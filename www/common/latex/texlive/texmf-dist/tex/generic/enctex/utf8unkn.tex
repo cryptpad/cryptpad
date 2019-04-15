@@ -1,0 +1,77 @@
+% utf8unkn.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Feb. 6. 2003                                            Petr Olsak
+%
+% Oct. 2012: More robust macros by \long, \noexpand, \badutfinput (P.O.)
+%
+% This macro sets all others UTF-8 codes (not declared formerly or
+% later) as "unknown" by encTeX primitives. You need the version 
+% Feb. 2003 of encTeX or later.
+% 
+% You can re-define the \warntwobytes and \warnthreebytes macros
+% if you need it. The default value of these macros is that
+% the black box is typeset and warning is printed by \message 
+% and the unknown code is printed without any change to \write files.
+
+\def\setunknowncodes {\bgroup
+   \def\a ##1{\mubyte \warntwobytes ####2 ##1\endmubyte}
+   \a ^^c2 \a ^^c3 \a ^^c4 \a ^^c5 \a ^^c6 \a ^^c7 
+   \a ^^c8 \a ^^c9 \a ^^ca \a ^^cb \a ^^cc \a ^^cd \a ^^ce \a ^^cf 
+   \a ^^d0 \a ^^d1 \a ^^d2 \a ^^d3 \a ^^d4 \a ^^d5 \a ^^d6 \a ^^d7 
+   \a ^^d8 \a ^^d9 \a ^^da \a ^^db \a ^^dc \a ^^dd \a ^^de \a ^^df 
+   \def\a ##1{\mubyte \warnthreebytes ####3 ##1\endmubyte}
+   \a ^^e0 \a ^^e1 \a ^^e2 \a ^^e3 \a ^^e4 \a ^^e5 \a ^^e6 \a ^^e7 
+   \a ^^e8 \a ^^e9 \a ^^ea \a ^^eb \a ^^ec \a ^^ed \a ^^ee \a ^^ef 
+\egroup}
+
+\mubyte \writeparameter \relax \endmubyte \def\writeparameter{}
+
+\long\def\warntwobytes #1#2{%
+   \ifx\writeparameter\relax % write parameter copies unknown code
+     \expandafter\noconvert\noexpand#1%
+     \expandafter\noconvert\noexpand#2% to output without any change
+   \else 
+     \if\noexpand#2\relax \badutfinput \else
+     \ifnum`#2<128 \badutfinput \else 
+     \missingutfchar{\expandafter\noconvert\noexpand#1%
+                     \expandafter\noconvert\noexpand#2}%
+   \fi\fi\fi}
+\long\def\warnthreebytes #1#2#3{\ifx\writeparameter\relax 
+     \expandafter\noconvert\noexpand#1%
+     \expandafter\noconvert\noexpand#2%
+     \expandafter\noconvert\noexpand#3%
+   \else 
+     \if\noexpand#2\relax \badutfinput \else
+     \ifnum`#2<128 \badutfinput \else
+       \missingutfchar{\expandafter\noconvert\noexpand#1%
+                       \expandafter\noconvert\noexpand#2%
+                       \expandafter\noconvert\noexpand#3}%
+   \fi\fi\fi}
+\def\badutfinput{{\errorcontextlines=-1
+   \errhelp={Try to set mubytein=0 or input utf8off or input mixcodes.}
+   \errmessage{UTF-8 INPUT IS CORRUPTED !
+               \space May be you are using another input encoding}}}
+\def\missingutfchar#1{{\day=0
+   \ifnum\day=0 % this makes me more robust in message prameter
+     \newlinechar=`^^J \chardef\$=\xprncode255
+     \xprncodes=1 \message{WARNING: unknown UTF-8 code: `#1 =}%
+     \xprncodes=0 \message{#1' (line: \the\inputlineno)}%
+     \xprncodes=\$
+     \leavevmode\hbox{\kern.05em\vrule width.5em height.5em\kern.05em}%
+   \else unknown UTF-8 code `#1'\fi}}
+
+% \xprncodes=1 or \xprncodes=0 .. set/unset printability of 128..255 chars
+
+\def\xprncodes=#1 {%
+  \count255=128
+  \loop \xprncode\count255=#1\advance\count255 by 1
+  \ifnum \count255<256 \repeat
+}
+
+
+\ifx\unknowncodes\relax \endinput \fi  % you can \let\unknowncodes\relax
+                                       % if you don't want to active
+                                       % the warncodes immediatelly
+\setunknowncodes
+
+\endinput

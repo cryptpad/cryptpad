@@ -1,0 +1,40 @@
+Hyphenation patterns for multi-accent (polytonic) Modern Greek
+
+(more info about the licence to be added later)
+
+% ****************************************************************
+%
+% File name: hyph-el-polyton.tex
+%
+% Created:       June 6, 2008
+% Last modified: Sept. 12, 2011
+%
+% Unicode hyphenation patterns for Modern Polytonic (multi accent)
+% Greek.
+%
+% Author:        Dimitrios Filippou, (c) 2008-2011
+% Licence:       LaTeX Project Public Licence
+%
+% This file was first created by mechanical translation from
+% GRPhyph5.tex via "elhyph-utf8 -p -c" (version 0.1 by Peter
+% Heslin -- p.j.heslin at durham dot ac dot uk). Some additions
+% were also made by hand.
+%
+% Created by Dimitrios Filippou with some ideas borrowed from
+% Yannis Haralambous, Kostis Dryllerakis and Claudio Beccari.
+% Mojca Miklavec adapted it for the "hyph-utf8" package.
+%
+% These hyphenation patterns are explained in "modern.pdf", which
+% can be found in the "elhyphen" or "hyphenation-greek" package.
+% Questionable patterns are marked by three question marks "???".
+%
+% Documentation in English can be found in: D. Filippou,
+% "Hyphenation patterns for Ancient and Modern Greek," in
+% "TeX, XML, and Digital Typography" (A. Syropoulos et al.,
+% eds.), Lecture Notes in Computer Science 3130, Springer-Verlag
+% Berlin-Heidelberg, 2004. ISBN 3-540-22801-2.
+%
+% ****************************************************************
+%
+% \message{UTF-8 hyphenation patterns for Modern, Polytonic Greek}
+%

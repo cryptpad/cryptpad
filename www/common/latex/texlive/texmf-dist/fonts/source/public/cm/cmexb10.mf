@@ -1,0 +1,85 @@
+% Computer Modern Math Extension Bold 10 point
+% Modification of cmex10 by Sami Sozuer. August 10 1994. 
+if unknown cmbase: input cmbase fi
+
+font_identifier:="CMEXB"; font_size 10pt#;
+
+u#:=20/36pt#;      % unit width, must be the same as cmex10 (circle stuff)
+width_adj#:=0pt#;    % width adjustment for certain characters
+serif_fit#:=0pt#;    % extra sidebar near lowercase serifs
+cap_serif_fit#:=5/36pt#;  % extra sidebar near uppercase serifs
+letter_fit#:=0pt#;    % extra space added to all sidebars
+
+body_height#:=270/36pt#;  % height of tallest characters
+asc_height#:=250/36pt#;    % height of lowercase ascenders
+cap_height#:=246/36pt#;    % height of caps
+fig_height#:=232/36pt#;    % height of numerals
+x_height#:=155/36pt#;    % height of lowercase without ascenders
+math_axis#:=90/36pt#;    % axis of symmetry for math symbols
+bar_height#:=87/36pt#;    % height of crossbar in lowercase e
+comma_depth#:=70/36pt#;    % depth of comma below baseline
+desc_depth#:=70/36pt#;    % depth of lowercase descenders
+
+crisp#:=0pt#;      % diameter of serif corners
+tiny#:=8/36pt#;      % diameter of rounded corners
+fine#:=7/36pt#;      % diameter of sharply rounded corners
+thin_join#:=9.5/36pt#;    % width of extrafine details
+hair#:=13.5/36pt#;      % lowercase hairline breadth
+stem#:=37/36pt#;    % lowercase stem breadth
+curve#:=42/36pt#;    % lowercase curve breadth
+ess#:=40/36pt#;      % breadth in middle of lowercase s
+flare#:=46/36pt#;    % diameter of bulbs or breadth of terminals
+dot_size#:=48/36pt#;    % diameter of dots
+cap_hair#:=16/36pt#;    % uppercase hairline breadth
+cap_stem#:=47/36pt#;    % uppercase stem breadth
+cap_curve#:=50/36pt#;    % uppercase curve breadth
+cap_ess#:=47/36pt#;    % breadth in middle of uppercase s
+rule_thickness#:=.58pt#;    % thickness of lines in math symbols
+
+dish#:=1/36pt#;      % amount erased at top or bottom of serifs
+bracket#:=20/36pt#;    % vertical distance from serif base to tangent
+jut#:=28/36pt#;      % protrusion of lowercase serifs
+cap_jut#:=37/36pt#;    % protrusion of uppercase serifs
+beak_jut#:=10/36pt#;    % horizontal protrusion of beak serifs
+beak#:=70/36pt#;    % vertical protrusion of beak serifs
+vair#:=10.5/36pt#;      % vertical diameter of hairlines
+notch_cut#:=15pt#;    % maximum breadth above or below notches
+bar#:=16/36pt#;      % lowercase bar thickness
+slab#:=16/36pt#;    % serif and arm thickness
+cap_bar#:=16/36pt#;    % uppercase bar thickness
+cap_band#:=16/36pt#;    % uppercase thickness above/below lobes
+cap_notch_cut#:=16pt#;    % max breadth above/below uppercase notches
+serif_drop#:=4/36pt#;    % vertical drop of sloped serifs
+stem_corr#:=1/36pt#;    % for small refinements of stem breadth
+vair_corr#:=1/36pt#;    % for small refinements of hairline height
+apex_corr#:=0pt#;    % extra width at diagonal junctions
+
+o#:=8/36pt#;      % amount of overshoot for curves
+apex_o#:=8/36pt#;    % amount of overshoot for diagonal junctions
+
+slant:=0;      % tilt ratio $(\Delta x/\Delta y)$
+fudge:=1;      % factor applied to weights of heavy characters
+math_spread:=0;      % extra openness of math symbols
+superness:=1/sqrt2;    % parameter for superellipses
+superpull:=1/6;      % extra openness inside bowls
+beak_darkness:=11/30;    % fraction of triangle inside beak serifs
+ligs:=2;      % level of ligatures to be included
+
+square_dots:=false;    % should dots be square?
+hefty:=false;      % should we try hard not to be overweight?
+serifs:=true;      % should serifs and bulbs be attached?
+monospace:=false;    % should all characters have the same width?
+variant_g:=false;    % should an italic-style g be used?
+low_asterisk:=false;    % should the asterisk be centered at the axis?
+math_fitting:=false;    % should math-mode spacing be used?
+
+% the following font parameters are explained in {\sl The \TeX book}, Appendix G
+fontdimen 8:  % parameters $\xi_8$ through $\xi_{13}$ will now be listed
+ rule_thickness#,  % default\_rule\_thickness
+ 40/36pt#,    % big\_op\_spacing1
+ 60/36pt#,    % big\_op\_spacing2
+ 72/36pt#,    % big\_op\_spacing3
+ 216/36pt#,    % big\_op\_spacing4
+ 36/36pt#;    % big\_op\_spacing5
+
+generate mathex      % switch to the driver file

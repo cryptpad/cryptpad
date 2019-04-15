@@ -1,0 +1,33 @@
+%%
+%% This is file `mflogo.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mflogo.dtx  (with options: `package')
+%% 
+%% Copyright (C) 1994--1999 Ulrik Vieth
+%% 
+%% This file is part of the `mflogo' package.
+%% 
+%% This program is free software; you can redistribute it and/or
+%% modify it under the terms of the LaTeX Project Public License
+%% as described in lppl.txt in the base LaTeX distribution; either
+%% version 1 of the License, or (at your option) any later version.
+%% 
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{mflogo}
+[1999/03/10 v2.0 LaTeX package for Metafont and MetaPost logos]
+\DeclareRobustCommand\logofamily{%
+  \not@math@alphabet\logofamily\relax
+  \fontencoding{U}\fontfamily{logo}\selectfont}
+\DeclareTextFontCommand{\textlogo}{\logofamily}
+\def\MF{\textlogo{META}\@dischyph\textlogo{FONT}\@}
+\def\MP{\textlogo{META}\@dischyph\textlogo{POST}\@}
+\endinput
+%%
+%% End of file `mflogo.sty'.

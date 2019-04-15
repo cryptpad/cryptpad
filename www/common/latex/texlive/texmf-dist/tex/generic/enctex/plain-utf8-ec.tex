@@ -1,0 +1,22 @@
+\input noprefnt % re-defines primitive \font, \font\preloaded is ignored
+\input plain    % format Plain
+\restorefont    % original meaning of primitive \font
+\font\tenrm=ecrm1000 \tenrm
+\font\tenbf=ecbx1000
+\font\tenit=ecti1000
+\font\tentt=ectt1000
+\font\tensl=ecsl1000
+\input utf8-t1  % input: UTF-8, internal TeX: Cork
+\input hyphen.lan  % czech / slovak hyphenation pattern (may be others too)
+\input plaina4  % \hsize and \vsize for A4
+\everyjob=\expandafter{\the\everyjob
+   \message{The format: plain-utf8-ec <Jan. 2003>.}
+   \message{The cs-fonts are preloaded and A4 size predefined.}}
+\dump
+
+
+
+
+
+
+

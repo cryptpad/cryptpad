@@ -1,0 +1,298 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%% \CheckSum{113}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%
+%
+% \changes{v2.1a}{1994/03/10}{Update for \LaTeXe}
+%
+% \DoNotIndex{\@cclvi,\@cclv,\@gobble,\@gobbletwo,\@ifnextchar}
+% \DoNotIndex{\@M,\@tempboxa,\advance,\alloc,\begingroup,\bgroup}
+% \DoNotIndex{\box,\count@,\def,\do,\docdate,\egroup,\endgroup}
+% \DoNotIndex{\fi,\filedate,\fileversion,\font,\fontdimen,\global}
+% \DoNotIndex{\ifinner,\ifnum,\immediate,\let,\long,\loop,\m@ne}
+% \DoNotIndex{\noexpand,\relax,\repeat,\scriptfont}
+% \DoNotIndex{\scriptscriptfont,\setbox,\sixt@@n,\space,\textfont}
+% \DoNotIndex{\toks,\toksdef,\write,\xdef,\z@}%
+%
+%
+%\title{The file \texttt{syntonly.dtx} for use with
+%      \LaTeXe.\thanks{This file has version
+%           number \fileversion, dated \filedate.}\\[2pt]
+%      It contains the code for \texttt{syntonly.sty}}
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This package implements the |\syntaxonly| declaration for \LaTeXe.
+% This command can be used in the preamble for running a document
+% through \LaTeX{} without actually getting any output.
+%
+% \StopEventually{}
+%
+%
+% \section{Identification}
+%
+%  We identify the package and its current version.
+% \changes{v2.1b}{1995/04/22}{Removed surplus \cs{typeout} lines}
+% \changes{v2.1c}{1996/06/14}{Rearange \cs{GetFileInfo} useage.}
+% \changes{v2.1d}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+%    \begin{macrocode}
+%<package>\ProvidesPackage{syntonly}
+%<*dtx>
+          \ProvidesFile{syntonly.dtx}
+%</dtx>
+%<*package|dtx>
+              [1999/09/17 v2.1e Standard LaTeX2e package]
+%</package|dtx>
+%    \end{macrocode}
+%
+%\iffalse
+%
+% \section{The documentation driver file}
+%
+% The next bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the \dst{}
+% program.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\GetFileInfo{syntonly.dtx}
+\providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+\begin{document}
+   \DocInput{syntonly.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%\fi
+%
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\dummyft@}
+%    First of all we need to define the `dummy' font.
+%    \begin{macrocode}
+\font\dummyft@=dummy \relax
+%    \end{macrocode}
+% \end{macro}
+% \changes{v2.1b}{1995/05/25}{Removed unneeded fontdimen settings for
+%   dummyft@}
+%
+% \begin{macro}{\ifsyntax@}
+% Now we can define the `syntax only' feature.  We define a switch
+% |\if@syntax| so that any macro can always find out if it
+% is really supposed to typeset text.  Its default is to run in
+% normal mode.
+%    \begin{macrocode}
+\newif\ifsyntax@
+\syntax@false
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\syntaxonly}
+%    The |\syntaxonly| macro sets up everything for syntax
+%    checking.
+%    \begin{macrocode}
+\def\syntaxonly{%
+%    \end{macrocode}
+%    First of all it sets the |syntax@| switch to \texttt{true}.
+%    \begin{macrocode}
+   \syntax@true
+%    \end{macrocode}
+%    Then it globally sets all fonts to the dummy font.  These are:
+%    the current font outside math mode,
+%    \begin{macrocode}
+   \global\dummyft@
+%    \end{macrocode}
+%    and the $3\times16$ math fonts for the $16$ math \emph{groups}.
+%    We use a loop to set these.
+%    \begin{macrocode}
+   \count@\sixt@@n
+   \loop
+    \ifnum\count@ >\z@
+     \advance\count@\m@ne
+     \global\textfont\count@\dummyft@
+     \global\scriptfont\count@\dummyft@
+     \global\scriptscriptfont\count@\dummyft@
+    \repeat
+%    \end{macrocode}
+%    Since all font changes occur either via |\selectfont| (in
+%    text or |\mathversion| (for math mode) it is sufficient
+%    to change these to no-ops.  In addition we must prevent
+%    the loading of math fonts, this is done by making
+%    |\getanddefine@fonts| a no-op.
+%    \begin{macrocode}
+   \global\let\selectfont\relax
+   \global\let\mathversion\@gobble
+   \global\let\getanddefine@fonts\@gobbletwo
+%    \end{macrocode}
+%    We prevent \TeX{} from complaining about the dummy font
+%    having no characters.
+%    \begin{macrocode}
+   \tracinglostchars\z@
+%    \end{macrocode}
+%    Then we disable the output routine, and set |\frenchspacing|
+%    (which is slightly faster than |\nonfrenchspacing|).
+%    Finally we set |\hbadness| to $10000$ to avoid overfull box
+%    messages.
+%    \begin{macrocode}
+   \nopages@
+   \frenchspacing
+   \hbadness\@M}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v2.1b}{1995/05/25}{Removed non-outer newtoks@: newtoks is no
+%   longer outer}
+%
+% \begin{macro}{\nopages@}
+% \changes{v1.0b}{1990/01/14}{Rewrite of the \cs{nopages@} macro to
+%       correctly handle footnote insertions, floats and marginpars.}
+%    The |\nopages@| macro disables the \LaTeX{} output routine.
+%    To this end we define a very simple output routine that empties
+%    the output \emph{and} footnote boxes (remember that the latter
+%    are insertions.
+%    \begin{macrocode}
+\def\nopages@{%
+  \output {\setbox\z@\box\@cclv
+           \setbox\z@\box\footins
+           \deadcycles\z@}%
+%    \end{macrocode}
+%    Then we protect it against definition by a style file.
+% \changes{v2.1b}{1995/05/25}{newtoks is no longer outer}
+%    \begin{macrocode}
+  \newtoks\output
+%    \end{macrocode}
+%    But this is not enough: normally the \LaTeX{} output routine
+%    is responsible for dealing with floating objects.
+%    We therefore also redefine the internal macros for handling
+%    floats and marginpars.
+%    \begin{macrocode}
+  \def\@xfloat##1[##2]{%
+%    \end{macrocode}
+%    There are a few things that have to be retained:
+%    the definition of |\@captype| since it is used by the
+%    |\caption| command,
+% \changes{v1.0c}{1990/01/16}{Definition of \cs{@captype} added.}
+%    \begin{macrocode}
+    \def\@captype{##1}%
+%    \end{macrocode}
+%    the error message issued when not in outer paragraph mode,
+%    \begin{macrocode}
+    \ifinner\@parmoderr\fi
+%    \end{macrocode}
+%    and the |\@parboxrestore| command for the body of the
+%    float.  This is necessary since it restores the original
+%    definitions of important commands like |\par| or |\\|.
+%    \begin{macrocode}
+    \setbox\@tempboxa\vbox\bgroup\@parboxrestore}%
+%    \end{macrocode}
+%    |\end@float| must now only close the brace:
+%    \begin{macrocode}
+  \let\end@float\egroup
+%    \end{macrocode}
+%    The above would be enough also for two-column floats with the
+%   kernel algorithm. However with the refined algorithm inside
+%   \texttt{fixlxt2e} this doesn't any longer work, so there we also
+%   need to explicitly overwrite the end macro for two-column floats
+%   (the begin is still okay as it resolves to |\@xfloat| eventually).
+%    \begin{macrocode}
+  \let\end@dblfloat\egroup
+%    \end{macrocode}
+%    The redefinition of the |\marginpar| command is a bit more
+%    complicated since we have to check for the optional argument.
+%    First we redefine the command itself:
+%    \begin{macrocode}
+  \def\marginpar{\ifinner\@parmoderr\fi
+%    \end{macrocode}
+%    We open a group so that everything gathered in a temporary box
+%    can easily be thrown away by closing it again (see below).
+%    \begin{macrocode}
+    \begingroup \@ifnextchar [\@xmpar\@ympar}
+%    \end{macrocode}
+%    |\@xmpar| and |\@ympar| are now defined similar to
+%    |\@xfloat| above.
+%    If an optional argument is present |\@xmpar| typesets
+%    it in a temporary box that is thrown away later.
+%    Then it calls up |\@ympar| to process |\marginpar|'s
+%    argument.
+% \changes{v1.0d}{1990/01/21}{Added forgotten \cs{vbox}.}
+%    \begin{macrocode}
+  \long\def\@xmpar[##1]{%
+    \setbox\@tempboxa\vbox{\@parboxrestore ##1}\@ympar}%
+%    \end{macrocode}
+%    |\@ympar| gathers its argument in the same temporary box
+%    and throws away its contents by closing the group opened up in
+%    |\marginpar| above.
+% \changes{v1.0d}{1990/01/21}{Added forgotten \cs{vbox}.}
+%    \begin{macrocode}
+  \long\def\@ympar##1{%
+    \setbox\@tempboxa\vbox{\@parboxrestore ##1}\endgroup}%
+%    \end{macrocode}
+%    And that's all we had to do.
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@preamblecmds}
+%    We disable the use of the |\syntaxonly| command after
+%    |\begin{document}|
+%    \begin{macrocode}
+\@onlypreamble\syntaxonly
+%</package>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+
+\endinput

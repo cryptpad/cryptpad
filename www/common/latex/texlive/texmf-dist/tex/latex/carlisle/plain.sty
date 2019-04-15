@@ -1,0 +1,251 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                  plain.sty
+%                  %%%%%%%%%
+%
+% Copyright 1990 David Carlisle
+%
+% This file may be distributed under the terms of the LPPL.
+% See 00readme.txt for details.
+
+% Defines a new environment plain, in which plain TeX files should be 
+% LaTeX'able.  
+% Defines \magnification and \bye to be no-op.
+% Re-enables some plain commands (\line, \eqalign ...)
+% Fakes some other plain commands (\footnote, \topinsert, ... )
+% Keeps LaTeX's font definitions, and output routine.
+%
+%     Example use:
+%     \begin{plain}
+%     \input{Somebodys_nasty_plain_file.tex}
+%     \end{plain}
+%
+%  You do not have to \input the plain commands, they can  be entered
+%  directly inside the plain environment.
+%
+%      \begin{plain}
+%      $$ \eqalign{1+2&=2+1\cr&=3}$$
+%      \end{plain}
+
+%  Note that this style file is designed to make plain TeX files do
+%  something sensible inside LaTeX. The page breaks, widths of lines,
+%  fonts used etc may not be the same as obtained from plain TeX.
+
+%  If you want exactly the same result from LaTeX as plain TeX use: (!!)
+%  latex \&plain Somebodys_nasty_plain_file.tex
+  
+%                   David Carlisle
+%                   carlisle@cs.man.ac.uk
+%                   1990/11/14
+
+% All of the code is from (l)plain.tex except a few definitions
+% which are marked with the comment:
+%DPC
+% and one set of three commands marked with the comment
+%RF (at DPC's request)
+%
+% one place where extraneous \par token, and two places where
+% extraneous spaces appeared corrected RF 2001/09/14
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1990/11/14   initial version
+% 1994-5       Robin Fairbairns kindly fixed up a few things
+% 1996/04/22   Add support for plain TeX commands and primitives hit
+%               by AMS packages.
+
+%DPC
+% Just to get started...
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{plain}[1996/04/22 Plain TeX emulation (DPC)]
+
+%DPC
+\let\latex@end=\end
+
+%DPC
+% First a few \new's 
+\newif\ifus@@latex 
+\newif\if@cr@latex
+\newbox\tabs@latex
+\newbox\tabsyet@latex
+\newbox\tabsdone@latex
+
+%DPC
+% AMS packages might squash these, so ...
+\ifx\@@over\@undefined
+  \let\@@over\over
+\fi
+\ifx\@@atop\@undefined
+  \let\@@atop\atop
+\fi
+\ifx\@@above\@undefined
+  \let\@@above\above
+\fi
+\ifx\@@overwithdelims\@undefined
+  \let\@@overwithdelims\overwithdelims
+\fi
+\ifx\@@atopwithdelims\@undefined
+  \let\@@atopwithdelims\atopwithdelims
+\fi
+\ifx\@@abovewithdelims\@undefined
+  \let\@@abovewithdelims\abovewithdelims
+\fi
+
+%DPC
+% The plain environment:
+\def\plain{%
+%
+%DPC
+% put the \ifs and registers back
+\let\ifus@\ifus@@latex 
+\let\if@cr\if@cr@latex
+\let\tabs\tabs@latex
+\let\tabsyet\tabsyet@latex
+\let\tabsdone\tabsdone@latex
+%
+\let\centering=\@centering
+%
+% \line changed to \@@line because LaTeX redefines \line
+\let\line\@@line
+% <-- this comment marker inserted by RF 2001-09-14
+% LaTeX has its own tabbing environment, so PLAIN's is disabled.
+\def\cleartabs{\global\setbox\tabsyet\null \setbox\tabs\null}%
+\def\settabs{\setbox\tabs\null \futurelet\next\sett@b}%
+\let\+=\relax % in case this file is being read in twice
+\def\sett@b{\ifx\next\+\let\next\relax
+    \def\next{\afterassignment\s@tt@b\let\next}%
+  \else\let\next\s@tcols\fi\next}%
+\def\s@tt@b{\let\next\relax\us@false\m@ketabbox}%
+\def\tabalign{\us@true\m@ketabbox}%  non-\outer version of \+
+\outer\def\+{\tabalign}%
+\def\s@tcols##1\columns{\count@##1 \dimen@\hsize
+  \loop\ifnum\count@>\z@ \@nother \repeat}%
+\def\@nother{\dimen@ii\dimen@ \divide\dimen@ii\count@
+  \setbox\tabs\hbox{\hbox to\dimen@ii{}\unhbox\tabs}%
+  \advance\dimen@-\dimen@ii \advance\count@\m@ne}%
+%
+\def\m@ketabbox{\begingroup
+  \global\setbox\tabsyet\copy\tabs
+  \global\setbox\tabsdone\null
+  \def\cr{\@crtrue\crcr\egroup\egroup
+    \ifus@\unvbox\z@\lastbox\fi\endgroup
+    \setbox\tabs\hbox{\unhbox\tabsyet\unhbox\tabsdone}}%
+  \setbox\z@\vbox\bgroup\@crfalse
+    \ialign\bgroup&\t@bbox####\t@bb@x\crcr}%
+%
+\def\t@bbox{\setbox\z@\hbox\bgroup}%
+\def\t@bb@x{\if@cr\egroup % now \box\z@ holds the column
+  \else\hss\egroup \global\setbox\tabsyet\hbox{\unhbox\tabsyet
+      \global\setbox\@ne\lastbox}% now \box\@ne holds its size
+    \ifvoid\@ne\global\setbox\@ne\hbox to\wd\z@{}%
+    \else\setbox\z@\hbox to\wd\@ne{\unhbox\z@}\fi
+    \global\setbox\tabsdone\hbox{\box\@ne\unhbox\tabsdone}\fi
+  \box\z@}%
+%
+% LaTeX has its own sectioning macros
+\outer\def\beginsection##1\par{\filbreak\bigskip
+  \message{##1}\leftline{\bf##1}\nobreak\smallskip\vskip-\parskip
+  \noindent}%
+%
+% LaTeX change: \bye is eliminated.
+%DPC
+% \bye made a no-op
+\let\bye\relax
+%
+%DPC
+% fake \supereject
+\let\supereject\clearpage
+%
+%DPC
+% \end made no-op unless it is followed by {
+\def\end{\@ifnextchar \bgroup\latex@end\relax}%
+%
+% LaTeX change: \eqalign eliminated, since it is replaced by the
+% eqnarray environment.
+\def\eqalign##1{\null\,\vcenter{\openup\jot\m@th
+  \ialign{\strut\hfil$\displaystyle{####}$&$\displaystyle{{}####}$\hfil
+      \crcr##1\crcr}}\,}%
+%
+%  LaTeX: The following \eqalign type macros are eliminated, since
+%  they are replaced by the eqnarray environment.
+\def\eqalignno##1{\displ@y \tabskip\centering
+  \halign to\displaywidth{%
+    \hfil$\@lign\displaystyle{####}$\tabskip\z@skip
+    &$\@lign\displaystyle{{}####}$\hfil\tabskip\centering
+    &\llap{$\@lign####$}\tabskip\z@skip\crcr
+    ##1\crcr}}%
+\def\leqalignno##1{\displ@y \tabskip\centering
+  \halign to\displaywidth{%
+    \hfil$\@lign\displaystyle{####}$\tabskip\z@skip
+    &$\@lign\displaystyle{{}####}$\hfil\tabskip\centering
+    &\kern-\displaywidth\rlap{$\@lign####$}\tabskip\displaywidth\crcr
+    ##1\crcr}}%
+%
+%DPC
+% Fake plain's \nopagenumers
+\def\nopagenumbers{\pagestyle{empty}}%
+%
+\def\advancepageno{\ifnum\pageno<\z@ \global\advance\pageno\m@ne
+  \else\global\advance\pageno\@ne \fi}%  increase |pageno|
+%
+\countdef\pageno\z@
+%
+%DPC
+% Fake plain's \footnote with internal LaTeX commands
+\def\footnote##1{\def\@thefnmark{##1}\@footnotemark\@footnotetext}%
+%
+%DPC
+% Re-instate the primitive \underline 
+%(LaTeX's version generates errors in some valid (plain) contexts)
+\let\underline\@@underline
+%
+%DPC
+% Re-instate plain's \item
+\def\item{\par\hang\textindent}%
+\def\itemitem{\par\indent \hangindent2\parindent \textindent}%
+%
+%DPC
+% Fake plain's \[top|mid|page]insert with LaTeX's figure environment.
+\def\topinsert{\begin{figure}[!tp]}%
+\def\midinsert{\begin{figure}[!htp]}%
+\def\pageinsert{\begin{figure}[p]}%
+\def\endinsert{\end{figure}}%
+%
+% \magnification doesn't work in LaTeX
+%
+%DPC
+% Make \magnification just gobble the next <number>
+\def\magnification{\count@}%
+%
+%RF (at DPC's request)
+% \proclaim \hang and \textindent from plain.tex (since they're now no
+% longer part of 2e kernel, but only compatibility)
+\def\proclaim ##1. ##2\par{\medbreak
+  \noindent{\bf##1.\enspace}{\sl##2\par}%
+  \ifdim\lastskip<\medskipamount \removelastskip\penalty55\medskip\fi}%
+%
+\def\hang{\hangindent\parindent}%
+%
+\def\textindent##1{\indent\llap{##1\enspace}\ignorespaces}%
+%
+%
+%DPC
+% Repair AMS `damage'
+\let\over\@@over
+\let\atop\@@atop
+\let\above\@@above
+\let\overwithdelims\@@overwithdelims
+\let\atopwithdelims\@@atopwithdelims
+\let\abovewithdelims\@@abovewithdelims
+%
+\def\cases##1{\left\{\,\vcenter{\normalbaselines\m@th
+    \ialign{$####\hfil$&\quad####\hfil\crcr##1\crcr}}\right.}%
+\def\matrix##1{\null\,\vcenter{\normalbaselines\m@th
+    \ialign{\hfil$####$\hfil&&\quad\hfil$####$\hfil\crcr
+      \mathstrut\crcr\noalign{\kern-\baselineskip}%
+      ##1\crcr\mathstrut\crcr\noalign{\kern-\baselineskip}}}\,}%
+\def\pmatrix##1{\left(\matrix{##1}\right)}%
+%
+%DPC
+%end of \def\plain
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endinput

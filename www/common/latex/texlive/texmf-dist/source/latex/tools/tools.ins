@@ -1,0 +1,210 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993-2015
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% This file is part of the Standard LaTeX `Tools Bundle'.
+%% -------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX 
+%% version 2005/12/01 or later.
+%% 
+%% In particular, NO PERMISSION is granted to modify the contents of this
+%% file since it contains the legal notices that are placed in the files
+%% it generates.
+%% 
+%% The list of all files belonging to the `Tools Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+\input docstrip
+
+\def\SimplePackage#1{%
+  \generate{\file{#1.sty}{\from{#1.dtx}{package}}}}
+
+\keepsilent
+
+\usedir{tex/latex/tools}
+
+\preamble
+
+This is a generated file.
+
+The source is maintained by the LaTeX Project team and bug
+reports for it can be opened at http://latex-project.org/bugs.html
+(but please observe conditions on bug reports sent to that address!)
+
+
+Copyright 1993-2015
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+This file was generated from file(s) of the Standard LaTeX `Tools Bundle'.
+--------------------------------------------------------------------------
+
+It may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX 
+version 2005/12/01 or later.
+
+This file may only be distributed together with a copy of the LaTeX
+`Tools Bundle'. You may however distribute the LaTeX `Tools Bundle'
+without such generated files.
+
+The list of all files belonging to the LaTeX `Tools Bundle' is
+given in the file `manifest.txt'.
+
+\endpreamble
+
+% Array files
+%%%%%%%%%%%%%
+\generate{\file{array.sty}{\from{array.dtx}{package,ncols}}}
+
+\SimplePackage{delarray}
+
+\batchinput{tabularx.ins}
+
+\SimplePackage{dcolumn}
+
+\SimplePackage{hhline}
+
+\batchinput{longtable.ins}
+
+% Multicolumn
+%%%%%%%%%%%%%
+\batchinput{multicol.ins}
+
+% Bold Math Symbols
+%%%%%%%%%%%%%%%%%%%
+\batchinput{bm.ins}
+
+% Footnote Right
+%%%%%%%%%%%%%%%
+\SimplePackage{ftnright}
+
+% Theorem files
+%%%%%%%%%%%%%%%
+\generate{%
+  \file{theorem.sty}{\from{theorem.dtx}{package}}
+  \file{thb.sty}{\from{theorem.dtx}{thb}}
+  \file{thcb.sty}{\from{theorem.dtx}{thcb}}
+  \file{thc.sty}{\from{theorem.dtx}{thc}}
+  \file{thp.sty}{\from{theorem.dtx}{thp}}
+  \file{thmb.sty}{\from{theorem.dtx}{thmb}}
+  \file{thm.sty}{\from{theorem.dtx}{thm}}}
+
+% Verbatim
+%%%%%%%%%%
+\generate{%
+  \file{verbatim.sty}{\from{verbatim.dtx}{package}}
+  \file{verbtest.tex}{\from{verbatim.dtx}{testdriver}}}
+
+% Smart Page references
+%%%%%%%%%%%%%%%%%%%%%%%
+\batchinput{varioref.ins}
+
+% External references
+%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{xr}
+
+% Smart Space command
+%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{xspace}
+
+% Show \label \ref keys
+%%%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{showkeys}
+
+% Load fonts under old names
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{rawfonts}
+
+% Selective Option handling
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{somedefs}
+
+
+% Font sample
+%%%%%%%%%%%%%
+\generate{%
+  \file{fontsmpl.sty}{\from{fontsmpl.dtx}{package}}
+  \file{fontsmpl.tex}{\from{fontsmpl.dtx}{document}}}
+
+% After Page Package
+%%%%%%%%%%%%%%%%%%%%
+\batchinput{afterpage.ins}
+
+% Enumerate Package
+%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{enumerate}
+
+
+% Indent first paragraphs
+%%%%%%%%%%%%%%%%%%%
+\SimplePackage{indentfirst}
+
+
+% Show the layout of a document class
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{layout}
+
+
+% Infix Arithmetic 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{calc}
+
+% Debugging
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\SimplePackage{trace}
+
+% File-Error files
+%%%%%%%%%%%%%%%%%%
+\generate{%
+  \file{h.tex}{\from{fileerr.dtx}{help}}
+  \file{s.tex}{\from{fileerr.dtx}{scroll}}
+  \file{e.tex}{\from{fileerr.dtx}{edit}}
+  \file{q.tex}{\from{fileerr.dtx}{batch}}
+  \file{r.tex}{\from{fileerr.dtx}{run}}
+  \file{x.tex}{\from{fileerr.dtx}{exit}}}
+
+
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* All the files with extension `.sty' and `.tex'}
+\Msg{* Note there also may be a file .tex which is `invisible'}
+\Msg{* on some operating systems.}
+\Msg{*}
+\Msg{* To produce the documentation run the .dtx files through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
+
+
+\Msg{}
+\Msg{* Finally trying to make a file `.tex'.}
+\Msg{* (Placed at the end of this run, as this}
+\Msg{*  may fail on some operating systems.)}
+
+\let\oldopenout\openout
+\def\openout{\batchmode\immediate\oldopenout}
+
+\generate{\file{.tex}{\from{fileerr.dtx}{return}}}
+
+\endbatchfile

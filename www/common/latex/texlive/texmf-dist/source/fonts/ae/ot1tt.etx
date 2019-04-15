@@ -1,0 +1,68 @@
+%% ot1tt.etx
+%% Copyright 1993 Alan Jeffrey
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+%%%========================================================================
+%%% @TeX-font-encoding-file{
+%%%    author              = "Alan Jeffrey",
+%%%    version             = "1.30",
+%%%    date                = "29 December 1993",
+%%%    time                = "20:12:28 BST",
+%%%    filename            = "ot1tt.etx",
+%%%    address             = "School of Cognitive and Computing Sciences
+%%%                           University of Sussex
+%%%                           Brighton BN1 9QH
+%%%                           UK",
+%%%    telephone           = "+44 273 606755 x 3238",
+%%%    FAX                 = "+44 273 678188",
+%%%    checksum            = "???",
+%%%    email               = "alanje@cogs.sussex.ac.uk",
+%%%    codetable           = "ISO/ASCII",
+%%%    keywords            = "encoding, Cork, TeX, PostScript",
+%%%    supported           = "yes",
+%%%    abstract            = "This is the Cork encoding as a TeX font 
+%%%                           encoding file, for use with the fontinst 
+%%%                           font installation package.",
+%%%    docstring           = "The checksum field above contains a CRC-16
+%%%                           checksum as the first value, followed by the
+%%%                           equivalent of the standard UNIX wc (word
+%%%                           count) utility output of lines, words, and
+%%%                           characters.  This is produced by Robert
+%%%                           Solovay's checksum utility.",
+%%%    package             = "fontinst",
+%%%    dependencies        = "fontinst.sty, ltugboat.sty, ot1.etx",
+%%% }
+%%%========================================================================
+
+\relax
+
+\encoding
+
+% We define the parameters for ot1.etx to produce a typewriter font.
+
+\setcommand\lc#1#2{#2}
+\setcommand\uc#1#2{#1}
+\setcommand\lclig#1#2{#2}
+\setcommand\uclig#1#2{#1}
+\setcommand\digit#1{#1}
+\setcommand\tty{y}
+\setcommand\currency{dollar}
+
+% Then we call ot1.etx.
+
+\inputetx{OT1}
+
+\endencoding

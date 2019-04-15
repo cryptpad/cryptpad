@@ -1,0 +1,40 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName LASYB10
+FullName LASYB10
+FamilyName LaTeX
+Weight Bold
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name LASYB10.)
+ItalicAngle -14.035
+IsFixedPitch false
+UnderlinePosition 0
+UnderlineThickness 0
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox -29 -219 1086 697
+StartCharMetrics 23
+C 1 ; WX 894 ; N a1 ; B 96 -85 799 586 ;
+C 2 ; WX 894 ; N a2 ; B 96 -196 799 697 ;
+C 3 ; WX 894 ; N a3 ; B 96 -85 799 586 ;
+C 4 ; WX 894 ; N a4 ; B 96 -196 799 697 ;
+C 32 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 40 ; WX 383 ; N a40 ; B 64 53 284 447 ;
+C 41 ; WX 383 ; N a41 ; B 99 53 319 447 ;
+C 42 ; WX 575 ; N a42 ; B 91 -219 484 0 ;
+C 43 ; WX 575 ; N a43 ; B 91 0 484 220 ;
+C 48 ; WX 830 ; N a48 ; B 51 -16 779 686 ;
+C 49 ; WX 830 ; N a49 ; B 66 38 765 648 ;
+C 50 ; WX 780 ; N a50 ; B 98 51 683 636 ;
+C 51 ; WX 808 ; N a51 ; B 64 3 744 683 ;
+C 58 ; WX 766 ; N a58 ; B -29 108 797 393 ;
+C 59 ; WX 1150 ; N a59 ; B -29 65 1086 435 ;
+C 60 ; WX 894 ; N a60 ; B 104 -85 829 586 ;
+C 61 ; WX 894 ; N a61 ; B 66 -85 790 586 ;
+C 128 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 162 ; WX 894 ; N a1 ; B 96 -85 799 586 ;
+C 163 ; WX 894 ; N a2 ; B 96 -196 799 697 ;
+C 164 ; WX 894 ; N a3 ; B 96 -85 799 586 ;
+C 165 ; WX 894 ; N a4 ; B 96 -196 799 697 ;
+C 195 ; WX 333 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+EndFontMetrics

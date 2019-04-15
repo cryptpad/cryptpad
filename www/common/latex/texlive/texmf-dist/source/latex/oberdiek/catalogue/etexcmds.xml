@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='etexcmds'>
+  <name>etexcmds</name>
+  <caption>Avoid name clashes with e-TeX commands.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.5'/>
+  <description>
+    New primitive commands are introduced in e-TeX; sometimes the
+    names collide with existing macros.  This package solves the
+    name clashes by adding a prefix to e-TeX&#x2019;s commands.  For
+    example, eTeX&#x2019;s <tt>\unexpanded</tt> is provided as
+    <tt>\etex@unexpanded</tt>.
+
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/etexcmds.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/etexcmds.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

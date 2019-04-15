@@ -1,0 +1,381 @@
+%%
+%% This is file `switch.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babel.dtx  (with options: `kernel')
+%% This is a generated file.
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright 1989-2008 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% The Current Maintainer of this work is Javier Bezos.
+%% 
+%% This file may only be distributed together with a copy of the Babel
+%% system. You may however distribute the Babel system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the Babel distribution is
+%% given in the file `manifest.bbl'. See also `legal.bbl for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%% File 'babel.dtx'
+%%\ProvidesFile{babel.dtx}[2015/08/03 v3.9m The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989-2008 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%% Copyright (C) 2013-2014 by Johannes Braams
+%%                            TeXniek
+%%                            by Javier Bezos
+%%                            all rights reserved.
+\ifx\ProvidesFile\@undefined
+  \def\ProvidesFile#1[#2 #3 #4]{%
+    \wlog{File: #1 #4 #3 <#2>}%
+    \let\ProvidesFile\@undefined}
+\fi
+\ProvidesFile{switch.def}[2015/08/03 3.9m Babel switching mechanism]
+\ifx\AtBeginDocument\@undefined
+  \input plain.def\relax
+\fi
+\ifx\language\@undefined
+  \csname newcount\endcsname\language
+\fi
+\ifx\newlanguage\@undefined
+  \csname newcount\endcsname\last@language
+  \def\addlanguage#1{%
+    \global\advance\last@language\@ne
+    \ifnum\last@language<\@cclvi
+    \else
+        \errmessage{No room for a new \string\language!}%
+    \fi
+    \global\chardef#1\last@language
+    \wlog{\string#1 = \string\language\the\last@language}}
+\else
+  \countdef\last@language=19
+  \def\addlanguage{\alloc@9\language\chardef\@cclvi}
+\fi
+\def\bbl@version{3.9m}
+\def\bbl@date{2015/08/03}
+\def\adddialect#1#2{%
+  \global\chardef#1#2\relax
+  \bbl@usehooks{adddialect}{{#1}{#2}}%
+  \wlog{\string#1 = a dialect from \string\language#2}}
+\def\bbl@fixname#1{%
+  \begingroup
+    \def\bbl@tempe{l@}%
+    \edef\bbl@tempd{\noexpand\@ifundefined{\noexpand\bbl@tempe#1}}%
+    \bbl@tempd
+      {\lowercase\expandafter{\bbl@tempd}%
+         {\uppercase\expandafter{\bbl@tempd}%
+           \@empty
+           {\edef\bbl@tempd{\def\noexpand#1{#1}}%
+            \uppercase\expandafter{\bbl@tempd}}}%
+         {\edef\bbl@tempd{\def\noexpand#1{#1}}%
+          \lowercase\expandafter{\bbl@tempd}}}%
+      \@empty
+    \edef\bbl@tempd{\endgroup\def\noexpand#1{#1}}%
+  \bbl@tempd}
+\def\bbl@iflanguage#1{%
+  \@ifundefined{l@#1}{\@nolanerr{#1}\@gobble}\@firstofone}
+\def\iflanguage#1{%
+  \bbl@iflanguage{#1}{%
+    \ifnum\csname l@#1\endcsname=\language
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi}}
+\let\bbl@select@type\z@
+\edef\selectlanguage{%
+  \noexpand\protect
+  \expandafter\noexpand\csname selectlanguage \endcsname}
+\ifx\@undefined\protect\let\protect\relax\fi
+\ifx\documentclass\@undefined
+  \def\xstring{\string\string\string}
+\else
+  \let\xstring\string
+\fi
+\def\bbl@language@stack{}
+\def\bbl@push@language{%
+  \xdef\bbl@language@stack{\languagename+\bbl@language@stack}}
+\def\bbl@pop@lang#1+#2-#3{%
+  \edef\languagename{#1}\xdef#3{#2}}
+\def\bbl@pop@language{%
+  \expandafter\bbl@pop@lang\bbl@language@stack-\bbl@language@stack
+  \expandafter\bbl@set@language\expandafter{\languagename}}
+\expandafter\def\csname selectlanguage \endcsname#1{%
+  \ifnum\bbl@hymapsel=\@cclv\let\bbl@hymapsel\tw@\fi
+  \bbl@push@language
+  \aftergroup\bbl@pop@language
+  \bbl@set@language{#1}}
+\def\BabelContentsFiles{toc,lof,lot}
+\def\bbl@set@language#1{%
+  \edef\languagename{%
+    \ifnum\escapechar=\expandafter`\string#1\@empty
+    \else\string#1\@empty\fi}%
+  \select@language{\languagename}%
+  \expandafter\ifx\csname date\languagename\endcsname\relax\else
+    \if@filesw
+      \protected@write\@auxout{}{\string\select@language{\languagename}}%
+      \bbl@for\bbl@tempa\BabelContentsFiles{%
+        \addtocontents{\bbl@tempa}{\xstring\select@language{\languagename}}}%
+      \bbl@usehooks{write}{}%
+    \fi
+  \fi}
+\def\select@language#1{%
+  \ifnum\bbl@hymapsel=\@cclv\chardef\bbl@hymapsel4\relax\fi
+  \edef\languagename{#1}%
+  \bbl@fixname\languagename
+  \bbl@iflanguage\languagename{%
+    \expandafter\ifx\csname date\languagename\endcsname\relax
+      \bbl@error
+        {Unknown language `#1'. Either you have\\%
+         misspelled its name, it has not been installed,\\%
+         or you requested it in a previous run. Fix its name,\\%
+         install it or just rerun the file, respectively}%
+        {You may proceed, but expect unexpected results}%
+    \else
+      \let\bbl@select@type\z@
+      \expandafter\bbl@switch\expandafter{\languagename}%
+    \fi}}
+\def\select@language@x#1{%
+  \ifcase\bbl@select@type
+    \bbl@ifsamestring\languagename{#1}{}{\select@language{#1}}%
+  \else
+    \select@language{#1}%
+  \fi}
+\def\bbl@switch#1{%
+  \originalTeX
+  \expandafter\def\expandafter\originalTeX\expandafter{%
+    \csname noextras#1\endcsname
+    \let\originalTeX\@empty
+    \babel@beginsave}%
+  \bbl@usehooks{afterreset}{}%
+  \languageshorthands{none}%
+  \ifcase\bbl@select@type
+    \csname captions#1\endcsname
+    \csname date#1\endcsname
+  \fi
+  \bbl@usehooks{beforeextras}{}%
+  \csname extras#1\endcsname\relax
+  \bbl@usehooks{afterextras}{}%
+  \ifcase\bbl@hymapopt\or
+    \def\BabelLower##1##2{\lccode##1=##2\relax}%
+    \ifnum\bbl@hymapsel>4\else
+      \csname\languagename @bbl@hyphenmap\endcsname
+    \fi
+    \chardef\bbl@hymapopt\z@
+  \else
+    \ifnum\bbl@hymapsel>\bbl@hymapopt\else
+      \csname\languagename @bbl@hyphenmap\endcsname
+    \fi
+  \fi
+  \global\let\bbl@hymapsel\@cclv
+  \bbl@patterns{#1}%
+  \babel@savevariable\lefthyphenmin
+  \babel@savevariable\righthyphenmin
+  \expandafter\ifx\csname #1hyphenmins\endcsname\relax
+    \set@hyphenmins\tw@\thr@@\relax
+  \else
+    \expandafter\expandafter\expandafter\set@hyphenmins
+      \csname #1hyphenmins\endcsname\relax
+  \fi}
+\def\bbl@ifsamestring#1#2{%
+  \protected@edef\bbl@tempb{#1}%
+  \edef\bbl@tempb{\expandafter\strip@prefix\meaning\bbl@tempb}%
+  \protected@edef\bbl@tempc{#2}%
+  \edef\bbl@tempc{\expandafter\strip@prefix\meaning\bbl@tempc}%
+  \ifx\bbl@tempb\bbl@tempc
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi}
+\long\def\otherlanguage#1{%
+  \ifnum\bbl@hymapsel=\@cclv\let\bbl@hymapsel\thr@@\fi
+  \csname selectlanguage \endcsname{#1}%
+  \ignorespaces}
+\long\def\endotherlanguage{%
+  \global\@ignoretrue\ignorespaces}
+\expandafter\def\csname otherlanguage*\endcsname#1{%
+  \ifnum\bbl@hymapsel=\@cclv\chardef\bbl@hymapsel4\relax\fi
+  \foreign@language{#1}}
+\expandafter\let\csname endotherlanguage*\endcsname\relax
+\edef\foreignlanguage{%
+  \noexpand\protect
+  \expandafter\noexpand\csname foreignlanguage \endcsname}
+\expandafter\def\csname foreignlanguage \endcsname#1#2{%
+  \begingroup
+    \foreign@language{#1}%
+    #2%
+  \endgroup}
+\def\foreign@language#1{%
+  \edef\languagename{#1}%
+  \bbl@fixname\languagename
+  \bbl@iflanguage\languagename{%
+    \expandafter\ifx\csname date\languagename\endcsname\relax
+      \bbl@warning
+        {You haven't loaded the language \languagename\space yet\\%
+         I'll proceed, but expect unexpected results.\\%
+         Reported}%
+    \fi
+    \let\bbl@select@type\@ne
+    \expandafter\bbl@switch\expandafter{\languagename}}}
+\let\bbl@hyphlist\@empty
+\let\bbl@hyphenation@\relax
+\let\bbl@pttnlist\@empty
+\let\bbl@patterns@\relax
+\let\bbl@hymapsel=\@cclv
+\def\bbl@patterns#1{%
+  \language=\expandafter\ifx\csname l@#1:\f@encoding\endcsname\relax
+      \csname l@#1\endcsname
+      \edef\bbl@tempa{#1}%
+    \else
+      \csname l@#1:\f@encoding\endcsname
+      \edef\bbl@tempa{#1:\f@encoding}%
+    \fi\relax
+  \@expandtwoargs\bbl@usehooks{patterns}{{#1}{\bbl@tempa}}%
+  \@ifundefined{bbl@hyphenation@}{}{%
+    \begingroup
+      \@expandtwoargs\in@{,\number\language,}{,\bbl@hyphlist}%
+      \ifin@\else
+        \@expandtwoargs\bbl@usehooks{hyphenation}{{#1}{\bbl@tempa}}%
+        \hyphenation{%
+          \bbl@hyphenation@
+          \@ifundefined{bbl@hyphenation@#1}%
+            \@empty
+            {\space\csname bbl@hyphenation@#1\endcsname}}%
+        \xdef\bbl@hyphlist{\bbl@hyphlist\number\language,}%
+      \fi
+    \endgroup}}
+\def\hyphenrules#1{%
+  \edef\languagename{#1}%
+  \bbl@fixname\languagename
+  \bbl@iflanguage\languagename{%
+    \expandafter\bbl@patterns\expandafter{\languagename}%
+    \languageshorthands{none}%
+    \expandafter\ifx\csname\languagename hyphenmins\endcsname\relax
+      \set@hyphenmins\tw@\thr@@\relax
+    \else
+      \expandafter\expandafter\expandafter\set@hyphenmins
+      \csname\languagename hyphenmins\endcsname\relax
+    \fi}}
+\let\endhyphenrules\@empty
+\def\providehyphenmins#1#2{%
+  \expandafter\ifx\csname #1hyphenmins\endcsname\relax
+    \@namedef{#1hyphenmins}{#2}%
+  \fi}
+\def\set@hyphenmins#1#2{\lefthyphenmin#1\relax\righthyphenmin#2\relax}
+\ifx\ProvidesFile\@undefined
+  \def\ProvidesLanguage#1[#2 #3 #4]{%
+    \wlog{Language: #1 #4 #3 <#2>}%
+    }
+\else
+  \def\ProvidesLanguage#1{%
+    \begingroup
+      \catcode`\ 10 %
+      \@makeother\/%
+      \@ifnextchar[%]
+        {\@provideslanguage{#1}}{\@provideslanguage{#1}[]}}
+  \def\@provideslanguage#1[#2]{%
+    \wlog{Language: #1 #2}%
+    \expandafter\xdef\csname ver@#1.ldf\endcsname{#2}%
+    \endgroup}
+\fi
+\def\LdfInit{%
+  \chardef\atcatcode=\catcode`\@
+  \catcode`\@=11\relax
+  \input babel.def\relax
+  \catcode`\@=\atcatcode \let\atcatcode\relax
+  \LdfInit}
+\ifx\originalTeX\@undefined\let\originalTeX\@empty\fi
+\ifx\babel@beginsave\@undefined\let\babel@beginsave\relax\fi
+\edef\bbl@nulllanguage{\string\language=0}
+\ifx\PackageError\@undefined
+  \def\bbl@error#1#2{%
+    \begingroup
+      \newlinechar=`\^^J
+      \def\\{^^J(babel) }%
+      \errhelp{#2}\errmessage{\\#1}%
+    \endgroup}
+  \def\bbl@warning#1{%
+    \begingroup
+      \newlinechar=`\^^J
+      \def\\{^^J(babel) }%
+      \message{\\#1}%
+    \endgroup}
+  \def\bbl@info#1{%
+    \begingroup
+      \newlinechar=`\^^J
+      \def\\{^^J}%
+      \wlog{#1}%
+    \endgroup}
+\else
+  \def\bbl@error#1#2{%
+    \begingroup
+      \def\\{\MessageBreak}%
+      \PackageError{babel}{#1}{#2}%
+    \endgroup}
+  \def\bbl@warning#1{%
+    \begingroup
+      \def\\{\MessageBreak}%
+      \PackageWarning{babel}{#1}%
+    \endgroup}
+  \def\bbl@info#1{%
+    \begingroup
+      \def\\{\MessageBreak}%
+      \PackageInfo{babel}{#1}%
+    \endgroup}
+\fi
+\@ifpackagewith{babel}{silent}
+  {\let\bbl@info\@gobble
+   \let\bbl@warning\@gobble}
+  {}
+\def\@nolanerr#1{%
+  \bbl@error
+    {You haven't defined the language #1\space yet}%
+    {Your command will be ignored, type <return> to proceed}}
+\def\@nopatterns#1{%
+  \bbl@warning
+    {No hyphenation patterns were preloaded for\\%
+     the language `#1' into the format.\\%
+     Please, configure your TeX system to add them and\\%
+     rebuild the format. Now I will use the patterns\\%
+     preloaded for \bbl@nulllanguage\space instead}}
+\let\bbl@usehooks\@gobbletwo
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `switch.def'.

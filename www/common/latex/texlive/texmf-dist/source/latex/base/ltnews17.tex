@@ -1,0 +1,230 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews17.tex
+%
+% This is issue 17 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]    % uncomment this line to get Palatino
+     {ltnews}[2004/02/28]
+
+% \usepackage[T1]{fontenc}
+
+
+\publicationmonth{December}
+\publicationyear{2005}
+\publicationissue{17}
+
+\begin{document}
+
+\maketitle
+
+% \raisefirstsection
+
+\section{Project licence news}
+
+The \LaTeX{} Project Public License has been updated slightly so that
+it is now version 1.3c.  In the warranty section the
+phrase ``unless required by applicable law'' has been reinstated,
+having got lost at some point.  Also,
+it now contains three clarifications: of the difference between
+``maintained'' and ``author-maintained''; of the
+term ``Base Interpreter''; and when clause 6b and 6d shall not apply.
+
+Following requests, we now also provide the text of the licence as a
+\LaTeX{} document (in the file \texttt{lppl.tex}). This file can be
+processed either as a stand-alone document or it can be included
+(without any modification) into another \LaTeX{} document, e.g., as an
+appendix, using \verb|\input| or \verb|\include|.
+
+
+\section{New guide on font encodings}
+
+Way back in 1995 work was started on a guide to document the
+officially allocated \LaTeX{} font encoding names. However, for one
+reason or another this guide (named \textit{\LaTeX{} font encodings})
+was, until now, not added to the distribution.  It describes the major
+7-bit and 8-bit font encodings used in the \LaTeX{} world and explains
+the restrictions required of conforming text font encodings.  It also
+lists all the `encoding specific commands' (the LICR or \LaTeX{}
+Internal Character Representation) for characters supported by the
+encodings \texttt{OT1} and \texttt{T1}.
+
+When the file \texttt{encguide.tex} is processed by \LaTeX{}, it will
+attempt to typeset an encoding table for each encoding it describes.
+For this to be possible, \LaTeX{} must be able to find \texttt{.tfm}
+files for a representative example font for each encoding.  If
+\LaTeX{} cannot find such a file then a warning is issued and the
+corresponding table is omitted.
+
+
+\section{Robust commands in math}
+
+The font changing commands in text-mode have been robust commands for years,
+but the same has not been true for the math versions such as
+\verb|\mathbf|.  While the math-mode commands worked correctly in
+section heads, they could cause problems in other places such as index
+entries.  With this release, these math-mode commands are now robust in
+the same way as their text-mode counterparts.
+
+%%
+\pagebreak
+%%
+
+
+\section{Updates of required packages}
+
+Several of the packages in the \package{tools} bundle have been updated
+for this release.
+
+The \package{xspace} package has some new features.  One is an
+interface for adding and removing the exceptions it knows about and
+another is that it works with active characters. These remove problems
+of incompatibility with the \package{babel} system.
+
+In \textit{\LaTeX\ News~16} we announced that some packages might
+begin to take advantage of \eTeX{} extensions on systems where these
+are available: and the latest version of \package{xspace} does just
+that.  Note also that \package{fixltx2e} will make use of the
+facilities in \eTeX{} whenever these are present (see below).
+
+The \package{calc} package has also been given an update with a few
+extra commands.  
+The commands \verb|\maxof| and \verb|\minof|, each with two
+brace-delimited arguments, provide the usual numeric $\max$ and $\min$
+operations. The commands \verb|\settototalheight| and
+\verb|\totalheightof| work like \verb|\settoheight| and
+\verb|\heightof|.  There are also some internal improvements to make
+\package{calc} work with some more primitive \TeX\ constructs, such as
+\verb|\ifcase|.
+
+The \package{varioref} package has acquired a few more default
+strings but there are still a number of languages for 
+which good strings are still missing.
+
+The \package{showkeys} package has also been updated slightly to work
+with more recent developments in \package{varioref}. Also, it now
+provides an easy way to define the look of the printed labels with
+the command \verb|\showkeyslabelformat|.
+
+\section{Work on \LaTeX{} fixes}
+
+The package known as \package{fixltx2e} has three new additions. A new
+command \verb|\textsubscript| has been added as a complement to the
+command \verb|\textsuperscript| in the kernel.  Secondly, a new form of
+\verb|\DeclareMathSizes| that allows all of its arguments to have a
+dimension suffix.  This means you can now use expressions such as
+\verb|\DeclareMathSizes{9.5dd}{9.5dd}{7.4dd}{6.6dd}|.  
+
+The third new
+addition is the robust command \verb|\TextOrMath| which takes two
+arguments and executes one of them when typesetting in text or math
+mode respectively. This command also takes advantage of \eTeX{}
+extensions if available; more specifically, 
+%%
+%%\pagebreak
+%%
+when the \eTeX{} extensions are available, it does not
+destroy kerning between previous letters and the text to be typeset. 
+The command is also used
+internally in \package{fixltx2e} to resolve a problem with
+\verb|\fnsymbol|.  
+
+Also, further work has been done on reimplementing
+the command \verb|\addpenalty|, which is used internally in several
+places: we hope it is an improvement!
+
+\section{The graphics bundle}
+
+The \package{graphics} bundle now supports the
+\package{dvipdfmx} post-processor and Jonathan Kew's XE\TeX\
+program. By support we mean that the graphics packages recognize the
+new options \texttt{xetex} and \texttt{dvipdfmx} but we do not
+distribute the respective driver files. 
+
+This leads elegantly to a description of the 
+new policy concerning such driver files in the \package{graphics} bundle.
+Most driver files for our graphics packages are maintained by the
+developers of the associated post-processor or \TeX\ programs.  
+The teams developing these packages are working very hard: their rapid
+development offers a stark contrast to the current schedule of \LaTeX\
+releases.  It is therefore no longer practical
+for the \LaTeX\ Team to be responsible for distributing the
+latest versions of these driver files.  
+
+Therefore the installation files for \package{graphics} have been
+split: there is now \file{graphics.ins} to install the package files and
+\file{graphics-drivers.ins} for the driver files (located in
+\file{drivers.dtx}). 
+There is no need 
+to install all those provided in the file \file{drivers.dtx}.
+
+Please also note that, as requested by the maintainers of
+\package{PStricks}, we have removed the package \package{pstcol} as
+current versions of \package{PSTricks} make it obsolete.
+
+%%
+\newpage
+%%
+
+
+\section{Future development}
+
+The title of this section is a little misleading as it actually
+describes \emph{current} development. In 1998 the \package{expl3}
+bundle of packages was put on \ctan\ to demonstrate a possible \LaTeX3
+programming environment. These packages have been lying dormant for some
+time while the \LaTeX\ Project Team were preoccupied by other things
+such as developing the experimental packages \package{xor},
+\package{template}, etc., (and also writing that indispensable
+and encyclopaedic volume,\\ 
+The \LaTeX{} Companion -- 2nd edition).
+
+In October 2004 work on this code base was resumed with the goal of
+some day turning it into a kernel for \LaTeX3.  This work can now
+also make full use of the widely accepted \eTeX\ extensions. Currently
+two areas are central to this work. 
+
+\begin{itemize} 
+\item Extending the
+  kernel code of \LaTeX3. 
+\item Converting the experimental packages
+  such as \package{xor}, \package{template} to use the new
+  syntax internally. 
+\end{itemize} 
+
+Beware! Development of
+\package{expl3} is happening so fast that the descriptions above might
+be out of date when you read this! If you wish to see what's going on
+then go to
+\url{http://www.latex-project.org/code.html} where you can download
+ fully working code (we hope!).  
+
+\end{document}
+

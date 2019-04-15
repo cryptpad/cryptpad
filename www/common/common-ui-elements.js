@@ -785,6 +785,12 @@ define([
                     'class': "fa fa-print cp-toolbar-icon-print",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
+            case 'pdf':
+                button = $('<button>', {
+                    title: Messages.pdfButtonTitle2,
+                    'class': "fa fa-file-pdf-o cp-toolbar-icon-pdf",
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.pdfText));
+                break;
             case 'history':
                 if (!AppConfig.enableHistory) {
                     button = $('<span>');

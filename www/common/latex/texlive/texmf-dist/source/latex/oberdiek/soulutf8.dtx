@@ -1,0 +1,1924 @@
+% \iffalse meta-comment
+%
+% File: soulutf8.dtx
+% Version: 2007/09/09 v1.0
+% Info: Permit use of UTF-8 characters in soul
+%
+% Copyright (C) 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file soulutf8.dtx
+% and the derived files
+%    soulutf8.sty, soulutf8.pdf, soulutf8.ins, soulutf8.drv,
+%    soulutf8-test1.tex, soulutf8-test2.tex, soulutf8-test3.tex,
+%    soulutf8-test4.tex, soulutf8-test5.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/soulutf8.dtx
+%    CTAN:macros/latex/contrib/oberdiek/soulutf8.pdf
+%
+% Unpacking:
+%    (a) If soulutf8.ins is present:
+%           tex soulutf8.ins
+%    (b) Without soulutf8.ins:
+%           tex soulutf8.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{soulutf8.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If soulutf8.drv is present:
+%           latex soulutf8.drv
+%    (b) Without soulutf8.drv:
+%           latex soulutf8.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex soulutf8.dtx
+%       makeindex -s gind.ist soulutf8.idx
+%       pdflatex soulutf8.dtx
+%       makeindex -s gind.ist soulutf8.idx
+%       pdflatex soulutf8.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/soulutf8.sty
+%    TDS:doc/latex/oberdiek/soulutf8.pdf
+%    TDS:doc/latex/oberdiek/test/soulutf8-test1.tex
+%    TDS:doc/latex/oberdiek/test/soulutf8-test2.tex
+%    TDS:doc/latex/oberdiek/test/soulutf8-test3.tex
+%    TDS:doc/latex/oberdiek/test/soulutf8-test4.tex
+%    TDS:doc/latex/oberdiek/test/soulutf8-test5.tex
+%    TDS:source/latex/oberdiek/soulutf8.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: soulutf8 2007/09/09 v1.0 Permit use of UTF-8 characters in soul (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: soulutf8
+Version: 2007/09/09 v1.0
+
+Copyright (C) 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file soulutf8.dtx
+and the derived files
+   soulutf8.sty, soulutf8.pdf, soulutf8.ins, soulutf8.drv,
+   soulutf8-test1.tex, soulutf8-test2.tex, soulutf8-test3.tex,
+   soulutf8-test4.tex, soulutf8-test5.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{soulutf8.ins}{\from{soulutf8.dtx}{install}}%
+  \file{soulutf8.drv}{\from{soulutf8.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{soulutf8.sty}{\from{soulutf8.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{soulutf8-test1.tex}{\from{soulutf8.dtx}{test1}}%
+  \file{soulutf8-test2.tex}{\from{soulutf8.dtx}{test2,utf8}}%
+  \file{soulutf8-test3.tex}{\from{soulutf8.dtx}{test3,utf8x}}%
+  \file{soulutf8-test4.tex}{\from{soulutf8.dtx}{test4,utf8,noetex}}%
+  \file{soulutf8-test5.tex}{\from{soulutf8.dtx}{test5,utf8x,noetex}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{soulutf8.xml}{\from{soulutf8.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     soulutf8.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `soulutf8.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{soulutf8.drv}%
+  [2007/09/09 v1.0 Permit use of UTF-8 characters in soul (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{soulutf8.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2006}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{soulutf8.drv}
+%
+% \title{The \xpackage{soulutf8} package}
+% \date{2007/09/09 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package extends package \xpackage{soul} and adds some support
+% for UTF-8. Namely the input encodings \xfile{utf8.def}
+% from package \xpackage{inputenc} and
+% package \xpackage{ucs}'s \xfile{utf8x.def} are supported.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% This package \xpackage{soulutf8} does not have own options and does not
+% define new user commands.
+% Any option is passed to package \xpackage{soul} \cite{soul}
+% that is loaded first.
+% Then some internal macros of \xpackage{soul} are redefined to add
+% support for UTF-8.
+% The following input encodings are supported:
+% \begin{quote}
+%   \begin{tabular}{@{}lll@{}}
+%     \texttt{utf8} & \LaTeX\ base &
+%        \xfile{TDS:tex/latex/base/utf8.def} \cite{utf8}\\
+%     \texttt{utf8x} & Package \xpackage{ucs} &
+%       \xfile{TDS:tex/latex/ucs/utf8x.def} \cite{ucs}\\
+%   \end{tabular}
+% \end{quote}
+% UTF-8 byte sequences are added as token group to a word, even
+% if these UTF-8 characters are some kind of hyphen or space.
+% As exception the following three Unicode characters are handled specially:
+% \begin{quote}
+%   \begin{tabular}{lll}
+%     Slot & Name & Action\\
+%     \hline
+%     \texttt{U+00A0} & NO-BREAK SPACE & like |~|\\
+%     \texttt{U+2013} & EN DASH & |--|\\
+%     \texttt{U+2014} & EM DASH & |---|
+%   \end{tabular}
+%
+% \subsection{Patch}
+%
+% Also package \xpackage{soulutf8} tries to patch package \xpackage{soul}
+% to improve its behaviour:
+% \begin{itemize}
+% \item
+%   A problem with additional levels of curly braces is fixed.
+%   As advantage more implicite kernings are detected.
+%   However, the result may be incompatible with the
+%   original behaviour of package \xpackage{soul} because
+%   of these respected implicite kernings.
+% \item
+%   \eTeX\ , especially \cs{unexpanded} is supported.
+%   This allows a better protection of token groups
+%   (|\mbox{|\dots|}|, math, \dots).
+% \end{itemize}
+% \end{quote}
+%
+% \subsection{Future}
+%
+% Currently package \xpackage{soul} does not seem to be
+% maintained. Nevertheless if there will be a new version that
+% adds support for UTF-8, then this package may become
+% obsolete.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@soulutf8.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{soulutf8}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@soulutf8.sty\endcsname
+\ProvidesPackage{soulutf8}%
+  [2007/09/09 v1.0 Permit use of UTF-8 characters in soul (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname SOuL@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\SOuL@AtEnd{%
+    \SOuL@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{126}\active % ~
+\TMP@EnsureCode{128}{12}% ^^80
+\TMP@EnsureCode{147}{12}% ^^93
+\TMP@EnsureCode{148}{12}% ^^94
+\TMP@EnsureCode{160}{12}% ^^a0
+\TMP@EnsureCode{194}{12}% ^^c2
+\TMP@EnsureCode{226}{12}% ^^e2
+\edef\SOuL@AtEnd{\SOuL@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Loading packages}
+%
+%    Package \xpackage{soul} uses \cs{documentclass} to detect \LaTeX.
+%    \begin{macrocode}
+\ifx\documentclass\@undefined
+%    \end{macrocode}
+%
+% \subsubsection{\plainTeX}
+%
+%    First we check, whether package \xpackage{soul} is already loaded.
+%    \begin{macrocode}
+  \expandafter\ifx\csname SOUL@\endcsname\relax
+%    \end{macrocode}
+%    In case of \plainTeX\ package \xpackage{soul} defines some
+%    macros in a simple manner that will break the definitions of
+%    \xfile{miniltx.tex}, for example. Therefore these macros
+%    are first saved and restored afterwards.
+%    \begin{macrocode}
+    \let\SOuL@orgDeclareRobustCommand\DeclareRobustCommand
+    \let\SOuL@orgnewcommand          \newcommand
+    \let\SOuL@orgDeclareOption       \DeclareOption
+    \let\SOuL@orgPackageError        \PackageError
+    \def\SOuL@restorelatexcmds{%
+      \let\DeclareRobustCommand\SOuL@orgDeclareRobustCommand
+      \let\newcommand          \SOuL@orgnewcommand
+      \let\DeclareOption       \SOuL@orgDeclareOption
+      \let\PackageError        \SOuL@orgPackageError
+    }%
+    \input soul.sty\relax
+    \SOuL@restorelatexcmds
+  \fi
+%    \end{macrocode}
+%    \begin{macro}{\SOUL@error}
+%     Package \xpackage{soul}'s use of \cs{PackageError} is replaced
+%     by \cs{@PackageError} of package \xpackage{infwarerr}.
+%    \begin{macrocode}
+  \input infwarerr.sty\relax
+  \let\SOuL@orgSOUL@error\SOUL@error
+  \def\SOUL@error{%
+    \begingroup
+      \let\PackageError\@PackageError
+      \SOuL@orgSOUL@error
+    \endgroup
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \input etexcmds.sty\relax
+%    \end{macrocode}
+%    \begin{macro}{\@onelevel@sanitize}
+%    Define \LaTeX's \cs{@onelevel@sanitize} if not already available.
+%    \begin{macrocode}
+  \expandafter\ifx\csname @onelevel@sanitize\endcsname\relax
+    \def\@onelevel@sanitize#1{%
+      \edef#1{%
+        \expandafter\strip@prefix\meaning#1%
+      }%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\strip@prefix}
+%    \begin{macrocode}
+    \def\strip@prefix#1>{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \fi
+\else
+%    \end{macrocode}
+%
+% \subsubsection{\LaTeX}
+%    \begin{macrocode}
+  \DeclareOption*{\PassOptionsToPackage{\CurrentOption}{soul}}%
+  \ProcessOptions\relax
+  \RequirePackage{soul}[2003/11/17]%
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{etexcmds}[2007/09/09]%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{\eTeX}
+%
+%    In \plainTeX\ command \cs{+} is an \emph{outer} macro.
+%    Therefore numbers are used to avoid problems.
+%    \begin{macrocode}
+\ifetex@unexpanded
+  \catcode33=14 % '!': comment
+  \catcode43=9  % '+': ignore
+\else
+  \catcode33=9  % '!': ignore
+  \catcode43=14 % '+': comment
+\fi
+%    \end{macrocode}
+%
+% \subsection{Macro for redefinitions}
+%
+%    \begin{macro}{\SOuL@redefine}
+%    \begin{macrocode}
+\def\SOuL@redefine#1{%
+  \begingroup
+    \def\SOuL@cmd{#1}%
+    \afterassignment\SOuL@cmdcheck
+    \def\SOuL@temp
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOuL@cmdcheck}
+%    \begin{macrocode}
+\def\SOuL@cmdcheck{%
+    \expandafter\ifx\SOuL@cmd\SOuL@temp
+    \else
+      \edef\SOuL@temp*{\expandafter\string\SOuL@cmd}%
+      \@PackageWarningNoLine{soulutf8}{%
+        Command \SOuL@temp* has changed.\MessageBreak
+        Supported versions of package `soul': 2003/11/17.\MessageBreak
+        Depending on the unknown changes the redefinition\MessageBreak
+        of \SOuL@temp* may not behave correctly%
+      }%
+    \fi
+  \expandafter\endgroup
+  \expandafter\def\SOuL@cmd
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Redefinition of \cs{SOUL@eval}}
+%
+%    \begin{macro}{\SOUL@eval}
+%    Macro \cs{SOUL@eval} is redefined to add detection of
+%    the first byte of a UTF-8 sequence. Because \cs{SOUL@eval}
+%    is overwritten, a warning is issued, if the contents of
+%    \cs{SOUL@eval} is not as expected.
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@eval{%
+%    \end{macrocode}
+%    First the expected definition.
+%    \begin{macrocode}
+  \def\SOUL@n*##1{\SOUL@scan}%
+  \if\noexpand\SOUL@@\SOUL@spc
+  \else
+    \SOUL@ignorespacesfalse
+  \fi
+  \ifnum\SOUL@minus=\thr@@
+    \SOUL@flushminus
+  \else\ifnum\SOUL@comma=\tw@
+    \SOUL@flushcomma
+  \else\ifnum\SOUL@apo=\tw@
+    \SOUL@flushapo
+  \else\ifnum\SOUL@grave=\tw@
+    \SOUL@flushgrave
+  \fi\fi\fi\fi
+  \ifx\SOUL@@-\else\SOUL@flushminus\fi
+  \ifx\SOUL@@,\else\SOUL@flushcomma\fi
+  \ifx\SOUL@@'\else\SOUL@flushapo\fi
+  \ifx\SOUL@@`\else\SOUL@flushgrave\fi
+  \ifx\SOUL@@-%
+    \advance\SOUL@minus\@ne
+  \else\ifx\SOUL@@,%
+    \advance\SOUL@comma\@ne
+  \else\ifx\SOUL@@'%
+    \advance\SOUL@apo\@ne
+  \else\ifx\SOUL@@`%
+    \advance\SOUL@grave\@ne
+  \else
+    \SOUL@flushminus
+    \SOUL@flushcomma
+    \SOUL@flushapo
+    \SOUL@flushgrave
+    \ifx\SOUL@@\SOUL@stop
+      \def\SOUL@n*{%
+        \SOUL@doword
+        \SOUL@eventuallyexhyphen\null
+      }%
+    \else\ifx\SOUL@@\par
+      \def\SOUL@n*\par{\par\leavevmode\SOUL@scan}%
+    \else\if\noexpand\SOUL@@\SOUL@spc
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen\null
+      \ifSOUL@ignorespaces
+      \else
+        \SOUL@everyspace{}%
+      \fi
+      \def\SOUL@n* {\SOUL@scan}%
+    \else\ifx\SOUL@@\\%
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen\null
+      \SOUL@everyspace{\unskip\nobreak\hfil\break}%
+      \SOUL@ignorespacestrue
+    \else\ifx\SOUL@@~%
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen\null
+      \SOUL@everyspace{\nobreak}%
+    \else\ifx\SOUL@@\slash
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen{/}%
+      \SOUL@exhyphen{/}%
+    \else\ifx\SOUL@@\mbox
+      \def\SOUL@n*{\SOUL@addprotect}%
+    \else\ifx\SOUL@@\hbox
+      \def\SOUL@n*{\SOUL@addprotect}%
+    \else\ifx\SOUL@@\soulomit
+      \def\SOUL@n*\soulomit##1{%
+        \SOUL@doword
+        {\spaceskip\SOUL@spaceskip##1}%
+        \SOUL@scan
+      }%
+    \else\ifx\SOUL@@\break
+      \SOUL@doword
+      \break
+    \else\ifx\SOUL@@\linebreak
+      \SOUL@doword
+      \SOUL@everyspace{\linebreak}%
+    \else\ifcat\bgroup\noexpand\SOUL@@
+      \def\SOUL@n*{\SOUL@addgroup{}}%
+    \else\ifcat$\noexpand\SOUL@@
+      \def\SOUL@n*{\SOUL@addmath}%
+    \else
+      \def\SOUL@n*{\SOUL@dotoken}%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+  \fi\fi\fi\fi
+  \SOUL@n*%
+}{%
+%    \end{macrocode}
+%    Now the redefined version follows.
+%    \begin{macrocode}
+  \def\SOUL@n*##1{\SOUL@scan}%
+  \if\noexpand\SOUL@@\SOUL@spc
+  \else
+    \SOUL@ignorespacesfalse
+  \fi
+  \ifnum\SOUL@minus=\thr@@
+    \SOUL@flushminus
+  \else\ifnum\SOUL@comma=\tw@
+    \SOUL@flushcomma
+  \else\ifnum\SOUL@apo=\tw@
+    \SOUL@flushapo
+  \else\ifnum\SOUL@grave=\tw@
+    \SOUL@flushgrave
+  \fi\fi\fi\fi
+  \ifx\SOUL@@-\else\SOUL@flushminus\fi
+  \ifx\SOUL@@,\else\SOUL@flushcomma\fi
+  \ifx\SOUL@@'\else\SOUL@flushapo\fi
+  \ifx\SOUL@@`\else\SOUL@flushgrave\fi
+  \ifx\SOUL@@-%
+    \advance\SOUL@minus\@ne
+  \else\ifx\SOUL@@,%
+    \advance\SOUL@comma\@ne
+  \else\ifx\SOUL@@'%
+    \advance\SOUL@apo\@ne
+  \else\ifx\SOUL@@`%
+    \advance\SOUL@grave\@ne
+  \else
+    \SOUL@flushminus
+    \SOUL@flushcomma
+    \SOUL@flushapo
+    \SOUL@flushgrave
+    \ifx\SOUL@@\SOUL@stop
+      \def\SOUL@n*{%
+          \SOUL@doword
+          \SOUL@eventuallyexhyphen\null
+      }%
+    \else\ifx\SOUL@@\par
+      \def\SOUL@n*\par{\par\leavevmode\SOUL@scan}%
+    \else\if\noexpand\SOUL@@\SOUL@spc
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen\null
+      \ifSOUL@ignorespaces
+      \else
+        \SOUL@everyspace{}%
+      \fi
+      \def\SOUL@n* {\SOUL@scan}%
+    \else\ifx\SOUL@@\\%
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen\null
+      \SOUL@everyspace{\unskip\nobreak\hfil\break}%
+      \SOUL@ignorespacestrue
+    \else\ifx\SOUL@@~%
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen\null
+      \SOUL@everyspace{\nobreak}%
+    \else\ifx\SOUL@@\slash
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen{/}%
+      \SOUL@exhyphen{/}%
+    \else\ifx\SOUL@@\mbox
+      \def\SOUL@n*{\SOUL@addprotect}%
+    \else\ifx\SOUL@@\hbox
+      \def\SOUL@n*{\SOUL@addprotect}%
+    \else\ifx\SOUL@@\soulomit
+      \def\SOUL@n*\soulomit##1{%
+        \SOUL@doword
+        {\spaceskip\SOUL@spaceskip##1}%
+        \SOUL@scan
+      }%
+    \else\ifx\SOUL@@\break
+      \SOUL@doword
+      \break
+    \else\ifx\SOUL@@\linebreak
+      \SOUL@doword
+      \SOUL@everyspace{\linebreak}%
+    \else\ifcat\bgroup\noexpand\SOUL@@
+      \def\SOUL@n*{\SOUL@addgroup{}}%
+    \else\ifcat$\noexpand\SOUL@@
+      \def\SOUL@n*{\SOUL@addmath}%
+    \else
+%    \end{macrocode}
+%    The current token is examined to detect the start of
+%    a UTF-8 sequence.
+%    \begin{macrocode}
+      \SOuL@analyzeutfviii
+      \ifcase\SOuL@octets
+        \SOuL@analyzeutfviiix
+      \fi
+      \ifcase\SOuL@octets
+        \def\SOUL@n*{\SOUL@dotoken}%
+      \or % 1
+      \or % 2
+        \def\SOUL@n*{\SOuL@addtwooctets}%
+      \or % 3
+        \def\SOUL@n*{\SOuL@addthreeoctets}%
+      \or % 4
+        \def\SOUL@n*{\SOuL@addfouroctets}%
+      \fi
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+  \fi\fi\fi\fi
+  \SOUL@n*%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{UTF-8 analysis}
+%
+% \subsubsection{Help strings}
+%
+%    \begin{macrocode}
+\def\SOuL@defsanitizedstring#1#2{%
+  \expandafter\def\csname SOuL@string#1\endcsname{#2}%
+  \expandafter\@onelevel@sanitize\csname SOuL@string#1\endcsname
+}
+\SOuL@defsanitizedstring{UTFviii}{UTFviii@}
+\SOuL@defsanitizedstring{octets}{@octets}
+\SOuL@defsanitizedstring{two}{two}
+\SOuL@defsanitizedstring{three}{three}
+\SOuL@defsanitizedstring{four}{four}
+\SOuL@defsanitizedstring{macrocolon}{macro:}
+\SOuL@defsanitizedstring{csnameu}{csname u8-}
+\SOuL@defsanitizedstring{undeferr}{utf@viii@undeferr}
+\def\SOuL@stringendash{^^e2^^80^^93}
+\def\SOuL@stringemdash{^^e2^^80^^94}
+\def\SOuL@stringnobreakspace{^^c2^^a0}
+\edef\SOuL@charhash{\string #}
+\edef\SOuL@chartwo{\string 2}
+\edef\SOuL@charthree{\string 3}
+\def\SOuL@empty{}
+%    \end{macrocode}
+%
+% \subsubsection{Support for \xfile{utf8.def}}
+%
+%    \begin{macro}{\SOuL@analyzeutfviii}
+%    \begin{macrocode}
+\begingroup
+  \edef\x{\endgroup
+    \def\noexpand\SOuL@analyzeutfviii{%
+      \noexpand\expandafter\noexpand\SOuL@checkutfviii
+      \noexpand\meaning\noexpand\SOUL@@
+      \SOuL@stringUTFviii\SOuL@stringoctets
+      \noexpand\@nil
+    }%
+    \def\noexpand\SOuL@checkutfviii
+      ##1\SOuL@stringUTFviii##2\SOuL@stringoctets##3\noexpand\@nil
+  }%
+\x{%
+  \def\SOuL@temp{#2}%
+  \chardef\SOuL@octets=%
+      \ifx\SOuL@temp\SOuL@stringtwo
+        \tw@
+      \else\ifx\SOuL@temp\SOuL@stringthree
+        \thr@@
+      \else\ifx\SOuL@temp\SOuL@stringfour
+        4 %
+      \else
+        \z@
+      \fi\fi\fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Support for \xfile{utf8x.def}}
+%
+%    \begin{macro}{\SOuL@analyzeutfviiix}
+%    \begin{macrocode}
+\begingroup
+  \edef\x{\endgroup
+    \def\noexpand\SOuL@analyzeutfviiix{%
+      \noexpand\expandafter\noexpand\SOuL@checkutfviiix
+      \noexpand\meaning\noexpand\SOUL@@
+      \SOuL@stringmacrocolon\SOuL@charhash1{}{}{}{}%
+      \SOuL@stringcsnameu\SOuL@stringundeferr
+      \noexpand\@nil
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOuL@checkutfviiix}
+%    \begin{macrocode}
+    \def\noexpand\SOuL@checkutfviiix
+      ##1\SOuL@stringmacrocolon\SOuL@charhash1##2##3##4##5##6%
+      \SOuL@stringcsnameu##7\SOuL@stringundeferr##8\noexpand\@nil
+  }%
+\x{%
+  \def\SOuL@temp{#7}%
+  \ifx\SOuL@temp\SOuL@empty
+    \chardef\SOuL@octets=\z@
+  \else
+    \def\SOuL@temp{#5}%
+    \ifx\SOuL@temp\SOuL@charthree
+      \chardef\SOuL@octets=4 %
+    \else
+      \def\SOuL@temp{#3}%
+      \ifx\SOuL@temp\SOuL@chartwo
+        \chardef\SOuL@octets=\thr@@
+      \else
+        \chardef\SOuL@octets=\tw@
+      \fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Actions for UTF-8 sequences}
+%
+%    \begin{macro}{\SOuL@addtwooctets}
+%    \begin{macrocode}
+\def\SOuL@addtwooctets#1#2{%
+  \def\SOuL@temp{#1#2}%
+  \@onelevel@sanitize\SOuL@temp
+  \ifx\SOuL@temp\SOuL@stringnobreakspace
+    \SOUL@doword
+    \SOUL@eventuallyexhyphen\null
+    \SOUL@everyspace{\nobreak}%
+    \let\SOuL@next\SOUL@scan
+  \else
+    \def\SOuL@next{%
+!     \SOUL@addtoken{{\noexpand#1\noexpand#2}}%
++     \SOUL@addtoken{{\etex@unexpanded{#1#2}}}%
+    }%
+  \fi
+  \SOuL@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOuL@addthreeoctets}
+%    \begin{macrocode}
+\def\SOuL@addthreeoctets#1#2#3{%
+  \def\SOuL@temp{#1#2#3}%
+  \@onelevel@sanitize\SOuL@temp
+  \ifx\SOuL@temp\SOuL@stringendash
+    \SOUL@doword
+    \SOUL@eventuallyexhyphen{-}%
+    \SOUL@exhyphen{--}%
+    \let\SOuL@next\SOUL@scan
+  \else
+    \ifx\SOuL@temp\SOuL@stringemdash
+      \SOUL@doword
+      \SOUL@eventuallyexhyphen{-}%
+      \SOUL@exhyphen{---}%
+      \let\SOuL@next\SOUL@scan
+    \else
+      \def\SOuL@next{%
+!       \SOUL@addtoken{{\noexpand#1\noexpand#2\noexpand#3}}%
++       \SOUL@addtoken{{\etex@unexpanded{#1#2#3}}}%
+      }%
+    \fi
+  \fi
+  \SOuL@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOuL@addfouroctets}
+%    \begin{macrocode}
+\def\SOuL@addfouroctets#1#2#3#4{%
+! \SOUL@addtoken{{\noexpand#1\noexpand#2\noexpand#3\noexpand#4}}%
++ \SOUL@addtoken{{\etex@unexpanded{#1#2#3#4}}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Redefinition of \cs{SOUL@splittoken}}
+%
+%    \begin{macro}{\SOUL@splittoken}
+%    Macro \cs{SOUL@splittoken} separates the first token
+%    or token group from a word and redefines the word to contain
+%    the remaining tokens. However if the remaining tokens are
+%    a token group, then the curly braces will be removed and
+%    the token group is splitted by the next call of \cs{SOUL@splittoken}.
+%    The redefinition avoids the removal of curly braces around the
+%    remaining tokens.
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@splittoken#1#2\SOUL@stop{%
+  \global\SOUL@token={#1}%
+  \global\SOUL@word={#2}%
+}#1{%
+  \global\SOUL@token={#1}%
+  \SOuL@remainingtoken\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOuL@remainingtoken}
+%    \begin{macrocode}
+\def\SOuL@remainingtoken#1\SOUL@stop{%
+  \global\SOUL@word=\expandafter{\@gobble#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Patches}
+%
+%    The fixed \cs{SOUL@splittoken} allows to remove the double
+%    sets of curly braces in other macros of package \xpackage{soul}.
+%    The benefit is that implicite kernings are more often detected
+%    and fixes a bug in package \xpackage{soul}. The disadvantage is
+%    incompatibility. The width of the resulting strings may change.
+%    \begin{macro}{\SOUL@flushcomma}
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@flushcomma{%
+  \ifcase\SOUL@comma
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word,}}\x
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word{{,,}}}}\x
+  \fi
+  \SOUL@comma\z@
+}{%
+  \ifcase\SOUL@comma
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word,}}\x
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word{,,}}}\x
+  \fi
+  \SOUL@comma\z@
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOUL@flushapo}
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@flushapo{%
+  \ifcase\SOUL@apo
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word'}}\x
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word{{''}}}}\x
+  \fi
+  \SOUL@apo\z@
+}{%
+  \ifcase\SOUL@apo
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word'}}\x
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word{''}}}\x
+  \fi
+  \SOUL@apo\z@
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOUL@flushgrave}
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@flushgrave{%
+  \ifcase\SOUL@grave
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word`}}\x
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word{{``}}}}\x
+  \fi
+  \SOUL@grave\z@
+}{%
+  \ifcase\SOUL@grave
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word`}}\x
+  \or
+    \edef\x{\SOUL@word={\the\SOUL@word{``}}}\x
+  \fi
+  \SOUL@grave\z@
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOUL@addgroup}
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@addgroup#1#2{%
+  {%
+    \let\protect\noexpand
+    \edef\x{%
+      \global\SOUL@word={%
+        \the\SOUL@word
+        {{\noexpand#1#2}}%
+      }%
+    }%
+    \x
+  }%
+  \SOUL@scan
+}#1#2{%
+  \begingroup
+    \let\protect\noexpand
+    \edef\x{\endgroup
+      \SOUL@word={%
+        \the\SOUL@word
+!       {\noexpand#1{#2}}%
++       {\etex@unexpanded{#1{#2}}}%
+      }%
+    }%
+  \x
+  \SOUL@scan
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOUL@addmath}
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@addmath$#1${%
+  {%
+    \let\protect\noexpand
+    \edef\x{%
+      \global\SOUL@word={%
+        \the\SOUL@word
+        {{\hbox{$#1$}}}%
+      }%
+    }%
+    \x
+  }%
+  \SOUL@scan
+}$#1${%
+  \begingroup
+    \let\protect\noexpand
+    \edef\x{\endgroup
+      \SOUL@word={%
+        \the\SOUL@word
+!       {\hbox{$#1$}}%
++       {\etex@unexpanded{\hbox{$#1$}}}%
+      }%
+    }%
+  \x
+  \SOUL@scan
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SOUL@addprotect}
+%    \begin{macrocode}
+\SOuL@redefine\SOUL@addprotect#1#2{%
+  {%
+    \let\protect\noexpand
+    \edef\x{%
+      \global\SOUL@word={%
+        \the\SOUL@word
+        {{\hbox{#2}}}%
+      }%
+    }%
+    \x
+  }%
+  \SOUL@scan
+}#1#2{%
+  \begingroup
+    \let\protect\noexpand
+    \edef\x{\endgroup
+      \SOUL@word={%
+        \the\SOUL@word
+!       {\hbox{#2}}%
++       {\etex@unexpanded{\hbox{#2}}}%
+      }%
+    }%
+  \x
+  \SOUL@scan
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\SOUL@addtoken}
+%    \begin{macrocode}
++ \SOuL@redefine\SOUL@addtoken#1{%
++   \edef\x{%
++     \SOUL@word={%
++       \the\SOUL@word
++       \noexpand#1%
++     }%
++   }%
++   \x
++   \SOUL@scan
++ }#1{%
++   \edef\x{%
++     \SOUL@word={%
++       \the\SOUL@word
++       \etex@unexpanded{#1}%
++     }%
++   }%
++   \x
++   \SOUL@scan
++ }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\SOuL@AtEnd%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input soulutf8.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{\LaTeX\space tests}
+%
+%    \begin{macrocode}
+%<*test2|test3|test4|test5>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<noetex>\let\SavedUnexpanded\unexpanded
+%<noetex>\let\unexpanded\UNDEFINED
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage[ngerman]{babel}
+\expandafter\def\csname ver@hypdestopt.sty\endcsname{}
+\usepackage[unicode]{hyperref}
+\usepackage{bookmark}
+\usepackage{color}
+\usepackage{soul}[2003/11/17]
+\makeatletter
+\newcommand*{\@ifDefined}[1]{%
+  \@ifundefined{#1}{%
+    \@latex@error{%
+      \expandafter\noexpand\csname#1\endcsname undefined%
+    }\@ehc
+  }%
+}
+\newcommand*{\SaveOrg}[1]{%
+  \@ifdefinable{ORG@SOUL@#1}{%
+    \@ifDefined{SOUL@#1}{%
+      \expandafter\let\csname ORG@SOUL@#1\expandafter\endcsname
+                      \csname SOUL@#1\endcsname
+    }%
+  }%
+}
+\newcommand*{\RestoreOrg}[1]{%
+  \@ifDefined{ORG@SOUL@#1}{%
+    \@ifDefined{SOUL@#1}{%
+      \expandafter\let\csname SOUL@#1\expandafter\endcsname
+                      \csname ORG@SOUL@#1\endcsname
+    }%
+  }%
+}
+\makeatother
+\SaveOrg{eval}
+\SaveOrg{splittoken}
+\SaveOrg{flushcomma}
+\SaveOrg{flushapo}
+\SaveOrg{grave}
+\SaveOrg{addgroup}
+\SaveOrg{addmath}
+\SaveOrg{addprotect}
+\SaveOrg{addtoken}
+\usepackage{soulutf8}[2007/09/09]
+%    \end{macrocode}
+%    \begin{macrocode}
+%<noetex>\let\unexpanded\SavedUnexpanded
+%    \end{macrocode}
+%    Input encoding \xfile{utf8}.
+%    \begin{macrocode}
+%<*utf8>
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{00A0}{\nobreakspace}
+%</utf8>
+%    \end{macrocode}
+%    Input encoding \xfile{utf8x}. Package \xpackage{ucs}
+%    has a nasty bug, that it redefines \cs{show}.
+%    \begin{macrocode}
+%<*utf8x>
+\let\origshow\show
+\usepackage[utf8x]{inputenc}
+\AtBeginDocument{%
+  \let\show\origshow
+}
+%</utf8x>
+%    \end{macrocode}
+%
+% \subsubsection{Driver definitions}
+%
+%    \begin{macrocode}
+\makeatletter
+%    \end{macrocode}
+%    \begin{macro}{\an}
+%    The definition for \cs{an} is taken from the documentation of
+%    package \xpackage{soul}.
+%    \begin{macrocode}
+\DeclareRobustCommand*{\an}{%
+  \def\SOUL@preamble{$^{^P}$}%
+  \def\SOUL@everyspace##1{##1\texttt{\char`\ }\linebreak[2]}%
+  \def\SOUL@postamble{$^{^E}$}%
+  \def\SOUL@everyhyphen{$^{^-}$\linebreak[1]}%
+  \def\SOUL@everyexhyphen##1{##1$^{^=}$}%
+  \def\SOUL@everysyllable{$^{^S}$}%
+  \def\SOUL@everytoken{\the\SOUL@token$^{^T}$}%
+  \def\SOUL@everylowerthan{$^{^L}$}%
+  \SOUL@
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\sy}
+%    The definition for \cs{sy} is taken from the documentation of
+%    package \xpackage{soul}.
+%    \begin{macrocode}
+\DeclareRobustCommand*{\sy}{%
+  \SOUL@setup
+  \def\SOUL@preamble{%
+    \lefthyphenmin=\z@
+    \righthyphenmin=\z@
+  }%
+  \def\SOUL@everyspace##1{##1\space}%
+  \def\SOUL@everysyllable{\the\SOUL@syllable}%
+  \def\SOUL@everyhyphen{%
+    \discretionary{%
+      \SOUL@setkern\SOUL@hyphkern
+      \SOUL@sethyphenchar
+    }{}{%
+      \hbox{\kern1pt$\cdot$}%
+    }%
+  }%
+  \def\SOUL@everyexhyphen##1{%
+    \SOUL@setkern\SOUL@hyphkern
+    \hbox{##1}%
+    \discretionary{}{}{%
+      \SOUL@setkern\SOUL@charkern
+    }%
+  }%
+  \SOUL@
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\soulH}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\soulH}{%
+  \def\SOUL@preamble{%
+    \gdef\SOULH{}%
+    \soulHadd{[}%
+  }%
+  \def\SOUL@everyspace##1{%
+    \soulHadd{Sp}%
+  }%
+  \def\SOUL@postamble{%
+    \soulHadd{]}%
+  }%
+  \def\SOUL@everyhyphen{%
+    \soulHadd{Hy}%
+  }%
+  \def\SOUL@everyexhyphen##1{%
+    \soulHadd{Exhy}%
+  }%
+  \def\SOUL@everysyllable{%
+    \soulHadd{Sy}%
+  }%
+  \def\SOUL@everytoken{%
+    \soulHadd{T}%
+  }%
+  \def\SOUL@everylowerthan{%
+    \soulHadd{<}%
+  }%
+  \SOUL@
+}
+\newcommand*{\soulHadd}[1]{%
+  #1%
+  \expandafter\gdef\expandafter\soulHstring\expandafter{%
+    \soulHstring
+    #1%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Test macros}
+%
+%    \begin{macrocode}
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+%    \end{macrocode}
+%    \begin{macrocode}
+\newsavebox\boxA
+\newsavebox\boxB
+\newsavebox\boxC
+%    \end{macrocode}
+%    \begin{macro}{\TestDriver}
+%    \begin{macrocode}
+\newcommand*{\TestDriver}[4]{%
+  \subsection{Driver #1}%
+  \@PackageInfo{soulutf8-test}{* Driver #1}%
+  \expandafter\let\expandafter\testdriver\csname #1\endcsname
+  \def\teststringA{#3}%
+  \def\teststringB{#4}%
+  \begin{qstest}{string-#2-driver-#1}{string,#2,driver,#1}%
+    \@PackageInfo{soulutf8-test}{* Version: soulutf8}%
+    \global\let\soulHstring\@empty
+    \setbox0=\hbox{\expandafter\testdriver\expandafter{\teststringA}}%
+    \let\HstringA\soulHstring
+    \SetTestVBox{\boxA}{\teststringA}%
+    %
+    \@PackageInfo{soulutf8-test}{* Version: soul + patch}%
+    \global\let\soulHstring\@empty
+    \RestoreOrg{eval}%
+    \setbox2=\hbox{\expandafter\testdriver\expandafter{\teststringB}}%
+    \let\HstringB\soulHstring
+    \SetTestVBox{\boxB}{\teststringB}%
+    %
+    \@PackageInfo{soulutf8-test}{* Version: original soul}%
+    \global\let\soulHstring\@empty
+    \RestoreOrg{splittoken}%
+    \RestoreOrg{flushcomma}%
+    \RestoreOrg{flushapo}%
+    \RestoreOrg{grave}%
+    \RestoreOrg{addgroup}%
+    \RestoreOrg{addmath}%
+    \RestoreOrg{addprotect}%
+    \RestoreOrg{addtoken}%
+    \setbox4=\hbox{\expandafter\testdriver\expandafter{\teststringB}}%
+    \let\HstringC\soulHstring
+    \SetTestVBox{\boxC}{\teststringB}%
+    %
+    \TestInfo{0}{soulutf8}%
+    \TestInfo{2}{soul + patch}%
+    \TestInfo{4}{original soul}%
+    \TestInfoVBox
+    \showboxdepth=\maxdimen
+    \showboxbreadth=\maxdimen
+    \tracingonline=\@ne
+    \Expect*{\HstringA}*{\HstringB}%
+    \Expect*{\HstringA}*{\HstringC}%
+    \Expect*{\the\wd0}*{\the\wd2}%
+    \ifdim\wd0=\wd2 %
+    \else
+      \showbox0 %
+      \showbox2 %
+    \fi
+    \Expect*{\the\ht0}*{\the\ht2}%
+    \Expect*{\the\dp0}*{\the\dp2}%
+    \Expect*{\the\wd\boxB}*{\the\wd\boxA}%
+    \Expect*{\the\wd\boxC}*{\the\wd\boxA}%
+    \Expect*{\the\ht\boxB}*{\the\ht\boxA}%
+    \ifdim\ht\boxB=\ht\boxA
+    \else
+      \showbox\boxA
+      \showbox\boxB
+    \fi
+    \Expect*{\the\ht\boxC}*{\the\ht\boxA}%
+    \Expect*{\the\dp\boxB}*{\the\dp\boxA}%
+    \Expect*{\the\dp\boxC}*{\the\dp\boxA}%
+  \end{qstest}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SetTestVBox}
+%    \begin{macrocode}
+\newcommand*{\SetTestVBox}[2]{%
+  \setbox#1=\vbox{%
+    \hsize=0pt\relax
+    \hfuzz=100mm\relax
+    \expandafter\testdriver\expandafter{#2}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\TestInfo}
+%    \begin{macrocode}
+\newcommand*{\TestInfo}[2]{%
+  \par
+  \noindent
+  \copy#1\relax
+  \hfill
+  \begingroup
+    \small
+    \ifdim\wd0=\wd2\relax
+      \ifdim\wd0=\wd4\relax
+      \else
+        \ifnum#1=2 %
+          \raisebox{.5\baselineskip}[0pt][0pt]{%
+            \llap{$\}$ }%
+            \rlap{width = \the\wd#1\relax\space$\{$}%
+            \phantom{width = 999.99999pt}%
+            \qquad
+          }%
+        \else
+          \ifnum#1=4 %
+            \rlap{width = \the\wd#1}%
+            \phantom{width = 999.99999pt}%
+            \qquad
+          \fi
+        \fi
+      \fi
+    \else
+      \begingroup
+        \bfseries
+        \rlap{width = \the\wd#1}%
+        \phantom{width = 999.99999pt}%
+      \endgroup
+      \qquad
+    \fi
+    \rlap{(#2)}%
+    \phantom{(original soul)}%
+  \endgroup
+  \par
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\TestInfoVBox}
+%    \begin{macrocode}
+\newcommand*{\TestInfoVBox}{%
+  \par
+  \noindent
+  \mbox{\vrule\relax\space\copy\boxA}%
+  \ifdim\ht\boxA=\ht\boxB
+  \else
+    \hfill
+    \begingroup
+      \small
+      \rlap{(soulutf8)}%
+      \phantom{(soulutf8)}%
+    \endgroup
+    \par
+    \noindent
+    \mbox{\vrule\relax\space\copy\boxB}%
+    \hfill
+    \begingroup
+      \small
+      \rlap{(soul)}%
+      \phantom{(soulutf8)}%
+    \endgroup
+  \fi
+  \par
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Test}
+%    \begin{macrocode}
+\makeatletter
+\newcommand*{\Test}[3]{%
+  \clearpage
+  \begingroup
+    \def\linebreak{\textbackslash linebreak }%
+    \def\\{\textbackslash\textbackslash}%
+    \def\soulomit##1{%
+      \textbackslash soulomit\textbraceleft##1\textbraceright
+    }%
+    \def\mbox##1{%
+      \textbackslash mbox\textbraceleft##1\textbraceright
+    }%
+    \def\abc{\textbackslash abc }%
+    \def\texttt##1{%
+      \textbackslash texttt\textbraceleft##1\textbraceright
+    }%
+    \def\c##1{%
+      \textbackslash c\textbraceleft##1\textbraceright
+    }%
+%<*utf8x>
+    \count@=128 %
+    \loop
+    \ifnum\count@<256 %
+      \lccode`\~=\count@
+      \lowercase{%
+        \def~{\noexpand~}%
+      }%
+      \advance\count@\@ne
+    \repeat
+%</utf8x>
+    \csname protected@edef\endcsname\x{\endgroup
+      \noexpand\section{String #1: #2}%
+    }%
+  \x
+  \TestDriver{so}{#1}{#2}{#3}%
+  \TestDriver{caps}{#1}{#2}{#3}%
+  \TestDriver{ul}{#1}{#2}{#3}%
+  \TestDriver{st}{#1}{#2}{#3}%
+  \TestDriver{hl}{#1}{#2}{#3}%
+  \TestDriver{an}{#1}{#2}{#3}%
+  \TestDriver{sy}{#1}{#2}{#3}%
+  \TestDriver{soulH}{#1}{#2}{#3}%
+}
+\makeatother
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Testing}
+%
+%    \begin{macrocode}
+\begin{document}
+  \Test A{}{}%
+  \Test B{Hello World}{Hello World}%
+  \Test C{%
+    Umlauts: ^^c3^^84^^c3^^96^^c3^^9c^^c3^^a4^^c3^^b6^^c3^^bc^^c3^^9f%
+  }{%
+    Umlauts: \"A\"O\"U\"a\"o\"u\ss
+  }%
+  \Test D{Euro: ^^e2^^82^^ac}{Euro: \texteuro}%
+  \Test E{Stra^^c3^^9fe}{Stra\ss e}%
+  \Test F{R^^c3^^b6mer}{R\"omer}%
+  \Test G{A^^e2^^80^^93B^^e2^^80^^94C}{A--B---C}%
+  \Test H{X^^c2^^a0Y}{X~Y}%
+  \Test I{A^^c5^^a4}{A\v T}%
+  \Test J{A,B,,C,,,D,,,,E}{A,B,,C,,,D,,,,E}%
+  \Test K{A'B''C'''D''''E}{A'B''C'''D''''E}%
+  \Test L{A`B``C```D````E}{A`B``C```D````E}%
+  \Test M{A$x$B}{A$x$B}%
+  \Test N{A\mbox{abc}B}{A\mbox{abc}B}%
+  \Test O{,,TA''}{,,TA''}%
+  \Test P{{!`}Hola{?`}}{{!`}Hola{?`}}%
+  \Test Q{re-sent\slash x}{re-sent\slash x}%
+  \Test R{new\\line}{new\\line}%
+  \Test S{foo\linebreak bar}{foo\linebreak bar}%
+  \Test T{Virchow{sche}}{Virchow{sche}}%
+  \Test U{A\soulomit{foo}B}{A\soulomit{foo}B}%
+  \Test V{A\texttt{xyz}B}{A\texttt{xyz}B}%
+  \Test W{ffi}{ffi}%
+  \Test X{f{}f{}i}{f{}f{}i}%
+  \Test Y{f\mbox{}f\mbox{}i}{f\mbox{}f\mbox{}i}%
+  \Test Z{\c{\"a}}{{\c{\"a}}}%
+%<*test2|test3>
+  \let\abcx\UNDEFINED
+  \def\abc{%
+    \begingroup
+      \def\abcx{x}%
+      \abcx
+    \endgroup
+  }%
+  \Test{AA}{[{x\abc x}]}{[{xxx}]}%
+%</test2|test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\end{document}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test2|test3|test4|test5>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/soulutf8.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/soulutf8.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex soulutf8.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   soulutf8.sty & tex/generic/oberdiek/soulutf8.sty\\
+%   soulutf8.pdf & doc/latex/oberdiek/soulutf8.pdf\\
+%   test/soulutf8-test1.tex & doc/latex/oberdiek/test/soulutf8-test1.tex\\
+%   test/soulutf8-test2.tex & doc/latex/oberdiek/test/soulutf8-test2.tex\\
+%   test/soulutf8-test3.tex & doc/latex/oberdiek/test/soulutf8-test3.tex\\
+%   test/soulutf8-test4.tex & doc/latex/oberdiek/test/soulutf8-test4.tex\\
+%   test/soulutf8-test5.tex & doc/latex/oberdiek/test/soulutf8-test5.tex\\
+%   soulutf8.dtx & source/latex/oberdiek/soulutf8.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk soulutf8.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{soulutf8.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex soulutf8.dtx
+%makeindex -s gind.ist soulutf8.idx
+%pdflatex soulutf8.dtx
+%makeindex -s gind.ist soulutf8.idx
+%pdflatex soulutf8.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{soulutf8.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='soulutf8'>
+  <name>soulutf8</name>
+  <caption>Permit use of UTF-8 characters in soul.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    This package extends package <xref refid='soul'>soul</xref> and adds
+    some support for UTF-8. Namely the input encodings in
+    &#x2018;<tt>utf8.def</tt>&#x2019; from package
+    <xref refid='inputenc'>inputenc</xref> and
+    &#x2018;<tt>utf8x.def</tt>&#x2019; from package
+    <xref refid='unicode'>ucs</xref> are supported.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/soulutf8.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/soulutf8.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{soul}
+%   Melchior Franz: \textit{The \xpackage{soul} package};
+%   2003/11/17;\\
+%   \CTAN{macros/latex/contrib/soul/}.
+%
+% \bibitem{ucs}
+%   Dominique P. G. Unruh: \textit{\xpackage{ucs.sty} -- Unicode Support};
+%   2004/10/17;\\
+%   \CTAN{macros/latex/contrib/unicode/}.
+%
+% \bibitem{utf8}
+%   Frank Mittelbach, Chris Rowley:
+%   \textit{Providing some UTF-8 support via \xpackage{inputenc}};
+%   2006/03/30;\\
+%   \CTAN{macros/latex/base/utf8ienc.dtx}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/09/09 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

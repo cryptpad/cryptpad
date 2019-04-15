@@ -1,0 +1,255 @@
+% \iffalse meta-comment
+%
+% Copyright 2014
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% Filename: ltnews21.tex
+%
+% This is issue 21 of LaTeX News.
+
+\documentclass{ltnews}
+\def\ConTeXt{C\kern-.0333emon\-\kern-.0667em\TeX\kern-.0333emt} 
+\usepackage[T1]{fontenc}
+
+\usepackage{lmodern,url,hologo}
+
+\publicationmonth{May}
+\publicationyear{2014}
+
+\publicationissue{21}
+
+\begin{document}
+
+\maketitle
+
+\section{Scheduled \LaTeX\ bug-fix release}
+
+This issue of \LaTeX~News marks the second bug-fix release of
+\LaTeXe\ (standard \LaTeX) since shifting to a new build system in 2009.
+Provided sufficient changes are made, we expect to
+make such releases yearly or every two years, in sync with \TeX\ Live.
+
+
+
+\subsection{Release notes}
+
+This release makes no changes to the core code in the \LaTeXe\ format
+but there are a small number of documentation fixes (not listed
+here). In addition several packages in the \textsf{base} and
+\textsf{required} areas have been updated as detailed below.
+
+
+This has been done in accordance with the philosophy of minimising
+problems in both forwards and backwards compatibility, so most of
+these changes should not be noticed by the regular \LaTeX\ user.
+
+References in the text below of the form ``graphics/3873'' are to
+bug reports listed
+at:\\ \url{http://latex-project.org/cgi-bin/ltxbugs2html}
+
+
+\let\paragraph\subsubsection
+
+\paragraph{\textsf{fixltx2e} updates}
+
+
+
+There are a number of bugs and faulty design decisions in \LaTeXe{}
+that should have been corrected long ago in the kernel code.  However,
+such corrections cannot be done as this would break backwards
+compatibility in the following sense. A large number of documents
+exist by now that have worked around the bug or have even made use of
+a particular misfeature.  Thus changing the kernel code would break
+too many existing documents.
+
+The corrections for these types of bug have therefore been collected together
+in a package that can be loaded only when needed; its name is \textsf{fixltx2e}.
+For this release we made the following changes to this package:
+\begin{itemize}
+\item
+   Misspelled float placement specifiers such as
+   \verb=\begin{figure}[tv]= instead of \texttt{tb} are silently
+   ignored by the kernel code.  Now we test for such letters and issue
+   an error message.
+\item
+   \LaTeX's float handling algorithm can get out of sync if you mix
+   single and double-column floats (as they are placed independently
+   of each other). This was corrected in \textsf{fixltx2e} a few years ago
+   but the fix was not perfect as one situation using
+   \verb=\enlargethispage= generated a low-level \TeX{} error. 
+   This behaviour of the package is now improved.
+\end{itemize}
+
+
+
+
+\paragraph{New \textsf{fltrace} package}
+
+For years the file \texttt{ltoutput.dtx} contained some hidden code to
+trace the detailed behaviour of the float placement algorithm of
+\LaTeX. Prompted by questions on StackExchange we now extract this
+code into a new \textsf{fltrace} package. To see the float algorithm
+in action (or to understand why it decides to place all your floats at
+the very end of the document) use
+\begin{verbatim}
+ \usepackage{fltrace} \tracefloats
+\end{verbatim}
+To stop tracing somewhere in the document use
+\verb=\tracefloatsoff= and to see the current value of various float
+parameters use \verb=\tracefloatvals=. As the package is identical to
+the kernel code with tracing added, it may or may not work if you load any
+other package that manipulates that part of the kernel code. In such a
+case your best bet is to load \textsf{fltrace} first.
+
+\paragraph{\textsf{inputenc} package updates}
+
+The \textsf{inputenc} package allows different input encodings for
+\LaTeX\ documents to be specified including the important
+\texttt{utf8} option used to specify the Unicode UTF-8 encoding. A
+common mistake in documents has been to also include this option when
+using the Unicode-based \TeX\ engines \hologo{LuaTeX} and \hologo{XeTeX}
+producing strange errors as these engines natively deal with UTF-8
+characters.
+
+If a document stored in an 8bit encoding is processed by
+\hologo{pdfTeX}, it needs the \textsf{inputenc} package to work
+correctly. However, if such a document is processed unchanged by
+\hologo{LuaTeX} or \hologo{XeTeX}, then accented characters may
+silently get dropped from the output.
+
+The package has been modified so that if used with \hologo{LuaTeX} or
+\hologo{XeTeX}, then it just issues a warning if \texttt{utf8} or
+\texttt{ascii} is specified, and stops with an error for any other
+encoding requested.
+
+
+
+One further improvement has been made to the encoding definition files
+(\texttt{.def}) used by \textsf{inputenc}: the catcode of \texttt{@}
+is now saved and restored when reading them instead of always using
+\verb=\makeatother= inside the files (latex/4192).
+
+
+
+\paragraph{The tools directory}
+
+In the past each of the sub-directories in the ``required'' section of
+the \LaTeX{} distribution contained a single \texttt{.ins} file to
+generate the code files from the source files. We have now
+started to provide individual \texttt{.ins} files for each of those
+packages that are likely to require updates outside a major
+\LaTeX{} release.
+
+\paragraph{\textsf{multicol} updates}
+
+Version 1.8 of \textsf{multicol} implements some improvements/fixes
+and one extension. In the past the balancing algorithm enlarged the
+column height until it found a solution that satisfied all
+constraints. If there were insufficient break points then the final
+column height could have been much larger than expected and if that
+happened near the end of the page it resulted in the text overflowing
+into the bottom margin. This situation is now detected and in that
+case a normal page is cut and balancing is resumed on the next
+page. Some overflow is still allowed and controlled via the parameter
+\verb=\maxbalancingoverflow=.
+
+The use of \verb=\enlargethispage= is now properly supported within
+the environment. Finally a new command \verb=\docolaction= was added
+to allow the execution of code depending on the column in which the
+command is executed. See the documentation for details.
+
+Bug fixes: the new version fixes both a color leak that could happen
+in certain situations and the problem that \texttt{multicols} could
+mess up the positioning of \verb=\marginpar=s that followed the
+environment.
+
+
+\paragraph{\textsf{tabularx} updates}
+
+The restrictions on embedding \verb|\tabularx| \verb|\endtabularx|
+into the definition of a new environment have been relaxed
+slightly. See the package documentation for details.
+
+\paragraph{\textsf{showkeys} updates}
+
+The \textsf{showkeys} package has been updated to fix problems if used
+at the start of list items, and to work if brace groups (\verb|{| and
+\verb|}|) are used in the optional argument of
+\verb|\cite|. (tools/4162, tools/4173)
+
+
+\paragraph{\textsf{color} updates}
+
+The \verb|\nopagecolor| command suggested by Heiko Oberdiek, 
+available for some years in the \textsf{pdftex} option, has been
+added to the core package as suggested in graphics/3873. Currently
+this is supported in the driver files for \textsf{dvips} and
+\textsf{pdftex}.  Patches to support other drivers are welcome.
+
+ \paragraph{\textsf{graphicx} updates}
+
+The \textsf{graphicx} version of \verb|\rotatebox| now allows 
+\verb|\par| (and blank lines) in values, to match the change made
+to the \textsf{graphics} version some years ago. See graphics/4296.
+
+
+\paragraph{\textsf{keyval} updates}
+
+All parsing used in the \textsf{keyval} package has been changed
+to allow \verb|\par| (and blank lines) in values.
+(A second change, to parsing of brace groups
+in a construct such as \texttt{key=\{\{\{value\}\}\}}, was reverted in v1.15.)
+See graphics/3446.
+
+
+
+
+\vfill
+
+\section{Standard \LaTeX\ (\LaTeXe) and \textsf{expl3}}
+
+The substantial collection of innovative code in \textsf{expl3}
+implements a new programming language that has for a while now been
+used by some writers of \LaTeXe\ packages.  This code has recently
+also been made available for use on top of plain \TeX\ or {\ConTeXt},
+largely to support generic packages that are supposed to work with
+different flavours of \TeX.  These uses in no way affect authors of
+\LaTeX\ documents and such \LaTeXe\ packages will continue to work as
+advertised by their authors with standard \LaTeX.
+
+This code base will also become an important foundation for the kernel
+of \LaTeX3 and so the new programming language can be described as
+`The \LaTeX3 Programming Language'. However, if you see or hear that a
+package `uses \LaTeX3' then it remains very unlikely (as yet) to mean
+that the package is part of some `new version of \LaTeX'.
+
+News about the development and use of \textsf{expl3} and about other
+developments in the \LaTeX3 code base is reported regularly in the
+\LaTeX3~News series (\url{http://latex-project.org/l3news/}), the most
+recent issue of which was published in March 2014.
+
+
+\end{document}

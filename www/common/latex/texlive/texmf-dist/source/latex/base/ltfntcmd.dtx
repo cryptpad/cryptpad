@@ -1,0 +1,791 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltfntcmd.dtx
+%%
+%<*driver>
+% \fi
+\ProvidesFile{ltfntcmd.dtx}
+             [2015/03/11 v3.4b LaTeX Kernel (Font commands)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltfntcmd.dtx}
+\title{\filename}
+\date{\filedate}
+\author{Frank Mittelbach, Chris Rowley}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{258}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \iffalse
+% Copyright (C) 1994-1995 Frank Mittelbach and Chris Rowley
+% all rights reserved.
+% \fi
+%
+% \changes{v2.0b}{1993/05/05}{Removed all LaTeX related cmds}
+% \changes{v3.0a}{1993/12/11}{Complete reworking of all text commands,
+% using just one creator function}
+% \changes{v3.0a}{1993/12/11}{newfontswitch command corrected and
+% changed}
+% \changes{v3.0a}{1993/12/11}{newcommands replaced by defs}
+% \changes{v3.0a}{1993/12/11}{italic correction now put in front of
+% penalty before glue}
+% \changes{v3.0b}{1993/12/19}{\cs{@pdef} command added}
+% \changes{v3.0b}{1993/12/19}{Other tidying}
+% \changes{v3.0b}{1993/12/19}{Made \cs{@newfontswitch} produce an
+% error if command already exists, and added \cs{@renewfontswitch},
+% ASAJ}
+% \changes{v3.0b}{1993/12/19}{Untidying added, so this is now a
+%    TEMPORARY version.}
+% \changes{v3.0b}{1993/12/19}{Some more tidying done}
+% \changes{v3.1b}{1994/01/31}{\cs{@normalsize} no longer defined}
+% \changes{v3.2a}{1994/03/15}{Adapted to mass formatting}
+% \changes{v3.2a}{1994/03/15}{Removed defs of short-forms and all
+% sizes except \cs{normalize}}
+% \changes{v3.2a}{1994/03/15}{Removed \cs{@renewfontswitch}}
+% \changes{v3.2a}{1994/03/15}{Changed \cs{/} to \cs{@@italiccorr}}
+% \changes{v3.2b}{1994/04/14}{Macros renamed to non-private forms, JB}
+% \changes{v3.3a}{1994/04/20}{New implementation of \cs{nocorr}}
+% \changes{v3.3a}{1994/04/20}{Documentation up-dated}
+% \changes{v3.3b}{1994/04/30}{Documentation up-dated and tidied}
+% \changes{v3.3b}{1994/04/30}{Title changed}
+% \changes{v3.3b}{1994/04/30}{Prefix frag@ changed to frag in
+% \cs{@protecteddef}}
+% \changes{v3.3b}{1994/04/30}{Warning changed to info message in
+% \cs{@protecteddef}}
+% \changes{v3.3c}{1994/05/05}{Corrected \cs{@fontswitch}}
+% \changes{v3.3d}{1994/05/08}{Removed \cs{@undefinedfonterror}}
+% \changes{v3.3f}{1994/05/09}{Replaced all \cs{next} by
+%                          \cs{@let@token} and undo change 3.3e,
+%                          whatever that was.}
+% \changes{v3.3g}{1994/05/13}{Replaced \cs{@protecteddef} by
+%                             \cs{DeclareRobustCommand}}
+% \changes{v3.3h}{1994/05/20}{Use new error commands}
+% \changes{v3.3i}{1994/05/24}{Tidying and typos fixed}
+% \changes{v3.3j}{1994/05/25}{Insertion of \cs{aftergroup}s to
+% implement \cs{nocorr} moved to the end of the group}
+% \changes{v3.3k}{1994/06/09}{Tidying and typos fixed in documentation}
+% \changes{v3.3l}{1994/06/18}{Added check for empty text}
+% \changes{v3.3m}{1994/06/22}{Removed space from \cs{nfss@text}}
+% \changes{v3.3m}{1994/06/22}{Renamed \cs{check@nocorr}}
+% \changes{v3.3p}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v3.3v}{1997/06/16}{Fix typo in documentation.}
+% \changes{v3.3x}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+% \def \ie {i.e.~}
+% \def \eg {e.g.~}
+%
+% \def \dst {{\normalfont\scshape docstrip}}
+% \def \NFSS {\textsf{NFSS}}
+%
+%
+% \begin{abstract}
+%   The commands defined in this file \texttt{ltfntcmd} are
+%   part of the kernel code for \LaTeXe/NFSS2.
+%
+%   It is also meant to serve as documentation for package writers since
+%   it demonstrates how to define high-level font changing commands
+%   using a small number of creator functions.
+% \end{abstract}
+%
+% \section{Introduction}
+%
+% Font changes such as |\bfseries|, |\sffamily|, etc.\ are
+% declarations; this means that their scope is delimited by the
+% grouping structure, either by the next |\end| of some environment or
+% by explicitly using a group, e.g., writing something like
+% |{\bfseries...}| in the source. If you make the mistake of writing
+% |\bfseries{...}| (thinking of |\bfseries| as a command with one
+% argument) then the result is rather striking.
+%
+% Font declarations are an artifact of the \TeX{} system and for
+% several reasons it is better to avoid them on the user level
+% whenever possible.  In \LaTeX3 they will probably all be
+% replaced by environments and by font commands taking one argument.
+%
+% This file defines a creator function for such declarative font
+% switches.  This function creates commands which can be used in
+% both math and text.
+%
+% This file also defines a number of high-level commands (all
+% starting with |\text..|) that have one argument and typeset this
+% argument in the requested way. Thus these commands are for
+% typesetting short pieces of text in a specific family, series or
+% shape.  These are all produced as examples of the use of a creator
+% function which is itself also defined in this file.
+%
+% Table~\ref{tab:fontcmds} shows all these high-level commands in
+% action.  A further advantage of using these commands is that they
+% automatically take care of any necessary italic correction on either
+% side of their argument.
+% \begin{table}[t]
+% \begin{center}
+% \begin{tabular}{lll}
+% \textit{Command} & \textit{Corresponds to }& \textit{Action} \\[4pt]
+% |\textrm{..}| & |\rmfamily| &
+%            Typeset argument in roman family  \\
+% |\textsf{..}| & |\sffamily| &
+%            Typeset argument in \textsf{sans serif} family  \\
+% |\texttt{..}| & |\ttfamily| &
+%            Typeset argument in \texttt{typewriter} family
+%                                                            \\[2pt]
+% |\textmd{..}| & |\mdseries| &
+%             Typeset argument in medium series    \\
+% |\textbf{..}| & |\bfseries| &
+%             Typeset argument in \textbf{bold} series    \\[2pt]
+% |\textup{..}| & |\upshape| &
+%             Typeset argument in normal shape  \\
+% |\textit{..}| & |\itshape| &
+%             Typeset argument in \textit{italic} shape  \\
+% |\textsl{..}| & |\slshape| &
+%             Typeset argument in \textsl{slanted} shape  \\
+% |\textsc{..}| & |\scshape| &
+%             Typeset argument in \textsc{small caps} shape
+%                                                            \\[2pt]
+% |\emph{..}| & |\em| &
+%              Typeset argument \emph{emphasized}
+% \end{tabular}
+% \end{center}
+% \caption{Font-change commands with arguments}
+% \label{tab:fontcmds}
+% \begin{quote}
+% The font change commands provided here
+% all start with |\text..| to emphasize that they
+% are for use in normal text and to be easily memorable. They
+% automatically take care of any necessary italic correction on either
+% side of the argument.
+% \end{quote}
+% \end{table}
+%
+% Thus, when using such commands, one does not have to worry about
+% forgetting the italic correction when changing fonts.  Only in very
+% few situations is this additional space wrong but, for example, most
+% typographers recommend omitting the italic correction if a small
+% punctuation character, like a comma, directly follows the font
+% change.  Since the amount of correction required is partly a matter
+% of taste, you can define in what situations the italic correction
+% should be suppressed. This is done by putting the characters that
+% should cancel a preceding italic correction in the list
+% |\nocorrlist|.\footnote{Any package that changes the
+% \texttt{\string\catcode} of a character inside
+% \texttt{\string\nocorrlist} must then explicitly reset the list.
+% Otherwise the changed character will no longer be recognized
+% by the suppression algorithm.}
+% The default definition for this list is produced by the following.
+% \begin{verbatim}
+% \newcommand \nocorrlist {,.}
+% \end{verbatim}
+% It is best to declare the most often used characters first, because
+% this will make the processing slightly faster.  For example,
+% \begin{verbatim}
+% \emph{When using the \NFSS{} high-level commands,
+% the \emph{proper} use of italic corrections is
+% automatically taken care of}. Only
+% \emph{sometimes} one has to help \LaTeX{} by
+% adding a \verb=\nocorr= command.
+% \end{verbatim}
+% which results in:
+% \begin{quote}
+% \emph{When using the \NFSS{} high-level commands,
+% the \emph{proper} use of italic corrections is
+% automatically taken care of}. Only
+% \emph{sometimes} one has to help \LaTeX{} by
+% adding a \verb=\nocorr= command.
+% \end{quote}
+%
+% In contrast, the use of the declaration forms is often more
+% appropriate when you define your own commands or environments.
+% \begin{verbatim}
+% \newenvironment{bfitemize}{\begin{itemize}\normalfont\bfseries}
+%                           {\end{itemize}}
+% \begin{bfitemize}
+% \item This environment produces boldface items.
+% \item It is defined in terms of \LaTeX's
+%   \texttt{itemize} environment and NFSS
+%   declarations.
+% \end{bfitemize}
+% \end{verbatim}
+% This gives:
+% \begin{quote}
+% \newenvironment{bfitemize}
+%   {\begin{itemize}\normalfont\bfseries}
+%   {\end{itemize}}
+% \begin{bfitemize}
+% \item This environment produces boldface items.
+% \item It is defined in terms of \LaTeX's
+%   \texttt{itemize} environment and NFSS
+%   declarations.
+% \end{bfitemize}
+% \end{quote}
+%
+% In addition to global customization of when to insert the italic
+% correction, it is of course sometimes necessary to explicitly insert
+% one with |\/|.
+%
+% It is also possible to suppress the italic correction
+% in individual instances. For this, the command |\nocorr| is provided.
+%
+% The |\nocorr| must appear as the first or last token inside the
+% braces of the argument of the |\text...| commands, at that end of
+% the text where you wish to suppress the italic correction.
+%
+%
+% It is worth pointing out here that inserting a |\/| in places where
+% it can have no function (\ie anywhere except immediately after a
+% slanted letter) is not an error---it will just be silently ignored.
+% Unfortunately this is not true if the redefinition of |\/| in {\tt
+% amstex.sty} is used as this version can cause space to be removed
+% immediately before the |\/|.
+%
+% \StopEventually{}
+%
+%
+% \section{The implementation}
+%
+% \changes{v3.3z}{2003/01/01}{Code checked and documentation extended
+%  by Chris}
+%
+%  \begin{macro}{\DeclareTextFontCommand}
+% \changes{v3.0a}{1993/12/11}{Macro changed}
+% \changes{v3.0a}{1993/12/11}{Macro changed}
+%    This is the creator function for |\text..| commands.
+%    It gives a warning if |\foo| or |\fragfoo| is already defined.
+% \changes{v3.0b}{1993/12/19}{Corrected and tidied}
+%
+%    In math mode it simply puts the font declaration and text into a
+%    box (possibly an automagically sized one).
+%
+%    Otherwise it first scans the text to see where |\nocorr| occurs
+%    within it.  This sets the |\check@ic| commands to do what is
+%    necessary concerning the italic correction at both ends.
+%
+%    The algorithm for deciding whether to put in an italic correction
+%    is not very subtle: one is added whenever the newly current font
+%    is not itself positively sloped, unless the next token is a
+%    character in the `nocorr' list.  At the end of the text this
+%    is done after closing the group so as to check the `outer font'.
+%    Note that this
+%    will often result in adding an italic correction token after a
+%    character in an unsloped font; we believe (in early 2003) that
+%    this is perhaps inefficient but not dangerous.
+%
+%    It also now checks for empty contents of the text command and optimises
+%    this case.  Some care is also taken to check that doing dangerous
+%    things in vertical mode is avoided.
+%
+%    The italic correction token is added to the horizontal list
+%    before (in the list) an immediately preceding non-zero glob of
+%    glue (skip) and any non-zero penalty preceding that since, in
+%    the typical case, this puts it immediately
+%    after the last character in the preceding word.
+%
+%
+% \changes{v3.3j}{1994/05/25}{Insertion of \cs{aftergroup}s moved}
+% \changes{v3.3j}{1994/05/25}{\cs{expandafter} inserted}
+% \changes{v3.3m}{1994/06/22}{Removed space from \cs{nfss@text}}
+% \changes{v3.3u}{1996/10/08}{Removed \cs{check@icr} when in vmode
+% since it causes various errors (see pr/2157)}
+% \changes{v3.3w}{1997/10/17}{Reinstalled \cs{check@icr} as check is
+%    now done in \cs{check@nocorr@} (see PR/2646).}
+% \changes{v3.3y}{2000/01/30}{Use \cs{hmode@bgroup} now (pr/3160)}
+%
+%    Note that it is necessary to put in the |\aftergroup\maybe@ic| at
+%    the end of the group so that it comes after any other aftergroup
+%    tokens and immediately before the following tokens.
+%    It is also necessary to remove the |\fi| from the token list before
+%    the group ends; this is done by adding an |\expandafter| just
+%    before the closing brace.
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\def \DeclareTextFontCommand #1#2{%
+  \DeclareRobustCommand#1[1]{%
+    \ifmmode
+      \nfss@text{#2##1}%
+    \else
+      \hmode@bgroup
+       \text@command{##1}%
+       #2\check@icl ##1\check@icr
+       \expandafter
+      \egroup
+    \fi
+                       }%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\textrm}
+%  \begin{macro}{\textsf}
+%  \begin{macro}{\texttt}
+%  \begin{macro}{\textnormal}
+%    Now we define the |\text|\meta{family} commands in terms of the
+%    above; |\texttt| does not look very nice!
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textrm}{\rmfamily}
+\DeclareTextFontCommand{\textsf}{\sffamily}
+\DeclareTextFontCommand{\texttt}{\ttfamily}
+\DeclareTextFontCommand{\textnormal}{\normalfont}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\textbf}
+%  \begin{macro}{\textmd}
+%    For the series attribute:
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textbf}{\bfseries}
+\DeclareTextFontCommand{\textmd}{\mdseries}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\textit}
+%  \begin{macro}{\textsl}
+%  \begin{macro}{\textsc}
+%  \begin{macro}{\textup}
+% \changes{v3.0a}{1993/12/11}{Macros changed}
+%    And for the shapes:
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textit}{\itshape}
+\DeclareTextFontCommand{\textsl}{\slshape}
+\DeclareTextFontCommand{\textsc}{\scshape}
+\DeclareTextFontCommand{\textup}{\upshape}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\emph}
+% \changes{v3.0a}{1993/12/11}{Macro changed}
+%    Finally we have the |\em| font change declaration of \LaTeX. The
+%    corresponding definition with argument is
+%    \begin{macrocode}
+\DeclareTextFontCommand{\emph}{\em}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\nocorr}
+%  This is just a label, so it does nothing; it should also be
+%  unexpandable.
+%    \begin{macrocode}
+\let \nocorr \relax
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\check@icl}
+%  \begin{macro}{\check@icr}
+% \changes{v3.3j}{1994/05/25}{Macros added}
+% \changes{v3.3t}{1996/05/09}{Default definitions added}
+%  We define these defaults in case some error causes them to be
+%  expanded at the wrong time.
+%    \begin{macrocode}
+\let \check@icl \@empty
+\let \check@icr \@empty
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\text@command}
+%  \begin{macro}{\check@nocorr@}
+% \changes{v3.3a}{1994/04/20}{Macros added}
+% \changes{v3.3m}{1994/06/22}{Renamed \cs{check@nocorr} to
+% \cs{text@command} to improve \cs{long} error message}
+% \changes{v3.3j}{1994/05/25}{Insertion of \cs{aftergroup}s moved
+% and defaults set up for efficiency}
+%    This checks for a |\nocorr| as the first token in its argument
+%    and also for one in any other position not protected within
+%    braces (the latter is treated as if it were at the end of the
+%    argument).
+%
+%    Is this the correct action in the `empty' case? It is efficient but
+%    typographically it is, strictly, incorrect!
+% \changes{v3.3l}{1994/06/18}{Added check for empty text}
+%    \begin{macrocode}
+\def \text@command #1{%
+  \def \reserved@a {#1}%
+  \ifx \reserved@a \@empty
+    \let \check@icl \@empty
+    \let \check@icr \@empty
+  \else
+%    \end{macrocode}
+%    |\space| is a reserved word in \LaTeX{} or actually already in
+%    plain \TeX. If somebody really redefines it so many things will
+%    break that I don't see any reason to make this routine here
+%    slower than necessary.
+% \changes{v3.3q}{1994/12/10}{Use \cs{space} command for comparison}
+%    \begin{macrocode}
+%    \def \reserved@b { }%
+%    \ifx \reserved@a \reserved@b
+    \ifx \reserved@a \space
+      \let \check@icl \@empty
+      \let \check@icr \@empty
+    \else
+      \check@nocorr@ #1\nocorr\@nil
+    \fi
+  \fi
+}
+\def \check@nocorr@ #1#2\nocorr#3\@nil {%
+%    \end{macrocode}
+%    The two checks are initialised here to their values in
+%    the normal case.
+% \changes{v3.3w}{1997/10/17}{Check for vertical mode moved here, from
+%    \cs{DeclareTextFontCommand} (see PR/2646).}
+%    \begin{macrocode}
+  \let \check@icl \maybe@ic
+  \def \check@icr {\ifvmode \else \aftergroup \maybe@ic \fi}%
+  \def \reserved@a {\nocorr}%
+  \def \reserved@b {#1}%
+  \def \reserved@c {#3}%
+  \ifx \reserved@a \reserved@b
+    \ifx \reserved@c \@empty
+%    \end{macrocode}
+%    In this case there is a |\nocorr| at the start but not at the
+%    end, so |\check@icl| should be empty.
+%    \begin{macrocode}
+      \let \check@icl \@empty
+    \else
+%    \end{macrocode}
+%    Otherwise there is a |\nocorr| both at the start and
+%    elsewhere, so no italic corrections should be added.
+%    \begin{macrocode}
+      \let \check@icl \@empty
+      \let \check@icr \@empty
+    \fi
+  \else
+    \ifx \reserved@c \@empty
+%    \end{macrocode}
+%    In this case there is no |\nocorr| anywhere, so we need to check
+%    for an italic correction at both the beginning and the end.  This
+%    has been set up as the default so no code is needed here.
+%    \begin{macrocode}
+    \else
+%    \end{macrocode}
+%    In this case there is no |\nocorr| at the start but there is one
+%    elsewhere, so no |\aftergroup| is needed.
+%    \begin{macrocode}
+      \let \check@icr \@empty
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\ifmaybe@ic}
+% \changes{v3.4a}{2009/12/14}{Macro added}
+%    Switch used soley within |\maybe@ic| not interfering with other
+%    switches.
+%    \begin{macrocode}
+\newif\ifmaybe@ic
+%    \end{macrocode}
+% \end{macro}
+
+%  \begin{macro}{\maybe@ic}
+% \changes{v3.0a}{1993/12/11}{Macro name changed}
+%  \begin{macro}{\maybe@ic@}
+% \changes{v3.0a}{1993/12/11}{Macro and name changed}
+% \changes{v3.4a}{2009/12/14}{Use switch \cs{ifmaybe@ic} instead of
+%    \cs{if@tempswa}}
+% \task{CAR}{Make this more efficient by checking for non-characters
+% first and using \cs{if} test?}
+%    These macros implement the italic correction.
+%    \begin{macrocode}
+\def \maybe@ic {\futurelet\@let@token\maybe@ic@}
+\def \maybe@ic@ {%
+%    \end{macrocode}
+%    We first check to see if the current font is positively sloped.
+%    (But do not forget the message Rainer sent about an upright font
+%    with non-zero slope!  Or is this an urban myth?) It has been
+%    suggested that this should test against a small positive value,
+%    but what?
+%    \begin{macrocode}
+  \ifdim  \fontdimen\@ne\font>\z@
+  \else
+    \maybe@ictrue
+%    \end{macrocode}
+%    It would be possible, but probably not worthwhile, to continue the
+%    forward scan beyond any closing braces.
+%
+% \changes{v3.3a}{1994/04/20}{\cs{nocorr} etc removed from list of
+%                 tokens to check, leaving only punctuation characters}
+%    \begin{macrocode}
+    \expandafter\@tfor\expandafter\reserved@a\expandafter:\expandafter=%
+        \nocorrlist
+%    \end{macrocode}
+%    We have to hide the |\@let@token| in the macro |\t@st@ic| rather
+%    than testing it directly in the loop since it might be |\let|
+%    to a |\fi| or |\else|, which would result in chaos.
+% \changes{v2.1a}{1993/11/24}{Use \cs{t@st@ic}}
+%    \begin{macrocode}
+    \do \t@st@ic
+%    \end{macrocode}
+%    Frank thinks that the next bit it is inefficient if done after
+%    the second change.  Chris thinks that most all of this is
+%    inefficient for the commonest cases: but that is the price of a
+%    cleverer algorithm.  It is certainly needed to deal with the use
+%    of |\nolinebreak|.
+%
+%    \begin{macrocode}
+    \ifmaybe@ic \sw@slant \fi
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\t@st@ic}
+% \changes{v2.1a}{1993/11/24}{Macro added}
+% \changes{v3.3s}{1995/07/05}{Renamed from \cs{test@next}}
+%    The next token in the input stream is stored in |\@let@token| via a
+%    |\let|, the current token from |\nocorrlist| is stored via |\def|
+%    in |\reserved@a|. To compare them we have to fiddle around a bit.
+%
+%    If the only things to check were characters then this could be
+%    done via an |\if| thus their catcodes would not matter; but this
+%    will not work whilst |\futurelet| is used above.
+% \changes{v3.4a}{2009/12/14}{Use switch \cs{ifmaybe@ic} instead of
+%    \cs{if@tempswa}}
+%    \begin{macrocode}
+\def \t@st@ic {%
+  \expandafter\let\expandafter\reserved@b\expandafter=\reserved@a\relax
+  \ifx\reserved@b\@let@token
+%    \end{macrocode}
+%    If they are the same we record the fact and jump out of the loop.
+% \changes{v3.3s}{1995/07/03}{Use clean interface for jump}
+%    \begin{macrocode}
+    \maybe@icfalse
+    \@break@tfor
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\sw@slant}
+% \changes{v3.0a}{1993/12/11}{Macro changed}
+%  \begin{macro}{\fix@penalty}
+% \changes{v3.0a}{1993/12/11}{Macro added}
+%    The definition of the mysterious |\sw@slant| command is as follows.
+%    \begin{macrocode}
+\def \sw@slant {%
+%    \end{macrocode}
+%    It is surely correct to put in an italic correction when there
+%    is no skip.  If the last thing on the list is actually a zero
+%    skip (including things whose dimension part is zero, such as
+%    |\hfill|), or anything other than a character, then the
+%    italic correction will have no effect.
+%
+%    In order to work correctly with unbreakable spaces from |~|
+%    (and other common forms of line-breaking control) we also move
+%    back across a penalty before the glue.
+%    \begin{macrocode}
+  \ifdim \lastskip=\z@
+    \fix@penalty
+  \else
+    \skip@ \lastskip
+    \unskip
+    \fix@penalty
+    \hskip \skip@
+  \fi
+}
+%    \end{macrocode}
+%    The above code means: ``If there is a non-zero space just before
+%    the current position (|\ifdim...|) save the amount of that space
+%    (|\skip@\lastskip|), remove it (|\unskip|), then do a similar
+%    thing if there is a penalty just before the skip,
+%    and finally put the space back in.''
+%
+%    Since zero glue cannot be distinguished in this context from no
+%    glue, we dare not put in an |\hskip| in this case as this may
+%    produce an unwanted breakpoint.  This is not satisfactory.
+%
+%    The penalty before the glue is handled similarly, with the same
+%    caveats concerning the zero case.   Is this the first recorded
+%    use of |\unpenalty| in standard \LaTeX{} code?
+%    \begin{macrocode}
+\def \fix@penalty {%
+  \ifnum \lastpenalty=\z@
+    \@@italiccorr
+  \else
+    \count@ \lastpenalty
+    \unpenalty
+    \@@italiccorr
+    \penalty \count@
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\nocorrlist}
+%    This holds the list of characters that should prevent italic
+%    correction.  They should be ordered by decreasing frequency of
+%    use. If any such character is made active later on one needs
+%    to redefine the list so that the active character becomes part
+%    of it.
+% \changes{v3.1a}{1994/01/27}{Only ., used as default for cm fonts}
+%    \begin{macrocode}
+\def \nocorrlist {,.}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\nfss@text}
+%    This command will by default behave like a \LaTeX{} |\mbox| but
+%    may be redefined by packages such as |amstext.sty| to be a bit
+%    cleverer.
+%    \begin{macrocode}
+\ifx \nfss@text\@undefined
+  \def \nfss@text {\leavevmode\hbox}
+\fi
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\DeclareOldFontCommand}
+% \changes{v3.2b}{1994/04/14}{Renamed from \cs{@newfontswitch}}
+%    This is the function used to create declarative font-changing
+%    commands that can also be used to change alphabets in math-mode.
+%
+%    Usage: |\DeclareOldFontCommand \fn{|\meta{font-change decls}|}|
+%                                        \meta{math-alphabet}
+%
+%    Here |\fn| is the font-declaration command being defined,
+%    \meta{font-change decls} is the declaration it will expand to in
+%    text-mode, and \meta{math-alphabet} is the (single) math alphabet
+%    specifier which is to be used in math-mode.
+%
+%    It does not care whether the command being defined already
+%    exists but it does give a warning if it redefines anything.
+%
+%    Here are some typical examples of its use in conjunction with
+%    more basic NFSS2 font commands.
+%    \begin{verbatim}
+%    \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+%    \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+%    \DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+%    \end{verbatim}
+%
+% \changes{v3.0b}{1993/12/19}{Corrected and tidied}
+%    \begin{macrocode}
+\def \DeclareOldFontCommand #1#2#3{%
+  \DeclareRobustCommand #1{\@fontswitch {#2}{#3}}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@fontswitch}
+%  \begin{macro}{\@@math@egroup}
+%  \begin{macro}{\@@math@egroup}
+%    These two commands actually do the necessary tests and
+%    declarative \mbox{font-} or alphabet-changing.
+%
+% \changes{v3.3c}{1994/05/05}{Corrected \cs{@fontswitch} and added
+% saved versions}
+% \changes{v3.3q}{1994/12/10}{Don't read arguments}
+% \changes{v3.3r}{1995/04/02}{Read them again to be able to add \cs{relax}.}
+%    \begin{macrocode}
+\def \@fontswitch #1#2{%
+  \ifmmode
+     \let \math@bgroup \relax
+     \def \math@egroup {\let \math@bgroup \@@math@bgroup
+                        \let \math@egroup \@@math@egroup}%
+%    \end{macrocode}
+%    We need to have a |\relax| in the following line in case the |#2|
+%    is something like |\mathsf| grabbing the next token as an
+%    argument. For this reason the code also uses explicit arguments
+%    again (see pr/1275).
+%    \begin{macrocode}
+     #2\relax
+  \else
+     #1%
+  \fi
+}
+\let \@@math@bgroup \math@bgroup
+\let \@@math@egroup \math@egroup
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \changes{v2.1b}{1993/12/08}{Macros \cs{rm}, \cs{bf} and \cs{sf}
+%                 moved to classes.dtx}
+%
+%    These commands are available only in the preamble.
+%    \begin{macrocode}
+\@onlypreamble \DeclareTextFontCommand
+\@onlypreamble \DeclareOldFontCommand
+%    \end{macrocode}
+%
+% \section{Initialization}
+% \changes{v3.0b}{1993/12/19}{Added by ASAJ.}
+% \changes{v3.0b}{1993/12/19}{Wording changes by CAR.}
+%
+% \begin{macro}{\normalsize}
+% \changes{v3.3d}{1994/05/08}{Removed \cs{@undefinedfonterror}}
+% \changes{v3.3o}{1994/11/12}{Added \cs{MessageBreak}}
+%    This is defined to produce an error.
+%    \begin{macrocode}
+\def\normalsize{%
+  \@latex@error {The font size command \protect\normalsize\space
+              is not defined:\MessageBreak
+              there is probably something wrong with
+              the class file}\@eha
+}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+\endinput

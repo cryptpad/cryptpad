@@ -1,0 +1,819 @@
+%% aesample.tex
+%% Copyright 1999 Lars Engebretsen
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+\overfullrule=0pt
+\def\TeX{T\kern-.12em\lower.37ex\hbox{E}\kern-.135emX}
+\def\LaTeX{L\raise.42ex\hbox{\sc\kern-.5em A}\kern-.15em\TeX}
+\def\iTeX{T\kern-.2em\lower.37ex\hbox{E}\kern-.08emX}
+\def\iLaTeX{L\raise.5ex\hbox{\sc\kern-.45em A}\kern-.10em\iTeX}
+\let\latex=\LaTeX
+\def\fLaTeX{L\raise.42ex\hbox{\sc\kern-.39em A}\kern-.10em\TeX}
+\def\sLaTeX{L\raise.42ex\hbox{\ssubfont\kern-.39em A}\kern-.10em\TeX}
+\def\tex{\TeX}
+\font\sc=cmr7 at 7pt
+\font\bigE=cmmi10 at 14pt
+\font\smallE=cmmi10 at 8pt
+\def\E{~2\lower.08em\hbox{\Efont\char"F}}
+\def\varE{~2\lower.08em\hbox{\Efont\char"22}}
+\let\e=\varE
+\let\Efont=\smallE
+\def\it{\fam\itfam\font\sc=cmti7 at 7pt\let\tex=\iTeX\let\latex=\iLaTeX \tenit}
+\def\bf{\fam\bffam\font\sc=cmbx7 at 7pt\tenbf}
+%\def\bul{\leavevmode\llap{\vrule height.5em width.5em
+%depth0pt\hskip.5em}} 
+\def\bs{$\backslash$}
+\def\vsm{\vskip2truept}
+
+
+ \def\ams{{\the\textfont2 A}\kern-.1667em
+ \lower.5ex\hbox{\the\textfont2 M}\kern-.125em
+ {\the\textfont2 S}}
+ \def\amstex{\ams-\TeX}
+
+\font\Bsym=cmbsy10 at 28pt
+\font\bbsym=cmbsy10 at 18pt
+\def\amstexb{{\bbsym A}\kern-.1667em\lower.5ex\hbox
+ {\bbsym M}\kern-.125em{\bbsym S}-\TeX}
+\def\amsb{{\bbsym A}\kern-.1667em\lower.5ex\hbox
+ {\bbsym M}\kern-.125em{\bbsym S}-\TeX}
+\def\amsB{{\Bsym A}\kern-.1667em\lower.5ex\hbox
+ {\Bsym M}\kern-.125em{\Bsym S}}
+
+\font\bsym=cmbsy10 at 10.5pt
+\def\amstexbh{{\bsym A}\kern-.1667em\lower.5ex\hbox
+ {\bsym M}\kern-.125em{\bsym S}-\TeX}
+\def\amsbh{{\bsym A}\kern-.1667em\lower.5ex\hbox
+ {\bsym M}\kern-.125em{\bsym S}}
+
+\def\pagenum{\ifnum\pageno=0\else\pagefont\folio\fi}
+\headline={}
+\footline{}
+
+%\newdimen\pagemargin \pagemargin=.5in
+\newdimen\pagemargin \pagemargin=.75in
+
+
+\newdimen\pageheight \pageheight=11in
+\advance\pageheight by -2\pagemargin
+
+\newdimen\pagewidth \pagewidth=8.5in
+\advance\pagewidth by -2\pagemargin
+
+\newdimen\headcolumn \headcolumn=.334\pagewidth
+\newdimen\bodycolumn \bodycolumn=.666\pagewidth
+
+\vsize\pageheight % already includes top/bottom margin
+%\advance\vsize by-\pagemargin
+
+\def\raggedright{\rightskip 0pt plus 3em } % we'll be back
+%\raggedbottom
+
+\pretolerance=1000
+\hyphenation{typeset typeset-ter typeset-ting Modern
+Post-Script Textures Classic Hyper-Card pro-gram-mable}
+
+\clubpenalty=10000
+\widowpenalty=\clubpenalty
+\hyphenpenalty=100
+\doublehyphendemerits=10000000
+\hsize=\pagewidth
+\topskip 20pt
+\leftskip=\headcolumn
+\parskip=.2\baselineskip
+\rightskip0pt plus .1\hsize
+%\everypar{\looseness=-1 }
+\setbox\strutbox=
+ \hbox{\vrule height 9pt depth 4pt width0pt}
+
+
+\emergencystretch .05\hsize
+
+
+\vbadness10000 % Shut up
+
+\font\chapterfont=cmssbx10 at 18pt
+\font\headfont=cmssbx10 at 10.5pt
+\font\subfont=cmss10 at 8pt
+\font\ssubfont=cmss10 at 5.5pt
+\font\pagefont=cmssbx10 at 9pt
+\font\bignumfont=cmssbx10 at 15pt
+\font\tt=cmtex10 at 10pt
+\font\bodyfont=cmr10 at 10pt
+\font\trade=cmr8 at 8pt
+\fontdimen3\bodyfont=0.0pt
+\font\tenit=cmti10 at 10pt
+\font\tenbf=cmbx10 at 10pt
+\fontdimen3\tenit=0.0pt
+\fontdimen3\tenbf=0.0pt
+\font\met=logo10 at 10pt
+\font\tmfont=cmr17 at 4.5pt
+\def\tm{\raise4pt\hbox{\tmfont TM}}
+\font\mbsy=cmbsy10
+
+\def\tagchar#1{\setbox0
+  \hbox{\char#1}\ifdim\wd0>0pt\box0\hskip.3em\fi}
+\def\tagfont#1#2{\hangafter=1\hang\noindent
+  \font\tf=#1 at 10pt
+  {\tf\count0=0\loop\tagchar{\count0}%
+    \ifnum\count0<127\advance\count0by1\repeat}
+  \par
+}
+
+\def\textsample#1#2#3
+ {\raggedright
+ {\font\ts=#1
+ \ts\par
+ \baselineskip= 1.2em
+ #2\par
+ #3\vskip 8pt}
+ \rm
+}
+
+\def\chaptertype{\chapterfont\font\sc=cmssbx10 at 12pt
+ \let\Efont=\bigE\let\e=\E
+ \let\latex=\fLaTeX\baselineskip26pt\spaceskip0pt}
+\def\headtype{\headfont\font\sc=cmssbx10 at 7pt
+ \let\Efont=\smallE\let\e=\E
+ \let\latex=\fLaTeX\baselineskip 13pt\spaceskip0pt}
+\def\subtype{\subfont\baselineskip 11pt}
+\def\bodytype{\bodyfont\baselineskip 13pt}
+%\def\headpar{\rightskip\hsize minus\hsize\parindent0pt}
+\def\headpar{\rightskip20pt plus3em minus1em\parindent0pt}
+%\let\subpar=\headpar
+\def\subpar{\rightskip25pt plus4em minus4em\parindent0pt}
+\def\bodypar{\rightskip0pt plus4em\parindent0pt}
+
+\bodytype
+\parindent=0pt
+
+\def\chapter#1#2\par{{\vfill\leftskip=0pt\hsize\pagewidth
+ \null\vskip 22pt\chaptertype\headpar\noindent\uppercase{#1}\par
+ \baselineskip13pt\null\hrule height 1pt\null
+ \bodytype\bodypar\noindent\leftskip\headcolumn
+ #2\par\null\vskip-2\baselineskip}}
+
+\def\head#1#2\par{%
+{\leftskip=0pt
+ \setbox0=\vtop{\hsize\headcolumn\headtype\headpar\noindent#1\par}
+ \dp0=0pt
+ \null\null\hrule\null\nobreak
+ \hbox{\box0\vtop{\hsize\bodycolumn\bodyfont\bodypar
+ \noindent\ignorespaces#2\par}}\vskip4pt}} % the 4pt is a kludge - bs
+
+\def\itemhead#1{%
+{\leftskip=0pt
+ \setbox0=\vtop{\hsize\headcolumn\headtype\headpar\noindent#1\par}
+ \dp0=0pt
+ \null\null\hrule\null\nobreak
+ \hbox{\box0\vtop{\hsize\bodycolumn\bodyfont\bodypar
+ }}\vskip-16pt}} % the 4pt is a kludge - bs
+
+\def\sub#1#2\par{%
+{\leftskip=0pt\setbox0=\vtop{\hsize\headcolumn\subtype\subpar\noindent#1\par}
+ \dp0=0pt
+ \vskip12pt\hrule height.2ptwidth\headcolumn\null\nobreak
+ \hbox{\box0\vtop{\hsize\bodycolumn\bodyfont\bodypar
+ \noindent\ignorespaces#2\par}}}}
+
+\def\itemsub#1{%
+{\leftskip=0pt\setbox0=\vtop{\hsize\headcolumn\subtype\subpar\noindent#1\par}
+ \dp0=0pt
+ \vskip12pt\hrule height.2ptwidth\headcolumn\null\nobreak
+ \hbox{\box0\vtop{\hsize\bodycolumn\bodyfont\bodypar
+ }}\vskip-\baselineskip}}
+
+\def\emptychapter{\null\vskip-\parskip\vskip-2\baselineskip}
+\def\emptyhead{\null\vskip-\parskip\vskip-2\baselineskip}
+
+\def\bignumbox#1{\vbox to 0pt{\vss
+ \hrule\hbox to 1.5\baselineskip{\vrule\hss\vbox to 1.5\baselineskip{
+ \vss
+ \bignumfont\hbox{#1}
+ \vss
+ }\hss\vrule}\hrule}}
+\def\bignum#1{\vskip3.5\baselineskip\goodbreak\vskip-3.5\baselineskip
+ \leavevmode\hangindent=2.\baselineskip\hangafter=-2\smash{%
+ \hbox to 0pt{\hss\lower\baselineskip\bignumbox{#1}\hskip.5\baselineskip
+ }}\ignorespaces}
+\let\item=\bignum
+
+\def\ms{\medskip}
+\newcount\TestCount
+\let\tex=\TeX
+\def \LaTeX{\TestCount=\the\fam \leavevmode L\raise.42ex
+\hbox{$\fam\TestCount\scriptstyle\kern-.3em A$}\kern-.15em\TeX}
+\let\latex=\LaTeX
+\def\LEX{L\lower.5ex\hbox{E}X}
+\let\pcmf=\pcMF
+\def\TUG{\TeX\ User Group}
+\let\tug=\TUG
+\font\eightss=cmss10 at 8pt
+\font\sectiontitle=cmbx10 at 12pt
+\font\sst=cmbx10
+\font\bti=cmbxti10
+\font\bt=cmb10
+\font\fivsvtn=cmr5 at 17pt
+\font\svtn=cmr17
+\font\fiv=cmr5
+\font\svtnfiv=cmr17 at 5pt
+
+\newbox\leftbox
+\def\makepage{\vtop{\hbox to\pagewidth{\the\headline}\box255}}
+\newif\ifleft
+\lefttrue
+\output{\shipout\makepage\advancepageno}
+
+\font\tiny=cmr17 at 4.25pt
+\def\reg{\raise.4em\rlap{\trade ¨}}
+\def\tm{\raise.4em\rlap{\tiny TM}}
+\def\ltwoe{\LaTeX~$2\epsilon$}
+
+
+\def\emptychapter{\null\vskip-\parskip\vskip-2\baselineskip}
+\def\emptyhead{\null\vskip-\parskip\vskip-2\baselineskip}
+\def\widedotfill{\leaders\hbox to 15pt{\hfil. \hfil}\hfill}
+\def\page#1{\widedotfill#1\par}
+
+\raggedright
+\pretolerance=10000
+\parindent=1.5em
+\parskip=0.2\baselineskip
+\font\capsmal=cmcsc10 at 5pt
+\def\Textures{{\it Textures\/}}
+\let\textures=\Textures
+\def\tm{\raise.75ex\hbox{\capsmal TM}\kern-.0625em}
+\font\tt=cmtt10
+\font\eightit=cmti8
+\font\title=cmr12 at 14pt
+\font\cpsmcp=cmcsc10 scaled \magstep5
+\font\subtitle=cmr12
+\def\TeX{T\kern-.18em\lower.35ex\hbox{E}\kern-.09emX}
+\let\tex=\TeX
+
+
+%%%%%Preamble above!!!!!!!
+
+{\parindent=0pt \obeylines \parskip=0pt \cpsmcp \baselineskip=1.05em
+Computer
+Modern
+Faces
+}
+
+\eject
+
+\headline={\hfill\pagenum}
+
+\vskip -.3in
+
+\chapter{Computer Modern PostScript Fonts}
+
+
+\vskip .3in
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+The Computer Modern typefaces were created in the spirit of the typeface
+Monotype Modern 8A by Professor Donald E. Knuth of Stanford University.  The
+Computer Modern family includes a large set of scientific and mathematical
+figures and symbols and is widely used with implementations of the \tex\
+typesetting system.  {\it Computer Modern Typefaces}, Volume E of {\it
+Computers and Typesetting} (D.~E.~Knuth, Addison Wesley), is the definitive
+source for the Computer Modern faces. {\it The \tex book} (D.~E.~Knuth, Addison
+Wesley), Appendix F, is also a good reference.
+
+This package contains 75 faces from the Computer Modern family in Adobe
+PostScript Type~1 form. These fonts can be used with all PostScript printers
+and Adobe Type Manager.
+
+}
+
+\vskip -1in
+
+\chapter{Font Samples, Text Faces}
+
+\vskip .3in
+\parindent 0pt
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+{\sst CM Bold}: cmb10
+\vskip -2pt
+\tagfont{cmb10}{}
+\textsample{cmb10}{My beautiful new watch had run eighteen months
+without losing or gaining, and without breaking any part of its
+machinery or stopping. I had come to}
+
+{\sst CM Bold Extended}: cmbx5, cmbx6, cmbx7, cmbx8, cmbx9, cmbx10, cmbx12
+\vskip -2pt
+\tagfont{cmbx10}{}
+\bt cmbx5:
+\vskip -2pt
+\textsample{cmbx5}{believe it infallible in its judgments about the time of
+day, and to consider its constitution and its anatomy imperishable. But at
+last, one night, I let it run down. I grieved about it as if it were a}
+
+
+\bt cmbx6:
+\vskip -2pt
+\textsample{cmbx6}{recognized messenger and forerunner of calamity. But by and
+by I cheered up, set the watch by guess, and commanded my bodings and
+superstitions to depart. Next day I stepped into}
+
+
+
+\bt cmbx7:
+\vskip -2pt
+\textsample{cmbx7}{the chief jeweler's to set it by the exact time, and the
+head of the establishment took it out of my hand and proceeded to set it for
+me. Then he said, ``She is four}
+
+}
+
+\vfill\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+\bt cmbx8:
+\vskip -2pt
+\textsample{cmbx8}{minutes slow---regulator wants pushing up.'' I tried to stop
+him---tried to make him understand that the watch kept perfect time. But no;
+all this human}
+
+
+\bt cmbx9:
+\vskip -2pt
+\textsample{cmbx9}{cabbage could see was that the watch was four minutes slow,
+and the regulator must be pushed up a little; and so, while I danced around him
+in}
+
+
+\bt cmbx10:
+\vskip -2pt
+\textsample{cmbx10}{anguish, and implored him to let the watch alone, he calmly
+and cruelly did the shameful deed. My watch began to gain. It gained}
+
+
+\bt cmbx12:
+\vskip -2pt
+\textsample{cmbx12}{faster and faster day by day. Within the week it sickened
+to a raging fever, and its pulse went up to a hundred and fifty}
+
+
+{\sst CM Bold Extended Slanted}: cmbxsl10
+\vskip -2pt
+\tagfont{cmbxsl10}{}
+\textsample{cmbxsl10}{in the shade. At the end of two months it had left all
+the timepieces of the town far in the rear, and was a fraction over thirteen
+days}
+
+{\sst CM Bold Extended Text Italic}: cmbxti10
+\vskip -2pt
+\tagfont{cmbxti10}{}
+\textsample{cmbxti10}{ahead of the almanac. It was away into November enjoying
+the snow, while the October leaves were still turning. It hurried}
+
+
+{\sst CM Caps and Small Caps}: cmcsc10
+\vskip -2pt
+\tagfont{cmcsc10}{}
+\textsample{cmcsc10}{up house rent, bills payable, and such things, in such a
+ruinous way that I could not abide it. I took it to the watchmaker to be}
+
+
+{\sst CM Dunhill}: cmdunh10
+\vskip -2pt
+\tagfont{cmdunh10}{}
+\textsample{cmdunh10}{regulated. He asked me if I had ever had it repaired.  I
+said no, it had never needed any repairing.  He looked a look of vicious
+happiness and eagerly pried}
+
+}
+
+\eject
+
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+{\sst CM Funny Roman}: cmff10
+\vskip -2pt
+\tagfont{cmff10}{}
+\textsample{cmff10}{the watch open, and then put a small dice-box into his eye
+and peered into its machinery.  He said it wanted cleaning and oiling, besides
+regulating---come in a week.  After being cleaned and}
+
+
+{\sst CM Funny Italic}: cmfi10
+\vskip -2pt
+\tagfont{cmfi10}{}
+\textsample{cmfi10}{oiled, and regulated, my watch slowed down to that degree
+that it ticked like a tolling bell.  I began to be left by trains, I failed all
+appointments, I got to}
+
+
+{\sst CM Fibonacci}: cmfib8
+\vskip -2pt
+\tagfont{cmfib8}{}
+\textsample{cmfib8}{missing my dinner; my watch strung out three days' grace to
+four and let me go to protest; I gradually drifted back into yesterday, then
+day}
+
+
+{\sst CM Italic Typewriter}: cmitt10
+\vskip -2pt
+\tagfont{cmitt10}{}
+\textsample{cmitt10}{before, then into last week, and by and by the
+comprehension came upon me that all solitary and alone I was lingering along in
+week before}
+
+
+{\sst CM Roman}: cmr5, cmr6, cmr7, cmr8, cmr9, cmr10, cmr12, cmr17
+\vskip -2pt
+\tagfont{cmr10}{}
+\bt cmr5:
+\vskip -2pt
+\textsample{cmr5}{last, and the world was out of sight. I seemed to detect in
+myself a sort of sneaking fellow-feeling for the mummy in the museum, and a
+desire to swap news with him. I went to a watchmaker again.  He took the watch}
+
+\bt cmr6:
+\vskip -2pt
+\textsample{cmr6}{all to pieces while I waited, and then said the barrel was
+``swelled.''  He said he could reduce it in three days.  After this the watch
+averaged well, but nothing more.  For half a day it would go like}
+
+
+\bt cmr7:
+\vskip -2pt
+\textsample{cmr7}{the very mischief, and keep up such a barking and wheezing
+and whooping and sneezing and snorting, that I could not hear myself think for
+the disturbance; and as long as it held out}
+
+
+\bt cmr8:
+\vskip -2pt
+\textsample{cmr8}{there was not a watch in the land that stood any chance
+against it.  But the rest of the day it would keep on slowing down and fooling
+along until all the clocks it had left behind}
+
+}
+
+\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+\bt cmr9:
+\vskip -2pt
+\textsample{cmr9}{caught up again.  So at last, at the end of twenty-four
+hours, it would trot up to the judges' stand all right and just in time.  It
+would show a fair and square average,}
+
+
+\bt cmr10:
+\vskip -2pt
+\textsample{cmr10}{and no man could say it had done more or less than its
+duty. But a correct average is only a mild virtue in a watch, and I took this
+instrument to another}
+
+
+\bt cmr12:
+\vskip -2pt
+\textsample{cmr12}{watchmaker.  He said the king-bolt was broken.  I said I was
+glad it was nothing more serious.  To tell the plain truth, I had no idea}
+
+
+\bt cmr17:
+\vskip -2pt
+\textsample{cmr17}{what the king-bolt was, but I did not choose to appear
+ignorant to a stranger.  He repaired the king-}
+
+{\sst CM Slanted}: cmsl8, cmsl9, cmsl10, cmsl12
+\vskip -2pt
+\tagfont{cmsl8}{}
+\bt cmsl8:
+\vskip -2pt
+\textsample{cmsl8}{bolt, but what the watch gained in one way it lost in
+another.  It would run awhile and then stop awhile, and then run awhile again,
+and so on, using its own discretion about}
+
+\bt cmsl9:
+\vskip -2pt
+\textsample{cmsl9}{the intervals.  And every time it went off it kicked back
+like a musket. I padded my breast for a few days, but finally took the watch to
+another watchmaker. He}
+
+\bt cmsl10:
+\vskip -2pt
+\textsample{cmsl10}{picked it all to pieces, and turned the ruin over and over
+under his glass; and then he said there appeared to be something the matter
+with the hair-trigger.  He}
+
+\bt cmsl12:
+\vskip -2pt
+\textsample{cmsl12}{fixed it, and gave it a fresh start.  It did well now,
+except that always at ten minutes to ten the hands would shut together like a
+pair of}
+
+{\sst CM Slanted Typewriter}: cmsltt10
+\vskip -2pt
+\tagfont{cmsltt10}{}
+\textsample{cmsltt10}{scissors, and from that time forth they would travel
+together.  The oldest man in the world could not make head or tail of the time
+of day}
+
+{\sst CM Sans Serif}: cmss8, cmss9, cmss10, cmss12, cmss17
+\vskip -2pt
+\tagfont{cmss8}{}
+
+}
+
+\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+\bt cmss8:
+\vskip -2pt
+\textsample{cmss8}{by such a watch, and so I went again to have the thing
+repaired. This person said that the crystal had got bent, and that the
+mainspring was not straight.  He also remarked that}
+
+
+\bt cmss9:
+\vskip -2pt
+\textsample{cmss9}{parts of the works needed half-soling.  He made these things
+all right, and then my timepiece performed unexceptionably, save that now and
+then, after working}
+
+
+\bt cmss10:
+\vskip -2pt
+\textsample{cmss10}{along quietly for nearly eight hours, everything inside
+would let go all of a sudden and begin to buzz like a bee, and the hands would
+straightway begin to spin}
+
+
+\bt cmss12:
+\vskip -2pt
+\textsample{cmss12}{round and round so fast that their individuality was lost
+completely, and they simply seemed a delicate spider's web over the face of the
+watch.}
+
+
+\bt cmss17:
+\vskip -2pt
+\textsample{cmss17}{She would reel off the next twenty-four hours in six or
+seven minutes, and then stop with a bang.}
+
+
+{\sst CM Sans Serif Bold Extended}: cmssbx10
+\vskip -2pt
+\tagfont{cmssbx10}{}
+\textsample{cmssbx10}{I went with a heavy heart to one more watch\-maker, and
+looked on while he took her to pieces.  Then I prepared to cross-question him
+rigidly, for}
+
+
+{\sst CM Sans Serif Demibold Condensed}: cmssdc10
+\vskip -2pt
+\tagfont{cmssdc10}{}
+\textsample{cmssdc10}{this thing was getting serious.  The watch had cost two
+hundred dollars originally, and I seemed to have paid out two or three thousand
+for repairs.  While I waited and}
+
+{\sst CM Sans Serif Italic}: cmssi8, cmssi9, cmssi10, cmssi12, cmssi17
+\vskip -2pt
+\tagfont{cmssi8}{}
+\bt cmssi8:
+\vskip -2pt
+\textsample{cmssi8}{looked on I presently recognized in this watchmaker an old
+acquaintance---a steamboat engineer of other days, and not a good engineer,
+either.  He examined all the parts carefully,}
+
+
+\bt cmssi9:
+\vskip -2pt
+\textsample{cmssi9}{just as the other watchmakers had done, and then delivered
+his verdict with the same confidence of manner. He said: ``She makes too much
+steam---you want to hang the}
+
+
+\bt cmssi10:
+\vskip -2pt
+\textsample{cmssi10}{monkey-wrench on the safety-valve!'' I brained him on the
+spot, and had him buried at my own expense. My uncle William (now deceased,
+alas!) used to say that a}
+
+}
+
+\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+\bt cmssi12:
+\vskip -2pt
+\textsample{cmssi12}{good horse was a good horse until it had run away once,
+and that a good watch was a good watch until the repairers got a chance at it.
+And}
+
+
+\bt cmssi17:
+\vskip -2pt
+\textsample{cmssi17}{he used to wonder what became of all the unsuccessful
+tinkers, and gunsmiths, and shoemakers, and}
+
+
+{\sst CM Sans Serif Quotation Style}: cmssq8
+\vskip -2pt
+\tagfont{cmssq8}{}
+\textsample{cmssq8}{engineers, and blacksmiths; but nobody could ever tell him.
+\hskip 2em (Mark Twain, 1870)}
+
+
+{\sst CM Sans Serif Quotation Italic Style}: cmssqi8
+\vskip -2pt
+\tagfont{cmssqi8}{}
+\textsample{cmssqi8}{My beautiful new watch had run eighteen months without
+losing or gaining, and without breaking any part of its machinery or
+stopping. I had come to believe it}
+
+
+{\sst CM Typewriter Caps and Small Caps}: cmtcsc10
+\vskip -2pt
+\tagfont{cmtcsc10}{}
+\textsample{cmtcsc10}{infallible in its judgments about the time of day, and to
+consider its constitution and its anatomy imperishable. But at last, one
+night,}
+
+
+{\sst CM Typewriter Extended}: cmtex8, cmtex9, cmtex10
+\vskip -2pt
+\tagfont{cmtex8}{}
+\bt cmtex8:
+\vskip -2pt
+\textsample{cmtex8}{I let it run down. I grieved about it as if it were a
+recognized messenger and forerunner of calamity. But by and by I cheered up,
+set the watch by guess, and}
+
+
+\bt cmtex9:
+\vskip -2pt
+\textsample{cmtex9}{commanded my bodings and superstitions to depart. Next day
+I stepped into the chief jeweler's to set it by the exact time, and the head of
+the}
+
+\bt cmtex10:
+\vskip -2pt
+\textsample{cmtex10}{establishment took it out of my hand and proceeded to set
+it for me. Then he said, ``She is four minutes slow---regulator wants}
+
+}
+
+\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+{\sst CM Text Italic}: cmti7, cmti8, cmti9, cmti10, cmti12
+\vskip -2pt
+\tagfont{cmti7}{}
+\bt cmti7:
+\vskip -2pt
+\textsample{cmti7}{pushing up.'' I tried to stop him---tried to make him
+understand that the watch kept perfect time.  But no; all this human cabbage
+could see was that the watch was four minutes}
+
+
+\bt cmti8:
+\vskip -2pt
+\textsample{cmti8}{slow, and the regulator must be pushed up a little; and so,
+while I danced around him in anguish, and implored him to let the watch alone,
+he calmly and cruelly did the shameful}
+
+
+\bt cmti9:
+\vskip -2pt
+\textsample{cmti9}{deed. My watch began to gain. It gained faster and faster
+day by day. Within the week it sickened to a raging fever, and its pulse went
+up to a hundred and fifty in the shade.}
+
+
+\bt cmti10:
+\vskip -2pt
+\textsample{cmti10}{At the end of two months it had left all the timepieces of
+the town far in the rear, and was a fraction over thirteen days ahead of the
+almanac. It was away into}
+
+
+\bt cmti12:
+\vskip -2pt
+\textsample{cmti12}{November enjoying the snow, while the October leaves were
+still turning. It hurried up house rent, bills payable, and such things,}
+
+{\sst CM Typewriter}: cmtt8, cmtt9, cmtt10, cmtt12
+\vskip -2pt
+\tagfont{cmtt8}{}
+\bt cmtt8:
+\vskip -2pt
+\textsample{cmtt8}{in such a ruinous way that I could not abide it. I took it
+to the watchmaker to be regulated.  He asked me if I had ever had it repaired.
+I said no, it had never needed}
+
+
+\bt cmtt9:
+\vskip -2pt
+\textsample{cmtt9}{any repairing.  He looked a look of vicious happiness and
+eagerly pried the watch open, and then put a small dice-box into his eye and
+peered into}
+
+
+\bt cmtt10:
+\vskip -2pt
+\textsample{cmtt10}{its machinery.  He said it wanted cleaning and oiling,
+besides regulating---come in a week.  After being cleaned and oiled, and
+regulated,}
+
+
+\bt cmtt12:
+\vskip -2pt
+\textsample{cmtt12}{my watch slowed down to that degree that it ticked like a
+tolling bell.  I began to be left by trains, I failed all}
+
+
+{\sst CM Unslanted Text Italic}: cmu10
+\vskip -2pt
+\tagfont{cmu10}{}
+
+}
+
+\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+
+\textsample{cmu10}{appointments, I got to missing my dinner; my watch strung
+out three days' grace to four and let me go to protest; I gradually drifted
+back into}
+
+{\sst CM Variable Typewriter}: cmvtt10
+\vskip -2pt
+\tagfont{cmvtt10}{}
+\textsample{cmvtt10}{yesterday, then day before, then into last week, and by
+and by the comprehension came upon me that all solitary and alone I was
+lingering along in}
+
+}
+
+\vfill
+\vskip -1.2in
+\chapter{Font Samples, Symbols}
+
+\vskip .2in
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+{\sst CM Bold Symbols}: cmbsy10
+\vskip -2pt
+\tagfont{cmbsy10}{}
+\vskip 14pt
+
+{\sst CM Inch}: cminch
+\vskip -.65in
+\textsample{cminch}{123ABC}
+
+{\sst CM Math Extension}: cmex10
+\vskip -2pt
+\tagfont{cmex10}{}
+\vskip 14pt
+
+{\sst CM Math Italic}: cmmi5, cmmi6, cmmi7, cmmi8, cmmi9, cmmi10, cmmi12
+\vskip -2pt
+\tagfont{cmmi10}{}
+\vskip 14pt
+
+}
+
+\vfill\eject
+
+{\leftskip .3in\baselineskip1.2\baselineskip\hrule height0pt
+{\sst CM Bold Extended Math Italic}: cmmib10
+\vskip -2pt
+\tagfont{cmmib10}{}
+\vskip 14pt
+
+{\sst CM Symbols}: cmsy5, cmsy6, cmsy7, cmsy8, cmsy9, cmsy10
+\vskip -2pt
+\tagfont{cmsy8}{}
+
+}
+
+\eject
+
+\end

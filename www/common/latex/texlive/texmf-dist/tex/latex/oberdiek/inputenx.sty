@@ -1,0 +1,209 @@
+%%
+%% This is file `inputenx.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{inputenx}%
+  [2011/05/27 v1.10 Enhanced input encoding handling (HO)]%
+\providecommand*{\CurrentInputEncodingName}{}
+\providecommand*{\CurrentInputEncodingOption}{}
+\def\IEX@SetFileCatcodes{%
+  \catcode`\\=0 %
+  \catcode`\{=1 %
+  \catcode`\}=2 %
+  \catcode`\#=6 %
+  \catcode`\^=7 %
+  \catcode`\@=11 %
+  \catcode`\~=\active
+  \catcode`\%=14 %
+  \catcode`\`=12 %
+}
+\def\IEX@SaveFileCatcodes{%
+  \edef\IEX@RestoreFileCatcodes{%
+    \catcode`\noexpand\\=\the\catcode`\\\relax
+    \catcode`\noexpand\{=\the\catcode`\{\relax
+    \catcode`\noexpand\}=\the\catcode`\}\relax
+    \catcode`\noexpand\#=\the\catcode`\#\relax
+    \catcode`\noexpand\^=\the\catcode`\^\relax
+    \catcode`\noexpand\@=\the\catcode`\@\relax
+    \catcode`\noexpand\~=\the\catcode`\~\relax
+    \catcode`\noexpand\%=\the\catcode`\%\relax
+    \catcode`\noexpand\`=\the\catcode`\`\relax
+    \catcode`\noexpand\<=\the\catcode`\<\relax
+  }%
+}
+\def\IEX@LookupEncoding#1{%
+  \edef\CurrentInputEncodingName{#1}%
+  \@onelevel@sanitize\CurrentInputEncodingName
+  \let\CurrentInputEncodingOption\@empty
+  \@ifundefined{IEX@enc@\CurrentInputEncodingName}{%
+    \global\expandafter\let
+       \csname IEX@enc@\CurrentInputEncodingName\endcsname
+       \CurrentInputEncodingName
+    \IEX@DoLookup
+  }{}%
+  \edef\CurrentInputEncodingOption{%
+    \csname IEX@enc@\CurrentInputEncodingName\endcsname
+  }%
+  \ifx\CurrentInputEncodingOption\@empty
+    \PackageWarning{inputenx}{%
+      Encoding `\CurrentInputEncodingName' is not available%
+      \MessageBreak
+      and therefore ignored%
+    }%
+  \else
+    \IfFileExists{\CurrentInputEncodingOption.def}{%
+      \PackageInfo{inputenx}{%
+        Encoding name: \CurrentInputEncodingName\MessageBreak
+        Encoding file: \CurrentInputEncodingOption.def\MessageBreak
+      }%
+    }{%
+      \PackageError{inputenx}{%
+        Cannot load encoding `\CurrentInputEncodingName'.\MessageBreak
+        A valid encoding alias was not found and\MessageBreak
+        encoding file `\CurrentInputEncodingOption.def' does not exist%
+      }\@ehc
+      \global\expandafter\let
+          \csname IEX@enc@\CurrentInputEncodingName\endcsname\@empty
+      \let\CurrentInputEncodingName\@empty
+      \let\CurrentInputEncodingOption\@empty
+    }%
+  \fi
+}
+\def\IEX@DoLookup{%
+  \begingroup
+    \IEX@SetFileCatcodes
+    \advance\endlinechar\@M
+    \IfFileExists{ix-alias.cfg}{%
+      \input{ix-alias.cfg}%
+    }{%
+      \input{ix-alias.def}%
+    }%
+    \advance\endlinechar-\@M
+  \endgroup
+}
+\def\InputenxAlias#1#2{%
+  \edef\IEX@temp{#1}%
+  \@onelevel@sanitize\IEX@temp
+  \ifx\IEX@temp\CurrentInputEncodingName
+    \edef\IEX@temp{#2}%
+    \@onelevel@sanitize\IEX@temp
+    \IfFileExists{\IEX@temp.def}{%
+      \global\expandafter\let
+          \csname IEX@enc@\CurrentInputEncodingName\endcsname\IEX@temp
+      \expandafter\endinput
+    }{%
+      \PackageWarning{inputenx}{%
+        Missing encoding file `\IEX@temp.def'\MessageBreak
+        for encoding `\CurrentInputEncodingName', continuing%
+        \MessageBreak
+        with lookup search%
+      }%
+    }%
+  \fi
+}
+\newif\ifIEX@math
+\DeclareOption{math}{\IEX@mathtrue}
+\let\IEX@enclist\@empty
+\DeclareOption*{%
+  \ifx\IEX@enclist\@empty
+    \let\IEX@enclist\CurrentOption
+  \else
+    \edef\IEX@enclist{\IEX@enclist,\CurrentOption}%
+  \fi
+}
+\ProcessOptions*
+\let\IEX@OptionList\@empty
+\@for\CurrentOption:=\IEX@enclist\do{%
+  \IEX@LookupEncoding\CurrentOption
+  \ifx\CurrentInputEncodingOption\@empty
+  \else
+    \edef\IEX@OptionList{%
+      \ifx\IEX@OptionList\@empty
+      \else
+        \IEX@OptionList,%
+      \fi
+      \CurrentInputEncodingOption
+    }%
+  \fi
+}
+\RequirePackage{inputenc}
+\@for\IEX@Option:=\IEX@OptionList\do{%
+  \inputencoding{\IEX@Option}%
+}
+\def\IEX@BeforeHook{}
+\def\IEX@AfterHook{}
+\newcommand*{\BeforeInputEncoding}{%
+  \g@addto@macro\IEX@BeforeHook
+}
+\newcommand*{\AfterInputEncoding}{%
+  \g@addto@macro\IEX@AfterHook
+}
+\newcommand*{\InputEncoding}[1]{%
+  \let\InputEncodingNameOld\CurrentInputEncodingName
+  \let\InputEncodingOptionOld\CurrentInputEncodingOption
+  \edef\InputEncodingNew{#1}%
+  \IEX@BeforeHook
+  \IEX@LookupEncoding\InputEncodingNew
+  \ifx\CurrentInputEncodingOption\@empty
+  \else
+    \IEX@SaveFileCatcodes
+    \IEX@SetFileCatcodes
+    \inputencoding{\CurrentInputEncodingOption}%
+    \IEX@RestoreFileCatcodes
+  \fi
+  \IEX@AfterHook
+}
+\ifIEX@math
+  \RequirePackage{inpmath}%
+  \IfFileExists{ix-math.cfg}{%
+    \input{ix-math.cfg}%
+  }{%
+    \input{ix-math.def}%
+  }%
+\fi
+\endinput
+%%
+%% End of file `inputenx.sty'.

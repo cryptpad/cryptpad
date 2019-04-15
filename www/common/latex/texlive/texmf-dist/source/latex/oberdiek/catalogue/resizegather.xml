@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='resizegather'>
+  <name>resizegather</name>
+  <caption>Automatically resize overly large equations.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Equations that are too large are resized to fit the available
+    space. The environment &#x2018;gather&#x2019; of package
+    <xref refid='amsmath'>amsmath</xref> is supported.  Also the
+    environments &#x2018;equation&#x2019; and
+    &#x2018;displaymath&#x2019; are redefined using
+    &#x2018;gather&#x2019; and its starred version.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/resizegather.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/resizegather.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

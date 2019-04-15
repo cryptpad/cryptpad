@@ -1,0 +1,980 @@
+% \iffalse meta-comment
+%
+% File: enparen.dtx
+% Version: 2012/01/07 v1.0
+% Info: Parentheses nesting
+%
+% Copyright (C) 2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file enparen.dtx
+% and the derived files
+%    enparen.sty, enparen.pdf, enparen.ins, enparen.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/enparen.dtx
+%    CTAN:macros/latex/contrib/oberdiek/enparen.pdf
+%
+% Unpacking:
+%    (a) If enparen.ins is present:
+%           tex enparen.ins
+%    (b) Without enparen.ins:
+%           tex enparen.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{enparen.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If enparen.drv is present:
+%           latex enparen.drv
+%    (b) Without enparen.drv:
+%           latex enparen.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex enparen.dtx
+%       makeindex -s gind.ist enparen.idx
+%       pdflatex enparen.dtx
+%       makeindex -s gind.ist enparen.idx
+%       pdflatex enparen.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/enparen.sty
+%    TDS:doc/latex/oberdiek/enparen.pdf
+%    TDS:source/latex/oberdiek/enparen.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: enparen 2012/01/07 v1.0 Parentheses nesting (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: enparen
+Version: 2012/01/07 v1.0
+
+Copyright (C) 2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file enparen.dtx
+and the derived files
+   enparen.sty, enparen.pdf, enparen.ins, enparen.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{enparen.ins}{\from{enparen.dtx}{install}}%
+  \file{enparen.drv}{\from{enparen.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{enparen.sty}{\from{enparen.dtx}{package}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     enparen.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `enparen.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{enparen.drv}%
+  [2012/01/07 v1.0 Parentheses nesting (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{enparen}[2012/01/07]
+\begin{document}
+  \DocInput{enparen.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{339}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{enparen.drv}
+%
+% \title{The \xpackage{enparen} package}
+% \date{2012/01/07 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package defines macros to set parentheses that automatically
+% change the symbols from inner to outer fences.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% The \hologo{LaTeX} package provides macros for automatically changed
+% parentheses symbols depending on the fence order.
+% The innermost parentheses are always using the same
+% parentheses. The symbols changes for the outer fences.
+%
+% Example:
+% \begin{quote}
+%   \enparen{a \enparen{b} \enparen{c \enparen{d}} \enparen{e}}
+% \end{quote}
+% is generated by
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{article}
+%\usepackage{enparen}
+%\begin{document}
+%  \enparen{a \enparen{b} \enparen{c \enparen{d}} \enparen{e}}
+%\end{document}
+%\end{verbatim}
+%\end{quote}
+%
+% The package is the result of a newsgroup thread. Dan gives
+% the following specification \cite{dan}:
+% \begin{quote}
+% ``On the other hand, the rules for fences are usually the reverse:
+% innermost fences are always |()|, next outer are |[]|, etc. This means
+% the opening fence has to wait until all the fences between it and
+% the matching close have been detected before it can decide whether
+% to be |(| or |[| or |{|.''
+% \end{quote}
+%
+% The fence level counting starts from innermost parentheses with one.
+% For the next outer fences the level is increased by one.
+% The example above with level indexes:
+% \begin{quote}
+%   \def\1{\ensuremath{_{1}}}
+%   \def\2{\ensuremath{_{2}}}
+%   \def\3{\ensuremath{_{3}}}
+%   \enparen{\3a \enparen{\1b}\1 \enparen{\2c \enparen{\1d}\1}\2 \enparen{e}}\3
+% \end{quote}
+% The correct level is only known at the closing symbol. Therefore the
+% correct value is remembered in the main \xext{aux} file and used
+% in the second \hologo{LaTeX} run.
+%
+% \subsection{User macros}
+%
+% \begin{declcs}{enparen} \M{text}
+% \end{declcs}
+% The macro \cs{enparen} puts its argument \meta{text} in parentheses.
+% If the macro is nested, the used fence symbols change for the
+% outer fences.
+%
+% \begin{declcs}{enparenLeft}\\
+%   \cs{enparenRight}
+% \end{declcs}
+% Instead of |\enparen{text}| the left and right symbol can be
+% used separately, but in pairs:
+% \begin{quote}
+%   |\enparenLeft text\enparenRight|
+% \end{quote}
+% \cs{enparenLeft} and \cs{enparenRight} may be used at different
+% group levels, but they must be properly nested.
+%
+% \begin{declcs}{enparenSetSymbols} \M{level} \M{opening symbol} \M{closing symbol}
+% \end{declcs}
+% Macro \cs{enparenSetSymbols} configures the \meta{opening symbol} and
+% \meta{closing symbol} for the \meta{level}. The \meta{level}
+% is a number and the counting starts with one. Level zero is used,
+% if the correct level is not known (e.g. in the first \hologo{LaTeX} run).
+% The package defines the following sets:
+%\begin{quote}
+%\begin{verbatim}
+%\enparenSetSymbols{0}{(}{)}
+%\enparenSetSymbols{1}{(}{)}
+%\enparenSetSymbols{2}{[}{]}
+%\enparenSetSymbols{3}{\{}{\}}
+%\end{verbatim}
+%\end{quote}
+% Example for changing the third and adding a fourth level:
+%\begin{quote}
+%\begin{verbatim}
+%\enparenSetSymbols{3}{\ensuremath{\langle}}{\ensuremath{\rangle}}
+%\enparenSetSymbols{4}{\{}{\}}
+%\end{verbatim}
+%\end{quote}
+%
+% \begin{declcs}{enparenUnsetSymbols} \M{level}
+% \end{declcs}
+% The symbols for level \meta{level} are removed.
+% Example scenario: Only two nesting levels must be used,
+% the package defines more, then the third level can be
+% disabled by |\enparenUnsetSymbols{3}| and the user
+% gets warnings if parentheses at level 3 are needed.
+%
+% \subsection{Contexts}
+%
+% \begin{declcs}{enparenBeginContext} \M{name}\\
+%   \cs{enparenEndContext} \M{name}
+% \end{declcs}
+% If the current text is interrupted by footnotes, floats
+% with captions, then the parentheses inside the text of footnotes,
+% captions, \dots should restart from scratch. This can be achieved
+% by embedding the text inside macros \cs{enparenBeginContext}
+% and \cs{enparenEndContext}. These macros must be properly nested.
+% The \meta{name} for the begin and end macro must be the same.
+% It is a help for debugging problems, because the warning messages
+% show the context name. But it is not necessary that the
+% begin\slash end pairs have different names. Example:
+%\begin{quote}
+%\begin{verbatim}
+%\enparenLeft text before table ...
+%\begin{table}
+%  \caption{Table caption}
+%  \enparenBegin{Context}{table}
+%  Other text \enparen{foobar}.
+%  \enparenEnd{Context}{table}
+%\end{table}
+%text after table ...
+%\enparenRight
+%\end{verbatim}
+%\end{quote}
+% The parentheses inside the table environment and context `table'
+% are not nested inside other parentheses: \enparen{foobar}.
+% In case of captions and footnotes the contexts are automatically
+% added, see next section about options.
+%
+% \subsection{Options}
+%
+% \begin{declcs}{enparenSetup} \M{key value list}
+% \end{declcs}
+% Some options (currently all) can also be set after the
+% package is loaded. They can be set in the argument
+% \meta{key value list} of \cs{enparenSetup}. Options are disabled
+% after they are used the last time. Currently all options are boolean
+% options and are disabled in |\begin{document}|.
+%
+% \begin{description}
+% \item[\xoption{caption}:] The caption text is put in a
+%   context |caption|.
+% \item[\xoption{footnote}:] The footnote text is put in a
+%   context |footnote|.
+% \end{description}
+%
+% Example for disabling the two options at different places:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage[caption=false]{enparen}
+%\enparenSetup{footnote=false}
+%\end{verbatim}
+%\end{quote}
+%
+% \subsection{Notes}
+%
+% \begin{description}
+% \item[Implicite kerning:]
+%   Unexpandable stuff might affect the implicite kerning.
+%   The package cannot avoid this, because it need to define
+%   and redefine macros at the occurence of each symbol.
+%   This is done before the opening and after the closing
+%   symbol, thus that the implicite kerning inside
+%   is not affected.
+% \end{description}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{enparen}
+  [2012/01/07 v1.0 Parentheses nesting (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Resources}
+%
+%    \begin{macrocode}
+\RequirePackage{ltxcmds}[2011/11/09]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ltx@IfUndefined{numexpr}{%
+  \PackageError{enparen}{%
+    Missing e-TeX's \ltx@backslashchar numexpr.\MessageBreak
+    The package will continue with emergency definitions%
+  }\@ehc
+  \def\enparenLeft{(}%
+  \def\enparenRight{)}%
+  \long\def\enparen#1{\enparenLeft#1\enparenRight}%
+  \let\enparenSetup\ltx@gobble
+  \let\enparenSetSymbols\ltx@gobblethree
+  \let\enparenUnsetSymbols\ltx@gobble
+  \endinput
+}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{protecteddef}[2011/01/31]
+\RequirePackage{atveryend}[2011/06/30]
+\RequirePackage{uniquecounter}[2011/01/30]
+\RequirePackage{zref-base}[2011/03/18]
+\RequirePackage{kvoptions}[2011/06/30]
+\RequirePackage{kvsetkeys}[2011/10/18]
+%    \end{macrocode}
+%
+%    \begin{macro}{\zref@wrapper@mainaux}
+%    \begin{macrocode}
+\providecommand{\zref@wrapper@mainaux}[1]{%
+  \ifx\@auxout\@mainaux
+    #1%
+  \else
+    \begingroup
+      \let\@auxout\@mainaux
+      #1%
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\UniqueCounterNew{enparen}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\zref@newprop{enparen}[0]{}
+%    \end{macrocode}
+%
+% \subsection{Contexts}
+%
+%    \begin{macro}{\enparenContextDefault}
+%    \begin{macrocode}
+\def\enparenContextDefault{main}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@ctx}
+%    \begin{macrocode}
+\let\enparen@ctx\ltx@empty
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@stack}
+%    \begin{macrocode}
+\let\enparen@stack\ltx@empty
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Stack for contexts}
+%
+%    \begin{macro}{\enparen@CtxStack}
+%    \begin{macrocode}
+\global\let\enparen@CtxStack\ltx@empty
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@CtxStackPush}
+%    \begin{macrocode}
+\def\enparen@CtxStackPush#1{%
+  \xdef\enparen@CtxStack{%
+    {\enparen@ctx}{\enparen@stack}%
+    \enparen@CtxStack
+  }%
+  \xdef\enparen@ctx{#1}%
+  \global\let\enparen@stack\ltx@empty
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@CtxStackPop}
+%    \begin{macrocode}
+\def\enparen@CtxStackPop{%
+  \ifx\enparen@CtxStack\ltx@empty
+    \PackageWarning{enparen}{%
+      Pop request for empty context stack%
+    }%
+    \global\let\enparen@ctx\enparenContextDefault
+    \global\let\enparen@stack\ltx@empty
+  \else
+    \xdef\enparen@ctx{%
+      \expandafter\ltx@car\enparen@CtxStack\@nil
+    }%
+    \xdef\enparen@stack{%
+      \expandafter\ltx@carsecond\enparen@CtxStack\@nil
+    }%
+    \xdef\enparen@CtxStack{%
+      \expandafter\ltx@cdrtwo\enparen@CtxStack\@nil
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Context user macros}
+%
+%    \begin{macro}{\enparenBeginContext}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenBeginContext}[1]{%
+  \enparen@CtxStackPush{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\enparenEndContext}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenEndContext}[1]{%
+  \edef\enparen@temp{#1}%
+  \ifx\enparen@temp\enparen@ctx
+  \else
+    \PackageWarning{enparen}{%
+      Context mismatch in end request.\MessageBreak
+      `#1' should be ended, but current context\MessageBreak
+      is `\enparen@ctx'%
+    }%
+  \fi
+  \enparenCheckEmptyStack
+  \enparen@CtxStackPop
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparenCheckEmptyStack}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenCheckEmptyStack}[0]{%
+  \ifx\enparen@stack\ltx@empty
+  \else
+    \PackageWarning{enparen}{%
+      Ending non-empty stack `\enparen@ctx':\MessageBreak
+      \enparen@PrintStack\MessageBreak
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@PrintStack}
+%    \begin{macrocode}
+\def\enparen@PrintStack{%
+  \expandafter\enparen@PrintStackAux
+  \enparen@stack\ltx@empty\ltx@empty
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\enparen@PrintStackAux}
+%    \begin{macrocode}
+\def\enparen@PrintStackAux#1#2{%
+  \ifx\ltx@empty#1%
+  \else
+    {#1:#2}%
+    \expandafter\enparen@PrintStackAux
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Symbols}
+%
+%    \begin{macro}{\enparenSetSymbols}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenSetSymbols}[3]{%
+  \expandafter
+  \def\csname enparen@symbol\the\numexpr#1L\endcsname{#2}%
+  \expandafter
+  \def\csname enparen@symbol\the\numexpr#1R\endcsname{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\enparenUnsetSymbols}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenUnsetSymbols}[1]{%
+  \expandafter
+  \let\csname enparen@symbol\the\numexpr#1L\endcsname\ltx@undefined
+  \expandafter
+  \let\csname enparen@symbol\the\numexpr#1R\endcsname\ltx@undefined
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\enparenSetSymbols{0}{(}{)}
+\enparenSetSymbols{1}{(}{)}
+\enparenSetSymbols{2}{[}{]}
+\enparenSetSymbols{3}{\{}{\}}
+\enparenSetSymbols{4}{\ensuremath{\langle}}{\ensuremath{\rangle}}
+%    \end{macrocode}
+%
+% \subsection{Main user macros}
+%
+%    \begin{macro}{\enparen}
+%    \begin{macrocode}
+\ProtectedDef{\enparen}[1]{%
+  \enparenLeft#1\enparenRight
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparenLeft}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenLeft}[0]{%
+  \UniqueCounterCall{enparen}\enparen@Left
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\enparen@Left}
+%    \begin{macrocode}
+\def\enparen@Left#1{%
+  \xdef\enparen@stack{%
+    {#1}{1}%
+    \expandafter\enparen@Inc\expandafter2\expandafter!%
+    \enparen@stack\ltx@empty\ltx@empty
+  }%
+  \edef\enparen@tmp{\zref@extract{enparen#1}{enparen}}%
+  \ltx@IfUndefined{enparen@symbol\enparen@tmp L}{%
+    \PackageWarning{enparen}{%
+      Undefined symbols for level \enparen@tmp
+    }%
+    \csname enparen@symbol0L\endcsname
+  }{%
+    \csname enparen@symbol\enparen@tmp L\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\enparen@Inc}
+%    \begin{macrocode}
+\def\enparen@Inc#1!#2#3{%
+  \ifx\ltx@empty#2%
+  \else
+    \ifnum#3<#1 %
+      {#2}{#1}%
+      \expandafter\enparen@Inc
+      \the\numexpr#1+1\expandafter\expandafter\expandafter!%
+    \else
+      {#2}{#3}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparenRight}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenRight}[0]{%
+  \ifx\enparen@stack\ltx@empty
+    \PackageWarning{enparen}{%
+      Missing left symbol for right symbol%
+    }%
+    \csname enparen@symbol0R\endcsname
+  \else
+    \expandafter\enparen@Right\enparen@stack\@nil
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@Right}
+%    \begin{macrocode}
+\def\enparen@Right#1#2#3\@nil{%
+  \ltx@IfUndefined{%
+    enparen@symbol%
+    \zref@extract{enparen#1}{enparen}%
+    R%
+  }{%
+    \csname enparen@symbol0R\endcsname
+  }{%
+    \csname
+      enparen@symbol%
+      \zref@extract{enparen#1}{enparen}%
+       R%
+    \endcsname
+  }%
+  \zref@wrapper@mainaux{%
+    \zref@setcurrent{enparen}{#2}%
+    \zref@labelbyprops{enparen#1}{enparen}%
+  }%
+  \xdef\enparen@stack{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{%
+  family=enparen,%
+  prefix=enparen@,%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\enparenSetup}
+%    \begin{macrocode}
+\ProtectedDef*{\enparenSetup}[0]{%
+  \kvsetkeys{enparen}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\DeclareBoolOption[true]{footnote}
+\DeclareBoolOption[true]{caption}
+\ProcessKeyvalOptions*
+%    \end{macrocode}
+%
+% \subsection{Context settings}
+%
+%    \begin{macro}{\enparen@AtBegin}
+%    \begin{macrocode}
+\def\enparen@AtBegin{%
+  \ifenparen@footnote
+    \let\enparen@org@makefntext\@makefntext
+    \long\def\@makefntext##1{%
+      \enparen@org@makefntext{%
+        \enparenBeginContext{footnote}%
+        ##1%
+        \enparenEndContext{footnote}%
+      }%
+    }%
+  \fi
+  \enparen@Disable{footnote}%
+  \ifenparen@caption
+    \let\enparen@org@makecaption\@makecaption
+    \long\def\@makecaption##1##2{%
+      \enparen@org@makecaption{##1}{%
+        \enparenBeginContext{caption}%
+        ##2%
+        \enparenEndContext{caption}%
+      }%
+    }%
+  \fi
+  \enparen@Disable{caption}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\enparen@Disable}
+%    \begin{macrocode}
+\def\enparen@Disable#1{%
+  \DisableKeyvalOption[%
+    action=warning,%
+    package=enparen,%
+  ]{enparen}{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\AtBeginDocument{\enparen@AtBegin}
+%    \end{macrocode}
+%
+% \subsection{At end of document}
+%
+%    \begin{macro}{\enparen@AtEnd}
+%    \begin{macrocode}
+\def\enparen@AtEnd{%
+  \enparenCheckEmptyStack
+  \ifx\enparen@CtxStack\ltx@empty
+  \else
+    \PackageWarningNoLine{enparen}{%
+      Context stack is not empty at end of document.\MessageBreak
+      Current stack and contents of context stack:\MessageBreak
+      [\enparen@ctx]:[\enparen@PrintStack]%
+      \expandafter
+      \enparen@PrintContextStack\enparen@CtxStack\relax\relax
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\enparen@PrintContextStack}
+%    \begin{macrocode}
+\def\enparen@PrintContextStack#1#2{%
+  \ifx\relax#1\ltx@empty
+  \else
+    \MessageBreak
+    [#1]:[\enparen@PrintStackAux#2\ltx@empty\ltx@empty]% hash-ok
+    \expandafter\enparen@PrintContextStack
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AtVeryEndDocument{\enparen@AtEnd}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/enparen.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/enparen.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex enparen.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   enparen.sty & tex/latex/oberdiek/enparen.sty\\
+%   enparen.pdf & doc/latex/oberdiek/enparen.pdf\\
+%   enparen.dtx & source/latex/oberdiek/enparen.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk enparen.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{enparen.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex enparen.dtx
+%makeindex -s gind.ist enparen.idx
+%pdflatex enparen.dtx
+%makeindex -s gind.ist enparen.idx
+%pdflatex enparen.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+% \bibitem{dan}
+%   Dan Luecking: \textit{Re: bracket order};
+%   newsgroup \xnewsgroup{comp.text.tex};
+%   message id \texttt{\small$\langle$9b07c9c8-ff92-4cbf-b3a9-84efecfeb506@l24g2000yqm.googlegroups.com$\rangle$}
+%   2012-01-05.
+%   \url{http://groups.google.com/group/comp.text.tex/msg/8774519da31c2352}
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2012/01/07 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

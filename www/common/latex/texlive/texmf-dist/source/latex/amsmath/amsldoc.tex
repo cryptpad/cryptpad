@@ -1,0 +1,2620 @@
+%%% ====================================================================
+%%%  @LaTeX-file{
+%%%     filename        = "amsldoc.tex",
+%%%     version         = "2.09",
+%%%     date            = "2004/04/06",
+%%%     time            = "15:13:33 EDT",
+%%%     checksum        = "39446 2620 11111 93831",
+%%%     author          = "American Mathematical Society",
+%%%     address         = "American Mathematical Society,
+%%%                        Technical Support,
+%%%                        Electronic Products and Services,
+%%%                        P. O. Box 6248,
+%%%                        Providence, RI 02940,
+%%%                        USA",
+%%%     telephone       = "401-455-4080 or (in the USA and Canada)
+%%%                        800-321-4AMS (321-4267)",
+%%%     FAX             = "401-331-3842",
+%%%     email           = "tech-support@ams.org (Internet)",
+%%%     copyright       = "Copyright 1999 American Mathematical Society,
+%%%                        all rights reserved.  Copying of this file is
+%%%                        authorized only if either:
+%%%                        (1) you make absolutely no changes to your copy,
+%%%                        including name; OR
+%%%                        (2) if you do make changes, you first rename it
+%%%                        to some other name.",
+%%%     supported       = "yes",
+%%%     keywords        = "latex, amsmath",
+%%%     abstract        = "This file is the source file for the user's
+%%%                        guide of the \LaTeX{} package amsmath .",
+%%%     docstring       = "The checksum field above contains a CRC-16
+%%%                        checksum as the first value, followed by the
+%%%                        equivalent of the standard UNIX wc (word
+%%%                        count) utility output of lines, words, and
+%%%                        characters.  This is produced by Robert
+%%%                        Solovay's checksum utility.",
+%%%  }
+%%% ====================================================================
+\documentclass[leqno,titlepage,openany]{amsldoc}[1999/12/13]
+
+\ifx\UndEfiNed\url
+  \ClassError{amsldoc}{%
+    This version of amsldoc.tex must be processed\MessageBreak
+    with a newer version of amsldoc.cls (2.02 or later)}{}
+\fi
+
+\title{User's Guide for the \pkg{amsmath} Package (Version~2.0)}
+\author{American Mathematical Society}
+\date{1999-12-13 (revised 2002-02-25)}
+
+%    Use the amsmath package and amscd package in order to print
+%    examples.
+\usepackage{amsmath}
+\usepackage{amscd}
+
+\makeindex % generate index data
+\providecommand{\see}[2]{\textit{see} #1}
+
+%    The amsldoc class includes a number of features useful for
+%    documentation about TeX, including:
+%
+%    ---Commands \tex/, \amstex/, \latex/, ... for uniform treatment
+%    of the various logos and easy handling of following spaces.
+%
+%    ---Commands for printing various common elements: \cn for command
+%    names, \fn for file names (including font-file names), \env for
+%    environments, \pkg and \cls for packages and classes, etc.
+
+%    Many of the command names used here are rather long and will
+%    contribute to poor linebreaking if we follow the \latex/ practice
+%    of not hyphenating anything set in tt font; instead we selectively
+%    allow some hyphenation.
+\allowtthyphens % defined in amsldoc.cls
+
+\hyphenation{ac-cent-ed-sym-bol add-to-counter add-to-length align-at
+  aligned-at allow-dis-play-breaks ams-art ams-cd ams-la-tex amsl-doc
+  ams-symb ams-tex ams-text ams-xtra bmatrix bold-sym-bol cen-ter-tags
+  eqn-ar-ray idots-int int-lim-its latex med-space neg-med-space
+  neg-thick-space neg-thin-space no-int-lim-its no-name-lim-its
+  over-left-arrow over-left-right-arrow over-right-arrow pmatrix
+  qed-sym-bol set-length side-set small-er tbinom the-equa-tion
+  thick-space thin-space un-der-left-arrow un-der-left-right-arrow
+  un-der-right-arrow use-pack-age var-inj-lim var-proj-lim vmatrix
+  xalign-at xx-align-at}
+
+%    Prepare for illustrating the \vec example
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\newcommand{\booktitle}[1]{\textit{#1}}
+\newcommand{\journalname}[1]{\textit{#1}}
+\newcommand{\seriesname}[1]{\textit{#1}}
+
+%    Command to insert and index a particular phrase. Doesn't work for
+%    certain kinds of special characters in the argument.
+\newcommand{\ii}[1]{#1\index{#1}}
+
+\newcommand{\vstrut}[1]{\vrule width0pt height#1\relax}
+
+%    An environment for presenting comprehensive address information:
+\newenvironment{infoaddress}{%
+  \par\topsep\medskipamount
+  \trivlist\centering
+  \item[]%
+  \begin{minipage}{.7\columnwidth}%
+  \raggedright
+}{%
+  \end{minipage}%
+  \endtrivlist
+}
+
+\newenvironment{eqxample}{%
+  \par\addvspace\medskipamount
+  \noindent\begin{minipage}{.5\columnwidth}%
+  \def\producing{\end{minipage}\begin{minipage}{.5\columnwidth}%
+    \hbox\bgroup\kern-.2pt\vrule width.2pt%
+      \vbox\bgroup\parindent0pt\relax
+%    The 3pt is to cancel the -\lineskip from \displ@y
+    \abovedisplayskip3pt \abovedisplayshortskip\abovedisplayskip
+    \belowdisplayskip0pt \belowdisplayshortskip\belowdisplayskip
+    \noindent}
+}{%
+  \par
+%    Ensure that a lonely \[\] structure doesn't take up width less than
+%    \hsize.
+  \hrule height0pt width\hsize
+  \egroup\vrule width.2pt\kern-.2pt\egroup
+  \end{minipage}%
+  \par\addvspace\medskipamount
+}
+
+%    The chapters are so short, perhaps we shouldn't call them by the
+%    name `Chapter'. We make \chaptername read an argument in order to
+%    remove a following \space or "{} " (both possibilities are present
+%    in book.cls).
+
+\renewcommand{\chaptername}[1]{}
+\newcommand{\chapnum}[1]{\mdash #1\mdash }
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace{1.5\baselineskip}%
+  {\parindent \z@ \raggedright \reset@font
+    \ifnum \c@secnumdepth >\m@ne
+      \large\bfseries \chapnum{\thechapter}%
+      \par\nobreak
+      \vskip.5\baselineskip\relax
+    \fi
+    #1\par\nobreak
+    \vskip\baselineskip
+  }}
+\makeatother
+
+%    A command for ragged-right parbox in a tabular.
+\newcommand{\rp}{\let\PBS\\\raggedright\let\\\PBS}
+
+%    Non-indexed file name
+\newcommand{\nfn}[1]{\texttt{#1}}
+
+%    For the examples in the math spacing table.
+%%\newcommand{\lspx}{\mbox{\rule{5pt}{.6pt}\rule{.6pt}{6pt}}}
+%%\newcommand{\rspx}{\mbox{\rule[-1pt]{.6pt}{7pt}%
+%%  \rule[-1pt]{5pt}{.6pt}}}
+\newcommand{\lspx}{\mathord{\Rightarrow\mkern-1mu}}
+\newcommand{\rspx}{\mathord{\mkern-1mu\Leftarrow}}
+\newcommand{\spx}[1]{$\lspx #1\rspx$}
+
+%    For a list of characters representing document input.
+\newcommand{\clist}[1]{%
+  \mbox{\ntt\spaceskip.2em plus.1em \xspaceskip\spaceskip#1}}
+
+%    Fix weird \latex/ definition of rightmark.
+\makeatletter
+\def\rightmark{\expandafter\@rightmark\botmark{}{}}
+%    Also turn off section marks.
+\let\sectionmark\@gobble
+\renewcommand{\chaptermark}[1]{%
+  \uppercase{\markboth{\rhcn#1}{\rhcn#1}}}
+\newcommand{\rhcn}{\thechapter. }
+\makeatother
+
+%    Include down to \section but not \subsection, in toc:
+\setcounter{tocdepth}{1}
+
+\DeclareMathOperator{\ix}{ix}
+\DeclareMathOperator{\nul}{nul}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\xxx}{xxx}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frontmatter
+
+\maketitle
+\pagestyle{headings}
+\tableofcontents
+\cleardoublepage % for better page number placement
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mainmatter
+\chapter{Introduction}
+
+The \pkg{amsmath} package is a \LaTeX{} package that provides
+miscellaneous enhancements for improving the information structure and
+printed output of documents that contain mathematical formulas. Readers
+unfamiliar with \LaTeX{} should refer to \cite{lamport}. If you have an
+up-to-date version of \LaTeX{}, the \pkg{amsmath} package is normally
+provided along with it. Upgrading when a newer version of the
+\pkg{amsmath} package is released can be done via
+\url{http://www.ams.org/tex/amsmath.html} or
+\url{ftp://ftp.ams.org/pub/tex/}.
+
+This documentation describes the features of the \pkg{amsmath} package
+and discusses how they are intended to be used. It also covers some
+ancillary packages:
+\begin{ctab}{ll}
+\pkg{amsbsy}& \pkg{amstext}\\
+\pkg{amscd}& \pkg{amsxtra}\\
+\pkg{amsopn}
+\end{ctab}
+These all have something to do with the contents of math formulas. For
+information on extra math symbols and math fonts, see \cite{amsfonts}
+and \url{http://www.ams.org/tex/amsfonts.html}. For documentation of the
+\pkg{amsthm} package or AMS document classes (\cls{amsart},
+\cls{amsbook}, etc.\@) see \cite{amsthdoc} or \cite{instr-l} and
+\url{http://www.ams.org/tex/author-info.html}.
+
+If you are a long-time \latex/ user and have lots of mathematics in what
+you write, then you may recognize solutions for some familiar problems
+in this list of \pkg{amsmath} features:
+\begin{itemize}
+
+\item A convenient way to define new `operator name' commands analogous
+to \cn{sin} and \cn{lim}, including proper side spacing and automatic
+selection of the correct font style and size (even when used in
+sub- or superscripts).
+
+\item Multiple substitutes for the \env{eqnarray} environment to make
+various kinds of equation arrangements easier to write.
+
+\item Equation numbers automatically adjust up or down to avoid
+overprinting on the equation contents (unlike \env{eqnarray}).
+
+\item Spacing around equals signs matches the normal spacing in the
+\env{equation} environment (unlike \env{eqnarray}).
+
+\item A way to produce multiline subscripts as are often used with
+summation or product symbols.
+
+\item An easy way to substitute a variant equation number for a given
+equation instead of the automatically supplied number.
+
+\item An easy way to produce subordinate equation numbers of the form
+(1.3a) (1.3b) (1.3c) for selected groups of equations.
+
+\end{itemize}
+
+The \pkg{amsmath} package is distributed together with some small
+auxiliary packages:
+\begin{description}
+\item[\pkg{amsmath}] Primary package, provides various features for
+  displayed equations and other mathematical constructs.
+
+\item[\pkg{amstext}] Provides a \cn{text} command for
+  typesetting a fragment of text inside a display.
+
+\item[\pkg{amsopn}] Provides \cn{DeclareMathOperator} for defining new
+  `operator names' like \cn{sin} and \cn{lim}.
+
+\item[\pkg{amsbsy}] For backward compatibility this package continues
+to exist but use of the newer \pkg{bm} package that comes with \LaTeX{}
+is recommended instead.
+
+\item[\pkg{amscd}] Provides a \env{CD} environment for simple
+  commutative diagrams (no support for diagonal arrows).
+
+\item[\pkg{amsxtra}] Provides certain odds and ends such as
+  \cn{fracwithdelims} and \cn{accentedsymbol}, for compatibility with
+  documents created using version 1.1.
+
+\end{description}
+
+The \pkg{amsmath} package incorporates \pkg{amstext}, \pkg{amsopn}, and
+\pkg{amsbsy}. The features of \pkg{amscd} and \pkg{amsxtra}, however,
+are available only by invoking those packages separately.
+
+\chapter{Options for the \pkg{amsmath} package}\label{options}
+
+The \pkg{amsmath} package has the following options:
+\begin{description}
+
+\item[\opt{centertags}] (default) For a split equation, place equation
+numbers\index{equation numbers!vertical placement} vertically centered
+on the total height of the equation.
+
+\item[\opt{tbtags}] `Top-or-bottom tags': For a split equation, place
+equation numbers\index{equation numbers!vertical placement} level with
+the last (resp.\@ first) line, if numbers are on the right (resp.\@
+left).
+
+\item[\opt{sumlimits}] (default) Place the subscripts and
+superscripts\index{subscripts and superscripts!placement}\relax
+\index{limits|see{subscripts and superscripts}} of summation symbols
+above and below, in displayed equations. This option also affects other
+symbols of the same type\mdash $\prod$, $\coprod$, $\bigotimes$,
+$\bigoplus$, and so forth\mdash but excluding integrals (see below).
+
+\item[\opt{nosumlimits}] Always place the subscripts and superscripts of
+summation-type symbols to the side, even in displayed equations.
+
+\item[\opt{intlimits}] Like \opt{sumlimits}, but for
+integral\index{integrals!placement of limits} symbols.
+
+\item[\opt{nointlimits}] (default) Opposite of \opt{intlimits}.
+
+\item[\opt{namelimits}] (default) Like \opt{sumlimits}, but for certain
+`operator names' such as $\det$, $\inf$, $\lim$, $\max$, $\min$, that
+traditionally have subscripts \index{subscripts and
+superscripts!placement} placed underneath when they occur in a displayed
+equation.
+
+\item[\opt{nonamelimits}] Opposite of \opt{namelimits}.
+
+\end{description}
+
+To use one of these package options, put the option name in the optional
+argument of the \cn{usepackage} command\mdash e.g.,
+\verb"\usepackage[intlimits]{amsmath}".
+
+The \pkg{amsmath} package also recognizes the following options which
+are normally selected (implicitly or explicitly) through the
+\cn{documentclass} command, and thus need not be repeated in the option
+list of the \cn{usepackage}|{amsmath}| statement.
+\begin{description}
+
+\item[\opt{leqno}] Place equation numbers on the left.\index{equation
+numbers!left or right placement}
+
+\item[\opt{reqno}] Place equation numbers on the right.
+
+\item[\opt{fleqn}] Position equations at a fixed indent from the left
+margin rather than centered in the text column.\index{displayed
+equations!centering}
+
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Displayed equations}
+
+\section{Introduction}
+The \pkg{amsmath} package provides a number of additional displayed
+equation structures\index{displayed
+  equations}\index{equations|see{displayed equations}} beyond the ones
+provided in basic \latex/. The augmented set includes:
+\begin{verbatim}
+  equation     equation*     align       align*
+  gather       gather*       flalign     flalign*
+  multline     multline*     alignat     alignat*
+  split
+\end{verbatim}
+(Although the standard \env{eqnarray} environment remains available,
+it is better to use \env{align} or \env{equation}+\env{split} instead.)
+
+Except for \env{split}, each environment has both starred and unstarred
+forms, where the unstarred forms have automatic numbering using
+\latex/'s \env{equation} counter. You can suppress the number on any
+particular line by putting \cn{notag} before the \cn{\\}; you can also
+override\index{equation numbers!overriding} it with a tag of your own
+using \cn{tag}|{|\<label>|}|, where \<label> means arbitrary text such
+as |$*$| or |ii| used to \qq{number} the equation. There is also a
+\cn{tag*} command that causes the text you supply to be typeset
+literally, without adding parentheses around it. \cn{tag} and \cn{tag*}
+can also be used within the unnumbered versions of all the \pkg{amsmath}
+alignment structures. Some examples of the use of \cn{tag} may be found
+in the sample files \fn{testmath.tex} and \fn{subeqn.tex} provided with
+the \pkg{amsmath} package.
+
+The \env{split} environment is a special subordinate form that is used
+only \emph{inside} one of the others. It cannot be used inside
+\env{multline}, however.
+
+In the structures that do alignment (\env{split}, \env{align} and
+variants), relation symbols have an \verb'&' before them but not
+after\mdash unlike \env{eqnarray}. Putting the \verb'&' after the
+relation symbol will interfere with the normal spacing; it has to go
+before.
+
+\begin{table}[p]
+\caption[]{Comparison of displayed equation environments (vertical lines
+indicating nominal margins)}\label{displays}
+\renewcommand{\theequation}{\arabic{equation}}
+\begin{eqxample}
+\begin{verbatim}
+\begin{equation*}
+a=b
+\end{equation*}
+\end{verbatim}
+\producing
+\begin{equation*}
+a=b
+\end{equation*}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{equation}
+a=b
+\end{equation}
+\end{verbatim}
+\producing
+\begin{equation}
+a=b
+\end{equation}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{equation}\label{xx}
+\begin{split}
+a& =b+c-d\\
+ & \quad +e-f\\
+ & =g+h\\
+ & =i
+\end{split}
+\end{equation}
+\end{verbatim}
+\producing
+\begin{equation}\label{xx}
+\begin{split}
+a& =b+c-d\\
+ & \quad +e-f\\
+ & =g+h\\
+ & =i
+\end{split}
+\end{equation}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{multline}
+a+b+c+d+e+f\\
++i+j+k+l+m+n
+\end{multline}
+\end{verbatim}
+\producing
+\begin{multline}
+a+b+c+d+e+f\\
++i+j+k+l+m+n
+\end{multline}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{gather}
+a_1=b_1+c_1\\
+a_2=b_2+c_2-d_2+e_2
+\end{gather}
+\end{verbatim}
+\producing
+\begin{gather}
+a_1=b_1+c_1\\
+a_2=b_2+c_2-d_2+e_2
+\end{gather}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{align}
+a_1& =b_1+c_1\\
+a_2& =b_2+c_2-d_2+e_2
+\end{align}
+\end{verbatim}
+\producing
+\begin{align}
+a_1& =b_1+c_1\\
+a_2& =b_2+c_2-d_2+e_2
+\end{align}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{align}
+a_{11}& =b_{11}&
+  a_{12}& =b_{12}\\
+a_{21}& =b_{21}&
+  a_{22}& =b_{22}+c_{22}
+\end{align}
+\end{verbatim}
+\producing
+\begin{align}
+a_{11}& =b_{11}&
+  a_{12}& =b_{12}\\
+a_{21}& =b_{21}&
+  a_{22}& =b_{22}+c_{22}
+\end{align}
+\end{eqxample}
+
+\begin{eqxample}
+\begin{verbatim}
+\begin{flalign*}
+a_{11}& =b_{11}&
+  a_{12}& =b_{12}\\
+a_{21}& =b_{21}&
+  a_{22}& =b_{22}+c_{22}
+\end{flalign*}
+\end{verbatim}
+\producing
+\begin{flalign*}
+a_{11}& =b_{11}&
+  a_{12}& =b_{12}\\
+a_{21}& =b_{21}&
+  a_{22}& =b_{22}+c_{22}
+\end{flalign*}
+\end{eqxample}
+\end{table}
+
+\section{Single equations}
+
+The \env{equation} environment is for a single equation with an
+automatically generated number. The \env{equation*} environment is the
+same except for omitting the number.%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\footnote{Basic \latex/ doesn't provide an \env{equation*} environment,
+but rather a functionally equivalent environment named
+\env{displaymath}.}
+
+\section{Split equations without alignment}
+
+The \env{multline} environment is a variation of the \env{equation}
+environment used for equations that don't fit on a single line. The
+first line of a \env{multline} will be at the left margin and the last
+line at the right margin, except for an indention on both sides in the
+amount of \cn{multlinegap}. Any additional lines in between will be
+centered independently within the display width (unless the \opt{fleqn}
+option is in effect).
+
+Like \env{equation}, \env{multline} has only a single equation number
+(thus, none of the individual lines should be marked with \cn{notag}).
+The equation number is placed on the last line (\opt{reqno} option) or
+first line (\opt{leqno} option); vertical centering as for \env{split}
+is not supported by \env{multline}.
+
+It's possible to force one of the middle lines to the left or right with
+commands \cn{shoveleft}, \cn{shoveright}. These commands take the entire
+line as an argument, up to but not including the final \cn{\\}; for
+example
+\begin{multline}
+\framebox[.65\columnwidth]{A}\\
+\framebox[.5\columnwidth]{B}\\
+\shoveright{\framebox[.55\columnwidth]{C}}\\
+\framebox[.65\columnwidth]{D}
+\end{multline}
+\begin{verbatim}
+\begin{multline}
+\framebox[.65\columnwidth]{A}\\
+\framebox[.5\columnwidth]{B}\\
+\shoveright{\framebox[.55\columnwidth]{C}}\\
+\framebox[.65\columnwidth]{D}
+\end{multline}
+\end{verbatim}
+
+The value of \cn{multlinegap} can be changed with the usual \latex/
+commands \cn{setlength} or \cn{addtolength}.
+
+\section{Split equations with alignment}
+
+Like \env{multline}, the \env{split} environment is for \emph{single}
+equations that are too long to fit on one line and hence must be split
+into multiple lines.  Unlike \env{multline}, however, the \env{split}
+environment provides for alignment among the split lines, using |&| to
+mark alignment points. Unlike the other \pkg{amsmath} equation
+structures, the \env{split} environment provides no numbering, because
+it is intended to be used \emph{only inside some other displayed
+  equation structure}, usually an \env{equation}, \env{align}, or
+\env{gather} environment, which provides the numbering. For example:
+\begin{equation}\label{e:barwq}\begin{split}
+H_c&=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+\sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+&\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+\Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+\kern-2em % adjust equation body to the right [mjd,13-Nov-1994]
+\end{split}\end{equation}
+
+\begin{verbatim}
+\begin{equation}\label{e:barwq}\begin{split}
+H_c&=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+\sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+&\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+\Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+\end{split}\end{equation}
+\end{verbatim}
+
+The \env{split} structure should constitute the entire body of the
+enclosing structure, apart from commands like \cn{label} that produce no
+visible material.
+
+\section{Equation groups without alignment}
+
+The \env{gather} environment is used for a group of consecutive
+equations when there is no alignment desired among them; each one is
+centered separately within the text width (see Table~\ref{displays}).
+Equations inside \env{gather} are separated by a \cn{\\} command.
+Any equation in a \env{gather} may consist of a \verb'\begin{split}'
+  \dots\ \verb'\end{split}' structure\mdash for example:
+\begin{verbatim}
+\begin{gather}
+  first equation\\
+  \begin{split}
+    second & equation\\
+           & on two lines
+  \end{split}
+  \\
+  third equation
+\end{gather}
+\end{verbatim}
+
+\section{Equation groups with mutual alignment}
+
+The \env{align} environment is used for two or more equations when
+vertical alignment is desired; usually binary relations such as equal
+signs are aligned (see Table~\ref{displays}).
+
+To have several equation columns side-by-side, use extra ampersands
+to separate the columns:
+\begin{align}
+x&=y       & X&=Y       & a&=b+c\\
+x'&=y'     & X'&=Y'     & a'&=b\\
+x+x'&=y+y' & X+X'&=Y+Y' & a'b&=c'b
+\end{align}
+%
+\begin{verbatim}
+\begin{align}
+x&=y       & X&=Y       & a&=b+c\\
+x'&=y'     & X'&=Y'     & a'&=b\\
+x+x'&=y+y' & X+X'&=Y+Y' & a'b&=c'b
+\end{align}
+\end{verbatim}
+Line-by-line annotations on an equation can be done by judicious
+application of \cn{text} inside an \env{align} environment:
+\begin{align}
+x& = y_1-y_2+y_3-y_5+y_8-\dots
+                    && \text{by \eqref{eq:C}}\\
+ & = y'\circ y^*    && \text{by \eqref{eq:D}}\\
+ & = y(0) y'        && \text {by Axiom 1.}
+\end{align}
+%
+\begin{verbatim}
+\begin{align}
+x& = y_1-y_2+y_3-y_5+y_8-\dots
+                    && \text{by \eqref{eq:C}}\\
+ & = y'\circ y^*    && \text{by \eqref{eq:D}}\\
+ & = y(0) y'        && \text {by Axiom 1.}
+\end{align}
+\end{verbatim}
+A variant environment \env{alignat} allows the horizontal space between
+equations to be explicitly specified. This environment takes one argument,
+the number of \qq{equation columns}: count the maximum number of \verb'&'s
+in any row, add 1 and divide by 2.
+\begin{alignat}{2}
+x& = y_1-y_2+y_3-y_5+y_8-\dots
+                  &\quad& \text{by \eqref{eq:C}}\\
+ & = y'\circ y^*  && \text{by \eqref{eq:D}}\\
+ & = y(0) y'      && \text {by Axiom 1.}
+\end{alignat}
+%
+\begin{verbatim}
+\begin{alignat}{2}
+x& = y_1-y_2+y_3-y_5+y_8-\dots
+                  &\quad& \text{by \eqref{eq:C}}\\
+ & = y'\circ y^*  && \text{by \eqref{eq:D}}\\
+ & = y(0) y'      && \text {by Axiom 1.}
+\end{alignat}
+\end{verbatim}
+
+\section{Alignment building blocks}
+
+Like \env{equation}, the multi-equation environments \env{gather},
+\env{align}, and \env{alignat} are designed to produce a structure
+whose width is the full line width. This means, for example, that one
+cannot readily add parentheses around the entire structure. But variants
+\env{gathered}, \env{aligned}, and \env{alignedat} are provided whose
+total width is the actual width of the contents; thus they can be used
+as a component in a containing expression. E.g.,
+\begin{equation*}
+\left.\begin{aligned}
+  B'&=-\partial\times E,\\
+  E'&=\partial\times B - 4\pi j,
+\end{aligned}
+\right\}
+\qquad \text{Maxwell's equations}
+\end{equation*}
+\begin{verbatim}
+\begin{equation*}
+\left.\begin{aligned}
+  B'&=-\partial\times E,\\
+  E'&=\partial\times B - 4\pi j,
+\end{aligned}
+\right\}
+\qquad \text{Maxwell's equations}
+\end{equation*}
+\end{verbatim}
+Like the \env{array} environment, these \texttt{-ed} variants also take
+an optional \verb'[t]' or \verb'[b]' argument to specify vertical
+positioning.
+
+\qq{Cases} constructions like the following are common in
+mathematics:
+\begin{equation}\label{eq:C}
+P_{r-j}=
+  \begin{cases}
+    0&  \text{if $r-j$ is odd},\\
+    r!\,(-1)^{(r-j)/2}&  \text{if $r-j$ is even}.
+  \end{cases}
+\end{equation}
+and in the \pkg{amsmath} package there is a \env{cases} environment to
+make them easy to write:
+\begin{verbatim}
+P_{r-j}=\begin{cases}
+    0&  \text{if $r-j$ is odd},\\
+    r!\,(-1)^{(r-j)/2}&  \text{if $r-j$ is even}.
+  \end{cases}
+\end{verbatim}
+Notice the use of \cn{text} (cf.~\secref{text}) and the nested
+math formulas.
+
+\section{Adjusting tag placement}
+
+Placing equation numbers can be a rather complex problem in multiline
+displays. The environments of the \pkg{amsmath} package try hard to
+avoid overprinting an equation number on the equation contents, if
+necessary moving the number down or up to a separate line. Difficulties
+in accurately calculating the profile of an equation can occasionally
+result in number movement that doesn't look right. There is a
+\cn{raisetag} command provided to adjust the vertical position of the
+current equation number, if it has been shifted away from its normal
+position. To move a particular number up by six points, write
+|\raisetag{6pt}|. This kind of adjustment is fine tuning like line
+breaks and page breaks, and should therefore be left undone until your
+document is nearly finalized, or you may end up redoing the fine tuning
+several times to keep up with changing document contents.
+
+\section{Vertical spacing and page breaks in multiline displays}
+
+You can use the \cn{\\}|[|\<dimension>|]| command to get extra vertical
+space between lines in all the \pkg{amsmath} displayed equation
+environments, as is usual in \latex/.  When the \pkg{amsmath} package is
+in use \ii{page breaks} between equation lines are normally disallowed;
+the philosophy is that page breaks in such material should receive
+individual attention from the author. To get an individual page break
+inside a particular displayed equation, a \cn{displaybreak} command is
+provided. \cn{displaybreak} is best placed immediately before the
+\cn{\\} where it is to take effect.  Like \latex/'s \cn{pagebreak},
+\cn{displaybreak} takes an optional argument between 0 and 4 denoting
+the desirability of the pagebreak. |\displaybreak[0]| means \qq{it is
+  permissible to break here} without encouraging a break;
+\cn{displaybreak} with no optional argument is the same as
+|\displaybreak[4]| and forces a break.
+
+If you prefer a strategy of letting page breaks fall where they may,
+even in the middle of a multi-line equation, then you might put
+\cn{allowdisplaybreaks}\texttt{[1]} in the preamble of your document. An
+optional argument 1\ndash 4 can be used for finer control: |[1]| means
+allow page breaks, but avoid them as much as possible; values of 2,3,4
+mean increasing permissiveness. When display breaks are enabled with
+\cn{allowdisplaybreaks}, the \cn{\\*} command can be used to prohibit a
+pagebreak after a given line, as usual.
+
+\begin{bfseries}
+Note: Certain equation environments wrap their contents in an
+unbreakable box, with the consequence that neither \cn{displaybreak} nor
+\cn{allowdisplaybreaks} will have any effect on them. These include
+\env{split}, \env{aligned}, \env{gathered}, and \env{alignedat}.
+\end{bfseries}
+
+\section{Interrupting a display}
+
+The command \cn{intertext} is used for a short interjection of one or
+two lines of text\index{text fragments inside math} in the middle of a
+multiple-line display structure (see also the \cn{text} command in
+\secref{text}). Its salient feature is preservation of the alignment,
+which would not happen if you simply ended the display and then started
+it up again afterwards. \cn{intertext} may only appear right after a
+\cn{\\} or \cn{\\*} command. Notice the position of the word \qq{and} in
+this example.
+\begin{align}
+A_1&=N_0(\lambda;\Omega')-\phi(\lambda;\Omega'),\\
+A_2&=\phi(\lambda;\Omega')-\phi(\lambda;\Omega),\\
+\intertext{and}
+A_3&=\mathcal{N}(\lambda;\omega).
+\end{align}
+\begin{verbatim}
+\begin{align}
+A_1&=N_0(\lambda;\Omega')-\phi(\lambda;\Omega'),\\
+A_2&=\phi(\lambda;\Omega')-\phi(\lambda;\Omega),\\
+\intertext{and}
+A_3&=\mathcal{N}(\lambda;\omega).
+\end{align}
+\end{verbatim}
+
+\section{Equation numbering}
+
+\subsection{Numbering hierarchy}
+In \latex/ if you wanted to have equations numbered within
+sections\mdash that is, have
+equation numbers (1.1), (1.2), \dots, (2.1), (2.2),
+\dots, in sections 1, 2, and so forth\mdash you could redefine
+\cn{theequation} as suggested in the \latex/ manual \cite[\S6.3, \S
+C.8.4]{lamport}:
+\begin{verbatim}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\end{verbatim}
+
+This works pretty well, except that the equation counter won't be reset
+to zero at the beginning of a new section or chapter, unless you do it
+yourself using \cn{setcounter}. To make this a little more convenient,
+the \pkg{amsmath} package provides a command\index{equation
+numbers!hierarchy} \cn{numberwithin}. To have equation numbering tied to
+section numbering, with automatic reset of the equation counter, write
+\begin{verbatim}
+\numberwithin{equation}{section}
+\end{verbatim}
+As its name implies, the \cn{numberwithin} command can be applied to
+any counter, not just the \texttt{equation} counter.
+
+\subsection{Cross references to equation numbers}
+
+To make cross-references to equations easier, an \cn{eqref}
+command\index{equation numbers!cross-references} is provided. This
+automatically supplies the parentheses around the equation number. I.e.,
+if \verb'\ref{abc}' produces 3.2 then \verb'\eqref{abc}' produces
+(3.2).
+
+\subsection{Subordinate numbering sequences}
+
+The \pkg{amsmath} package provides also a \env{subequations}
+environment\index{equation numbers!subordinate numbering} to make it
+easy to number equations in a particular group with a subordinate
+numbering scheme. For example
+\begin{verbatim}
+\begin{subequations}
+...
+\end{subequations}
+\end{verbatim}
+causes all numbered equations within that part of the document to be
+numbered (4.9a) (4.9b) (4.9c) \dots, if the preceding numbered
+equation was (4.8). A \cn{label} command immediately after
+\verb/\begin{subequations}/ will produce a \cn{ref} of the parent
+number 4.9, not 4.9a. The counters used by the subequations
+environment are \verb/parentequation/ and \verb/equation/ and
+\cn{addtocounter}, \cn{setcounter}, \cn{value}, etc., can be applied
+as usual to those counter names. To get anything other than lowercase
+letters for the subordinate numbers, use standard \latex/ methods for
+changing numbering style \cite[\S6.3, \S C.8.4]{lamport}. For example,
+redefining \cn{theequation} as follows will produce roman numerals.
+\begin{verbatim}
+\begin{subequations}
+\renewcommand{\theequation}{\theparentequation \roman{equation}}
+...
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Miscellaneous mathematical features}
+
+\section{Matrices}\label{ss:matrix}
+
+The \pkg{amsmath} package provides some environments for
+matrices\index{matrices} beyond the basic \env{array} environment of
+\latex/. The \env{pmatrix}, \env{bmatrix}, \env{Bmatrix}, \env{vmatrix}
+and \env{Vmatrix} have (respectively) $(\,)$, $[\,]$, $\lbrace\,\rbrace$,
+$\lvert\,\rvert$, and
+$\lVert\,\rVert$ delimiters built in. For naming consistency there is a
+\env{matrix} environment sans delimiters. This is not entirely redundant
+with the \env{array} environment; the matrix environments all use more
+economical horizontal spacing than the rather prodigal spacing of the
+\env{array} environment. Also, unlike the \env{array} environment, you
+don't have to give column specifications for any of the matrix
+environments; by default you can have up to 10 centered columns.%
+\footnote{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+More precisely: The maximum number of columns in a matrix is determined
+by the counter |MaxMatrixCols| (normal value = 10), which you can change
+if necessary using \latex/'s \cn{setcounter} or \cn{addtocounter}
+commands.%
+}\space%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(If you need left or right alignment in a column or other special
+formats you must resort to \env{array}.)
+
+To produce a small matrix suitable for use in text, there is a
+\env{smallmatrix} environment (e.g.,
+\begin{math}
+\bigl( \begin{smallmatrix}
+  a&b\\ c&d
+\end{smallmatrix} \bigr)
+\end{math})
+that comes closer to fitting within a single text line than a normal
+matrix. Delimiters must be provided; there are no |p|,|b|,|B|,|v|,|V|
+versions of \env{smallmatrix}. The above example was produced by
+\begin{verbatim}
+\bigl( \begin{smallmatrix}
+  a&b\\ c&d
+\end{smallmatrix} \bigr)
+\end{verbatim}
+
+\cn{hdotsfor}|{|\<number>|}| produces a row of dots in a
+matrix\index{matrices!ellipsis dots}\index{ellipsis dots!in
+matrices}\index{dots|see{ellipsis dots}} spanning the given number of
+columns. For example,
+\begin{center}
+\begin{minipage}{.3\columnwidth}
+\noindent$\begin{matrix} a&b&c&d\\
+e&\hdotsfor{3} \end{matrix}$
+\end{minipage}%
+\qquad
+\begin{minipage}{.45\columnwidth}
+\begin{verbatim}
+\begin{matrix} a&b&c&d\\
+e&\hdotsfor{3} \end{matrix}
+\end{verbatim}
+\end{minipage}%
+\end{center}
+
+The spacing of the dots can be varied through use of a square-bracket
+option, for example, |\hdotsfor[1.5]{3}|.  The number in square brackets
+will be used as a multiplier (i.e., the normal value is 1.0).
+\begin{equation}\label{eq:D}
+\begin{pmatrix} D_1t&-a_{12}t_2&\dots&-a_{1n}t_n\\
+-a_{21}t_1&D_2t&\dots&-a_{2n}t_n\\
+\hdotsfor[2]{4}\\
+-a_{n1}t_1&-a_{n2}t_2&\dots&D_nt\end{pmatrix},
+\end{equation}
+\begin{verbatim}
+\begin{pmatrix} D_1t&-a_{12}t_2&\dots&-a_{1n}t_n\\
+-a_{21}t_1&D_2t&\dots&-a_{2n}t_n\\
+\hdotsfor[2]{4}\\
+-a_{n1}t_1&-a_{n2}t_2&\dots&D_nt\end{pmatrix}
+\end{verbatim}
+
+\section{Math spacing commands}
+
+The \pkg{amsmath} package slightly extends the set of math
+spacing\index{horizontal space!in math mode} commands, as shown below.
+Both the spelled-out and abbreviated forms of these commands are robust,
+and they can also be used outside of math.
+\begin{ctab}{lll|lll}
+Abbrev.& Spelled out& Example & Abbrev.& Spelled out& Example\\
+\hline
+\vstrut{2.5ex}
+& no space& \spx{}& & no space & \spx{}\\
+\cn{\,}& \cn{thinspace}& \spx{\,}&
+  \cnbang& \cn{negthinspace}& \spx{\!}\\
+\cn{\:}& \cn{medspace}& \spx{\:}&
+  & \cn{negmedspace}& \spx{\negmedspace}\\
+\cn{\;}& \cn{thickspace}& \spx{\;}&
+  & \cn{negthickspace}& \spx{\negthickspace}\\
+& \cn{quad}& \spx{\quad}\\
+& \cn{qquad}& \spx{\qquad}
+\end{ctab}
+For the greatest possible control over math spacing, use \cn{mspace}
+and `math units'. One math unit, or |mu|, is equal to 1/18 em. Thus to
+get a negative \cn{quad} you could write |\mspace{-18.0mu}|.
+
+\section{Dots}
+
+For preferred placement of ellipsis dots (raised or on-line) in various
+contexts there is no general consensus. It may therefore be considered a
+matter of taste. By using the semantically oriented commands
+\begin{itemize}
+\item \cn{dotsc} for \qq{dots with commas}
+\item \cn{dotsb} for \qq{dots with binary operators/relations}
+\item \cn{dotsm} for \qq{multiplication dots}
+\item \cn{dotsi} for \qq{dots with integrals}
+\item \cn{dotso} for \qq{other dots} (none of the above)
+\end{itemize}
+instead of \cn{ldots} and \cn{cdots}, you make it possible for your
+document to be adapted to different conventions on the fly, in case (for
+example) you have to submit it to a publisher who insists on following
+house tradition in this respect. The default treatment for the various
+kinds follows American Mathematical Society conventions:
+\begin{center}
+\begin{tabular}{@{}l@{}l@{}}
+\begin{minipage}[t]{.54\textwidth}
+\begin{verbatim}
+Then we have the series $A_1, A_2,
+\dotsc$, the regional sum $A_1
++A_2 +\dotsb $, the orthogonal
+product $A_1 A_2 \dotsm $, and
+the infinite integral
+\[\int_{A_1}\int_{A_2}\dotsi\].
+\end{verbatim}
+\end{minipage}
+&
+\begin{minipage}[t]{.45\textwidth}
+\noindent
+Then we have the series $A_1,A_2,\dotsc$,
+the regional sum $A_1+A_2+\dotsb$,
+the orthogonal product $A_1A_2\dotsm$,
+and the infinite integral
+\[\int_{A_1}\int_{A_2}\dotsi.\]
+\end{minipage}
+\end{tabular}
+\end{center}
+
+\section{Nonbreaking dashes}
+
+A command \cn{nobreakdash} is provided to suppress the possibility
+of a linebreak after the following hyphen or dash. For example, if you
+write `pages 1\ndash 9' as |pages 1\nobreakdash--9| then a linebreak will
+never occur between the dash and the 9. You can also use
+\cn{nobreakdash} to prevent undesirable hyphenations in combinations
+like |$p$-adic|. For frequent use, it's advisable to make abbreviations,
+e.g.,
+\begin{verbatim}
+\newcommand{\p}{$p$\nobreakdash}% for "\p-adic"
+\newcommand{\Ndash}{\nobreakdash--}% for "pages 1\Ndash 9"
+%    For "\n dimensional" ("n-dimensional"):
+\newcommand{\n}[1]{$n$\nobreakdash-\hspace{0pt}}
+\end{verbatim}
+The last example shows how to prohibit a linebreak after the hyphen but
+allow normal hyphenation in the following word. (It suffices to add a
+zero-width space after the hyphen.)
+
+\section{Accents in math}
+
+In ordinary \LaTeX{} the placement of the second accent in doubled math
+accents is often poor. With the \pkg{amsmath} package you
+will get improved placement of the second accent:
+$\hat{\hat{A}}$ (\cn{hat}|{\hat{A}}|).
+
+The commands \cn{dddot} and \cn{ddddot} are available to produce triple
+and quadruple dot accents in addition to the \cn{dot} and \cn{ddot}
+accents already available in \latex/.
+
+To get a superscripted hat or tilde character, load the \pkg{amsxtra}
+package and use \cn{sphat} or \cn{sptilde}. Usage is \verb'A\sphat'
+(note the absence of the \verb'^' character).
+
+To place an arbitrary symbol in math accent position, or to get under
+accents, see the \pkg{accents} package by Javier Bezos.
+
+\section{Roots}
+
+In ordinary \latex/ the placement of root indices is sometimes not so
+good: $\sqrt[\beta]{k}$ (|\sqrt||[\beta]{k}|).  In the
+\pkg{amsmath} package \cn{leftroot} and \cn{uproot} allow you to adjust
+the position of the root:
+\begin{verbatim}
+  \sqrt[\leftroot{-2}\uproot{2}\beta]{k}
+\end{verbatim}
+will move the beta up and to the right:
+$\sqrt[\leftroot{-2}\uproot{2}\beta]{k}$. The negative argument used
+with \cn{leftroot} moves the $\beta$ to the right. The units are a small
+amount that is a useful size for such adjustments.
+
+\section{Boxed formulas}
+
+The command \cn{boxed} puts a box around its
+argument, like \cn{fbox} except that the contents are in math mode:
+\begin{equation}
+\boxed{\eta \leq C(\delta(\eta) +\Lambda_M(0,\delta))}
+\end{equation}
+\begin{verbatim}
+  \boxed{\eta \leq C(\delta(\eta) +\Lambda_M(0,\delta))}
+\end{verbatim}
+
+\section{Over and under arrows}
+
+Basic \latex/ provides \cn{overrightarrow} and \cn{overleftarrow}
+commands. Some additional over and under arrow commands are provided
+by the \pkg{amsmath} package to extend the set:
+
+\begin{tabbing}
+\qquad\=\ncn{overleftrightarrow}\qquad\=\kill
+\> \cn{overleftarrow}    \> \cn{underleftarrow} \+\\
+   \cn{overrightarrow}    \> \cn{underrightarrow} \\
+   \cn{overleftrightarrow}\> \cn{underleftrightarrow}
+\end{tabbing}
+
+\section{Extensible arrows}
+
+\cn{xleftarrow} and \cn{xrightarrow} produce
+arrows\index{arrows!extensible} that extend automatically to accommodate
+unusually wide subscripts or superscripts. These commands take one
+optional argument (the subscript) and one mandatory argument (the
+superscript, possibly empty):
+\begin{equation}
+A\xleftarrow{n+\mu-1}B \xrightarrow[T]{n\pm i-1}C
+\end{equation}
+\begin{verbatim}
+  \xleftarrow{n+\mu-1}\quad \xrightarrow[T]{n\pm i-1}
+\end{verbatim}
+
+\section{Affixing symbols to other symbols}
+
+\latex/ provides \cn{stackrel} for placing a
+superscript\index{subscripts and superscripts} above a binary relation.
+In the \pkg{amsmath} package there are somewhat more general commands,
+\cn{overset} and \cn{underset}, that can be used to place one symbol
+above or below another symbol, whether it's a relation or something
+else. The input |\overset{*}{X}| will place a superscript-size $*$ above
+the $X$: $\overset{*}{X}$; \cn{underset} is the analog for adding a
+symbol underneath.
+
+See also the description of \cn{sideset} in \secref{sideset}.
+
+\section{Fractions and related constructions}
+
+\subsection{The \cn{frac}, \cn{dfrac}, and \cn{tfrac} commands}
+
+The \cn{frac} command, which is in the basic command set of
+\latex/,\index{fractions} takes two arguments\mdash numerator and
+denominator\mdash and typesets them in normal fraction form. The
+\pkg{amsmath} package provides also \cn{dfrac} and \cn{tfrac} as
+convenient abbreviations for |{\displaystyle\frac| |...| |}|
+and\indexcs{textstyle}\relax
+\indexcs{displaystyle} |{\textstyle\frac| |...| |}|.
+\begin{equation}
+\frac{1}{k}\log_2 c(f)\quad\tfrac{1}{k}\log_2 c(f)\quad
+\sqrt{\frac{1}{k}\log_2 c(f)}\quad\sqrt{\dfrac{1}{k}\log_2 c(f)}
+\end{equation}
+\begin{verbatim}
+\begin{equation}
+\frac{1}{k}\log_2 c(f)\;\tfrac{1}{k}\log_2 c(f)\;
+\sqrt{\frac{1}{k}\log_2 c(f)}\;\sqrt{\dfrac{1}{k}\log_2 c(f)}
+\end{equation}
+\end{verbatim}
+
+\subsection{The \cn{binom}, \cn{dbinom}, and \cn{tbinom} commands}
+
+For binomial expressions\index{binomials} such as $\binom{n}{k}$
+\pkg{amsmath} has \cn{binom}, \cn{dbinom} and \cn{tbinom}:
+\begin{equation}
+2^k-\binom{k}{1}2^{k-1}+\binom{k}{2}2^{k-2}
+\end{equation}
+\begin{verbatim}
+2^k-\binom{k}{1}2^{k-1}+\binom{k}{2}2^{k-2}
+\end{verbatim}
+
+\subsection{The \cn{genfrac} command}
+
+The capabilities of \cn{frac}, \cn{binom}, and their variants are
+subsumed by a generalized fraction command \cn{genfrac} with six
+arguments. The last two correspond to \cn{frac}'s numerator and
+denominator; the first two are optional delimiters (as seen in
+\cn{binom}); the third is a line thickness override (\cn{binom} uses
+this to set the fraction line thickness to 0\mdash i.e., invisible); and
+the fourth argument is a mathstyle override: integer values 0\ndash 3 select
+respectively \cn{displaystyle}, \cn{textstyle}, \cn{scriptstyle}, and
+\cn{scriptscriptstyle}. If the third argument is left empty, the line
+thickness defaults to `normal'.
+
+\begin{center}\begin{minipage}{.85\columnwidth}
+\raggedright \normalfont\ttfamily \exhyphenpenalty10000
+\newcommand{\ma}[1]{%
+  \string{{\normalfont\itshape#1}\string}\penalty9999 \ignorespaces}
+\string\genfrac \ma{left-delim} \ma{right-delim} \ma{thickness}
+\ma{mathstyle} \ma{numerator} \ma{denominator}
+\end{minipage}\end{center}
+To illustrate, here is how \cn{frac}, \cn{tfrac}, and
+\cn{binom} might be defined.
+\begin{verbatim}
+\newcommand{\frac}[2]{\genfrac{}{}{}{}{#1}{#2}}
+\newcommand{\tfrac}[2]{\genfrac{}{}{}{1}{#1}{#2}}
+\newcommand{\binom}[2]{\genfrac{(}{)}{0pt}{}{#1}{#2}}
+\end{verbatim}
+If you find yourself repeatedly using \cn{genfrac} throughout a document
+for a particular notation, you will do yourself a favor (and your
+publisher) if you define a meaningfully-named abbreviation for that
+notation, along the lines of \cn{frac} and \cn{binom}.
+
+The primitive generalized fraction commands \cs{over}, \cs{overwithdelims},
+\cs{atop}, \cs{atopwithdelims}, \cs{above}, \cs{abovewithdelims} produce
+warning  messages if used with the \pkg{amsmath} package, for reasons
+discussed in \fn{technote.tex}.
+
+\section{Continued fractions}
+
+The continued fraction\index{continued fractions}
+\begin{equation}
+\cfrac{1}{\sqrt{2}+
+ \cfrac{1}{\sqrt{2}+
+  \cfrac{1}{\sqrt{2}+\cdots
+}}}
+\end{equation}
+can be obtained by typing
+{\samepage
+\begin{verbatim}
+\cfrac{1}{\sqrt{2}+
+ \cfrac{1}{\sqrt{2}+
+  \cfrac{1}{\sqrt{2}+\dotsb
+}}}
+\end{verbatim}
+}% End of \samepage
+This produces better-looking results than straightforward use of
+\cn{frac}. Left or right placement of any of the numerators is
+accomplished by using \cn{cfrac}|[l]| or \cn{cfrac}|[r]| instead of
+\cn{cfrac}.
+
+\section{Smash options}
+
+The command \cn{smash} is used to typeset a subformula with an effective height and depth of zero, which is sometimes
+useful in adjusting the subformula's position with respect to adjacent
+symbols. With the \pkg{amsmath} package \cn{smash} has optional
+arguments |t| and |b|, because occasionally it is advantageous to be
+able to \qq{smash} only the top or only the bottom of something while
+retaining the natural depth or height. For example, when adjacent
+radical symbols are unevenly sized or positioned because of differences
+in the height and depth of their contents, \cn{smash} can be employed to
+make them more consistent. Compare
+$\sqrt{x}+\sqrt{y}+\sqrt{z}$ and $\sqrt{x}+\sqrt{\smash[b]{y}}+\sqrt{z}$,
+where the latter was produced by
+\verb"$\sqrt{x}" \verb"+"
+\verb"\sqrt{"\5\verb"\smash[b]{y}}" \verb"+" \verb"\sqrt{z}$".
+
+\section{Delimiters}
+
+\subsection{Delimiter sizes}\label{bigdel}
+
+The automatic delimiter sizing done by \cn{left} and \cn{right} has two
+limitations: First, it is applied mechanically to produce delimiters
+large enough to encompass the largest contained item, and second, the
+range of sizes is not even approximately continuous but has fairly large
+quantum jumps. This means that a math fragment that is infinitesimally
+too large for a given delimiter size will get the next larger size, a
+jump of 3pt or so in normal-sized text. There are two or three
+situations where the delimiter size is commonly adjusted, using a set of
+commands that have `big' in their names.
+\begin{ctab}{l|llllll}
+Delimiter&
+  text& \ncn{left}& \ncn{bigl}& \ncn{Bigl}& \ncn{biggl}& \ncn{Biggl}\\
+size&
+  size& \ncn{right}& \ncn{bigr}& \ncn{Bigr}& \ncn{biggr}& \ncn{Biggr}\\
+\hline
+Result\vstrut{5ex}&
+  $\displaystyle(b)(\frac{c}{d})$&
+  $\displaystyle\left(b\right)\left(\frac{c}{d}\right)$&
+  $\displaystyle\bigl(b\bigr)\bigl(\frac{c}{d}\bigr)$&
+  $\displaystyle\Bigl(b\Bigr)\Bigl(\frac{c}{d}\Bigr)$&
+  $\displaystyle\biggl(b\biggr)\biggl(\frac{c}{d}\biggr)$&
+  $\displaystyle\Biggl(b\Biggr)\Biggl(\frac{c}{d}\Biggr)$
+\end{ctab}
+The first kind of situation is a cumulative operator with limits above
+and below. With \cn{left} and \cn{right} the delimiters usually turn out
+larger than necessary, and using the |Big| or |bigg|
+sizes\index{big@\cn{big}, \cn{Big}, \cn{bigg}, \dots\ delimiters}
+instead gives better results:
+\begin{equation*}
+\left[\sum_i a_i\left\lvert\sum_j x_{ij}\right\rvert^p\right]^{1/p}
+\quad\text{versus}\quad
+\biggl[\sum_i a_i\Bigl\lvert\sum_j x_{ij}\Bigr\rvert^p\biggr]^{1/p}
+\end{equation*}
+\begin{verbatim}
+\biggl[\sum_i a_i\Bigl\lvert\sum_j x_{ij}\Bigr\rvert^p\biggr]^{1/p}
+\end{verbatim}
+The second kind of situation is clustered pairs of delimiters where
+\cn{left} and \cn{right} make them all the same size (because that is
+adequate to cover the encompassed material) but what you really want
+is to make some of the delimiters slightly larger to make the nesting
+easier to see.
+\begin{equation*}
+\left((a_1 b_1) - (a_2 b_2)\right)
+\left((a_2 b_1) + (a_1 b_2)\right)
+\quad\text{versus}\quad
+\bigl((a_1 b_1) - (a_2 b_2)\bigr)
+\bigl((a_2 b_1) + (a_1 b_2)\bigr)
+\end{equation*}
+\begin{verbatim}
+\left((a_1 b_1) - (a_2 b_2)\right)
+\left((a_2 b_1) + (a_1 b_2)\right)
+\quad\text{versus}\quad
+\bigl((a_1 b_1) - (a_2 b_2)\bigr)
+\bigl((a_2 b_1) + (a_1 b_2)\bigr)
+\end{verbatim}
+The third kind of situation is a slightly oversize object in running
+text, such as $\left\lvert\frac{b'}{d'}\right\rvert$ where the
+delimiters produced by \cn{left} and \cn{right} cause too much line
+spreading. In that case \ncn{bigl} and \ncn{bigr}\index{big@\cn{big},
+\cn{Big}, \cn{bigg}, \dots\ delimiters} can be used to produce
+delimiters that are slightly larger than the base size but still able to
+fit within the normal line spacing:
+$\bigl\lvert\frac{b'}{d'}\bigr\rvert$.
+
+In ordinary \latex/ \ncn{big}, \ncn{bigg}, \ncn{Big}, and \ncn{Bigg}
+delimiters aren't scaled properly over the full range of \latex/ font
+sizes.  With the \pkg{amsmath} package they are.
+
+\subsection{Vertical bar notations}
+
+The \pkg{amsmath} package provides commands \cn{lvert}, \cn{rvert},
+\cn{lVert}, \cn{rVert} (compare \cn{langle}, \cn{rangle}) to address the
+problem of overloading for the vert bar character \qc{\|}. This
+character is currently used in \latex/ documents to represent a wide
+variety of mathematical objects: the `divides' relation in a
+number-theory expression like $p\vert q$, or the absolute-value
+operation $\lvert z\rvert$, or the `such that' condition in set
+notation, or the `evaluated at' notation $f_\zeta(t)\bigr\rvert_{t=0}$.
+The multiplicity of uses in itself is not so bad; what is bad, however,
+is that fact that not all of the uses take the same typographical
+treatment, and that the complex discriminatory powers of a knowledgeable
+reader cannot be replicated in computer processing of mathematical
+documents. It is recommended therefore that there should be a one-to-one
+correspondence in any given document between the vert bar character
+\qc{\|} and a selected mathematical notation, and similarly for the
+double-bar command \ncn{\|}\index{"|@\verb"*+"\"|+}. This immediately
+rules out the use of \qc{|}
+and \ncn{\|}\index{"|@\verb"*+"\"|+} for delimiters, because left and right
+delimiters are distinct usages that do not relate in the same way to
+adjacent symbols; recommended practice is therefore to define suitable
+commands in the document preamble for any paired-delimiter use of vert
+bar symbols:
+\begin{verbatim}
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\end{verbatim}
+whereupon the document would contain |\abs{z}| to produce $\lvert
+z\rvert$ and |\norm{v}| to produce $\lVert v\rVert$.
+
+\chapter{Operator names}
+
+\section{Defining new operator names}\label{s:opname}
+
+Math functions\index{operator names}\relax \index{function
+names|see{operator names}} such as $\log$, $\sin$, and $\lim$ are
+traditionally typeset in roman type to make them visually more distinct
+from one-letter math variables, which are set in math italic. The more
+common ones have predefined names, \cn{log}, \cn{sin}, \cn{lim}, and so
+forth, but new ones come up all the time in mathematical papers, so the
+\pkg{amsmath} package provides a general mechanism for defining new
+`operator names'. To define a math function \ncn{xxx} to work like
+\cn{sin}, you write
+\begin{verbatim}
+\DeclareMathOperator{\xxx}{xxx}
+\end{verbatim}
+whereupon ensuing uses of \ncn{xxx} will produce {\upshape xxx} in the
+proper font and automatically add proper spacing\index{horizontal
+space!around operator names} on either side when necessary, so that you
+get $A\xxx B$ instead of $A\mathrm{xxx}B$. In the second argument of
+\cn{DeclareMathOperator} (the name text), a pseudo-text mode prevails:
+the hyphen character \qc{\-} will print as a text hyphen rather than a
+minus sign and an asterisk \qc{\*} will print as a raised text asterisk
+instead of a centered math star. (Compare
+\textit{a}-\textit{b}*\textit{c} and $a-b*c$.) But otherwise the name
+text is printed in math mode, so that you can use, e.g., subscripts and
+superscripts there.
+
+If the new operator should have subscripts and superscripts placed in
+`limits' position above and below as with $\lim$, $\sup$, or $\max$, use
+the \qc{\*} form of the \cn{DeclareMathOperator} command:
+\begin{verbatim}
+\DeclareMathOperator*{\Lim}{Lim}
+\end{verbatim}
+See also the discussion of subscript placement in
+Section~\ref{subplace}.
+
+The following operator names are predefined:
+\begin{ctab}{rlrlrlrl}
+\cn{arccos}& $\arccos$ &\cn{deg}& $\deg$ &      \cn{lg}& $\lg$ &        \cn{projlim}& $\projlim$\\
+\cn{arcsin}& $\arcsin$ &\cn{det}& $\det$ &      \cn{lim}& $\lim$ &      \cn{sec}& $\sec$\\
+\cn{arctan}& $\arctan$ &\cn{dim}& $\dim$ &      \cn{liminf}& $\liminf$ &\cn{sin}& $\sin$\\
+\cn{arg}& $\arg$ &      \cn{exp}& $\exp$ &      \cn{limsup}& $\limsup$ &\cn{sinh}& $\sinh$\\
+\cn{cos}& $\cos$ &      \cn{gcd}& $\gcd$ &      \cn{ln}& $\ln$ &        \cn{sup}& $\sup$\\
+\cn{cosh}& $\cosh$ &    \cn{hom}& $\hom$ &      \cn{log}& $\log$ &      \cn{tan}& $\tan$\\
+\cn{cot}& $\cot$ &      \cn{inf}& $\inf$ &      \cn{max}& $\max$ &      \cn{tanh}& $\tanh$\\
+\cn{coth}& $\coth$ &    \cn{injlim}& $\injlim$ &\cn{min}& $\min$\\
+\cn{csc}& $\csc$ &      \cn{ker}& $\ker$ &      \cn{Pr}& $\Pr$
+\end{ctab}
+\begin{ctab}{rlrl}
+\cn{varlimsup}&  $\displaystyle\varlimsup$&
+  \cn{varinjlim}&  $\displaystyle\varinjlim$\\
+\cn{varliminf}&  $\displaystyle\varliminf$&
+  \cn{varprojlim}& $\displaystyle\varprojlim$
+\end{ctab}
+
+There is also a command \cn{operatorname} such that using
+\begin{verbatim}
+\operatorname{abc}
+\end{verbatim}
+in a math formula is equivalent to a use of \ncn{abc} defined by
+\cn{DeclareMathOperator}. This may be occasionally useful for
+constructing more complex notation or other purposes. (Use the variant
+\cn{operatorname*} to get limits.)
+
+\section{\cn{mod} and its relatives}
+
+Commands \cn{mod}, \cn{bmod}, \cn{pmod}, \cn{pod} are provided to deal
+with the special spacing conventions of \qq{mod} notation. \cn{bmod} and
+\cn{pmod} are available in \latex/, but with the \pkg{amsmath} package
+the spacing of \cn{pmod} will adjust to a smaller value if it's used in
+a non-display-mode formula. \cn{mod} and \cn{pod} are variants of
+\cn{pmod} preferred by some authors; \cn{mod} omits the parentheses,
+whereas \cn{pod} omits the \qq{mod} and retains the parentheses.
+\begin{equation}
+\gcd(n,m\bmod n);\quad x\equiv y\pmod b;
+\quad x\equiv y\mod c;\quad x\equiv y\pod d
+\end{equation}
+\begin{verbatim}
+\gcd(n,m\bmod n);\quad x\equiv y\pmod b;
+\quad x\equiv y\mod c;\quad x\equiv y\pod d
+\end{verbatim}
+
+\chapter{The \cn{text} command}\label{text}
+
+The main use of the command \cn{text} is for words or
+phrases\index{text fragments inside math} in a display. It is very
+similar to the \latex/ command \cn{mbox} in its effects, but has a
+couple of advantages. If you want a word or phrase of text in a
+subscript, you can type |..._{\text{word or phrase}}|, which is slightly
+easier than the \cn{mbox} equivalent: |..._{\mbox{\scriptsize| |word|
+|or| |phrase}}|. The other advantage is the more descriptive name.
+\begin{equation}
+f_{[x_{i-1},x_i]} \text{ is monotonic,}
+\quad i = 1,\dots,c+1
+\end{equation}
+\begin{verbatim}
+f_{[x_{i-1},x_i]} \text{ is monotonic,}
+\quad i = 1,\dots,c+1
+\end{verbatim}
+
+\chapter{Integrals and sums}
+
+\section{Multiline subscripts and superscripts}
+
+The \cn{substack} command can be used to produce a multiline subscript
+or superscript:\index{subscripts and superscripts!multi-line}\relax
+\index{superscripts|see{subscripts and superscripts}} for example
+\begin{ctab}{ll}
+\begin{minipage}[t]{.6\columnwidth}
+\begin{verbatim}
+\sum_{\substack{
+         0\le i\le m\\
+         0<j<n}}
+  P(i,j)
+\end{verbatim}
+\end{minipage}
+&
+$\displaystyle
+\sum_{\substack{0\le i\le m\\ 0<j<n}} P(i,j)$
+\end{ctab}
+A slightly more generalized form is the \env{subarray} environment which
+allows you to specify that each line should be left-aligned instead of
+centered, as here:
+\begin{ctab}{ll}
+\begin{minipage}[t]{.6\columnwidth}
+\begin{verbatim}
+\sum_{\begin{subarray}{l}
+        i\in\Lambda\\ 0<j<n
+      \end{subarray}}
+ P(i,j)
+\end{verbatim}
+\end{minipage}
+&
+$\displaystyle
+  \sum_{\begin{subarray}{l}
+        i\in \Lambda\\ 0<j<n
+      \end{subarray}}
+ P(i,j)$
+\end{ctab}
+
+\section{The \cn{sideset} command}\label{sideset}
+
+There's also a command called \cn{sideset}, for a rather special
+purpose: putting symbols at the subscript and
+superscript\index{subscripts and superscripts!on sums} corners of a
+large operator symbol such as $\sum$ or $\prod$. \emph{Note: this
+command is not designed to be applied to anything other than sum-class symbols.} The prime
+example is the case when you want to put a prime on a sum symbol. If
+there are no limits above or below the sum, you could just use
+\cn{nolimits}: here's
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+|\sum\nolimits' E_n| in display mode:
+\begin{equation}
+\sum\nolimits' E_n
+\end{equation}
+If, however, you want not only the prime but also something below or
+above the sum symbol, it's not so easy\mdash indeed, without
+\cn{sideset}, it would be downright difficult. With \cn{sideset}, you
+can write
+\begin{ctab}{ll}
+\begin{minipage}[t]{.6\columnwidth}
+\begin{verbatim}
+\sideset{}{'}
+  \sum_{n<k,\;\text{$n$ odd}} nE_n
+\end{verbatim}
+\end{minipage}
+&$\displaystyle
+\sideset{}{'}\sum_{n<k,\;\text{$n$ odd}} nE_n
+$
+\end{ctab}
+The extra pair of empty braces is explained by the fact that
+\cn{sideset} has the capability of putting an extra symbol or symbols at
+each corner of a large operator; to put an asterisk at each corner of a
+product symbol, you would type
+\begin{ctab}{ll}
+\begin{minipage}[t]{.6\columnwidth}
+\begin{verbatim}
+\sideset{_*^*}{_*^*}\prod
+\end{verbatim}
+\end{minipage}
+&$\displaystyle
+\sideset{_*^*}{_*^*}\prod
+$
+\end{ctab}
+
+\section{Placement of subscripts and limits}\label{subplace}
+
+The default positioning for subscripts depends on the
+base symbol involved. The default for sum-class symbols is
+`displaylimits' positioning: When a sum-class symbol appears
+in a displayed formula, subscript and superscript are placed in `limits'
+position above and below, but in an inline formula, they are placed to
+the side, to avoid unsightly and wasteful spreading of the
+surrounding text lines.
+The default for integral-class symbols is to have sub- and
+superscripts always to the side, even in displayed formulas.
+(See the discussion of the \opt{intlimits} and related options in
+Section~\ref{options}.)
+
+Operator names such as $\sin$ or $\lim$ may have either `displaylimits'
+or `limits' positioning depending on how they were defined. The standard
+operator names are defined according to normal mathematical usage.
+
+The commands \cn{limits} and \cn{nolimits} can be used to override the
+normal behavior of a base symbol:
+\begin{equation*}
+\sum\nolimits_X,\qquad \iint\limits_{A},
+\qquad\varliminf\nolimits_{n\to \infty}
+\end{equation*}
+To define a command whose subscripts follow the
+same `displaylimits' behavior as \cn{sum}, put
+\cn{displaylimits} at the tail end of the definition. When multiple
+instances of \cn{limits}, \cn{nolimits}, or \cn{displaylimits} occur
+consecutively, the last one takes precedence.
+
+\section{Multiple integral signs}
+
+\cn{iint}, \cn{iiint}, and \cn{iiiint} give multiple integral
+signs\index{integrals!multiple} with the spacing between them nicely
+adjusted, in both text and display style. \cn{idotsint} is an extension
+of the same idea that gives two integral signs with dots between them.
+\begin{gather}
+\iint\limits_A f(x,y)\,dx\,dy\qquad\iiint\limits_A
+f(x,y,z)\,dx\,dy\,dz\\
+\iiiint\limits_A
+f(w,x,y,z)\,dw\,dx\,dy\,dz\qquad\idotsint\limits_A f(x_1,\dots,x_k)
+\end{gather}
+
+\chapter{Commutative diagrams}\label{s:commdiag}
+
+Some commutative diagram commands like the ones in \amstex/ are
+available as a separate package, \pkg{amscd}. For complex commutative
+diagrams authors will need to turn to more comprehensive packages like
+\pkg{kuvio} or \xypic/, but for simple diagrams without diagonal
+arrows\index{arrows!in commutative diagrams} the \pkg{amscd} commands
+may be more convenient. Here is one example.
+\begin{equation*}
+\begin{CD}
+S^{{\mathcal{W}}_\Lambda}\otimes T   @>j>>   T\\
+@VVV                                    @VV{\End P}V\\
+(S\otimes T)/I                  @=      (Z\otimes T)/J
+\end{CD}
+\end{equation*}
+\begin{verbatim}
+\begin{CD}
+S^{{\mathcal{W}}_\Lambda}\otimes T   @>j>>   T\\
+@VVV                                    @VV{\End P}V\\
+(S\otimes T)/I                  @=      (Z\otimes T)/J
+\end{CD}
+\end{verbatim}
+In the \env{CD} environment the commands |@>>>|,
+|@<<<|, |@VVV|, and |@AAA| give respectively right, left, down, and up
+arrows. For the horizontal arrows, material between the first and second
+|>| or |<| symbols will be typeset as a superscript, and material
+between the second and third will be typeset as a subscript. Similarly,
+material between the first and second or second and third |A|s or |V|s
+of vertical arrows will be typeset as left or right \qq{sidescripts}.
+The commands |@=| and \verb'@|' give horizontal and vertical double lines.
+A \qq{null arrow} command |@.| can be used instead of a visible arrow
+to fill out an array where needed.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Using math fonts}
+
+\section{Introduction}
+
+For more comprehensive information on font use in \latex/, see the
+\latex/ font guide (\fn{fntguide.tex}) or \booktitle{The \latex/
+Companion} \cite{tlc}. The basic set of math font commands\index{math
+fonts}\relax \index{math symbols|see{math fonts}} in \latex/ includes
+\cn{mathbf}, \cn{mathrm}, \cn{mathcal}, \cn{mathsf}, \cn{mathtt},
+\cn{mathit}. Additional math alphabet commands such as
+\cn{mathbb} for blackboard bold, \cn{mathfrak} for Fraktur, and
+\cn{mathscr} for Euler script are available through the packages
+\pkg{amsfonts} and \pkg{euscript} (distributed separately).
+
+\section{Recommended use of math font commands}
+
+If you find yourself employing math font commands frequently in your
+document, you might wish that they had shorter names, such as \ncn{mb}
+instead of \cn{mathbf}. Of course, there is nothing to keep you from
+providing such abbreviations for yourself by suitable \cn{newcommand}
+statements. But for \latex/ to provide shorter names would actually be a
+disservice to authors, as that would obscure a much better alternative:
+defining custom command names derived from the names of the underlying
+mathematical objects, rather than from the names of the fonts used to
+distinguish the objects. For example, if you are using bold to indicate
+vectors, then you will be better served in the long run if you define a
+`vector' command instead of a `math-bold' command:
+\begin{verbatim}
+  \newcommand{\vect}[1]{\mathbf{#1}}
+\end{verbatim}
+you can write |\vect{a} + \vect{b}| to produce $\vect{a} +
+\vect{b}$.
+If you decide several months down the road that you want to use the bold
+font for some other purpose, and mark vectors by a small over-arrow
+instead, then you can put the change into effect merely by changing the
+definition of \ncn{vect}; otherwise you would have to replace all
+occurrences of \cn{mathbf} throughout your document, perhaps even
+needing to inspect each one to see whether it is indeed
+an instance of a vector.
+
+It can also be useful to assign distinct
+command names for different letters of a particular font:
+\begin{verbatim}
+\DeclareSymbolFont{AMSb}{U}{msb}{m}{n}% or use amsfonts package
+\DeclareMathSymbol{\C}{\mathalpha}{AMSb}{"43}
+\DeclareMathSymbol{\R}{\mathalpha}{AMSb}{"52}
+\end{verbatim}
+These statements would define the commands \cn{C} and \cn{R} to produce
+blackboard-bold letters from the `AMSb' math symbols font. If you refer
+often to the\break complex numbers or real numbers in your document, you
+might find this method more convenient than (let's say) defining a
+\ncn{field} command and writing\break |\field{C}|, |\field{R}|. But for
+maximum flexibility and control, define such a \ncn{field} command and
+then define \ncn{C} and \ncn{R} in terms of that
+command:\indexcs{mathbb}
+\begin{verbatim}
+\usepackage{amsfonts}% to get the \mathbb alphabet
+\newcommand{\field}[1]{\mathbb{#1}}
+\newcommand{\C}{\field{C}}
+\newcommand{\R}{\field{R}}
+\end{verbatim}
+
+\section{Bold math symbols}
+
+The \cn{mathbf} command is commonly used to obtain bold Latin letters in
+math, but for most other kinds of math symbols it has no effect, or its
+effects depend unreliably on the set of math fonts that are in use. For
+example, writing
+\begin{verbatim}
+\Delta \mathbf{\Delta}\mathbf{+}\delta \mathbf{\delta}
+\end{verbatim}
+produces $\Delta \mathbf{\Delta}\mathbf{+}\delta
+\mathbf{\delta}$; the \cn{mathbf} has no effect on the plus
+sign or the small delta.
+
+The \pkg{amsmath} package therefore provides two additional commands,
+\cn{boldsymbol} and \cn{pmb}, that can be applied to other kinds of math
+symbols. \cn{boldsymbol} can be used for a math symbol that remains
+unaffected by \cn{mathbf} if (and only if) your current math font set
+includes a bold version of that symbol. \cn{pmb} can be used as a last
+resort for any math symbols that do not have a true bold version
+provided by your set of math fonts; \qq{pmb} stands for \qq{poor man's
+bold} and the command works by typesetting multiple copies of the symbol
+with slight offsets. The quality of the output is inferior, especially
+for symbols that contain any hairline strokes. When the standard default set of
+\latex/ math fonts are in use (Computer Modern), the only symbols that
+are likely to require \cn{pmb} are large operator symbols like \cn{sum},
+extended delimiter symbols, or the extra math symbols provided by
+the \pkg{amssymb} package \cite{amsfonts}.
+
+The following formula shows some of the results that are possible:
+\begin{verbatim}
+A_\infty + \pi A_0
+\sim \mathbf{A}_{\boldsymbol{\infty}} \boldsymbol{+}
+  \boldsymbol{\pi} \mathbf{A}_{\boldsymbol{0}}
+\sim\pmb{A}_{\pmb{\infty}} \pmb{+}\pmb{\pi} \pmb{A}_{\pmb{0}}
+\end{verbatim}
+\begin{equation*}
+A_\infty + \pi A_0
+\sim \mathbf{A}_{\boldsymbol{\infty}} \boldsymbol{+}
+  \boldsymbol{\pi} \mathbf{A}_{\boldsymbol{0}}
+\sim\pmb{A}_{\pmb{\infty}} \pmb{+}\pmb{\pi} \pmb{A}_{\pmb{0}}
+\end{equation*}
+If you want to use only the \cn{boldsymbol} command without loading the
+whole \pkg{amsmath} package, the \pkg{bm} package is recommended (this
+is a standard \latex/ package, not an AMS package; you probably have it
+already if you have a 1997 or newer version of \latex/).
+
+\section{Italic Greek letters}
+
+For italic versions of the capital Greek letters, the following commands
+are provided:
+\begin{ctab}{rlrl}
+\cn{varGamma}& $\varGamma$& \cn{varSigma}& $\varSigma$\\
+\cn{varDelta}& $\varDelta$& \cn{varUpsilon}& $\varUpsilon$\\
+\cn{varTheta}& $\varTheta$& \cn{varPhi}& $\varPhi$\\
+\cn{varLambda}& $\varLambda$& \cn{varPsi}& $\varPsi$\\
+\cn{varXi}& $\varXi$& \cn{varOmega}& $\varOmega$\\
+\cn{varPi}& $\varPi$
+\end{ctab}
+
+\chapter{Error messages and output problems}
+
+\section{General remarks}
+
+This is a supplement to Chapter~8 of the \latex/ manual \cite{lamport} (first
+edition: Chapter~6). For the reader's convenience, the set of error
+messages discussed here overlaps somewhat with the set in that chapter,
+but please be aware that we don't provide exhaustive coverage here.
+The error messages are arranged in alphabetical order, disregarding
+unimportant text such as |! LaTeX Error:| at the beginning, and
+nonalphabetical characters such as \qc{\\}. Where examples are given, we
+show also the help messages that appear on screen when you respond to an
+error message prompt by entering |h|.
+
+There is also a section discussing some output errors, i.e., instances
+where the printed document has something wrong but there was no \latex/
+error during typesetting.
+
+\section{Error messages}
+
+\begin{error}{\begin{split} won't work here.}
+\errexa
+\begin{verbatim}
+! Package amsmath Error: \begin{split} won't work here.
+ ...
+
+l.8 \begin{split}
+
+? h
+\Did you forget a preceding \begin{equation}?
+If not, perhaps the `aligned' environment is what you want.
+?
+\end{verbatim}
+\errexpl
+The \env{split} environment does not construct a stand-alone displayed
+equation; it needs to be used within some other environment such as
+\env{equation} or \env{gather}.
+
+\end{error}
+
+\begin{error}{Extra & on this line}
+\errexa
+\begin{verbatim}
+! Package amsmath Error: Extra & on this line.
+
+See the amsmath package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+l.9 \end{alignat}
+
+? h
+\An extra & here is so disastrous that you should probably exit
+ and fix things up.
+?
+\end{verbatim}
+\errexpl
+In an \env{alignat} structure the number of alignment points per line
+is dictated by the numeric argument given after |\begin{alignat}|.
+If you use more alignment points in a line it is assumed that you
+accidentally left out a newline command \cn{\\} and the above error is
+issued.
+\end{error}
+
+\begin{error}{Improper argument for math accent}
+\errexa
+\begin{verbatim}
+! Package amsmath Error: Improper argument for math accent:
+(amsmath)                Extra braces must be added to
+(amsmath)                prevent wrong output.
+
+See the amsmath package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+l.415 \tilde k_{\lambda_j} = P_{\tilde \mathcal
+                                               {M}}
+?
+\end{verbatim}
+\errexpl
+Non-simple arguments for any \LaTeX{} command should be enclosed in
+braces. In this example extra braces are needed as follows:
+\begin{verbatim}
+... P_{\tilde{\mathcal{M}}}
+\end{verbatim}
+\end{error}
+
+\begin{error}{Font OMX/cmex/m/n/7=cmex7 not loadable ...}
+\errexa
+\begin{verbatim}
+! Font OMX/cmex/m/n/7=cmex7 not loadable: Metric (TFM) file not found.
+<to be read again>
+                   relax
+l.8 $a
+      b+b^2$
+? h
+I wasn't able to read the size data for this font,
+so I will ignore the font specification.
+[Wizards can fix TFM files using TFtoPL/PLtoTF.]
+You might try inserting a different font spec;
+e.g., type `I\font<same font id>=<substitute font name>'.
+?
+\end{verbatim}
+\errexpl
+Certain extra sizes of some Computer Modern fonts that were formerly
+available mainly through the AMSFonts\index{AMSFonts collection}
+distribution are considered part of standard \latex/ (as of June 1994):
+\fn{cmex7}\ndash \texttt{9}, \fn{cmmib5}\ndash \texttt{9}, and
+\fn{cmbsy5}\ndash \texttt{9}. If these extra sizes are missing on your
+system, you should try first to get them from the source where you
+obtained \latex/. If that fails, you could try getting the fonts from
+CTAN (e.g., in the form of Metafont\index{Metafont source files} source
+files, directory \nfn{/tex-archive/fonts/latex/mf}, or in PostScript
+Type 1 format, directory
+\nfn{/tex-archive/fonts/cm/ps-type1/bakoma}\index{BaKoMa fonts}\relax
+\index{PostScript fonts}).
+
+If the font name begins with \fn{cmex}, there is a special option
+\fn{cmex10} for the \pkg{amsmath} package that provides a temporary
+workaround. I.e., change the \cn{usepackage} to
+\begin{verbatim}
+\usepackage[cmex10]{amsmath}
+\end{verbatim}
+This will force the use of the 10-point size of the \fn{cmex} font in
+all cases. Depending on the contents of your document this may be
+adequate.
+\end{error}
+
+\begin{error}{Math formula deleted: Insufficient extension fonts}
+\errexa
+\begin{verbatim}
+! Math formula deleted: Insufficient extension fonts.
+l.8 $ab+b^2$
+
+?
+\end{verbatim}
+\errexpl
+This usually follows a previous error |Font ... not loadable|; see the
+discussion of that error (above) for solutions.
+\end{error}
+
+\begin{error}{Missing number, treated as zero}
+\errexa
+\begin{verbatim}
+! Missing number, treated as zero.
+<to be read again>
+                   a
+l.100 \end{alignat}
+
+? h
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+?
+\end{verbatim}
+\errexpl
+There are many possibilities that can lead to this error. However, one
+possibility that is relevant for the \pkg{amsmath} package is that you
+forgot to give the number argument of an \env{alignat} environment, as
+in:
+\begin{verbatim}
+\begin{alignat}
+ a&  =b&    c& =d\\
+a'& =b'&   c'& =d'
+\end{alignat}
+\end{verbatim}
+where the first line should read instead
+\begin{verbatim}
+\begin{alignat}{2}
+\end{verbatim}
+
+Another possibility is that you have a left bracket character |[|
+following a linebreak command \cn{\\} in a multiline construction such
+as \env{array}, \env{tabular}, or \env{eqnarray}. This will be
+interpreted by \latex/ as the beginning of an `additional vertical
+space' request \cite[\S C.1.6]{lamport}, even if it occurs on the following
+line and is intended to be part of the contents. For example
+\begin{verbatim}
+\begin{array}
+a+b\\
+[f,g]\\
+m+n
+\end{array}
+\end{verbatim}
+To prevent the error message in such a case, you can
+add braces as discussed in the \latex/ manual \cite[\S C.1.1]{lamport}:
+\begin{verbatim}
+\begin{array}
+a+b\\
+{[f,g]}\\
+m+n
+\end{array}
+\end{verbatim}
+
+\end{error}
+
+\begin{error}{Missing \right. inserted}
+\errexa
+\begin{verbatim}
+! Missing \right. inserted.
+<inserted text>
+                \right .
+l.10 \end{multline}
+
+? h
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+\end{verbatim}
+\errexpl
+This error typically arises when you try to insert a linebreak inside a
+\cn{left}-\cn{right} pair of delimiters in a \env{multline} or
+\env{split} environment:
+\begin{verbatim}
+\begin{multline}
+AAA\left(BBB\\
+  CCC\right)
+\end{multline}
+\end{verbatim}
+There are two possible solutions: (1)~instead of using \cn{left} and
+\cn{right}, use `big' delimiters of fixed size (\cn{bigl} \cn{bigr}
+\cn{biggl} \cn{biggr} \dots; see \secref{bigdel}); or (2)~use null
+delimiters to break up the \cn{left}-\cn{right} pair into parts for each
+line:
+\begin{verbatim}
+AAA\left(BBB\right.\\
+  \left.CCC\right)
+\end{verbatim}
+The latter solution may result in mismatched delimiter sizes;
+ensuring that they match requires using \cn{vphantom} in the line
+that has the smaller delimiter (or possibly \cn{smash} in the line that
+has the larger delimiter). In the argument of \cn{vphantom} put a copy
+of the tallest element that occurs in the other line, e.g.,
+\begin{verbatim}
+xxx \left(\int_t yyy\right.\\
+  \left.\vphantom{\int_t} zzz ... \right)
+\end{verbatim}
+\end{error}
+
+\begin{error}{Paragraph ended before \xxx was complete}
+\errexa
+\begin{verbatim}
+Runaway argument?
+
+! Paragraph ended before \multline was complete.
+<to be read again>
+                   \par
+l.100
+
+? h
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+?
+\end{verbatim}
+\errexpl
+This might be produced by a misspelling in the |\end{multline}| command,
+e.g.,
+\begin{verbatim}
+\begin{multline}
+...
+\end{multiline}
+\end{verbatim}
+or by using abbreviations for certain environments, such as |\bal| and
+|\eal| for |\begin{align}| and |\end{align}|:
+\begin{verbatim}
+\bal
+...
+\eal
+\end{verbatim}
+For technical reasons that kind of abbreviation does not work with
+the more complex displayed equation environments of the \pkg{amsmath} package
+(\env{gather}, \env{align}, \env{split}, etc.; cf.\@ \fn{technote.tex}).
+\end{error}
+
+\begin{error}{Runaway argument?}
+See the discussion for the error message
+\texttt{Paragraph ended before \ncn{xxx} was complete}.
+\end{error}
+
+\begin{error}{Unknown option `xxx' for package `yyy'}
+\errexa
+\begin{verbatim}
+! LaTeX Error: Unknown option `intlim' for package `amsmath'.
+...
+? h
+The option `intlim' was not declared in package `amsmath', perhaps you
+misspelled its name. Try typing  <return>  to proceed.
+?
+\end{verbatim}
+\errexpl
+This means that you misspelled the option name, or the package simply
+does not have an option that you expected it to have. Consult the
+documentation for the given package.
+\end{error}
+
+\begin{error}{Old form `\pmatrix' should be \begin{pmatrix}.}
+\errexa
+\begin{verbatim}
+! Package amsmath Error: Old form `\pmatrix' should be
+                         \begin{pmatrix}.
+
+See the amsmath package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+\pmatrix ->\left (\matrix@check \pmatrix
+                                         \env@matrix
+l.16 \pmatrix
+             {a&b\cr c&d\cr}
+? h
+`\pmatrix{...}' is old Plain-TeX syntax whose use is
+ill-advised in LaTeX.
+?
+\end{verbatim}
+\errexpl
+When the \pkg{amsmath} package is used, the old forms of \cn{pmatrix},
+\cn{matrix}, and \cn{cases} cannot be used any longer because of naming
+conflicts. Their syntax did not conform with standard \LaTeX{} syntax
+in any case.
+\end{error}
+
+\begin{error}{Erroneous nesting of equation structures}
+\errexa
+\begin{verbatim}
+! Package amsmath Error: Erroneous nesting of equation structures;
+(amsmath)                trying to recover with `aligned'.
+
+See the amsmath package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+l.260 \end{alignat*}
+                    \end{equation*}
+\end{verbatim}
+\errexpl
+The structures \env{align}, \env{alignat}, etc., are designed
+for top-level use and for the most part cannot be nested inside some
+other displayed equation structure. The chief exception is that
+\env{align} and most of its variants can be used inside the
+\env{gather} environment.
+\end{error}
+
+\section{Warning messages}
+
+\begin{error}{Foreign command \over [or \atop or \above]}
+\errexa
+\begin{verbatim}
+Package amsmath Warning: Foreign command \over; \frac or \genfrac
+(amsmath)                should be used instead.
+\end{verbatim}
+\errexpl The primitive generalized fraction commands of \tex/\mdash
+\cs{over}, \cs{atop}, \cs{above}\mdash are deprecated when the
+\pkg{amsmath} package is used because their syntax is foreign to \latex/
+and \pkg{amsmath} provides native \latex/ equivalents. See
+\fn{technote.tex} for further information.
+\end{error}
+
+\begin{error}{Cannot use `split' here}
+\errexa
+\begin{verbatim}
+Package amsmath Warning: Cannot use `split' here;
+(amsmath)                trying to recover with `aligned'
+\end{verbatim}
+\errexpl The \env{split} environment is designed to serve as the entire
+body of an equation, or an entire line of an \env{align} or \env{gather}
+environment. There cannot be any printed material before or
+after it within the same enclosing structure:
+\begin{verbatim}
+\begin{equation}
+\left\{ % <-- Not allowed
+\begin{split}
+...
+\end{split}
+\right. % <-- Not allowed
+\end{equation}
+\end{verbatim}
+\end{error}
+
+\section{Wrong output}
+
+\subsection{Section numbers 0.1, 5.1, 8.1 instead of 1, 2, 3}
+\label{numinverse}
+
+This most likely means that you have the arguments for \cn{numberwithin}
+in reverse order:
+\begin{verbatim}
+\numberwithin{section}{equation}
+\end{verbatim}
+That means `print the section number as \textit{equation
+number}.\textit{section number} and reset to 1 every time an equation
+occurs' when what you probably wanted was the inverse
+\begin{verbatim}
+\numberwithin{equation}{section}
+\end{verbatim}
+
+\subsection{The \cn{numberwithin} command had no effect on equation
+numbers}
+
+Are you looking at the first section in your document? Check the section
+numbers elsewhere to see if the problem is the one described in
+\secref{numinverse}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Additional information}
+
+\section{Converting existing documents}
+
+\subsection{Converting from plain \LaTeX{}}
+
+A \LaTeX{} document will typically continue to work the same in most
+respects if \verb'\usepackage{amsmath}' is added in the document
+preamble. By default, however, the \pkg{amsmath} package suppresses page
+breaks inside multiple-line displayed equation structures such as
+\env{eqnarray}, \env{align}, and \env{gather}. To continue allowing page
+breaks inside \env{eqnarray} after switching to \pkg{amsmath}, you will
+need to add the following line in your document preamble:
+\begin{verbatim}
+\allowdisplaybreaks[1]
+\end{verbatim}
+To ensure normal spacing around relation symbols, you might also want to
+change \env{eqnarray} to \env{align}, \env{multline}, or
+\env{equation}\slash\env{split} as appropriate.
+
+Most of the other differences in \pkg{amsmath} usage can be considered
+optional refinements, e.g., using
+\begin{verbatim}
+\DeclareMathOperator{\Hom}{Hom}
+\end{verbatim}
+instead of \verb'\newcommand{\Hom}{\mbox{Hom}}'.
+
+\subsection{Converting from \amslatex/ 1.1}
+See \fn{diffs-m.txt}.
+
+\section{Technical notes}
+The file \fn{technote.tex} contains some remarks on miscellaneous
+technical questions that are less likely to be of general interest.
+
+\section{Getting help}
+
+Questions or comments regarding \pkg{amsmath} and related packages
+should be sent to:
+\begin{infoaddress}
+American Mathematical Society\\
+Technical Support\\
+Electronic Products and Services\\
+P. O. Box 6248\\
+Providence, RI 02940\\[3pt]
+Phone: 800-321-4AMS (321-4267) \quad or \quad 401-455-4080\\
+Internet: \mail{tech-support@ams.org}
+\end{infoaddress}
+If you are reporting a problem you should include
+the following information to make proper investigation possible:
+\begin{enumerate}
+\item The source file where the problem occurred, preferably reduced
+  to minimum size by removing any material that can be removed without
+  affecting the observed problem.
+\item A \latex/ log file showing the error message (if applicable) and
+  the version numbers of the document class and option files being used.
+\end{enumerate}
+
+\section{Of possible interest}\label{a:possible-interest}
+Information about obtaining AMSFonts or other \tex/-related
+software from the AMS Internet archive \fn{e-math.ams.org}
+can be obtained by sending a request through electronic mail to:
+\mail{webmaster@ams.org}.
+
+Information about obtaining the \pkg{amsmath} distribution on diskette
+from the AMS is available from:
+\begin{infoaddress}
+American Mathematical Society\\
+Customer Services\\
+P. O. Box 6248\\
+Providence, RI 02940\\[3pt]
+Phone: 800-321-4AMS (321-4267) \quad or \quad 401-455-4000\\
+Internet: \mail{cust-serv@ams.org}
+\end{infoaddress}
+
+The \tex/ Users Group\index{TeX Users@\tex/ Users Group} is a nonprofit
+organization that publishes a journal
+(\journalname{TUGboat}\index{TUGboat@\journalname{TUGboat}}), holds
+meetings, and serves as a clearing-house of general information about
+\tex/ and \tex/-related software.
+\begin{infoaddress}
+\tex/ Users Group\\
+PO Box 2311\\
+Portland, OR 97208-2311\\
+USA\\[3pt]
+Phone: +1-503-223-9994\\
+Email: \mail{office@tug.org}
+\end{infoaddress}
+Membership in the \tex/ Users Group is a good way to support continued
+development of free \tex/-related software. There are also many local
+\tex/ user groups in other countries; information about contacting a
+local user group can be gotten from the \tex/ Users Group.
+
+There is a Usenet newsgroup called \fn{comp.text.tex} that is a fairly
+good source of information about \latex/ and \tex/ in general. If you
+don't know about reading newsgroups, check with your local system
+administrator to see if newsgroup service is available at your site.
+
+\begin{thebibliography}{9}
+\addcontentsline{toc}{chapter}{Bibliography}
+
+\bibitem{amsfonts}\booktitle{AMSFonts version \textup{2.2}\mdash user's guide},
+Amer. Math. Soc., Providence, RI, 1994; distributed
+with the AMSFonts package.
+
+\bibitem{instr-l}\booktitle{Instructions for preparation of
+papers and monographs\mdash \amslatex/},
+Amer. Math. Soc., Providence, RI, 1996, 1999.
+
+\bibitem{amsthdoc}\booktitle{Using the \pkg{amsthm} Package},
+Amer. Math. Soc., Providence, RI, 1999.
+
+\bibitem{tlc} Michel Goossens, Frank Mittelbach, and Alexander Samarin,
+\booktitle{The \latex/ companion}, Addison-Wesley, Reading, MA, 1994.
+  [\emph{Note: The 1994 edition is not a reliable guide for the
+    \pkg{amsmath} package unless you refer to the errata for Chapter
+    8\mdash file \fn{compan.err}, distributed with \LaTeX{}.}]
+
+% Deal with a line breaking problem
+\begin{raggedright}
+\bibitem{mil} G. Gr\"{a}tzer,
+\emph{Math into \LaTeX{}: An Introduction to \LaTeX{} and AMS-\LaTeX{}}
+  \url{http://www.ams.org/cgi-bin/bookstore/bookpromo?fn=91&arg1=bookvideo&itmc=MLTEX},
+Birkh\"{a}user, Boston, 1995.\par
+\end{raggedright}
+
+\bibitem{kn} Donald E. Knuth, \booktitle{The \tex/book},
+Addison-Wesley, Reading, MA, 1984.
+
+\bibitem{lamport} Leslie Lamport, \booktitle{\latex/: A document preparation
+system}, 2nd revised ed., Addison-Wesley, Reading, MA, 1994.
+
+\bibitem{msf} Frank Mittelbach and Rainer Sch\"opf,
+\textit{The new font family selection\mdash user
+interface to standard \latex/}, \journalname{TUGboat} \textbf{11},
+no.~2 (June 1990), pp.~297\ndash 305.
+
+\bibitem{jt} Michael Spivak, \booktitle{The joy of \tex/}, 2nd revised ed.,
+Amer. Math. Soc., Providence, RI, 1990.
+
+\end{thebibliography}
+
+\begin{theindex}
+
+  \item {\normalfont  \ttfamily  \bslchar \qcbang  }, 11
+  \item \verb*+\,+, 11
+  \item \verb*+\:+, 11
+  \item \verb*+\;+, 11
+  \item \verb*+\\+, 3, 5, 6, 8, 9, 24, 26
+  \item \verb*+\\*+, 9
+  \item \verb*+\|+, 16
+
+  \indexspace
+
+  \item \verb*+\above+, 14, 29
+  \item \verb*+\abovewithdelims+, 14
+  \item \verb*+\accentedsymbol+, 2
+  \item \texttt{accents} package, 12
+  \item \verb*+\addtocounter+, 10
+  \item \verb*+\addtolength+, 5
+  \item \texttt{align} environment, 3, 5--7, 28--30
+  \item \texttt{alignat} environment, 7, 24, 26, 29
+  \item \texttt{aligned} environment, 7, 9
+  \item \texttt{alignedat} environment, 7, 9
+  \item \verb*+\allowdisplaybreaks+, 8, 9
+  \item \texttt{amsart} class, 1
+  \item \texttt{amsbook} class, 1
+  \item \texttt{amsbsy} package, 1, 2
+  \item \texttt{amscd} package, 1, 2, 20
+  \item \texttt{amsfonts} package, 21
+  \item AMSFonts collection, 25
+  \item \texttt{amsmath} package, i, 1--3, 5, 8--18, 22, 23, 25, 26,
+		28--32
+  \item \texttt{amsopn} package, 1, 2
+  \item \texttt{amssymb} package, 22
+  \item \texttt{amstext} package, 1, 2
+  \item \texttt{amsthm} package, 1, 32
+  \item \texttt{amsxtra} package, 1, 2, 12
+  \item \verb*+\arccos+, 18
+  \item \verb*+\arcsin+, 18
+  \item \verb*+\arctan+, 18
+  \item \verb*+\arg+, 18
+  \item \texttt{array} environment, 8, 10, 26
+  \item arrows
+    \subitem extensible, 13
+    \subitem in commutative diagrams, 20
+  \item \verb*+\atop+, 14, 29
+  \item \verb*+\atopwithdelims+, 14
+
+  \indexspace
+
+  \item BaKoMa fonts, 25
+  \item \cn{big}, \cn{Big}, \cn{bigg}, \dots\ delimiters, 16
+  \item \verb*+\biggl+, 27
+  \item \verb*+\biggr+, 27
+  \item \verb*+\bigl+, 27
+  \item \verb*+\bigr+, 27
+  \item \verb*+\binom+, 14
+  \item binomials, 14
+  \item \texttt{bm} package, 2, 23
+  \item \texttt{Bmatrix} environment, 10
+  \item \texttt{bmatrix} environment, 10
+  \item \verb*+\bmod+, 18
+  \item \verb*+\boldsymbol+, 22, 23
+  \item \verb*+\boxed+, 13
+
+  \indexspace
+
+  \item \verb*+\C+, 22
+  \item \texttt{cases} environment, 8
+  \item \verb*+\cases+, 28
+  \item \texttt{CD} environment, 2, 21
+  \item \verb*+\cdots+, 12
+  \item \texttt{centertags} option, 2
+  \item \verb*+\cfrac+, 15
+  \item \texttt{cmbsy5}, 25
+  \item \texttt{cmex}, 25
+  \item \texttt{cmex10}, 25
+  \item \texttt{cmex7}, 25
+  \item \texttt{cmmib5}, 25
+  \item \texttt{comp.text.tex}, 31
+  \item \texttt{compan.err}, 32
+  \item continued fractions, 15
+  \item \verb*+\cos+, 18
+  \item \verb*+\cosh+, 18
+  \item \verb*+\cot+, 18
+  \item \verb*+\coth+, 18
+  \item \verb*+\csc+, 18
+
+  \indexspace
+
+  \item \verb*+\dbinom+, 14
+  \item \verb*+\ddddot+, 12
+  \item \verb*+\dddot+, 12
+  \item \verb*+\ddot+, 12
+  \item \verb*+\DeclareMathOperator+, 2, 17, 18
+  \item \verb*+\deg+, 18
+  \item \verb*+\det+, 18
+  \item \verb*+\dfrac+, 14
+  \item \texttt{diffs-m.txt}, 30
+  \item \verb*+\dim+, 18
+  \item \verb*+\displaybreak+, 8, 9
+  \item displayed   equations, 3
+  \item displayed equations
+    \subitem centering, 3
+  \item \verb*+\displaylimits+, 20
+  \item \texttt{displaymath} environment, 3
+  \item \verb*+\displaystyle+, 14
+  \item \verb*+\documentclass+, 2
+  \item \verb*+\dot+, 12
+  \item dots, \see{ellipsis dots}{11}
+  \item \verb*+\dotsb+, 12
+  \item \verb*+\dotsc+, 12
+  \item \verb*+\dotsi+, 12
+  \item \verb*+\dotsm+, 12
+  \item \verb*+\dotso+, 12
+
+  \indexspace
+
+  \item \texttt{e-math.ams.org}, 31
+  \item ellipsis dots
+    \subitem in matrices, 11
+  \item \texttt{eqnarray} environment, 1, 3, 26, 30
+  \item \verb*+\eqref+, 10
+  \item \texttt{equation} environment, 1, 3, 5, 7, 24, 30
+  \item equation numbers
+    \subitem cross-references, 10
+    \subitem hierarchy, 9
+    \subitem left or right placement, 3
+    \subitem overriding, 3
+    \subitem subordinate numbering, 10
+    \subitem vertical placement, 2
+  \item \texttt{equation*} environment, 3
+  \item equations, \see{displayed equations}{3}
+  \item \texttt{euscript} package, 21
+  \item \verb*+\exp+, 18
+
+  \indexspace
+
+  \item \verb*+\fbox+, 13
+  \item \texttt{fleqn} option, 3, 5
+  \item \texttt{fntguide.tex}, 21
+  \item \verb*+\frac+, 14, 15
+  \item fractions, 14
+  \item \verb*+\fracwithdelims+, 2
+  \item function names, \see{operator names}{17}
+
+  \indexspace
+
+  \item \texttt{gather} environment, 5--7, 24, 28--30
+  \item \texttt{gathered} environment, 7, 9
+  \item \verb*+\gcd+, 18
+  \item \verb*+\genfrac+, 14
+
+  \indexspace
+
+  \item \verb*+\hat+, 12
+  \item \verb*+\hdotsfor+, 11
+  \item \verb*+\hom+, 18
+  \item horizontal space
+    \subitem around operator names, 17
+    \subitem in math mode, 11
+
+  \indexspace
+
+  \item \verb*+\idotsint+, 20
+  \item \verb*+\iiiint+, 20
+  \item \verb*+\iiint+, 20
+  \item \verb*+\iint+, 20
+  \item \verb*+\inf+, 18
+  \item \verb*+\injlim+, 18
+  \item integrals
+    \subitem multiple, 20
+    \subitem placement of limits, 2
+  \item \verb*+\intertext+, 9
+  \item \texttt{intlimits} option, 2, 20
+
+  \indexspace
+
+  \item \verb*+\ker+, 18
+  \item \texttt{kuvio} package, 20
+
+  \indexspace
+
+  \item \verb*+\label+, 6, 10
+  \item \verb*+\langle+, 16
+  \item \verb*+\ldots+, 12
+  \item \verb*+\left+, 15, 16, 27
+  \item \verb*+\leftroot+, 13
+  \item \texttt{leqno} option, 3, 5
+  \item \verb*+\lg+, 18
+  \item \verb*+\lim+, 1, 2, 17, 18
+  \item \verb*+\liminf+, 18
+  \item limits, \see{subscripts and superscripts}{2}
+  \item \verb*+\limits+, 20
+  \item \verb*+\limsup+, 18
+  \item \verb*+\ln+, 18
+  \item \verb*+\log+, 17, 18
+  \item \verb*+\lVert+, 16
+  \item \verb*+\lvert+, 16
+
+  \indexspace
+
+  \item math fonts, 21
+  \item math symbols, \see{math fonts}{21}
+  \item \verb*+\mathbb+, 21, 22
+  \item \verb*+\mathbf+, 21, 22
+  \item \verb*+\mathcal+, 21
+  \item \verb*+\mathfrak+, 21
+  \item \verb*+\mathit+, 21
+  \item \verb*+\mathrm+, 21
+  \item \verb*+\mathscr+, 21
+  \item \verb*+\mathsf+, 21
+  \item \verb*+\mathtt+, 21
+  \item matrices, 10
+    \subitem ellipsis dots, 11
+  \item \texttt{matrix} environment, 10
+  \item \verb*+\matrix+, 28
+  \item \verb*+\max+, 18
+  \item \verb*+\mbox+, 18
+  \item \verb*+\medspace+, 11
+  \item Metafont source files, 25
+  \item \verb*+\min+, 18
+  \item \verb*+\mod+, 18
+  \item \verb*+\mspace+, 11
+  \item \texttt{multline} environment, 3, 5, 27, 30
+  \item \verb*+\multlinegap+, 5
+
+  \indexspace
+
+  \item \texttt{namelimits} option, 2
+  \item \verb*+\negmedspace+, 11
+  \item \verb*+\negthickspace+, 11
+  \item \verb*+\negthinspace+, 11
+  \item \verb*+\newcommand+, 21
+  \item \verb*+\nobreakdash+, 12
+  \item \texttt{nointlimits} option, 2
+  \item \verb*+\nolimits+, 19, 20
+  \item \texttt{nonamelimits} option, 2
+  \item \texttt{nosumlimits} option, 2
+  \item \verb*+\notag+, 3, 5
+  \item \verb*+\numberwithin+, 9, 29, 30
+
+  \indexspace
+
+  \item operator names, 17
+  \item \verb*+\operatorname+, 18
+  \item \verb*+\operatorname*+, 18
+  \item \verb*+\over+, 14, 29
+  \item \verb*+\overleftarrow+, 13
+  \item \verb*+\overleftrightarrow+, 13
+  \item \verb*+\overrightarrow+, 13
+  \item \verb*+\overset+, 13
+  \item \verb*+\overwithdelims+, 14
+
+  \indexspace
+
+  \item page breaks, 8
+  \item \verb*+\pagebreak+, 8
+  \item \texttt{pmatrix} environment, 10
+  \item \verb*+\pmatrix+, 28
+  \item \verb*+\pmb+, 22
+  \item \verb*+\pmod+, 18
+  \item \verb*+\pod+, 18
+  \item PostScript fonts, 25
+  \item \verb*+\Pr+, 18
+  \item \verb*+\projlim+, 18
+
+  \indexspace
+
+  \item \verb*+\qquad+, 11
+  \item \verb*+\quad+, 11
+
+  \indexspace
+
+  \item \verb*+\R+, 22
+  \item \verb*+\raisetag+, 8
+  \item \verb*+\rangle+, 16
+  \item \verb*+\ref+, 10
+  \item \texttt{reqno} option, 3, 5
+  \item \verb*+\right+, 15, 16, 27
+  \item \verb*+\rVert+, 16
+  \item \verb*+\rvert+, 16
+
+  \indexspace
+
+  \item \verb*+\scriptscriptstyle+, 14
+  \item \verb*+\scriptstyle+, 14
+  \item \verb*+\sec+, 18
+  \item \verb*+\setcounter+, 9, 10
+  \item \verb*+\setlength+, 5
+  \item \verb*+\shoveleft+, 5
+  \item \verb*+\shoveright+, 5
+  \item \verb*+\sideset+, 13, 19
+  \item \verb*+\sin+, 1, 2, 17, 18
+  \item \verb*+\sinh+, 18
+  \item \texttt{smallmatrix} environment, 11
+  \item \verb*+\smash+, 15, 27
+  \item \verb*+\sphat+, 12
+  \item \texttt{split} environment, 3, 5, 6, 9, 24, 27--30
+  \item \verb*+\sptilde+, 12
+  \item \verb*+\stackrel+, 13
+  \item \texttt{subarray} environment, 19
+  \item \texttt{subeqn.tex}, 3
+  \item \texttt{subequations} environment, 10
+  \item subscripts and superscripts, 13
+    \subitem multi-line, 19
+    \subitem on sums, 19
+    \subitem placement, 2
+  \item \verb*+\substack+, 19
+  \item \verb*+\sum+, 20, 22
+  \item \texttt{sumlimits} option, 2
+  \item \verb*+\sup+, 18
+  \item superscripts, \see{subscripts and superscripts}{19}
+
+  \indexspace
+
+  \item \texttt{tabular} environment, 26
+  \item \verb*+\tag+, 3
+  \item \verb*+\tag*+, 3
+  \item \verb*+\tan+, 18
+  \item \verb*+\tanh+, 18
+  \item \verb*+\tbinom+, 14
+  \item \texttt{tbtags} option, 2
+  \item \texttt{technote.tex}, 14, 28--30
+  \item \texttt{testmath.tex}, 3
+  \item \tex/ Users Group, 31
+  \item \verb*+\text+, 2, 7--9, 18
+  \item text fragments inside math, 9, 18
+  \item \verb*+\textstyle+, 14
+  \item \verb*+\tfrac+, 14
+  \item \verb*+\theequation+, 9, 10
+  \item \verb*+\thickspace+, 11
+  \item \verb*+\thinspace+, 11
+  \item \journalname{TUGboat}, 31
+
+  \indexspace
+
+  \item \verb*+\underleftarrow+, 13
+  \item \verb*+\underleftrightarrow+, 13
+  \item \verb*+\underrightarrow+, 13
+  \item \verb*+\underset+, 13
+  \item \verb*+\uproot+, 13
+  \item \verb*+\usepackage+, 2, 25
+
+  \indexspace
+
+  \item \verb*+\value+, 10
+  \item \verb*+\varDelta+, 23
+  \item \verb*+\varGamma+, 23
+  \item \verb*+\varinjlim+, 18
+  \item \verb*+\varLambda+, 23
+  \item \verb*+\varliminf+, 18
+  \item \verb*+\varlimsup+, 18
+  \item \verb*+\varOmega+, 23
+  \item \verb*+\varPhi+, 23
+  \item \verb*+\varPi+, 23
+  \item \verb*+\varprojlim+, 18
+  \item \verb*+\varPsi+, 23
+  \item \verb*+\varSigma+, 23
+  \item \verb*+\varTheta+, 23
+  \item \verb*+\varUpsilon+, 23
+  \item \verb*+\varXi+, 23
+  \item \texttt{Vmatrix} environment, 10
+  \item \texttt{vmatrix} environment, 10
+  \item \verb*+\vphantom+, 27
+
+  \indexspace
+
+  \item \verb*+\xleftarrow+, 13
+  \item \verb*+\xrightarrow+, 13
+
+\end{theindex}
+
+\end{document}

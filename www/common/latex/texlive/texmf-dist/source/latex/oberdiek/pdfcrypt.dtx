@@ -1,0 +1,1153 @@
+% \iffalse meta-comment
+%
+% File: pdfcrypt.dtx
+% Version: 2007/04/26 v1.0
+% Info: Allows the setting of PDF encryption
+%
+% Copyright (C) 2001, 2006, 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file pdfcrypt.dtx
+% and the derived files
+%    pdfcrypt.sty, pdfcrypt.pdf, pdfcrypt.ins, pdfcrypt.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfcrypt.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfcrypt.pdf
+%
+% Unpacking:
+%    (a) If pdfcrypt.ins is present:
+%           tex pdfcrypt.ins
+%    (b) Without pdfcrypt.ins:
+%           tex pdfcrypt.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfcrypt.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfcrypt.drv is present:
+%           latex pdfcrypt.drv
+%    (b) Without pdfcrypt.drv:
+%           latex pdfcrypt.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfcrypt.dtx
+%       makeindex -s gind.ist pdfcrypt.idx
+%       pdflatex pdfcrypt.dtx
+%       makeindex -s gind.ist pdfcrypt.idx
+%       pdflatex pdfcrypt.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/pdfcrypt.sty
+%    TDS:doc/latex/oberdiek/pdfcrypt.pdf
+%    TDS:source/latex/oberdiek/pdfcrypt.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfcrypt 2007/04/26 v1.0 Allows the setting of PDF encryption (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfcrypt
+Version: 2007/04/26 v1.0
+
+Copyright (C) 2001, 2006, 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file pdfcrypt.dtx
+and the derived files
+   pdfcrypt.sty, pdfcrypt.pdf, pdfcrypt.ins, pdfcrypt.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfcrypt.ins}{\from{pdfcrypt.dtx}{install}}%
+  \file{pdfcrypt.drv}{\from{pdfcrypt.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{pdfcrypt.sty}{\from{pdfcrypt.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfcrypt.xml}{\from{pdfcrypt.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfcrypt.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfcrypt.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfcrypt.drv}%
+  [2007/04/26 v1.0 Allows the setting of PDF encryption (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pdfcrypt.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{679}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfcrypt.drv}
+%
+% \title{The \xpackage{pdfcrypt} package}
+% \date{2007/04/26 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package supports the setting of pdf encryption options
+% for \VTeX\ and some older versions of \pdfTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% This package allows the setting of pdf encryption
+% options for
+% \begin{itemize}
+% \item
+%   \VTeX, since version 7.35, \url{http://www.micropress-inc.com/}.
+% \item
+%   \pdfTeX, patched by
+%   \NameEmail{Ricardo Sanchez Carmenes}{carmenes@bioquimica.uniovi.es}.\\
+%   Some supported versions are:
+%   \begin{quote}
+%     \pdfTeX-1.00a,\\
+%     \pdfTeX-0.14h-pdfcrypt-20010310,\\
+%     pdfcrypt-20010331
+%   \end{quote}
+% \end{itemize}
+%
+% \noindent
+% \textcolor{red}{Note:} Since \pdfTeX-1.10a (2003-01-16) encryption
+% support was dropped! Thus the package is now obsolete for recent
+% \pdfTeX\ versions.
+%
+% \subsection{Alternatives}
+%
+% There are free alternatives, programs that can
+% be used for postprocessing the pdf file:
+% \begin{itemize}
+% \item \textsf{pdftk}\\
+%   \url{http://www.accesspdf.com/pdftk/}
+% \item \textsf{Multivalent}\\
+%   \url{http://multivalent.sourceforge.net/}
+% \item \textsf{PDFBox}\\
+%   \url{http://www.pdfbox.org/}
+% \item \textsf{PDFTrans}\\
+%   \url{http://maddingue.free.fr/softwares/pdftrans.html}
+% \item \dots
+% \end{itemize}
+%
+% \subsection{Usage}
+%
+% The options can be set as package options or
+% with the command \cs{pdfcryptsetup}:
+% \begin{quote}
+%   |owner=|\meta{owner password}\\
+%   |user=|\meta{user password}\\
+%   |print|, |copy|, |edit|, |annotate=true|, |false|\\
+%   |all|, |none|\\
+%   |debug|
+% \end{quote}
+% The encryption is set at |\begin{document}| by default,
+% but this can be forced for an earlier time
+% using the option |set|.
+% Example:
+% \begin{quote}
+%   |\usepackage[owner=Donald,user=Knuth,print=false]{pdfcrypt}|\\
+%   \dots\\
+%   |\begin{document}|
+% \end{quote}
+% or
+% \begin{quote}
+%   |\usepackage{pdfcrypt}|\\
+%   |\pdfcryptsetup{owner=Donald,user=Knut}|\\
+%   |\pdfcryptsetup{print=false,set}|\\
+%   \dots\\
+%   |\begin{document}|
+% \end{quote}
+%
+% \subsubsection{Special characters}
+%
+% The characters `|{|', `|}|', and `|\|' have to be
+% escaped with `|\|'. Then the string should not
+% be specified as package option but with
+% the macro \cs{pdfcryptsetup}, eg:
+% \begin{quote}
+%   |\pdfcryptsetup{user={\{\\Hello\}},print=false}|
+% \end{quote}
+% The password here is ``|{\Hello}|''.
+% Active characters can be used and are not expanded.
+% Macros except for |\{|, |\}|, and |\\| should not be used
+% and are not expanded.
+%
+% \subsubsection{\cs{nopdfcrypt}}
+%
+% Often the whole process of pdf generation includes
+% several \TeX\ compilations and perhaps other
+% postprocessing steps. Therefore a feature would
+% be useful to disable the encryption stuff in order
+% to speed up the first compilations.
+% Therefore package \xpackage{pdfcrypt} will look for
+% the macro \cs{nopdfcrypt}. If it has the meaning of the
+% letter `|Y|', the package will be disabled.
+% Example:
+% \begin{quote}
+%   |pdflatex '\let\nopdfcrypt=Y\input myfile'|\\
+%   |thumbpdf myfile|\\
+%   |pdfelatex myfile|
+% \end{quote}
+%
+% \subsubsection{Configuration file}
+%
+% If the file \xfile{pdfcrypt.cfg} exists it is loaded
+% and can be used for common settings.
+%
+% \subsubsection{Support for \plainTeX}
+%
+% The package can also be used with \plainTeX. It defines the
+% missing \LaTeX\ macros and loads package \xpackage{keyval}.
+% The configuration file is not supported and automatically
+% loaded.
+%
+% \subsection{Hints for \pdfTeX}
+%
+% This section is out of date, because the encryption support
+% was removed from \pdfTeX. Therefore this hints are of
+% historical interest only.
+%
+%\begin{verbatim}
+%* There are packages such as thumbpdf that ship out
+%  some stuff (\immediate\pdfobj{...}). In these cases
+%  \pdfcrypt will be ignored without warning or error
+%  message. Therefore the package pdfcrypt should be
+%  loaded before and option "set" should be used in
+%  order to force the call of \pdfcrypt, for example:
+%     \usepackage{pdfcrypt}
+%     \pdfcryptsetup{..., set}
+%     ...
+%     \usepackage{thumbpdf}
+%
+%* Compiling pdfTeX (eg. version 1.00a-pretest-20010804):
+%  pdfTeX versions are available at
+%      ftp://ftp.cstug.cz/pub/tex/local/cstug/thanh/pdftex/snapshots/
+%  Unpack the latest .tgz file:
+%      > tar xzf pdftex-20010804.tgz
+%  Enable encryption support:
+%      src> cd src/texk/web2c/pdftexdir
+%      src/texk/web2c/pdftexdir> ln -fs pdfcrypt-full.c pdfcrypt.c
+%  Compile:
+%      src/texk/web2c/pdftexdir> cd ../../..
+%      src> ./configure
+%      src> cd texk/web2c
+%      src/texk/web2c> make pdftexbin
+%  At last install the binary and pool files.
+%\end{verbatim}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Help macros for \plainTeX}
+%
+%    \begin{macrocode}
+\expandafter\edef\csname pc@endinput\endcsname{%
+  \catcode`\noexpand\@=\the\catcode`\@\relax
+  \noexpand\endinput
+}
+\catcode`\@=11 %
+
+\expandafter\ifx\csname @firstoftwo\endcsname\relax
+  \long\def\@firstoftwo#1#2{#1}%
+\fi
+
+\expandafter\ifx\csname @secondoftwo\endcsname\relax
+  \long\def\@secondoftwo#1#2{#2}%
+\fi
+
+\expandafter\ifx\csname @ifundefined\endcsname\relax
+  \def\@ifundefined#1{%
+    \expandafter\ifx\csname #1\endcsname\relax
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+\fi
+
+\@ifundefined{@ifnextchar}{%
+  \long\def\@ifnextchar#1#2#3{%
+    \let\reserved@d=#1%
+    \def\reserved@a{#2}%
+    \def\reserved@b{#3}%
+    \futurelet\@let@token\@ifnch
+  }%
+  \def\@ifnch{%
+    \ifx\@let@token\@sptoken
+      \let\reserved@c\@xifnch
+    \else
+      \ifx\@let@token\reserved@d
+        \let\reserved@c\reserved@a
+      \else
+        \let\reserved@c\reserved@b
+      \fi
+    \fi
+    \reserved@c
+  }%
+  \begingroup
+    \def\:{\global\let\@sptoken= }%
+    \: %
+    \def\:{\@xifnch}%
+    \expandafter\gdef\: {\futurelet\@let@token\@ifnch}%
+  \endgroup
+}{}
+
+\@ifundefined{ProvidesPackage}{%
+  \def\ProvidesPackage#1{%
+    \@ifnextchar[{\pc@ProvidesPackage{#1}}%
+                 {\pc@ProvidesPackage{#1}[]}%
+  }%
+  \def\pc@ProvidesPackage#1[#2]{%
+    \immediate\write-1{Package: #1 #2}%
+  }%
+}{}
+
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+\else
+  \RequirePackage{infwarerr}%
+\fi
+
+\@ifundefined{@gobble}{%
+  \long\def\@gobble#1{}%
+}{}
+
+\@ifundefined{@empty}{%
+  \def\@empty{}%
+}{}
+%    \end{macrocode}
+%
+% \subsection{Package Identification and checks}
+%
+%    \begin{macrocode}
+\ProvidesPackage{pdfcrypt}%
+  [2007/04/26 v1.0 Allows the setting of PDF encryption (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@ifundefined{pdfcryptsetup}{%
+  \let\pdfcryptsetup\@gobble
+}{%
+  \@PackageWarningNoLine{pdfcrypt}{Package pdfcrypt is already loaded}%
+  \pc@endinput
+}
+%    \end{macrocode}
+%    Support for \cs{nopdfcrypt}.
+%    \begin{macrocode}
+\newif\ifpc@nopdfcrypt
+\ifx Y\nopdfcrypt
+  \@PackageWarningNoLine{pdfcrypt}{%
+    Encryption disabled by \string \nopdfcrypt\space request%
+  }%
+  \global\pc@nopdfcrypttrue
+\fi
+%    \end{macrocode}
+%
+% \subsection{Driver detection}
+%
+%    \begin{macrocode}
+\let\pc@driver\@empty
+\begingroup
+  % pdfTeX detection
+  \@ifundefined{pdfoutput}{%
+  }{%
+    \ifcase\pdfoutput
+    \else
+      \@ifundefined{pdfcrypt}{%
+        \@PackageError{pdfcrypt}{%
+          PDF encryption is not supported with this pdfTeX%
+        }{%
+          Encryption support was added in 0.14h (2001/03/10)\MessageBreak
+          and removed in 1.10a (2003/01/16).%
+        }%
+        \endgroup
+        \pc@endinput
+      }{%
+        \gdef\pc@driver{pdftex}%
+      }%
+    \fi
+  }%
+  % VTeX detection
+  \@ifundefined{OpMode}{%
+  }{%
+    \ifnum\OpMode=1 %
+      \ifnum\@ifundefined{VTeXversion}0\VTeXversion<735 %
+        \@PackageError{pdfcrypt}{%
+          PDF encryption is not supported with this VTeX%
+        }{%
+          You need VTeX 7.35 or higher.%
+        }%
+        \endgroup
+        \pc@endinput
+      \else
+        \gdef\pc@driver{vtex}%
+      \fi
+    \fi
+  }%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Load package \xpackage{keyval}}
+%
+%    \begin{macrocode}
+\@ifundefined{@makeother}{%
+  \def\@makeother#1{\catcode`#1=12\relax}%
+}{}
+
+\@ifundefined{g@addto@macro}{%
+  \long\def\g@addto@macro#1#2{%
+    \begingroup
+      \toks@\expandafter{#1#2}%
+      \xdef#1{\the\toks@}%
+    \endgroup
+  }%
+}{}
+
+\@ifundefined{@namedef}{%
+  \def\@namedef#1{\expandafter\def\csname#1\endcsname}%
+}{}
+
+\@ifundefined{@nameuse}{%
+  \def\@nameuse#1{\csname #1\endcsname}%
+}{}
+
+\def\pc@KeyvalRestore{%
+  \let\pc@KeyvalRestore\@undefined
+}
+
+\let\pcOrg@NeedsTeXFormat\NeedsTeXFormat
+\@ifundefined{NeedsTeXFormat}{%
+  \def\NeedsTeXFormat#1{}%
+  \g@addto@macro\pc@KeyvalRestore{%
+    \let\NeedsTeXFormat\pcOrg@NeedsTeXFormat
+  }%
+}{}
+
+\let\pcOrg@DeclareOption\DeclareOption
+\@ifundefined{DeclareOption}{%
+  \def\DeclareOption#1#2{#2}%
+  \g@addto@macro\pc@KeyvalRestore{%
+    \let\DeclareOption\pcOrg@DeclareOption
+  }%
+}{}
+
+\let\pcOrg@ExecuteOptions\ExecuteOptions
+\@ifundefined{ExecuteOptions}{%
+  \def\ExecuteOptions#1{}%
+  \g@addto@macro\pc@KeyvalRestore{%
+    \let\ExecuteOptions\pcOrg@ExecuteOptions
+  }%
+}{}
+
+\let\pcOrg@ProcessOptions\ProcessOptions
+\@ifundefined{ProcessOptions}{%
+  \def\ProcessOptions{}%
+  \g@addto@macro\pc@KeyvalRestore{%
+    \let\ProcessOptions\pcOrg@ProcessOptions
+  }%
+}{}%
+
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input keyval.sty\relax
+\else
+  \RequirePackage{keyval}%
+\fi
+\pc@KeyvalRestore
+%    \end{macrocode}
+%
+% \subsection{Define options}
+%
+%    \begin{macrocode}
+\@ifundefined{@dblarg}{%
+  \long\def\@dblarg#1{\@ifnextchar[{#1}{\@xdblarg{#1}}}%
+  \long\def\@xdblarg#1#2{#1[{#2}]{#2}}%
+}{}
+
+\newif\ifpc@set
+\newif\ifpc@print
+\newif\ifpc@copy
+\newif\ifpc@edit
+\newif\ifpc@annotate
+\newif\ifpc@debug
+\let\pc@owner\@empty
+\let\pc@user\@empty
+
+% default: allow all
+\pc@printtrue
+\pc@copytrue
+\pc@edittrue
+\pc@annotatetrue
+
+\edef\pc@temp{\catcode`\noexpand\"=\the\catcode`\"\relax}
+\@makeother\"
+\def\pc@set{%
+  \@PackageInfo{pdfcrypt}{%
+    \ifpc@debug
+      \ifx\pc@owner\@empty
+        No owner password%
+      \else
+        Owner password: `\pc@owner'%
+      \fi
+      \MessageBreak
+      \ifx\pc@user\@empty
+        No user password%
+      \else
+        User password: `\pc@user'%
+      \fi
+      \MessageBreak
+      Flags: %
+      \ifpc@print   \else no\fi print, %
+      \ifpc@copy    \else no\fi copy, %
+      \ifpc@edit    \else no\fi edit, %
+      \ifpc@annotate\else no\fi annotate%
+      \MessageBreak
+    \fi
+    \ifpc@nopdfcrypt
+      Encryption is disabled by `\string\nopdfcrypt'%
+    \else
+      Encryption is set for `\pc@driver'%
+    \fi
+  }%
+  \ifpc@nopdfcrypt
+  \else
+    \@ifundefined{pc@set@\pc@driver}{%
+      \ifx\pc@driver\@empty
+        \@PackageError{pdfcrypt}{No driver for encryption %
+          support found}\@ehc
+      \else
+        \@PackageError{pdfcrypt}{Cannot set encryption for %
+          unknown driver `\pc@driver'}\@ehc
+      \fi
+    }{%
+      \@nameuse{pc@set@\pc@driver}%
+    }%
+  \fi
+}
+\def\pc@set@pdftex{%
+  \ifnum\pdftexversion<100 %
+    \pc@set@pdftexold
+  \else
+    \pc@set@pdftexnew
+  \fi
+}
+\def\pc@set@pdftexold{%
+  \pdfcrypt{%
+    owner "\pc@owner" %
+    user "\pc@user" %
+    \ifpc@print   \else no\fi print %
+    \ifpc@copy    \else no\fi copy %
+    \ifpc@edit    \else no\fi edit %
+    \ifpc@annotate\else no\fi annotate%
+  }%
+}
+\def\pc@set@pdftexnew{%
+  \pdfcrypt
+    owner{\pc@owner}%
+    user{\pc@user}%
+    \ifpc@print   \else no\fi print %
+    \ifpc@copy    \else no\fi copy %
+    \ifpc@edit    \else no\fi edit %
+    \ifpc@annotate\else no\fi annotate%
+  \relax
+}
+\def\pc@set@vtex{%
+  \immediate\special{!security %
+    O=\pc@MakeVTeXString\pc@owner,%
+    U=\pc@MakeVTeXString\pc@user,%
+    P\ifpc@print +\else -\fi,%
+    C\ifpc@copy +\else -\fi,%
+    M\ifpc@edit +\else -\fi,%
+    A\ifpc@annotate +\else -\fi
+  }%
+}
+\def\pc@MakeVTeXString#1{%
+  "\expandafter\pc@@MakeVTeXString#1"\@nil"%
+}
+\def\pc@@MakeVTeXString#1"#2\@nil{%
+  #1%
+  \ifx\\#2\\%
+  \else
+    ""%
+    \@ReturnAfterFi{%
+      \pc@@MakeVTeXString#2\@nil
+    }%
+  \fi
+}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+\pc@temp
+
+\begingroup
+  \catcode`\ =12 \gdef\pc@spaceother{ }\catcode`\ =10\relax
+  \catcode`\|=0 %
+  \catcode`\\=12 %
+  |gdef|pc@DefString#1#2{%
+    |def#1{#2}%
+    |edef#1{|expandafter|strip@prefix|meaning#1}%
+    |edef#1{|expandafter|pc@SpaceToOther#1 |@nil}%
+    |edef#1{|expandafter|pc@EscapeRemove#1|@empty\|@empty|@nil}%
+  }%
+  |gdef|pc@EscapeRemove#1\#2#3|@nil{%
+    #1#2%
+    |ifx|\#3|\%%
+    |else
+      |@ReturnAfterFi{%
+        |pc@EscapeRemove#3|@nil
+      }%
+    |fi
+  }%
+|endgroup
+\def\pc@SpaceToOther#1 #2\@nil{%
+  #1%
+  \ifx\\#2\\%
+  \else
+    \pc@spaceother
+    \@ReturnAfterFi{%
+      \pc@SpaceToOther#2\@nil
+    }%
+  \fi
+}
+
+\def\pc@boolkey{\@dblarg\pc@@boolkey}
+\def\pc@@boolkey[#1]#2#3{%
+  \lowercase{\def\pc@temp{#3}}%
+  \ifx\pc@temp\@empty
+    \let\pc@temp\pc@true
+  \fi
+  \ifx\pc@temp\pc@true
+  \else
+    \ifx\pc@temp\pc@false
+    \else
+      \let\pc@temp\relax
+    \fi
+  \fi
+  \ifx\pc@temp\relax
+    \@PackageWarning{pdfcrypt}{%
+      Unexpected value \string`#3\string' of %
+      option \string`#2\string'\MessageBreak
+      instead of %
+      \string`true\string' or \string`false\string'%
+    }%
+  \else
+    \csname pc@#2\pc@temp\endcsname
+  \fi
+}
+\def\pc@true{true}
+\def\pc@false{false}
+
+\define@key{pc}{set}[true]{%
+  \pc@boolkey{set}{#1}%
+}
+\define@key{pc}{pdftex}[]{%
+  \def\pc@driver{pdftex}%
+}
+\define@key{pc}{vtex}[]{%
+  \def\pc@driver{vtex}%
+}
+\define@key{pc}{print}[true]{%
+  \pc@boolkey{print}{#1}%
+}
+\define@key{pc}{copy}[true]{%
+  \pc@boolkey{copy}{#1}%
+}
+\define@key{pc}{edit}[true]{%
+  \pc@boolkey{edit}{#1}%
+}
+\define@key{pc}{annotate}[true]{%
+  \pc@boolkey{annotate}{#1}%
+}
+\define@key{pc}{all}[]{%
+  \pc@boolkey{print}{true}%
+  \pc@boolkey{copy}{true}%
+  \pc@boolkey{edit}{true}%
+  \pc@boolkey{annotate}{true}%
+}
+\define@key{pc}{none}[]{%
+  \pc@boolkey{print}{false}%
+  \pc@boolkey{copy}{false}%
+  \pc@boolkey{edit}{false}%
+  \pc@boolkey{annotate}{false}%
+}
+
+\define@key{pc}{owner}{%
+  \pc@DefString\pc@owner{#1}%
+}
+\define@key{pc}{user}{%
+  \pc@DefString\pc@user{#1}%
+}
+\define@key{pc}{debug}[true]{%
+  \pc@boolkey{debug}{#1}%
+}
+
+\def\pdfcryptsetup#1{%
+  \setkeys{pc}{#1}%
+  \ifpc@set
+    \pc@set
+    \global\let\pc@set\relax
+    \gdef\pdfcryptsetup##1{%
+      \@PackageWarning{pdfcrypt}{%
+        Encryption options are already set\MessageBreak
+        new values are ignored%
+      }%
+    }%
+  \fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @onlypreamble\endcsname\relax
+\else
+  \@onlypreamble\pdfcryptsetup
+\fi
+%    \end{macrocode}
+%
+% \subsection{support of configuration file}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname InputIfFileExists\endcsname\relax
+  \@PackageInfo{pdfcrypt}{%
+    Configuration file pdfcrypt.cfg not supported.%
+  }%
+\else
+  \let\pc@ExecuteOptions\ExecuteOptions
+  \InputIfFileExists{pdfcrypt.cfg}{}{}%
+  \let\ExecuteOptions\pc@ExecuteOptions
+\fi
+%    \end{macrocode}
+%
+% \subsection{Package options}
+%
+%    Plain format does not know package options.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @classoptionslist\endcsname\relax
+  \expandafter\pc@endinput
+\fi
+%    \end{macrocode}
+%    Process global and local options.
+%    \begin{macrocode}
+\def\pc@ProcessOptionsWithKV{%
+  \let\pc@temp\@empty
+  \@for\CurrentOption:=\@classoptionslist\do{%
+    \@ifundefined{KV@pc@\CurrentOption}{}{%
+      \edef\pc@temp{\pc@temp,\CurrentOption,}%
+      \@expandtwoargs\@removeelement\CurrentOption
+        \@unusedoptionlist\@unusedoptionlist
+    }%
+  }%
+  \edef\pc@temp{%
+    \noexpand\pdfcryptsetup{%
+      \pc@temp\@ptionlist{\@currname.\@currext}%
+    }%
+  }%
+  \pc@temp
+}
+\pc@ProcessOptionsWithKV
+\AtEndOfPackage{\let\@unprocessedoptions\relax}
+\AtBeginDocument{\pc@set}
+
+\pc@endinput
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcrypt.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcrypt.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfcrypt.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfcrypt.sty & tex/generic/oberdiek/pdfcrypt.sty\\
+%   pdfcrypt.pdf & doc/latex/oberdiek/pdfcrypt.pdf\\
+%   pdfcrypt.dtx & source/latex/oberdiek/pdfcrypt.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfcrypt.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfcrypt.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfcrypt.dtx
+%makeindex -s gind.ist pdfcrypt.idx
+%pdflatex pdfcrypt.dtx
+%makeindex -s gind.ist pdfcrypt.idx
+%pdflatex pdfcrypt.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfcrypt.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcrypt'>
+  <name>pdfcrypt</name>
+  <caption>Allows the setting of pdf encryption.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2006,2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    Allows the setting of pdf encryption options for VTeX and some
+    older versions of pdfTeX.  The options can be set as package
+    options or in the command <tt>\pdfcryptsetup</tt>. Options
+    include <tt>owner=OwnerPassword</tt>, <tt>user=UserPassword,
+    print</tt>, <tt>copy</tt>, <tt>edit</tt>, <tt>annotate=true,
+    false all, none</tt>. The encryption is set at
+    <tt>\begin{document}</tt> by default, but this can be forced for
+    an earlier time by option &#x2018;set&#x2019;.
+    <p/>
+    Example:
+    <tt>\usepackage[owner=Donald,user=Knuth,print=false]{pdfcrypt}</tt>
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcrypt.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcrypt.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2001/04/02 v0.1}
+%   \item
+%     First public version, published in the pdftex
+%     mailing list for testing with pdfcrypt-20010331
+%   \end{Version}
+%   \begin{Version}{2001/07/19 v0.2}
+%   \item
+%     Default: all allowed.
+%   \item
+%     Support for \VTeX\ added.
+%   \end{Version}
+%   \begin{Version}{2001/07/19 v0.3}
+%   \item
+%     Bug fix: \VTeX\ letter for edit is M (modify).
+%   \end{Version}
+%   \begin{Version}{2001/07/19 v0.4}
+%   \item
+%     Bug fix: \cs{VTeXversion} is correct after
+%     regenerating the format file.
+%   \end{Version}
+%   \begin{Version}{2001/08/05 v0.5}
+%   \item
+%     Syntax change in \pdfTeX\ 1.00a.
+%   \end{Version}
+%   \begin{Version}{2001/08/09 v0.6}
+%   \item
+%     Support of special characters:\\
+%     input: |\{|, |\}|, |\\| for |{|, |}|, |\|\\
+%     output: |"| in \VTeX
+%   \item
+%     Option debug added.
+%   \end{Version}
+%   \begin{Version}{2001/10/28 v0.7}
+%   \item
+%     Plain compatibility.
+%   \item
+%     \cs{nopdfcrypt} added.
+%   \item
+%     Typos corrected.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v0.8}
+%   \item
+%     Obsolete remarks for \pdfTeX.
+%   \item
+%     DTX framework.
+%   \item
+%     LPPL 1.3
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v0.9}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/04/26 v1.0}
+%   \item
+%     Use of package \xpackage{infwarerr}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

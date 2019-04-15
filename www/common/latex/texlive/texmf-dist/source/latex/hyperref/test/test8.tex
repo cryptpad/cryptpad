@@ -1,0 +1,41 @@
+% Test file from Stephan Haller <stk@snafu.de> that shows how
+% bookmark open levels can vary during the document.
+
+\documentclass{article}
+
+\usepackage{times}
+
+\def\OpMode{1}  % fake vtex
+
+\usepackage{hyperref}
+
+\begin{document}
+
+\section{I'm closed (default)}
+\subsection{x}
+
+\hypersetup{bookmarksopen=true}
+
+\section{I'm open,}
+\subsection{and so}
+\subsection{are my}
+\subsubsection{children}
+
+\hypersetup{bookmarksopen=false}
+
+\section{I'm closed,}
+
+\hypersetup{bookmarksopen=true}
+
+\subsection{but my}
+\subsubsection{children}
+\subsection{are}
+\subsubsection{open}
+
+\hypersetup{bookmarksopenlevel=2}
+
+\section{level is two now}
+\subsection{so this is closed}
+\subsubsection{y}
+
+\end{document}

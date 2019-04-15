@@ -1,0 +1,106 @@
+install.txt for amscls 2.20 [2004/08/05]
+
+If you have a relatively up-do-date TeX system that complies with the
+TeX Directory Structure (TDS) standard, installing according to the
+instructions in section I below is the easiest method.  See
+
+    http://www.tug.org/tds/tds.pdf
+
+for details on the TDS standard.  If your TeX system does not comply
+with the  TDS standard, please contact the manufacturer of your TeX
+system for details on how to install third-party TeX packages.
+
+The first step is to identify the TEXMF folder that contains files used
+by LaTeX. To do this, look for the file article.cls. If you find, e.g.,
+
+  /usr/local/share/texmf/tex/latex/base/article.cls
+
+then we will define TEXMF to mean /usr/local/share/texmf (everything
+up to the /tex/latex/base part). On a Windows system the file location
+will probably be something like
+
+  c:\sw\texmf\tex\latex\base\article.cls
+
+Then we define TEXMF to mean c:\sw\texmf. In the following
+instructions, wherever you see "TEXMF" substitute the folder name
+determined in this way.
+
+If this terminology does not make sense to you, seek assistance from
+a friend or colleague, or from the company that you bought your TeX
+system from, or contact us at
+
+  tech-support@ams.org
+  800-321-4AMS (321-4267) (USA/Canada)
+  401-455-4080
+
+========================================================================
+I. Installing the easy way.
+
+1. Download the following archive file:
+
+   ftp://ftp.ams.org/pub/tex/amscls.zip
+
+2. View the following files to assess the effects of the upgrade on
+your system:
+
+  00readme.txt
+  install.txt (this file)
+  diffs-c.txt
+
+3. Backup the old version of AMS-LaTeX, preferably by moving it out of the
+TEXMF tree.
+
+4. Extract files fromthe .zip archive using your favorite unzip tool, setting
+the extraction target directory to the texmf root directory.
+
+5. To check the end result, you should find that you now have amsmath.sty
+in the following location
+
+  TEXMF/tex/latex/amscls/amsart.cls
+
+Some TeX systems also use a database to keep track of TeX input files. If
+this database is not updated, your TeX system might not find the newly
+installed files.  Consult your system's documentation to determine how
+to update this database.
+
+6. Some files will appear in both the source area and another area.
+This is because the source form and the in-use form are identical.
+As distributed, the files in the source/latex/amscls area comprise a
+complete copy of the distribution from which all the other files can
+be regenerated if need be. If you need to conserve disk space, you
+could delete the files in the source area, since they are not needed
+for normal use.
+
+========================================================================
+II. Installing the not-so-easy way.
+
+Download ftp://ftp.ams.org/pub/tex/amscls.zip.
+
+Make the following directories, if not already present:
+
+  TEXMF/source/latex/amscls
+  TEXMF/tex/latex/amscls
+  TEXMF/doc/latex/amscls
+
+Backup your old AMS-LaTeX files if they are installed, preferably moving them
+out of the TEXMF tree.
+
+Create a temporary directory and generate documentation files (these assume
+a UNIX TeX installation):
+
+  - make directory /tmp/amscls
+  - unzip -d /tmp/amscls amscls.zip
+  - cd /tmp/amscls
+  - Run latex on the file ams-c1.ins to produce .cls and .sty files
+  - Run latex on *.tex
+  - [optional] Run latex on *.dtx (technical documentation)
+  - move *.dvi, *.pdf, *.tex to TEXMF/doc/latex/amscls
+  - [optional] move *.dtx to TEXMF/doc/latex/amscls
+  - [optional] convert .dvi to .ps or .pdf
+  - move *.sty and *.cls to TEXMF/tex/latex/amscls
+  - delete /tmp/amscls
+
+Some TeX systems also use a database to keep track of TeX input files. If
+this database is not updated, your TeX system might not find the newly
+installed files.  Consult your system's documentation to determine how to
+update this database.

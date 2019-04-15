@@ -1,0 +1,1034 @@
+% \iffalse meta-comment
+%
+% File: resizegather.dtx
+% Version: 2010/03/01 v1.2
+% Info: Resize overly large equations
+%
+% Copyright (C) 2009, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file resizegather.dtx
+% and the derived files
+%    resizegather.sty, resizegather.pdf, resizegather.ins, resizegather.drv,
+%    resizegather-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/resizegather.dtx
+%    CTAN:macros/latex/contrib/oberdiek/resizegather.pdf
+%
+% Unpacking:
+%    (a) If resizegather.ins is present:
+%           tex resizegather.ins
+%    (b) Without resizegather.ins:
+%           tex resizegather.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{resizegather.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If resizegather.drv is present:
+%           latex resizegather.drv
+%    (b) Without resizegather.drv:
+%           latex resizegather.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex resizegather.dtx
+%       makeindex -s gind.ist resizegather.idx
+%       pdflatex resizegather.dtx
+%       makeindex -s gind.ist resizegather.idx
+%       pdflatex resizegather.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/resizegather.sty
+%    TDS:doc/latex/oberdiek/resizegather.pdf
+%    TDS:doc/latex/oberdiek/test/resizegather-test1.tex
+%    TDS:source/latex/oberdiek/resizegather.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: resizegather 2010/03/01 v1.2 Resize overly large equations (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: resizegather
+Version: 2010/03/01 v1.2
+
+Copyright (C) 2009, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file resizegather.dtx
+and the derived files
+   resizegather.sty, resizegather.pdf, resizegather.ins, resizegather.drv,
+   resizegather-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{resizegather.ins}{\from{resizegather.dtx}{install}}%
+  \file{resizegather.drv}{\from{resizegather.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{resizegather.sty}{\from{resizegather.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{resizegather-test1.tex}{\from{resizegather.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{resizegather.xml}{\from{resizegather.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     resizegather.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `resizegather.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{resizegather.drv}%
+  [2010/03/01 v1.2 Resize overly large equations (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{ifluatex}
+\ifluatex
+\else
+  \usepackage[T1]{fontenc}%
+  \usepackage{textcomp}%
+  \usepackage{lmodern}%
+\fi
+\begin{document}
+  \DocInput{resizegather.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{565}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{resizegather.drv}
+%
+% \title{The \xpackage{resizegather} package}
+% \date{2010/03/01 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Equations that are too large are resized to fit the available
+% space. The environment \textsf{gather} of package \xpackage{amsmath}
+% is supported. Also the environments \textsf{equation} and
+% \textsf{displaymath} are redefined using \textsf{gather}
+% and its starred version.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \makeatletter
+% \def\env#1{^^A
+%    \textsf{\@env#1*\@nil}^^A
+% }%
+% \def\@env#1*#2\@nil{^^A
+%   #1^^A
+%   \ifx\\#2\\^^A
+%     \expandafter\@gobble
+%   \else
+%     \textasteriskcentered
+%     \expandafter\@firstofone
+%   \fi
+%   {\@env#2\@nil}^^A
+% }
+% \makeatother
+%
+% \section{Documentation}
+%
+% Sometimes an equation is just a little to large to fit in the
+% line. And breaking the equation across lines might be worse
+% than downscaling the equation. This package implements this
+% for the environments \env{gather} and \env{gather*} of
+% package \xpackage{amsmath}. That package already measures
+% the equations and simplifies the implementation of \xpackage{resizegather}
+% that only needs to hook into \xpackage{amsmath}'s code to add
+% the resizing feature.
+%
+% Resized equations are recorded in the \xext{log} file
+% for small exceeds (default setting is smaller than five percent).
+% Otherwise a warning is given.
+%
+% Also environments \env{equation} and \env{displaymath}
+% are supported by redefining them using \env{gather}
+% and \env{gather*}.
+%
+% \cs{[} and \cs{]} are not supported, because these macros
+% are not in environment form that is required for
+% \xpackage{amsmath}. The environment body is collected
+% first to be able to process the body twice for measuring
+% first.
+%
+% Also the environments using alignments are not supported.
+% If a single equation line would be resized, the alignment
+% would get lost. And resizing all equations of the alignment
+% does not seem appropriate either.
+%
+% \subsection{Options}
+%
+% \begin{description}
+% \item[\xoption{warningthreshold}:]
+%   Print a warning if the original equation line exceeds
+%   its available width by the given fraction.
+%   Default is |0.05|: A warning is given if the equation
+%   is too large by five percent.
+%   Otherwise the exceed is recorded in the \xext{log} file
+%   only.
+% \end{description}
+% The next options are boolean options. They are enabled
+% by value |true| or if no value is given. They are switched
+% off by value |false|.
+% \begin{description}
+% \item[\xoption{enable}:] The resize feature is active (default).
+% \item[\xoption{disable}:] The complementary option for \xoption{enable},
+%  added for convenience: |disable| (or |disable=true|) is the same
+%  as |enable=false|.
+% \item[\xoption{equations}:]
+%   \LaTeX\ environments \textsf{equation} and \textsf{displaymath}
+%   environments are redefined. These equations
+%   are now using environment \env{gather} and
+%   \env{gather*}. This is the default.
+% \end{description}
+% The following table shows additional options if you
+% want to have finer control for the redefined
+% environments:
+% \begin{quote}
+% \def\unchanged{\textit{unchanged}}
+% \def\notprovided{\textit{not provided}}
+% \begin{tabular}{l|ll}
+% &\multicolumn{2}{c}{Environments}\\
+% Option & \env{equation} & \env{displaymath}\\
+% \hline
+% \xoption{equations} & \env{gather} & \env{gather*}\\
+% \xoption{equation} & \env{gather} & \unchanged\\
+% \xoption{displaymath} & \unchanged & \env{gather*}\\
+% \end{tabular}
+% \end{quote}
+% If such an option is switched off, the original meaning
+% of the affected environments is restored.
+%
+% Options are evaluated in the following order:
+% \begin{enumerate}
+% \item
+%  Configuration file \xfile{resizegather.cfg} using \cs{resizegathersetup}
+%  if the file exists.
+%  \item
+%  Package options given for \cs{usepackage}.
+%  \item
+%  Later calls of \cs{resizegathersetup}.
+% \end{enumerate}
+% \begin{declcs}{resizegathersetup}\M{option list}
+% \end{declcs}
+% The options are key value options. Boolean options are enabled by
+% default (without value) or by using the explicit value \texttt{true}.
+% Value \texttt{false} disable the option.
+%
+% \subsection{Options for packages \xpackage{amsmath} or \xpackage{graphics}}
+%
+% The package loads the package \xpackage{amsmath} because is internally
+% measures the equations first. Thus this package hooks into this code
+% in order to resize the equations if they are too large.
+% The resizing itself is done by \cs{resizebox} of package \xpackage{graphics}.
+% If you need special options for these packages, just load them first or
+% use global options when appropriate. Example:
+% \begin{quote}
+%\begin{verbatim}
+%\usepackage[dvipdfm]{graphicx}% or graphics
+%\usepackage[fleqn]{amsmath}
+%\usepackage{resizegather}
+%\end{verbatim}
+%\end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@resizegather.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{resizegather}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@resizegather.sty\endcsname
+\ProvidesPackage{resizegather}%
+  [2010/03/01 v1.2 Resize overly large equations (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ResizeGather@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ResizeGather@AtEnd{%
+    \ResizeGather@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\edef\ResizeGather@AtEnd{\ResizeGather@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{kvoptions}[2009/12/04]
+\SetupKeyvalOptions{%
+  family=resizegather,%
+  prefix=ResizeGather@,%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\@for\ResizeGather@option:=%
+  centertags,%
+  tbtags,%
+  sumlimits,%
+  nosumlimits,%
+  intlimits,%
+  nointlimits,%
+  nonamelimits,%
+  leqno,%
+  reqno,%
+  fleqn%
+\do{%
+  \edef\ResizeGather@temp{%
+    \noexpand\DeclareVoidOption{\ResizeGather@option}{%
+      \noexpand\PassOptionsToPackage{amsmath}{\ResizeGather@option}%
+    }%
+    \noexpand\AtEndOfPackage{%
+      \noexpand\DisableKeyvalOption[%
+        action=error,%
+        package=resizegather,%
+      ]{resizegather}{\ResizeGather@option}%
+    }%
+  }%
+  \ResizeGather@temp
+}
+\@for\ResizeGather@option:=%
+  draft,%
+  final,%
+  hiderotate,%
+  hidescale,%
+  hiresbb,%
+  demo,%
+  dvips,xdvi,dvipdf,dvipdfm,dvipdfmx,pdftex,dvipsone,%
+  dviwindo,emtex,dviwin,pctexps,pctexwin,pctexhp,pctex32,%
+  truetex,tcidvi,vtex,oztex,textures,xetex%
+\do{%
+  \edef\ResizeGather@temp{%
+    \noexpand\DeclareVoidOption{\ResizeGather@option}{%
+      \noexpand\PassOptionsToPackage{graphics}{\ResizeGather@option}%
+    }%
+    \noexpand\AtEndOfPackage{%
+      \noexpand\DisableKeyvalOption[%
+        action=error,%
+        package=resizegather,%
+      ]{resizegather}{\ResizeGather@option}%
+    }%
+  }%
+  \ResizeGather@temp
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareBoolOption[true]{enable}
+\DeclareComplementaryOption{disable}{enable}
+\DeclareStringOption[.05]{warningthreshold}
+\newif\ifResizeGather@NeedInit
+\DeclareBoolOption[true]{equations}
+\DeclareBoolOption[true]{equation}
+\DeclareBoolOption[true]{displaymath}
+\AddToKeyvalOption*{equations}{%
+  \ResizeGather@NeedInittrue
+  \ifResizeGather@equations
+    \ResizeGather@equationtrue
+    \ResizeGather@displaymathtrue
+  \else
+    \ResizeGather@equationfalse
+    \ResizeGather@displaymathfalse
+  \fi
+}
+\AddToKeyvalOption*{equation}{%
+  \ResizeGather@NeedInittrue
+}
+\AddToKeyvalOption*{displaymath}{%
+  \ResizeGather@NeedInittrue
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\resizegathersetup}
+%    \begin{macrocode}
+\newcommand*{\resizegathersetup}[1]{%
+  \ResizeGather@NeedInitfalse
+  \setkeys{resizegather}{#1}%
+  \ifResizeGather@NeedInit
+    \ResizeGather@init
+  \fi
+}
+\let\ResizeGather@init\relax
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\InputIfFileExists{resizegather.cfg}{}{}%
+\ProcessKeyvalOptions*\relax
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage{amsmath}
+\RequirePackage{graphics}
+%    \end{macrocode}
+%    \begin{macro}{\ResizeGather@redefine}
+%    \begin{macrocode}
+\def\ResizeGather@redefine#1#2#3#4#5{%
+  \csname ifResizeGather@#1\endcsname
+    \@ifundefined{ResizeGather@org@#2}{%
+      \expandafter\let\csname ResizeGather@org@#2\expandafter\endcsname
+                      \csname #2\endcsname
+    }{}%
+    \@ifundefined{ResizeGather@org@#3}{%
+      \expandafter\let\csname ResizeGather@org@#3\expandafter\endcsname
+                      \csname #3\endcsname
+    }{}%
+    \expandafter\edef\csname #2\endcsname{%
+      \expandafter\noexpand\csname#4\endcsname
+    }%
+    \expandafter\edef\csname #3\endcsname{%
+      \expandafter\noexpand\csname#5\endcsname
+    }%
+  \else
+    \@ifundefined{ResizeGather@org@#2}{}{%
+      \expandafter\let\csname #2\expandafter\endcsname
+                      \csname ResizeGather@org@#2\endcsname
+      \expandafter\let\csname #3\expandafter\endcsname
+                      \csname ResizeGather@org@#3\endcsname
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ResizeGather@init}
+%    \begin{macrocode}
+\def\ResizeGather@init{%
+  \ResizeGather@redefine{equation}{equation}{endequation}%
+    {gather}{endgather}%
+  \ResizeGather@redefine{displaymath}{displaymath}{enddisplaymath}%
+    {gather*}{endgather*}%
+}
+\ResizeGather@init
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ResizeGather@ResizeGather}
+%    \begin{macrocode}
+\def\ResizeGather@ResizeGather{%
+  \ifResizeGather@enable
+    \dimen@\displaywidth
+    \if@fleqn
+      \advance\dimen@-\@mathmargin
+    \fi
+    \ifdim\wdz@>\dimen@
+      \begingroup
+        \advance\dimen@ -\wdz@
+        \dimen@ -\dimen@
+        \ifdim\ResizeGather@warningthreshold\wdz@>\dimen@
+          \expandafter\PackageInfo
+        \else
+          \expandafter\PackageWarning
+        \fi
+        {resizegather}{%
+          Equation line \the\row@\space is too large %
+          by \the\dimen@\MessageBreak
+          in environment `\@currenvir'%
+        }%
+      \endgroup
+      \setboxz@h to\dimen@{%
+        \resizebox{\dimen@}{!}{\boxz@}%
+        \hss
+      }%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\calc@shift@gather}
+%    \begin{macrocode}
+\expandafter\def\expandafter\calc@shift@gather\expandafter{%
+  \expandafter\ResizeGather@ResizeGather
+  \calc@shift@gather
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ResizeGather@org@gmeasure@}
+%    \begin{macrocode}
+\let\ResizeGather@org@gmeasure@\gmeasure@
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\gmeasure@}
+%    \begin{macrocode}
+\def\gmeasure@#1{%
+  \ResizeGather@org@gmeasure@{#1}%
+  \ifResizeGather@enable
+    \ifdim\totwidth@>\displaywidth
+      \totwidth@=\displaywidth
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\ResizeGather@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input resizegather.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/resizegather.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/resizegather.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex resizegather.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   resizegather.sty & tex/latex/oberdiek/resizegather.sty\\
+%   resizegather.pdf & doc/latex/oberdiek/resizegather.pdf\\
+%   test/resizegather-test1.tex & doc/latex/oberdiek/test/resizegather-test1.tex\\
+%   resizegather.dtx & source/latex/oberdiek/resizegather.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk resizegather.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{resizegather.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex resizegather.dtx
+%makeindex -s gind.ist resizegather.idx
+%pdflatex resizegather.dtx
+%makeindex -s gind.ist resizegather.idx
+%pdflatex resizegather.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{resizegather.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='resizegather'>
+  <name>resizegather</name>
+  <caption>Automatically resize overly large equations.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Equations that are too large are resized to fit the available
+    space. The environment &#x2018;gather&#x2019; of package
+    <xref refid='amsmath'>amsmath</xref> is supported.  Also the
+    environments &#x2018;equation&#x2019; and
+    &#x2018;displaymath&#x2019; are redefined using
+    &#x2018;gather&#x2019; and its starred version.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/resizegather.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/resizegather.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Dieter Jurzitza:]
+% He wanted the resizing feature at the \TeX\ table
+% in Karlsruhe of December 2009. Thus this package is a kind of
+% Christmas present.
+% \end{description}
+%
+% \begin{History}
+%   \begin{Version}{2009/12/04 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+%   \begin{Version}{2009/12/05 v1.1}
+%   \item
+%     Options \xoption{enable} and \xoption{disable} added.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.2}
+%   \item
+%     TDS location moved from `generic' to `latex'.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

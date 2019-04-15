@@ -1,0 +1,7 @@
+% Gray font for Imagen with proofsheet resolution 25 pixels per inch
+
+if mode<>imagen: errmessage "This file is for imagen only"; fi
+
+font_identifier "GRAY3IMAGEN";
+rep=3; boolean large_pixels;
+input grayf

@@ -1,0 +1,674 @@
+% \iffalse meta-comment
+%
+% File: colonequals.dtx
+% Version: 2006/08/01 v1.0
+% Info: Colon equals symbols
+%
+% Copyright (C) 2006 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file colonequals.dtx
+% and the derived files
+%    colonequals.sty, colonequals.pdf, colonequals.ins, colonequals.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/colonequals.dtx
+%    CTAN:macros/latex/contrib/oberdiek/colonequals.pdf
+%
+% Unpacking:
+%    (a) If colonequals.ins is present:
+%           tex colonequals.ins
+%    (b) Without colonequals.ins:
+%           tex colonequals.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{colonequals.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If colonequals.drv is present:
+%           latex colonequals.drv
+%    (b) Without colonequals.drv:
+%           latex colonequals.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex colonequals.dtx
+%       makeindex -s gind.ist colonequals.idx
+%       pdflatex colonequals.dtx
+%       makeindex -s gind.ist colonequals.idx
+%       pdflatex colonequals.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/colonequals.sty
+%    TDS:doc/latex/oberdiek/colonequals.pdf
+%    TDS:source/latex/oberdiek/colonequals.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: colonequals 2006/08/01 v1.0 Colon equals symbols (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: colonequals
+Version: 2006/08/01 v1.0
+
+Copyright (C) 2006 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file colonequals.dtx
+and the derived files
+   colonequals.sty, colonequals.pdf, colonequals.ins, colonequals.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{colonequals.ins}{\from{colonequals.dtx}{install}}%
+  \file{colonequals.drv}{\from{colonequals.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{colonequals.sty}{\from{colonequals.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{colonequals.xml}{\from{colonequals.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     colonequals.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `colonequals.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{colonequals.drv}%
+  [2006/08/01 v1.0 Colon equals symbols (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{colonequals}
+\usepackage{array}
+\usepackage{capt-of}
+\usepackage{longtable}
+\begin{document}
+  \DocInput{colonequals.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{92}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{colonequals.drv}
+%
+% \title{The \xpackage{colonequals} package}
+% \date{2006/08/01 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{colonequals} defines poor man's symbols
+% for math relation symbols such as ``colon equals''.
+% The colon is centered around the horizontal math axis.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{User interface}
+%
+% \subsection{Introduction}
+%
+% Math symbols consisting of the colon character can be
+% constructed with the colon text character, if the math font
+% lacks of the complete symbol. Often, however, the colon text
+% character is not centered around the math axis. Especially
+% combined with the equals symbol the composed symbol does not
+% look symmetrically. Thus this packages defines a colon
+% math symbol \cs{ratio} that is centered around the horizontal
+% math axis. Also math symbols are provided that consist of the
+% colon symbol. The package is not necessary, if the math
+% font contains the composed symbols. Examples are \textsf{txfonts}
+% (\cite{txfonts}) or \textsf{mathabx} (\cite{mathabx}).
+%
+% \subsection{Symbols}
+%
+% All symbols of this package are relation symbols.
+% The relation property can be changed by the appropriate
+% \TeX\ command \cs{mathbin}, \cs{mathord}, \dots
+%
+% \begin{center}
+% \captionof{table}{Unicode mathematical operators}
+% \kern1ex
+% \begin{tabular}{l>{\scshape}l>{$}l<{$}l}
+%   U+2236 & ratio        & \ratio       & \cs{ratio}       \\
+%   U+2237 & proportion   & \coloncolon  & \cs{coloncolon}  \\
+%   U+2239 & excess       & \colonminus  & \cs{colonminus}  \\
+%   U+2254 & colon equals & \colonequals & \cs{colonequals} \\
+%   U+2255 & equals colon & \equalscolon & \cs{equalscolon} \\
+% \end{tabular}
+% \end{center}
+%
+% The following grammar generates all symbols that are supported by
+% this package:
+% \begin{center}
+% \captionof{table}{Symbol grammar}
+% \kern1ex
+% \begin{tabular}{@{}l>{$}r<{$}l@{}}
+%   symbols & \coloncolonequals & col \\
+%           & \mid & col symbol \\
+%           & \mid & symbol col \\
+%           & ; & \\[1ex]
+%   col     & \coloncolonequals & '\texttt{:}' \\
+%           & \mid & '\texttt{::}' \\
+%           & ; & \\[1ex]
+%   symbol  & \coloncolonequals & '\texttt{=}' \\
+%           & \mid & '\texttt{-}' \\
+%           & \mid & '$\approx$' \\
+%           & \mid & '$\sim$' \\
+%           & ; &
+% \end{tabular}
+% \end{center}
+%
+% \def\entry#1{\csname #1\endcsname&\cs{#1}\\}
+% \def\entryset#1{^^A
+%    \entry{colon#1}^^A
+%    \entry{coloncolon#1}^^A
+%    \entry{#1colon}^^A
+%    \entry{#1coloncolon}^^A
+% }
+% \begin{longtable}{>{$}l<{$}l}
+%   \caption{All relation symbols}\\
+%   \entry{ratio}
+%   \entry{coloncolon}
+%   \entryset{equals}
+%   \entryset{minus}
+%   \entryset{approx}
+%   \entryset{sim}
+% \end{longtable}
+%
+% \subsection{Fine tuning}
+%
+% The distances in composed symbols can be configured:
+%
+% \begin{declcs}{colonsep}
+% \end{declcs}
+% Macro \cs{colonsep} is executed between the colon and
+% the other symbol.
+%
+% \begin{declcs}{doublecolonsep}
+% \end{declcs}
+% Macro \cs{doublecolonsep} controls the distance between
+% two colons.
+%
+% \subsubsection{Example}
+% \begin{quote}
+%   \verb|\renewcommand*{\colonsep}{\mskip-.5\thinmuskip}|
+% \end{quote}
+%
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{colonequals}%
+  [2006/08/01 v1.0 Colon equals symbols (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Distance control}
+%
+%    \begin{macro}{\colonsep}
+%    \begin{macrocode}
+\newcommand*{\colonsep}{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\doublecolonsep}
+%    \begin{macrocode}
+\newcommand*{\doublecolonsep}{}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Centered colons}
+%
+%    \begin{macrocode}
+\def\@center@colon{%
+  \mathpalette\@center@math{:}%
+}
+\def\@center@math#1#2{%
+  \vcenter{%
+    \m@th
+    \hbox{$#1#2$}%
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\ratio}
+%    Because the name \cs{colon} is already in use, the Unicode name
+%    \cs{ratio} is used for the centered colon relation symbol.
+%    (The \cs{ratio} of package \textsf{calc} is not used outside
+%    calc expressions.)
+%    \begin{macrocode}
+\newcommand*{\ratio}{%
+  \ensuremath{%
+    \mathrel{%
+      \@center@colon
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\coloncolon}
+%    \begin{macrocode}
+\newcommand*{\coloncolon}{%
+  \ensuremath{%
+    \mathrel{%
+      \@center@colon
+      \doublecolonsep
+      \@center@colon
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Combined symbols}
+%
+%    \begin{macrocode}
+\def\@make@colon@set#1#2{%
+  \begingroup
+    \let\@center@colon\relax
+    \let\newcommand\relax
+    \let\ensuremath\relax
+    \let\mathrel\relax
+    \let\colonsep\relax
+    \let\doublecolonsep\relax
+    \def\csx##1{%
+      \expandafter\noexpand\csname ##1\endcsname
+    }%
+    \edef\x{\endgroup
+      \newcommand*{\csx{colon#1}}{%
+        \ensuremath{%
+          \mathrel{%
+            \@center@colon
+            \colonsep
+            {#2}%
+          }%
+        }%
+      }%
+      \newcommand*{\csx{coloncolon#1}}{%
+        \ensuremath{%
+          \mathrel{%
+            \@center@colon
+            \doublecolonsep
+            \@center@colon
+            \colonsep
+            {#2}%
+          }%
+        }%
+      }%
+      \newcommand*{\csx{#1colon}}{%
+        \ensuremath{%
+          \mathrel{%
+            {#2}%
+            \colonsep
+            \@center@colon
+          }%
+        }%
+      }%
+      \newcommand*{\csx{#1coloncolon}}{%
+        \ensuremath{%
+          \mathrel{%
+            {#2}%
+            \colonsep
+            \@center@colon
+            \doublecolonsep
+            \@center@colon
+          }%
+        }%
+      }%
+    }%
+  \x
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@make@colon@set{equals}{=}%
+\@make@colon@set{minus}{-}%
+\@make@colon@set{approx}{\approx}
+\@make@colon@set{sim}{\sim}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/colonequals.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/colonequals.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex colonequals.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   colonequals.sty & tex/latex/oberdiek/colonequals.sty\\
+%   colonequals.pdf & doc/latex/oberdiek/colonequals.pdf\\
+%   colonequals.dtx & source/latex/oberdiek/colonequals.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk colonequals.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{colonequals.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex colonequals.dtx
+%makeindex -s gind.ist colonequals.idx
+%pdflatex colonequals.dtx
+%makeindex -s gind.ist colonequals.idx
+%pdflatex colonequals.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{colonequals.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='colonequals'>
+  <name>colonequals</name>
+  <caption>Colon equals symbols.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    This package defines poor man&#x2018;s symbols for mathematical
+    relation symbols such as &#x201C;colon equals&#x201D;.
+    The colon is centered around the horizontal math axis.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/colonequals.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/colonequals.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{txfonts}
+%   Young Ryu: \textit{The TX Fonts};
+%   2000/12/15;
+%   \CTAN{fonts/txfonts/}.
+%
+% \bibitem{mathabx}
+%   Anthony Phan: \textit{Mathabx font series};
+%   2005/05/16;
+%   \CTAN{fonts/mathabx/}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2006/08/01 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

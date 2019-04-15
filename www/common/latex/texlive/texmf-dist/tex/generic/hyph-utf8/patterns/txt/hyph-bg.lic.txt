@@ -1,0 +1,45 @@
+Bulgarian hyphenation patterns
+
+(more info about the licence to be added later)
+
+% Bulgarian hyphenation patterns, version 1.7, July 2008
+%   Copyright 1994-2008 Georgi Boshnakov
+%   Georgi dot Boshnakov at manchester dot ac dot uk
+%
+% This file can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License distributed from CTAN
+% archives in directory macros/latex/base/lppl.txt; either
+% version 1 of the License, or any later version.
+%
+%
+%   First version:  1994
+%   Modified:  June 2000 (minor changes)
+%   Modified:  May  2006 (added copyright notice)
+%   Modified:  June 2008 (changed encoding to utf-8)
+%
+%   Please send wrongly hyphenated words and suggestions for
+%   corrections to the address given towards the beginning of this
+%   file.
+%
+%
+% Note: The original name of this file was 'bghyphsi.tex' which is
+%   part of the package 'bghyphen'. The package 'bghyphen' is now
+%   obsolete but it is still available on CTAN and currently (June 2008)
+%   gives the same hyphenation results.
+%
+%
+%
+% To make TeX use these patterns:
+%
+%    (1) Make sure that the hyph-utf8 package is present in your TeX
+%        system.
+%
+%    (2) generate the necessary formats (TeX, LaTeX, pdfLaTeX, etc),
+%        instructing TeX to load 'loadhyph-bg.tex' for Bulgarian
+%        hyphenation.
+%
+% The LaTeX babel package sets \lefthyphenmin and \righthyphenmin to 2
+%   when the language is switched to Bulgarian.  Developers who write
+%   support for Bulgarian outside LaTeX and/or babel need to take care
+%   of this.
+%

@@ -1,0 +1,84 @@
+%% ot1aer.fd
+%% Copyright 1997 Lars Engebretsen
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ot1aer.fd}
+   [1997/11/16 Font definitions for OT1/aer.]
+
+\DeclareFontFamily{OT1}{aer}{}
+
+\DeclareFontShape{OT1}{aer}{m}{n}{
+   <-6> cmr5
+   <6-7> cmr6
+   <7-8> cmr7
+   <8-9> cmr8
+   <9-10> cmr9
+   <10-12> cmr10
+   <12-17> cmr12
+   <17-> cmr17
+}{}
+
+\DeclareFontShape{OT1}{aer}{bx}{n}{
+   <-6> cmbx5
+   <6-7> cmbx6
+   <7-8> cmbx7
+   <8-9> cmbx8
+   <9-10> cmbx9
+   <10-12> cmbx10
+   <12-> cmbx12
+}{}
+
+\DeclareFontShape{OT1}{aer}{m}{it}{
+   <-8> cmti7
+   <8-9> cmti8
+   <9-10> cmti9
+   <10-12> cmti10
+   <12-> cmti12
+}{}
+
+\DeclareFontShape{OT1}{aer}{m}{sl}{
+   <-9> cmsl8
+   <9-10> cmsl9
+   <10-12> cmsl10
+   <12-> cmsl12
+}{}
+
+\DeclareFontShape{OT1}{aer}{b}{n}{
+   <-> cmb10
+}{}
+
+\DeclareFontShape{OT1}{aer}{bx}{it}{
+   <-> cmbxti10
+}{}
+
+\DeclareFontShape{OT1}{aer}{bx}{sl}{
+   <-> cmbxsl10
+}{}
+
+\DeclareFontShape{OT1}{aer}{m}{sc}{
+   <-> cmcsc10
+}{}
+
+\DeclareFontShape{OT1}{aer}{l}{n}{<->ssub * aer/m/n}{}
+\DeclareFontShape{OT1}{aer}{l}{it}{<->ssub * aer/m/it}{}
+\DeclareFontShape{OT1}{aer}{l}{sl}{<->ssub * aer/m/sl}{}
+\DeclareFontShape{OT1}{aer}{b}{it}{<->ssub * aer/bx/it}{}
+\DeclareFontShape{OT1}{aer}{b}{sl}{<->ssub * aer/bx/sl}{}
+\DeclareFontShape{OT1}{aer}{l}{sc}{<->ssub * aer/m/sc}{}
+
+\endinput

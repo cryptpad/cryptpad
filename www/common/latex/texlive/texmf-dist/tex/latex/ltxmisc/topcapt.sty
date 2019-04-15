@@ -1,0 +1,61 @@
+\@ifundefined{ProvidesPackage}{\def\ProvidesPackage#1[#2]{}}{}
+\ProvidesPackage{topcapt}[2004/12/11 v1.2 Caption at top of float]
+
+%  Copyright 1994, 1998, 1999, 2004 Robin Fairbairns
+%
+%   This program can redistributed and/or modified under the terms
+%   of the LaTeX Project Public License Distributed from CTAN
+%   archives in directory macros/latex/base/lppl.txt; either
+%   version 1 of the License, or (at your option) any later version.
+%
+% This is a jiffy LaTeX package that enables coherent setting
+% of the caption _above_ a figure or table
+%
+% Author: Robin Fairbairns 1994/11/18
+% Bugfix from Bernd Schandl incorporated 1998/12/31
+% First stab at hyperref interworking 2004/12/11
+% Copyright statement incorporated 1999/03/03
+%
+% Works under 2e or 2.09
+%
+% Usage:  \usepackage{...,topcapt,...}                    (2e)
+%         \documentstyle[...,topcapt,...]{whateverclass}  (2.09)
+%
+% defines a \topcaption command that sets a caption as if above the
+% table (i.e., with the abovecaptionskip and the belowcaptionskip
+% exchanged)
+
+\@ifundefined{abovecaptionskip}{% in 2.09
+  \newlength\abovecaptionskip
+  \newlength\belowcaptionskip
+  \setlength\abovecaptionskip{10pt}
+  \setlength\belowcaptionskip{0pt}
+  \long\def\@makecaption#1#2{%
+    \vskip\abovecaptionskip
+    \sbox\@tempboxa{#1: #2}%
+    \ifdim \wd\@tempboxa >\hsize
+      #1: #2\par
+    \else
+      \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
+    \vskip\belowcaptionskip}
+  }{% in 2e; everything's already set up as above
+}
+
+% \topcaption simply advances the caption count, sorts out the
+% arguments and passes on to \@topcaption
+\newcommand\topcaption{%
+  \@ifundefined{H@refstepcounter}%
+    {\refstepcounter}{\H@refstepcounter}\@captype
+  \@dblarg{\@topcaption\@captype}%
+} 
+
+% \@topcaption swaps above and below caption skips and the relays its
+% arguments to \@caption
+\def\@topcaption#1[#2]#3{\@tempskipa\abovecaptionskip
+  \abovecaptionskip\belowcaptionskip
+  \belowcaptionskip\@tempskipa
+  \@caption{#1}[{#2}]{#3}%
+  \@tempskipa\abovecaptionskip
+  \abovecaptionskip\belowcaptionskip
+  \belowcaptionskip\@tempskipa}

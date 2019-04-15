@@ -1,0 +1,391 @@
+#!/bin/sh
+# $Id: tcfmgr 34641 2014-07-17 16:38:18Z karl $
+# tcfmgr - TeX configuration file manager (sort of).
+# Public domain.  Originally written by Thomas Esser.
+
+# invoke the right shell:
+
+test -f /bin/ksh && test -z "$RUNNING_KSH" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
+  && { RUNNING_KSH=true; export RUNNING_KSH; exec /bin/ksh $0 ${1+"$@"}; }
+unset RUNNING_KSH
+
+test -f /bin/bsh && test -z "$RUNNING_BSH" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xAIX; } 2>/dev/null \
+  && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
+unset RUNNING_BSH
+
+# preferentially use subprograms from our own directory.
+mydir=`echo "$0" | sed 's,/[^/]*$,,'`
+mydir=`cd "$mydir" && pwd`
+PATH="$mydir:$PATH"; export PATH
+
+# hack around a bug in zsh:
+test -n "${ZSH_VERSION+set}" && alias -g '${1+"$@"}'='"$@"'
+
+progname=tcfmgr
+
+abort()
+{
+  echo "$progname: $@." >&2
+  (exit 1); exit 1
+}
+
+mktexupd()
+{
+  setupMktexupd
+  "$TFC_MKTEXUPD" "$@" >&2
+}
+
+# call mktexdir script, disable all features (to prevent sticky directories)
+mktexdir()
+{
+  setupMktexDir
+  MT_FEATURES=none "$TFC_MKTEXDIR" "$@" >&2
+}
+
+setupMap()
+{
+  case $setupMapOK in
+    "") : ;;
+    *) (exit 0); return 0;;
+  esac
+  
+  case $TFC_MAP in
+    "") TFC_MAP=`(kpsewhich -progname=texconfig -format='other text files' tcfmgr.map) 2>/dev/null`;;
+  esac
+
+  case $TFC_MAP in
+    "") abort "config file \`tcfmgr.map' (usually in \$TEXMFMAIN/texconfig) not found (ls-R missing?)";;
+  esac
+
+  if test ! -f "$TFC_MAP"; then
+    abort "config file \`TFC_MAP' does not exist"
+  fi
+  setupMapOK=true
+}
+
+setupTemp()
+{
+  case $setupTempOK in
+    "") : ;;
+    *) (exit 0); return 0;;
+  esac
+
+  case $TFC_TEMP in
+    "") TFC_TEMP=${TEMPDIR-/tmp};;
+  esac
+
+  if test ! -d "$TFC_TEMP"; then
+    abort "temp directory \`$TFC_TEMP' does not exist"
+  fi
+
+  if test ! -w "$TFC_TEMP"; then
+    abort "temp directory \`$TFC_TEMP' is not writable"
+  fi
+  setupTempOK=true
+}
+
+setupTexmfConfig()
+{
+  case $TFC_TEXMFCONFIG in
+    "") TFC_TEXMFCONFIG=`(kpsewhich -var-value=TEXMFCONFIG) 2>/dev/null`;;
+    *) (exit 0); return 0;;
+  esac
+  case $TFC_TEXMFCONFIG in
+    "") abort "variable \$TEXMFCONFIG is not defined in texmf.cnf";;
+  esac
+}
+
+setupMktexDir()
+{
+  case $TFC_MKTEXDIR in
+    "") TFC_MKTEXDIR=`(kpsewhich --format='web2c files' mktexdir) 2>/dev/null`;;
+  esac
+
+  case $TFC_MKTEXDIR in
+    "") abort "program mktexdir (usually in \$TEXMFMAIN/web2c) not found";;
+  esac
+}
+
+setupMktexupd()
+{
+  case $TFC_MKTEXUPD in
+    "") TFC_MKTEXUPD=`(kpsewhich --format='web2c files' mktexupd) 2>/dev/null`;;
+  esac
+
+  case $TFC_MKTEXUPD in
+    "") abort "program mktexupd (usually in \$TEXMFMAIN/web2c) not found";;
+  esac
+}
+
+writableCheck()
+{
+  setupTexmfConfig
+  if test ! -d "$TFC_TEXMFCONFIG"; then
+    mktexdir "$TFC_TEXMFCONFIG" >/dev/null 2>&1
+    if test ! -d "$TFC_TEXMFCONFIG"; then
+      msg="Directory TEXMFCONFIG=\`$TFC_TEXMFCONFIG' does not exist"
+      (exit 1); return 1
+    fi
+  fi
+
+  case "$relDir" in
+    "") get_info;;
+  esac
+  if test -f "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE" \
+     && test -w "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE"
+  then
+    (exit 0); return 0
+  fi
+
+  if test -d "$TFC_TEXMFCONFIG/$relDir"; then
+    if test -w "$TFC_TEXMFCONFIG/$relDir"; then
+      (exit 0); return 0
+    else
+      msg="Directory \`$TFC_TEXMFCONFIG/$relDir' is not writable"
+      (exit 1); return 1
+    fi
+  else
+    # we assume that a "mkdir -p" would work if the top-level
+    # $TFC_TEXMFCONFIG is writable
+    if test -w "$TFC_TEXMFCONFIG"; then
+      (exit 0); return 0
+    else
+      msg="Directory \`$TFC_TEXMFCONFIG' is not writable"
+      (exit 1); return 1
+    fi
+  fi
+}
+
+get_info()
+{
+  case "$TFC_FILE" in
+    "") abort "missing --file option or empty argument";;
+  esac
+  setupMap
+  # prepare + get info
+  IFS=$TAB
+  # set -- x `(awk '$1 == file' file=$TFC_FILE <$TFC_MAP) 2>/dev/null`; shift
+  set -- x `(grep "^$TFC_FILE[ 	]" $TFC_MAP) 2>/dev/null`; shift
+  IFS=$STD_IFS
+
+  # assign results
+  file="$1"
+  relDir="$2"
+  kpseFormat="$3"
+  kpseProgArg="$4"
+
+  # sanity checks
+  case $file in
+    "") abort "no info for file \`$TFC_FILE' in map \`$TFC_MAP'";;
+  esac
+
+  case $relDir in
+    -) abort "no known standard location for file \`$TFC_FILE' in map \`$TFC_MAP'";;
+  esac
+
+  case $kpseProgArg in
+    -) kpseProgArg=kpsewhich;;
+  esac
+}
+
+check_out()
+{
+  if $createEmptyFile; then
+    :
+  else
+    case "$orig" in
+      "")
+          get_info
+          orig=`(kpsewhich -format="$kpseFormat" -progname="$kpseProgArg" "$TFC_FILE") 2>/dev/null`
+          ;;
+      *)
+          test -f "$orig" || orig=
+    esac
+
+    case $orig in
+      "") abort "file \`$TFC_FILE' not found";;
+    esac
+  fi
+
+  # writableCheck needs to get a valid relDir, so it calls get_info if necessary
+  if writableCheck; then
+   : ok
+  else
+    cat >&2 <<eof
+
+There was a problem finding a proper place to store configuration data.
+The message was:
+  $msg
+
+To overcome such problems, set up the environment variable TEXMFCONFIG to
+point to a directory tree that is writable to you, e.g.
+  TEXMFCONFIG=\$HOME/texmf; export TEXMFCONFIG
+or
+  setenv TEXMFCONFIG \$HOME/texmf
+eof
+    (exit 1); exit 1
+  fi
+
+  setupTemp
+  : ${TFC_ID=tfc$$}
+  for d in "$TFC_TEMP/$TFC_ID" "$TFC_TEMP/$TFC_ID/in" "$TFC_TEMP/$TFC_ID/out"; do
+    (umask 077; mkdir "$d") || abort "could not create directory \`$d'"
+  done
+
+  if $createEmptyFile; then
+    (umask 022
+     > "$TFC_TEMP/$TFC_ID/in/$TFC_FILE"
+     > "$TFC_TEMP/$TFC_ID/out/$TFC_FILE")
+  else
+    cp "$orig" "$TFC_TEMP/$TFC_ID/in/$TFC_FILE" \
+      || abort "copy \`$orig' -> \`$TFC_TEMP/$TFC_ID/in/$TFC_FILE' failed"
+
+    cp "$orig" "$TFC_TEMP/$TFC_ID/out/$TFC_FILE" \
+      || abort "copy \`$orig' -> \`$TFC_TEMP/$TFC_ID/out/$TFC_FILE' failed"
+
+    chmod u+w "$TFC_TEMP/$TFC_ID/out/$TFC_FILE"
+  fi
+
+  cat >"$TFC_TEMP/$TFC_ID/relDir" <<eof
+$relDir
+eof
+
+  cat > "$TFC_TEMP/$TFC_ID/file" <<eof
+$TFC_FILE
+eof
+
+  echo "$TFC_ID $TFC_TEMP/$TFC_ID/in/$TFC_FILE $TFC_TEMP/$TFC_ID/out/$TFC_FILE $orig"
+}
+
+check_in()
+{
+  setupTemp
+
+  if test ! -d "$TFC_TEMP/$TFC_ID"; then
+    abort "directory \`$TFC_TEMP/$TFC_ID' does not exist. Perhaps missing arg --id"
+  fi
+
+  case "$TFC_FILE" in
+    "") TFC_FILE=`(cat "$TFC_TEMP/$TFC_ID/file") 2>/dev/null`;;
+  esac
+
+  for f in "$TFC_TEMP/$TFC_ID/relDir" "$TFC_TEMP/$TFC_ID/file" "$TFC_TEMP/$TFC_ID/in/$TFC_FILE" "$TFC_TEMP/$TFC_ID/out/$TFC_FILE"; do
+    if test ! -f "$f"; then
+      abort "Oops! file \`$f' does not exist"
+    fi
+  done
+
+  if (cmp "$TFC_TEMP/$TFC_ID/in/$TFC_FILE" "$TFC_TEMP/$TFC_ID/out/$TFC_FILE") >/dev/null 2>&1; then
+    (exit 0); return 0
+  fi
+
+  setupTexmfConfig
+  relDir=`cat "$TFC_TEMP/$TFC_ID/relDir"`
+  if test ! -d "$TFC_TEXMFCONFIG/$relDir"; then
+    setupMktexDir
+    mktexdir "$TFC_TEXMFCONFIG/$relDir" || abort "could not create directory \`$TFC_TEXMFCONFIG/$relDir'"
+  fi
+
+  if test -f "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE"; then
+    needsLSRUpdate=false
+    test -w "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE" || rm -f "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE"
+  else
+    needsLSRUpdate=true
+  fi
+
+  if test -f "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE"; then
+    cat <"$TFC_TEMP/$TFC_ID/out/$TFC_FILE" >"$TFC_TEXMFCONFIG/$relDir/$TFC_FILE" ||
+      abort "failed to write new file \`$TFC_TEXMFCONFIG/$relDir/$TFC_FILE'"
+  else
+    cp "$TFC_TEMP/$TFC_ID/out/$TFC_FILE" "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE" ||
+      abort "failed to copy \`$TFC_TEMP/$TFC_ID/out/$TFC_FILE' to \`$TFC_TEXMFCONFIG/$relDir/$TFC_FILE'"
+    chmod 644 "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE" 2>/dev/null
+  fi
+  if $needsLSRUpdate; then
+    mktexupd "$TFC_TEXMFCONFIG/$relDir" "$TFC_FILE"
+  fi
+  echo "$TFC_TEXMFCONFIG/$relDir/$TFC_FILE"
+  (exit 0); return 0
+}
+
+find_file()
+{
+  get_info
+  kpsewhich -format="$kpseFormat" -progname="$kpseProgArg" "$TFC_FILE"
+}
+
+help()
+{
+  cat <<eof
+Usage: $progname [option] ...
+
+Valid options:
+    --reldir       specify directory relative to texmf root
+    --infile       specify input file
+    --emptyinfile  create an empty input file
+    --map          specify map file
+    --texmfconfig  texmf tree for config files
+    --mktexdir     full path of mktexdir
+    --mktexupd     full path of mktexupd
+    --tmp          temp directory
+    --id           identity string (generated when running command co)
+    --file         specify configuration entry from map file
+    --cmd          command to execute
+    --help         display this help
+
+Valid commands (--cmd) are:
+    co             check out
+    ci             check in
+    find           look up source for file
+    mapfile        display path name of map file
+eof
+}
+
+show_map()
+{
+  setupMap
+  echo "$TFC_MAP"
+}
+
+TAB='	'
+SPACE=' '
+NL='
+'
+createEmptyFile=false
+
+STD_IFS="$TAB$SPACE$NL"
+while
+  case $1 in
+    --reldir) relDir=$2; shift;;
+    --infile) orig=$2; shift;;
+    --emptyinfile) createEmptyFile=true;;
+    --map) TFC_MAP=$2; shift;;
+    --texmfconfig)
+           TFC_TEXMFCONFIG=$2; shift;;
+    --mktexdir)
+           TFC_MKTEXDIR=$2;;
+    --mktexupd)
+           TFC_MKTEXUPD=$2;;
+    --tmp) TFC_TEMP=$2; shift;;
+    --id)  TFC_ID=$2; shift;;
+    --file)TFC_FILE=$2; shift;;
+    --cmd) TFC_CMD=$2; shift;;
+    --help) TFC_CMD=help;;
+    "") break;;
+    *) abort "unknown option \`$1'; try $progname --help"; (exit 1); exit 1;;
+  esac
+do test $# -gt 0 && shift; done
+
+case $TFC_CMD in
+  ci) check_in;;
+  co) check_out;;
+  find) find_file;;
+  mapfile) show_map;;
+  help) help;;
+  "")
+    abort "no command; try $progname --help"; (exit 1); exit 1;;
+  *)
+    abort "unknown command \`$TFC_CMD'; try $progname --help"; (exit 1); exit 1;;
+esac

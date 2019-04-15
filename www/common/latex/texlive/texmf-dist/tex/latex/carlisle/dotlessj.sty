@@ -1,0 +1,106 @@
+
+% dotlessj package
+%%%%%%%%%%%%%%%%%
+% dotless j (\j) for them that wants one.
+
+% Copyright 1997 1998 David Carlisle
+%
+% This file may be distributed under the terms of the LPPL.
+% See 00readme.txt for details.
+%
+% David Carlisle david@dcarlisle.demon.co.uk
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dotlessj}[1998/12/09 v0.03 dotless j package (DPC)]
+
+% 1997/09/10 v0.01  posted to c.t.t
+% 1997/09/11 v0.02  added \jmath support
+% 1998/12/09 v0.03  added \v\j for  Christoph Eyrich
+
+\RequirePackage{color}
+
+% use a coloured rule rather than clipping as it is more portable
+% eg the Y&Y dviwindo previewer, and the OzTeX previewer support
+% colour package (and dviwindo can print on colour to non PS devices
+% such as ink jet printers).
+% Disadvantages of using colour are:
+% a) it shows up if the background is not white.
+% b) You have to arrange that the accent is printed after the colour.
+%    (Easy to arrange for text accents with LaTeX's 
+%    \DeclareTextCompositeCommand, but a bit more dangerous for math
+%    accents.)
+\def\j@internal{%
+  \setbox\tw@\hbox{\copy\z@
+  \kern-.8\wd\z@
+  {\color{white}%
+   \vrule \@height1.1\ht\z@ \@depth -1.1\ht4 \@width \wd\z@}%
+   \kern-.2\wd\z@}%
+   \ht\tw@\ht4 }
+
+%
+
+% The \jmath definition, set up to be passed to \mathpalette
+\def\jmath@#1#2{%
+  {\m@th\sbox\z@{$#1j$}\sbox4{$#1\imath$}%
+   \j@internal
+    \box\tw@}}%
+
+% The \jmathaccent definition, set up to be passed to \mathpalette
+\def\jmath@x#1#2{%
+  {\m@th\sbox\z@{$#1j$}\sbox4{$#1\imath$}%
+   \j@internal
+     \copy\tw@\kern-\wd\tw@#2{\kern\wd\tw@}}}%
+
+\DeclareRobustCommand\jmathaccent[1]{{\mathpalette\jmath@x{#1}}}
+
+
+\DeclareRobustCommand\jaccent[1]{%
+     {\leavevmode\sbox\z@{j}%
+     \hb@xt@\wd\z@{\hss\clap\j\clap{#1{}}\hss}}}%
+
+% centered version of \rlap \llap.
+\def\clap#1{\hb@xt@\z@{\hss#1\hss}}%
+
+
+% If \jmath is passed to a math accent, need to intercept it and
+% instead pass the accent to \jmathaccent.
+
+\let\j@mathaccent\mathaccent
+
+\def\mathaccent{\afterassignment\j@mathacc@\count@}
+
+\def\j@mathacc@#1#2{%
+  \ifx\jmath#2%
+    \jmathaccent{\j@mathaccent\count@}%
+  \else
+%     #1 should be \relax, but put it back, just in case.
+    \j@mathaccent\count@#1{#2}%
+  \fi}
+ 
+
+% delay everything as  \j and friends get defined by encoding files
+% read in by, eg fontenc package.
+
+\AtBeginDocument{%
+%
+\DeclareRobustCommand\j{%
+  {\sbox\z@{j}\sbox4{\i}%
+   \j@internal
+   \leavevmode\box\tw@}}%
+%
+\DeclareRobustCommand\jmath{{\mathpalette\jmath@\relax}}%
+%
+% Could do this for all known encodings, but just do it
+% for the default encoding at begin document, to avoid wasting
+% too much space.
+\DeclareTextCompositeCommand\'{\encodingdefault}{\j}{\jaccent\'}%
+\DeclareTextCompositeCommand\`{\encodingdefault}{\j}{\jaccent\`}%
+\DeclareTextCompositeCommand\"{\encodingdefault}{\j}{\jaccent\"}%
+\DeclareTextCompositeCommand\^{\encodingdefault}{\j}{\jaccent\^}%
+\DeclareTextCompositeCommand\~{\encodingdefault}{\j}{\jaccent\~}%
+\DeclareTextCompositeCommand\.{\encodingdefault}{\j}{j}%
+\DeclareTextCompositeCommand\={\encodingdefault}{\j}{\jaccent\=}%
+\DeclareTextCompositeCommand\v{\encodingdefault}{\j}{\jaccent\v}}
+
+
+

@@ -1,0 +1,49 @@
+Lithuanian hyphenation patterns
+
+(more info about the licence to be added later)
+
+% This file is part of hyph-utf8 package and resulted from
+% semi-manual conversions of hyphenation patterns into UTF-8
+% in October 2008 by Mojca & Arthur.
+%
+% Source available on:
+% - http://www.vtex.lt/tex/littex/index.html
+%
+% Authors:
+%
+% First version in LT encoding (modified T1):
+% - Vytas Statulevičius <vytas at vtex.lt>
+% - Yannis Haralambous
+%   (Vilnius, March 4, 1992)
+% Conversion into Latin 7 and aditional support files (babel, fonts):
+% - Sigitas Tolušis <sigitas at vtex.lt>
+%   (2002-11-20)
+% Adaptation for hyph-utf8:
+% - Mojca & Arthur (see below), October 2008
+%
+% The copyright statement of this file is:
+%
+%    Do with this file whatever needs to be done in future for the sake of
+%    "a better world" as long as you respect the copyright of original file.
+%
+% If you want to change this file, rather than uploading directly to CTAN,
+% we would be grateful if you could send it to us (http://tug.org/tex-hyphen)
+% or ask for credentials for SVN repository and commit it yourself;
+% we will then upload the whole "package" to CTAN.
+%
+% For more unformation see
+%
+%    http://tug.org/tex-hyphen
+%
+%------------------------------------------------------------------------------
+%
+% A note about lefthyphenmin/righthyphenmin (by Sigitas, February 2009):
+%
+% At the moment the lefthyphenmin & righthyphenmin are both set to 2.
+% The Lithuanian patterns were build earlier then the latest grammatical rules
+% took place in 1997. At that time it was forbidden to leave one character at boundary.
+% One may change it to one now, but from typographical point of view there is no need to do
+% any changes. Even more, changing lefthyphen and righthyphen to 1 requires
+% to review and maybe rebuild the patterns file.
+%
+%------------------------------------------------------------------------------

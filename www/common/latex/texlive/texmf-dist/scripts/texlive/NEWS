@@ -1,0 +1,133 @@
+(This file public domain.  Originally written by Norbert Preining and
+Karl Berry, 2010.)
+
+<p><b>tlmgr revision 37738 (released 3jul15):</b>
+<li>more accurate error codes, e.g., for paper sizes.
+<li>info searches titles, descriptions, file names, topics if available.
+
+<p><b>tlmgr revision 37030 (released 24apr15):</b>
+<li>more reliable exit status codes.
+<li>add --with-doc and --with-src options for use with install --reinstall,
+to get the doc and/or src files even if they were omitted at initial
+installation.
+<li>the install action reports explicitly-requested packages already installed.
+<li>restore --dry-run is now more of a no-op, as intended.
+
+<p><b>tlmgr revision 35841 (released 24dec14):</b>
+<li>remove taxonomy searching, since upstream data is no longer maintained.
+
+<p><b>tlmgr revision 34227 (released 23may14, TeX Live 2014):</b>
+<li>If the NOPERLDOC envvar is set, avoid fancy <tt>--help</tt> message
+formatting, regardless.  (Same holds for install-tl.)
+<li><tt>tlmgr conf</tt> supports new options <tt>--delete</tt>,
+<tt>--conffile</tt>, and <tt>updmap</tt>.
+<li>doc and error checking updates as usual.
+
+<p><b>tlmgr revision 32912 (released 9feb14):</b>
+<li>tlmgrgui wordings, arrangements, etc.
+
+<p><b>tlmgr revision 31657 (released 15sep13):</b>
+<li>fix for "quoted" strings inside doc attributes, as in pythontex's
+Catalogue entry.
+
+<p><b>tlmgr revision 31400 (released 9aug13):</b>
+<li>fix for installation from file (install --file).
+
+<p><b>tlmgr revision 30643 (released 23may13, TeX Live 2013):</b>
+<li>documentation updates for the release.
+<li>new tlperl (version 5.16.2) for Windows, compiled without
+    optimization and with debugging
+
+<p><b>tlmgr revision 28216 (released 09nov12):</b>
+<li>menu shortcuts are installed unconditionally, the desktop_integration
+    option only controls shortcuts on the desktop (W32)
+<li>fix --self updates on W32 when multiple remote repositories are used
+
+<p><b>tlmgr revision 27748 (released 25oct12):</b>
+<li>support <tt>tlmgr repository list ...</tt> for listing of any repository
+<li>work around Cygwin Perl returning undef from an empty file
+
+<p><b>tlmgr revision 27601 (released 07sep12):</b>
+<li>allow for spaces in the repository path (again)
+<li>make <tt>tlmgr --help</tt> more robust against broken perldoc
+
+<p><b>tlmgr revision 27413 (released 16aug12):</b>
+<li>fix Perl syntax warning in trans.pl
+<li><tt>tar -m</tt> in Windows update to avoid spurious problems
+
+<p><b>tlmgr revision 27258 (released 30jul12):</b>
+<li>more fixes to updmap multi-tree support for TEXMFLOCAL
+
+<p><b>tlmgr revision 27170 (released 26jul12):</b>
+<li>consistently use ll_RR in .po file naming, per general gettext convention
+<li>make sure that an outdated updmap.cfg file is backed up and removed
+
+<p><b>texlive.infra (tlmgr) revision 26923 (released 07jul12):</b>
+<li>version with TeX Live 2012
+<li>generate updmap is no more, since updmap.cfg is now per-tree
+<li>multiple repository support
+<li>tlmgr can now install a package from a file
+
+<p><b>tlmgr revision 24419 (released 01nov11):</b>
+<li>support addKanjiMap execute
+
+<p><b>tlmgr revision 23514 (released 12aug11):</b>
+<li>dependent formats are regenerated when necessary.
+<li>on Windows only, do not update time stamps when unpacking,
+    to partially avoid spurious errors.
+<li>detect mipsel and mipsel64 platforms.
+
+<p><b>tlmgr revision 23117 (released 23jun11):</b>
+<li>version with TeX Live 2011.
+<li>support <tt>gui-lang</tt> in tlmgr config file, and add GUI
+    interface for it.
+
+<p><b>tlmgr revision 20975 (released 24jan11):</b>
+<li>fix usage of persistent connections in tlmgr.
+<li>override locale settings when using wget as a subprocess.
+
+<p><b>tlmgr revision 20243 (released 1nov10):</b>
+<li>try (again) not to load the remote tlpdb if tlmgr update is called
+    without arguments.
+<li>fix bugs in autobackup/backupdir handling; unify error messages;
+    on clean, also remove package backups for packages no longer present
+    in tlpdb.
+<li>support keyword searching as provided by the beta CTAN characterizations
+    at <a href="http://az.ctan.org/">http://az.ctan.org/</a> (no Internet
+    access needed for the search, though).  tlmgr documentation 
+    has details. Support is also present in tlmgrgui.
+
+<p><b>tlmgr revision 19923 (released 28sep10):</b>
+<li>undo change for not loading remote db, needs more work.
+
+<p><b>tlmgr revision 19896 (released 27sep10):</b>
+<li>add <tt>-R</tt> to the <tt>LESS</tt> environment variable, and unset
+    LESSOPEN and LESSPIPE, before calling pod2usage.
+<li>don't load the remote db if tlmgr update is called without arguments.
+
+<p><b>tlmgr revision 19414 (TeX Live 2010 release version):</b>
+<li>implement download selection mode in the file
+    <tt>TEXMFCONFIG/tlmgr/config</tt>,
+    option <tt>persistent-downloads</tt>, with value 0 or 1.
+<li>remove support for old GUI (<tt>tlmgr gui-old</tt>).
+
+tlmgr rev 17811 (2010-04-25)
+  * tlmgr restore --all: restoring the latest, using all available backups.
+  * GUI: add support for restore action.
+  * do not auto-install packages contained in forcibly removed collections.
+  * GUI: add support for the three command line options: --no-auto-install,
+    --no-auto-remove (under Menu->Options), and --reinstall-forcibly-removed
+    (just below the "Update all installed" button).
+  * GUI: provide access to the manual (tlmgr help) in the Help menu
+  * GUI: provide simple and expert modes (Options->Expert options)
+
+tlmgr rev 17611 (2010-03-30)
+  * Support automatic installation of new collections (when they are 
+    included in the selected scheme). 
+
+tlmgr rev 17455 (2010-03-19)
+  * persistent HTTP connections enabled by default 
+    (use --no-persistent-downloads to turn off)
+  * package update algorithm changed to avoid incorrect
+    "forcibly removed" inferences. Should be invisible.
+  * report of the number of pending updates in tlmgr gui. 

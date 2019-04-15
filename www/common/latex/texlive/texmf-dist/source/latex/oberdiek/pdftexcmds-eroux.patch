@@ -1,0 +1,77 @@
+Index: pdftexcmds.lua
+===================================================================
+--- pdftexcmds.lua	(revision 30140)
++++ pdftexcmds.lua	(working copy)
+@@ -6,12 +6,12 @@
+ -- 
+ --  pdftexcmds.dtx  (with options: `lua')
+ --  
+---  This is a generated file.
++--  This (was) a generated file.
+ --  
+ --  Project: pdftexcmds
+---  Version: 2011/11/29 v0.20
++--  Version: 2013/04/28 v0.20-eroux
+ --  
+---  Copyright (C) 2007, 2009-2011 by
++--  Copyright (C) 2007, 2009-2011, 2013 by
+ --     Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+ --  
+ --  This work may be distributed and/or modified under the
+@@ -42,6 +42,8 @@
+ local systemexitstatus
+ function getversion()
+   tex.write("2011/11/29 v0.20")
++  -- could not change above version string due to runtime version checks.
++  -- eroux/karl, 28apr13
+ end
+ function strcmp(A, B)
+   if A == B then
+@@ -150,6 +152,9 @@
+     end
+     result = utf8
+   end
++  -- this next line added for current luatex; this is the only
++  -- change in the file.  eroux, 28apr13.
++  local unpack = _G["unpack"] or table.unpack
+   tex.settoks(toks, string.char(unpack(result)))
+ end
+ function escapestring(str, mode)
+Index: oberdiek.luatex.lua
+===================================================================
+--- oberdiek.luatex.lua	(revision 30140)
++++ oberdiek.luatex.lua	(working copy)
+@@ -6,12 +6,12 @@
+ -- 
+ --  luatex.dtx  (with options: `lua')
+ --  
+---  This is a generated file.
++--  This (was) a generated file.
+ --  
+ --  Project: luatex
+---  Version: 2010/03/09 v0.4
++--  Version: 2013/04/28 v0.4-roux
+ --  
+---  Copyright (C) 2007, 2009, 2010 by
++--  Copyright (C) 2007, 2009, 2010, 2013 by
+ --     Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+ --  
+ --  This work may be distributed and/or modified under the
+@@ -47,11 +47,14 @@
+       texio.write_nl("(" .. file .. ")")
+       return loader
+     end
+-    return "\n\t[oberdiek.luatex.kpse_module_loader] Loading error:\n\t"
++    return "\n\t[oberdiek.luatex.kpse_module_loader]-eroux Loading error:\n\t"
+            .. error
+   end
+-  return "\n\t[oberdiek.luatex.kpse_module_loader] Search failed"
++  return "\n\t[oberdiek.luatex.kpse_module_loader]-eroux Search failed"
+ end
+-table.insert(package.loaders, kpse_module_loader)
++-- following line changed to use package.searchers instead of
++-- package.loaders for current luatex; this is the only change in the
++-- code.  eroux, 28apr13.
++table.insert(package.searchers, kpse_module_loader)
+ -- 
+ --  End of File `oberdiek.luatex.lua'.

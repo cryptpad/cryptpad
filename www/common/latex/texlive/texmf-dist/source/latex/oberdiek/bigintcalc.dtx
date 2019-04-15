@@ -1,0 +1,4555 @@
+% \iffalse meta-comment
+%
+% File: bigintcalc.dtx
+% Version: 2012/04/08 v1.3
+% Info: Expandable calculations on big integers
+%
+% Copyright (C) 2007, 2011, 2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file bigintcalc.dtx
+% and the derived files
+%    bigintcalc.sty, bigintcalc.pdf, bigintcalc.ins, bigintcalc.drv,
+%    bigintcalc-test1.tex, bigintcalc-test2.tex,
+%    bigintcalc-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/bigintcalc.dtx
+%    CTAN:macros/latex/contrib/oberdiek/bigintcalc.pdf
+%
+% Unpacking:
+%    (a) If bigintcalc.ins is present:
+%           tex bigintcalc.ins
+%    (b) Without bigintcalc.ins:
+%           tex bigintcalc.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{bigintcalc.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If bigintcalc.drv is present:
+%           latex bigintcalc.drv
+%    (b) Without bigintcalc.drv:
+%           latex bigintcalc.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex bigintcalc.dtx
+%       makeindex -s gind.ist bigintcalc.idx
+%       pdflatex bigintcalc.dtx
+%       makeindex -s gind.ist bigintcalc.idx
+%       pdflatex bigintcalc.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/bigintcalc.sty
+%    TDS:doc/latex/oberdiek/bigintcalc.pdf
+%    TDS:doc/latex/oberdiek/test/bigintcalc-test1.tex
+%    TDS:doc/latex/oberdiek/test/bigintcalc-test2.tex
+%    TDS:doc/latex/oberdiek/test/bigintcalc-test3.tex
+%    TDS:source/latex/oberdiek/bigintcalc.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: bigintcalc 2012/04/08 v1.3 Expandable calculations on big integers (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: bigintcalc
+Version: 2012/04/08 v1.3
+
+Copyright (C) 2007, 2011, 2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file bigintcalc.dtx
+and the derived files
+   bigintcalc.sty, bigintcalc.pdf, bigintcalc.ins, bigintcalc.drv,
+   bigintcalc-test1.tex, bigintcalc-test2.tex,
+   bigintcalc-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{bigintcalc.ins}{\from{bigintcalc.dtx}{install}}%
+  \file{bigintcalc.drv}{\from{bigintcalc.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{bigintcalc.sty}{\from{bigintcalc.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{bigintcalc-test1.tex}{\from{bigintcalc.dtx}{test1}}%
+  \file{bigintcalc-test2.tex}{\from{bigintcalc.dtx}{test2,etex}}%
+  \file{bigintcalc-test3.tex}{\from{bigintcalc.dtx}{test2,noetex}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{bigintcalc.xml}{\from{bigintcalc.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     bigintcalc.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `bigintcalc.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bigintcalc.drv}%
+  [2012/04/08 v1.3 Expandable calculations on big integers (HO)]%
+\documentclass{ltxdoc}
+\usepackage{wasysym}
+\let\iint\relax
+\let\iiint\relax
+\usepackage[fleqn]{amsmath}
+
+\DeclareMathOperator{\opInv}{Inv}
+\DeclareMathOperator{\opAbs}{Abs}
+\DeclareMathOperator{\opSgn}{Sgn}
+\DeclareMathOperator{\opMin}{Min}
+\DeclareMathOperator{\opMax}{Max}
+\DeclareMathOperator{\opCmp}{Cmp}
+\DeclareMathOperator{\opOdd}{Odd}
+\DeclareMathOperator{\opInc}{Inc}
+\DeclareMathOperator{\opDec}{Dec}
+\DeclareMathOperator{\opAdd}{Add}
+\DeclareMathOperator{\opSub}{Sub}
+\DeclareMathOperator{\opShl}{Shl}
+\DeclareMathOperator{\opShr}{Shr}
+\DeclareMathOperator{\opMul}{Mul}
+\DeclareMathOperator{\opSqr}{Sqr}
+\DeclareMathOperator{\opFac}{Fac}
+\DeclareMathOperator{\opPow}{Pow}
+\DeclareMathOperator{\opDiv}{Div}
+\DeclareMathOperator{\opMod}{Mod}
+\DeclareMathOperator{\opInt}{Int}
+\DeclareMathOperator{\opODD}{ifodd}
+
+\newcommand*{\Def}{%
+  \ensuremath{%
+    \mathrel{\mathop{:}}=%
+  }%
+}
+\newcommand*{\op}[1]{%
+  \textsf{#1}%
+}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{bigintcalc.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{3723}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{bigintcalc.drv}
+%
+% \title{The \xpackage{bigintcalc} package}
+% \date{2012/04/08 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package provides expandable arithmetic operations
+% with big integers that can exceed \TeX's number limits.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% Package \xpackage{bigintcalc} defines arithmetic operations
+% that deal with big integers. Big integers can be given
+% either as explicit integer number or as macro code
+% that expands to an explicit number. \emph{Big} means that
+% there is no limit on the size of the number. Big integers
+% may exceed \TeX's range limitation of -2147483647 and 2147483647.
+% Only memory issues will limit the usable range.
+%
+% In opposite to package \xpackage{intcalc}
+% unexpandable command tokens are not supported, even if
+% they are valid \TeX\ numbers like count registers or
+% commands created by \cs{chardef}. Nevertheless they may
+% be used, if they are prefixed by \cs{number}.
+%
+% Also \eTeX's \cs{numexpr} expressions are not supported
+% directly in the manner of package \xpackage{intcalc}.
+% However they can be given if \cs{the}\cs{numexpr}
+% or \cs{number}\cs{numexpr} are used.
+%
+% The operations have the form of macros that take one or
+% two integers as parameter and return the integer result.
+% The macro name is a three letter operation name prefixed
+% by the package name, e.g. \cs{bigintcalcAdd}|{10}{43}| returns
+% |53|.
+%
+% The macros are fully expandable, exactly two expansion
+% steps generate the result. Therefore the operations
+% may be used nearly everywhere in \TeX, even inside
+% \cs{csname}, file names,  or other
+% expandable contexts.
+%
+% \subsection{Conditions}
+%
+% \subsubsection{Preconditions}
+%
+% \begin{itemize}
+% \item
+%   Arguments can be anything that expands to a number that consists
+%   of optional signs and digits.
+% \item
+%   The arguments and return values must be sound.
+%   Zero as divisor or factorials of negative numbers will cause errors.
+% \end{itemize}
+%
+% \subsubsection{Postconditions}
+%
+% Additional properties of the macros apart from calculating
+% a correct result (of course \smiley):
+% \begin{itemize}
+% \item
+%   The macros are fully expandable. Thus they can
+%   be used inside \cs{edef}, \cs{csname},
+%   for example.
+% \item
+%   Furthermore exactly two expansion steps calculate the result.
+% \item
+%   The number consists of one optional minus sign and one or more
+%   digits. The first digit is larger than zero for
+%   numbers that consists of more than one digit.
+%
+%   In short, the number format is exactly the same as
+%   \cs{number} generates, but without its range limitation.
+%   And the tokens (minus sign, digits)
+%   have catcode 12 (other).
+% \item
+%   Call by value is simulated. First the arguments are
+%   converted to numbers. Then these numbers are used
+%   in the calculations.
+%
+%   Remember that arguments
+%   may contain expensive macros or \eTeX\ expressions.
+%   This strategy avoids multiple evaluations of such
+%   arguments.
+% \end{itemize}
+%
+% \subsection{Error handling}
+%
+% Some errors are detected by the macros, example: division by zero.
+% In this cases an undefined control sequence is called and causes
+% a TeX error message, example: \cs{BigIntCalcError:DivisionByZero}.
+% The name of the control sequence contains
+% the reason for the error. The \TeX\ error may be ignored.
+% Then the operation returns zero as result.
+% Because the macros are supposed to work in expandible contexts.
+% An traditional error message, however, is not expandable and
+% would break these contexts.
+%
+% \subsection{Operations}
+%
+% Some definition equations below use the function $\opInt$
+% that converts a real number to an integer. The number
+% is truncated that means rounding to zero:
+% \begin{gather*}
+%   \opInt(x) \Def
+%   \begin{cases}
+%     \lfloor x\rfloor & \text{if $x\geq0$}\\
+%     \lceil x\rceil & \text{otherwise}
+%   \end{cases}
+% \end{gather*}
+%
+% \subsubsection{\op{Num}}
+%
+% \begin{declcs}{bigintcalcNum} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcNum} converts its argument to a normalized integer
+% number without unnecessary leading zeros or signs.
+% The result matches the regular expression:
+%\begin{quote}
+%\begin{verbatim}
+%0|-?[1-9][0-9]*
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{\op{Inv}, \op{Abs}, \op{Sgn}}
+%
+% \begin{declcs}{bigintcalcInv} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcInv} switches the sign.
+% \begin{gather*}
+%   \opInv(x) \Def -x
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcAbs} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcAbs} returns the absolute value
+% of integer \meta{x}.
+% \begin{gather*}
+%   \opAbs(x) \Def \vert x\vert
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcSgn} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcSgn} encodes the sign of \meta{x} as number.
+% \begin{gather*}
+%   \opSgn(x) \Def
+%   \begin{cases}
+%     -1& \text{if $x<0$}\\
+%      0& \text{if $x=0$}\\
+%      1& \text{if $x>0$}
+%   \end{cases}
+% \end{gather*}
+% These return values can easily be distinguished by \cs{ifcase}:
+%\begin{quote}
+%\begin{verbatim}
+%\ifcase\bigintcalcSgn{<x>}
+%  $x=0$
+%\or
+%  $x>0$
+%\else
+%  $x<0$
+%\fi
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{\op{Min}, \op{Max}, \op{Cmp}}
+%
+% \begin{declcs}{bigintcalcMin} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcMin} returns the smaller of the two integers.
+% \begin{gather*}
+%   \opMin(x,y) \Def
+%   \begin{cases}
+%     x & \text{if $x<y$}\\
+%     y & \text{otherwise}
+%   \end{cases}
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcMax} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcMax} returns the larger of the two integers.
+% \begin{gather*}
+%   \opMax(x,y) \Def
+%   \begin{cases}
+%     x & \text{if $x>y$}\\
+%     y & \text{otherwise}
+%   \end{cases}
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcCmp} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcCmp} encodes the comparison result as number:
+% \begin{gather*}
+%   \opCmp(x,y) \Def
+%   \begin{cases}
+%     -1 & \text{if $x<y$}\\
+%      0 & \text{if $x=y$}\\
+%      1 & \text{if $x>y$}
+%   \end{cases}
+% \end{gather*}
+% These values can be distinguished by \cs{ifcase}:
+%\begin{quote}
+%\begin{verbatim}
+%\ifcase\bigintcalcCmp{<x>}{<y>}
+%  $x=y$
+%\or
+%  $x>y$
+%\else
+%  $x<y$
+%\fi
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{\op{Odd}}
+%
+% \begin{declcs}{bigintcalcOdd} \M{x}
+% \end{declcs}
+% \begin{gather*}
+%   \opOdd(x) \Def
+%   \begin{cases}
+%     1 & \text{if $x$ is odd}\\
+%     0 & \text{if $x$ is even}
+%   \end{cases}
+% \end{gather*}
+%
+% \subsubsection{\op{Inc}, \op{Dec}, \op{Add}, \op{Sub}}
+%
+% \begin{declcs}{bigintcalcInc} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcInc} increments \meta{x} by one.
+% \begin{gather*}
+%   \opInc(x) \Def x + 1
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcDec} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcDec} decrements \meta{x} by one.
+% \begin{gather*}
+%   \opDec(x) \Def x - 1
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcAdd} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcAdd} adds the two numbers.
+% \begin{gather*}
+%   \opAdd(x, y) \Def x + y
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcSub} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcSub} calculates the difference.
+% \begin{gather*}
+%   \opSub(x, y) \Def x - y
+% \end{gather*}
+%
+% \subsubsection{\op{Shl}, \op{Shr}}
+%
+% \begin{declcs}{bigintcalcShl} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcShl} implements shifting to the left that
+% means the number is multiplied by two.
+% The sign is preserved.
+% \begin{gather*}
+%   \opShl(x) \Def x*2
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcShr} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcShr} implements shifting to the right.
+% That is equivalent to an integer division by two.
+% The sign is preserved.
+% \begin{gather*}
+%   \opShr(x) \Def \opInt(x/2)
+% \end{gather*}
+%
+% \subsubsection{\op{Mul}, \op{Sqr}, \op{Fac}, \op{Pow}}
+%
+% \begin{declcs}{bigintcalcMul} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcMul} calculates the product of
+% \meta{x} and \meta{y}.
+% \begin{gather*}
+%   \opMul(x,y) \Def x*y
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcSqr} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcSqr} returns the square product.
+% \begin{gather*}
+%   \opSqr(x) \Def x^2
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcFac} \M{x}
+% \end{declcs}
+% Macro \cs{bigintcalcFac} returns the factorial of \meta{x}.
+% Negative numbers are not permitted.
+% \begin{gather*}
+%   \opFac(x) \Def x!\qquad\text{for $x\geq0$}
+% \end{gather*}
+% ($0! = 1$)
+%
+% \begin{declcs}{bigintcalcPow} M{x} M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcPow} calculates the value of \meta{x} to the
+% power of \meta{y}. The error ``division by zero'' is thrown
+% if \meta{x} is zero and \meta{y} is negative.
+% permitted:
+% \begin{gather*}
+%   \opPow(x,y) \Def
+%   \opInt(x^y)\qquad\text{for $x\neq0$ or $y\geq0$}
+% \end{gather*}
+% ($0^0 = 1$)
+%
+% \subsubsection{\op{Div}, \op{Mul}}
+%
+% \begin{declcs}{bigintcalcDiv} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcDiv} performs an integer division.
+% Argument \meta{y} must not be zero.
+% \begin{gather*}
+%   \opDiv(x,y) \Def \opInt(x/y)\qquad\text{for $y\neq0$}
+% \end{gather*}
+%
+% \begin{declcs}{bigintcalcMod} \M{x} \M{y}
+% \end{declcs}
+% Macro \cs{bigintcalcMod} gets the remainder of the integer
+% division. The sign follows the divisor \meta{y}.
+% Argument \meta{y} must not be zero.
+% \begin{gather*}
+%   \opMod(x,y) \Def x\mathrel{\%}y\qquad\text{for $y\neq0$}
+% \end{gather*}
+% The result ranges:
+% \begin{gather*}
+%   -\vert y\vert < \opMod(x,y) \leq 0\qquad\text{for $y<0$}\\
+%   0 \leq \opMod(x,y) < y\qquad\text{for $y\geq0$}
+% \end{gather*}
+%
+% \subsection{Interface for programmers}
+%
+% If the programmer can ensure some more properties about
+% the arguments of the operations, then the following
+% macros are a little more efficient.
+%
+% In general numbers must obey the following constraints:
+% \begin{itemize}
+% \item Plain number: digit tokens only, no command tokens.
+% \item Non-negative. Signs are forbidden.
+% \item Delimited by exclamation mark. Curly braces
+%       around the number are not allowed and will
+%       break the code.
+% \end{itemize}
+%
+% \begin{declcs}{BigIntCalcOdd} \meta{number} |!|
+% \end{declcs}
+% |1|/|0| is returned if \meta{number} is odd/even.
+%
+% \begin{declcs}{BigIntCalcInc} \meta{number} |!|
+% \end{declcs}
+% Incrementation.
+%
+% \begin{declcs}{BigIntCalcDec} \meta{number} |!|
+% \end{declcs}
+% Decrementation, positive number without zero.
+%
+% \begin{declcs}{BigIntCalcAdd} \meta{number A} |!| \meta{number B} |!|
+% \end{declcs}
+% Addition, $A\geq B$.
+%
+% \begin{declcs}{BigIntCalcSub} \meta{number A} |!| \meta{number B} |!|
+% \end{declcs}
+% Subtraction, $A\geq B$.
+%
+% \begin{declcs}{BigIntCalcShl} \meta{number} |!|
+% \end{declcs}
+% Left shift (multiplication with two).
+%
+% \begin{declcs}{BigIntCalcShr} \meta{number} |!|
+% \end{declcs}
+% Right shift (integer division by two).
+%
+% \begin{declcs}{BigIntCalcMul} \meta{number A} |!| \meta{number B} |!|
+% \end{declcs}
+% Multiplication, $A\geq B$.
+%
+% \begin{declcs}{BigIntCalcDiv} \meta{number A} |!| \meta{number B} |!|
+% \end{declcs}
+% Division operation.
+%
+% \begin{declcs}{BigIntCalcMod} \meta{number A} |!| \meta{number B} |!|
+% \end{declcs}
+% Modulo operation.
+%
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@bigintcalc.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{bigintcalc}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@bigintcalc.sty\endcsname
+\ProvidesPackage{bigintcalc}%
+  [2012/04/08 v1.3 Expandable calculations on big integers (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname BIC@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\BIC@AtEnd{%
+    \BIC@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{14}% $ (comment!)
+\TMP@EnsureCode{38}{14}% & (comment!)
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{11}% : (letter!)
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{14}% ? (comment!)
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\BIC@AtEnd{\BIC@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname BIC@TestMode\endcsname\relax
+\else
+  \catcode63=9 % ? (ignore)
+\fi
+? \let\BIC@@TestMode\BIC@TestMode
+%    \end{macrocode}
+%
+% \subsection{\eTeX\ detection}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \catcode36=9 % $ (ignore)
+\else
+  \catcode38=9 % & (ignore)
+\fi
+%    \end{macrocode}
+%
+% \subsection{Help macros}
+%
+%    \begin{macro}{\BIC@Fi}
+%    \begin{macrocode}
+\let\BIC@Fi\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AfterFi}
+%    \begin{macrocode}
+\def\BIC@AfterFi#1#2\BIC@Fi{\fi#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AfterFiFi}
+%    \begin{macrocode}
+\def\BIC@AfterFiFi#1#2\BIC@Fi{\fi\fi#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AfterFiFiFi}
+%    \begin{macrocode}
+\def\BIC@AfterFiFiFi#1#2\BIC@Fi{\fi\fi\fi#1}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@Space}
+%    \begin{macrocode}
+\begingroup
+  \def\x#1{\endgroup
+    \let\BIC@Space= #1%
+  }%
+\x{ }
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Expand number}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{pdftexcmds}[2007/11/11]%
+\else
+  \RequirePackage{pdftexcmds}[2007/11/11]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapehex\endcsname\relax
+%    \end{macrocode}
+%
+%    \begin{macro}{\BIC@Expand}
+%    \begin{macrocode}
+  \def\BIC@Expand#1{%
+    \romannumeral0%
+    \BIC@@Expand#1!\@nil{}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Expand}
+%    \begin{macrocode}
+  \def\BIC@@Expand#1#2\@nil#3{%
+    \expandafter\ifcat\noexpand#1\relax
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \expandafter\BIC@@Expand#1#2\@nil{#3}%
+    }{%
+      \ifx#1!%
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      { #3}{%
+        \BIC@@Expand#2\@nil{#3#1}%
+      }%
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@firstoftwo}
+%    \begin{macrocode}
+  \expandafter\ifx\csname @firstoftwo\endcsname\relax
+    \long\def\@firstoftwo#1#2{#1}%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@secondoftwo}
+%    \begin{macrocode}
+  \expandafter\ifx\csname @secondoftwo\endcsname\relax
+    \long\def\@secondoftwo#1#2{#2}%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macro}{\BIC@Expand}
+%    \begin{macrocode}
+  \def\BIC@Expand#1{%
+    \romannumeral0\expandafter\expandafter\expandafter\BIC@Space
+    \pdf@unescapehex{%
+      \expandafter\expandafter\expandafter
+      \BIC@StripHexSpace\pdf@escapehex{#1}20\@nil
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@StripHexSpace}
+%    \begin{macrocode}
+  \def\BIC@StripHexSpace#120#2\@nil{%
+    #1%
+    \ifx\\#2\\%
+    \else
+      \BIC@AfterFi{%
+        \BIC@StripHexSpace#2\@nil
+      }%
+    \BIC@Fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+% \subsection{Normalize expanded number}
+%
+%    \begin{macro}{\BIC@Normalize}
+%    |#1|: result sign\\
+%    |#2|: first token of number
+%    \begin{macrocode}
+\def\BIC@Normalize#1#2{%
+  \ifx#2-%
+    \ifx\\#1\\%
+      \BIC@AfterFiFi{%
+        \BIC@Normalize-%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@Normalize{}%
+      }%
+    \fi
+  \else
+    \ifx#2+%
+      \BIC@AfterFiFi{%
+        \BIC@Normalize{#1}%
+      }%
+    \else
+      \ifx#20%
+        \BIC@AfterFiFiFi{%
+          \BIC@NormalizeZero{#1}%
+        }%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@NormalizeDigits#1#2%
+        }%
+      \fi
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@NormalizeZero}
+%    \begin{macrocode}
+\def\BIC@NormalizeZero#1#2{%
+  \ifx#2!%
+    \BIC@AfterFi{ 0}%
+  \else
+    \ifx#20%
+      \BIC@AfterFiFi{%
+        \BIC@NormalizeZero{#1}%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@NormalizeDigits#1#2%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@NormalizeDigits}
+%    \begin{macrocode}
+\def\BIC@NormalizeDigits#1!{ #1}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Num}}
+%
+%    \begin{macro}{\bigintcalcNum}
+%    \begin{macrocode}
+\def\bigintcalcNum#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Normalize
+  \expandafter\expandafter\expandafter{%
+  \expandafter\expandafter\expandafter}%
+  \BIC@Expand{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Inv}, \op{Abs}, \op{Sgn}}
+%
+%
+%    \begin{macro}{\bigintcalcInv}
+%    \begin{macrocode}
+\def\bigintcalcInv#1{%
+  \romannumeral0\expandafter\expandafter\expandafter\BIC@Space
+  \bigintcalcNum{-#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bigintcalcAbs}
+%    \begin{macrocode}
+\def\bigintcalcAbs#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Abs
+  \bigintcalcNum{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Abs}
+%    \begin{macrocode}
+\def\BIC@Abs#1{%
+  \ifx#1-%
+    \expandafter\BIC@Space
+  \else
+    \expandafter\BIC@Space
+    \expandafter#1%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bigintcalcSgn}
+%    \begin{macrocode}
+\def\bigintcalcSgn#1{%
+  \number
+  \expandafter\expandafter\expandafter\BIC@Sgn
+  \bigintcalcNum{#1}! %
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Sgn}
+%    \begin{macrocode}
+\def\BIC@Sgn#1#2!{%
+  \ifx#1-%
+    -1%
+  \else
+    \ifx#10%
+      0%
+    \else
+      1%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Cmp}, \op{Min}, \op{Max}}
+%
+%    \begin{macro}{\bigintcalcCmp}
+%    \begin{macrocode}
+\def\bigintcalcCmp#1#2{%
+  \number
+  \expandafter\expandafter\expandafter\BIC@Cmp
+  \bigintcalcNum{#2}!{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Cmp}
+%    \begin{macrocode}
+\def\BIC@Cmp#1!#2{%
+  \expandafter\expandafter\expandafter\BIC@@Cmp
+  \bigintcalcNum{#2}!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Cmp}
+%    \begin{macrocode}
+\def\BIC@@Cmp#1#2!#3#4!{%
+  \ifx#1-%
+    \ifx#3-%
+      \BIC@AfterFiFi{%
+        \BIC@@Cmp#4!#2!%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        -1 %
+      }%
+    \fi
+  \else
+    \ifx#3-%
+      \BIC@AfterFiFi{%
+        1 %
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@CmpLength#1#2!#3#4!#1#2!#3#4!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@PosCmp}
+%    \begin{macrocode}
+\def\BIC@PosCmp#1!#2!{%
+  \BIC@CmpLength#1!#2!#1!#2!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@CmpLength}
+%    \begin{macrocode}
+\def\BIC@CmpLength#1#2!#3#4!{%
+  \ifx\\#2\\%
+    \ifx\\#4\\%
+      \BIC@AfterFiFi\BIC@CmpDiff
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@CmpResult{-1}%
+      }%
+    \fi
+  \else
+    \ifx\\#4\\%
+      \BIC@AfterFiFi{%
+        \BIC@CmpResult1%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@CmpLength#2!#4!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@CmpResult}
+%    \begin{macrocode}
+\def\BIC@CmpResult#1#2!#3!{#1 }
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@CmpDiff}
+%    \begin{macrocode}
+\def\BIC@CmpDiff#1#2!#3#4!{%
+  \ifnum#1<#3 %
+    \BIC@AfterFi{%
+      -1 %
+    }%
+  \else
+    \ifnum#1>#3 %
+      \BIC@AfterFiFi{%
+        1 %
+      }%
+    \else
+      \ifx\\#2\\%
+        \BIC@AfterFiFiFi{%
+          0 %
+        }%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@CmpDiff#2!#4!%
+        }%
+      \fi
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bigintcalcMin}
+%    \begin{macrocode}
+\def\bigintcalcMin#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@MinMax
+  \bigintcalcNum{#1}!-!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bigintcalcMax}
+%    \begin{macrocode}
+\def\bigintcalcMax#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@MinMax
+  \bigintcalcNum{#1}!!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@MinMax}
+%    |#1|: $x$\\
+%    |#2|: sign for comparison\\
+%    |#3|: $y$
+%    \begin{macrocode}
+\def\BIC@MinMax#1!#2!#3{%
+  \expandafter\expandafter\expandafter\BIC@@MinMax
+  \bigintcalcNum{#3}!#1!#2!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@MinMax}
+%    |#1|: $y$\\
+%    |#2|: $x$\\
+%    |#3|: sign for comparison
+%    \begin{macrocode}
+\def\BIC@@MinMax#1!#2!#3!{%
+  \ifnum\BIC@@Cmp#1!#2!=#31 %
+    \BIC@AfterFi{ #1}%
+  \else
+    \BIC@AfterFi{ #2}%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Odd}}
+%
+%    \begin{macro}{\bigintcalcOdd}
+%    \begin{macrocode}
+\def\bigintcalcOdd#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Odd
+  \bigintcalcAbs{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcOdd}
+%    \begin{macrocode}
+\def\BigIntCalcOdd#1!{%
+  \romannumeral0%
+  \BIC@Odd#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Odd}
+%    |#1|: $x$
+%    \begin{macrocode}
+\def\BIC@Odd#1#2{%
+  \ifx#2!%
+    \ifodd#1 %
+      \BIC@AfterFiFi{ 1}%
+    \else
+      \BIC@AfterFiFi{ 0}%
+    \fi
+  \else
+    \expandafter\BIC@Odd\expandafter#2%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Inc}, \op{Dec}}
+%
+%    \begin{macro}{\bigintcalcInc}
+%    \begin{macrocode}
+\def\bigintcalcInc#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@IncSwitch
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@IncSwitch}
+%    \begin{macrocode}
+\def\BIC@IncSwitch#1#2!{%
+  \ifcase\BIC@@Cmp#1#2!-1!%
+    \BIC@AfterFi{ 0}%
+  \or
+    \BIC@AfterFi{%
+      \BIC@Inc#1#2!{}%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \expandafter-\romannumeral0%
+      \BIC@Dec#2!{}%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bigintcalcDec}
+%    \begin{macrocode}
+\def\bigintcalcDec#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@DecSwitch
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DecSwitch}
+%    \begin{macrocode}
+\def\BIC@DecSwitch#1#2!{%
+  \ifcase\BIC@Sgn#1#2! %
+    \BIC@AfterFi{ -1}%
+  \or
+    \BIC@AfterFi{%
+      \BIC@Dec#1#2!{}%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \expandafter-\romannumeral0%
+      \BIC@Inc#2!{}%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BigIntCalcInc}
+%    \begin{macrocode}
+\def\BigIntCalcInc#1!{%
+  \romannumeral0\BIC@Inc#1!{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcDec}
+%    \begin{macrocode}
+\def\BigIntCalcDec#1!{%
+  \romannumeral0\BIC@Dec#1!{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@Inc}
+%    \begin{macrocode}
+\def\BIC@Inc#1#2!#3{%
+  \ifx\\#2\\%
+    \BIC@AfterFi{%
+      \BIC@@Inc1#1#3!{}%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \BIC@Inc#2!{#1#3}%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Inc}
+%    \begin{macrocode}
+\def\BIC@@Inc#1#2#3!#4{%
+  \ifcase#1 %
+    \ifx\\#3\\%
+      \BIC@AfterFiFi{ #2#4}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@@Inc0#3!{#2#4}%
+      }%
+    \fi
+  \else
+    \ifnum#2<9 %
+      \BIC@AfterFiFi{%
+&       \expandafter\BIC@@@Inc\the\numexpr#2+1\relax
+$       \expandafter\expandafter\expandafter\BIC@@@Inc
+$       \ifcase#2 \expandafter1%
+$       \or\expandafter2%
+$       \or\expandafter3%
+$       \or\expandafter4%
+$       \or\expandafter5%
+$       \or\expandafter6%
+$       \or\expandafter7%
+$       \or\expandafter8%
+$       \or\expandafter9%
+$?      \else\BigIntCalcError:ThisCannotHappen%
+$       \fi
+        0#3!{#4}%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@@@Inc01#3!{#4}%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@Inc}
+%    \begin{macrocode}
+\def\BIC@@@Inc#1#2#3!#4{%
+  \ifx\\#3\\%
+    \ifnum#2=1 %
+      \BIC@AfterFiFi{ 1#1#4}%
+    \else
+      \BIC@AfterFiFi{ #1#4}%
+    \fi
+  \else
+    \BIC@AfterFi{%
+      \BIC@@Inc#2#3!{#1#4}%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@Dec}
+%    \begin{macrocode}
+\def\BIC@Dec#1#2!#3{%
+  \ifx\\#2\\%
+    \BIC@AfterFi{%
+      \BIC@@Dec1#1#3!{}%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \BIC@Dec#2!{#1#3}%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Dec}
+%    \begin{macrocode}
+\def\BIC@@Dec#1#2#3!#4{%
+  \ifcase#1 %
+    \ifx\\#3\\%
+      \BIC@AfterFiFi{ #2#4}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@@Dec0#3!{#2#4}%
+      }%
+    \fi
+  \else
+    \ifnum#2>0 %
+      \BIC@AfterFiFi{%
+&       \expandafter\BIC@@@Dec\the\numexpr#2-1\relax
+$       \expandafter\expandafter\expandafter\BIC@@@Dec
+$       \ifcase#2
+$?        \BigIntCalcError:ThisCannotHappen%
+$       \or\expandafter0%
+$       \or\expandafter1%
+$       \or\expandafter2%
+$       \or\expandafter3%
+$       \or\expandafter4%
+$       \or\expandafter5%
+$       \or\expandafter6%
+$       \or\expandafter7%
+$       \or\expandafter8%
+$?      \else\BigIntCalcError:ThisCannotHappen%
+$       \fi
+        0#3!{#4}%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@@@Dec91#3!{#4}%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@Dec}
+%    \begin{macrocode}
+\def\BIC@@@Dec#1#2#3!#4{%
+  \ifx\\#3\\%
+    \ifcase#1 %
+      \ifx\\#4\\%
+        \BIC@AfterFiFiFi{ 0}%
+      \else
+        \BIC@AfterFiFiFi{ #4}%
+      \fi
+    \else
+      \BIC@AfterFiFi{ #1#4}%
+    \fi
+  \else
+    \BIC@AfterFi{%
+      \BIC@@Dec#2#3!{#1#4}%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Add}, \op{Sub}}
+%
+%    \begin{macro}{\bigintcalcAdd}
+%    \begin{macrocode}
+\def\bigintcalcAdd#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Add
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Add}
+%    \begin{macrocode}
+\def\BIC@Add#1!#2{%
+  \expandafter\expandafter\expandafter
+  \BIC@AddSwitch\bigintcalcNum{#2}!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bigintcalcSub}
+%    \begin{macrocode}
+\def\bigintcalcSub#1#2{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Add
+  \bigintcalcNum{-#2}!{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@AddSwitch}
+%    Decision table for \cs{BIC@AddSwitch}.
+%    \begin{quote}
+%    \begin{tabular}[t]{@{}|l|l|l|l|l|@{}}
+%      \hline
+%      $x<0$ & $y<0$ & $-x>-y$ & $-$ & $\opAdd(-x,-y)$\\
+%      \cline{3-3}\cline{5-5}
+%            &       & else    &     & $\opAdd(-y,-x)$\\
+%      \cline{2-5}
+%            & else  & $-x> y$ & $-$ & $\opSub(-x, y)$\\
+%      \cline{3-5}
+%            &       & $-x= y$ &     & $0$\\
+%      \cline{3-5}
+%            &       & else    & $+$ & $\opSub( y,-x)$\\
+%      \hline
+%      else  & $y<0$ & $ x>-y$ & $+$ & $\opSub( x,-y)$\\
+%      \cline{3-5}
+%            &       & $ x=-y$ &     & $0$\\
+%      \cline{3-5}
+%            &       & else    & $-$ & $\opSub(-y, x)$\\
+%      \cline{2-5}
+%            & else  & $ x> y$ & $+$ & $\opAdd( x, y)$\\
+%      \cline{3-3}\cline{5-5}
+%            &       & else    &     & $\opAdd( y, x)$\\
+%      \hline
+%    \end{tabular}
+%    \end{quote}
+%    \begin{macrocode}
+\def\BIC@AddSwitch#1#2!#3#4!{%
+  \ifx#1-% x < 0
+    \ifx#3-% y < 0
+      \expandafter-\romannumeral0%
+      \ifnum\BIC@PosCmp#2!#4!=1 % -x > -y
+        \BIC@AfterFiFiFi{%
+          \BIC@AddXY#2!#4!!!%
+        }%
+      \else % -x <= -y
+        \BIC@AfterFiFiFi{%
+          \BIC@AddXY#4!#2!!!%
+        }%
+      \fi
+    \else % y >= 0
+      \ifcase\BIC@PosCmp#2!#3#4!% -x = y
+        \BIC@AfterFiFiFi{ 0}%
+      \or % -x > y
+        \expandafter-\romannumeral0%
+        \BIC@AfterFiFiFi{%
+          \BIC@SubXY#2!#3#4!!!%
+        }%
+      \else % -x <= y
+        \BIC@AfterFiFiFi{%
+          \BIC@SubXY#3#4!#2!!!%
+        }%
+      \fi
+    \fi
+  \else % x >= 0
+    \ifx#3-% y < 0
+      \ifcase\BIC@PosCmp#1#2!#4!% x = -y
+        \BIC@AfterFiFiFi{ 0}%
+      \or % x > -y
+        \BIC@AfterFiFiFi{%
+          \BIC@SubXY#1#2!#4!!!%
+        }%
+      \else % x <= -y
+        \expandafter-\romannumeral0%
+        \BIC@AfterFiFiFi{%
+          \BIC@SubXY#4!#1#2!!!%
+        }%
+      \fi
+    \else % y >= 0
+      \ifnum\BIC@PosCmp#1#2!#3#4!=1 % x > y
+        \BIC@AfterFiFiFi{%
+          \BIC@AddXY#1#2!#3#4!!!%
+        }%
+      \else % x <= y
+        \BIC@AfterFiFiFi{%
+          \BIC@AddXY#3#4!#1#2!!!%
+        }%
+      \fi
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BigIntCalcAdd}
+%    \begin{macrocode}
+\def\BigIntCalcAdd#1!#2!{%
+  \romannumeral0\BIC@AddXY#1!#2!!!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcSub}
+%    \begin{macrocode}
+\def\BigIntCalcSub#1!#2!{%
+  \romannumeral0\BIC@SubXY#1!#2!!!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@AddXY}
+%    \begin{macrocode}
+\def\BIC@AddXY#1#2!#3#4!#5!#6!{%
+  \ifx\\#2\\%
+    \ifx\\#3\\%
+      \BIC@AfterFiFi{%
+        \BIC@DoAdd0!#1#5!#60!%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@DoAdd0!#1#5!#3#6!%
+      }%
+    \fi
+  \else
+    \ifx\\#4\\%
+      \ifx\\#3\\%
+        \BIC@AfterFiFiFi{%
+          \BIC@AddXY#2!{}!#1#5!#60!%
+        }%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@AddXY#2!{}!#1#5!#3#6!%
+        }%
+      \fi
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@AddXY#2!#4!#1#5!#3#6!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DoAdd}
+%    |#1|: carry\\
+%    |#2|: reverted result\\
+%    |#3#4|: reverted $x$\\
+%    |#5#6|: reverted $y$
+%    \begin{macrocode}
+\def\BIC@DoAdd#1#2!#3#4!#5#6!{%
+  \ifx\\#4\\%
+    \BIC@AfterFi{%
+&     \expandafter\BIC@Space
+&     \the\numexpr#1+#3+#5\relax#2%
+$     \expandafter\expandafter\expandafter\BIC@AddResult
+$     \BIC@AddDigit#1#3#5#2%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \expandafter\expandafter\expandafter\BIC@DoAdd
+      \BIC@AddDigit#1#3#5#2!#4!#6!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AddResult}
+%    \begin{macrocode}
+$ \def\BIC@AddResult#1{%
+$   \ifx#10%
+$     \expandafter\BIC@Space
+$   \else
+$     \expandafter\BIC@Space\expandafter#1%
+$   \fi
+$ }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AddDigit}
+%    |#1|: carry\\
+%    |#2|: digit of $x$\\
+%    |#3|: digit of $y$
+%    \begin{macrocode}
+\def\BIC@AddDigit#1#2#3{%
+  \romannumeral0%
+& \expandafter\BIC@@AddDigit\the\numexpr#1+#2+#3!%
+$ \expandafter\BIC@@AddDigit\number%
+$ \csname
+$   BIC@AddCarry%
+$   \ifcase#1 %
+$     #2%
+$   \else
+$     \ifcase#2 1\or2\or3\or4\or5\or6\or7\or8\or9\or10\fi
+$   \fi
+$ \endcsname#3!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@AddDigit}
+%    \begin{macrocode}
+\def\BIC@@AddDigit#1!{%
+  \ifnum#1<10 %
+    \BIC@AfterFi{ 0#1}%
+  \else
+    \BIC@AfterFi{ #1}%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AddCarry0}
+%    \begin{macrocode}
+$ \expandafter\def\csname BIC@AddCarry0\endcsname#1{#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AddCarry10}
+%    \begin{macrocode}
+$ \expandafter\def\csname BIC@AddCarry10\endcsname#1{1#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@AddCarry[1-9]}
+%    \begin{macrocode}
+$ \def\BIC@Temp#1#2{%
+$   \expandafter\def\csname BIC@AddCarry#1\endcsname##1{%
+$     \ifcase##1 #1\or
+$     #2%
+$?    \else\BigIntCalcError:ThisCannotHappen%
+$     \fi
+$   }%
+$ }%
+$ \BIC@Temp 0{1\or2\or3\or4\or5\or6\or7\or8\or9}%
+$ \BIC@Temp 1{2\or3\or4\or5\or6\or7\or8\or9\or10}%
+$ \BIC@Temp 2{3\or4\or5\or6\or7\or8\or9\or10\or11}%
+$ \BIC@Temp 3{4\or5\or6\or7\or8\or9\or10\or11\or12}%
+$ \BIC@Temp 4{5\or6\or7\or8\or9\or10\or11\or12\or13}%
+$ \BIC@Temp 5{6\or7\or8\or9\or10\or11\or12\or13\or14}%
+$ \BIC@Temp 6{7\or8\or9\or10\or11\or12\or13\or14\or15}%
+$ \BIC@Temp 7{8\or9\or10\or11\or12\or13\or14\or15\or16}%
+$ \BIC@Temp 8{9\or10\or11\or12\or13\or14\or15\or16\or17}%
+$ \BIC@Temp 9{10\or11\or12\or13\or14\or15\or16\or17\or18}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@SubXY}
+%    Preconditions:
+%    \begin{itemize}
+%    \item $x > y$, $x \geq 0$, and $y >= 0$
+%    \item digits($x$) = digits($y$)
+%    \end{itemize}
+%    \begin{macrocode}
+\def\BIC@SubXY#1#2!#3#4!#5!#6!{%
+  \ifx\\#2\\%
+    \ifx\\#3\\%
+      \BIC@AfterFiFi{%
+        \BIC@DoSub0!#1#5!#60!%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@DoSub0!#1#5!#3#6!%
+      }%
+    \fi
+  \else
+    \ifx\\#4\\%
+      \ifx\\#3\\%
+        \BIC@AfterFiFiFi{%
+          \BIC@SubXY#2!{}!#1#5!#60!%
+        }%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@SubXY#2!{}!#1#5!#3#6!%
+        }%
+      \fi
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@SubXY#2!#4!#1#5!#3#6!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DoSub}
+%    |#1|: carry\\
+%    |#2|: reverted result\\
+%    |#3#4|: reverted x\\
+%    |#5#6|: reverted y
+%    \begin{macrocode}
+\def\BIC@DoSub#1#2!#3#4!#5#6!{%
+  \ifx\\#4\\%
+    \BIC@AfterFi{%
+      \expandafter\expandafter\expandafter\BIC@SubResult
+      \BIC@SubDigit#1#3#5#2%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \expandafter\expandafter\expandafter\BIC@DoSub
+      \BIC@SubDigit#1#3#5#2!#4!#6!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@SubResult}
+%    \begin{macrocode}
+\def\BIC@SubResult#1{%
+  \ifx#10%
+    \expandafter\BIC@SubResult
+  \else
+    \expandafter\BIC@Space\expandafter#1%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@SubDigit}
+%    |#1|: carry\\
+%    |#2|: digit of $x$\\
+%    |#3|: digit of $y$
+%    \begin{macrocode}
+\def\BIC@SubDigit#1#2#3{%
+  \romannumeral0%
+& \expandafter\BIC@@SubDigit\the\numexpr#2-#3-#1!%
+$ \expandafter\BIC@@AddDigit\number
+$   \csname
+$     BIC@SubCarry%
+$     \ifcase#1 %
+$       #3%
+$     \else
+$       \ifcase#3 1\or2\or3\or4\or5\or6\or7\or8\or9\or10\fi
+$     \fi
+$   \endcsname#2!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@SubDigit}
+%    \begin{macrocode}
+& \def\BIC@@SubDigit#1!{%
+&   \ifnum#1<0 %
+&     \BIC@AfterFi{%
+&       \expandafter\BIC@Space
+&       \expandafter1\the\numexpr#1+10\relax
+&     }%
+&   \else
+&     \BIC@AfterFi{ 0#1}%
+&   \BIC@Fi
+& }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@SubCarry0}
+%    \begin{macrocode}
+$ \expandafter\def\csname BIC@SubCarry0\endcsname#1{#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@SubCarry10}%
+%    \begin{macrocode}
+$ \expandafter\def\csname BIC@SubCarry10\endcsname#1{1#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@SubCarry[1-9]}
+%    \begin{macrocode}
+$ \def\BIC@Temp#1#2{%
+$   \expandafter\def\csname BIC@SubCarry#1\endcsname##1{%
+$     \ifcase##1 #2%
+$?    \else\BigIntCalcError:ThisCannotHappen%
+$     \fi
+$   }%
+$ }%
+$ \BIC@Temp 1{19\or0\or1\or2\or3\or4\or5\or6\or7\or8}%
+$ \BIC@Temp 2{18\or19\or0\or1\or2\or3\or4\or5\or6\or7}%
+$ \BIC@Temp 3{17\or18\or19\or0\or1\or2\or3\or4\or5\or6}%
+$ \BIC@Temp 4{16\or17\or18\or19\or0\or1\or2\or3\or4\or5}%
+$ \BIC@Temp 5{15\or16\or17\or18\or19\or0\or1\or2\or3\or4}%
+$ \BIC@Temp 6{14\or15\or16\or17\or18\or19\or0\or1\or2\or3}%
+$ \BIC@Temp 7{13\or14\or15\or16\or17\or18\or19\or0\or1\or2}%
+$ \BIC@Temp 8{12\or13\or14\or15\or16\or17\or18\or19\or0\or1}%
+$ \BIC@Temp 9{11\or12\or13\or14\or15\or16\or17\or18\or19\or0}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Shl}, \op{Shr}}
+%
+%    \begin{macro}{\bigintcalcShl}
+%    \begin{macrocode}
+\def\bigintcalcShl#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Shl
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Shl}
+%    \begin{macrocode}
+\def\BIC@Shl#1#2!{%
+  \ifx#1-%
+    \BIC@AfterFi{%
+      \expandafter-\romannumeral0%
+&     \BIC@@Shl#2!!%
+$     \BIC@AddXY#2!#2!!!%
+    }%
+  \else
+    \BIC@AfterFi{%
+&     \BIC@@Shl#1#2!!%
+$     \BIC@AddXY#1#2!#1#2!!!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcShl}
+%    \begin{macrocode}
+\def\BigIntCalcShl#1!{%
+  \romannumeral0%
+& \BIC@@Shl#1!!%
+$ \BIC@AddXY#1!#1!!!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Shl}
+%    \begin{macrocode}
+& \def\BIC@@Shl#1#2!{%
+&   \ifx\\#2\\%
+&     \BIC@AfterFi{%
+&       \BIC@@@Shl0!#1%
+&     }%
+&   \else
+&     \BIC@AfterFi{%
+&       \BIC@@Shl#2!#1%
+&     }%
+&   \BIC@Fi
+& }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@Shl}
+%    |#1|: carry\\
+%    |#2|: result\\
+%    |#3#4|: reverted number
+%    \begin{macrocode}
+& \def\BIC@@@Shl#1#2!#3#4!{%
+&   \ifx\\#4\\%
+&     \BIC@AfterFi{%
+&       \expandafter\BIC@Space
+&       \the\numexpr#3*2+#1\relax#2%
+&     }%
+&   \else
+&     \BIC@AfterFi{%
+&       \expandafter\BIC@@@@Shl\the\numexpr#3*2+#1!#2!#4!%
+&     }%
+&   \BIC@Fi
+& }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@@Shl}
+%    \begin{macrocode}
+& \def\BIC@@@@Shl#1!{%
+&   \ifnum#1<10 %
+&     \BIC@AfterFi{%
+&       \BIC@@@Shl0#1%
+&     }%
+&   \else
+&     \BIC@AfterFi{%
+&       \BIC@@@Shl#1%
+&     }%
+&   \BIC@Fi
+& }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bigintcalcShr}
+%    \begin{macrocode}
+\def\bigintcalcShr#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Shr
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Shr}
+%    \begin{macrocode}
+\def\BIC@Shr#1#2!{%
+  \ifx#1-%
+    \expandafter-\romannumeral0%
+    \BIC@AfterFi{%
+      \BIC@@Shr#2!%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \BIC@@Shr#1#2!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcShr}
+%    \begin{macrocode}
+\def\BigIntCalcShr#1!{%
+  \romannumeral0%
+  \BIC@@Shr#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Shr}
+%    \begin{macrocode}
+\def\BIC@@Shr#1#2!{%
+  \ifcase#1 %
+    \BIC@AfterFi{ 0}%
+  \or
+    \ifx\\#2\\%
+      \BIC@AfterFiFi{ 0}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@@@Shr#1#2!!%
+      }%
+    \fi
+  \else
+    \BIC@AfterFi{%
+      \BIC@@@Shr0#1#2!!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@Shr}
+%    |#1|: carry\\
+%    |#2#3|: number\\
+%    |#4|: result
+%    \begin{macrocode}
+\def\BIC@@@Shr#1#2#3!#4!{%
+  \ifx\\#3\\%
+    \ifodd#1#2 %
+      \BIC@AfterFiFi{%
+&       \expandafter\BIC@ShrResult\the\numexpr(#1#2-1)/2\relax
+$       \expandafter\expandafter\expandafter\BIC@ShrResult
+$       \csname BIC@ShrDigit#1#2\endcsname
+        #4!%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+&       \expandafter\BIC@ShrResult\the\numexpr#1#2/2\relax
+$       \expandafter\expandafter\expandafter\BIC@ShrResult
+$       \csname BIC@ShrDigit#1#2\endcsname
+        #4!%
+      }%
+    \fi
+  \else
+    \ifodd#1#2 %
+      \BIC@AfterFiFi{%
+&       \expandafter\BIC@@@@Shr\the\numexpr(#1#2-1)/2\relax1%
+$       \expandafter\expandafter\expandafter\BIC@@@@Shr
+$       \csname BIC@ShrDigit#1#2\endcsname
+        #3!#4!%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+&       \expandafter\BIC@@@@Shr\the\numexpr#1#2/2\relax0%
+$       \expandafter\expandafter\expandafter\BIC@@@@Shr
+$       \csname BIC@ShrDigit#1#2\endcsname
+        #3!#4!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ShrResult}
+%    \begin{macrocode}
+& \def\BIC@ShrResult#1#2!{ #2#1}%
+$ \def\BIC@ShrResult#1#2#3!{ #3#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@@Shr}
+%    |#1|: new digit\\
+%    |#2|: carry\\
+%    |#3|: remaining number\\
+%    |#4|: result
+%    \begin{macrocode}
+\def\BIC@@@@Shr#1#2#3!#4!{%
+  \BIC@@@Shr#2#3!#4#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ShrDigit[00-19]}
+%    \begin{macrocode}
+$ \def\BIC@Temp#1#2#3#4{%
+$   \expandafter\def\csname BIC@ShrDigit#1#2\endcsname{#3#4}%
+$ }%
+$ \BIC@Temp 0000%
+$ \BIC@Temp 0101%
+$ \BIC@Temp 0210%
+$ \BIC@Temp 0311%
+$ \BIC@Temp 0420%
+$ \BIC@Temp 0521%
+$ \BIC@Temp 0630%
+$ \BIC@Temp 0731%
+$ \BIC@Temp 0840%
+$ \BIC@Temp 0941%
+$ \BIC@Temp 1050%
+$ \BIC@Temp 1151%
+$ \BIC@Temp 1260%
+$ \BIC@Temp 1361%
+$ \BIC@Temp 1470%
+$ \BIC@Temp 1571%
+$ \BIC@Temp 1680%
+$ \BIC@Temp 1781%
+$ \BIC@Temp 1890%
+$ \BIC@Temp 1991%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{BIC@Tim}}
+%
+%    \begin{macro}{\BIC@Tim}
+%    Macro \cs{BIC@Tim} implements ``Number \emph{tim}es digit''.\\
+%    |#1|: plain number without sign\\
+%    |#2|: digit
+\def\BIC@Tim#1!#2{%
+  \romannumeral0%
+  \ifcase#2 % 0
+    \BIC@AfterFi{ 0}%
+  \or % 1
+    \BIC@AfterFi{ #1}%
+  \or % 2
+    \BIC@AfterFi{%
+      \BIC@Shl#1!%
+    }%
+  \else % 3-9
+    \BIC@AfterFi{%
+      \BIC@@Tim#1!!#2%
+    }%
+  \BIC@Fi
+}
+%    \begin{macrocode}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Tim}
+%    |#1#2|: number\\
+%    |#3|: reverted number
+%    \begin{macrocode}
+\def\BIC@@Tim#1#2!{%
+  \ifx\\#2\\%
+    \BIC@AfterFi{%
+      \BIC@ProcessTim0!#1%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \BIC@@Tim#2!#1%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessTim}
+%    |#1|: carry\\
+%    |#2|: result\\
+%    |#3#4|: reverted number\\
+%    |#5|: digit
+%    \begin{macrocode}
+\def\BIC@ProcessTim#1#2!#3#4!#5{%
+  \ifx\\#4\\%
+    \BIC@AfterFi{%
+      \expandafter\BIC@Space
+&     \the\numexpr#3*#5+#1\relax
+$     \romannumeral0\BIC@TimDigit#3#5#1%
+      #2%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \expandafter\BIC@@ProcessTim
+&     \the\numexpr#3*#5+#1%
+$     \romannumeral0\BIC@TimDigit#3#5#1%
+      !#2!#4!#5%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@ProcessTim}
+%    |#1#2|: carry?, new digit\\
+%    |#3|: new number\\
+%    |#4|: old number\\
+%    |#5|: digit
+%    \begin{macrocode}
+\def\BIC@@ProcessTim#1#2!{%
+  \ifx\\#2\\%
+    \BIC@AfterFi{%
+      \BIC@ProcessTim0#1%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \BIC@ProcessTim#1#2%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@TimDigit}
+%    |#1|: digit 0--9\\
+%    |#2|: digit 3--9\\
+%    |#3|: carry 0--9
+%    \begin{macrocode}
+$ \def\BIC@TimDigit#1#2#3{%
+$   \ifcase#1 % 0
+$     \BIC@AfterFi{ #3}%
+$   \or % 1
+$     \BIC@AfterFi{%
+$       \expandafter\BIC@Space
+$       \number\csname BIC@AddCarry#2\endcsname#3 %
+$     }%
+$   \else
+$     \ifcase#3 %
+$       \BIC@AfterFiFi{%
+$         \expandafter\BIC@Space
+$         \number\csname BIC@MulDigit#2\endcsname#1 %
+$       }%
+$     \else
+$       \BIC@AfterFiFi{%
+$         \expandafter\BIC@Space
+$         \romannumeral0%
+$         \expandafter\BIC@AddXY
+$         \number\csname BIC@MulDigit#2\endcsname#1!%
+$         #3!!!%
+$       }%
+$     \fi
+$   \BIC@Fi
+$ }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@MulDigit[3-9]}
+%    \begin{macrocode}
+$ \def\BIC@Temp#1#2{%
+$   \expandafter\def\csname BIC@MulDigit#1\endcsname##1{%
+$     \ifcase##1 0%
+$     \or ##1%
+$     \or #2%
+$?    \else\BigIntCalcError:ThisCannotHappen%
+$     \fi
+$   }%
+$ }%
+$ \BIC@Temp 3{6\or9\or12\or15\or18\or21\or24\or27}%
+$ \BIC@Temp 4{8\or12\or16\or20\or24\or28\or32\or36}%
+$ \BIC@Temp 5{10\or15\or20\or25\or30\or35\or40\or45}%
+$ \BIC@Temp 6{12\or18\or24\or30\or36\or42\or48\or54}%
+$ \BIC@Temp 7{14\or21\or28\or35\or42\or49\or56\or63}%
+$ \BIC@Temp 8{16\or24\or32\or40\or48\or56\or64\or72}%
+$ \BIC@Temp 9{18\or27\or36\or45\or54\or63\or72\or81}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Mul}}
+%
+%    \begin{macro}{\bigintcalcMul}
+%    \begin{macrocode}
+\def\bigintcalcMul#1#2{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Mul
+  \bigintcalcNum{#1}!{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Mul}
+%    \begin{macrocode}
+\def\BIC@Mul#1!#2{%
+  \expandafter\expandafter\expandafter\BIC@MulSwitch
+  \bigintcalcNum{#2}!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@MulSwitch}
+%    Decision table for \cs{BIC@MulSwitch}.
+%    \begin{quote}
+%    \begin{tabular}[t]{@{}|l|l|l|l|l|@{}}
+%      \hline
+%      $x=0$ &\multicolumn{3}{l}{}    &$0$\\
+%      \hline
+%      $x>0$ & $y=0$ &\multicolumn2l{}&$0$\\
+%      \cline{2-5}
+%            & $y>0$ & $ x> y$ & $+$ & $\opMul( x, y)$\\
+%      \cline{3-3}\cline{5-5}
+%            &       & else    &     & $\opMul( y, x)$\\
+%      \cline{2-5}
+%            & $y<0$ & $ x>-y$ & $-$ & $\opMul( x,-y)$\\
+%      \cline{3-3}\cline{5-5}
+%            &       & else    &     & $\opMul(-y, x)$\\
+%      \hline
+%      $x<0$ & $y=0$ &\multicolumn2l{}&$0$\\
+%      \cline{2-5}
+%            & $y>0$ & $-x> y$ & $-$ & $\opMul(-x, y)$\\
+%      \cline{3-3}\cline{5-5}
+%            &       & else    &     & $\opMul( y,-x)$\\
+%      \cline{2-5}
+%            & $y<0$ & $-x>-y$ & $+$ & $\opMul(-x,-y)$\\
+%      \cline{3-3}\cline{5-5}
+%            &       & else    &     & $\opMul(-y,-x)$\\
+%      \hline
+%    \end{tabular}
+%    \end{quote}
+%    \begin{macrocode}
+\def\BIC@MulSwitch#1#2!#3#4!{%
+  \ifcase\BIC@Sgn#1#2! % x = 0
+    \BIC@AfterFi{ 0}%
+  \or % x > 0
+    \ifcase\BIC@Sgn#3#4! % y = 0
+      \BIC@AfterFiFi{ 0}%
+    \or % y > 0
+      \ifnum\BIC@PosCmp#1#2!#3#4!=1 % x > y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#1#2!#3#4!%
+        }%
+      \else % x <= y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#3#4!#1#2!%
+        }%
+      \fi
+    \else % y < 0
+      \expandafter-\romannumeral0%
+      \ifnum\BIC@PosCmp#1#2!#4!=1 % x > -y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#1#2!#4!%
+        }%
+      \else % x <= -y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#4!#1#2!%
+        }%
+      \fi
+    \fi
+  \else % x < 0
+    \ifcase\BIC@Sgn#3#4! % y = 0
+      \BIC@AfterFiFi{ 0}%
+    \or % y > 0
+      \expandafter-\romannumeral0%
+      \ifnum\BIC@PosCmp#2!#3#4!=1 % -x > y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#2!#3#4!%
+        }%
+      \else % -x <= y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#3#4!#2!%
+        }%
+      \fi
+    \else % y < 0
+      \ifnum\BIC@PosCmp#2!#4!=1 % -x > -y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#2!#4!%
+        }%
+      \else % -x <= -y
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessMul0!#4!#2!%
+        }%
+      \fi
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcMul}
+%    \begin{macrocode}
+\def\BigIntCalcMul#1!#2!{%
+  \romannumeral0%
+  \BIC@ProcessMul0!#1!#2!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessMul}
+%    |#1|: result\\
+%    |#2|: number $x$\\
+%    |#3#4|: number $y$
+%    \begin{macrocode}
+\def\BIC@ProcessMul#1!#2!#3#4!{%
+  \ifx\\#4\\%
+    \BIC@AfterFi{%
+      \expandafter\expandafter\expandafter\BIC@Space
+      \bigintcalcAdd{\BIC@Tim#2!#3}{#10}%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \expandafter\expandafter\expandafter\BIC@ProcessMul
+      \bigintcalcAdd{\BIC@Tim#2!#3}{#10}!#2!#4!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Sqr}}
+%
+%    \begin{macro}{\bigintcalcSqr}
+%    \begin{macrocode}
+\def\bigintcalcSqr#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Sqr
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Sqr}
+%    \begin{macrocode}
+\def\BIC@Sqr#1{%
+   \ifx#1-%
+     \expandafter\BIC@@Sqr
+   \else
+     \expandafter\BIC@@Sqr\expandafter#1%
+   \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@Sqr}
+%    \begin{macrocode}
+\def\BIC@@Sqr#1!{%
+  \BIC@ProcessMul0!#1!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Fac}}
+%
+%    \begin{macro}{\bigintcalcFac}
+%    \begin{macrocode}
+\def\bigintcalcFac#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Fac
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Fac}
+%    \begin{macrocode}
+\def\BIC@Fac#1#2!{%
+  \ifx#1-%
+    \BIC@AfterFi{ 0\BigIntCalcError:FacNegative}%
+  \else
+    \ifnum\BIC@PosCmp#1#2!13!<0 %
+      \ifcase#1#2 %
+         \BIC@AfterFiFiFi{ 1}% 0!
+      \or\BIC@AfterFiFiFi{ 1}% 1!
+      \or\BIC@AfterFiFiFi{ 2}% 2!
+      \or\BIC@AfterFiFiFi{ 6}% 3!
+      \or\BIC@AfterFiFiFi{ 24}% 4!
+      \or\BIC@AfterFiFiFi{ 120}% 5!
+      \or\BIC@AfterFiFiFi{ 720}% 6!
+      \or\BIC@AfterFiFiFi{ 5040}% 7!
+      \or\BIC@AfterFiFiFi{ 40320}% 8!
+      \or\BIC@AfterFiFiFi{ 362880}% 9!
+      \or\BIC@AfterFiFiFi{ 3628800}% 10!
+      \or\BIC@AfterFiFiFi{ 39916800}% 11!
+      \or\BIC@AfterFiFiFi{ 479001600}% 12!
+?     \else\BigIntCalcError:ThisCannotHappen%
+      \fi
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ProcessFac#1#2!479001600!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessFac}
+%    |#1|: $n$\\
+%    |#2|: result
+%    \begin{macrocode}
+\def\BIC@ProcessFac#1!#2!{%
+  \ifnum\BIC@PosCmp#1!12!=0 %
+    \BIC@AfterFi{ #2}%
+  \else
+    \BIC@AfterFi{%
+      \expandafter\BIC@@ProcessFac
+      \romannumeral0\BIC@ProcessMul0!#2!#1!%
+      !#1!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@ProcessFac}
+%    |#1|: result\\
+%    |#2|: $n$
+%    \begin{macrocode}
+\def\BIC@@ProcessFac#1!#2!{%
+  \expandafter\BIC@ProcessFac
+  \romannumeral0\BIC@Dec#2!{}%
+  !#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Pow}}
+%
+%    \begin{macro}{\bigintcalcPow}
+%    |#1|: basis\\
+%    |#2|: power
+%    \begin{macrocode}
+\def\bigintcalcPow#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Pow
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Pow}
+%    |#1|: basis\\
+%    |#2|: power
+%    \begin{macrocode}
+\def\BIC@Pow#1!#2{%
+  \expandafter\expandafter\expandafter\BIC@PowSwitch
+  \bigintcalcNum{#2}!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@PowSwitch}
+%    |#1#2|: power $y$\\
+%    |#3#4|: basis $x$\\
+%    Decision table for \cs{BIC@PowSwitch}.
+%    \begin{quote}
+%    \def\M#1{\multicolumn{#1}{l}{}}%
+%    \begin{tabular}[t]{@{}|l|l|l|l|@{}}
+%    \hline
+%    $y=0$ & \M{2}                        & $1$\\
+%    \hline
+%    $y=1$ & \M{2}                        & $x$\\
+%    \hline
+%    $y=2$ & $x<0$          & \M{1}       & $\opMul(-x,-x)$\\
+%    \cline{2-4}
+%          & else           & \M{1}       & $\opMul(x,x)$\\
+%    \hline
+%    $y<0$ & $x=0$          & \M{1}       & DivisionByZero\\
+%    \cline{2-4}
+%          & $x=1$          & \M{1}       & $1$\\
+%    \cline{2-4}
+%          & $x=-1$         & $\opODD(y)$ & $-1$\\
+%    \cline{3-4}
+%          &                & else        & $1$\\
+%    \cline{2-4}
+%          & else ($\string|x\string|>1$) & \M{1}       & $0$\\
+%    \hline
+%    $y>2$ & $x=0$          & \M{1}       & $0$\\
+%    \cline{2-4}
+%          & $x=1$          & \M{1}       & $1$\\
+%    \cline{2-4}
+%          & $x=-1$         & $\opODD(y)$ & $-1$\\
+%    \cline{3-4}
+%          &                & else        & $1$\\
+%    \cline{2-4}
+%          & $x<-1$ ($x<0$) & $\opODD(y)$ & $-\opPow(-x,y)$\\
+%    \cline{3-4}
+%          &                & else        & $\opPow(-x,y)$\\
+%    \cline{2-4}
+%          & else ($x>1$)   & \M{1}       & $\opPow(x,y)$\\
+%    \hline
+%    \end{tabular}
+%    \end{quote}
+%    \begin{macrocode}
+\def\BIC@PowSwitch#1#2!#3#4!{%
+  \ifcase\ifx\\#2\\%
+           \ifx#100 % y = 0
+           \else\ifx#111 % y = 1
+           \else\ifx#122 % y = 2
+           \else4 % y > 2
+           \fi\fi\fi
+         \else
+           \ifx#1-3 % y < 0
+           \else4 % y > 2
+           \fi
+         \fi
+    \BIC@AfterFi{ 1}% y = 0
+  \or % y = 1
+    \BIC@AfterFi{ #3#4}%
+  \or % y = 2
+    \ifx#3-% x < 0
+      \BIC@AfterFiFi{%
+        \BIC@ProcessMul0!#4!#4!%
+      }%
+    \else % x >= 0
+      \BIC@AfterFiFi{%
+        \BIC@ProcessMul0!#3#4!#3#4!%
+      }%
+    \fi
+  \or % y < 0
+    \ifcase\ifx\\#4\\%
+             \ifx#300 % x = 0
+             \else\ifx#311 % x = 1
+             \else3 % x > 1
+             \fi\fi
+           \else
+             \ifcase\BIC@MinusOne#3#4! %
+               3 % |x| > 1
+             \or
+               2 % x = -1
+?            \else\BigIntCalcError:ThisCannotHappen%
+             \fi
+           \fi
+      \BIC@AfterFiFi{ 0\BigIntCalcError:DivisionByZero}% x = 0
+    \or % x = 1
+      \BIC@AfterFiFi{ 1}% x = 1
+    \or % x = -1
+      \ifcase\BIC@ModTwo#2! % even(y)
+        \BIC@AfterFiFiFi{ 1}%
+      \or % odd(y)
+        \BIC@AfterFiFiFi{ -1}%
+?     \else\BigIntCalcError:ThisCannotHappen%
+      \fi
+    \or % |x| > 1
+      \BIC@AfterFiFi{ 0}%
+?   \else\BigIntCalcError:ThisCannotHappen%
+    \fi
+  \or % y > 2
+    \ifcase\ifx\\#4\\%
+             \ifx#300 % x = 0
+             \else\ifx#311 % x = 1
+             \else4 % x > 1
+             \fi\fi
+           \else
+             \ifx#3-%
+               \ifcase\BIC@MinusOne#3#4! %
+                 3 % x < -1
+               \else
+                 2 % x = -1
+               \fi
+             \else
+               4 % x > 1
+             \fi
+           \fi
+      \BIC@AfterFiFi{ 0}% x = 0
+    \or % x = 1
+      \BIC@AfterFiFi{ 1}% x = 1
+    \or % x = -1
+      \ifcase\BIC@ModTwo#1#2! % even(y)
+        \BIC@AfterFiFiFi{ 1}%
+      \or % odd(y)
+        \BIC@AfterFiFiFi{ -1}%
+?     \else\BigIntCalcError:ThisCannotHappen%
+      \fi
+    \or % x < -1
+      \ifcase\BIC@ModTwo#1#2! % even(y)
+        \BIC@AfterFiFiFi{%
+          \BIC@PowRec#4!#1#2!1!%
+        }%
+      \or % odd(y)
+        \expandafter-\romannumeral0%
+        \BIC@AfterFiFiFi{%
+          \BIC@PowRec#4!#1#2!1!%
+        }%
+?     \else\BigIntCalcError:ThisCannotHappen%
+      \fi
+    \or % x > 1
+      \BIC@AfterFiFi{%
+        \BIC@PowRec#3#4!#1#2!1!%
+      }%
+?   \else\BigIntCalcError:ThisCannotHappen%
+    \fi
+? \else\BigIntCalcError:ThisCannotHappen%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Help macros}
+%
+%    \begin{macro}{\BIC@ModTwo}
+%    Macro \cs{BIC@ModTwo} expects a number without sign
+%    and returns digit |1| or |0| if the number is odd or even.
+%    \begin{macrocode}
+\def\BIC@ModTwo#1#2!{%
+  \ifx\\#2\\%
+    \ifodd#1 %
+      \BIC@AfterFiFi1%
+    \else
+      \BIC@AfterFiFi0%
+    \fi
+  \else
+    \BIC@AfterFi{%
+      \BIC@ModTwo#2!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BIC@MinusOne}
+%    Macro \cs{BIC@MinusOne} expects a number and returns
+%    digit |1| if the number equals minus one and returns |0| otherwise.
+%    \begin{macrocode}
+\def\BIC@MinusOne#1#2!{%
+  \ifx#1-%
+    \BIC@@MinusOne#2!%
+  \else
+    0%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@MinusOne}
+%    \begin{macrocode}
+\def\BIC@@MinusOne#1#2!{%
+  \ifx#11%
+    \ifx\\#2\\%
+      1%
+    \else
+      0%
+    \fi
+  \else
+    0%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Recursive calculation}
+%
+%    \begin{macro}{\BIC@PowRec}
+%\begin{quote}
+%\begin{verbatim}
+%Pow(x, y) {
+%  PowRec(x, y, 1)
+%}
+%PowRec(x, y, r) {
+%  if y == 1 then
+%    return r
+%  else
+%    ifodd y then
+%      return PowRec(x*x, y div 2, r*x) % y div 2 = (y-1)/2
+%    else
+%      return PowRec(x*x, y div 2, r)
+%    fi
+%  fi
+%}
+%\end{verbatim}
+%\end{quote}
+%    |#1|: $x$ (basis)\\
+%    |#2#3|: $y$ (power)\\
+%    |#4|: $r$ (result)
+%    \begin{macrocode}
+\def\BIC@PowRec#1!#2#3!#4!{%
+  \ifcase\ifx#21\ifx\\#3\\0 \else1 \fi\else1 \fi % y = 1
+    \ifnum\BIC@PosCmp#1!#4!=1 % x > r
+      \BIC@AfterFiFi{%
+        \BIC@ProcessMul0!#1!#4!%
+      }%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ProcessMul0!#4!#1!%
+      }%
+    \fi
+  \or
+    \ifcase\BIC@ModTwo#2#3! % even(y)
+      \BIC@AfterFiFi{%
+        \expandafter\BIC@@PowRec\romannumeral0%
+        \BIC@@Shr#2#3!%
+        !#1!#4!%
+      }%
+    \or % odd(y)
+      \ifnum\BIC@PosCmp#1!#4!=1 % x > r
+        \BIC@AfterFiFiFi{%
+          \expandafter\BIC@@@PowRec\romannumeral0%
+          \BIC@ProcessMul0!#1!#4!%
+          !#1!#2#3!%
+        }%
+      \else
+        \BIC@AfterFiFiFi{%
+          \expandafter\BIC@@@PowRec\romannumeral0%
+          \BIC@ProcessMul0!#1!#4!%
+          !#1!#2#3!%
+        }%
+      \fi
+?   \else\BigIntCalcError:ThisCannotHappen%
+    \fi
+? \else\BigIntCalcError:ThisCannotHappen%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@PowRec}
+%    |#1|: $y/2$\\
+%    |#2|: $x$\\
+%    |#3|: new $r$ ($r$ or $r*x$)
+%    \begin{macrocode}
+\def\BIC@@PowRec#1!#2!#3!{%
+  \expandafter\BIC@PowRec\romannumeral0%
+  \BIC@ProcessMul0!#2!#2!%
+  !#1!#3!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@@PowRec}
+%    |#1|: $r*x$
+%    |#2|: $x$
+%    |#3|: $y$
+%    \begin{macrocode}
+\def\BIC@@@PowRec#1!#2!#3!{%
+  \expandafter\BIC@@PowRec\romannumeral0%
+  \BIC@@Shr#3!%
+  !#2!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Div}}
+%
+%    \begin{macro}{\bigintcalcDiv}
+%    |#1|: $x$\\
+%    |#2|: $y$ (divisor)
+%    \begin{macrocode}
+\def\bigintcalcDiv#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Div
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Div}
+%    |#1|: $x$\\
+%    |#2|: $y$
+%    \begin{macrocode}
+\def\BIC@Div#1!#2{%
+  \expandafter\expandafter\expandafter\BIC@DivSwitchSign
+  \bigintcalcNum{#2}!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcDiv}
+%    \begin{macrocode}
+\def\BigIntCalcDiv#1!#2!{%
+  \romannumeral0%
+  \BIC@DivSwitchSign#2!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivSwitchSign}
+%    Decision table for \cs{BIC@DivSwitchSign}.
+%    \begin{quote}
+%    \begin{tabular}{@{}|l|l|l|@{}}
+%    \hline
+%    $y=0$ & \multicolumn{1}{l}{} & DivisionByZero\\
+%    \hline
+%    $y>0$ & $x=0$ & $0$\\
+%    \cline{2-3}
+%          & $x>0$ & DivSwitch$(+,x,y)$\\
+%    \cline{2-3}
+%          & $x<0$ & DivSwitch$(-,-x,y)$\\
+%    \hline
+%    $y<0$ & $x=0$ & $0$\\
+%    \cline{2-3}
+%          & $x>0$ & DivSwitch$(-,x,-y)$\\
+%    \cline{2-3}
+%          & $x<0$ & DivSwitch$(+,-x,-y)$\\
+%    \hline
+%    \end{tabular}
+%    \end{quote}
+%    |#1|: $y$ (divisor)\\
+%    |#2|: $x$
+%    \begin{macrocode}
+\def\BIC@DivSwitchSign#1#2!#3#4!{%
+  \ifcase\BIC@Sgn#1#2! % y = 0
+    \BIC@AfterFi{ 0\BigIntCalcError:DivisionByZero}%
+  \or % y > 0
+    \ifcase\BIC@Sgn#3#4! % x = 0
+      \BIC@AfterFiFi{ 0}%
+    \or % x > 0
+      \BIC@AfterFiFi{%
+        \BIC@DivSwitch{}#3#4!#1#2!%
+      }%
+    \else % x < 0
+      \BIC@AfterFiFi{%
+        \BIC@DivSwitch-#4!#1#2!%
+      }%
+    \fi
+  \else % y < 0
+    \ifcase\BIC@Sgn#3#4! % x = 0
+      \BIC@AfterFiFi{ 0}%
+    \or % x > 0
+      \BIC@AfterFiFi{%
+        \BIC@DivSwitch-#3#4!#2!%
+      }%
+    \else % x < 0
+      \BIC@AfterFiFi{%
+        \BIC@DivSwitch{}#4!#2!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivSwitch}
+%    Decision table for \cs{BIC@DivSwitch}.
+%    \begin{quote}
+%    \begin{tabular}{@{}|l|l|l|@{}}
+%    \hline
+%    $y=x$ & \multicolumn{1}{l}{} & sign $1$\\
+%    \hline
+%    $y>x$ & \multicolumn{1}{l}{} & $0$\\
+%    \hline
+%    $y<x$ & $y=1$                & sign $x$\\
+%    \cline{2-3}
+%          & $y=2$                & sign Shr$(x)$\\
+%    \cline{2-3}
+%          & $y=4$                & sign Shr(Shr$(x)$)\\
+%    \cline{2-3}
+%          & else                 & sign ProcessDiv$(x,y)$\\
+%    \hline
+%    \end{tabular}
+%    \end{quote}
+%    |#1|: sign\\
+%    |#2|: $x$\\
+%    |#3#4|: $y$ ($y\ne 0$)
+%    \begin{macrocode}
+\def\BIC@DivSwitch#1#2!#3#4!{%
+  \ifcase\BIC@PosCmp#3#4!#2!% y = x
+    \BIC@AfterFi{ #11}%
+  \or % y > x
+    \BIC@AfterFi{ 0}%
+  \else % y < x
+    \ifx\\#1\\%
+    \else
+      \expandafter-\romannumeral0%
+    \fi
+    \ifcase\ifx\\#4\\%
+             \ifx#310 % y = 1
+             \else\ifx#321 % y = 2
+             \else\ifx#342 % y = 4
+             \else3 % y > 2
+             \fi\fi\fi
+           \else
+             3 % y > 2
+           \fi
+      \BIC@AfterFiFi{ #2}% y = 1
+    \or % y = 2
+      \BIC@AfterFiFi{%
+        \BIC@@Shr#2!%
+      }%
+    \or % y = 4
+      \BIC@AfterFiFi{%
+        \expandafter\BIC@@Shr\romannumeral0%
+          \BIC@@Shr#2!!%
+      }%
+    \or % y > 2
+      \BIC@AfterFiFi{%
+        \BIC@DivStartX#2!#3#4!!!%
+      }%
+?   \else\BigIntCalcError:ThisCannotHappen%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessDiv}
+%    |#1#2|: $x$\\
+%    |#3#4|: $y$\\
+%    |#5|: collect first digits of $x$\\
+%    |#6|: corresponding digits of $y$
+%    \begin{macrocode}
+\def\BIC@DivStartX#1#2!#3#4!#5!#6!{%
+  \ifx\\#4\\%
+    \BIC@AfterFi{%
+      \BIC@DivStartYii#6#3#4!{#5#1}#2=!%
+    }%
+  \else
+    \BIC@AfterFi{%
+      \BIC@DivStartX#2!#4!#5#1!#6#3!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivStartYii}
+%    |#1|: $y$\\
+%    |#2|: $x$, |=|
+%    \begin{macrocode}
+\def\BIC@DivStartYii#1!{%
+  \expandafter\BIC@DivStartYiv\romannumeral0%
+  \BIC@Shl#1!%
+  !#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivStartYiv}
+%    |#1|: $2y$\\
+%    |#2|: $y$\\
+%    |#3|: $x$, |=|
+%    \begin{macrocode}
+\def\BIC@DivStartYiv#1!{%
+  \expandafter\BIC@DivStartYvi\romannumeral0%
+  \BIC@Shl#1!%
+  !#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivStartYvi}
+%    |#1|: $4y$\\
+%    |#2|: $2y$\\
+%    |#3|: $y$\\
+%    |#4|: $x$, |=|
+%    \begin{macrocode}
+\def\BIC@DivStartYvi#1!#2!{%
+  \expandafter\BIC@DivStartYviii\romannumeral0%
+  \BIC@AddXY#1!#2!!!%
+  !#1!#2!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivStartYviii}
+%    |#1|: $6y$\\
+%    |#2|: $4y$\\
+%    |#3|: $2y$\\
+%    |#4|: $y$\\
+%    |#5|: $x$, |=|
+%    \begin{macrocode}
+\def\BIC@DivStartYviii#1!#2!{%
+  \expandafter\BIC@DivStart\romannumeral0%
+  \BIC@Shl#2!%
+  !#1!#2!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivStart}
+%    |#1|: $8y$\\
+%    |#2|: $6y$\\
+%    |#3|: $4y$\\
+%    |#4|: $2y$\\
+%    |#5|: $y$\\
+%    |#6|: $x$, |=|
+%    \begin{macrocode}
+\def\BIC@DivStart#1!#2!#3!#4!#5!#6!{%
+  \BIC@ProcessDiv#6!!#5!#4!#3!#2!#1!=%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessDiv}
+%    |#1#2#3|: $x$, |=|\\
+%    |#4|: result\\
+%    |#5|: $y$\\
+%    |#6|: $2y$\\
+%    |#7|: $4y$\\
+%    |#8|: $6y$\\
+%    |#9|: $8y$
+%    \begin{macrocode}
+\def\BIC@ProcessDiv#1#2#3!#4!#5!{%
+  \ifcase\BIC@PosCmp#5!#1!% y = #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#41}}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ProcessDiv#2#3!#41!#5!%
+      }%
+    \fi
+  \or % y > #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#40}}%
+    \else
+      \ifx\\#4\\%
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessDiv{#1#2}#3!!#5!%
+        }%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessDiv{#1#2}#3!#40!#5!%
+        }%
+      \fi
+    \fi
+  \else % y < #1
+    \BIC@AfterFi{%
+      \BIC@@ProcessDiv{#1}#2#3!#4!#5!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivCleanup}
+%    |#1|: result\\
+%    |#2|: garbage
+%    \begin{macrocode}
+\def\BIC@DivCleanup#1#2={ #1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@@ProcessDiv}
+%    \begin{macrocode}
+\def\BIC@@ProcessDiv#1#2#3!#4!#5!#6!#7!{%
+  \ifcase\BIC@PosCmp#7!#1!% 4y = #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#44}}%
+    \else
+     \BIC@AfterFiFi{%
+       \BIC@ProcessDiv#2#3!#44!#5!#6!#7!%
+     }%
+    \fi
+  \or % 4y > #1
+    \ifcase\BIC@PosCmp#6!#1!% 2y = #1
+      \ifx#2=%
+        \BIC@AfterFiFiFi{\BIC@DivCleanup{#42}}%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessDiv#2#3!#42!#5!#6!#7!%
+        }%
+      \fi
+    \or % 2y > #1
+      \ifx#2=%
+        \BIC@AfterFiFiFi{\BIC@DivCleanup{#41}}%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@DivSub#1!#5!#2#3!#41!#5!#6!#7!%
+        }%
+      \fi
+    \else % 2y < #1
+      \BIC@AfterFiFi{%
+        \expandafter\BIC@ProcessDivII\romannumeral0%
+        \BIC@SubXY#1!#6!!!%
+        !#2#3!#4!#5!23%
+        #6!#7!%
+      }%
+    \fi
+  \else % 4y < #1
+    \BIC@AfterFi{%
+      \BIC@@@ProcessDiv{#1}#2#3!#4!#5!#6!#7!%
+    }%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@DivSub}
+%    Next token group: |#1|-|#2| and next digit |#3|.
+%    \begin{macrocode}
+\def\BIC@DivSub#1!#2!#3{%
+  \expandafter\BIC@ProcessDiv\expandafter{%
+    \romannumeral0%
+    \BIC@SubXY#1!#2!!!%
+    #3%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessDivII}
+%    |#1|: $x'-2y$\\
+%    |#2#3|: remaining $x$, |=|\\
+%    |#4|: result\\
+%    |#5|: $y$\\
+%    |#6|: first possible result digit\\
+%    |#7|: second possible result digit
+%    \begin{macrocode}
+\def\BIC@ProcessDivII#1!#2#3!#4!#5!#6#7{%
+  \ifcase\BIC@PosCmp#5!#1!% y = #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#4#7}}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ProcessDiv#2#3!#4#7!#5!%
+      }%
+    \fi
+  \or % y > #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#4#6}}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ProcessDiv{#1#2}#3!#4#6!#5!%
+      }%
+    \fi
+  \else % y < #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#4#7}}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@DivSub#1!#5!#2#3!#4#7!#5!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ProcessDivIV}
+%    |#1#2#3|: $x$, |=|, $x>4y$\\
+%    |#4|: result\\
+%    |#5|: $y$\\
+%    |#6|: $2y$\\
+%    |#7|: $4y$\\
+%    |#8|: $6y$\\
+%    |#9|: $8y$
+%    \begin{macrocode}
+\def\BIC@@@ProcessDiv#1#2#3!#4!#5!#6!#7!#8!#9!{%
+  \ifcase\BIC@PosCmp#8!#1!% 6y = #1
+    \ifx#2=%
+      \BIC@AfterFiFi{\BIC@DivCleanup{#46}}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ProcessDiv#2#3!#46!#5!#6!#7!#8!#9!%
+      }%
+    \fi
+  \or % 6y > #1
+    \BIC@AfterFi{%
+      \expandafter\BIC@ProcessDivII\romannumeral0%
+      \BIC@SubXY#1!#7!!!%
+      !#2#3!#4!#5!45%
+      #6!#7!#8!#9!%
+    }%
+  \else % 6y < #1
+    \ifcase\BIC@PosCmp#9!#1!% 8y = #1
+      \ifx#2=%
+        \BIC@AfterFiFiFi{\BIC@DivCleanup{#48}}%
+      \else
+        \BIC@AfterFiFiFi{%
+          \BIC@ProcessDiv#2#3!#48!#5!#6!#7!#8!#9!%
+        }%
+      \fi
+    \or % 8y > #1
+      \BIC@AfterFiFi{%
+        \expandafter\BIC@ProcessDivII\romannumeral0%
+        \BIC@SubXY#1!#8!!!%
+        !#2#3!#4!#5!67%
+        #6!#7!#8!#9!%
+      }%
+    \else % 8y < #1
+      \BIC@AfterFiFi{%
+        \expandafter\BIC@ProcessDivII\romannumeral0%
+        \BIC@SubXY#1!#9!!!%
+        !#2#3!#4!#5!89%
+        #6!#7!#8!#9!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\op{Mod}}
+%
+%    \begin{macro}{\bigintcalcMod}
+%    |#1|: $x$\\
+%    |#2|: $y$
+%    \begin{macrocode}
+\def\bigintcalcMod#1{%
+  \romannumeral0%
+  \expandafter\expandafter\expandafter\BIC@Mod
+  \bigintcalcNum{#1}!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@Mod}
+%    |#1|: $x$\\
+%    |#2|: $y$
+%    \begin{macrocode}
+\def\BIC@Mod#1!#2{%
+  \expandafter\expandafter\expandafter\BIC@ModSwitchSign
+  \bigintcalcNum{#2}!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BigIntCalcMod}
+%    \begin{macrocode}
+\def\BigIntCalcMod#1!#2!{%
+  \romannumeral0%
+  \BIC@ModSwitchSign#2!#1!%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ModSwitchSign}
+%    Decision table for \cs{BIC@ModSwitchSign}.
+%    \begin{quote}
+%    \begin{tabular}{@{}|l|l|l|@{}}
+%    \hline
+%    $y=0$ & \multicolumn{1}{l}{} & DivisionByZero\\
+%    \hline
+%    $y>0$ & $x=0$ & $0$\\
+%    \cline{2-3}
+%          & else  & ModSwitch$(+,x,y)$\\
+%    \hline
+%    $y<0$ & \multicolumn{1}{l}{} & ModSwitch$(-,-x,-y)$\\
+%    \hline
+%    \end{tabular}
+%    \end{quote}
+%    |#1#2|: $y$\\
+%    |#3#4|: $x$
+%    \begin{macrocode}
+\def\BIC@ModSwitchSign#1#2!#3#4!{%
+  \ifcase\ifx\\#2\\%
+           \ifx#100 % y = 0
+           \else1 % y > 0
+           \fi
+          \else
+            \ifx#1-2 % y < 0
+            \else1 % y > 0
+            \fi
+          \fi
+    \BIC@AfterFi{ 0\BigIntCalcError:DivisionByZero}%
+  \or % y > 0
+    \ifcase\ifx\\#4\\\ifx#300 \else1 \fi\else1 \fi % x = 0
+      \BIC@AfterFiFi{ 0}%
+    \else
+      \BIC@AfterFiFi{%
+        \BIC@ModSwitch{}#3#4!#1#2!%
+      }%
+    \fi
+  \else % y < 0
+    \ifcase\ifx\\#4\\%
+             \ifx#300 % x = 0
+             \else1 % x > 0
+             \fi
+           \else
+             \ifx#3-2 % x < 0
+             \else1 % x > 0
+             \fi
+           \fi
+      \BIC@AfterFiFi{ 0}%
+    \or % x > 0
+      \BIC@AfterFiFi{%
+        \BIC@ModSwitch--#3#4!#2!%
+      }%
+    \else % x < 0
+      \BIC@AfterFiFi{%
+        \BIC@ModSwitch-#4!#2!%
+      }%
+    \fi
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ModSwitch}
+%    Decision table for \cs{BIC@ModSwitch}.
+%    \begin{quote}
+%    \begin{tabular}{@{}|l|l|l|@{}}
+%    \hline
+%    $y=1$ & \multicolumn{1}{l}{} & $0$\\
+%    \hline
+%    $y=2$ & ifodd$(x)$ & sign $1$\\
+%    \cline{2-3}
+%          & else       & $0$\\
+%    \hline
+%    $y>2$ & $x<0$      &
+%        $z\leftarrow x-(x/y)*y;\quad (z<0)\mathbin{?}z+y\mathbin{:}z$\\
+%    \cline{2-3}
+%          & $x>0$      & $x - (x/y) * y$\\
+%    \hline
+%    \end{tabular}
+%    \end{quote}
+%    |#1|: sign\\
+%    |#2#3|: $x$\\
+%    |#4#5|: $y$
+%    \begin{macrocode}
+\def\BIC@ModSwitch#1#2#3!#4#5!{%
+  \ifcase\ifx\\#5\\%
+           \ifx#410 % y = 1
+           \else\ifx#421 % y = 2
+           \else2 % y > 2
+           \fi\fi
+         \else2 % y > 2
+         \fi
+    \BIC@AfterFi{ 0}% y = 1
+  \or % y = 2
+    \ifcase\BIC@ModTwo#2#3! % even(x)
+      \BIC@AfterFiFi{ 0}%
+    \or % odd(x)
+      \BIC@AfterFiFi{ #11}%
+?   \else\BigIntCalcError:ThisCannotHappen%
+    \fi
+  \or % y > 2
+    \ifx\\#1\\%
+    \else
+      \expandafter\BIC@Space\romannumeral0%
+      \expandafter\BIC@ModMinus\romannumeral0%
+    \fi
+    \ifx#2-% x < 0
+      \BIC@AfterFiFi{%
+        \expandafter\expandafter\expandafter\BIC@ModX
+        \bigintcalcSub{#2#3}{%
+          \bigintcalcMul{#4#5}{\bigintcalcDiv{#2#3}{#4#5}}%
+        }!#4#5!%
+      }%
+    \else % x > 0
+      \BIC@AfterFiFi{%
+        \expandafter\expandafter\expandafter\BIC@Space
+        \bigintcalcSub{#2#3}{%
+          \bigintcalcMul{#4#5}{\bigintcalcDiv{#2#3}{#4#5}}%
+        }%
+      }%
+    \fi
+? \else\BigIntCalcError:ThisCannotHappen%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ModMinus}
+%    \begin{macrocode}
+\def\BIC@ModMinus#1{%
+  \ifx#10%
+    \BIC@AfterFi{ 0}%
+  \else
+    \BIC@AfterFi{ -#1}%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BIC@ModX}
+%    |#1#2|: $z$\\
+%    |#3|: $x$
+%    \begin{macrocode}
+\def\BIC@ModX#1#2!#3!{%
+  \ifx#1-% z < 0
+    \BIC@AfterFi{%
+      \expandafter\BIC@Space\romannumeral0%
+      \BIC@SubXY#3!#2!!!%
+    }%
+  \else % z >= 0
+    \BIC@AfterFi{ #1#2}%
+  \BIC@Fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\BIC@AtEnd%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input bigintcalc.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+% \subsubsection{Preamble with test macro definitions}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{article}
+%<noetex>\let\SavedNumexpr\numexpr
+%<noetex>\let\numexpr\UNDEFINED
+\makeatletter
+\chardef\BIC@TestMode=1 %
+\makeatother
+\usepackage{bigintcalc}[2012/04/08]
+%<noetex>\let\numexpr\SavedNumexpr
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\newcommand*{\TestSpaceAtEnd}[1]{%
+%<noetex>  \let\SavedNumexpr\numexpr
+%<noetex>  \let\numexpr\UNDEFINED
+  \edef\resultA{#1}%
+  \edef\resultB{#1 }%
+%<noetex>  \let\numexpr\SavedNumexpr
+  \Expect*{\resultA\space}*{\resultB}%
+}
+\newcommand*{\TestResult}[2]{%
+%<noetex>  \let\SavedNumexpr\numexpr
+%<noetex>  \let\numexpr\UNDEFINED
+  \edef\result{#1}%
+%<noetex>  \let\numexpr\SavedNumexpr
+  \Expect*{\result}{#2}%
+}
+\newcommand*{\TestResultTwoExpansions}[2]{%
+%<*noetex>
+  \begingroup
+    \let\numexpr\UNDEFINED
+    \expandafter\expandafter\expandafter
+  \endgroup
+%</noetex>
+  \expandafter\expandafter\expandafter\Expect
+  \expandafter\expandafter\expandafter{#1}{#2}%
+}
+\newcount\TestCount
+%<etex>\newcommand*{\TestArg}[1]{\numexpr#1\relax}
+%<noetex>\newcommand*{\TestArg}[1]{#1}
+\newcommand*{\TestTeXDivide}[2]{%
+  \TestCount=\TestArg{#1}\relax
+  \divide\TestCount by \TestArg{#2}\relax
+  \Expect*{\bigintcalcDiv{#1}{#2}}*{\the\TestCount}%
+}
+\newcommand*{\Test}[2]{%
+  \TestResult{#1}{#2}%
+  \TestResultTwoExpansions{#1}{#2}%
+  \TestSpaceAtEnd{#1}%
+}
+\newcommand*{\TestExch}[2]{\Test{#2}{#1}}
+\newcommand*{\TestInv}[2]{%
+  \Test{\bigintcalcInv{#1}}{#2}%
+}
+\newcommand*{\TestAbs}[2]{%
+  \Test{\bigintcalcAbs{#1}}{#2}%
+}
+\newcommand*{\TestSgn}[2]{%
+  \Test{\bigintcalcSgn{#1}}{#2}%
+}
+\newcommand*{\TestMin}[3]{%
+  \Test{\bigintcalcMin{#1}{#2}}{#3}%
+}
+\newcommand*{\TestMax}[3]{%
+  \Test{\bigintcalcMax{#1}{#2}}{#3}%
+}
+\newcommand*{\TestCmp}[3]{%
+  \Test{\bigintcalcCmp{#1}{#2}}{#3}%
+}
+\newcommand*{\TestOdd}[2]{%
+  \Test{\bigintcalcOdd{#1}}{#2}%
+  \edef\x{%
+    \noexpand\Test{%
+      \noexpand\BigIntCalcOdd
+      \bigintcalcAbs{#1}!%
+    }{#2}%
+  }%
+  \x
+}
+\newcommand*{\TestInc}[2]{%
+  \Test{\bigintcalcInc{#1}}{#2}%
+  \ifnum\bigintcalcSgn{#1}>-1 %
+    \edef\x{%
+      \noexpand\Test{%
+        \noexpand\BigIntCalcInc\bigintcalcNum{#1}!%
+      }{#2}%
+    }%
+    \x
+  \fi
+}
+\newcommand*{\TestDec}[2]{%
+  \Test{\bigintcalcDec{#1}}{#2}%
+  \ifnum\bigintcalcSgn{#1}>0 %
+    \edef\x{%
+      \noexpand\Test{%
+        \noexpand\BigIntCalcDec\bigintcalcNum{#1}!%
+      }{#2}%
+    }%
+    \x
+  \fi
+}
+\newcommand*{\TestAdd}[3]{%
+  \Test{\bigintcalcAdd{#1}{#2}}{#3}%
+  \ifnum\bigintcalcSgn{#1}>0 %
+    \ifnum\bigintcalcSgn{#2}> 0 %
+      \ifnum\bigintcalcCmp{#1}{#2}>0 %
+        \edef\x{%
+          \noexpand\Test{%
+            \noexpand\BigIntCalcAdd
+            \bigintcalcNum{#1}!\bigintcalcNum{#2}!%
+          }{#3}%
+        }%
+        \x
+      \else
+        \edef\x{%
+          \noexpand\Test{%
+            \noexpand\BigIntCalcAdd
+            \bigintcalcNum{#2}!\bigintcalcNum{#1}!%
+          }{#3}%
+        }%
+        \x
+      \fi
+    \fi
+  \fi
+}
+\newcommand*{\TestSub}[3]{%
+  \Test{\bigintcalcSub{#1}{#2}}{#3}%
+  \ifnum\bigintcalcSgn{#1}>0 %
+    \ifnum\bigintcalcSgn{#2}> 0 %
+      \ifnum\bigintcalcCmp{#1}{#2}>0 %
+        \edef\x{%
+          \noexpand\Test{%
+            \noexpand\BigIntCalcSub
+            \bigintcalcNum{#1}!\bigintcalcNum{#2}!%
+          }{#3}%
+        }%
+        \x
+      \fi
+    \fi
+  \fi
+}
+\newcommand*{\TestShl}[2]{%
+  \Test{\bigintcalcShl{#1}}{#2}%
+  \edef\x{%
+    \noexpand\Test{%
+      \noexpand\BigIntCalcShl\bigintcalcAbs{#1}!%
+    }{\bigintcalcAbs{#2}}%
+  }%
+  \x
+}
+\newcommand*{\TestShr}[2]{%
+  \Test{\bigintcalcShr{#1}}{#2}%
+  \edef\x{%
+    \noexpand\Test{%
+      \noexpand\BigIntCalcShr\bigintcalcAbs{#1}!%
+    }{\bigintcalcAbs{#2}}%
+  }%
+  \x
+}
+\newcommand*{\TestMul}[3]{%
+  \Test{\bigintcalcMul{#1}{#2}}{#3}%
+  \edef\x{%
+    \noexpand\Test{%
+      \noexpand\BigIntCalcMul
+      \bigintcalcAbs{#1}!\bigintcalcAbs{#2}!%
+    }{\bigintcalcAbs{#3}}%
+  }%
+  \x
+}
+\newcommand*{\TestSqr}[2]{%
+  \Test{\bigintcalcSqr{#1}}{#2}%
+}
+\newcommand*{\TestFac}[2]{%
+  \expandafter\TestExch\expandafter{%
+    \the\numexpr#2%
+  }{\bigintcalcFac{#1}}%
+}
+\newcommand*{\TestFacBig}[2]{%
+  \Test{\bigintcalcFac{#1}}{#2}%
+}
+\newcommand*{\TestPow}[3]{%
+  \Test{\bigintcalcPow{#1}{#2}}{#3}%
+}
+\newcommand*{\TestDiv}[3]{%
+  \Test{\bigintcalcDiv{#1}{#2}}{#3}%
+  \TestTeXDivide{#1}{#2}%
+}
+\newcommand*{\TestDivBig}[3]{%
+  \Test{\bigintcalcDiv{#1}{#2}}{#3}%
+  \edef\x{%
+    \noexpand\Test{%
+      \noexpand\BigIntCalcDiv\bigintcalcAbs{#1}!\bigintcalcAbs{#2}!%
+    }{\bigintcalcAbs{#3}}%
+  }%
+}
+\newcommand*{\TestMod}[3]{%
+  \Test{\bigintcalcMod{#1}{#2}}{#3}%
+  \ifcase\ifcase\bigintcalcSgn{#1} 0%
+         \or
+           \ifcase\bigintcalcSgn{#2} 1%
+           \or 0%
+           \else 1%
+           \fi
+         \else
+           \ifcase\bigintcalcSgn{#2} 1%
+           \or 1%
+           \else 0%
+           \fi
+         \fi\relax
+    \edef\x{%
+      \noexpand\Test{%
+        \noexpand\BigIntCalcMod
+        \bigintcalcAbs{#1}!\bigintcalcAbs{#2}!%
+      }{\bigintcalcAbs{#3}}%
+    }%
+    \x
+  \fi
+}
+%    \end{macrocode}
+%
+% \subsubsection{Time}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfresettimer\endcsname\relax
+\else
+  \makeatletter
+  \newcount\SummaryTime
+  \newcount\TestTime
+  \SummaryTime=\z@
+  \newcommand*{\PrintTime}[2]{%
+    \typeout{%
+      [Time #1: \strip@pt\dimexpr\number#2sp\relax\space s]%
+    }%
+  }%
+  \newcommand*{\StartTime}[1]{%
+    \renewcommand*{\TimeDescription}{#1}%
+    \pdfresettimer
+  }%
+  \newcommand*{\TimeDescription}{}%
+  \newcommand*{\StopTime}{%
+    \TestTime=\pdfelapsedtime
+    \global\advance\SummaryTime\TestTime
+    \PrintTime\TimeDescription\TestTime
+  }%
+  \let\saved@qstest\qstest
+  \let\saved@endqstest\endqstest
+  \def\qstest#1#2{%
+    \saved@qstest{#1}{#2}%
+    \StartTime{#1}%
+  }%
+  \def\endqstest{%
+    \StopTime
+    \saved@endqstest
+  }%
+  \AtEndDocument{%
+    \PrintTime{summary}\SummaryTime
+  }%
+  \makeatother
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Test sets}
+%
+%    \begin{macrocode}
+\makeatletter
+
+\begin{qstest}{inv}{inv}%
+  \TestInv{0}{0}%
+  \TestInv{1}{-1}%
+  \TestInv{-1}{1}%
+  \TestInv{10}{-10}%
+  \TestInv{-10}{10}%
+  \TestInv{2147483647}{-2147483647}%
+  \TestInv{-2147483647}{2147483647}%
+  \TestInv{12345678901234567890}{-12345678901234567890}%
+  \TestInv{-12345678901234567890}{12345678901234567890}%
+  \TestInv{ 0 }{0}%
+  \TestInv{ 1 }{-1}%
+  \TestInv{--1}{-1}%
+  \TestInv{\number\z@}{0}%
+  \TestInv{\ifx\relax\relax1\fi}{-1}%
+  \TestInv{\ifx\relax\relax-\fi\ifx234\else1\fi}{1}%
+\end{qstest}
+
+\begin{qstest}{abs}{abs}%
+  \TestAbs{0}{0}%
+  \TestAbs{1}{1}%
+  \TestAbs{-1}{1}%
+  \TestAbs{10}{10}%
+  \TestAbs{-10}{10}%
+  \TestAbs{2147483647}{2147483647}%
+  \TestAbs{-2147483647}{2147483647}%
+  \TestAbs{12345678901234567890}{12345678901234567890}%
+  \TestAbs{-12345678901234567890}{12345678901234567890}%
+  \TestAbs{ 0 }{0}%
+  \TestAbs{ 1 }{1}%
+  \TestAbs{--1}{1}%
+  \TestAbs{-+-+1}{1}%
+  \TestAbs{00000000000}{0}%
+  \TestAbs{00000001000}{1000}%
+  \TestAbs{\ifx\relax\relax 0\else 1\fi}{0}%
+\end{qstest}
+
+\begin{qstest}{sign}{sign}%
+  \TestSgn{0}{0}%
+  \TestSgn{1}{1}%
+  \TestSgn{-1}{-1}%
+  \TestSgn{10}{1}%
+  \TestSgn{-10}{-1}%
+  \TestSgn{2147483647}{1}%
+  \TestSgn{-2147483647}{-1}%
+  \TestSgn{12345678901234567890}{1}%
+  \TestSgn{-12345678901234567890}{-1}%
+  \TestSgn{ 0 }{0}%
+  \TestSgn{ 2 }{1}%
+  \TestSgn{ -2 }{-1}%
+  \TestSgn{--2}{1}%
+  \TestSgn{\number\z@}{0}%
+  \TestSgn{\number\@ne}{1}%
+  \TestSgn{\number\m@ne}{-1}%
+  \TestSgn{%
+    -+-+\number\z@\number\z@
+    \iftrue1\fi\iftrue2\fi\iftrue3\fi
+  }{1}%
+\end{qstest}
+
+\begin{qstest}{min}{min}%
+  \TestMin{0}{1}{0}%
+  \TestMin{1}{0}{0}%
+  \TestMin{-10}{-20}{-20}%
+  \TestMin{ 1 }{ 2 }{1}%
+  \TestMin{ 2 }{ 1 }{1}%
+  \TestMin{1}{1}{1}%
+  \TestMin{\number\z@}{\number\@ne}{0}%
+  \TestMin{\number\@ne}{\number\m@ne}{-1}%
+\end{qstest}
+
+\begin{qstest}{max}{max}%
+  \TestMax{0}{1}{1}%
+  \TestMax{1}{0}{1}%
+  \TestMax{-10}{-20}{-10}%
+  \TestMax{ 1 }{ 2 }{2}%
+  \TestMax{ 2 }{ 1 }{2}%
+  \TestMax{1}{1}{1}%
+  \TestMax{\number\z@}{\number\@ne}{1}%
+  \TestMax{\number\@ne}{\number\m@ne}{1}%
+\end{qstest}
+
+\begin{qstest}{cmp}{cmp}%
+  \TestCmp{0}{0}{0}%
+  \TestCmp{-21}{17}{-1}%
+  \TestCmp{3}{4}{-1}%
+  \TestCmp{-10}{-10}{0}%
+  \TestCmp{-10}{-11}{1}%
+  \TestCmp{100}{5}{1}%
+  \TestCmp{9}{10}{-1}%
+  \TestCmp{10}{9}{1}%
+  \TestCmp{ 3 }{ 3 }{0}%
+  \TestCmp{-9}{-10}{1}%
+  \TestCmp{-10}{-9}{-1}%
+  \TestCmp{-3}{-3}{0}%
+  \TestCmp{0}{-2}{1}%
+  \TestCmp{0}{2}{-1}%
+  \TestCmp{2}{0}{1}%
+  \TestCmp{-2}{0}{-1}%
+  \TestCmp{12}{11}{1}%
+  \TestCmp{11}{12}{-1}%
+  \TestCmp{2147483647}{-2147483647}{1}%
+  \TestCmp{-2147483647}{2147483647}{-1}%
+  \TestCmp{2147483647}{2147483647}{0}%
+  \TestCmp{\number\z@}{\number\@ne}{-1}%
+  \TestCmp{\number\@ne}{\number\m@ne}{1}%
+  \TestCmp{ 4 }{ 5 }{-1}%
+  \TestCmp{ -3 }{ -7 }{1}%
+\end{qstest}
+
+\begin{qstest}{odd}{odd}
+\tracingmacros=1
+  \TestOdd{0}{0}%
+  \TestOdd{1}{1}%
+  \TestOdd{2}{0}%
+  \TestOdd{3}{1}%
+  \TestOdd{14}{0}%
+  \TestOdd{15}{1}%
+  \TestOdd{12345678901234567896}{0}%
+  \TestOdd{12345678901234567897}{1}%
+\end{qstest}
+
+\begin{qstest}{inc}{inc}%
+  \TestInc{0}{1}%
+  \TestInc{1}{2}%
+  \TestInc{-1}{0}%
+  \TestInc{10}{11}%
+  \TestInc{-10}{-9}%
+  \TestInc{ 3 }{4}%
+  \TestInc{999}{1000}%
+  \TestInc{-1000}{-999}%
+  \TestInc{129}{130}%
+  \TestInc{2147483646}{2147483647}%
+  \TestInc{-2147483647}{-2147483646}%
+  \TestInc{12345678901234567890}{12345678901234567891}%
+  \TestInc{99999999999999999999}{100000000000000000000}%
+  \TestInc{-12345678901234567891}{-12345678901234567890}%
+  \TestInc{-100000000000000000000}{-99999999999999999999}%
+\end{qstest}
+
+\begin{qstest}{dec}{dec}%
+  \TestDec{0}{-1}%
+  \TestDec{1}{0}%
+  \TestDec{-1}{-2}%
+  \TestDec{10}{9}%
+  \TestDec{-10}{-11}%
+  \TestDec{1000}{999}%
+  \TestDec{-999}{-1000}%
+  \TestDec{130}{129}%
+  \TestDec{2147483647}{2147483646}%
+  \TestDec{-2147483646}{-2147483647}%
+  \TestDec{12345678901234567891}{12345678901234567890}%
+  \TestDec{100000000000000000000}{99999999999999999999}%
+  \TestDec{-12345678901234567890}{-12345678901234567891}%
+  \TestDec{-99999999999999999999}{-100000000000000000000}%
+\end{qstest}
+
+\begin{qstest}{add}{add}%
+  \TestAdd{0}{0}{0}%
+  \TestAdd{1}{0}{1}%
+  \TestAdd{0}{1}{1}%
+  \TestAdd{1}{2}{3}%
+  \TestAdd{-1}{-1}{-2}%
+  \TestAdd{2147483646}{1}{2147483647}%
+  \TestAdd{-2147483647}{2147483647}{0}%
+  \TestAdd{20}{-5}{15}%
+  \TestAdd{-4}{-1}{-5}%
+  \TestAdd{-1}{-4}{-5}%
+  \TestAdd{-4}{1}{-3}%
+  \TestAdd{-1}{4}{3}%
+  \TestAdd{4}{-1}{3}%
+  \TestAdd{1}{-4}{-3}%
+  \TestAdd{-4}{-1}{-5}%
+  \TestAdd{-1}{-4}{-5}%
+  \TestAdd{ -4 }{ -1 }{-5}%
+  \TestAdd{ -1 }{ -4 }{-5}%
+  \TestAdd{ -4 }{ 1 }{-3}%
+  \TestAdd{ -1 }{ 4 }{3}%
+  \TestAdd{ 4 }{ -1 }{3}%
+  \TestAdd{ 1 }{ -4 }{-3}%
+  \TestAdd{ -4 }{ -1 }{-5}%
+  \TestAdd{ -1 }{ -4 }{-5}%
+  \TestAdd{876543210}{111111111}{987654321}%
+  \TestAdd{999999999}{2}{1000000001}%
+\end{qstest}
+
+\begin{qstest}{sub}{sub}
+  \TestSub{0}{0}{0}%
+  \TestSub{1}{0}{1}%
+  \TestSub{1}{2}{-1}%
+  \TestSub{-1}{-1}{0}%
+  \TestSub{2147483646}{-1}{2147483647}%
+  \TestSub{-2147483647}{-2147483647}{0}%
+  \TestSub{-4}{-1}{-3}%
+  \TestSub{-1}{-4}{3}%
+  \TestSub{-4}{1}{-5}%
+  \TestSub{-1}{4}{-5}%
+  \TestSub{4}{-1}{5}%
+  \TestSub{1}{-4}{5}%
+  \TestSub{-4}{-1}{-3}%
+  \TestSub{-1}{-4}{3}%
+  \TestSub{ -4 }{ -1 }{-3}%
+  \TestSub{ -1 }{ -4 }{3}%
+  \TestSub{ -4 }{ 1 }{-5}%
+  \TestSub{ -1 }{ 4 }{-5}%
+  \TestSub{ 4 }{ -1 }{5}%
+  \TestSub{ 1 }{ -4 }{5}%
+  \TestSub{ -4 }{ -1 }{-3}%
+  \TestSub{ -1 }{ -4 }{3}%
+  \TestSub{1000000000}{2}{999999998}%
+  \TestSub{987654321}{111111111}{876543210}%
+\end{qstest}
+
+\begin{qstest}{shl}{shl}
+  \TestShl{0}{0}%
+  \TestShl{1}{2}%
+  \TestShl{2}{4}%
+  \TestShl{5621}{11242}%
+  \TestShl{1073741823}{2147483646}%
+\end{qstest}
+
+\begin{qstest}{shr}{shr}
+  \TestShr{0}{0}%
+  \TestShr{1}{0}%
+  \TestShr{2}{1}%
+  \TestShr{3}{1}%
+  \TestShr{4}{2}%
+  \TestShr{5}{2}%
+  \TestShr{6}{3}%
+  \TestShr{7}{3}%
+  \TestShr{8}{4}%
+  \TestShr{9}{4}%
+  \TestShr{10}{5}%
+  \TestShr{11}{5}%
+  \TestShr{12}{6}%
+  \TestShr{13}{6}%
+  \TestShr{14}{7}%
+  \TestShr{15}{7}%
+  \TestShr{16}{8}%
+  \TestShr{17}{8}%
+  \TestShr{18}{9}%
+  \TestShr{19}{9}%
+  \TestShr{20}{10}%
+  \TestShr{21}{10}%
+  \TestShr{22}{11}%
+  \TestShr{11241}{5620}%
+  \TestShr{73054202}{36527101}%
+  \TestShr{2147483646}{1073741823}%
+\end{qstest}
+
+\begin{qstest}{mul}{mul}
+  \TestMul{0}{0}{0}%
+  \TestMul{1}{0}{0}%
+  \TestMul{0}{1}{0}%
+  \TestMul{1}{1}{1}%
+  \TestMul{3}{1}{3}%
+  \TestMul{1}{-3}{-3}%
+  \TestMul{-4}{-5}{20}%
+  \TestMul{3}{7}{21}%
+  \TestMul{7}{3}{21}%
+  \TestMul{3}{-7}{-21}%
+  \TestMul{7}{-3}{-21}%
+  \TestMul{-3}{7}{-21}%
+  \TestMul{-7}{3}{-21}%
+  \TestMul{-3}{-7}{21}%
+  \TestMul{-7}{-3}{21}%
+  \TestMul{12}{11}{132}%
+  \TestMul{999}{333}{332667}%
+  \TestMul{1000}{4321}{4321000}%
+  \TestMul{12345}{173955}{2147474475}%
+  \TestMul{1073741823}{2}{2147483646}%
+  \TestMul{2}{1073741823}{2147483646}%
+  \TestMul{-1073741823}{2}{-2147483646}%
+  \TestMul{2}{-1073741823}{-2147483646}%
+  \TestMul{6706022400}{13}{87178291200}%
+\end{qstest}
+
+\begin{qstest}{sqr}{sqr}
+  \TestSqr{0}{0}%
+  \TestSqr{1}{1}%
+  \TestSqr{2}{4}%
+  \TestSqr{3}{9}%
+  \TestSqr{4}{16}%
+  \TestSqr{9}{81}%
+  \TestSqr{10}{100}%
+  \TestSqr{46340}{2147395600}%
+  \TestSqr{-1}{1}%
+  \TestSqr{-2}{4}%
+  \TestSqr{-46340}{2147395600}%
+\end{qstest}
+
+\begin{qstest}{fac}{fac}
+  \TestFac{0}{1}%
+  \TestFac{1}{1}%
+  \TestFac{2}{2}%
+  \TestFac{3}{2*3}%
+  \TestFac{4}{2*3*4}%
+  \TestFac{5}{2*3*4*5}%
+  \TestFac{6}{2*3*4*5*6}%
+  \TestFac{7}{2*3*4*5*6*7}%
+  \TestFac{8}{2*3*4*5*6*7*8}%
+  \TestFac{9}{2*3*4*5*6*7*8*9}%
+  \TestFac{10}{2*3*4*5*6*7*8*9*10}%
+  \TestFac{11}{2*3*4*5*6*7*8*9*10*11}%
+  \TestFac{12}{2*3*4*5*6*7*8*9*10*11*12}%
+  \TestFacBig{13}{6227020800}%
+  \TestFacBig{14}{87178291200}%
+  \TestFacBig{15}{1307674368000}%
+  \TestFacBig{16}{20922789888000}%
+  \TestFacBig{17}{355687428096000}%
+  \TestFacBig{18}{6402373705728000}%
+  \TestFacBig{19}{121645100408832000}%
+  \TestFacBig{20}{2432902008176640000}%
+  \TestFacBig{21}{51090942171709440000}%
+  \TestFacBig{22}{1124000727777607680000}%
+\end{qstest}
+
+\begin{qstest}{pow}{pow}
+  \TestPow{-2}{0}{1}%
+  \TestPow{-1}{0}{1}%
+  \TestPow{0}{0}{1}%
+  \TestPow{1}{0}{1}%
+  \TestPow{2}{0}{1}%
+  \TestPow{3}{0}{1}%
+  \TestPow{-2}{1}{-2}%
+  \TestPow{-1}{1}{-1}%
+  \TestPow{1}{1}{1}%
+  \TestPow{2}{1}{2}%
+  \TestPow{3}{1}{3}%
+  \TestPow{-2}{2}{4}%
+  \TestPow{-1}{2}{1}%
+  \TestPow{0}{2}{0}%
+  \TestPow{1}{2}{1}%
+  \TestPow{2}{2}{4}%
+  \TestPow{3}{2}{9}%
+  \TestPow{0}{1}{0}%
+  \TestPow{1}{-2}{1}%
+  \TestPow{1}{-1}{1}%
+  \TestPow{-1}{-2}{1}%
+  \TestPow{-1}{-1}{-1}%
+  \TestPow{-1}{3}{-1}%
+  \TestPow{-1}{4}{1}%
+  \TestPow{-2}{-1}{0}%
+  \TestPow{-2}{-2}{0}%
+  \TestPow{2}{3}{8}%
+  \TestPow{2}{4}{16}%
+  \TestPow{2}{5}{32}%
+  \TestPow{2}{6}{64}%
+  \TestPow{2}{7}{128}%
+  \TestPow{2}{8}{256}%
+  \TestPow{2}{9}{512}%
+  \TestPow{2}{10}{1024}%
+  \TestPow{-2}{3}{-8}%
+  \TestPow{-2}{4}{16}%
+  \TestPow{-2}{5}{-32}%
+  \TestPow{-2}{6}{64}%
+  \TestPow{-2}{7}{-128}%
+  \TestPow{-2}{8}{256}%
+  \TestPow{-2}{9}{-512}%
+  \TestPow{-2}{10}{1024}%
+  \TestPow{3}{3}{27}%
+  \TestPow{3}{4}{81}%
+  \TestPow{3}{5}{243}%
+  \TestPow{-3}{3}{-27}%
+  \TestPow{-3}{4}{81}%
+  \TestPow{-3}{5}{-243}%
+  \TestPow{2}{30}{1073741824}%
+  \TestPow{-3}{19}{-1162261467}%
+  \TestPow{5}{13}{1220703125}%
+  \TestPow{-7}{11}{-1977326743}%
+\end{qstest}
+
+\begin{qstest}{div}{div}
+  \TestDiv{1}{1}{1}%
+  \TestDiv{2}{1}{2}%
+  \TestDiv{-2}{1}{-2}%
+  \TestDiv{2}{-1}{-2}%
+  \TestDiv{-2}{-1}{2}%
+  \TestDiv{15}{2}{7}%
+  \TestDiv{-16}{2}{-8}%
+  \TestDiv{1}{2}{0}%
+  \TestDiv{1}{3}{0}%
+  \TestDiv{2}{3}{0}%
+  \TestDiv{-2}{3}{0}%
+  \TestDiv{2}{-3}{0}%
+  \TestDiv{-2}{-3}{0}%
+  \TestDiv{13}{3}{4}%
+  \TestDiv{-13}{-3}{4}%
+  \TestDiv{-13}{3}{-4}%
+  \TestDiv{-6}{5}{-1}%
+  \TestDiv{-5}{5}{-1}%
+  \TestDiv{-4}{5}{0}%
+  \TestDiv{-3}{5}{0}%
+  \TestDiv{-2}{5}{0}%
+  \TestDiv{-1}{5}{0}%
+  \TestDiv{0}{5}{0}%
+  \TestDiv{1}{5}{0}%
+  \TestDiv{2}{5}{0}%
+  \TestDiv{3}{5}{0}%
+  \TestDiv{4}{5}{0}%
+  \TestDiv{5}{5}{1}%
+  \TestDiv{6}{5}{1}%
+  \TestDiv{-5}{4}{-1}%
+  \TestDiv{-4}{4}{-1}%
+  \TestDiv{-3}{4}{0}%
+  \TestDiv{-2}{4}{0}%
+  \TestDiv{-1}{4}{0}%
+  \TestDiv{0}{4}{0}%
+  \TestDiv{1}{4}{0}%
+  \TestDiv{2}{4}{0}%
+  \TestDiv{3}{4}{0}%
+  \TestDiv{4}{4}{1}%
+  \TestDiv{5}{4}{1}%
+  \TestDiv{12345}{678}{18}%
+  \TestDiv{32372}{5952}{5}%
+  \TestDiv{284271294}{18162}{15651}%
+  \TestDiv{217652429}{12561}{17327}%
+  \TestDiv{462028434}{5439}{84947}%
+  \TestDiv{2147483647}{1000}{2147483}%
+  \TestDiv{2147483647}{-1000}{-2147483}%
+  \TestDiv{-2147483647}{1000}{-2147483}%
+  \TestDiv{-2147483647}{-1000}{2147483}%
+  \TestDiv{0}{3}{0}%
+  \TestDiv{1}{3}{0}%
+  \TestDiv{2}{3}{0}%
+  \TestDiv{3}{3}{1}%
+  \TestDiv{4}{3}{1}%
+  \TestDiv{5}{3}{1}%
+  \TestDiv{6}{3}{2}%
+  \TestDiv{7}{3}{2}%
+  \TestDiv{8}{3}{2}%
+  \TestDiv{9}{3}{3}%
+  \TestDiv{10}{3}{3}%
+  \TestDiv{11}{3}{3}%
+  \TestDiv{12}{3}{4}%
+  \TestDiv{13}{3}{4}%
+  \TestDiv{14}{3}{4}%
+  \TestDiv{15}{3}{5}%
+  \TestDiv{16}{3}{5}%
+  \TestDiv{17}{3}{5}%
+  \TestDiv{18}{3}{6}%
+  \TestDiv{19}{3}{6}%
+  \TestDiv{20}{3}{6}%
+  \TestDiv{21}{3}{7}%
+  \TestDiv{22}{3}{7}%
+  \TestDiv{23}{3}{7}%
+  \TestDiv{24}{3}{8}%
+  \TestDiv{25}{3}{8}%
+  \TestDiv{26}{3}{8}%
+  \TestDiv{27}{3}{9}%
+  \TestDiv{28}{3}{9}%
+  \TestDiv{29}{3}{9}%
+  \TestDiv{30}{3}{10}%
+  \TestDiv{31}{3}{10}%
+  \TestDivBig{17363436332507}{24702}{702916214}%
+\end{qstest}
+
+\begin{qstest}{mod}{mod}
+  \TestMod{-6}{5}{4}%
+  \TestMod{-5}{5}{0}%
+  \TestMod{-4}{5}{1}%
+  \TestMod{-3}{5}{2}%
+  \TestMod{-2}{5}{3}%
+  \TestMod{-1}{5}{4}%
+  \TestMod{0}{5}{0}%
+  \TestMod{1}{5}{1}%
+  \TestMod{2}{5}{2}%
+  \TestMod{3}{5}{3}%
+  \TestMod{4}{5}{4}%
+  \TestMod{5}{5}{0}%
+  \TestMod{6}{5}{1}%
+  \TestMod{-5}{4}{3}%
+  \TestMod{-4}{4}{0}%
+  \TestMod{-3}{4}{1}%
+  \TestMod{-2}{4}{2}%
+  \TestMod{-1}{4}{3}%
+  \TestMod{0}{4}{0}%
+  \TestMod{1}{4}{1}%
+  \TestMod{2}{4}{2}%
+  \TestMod{3}{4}{3}%
+  \TestMod{4}{4}{0}%
+  \TestMod{5}{4}{1}%
+  \TestMod{-6}{-5}{-1}%
+  \TestMod{-5}{-5}{0}%
+  \TestMod{-4}{-5}{-4}%
+  \TestMod{-3}{-5}{-3}%
+  \TestMod{-2}{-5}{-2}%
+  \TestMod{-1}{-5}{-1}%
+  \TestMod{0}{-5}{0}%
+  \TestMod{1}{-5}{-4}%
+  \TestMod{2}{-5}{-3}%
+  \TestMod{3}{-5}{-2}%
+  \TestMod{4}{-5}{-1}%
+  \TestMod{5}{-5}{0}%
+  \TestMod{6}{-5}{-4}%
+  \TestMod{-5}{-4}{-1}%
+  \TestMod{-4}{-4}{0}%
+  \TestMod{-3}{-4}{-3}%
+  \TestMod{-2}{-4}{-2}%
+  \TestMod{-1}{-4}{-1}%
+  \TestMod{0}{-4}{0}%
+  \TestMod{1}{-4}{-3}%
+  \TestMod{2}{-4}{-2}%
+  \TestMod{3}{-4}{-1}%
+  \TestMod{4}{-4}{0}%
+  \TestMod{5}{-4}{-3}%
+  \TestMod{2147483647}{1000}{647}%
+  \TestMod{2147483647}{-1000}{-353}%
+  \TestMod{-2147483647}{1000}{353}%
+  \TestMod{-2147483647}{-1000}{-647}%
+  \TestMod{ 0 }{ 4 }{0}%
+  \TestMod{ 1 }{ 4 }{1}%
+  \TestMod{ -1 }{ 4 }{3}%
+  \TestMod{ 0 }{ -4 }{0}%
+  \TestMod{ 1 }{ -4 }{-3}%
+  \TestMod{ -1 }{ -4 }{-1}%
+  \TestMod{18362}{25}{12}%
+\end{qstest}
+
+\newcommand*{\TestError}[2]{%
+  \begingroup
+    \expandafter\def\csname BigIntCalcError:#1\endcsname{}%
+    \Expect*{#2}{0}%
+    \expandafter\def\csname BigIntCalcError:#1\endcsname{ERROR}%
+    \Expect*{#2}{0ERROR}%
+  \endgroup
+}
+\begin{qstest}{error}{error}
+  \TestError{FacNegative}{\bigintcalcFac{-1}}%
+  \TestError{FacNegative}{\bigintcalcFac{-2147483647}}%
+  \TestError{DivisionByZero}{\bigintcalcPow{0}{-1}}%
+  \TestError{DivisionByZero}{\bigintcalcDiv{1}{0}}%
+  \TestError{DivisionByZero}{\bigintcalcMod{1}{0}}%
+\end{qstest}
+
+\begin{document}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/bigintcalc.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/bigintcalc.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex bigintcalc.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   bigintcalc.sty & tex/generic/oberdiek/bigintcalc.sty\\
+%   bigintcalc.pdf & doc/latex/oberdiek/bigintcalc.pdf\\
+%   test/bigintcalc-test1.tex & doc/latex/oberdiek/test/bigintcalc-test1.tex\\
+%   test/bigintcalc-test2.tex & doc/latex/oberdiek/test/bigintcalc-test2.tex\\
+%   test/bigintcalc-test3.tex & doc/latex/oberdiek/test/bigintcalc-test3.tex\\
+%   bigintcalc.dtx & source/latex/oberdiek/bigintcalc.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk bigintcalc.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{bigintcalc.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex bigintcalc.dtx
+%makeindex -s gind.ist bigintcalc.idx
+%pdflatex bigintcalc.dtx
+%makeindex -s gind.ist bigintcalc.idx
+%pdflatex bigintcalc.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{bigintcalc.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='bigintcalc'>
+  <name>bigintcalc</name>
+  <caption>Integer calculations on very large numbers.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2011,2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    This package provides expandable arithmetic operations
+    with big integers that can exceed TeX's number limits.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/bigintcalc.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/bigintcalc.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/09/27 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.1}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.2}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+%   \begin{Version}{2012/04/08 v1.3}
+%   \item
+%     Fix: \xpackage{pdftexcmds} wasn't loaded in case of \hologo{LaTeX}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

@@ -1,0 +1,6 @@
+selected_scheme scheme-basic
+TEXDIR /home/thunder/emsdk_portable/texlive.js/texlive
+TEXMFLOCAL /home/thunder/emsdk_portable/texlive.js/texlive/texmf-local
+TEXMFSYSVAR /home/thunder/emsdk_portable/texlive.js/texlive/texmf-var
+TEXMFSYSCONFIG /home/thunder/emsdk_portable/texlive.js/texlive/texmf-config
+TEXMFVAR /home/thunder/emsdk_portable/texlive.js/home/texmf-var

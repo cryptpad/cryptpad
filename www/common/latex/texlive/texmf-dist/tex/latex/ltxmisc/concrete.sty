@@ -1,0 +1,24 @@
+\ProvidesPackage{concrete}[1996/10/08]
+\NeedsTeXFormat{LaTeX2e}
+% CONCRETE.sty
+%  Provides fonts for an approximation of the style in _Concrete Mathematics_.
+% History.....................
+%  96-10-08 Jim Hefferon jhefferon@smcvt.edu
+%    It is an FAQ on comp.text.tex that people look on CTAN for a style 
+%    with this name.  Seems reasonable.  They are always advised to 
+%    \usepackage the two packages below.  So here is a wrapper style
+%    to do that.
+% Remarks.....................
+% 96-10-08 jh
+%   There are other styles for Concrete Math (concmath and something
+%   from AMS-LaTeX 1.1 are the ones that I know of), but this one is
+%   modular in that if the packages it calls are updated then of
+%   course, this is updated also).  In particular, there are no font 
+%   parameters, etc.
+% Bugs........................
+%  *Unlike the AMS-LaTeX v. 1.1 style file, this makes no attempt to
+%  provide any grafitti, etc. macros.  Just the fonts.  (One could
+%  argue that those are document-style, not font, macros.)
+\RequirePackage{beton} % for the text fonts
+\RequirePackage{euler} % for the math fonts
+\endinput 

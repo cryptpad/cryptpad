@@ -1,0 +1,335 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltpage.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltpage.dtx}
+             [2000/06/02 v1.0k LaTeX Kernel (page style setup)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltpage.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{175}
+%
+% \section{Page styles and related commands}
+%
+%
+% \changes{v1.0a}{1994/03/07}{Initial version, split from ltherest.dtx}
+% \changes{v1.0b}{1994/04/19}{Improve documentation}
+% \changes{v1.0i}{1996/04/18}{Improve documentation}
+%
+%
+% \subsection{Page Style Commands}
+%
+%  |\pagestyle|\marg{style} : sets the page style of the
+%  current and succeeding  pages to \emph{style}
+%
+%  |\thispagestyle|\marg{style} : sets the page style of the
+%  current page only to \emph{style}.
+%
+%  To define a page style \emph{style}, you must define
+%  |\ps@|\emph{style} to set the page style parameters.
+%
+% \subsection{How a page style makes running heads and feet}
+%
+% The |\ps@|\ldots command defines the macros |\@oddhead|, |\@oddfoot|,
+% |\@evenhead|, and |\@evenfoot| to define the running heads and feet.
+% (See output routine.)  To make headings determined by the sectioning
+% commands, the page style defines the commands |\chaptermark|,
+% |\sectionmark|, etc., where |\chaptermark|\marg{text} is called by
+% |\chapter| to set a mark.  The |\...mark| commands and the |\...head|
+% macros are defined  with the help of the following macros.
+%
+% (All the |\...mark| commands should be initialized to no-ops.)
+%
+% \subsection{marking conventions}
+%
+% \LaTeX\ extends \TeX's |\mark| facility by producing two kinds of marks
+% a `left' and a `right' mark, using the following commands:\\
+%     |\markboth|\marg{left}\marg{right} : Adds both marks.\\
+%     |\markright|\marg{right}      : Adds a 'right' mark.\\
+%     |\leftmark| :
+%        Used in the output routine, gets the current `left'  mark.
+%        Works like \TeX's |\botmark.|\\
+%     |\rightmark| :
+%        Used in the output routine, gets the current `right' mark.
+%        Works like \TeX's |\firstmark|.
+% The marking commands work reasonably well for right marks `numbered
+% within' left marks---e.g., the left mark is changed by a |\chapter|
+% command and the right mark is changed by a |\section| command.
+% However, it does produce somewhat anomalous results if 2 |\markboth|'s
+% occur on the same page.
+%
+% Commands like |\tableofcontents| that should set the marks in some
+% page styles use a |\@mkboth| command, which is |\let| by the pagestyle
+% command (|\ps@...|) to |\markboth| for setting the heading or to
+% |\@gobbletwo| to do nothing.
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+% \begin{macro}{\pagestyle}
+% User command to set the page style for this and following pages.
+% \changes{LaTeX2e}{1994/01/24}
+%         {(DPC) Complain if pagestyle is undefined.}
+% \changes{LaTeX2e}{1994/02/01}
+%         {(DPC) Modify to get nicer error message}
+%    \begin{macrocode}
+\def\pagestyle#1{%
+  \@ifundefined{ps@#1}%
+    \undefinedpagestyle
+    {\@nameuse{ps@#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\thispagestyle}
+% User command to set the page style for this page only.
+% \changes{LaTeX2e}{1994/02/01}
+%         {(DPC) Modify to get nicer error message}
+%    \begin{macrocode}
+\def\thispagestyle#1{%
+  \@ifundefined{ps@#1}%
+    \undefinedpagestyle
+    {\global\@specialpagetrue\gdef\@specialstyle{#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\ps@empty}
+% The empty page style: No head or foot line.
+%    \begin{macrocode}
+\def\ps@empty{%
+  \let\@mkboth\@gobbletwo\let\@oddhead\@empty\let\@oddfoot\@empty
+  \let\@evenhead\@empty\let\@evenfoot\@empty}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ps@plain}
+% \changes{v1.0g}{1995/05/26}{removed \cs{rmfamily} (PR 1578)}
+% The plain page style: No head, centred page number in foot.
+%    \begin{macrocode}
+\def\ps@plain{\let\@mkboth\@gobbletwo
+     \let\@oddhead\@empty\def\@oddfoot{\reset@font\hfil\thepage
+     \hfil}\let\@evenhead\@empty\let\@evenfoot\@oddfoot}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@leftmark}
+% \begin{macro}{\@rightmark}
+%    We implement |\@leftmark| and |\@rightmark| in terms of already
+%    defined commands to save token space. We can't get rid of them
+%    since they are sometimes used in applications.
+%    \begin{macrocode}
+\let\@leftmark\@firstoftwo
+\let\@rightmark\@secondoftwo
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\markboth}
+% \begin{macro}{\markright}
+% \changes{v1.0d}{1994/05/20}{Changed setting for \cs{protect}.}
+% \changes{v1.0e}{1994/11/04}{Added \cs{@unexpandable@protect}.
+%    ASAJ.}
+%
+% User commands for setting \LaTeX\ marks.
+%
+% Test for |\@nobreak| added 15 Apr 86 in |\markboth| and |\markright|
+% letting |\label| and |\index| to |\relax| added 22 Feb 86 so these
+%   commands can appear in sectioning command arguments
+% RmS 91/06/21 Same for |\glossary|
+% \changes{v1.0k}{2000/06/02}{Tidied 1.0j reimplementation, CAR}
+% \changes{v1.0k}{2000/06/02}{Small adjustment to give slightly less
+%    expansion, CAR}
+% \changes{v1.0j}{2000/05/26}{Reimplementation to fix expansion
+%                             error (pr/3203).}
+%    \begin{macrocode}
+\def\markboth#1#2{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \unrestored@protected@xdef\@themark {{#1}{#2}}%
+    \@temptokena \expandafter{\@themark}%
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+\def\markright#1{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+%    \end{macrocode}
+%    Protection is handled inside |\@markright|.
+%    \begin{macrocode}
+    \expandafter\@markright\@themark {#1}%
+    \@temptokena \expandafter{\@themark}%
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@markright}
+% \changes{v1.0j}{2000/05/26}{Reimplementation to fix expansion
+%                             error (pr/3203).}
+% \changes{v1.0k}{2000/06/02}{Small adjustment to give slightly less
+%    expansion, CAR}
+% \begin{macro}{\leftmark}
+% \changes{v1.0j}{2000/05/26}{Use \cs{@empty} instead of brace group
+%                             (pr/3203).}
+% \begin{macro}{\rightmark}
+% \changes{LaTeX2e}{1993/12/17}{Stopgap solution to mark \cs{leftmark}
+%      and \cs{rightmark} work without initializing mark until
+%      the problem is solved.}
+% \changes{v1.0j}{2000/05/26}{Use \cs{@empty} instead of brace group
+%                             (pr/3203).}
+% \task{???}{mark initialisation solved?}
+%    \begin{macrocode}
+\def\@markright#1#2#3{\@temptokena {#1}%
+  \unrestored@protected@xdef\@themark{{\the\@temptokena}{#3}}}
+\def\leftmark{\expandafter\@leftmark\botmark\@empty\@empty}
+\def\rightmark{\expandafter\@rightmark\firstmark\@empty\@empty}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@themark}
+% Initialise \LaTeX's marks without setting a \TeX\ mark \meta{whatsit}.
+%    \begin{macrocode}
+\def\@themark{{}{}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\mark}
+%   Test versions of \LaTeXe\ initialised \TeX's |\mark| system
+%  at this point, but this was removed before the first release.
+% \changes{LaTeX2e}{1993/12/16}{Init \cs{mark} at begin document}
+% \changes{LaTeX2e}{1993/12/17}{Removed init \cs{mark} at begin
+%                   document, since it doesn't work.}
+%\begin{verbatim}
+%\AtBeginDocument{\mark{{}{}}}
+%\end{verbatim}
+%  \end{macro}
+%
+%
+% \begin{macro}{\raggedbottom}
+%  |\raggedbottom| typesets pages with no vertical stretch, so they have
+%                  their natural height instead of all being exactly the
+%                  same height.  (Uses a space of .0001fil to avoid
+%                  interfering with the 1fil space of |\newpage|.)
+%
+%    \begin{macrocode}
+\def\raggedbottom{%
+  \def\@textbottom{\vskip \z@ \@plus.0001fil}\let\@texttop\relax}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\flushbottom}
+% |\flushbottom|:
+% Inverse of |\raggedbottom| --- makes all pages the same height.
+%    \begin{macrocode}
+\def\flushbottom{%
+  \let\@textbottom\relax \let\@texttop\relax}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\sloppy}
+%  |\sloppy| will never (well, hardly ever) produce overfull boxes, but
+%  may produce underfull ones.  (14 June 85)
+% \changes{LaTeX2e}{1993/12/18}{Added \cs{emergencystretch}}
+% \changes{v1.0h}{1994/07/20}{Save a few tokens}
+%    \begin{macrocode}
+\def\sloppy{%
+  \tolerance 9999%
+  \emergencystretch 3em%
+  \hfuzz .5\p@
+  \vfuzz\hfuzz}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{sloppypar}
+%  A sloppypar environment is equivalent to |{\par \sloppy ... \par}|.
+%    \begin{macrocode}
+\def\sloppypar{\par\sloppy}
+\def\endsloppypar{\par}
+%    \end{macrocode}
+%  \end{environment}
+%
+% \begin{macro}{\fussy}
+% \changes{v1.0f}{1995/04/24}{reset \cs{emergencystretch} latex/1344}
+%  Resets \TeX's parameters to their normal finicky values.
+%    \begin{macrocode}
+\def\fussy{%
+  \emergencystretch\z@
+  \tolerance 200%
+  \hfuzz .1\p@
+  \vfuzz\hfuzz}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\overfullrule}
+% \LaTeX\ default is no overfull box rule.  Changed by document
+% class option.
+%    \begin{macrocode}
+\overfullrule 0pt
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

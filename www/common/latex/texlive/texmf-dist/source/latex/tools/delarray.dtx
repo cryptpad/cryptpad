@@ -1,0 +1,207 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: delarray.dtx Copyright (C) 1991-1994 David Carlisle
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{delarray}
+%<package>         [2014/10/28 v1.01 array delimiter package (DPC)]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{delarray}
+\GetFileInfo{delarray.sty}
+\begin{document}
+\title{The \textsf{delarray} package\thanks{This file
+        has version number \fileversion, last
+        revised \filedate.}}
+\author{David Carlisle}
+\date{\filedate}
+ \MaintainedByLaTeXTeam{tools}
+ \maketitle
+ \DocInput{delarray.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+%
+% \changes{v1.00}{1992/07/06}
+%    {Initial version after merging of newarray.sty to array.sty}
+%
+% \changes{v1.01}{1994/03/14}
+%    {Update to LaTeX2e}
+%
+% \CheckSum{64}
+%
+% \section{Examples}
+%
+%
+% The addition to {\tt array.sty} added in {\tt delarray.sty} is
+% a system of implicit |\left| |\right| pairs. If you want an array
+% surrounded by parentheses, you can enter:\\
+% |\begin{array}({cc})| \ldots
+% \[  \begin{array}({cc})a&b\\c&d\end{array}   \]
+%
+% Similarly if an environment equivalent to \PlainTeX's |\cases| could
+% be defined by:\\
+% |\begin{array}\{{lL}.| \ldots
+%
+% \newcolumntype{L}{>{$}l<{$}}
+% \[  f(x)=\begin{array}\{{lL}.
+%           0        &if $x=0$\\
+%           \sin(x)/x&otherwise
+%           \end{array}  \]
+% Here |L| is supposed to denote a column of left aligned L-R text. It
+% may be defined via: |\newcolumntype{L}{>{$}l<{$}}|, as discussed in
+% {\tt array.sty}.
+% Note that as the delimiters must always be used in pairs, the  `|.|'
+% must be used to denote a  `null delimiter'.
+%
+% This feature is especially useful if the |[t]| or |[b]|
+% arguments are also used. In these cases the result is not equivalent
+% to surrounding the environment by |\left|\ldots|\right|, as
+% can be seen from the following example:
+% \[
+% \begin{array}[t]({c}) 1\\2\\3 \end{array}
+% \begin{array}[c]({c}) 1\\2\\3 \end{array}
+% \begin{array}[b]({c}) 1\\2\\3 \end{array}
+% \quad\mbox{not}\quad
+% \left(\begin{array}[t]{c} 1\\2\\3 \end{array}\right)
+% \left(\begin{array}[c]{c} 1\\2\\3 \end{array}\right)
+% \left(\begin{array}[b]{c} 1\\2\\3 \end{array}\right)
+% \]
+% \begin{verbatim}
+% \begin{array}[t]({c}) 1\\2\\3 \end{array}
+% \begin{array}[c]({c}) 1\\2\\3 \end{array}
+% \begin{array}[b]({c}) 1\\2\\3 \end{array}
+% \quad\mbox{not}\quad
+% \left(\begin{array}[t]{c} 1\\2\\3 \end{array}\right)
+% \left(\begin{array}[c]{c} 1\\2\\3 \end{array}\right)
+% \left(\begin{array}[b]{c} 1\\2\\3 \end{array}\right)
+% \end{verbatim}
+%
+%
+% \StopEventually{}
+%
+% \section{The Macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{array}[1994/02/03]
+%    \end{macrocode}
+%
+% \begin{macro}{\@tabarray}
+%    This macro tests for an optional bracket and then calls up
+%    |\@@array| or |\@@array[c]| (as default).
+%    \begin{macrocode}
+\def\@tabarray{\@ifnextchar[{\@@array}{\@@array[c]}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@@array}
+%    This macro tests for an optional delimiter before the left brace
+%    of the main preamble argument. If there is no delimiter,
+%    |\@arrayleft| and |\@arrayright| are made a no-ops, and
+%    |\@array| is called with the positional argument. Otherwise
+%    call |\@del@array|.
+%    \begin{macrocode}
+\def\@@array[#1]{\@ifnextchar\bgroup
+  {\let\@arrayleft\relax\let\@arrayright\relax\@array[#1]}%
+  {\@del@array[#1]}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@del@array}
+%    We now know that we have an {\tt array} (or {\tt tabular}) with
+%    delimiters.
+%    \begin{macrocode}
+\def\@del@array[#1]#2#3#4{%
+%    \end{macrocode}
+% The following line is completely redundant but it does catch errors
+% involving delimiters  before the processing of the alignment begins.
+% A common error is likely to be omitting the `.' in a
+% |\cases|-type construction. This causes the first token of the
+% alignment to be gobbled, possibly causing lots of spurious errors
+% before the cause of the error, the missing delimiter, is discovered as
+% |\@arrayright| puts the alignment and the delimiters together.
+%    \begin{macrocode}
+  \setbox\z@\hbox{$\left#2\right#4$}%
+%    \end{macrocode}
+% In the case of a `c' argument we do not need to rebox the alignment,
+% so we can define |\@arrayleft| and |\@arrayright| just to
+% insert the delimiters.
+%    \begin{macrocode}
+  \if#1c\def\@arrayleft{\left#2}\def\@arrayright{\right#4}%
+%    \end{macrocode}
+% Otherwise we (should) have a {\tt[t]} or {\tt[b]} argument, so first we
+% store the alignment, without delimiters in box0.
+%    \begin{macrocode}
+  \else\def\@arrayleft{\setbox\z@}%
+%    \end{macrocode}
+% Then after the alignment is finished:
+%    \begin{macrocode}
+  \def\@arrayright{%
+%    \end{macrocode}
+% Calculate the amount the box needs to be lowered (this will be
+% negative in the case of |[b]|). A little bit of arithmetic cf.\
+% the \TeX{}Book, Appendix G, rule 8. We calculate the amount this
+% way, rather than just taking the difference between the depth of box0
+% and the depth of the box defined below, as the depth of that box may
+% be affected by the delimiters if |\delimitershortfall| or
+% |\delimiterfactor| have non-standard values.
+%    \begin{macrocode}
+     \dimen@=\dp\z@
+     \advance\dimen@-\ht\z@
+     \divide \dimen@ by \tw@
+     \advance\dimen@ by\fontdimen22 \textfont\tw@
+%    \end{macrocode}
+% Now lower the alignment and the delimiters into place.
+%    \begin{macrocode}
+     \lower\dimen@\hbox{$\left#2\vcenter{\unvbox\z@}\right#4$}}%
+%    \end{macrocode}
+% End the |\if#1c|
+%    \begin{macrocode}
+  \fi
+%    \end{macrocode}
+% Now that we have defined |\@arrayleft| and |\@arrayright|, call
+% |\@array|.
+%    \begin{macrocode}
+  \@array[#1]{#3}}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+%
+% \subsection{newarray.sty}
+% All the features of the old {\tt newarray} style option have been
+% merged into the {\tt array} or {\tt delarray} options.
+% \changes{v1.00}{1992/07/06}
+%    {Stop generating a `shell' newarray.sty}
+%
+%
+% \Finale
+\endinput

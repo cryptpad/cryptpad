@@ -1,0 +1,82 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jun 13 12:00:00 2011
+FontName EUEX7
+FullName EUEX7
+FamilyName Euler
+Weight Normal
+Notice (Copyright (c) 1997, 2009, 2011 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name EUEX7.)
+ItalicAngle 0
+IsFixedPitch false
+UnderlinePosition -100
+UnderlineThickness 50
+Version 003.003
+EncodingScheme FontSpecific
+FontBBox -20 -2950 1514 773
+StartCharMetrics 65
+C 8 ; WX 662 ; N braceleftbig ; B 127 -1150 533 49 ;
+C 9 ; WX 662 ; N bracerightbig ; B 128 -1150 533 49 ;
+C 10 ; WX 754 ; N braceleftBig ; B 137 -1750 616 49 ;
+C 11 ; WX 754 ; N bracerightBig ; B 137 -1750 616 49 ;
+C 12 ; WX 846 ; N braceleftbigg ; B 151 -2350 694 49 ;
+C 13 ; WX 846 ; N bracerightbigg ; B 151 -2350 694 49 ;
+C 14 ; WX 908 ; N braceleftBigg ; B 165 -2950 742 49 ;
+C 15 ; WX 908 ; N bracerightBigg ; B 165 -2950 742 49 ;
+C 24 ; WX 1123 ; N arrowlefttophalf ; B 69 226 1053 500 ;
+C 25 ; WX 1123 ; N arrowleftbothalf ; B 69 1 1053 275 ;
+C 26 ; WX 1123 ; N arrowrighttophalf ; B 69 226 1053 500 ;
+C 27 ; WX 1123 ; N arrowrightbothalf ; B 69 1 1053 275 ;
+C 32 ; WX 1123 ; N arrowleft ; B 69 1 1053 500 ;
+C 33 ; WX 1123 ; N arrowright ; B 69 1 1053 500 ;
+C 34 ; WX 569 ; N arrowup ; B 39 -194 530 694 ;
+C 35 ; WX 569 ; N arrowdown ; B 39 -194 530 694 ;
+C 36 ; WX 1123 ; N arrowboth ; B 69 1 1053 500 ;
+C 37 ; WX 1123 ; N arrownortheast ; B 69 -194 1101 773 ;
+C 38 ; WX 1123 ; N arrowsoutheast ; B 69 -273 1101 694 ;
+C 40 ; WX 1123 ; N arrowdblleft ; B 70 -109 1053 610 ;
+C 41 ; WX 1123 ; N arrowdblright ; B 69 -109 1052 610 ;
+C 42 ; WX 754 ; N arrowdblup ; B 21 -194 733 693 ;
+C 43 ; WX 754 ; N arrowdbldown ; B 21 -193 733 694 ;
+C 44 ; WX 1123 ; N arrowdblboth ; B 50 -109 1072 610 ;
+C 45 ; WX 1123 ; N arrownorthwest ; B 21 -194 1053 773 ;
+C 46 ; WX 1123 ; N arrowsouthwest ; B 21 -273 1053 694 ;
+C 49 ; WX 1123 ; N infinity ; B 69 -10 1053 441 ;
+C 56 ; WX 1000 ; N bracelefttp ; B 448 -912 804 -1 ;
+C 57 ; WX 1000 ; N bracerighttp ; B 195 -912 551 -1 ;
+C 58 ; WX 1000 ; N braceleftbt ; B 448 -899 804 12 ;
+C 59 ; WX 1000 ; N bracerightbt ; B 195 -899 551 12 ;
+C 60 ; WX 1000 ; N braceleftmid ; B 195 -1812 551 12 ;
+C 61 ; WX 1000 ; N bracerightmid ; B 448 -1812 804 12 ;
+C 62 ; WX 1000 ; N braceex ; B 448 -312 551 12 ;
+C 72 ; WX 600 ; N contintegraltext ; B 59 -1111 570 0 ;
+C 73 ; WX 508 ; N contintegraldisplay ; B 21 -2222 623 0 ;
+C 80 ; WX 1185 ; N summationtext ; B 69 -1000 1084 0 ;
+C 81 ; WX 1185 ; N producttext ; B 85 -1000 1099 0 ;
+C 82 ; WX 600 ; N integraltext ; B 59 -1111 570 0 ;
+C 88 ; WX 1615 ; N summationdisplay ; B 69 -1400 1514 0 ;
+C 89 ; WX 1578 ; N productdisplay ; B 69 -1400 1508 0 ;
+C 90 ; WX 508 ; N integraldisplay ; B 49 -2222 581 0 ;
+C 96 ; WX 1185 ; N coproducttext ; B 85 -1000 1099 0 ;
+C 97 ; WX 1578 ; N coproductdisplay ; B 69 -1400 1508 0 ;
+C 108 ; WX 569 ; N arrowbothv ; B 39 -270 530 770 ;
+C 109 ; WX 754 ; N arrowdblbothv ; B 21 -269 733 769 ;
+C 122 ; WX 466 ; N bracehtipdownleft ; B -20 -252 470 103 ;
+C 123 ; WX 466 ; N bracehtipdownright ; B -4 -252 486 103 ;
+C 124 ; WX 466 ; N bracehtipupleft ; B -20 0 470 356 ;
+C 125 ; WX 466 ; N bracehtipupright ; B -4 0 486 356 ;
+C 128 ; WX 1123 ; N arrowleft ; B 69 1 1053 500 ;
+C 160 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 169 ; WX 662 ; N braceleftbig ; B 127 -1150 533 49 ;
+C 170 ; WX 662 ; N bracerightbig ; B 128 -1150 533 49 ;
+C 173 ; WX 754 ; N braceleftBig ; B 137 -1750 616 49 ;
+C 174 ; WX 754 ; N bracerightBig ; B 137 -1750 616 49 ;
+C 175 ; WX 846 ; N braceleftbigg ; B 151 -2350 694 49 ;
+C 176 ; WX 846 ; N bracerightbigg ; B 151 -2350 694 49 ;
+C 177 ; WX 908 ; N braceleftBigg ; B 165 -2950 742 49 ;
+C 178 ; WX 908 ; N bracerightBigg ; B 165 -2950 742 49 ;
+C 187 ; WX 1123 ; N arrowlefttophalf ; B 69 226 1053 500 ;
+C 188 ; WX 1123 ; N arrowleftbothalf ; B 69 1 1053 275 ;
+C 189 ; WX 1123 ; N arrowrighttophalf ; B 69 226 1053 500 ;
+C 190 ; WX 1123 ; N arrowrightbothalf ; B 69 1 1053 275 ;
+C 195 ; WX 1123 ; N arrowleft ; B 69 1 1053 500 ;
+EndCharMetrics
+EndFontMetrics

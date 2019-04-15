@@ -1,0 +1,1617 @@
+% \iffalse meta-comment
+%
+% File: atveryend.dtx
+% Version: 2011/06/30 v1.8
+% Info: Hooks at the very end of document
+%
+% Copyright (C) 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file atveryend.dtx
+% and the derived files
+%    atveryend.sty, atveryend.pdf, atveryend.ins, atveryend.drv,
+%    atveryend-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/atveryend.dtx
+%    CTAN:macros/latex/contrib/oberdiek/atveryend.pdf
+%
+% Unpacking:
+%    (a) If atveryend.ins is present:
+%           tex atveryend.ins
+%    (b) Without atveryend.ins:
+%           tex atveryend.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{atveryend.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If atveryend.drv is present:
+%           latex atveryend.drv
+%    (b) Without atveryend.drv:
+%           latex atveryend.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex atveryend.dtx
+%       makeindex -s gind.ist atveryend.idx
+%       pdflatex atveryend.dtx
+%       makeindex -s gind.ist atveryend.idx
+%       pdflatex atveryend.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/atveryend.sty
+%    TDS:doc/latex/oberdiek/atveryend.pdf
+%    TDS:doc/latex/oberdiek/test/atveryend-test1.tex
+%    TDS:source/latex/oberdiek/atveryend.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: atveryend 2011/06/30 v1.8 Hooks at the very end of document (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: atveryend
+Version: 2011/06/30 v1.8
+
+Copyright (C) 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file atveryend.dtx
+and the derived files
+   atveryend.sty, atveryend.pdf, atveryend.ins, atveryend.drv,
+   atveryend-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{atveryend.ins}{\from{atveryend.dtx}{install}}%
+  \file{atveryend.drv}{\from{atveryend.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{atveryend.sty}{\from{atveryend.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{atveryend-test1.tex}{\from{atveryend.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{atveryend.xml}{\from{atveryend.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     atveryend.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `atveryend.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atveryend.drv}%
+  [2011/06/30 v1.8 Hooks at the very end of document (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{atveryend.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1203}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{atveryend.drv}
+%
+% \title{The \xpackage{atveryend} package}
+% \date{2011/06/30 v1.8}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This \LaTeX\ package provides two hooks for \verb|\end{document}|
+% that are executed after the hook of \cs{AtEndDocument}.
+% \cs{AfterLastShipout} can be used for code that is to be executed
+% right after the last \cs{clearpage} before the \xext{aux} file
+% is closed. \cs{AtVeryEndDocument} is used for code after closing
+% and final reading of the \xext{aux} file.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% There are packages (e.g. \xpackage{hyperref} \cite{hyperref},
+% \xpackage{lastpage} \cite{lastpage})
+% that want to call code after the typesetting is done, for example
+% to remember the last page number. \LaTeX\ provides the hook
+% \cs{AtEndDocument} (\xpackage{clsguide} \cite{clsguide}).
+% There are packages that use this hook to do their job for
+% typesetting pages (e.g. \xpackage{endfloat} emits the floats here
+% \cite{endfloat}).
+% Also a user might provide additional code in \cs{AtEndDocument}.
+% Therefore packages have to call \cs{clearpage} in \cs{AtEndDocument}
+% to get after the last shipout page. But this is not too reliable,
+% because the right timing is important between packages that want
+% or have to do things before the last page is output and packages
+% that only work properly if they can reach the point after the
+% last shipout.
+%
+% Therefore the task of this package is to provide additional
+% hooks for |\end{document}|. All hooks are called after
+% the hook of \cs{AtEndDocument}.
+% \begin{declcs}{BeforeClearDocument} \M{code}
+% \end{declcs}
+% The code is called before the final \cs{clearpage} in
+% \cs{enddocument}. However it is unknown, whether the last
+% page is already shipped out or if this will be triggered by the
+% final \cs{clearpage}.
+%
+% \begin{declcs}{AfterLastShipout} \M{code}
+% \end{declcs}
+% The code is called after the final \cs{clearpage} of \cs{enddocument}
+% before the main \xext{aux} file is closed. This is the right place
+% to remember the last page in the \xext{aux} file, for instance.
+%
+% \begin{declcs}{AtVeryEndDocument} \M{code}
+% \end{declcs}
+% The code is called after the \xext{aux} file is closed and read in again.
+% It is the place for final checks, rerun hints, final messages.
+%
+% \begin{declcs}{AtEndAfterFileList} \M{code}
+% \end{declcs}
+% After the \xext{aux} file closing and reading \hologo{LaTeX}
+% prints the file list if requested by \cs{listfiles}.
+% Then this hook is executed.
+%
+% \begin{declcs}{AtVeryVeryEnd} \M{code}
+% \end{declcs}
+% This code is called right before the final \cs{@@end}.
+%
+% \subsection{Related work}
+%
+% \begin{description}
+% \item[Package \xpackage{scrfile}:]
+% Markus Kohm has written package \xpackage{scrlfile}
+% (part of KOMA-Script \cite{koma})
+% that provides
+% hooks \cs{BeforeClosingMainAux} and after \cs{AfterReadingMainAux}.
+% They have the same function as the hooks of this package. In fact
+% this package uses them, if they are available.
+% \item[Class \xclass{revtex4-1}:]
+% This class calls \cs{clear@document} in \cs{enddocument}
+% that wraps the final call of \cs{clearpage}.
+% Thus it can be used as hook to call stuff after that \cs{clearpage}.
+% This is also done by this package.
+% \item[Package \xpackage{etoolbox}:]
+% It provides \cs{AfterEndDocument}, a hook right before
+% \cs{deadcycles} or \cs{@@end} \cite{etoolbox}.
+% \end{description}
+% This package tries to combine as many approaches as possible:
+% \begin{itemize}
+% \item It looks for a known \cs{enddocument} and redefines it.
+% \item Hooks that are provided by others are used (package
+% \xpackage{scrlfile} or class \xclass{revtex4-1}.
+% \item It redefines \cs{@checkend} and \cs{@dofilelist} to insert
+% the hooks similar to package \xpackage{scrlfile}.
+% \item The hook execution is wrapped in a macro that
+% is redefined by its first call to prevent calling the hook
+% more than once.
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname AtVeryEnd@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\AtVeryEnd@AtEnd{%
+    \AtVeryEnd@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{9}{10}% (tab)
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\AtVeryEnd@AtEnd{\AtVeryEnd@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{atveryend}%
+  [2011/06/30 v1.8 Hooks at the very end of document (HO)]
+%    \end{macrocode}
+%
+% \subsection{Tools}
+%
+%    \begin{macro}{\AtVeryEnd@ifundefined}
+%    \begin{macrocode}
+\def\AtVeryEnd@ifundefined#1{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Hooks}
+%
+%    \begin{macro}{\AtVeryEnd@BeforeClearDocumentHook}
+%    \begin{macrocode}
+\let\AtVeryEnd@BeforeClearDocumentHook\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@AfterLastShipoutHook}
+%    \begin{macrocode}
+\let\AtVeryEnd@AfterLastShipoutHook\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@AtVeryEndDocumentHook}
+%    \begin{macrocode}
+\let\AtVeryEnd@AtVeryEndDocumentHook\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@AtEndAfterFileListHook}
+%    \begin{macrocode}
+\let\AtVeryEnd@AtEndAfterFileListHook\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@AtVeryVeryEndHook}
+%    \begin{macrocode}
+\let\AtVeryEnd@AtVeryVeryEndHook\@empty
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BeforeClearDocument}
+%    \begin{macrocode}
+\newcommand*{\BeforeClearDocument}{%
+  \g@addto@macro\AtVeryEnd@BeforeClearDocumentHook
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AfterLastShipout}
+%    \begin{macrocode}
+\newcommand*{\AfterLastShipout}{%
+  \g@addto@macro\AtVeryEnd@AfterLastShipoutHook
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEndDocument}
+%    \begin{macrocode}
+\newcommand*{\AtVeryEndDocument}{%
+  \g@addto@macro\AtVeryEnd@AtVeryEndDocumentHook
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtEndAfterFileList}
+%    \begin{macrocode}
+\newcommand*{\AtEndAfterFileList}{%
+  \g@addto@macro\AtVeryEnd@AtEndAfterFileListHook
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryVeryEnd}
+%    \begin{macrocode}
+\newcommand*{\AtVeryVeryEnd}{%
+  \g@addto@macro\AtVeryEnd@AtVeryVeryEndHook
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\Call@BeforeClearDocument}
+%    \begin{macrocode}
+\newcommand*{\Call@BeforeClearDocument}{%
+  \let\BeforeClearDocument\@firstofone
+  \ifx\AtVeryEnd@BeforeClearDocumentHook\@empty
+    \PackageInfo{atveryend}{Empty hook `BeforeClearDocument'}%
+  \else
+    \PackageInfo{atveryend}{Executing hook `BeforeClearDocument'}%
+    \AtVeryEnd@BeforeClearDocumentHook
+  \fi
+  \global\let\AtVeryEnd@BeforeClearDocumentHook\@undefined
+  \global\let\Call@BeforeClearDocument\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Call@AfterLastShipout}
+%    \begin{macrocode}
+\newcommand*{\Call@AfterLastShipout}{%
+  \let\AfterLastShipout\@firstofone
+  \ifx\AtVeryEnd@AfterLastShipoutHook\@empty
+    \PackageInfo{atveryend}{Empty hook `AfterLastShipout'}%
+  \else
+    \PackageInfo{atveryend}{Executing hook `AfterLastShipout'}%
+    \AtVeryEnd@AfterLastShipoutHook
+  \fi
+  \global\let\AtVeryEnd@AfterLastShipoutHook\@undefined
+  \global\let\Call@AfterLastShipout\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Call@AtVeryEndDocument}
+%    \begin{macrocode}
+\newcommand*{\Call@AtVeryEndDocument}{%
+  \let\AtVeryEndDocument\@firstofone
+  \ifx\AtVeryEnd@AtVeryEndDocumentHook\@empty
+    \PackageInfo{atveryend}{Empty hook `AtVeryEndDocument'}%
+  \else
+    \PackageInfo{atveryend}{Executing hook `AtVeryEndDocument'}%
+    \AtVeryEnd@AtVeryEndDocumentHook
+  \fi
+  \global\let\AtVeryEnd@AtVeryEndDocumentHook\@undefined
+  \global\let\Call@AtVeryEndDocument\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\Call@AtEndAfterFileList}
+%    \begin{macrocode}
+\newcommand*{\Call@AtEndAfterFileList}{%
+  \Call@AtVeryEndDocument
+  \let\AtEndAfterFileList\@firstofone
+  \ifx\AtVeryEnd@AtEndAfterFileListHook\@empty
+    \PackageInfo{atveryend}{Empty hook `AtEndAfterFileList'}%
+  \else
+    \PackageInfo{atveryend}{Executing hook `AtEndAfterFileList'}%
+    \AtVeryEnd@AtEndAfterFileListHook
+  \fi
+  \global\let\AtVeryEnd@AtEndAfterFileListHook\@undefined
+  \global\let\Call@AtEndAfterFileList\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\Call@AtVeryVeryEnd}
+%    \begin{macrocode}
+\newcommand*{\Call@AtVeryVeryEnd}{%
+  \Call@AtEndAfterFileList
+  \let\AtVeryVeryEnd\@firstofone
+  \ifx\AtVeryEnd@AtVeryVeryEndHook\@empty
+    \PackageInfo{atveryend}{Empty hook `AtVeryVeryEnd'}%
+  \else
+    \PackageInfo{atveryend}{Executing hook `AtVeryVeryEnd'}%
+    \AtVeryEnd@AtVeryVeryEndHook
+  \fi
+  \global\let\AtVeryEnd@AtVeryVeryEndHook\@undefined
+  \global\let\Call@AtVeryVeryEnd\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Redefining \cs{enddocument}}
+%
+%    This approach looks for known versions of \cs{enddocument}
+%    and redefines it.  Class \xclass{seminar}
+%    and package \xpackage{slidesec} are not checked, because
+%    there would be too much combinations to check.
+%
+% \subsubsection{\LaTeX\ kernel}
+%
+%    \begin{macro}{\AtVeryEnd@test@standard}
+%    \begin{macrocode}
+\def\AtVeryEnd@test@standard{%
+  \let\AtEndDocument\@firstofone
+  \@enddocumenthook
+  \@checkend{document}%
+  \clearpage
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \let\@setckpt\@gobbletwo
+      \let\@newl@bel\@testdef
+      \@tempswafalse
+      \makeatletter
+      \input\jobname.aux %
+    \fi
+    \@dofilelist
+    \ifdim \font@submax >\fontsubfuzz\relax
+      \@font@warning{Size substitutions with differences\MessageBreak
+                 up to \font@submax\space have occurred.\@gobbletwo}%
+    \fi
+    \@defaultsubs
+    \@refundefined
+    \if@filesw
+      \ifx \@multiplelabels \relax
+        \if@tempswa
+          \@latex@warning@no@line{Label(s) may have changed. %
+              Rerun to get cross-references right}%
+        \fi
+      \else
+        \@multiplelabels
+      \fi
+    \fi
+  \endgroup
+  \deadcycles\z@
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@enddocument@standard}
+%    \begin{macrocode}
+\def\AtVeryEnd@enddocument@standard{%
+  \let\AtEndDocument\@firstofone
+  \@enddocumenthook
+  \@checkend{document}%
+  \Call@BeforeClearDocument
+  \clearpage
+  \Call@AfterLastShipout
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \let\@setckpt\@gobbletwo
+      \let\@newl@bel\@testdef
+      \@tempswafalse
+      \makeatletter
+      \input\jobname.aux %
+    \fi
+    \Call@AtVeryEndDocument
+    \@dofilelist
+    \Call@AtEndAfterFileList
+    \ifdim \font@submax >\fontsubfuzz\relax
+      \@font@warning{Size substitutions with differences\MessageBreak
+                 up to \font@submax\space have occurred.\@gobbletwo}%
+    \fi
+    \@defaultsubs
+    \@refundefined
+    \if@filesw
+      \ifx \@multiplelabels \relax
+        \if@tempswa
+          \@latex@warning@no@line{Label(s) may have changed. %
+              Rerun to get cross-references right}%
+        \fi
+      \else
+        \@multiplelabels
+      \fi
+    \fi
+  \endgroup
+  \deadcycles\z@
+  \Call@AtVeryVeryEnd
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\LaTeX\ kernel 2011/06/27}
+%
+%    The \hologo{LaTeX2e} release 2011/06/27 has changed \cs{enddocument}
+%    (\cs{input} is replaced by \cs{@@input}).
+%    \begin{macro}{\AtVeryEnd@test@standard20110627}
+%    \begin{macrocode}
+\expandafter\def\csname AtVeryEnd@test@standard20110627\endcsname{%
+  \let\AtEndDocument\@firstofone
+  \@enddocumenthook
+  \@checkend{document}%
+  \clearpage
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \let\@setckpt\@gobbletwo
+      \let\@newl@bel\@testdef
+      \@tempswafalse
+      \makeatletter
+      \@@input\jobname.aux %
+    \fi
+    \@dofilelist
+    \ifdim \font@submax >\fontsubfuzz\relax
+      \@font@warning{Size substitutions with differences\MessageBreak
+                 up to \font@submax\space have occurred.\@gobbletwo}%
+    \fi
+    \@defaultsubs
+    \@refundefined
+    \if@filesw
+      \ifx \@multiplelabels \relax
+        \if@tempswa
+          \@latex@warning@no@line{Label(s) may have changed. %
+              Rerun to get cross-references right}%
+        \fi
+      \else
+        \@multiplelabels
+      \fi
+    \fi
+  \endgroup
+  \deadcycles\z@
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@enddocument@standard20110627}
+%    \begin{macrocode}
+\expandafter\def\csname AtVeryEnd@enddocument@standard20110627\endcsname{%
+  \let\AtEndDocument\@firstofone
+  \@enddocumenthook
+  \@checkend{document}%
+  \Call@BeforeClearDocument
+  \clearpage
+  \Call@AfterLastShipout
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \let\@setckpt\@gobbletwo
+      \let\@newl@bel\@testdef
+      \@tempswafalse
+      \makeatletter
+      \@@input\jobname.aux %
+    \fi
+    \Call@AtVeryEndDocument
+    \@dofilelist
+    \Call@AtEndAfterFileList
+    \ifdim \font@submax >\fontsubfuzz\relax
+      \@font@warning{Size substitutions with differences\MessageBreak
+                 up to \font@submax\space have occurred.\@gobbletwo}%
+    \fi
+    \@defaultsubs
+    \@refundefined
+    \if@filesw
+      \ifx \@multiplelabels \relax
+        \if@tempswa
+          \@latex@warning@no@line{Label(s) may have changed. %
+              Rerun to get cross-references right}%
+        \fi
+      \else
+        \@multiplelabels
+      \fi
+    \fi
+  \endgroup
+  \deadcycles\z@
+  \Call@AtVeryVeryEnd
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Package \xpackage{booklet}, file \xpackage{2up.tex}}
+%
+%    \begin{macro}{\AtVeryEnd@test@booklet}
+%    \begin{macrocode}
+\expandafter\def\expandafter\AtVeryEnd@test@booklet\expandafter{%
+  \expandafter\twoupclearpage
+  \AtVeryEnd@test@standard
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@enddocument@booklet}
+%    \begin{macrocode}
+\expandafter\def\expandafter\AtVeryEnd@enddocument@booklet\expandafter{%
+  \expandafter\twoclearpage
+  \AtVeryEnd@enddocument@standard
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Class \xclass{dinbrief}}
+%
+%    \begin{macro}{\AtVeryEnd@test@dinbrief}
+%    \begin{macrocode}
+\def\AtVeryEnd@test@dinbrief{%
+  \@checkend{document} %
+  \newpage
+  \begingroup
+    \if@filesw
+      \ifnum\c@labelgen>0 %
+        \immediate\closeout\@mainlbl
+        \makeatletter
+        \input \jobname@lbl\relax
+        \clearpage
+      \fi
+      \immediate\closeout\@mainaux
+    \fi
+  \endgroup
+  \deadcycles\z@
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@enddocument@dinbrief}
+%    \begin{macrocode}
+\def\AtVeryEnd@enddocument@dinbrief{%
+  \@checkend{document}%
+  \Call@BeforeClearDocument
+  \newpage
+  \Call@AfterLastShipout
+  \begingroup
+    \if@filesw
+      \ifnum\c@labelgen>\z@
+        \immediate\closeout\@mainlbl
+        \makeatletter
+        \input \jobname@lbl\relax
+        \clearpage
+      \fi
+      \immediate\closeout\@mainaux
+    \fi
+    \Call@AtVeryEndDocument
+    \csname @dofilelist\endcsname
+    \Call@AtEndAfterFileList
+  \endgroup
+  \deadcycles\z@
+  \Call@AtVeryVeryEnd
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Class \xclass{combine}}
+%
+%    \begin{macro}{\AtVeryEnd@test@combine}
+%    \begin{macrocode}
+\def\AtVeryEnd@test@combine{%
+  \@enddocumenthook
+  \@checkend{document}%
+  \clearpage
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \immediate\closeout\@partaux
+      \let\@setckpt\@gobbletwo
+      \let\@newl@bel\@testdef
+      \@tempswafalse
+      \makeatletter \input\c@lmainauxfile  %% change here
+    \fi
+    \c@lenddoca                            %% a replacement
+    \@refundefined
+  \endgroup
+  \deadcycles\z@
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@enddocument@combine}
+%    \begin{macrocode}
+\def\AtVeryEnd@enddocument@combine{%
+  \@enddocumenthook
+  \@checkend{document}%
+  \Call@BeforeClearDocument
+  \clearpage
+  \Call@AfterLastShipout
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \immediate\closeout\@partaux
+      \let\@setckpt\@gobbletwo
+      \let\@newl@bel\@testdef
+      \@tempswafalse
+      \makeatletter \input\c@lmainauxfile  %% change here
+    \fi
+    \Call@AtVeryEndDocument
+    \c@lenddoca                            %% a replacement
+    \@refundefined
+  \endgroup
+  \deadcycles\z@
+  \Call@AtVeryVeryEnd
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtVeryEnd@test@c@lenddoca}
+%    \begin{macrocode}
+\long\def\AtVeryEnd@test@c@lenddoca{%
+  \@dofilelist
+  \ifdim\font@submax>\fontsubfuzz\relax
+    \@font@warning{%
+      Size substitutions with differences\MessageBreak
+      up to \font@submax\space have occured.\@gobbletwo
+    }%
+  \fi
+  \@defaultsubs
+  \if@filesw
+    \ifx\@multiplelabels\relax
+      \if@tempswa
+        \@latex@warning@no@line{%
+          Label(s) may have changed. %
+          Rerun to get cross-references right%
+        }%
+      \fi
+    \else
+      \@multiplelabels
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\c@lenddoca}
+%    \begin{macrocode}
+\ifx\AtVeryEnd@c@lenddoca\c@lenddoca
+  \def\c@lenddoca{%
+    \@dofilelist
+    \Call@AtEndAfterFileList
+    \ifdim\font@submax>\fontsubfuzz\relax
+      \@font@warning{%
+        Size substitutions with differences\MessageBreak
+        up to \font@submax\space have occured.\@gobbletwo
+      }%
+    \fi
+    \@defaultsubs
+    \if@filesw
+      \ifx\@multiplelabels\relax
+        \if@tempswa
+          \@latex@warning@no@line{%
+            Label(s) may have changed. %
+            Rerun to get cross-references right%
+          }%
+        \fi
+      \else
+        \@multiplelabels
+      \fi
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Class \xpackage{jpsj2}}
+%
+%    \begin{macro}{\AtVeryEnd@test@jpsj}
+%    \begin{macrocode}
+\def\AtVeryEnd@test@jpsj{%
+  \if@lastpagebalancing
+    \global\let\@outputdblcol=\balancing@outputdblcol
+  \fi
+  \@checkend{document}%
+  \clearpage
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \def\global\@namedef##1##2{}%
+      \def\newlabel{\@testdef r}%
+      \def\bibcite{\@testdef b}%
+      \@tempswafalse
+      \makeatletter
+      \input \jobname.aux %
+      \if@tempswa
+        \@warning{%
+          Label(s) may have changed. %
+          Rerun to get cross-references right%
+        }%
+      \fi
+    \fi
+  \endgroup
+  \deadcycles\z@
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@enddocument@jpsj}
+%    \begin{macrocode}
+\def\AtVeryEnd@enddocument@jpsj{%
+  \if@lastpagebalancing
+    \global\let\@outputdblcol=\balancing@outputdblcol
+  \fi
+  \@checkend{document}%
+  \Call@BeforeClearDocument
+  \clearpage
+  \Call@AfterLastShipout
+  \begingroup
+    \if@filesw
+      \immediate\closeout\@mainaux
+      \def\global\@namedef##1##2{}%
+      \def\newlabel{\@testdef r}%
+      \def\bibcite{\@testdef b}%
+      \@tempswafalse
+      \makeatletter
+      \input \jobname.aux %
+      \if@tempswa
+        \@warning{%
+          Label(s) may have changed. %
+          Rerun to get cross-references right%
+        }%
+      \fi
+    \fi
+    \Call@AtVeryEndDocument
+    \csname @dofilelist\endcsname
+    \Call@AtEndAfterFileList
+  \endgroup
+  \deadcycles\z@
+  \Call@AtVeryVeryEnd
+  \@@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Testing and redefining}
+%
+%    \begin{macro}{\AtVeryEnd@Test}
+%    \begin{macrocode}
+\def\AtVeryEnd@Test#1#2{%
+  \expandafter\ifx\csname AtVeryEnd@test@#2\endcsname#1%
+    \expandafter\let\expandafter#1%
+    \csname AtVeryEnd@enddocument@#2\endcsname
+    \begingroup
+      \let\on@line\@empty
+      \PackageInfo{atveryend}{%
+        \string#1 detected (#2)%
+      }%
+    \endgroup
+    \expandafter\AtVeryEnd@SkipToNil
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@SkipToNil}
+%    \begin{macrocode}
+\def\AtVeryEnd@SkipToNil#1\@nil{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtVeryEnd@RedefEndDocument}
+%    \begin{macrocode}
+\def\AtVeryEnd@RedefEndDocument#1{%
+  \ifx#1\@undefined
+  \else
+    \AtVeryEnd@Test#1{standard20110627}%
+    \AtVeryEnd@Test#1{standard}%
+    \AtVeryEnd@Test#1{booklet}%
+    \AtVeryEnd@Test#1{dinbrief}%
+    \AtVeryEnd@Test#1{combine}%
+    \AtVeryEnd@Test#1{jpsj}%
+    \AtVeryEnd@SkipToNil
+    \@nil
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AtVeryEnd@RedefEndDocument\enddocument
+\AtVeryEnd@RedefEndDocument\AP@enddocument % afterpage.sty
+\AtVeryEnd@RedefEndDocument\hyper@back@cite@enddocument % htx-bc.sty
+\AtVeryEnd@RedefEndDocument\hyper@enddocument % hyper.sty
+\AtVeryEnd@RedefEndDocument\hyper@fn@enddocument % hyper.sty
+\AtVeryEnd@RedefEndDocument\cweb@save@enddocument % cweb.cls
+\AtVeryEnd@RedefEndDocument\prev@enddocument % flushend.sty
+\AtVeryEnd@RedefEndDocument\endorigdocument % gaceta.cls
+\AtVeryEnd@RedefEndDocument\keependdoc % aguplus.sty
+\AtVeryEnd@RedefEndDocument\EMenddocument % t-angles.sty
+\AtVeryEnd@RedefEndDocument\docmute@enddocument % docmute.sty
+\AtVeryEnd@RedefEndDocument\a@enddocument % alatex.sty
+\AtVeryEnd@RedefEndDocument\enddocumentasusual % frenchle.sty
+\AtVeryEnd@RedefEndDocument\old@enddocument % uwthesis.cls
+%    \end{macrocode}
+%
+% \subsection{Hack into \cs{enddocument}}
+%
+%    \begin{macrocode}
+\def\AtVeryEnd@document{document}%
+\def\AtVeryEnd@RedefCheckEnd{%
+  \expandafter\def\expandafter\@checkend
+  \expandafter##\expandafter1\expandafter{%
+    \@checkend{##1}%
+    \def\AtVeryEnd@temp{##1}%
+    \ifx\AtVeryEnd@temp\AtVeryEnd@document
+      \let\AtVeryEnd@OrgClearpage\clearpage
+      \def\clearpage{%
+        \let\clearpage\AtVeryEnd@OrgClearpage
+        \Call@BeforeClearDocument
+        \clearpage
+        \Call@AfterLastShipout
+      }%
+    \fi
+  }%
+  \aftergroup\AtVeryEnd@RedefCheckEnd
+}%
+\AtBeginDocument{%
+  \AtEndDocument{%
+    \AtVeryEnd@RedefCheckEnd
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AtEndDocument{%
+  \@ifundefined{@dofilelist}{%
+    \gdef\@dofilelist{%
+      \Call@AtVeryEndDocument
+      \Call@AtEndAfterFileList
+    }%
+  }{%
+    \begingroup
+      \toks@\expandafter{\@dofilelist}%
+      \xdef\@dofilelist{%
+        \noexpand\Call@AtVeryEndDocument
+        \the\toks@
+        \noexpand\Call@AtEndAfterFileList
+      }%
+    \endgroup
+  }%
+}
+%    \end{macrocode}
+%
+% \subsection{Using hooks of other packages}
+%
+% \subsubsection{Package \xpackage{scrlfile}}
+%
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifpackageloaded{scrlfile}{%
+    \AtVeryEnd@ifundefined{BeforeClosingMainAux}{}{%
+      \BeforeClosingMainAux{\Call@AfterLastShipout}%
+    }%
+    \AtVeryEnd@ifundefined{AfterReadingMainAux}{}{%
+      \AfterReadingMainAux{\Call@AtVeryEndDocument}%
+    }%
+  }{}%
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{etoolbox}}
+%
+%    \begin{macrocode}
+  \@ifpackageloaded{etoolbox}{%
+    \AtVeryEnd@ifundefined{AfterEndDocument}{}{%
+      \AfterEndDocument{\Call@AtVeryEndDocument}%
+    }%
+  }{}%
+%    \end{macrocode}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+% \subsection{Class \xclass{letter}}
+%
+%    The class \xclass{letter} and some similar classes
+%    insert material (\cs{@startlabels}) at the end of the document.
+%    However, this method violates
+%    a precondition of this package that the \cs{clearpage} in
+%    \cs{enddocument} is the final call with no material at
+%    later times. Therefore we move the label making
+%    from the \xext{aux} file to \cs{AtEndDocument}.
+%    \begin{macrocode}
+\def\AtVeryEnd@temp{%
+  \AtBeginDocument{%
+    \let\@startlabels\startlabels
+    \let\@mlabel\mlabel
+    \if@filesw
+      \immediate\write\@mainaux{\string\@startlabels}%
+    \fi
+  }%
+  \AtEndDocument{%
+    \if@filesw
+      \immediate\write\@mainaux{\string\clearpage}%
+    \fi
+  }%
+}
+\ifx\makelabels\AtVeryEnd@temp
+\else
+  \expandafter\AtVeryEnd@AtEnd
+\fi%
+\let\AtVeryEnd@PatchLetter=N%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname endletter\endcsname\relax
+\else
+  \long\def\AtVeryEnd@TestEndLetter#1\@auxout#2#3\AtVeryEnd@Nil{%
+    \def\AtVeryEnd@temp{#2}%
+    \ifx\AtVeryEnd@temp\@empty
+    \else
+      \@onelevel@sanitize\AtVeryEnd@temp
+      \edef\AtVeryEnd@StringMlabel{%
+        \string\string
+        \string\@mlabel
+        \expandafter\@gobble\string\{%
+      }%
+      \def\AtVeryEnd@CatchFirst##1##2##3##4##5##6##7##8{%
+        ##1##2##3##4##5##6##7##8\AtVeryEnd@CatchSecond
+      }%
+      \def\AtVeryEnd@CatchSecond##1##2##3##4##5##6##7##8##9\@nil{%
+        ##1##2##3##4##5##6##7##8%
+      }%
+      \edef\AtVeryEnd@temp{%
+        \expandafter\AtVeryEnd@CatchFirst\AtVeryEnd@temp
+        {}{}{}{}{}{}{}{}%
+        {}{}{}{}{}{}{}{}%
+        \@nil
+      }%
+      \ifx\AtVeryEnd@temp\AtVeryEnd@StringMlabel
+        \expandafter\def\expandafter\endletter\expandafter{%
+          \endletter
+          \begingroup
+            \let\\=\relax
+            \let\protect\@unexpandable@protect
+            \let\@mlabel=\relax
+            \edef\x{\endgroup
+              \noexpand\AtEndDocument{%
+                \@gobble#2%
+              }%
+            }%
+          \x
+        }%
+        \let\AtVeryEnd@PatchLetter=Y%
+      \fi
+    \fi
+  }%
+  \expandafter\AtVeryEnd@TestEndLetter\endletter
+    \@auxout{}\AtVeryEnd@Nil
+\fi
+\ifx\AtVeryEnd@PatchLetter Y%
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{atveryend}{%
+      \@backslashchar makelabels detected. %
+      Moving labels\MessageBreak
+      from `.aux' file to \@backslashchar AtEndDocument%
+    }%
+  \endgroup
+  \def\makelabels{%
+    \AtBeginDocument{%
+      \let\@startlabels\startlabels
+      \let\@mlabel\mlabel
+    }%
+  }%
+  \AtEndDocument{%
+    \AtVeryEnd@ifundefined{@startlabels}{%
+    }{%
+      \clearpage
+      \@startlabels
+    }%
+  }%
+  \AfterLastShipout{%
+    \let\@startlabels\relax
+    \let\@mlabel\@gobbletwo
+  }%
+\else
+  \PackageWarningNoLine{atveryend}{%
+    \@backslashchar makelabels detected, but labels cannot\MessageBreak
+    be moved to \@backslashchar AtEndDocument, because\MessageBreak
+    \@backslashchar endletter is not in expected form%
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AtVeryEnd@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input atveryend.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/atveryend.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/atveryend.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex atveryend.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   atveryend.sty & tex/latex/oberdiek/atveryend.sty\\
+%   atveryend.pdf & doc/latex/oberdiek/atveryend.pdf\\
+%   test/atveryend-test1.tex & doc/latex/oberdiek/test/atveryend-test1.tex\\
+%   atveryend.dtx & source/latex/oberdiek/atveryend.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk atveryend.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{atveryend.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex atveryend.dtx
+%makeindex -s gind.ist atveryend.idx
+%pdflatex atveryend.dtx
+%makeindex -s gind.ist atveryend.idx
+%pdflatex atveryend.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{atveryend.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='atveryend'>
+  <name>atveryend</name>
+  <caption>Hooks at the very end of a document.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.8'/>
+  <description>
+    This LaTeX packages provides two hooks for <tt>\end{document}</tt>
+    that are executed after the hook of <tt>\AtEndDocument</tt>:
+    <tt>\AfterLastShipout</tt> can be used for code that is to be executed
+    right after the last <tt>\clearpage</tt> before the `<tt>.aux</tt>' file
+    is closed. <tt>\AtVeryEndDocument</tt> is used for code after closing
+    and final reading of the `<tt>.aux</tt>' file.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/atveryend.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/atveryend.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Arthur Ogawa:] He proposed the new API with \cs{AfterLastShipout}
+%   and gave me much feedback, comprehensive class/package lists, many
+%   suggestions and comments.
+% \end{description}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{clsguide}
+% The \LaTeX3 Project:
+% \textit{\LaTeX2e\ for class and package writers}
+% 2006/02/15;
+% \CTAN{macros/latex/doc/clsguide.pdf}.
+%
+% \bibitem{endfloat}
+% James Darrell McCauley, Jeff Goldberg:
+% \textit{The \xpackage{endfloat} package};
+% 1995/10/11 v2.4i;
+% \CTAN{macros/latex/contrib/endfloat/endfloat.pdf}.
+%
+% \bibitem{etoolbox}
+% Philipp Lehmann:
+% \textit{The \xpackage{etoolbox} package};
+% 2009/08/06 v1.8;
+% \CTAN{macros/latex/contrib/etoolbox/etoolbox.pdf}.
+%
+% \bibitem{hyperref}
+% Sebastian Rahtz, Heiko Oberdiek:
+% \textit{The \xpackage{hyperref} package};
+% 2009/12/05 v6.79l;
+% \CTAN{macros/latex/contrib/hyperref/}.
+%
+% \bibitem{koma}
+% Markus Kohm:
+% \textit{KOMA-Script};
+% 2009/07/24 v3.04a;
+% \url{http://www.komascript.de/}.
+%
+% \bibitem{lastpage}
+% Jeff Goldberg:
+% \textit{The \xpackage{lastpage} package};
+% 1994/07/20 v0.1b;
+% \CTAN{macros/latex/contrib/lastpage/lastpage.pdf}.
+%
+% \bibitem{revtex}
+% APS, AIP, Arthur Orgawa;
+% ReVTeX 4.1;
+% 2009/10/13 v4.1;
+% \url{http://authors.aps.org/revtex4/}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2009/12/06 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+%   \begin{Version}{2009/12/07 v1.1}
+%   \item
+%     Bug fixes.
+%   \end{Version}
+%   \begin{Version}{2009/12/09 v1.2}
+%   \item
+%     Additional support of classes and packages.
+%   \end{Version}
+%   \begin{Version}{2009/12/11 v1.3}
+%   \item
+%     Patch for letter like classes that puts label into the `.aux' file.
+%   \item
+%     Hook \cs{BeforeClearDocument} added (request from Arthur Ogawa).
+%   \item
+%     Patch of \cs{clear@document} removed (Arthur Ogawa).
+%   \item
+%     A nested \cs{AtBeginDocument} removed.
+%   \end{Version}
+%   \begin{Version}{2010/01/25 v1.4}
+%   \item
+%     Moved from \texttt{TDS:*/generic/*} to \texttt{TDS:*/latex/*}.
+%   \end{Version}
+%   \begin{Version}{2010/03/24 v1.5}
+%   \item
+%     \cs{Call@BeforeClearDocument} fixed (Ahmed Musa).
+%   \end{Version}
+%   \begin{Version}{2011/04/15 v1.6}
+%   \item
+%     \cs{Call@AtEndAfterFileList} and \cs{Call@AtVeryVeryEnd} added.
+%   \end{Version}
+%   \begin{Version}{2011/04/23 v1.7}
+%   \item
+%     Some fix for \cs{AtVeryEnd@RedefCheckEnd}
+%     to avoid error because of undefined control sequence
+%     in some circumstances (thanks to D.P. Story for bug report).
+%   \end{Version}
+%   \begin{Version}{2011/06/30 v1.8}
+%   \item
+%     Support of changed \cs{enddocument} of \hologo{LaTeX2e} 2011/06/27.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

@@ -1,0 +1,1089 @@
+% \iffalse meta-comment
+%
+% File: eolgrab.dtx
+% Version: 2011/01/12 v1.0
+% Info: Catch arguments delimited by end of line
+%
+% Copyright (C) 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file eolgrab.dtx
+% and the derived files
+%    eolgrab.sty, eolgrab.pdf, eolgrab.ins, eolgrab.drv,
+%    eolgrab-example-ltx.tex, eolgrab-example-env.tex,
+%    eolgrab-example-sec.tex, eolgrab-test1.tex,
+%    eolgrab-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/eolgrab.dtx
+%    CTAN:macros/latex/contrib/oberdiek/eolgrab.pdf
+%
+% Unpacking:
+%    (a) If eolgrab.ins is present:
+%           tex eolgrab.ins
+%    (b) Without eolgrab.ins:
+%           tex eolgrab.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{eolgrab.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If eolgrab.drv is present:
+%           latex eolgrab.drv
+%    (b) Without eolgrab.drv:
+%           latex eolgrab.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex eolgrab.dtx
+%       makeindex -s gind.ist eolgrab.idx
+%       pdflatex eolgrab.dtx
+%       makeindex -s gind.ist eolgrab.idx
+%       pdflatex eolgrab.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/eolgrab.sty
+%    TDS:doc/latex/oberdiek/eolgrab.pdf
+%    TDS:doc/latex/oberdiek/example/eolgrab-example-ltx.tex
+%    TDS:doc/latex/oberdiek/example/eolgrab-example-env.tex
+%    TDS:doc/latex/oberdiek/example/eolgrab-example-sec.tex
+%    TDS:doc/latex/oberdiek/test/eolgrab-test1.tex
+%    TDS:doc/latex/oberdiek/test/eolgrab-test2.tex
+%    TDS:source/latex/oberdiek/eolgrab.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: eolgrab 2011/01/12 v1.0 Catch arguments delimited by end of line (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: eolgrab
+Version: 2011/01/12 v1.0
+
+Copyright (C) 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file eolgrab.dtx
+and the derived files
+   eolgrab.sty, eolgrab.pdf, eolgrab.ins, eolgrab.drv,
+   eolgrab-example-ltx.tex, eolgrab-example-env.tex,
+   eolgrab-example-sec.tex, eolgrab-test1.tex,
+   eolgrab-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{eolgrab.ins}{\from{eolgrab.dtx}{install}}%
+  \file{eolgrab.drv}{\from{eolgrab.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{eolgrab.sty}{\from{eolgrab.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/example}%
+  \file{eolgrab-example-ltx.tex}{\from{eolgrab.dtx}{example-ltx}}%
+  \file{eolgrab-example-env.tex}{\from{eolgrab.dtx}{example-env}}%
+  \file{eolgrab-example-sec.tex}{\from{eolgrab.dtx}{example-sec}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{eolgrab-test1.tex}{\from{eolgrab.dtx}{test1}}%
+  \file{eolgrab-test2.tex}{\from{eolgrab.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{eolgrab.xml}{\from{eolgrab.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     eolgrab.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `eolgrab.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{eolgrab.drv}%
+  [2011/01/12 v1.0 Catch arguments delimited by end of line (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{eolgrab.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{478}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{eolgrab.drv}
+%
+% \title{The \xpackage{eolgrab} package}
+% \date{2011/01/12 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package implements a generic argument grabber
+% to catch an argument that is delimited by the line end.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \urldef\urltexhax\url{http://tug.org/mailman/listinfo/texhax}
+% \def\eol/{^^A
+%   \meta{\texttt{EOL}}^^A
+% }
+%
+% \section{Documentation}
+%
+% The starting point for this package was a feature
+% request of Arno Trautmann in the mailing list
+% \texttt{texhax}\footnote{Info page for mailing list
+% \texttt{texhax}: \urltexhax} \cite{trautmann-request}.
+% A macro \cs{eolsection} should behave like \cs{section},
+% but the argument should be delimited by the line end
+% instead of given in curly braces:
+% \begin{quote}
+%   |\eolsection My Title|
+% \end{quote}
+% Phil Taylor answered this with an implementation for \cs{eolsection}.
+% Because this feature could be useful for other macros as well,
+% I answered with an implementation of \cs{eolgrab} as general solution
+% \cite{oberdiek-eolgrab}.
+%
+% Both formats \hologo{plainTeX} and \hologo{LaTeX} are supported
+% by the package, see the example for \cs{eolsection} below.
+%
+% \begin{declcs}{eolgrab} \M{code} \meta{argument} \eol/
+% \end{declcs}
+% Macro \cs{eolgrab} takes two arguments. The first argument
+% is \meta{code}, a classical undelimited \hologo{TeX} macro argument.
+% The second argument is delimited by the line end \eol/.
+% The macro calls \meta{code} with \meta{argument} as argument
+% in curly braces. Because the catcode of the line end is changed,
+% \cs{eolgrab} will not work in the argument of other macros.
+% Macro \cs{eolgrab} is made robust if either \hologo{eTeX}'s
+% \cs{protected} or \hologo{LaTeX}'s \cs{DeclareRobustCommand}
+% is available.
+%
+% \begin{declcs}{eolgrabopt} \M{code} \meta{argument} \eol/
+% \end{declcs}
+% Macro \cs{eolgrabopt} passes \meta{argument} as optional
+% argument to \meta{code} if \meta{argument} is not empty.
+% \begin{quote}
+%   |\eolgrabopt\item foo|
+% \end{quote}
+% becomes to
+% \begin{quote}
+%   |\item[{foo}]|
+% \end{quote}
+% The curly argument braces are added to support square brackets
+% inside \meta{argument}.
+% If the \meta{argument} is empty:
+% \begin{quote}
+%   |\eolgrabopt\item|
+% \end{quote}
+% then
+% \begin{quote}
+%   |\item|
+% \end{quote}
+% is called without optional argument.
+%
+% \subsection{Examples}
+%
+% \begin{itemize}
+% \item
+%   The line
+%   \begin{quote}
+%     |\eolgrab\section My Title|
+%   \end{quote}
+%   is equivalent to
+%   \begin{quote}
+%     |\section{My Title}|
+%   \end{quote}
+% \item
+%   The next example uses the star form of \cs{section}. Then the
+%   command to be called consists of two tokens. Therefore the
+%   first argument of \cs{eolgrab} needs curly braces:
+%   \begin{quote}
+%     |\eolgrab{\section*}My Title|
+%   \end{quote}
+%   becomes
+%   \begin{quote}
+%     |\section*{My Title}|
+%   \end{quote}
+% \item
+%   Now \hologo{LaTeX}'s \cs{PackageError} is used. This macro
+%   has three arguments, the package or class name, the message
+%   text and the help text. A standard help text of \hologo{LaTeX}
+%   is used as given in macro \cs{@ehc}. The second argument,
+%   the message text is used as argument, delimited by line end:
+%   \begin{quote}
+%     |\eolgrab{\PackageError{foobar}}%|\\
+%     |Some error message text\MessageBreak%|\\
+%     |with several lines|\\
+%     |\@ehc|
+%   \end{quote}
+%   In the first two lines of the example, the line end is suppressed
+%   by the comment character (percent), thus the argument is delimited
+%   by the line end of the third line. The result is:
+%   \begin{quote}
+%     |\PackageError{foobar}{Some error message text\MessageBreak|\\
+%     |with several lines}\@ehc|
+%   \end{quote}
+% \item
+%   The original request for macro \cs{eolsection}, see above,
+%   can be implemented easily with the help of \cs{eolgrab}.
+%   Example for \hologo{LaTeX}:
+%   \begin{quote}
+%     |\usepackage{eolgrab}|\\
+%     |\newcommand*{\eolsection}{\eolgrab\section}|
+%   \end{quote}
+%   Example for \hologo{plainTeX}:
+%   \begin{quote}
+%     |\input eolgrab.sty\relax|\\
+%     |\def\eolsection{\eolgrab\section}|
+%   \end{quote}
+%   And a sophisticated variant for \hologo{LaTeX} that also supports
+%   the star syntax and the optional argument:
+%    \begin{macrocode}
+%<*example-sec>
+\documentclass{article}
+\usepackage{eolgrab}
+\makeatletter
+\newcommand*{\eolsection}{%
+  \@ifstar{%
+    \eolgrab{\section*}%
+  }{%
+    \@ifnextchar[{%
+      \eoloptsection
+    }{%
+      \eolgrab\section
+    }%
+  }%
+}
+\newcommand*{\eoloptsection}[1][]{%
+  \eolgrab{\section[{#1}]}%
+}
+\makeatother
+\begin{document}
+\tableofcontents
+\eolsection Section without star and optional argument
+\eolsection*Section with star
+\eolsection[Short section title]Long section title
+\end{document}
+%</example-sec>
+%    \end{macrocode}
+% \end{itemize}
+%
+% \subsubsection{Small \hologo{LaTeX} document as example}
+%
+%    \begin{macrocode}
+%<*example-ltx>
+\RequirePackage{eolgrab}
+\eolgrab\documentclass article
+\eolgrab\begin document
+\eolgrab\section Hello World
+\eolgrab\emph Some text
+\eolgrab\end document
+%</example-ltx>
+%    \end{macrocode}
+%
+% \subsubsection{\hologo{LaTeX} document with environments}
+%
+%    \begin{macrocode}
+%<*example-env>
+\documentclass{article}
+\usepackage{eolgrab}
+\newcommand*{\Begin}{\eolgrab   \begin}
+\newcommand*{\End  }{\eolgrab   \end  }
+\newcommand*{\Item }{\eolgrabopt\item }
+\Begin document
+  \Begin itemize
+    \Item
+      first item
+    \Item
+      second item
+  \End itemize
+  \Begin description
+    \Item foo
+      is the first syllable of foobar.
+    \Item bar
+      is the second syllable of foobar.
+  \End description
+\End document
+%</example-env>
+%    \end{macrocode}
+%
+% \subsection{Limitations}
+%
+% Macro \cs{eolgrab} needs to catch the line end.
+% If \hologo{TeX} reads a line, then it throws away the line end
+% characters (carriage return, line feed) and removes spaces at the
+% end of the line. Then it adds the character with the character code
+% that is given by \cs{endlinechar} at the end of the line. The category
+% code of the inserted character is given by the current value of
+% its \cs{catcode}. If \cs{endlinechar} is not a valid character code
+% (especially if it is negative), then no character is added.
+%
+% In \hologo{plainTeX} and \hologo{LaTeX} the standard settings
+% of the inserted endline character is the character with code 13
+% (or |^||^||M| in \hologo{TeX} notation) with catcode 5 (end of line).
+% That means the inserted end of line character behaves like a space
+% token. For example, it is removed after macro names. Therefore
+% \cs{eolgrab} changes the catcode.
+%
+% Therefore \cs{eolgrab} has some limitations:
+% \begin{itemize}
+% \item
+%   Like other verbatim stuff, the macro \cs{eolgrab} cannot be
+%   used in the argument of other macros. \cs{eolgrab} want to
+%   change the catcode of the end of line character. If this
+%   character is read before, because it is processed as argument
+%   of another macro, the catcode is already set and is not reassigned
+%   later if \cs{eolgrab} changes the category code for this character
+%   code.
+% \item
+%   The argument must not contain the end of line character.
+%   Otherwise the first end of line character is already taken
+%   as delimiter, leaving the rest of the line outside the argument.
+% \item
+%   Because \cs{eolgrab} is probably mostly used in the line with
+%   the delimited argument. Therefore changes of \cs{endlinechar}
+%   will not affect the current line.
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@eolgrab.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{eolgrab}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@eolgrab.sty\endcsname
+\ProvidesPackage{eolgrab}%
+  [2011/01/12 v1.0 Catch arguments delimited by end of line (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname eolgrab@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\eolgrab@AtEnd{%
+    \eolgrab@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^
+\edef\eolgrab@AtEnd{\eolgrab@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Resources}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+  \input infwarerr.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2010/12/04]%
+  \RequirePackage{infwarerr}[2010/04/08]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\eolgrab@ifdefinable}
+%    \begin{macrocode}
+\ltx@IfUndefined{@ifdefinable}{%
+  \def\eolgrab@ifdefinable#1#2{%
+    \ltx@ifundefined{#1}{#2}{%
+      \@PackageError{eolgrab}{%
+        Command \ltx@backslashchar#1 already defined%
+      }\@ehc
+    }%
+  }%
+}{%
+  \def\eolgrab@ifdefinable#1{%
+    \expandafter\@ifdefinable\csname#1\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Macro \cs{eolgrab}}
+%
+%    \begin{macro}{\eolgrab}
+%    \begin{macrocode}
+\eolgrab@ifdefinable{eolgrab}{%
+  \ltx@IfUndefined{protected}{%
+    \ltx@IfUndefined{DeclareRobustCommand}{%
+      \def\eolgrab#1%
+    }{%
+      \newcommand\eolgrab{}%
+      \DeclareRobustCommand*\eolgrab
+    }%
+  }{%
+    \protected\def\eolgrab#1%
+  }{%
+    \begingroup
+    \endlinechar=13 %
+    \catcode13=\ltx@active
+    \eolgrab@{#1}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\eolgrabopt}
+%    \begin{macrocode}
+\eolgrab@ifdefinable{eolgrabopt}{%
+  \ltx@IfUndefined{protected}{%
+    \ltx@IfUndefined{DeclareRobustCommand}{%
+      \def\eolgrabopt#1%
+    }{%
+      \newcommand\eolgrabopt{}%
+      \DeclareRobustCommand*\eolgrabopt
+    }%
+  }{%
+    \protected\def\eolgrabopt#1%
+  }{%
+    \begingroup
+    \endlinechar=13 %
+    \catcode13=\ltx@active
+    \eolgrab@opt{#1}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\begingroup
+  \catcode13=\ltx@active %
+\ltx@firstofone{\endgroup %
+%    \end{macrocode}
+%    \begin{macro}{\eolgrab@}
+%    \begin{macrocode}
+  \def\eolgrab@#1#2^^M{%
+    \endgroup %
+    #1{#2}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\eolgrab@opt}
+%    \begin{macrocode}
+  \def\eolgrab@opt#1#2^^M{%
+    \endgroup %
+    \ltx@ifempty{#2}{%
+      #1%
+    }{%
+      #1[{#2}]%
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\eolgrab@AtEnd%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input eolgrab.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Tests for \hologo{plainTeX}}
+%
+%    \begin{macrocode}
+%<*test2>
+\input eolgrab.sty\relax
+\catcode`\{=1 %
+\catcode`\}=2 %
+\eolgrab{\immediate\write16}Hello World
+\def\TestExpected{foo bar}
+\eolgrab{\def\TestResult}foo bar
+
+\ifx\TestExpected\TestResult
+  \immediate\write16{* Ok (foo bar)}%
+\else
+  \errmessage{Test failed (foo bar)}%
+\fi
+
+\begingroup
+  \def\TestExpected{foobar}%
+  \endlinechar=-1 %
+  \eolgrab{\def\TestResult}foo
+  bar
+  ^^M
+  \ifx\TestExpected\TestResult
+    \immediate\write16{* Ok (foobar)}%
+  \else
+    \errmessage{Test failed (foobar)}%
+  \fi
+\endgroup
+
+\csname @@end\endcsname\end
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/eolgrab.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/eolgrab.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex eolgrab.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   eolgrab.sty & tex/generic/oberdiek/eolgrab.sty\\
+%   eolgrab.pdf & doc/latex/oberdiek/eolgrab.pdf\\
+%   example/eolgrab-example-ltx.tex & doc/latex/oberdiek/example/eolgrab-example-ltx.tex\\
+%   example/eolgrab-example-env.tex & doc/latex/oberdiek/example/eolgrab-example-env.tex\\
+%   example/eolgrab-example-sec.tex & doc/latex/oberdiek/example/eolgrab-example-sec.tex\\
+%   test/eolgrab-test1.tex & doc/latex/oberdiek/test/eolgrab-test1.tex\\
+%   test/eolgrab-test2.tex & doc/latex/oberdiek/test/eolgrab-test2.tex\\
+%   eolgrab.dtx & source/latex/oberdiek/eolgrab.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk eolgrab.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{eolgrab.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex eolgrab.dtx
+%makeindex -s gind.ist eolgrab.idx
+%pdflatex eolgrab.dtx
+%makeindex -s gind.ist eolgrab.idx
+%pdflatex eolgrab.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{eolgrab.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='eolgrab'>
+  <name>eolgrab</name>
+  <caption>Catch arguments delimited by end of line.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    The package defines the command <tt>\eolgrab</tt> that reads an
+    string terminated by end of line, and then calls a macro with that
+    string as argument.  Thus
+    <pre>\eolgrab\section My title</pre> is equivalent to
+    <pre>\section{My title}</pre>
+    <p/>
+    A second command <tt>\eolgrabopt</tt> provides the string as an
+    optional argument (which is useful for <tt>\item</tt>, for example).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/eolgrab.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/eolgrab.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+% \bibitem{trautmann-request}
+% Arno Trautmann,
+% \textit{[texhax] read argument until EOL};
+% mailing list \texttt{texthax@tug.org},
+% 2011-01-06;
+% \url{http://tug.org/pipermail/texhax/2011-January/016517.html}.
+%
+% \bibitem{taylor}
+% Philip Taylor,
+% \textit{Re: [texhax] read argument until EOL};
+% mailing list \texttt{texhax@tug.org},
+% 2011-01-06;
+% \url{http://tug.org/pipermail/texhax/2011-January/016519.html}.
+%
+% \bibitem{oberdiek-eolgrab}
+% Heiko Oberdiek,
+% \textit{Re: [texhax] read argument until EOL};
+% mailing list \texttt{texhax@tug.org},
+% 2011-01-06;
+% \url{http://tug.org/pipermail/texhax/2011-January/016526.html}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2011/01/12 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

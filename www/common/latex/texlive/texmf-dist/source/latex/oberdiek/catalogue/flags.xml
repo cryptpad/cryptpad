@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='flags'>
+  <name>flags</name>
+  <caption>Setting and clearing of flags in bit fields.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='0.4'/>
+  <description>
+    This package allows the setting and clearing
+    of flags in bit fields and converts the bit field into a
+    decimal number. Currently the bit field is limited to 31 bits.
+    <p/>
+    It is now deprecated because of new more powerful
+    package <xref refid='bitset'>bitset</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/flags.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/flags.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

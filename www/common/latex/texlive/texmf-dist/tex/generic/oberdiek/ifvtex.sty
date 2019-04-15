@@ -1,0 +1,261 @@
+%%
+%% This is file `ifvtex.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ifvtex.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: ifvtex
+%% Version: 2010/03/01 v1.5
+%% 
+%% Copyright (C) 2001, 2006-2008, 2010 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file ifvtex.dtx
+%% and the derived files
+%%    ifvtex.sty, ifvtex.pdf, ifvtex.ins, ifvtex.drv, ifvtex-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@ifvtex.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{ifvtex}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@ifvtex.sty\endcsname
+\ProvidesPackage{ifvtex}%
+  [2010/03/01 v1.5 Detect VTeX and its facilities (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ifvtex@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ifvtex@AtEnd{%
+    \ifvtex@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifvtex@AtEnd{\ifvtex@AtEnd\noexpand\endinput}
+\begingroup
+  \expandafter\ifx\csname ifvtex\endcsname\relax
+  \else
+    \edef\i/{\expandafter\string\csname ifvtex\endcsname}%
+    \expandafter\ifx\csname PackageError\endcsname\relax
+      \def\x#1#2{%
+        \edef\z{#2}%
+        \expandafter\errhelp\expandafter{\z}%
+        \errmessage{Package ifvtex Error: #1}%
+      }%
+      \def\y{^^J}%
+      \newlinechar=10 %
+    \else
+      \def\x#1#2{%
+        \PackageError{ifvtex}{#1}{#2}%
+      }%
+      \def\y{\MessageBreak}%
+    \fi
+    \x{Name clash, \i/ is already defined}{%
+      Incompatible versions of \i/ can cause problems,\y
+      therefore package loading is aborted.%
+    }%
+    \endgroup
+    \expandafter\ifvtex@AtEnd
+  \fi%
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newif\endcsname\relax
+  \def\ifvtex@newif#1{%
+    \begingroup
+      \escapechar=-1 %
+    \expandafter\endgroup
+    \expandafter\ifvtex@@newif\string#1\@nil
+  }%
+  \def\ifvtex@@newif#1#2#3\@nil{%
+    \expandafter\edef\csname#3true\endcsname{%
+      \let
+      \expandafter\noexpand\csname if#3\endcsname
+      \expandafter\noexpand\csname iftrue\endcsname
+    }%
+    \expandafter\edef\csname#3false\endcsname{%
+      \let
+      \expandafter\noexpand\csname if#3\endcsname
+      \expandafter\noexpand\csname iffalse\endcsname
+    }%
+    \csname#3false\endcsname
+  }%
+\else
+  \expandafter\let\expandafter\ifvtex@newif\csname newif\endcsname
+\fi
+\ifvtex@newif\ifvtex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname VTeXversion\endcsname\relax
+\else
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname OpMode\endcsname\relax
+  \else
+    \vtextrue
+  \fi
+\fi
+\ifvtex@newif\ifvtexdvi
+\ifvtex@newif\ifvtexpdf
+\ifvtex@newif\ifvtexps
+\ifvtex@newif\ifvtexhtml
+\ifvtex@newif\ifvtexgex
+\ifvtex
+  \ifcase\OpMode\relax
+    \vtexdvitrue
+  \or % 1
+    \vtexpdftrue
+  \or % 2
+    \vtexpstrue
+  \or % 3
+    \vtexpstrue
+  \or\or\or\or\or\or\or % 10
+    \vtexhtmltrue
+  \fi
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname gexmode\endcsname\relax
+  \else
+    \ifnum\gexmode>0 %
+      \vtexgextrue
+    \fi
+  \fi
+\fi
+\begingroup
+  \expandafter\ifx\csname PackageInfo\endcsname\relax
+    \def\x#1#2{%
+      \immediate\write-1{Package #1 Info: #2.}%
+    }%
+  \else
+    \let\x\PackageInfo
+    \expandafter\let\csname on@line\endcsname\empty
+  \fi
+  \x{ifvtex}{%
+    VTeX %
+    \ifvtex
+      in \ifvtexdvi DVI\fi
+         \ifvtexpdf PDF\fi
+         \ifvtexps PS\fi
+         \ifvtexhtml HTML\fi
+      \space mode %
+      with\ifvtexgex\else out\fi\space GeX %
+    \else
+      not %
+    \fi
+    detected%
+  }%
+\endgroup
+\ifvtex@AtEnd%
+\endinput
+%%
+%% End of file `ifvtex.sty'.

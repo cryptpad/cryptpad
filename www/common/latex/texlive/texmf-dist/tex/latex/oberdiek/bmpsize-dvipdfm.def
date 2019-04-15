@@ -1,0 +1,150 @@
+%%
+%% This is file `bmpsize-dvipdfm.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bmpsize.dtx  (with options: `dvipdfm')
+%% 
+%% This is a generated file.
+%% 
+%% Project: bmpsize
+%% Version: 2009/09/04 v1.6
+%% 
+%% Copyright (C) 2006-2009 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file bmpsize.dtx
+%% and the derived files
+%%    bmpsize.sty, bmpsize.pdf, bmpsize.ins, bmpsize.drv,
+%%    bmpsize-base.sty, bmpsize-test.tex, bmpsize-dvips.def,
+%%    bmpsize-dvipdfm.def, bmpsize-dvipdfmx.def.
+%% 
+\ProvidesFile{bmpsize-dvipdfm.def}%
+  [2009/09/04 v1.6 Graphics bitmap driver for dvipdfm (HO)]%
+\expandafter\edef\csname @bmpsize@driver@catcodes\endcsname{%
+  \catcode44 \the\catcode44 % ,
+  \catcode46 \the\catcode46 % .
+  \catcode58 \the\catcode58 % :
+  \catcode60 \the\catcode60 % <
+  \catcode61 \the\catcode61 % =
+  \catcode62 \the\catcode62 % >
+  \catcode64 \the\catcode64 % @
+}
+\catcode64 11 %
+\@makeother\,
+\@makeother\.
+\@makeother\:
+\@makeother\<
+\@makeother\=
+\@makeother\>
+\@ifundefined{@bmpsize@count}{%
+  \csname newcount\endcsname\@bmpsize@count
+  \@bmpsize@count=\z@
+}{}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapestring\endcsname\relax
+  \def\@bmpsize@pdfescapestring#1{#1}%
+\else
+  \let\@bmpsize@pdfescapestring\pdf@escapestring
+\fi
+\def\bmpsize@dvipdfm@factor{.99626}
+\def\Ginclude@bmp#1{%
+  \message{<#1>}%
+  \ifGin@clip
+    \global\advance\@bmpsize@count\@ne
+    \edef\@bmpsize@clip@name{@CLIP@\the\@bmpsize@count}%
+    \special{%
+      pdf:bxobj \@bmpsize@clip@name\space
+      width \the\Gin@req@width\space
+      height \the\Gin@req@height
+    }%
+  \fi
+  \hbox to \z@{%
+    \@ifundefined{Gin@ollx}{%
+      \dimen@\z@
+    }{%
+      \ifx\Gin@scalex\Gin@exclamation
+        \let\Gin@scalex\Gin@scaley
+      \fi
+      \ifx\Gin@scaley\Gin@exclamation
+        \let\Gin@scaley\Gin@scalex
+      \fi
+      \@ifundefined{bmpsize@width}{%
+        \let\bmpsize@width\Gin@ourx
+        \let\bmpsize@height\Gin@oury
+      }{}%
+      \dimen@=\Gin@llx bp\relax
+      \dimen@=\Gin@scalex\dimen@
+      \kern-\dimen@
+      \advance\Gin@req@width\dimen@
+      \dimen@=\bmpsize@width bp\relax
+      \advance\dimen@ by -\Gin@urx bp\relax
+      \dimen@=\Gin@scalex\dimen@
+      \advance\Gin@req@width\dimen@
+      \dimen@=\bmpsize@height bp\relax
+      \advance\dimen@ by -\Gin@ury bp\relax
+      \dimen@=\Gin@scaley\dimen@
+      \advance\Gin@req@height\dimen@
+      \dimen@=\Gin@lly bp\relax
+      \dimen@=\Gin@scaley\dimen@
+      \advance\Gin@req@height\dimen@
+    }%
+    \ifdim\dimen@=\z@
+    \else
+      \vbox to\z@\bgroup
+        \kern\dimen@
+    \fi
+    \edef\@bmpsize@temp{@IMG@\@bmpsize@pdfescapestring{#1}}%
+    \@ifundefined{\@bmpsize@temp}{%
+      \global\advance\@bmpsize@count\@ne
+      \expandafter\xdef\csname\@bmpsize@temp\endcsname{%
+        \the\@bmpsize@count
+      }%
+      \special{%
+        pdf:image @IMG\the\@bmpsize@count\space
+        width \the\Gin@req@width\space
+        height \the\Gin@req@height\space
+        depth 0pt (\@bmpsize@pdfescapestring{#1})%
+      }%
+    }{%
+      \special{%
+        pdf:bt %
+        xscale \strip@pt\dimexpr
+          \bmpsize@dvipdfm@factor\Gin@req@width\relax\space
+        yscale \strip@pt\dimexpr
+          \bmpsize@dvipdfm@factor\Gin@req@height\relax
+      }%
+      \special{pdf:uxobj @IMG\csname\@bmpsize@temp\endcsname}%
+      \special{pdf:et}%
+    }%
+    \ifdim\dimen@=\z@
+    \else
+        \vss
+      \egroup
+    \fi
+    \hss
+  }%
+  \ifGin@clip
+    \special{pdf:exobj}%
+    \special{pdf:uxobj \@bmpsize@clip@name}%
+  \fi
+}
+\@bmpsize@driver@catcodes
+\endinput
+%%
+%% End of file `bmpsize-dvipdfm.def'.

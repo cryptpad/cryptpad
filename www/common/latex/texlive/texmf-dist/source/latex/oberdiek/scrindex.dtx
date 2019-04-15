@@ -1,0 +1,770 @@
+% \iffalse meta-comment
+%
+% File: scrindex.dtx
+% Version: 2008/08/11 v1.1
+% Info: Package index with KOMA-Script classes
+%
+% Copyright (C) 2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file scrindex.dtx
+% and the derived files
+%    scrindex.sty, scrindex.pdf, scrindex.ins, scrindex.drv,
+%    scrindex-example1.tex, scrindex-example2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/scrindex.dtx
+%    CTAN:macros/latex/contrib/oberdiek/scrindex.pdf
+%
+% Unpacking:
+%    (a) If scrindex.ins is present:
+%           tex scrindex.ins
+%    (b) Without scrindex.ins:
+%           tex scrindex.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{scrindex.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If scrindex.drv is present:
+%           latex scrindex.drv
+%    (b) Without scrindex.drv:
+%           latex scrindex.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex scrindex.dtx
+%       makeindex -s gind.ist scrindex.idx
+%       pdflatex scrindex.dtx
+%       makeindex -s gind.ist scrindex.idx
+%       pdflatex scrindex.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/scrindex.sty
+%    TDS:doc/latex/oberdiek/scrindex.pdf
+%    TDS:doc/latex/oberdiek/scrindex-example1.tex
+%    TDS:doc/latex/oberdiek/scrindex-example2.tex
+%    TDS:source/latex/oberdiek/scrindex.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: scrindex 2008/08/11 v1.1 Package index with KOMA-Script classes (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: scrindex
+Version: 2008/08/11 v1.1
+
+Copyright (C) 2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file scrindex.dtx
+and the derived files
+   scrindex.sty, scrindex.pdf, scrindex.ins, scrindex.drv,
+   scrindex-example1.tex, scrindex-example2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{scrindex.ins}{\from{scrindex.dtx}{install}}%
+  \file{scrindex.drv}{\from{scrindex.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{scrindex.sty}{\from{scrindex.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{scrindex-example1.tex}{\from{scrindex.dtx}{example1}}%
+  \file{scrindex-example2.tex}{\from{scrindex.dtx}{example2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{scrindex.xml}{\from{scrindex.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     scrindex.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `scrindex.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{scrindex.drv}%
+  [2008/08/11 v1.1 Package index with KOMA-Script classes (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{calc}
+\begin{document}
+  \DocInput{scrindex.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{237}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{scrindex.drv}
+%
+% \title{The \xpackage{scrindex} package}
+% \date{2008/08/11 v1.1}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package redefines environment `theindex' of package \xpackage{index},
+% if a class from KOMA-Script is loaded. Also option \xoption{idxtotoc}
+% is supported. Index preambles can be given either by means of package
+% \xpackage{index} or via the interface provided by KOMA-Script.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Package \xpackage{index}, written by David M.\ Jones, detects
+% the standard classes |article|, |report|, and |book|. It
+% redefines environment `theindex' for its needs.
+% However, it does not know other classes such as KOMA-Script.
+% This package closes the compatibiliy gap between KOMA-Script's
+% classes and package \xpackage{index}.
+%
+% Environment |theindex| is redefined to support both package
+% \xpackage{index} and KOMA-Script's classes. Thus both
+% the prologe of package \xpackage{index} and the preamble
+% of KOMA-Script's classes are available. Also class option |idxtotoc|
+% of KOMA-Script is supported.
+%
+% \subsection{Usage}
+%
+% The package \xpackage{scrindex} is loaded without options:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{scrindex}
+%\end{verbatim}
+%\end{quote}
+%
+% It loads package \xpackage{index} and requests version 2004/01/20
+% or later. \LaTeX's package interface allows multiple calls
+% of the same package. The package is loaded at its first
+% package loading command. At later times \LaTeX\ only checks
+% options and a requested version date. Therefore it does not harm
+% to add |\usepackage{index}| before or after |\usepackage{scrindex}|.
+%
+% Also the class does not matter. Environment |theindex| is only
+% redefined for a supported class:
+% \begin{itemize}
+% \item |scrartcl|
+% \item |scrreprt|
+% \item |scrbook|
+% \end{itemize}
+%
+% \subsection{Preambles}
+%
+% Both the prologue of package \xpackage{index} and the preamble
+% of KOMA-Script's classes are supported. The position depends on
+% the class.
+%
+% \subsubsection{Class \xclass{scrartcl}}
+%
+%    \begin{macrocode}
+%<*example1>
+\documentclass{scrartcl}
+\usepackage{scrindex}
+\setindexpreamble{Preamble of \texttt{scrartcl}\dotfill EOL}
+\makeindex
+\begin{document}
+\section{First Section}
+\index{first}
+\index{section}
+\printindex[default]%
+  [Prologue of package \texttt{index}\dotfill EOL]%
+\end{document}
+%</example1>
+%    \end{macrocode}
+% The prologue of package \xpackage{index} is first set straight
+% after the section title spanning both columns.
+% Then the preamble of KOMA-Script follows
+% in the first left column.
+%
+% \medskip
+% \begin{quote}
+%   \renewcommand*{\arraystretch}{1.2}
+%   \begin{tabular}{|p{.45\linewidth}|p{.45\linewidth}|}
+%   \hline
+%   \multicolumn{2}{|l|}{\textbf{Index}}\\[1ex]
+%   \multicolumn{2}{|p{.9\linewidth+2\tabcolsep}|}{^^A
+%     Prologue of package \texttt{index}\dotfill EOL^^A
+%   }\\[1ex]
+%   \hline
+%   Preamble of \texttt{scrartcl}\dotfill EOL&\\
+%   first, 1&\\
+%   section, 1&\\
+%   \hline
+%   \end{tabular}
+% \end{quote}
+%
+% \subsubsection{Classes \xclass{scrreprt} and \xclass{scrbook}}
+%
+%    \begin{macrocode}
+%<*example2>
+\documentclass[openany]{scrbook}% or scrreprt
+\usepackage{scrindex}
+\setindexpreamble{Preamble of class \texttt{scrbook}\dotfill EOL}
+\makeindex
+\begin{document}
+\chapter{First Chapter}
+\index{first}
+\index{chapter}
+\printindex[default]%
+  [Prologue of package \texttt{index}\dotfill EOL]%
+\end{document}
+%</example2>
+%    \end{macrocode}
+% The order of the two preambles are different for the classes
+% \xclass{scrreprt} and \xclass{scrbook}. First KOMA-Script's
+% chapter preamble is set, then the prologue of package \xpackage{index}
+% follows. Both are set spanning both columns.
+%
+% \medskip
+% \begin{quote}
+%   \renewcommand*{\arraystretch}{1.2}
+%   \begin{tabular}{|p{.45\linewidth}|p{.45\linewidth}|}
+%   \hline
+%   \multicolumn{2}{|l|}{\textbf{Index}}\\[1ex]
+%   \multicolumn{2}{|p{.9\linewidth+2\tabcolsep}|}{^^A
+%     Preamble of class \texttt{scrbook}\dotfill EOL^^A
+%   }\\
+%   \multicolumn{2}{|p{.9\linewidth+2\tabcolsep}|}{^^A
+%     Prologue of package \xpackage{index}\dotfill EOL^^A
+%   }\\[1ex]
+%   \hline
+%   chapter, 1&\\
+%   first, 1&\\
+%   \hline
+%   \end{tabular}
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{scrindex}
+  [2008/08/11 v1.1 Package index with KOMA-Script classes (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{index}[2004/01/20]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@ifclassloaded{scrartcl}{%
+  \renewenvironment{theindex}{%
+    \edef\indexname{%
+      \the\@nameuse{idxtitle@\@indextype}%
+    }%
+    \if@twocolumn
+      \@restonecolfalse
+    \else
+      \@restonecoltrue
+    \fi
+    \idx@heading
+    \thispagestyle{\indexpagestyle}%
+    \columnseprule\z@
+    \columnsep 35\p@
+    \index@preamble\par\nobreak
+    \parindent\z@
+    \parskip\z@ \@plus .3\p@\relax
+    \parfillskip\z@ \@plus 1fil\relax
+    \let\item\@idxitem
+  }{%
+    \if@restonecol
+      \onecolumn
+    \else
+      \clearpage
+    \fi
+  }%
+  \@ifclasswith{scrartcl}{idxtotoc}{%
+    \renewcommand*{\idx@heading}{%
+      \twocolumn[%
+        \addsec{\indexname}%
+        \ifx\index@prologue\@empty
+        \else
+          \index@prologue
+          \bigskip
+        \fi
+      ]%
+      \@mkboth{\indexname}{\indexname}%
+    }%
+  }{%
+    \renewcommand*{\idx@heading}{%
+      \twocolumn[%
+        \section*{\indexname}%
+        \ifx\index@prologue\@empty
+        \else
+          \index@prologue
+          \bigskip
+        \fi
+      ]%
+      \@mkboth{\indexname}{\indexname}%
+    }%
+  }%
+}{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\@ifclassloaded{scrreprt}{%
+  \renewenvironment{theindex}{%
+    \edef\indexname{%
+      \the\@nameuse{idxtitle@\@indextype}%
+    }%
+    \if@twocolumn
+      \@restonecolfalse
+    \else
+      \@restonecoltrue
+    \fi
+    \setchapterpreamble{\index@preamble}%
+    \idx@heading
+    \thispagestyle{\indexpagestyle}%
+    \columnseprule\z@
+    \columnsep 35\p@
+    \parindent\z@
+    \parskip\z@ \@plus .3\p@\relax
+    \parfillskip\z@ \@plus 1fil\relax
+    \let\item\@idxitem
+  }{%
+    \if@restonecol
+      \onecolumn
+    \else
+      \clearpage
+    \fi
+  }%
+  \@ifclasswith{scrreprt}{idxtotoc}{%
+    \renewcommand*{\idx@heading}{%
+      \if@openright
+        \cleardoublepage
+      \else
+        \clearpage
+      \fi
+      \twocolumn[%
+        \addchap{\indexname}%
+        \ifx\index@prologue\@empty
+        \else
+          \index@prologue
+          \bigskip
+        \fi
+      ]%
+      \@mkboth{\indexname}{\indexname}%
+    }%
+  }{%
+    \renewcommand*{\idx@heading}{%
+      \if@openright
+        \cleardoublepage
+      \else
+        \clearpage
+      \fi
+      \twocolumn[%
+        \chapter*{\indexname}%
+        \ifx\index@prologue\@empty
+        \else
+          \index@prologue
+          \bigskip
+        \fi
+      ]%
+      \@mkboth{\indexname}{\indexname}%
+    }%
+  }%
+}{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\@ifclassloaded{scrbook}{%
+  \renewenvironment{theindex}{%
+    \edef\indexname{%
+      \the\@nameuse{idxtitle@\@indextype}%
+    }%
+    \if@twocolumn
+      \@restonecolfalse
+    \else
+      \@restonecoltrue
+    \fi
+    \setchapterpreamble{\index@preamble}%
+    \idx@heading
+    \thispagestyle{\indexpagestyle}%
+    \columnseprule\z@
+    \columnsep 35\p@
+    \parindent\z@
+    \parskip\z@ \@plus .3\p@\relax
+    \parfillskip\z@ \@plus 1fil\relax
+    \let\item\@idxitem
+  }{%
+    \if@restonecol
+      \onecolumn
+    \else
+      \clearpage
+    \fi
+  }%
+  \@ifclasswith{scrbook}{idxtotoc}{%
+    \renewcommand*{\idx@heading}{%
+      \if@openright
+        \cleardoublepage
+      \else
+        \clearpage
+      \fi
+      \twocolumn[%
+        \addchap{\indexname}%
+        \ifx\index@prologue\@empty
+        \else
+          \index@prologue
+          \bigskip
+        \fi
+      ]%
+      \@mkboth{\indexname}{\indexname}%
+    }%
+  }{%
+    \renewcommand*{\idx@heading}{%
+      \if@openright
+        \cleardoublepage
+      \else
+        \clearpage
+      \fi
+      \twocolumn[%
+        \chapter*{\indexname}%
+        \ifx\index@prologue\@empty
+        \else
+          \index@prologue
+          \bigskip
+        \fi
+      ]%
+      \@mkboth{\indexname}{\indexname}%
+    }%
+  }%
+}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/scrindex.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/scrindex.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex scrindex.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   scrindex.sty & tex/latex/oberdiek/scrindex.sty\\
+%   scrindex.pdf & doc/latex/oberdiek/scrindex.pdf\\
+%   scrindex-example1.tex & doc/latex/oberdiek/scrindex-example1.tex\\
+%   scrindex-example2.tex & doc/latex/oberdiek/scrindex-example2.tex\\
+%   scrindex.dtx & source/latex/oberdiek/scrindex.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk scrindex.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{scrindex.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex scrindex.dtx
+%makeindex -s gind.ist scrindex.idx
+%pdflatex scrindex.dtx
+%makeindex -s gind.ist scrindex.idx
+%pdflatex scrindex.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{scrindex.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='scrindex'>
+  <name>scrindex</name>
+  <caption>Make index package work with Koma-script classes.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.1'/>
+  <description>
+    This package redefines environment `theindex' of package `index',
+    if a class from <xref refid='koma-script'>KOMA-Script</xref> is loaded.
+    Also option `idxtotoc' is supported. Index preambles can be given
+    either by means of package `index' or via the interface provided
+    by <xref refid='koma-script'>KOMA-Script</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/scrindex.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/scrindex.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2008/07/07 v1.0}
+%   \item
+%     First version, also published in newsgroup \xnewsgroup{de.comp.text.tex}:\\
+%     \URL{``\link{Re: Z\"ahler bei \cs{index}}''}^^A
+%     {http://groups.google.com/group/de.comp.text.tex/msg/39575b5e2f29be1e}
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.1}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

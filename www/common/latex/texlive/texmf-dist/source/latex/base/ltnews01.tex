@@ -1,0 +1,152 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews01.tex
+ 
+% This is issue 1 of LaTeX News.
+
+\documentclass
+%   [type1fonts]
+   {ltnews}
+ 
+\publicationmonth{June}
+\publicationyear{1994}
+\publicationissue{1}
+ 
+\begin{document}
+ 
+\maketitle
+ 
+\section{Welcome to \LaTeXNews}
+ 
+An issue of \emph{\LaTeXNews} will accompany every future release of 
+\LaTeX.  It will tell you about important events, such as major bug 
+fixes, newly available packages, or any other \LaTeX{} news.
+ 
+\section{\LaTeXe---the new \LaTeX{} release}
+ 
+The most important news is the release of \LaTeXe, the new version of
+the \LaTeX{} software.  This version has better support for fonts,
+graphics and colour, and will be actively maintained by the \LaTeX3
+project team.  Upgrades will be issued every six months, in June and 
+December.
+ 
+\section{Why a new \LaTeX?}
+ 
+Over the years many extensions have been developed for \LaTeX. This
+is, of course, a sure sign of its continuing popularity but it has had
+one unfortunate result: incompatible \LaTeX{} formats came into use at
+different sites. Thus, to process documents from various places, a
+site maintainer was forced to keep \LaTeX{} (with and without \NFSS),
+\SLiTeX, \AmSLaTeX, and so on.  In addition, when looking at a source
+file it was not always clear for which format the document was written.
+ 
+To put an end to this unsatisfactory
+situation a new release of \LaTeX{} was produced.
+It brings all such extensions back under a single format and thus
+prevents the proliferation of mutually incompatible dialects of
+\LaTeX~2.09. The new release was available for several months as a
+test version, and the final release of 1~June officially
+replaces the old version.
+ 
+\section{Processing documents with \LaTeXe}
+ 
+Documents written for \LaTeX~2.09 will
+still be read by \LaTeXe.  Any such document is run in
+\emph{\LaTeX~2.09 compatibility mode}.
+ 
+Unfortunately, compatibility mode comes with a price: it can run 
+up to 50\% slower than \LaTeX~2.09 did.  If you want to run your document 
+in the faster \emph{native mode}, you should try replacing the line:
+\begin{verbatim}
+   \documentstyle[<options>,<packages>]{<class>}
+\end{verbatim}
+with:
+\begin{verbatim}
+   \documentclass[<options>]{<class>}
+   \usepackage{latexsym,<packages>}
+\end{verbatim}
+Unfortunately, this will not always work, because some \LaTeX~2.09 
+packages will only work in \LaTeXe{} compatibility mode.  You should find 
+out if there is a \LaTeXe{} version of the package available.
+ 
+\LaTeXe{} native mode also gives access to the new features of \LaTeXe, 
+described in \emph{\LaTeXe{} for authors}.
+ 
+\section{New packages}
+ 
+\LaTeXe{} has much better support for graphics, colour, fonts, and 
+multi-lingual typesetting.  The following software should be available 
+from the distributor who brought you \LaTeXe:
+
+\begin{citations}
+\item[babel] for typesetting in many languages.
+\item[color] for colour support.
+\item[graphics] for including images.
+\item[mfnfss] for using bitmap fonts.
+\item[psnfss] for using Type~1 fonts.
+\item[tools]  other packages by the \LaTeX3 team.
+\end{citations}
+The packages come with full documentation, and are also described in 
+\emph{\LaTeX: A Document Processing System} or 
+\emph{The \LaTeX{} Companion}.
+ 
+\section{Further information}
+ 
+More information about \LaTeXe{} is to be found in:
+
+\begin{citations}
+\item[\LaTeX: A Document Preparation System]
+   Leslie Lamport, \AW, 2nd ed, 1994.
+\item[The \LaTeX{} Companion]
+   Goossens, Mittelbach and Samarin, \AW, 1994.
+\end{citations}
+The \LaTeX{} distribution comes with documentation on the new features of 
+\LaTeX:
+
+\begin{citations}
+\item[\LaTeXe{} for authors] 
+   describes the new features of \LaTeX{} documents,
+   in the file \verb|usrguide.tex|.
+\item[\LaTeXe{} for class and package writers]
+   describes the new features of \LaTeX{} classes and packages,
+   in the file \verb|clsguide.tex|.
+\item[\LaTeXe{} font selection]
+   describes the new features of \LaTeX{} fonts for
+   class and package writers,
+   in the file \verb|fntguide.tex|.
+\end{citations}
+For more information on \TeX{} and \LaTeX, get in touch with your local 
+\TeX{} Users Group, or the international \TeX{} Users Group, 
+P.~O.~Box~869, Santa~Barbara, CA~93102-0869, USA, Fax:~+1~805~963~8358, 
+EMail:~tug@tug.org.
+ 
+\end{document}
+ 
+
+

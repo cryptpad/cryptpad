@@ -1,0 +1,327 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltcntrl.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltcntrl.dtx}
+             [2014/04/21 v1.0h LaTeX Kernel (program control)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltcntrl.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{176}
+%
+% \changes{v1.0a}{1994/05/16}{(ASAJ) Split from ltinit.dtx.}
+% \changes{v1.0b}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0c}{1994/11/28}
+%         {Documentation improvements}
+%
+% \section{Program control structure}
+%
+% This section defines a number of control structure macros, such as
+% while-loops and for-loops.
+%
+% \StopEventually{}
+%
+% \begin{oldcomments}
+%    \begin{macrocode}
+%<*2ekernel>
+\message{control,}
+%    \end{macrocode}
+%
+% \@whilenum TEST \do {BODY}
+% \@whiledim TEST \do {BODY}  : These implement the loop
+%           while  TEST  do  BODY  od
+%     where  TEST  is a TeX \ifnum or \ifdim test, respectively.
+%     They are optimized for the normal case of TEST initially false.
+%
+% \@whilesw SWITCH \fi {BODY} : Implements the loop
+%               while SWITCH do BODY od
+%     Optimized for normal case of SWITCH initially false.
+%
+% \@for NAME := LIST \do {BODY} : Assumes that LIST expands to A1,A2,
+%      ... ,An .
+%      Executes  BODY  n  times, with  NAME = Ai  on the i-th iteration.
+%      Optimized for the normal case of n = 1.  Works for n=0.
+%
+% \@tfor NAME := LIST \do {BODY}
+%      if, before expansion, LIST = T1 ... Tn  where each Ti is a
+%      token or {...}, then executes  BODY  n  times, with  NAME = Ti
+%      on the i-th iteration.  Works for n=0.
+%
+%  NOTES: 1. These macros use no \@temp sequences.
+%         2. These macros do not work if the body contains anything that
+%         looks syntactically to TeX like an improperly balanced \if
+%         \else \fi.
+%
+% \@whilenum TEST \do {BODY} ==
+%  BEGIN
+%    if  TEST
+%      then  BODY
+%            \@iwhilenum{TEST \relax BODY}
+%  END
+%
+% \@iwhilenum {TEST BODY} ==
+%  BEGIN
+%    if  TEST
+%      then  BODY
+%            \@nextwhile = def(\@iwhilenum)
+%      else  \@nextwhile = def(\@whilenoop)
+%    fi
+%    \@nextwhile {TEST BODY}
+%  END
+%
+% \@whilesw SWITCH \fi {BODY} ==
+%  BEGIN
+%    if SWITCH
+%      then BODY
+%           \@iwhilesw {SWITCH BODY}\fi
+%    fi
+%  END
+%
+% \@iwhilesw {SWITCH BODY} \fi ==
+%  BEGIN
+%    if SWITCH
+%      then BODY
+%           \@nextwhile = def(\@iwhilesw)
+%      else \@nextwhile = def(\@whileswnoop)
+%    fi
+%    \@nextwhile {SWITCH BODY} \fi
+%  END
+%
+% \end{oldcomments}
+%
+% \begin{macro}{\@whilenoop}
+% \begin{macro}{\@whilenum}
+% \begin{macro}{\@iwhilenum}
+% \changes{v1.0f}{1995/07/09}{Reimplemented using Kabelschacht method}
+% \changes{v1.0g}{1995/08/16}{Removed \cs{@whilenoop}}
+% \changes{v1.0g}{1995/08/16}{Made defs long}
+%    \begin{macrocode}
+\long\def\@whilenum#1\do #2{\ifnum #1\relax #2\relax\@iwhilenum{#1\relax
+     #2\relax}\fi}
+\long\def\@iwhilenum#1{\ifnum #1\expandafter\@iwhilenum
+         \else\expandafter\@gobble\fi{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@whiledim}
+% \begin{macro}{\@iwhiledim}
+% \changes{v1.0f}{1995/07/09}{Reimplemented using Kabelschacht method}
+% \changes{v1.0g}{1995/08/16}{Removed \cs{@whilenoop}}
+% \changes{v1.0g}{1995/08/16}{Made defs long}
+%    \begin{macrocode}
+\long\def\@whiledim#1\do #2{\ifdim #1\relax#2\@iwhiledim{#1\relax#2}\fi}
+\long\def\@iwhiledim#1{\ifdim #1\expandafter\@iwhiledim
+        \else\expandafter\@gobble\fi{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@whileswnoop}
+% \begin{macro}{\@whilesw}
+% \begin{macro}{\@iwhilesw}
+% \changes{v1.0f}{1995/07/09}{Reimplemented using Kabelschacht method}
+% \changes{v1.0g}{1995/08/16}{Removed \cs{@whileswnoop}}
+%    \begin{macrocode}
+\long\def\@whilesw#1\fi#2{#1#2\@iwhilesw{#1#2}\fi\fi}
+\long\def\@iwhilesw#1\fi{#1\expandafter\@iwhilesw
+         \else\@gobbletwo\fi{#1}\fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{oldcomments}
+%
+% \@for NAME := LIST \do {BODY} ==
+%    BEGIN \@forloop expand(LIST),\@nil,\@nil \@@ NAME {BODY} END
+%
+% \@forloop CAR, CARCDR, CDRCDR \@@ NAME {BODY} ==
+%   BEGIN
+%     NAME = CAR
+%     if def(NAME) = def(\@nnil)
+%       else BODY;
+%            NAME = CARCDR
+%            if def(NAME) = def(\@nnil)
+%              else BODY
+%                   \@iforloop CDRCDR \@@ NAME \do {BODY}
+%            fi
+%     fi
+%   END
+%
+% \@iforloop CAR, CDR \@@ NAME {BODY} =
+%     NAME = CAR
+%     if def(NAME) = def(\@nnil)
+%        then  \@nextwhile = def(\@fornoop)
+%        else  BODY ;
+%              \@nextwhile = def(\@iforloop)
+%     fi
+%     \@nextwhile name cdr {body}
+%
+% \@tfor NAME := LIST \do {BODY}
+%    =  \@tforloop LIST \@nil \@@ NAME {BODY}
+%
+% \@tforloop car cdr \@@ name {body} =
+%     name = car
+%     if def(name) = def(\@nnil)
+%        then  \@nextwhile == \@fornoop
+%        else  body ;
+%              \@nextwhile == \@forloop
+%     fi
+%     \@nextwhile name cdr {body}
+% \end{oldcomments}
+%
+% \begin{macro}{\@nnil}
+%    \begin{macrocode}
+\def\@nnil{\@nil}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@empty}
+%    \begin{macrocode}
+\def\@empty{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@fornoop}
+% \changes{v1.0g}{1995/08/16}{Made defs long}
+% \changes{v1.0h}{2007/08/06}{Really make defs long}
+%    \begin{macrocode}
+\long\def\@fornoop#1\@@#2#3{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@for}
+% \changes{v1.0d}{1995/04/24}
+%      {Dont expand second argument with \cs{edef}: /1317 (DPC)}
+%    \begin{macrocode}
+\long\def\@for#1:=#2\do#3{%
+  \expandafter\def\expandafter\@fortmp\expandafter{#2}%
+  \ifx\@fortmp\@empty \else
+    \expandafter\@forloop#2,\@nil,\@nil\@@#1{#3}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@forloop}
+% \changes{v1.0g}{1995/08/16}{Made defs long}
+%    \begin{macrocode}
+\long\def\@forloop#1,#2,#3\@@#4#5{\def#4{#1}\ifx #4\@nnil \else
+       #5\def#4{#2}\ifx #4\@nnil \else#5\@iforloop #3\@@#4{#5}\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iforloop}
+% \changes{v1.0f}{1995/07/09}{Reimplemented using Kabelschacht method}
+% \changes{v1.0g}{1995/08/16}{Made defs long}
+%    \begin{macrocode}
+\long\def\@iforloop#1,#2\@@#3#4{\def#3{#1}\ifx #3\@nnil
+       \expandafter\@fornoop \else
+      #4\relax\expandafter\@iforloop\fi#2\@@#3{#4}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tfor}
+% \changes{LaTeX209}{1991/10/17}
+%         {(Rms) \cs{xdef} replaced by \cs{def}
+%          (See FMi's array.doc)}
+% \changes{v1.0c}{1994/03/13}
+%         {(DPC) Add \cs{@tf@r} so a single group is
+%           correctly treated.}
+% \changes{v1.0f}{1995/07/09}{Reimplemented using Kabelschacht method}
+% \changes{v1.0g}{1995/08/16}{Made defs long}
+%    \begin{macrocode}
+\def\@tfor#1:={\@tf@r#1 }
+\long\def\@tf@r#1#2\do#3{\def\@fortmp{#2}\ifx\@fortmp\space\else
+    \@tforloop#2\@nil\@nil\@@#1{#3}\fi}
+\long\def\@tforloop#1#2\@@#3#4{\def#3{#1}\ifx #3\@nnil
+       \expandafter\@fornoop \else
+      #4\relax\expandafter\@tforloop\fi#2\@@#3{#4}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@break@tfor}
+% Break out of a |\@tfor| loop. This should be called \emph{inside}
+% the scope of an |\if|. See |\@iffileonpath| for an example.
+% \changes{v1.0l}{1994/05/02}{Macro added (from ltfiles.dtx)}
+% \changes{v1.0g}{1995/08/16}{Made long}
+%    \begin{macrocode}
+\long\def\@break@tfor#1\@@#2#3{\fi\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@removeelement}
+%    Removes an element from a comma-separated list and puts it into
+%    a control sequence, called as
+%    |\@removeelement{|\meta{element}|}{|\meta{list}|}{|\meta{cs}|}|.
+%    Due to the implementation method the \meta{element} is not allowed
+%    to contain braces.
+%    \begin{macrocode}
+\def\@removeelement#1#2#3{%
+  \def\reserved@a##1,#1,##2\reserved@a{##1,##2\reserved@b}%
+  \def\reserved@b##1,\reserved@b##2\reserved@b{%
+    \ifx,##1\@empty\else##1\fi}%
+  \edef#3{%
+    \expandafter\reserved@b\reserved@a,#2,\reserved@b,#1,\reserved@a}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \changes{v1.0e}{1995/04/29}{Removed unused defs for
+%              \cs{@setprotect} and \cs{@resetprotect}}
+% \changes{v1.0e}{1995/04/29}{Moved init of \cs{protect}
+%              to ltdefns.dtx}
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+%\Finale
+\endinput

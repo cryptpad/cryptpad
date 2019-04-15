@@ -1,0 +1,341 @@
+% utf8-t1.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This file implements the conversion from UTF8 to Cork
+% encoding (used by DC (EC) fonts).
+% The conversion is done by encTeX v. Dec 2002 or higher.
+%
+% Copyright (C) 2002-2003 Petr Olsak
+% Copyright (C) 2003 David Necas (Yeti)
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+\ifx\mubyte\undefined
+   \errhelp{Sorry, you can't use this file without encTeX ver. Jan. 2002.}
+   \errmessage{The encTeX extension of TeX is not found}
+   \endinput \fi
+
+% first, we set the identity mapping in xord/xchr:
+
+\bgroup
+\ifx\xordcode\undefined
+   \errhelp{May be, you are using this file from csplain which disables
+            the \xordcode primitive. Use
+            initex \let\enc=u \input csplain.ini
+            for csplain generation instead this file.
+            If you are using ISO8859-2 input encoding in csplain,
+            you can skip this error message.}
+   \errmessage{I can't set the xord/xchr to identity mapping}
+   \def\xchrcode\count255=\count255{} \def\xordcode\count255=\count255{}
+\fi
+\count255=128
+\loop \xordcode\count255=\count255
+      \xchrcode\count255=\count255
+      \advance\count255 by 1
+\ifnum \count255<256 \repeat
+\egroup
+
+
+% we remove the current conversion table, if exists:
+
+{\catcode`\^^@=12
+\gdef\clearmubytes{\bgroup \count255=1
+   \loop \uccode`X=\count255
+       \uppercase{\mubyte XX\endmubyte}%
+       \advance\count255 by1
+       \ifnum\count255<256 \repeat
+   \mubyte ^^@^^@\endmubyte
+   \egroup}
+}
+\clearmubytes
+
+% include these first, so we can redefine some characters better later here
+
+\input utf8cseq
+\input utf8math
+\input utf8unkn
+
+% now, the conversion table is created:
+\mubyte ^^80 ^^c4^^82\endmubyte % latin capital letter a with breve
+\mubyte ^^81 ^^c4^^84\endmubyte % latin capital letter a with ogonek
+\mubyte ^^82 ^^c4^^86\endmubyte % latin capital letter c with acute
+\mubyte ^^83 ^^c4^^8c\endmubyte % latin capital letter c with caron
+\mubyte ^^84 ^^c4^^8e\endmubyte % latin capital letter d with caron
+\mubyte ^^85 ^^c4^^9a\endmubyte % latin capital letter e with caron
+\mubyte ^^86 ^^c4^^98\endmubyte % latin capital letter e with ogonek
+\mubyte ^^87 ^^c4^^9e\endmubyte % latin capital letter g with breve
+\mubyte ^^88 ^^c4^^b9\endmubyte % latin capital letter l with acute
+\mubyte ^^89 ^^c4^^bd\endmubyte % latin capital letter l with caron
+\mubyte ^^8a ^^c5^^81\endmubyte % latin capital letter l with stroke
+\mubyte ^^8b ^^c5^^83\endmubyte % latin capital letter n with acute
+\mubyte ^^8c ^^c5^^87\endmubyte % latin capital letter n with caron
+\mubyte ^^8d ^^c5^^8a\endmubyte % latin capital letter eng (sami)
+\mubyte ^^8e ^^c5^^90\endmubyte % latin capital letter o with double acute
+\mubyte ^^8f ^^c5^^94\endmubyte % latin capital letter r with acute
+\mubyte ^^90 ^^c5^^98\endmubyte % latin capital letter r with caron
+\mubyte ^^91 ^^c5^^9a\endmubyte % latin capital letter s with acute
+\mubyte ^^92 ^^c5^^a0\endmubyte % latin capital letter s with caron
+\mubyte ^^93 ^^c5^^9e\endmubyte % latin capital letter s with cedilla
+\mubyte ^^94 ^^c5^^a4\endmubyte % latin capital letter t with caron
+\mubyte ^^95 ^^c5^^a2\endmubyte % latin capital letter t with cedilla
+\mubyte ^^96 ^^c5^^b0\endmubyte % latin capital letter u with double acute
+\mubyte ^^97 ^^c5^^ae\endmubyte % latin capital letter u with ring above
+\mubyte ^^98 ^^c5^^b8\endmubyte % latin capital letter y with diaeresis
+\mubyte ^^99 ^^c5^^b9\endmubyte % latin capital letter z with acute
+\mubyte ^^9a ^^c5^^bd\endmubyte % latin capital letter z with caron
+\mubyte ^^9b ^^c5^^bb\endmubyte % latin capital letter z with dot above
+\mubyte ^^9c ^^c4^^b2\endmubyte % latin capital ligature ij
+\mubyte ^^9d ^^c4^^b0\endmubyte % latin capital letter i with dot above
+\mubyte ^^9e ^^c4^^91\endmubyte % latin small letter d with stroke
+\mubyte ^^9f ^^c2^^a7\endmubyte % section sign
+\mubyte ^^a0 ^^c4^^83\endmubyte % latin small letter a with breve
+\mubyte ^^a1 ^^c4^^85\endmubyte % latin small letter a with ogonek
+\mubyte ^^a2 ^^c4^^87\endmubyte % latin small letter c with acute
+\mubyte ^^a3 ^^c4^^8d\endmubyte % latin small letter c with caron
+\mubyte ^^a4 ^^c4^^8f\endmubyte % latin small letter d with caron
+\mubyte ^^a5 ^^c4^^9b\endmubyte % latin small letter e with caron
+\mubyte ^^a6 ^^c4^^99\endmubyte % latin small letter e with ogonek
+\mubyte ^^a7 ^^c4^^9f\endmubyte % latin small letter g with breve
+\mubyte ^^a8 ^^c4^^ba\endmubyte % latin small letter l with acute
+\mubyte ^^a9 ^^c4^^be\endmubyte % latin small letter l with caron
+\mubyte ^^aa ^^c5^^82\endmubyte % latin small letter l with stroke
+\mubyte ^^ab ^^c5^^84\endmubyte % latin small letter n with acute
+\mubyte ^^ac ^^c5^^88\endmubyte % latin small letter n with caron
+\mubyte ^^ad ^^c5^^8b\endmubyte % latin small letter eng (sami)
+\mubyte ^^ae ^^c5^^91\endmubyte % latin small letter o with double acute
+\mubyte ^^af ^^c5^^95\endmubyte % latin small letter r with acute
+\mubyte ^^b0 ^^c5^^99\endmubyte % latin small letter r with caron
+\mubyte ^^b1 ^^c5^^9b\endmubyte % latin small letter s with acute
+\mubyte ^^b2 ^^c5^^a1\endmubyte % latin small letter s with caron
+\mubyte ^^b3 ^^c5^^9f\endmubyte % latin small letter s with cedilla
+\mubyte ^^b4 ^^c5^^a5\endmubyte % latin small letter t with caron
+\mubyte ^^b5 ^^c5^^a3\endmubyte % latin small letter t with cedilla
+\mubyte ^^b6 ^^c5^^b1\endmubyte % latin small letter u with double acute
+\mubyte ^^b7 ^^c5^^af\endmubyte % latin small letter u with ring above
+\mubyte ^^b8 ^^c3^^bf\endmubyte % latin small letter y with diaeresis
+\mubyte ^^b9 ^^c5^^ba\endmubyte % latin small letter z with acute
+\mubyte ^^ba ^^c5^^be\endmubyte % latin small letter z with caron
+\mubyte ^^bb ^^c5^^bc\endmubyte % latin small letter z with dot above
+\mubyte ^^bc ^^c4^^b3\endmubyte % latin small ligature ij
+\mubyte ^^bd ^^c2^^a1\endmubyte % inverted exclamation mark
+\mubyte ^^be ^^c2^^bf\endmubyte % inverted question mark
+\mubyte ^^bf ^^c2^^a3\endmubyte % pound sign
+\mubyte ^^c0 ^^c3^^80\endmubyte % latin capital letter a with grave
+\mubyte ^^c1 ^^c3^^81\endmubyte % latin capital letter a with acute
+\mubyte ^^c2 ^^c3^^82\endmubyte % latin capital letter a with circumflex
+\mubyte ^^c3 ^^c3^^83\endmubyte % latin capital letter a with tilde
+\mubyte ^^c4 ^^c3^^84\endmubyte % latin capital letter a with diaeresis
+\mubyte ^^c5 ^^c3^^85\endmubyte % latin capital letter a with ring above
+\mubyte ^^c6 ^^c3^^86\endmubyte % latin capital letter ae (ash)
+\mubyte ^^c7 ^^c3^^87\endmubyte % latin capital letter c with cedilla
+\mubyte ^^c8 ^^c3^^88\endmubyte % latin capital letter e with grave
+\mubyte ^^c9 ^^c3^^89\endmubyte % latin capital letter e with acute
+\mubyte ^^ca ^^c3^^8a\endmubyte % latin capital letter e with circumflex
+\mubyte ^^cb ^^c3^^8b\endmubyte % latin capital letter e with diaeresis
+\mubyte ^^cc ^^c3^^8c\endmubyte % latin capital letter i with grave
+\mubyte ^^cd ^^c3^^8d\endmubyte % latin capital letter i with acute
+\mubyte ^^ce ^^c3^^8e\endmubyte % latin capital letter i with circumflex
+\mubyte ^^cf ^^c3^^8f\endmubyte % latin capital letter i with diaeresis
+\mubyte ^^d0 ^^c3^^90\endmubyte % latin capital letter eth (icelandic)
+\mubyte ^^d1 ^^c3^^91\endmubyte % latin capital letter n with tilde
+\mubyte ^^d2 ^^c3^^92\endmubyte % latin capital letter o with grave
+\mubyte ^^d3 ^^c3^^93\endmubyte % latin capital letter o with acute
+\mubyte ^^d4 ^^c3^^94\endmubyte % latin capital letter o with circumflex
+\mubyte ^^d5 ^^c3^^95\endmubyte % latin capital letter o with tilde
+\mubyte ^^d6 ^^c3^^96\endmubyte % latin capital letter o with diaeresis
+\mubyte ^^d7 ^^c5^^92\endmubyte % latin capital ligature oe
+\mubyte ^^d8 ^^c3^^98\endmubyte % latin capital letter o with stroke
+\mubyte ^^d9 ^^c3^^99\endmubyte % latin capital letter u with grave
+\mubyte ^^da ^^c3^^9a\endmubyte % latin capital letter u with acute
+\mubyte ^^db ^^c3^^9b\endmubyte % latin capital letter u with circumflex
+\mubyte ^^dc ^^c3^^9c\endmubyte % latin capital letter u with diaeresis
+\mubyte ^^dd ^^c3^^9d\endmubyte % latin capital letter y with acute
+\mubyte ^^de ^^c3^^9e\endmubyte % latin capital letter thorn (icelandic)
+\mubyte ^^e0 ^^c3^^a0\endmubyte % latin small letter a with grave
+\mubyte ^^e1 ^^c3^^a1\endmubyte % latin small letter a with acute
+\mubyte ^^e2 ^^c3^^a2\endmubyte % latin small letter a with circumflex
+\mubyte ^^e3 ^^c3^^a3\endmubyte % latin small letter a with tilde
+\mubyte ^^e4 ^^c3^^a4\endmubyte % latin small letter a with diaeresis
+\mubyte ^^e5 ^^c3^^a5\endmubyte % latin small letter a with ring above
+\mubyte ^^e6 ^^c3^^a6\endmubyte % latin small letter ae (ash)
+\mubyte ^^e7 ^^c3^^a7\endmubyte % latin small letter c with cedilla
+\mubyte ^^e8 ^^c3^^a8\endmubyte % latin small letter e with grave
+\mubyte ^^e9 ^^c3^^a9\endmubyte % latin small letter e with acute
+\mubyte ^^ea ^^c3^^aa\endmubyte % latin small letter e with circumflex
+\mubyte ^^eb ^^c3^^ab\endmubyte % latin small letter e with diaeresis
+\mubyte ^^ec ^^c3^^ac\endmubyte % latin small letter i with grave
+\mubyte ^^ed ^^c3^^ad\endmubyte % latin small letter i with acute
+\mubyte ^^ee ^^c3^^ae\endmubyte % latin small letter i with circumflex
+\mubyte ^^ef ^^c3^^af\endmubyte % latin small letter i with diaeresis
+\mubyte ^^f0 ^^c3^^b0\endmubyte % latin small letter eth (icelandic)
+\mubyte ^^f1 ^^c3^^b1\endmubyte % latin small letter n with tilde
+\mubyte ^^f2 ^^c3^^b2\endmubyte % latin small letter o with grave
+\mubyte ^^f3 ^^c3^^b3\endmubyte % latin small letter o with acute
+\mubyte ^^f4 ^^c3^^b4\endmubyte % latin small letter o with circumflex
+\mubyte ^^f5 ^^c3^^b5\endmubyte % latin small letter o with tilde
+\mubyte ^^f6 ^^c3^^b6\endmubyte % latin small letter o with diaeresis
+\mubyte ^^f7 ^^c5^^93\endmubyte % latin small ligature oe
+\mubyte ^^f8 ^^c3^^b8\endmubyte % latin small letter o with stroke
+\mubyte ^^f9 ^^c3^^b9\endmubyte % latin small letter u with grave
+\mubyte ^^fa ^^c3^^ba\endmubyte % latin small letter u with acute
+\mubyte ^^fb ^^c3^^bb\endmubyte % latin small letter u with circumflex
+\mubyte ^^fc ^^c3^^bc\endmubyte % latin small letter u with diaeresis
+\mubyte ^^fd ^^c3^^bd\endmubyte % latin small letter y with acute
+\mubyte ^^fe ^^c3^^be\endmubyte % latin small letter thorn (icelandic)
+\mubyte ^^ff ^^c3^^9f\endmubyte % latin small letter sharp s (german)
+
+% Non-characters
+\chardef\erqq="11
+\mubyte \erqq ^^e2^^80^^9d\endmubyte % right double quotation mark
+\chardef\erq="27
+\mubyte \erq ^^e2^^80^^99\endmubyte % right single quotation mark
+% there's no \elqq, it's the same Unicode character as \crqq
+\chardef\flq="0E
+\chardef\frq="0F
+\mubyte \flq ^^e2^^80^^b9\endmubyte % single left-pointing angle quotation mark
+\mubyte \frq ^^e2^^80^^ba\endmubyte % single right-pointing angle quotation mark
+\chardef\endash="15
+\chardef\emdash="16
+\mubyte \endash ^^e2^^80^^93\endmubyte % en dash
+\mubyte \emdash ^^e2^^80^^94\endmubyte % em dash
+\chardef\utfligatureff="1B
+\chardef\utfligaturefi="1C
+\chardef\utfligaturefl="1D
+\chardef\utfligatureffi="1E
+\chardef\utfligatureffl="1F
+\mubyte \utfligatureff ^^ef^^ac^^80\endmubyte % latin small ligature ff
+\mubyte \utfligaturefi ^^ef^^ac^^81\endmubyte % latin small ligature fi
+\mubyte \utfligaturefl ^^ef^^ac^^82\endmubyte % latin small ligature fl
+\mubyte \utfligatureffi ^^ef^^ac^^83\endmubyte % latin small ligature ffi
+\mubyte \utfligatureffl ^^ef^^ac^^84\endmubyte % latin small ligature ffl
+
+% You can add more UTF-8 codes here. You can map these codes to
+% control sequences (see encdoc.tex for more datails) so,
+% the number of UTF-8 codes examined by TeX is unlimited.
+
+% ...
+
+\mubytein=1 \mubyteout=3
+
+%% for compatibility with hyphen.lan file:
+\let\csaccents=\relax \let\cmaccents=\relax
+
+% now we still have to deal with accents
+\input t1macro \input encmacro
+
+% This needed for hyphenation patterns.
+
+% (1) Czech/Slovak alphabet
+%            input TeX   lc   uc    sf cat prn        sequence
+\setcharcode  ?  "C1  "E1  "C1   999  11  1  \texaccent \'A
+\setcharcode  ?  "E1  "E1  "C1  1000  11  1  \texaccent \'a
+\setcharcode  ?  "C4  "E4  "C4   999  11  1  \texaccent \"A
+\setcharcode  ?  "E4  "E4  "C4  1000  11  1  \texaccent \"a
+\setcharcode  ?  "83  "A3  "83   999  11  1  \texaccent \v C
+\setcharcode  ?  "A3  "A3  "83  1000  11  1  \texaccent \v c
+\setcharcode  ?  "84  "A4  "84   999  11  1  \texaccent \v D
+\setcharcode  ?  "A4  "A4  "84  1000  11  1  \texaccent \v d
+\setcharcode  ?  "C9  "E9  "C9   999  11  1  \texaccent \'E
+\setcharcode  ?  "E9  "E9  "C9  1000  11  1  \texaccent \'e
+\setcharcode  ?  "85  "A5  "85   999  11  1  \texaccent \v E
+\setcharcode  ?  "A5  "A5  "85  1000  11  1  \texaccent \v e
+\setcharcode  ?  "CD  "ED  "CD   999  11  1  \texaccent \'I
+\setcharcode  ?  "ED  "ED  "CD  1000  11  1  \texaccent \'i  \texaccent \'\i
+\setcharcode  ?  "88  "A8  "88   999  11  1  \texaccent \'L
+\setcharcode  ?  "A8  "A8  "88  1000  11  1  \texaccent \'l
+\setcharcode  ?  "89  "A9  "89   999  11  1  \texaccent \v L
+\setcharcode  ?  "A9  "A9  "89  1000  11  1  \texaccent \v l
+\setcharcode  ?  "8C  "AC  "8C   999  11  1  \texaccent \v N
+\setcharcode  ?  "AC  "AC  "8C  1000  11  1  \texaccent \v n
+\setcharcode  ?  "D3  "F3  "D3   999  11  1  \texaccent \'O
+\setcharcode  ?  "F3  "F3  "D3  1000  11  1  \texaccent \'o
+\setcharcode  ?  "D4  "F4  "D4   999  11  1  \texaccent \^O
+\setcharcode  ?  "F4  "F4  "D4  1000  11  1  \texaccent \^o
+\setcharcode  ?  "D6  "F6  "D6   999  11  1  \texaccent \"O
+\setcharcode  ?  "F6  "F6  "D6  1000  11  1  \texaccent \"o
+\setcharcode  ?  "8F  "AF  "8F   999  11  1  \texaccent \'R
+\setcharcode  ?  "AF  "AF  "8F  1000  11  1  \texaccent \'r
+\setcharcode  ?  "90  "B0  "90   999  11  1  \texaccent \v R
+\setcharcode  ?  "B0  "B0  "90  1000  11  1  \texaccent \v r
+\setcharcode  ?  "92  "B2  "92   999  11  1  \texaccent \v S
+\setcharcode  ?  "B2  "B2  "92  1000  11  1  \texaccent \v s
+\setcharcode  ?  "94  "B4  "94   999  11  1  \texaccent \v T
+\setcharcode  ?  "B4  "B4  "94  1000  11  1  \texaccent \v t
+\setcharcode  ?  "DA  "FA  "DA   999  11  1  \texaccent \'U
+\setcharcode  ?  "FA  "FA  "DA  1000  11  1  \texaccent \'u
+\setcharcode  ?  "97  "B7  "97   999  11  1  \texaccent \r U
+\setcharcode  ?  "B7  "B7  "97  1000  11  1  \texaccent \r u
+\setcharcode  ?  "DC  "FC  "DC   999  11  1  \texaccent \"U
+\setcharcode  ?  "FC  "FC  "DC  1000  11  1  \texaccent \"u
+\setcharcode  ?  "DD  "FD  "DD   999  11  1  \texaccent \'Y
+\setcharcode  ?  "FD  "FD  "DD  1000  11  1  \texaccent \'y
+\setcharcode  ?  "9A  "BA  "9A   999  11  1  \texaccent \v Z
+\setcharcode  ?  "BA  "BA  "9A  1000  11  1  \texaccent \v z
+
+% (2) Non Czech/Slovak alphabet
+%            input TeX   lc   uc    sf cat prn        sequence
+\setcharcode  ?  "81  "A1  "81   999  11  1  \texaccent \og A
+\setcharcode  ?  "A1  "A1  "81  1000  11  1  \texaccent \og a
+\setcharcode  ?  "8A  "AA  "8A   999  11  1  \texmacro  \L
+\setcharcode  ?  "AA  "AA  "8A  1000  11  1  \texmacro  \l
+\setcharcode  ?  "91  "B1  "91   999  11  1  \texaccent \'S
+\setcharcode  ?  "B1  "B1  "91  1000  11  1  \texaccent \'s
+\setcharcode  ?  "93  "B3  "93   999  11  1  \texaccent \c S
+\setcharcode  ?  "B3  "B3  "93  1000  11  1  \texaccent \c s
+\setcharcode  ?  "99  "B9  "99   999  11  1  \texaccent \'Z
+\setcharcode  ?  "B9  "B9  "99  1000  11  1  \texaccent \'z
+\setcharcode  ?  "9B  "BB  "9B   999  11  1  \texaccent \.Z
+\setcharcode  ?  "BB  "BB  "9B  1000  11  1  \texaccent \.z
+\setcharcode  ?  "C2  "E2  "C2   999  11  1  \texaccent \^A
+\setcharcode  ?  "E2  "E2  "C2  1000  11  1  \texaccent \^a
+\setcharcode  ?  "80  "A0  "80   999  11  1  \texaccent \u A
+\setcharcode  ?  "A0  "A0  "80  1000  11  1  \texaccent \u a
+\setcharcode  ?  "82  "A2  "82   999  11  1  \texaccent \'C
+\setcharcode  ?  "A2  "A2  "82  1000  11  1  \texaccent \'c
+\setcharcode  ?  "C7  "E7  "C7   999  11  1  \texaccent \c C
+\setcharcode  ?  "E7  "E7  "C7  1000  11  1  \texaccent \c c
+\setcharcode  ?  "86  "A6  "86   999  11  1  \texaccent \og E
+\setcharcode  ?  "A6  "A6  "86  1000  11  1  \texaccent \og e
+\setcharcode  ?  "CB  "EB  "CB   999  11  1  \texaccent \"E
+\setcharcode  ?  "EB  "EB  "CB  1000  11  1  \texaccent \"e
+\setcharcode  ?  "CE  "EE  "CE   999  11  1  \texaccent \^I
+\setcharcode  ?  "EE  "EE  "CE  1000  11  1  \texaccent \^i  \texaccent \^\i
+\setcharcode  ?  "D0  "F0  "D0   999  11  1  \texmacro \Dslash
+\setcharcode  ?  "F0  "F0  "D0  1000  11  1  \texmacro \dslash
+\setcharcode  ?  "8B  "AB  "8B   999  11  1  \texaccent \'N
+\setcharcode  ?  "AB  "AB  "8B  1000  11  1  \texaccent \'n
+\setcharcode  ?  "8E  "AE  "8E   999  11  1  \texaccent \H O
+\setcharcode  ?  "AE  "AE  "8E  1000  11  1  \texaccent \H o
+\setcharcode  ?  "96  "B6  "96   999  11  1  \texaccent \H U
+\setcharcode  ?  "B6  "B6  "96  1000  11  1  \texaccent \H u
+\setcharcode  ?  "95  "B5  "95   999  11  1  \texaccent \c T
+\setcharcode  ?  "B5  "B5  "95  1000  11  1  \texaccent \c t
+\setcharcode  ?  "FF  "FF  "DF  1000  11  1  \texmacro  \ss
+
+\redefaccent \'
+\redefaccent \v
+\redefaccent \"
+\redefaccent \^
+\redefaccent \r
+
+% finally, we can forbid the encTeX primitives in document
+% (this is commented out here because it is only an example):
+
+% \let\xordcode=\undefined \let\xchrcode=\undefined\let
+% \let\xprncode=\undefined
+% \let\mubytein=\undefined \let\mubyteout=\undefined
+% \let\mubyte=\undefined   \let\endmubyte=\undefined
+
+\endinput
+

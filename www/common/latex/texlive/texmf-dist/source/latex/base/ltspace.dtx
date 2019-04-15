@@ -1,0 +1,1129 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltspace.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltspace.dtx}
+             [2015/01/14 v1.3e LaTeX Kernel (spacing)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltspace.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{578}
+%
+% \changes{v1.1a}{1994/05/16}{(ASAJ) Split from ltinit.dtx.}
+% \changes{v1.2f}{1995/05/25}{Macros moved to ltlists.dtx}
+% \changes{v1.2n}{1996/04/22}{Documentation Improvements}
+% \changes{v1.2o}{1996/06/22}{Documentation of problems added}
+% \changes{v1.2q}{1996/07/27}{Further documentation of problems}
+% \changes{v1.2r}{1996/07/27}{Correct documentation of problems}
+% \changes{v1.2w}{1998/08/17}{Documentation fixes.}
+%
+%
+% \section{Spacing}
+%
+% This section deals with spacing, and line- and page-breaking.
+%
+% \subsection{User Commands}
+%
+% \DescribeMacro\nopagebreak\oarg{i} : \meta{i} = 0,...,4.
+%
+% Default argument = 4.  Puts a penalty into the vertical list
+% output as follows:\\
+%                   0 : penalty = 0\\
+%                   1 : penalty = |\@lowpenalty|\\
+%                   2 : penalty = |\@medpenalty|\\
+%                   3 : penalty = |\@highpenalty|\\
+%                   4 : penalty = 10000
+%
+% \DescribeMacro\pagebreak\oarg{i} :
+%          same as \nopagebreak except negatives of its penalty
+%
+% \DescribeMacro\linebreak\oarg{i} : analog of the above
+%
+% \DescribeMacro\nolinebreak\oarg{i} : analog of the above
+%
+% \DescribeMacro\samepage :
+% inhibits page breaking most places by setting the
+% following penalties to 10000:\\
+%                    |\interlinepenalty|\\
+%                    |\postdisplaypenalty|\\
+%                    |\interdisplaylinepenalty|\\
+%                    |\@beginparpenalty|\\
+%                    |\@endparpenalty|\\
+%                    |\@itempenalty|\\
+%                    |\@secpenalty|\\
+%                    |\interfootnotelinepenalty|
+%
+% \DescribeMacro{\\}         : initially defined to be |\newline|
+%
+% |\\|\oarg{length} : initially defined to be
+%              |\vspace|\marg{length}|\newline|\\
+%              Note: |\\*| adds a |\vadjust{\penalty 10000}|
+%
+% OBSOLETE COMMANDS (which never made it into the manual):
+%
+% |\obeycr|    : defines <CR> == |\\\relax|\\
+% |\restorecr| : restores <CR> to its usual meaning.
+%
+%
+% \StopEventually{}
+%
+% \subsection{Chris' comments}
+%
+% There are several aspects of the handling of space in horizontal
+% mode that are inconsistent or do not work well in some cases.
+% These are largely concerned with ignoring the effect of space
+% tokens that would otherwise typeset an inter-word space.
+%
+% Negating the effect of such space tokens is achieved by two
+% mechanisms:
+% \begin{itemize}
+% \item |\unskip| is used to remove the glue just added by
+% a space that has already had its effect; it is sometimes
+% invoked after an |\ifdim| test on |\lastskip| (see below);
+% \item |\ignorespaces| is used to ignore space-tokens yet to come.
+% \end{itemize}
+%
+% The test done on |\lastskip| is sometimes for equality with zero and
+% sometimes for being positive.  Recall also that the test is only on
+% the natural length of the glue and that no glue cannot be
+% distinguished from glue whose natural length is zero: to summarise,
+% a pretty awful test.  It is not clear why these tests are not all
+% the same; I think that they should all be for equality.  One place
+% where |\unskip| is often used is just before a |\par| (which itself
+% internally does an |\unskip|) and one bit of code (in |\@item|) even
+% has two |\unskips| before a |\par|.  These uses may be fossil code
+% but if they are necessary, maybe |\@killglue| would be even safer.
+%
+% Such removal of glue by |\unskip| may sometimes have the wrong result,
+% removing not the glue from a space-token but other explicit glue;
+% this is sometimes not what is intended.
+%
+% A common way to prevent such removal is to add an |\hskip\z@| after
+% the glue that should not be removed.  This protects that glue
+% against one |\unskip| with no test but not against more than one.
+% It does work for `tested |\unskip|s'.   This is used
+% by |\hspace*| but not by |\hspace|; this is inconsistent as the star
+% is supposed to prevent removal only at the beginning of a line, not
+% at the end, or in a tabular, etc.
+%
+% If this reason for removing glue were the only consideration then a
+% tested-|\unskip| and protection by |\hskip\z@| would suffice but
+% would need to be consistently implemented.
+%
+% However, the class of invisibles, commands and environments tries to
+% be even cleverer: one of these tries to leave only one inter-word
+% space whenever there is one before it and one after it; and it does
+% this quite well.
+%
+% But problems can arise when there is not a space-token on
+% both sides of it; in particular, when an invisible appears at the
+% beginning or end of a piece of text the method still leaves one space
+% token whereas usually in these cases it should leave none.
+%
+% Also, the current rules do not work well when more than one such
+% command appears consecutively, separated by space-tokens; it leaves
+% glue between every other invisible.
+%
+% There is also a question about what these commands should do when
+% they occur next to spaces that do not come from space tokens but,
+% for example, from |\hspace|.  Should they still produce `just one
+% space'?  If so, which one?  It is good to note that the manual
+% is sufficiently cautious about invisibles that we are not obliged to
+% make anything work.
+%
+% Another interesting side-road to explore is whether the space-tokens
+% either side of an |\hspace{...}| should be ignored.
+%
+% One alternative to the current algorithm that is often suggested is
+% that all glue around the invisible  should be consolidated into a
+% space after it (usually without stating how much glue should be put
+% there).  The command |\nolinebreak| is implemented this way (and
+% |\linebreak| should also be). This does not work correctly for the
+% following common case:
+% \begin{verbatim}
+%   ... some text
+%   \index{some-word}
+%   some-word and more text.
+% \end{verbatim}
+% This is optimal coding since it is normal to index a word that gets
+% split across a page-break on its starting page.  This would, on the
+% other hand, fix another common (and documented) failure of the
+% current system: when the invisible is the last thing in a paragraph
+% the space before it is not removed and, worse, it is also hidden
+% from the paragraph-ending mechanism so that an `empty' line can be
+% created at the end of the paragraph.
+%
+% Another deficiency (I think) of the current system is that the
+% following is treated as having the |\index| command between the
+% paragraphs, which is probably not what the author intended (since
+% there is no empty line after it).
+% \begin{verbatim}
+%
+%   \index{beginnings}
+%   Beginnings of paragraphs ...
+% \end{verbatim}
+%
+% I know of no algorithm that will handle satisfactorily even
+% all the most common cases; note that it could be that the best
+% algorithm may be different for different invisibles since,
+% for example, the common uses and expected behaviour of
+% |\index|, |\marginpar|, |\linebreak|, |\pagebreak| and
+% |\vspace| are somewhat different.  [For example, is
+% |\vspace| ever used in the middle of a paragraph?]
+%
+% One method that can (and is) used to make invisible commands produce
+% no space when used at the beginning of text is to put in some glue
+% that is nearly enough the same as no glue or glue of zero length in
+% all respects except for the precise test for not being exactly equal
+% to zero; examples of such glue are |\hskip 1sp| and, possibly better
+% but more complex, |\hskip -1sp \hskip 1sp|.  However, this only works
+% when it is known that user-supplied text is about to start.
+%
+% Some similar concerns apply to the handling of space and penalties
+% in vertical mode; there is an extra hurdle here as |\unskip| does
+% not work on the main vertical list.  The complexity of the tests done
+% by |\addvspace| have never been explained.
+%
+% The implementation of space hacks etc for vertical mode is another
+% major area that needs further attention; my earlier experiments
+% did not produce much improvement over the current unsatisfactory
+% situation.
+%
+% One particular problem is what happens when the following very
+% natural coding is used (part of the problem here is that this looks
+% like an hmode problem, but it is not):
+% \begin{verbatim}
+%   ... end of text.
+%
+%   \begin{enumerate}
+%     \item \label{item:xxx} Item text.
+%   \end{enumerate}
+% \end{verbatim}
+%
+% \subsection{Some immediate actions}
+%
+% \begin{itemize}
+% \item Fix bug in |\linebreak|.
+% \item Fix bug in |\\*|.
+% \item Reimplement |\\|, etc, removing extra |\vadjust|s and getting
+% better error trapping (this seems to involve a lot more tokens).
+% \item Investigate whether |\\|, etc need to be errors in vmode; I
+% think that they could be noops (maybe with a warning).
+% \item Make all(?) |\unskips| include test for zero skip (rather than
+%   other tests or no test).
+% \item Consider replacing |\hskip 1sp| by something better (here
+%   called an `infinitesimal' skip).
+% \item Look at all |\hskip\z@| (or similar) to see if they should be
+%   changed to an `infinitesimal' skip.
+% \item Resolve the inconsistency between |\hspace| and |\hspace*|.
+% \item Remove unnecessary |\unskips|.
+% \item Investigate and rationalise the `newline' code.
+% \item Find better algorithms for all sorts of things or, easier(?),
+%   fix \TeX{} itself.
+% \end{itemize}
+%
+% \subsection{The code}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{spacing,}
+%    \end{macrocode}
+%
+%  \begin{macro}{\pagebreak}
+%  \begin{macro}{\nopagebreak}
+% \changes{v1.2h}{1995/07/05}{Reimplemented both using \cs{@no@pgbk}}
+% \changes{v1.2j}{1995/10/16}{(DPC) Use \cs{@testopt} /1911}
+%    \begin{macrocode}
+\def\pagebreak{\@testopt{\@no@pgbk-}4}
+\def\nopagebreak{\@testopt\@no@pgbk4}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@no@pgbk}
+% \changes{v1.2h}{1995/07/05}{Macro replaces \cs{@pgbk}
+%                 and \cs{@nopgbk}}
+%    \begin{macrocode}
+\def\@no@pgbk #1[#2]{%
+  \ifvmode
+    \penalty #1\@getpen{#2}%
+  \else
+    \@bsphack
+    \vadjust{\penalty #1\@getpen{#2}}%
+    \@esphack
+  \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\linebreak}
+%  \begin{macro}{\nolinebreak}
+% \changes{v1.2u}{1996/10/29}{Reimplemented both using \cs{@no@lnbk}}
+% \changes{v1.2j}{1995/10/16}{(DPC) Use \cs{@testopt} /1911}
+%    \begin{macrocode}
+\def\linebreak{\@testopt{\@no@lnbk-}4}
+\def\nolinebreak{\@testopt\@no@lnbk4}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \begin{macro}{\@no@lnbk}
+% \changes{v1.2u}{1996/10/29}{Macro replaces \cs{@lnbk}
+%                 and \cs{@nolnbk}}
+%    \begin{macrocode}
+\def\@no@lnbk #1[#2]{%
+  \ifvmode
+    \@nolnerr
+  \else
+    \@tempskipa\lastskip
+    \unskip
+    \penalty #1\@getpen{#2}%
+    \ifdim\@tempskipa>\z@
+      \hskip\@tempskipa
+      \ignorespaces
+    \fi
+  \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\samepage}
+%    \begin{macrocode}
+\def\samepage{\interlinepenalty\@M
+   \postdisplaypenalty\@M
+   \interdisplaylinepenalty\@M
+   \@beginparpenalty\@M
+   \@endparpenalty\@M
+   \@itempenalty\@M
+   \@secpenalty\@M
+   \interfootnotelinepenalty\@M}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\\}
+% \changes{v1.2a}{1994/11/11}{(DPC) Make robust}
+% \changes{v1.2d}{1994/11/14}{(DPC) Macro modified}
+%
+% \changes{v1.2u}{1996/10/29}{Corrected and rationalised code}
+% The purpose of the new code is to fix a few bugs; however, it also
+% attempts to optimize the following, in order of priority:
+%     \begin{enumerate}
+%       \item efficient execution of plain |\\|;
+%       \item efficient execution of |\\[...]|;
+%       \item memory use;
+%       \item name-space use.
+%     \end{enumerate}
+% The changes should make no difference to the typeset output.
+% It appears to be safe to use |\reserved@e| and |\reserved@f| here
+% (other reserved macros are somewhat disastrous).
+%
+% These changes made |\newline| even less robust than it had been,
+% so now it is explicitly robust, like |\\|.
+%  \begin{macro}{\@normalcr}
+% The internal definition of the `normal' definition of |\\|.
+%    \begin{macrocode}
+\DeclareRobustCommand\\{%
+  \let \reserved@e \relax
+  \let \reserved@f \relax
+  \@ifstar{\let \reserved@e \vadjust \let \reserved@f \nobreak
+             \@xnewline}%
+          \@xnewline}
+\expandafter\let\expandafter\@normalcr
+     \csname\expandafter\@gobble\string\\ \endcsname
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \begin{macro}{\newline}
+% A simple form of the `normal' definition of |\\|.
+% \changes{v1.2v}{1997/05/07}{Made completely robust.}
+%    \begin{macrocode}
+\DeclareRobustCommand\newline{\@normalcr\relax}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@xnewline}
+%    \begin{macrocode}
+\def\@xnewline{\@ifnextchar[% ] bracket matching
+                  \@newline
+                 {\@gnewline\relax}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@newline}
+%    \begin{macrocode}
+\def\@newline[#1]{\let \reserved@e \vadjust
+                   \@gnewline {\vskip #1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@gnewline}
+% \changes{v1.2u}{1996/10/29}{Added macro}
+% The |\nobreak| added to prevent null lines when |\\|
+% ends an overfull line.  Change made 24 May 89 as suggested by
+% Frank Mittelbach and Rainer Sch\"opf
+% \changes{v1.2h}{1995/07/05}{Use \cs{break}}
+%    \begin{macrocode}
+\def\@gnewline #1{%
+  \ifvmode
+    \@nolnerr
+  \else
+    \unskip \reserved@e {\reserved@f#1}\nobreak \hfil \break
+  \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\@getpen}
+%    \begin{macrocode}
+\def\@getpen#1{\ifcase #1 \z@ \or \@lowpenalty\or
+         \@medpenalty \or \@highpenalty
+         \else \@M \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\if@nobreak}
+% \changes{v1.2p}{1996/07/26}{put \cs{global} inside definition}
+% Switch used to avoid page breaks caused by |\label| after a
+%      section heading, etc. It should be \textbf{GLOBALLY} set true
+%      after the  |\nobreak| and \textbf{globally} set false by the
+%      next invocation of |\everypar|.
+%
+%      Commands that reset |\everypar| should globally set it false if
+%      appropriate.
+%    \begin{macrocode}
+\def\@nobreakfalse{\global\let\if@nobreak\iffalse}
+\def\@nobreaktrue {\global\let\if@nobreak\iftrue}
+\@nobreakfalse
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\@savsk}
+% \begin{macro}{\@savsf}
+% Registers used to save the space factor and last skip.
+%    \begin{macrocode}
+\newdimen\@savsk
+\newcount\@savsf
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+%
+%  \begin{macro}{\@bsphack}
+% \changes{LaTeX2e}{1993/12/08}
+%         {Command reimplemented; late birthday present for Chris}
+% \changes{LaTeX2e}{1993/12/08}{Command reimplemented}
+% \changes{LaTeX2e}{1993/12/16}{Corrected optimisation :-)}
+%  |\@bsphack| and |\@esphack|
+%  used by macros such as |\index| and
+% |\begin{@float}| \ldots |\end{@float}|
+%  that want to be invisible --- i.e.,
+%  not leave any extra space when used in the middle of text.  Such
+%  a macro should begin with |\@bsphack| and end with |\@esphack|
+%  The macro in question should not create any text, nor change the
+%  mode.
+%
+% Before giving the current definition we give an extended definition
+% that is currently not used (because it doesn't work as advertised:-)
+%
+%    These are generalised hacks which attempt to do sensible things
+%    when `invisible commands' appear in vmode too.
+%
+%    They need to cope with space in both hmode (plus spacefactor) and
+%    vmode, and also cope with breaks etc.  In vmode this means
+%    ensuring that any following |\addvspace|, etc sees the correct
+%    glue in |\lastskip|.
+%
+%    In fact, these improved versions should be used for other cases
+%    of `whatsits, thingies etc' which should be invisible.  They are
+%    only for commands, not environments (see notes on |\@Esphack|).
+%
+%    BTW, anyone know why the standard hacks are surrounded by
+%    |\ifmmode\else| rather than simply |\ifhmode|?
+%
+%    And are there any cases where saving the spacefactor is
+%    essential?  I have some extensions where it is, but it does not
+%    appear to be so in the standard uses.
+%\begin{verbatim}
+%\def \@bsphack{%
+%  \relax \ifvmode
+%    \@savsk \lastskip
+%    \ifdim \lastskip=\z@
+%    \else
+%      \vskip -\lastskip
+%    \fi
+%  \else
+%    \ifhmode
+%      \@savsk \lastskip
+%      \@savsf \spacefactor
+%    \fi
+%  \fi
+%}
+%\end{verbatim}
+%    I think that, in vmode, it is the safest to put
+%    in a |\nobreak| immediately after such things since writes,
+%    inserts etc followed by glue give valid breakpoints and, in
+%    general, it is possible to create breaks but impossible to
+%    destroy them.
+%\begin{verbatim}
+%\def \@esphack{%
+%   \relax \ifvmode
+%     \nobreak
+%     \ifdim \@savsk=\z@
+%     \else
+%       \vskip\@savsk
+%     \fi
+%   \else
+%     \ifhmode
+%       \spacefactor \@savsf
+%       \ifdim \@savsk>\z@
+%         \ignorespaces
+%       \fi
+%     \fi
+%   \fi
+%}
+%\end{verbatim}
+%    For the moment we are going to ignore the vertical versions until
+%    they are correct.
+% \changes{LaTeX2e}{1993/12/19}{There seem to be problems with selfmade
+%                           birthday presents}
+%    \begin{macrocode}
+\def\@bsphack{%
+  \relax
+  \ifhmode
+    \@savsk\lastskip
+    \@savsf\spacefactor
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@esphack}
+% Companion to |\@bsphack|.
+% \changes{v1.3d}{2015/01/11}{Allow hyphenation (Donald Arseneau pr/3498) (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\@esphack}{hyphenation after space hack}%
+%<*2ekernel|latexrelease>
+\def\@esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \nobreak \hskip\z@skip
+      \ignorespaces
+    \fi
+  \fi}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\@esphack}{hyphenation after space hack}%
+%<latexrelease>\def\@esphack{%
+%<latexrelease>  \relax
+%<latexrelease>  \ifhmode
+%<latexrelease>    \spacefactor\@savsf
+%<latexrelease>    \ifdim\@savsk>\z@
+%<latexrelease>      \ignorespaces
+%<latexrelease>    \fi
+%<latexrelease>  \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@Esphack}
+% A variant of |\@esphack| that sets the |@ignore| switch to
+%     true (as |\@esphack| used to do previously).
+% This is currently used only for floats and similar environments.
+% \changes{v1.2s}{1996/08/02}{Remove \cs{global} before \cs{@ignore...}}
+% \changes{v1.3d}{2015/01/11}{Allow hyphenation (Donald Arseneau pr/3498) (latexrelease)}w
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\Eesphack}{hyphenation after space hack}%
+%<*2ekernel|latexrelease>
+\def\@Esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \nobreak \hskip\z@skip
+      \@ignoretrue
+      \ignorespaces
+    \fi
+   \fi}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\@Esphack}{hyphenation after space hack}%
+%<latexrelease>\def\@Esphack{%
+%<latexrelease>  \relax
+%<latexrelease>  \ifhmode
+%<latexrelease>    \spacefactor\@savsf
+%<latexrelease>    \ifdim\@savsk>\z@
+%<latexrelease>      \@ignoretrue
+%<latexrelease>      \ignorespaces
+%<latexrelease>    \fi
+%<latexrelease>   \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@vbsphack}
+% \changes{LaTeX2e}{1993/12/08}{Command added}
+%    Another variant which is useful for invisible things which should
+%    not live in vmode (this is how some people feel about marginals).
+%
+%    If it occurs in vmode then it enters hmode and ensures that
+%    |\@savsk| is nonzero so that the |\ignorespaces| is put in later.
+%    It is not used at present.
+% \changes{v1.2f}{1995/05/25}{(CAR) not used so `removed'.}
+%\begin{verbatim}
+% \def \@vbsphack{ %
+%    \relax \ifvmode
+%      \leavevmode
+%      \@savsk 1sp
+%      \@savsf \spacefactor
+%    \else
+%      \ifhmode
+%        \@savsk \lastskip
+%        \@savsf \spacefactor
+%      \fi
+%    \fi
+% }
+%\end{verbatim}
+%  \end{macro}
+%
+%
+% \subsection{Vertical spacing}
+%
+%
+% \LaTeX\ supports the plain \TeX\ commands
+% |\smallskip|, |\medskip| and |\bigskip|.
+% However, it redefines them using |\vspace| instead of |\vskip|.
+%
+% Extra vertical space is added by the command
+% |\addvspace|\marg{skip},
+% which adds a vertical skip of \meta{skip} to the document.
+% The sequence\\
+%         |\addvspace|\marg{s1} |\addvspace|\marg{s2}
+% is equivalent to\\
+%         |\addvspace|\marg{maximum of s1, s2}.
+%
+% |\addvspace| should be used only in vertical mode, and gives an
+% error if it's not.  The |\addvspace| command does \emph{not} add
+% vertical space if |@minipage| is true. The minipage environment uses
+% this to inhibit the addition of extra vertical space at the beginning.
+%
+% Penalties are put into the vertical list with the
+% |\addpenalty|\marg{penalty}
+% command.  It works properly when |\addpenalty| and |\addvspace|
+% commands are mixed.
+%
+% The |@nobreak| switch is set true used when in vertical mode and no
+% page break should occur.  (Right now, it is used only by the section
+% heading commands to inhibit page breaking after a heading.)
+%
+%
+%\begin{verbatim}
+% \addvspace{SKIP} ==
+%  BEGIN
+%   if vmode
+%     then if @minipage
+%            else if \lastskip =0
+%                    then  \vskip SKIP
+%                    else  if \lastskip < SKIP
+%                             then  \vskip -\lastskip
+%                                   \vskip SKIP
+%                             else if SKIP < 0 and \lastskip >= 0
+%                                    then \vskip -\lastskip
+%                                         \vskip \lastskip + SKIP
+%          fi      fi       fi      fi
+%     else useful error message (CAR).
+%   fi
+%  END
+%\end{verbatim}
+%
+% \begin{macro}{\@xaddvskip}
+% Internal macro for |\vspace| handling the case that space has
+% previously been added.
+%    \begin{macrocode}
+\def\@xaddvskip{%
+  \ifdim\lastskip<\@tempskipb
+    \vskip-\lastskip
+    \vskip\@tempskipb
+  \else
+    \ifdim\@tempskipb<\z@
+      \ifdim\lastskip<\z@
+      \else
+        \advance\@tempskipb\lastskip
+        \vskip-\lastskip
+        \vskip \@tempskipb
+      \fi
+    \fi
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\addvspace}
+% \changes{v1.2b}{1994/11/12}{Corrected error message}
+% \changes{v1.2c}{1994/11/13}{Recorrected error message}
+%  Add vertical space taking into account space already added, as
+%  described above.
+%    \begin{macrocode}
+\def\addvspace#1{%
+  \ifvmode
+     \if@minipage\else
+       \ifdim \lastskip =\z@
+         \vskip #1\relax
+       \else
+       \@tempskipb#1\relax
+         \@xaddvskip
+       \fi
+     \fi
+  \else
+    \@noitemerr
+  \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\addpenalty}
+% \changes{v1.2b}{1994/11/12}{Corrected error message}
+% \changes{v1.2c}{1994/11/13}{Recorrected error message}
+% \changes{v1.1h}{2015/01/09}{Donald Arseneau's fix from PR/377703 (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\addpenalty}{\addpenalty}%
+%<*2ekernel|latexrelease>
+%    \end{macrocode}
+%   Fix provided by Donald (though the original fix was not good
+%   enough).  In 2005 Plamen Tanovski discovered that this fix wasn't
+%   good enough either as the \cs{vskip} kept getting bigger if
+%   several \cs{addpenalty} commands followed each other. Donald
+%   kindly send a new fix.
+%    \begin{macrocode}
+\def\addpenalty#1{%
+  \ifvmode
+    \if@minipage
+    \else
+      \if@nobreak
+      \else
+        \ifdim\lastskip=\z@
+          \penalty#1\relax
+        \else
+          \@tempskipb\lastskip
+%    \end{macrocode}
+%    We have to make sure the final \cs{vskip} seen by \TeX\ is the
+%    correct one, namely \cs{@tempskipb}. However we may have to
+%    adjust for \cs{prevdepth} when placing the penalty but that
+%    should not affect the skip we pass on to \TeX.
+% \changes{v1.3e}{2015/01/14}{Avoid adding redundant skips (DPC)}
+%    \begin{macrocode}
+          \begingroup
+            \@tempskipa\@tempskipb
+            \advance \@tempskipb
+              \ifdim\prevdepth>\maxdepth\maxdepth\else
+%    \end{macrocode}
+%    If |\prevdepth| is -1000pt due to |\nointerlineskip| we better
+%    not add it!
+%    \begin{macrocode}
+                 \ifdim \prevdepth = -\@m\p@ \z@ \else \prevdepth \fi
+               \fi
+             \vskip -\@tempskipb
+             \penalty#1%
+             \ifdim\@tempskipa=\@tempskipb
+%    \end{macrocode}
+% Do nothing if the |\prevdepth| check made no adjustment.
+%    \begin{macrocode}
+             \else
+%    \end{macrocode}
+% Combine the prevdepth adjustment into a single skip.
+%    \begin{macrocode}
+               \advance\@tempskipb -\@tempskipa
+               \vskip \@tempskipb
+             \fi
+%    \end{macrocode}
+% The final skip is always the specified length.
+%    \begin{macrocode}
+             \vskip \@tempskipa
+          \endgroup
+        \fi
+      \fi
+    \fi
+  \else
+    \@noitemerr
+  \fi}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\addpenalty}{\addpenalty}%
+%<latexrelease>\def\addpenalty#1{%
+%<latexrelease>  \ifvmode
+%<latexrelease>    \if@minipage
+%<latexrelease>    \else
+%<latexrelease>      \if@nobreak
+%<latexrelease>      \else
+%<latexrelease>        \ifdim\lastskip=\z@
+%<latexrelease>          \penalty#1\relax
+%<latexrelease>        \else
+%<latexrelease>          \@tempskipb\lastskip
+%<latexrelease>          \vskip -\lastskip
+%<latexrelease>          \penalty#1%
+%<latexrelease>          \vskip\@tempskipb
+%<latexrelease>        \fi
+%<latexrelease>      \fi
+%<latexrelease>    \fi
+%<latexrelease>  \else
+%<latexrelease>    \@noitemerr
+%<latexrelease>  \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\vspace}
+% \changes{v1.2m}{1996/01/20}{Made robust}
+% \begin{macro}{\@vspace}
+% \begin{macro}{\@vspacer}
+% \changes{v1.2f}{1995/05/25}
+%         {(CAR) macros modified to be more efficient}
+% \changes{v1.2f}{1995/05/25}{(CAR) \cs{@restorepar} added to avoid
+%   possible infinite tail recursion caused by a typo in the argument.}
+%    The new code for these commands depends on the following facts:
+%    \begin{itemize}
+%      \item The value of prevdepth is changed only when a box or rule
+%        is created and added to a vertical list;
+%      \item The value of prevdepth is used only when a box is created
+%        and added to a vertical list;
+%      \item The value of prevdepth is always local to the building of
+%        one vertical list.
+%    \end{itemize}
+%    \begin{macrocode}
+\DeclareRobustCommand\vspace{\@ifstar\@vspacer\@vspace}
+\def\@vspace #1{%
+  \ifvmode
+    \vskip #1
+    \vskip\z@skip
+   \else
+     \@bsphack
+     \vadjust{\@restorepar
+              \vskip #1
+              \vskip\z@skip
+              }%
+     \@esphack
+   \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@vspacer#1{%
+  \ifvmode
+    \dimen@\prevdepth
+    \hrule \@height\z@
+    \nobreak
+    \vskip #1
+    \vskip\z@skip
+    \prevdepth\dimen@
+  \else
+    \@bsphack
+    \vadjust{\@restorepar
+             \hrule \@height\z@
+             \nobreak
+             \vskip #1
+             \vskip\z@skip}%
+    \@esphack
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\smallskip}
+% \begin{macro}{\medskip}
+% \begin{macro}{\bigskip}
+%    \begin{macrocode}
+\def\smallskip{\vspace\smallskipamount}
+\def\medskip{\vspace\medskipamount}
+\def\bigskip{\vspace\bigskipamount}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\smallskipamount}
+% \begin{macro}{\medskipamount}
+% \begin{macro}{\bigskipamount}
+%    \begin{macrocode}
+\newskip\smallskipamount \smallskipamount=3pt plus 1pt minus 1pt
+\newskip\medskipamount   \medskipamount  =6pt plus 2pt minus 2pt
+\newskip\bigskipamount   \bigskipamount =12pt plus 4pt minus 4pt
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+% \subsection{Horizontal space (and breaks)}
+%
+% \begin{macro}{\nobreakdashes}
+% \changes{v1.3}{2004/02/04}{(Macro added}
+% \changes{v1.3a}{2004/02/15}{(Added spacefactor setting}
+%    This idea is borrowed from the \textsf{amsmath} package but
+%    here we define a robust command.
+%
+%    This command is a low-level command designed for use only before
+%    hyphens or dashes (such as |-|, |--|, or |---|).
+%
+%    It could probably be better implemented: it may need its own
+%    private token register and temporary command.
+%
+%    Setting the hyphen in a box and then unboxing it means that the
+%    normal penalty will not be added after it---and if the penalty is
+%    not there a break will not be taken (unless an explicit penalty
+%    or glue follows, thus the final \verb=\nobreak=).
+%
+%    Note that even if it is not followed by a `-', it still leaves
+%    vmode and sets the spacefactor; so use it carefully!
+%
+%    \begin{macrocode}
+\DeclareRobustCommand{\nobreakdashes}{%
+  \leavevmode
+  \toks@{}%
+  \def\reserved@a##1{\toks@\expandafter{\the\toks@-}%
+                     \futurelet\@let@token \reserved@b}%
+  \def\reserved@b   {\ifx\@let@token -%
+                        \expandafter\reserved@a
+                     \else
+                       \setbox\z@ \hbox{\the\toks@\nobreak}%
+                       \unhbox\z@
+                       \spacefactor\sfcode`\-
+                     \fi}%
+  \futurelet\@let@token \reserved@b
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\nobreakspace}
+% \changes{v1.2k}{1995/12/04}{(Macro added}
+% \begin{macro}{\@xobeysp}
+% \changes{v1.2t}{1996/09/28}{Moved from ltmiscen.dtx and redefined to
+%                 use \cs{nobreakspace }}
+%
+%   This is a robust command that produces a horizontal space at
+%   which, in paragraph-mode, a line-break is not possible.  We then
+%   define an active |~| to expand to it since this is the documented
+%   behaviour of |~|.  One reason for introducing this is that some
+%   8-bit input encodings have a slot for such a space and we do not
+%   want to use active characters as the \LaTeX{} internal commands.
+%
+%   The braces in the definition of |~| are needed to ensure that a
+%   following space is preserved when reading to/from internal files.
+% \changes{v1.2l}{1995/12/04}{(braces added to definition of tilde}
+%
+%   We need to keep \cs{@xobeysp} as it is widely used; so here it is
+%   let to the non-robust command \cs{nobreakspace }.
+%
+%    \begin{macrocode}
+\DeclareRobustCommand{\nobreakspace}{%
+   \leavevmode\nobreak\ }
+\catcode `\~=13
+\def~{\nobreakspace{}}
+\expandafter\let\expandafter\@xobeysp\csname nobreakspace \endcsname
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+%    \end{macrocode}
+%
+%
+% \begin{macro}{\,}
+%   Used in paragraph mode produces a |\thinspace|.  It has the
+%   ordinary definition in math mode.  Useful for quotes inside quotes,
+%   as in  |``\,`Foo', he said.''|
+% \changes{v1.0o}{1994/05/11}{Use \cs{DeclareRobustCommand}. ASAJ.}
+%    \begin{macrocode}
+\DeclareRobustCommand{\,}{%
+   \relax\ifmmode\mskip\thinmuskip\else\thinspace\fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@}
+%     Placed before a '.', makes it a sentence-ending period.  Does the
+%     right thing for other punctuation marks as well.  Does this by
+%     setting spacefactor to 1000.
+% \changes{v1.3b}{2014/12/30}{\cs{@} discards spaces when moving
+%             (pr3039)(latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\@}{Space after \@}%
+%<*2ekernel|latexrelease>
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\@{\spacefactor\@m{}}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\@}{Space after \@}%
+%<latexrelease>\def\@{\spacefactor\@m}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\hspace}
+% \changes{v1.0o}{1994/05/11}{Use \cs{DeclareRobustCommand}. ASAJ.}
+%    \begin{macrocode}
+\DeclareRobustCommand\hspace{\@ifstar\@hspacer\@hspace}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@hspace}
+% \changes{LaTeX2e}{1993/08/05}
+%    {(RmS) Removed superfluous \cs{leavevmode} in \cs{@hspace} and
+%               \cs{@hspacer}, as suggested by CAR.}
+%    \begin{macrocode}
+\def\@hspace#1{\hskip #1\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@hspacer}
+% extra |\hskip 0pt| added 1985/17/12 to guard
+% against a following |\unskip|
+% |\relax| added 13 Oct 88 for usual \TeX\ lossage
+% replaced both changes by |\hskip\z@skip| 27 Nov 91
+%    \begin{macrocode}
+\def\@hspacer#1{\vrule \@width\z@\nobreak
+                \hskip #1\hskip \z@skip}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\fill}
+%    \begin{macrocode}
+\newskip\fill
+\fill = 0pt plus 1fill
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\stretch}
+%    \begin{macrocode}
+\def\stretch#1{\z@ \@plus #1fill\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%
+% \begin{macro}{\thinspace}
+% \begin{macro}{\negthinspace}
+% \begin{macro}{\enspace}
+%    \begin{macrocode}
+\def\thinspace{\kern .16667em }
+\def\negthinspace{\kern-.16667em }
+\def\enspace{\kern.5em }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\enskip}
+% \begin{macro}{\quad}
+% \begin{macro}{\qquad}
+%    \begin{macrocode}
+\def\enskip{\hskip.5em\relax}
+\def\quad{\hskip1em\relax}
+\def\qquad{\hskip2em\relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\obeycr}
+% \begin{macro}{\restorecr}
+% The following definitions will probably get deleted or moved to
+% compatibility mode soon.
+%
+% \changes{v1.2g}{1995/06/11}
+%                {(CAR) \cs{relax} added to stop silent eating of *.}
+%    \begin{macrocode}
+{\catcode`\^^M=13 \gdef\obeycr{\catcode`\^^M13 \def^^M{\\\relax}%
+    \@gobblecr}%
+{\catcode`\^^M=13 \gdef\@gobblecr{\@ifnextchar
+\@gobble\ignorespaces}}
+\gdef\restorecr{\catcode`\^^M5 }}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+\endinput
+

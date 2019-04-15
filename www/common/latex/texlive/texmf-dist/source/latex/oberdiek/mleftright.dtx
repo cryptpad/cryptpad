@@ -1,0 +1,989 @@
+% \iffalse meta-comment
+%
+% File: mleftright.dtx
+% Version: 2010/09/25 v1.0
+% Info: Math left/right delim. as open/close
+%
+% Copyright (C) 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file mleftright.dtx
+% and the derived files
+%    mleftright.sty, mleftright.pdf, mleftright.ins, mleftright.drv,
+%    mleftright-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/mleftright.dtx
+%    CTAN:macros/latex/contrib/oberdiek/mleftright.pdf
+%
+% Unpacking:
+%    (a) If mleftright.ins is present:
+%           tex mleftright.ins
+%    (b) Without mleftright.ins:
+%           tex mleftright.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{mleftright.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If mleftright.drv is present:
+%           latex mleftright.drv
+%    (b) Without mleftright.drv:
+%           latex mleftright.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex mleftright.dtx
+%       makeindex -s gind.ist mleftright.idx
+%       pdflatex mleftright.dtx
+%       makeindex -s gind.ist mleftright.idx
+%       pdflatex mleftright.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/mleftright.sty
+%    TDS:doc/latex/oberdiek/mleftright.pdf
+%    TDS:doc/latex/oberdiek/test/mleftright-test1.tex
+%    TDS:source/latex/oberdiek/mleftright.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: mleftright 2010/09/25 v1.0 Math left/right delim. as open/close (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: mleftright
+Version: 2010/09/25 v1.0
+
+Copyright (C) 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file mleftright.dtx
+and the derived files
+   mleftright.sty, mleftright.pdf, mleftright.ins, mleftright.drv,
+   mleftright-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{mleftright.ins}{\from{mleftright.dtx}{install}}%
+  \file{mleftright.drv}{\from{mleftright.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{mleftright.sty}{\from{mleftright.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{mleftright-test1.tex}{\from{mleftright.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{mleftright.xml}{\from{mleftright.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     mleftright.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `mleftright.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{mleftright.drv}%
+  [2010/09/25 v1.0 Math left/right delim. as open/close (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{mleftright}[2010/09/25]
+\begin{document}
+  \DocInput{mleftright.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{550}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{mleftright.drv}
+%
+% \title{The \xpackage{mleftright} package}
+% \date{2010/09/25 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% \TeX\ sets subformulas by \cs{left} and \cs{right} as inner formulas
+% with additional surrounding spaces in some situations. This package
+% provides \cs{mleft} and \cs{mright} that call \cs{left} and \cs{right},
+% but the delimiters will act as normal \cs{mathopen} and \cs{mathclose}
+% delimiters without the additional space of an inner formula.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% The package is a result of a thread in the newsgroup \textsf{comp.text.tex}
+% with the subject \textit{spacing after \cs{right}\texttt{)}
+% and before \cs{left}\texttt{)}} \cite{dave}.
+% The problem: \cs{left} and \cs{right} adjust the size of the
+% delimiters automatically. However, \TeX\ treats the whole expression
+% as inner formula. In some circumstances \TeX\ adds extra space
+% before or after an inner formula.
+% Example:
+% \begin{quote}
+%   \thinmuskip=1.5\thinmuskip
+%   \begin{tabular}{@{}l@{\quad$\Rightarrow$\quad}l@{}}
+%     |$\sin(x^2), x$|
+%     & $\sin(x^2), x$\\
+%     |$\sin\left(x^2\right), x$|
+%     & $\sin\left(x^2\right), x$\\
+%   ^^A  \multicolumn{1}{@{}r@{\quad$\Rightarrow$\quad}}{^^A
+%   ^^A    \itshape with exaggerated spacing^^A
+%   ^^A  }
+%   ^^A  & $\thinmuskip=4\thinmuskip
+%   ^^A    \sin\left(x^2\right){,}\mskip.25\thinmuskip x$\\
+%     |$\sin\mleft(x^2\mright), x$|
+%     & $\sin\mleft(x^2\mright), x$\\
+%   \end{tabular}\\*[.5ex]
+%   (\cs{mleft} and \cs{mright} are provided by this package.)
+% \end{quote}
+%
+% In the newsgroup Donald Arseneau answered with clever macros \cite{arseneau}:
+% \begin{quote}
+%\begin{verbatim}
+%\newcommand\lft{\mathopen{}\left}
+%\newcommand\rgt{\aftergroup\mathclose\aftergroup{\aftergroup}\right}
+%\end{verbatim}
+% \end{quote}
+% However one problem remains, a following subscript or superscript
+% is not applied to the right delimiter but the empty
+% \cs{mathclose}.
+% Thus Philipp Stephani provided an improvement \cite{stephani}:
+%\begin{quote}
+%\begin{verbatim}
+%\mathopen{} \mathclose{\left\| A^2 \right\|}_2
+%\end{verbatim}
+%\end{quote}
+% Heiko Oberdiek converted this into macro form \cite{oberdiek}:
+%\begin{quote}
+%\begin{verbatim}
+%\newcommand\lft{\mathopen{}\mathclose\bgroup\left}
+%\newcommand\rgt{\aftergroup\egroup\right}
+%\end{verbatim}
+%\end{quote}
+%
+% The package uses longer macro names \cs{mleft} and \cs{mright}
+% to avoid name clashes. Also it adds some checks for error conditions.
+%
+% \subsection{Use}
+%
+% \begin{declcs}{mleft}\meta{delimL} \dots\unkern\ \cs{mright}\meta{delimR}
+% \end{declcs}
+% Macros \cs{mleft} and \cs{mright} are used in the same way as
+% \cs{left} and \cs{right}. Also \cs{middle} can be used inbetween if
+% \eTeX\ is present.
+%
+% \begin{declcs}{mleftright}
+% \end{declcs}
+% Macro \cs{mleftright} redefines \cs{left} as \cs{mleft} and
+% \cs{right} as \cs{mright}. The redefinition is local to the group.
+%
+% \begin{declcs}{mleftrightrestore}
+% \end{declcs}
+% Macro \cs{mleftright} restores \cs{left} and \cs{right} with
+% the original meaning if they were previously redefined by
+% \cs{mleftright} (also locally).
+%
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@mleftright.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{mleftright}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@mleftright.sty\endcsname
+\ProvidesPackage{mleftright}%
+  [2010/09/25 v1.0 Math left/right delim. as open/close (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname mleftright@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\mleftright@AtEnd{%
+    \mleftright@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\mleftright@AtEnd{%
+  \mleftright@AtEnd
+  \escapechar\the\escapechar\relax
+  \noexpand\endinput
+}
+\escapechar=92 %
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{infwarerr}[2010/04/08]%
+  \RequirePackage{ltxcmds}[2010/04/26]%
+\fi
+%    \end{macrocode}
+%
+%    The original commands \cs{left} and \cs{right}
+%    are saved and later used in \cs{mleft} and
+%    \cs{mright} in order to deal with:
+%    \begin{quote}
+%\begin{verbatim}
+%\let\left\mleft
+%\let\right\mright
+%\end{verbatim}
+%    \end{quote}
+%    \begin{macro}{\mleftright@OrgLeft}
+%    \begin{macrocode}
+\let\mleftright@OrgLeft\left
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\mleftright@OrgRight}
+%    \begin{macrocode}
+\let\mleftright@OrgRight\right
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\mleftright@Def}
+%    Macro \cs{mleftright@Def} defines a macro as robust macro
+%    if \eTeX\ or \LaTeX\ is available.
+%    \begin{macrocode}
+\ltx@IfUndefined{protected}{%
+  \ltx@IfUndefined{DeclareRobustCommand}{%
+    \def\mleftright@Def{\def}%
+  }{%
+    \def\mleftright@Def{\DeclareRobustCommand*}%
+  }%
+}{%
+  \def\mleftright@Def{\protected\def}%
+}
+\edef\mleftright@Def#1{%
+  \noexpand\ltx@IfUndefined{%
+    \noexpand\expandafter\noexpand\ltx@gobble\noexpand\string#1%
+  }{%
+    \expandafter\noexpand\mleftright@Def#1%
+  }{%
+    \noexpand\@PackageError{mleftright}{%
+      Command \noexpand\string#1 already defined%
+    }\noexpand\@ehd
+    \noexpand\ltx@gobble
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    In case of \eTeX\ the group status after the left symbol
+%    is saved and later checked at the beginning of \cs{mright}.
+%    \begin{macrocode}
+\ltx@IfUndefined{currentgrouplevel}{%
+  \catcode38=14 % & = comment
+}{%
+  \catcode38=9 % & = ignore
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\mleftright@GroupLevel}
+%    \begin{macrocode}
+& \def\mleftright@GroupLevel{-1}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\mleftright@WrongGroup}
+%    \begin{macrocode}
+& \def\mleftright@WrongGroup#1(#2){%
+&   \ifnum\mleftright@GroupLevel<\ltx@zero
+&     \@PackageError{mleftright}{%
+&       Missing previous \string\mleft
+&     }\@ehc
+&   \else
+&     \@PackageError{mleftright}{%
+&       Unexpected group status for \string\mright%
+&       \ifnum\mleftright@GroupLevel=#1 %
+&       \else
+&         .\MessageBreak
+&         Group level is #1, %
+&           expected is \mleftright@GroupLevel
+&       \fi
+&       \ifnum16=#2 %
+&       \else
+&         .\MessageBreak
+&         Group type is #2 (%
+&         \ifcase#2 %
+&           bottom level%
+&           \expandafter\expandafter\expandafter\ltx@gobblefour
+&           \expandafter\ltx@gobbletwo
+&         \or simple%
+&         \or hbox%
+&         \or adjusted hbox%
+&         \or vbox%
+&         \or vtop%
+&         \or align%
+&         \or no align%
+&         \or output%
+&         \or math%
+&         \or disc%
+&         \or insert%
+&         \or vcenter%
+&         \or math choice%
+&         \or semi simple%
+&         \or math shift%
+&         \or math left%
+&         \else
+&           unknown%
+&         \fi
+&         \space group),\MessageBreak
+&         expected is 16 (math left group)%
+&       \fi
+&     }\@ehd
+&   \fi
+& }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\mleft}
+%    \begin{macrocode}
+\mleftright@Def\mleft{%
+  \mathopen{}\mathclose\bgroup
+& \edef\mleftright@GroupLevel{\the\numexpr\the\currentgrouplevel+1}%
+  \mleftright@OrgLeft
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\mright}
+%    \begin{macrocode}
+\mleftright@Def\mright{%
+& \ifnum\mleftright@GroupLevel=\currentgrouplevel
+&   \ifnum16=\currentgrouptype
+      \aftergroup\egroup
+&   \else
+&     \expandafter\mleftright@WrongGroup
+&     \the\expandafter\currentgrouplevel
+&     \expandafter(\the\currentgrouptype)%
+&   \fi
+& \else
+&   \expandafter\mleftright@WrongGroup
+&   \the\expandafter\currentgrouplevel
+&   \expandafter(\the\currentgrouptype)%
+& \fi
+  \mleftright@OrgRight
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\mleftright}
+%    \begin{macrocode}
+\mleftright@Def\mleftright{%
+  \let\left\mleft
+  \let\right\mright
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\mleftrightrestore}
+%    \begin{macrocode}
+\mleftright@Def\mleftrightrestore{%
+  \ifx\left\mleft
+    \let\left\mleftright@OrgLeft
+  \fi
+  \ifx\right\mright
+    \let\right\mleftright@OrgRight
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\mleftright@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input mleftright.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/mleftright.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/mleftright.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex mleftright.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   mleftright.sty & tex/generic/oberdiek/mleftright.sty\\
+%   mleftright.pdf & doc/latex/oberdiek/mleftright.pdf\\
+%   test/mleftright-test1.tex & doc/latex/oberdiek/test/mleftright-test1.tex\\
+%   mleftright.dtx & source/latex/oberdiek/mleftright.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk mleftright.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{mleftright.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex mleftright.dtx
+%makeindex -s gind.ist mleftright.idx
+%pdflatex mleftright.dtx
+%makeindex -s gind.ist mleftright.idx
+%pdflatex mleftright.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{mleftright.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='mleftright'>
+  <name>mleftright</name>
+  <caption>Variants of delimiters that act as maths open/close.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    The package defines variants <tt>\mleft</tt> and <tt>\mright</tt>
+    of <tt>\left</tt> and <tt>\right</tt>, that make the delimiters
+    act as <tt>\mathopen</tt> and <tt>\mathclose</tt>.  These commands
+    address spacing difficulties in subformulas.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/mleftright.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/mleftright.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Donald Arsenau:]
+% He provided the main trick and the first macros.
+% \item[Philipp Stephani:]
+% He solved the subscript problem.
+% \end{description}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+% \bibitem{dave}
+%   Dave94705,
+%   \textit{spacing after \cs{right}\texttt{)} and before \cs{left}\texttt{)}},
+%   newsgroup comp.text.tex,
+%   Message-ID: \texttt{\small 5d264909-7c3d-4c9d-9b22-434178b2bf90@g21g2000prn.googlegroups.com},
+%   2010-08-12.
+%   \newblock
+%   {\small\url{http://groups.google.com/group/comp.text.tex/msg/e5b6833da7dc29bf}}
+%
+% \bibitem{arseneau}
+%   Donald Arseneau,
+%   \textit{Re: spacing after \cs{right}\texttt) and before \cs{left}\texttt)},
+%   newsgroup comp.text.tex,
+%   Message-ID: \texttt{\small yfivd6svl8y.fsf@mutant.triumf.ca},
+%   2010-08-30.
+%   \newblock
+%   {\small\url{http://groups.google.com/group/comp.text.tex/msg/e0b2e4386e5d04e4}}
+%
+% \bibitem{stephani}
+%   Philipp Stephani,
+%   \textit{Re: spacing after \cs{right}\texttt) and before \cs{left}\texttt)},
+%   newsgroup comp.text.tex,
+%   Message-ID: \texttt{\small 4c8c8c1e\$0\$6981\$9b4e6d93@newsspool4.arcor-online.net},
+%   2010-09-12.
+%   \newblock
+%   {\small\url{http://groups.google.com/group/comp.text.tex/msg/87ac1f61321de3ef}}
+%
+% \bibitem{oberdiek}
+%   Heiko Oberdiek,
+%   \textit{Re: spacing after \cs{right}\texttt) and before \cs{left}\texttt)},
+%   newsgroup comp.text.tex,
+%   Message-ID: \texttt{\small i6jcc2\$8of\$1@news.eternal-september.org},
+%   2010-09-12.
+%   \newblock
+%   {\small\url{http://groups.google.com/group/comp.text.tex/msg/257aa6119bef878b}}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2010/09/25 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

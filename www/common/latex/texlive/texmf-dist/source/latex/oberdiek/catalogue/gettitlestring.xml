@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='gettitlestring'>
+  <name>gettitlestring</name>
+  <caption>Clean up title references.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    Cleans up the title string (removing <tt>\label</tt> commands) for
+    packages (such as <xref refid='nameref'>nameref</xref>) that
+    typeset such strings.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/gettitlestring.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/gettitlestring.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

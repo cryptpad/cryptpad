@@ -1,0 +1,23 @@
+--- hologo-old.dtx	2013-05-13 16:33:39.000000000 +0200
++++ hologo-new.dtx	2013-05-13 16:31:27.000000000 +0200
+@@ -2689,12 +2689,16 @@
+     \def\HOLOGO@IfCharExists#1{%
+       \ifnum
+           \directlua{%
+-            if font and font.fonts and font.current then %
+-              local f = font.fonts[font.current()]%
++            if luaotfload and luaotfload.aux then %
++              if luaotfload.aux.font_has_glyph(font.current(), \number#1) then %
++                tex.print("1") %
++              end %
++            elseif font and font.fonts and font.current then %
++              local f = font.fonts[font.current()] %
+               if f.characters and f.characters[\number#1] then %
+-                tex.print("1")%
++                tex.print("1") %
+               end %
+-            end%
++            end %
+           }0=\ltx@zero
+         \expandafter\ltx@secondoftwo
+       \else

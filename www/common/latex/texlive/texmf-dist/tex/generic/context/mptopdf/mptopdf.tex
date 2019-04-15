@@ -1,0 +1,178 @@
+%D \module
+%D   [       file=mptopdf,
+%D        version=2011.05.19, % 2000.03.27,
+%D          title=\METAPOST,
+%D       subtitle=conversion to \PDF,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA ADE \& \CONTEXT\ Development Team}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for
+%C details.
+
+%D The file \type {mptopdf} provides a quick way to convert
+%D \METAPOST\ files to \PDF\ using a slightly stripped down
+%D plain \TEX, \PDFTEX, and a few \CONTEXT\ modules.
+%D
+%D First generate a format, which in \WEBC\ looks like:
+%D
+%D \starttyping
+%D pdftex --ini mptopdf
+%D \stoptyping
+%D
+%D or:
+%D
+%D \starttyping
+%D texexec --make --tex=pdftex --format=mptopdf --alone
+%D \stoptyping
+%D
+%D Since this conversion only works with \PDFTEX\ or \PDFETEX,
+%D the session is aborted when another \TEX\ is used. When
+%D finished, the resulting \type {fmt} file should be moved to
+%D the right location.
+%D
+%D The conversion itself is accomplished by:
+%D
+%D \starttyping
+%D pdftex &mptopdf \relax filename.number
+%D \stoptyping
+%D
+%D The \type {\relax} is needed since we don't want to process
+%D the file directly. Instead we pick up the filename using
+%D \type {\everypar}. Since this file is still the first one
+%D we load, although delayed, the jobname is as we expect. So,
+%D at least in \WEBC, the result of the conversion comes
+%D available in the file \type {filename.pdf}. This conversion
+%D process is roughly compatible with:
+%D
+%D \starttyping
+%D texexec --pdf --fig=c --result=filename filename.number
+%D \stoptyping
+%D
+%D This uses \CONTEXT, and is therefore slower. Therefore,
+%D we provide a small \PERL\ script that does a faster job,
+%D using the minimal format. Given that a format is
+%D generated, one can say:
+%D
+%D \starttyping
+%D mptopdf somefile
+%D mptopdf somefile.123
+%D mptopdf mp*.*
+%D \stoptyping
+%D
+%D The results are copied into files named \type
+%D {somefile-number}. This mechanism will also be available
+%D in a next release of \TEXUTIL.
+
+%D The \TEX\ implementation is rather simple, since we use some
+%D generic \CONTEXT\ modules. Because we need a few register
+%D allocation macros, we preload plain \TEX. We don't load
+%D fonts yet.
+
+\input syst-tex.mkii
+
+%D We check for the usage of \PDFTEX, and quit if another
+%D \TEX\ is used.
+
+\ifx\pdfoutput\undefined
+  \message{Sorry, you should use pdf(e)TeX instead.}
+  \expandafter \endinput
+\fi
+
+%D The conversion to \PDF\ is carried out by macros, that
+%D are collected in the file:
+
+\input supp-mis.mkii
+\input supp-pdf.mkii
+\input supp-mpe.mkii  \MPcmykcolorstrue \MPspotcolorstrue
+
+%D We use no output routine.
+
+\output{}
+
+%D Since we need to calculate and set the bounding box,
+%D we definitely don't want to indent paragraphs.
+
+\parindent=0pt
+
+%D We use \type {\everypar} to pick up the filename and
+%D process the \METAPOST\ graphic.
+
+\everypar{\processMPfile}
+
+%D The main macro shows a few \PDFTEX\ primitives. The main
+%D work is done by the macro \type {\convertMPtoPDF} which is
+%D defined in \type supp-pdf}. This macro interprets the
+%D \METAPOST\ file. Close reading of this macro will probably
+%D learn a few (\PDF) tricks. Apart from some path
+%D transformations, which are needed since \PDF\ has a
+%D different vision on paths, the graphic is positioned in
+%D such a way that accuracy in \PDF\ xforms is guaranteed.
+
+\ifx\makeMPintoPDFobject\undefined \newcount\makeMPintoPDFobject \fi
+
+\def\processMPfile#1 %
+  {\pdfoutput=1
+   \pdfpkresolution600
+   \pdfcompresslevel=9
+   \makeMPintoPDFobject=1
+   \hsize=100in
+   \vsize=\hsize
+   \hoffset=-1in
+   \voffset=\hoffset
+   \topskip=0pt
+   \setbox0=\vbox{\convertMPtoPDF{#1}{1}{1}}%
+   \ifdim\wd0<1in \message{[warning: the width  is less than 1in]}\fi
+   \ifdim\ht0<1in \message{[warning: the height is less than 1in]}\fi
+   \pdfpageheight=\ht0
+   \pdfpagewidth=\wd0
+   \box0
+   \bye}
+
+%D The \type {\chardef} forces the converter to build a so
+%D called xform object. This is needed in case the graphic
+%D uses special trickery, like shading.
+
+%D Since \ACROBAT\ has troubles with figures smaller than
+%D 1~inch, we issue a warning. When embedding graphics in
+%D documents, a size less that 1~inch does not harm. In
+%D order to overload runtime directives in the \PDFTEX\
+%D configuration file, we set the offsets and output method
+%D in the macro.
+%D
+%D The resulting \PDF\ file is about as efficient as such a
+%D self contained file can be. However, if needed, this \PDF\
+%D file can be converted to \EPS\ using for instance the
+%D \PDFTOPS\ program (in \WEBC) or \GHOSTSCRIPT.
+
+%D A few helpers:
+
+{\catcode`\.=12
+ \catcode`\p=12
+ \catcode`\t=12
+ \gdef\WITHOUTPT#1pt{#1}}
+
+\def\withoutpt#1%
+  {\expandafter\WITHOUTPT#1}
+
+\def\negatecolorcomponent#1% #1 = \macro
+  {\scratchdimen1pt\advance\scratchdimen-#1\onepoint
+   \ifdim\scratchdimen<\zeropoint\scratchdimen\zeropoint\fi
+   \edef#1{\withoutpt\the\scratchdimen}}
+
+\let\negatedcolorcomponent\firstofoneargument
+
+\def\negatedcolorcomponent#1%
+  {\ifdim\dimexpr1pt-#1pt\relax<\zeropoint
+     0pt%
+   \else
+     \expandafter\withoutpt\the\dimexpr1pt-#1pt\relax
+   \fi}
+
+\def\negatecolorcomponent#1% #1 = \macro
+  {\edef#1{\negatedcolorcomponent{#1}}}
+
+\countdef\realpageno=0 % to satisfy mkiv status reports
+
+\dump

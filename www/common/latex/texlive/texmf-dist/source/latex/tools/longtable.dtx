@@ -1,0 +1,2147 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: longtable.dtx Copyright (C) 1990-2001 David Carlisle
+%
+%<*dtx>
+          \ProvidesFile{longtable.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+%<package>\ProvidesPackage{longtable}
+%<driver> \ProvidesFile{longtable.drv}
+% \fi
+%         \ProvidesFile{longtable.dtx}
+          [2014/10/28 v4.11 Multi-page Table package (DPC)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{longtable}
+\begin{document}
+\DocInput{longtable.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{longtable.dtx}
+% \title{The \textsf{longtable} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{David Carlisle\thanks{The new algorithm for aligning `chunks'
+% of a table used in version 4 of this package was devised coded
+% and documented by David Kastrup.}}
+% \date{\filedate}
+%
+% \let\package\textsf
+% \let\env\textsf
+% \providecommand\finalclearpage{\clearpage}
+%
+%  \MaintainedByLaTeXTeam{tools}
+%  \maketitle
+%
+% \begin{abstract}
+%  This package defines the \env{longtable} environment, a multi-page
+%  version of \env{tabular}.
+% \end{abstract}
+%
+% \DeleteShortVerb{\|}
+% \MakeShortVerb{\"}
+%
+% \changes{v0.00}{1989/11/06}
+%    {`Version 0' distributed as longtab.sty
+%      always used just one chunk for the whole table}
+%
+% \changes{v1.00}{1990/12/20}
+%    {Initial version}
+%
+% \changes{v2.00}{1991/06/17}
+%    {Support NFSS and array.sty}
+%
+% \changes{v3.00}{1992/03/16}
+%    {New implementation. tables may now start anywhere on the page.}
+%
+% \changes{v3.01}{1992/04/06}
+%    {(Michel Goossens) If a chunk ends on a line in which the first
+%     entry is empty, weird errors occur. Added special begin and end
+%     groups, (\cs{ifnum}0 ) stuff as  explained in Appendix D.}
+%
+% \changes{v3.02}{1992/04/09}
+%    {(Michel Goossens) Longtable fails if the table counter is reset
+%     during a document. Now use an internal counter, but still
+%     increment table so \cs{caption} and \cs{label} work out right.}
+%
+% \changes{v3.03}{1992/06/25}
+%    {Add \cs{@ifundefined\{reset@font\}} so that the documentation may
+%     be processed with old versions of \LaTeX.}
+% \changes{v3.03}{1992/06/25}
+%    {Modify the treatment of \cs{d@llar} to match the new versions of
+%     Mittelbach's array.sty (array.sty v2.0h)}
+%
+% \changes{v3.04}{1992/11/12}
+%    {(Jean-Pierre Drucbert) Longtable failed when used with
+%     \cs{includeonly}.}
+% \changes{v3.04}{1992/11/12}
+%    {Fix bug which stopped \cs{kill} working correctly in headings.}
+% \changes{v3.04}{1992/11/12}
+%    {(Graham Gough) Made \cs{setlongtables} issue a warning message.}
+% \changes{v3.04}{1992/11/12}
+%    {(Sebastian Rahtz) longtable ran out of memory on really long
+%     tables. Another bug introduced in V3.}
+%
+% \changes{v3.05}{1992/11/20}
+%   {(Juergen Peus) Table was hard coded into the captions, Now the
+%     captions use \cs{fnum@table}, so \cs{tablename} will be used.}
+%
+% \changes{v3.06}{1993/01/21}
+%    {(Ingo Hoffmann) longtable fails with letter style.
+%     The table counter is not defined, and the .aux file is not used in
+%     the same way. This version will use a .lta file for letter style.}
+%
+% \changes{v3.07}{1993/06/09}
+%    {Allow the \LaTeX\ syntax \cs{setcounter}\{LTchunksize\}\{10\}}
+%
+% \changes{v3.08}{1993/06/09}
+%     {Update for \LaTeXe}
+%
+% \changes{v3.09}{1994/03/15}
+%     {New ltxdoc style}
+%
+% \changes{v3.11}{1994/05/22}
+%      {Option handling added, new style errors and warnings}
+%
+% \changes{v3.12}{1994/06/30}
+%      {Remove special letter class handling from v3.06, not needed for
+%      new letter class}
+%
+% \changes{v4.00}{1996/04/08}
+%      {(DK) New algorithm to align chunks devised and coded by David
+%      Kastrup}
+%
+% \changes{v4.02}{1996/04/16}
+%      {(DPC/DK) documentation improvements}
+%
+% \changes{v4.06}{1997/06/28}
+%      {(DK) new email address}
+%
+% \CheckSum{1045}
+%
+%
+% \makeatletter
+% \def\@oddfoot{\normalfont\rmfamily\dotfill Page \thepage\dotfill}
+% \def\@oddhead{\dotfill{\normalfont\ttfamily longtable.sty}\dotfill}
+% \def\ps@titlepage{\let\@oddhead\@empty}
+% \makeatother
+%
+%
+% \setlength\LTleft\parindent
+% \setlength\LTright\fill
+% \setcounter{LTchunksize}{10}
+%
+% \def\v{\char`}
+%
+% ^^A \vbox to 100pt makes the page breaks the same on the first run.
+% \changes{v3.08}{1993/06/09}
+%     {No need to use \cs{vbox} with \LaTeXe\ minipage}
+% \noindent\begin{minipage}[t][130pt]{\textwidth}
+% \listoftables
+% \end{minipage}
+%
+% \section{Introduction}
+%
+% The \package{longtable} package defines a new environment,
+% \DescribeEnv{longtable}
+% \env{longtable}, which has most of the features of the \env{tabular}
+% environment, but produces tables which may be broken by \TeX's
+% standard page-breaking algorithm. It also shares some features with
+% the \env{table} environment. In particular it uses the same counter,
+% \texttt{table}, and has a similar "\caption" command. Also, the
+% standard "\listoftables" command lists tables produced by either the
+% \env{table} or \env{longtable} environments.
+%
+% The following example uses most of the features of the \env{longtable}
+% environment. An edited listing of the input for this example appears
+% in Section~\ref{listing}.
+%
+% \textbf{Note:} Various parts of the following table will
+% \textbf{not} line up correctly until this document has been run
+% through \LaTeX\ several times.  This is a characteristic feature of
+% this package, as described below.
+%
+% \begin{longtable}{@{*}r||p{1in}@{*}}
+% KILLED & LINE!!!! \kill
+% \caption
+% [An optional table caption (used in the list of tables)]
+% {A long table\label{long}}\\
+% \hline\hline
+% \multicolumn{2}{@{*}c@{*}}%
+%      {This part appears at the top of the table}\\
+% \textsc{First}&\textsc{Second}\\
+% \hline\hline
+% \endfirsthead
+% \caption[]{(continued)}\\
+% \hline\hline
+% \multicolumn{2}{@{*}c@{*}}%
+%       {This part appears at the top of every other page}\\
+% \textbf{First}&\textbf{Second}\\
+% \hline\hline
+% \endhead
+% \hline
+% This goes at the&bottom.\\
+% \hline
+% \endfoot
+% \hline
+% These lines will&appear\\
+% in place of the & usual foot\\
+% at the end& of the table\\
+% \hline
+% \endlastfoot
+% \env{longtable}  columns  are specified& in the \\
+% same way as  in the \env{tabular}& environment.\\
+% "@{*}r||p{1in}@{*}"& in this case.\\
+% Each row ends with a& "\\" command.\\
+% The "\\"  command  has an& optional\\
+% argument, just as in& the\\
+%  \env{tabular}&environment.\\[10pt]
+% See the  effect  of "\\[10pt]"&?\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Also  "\hline"  may be used,&  as in \env{tabular}.\\
+% \hline
+% That  was a "\hline"&.\\
+% \hline\hline
+% That  was "\hline\hline"&.\\
+% \multicolumn{2}{||c||}%
+% {This is a \ttfamily\v\\multicolumn\v{2\v}\v{||c||\v}}\\
+% If a  page break  occurs at a "\hline" then& a line is drawn\\
+% at the bottom of one  page  and at the& top of the next.\\
+% \hline
+% The  "[t] [b] [c]"  argument of \env{tabular}& can  not be used.\\
+% The optional argument may be  one of& "[l] [r] [c]"\\
+% to specify whether  the  table  should be& adjusted\\
+% to the  left, right& or centrally.\\
+% \hline\hline
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Some lines may take up a lot of space, like this: &
+%     \raggedleft This last column is a ``p'' column so this
+%     ``row'' of the table can take up several lines. Note however that
+%     \TeX\ will  never break a page within such a row. Page breaks only
+%     occur between rows of the table or at "\hline" commands.
+%     \tabularnewline
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% Lots of lines& like this.\\
+% \hline
+% Lots\footnote{This is a footnote.} of lines& like this.\\
+% Lots   of   lines& like this\footnote{\env{longtable} takes special
+%     precautions, so that footnotes may also be used in `p' columns.}\\
+% \hline
+% Lots of lines& like this.\\
+% Lots of lines& like this.
+% \end{longtable}
+%
+% \section{Chunk Size}
+%
+% \DescribeMacro{LTchunksize}
+% In order to \TeX\ multi-page tables, it is necessary to break up the
+% table into smaller chunks, so that \TeX\ does  not have to keep
+% everything in memory at one time. By default \env{longtable} uses 20
+% rows per chunk, but this can be set by the user, with e.g.,
+% "\setcounter{LTchunksize}{10}".\footnote
+%    {You can also use the plain \TeX\ syntax
+%    {\ttfamily\v\\LTchunksize=10.}}
+% These chunks do not affect page breaking,
+% thus if you are using a \TeX\ with a lot of memory, you can set
+% "LTchunksize" to be several pages of the table. \TeX\ will run
+% faster with a large "LTchunksize". However, if necessary,
+% \env{longtable} can work with "LTchunksize" set to 1, in which case
+% the memory taken up is negligible.
+% Note that if you use the commands for setting the table head or foot
+% (see below), the "LTchunksize" must be at least  as large as the
+% number of rows in each of the head or foot sections.
+%
+% This document specifies "\setcounter{LTchunksize}{10}".  If you look
+% at the previous table, after the \emph{first} run of \LaTeX\  you will
+% see that various parts of the table do not line up.
+% \LaTeX\ will also have printed a warning that the column
+% widths had changed. \env{longtable} writes information onto the
+% ".aux" file, so that it can line up the different chunks.
+% Prior to version~4 of this package, this information was not used
+% unless a "\setlongtables" command was issued,  however, now the
+% information is always used, using a new algorithm\footnote{Due to
+% David Kastrup.} and so "\setlongtables" is no longer needed. It is
+% defined (but does nothing) for the benefit of old documents that
+% use it.
+%
+% \begin{table}
+% \centering
+% \begin{tabular}{||l|l|l||}
+% \hline\hline
+% A&\env{tabular}& environment\\
+% \hline
+% within&a floating&\env{table}\\
+% \hline\hline
+% \end{tabular}
+% \caption{A floating table}
+% \end{table}
+%
+% \section{Captions and Headings}
+%
+% At the start of the table one may specify lines which are to appear at
+% the top of every page (under the headline, but before the other lines
+% of the table).
+% \DescribeMacro{\endhead}
+% The lines are entered as normal, but the last "\\" command is
+% replaced by a "\endhead" command.
+% \DescribeMacro{\endfirsthead}
+% If the first page should have a different heading, then this should be
+% entered in the same way, and terminated with the "\endfirsthead"
+% command. The "LTchunksize" should be at least as large as the
+% number of rows in the heading.
+% \DescribeMacro{\endfoot}
+% There are also "\endfoot" and "\endlastfoot"
+%\DescribeMacro{\endlastfoot}
+% commands which are used in the same way (at the \emph{start} of the
+% table) to specify rows (or an "\hline") to appear at the bottom of
+% each page. In certain situations, you may want to place lines which
+% logically belong in the table body at the end of the \env{firsthead},
+% or the beginning of the \env{lastfoot}. This helps to control which
+% lines appear on the first and last page of the table.
+%
+% \DescribeMacro{\caption}%
+% The "\caption{...}" command is essentially equivalent to\\
+% "\multicolumn{n}{c}{\parbox{\LTcapwidth}{...}}"\\
+% where \texttt{n} is the number of columns of the table. You may set
+% the width of the caption with a command such as
+% "\setlength{\LTcapwidth}{2in}"
+% in the preamble of your document. The default is 4in. "\caption" also
+% writes the information to produce an entry in the list of tables. As
+% with the "\caption" command in the \env{figure} and \env{table}
+% environments, an optional argument specifies the text to appear in the
+% list of tables if this is different from the text to appear in the
+% caption. Thus the caption for table \ref{long} was specified as
+% {\ttfamily
+%  "\caption"[An optional table caption
+%             (used in the list of tables)]\v{A long
+%  table"\label{long}"\v}}.
+%
+% You may wish the caption on later pages to be different to that on the
+% first page. In this case put the "\caption" command in the first
+% heading, and put a subsidiary caption in a "\caption[]" command in
+% the main heading. If the optional argument to "\caption" is empty,
+% no entry is made in the list of tables. Alternatively, if you do not
+% want the table number to be printed each time, use the "\caption*"
+% command.
+%
+% The captions are set based on the code for the \package{article}
+% class.
+% If you have redefined the standard "\@makecaption" command to produce
+% a different format for the captions, you may
+% need to make similar changes to the \package{longtable} version,
+% "\LT@makecaption". See the code section for more details.
+%
+% A more convenient method of customising captions is given by the
+% \package{caption(2)} package, which provides commands for customising
+% captions, and arranges that the captions in standard environments, and
+% many environments provided by packages (including \package{longtable})
+% are modified in a compatible manner.
+%
+% You may use the "\label" command so that you can cross reference
+% \env{longtable}s with "\ref". Note however, that the "\label" command
+% should not be used in a heading that may appear more than once. Place
+% it either in the \env{firsthead}, or in the body of the table. It
+% should not be the \emph{first} command in any entry.
+%
+% \section{Multicolumn entries}
+%
+% The "\multicolumn" command may be used in \env{longtable} in exactly
+% the same way as for \env{tabular}. So you may want to skip this
+% section, which is rather technical, however coping with "\multicolumn"
+% is one of the main problems for an environment such as
+% \env{longtable}. The main effect that a user will see is that
+% certain combinations of "\multicolumn" entries will result in a
+% document needing more runs of \LaTeX\ before the various `chunks' of
+% a table align.
+%
+% The examples in this section are set with "LTchunksize" set to the
+% minimum value of one, to demonstrate the effects when "\multicolumn"
+% entries occur in different chunks.
+%
+% \begin{table}[!htp]
+% \begin{center}
+% \LTchunksize=1
+%  \makeatletter
+%
+%  \global\let\LT@save@row\relax
+%  \let\LT@warn\@gobble
+%  \let\LT@final@warn\relax
+%
+%  \newcommand\ltexample[1]{
+%  \stepcounter{LT@tables}
+%  \expandafter\let\csname LT@\romannumeral\c@LT@tables\endcsname
+%                   \LT@save@row
+%  \addtocounter{LT@tables}{-1}
+%  \begin{longtable}{|c|c|c|}
+%  \caption{A difficult {\cs{multicolumn}} combination:
+%                                pass #1\label{pass#1}}\\
+%    \hline
+%    1&2&3\\
+%    \multicolumn{3}{|c|}{wide multicolumn spanning 1--3}\\
+%    \multicolumn{2}{|c|}{multicolumn 1--2}&3\\
+%    wide 1&2&3\\
+%    \hline
+% \end{longtable}
+% }
+%
+% \ltexample{1}
+%
+% \ltexample{2}
+%
+% \ltexample{3}
+%
+% \ltexample{4}
+%
+% \end{center}
+% \end{table}
+%
+% Consider Table~\ref{pass1}.
+% In the second chunk, \env{longtable}  sees the wide
+% multicolumn entry.  At this point it thinks that the first two
+% columns are very narrow. All
+% the width of the multicolumn entry is assumed to be in the
+% third column. (This is a `feature' of \TeX's primitive "\halign"
+% command.) \env{longtable} then passes the information that there
+% is a wide third column to the later chunks, with the result that the
+% first pass over the table is too wide.
+%
+% If the `saved row' from this first pass was re-inserted into the
+% table on the next pass, the table would line up in two passes, but
+% would be much two wide.
+%
+% \DescribeMacro{\kill}%
+% The solution to this problem used in Versions 1~and~2, was to use a
+% "\kill" line. If a line is "\kill"ed, by using "\kill" rather than
+% "\\" at the end of the line, it is used in calculating
+% column widths, but removed from the final table. Thus entering
+% "\kill"ed copies of the last two rows before the wide multicolumn
+% entry would  mean that "\halign" `saw' the wide entries in the first
+% two columns, and so would not widen the third column by so much to
+% make room for the multicolumn entry.
+%
+% In Version~3, a new solution was introduced. If the saved row in
+% the ".aux" file was not being used, \env{longtable} used a special
+% `draft' form of "\multicolumn", this modified the definition, so the
+% spanning entry was never considered to be wider than the columns it
+% spanned. So after the first pass, the ".aux" file stored the
+% widest normal entry for each column, no column was widened due to
+% "\span"ned columns. By default \env{longtable} ignored the ".aux"
+% file, and so each run of \LaTeX\ was considered a first pass. Once the
+% "\setlongtables" declaration was given, the saved row in the ".aux"
+% file, and the proper definition of "\multicolumn" were used. If any
+% "\multicolumn" entry caused one of the columns to be widened, this
+% information could not be passed back to earlier chunks, and so the
+% table would not correctly line up until the third pass. This algorithm
+% always converged in three passes as described above, but in examples
+% such as the ones in Tables \ref{pass1}--\ref{pass4}, the final
+% widths were not optimal as the width of column~2, which is
+% determined by a "\multicolumn" entry was not known when the final
+% width for column~3 was fixed, due to the fact that \emph{both}
+% "\multicolumn" commands were switched from `draft' mode to `normal'
+% mode at the same time.
+%
+% Version~4 alleviates the problem considerably.
+% The first pass of the table will
+% indeed have the third column much too wide. However, on the next pass
+% \env{longtable} will notice the error and reduce the column width
+% accordingly. If this has to propagate to chunks before the
+% "\multicolumn" one, an additional pass will, of course, be
+% needed. It is possible to construct tables where this rippling up of
+% the correct widths takes several passes to `converge' and produce a
+% table with all chunks aligned. However in
+% order to need many passes one needs to construct a table with
+% many overlapping "\multicolumn" entries, all being wider than the
+% natural widths of the columns they span, and all occurring in
+% different chunks. In the typical case the algorithm will converge
+% after three or four passes, and, the benefits of not needing to edit
+% the document before the final run to add "\setlongtables", and the
+% better choice of final column widths in the case of multiple
+% "\multicolumn" entries  will hopefully more than pay for the extra
+% passes that may possibly be needed.
+%
+% So Table~\ref{pass1} converges after 4~passes, as seen in
+% Table~\ref{pass4}.
+%
+% You can still speed the convergence by introducing judicious "\kill"
+% lines, if you happen to have constellations like the above.
+%
+% If you object even to \LaTeX-ing a file twice, you should
+% make the first line of
+% every \env{longtable} a "\kill" line that contains the widest entry
+% to be used in each column. All chunks will then line up on the first
+% pass.
+%
+% \section{Adjustment}
+%
+% The optional argument of \env{longtable} controls the
+% horizontal alignment of the table. The possible options are "[c]",
+% "[r]" and "[l]", for  centring,
+% right  and left adjustment, respectively.
+% \DescribeMacro{\LTleft}
+% Normally centring is the default, but this document specifies
+% \DescribeMacro{\LTright}
+%\begin{verbatim}
+% \setlength\LTleft\parindent
+% \setlength\LTright\fill
+%\end{verbatim}
+% in the preamble,
+%  which means that the tables are set flush left, but
+% indented by the usual paragraph indentation. Any lengths can be
+% specified for these two parameters, but at least one of them should be
+% a rubber length so that it fills up the width of the page, unless
+% rubber lengths are added between the columns using the
+% "\extracolsep" command.
+% For instance
+%\begin{verbatim}
+%  \begin{tabular*}{\textwidth}{@{\extracolsep{...}}...}
+%\end{verbatim}
+% produces a full width table, to get a similar effect with
+% \env{longtable} specify
+%\begin{verbatim}
+% \setlength\LTleft{0pt}
+% \setlength\LTright{0pt}
+% \begin{longtable}{@{\extracolsep{...}}...}
+%\end{verbatim}
+%
+% \section{Changes}
+%
+% This section highlights the major changes since version~2. A more
+% detailed change log may be produced at the end of the code listing
+% if the "ltxdoc.cfg" file specifies
+%\begin{verbatim}
+%  \AtBeginDocument{\RecordChanges}
+%  \AtEndDocument{\PrintChanges}
+%\end{verbatim}
+%
+% Changes made between versions 2 and 3.
+% \begin{itemize}
+% \item The mechanism for adding the head and foot of the table has been
+% completely rewritten. With this new mechanism, \env{longtable} does
+% not need to issue a "\clearpage" at the start of the table, and so the
+% table may start half way down a page. Also the "\endlastfoot" command
+% which could not safely be implemented under the old scheme, has been
+% added.
+% \item \env{longtable} now issues an error if started in the scope of
+% "\twocolumn", or the \env{multicols} environment.
+% \item The separate documentation file "longtable.tex" has been
+% merged with the package file, "longtable.dtx" using Mittelbach's
+% \package{doc} package.
+% \item Support for footnotes has been added. Note however that
+% "\footnote" will not work in the `head' or `foot' sections of the
+% table. In order to put a footnote in those sections (e.g., inside a
+% caption), use "\footnotemark" at that point, and "\footnotetext"
+% anywhere in the table \emph{body} that will fall on the same page.
+% \item The treatment of "\multicolumn" has changed, making
+% "\kill" lines unnecessary, at the price of sometimes requiring a
+% third pass through \LaTeX.
+% \item The "\newpage" command now works inside a \env{longtable}.
+% \end{itemize}
+%
+% Changes made between versions 3 and 4.
+% \begin{itemize}
+% \item A new algorithm is used for aligning chunks. As well as the
+% widest width in each column, \package{longtable} remembers which
+% chunk produced this maximum. This allows it to check that the
+% maximum is still achieved in later runs. As \package{longtable} can
+% now deal with columns shrinking as the file is edited, the
+% "\setlongtables" system is no longer needed and is disabled.
+%
+% \item An extra benefit of the new algorithm's ability to deal with
+% `shrinking' columns is that it can give better (narrower) column
+% widths in the case of overlapping "\multicolumn" entries in
+% different chunks than the previous algorithm produced.
+%
+% \item The `draft' multicolumn system has been removed, along with
+% related commands such as "\LTmulticolumn".
+%
+% \item The disadvantage of the new algorithm is that it can take more
+% passes. The theoretical maximum is approximately twice the length
+% of a `chain' of columns with overlapping "\multicolumn" entries,
+% although in practice it usually converges as fast as the old
+% version. (Which always converged in three passes once
+% "\setlongtables" was  activated.)
+%
+% \item "\\*" and "\nopagebreak" commands may be used to control page
+%  breaking.
+%
+% \end{itemize}
+%
+%
+% \section{Summary}
+%
+% ^^A Allow the table to stick into the left margin.
+% \setlength{\LTleft}{0pt plus 1fill minus 1fill}
+% \setlength{\LTright}{0pt}
+%
+% \begin{longtable}{@{}l@{\hspace{10pt}}p{.8\linewidth}@{}}
+% \caption[A summary of \env{longtable} commands]%
+%         {\normalsize A summary of \env{longtable} commands}\\
+% \multicolumn{2}{c}{\textbf{Parameters}}\\*
+% \hline
+% "\LTleft"&
+%     Glue to the left of the table.           \hfill("\fill")\\
+% "\LTright"&
+%     Glue to the right of the table.          \hfill("\fill")\\
+% "\LTpre"&
+%     Glue before the the table.      \hfill("\bigskipamount")\\
+% "\LTpost"&
+%     Glue after the the table.       \hfill("\bigskipamount")\\
+% "\LTcapwidth"&
+%     The width of a parbox containing the caption.\hfill(4in)\\
+% "LTchunksize"&
+%     The number of rows per chunk.                 \hfill(20)\\[5pt]
+% \multicolumn{2}{c}{\textbf{Optional
+%      arguments to} \ttfamily\v\\begin\v{longtable\v}}\\*
+% \hline
+% \it none& Position as specified by "\LTleft" and "\LTright".\\
+% "[c]"&   Centre the table.\\
+% "[l]"&   Place the table flush left.\\
+% "[r]"&   Place the table flush right.\\[5pt]
+% \pagebreak[2]
+% \multicolumn{2}{c}{\textbf{Commands
+%                     to end table rows}}\\*
+% \hline
+% "\\"&
+%     Specifies the end of a row\\
+% "\\"\oarg{dim}& Ends row, then adds vertical space
+%     (as in the \env{tabular} environment).\\
+% "\\*"&
+%     The same as "\\" but disallows a page break after the row.\\
+% "\tabularnewline"&
+%     Alternative to "\\" for use in the scope of "\raggedright" and
+%     similar commands that redefine "\\".\\
+% "\kill"&
+%     Row is `killed', but is used in calculating widths.\\
+% "\endhead"&
+%     Specifies rows to appear at the top of every page.\\
+% "\endfirsthead"&
+%     Specifies rows to appear at the top the first page.\\
+% "\endfoot"&
+%     Specifies rows to appear at the bottom of every page.\\
+% "\endlastfoot"&
+%     Specifies rows to appear at the bottom of the last page.\\[5pt]
+% \multicolumn{2}{c}{\textbf{\env{longtable} caption commands}}\\*
+% \hline
+% "\caption"\marg{caption}&
+%     Caption `Table ?: \meta{caption}', and a `\meta{caption}'
+%     entry in the list of tables.\\
+% "\caption"\oarg{lot}\marg{caption}&
+%     Caption `Table ?: \meta{caption}', and a `\meta{lot}'
+%     entry in the list of tables.\\
+% "\caption[]"\marg{caption}&
+%     Caption `Table ?: \meta{caption}',
+%     but no entry in the list of tables.\\
+% "\caption*"\marg{caption}&
+%     Caption `\meta{caption}', but no entry in the list of tables.\\[5pt]
+% \multicolumn{2}{c}{%^^A
+%        \textbf{Commands available at the start of a row}}\\*
+% \hline
+% "\pagebreak"&
+%     Force a page break.\\*
+% "\pagebreak"\oarg{val}& A `hint' between 0 and 4
+%  of the desirability  of a break.\\
+% "\nopagebreak"& Prohibit a page break.\\*
+% "\nopagebreak"\oarg{val}& A `hint' between 0 and 4 of the undesirability
+%    of a break.\\
+% "\newpage"&
+%     Force a page break.\\[5pt]
+% \multicolumn{2}{c}{\textbf{Footnote commands
+%                      available inside \env{longtable}}}\\*
+% \hline
+% "\footnote"&
+%     Footnotes, but may not be used in the table head \& foot.\\*
+% "\footnotemark"&
+%     Footnotemark, may be used in the table head \& foot.\\*
+% "\footnotetext"&
+%     Footnote text, use in the table body.\\[5pt]
+% \multicolumn{2}{c}{\textbf{Setlongtables}}\\
+% \hline
+% "\setlongtables"&  Obsolete command. Does nothing now.
+% \end{longtable}
+%
+%
+% \finalclearpage
+% \section{Verbatim highlights from Table \protect\ref{long}}
+% \label{listing}
+% \begingroup\catcode`\/=0
+% \begin{verbatim}
+% \begin{longtable}{@{*}r||p{1in}@{*}}
+% KILLED & LINE!!!! \kill
+% \caption[An optional table caption /ldots]{A long table\label{long}}\\
+% \hline\hline
+% \multicolumn{2}{@{*}c@{*}}%
+%      {This part appears at the top of the table}\\
+% \textsc{First}&\textsc{Second}\\
+% \hline\hline
+% \endfirsthead
+% \caption[]{(continued)}\\
+% \hline\hline
+% \multicolumn{2}{@{*}c@{*}}%
+%       {This part appears at the top of every other page}\\
+% \textbf{First}&\textbf{Second}\\
+% \hline\hline
+% \endhead
+% \hline
+% This goes at the&bottom.\\
+% \hline
+% \endfoot
+% \hline
+% These lines will&appear\\
+% in place of the & usual foot\\
+% at the end& of the table\\
+% \hline
+% \endlastfoot
+% \env{longtable}  columns  are specified& in the \\
+% same way as  in the \env{tabular}& environment.\\
+% /ldots
+% \multicolumn{2}{||c||}{This is a /ldots}\\
+% /ldots
+% Some lines may take/ldots&
+%     \raggedleft This last column is a ``p'' column/ldots
+%     \tabularnewline
+% /ldots
+% Lots of lines& like this.\\
+% /ldots
+% \hline
+% Lots\footnote{/ldots} of lines& like this.\\
+% Lots   of   lines& like this\footnote{/ldots}\\
+% \hline
+% Lots of lines& like this.\\
+% /ldots
+% \end{longtable}
+% \end{verbatim}
+% \endgroup
+%
+% \StopEventually{}
+%
+% \finalclearpage
+% \section{The Macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Initial code}
+%
+% Before declaring the package options, we must define some defaults
+% here.
+%
+%  \begin{macro}{\LT@err}
+% The error generating command
+%    \begin{macrocode}
+\def\LT@err{\PackageError{longtable}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\LT@warn}
+% The warning generating command
+%    \begin{macrocode}
+\def\LT@warn{\PackageWarning{longtable}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\LT@final@warn}
+% \changes{v4.04}{1996/05/24}
+%      {Macro added}
+% If any \env{longtable}s have not aligned, generate a warning at the
+% end of the run at "\AtEndDocument".
+%    \begin{macrocode}
+\def\LT@final@warn{%
+  \AtEndDocument{%
+    \LT@warn{Table \@width s have changed. Rerun LaTeX.\@gobbletwo}}%
+  \global\let\LT@final@warn\relax}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \subsection{Options}
+%
+% The first two options deal with error handling. They are compatible
+% with the options used by the \texttt{tracefnt} package.
+%
+%  \begin{macro}{errorshow}
+% \emph{Only} show errors on the terminal. `warnings' are just sent to
+% the log file.
+% \changes{v3.14}{1995/04/25}
+%      {Change string from LT to longtable}
+%    \begin{macrocode}
+\DeclareOption{errorshow}{%
+  \def\LT@warn{\PackageInfo{longtable}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{pausing}
+% \changes{v3.14}{1995/04/25}
+%      {Change string from LT to longtable}
+% \changes{v3.15}{1995/06/15}
+%      {Use single hash for latex/1557}
+% Make every warning message into an error so \TeX\ stops.
+% May be useful for debugging.
+%    \begin{macrocode}
+\DeclareOption{pausing}{%
+  \def\LT@warn#1{%
+    \LT@err{#1}{This is not really an error}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{set}
+%  \begin{macro}{final}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) make set and final options no op}
+% The next options are just alternative syntax for the
+% "\setlongtables" declaration.
+%    \begin{macrocode}
+\DeclareOption{set}{}
+\DeclareOption{final}{}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+% \subsection{User Settable Parameters}
+%
+% \begin{macro}{\LTleft}
+% \begin{macro}{\LTright}
+% Glue to the left and right of the table, default "\fill" (ie
+% centred).
+%    \begin{macrocode}
+\newskip\LTleft       \LTleft=\fill
+\newskip\LTright      \LTright=\fill
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\LTpre}
+% \begin{macro}{\LTpost}
+% Glue before and after the \env{longtable}.  "\bigskip" by default.
+%    \begin{macrocode}
+\newskip\LTpre        \LTpre=\bigskipamount
+\newskip\LTpost       \LTpost=\bigskipamount
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\LTchunksize}
+% Chunk size (The number of rows taken per "\halign"). Default 20.
+%    \begin{macrocode}
+\newcount\LTchunksize \LTchunksize=20
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@LTchunksize}
+% Added in V3.07 to allow the \LaTeX\ syntax
+% "\setcounter{LTchunksize}{10}".
+%    \begin{macrocode}
+\let\c@LTchunksize\LTchunksize
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LTcapwidth}
+% Width of the "\parbox" containing the caption. Default 4in.
+%    \begin{macrocode}
+\newdimen\LTcapwidth  \LTcapwidth=4in
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Internal Parameters}
+%
+% \begin{macro}{\LT@head}
+% \begin{macro}{\LT@firsthead}
+% \begin{macro}{\LT@foot}
+% \begin{macro}{\LT@lastfoot}
+% Boxes for the table head and foot.
+%    \begin{macrocode}
+\newbox\LT@head
+\newbox\LT@firsthead
+\newbox\LT@foot
+\newbox\LT@lastfoot
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\LT@cols}
+% Counter for number of columns.
+%    \begin{macrocode}
+\newcount\LT@cols
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@rows}
+% Counter for rows up to chunksize.
+%    \begin{macrocode}
+\newcount\LT@rows
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@LT@tables}
+% Counter for the tables, added in V3.02. Previous versions just used
+% the \LaTeX\ counter "table", but this fails if "table" is
+% reset during a document, eg \package{report} class resets it every
+% chapter.
+%
+% This was changed from "\newcount\LT@tables" in V3.04. \LaTeX\ counters
+% are preserved correctly when "\includeonly" is used. In the rest of
+% the file "\LT@tables" has been replaced by "\c@LT@tables" without
+% further comment.
+%    \begin{macrocode}
+\newcounter{LT@tables}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@LT@chunks}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) Chunk counter added}
+% We need to count through the chunks of our tables from Version~4 on.
+%    \begin{macrocode}
+\newcounter{LT@chunks}[LT@tables]
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@table}
+% \begin{macro}{\fnum@table}
+% \begin{macro}{\tablename}
+% If the "table" counter is not defined (eg in "letter" style), define
+% it. (Added in V3.06.)
+%    \begin{macrocode}
+\ifx\c@table\undefined
+  \newcounter{table}
+  \def\fnum@table{\tablename~\thetable}
+\fi
+\ifx\tablename\undefined
+  \def\tablename{Table}
+\fi
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\LT@out}
+% In a normal style, "longtable" uses the ".aux" file to record the
+% column widths. With "letter.sty", use a separate ".lta" file.
+% (Added in V3.06.)
+%
+% Not needed for new letter class.
+%\begin{verbatim}
+%\ifx\startlabels\undefined
+%  \let\@auxout\@auxout
+%\else
+%  {\@input{\jobname.lta}}%
+%  \newwrite\@auxout
+%  \immediate\openout\@auxout=\jobname.lta
+%\fi
+%\end{verbatim}
+% \end{macro}
+%
+% \begin{macro}{\LT@p@ftn}
+% Temporary storage for footnote text in a `p' column.
+%    \begin{macrocode}
+\newtoks\LT@p@ftn
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@end@pen}
+% Special penalty for the end of the table. Done this way to save using
+% up a count register.
+%    \begin{macrocode}
+\mathchardef\LT@end@pen=30000
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The \env{longtable} environment}
+%
+% \begin{macro}{\longtable}
+% Called by "\begin{longtable}". This implementation does not work in
+% multiple column formats. "\par" added at V3.04.
+%    \begin{macrocode}
+\def\longtable{%
+  \par
+  \ifx\multicols\@undefined
+  \else
+     \ifnum\col@number>\@ne
+       \@twocolumntrue
+     \fi
+  \fi
+  \if@twocolumn
+    \LT@err{longtable not in 1-column mode}\@ehc
+  \fi
+  \begingroup
+%    \end{macrocode}
+% Check for an optional argument.
+%    \begin{macrocode}
+  \@ifnextchar[\LT@array{\LT@array[x]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@array}
+% Start setting the alignment.
+% Based on "\@array" from the \LaTeX\ kernel
+% and the \package{array} package.
+%
+% Since Version 3.02, \package{longtable} has used the internal counter
+% "\c@LT@tables". The \LaTeX\ counter "table" is still incremented
+% so that "\caption" works correctly.
+%    \begin{macrocode}
+\def\LT@array[#1]#2{%
+  \refstepcounter{table}\stepcounter{LT@tables}%
+%    \end{macrocode}
+% Set up the glue around the table if an optional argument given.
+%    \begin{macrocode}
+  \if l#1%
+    \LTleft\z@ \LTright\fill
+  \else\if r#1%
+    \LTleft\fill \LTright\z@
+  \else\if c#1%
+    \LTleft\fill \LTright\fill
+  \fi\fi\fi
+%    \end{macrocode}
+% Set up these internal commands for \env{longtable}.
+% \changes{v3.13}{1994/12/08}
+%      {add \cs{tabularnewline}}
+% \changes{v3.14}{1995/04/25}
+%      {(Mike Van Geest) rename \cs{LT@mc} to
+%         \cs{LT@mcol} to allow 1100 tables}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) don't need multicolumn warning}
+%\begin{verbatim}
+%  \global\let\LT@mcw@rn\relax
+%\end{verbatim}
+%    \begin{macrocode}
+  \let\LT@mcol\multicolumn
+%    \end{macrocode}
+% \changes{v3.17}{1996/01/31}
+%      {Reset \cs{hline} and \cs{multicolumn} in nested tabular
+%       and array, for tools/2068}
+% Now redefine "\@tabarray" to restore "\hline" and "\multicolumn" so
+% that arrays and tabulars nested in longtable (or in page headings on
+% longtable pages) work out OK. Saving the original definitions done
+% here so that you can load the \package{array} package before or after
+% \package{longtable}.
+%    \begin{macrocode}
+  \let\LT@@tabarray\@tabarray
+  \let\LT@@hl\hline
+  \def\@tabarray{%
+    \let\hline\LT@@hl
+%    \end{macrocode}
+%\begin{verbatim}
+%    \let\multicolumn\LT@mcol
+%\end{verbatim}
+%    \begin{macrocode}
+    \LT@@tabarray}%
+  \let\\\LT@tabularcr\let\tabularnewline\\%
+  \def\newpage{\noalign{\break}}%
+%    \end{macrocode}
+% \changes{v4.05}{1996/11/12}
+%      {\cs{nopagebreak} and \cs{pagebreak} added}
+% More or less standard definitions, but first start a "\noalign".
+%    \begin{macrocode}
+  \def\pagebreak{\noalign{\ifnum`}=0\fi\@testopt{\LT@no@pgbk-}4}%
+  \def\nopagebreak{\noalign{\ifnum`}=0\fi\@testopt\LT@no@pgbk4}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \let\hline\LT@hline \let\kill\LT@kill\let\caption\LT@caption
+  \@tempdima\ht\strutbox
+%    \end{macrocode}
+%
+% \changes{v4.08}{1998/01/20}
+%      {Move \cs{@endpbox} definition earlier and define \cs{@@endpbox}
+%      and \cs{@@startpbox} for non-array case. tools/2736}
+%    \begin{macrocode}
+  \let\@endpbox\LT@endpbox
+%    \end{macrocode}
+% Set up internal commands according to Lamport or Mittelbach.
+%    \begin{macrocode}
+  \ifx\extrarowheight\@undefined
+%    \end{macrocode}
+% Initialise these commands as in \env{tabular} from the \LaTeX\ kernel.
+%    \begin{macrocode}
+    \let\@acol\@tabacol
+    \let\@classz\@tabclassz \let\@classiv\@tabclassiv
+    \def\@startpbox{\vtop\LT@startpbox}%
+    \let\@@startpbox\@startpbox
+    \let\@@endpbox\@endpbox
+    \let\LT@LL@FM@cr\@tabularcr
+  \else
+%    \end{macrocode}
+% Initialise these commands as in \package{array}. "\d@llar"
+% replaced by "\d@llarbegin" "\d@llarend"  in V3.03 to match
+% \package{array} V2.0h. We do not need to set "\d@llarbegin" and
+% "\d@llarend"  as the \package{array} package gives them the correct
+% values at the top level.
+%    \begin{macrocode}
+    \advance\@tempdima\extrarowheight
+    \col@sep\tabcolsep
+    \let\@startpbox\LT@startpbox\let\LT@LL@FM@cr\@arraycr
+  \fi
+%    \end{macrocode}
+% The rest of this macro is mainly based on \package{array} package, but
+% should work for the standard \env{tabular} too.
+%    \begin{macrocode}
+  \setbox\@arstrutbox\hbox{\vrule
+    \@height \arraystretch \@tempdima
+    \@depth \arraystretch \dp \strutbox
+    \@width \z@}%
+  \let\@sharp##\let\protect\relax
+%    \end{macrocode}
+% Interpret the preamble argument.
+%    \begin{macrocode}
+   \begingroup
+    \@mkpream{#2}%
+%    \end{macrocode}
+% We need to rename "\@preamble" here as F.M.'s scheme uses
+% "\global", and we may need to nest "\@mkpream", eg for
+% "\multicolumn"
+% or an \env{array}.
+% We do not need to worry about nested \env{longtable}s though!
+%    \begin{macrocode}
+    \xdef\LT@bchunk{%
+%    \end{macrocode}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) Increment Chunk counter}
+%    \begin{macrocode}
+       \global\advance\c@LT@chunks\@ne
+       \global\LT@rows\z@\setbox\z@\vbox\bgroup
+%    \end{macrocode}
+% \changes{v4.05}{1996/11/12}
+%      {\cs{LT@setprevdepth} added}
+% The following line was added in v4.05.
+% In order to get the "\penalties" to work at chunk boundaries
+% Need to take more care about where and when "\lineskip" glue
+% is added. The following does nothing at top of table, and in
+% header chunks, but in normal body chunks it sets "\prevdepth"
+% (to 0pt, but any value would do) so that "\lineskip" glue will
+% be added. the important thing to note is that the glue will be
+% added \emph{after} any vertical material coming from "\noalign".
+%    \begin{macrocode}
+       \LT@setprevdepth
+%    \end{macrocode}
+%
+% \changes{v4.10}{2000/10/22}
+%      {\cs{noexpand} added (as in array.sty) for mathtext.sty, CAR}
+%    \begin{macrocode}
+       \tabskip\LTleft \noexpand\halign to\hsize\bgroup
+%       \tabskip\LTleft\halign to\hsize\bgroup
+      \tabskip\z@ \@arstrut \@preamble \tabskip\LTright \cr}%
+  \endgroup
+%    \end{macrocode}
+% Find out how many columns we have (store in "\LT@cols").
+%    \begin{macrocode}
+  \expandafter\LT@nofcols\LT@bchunk&\LT@nofcols
+%    \end{macrocode}
+% Get the saved row from "\LT@i"\ldots"\LT@ix" (from the
+% ".aux"  file), or make a new blank row.
+%    \begin{macrocode}
+  \LT@make@row
+%    \end{macrocode}
+% A few more internal commands for \env{longtable}.
+%    \begin{macrocode}
+  \m@th\let\par\@empty
+  \everycr{}\lineskip\z@\baselineskip\z@
+%    \end{macrocode}
+% Start the first chunk.
+%    \begin{macrocode}
+  \LT@bchunk}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@no@pgbk}
+% \changes{v4.05}{1996/11/12}
+%      {Macro added}
+% Can simplify the standard "\@no@pgbk" as this is vmode only
+% but then need to close the "\noalign".
+%    \begin{macrocode}
+\def\LT@no@pgbk#1[#2]{\penalty #1\@getpen{#2}\ifnum`{=0\fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@start}
+% This macro starts the process of putting the table on the current
+% page. It is not called until either a "\\" or "\endlongtable" command
+% ends a chunk, as we do not know until that point which of the four
+% possible head or foot sections have been specified.
+%
+% It begins by redefining itself, so that the table is only started
+% once! Until V3.04, was redefined to "\relax", now use "\endgraf" to
+% force the page-breaker to wake up.
+%    \begin{macrocode}
+\def\LT@start{%
+  \let\LT@start\endgraf
+  \endgraf\penalty\z@\vskip\LTpre
+%    \end{macrocode}
+% Start a new page if there is not enough room for the table head, foot,
+% and one extra line.
+%    \begin{macrocode}
+  \dimen@\pagetotal
+  \advance\dimen@ \ht\ifvoid\LT@firsthead\LT@head\else\LT@firsthead\fi
+  \advance\dimen@ \dp\ifvoid\LT@firsthead\LT@head\else\LT@firsthead\fi
+  \advance\dimen@ \ht\LT@foot
+%    \end{macrocode}
+% \changes{v3.16}{1995/11/09}
+%      {Measure the first line of the table}
+% At this point I used to add "\ht\@arstrutbox" and "\dp\@arstrutbox"
+% as a measure of a row size. However this can fail spectacularly
+% for "p" columns which might be much larger. Previous versions could
+% end up with the table starting with a foot, then a page break then
+% a head \emph{then} a `first head'! So now measure the first line of
+% the table accurately by "\vsplit"ting it out of the first chunk.
+%    \begin{macrocode}
+  \dimen@ii\vfuzz
+  \vfuzz\maxdimen
+    \setbox\tw@\copy\z@
+    \setbox\tw@\vsplit\tw@ to \ht\@arstrutbox
+    \setbox\tw@\vbox{\unvbox\tw@}%
+  \vfuzz\dimen@ii
+  \advance\dimen@ \ht
+        \ifdim\ht\@arstrutbox>\ht\tw@\@arstrutbox\else\tw@\fi
+  \advance\dimen@\dp
+        \ifdim\dp\@arstrutbox>\dp\tw@\@arstrutbox\else\tw@\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \advance\dimen@ -\pagegoal
+  \ifdim \dimen@>\z@\vfil\break\fi
+%    \end{macrocode}
+% Store height of page minus table foot in  "\@colroom".
+% \changes{v3.14}{1995/05/02}
+%      {Set \cs{@colroom}, for tools/1584}
+%    \begin{macrocode}
+      \global\@colroom\@colht
+%    \end{macrocode}
+% If the foot is non empty, reduce the "\vsize" and "\@colroom"
+% accordingly.
+%    \begin{macrocode}
+  \ifvoid\LT@foot\else
+    \advance\vsize-\ht\LT@foot
+    \global\advance\@colroom-\ht\LT@foot
+    \dimen@\pagegoal\advance\dimen@-\ht\LT@foot\pagegoal\dimen@
+    \maxdepth\z@
+  \fi
+%    \end{macrocode}
+% Put the table head on the page, and then switch to the new output
+% routine.
+% \changes{v4.11}{2004/02/01}
+%      {\cs{nobreak}, for tools/3484}
+%    \begin{macrocode}
+  \ifvoid\LT@firsthead\copy\LT@head\else\box\LT@firsthead\fi\nobreak
+  \output{\LT@output}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endlongtable}
+% Called by "\end{longtable}".
+%    \begin{macrocode}
+\def\endlongtable{%
+%    \end{macrocode}
+% Essentially add a final "\\". But as we now know the number of
+% actual chunks, we first strip away all entries referring to a
+% maximum entry beyond the table (this can only happen if a table has
+% been shortened, or the table numbering has gone awry). In that case
+% we at least start collecting valid new information with the last
+% chunk of this table, by removing the width constraint.
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) use \cs{noalign} to sneak in \cs{LT@entry@chop}}
+%    \begin{macrocode}
+  \crcr
+  \noalign{%
+    \let\LT@entry\LT@entry@chop
+    \xdef\LT@save@row{\LT@save@row}}%
+  \LT@echunk
+  \LT@start
+  \unvbox\z@
+  \LT@get@widths
+%    \end{macrocode}
+% Write the dummy row to the ".aux" file.
+% Since V3.06, use ".lta" for "letter.sty".
+% \changes{v3.12}{1994/06/30}
+%      {Do not write if \cs{nofiles} in operation.}
+%    \begin{macrocode}
+  \if@filesw
+    {\let\LT@entry\LT@entry@write\immediate\write\@auxout{%
+%    \end{macrocode}
+% Since Version 3.02, \package{longtable} has used the internal counter
+% "\c@LT@tables" rather than the \LaTeX\ counter \textsf{table}. This
+% information looks entirely different from version~3
+% information. Still, we don't need to rename the macro name because
+% later code will consider the information to have no columns, and
+% thus will throw the old data away.
+%    \begin{macrocode}
+      \gdef\expandafter\noexpand
+        \csname LT@\romannumeral\c@LT@tables\endcsname
+          {\LT@save@row}}}%
+  \fi
+%    \end{macrocode}
+% At this point used to
+% issue a warning if a "\multicolumn" has been set in draft mode.
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) No need for multicolumn warnings}
+%\begin{verbatim}
+%  \LT@mcw@rn
+%\end{verbatim}
+% If the last chunk has different widths than the first, warn the user.
+% Also trigger a warning to rerun \LaTeX\ at the end of the document.
+% \changes{v4.04}{1996/05/24}
+%      {Use \cs{LT@final@warn}}
+%    \begin{macrocode}
+  \ifx\LT@save@row\LT@@save@row
+  \else
+    \LT@warn{Column \@width s have changed\MessageBreak
+             in table \thetable}%
+    \LT@final@warn
+  \fi
+%    \end{macrocode}
+% Force one more go with the \env{longtable} output routine.
+%    \begin{macrocode}
+  \endgraf\penalty -\LT@end@pen
+%    \end{macrocode}
+% Now close the group to return to the standard routine.
+%    \begin{macrocode}
+  \endgroup
+%    \end{macrocode}
+% Reset "\@mparbottom" to allow marginpars close to the end of the
+% table.\footnote{This can not be the correct. However if it is omitted,
+% there is a problem with marginpars, for example on page~3 of this
+% document. Any Output Routine Gurus out there?}
+%    \begin{macrocode}
+  \global\@mparbottom\z@
+  \pagegoal\vsize
+  \endgraf\penalty\z@\addvspace\LTpost
+%    \end{macrocode}
+% Footnotes. As done in  the \package{multicol} package.
+%    \begin{macrocode}
+  \ifvoid\footins\else\insert\footins{}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Counting Columns}
+%
+% Columns are counted by examining "\@preamble", rather than simply
+% getting "\@mkpream" to increment the counter as it builds the
+% preamble so that this package works with many of the packages which
+% add extra column specifiers to \LaTeX's standard ones.
+%
+%  Version~1 counted "\@sharp"'s to calculate the number of columns,
+%  this was changed for Version~2 as it does not work with the NFSS. Now
+%  count "&"'s. ("lfonts.new" (and now the Standard \LaTeX\ definition)
+% defines "\@tabclassz" so that "\@sharp" is inside a group.)
+%
+% \begin{macro}{\LT@nofcols}
+% Find the next "&", then look ahead to see what is next.
+%    \begin{macrocode}
+\def\LT@nofcols#1&{%
+  \futurelet\@let@token\LT@n@fcols}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@n@fcols}
+% Add one, then stop at an "\LT@nofcols" or look for the next
+% "&". The "\expandafter" trick was added in Version~3, also the
+% name changed from "\@LT@nofcols" to preserve the "\LT@" naming
+% convention.
+%    \begin{macrocode}
+\def\LT@n@fcols{%
+  \advance\LT@cols\@ne
+  \ifx\@let@token\LT@nofcols
+    \expandafter\@gobble
+  \else
+    \expandafter\LT@nofcols
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The {\ttfamily\bslash\bslash} and \cs{kill} Commands}
+%
+% \begin{macro}{\LT@tabularcr}
+% \changes{v4.05}{1996/11/12}
+%      {Code re-organised for the *-form processing.}
+% The internal definition of "\\".
+% In the "*" form, insert a "\nobreak" after the next "\cr" (or "\crcr").
+%
+% This star form processing was finally added in v4.05. For the previous
+% six or seven years the comment at this point said
+% \begin{quote}\small
+% This definition also accepts "\\*", which acts in the same way as
+% "\\". \env{tabular} does this, but \env{longtable} probably ought to
+% make "\\*" prevent page breaking.
+% \end{quote}
+%
+% "{\ifnum0=`}\fi" added in version 3.01, required if the first entry
+% is empty.
+% The above in fact is not good enough, as with \package{array} package
+% it can introduce a "{}" group in math mode, which changes the spacing.
+% So use the following variant. Added in v3.14.
+% \changes{v3.14}{1995/04/25}
+%      {More fun with \cs{ifnum} cf tools/1571}
+%    \begin{macrocode}
+\def\LT@tabularcr{%
+  \relax\iffalse{\fi\ifnum0=`}\fi
+  \@ifstar
+    {\def\crcr{\LT@crcr\noalign{\nobreak}}\let\cr\crcr
+     \LT@t@bularcr}%
+    {\LT@t@bularcr}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@crcr}
+% \changes{v4.05}{1996/11/12}
+%      {Macro added}
+%    \begin{macrocode}
+\let\LT@crcr\crcr
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@setprevdepth}
+% \changes{v4.05}{1996/11/12}
+%      {Macro added}
+% This will be redefined to set the "\prevdepth"
+%  at the start of a chunk.
+%    \begin{macrocode}
+\let\LT@setprevdepth\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@t@bularcr}
+%    \begin{macrocode}
+\def\LT@t@bularcr{%
+%    \end{macrocode}
+% Increment the counter, and do  \env{tabular}'s "\\" or finish the
+% chunk.\\ The "\expandafter" trick was added in Version~3.
+% Set the "\prevdepth" at the start of a new chunk. (Done here
+% so not set in header chunks).
+%    \begin{macrocode}
+  \global\advance\LT@rows\@ne
+  \ifnum\LT@rows=\LTchunksize
+    \gdef\LT@setprevdepth{%
+      \prevdepth\z@\global
+      \global\let\LT@setprevdepth\relax}%
+    \expandafter\LT@xtabularcr
+  \else
+    \ifnum0=`{}\fi
+    \expandafter\LT@LL@FM@cr
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@xtabularcr}
+% This just looks for an optional argument.
+%    \begin{macrocode}
+\def\LT@xtabularcr{%
+  \@ifnextchar[\LT@argtabularcr\LT@ntabularcr}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@ntabularcr}
+% The version with no optional argument.
+% "\ifnum0=`{\fi}" added in version 3.01. Changed in 3.14.
+%    \begin{macrocode}
+\def\LT@ntabularcr{%
+  \ifnum0=`{}\fi
+  \LT@echunk
+  \LT@start
+  \unvbox\z@
+  \LT@get@widths
+  \LT@bchunk}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@argtabularcr}
+% The version with an optional argument.
+% "\ifnum0=`{\fi}" added in version 3.01. Changed in 3.14.
+%    \begin{macrocode}
+\def\LT@argtabularcr[#1]{%
+  \ifnum0=`{}\fi
+  \ifdim #1>\z@
+    \unskip\@xargarraycr{#1}%
+  \else
+    \@yargarraycr{#1}%
+  \fi
+%    \end{macrocode}
+% Add the dummy row, and finish the "\halign".
+%    \begin{macrocode}
+  \LT@echunk
+  \LT@start
+  \unvbox\z@
+  \LT@get@widths
+  \LT@bchunk}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@echunk}
+% \changes{v4.05}{1996/11/12}
+%      {\cs{unskip} added for pagebreak support}
+% This ends the current chunk, and removes the dummy row.
+%    \begin{macrocode}
+\def\LT@echunk{%
+  \crcr\LT@save@row\cr\egroup
+  \global\setbox\@ne\lastbox
+%    \end{macrocode}
+% The following line was added in v4.05.
+% \package{longtable} relies on "\lineskip" glue (which is 0pt) to
+% provide break points between each row so the table may be split
+%  into pages.
+%
+% Previous releases left the "\lineskip" glue at the end of each chunk
+% that had been added when the dummy row was added. There was no glue
+% at the start of the next chunk as \TeX\ normally does not put
+% "\lineskip" glue at the top of a box. This meant that normally the
+% chunks fitted together perfectly, however "\noalign" material at a
+% chunk boundary came before the first row of the next chunk
+% but after the lineskip glue at the end of this chunk. This is the
+% wrong place, e.g., it means even a "\penalty10000" does not stop a
+% break as the "\lineskip" glue in the previous item on the list
+% provides a legal breakpoint. So now remove the "\lineskip" glue that
+% was before the dummy row and introduce "\LT@setprevdepth" to set the
+% "\prevdepth" at the start of the next chunk, to make sure "\lineskip"
+% glue is added later.
+%    \begin{macrocode}
+    \unskip
+  \egroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@entry}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) Macro added}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) Use \cs{ifhmode} trick to determine first entry}
+% We here give the `basic' definition of "\LT@entry", namely that used
+% in alignment templates. It has a "\kern" only if the maximum is
+% imposed from a different chunk.
+% The "\ifhmode" test reveals the first entry, when we don't want to add
+% an "&".
+%    \begin{macrocode}
+\def\LT@entry#1#2{%
+  \ifhmode\@firstofone{&}\fi\omit
+  \ifnum#1=\c@LT@chunks
+  \else
+    \kern#2\relax
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@entry@chop}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) Macro added}
+% This definition for the argument of "\LT@save@row" is used to scrap
+% all those maxima which could not be verified because they occur
+% after the end of the table. This can happen only if a table has been
+% shortened (or the sequencing got mixed up) since the
+% previous run.
+% Note that this is premature: the last chunk still is going to be
+% set, and with the chopped limits.
+%    \begin{macrocode}
+\def\LT@entry@chop#1#2{%
+  \noexpand\LT@entry
+    {\ifnum#1>\c@LT@chunks
+       1}{0pt%
+     \else
+       #1}{#2%
+     \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@entry@write}
+% \changes{v4.07}{1997/10/16}
+%      {Avoid use of percent. tools/2631}
+% To write an entry for the "aux" file, we use a slightly
+% surprising definition which has the sole purpose of avoiding
+% overfull lines (which might break \TeX{}'s limits when reading the
+% "aux" file, probably you'd need to have a few hundred columns before
+% this happened but\ldots).
+%    \begin{macrocode}
+\def\LT@entry@write{%
+  \noexpand\LT@entry^^J%
+  \@spaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@kill}
+% This ends the current chunk as above, but strips off two rows, the
+% `dummy row' and the `killed row' before starting the next chunk.
+% Since V3.04, the old chunk is reboxed at the start of the box
+% containing the next chunk. This allows "\kill" to be used in headers,
+% which must be processed in a single box.
+%    \begin{macrocode}
+\def\LT@kill{%
+  \LT@echunk
+  \LT@get@widths
+  \expandafter\LT@rebox\LT@bchunk}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@rebox}
+% Drop the old chunk (box0) back at the top of the new chunk, removing
+% the killed row. This macro added at V3.04.
+%    \begin{macrocode}
+\def\LT@rebox#1\bgroup{%
+  #1\bgroup
+  \unvbox\z@
+  \unskip
+  \setbox\z@\lastbox}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The Dummy Row}
+%
+% The dummy row is kept inside of the macro "\LT@save@row".
+%
+% \begin{macro}{\LT@blank@row}
+% \begin{macro}{\LT@build@blank}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) Macro added}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) Don't mess with \cs{multicolumn} on draft passes}
+% Create a blank row if we are not using the info in the ".aux" file.
+%    \begin{macrocode}
+\def\LT@blank@row{%
+  \xdef\LT@save@row{\expandafter\LT@build@blank
+    \romannumeral\number\LT@cols 001 }}
+%    \end{macrocode}
+% Whoops! What's that supposed to be? A drop-in replacement for the
+% first task of Appendix~D in the \TeX book. The "\romannumeral"
+% produces "\LT@cols" instances of "m" followed by "i". The below
+% macro then replaces the "m"s by appropriate entries.
+%    \begin{macrocode}
+\def\LT@build@blank#1{%
+  \if#1m%
+    \noexpand\LT@entry{1}{0pt}%
+    \expandafter\LT@build@blank
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\LT@make@row}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) New implementation}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) Make this the default behaviour, not needing
+%      \cs{setlongtables}}
+%
+% Prior to version 4, by default did not use information in the
+% ".aux" file but now we can define "\LT@make@row" to use the ".aux"
+% file, even on the `draft' passes.
+%    \begin{macrocode}
+\def\LT@make@row{%
+  \global\expandafter\let\expandafter\LT@save@row
+    \csname LT@\romannumeral\c@LT@tables\endcsname
+  \ifx\LT@save@row\relax
+    \LT@blank@row
+%    \end{macrocode}
+% Now a slightly difficult part comes. Before we decide making the
+% template from the ".aux" file info we check that the number of
+% fields has remained the same. If it hasn't, either the table format
+% has changed, or we have the wrong table altogether. In both cases,
+% we decide to better drop all gathered information and start over.
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) Use \cs{if} test rather than \cs{ifx}\cs{@empty}}
+%
+% The expansion between "!"\ldots"!" below will be empty if the number
+% of "\LT@entry" macros
+% including arguments in "\LT@save@row" is equal to "\LT@cols". If it
+% is not empty, we throw the row away and start from scratch.
+%    \begin{macrocode}
+  \else
+    {\let\LT@entry\or
+     \if!%
+         \ifcase\expandafter\expandafter\expandafter\LT@cols
+         \expandafter\@gobble\LT@save@row
+         \or
+         \else
+           \relax
+         \fi
+        !%
+     \else
+       \aftergroup\LT@blank@row
+     \fi}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\setlongtables}
+% Redefine "\LT@make@row" to use information in the ".aux" file,
+% if there is a saved row for this table with the right number of
+% columns.
+%
+% Since Version 3.02, \package{longtable} has used the internal counter
+% "\c@LT@tables" rather than the \LaTeX\ counter \textsf{table}.
+% The warning message was added at V3.04, as was the "\global", to stop
+% save-stack overflow.
+%
+% Since Version 4.01 "\setlongtables" does nothing as it is not
+% needed, but is defined as "\relax" for the benefit of old documents.
+% \changes{v3.12}{1994/06/30}
+%      {Warning altered to fit line on terminal.}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) make into no op}
+%    \begin{macrocode}
+\let\setlongtables\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@get@widths}
+% This is the heart of \package{longtable}. If it were not for the table
+% head and foot, this macro together with the modified "\\" command
+% would form the basis of quite a simple little package file for long
+% tables. It is closely modelled on the "\endvrulealign" macro of
+% appendix D of the \TeX book.
+%    \begin{macrocode}
+\def\LT@get@widths{%
+%    \end{macrocode}
+% "\global" added at V3.04, to stop save-stack overflow.
+%    \begin{macrocode}
+%    \end{macrocode}
+% Loop through the last row, discarding glue, and saving box widths. At
+% V3.04 changed the scratch box to 2, as the new "\kill" requires that
+% "\box0" be preserved.
+%    \begin{macrocode}
+  \setbox\tw@\hbox{%
+    \unhbox\@ne
+    \let\LT@old@row\LT@save@row
+    \global\let\LT@save@row\@empty
+    \count@\LT@cols
+    \loop
+      \unskip
+      \setbox\tw@\lastbox
+    \ifhbox\tw@
+      \LT@def@row
+      \advance\count@\m@ne
+    \repeat}%
+%    \end{macrocode}
+% Remember the widths if we are in the first chunk.
+%    \begin{macrocode}
+  \ifx\LT@@save@row\@undefined
+    \let\LT@@save@row\LT@save@row
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@def@row}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) New implementation}
+% Add a column to the dummy row. Name changed from "\defLT@save@row"
+% in Version~3, to preserve the "\LT@" naming convention.
+%    \begin{macrocode}
+\def\LT@def@row{%
+%    \end{macrocode}
+% We start by picking the respective entry from our old row.
+% These redefinitions of "\LT@entry" are local to the group started
+% in "\LT@get@widths".
+%    \begin{macrocode}
+  \let\LT@entry\or
+  \edef\@tempa{%
+    \ifcase\expandafter\count@\LT@old@row
+    \else
+      {1}{0pt}%
+    \fi}%
+%    \end{macrocode}
+% Now we tack the right combination in front of "\LT@save@row":
+%    \begin{macrocode}
+  \let\LT@entry\relax
+  \xdef\LT@save@row{%
+    \LT@entry
+    \expandafter\LT@max@sel\@tempa
+    \LT@save@row}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@max@sel}
+% \changes{v4.00}{1996/04/08}
+%      {(DK) macro added}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) minor modifications}
+% And this is how to select the right combination. Note that we take
+% the old maximum information only if the size does not change in
+% \emph{either} direction. If the size has grown, we of course have a
+% new maximum. If the size has shrunk, the old maximum (which was
+% explicitly not enforced because of being in the current chunk) is
+% invalid, and we start with this chunk as the new size. Note that
+% even in the case of equality we \emph{must} use the "\the\wd\tw@"
+% construct instead of "#2" because "#2" might be read in from the
+% file, and so could have "\catcode"~11 versions of "p" and~"t" in~it
+% which we want to be replaced by their `proper' "\catcode"~12 versions.
+%    \begin{macrocode}
+\def\LT@max@sel#1#2{%
+  {\ifdim#2=\wd\tw@
+     #1%
+   \else
+     \number\c@LT@chunks
+   \fi}%
+  {\the\wd\tw@}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The \cs{hline} Command}
+%
+% \begin{macro}{\LT@hline}
+% "\hline" and "\hline\hline" both produce \emph{two} lines.
+% The only difference being the glue and penalties between them.
+% This is so that a page break at a "\hline" produces a line on both
+% pages.\footnote
+% {\env{longtable} has always done this, but perhaps it would be
+% better if hlines were \emph{omitted} at a page break, as the head and
+% foot usually put a hline here anyway.}
+% Also this "\hline" is more like a "\cline{1-\LT@cols}".
+% \env{tabular}'s "\hline" would draw lines the full width of the page.
+%    \begin{macrocode}
+\def\LT@hline{%
+  \noalign{\ifnum0=`}\fi
+    \penalty\@M
+    \futurelet\@let@token\LT@@hline}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@@hline}
+% This code is based on "\cline". Two copies of the line are produced,
+% as described above.
+%    \begin{macrocode}
+\def\LT@@hline{%
+  \ifx\@let@token\hline
+    \global\let\@gtempa\@gobble
+    \gdef\LT@sep{\penalty-\@medpenalty\vskip\doublerulesep}%
+  \else
+    \global\let\@gtempa\@empty
+    \gdef\LT@sep{\penalty-\@lowpenalty\vskip-\arrayrulewidth}%
+  \fi
+  \ifnum0=`{\fi}%
+  \multispan\LT@cols
+     \unskip\leaders\hrule\@height\arrayrulewidth\hfill\cr
+  \noalign{\LT@sep}%
+  \multispan\LT@cols
+     \unskip\leaders\hrule\@height\arrayrulewidth\hfill\cr
+  \noalign{\penalty\@M}%
+  \@gtempa}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Captions}
+%
+% \begin{macro}{\LT@caption}
+% The caption is "\multicolumn{\LT@cols}{c}{"\meta{a parbox with the
+% table's caption}"}"
+%    \begin{macrocode}
+\def\LT@caption{%
+  \noalign\bgroup
+    \@ifnextchar[{\egroup\LT@c@ption\@firstofone}\LT@capti@n}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@c@ption}
+% Caption command (with [optional argument]).  "\protect" added in
+% Version~3. "\fnum@table" added at V3.05.
+% \changes{v3.14}{1995/05/02}
+%      {Call \cs{LT@makecaption} not \cs{LT@mkcaption}}
+% \changes{v3.14}{1995/05/24}
+%      {Add new control argument}
+%    \begin{macrocode}
+\def\LT@c@ption#1[#2]#3{%
+  \LT@makecaption#1\fnum@table{#3}%
+  \def\@tempa{#2}%
+  \ifx\@tempa\@empty\else
+     {\let\\\space
+     \addcontentsline{lot}{table}{\protect\numberline{\thetable}{#2}}}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@capti@n}
+% Caption command (no [optional argument])
+% \changes{v3.14}{1995/05/02}
+%      {Call \cs{LT@makecaptionx} not \cs{LT@mkcaption}}
+% \changes{v3.14}{1995/05/24}
+%      {Call \cs{LT@makecaption} with \cs{@gobble} or \cs{@firstofone}}
+%    \begin{macrocode}
+\def\LT@capti@n{%
+  \@ifstar
+    {\egroup\LT@c@ption\@gobble[]}%
+    {\egroup\@xdblarg{\LT@c@ption\@firstofone}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\LT@makecaption}
+% Put the caption in a box of width 0pt, so that it never affects the
+% column widths. Inside that is a "\parbox" of width
+% "\LTcapwidth".
+% \changes{v3.14}{1995/05/02}
+%      {Renamed from \cs{LT@mkcaption},
+%       and modified to call \cs{@makecaption}}
+% \changes{v3.14}{1995/05/02}
+%      {Use the first arg to remove counter for star form}
+%    \begin{macrocode}
+\def\LT@makecaption#1#2#3{%
+  \LT@mcol\LT@cols c{\hbox to\z@{\hss\parbox[t]\LTcapwidth{%
+%    \end{macrocode}
+% Based on article class "\@makecaption", "#1" is "\@gobble" in star
+% form, and "\@firstofone" otherwise.
+%    \begin{macrocode}
+    \sbox\@tempboxa{#1{#2: }#3}%
+    \ifdim\wd\@tempboxa>\hsize
+      #1{#2: }#3%
+    \else
+      \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
+    \endgraf\vskip\baselineskip}%
+  \hss}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{The Output Routine}
+%
+% The method used here for interfacing a special purpose output routine
+% to the standard \LaTeX\ routine is lifted straight out of
+% F.~Mittelbach's \package{multicol} package.
+%
+% \begin{macro}{\LT@output}
+%     Actually this is not so bad, with FM leading the way.
+%    \begin{macrocode}
+\def\LT@output{%
+  \ifnum\outputpenalty <-\@Mi
+    \ifnum\outputpenalty > -\LT@end@pen
+%    \end{macrocode}
+%     If this was a float or a marginpar we complain.
+%    \begin{macrocode}
+      \LT@err{floats and marginpars not allowed in a longtable}\@ehc
+    \else
+%    \end{macrocode}
+% We have reached the end of the table, on the scroll at least,
+%    \begin{macrocode}
+      \setbox\z@\vbox{\unvbox\@cclv}%
+      \ifdim \ht\LT@lastfoot>\ht\LT@foot
+%    \end{macrocode}
+% The last foot might not fit, so:\footnote{An alternative would be to
+% vsplit off a bit of the last chunk, so that the last page did not just
+% have head and foot sections, but it is hard to do this in a consistent
+% manner.}
+%    \begin{macrocode}
+        \dimen@\pagegoal
+        \advance\dimen@-\ht\LT@lastfoot
+        \ifdim\dimen@<\ht\z@
+          \setbox\@cclv\vbox{\unvbox\z@\copy\LT@foot\vss}%
+          \@makecol
+          \@outputpage
+          \setbox\z@\vbox{\box\LT@head}%
+%    \end{macrocode}
+% End of "\ifdim\dimen@<\ht\@cclc".
+%    \begin{macrocode}
+        \fi
+%    \end{macrocode}
+% End of "\ifdim \ht\LT@lastfoot > \ht\LT@foot".
+%    \begin{macrocode}
+      \fi
+%    \end{macrocode}
+% Reset "\@colroom".
+% \changes{v3.14}{1995/05/02}
+%      {Reset \cs{@colroom}, for tools/1584}
+%    \begin{macrocode}
+      \global\@colroom\@colht
+      \global\vsize\@colht
+%    \end{macrocode}
+% Put the last page of the table on to the main vertical list.
+%    \begin{macrocode}
+      \vbox
+        {\unvbox\z@\box\ifvoid\LT@lastfoot\LT@foot\else\LT@lastfoot\fi}%
+%    \end{macrocode}
+% End of "\ifnum\outputpenalty > -\LT@end@pen".
+%    \begin{macrocode}
+    \fi
+%    \end{macrocode}
+% Else "\outputpenalty > -\@Mi".
+%    \begin{macrocode}
+  \else
+%    \end{macrocode}
+% If we have not reached the end of the table,
+%    \begin{macrocode}
+    \setbox\@cclv\vbox{\unvbox\@cclv\copy\LT@foot\vss}%
+    \@makecol
+    \@outputpage
+%    \end{macrocode}
+% Reset "\vsize".
+% \changes{v3.14}{1995/05/02}
+%      {Reset \cs{vsize}, for tools/1584}
+%    \begin{macrocode}
+      \global\vsize\@colroom
+%    \end{macrocode}
+% Put the head at the top of the next page.
+% \changes{v4.11}{2004/02/01}
+%      {\cs{nobreak}, for tools/3484}
+%    \begin{macrocode}
+    \copy\LT@head\nobreak
+%    \end{macrocode}
+% End of "\ifnum\outputpenalty <-\@Mi".
+%    \begin{macrocode}
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Commands for the the table head and foot}
+%
+% \begin{macro}{\LT@end@hd@ft}
+% The core of "\endhead" and friends. Store the current chunk in the
+% box specified by "#1". Issue an error if the table has already
+% started. Then start a new chunk.
+%    \begin{macrocode}
+\def\LT@end@hd@ft#1{%
+  \LT@echunk
+%    \end{macrocode}
+% Changed from "\relax" to "\endgraf" at V3.04, see "\LT@start".
+%    \begin{macrocode}
+  \ifx\LT@start\endgraf
+    \LT@err
+     {Longtable head or foot not at start of table}%
+     {Increase LTchunksize}%
+  \fi
+  \setbox#1\box\z@
+  \LT@get@widths
+  \LT@bchunk}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endfirsthead}
+% \begin{macro}{\endhead}
+% \begin{macro}{\endfoot}
+% \begin{macro}{\endlastfoot}
+% Call "\LT@end@hd@ft" with the appropriate box.
+%    \begin{macrocode}
+\def\endfirsthead{\LT@end@hd@ft\LT@firsthead}
+\def\endhead{\LT@end@hd@ft\LT@head}
+\def\endfoot{\LT@end@hd@ft\LT@foot}
+\def\endlastfoot{\LT@end@hd@ft\LT@lastfoot}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{The \cs{multicolumn} command}
+%
+% Earlier versions needed a special `draft' form of "\multicolumn".
+% This is not needed in version~4, and so these commands have been
+% removed.
+%
+% \begin{macro}{\LTmulticolumn}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) macro removed}
+% \end{macro}
+%
+% \begin{macro}{\LT@mcwarn}
+% \changes{v4.01}{1996/04/11}
+%      {(DPC) macro removed}
+% \end{macro}
+%
+% \subsection{Footnotes}
+%
+% The standard "\footnote" command works in a "c" column, but we
+% need to modify the definition in a "p" column to overcome the
+% extra level of boxing. These macros are based on the \package{array}
+% package, but should be OK for the standard \env{tabular}.
+%
+% \begin{macro}{\LT@startpbox}
+% \changes{v4.09}{1998/05/13}
+%      {Use \cs{setlength}, so that calc extensions apply. tools/2793}
+% Add extra code to switch the definition of "\@footnotetext".
+%    \begin{macrocode}
+\def\LT@startpbox#1{%
+  \bgroup
+    \let\@footnotetext\LT@p@ftntext
+    \setlength\hsize{#1}%
+    \@arrayparboxrestore
+    \vrule \@height \ht\@arstrutbox \@width \z@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@endpbox}
+% After the parbox is closed, expand "\LT@p@ftn" which will execute a
+% series of\\
+% "\footnotetext["\meta{num}"]{"\meta{note}"}"\\
+% commands. After being lifted out of the parbox, they can migrate on
+% their own from here.
+% \changes{v3.10}{1994/05/15}
+%     {Use \cs{@finalstrut}}
+% \changes{v4.03}{1996/05/07}
+%     {Use \cs{hfil} for tools/2120}
+%    \begin{macrocode}
+\def\LT@endpbox{%
+  \@finalstrut\@arstrutbox
+  \egroup
+  \the\LT@p@ftn
+  \global\LT@p@ftn{}%
+  \hfil}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LT@p@ftntext}
+% Inside the `p' column, just save up the footnote text in a token
+% register.
+%    \begin{macrocode}
+\def\LT@p@ftntext#1{%
+  \edef\@tempa{\the\LT@p@ftn\noexpand\footnotetext[\the\c@footnote]}%
+  \global\LT@p@ftn\expandafter{\@tempa{#1}}}%
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput
+

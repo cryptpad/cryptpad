@@ -1,0 +1,342 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltxref.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltxref.dtx}
+             [2014/09/29 v1.1k LaTeX Kernel (Cross Referencing)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltxref.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{92}
+%
+% \changes{v1.0c}{1994/03/29}
+%     {Create file ltcntlen from parts of ltmiscen and ltherest.}
+% \changes{v1.1a}{1994/05/19}
+%     {Extract file ltxref from ltcntlen.}
+% \changes{v1.1b}{1994/05/21}{Use new warning commands}
+% \changes{v1.1c}{1994/05/25}{Modify documentation}
+%
+% \section{Cross Referencing}
+%  The user writes  |\label|\marg{foo}  to define the following
+%  cross-references:
+%
+%   |\ref|\marg{foo}: value of most recently incremented referencable
+%             counter. in the current environment. (Chapter, section,
+%             theorem and enumeration counters counters are
+%             referencable, footnote counters are not.)
+%
+%   |\pageref|\marg{foo}: page number at which |\label{foo}|  command
+%             appeared.  where  foo  can be any string of characters not
+%             containing  `|\|', `|{|' or `|}|'.
+%
+%  Note: The scope of the |\label| command is delimited by environments,
+%  so\\
+%  |\begin{theorem} \label{foo} ... \end{theorem} \label{bar}|\\
+%  defines |\ref{foo}| to be the theorem number and |\ref{bar}| to be
+%  the current section number.
+%
+%  Note: |\label| does the right thing in terms of spacing -- i.e.,
+%  leaving a space on both sides of it is equivalent to leaving
+%  a space on either side.
+%
+%
+% \StopEventually{}
+%
+% \subsection{Cross Referencing}
+%
+% \begin{oldcomments}
+%    \begin{macrocode}
+%<*2ekernel>
+\message{x-ref,}
+%    \end{macrocode}
+%
+%  This is implemented as follows.  A referencable counter  CNT  is
+%  incremented by the command  \refstepcounter{CNT} , which sets
+%  \@currentlabel == {CNT}{eval(\p@cnt\theCNT)}.   The command
+%  \label{FOO} then writes the following on file \@auxout :
+%        \newlabel{FOO}{{eval(\@currentlabel)}{eval(\thepage)}}
+%
+%  \ref{FOO} ==
+%    BEGIN
+%      if \r@foo undefined
+%        then  @refundefined := G T
+%              ??
+%              Warning: 'reference foo on page ... undefined'
+%        else  \@car \eval(\r@FOO)\@nil
+%      fi
+%    END
+%
+%  \pageref{foo} =
+%    BEGIN
+%      if \r@foo undefined
+%        then  @refundefined := G T
+%              ??
+%              Warning: 'reference foo on page ... undefined'
+%        else  \@cdr \eval(\r@FOO)\@nil
+%      fi
+%    END
+%
+% \end{oldcomments}
+%
+%  \begin{macro}{\G@refundefinedtrue}
+% \changes{v1.1i}{1995/12/07}{Renamed (back) from \cs{G@refundefined}}
+%  \begin{macro}{\@refundefined}
+% \changes{v1.1h}{1995/10/24}{Switch for refundefined replaced}
+%    This does not save on name-space (since \cs{G@refundefinedfalse}
+%    was never needed) but it does make the implementation of such
+%    one-way switches more consistent. The extra macro to make the
+%    change is used since this change appears several times.
+%
+%    \textbf{Note} despite its name, |\G@refundefinedtrue| does
+%    \emph{not} correspond to an |\if| command, and there is no
+%    matching \ldots|false|. It would be more natural to call the
+%    command |\G@refundefined| (as inspection of the change log will
+%    reveal) but unfortunately such a change would break any package
+%    that had defined a  |\ref|-like command that mimicked the
+%    definition of |\ref|, calling |\G@refundefinedtrue|. Inspection
+%    of the \TeX\ archives revealed several such packages, and so this
+%    command has been named \ldots|true| so that the definition of
+%    |\ref| need not be changed, and the packages will work without
+%    change.
+%    \begin{macrocode}
+% \newif\ifG@refundefined
+% \def\G@refundefinedtrue{\global\let\ifG@refundefined\iftrue}
+% \def\G@refundefinedfalse{\global\let\ifG@refundefined\iffalse}
+\def\G@refundefinedtrue{%
+  \gdef\@refundefined{%
+    \@latex@warning@no@line{There were undefined references}}}
+\let\@refundefined\relax
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%    \end{macrocode}
+%  \begin{macro}{\ref}
+% \changes{LaTeX2e}{1993/12/11}{Macro reimplemented}
+%  \begin{macro}{\pageref}
+% \changes{LaTeX2e}{1993/12/11}{Macro reimplemented}
+%  \begin{macro}{\@setref}
+% \changes{LaTeX2e}{1993/12/11}{Macro added}
+% \changes{v1.1h}{1995/10/24}{Switch for refundefined renamed}
+% \changes{v1.1i}{1995/12/07}{Switch for refundefined restored}
+%    Referencing a |\label|.
+% RmS 91/10/25: added a few extra |\reset@font|,
+%               as suggested by Bernd Raichle
+%
+% RmS 92/08/14: made |\ref| and |\pageref| robust
+%
+% RmS 93/09/08: Added setting of refundefined switch.
+%    \begin{macrocode}
+\def\@setref#1#2#3{%
+  \ifx#1\relax
+   \protect\G@refundefinedtrue
+   \nfss@text{\reset@font\bfseries ??}%
+   \@latex@warning{Reference `#3' on page \thepage \space
+             undefined}%
+  \else
+   \expandafter#2#1\null
+  \fi}
+\def\ref#1{\expandafter\@setref\csname r@#1\endcsname\@firstoftwo{#1}}
+\def\pageref#1{\expandafter\@setref\csname r@#1\endcsname
+                                   \@secondoftwo{#1}}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\newlabel}
+% \changes{v1.1b}{1994/05/21}{Use new warning commands}
+% \changes{v1.1e}{1995/04/24}{Make \cs{@onlypreamble} for /1388.}
+% \changes{v1.1e}{1995/06/19}
+%      {Use \cs{@newl@bel} to share code with \cs{bibcite}}
+% \changes{v1.1g}{1995/07/14}
+%   {Remove \cs{@onlypreamble} so still defined in new \cs{enddocument}}
+%    This command will be written to the \texttt{.aux} file to
+%    pass label information from one run to another.
+%  \begin{macro}{\@newl@bel}
+%    The internal form of |\newlabel| and |\bibcite|. Note that this
+%    macro does it's work inside a group. That way the local
+%    assignments it needs to do don't clutter the save stack. This
+%    prevents large documents with many labels to run out of save
+%    stack.
+% \changes{v1.1h}{1995/10/24}{Switch for multiplelabels replaced by
+%    inline code}
+% \changes{v1.1k}{2001/02/16}{Added an extra grouplevel (PR3250), jlb}
+%    \begin{macrocode}
+\def\@newl@bel#1#2#3{{%
+  \@ifundefined{#1@#2}%
+    \relax
+    {\gdef \@multiplelabels {%
+       \@latex@warning@no@line{There were multiply-defined labels}}%
+     \@latex@warning@no@line{Label `#2' multiply defined}}%
+  \global\@namedef{#1@#2}{#3}}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\newlabel{\@newl@bel r}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\@newl@bel
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\if@multiplelabels}
+% \changes{v1.1h}{1995/10/24}{Macro removed}
+%  \begin{macro}{\@multiplelabels}
+% \changes{v1.1h}{1995/10/24}{Switch for multiplelabels removed}
+%    This is redefined to produce a warning if at least one label is
+%    defined more than once. It is executed by the |\enddocument|
+%    command.
+%    \begin{macrocode}
+\let \@multiplelabels \relax
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\label}
+% \changes{v1.1d}{1994/11/04}{(ASAJ)Added \cs{protected@write}}
+%  \begin{macro}{\refstepcounter}
+% \changes{v1.1d}{1994/11/04}{(ASAJ)Added \cs{protected@edef}}
+%    The commands |\label| and |\refstepcounter| have been changed to
+%    allow |\protect|'ed commands to work properly.  For example,
+%\begin{verbatim}
+%   \def\thechapter{\protect\foo{\arabic{chapter}.\roman{section}}}
+%\end{verbatim}
+%    will cause a |\label{bar}| command to define |\ref{bar}| to expand
+%    to something like |\foo{4.d}|.  Change made 20 Jul 88.
+%
+%    \begin{macrocode}
+\def\label#1{\@bsphack
+  \protected@write\@auxout{}%
+         {\string\newlabel{#1}{{\@currentlabel}{\thepage}}}%
+  \@esphack}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\refstepcounter#1{\stepcounter{#1}%
+    \protected@edef\@currentlabel
+       {\csname p@#1\endcsname\csname the#1\endcsname}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@currentlabel}
+% For |\label| commands that come before any environment
+%
+%    \begin{macrocode}
+\def\@currentlabel{}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \subsection{An extension of counter referencing}
+%
+%
+% At the moment a reference to a counter |foo| will generate the
+% equivalent of |\p@foo\thefoo| although not quite in this form.  For
+% some applications it would be nice of one could have |\thefoo| being
+% an argument to |\p@foo| to be able to put material before and after
+% the number generated by |\thefoo|. This can be easily achieved with
+% a small change to one of the kernel commands as follows:
+%
+%\begin{verbatim}
+%\def\refstepcounter#1{\stepcounter{#1}%
+%    \protected@edef\@currentlabel
+%       {\csname p@#1\expandafter\endcsname\csname the#1\endcsname}%
+%}
+%\end{verbatim}
+%
+% The trick is to ensure that |\csname the#1\endcsname| is turned into
+% a single token before |\p@...| is expanded further. This way, if the
+% |\p@...| command is a macro with one argument it will receive
+% |\the...|. With the kernel code (i.e., without the |\expandafter|)
+% it will instead pick up |\csname| which would be disastrous.
+%
+% Using |\expandafter| instead of braces delimiting the argument is
+% better because, assuming that the |\p@...| command is not defined as
+% a macro with one argument, the braces will stay and prohibit kerning
+% that might otherwise happen between the glyphs generated by
+% |\the...| and surrounding glyphs.
+%
+% We have refrained from making this change in the kernel code
+% although for existing documents it would be 100\% backward
+% compatible. The reason being that any class or package making use of
+% this functionality would then horribly fail with older \LaTeX{}
+% installations.
+%
+% Instead we suggest that people who are interested in using this
+% functionality in a document class or package add the redefinition to
+% the class file. To ensure that this redefinition is properly applied
+% they might want to test for the original definition first, e.g.
+%
+%\begin{verbatim}
+%\CheckCommand*\refstepcounter[1]{\stepcounter{#1}%
+%    \protected@edef\@currentlabel
+%       {\csname p@#1\endcsname\csname the#1\endcsname}%
+%}
+%\renewcommand*\refstepcounter[1]{\stepcounter{#1}%
+%    \protected@edef\@currentlabel
+%       {\csname p@#1\expandafter\endcsname\csname the#1\endcsname}%
+%}
+%\end{verbatim}
+%
+% \Finale
+%

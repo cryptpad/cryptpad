@@ -1,0 +1,17 @@
+Latvian hyphenation patterns
+
+(more info about the licence to be added later)
+
+% This file is part if hyph-utf8 package and resulted from semi-manual
+% conversions of hyphenation patterns into UTF-8 in November 2008 by Mojca &
+% Arthur.
+%
+% This file is available under the term of the GNU GPL, version 2.
+%
+% Source:   Latvian Lingucomponents for OpenOffice
+% Homepage: http://sourceforge.net/projects/openoffice-lv
+% File:     hyph_lv_lv.dic (version 0.3, 2005-09-14)
+% Author:   Copyright (C) 2004-2005 Janis Vilims, jvilims@apollo.lv
+% License:  Lesser General Public Licence (LGPL) 2.1
+%
+

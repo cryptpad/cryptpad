@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pagegrid'>
+  <name>pagegrid</name>
+  <caption>Print page grid in background.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    This package puts a grid on the paper. It was written for
+    developers of a class or package
+    who have to put elements on definite locations on a page
+    (e.g. letter class). The grid allows a faster optical check,
+    whether the positions are correct. If the previewer already
+    offers features for measuring, the package might be unnecessary.
+    Otherwise it saves the developer from printing the page and
+    measuring by hand.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pagegrid.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pagegrid.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

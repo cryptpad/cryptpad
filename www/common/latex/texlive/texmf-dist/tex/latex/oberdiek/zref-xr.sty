@@ -1,0 +1,448 @@
+%%
+%% This is file `zref-xr.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% zref.dtx  (with options: `xr')
+%% 
+%% This is a generated file.
+%% 
+%% Project: zref
+%% Version: 2012/04/04 v2.24
+%% 
+%% Copyright (C) 2006-2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file zref.dtx
+%% and the derived files
+%%    zref.sty, zref.pdf, zref.ins, zref.drv, zref-base.sty,
+%%    zref-abspage.sty, zref-abspos.sty, zref-counter.sty,
+%%    zref-dotfill.sty, zref-env.sty, zref-hyperref.sty,
+%%    zref-lastpage.sty, zref-marks.sty, zref-nextpage.sty,
+%%    zref-pageattr.sty, zref-pagelayout.sty, zref-perpage.sty,
+%%    zref-runs.sty, zref-savepos.sty, zref-thepage.sty,
+%%    zref-titleref.sty, zref-totpages.sty, zref-user.sty,
+%%    zref-xr.sty, zref-example.tex, zref-example-lastpage.tex,
+%%    zref-example-nextpage.tex, zref-test1.tex,
+%%    zref-test-base.tex, zref-test-runs.tex,
+%%    zref-test-titleref-memoir.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{zref-xr}%
+  [2012/04/04 v2.24 Module xr for zref (HO)]%
+\RequirePackage{zref-base}[2012/04/04]
+\ifx\ZREF@base@ok Y%
+\else
+  \expandafter\endinput
+\fi
+\RequirePackage{keyval}
+\RequirePackage{kvoptions}[2010/02/22]
+\zref@newprop{url}{}%
+\zref@newprop{urluse}{}%
+\zref@newprop{externaldocument}{}%
+\providecommand*{\zref@xr@ext}{%
+  \ltx@ifundefined{XR@ext}{pdf}{\XR@ext}%
+}%
+\newif\ifZREF@xr@zreflabel
+\SetupKeyvalOptions{%
+  family=ZREF@XR,%
+  prefix=ZREF@xr@%
+}
+\DeclareBoolOption[true]{tozreflabel}
+\DeclareBoolOption[false]{toltxlabel}
+\DeclareBoolOption{verbose}
+\define@key{ZREF@XR}{ext}{%
+  \def\zref@xr@{#1}%
+}
+\DeclareBoolOption[false]{urluse}
+\newcommand*{\zxrsetup}{%
+  \kvsetkeys{ZREF@XR}%
+}%
+\newcount\ZREF@xr@URL
+\ZREF@xr@URL=\ltx@zero
+\def\ZREF@xr@AddURL#1{%
+  \begingroup
+    \def\ZREF@temp{#1}%
+    \count@=\ltx@one
+    \ZREF@xr@@AddUrl
+  \endgroup
+}
+\def\ZREF@xr@@AddUrl{%
+  \ifnum\count@>\ZREF@xr@URL
+    \global\advance\ZREF@xr@URL by\ltx@one
+    \xdef\ZREF@xr@theURL{\romannumeral\ZREF@xr@URL}%
+    \global\expandafter\let
+        \csname Z@U@\ZREF@xr@theURL\endcsname\ZREF@temp
+    \@PackageInfo{zref-xr}{%
+      \ltx@backslashchar Z@U@\ZREF@xr@theURL:\MessageBreak
+      \ZREF@temp\MessageBreak
+    }%
+  \else
+    \expandafter
+    \ifx\csname Z@U@\romannumeral\count@\endcsname\ZREF@temp
+      \xdef\ZREF@xr@theURL{\romannumeral\count@}%
+    \else
+      \expandafter\expandafter\expandafter\ZREF@xr@@AddUrl
+    \fi
+  \fi
+}
+\ZREF@IfDefinable\zexternaldocument\def{%
+  {%
+    \ZREF@NewPropAnchor
+    \ZREF@NewPropTitle
+    \begingroup
+      \csname @safe@actives@true\endcsname
+      \makeatletter
+      \@ifstar{%
+        \ZREF@xr@zreflabelfalse
+        \@testopt\ZREF@xr@externaldocument{}%
+      }{%
+        \ZREF@xr@zreflabeltrue
+        \@testopt\ZREF@xr@externaldocument{}%
+      }%
+  }%
+}%
+\def\ZREF@xr@externaldocument[#1]#2{%
+    \def\ZREF@xr@prefix{#1}%
+    \let\ZREF@xr@filelist\ltx@empty
+    \edef\ZREF@xr@externalfile{#2}%
+    \edef\ZREF@xr@file{\ZREF@xr@externalfile.aux}%
+    \filename@parse{#2}%
+    \@testopt\ZREF@xr@graburl{#2.\zref@xr@ext}%
+}%
+\def\ZREF@xr@graburl[#1]{%
+    \edef\ZREF@xr@url{#1}%
+    \ifZREF@xr@urluse
+      \expandafter\ZREF@xr@AddURL\expandafter{\ZREF@xr@url}%
+      \expandafter\def\expandafter\ZREF@xr@url
+      \expandafter{\csname Z@U@\ZREF@xr@theURL\endcsname}%
+    \fi
+    \ZREF@xr@checkfile
+  \endgroup
+}%
+\def\ZREF@xr@checkfile{%
+  \openin\@inputcheck\ZREF@xr@file\relax
+  \ifeof\@inputcheck
+    \PackageWarning{zref-xr}{%
+      File `\ZREF@xr@file' not found or empty,\MessageBreak
+      labels not imported%
+    }%
+  \else
+    \PackageInfo{zref-xr}{%
+      Label \ifZREF@xr@zreflabel (zref) \fi
+      import from `\ZREF@xr@file'%
+    }%
+    \def\ZREF@xr@found{0}%
+    \def\ZREF@xr@ignored@empty{0}%
+    \def\ZREF@xr@ignored@zref{0}%
+    \def\ZREF@xr@ignored@ltx{0}%
+    \ZREF@xr@processfile
+    \closein\@inputcheck
+    \begingroup
+      \let\on@line\ltx@empty
+      \PackageInfo{zref-xr}{%
+        Statistics for `\ZREF@xr@file':\MessageBreak
+        \ZREF@xr@found\space
+        \ifZREF@xr@zreflabel zref\else LaTeX\fi\space
+        label(s) found%
+        \ifnum\ZREF@xr@ignored@empty>0 %
+          ,\MessageBreak
+          \ZREF@xr@ignored@empty\space empty label(s) ignored%
+        \fi
+        \ifnum\ZREF@xr@ignored@zref>0 %
+          ,\MessageBreak
+          \ZREF@xr@ignored@zref\space
+          duplicated zref label(s) ignored%
+        \fi
+        \ifnum\ZREF@xr@ignored@ltx>0 %
+          ,\MessageBreak
+          \ZREF@xr@ignored@ltx\space
+          duplicated latex label(s) ignored%
+        \fi
+      }%
+    \endgroup
+  \fi
+  \ifx\ZREF@xr@filelist\ltx@empty
+  \else
+    \edef\ZREF@xr@file{%
+      \expandafter\ltx@car\ZREF@xr@filelist\@nil
+    }%
+    \edef\ZREF@xr@filelist{%
+      \expandafter\ltx@cdr\ZREF@xr@filelist\ltx@empty\@nil
+    }%
+    \expandafter\ZREF@xr@checkfile
+  \fi
+}%
+\def\ZREF@xr@processfile{%
+  \read\@inputcheck to\ZREF@xr@line
+  \expandafter\ZREF@xr@processline\ZREF@xr@line..\ZREF@nil
+  \ifeof\@inputcheck
+  \else
+    \expandafter\ZREF@xr@processfile
+  \fi
+}%
+\long\def\ZREF@xr@processline#1#2#3\ZREF@nil{%
+  \def\x{#1}%
+  \toks@{#2}%
+  \ifZREF@xr@zreflabel
+    \ifx\x\ZREF@xr@zref@newlabel
+      \expandafter
+      \ZREF@xr@process@zreflabel\ZREF@xr@line...\ZREF@nil
+    \fi
+  \else
+    \ifx\x\ZREF@xr@newlabel
+      \expandafter
+      \ZREF@xr@process@label\ZREF@xr@line...[]\ZREF@nil
+    \fi
+  \fi
+  \ifx\x\ZREF@xr@@input
+    \edef\ZREF@xr@filelist{%
+      \etex@unexpanded\expandafter{\ZREF@xr@filelist}%
+      {\filename@area\the\toks@}%
+    }%
+  \fi
+}%
+\def\ZREF@xr@process@zreflabel\zref@newlabel#1#2#3\ZREF@nil{%
+  \edef\ZREF@xr@refname{Z@R@\ZREF@xr@prefix#1}%
+  \edef\ZREF@xr@found{\the\numexpr\ZREF@xr@found+1\relax}%
+  \def\x{#2}%
+  \edef\ZREF@xr@tempname{$temp$}%
+  \edef\ZREF@xr@temprefname{Z@R@\ZREF@xr@tempname}%
+  \let\ZREF@xr@list\x
+  \ifx\ZREF@xr@list\ltx@empty
+    \PackageWarningNoLine{zref-xr}{%
+      Label `#1' without properties ignored\MessageBreak
+      in file `\ZREF@xr@file'%
+    }%
+    \edef\ZREF@xr@ignored@empty{%
+      \the\numexpr\ZREF@xr@ignored@empty+1\relax
+    }%
+  \else
+    \expandafter\ZREF@xr@checklist\x\ZREF@nil
+    \expandafter\let\csname\ZREF@xr@temprefname\endcsname\x
+    \expandafter\ltx@LocalAppendToMacro
+    \csname\ZREF@xr@temprefname\expandafter\endcsname
+    \expandafter{%
+      \expandafter\externaldocument\expandafter{%
+        \ZREF@xr@externalfile
+      }%
+    }%
+    \ZREF@xr@urlcheck\ZREF@xr@tempname
+    \ifZREF@xr@tozreflabel
+      \@ifundefined{\ZREF@xr@refname}{%
+        \ifZREF@xr@verbose
+          \PackageInfo{zref-xr}{%
+            Import to zref label `\ZREF@xr@tempname#1'%
+          }%
+        \fi
+        \global\expandafter
+        \let\csname\ZREF@xr@refname\expandafter\endcsname
+        \csname\ZREF@xr@temprefname\endcsname
+      }{%
+        \ZREF@xr@zref@ignorewarning{\ZREF@xr@prefix#1}%
+      }%
+    \fi
+    \ifZREF@xr@toltxlabel
+      \ZREF@xr@tolabel{\ZREF@xr@tempname}{\ZREF@xr@prefix#1}%
+    \fi
+  \fi
+}%
+\def\ZREF@xr@process@label\newlabel#1#2#3[#4]#5\ZREF@nil{%
+  \def\ZREF@xr@refname{Z@R@\ZREF@xr@prefix#1}%
+  \edef\ZREF@xr@found{\the\numexpr\ZREF@xr@found+1\relax}%
+  \def\x{#2}%
+  \edef\ZREF@xr@tempname{$temp$}%
+  \edef\ZREF@xr@temprefname{Z@R@\ZREF@xr@tempname}%
+  \expandafter\ZREF@xr@scanparams
+      \csname\ZREF@xr@temprefname\expandafter\endcsname
+      \x{}{}{}{}{}\ZREF@nil
+  \ifx\\#4\\%
+  \else
+    % ntheorem knows an optional argument at the end of \newlabel
+    \ZREF@NewPropTheotype
+    \expandafter\ltx@LocalAppendToMacro
+        \csname\ZREF@xr@temprefname\endcsname{\theotype{#4}}%
+  \fi
+  \expandafter\ltx@LocalAppendToMacro
+  \csname\ZREF@xr@temprefname\expandafter\endcsname\expandafter{%
+    \expandafter\externaldocument\expandafter{%
+      \ZREF@xr@externalfile
+    }%
+  }%
+  \ZREF@xr@urlcheck\ZREF@xr@tempname
+  \ifZREF@xr@tozreflabel
+    \@ifundefined{\ZREF@xr@refname}{%
+      \ifZREF@xr@verbose
+        \PackageInfo{zref-xr}{%
+          Import to zref label `\ZREF@xr@prefix#1'%
+        }%
+      \fi
+      \global\expandafter
+      \let\csname\ZREF@xr@refname\expandafter\endcsname
+      \csname\ZREF@xr@temprefname\endcsname
+    }{%
+      \ZREF@xr@zref@ignorewarning{\ZREF@xr@prefix#1}%
+    }%
+  \fi
+  \ifZREF@xr@toltxlabel
+    \ZREF@xr@tolabel{\ZREF@xr@tempname}{\ZREF@xr@prefix#1}%
+  \fi
+}
+\def\ZREF@xr@zref@newlabel{\zref@newlabel}%
+\def\ZREF@xr@newlabel{\newlabel}%
+\def\ZREF@xr@@input{\@input}%
+\def\ZREF@xr@relax{\relax}%
+\def\ZREF@xr@tolabel#1#2{%
+  \ifZREF@xr@verbose
+    \PackageInfo{zref-xr}{%
+      Import to LaTeX label `#2'%
+    }%
+  \fi
+  \zref@wrapper@unexpanded{%
+    \expandafter\xdef\csname r@#2\endcsname{%
+      {%
+        \ltx@ifundefined{M@TitleReference}{%
+          \ltx@ifundefined{TR@TitleReference}{%
+            \zref@extractdefault{#1}{default}{}%
+          }{%
+            \noexpand\TR@TitleReference
+            {\zref@extractdefault{#1}{default}{}}%
+            {\zref@extractdefault{#1}{title}{}}%
+          }%
+        }{%
+          \noexpand\M@TitleReference
+          {\zref@extractdefault{#1}{default}{}}%
+          {\zref@extractdefault{#1}{title}{}}%
+        }%
+      }%
+      {\zref@extractdefault{#1}{page}{}}%
+      \ltx@ifpackageloaded{nameref}{%
+        {\zref@extractdefault{#1}{title}{}}%
+        {\zref@extractdefault{#1}{anchor}{}}%
+        \zref@ifrefcontainsprop{#1}{urluse}{%
+          {\zref@extractdefault{#1}{urluse}{}}%
+        }{%
+          {\zref@extractdefault{#1}{url}{}}%
+        }%
+      }{}%
+    }%
+  }%
+}
+\def\ZREF@xr@zref@ignorewarning#1{%
+  \PackageWarningNoLine{zref-xr}{%
+    Zref label `#1' is already in use\MessageBreak
+    in file `\ZREF@xr@file'%
+  }%
+  \edef\ZREF@xr@ignored@zref{%
+    \the\numexpr\ZREF@xr@ignored@zref+1%
+  }%
+}%
+\def\ZREF@xr@ltx@ignorewarning#1{%
+  \PackageWarningNoLine{zref-xr}{%
+    LaTeX label `#1' is already in use\MessageBreak
+    in file `\ZREF@xr@file'%
+  }%
+  \edef\ZREF@xr@ignored@ltx{%
+    \the\numexpr\ZREF@xr@ignored@ltx+1%
+  }%
+}%
+\def\ZREF@xr@checklist#1#2#3\ZREF@nil{%
+  \ifx\@undefined#1\relax
+    \expandafter\ZREF@xr@checkkey\string#1\@nil
+  \fi
+  \ifx\\#3\\%
+  \else
+    \ltx@ReturnAfterFi{%
+      \ZREF@xr@checklist#3\ZREF@nil
+    }%
+  \fi
+}%
+\def\ZREF@xr@checkkey#1#2\@nil{%
+  \zref@ifpropundefined{#2}{%
+    \zref@newprop{#2}{}%
+  }{}%
+}%
+\def\ZREF@xr@scanparams#1#2#3#4#5#6#7\ZREF@nil{%
+  \let#1\ltx@empty
+  \ZREF@foundfalse
+  \ZREF@xr@scantitleref#1#2\TR@TitleReference{}{}\ZREF@nil
+  \ifZREF@found
+  \else
+    \ltx@LocalAppendToMacro#1{\default{#2}}%
+  \fi
+  % page
+  \ltx@LocalAppendToMacro#1{\page{#3}}%
+  % nameref title
+  \ifZREF@found
+  \else
+    \ifx\\#4\\%
+    \else
+      \def\ZREF@xr@temp{#4}%
+      \ifx\ZREF@xr@temp\ZREF@xr@relax
+      \else
+        \ltx@LocalAppendToMacro#1{\title{#4}}%
+      \fi
+    \fi
+  \fi
+  % anchor
+  \ifx\\#5\\%
+  \else
+    \ltx@LocalAppendToMacro#1{\anchor{#5}}%
+  \fi
+  \ifx\\#6\\%
+  \else
+    \ifZREF@xr@urluse
+      \ZREF@xr@AddURL{#6}%
+      \expandafter\ltx@LocalAppendToMacro\expandafter#1%
+      \expandafter{%
+        \expandafter\urluse\expandafter{%
+          \csname Z@U@\ZREF@xr@theURL\endcsname
+        }%
+      }%
+    \else
+      \ltx@LocalAppendToMacro#1{\url{#6}}%
+    \fi
+  \fi
+}%
+\def\ZREF@xr@scantitleref#1#2\TR@TitleReference#3#4#5\ZREF@nil{%
+  \ifx\\#5\\%
+  \else
+    \ltx@LocalAppendToMacro#1{%
+      \default{#3}%
+      \title{#4}%
+    }%
+    \ZREF@foundtrue
+  \fi
+}%
+\def\ZREF@xr@urlcheck#1{%
+  \zref@ifrefcontainsprop{#1}{anchor}{%
+    \zref@ifrefcontainsprop{#1}{url}{%
+    }{%
+      \expandafter
+      \ltx@LocalAppendToMacro\csname Z@R@#1\expandafter\endcsname
+      \expandafter{%
+        \csname url\ifZREF@xr@urluse use\fi
+        \expandafter\endcsname\expandafter{\ZREF@xr@url}%
+      }%
+    }%
+  }{%
+  }%
+}%
+\endinput
+%%
+%% End of file `zref-xr.sty'.

@@ -1,0 +1,1590 @@
+% \iffalse meta-comment
+%
+% File: thepdfnumber.dtx
+% Version: 2011/11/24 v1.0
+% Info: Print PDF numbers with minimal digits
+%
+% Copyright (C) 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file thepdfnumber.dtx
+% and the derived files
+%    thepdfnumber.sty, thepdfnumber.pdf, thepdfnumber.ins, thepdfnumber.drv,
+%    thepdfnumber-test1.tex, thepdfnumber-test2.tex,
+%    thepdfnumber-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/thepdfnumber.dtx
+%    CTAN:macros/latex/contrib/oberdiek/thepdfnumber.pdf
+%
+% Unpacking:
+%    (a) If thepdfnumber.ins is present:
+%           tex thepdfnumber.ins
+%    (b) Without thepdfnumber.ins:
+%           tex thepdfnumber.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{thepdfnumber.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If thepdfnumber.drv is present:
+%           latex thepdfnumber.drv
+%    (b) Without thepdfnumber.drv:
+%           latex thepdfnumber.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex thepdfnumber.dtx
+%       makeindex -s gind.ist thepdfnumber.idx
+%       pdflatex thepdfnumber.dtx
+%       makeindex -s gind.ist thepdfnumber.idx
+%       pdflatex thepdfnumber.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/thepdfnumber.sty
+%    TDS:doc/latex/oberdiek/thepdfnumber.pdf
+%    TDS:doc/latex/oberdiek/test/thepdfnumber-test1.tex
+%    TDS:doc/latex/oberdiek/test/thepdfnumber-test2.tex
+%    TDS:doc/latex/oberdiek/test/thepdfnumber-test3.tex
+%    TDS:source/latex/oberdiek/thepdfnumber.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: thepdfnumber 2011/11/24 v1.0 Print PDF numbers with minimal digits (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: thepdfnumber
+Version: 2011/11/24 v1.0
+
+Copyright (C) 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file thepdfnumber.dtx
+and the derived files
+   thepdfnumber.sty, thepdfnumber.pdf, thepdfnumber.ins, thepdfnumber.drv,
+   thepdfnumber-test1.tex, thepdfnumber-test2.tex,
+   thepdfnumber-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{thepdfnumber.ins}{\from{thepdfnumber.dtx}{install}}%
+  \file{thepdfnumber.drv}{\from{thepdfnumber.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{thepdfnumber.sty}{\from{thepdfnumber.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{thepdfnumber-test1.tex}{\from{thepdfnumber.dtx}{test1}}%
+  \file{thepdfnumber-test2.tex}{\from{thepdfnumber.dtx}{test2}}%
+  \file{thepdfnumber-test3.tex}{\from{thepdfnumber.dtx}{test2,active}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     thepdfnumber.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `thepdfnumber.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{thepdfnumber.drv}%
+  [2011/11/24 v1.0 Print PDF numbers with minimal digits (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{csquotes}
+\usepackage[
+  bibencoding=ascii,
+  alldates=iso8601,
+]{biblatex}[2011/11/13]
+\bibliography{oberdiek-source}
+\begin{document}
+  \DocInput{thepdfnumber.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1146}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{thepdfnumber.drv}
+%
+% \title{The \xpackage{thepdfnumber} package}
+% \date{2011/11/24 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package converts real numbers to a minimal representation
+% that is stripped from leading or trailing zeros,
+% plus signs and decimal point if not necessary.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% Dealing with the PDF format, there is sometimes the need to write
+% some low level PDF stuff. In case of numbers, the numbers can
+% arise from user input (e.g. color or transparency specifications)
+% or can be calculated. For example, \hologo{LaTeX}'s \cs{strip@pt}
+% makes a good job to output a real number. It automatically suppresses
+% the decimal part if the number is an integer. However it leaves
+% a leading zero for numbers greater zero and smaller one.
+% Thus the package provides macros that can be used with different
+% formats, even with \hologo{iniTeX} and generates numbers that
+% are valid numbers of the PDF format and whose length is minimal.
+%
+% \subsection{Usage}
+%
+% The package \xpackage{thepdfnumber} can be used with \hologo{LaTeX},
+% \hologo{plainTeX} or even with \hologo{iniTeX}:
+% \begin{quote}
+%   |\RequirePackage{thepdfnumber}| \textit{\% \hologo{LaTeX}}\\
+%   |\input thepdfnumber.sty| \textit{\% \hologo{plainTeX}/\hologo{iniTeX}}
+% \end{quote}
+% The package does not need and have package options.
+%
+% \subsection{User macros}
+%
+% All user macros are expandable in exact two expansion steps.
+%
+% \begin{declcs}{thepdfnumber} \M{number}
+% \end{declcs}
+% Macro \cs{thepdfnumber} takes a number
+% as argument and expands to a minimal representation of that number.
+% Some examples:
+% \begin{quote}
+% \begin{tabular}{r@{.: }>{\ttfamily}l@{ $\rightarrow$\ }>{\ttfamily}l@{}}
+%   1& +123 & 123\\
+%   2& --123 & 123\\
+%   3& -01 & -1\\
+%   4& 0045 & 45\\
+%   5& 1.0 & 1\\
+%   6& 1.20 & 1.2\\
+%   7& 0.0 & 0\\
+%   8& 0.78 & .78\\
+%   9& +012.340 & 12.34\\
+% \end{tabular}
+% \end{quote}
+% It reduces the length of the number representation:
+% \begin{itemize}
+% \item The signs are collapsed and only one minus sign
+%   is output if the number is negative (see examples 1, 2, 3, 9).
+% \item Leading zeros are removed (4, 8, 9) unless the number is zero (7).
+% \item The decimal part is omitted, if the number is an integer (5, 7).
+% \item Trailing zeros from the decimal part are stripped (5, 6, 7, 9).
+% \end{itemize}
+% The resulting number representation can be catched with one of the
+% following Perl regular expressions:
+% \begin{itemize}
+% \item |^0$| (zero)
+% \item |^-?[1-9][0-9]*$| (integer)
+% \item |^-?[0-9]*\.[0-9]*[1-9]$| (real)
+% \end{itemize}
+% This is a valid numeric object of the PDF specification \cite[``7.3.3~Numeric Objects'']{pdfspec-iso32000-1}.
+%
+% \begin{declcs}{thepdfnumberNormZeroOne}
+% \end{declcs}
+% There are various places in the PDF specification where the
+% number is in the domain 0.0 upto 1.0. Macro thepdfnumberNormZeroOne
+% automatically adjusts the number to fit into that range. Negative
+% numbers are mapped to |0| and numbers greater than one are
+% replaced by |1|. Thus the result fits one of the following regular
+% expressions:
+% \begin{itemize}
+% \item |^0$|
+% \item |^\.[0-9]*[1-9]$|
+% \item |^1$|
+% \end{itemize}
+% Examples:
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$\ }>{\ttfamily}l@{}}
+%   -456 & 0\\
+%   -0.001 & 0\\
+%   0.0 & 0\\
+%   0.010 & .01\\
+%   0.456 & .456\\
+%   1.0 & 1\\
+%   01.001 & 1\\
+%   4 & 1\\
+% \end{tabular}
+% \end{quote}
+%
+% \subsection{Input number}
+%
+% The user macros expect a number as argument. The number can either
+% be given explicitely or as macro that expands in one step
+% to an explicite number, because the first token of the argument
+% is expanded once.
+%
+% The explicite number consists of
+% \begin{itemize}
+% \item optional signs `\texttt{+}' and `\texttt{-}',
+% \item digits `\texttt{0}' upto `\texttt{9}' and
+% \item an optional dot `\texttt{.}'.
+% \end{itemize}
+% All tokens must have catcode 12 (other), the default catcodes
+% for these characters in \hologo{LaTeX}, \hologo{plainTeX} or
+% \hologo{iniTeX}. As Perl regular expression the number is expected
+% in one of the following forms:
+% \begin{itemize}
+% \item |^[+-]*[0-9]+$|
+% \item |^[+-]*[0-9]*\.[0-9]*$|
+% \end{itemize}
+% At least one digit or the dot must be present.
+%
+% \subsection{Error handling}
+%
+% The package is not intended for validating numbers or to
+% decide if an argument is a number. Therefore it is an usage
+% error to use the user macros with arguments that are not
+% explicite numbers as specified in the previous sections.
+% Nevertheless some error conditions are sometimes recognized.
+% Errors are given in form of an undefined command sequence.
+% It is the only way to notify \hologo{TeX} in expandable context.
+% Expanding to some error text would invalidate the output.
+% Currently the following errors are thrown:
+% \begin{description}
+% \item[\cs{thepdfnumber@ErrorEndMarker}:]
+%   Internally the argument parsing uses an end marker that
+%   is never called directly. If it is called with valid
+%   user input, then this is a bug. Otherwise it means the user input
+%   contains nasty stuff.
+% \item[\cs{thepdfnumber@ErrorUnexpectedEnd}:] The macros expect at least one digit
+%   or the dot, otherwise if the argument is empty or only contains
+%   signs, then this error is called.
+% \item[\cs{thepdfnumber@ErrorInvalidToken}:] It is called if the number
+%   contains other tokens than signs, digits or the dot or the
+%   token at the wrong place (e.g. a sign after a digit).
+%   In case of \cs{thepdfnumberNormZeroOne} this error condition might
+%   not always be detected, because the number parsing might stop
+%   at an early point, when the result is already clear (e.g.
+%   if the number is negative or will be greater than one).
+% \item[Improper alphabetic constant:] This error might be
+%   thrown by \hologo{TeX}, if the number contains
+%   command tokens instead of characters.
+% \end{description}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@thepdfnumber.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{thepdfnumber}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@thepdfnumber.sty\endcsname
+\ProvidesPackage{thepdfnumber}%
+  [2011/11/24 v1.0 Print PDF numbers with minimal digits (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ThPdNu@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ThPdNu@AtEnd{%
+    \ThPdNu@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{96}{12}% `
+\edef\ThPdNu@AtEnd{\ThPdNu@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Helper macros}
+%
+%    \begin{macro}{\ThPdNu@FIN}
+%    \begin{macrocode}
+\def\ThPdNu@FIN{\thepdfnumber@ErrorEndMarker}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@space}
+%    \begin{macrocode}
+\def\ThPdNu@space{ }
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@zero}
+%    \begin{macrocode}
+\chardef\ThPdNu@zero=0 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@one}
+%    \begin{macrocode}
+\chardef\ThPdNu@one=1 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@firstoftwo}
+%    \begin{macrocode}
+\long\def\ThPdNu@firstoftwo#1#2{#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@secondoftwo}
+%    \begin{macrocode}
+\long\def\ThPdNu@secondoftwo#1#2{#2}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Detect \hologo{eTeX}}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname detokenize\endcsname\relax
+  \catcode`\&=14 %
+  \catcode`\$=9 %
+\else
+  \catcode`\&=9 %
+  \catcode`\$=14 %
+\fi
+%    \end{macrocode}
+%
+% \subsection{User macro \cs{thepdfnumber}}
+%
+%    \begin{macro}{\thepdfnumber}
+%    \begin{macrocode}
+\def\thepdfnumber#1{%
+  \romannumeral
+& \iftrue\expandafter\ThPdNu@State@Plus\expandafter\fi
+& \detokenize\expandafter{#1}%
+& \ThPdNu@FIN
+$ \ifx\ThPdNu@FIN#1\ThPdNu@FIN
+$   \expandafter\ThPdNu@firstoftwo
+$ \else
+$   \expandafter\ThPdNu@secondoftwo
+$ \fi
+$ {%
+$   \ThPdNu@zero
+$   0\thepdfnumber@ErrorUnexpectedEnd
+$ }{%
+$   \iftrue\expandafter\ThPdNu@State@Plus\expandafter\fi#1\ThPdNu@FIN
+$ }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{State definitions for sign}
+%
+%    \begin{macro}{\ThPdNu@State@Plus}
+%    \begin{macrocode}
+\def\ThPdNu@State@Plus#1\fi#2{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#2%
+           0%
+&        \else\ifx-#2%
+$        \else\ifnum`#2=45 % -
+           1%
+         \else\ifx0#2%
+           2%
+         \else\ifnum`#2>48 %
+           \ifnum`#2<58 %
+             3%
+           \else
+             9%
+           \fi
+&        \else\ifx.#2%
+$        \else\ifnum`#2=46 % .
+           4%
+&        \else\ifx+#2%
+$        \else\ifnum`#2=43 % +
+           5%
+         \else
+           9%
+         \fi\fi\fi\fi\fi\fi\ThPdNu@space
+    \expandafter\ThPdNu@zero
+    \expandafter0%
+    \expandafter\thepdfnumber@ErrorUnexpectedEnd
+  \or
+    \ThPdNu@State@Minus
+  \or
+    \ThPdNu@State@SkipZeros!%
+  \or
+    \ThPdNu@State@Int!#2!%
+  \or
+    \ThPdNu@State@Dot!\ThPdNu@zero*\ThPdNu@zero!!%
+  \or
+    \ThPdNu@State@Plus
+  \else
+    \ThPdNu@ReturnError{0}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@State@Minus}
+%    \begin{macrocode}
+\def\ThPdNu@State@Minus#1\fi#2{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#2%
+           0%
+         \else\ifx0#2%
+           1%
+         \else\ifnum`#2>48 %
+           \ifnum`#2<58 %
+             2%
+           \else
+             9%
+           \fi
+&        \else\ifx.#2%
+$        \else\ifnum`#2=46 % .
+           3%
+&        \else\ifx-#2%
+$        \else\ifnum`#2=45 % -
+           4%
+&        \else\ifx+#2%
+$        \else\ifnum`#2=43 % +
+           5%
+         \else
+           9%
+         \fi\fi\fi\fi\fi\fi\ThPdNu@space
+    \expandafter\ThPdNu@zero
+    \expandafter0%
+    \expandafter\thepdfnumber@ErrorUnexpectedEnd
+  \or
+    \ThPdNu@State@SkipZeros-!%
+  \or
+    \ThPdNu@State@Int-!#2!%
+  \or
+    \ThPdNu@State@Dot-!\ThPdNu@zero*\ThPdNu@zero!!%
+  \or
+    \ThPdNu@State@Plus
+  \or
+    \ThPdNu@State@Minus
+  \else
+    \ThPdNu@ReturnError{0}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnError}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnError#1#2\fi#3\ThPdNu@FIN{%
+  \fi
+  \ThPdNu@zero
+  #1%
+  \thepdfnumber@ErrorInvalidToken
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{State definitions for integer part}
+%
+%    \begin{macro}{\ThPdNu@State@SkipZeros}
+%    \begin{macrocode}
+\def\ThPdNu@State@SkipZeros#1!#2\fi#3{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#3%
+           0%
+         \else\ifx0#3%
+           1%
+         \else\ifnum`#3>48 %
+           \ifnum`#3<58 %
+             2%
+           \else
+             9%
+           \fi
+&        \else\ifx.#3%
+$        \else\ifnum`#3=46 % .
+           3%
+         \else
+           9%
+         \fi\fi\fi\fi\ThPdNu@space
+    \expandafter\ThPdNu@zero
+    \expandafter0%
+  \or
+   \ThPdNu@State@SkipZeros#1!%
+  \or
+    \ThPdNu@State@Int#1!#3!%
+  \or
+    \ThPdNu@State@Dot#1!\ThPdNu@zero*\ThPdNu@zero!!%
+  \else
+    \ThPdNu@ReturnError{0}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@State@Int}
+%    \begin{macrocode}
+\def\ThPdNu@State@Int#1!#2!#3\fi#4{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#4%
+           0%
+         \else\ifnum`#4>47 %
+           \ifnum`#4<58 %
+             1%
+           \else
+             9%
+           \fi
+&        \else\ifx.#4%
+$        \else\ifnum`#4=46 % .
+           2%
+         \else
+           9%
+         \fi\fi\fi\ThPdNu@space
+    \ThPdNu@ReturnInt{#1#2}%
+  \or
+    \ThPdNu@State@Int#1!#2#4!%
+  \or
+    \ThPdNu@State@Dot#1!\ThPdNu@one#2*\ThPdNu@zero!!%
+  \else
+    \ThPdNu@ReturnError{#1#2}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnInt}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnInt#1#2\fi{%
+  \fi
+  \ThPdNu@zero
+  #1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{State definitions for decimal digits}
+%
+%    \begin{macro}{\ThPdNu@State@Dot}
+%    \begin{macrocode}
+\def\ThPdNu@State@Dot#1*#2#3!#4!#5\fi#6{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#6%
+           0%
+         \else\ifnum`#6>48 %
+           \ifnum`#6<58 %
+             1%
+           \else
+             9%
+           \fi
+         \else\ifx0#6%
+           2%
+         \else
+           9%
+         \fi\fi\fi\ThPdNu@space
+    \ThPdNu@ReturnNumber#1*#2#3!%
+  \or
+    \ThPdNu@State@Dot#1*\ThPdNu@one#3#4#6!!%
+  \or
+    \ThPdNu@State@DotZero#1*#2#3!#4#6!%
+  \else
+    \ThPdNu@ReturnNumberInvalid#1*#2#3!%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@State@DotZero}
+%    \begin{macrocode}
+\def\ThPdNu@State@DotZero#1*#2#3!#4!#5\fi#6{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#6%
+           0%
+         \else\ifnum`#6>48 %
+           \ifnum`#6<58 %
+             1%
+           \else
+             9%
+           \fi
+         \else\ifx0#6%
+           2%
+         \else
+           9%
+         \fi\fi\fi\ThPdNu@space
+    \ThPdNu@ReturnNumber#1*#2#3!%
+  \or
+    \ThPdNu@State@Dot#1*\ThPdNu@one#3#4#6!!%
+  \or
+    \ThPdNu@State@DotZero#1*#2#3!#4#6!%
+  \else
+    \ThPdNu@ReturnNumber#1*#2#3!%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnNumber}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnNumber#1!#2#3*#4#5!#6\fi{%
+  \fi
+  \ifcase#2%
+    \expandafter\ThPdNu@firstoftwo
+  \else
+    \expandafter\ThPdNu@secondoftwo
+  \fi
+  {%
+    \ifcase#4%
+      \expandafter\ThPdNu@firstoftwo
+    \else
+      \expandafter\ThPdNu@secondoftwo
+    \fi
+    {\ThPdNu@zero 0}%
+    {\ThPdNu@zero #1.#5}%
+  }{%
+    \ifcase#4%
+      \expandafter\ThPdNu@firstoftwo
+    \else
+      \expandafter\ThPdNu@secondoftwo
+    \fi
+    {\ThPdNu@zero #1#3}%
+    {\ThPdNu@zero #1#3.#5}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnNumberInvalid}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnNumberInvalid#1*#2!#3\fi#4\ThPdNu@FIN{%
+  \fi
+  \iftrue\ThPdNu@ReturnNumber#1*#2!\fi
+  \thepdfnumber@ErrorInvalidToken
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Norm macro}
+%
+%    \begin{macro}{\thepdfnumberNormZeroOne}
+%    \begin{macrocode}
+\def\thepdfnumberNormZeroOne#1{%
+  \romannumeral
+& \iftrue\expandafter\ThPbNu@StateN@Plus\expandafter\fi
+& \detokenize\expandafter{#1}%
+& \ThPdNu@FIN
+$ \ifx\ThPdNu@FIN#1\ThPdNu@FIN
+$   \expandafter\ThPdNu@firstoftwo
+$ \else
+$   \expandafter\ThPdNu@secondoftwo
+$ \fi
+$ {%
+$   \ThPdNu@zero
+$   0\thepdfnumber@ErrorUnexpectedEnd
+$ }{%
+$   \iftrue\expandafter\ThPbNu@StateN@Plus\expandafter\fi#1\ThPdNu@FIN
+$ }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{State definitions for sign}
+%
+%    \begin{macro}{\ThPbNu@StateN@Plus}
+%    \begin{macrocode}
+\def\ThPbNu@StateN@Plus#1\fi#2{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#2%
+           0%
+&        \else\ifx-#2%
+$        \else\ifnum`#2=45 % -
+           1%
+         \else\ifx0#2%
+           2%
+         \else\ifnum`#2>48 %
+           \ifnum`#2<58 %
+             3%
+           \else
+             9%
+           \fi
+&        \else\ifx.#2%
+$        \else\ifnum`#2=46 % .
+           4%
+&        \else\ifx+#2%
+$        \else\ifnum`#2=43 % +
+           5%
+         \else
+           9%
+         \fi\fi\fi\fi\fi\fi\ThPdNu@space
+    \expandafter\ThPdNu@zero
+    \expandafter0%
+    \expandafter\thepdfnumber@ErrorUnexpectedEnd
+  \or
+    \ThPbNu@StateN@Minus
+  \or
+    \ThPbNu@StateN@SkipZeros
+  \or
+    \ThPdNu@ReturnAndSkip{1}%
+  \or
+    \ThPbNu@StateN@Dot\ThPdNu@zero!!%
+  \or
+    \ThPbNu@StateN@Plus
+  \else
+    \ThPdNu@ReturnError{0}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPbNu@StateN@Minus}
+%    \begin{macrocode}
+\def\ThPbNu@StateN@Minus#1\fi#2{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#2%
+           0%
+         \else\ifnum`#2>47 %
+           \ifnum`#2<58 %
+             1%
+           \else
+             9%
+           \fi
+&        \else\ifx.#2%
+$        \else\ifnum`#2=46 % .
+           1%
+&        \else\ifx-#2%
+$        \else\ifnum`#2=45 % -
+           2%
+&        \else\ifx+#2%
+$        \else\ifnum`#2=43 % +
+           3%
+         \else
+           9%
+         \fi\fi\fi\fi\fi\ThPdNu@space
+    \expandafter\ThPdNu@zero
+    \expandafter0%
+    \expandafter\thepdfnumber@ErrorUnexpectedEnd
+  \or
+    \ThPdNu@ReturnAndSkip{0}%
+  \or
+    \ThPbNu@StateN@Plus
+  \or
+    \ThPbNu@StateN@Minus
+  \else
+    \ThPdNu@ReturnError{0}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnAndSkip}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnAndSkip#1#2\fi#3\ThPdNu@FIN{%
+  \fi
+  \ThPdNu@zero
+  #1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{State definitions for integer part}
+%
+%    \begin{macro}{\ThPbNu@StateN@SkipZeros}
+%    \begin{macrocode}
+\def\ThPbNu@StateN@SkipZeros#1\fi#2{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#2%
+           0%
+         \else\ifx0#2%
+           1%
+         \else\ifnum`#2>48 %
+           \ifnum`#2<58 %
+             2%
+           \else
+             9%
+           \fi
+&        \else\ifx.#2%
+$        \else\ifnum`#2=46 % .
+           3%
+         \else
+           9%
+         \fi\fi\fi\fi\ThPdNu@space
+    \expandafter\ThPdNu@zero
+    \expandafter0%
+  \or
+   \ThPbNu@StateN@SkipZeros%
+  \or
+    \ThPdNu@ReturnAndSkip{1}%
+  \or
+    \ThPbNu@StateN@Dot\ThPdNu@zero!!%
+  \else
+    \ThPdNu@ReturnError{0}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{State definitions for decimal digits}
+%
+%    \begin{macro}{\ThPbNu@StateN@Dot}
+%    \begin{macrocode}
+\def\ThPbNu@StateN@Dot#1#2!#3!#4\fi#5{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#5%
+           0%
+         \else\ifnum`#5>48 %
+           \ifnum`#5<58 %
+             1%
+           \else
+             9%
+           \fi
+         \else\ifx0#5%
+           2%
+         \else
+           9%
+         \fi\fi\fi\ThPdNu@space
+    \ThPdNu@ReturnFracNumber#1#2!%
+  \or
+    \ThPbNu@StateN@Dot\ThPdNu@one#2#3#5!!%
+  \or
+    \ThPbNu@StateN@DotZero#1#2!#3#5!%
+  \else
+    \ThPdNu@ReturnFracNumberInvalid#1#2!%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPbNu@StateN@DotZero}
+%    \begin{macrocode}
+\def\ThPbNu@StateN@DotZero#1#2!#3!#4\fi#5{%
+  \fi
+  \ifcase\ifx\ThPdNu@FIN#5%
+           0%
+         \else\ifnum`#5>48 %
+           \ifnum`#5<58 %
+             1%
+           \else
+             9%
+           \fi
+         \else\ifx0#5%
+           2%
+         \else
+           9%
+         \fi\fi\fi\ThPdNu@space
+    \ThPdNu@ReturnFracNumber#1#2!%
+  \or
+    \ThPbNu@StateN@Dot\ThPdNu@one#2#3#5!!%
+  \or
+    \ThPbNu@StateN@DotZero#1#2!#3#5!%
+  \else
+    \ThPdNu@ReturnFracNumberInvalid#1#2!%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnFracNumber}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnFracNumber#1#2!#3\fi{%
+  \fi
+  \ifcase#1%
+    \expandafter\ThPdNu@firstoftwo
+  \else
+    \expandafter\ThPdNu@secondoftwo
+  \fi
+  {\ThPdNu@zero 0}%
+  {\ThPdNu@zero .#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ThPdNu@ReturnFracNumberInvalid}
+%    \begin{macrocode}
+\def\ThPdNu@ReturnFracNumberInvalid#1!#2\fi#3\ThPdNu@FIN{%
+  \fi
+  \iftrue\ThPdNu@ReturnFracNumber#1!\fi
+  \thepdfnumber@ErrorInvalidToken
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\ThPdNu@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input thepdfnumber.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+% \subsubsection{Preamble}
+%
+%    \begin{macrocode}
+%<*test2>
+\catcode`\{=1
+\catcode`\}=2
+\catcode`\#=6
+\catcode`\@=11
+\errorcontextlines=10000 %
+\def\msg#{\immediate\write16}
+\def\space{ }
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input thepdfnumber.sty\relax
+\else
+  \RequirePackage{thepdfnumber}[2011/11/24]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\Test}
+%    \begin{macrocode}
+\def\Test#1#2{%
+  \def\TestExpected{#2}%
+%<*active>
+  \edef\TestExpected{\TestExpected}%
+%</active>
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\TestResult
+  \expandafter\expandafter\expandafter{%
+    \TestCommand{#1}%
+  }%
+  \begingroup
+    \toks0\expandafter{\TestResult}%
+    \toks2\expandafter{\TestExpected}%
+    \ifx\TestResult\TestExpected
+      \msg{* OK: #1 => \the\toks0}%
+    \else
+      \errmessage{FAILED: #1 => \the\toks0\space(\the\toks2)}%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\let\thepdfnumber@ErrorUnexpectedEnd\relax
+\let\thepdfnumber@ErrorInvalidToken\relax
+%    \end{macrocode}
+%
+% \subsubsection{Test with active catcodes}
+%
+%    \begin{macrocode}
+%<*active>
+\catcode`\~=13 %
+\def\ThPdNu@Temp#1{%
+  \begingroup
+    \lccode`\~=`#1 %
+  \lowercase{\endgroup
+    \edef~%
+  }{\string#1}%
+  \catcode`#1=13 %
+}
+\ThPdNu@Temp{.}
+\ThPdNu@Temp{-}
+\ThPdNu@Temp{+}
+%</active>
+%    \end{macrocode}
+%
+% \subsubsection{Test cases for \cs{thepdfnumber}}
+%
+%    \begin{macro}{\TestCommand}
+%    \begin{macrocode}
+\let\TestCommand\thepdfnumber
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\Test{0}{0}
+\Test{1}{1}
+\Test{23}{23}
+\Test{0045}{45}
+\Test{4500}{4500}
+\Test{-0}{0}
+\Test{-1}{-1}
+\Test{-00002}{-2}
+\Test{-010203}{-10203}
+\Test{+0}{0}
+\Test{+123}{123}
+
+\Test{+-4}{-4}
+\Test{+-+-4}{4}
+\Test{++--++--++4}{4}
+\Test{+++---+++---+++---4}{-4}
+
+\Test{.}{0}
+\Test{0.}{0}
+\Test{.0}{0}
+\Test{0.}{0}
+\Test{-.}{0}
+\Test{-0.}{0}
+\Test{-.0}{0}
+\Test{-0.}{0}
+\Test{010.020}{10.02}
+\Test{123.456}{123.456}
+\Test{12.}{12}
+\Test{.123}{.123}
+\Test{.0001}{.0001}
+\Test{.00100}{.001}
+\Test{.12003400560078009}{.12003400560078009}
+\Test{-.12003400560078009}{-.12003400560078009}
+\Test{04.0500000}{4.05}
+
+\Test{}{0\thepdfnumber@ErrorUnexpectedEnd}
+\Test{+}{0\thepdfnumber@ErrorUnexpectedEnd}
+\Test{-}{0\thepdfnumber@ErrorUnexpectedEnd}
+\Test{a}{0\thepdfnumber@ErrorInvalidToken}
+\Test{0x1}{0\thepdfnumber@ErrorInvalidToken}
+\Test{4x56}{4\thepdfnumber@ErrorInvalidToken}
+\Test{012,34}{12\thepdfnumber@ErrorInvalidToken}
+\Test{0.12x4}{.12\thepdfnumber@ErrorInvalidToken}
+%    \end{macrocode}
+%
+% \subsubsection{Test cases for \cs{thepdfnumberNormZeroOne}}
+%
+%    \begin{macro}{\TestCommand}
+%    \begin{macrocode}
+\let\TestCommand\thepdfnumberNormZeroOne
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\Test{0}{0}
+\Test{1}{1}
+\Test{23}{1}
+\Test{12}{1}
+\Test{10}{1}
+\Test{0045}{1}
+\Test{001}{1}
+\Test{-0}{0}
+\Test{-1}{0}
+\Test{-01}{0}
+\Test{-4}{0}
+
+\Test{+-0}{0}
+\Test{+-+-1}{1}
+\Test{++--++--++1}{1}
+\Test{+++---+++---+++---1}{0}
+
+\Test{.}{0}
+\Test{0.}{0}
+\Test{.0}{0}
+\Test{0.}{0}
+\Test{-.}{0}
+\Test{-0.}{0}
+\Test{-.0}{0}
+\Test{-0.}{0}
+\Test{010.020}{1}
+\Test{123.456}{1}
+\Test{12.}{1}
+\Test{.123}{.123}
+\Test{.0001}{.0001}
+\Test{.00100}{.001}
+\Test{.12003400560078009}{.12003400560078009}
+\Test{-.12003400560078009}{0}
+\Test{04.0500000}{1}
+\Test{0.1200340056}{.1200340056}
+\Test{1.05}{1}
+
+\Test{}{0\thepdfnumber@ErrorUnexpectedEnd}
+\Test{+}{0\thepdfnumber@ErrorUnexpectedEnd}
+\Test{-}{0\thepdfnumber@ErrorUnexpectedEnd}
+\Test{a}{0\thepdfnumber@ErrorInvalidToken}
+\Test{0x1}{0\thepdfnumber@ErrorInvalidToken}
+\Test{4x56}{1}
+\Test{012,34}{1}
+\Test{.012x4}{.012\thepdfnumber@ErrorInvalidToken}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\csname @@end\endcsname\end
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/thepdfnumber.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/thepdfnumber.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex thepdfnumber.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   thepdfnumber.sty & tex/generic/oberdiek/thepdfnumber.sty\\
+%   thepdfnumber.pdf & doc/latex/oberdiek/thepdfnumber.pdf\\
+%   test/thepdfnumber-test1.tex & doc/latex/oberdiek/test/thepdfnumber-test1.tex\\
+%   test/thepdfnumber-test2.tex & doc/latex/oberdiek/test/thepdfnumber-test2.tex\\
+%   test/thepdfnumber-test3.tex & doc/latex/oberdiek/test/thepdfnumber-test3.tex\\
+%   thepdfnumber.dtx & source/latex/oberdiek/thepdfnumber.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk thepdfnumber.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{thepdfnumber.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex thepdfnumber.dtx
+%makeindex -s gind.ist thepdfnumber.idx
+%pdflatex thepdfnumber.dtx
+%makeindex -s gind.ist thepdfnumber.idx
+%pdflatex thepdfnumber.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \printbibliography[
+%   heading=bibnumbered,
+% ]
+%
+% \begin{History}
+%   \begin{Version}{2011/11/24 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

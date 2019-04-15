@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hopatch'>
+  <name>hopatch</name>
+  <caption>Load patches for packages.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011,2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    The hopatch package provides a command with which the user may
+    register a piece of patch code for a particular package.  Hopatch
+    will apply the patch immediately, if the relevant package has
+    already been loaded; otherwise it will store the patch until the
+    package appears.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hopatch.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hopatch.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

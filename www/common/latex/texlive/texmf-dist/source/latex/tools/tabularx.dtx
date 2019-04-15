@@ -1,0 +1,966 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: tabularx.dtx Copyright (C) 1991-1999 2012 2014 David Carlisle
+%
+%<*dtx>
+          \ProvidesFile{tabularx.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{tabularx}
+%<driver> \ProvidesFile{tabularx.drv}
+% \fi
+%         \ProvidesFile{tabularx.dtx}
+          [2014/10/28 v2.10 `tabularx' package (DPC)]
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[infoshow]{tabularx}
+\begin{document}
+ \DocInput{tabularx.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \changes{v1.00}{1992/01/30}{Initial version.}
+% \changes{v1.01}{1992/07/07}{Re-issue for the new doc and docstrip.}
+% \changes{v1.02}{1992/07/17}{Added some support for \cmd\verb}
+% \changes{v1.03}{1992/08/17}
+%    {Added \cs{ifnum0}!=`\{\cs{fi}\} brackets after report by
+%     Andreas Maassen}
+% \changes{v1.04}{1992/09/02}
+%    {fixed \cmd\verb, and support footnotes.}
+% \changes{v1.05}{1992/11/06}
+%    {preserve all LaTeX counters}
+% \changes{v1.06}{1993/08/02}
+%    {(Martin Schroeder) Support the optional [t] or [b] argument.
+%     Also now works with delarray.sty.}
+% \changes{v1.07}{1993/08/27}
+%    {Modifications to make this style compatible with calc.sty.}
+% \changes{v2.00}{1994/03/14}
+%    {Update to LaTeX2e}
+% \changes{v2.01}{1994/05/22}
+%    {New Tracing format.}
+%
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+% \CheckSum{527}
+%
+% \GetFileInfo{tabularx.dtx}
+% \title{The \textsf{tabularx} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{David Carlisle}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+% \DeleteShortVerb{\|}
+% \MakeShortVerb{\"}
+%
+% \begin{abstract}
+% A new environment, {\ttfamily tabularx}, is defined, which takes the
+% same arguments as {\ttfamily tabular*}, but modifies the widths of
+% certain columns, rather than the inter column space, to set a table
+% with the requested total width. The columns that may stretch are
+% marked with the new token {\ttfamily X} in the preamble argument.
+%
+% This package requires the {\ttfamily array} package.
+% \end{abstract}
+%
+% \section{Introduction}
+% This package implements a version of the {\ttfamily tabular}
+% environment in which the widths of certain columns are calculated so
+% that the table is is a specified width. Requests for such an
+% environment seem to occur quite regularly in {\ttfamily
+% comp.text.tex}.
+%
+% \DescribeEnv{tabularx}
+% "\begin{tabularx}{"\meta{width}"}{"\meta{preamble}"}"\\
+% The arguments of "tabularx" are essentially the same as those of
+% the standard "tabular*" environment. However rather than adding space
+% between the columns to achieve the desired width, it adjusts the
+% widths of some of the columns. The columns which are affected by the
+% {\ttfamily tabularx} environment should be denoted with the letter
+% {\ttfamily X} in the preamble argument. The {\ttfamily X} column
+% specification will be converted to  "p{"\meta{some value}"}" once the
+% correct column width has been calculated.
+%
+% \section{Examples}
+%
+% The following table is set with
+% "\begin{tabularx}{250pt}{|c|X|c|X|} ...".
+%
+% \begin{center}
+% \begin{tabularx}{250pt}{|c|X|c|X|}
+% \hline
+% \multicolumn{2}{|c|}{Multicolumn entry!}&
+% THREE&
+% FOUR\\
+% \hline
+% one&
+% \raggedright\arraybackslash The width of this column depends on the
+% width of the table.\footnote
+% {You can now use {\ttfamily \bslash footnote} inside {\ttfamily
+% tabularx}!}&
+% three&
+% \raggedright\arraybackslash Column four will act in the same way as
+% column two, with the same width.\\
+% \hline
+% \end{tabularx}
+% \end{center}
+% If we change the first line to "\begin{tabularx}{300pt}{|c|X|c|X|}" we
+% get:
+% \begin{center}
+% \begin{tabularx}{300pt}{|c|X|c|X|}
+% \hline
+% \multicolumn{2}{|c|}{Multicolumn entry!}&
+% THREE&
+% FOUR\\
+% \hline
+% one&
+% \raggedright\arraybackslash The width of this column depends on the
+% width of the table.&
+% three&
+% \raggedright\arraybackslash Column four will act in the same way as
+% column two, with the same width.\\
+% \hline
+% \end{tabularx}
+% \end{center}
+%
+% \edef\mytt{\expandafter\noexpand\csname
+%             mdseries\endcsname\noexpand\ttfamily}
+% \section{Differences between {\mytt tabularx} and {\mytt tabular*}}
+% These two environments take the same arguments, to produce a table of
+% a specified width. The main differences between them are:
+% \begin{itemize}
+% \item {\ttfamily tabularx} modifies the widths of the \emph{columns},
+% whereas {\ttfamily tabular*} modifies the widths of the inter-column
+% \emph{spaces}.
+% \item {\ttfamily tabular} and {\ttfamily tabular*} environments may be
+% nested with no restriction, however if one {\ttfamily tabularx}
+% environment occurs inside another, then the inner one {\em must\/} be
+% enclosed by "{ }".
+% \item The body of the {\ttfamily tabularx} environment is in fact the
+% argument to a command, and so certain constructions which are not
+% allowed in command arguments (like "\verb") may not be used.\footnote
+% {Since Version 1.02, {\ttfamily\bslash verb and \ttfamily\bslash
+% verb*} may be used, but they may treat spaces incorrectly, and the
+% argument can not contain an unmatched {\ttfamily\char`\{} or
+% {\ttfamily\char`\}}, or a  {\ttfamily\char`\%} character.}
+% \item {\ttfamily tabular*} uses a primitive capability of \TeX\ to
+% modify the inter column space of an alignment. {\ttfamily tabularx}
+% has to set the table several times as it searches for the best column
+% widths, and is therefore much slower. Also the fact that the body is
+% expanded several times may break certain \TeX\ constructs.
+% \end{itemize}
+%
+% \section{Customising the behaviour of {\mytt tabularx}}
+%
+% \subsection{Terminal output}
+% \DescribeMacro{\tracingtabularx}
+% If this declaration is made, say in the document preamble, then all
+% following {\ttfamily tabularx} environments will print information
+% about column widths as they repeatedly re-set the tables to find the
+% correct widths.
+%
+% As an alternative to using the "\tracingtabularx" declaration, either
+% of the options "infoshow" or "debugshow" may be given, either in the
+% "\usepackage" command that loads "tabularx", or as a global option
+% in the "\documentclass" command.
+%
+% \subsection{The environment used to typeset the {\mytt X} columns}
+% By default the {\ttfamily X} specification is turned into
+% "p{"\meta{some value}"}". Such narrow columns often
+% require a special format, this may be achieved using the ">" syntax
+% of {\ttfamily array.sty}. So for example you may give a specification
+% of ">{\small}X". Another format which is useful in narrow columns is
+% ragged right, however \LaTeX's "\raggedright" macro redefines
+% "\\" in a way which conflicts with its use in a tabular or array
+% environments.
+%\DescribeMacro{\arraybackslash}
+% For this reason this package introduces the command "\arraybackslash",
+% this may be used after a "\raggedright", "\raggedleft"  or
+% "\centering" declaration. Thus a {\ttfamily tabularx} preamble may
+% specify\\
+% ">{\raggedright\arraybackslash}X".
+%
+% \DescribeMacro{\newcolumntype}
+% These preamble specifications may of course be saved using the
+% command, "\newcolumntype", defined in {\ttfamily array.sty}. Thus we
+% may say\\
+% "\newcolumntype{Y}{>{\small\raggedright\arraybackslash}X}"\\
+% and then use {\ttfamily Y} in the {\ttfamily tabularx} preamble
+% argument.
+%
+% \DescribeMacro{\tabularxcolumn}
+% The {\ttfamily X} columns are set using the {\ttfamily p} column which
+% corresponds  to "\parbox[t]". You may want them set using, say, the
+% {\ttfamily m} column, which corresponds to "\parbox[c]". It is not
+% possible to change the column type using the ">" syntax, so another
+% system is provided.  "\tabularxcolumn" should be defined to be a macro
+% with one argument, which expands to the {\ttfamily tabular} preamble
+% specification that you want to correspond to {\ttfamily X}. The
+% argument will be replaced by the calculated width of a column.
+%
+% The default is "\newcommand{\tabularxcolumn}[1]{p{#1}}". So we may
+% change this with a command such as:\\
+% "\renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}"
+%
+% \subsection{Column widths}
+% Normally all {\ttfamily X} columns in a single table are set to the
+% same width, however it is possible to make {\ttfamily tabularx} set
+% them to different widths.
+% A preamble argument of "{>{\hsize=.5\hsize}X>{\hsize=1.5\hsize}X}"
+% specifies two columns, the second will be three times as wide as the
+% first. However if you want to play games like this you should follow
+% the following two rules.
+% \begin{itemize}
+% \item Make sure that the sum of the widths of all the {\ttfamily X}
+% columns is unchanged. (In the above example, the new widths still add
+% up to twice the default width, the same as two standard {\ttfamily X}
+% columns.)
+% \item Do not use "\multicolumn" entries which cross any {\ttfamily X}
+% column.
+% \end{itemize}
+% As with most rules, these may be broken if you know what you are
+% doing.
+%
+% \subsection{If the algorithm fails\ldots}
+% It may be that the widths of the `normal' columns of the table
+% already total more  than the requested total
+% width. \textsf{tabularx} refuses to set the
+% \texttt{X} columns to a negative width, so in this case you get a
+% warning ``X Columns too narrow (table too wide)''.
+%
+% The \texttt{X} columns will in this case be set to a width of 1em
+% and so the table itself will be wider than the requested total width
+% given in the argument to the environment.
+% This behaviour of the package can be customised slightly
+% as noted in the documentation of the code section.
+%
+% \StopEventually{}
+%
+% \section{The Macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \changes{v2.00}{1994/02/07}
+%    {New Option Handling}
+%    \begin{macrocode}
+\DeclareOption{infoshow}{\AtEndOfPackage\tracingtabularx}
+\DeclareOption{debugshow}{\AtEndOfPackage\tracingtabularx}
+\ProcessOptions
+%    \end{macrocode}
+%
+% This requires {\ttfamily array.sty}.
+% \changes{v2.00}{1994/02/07}
+%    {Use LaTeX2e's \cmd{\RequirePackage} to load array}
+%    \begin{macrocode}
+\RequirePackage{array}[1994/02/03]
+%    \end{macrocode}
+%
+% First some registers etc.\ that we need.
+%    \begin{macrocode}
+\newdimen\TX@col@width
+\newdimen\TX@old@table
+\newdimen\TX@old@col
+\newdimen\TX@target
+\newdimen\TX@delta
+\newcount\TX@cols
+\newif\ifTX@
+%    \end{macrocode}
+%
+% Now a trick to get the body of an environment into a token register,
+% without doing any expansion. This does not do any real checking of
+% nested environments, so if you should need to nest one {\ttfamily
+% tabularx} inside another, the inner one must be surrounded by "{ }".
+%
+% \begin{macro}{\tabularx}
+% Prior to v1.06, this macro took two arguments, which were saved in
+% separate registers before the table body was saved by "\TX@get@body".
+% Unfortunately this disables the "[t]" optional argument. Now just save
+% the width specification separately, then clear the token register
+% "\toks@".
+% Finally call "\TX@get@body" to begin saving the body of the table.
+% The "{\ifnum0=`}\fi" was added at v1.03, to allow "tabularx" to appear
+% inside a "\halign".^^A
+% \setbox0=\hbox{\footnotesize"\iffalse{\fi\ifnum0=`}\fi"}^^A
+% \setbox2=\hbox{\footnotesize"\ifnum0=`{}\fi"}^^A
+% \footnote{This adds an extra level of grouping,
+% which is not really needed. Instead, I could use \box0\ here, and
+% \box2\ below, however the code here would then have to be moved after
+% the first line, because of the footnote to page 386 of the \TeX{}Book,
+% and I do not think I should be writing code that is so obscure as to
+% be documented in a footnote in an appendix called ``Dirty Tricks''!}
+%
+% This mechanism of grabbing an environment body does have the
+% disadvantage (shared with the AMS alignment environments) that you
+% can not make extension environments by code such as
+%\begin{verbatim}
+%\newenvironment{foo}{\begin{tabularx}{XX}}{\end{tabularx}}
+%\end{verbatim}
+% as the code is looking for a literal string "\end{tabularx}" to stop
+% scanning. Since version 2.02, one may avoid this problem by using
+% "\tabularx" and "\endtabularx" directly in the definition:
+%\begin{verbatim}
+%\newenvironment{foo}{\tabularx{XX}}{\endtabularx}
+%\end{verbatim}
+% The scanner now looks for the end of the current environment ("foo" in
+% this example.) There are some restrictions on this usage, the
+% principal one being that "\endtabularx" must not be inside any "{ }" pairs
+% ao that the code before "\endtabularx"  may be extracted and added to the table body
+% (prior to version 2.09  "\endtabularx" had to be
+% the \emph{first} token of the `end code' of the environment).
+%    \begin{macrocode}
+\def\tabularx#1{%
+%    \end{macrocode}
+% \changes{v2.02}{1995/03/20}
+%    {New local setting of \cs{TX@}}
+% \changes{v4.09}{1998/05/13}
+%      {Use \cs{setlength}, so that calc extensions apply. tools/2793}
+% Allow "\tabularx" "\endtabularx" (but not "\begin{tabularx}"
+% "\end{tabularx}") to be used in "\newenvironment" definitions.
+%    \begin{macrocode}
+\edef\TX@{\@currenvir}%
+  {\ifnum0=`}\fi
+%    \end{macrocode}
+% "\relax" added at v1.05 so that non-expandable length tokens, like
+% "\textwidth" do not generate an extra space, and an overfull box.
+% "\relax" removed again at v4.09 in favour of "\setlength" so if you
+% use the calc package you can use a width of "(\textwidth-12pt)/2".
+%    \begin{macrocode}
+  \setlength\TX@target{#1}%
+  \TX@typeout{Target width: #1 = \the\TX@target.}%
+  \toks@{}\TX@get@body}
+%    \end{macrocode}
+% \end{macro}
+%
+
+%  \begin{macro}{\endtabularx}
+% This does not do very much\ldots
+% \changes{v2.02}{1995/03/20}
+%    {Macro added}
+%    \begin{macrocode}
+\let\endtabularx\relax
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\TX@get@body}
+% Place all tokens as far as the first "\end" into a token register.
+% Then call "\TX@find@end" to see if we are at "\end{tabularx}".
+%    \begin{macrocode}
+\long\def\TX@get@body#1\end
+  {\toks@\expandafter{\the\toks@#1}\TX@find@end}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@find@end}
+% If we are at "\end{tabularx}", call "\TX@endtabularx", otherwise
+% add "\end{...}" to the register, and call "\TX@get@body" again.
+%    \begin{macrocode}
+\def\TX@find@end#1{%
+  \def\@tempa{#1}%
+  \ifx\@tempa\TX@\expandafter\TX@endtabularx
+  \else\toks@\expandafter
+    {\the\toks@\end{#1}}\expandafter\TX@get@body\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@find@endtabularxa}
+% \changes{v2.09}{2014/04/22}{macro added}
+% \changes{v2.10}{2014/05/13}{macro modified to test for missing `\cs{endtabularx}}
+% split up the end code, and extract the part that lives in the table body.
+%    \begin{macrocode}
+\long\def\TX@find@endtabularxa
+       #1\endtabularx#2\endtabularx#3\TX@find@endtabularxa{%
+  \ifx\TX@#2\else
+  \toks@\expandafter{\the\toks@#1}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\TX@find@endtabularxb}
+% \changes{v2.09}{2014/04/22}{macro added}
+% \changes{v2.10}{2014/05/13}{macro modified to test for missing \cs{endtabularx}}
+% split up the end code, and extract the part that lives outside the table body.
+%    \begin{macrocode}
+\long\def\TX@find@endtabularxb
+       #1\endtabularx#2\endtabularx#3\TX@find@endtabularxb{%
+  \ifx\TX@#2%
+    \expandafter\@firstoftwo
+  \else
+     \expandafter\@secondoftwo
+  \fi
+  {#1}{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@find@endtabularxbb}
+% \changes{v2.10}{2014/05/13}{macro added}
+% Helper to avoid needing 15 consecutive "expandafter"
+%    \begin{macrocode}
+\def\TX@find@endtabularxbb{%
+  \expandafter\expandafter\expandafter
+  \TX@find@endtabularxb
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@}
+% The string {\ttfamily tabularx} as a macro for testing with "\ifx".
+%    \begin{macrocode}
+\def\TX@{tabularx}
+%    \end{macrocode}
+% \end{macro}
+%
+% Now that all the parts of the table specification are stored in
+% registers, we can begin the work of setting the table.
+%
+% The algorithm for finding the correct column widths is as follows.
+% Firstly set the table with each {\ttfamily X} column the width of the
+% final table. Assuming that there is at least one {\ttfamily X} column,
+% this will produce a table that is too wide. Divide the excess width by
+% the number of {\ttfamily X} columns, and reduce the column width by
+% this amount. Reset the table. If the table is not now the correct
+% width, a "\multicolumn" entry must be `hiding' one of the {\ttfamily
+% X} columns, and so there is one less {\ttfamily X} column affecting
+% the width of the table. So we reduce by 1 the number of X columns and
+% repeat the process.
+%
+% \begin{macro}{\TX@endtabularx}
+% Although I have tried to make {\ttfamily tabularx} look like an
+% environment, it is in fact a command, all the work is done by this
+% macro.
+%    \begin{macrocode}
+\def\TX@endtabularx{%
+%    \end{macrocode}
+% \changes{v2.09}{2014/04/22}{call to \cs{TX@find@endtabularxa} added}
+% \changes{v2.10}{2014/05/13}{macro modified to test for missing \cs{endtabularx}}
+%    \begin{macrocode}
+   \expandafter\expandafter\expandafter
+     \TX@find@endtabularxa\csname end\TX@\endcsname
+     \endtabularx\TX@\endtabularx\TX@find@endtabularxa
+%    \end{macrocode}
+% Define the {\ttfamily X} column, with an internal version of the
+% "\newcolumntype" command. The "\expandafter" commands enable
+% "\NC@newcol"  to get the {\em expansion} of\\
+% "\tabularxcolumn{\TX@col@width}" as its
+% argument. This will be the definition of an {\ttfamily X} column, as
+% discussed in section 4.
+%    \begin{macrocode}
+  \expandafter\TX@newcol\expandafter{\tabularxcolumn{\TX@col@width}}%
+%    \end{macrocode}
+% Initialise the column width, and the number of {\ttfamily X} columns.
+% The number of {\ttfamily X} columns is set to one, which means that
+% the initial count will be one too high, but this value is decremented
+% before it is used in the main loop.
+%
+% Since v1.02, switch the definition of "\verb".
+%    \begin{macrocode}
+  \let\verb\TX@verb
+%    \end{macrocode}
+% Since v1.05, save the values of all \LaTeX\ counters, the list
+% "\cl@@ckpt" contains the names of all the \LaTeX\ counters that have
+% been defined so far. We expand "\setcounter" at this point, as it
+% results in fewer tokens being stored in "\TX@ckpt", but the actual
+% resetting of the counters occurs when "\TX@ckpt" is expanded after
+% each trial run.
+% Actually since v1.07, use something equivalent to the expansion of the
+% original definition of "\setcounter", so that "tabularx" works in
+% conjunction with "calc.sty".
+%    \begin{macrocode}
+  \def\@elt##1{\global\value{##1}\the\value{##1}\relax}%
+  \edef\TX@ckpt{\cl@@ckpt}%
+  \let\@elt\relax
+  \TX@old@table\maxdimen
+  \TX@col@width\TX@target
+  \global\TX@cols\@ne
+%    \end{macrocode}
+% Typeout some headings (unless this is disabled).
+%    \begin{macrocode}
+  \TX@typeout@
+    {\@spaces Table Width\@spaces Column Width\@spaces X Columns}%
+%    \end{macrocode}%
+% First attempt. Modify the {\ttfamily X} definition to count {\ttfamily
+% X} columns.
+%    \begin{macrocode}
+  \TX@trial{\def\NC@rewrite@X{%
+          \global\advance\TX@cols\@ne\NC@find p{\TX@col@width}}}%
+%    \end{macrocode}
+% Repeatedly decrease column width until table is the correct width,
+% or stops shrinking, or the columns become two narrow.
+% If there are no multicolumn entries, this will only take one attempt.
+%    \begin{macrocode}
+  \loop
+    \TX@arith
+    \ifTX@
+    \TX@trial{}%
+  \repeat
+%    \end{macrocode}
+% One last time, with warnings back on (see appendix D)
+% use {\ttfamily tabular*} to put it in a box of the right size, in case
+% the algorithm failed to find the correct size.
+%
+% Since v1.04, locally make "\footnotetext" save its argument in a token
+% register.
+% Since v1.06, "\toks@" contains the preamble specification,
+% and possible optional argument, as well as the table body.
+%    \begin{macrocode}
+  {\let\@footnotetext\TX@ftntext\let\@xfootnotenext\TX@xftntext
+    \csname tabular*\expandafter\endcsname\expandafter\TX@target
+      \the\toks@
+    \csname endtabular*\endcsname}%
+%    \end{macrocode}
+% Now the alignment is finished, and the "}" has restored the original
+% meaning of "\@footnotetext" expand the register "\TX@ftn" which will
+% execute a series of\\
+% "\footnotetext["\meta{num}"]{"\meta{note}"}"\\
+% commands. We need to be careful about clearing the register as we may
+% be inside a nested {\ttfamily tabularx}.
+%    \begin{macrocode}
+  \global\TX@ftn\expandafter{\expandafter}\the\TX@ftn
+%    \end{macrocode}
+% Now finish off the {\ttfamily tabularx} environment. Note that we need
+% "\end{tabularx}" here as the "\end{tabularx}" in the user's
+% file is never expanded. Now use "\TX@" rather than "tabularx".
+% \changes{v2.02}{1995/03/20}
+%    {Close the environment \cs{TX@} rather than `tabularx'}
+%
+% We also need to finish off the group started by "{\ifnum0=`}\fi" in
+% the macro "\tabularx".
+%    \begin{macrocode}
+  \ifnum0=`{\fi}%
+%    \end{macrocode}
+% \changes{v2.09}{2014/04/22}{call to \cs{TX@find@endtabularxb} added}
+% \changes{v2.10}{2014/05/13}{macro modified to test for missing \cs{endtabularx}}
+%    \begin{macrocode}
+   \expandafter\expandafter\expandafter
+   \TX@find@endtabularxbb
+    \expandafter\end\expandafter{\TX@}%
+    \endtabularx\TX@\endtabularx\TX@find@endtabularxb
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\TX@arith}
+% Calculate the column width for the next try, setting the flag
+% "\ifTX@" to false if the loop should be aborted.
+%    \begin{macrocode}
+\def\TX@arith{%
+  \TX@false
+%    \end{macrocode}
+% \changes{v2.08}{2012/02/06}{Avoid exceeding maxdimen during trials}
+%    \begin{macrocode}
+  \@tempdimb\maxdimen
+  \divide\@tempdimb\TX@cols
+  \ifdim\TX@col@width>\@tempdimb
+    \TX@typeout@{Don't exceed \maxdimen}%
+    \wd\@tempboxa\maxdimen
+  \fi
+  \ifdim\TX@old@table=\wd\@tempboxa
+%    \end{macrocode}
+% If we have reduced the column width, but the table width has not
+% changed, we stop the loop, and output the table (which will cause an
+% over-full alignment) with the previous value of "\TX@col@width".
+%    \begin{macrocode}
+    \TX@col@width\TX@old@col
+    \TX@typeout@{Reached minimum width, backing up.}%
+  \else
+%    \end{macrocode}
+% Otherwise calculate the amount by which the current table is too wide.
+%    \begin{macrocode}
+    \dimen@\wd\@tempboxa
+    \advance\dimen@ -\TX@target
+    \ifdim\dimen@<\TX@delta
+%    \end{macrocode}
+% If this amount is less than "\TX@delta", stop. ("\TX@delta"
+% should be non-zero otherwise we may miss the target due to rounding
+% error.)
+%    \begin{macrocode}
+      \TX@typeout@{Reached target.}%
+    \else
+%    \end{macrocode}
+% Reduce the number of effective {\ttfamily X} columns by one. (Checking
+% that we do not get 0, as this would produce an error later.) Then
+% divide excess width by the number of effective columns, and calculate
+% the new column width. Temporarily store this value (times $-1$) in
+% "\dimen@".
+%    \begin{macrocode}
+      \ifnum\TX@cols>\@ne
+        \advance\TX@cols\m@ne
+      \fi
+      \divide\dimen@\TX@cols
+      \advance\dimen@ -\TX@col@width
+      \ifdim \dimen@ >\z@
+%    \end{macrocode}
+% If the new width would be too narrow, abort the loop. At the moment
+% too narrow, means less than 0\,pt!
+%
+% Prior to v2.03, if the loop was aborted here, the X columns were left
+% with the width of the previous run, but this may make the table far
+% too wide as initial guesses are always too big. Now force to
+% "\TX@error@width" which defaults to be 1em. If you want to
+% get the old behaviour stick\\
+%  "\renewcommand\TX@error@width{\TX@col@width}"\\
+% in a package file loaded after \textsf{tabularx}.
+% \changes{v2.03}{1997/02/20}{Improve warning message and force to 1em.}
+%    \begin{macrocode}
+        \PackageWarning{tabularx}%
+           {X Columns too narrow (table too wide)\MessageBreak}%
+        \TX@col@width\TX@error@width\relax
+      \else
+%    \end{macrocode}
+% Otherwise save the old settings, and set the new column width. Set the
+% flag to true so that the table will be set, and the loop will be
+% executed again.
+%    \begin{macrocode}
+        \TX@old@col\TX@col@width
+        \TX@old@table\wd\@tempboxa
+        \TX@col@width-\dimen@
+        \TX@true
+      \fi
+    \fi
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@error@width}
+% \changes{v2.03}{1997/02/20}{macro added.}
+% \changes{v2.04}{1997/02/26}{spurious brace removed.}
+% If the calculated width is negative, use this instead.
+%    \begin{macrocode}
+\def\TX@error@width{1em}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@delta}
+% Accept a table that is within "\hfuzz" of the correct width.
+%    \begin{macrocode}
+\TX@delta\hfuzz
+%    \end{macrocode}
+% \end{macro}
+%
+% Initialise the {\ttfamily X} column. The definition can be empty here,
+% as it is set for each {\ttfamily tabularx} environment.
+%    \begin{macrocode}
+\newcolumntype{X}{}
+%    \end{macrocode}
+%
+% \begin{macro}{\tabularxcolumn}
+% The default definition of {\ttfamily X} is "p{#1}".
+%    \begin{macrocode}
+\def\tabularxcolumn#1{p{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@newcol}
+% A little macro just used to cut down the number of "\expandafter"
+% commands needed.
+%    \begin{macrocode}
+\def\TX@newcol{\newcol@{X}[0]}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@trial}
+% Make a test run.
+%    \begin{macrocode}
+\def\TX@trial#1{%
+  \setbox\@tempboxa\hbox{%
+%    \end{macrocode}
+% Any extra commands. This is used on the first run to count the number
+% of {\ttfamily X} columns.
+%    \begin{macrocode}
+    #1\relax
+%    \end{macrocode}
+% Since v1.04, make "\footnotetext" gobble its arguments. Also locally
+% clear "\TX@vwarn" so that the warning is generated by the {\ttfamily
+% final} run, and does not appear in the middle of the table if
+% "\tracingtabularx".
+%    \begin{macrocode}
+  \let\@footnotetext\TX@trial@ftn
+  \let\TX@vwarn\@empty
+%    \end{macrocode}
+% Do not nest {\ttfamily tabularx} environments during trial runs. This
+% would waste time, and the global setting of "\TX@cols" would break the
+% algorithm.
+%    \begin{macrocode}
+   \expandafter\let\expandafter\tabularx\csname tabular*\endcsname
+   \expandafter\let\expandafter\endtabularx\csname endtabular*\endcsname
+%    \end{macrocode}
+% Added at v1.05: disable "\write"s during a trial run. This trick is
+% from the \TeX{}Book.\footnote{Actually the \TeX{}Book trick does
+% not work correctly, so changed for v2.05.}
+% \changes{v2.05}{1997/09/18}
+%    {New \cs{write} trick. tools/2607}
+% \changes{v2.07}{1999/01/07}
+%    {Newer \cs{write} trick. tools/2792}
+%    \begin{macrocode}
+   \def\write{\begingroup
+     \def\let{\afterassignment\endgroup\toks@}%
+        \afterassignment\let\count@}%
+%    \end{macrocode}
+% Turn off warnings (see appendix D). Also prevent them being turned
+% back on by setting the parameter names to be registers.
+%    \begin{macrocode}
+    \hbadness\@M
+    \hfuzz\maxdimen
+    \let\hbadness\@tempcnta
+    \let\hfuzz\@tempdima
+%    \end{macrocode}
+% Make the table, and finish the hbox.
+% Since v1.06, "\toks@" contains the preamble specification,
+% and possible optional argument, as well as the table body.
+%    \begin{macrocode}
+    \expandafter\tabular\the\toks@
+    \endtabular}%
+%    \end{macrocode}
+% Since v1.05 reset all \LaTeX\ counters, by executing "\TX@ckpt".
+%    \begin{macrocode}
+  \TX@ckpt
+%    \end{macrocode}
+% Print some statistics.
+% Added "\TX@align" in v1.05, to line up the columns.
+%    \begin{macrocode}
+  \TX@typeout@{\@spaces
+     \expandafter\TX@align
+        \the\wd\@tempboxa\space\space\space\space\space\@@
+     \expandafter\TX@align
+        \the\TX@col@width\space\space\space\space\space\@@
+     \@spaces\the\TX@cols}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@align}
+% Macro added at v1.05, to improve the printing of the tracing info.
+%    \begin{macrocode}
+\def\TX@align#1.#2#3#4#5#6#7#8#9\@@{%
+  \ifnum#1<10 \space\fi
+  \ifnum#1<100 \space\fi
+  \ifnum#1<\@m\space\fi
+  \ifnum#1<\@M\space\fi
+  #1.#2#3#4#5#6#7#8\space\space}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\arraybackslash}
+% "\\" hack.
+% \changes{v2.08}{2012/02/06}{Don't define this if already defined by newer array package and use tabularnewline now this is in 2e.}
+%    \begin{macrocode}
+\ifx\arraybackslash\@undefined
+\def\arraybackslash{\let\\\tabularnewline}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tracingtabularx}
+% Print statistics on column and table widths.
+%    \begin{macrocode}
+\def\tracingtabularx{%
+  \def\TX@typeout{\PackageWarningNoLine{tabularx}}%
+  \def\TX@typeout@##1{\typeout{(tabularx) ##1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@typeout}
+% The default is to be to be quiet
+%    \begin{macrocode}
+\let\TX@typeout\@gobble
+\let\TX@typeout@\@gobble
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@ftn}
+% A token register for saving footnote texts.
+%    \begin{macrocode}
+\newtoks\TX@ftn
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@ftntext}
+% \begin{macro}{\TX@xftntext}
+% Inside the alignment just save up the footnote text in a token
+% register.
+%    \begin{macrocode}
+\long\def\TX@ftntext#1{%
+  \edef\@tempa{\the\TX@ftn\noexpand\footnotetext
+                    [\the\csname c@\@mpfn\endcsname]}%
+  \global\TX@ftn\expandafter{\@tempa{#1}}}%
+\long\def\TX@xftntext[#1]#2{%
+  \global\TX@ftn\expandafter{\the\TX@ftn\footnotetext[#1]{#2}}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\TX@trial@ftn}
+% On trial runs, gobble footnote texts.
+%    \begin{macrocode}
+\long\def\TX@trial@ftn#1{}
+%    \end{macrocode}
+% \end{macro}
+%
+% This last section was added at Version 1.02. Previous versions
+% documented the fact that "\verb" did not work inside {\ttfamily
+% tabularx}, but that did not stop people using it! This usually put
+% \LaTeX\ into an irrecoverable error position, with error messages that
+% did not mention the cause of the error. The `poor man's "\verb"' (and
+% "\verb*") defined here is based on page 382 of the \TeX{}Book. As
+% explained there, doing verbatim this way means that spaces are not
+% treated correctly, and so "\verb*" may well be useless, however I
+% consider this section of code to be error-recovery, rather than a real
+% implementation of verbatim.
+%
+% The mechanism is quite general, and any macro which wants to allow a
+% form of "\verb" to be used within its argument may
+% "\let\verb=\TX@verb". (Making sure to restore the real definition
+% later!)
+%
+% "\verb" and "\verb*" are subject to the following restrictions:
+% \begin{enumerate}
+% \item Spaces in the argument are not read verbatim, but may be skipped
+%       according to \TeX's usual rules.
+% \item Spaces will be added to the output after control words, even if
+%       they were not present in the input.
+% \item Unless the argument is a single space, any trailing space,
+%       whether in the original argument, or added as in (2),
+%       will be omitted.
+% \item The argument must not end with "\", so "\verb|\|" is not
+%      allowed, however, because of (3), "\verb|\ |" produces
+%      "\".
+% \item The argument must be balanced with respect to "{" and "}". So
+%      "\verb|{|" is not allowed.
+% \item A comment character like "%" will not appear verbatim. It will
+%       act as usual, commenting out the rest of the input line!
+% \item The combinations "?`" and "!`" will appear as
+%       {\ttfamily?`} and {\ttfamily!`} if the {\ttfamily cmtt} font is
+%       being used.
+% \end{enumerate}
+%
+% \begin{macro}{\TX@verb}
+% The internal definition of "\verb". Spaces will be replaced by "~", so
+% for the star-form, "\let" "~" be \verb*| |, which we obtain as
+% "\uppercase{*}". Use "{\ifnum0=`}\fi" rather than "\bgroup" to allow
+% "&" to appear in the argument.
+%    \begin{macrocode}
+{\uccode`\*=`\ %
+\uppercase{\gdef\TX@verb{%
+  \leavevmode\null\TX@vwarn
+  {\ifnum0=`}\fi\ttfamily\let\\\ignorespaces
+  \@ifstar{\let~*\TX@vb}{\TX@vb}}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@vb}
+% Get the `almost verbatim' text using "\meaning". The `"!"' is added to
+% the front of the user supplied text, to ensure that the whole argument
+% does not consist of a single "{ }" group. \TeX\ would strip the outer
+% braces from such a group. The `"!"' will be removed later.
+%
+% Originally I followed Knuth, and had "\def\@tempa{##1}", however this
+% did not allow "#" to appear in the argument. So in v1.04, I changed
+% this to to use a token register, and "\edef". This allows "#" appear,
+% but makes each one appear twice!, so later we loop through, replacing
+% "##" by "#".
+%    \begin{macrocode}
+\def\TX@vb#1{\def\@tempa##1#1{\toks@{##1}\edef\@tempa{\the\toks@}%
+    \expandafter\TX@v\meaning\@tempa\\ \\\ifnum0=`{\fi}}\@tempa!}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@v}
+% Strip the initial segment of the "\meaning", including the `"!"'
+% added earlier.
+%    \begin{macrocode}
+\def\TX@v#1!{\afterassignment\TX@vfirst\let\@tempa= }
+%    \end{macrocode}
+% \end{macro}
+%
+% As explained above we are going to replace "##" pairs by "#". To do
+% this we need non-special "#" tokens.  Make "*" into a parameter
+% token so that we can define macros with arguments. The normal meanings
+% will be restored by the "\endgroup" later.
+%    \begin{macrocode}
+\begingroup
+\catcode`\*=\catcode`\#
+\catcode`\#=12
+%    \end{macrocode}
+%
+% \begin{macro}{\TX@vfirst}
+% As a special case, prevent the first character from being dropped.
+% This makes "\verb*| |" produce \verb*| |. Then call "\TX@v@".
+% This is slightly tricky since v1.04, as I have to ensure that an
+% actual "#" rather than a command "\let" to "#" is passed on if the
+% first character is "#".
+%    \begin{macrocode}
+\gdef\TX@vfirst{%
+  \if\@tempa#%
+    \def\@tempb{\TX@v@#}%
+  \else
+    \let\@tempb\TX@v@
+    \if\@tempa\space~\else\@tempa\fi
+  \fi
+  \@tempb}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@v@}
+% Loop through the "\meaning", replacing all spaces by "~". If the last
+% character is a space it is dropped, so that "\verb*|\LaTeX|" produces
+% "\LaTeX" not \verb*|\LaTeX |. The rewritten tokens are then further
+% processed to replace "##" pairs.
+%    \begin{macrocode}
+\gdef\TX@v@*1 *2{%
+  \TX@v@hash*1##\relax\if*2\\\else~\expandafter\TX@v@\fi*2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TX@v@hash}
+% The inner loop, replacing "##" by "#".
+%    \begin{macrocode}
+\gdef\TX@v@hash*1##*2{*1\ifx*2\relax\else#\expandafter\TX@v@hash\fi*2}
+%    \end{macrocode}
+% \end{macro}
+%
+% As promised, we now restore the normal meanings of "#" and "*".
+%    \begin{macrocode}
+\endgroup
+%    \end{macrocode}
+%
+% \begin{macro}{\TX@vwarn}
+% Warn the user the first time this "\verb" is used.
+%    \begin{macrocode}
+\def\TX@vwarn{%
+  \@warning{\noexpand\verb may be unreliable inside tabularx}%
+  \global\let\TX@vwarn\@empty}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput

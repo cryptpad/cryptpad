@@ -1,0 +1,9 @@
+% Black font for LJ with proofsheet resolution 75 pixels per inch.
+
+if mode<>ljfour: errmessage "This file is for ljfour only"; fi
+
+font_identifier "BLACKLJ";
+picture pix_picture; pix_wd := pix_ht := 8;
+pix_picture := unitpixel scaled 8;
+
+input grayf

@@ -1,0 +1,684 @@
+% \iffalse meta-comment
+%
+% File: stampinclude.dtx
+% Version: 2008/07/14 v1.0
+% Info: Include files based on time stamps
+%
+% Copyright (C) 2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file stampinclude.dtx
+% and the derived files
+%    stampinclude.sty, stampinclude.pdf, stampinclude.ins, stampinclude.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/stampinclude.dtx
+%    CTAN:macros/latex/contrib/oberdiek/stampinclude.pdf
+%
+% Unpacking:
+%    (a) If stampinclude.ins is present:
+%           tex stampinclude.ins
+%    (b) Without stampinclude.ins:
+%           tex stampinclude.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{stampinclude.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If stampinclude.drv is present:
+%           latex stampinclude.drv
+%    (b) Without stampinclude.drv:
+%           latex stampinclude.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex stampinclude.dtx
+%       makeindex -s gind.ist stampinclude.idx
+%       pdflatex stampinclude.dtx
+%       makeindex -s gind.ist stampinclude.idx
+%       pdflatex stampinclude.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/stampinclude.sty
+%    TDS:doc/latex/oberdiek/stampinclude.pdf
+%    TDS:source/latex/oberdiek/stampinclude.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: stampinclude 2008/07/14 v1.0 Include files based on time stamps (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: stampinclude
+Version: 2008/07/14 v1.0
+
+Copyright (C) 2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file stampinclude.dtx
+and the derived files
+   stampinclude.sty, stampinclude.pdf, stampinclude.ins, stampinclude.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{stampinclude.ins}{\from{stampinclude.dtx}{install}}%
+  \file{stampinclude.drv}{\from{stampinclude.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{stampinclude.sty}{\from{stampinclude.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{stampinclude.xml}{\from{stampinclude.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     stampinclude.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `stampinclude.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{stampinclude.drv}%
+  [2008/07/14 v1.0 Include files based on time stamps (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{stampinclude.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{120}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{stampinclude.drv}
+%
+% \title{The \xpackage{stampinclude} package}
+% \date{2008/07/14 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package replaces \cs{includeonly} and selects the files for
+% \cs{include} by inspecting the time stamp of the \xext{aux} file.
+% The file is selected for inclusion if the \xext{aux} file does
+% not yet exist or is older than the corresponding \xext{tex} file.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+% \label{sec:intro}
+%
+% \LaTeX\ provides two commands \cs{include} and \cs{includeonly}
+% that helps in organizing large projects.
+% Example for a master file:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{book}
+%  % \includeonly{}
+%\begin{document}
+% \include{fileA}
+% \include{fileB}
+% \include{fileC}
+%\end{document}
+%\end{verbatim}
+%\end{quote}
+% All files are read and compiled if \cs{includeonly} is not
+% executed. Otherwise you can give \cs{includeonly} a list
+% of files in the preamble, e.g.:
+% \begin{quote}
+%   |\includeonly{fileA,fileC}|
+% \end{quote}
+% Now only files \xfile{fileA.tex} and \xfile{fileC.tex} are read
+% and compiled.
+%
+% If you change file \xfile{fileB.tex} and want to see only this
+% file, then you must change the line with \cs{includeonly} to
+% \begin{quote}
+%   |\includeonly{fileB}|
+% \end{quote}
+% It is tedious to do this again and again, if different files
+% are changed.
+%
+% Package \xpackage{askinclude} \cite{askinclude}
+% offers a solution for this problem. It interactively asks
+% for the files to be included and saves the user from
+% editing the master file.
+%
+% This package \xpackage{stampinclude} goes another way.
+% \LaTeX\ reads and writes a separate \xext{aux} file for each
+% file that is included by \cs{include}. There \LaTeX\ remembers
+% counter valuses. Changed \xext{tex}
+% files can therefore be detected by comparing the file date stamp of
+% the \xext{tex} file with the date stamp of its \xext{aux} file.
+% Since version 1.30.0 \pdfTeX\ provides \cs{pdffilemoddate}
+% that reads the file date stamp. Thus this package uses this
+% command and redefines
+% \cs{include} to include the files that do not have \xext{aux}
+% files yet or that are newer than its \xext{aux} file.
+% \cs{includeonly} is ignored.
+%
+% \subsection{Usage}
+%
+% The package is loaded as normal \LaTeX\ package without options:
+% \begin{quote}
+%   |\usepackage{stampinclude}|
+% \end{quote}
+% Alternatively the package may be loaded on the command line
+% (Example for shell `bash'):
+% \begin{center}
+%   |latex '\AtBeginDocument{\usepackage{stampinclude}}\input{master}'|
+% \end{center}
+% Without \cs{AtBeginDocument} (and \cs{RequirePackage} instead of
+% \cs{usepackage}) \TeX\ would name the document \xfile{stampinclude.dvi}
+% instead of \xfile{master.dvi}.
+%
+% \subsection{Limitations}
+%
+% \subsubsection{Other file dependencies}
+%
+% A file that is included by \cs{include} may input ore reference
+% other files:
+% \begin{itemize}
+% \item other \TeX\ files using \cs{input},
+% \item graphics files (\cs{includegraphics}),
+% \item listings of external files,
+% \item ...
+% \end{itemize}
+% Updates of those files are not detected by this package.
+% It limits the date stamp comparison of an \xext{aux} file
+% to its \xext{tex} file.
+%
+% \subsubsection{\cs{include} dependencies}
+%
+% In the example, given in the introduction \ref{sec:intro},
+% three files \xfile{fileA}, \xfile{fileB}, and \xfile{fileC}
+% are included in this order. Now file \xfile{fileA} is changed by adding
+% four pages, \xfile{fileB} remains untouched, and \xfile{fileC} is
+% also updated. Then the package only selects \xfile{fileA} and
+% \xfile{fileC} for inclusion. File \xfile{fileB} is not included.
+% But \LaTeX\ has stored the counter values that are active
+% at the end of \xfile{fileB} in \xfile{fileB.aux} in one of the
+% previous runs when \xfile{fileB} was included.
+% However the later addition of four pages in \xfile{fileA}
+% was not known at that time. Therefore \xfile{fileB.aux}
+% is out of date and the inclusion of file \xfile{fileC}
+% starts with wrong counter values (especially the page counter).
+%
+% \subsubsection{Summary}
+%
+% This package \xpackage{stampinclude} and the \cs{include} feature
+% helps in accelerating the \LaTeX\ compilation.
+% But it is not intended for generating the final version.
+% For the final version of the document it is better to include
+% \emph{all} files to get all counter values right.
+% Then this package and any \cs{includeonly} lines should be commented out:
+%\begin{quote}
+%  |% \usepackage{stampinclude}|\\
+%  |% \includeonly{...}|
+%\end{quote}
+%
+% \subsection{Requirements}
+%
+% \begin{itemize}
+% \item \pdfTeX\ v1.30.0 (because of \cs{pdffilemoddate}
+%   and \cs{pdfstrcmp}),\\
+%   both modes for DVI and PDF are supported.
+% \item Alternatively Lua\TeX\ may be used.
+%   It lacks \cs{pdffilemoddate} and \cs{pdfstrcmp}. But its services
+%   are provided by package \xpackage{pdftexcmds} \cite{pdftexcmds}
+%   that is automatically loaded.
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{stampinclude}
+  [2008/07/14 v1.0 Include files based on time stamps (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{pdftexcmds}[2007/12/12]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup
+  \chardef\x=1 %
+  \expandafter\ifx\csname pdf@filemoddate\endcsname\relax
+    \chardef\x=0 %
+  \fi
+  \expandafter\ifx\csname pdf@strcmp\endcsname\relax
+    \chardef\x=0 %
+  \fi
+\expandafter\endgroup\ifcase\x
+  \PackageWarningNoLine{stampinclude}{%
+    \string\pdffilemoddate\space or %
+    \string\pdfstrcmp\space are not found,\MessageBreak
+    that are provided by pdfTeX >= 1.30.0.\MessageBreak
+    Also LuaTeX is not detected.\MessageBreak
+    Therefore package loading is aborted%
+  }%
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\SInc@org@include}
+%    \begin{macrocode}
+\let\SInc@org@include\@include
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@include}
+%    \begin{macrocode}
+\def\@include#1 {%
+  \IfFileExists{#1.aux}{%
+    \ifnum\pdf@strcmp{\pdf@filemoddate{#1.aux}}%
+                     {\pdf@filemoddate{#1.tex}}<0 %
+      \ifx\@partlist\@empty
+        \gdef\@partlist{{#1}}%
+      \else
+        \g@addto@macro\@partlist{,{#1}}%
+      \fi
+    \fi
+  }{%
+    \ifx\@partlist\@empty
+      \gdef\@partlist{{#1}}%
+    \else
+      \g@addto@macro\@partlist{,{#1}}%
+    \fi
+  }%
+  \SInc@org@include{#1} \relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\includeonly}
+%    Macro \cs{includeonly} is ignored.
+%    \begin{macrocode}
+\renewcommand*{\includeonly}[1]{%
+  \PackageInfo{stampinclude}{%
+    Ignoring \string\includeonly
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Simulate \cs{includeonly}.
+%    \begin{macrocode}
+\@partswtrue
+\gdef\@partlist{}
+%    \end{macrocode}
+%
+%    Print included files at end of document.
+%    \begin{macrocode}
+\AtEndDocument{%
+  \begingroup
+    \expandafter\let\expandafter\@partlist\expandafter\@empty
+    \expandafter\@for\expandafter\reserved@a
+    \expandafter:\expandafter=\@partlist\do{%
+      \ifx\@partlist\@empty
+        \edef\@partlist{\reserved@a}%
+      \else
+        \edef\@partlist{\@partlist, \reserved@a}%
+      \fi
+    }%
+    \typeout{********************%
+             ********************%
+             ********************%
+             ******************%
+    }%
+    \ifx\@partlist\@empty
+      \typeout{[stampinclude] No included files.}%
+    \else
+      \typeout{[stampinclude] Included files:}%
+      \typeout{\@partlist}%
+    \fi
+    \typeout{********************%
+             ********************%
+             ********************%
+             ******************%
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/stampinclude.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/stampinclude.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex stampinclude.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   stampinclude.sty & tex/latex/oberdiek/stampinclude.sty\\
+%   stampinclude.pdf & doc/latex/oberdiek/stampinclude.pdf\\
+%   stampinclude.dtx & source/latex/oberdiek/stampinclude.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk stampinclude.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{stampinclude.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex stampinclude.dtx
+%makeindex -s gind.ist stampinclude.idx
+%pdflatex stampinclude.dtx
+%makeindex -s gind.ist stampinclude.idx
+%pdflatex stampinclude.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{stampinclude.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='stampinclude'>
+  <name>stampinclude</name>
+  <caption>Inclusion based on .aux file date stamps.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    This package replaces <tt>\includeonly</tt> and selects the files for
+    <tt>\include</tt> by inspecting the timestamp of the <tt>.aux</tt> file.
+    The file is selected for inclusion if the <tt>.aux</tt> file does
+    not yet exist or is older than the corresponding <tt>.tex</tt> file.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/stampinclude.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/stampinclude.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \bibitem{askinclude}
+%   Pablo A. Straub, Heiko Oberdiek:
+%   \textit{The \xpackage{askinclude} package};
+%   2007/10/23 v2.0;
+%   \CTAN{macros/latex/contrib/oberdiek/askinclude.pdf}.
+%
+% \bibitem{pdftexcmds}
+%   Heiko Oberdiek:
+%   \textit{The \xpackage{pdftexcmds} package};
+%   2007/12/12 v0.3;
+%   \CTAN{macros/latex/contrib/oberdiek/pdftexcmds.pdf}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2008/07/14 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

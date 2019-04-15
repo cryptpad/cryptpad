@@ -1,0 +1,1051 @@
+% \iffalse meta-comment
+%
+% File: pdfcolmk.dtx
+% Version: 2008/08/11 v1.2
+% Info: Color support for pdfTeX via marks
+%
+% Copyright (C) 2000, 2005-2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pdfcolmk.dtx
+% and the derived files
+%    pdfcolmk.sty, pdfcolmk.pdf, pdfcolmk.ins, pdfcolmk.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfcolmk.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfcolmk.pdf
+%
+% Unpacking:
+%    (a) If pdfcolmk.ins is present:
+%           tex pdfcolmk.ins
+%    (b) Without pdfcolmk.ins:
+%           tex pdfcolmk.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfcolmk.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfcolmk.drv is present:
+%           latex pdfcolmk.drv
+%    (b) Without pdfcolmk.drv:
+%           latex pdfcolmk.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfcolmk.dtx
+%       makeindex -s gind.ist pdfcolmk.idx
+%       pdflatex pdfcolmk.dtx
+%       makeindex -s gind.ist pdfcolmk.idx
+%       pdflatex pdfcolmk.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pdfcolmk.sty
+%    TDS:doc/latex/oberdiek/pdfcolmk.pdf
+%    TDS:source/latex/oberdiek/pdfcolmk.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfcolmk 2008/08/11 v1.2 Color support for pdfTeX via marks (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfcolmk
+Version: 2008/08/11 v1.2
+
+Copyright (C) 2000, 2005-2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pdfcolmk.dtx
+and the derived files
+   pdfcolmk.sty, pdfcolmk.pdf, pdfcolmk.ins, pdfcolmk.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfcolmk.ins}{\from{pdfcolmk.dtx}{install}}%
+  \file{pdfcolmk.drv}{\from{pdfcolmk.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pdfcolmk.sty}{\from{pdfcolmk.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfcolmk.xml}{\from{pdfcolmk.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfcolmk.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfcolmk.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfcolmk.drv}%
+  [2008/08/11 v1.2 Color support for pdfTeX via marks (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pdfcolmk.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{843}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfcolmk.drv}
+%
+% \title{The \xpackage{pdfcolmk} package}
+% \date{2008/08/11 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package tries a solution for the missing color
+% stack of \pdfTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% This package uses a mark register in order to solve the
+% problem of a missing color stack of \pdfTeX\ prior 1.40.0.
+% Since this version of \pdfTeX\ a color stack is available
+% and supported by \xfile{pdftex.def} 2007/01/01 v0.04a.
+% In this case this package is obsolete and the package
+% stops its loading.
+%
+% \subsection{Background}
+%
+% After the Dante meeting (Clausthal 2000) I have started
+% to experiment with the eTeX method of a \emph{colour} mark.
+% One of the major problems is the understanding of the
+% output routine and the need to rewrite it because of
+% missing hooks. Currently I have made some tests in
+% in onecolumn and twocolumn mode, but the state is
+% experimental.
+%
+% \subsection{Limitations}
+%
+% \begin{itemize}
+% \item Mark limitations: page breaks in math.
+% \item \LaTeX's output routine is redefinded.
+%   \begin{itemize}
+%   \item Changes in the output routine of newer versions
+%         of LaTeX are not detected.
+%   \item Packages that change the output routine are not
+%         supported.
+%   \end{itemize}
+% \item It does not support several independent text
+%       streams like footnotes.
+% \item Limitations in float and marginpar support.
+% \end{itemize}
+%
+% \subsection{Recommendation}
+%
+% \eTeX\ (for additional mark register)
+% Without \eTeX\ \LaTeX's mark commands are redefined
+% to store an additional color value.
+%
+% \subsection{Usage}
+%
+% Load after package color:
+% \begin{quote}
+%   |\usepackage[pdftex]{color}|\\
+%   |\usepackage{pdfcolmk}|
+% \end{quote}
+%
+% \subsection{Compatibility}
+%
+% \begin{itemize}
+% \item Load the following packages after \xpackage{pdfcolmk}:
+%   \begin{quote}
+%       \xpackage{mparhack.sty}
+%   \end{quote}
+% \item Load the following packages before \xpackage{pdfcolmk}:
+%   \begin{quote}
+%       \xpackage{marn.sty}\\
+%       \xpackage{newmarn.sty}
+%   \end{quote}
+% \item Supported \cs{@addmarginpar} patch:
+%   \begin{quote}
+%       \xpackage{latex/base/latex.ltx}\\
+%       \xpackage{memoir.cls}\\
+%       \xpackage{poemscol/marn.sty}, \xpackage{poemscol/newmarn.sty}\\
+%       \xpackage{mparhack.sty}
+%   \end{quote}
+% \item Unsupported \cs{@addmarginpar} patch:
+%   \begin{quote}
+%       \xpackage{lineno.sty}\\
+%       \xpackage{sttools/marginal.sty}\\
+%       \xpackage{revtex4.cls}
+%   \end{quote}
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdfcolmk}%
+  [2008/08/11 v1.2 Color support for pdfTeX via marks (HO)]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@ifundefined{ver@pdftex.def}{%
+  \PackageWarningNoLine{pdfcolmk}{%
+    Nothing to fix, because \string`pdftex.def\string' not loaded%
+  }%
+  \endinput
+}{}
+\@ifpackageloaded{color}{}{%
+  \PackageWarningNoLine{pdfcolmk}{%
+    Nothing to fix, because \string`color.sty\string' not loaded%
+  }%
+  \endinput
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname main@pdfcolorstack\endcsname\relax
+\else
+  % pdftex.def >= 2007/01/01 0.04a and pdfTeX >= 1.40.0
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{pdfcolmk}{%
+      The color stack of pdfTeX \string>\string= 1.40 is used. %
+      Therefore\MessageBreak
+      this package is not necessary and not loaded%
+    }%
+  \endgroup
+  \expandafter\endinput
+\fi
+
+\PackageInfo{pdfcolmk}{%
+  This package tries to simulate dvips's color stack\MessageBreak
+  for pdfTeX based on a mark register of e-TeX.\MessageBreak
+  It redefines LaTeX's output routine. Therefore\MessageBreak
+  use with care, no warranties%
+}
+
+\ifx\marks\@undefined
+
+  \let\pec@mark\mark
+  \let\pec@value\empty
+  \long\def\mark#1{%
+    \protected@xdef\pec@value{#1}%
+    \pec@setmark
+  }%
+  \def\pec@setmark{%
+    \begingroup
+      \@temptokena\expandafter{\pec@value}%
+      \pec@mark{{\current@color}\the\@temptokena}%
+    \endgroup
+  }%
+  \def\pec@getmark{%
+    \xdef\pec@botcolor{%
+      \expandafter\@firstofthree\botmark\@empty\@empty\@empty
+    }%
+  }%
+  \long\def\@firstofthree#1#2#3{#1}%
+  \CheckCommand{\@leftmark}[2]{#1}%
+  \CheckCommand{\@rightmark}[2]{#2}%
+  \CheckCommand*{\leftmark}{%
+    \expandafter\@leftmark\botmark\@empty\@empty
+  }%
+  \CheckCommand*{\rightmark}{%
+    \expandafter\@rightmark\firstmark\@empty\@empty
+  }%
+  \long\def\@leftmark#1#2#3{#2}%
+  \long\def\@rightmark#1#2#3{#3}%
+  \g@addto@macro\leftmark\@empty
+  \g@addto@macro\rightmark\@empty
+
+\else
+
+  \RequirePackage{etex}[1998/03/26]%
+  \newmarks\pec@marks
+  \def\pec@setmark{\marks\pec@marks{\current@color}}%
+  \def\pec@getmark{\xdef\pec@botcolor{\botmarks\pec@marks}}%
+
+\fi
+%    \end{macrocode}
+%
+% \subsection{\cs{marginpar} fix}
+%
+%    \begin{macrocode}
+\chardef\pec@result\z@
+\def\pec@temp#1{%
+  \chardef\pec@result\@ne
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{pdfcolmk}{%
+      Patch for \string\@addmarginpar\space applied (#1)%
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%
+% \subsubsection{latex/base/latex.ltx}
+%
+%    \begin{macrocode}
+\def\pec@addmarginpar{%
+  \@next\@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \@tempcnta\@ne
+  \if@twocolumn
+    \if@firstcolumn
+      \@tempcnta\m@ne
+    \fi
+  \else
+    \if@mparswitch
+      \ifodd\c@page
+      \else
+        \@tempcnta\m@ne
+      \fi
+    \fi
+    \if@reversemargin \@tempcnta -\@tempcnta \fi
+  \fi
+  \ifnum\@tempcnta <\z@  \global\setbox\@marbox\box\@currbox \fi
+  \@tempdima\@mparbottom
+  \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+    \@latex@warning@no@line{Marginpar on page \thepage\space moved}%
+  \else
+    \@tempdima\z@
+  \fi
+  \global\@mparbottom\@pageht
+  \global\advance\@mparbottom\@tempdima
+  \global\advance\@mparbottom\dp\@marbox
+  \global\advance\@mparbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\setbox\@marbox\vbox{%
+    \vskip \@tempdima
+    \box \@marbox
+  }%
+  \global \ht\@marbox \z@
+  \global \dp\@marbox \z@
+  \kern -\@pagedp
+  \nointerlineskip
+  \hb@xt@\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \box\@marbox \hss
+  }%
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{latex/base}%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{memoir.cls}
+%
+%    \begin{macrocode}
+\def\pec@addmarginpar{%
+  \checkoddpage
+  \@next\@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \@tempcnta\@ne
+  \if@twocolumn
+    \if@firstcolumn
+      \@tempcnta\m@ne
+    \fi
+  \else
+    \if@mparswitch
+      \ifoddpage
+      \else
+        \@tempcnta\m@ne
+      \fi
+    \fi
+    \if@reversemargin
+      \@tempcnta -\@tempcnta
+    \fi
+  \fi
+  \ifnum\@tempcnta <\z@
+    \global\setbox\@marbox\box\@currbox
+  \fi
+  \@tempdima\@mparbottom
+  \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+    \@latex@warning@no@line{%
+      Marginpar on page \thepage\space moved by \the\@tempdima
+    }%
+  \else
+    \@tempdima\z@
+  \fi
+  \global\@mparbottom\@pageht
+  \global\advance\@mparbottom\@tempdima
+  \global\advance\@mparbottom\dp\@marbox
+  \global\advance\@mparbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\setbox\@marbox\vbox{%
+    \vskip \@tempdima
+    \box \@marbox
+  }%
+  \global \ht\@marbox \z@
+  \global \dp\@marbox \z@
+  \kern -\@pagedp
+  \nointerlineskip
+  \hb@xt@\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \box\@marbox
+    \hss
+  }%
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}%
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{memoir.cls}%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{poemscol/marn.sty, poemscol/newmarn.sty}
+%
+%    \begin{macrocode}
+\def\pec@addmarginpar{%
+  \@next \@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \global\advance\@mpar@count\m@ne
+  \@ifundefined{@marn@\the\@mpar@count @}{% was location logged last time?
+    \@tempcnta\@ne % NO: use original LaTeX logic
+    \if@twocolumn
+      \if@firstcolumn
+        \@tempcnta\m@ne
+      \fi
+    \else
+      \if@mparswitch
+        \ifodd\c@page
+        \else
+          \@tempcnta\m@ne
+        \fi
+      \fi
+      \if@reversemargin
+        \@tempcnta -\@tempcnta
+      \fi
+    \fi
+  }{%
+    \@tempcnta %    YES: use record from last time to decide side.
+    \@nameuse{@marn@\the\@mpar@count @}%
+    \if@reversemargin -\fi \@ne
+  }%
+  \ifnum\@tempcnta <\z@
+    \global\setbox\@marbox\box\@currbox
+    \global\let\@marnbottom\@mparbottoml
+  \else
+    \global\let\@marnbottom\@mparbottom
+  \fi
+  \@tempdima\@marnbottom \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+    \@@warning{Marginpar on page \thepage\space moved}%
+  \else
+    \@tempdima\z@
+  \fi
+  \global\@marnbottom\@pageht
+  \global\advance\@marnbottom\@tempdima
+  \global\advance\@marnbottom\dp\@marbox
+  \global\advance\@marnbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\ht\@marbox\z@
+  \global\dp\@marbox\z@
+  \vskip -\@pagedp
+  \vskip\@tempdima\nointerlineskip
+  \hbox to\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \if@filesw % record where this is for use next time:
+       \@marn@log\@mpar@count
+    \fi
+    \box\@marbox
+    \hss
+  }%
+  \nobreak   %% RmS 91/06/21 \nobreak added
+  \vskip -\@tempdima
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{poemscol/(new)marn.sty}%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{refman/refart.cls, refnam/refrep.cls}
+%
+%    \begin{macrocode}
+\def\pec@addmarginpar{%
+  \@next\@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \@tempcnta\@ne
+  \if@twocolumn
+    \if@firstcolumn
+      \@tempcnta\m@ne
+    \fi
+  \else
+    \@tempcnta\m@ne
+  \fi
+  \ifnum\@tempcnta <\z@
+    \global\setbox\@marbox\box\@currbox
+  \fi
+  \@tempdima\@mparbottom
+  \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+     \@@warning{Marginpar on page \thepage\space moved}%
+  \else
+     \@tempdima\z@
+  \fi
+  \global\@mparbottom\@pageht
+  \global\advance\@mparbottom\@tempdima
+  \global\advance\@mparbottom\dp\@marbox
+  \global\advance\@mparbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\setbox\@marbox\vbox{%
+    \vskip \@tempdima \box \@marbox
+  }%
+  \global \ht\@marbox \z@
+  \global \dp\@marbox \z@
+  \kern -\@pagedp
+  \nointerlineskip
+  \hb@xt@\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \box\@marbox
+    \hss
+  }%
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{ref(art|rep).cls}%
+\fi
+
+\ifcase\pec@result
+  \PackageInfo{pdfcolmk}{%
+    Fix for \string\@addmarginpar\space is omitted, %
+    because this variant\MessageBreak
+    of \string\@addmarginpar\space
+      is not recognized%
+  }%
+\else
+  % apply patch for \@addmarginpar
+  \def\pec@PatchAddMarginpar#1\columnwidth#2#3\@nil{%
+    \pec@PatchAddMarginparI#2\@nil{#1}{#3}%
+  }%
+  \def\pec@PatchAddMarginparI#1\box\@marbox\hss#2\@nil#3#4{%
+    \def\@addmarginpar{%
+      #3%
+      \columnwidth{%
+        #1%
+        \pdfliteral{q}%
+        \rlap{%
+          \box\@marbox
+        }%
+        \pdfliteral{Q}%
+        \hss
+        #2%
+      }%
+      #4%
+    }%
+  }%
+  \expandafter\pec@PatchAddMarginpar\@addmarginpar\@nil
+\fi
+%    \end{macrocode}
+%
+% \subsection{Color fix}
+%
+%    \begin{macrocode}
+\def\set@color{%
+  \pdfliteral{\current@color}%
+  \ifinner
+  \else
+    \pec@setmark
+  \fi
+  \aftergroup\reset@color
+}
+\def\reset@color{%
+  \pdfliteral{\current@color}%
+  \ifinner
+  \else
+    \pec@setmark
+  \fi
+}
+
+\let\pec@botcolor\current@color
+
+\def\pec@PatchVBoxCCLV{%
+  \ifx\pec@botcolor\@empty
+  \else
+    \setbox\@cclv\vbox{%
+      \pdfliteral{\pec@botcolor}%
+      \unvbox\@cclv
+    }%
+  \fi
+  \pec@getmark
+}
+
+\def\pec@PatchAlreadyInBox{%
+  \ifx\pec@botcolor\@empty
+  \else
+    \pdfliteral{\pec@botcolor}%
+  \fi
+  \pec@getmark
+}
+
+\@ifclassloaded{memoir}{%
+  \expandafter\def\expandafter\mem@makecol\expandafter{%
+    \expandafter\pec@PatchVBoxCCLV
+    \mem@makecol
+  }%
+  \endinput
+}{}
+
+\@ifclassloaded{seminar}{%
+  \newcommand\pec@org@makeslide{}%
+  \let\pec@org@makeslide\@makeslide
+  \def\@makeslide{%
+    \pec@PatchVBoxCCLV
+    \pec@org@makeslide
+  }%
+  \endinput
+}{}
+
+\long\def\pec@output#1\@specialoutput\else#2\pec@end{%
+  \begingroup
+    \def\x{#2}%
+  \expandafter\endgroup
+  \ifx\x\@empty
+    \PackageWarningNoLine{pdfcolmk}{%
+      Unexpected \string\output\space routine detected,%
+      \MessageBreak
+      loading of package stopped%
+    }%
+    \expandafter\endinput
+  \fi
+}
+\expandafter\expandafter\expandafter\pec@output
+\expandafter\@firstofone\the\output\@specialoutput\else\pec@end
+
+\long\def\pec@output#1\@specialoutput\else#2\pec@end{%
+  \output{%
+    #1\@specialoutput\else
+    \pec@PatchVBoxCCLV
+    #2%
+  }%
+}
+\expandafter\expandafter\expandafter\pec@output
+\expandafter\@firstofone\the\output\pec@end
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcolmk.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcolmk.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfcolmk.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfcolmk.sty & tex/latex/oberdiek/pdfcolmk.sty\\
+%   pdfcolmk.pdf & doc/latex/oberdiek/pdfcolmk.pdf\\
+%   pdfcolmk.dtx & source/latex/oberdiek/pdfcolmk.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfcolmk.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfcolmk.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfcolmk.dtx
+%makeindex -s gind.ist pdfcolmk.idx
+%pdflatex pdfcolmk.dtx
+%makeindex -s gind.ist pdfcolmk.idx
+%pdflatex pdfcolmk.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfcolmk.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcolmk'>
+  <name>pdfcolmk</name>
+  <caption>Improving colour support under pdftex.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2000,2005-2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    The package provides macros that emulate the &#x2018;colour stack&#x2019;
+    functionality of dvips.  The colour stack deals with colour
+    manipulations when asynchronous events (like page-breaking) occur;
+    pdftex does not (yet) have such a stack, but dvips does, and the
+    <xref refid='color'>color</xref> package makes extensive use of
+    it.
+    <p/>
+    This package is an experimental solution to the problem, and works
+    best with pdf-e-tex.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcolmk.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcolmk.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2000/08/27 v0.1}
+%   \item
+%     First published version in newsgroup \xnewsgroup{comp.text.tex}:\\
+%     \URL{``\link{pdftex: bug with colors?}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/6f088e69e4085d2c}
+%   \end{Version}
+%   \begin{Version}{2000/09/02 v0.2}
+%   \item
+%     Next try.
+%   \end{Version}
+%   \begin{Version}{2000/09/02 v0.3}
+%   \item
+%     Solution without \eTeX\ added.
+%   \end{Version}
+%   \begin{Version}{2000/09/06 v0.4}
+%   \item
+%     Patch commands added.
+%   \item
+%     Patch for seminar.cls added.
+%   \end{Version}
+%   \begin{Version}{2000/09/06 v0.5}
+%   \item
+%     Bug fix: initialization of \cs{pec@value} added.
+%   \end{Version}
+%   \begin{Version}{2005/06/15 v0.6}
+%   \item
+%     Support for \cs{marginpar} added.
+%     See thread in \xnewsgroup{comp.text.tex}:\\
+%     \URL{``\link{Using \cs{textcolor} and \cs{marginpar} together}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/38ed58f8845a2a4f}
+%   \end{Version}
+%   \begin{Version}{2005/07/09 v0.7}
+%   \item
+%     Output support added for \xpackage{memoir},
+%     provided by Lars Madsen.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v0.8}
+%   \item
+%     Code is not changed.
+%   \item
+%     DTX framework.
+%   \end{Version}
+%   \begin{Version}{2007/01/01 v1.0}
+%   \item
+%     If \xfile{pdftex.def} \textgreater= 2007/01/01 v0.04a is used with
+%     \pdfTeX\ \textgreater= 1.40.0, then package \xpackage{pdfcolmk} is obsolete.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.1}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.2}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

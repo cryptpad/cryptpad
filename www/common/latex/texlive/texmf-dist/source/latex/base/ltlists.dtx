@@ -1,0 +1,1098 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltlists.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltlists.dtx}
+             [2015/05/10 v1.0t LaTeX Kernel (List Environments)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltlists.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Tobias Oetiker\thanks{Tobi has converted the documentation to
+    doc.sty standard}\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{521}
+%
+% \changes{v1.0b}{1994/03/28}{Improve documentation}
+% \changes{v1.0f}{1994/05/21}{Use new error commands}
+% \changes{v1.0f}{1995/05/21}{Moved to doc.sty standard}
+%
+% \section{List, and related environments}
+%
+% The generic commands for creating an indented environment --
+% |enumerate|, |itemize|, |quote|, etc -- are:
+% \begin{quote}
+%        |\list|\marg{LABEL}\marg{COMMANDS} ... |\endlist|
+% \end{quote}
+%
+% which can be invoked by the user as the list environment.  The LABEL
+% argument specifies item labeling.  COMMANDS contains commands for
+% changing the horizontal and vertical spacing parameters.
+%
+% Each item of the environment is begun by the command
+% |\item[|ITEMLABEL|]|
+% which produces an item labeled by ITEMLABEL.  If the argument is
+% missing, then the LABEL argument of the |\list| command is used as the
+% item label.
+%
+% The label is formed by putting |\makelabel|\marg{ITEMLABEL} in an hbox
+% whose width is either its natural width or else |\labelwidth|,
+% whichever is larger.  The |\list| command defines |\makelabel| to have
+% the default  definition:
+% \begin{quote}
+%     |\makelabel|\marg{ARG} == BEGIN |\hfil| ARG END
+% \end{quote}
+% which, for a label of width less than |\labelwidth|, puts the label
+% flushright, |\labelsep| to the left of the item's text.  However,
+% |\makelabel| can be |\let| to another command by the |\list|'s
+% COMMANDS argument.
+%
+% A |\usecounter|\marg{foo} command in the second argument causes the
+% counter \emph{foo} to be initialized to zero, and stepped by every
+% |\item| command without an argument.  (|\label| commands within the
+% list refer to this counter.)
+%
+% When you leave a list environment, returning either to an enclosing
+% list or normal text mode, LaTeX begins a new paragraph if and only if
+% you leave a blank line after the |\end| command.  This is accomplished
+% by the |\@endparenv| command.
+%
+% Blank lines are ignored every other reasonable place--i.e.:
+% \begin{itemize}
+%  \item  Between the |\begin{list}| and the first |\item|,
+%  \item  Between the |\item| and the text of that item.
+%  \item Between the end of the last item and the |\end{list}|.
+% \end{itemize}
+%
+% For an environment like quotation, in which items are not labeled,
+% the entire environment is a single item.  It is defined by
+% letting |\quotation| == |\list{}{...}\item\relax|.  (Note the
+% |\relax|, there in case the first character in the environment is a
+% '['.)  The spacing parameters provide a great deal of flexability in
+% designing the format, including the ability to let the indentation of
+% the first paragraph be different from that of the subsequent ones.
+%
+% The trivlist environment is equivalent to a list environment
+% whose second argument sets the following parameter values:
+% \begin{description}
+% \item[\cs{leftmargin} = 0:] causes no indentation of left margin
+% \item[\cs{labelwidth} = 0:] see below for precise effect this has.
+% \item[\cs{itemindent} = 0:] with a null label, makes first paragraph
+%        have no indentation.  Succeeding paragraphs have |\parindent|
+%        indentation.  To give first paragraph same indentation, set
+%        |\itemindent| = |\parindent| before the |\item[]|.
+% \end{description}
+%
+% Every |\item| in a trivlist environment must have an argument---in
+% many cases, this will be the null argument (|\item[]|).  The trivlist
+% environment is mainly used for paragraphing environments, like
+% verbatim, in which there is no margin change.  It provides the same
+% vertical spacing as the list environment, and works reasonably well
+% when it occurs immediately after an |\item| command in an enclosing
+% list.
+%
+% \StopEventually{}
+%
+%
+% \changes{v1.0a}{1994/03/07}{Initial version, split from latex.dtx}
+% \changes{v1.0a}{1994/03/07}{Long lines wrapped to 72 columns}
+%
+%
+% \subsection{List and Trivlist}
+%
+%
+% The following variables are used inside a list environment:
+% \begin{description}
+% \item[\cs{@totalleftmargin}] The distance that the prevailing left
+%     margin is indented from the outermost left margin,
+% \item[\cs{linewidth}] The width of the current line.  Must be
+%     initialized to |\hsize|.
+% \item[\cs{@listdepth}] A count for holding current list nesting depth.
+% \item[\cs{makelabel}] A macro with a single argument, used to
+%   generate the label from the argument (given or implied)
+%   of the |\item| command. Initialized to |\@mklab| by the |\list|
+%   command.  This command must produce  some stretch---i.e., an
+%   |\hfil|.
+% \item[\cs{@inlabel}] A switch that is false except between the time
+%   an |\item| is encountered and the time that \TeX{}
+%   actually enters horizontal mode.  Should be tested by commands
+%   that can be messed up by the list environment's use of |\everypar|.
+% \item[\cs{box}\cs{@labels}] When |@inlabel = true|, it holds the labels
+%   to be put out by |\everypar|.
+% \item[\texttt{@noparitem}] A switch set by |\list| when
+%   |@inlabel = true|.
+%   Handles the case of a |\list| being the first thing in an item.
+% \item[\texttt{@noparlist}] A switch set true for a list that begins an
+%   item.  No |\topsep| space is added before or after |\item|'s such a
+%   list.
+% \item[\texttt{@newlist}] Set true by |\list|, set false by the first
+%   text (by |\everypar|).
+% \item[\texttt{@noitemarg}]  Set true when executing an |\item| with no
+%   explicit argument.  Used to save space. To save time, make two
+%   separate  |\@item| commands.
+% \item[\texttt{@nmbrlist}] Set true by |\usecounter| command, causes
+%   list to be numbered.
+% \item[\cs{@listctr}] |\def|'ed by |\usecounter| to name of counter.
+% \item[\cs{@noskipsec}] A switch set true by a sectioning command when
+%    it is creating an in-text heading with |\everypar|.
+% \end{description}
+%
+% Throughout a list environment, |\hsize| is the width of the current
+% line, measured from the outermost left margin to the outermost right
+% margin.  Environments like tabbing should use |\linewidth| instead of
+% |\hsize|.
+%
+% Here are the parameters of a list that can be set by commands in
+% the |\list|'s COMMANDS argument.  These parameters are all TeX
+% skips or dimensions (defined by |\newskip| or |\newdimen|), so the
+% usual \TeX\ or \LaTeX\ commands can be used to set them.  The
+% commands will be executed in vmode if and only if the |\list| was
+% preceded by a |\par| (or something like an |\end{list}|), so the
+% spacing parameters can be set according to whether the list is
+% inside a paragraph or is its own paragraph.
+%
+%
+% \subsection{Vertical Spacing (skips)}
+% \begin{description}
+% \item[\cs{topsep}:]  Space between first item and preceding paragraph.
+% \item[\cs{partopsep}:] Extra space added to \cs{topsep} when
+%        environment starts a new paragraph (is called in vmode).
+% \item[\cs{itemsep}:] Space between successive items.
+% \item[\cs{parsep}:] Space between paragraphs within an item -- the
+%                 \cs{parskip} for this environment.
+% \end{description}
+%
+% \subsection{Penalties}
+% \begin{description}
+%
+% \item[\cs{@beginparpenalty}:] put at the beginning of a list
+% \item[\cs{@endparpenalty}:] put at end of list
+%  \item[\cs{@itempenalty}:] put between items.
+%  \end{description}
+%
+% \subsection{Horizontal Spacing (dimens)}
+% \begin{description}
+% \item[\cs{leftmargin}:] space between left margin of enclosing
+%   environment (or of page if top level list) and left margin of
+%                     this list.  Must be nonnegative.
+%  \item[\cs{rightmargin}:] analogous.
+%  \item[\cs{listparindent}:] extra indentation at beginning of every
+%     paragraph of a list except the one started by the \cs{item}
+%                      command.  May be negative!  Usually, labeled
+%                       lists have \cs{listparindent} equal to zero.
+%   \item[\cs{itemindent}:] extra indentation added right BEFORE an item
+%                      label.
+%  \item[\cs{labelwidth}:] nominal width of box that contains the label.
+%                      If the natural width of the
+%                         label $< =$ \cs{labelwidth},
+%                      then the label is flushed right inside a box
+%                      of width \cs{labelwidth} (with an \cs{hfil}).
+%                      Otherwise,
+%                      a box of the natural width is employed, which
+%                       causes an indentation of the text on that line.
+%     \item[\cs{labelsep}:] space between end of label box and text of
+%                      first item.
+%  \end{description}
+% \subsection{Default Values}
+%      Defaults for the list environment are set as follows.
+%      First, \cs{rightmargin}, \cs{listparindent} and \cs{itemindent}
+%      are set
+%      to 0pt.  Then, one of the commands
+%      \cs{@listi}, \cs{@listii}, ... , \cs{@listvi}
+%      is called, depending upon the current level of the list.
+%      The \cs{@list} \ldots commands should be defined by the document
+%      style.  A convention that the document style should follow is
+%      to set \cs{leftmargin} to
+%      \cs{leftmargini},\ldots, \cs{leftmarginvi} for
+%      the appropriate level.  Items that aren't changed may be left
+%      alone, but everything that could possibly be changed must be
+%      reset.
+%  \begin{oldcomments}
+%  \list{LABEL}{COMMANDS} ==
+%   BEGIN
+%     if \@listdepth > 5
+%       then LaTeX error: 'Too deeply nested'
+%       else \@listdepth :=G \@listdepth + 1
+%     fi
+%     \rightmargin     := 0pt
+%     \listparindent   := 0pt
+%     \itemindent      := 0pt
+%     \eval(@list \romannumeral\the\@listdepth)  %% Set default values:
+%     \@itemlabel      :=L LABEL
+%     \makelabel       == \@mklab
+%     @nmbrlist        :=L false
+%     COMMANDS
+%
+%     \@trivlist                % commands common to \list and \trivlist
+%
+%     \parskip          :=L \parsep
+%     \parindent        :=L \listparindent
+%     \linewidth        :=L \linewidth - \rightmargin -\leftmargin
+%     \@totalleftmargin :=L \@totalleftmargin + \leftmargin
+%     \parshape 1 \@totalleftmargin \linewidth
+%     \ignorespaces                    % gobble space up to \item
+%    END
+%
+% \endlist == BEGIN \@listdepth :=G \@listdepth -1
+%                   \endtrivlist
+%             END
+%
+% \@trivlist ==
+%  BEGIN
+%     if @newlist = T then \@noitemerr fi
+%                     %% This command removed for some forgotten reason.
+%     \@topsepadd :=L \topsep
+%     if @noskipsec then leave vertical mode fi  %% Added 11 Jun 85
+%     if vertical mode
+%       then \@topsepadd :=L \@topsepadd + \partopsep
+%       else \unskip \par            % remove glue from end of last line
+%     fi
+%     if @inlabel = true
+%        then @noparitem :=L true
+%             @noparlist :=L true
+%        else @noparlist :=L false
+%             \@topsep   :=L \@topsepadd
+%     fi
+%     \@topsep         :=L \@topsep + \parskip  %% Change 4 Sep 85
+%     \leftskip        :=L 0pt         % Restore paragraphing parameters
+%     \rightskip       :=L \@rightskip
+%     \parfillskip     :=L 0pt + 1fil
+%
+%   NOTE: \@setpar called on every \list in case \par has been
+%   temporarily  munged before the \list command.
+%     \@setpar{if @newlist = false then {\@@par} fi}
+%     \@newlist         :=G T
+%     \@outerparskip    :=L \parskip
+% END
+%
+% \trivlist  ==
+% BEGIN
+%  \parsep     := \parskip
+%  @nmbrlist := F
+%  \@trivlist
+%  \labelwidth := 0
+%  \leftmargin := 0
+%  \itemindent := \parindent
+%  \@itemlabel :=L "empty"          %% added 93/12/13
+%  \makelabel{LABEL} == LABEL
+% END
+%
+% \endtrivlist ==
+%   BEGIN
+%     if @inlabel = T then \indent fi
+%     if horizontal mode then \unskip \par fi
+%     if @noparlist = true
+%       else if \lastskip > 0
+%               then \@tempskipa := \lastskip
+%                    \vskip - \lastskip
+%                    \vskip \@tempskipa -\@outerparskip + \parskip
+%            fi
+%            \@endparenv
+%     fi
+%   END
+%
+% \@endparenv ==
+%   BEGIN
+%    \addpenalty{@endparpenalty}
+%    \addvspace{\@topsepadd}
+%    \endgroup    %% ends the \begin command's \begingroup
+%    \par  ==  BEGIN
+%                \@restorepar
+%                \everypar{}
+%                \par
+%              END
+%    \everypar == BEGIN remove \lastbox \everypar{} END
+%    \begingroup  %% to match the \end commands \endgroup
+%   END
+%
+% \item == BEGIN if math mode then WARNING fi
+%                  if  next char = [
+%                  then  \@item
+%                  else  @noitemarg := true
+%                        \@item[@itemlabel]
+%          END
+%
+% \@item[LAB] ==
+%    BEGIN
+%     if @noparitem = true
+%       then @noparitem := false
+%                % NOTE: then clause  hardly every taken,
+%                %  so made a macro \@donoparitem
+%            \box\@labels :=G \hbox{\hskip -\leftmargin
+%                                   \box\@labels
+%                                   \hskip \leftmargin }
+%            if @minipage = false then
+%               \@tempskipa := \lastskip
+%               \vskip -\lastskip
+%               \vskip \@tempskipa + \@outerparskip - \parskip
+%            fi
+%       else if @inlabel = true
+%              then \indent \par   % previous item empty.
+%            fi
+%            if hmode then 2 \unskip's
+%                           % To remove any space at end of prev.
+%                           % paragraph that could cause a blank line.
+%                     \par
+%            fi
+%            if @newlist = T
+%               then if @nobreak = T   % Kludge if list follows \section
+%                      then \addvspace{\@outerparskip - \parskip}
+%                      else \addpenalty{\@beginparpenalty}
+%                           \addvspace{\@topsep}
+%                           \addvspace{-\parskip}   %% added 4 Sep 85
+%                    fi
+%               else \addpenalty{\@itempenalty}
+%                    \addvspace{\itemsep}
+%            fi
+%            @inlabel :=G true
+%     fi
+%
+%     \everypar{ @minipage :=G F
+%                @newlist :=G F
+%                if  @inlabel = true
+%                  then @inlabel :=G false
+%                       \hskip -\parindent
+%                       \box\@labels
+%                       \penalty 0
+%                             %% 3 Oct 85  -- allow line break here
+%                       \box\@labels :=G null
+%                fi
+%                \everypar{} }
+%     @nobreak :=G false
+%     if  @noitemarg = true
+%       then @noitemarg := false
+%            if @nmbrlist
+%              then \refstepcounter{\@listctr}
+%     fi     fi
+%     \@tempboxa   :=L \hbox{\makelabel{LAB}}
+%     \box\@labels :=G \@labels \hskip \itemindent
+%                       \hskip - (\labelwidth + \labelsep)
+%                       if \wd \@tempboxa > \labelwidth
+%                          then \box\@tempboxa
+%                          else \hbox to \labelwidth {\unhbox\@tempboxa}
+%                       fi
+%                       \hskip\labelsep
+%     \ignorespaces                        %gobble space up to text
+%   END
+%
+%   \makelabel{LABEL} == ERROR   %% default to catch lonely \item
+%
+%
+%   \usecounter{CTR} == BEGIN  @nmbrlist :=L true
+%                              \@listctr == CTR
+%                              \setcounter{CTR}{0}
+%                       END
+%
+% DEFINE \dimen's and \count
+% \end{oldcomments}
+% \begin{macro}{\topskip}
+% \begin{macro}{\partopsep}
+% \begin{macro}{\itemsep}
+% \begin{macro}{\parsep}
+% \begin{macro}{\@topsep}
+% \begin{macro}{\@topsepadd}
+% \begin{macro}{\outerparskip}
+%    \begin{macrocode}
+%<*2ekernel>
+\newskip\topsep
+\newskip\partopsep
+\newskip\itemsep
+\newskip\parsep
+\newskip\@topsep
+\newskip\@topsepadd
+\newskip\@outerparskip
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}\end{macro}\end{macro}\end{macro}
+% \end{macro}
+% \begin{macro}{\leftmargin}\begin{macro}{\rightmargin}
+% \begin{macro}{\listparindent}\begin{macro}{\itemindent}
+% \begin{macro}{\labelwidth}\begin{macro}{\labelsep}
+% \begin{macro}{\@totalleftmargin}
+%    \begin{macrocode}
+\newdimen\leftmargin
+\newdimen\rightmargin
+\newdimen\listparindent
+\newdimen\itemindent
+\newdimen\labelwidth
+\newdimen\labelsep
+\newdimen\linewidth
+\newdimen\@totalleftmargin \@totalleftmargin=\z@
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}\end{macro}\end{macro}
+% \end{macro}\end{macro}
+%
+% \begin{macro}{\leftmargini}
+% \begin{macro}{\leftmarginii}
+% \begin{macro}{\leftmarginiii}
+% \begin{macro}{\leftmarginiv}
+% \begin{macro}{\leftmarginv}
+% \begin{macro}{\leftmarginvi}
+%    \begin{macrocode}
+\newdimen\leftmargini
+\newdimen\leftmarginii
+\newdimen\leftmarginiii
+\newdimen\leftmarginiv
+\newdimen\leftmarginv
+\newdimen\leftmarginvi
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\@listdepth}\begin{macro}{\@itempenalty}
+% \begin{macro}{\@beginparpenalty}\begin{macro}{\@endparpenalty}
+%    \begin{macrocode}
+\newcount\@listdepth \@listdepth=0
+\newcount\@itempenalty
+\newcount\@beginparpenalty
+\newcount\@endparpenalty
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\@labels}
+%    \begin{macrocode}
+\newbox\@labels
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@inlabel}
+% \begin{macro}{\@inlabelfalse}
+% \begin{macro}{\@inlabeltrue}
+%    \begin{macrocode}
+\newif\if@inlabel \@inlabelfalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\if@newlist}
+% \begin{macro}{\@newlistfalse}
+% \begin{macro}{\@newlisttrue}
+%    \begin{macrocode}
+\newif\if@newlist   \@newlistfalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\if@noparitem}
+% \begin{macro}{\@noparitemfalse}
+% \begin{macro}{\@noparitemtrue}
+%    \begin{macrocode}
+\newif\if@noparitem \@noparitemfalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\if@noparlist}
+% \begin{macro}{\@noparlistfalse}
+% \begin{macro}{\@noparlisttrue}
+%    \begin{macrocode}
+\newif\if@noparlist \@noparlistfalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\if@noitemarg}
+% \begin{macro}{\@noitemargfalse}
+% \begin{macro}{\@noitemargtrue}
+%    \begin{macrocode}
+\newif\if@noitemarg \@noitemargfalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\if@newlist}
+% \begin{macro}{\@newlistfalse}
+% \begin{macro}{\@newlisttrue}
+%    \begin{macrocode}
+\newif\if@nmbrlist  \@nmbrlistfalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\list}
+%    \begin{macrocode}
+\def\list#1#2{%
+  \ifnum \@listdepth >5\relax
+    \@toodeep
+  \else
+    \global\advance\@listdepth\@ne
+  \fi
+  \rightmargin\z@
+  \listparindent\z@
+  \itemindent\z@
+  \csname @list\romannumeral\the\@listdepth\endcsname
+  \def\@itemlabel{#1}%
+  \let\makelabel\@mklab
+  \@nmbrlistfalse
+  #2\relax
+  \@trivlist
+  \parskip\parsep
+  \parindent\listparindent
+  \advance\linewidth -\rightmargin
+  \advance\linewidth -\leftmargin
+  \advance\@totalleftmargin \leftmargin
+  \parshape \@ne \@totalleftmargin \linewidth
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\par@deathcycles}
+%    \begin{macrocode}
+\newcount\par@deathcycles
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@trivlist}
+% \changes{v1.0e}{1994/12/02}{RmS: Added check for looping}
+% \changes{v1.0p}{1996/10/31}{Added check for missing item in outer
+%                             list}
+% \changes{v1.0q}{1996/11/04}{Moved check for missing item: only checked
+%                 when not inlabel flag is false}
+% Because |\par| is sometimes made a no-op it is possible for a missing
+% |\item| to produce a loop that does not fill memory and so never gets
+% trapped by \TeX.  We thus need to trap this here by seting |\par| to
+% count the number of times a paragraph ii is called with no progress
+% being made started.
+%    \begin{macrocode}
+\def\@trivlist{%
+  \if@noskipsec \leavevmode \fi
+  \@topsepadd \topsep
+  \ifvmode
+    \advance\@topsepadd \partopsep
+  \else
+    \unskip \par
+  \fi
+  \if@inlabel
+    \@noparitemtrue
+    \@noparlisttrue
+  \else
+    \if@newlist \@noitemerr \fi
+    \@noparlistfalse
+    \@topsep \@topsepadd
+  \fi
+  \advance\@topsep \parskip
+  \leftskip \z@skip
+  \rightskip \@rightskip
+  \parfillskip \@flushglue
+  \par@deathcycles \z@
+  \@setpar{\if@newlist
+             \advance\par@deathcycles \@ne
+             \ifnum \par@deathcycles >\@m
+               \@noitemerr
+               {\@@par}%
+             \fi
+           \else
+             {\@@par}%
+           \fi}%
+  \global \@newlisttrue
+  \@outerparskip \parskip}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{0.0}{1992/03/18}{RmS: added \cs{@nmbrlistfalse}}
+% \begin{macro}{\trivlist}
+%    \begin{macrocode}
+\def\trivlist{%
+  \parsep\parskip
+  \@nmbrlistfalse
+  \@trivlist
+  \labelwidth\z@
+  \leftmargin\z@
+  \itemindent\z@
+%    \end{macrocode}
+%
+%    We initialise |\@itemlabel| so that a \texttt{trivlist} with
+%    an |\item| not having an optional argument doesn't produce an
+%    error message.
+% \changes{latex2e}{1993/12/13}{Initialised \cs{@itemlabel}}
+%    \begin{macrocode}
+  \let\@itemlabel\@empty
+  \def\makelabel##1{##1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endlist}
+%    \begin{macrocode}
+\def\endlist{%
+  \global\advance\@listdepth\m@ne
+  \endtrivlist}
+%    \end{macrocode}
+% \end{macro}
+%
+%    The definition of \cs{trivlist} used to be in ltspace.dtx
+%    so that other commands could be `let to it'.
+%    They now use \cs{def}.
+% \begin{macro}{\endtrivlist}
+% \changes{v1.2b ltspace}{1994/11/12}{Changed order of tests to make
+% \cs{@noitemerror} correct: end of an era.}
+% \changes{v1.0i}{1995/05/25}{Macros moved from ltspace.dtx}
+% \changes{v1.0n}{1996/10/25}{Change \cs{indent} to \cs{leavevmode}}
+% \changes{v1.0n}{1996/10/25}{Reset flags explicitly}
+% \changes{v1.0o}{1996/10/26}{Correct typo}
+%    \begin{macrocode}
+\def\endtrivlist{%
+  \if@inlabel
+    \leavevmode
+    \global \@inlabelfalse
+  \fi
+  \if@newlist
+    \@noitemerr
+    \global \@newlistfalse
+  \fi
+  \ifhmode\unskip \par
+%    \end{macrocode}
+%    We also check if we are in math mode and issue an error message
+%    if so (hoping that |\@currenvir| resolves suitably). Otherwise
+%    the usual ``perhaps a missing item'' error will get triggered
+%    later which is confusing.
+% \changes{v1.0s}{2002/10/28}{Check for math mode (pr/3437)}
+%    \begin{macrocode}
+  \else
+    \@inmatherr{\end{\@currenvir}}%
+  \fi
+  \if@noparlist \else
+    \ifdim\lastskip >\z@
+      \@tempskipa\lastskip \vskip -\lastskip
+      \advance\@tempskipa\parskip \advance\@tempskipa -\@outerparskip
+      \vskip\@tempskipa
+    \fi
+    \@endparenv
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\@endparenv}
+% \begin{macro}{\@doendpe}
+% To suppress the paragraph indentation in text immediately following
+% a paragraph-making environment, \cs{everypar} is changed to remove the
+% space, and \cs{par} is redefined to restore \cs{everypar}.  Instead of
+% redefining \cs{par} and \cs{everypar}, \cs{@endparenv} was changed to
+% set the @endpe switch, letting \cs{end} redefine \cs{par} and
+% \cs{everypar}.
+%
+% This allows paragraph-making environments to work right when called
+% by other environments. (Changed 27 Oct 86)
+%    \begin{macrocode}
+\def\@endparenv{%
+  \addpenalty\@endparpenalty\addvspace\@topsepadd\@endpetrue}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/01}{\@doendpe}{clubpenalty fix}%
+\def\@doendpe{\@endpetrue
+     \def\par{\@restorepar
+%    \end{macrocode}
+%    If a section heading changes |\clubpenalty| to keep lines
+%    after it together then this modification is restored via the
+%   |\everypar| mechanism at the start of the next paragraph. As we
+%   destroy the contents of this token here we explicity set
+%   |\clubpenalty| back to its default.
+% \changes{v1.0t}{2015/05/10}{Explicitly reset \cs{clubpenalty} before
+%  clearing \cs{everypar}; see also pr/0462 and pr/4065}
+%    \begin{macrocode}
+              \clubpenalty\@clubpenalty
+              \everypar{}\par\@endpefalse}\everypar
+%    \end{macrocode}
+%
+%    Use |\setbox0=\lastbox| instead of   |\hskip -\parindent|
+%    so that a \cs{noindent} becomes a no-op when used before
+%    a line immediately following a list environment(23 Oct 86).
+% \changes{v1.0k}{1995/11/07}{Enclosed \cs{setbox0} assignment by a
+% group so that it leaves the contents of box $0$ intact.}
+%    \begin{macrocode}
+               {{\setbox\z@\lastbox}%
+                \everypar{}\@endpefalse}}
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{0000/00/00}{\@doendpe}{clubpenalty fix}%
+%<latexrelease>\def\@doendpe{\@endpetrue
+%<latexrelease>    \def\par{\@restorepar\everypar{}\par\@endpefalse}\everypar
+%<latexrelease>               {{\setbox\z@\lastbox}\everypar{}\@endpefalse}}
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\if@endpe}
+% \begin{macro}{\@endpefalse}
+% \begin{macro}{\@endpeltrue}
+%    \begin{macrocode}
+\newif\if@endpe
+\@endpefalse
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+%
+%
+% \begin{macro}{\@mklab}
+%    \begin{macrocode}
+\def\@mklab#1{\hfil #1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{LaTeX2.09}{1992/09/18}
+%     {(RmS) Added warning if \cs{item} is used in math mode}
+% \changes{v1.0c}{1994/04/28}
+%     {Replaced \cs{@ltxnomath} by \cs{@inmatherr}}
+% \changes{v1.0d}{1994/05/03}
+%     {Removed superfluous braces}
+% \begin{macro}{\item}
+%    \begin{macrocode}
+\def\item{%
+  \@inmatherr\item
+  \@ifnextchar [\@item{\@noitemargtrue \@item[\@itemlabel]}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@donoparitem}
+%    \begin{macrocode}
+\def\@donoparitem{%
+  \@noparitemfalse
+  \global\setbox\@labels\hbox{\hskip -\leftmargin
+                               \unhbox\@labels
+                                \hskip \leftmargin}%
+  \if@minipage\else
+    \@tempskipa\lastskip
+    \vskip -\lastskip
+    \advance\@tempskipa\@outerparskip
+    \advance\@tempskipa -\parskip
+    \vskip\@tempskipa
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@item}
+% \changes{v1.0l}{1996/07/26}{Remove unecessary \cs{global} before
+%                 \cs{@minipage...}}
+%    \begin{macrocode}
+\def\@item[#1]{%
+  \if@noparitem
+    \@donoparitem
+  \else
+    \if@inlabel
+      \indent \par
+    \fi
+    \ifhmode
+      \unskip\unskip \par
+    \fi
+    \if@newlist
+      \if@nobreak
+        \@nbitem
+      \else
+        \addpenalty\@beginparpenalty
+        \addvspace\@topsep
+        \addvspace{-\parskip}%
+      \fi
+    \else
+      \addpenalty\@itempenalty
+      \addvspace\itemsep
+    \fi
+    \global\@inlabeltrue
+  \fi
+  \everypar{%
+    \@minipagefalse
+    \global\@newlistfalse
+%    \end{macrocode}
+%    This |\if@inlabel| check is needed in case an item starts of
+%    inside a group so that |\everypar| does not become empty
+%    outside that group.
+% \@nobreakfalse, etc etc.
+%    \begin{macrocode}
+    \if@inlabel
+      \global\@inlabelfalse
+%    \end{macrocode}
+%    The paragraph indent is now removed by using |\setbox...| since
+%    this makes |\noindent| a no-op here, as it should be. Thus the
+%    following comment is redundant but is left here for the sake of
+%    future historians:
+%    this next command was changed from an hskip to a kern to avoid
+%    a break point after the parindent box: the skip could cause a
+%    line-break if a very long label occurs in raggedright setting.
+% \changes{v1.0d}{1994/05/03}{\cs{hskip} changed to \cs{kern}}
+% \changes{v1.0m}{1996/10/23}{\cs{kern...} changed to \cs{setbox...}}
+% \changes{v1.0r}{1997/02/21}
+%    {\cs{ifvoid} check added for \cs{noindent}. latex/2414}
+% If |\noindent| was used after |\item| want to cancel the |\itemindent|
+% skip. This case can be detected as the indentation box will be void.
+%    \begin{macrocode}
+      {\setbox\z@\lastbox
+       \ifvoid\z@
+         \kern-\itemindent
+       \fi}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+      \box\@labels
+      \penalty\z@
+    \fi
+%    \end{macrocode}
+%    This code is intended to prevent a page break after the first
+%    line of an item that comes immediately after a section title. It
+%    may be sensible to always forbid a page break after one line of
+%    an item?  As with all such settings of |\clubpenalty| it is local
+%    so will have no effect if the item starts in a group.
+%
+%    Only resetting |\@nobreak| when it is true is now
+%    essential since now it is sometimes set locally.
+% \changes{v1.0m}{1996/10/23}{Added setting of \cs{clubpenalty} and
+%    set \cs{@nobreakfalse} only when necessary}
+%    \begin{macrocode}
+    \if@nobreak
+      \@nobreakfalse
+      \clubpenalty \@M
+    \else
+      \clubpenalty \@clubpenalty
+      \everypar{}%
+    \fi}%
+%    \end{macrocode}
+% \changes{v1.0l}{1996/07/26}{Remove unecessary \cs{global} before
+%                 \cs{@nobreak...}}
+% \changes{v1.0m}{1996/10/23}{\cs{@nobreak...} moved into the
+%          \cs{everypar} and not executed unconditionally, see above}
+%    \begin{macrocode}
+  \if@noitemarg
+    \@noitemargfalse
+    \if@nmbrlist
+%    \end{macrocode}
+% \changes{v1.0g}{1995/05/17}{Removed surplus braces}
+%    \begin{macrocode}
+      \refstepcounter\@listctr
+    \fi
+  \fi
+%    \end{macrocode}
+%    We use |\sbox| to support colour commands.
+% \changes{LaTeX2e}{1993/12/08}{use \cs{sbox} to support colour}
+%    \begin{macrocode}
+  \sbox\@tempboxa{\makelabel{#1}}%
+  \global\setbox\@labels\hbox{%
+    \unhbox\@labels
+    \hskip \itemindent
+    \hskip -\labelwidth
+    \hskip -\labelsep
+    \ifdim \wd\@tempboxa >\labelwidth
+      \box\@tempboxa
+%    \end{macrocode}
+% \changes{LaTeX2.09}{1991/11/22}
+%         {(RmS) Changed second call to \cs{makelabel} to
+%           \cs{unhbox}\cs{@tempboxa}.
+%          Avoids problems with side effects in \cs{makelabel} and is
+%               more efficient.}
+%    \begin{macrocode}
+    \else
+      \hbox to\labelwidth {\unhbox\@tempboxa}%
+    \fi
+    \hskip \labelsep}%
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\makelabel}
+% \changes{LaTeX2.09}{1991/11/04}
+%         {(RmS) added default definition for \cs{makelabel},
+%               to produce an error message.}
+%    \begin{macrocode}
+\def\makelabel#1{%
+  \@latex@error{Lonely \string\item--perhaps a missing
+        list environment}\@ehc}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@nbitem}
+% \changes{v1.0g}{1995/05/17}{Removed surplus braces}
+%    \begin{macrocode}
+\def\@nbitem{%
+  \@tempskipa\@outerparskip
+  \advance\@tempskipa -\parskip
+  \addvspace\@tempskipa}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\usecounter}
+%    \begin{macrocode}
+\def\usecounter#1{\@nmbrlisttrue\def\@listctr{#1}\setcounter{#1}\z@}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Itemize and Enumerate}
+%
+%  Enumeration is done with four counters: |enumi|, |enumii|, |enumiii|
+%  and |enumiv|, where |enum|N controls the numbering of the Nth level
+%  enumeration.  The label is generated by the commands
+%  \cs{labelenumi} \ldots{} \cs{labelenumiv}, which should be defined
+%  by the document style.
+%  Note that \cs{p@enum}N\cs{theenum}N defines the output
+%  of a \cs{ref} command.  A typical definition might be:
+% \begin{verbatim}
+%     \def\theenumii{\alph{enumii}}
+%     \def\p@enumii{\theenumi}
+%     \def\labelenumii{(\theenumii)}
+% \end{verbatim}
+% which will print the labels as `(a)', `(b)', \ldots
+% and print a \cs{ref} as `3a'.
+%
+% The item numbers are moved to the right of the label box, so they are
+% always a distance of \cs{labelsep} from the item.
+%
+% \cs{@enumdepth} holds the current enumeration nesting depth.
+%
+% Itemization is controlled by four commands: \cs{labelitemi},
+% \cs{labelitemii},
+% \cs{labelitemiii}, and \cs{labelitemiv}.
+% To cause the second-level list to be
+% bulleted, you just define \cs{labelitemii}
+% to be $\bullet$.  \cs{@itemspacing}
+% and \cs{@itemdepth} are the analogs of \cs{@enumspacing} and
+% \cs{@enumdepth}.
+%
+% \begin{oldcomments}
+% \enumerate ==
+%   BEGIN
+%     if \@enumdepth > 3
+%       then errormessage: ``Too deeply nested''.
+%       else \@enumdepth :=L \@enumdepth + 1
+%            \@enumctr :=L eval(enum@\romannumeral\the\@enumdepth)
+%            \list{\label(\@enumctr)}
+%                 {\usecounter{\@enumctr}
+%                  \makelabel{LABEL} ==  \hss \llap{LABEL}}
+%     fi
+%   END
+%
+% \endenumerate == \endlist
+% \end{oldcomments}
+%
+% \begin{macro}{\@enumdepth}
+%    \begin{macrocode}
+\newcount\@enumdepth \@enumdepth = 0
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@enumi}
+% \begin{macro}{\c@enumii}
+% \begin{macro}{\c@enumii}
+% \begin{macro}{\c@enumiv}
+%    \begin{macrocode}
+\@definecounter{enumi}
+\@definecounter{enumii}
+\@definecounter{enumiii}
+\@definecounter{enumiv}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{environment}{enumerate}
+% \changes{v1.0g}{1995/05/17}{Use \cs{thr@@} and remove surplus braces}
+%    \begin{macrocode}
+\def\enumerate{%
+  \ifnum \@enumdepth >\thr@@\@toodeep\else
+    \advance\@enumdepth\@ne
+    \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+%    \end{macrocode}
+%
+% \changes{v1.0j}{1995/07/09}{Use \cs{expandafter}}
+%    \begin{macrocode}
+      \expandafter
+      \list
+        \csname label\@enumctr\endcsname
+        {\usecounter\@enumctr\def\makelabel##1{\hss\llap{##1}}}%
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\endenumerate =\endlist
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \begin{oldcomments}
+%  \itemize ==
+%    BEGIN
+%      if \@itemdepth > 3
+%        then  errormessage: 'Too deeply nested'.
+%        else \@itemdepth :=L \@itemdepth + 1
+%             \@itemitem  == eval(labelitem\romannumeral\the\@itemdepth)
+%             \list{\@nameuse{\@itemitem}}
+%                   {\makelabel{LABEL} ==  \hss \llap{LABEL}}
+%      fi
+%    END
+%
+%  \enditemize ==  \endlist
+%
+% \end{oldcomments}
+%
+% \begin{macro}{\@itemdepth}
+%    \begin{macrocode}
+\newcount\@itemdepth \@itemdepth = 0
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{itemize}
+% \changes{v1.0g}{1995/05/17}{Use \cs{thr@@}}
+%    \begin{macrocode}
+\def\itemize{%
+  \ifnum \@itemdepth >\thr@@\@toodeep\else
+    \advance\@itemdepth\@ne
+    \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+%    \end{macrocode}
+%
+% \changes{v1.0j}{1995/07/09}{Use \cs{expandafter}}
+%    \begin{macrocode}
+    \expandafter
+    \list
+      \csname\@itemitem\endcsname
+      {\def\makelabel##1{\hss\llap{##1}}}%
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\enditemize =\endlist
+%</2ekernel>
+%    \end{macrocode}
+% \end{environment}
+%
+% \Finale
+%

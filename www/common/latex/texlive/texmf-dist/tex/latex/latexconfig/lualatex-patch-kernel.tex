@@ -1,0 +1,26 @@
+% $Id: lualatexquotejobname.tex 18968 2010-06-14 11:22:59Z mpg $
+% Manuel Pegourie-Gonnard, originally written 2010. WTFPL v2.
+%
+% Misc. patches to commands in the LaTeX kernel for LuaTeX.
+
+\makeatletter
+
+% \endlinechar must always be < 127
+%
+% mpg: this was the only occurence of such an assignement in the kernel
+% (checked \newlinechar too)
+%
+% mpg: the +10000/-10000 breaks, and we want to avoid munging
+% \@tempcnta globally, so use a group with a few \expandafter's
+\def\@xtypein[#1]#2{%
+  \typeout{#2}%
+  %%\advance\endlinechar\@M
+  \begingroup \endlinechar\m@ne
+  \read\@inputcheck to#1%
+  \expandafter\endgroup
+  \expandafter\def\expandafter#1\expandafter{#1}%
+  %%\advance\endlinechar-\@M
+  \@typein}
+
+\makeatother
+\endinput

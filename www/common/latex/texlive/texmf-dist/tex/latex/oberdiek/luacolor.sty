@@ -1,0 +1,244 @@
+%%
+%% This is file `luacolor.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% luacolor.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: luacolor
+%% Version: 2011/11/01 v1.8
+%% 
+%% Copyright (C) 2007, 2009-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file luacolor.dtx
+%% and the derived files
+%%    luacolor.sty, luacolor.pdf, luacolor.ins, luacolor.drv,
+%%    luacolor-test1.tex, luacolor-test2.tex, luacolor-test3.tex,
+%%    oberdiek.luacolor.lua, luacolor.lua,
+%%    oberdiek.luacolor-pre065.lua, luacolor-pre065.lua.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname LuaCol@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\LuaCol@AtEnd{%
+    \LuaCol@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{95}{12}% _ (other!)
+\TMP@EnsureCode{96}{12}% `
+\edef\LuaCol@AtEnd{\LuaCol@AtEnd\noexpand\endinput}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{luacolor}%
+  [2011/11/01 v1.8 Color support via LuaTeX's attributes (HO)]
+\RequirePackage{infwarerr}[2010/04/08]%
+\RequirePackage{ifluatex}[2010/03/01]%
+\RequirePackage{ifpdf}[2011/01/30]%
+\RequirePackage{ltxcmds}[2011/04/18]%
+\RequirePackage{color}
+\ifluatex
+  \ltx@ifpackageloaded{luatexbase-attr}{%
+  }{%
+    \RequirePackage{luatex}[2010/03/09]%
+  }%
+\else
+  \@PackageError{luacolor}{%
+    This package may only be run using LuaTeX%
+  }\@ehc
+  \expandafter\LuaCol@AtEnd
+\fi%
+\ifnum\luatexversion<36 %
+  \def\LuaCol@directlua{\directlua0 }%
+\else
+  \let\LuaCol@directlua\directlua
+\fi
+\ifcolors@
+\else
+  \@PackageWarningNoLine{luacolor}{%
+    Colors are disabled by option `monochrome'%
+  }%
+  \def\set@color{}%
+  \def\reset@color{}%
+  \def\set@page@color{}%
+  \def\define@color#1#2{}%
+  \expandafter\LuaCol@AtEnd
+\fi%
+\LuaCol@directlua{%
+  require("oberdiek.luacolor\ifnum\luatexversion<65 -pre065\fi")%
+}
+\begingroup
+  \edef\x{\LuaCol@directlua{tex.write("2011/11/01 v1.8")}}%
+  \edef\y{%
+    \LuaCol@directlua{%
+      if oberdiek.luacolor.getversion then %
+        oberdiek.luacolor.getversion()%
+      end%
+    }%
+  }%
+  \ifx\x\y
+  \else
+    \@PackageError{luacolor}{%
+      Wrong version of lua module.\MessageBreak
+      Package version: \x\MessageBreak
+      Lua module: \y
+    }\@ehc
+  \fi
+\endgroup
+\ifpdf
+\else
+  \begingroup
+    \def\current@color{}%
+    \def\reset@color{}%
+    \setbox\z@=\hbox{%
+      \begingroup
+        \set@color
+      \endgroup
+    }%
+    \edef\reserved@a{%
+      \LuaCol@directlua{%
+        oberdiek.luacolor.dvidetect()%
+      }%
+    }%
+    \ifx\reserved@a\@empty
+      \@PackageError{luacolor}{%
+        DVI driver detection failed because of\MessageBreak
+        unrecognized color \string\special
+      }\@ehc
+      \endgroup
+      \expandafter\expandafter\expandafter\LuaCol@AtEnd
+    \else
+      \@PackageInfoNoLine{luacolor}{%
+        Type of color \string\special: \reserved@a
+      }%
+    \fi%
+  \endgroup
+\fi
+\ltx@IfUndefined{newluatexattribute}{%
+  \newattribute\LuaCol@Attribute
+}{%
+  \newluatexattribute\LuaCol@Attribute
+}
+\ltx@IfUndefined{setluatexattribute}{%
+  \let\LuaCol@setattribute\setattribute
+}{%
+  \let\LuaCol@setattribute\setluatexattribute
+}
+\LuaCol@directlua{%
+  oberdiek.luacolor.setattribute(\number\allocationnumber)%
+}
+\protected\def\set@color{%
+  \LuaCol@setattribute\LuaCol@Attribute{%
+    \LuaCol@directlua{%
+      oberdiek.luacolor.get("\luatexluaescapestring{\current@color}")%
+    }%
+  }%
+}
+\def\reset@color{}
+\def\luacolorProcessBox#1{%
+  \LuaCol@directlua{%
+    oberdiek.luacolor.process(\number#1)%
+  }%
+}
+\RequirePackage{atbegshi}[2011/01/30]
+\AtBeginShipout{%
+  \luacolorProcessBox\AtBeginShipoutBox
+}
+\set@color
+\ifpdf
+  \ltx@IfUndefined{pdfxform}{%
+    \ifnum\luatexversion>36 %
+      \directlua{%
+        tex.enableprimitives('',{%
+          'pdfxform','pdflastxform','pdfrefxform'%
+        })%
+      }%
+    \fi
+  }{}%
+  \ltx@IfUndefined{protected}{%
+    \ifnum\luatexversion>36 %
+      \directlua{tex.enableprimitives('',{'protected'})}%
+    \fi
+  }{}%
+  \ltx@IfUndefined{pdfxform}{%
+    \@PackageWarning{luacolor}{\string\pdfxform\space not found}%
+  }{%
+    \let\LuaCol@org@pdfxform\pdfxform
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname protected\endcsname\relax
+      \@PackageWarning{luacolor}{\string\protected\space not found}%
+    \else
+      \expandafter\protected
+    \fi
+    \def\pdfxform{%
+      \begingroup
+      \afterassignment\LuaCol@pdfxform
+      \count@=%
+    }%
+    \def\LuaCol@pdfxform{%
+      \luacolorProcessBox\count@
+      \LuaCol@org@pdfxform\count@
+      \endgroup
+    }%
+  }%
+\fi
+\LuaCol@AtEnd%
+\endinput
+%%
+%% End of file `luacolor.sty'.

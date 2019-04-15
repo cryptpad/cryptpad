@@ -1,0 +1,1358 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File `calc.dtx'.
+%% Copyright (C) 1992--1995
+%%          Kresten Krab Thorup and Frank Jensen.
+%% Copyright (C) 1997--2007
+%%          Kresten Krab Thorup, Frank Jensen and the LaTeX3 Project.
+%%
+%% The original authors (fj@hugin.dk and  krab@daimi.aau.dk) have
+%% contributed this package to the LaTeX distribution.
+%% Problems with this package should now be sent using latexbug.tex to
+%% the normal LaTeX bug report address.
+%
+%<*dtx>
+          \ProvidesFile{calc.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{calc}
+%<driver> \ProvidesFile{calc.drv}
+% \fi
+%         \ProvidesFile{calc.dtx}
+          [2014/10/28 v4.3 Infix arithmetic (KKT,FJ)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\EnableCrossrefs
+\RecordChanges
+\usepackage{calc}
+\begin{document}
+\DocInput{calc.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{calc.dtx}
+% \CheckSum{676}
+%
+% \title{The \texttt{calc} package\\Infix notation
+%        arithmetic in \LaTeX\thanks{We thank Frank Mittelbach for his
+%        valuable comments and suggestions which have greatly improved
+%        this package.}}
+% \author{Kresten Krab Thorup, Frank Jensen (and Chris Rowley)}
+% \date{\filedate}
+%
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \changes{v4.0d}{1997/11/08}
+%    {Contributed to tools distribution}
+% \changes{v4.1a}{1998/06/07}
+%    {Added text sizes: CAR}
+% \changes{v4.1a}{1998/06/07}
+%    {Attempt to make user-syntax robust: CAR}
+%
+% \newenvironment{calc-syntax}
+%    {\par
+%     \parskip\medskipamount
+%     \def\is{\ \hangindent3\parindent$\longrightarrow$~}%
+%     \def\alt{\ $\vert$~}%
+%     \rightskip 0pt plus 1fil
+%     \def\<##1>{\mbox{\NormalSpaces$\langle$##1\/$\rangle$}}%
+%     \IgnoreSpaces\obeyspaces%
+% }{\par\vskip\parskip}
+% {\obeyspaces\gdef\NormalSpaces{\let =\space}\gdef\IgnoreSpaces{\def {}}}
+%
+% \def\<#1>{$\langle$#1\/$\rangle$}%
+% \def\s#1{\ensuremath{[\![#1]\!]}}
+% \def\savecode#1{\hbox{${}_{\hookrightarrow[#1]}$}}
+% \def\gassign{\Leftarrow}
+% \def\lassign{\leftarrow}
+%
+% \begin{abstract}
+% The \texttt{calc} package reimplements the \LaTeX\ commands
+% |\setcounter|, |\addtocounter|, |\setlength|, and |\addtolength|.
+% Instead of a simple value, these commands now accept an infix
+% notation expression.
+% \end{abstract}
+%
+% \section{Introduction}
+%
+% Arithmetic in \TeX\ is done using low-level operations such as
+% |\advance| and |\multiply|.  This may be acceptable when developing
+% a macro package, but it is not an acceptable interface for the
+% end-user.
+%
+% This package introduces proper infix notation arithmetic which is
+% much more familiar to most people.  The infix notation is more
+% readable and easier to modify than the alternative: a sequence of
+% assignment and arithmetic instructions.  One of the arithmetic
+% instructions (|\divide|) does not even have an equivalent in
+% standard \LaTeX.
+%
+% The infix expressions can be used in arguments to macros (the
+% \texttt{calc} package doesn't employ category code changes to
+% achieve its goals).\footnote{However, it therefore assumes that the
+%    category codes of the special characters, such as \texttt{(*/)}
+%    in its syntax do not change.}
+%
+% \section{Informal description}
+%
+% Standard \LaTeX\ provides the following set of commands to
+% manipulate counters and lengths \cite[pages 194 and~216]{latexman}.
+% \begin{itemize}
+% \item[]\hskip-\leftmargin
+%    |\setcounter{|\textit{ctr}|}{|\textit{num}|}| sets the
+%    value of the counter \textit{ctr} equal to (the value of)
+%    \textit{num}.  (Fragile)
+% \item[]\hskip-\leftmargin
+%    |\addtocounter{|\textit{ctr}|}{|\textit{num}|}|
+%    increments the value of the counter \textit{ctr} by (the
+%    value of) \textit{num}.  (Fragile)
+%
+% \item[]\hskip-\leftmargin
+%    |\setlength{|\textit{cmd}|}{|\textit{len}|}| sets the value of
+%    the length command \textit{cmd} equal to (the value of) \textit{len}.
+%    (Robust)
+% \item[]\hskip-\leftmargin
+%    |\addtolength{|\textit{cmd}|}{|\textit{len}|}| sets the value of
+%    the length command \textit{cmd} equal to its current value plus
+%    (the value of) \textit{len}.  (Robust)
+% \end{itemize}
+% (The |\setcounter| and |\addtocounter| commands have global effect,
+% while the |\setlength| and |\addtolength| commands obey the normal
+% scoping rules.)  In standard \LaTeX, the arguments to these commands
+% must be simple values.  The \texttt{calc} package extends these
+% commands to accept infix notation expressions, denoting values of
+% appropriate types.  Using the \texttt{calc} package, \textit{num} is
+% replaced by \<integer expression>, and \textit{len} is replaced by
+% \<glue expression>.  The formal syntax of \<integer expression> and
+% \<glue expression> is given below.
+%
+% In addition to these commands to explicitly set a length, many \LaTeX\
+% commands take a length argument. After loading this package, most of
+% these commands will accept a  \<glue expression>. This includes
+% the optional width argument of |\makebox|, the width argument of
+% |\parbox|, |minipage|, and a |tabular| |p|-column, and many similar
+% constructions. (This package does not redefine any of these commands,
+% but they are defined by default to read their arguments by |\setlength|
+% and so automatically benefit from the enhanced |\setlength| command
+% provided by this package.)
+%
+% In the following, we shall use standard \TeX\ terminology.  The
+% correspondence between \TeX\ and \LaTeX\ terminology is as follows:
+% \LaTeX\ counters correspond to \TeX's count registers; they hold
+% quantities of type \<number>.  \LaTeX\ length commands correspond to
+% \TeX's dimen (for rigid lengths) and skip (for rubber lengths)
+% registers; they hold quantities of types \<dimen> and \<glue>,
+% respectively.
+%
+% \TeX\ gives us primitive operations to perform arithmetic on registers as
+% follows:
+% \begin{itemize}
+%   \item addition and subtraction on all types of quantities without
+%       restrictions;
+%   \item multiplication and division by an \emph{integer} can be
+%       performed on a register of any type;
+%   \item multiplication by a \emph{real} number (i.e., a number with a
+%       fractional part) can be performed on a register of any type,
+%       but the stretch and shrink components of a glue quantity are
+%       discarded.
+% \end{itemize}
+% The \texttt{calc} package uses these \TeX\ primitives but provides a
+% more user-friendly notation for expressing the arithmetic.
+%
+% An expression is formed of numerical quantities (such as explicit
+% constants and \LaTeX\ counters and length commands) and binary
+% operators (the tokens `\texttt{+}', `\texttt{-}', `\texttt{*}', and
+% `\texttt{/}' with their usual meaning) using the familiar infix
+% notation; parentheses may be used to override the usual precedences
+% (that multiplication/division have higher precedence than
+% addition/subtraction).
+%
+% Expressions must be properly typed.  This means, e.g., that a dimen
+% expression must be a sum of dimen terms: i.e., you cannot say
+% `\texttt{2cm+4}' but `\texttt{2cm+4pt}' is valid.
+%
+% In a dimen term, the dimension part must come first; the same holds
+% for glue terms.  Also, multiplication and division by non-integer
+% quantities require a special syntax; see below.
+%
+% Evaluation of subexpressions at the same level of precedence
+% proceeds from left to right.  Consider a dimen term such as
+% ``\texttt{4cm*3*4}''.  First, the value of the factor \texttt{4cm} is
+% assigned to a dimen register, then this register is multiplied
+% by~$3$ (using |\multiply|), and, finally, the register is multiplied
+% by~$4$ (again using |\multiply|).  This also explains why the
+% dimension part (i.e., the part with the unit designation) must come
+% first; \TeX\ simply doesn't allow untyped constants to be assigned
+% to a dimen register.
+%
+% The \texttt{calc} package also allows multiplication and division by
+% real numbers.  However, a special syntax is required: you must use
+% |\real{|\<decimal constant>|}|\footnote{Actually, instead of
+% \<decimal constant>, the more general \<optional signs>\<factor> can
+% be used.  However, that doesn't add any extra expressive power to
+% the language of infix expressions.} or
+% |\ratio{|\<dimen expression>|}{|\<dimen expression>|}| to denote a
+% real value to be used for multiplication/division.  The first form has
+% the obvious meaning, and the second form denotes the number obtained
+% by dividing the value of the first expression by the value of the
+% second expression.
+%
+%    A later addition to the package (in June 1998) allows an additional
+%    method of specifying a factor of type dimen by setting some text
+%    (in LR-mode) and measuring its dimensions: these are denoted as
+%    follows.
+%\begin{quote}
+%    |\widthof{|\<text>|}|\quad
+%    |\heightof{|\<text>|}|\quad
+%    |\depthof{|\<text>|}|
+%\end{quote}
+%    These calculate the natural sizes of the \<text> in exactly the
+%    same way as is done for the commands |\settowidth| etc.~on
+%    Page~216 of the manual~\cite{latexman}.
+%    In August 2005 the package was further extended to provide the command
+%\begin{quote}
+%    |\totalheightof{|\<text>|}|
+%\end{quote}
+%    This command does exactly what you'd expect from its name.
+%    Additionally the package also provides the command
+%\begin{quote}
+%    |\settototalheight{|\<cmd>|}{|\<text>|}|
+%\end{quote}
+%
+%
+%    Note that there is a small difference in the usage of these two
+%    methods of accessing text dimensions.  After
+%    |\settowidth{\txtwd}{Some text}| you can use:
+%\begin{verbatim}
+%    \setlength{\parskip}{0.68\textwd}
+%\end{verbatim}
+%    whereas using the more direct access to the width of the text
+%    requires the longer form for multiplication, thus:
+%\begin{verbatim}
+%    \setlength{\parskip}{\widthof{Some text} * \real{0.68}}
+%\end{verbatim}
+%
+% \TeX\ discards the stretch and shrink components of glue when glue
+% is multiplied by a real number.  So, for example,
+%\begin{verbatim}
+%    \setlength{\parskip}{3pt plus 3pt * \real{1.5}}
+%\end{verbatim}
+% will set the paragraph separation to 4.5pt with no stretch or
+% shrink.  Incidentally, note how spaces can be used to enhance
+% readability. When \TeX\ is scanning for a \<number> etc.\ it is
+% common to terminate the scanning with a space token or by inserting
+% \cs{relax}. As of version~4.3 \textsf{calc} allows \cs{relax} tokens
+% to appear in places where they would usually be used for terminating
+% \TeX's scanning. In short this is just before any of \texttt{+-*/)}
+% or at the end of the expression being evaluated.
+%
+% When \TeX\ performs arithmetic on integers, any fractional part of
+% the results are discarded.  For example,
+%\begin{verbatim}
+%    \setcounter{x}{7/2}
+%    \setcounter{y}{3*\real{1.6}}
+%    \setcounter{z}{3*\real{1.7}}
+%\end{verbatim}
+% will assign the value~$3$ to the counter~\texttt{x}, the value~$4$
+% to~\texttt{y}, and the value~$5$ to~\texttt{z}.  This truncation
+% also applies to \emph{intermediate} results in the sequential
+% computation of a composite expression; thus, the following command
+%\begin{verbatim}
+%    \setcounter{x}{3 * \real{1.6} * \real{1.7}}
+%\end{verbatim}
+% will assign~$6$ to~\texttt{x}.
+%
+% As an example of the use of |\ratio|, consider the problem of
+% scaling a figure to occupy the full width (i.e., |\textwidth|) of
+% the body of a page.  Assume that the original dimensions of the
+% figure are given by the dimen (length) variables, |\Xsize| and
+% |\Ysize|.  The height of the scaled figure can then be expressed by
+%\begin{verbatim}
+%    \setlength{\newYsize}{\Ysize*\ratio{\textwidth}{\Xsize}}
+%\end{verbatim}
+%
+%
+%
+% Another new feature introduced in August 2005 was $\max$ and $\min$
+% operations with associated macros
+%\begin{quote}
+%    |\maxof{|\<\textit{type} expression>|}{|\<\textit{type} expression>|}|
+%    \\
+%    |\minof{|\<\textit{type} expression>|}{|\<\textit{type} expression>|}|
+%\end{quote}
+% When \textit{type} is either \meta{glue} or \meta{dimen} these macros
+% are allowed only as part of addition or subtraction but when
+% \textit{type} is \meta{integer} they can also be used when
+% multiplying and dividing. In the latter case they follow the
+% same syntax rules as |\ratio| and |\real| which means they must come
+% after the |*| or the |/|. Thus
+%\begin{verbatim}
+%  \setcounter{x}{3*\maxof{4+5}{3*4}+\minof{2*\real{1.6}}{5-1}}
+%\end{verbatim}
+% will assign $3\times\max(9,12)+\min(3,4)=39$ to |x|. Similarly
+%\begin{verbatim}
+%  \setlength{\parindent}{%
+%    \minof{3pt}{\parskip}*\real{1.5}*\maxof{2*\real{1.6}}{2-1}}
+%\end{verbatim}
+% will assign $\min(13.5\textrm{pt},4.5\cs{parskip})$ to \cs{parindent}
+%
+%
+%
+% \section{Formal syntax}
+%
+% The syntax is described by the following set of rules.
+% Note that the definitions of \<number>, \<dimen>, \<glue>,
+% \<decimal constant>, and \<plus or minus> are
+% as in Chapter~24 of The \TeX book~\cite{texbook}; and \<text>
+% is LR-mode material, as in the manual~\cite{latexman}.
+% We use \textit{type} as a meta-variable, standing for
+% `integer', `dimen', and `glue'.\footnote{This version of the
+% \texttt{calc} package doesn't support evaluation of muglue expressions.}
+%
+% \begin{calc-syntax}
+%    \<\textit{type} expression>^^A
+%       \is  \<\textit{type} term>^^A
+%       \alt \<\textit{type} expression> \<plus or minus> \<\textit{type} term>
+%
+%    \<\textit{type} term>^^A
+%       \is  \<\textit{type} term> \<\textit{type} scan stop>
+%       \alt \<\textit{type} factor>^^A
+%       \alt \<\textit{type} term> \<multiply or divide> \<integer>^^A
+%       \alt \<\textit{type} term> \<multiply or divide> \<real number>^^A
+%       \alt \<\textit{type} term> \<multiply or divide>^^A
+%            \<$\max$ or $\min$ integer>^^A
+%
+%    \<\textit{type} scan stop>^^A
+%       \is  \<empty>^^A
+%       \alt \<optional space>^^A
+%       \alt |\relax|
+%
+%    \<\textit{type} factor>^^A
+%       \is  \<\textit{type}>^^A
+%       \alt \<text dimen factor>^^A
+%       \alt \<$\max$ or $\min$ \textit{type}>^^A
+%       \alt |(|$_{12}$ \<\textit{type} expression> |)|$_{12}$
+%
+%    \<integer> \is \<number>
+%
+%    \<$\max$ or $\min$ \textit{type}> \is \<$\max$ or $\min$ command>^^A
+%               |{| \<\textit{type} expression> |}|^^A
+%               |{| \<\textit{type} expression> |}|
+%
+%    \<$\max$ or $\min$ command> \is |\maxof|^^A
+%                                \alt |\minof|
+%
+%    \<text dimen factor>^^A
+%       \is  \<text dimen command>|{| \<text> |}|
+%
+%    \<text dimen command>^^A
+%       \is   |\widthof|^^A
+%       \alt  |\heightof|^^A
+%       \alt  |\depthof|^^A
+%       \alt  |\totalheightof|^^A
+%
+%    \<multiply or divide>^^A
+%       \is  |*|$_{12}$^^A
+%       \alt |/|$_{12}$
+%
+%    \<real number>^^A
+%       \is  |\ratio{| \<dimen expression> |}{| \<dimen expression> |}|^^A
+%       \alt |\real{| \<optional signs> \<decimal constant> |}|
+%
+%    \<plus or minus>^^A
+%       \is  |+|$_{12}$^^A
+%       \alt |-|$_{12}$
+%
+%    \<decimal constant>^^A
+%       \is  |.|$_{12}$^^A
+%       \alt |,|$_{12}$^^A
+%       \alt \<digit> \<decimal constant>^^A
+%       \alt \<decimal constant> \<digit>
+%
+%    \<digit>^^A
+%       \is  |0|$_{12}$^^A
+%       \alt |1|$_{12}$^^A
+%       \alt |2|$_{12}$^^A
+%       \alt |3|$_{12}$^^A
+%       \alt |4|$_{12}$^^A
+%       \alt |5|$_{12}$^^A
+%       \alt |6|$_{12}$^^A
+%       \alt |7|$_{12}$^^A
+%       \alt |8|$_{12}$^^A
+%       \alt |9|$_{12}$
+%
+%    \<optional signs>^^A
+%       \is  \<optional spaces>^^A
+%       \alt \<optional signs> \<plus or minus> \<optional spaces>
+%
+% \end{calc-syntax}
+%
+%
+% Relying heavily on \TeX\ to do the underlying assignments, it is
+% only natural for \texttt{calc} to simulate \TeX's parsing machinery
+% for these quantities. Therefore it a)~imposes the same restrictions
+% on the catcode of syntax characters as \TeX\ and b)~tries to expand
+% its argument fully. a)~means that implicit characters for the tokens
+% |*|$_{12}$, |/|$_{12}$, |(|$_{12}$, and |)|$_{12}$ will not
+% work\footnote{e\TeX\ also assumes these catcodes when parsing a
+% \cs{numexpr}, \cs{dimexpr}, \cs{glueexpr}, or \cs{muglueexpr} and
+% does not allow implicit characters.} but because of~b), the
+% expansion should allow you to use macros that expand to explicit
+% syntax characters.
+%
+%
+% \StopEventually{
+% \begin{thebibliography}{1}
+%    \bibitem{texbook}
+%       \textsc{D. E. Knuth}.
+%       \newblock \textit{The \TeX{}book} (Computers \& Typesetting Volume A).
+%       \newblock Addison-Wesley, Reading, Massachusetts, 1986.
+%    \bibitem{latexman}
+%       \textsc{L. Lamport}.
+%       \newblock \textit{\LaTeX, A Document Preparation System.}
+%       \newblock Addison-Wesley, Reading, Massachusetts, Second
+%       edition 1994/1985.
+% \end{thebibliography}
+% \PrintChanges
+% }
+%
+% \section{The evaluation scheme}
+% \label{evaluation:scheme}
+%
+% In this section, we shall for simplicity consider only expressions
+% containing `$+$' (addition) and `$*$' (multiplication) operators.
+% It is trivial to add subtraction and division.
+%
+% An expression $E$ is a sum of terms: $T_1+\cdots+T_n$; a term is a
+% product of factors: $F_1*\cdots*F_m$; a factor is either a simple
+% numeric quantity~$f$ (like \<number> as described in the \TeX book),
+% or a parenthesized expression~$(E')$.
+%
+% Since the \TeX\ engine can only execute arithmetic operations in a
+% machine-code like manner, we have to find a way to translate the
+% infix notation into this `instruction set'.
+%
+% Our goal is to design a translation scheme that translates~$X$ (an
+% expression, a term, or a factor) into a sequence of \TeX\ instructions
+% that does the following [Invariance Property]: correctly
+% evaluates~$X$, leaves the result in a global register~$A$ (using a
+% global assignment), and does not perform global assignments to the
+% scratch register~$B$; moreover, the code sequence must be balanced
+% with respect to \TeX\ groups.  We shall denote the code sequence
+% corresponding to~$X$ by \s{X}.
+%
+% In the replacement code specified below, we use the following
+% conventions:
+% \begin{itemize}
+%    \item $A$ and $B$ denote registers; all assignments to~$A$ will
+%       be global, and all assignments to~$B$ will be local.
+%    \item ``$\gassign$'' means global assignment to the register on
+%       the lhs.
+%    \item ``$\lassign $'' means local assignment to the register on
+%       the lhs.
+%    \item ``\savecode C'' means ``save the code~$C$ until the current
+%       group (scope) ends, then execute it.''  This corresponds to
+%       the \TeX-primitive |\aftergroup|.
+%    \item ``$\{$'' denotes the start of a new group, and ``$\}$''
+%       denotes the end of a group.
+% \end{itemize}
+%
+% Let us consider an expression $T_1+T_2+\cdots+T_n$.  Assuming that
+% \s{T_k} ($1\le k\le n$) attains the stated goal, the following code
+% clearly attains the stated goal for their sum:
+% \begin{eqnarray*}
+% \s{T_1+T_2+\cdots+T_n}&\Longrightarrow&
+%       \{\,\s{T_1}\,\} \; B\lassign A \quad
+%       \{\,\s{T_2}\,\} \; B\lassign B+A \\
+%       &&\qquad \ldots \quad \{\,\s{T_n}\,\} \; B\lassign B+A
+%                       \quad A\gassign B
+% \end{eqnarray*}
+% Note the extra level of grouping enclosing each of \s{T_1}, \s{T_2},
+% \ldots,~\s{T_n}.  This will ensure that register~$B$, used to
+% compute the sum of the terms, is not clobbered by the intermediate
+% computations of the individual terms.  Actually, the group
+% enclosing~\s{T_1} is unnecessary, but it turns out to be simpler if
+% all terms are treated the same way.
+%
+% The code sequence ``$\{\,\s{T_2}\,\}\;B\lassign B+A$'' can be translated
+% into the following equivalent code sequence:
+% ``$\{\savecode{B\lassign B+A}\,\s{T_2}\,\}$''.  This observation turns
+% out to be the key to the implementation: The ``$\savecode{B\lassign
+% B+A}$'' is generated \emph{before} $T_2$ is translated, at the same
+% time as the `$+$' operator between $T_1$ and~$T_2$ is seen.
+%
+% Now, the specification of the translation scheme is straightforward:
+% \begin{eqnarray*}
+%    \s{f}&\Longrightarrow&A\gassign f\\[\smallskipamount]
+%    \s{(E')}&\Longrightarrow&\s{E'}\\[\smallskipamount]
+%    \s{T_1+T_2+\cdots+T_n}&\Longrightarrow&
+%       \{\savecode{B\lassign A}\,\s{T_1}\,\} \quad
+%       \{\savecode{B\lassign B+A}\,\s{T_2}\,\} \\
+%       &&\qquad \ldots \quad \{\savecode{B\lassign B+A}\,\s{T_n}\,\}
+%                       \quad A\gassign B
+%                       \\[\smallskipamount]
+%    \s{F_1*F_2*\cdots*F_m}&\Longrightarrow&
+%       \{\savecode{B\lassign A}\,\s{F_1}\,\} \quad
+%       \{\savecode{B\lassign B*A}\,\s{F_2}\,\}\\
+%       &&\qquad \ldots \quad \{\savecode{B\lassign B*A}\,\s{F_m}\,\}
+%                       \quad A\gassign B
+% \end{eqnarray*}
+% By structural induction, it is easily seen that the stated property
+% is attained.
+%
+% By inspection of this translation scheme, we see that we have to
+% generate the following code:
+% \begin{itemize}
+%    \item we must generate ``$\{\savecode{B\lassign
+%       A}\{\savecode{B\lassign A}$'' at the left border of an
+%       expression (i.e., for each left parenthesis and the implicit
+%       left parenthesis at the beginning of the whole expression);
+%    \item we must generate ``$\}A\gassign B\}A\gassign B$'' at the
+%       right border of an expression (i.e., each right parenthesis
+%       and the implicit right parenthesis at the end of the full
+%       expression);
+%    \item `\texttt{*}' is replaced by ``$\}\{\savecode{B\lassign
+%       B*A}$'';
+%    \item `\texttt{+}' is replaced by
+%       ``$\}A\gassign B\}\{\savecode{B\lassign
+%       B+A}\{\savecode{B\lassign A}$'';
+%    \item when we see (expect) a numeric quantity, we insert the
+%    assignment code ``$A\gassign$'' in front of the quantity and let
+%    \TeX\ parse it.
+% \end{itemize}
+%
+% \section{Implementation}
+%
+% For brevity define
+% \begin{calc-syntax}
+%    \<numeric> \is \<number> \alt \<dimen> \alt \<glue> \alt \<muglue>
+% \end{calc-syntax}
+% So far we have ignored the question of how to determine the type of
+% register to be used in the code.  However, it is easy to see that
+% (1)~`$*$' always initiates an \<integer factor>, (2)~all
+% \<numeric>s in an expression, except those which are part of an
+% \<integer factor>, are of the same type as the whole expression, and
+% all \<numeric>s in an \<integer factor> are \<number>s.
+%
+% We have to ensure that $A$ and~$B$ always have an appropriate type
+% for the \<numeric>s they manipulate.  We can achieve this by having
+% an instance of $A$ and~$B$ for each type.  Initially, $A$~and~$B$
+% refer to registers of the proper type for the whole expression.
+% When an \<integer factor> is expected, we must change $A$ and~$B$ to
+% refer to integer type registers.  We can accomplish this by
+% including instructions to change the type of $A$ and~$B$ to integer
+% type as part of the replacement code for~`$*$; if we append such
+% instructions to the replacement code described above, we also ensure
+% that the type-change is local (provided that the type-changing
+% instructions only have local effect).  However, note that the
+% instance of~$A$ referred to in $\savecode{B\lassign B*A}$ is the
+% integer instance of~$A$.
+%
+% We shall use |\begingroup| and |\endgroup| for the open-group and
+% close-group characters.  This avoids problems with spacing in math
+% (as pointed out to us by Frank Mittelbach).
+%
+% \subsection{Getting started}
+%
+% Now we have enough insight to do the actual implementation in \TeX.
+% First, we announce the macro package.\footnote{Code moved to top of file}
+%    \begin{macrocode}
+%<*package>
+%\NeedsTeXFormat{LaTeX2e}
+%\ProvidesPackage{calc}[\filedate\space\fileversion]
+%    \end{macrocode}
+%
+% \subsection{Assignment macros}
+%
+% \begin{macro}{\calc@assign@generic}
+% \changes{v4.2}{2005/08/06}{Removed a few redundant \cs{expandafter}s}
+% The |\calc@assign@generic| macro takes four arguments: (1~and~2) the
+% registers to be used
+% for global and local manipulations, respectively; (3)~the lvalue
+% part; (4)~the expression to be evaluated.
+%
+% The third argument (the lvalue) will be used as a prefix to a
+% register that contains the value of the specified expression (the
+% fourth argument).
+%
+% In general, an lvalue is anything that may be followed by a variable
+% of the appropriate type.  As an example, |\linepenalty| and
+% |\global\advance\linepenalty| may both be followed by an \<integer
+% variable>.
+%
+% The macros described below refer to the registers by the names
+% |\calc@A| and |\calc@B|; this is accomplished by
+% |\let|-assignments.
+%
+% As discovered in Section~\ref{evaluation:scheme}, we have to
+% generate code as
+% if the expression is parenthesized.  As described below,
+% |\calc@open| is the macro that replaces a left parenthesis by its
+% corresponding \TeX\ code sequence.  When the scanning process sees
+% the exclamation point, it generates an |\endgroup| and stops.  As we
+% recall from Section~\ref{evaluation:scheme}, the correct expansion
+% of a right
+% parenthesis is ``$\}A\gassign B\}A\gassign B$''.  The remaining
+% tokens of this expansion are inserted explicitly, except that the
+% last assignment has been replaced by the lvalue part (i.e.,
+% argument~|#3| of |\calc@assign@generic|) followed by |\calc@B|.
+%    \begin{macrocode}
+\def\calc@assign@generic#1#2#3#4{\let\calc@A#1\let\calc@B#2%
+    \calc@open(#4!%
+    \global\calc@A\calc@B\endgroup#3\calc@B}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\calc@assign@count}
+% \begin{macro}{\calc@assign@dimen}
+% \begin{macro}{\calc@assign@skip}
+% We need three instances of the |\calc@assign@generic| macro,
+% corresponding to the types \<integer>, \<dimen>, and \<glue>.
+%    \begin{macrocode}
+\def\calc@assign@count{\calc@assign@generic\calc@Acount\calc@Bcount}
+\def\calc@assign@dimen{\calc@assign@generic\calc@Adimen\calc@Bdimen}
+\def\calc@assign@skip{\calc@assign@generic\calc@Askip\calc@Bskip}
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}
+% These macros each refer to two registers, one
+% to be used globally and one to be used locally.
+% We must allocate these registers.
+%    \begin{macrocode}
+\newcount\calc@Acount   \newcount\calc@Bcount
+\newdimen\calc@Adimen   \newdimen\calc@Bdimen
+\newskip\calc@Askip     \newskip\calc@Bskip
+%    \end{macrocode}
+%
+% \subsection{The \LaTeX\ interface}
+%
+% \begin{macro}{\setcounter}
+% \begin{macro}{\addtocounter}
+% \changes{v4.2}{2005/08/06}
+%  {Fix to make \cs{addtocounter} work with \texttt{amstext}}
+% \begin{macro}{\steptocounter}
+% \changes{v4.2}{2005/08/06}
+%  {Avoid redundant processing. PR/3795}
+% \begin{macro}{\setlength}
+% \begin{macro}{\addtolength}
+% As promised, we redefine the following standard \LaTeX\ commands:
+% |\setcounter|,
+% |\addtocounter|, |\setlength|, and |\addtolength|.
+%    \begin{macrocode}
+\def\setcounter#1#2{\@ifundefined{c@#1}{\@nocounterr{#1}}%
+   {\calc@assign@count{\global\csname c@#1\endcsname}{#2}}}
+%    \end{macrocode}
+%    \begin{macrocode}
+  \def\addtocounter#1#2{\@ifundefined{c@#1}{\@nocounterr{#1}}%
+    {\calc@assign@count{\global\advance\csname c@#1\endcsname}{#2}}}%
+%    \end{macrocode}
+% We also fix \cs{stepcounter} to not go through the whole \texttt{calc}
+% process.
+%    \begin{macrocode}
+  \def\stepcounter#1{\@ifundefined {c@#1}%
+    {\@nocounterr {#1}}%
+    {\global\advance\csname c@#1\endcsname \@ne
+    \begingroup
+      \let\@elt\@stpelt \csname cl@#1\endcsname
+    \endgroup}}%
+%    \end{macrocode}
+% If the \texttt{amstext} package is loaded we must add the
+% |\iffirstchoice@| switch as well. We patch the commands this
+% way since it's good practice when we know how many arguments they take.
+%    \begin{macrocode}
+\@ifpackageloaded{amstext}{%
+ \expandafter\def\expandafter\stepcounter
+    \expandafter#\expandafter1\expandafter{%
+    \expandafter\iffirstchoice@\stepcounter{#1}\fi
+ }
+ \expandafter\def\expandafter\addtocounter
+    \expandafter#\expandafter1\expandafter#\expandafter2\expandafter{%
+    \expandafter\iffirstchoice@\addtocounter{#1}{#2}\fi
+ }
+}{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareRobustCommand\setlength{\calc@assign@skip}
+\DeclareRobustCommand\addtolength[1]{\calc@assign@skip{\advance#1}}
+%    \end{macrocode}
+% (|\setlength| and |\addtolength| are robust according to
+% \cite{latexman}.)
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{The scanner}
+%
+% We evaluate expressions by explicit scanning of characters.  We do
+% not rely on active characters for this.
+%
+% The scanner consists of two parts, |\calc@pre@scan| and
+% |\calc@post@scan|; |\calc@pre@scan| consumes left parentheses, and
+% |\calc@post@scan| consumes binary operator, |\real|, |\ratio|, and
+% right parenthesis tokens.
+%
+% \begin{macro}{\calc@pre@scan}
+% \begin{macro}{\@calc@pre@scan}
+% \changes{v4.2}{2005/08/06}
+%    {Added macro and force expansion}
+%
+%    Note that this is called at least once on every use of calc
+%    processing, even when none of the extended syntax is present; it
+%    therefore needs to be made very efficient.
+%
+%    It reads the initial part of expressions, until some \<text dimen
+%    factor> or \<numeric> is seen; in fact, anything not explicitly
+%    recognized here is taken to be a \<numeric> of some sort as this
+%    allows unary
+%   `\texttt{+}' and unary `\texttt{-}' to be treated easily and
+%    correctly\footnote{In the few contexts where signs are allowed:
+%    this could, I think, be extended (CAR).} but means that anything
+%    illegal will simply generate a \TeX-level error, often a
+%    reasonably comprehensible one!
+%
+%    The |\romannumeral-`\a| part is a little trick which forces expansion
+%    in case |#1| is a normal macro, something that occurs from time to
+%    time. A conditional test inside will possibly leave a trailing
+%    \cs{fi} but this remnant is removed later when \cs{calc@post@scan}
+%    performs the same trick.
+%
+%    The many |\expandafter|s are needed to efficiently end the nested
+%    conditionals so that |\calc@textsize| and |\calc@maxmin@addsub| can
+%    process their argument.
+% \changes{v4.1a}{1998/06/07}
+%    {Added code for text sizes: CAR}
+% \changes{v4.1b}{1998/07/07}
+%    {Correction to  ifx true case}
+% \changes{v4.2}{2005/08/06}
+%    {Added \cs{maxof} and \cs{minof} operations}
+%    \begin{macrocode}
+\def\calc@pre@scan#1{%
+  \expandafter\@calc@pre@scan\romannumeral-`\a#1}
+\def\@calc@pre@scan#1{%
+  \ifx(#1%
+    \expandafter\calc@open
+  \else
+    \ifx\widthof#1%
+      \expandafter\expandafter\expandafter\calc@textsize
+    \else
+      \ifx\maxof#1%
+        \expandafter\expandafter\expandafter\expandafter
+        \expandafter\expandafter\expandafter\calc@maxmin@addsub
+      \else
+        \calc@numeric% no \expandafter needed for this one.
+      \fi
+    \fi
+  \fi
+  #1}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\calc@open}
+% \begin{macro}{\calc@initB}
+% |\calc@open| is used when there is a left parenthesis right ahead.
+% This parenthesis is replaced by \TeX\ code corresponding to the code
+% sequence ``$\{\savecode{B\lassign A}\{\savecode{B\lassign A}$''
+% derived in Section~\ref{evaluation:scheme}.  Finally,
+% |\calc@pre@scan| is
+% called again.
+%    \begin{macrocode}
+\def\calc@open({\begingroup\aftergroup\calc@initB
+   \begingroup\aftergroup\calc@initB
+   \calc@pre@scan}
+\def\calc@initB{\calc@B\calc@A}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\calc@numeric}
+% |\calc@numeric| assigns the following value to |\calc@A| and then
+% transfers control to |\calc@post@scan|.
+%    \begin{macrocode}
+\def\calc@numeric{\afterassignment\calc@post@scan \global\calc@A}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\widthof}
+% \begin{macro}{\heightof}
+% \begin{macro}{\depthof}
+% \changes{v4.1a}{1998/06/07}
+%    {Added macros: CAR}
+% \begin{macro}{\totalheightof}
+% \changes{v4.2}{2005/08/06}
+%    {Added macro}
+% \changes{v4.2}{2005/08/06}
+%    {Added informative message for reserved macros}
+%
+%    These do not need any particular definition when they are scanned
+%    so, for efficiency and robustness, we make them all equivalent to
+%    the same harmless (I hope) unexpandable command.\footnote{If this
+%    level of safety is not needed then the code can be sped up:
+%    CAR.}  Thus the test in |\@calc@pre@scan| finds any of them.
+%
+%    As we have to check for these commands explicitly we must ensure
+%    that our definition wins. Using \cs{newcommand} gives an error when
+%    loading \texttt{calc} and may be mildly surprising. This should be
+%    a little more informative.
+%    \begin{macrocode}
+\@for\reserved@a:=widthof,heightof,depthof,totalheightof,maxof,minof\do
+{\@ifundefined{\reserved@a}{}{%
+  \PackageError{calc}{%
+  The\space calc\space package\space reserves\space the\space
+  command\space name\space `\@backslashchar\reserved@a'\MessageBreak
+  but\space it\space has\space already\space been\space defined\space
+  with\space the\space meaning\MessageBreak
+  `\expandafter\meaning\csname\reserved@a\endcsname'.\MessageBreak
+  This\space original\space definition\space will\space be\space lost}%
+  {If\space you\space need\space a\space command\space with\space
+  this\space definition,\space you\space must\space use\space a\space
+  different\space name.}}%
+}
+\let\widthof\ignorespaces
+\let\heightof\ignorespaces
+\let\depthof\ignorespaces
+\let\totalheightof\ignorespaces
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\calc@textsize}
+% \changes{v4.1a}{1998/06/07}
+%    {Added macro: CAR}
+% \changes{v4.1a}{1998/06/07}
+%    {Added macro: CAR}
+% \changes{v4.2}{2005/08/06}
+%    {Extended macro with \cs{totalheightof}}
+%    The presence of the above four commands invokes this code, where
+%    we must distinguish them from each other.
+%    This implementation is somewhat optimized by using low-level
+%    code from the commands |\settowidth|, etc.\footnote{It is based on
+%    suggestions by Donald Arseneau and David Carlisle.}
+%
+%    Within the text argument we must restore the normal meanings of
+%    the four user-level commands since arbitrary material can appear
+%    in here, including further uses of calc.
+%    \begin{macrocode}
+\def\calc@textsize #1#2{%
+  \begingroup
+    \let\widthof\wd
+    \let\heightof\ht
+    \let\depthof\dp
+    \def\totalheightof{\ht\dp}%
+%    \end{macrocode}
+% We must expand the argument one level if it's \cs{totalheightof}
+% and it doesn't hurt the other three.
+%    \begin{macrocode}
+    \expandafter\@settodim\expandafter{#1}%
+      {\global\calc@A}%
+      {%
+       \let\widthof\ignorespaces
+       \let\heightof\ignorespaces
+       \let\depthof\ignorespaces
+       \let\totalheightof\ignorespaces
+       #2}%
+  \endgroup
+  \calc@post@scan}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\calc@post@scan}
+% \begin{macro}{\@calc@post@scan}
+% \changes{v4.2}{2005/08/06}{Added macro and force expansion}
+% \changes{v4.3}{2007/08/22}{Discard terminating \cs{relax} tokens and
+%   avoid extra error message from \cs{calc@next}}
+% The macro |\calc@post@scan| is called right after a value has been
+% read.  At this point, a binary operator, a sequence of right
+% parentheses, an optional \cs{relax}, and the end-of-expression mark
+% (`|!|') is allowed.\footnote{Is \texttt{!} a good choice, CAR?}
+% Depending on our findings, we call a suitable macro to generate the
+% corresponding \TeX\ code (except when we detect the
+% end-of-expression marker: then scanning ends, and control is
+% returned to |\calc@assign@generic|).
+%
+% This macro may be optimized by selecting a different order of
+% |\ifx|-tests.  The test for `\texttt{!}' (end-of-expression) is
+% placed first as it will always be performed: this is the only test
+% to be performed if the expression consists of a single \<numeric>.
+% This ensures that documents that do not use the extra expressive
+% power provided by the \texttt{calc} package only suffer a minimum
+% slowdown in processing time.
+%    \begin{macrocode}
+\def\calc@post@scan#1{%
+ \expandafter\@calc@post@scan\romannumeral-`\a#1}
+\def\@calc@post@scan#1{%
+  \ifx#1!\let\calc@next\endgroup \else
+    \ifx#1+\let\calc@next\calc@add \else
+      \ifx#1-\let\calc@next\calc@subtract \else
+        \ifx#1*\let\calc@next\calc@multiplyx \else
+          \ifx#1/\let\calc@next\calc@dividex \else
+            \ifx#1)\let\calc@next\calc@close \else
+              \ifx#1\relax\let\calc@next\calc@post@scan \else
+                \def\calc@next{\calc@error#1}%
+              \fi
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+  \calc@next}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\calc@add}
+% \begin{macro}{\calc@subtract}
+% \begin{macro}{\calc@generic@add}
+% \begin{macro}{\calc@addAtoB}
+% \begin{macro}{\calc@subtractAfromB}
+% The replacement code for the binary operators `\texttt{+}' and
+% `\texttt{-}' follow a common pattern; the only difference is the
+% token that is stored away by |\aftergroup|.  After this replacement
+% code, control is transferred to |\calc@pre@scan|.
+%    \begin{macrocode}
+\def\calc@add{\calc@generic@add\calc@addAtoB}
+\def\calc@subtract{\calc@generic@add\calc@subtractAfromB}
+\def\calc@generic@add#1{\endgroup\global\calc@A\calc@B\endgroup
+   \begingroup\aftergroup#1\begingroup\aftergroup\calc@initB
+   \calc@pre@scan}
+\def\calc@addAtoB{\advance\calc@B\calc@A}
+\def\calc@subtractAfromB{\advance\calc@B-\calc@A}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macro}{\real}
+%    \begin{macro}{\ratio}
+%    \begin{macro}{\calc@ratio@x}
+%    \begin{macro}{\calc@real@x}
+%    The multiplicative operators, `\texttt{*}' and `\texttt{/}', may be
+%    followed by a |\real|, |\ratio|, |\minof|, or |\maxof|  token. The
+%    last two of these control sequences are defined by \texttt{calc} as
+%    they are needed by the scanner for addition or subtraction while the
+%    first two are not defined (at least not by the \texttt{calc}
+%    package); this,
+%    unfortunately, leaves them highly non-robust.  We therefore
+%    equate them to |\relax| but only if they have not already been
+%    defined\footnote{Suggested code from David Carlisle.}
+%    (by some other package: dangerous but possible!); this
+%    will also make them appear to be undefined to a \LaTeX{} user
+%    (also possibly dangerous).
+% \changes{v4.1a}{1998/06/07}
+%    {Added macro set-ups to make them robust but undefined: CAR}
+%    \begin{macrocode}
+\ifx\real\@undefined\let\real\relax\fi
+\ifx\ratio\@undefined\let\ratio\relax\fi
+%    \end{macrocode}
+%    In order to test for |\real| or |\ratio|, we define these
+%    two.\footnote{May not need the extra names, CAR?}
+%    \begin{macrocode}
+\def\calc@ratio@x{\ratio}
+\def\calc@real@x{\real}
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%    \end{macro}
+%    \end{macro}
+% \begin{macro}{\calc@multiplyx}
+% \changes{v4.2}{2005/08/06}
+%    {Added $\protect\max$ and $\protect\min$ operations}
+% \begin{macro}{\calc@dividex}
+% \changes{v4.2}{2005/08/06}
+%    {Added $\protect\max$ and $\protect\min$ operations}
+% Test which operator followed |*| or |/|. If none followed it's just
+% a standard multiplication or division.
+%    \begin{macrocode}
+\def\calc@multiplyx#1{\def\calc@tmp{#1}%
+  \ifx\calc@tmp\calc@ratio@x \let\calc@next\calc@ratio@multiply \else
+    \ifx\calc@tmp\calc@real@x \let\calc@next\calc@real@multiply \else
+      \ifx\maxof#1\let\calc@next\calc@maxmin@multiply \else
+        \let\calc@next\calc@multiply
+      \fi
+    \fi
+  \fi
+  \calc@next#1}
+\def\calc@dividex#1{\def\calc@tmp{#1}%
+  \ifx\calc@tmp\calc@ratio@x \let\calc@next\calc@ratio@divide \else
+    \ifx\calc@tmp\calc@real@x \let\calc@next\calc@real@divide \else
+      \ifx\maxof#1\let\calc@next\calc@maxmin@divide \else
+        \let\calc@next\calc@divide
+      \fi
+    \fi
+  \fi
+  \calc@next#1}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\calc@multiply}
+% \begin{macro}{\calc@divide}
+% \begin{macro}{\calc@generic@multiply}
+% \begin{macro}{\calc@multiplyBbyA}
+% \begin{macro}{\calc@divideBbyA}
+% The binary operators `\texttt{*}' and `\texttt{/}' also insert code
+% as determined above.  Moreover, the meaning of |\calc@A| and
+% |\calc@B| is changed as factors following a multiplication and
+% division operator always have integer type; the original meaning of
+% these macros will be restored when the factor has been read and
+% evaluated.
+%    \begin{macrocode}
+\def\calc@multiply{\calc@generic@multiply\calc@multiplyBbyA}
+\def\calc@divide{\calc@generic@multiply\calc@divideBbyA}
+\def\calc@generic@multiply#1{\endgroup\begingroup
+   \let\calc@A\calc@Acount \let\calc@B\calc@Bcount
+   \aftergroup#1\calc@pre@scan}
+\def\calc@multiplyBbyA{\multiply\calc@B\calc@Acount}
+\def\calc@divideBbyA{\divide\calc@B\calc@Acount}
+%    \end{macrocode}
+% Since the value to use in the multiplication/division operation is
+% stored in the |\calc@Acount| register, the |\calc@multiplyBbyA| and
+% |\calc@divideBbyA| macros use this register.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\calc@close}
+% |\calc@close| generates code for a right parenthesis (which was
+% derived to be ``$\}A\gassign B\}A\gassign B$'' in
+% Section~\ref{evaluation:scheme}).  After this code, the control is
+% returned to
+% |\calc@post@scan| in order to look for another right parenthesis or
+% a binary operator.
+%    \begin{macrocode}
+\def\calc@close
+   {\endgroup\global\calc@A\calc@B
+    \endgroup\global\calc@A\calc@B
+    \calc@post@scan}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Calculating a ratio}
+%
+% \begin{macro}{\calc@ratio@multiply}
+% \begin{macro}{\calc@ratio@divide}
+% When |\calc@post@scan| encounters a |\ratio| control sequence, it hands
+% control to one of the macros |\calc@ratio@multiply| or |\calc@ratio@divide|,
+% depending on the preceding character. Those macros both forward the
+% control to the macro |\calc@ratio@evaluate|, which performs two steps: (1) it
+% calculates the ratio, which is saved in the global macro token
+% |\calc@the@ratio|; (2) it makes sure that the value of |\calc@B| will be
+% multiplied by the ratio as soon as the current group ends.
+%
+% The following macros call |\calc@ratio@evaluate| which multiplies
+% |\calc@B| by the ratio, but |\calc@ratio@divide| flips the arguments
+% so that the `opposite' fraction is actually evaluated.
+%    \begin{macrocode}
+\def\calc@ratio@multiply\ratio{\calc@ratio@evaluate}
+\def\calc@ratio@divide\ratio#1#2{\calc@ratio@evaluate{#2}{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\calc@Ccount}
+% \begin{macro}{\calc@numerator}
+% \begin{macro}{\calc@denominator}
+% We shall need two registers for temporary usage in the
+% calculations.  We can save one register since we can reuse
+% |\calc@Bcount|.
+%    \begin{macrocode}
+\newcount\calc@Ccount
+\let\calc@numerator=\calc@Bcount
+\let\calc@denominator=\calc@Ccount
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\calc@ratio@evaluate}
+% Here is the macro that handles the actual evaluation of ratios.  The
+% procedure is
+% this: First, the two expressions are evaluated and coerced to
+% integers. The whole procedure is enclosed in a group to be able to
+% use the registers |\calc@numerator| and |\calc@denominator| for temporary
+% manipulations.
+%    \begin{macrocode}
+\def\calc@ratio@evaluate#1#2{%
+   \endgroup\begingroup
+      \calc@assign@dimen\calc@numerator{#1}%
+      \calc@assign@dimen\calc@denominator{#2}%
+%    \end{macrocode}
+% Here we calculate the ratio.  First, we check for negative numerator
+% and/or denominator; note that \TeX\ interprets two minus signs the
+% same as a plus sign.  Then, we calculate the integer part.
+% The minus sign(s), the integer part, and a decimal point, form the
+% initial expansion of the |\calc@the@ratio| macro.
+%    \begin{macrocode}
+      \gdef\calc@the@ratio{}%
+      \ifnum\calc@numerator<0 \calc@numerator-\calc@numerator
+         \gdef\calc@the@ratio{-}%
+      \fi
+      \ifnum\calc@denominator<0 \calc@denominator-\calc@denominator
+         \xdef\calc@the@ratio{\calc@the@ratio-}%
+      \fi
+      \calc@Acount\calc@numerator
+      \divide\calc@Acount\calc@denominator
+      \xdef\calc@the@ratio{\calc@the@ratio\number\calc@Acount.}%
+%    \end{macrocode}
+% Now we generate the digits after the decimal point, one at a time.
+% When \TeX\ scans these digits (in the actual multiplication
+% operation), it forms a fixed-point number with 16~bits for
+% the fractional part.  We hope that six digits is sufficient, even
+% though the last digit may not be rounded correctly.
+%    \begin{macrocode}
+      \calc@next@digit \calc@next@digit \calc@next@digit
+      \calc@next@digit \calc@next@digit \calc@next@digit
+   \endgroup
+%    \end{macrocode}
+% Now we have the ratio represented (as the expansion of the global
+% macro |\calc@the@ratio|) in the syntax \<decimal constant>
+% \cite[page~270]{texbook}.  This is fed to |\calc@multiply@by@real|
+% that will
+% perform the actual multiplication.  It is important that the
+% multiplication takes place at the correct grouping level so that the
+% correct instance of the $B$ register will be used.  Also note that
+% we do not need the |\aftergroup| mechanism in this case.
+%    \begin{macrocode}
+   \calc@multiply@by@real\calc@the@ratio
+   \begingroup
+   \calc@post@scan}
+%    \end{macrocode}
+% \end{macro}
+% The |\begingroup| inserted before the |\calc@post@scan| will be
+% matched by the |\endgroup| generated as part of the replacement of a
+% subsequent binary operator or right parenthesis.
+% \begin{macro}{\calc@next@digit}
+%    \begin{macrocode}
+\def\calc@next@digit{%
+      \multiply\calc@Acount\calc@denominator
+      \advance\calc@numerator -\calc@Acount
+      \multiply\calc@numerator 10
+      \calc@Acount\calc@numerator
+      \divide\calc@Acount\calc@denominator
+      \xdef\calc@the@ratio{\calc@the@ratio\number\calc@Acount}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\calc@multiply@by@real}
+% In the following code, it is important that we first assign the
+% result to a dimen register.  Otherwise, \TeX\ won't allow us to
+% multiply with a real number.
+%    \begin{macrocode}
+\def\calc@multiply@by@real#1{\calc@Bdimen #1\calc@B \calc@B\calc@Bdimen}
+%    \end{macrocode}
+% (Note that this code wouldn't work if |\calc@B| were a muglue
+% register.  This is the real reason why the \texttt{calc} package
+% doesn't support muglue expressions.  To support muglue expressions
+% in full, the |\calc@multiply@by@real| macro must use a muglue register
+% instead of |\calc@Bdimen| when |\calc@B| is a muglue register;
+% otherwise, a dimen register should be used.  Since integer
+% expressions can appear as part of a muglue expression, it would be
+% necessary to determine the correct register to use each time a
+% multiplication is made.)
+% \end{macro}
+%
+% \subsection{Multiplication by real numbers}
+%
+% \begin{macro}{\calc@real@multiply}
+% \begin{macro}{\calc@real@divide}
+% This is similar to the |\calc@ratio@evaluate| macro above, except that
+% it is considerably simplified since we don't need to calculate the
+% factor explicitly.
+%    \begin{macrocode}
+\def\calc@real@multiply\real#1{\endgroup
+   \calc@multiply@by@real{#1}\begingroup
+   \calc@post@scan}
+\def\calc@real@divide\real#1{\calc@ratio@evaluate{1pt}{#1pt}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{$\max$ and $\min$ operations}
+%
+% \begin{macro}{\maxof}
+% \begin{macro}{\minof}
+% \changes{v4.2}{2005/08/06}
+%    {Added macros}
+% With version 4.2, the $\max$ and $\min$ operators were
+% added to \texttt{calc}. The user functions for them are \cs{maxof} and
+% \cs{minof} respectively.
+% These macros are internally similar to \cs{widthof} etc.\ in that they
+% are unexpandable and easily recognizable by the scanner.
+%    \begin{macrocode}
+\let\maxof\@@italiccorr
+\let\minof\@@italiccorr
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\calc@Cskip}
+% \begin{macro}{\ifcalc@count@}
+% The $\max$ and $\min$ operations take two arguments so we need an extra
+% \<skip> register. We also add a switch for determining when to perform
+% a \<skip> or a \<count> assignment.
+%    \begin{macrocode}
+\newskip\calc@Cskip
+\newif\ifcalc@count@
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%  \begin{macro}{\calc@maxmin@addsub}
+%  \begin{macro}{\calc@maxmin@generic}
+% \changes{v4.2}{2005/08/06}{Macros added}
+% When doing addition or subtraction with a $\max$ or $\min$ operator, we
+% first check if |\calc@A| is a \<count> register or not and then set the
+% switch. Then call the real function which sets |\calc@A| to the desired
+% value and continue as usual with |\calc@post@scan|.
+%    \begin{macrocode}
+\def\calc@maxmin@addsub#1#2#3{\begingroup
+  \ifx\calc@A\calc@Acount%
+    \calc@count@true
+  \else
+    \calc@count@false
+  \fi
+  \calc@maxmin@generic#1{#2}{#3}%
+  \endgroup
+  \calc@post@scan
+}
+%    \end{macrocode}
+% Check the switch and do either \<count> or \<skip> assignments. Note that
+% |\maxof| and |\minof| are not set to |>| and |<| until after the
+% assignments, which ensures we can nest them without problems. Then set
+% |\calc@A| to the correct one.
+%    \begin{macrocode}
+\def\calc@maxmin@generic#1#2#3{%
+  \begingroup
+    \ifcalc@count@
+      \calc@assign@count\calc@Ccount{#2}%
+      \calc@assign@count\calc@Bcount{#3}%
+      \def\minof{<}\def\maxof{>}%
+      \global\calc@A\ifnum\calc@Ccount#1\calc@Bcount
+        \calc@Ccount\else\calc@Bcount\fi
+    \else
+      \calc@assign@skip\calc@Cskip{#2}%
+      \calc@assign@skip\calc@Bskip{#3}%
+      \def\minof{<}\def\maxof{>}%
+      \global\calc@A\ifdim\calc@Cskip#1\calc@Bskip
+        \calc@Cskip\else\calc@Bskip\fi
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\calc@maxmin@divmul}
+% \begin{macro}{\calc@maxmin@multiply}
+% \begin{macro}{\calc@maxmin@divide}
+% \changes{v4.2}{2005/08/06}{Macros added}
+% When doing division or multiplication we must be using \<count> registers
+% so we set the switch. Other than that it is almost business as usual when
+% multiplying or dividing. |#1| is the instruction to either multiply or
+% divide |\calc@B| by |\calc@A|, |#2| is either |\maxof| or |\minof| which
+% is waiting in the input stream and |#3| and |#4| are the calc expressions.
+% We end it all as usual by calling |\calc@post@scan|.
+%    \begin{macrocode}
+\def\calc@maxmin@divmul#1#2#3#4{%
+  \endgroup\begingroup
+  \calc@count@true
+  \aftergroup#1%
+  \calc@maxmin@generic#2{#3}{#4}%
+  \endgroup\begingroup
+  \calc@post@scan
+}
+%    \end{macrocode}
+% The two functions called when seeing a |*| or a |/|.
+%    \begin{macrocode}
+\def\calc@maxmin@multiply{\calc@maxmin@divmul\calc@multiplyBbyA}
+\def\calc@maxmin@divide  {\calc@maxmin@divmul\calc@divideBbyA}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \section{Reporting errors}
+% \begin{macro}{\calc@error}
+% \changes{v4.0d}{1997/11/08}
+%    {Use \cs{PackageError} for error messages (DPC)}
+% \changes{v4.0e}{1997/11/11}
+%    {typo fixed}
+% If |\calc@post@scan| reads a character that is not one of `\texttt{+}',
+% `\texttt{-}', `\texttt{*}', `\texttt{/}', or `\texttt{)}', an error
+% has occurred, and this is reported to the user.  Violations in the
+% syntax of \<numeric>s will be detected and reported by \TeX.
+% \changes{v4.1a}{1998/06/07}
+%    {Improved, I hope, error message: CAR}
+%    \begin{macrocode}
+\def\calc@error#1{%
+   \PackageError{calc}%
+     {`#1' invalid at this point}%
+     {I expected to see one of: + - * / )}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{Other additions}
+% \begin{macro}{\@settodim}
+% \changes{v4.2}{2005/08/06}
+%    {Changed kernel macro}
+% \begin{macro}{\settototalheight}
+% \changes{v4.2}{2005/08/06}
+%    {Added macro}
+% The kernel macro \cs{@settodim} is changed so that it runs through a list
+% containing \cs{ht}, \cs{wd}, and \cs{dp} and than advance the length
+% one step at a time. We just have to use a scratch register in case the
+% user decides to put in a \cs{global} prefix on the length register.
+% A search on the internet confirmed that some people do that kind of thing.
+%    \begin{macrocode}
+\def\@settodim#1#2#3{%
+  \setbox\@tempboxa\hbox{{#3}}%
+  \dimen@ii=\z@
+  \@tf@r\reserved@a #1\do{%
+  \advance\dimen@ii\reserved@a\@tempboxa}%
+  #2=\dimen@ii
+  \setbox\@tempboxa\box\voidb@x}
+%    \end{macrocode}
+% Now the user level macro is straightforward.
+%    \begin{macrocode}
+\def\settototalheight{\@settodim{\ht\dp}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% That's the end of the package.
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput
+

@@ -1,0 +1,408 @@
+%%
+%% This is file `plain.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babel.dtx  (with options: `plain')
+%% This is a generated file.
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright 1989-2008 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% The Current Maintainer of this work is Javier Bezos.
+%% 
+%% This file may only be distributed together with a copy of the Babel
+%% system. You may however distribute the Babel system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the Babel distribution is
+%% given in the file `manifest.bbl'. See also `legal.bbl for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%% File 'babel.dtx'
+%%\ProvidesFile{babel.dtx}[2015/08/03 v3.9m The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989-2008 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%% Copyright (C) 2013-2014 by Johannes Braams
+%%                            TeXniek
+%%                            by Javier Bezos
+%%                            all rights reserved.
+\def\@empty{}
+\def\loadlocalcfg#1{%
+  \openin0#1.cfg
+  \ifeof0
+    \closein0
+  \else
+    \closein0
+    {\immediate\write16{*************************************}%
+     \immediate\write16{* Local config file #1.cfg used}%
+     \immediate\write16{*}%
+     }
+    \input #1.cfg\relax
+  \fi
+  \@endofldf}
+\long\def\@firstofone#1{#1}
+\long\def\@firstoftwo#1#2{#1}
+\long\def\@secondoftwo#1#2{#2}
+\def\@nnil{\@nil}
+\def\@gobbletwo#1#2{}
+\def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
+\def\@star@or@long#1{%
+  \@ifstar
+  {\let\l@ngrel@x\relax#1}%
+  {\let\l@ngrel@x\long#1}}
+\let\l@ngrel@x\relax
+\def\@car#1#2\@nil{#1}
+\def\@cdr#1#2\@nil{#2}
+\let\@typeset@protect\relax
+\let\protected@edef\edef
+\long\def\@gobble#1{}
+\edef\@backslashchar{\expandafter\@gobble\string\\}
+\def\strip@prefix#1>{}
+\def\g@addto@macro#1#2{{%
+    \toks@\expandafter{#1#2}%
+    \xdef#1{\the\toks@}}}
+\def\@namedef#1{\expandafter\def\csname #1\endcsname}
+\def\@nameuse#1{\csname #1\endcsname}
+\def\@ifundefined#1{%
+  \expandafter\ifx\csname#1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi}
+\def\@expandtwoargs#1#2#3{%
+  \edef\reserved@a{\noexpand#1{#2}{#3}}\reserved@a}
+\def\zap@space#1 #2{%
+  #1%
+  \ifx#2\@empty\else\expandafter\zap@space\fi
+  #2}
+\ifx\@preamblecmds\@undefined
+  \def\@preamblecmds{}
+\fi
+\def\@onlypreamble#1{%
+  \expandafter\gdef\expandafter\@preamblecmds\expandafter{%
+    \@preamblecmds\do#1}}
+\@onlypreamble\@onlypreamble
+\def\begindocument{%
+  \@begindocumenthook
+  \global\let\@begindocumenthook\@undefined
+  \def\do##1{\global\let##1\@undefined}%
+  \@preamblecmds
+  \global\let\do\noexpand}
+\ifx\@begindocumenthook\@undefined
+  \def\@begindocumenthook{}
+\fi
+\@onlypreamble\@begindocumenthook
+\def\AtBeginDocument{\g@addto@macro\@begindocumenthook}
+\def\AtEndOfPackage#1{\g@addto@macro\@endofldf{#1}}
+\@onlypreamble\AtEndOfPackage
+\def\@endofldf{}
+\@onlypreamble\@endofldf
+\let\bbl@afterlang\@empty
+\chardef\bbl@hymapopt\z@
+\ifx\if@filesw\@undefined
+  \expandafter\let\csname if@filesw\expandafter\endcsname
+    \csname iffalse\endcsname
+\fi
+\def\newcommand{\@star@or@long\new@command}
+\def\new@command#1{%
+  \@testopt{\@newcommand#1}0}
+\def\@newcommand#1[#2]{%
+  \@ifnextchar [{\@xargdef#1[#2]}%
+                {\@argdef#1[#2]}}
+\long\def\@argdef#1[#2]#3{%
+  \@yargdef#1\@ne{#2}{#3}}
+\long\def\@xargdef#1[#2][#3]#4{%
+  \expandafter\def\expandafter#1\expandafter{%
+    \expandafter\@protected@testopt\expandafter #1%
+    \csname\string#1\expandafter\endcsname{#3}}%
+  \expandafter\@yargdef \csname\string#1\endcsname
+  \tw@{#2}{#4}}
+\long\def\@yargdef#1#2#3{%
+  \@tempcnta#3\relax
+  \advance \@tempcnta \@ne
+  \let\@hash@\relax
+  \edef\reserved@a{\ifx#2\tw@ [\@hash@1]\fi}%
+  \@tempcntb #2%
+  \@whilenum\@tempcntb <\@tempcnta
+  \do{%
+    \edef\reserved@a{\reserved@a\@hash@\the\@tempcntb}%
+    \advance\@tempcntb \@ne}%
+  \let\@hash@##%
+  \l@ngrel@x\expandafter\def\expandafter#1\reserved@a}
+\def\providecommand{\@star@or@long\provide@command}
+\def\provide@command#1{%
+  \begingroup
+    \escapechar\m@ne\xdef\@gtempa{{\string#1}}%
+  \endgroup
+  \expandafter\@ifundefined\@gtempa
+    {\def\reserved@a{\new@command#1}}%
+    {\let\reserved@a\relax
+     \def\reserved@a{\new@command\reserved@a}}%
+   \reserved@a}%
+\def\DeclareRobustCommand{\@star@or@long\declare@robustcommand}
+\def\declare@robustcommand#1{%
+   \edef\reserved@a{\string#1}%
+   \def\reserved@b{#1}%
+   \edef\reserved@b{\expandafter\strip@prefix\meaning\reserved@b}%
+   \edef#1{%
+      \ifx\reserved@a\reserved@b
+         \noexpand\x@protect
+         \noexpand#1%
+      \fi
+      \noexpand\protect
+      \expandafter\noexpand\csname
+         \expandafter\@gobble\string#1 \endcsname
+   }%
+   \expandafter\new@command\csname
+      \expandafter\@gobble\string#1 \endcsname
+}
+\def\x@protect#1{%
+   \ifx\protect\@typeset@protect\else
+      \@x@protect#1%
+   \fi
+}
+\def\@x@protect#1\fi#2#3{%
+   \fi\protect#1%
+}
+\def\bbl@tempa{\csname newif\endcsname\ifin@}
+\ifx\in@\@undefined
+  \def\in@#1#2{%
+    \def\in@@##1#1##2##3\in@@{%
+      \ifx\in@##2\in@false\else\in@true\fi}%
+    \in@@#2#1\in@\in@@}
+\else
+  \let\bbl@tempa\@empty
+\fi
+\bbl@tempa
+\def\@ifpackagewith#1#2#3#4{#3}
+\def\@ifl@aded#1#2#3#4{}
+\ifx\@tempcnta\@undefined
+  \csname newcount\endcsname\@tempcnta\relax
+\fi
+\ifx\@tempcntb\@undefined
+  \csname newcount\endcsname\@tempcntb\relax
+\fi
+\ifx\bye\@undefined
+  \advance\count10 by -2\relax
+\fi
+\ifx\@ifnextchar\@undefined
+  \def\@ifnextchar#1#2#3{%
+    \let\reserved@d=#1%
+    \def\reserved@a{#2}\def\reserved@b{#3}%
+    \futurelet\@let@token\@ifnch}
+  \def\@ifnch{%
+    \ifx\@let@token\@sptoken
+      \let\reserved@c\@xifnch
+    \else
+      \ifx\@let@token\reserved@d
+        \let\reserved@c\reserved@a
+      \else
+        \let\reserved@c\reserved@b
+      \fi
+    \fi
+    \reserved@c}
+  \def\:{\let\@sptoken= } \:  % this makes \@sptoken a space token
+  \def\:{\@xifnch} \expandafter\def\: {\futurelet\@let@token\@ifnch}
+\fi
+\def\@testopt#1#2{%
+  \@ifnextchar[{#1}{#1[#2]}}
+\def\@protected@testopt#1{%%
+  \ifx\protect\@typeset@protect
+    \expandafter\@testopt
+  \else
+    \@x@protect#1%
+  \fi}
+\long\def\@whilenum#1\do #2{\ifnum #1\relax #2\relax\@iwhilenum{#1\relax
+     #2\relax}\fi}
+\long\def\@iwhilenum#1{\ifnum #1\expandafter\@iwhilenum
+         \else\expandafter\@gobble\fi{#1}}
+\def\DeclareTextCommand{%
+   \@dec@text@cmd\providecommand
+}
+\def\ProvideTextCommand{%
+   \@dec@text@cmd\providecommand
+}
+\def\DeclareTextSymbol#1#2#3{%
+   \@dec@text@cmd\chardef#1{#2}#3\relax
+}
+\def\@dec@text@cmd#1#2#3{%
+   \expandafter\def\expandafter#2%
+      \expandafter{%
+         \csname#3-cmd\expandafter\endcsname
+         \expandafter#2%
+         \csname#3\string#2\endcsname
+      }%
+   \expandafter#1\csname#3\string#2\endcsname
+}
+\def\@current@cmd#1{%
+  \ifx\protect\@typeset@protect\else
+      \noexpand#1\expandafter\@gobble
+  \fi
+}
+\def\@changed@cmd#1#2{%
+   \ifx\protect\@typeset@protect
+      \expandafter\ifx\csname\cf@encoding\string#1\endcsname\relax
+         \expandafter\ifx\csname ?\string#1\endcsname\relax
+            \expandafter\def\csname ?\string#1\endcsname{%
+               \@changed@x@err{#1}%
+            }%
+         \fi
+         \global\expandafter\let
+           \csname\cf@encoding \string#1\expandafter\endcsname
+           \csname ?\string#1\endcsname
+      \fi
+      \csname\cf@encoding\string#1%
+        \expandafter\endcsname
+   \else
+      \noexpand#1%
+   \fi
+}
+\def\@changed@x@err#1{%
+    \errhelp{Your command will be ignored, type <return> to proceed}%
+    \errmessage{Command \protect#1 undefined in encoding \cf@encoding}}
+\def\DeclareTextCommandDefault#1{%
+   \DeclareTextCommand#1?%
+}
+\def\ProvideTextCommandDefault#1{%
+   \ProvideTextCommand#1?%
+}
+\expandafter\let\csname OT1-cmd\endcsname\@current@cmd
+\expandafter\let\csname?-cmd\endcsname\@changed@cmd
+\def\DeclareTextAccent#1#2#3{%
+  \DeclareTextCommand#1{#2}[1]{\accent#3 ##1}
+}
+\def\DeclareTextCompositeCommand#1#2#3#4{%
+   \expandafter\let\expandafter\reserved@a\csname#2\string#1\endcsname
+   \edef\reserved@b{\string##1}%
+   \edef\reserved@c{%
+     \expandafter\@strip@args\meaning\reserved@a:-\@strip@args}%
+   \ifx\reserved@b\reserved@c
+      \expandafter\expandafter\expandafter\ifx
+         \expandafter\@car\reserved@a\relax\relax\@nil
+         \@text@composite
+      \else
+         \edef\reserved@b##1{%
+            \def\expandafter\noexpand
+               \csname#2\string#1\endcsname####1{%
+               \noexpand\@text@composite
+                  \expandafter\noexpand\csname#2\string#1\endcsname
+                  ####1\noexpand\@empty\noexpand\@text@composite
+                  {##1}%
+            }%
+         }%
+         \expandafter\reserved@b\expandafter{\reserved@a{##1}}%
+      \fi
+      \expandafter\def\csname\expandafter\string\csname
+         #2\endcsname\string#1-\string#3\endcsname{#4}
+   \else
+     \errhelp{Your command will be ignored, type <return> to proceed}%
+     \errmessage{\string\DeclareTextCompositeCommand\space used on
+         inappropriate command \protect#1}
+   \fi
+}
+\def\@text@composite#1#2#3\@text@composite{%
+   \expandafter\@text@composite@x
+      \csname\string#1-\string#2\endcsname
+}
+\def\@text@composite@x#1#2{%
+   \ifx#1\relax
+      #2%
+   \else
+      #1%
+   \fi
+}
+\def\@strip@args#1:#2-#3\@strip@args{#2}
+\def\DeclareTextComposite#1#2#3#4{%
+   \def\reserved@a{\DeclareTextCompositeCommand#1{#2}{#3}}%
+   \bgroup
+      \lccode`\@=#4%
+      \lowercase{%
+   \egroup
+      \reserved@a @%
+   }%
+}
+\def\UseTextSymbol#1#2{%
+   #2%
+}
+\def\UseTextAccent#1#2#3{%
+}
+\def\@use@text@encoding#1{%
+}
+\def\DeclareTextSymbolDefault#1#2{%
+   \DeclareTextCommandDefault#1{\UseTextSymbol{#2}#1}%
+}
+\def\DeclareTextAccentDefault#1#2{%
+   \DeclareTextCommandDefault#1{\UseTextAccent{#2}#1}%
+}
+\def\cf@encoding{OT1}
+\DeclareTextAccent{\"}{OT1}{127}
+\DeclareTextAccent{\'}{OT1}{19}
+\DeclareTextAccent{\^}{OT1}{94}
+\DeclareTextAccent{\`}{OT1}{18}
+\DeclareTextAccent{\~}{OT1}{126}
+\DeclareTextSymbol{\textquotedblleft}{OT1}{92}
+\DeclareTextSymbol{\textquotedblright}{OT1}{`\"}
+\DeclareTextSymbol{\textquoteleft}{OT1}{`\`}
+\DeclareTextSymbol{\textquoteright}{OT1}{`\'}
+\DeclareTextSymbol{\i}{OT1}{16}
+\DeclareTextSymbol{\ss}{OT1}{25}
+\ifx\scriptsize\@undefined
+  \let\scriptsize\sevenrm
+\fi
+\let\bbl@opt@shorthands\@nnil
+\def\bbl@ifshorthand#1#2#3{#2}%
+\ifx\babeloptionstrings\@undefined
+  \let\bbl@opt@strings\@nnil
+\else
+  \let\bbl@opt@strings\babeloptionstrings
+\fi
+\def\bbl@tempa{normal}
+\ifx\babeloptionmath\bbl@tempa
+  \def\bbl@mathnormal{\noexpand\textormath}
+\fi
+\def\BabelStringsDefault{generic}
+\ifx\BabelModifiers\@undefined\let\BabelModifiers\relax\fi
+\let\bbl@afterlang\relax
+\let\bbl@language@opts\@empty
+\ifx\@uclclist\@undefined\let\@uclclist\@empty\fi
+\def\AfterBabelLanguage#1#2{}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `plain.def'.

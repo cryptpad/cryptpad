@@ -1,0 +1,154 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews12.tex 
+%
+% This is issue 12 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]     % uncomment this line to get Times
+   {ltnews}[1999/12/01]
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{December}
+\publicationyear{1999}
+\publicationissue{12}
+
+% Should go to .cls:
+\newcommand{\acro}[1]{\textsc{\MakeLowercase{#1}}}
+
+\begin{document}
+
+\maketitle
+
+\section{LPPL update}
+
+Since the release of the \LaTeX{} Project Public Licence version~1.1,
+we have received a small number of queries which resulted in some
+minor changes to improve the wording or explain the intentions better.
+As a consequence this release now contains LPPL~1.2 in the file
+\file{lppl.txt} and the previous versions as \file{lppl-1-0.txt} and
+\file{lppl-1-1.txt}.
+
+\section{fixltx2e package}
+
+    This package provides fixes to \LaTeXe{} which are desirable but
+    cannot be integrated into the \LaTeXe{} kernel directly as they
+    would produce a version incompatible to earlier releases (either
+    in formatting or functionality).
+
+    By having these fixes in the form of a package, users can benefit
+    from them without the danger that their documents will fail, or
+    produce unexpected results, at other sites; this works because a
+    document will contain a clear indication (the \verb=\usepackage=
+    line, preferably with a required date) that at least some of these
+    fixes are required to format it.
+
+\section{Outcome of TUG '99 (Vancouver)}
+
+The slides from the \acro{TUG}'99 presentation we gave on \emph{a
+new interface for \LaTeX\ class designers} are available from the
+\LaTeX\ Project website; look for the file \verb|tug99.pdf| at:
+\begin{quote}
+   \url{http://www.latex-project.org/talks/}
+\end{quote}
+
+Please note that this document was intended only to be informal
+``speaker's notes'' for our own use. We decided to make them available (the
+speaker's notes as well as the slides that were presented) because several
+people requested copies after the talk. However, they are \emph{not} in
+a polished copy-edited form and are not intended for publication.
+
+Prototype implementations of parts of this interface are now available from:
+\begin{quote}
+   \url{http://www.latex-project.org/code/experimental/}
+\end{quote}
+
+We are continuing to add new material at this location so as to
+stimulate further discussion of the underlying concepts. As of
+December 1, 1999
+the following parts can be downloaded.
+\begin{description}
+
+ \item[xparse] Prototype implementation of the interface for declaring
+  document command syntax. See the \texttt{.dtx} files for
+  documentation.
+
+ \item[template] Prototype implementation of the template interface
+  (needs parts of \texttt{xparse}).
+
+  The file \texttt{template.dtx} in that directory has a large section
+  of documentation at the front describing the commands in the
+  interface and giving a `worked example' building up some templates
+  for caption formatting.
+
+ \item[xcontents] Interface description for table of contents data (no
+  code yet).  Coding examples have been thoroughly discussed on the
+  \texttt{latex-l} list.
+
+ \item[xfootnote] Working examples for generating footnotes,
+  etc. Needs \texttt{xparse} and \texttt{template}.
+
+ \end{description}
+All examples are organised in subdirectories and additionally
+ available as \texttt{gzip} \texttt{tar} files.
+
+ Please remember
+that this material is intended only for experimentation and comments;
+thus any aspect of it, e.g., the user interface or the functionality,
+may change and, in fact, is very likely to change.
+For this reason it is explicitly forbidden to place this material on
+\acro{CD-ROM} distributions or public servers.
+
+These concepts, as well as their implementation, are under discussion
+on the list \texttt{LATEX-L}. You can join this list, which is
+intended solely for discussing ideas and concepts for future versions
+of \LaTeX, by sending mail to
+%\begin{quote}
+  \email{listserv@URZ.UNI-HEIDELBERG.DE} 
+%\end{quote}
+containing the line
+  \begin{quote}
+    \texttt{SUBSCRIBE LATEX-L} \textit{Your Name}
+  \end{quote}
+
+This list is archived and, after subscription, you can retrieve older
+posts to it by sending mail to the above address, containing a command
+such as:
+\begin{quote}
+\texttt{GET LATEX-L LOGyymm}
+\end{quote}
+where \texttt{yy}=Year and \texttt{mm}=Month, e.g.
+\begin{quote}
+\texttt{GET LATEX-L LOG9910}
+\end{quote}
+for all messages sent in October 1999.
+
+
+\end{document}

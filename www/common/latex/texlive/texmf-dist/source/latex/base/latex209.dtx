@@ -1,0 +1,1151 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \title{Compatibility mode for \LaTeXe{} emulating \LaTeX~2.09}
+% \author{Alan Jeffrey and Frank Mittelbach}
+% \date{1995/12/27}
+%
+% \CheckSum{717}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+% \changes{v0.01}{1993/12/11}{Created the file, including:
+%   setting the compatibility flag,
+%   inputting oldlfont.sty,
+%   setting the default encoding to be OT1, and
+%   inputting the latex209.rc file}
+% \changes{v0.02}{1993/12/12}{Changed the package filename to
+%   latex209.sty, and added the provides-package command.}
+% \changes{v0.03}{1993/12/16}{Added an empty mark, replaced
+%   provides-package with provides-file, added the compatibility hook.}
+% \changes{v0.04}{1993/12/16}{Moved oldlfont.sty out of the
+%    compatibility hook and back into latex209.cmp.  Redefined
+%    newfontswitch to ignore redefinitions.  Set the LaTeX 2e commands
+%    to be errors.}
+% \changes{v0.05}{1993/12/17}
+%    {Removed the \cs{mark}, since it is now in the kernel.}
+% \changes{v0.06}{1993/12/18}{Replaced the redefinition of
+%    \cs{@newfontswitch} to a redefinition of \cs{@renewfontswitch}.
+%    Added \cs{sloppy.}}
+% \changes{v0.07}{1993/12/18}{Fixed a bug with \cs{@missingfileerror}.}
+% \changes{v0.08}{1993/12/18}{Added the obsolete .sty files.}
+% \changes{v0.09}{1993/12/20}{Removed art10.sty and friends.}
+% \changes{v0.10}{1994/01/14}{Replaced latex209.rc by latex209.cfg.}
+% \changes{v0.11}{1994/01/21}{Replaced latex209.cmp by latex209.def.
+%    Moved half of oldlfont.dtx to here.  Split the package dst option
+%    into head and tail.}
+% \changes{v0.12}{1994/01/24}
+%   {Added \cs{normalshape} and \cs{mediumseries}, and
+%    declared the `oldlfont' option to stop oldlfont.sty from being
+%    loaded.}
+% \changes{v0.13}{1994/01/31}{removed setting of \cs{normalsize}. FMi}
+% \changes{v0.14}{1994/02/07}{Added it back again.}
+% \changes{v0.15}{1994/02/10}{Renamed \cs{@compatibility} to
+%    \cs{@documentclasshook}.  Added the check for whether
+%     \cs{normalsize} or \cs{@normalsize} needs defined.}
+% \changes{v0.16}{1994/02/11}{Replaced the allocation of temporary
+%    dimens for \cs{footheight}, \cs{@maxsep} and \cs{@dblmaxsep}
+%     by real dimen variables.}
+% \changes{v0.17}{1994/03/02}{Moved the documentation to the front, so
+%     this file can be processed directly without a driver file.
+%     Added \cs{@ptscale}, \cs{@halfmag}, \cs{@magscale}, and set the
+%     default font to be CMR at 10pt.}
+% \changes{v0.18}{1994/03/11}{Restored the old definition of \cs{verb}.
+%     Set the catcodes of the non-alphanumerics.}
+% \changes{v0.19}{1994/04/05}{Switched off more 2e features: \cs{lrbox},
+%     \cs{width}, \cs{height}, \cs{depth} in box dimensions, and the new
+%     optional arguments to \cs{parbox}, \cs{minipage} and
+%     \cs{newcommand}.  The code was provided by DPC.  Fixed a misplaced
+%     </head!>.  Made the \cs{ProvidesPackage} and \cs{ProvidesClass}
+%     warnings log messages. Removed \cs{filedate}.}
+% \changes{v0.20}{1994/04/20}
+%      {Restored the 2.09 definition of \cs{@noligs}.}
+% \changes{v0.21}{1994/04/24}
+%      {Restored the 2.09 definition of \cs{@lquote}.}
+% \changes{v0.22}{1994/05/02}{Added \cs{@latex@e@command}.}
+% \changes{v0.23}{1994/05/11}{Added bezier.sty.}
+% \changes{v0.24}{1994/05/14}{Removed \cs{@@@} and switched the box
+%    commands back on, for use in packages.}
+% \changes{v0.24}{1994/05/14}{Changed the 2e command error help.}
+% \changes{v0.24}{1994/05/14}{Removed date from announcement of
+%    2.09 mode.}
+% \changes{v0.25}{1994/05/14}{Added the newlfont option, and rewrote the
+%    oldlfont option.}
+% \changes{v0.26}{1994/05/15}{Added the margid and nomargid options.}
+% \changes{v0.27}{1994/05/16}{Fixed a bug with the margid option.}
+% \changes{v0.28}{1994/05/16}{Fixed a bug with \cs{mediumseries}.}
+% \changes{v0.29}{1994/05/17}{Fixed a bug with \cs{newlfont}.}
+% \changes{v0.29}{1994/05/17}{Removed extra spaces from the missing
+%    file error.}
+% \changes{v0.29}{1994/05/17}{Made the bezier package use \cs{iffalse}
+%    to comment itself out, rather than \%\%, which caused it to
+%    appear in every 2.09 file.}
+% \changes{v0.30}{1994/05/18}{Added \cs{@finalstrut}.}
+% \changes{v0.31}{1994/05/20}{New definition of \cs{@finalstrut}.}
+% \changes{v0.31}{1994/05/20}{Added the t1enc package.}
+% \changes{v0.32}{1994/05/20}{Added SLiTeX.}
+% \changes{v0.33}{1994/06/01}{Fixed bug with SLiTeX.}
+% \changes{v0.34}{1994/08/22}{Replaced l2euser by usrguide.}
+% \changes{v0.34}{1994/08/22}{Added a default definition for \cs{+}.}
+% \changes{v0.35}{1994/09/23}
+%                {Added spaces to the old font scale commands.}
+% \changes{v0.36}{1994/10/17}{Added an empty \cs{mark} back again.}
+% \changes{v0.37}{1994/10/20}{Corrected a typo.}
+% \changes{v0.38}{1994/11/16}{Removed \cs{LaTeXe} from this list}
+% \changes{v0.39}{1994/11/28}{Added old behaviour of floats and space.}
+% \changes{v0.40}{1995/05/05}{Make \cs{verb} use \cs{tt} font in
+%                             math mode.}
+% \changes{v0.49}{1995/10/26}{Added code for fleqn.sty, leqno.sty,
+%                             openbib.sty.}
+% \changes{v0.50}{1995/12/08}{Switched of \cs{@inmathwarn}.}
+% \changes{v0.53}{2015/02/22}{Dropped \cs{@no@font@optfalse} in various places
+%                              - no longer provided by ltfsscmp.dtx.}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Introduction}
+%
+% The file |latex209.def| is read in by \LaTeXe{} whenever it finds a
+% |\documentstyle| rather than |\documentclass| command at the
+% beginning of the file.  This indicates a \LaTeX~2.09 document, which
+% should be processed in {\em compatibility mode}.
+%
+% Any document which compiled under \LaTeX~2.09 should compile under
+% compatibility mode, unless it uses low-level commands such as
+% |\tenrm|.
+%
+% \section{The docstrip modules}
+%
+% The following modules are used in the implementation to direct
+% docstrip in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   head    & produce the beginning of |latex209.def| \\
+%   tail    & produce the end of |latex209.def| \\
+%   article  & produce |article.sty| \\
+%   book     & produce |book.sty| \\
+%   report   & produce |report.sty| \\
+%   slides   & produce |slides.sty| \\
+%   letter   & produce |letter.sty| \\
+%   bezier   & produce |bezier.sty| \\
+%   fleqn    & produce |fleqn.sty| \\
+%   leqno    & produce |leqno.sty| \\
+%   openbib  & produce |openbib.sty|
+% \end{tabular}
+% \end{center}
+% Between the |head| and |tail| of |latex209.def|, the code for
+% |oldlfont.sty| is included, so \LaTeX~2.09 documents will
+% automatically be run simulating the OFSS.
+% \changes{v0.09}{1993/12/20}{Removed artN.sty, bkN.sty and repN.sty.}
+% \changes{v0.11}{1994/01/21}{Split package into head and tail.}
+% \changes{v0.23}{1994/05/11}{Added bezier option.}
+%
+% \StopEventually{}
+%
+% \section{Driver}
+%
+% This section contains the driver for this documentation.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\DisableCrossrefs
+% \OnlyDescription
+\begin{document}
+   \DocInput{latex209.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+% \section{Beginning of latex209.def}
+%
+% \changes{v0.11}{1994/01/21}{oldlfont.dtx is now also used to generate
+%    latex209.dtx.}
+%
+% This section describes the beginning of the file |latex209.def|.
+%    \begin{macrocode}
+%<*head>
+%    \end{macrocode}
+%
+% \subsection{Identification}
+%
+% This file needs to be run with \LaTeXe.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+%    \end{macrocode}
+% Describe the file.
+%    \begin{macrocode}
+\ProvidesFile{latex209.def}[2015/02/22 v0.53 Standard LaTeX file]
+%    \end{macrocode}
+% \changes{v0.24}{1994/05/14}{Removed date.}
+% \changes{v0.40}{1995/03/21}
+%         {(DPC) Do not execute this file twice latex/1460}
+% Announce compatibility mode to the user.
+% \changes{v0.52}{1998/05/13}{Added experimental
+%    long typeout to possibly avoid prs like 2807}
+%    \begin{macrocode}
+\if@compatibility
+  \expandafter\endinput
+\else
+  \typeout{^^J\space
+\@spaces\@spaces\space  Entering LaTeX 2.09 COMPATIBILITY MODE^^J\space
+ *************************************************************^^J\space
+ \space\space\space!!WARNING!!\space
+ \space\space\space!!WARNING!!\space
+ \space\space\space!!WARNING!!\space
+ \space\space\space!!WARNING!!\space\space\space   ^^J\space
+ ^^J\space
+ This mode attempts to provide an emulation of the LaTeX 2.09^^J\space
+ author environment so that OLD documents can be successfully^^J\space
+ processed. It should NOT be used for NEW documents!^^J\space
+ ^^J\space
+ New documents should use Standard LaTeX conventions and start^^J\space
+ with the \string\documentclass\space command.^^J\space
+ ^^J\space
+ Compatibility mode is UNLIKELY TO WORK with LaTeX 2.09 style^^J\space
+ files that change any internal macros, especially not with^^J\space
+ those that change the FONT SELECTION or OUTPUT ROUTINES.^^J\space
+^^J\space
+ Therefore such style files   MUST BE UPDATED to use^^J\space
+\@spaces\@spaces\space        Current Standard LaTeX: LaTeX2e.^^J\space
+ If you suspect that you may be using such a style file, which^^J\space
+ is probably very, very old by now, then you should attempt to^^J\space
+ get it updated by sending a copy of this error message to the^^J\space
+ author of that file.^^J\space
+ *************************************************************^^J}
+ \fi
+%    \end{macrocode}
+%
+% \subsection{Compatibility flag}
+%
+% \begin{macro}{\@compatibilitytrue}
+%    \LaTeXe{} has a flag |\if@compatibility| which can be used by
+%    document classes or packages to determine whether they are running
+%    in compatibility mode or not.  This flag is set true by this file.
+%    \begin{macrocode}
+\@compatibilitytrue
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Removing features}
+%
+% \changes{v0.22}{1994/05/02}{Added \cs{latex@e@command}.}
+% \changes{v0.36}{1994/10/17}{Redid switching off commands.}
+% \changes{v0.38}{1994/11/16}{Removed \cs{LaTeXe} from this list}
+%
+% \begin{macro}{\usepackage}
+% \begin{macro}{\listfiles}
+% \begin{macro}{\ensuremath}
+% \begin{macro}{\lrbox}
+% \begin{macro}{\newcommand}
+%    These \LaTeXe{} commands are switched off in compatibility mode.
+%    This is done by saving the old definition, and redefining the
+%    command to call |\@latex@e@error| before executing the old version.
+%    \begin{macrocode}
+\def\@tempa#1#2{%
+   \expandafter\let\csname @@\string#1\endcsname#1%
+   \edef#1{%
+      \noexpand\@latex@e@error{\noexpand#2}%
+      \expandafter\noexpand\csname @@\string#1\endcsname
+   }%
+}
+\@tempa\usepackage\usepackage
+\@tempa\listfiles\listfiles
+\@tempa\ensuremath\ensuremath
+\@tempa\lrbox{\begin{lrbox}}%
+\@tempa\@xargdef{\newcommand{cmd}[args][def]}%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v0.22}{1994/05/02}
+%         {Added \cs{if@latex@e@errors} and \cs{@@@}.}
+% \changes{v0.24}
+%         {1994/05/14}{Removed \cs{if@latex@e@errors} and \cs{@@@}.}
+% \changes{v0.24}{1994/05/14}{Changed the error help.}
+% \changes{v0.36}{1994/10/17}{Initialized \cs{@latex@e@error} to do
+%    nothing, and switched it on at the begin document.}
+%
+% \begin{macro}{\@latex@e@error}
+% \begin{macro}{\@latex@e@error@}
+%   This error is produced if a user uses a \LaTeXe{} command in
+%   compatibility mode.  This is to encourage users to move over to
+%   using |\documentclass| as quickly as possible.  During the preamble
+%   the error does nothing (so that packages can use \LaTeXe{} commands)
+%   but it is redefined to be an error message at |\begin{document}|.
+%    \begin{macrocode}
+\let\@latex@e@error\@gobble
+\def\@latex@e@error@#1{%
+      \@latexerr{%
+         LaTeX2e command \string#1\space in LaTeX 2.09 document%
+      }{%
+         This is a LaTeX 2.09 document, but it contains
+         \string#1.^^J%
+         If you want to use the new features of LaTeX2e,
+         your document^^J%
+         should begin with \string\documentclass\space
+         rather than \string\documentstyle
+      }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v0.36}{1994/10/17}
+%         {Allow 2e commands to be redefined once with \cs{newcommand}.}
+% \changes{v0.40}{1995/03/21}{
+%         (DPC) Add \cs{r} to the list of 2e commands latex/1424}
+%
+% \begin{macro}{\@ifdefinable}
+% \begin{macro}{\@old@ifdefinable}
+% \begin{macro}{\@@ifdefinable}
+% \begin{macro}{\@latex@e@commands}
+%    We trap the |\@notdefinable| error message to check to see if the
+%    command is a \LaTeXe{} command, in which case we allow the
+%    definition to happen.   We keep a list of commands which are
+%    allowed to be redefined this way in |\@latex@e@commands|, and
+%    remove an entry each time it is defined.
+%    \begin{macrocode}
+\let\@old@ifdefinable\@ifdefinable
+\long\def\@ifdefinable#1{%
+   \def\@tempa##1#1##2#1##3#1##4\@tempa{%
+      \def\@latex@e@commands{##1##2}%
+      ##3% ##3 will either be \iftrue or \iffalse
+         \expandafter\@firstofone
+      \else
+         \expandafter\@old@ifdefinable\expandafter#1%
+      \fi
+   }%
+   \expandafter\@tempa\@latex@e@commands#1\iftrue#1\iffalse#1\@tempa%
+}
+\let\@@ifdefinable\@ifdefinable
+\def\@latex@e@commands{%
+   \usepackage\listfiles\ensuremath\LaTeXe\lrbox
+   \th\dh\ng\dj\TH\DH\NG\DJ\k\r\SS
+   \guillemotleft\guillemotright\guilsinglleft
+   \guilsinglright\quotedblbase\quotesinglbase
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@begin@tempboxa}
+%    \changes{v0.22}{1994/05/02}{Commented out the redefinition of
+%       \cs{@begin@tempboxa}.}
+%    If we were to switch off the new |\width|, |\height| and |\depth|
+%    commands, this is how to do it.  This isn't done, since these
+%    commands may be used in packages.
+%    \begin{verbatim}
+%\long\def\@begin@tempboxa#1#2{%
+%  \begingroup
+%    \setbox\@tempboxa#1{{#2}}}
+%    \end{verbatim}
+% \end{macro}
+%
+% \subsection{Document class hook}
+%
+% \begin{macro}{\@documentclasshook}
+% \changes{v0.15}{1994/02/10}{Renamed from \cs{@compatibility} to
+%    \cs{@documentclasshook}.  Added the check for \cs{@normalsize} and
+%    \cs{normalsize} being defined.}
+% \changes{v0.22}{1994/05/02}{Moved switching off commands into the
+%    document class hook.}
+% \changes{v0.24}{1994/05/14}{Switched the box commands back on, for use
+%    in packages.}
+% \changes{v0.36}{1994/10/17}{Changed the way the 2e command error is
+%    activated.}
+% \changes{v0.51}{1996/05/24}{(DPC) Reimplemented for /2153.}
+%    This macro is called by each use of |\documentclass|.  We define
+%    it to define |\@normalsize| and |\normalsize| if necessary,
+%    to input each unused option as a package, and to switch off the new
+%    \LaTeXe{} commands.  However, we leave on the commands
+%    |\settoheight|, |\settowidth| and the new options to |\parbox| and
+%    |\minipage|, since these are likely to be used in packages.
+%
+% The intention of the strange |\normalsize| tests below are that after
+% the |\documentstyle| command has completed, then
+% if neither of the commands |\normalsize|
+% nor |\@normalsize|  were defined by the main style or one of its
+% `substyles' or `options', then |\@normalsize| will be undefined and
+% |\normalsize| will generate an error saying it hasn't been defined.
+%
+% If the style defined either |\normalsize| or \@|normalsize| then
+% these two commands will be |\let| equal to each other, with the
+% definition given by the style file.
+%
+% If the style defines both |\normalsize| and |\@normalsize| then
+% those two definitions are kept.
+%    \begin{macrocode}
+\def\@documentclasshook{%
+  \RequirePackage\@unusedoptionlist
+  \let\@unusedoptionlist\@empty
+  \def\@tempa{\@normalsize}%
+  \ifx\normalsize\@tempa
+    \let\normalsize\@normalsize
+  \fi
+  \ifx\@normalsize\@undefined
+    \let\@normalsize\normalsize
+  \fi
+  \ifx\normalsize\@undefined
+    \let\normalsize\original@normalsize
+  \fi
+  \let\@latex@e@error\@latex@e@error@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\original@normalsize}
+% \changes{v0.51}{1996/05/24}{(DPC) Macro added /2153.}
+% Save the original definition of |\normalsize| (which generates an
+% error)
+%    \begin{macrocode}
+\let\original@normalsize\normalsize
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\normalsize}
+% \changes{v0.14}{1994/02/07}{Added \cs{normalsize}.}
+%    Some styles don't define |\normalsize|, just |\@normalsize|.
+%    \begin{macrocode}
+\def\normalsize{\@normalsize}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Compatibility with \LaTeX~2.09 document styles}
+%
+% \begin{macro}{\@missingfileerror}
+%    If a |.cls| file is missing, we look to see if there is
+%    a file of the same name with a |.sty| extension.
+% \changes{v0.06}{1993/12/18}{Corrected a typo
+%  \cs{@saved@missingfileerror}
+%    should have been \cs{saved@missingfileerror}.}
+% \changes{v0.07}{1993/12/18}{Corrected a typo, I'd forgotten to pass
+%    the arguments of \cs{@missingfileerror} on to
+%    \cs{saved@missingfileerror}.}
+% \changes{v0.29}{1994/05/17}{Removed extraneous spaces.}
+%    \begin{macrocode}
+\@ifundefined{saved@missingfileerror}{
+   \let\saved@missingfileerror=\@missingfileerror
+}{}
+\def\@missingfileerror#1#2{%
+   \ifx#2\@clsextension
+      \InputIfFileExists{#1.\@pkgextension}{%
+         \wlog{Compatibility mode: loading #1.\@pkgextension
+            \space rather than #1.#2.}%
+      }{%
+         \saved@missingfileerror{#1}{#2}%
+      }%
+   \else
+      \saved@missingfileerror{#1}{#2}%
+   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@obsoletefile}
+%    For compatibility with the document styles which |\input| the
+%    standard \LaTeX~2.09 document styles, we distribute
+%    files called |article.sty|, |book.sty|, |report.sty|,
+%    |slides.sty| and |letter.sty|.  These use the command
+%    |\@obsoletefile|, which the \LaTeXe{} kernel defines to produce a
+%    warning message.  We redefine it to just produce a message in the
+%    log file, and to pass any options from the old filename to the
+%    new filename.
+%    \changes{v0.08}{1993/12/19}{Added this command.}
+%    \changes{v0.10}{1994/01/14}{Added the option-passing.}
+%    \begin{macrocode}
+\def\@obsoletefile#1#2{%
+   \expandafter\let\csname opt@#1\expandafter\endcsname
+      \csname opt@\@currname.\@currext\endcsname
+   \wlog{Compatibility mode: inputting `#1'
+      instead of obsolete `#2'.}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footheight}
+% \begin{macro}{\@maxsep}
+% \begin{macro}{\@dblmaxsep}
+%    \LaTeX~2.09 supported these parameters, so for compatibility with
+%    old document styles we allocate them.
+% \changes{v0.16}{1994/02/11}{Replaced the allocation of temporary
+%    dimens for \cs{footheight}, \cs{@maxsep} and \cs{@dblmaxsep} by
+%     real dimen variables.}
+%    \begin{macrocode}
+\newdimen\footheight
+\newdimen\@maxsep
+\newdimen\@dblmaxsep
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v0.36}{1994/10/17}{Added an empty \cs{mark}.}
+% \changes{v0.37}
+%         {1994/10/20}{Corrected a type with the empty \cs{mark}.}
+%
+% \begin{macro}{\mark}
+%    \LaTeX~2.09 initialized an empty mark.  Who knows, someone may have
+%    relied on it:
+%    \begin{macrocode}
+\mark{{}{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Layout}
+%
+% \begin{macro}{\sloppy}
+% \changes{v0.06}{1993/12/18}{Added \cs{sloppy}}
+%    There is a new version of |\sloppy| in \LaTeXe, so we restore the
+%    old one.
+%    \begin{macrocode}
+\def\sloppy{\tolerance \@M \hfuzz .5\p@ \vfuzz .5\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@finalstrut}
+% \changes{v0.30}{1994/05/18}{Added \cs{@finalstrut}.}
+% \changes{v0.31}{1994/05/20}{New definition of \cs{@finalstrut}.}
+%    The strut which is used in a footnote has changed.  This restores
+%    the old definition.
+%    \begin{macrocode}
+\def\@finalstrut#1{\unskip\strut}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@marginparreset}
+% \begin{macro}{\@floatboxreset}
+% \changes{v0.39}{1994/11/28}{Added old behaviour of floats and space.}
+% \changes{v0.45}{1995/05/25}{(CAR) Changed method of restoring
+%    old behaviour of floats and space.}
+%    Restore the old spacing around floats.
+%    \begin{macrocode}
+\let \@marginparreset \@empty
+\let \@floatboxreset \@empty
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\proclaim}
+% \changes{v0.41}{1995/04/24}
+%         {Move here from ltplain.dtx}
+% From plain \TeX.
+%    \begin{macrocode}
+\outer\def\proclaim #1. #2\par{%
+  \medbreak
+  \noindent{\bfseries#1.\enspace}{\slshape#2\par}%
+  \ifdim\lastskip<\medskipamount
+    \removelastskip\penalty55\medskip
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\hang}
+% \begin{macro}{\textindent}
+% \changes{v0.42}{1995/04/27}
+%         {Move here from ltplain.dtx}
+% From plain \TeX.
+%    \begin{macrocode}
+\def\hang{\hangindent\parindent}
+\def\textindent#1{\indent\llap{#1\enspace}\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\ttraggedright}
+% \changes{v0.41}{1995/04/24}
+%         {Move here from ltplain.dtx}
+%    \begin{macrocode}
+\def\ttraggedright{\reset@font\ttfamily\rightskip\z@ plus2em\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@footnotemark}
+% \changes{v0.43}{1995/05/12}
+%         {macro added}
+% \LaTeXe\ version has |\nobreak| to allow hyphenation.
+%    \begin{macrocode}
+\def\@footnotemark{%
+  \leavevmode
+  \ifhmode\edef\@x@sf{\the\spacefactor}\fi
+  \@makefnmark
+  \ifhmode\spacefactor\@x@sf\fi
+  \relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@textsuperscript}
+% \changes{v0.48}{1995/07/07}
+%         {macro added for latex/1722}
+% Fudge this command to remove the text font command which
+% is always the first thing in the argument. This is needed
+% as in compatibility mode footnotes are processed in math mode,
+% but the standard classes call |\@textsuperscript| in the definition
+% of |\thanks|.
+%    \begin{macrocode}
+\def\@textsuperscript#1{$\m@th^{\@gobble#1}$}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%  \begin{macro}{\@makefnmark}
+% \changes{v0.44}{1995/05/20}{macro added}
+%    \LaTeXe\ version uses |\textsuperscript| rather than
+%    math mode.
+%    \begin{macrocode}
+\def\@makefnmark{\hbox{$^{\@thefnmark}\m@th$}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\thempfootnote}
+% \changes{v0.44}{1995/05/20}{macro added}
+%    \LaTeXe\ version has an additional |\itshape| which would not
+%    work (and would not make sense) in math mode.
+%    \begin{macrocode}
+\def\thempfootnote{\@alph\c@mpfootnote}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@fnsymbol}
+% \changes{v0.46}{1995/06/30}{macro added}
+% \LaTeX\ version uses |\ensuremath| which does not work in
+% compatibility mode.
+%    \begin{macrocode}
+\def\@fnsymbol#1{\ifcase#1\or *\or \dagger\or \ddagger\or
+    \mathchar "278\or \mathchar "27B\or \|\or **\or \dagger\dagger
+    \or \ddagger\ddagger \else\@ctrerr\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@inmathwarn}
+% \changes{v0.50}{1995/12/08}{Switched off \cs{@inmathwarn}}
+% \LaTeX\ (1995/12/01) checks for text commands being used in math
+% mode.  We switch this off in compatibility mode.
+%    \begin{macrocode}
+\let\@inmathwarn\@gobble
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Verbatim}
+%
+% \changes{v0.18}{1994/03/11}{Added the changes to \cs{verb}}
+% \changes{v0.40}{1995/05/05}{Make \cs{verb} use \cs{tt} font in
+%                             math mode.}
+% \begin{macro}{\verb}
+% \begin{macro}{\@sverb}
+%    We restore the old definition of |\verb|, but using
+%    |\verbatim@font| rather than |\tt|. The use of |\bgroup| and
+%    |\egroup| allows us to prefix it with |\hbox| in math mode.
+%    \begin{macrocode}
+\def\verb{%
+   \relax\ifmmode\hbox\fi\bgroup
+      \@noligs
+      \verbatim@font
+      \let\do\@makeother \dospecials
+      \@ifstar{\@sverb}{\@verb}%
+}
+\def\@sverb#1{%
+   \def\@tempa ##1#1{\leavevmode\null##1\egroup}%
+   \@tempa
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@nolig@list}
+% \changes{v0.20}{1994/04/20}{Added the redefinition of
+%    \cs{verbatim@nolig@list}.}
+%    The only ligatures which should be switched off in 2.09 mode are
+%    the Spanish punctuation.
+%    \begin{macrocode}
+\def\verbatim@nolig@list{\do\`}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@lquote}
+% \changes{v0.21}{1994/04/24}{Added the definition of \cs{@lquote}.}
+%    We restore the old definition of |\@lquote| in case any packages
+%    use it.
+%    \begin{macrocode}
+\def\@lquote{\leavevmode{\kern\z@}`}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Character codes}
+%
+% \changes{v0.18}{1994/03/11}{Added the catcode changes}
+%
+% By default, \LaTeXe{} makes the input charactes 0--8, 11, 14--31 and
+% 128--255 illegal.  In compatibility mode, we restore their old
+% meanings.
+%    \begin{macrocode}
+\catcode0=9
+\@tempcnta=1
+\loop\ifnum\@tempcnta<32
+   \catcode\@tempcnta=12
+   \advance\@tempcnta by 1
+\repeat%
+\catcode`\^^I=10\relax%
+\catcode`\^^L=13\relax%
+\catcode`\^^M=5\relax%
+\catcode127=15
+\@tempcnta=128
+\loop\ifnum\@tempcnta<256
+   \catcode\@tempcnta=12
+   \advance\@tempcnta by 1
+\repeat
+%    \end{macrocode}
+%
+% \subsection{Miscellaneous commands}
+%
+% \begin{macro}{\SLiTeX}
+%    The \textsc{Sli\TeX} logo.
+%    \begin{macrocode}
+\DeclareRobustCommand{\SLiTeX}{{%
+   \normalfont S\kern -.06em
+   {\scshape l\kern -.035emi}\kern -.06em
+   \TeX}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\+}
+%    The |\+| command should be defined, so that it can be used in
+%    |\renewcommand|.
+%    \begin{macrocode}
+\let\+\@empty
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@cla}
+% \begin{macro}{\@clb}
+% \changes{v0.47}{1995/09/25}
+%         {(DPC) Declare old \cs{cline} registers}
+% \begin{macro}{\mscount}
+% \LaTeX2.09 (and early versions of \LaTeXe) used these count registers
+% in the definition of |\cline| and |\multispan|.
+% Declare them here in case they were used for any other purposes.
+%    \begin{macrocode}
+\newcount\@cla
+\newcount\@clb
+\newcount\mscount
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@imakepicbox}
+% \changes{v0.48}{1995/10/16}
+%         {(DPC) emulate old behaviour of picture mode makebox}
+% picture mode version
+%    \begin{macrocode}
+\long\def\@imakepicbox(#1,#2)[#3]#4{%
+  \vbox to#2\unitlength
+   {\let\mb@b\vss \let\mb@l\hss\let\mb@r\hss
+    \let\mb@t\vss
+    \@tfor\reserved@a :=#3\do{%
+      \if s\reserved@a
+        \let\mb@l\relax\let\mb@r\relax
+      \else
+        \expandafter\let\csname mb@\reserved@a\endcsname\relax
+      \fi}%
+    \mb@t
+    \hb@xt@ #1\unitlength{\mb@l #4\mb@r}%
+    \mb@b
+%    \end{macrocode}
+% This kern ensures that a |b| option aligns on the bottom of the
+% text rather than the baseline. this is the documented behaviour in
+% the \LaTeX Book. The kern is removed in compatibility mode.
+%
+% Remove kern for bug compatibility with 2.09.
+%    \begin{macrocode}
+%    \kern\z@
+     }}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\supereject}
+%    \begin{macrocode}
+\def\supereject{\par\penalty-\@MM}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\nofiles}
+% \changes{v0.51}{1996/05/24}{(DPC) Old definition, without \cs{write}
+% added to \cs{protected@write}, for latex/2146}
+% This old version might change the vertical spacing when it is used.
+% Some old document might depend on that changed spacing so\ldots
+%    \begin{macrocode}
+\def\nofiles{%
+  \@fileswfalse
+  \typeout{No auxiliary output files.^^J}%
+  \long\def\protected@write##1##2##3{}%
+  \let\makeindex\relax
+  \let\makeglossary\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Packages and classes}
+%
+% \begin{macro}{\ProvidesPackage}
+% \begin{macro}{\ProvidesClass}
+%    We redefine |\ProvidesPackage| and |\ProvidesClass| to produce a
+%    log message rather than a warning if they find an unexpected
+%    file.
+%    \begin{macrocode}
+\def\ProvidesPackage#1{%
+  \xdef\@gtempa{#1}%
+  \ifx\@gtempa\@currname\else
+    \wlog{Compatibility mode: \@cls@pkg\space`\@currname' requested,
+       but `#1' provided.}%
+  \fi
+  \@ifnextchar[\@pr@videpackage{\@pr@videpackage[]}}%]
+\let\ProvidesClass=\ProvidesPackage
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% That ends the head of |latex209.def|.
+%    \begin{macrocode}
+%</head>
+%    \end{macrocode}
+%
+% \section{Middle of latex209.def}
+%
+% At this point, the code for |oldlfont.sty| is read in by the
+% installation script.
+%
+% \section{End of latex209.def}
+%
+% This section describes the end of |latex209.def|.
+%    \begin{macrocode}
+%<*tail>
+%    \end{macrocode}
+%
+% \subsection{Font commands}
+%
+% \changes{v0.12}{1994/01/24}{Added the oldlfont option.}
+% \changes{v0.25}{1994/05/14}{Added the newlfont option, rewrote the
+%    oldlfont option to change math grouping.}
+% \changes{v0.26}{1994/05/15}{Added the margid and nomargid options.}
+% \changes{v0.27}{1994/05/16}{Replaced \# by \#\# in margid.}
+% \changes{v0.28}{1994/05/17}{Replaced \cs{input} newlfont.sty by
+%    \cs{OptionNotUsed} in \cs{ds@newlfont}.}
+%
+% \begin{macro}{\ds@oldlfont}
+% \begin{macro}{\ds@newlfont}
+% \begin{macro}{\ds@margid}
+% \begin{macro}{\ds@nomargid}
+%    We declare |oldlfont|, |newlfont|, |margid| and |nomargid|
+%    options to mimic the \LaTeX~2.09 NFSS1 options.
+%    \begin{macrocode}
+\def\ds@oldlfont{%
+%FM   \@no@font@optfalse
+   \let\math@bgroup\@empty
+   \let\math@egroup\@empty
+   \let\@@math@bgroup\math@bgroup
+   \let\@@math@egroup\math@egroup
+}
+\def\ds@newlfont{%
+%FM    \@no@font@optfalse
+   \OptionNotUsed
+}
+\def\ds@margid{%
+%FM   \@no@font@optfalse
+  \let\math@bgroup\bgroup
+  \def\math@egroup##1{##1\egroup}%
+  \let \@@math@bgroup \math@bgroup
+  \let \@@math@egroup \math@egroup
+}
+\let\ds@nomargid\ds@oldlfont
+\@onlypreamble\ds@oldfont
+\@onlypreamble\ds@newfont
+\@onlypreamble\ds@margid
+\@onlypreamble\ds@nomargid
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\encodingdefault}
+%    The default encoding for old documents is OT1 rather than T1.
+%    \begin{macrocode}
+\renewcommand{\encodingdefault}{OT1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\cmex/m/n/10}
+%    Just in case a document style relies on |\cmex/m/n/10| to exist
+%    (which may have been hard-wired to |\fam3|) we load the font.
+%    \begin{macrocode}
+\expandafter\font\csname cmex/m/n/10\endcsname=cmex10
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \changes{v0.12}{1994/01/24}
+%    {Added \cs{normalshape} and \cs{mediumseries}.}
+% \changes{v0.28}{1994/05/16}{\cs{mediumseries} was using
+%    \cs{fontshape} rather than \cs{fontseries}.}
+%
+% \begin{macro}{\normalshape}
+% \begin{macro}{\mediumseries}
+%    These commands were used in older versions of NFSS.
+%    \begin{macrocode}
+\def\normalshape{\fontshape\shapedefault\selectfont}
+\def\mediumseries{\fontseries\seriesdefault\selectfont}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\DeclareOldFontCommand}
+%    We redefine |\DeclareOldFontCommand| to do nothing.  This means
+%    that any new document classes will have their redefinitions of
+%    |\rm|, |\bf| etc.~ignored.
+% \changes{v0.06}{1993/12/18}{Replaced \cs{@newfontswitch} by
+%    \cs{@renewfontswitch}.}
+% \changes{v0.11}{1994/01/21}{Removed \cs{RequirePackage}{oldlfont}.}
+% \changes{v0.19}{1994/04/05}{Replaced \cs{@renewfontswitch} by
+%    \cs{DeclareOldFontCommand}.}
+%    \begin{macrocode}
+\def \DeclareOldFontCommand #1#2#3{%
+  \wlog{Compatibility mode: definition
+        of \string#1\space ignored.}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v0.17}
+%    {1994/03/02}{Added \cs{@halfmag}, \cs{@magscale} and \cs{@ptscale}}
+% \changes{v0.35}
+%         {1994/09/23}{Added spaces to the old font scale commands.}
+%
+% \begin{macro}{\@halfmag}
+% \begin{macro}{\@magscale}
+% \begin{macro}{\@ptscale}
+%    Some font-specifying commands from \LaTeX~2.09.
+%    \begin{macrocode}
+\def\@halfmag{ scaled \magstephalf}
+\def\@magscale#1{ scaled \magstep#1 }
+\def\@ptscale#1{ scaled #100 }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\font}
+%    The current font is set to be CMR 10pt, to match \LaTeX~2.09.
+%    \begin{macrocode}
+\fontencoding{OT1} \fontfamily{cmr}
+\fontsize{10}{12} \fontseries{m} \fontshape{n}
+\selectfont
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v0.11}{1994/01/21}{Added the rest of this subsection, which
+%    used to be in oldlfont.dtx.}
+%
+% \begin{macro}{\load}
+%    The |\load| command is no longer needed, it is therefore
+%    defined to do nothing.
+%    \begin{macrocode}
+\let\load\@gobbletwo
+%    \end{macrocode}
+% \end{macro}
+%
+%    Here are three delimiters which have be partly disabled by
+%    NFSS2 (the small variants) since the corresponding fonts are
+%    normally not preloaded as math symbol fonts.
+%    \begin{macrocode}
+\DeclareMathDelimiter{\lgroup} % extensible ( with sharper tips
+     {\mathopen}{bold}{"28}{largesymbols}{"3A}
+\DeclareMathDelimiter{\rgroup} % extensible ) with sharper tips
+     {\mathclose}{bold}{"29}{largesymbols}{"3B}
+\DeclareMathDelimiter{\bracevert} % the vertical bar that extends braces
+     {\mathord}{typewriter}{"7C}{largesymbols}{"3E}
+%    \end{macrocode}
+%
+%    In old documents we might find some usages of |\bffam| etc. Thus
+%    we add the following code:
+%    \begin{macrocode}
+\let\bffam\symbold
+\let\sffam\symsans
+\let\itfam\symitalic
+\let\ttfam\symtypewriter
+\let\scfam\symsmallcaps
+\let\slfam\symslanted
+\let\rmfam\symoperators
+%    \end{macrocode}
+%
+%    Below are the |\..pt| commands with hopefully the same
+%    functionality as in the old \texttt{lfonts.tex}. Notice that the
+%    |\baselineskip| parameter wasn't set by these commands so that
+%    using them now shouldn't set this either. Thus we go low-level.
+%    This means that the commands are now fragile but I think they
+%    have been fragile before.
+%    \begin{macrocode}
+\newcommand\vpt   {\edef\f@size{\@vpt}\rm}
+\newcommand\vipt  {\edef\f@size{\@vipt}\rm}
+\newcommand\viipt {\edef\f@size{\@viipt}\rm}
+\newcommand\viiipt{\edef\f@size{\@viiipt}\rm}
+\newcommand\ixpt  {\edef\f@size{\@ixpt}\rm}
+\newcommand\xpt   {\edef\f@size{\@xpt}\rm}
+\newcommand\xipt  {\edef\f@size{\@xipt}\rm}
+\newcommand\xiipt {\edef\f@size{\@xiipt}\rm}
+\newcommand\xivpt {\edef\f@size{\@xivpt}\rm}
+\newcommand\xviipt{\edef\f@size{\@xviipt}\rm}
+\newcommand\xxpt  {\edef\f@size{\@xxpt}\rm}
+\newcommand\xxvpt {\edef\f@size{\@xxvpt}\rm}
+%    \end{macrocode}
+%
+% \subsection{User customization}
+%
+% For sites which customized their version of \LaTeX~2.09, we provide
+% a file |latex209.cfg|, which is loaded every time we enter
+% compatibility mode.  If the file doesn't exist, we don't do
+% anything.
+%    \begin{macrocode}
+\InputIfFileExists{latex209.cfg}{}{}
+%    \end{macrocode}
+% That ends the file |latex209.def|.
+%    \begin{macrocode}
+%</tail>
+%    \end{macrocode}
+%
+% \section{Obsolete style files}
+%
+% \changes{v0.08}{1993/12/19}{Added this section.}
+% \changes{v0.09}{1993/12/20}{Removed artN.sty, bkN.sty and repN.sty.}
+% \changes{v0.23}{1994/05/11}{Added bezier.sty.}
+% \changes{v0.31}{1994/05/20}{Added t1enc.sty.}
+%
+% For each of the standard \LaTeX~2.09 document styles, we produce a
+% file which points to the appropriate \LaTeXe{} document class file.
+% This means that any styles which say |\input article.sty| should
+% still work.
+%
+%    \begin{macrocode}
+%<*article|book|report|letter|slides>
+\NeedsTeXFormat{LaTeX2e}
+%</article|book|report|letter|slides>
+%<*article>
+\@obsoletefile{article.cls}{article.sty}
+\LoadClass{article}
+%</article>
+%<*book>
+\@obsoletefile{book.cls}{book.sty}
+\LoadClass{book}
+%</book>
+%<*report>
+\@obsoletefile{report.cls}{report.sty}
+\LoadClass{report}
+%</report>
+%<*letter>
+\@obsoletefile{letter.cls}{letter.sty}
+\LoadClass{letter}
+%</letter>
+%<*slides>
+\@obsoletefile{slides.cls}{slides.sty}
+\LoadClass{slides}
+%</slides>
+%    \end{macrocode}
+% We also produce empty |fleqn.sty| and |leqno.sty| files in case
+% anyone has |\input| one of them.
+%    \begin{macrocode}
+%<*fleqn>
+\@obsoletefile{fleqn.clo}{fleqn.sty}
+\input{fleqn.clo}
+%</fleqn>
+%<*leqno>
+\@obsoletefile{leqno.clo}{leqno.sty}
+\input{leqno.clo}
+%</leqno>
+%    \end{macrocode}
+% We also produce an empty |openbib.sty| in case anyone has |\input|
+% |openbib.sty|.  The |openbib| class option is now part of the kernel.
+%    \begin{macrocode}
+%<*openbib>
+\iffalse
+
+The openbib option is now part of LaTeX thus this package is no
+longer necessary.  It is only retained for upward compatibility.
+See the 2nd edition of the LaTeX book, or the file usrguide.tex
+which comes with the LaTeX distribution, for more details.
+
+\fi
+%</openbib>
+%    \end{macrocode}
+% We also produce an empty |bezier.sty| in case anyone has |\input|
+% |bezier.sty|.  The |\bezier| command is now part of the kernel.
+%    \begin{macrocode}
+%<*bezier>
+\iffalse
+
+The \bezier command is now part of LaTeX thus this package is no
+longer necessary.  It is only retained for upward compatibility.
+Also, please note that LaTeX now offers an extended bezier command
+which automatically calculates the number of points needed for the
+plot.  See the 2nd edition of the LaTeX book, or the file
+usrguide.tex which comes with the LaTeX distribution, for more
+details.
+
+\fi
+%</bezier>
+%    \end{macrocode}
+% We also produce a |t1enc| package, for compatibility with the
+% Companion.  This has been replaced by the |fontenc| package.
+%    \begin{macrocode}
+%<*t1enc>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{t1enc}[1994/06/01 Standard LaTeX package]
+\renewcommand{\encodingdefault}{T1}
+\fontencoding{T1}\selectfont
+%</t1enc>
+%    \end{macrocode}
+% \DeleteShortVerb{\|}
+% \Finale
+\endinput

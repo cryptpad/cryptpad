@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='holtxdoc'>
+  <name>holtxdoc</name>
+  <caption>Documentation macros for oberdiek bundle, etc.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999-2012'/>
+  <license type='lppl1.3'/>
+  <version number='0.24'/>
+  <description>
+    These are personal macros, which are not necessarily useful to
+    other authors (they are provided as part off the source of others
+    of the author's packages).  Macros that may be of use to other
+    authors are available separately, in package
+    <xref refid='hypdoc'>hypdoc</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/holtxdoc.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/holtxdoc.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

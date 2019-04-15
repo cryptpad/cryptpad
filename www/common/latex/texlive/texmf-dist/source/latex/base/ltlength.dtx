@@ -1,0 +1,168 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltlength.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltlength.dtx}
+             [2015/01/08 v1.1c LaTeX Kernel (Lengths)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltlength.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{53}
+%
+% \changes{v1.0c}{1994/03/29}
+%     {Create file ltcntlen from parts of ltmiscen and ltherest.}
+% \changes{v1.1a}{1994/05/19}
+%     {Extract file ltlength from ltcntlen.}
+% \changes{v1.1b}{1995/08/11}
+%     {Doc typos fixed for latex/753}
+%
+% \section{Lengths}
+%
+% \DescribeMacro{\newlength}
+% Declare |#1| to be a new length command.
+%
+% \DescribeMacro{\setlength}
+% Set the length command, |#1|, to the value |#2|.
+%
+% \DescribeMacro{\addtolength}
+% Increase the value of  the length command, |#1|, by the value |#2|.
+%
+% \DescribeMacro{\settowidth}
+% Set the length, |#1| to the width of a box containing |#2|.
+%
+% \DescribeMacro{\settoheight}
+% Set the length, |#1| to the height of a box containing |#2|.
+%
+% \DescribeMacro{\settodepth}
+% Set the length, |#1| to the depth of a box containing |#2|.
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{lengths,}
+%    \end{macrocode}
+%
+% \begin{macro}{\newlength}
+%    \begin{macrocode}
+\def\newlength#1{\@ifdefinable#1{\newskip#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\setlength}
+% \changes{v1.1c}{2015/01/08}{add = to ensure first length argument is terminated.
+%             (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\setlength}{Using \setlength with \dimen0}%
+%<*2ekernel|latexrelease>
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\setlength#1#2{#1 #2\relax}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\setlength}{Using \setlength with \dimen0}%
+%<latexrelease>\def\setlength#1#2{#1#2\relax}
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\addtolength}
+% |\relax| added 24 Mar 86
+%    \begin{macrocode}
+\def\addtolength#1#2{\advance#1 #2\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\settoheight}
+% \changes{LaTeX2e}{1993/11/22}{Macro added}
+% \begin{macro}{\settodepth}
+% \changes{LaTeX2e}{1993/11/22}{Macro added}
+% \begin{macro}{\settowidth}
+% \begin{macro}{\@settodim}
+% \changes{LaTeX2e}{1993/11/22}{Macro added}
+% \changes{v1.0a}{1994/03/07}{(DPC) Extra group for colour}
+%    The obvious analogs of |\settowidth|.
+%    \begin{macrocode}
+\def\@settodim#1#2#3{\setbox\@tempboxa\hbox{{#3}}#2#1\@tempboxa
+%    \end{macrocode}
+%    Clear the memory afterwards (which might be a lot).
+%    \begin{macrocode}
+       \setbox\@tempboxa\box\voidb@x}
+\def\settoheight{\@settodim\ht}
+\def\settodepth {\@settodim\dp}
+\def\settowidth {\@settodim\wd}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@settopoint}
+%    This macro takes the contents of the skip register that is
+%    supplied as its argument and removes the fractional part to make
+%    it a whole number of points. This can be used in class files to
+%    avoid values like |345.4666666pt| when calulating a dimension.
+% \changes{LaTeX2e}{1993/11/22}{Macro added}
+%    \begin{macrocode}
+\def\@settopoint#1{\divide#1\p@\multiply#1\p@}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+%

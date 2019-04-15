@@ -1,0 +1,50 @@
+% \iffalse
+% Copyright 2006-2010 by Will Robertson <wspr81@gmail.com>
+%
+% Distributable under the LaTeX Project Public License,
+% version 1.3c or higher (your choice). The latest version of
+% this license is at: http://www.latex-project.org/lppl.txt
+%
+% This work is maintained by Will Robertson.
+% \fi
+
+% Ensure loading a single time only.
+\csname ifxetexloaded\endcsname
+\let\ifxetexloaded\endinput
+
+% Declare ourselves to \LaTeX.
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax\else
+  \ProvidesPackage{ifxetex}
+    [2010/09/12 v0.6 Provides ifxetex conditional]
+\fi
+
+% For \XeTeX-exclusive packages.
+\def\RequireXeTeX{%
+  \ifxetex\else
+    \begingroup
+      \errorcontextlines=-1\relax
+      \newlinechar=10\relax
+      \errmessage{^^J
+      ********************************************^^J
+      * XeTeX is required to compile this document.^^J
+      * Sorry!^^J
+      ********************************************}%
+    \endgroup
+  \fi}
+
+% Abort if \cmd\ifxetex\ is already defined
+% (assume that it has already been set correctly)^^A
+% \footnote{Thanks to \textit{Dan Luecking} for suggesting this.}
+\expandafter\ifx\csname ifxetex\endcsname\relax\else
+  \expandafter\endinput
+\fi
+
+% Create and set \cmd\ifxetex\ accordingly.
+\newif\ifxetex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname XeTeXrevision\endcsname\relax
+  \xetexfalse
+\else
+  \xetextrue
+\fi

@@ -1,0 +1,756 @@
+%%
+%% This is file `embedfile.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% embedfile.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: embedfile
+%% Version: 2011/04/13 v2.6
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file embedfile.dtx
+%% and the derived files
+%%    embedfile.sty, embedfile.pdf, embedfile.ins, embedfile.drv,
+%%    dtx-attach.sty, embedfile-example-plain.tex,
+%%    embedfile-example-collection.tex, embedfile-test1.tex,
+%%    embedfile-test2.tex, embedfile-test3.tex,
+%%    embedfile-test4.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@embedfile.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{embedfile}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@embedfile.sty\endcsname
+\ProvidesPackage{embedfile}%
+  [2011/04/13 v2.6 Embed files into PDF (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname EmFi@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\EmFi@AtEnd{%
+    \EmFi@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\EmFi@AtEnd{\EmFi@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\EmFi@RequirePackage#1[#2]{%
+    \input #1.sty\relax
+  }%
+\else
+  \let\EmFi@RequirePackage\RequirePackage
+\fi
+\EmFi@RequirePackage{infwarerr}[2007/09/09]%
+\def\EmFi@Error{%
+  \@PackageError{embedfile}%
+}
+\EmFi@RequirePackage{ifpdf}[2007/09/09]
+\ifpdf
+\else
+  \EmFi@Error{%
+    Missing pdfTeX in PDF mode%
+  }{%
+    Currently other drivers are not supported. %
+    Package loading is aborted.%
+  }%
+  \expandafter\EmFi@AtEnd
+\fi%
+\EmFi@RequirePackage{pdftexcmds}[2007/11/11]
+\EmFi@RequirePackage{ltxcmds}[2010/03/01]
+\EmFi@RequirePackage{kvsetkeys}[2010/03/01]
+\EmFi@RequirePackage{kvdefinekeys}[2010/03/01]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filesize\endcsname\relax
+  \EmFi@Error{%
+    Unsupported pdfTeX version%
+  }{%
+    At least version 1.30 is necessary. Package loading is aborted.%
+  }%
+  \expandafter\EmFi@AtEnd
+\fi%
+\EmFi@RequirePackage{pdfescape}[2007/11/11]
+\def\EmFi@temp#1{%
+  \expandafter\EdefSanitize\csname EmFi@S@#1\endcsname{#1}%
+}
+\EmFi@temp{details}%
+\EmFi@temp{tile}%
+\EmFi@temp{hidden}%
+\EmFi@temp{text}
+\EmFi@temp{date}
+\EmFi@temp{number}
+\EmFi@temp{file}
+\EmFi@temp{desc}
+\EmFi@temp{moddate}
+\EmFi@temp{creationdate}
+\EmFi@temp{size}
+\EmFi@temp{ascending}
+\EmFi@temp{descending}
+\EmFi@temp{true}
+\EmFi@temp{false}
+\ltx@newif\ifEmFi@collection
+\ltx@newif\ifEmFi@sort
+\ltx@newif\ifEmFi@visible
+\ltx@newif\ifEmFi@edit
+\ltx@newif\ifEmFi@item
+\ltx@newif\ifEmFi@finished
+\ltx@newif\ifEmFi@id
+\def\EmFi@GlobalKey#1#2{%
+  \global\expandafter\let\csname KV@#1@#2\expandafter\endcsname
+                         \csname KV@#1@#2\endcsname
+}
+\def\EmFi@GlobalDefaultKey#1#2{%
+  \EmFi@GlobalKey{#1}{#2}%
+  \global\expandafter\let
+      \csname KV@#1@#2@default\expandafter\endcsname
+      \csname KV@#1@#2@default\endcsname
+}
+\def\EmFi@DefineKey#1#2{%
+  \kv@define@key{EmFi}{#1}{%
+    \expandafter\def\csname EmFi@#1\endcsname{##1}%
+  }%
+  \expandafter\def\csname EmFi@#1\endcsname{#2}%
+}
+\EmFi@DefineKey{mimetype}{}
+\EmFi@DefineKey{filespec}{\EmFi@file}
+\EmFi@DefineKey{ucfilespec}{}
+\EmFi@DefineKey{filesystem}{}
+\EmFi@DefineKey{desc}{}
+\EmFi@DefineKey{stringmethod}{%
+  \ifx\pdfstringdef\@undefined
+    escape%
+  \else
+    \ifx\pdfstringdef\relax
+      escape%
+    \else
+      psd%
+    \fi
+  \fi
+}
+\kv@define@key{EmFi}{id}{%
+  \def\EmFi@id{#1}%
+  \EmFi@idtrue
+}
+\def\EmFi@defobj#1{%
+  \ifEmFi@id
+    \expandafter\xdef\csname EmFi@#1@\EmFi@id\endcsname{%
+      \the\pdflastobj\ltx@space 0 R%
+    }%
+  \fi
+}
+\def\embedfileifobjectexists#1#2{%
+  \expandafter\ifx\csname EmFi@#2@#1\endcsname\relax
+    \expandafter\ltx@secondoftwo
+  \else
+    \expandafter\ltx@firstoftwo
+  \fi
+}
+\def\embedfilegetobject#1#2{%
+  \embedfileifobjectexists{#1}{#2}{%
+    \csname EmFi@#2@#1\endcsname
+  }{%
+    0 0 R%
+  }%
+}
+\kv@define@key{EmFi}{view}[]{%
+  \EdefSanitize\EmFi@temp{#1}%
+  \def\EmFi@next{%
+    \global\EmFi@collectiontrue
+  }%
+  \ifx\EmFi@temp\ltx@empty
+    \let\EmFi@view\EmFi@S@details
+  \else\ifx\EmFi@temp\EmFi@S@details
+    \let\EmFi@view\EmFi@S@details
+  \else\ifx\EmFi@temp\EmFi@S@tile
+    \let\EmFi@view\EmFi@S@tile
+  \else\ifx\EmFi@temp\EmFi@S@hidden
+    \let\EmFi@view\EmFi@S@hidden
+  \else
+    \let\EmFi@next\relax
+    \EmFi@Error{%
+      Unknown value `\EmFi@temp' for key `view'.\MessageBreak
+      Supported values: `details', `tile', `hidden'.%
+    }\@ehc
+  \fi\fi\fi\fi
+  \EmFi@next
+}
+\EmFi@DefineKey{initialfile}{}
+\def\embedfilesetup{%
+  \ifEmFi@finished
+    \def\EmFi@next##1{}%
+    \EmFi@Error{%
+      \string\embedfilefield\ltx@space after \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \def\EmFi@next{%
+      \kvsetkeys{EmFi}%
+    }%
+  \fi
+  \EmFi@next
+}
+\def\EmFi@schema{}
+\gdef\EmFi@order{0}
+\let\EmFi@@order\relax
+\def\EmFi@fieldlist{}
+\def\EmFi@sortcase{0}%
+\def\embedfilefield#1#2{%
+  \ifEmFi@finished
+    \EmFi@Error{%
+      \string\embedfilefield\ltx@space after \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \global\EmFi@collectiontrue
+    \EdefSanitize\EmFi@key{#1}%
+    \expandafter\ifx\csname KV@EmFi@\EmFi@key.prefix\endcsname\relax
+      \begingroup
+        \count@=\EmFi@order
+        \advance\count@ 1 %
+        \xdef\EmFi@order{\the\count@}%
+        \let\EmFi@title\EmFi@key
+        \let\EmFi@type\EmFi@S@text
+        \EmFi@visibletrue
+        \EmFi@editfalse
+        \kvsetkeys{EmFiFi}{#2}%
+        \EmFi@convert\EmFi@title\EmFi@title
+        \xdef\EmFi@schema{%
+          \EmFi@schema
+          /\pdf@escapename{\EmFi@key}<<%
+            /Subtype/%
+            \ifx\EmFi@type\EmFi@S@date D%
+            \else\ifx\EmFi@type\EmFi@S@number N%
+            \else\ifx\EmFi@type\EmFi@S@file F%
+            \else\ifx\EmFi@type\EmFi@S@desc Desc%
+            \else\ifx\EmFi@type\EmFi@S@moddate ModDate%
+            \else\ifx\EmFi@type\EmFi@S@creationdate CreationDate%
+            \else\ifx\EmFi@type\EmFi@S@size Size%
+            \else S%
+            \fi\fi\fi\fi\fi\fi\fi
+            /N(\EmFi@title)%
+            \EmFi@@order{\EmFi@order}%
+            \ifEmFi@visible
+            \else
+              /V false%
+            \fi
+            \ifEmFi@edit
+              /E true%
+            \fi
+          >>%
+        }%
+        \let\do\relax
+        \xdef\EmFi@fieldlist{%
+          \EmFi@fieldlist
+          \do{\EmFi@key}%
+        }%
+        \ifx\EmFi@type\EmFi@S@text
+          \kv@define@key{EmFi}{\EmFi@key.value}{%
+            \EmFi@itemtrue
+            \def\EmFi@temp{##1}%
+            \EmFi@convert\EmFi@temp\EmFi@temp
+            \expandafter\def\csname EmFi@V@#1%
+            \expandafter\endcsname\expandafter{%
+              \expandafter(\EmFi@temp)%
+            }%
+          }%
+          \EmFi@GlobalKey{EmFi}{\EmFi@key.value}%
+        \else\ifx\EmFi@type\EmFi@S@date
+          \kv@define@key{EmFi}{\EmFi@key.value}{%
+            \EmFi@itemtrue
+            \def\EmFi@temp{##1}%
+            \EmFi@convert\EmFi@temp\EmFi@temp
+            \expandafter\def\csname EmFi@V@#1%
+            \expandafter\endcsname\expandafter{%
+              \expandafter(\EmFi@temp)%
+            }%
+          }%
+          \EmFi@GlobalKey{EmFi}{\EmFi@key.value}%
+        \else\ifx\EmFi@type\EmFi@S@number
+          \kv@define@key{EmFi}{\EmFi@key.value}{%
+            \EmFi@itemtrue
+            \expandafter\EdefSanitize\csname EmFi@V@#1\endcsname{ ##1}%
+          }%
+          \EmFi@GlobalKey{EmFi}{\EmFi@key.value}%
+        \fi\fi\fi
+        \kv@define@key{EmFi}{\EmFi@key.prefix}{%
+          \EmFi@itemtrue
+          \expandafter\def\csname EmFi@P@#1\endcsname{##1}%
+        }%
+        \EmFi@GlobalKey{EmFi}{\EmFi@key.prefix}%
+        \kv@define@key{EmFiSo}{\EmFi@key}[ascending]{%
+          \EdefSanitize\EmFi@temp{##1}%
+          \ifx\EmFi@temp\EmFi@S@ascending
+            \def\EmFi@temp{true}%
+          \else\ifx\EmFi@temp\EmFi@S@descending
+            \def\EmFi@temp{false}%
+          \else
+            \def\EmFi@temp{}%
+            \EmFi@Error{%
+              Unknown sort order `\EmFi@temp'.\MessageBreak
+              Supported values: `\EmFi@S@ascending', %
+              `\EmFi@S@descending
+            }\@ehc
+          \fi\fi
+          \ifx\EmFi@temp\ltx@empty
+          \else
+            \xdef\EmFi@sortkeys{%
+              \EmFi@sortkeys
+              /\pdf@escapename{#1}%
+            }%
+            \ifx\EmFi@sortorders\ltx@empty
+              \global\let\EmFi@sortorders\EmFi@temp
+              \gdef\EmFi@sortcase{1}%
+            \else
+              \xdef\EmFi@sortorders{%
+                \EmFi@sortorders
+                \ltx@space
+                \EmFi@temp
+              }%
+              \xdef\EmFi@sortcase{2}%
+            \fi
+          \fi
+        }%
+        \EmFi@GlobalDefaultKey{EmFiSo}\EmFi@key
+      \endgroup
+    \else
+      \EmFi@Error{%
+        Field `\EmFi@key' is already defined%
+      }\@ehc
+    \fi
+  \fi
+}
+\kv@define@key{EmFiFi}{type}{%
+  \EdefSanitize\EmFi@temp{#1}%
+  \ifx\EmFi@temp\EmFi@S@text
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@date
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@number
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@file
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@desc
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@moddate
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@creationdate
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@size
+    \let\EmFi@type\EmFi@temp
+  \else
+    \EmFi@Error{%
+      Unknown type `\EmFi@temp'.\MessageBreak
+      Supported types: `text', `date', `number', `file',\MessageBreak
+      `desc', `moddate', `creationdate', `size'%
+    }%
+  \fi\fi\fi\fi\fi\fi\fi\fi
+}
+\kv@define@key{EmFiFi}{title}{%
+  \def\EmFi@title{#1}%
+}
+\def\EmFi@setboolean#1#2{%
+  \EdefSanitize\EmFi@temp{#2}%
+  \ifx\EmFi@temp\EmFi@S@true
+    \csname EmFi@#1true\endcsname
+  \else
+    \ifx\EmFi@temp\EmFi@S@false
+      \csname EmFi@#1false\endcsname
+    \else
+      \EmFi@Error{%
+        Unknown value `\EmFi@temp' for key `#1'.\MessageBreak
+        Supported values: `true', `false'%
+      }\@ehc
+    \fi
+  \fi
+}
+\kv@define@key{EmFiFi}{visible}[true]{%
+  \EmFi@setboolean{visible}{#1}%
+}
+\kv@define@key{EmFiFi}{edit}[true]{%
+  \EmFi@setboolean{edit}{#1}%
+}
+\def\EmFi@sortkeys{}
+\def\EmFi@sortorders{}
+\def\embedfilesort{%
+  \kvsetkeys{EmFiSo}%
+}
+\def\embedfile{%
+  \ltx@ifnextchar[\EmFi@embedfile{\EmFi@embedfile[]}%
+}
+\def\EmFi@embedfile[#1]#2{%
+  \ifEmFi@finished
+    \EmFi@Error{%
+      \string\embedfile\ltx@space after \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \begingroup
+      \def\EmFi@file{#2}%
+      \kvsetkeys{EmFi}{#1}%
+      \expandafter\expandafter\expandafter
+      \ifx\expandafter\expandafter\expandafter
+          \\\pdf@filesize{\EmFi@file}\\%
+        \EmFi@Error{%
+          File `\EmFi@file' not found%
+        }{%
+          The unknown file is not embedded.%
+        }%
+      \else
+        \edef\EmFi@@filespec{%
+          \pdf@escapestring{\EmFi@filespec}%
+        }%
+        \ifx\EmFi@ucfilespec\ltx@empty
+          \let\EmFi@@ucfilespec\ltx@empty
+        \else
+          \EmFi@convert\EmFi@ucfilespec\EmFi@@ucfilespec
+        \fi
+        \ifx\EmFi@desc\ltx@empty
+          \let\EmFi@@desc\ltx@empty
+        \else
+          \EmFi@convert\EmFi@desc\EmFi@@desc
+        \fi
+        \ifEmFi@item
+          \let\do\EmFi@do
+          \immediate\pdfobj{%
+            <<%
+              \EmFi@fieldlist
+            >>%
+          }%
+          \edef\EmFi@ci{\the\pdflastobj}%
+        \fi
+        \immediate\pdfobj stream attr{%
+          /Type/EmbeddedFile%
+          \ifx\EmFi@mimetype\ltx@empty
+          \else
+            /Subtype/\pdf@escapename{\EmFi@mimetype}%
+          \fi
+          /Params<<%
+            /ModDate(\pdf@filemoddate{\EmFi@file})%
+            /Size \pdf@filesize{\EmFi@file}%
+            /CheckSum<\pdf@filemdfivesum{\EmFi@file}>%
+          >>%
+        }file{\EmFi@file}\relax
+        \EmFi@defobj{EmbeddedFile}%
+        \immediate\pdfobj{%
+          <<%
+            /Type/Filespec%
+            \ifx\EmFi@filesystem\ltx@empty
+            \else
+            /FS/\pdf@escapename{\EmFi@filesystem}%
+            \fi
+            /F(\EmFi@@filespec)%
+            \ifx\EmFi@@ucfilespec\ltx@empty
+            \else
+              /UF(\EmFi@@ucfilespec)%
+            \fi
+            \ifx\EmFi@@desc\ltx@empty
+            \else
+              /Desc(\EmFi@@desc)%
+            \fi
+            /EF<<%
+              /F \the\pdflastobj\ltx@space 0 R%
+            >>%
+            \ifEmFi@item
+              /CI \EmFi@ci\ltx@space 0 R%
+            \fi
+          >>%
+        }%
+        \EmFi@defobj{Filespec}%
+        \EmFi@add{%
+          \EmFi@@filespec
+        }{\the\pdflastobj\ltx@space 0 R}%
+      \fi
+    \endgroup
+  \fi
+}
+\def\EmFi@do#1{%
+  \expandafter\ifx\csname EmFi@P@#1\endcsname\relax
+    \expandafter\ifx\csname EmFi@V@#1\endcsname\relax
+    \else
+      /\pdf@escapename{#1}\csname EmFi@V@#1\endcsname
+    \fi
+  \else
+    /\pdf@escapename{#1}<<%
+      \expandafter\ifx\csname EmFi@V@#1\endcsname\relax
+      \else
+        /D\csname EmFi@V@#1\endcsname
+      \fi
+      /P(\csname EmFi@P@#1\endcsname)%
+    >>%
+  \fi
+}
+\def\EmFi@convert#1#2{%
+  \ifnum\pdf@strcmp{\EmFi@stringmethod}{psd}=0 %
+    \pdfstringdef\EmFi@temp{#1}%
+    \let#2\EmFi@temp
+  \else
+    \edef#2{\pdf@escapestring{#1}}%
+  \fi
+}
+\global\let\EmFi@list\ltx@empty
+\def\EmFi@add#1#2{%
+  \begingroup
+    \ifx\EmFi@list\ltx@empty
+      \xdef\EmFi@list{\noexpand\do{#1}{#2}}%
+    \else
+      \def\do##1##2{%
+        \ifnum\pdf@strcmp{##1}{#1}>0 %
+          \edef\x{%
+            \toks@{%
+              \the\toks@%
+              \noexpand\do{#1}{#2}%
+              \noexpand\do{##1}{##2}%
+            }%
+          }%
+          \x
+          \def\do####1####2{%
+            \toks@\expandafter{\the\toks@\do{####1}{####2}}%
+          }%
+          \def\stop{%
+            \xdef\EmFi@list{\the\toks@}%
+          }%
+        \else
+          \toks@\expandafter{\the\toks@\do{##1}{##2}}%
+        \fi
+      }%
+      \def\stop{%
+        \xdef\EmFi@list{\the\toks@\noexpand\do{#1}{#2}}%
+      }%
+      \toks@{}%
+      \EmFi@list\stop
+    \fi
+  \endgroup
+}
+\def\embedfilefinish{%
+  \ifEmFi@finished
+    \EmFi@Error{%
+      Too many invocations of \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \ifx\EmFi@list\ltx@empty
+    \else
+      \global\EmFi@finishedtrue
+      \begingroup
+        \def\do##1##2{%
+          (##1)##2%
+        }%
+        \immediate\pdfobj{%
+          <<%
+            /Names[\EmFi@list]%
+          >>%
+        }%
+        \pdfnames{%
+          /EmbeddedFiles \the\pdflastobj\ltx@space 0 R%
+        }%
+      \endgroup
+      \ifx\EmFi@initialfile\ltx@empty
+      \else
+        \EmFi@collectiontrue
+      \fi
+      \ifEmFi@collection
+        \ifx\EmFi@initialfile\ltx@empty
+          \let\EmFi@@initialfile\ltx@empty
+        \else
+          \edef\EmFi@@initialfile{%
+            \pdf@escapestring{\EmFi@initialfile}%
+          }%
+        \fi
+        \begingroup
+          \let\f=N%
+          \def\do##1##2{%
+            \def\x{##1}%
+            \ifx\x\EmFi@@initialfile
+              \let\f=Y%
+              \let\do\ltx@gobbletwo
+            \fi
+          }%
+          \EmFi@list
+        \expandafter\endgroup
+        \ifx\f Y%
+        \else
+          \@PackageWarningNoLine{embedfile}{%
+            Missing initial file `\EmFi@initialfile'\MessageBreak
+            among the embedded files%
+          }%
+          \let\EmFi@initialfile\ltx@empty
+          \let\EmFi@@initialfile\ltx@empty
+        \fi
+        \ifcase\EmFi@sortcase
+          \def\EmFi@temp{}%
+        \or
+          \def\EmFi@temp{%
+            /S\EmFi@sortkeys
+            /A \EmFi@sortorders
+          }%
+        \else
+          \def\EmFi@temp{%
+            /S[\EmFi@sortkeys]%
+            /A[\EmFi@sortorders]%
+          }%
+        \fi
+        \def\EmFi@@order##1{%
+          \ifnum\EmFi@order>1 %
+            /O ##1%
+          \fi
+        }%
+        \immediate\pdfobj{%
+          <<%
+            \ifx\EmFi@schema\ltx@empty
+            \else
+              /Schema<<\EmFi@schema>>%
+            \fi
+            \ifx\EmFi@@initialfile\ltx@empty
+            \else
+              /D(\EmFi@@initialfile)%
+            \fi
+            \ifx\EmFi@view\EmFi@S@tile
+              /View/T%
+            \else\ifx\EmFi@view\EmFi@S@hidden
+              /View/H%
+            \fi\fi
+            \ifx\EmFi@temp\ltx@empty
+              \EmFi@temp
+            \else
+              /Sort<<\EmFi@temp>>%
+            \fi
+          >>%
+        }%
+        \pdfcatalog{%
+          /Collection \the\pdflastobj\ltx@space0 R%
+        }%
+      \fi
+    \fi
+  \fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname AtEndDocument\endcsname\relax
+\else
+  \AtEndDocument{\embedfilefinish}%
+\fi
+\EmFi@AtEnd%
+\endinput
+%%
+%% End of file `embedfile.sty'.

@@ -1,0 +1,220 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%\iffalse   % this is a METACOMMENT !
+%
+%% File `newlfont.dtx'.
+%% Copyright (C) 1989-1998 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+%
+%<*dtx>
+          \ProvidesFile{newlfont.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{newlfont}
+%<driver> \ProvidesFile{newlfont.drv}
+% \fi
+%         \ProvidesFile{newlfont.dtx}
+          [1998/08/17 v2.2m Standard LaTeX package]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{newlfont.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{88}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v2.2a}{1994/01/17}{Added missing definitions to support
+%                             newlfont in compat mode}
+% \changes{v2.2b}{1994/01/27}{Removed if@compat test since
+%           these settings need also be executed in 2e mode.}
+% \changes{v2.2c}{1994/03/06}{Added def for \cs{cal} and \cs{mit}}
+% \changes{v2.2l}{1995/11/29}{Remove duplicate driver code.}
+% \changes{v2.2m}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+% \providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+%
+%
+% \GetFileInfo{newlfont.dtx}
+%
+% \title{The file \texttt{newlfont.dtx} for use with
+%        \LaTeXe.\thanks{This file has version
+%        number \fileversion, dated \filedate.}\\[2pt]
+%        It contains the code for \texttt{newlfont.sty}}
+%
+% \author{Frank Mittelbach}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Introduction}
+%
+%    This file contains the code for the \texttt{newlfont} package
+%    which provides defines commands like |\rm| to behave as with
+%    NFSS1, i.e., to change one font attribute without resetting the
+%    other attributes.
+%
+% \StopEventually{}
+%
+%
+% \section{The Code}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    We define the font commands for selecting the typeface. They are
+%    probably defined by the document class/style but we want to force
+%    the old meaning from NFSS1.
+%
+% \changes{v2.2g}{1994/05/11}{DPC Remove definitions of \cs{prm} etc.}
+%    \begin{macrocode}
+\let\rm\rmfamily
+\let\sf\sffamily
+\let\tt\ttfamily
+\let\bf\bfseries
+\let\sl\slshape
+\let\sc\scshape
+\let\it\itshape
+%    \end{macrocode}
+%     We also have to define the \emph{emphasize} font change command
+%    (i.e.\ |\em|). This command will look whether the current font is
+%    sloped (i.e.\ has a positive |\fontdimen1|) and will then select
+%    either an upright or italic font.
+% \changes{v2.2g}{1994/05/11}{DPC use \cs{DeclareProtectedCommand}}
+% \changes{v2.2h}{1994/05/13}{DPC renamed to \cs{DeclareRobustCommand}}
+%    \begin{macrocode}
+\DeclareRobustCommand\em{%
+  \@nomath\em
+  \ifdim \fontdimen\@ne\font >\z@\upshape \else \itshape \fi}
+%    \end{macrocode}
+%
+%    For compatibility with old sources we should define the following
+%    commands although their use in new documents is discouraged.
+%    \begin{macrocode}
+\let\mediumseries\mdseries
+\let\normalshape\upshape
+%    \end{macrocode}
+%
+%    In case \texttt{newlfont} is used in compatibility mode, eg
+%\begin{verbatim}
+%  \documentstyle[newlfont]{article}
+%\end{verbatim}
+%    or with the \texttt{oldlfont} package already loaded
+%    we have to undo a number of settings changed by the compatibility
+%    mode for \LaTeX~2.09 documents.
+%
+%    |\@setfontsize| should not have a |\reset@font| included.
+% \changes{v2.2j}{1994/11/06}{Use \cs{@typeset@protect}}
+%    \begin{macrocode}
+\def\@setfontsize#1#2#3{\@nomath#1%
+    \ifx\protect\@typeset@protect
+      \let\@currsize#1%
+    \fi
+    \fontsize{#2}{#3}\selectfont}
+%    \end{macrocode}
+%    Math alphabet identifiers should have an argument.
+% \changes{v2.2d}{1994/03/10}{Changed \cs{begingroup}/\cs{endgroup} to
+%                             \cs{bgroup}/\cs{egroup}.}
+% \changes{v2.2f}{1994/05/05}{Added saved versions of the
+% math-groupers, CAR}
+%    \begin{macrocode}
+\let\math@bgroup\bgroup
+\def\math@egroup#1{#1\egroup}
+\let \@@math@bgroup \math@bgroup
+\let \@@math@egroup \math@egroup
+%    \end{macrocode}
+%    Warn again, if text font commands are used in math
+%    (same macro as in \texttt{lfonts.dtx}).
+% \changes{v2.2e}{1994/04/21}{Changed error message}
+% \changes{v2.2k}{1995/04/02}{add \cs{noexpand} to second part of message}
+%    \begin{macrocode}
+\def\not@math@alphabet#1#2{%
+   \relax
+   \ifmmode
+     \@latex@error{Command \noexpand#1invalid in math mode}%
+        {%
+         Please
+         \ifx#2\relax
+            define a new math alphabet^^J%
+            if you want to use a special font in math mode%
+          \else
+%    \end{macrocode}
+%    We have to add |\noexpand| below to prevent expansion of |#2|. In
+%    case of |#1| we can omit this (due to the current definition of
+%    robust commands since they do come out right there :-).
+%    \begin{macrocode}
+            use the math alphabet \noexpand#2instead of
+            the #1command%
+         \fi
+         .
+        }%
+   \fi}
+%    \end{macrocode}
+%
+%    In NFSS1 math alphabets had arguments so we have to change |\cal|
+%    and |\mit| which by default are defined to behave like in
+%    \LaTeX209.
+%    \begin{macrocode}
+\let\pcal\@undefined
+\let\cal\mathcal
+\let\pmit\@undefined
+\let\mit\mathnormal
+%    \end{macrocode}
+%
+%    The NFSS1 version of \texttt{newlfont} included the \LaTeX{}
+%    symbols. And that is probably all there is.
+%    \begin{macrocode}
+\RequirePackage{latexsym}
+%</package>
+%    \end{macrocode}
+%
+%
+% \Finale
+\endinput

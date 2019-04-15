@@ -1,0 +1,80 @@
+%%
+%% This is file `nil.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babel.dtx  (with options: `nil')
+%% This is a generated file.
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright 1989-2008 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% The Current Maintainer of this work is Javier Bezos.
+%% 
+%% This file may only be distributed together with a copy of the Babel
+%% system. You may however distribute the Babel system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the Babel distribution is
+%% given in the file `manifest.bbl'. See also `legal.bbl for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%% File 'babel.dtx'
+%%\ProvidesFile{babel.dtx}[2015/08/03 v3.9m The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989-2008 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%% Copyright (C) 2013-2014 by Johannes Braams
+%%                            TeXniek
+%%                            by Javier Bezos
+%%                            all rights reserved.
+\ProvidesLanguage{nil}[2015/08/03 3.9m Nil language]
+\LdfInit{nil}{datenil}
+\ifx\l@nohyphenation\@undefined
+   \@nopatterns{nil}
+   \adddialect\l@nil0
+\else
+   \let\l@nil\l@nohyphenation
+\fi
+\providehyphenmins{\CurrentOption}{\m@ne\m@ne}
+\let\captionsnil\@empty
+\let\datenil\@empty
+\ldf@finish{nil}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `nil.ldf'.

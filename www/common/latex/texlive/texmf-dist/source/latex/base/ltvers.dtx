@@ -1,0 +1,218 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltvers.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltvers.dtx}
+             [2015/08/23 v1.0v LaTeX Kernel (Version Info)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltvers.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{150}
+%
+% \section{Version Identification}
+% First we identify the date and version number of this release of
+% \LaTeX, and set |\everyjob| so that it is printed at the start of
+% every \LaTeX\ run.
+%
+% \StopEventually{}
+%
+% \changes{v1.0g}{1996/11/28}
+%     {Check for old format modified /2319}
+% \changes{v1.0f}{1996/11/20}
+%     {Check for old format modified /2319}
+% \changes{v1.0e}{1995/05/12}
+%     {Add autoload docstrip guards}
+% \changes{v1.0e}{1995/05/12}
+%     {Check for format older than 1 year}
+% \changes{v1.0d}{1994/05/25}
+%     {Remove PRELIMINARY TEST RELEASE from startup banner
+%      (spring is here)}
+% \changes{v1.0b}{1994/04/12}
+%     {Have version info generated automatically.}
+% \changes{v1.0a}{1994/03/04}
+%     {Initial version, split from latex.dtx}
+% \changes{v1.0r}{2015/02/21}{Removed autoload code}
+% \changes{v1.0t}{2015/06/23}
+%     {set \cs{patch@level} in ltvers rather than in ltfinal/ltpatch}
+%
+% \begin{macro}{\fmtname}
+% \begin{macro}{\fmtversion}
+% \begin{macro}{\patcj@level}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\fmtname{LaTeX2e}
+\edef\fmtversion
+%</2ekernel>
+%<latexrelease>\edef\latexreleaseversion
+%<*2ekernel|latexrelease>
+   {2015/10/01}
+%</2ekernel|latexrelease>
+%<*2ekernel>
+\def\patch@level{1}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% Check that the format being made is not too old.
+% The error message complains about `more than 5 years'
+% but in fact the error is not triggered until 65 months.
+%
+% This code is currently not activated as we don't know if we already
+% got to the last official 2e version (due to staff shortage or due to
+% a successor (think positive:-)).
+% \changes{v1.0i}{2001/06/04}{Check for old format disabled}
+% \changes{v1.0k}{2004/01/28}{Check for old format made 5 years (pr/3601)}
+% \changes{v1.0l}{2009/09/24}{Stop checking for old format}
+%    \begin{macrocode}
+\iffalse
+\def\reserved@a#1/#2/#3\@nil{%
+  \count@\year
+  \advance\count@-#1\relax
+  \multiply\count@ by 12\relax
+  \advance\count@\month
+  \advance\count@-#2\relax}
+\expandafter\reserved@a\fmtversion\@nil
+%    \end{macrocode}
+% |\count@| is now the age of this file in months. Take a generous
+% definition of `year' so this message is not generated too often.
+%    \begin{macrocode}
+\ifnum\count@>65
+  \typeout{^^J%
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+!  You are attempting to make a LaTeX format from a source file^^J%
+!  That is more than five years old.^^J%
+!^^J%
+!  If you enter <return> to scroll past this message then the format^^J%
+!  will be built, but please consider obtaining newer source files^^J%
+!  before continuing to build LaTeX.^^J%
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+}
+   \errhelp{To avoid this error message, obtain new LaTeX sources.}
+   \errmessage{LaTeX source files more than 5 years old!}
+\fi
+\let\reserved@a\relax
+\fi
+%    \end{macrocode}
+%
+% \changes{v1.0p}{2015/01/22}{Preserve any \cs{everyjob} material inserted
+%   by a loader (\texttt{.ini} file)}
+% \changes{v1.0v}{2015/08/23}{Allow negative patchlevel for pre-release}
+%    \begin{macrocode}
+  \ifnum\patch@level=0
+    \everyjob\expandafter{\the\everyjob
+      \typeout{\fmtname \space<\fmtversion>}}
+    \immediate
+    \write16{\fmtname \space<\fmtversion>}
+  \else\ifnum\patch@level>0
+    \everyjob\expandafter{\the\everyjob
+      \typeout{\fmtname \space<\fmtversion> patch level \patch@level}}
+    \immediate
+    \write16{\fmtname \space<\fmtversion> patch level \patch@level}
+  \else
+    \everyjob\expandafter{\the\everyjob
+      \typeout{\fmtname \space<\fmtversion> pre-release\patch@level}}
+    \immediate
+    \write16{\fmtname \space<\fmtversion> pre-release\patch@level}
+    \fi
+  \fi
+%</2ekernel>
+%    \end{macrocode}
+%
+% \begin{macro}{\IncludeInRelease}
+% \changes{v1.0n}{2015/01/07}{macro added}
+% \changes{v1.0m}{2015/01/17}{modified with \cs{@currname}}
+% \changes{v1.0o}{2015/01/19}{Optional argument}
+% \changes{v1.0q}{2015/02/19}{Swap argument order}
+%    \begin{macrocode}
+%<*2ekernel|latexrelease>
+\def\IncludeInRelease#1{\kernel@ifnextchar[%
+  {\@IncludeInRelease{#1}}
+  {\@IncludeInRelease{#1}[#1]}}
+%    \end{macrocode}
+%
+% If a specific date has not been specified in |latexrelease|
+% use `|#1|`. 
+%    \begin{macrocode}
+\def\@IncludeInRelease#1[#2]{\@IncludeInRele@se{#2}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@IncludeInRele@se#1#2#3{%
+  \toks@{[#1] #3}%
+  \expandafter\ifx\csname\string#2+\@currname+IIR\endcsname\relax
+    \ifnum\expandafter\@parse@version#1//00\@nil
+          >\expandafter\@parse@version\fmtversion//00\@nil
+      \GenericInfo{}{Skipping: \the\toks@}%
+     \expandafter\expandafter\expandafter\@gobble@IncludeInRelease
+    \else
+      \GenericInfo{}{Applying: \the\toks@}%
+      \expandafter\let\csname\string#2+\@currname+IIR\endcsname\@empty
+    \fi
+  \else
+    \GenericInfo{}{Already applied: \the\toks@}%
+    \expandafter\@gobble@IncludeInRelease
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\long\def\@gobble@IncludeInRelease#1\EndIncludeInRelease{}
+\let\EndIncludeInRelease\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%    \end{macrocode}
+% \end{macro}
+% \Finale
+%
+\endinput

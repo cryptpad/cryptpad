@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pmboxdraw'>
+  <name>pmboxdraw</name>
+  <caption>Poor man's box drawing characters.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.1'/>
+  <description>
+    This package declares box drawing characters of
+    old code pages, e.g. cp437. It uses rules instead of using a font.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pmboxdraw.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pmboxdraw.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

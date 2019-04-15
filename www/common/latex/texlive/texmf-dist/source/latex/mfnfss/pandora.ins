@@ -1,0 +1,121 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see the file legal.txt, and any other copyright
+%% notices in this file.
+%% 
+%% This file is part of the Standard LaTeX `MFNFSS Bundle'.
+%% --------------------------------------------------------
+%% 
+%%  This file, and all the other files in this bundle as listed below,
+%%  may be distributed under the terms of the LaTeX Project Public
+%%  License, as described in lppl.txt in the base LaTeX distribution.
+%%  Either version 1.0 or, at your option, any later version.
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+%% Copyright 1995 1996 1997 The LaTeX3 Project Team.
+%%
+%% This file is part of the `mfnfss' bundle in the LaTeX2e distribution.
+%%
+%% You are allowed to distribute this file together with the
+%% corresponding source files.
+%%
+%% You are not allowed to modify its contents.
+%%
+\def\batchfile{pandora.ins}
+\input docstrip.tex  
+
+{\ifx\generate\undefined
+\Msg{**********************************************}
+\Msg{*}
+\Msg{* This installation requires docstrip}
+\Msg{* version 2.3c or later.}
+\Msg{*}
+\Msg{* An older version of docstrip has been input}
+\Msg{*}
+\Msg{**********************************************}
+\errhelp{Move or rename old docstrip.tex.}
+\errmessage{Old docstrip in input path}
+\batchmode
+\csname @@end\endcsname
+\fi}
+
+
+\keepsilent
+
+\usedir{tex/latex/mfnfss}
+
+\declarepreamble\mfnfsspreamble
+
+This is a generated file.
+
+Copyright 1993 1994 1995 1996 1997 1998 1999
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+This file is part of the Standard LaTeX `MFNFSS Bundle'.
+--------------------------------------------------------
+
+It may be distributed under the terms of the LaTeX Project Public
+License, as described in lppl.txt in the base LaTeX distribution.
+Either version 1.0 or, at your option, any later version.
+\endpreamble
+
+\declarepreamble\mfnfssfd
+
+This is a generated file.
+
+Copyright 1993 1994 1995 1996 1997 1998 1999
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+This file is part of the Standard LaTeX `MFNFSS Bundle'.
+--------------------------------------------------------
+
+It may be distributed under the terms of the LaTeX Project Public
+License, as described in lppl.txt in the base LaTeX distribution.
+Either version 1.0 or, at your option, any later version.
+
+In particular, permission is granted to customize the declarations in
+this file to serve the needs of your installation.
+
+However, NO PERMISSION is granted to distribute a modified version
+of this file under its original name.
+
+\endpreamble
+
+
+\generate{%
+   \usepreamble\mfnfsspreamble
+   \file{pandora.sty}{\from{pandora.dtx}{package}}
+   \usepreamble\mfnfssfd
+   \file{ot1panr.fd}{\from{pandora.dtx}{fd,panr}}
+   \file{ot1pss.fd}{\from{pandora.dtx}{fd,pss}}
+   }
+
+
+\ifToplevel{
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space pandora.sty}
+\Msg{* \space\space *.fd}
+\Msg{*}
+\Msg{* To produce the documentation run the file ending with}
+\Msg{* `.dtx' through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
+}
+
+\endinput

@@ -1,0 +1,667 @@
+% \iffalse meta-comment
+%
+% File: classlist.dtx
+% Version: 2011/10/17 v1.4
+% Info: Record classes used in a document
+%
+% Copyright (C) 2005, 2006, 2008, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file classlist.dtx
+% and the derived files
+%    classlist.sty, classlist.pdf, classlist.ins, classlist.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/classlist.dtx
+%    CTAN:macros/latex/contrib/oberdiek/classlist.pdf
+%
+% Unpacking:
+%    (a) If classlist.ins is present:
+%           tex classlist.ins
+%    (b) Without classlist.ins:
+%           tex classlist.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{classlist.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If classlist.drv is present:
+%           latex classlist.drv
+%    (b) Without classlist.drv:
+%           latex classlist.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex classlist.dtx
+%       makeindex -s gind.ist classlist.idx
+%       pdflatex classlist.dtx
+%       makeindex -s gind.ist classlist.idx
+%       pdflatex classlist.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/classlist.sty
+%    TDS:doc/latex/oberdiek/classlist.pdf
+%    TDS:source/latex/oberdiek/classlist.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: classlist 2011/10/17 v1.4 Record classes used in a document (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: classlist
+Version: 2011/10/17 v1.4
+
+Copyright (C) 2005, 2006, 2008, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file classlist.dtx
+and the derived files
+   classlist.sty, classlist.pdf, classlist.ins, classlist.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{classlist.ins}{\from{classlist.dtx}{install}}%
+  \file{classlist.drv}{\from{classlist.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{classlist.sty}{\from{classlist.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{classlist.xml}{\from{classlist.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     classlist.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `classlist.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{classlist.drv}%
+  [2011/10/17 v1.4 Record classes used in a document (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{classlist.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{168}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{classlist.drv}
+%
+% \title{The \xpackage{classlist} package}
+% \date{2011/10/17 v1.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package records the loaded classes and stores
+% them in a list.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Background}
+%
+% This packages is an answer of a newsgroup question:
+% \begin{quote}
+% \begin{tabular}{@{}ll@{}}
+%   Newsgroup: & comp.text.tex\\
+%   Subject: & Finding the Document Class\\
+%   From: & Herber Schulz\\
+%   Date: & 18 Jun 2005 13:16:49 -0500\\
+%   Message-ID: &
+%    \textless
+%    \texttt{herbs-D55DB9.13170418062005@news.isp.giganews.com}^^A
+%    \textgreater
+% \end{tabular}
+% \end{quote}
+%
+% \subsection{Usage}
+%
+% Load this package before \cs{documentclass}:
+% \begin{quote}
+%   |\RequirePackage{classlist}|\\
+%   |\documentclass[some,options]{whatever}|
+% \end{quote}
+% It then records the classes with options.
+%
+% If used after \cs{documentclass}, \cs{@filelist} is
+% parsed for classes. The additional data
+% specified options and requested version is no
+% longer available here.
+%
+% \begin{description}
+% \item[\cs{MainClassName}] contains the first loaded class.
+% \item[\cs{ClassList}] stores the class entries, eg.
+%   \begin{quote}
+%   \begin{tabular}{@{}l@{ }l@{}}
+%     \cs{ClassList} $\rightarrow$&
+%     |\ClassListEntry{myarticle}{a4paper}{}|\\
+%     &|\ClassListEntry{article}{}{}|
+%   \end{tabular}
+%   \end{quote}
+% \item[\cs{ClassListEntry}] has three arguments:
+%   \begin{quote}
+%   \begin{tabular}{@{}ll@{}}
+%     |#1|: & class name\\
+%     |#2|: & options given in \cs{documentclass}/\cs{LoadClass}\\
+%     |#3|: & requested version, not the version of class
+%   \end{tabular}
+%   \end{quote}
+% \item[\cs{PrintClassList}] prints the list on screen it can be
+%    configured by
+% \item[\cs{PrintClassListTitle}] for the title and
+% \item[\cs{PrintClassListEntry}] for formatting the entries.
+%    See the implemenation how to use these.
+% \end{description}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{classlist}%
+  [2011/10/17 v1.4 Record classes used in a document (HO)]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\ClassList\@empty
+\let\MainClassName\relax
+%    \end{macrocode}
+%
+%    Test, whether we are called before \cs{documentclass}.
+%    \begin{macrocode}
+\ifx\@classoptionslist\relax
+  \let\CL@org@fileswith@pti@ns\@fileswith@pti@ns
+  \def\@fileswith@pti@ns#1[#2]#3[#4]{%
+%    \end{macrocode}
+%    \begin{tabular}{@{}ll@{}}
+%      |#1|: & \cs{@clsextension}\\
+%      |#2|: & options of \cs{documentclass}/\cs{LoadClass}\\
+%      |#3|: & class name\\
+%      |#4|: & requested version
+%    \end{tabular}
+%    \begin{macrocode}
+    \ifx#1\@clsextension
+      \@ifl@aded#1{#3}{%
+        \PackageInfo{classlist}{%
+          Skipping class `#3', because\MessageBreak
+          this class is already loaded%
+        }%
+      }{%
+        \@ifundefined{MainClassName}{%
+          \def\MainClassName{#3}%
+        }{}%
+        \@temptokena\expandafter{%
+          \ClassList
+          \ClassListEntry{#3}{#2}{#4}%
+        }%
+        \edef\ClassList{\the\@temptokena}%
+      }%
+    \fi
+    \CL@org@fileswith@pti@ns{#1}[{#2}]{#3}[{#4}]%
+  }%
+  \let\@@fileswith@pti@ns\@fileswith@pti@ns
+\else
+%    \end{macrocode}
+%    Called after \cs{documentclass}.
+%    \begin{macrocode}
+  \PackageInfo{classlist}{Use \string\@filelist\space method}%
+
+  \let\ClassListEntry\relax
+  \expandafter\def\expandafter\CL@test
+      \expandafter#\expandafter1\@clsextension#2\@nil{%
+    \ifx\\#2\\%
+%    \end{macrocode}
+%    Name does not contain \cs{@clsextension}
+%    \begin{macrocode}
+    \else
+      \expandafter\CL@test@i\CL@entry\@nil
+    \fi
+  }%
+  \expandafter\def\expandafter\CL@test@i
+      \expandafter#\expandafter1\@clsextension#2\@nil{%
+    \ifx\\#2\\%
+      \@ifundefined{opt@\CL@entry}{%
+      }{%
+        \@ifundefined{MainClassName}{%
+          \let\MainClassName\CL@entry
+        }{%
+        }%
+        \edef\ClassList{%
+          \ClassList
+          \ClassListEntry{\CL@entry}{}{}%
+        }%
+      }%
+    \else
+%    \end{macrocode}
+%    Names with more than one \cs{@clsextension} are not supported.
+%    \begin{macrocode}
+    \fi
+  }%
+  \@for\CL@entry:=\@filelist\do{%
+    \expandafter\expandafter\expandafter\CL@test\expandafter
+        \CL@entry\@clsextension\@nil
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\PrintClassListEntry}
+%    \begin{macrocode}
+\providecommand*{\PrintClassListEntry}[3]{%
+  \toks@{* #1}%
+  \typeout{\the\toks@}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PrintClassListTitle}
+%    \begin{macrocode}
+\providecommand*{\PrintClassListTitle}{%
+  \typeout{Class list:}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PrintClassList}
+%    \begin{macrocode}
+\providecommand*{\PrintClassList}{%
+  \begingroup
+    \let\ClassListEntry\PrintClassListEntry
+    \PrintClassListTitle
+    \ClassList
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\CL@InfoEntry}
+%    \begin{macrocode}
+\def\CL@InfoEntry#1#2#3{%
+  \advance\count@ by \@ne
+  \def\x{#2}%
+  \@onelevel@sanitize\x
+  \edef\CL@Info{%
+    \CL@Info
+    \noexpand\MessageBreak
+    (\the\count@) %
+    #1 [\x]%
+    \ifx\\#3\\%
+    \else
+      \space[#3]% hash-ok
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \begingroup
+    \count@=\z@
+    \def\CL@Info{Class List:}%
+    \let\ClassListEntry\CL@InfoEntry
+    \ClassList
+    \let\on@line\@empty
+    \PackageInfo{classlist}{\CL@Info}%
+  \endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/classlist.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/classlist.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex classlist.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   classlist.sty & tex/latex/oberdiek/classlist.sty\\
+%   classlist.pdf & doc/latex/oberdiek/classlist.pdf\\
+%   classlist.dtx & source/latex/oberdiek/classlist.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk classlist.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{classlist.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex classlist.dtx
+%makeindex -s gind.ist classlist.idx
+%pdflatex classlist.dtx
+%makeindex -s gind.ist classlist.idx
+%pdflatex classlist.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{classlist.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='classlist'>
+  <name>classlist</name>
+  <caption>Record classes used in a document.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2005,2006,2008,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    Load this package before \documentclass:
+    <p/>
+    &nbsp;&nbsp;<tt>\RequirePackage{classlist}</tt><br/>
+    &nbsp;&nbsp;<tt>\documentclass[some,options]{whatever}</tt>
+    <p/>
+    After doing this, <tt>\MainClass</tt> contains the name of the
+    first loaded class, <tt>\ClassList</tt> contains a set of triples
+    &lt;class name&gt;, &lt;options directly requested&gt;, and
+    &lt;version requested&gt;.  (The package may also be loaded after
+    <tt>\documentclass</tt>, in which case some information is not
+    available.)
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/classlist.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/classlist.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2005/06/19 v1.0}
+%   \item
+%     First published version: CTAN and newsgroup \xnewsgroup{comp.text.tex}:
+%     \URL{``\link{Re: Finding the Document Class}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/8ee9523c2dc13666}
+%   \end{Version}
+%   \begin{Version}{2005/06/19 v1.1}
+%   \item
+%     After \cs{documentclass} the package looks
+%     at \cs{@filelist} instead of aborting with error.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.2}
+%   \item
+%     DTX framework.
+%   \item
+%     Fix for \cs{@@fileswith@pti@ns}.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.3}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2011/10/17 v1.4}
+%   \item
+%     Documentation fix: \cs{MainClass} $\rightarrow$ \cs{MainClassName}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

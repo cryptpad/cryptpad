@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='intcalc'>
+  <name>intcalc</name>
+  <caption>Expandable arithmetic operations with integers.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.1'/>
+  <description>
+    This package provides expandable arithmetic operations
+    with integers, using the e-TeX extension <tt>\numexpr</tt> if it
+    is available.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/intcalc.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/intcalc.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

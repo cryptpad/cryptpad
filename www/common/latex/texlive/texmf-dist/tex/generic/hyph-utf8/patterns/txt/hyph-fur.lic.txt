@@ -1,0 +1,47 @@
+Friulan hyphenation patterns
+
+(more info about the licence to be added later)
+
+% hyph-fur.tex
+%
+% Friulan hyphenation patterns
+%
+% This file is part of the hyph-utf8 package.
+% For more information see
+%
+%    http://tug.org/tex-hyphen
+%
+%------------------------------------------------------------------------------
+%
+%% Copyright 2012 Claudio Beccari
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in
+%        http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions
+% of LaTeX version 2003/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% The Current Maintainer of this work is Claudio Beccari
+% e-mail:  claudio dot beccari at gmail dot com
+%
+% This work consists of the single file hyph-fur.tex.
+%
+% \versionnumber{1.1}   \versiondate{2012/04/10}
+%
+% These hyphenation patterns for the Friulan language are supposed to comply
+% with the common spelling of the Friulan (Furlan) language as fixed by the
+% Regional Law N.15/96 dated November 6, 1996 and its following amendments.
+% They were initially obtained by merging the consonantic endings to the Italian
+% patterns and adding the necessary patterns for the special Friulan digraphs
+% used in this language and for the \c{c} consonant. The common Latin roots
+% of both languages helped a lot in this adaptation.
+% Digraphs: cj, gj, gl, gn, sj, ss.
+%
+% ChangeLog:
+% - 2012-01-14 - First release 1.0
+% - 2012-02-10 - Version 1.1. Fix inconsistencies.
+%%

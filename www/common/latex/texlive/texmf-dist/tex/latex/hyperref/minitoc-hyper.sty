@@ -1,0 +1,2304 @@
+\def\fileversion{v28href}
+\def\filedate{1999/05/17}
+% minitoc-hyper.sty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Jean-Pierre Drucbert
+% ONERA/CERT/GPI
+% Office National d'\'Etudes et de Recherches A\'erospatiales
+% Centre d'\'Etudes et de Recherches de Toulouse
+% Groupe de Prestations Informatiques
+% Complexe Scientifique de Rangueil
+% 2, Avenue \'Edouard Belin
+% BP 4025
+% F-31055 TOULOUSE CEDEX
+% FRANCE
+%
+% Phone +33-62-25-25-15
+%
+% Email: drucbert@onecert.fr
+%
+% Please send me any (constructive) suggestions and comments.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Temporarily patched by Bernd Jaehne [Bernd.Jaehne@aeon.de] 
+% and Didier Verna [verna@inf.enst.fr] to
+% work with hyperref.sty from s.rahtz@elsevier.co.uk
+% using input from Tony Roberts [aroberts@usq.edu.au]
+% For changes see comments %%BJ and %DV
+%
+% However: this patch works only when  hyperref.sty is used,
+% otherwise errors occur. Thus it may be advisable to add code
+% so that minitoc runs both in standard and hyperref mode.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% History (contains some obsolete things... it is NOT
+% the REAL documentation)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% minitoc.sty --- redefines the \chapter command to display a
+%  mini-table-of-contents at the beginning of every chapter.
+%  Oct-90       Original version, by Nigel Ward.
+%  Nov-91       Revised to reuse \chapter, \section, \subsection commands
+%               transparently, generate toc-file-name automatically,
+%               assorted other cleanup.  Dan Jurafsky
+%  Jun/Jul-93   New design, to avoid allocating a newwrite
+%               for each chapter (!)
+%               Added \chapterend to terminate the scope of a minitoc.
+%               (IF YOU FORGOT PUTTING \chapterend at the end
+%               of EACH chapter, an entry for the next chapter
+%               will appear in each minitoc.) (Thanks to Yufan Hu).
+%               Replaced ``minipage'' environnement by a ``verse''
+%               environnement, to allow a minitoc split across pages.
+%               All the layout of the minitoc is in the
+%               \minitableofcontents command, so if someboby wants
+%               to redefine that layout, he has just to
+%               rewrite it (and only it).
+%
+%               You can inhibit the minitoc for the next chapter
+%               by preceding it with \minitocno. (\minitocyes
+%               is useless for the user: it is implicit AFTER
+%               the \chapter* pseudo-chapters).
+%
+%               Problems: you MUST have \chapterend to terminate each
+%               chapter with a minitoc.
+%               How about avoiding this constraint?
+%
+%               The depth of the minitoc is user-adjustable with
+%               the counter `minitocdepth' (as `tocdepth' for the table
+%               of contents).
+%               At least three passes (3!!!) of LaTeX are necessary to get
+%               correct minitoc's (the first pass creates the .mtcX files,
+%               the second uses them (but they may contain wrong page
+%               numbers) and recreates them, the third should be ok).
+%
+%               Works with \chapter[xxx]{yyy} and floating bodies.
+%               Works with two columns (but the minitoc is in composed in
+%               one column; how to make it to spread over the two column?)
+%               Some mods added to work with xr.sty (external references).
+%               xr.sty version 5 is much more tolerant.
+%   05Jul93     Version 2
+%               Added compatibility with hangcaption.sty (the option
+%               hangcaption (if present) must be given BEFORE minitoc
+%               option.)
+%               BEWARE to options modifying \@caption
+%               Version 3 not released (buggy)
+%   09Jul93     Version 4
+%               Added \if@realch to avoid contentslines from
+%               pseudo-chapters to go into the toc!
+%               The option file mtcoff.sty allows to use a latex
+%               document with minitoc commands and to make them
+%               transparent: just replace the minitoc option by
+%               mtcoff.
+%   13Jul93     Version 5
+%               Added a selection mechanism to not write spurious things
+%               in the minitoc's.
+%   15Jul93     Version 6
+%               Fixed problems about chapters in the toc,
+%               removed obsolete \caption stuff (filters are better)
+%               added compatibility with toch.sty
+%               (toch.sty makes a table of chapters. If used,
+%               must be loaded BEFORE minitoc.sty)
+%   22Jul93     Version 7 (MAJOR DIFFERENCES)
+%               Completely rewritten, using tricks from xr.sty
+%               (the version 5, by David Carlisle). The info
+%               for minitocs is directly stolen from the .toc
+%               file.
+%               \chapterend and \minitocno are suppressed
+%               \minitoc, \dominitoc and \faketableofcontents added
+%   29Jul93     Version 8
+%               Spacing adjustements.
+%   04Aug93     Version 9
+%               Added mods for MS-DOS (search MS-DOS, uncomment;
+%               search UNIX, comment out). MS-DOS allows only
+%               3 characters for extensions in file names (what a pity!).
+%   05Aug93     Version 10
+%               Works with appendices.
+%               Detects obsolete versions of latex.tex.
+%               (\@inputcheck or \reset@font not defined).
+%   18Aug93     Version 11
+%               Added \mtcSfont, font for section entries,
+%               \mtcSSfont for subsection entries,
+%               \mtcSSSfont for subsubsection entries,
+%               \mtcPfont for paragraph entries,
+%               \mtcSPfont for subparagraph entries.
+%
+%   16Dec93     Version 12
+%               Use \kern's in place of \vspace*'s,
+%               and added penalties (\nopagebreak) to
+%               avoid a page break just before last \mtc@rule.
+%               Also added a \samepage environnement.
+%               Removed old commented out lines from
+%               previous versions.
+%
+%   17Dec93     Version 13
+%               Added minilof and minilot stuff.
+%               For MS-DOS, uncomment the definition of \SHORTEXT.
+%
+%   03Jan94     Version 14
+%               Corrected space under minitoc/lof/lot and added a
+%               \raggedright to avoid ``underfull'' warnings.
+%               Corrected some spacing problems (avoiding ~'s).
+%               \mtifont changed from \normalsize\bf to
+%               \large\bf.
+%               Some mods suggested by Donald Arseneau (thanks):
+%               \@newread becomes \newread, not outer
+%               version of \newread.
+%               \empty replaced by \relax in the spare definition
+%               of \reset@font.
+%               Removed \clubpenalty=10000 and \widowpenalty=10000
+%               (done by \samepage), and \noindent.
+%               Simplified processing of optional argument in
+%               \minitoc, \minilof and \minilot.
+%
+%   27Jan94     Version 15
+%               Added parttoc, partlof and partlot for books,
+%               with commands and parameters parallel to
+%               those for mini-things.
+%
+%               Added secttoc, sectlof and sectlot for articles,
+%               with commands and parameters parallel to
+%               those for mini-things.
+%
+%   02Feb94     Version 16
+%               Bug fixes (typos).
+%
+%   23Jun94     Version 17
+%               Keyword 'n' (null) synonym of 'e' (empty).
+%               Compatibility with LaTeX ``2e''.
+%               Thanks to Denis Roegel (who found
+%               the problem) and Frank Mittelbach
+%               (who gave the hints to solve).
+%
+%   26Jun94     Version 18
+%               Make minitoc really compatible with latex2e
+%               Introduce the language files as options
+%               Thanks to Michel Goossens (via Frank Mittelbach)
+%               who was inspired by the code of babel (Johannes Braams).
+%
+%   16Aug94     Version 19
+%               Added stuff for numbering of chapters (parts,
+%               sections) not starting at 1.
+%               \firstchapteris etc. commands added.
+%               \mtcrule, \nomtcrule etc. commands added.
+%               Corrected a bug in \c@mti.
+%               Corrected mtcswedish.sty (Jan Michel Rynning)
+%               Corrected appendix in articles
+%
+%   25Aug94     Version 20
+%               Corrected spacing before and after minitocs
+%               and siblings.
+%               Added \mtcpagenumbers and \nomtcpagenumbers
+%               (and siblings) to make minitocs with/without
+%               page numbers. Default: page numbers.
+%               Corrected (difficult bug) appendix in articles.
+%               Corrected vertical spacing.
+%               Corrected a problem with chapters numbered
+%               with (uppercase) roman numbers.
+%
+%   07Sep94     Version 21
+%               Corrected typos in minitoc.sty and minitoc.tex.
+%
+%   10Oct94     Version 22
+%               Corrected typos in minitoc.sty.
+%
+%   08Nov94     Version 23
+%               Added a missing line in \sectlof@.
+%               Works with document classes resetting
+%               chapter (or section) number at each part.
+%               (Thanks to Denis Roegel)
+%               Removed stuff for \firstchapteris and co.
+%               These commands are obsolete.
+%               Removed appendix stuff.
+%
+%   21Dec94     Version 24
+%               The \protect commands have been removed from
+%               the .toc, .lot and .lot files, so some internal
+%               macros have been corrected to be compatible
+%               with the LaTeX2e release of December 1994.
+%               Thanks to Denis Roegel who did the work.
+%
+%   13Sep96     Version 25
+%               Updated mtcnorsk.sty and added mtcnynorsk.sty
+%               on a suggestion from Dag Langmyhr (dag@ifi.uio.no).
+%
+%   14Nov96     Version 26
+%               Language specific commands are now names <language>.mld
+%               (in place of mtc<language>.sty) because there are not
+%               packages and it makes shorter names.
+%               Added breton, estonian, germanb, greek, irish,
+%               russianb, scottish, lower and upper sorbian;
+%               renamed esperanto into esperant like in Babel.
+%
+%   20Dec96     Version 27
+%               Corrections for starred sectionning commands.
+%               english.mld loaded as default language.
+%               Added vietnam.mld.
+%               Added arab.mld.
+%               Renamed minitocoff.sty into mtcoff.sty to
+%               keep the name short.
+%
+%
+%               Jean-Pierre Drucbert
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]%
+%%% This file will not work with latex2.09
+\ProvidesPackage{minitoc}[\filedate\space\fileversion\space
+                        The minitoc package]
+\typeout{*** minitoc package, version 27p ***}%
+\@ifundefined{part}%
+{}%
+{\typeout{*** part level macros available ***}
+\let\mtc@svpart\part %23
+\def\part{\stepcounter{ptc}\mtc@svpart}} %23
+\@ifundefined{chapter}%
+{%
+\@ifundefined{section}%
+{\typeout{*** no section or chapter level macros available ***}%
+\typeout{*** PLEASE VERIFY YOUR MAIN DOCUMENT CLASS ***}}%
+{\typeout{*** section level macros available ***}
+\let\mtc@svsection\section %23
+\def\section{\stepcounter{stc}\mtc@svsection} %23
+\let\mtc@svss\@ssect %23
+%v25 \def\@ssect{\addtocounter{stc}{-1}\mtc@svss} %23
+}%
+}%
+{\typeout{*** chapter level macros available ***}
+\let\mtc@svchapter\@chapter %23
+\def\@chapter{\stepcounter{mtc}\mtc@svchapter} %23
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%         *****  ****   ***  *****
+%         *      *   *   *     *
+%         ***    *   *   *     *
+%         *      *   *   *     *
+%         *****  ****   ***    *
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\def\SHORTEXT{SHORTEXT}    %%% UNCOMMENT FOR DOS AND
+                            %%% SYSTEMS WITH SHORT EXTENSIONS
+                            %%% TO FILE NAMES
+                            %%% LEAVE IT COMMENTED OUT
+                            %%% FOR UNIX AND O.S. WITH
+                            %%% LONG EXTENSIONS
+                            %%% YOU CAN VERIFY BY LATEXING
+                            %%% AN EXAMPLE DOCUMENT
+                            %%% ONE OF THE FOLLOWING MESSAGES APPEARS
+                            %%% PLEASE CORRECT IF THE MESSAGE IS WRONG
+% v27 : claim the type of system!
+\@ifundefined{SHORTEXT}%
+{\typeout{==> this version is configured for UNIX-like (long extensions) file names.}}%
+{\typeout{==> this version is configured for MSDOS-like (8+3) file names.}}
+%
+%not outer version of \newread
+\def\newread{\alloc@6\read\chardef\sixt@@n}
+\@ifundefined{@inputcheck}%
+  {\typeout{Your version of latex.tex is obsolete.}%
+  \typeout{Trying to continue...}\newread\@inputcheck\relax}{}
+\@ifundefined{reset@font}%
+  {\typeout{Your version of latex.tex is very obsolete.}%
+  \typeout{Trying to continue...}\let\reset@font\relax}{}
+\newwrite\tf@mtc  % a file descriptor to write minitocs
+\newtoks\mtc@toks
+\def\mtc@string{\relax}
+\newbox\mtc@strutbox
+\setbox\mtc@strutbox=\hbox{\vrule height2.5ex
+      depth1.8ex width\z@}
+\def\mtc@strut{\relax\ifmmode\copy\mtc@strutbox\else\unhcopy\mtc@strutbox\fi}
+\def\mtc@v{\leavevmode%
+     \mtc@strut\vphantom{Lp$^{l^l}_{p_p}$}}  % a pseudo-strut ?
+% \@BBR discourages page breaks
+\def\@BBR{\unpenalty\nopagebreak[4]}
+% Modified version to ignore the dots and the page number.              % 17b
+\def\@undottedtocline#1#2#3#4#5{\ifnum #1>\c@tocdepth \else             % 17b
+  \vskip \z@ plus.2\p@                                                  % 17b
+  {\leftskip #2\relax \rightskip \@tocrmarg \parfillskip -\rightskip    % 17b
+    \parindent #2\relax\@afterindenttrue                                % 17b
+   \interlinepenalty\@M                                                 % 17b
+   \leavevmode                                                          % 17b
+   \@tempdima #3\relax \advance\leftskip \@tempdima \hbox{}%            % 17b
+   \hskip -\leftskip                                                    % 17b
+    #4\nobreak\hfill \nobreak                                           % 17b
+           \null\par}\fi}                                               % 17b
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17b
+\def\mtcpagenumbers{\let\mtc@pgno\null}         %17b
+\mtcpagenumbers %default                        %17b
+\def\nomtcpagenumbers{\let\mtc@pgno\relax}      %17b
+\def\stcpagenumbers{\let\stc@pgno\null}         %17b
+\stcpagenumbers %default                        %17b
+\def\nostcpagenumbers{\let\stc@pgno\relax}      %17b
+\def\ptcpagenumbers{\let\ptc@pgno\null}         %17b
+\ptcpagenumbers %default                        %17b
+\def\noptcpagenumbers{\let\ptc@pgno\relax}      %17b
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17b
+\def\mlfpagenumbers{\let\mlf@pgno\null}         %17b
+\mlfpagenumbers %default                        %17b
+\def\nomlfpagenumbers{\let\mlf@pgno\relax}      %17b
+\def\slfpagenumbers{\let\slf@pgno\null}         %17b
+\slfpagenumbers %default                        %17b
+\def\noslfpagenumbers{\let\slf@pgno\relax}      %17b
+\def\plfpagenumbers{\let\plf@pgno\null}         %17b
+\plfpagenumbers %default                        %17b
+\def\noplfpagenumbers{\let\plf@pgno\relax}      %17b
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17b
+\def\mltpagenumbers{\let\mlt@pgno\null}         %17b
+\mltpagenumbers %default                        %17b
+\def\nomltpagenumbers{\let\mlt@pgno\relax}      %17b
+\def\sltpagenumbers{\let\slt@pgno\null}         %17b
+\sltpagenumbers %default                        %17b
+\def\nosltpagenumbers{\let\slt@pgno\relax}      %17b
+\def\pltpagenumbers{\let\plt@pgno\null}         %17b
+\pltpagenumbers %default                        %17b
+\def\nopltpagenumbers{\let\plt@pgno\relax}      %17b
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%17b
+% if you don't want a table of contents, but want minitocs,
+% you need to create the .toc file, without inputing it
+% into your document. This command is a stripped off version
+% of \tableofcontents
+\def\faketableofcontents{\fake@starttoc{toc}}
+% idem for list of figures
+\def\fakelistoffigures{\fake@starttoc{lof}}
+% idem for list of tables
+\def\fakelistoftables{\fake@starttoc{lot}}
+\def\fake@starttoc#1{\begingroup
+  \makeatletter
+  \if@filesw \expandafter\newwrite\csname tf@#1\endcsname
+             \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+  \fi \global\@nobreakfalse \endgroup}
+%%
+\global\let\mtc@markboth\markboth
+\global\let\@mkboth\markboth
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\@ifundefined{chapter}{}{%
+\def\The@chapter{\arabic{mtc}} %23
+\def\firstchapteris#1%
+  {\typeout{^^JWARNING*** \string\firstchapteris}%
+   \typeout{ is an obsolete command^^J}}
+\newcounter{mtc}  % counter of minitocs
+\setcounter{mtc}{0}
+\gdef\themtc{\arabic{mtc}}
+\newcounter{minitocdepth} % analog to tocdepth, but for minitocs
+\setcounter{minitocdepth}{2} % default value
+\def\mtc@rule{\kern-3\p@%
+  \hrule width \columnwidth \kern2.6\p@} % the \hrule is .4pt high
+
+\newlength\mtcindent % indentation (left/right) of minitocs
+\mtcindent=24pt      % defaut value
+\def\mtcfont{\small\rm}    % font for the minitoc
+\def\mtcSfont{\small\bf}   % font for the minitoc (sections)
+\def\mtcSSfont{\mtcfont}   % font for the minitoc (subsections)
+\def\mtcSSSfont{\mtcfont}  % font for the minitoc (subsubsections)
+\def\mtcPfont{\mtcfont}    % font for the minitoc (paragraphs)
+\def\mtcSPfont{\mtcfont}   % font for the minitoc (subparagraphs)
+\def\mlffont{\mtcfont}     % font for the minilof (figures)
+\def\mltfont{\mtcfont}     % font for the minilot (tables)
+\def\mtifont{\large\bf}    % font for titles
+
+% Centering, flushleft, flushright or empty titles.
+\def\c@mti#1{\null\hfill #1\hfill\null}
+\def\l@mti#1{\null #1\hfill\null}
+\def\r@mti#1{\null\hfill #1\null}
+\def\e@mti#1{\relax}
+\def\n@mti#1{\relax}
+
+% Default: titles on left
+\let\do@mtitc\l@mti
+\let\df@mtitc\l@mti
+\let\do@mtilf\l@mti
+\let\df@mtilf\l@mti
+\let\do@mtilt\l@mti
+\let\df@mtilt\l@mti
+
+%v27 Language dependent names: default values. Now
+%v27 english.mld is loaded first.
+%v27 \@ifundefined{mtctitle}{\def\mtctitle{Contents}}{\relax}
+%v27 \@ifundefined{mlftitle}{\def\mlftitle{Figures}}{\relax}
+%v27 \@ifundefined{mlttitle}{\def\mlttitle{Tables}}{\relax}
+
+\def\mtc@verse{\let\\=\@centercr
+  \list{}{\itemsep\z@\itemindent \z@\listparindent \itemindent
+          \leftmargin\mtcindent
+          \rightmargin\leftmargin}\item[]}
+\def\endmtc@verse{\nopagebreak[4]\endlist}
+
+% this command must be used after \chapter
+% if you need a minitoc (no automatic minitoc)
+\def\minitoc{\@ifnextchar[{\minitoc@}{\minitoc@[d]}}
+
+\def\minitoc@[#1]{%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@mtitc\e@mti
+        \else\if #1n\let\do@mtitc\n@mti
+        \else\if #1c\let\do@mtitc\c@mti
+        \else\if #1l\let\do@mtitc\l@mti
+        \else\if #1r\let\do@mtitc\r@mti
+        \else\if #1d\let\do@mtitc\df@mtitc
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\mtcfont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent %%
+        \ifx\mtc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\mtifont\do@mtitc{\mtc@v\mtctitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\mtifont\do@mtitc{\mtc@v\mtctitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\mtcindent
+        \rightmargin\mtcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        \begin{mtc@verse}\c@tocdepth=\c@minitocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{mtc@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{mtc\The@chapter}}%  % UNIX
+{\def\@tocfile{M\The@chapter}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{mtc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\mtc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\pagebreak[1]\vspace*{-1ex}}%
+        % some space under the minitoc
+
+% Added in version #13
+% this command must be used after \chapter
+% if you need a minilof (no automatic minilof)
+\def\minilof{\@ifnextchar[{\minilof@}{\minilof@[d]}}
+
+\def\minilof@[#1]{%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@mtilf\e@mti
+        \else\if #1n\let\do@mtilf\n@mti
+        \else\if #1c\let\do@mtilf\c@mti
+        \else\if #1l\let\do@mtilf\l@mti
+        \else\if #1r\let\do@mtilf\r@mti
+        \else\if #1d\let\do@mtilf\df@mtilf
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\mlffont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\mtc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\mtifont\do@mtilf{\mtc@v\mlftitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\mtifont\do@mtilf{\mtc@v\mlftitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\mtcindent
+        \rightmargin\mtcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        % depth does not matter for minilof
+        \begin{mtc@verse}%\c@tocdepth=\c@minitocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{mlf@pgno}%
+  {\let@dottedtocline\@undottedtocline}{}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{mlf\The@chapter}}%  % UNIX
+{\def\@tocfile{F\The@chapter}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{mtc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\mtc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\pagebreak[1]\vspace*{-1ex}}%
+        % some space under the minilof
+
+% Added in version #13
+% this command must be used after \chapter
+% if you need a minilot (no automatic minilot)
+\def\minilot{\@ifnextchar[{\minilot@}{\minilot@[d]}}
+
+\def\minilot@[#1]{%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@mtilt\e@mti
+        \else\if #1n\let\do@mtilt\n@mti
+        \else\if #1c\let\do@mtilt\c@mti
+        \else\if #1l\let\do@mtilt\l@mti
+        \else\if #1r\let\do@mtilt\r@mti
+        \else\if #1d\let\do@mtilt\df@mtilt
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\mltfont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\mtc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\mtifont\do@mtilt{\mtc@v\mlttitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\mtifont\do@mtilt{\mtc@v\mlttitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\mtcindent
+        \rightmargin\mtcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        % depth does not matter for minilot
+        \begin{mtc@verse}%\c@tocdepth=\c@minitocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{mlt@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{mlt\The@chapter}}%  % UNIX
+{\def\@tocfile{T\The@chapter}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{mtc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\mtc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\pagebreak[1]\vspace*{-1ex}}%
+        % some space under the minilot
+
+% I use a depth of 10000 to inhibit the printing of
+% that contentsline.
+\def\l@xchapter{\@dottedtocline{\@M}{1em}{2.3em}}
+\def\xchapter{xchapter}
+
+\let\sv@chapter\@chapter
+\def\@chapter[#1]#2{\sv@chapter[{#1}]{#2}\relax%
+\addcontentsline{lof}{xchapter}{#1}%
+\addcontentsline{lot}{xchapter}{#1}%
+}
+
+% tricky code to deal with \chapter*
+\let\mtc@schapter\@schapter
+\def\@schapter{%
+\addtocontents{toc}{\protect\chapterend}\mtc@schapter%
+}
+\def\@schapter{%
+\addtocontents{toc}{\protect\chapterbegin}\mtc@schapter%
+}
+\let\chapterend\relax
+\let\chapterbegin\relax
+
+\let\appendixmtc\relax
+
+% this command extracts info from the .toc file
+% and create the .mtcN files (.mtc -> .M on MS-DOS)
+\def\@dominitoc#1{{%
+  \makeatletter
+  \setcounter{mtc}{0} % START VALUE
+  \MTC@next#1.toc\relax\\}\setcounter{mtc}{0}} %23: raz
+% this command extracts info from the .lof file
+% and create the .mlfN files (.mlf -> .F on MS-DOS)
+\def\@dominilof#1{{%
+  \makeatletter
+  \setcounter{mtc}{0} % START VALUE
+  \MLF@next#1.lof\relax\\}\setcounter{mtc}{0}} %23: raz
+% this command extracts info from the .lot file
+% and create the .mltN files (.mlt -> .T on MS-DOS)
+\def\@dominilot#1{{%
+  \makeatletter
+  \setcounter{mtc}{0} % START VALUE
+  \MLT@next#1.lot\relax\\}\setcounter{mtc}{0}} %23: raz
+
+\def\dominitoc{\@ifnextchar[{\dominitoc@}{\dominitoc@[l]}}
+\def\dominilof{\@ifnextchar[{\dominilof@}{\dominilof@[l]}}
+\def\dominilot{\@ifnextchar[{\dominilot@}{\dominilot@[l]}}
+
+\def\dominitoc@[#1]{%
+\if #1e\let\df@mtitc\e@mti%
+\else\if #1n\let\df@mtitc\n@mti%
+\else\if #1c\let\df@mtitc\c@mti%
+\else\if #1l\let\df@mtitc\l@mti%
+\else\if #1r\let\df@mtitc\r@mti%
+\fi\fi\fi\fi\fi%
+\@@dominitoc}
+
+\def\dominilof@[#1]{%
+\if #1e\let\df@mtilf\e@mti%
+\else\if #1n\let\df@mtilf\n@mti%
+\else\if #1c\let\df@mtilf\c@mti%
+\else\if #1l\let\df@mtilf\l@mti%
+\else\if #1r\let\df@mtilf\r@mti%
+\fi\fi\fi\fi\fi%
+\@@dominilof}
+
+\def\dominilot@[#1]{%
+\if #1e\let\df@mtilt\e@mti%
+\else\if #1n\let\df@mtilt\n@mti%
+\else\if #1c\let\df@mtilt\c@mti%
+\else\if #1l\let\df@mtilt\l@mti%
+\else\if #1r\let\df@mtilt\r@mti%
+\fi\fi\fi\fi\fi%
+\@@dominilot}
+
+\def\@@dominitoc{\@dominitoc{\jobname}\immediate\closeout\tf@mtc}
+\def\@@dominilof{\@dominilof{\jobname}\immediate\closeout\tf@mtc}
+\def\@@dominilot{\@dominilot{\jobname}\immediate\closeout\tf@mtc}
+
+\def\MTC@next#1\relax#2\\{%
+  \edef\MTC@list{#2}%
+  \MTC@loop{#1}}
+\def\MTC@toc{%
+  \ifx\MTC@list\@empty\else\expandafter\MTC@explist\fi}
+
+%%%%%%% patch minitoc to write *.mtc files with link name at end
+% so that hyperref contentsline works properly---I hope
+\def\MTC@contentsline#1#2#3#4{% %%BJ: 4 instead of 3 parameters
+\gdef\themtc{\arabic{mtc}}
+\expandafter%
+ \ifx\csname #1\endcsname\chapter\relax
+ \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.mtc\themtc}%     % UNIX
+\def\mtcname{\jobname.mtc\themtc}}%              % UNIX
+{\typeout{Writing\space\jobname.M\themtc}%       % MS-DOS
+\def\mtcname{\jobname.M\themtc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+ \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\section\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subsubsection\relax
+     \mtc@toks{\noexpand \leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSSfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\paragraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcPfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSPfont
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+% Added v25: \starchapter and co.
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\starchapter\relax
+\stepcounter{mtc}% % the mtc counter simulates the chapter counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.mtc\themtc}%     % UNIX
+\def\mtcname{\jobname.mtc\themtc}}%              % UNIX
+{\typeout{Writing\space\jobname.M\themtc}%       % MS-DOS
+\def\mtcname{\jobname.M\themtc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .mtcN .mtc->.M on MS-DOS
+ \immediate\openout\tf@mtc=\mtcname % open next .mtcN (.mtc->.M if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\starsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubsubsection\relax
+     \mtc@toks{\noexpand \leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSSSfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcPfont%
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mtcSPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mtcSPfont
+      \space #3}{#4}}}}\@tempa%   %%BJ: #4 is hyperlink
+ \fi
+}
+
+
+\def\MTC@explist{\expandafter\MTC@next\MTC@list\\}
+\def\MTC@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JMINITOCS NOT PREPARED.^^J}%
+    \expandafter\MTC@toc
+  \else
+    \typeout{PREPARING MINITOCS FROM #1}%
+    \expandafter\MTC@read\fi}
+\def\MTC@read{%
+  \read\@inputcheck to\MTC@line
+  \expandafter\MTC@test\MTC@line....\MTC@%
+  }%
+% now patch MTC@test %   %%BJ: call \MTC@contentsline with 4 instead of 3 parameters
+\newcommand{\scrubdots}[5]{#1} %%BJ: added by Tony Roberts
+\long\def\MTC@test#1#2#3#4#5\MTC@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \MTC@contentsline{#2}{#3}{#4}{\scrubdots#5}% %%BJ: 4. parameter added by Tony Roberts
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\MTC@list{\MTC@list#2\relax}%
+  \else\ifx#1\chapterend % \chapter* closes .mtcN (.mtc->.M on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\chapterbegin
+     \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\MTC@toc
+  \else\expandafter\MTC@read\fi}%
+%%%%%%%%%% end of minitoc patches
+
+
+\def\MLF@next#1\relax#2\\{%
+  \edef\MLF@list{#2}%
+  \MLF@loop{#1}}
+\def\MLF@lof{%
+  \ifx\MLF@list\@empty\else\expandafter\MLF@explist\fi}
+
+\def\MLF@contentsline#1#2#3{%
+\gdef\themtc{\arabic{mtc}}
+\expandafter%
+ \ifx\csname #1\endcsname\xchapter\relax
+ \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.mlf\themtc}%     % UNIX
+\def\mlfname{\jobname.mlf\themtc}}%              % UNIX
+{\typeout{Writing\space\jobname.F\themtc}%       % MS-DOS
+\def\mlfname{\jobname.F\themtc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .mlfN .mlf->.F on MS-DOS
+ \immediate\openout\tf@mtc=\mlfname % open next .mlfN (.mlf->.F if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\figure\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mlffont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mlffont%
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\MLF@explist{\expandafter\MLF@next\MLF@list\\}
+\def\MLF@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JMINILOFS NOT PREPARED.^^J}%
+    \expandafter\MLF@lof
+  \else
+    \typeout{PREPARING MINILOFS FROM #1}%
+    \expandafter\MLF@read\fi}
+\def\MLF@read{%
+  \read\@inputcheck to\MLF@line
+  \expandafter\MLF@test\MLF@line....\MLF@%
+  }%
+\long\def\MLF@test#1#2#3#4#5\MLF@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \MLF@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\MLF@list{\MLF@list#2\relax}%
+  \else\ifx#1\chapterend % \chapter* closes .mlfN (.mlf->.F on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\chapterbegin
+     \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\MLF@lof
+  \else\expandafter\MLF@read\fi}%
+
+\def\MLT@next#1\relax#2\\{%
+  \edef\MLT@list{#2}%
+  \MLT@loop{#1}}
+\def\MLT@lot{%
+  \ifx\MLT@list\@empty\else\expandafter\MLT@explist\fi}
+
+\def\MLT@contentsline#1#2#3{%
+\gdef\themtc{\arabic{mtc}}
+\expandafter%
+ \ifx\csname #1\endcsname\xchapter\relax
+ \stepcounter{mtc}% % the mtc counter simulates the chapter counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.mlt\themtc}%     % UNIX
+\def\mltname{\jobname.mlt\themtc}}%              % UNIX
+{\typeout{Writing\space\jobname.T\themtc}%       % MS-DOS
+\def\mltname{\jobname.T\themtc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .mltN .mlt->.T on MS-DOS
+ \immediate\openout\tf@mtc=\mltname % open next .mltN (.mlt->.T if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\table\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\mltfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\mltfont%
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\MLT@explist{\expandafter\MLT@next\MLT@list\\}
+\def\MLT@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JMINILOTS NOT PREPARED.^^J}%
+    \expandafter\MLT@lot
+  \else
+    \typeout{PREPARING MINILOTS FROM #1}%
+    \expandafter\MLT@read\fi}
+\def\MLT@read{%
+  \read\@inputcheck to\MLT@line
+  \expandafter\MLT@test\MLT@line....\MLT@%
+  }%
+\long\def\MLT@test#1#2#3#4#5\MLT@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \MLT@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\MLT@list{\MLT@list#2\relax}%
+  \else\ifx#1\chapterend % \chapter* closes .mltN (.mlt->.T on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\chapterbegin
+     \addtocounter{mtc}{-1}% % \chapter* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\MLT@lot
+  \else\expandafter\MLT@read\fi}%
+} % end of chapter level
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+% If \part is defined (book or article-like document),
+% the following macros are allowed
+% Sometimes, we need to make a difference between book and
+% article (is \chapter defined?), to have a different layout.
+\@ifundefined{part}{}%
+{%
+\def\xpart{xpart}
+\def\Thepart{\arabic{part}}
+\def\firstpartis#1%
+  {\typeout{^^JWARNING*** \string\firstpartis}%
+   \typeout{ is an obsolete command^^J}}
+\newcounter{ptc}  % counter of parttocs
+\setcounter{ptc}{0}
+\def\theptc{\arabic{ptc}}
+\newcounter{parttocdepth} % analog to tocdepth, but for parttocs
+\setcounter{parttocdepth}{2}
+
+\@ifundefined{chapter}{%
+\def\ptc@rule{\kern-3\p@%
+  \hrule width \columnwidth \kern2.6\p@}% the \hrule is .4pt high
+}{\let\ptc@rule\relax} % no rule before/after parttoc/partlof/partlot
+                       % for books
+
+\newlength\ptcindent % indentation (left/right) of parttocs
+\@ifundefined{chapter}{\ptcindent=24pt}{\ptcindent=0pt} % defaut value
+
+\@ifundefined{chapter}{%
+\def\ptcfont{\small\rm}    % font for the parttoc
+\def\ptcSfont{\small\bf}   % font for the parttoc (sections)
+\def\ptcSSfont{\ptcfont}   % font for the parttoc (subsections)
+\def\ptcSSSfont{\ptcfont}  % font for the parttoc (subsubsections)
+\def\ptcPfont{\ptcfont}    % font for the parttoc (paragraphs)
+\def\ptcSPfont{\ptcfont}   % font for the parttoc (subparagraphs)
+\def\plffont{\ptcfont}     % font for the partlof (figures)
+\def\pltfont{\ptcfont}     % font for the partlot (tables)
+\def\ptifont{\large\bf}    % font for titles
+}{%
+\def\ptcfont{\normalsize\rm}    % font for the parttoc
+\def\ptcCfont{\normalsize\bf}   % font for the parttoc (chapters)
+\def\ptcSfont{\normalsize\rm}   % font for the parttoc (sections)
+\def\ptcSSfont{\ptcfont}   % font for the parttoc (subsections)
+\def\ptcSSSfont{\ptcfont}  % font for the parttoc (subsubsections)
+\def\ptcPfont{\ptcfont}    % font for the parttoc (paragraphs)
+\def\ptcSPfont{\ptcfont}   % font for the parttoc (subparagraphs)
+\def\plffont{\ptcfont}     % font for the partlof (figures)
+\def\pltfont{\ptcfont}     % font for the partlot (tables)
+\def\ptifont{\Huge\bf}     % font for titles
+}
+
+% Centering, flushleft, flushright or empty titles.
+\@ifundefined{chapter}{%
+\def\c@pti#1{\null\hfill #1\hfill\null}
+\def\l@pti#1{\null #1\hfill\null}
+\def\r@pti#1{\null\hfill #1\null}
+\def\e@pti#1{\relax}
+\def\n@pti#1{\relax}
+}{%
+\def\e@pti#1{\relax}
+\def\n@pti#1{\relax}
+\def\l@pti#1{\if@twocolumn
+    \@topnewpage[\@makephead@l{#1}]%
+    \else
+    \@makephead@l{#1}%
+    \@afterheading
+    \fi}
+\def\@makephead@l#1{%
+    \vspace*{50\p@}%
+    {\parindent \z@ \raggedright
+     \ptifont
+     #1\par
+     \nobreak
+     \vskip 40\p@
+    }}
+\def\r@pti#1{\if@twocolumn
+    \@topnewpage[\@makephead@r{#1}]%
+    \else
+    \@makephead@r{#1}%
+    \@afterheading
+    \fi}
+\def\@makephead@r#1{%
+    \vspace*{50\p@}%
+    {\parindent \z@ \raggedleft
+     \ptifont
+     #1\par
+     \nobreak
+     \vskip 40\p@
+    }}
+\def\c@pti#1{\if@twocolumn
+    \@topnewpage[\@makephead@c{#1}]%
+    \else
+    \@makephead@c{#1}%
+    \@afterheading
+    \fi}
+\def\@makephead@c#1{%
+    \vspace*{50\p@}%
+    {\parindent \z@ \centering
+     \ptifont
+     #1\par
+     \nobreak
+     \vskip 40\p@
+    }}%
+}
+
+% Default: titles on left
+\let\do@ptitc\l@pti
+\let\df@ptitc\l@pti
+\let\do@ptilf\l@pti
+\let\df@ptilf\l@pti
+\let\do@ptilt\l@pti
+\let\df@ptilt\l@pti
+
+%v27 % Language dependent names: default values
+%v27 \@ifundefined{chapter}{%
+%v27 \@ifundefined{ptctitle}{\def\ptctitle{Contents}}{\relax}
+%v27 \@ifundefined{plftitle}{\def\plftitle{Figures}}{\relax}
+%v27 \@ifundefined{plttitle}{\def\plttitle{Tables}}{\relax}}%
+%v27 {%
+%v27 \@ifundefined{ptctitle}{\def\ptctitle{Table of Contents}}{\relax}
+%v27 \@ifundefined{plftitle}{\def\plftitle{List of Figures}}{\relax}
+%v27 \@ifundefined{plttitle}{\def\plttitle{List of Tables}}{\relax}
+%v27 }
+
+\def\ptc@verse{\let\\=\@centercr
+  \list{}{\itemsep\z@\itemindent \z@\listparindent \itemindent
+          \leftmargin\ptcindent
+          \rightmargin\leftmargin}\item[]}
+\def\endptc@verse{\nopagebreak[4]\endlist}
+
+% this command must be used after \part
+% if you need a parttoc (no automatic parttoc)
+\def\parttoc{\@ifnextchar[{\parttoc@}{\parttoc@[d]}}
+
+\def\parttoc@[#1]{%
+        \@ifundefined{chapter}{}{\cleardoublepage
+        \global\let\mtc@markboth\markboth
+        \global\let\@mkboth\markboth
+        \thispagestyle{empty}
+        \mtc@markboth{\uppercase{\ptctitle}}{\uppercase{\ptctitle}}%
+        }%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@ptitc\e@pti
+        \else\if #1n\let\do@ptitc\n@pti
+        \else\if #1c\let\do@ptitc\c@pti
+        \else\if #1l\let\do@ptitc\l@pti
+        \else\if #1r\let\do@ptitc\r@pti
+        \else\if #1d\let\do@ptitc\df@ptitc
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\ptcfont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \nopagebreak[4]%
+        \ifx\ptc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\ptifont\do@ptitc{\mtc@v\ptctitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\ptifont\do@ptitc{\mtc@v\ptctitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\ptcindent
+        \rightmargin\ptcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        \begin{ptc@verse}\c@tocdepth=\c@parttocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{ptc@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{ptc\Thepart}}%  % UNIX
+{\def\@tocfile{P\Thepart}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{ptc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\ptc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\@ifundefined{chapter}{\pagebreak[1]\vspace*{-1ex}}%
+        {\cleardoublepage}}
+
+% this command must be used after \part
+% if you need a partlof (no automatic partlof)
+\def\partlof{\@ifnextchar[{\partlof@}{\partlof@[d]}}
+
+\def\partlof@[#1]{%
+        \@ifundefined{chapter}{}{\cleardoublepage
+        \global\let\mtc@markboth\markboth
+        \global\let\@mkboth\markboth
+        \thispagestyle{empty}
+        \mtc@markboth{\uppercase{\plftitle}}{\uppercase{\plftitle}}%
+        }%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@ptilf\e@pti
+        \else\if #1n\let\do@ptilf\n@pti
+        \else\if #1c\let\do@ptilf\c@pti
+        \else\if #1l\let\do@ptilf\l@pti
+        \else\if #1r\let\do@ptilf\r@pti
+        \else\if #1d\let\do@ptilf\df@ptilf
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\plffont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\ptc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\ptifont\do@ptilf{\mtc@v\plftitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\ptifont\do@ptilf{\mtc@v\plftitle}}\\
+        \@ifundefined{chapter}{\hline}{}
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\ptcindent
+        \rightmargin\ptcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        % depth does not matter for partlof
+        \begin{ptc@verse}%\c@tocdepth=\c@parttocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{plf@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{plf\Thepart}}%  % UNIX
+{\def\@tocfile{G\Thepart}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{ptc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\ptc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\@ifundefined{chapter}{\pagebreak[1]\vspace*{-1ex}}%
+        {\cleardoublepage}}
+
+% Added in version #13
+% this command must be used after \part
+% if you need a minilot (no automatic partlot)
+\def\partlot{\@ifnextchar[{\partlot@}{\partlot@[d]}}
+
+\def\partlot@[#1]{%
+        \@ifundefined{chapter}{}{\cleardoublepage
+        \global\let\mtc@markboth\markboth
+        \global\let\@mkboth\markboth
+        \thispagestyle{empty}
+        \mtc@markboth{\uppercase{\plttitle}}{\uppercase{\plttitle}}%
+        }%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@ptilt\e@pti
+        \else\if #1n\let\do@ptilt\n@pti
+        \else\if #1c\let\do@ptilt\c@pti
+        \else\if #1l\let\do@ptilt\l@pti
+        \else\if #1r\let\do@ptilt\r@pti
+        \else\if #1d\let\do@ptilt\df@ptilt
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\pltfont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\ptc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\ptifont\do@ptilt{\mtc@v\plttitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\ptifont\do@ptilt{\mtc@v\plttitle}}\\
+        \@ifundefined{chapter}{\hline}{}
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\ptcindent
+        \rightmargin\ptcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        % depth does not matter for partlot
+        \begin{ptc@verse}%\c@tocdepth=\c@parttocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{plt@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{plt\Thepart}}%  % UNIX
+{\def\@tocfile{U\Thepart}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{ptc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\ptc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\@ifundefined{chapter}{\pagebreak[1]\vspace*{-1ex}}%
+        {\cleardoublepage}}
+
+% I use a depth of 10000 to inhibit the printing of
+% that contentsline.
+\def\l@xpart{\@dottedtocline{\@M}{1.0em}{2.3em}}
+\def\l@pchapter{\@dottedtocline{1}{1.0em}{2.3em}}
+
+\def\pchapter{pchapter}
+
+\let\sv@part\@part
+\def\@part[#1]#2{\sv@part[{#1}]{#2}\relax%
+\addcontentsline{lof}{xpart}{#1}%
+\addcontentsline{lot}{xpart}{#1}%
+}
+
+% tricky code to deal with \part*
+\let\ptc@spart\@spart
+\def\@spart{%
+\addtocontents{toc}{\protect\partend}\ptc@spart%
+}
+\def\@spart{%
+\addtocontents{toc}{\protect\partbegin}\ptc@spart%
+}
+\let\partend\relax
+\let\partbegin\relax
+
+\let\appendixmtc\relax
+
+% this command extracts info from the .toc file
+% and create the .ptcN files (.ptc -> .P on MS-DOS)
+\def\@doparttoc#1{{%
+  \makeatletter
+  \setcounter{ptc}{0} % START VALUE
+  \PTC@next#1.toc\relax\\}\setcounter{ptc}{0}} %23; raz
+% this command extracts info from the .lof file
+% and create the .plfN files (.plf -> .G on MS-DOS)
+\def\@dopartlof#1{{%
+  \makeatletter
+  \setcounter{ptc}{0} % START VALUE
+  \PLF@next#1.lof\relax\\}\setcounter{ptc}{0}} %23: raz
+% this command extracts info from the .lot file
+% and create the .pltN files (.plt -> .U on MS-DOS)
+\def\@dopartlot#1{{%
+  \setcounter{ptc}{0} % START VALUE
+  \makeatletter
+  \PLT@next#1.lot\relax\\}\setcounter{ptc}{0}} %23: raz
+
+\def\doparttoc{\@ifnextchar[{\doparttoc@}{\doparttoc@[l]}}
+\def\dopartlof{\@ifnextchar[{\dopartlof@}{\dopartlof@[l]}}
+\def\dopartlot{\@ifnextchar[{\dopartlot@}{\dopartlot@[l]}}
+
+\def\doparttoc@[#1]{%
+\if #1e\let\df@ptitc\e@pti%
+\else\if #1n\let\df@ptitc\n@pti%
+\else\if #1c\let\df@ptitc\c@pti%
+\else\if #1l\let\df@ptitc\l@pti%
+\else\if #1r\let\df@ptitc\r@pti%
+\fi\fi\fi\fi\fi%
+\@@doparttoc}
+
+\def\dopartlof@[#1]{%
+\if #1e\let\df@ptilf\e@pti%
+\else\if #1n\let\df@ptilf\n@pti%
+\else\if #1c\let\df@ptilf\c@pti%
+\else\if #1l\let\df@ptilf\l@pti%
+\else\if #1r\let\df@ptilf\r@pti%
+\fi\fi\fi\fi\fi%
+\@@dopartlof}
+
+\def\dopartlot@[#1]{%
+\if #1e\let\df@ptilt\e@pti%
+\else\if #1n\let\df@ptilt\n@pti%
+\else\if #1c\let\df@ptilt\c@pti%
+\else\if #1l\let\df@ptilt\l@pti%
+\else\if #1r\let\df@ptilt\r@pti%
+\fi\fi\fi\fi\fi%
+\@@dopartlot}
+
+\def\@@doparttoc{\@doparttoc{\jobname}\immediate\closeout\tf@mtc}
+\def\@@dopartlof{\@dopartlof{\jobname}\immediate\closeout\tf@mtc}
+\def\@@dopartlot{\@dopartlot{\jobname}\immediate\closeout\tf@mtc}
+
+\def\PTC@next#1\relax#2\\{%
+  \edef\PTC@list{#2}%
+  \PTC@loop{#1}}
+\def\PTC@toc{%
+  \ifx\PTC@list\@empty\else\expandafter\PTC@explist\fi}
+
+\def\PTC@contentsline#1#2#3#4{% %%DV: 4 instead of 3 parameters
+\expandafter%
+ \ifx\csname #1\endcsname\part\relax
+ \stepcounter{ptc}% % the ptc counter simulates the part counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.ptc\theptc}%     % UNIX
+\def\ptcname{\jobname.ptc\theptc}}%              % UNIX
+{\typeout{Writing\space\jobname.P\theptc}%       % MS-DOS
+\def\ptcname{\jobname.P\theptc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .ptcN .ptc->.P on MS-DOS
+ \immediate\openout\tf@mtc=\ptcname % open next .ptcN (.ptc->.P if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for chapters, sections, etc.
+ \ifx\csname #1\endcsname\chapter\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcCfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcCfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\section\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subsubsection\relax
+     \mtc@toks{\noexpand \leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSSfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\paragraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcPfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSPfont
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+% Added v25: \starchapter & co.
+\expandafter% % extracts and writes info for chapters, sections, etc.
+ \ifx\csname #1\endcsname\starchapter\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcCfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcCfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubsubsection\relax
+     \mtc@toks{\noexpand \leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSSSfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcPfont%
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\ptcSPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\ptcSPfont
+      \space #3}{#4}}}}\@tempa% %%DV: 4 instead of 3 parameters
+ \fi
+}
+
+\def\PTC@explist{\expandafter\PTC@next\PTC@list\\}
+\def\PTC@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JPARTTOCS NOT PREPARED.^^J}%
+    \expandafter\PTC@toc
+  \else
+    \typeout{PREPARING PARTTOCS FROM #1}%
+    \expandafter\PTC@read\fi}
+\def\PTC@read{%
+  \read\@inputcheck to\PTC@line
+  \expandafter\PTC@test\PTC@line....\PTC@%
+  }%
+\long\def\PTC@test#1#2#3#4#5\PTC@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \PTC@contentsline{#2}{#3}{#4}{\scrubdots#5}% %%DV: 4 instead of 3 params
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\PTC@list{\PTC@list#2\relax}%
+  \else\ifx#1\partend % \part* closes .ptcN (.ptc->.P on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\partbegin
+     \addtocounter{ptc}{-1}% % \part* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\PTC@toc
+  \else\expandafter\PTC@read\fi}%
+
+\def\PLF@next#1\relax#2\\{%
+  \edef\PLF@list{#2}%
+  \PLF@loop{#1}}
+\def\PLF@lof{%
+  \ifx\PLF@list\@empty\else\expandafter\PLF@explist\fi}
+
+\def\PLF@contentsline#1#2#3{%
+\expandafter%
+ \ifx\csname #1\endcsname\xpart\relax
+ \stepcounter{ptc}% % the ptc counter simulates the part counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.plf\theptc}%     % UNIX
+\def\plfname{\jobname.plf\theptc}}%              % UNIX
+{\typeout{Writing\space\jobname.G\theptc}%       % MS-DOS
+\def\plfname{\jobname.G\theptc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .plfN .plf->.G on MS-DOS
+ \immediate\openout\tf@mtc=\plfname % open next .plfN (.plf->.G if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\figure\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\plffont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\plffont%
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\PLF@explist{\expandafter\PLF@next\PLF@list\\}
+\def\PLF@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JPARTLOFS NOT PREPARED.^^J}%
+    \expandafter\PLF@lof
+  \else
+    \typeout{PREPARING PARTLOFS FROM #1}%
+    \expandafter\PLF@read\fi}
+\def\PLF@read{%
+  \read\@inputcheck to\PLF@line
+  \expandafter\PLF@test\PLF@line....\PLF@%
+  }%
+\long\def\PLF@test#1#2#3#4#5\PLF@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \PLF@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\PLF@list{\PLF@list#2\relax}%
+  \else\ifx#1\partend % \part* closes .plfN (.plf->.G on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\partbegin
+     \addtocounter{ptc}{-1}% % \part* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\PLF@lof
+  \else\expandafter\PLF@read\fi}%
+
+\def\PLT@next#1\relax#2\\{%
+  \edef\PLT@list{#2}%
+  \PLT@loop{#1}}
+\def\PLT@lot{%
+  \ifx\PLT@list\@empty\else\expandafter\PLT@explist\fi}
+
+\def\PLT@contentsline#1#2#3{%
+\expandafter%
+ \ifx\csname #1\endcsname\xpart\relax
+ \stepcounter{ptc}% % the ptc counter simulates the part counter
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.plt\theptc}%     % UNIX
+\def\pltname{\jobname.plt\theptc}}%              % UNIX
+{\typeout{Writing\space\jobname.U\theptc}%       % MS-DOS
+\def\pltname{\jobname.U\theptc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .pltN .plt->.U on MS-DOS
+ \immediate\openout\tf@mtc=\pltname % open next .pltN (.plt->.U if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for chapters, sections, etc.
+ \ifx\csname #1\endcsname\table\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\pltfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\pltfont%
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\PLT@explist{\expandafter\PLT@next\PLT@list\\}
+\def\PLT@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JPARTLOTS NOT PREPARED.^^J}%
+    \expandafter\PLT@lot
+  \else
+    \typeout{PREPARING PARTLOTS FROM #1}%
+    \expandafter\PLT@read\fi}
+\def\PLT@read{%
+  \read\@inputcheck to\PLT@line
+  \expandafter\PLT@test\PLT@line....\PLT@%
+  }%
+\long\def\PLT@test#1#2#3#4#5\PLT@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \PLT@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\PLT@list{\PLT@list#2\relax}%
+  \else\ifx#1\partend % \part* closes .pltN (.plt->.U on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\partbegin
+     \addtocounter{ptc}{-1}% % \part* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\PLT@lot
+  \else\expandafter\PLT@read\fi}%
+} % end of part stuff
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% If \chapter is not defined but \section is, then
+%%% the following macros are available (for article-like documents).
+%%% Braces are inscrutable!
+\@ifundefined{chapter}%
+{\@ifundefined{section}{}{%
+\def\firstsectionis#1%
+  {\typeout{^^JWARNING*** \string\firstsectionis}%
+   \typeout{ is an obsolete command^^J}}
+\newcounter{stc}  % counter of secttocs
+\setcounter{stc}{0}
+\newcounter{secttocdepth} % analog to tocdepth, but for secttocs
+\setcounter{secttocdepth}{2}
+
+% rule before/after secttoc/sectlof/sectlot
+\def\stc@rule{\kern-3\p@%
+  \hrule width \columnwidth \kern2.6\p@} % the \hrule is .4pt high
+
+\newlength\stcindent % indentation (left/right) of secttocs
+\stcindent=24pt      % defaut value
+\def\stcfont{\small\rm}    % font for the secttoc
+\def\stcSSfont{\normalsize\bf}   % font for the secttoc (subsections)
+\def\stcSSSfont{\stcfont}  % font for the secttoc (subsubsections)
+\def\stcPfont{\stcfont}    % font for the secttoc (paragraphs)
+\def\stcSPfont{\stcfont}   % font for the secttoc (subparagraphs)
+\def\slffont{\stcfont}     % font for the sectlof (figures)
+\def\sltfont{\stcfont}     % font for the sectlot (tables)
+\def\stifont{\Large\bf}    % font for titles
+
+% Centering, flushleft, flushright or empty titles.
+\def\c@sti#1{\null\hfill #1\hfill\null}
+\def\l@sti#1{\null #1\hfill\null}
+\def\r@sti#1{\null\hfill #1\null}
+\def\e@sti#1{\relax}
+\def\n@sti#1{\relax}
+
+% Default: titles on left
+\let\do@stitc\l@sti
+\let\df@stitc\l@sti
+\let\do@stilf\l@sti
+\let\df@stilf\l@sti
+\let\do@stilt\l@sti
+\let\df@stilt\l@sti
+
+%v27 % Language dependent names: default values
+%v27 \@ifundefined{stctitle}{\def\stctitle{Contents}}{\relax}
+%v27 \@ifundefined{slftitle}{\def\slftitle{Figures}}{\relax}
+%v27 \@ifundefined{slttitle}{\def\slttitle{Tables}}{\relax}
+
+\def\stc@verse{\let\\=\@centercr
+  \list{}{\itemsep\z@\itemindent \z@\listparindent \itemindent
+          \leftmargin\stcindent
+          \rightmargin\leftmargin}\item[]}
+\def\endstc@verse{\nopagebreak[4]\endlist}
+
+% this command must be used after \section
+% if you need a secttoc (no automatic secttoc)
+\def\secttoc{\@ifnextchar[{\secttoc@}{\secttoc@[d]}}
+
+\def\secttoc@[#1]{%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@stitc\e@sti
+        \else\if #1n\let\do@stitc\n@sti
+        \else\if #1c\let\do@stitc\c@sti
+        \else\if #1l\let\do@stitc\l@sti
+        \else\if #1r\let\do@stitc\r@sti
+        \else\if #1d\let\do@stitc\df@stitc
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\stcfont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\stc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\stifont\do@stitc{\mtc@v\stctitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\stifont\do@stitc{\mtc@v\stctitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\stcindent
+        \rightmargin\stcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        \begin{stc@verse}\c@tocdepth=\c@secttocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{stc@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+   \gdef\thestc{\arabic{stc}} %23
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{stc\thestc}}%  % UNIX
+{\def\@tocfile{S\thestc}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{stc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\stc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\pagebreak[1]\vspace*{-1ex}}%
+        % some space under the secttoc
+
+% this command must be used after \section
+% if you need a sectlof (no automatic sectlof)
+\def\sectlof{\@ifnextchar[{\sectlof@}{\sectlof@[d]}}
+
+\def\sectlof@[#1]{%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@stilf\e@sti
+        \else\if #1n\let\do@stilf\n@sti
+        \else\if #1c\let\do@stilf\c@sti
+        \else\if #1l\let\do@stilf\l@sti
+        \else\if #1r\let\do@stilf\r@sti
+        \else\if #1d\let\do@stilf\df@stilf
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\slffont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\stc@rule\relax % correction 07Nov94 v23
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\stifont\do@stilf{\mtc@v\slftitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\stifont\do@stilf{\mtc@v\slftitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\stcindent
+        \rightmargin\stcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        % depth does not matter for sectlof
+        \begin{stc@verse}%\c@tocdepth=\c@secttocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{slf@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+   \gdef\thestc{\arabic{stc}} %23
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{slf\thestc}}%  % UNIX
+{\def\@tocfile{H\thestc}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{stc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\stc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\pagebreak[1]\vspace*{-1ex}}%
+        % some space under the secttoc
+
+% Added in version #13
+% this command must be used after \section
+% if you need a sectlot (no automatic sectlot)
+\def\sectlot{\@ifnextchar[{\sectlot@}{\sectlot@[d]}}
+
+\def\sectlot@[#1]{%
+        \relax\begin{samepage}% we begin a local group here, using samepage
+        \if #1e\let\do@stilt\e@sti
+        \else\if #1n\let\do@stilt\n@sti
+        \else\if #1c\let\do@stilt\c@sti
+        \else\if #1l\let\do@stilt\l@sti
+        \else\if #1r\let\do@stilt\r@sti
+        \else\if #1d\let\do@stilt\df@stilt
+        \fi\fi\fi\fi\fi\fi
+        \raggedright % added #14
+        \parskip=\z@%
+        \reset@font\sltfont%
+        \parindent=\z@%
+        \nopagebreak[4]%
+        \kern-0.8\baselineskip\nopagebreak[4]%
+        \par\noindent
+        \ifx\stc@rule\relax
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\stifont\do@stilt{\mtc@v\slttitle}}\\
+        \end{tabular}\else
+        \begin{tabular}{@{}p{\columnwidth}@{}}
+        {\reset@font\stifont\do@stilt{\mtc@v\slttitle}}\\\hline
+        \end{tabular}\fi
+        \nopagebreak[4]\null\leavevmode\vrule width \z@
+        height \z@ depth \z@\\\@BBR%
+        \leftmargin\stcindent
+        \rightmargin\stcindent
+        \itemindent=\z@\labelwidth=\z@%
+        \labelsep=\z@\listparindent=\z@%
+        % depth does not matter for sectlot
+        \begin{stc@verse}%\c@tocdepth=\c@secttocdepth%
+        \leavevmode\\\@BBR% this blank line is necessary to avoid
+                % a wild negative indentation
+        \vskip -.5\baselineskip
+\begingroup
+  \makeatletter
+  \@ifundefined{slt@pgno}%
+  {\let\@dottedtocline\@undottedtocline}{}
+    \gdef\thestc{\arabic{stc}}
+\@ifundefined{SHORTEXT}%
+{\def\@tocfile{slt\thestc}}%  % UNIX
+{\def\@tocfile{V\thestc}}%    % MS-DOS
+  \@input{\jobname.\@tocfile}\if@filesw
+  \fi%
+  \global\@nobreakfalse\endgroup
+        \end{stc@verse}%
+        \kern0.\baselineskip%
+        \nopagebreak[4]\stc@rule\null\leavevmode\\%
+        \vskip-1.0\baselineskip
+        \vrule width \z@ height \z@
+        depth \z@\end{samepage}% %## the \\ is essential
+        \par\pagebreak[1]\vspace*{-1ex}}%
+        % some space under the secttoc
+
+% I use a depth of 10000 to inhibit the printing of
+% that contentsline.
+\def\l@xsect{\@dottedtocline{\@M}{1.0em}{2.3em}}
+\def\l@schapter{\@dottedtocline{1}{1.0em}{2.3em}}
+
+\def\xsect{xsect}
+\def\schapter{schapter}
+
+\let\sv@sect\@sect
+\gdef\@sect#1#2#3#4#5#6[#7]#8{%
+\ifnum #2=1
+\addcontentsline{lof}{xsect}{#7}%
+\addcontentsline{lot}{xsect}{#7}%
+\fi
+\sv@sect{#1}{#2}{#3}{#4}{#4}{#5}{#6}[{#7}]{#8}}
+
+\def\@sect#1#2#3#4#5#6[#7]#8{
+\expandafter
+\ifx\csname #1\endcsname\section\relax % ADDED
+\addcontentsline{lof}{xsect}{#7}%        ADDED
+\addcontentsline{lot}{xsect}{#7}%        ADDED
+\fi                             %        ADDED
+\ifx\csname #1\endcsname\starsection\relax % ADDED v25
+\addcontentsline{lof}{xsect}{#7}%        ADDED v25
+\addcontentsline{lot}{xsect}{#7}%        ADDED v25
+\fi                             %        ADDED v25
+\ifnum #2>\c@secnumdepth
+     \let\@svsec\@empty\else
+     \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname\hskip 1em}\fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+          \@hangfrom{\hskip #3\relax\@svsec}{\interlinepenalty \@M #8\par}%
+        \endgroup
+       \csname #1mark\endcsname{#7}\addcontentsline
+         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                      \protect\numberline{\csname the#1\endcsname}\fi
+                    #7}\else
+        \def\@svsechd{#6\hskip #3\relax  %% \relax added 2 May 90
+                   \@svsec #8\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                             \protect\numberline{\csname the#1\endcsname}\fi
+                       #7}}\fi
+     \@xsect{#5}}
+
+% tricky code to deal with \section*
+\let\stc@ssect\@ssect
+\def\@ssect{%
+\addtocontents{toc}{\protect\sectend}\stc@ssect%
+}
+\def\@ssect{%
+\addtocontents{toc}{\protect\sectbegin}\stc@ssect%
+}
+\let\sectend\relax
+\let\sectbegin\relax
+
+\let\appendixmtc\relax
+
+% this command extracts info from the .toc file
+% and create the .stcN files (.stc -> .S on MS-DOS)
+\def\@dosecttoc#1{{%
+  \makeatletter
+  \setcounter{stc}{0} % START VALUE
+  \STC@next#1.toc\relax\\}\setcounter{stc}{0}} %23: raz
+% this command extracts info from the .lof file
+% and create the .slfN files (.slf -> .H on MS-DOS)
+\def\@dosectlof#1{{%
+  \makeatletter
+  \setcounter{stc}{0} % START VALUE
+  \SLF@next#1.lof\relax\\}\setcounter{stc}{0}} %23: raz
+% this command extracts info from the .lot file
+% and create the .sltN files (.slt -> .V on MS-DOS)
+\def\@dosectlot#1{{%
+  \setcounter{stc}{0} % START VALUE
+  \makeatletter
+  \SLT@next#1.lot\relax\\}\setcounter{stc}{0}} %23: raz
+
+\def\dosecttoc{\@ifnextchar[{\dosecttoc@}{\dosecttoc@[l]}}
+\def\dosectlof{\@ifnextchar[{\dosectlof@}{\dosectlof@[l]}}
+\def\dosectlot{\@ifnextchar[{\dosectlot@}{\dosectlot@[l]}}
+
+\def\dosecttoc@[#1]{%
+\if #1e\let\df@stitc\e@sti%
+\else\if #1n\let\df@stitc\n@sti%
+\else\if #1c\let\df@stitc\c@sti%
+\else\if #1l\let\df@stitc\l@sti%
+\else\if #1r\let\df@stitc\r@sti%
+\fi\fi\fi\fi\fi%
+\@@dosecttoc}
+
+\def\dosectlof@[#1]{%
+\if #1e\let\df@stilf\e@sti%
+\else\if #1n\let\df@stilf\n@sti%
+\else\if #1c\let\df@stilf\c@sti%
+\else\if #1l\let\df@stilf\l@sti%
+\else\if #1r\let\df@stilf\r@sti%
+\fi\fi\fi\fi\fi%
+\@@dosectlof}
+
+\def\dosectlot@[#1]{%
+\if #1e\let\df@stilt\e@sti%
+\else\if #1n\let\df@stilt\n@sti%
+\else\if #1c\let\df@stilt\c@sti%
+\else\if #1l\let\df@stilt\l@sti%
+\else\if #1r\let\df@stilt\r@sti%
+\fi\fi\fi\fi\fi%
+\@@dosectlot}
+
+\def\@@dosecttoc{\@dosecttoc{\jobname}\immediate\closeout\tf@mtc}
+\def\@@dosectlof{\@dosectlof{\jobname}\immediate\closeout\tf@mtc}
+\def\@@dosectlot{\@dosectlot{\jobname}\immediate\closeout\tf@mtc}
+
+\def\STC@next#1\relax#2\\{%
+  \edef\STC@list{#2}%
+  \STC@loop{#1}}
+\def\STC@toc{%
+  \ifx\STC@list\@empty\else\expandafter\STC@explist\fi}
+
+\def\STC@contentsline#1#2#3{%
+  \gdef\thestc{\arabic{stc}}
+\expandafter%
+ \ifx\csname #1\endcsname\section\relax
+ \stepcounter{stc}% % the stc counter simulates the section counter
+  \gdef\thestc{\arabic{stc}}
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.stc\thestc}%     % UNIX
+\def\stcname{\jobname.stc\thestc}}%              % UNIX
+{\typeout{Writing\space\jobname.S\thestc}%       % MS-DOS
+\def\stcname{\jobname.S\thestc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .stcN .stc->.S on MS-DOS
+ \immediate\openout\tf@mtc=\stcname % open next .stcN (.stc->.S if MS-DOS)
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSfont%
+      \space #3}}}}\@tempa
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subsubsection\relax
+     \mtc@toks{\noexpand \leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcSSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSSfont%
+      \space #3}}}}\@tempa
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\paragraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcPfont%
+      \space #3}}}}\@tempa
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\subparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcSPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSPfont
+      \space #3}}}}\@tempa
+ \fi
+% Added v25: \starsection and co.
+ \ifx\csname #1\endcsname\starsection\relax
+ \stepcounter{stc}% % the stc counter simulates the section counter
+  \gdef\thestc{\arabic{stc}}
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.stc\thestc}%     % UNIX
+\def\stcname{\jobname.stc\thestc}}%              % UNIX
+{\typeout{Writing\space\jobname.S\thestc}%       % MS-DOS
+\def\stcname{\jobname.S\thestc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .stcN .stc->.S on MS-DOS
+ \immediate\openout\tf@mtc=\stcname % open next .stcN (.stc->.S if MS-DOS)
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubsection\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSfont%
+      \space #3}}}}\@tempa
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubsubsection\relax
+     \mtc@toks{\noexpand \leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcSSSfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSSSfont%
+      \space #3}}}}\@tempa
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcPfont%
+      \space #3}}}}\@tempa
+ \fi
+\expandafter%
+ \ifx\csname #1\endcsname\starsubparagraph\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\stcSPfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\stcSPfont
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\STC@explist{\expandafter\STC@next\STC@list\\}
+\def\STC@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JSECTTOCS NOT PREPARED.^^J}%
+    \expandafter\STC@toc
+  \else
+    \typeout{PREPARING SECTTOCS FROM #1}%
+    \expandafter\STC@read\fi}
+\def\STC@read{%
+  \read\@inputcheck to\STC@line
+  \expandafter\STC@test\STC@line....\STC@%
+  }%
+\long\def\STC@test#1#2#3#4#5\STC@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \STC@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\STC@list{\STC@list#2\relax}%
+  \else\ifx#1\sectend % \section* closes .stcN (.stc->.S on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\sectbegin
+     \addtocounter{stc}{-1}% % \section* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\STC@toc
+  \else\expandafter\STC@read\fi}%
+
+\def\SLF@next#1\relax#2\\{%
+  \edef\SLF@list{#2}%
+  \SLF@loop{#1}}
+\def\SLF@lof{%
+  \ifx\SLF@list\@empty\else\expandafter\SLF@explist\fi}
+
+\def\SLF@contentsline#1#2#3{%
+  \gdef\thestc{\arabic{stc}}
+\expandafter%
+ \ifx\csname #1\endcsname\xsect\relax
+ \stepcounter{stc}% % the stc counter simulates the section counter
+  \gdef\thestc{\arabic{stc}}
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.slf\thestc}%     % UNIX
+\def\slfname{\jobname.slf\thestc}}%              % UNIX
+{\typeout{Writing\space\jobname.G\thestc}%       % MS-DOS
+\def\slfname{\jobname.H\thestc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .slfN .slf->.H on MS-DOS
+ \immediate\openout\tf@mtc=\slfname % open next .slfN (.slf->.H if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for sections, etc.
+ \ifx\csname #1\endcsname\figure\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\slffont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\slffont%
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\SLF@explist{\expandafter\SLF@next\SLF@list\\}
+\def\SLF@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JSECTLOFS NOT PREPARED.^^J}%
+    \expandafter\SLF@lof
+  \else
+    \typeout{PREPARING SECTLOFS FROM #1}%
+    \expandafter\SLF@read\fi}
+\def\SLF@read{%
+  \read\@inputcheck to\SLF@line
+  \expandafter\SLF@test\SLF@line....\SLF@%
+  }%
+\long\def\SLF@test#1#2#3#4#5\SLF@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \SLF@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\SLF@list{\SLF@list#2\relax}%
+  \else\ifx#1\sectend % \section* closes .slfN (.slf->.H on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\sectbegin
+     \addtocounter{stc}{-1}% % \section* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\SLF@lof
+  \else\expandafter\SLF@read\fi}%
+
+\def\SLT@next#1\relax#2\\{%
+  \edef\SLT@list{#2}%
+  \SLT@loop{#1}}
+\def\SLT@lot{%
+  \ifx\SLT@list\@empty\else\expandafter\SLT@explist\fi}
+
+\def\SLT@contentsline#1#2#3{%
+  \gdef\thestc{\arabic{stc}}
+\expandafter%
+ \ifx\csname #1\endcsname\xsect\relax
+ \stepcounter{stc}% % the stc counter simulates the section counter
+  \gdef\thestc{\arabic{stc}}
+\@ifundefined{SHORTEXT}%
+{\typeout{Writing\space\jobname.slt\thestc}%     % UNIX
+\def\mltname{\jobname.slt\thestc}}%              % UNIX
+{\typeout{Writing\space\jobname.V\thestc}%       % MS-DOS
+\def\sltname{\jobname.V\thestc}}%                % MS-DOS
+ \immediate\closeout\tf@mtc % close current .sltN .slt->.V on MS-DOS
+ \immediate\openout\tf@mtc=\sltname % open next .sltN (.slt->.V if MS-DOS)
+ \fi
+\expandafter% % extracts and writes info for subsections, etc.
+ \ifx\csname #1\endcsname\table\relax
+     \mtc@toks{\noexpand\leavevmode#2}%
+     \edef\@tempa{\immediate\write\tf@mtc {%
+     {\string\reset@font\string\sltfont\string\mtc@string%
+     \string\contentsline{#1}%
+     {\noexpand\the\mtc@toks}{\string\reset@font\string\sltfont%
+      \space #3}}}}\@tempa
+ \fi
+}
+
+\def\SLT@explist{\expandafter\SLT@next\SLT@list\\}
+\def\SLT@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \typeout{^^JNo file #1^^JSECTLOTS NOT PREPARED.^^J}%
+    \expandafter\SLT@lot
+  \else
+    \typeout{PREPARING SECTLOTS FROM #1}%
+    \expandafter\SLT@read\fi}
+\def\SLT@read{%
+  \read\@inputcheck to\SLT@line
+  \expandafter\SLT@test\SLT@line....\SLT@%
+  }%
+\long\def\SLT@test#1#2#3#4#5\SLT@{%
+  \ifx#1\contentsline
+    \let\mtc@string\string
+    \SLT@contentsline{#2}{#3}{#4}%
+    \let\mtc@string\relax
+  \else\ifx#1\@input
+     \edef\SLT@list{\SLT@list#2\relax}%
+  \else\ifx#1\sectend % \section* closes .sltN (.slt->.V on MS-DOS)
+     \immediate\closeout\tf@mtc
+     \immediate\openout\tf@mtc=\jobname.bmt % and opens a scratch file
+  \else\ifx#1\sectbegin
+     \addtocounter{stc}{-1}% % \section* has done a parasite increment
+  \fi\fi\fi\fi
+  \ifeof\@inputcheck\expandafter\SLT@lot
+  \else\expandafter\SLT@read\fi}%
+}}{}
+
+\@ifundefined{section}{}{\let\l@listof\l@section} %v27
+\@ifundefined{chapter}{}{\let\l@listof\l@chapter} %v27
+\@ifundefined{part}{}{\let\l@starpart\l@part}
+\@ifundefined{chapter}{}{\let\l@starchapter\l@chapter}
+\@ifundefined{section}{}{\let\l@starsection\l@section}
+\@ifundefined{subsection}{}{\let\l@starsubsection\l@subsection}
+\@ifundefined{subsubsection}{}{\let\l@starsubsubsection\l@subsubsection}
+\@ifundefined{paragraph}{}{\let\l@starparagraph\l@paragraph}
+\@ifundefined{subparagraph}{}{\let\l@starsubparagraph\l@subparagraph}
+
+\def\noptcrule{\let\ptc@rule\relax}
+\def\nomtcrule{\let\mtc@rule\relax}
+\def\nostcrule{\let\stc@rule\relax}
+\def\ptcrule{\def\ptc@rule{\kern-3\p@%
+  \hrule width \columnwidth \kern2.6\p@}} % the \hrule is .4pt high
+\def\mtcrule{\def\mtc@rule{\kern-3\p@%
+  \hrule width \columnwidth \kern2.6\p@}} % the \hrule is .4pt high
+\def\stcrule{\def\stc@rule{\kern-3\p@%
+  \hrule width \columnwidth \kern2.6\p@}} % the \hrule is .4pt high
+
+%%%% Language dependent part
+\DeclareOption{american}{\input{english.mld}}
+\DeclareOption{austrian}{\input{german.mld}}
+\DeclareOption{brazil}{\input{portuges.mld}}
+\DeclareOption{breton}{\input{breton.mld}} %v26
+\DeclareOption{catalan}{\input{catalan.mld}}
+\DeclareOption{croatian}{\input{croatian.mld}}
+\DeclareOption{czech}{\input{czech.mld}}
+\DeclareOption{danish}{\input{danish.mld}}
+\DeclareOption{dutch}{\input{dutch.mld}}
+\DeclareOption{english}{\input{english.mld}}
+\DeclareOption{esperant}{\input{esperant.mld}} %v26
+\DeclareOption{esperanto}{\input{esperant.mld}} %v26
+\DeclareOption{finnish}{\input{finnish.mld}}
+\DeclareOption{francais}{\input{french.mld}}
+\DeclareOption{french}{\input{french.mld}}
+\DeclareOption{galician}{\input{galician.mld}}
+\DeclareOption{german}{\input{german.mld}}
+\DeclareOption{germanb}{\input{germanb.mld}} %v26
+\DeclareOption{greek}{\input{greek.mld}} %v26
+\DeclareOption{hungarian}{\input{magyar.mld}}
+\DeclareOption{irish}{\input{irish.mld}} %v26
+\DeclareOption{italian}{\input{italian.mld}}
+\DeclareOption{lsorbian}{\input{lsorbian.mld}} %v26
+\DeclareOption{magyar}{\input{magyar.mld}}
+\DeclareOption{norsk}{\input{norsk.mld}}
+\DeclareOption{nynorsk}{\input{nynorsk.mld}} %v25
+\DeclareOption{polish}{\input{polish.mld}}
+\DeclareOption{portuges}{\input{portuges.mld}}
+\DeclareOption{romanian}{\input{romanian.mld}}
+%%%%russian not supported \DeclareOption{russian}{\input{russian.mld}}
+\DeclareOption{russianb}{\input{russianb.mld}} %v26
+\DeclareOption{scottish}{\input{scottish.mld}} %v26
+\DeclareOption{slovak}{\input{slovak.mld}}
+\DeclareOption{slovene}{\input{slovene.mld}}
+\DeclareOption{spanish}{\input{spanish.mld}}
+\DeclareOption{swedish}{\input{swedish.mld}}
+\DeclareOption{turkish}{\input{turkish.mld}}
+\DeclareOption{usorbian}{\input{usorbian.mld}} %v26
+\DeclareOption{vietnam}{\input{vietnam.mld}}   %v27
+\DeclareOption{vietnamese}{\input{vietnam.mld}}   %v27
+\DeclareOption{arab}{\input{arab.mld}}   %v27
+\DeclareOption{arabic}{\input{arab.mld}}   %v27
+\ExecuteOptions{english} %v27 % default
+\ProcessOptions*
+%%\languagespecific{russian.dtx}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `minitoc.sty'.

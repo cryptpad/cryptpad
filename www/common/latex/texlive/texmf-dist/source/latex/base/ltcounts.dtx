@@ -1,0 +1,541 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltcounts.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltcounts.dtx}
+             [2015/06/05 v1.1i LaTeX Kernel (Counters)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltcounts.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{377}
+%
+% \changes{v1.0c}{1994/03/29}
+%     {Create file from parts of ltmiscen and ltherest.}
+% \changes{v1.1a}{1994/05/19}{Extracted file from ltcntlen.}
+% \changes{v1.1d}{1996/04/23}{Documentation improvements}
+%
+% \section{Counters and Lengths}
+% Commands for defining and using counters. This file defines:
+%
+% \DescribeMacro{\newcounter}
+% To define a new counter.
+%
+% \DescribeMacro{\setcounter}
+% To set the value of counters.
+%
+% \DescribeMacro{\addtocounter}
+% Increase the counter |#1| by the number |#2|.
+%
+% \DescribeMacro{\stepcounter}
+% Increase a counter by one.
+%
+% \DescribeMacro{\refstepcounter}
+% Increase a counter by one, also setting the value used by |\label|.
+%
+%
+% \DescribeMacro{\value}
+% For accessing the value of the counter as a \TeX\ number (as opposed
+% to |\the|\meta{counter} which expands to the \emph{printed}
+% representation of \meta{counter})
+%
+% \DescribeMacro\arabic
+% |\arabic|\marg{counter}: 1, 2, 3, \ldots
+%
+% \DescribeMacro\roman
+% |\roman|\marg{counter}: i, ii, iii, \ldots
+%
+% \DescribeMacro\Roman
+% |\Roman|\marg{counter}: I, II, III, \ldots
+%
+% \DescribeMacro\alph
+% |\alph|\marg{counter}: a, b, c, \ldots
+%
+% \DescribeMacro\Alph
+% |\Alph|\marg{counter}: A, B, C, \ldots
+%
+% \DescribeMacro\fnsymbol
+% |\fnsymbol|\marg{counter}:  $*$, $\dagger$, $\ddagger$, \ldots
+%
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+% \subsection{Environment Counter Macros}
+%
+%  An environment  foo  has an associated counter defined by the
+%  following control sequences:
+%
+% \begin{tabular}{lp{.75\textwidth}}
+%  |\c@foo|  &  Contains the counter's numerical value.
+%                It is defined by  |\newcount\foocounter|.\\
+%  |\thefoo| & Macro that expands to the printed value of |\foocounter|.
+%              For example, if sections are numbered within chapters,
+%              and section headings look like
+%
+%                  Section II-3.  The Nature of Counters
+%
+%              then |\thesection| might be defined by:\newline
+%                 |\def\thesection|\newline\hspace*{2em}
+%                    |{\@Roman{\c@chapter}-\@arabic{\c@section}}|\\
+%
+%  |\p@foo|  & Macro that expands to a printed `reference prefix' of
+%              counter foo.  Any |\ref| to a value created by counter
+%              foo will produce the expansion of |\p@foo\thefoo|  when
+%              the |\label| command is executed. See file \texttt{ltxref.dtx}
+%              for an extension of this mechanism.\\
+%  |\cl@foo| & List of counters to be reset when foo stepped.
+%              Has format
+%                  |\@elt{countera}\@elt{counterb}\@elt{counterc}|.
+% \end{tabular}
+%
+% \textbf{NOTE:}\\
+% |\thefoo| and |\p@foo| \emph{must} be defined in such a way that
+% |\edef\bar{\thefoo}| or |\edef\bar{\p@foo}|
+% defines |\bar| so that it will evaluate to the counter value at the
+% time of the |\edef|, even after |\foocounter| and any other counters
+% have been changed.  This will happen if you use the standard commands
+% |\@arabic|, |\@Roman|, etc.
+%
+%
+%  The following commands are used to define and modify counters.
+%
+%    |\refstepcounter|\marg{foo}\\
+%         Same as |\stepcounter|, but it also defines
+%         |\@currentreference| so that a subsequent
+%         |\label|\marg{bar} command causes |\ref|\marg{bar} to
+%          generate the current value of counter \meta{foo}.
+%
+%    |\@definecounter|\marg{foo}\\
+%        Initializes counter \marg{foo} (with empty reset list), defines
+%        |\p@foo| and |\thefoo| to be null. Also adds \meta{foo}
+%        to |\cl@@ckpt| --
+%          the reset list of a dummy counter |@ckpt| used for taking
+%          checkpoints for the |\include| system.
+%
+%    |\@addtoreset|\marg{foo}\marg{bar} :
+%          Adds counter \meta{foo} to the list of counters
+%         |\cl@bar| to be reset  when counter \meta{bar} is stepped.
+%
+%
+% \begin{macro}{\setcounter}
+% \changes{v1.0d}{1994/04/09}
+%     {\cs{@nocnterr} now has counter name argument}
+% \changes{v1.0e}{1994/04/17}
+%     {Use \cs{@nocounterr} instead of \cs{@nocnterr}}
+%    |\setcounter|\marg{foo}\marg{val}  :
+%  Globally sets |\foocounter| equal to \meta{val}.
+%    \begin{macrocode}
+\def\setcounter#1#2{%
+  \@ifundefined{c@#1}%
+    {\@nocounterr{#1}}%
+    {\global\csname c@#1\endcsname#2\relax}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\addtocounter}
+% \changes{v1.0d}{1994/04/09}
+%     {\cs{@nocnterr} now has counter name argument}
+% \changes{v1.0e}{1994/04/17}
+%     {Use \cs{@nocounterr} instead of \cs{@nocnterr}}
+% |\addtocounter|\marg{foo}\marg{val}
+% Globally increments |\foocounter| by \meta{val}.
+%    \begin{macrocode}
+\def\addtocounter#1#2{%
+  \@ifundefined{c@#1}%
+    {\@nocounterr{#1}}%
+    {\global\advance\csname c@#1\endcsname #2\relax}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\newcounter}
+% |\newcounter|\marg{newctr}\oarg{oldctr}
+%    Defines \meta{newctr} to be a counter, which is reset when counter
+%       \meta{oldctr} is stepped.  If \meta{newctr} already defined
+% produces
+%           `|c@newctr  already defined|' error.
+%    \begin{macrocode}
+\def\newcounter#1{%
+  \expandafter\@ifdefinable \csname c@#1\endcsname
+    {\@definecounter{#1}}%
+  \@ifnextchar[{\@newctr{#1}}{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\value}
+%    |\value|\marg{ctr}
+%           produces the value of counter \meta{ctr}, for use with
+%           a |\setcounter| or |\addtocounter| command.
+%    \begin{macrocode}
+\def\value#1{\csname c@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@newctr}
+% \changes{v1.0d}{1994/04/09}
+%     {\cs{@nocnterr} now has counter name argument}
+% \changes{v1.0e}{1994/04/17}
+%     {Use \cs{@nocounterr} instead of \cs{@nocnterr}}
+%    \begin{macrocode}
+\def\@newctr#1[#2]{%
+  \@ifundefined{c@#2}{\@nocounterr{#2}}{\@addtoreset{#1}{#2}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\stepcounter}
+% \changes{LaTeX209}{1992/11/23}{Replaced \{\} in \cs{stepcounter} by
+%       \cs{begingroup} \cs{endgroup} to avoid adding an empty ord in
+%       math mode}
+% \changes{v1.0d}{1994/04/09}
+%     {Use \cs{addtocounter} to have name checked}
+%    |\stepcounter|{foo}
+%  Globally increments counter |\c@FOO|
+%                             and resets all subsidiary counters.
+%    \begin{macrocode}
+\def\stepcounter#1{%
+  \addtocounter{#1}\@ne
+  \begingroup
+    \let\@elt\@stpelt
+    \csname cl@#1\endcsname
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@stpelt}
+% \changes{v1.1h}{2015/01/10}{Reset all within counters in one go (latexrelease)}
+%
+%    Rather than resetting the ``within'' counter to zero we set it to
+%    $-1$ and then run |\stepcounter| that moves it to $0$ and also
+%    initiates resetting the next level down.
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\@stpelt}
+%<latexrelease>                             {Reset nested counters}%
+%<*2ekernel|latexrelease>
+\def\@stpelt#1{\global\csname c@#1\endcsname \m@ne\stepcounter{#1}}%
+%<latexrelease>\EndIncludeInRelease
+%</2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{0000/00/00}{\@stpelt}
+%<latexrelease>                             {Reset nested counters}%%
+%<latexrelease>\def\@stpelt#1{\global\csname c@#1\endcsname \z@}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\cl@@ckpt}
+%    \begin{macrocode}
+\def\cl@@ckpt{\@elt{page}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@definecounter}
+%  \changes{v1.1b}{1995/05/20}{Streamlined code}
+%  \changes{v1.1c}{1995/05/20}{And do it right}
+%
+%    \begin{macrocode}
+\def\@definecounter#1{\expandafter\newcount\csname c@#1\endcsname
+     \setcounter{#1}\z@
+     \global\expandafter\let\csname cl@#1\endcsname\@empty
+     \@addtoreset{#1}{@ckpt}%
+     \global\expandafter\let\csname p@#1\endcsname\@empty
+     \expandafter
+     \gdef\csname the#1\expandafter\endcsname\expandafter
+          {\expandafter\@arabic\csname c@#1\endcsname}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@addtoreset}
+%    \begin{macrocode}
+\def\@addtoreset#1#2{\expandafter\@cons\csname cl@#2\endcsname {{#1}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%    Numbering commands for definitions of |\theCOUNTER| and |\list|
+%    arguments.
+%
+%    All commands can now be used in text and math mode.
+%
+%  \begin{macro}{\arabic}
+%          Representation of\meta{counter} as arabic numerals.
+%          Changed 29 Apr 86 to make it print the obvious thing
+%          it COUNTER not positive.
+%    \begin{macrocode}
+\def\arabic#1{\expandafter\@arabic\csname c@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\roman}
+%  Representation of \meta{counter} as lower-case
+%                           Roman numerals.
+%    \begin{macrocode}
+\def\roman#1{\expandafter\@roman\csname c@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\Roman}
+%  Representation of \meta{counter} as upper-case
+%                           Roman numerals.
+%    \begin{macrocode}
+\def\Roman#1{\expandafter\@Roman\csname c@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\alph}
+%  Representation of \meta{counter} as a lower-case
+%                           letter: 1 = a, 2 = b, etc.
+%    \begin{macrocode}
+\def\alph#1{\expandafter\@alph\csname c@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\Alph}
+%  Representation of \meta{counter} as an upper-case
+%                           letter: 1 = A, 2 = B, etc.
+%    \begin{macrocode}
+\def\Alph#1{\expandafter\@Alph\csname c@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\fnsymbol}
+%  \changes{v1.1b}{1995/05/20}{Streamlined code}
+% \changes{v1.1e}{1997/03/21}
+%     {Use \cs{mathsection} and \cs{mathparagraph}. latex/2445}
+%
+%    Representation of \meta{COUNTER} as a footnote
+%                           symbol: 1 = $*$, 2 = $\dagger$, etc.
+%    \begin{macrocode}
+\def\fnsymbol#1{\expandafter\@fnsymbol\csname c@#1\endcsname}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v1.0f}{1994/05/13}{Removed \cs{@ialph}}
+% \changes{v1.0f}{1994/05/13}{Removed \cs{@Ialph}}
+%
+%  \begin{macro}{\@arabic}
+%     |\@arabic\FOOcounter|
+%     Representation of |\FOOcounter| as arabic numerals.
+%    \begin{macrocode}
+\def\@arabic#1{\number #1}  %% changed 29 Apr 86
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@roman}
+%   |\@roman\FOOcounter|
+%    Representation of |\FOOcounter| as lower-case
+%                           Roman numerals.
+%    \begin{macrocode}
+\def\@roman#1{\romannumeral #1}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@Roman}
+%     |\@Roman\FOOcounter|
+%     Representation of |\FOOcounter| as upper-case
+%                    Roman numerals.
+
+% \changes{v1.1f}{1997/10/06}{Change \cs{@Roman} to be fully
+%    expandable, so that the result is written properly to files.}
+%    \begin{macrocode}
+\def\@Roman#1{\expandafter\@slowromancap\romannumeral #1@}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@slowromancap}
+% \changes{v1.1f}{1997/10/06}{Macro added.}
+%    Fully expandable macro to change a roman number to uppercase.
+%    \begin{macrocode}
+\def\@slowromancap#1{\ifx @#1% then terminate
+     \else
+       \if i#1I\else\if v#1V\else\if x#1X\else\if l#1L\else\if
+       c#1C\else\if d#1D\else \if m#1M\else#1\fi\fi\fi\fi\fi\fi\fi
+       \expandafter\@slowromancap
+     \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@alph}
+%     |\@alph\FOOcounter|
+%     Representation of |\FOOcounter| as a lower-case
+%                    letter: 1 = a, 2 = b, etc.
+%    \begin{macrocode}
+\def\@alph#1{%
+  \ifcase#1\or a\or b\or c\or d\or e\or f\or g\or h\or i\or j\or
+   k\or l\or m\or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or
+    y\or z\else\@ctrerr\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@Alph}
+%     |\@Alph\FOOcounter|
+%       Representation of |\FOOcounter| as an upper-case
+%                    letter: 1 = A, 2 = B, etc.
+%    \begin{macrocode}
+\def\@Alph#1{%
+  \ifcase#1\or A\or B\or C\or D\or E\or F\or G\or H\or I\or J\or
+   K\or L\or M\or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or
+    Y\or Z\else\@ctrerr\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@fnsymbol}
+%  \changes{v1.1b}{1995/05/20}{Allowing both text and math}
+%    Typesetting old fashioned footnote symbols.
+%    This can be done both in text or math mode now.
+%
+%  \changes{v1.1h}{2015/01/10}{Unse \cs{TextOrMath} (latexrelease)}
+%    This macro is another example of an ever recurring problem in
+%    \TeX: Determining if something is text-mode or math-mode. It is
+%    imperative for the decision between text and math to be delayed
+%    until the actual typesetting is done as the code in question may
+%    go through an |\edef| or |\write| where an |\ifmmode| test would
+%    be executed prematurely. Hence in the implementation below,
+%    |\@fnsymbol| is not robust in itself but the parts doing the
+%    actual typesetting are.
+%
+%    In the case of |\@fnsymbol| we make use of the robust command
+%    |\TextOrMath| which takes two arguments and typesets the first if
+%    in text-mode and the second if in math-mode. Note that in order
+%    for this command to make the correct decision, it must insert a
+%    |\relax| token if run under regular \TeX, which ruins any kerning
+%    between the preceding characters and whatever awaits
+%    typesetting. If you use e\TeX\ as engine for \LaTeX\ (as
+%    recommended) this unfortunate side effect is not present.
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\@fnsymbol}{Use \TexOrMath}%
+%<*2ekernel|latexrelease>
+\def\@fnsymbol#1{%
+   \ifcase#1\or \TextOrMath\textasteriskcentered *\or
+   \TextOrMath \textdagger \dagger\or
+   \TextOrMath \textdaggerdbl \ddagger \or
+   \TextOrMath \textsection  \mathsection\or
+   \TextOrMath \textparagraph \mathparagraph\or
+   \TextOrMath \textbardbl \|\or
+   \TextOrMath {\textasteriskcentered\textasteriskcentered}{**}\or
+   \TextOrMath {\textdagger\textdagger}{\dagger\dagger}\or
+   \TextOrMath {\textdaggerdbl\textdaggerdbl}{\ddagger\ddagger}\else
+   \@ctrerr \fi
+}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\@fnsymbol}{Use \TexOrMath}%
+%<latexrelease>\def\@fnsymbol#1{\ensuremath{%
+%<latexrelease>   \ifcase#1\or *\or \dagger\or \ddagger\or \mathsection\or
+%<latexrelease>     \mathparagraph\or \|\or **\or \dagger\dagger
+%<latexrelease>     \or \ddagger\ddagger \else\@ctrerr\fi}}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\TextOrMath}
+%    \changes{v1.1h}{2015/01/11}{Add command to solve robustness
+%      issues (pr/3752) (latexrelease)}
+%    When using regular \TeX, we make this command robust so that it
+%    always selects the correct branch in an |\ifmmode| switch with
+%    the usual disadvantage of ruining kerning. For the application we
+%    use it for here that shouldn't matter. The alternative would be
+%    to mimic |\IeC| from \textsf{inputenc} but then it wil have the
+%    disadvantage of choosing the wrong branch if appearing at the
+%    beginning of an alignment cell. However, users of e\TeX\ will be
+%    pleasantly surprised to get the best of both worlds and no bad
+%    side effects.
+%
+%    First some code for checking if we are running e\TeX\ but making
+%    sure not to permanently turn |\eTeXversion| into |\relax|.
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\TextOrMath}{\TextOrMath}%
+%<*2ekernel|latexrelease>
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname eTeXversion\endcsname\relax
+%    \end{macrocode}
+% In case of ordinary \TeX\ we define |\TextOrMath| as a robust
+% command but make sure it always grabs its arguments. If we didn't do
+% this it might very well gobble spaces in the input stream.
+%    \begin{macrocode}
+\DeclareRobustCommand\TextOrMath{%
+  \ifmmode  \expandafter\@secondoftwo
+  \else     \expandafter\@firstoftwo  \fi}
+\protected@edef\TextOrMath#1#2{\TextOrMath{#1}{#2}}
+\else
+%    \end{macrocode}
+% For e\TeX\ the situation is similar. The robust macro is a hidden
+% one so that we again avoid problems of gobbling spaces in the input.
+%    \begin{macrocode}
+\protected\expandafter\def\csname TextOrMath\space\endcsname{%
+  \ifmmode  \expandafter\@secondoftwo
+  \else     \expandafter\@firstoftwo  \fi}
+\edef\TextOrMath#1#2{%
+  \expandafter\noexpand\csname TextOrMath\space\endcsname
+  {#1}{#2}}
+\fi
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\TextOrMath}{\TextOrMath}%
+%<latexrelease>\let\TextOrMath\@undefined
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

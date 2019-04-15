@@ -1,0 +1,386 @@
+%%
+%% This is file `russian.bdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,russian')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+%% Language definitions for Russian by
+%%   ... (can't find the information. If it was you please tell me!)
+\ProvidesFile{russian.bdf}
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\newcommand\bibsrussian[1][russian]{%
+  \def\biblanguagename{#1}%
+  \def\btxetalshort##1{\protect\foreignlanguage{#1}{\IeC {\cyri }~\IeC
+      {\cyrd }\IeC {\cyrr }.##1{}}}%
+  \def\btxetallong##1{\protect\foreignlanguage{#1}{\IeC {\cyri }~\IeC
+      {\cyrd }\IeC {\cyrr }\IeC {\cyru }\IeC {\cyrg }\IeC {\cyri }\IeC
+      {\cyre }}}%
+  \def\btxandshort##1{\protect\foreignlanguage{#1}{\IeC {\cyri }}}%
+  \def\btxandlong##1{\protect\foreignlanguage{#1}{\IeC {\cyri }}}%
+  \def\btxandcomma##1{,}%
+  \def\btxinlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrv }}}%
+  \def\btxinshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrv }}}%
+  \def\btxofseriesshort##1{\protect\foreignlanguage{#1}{\IeC {\cyri
+      }\IeC {\cyrz }}}%
+  \def\btxinseriesshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrv }}}%
+  \def\btxofserieslong##1{\protect\foreignlanguage{#1}{\IeC {\cyri
+      }\IeC {\cyrz }}}%
+  \def\btxinserieslong##1{\protect\foreignlanguage{#1}{\IeC {\cyrv }}}%
+  \def\btxeditorshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrr
+      }\IeC {\cyre }\IeC {\cyrd }.##1{}}}%
+  \def\btxeditorlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrr }\IeC
+      {\cyre }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrk }\IeC {\cyrt }\IeC
+      {\cyro }\IeC {\cyrr }}}%
+  \def\btxeditorsshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrr
+      }\IeC {\cyre }\IeC {\cyrd }.##1{}}}%
+  \def\btxeditorslong##1{\protect\foreignlanguage{#1}{\IeC {\cyrr
+      }\IeC {\cyre }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrk }\IeC {\cyrt
+      }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrery }}}%
+  \def\btxvolumeshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrt }.##1{}}}%
+  \def\btxvolumelong##1{\protect\foreignlanguage{#1}{\IeC {\cyrt }\IeC
+      {\cyro }\IeC {\cyrm }}}%
+  \def\btxnumbershort##1{\protect\foreignlanguage{#1}{%
+      n\textsuperscript{\underline{o}}}}%
+  \def\btxnumberlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrn }\IeC
+      {\cyro }\IeC {\cyrm }\IeC {\cyre }\IeC {\cyrr }}}%
+  \def\btxeditionshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrr
+      }\IeC {\cyre }\IeC {\cyrd }.##1{}}}%
+  \def\btxeditionlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrr
+      }\IeC {\cyre }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrk }\IeC {\cyrc
+      }\IeC {\cyri }\IeC {\cyrya }}}%
+  \def\btxeditionnumshort##1##2{\btxnumeralshort{##1}~\btxeditionshort{##2}}%
+  \def\btxeditionnumlong##1##2{\btxnumerallong{##1}~\btxeditionlong{##2}}%
+  \def\btxchaptershort##1{\protect\foreignlanguage{#1}{\IeC {\cyrg
+      }\IeC {\cyrl }.##1{}}}%
+  \def\btxchapterlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrg
+      }\IeC {\cyrl }\IeC {\cyra }\IeC {\cyrv }\IeC {\cyra }}}%
+  \def\btxpageshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrs }\IeC
+      {\cyrt }\IeC {\cyrr }.##1{}}}%
+  \def\btxpagelong##1{\protect\foreignlanguage{#1}{\IeC {\cyrs }\IeC
+      {\cyrt }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyri }\IeC
+      {\cyrc }\IeC {\cyra }}}%
+  \def\btxpagesshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrs }\IeC
+      {\cyrt }\IeC {\cyrr }.##1{}}}%
+  \def\btxpageslong##1{\protect\foreignlanguage{#1}{\IeC {\cyrs }\IeC
+      {\cyrt }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyri }\IeC
+      {\cyrc }\IeC {\cyrery }}}%
+  \def\btxmastthesis##1{\protect\foreignlanguage{#1}{\IeC {\CYRD }\IeC
+      {\cyri }\IeC {\cyrp }\IeC {\cyrl }\IeC {\cyro }\IeC {\cyrm }
+      \IeC {\cyrm }\IeC {\cyra }\IeC {\cyrg }\IeC {\cyri }\IeC {\cyrs
+      }\IeC {\cyrt }\IeC {\cyrr }\IeC {\cyra }}}%
+  \def\btxphdthesis##1{\protect\foreignlanguage{#1}{\IeC {\CYRK }\IeC
+      {\cyra }\IeC {\cyrn }\IeC {\cyrd }\IeC {\cyri }\IeC {\cyrd }\IeC
+      {\cyra }\IeC {\cyrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyra }\IeC
+      {\cyrya } \IeC {\cyrd }\IeC {\cyri }\IeC {\cyrs }\IeC {\cyrs
+      }\IeC {\cyre }\IeC {\cyrr }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrc
+      }\IeC {\cyri }\IeC {\cyrya }}}%
+  \def\btxtechrepshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrt
+      }\IeC {\cyre }\IeC {\cyrh }.\ \IeC {\cyro }\IeC {\cyrt }\IeC
+      {\cyrch }\IeC {\cyre }\IeC {\cyrt }##1{}}}%
+  \def\btxtechreplong##1{\protect\foreignlanguage{#1}{\IeC {\cyrt
+      }\IeC {\cyre }\IeC {\cyrh }\IeC {\cyrn }\IeC {\cyri }\IeC
+      {\cyrch }\IeC {\cyre }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri
+      }\IeC {\cyrishrt } \IeC {\cyro }\IeC {\cyrt }\IeC {\cyrch }\IeC
+      {\cyre }\IeC {\cyrt }}}%
+  \def\btxmonjanlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrya
+      }\IeC {\cyrn }\IeC {\cyrv }\IeC {\cyra }\IeC {\cyrr }\IeC
+      {\cyrsftsn }}}%
+  \def\btxmonfeblong##1{\protect\foreignlanguage{#1}{\IeC {\cyrf }\IeC
+      {\cyre }\IeC {\cyrv }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrl }\IeC
+      {\cyrsftsn }}}%
+  \def\btxmonmarlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrm }\IeC
+      {\cyra }\IeC {\cyrr }\IeC {\cyrt }}}%
+  \def\btxmonaprlong##1{\protect\foreignlanguage{#1}{\IeC {\cyra }\IeC
+      {\cyrp }\IeC {\cyrr }\IeC {\cyre }\IeC {\cyrl }\IeC {\cyrsftsn
+      }}}%
+  \def\btxmonmaylong##1{\protect\foreignlanguage{#1}{\IeC {\cyrm }\IeC
+      {\cyra }\IeC {\cyrishrt }}}%
+  \def\btxmonjunlong##1{\protect\foreignlanguage{#1}{\IeC {\cyri }\IeC
+      {\cyryu }\IeC {\cyrn }\IeC {\cyrsftsn }}}%
+  \def\btxmonjullong##1{\protect\foreignlanguage{#1}{\IeC {\cyri }\IeC
+      {\cyryu }\IeC {\cyrl }\IeC {\cyrsftsn }}}%
+  \def\btxmonauglong##1{\protect\foreignlanguage{#1}{\IeC {\cyra }\IeC
+      {\cyrv }\IeC {\cyrg }\IeC {\cyru }\IeC {\cyrs }\IeC {\cyrt }}}%
+  \def\btxmonseplong##1{\protect\foreignlanguage{#1}{\IeC {\cyrs }\IeC
+      {\cyre }\IeC {\cyrn }\IeC {\cyrt }\IeC {\cyrya }\IeC {\cyrb
+      }\IeC {\cyrr }\IeC {\cyrsftsn }}}%
+  \def\btxmonoctlong##1{\protect\foreignlanguage{#1}{\IeC {\cyro }\IeC
+      {\cyrk }\IeC {\cyrt }\IeC {\cyrya }\IeC {\cyrb }\IeC {\cyrr
+      }\IeC {\cyrsftsn }}}%
+  \def\btxmonnovlong##1{\protect\foreignlanguage{#1}{\IeC {\cyrn }\IeC
+      {\cyro }\IeC {\cyrya }\IeC {\cyrb }\IeC {\cyrr }\IeC {\cyrsftsn
+      }}}%
+  \def\btxmondeclong##1{\protect\foreignlanguage{#1}{\IeC {\cyrd }\IeC
+      {\cyre }\IeC {\cyrk }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyrr }\IeC
+      {\cyrsftsn }}}%
+  \def\btxmonjanshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrya
+      }\IeC {\cyrn }\IeC {\cyrv }.##1{}}}%
+  \def\btxmonfebshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrf
+      }\IeC {\cyre }\IeC {\cyrv }.##1{}}}%
+  \def\btxmonmarshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrm
+      }\IeC {\cyra }\IeC {\cyrr }.##1{}}}%
+  \def\btxmonaprshort##1{\protect\foreignlanguage{#1}{\IeC {\cyra
+      }\IeC {\cyrp }\IeC {\cyrr }.##1{}}}%
+  \def\btxmonmayshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrm
+      }\IeC {\cyra }\IeC {\cyrishrt }}}%
+  \def\btxmonjunshort##1{\protect\foreignlanguage{#1}{\IeC {\cyri
+      }\IeC {\cyryu }\IeC {\cyrn }\IeC {\cyrsftsn }##1{}}}%
+  \def\btxmonjulshort##1{\protect\foreignlanguage{#1}{\IeC {\cyri
+      }\IeC {\cyryu }\IeC {\cyrl }\IeC {\cyrsftsn }##1{}}}%
+  \def\btxmonaugshort##1{\protect\foreignlanguage{#1}{\IeC {\cyra
+      }\IeC {\cyrv }\IeC {\cyrg }.##1{}}}%
+  \def\btxmonsepshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrs
+      }\IeC {\cyre }\IeC {\cyrn }.##1{}}}%
+  \def\btxmonoctshort##1{\protect\foreignlanguage{#1}{\IeC {\cyro
+      }\IeC {\cyrk }\IeC {\cyrt }.##1{}}}%
+  \def\btxmonnovshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrn
+      }\IeC {\cyro }\IeC {\cyrya }.##1{}}}%
+  \def\btxmondecshort##1{\protect\foreignlanguage{#1}{\IeC {\cyrd
+      }\IeC {\cyre }\IeC {\cyrk }.##1{}}}%
+  \def\Btxinlong##1{\protect\foreignlanguage{#1}{\IeC {\CYRV }}}%
+  \def\Btxinshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRV }}}%
+  \def\Btxeditorshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRR
+      }\IeC {\cyre }\IeC {\cyrd }.##1{}}}%
+  \def\Btxeditorlong##1{\protect\foreignlanguage{#1}{\IeC {\CYRR }\IeC
+      {\cyre }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrk }\IeC {\cyrt }\IeC
+      {\cyro }\IeC {\cyrr }}}%
+  \def\Btxeditorsshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRR
+      }\IeC {\cyre }\IeC {\cyrd }.##1{}}}%
+  \def\Btxeditorslong##1{\protect\foreignlanguage{#1}{\IeC {\CYRR
+      }\IeC {\cyre }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrk }\IeC {\cyrt
+      }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrery }}}%
+  \def\Btxvolumeshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRT }.##1{}}}%
+  \def\Btxvolumelong##1{\protect\foreignlanguage{#1}{\IeC {\CYRT }\IeC
+      {\cyro }\IeC {\cyrm }}}%
+  \def\Btxnumbershort##1{\protect\foreignlanguage{#1}{%
+      N\textsuperscript{\underline{o}}}}%
+  \def\Btxnumberlong##1{\protect\foreignlanguage{#1}{\IeC {\CYRN }\IeC
+      {\cyro }\IeC {\cyrm }\IeC {\cyre }\IeC {\cyrr }}}%
+  \def\Btxeditionshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRR
+      }\IeC {\cyre }\IeC {\cyrd }.##1{}}}%
+  \def\Btxeditionlong##1{\protect\foreignlanguage{#1}{\IeC {\CYRR
+      }\IeC {\cyre }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrk }\IeC {\cyrc
+      }\IeC {\cyri }\IeC {\cyrya }}}%
+  \def\Btxeditionnumshort##1##2{\btxnumeralshort{##1}~\Btxeditionshort{##2}}%
+  \def\Btxeditionnumlong##1##2{\btxnumerallong{##1}~\Btxeditionlong{##2}}%
+  \def\Btxchaptershort##1{\protect\foreignlanguage{#1}{\IeC {\CYRG
+      }\IeC {\cyrl }.##1{}}}%
+  \def\Btxchapterlong##1{\protect\foreignlanguage{#1}{\IeC {\CYRG
+      }\IeC {\cyrl }\IeC {\cyra }\IeC {\cyrv }\IeC {\cyra }}}%
+  \def\Btxpageshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRS }\IeC
+      {\cyrt }\IeC {\cyrr }.##1{}}}%
+  \def\Btxpagelong##1{\protect\foreignlanguage{#1}{\IeC {\CYRS }\IeC
+      {\cyrt }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyri }\IeC
+      {\cyrc }\IeC {\cyra }}}%
+  \def\Btxpagesshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRS }\IeC
+      {\cyrt }\IeC {\cyrr }.##1{}}}%
+  \def\Btxpageslong##1{\protect\foreignlanguage{#1}{\IeC {\CYRS }\IeC
+      {\cyrt }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyri }\IeC
+      {\cyrc }\IeC {\cyrery }}}%
+  \def\Btxtechrepshort##1{\protect\foreignlanguage{#1}{\IeC {\CYRT
+      }\IeC {\cyre }\IeC {\cyrh }.\ \IeC {\cyro }\IeC {\cyrt }\IeC
+      {\cyrch }\IeC {\cyre }\IeC {\cyrt }##1{}}}%
+  \def\Btxtechreplong##1{\protect\foreignlanguage{#1}{\IeC {\CYRT
+      }\IeC {\cyre }\IeC {\cyrh }\IeC {\cyrn }\IeC {\cyri }\IeC
+      {\cyrch }\IeC {\cyre }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri
+      }\IeC {\cyrishrt } \IeC {\cyro }\IeC {\cyrt }\IeC {\cyrch }\IeC
+      {\cyre }\IeC {\cyrt }}}%
+  \def\btxurldatecomment##1{\protect\foreignlanguage{#1}{, \IeC {\cyrp
+      }\IeC {\cyro }\IeC {\cyrs }\IeC {\cyre }\IeC {\cyrshch }\IeC
+      {\cyre }\IeC {\cyrn }\IeC {\cyro } ##1}}%
+  \def\btxfnamespaceshort{\,}%
+  \def\btxfnamespacelong{ }%
+  \def\btxnumeralshort##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxnumerallong##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxprintmonthyearnum##1##2{##1/##2}%
+  \def\btxkeywordlanguage##1{{\protect\selectlanguage{#1}##1}}%
+  \ifbbbblanguagenames
+    \def\btxlanguagenameamerican{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyrl }\IeC {\cyri
+        }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameaustrian{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrv }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyrr
+        }\IeC {\cyri }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamebrazil{\protect\foreignlanguage{#1}{\IeC
+        {\cyrp }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrt }\IeC {\cyru
+        }\IeC {\cyrg }\IeC {\cyra }\IeC {\cyrl }\IeC {\cyrsftsn }\IeC
+        {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamebrazilian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrp }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrt }\IeC {\cyru
+        }\IeC {\cyrg }\IeC {\cyra }\IeC {\cyrl }\IeC {\cyrsftsn }\IeC
+        {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamebritish{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyrl }\IeC {\cyri
+        }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenamebulgarian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrb }\IeC {\cyro }\IeC {\cyrl }\IeC {\cyrg }\IeC {\cyra
+        }\IeC {\cyrr }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenamecanadian{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyrl }\IeC {\cyri
+        }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenamecanadien{\protect\foreignlanguage{#1}{\IeC
+        {\cyrf }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrc
+        }\IeC {\cyru }\IeC {\cyrz }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamecatalan{\protect\foreignlanguage{#1}{\IeC
+        {\cyrk }\IeC {\cyra }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrl
+        }\IeC {\cyro }\IeC {\cyrn }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamecroatian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrh }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrv }\IeC {\cyra
+        }\IeC {\cyrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameczech{\protect\foreignlanguage{#1}{\IeC
+        {\cyrch }\IeC {\cyre }\IeC {\cyrsh }\IeC {\cyrs }\IeC {\cyrk
+        }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamedanish{\protect\foreignlanguage{#1}{\IeC
+        {\cyrd }\IeC {\cyra }\IeC {\cyrt }\IeC {\cyrs }\IeC {\cyrk
+        }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamedutch{\protect\foreignlanguage{#1}{\IeC {\cyrg
+        }\IeC {\cyro }\IeC {\cyrl }\IeC {\cyrl }\IeC {\cyra }\IeC
+        {\cyrn }\IeC {\cyrd }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri
+        }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameenglish{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyrl }\IeC {\cyri
+        }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameesperanto{\protect\foreignlanguage{#1}{\IeC
+        {\cyrerev }\IeC {\cyrs }\IeC {\cyrp }\IeC {\cyre }\IeC {\cyrr
+        }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrt }\IeC {\cyro }}}%
+    \def\btxlanguagenamefinnish{\protect\foreignlanguage{#1}{\IeC
+        {\cyrf }\IeC {\cyri }\IeC {\cyrn }\IeC {\cyrs }\IeC {\cyrk
+        }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamefranceis{\protect\foreignlanguage{#1}{\IeC
+        {\cyrf }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrc
+        }\IeC {\cyru }\IeC {\cyrz }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamefrench{\protect\foreignlanguage{#1}{\IeC
+        {\cyrf }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrc
+        }\IeC {\cyru }\IeC {\cyrz }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamefrenchb{\protect\foreignlanguage{#1}{\IeC
+        {\cyrf }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrc
+        }\IeC {\cyru }\IeC {\cyrz }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamegerman{\protect\foreignlanguage{#1}{\IeC
+        {\cyrn }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyre }\IeC {\cyrc
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamegermanb{\protect\foreignlanguage{#1}{\IeC
+        {\cyrn }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyre }\IeC {\cyrc
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamegreek{\protect\foreignlanguage{#1}{\IeC {\cyrg
+        }\IeC {\cyrr }\IeC {\cyre }\IeC {\cyrch }\IeC {\cyre }\IeC
+        {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamehebrew{\protect\foreignlanguage{#1}{\IeC
+        {\cyre }\IeC {\cyrv }\IeC {\cyrr }\IeC {\cyre }\IeC {\cyrishrt
+        }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamehungarian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrv }\IeC {\cyre }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyre
+        }\IeC {\cyrr }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameicelandic{\protect\foreignlanguage{#1}{\IeC
+        {\cyri }\IeC {\cyrs }\IeC {\cyrl }\IeC {\cyra }\IeC {\cyrn
+        }\IeC {\cyrd }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameirish{\protect\foreignlanguage{#1}{\IeC {\cyri
+        }\IeC {\cyrr }\IeC {\cyrl }\IeC {\cyra }\IeC {\cyrn }\IeC
+        {\cyrd }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt
+        }}}%
+    \def\btxlanguagenameitalian{\protect\foreignlanguage{#1}{\IeC
+        {\cyri }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrl }\IeC {\cyrsftsn
+        }\IeC {\cyrya }\IeC {\cyrn }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamelatin{\protect\foreignlanguage{#1}{\IeC {\cyrl
+        }\IeC {\cyra }\IeC {\cyrt }\IeC {\cyri }\IeC {\cyrn }\IeC
+        {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamenaustrian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrn }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyre }\IeC {\cyrc
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamengerman{\protect\foreignlanguage{#1}{\IeC
+        {\cyrn }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyre }\IeC {\cyrc
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamenorsk{\protect\foreignlanguage{#1}{\IeC {\cyrn
+        }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrv }\IeC {\cyre }\IeC
+        {\cyrzh }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenamenynorsk{\protect\foreignlanguage{#1}{\IeC
+        {\cyrn }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyro }\IeC {\cyrn
+        }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrv }\IeC {\cyre }\IeC
+        {\cyrzh }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenamepolish{\protect\foreignlanguage{#1}{\IeC
+        {\cyrp }\IeC {\cyro }\IeC {\cyrl }\IeC {\cyrsftsn }\IeC {\cyrs
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameportuges{\protect\foreignlanguage{#1}{\IeC
+        {\cyrp }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrt }\IeC {\cyru
+        }\IeC {\cyrg }\IeC {\cyra }\IeC {\cyrl }\IeC {\cyrsftsn }\IeC
+        {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameportuguese{\protect\foreignlanguage{#1}{\IeC
+        {\cyrp }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyrt }\IeC {\cyru
+        }\IeC {\cyrg }\IeC {\cyra }\IeC {\cyrl }\IeC {\cyrsftsn }\IeC
+        {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamerussian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrr }\IeC {\cyru }\IeC {\cyrs }\IeC {\cyrs }\IeC {\cyrk
+        }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamescottish{\protect\foreignlanguage{#1}{\IeC
+        {\cyrsh }\IeC {\cyro }\IeC {\cyrt }\IeC {\cyrl }\IeC {\cyra
+        }\IeC {\cyrn }\IeC {\cyrd }\IeC {\cyrs }\IeC {\cyrk }\IeC
+        {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameserbian{\protect\foreignlanguage{#1}{\IeC
+        {\cyrs }\IeC {\cyre }\IeC {\cyrr }\IeC {\cyrb }\IeC {\cyrs
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenamespanish{\protect\foreignlanguage{#1}{\IeC
+        {\cyri }\IeC {\cyrs }\IeC {\cyrp }\IeC {\cyra }\IeC {\cyrn
+        }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameswedish{\protect\foreignlanguage{#1}{\IeC
+        {\cyrsh }\IeC {\cyrv }\IeC {\cyre }\IeC {\cyrd }\IeC {\cyrs
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameturkish{\protect\foreignlanguage{#1}{\IeC
+        {\cyrt }\IeC {\cyru }\IeC {\cyrr }\IeC {\cyre }\IeC {\cyrc
+        }\IeC {\cyrk }\IeC {\cyri }\IeC {\cyrishrt }}}%
+    \def\btxlanguagenameukrainian{\protect\foreignlanguage{#1}{\IeC
+        {\cyru }\IeC {\cyrk }\IeC {\cyrr }\IeC {\cyra }\IeC {\cyri
+        }\IeC {\cyrn }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameUKenglish{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyrl }\IeC {\cyri
+        }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+    \def\btxlanguagenameUSenglish{\protect\foreignlanguage{#1}{\IeC
+        {\cyra }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyrl }\IeC {\cyri
+        }\IeC {\cyrishrt }\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyri }\IeC
+        {\cyrishrt }}}%
+  \fi
+}
+\newcommand\bibsrussianb{\bibsrussian[russianb]}
+\AtBeginDocument{%
+  \ifbbbbfixlanguage
+  \else
+    \bbbbaddto{russianb}{bibrussianb}
+    \bbbbaddto{russian}{bibsrussian}
+  \fi
+  \bbbbaddto{russianb}{btxifchangecaseoff}
+  \bbbbaddto{russian}{btxifchangecaseoff}
+}
+
+\endinput
+%%
+%% End of file `russian.bdf'.

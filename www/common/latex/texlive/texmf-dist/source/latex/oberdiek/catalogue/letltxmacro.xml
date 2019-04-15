@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='letltxmacro'>
+  <name>letltxmacro</name>
+  <caption>Let assignment for LaTeX macros.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    TeX&#x2019;s <tt>\let</tt> assignment does not work for LaTeX macros
+    with optional arguments or for macros that are defined
+    as robust macros by <tt>\DeclareRobustCommand</tt>.  This package
+    defines <tt>\LetLtxMacro</tt> that also takes care of the involved
+    internal macros.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/letltxmacro.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/letltxmacro.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

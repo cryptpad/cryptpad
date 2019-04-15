@@ -1,0 +1,1574 @@
+% \iffalse meta-comment
+%
+% Copyright 2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% It may be distributed and/or modified under the conditions of
+% the LaTeX Project Public License (LPPL), either version 1.3c of
+% this license or (at your option) any later version.  The latest
+% version of this license is in the file:
+%
+%   http://www.latex-project.org/lppl.txt
+%
+%
+%
+%<2ekernel>%%% From File: ltluatex.dtx
+%<plain>\ifx\newluafunction\undefined\else\expandafter\endinput\fi
+%<tex>\ifx
+%<tex>  \ProvidesFile\undefined\begingroup\def\ProvidesFile
+%<tex>  #1#2[#3]{\endgroup\immediate\write-1{File: #1 #3}}
+%<tex>\fi
+%<plain>\ProvidesFile{ltluatex.tex}
+%<*driver>
+\ProvidesFile{ltluatex.dtx}
+%</driver>
+%<*tex>
+[2015/10/02 v1.0e
+%</tex>
+%<plain>  LuaTeX support for plain TeX (core)
+%<*tex>
+]
+\edef\etatcatcode{\the\catcode`\@}
+\catcode`\@=11
+%</tex>
+%<*driver>
+\documentclass{ltxdoc}
+\GetFileInfo{ltluatex.dtx}
+\begin{document}
+\title{\filename\\(Lua\TeX{}-specific support)}
+\author{David Carlisle and Joseph Wright\footnote{Significant portions
+  of the code here are adapted/simplified from the packages \textsf{luatex} and
+  \textsf{luatexbase} written by Heiko Oberdiek, \'{E}lie Roux,
+  Manuel P\'{e}gouri\'{e}-Gonnar and Philipp Gesang.}}
+\date{\filedate}
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+\DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+%
+% \section{Overview}
+%
+% Lua\TeX{} adds a number of engine-specific functions to \TeX{}. Several of
+% these require set up that is best done in the kernel or need related support
+% functions. This file provides \emph{basic} support for Lua\TeX{} at the
+% \LaTeXe{} kernel level plus as a loadable file which can be used with
+% plain \TeX{} and \LaTeX{}.
+%
+% This file contains code for both \TeX{} (to be stored as part of the format)
+% and Lua (to be loaded at the start of each job). In the Lua code, the kernel
+% uses the namespace |luatexbase|.
+%
+% The following |\count| registers are used here for register allocation:
+% \begin{itemize}
+%  \item[\texttt{\string\e@alloc@attribute@count}] Attributes (default~258)
+%  \item[\texttt{\string\e@alloc@ccodetable@count}] Category code tables
+%    (default~259)
+%  \item[\texttt{\string\e@alloc@luafunction@count}] Lua functions
+%    (default~260)
+%  \item[\texttt{\string\e@alloc@whatsit@count}] User whatsits (default~261)
+%  \item[\texttt{\string\e@alloc@bytecode@count}] Lua bytecodes (default~262)
+%  \item[\texttt{\string\e@alloc@luachunk@count}] Lua chunks (default~263)
+% \end{itemize}
+% (|\count 256| is used for |\newmarks| allocation and |\count 257|
+% is used for\linebreak
+% |\newXeTeXintercharclass| with Xe\TeX{}, with code defined in
+% \texttt{ltfinal.dtx}).
+% With any \LaTeXe{} kernel from 2015 onward these registers are part of
+% the block in the extended area reserved by the kernel (prior to 2015 the
+% \LaTeXe{} kernel did not provide any functionality for the extended
+% allocation area).
+%
+% \section{Core \TeX{} functionality}
+%
+% The commands defined here are defined for
+% possible inclusion in a future \LaTeX{} format, however also extracted
+% to the file |ltluatex.tex| which may be used with older \LaTeX\
+% formats, and with plain \TeX.
+%
+% \noindent
+% \DescribeMacro{\newattribute}
+% |\newattribute{|\meta{attribute}|}|\\
+% Defines a named \cs{attribute}, indexed from~$1$
+% (\emph{i.e.}~|\attribute0| is never defined). Attributes initially
+% have the marker value |-"7FFFFFFF| (`unset') set by the engine.
+%
+% \noindent
+% \DescribeMacro{\newcatcodetable}
+% |\newcatcodetable{|\meta{catcodetable}|}|\\
+% Defines a named \cs{catcodetable}, indexed from~$1$
+% (|\catcodetable0| is never assigned). A new catcode table will be
+% populated with exactly those values assigned by Ini\TeX{} (as described
+% in the Lua\TeX{} manual).
+%
+% \noindent
+% \DescribeMacro{\newluafunction}
+% |\newluafunction{|\meta{function}|}|\\
+% Defines a named \cs{luafunction}, indexed from~$1$. (Lua indexes
+% tables from $1$ so |\luafunction0| is not available).
+%
+% \noindent
+% \DescribeMacro{\newwhatsit}
+% |\newwhatsit{|\meta{whatsit}|}|\\
+% Defines a custom \cs{whatsit}, indexed from~$1$.
+%
+% \noindent
+% \DescribeMacro{\newluabytecode}
+% |\newluabytecode{|\meta{bytecode}|}|\\
+% Allocates a number for lua bytecode register, indexed from~$1$.
+%
+% \noindent
+% \DescribeMacro{\newluachunkname}
+% |newluachunkname{|\meta{chunkname}|}|\\
+% Allocates a number for lua chunk register, indexed from~$1$.
+% Also enters the name of the regiser (without backslash) into the
+% \verb|lua.name| table to be used in stack traces.
+%
+% \noindent
+% \DescribeMacro{\catcodetable@initex}
+% \DescribeMacro{\catcodetable@string}
+% \DescribeMacro{\catcodetable@latex}
+% \DescribeMacro{\catcodetable@atletter}
+% Predefined category code tables with the obvious assignments. Note
+% that the |latex| and |atletter| tables set the full Unicode range
+% to the codes predefined by the kernel.
+%
+% \noindent
+% \DescribeMacro{\setattribute}
+% \DescribeMacro{\unsetattribute}
+% |\setattribute{|\meta{attribute}|}{|\meta{value}|}|\\
+% |\unsetattribute{|\meta{attribute}|}|\\
+% Set and unset attributes in a manner analogous to |\setlength|. Note that
+% attributes take a marker value when unset so this operation is distinct
+% from setting the value to zero.
+%
+% \section{Plain \TeX\ interface}
+%
+% The \textsf{ltluatex} interface may be used with plain \TeX\ using 
+% |\input{ltluatex}| this inputs |ltluatex.tex| which inputs
+% |etex.src| (or |etex.sty| if used with \LaTeX)
+% if it is not already input, and then defines some internal commands to
+% allow the \textsf{ltluatex} interface to be defined.
+%
+% The \textsf{luatexbase} package interface may also be used in plain \TeX,
+% as before, by inputting the package |\input luatexbase.sty|. The new
+% version of \textsf{luatexbase} is based on this \textsf{ltluatex}
+% code but implements a compatibility layer providing the interface
+% of the original package.
+%
+% \section{Lua functionality}
+%
+% \begingroup
+%
+% \begingroup\lccode`~=`_
+% \lowercase{\endgroup\let~}_
+% \catcode`_=12
+%
+% \subsection{Allocators in Lua}
+%
+% \DescribeMacro{new_attribute}
+% |luatexbase.new_attribute(|\meta{attribute}|)|\\
+% Returns an allocation number for the \meta{attribute}, indexed from~$1$.
+% The attribute will be initialised with the marker value |-"7FFFFFFF|
+% (`unset'). The attribute allocation sequence is shared with the \TeX{}
+% code but this function does \emph{not} define a token using
+% |\attributedef|.
+% The attribute name is recorded in the |attributes| table. A
+% metatable is provided so that the table syntax can be used
+% consistently for attributes declared in \TeX\ or lua.
+%
+% \noindent
+% \DescribeMacro{new_whatsit}
+% |luatexbase.new_whatsit(|\meta{whatsit}|)|\\
+% Returns an allocation number for the custom \meta{whatsit}, indexed from~$1$.
+%
+% \noindent
+% \DescribeMacro{new_bytecode}
+% |luatexbase.new_bytecode(|\meta{bytecode}|)|\\
+% Returns an allocation number for a bytecode register, indexed from~$1$.
+% The optional \meta{name} argument is just used for logging.
+%
+% \noindent
+% \DescribeMacro{new_chunkname}
+% |luatexbase.new_chunkname(|\meta{chunkname}|)|\\
+% Returns an allocation number for a lua chunk name for use with 
+% |\directlua| and |\latelua|, indexed from~$1$.
+% The number is returned and also \meta{name} argument is added to the
+% |lua.name| array at that index.
+%
+%
+% \subsection{Lua access to \TeX{} register numbers}
+%
+% \DescribeMacro{registernumber}
+% |luatexbase.registernumer(|\meta{name}|)|\\
+% Sometimes (notably in the case of Lua attributes) it is necessary to
+% access a register \emph{by number} that has been allocated by \TeX{}.
+% This package provides a function to look up the relevant number
+% using Lua\TeX{}'s internal tables. After for example
+% |\newattribute\myattrib|, |\myattrib| would be defined by (say)
+% |\myattrib=\attribute15|.  |luatexbase.registernumer("myattrib")|
+% would then return the register number, $15$ in this case. If the string passed
+% as argument does not correspond to a token defined by |\attributedef|,
+% |\countdef| or similar commands, the Lua value |false| is returned.
+%
+% As an example, consider the input:
+%\begin{verbatim}
+% \newcommand\test[1]{%
+% \typeout{#1: \expandafter\meaning\csname#1\endcsname^^J
+% \space\space\space\space
+% \directlua{tex.write(luatexbase.registernumber("#1") or "bad input")}%
+% }}
+%
+% \test{undefinedrubbish}
+%
+% \test{space}
+%
+% \test{hbox}
+%
+% \test{@MM}
+%
+% \test{@tempdima}
+% \test{@tempdimb}
+%
+% \test{strutbox}
+%
+% \test{sixt@@n}
+%
+% \attrbutedef\myattr=12
+% \myattr=200
+% \test{myattr}
+%
+%\end{verbatim}
+%
+% If the demonstration code is processed with Lua\LaTeX{} then the following
+% would be produced in the log and terminal output.
+%\begin{verbatim}
+% undefinedrubbish: \relax
+%      bad input
+% space: macro:->
+%      bad input
+% hbox: \hbox
+%      bad input
+% @MM: \mathchar"4E20
+%      20000
+% @tempdima: \dimen14
+%      14
+% @tempdimb: \dimen15
+%      15
+% strutbox: \char"B
+%      11
+% sixt@@n: \char"10
+%      16
+% myattr: \attribute12
+%      12
+%\end{verbatim}
+%
+% Notice how undefined commands, or commands unrelated to registers
+% do not produce an error, just return |false| and so print
+% |bad input| here. Note also that commands defined by |\newbox| work and
+% return the number of the box register even though the actual command
+% holding this number is a |\chardef| defined token (there is no
+% |\boxdef|).
+%
+% \subsection{Module utilities}
+%
+% \DescribeMacro{provides_module}
+% |luatexbase.provides_module(|\meta{info}|)|\\
+% This function is used by modules to identify themselves; the |info| should be
+% a table containing information about the module. The required field
+% |name| must contain the name of the module. It is recommended to provide a
+% field |date| in the usual \LaTeX{} format |yyyy/mm/dd|. Optional fields
+% |version| (a string) and |description| may be used if present. This
+% information will be recorded in the log. Other fields are ignored.
+%
+% \noindent
+% \DescribeMacro{module_info}
+% \DescribeMacro{module_warning}
+% \DescribeMacro{module_error}
+% |luatexbase.module_info(|\meta{module}, \meta{text}|)|\\
+% |luatexbase.module_warning(|\meta{module}, \meta{text}|)|\\
+% |luatexbase.module_error(|\meta{module}, \meta{text}|)|\\
+% These functions are similar to \LaTeX{}'s |\PackageError|, |\PackageWarning|
+% and |\PackageInfo| in the way they format the output.  No automatic line
+% breaking is done, you may still use |\n| as usual for that, and the name of
+% the package will be prepended to each output line.
+%
+% Note that |luatexbase.module_error| raises an actual Lua error with |error()|,
+% which currently means a call stack will be dumped. While this may not
+% look pretty, at least it provides useful information for tracking the
+% error down.
+%
+% \subsection{Callback management}
+%
+% \noindent
+% \DescribeMacro{add_to_callback}
+% |luatexbase.add_to_callback(|^^A
+% \meta{callback}, \meta{function}, \meta{description}|)|
+% Registers the \meta{function} into the \meta{callback} with a textual
+% \meta{description} of the function. Functions are inserted into the callback
+% in the order loaded.
+%
+% \noindent
+% \DescribeMacro{remove_from_callback}
+% |luatexbase.remove_from_callback(|\meta{callback}, \meta{description}|)|
+% Removes the callback function with \meta{description} from the \meta{callback}.
+% The removed function and its description 
+% are returned as the results of this function.
+%
+% \noindent
+% \DescribeMacro{in_callback}
+% |luatexbase.in_callback(|\meta{callback}, \meta{description}|)|
+% Checks if the \meta{description} matches one of the functions added
+% to the list for the \meta{callback}, returning a boolean value.
+%
+% \noindent
+% \DescribeMacro{disable_callback}
+% |luatexbase.disable_callback(|\meta{callback}|)|
+% Sets the \meta{callback} to \texttt{false} as described in the Lua\TeX{}
+% manual for the underlying \texttt{callback.register} built-in. Callbacks
+% will only be set to false (and thus be skipped entirely) if there are
+% no functions registered using the callback.
+%
+% \noindent
+% \DescribeMacro{callback_descriptions}
+% A list of the descriptions of functions registered to the specified
+% callback is returned. |{}| is returned if there are no functions registered.
+%
+% \noindent
+% \DescribeMacro{create_callback}
+% |luatexbase.create_callback(|\meta{name},meta{type},\meta{default}|)|
+% Defines a user defined callback. The last argument is a default
+% functtion of |false|.
+%
+% \noindent
+% \DescribeMacro{call_callback}
+% |luatexbase.call_callback(|\meta{name},\ldots|)|
+% Calls a user defined callback with the supplied arguments.
+%
+% \endgroup
+%
+% \CheckSum{488}
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*2ekernel|tex|latexrelease>
+%<2ekernel|latexrelease>\ifx\directlua\@undefined\else
+%    \end{macrocode}
+%
+%
+% \subsection{Minimum Lua\TeX{} version}
+%
+% Lua\TeX{} has changed a lot over time. In the kernel support for ancient
+% versions is not provided: trying to build a format with a very old binary
+% therefore gives some information in the log and loading stops. The cut-off
+% selected here relates to the tree-searching behaviour of |require()|:
+% from version~0.60, Lua\TeX{} will correctly find Lua files in the |texmf|
+% tree without `help'.
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/10/01}
+%<latexrelease>                 {\newluafunction}{LuaTeX}%
+\ifnum\luatexversion<60 %
+  \wlog{***************************************************}
+  \wlog{* LuaTeX version too old for ltluatex support *}
+  \wlog{***************************************************}
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+% \subsection{Older \LaTeX{}/Plain \TeX\ setup}
+% 
+%    \begin{macrocode}
+%<*tex>
+%    \end{macrocode}
+%
+% Older \LaTeX{} formats don't have the primitives with `native' names:
+% sort that out. If they already exist this will still be safe.
+%    \begin{macrocode}
+\directlua{tex.enableprimitives("",tex.extraprimitives("luatex"))}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifx\e@alloc\@undefined
+%    \end{macrocode}
+%
+% In pre-2014 \LaTeX{}, or plain \TeX{}, load |etex.{sty,src}|.
+%    \begin{macrocode}
+  \ifx\documentclass\@undefined
+    \ifx\loccount\@undefined
+      \input{etex.src}%
+    \fi
+    \catcode`\@=11 %
+    \outer\expandafter\def\csname newfam\endcsname
+                          {\alloc@8\fam\chardef\et@xmaxfam}
+  \else
+    \RequirePackage{etex}
+    \expandafter\def\csname newfam\endcsname
+                    {\alloc@8\fam\chardef\et@xmaxfam}
+    \expandafter\let\expandafter\new@mathgroup\csname newfam\endcsname
+  \fi
+%    \end{macrocode}
+%
+% \subsubsection{Fixes to \texttt{etex.src}/\texttt{etex.sty}}
+%
+% These could and probably should be made directly in an
+% update to etex.src which already has some luatex-specific
+% code, but does not define the correct range for luatex.
+%
+%    \begin{macrocode}
+% 2015-07-13 higher range in luatex
+\edef \et@xmaxregs {\ifx\directlua\@undefined 32768\else 65536\fi}
+% luatex/xetex also allow more math fam
+\edef \et@xmaxfam {\ifx\Umathchar\@undefined\sixt@@n\else\@cclvi\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\count 270=\et@xmaxregs % locally allocates \count registers
+\count 271=\et@xmaxregs % ditto for \dimen registers
+\count 272=\et@xmaxregs % ditto for \skip registers
+\count 273=\et@xmaxregs % ditto for \muskip registers
+\count 274=\et@xmaxregs % ditto for \box registers
+\count 275=\et@xmaxregs % ditto for \toks registers
+\count 276=\et@xmaxregs % ditto for \marks classes
+%    \end{macrocode}
+%
+% and 256 or 16 fam. (Done above due to plain/\LaTeX\ differences in
+% \textsf{ltluatex}.)
+%    \begin{macrocode}
+% \outer\def\newfam{\alloc@8\fam\chardef\et@xmaxfam}
+%    \end{macrocode}
+%
+% End of proposed changes to \texttt{etex.src}
+%
+% \subsubsection{luatex specific settings}
+% 
+% Switch to global cf |luatex.sty| to leave room for inserts
+% not really needed for luatex but possibly most compatible
+% with existing use.
+%    \begin{macrocode}
+\expandafter\let\csname newcount\expandafter\expandafter\endcsname
+                \csname globcount\endcsname
+\expandafter\let\csname newdimen\expandafter\expandafter\endcsname
+                \csname globdimen\endcsname
+\expandafter\let\csname newskip\expandafter\expandafter\endcsname
+                \csname globskip\endcsname
+\expandafter\let\csname newbox\expandafter\expandafter\endcsname
+                \csname globbox\endcsname
+%    \end{macrocode}
+%
+% Define|\e@alloc| as in latex (the existing macros in |etex.src|
+% hard to extend to further register types as they assume specific
+% 26x and 27x count range. For compatibility the existing register
+% allocation is not changed.
+%
+%    \begin{macrocode}
+\chardef\e@alloc@top=65535
+\let\e@alloc@chardef\chardef
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\e@alloc#1#2#3#4#5#6{%
+  \global\advance#3\@ne
+  \e@ch@ck{#3}{#4}{#5}#1%
+  \allocationnumber#3\relax
+  \global#2#6\allocationnumber
+  \wlog{\string#6=\string#1\the\allocationnumber}}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\e@ch@ck#1#2#3#4{%
+  \ifnum#1<#2\else
+    \ifnum#1=#2\relax
+      #1\@cclvi
+      \ifx\count#4\advance#1 10 \fi
+    \fi
+    \ifnum#1<#3\relax
+    \else
+      \errmessage{No room for a new \string#4}%
+    \fi
+  \fi}%
+%    \end{macrocode}
+%
+% Two simple \LaTeX\ macros used in |ltlatex.sty|.
+%    \begin{macrocode}
+\long\def\@gobble#1{}
+\long\def\@firstofone#1{#1}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+% Fix up allocations not to clash with |etex.src|.
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\expandafter\csname newcount\endcsname\e@alloc@attribute@count
+\expandafter\csname newcount\endcsname\e@alloc@ccodetable@count
+\expandafter\csname newcount\endcsname\e@alloc@luafunction@count
+\expandafter\csname newcount\endcsname\e@alloc@whatsit@count
+\expandafter\csname newcount\endcsname\e@alloc@bytecode@count
+\expandafter\csname newcount\endcsname\e@alloc@luachunk@count
+%    \end{macrocode}
+%
+% End of conditional setup for plain \TeX\ / old \LaTeX.
+%    \begin{macrocode}
+\fi
+%</tex>
+%    \end{macrocode}
+%
+%
+% \subsection{Attributes}
+%
+% \begin{macro}{\newattribute}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+%   As is generally the case for the Lua\TeX{} registers we start here
+%   from~$1$. Notably, some code assumes that |\attribute0| is never used so
+%   this is important in this case.
+%    \begin{macrocode}
+\ifx\e@alloc@attribute@count\@undefined
+  \countdef\e@alloc@attribute@count=258
+\fi
+\def\newattribute#1{%
+  \e@alloc\attribute\attributedef
+    \e@alloc@attribute@count\m@ne\e@alloc@top#1%
+}
+\e@alloc@attribute@count=\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\setattribute}
+% \begin{macro}{\unsetattribute}
+%   Handy utilities.
+%    \begin{macrocode}
+\def\setattribute#1#2{#1=\numexpr#2\relax}
+\def\unsetattribute#1{#1=-"7FFFFFFF\relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Category code tables}
+%
+% \begin{macro}{\newcatcodetable}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+%   Category code tables are allocated with a limit half of that used by Lua\TeX{}
+%   for everything else. At the end of allocation there needs to be an
+%   initialisation step. Table~$0$ is already taken (it's the global one for
+%   current use) so the allocation starts at~$1$.
+%    \begin{macrocode}
+\ifx\e@alloc@ccodetable@count\@undefined
+  \countdef\e@alloc@ccodetable@count=259
+\fi
+\def\newcatcodetable#1{%
+  \e@alloc\catcodetable\chardef
+    \e@alloc@ccodetable@count\m@ne{"8000}#1%
+  \initcatcodetable\allocationnumber
+}
+\e@alloc@ccodetable@count=\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\catcodetable@initex}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+% \begin{macro}{\catcodetable@string}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+% \begin{macro}{\catcodetable@latex}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+% \begin{macro}{\catcodetable@atletter}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+%   Save a small set of standard tables. The Unicode data is read
+%   here in a group avoiding any global definitions: that needs a bit
+%   of effort so that in package/plain mode there is no effect on any
+%   settings already in force.
+%    \begin{macrocode}
+\newcatcodetable\catcodetable@initex
+\newcatcodetable\catcodetable@string
+\begingroup
+  \def\setrangecatcode#1#2#3{%
+    \ifnum#1>#2 %
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+      {%
+        \catcode#1=#3 %
+        \expandafter\setrangecatcode\expandafter
+          {\number\numexpr#1 + 1\relax}{#2}{#3}
+      }%
+  }
+  \@firstofone{%
+    \catcodetable\catcodetable@initex
+      \catcode0=12 %
+      \catcode13=12 %
+      \catcode37=12 %
+      \setrangecatcode{65}{90}{12}%
+      \setrangecatcode{97}{122}{12}%
+      \catcode92=12 %
+      \catcode127=12 %
+      \savecatcodetable\catcodetable@string
+    \endgroup
+  }%
+\newcatcodetable\catcodetable@latex
+\newcatcodetable\catcodetable@atletter
+\begingroup
+  \let\ENDGROUP\endgroup
+  \let\begingroup\relax
+  \let\endgroup\relax
+  \let\global\relax
+  \let\gdef\def
+  \input{unicode-letters.def}%
+  \let\endgroup\ENDGROUP
+  \@firstofone{%
+    \catcode64=12 %
+    \savecatcodetable\catcodetable@latex
+    \catcode64=11 %
+    \savecatcodetable\catcodetable@atletter
+   }
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Named Lua functions}
+%
+% \begin{macro}{\newluafunction}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+%   Much the same story for allocating Lua\TeX{} functions except here they are
+%   just numbers so are allocated in the same way as boxes. Lua index from~$1$
+%   so once again slot~$0$ is skipped.
+%    \begin{macrocode}
+\ifx\e@alloc@luafunction@count\@undefined
+  \countdef\e@alloc@luafunction@count=260
+\fi
+\def\newluafunction{%
+  \e@alloc\luafunction\e@alloc@chardef
+    \e@alloc@luafunction@count\m@ne\e@alloc@top
+}
+\e@alloc@luafunction@count=\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Custom whatsits}
+%
+% \begin{macro}{\newwhatsit}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+%   These are only settable from Lua but for consistency are definable
+%   here.
+%    \begin{macrocode}
+\ifx\e@alloc@whatsit@count\@undefined
+  \countdef\e@alloc@whatsit@count=261
+\fi
+\def\newwhatsit#1{%
+  \e@alloc\whatsit\e@alloc@chardef
+    \e@alloc@whatsit@count\m@ne\e@alloc@top#1%
+}
+\e@alloc@whatsit@count=\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Lua bytecode registers}
+%
+% \begin{macro}{\newluabytecode}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+%   These are only settable from Lua but for consistency are definable
+%   here.
+%    \begin{macrocode}
+\ifx\e@alloc@bytecode@count\@undefined
+  \countdef\e@alloc@bytecode@count=262
+\fi
+\def\newluabytecode#1{%
+  \e@alloc\luabytecode\e@alloc@chardef
+    \e@alloc@bytecode@count\m@ne\e@alloc@top#1%
+}
+\e@alloc@bytecode@count=\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Lua chunk registers}
+
+% \begin{macro}{\newluachunkname}
+% \changes{v1.0a}{2015/09/24}{Macro added}
+% As for bytecode registers, but in addition we need to add a string
+% to the \verb|lua.name| table to use in stack tracing. We use the
+% name of the command passed to the allocator, with no backslash.
+%    \begin{macrocode}
+\ifx\e@alloc@luachunk@count\@undefined
+  \countdef\e@alloc@luachunk@count=263
+\fi
+\def\newluachunkname#1{%
+  \e@alloc\luachunk\e@alloc@chardef
+    \e@alloc@luachunk@count\m@ne\e@alloc@top#1%
+    {\escapechar\m@ne
+    \directlua{lua.name[\the\allocationnumber]="\string#1"}}%
+}
+\e@alloc@luachunk@count=\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Lua loader}
+%
+% Load the Lua code at the start of every job.
+% For the conversion of \TeX{} into numbers at the Lua side we need some
+% known registers: for convenience we use a set of systematic names, which
+% means using a group around the Lua loader.
+%    \begin{macrocode}
+%<2ekernel>\everyjob\expandafter{%
+%<2ekernel>  \the\everyjob
+  \begingroup
+    \attributedef\attributezero=0 %
+    \chardef     \charzero     =0 %
+%    \end{macrocode}
+% Note name change required on older luatex, for hash table access.
+%    \begin{macrocode}
+    \countdef    \CountZero    =0 % 
+    \dimendef    \dimenzero    =0 %
+    \mathchardef \mathcharzero =0 %
+    \muskipdef   \muskipzero   =0 %
+    \skipdef     \skipzero     =0 %
+    \toksdef     \tokszero     =0 %
+    \directlua{require("ltluatex")}
+  \endgroup
+%<2ekernel>}
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+% \changes{v1.0b}{2015/10/02}{Fix backing out of \TeX{} code}
+% \changes{v1.0c}{2015/10/02}{Allow backing out of Lua code}
+%<latexrelease>\IncludeInRelease{0000/00/00}
+%<latexrelease>                 {\newluafunction}{LuaTeX}%
+%<latexrelease>\let\e@alloc@attribute@count\@undefined
+%<latexrelease>\let\newattribute\@undefined
+%<latexrelease>\let\setattribute\@undefined
+%<latexrelease>\let\unsetattribute\@undefined
+%<latexrelease>\let\e@alloc@ccodetable@count\@undefined
+%<latexrelease>\let\newcatcodetable\@undefined
+%<latexrelease>\let\catcodetable@initex\@undefined
+%<latexrelease>\let\catcodetable@string\@undefined
+%<latexrelease>\let\catcodetable@latex\@undefined
+%<latexrelease>\let\catcodetable@atletter\@undefined
+%<latexrelease>\let\e@alloc@luafunction@count\@undefined
+%<latexrelease>\let\newluafunction\@undefined
+%<latexrelease>\let\e@alloc@luafunction@count\@undefined
+%<latexrelease>\let\newwhatsit\@undefined
+%<latexrelease>\let\e@alloc@whatsit@count\@undefined
+%<latexrelease>\let\newluabytecode\@undefined
+%<latexrelease>\let\e@alloc@bytecode@count\@undefined
+%<latexrelease>\let\newluachunkname\@undefined
+%<latexrelease>\let\e@alloc@luachunk@count\@undefined
+%<latexrelease>\directlua{luatexbase.uninstall()}
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<2ekernel|latexrelease>\fi
+%</2ekernel|tex|latexrelease>
+%    \end{macrocode}
+%
+% \subsection{Lua module preliminaries}
+%
+% \begingroup
+%
+%  \begingroup\lccode`~=`_
+%  \lowercase{\endgroup\let~}_
+%  \catcode`_=12
+%
+%    \begin{macrocode}
+%<*lua>
+%    \end{macrocode}
+%
+% Some set up for the Lua module which is needed for all of the Lua
+% functionality added here.
+%
+% \begin{macro}{luatexbase}
+% \changes{v1.0a}{2015/09/24}{Table added}
+%   Set up the table for the returned functions. This is used to expose
+%   all of the public functions.
+%    \begin{macrocode}
+luatexbase       = luatexbase or { }
+local luatexbase = luatexbase
+%    \end{macrocode}
+% \end{macro}
+%
+% Some Lua best practice: use local versions of functions where possible.
+%    \begin{macrocode}
+local string_gsub      = string.gsub
+local tex_count        = tex.count
+local tex_setattribute = tex.setattribute
+local tex_setcount     = tex.setcount
+local texio_write_nl   = texio.write_nl
+%    \end{macrocode}
+%
+% \subsection{Lua module utilities}
+%
+% \subsubsection{Module tracking}
+%
+% \begin{macro}{modules}
+% \changes{v1.0a}{2015/09/24}{Function modified}
+%   To allow tracking of module usage, a structure is provided to store
+%   information and to return it.
+%    \begin{macrocode}
+local modules = modules or { }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{provides_module}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   Modelled on |\ProvidesPackage|, we store much the same information but
+%   with a little more structure.
+%    \begin{macrocode}
+local function provides_module(info)
+  if not (info and info.name) then
+    luatexbase_error("Missing module name for provides_modules")
+    return
+  end
+  local function spaced(text)
+    return text and (" " .. text) or ""
+  end
+  texio_write_nl(
+    "log",
+    "Lua module: " .. info.name
+      .. spaced(info.date)
+      .. spaced(info.version)
+      .. spaced(info.description)
+  )
+  modules[info.name] = info
+end
+luatexbase.provides_module = provides_module
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Module messages}
+%
+% There are various warnings and errors that need to be given. For warnings
+% we can get exactly the same formatting as from \TeX{}. For errors we have to
+% make some changes. Here we give the text of the error in the \LaTeX{} format
+% then force an error from Lua to halt the run. Splitting the message text is
+% done using |\n| which takes the place of |\MessageBreak|.
+%
+% First an auxiliary for the formatting: this measures up the message
+% leader so we always get the correct indent.
+%    \begin{macrocode}
+local function msg_format(mod, msg_type, text)
+  local leader = ""
+  local cont
+  if mod == "LaTeX" then
+    cont = string_gsub(leader, ".", " ")
+    leader = leader .. "LaTeX: "
+  else
+    first_head = leader .. "Module "  .. msg_type
+    cont = "(" .. mod .. ")"
+      .. string_gsub(first_head, ".", " ")
+    first_head =  leader .. "Module "  .. mod .. " " .. msg_type  .. ":"
+  end
+  if msg_type == "Error" then
+    first_head = "\n" .. first_head
+  end
+  if string.sub(text,-1) ~= "\n" then
+    text = text .. " "
+  end
+  return first_head .. " "
+    .. string_gsub(
+         text 
+	 .. "on input line "
+         .. tex.inputlineno, "\n", "\n" .. cont .. " "
+      )
+   .. "\n"
+end
+%    \end{macrocode}
+%
+% \begin{macro}{module_info}
+% \changes{v1.0a}{2015/09/24}{Function added}
+% \begin{macro}{module_warning}
+% \changes{v1.0a}{2015/09/24}{Function added}
+% \begin{macro}{module_error}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   Write messages.
+%    \begin{macrocode}
+local function module_info(mod, text)
+  texio_write_nl("log", msg_format(mod, "Info", text))
+end
+luatexbase.module_info = module_info
+local function module_warning(mod, text)
+  texio_write_nl("term and log",msg_format(mod, "Warning", text))
+end
+luatexbase.module_warning = module_warning
+local function module_error(mod, text)
+  error(msg_format(mod, "Error", text))
+end
+luatexbase.module_error = module_error
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% Dedicated versions for the rest of the code here.
+%    \begin{macrocode}
+local function luatexbase_warning(text)
+  module_warning("luatexbase", text)
+end
+local function luatexbase_error(text)
+  module_error("luatexbase", text)
+end
+%    \end{macrocode}
+%
+%
+% \subsection{Accessing register numbers from Lua}
+%
+% Collect up the data from the \TeX{} level into a Lua table: from
+% version~0.80, Lua\TeX{} makes that easy.
+%    \begin{macrocode}
+local luaregisterbasetable = { }
+local registermap = {
+  attributezero = "assign_attr"    ,
+  charzero      = "char_given"     ,
+  CountZero     = "assign_int"     ,
+  dimenzero     = "assign_dimen"   ,
+  mathcharzero  = "math_given"     ,
+  muskipzero    = "assign_mu_skip" ,
+  skipzero      = "assign_skip"    ,
+  tokszero      = "assign_toks"    ,
+}
+local i, j
+local createtoken
+if tex.luatexversion >79 then
+ createtoken   = newtoken.create
+end
+local hashtokens    = tex.hashtokens
+local luatexversion = tex.luatexversion
+for i,j in pairs (registermap) do
+  if luatexversion < 80 then
+    luaregisterbasetable[hashtokens()[i][1]] =
+      hashtokens()[i][2]
+  else
+    luaregisterbasetable[j] = createtoken(i).mode
+  end
+end
+%    \end{macrocode}
+%
+% \begin{macro}{registernumber}
+%   Working out the correct return value can be done in two ways. For older
+%   Lua\TeX{} releases it has to be extracted from the |hashtokens|. On the
+%   other hand, newer Lua\TeX{}'s have |newtoken|, and whilst |.mode| isn't
+%   currently documented, Hans Hagen pointed to this approach so we should be
+%   OK.
+%    \begin{macrocode}
+local registernumber
+if luatexversion < 80 then
+  function registernumber(name)
+    local nt = hashtokens()[name]
+    if(nt and luaregisterbasetable[nt[1]]) then
+      return nt[2] - luaregisterbasetable[nt[1]]
+    else
+      return false
+    end
+  end
+else
+  function registernumber(name)
+    local nt = createtoken(name)
+    if(luaregisterbasetable[nt.cmdname]) then
+      return nt.mode - luaregisterbasetable[nt.cmdname]
+    else
+      return false
+    end
+  end
+end
+luatexbase.registernumber = registernumber
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Attribute allocation}
+%
+% \begin{macro}{new_attribute}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   As attributes are used for Lua manipulations its useful to be able
+%   to assign from this end.
+%    \begin{macrocode}
+local attributes=setmetatable(
+{},
+{
+__index = function(t,key)
+return registernumber(key) or nil
+end}
+)
+luatexbase.attributes=attributes
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+local function new_attribute(name)
+  tex_setcount("global", "e@alloc@attribute@count",
+                          tex_count["e@alloc@attribute@count"] + 1)
+  if tex_count["e@alloc@attribute@count"] > 65534 then
+    luatexbase_error("No room for a new \\attribute")
+    return -1
+  end
+  attributes[name]= tex_count["e@alloc@attribute@count"]
+  texio_write_nl("Lua-only attribute " .. name .. " = " ..
+                 tex_count["e@alloc@attribute@count"])
+  return tex_count["e@alloc@attribute@count"]
+end
+luatexbase.new_attribute = new_attribute
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Custom whatsit allocation}
+%
+% \begin{macro}{new_whatsit}
+% Much the same as for attribute allocation in Lua
+%    \begin{macrocode}
+local function new_whatsit(name)
+  tex_setcount("global", "e@alloc@whatsit@count", 
+                         tex_count["e@alloc@whatsit@count"] + 1)
+  if tex_count["e@alloc@whatsit@count"] > 65534 then
+    luatexbase_error("No room for a new custom whatsit")
+    return -1
+  end
+  texio_write_nl("Custom whatsit " .. (name or "") .. " = " ..
+                 tex_count["e@alloc@whatsit@count"])
+  return tex_count["e@alloc@whatsit@count"]
+end
+luatexbase.new_whatsit = new_whatsit
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Bytecode register allocation}
+%
+% \begin{macro}{new_bytecode}
+% Much the same as for attribute allocation in Lua.
+% The optional \meta{name} argument is used in the log if given.
+%    \begin{macrocode}
+local function new_bytecode(name)
+  tex_setcount("global", "e@alloc@bytecode@count", 
+                         tex_count["e@alloc@bytecode@count"] + 1)
+  if tex_count["e@alloc@bytecode@count"] > 65534 then
+    luatexbase_error("No room for a new bytecode register")
+    return -1
+  end
+  texio_write_nl("Lua bytecode " .. (name or "") .. " = " ..
+                 tex_count["e@alloc@bytecode@count"])
+  return tex_count["e@alloc@bytecode@count"]
+end
+luatexbase.new_bytecode = new_bytecode
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Lua chunk name allocation}
+%
+% \begin{macro}{new_chunkname}
+% As for bytecode registers but also store the name in the
+% |lua.name| table.
+%    \begin{macrocode}
+local function new_chunkname(name)
+  tex_setcount("global", "e@alloc@luachunk@count", 
+                         tex_count["e@alloc@luachunk@count"] + 1)
+  local chunkname_count = tex_count["e@alloc@luachunk@count"]
+  chunkname_count = chunkname_count + 1
+  if chunkname_count > 65534 then
+    luatexbase_error("No room for a new chunkname")
+    return -1
+  end
+  lua.name[chunkname_count]=name
+  texio_write_nl("Lua chunkname " .. (name or "") .. " = " .. 
+                 chunkname_count .. "\n")
+  return chunkname_count
+end
+luatexbase.new_chunkname = new_chunkname
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Lua callback management}
+%
+% The native mechanism for callbacks in Lua allows only one per function.
+% That is extremely restrictive and so a mechanism is needed to add and
+% remove callbacks from the appropriate hooks.
+%
+% \subsubsection{Housekeeping}
+%
+% The main table: keys are callback names, and values are the associated lists
+% of functions. More precisely, the entries in the list are tables holding the
+% actual function as |func| and the identifying description as |description|.
+% Only callbacks with a non-empty list of functions have an entry in this
+% list.
+%    \begin{macrocode}
+local callbacklist = callbacklist or { }
+%    \end{macrocode}
+%
+% Numerical codes for callback types, and name-to-value association (the
+% table keys are strings, the values are numbers).
+%    \begin{macrocode}
+local list, data, exclusive, simple = 1, 2, 3, 4
+local types = {
+  list      = list,
+  data      = data,
+  exclusive = exclusive,
+  simple    = simple,
+}
+%    \end{macrocode}
+%
+% Now, list all predefined callbacks with their current type, based on the
+% Lua\TeX{} manual version~0.80. A full list of the currently-available
+% callbacks can be obtained using
+%  \begin{verbatim}
+%    \directlua{
+%      for i,_ in pairs(callback.list()) do
+%        texio.write_nl("- " .. i)
+%      end
+%    }
+%    \bye
+%  \end{verbatim}
+% in plain Lua\TeX{}. (Some undocumented callbacks are omitted as they are
+% to be removed.)
+%    \begin{macrocode}
+local callbacktypes = callbacktypes or {
+%    \end{macrocode}
+%   Section 4.1.1: file discovery callbacks.
+%    \begin{macrocode}
+  find_read_file     = exclusive,
+  find_write_file    = exclusive,
+  find_font_file     = data,
+  find_output_file   = data,
+  find_format_file   = data,
+  find_vf_file       = data,
+  find_map_file      = data,
+  find_enc_file      = data,
+  find_sfd_file      = data,
+  find_pk_file       = data,
+  find_data_file     = data,
+  find_opentype_file = data,
+  find_truetype_file = data,
+  find_type1_file    = data,
+  find_image_file    = data,
+%    \end{macrocode}
+% Section 4.1.2: file reading callbacks.
+%    \begin{macrocode}
+  open_read_file     = exclusive,
+  read_font_file     = exclusive,
+  read_vf_file       = exclusive,
+  read_map_file      = exclusive,
+  read_enc_file      = exclusive,
+  read_sfd_file      = exclusive,
+  read_pk_file       = exclusive,
+  read_data_file     = exclusive,
+  read_truetype_file = exclusive,
+  read_type1_file    = exclusive,
+  read_opentype_file = exclusive,
+%    \end{macrocode}
+% Section 4.1.3: data processing callbacks.
+%    \begin{macrocode}
+  process_input_buffer  = data,
+  process_output_buffer = data,
+  process_jobname       = data,
+  token_filter          = exclusive,
+%    \end{macrocode}
+% Section 4.1.4: node list processing callbacks.
+%    \begin{macrocode}
+  buildpage_filter      = simple,
+  pre_linebreak_filter  = list,
+  linebreak_filter      = list,
+  post_linebreak_filter = list,
+  hpack_filter          = list,
+  vpack_filter          = list,
+  pre_output_filter     = list,
+  hyphenate             = simple,
+  ligaturing            = simple,
+  kerning               = simple,
+  mlist_to_hlist        = list,
+%    \end{macrocode}
+% Section 4.1.5: information reporting callbacks.
+%    \begin{macrocode}
+  pre_dump            = simple,
+  start_run           = simple,
+  stop_run            = simple,
+  start_page_number   = simple,
+  stop_page_number    = simple,
+  show_error_hook     = simple,
+  show_error_message  = simple,
+  show_lua_error_hook = simple,
+  start_file          = simple,
+  stop_file           = simple,
+%    \end{macrocode}
+% Section 4.1.6: PDF-related callbacks.
+%    \begin{macrocode}
+  finish_pdffile = data,
+  finish_pdfpage = data,
+%    \end{macrocode}
+% Section 4.1.7: font-related callbacks.
+%    \begin{macrocode}
+  define_font = exclusive,
+%    \end{macrocode}
+% Undocumented callbacks which are likely to get documented.
+%    \begin{macrocode}
+  find_cidmap_file           = data,
+  pdf_stream_filter_callback = data,
+}
+luatexbase.callbacktypes=callbacktypes
+%    \end{macrocode}
+%
+% \begin{macro}{callback.register}
+% \changes{v1.0a}{2015/09/24}{Function modified}
+%   Save the original function for registering callbacks and prevent the
+%   original being used. The original is saved in a place that remains
+%   available so other more sophisticated code can override the approach
+%   taken by the kernel if desired.
+%    \begin{macrocode}
+local callback_register = callback_register or callback.register
+function callback.register()
+  luatexbase_error("Attempt to use callback.register() directly\n")
+end
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Handlers}
+%
+% The handler function is registered into the callback when the
+% first function is added to this callback's list. Then, when the callback
+% is called, then handler takes care of running all functions in the list.
+% When the last function is removed from the callback's list, the handler
+% is unregistered.
+%
+% More precisely, the functions below are used to generate a specialized
+% function (closure) for a given callback, which is the actual handler.
+%
+% Handler for |data| callbacks.
+%    \begin{macrocode}
+local function data_handler(name)
+  return function(data, ...)
+    local i
+    for _,i in ipairs(callbacklist[name]) do
+      data = i.func(data,...)
+    end
+    return data
+  end
+end
+%    \end{macrocode}
+% Handler for |exclusive| callbacks. We can assume |callbacklist[name]| is not
+% empty: otherwise, the function wouldn't be registered in the callback any
+% more.
+%    \begin{macrocode}
+local function exclusive_handler(name)
+  return function(...)
+    return callbacklist[name][1].func(...)
+  end
+end
+%    \end{macrocode}
+% Handler for |list| callbacks.
+%    \begin{macrocode}
+local function list_handler(name)
+  return function(head, ...)
+    local ret
+    local alltrue = true
+    local i
+    for _,i in ipairs(callbacklist[name]) do
+      ret = i.func(head, ...)
+      if ret == false then
+        luatexbase_warning(
+          "Function `i.description' returned false\n"
+            .. "in callback `name'"
+         )
+         break
+      end
+      if ret ~= true then
+        alltrue = false
+        head = ret
+      end
+    end
+    return alltrue and true or head
+  end
+end
+%    \end{macrocode}
+% Handler for |simple| callbacks.
+%    \begin{macrocode}
+local function simple_handler(name)
+  return function(...)
+    local i
+    for _,i in ipairs(callbacklist[name]) do
+      i.func(...)
+    end
+  end
+end
+%    \end{macrocode}
+%
+% Keep a handlers table for indexed access.
+%    \begin{macrocode}
+local handlers = {
+  [data]      = data_handler,
+  [exclusive] = exclusive_handler,
+  [list]      = list_handler,
+  [simple]    = simple_handler,
+}
+%    \end{macrocode}
+%
+% \subsubsection{Public functions for callback management}
+%
+% Defining user callbacks perhaps should be in package code,
+% but impacts on |add_to_callback|.
+% If a default function is not required, may may be declared as |false|.
+% First we need a list of user callbacks.
+%    \begin{macrocode}
+local user_callbacks_defaults = { }
+%    \end{macrocode}
+%
+% \begin{macro}{create_callback}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   The allocator itself.
+%    \begin{macrocode}
+local function create_callback(name, ctype, default)
+  if not name or
+    name == "" or
+    callbacktypes[name] or
+    not(default == false or  type(default) == "function")
+    then
+      luatexbase_error("Unable to create callback " .. name)
+  end
+  user_callbacks_defaults[name] = default
+  callbacktypes[name] = types[ctype]
+end
+luatexbase.create_callback = create_callback
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{call_callback}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%  Call a user defined callback. First check arguments.
+%    \begin{macrocode}
+local function call_callback(name,...)
+  if not name or
+    name == "" or
+    user_callbacks_defaults[name] == nil
+    then
+        luatexbase_error("Unable to call callback " .. name)
+  end
+  local l = callbacklist[name]
+  local f
+  if not l then
+    f = user_callbacks_defaults[name]
+    if l == false then
+	   return nil
+	 end
+  else
+    f = handlers[callbacktypes[name]](name)
+  end
+  return f(...)
+end
+luatexbase.call_callback=call_callback
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{add_to_callback}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   Add a function to a callback. First check arguments.
+%    \begin{macrocode}
+local function add_to_callback(name, func, description)
+  if
+    not name or
+    name == "" or
+    not callbacktypes[name] or
+    type(func) ~= "function" or
+    not description or
+    description == "" then
+    luatexbase_error(
+      "Unable to register callback.\n\n"
+        .. "Correct usage:\n"
+        .. "add_to_callback(<callback>, <function>, <description>)"
+    )
+    return
+  end
+%    \end{macrocode}
+%   Then test if this callback is already in use. If not, initialise its list
+%   and register the proper handler.
+%    \begin{macrocode}
+  local l = callbacklist[name]
+  if l == nil then
+    l = { }
+    callbacklist[name] = l
+%    \end{macrocode}
+% If it is not a user defined callback use the primitive callback register.
+%    \begin{macrocode}
+    if user_callbacks_defaults[name] == nil then
+      callback_register(name, handlers[callbacktypes[name]](name))
+    end
+  end
+%    \end{macrocode}
+%  Actually register the function and give an error if more than one
+%  |exclusive| one is registered.
+%    \begin{macrocode}
+  local f = {
+    func        = func,
+    description = description,
+  }
+  local priority = #l + 1
+  if callbacktypes[name] == exclusive then
+    if #l == 1 then
+      luatexbase_error(
+        "Cannot add second callback to exclusive function\n`" ..
+        name .. "'")
+    end
+  end
+  table.insert(l, priority, f)
+%    \end{macrocode}
+%  Keep user informed.
+%    \begin{macrocode}
+  texio_write_nl(
+    "Inserting `" .. description .. "' at position "
+      .. priority .. " in `" .. name .. "'."
+  )
+end
+luatexbase.add_to_callback = add_to_callback
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{remove_from_callback}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   Remove a function from a callback. First check arguments.
+%    \begin{macrocode}
+local function remove_from_callback(name, description)
+  if
+    not name or
+    name == "" or
+    not callbacktypes[name] or
+    not description or
+    description == "" then
+    luatexbase_error(
+      "Unable to remove function from callback.\n\n"
+        .. "Correct usage:\n"
+        .. "remove_from_callback(<callback>, <description>)"
+    )
+    return
+  end
+  local l = callbacklist[name]
+  if not l then
+    luatexbase_error(
+      "No callback list for `" .. name .. "'\n")
+  end
+%    \end{macrocode}
+%  Loop over the callback's function list until we find a matching entry.
+%  Remove it and check if the list is empty: if so, unregister the
+%   callback handler.
+%    \begin{macrocode}
+  local index = false
+  local i,j
+  local cb = {}
+  for i,j in ipairs(l) do
+    if j.description == description then
+      index = i
+      break
+    end
+  end
+  if not index then
+    luatexbase_error(
+      "No callback `" .. description .. "' registered for `" ..
+      name .. "'\n")
+    return
+  end
+  cb = l[index]
+  table.remove(l, index)
+  texio_write_nl(
+    "Removing  `" .. description .. "' from `" .. name .. "'."
+  )
+  if #l == 0 then
+    callbacklist[name] = nil
+    callback_register(name, nil)
+  end
+  return cb.func,cb.description
+end
+luatexbase.remove_from_callback = remove_from_callback
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{in_callback}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   Look for a function description in a callback.
+%    \begin{macrocode}
+local function in_callback(name, description)
+  if not name
+    or name == ""
+    or not callbacktypes[name]
+    or not description then
+      return false
+  end
+  local i
+  for _, i in pairs(callbacklist[name]) do
+    if i.description == description then
+      return true
+    end
+  end
+  return false
+end
+luatexbase.in_callback = in_callback
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{disable_callback}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   As we subvert the engine interface we need to provide a way to access
+%   this functionality.
+%    \begin{macrocode}
+local function disable_callback(name)
+  if(callbacklist[name] == nil) then
+    callback_register(name, false)
+  else
+    luatexbase_error("Callback list for " .. name .. " not empty")
+  end
+end
+luatexbase.disable_callback = disable_callback
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{callback_descriptions}
+% \changes{v1.0a}{2015/09/24}{Function added}
+%   List the descriptions of functions registered for the given callback.
+%    \begin{macrocode}
+local function callback_descriptions (name)
+  local d = {}
+  if not name
+    or name == ""
+    or not callbacktypes[name]
+    then
+    return d
+  else
+  local i
+  for k, i in pairs(callbacklist[name] or {}) do
+    d[k]= i.description
+    end
+  end
+  return d
+end
+luatexbase.callback_descriptions =callback_descriptions 
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{uninstall}
+% \changes{v1.0e}{2015/10/02}{Function added}
+%   Unlike at the \TeX{} level, we have to provide a back-out mechanism here
+%   at the same time as the rest of the code. This is not meant for use by
+%   anything other than \textsf{latexrelease}: as such this is
+%   \emph{deliberately} not documented for users!
+%    \begin{macrocode}
+local function uninstall()
+  module_info(
+    "luatexbase",
+    "Uninstalling kernel luatexbase code"
+  )
+  callback.register = callback_register
+  luatexbase = nil
+end
+luatexbase.uninstall = uninstall
+%    \end{macrocode}
+% \end{macro}
+% \endgroup
+%
+%    \begin{macrocode}
+%</lua>
+%    \end{macrocode}
+%
+% Reset the catcode of |@|.
+%    \begin{macrocode}
+%<tex>\catcode`\@=\etatcatcode\relax
+%    \end{macrocode}
+%
+%
+% \Finale

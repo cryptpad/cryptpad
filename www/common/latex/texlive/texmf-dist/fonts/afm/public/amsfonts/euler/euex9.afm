@@ -1,0 +1,82 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jun 13 12:00:00 2011
+FontName EUEX9
+FullName EUEX9
+FamilyName Euler
+Weight Medium
+Notice (Copyright (c) 1997, 2009, 2011 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name EUEX9.)
+ItalicAngle 0
+IsFixedPitch false
+UnderlinePosition -100
+UnderlineThickness 50
+Version 003.003
+EncodingScheme FontSpecific
+FontBBox -25 -2957 1399 772
+StartCharMetrics 65
+C 8 ; WX 600 ; N braceleftbig ; B 113 -1157 486 42 ;
+C 9 ; WX 600 ; N bracerightbig ; B 113 -1157 486 42 ;
+C 10 ; WX 685 ; N braceleftBig ; B 121 -1757 563 42 ;
+C 11 ; WX 685 ; N bracerightBig ; B 121 -1757 563 42 ;
+C 12 ; WX 771 ; N braceleftbigg ; B 134 -2357 636 42 ;
+C 13 ; WX 771 ; N bracerightbigg ; B 134 -2357 636 42 ;
+C 14 ; WX 828 ; N braceleftBigg ; B 147 -2957 680 42 ;
+C 15 ; WX 828 ; N bracerightBigg ; B 147 -2957 680 42 ;
+C 24 ; WX 1028 ; N arrowlefttophalf ; B 57 229 970 500 ;
+C 25 ; WX 1028 ; N arrowleftbothalf ; B 57 1 970 272 ;
+C 26 ; WX 1028 ; N arrowrighttophalf ; B 57 229 970 500 ;
+C 27 ; WX 1028 ; N arrowrightbothalf ; B 57 1 970 272 ;
+C 32 ; WX 1028 ; N arrowleft ; B 57 1 970 500 ;
+C 33 ; WX 1028 ; N arrowright ; B 57 1 970 500 ;
+C 34 ; WX 514 ; N arrowup ; B 28 -194 485 694 ;
+C 35 ; WX 514 ; N arrowdown ; B 28 -194 485 694 ;
+C 36 ; WX 1028 ; N arrowboth ; B 57 1 970 500 ;
+C 37 ; WX 1028 ; N arrownortheast ; B 57 -219 1041 765 ;
+C 38 ; WX 1028 ; N arrowsoutheast ; B 57 -265 1041 719 ;
+C 40 ; WX 1028 ; N arrowdblleft ; B 58 -101 970 602 ;
+C 41 ; WX 1028 ; N arrowdblright ; B 57 -101 969 602 ;
+C 42 ; WX 685 ; N arrowdblup ; B 12 -194 672 693 ;
+C 43 ; WX 685 ; N arrowdbldown ; B 12 -193 672 694 ;
+C 44 ; WX 1028 ; N arrowdblboth ; B 36 -101 991 602 ;
+C 45 ; WX 1028 ; N arrownorthwest ; B -14 -219 970 765 ;
+C 46 ; WX 1028 ; N arrowsouthwest ; B -14 -265 970 719 ;
+C 49 ; WX 1028 ; N infinity ; B 57 -11 970 442 ;
+C 56 ; WX 914 ; N bracelefttp ; B 407 -911 738 -1 ;
+C 57 ; WX 914 ; N bracerighttp ; B 175 -911 506 -1 ;
+C 58 ; WX 914 ; N braceleftbt ; B 407 -899 738 11 ;
+C 59 ; WX 914 ; N bracerightbt ; B 175 -899 506 11 ;
+C 60 ; WX 914 ; N braceleftmid ; B 175 -1811 506 11 ;
+C 61 ; WX 914 ; N bracerightmid ; B 407 -1811 738 11 ;
+C 62 ; WX 914 ; N braceex ; B 407 -311 506 11 ;
+C 72 ; WX 542 ; N contintegraltext ; B 49 -1111 524 0 ;
+C 73 ; WX 457 ; N contintegraldisplay ; B 15 -2222 572 0 ;
+C 80 ; WX 1085 ; N summationtext ; B 57 -1000 999 0 ;
+C 81 ; WX 1085 ; N producttext ; B 71 -1000 1013 0 ;
+C 82 ; WX 542 ; N integraltext ; B 49 -1111 521 0 ;
+C 88 ; WX 1485 ; N summationdisplay ; B 57 -1400 1399 0 ;
+C 89 ; WX 1450 ; N productdisplay ; B 57 -1400 1392 0 ;
+C 90 ; WX 457 ; N integraldisplay ; B 40 -2222 531 0 ;
+C 96 ; WX 1085 ; N coproducttext ; B 71 -1000 1013 0 ;
+C 97 ; WX 1450 ; N coproductdisplay ; B 57 -1400 1392 0 ;
+C 108 ; WX 514 ; N arrowbothv ; B 28 -272 485 772 ;
+C 109 ; WX 685 ; N arrowdblbothv ; B 12 -271 672 771 ;
+C 122 ; WX 450 ; N bracehtipdownleft ; B -25 -232 461 99 ;
+C 123 ; WX 450 ; N bracehtipdownright ; B -11 -232 475 99 ;
+C 124 ; WX 450 ; N bracehtipupleft ; B -25 0 461 331 ;
+C 125 ; WX 450 ; N bracehtipupright ; B -11 0 475 331 ;
+C 128 ; WX 1028 ; N arrowleft ; B 57 1 970 500 ;
+C 160 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 169 ; WX 600 ; N braceleftbig ; B 113 -1157 486 42 ;
+C 170 ; WX 600 ; N bracerightbig ; B 113 -1157 486 42 ;
+C 173 ; WX 685 ; N braceleftBig ; B 121 -1757 563 42 ;
+C 174 ; WX 685 ; N bracerightBig ; B 121 -1757 563 42 ;
+C 175 ; WX 771 ; N braceleftbigg ; B 134 -2357 636 42 ;
+C 176 ; WX 771 ; N bracerightbigg ; B 134 -2357 636 42 ;
+C 177 ; WX 828 ; N braceleftBigg ; B 147 -2957 680 42 ;
+C 178 ; WX 828 ; N bracerightBigg ; B 147 -2957 680 42 ;
+C 187 ; WX 1028 ; N arrowlefttophalf ; B 57 229 970 500 ;
+C 188 ; WX 1028 ; N arrowleftbothalf ; B 57 1 970 272 ;
+C 189 ; WX 1028 ; N arrowrighttophalf ; B 57 229 970 500 ;
+C 190 ; WX 1028 ; N arrowrightbothalf ; B 57 1 970 272 ;
+C 195 ; WX 1028 ; N arrowleft ; B 57 1 970 500 ;
+EndCharMetrics
+EndFontMetrics

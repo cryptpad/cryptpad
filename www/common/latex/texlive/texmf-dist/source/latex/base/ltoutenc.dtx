@@ -1,0 +1,3455 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltoutenc.dtx
+%\NeedsTeXFormat{LaTeX2e}[2000/06/01]
+%<OT1>\ProvidesFile{ot1enc.def}
+%<T1>\ProvidesFile{t1enc.def}
+%<OMS>\ProvidesFile{omsenc.def}
+%<OML>\ProvidesFile{omlenc.def}
+%<OT4>\ProvidesFile{ot4enc.def}
+%<TS1>\ProvidesFile{ts1enc.def}[2001/06/05 v3.0e (jk/car/fm)
+%<package>\ProvidesPackage{fontenc}
+%<TS1sty>\ProvidesPackage{textcomp}
+%<OT1|T1|OMS|OML|OT4|package|TS1sty> [2005/09/27 v1.99g
+%<OT1|T1|OMS|OML|OT4|TS1>         Standard LaTeX file]
+%<package|TS1sty>                 Standard LaTeX package]
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltoutenc.dtx}
+             [2015/08/28 v1.99m LaTeX Kernel (font encodings)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltoutenc.dtx}
+\title{\filename}
+\date{\filedate}
+\author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\usepackage{textcomp}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2825}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v1.99e}{2004/02/13}{Documentation fixes: typos}
+% \changes{v1.9k}{1998/01/12}{Added \cs{ProvidesPackage}
+%    for textcomp.sty}
+% \changes{v1.9i}{1997/12/19}{Documentation corrections.}
+% \changes{v1.9h}{1997/12/17}{Documentation changes and additions.}
+% \changes{v1.9h}{1997/12/17}{Added textcomp.sty.}
+% \changes{v1.9f}{1997/08/29}{Added OT4 encoding,
+%    provided by Marcin Woli\'nski.}
+% \changes{v1.7r}{1995/11/28}{doc fixes}
+% \changes{v1.7h}{1995/04/21}{Added \cs{null} \cs{k}  latex/1274}
+% \changes{v1.7f}{1994/12/14}{Added braces to \cs{copyright} so it
+%    works unbraced in subscripts.}
+% \changes{v1.7f}{1994/12/14}{Added check for math mode in
+%    \cs{@changed@cmd}.}
+% \changes{v1.7f}{1994/12/14}{Commented out \cs{textasciicircum},
+%    \cs{textasciitilde}, \cs{textbackslash}, \cs{textbar},
+%    \cs{textgreater}, \cs{texthyphenchar}, \cs{texthyphen} and
+%    \cs{textless} to save memory.}
+% \changes{v1.7e}{1994/12/10}{Added documentation for the OML encoding.}
+% \changes{v1.7e}{1994/12/10}{Replaced width with \cs{@width} and
+%    ditto height in vrules.}
+% \changes{v1.7d}{1994/12/08}{Added \cs{null} and \cs{sh@ft} to \cs{b}
+%    and \cs{d}.}
+% \changes{v1.7c}{1994/12/05}{Added braces to \cs{textcircled}.}
+% \changes{v1.7b}{1994/12/02}{Fixed a bug with \cs{a}.}
+% \changes{v1.7a}{1994/11/30}{Added new code for encoding-specific
+%    commands.  These now expand in the mouth, which means that
+%    ligaturing and kerning can happen.}
+% \changes{v1.6i}{1994/11/22}{Fixed empty accents.  Again.}
+% \changes{v1.6i}{1994/11/22}{Corrected \cs{dots} so that there's no
+%    kerning in monowidth fonts.}
+% \changes{v1.6i}{1994/11/22}{Corrected typo with
+%    \cs{mathunderscore}.}
+% \changes{v1.6h}{1994/11/17}{(DPC) \cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.6d}{1994/11/02}{Wrapped lines longer than 70 characters.}
+% \changes{v1.6d}{1994/10/30}{Added math commands.}
+% \changes{v1.6d}{1994/10/30}{Added OML encoding.}
+% \changes{v1.6d}{1994/10/30}{Added \cs{textcircled}.}
+% \changes{v1.6d}{1994/10/30}{Added \cs{DeclareTextCompositeCommand}.}
+% \changes{v1.6c}{1994/10/29}{Renamed \cs{P}, \cs{S}, \cs{dag} and
+%    \cs{ddag} to \cs{textparagraph}, \cs{textsection},
+%    \cs{textdagger} and \cs{textdaggerdbl}.}
+% \changes{v1.6b}{1994/10/27}{Removed the enc.def files}
+% \changes{v1.6a}{1994/10/25}{Added \cs{ProvideTextCommand},
+%    \cs{UseTextSymbol},
+%    \cs{UseTextAccent},
+%    \cs{DeclareTextSymbolDefault},
+%    \cs{DeclareTextAccentDefault},
+%    \cs{DeclareTextCommandDefault}, and
+%    \cs{ProvideTextCommandDefault}.}
+% \changes{v1.5m}{1994/10/18}{Added new definitions of \cs{patterns}
+%    and \cs{hyphenation}.}
+% \changes{v1.5l}{1994/10/07}{Moved the ogonek accent.}
+% \changes{v1.5k}{1994/05/18}{Removed braces from \cs{pounds} and
+%    \cs{dollar}.}
+% \changes{v1.5k}{1994/05/18}{Replaced \cs{defaultencoding} with
+%    \cs{encodingdefault}.}
+% \changes{v1.5k}{1994/05/18}{Made dotted-i produce `i'.}
+% \changes{v1.5j}{1994/05/17}{Added braces to \cs{pounds} so it works
+%    as a subscript.}
+% \changes{v1.5i}{1994/05/16}{Fixed a bug with \cs{d}.}
+% \changes{v1.5h}{1994/05/16}{Added \cs{NG}, \cs{ng}, \cs{TH},
+%    \cs{th}, \cs{DH}, \cs{dh}, \cs{DJ} and \cs{dj}.}
+% \changes{v1.5h}{1994/05/16}{Added \cs{r} (ring accent) and \cs{k}
+%    (ogonek) accents.}
+% \changes{v1.5h}{1994/05/16}{Removed \cs{P} from the OT1 definitions
+%    file.}
+% \changes{v1.5h}{1994/05/16}{Fixed a bug with \cs{pounds}.}
+% \changes{v1.5g}{1994/05/16}{Made fontenc.sty use the new mixed-case
+%    encoding files.}
+% \changes{v1.5f}{1994/05/16}{Revert code so that the encoding
+%                    given is used in \cs{DeclareTextCommand} (FMi)}
+% \changes{v1.5f}{1994/05/16}{enc files now have uc encoding name
+%                             parts (FMi)}
+% \changes{v1.5e}{1994/05/14}{Replaced \cs{ENC@cmd} by \cs{ENC-cmd}.}
+% \changes{v1.5d}{1994/05/14}{Rewrote \cs{DeclareTextCommand} to define
+%    its argument to use the current encoding by default, rather than
+%    the encoding provided to \cs{DeclareTextCommand}.}
+% \changes{v1.5d}{1994/05/14}{Tidied up the documentation.}
+% \changes{v1.5c}{1994/05/14}{Added the fontenc package.}
+% \changes{v1.5c}{1994/05/14}{Fixed a bug which caused an infinite loop
+%    if \cs{f@encoding} was incorrectly set.}
+% \changes{v1.5c}{1994/05/14}{Moved fontsmpl to its own dtx file.}
+% \changes{v1.5b}{1994/05/13}{Added \cmd\{, \cmd\} and \cmd\$.}
+% \changes{v1.5b}{1994/05/13}
+%    {Replaces \cs{space} by `~' in \cs{csname}.}
+% \changes{v1.5b}{1994/05/13}{Renamed \cs{DeclareProtectedCommand} to
+%    \cs{DeclareRobustCommand}.}
+% \changes{v1.5a}{1994/05/11}{Renamed the commands again.  Made the
+%    encoding part of the command syntax.  Added the
+%    \cs{DeclareTextCommand} interface.  Used
+%    \cs{DeclareProtectedCommand}.}
+% \changes{v1.4a}{1994/05/01}{Renamed the commands, removed the
+%    \cs{EncodingSpecific} command.  Turned all slots into decimal.
+%    Added \cs{a}.}
+% \changes{v1.4a}{1994/05/01}{Removed Rokicki's encoding.}
+% \changes{v1.3d}{1993/12/18}{Some T1 stuff had drifted into the OT1
+%    file.}
+% \changes{v1.3c}{1993/12/18}{A new syntax, separating
+%    accent-definitions from encoding-specific definitions, and
+%    allowing encoding-specific \cs{chardef}, \cs{let}, etc.}
+% \changes{v1.3c}{1993/12/18}{Rewrote for the new syntax of
+%    \cs{EncodingSpecific}.}
+% \changes{v1.3b}{1993/12/18}{Corrected typos.}
+% \changes{v1.3b}{1993/12/18}{Replaced the missing last argument to
+%    \cs{DeclareFontEncoding}.}
+% \changes{v1.3a}{1993/12/18}{Replaced OT3 by XXX}
+% \changes{v1.3}{1993/12/17}{Added \cs{EncodingSpecificAccent},
+%   \cs{EncodingSpecificAccentedLetter} and
+%   \cs{EncodingSpecificCommand}.}
+% \changes{v1.3}{1993/12/17}{Made Rokicki's encoding a proper encoding
+%    scheme rather than a variant of OT1.}
+% \changes{v1.2b}{1993/12/13}{Corrected file name in driver code.}
+% \changes{v1.2a}{1993/12/11}{Corrected for t1enc, math.}
+% \changes{v1.2}{1993/12/10}{Added source code for t1enc.sty.}
+% \changes{v1.1}{1993/12/07}{Made all character numbers decimal.}
+% \changes{v1.1}{1993/12/07}{Removed a lot of equal signs and the
+%   like.}
+% \changes{v1.99m}{2015/02/21}
+%         {Removed autoload code}
+%
+%
+% \section{Font encodings}
+%
+%    This section of the kernel contains commands for declaring
+%    encoding-specific
+%    commands, such as accents.  It also contains the code for some of
+%    the encoding files, including |omlenc.def|,
+%    |omsenc.def|, |t1enc.def| and |ot1enc.def| files, which define
+%    the |OLM|,
+%    |OMS|, |T1| and |OT1| encodings, and the |fontenc| package
+%    for selecting encodings.
+%
+%    The |fontenc| package has options for encodings, of which the
+%    last option is the default encoding.  For example, to use the
+%    |OT2|, |OT3| and |T1| encodings, with |T1| as the default, you
+%    say:
+%\begin{verbatim}
+%    \usepackage[OT2,OT3,T1]{fontenc}
+%\end{verbatim}
+%    The standard kernel set-up loads font encoding files and selects
+%    an encoding as follows.
+%\begin{verbatim}
+%    \input {omlenc.def}
+%    \input  {t1enc.def}
+%    \input {ot1enc.def}
+%    \input {omsenc.def}
+%    \fontencoding{OT1}
+%\end{verbatim}
+%    Note that the files in the standard |inputenc| package depend on
+%    this behaviour of the kernel.
+%
+%    The syntax for declaring encoding-specific commands is:
+%    \begin{quote}
+%      |\DeclareTextCommand{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{encoding}|}|\\\hspace*{\fill}|[|^^A
+%         \meta{number}|][|^^A
+%         \meta{default}|]{|^^A
+%         \meta{commands}|}|
+%    \end{quote}
+%    This command is like |\newcommand|, except that it defines a
+%    command which is specific to one encoding.  The resulting command
+%    is always robust, even if its definition is fragile.  For example,
+%    the definition of |\l| in the |OT1| encoding is:
+%\begin{verbatim}
+%    \DeclareTextCommand{\l}{OT1}{{\@xxxii l}}
+%\end{verbatim}
+%    |\DeclareTextCommand| takes the same optional arguments as
+%    |\newcommand|.
+%    \begin{quote}
+%      |\ProvideTextCommand{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{encoding}|}|\\\hspace*{\fill}|[|^^A
+%         \meta{number}|][|^^A
+%         \meta{default}|]{|^^A
+%         \meta{commands}|}|
+%    \end{quote}
+%    This acts like |\DeclareTextCommand|, but does nothing if the
+%    command is already defined.
+%    \begin{quote}
+%      |\DeclareTextSymbol{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{encoding}|}{|^^A
+%         \meta{slot}|}|
+%    \end{quote}
+%    This command defines a text symbol, with a particular slot in that
+%    encoding.  The commands:
+% \changes{v1.9h}{1997/12/17}{Example corrected, braces removed.}
+%\begin{verbatim}
+%    \DeclareTextSymbol{\ss}{OT1}{25}
+%    \DeclareTextCommand{\ss}{OT1}{\char25 }
+%\end{verbatim}
+%    have the same effect, but the |\DeclareTextSymbol| is faster.
+%    \begin{quote}
+%      |\DeclareTextAccent{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{encoding}|}{|^^A
+%         \meta{slot}|}|
+%    \end{quote}
+% \changes{v1.8e}{1996/11/23}{Corrected description}
+% \changes{v1.9k}{1997/12/31}{Further correction}
+%    This command declares a text accent.  The commands:
+%\begin{verbatim}
+%    \DeclareTextAccent{\"}{OT1}{127}
+%    \DeclareTextCommand{\"}{OT1}{\add@accent {127}}
+%\end{verbatim}
+%    have the same effect.
+% \changes{v1.8c}{1996/10/27}
+%      {Corrected syntax descriptions}
+%    \begin{quote}
+%      |\DeclareTextComposite{|^^A
+%          \meta{command}|}|\\\hspace*{\fill}|{|^^A
+%         \meta{encoding}|}{|^^A
+%         \meta{argument}|}{|^^A
+%             \meta{slot}|}|
+%    \end{quote}
+%    This command declares a composite letter, for example in the |T1|
+%    encoding |\'{a}| is slot 225, which is declared by:
+%\begin{verbatim}
+%    \DeclareTextComposite{\'}{T1}{a}{225}
+%\end{verbatim}
+% \changes{v1.8e}{1996/11/23}
+%      {Corrected description}
+%    The \emph{command} will normally have been declared with
+%    |\DeclareTextAccent|, or as a one-argument |\DeclareTextCommand|.
+%
+%    |\DeclareTextComposite| is the most common example of using
+%    the more general declaration
+%    |\DeclareTextCompositeCommand|, which can define a composite
+%    to be an arbitrary piece of text.
+%    \begin{quote}
+%      |\DeclareTextCompositeCommand{|^^A
+%          \meta{command}|}|\\\hspace*{\fill}|{|^^A
+%         \meta{encoding}|}{|^^A
+%         \meta{argument}|}{|^^A
+%             \meta{text}|}|
+%    \end{quote}
+%    For example, in the OT1 encoding \r A has a hand-crafted
+%    definition this is declared as follows
+%\begin{verbatim}
+%    \DeclareTextCompositeCommand{\r}{OT1}{A}
+%     {\leavevmode\setbox\z@\hbox{!}\dimen@\ht\z@\advance\dimen@-1ex%
+%      \rlap{\raise.67\dimen@\hbox{\char23}}A}
+%\end{verbatim}
+% \changes{v1.8e}{1996/11/23}
+%      {Corrected description}
+%    The \emph{command} will normally have been declared with
+%    |\DeclareTextAccent|, or as a one-argument |\DeclareTextCommand|.
+%
+%    The commands defined using the above declarations can be used in
+%    two ways.
+%    Normally they are used by just calling the command in the
+%    appropriate encoding, for example |\ss|.  However, sometimes you
+%    may wish to use a command in an encoding where it is not defined.
+%    If the command has no arguments, then you can use it in another
+%    encoding by calling |\UseTextSymbol|:
+%    \begin{quote}
+%      |\UseTextSymbol{|^^A
+%         \meta{encoding}|}{|^^A
+%         \meta{command}|}|
+%    \end{quote}
+%
+% \task{?}{Document the problems of these commands, see pr/3160}
+% \changes{v1.9e}{1997/08/05}{Corrected order of arguments in
+%          \cs{UseTextSymbol} example.}
+%    For example, |\UseTextSymbol{OT1}{\ss}| has the same effect as:
+%\begin{verbatim}
+%    {\fontencoding{OT1}\selectfont\ss}
+%\end{verbatim}
+%    If the command has one argument then you can use it in another
+%    encoding by calling
+%    |\UseTextAccent|:
+%    \begin{quote}
+%      |\UseTextAccent{|^^A
+%         \meta{encoding}|}{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{text}|}|
+%    \end{quote}
+%    For example, if the current encoding is |OT2| then
+%    |\UseTextAccent{OT1}{\'}{a}| has the same effect as:
+%\begin{verbatim}
+%    {\fontencoding{OT1}\selectfont\'{\fontencoding{OT2}\selectfont a}}
+%\end{verbatim}
+% \changes{v1.8e}{1996/11/23}
+%      {Extended description}
+%    You can also declare a default definition for a text command, which
+%    will be used if the current encoding has no appropriate definition.
+%    Such use will also set the definition for this command in the
+%    current encoding to equal this default definition; this makes
+%    subsequent uses of the command much faster.
+%    \begin{quote}
+%      |\DeclareTextCommandDefault{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{definition}|}|
+%    \end{quote}
+%    For example, the default definition of the command
+%    |\textonequarter| (which produces the fraction $\frac14$) could be
+%    built using math mode:
+%\begin{verbatim}
+%    \DeclareTextCommandDefault{\textonequarter}{\ensuremath {\frac14}}
+%\end{verbatim}
+%    There is a matching |\Provide| command which will not override an
+%    existing default definition:
+%    \begin{quote}
+%      |\ProvideTextCommandDefault{|^^A
+%         \meta{command}|}{|^^A
+%         \meta{definition}|}|
+%    \end{quote}
+%    The most common use for these commands is to use symbols from
+%    other encodings, so there are some optimizations provided:
+%    \begin{quote}
+%      |\DeclareTextSymbolDefault{|^^A
+%         \meta{command}|}|^^A
+%         \meta{encoding}|}|\\
+%      |\DeclareTextAccentDefault{|^^A
+%         \meta{command}|}|^^A
+%         \meta{encoding}|}|
+%    \end{quote}
+%    are short for:
+%    \begin{quote}
+%      |\DeclareTextCommandDefault{|^^A
+%         \meta{command}|}|\\\hspace*{\fill}^^A
+%         |{\UseTextSymbol{|^^A
+%         \meta{encoding}|}{|\meta{command}|}}| \\
+%      |\DeclareTextCommandDefault[1]{|^^A
+%         \meta{command}|}|\\\hspace*{\fill}^^A
+%         |{\UseTextAccent{|^^A
+%         \meta{encoding}|}{|\meta{command}|}{#1}}|
+%    \end{quote}
+%    For example, to make |OT1| the default encoding for |\ss| and
+%    |\'| you say:
+%\begin{verbatim}
+%    \DeclareTextSymbolDefault{\ss}{OT1}
+%    \DeclareTextAccentDefault{\'}{OT1}
+%\end{verbatim}
+%    Note that you can use these commands on any zero- or one-argument
+%    commands declared with |\DeclareText*| or |\ProvideText*|, not
+%    just those defined using |\DeclareTextSymbol| or
+%    |\DeclareTextAccent|.
+%
+% \subsection{Removing encoding-specific commands}
+%    \label{sec:removeencspec}
+%
+% \changes{v1.9o}{1998/03/20}{Documentation added for pr/2783}
+%
+% In some cases encoding definitions are given to provide some limited
+% support since nothing better is available, for example, the definition
+% for |\textdollar| in \texttt{OT1} is a hack since \$ and \pounds{}
+% actually share the same slot in this encoding. Thus if such a glyph
+% becomes available in a different encoding (e.g., \texttt{TS1}) one
+% would like to get rid of the flacky one and make the default
+% definition point to the new encoding. In such a case defining
+%\begin{verbatim}
+%   \DeclareTextSymbol{\textdollar}{TS1}{36}
+%   \DeclareTextSymbolDefault{\textdollar}{TS1}
+%\end{verbatim}
+% is not enough since if typesetting in \texttt{OT1} \LaTeX{} will
+% still find the encoding specific-definition for \texttt{OT1} and
+% therefore ignore the new default.
+% Therefore to ensure that in this case the \texttt{TS1} version is
+% used  we have to remove the \texttt{OT1} declaration:
+%\begin{verbatim}
+%   \UndeclareTextCommand{\textdollar}{OT1}
+%\end{verbatim}
+%
+% Since the \$ sign is a proper glyph in the \texttt{T1} encoding there
+% is no point removing its definition and forcing \LaTeX{} to pick up
+% the \texttt{TS1} version if typesetting in this encoding.
+% However, assume you want to use the variant dollar sign,
+% i.e., \textdollaroldstyle{}
+% for your dollars. In that case you have to get rid of the \texttt{T1}
+% declaration as well, e.g., the following would do that for you:
+%\begin{verbatim}
+%   \UndeclareTextCommand{\textdollar}{OT1}
+%   \UndeclareTextCommand{\textdollar} {T1}
+%   \DeclareTextCommandDefault{\textdollar}
+%                             {\UseTextSymbol{TS1}\textdollaroldstyle}
+%\end{verbatim}
+%
+% \subsection{The order of declarations}\label{sec:orderofdecls}
+%
+% \changes{v1.9o}{1998/03/20}{Documentation added about order of decls}
+%
+% If an encoding-specific command is defined for more than one encoding,
+% then it will execute fastest in the encoding in which it was defined
+% last since its top-level definition will be set up to execute in that
+% encoding without any overhead.
+%
+% For this reason the file \texttt{fonttext.ltx} currently first loads
+% the definitions for the \texttt{T1} encoding and then those for the
+% \texttt{OT1} encoding so that typesetting in \texttt{OT1} is optimized
+% since that is (still) the default. However, when \texttt{T1} is
+% explicitly requested (via |\usepackage[T1]{fontenc}|) the
+% top-level definitions are automatically changed to favour
+% \texttt{T1} since its declarations are reloaded in the process.
+%
+% For the same reason default declarations should never come last since
+% they are implemented as a special encoding themselves (with the
+% name |?|).
+% Specifying them last would simply mean to make those encoding-specific
+% commands equally inefficient in all encodings. Therefore the
+% \texttt{textcomp} package, for example, first sets up all defaults
+% to point to \texttt{TS1} and then declares the commands in the
+% \texttt{TS1} encoding.
+%
+%
+% \StopEventually{}
+%
+% \subsection{Docstrip modules}
+%
+%    This |.dtx| file is be used to generate several related files
+%    containing font encoding definitions. The mutually exclusive
+%    docstrip options are listed here.
+%    \begin{center}
+%    \begin{tabular}{lp{10cm}}
+%      |T1|       & generates |t1enc.def| for the Cork encoding. \\
+%      |TS1|      & generates |ts1enc.def| for the Text Companion
+%                   encoding. \\
+%      |TS1sty|   & generates |textcomp.sty|, package that sets up use
+%                   of the Text Companion encoding. \\
+%      |OT1|      & generates |ot1enc.def| for Knuth's CM encoding. \\
+%      |OMS|      & generates |omsenc.def| for Knuth's
+%                   math symbol encoding. \\
+%      |OML|      & generates |omlenc.def| for Knuth's
+%                   math letters encoding. \\
+%      |OT4|      & generates |ot4enc.def| for the Polish extension to
+%                   the OT1 encoding, created by B.~Jackowski and
+%                   M.~Ry\'cko for use with the Polish version of
+%                   Computer Modern and Computer Concrete.\\
+%      |package|  & generates |fontenc.sty| for
+%                   selecting encodings. \\
+%      |2ekernel| & for the kernel commands.\\
+%    \end{tabular}
+%    \end{center}
+% \changes{1.0d}{1993/07/17}{changed \cs{catcoding} @}
+% \changes{1.0f}{1993/08/13}{Protected against active @ sign.}
+% \changes{1.0g}{1993/08/16}{Needs space after \cs{string}}
+% \changes{1.1}{1993/12/07}{Protected all special characters with
+%                          \cs{string}.}
+% \changes{1.3}{1993/12/17}{Removed the catcode hackery, since the file
+%    is only read as a package in the preamble, and removed all the
+%    messages on the screen, which just confuse users.  Replaced them
+%    by the appropriate \cs{ProvidesPackage} commands. Added XXXenc.}
+% \changes{1.3b}{1993/12/18}
+%   {Fixed typos with \cs{ProvidesPackage} lines.
+%    Added the \cs{NeedsTeXFormat} line.  Added the last argument to
+%    \cs{DeclareEncoding}. Moved the use of the encodings to after their
+%    declaration. }
+% \changes{1.4a}{1994/04/29}{Removed Rokicki's OT1 variant encoding.
+%    Moved the driver to the top.}
+% \changes{1.5a}{1994/05/11}{Made T1 and OT1 generate packages rather
+%    than def files.  Renamed the `package' module to `teststy'.}
+% \changes{1.5d}{1994/05/14}{Moved the driver to the top.}
+%
+% \subsection{Definitions for the kernel}
+%
+% \subsubsection{Declaration commands}
+%
+% \changes{1.3}{1993/12/17}{Added this section}
+% \changes{1.3c}{1993/12/18}{Split \cs{EncodingSpecificAccent} up into
+%    \cs{EncodingSpecific} and \cs{DeclareAccent}.}
+% \changes{1.4a}{1994/04/29}{Removed \cs{EncodingSpecific}.  Renamed
+%    all the commands.  Added \cs{DeclareTextGlyph} and
+%    \cs{UndeclareTextCommand}.}
+% \changes{v1.5a}{1994/05/11}{Reimplemented \cs{DeclareTextCommand}
+%    using \cs{@changed@cmd} and \cs{DeclareProtectedCommand}.}
+% \changes{v1.5c}{1994/05/14}{Fixed a bug which caused an infinite loop
+%    if \cs{f@encoding} was incorrectly set.}
+% \changes{v1.5d}{1994/05/14}{Rewrote \cs{DeclareTextCommand} to define
+%    its argument to use the current encoding by default, rather than
+%    the encoding provided to \cs{DeclareTextCommand}.}
+% \changes{v1.6a}{1994/10/25}{Added the \cs{Provide} commands,
+%    and the default definitions.}
+%
+% This section contains definitions for commands such as accents which
+% depend on the current encoding.  These commands will usually be kept
+% in |.def| files, for example |ot1enc.def| contains the definitions
+% for the |OT1| encoding.
+%    \begin{macrocode}
+%<*2ekernel>
+\message{font encodings,}
+%    \end{macrocode}
+%
+% \changes{v1.5d}{1994/10/27}{Rewrote \cs{DeclareTextSymbol} to define
+%    its argument to use the current encoding by default, to fit with
+%    \cs{DeclareTextCommand}.}
+%
+% \changes{v1.7a}{1994/11/30}{Redefined \cs{@changed@cmd} to expand in
+%    the mouth.}
+% \changes{v1.7a}{1994/11/30}{Removed \cs{@changed@x@mouth} since
+%    \cs{@changed@x} now expands in the mouth.}
+%
+% \changes{v1.7r}{1995/11/28}{Renamed \cs{@changed@x@err} to
+%    \cs{TextSymbolUnavailable}.}
+% \changes{v1.7r}{1995/11/28}{Added math mode checks to text commands.}
+% Far too many macros in one block here!
+% \begin{macro}{\DeclareTextCommand}
+% \begin{macro}{\ProvideTextCommand}
+% \begin{macro}{\DeclareTextSymbol}
+% \begin{macro}{\@dec@text@cmd}
+% \begin{macro}{\chardef@text@cmd}
+% \begin{macro}{\@changed@cmd}
+% \begin{macro}{\@changed@x}
+% \begin{macro}{\TextSymbolUnavailable}
+% \begin{macro}{\@inmathwarn}
+%    If you say:
+%\begin{verbatim}
+%    \DeclareTextCommand{\foo}{T1}...
+%\end{verbatim}
+%    then |\foo| is defined to be |\T1-cmd \foo \T1\foo|,
+%    where |\T1\foo| is \emph{one} control sequence, not two!
+%    We then call |\newcommand| to define |\T1\foo|.
+%    \begin{macrocode}
+\def\DeclareTextCommand{%
+   \@dec@text@cmd\newcommand}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ProvideTextCommand{%
+   \@dec@text@cmd\providecommand}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@dec@text@cmd#1#2#3{%
+   \expandafter\def\expandafter#2%
+      \expandafter{%
+         \csname#3-cmd\expandafter\endcsname
+         \expandafter#2%
+         \csname#3\string#2\endcsname
+      }%
+   \let\@ifdefinable\@rc@ifdefinable
+   \expandafter#1\csname#3\string#2\endcsname}
+%    \end{macrocode}
+% \changes{v1.99d}{2004/02/06}{New command added to fix
+%     severe bug: pr/3563}
+%    This command was introduced to fix a major bug
+%    in |\@dec@text@cmd| without changing that command itself.
+%    This was thought to be necessary because it is defined
+%    in more than one package. (Perhaps the more serious bug is to put
+%    complex low-level commands like this in packages?)
+%
+%    The problem it solves is that whereas both |\newcommand| and
+%    |\providecommand| (used just above) both handle the
+%    resetting of |\@ifdefinable| (following its disabling in
+%    |\@dec@text@cmd|), the primitive |\chardef| neither needs the
+%    disabling, nor does the resetting.
+%
+%    \begin{macrocode}
+\def\chardef@text@cmd{%
+   \let\@ifdefinable\@@ifdefinable
+   \chardef
+  }
+\def\DeclareTextSymbol#1#2#3{%
+   \@dec@text@cmd\chardef@text@cmd#1{#2}#3\relax
+  }
+%    \end{macrocode}
+%
+%    The declarations are only available before |\begin{document}|.
+% \changes{v1.7h}{1995/05/21}{Added several \cs{@onlypreamble}}
+% \changes{v1.7k}{1995/06/05}{Removed \cs{protected@cmd} and replaced
+%    with explicit \cs{noexpand}.}
+%    \begin{macrocode}
+\@onlypreamble\DeclareTextCommand
+\@onlypreamble\DeclareTextSymbol
+%    \end{macrocode}
+%    The sneaky bit in all this is what |\T1-cmd \foo \T1\foo| does.
+%    There are five possibilities, depending on the current values of
+%    |\protect|, |\cf@encoding| and |\ifmmode|:
+%    \begin{itemize}
+%    \item If |\protect| is |\@typeset@protect| and |\cf@encoding| is
+%       |T1|, then we execute |\T1\foo|.  This should be the normal
+%       behaviour, and is optimized for speed.
+%    \item If |\protect| is |\@typeset@protect|, |\cf@encoding| is
+%       (say) |OT1|, and |\OT1\foo| is defined, then we execute
+%       |\OT1\foo|.
+%    \item If |\protect| is |\@typeset@protect|, |\cf@encoding| is
+%       (say) |OT1|, we're in text mode,
+%       and |\OT1\foo| is undefined, then we define
+%       |\OT1\foo| to be the default value of |\foo|, and execute
+%       |\OT1\foo|.
+%    \item If |\protect| is |\@typeset@protect|, |\cf@encoding| is
+%       (say) |OT1|, we're in math mode,
+%       and |\OT1\foo| is undefined, then we execute the default value
+%       of |\foo|.  (This is necessary so that things like
+%       |$X_\copyright$| work properly.)
+%    \item If |\protect| is not |\@typeset@protect| then we execute
+%       |\noexpand\foo|.  For example, if we are writing to a file,
+%       then this results in |\foo| being written.  If we are in a
+%       |\mark|, then |\foo| will be put in the mark---since |\foo| is
+%       robust, it will then survive all the things which may happen
+%       to it whilst it's a |\mark|.
+%    \end{itemize}
+%    So after all that, we will either execute the appropriate
+%    definition of |\foo| for the current encoding, or we will execute
+%    |\noexpand\foo|.
+%
+%    The default value of |\foo| is |\?\foo| if it is defined, and an
+%    error message otherwise.
+%
+%    When the encoding is changed from |T1| to |OT1|, |\T1-cmd| is
+%    defined to be |\@changed@cmd| and |\OT1-cmd| is defined to be
+%    |\@current@cmd|.  This means that the test for what the current
+%    encoding is can be performed quickly.
+%    \begin{macrocode}
+\def\@current@cmd#1{%
+   \ifx\protect\@typeset@protect
+      \@inmathwarn#1%
+   \else
+      \noexpand#1\expandafter\@gobble
+   \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@changed@cmd#1#2{%
+   \ifx\protect\@typeset@protect
+      \@inmathwarn#1%
+      \expandafter\ifx\csname\cf@encoding\string#1\endcsname\relax
+         \expandafter\ifx\csname ?\string#1\endcsname\relax
+            \expandafter\def\csname ?\string#1\endcsname{%
+               \TextSymbolUnavailable#1%
+            }%
+         \fi
+         \global\expandafter\let
+               \csname\cf@encoding \string#1\expandafter\endcsname
+               \csname ?\string#1\endcsname
+      \fi
+      \csname\cf@encoding\string#1%
+         \expandafter\endcsname
+   \else
+      \noexpand#1%
+   \fi}
+%    \end{macrocode}
+% \changes{v1.7m}{1995/10/09}{Autoload error}
+% \changes{v1.7v}{1995/12/05}{Changed \cs{TextSymbolUnavailable} text}
+%    \begin{macrocode}
+\gdef\TextSymbolUnavailable#1{%
+   \@latex@error{%
+      Command \protect#1 unavailable in encoding \cf@encoding%
+   }\@eha}
+%    \end{macrocode}
+%    The command |\@inmathwarn| produces a warning message if we are
+%    currently in math mode.  Note that since this command is used
+%    inside text commands, it can't call |\relax| before the
+%    |\ifmmode|.  This means that it is possible for the warning to
+%    fail to be issued at the beginning of a row of an halign whose
+%    template enters math mode.  This is probably a bad feature, but
+%    there's not much that can be done about it, since adding a |\relax|
+%    would break ligatures and kerning between text symbols.
+%
+%    A more efficient solution would be to make |\@inmathwarn| and
+%    |\@inmatherr| equal to |\@empty| and |\relax| by default, and
+%    to have
+%    |\everymath| reset them to their usual definitions.  This is left
+%    for future investigation (for example it may break some third
+%    party code).
+%    \begin{macrocode}
+\def\@inmathwarn#1{%
+   \ifmmode
+      \@latex@warning{Command \protect#1 invalid in math mode}%
+   \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.7k}{1995/06/05}{Allowed \cs{ProvideTextCommandDefault}
+%    after the preamble.}
+%
+% \begin{macro}{\DeclareTextCommandDefault}
+% \begin{macro}{\ProvideTextCommandDefault}
+%    These define commands with encoding |?|.
+%
+%    Note that |\DeclareTextCommandDefault| can only be used in the
+%    preamble, but that the |\Provide| version is allowed in inputenc
+%    |.def| files, so is allowed anywhere.
+%    \begin{macrocode}
+\def\DeclareTextCommandDefault#1{%
+   \DeclareTextCommand#1?}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ProvideTextCommandDefault#1{%
+   \ProvideTextCommand#1?}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\DeclareTextCommandDefault
+%\@onlypreamble\ProvideTextCommandDefault
+%    \end{macrocode}
+%    They require |\?-cmd| to be initialized as |\@changed@cmd|.
+%    \begin{macrocode}
+\expandafter\let\csname?-cmd\endcsname\@changed@cmd
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\DeclareTextAccent}
+% \changes{v1.5a}{1994/05/11}
+%      {Reimplemented using \cs{DeclareTextCommand}.}
+% \changes{v1.7z}{1996/05/23}
+%      {Reimplemented using \cs{add@accent} to save space latex/2133}
+%    This is just a disguise for defining a \TeX~|\accent| command.
+%    \begin{macrocode}
+\def\DeclareTextAccent#1#2#3{%
+   \DeclareTextCommand#1{#2}{\add@accent{#3}}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\DeclareTextAccent
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.7a}{1994/11/30}{Rewrote \cs{@text@composite} so it
+%    allows an empty argument, or an argument containing lots of
+%    commands.}
+%
+%  \begin{macro}{\add@accent}
+% \changes{v1.7z}{1996/05/23}{macro added. latex/2133}
+% \changes{v1.91}{2000/08/30}{Rearranged but no change to final code,
+%    CAR (pr/3160)}
+% To save space this code is shared between all text accents that are
+% set using the |\accent| primitive.
+% The argument is pre-set in a box so that any
+% font loading that is needed is already done within the box.
+% This is needed because font-loading involves grouping and that would
+% prevent the accent mechanism from working so that the accent would
+% not be positioned over the argument.
+% Declarations that change the font should be allowed (only low-level
+% ones are at present) inside the argument of an accent command,
+% but not size changes, as they involve |\setbox| operations which
+% also inhibit the mechanism of the |\accent| primitive.
+%
+% Note that the whole process is within a group.
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    For a detailed discussion of this reimplementation and its
+%    deficiencies, see pr/3160.
+% \task{?}{Improve this and document its problems, see pr/3160}
+% \changes{v1.9z}{2000/01/30}{Macro reimplemented (pr/3160)}
+%    \begin{macrocode}
+\def\add@accent#1#2{\hmode@bgroup
+%    \end{macrocode}
+%    Turn off the group in |\UseTextSymbol| in case this is used
+%    inside the argument of |\add@accent|.
+%    \begin{macrocode}
+   \let\hmode@start@before@group\@firstofone
+   \setbox\@tempboxa\hbox{#2%
+%    \end{macrocode}
+%    When presetting the argument in a box we record its |\spacefactor|
+%    for later use after the accent got typeset. This way something like
+%    |\`A| gets the spacefactor of |A| (i.e., 999) rather than the
+%    default value of 1000.
+% \changes{v1.9q}{1998/06/12}
+%    {Explicitly set \cs{spacefactor} after \cs{accent} (pr/2877)}
+%    \begin{macrocode}
+      \global\mathchardef\accent@spacefactor\spacefactor}%
+   \accent#1 #2\egroup\spacefactor\accent@spacefactor}
+%    \end{macrocode}
+%    Default definition for |\accent@spacefactor| prevents a horrible
+%    death of the above macro inside an unprotected |\edef|.
+% \changes{v1.9w}{1999/10/28}{Give \cs{accent@spacefactor} a default
+%    definition (pr/3084)}
+%    \begin{macrocode}
+\let\accent@spacefactor\relax
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\hmode@bgroup}
+% \changes{v1.9y}{2000/01/30}{Macro added}
+%    \begin{macrocode}
+\def\hmode@bgroup{\leavevmode\bgroup}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\DeclareTextCompositeCommand}
+% \changes{v1.7z}{1996/05/23}
+%      {Modified to cope with new \cs{add@accent} command: required
+%      removal of check for one argument-command}
+% \begin{macro}{\DeclareTextComposite}
+% \changes{v1.7l}{1995/06/09}{Rewrote \cs{DeclareTextComposite} to
+%    define the composite as a no-argument command rather than a
+%    two-argument command.}
+% \begin{macro}{\@text@composite}
+% \begin{macro}{\@text@composite@x}
+% \begin{macro}{\@strip@args}
+% \changes{v1.8c}{1996/10/27}
+%      {Removed macro}
+%    Another amusing game to play with |\expandafter|, |\csname|, and
+%    |\string|.  When you say
+%    |\DeclareTextCompositeCommand{\foo}{T1}{a}{bar}|, we look to see
+%    if the expansion of |\T1\foo| begins with |\@text@composite|, and
+%    if it doesn't, we redefine |\T1\foo| to be:
+%\begin{verbatim}
+%    #1 -> \@text@composite \T1\foo #1\@empty \@text@composite {...}
+%\end{verbatim}
+%    where |...| is the
+%    previous definition of |\T1\foo|.  Finally, we define |\\T1\foo-a|
+%    to expand to |bar|.
+%    \begin{macrocode}
+\def\DeclareTextCompositeCommand#1#2#3#4{%
+  \expandafter\let\expandafter\reserved@a\csname#2\string#1\endcsname
+  \expandafter\expandafter\expandafter\ifx
+  \expandafter\@car\reserved@a\relax\relax\@nil \@text@composite \else
+      \edef\reserved@b##1{%
+         \def\expandafter\noexpand
+            \csname#2\string#1\endcsname####1{%
+            \noexpand\@text@composite
+               \expandafter\noexpand\csname#2\string#1\endcsname
+               ####1\noexpand\@empty\noexpand\@text@composite
+               {##1}}}%
+      \expandafter\reserved@b\expandafter{\reserved@a{##1}}%
+   \fi
+   \expandafter\def\csname\expandafter\string\csname
+      #2\endcsname\string#1-\string#3\endcsname{#4}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\DeclareTextCompositeCommand
+%    \end{macrocode}
+%    This all works because:
+%\begin{verbatim}
+%    \@text@composite \T1\foo A\@empty \@text@composite {...}
+%\end{verbatim}
+%    expands to
+%    |\\T1\foo-A| if |\\T1\foo-A| has been defined, and |{...}|
+%    otherwise.
+%
+%    Note that |\@text@composite| grabs the first token of the
+%    argument and puts just that in the
+%    csname.  This is so that |\'{\textit{e}}| will work---it checks
+%    whether |\\T1\'-\textit| is defined (which presumably it isn't)
+%    and so expands to |{\accent 1 \textit{e}}|.
+%
+%    This trick won't always work, for example |\'{{\itshape e}}| will
+%    expand to (with spaces added for clarity):
+%\begin{verbatim}
+%    \csname \string \T1\' - \string {\itshape e} \@empty \endcsname
+%\end{verbatim}
+%    which will die pretty horribly.  Unfortunately there's not much
+%    can be done about this if we're going to use |\csname| lookups as a
+%    fast way of accessing composites.
+%
+%    This has an unfortunate `misfeature' though, which is that in
+%    the T1 encoding, |\'{aa}| produces \'a.  This is not the expected
+%    behaviour, and should perhaps be fixed if the fix doesn't affect
+%    performance too badly.
+%
+%    Finally, it's worth noting that the |\@empty| is used in
+%    |\@text@composite| so that accents will work even when the
+%    argument is empty.  If you say |\'{}| then this looks up
+%    |\\T1\'-\@empty|, which ought to be |\relax|, and so all is well.
+%    If we didn't include the |\@empty|, then |\'{}| would expand to:
+%\begin{verbatim}
+%    \csname \string \T1\' - \string \endcsname
+%\end{verbatim}
+%    so the |\endcsname| would be |\string|'ed and the whole of the
+%    rest of the document would be put inside the |\csname|.  This
+%    would not be good.
+%    \begin{macrocode}
+\def\@text@composite#1#2#3\@text@composite{%
+   \expandafter\@text@composite@x
+      \csname\string#1-\string#2\endcsname}
+%    \end{macrocode}
+%
+% \changes{v1.7z}{1996/05/23}
+%      {\cs{expandafter} added to match other changes for latex/2133}
+% \changes{v1.9r}{1999/01/06}{New impl for latex/2930}
+% \changes{v1.9s}{1999/01/13}{Simplified solution for latex/2930}
+%    Originally the |\@text@composite@x| macro had two arguments and if
+%    |#1| was not |\relax| it was executed, otherwise |#2| was executed.
+%    All this happened within the |\ifx| code so that neither |#1|
+%    nor |#2| could have picked up any additional arguments form
+%    the input stream.
+%    This has now being changed using the typical |\@firstoftwo| /
+%    |\@secondoftwo| coding. This way the
+%    final expansion will happen without any |\else| or |\fi|
+%    intervening in the case that we need to get a further token
+%    from the input stream.
+%    \begin{macrocode}
+\def\@text@composite@x#1{%
+   \ifx#1\relax
+      \expandafter\@secondoftwo
+   \else
+      \expandafter\@firstoftwo
+   \fi
+   #1}
+%    \end{macrocode}
+%    The command |\DeclareTextComposite| uses
+%    |\DeclareTextCompositeCommand| to declare a command which
+%    expands out to a single glyph.
+% \changes{v1.8a}{1996/07/19}
+%      {Use char 0 not @ as carrier for \cs{lowercase} /2197}
+%    \begin{macrocode}
+\catcode\z@=11\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\DeclareTextComposite#1#2#3#4{%
+   \def\reserved@a{\DeclareTextCompositeCommand#1{#2}{#3}}%
+   \bgroup
+      \lccode\z@#4%
+      \lowercase{%
+   \egroup
+      \reserved@a ^^@}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\catcode\z@=15\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\DeclareTextComposite
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\UseTextAccent}
+% \begin{macro}{\UseTextSymbol}
+% \changes{v1.7p}{1995/11/17}{Support \cs{@wrong@font@char} latex/1676}
+% \changes{v1.7q}{1995/11/18}{Modify message slightly}
+% \begin{macro}{\@use@text@encoding}
+% \changes{v1.91}{2000/08/30}{Rearranged but no change to final code,
+%    CAR (pr/3160)}
+%    These fragile commands access glyphs from different encodings.
+%    They use grotty low-level calls to the font selection scheme for
+%    speed, and in order to make sure that |\UseTextSymbol| doesn't
+%    do anything which you're not allowed to do between an |\accent|
+%    and its glyph.
+%
+%    For a detailed discussion of this reimplementation and its
+%    deficiencies, see pr/3160.
+% \task{?}{Improve this and document its problems, see pr/3160}
+% \changes{v1.9z}{2000/01/30}{Macro reimplemented (pr/3160)}
+%    \begin{macrocode}
+\def\UseTextAccent#1#2#3{%
+  \hmode@start@before@group
+   {%
+%    \end{macrocode}
+%    Turn off the group in |\UseTextSymbol| in case this is used
+%    inside the arguments of |\UseTextAccent|.
+%    \begin{macrocode}
+    \let\hmode@start@before@group\@firstofone
+    \let\@curr@enc\cf@encoding
+    \@use@text@encoding{#1}%
+    #2{\@use@text@encoding\@curr@enc#3}%
+   }}
+%    \end{macrocode}
+%
+% \changes{v1.9z}{2000/01/30}{Macro reimplemented (pr/3160)}
+%    \begin{macrocode}
+\def\UseTextSymbol#1#2{%
+       \hmode@start@before@group
+       {%
+          \def\@wrong@font@char{\MessageBreak
+             for \noexpand\symbol`\string#2'}%
+          \@use@text@encoding{#1}%
+          #2%
+       }%
+    }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@use@text@encoding#1{%
+   \edef\f@encoding{#1}%
+   \xdef\font@name{%
+      \csname\curr@fontshape/\f@size\endcsname}%
+   \pickup@font
+   \font@name
+   \@@enc@update}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\hmode@start@before@group}
+%    The |\hmode@start@before@group| starts hmode and should be
+%    immediately followed by an explicit |{...}|. Its purpose is to
+%    ensure that hmode is started before this group  is opened. Inside
+%    |\add@accent| and |\UseTextAccent| it is redefined to remove this
+%    group so that it doesn't conflict with the |\accent| primitive.
+%
+%    For a detailed discussion see pr/3160.
+% \changes{v1.9z}{2000/01/30}{Macro added (pr/3160)}
+%    \begin{macrocode}
+\let\hmode@start@before@group\leavevmode
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareTextSymbolDefault}
+% \begin{macro}{\DeclareTextAccentDefault}
+%    Some syntactic sugar.  Again, these should probably be optimized
+%    for speed.
+%    \begin{macrocode}
+\def\DeclareTextSymbolDefault#1#2{%
+   \DeclareTextCommandDefault#1{\UseTextSymbol{#2}#1}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\DeclareTextAccentDefault#1#2{%
+   \DeclareTextCommandDefault#1{\UseTextAccent{#2}#1}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\DeclareTextSymbolDefault
+\@onlypreamble\DeclareTextAccentDefault
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\UndeclareTextCommand}
+%    This command safely removes and encoding specific declaration
+%    for a given encoding. It is helpful if one intends to use the
+%    default definition always and therefore wants to get rid of
+%    a declaration for some specific encoding.
+% \changes{v1.9o}{1998/03/20}{Macro added for pr/2783}
+%    \begin{macrocode}
+\def\UndeclareTextCommand#1#2{%
+%    \end{macrocode}
+%    If there is no declaration for the current encoding do nothing.
+%    (This makes a hash table entry but without e\TeX{} we can't do
+%    anything about that).
+%    \begin{macrocode}
+  \expandafter\ifx\csname#2\string#1\endcsname\relax
+  \else
+%    \end{macrocode}
+%    Else: throw away that declaration.
+%    \begin{macrocode}
+     \global\expandafter\let\csname#2\string#1\endcsname
+            \@undefined
+%    \end{macrocode}
+%    But this is unfortunately not enough, we have to take a look
+%    at the top-level definition of the encoding specific command
+%    which for a command |\foo| would look similar to
+%    |\T1-cmd \foo \T1\foo| (three tokens).
+%
+%    Of course, instead of |T1| one could see a different encoding name;
+%    which one depends the encoding for which |\foo| was declared
+%    last.
+%
+%    Now assume we have just removed the declaration for |\foo| in |T1|
+%    and the top-level of |\foo| expands to the above. Then we better
+%    change that pretty fast otherwise we do get an ``undefined csname
+%    error'' when we try to typeset |\foo| within |T1| instead of
+%    getting the default definition for |\foo|.
+%    And what is the best way to change that top-level definition? Well,
+%    the only ``encoding'' we know for sure will still be around is
+%    the default encoding denoted by |?|.
+%
+%    Thus in case the last token of the top-level expansion
+%    is now undefined we change the declaration to look like
+%    |\?-cmd \foo \?\foo| which is done by the following
+%    (readable?) code:
+%    \begin{macrocode}
+     \expandafter\expandafter\expandafter
+     \ifx\expandafter\@thirdofthree#1\@undefined
+       \expandafter\gdef\expandafter#1\expandafter
+          {\csname ?-cmd\expandafter\endcsname\expandafter
+           #1\csname?\string#1\endcsname}%
+     \fi
+ \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\UndeclareTextCommand
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection{Hyphenation}
+%
+% \changes{v1.5l}{1994/10/18}{Added new definitions of \cs{patterns}
+%    and \cs{hyphenation}.}
+% \changes{v1.6g}{1994/11/05}{Added setting of \cs{@typeset@protect}
+%    to \cs{patterns} and \cs{hyphenation}.}
+% \changes{v1.6g}{1994/11/30}{Removed new definitions of \cs{patterns}
+%    and \cs{hyphenation}, since encoding-specific commands now expand
+%    in the mouth.}
+%
+% \begin{macro}{\patterns}
+% \begin{macro}{\@@patterns}
+% \begin{macro}{\hyphenation}
+% \begin{macro}{\@@hyphenation}
+%    We redefine |\patterns| and |\hyphenation| to allow the use of
+%    commands declared with |\DeclareText*| to be used inside them.
+%    \begin{macrocode}
+%\let\@@patterns\patterns
+%\let\@@hyphenation\hyphenation
+%\def\patterns{%
+%   \bgroup
+%      \let\protect\@empty
+%      \let\@typeset@protect\@empty
+%      \let\@changed@x\@changed@x@mouth
+%   \afterassignment\egroup
+%   \@@patterns
+%}
+%\def\hyphenation{%
+%   \bgroup
+%      \let\protect\@empty
+%      \let\@typeset@protect\@empty
+%      \let\@changed@x\@changed@x@mouth
+%   \afterassignment\egroup
+%   \@@hyphenation
+%}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Miscellania}
+%
+% \changes{1.4a}{1994/05/01}{Added the \cs{a} command.}
+% \changes{1.7a}{1994/11/30}{Redefined \cs{a} for the new scheme.}
+% \changes{1.7b}{1994/12/02}{Redefined \cs{a} properly.}
+% \changes{1.7g}{1995/03/03}{Corrected an error in documentation
+%               referring to the tabular rather than the tabbing
+%               environment.}
+% \changes{v1.7n}{1995/11/02}{Changed internal name \cs{a} to
+% \cs{@tabacckludge} to protect against redefinition by malicious
+% users.}
+%
+% \begin{macro}{\a}
+%    The |\a| command is used to access the accent commands even when
+%    they have been redefined (for example by the |tabbing|
+%    environment). Its internal name is |\@tabacckludge|.
+%
+%    The |\string| within the |\csname| guards against something
+%    like |'| being active at the point of use.
+% \changes{v1.9r}{1998/09/19}{Added \cs{string} (pr/2878)}
+%    \begin{macrocode}
+\def\@tabacckludge#1{\expandafter\@changed@cmd
+                                 \csname\string#1\endcsname\relax}
+\let\a=\@tabacckludge
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.6a}{1994/10/25}{Added the files OT1enc.def, T1enc.def and
+%    OMSenc.def.}
+% \changes{v1.6b}{1994/10/27}{Removed the files OT1enc.def, T1enc.def
+%    and OMSenc.def.}
+%
+% \subsubsection{Default encodings}
+%
+% We define the default encodings for most commands to be either OT1,
+% OML or OMS.  These defaults are in the kernel and therefore
+% fonts with these encodings must be available unless these
+% defaults are redefined elsewhere.  Recall that the standard kernel
+% loads the encoding files for these encodings, and also that for
+% the T1 encoding.
+%
+% The naming conventions in the kernel are not what we would use if we
+% were starting from scratch\dots\
+% Those defined by DEK (like |\ae| and |\ss|) or by the \TeX{} Users
+% Group Technical Working Group on multi-lingual typesetting (like
+% |\th| and |\ng|) have short names.  Those which were added to the
+% kernel in 1993 and early 1994 are named after their Adobe glyph
+% names (like |\guillemotleft| and |\quotedblbase|).  Unfortunately,
+% this naming scheme won't work for all glyphs, since some names (like
+% |\space|) are already used, and some (like |\endash|) are very
+% likely to be defined by users.  So we're now using the naming scheme
+% of |\text| followed by the Adobe name, (like |\textendash| and
+% |\textsterling|).  Except that some glyphs don't have Adobe names,
+% so we're using the names used by fontinst for those (like
+% |\textcompwordmark|).  Sigh.
+%
+% \changes{v1.6a}{1994/10/25}{Added the defaults.}
+% \changes{v1.6b}{1994/10/27}{Added more defaults for OT1.}
+% \changes{v1.6c}{1994/10/29}{Added commands like \cs{dots} for use in
+%    text and math.}
+%
+% Some accents from OT1:
+%    \begin{macrocode}
+\DeclareTextAccentDefault{\"}{OT1}
+\DeclareTextAccentDefault{\'}{OT1}
+\DeclareTextAccentDefault{\.}{OT1}
+\DeclareTextAccentDefault{\=}{OT1}
+\DeclareTextAccentDefault{\H}{OT1}
+\DeclareTextAccentDefault{\^}{OT1}
+\DeclareTextAccentDefault{\`}{OT1}
+\DeclareTextAccentDefault{\b}{OT1}
+\DeclareTextAccentDefault{\c}{OT1}
+\DeclareTextAccentDefault{\d}{OT1}
+\DeclareTextAccentDefault{\r}{OT1}
+\DeclareTextAccentDefault{\u}{OT1}
+\DeclareTextAccentDefault{\v}{OT1}
+\DeclareTextAccentDefault{\~}{OT1}
+%    \end{macrocode}
+% Some symbols from OT1:
+% \changes{v1.8c}{1996/10/27}
+%      {Removed \cs{aa} and \cs{AA}}
+%    \begin{macrocode}
+%\DeclareTextSymbolDefault{\AA}{OT1}
+\DeclareTextSymbolDefault{\AE}{OT1}
+\DeclareTextSymbolDefault{\L}{OT1}
+\DeclareTextSymbolDefault{\OE}{OT1}
+\DeclareTextSymbolDefault{\O}{OT1}
+%\DeclareTextSymbolDefault{\aa}{OT1}
+\DeclareTextSymbolDefault{\ae}{OT1}
+\DeclareTextSymbolDefault{\i}{OT1}
+\DeclareTextSymbolDefault{\j}{OT1}
+%    \end{macrocode}
+% \changes{v1.99h}{2005/11/08}
+%      {Added \cs{ij} and \cs{IJ} from babel. (pr/3771)}
+%    \begin{macrocode}
+\DeclareTextSymbolDefault{\ij}{OT1}
+\DeclareTextSymbolDefault{\IJ}{OT1}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareTextSymbolDefault{\l}{OT1}
+\DeclareTextSymbolDefault{\oe}{OT1}
+\DeclareTextSymbolDefault{\o}{OT1}
+\DeclareTextSymbolDefault{\ss}{OT1}
+\DeclareTextSymbolDefault{\textdollar}{OT1}
+\DeclareTextSymbolDefault{\textemdash}{OT1}
+\DeclareTextSymbolDefault{\textendash}{OT1}
+\DeclareTextSymbolDefault{\textexclamdown}{OT1}
+%\DeclareTextSymbolDefault{\texthyphenchar}{OT1}
+%\DeclareTextSymbolDefault{\texthyphen}{OT1}
+\DeclareTextSymbolDefault{\textquestiondown}{OT1}
+\DeclareTextSymbolDefault{\textquotedblleft}{OT1}
+\DeclareTextSymbolDefault{\textquotedblright}{OT1}
+\DeclareTextSymbolDefault{\textquoteleft}{OT1}
+\DeclareTextSymbolDefault{\textquoteright}{OT1}
+\DeclareTextSymbolDefault{\textsterling}{OT1}
+%    \end{macrocode}
+% Some symbols from OMS:
+% \changes{v1.7t}{1995/11/29}{Added \cs{textbackslash} and
+%    \cs{textbar}.}
+% \changes{v1.8c}{1996/10/27}
+%      {Added \cs{textasteriskcentered}}
+% \changes{v1.95}{2002/06/16}{Added default for \cs{textbardbl} (pr/3400)}
+%    \begin{macrocode}
+\DeclareTextSymbolDefault{\textasteriskcentered}{OMS}
+\DeclareTextSymbolDefault{\textbackslash}{OMS}
+\DeclareTextSymbolDefault{\textbar}{OMS}
+\DeclareTextSymbolDefault{\textbardbl}{OMS}
+\DeclareTextSymbolDefault{\textbraceleft}{OMS}
+\DeclareTextSymbolDefault{\textbraceright}{OMS}
+\DeclareTextSymbolDefault{\textbullet}{OMS}
+\DeclareTextSymbolDefault{\textdaggerdbl}{OMS}
+\DeclareTextSymbolDefault{\textdagger}{OMS}
+\DeclareTextSymbolDefault{\textparagraph}{OMS}
+\DeclareTextSymbolDefault{\textperiodcentered}{OMS}
+\DeclareTextSymbolDefault{\textsection}{OMS}
+\DeclareTextAccentDefault{\textcircled}{OMS}
+%    \end{macrocode}
+%
+% \changes{v1.6d}{1994/10/30}{Added OML encoding.}
+% \changes{v1.6d}{1994/10/30}{Made \cs{textless} and \cs{textgreater}
+%    come from OML.}
+% \changes{v1.6d}{1994/10/30}{Added \cs{t}.}
+% \changes{v1.7k}{1995/06/05}{Commented out \cs{textless} and
+%    \cs{textgreater}.}
+%
+% Some symbols from OML:
+% \changes{v1.7t}{1995/11/29}{Added \cs{textless} and
+%    \cs{textgreater}.}
+%    \begin{macrocode}
+\DeclareTextSymbolDefault{\textless}{OML}
+\DeclareTextSymbolDefault{\textgreater}{OML}
+\DeclareTextAccentDefault{\t}{OML}
+%    \end{macrocode}
+%
+% \changes{v1.6d}{1994/10/30}{Added \cs{textcircled}.}
+% \changes{v1.6d}{1994/10/30}{Rewrote \cs{copyright} to use
+%    \cs{textcircled}.}
+% \changes{v1.6d}{1994/10/30}{Removed \cs{textregistered}.}
+% \changes{v1.7k}{1995/06/05}{Save some tokens in
+%    \cs{textvisiblespace} and \cs{textunderscore}.}
+% \changes{v1.7t}{1995/11/29}{Added \cs{textasciicircum},
+%    \cs{textasciitilde}, \cs{textregistered} and \cs{texttrademark}.}
+% \changes{v1.7u}{1995/12/01}{Made \cs{SS} a Default, rather than
+%    having the default point to the OT1 definition.}
+% \changes{v1.7w}{1995/12/11}{Modified \cs{copyright}}
+% \changes{v1.9a}{1997/04/30}{Introduced \cs{textcopyright} and modified
+%                             \cs{copyright}}
+%
+% Some defaults we can fake.
+%
+% The interface for defining |\copyright| changed, it used to
+% use |\expandafter| to add braces at the appropriate points.
+% \begin{macrocode}
+\DeclareTextCommandDefault{\textcopyright}{\textcircled{c}}
+% \expandafter\def\expandafter
+%                 \copyright\expandafter{\expandafter{\copyright}}
+%    \end{macrocode}
+%
+% \changes{v1.9a}{1997/04/30}{Modified \cs{textunderscore}, removing
+%                                    \cs{mathunderscore}}
+% \changes{v1.9b}{1997/04/30}{Added \cs{leavevmode} to
+%                                   \cs{textunderscore}}
+% \changes{v1.9d}{1997/05/07}{Added \cs{leavevmode} to
+%                                   \cs{textcompwordmark}}
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textasciicircum}{\^{}}
+\DeclareTextCommandDefault{\textasciitilde}{\~{}}
+\DeclareTextCommandDefault{\textcompwordmark}{\leavevmode\kern\z@}
+\DeclareTextCommandDefault{\textunderscore}{%
+  \leavevmode \kern.06em\vbox{\hrule\@width.3em}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textvisiblespace}{%
+   \mbox{\kern.06em\vrule \@height.3ex}%
+   \vbox{\hrule \@width.3em}%
+   \hbox{\vrule \@height.3ex}}
+%    \end{macrocode}
+%
+%    Using |\fontdimen3| in the next definition is some sort of a
+%    kludge (since it is the interword stretch) but it makes the
+%    ellipsis come out right in mono-spaced fonts too (since there it
+%    is zero).
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textellipsis}{%
+   .\kern\fontdimen3\font
+   .\kern\fontdimen3\font
+   .\kern\fontdimen3\font}
+%    \end{macrocode}
+%
+% \changes{v1.9a}{1997/04/30}{Changed \cs{textsc} to \cs{scshape}}
+% \changes{v1.95}{2002/06/18}{Changed def for \cs{textregistered} to
+%    avoid small caps (pr/3420)}
+%    \begin{macrocode}
+%\DeclareTextCommandDefault{\textregistered}{\textcircled{\scshape r}}
+\DeclareTextCommandDefault{\textregistered}{\textcircled{%
+     \check@mathfonts\fontsize\sf@size\z@\math@fontsfalse\selectfont R}}
+\DeclareTextCommandDefault{\texttrademark}{\textsuperscript{TM}}
+\DeclareTextCommandDefault{\SS}{SS}
+%    \end{macrocode}
+%
+% \changes{v1.9n}{1998/03/05}{Added masc/fem ords as in pr/2579}
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textordfeminine}{\textsuperscript{a}}
+\DeclareTextCommandDefault{\textordmasculine}{\textsuperscript{o}}
+%    \end{macrocode}
+%
+% \subsubsection{Math material}
+%
+%    Some commands can be used in both text and math mode:
+%    \begin{macrocode}
+\DeclareRobustCommand{\$}{\ifmmode\mathdollar\else\textdollar\fi}
+\DeclareRobustCommand{\{}{\ifmmode\lbrace\else\textbraceleft\fi}
+\DeclareRobustCommand{\}}{\ifmmode\rbrace\else\textbraceright\fi}
+\DeclareRobustCommand{\P}{\ifmmode\mathparagraph\else\textparagraph\fi}
+\DeclareRobustCommand{\S}{\ifmmode\mathsection\else\textsection\fi}
+\DeclareRobustCommand{\dag}{\ifmmode{\dagger}\else\textdagger\fi}
+\DeclareRobustCommand{\ddag}{\ifmmode{\ddagger}\else\textdaggerdbl\fi}
+%    \end{macrocode}
+%
+% For historical reasons |\copyright|
+% needs |{}| around the definition in maths.
+%
+% \changes{v1.6f}{1994/11/04}{Added \cmd\_.}
+%
+% \changes{v1.9a}{1997/04/30}{Modified \cs{underscore}, removing
+%                                    \cs{mathunderscore}}
+% \changes{v1.9a}{1997/04/30}{Introduced \cs{textcopyright} and modify
+%                             \cs{copyright}}
+%    \begin{macrocode}
+\DeclareRobustCommand{\_}{%
+   \ifmmode\nfss@text{\textunderscore}\else\textunderscore\fi}
+\DeclareRobustCommand{\copyright}{%
+   \ifmmode{\nfss@text{\textcopyright}}\else\textcopyright\fi}
+\DeclareRobustCommand{\pounds}{%
+   \ifmmode\mathsterling\else\textsterling\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand{\dots}{%
+   \ifmmode\mathellipsis\else\textellipsis\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\ldots\dots
+%    \end{macrocode}
+% \changes{v1.99m}{2015/02/16}{Added \cs{textcommabelow} latex/4414}
+% Default definition of comma below.
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/10/01}{\textcommabelow}{comma accent}%
+%<*2ekernel|latexrelease>
+\DeclareTextCommandDefault\textcommabelow[1]
+  {\hmode@bgroup\ooalign{\null#1\crcr\hidewidth\raise-.31ex
+   \hbox{\check@mathfonts\fontsize\ssf@size\z@
+   \math@fontsfalse\selectfont,}\hidewidth}\egroup}
+%<latexrelease>\EndIncludeInRelease
+%</2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{0000/00/00}{\textcommabelow}{comma accent}%
+%<latexrelease>\let\textcommabelow\@undefined
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+%
+% \changes{v1.6d}{1994/10/30}{Moved math commands here from ltmath.}
+% \changes{v1.6f}{1994/11/04}{Added \cs{mathunderscore}.}
+% \changes{v1.7k}{1995/06/05}{Moved math commands to fontdef.dtx.}
+%
+%
+% \changes{1.4a}{1994/05/01}{Added the \cs{SaveAtCatcode} and
+%    \cs{RestoreAtCatcode} commands.}
+%
+% \changes{1.5a}{1994/05/12}{Removed the \cs{SaveAtCatcode} and
+%    \cs{RestoreAtCatcode} commands.}
+%
+%
+% \subsection{Definitions for the OT1 encoding}
+%
+% \changes{1.3}{1993/12/17}{Removed all the hackery for use in
+%    \cs{DeclareFontEncoding}, and redid everything using
+%    \cs{DeclareTextFoo}.}
+% \changes{1.3b}{1993/12/18}{Replaced the missing last argument to
+%    \cs{DeclareFontEncoding}.}
+% \changes{1.3c}{1993/12/18}{Rewrote for the new syntax of
+%    \cs{EncodingSpecific}.}
+% \changes{1.4a}{1994/05/01}{Rewrote for the new syntax.}
+% \changes{1.5a}{1994/05/12}{Rewrote for the new syntax.}
+% \changes{1.5h}{1994/05/16}{\cs{pounds} was still using u rather than
+%    ui shape.}
+% \changes{1.6b}{1994/10/27}{Added:
+%   \cs{textemdash}
+%   \cs{textendash}
+%   \cs{textexclamdown}
+%   \cs{texthyphenchar}
+%   \cs{texthyphen}
+%   \cs{textquestiondown}
+%   \cs{textquotedblleft}
+%   \cs{textquotedblright}
+%   \cs{textquoteleft}
+%   \cs{textquoteright}
+% }
+%
+% The definitions for the `\TeX{} text' (OT1) encoding.
+%
+%    Declare the encoding.
+%    \begin{macrocode}
+%<*OT1>
+\DeclareFontEncoding{OT1}{}{}
+%    \end{macrocode}
+%    Declare the accents.
+%    \begin{macrocode}
+\DeclareTextAccent{\"}{OT1}{127}
+\DeclareTextAccent{\'}{OT1}{19}
+\DeclareTextAccent{\.}{OT1}{95}
+\DeclareTextAccent{\=}{OT1}{22}
+\DeclareTextAccent{\^}{OT1}{94}
+\DeclareTextAccent{\`}{OT1}{18}
+\DeclareTextAccent{\~}{OT1}{126}
+\DeclareTextAccent{\H}{OT1}{125}
+\DeclareTextAccent{\u}{OT1}{21}
+\DeclareTextAccent{\v}{OT1}{20}
+\DeclareTextAccent{\r}{OT1}{23}
+%    \end{macrocode}
+%    Some accents have to be built by hand:
+%    Note that |\ooalign| and |\o@lign| must be inside a group.
+% \changes{v1.7j}{1995/05/21}{Updated some plain macros}
+% \changes{v1.7o}{1995/11/07}{Added \cs{leavevmode} at start of
+% \cs{c}, otherwise the output routine might be invoked within the
+% macro.}
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+% \changes{v1.99g}{2005/09/27}{Replace \cs{sh@ft} by \cs{ltx@sh@ft}}
+%  In these definitions we no longer use the helper function |\sh@ft|
+%  from plain.tex since that now has two incompatible definitions.
+%    \begin{macrocode}
+\DeclareTextCommand{\b}{OT1}[1]
+   {\hmode@bgroup\o@lign{\relax#1\crcr\hidewidth\ltx@sh@ft{-3ex}%
+     \vbox to.2ex{\hbox{\char22}\vss}\hidewidth}\egroup}
+\DeclareTextCommand{\c}{OT1}[1]
+   {\leavevmode\setbox\z@\hbox{#1}\ifdim\ht\z@=1ex\accent24 #1%
+    \else{\ooalign{\unhbox\z@\crcr\hidewidth\char24\hidewidth}}\fi}
+\DeclareTextCommand{\d}{OT1}[1]
+   {\hmode@bgroup
+    \o@lign{\relax#1\crcr\hidewidth\ltx@sh@ft{-1ex}.\hidewidth}\egroup}
+%    \end{macrocode}
+%
+%    Declare the text symbols.
+%    \begin{macrocode}
+\DeclareTextSymbol{\AE}{OT1}{29}
+\DeclareTextSymbol{\OE}{OT1}{30}
+\DeclareTextSymbol{\O}{OT1}{31}
+\DeclareTextSymbol{\ae}{OT1}{26}
+\DeclareTextSymbol{\i}{OT1}{16}
+\DeclareTextSymbol{\j}{OT1}{17}
+\DeclareTextSymbol{\oe}{OT1}{27}
+\DeclareTextSymbol{\o}{OT1}{28}
+\DeclareTextSymbol{\ss}{OT1}{25}
+\DeclareTextSymbol{\textemdash}{OT1}{124}
+\DeclareTextSymbol{\textendash}{OT1}{123}
+%    \end{macrocode}
+%    Using the ligatures helps with OT1 fonts that have
+%    |\textexclamdown| and |\textquestiondown| in unusual positions.
+% \changes{v1.95}{2002/06/17}{Definition of \cs{textexclamdown} changed (pr/3368)}
+% \changes{v1.95}{2002/06/17}{Definition of \cs{textquestiondown} changed (pr/3368)}
+%    \begin{macrocode}
+%\DeclareTextSymbol{\textexclamdown}{OT1}{60}
+%\DeclareTextSymbol{\textquestiondown}{OT1}{62}
+\DeclareTextCommand{\textexclamdown}{OT1}{!`}
+\DeclareTextCommand{\textquestiondown}{OT1}{?`}
+%\DeclareTextSymbol{\texthyphenchar}{OT1}{`\-}
+%\DeclareTextSymbol{\texthyphen}{OT1}{`\-}
+\DeclareTextSymbol{\textquotedblleft}{OT1}{92}
+\DeclareTextSymbol{\textquotedblright}{OT1}{`\"}
+\DeclareTextSymbol{\textquoteleft}{OT1}{`\`}
+\DeclareTextSymbol{\textquoteright}{OT1}{`\'}
+%    \end{macrocode}
+%    Some symbols which are faked from others:
+% \changes{v1.7o}{1995/11/07}{Changed \cs{char}32 to \cs{@xxxii} (two
+% tokens less).}
+% \changes{v1.7o}{1995/11/07}{Replaced octal number 27 by decimal
+% number 23 to protect against the quote character being active.}
+% \changes{v1.7o}{1995/11/07}{Replaced some 0's by \cs{z@} (faster).}
+% \changes{v1.8c}{1996/10/27}
+%      {Removed \cs{aa} and \cs{AA}}
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    \begin{macrocode}
+% \DeclareTextCommand{\aa}{OT1}
+%    {{\accent23a}}
+\DeclareTextCommand{\L}{OT1}
+   {\leavevmode\setbox\z@\hbox{L}\hb@xt@\wd\z@{\hss\@xxxii L}}
+\DeclareTextCommand{\l}{OT1}
+   {\hmode@bgroup\@xxxii l\egroup}
+% \DeclareTextCommand{\AA}{OT1}
+%    {\leavevmode\setbox\z@\hbox{h}\dimen@\ht\z@\advance\dimen@-1ex%
+%     \rlap{\raise.67\dimen@\hbox{\char23}}A}
+%    \end{macrocode}
+%    In the OT1 encoding \r A has a hand-crafted definition, so we
+%    have here the first recorded explicit use of
+%    |\DeclareTextCompositeCommand|.
+% \changes{v1.8c}{1996/10/27}
+%      {Added \cs{r} A}
+% \changes{v1.96}{2002/10/28}{%
+%   coding change, to follow bug fix by DEK in plain.tex (pr/3469)}
+%    \begin{macrocode}
+\DeclareTextCompositeCommand{\r}{OT1}{A}
+   {\leavevmode\setbox\z@\hbox{!}\dimen@\ht\z@\advance\dimen@-1ex%
+    \rlap{\raise.67\dimen@\hbox{\char23}}A}
+%    \end{macrocode}
+% \changes{v1.99h}{2005/11/08}
+%      {Added \cs{ij} and \cs{IJ} from babel. (pr/3771)}
+%    The dutch language uses the letter `ij'. It is available in
+%    \texttt{T1} encoded fonts, but not in the \texttt{OT1} encoded
+%    fonts. Therefor we fake it for the \texttt{OT1} encoding.
+%    \begin{macrocode}
+\DeclareTextCommand{\ij}{OT1}{%
+  \nobreak\hskip\z@skip i\kern-0.02em j\nobreak\hskip\z@skip}
+\DeclareTextCommand{\IJ}{OT1}{%
+  \nobreak\hskip\z@skip I\kern-0.02em J\nobreak\hskip\z@skip}
+%    \end{macrocode}
+%    In the OT1 encoding, \pounds~and \$ share a slot.
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    \begin{macrocode}
+\DeclareTextCommand{\textdollar}{OT1}{\hmode@bgroup
+   \ifdim \fontdimen\@ne\font >\z@
+      \slshape
+   \else
+      \upshape
+   \fi
+   \char`\$\egroup}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareTextCommand{\textsterling}{OT1}{\hmode@bgroup
+   \ifdim \fontdimen\@ne\font >\z@
+      \itshape
+   \else
+      \fontshape{ui}\selectfont
+   \fi
+   \char`\$\egroup}
+%    \end{macrocode}
+%
+%    Here we are adding some more composite commands to the |OT1|
+%    encoding.  This makes the use of certain accents with |i|
+%    compatible with their use with the |T1| encoding; this
+%    enables them to become true \LaTeX{} internal representations.
+%    However, it will make these accents work a little less fast since
+%    a check will always be made for the existence of a composite.
+%
+% \changes{v1.93}{2001/05/28}{Added composites for compatibility with
+%                             T1, pr/3295}
+% \changes{v1.94}{2001/06/05}{Text composite Commands need kludges for
+%                               `,' -- see tlb1903.lvt}
+%    \begin{macrocode}
+\DeclareTextComposite{\.}{OT1}{i}{`\i}
+\DeclareTextComposite{\.}{OT1}{\i}{`\i}
+\DeclareTextCompositeCommand{\`}{OT1}{i}{\@tabacckludge`\i}
+\DeclareTextCompositeCommand{\'}{OT1}{i}{\@tabacckludge'\i}
+\DeclareTextCompositeCommand{\^}{OT1}{i}{\^\i}
+\DeclareTextCompositeCommand{\"}{OT1}{i}{\"\i}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</OT1>
+%    \end{macrocode}
+%
+% \subsection{Definitions for the T1 encoding}
+%
+% \changes{1.3}{1993/12/17}{Removed all the hackery for use in
+%    \cs{DeclareFontEncoding}, and redid everything using
+%    \cs{DeclareTextFoo}.}
+% \changes{1.3b}{1993/12/18}{Replaced the missing last argument to
+%    \cs{DeclareFontEncoding}.}
+% \changes{1.3c}{1993/12/18}{Rewrote for the new syntax of
+%    \cs{EncodingSpecific}.}
+% \changes{1.4a}{1994/05/01}{Rewrote for the new syntax.}
+% \changes{1.5a}{1994/05/12}{Rewrote for the new syntax.}
+% \changes{1.6a}{1994/10/25}{Added \cs{textdollar},
+%    \cs{textlbrace}, \cs{textrbrace}, \cs{textsterling},
+%    \cs{textunderline}.}
+% \changes{1.6a}{1994/10/25}{Removed
+%    \cs{textlbrace}, \cs{textrbrace}, \cs{textunderline} to give them
+%    their proper names.}
+% \changes{1.6b}{1994/10/27}{Added
+%   \cs{textasciicircum}
+%   \cs{textasciitilde}
+%   \cs{textbackslash}
+%   \cs{textbar}
+%   \cs{textbraceleft}
+%   \cs{textbraceright}
+%   \cs{textcompwordmark}
+%   \cs{textemdash}
+%   \cs{textendash}
+%   \cs{textexclamdown}
+%   \cs{textgreater}
+%   \cs{texthyphenchar}
+%   \cs{texthyphen}
+%   \cs{textless}
+%   \cs{textquestiondown}
+%   \cs{textquotedblleft}
+%   \cs{textquotedblright}
+%   \cs{textquotedbl}
+%   \cs{textquoteleft}
+%   \cs{textquoteright}
+%   \cs{textunderscore}
+%   \cs{textvisiblespace}
+% }
+% \changes{v1.9h}{1997/12/17}
+%    {Added \cs{textperthousand} and \cs{textpertenthousand}}
+%
+% The definitions for the `Extended \TeX{} text' (T1) encoding.
+%
+%    Declare the encoding.
+%    \begin{macrocode}
+%<*T1>
+\DeclareFontEncoding{T1}{}{}
+%    \end{macrocode}
+%    Declare the accents.
+%    \begin{macrocode}
+\DeclareTextAccent{\`}{T1}{0}
+\DeclareTextAccent{\'}{T1}{1}
+\DeclareTextAccent{\^}{T1}{2}
+\DeclareTextAccent{\~}{T1}{3}
+\DeclareTextAccent{\"}{T1}{4}
+\DeclareTextAccent{\H}{T1}{5}
+\DeclareTextAccent{\r}{T1}{6}
+\DeclareTextAccent{\v}{T1}{7}
+\DeclareTextAccent{\u}{T1}{8}
+\DeclareTextAccent{\=}{T1}{9}
+\DeclareTextAccent{\.}{T1}{10}
+%    \end{macrocode}
+%    Some accents have to be built by hand.
+%    Note that |\ooalign| and |\o@lign| must be inside a group.
+% \changes{v1.9h}{1997/12/17}{As in OT1, Added \cs{leavevmode} at
+% start of \cs{c}, otherwise the output routine might be invoked
+% within the macro.}
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+% \changes{v1.95}{2002/06/17}{Corrected \cs{c} for T1 (pr/3442)}
+% \changes{v1.99b}{2004/01/03}{Use \cs{ooalign} for \cs{k} (pr/3532)}
+% \changes{v1.99b}{2004/01/03}{Added \cs{textogonekcentered} (pr/3532)}
+% \changes{v1.99c}{2004/01/04}{More adjustments for ogonek (pr/3532)}
+% \changes{v1.99g}{2005/09/27}{Replace \cs{sh@ft} by \cs{ltx@sh@ft}}
+%  In these definitions we no longer use the helper function |\sh@ft|
+%  from plain.tex since that now has two incompatible definitions.
+%    \begin{macrocode}
+\DeclareTextCommand{\b}{T1}[1]
+   {\hmode@bgroup\o@lign{\relax#1\crcr\hidewidth\ltx@sh@ft{-3ex}%
+     \vbox to.2ex{\hbox{\char9}\vss}\hidewidth}\egroup}
+\DeclareTextCommand{\c}{T1}[1]
+   {\leavevmode\setbox\z@\hbox{#1}\ifdim\ht\z@=1ex\accent11 #1%
+     \else{\ooalign{\unhbox\z@\crcr
+        \hidewidth\char11\hidewidth}}\fi}
+\DeclareTextCommand{\d}{T1}[1]
+   {\hmode@bgroup
+    \o@lign{\relax#1\crcr\hidewidth\ltx@sh@ft{-1ex}.\hidewidth}\egroup}
+\DeclareTextCommand{\k}{T1}[1]
+   {\hmode@bgroup\ooalign{\null#1\crcr\hidewidth\char12}\egroup}
+\DeclareTextCommand{\textogonekcentered}{T1}[1]
+   {\hmode@bgroup\ooalign{%
+                \null#1\crcr\hidewidth\char12\hidewidth}\egroup}
+%    \end{macrocode}
+%
+%    Some symbols are constructed.
+%
+% \changes{v1.9h}{1997/12/17}
+%    {Added \cs{textperthousand} and \cs{textpertenthousand}}
+%    Slot 24 contains a small circle intended for construction of
+%    these two glyphs.
+%
+%    \begin{macrocode}
+\DeclareTextCommand{\textperthousand}{T1}
+   {\%\char 24 }          % space or `relax as delimiter?
+\DeclareTextCommand{\textpertenthousand}{T1}
+   {\%\char 24\char 24 }  % space or `relax as delimiter?
+%    \end{macrocode}
+%
+%    Declare the text symbols.
+% \changes{v1.7t}{1995/11/29}{Added \cs{textasciicircum},
+%    \cs{textasciitilde}, \cs{textbackslash}, \cs{textbar},
+%    \cs{textgreater} and \cs{textless}.}
+% \changes{v1.8c}{1996/10/27}
+%      {Removed \cs{aa} and \cs{AA}}
+% \changes{v1.99h}{2005/11/08}
+%      {Added \cs{ij} and \cs{IJ} from babel. (pr/3771)}
+%
+%    \begin{macrocode}
+%\DeclareTextSymbol{\AA}{T1}{197}
+\DeclareTextSymbol{\AE}{T1}{198}
+\DeclareTextSymbol{\DH}{T1}{208}
+\DeclareTextSymbol{\DJ}{T1}{208}
+\DeclareTextSymbol{\L}{T1}{138}
+\DeclareTextSymbol{\NG}{T1}{141}
+\DeclareTextSymbol{\OE}{T1}{215}
+\DeclareTextSymbol{\O}{T1}{216}
+\DeclareTextSymbol{\SS}{T1}{223}
+\DeclareTextSymbol{\TH}{T1}{222}
+%\DeclareTextSymbol{\aa}{T1}{229}
+\DeclareTextSymbol{\ae}{T1}{230}
+\DeclareTextSymbol{\dh}{T1}{240}
+\DeclareTextSymbol{\dj}{T1}{158}
+\DeclareTextSymbol{\guillemotleft}{T1}{19}
+\DeclareTextSymbol{\guillemotright}{T1}{20}
+\DeclareTextSymbol{\guilsinglleft}{T1}{14}
+\DeclareTextSymbol{\guilsinglright}{T1}{15}
+\DeclareTextSymbol{\i}{T1}{25}
+\DeclareTextSymbol{\j}{T1}{26}
+\DeclareTextSymbol{\ij}{T1}{188}
+\DeclareTextSymbol{\IJ}{T1}{156}
+\DeclareTextSymbol{\l}{T1}{170}
+\DeclareTextSymbol{\ng}{T1}{173}
+\DeclareTextSymbol{\oe}{T1}{247}
+\DeclareTextSymbol{\o}{T1}{248}
+\DeclareTextSymbol{\quotedblbase}{T1}{18}
+\DeclareTextSymbol{\quotesinglbase}{T1}{13}
+\DeclareTextSymbol{\ss}{T1}{255}
+\DeclareTextSymbol{\textasciicircum}{T1}{`\^}
+\DeclareTextSymbol{\textasciitilde}{T1}{`\~}
+\DeclareTextSymbol{\textbackslash}{T1}{`\\}
+\DeclareTextSymbol{\textbar}{T1}{`\|}
+\DeclareTextSymbol{\textbraceleft}{T1}{`\{}
+\DeclareTextSymbol{\textbraceright}{T1}{`\}}
+\DeclareTextSymbol{\textcompwordmark}{T1}{23}
+\DeclareTextSymbol{\textdollar}{T1}{`\$}
+\DeclareTextSymbol{\textemdash}{T1}{22}
+\DeclareTextSymbol{\textendash}{T1}{21}
+\DeclareTextSymbol{\textexclamdown}{T1}{189}
+\DeclareTextSymbol{\textgreater}{T1}{`\>}
+%\DeclareTextSymbol{\texthyphenchar}{T1}{127}
+%\DeclareTextSymbol{\texthyphen}{T1}{`\-}
+\DeclareTextSymbol{\textless}{T1}{`\<}
+\DeclareTextSymbol{\textquestiondown}{T1}{190}
+\DeclareTextSymbol{\textquotedblleft}{T1}{16}
+\DeclareTextSymbol{\textquotedblright}{T1}{17}
+\DeclareTextSymbol{\textquotedbl}{T1}{`\"}
+\DeclareTextSymbol{\textquoteleft}{T1}{`\`}
+\DeclareTextSymbol{\textquoteright}{T1}{`\'}
+\DeclareTextSymbol{\textsection}{T1}{159}
+\DeclareTextSymbol{\textsterling}{T1}{191}
+\DeclareTextSymbol{\textunderscore}{T1}{95}
+\DeclareTextSymbol{\textvisiblespace}{T1}{32}
+\DeclareTextSymbol{\th}{T1}{254}
+%    \end{macrocode}
+%    Declare the composites.
+% \changes{v1.93}{2001/05/28}{Changed the effect of
+%                             \cs{.}\cs{i}, pr/3295}
+%    \begin{macrocode}
+\DeclareTextComposite{\.}{T1}{i}{`\i}
+\DeclareTextComposite{\.}{T1}{\i}{`\i}
+%    \end{macrocode}
+% \changes{v1.9c}{1997/05/04}{Added `hex index tabs'}
+%    "80 = 128
+%    \begin{macrocode}
+\DeclareTextComposite{\u}{T1}{A}{128}
+\DeclareTextComposite{\k}{T1}{A}{129}
+\DeclareTextComposite{\'}{T1}{C}{130}
+\DeclareTextComposite{\v}{T1}{C}{131}
+\DeclareTextComposite{\v}{T1}{D}{132}
+\DeclareTextComposite{\v}{T1}{E}{133}
+\DeclareTextComposite{\k}{T1}{E}{134}
+\DeclareTextComposite{\u}{T1}{G}{135}
+%    \end{macrocode}
+%    "88 = 136
+%    \begin{macrocode}
+\DeclareTextComposite{\'}{T1}{L}{136}
+\DeclareTextComposite{\v}{T1}{L}{137}
+\DeclareTextComposite{\'}{T1}{N}{139}
+\DeclareTextComposite{\v}{T1}{N}{140}
+\DeclareTextComposite{\H}{T1}{O}{142}
+\DeclareTextComposite{\'}{T1}{R}{143}
+%    \end{macrocode}
+%    "90 = 144
+%    \begin{macrocode}
+\DeclareTextComposite{\v}{T1}{R}{144}
+\DeclareTextComposite{\'}{T1}{S}{145}
+\DeclareTextComposite{\v}{T1}{S}{146}
+\DeclareTextComposite{\c}{T1}{S}{147}
+\DeclareTextComposite{\v}{T1}{T}{148}
+\DeclareTextComposite{\c}{T1}{T}{149}
+\DeclareTextComposite{\H}{T1}{U}{150}
+\DeclareTextComposite{\r}{T1}{U}{151}
+%    \end{macrocode}
+%    "98 = 152
+%    \begin{macrocode}
+\DeclareTextComposite{\"}{T1}{Y}{152}
+\DeclareTextComposite{\'}{T1}{Z}{153}
+\DeclareTextComposite{\v}{T1}{Z}{154}
+\DeclareTextComposite{\.}{T1}{Z}{155}
+\DeclareTextComposite{\.}{T1}{I}{157}
+%    \end{macrocode}
+%    "A0 = 160
+%    \begin{macrocode}
+\DeclareTextComposite{\u}{T1}{a}{160}
+\DeclareTextComposite{\k}{T1}{a}{161}
+\DeclareTextComposite{\'}{T1}{c}{162}
+\DeclareTextComposite{\v}{T1}{c}{163}
+\DeclareTextComposite{\v}{T1}{d}{164}
+\DeclareTextComposite{\v}{T1}{e}{165}
+\DeclareTextComposite{\k}{T1}{e}{166}
+\DeclareTextComposite{\u}{T1}{g}{167}
+%    \end{macrocode}
+%    "A8 = 168
+%    \begin{macrocode}
+\DeclareTextComposite{\'}{T1}{l}{168}
+\DeclareTextComposite{\v}{T1}{l}{169}
+\DeclareTextComposite{\'}{T1}{n}{171}
+\DeclareTextComposite{\v}{T1}{n}{172}
+\DeclareTextComposite{\H}{T1}{o}{174}
+\DeclareTextComposite{\'}{T1}{r}{175}
+%    \end{macrocode}
+%    "B0 = 176
+%    \begin{macrocode}
+\DeclareTextComposite{\v}{T1}{r}{176}
+\DeclareTextComposite{\'}{T1}{s}{177}
+\DeclareTextComposite{\v}{T1}{s}{178}
+\DeclareTextComposite{\c}{T1}{s}{179}
+\DeclareTextComposite{\v}{T1}{t}{180}
+\DeclareTextComposite{\c}{T1}{t}{181}
+\DeclareTextComposite{\H}{T1}{u}{182}
+\DeclareTextComposite{\r}{T1}{u}{183}
+%    \end{macrocode}
+%    "B8 = 184
+%    \begin{macrocode}
+\DeclareTextComposite{\"}{T1}{y}{184}
+\DeclareTextComposite{\'}{T1}{z}{185}
+\DeclareTextComposite{\v}{T1}{z}{186}
+\DeclareTextComposite{\.}{T1}{z}{187}
+%    \end{macrocode}
+%    "C0 = 192
+%    \begin{macrocode}
+\DeclareTextComposite{\`}{T1}{A}{192}
+\DeclareTextComposite{\'}{T1}{A}{193}
+\DeclareTextComposite{\^}{T1}{A}{194}
+\DeclareTextComposite{\~}{T1}{A}{195}
+\DeclareTextComposite{\"}{T1}{A}{196}
+\DeclareTextComposite{\r}{T1}{A}{197}
+\DeclareTextComposite{\c}{T1}{C}{199}
+%    \end{macrocode}
+%    "C8 = 200
+%    \begin{macrocode}
+\DeclareTextComposite{\`}{T1}{E}{200}
+\DeclareTextComposite{\'}{T1}{E}{201}
+\DeclareTextComposite{\^}{T1}{E}{202}
+\DeclareTextComposite{\"}{T1}{E}{203}
+\DeclareTextComposite{\`}{T1}{I}{204}
+\DeclareTextComposite{\'}{T1}{I}{205}
+\DeclareTextComposite{\^}{T1}{I}{206}
+\DeclareTextComposite{\"}{T1}{I}{207}
+%    \end{macrocode}
+%    "D0 = 208
+%    \begin{macrocode}
+\DeclareTextComposite{\~}{T1}{N}{209}
+\DeclareTextComposite{\`}{T1}{O}{210}
+\DeclareTextComposite{\'}{T1}{O}{211}
+\DeclareTextComposite{\^}{T1}{O}{212}
+\DeclareTextComposite{\~}{T1}{O}{213}
+\DeclareTextComposite{\"}{T1}{O}{214}
+%    \end{macrocode}
+%    "D8 = 216
+%    \begin{macrocode}
+\DeclareTextComposite{\`}{T1}{U}{217}
+\DeclareTextComposite{\'}{T1}{U}{218}
+\DeclareTextComposite{\^}{T1}{U}{219}
+\DeclareTextComposite{\"}{T1}{U}{220}
+\DeclareTextComposite{\'}{T1}{Y}{221}
+%    \end{macrocode}
+%    "E0 = 224
+%    \begin{macrocode}
+\DeclareTextComposite{\`}{T1}{a}{224}
+\DeclareTextComposite{\'}{T1}{a}{225}
+\DeclareTextComposite{\^}{T1}{a}{226}
+\DeclareTextComposite{\~}{T1}{a}{227}
+\DeclareTextComposite{\"}{T1}{a}{228}
+\DeclareTextComposite{\r}{T1}{a}{229}
+\DeclareTextComposite{\c}{T1}{c}{231}
+%    \end{macrocode}
+%    "E8 = 232
+%    \begin{macrocode}
+\DeclareTextComposite{\`}{T1}{e}{232}
+\DeclareTextComposite{\'}{T1}{e}{233}
+\DeclareTextComposite{\^}{T1}{e}{234}
+\DeclareTextComposite{\"}{T1}{e}{235}
+\DeclareTextComposite{\`}{T1}{i}{236}
+\DeclareTextComposite{\`}{T1}{\i}{236}
+\DeclareTextComposite{\'}{T1}{i}{237}
+\DeclareTextComposite{\'}{T1}{\i}{237}
+\DeclareTextComposite{\^}{T1}{i}{238}
+\DeclareTextComposite{\^}{T1}{\i}{238}
+\DeclareTextComposite{\"}{T1}{i}{239}
+\DeclareTextComposite{\"}{T1}{\i}{239}
+%    \end{macrocode}
+%    "F0 = 240
+%    \begin{macrocode}
+\DeclareTextComposite{\~}{T1}{n}{241}
+\DeclareTextComposite{\`}{T1}{o}{242}
+\DeclareTextComposite{\'}{T1}{o}{243}
+\DeclareTextComposite{\^}{T1}{o}{244}
+\DeclareTextComposite{\~}{T1}{o}{245}
+\DeclareTextComposite{\"}{T1}{o}{246}
+%    \end{macrocode}
+%    "F8 = 248
+%    \begin{macrocode}
+\DeclareTextComposite{\`}{T1}{u}{249}
+\DeclareTextComposite{\'}{T1}{u}{250}
+\DeclareTextComposite{\^}{T1}{u}{251}
+\DeclareTextComposite{\"}{T1}{u}{252}
+\DeclareTextComposite{\'}{T1}{y}{253}
+%    \end{macrocode}
+% \changes{v1.99b}{2004/01/03}{Added composites for \cs{k} (pr/3532)}
+%    \begin{macrocode}
+\DeclareTextCompositeCommand{\k}{T1}{o}{\textogonekcentered{o}}
+\DeclareTextCompositeCommand{\k}{T1}{O}{\textogonekcentered{O}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</T1>
+%    \end{macrocode}
+%
+% \changes{1.4a}{1994/05/01}{Removed the uc/lc table settings, since
+%    the T1 uc/lc table is now the default.}
+%
+% \subsection{Definitions for the OMS encoding}
+%
+% \changes{v1.6a}{1994/10/25}{Added the OMS encoding.}
+% \changes{v1.6b}{1994/10/27}{Renamed \cs{textlbrace} to
+%    \cs{textbraceleft} and \cs{textrbrace} to \cs{textbraceright}.}
+% \changes{v1.6b}{1994/10/27}{Added \cs{textbackslash}.}
+% \changes{v1.6d}{1994/10/30}{Added \cs{textcircled}.}
+%
+% The definitions for the `\TeX{} math symbol' (OMS) encoding.  Even
+% though this is meant to be a math font, it includes some of the
+% standard \LaTeX{} text symbols.
+%
+%    Declare the encoding.
+%    \begin{macrocode}
+%<*OMS>
+\DeclareFontEncoding{OMS}{}{}
+%    \end{macrocode}
+%    Declare the symbols.
+% \changes{v1.7t}{1995/11/29}{Added \cs{textbackslash} and
+%    \cs{textbar}.}
+% \changes{v1.8c}{1996/10/27}
+%      {Added \cs{textasteriskcentered}}
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+% \changes{v1.95}{2002/06/16}{Added \cs{textbardbl} (pr/3400)}
+%    \begin{macrocode}
+% \changes{v1.99}{2004/02/02}{Added \cs{textbigcircle}}
+%    Note that slot 13 has in places been named |\Orb|: please root
+%    out and destroy this impolity wherever you find it!
+%    \begin{macrocode}
+\DeclareTextSymbol{\textasteriskcentered}{OMS}{3}   % "03
+\DeclareTextSymbol{\textbackslash}{OMS}{110}        % "6E
+\DeclareTextSymbol{\textbar}{OMS}{106}              % "6A
+\DeclareTextSymbol{\textbardbl}{OMS}{107}           % "6B
+\DeclareTextSymbol{\textbraceleft}{OMS}{102}        % "66
+\DeclareTextSymbol{\textbraceright}{OMS}{103}       % "67
+\DeclareTextSymbol{\textbullet}{OMS}{15}            % "0F
+\DeclareTextSymbol{\textdaggerdbl}{OMS}{122}        % "7A
+\DeclareTextSymbol{\textdagger}{OMS}{121}           % "79
+\DeclareTextSymbol{\textparagraph}{OMS}{123}        % "7B
+\DeclareTextSymbol{\textperiodcentered}{OMS}{1}     % "01
+\DeclareTextSymbol{\textsection}{OMS}{120}          % "78
+\DeclareTextSymbol{\textbigcircle}{OMS}{13}         % "0D
+\DeclareTextCommand{\textcircled}{OMS}[1]{\hmode@bgroup
+   \ooalign{%
+      \hfil \raise .07ex\hbox {\upshape#1}\hfil \crcr
+      \char 13 % "0D
+   }%
+ \egroup}
+%</OMS>
+%    \end{macrocode}
+%
+% \subsection{Definitions for the OML encoding}
+%
+% \changes{v1.6d}{1994/10/30}{Added the OML encoding.}
+%
+% The definitions for the `\TeX{} math italic' (OML) encoding.  Even
+% though this is meant to be a math font, it includes some of the
+% standard \LaTeX{} text symbols.
+%
+%    Declare the encoding.
+%    \begin{macrocode}
+%<*OML>
+\DeclareFontEncoding{OML}{}{}
+%    \end{macrocode}
+%    Declare the symbols.
+% \changes{v1.7t}{1995/11/29}{Added \cs{textless} and
+%    \cs{textgreater}.}
+% \changes{v1.9h}{1997/12/17}{Changed to decimal codes.}
+% \changes{v1.9m}{1998/01/16}{fixed decimal codes. latex/2734}
+%    \begin{macrocode}
+\DeclareTextSymbol{\textless}{OML}{`\<}
+\DeclareTextSymbol{\textgreater}{OML}{`\>}
+\DeclareTextAccent{\t}{OML}{127}  % "7F
+%</OML>
+%    \end{macrocode}
+%
+% \subsection{Definitions for the OT4 encoding}
+%
+% These definitions are for the Polish extension to the
+% `\TeX\ text' (OT1) encoding.
+% This encoding was created by B.~Jackowski and M.~Ry\'cko
+% for use with the Polish version of Computer Modern and Computer
+% Concrete.  In positions 0--127 it is identical to OT1 but it
+% contains some additional characters in the upper half.  The \LaTeX{}
+% support was developed by Mariusz Olko.
+%
+% The PL fonts that use it are available as follows:\\
+% Metafont sources
+% \texttt{ftp://ftp.gust.org.pl/TeX/language/polish/pl-mf.zip};
+%
+% Font files
+% \texttt{ftp://ftp.gust.org.pl/TeX/language/polish/pl-tfm.zip}.
+%
+%    Declare the encoding.
+%    \begin{macrocode}
+%<*OT4>
+\DeclareFontEncoding{OT4}{}{}
+\DeclareFontSubstitution{OT4}{cmr}{m}{n}
+%    \end{macrocode}
+%    Declare the accents.
+%    \begin{macrocode}
+\DeclareTextAccent{\"}{OT4}{127}
+\DeclareTextAccent{\'}{OT4}{19}
+\DeclareTextAccent{\.}{OT4}{95}
+\DeclareTextAccent{\=}{OT4}{22}
+\DeclareTextAccent{\^}{OT4}{94}
+\DeclareTextAccent{\`}{OT4}{18}
+\DeclareTextAccent{\~}{OT4}{126}
+\DeclareTextAccent{\H}{OT4}{125}
+\DeclareTextAccent{\u}{OT4}{21}
+\DeclareTextAccent{\v}{OT4}{20}
+\DeclareTextAccent{\r}{OT4}{23}
+%    \end{macrocode}
+%    The ogonek accent is available only under a e A \& E.  But we
+%    have to provide some definition for \cs{k}. Some other accents
+%    have to be built by hand as in OT1:
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    \begin{macrocode}
+\DeclareTextCommand{\k}{OT4}[1]{%
+    \TextSymbolUnavailable{\k{#1}}#1}
+%    \end{macrocode}
+%  In these definitions we no longer use the helper function |\sh@ft|
+%  from plain.tex since that now has two incompatible definitions.
+% \changes{v1.99g}{2005/09/27}{Replace \cs{sh@ft} by \cs{ltx@sh@ft}}
+%    \begin{macrocode}
+\DeclareTextCommand{\b}{OT4}[1]
+   {\hmode@bgroup\o@lign{\relax#1\crcr\hidewidth\ltx@sh@ft{-3ex}%
+     \vbox to.2ex{\hbox{\char22}\vss}\hidewidth}\egroup}
+\DeclareTextCommand{\c}{OT4}[1]
+   {\leavevmode\setbox\z@\hbox{#1}\ifdim\ht\z@=1ex\accent24 #1%
+    \else{\ooalign{\unhbox\z@\crcr\hidewidth\char24\hidewidth}}\fi}
+\DeclareTextCommand{\d}{OT4}[1]
+   {\hmode@bgroup
+    \o@lign{\relax#1\crcr\hidewidth\ltx@sh@ft{-1ex}.\hidewidth}\egroup}
+%    \end{macrocode}
+%    Declare the text symbols.
+%    \begin{macrocode}
+\DeclareTextSymbol{\AE}{OT4}{29}
+\DeclareTextSymbol{\OE}{OT4}{30}
+\DeclareTextSymbol{\O}{OT4}{31}
+\DeclareTextSymbol{\L}{OT4}{138}
+\DeclareTextSymbol{\ae}{OT4}{26}
+\DeclareTextSymbol{\guillemotleft}{OT4}{174}
+\DeclareTextSymbol{\guillemotright}{OT4}{175}
+\DeclareTextSymbol{\i}{OT4}{16}
+\DeclareTextSymbol{\j}{OT4}{17}
+\DeclareTextSymbol{\l}{OT4}{170}
+\DeclareTextSymbol{\o}{OT4}{28}
+\DeclareTextSymbol{\oe}{OT4}{27}
+\DeclareTextSymbol{\quotedblbase}{OT4}{255}
+\DeclareTextSymbol{\ss}{OT4}{25}
+\DeclareTextSymbol{\textemdash}{OT4}{124}
+\DeclareTextSymbol{\textendash}{OT4}{123}
+\DeclareTextSymbol{\textexclamdown}{OT4}{60}
+%\DeclareTextSymbol{\texthyphenchar}{OT4}{`\-}
+%\DeclareTextSymbol{\texthyphen}{OT4}{`\-}
+\DeclareTextSymbol{\textquestiondown}{OT4}{62}
+\DeclareTextSymbol{\textquotedblleft}{OT4}{92}
+\DeclareTextSymbol{\textquotedblright}{OT4}{`\"}
+\DeclareTextSymbol{\textquoteleft}{OT4}{`\`}
+\DeclareTextSymbol{\textquoteright}{OT4}{`\'}
+%    \end{macrocode}
+%    Definition for \r A as in OT1:
+% \changes{v1.96}{2002/10/28}{%
+%   coding change, to follow bug fix by DEK in plain.tex (pr/3469)}
+%    \begin{macrocode}
+\DeclareTextCompositeCommand{\r}{OT4}{A}
+   {\leavevmode\setbox\z@\hbox{!}\dimen@\ht\z@\advance\dimen@-1ex%
+    \rlap{\raise.67\dimen@\hbox{\char23}}A}
+%    \end{macrocode}
+%    In the OT4 encoding, \pounds~and \$ share a slot.
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    \begin{macrocode}
+\DeclareTextCommand{\textdollar}{OT4}{\hmode@bgroup
+   \ifdim \fontdimen\@ne\font >\z@
+      \slshape
+   \else
+      \upshape
+   \fi
+   \char`\$\egroup}
+\DeclareTextCommand{\textsterling}{OT4}{\hmode@bgroup
+   \ifdim \fontdimen\@ne\font >\z@
+      \itshape
+   \else
+      \fontshape{ui}\selectfont
+   \fi
+   \char`\$\egroup}
+%    \end{macrocode}
+%    Declare the composites.
+%    \begin{macrocode}
+\DeclareTextComposite{\k}{OT4}{A}{129}
+\DeclareTextComposite{\'}{OT4}{C}{130}
+\DeclareTextComposite{\k}{OT4}{E}{134}
+\DeclareTextComposite{\'}{OT4}{N}{139}
+\DeclareTextComposite{\'}{OT4}{S}{145}
+\DeclareTextComposite{\'}{OT4}{Z}{153}
+\DeclareTextComposite{\.}{OT4}{Z}{155}
+\DeclareTextComposite{\k}{OT4}{a}{161}
+\DeclareTextComposite{\'}{OT4}{c}{162}
+\DeclareTextComposite{\k}{OT4}{e}{166}
+\DeclareTextComposite{\'}{OT4}{n}{171}
+\DeclareTextComposite{\'}{OT4}{s}{177}
+\DeclareTextComposite{\'}{OT4}{z}{185}
+\DeclareTextComposite{\.}{OT4}{z}{187}
+\DeclareTextComposite{\'}{OT4}{O}{211}
+\DeclareTextComposite{\'}{OT4}{o}{243}
+%</OT4>
+%    \end{macrocode}
+%
+%
+% \subsection{Definitions for the TS1 encoding}
+%
+% \changes{v1.9c}{1997/05/04}{Added TS1 encoding v2.2.beta}
+% \changes{v1.9g}{1997/11/23}
+%    {Use \cs{textperthousand}, \cs{textpertenthousand} and
+%          \cs{textfractionsolidus} not
+%         \cs{textpermill}, \cs{textpertenmill} and \cs{textfraction}.
+%         /2673 }
+% \changes{v1.9h}{1997/12/17}
+%     {Removed default settings, see next section.}
+%
+%    \begin{macrocode}
+%<*TS1>
+\DeclareFontEncoding{TS1}{}{}
+\DeclareFontSubstitution{TS1}{cmr}{m}{n}
+%    \end{macrocode}
+%    Some accents have to be built by hand.
+%    Note that |\ooalign| and |\o@lign| must be inside a group.
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    \begin{macrocode}
+\DeclareTextCommand{\capitalcedilla}{TS1}[1]
+   {\hmode@bgroup
+    \ooalign{\null#1\crcr\hidewidth\char11\hidewidth}\egroup}
+\DeclareTextCommand{\capitalogonek}{TS1}[1]
+   {\hmode@bgroup
+    \ooalign{\null#1\crcr\hidewidth\char12\hidewidth}\egroup}
+%    \end{macrocode}
+%
+% Accents for capital letters.
+%
+% These commands can be used by the end user either directly or through
+% definitions of the type
+% \begin{verbatim}
+% \DeclareTextCompositeCommand{\'}{T1}{X}{\capitalacute X}
+% \end{verbatim}
+% None of the latter definitions are provided by default, since they
+% are probably rarely used.
+%
+%    "00 = 0
+%    \begin{macrocode}
+\DeclareTextAccent{\capitalgrave}{TS1}{0}
+\DeclareTextAccent{\capitalacute}{TS1}{1}
+\DeclareTextAccent{\capitalcircumflex}{TS1}{2}
+\DeclareTextAccent{\capitaltilde}{TS1}{3}
+\DeclareTextAccent{\capitaldieresis}{TS1}{4}
+\DeclareTextAccent{\capitalhungarumlaut}{TS1}{5}
+\DeclareTextAccent{\capitalring}{TS1}{6}
+\DeclareTextAccent{\capitalcaron}{TS1}{7}
+%    \end{macrocode}
+%    "08 = 8
+%    \begin{macrocode}
+\DeclareTextAccent{\capitalbreve}{TS1}{8}
+\DeclareTextAccent{\capitalmacron}{TS1}{9}
+\DeclareTextAccent{\capitaldotaccent}{TS1}{10}
+%    \end{macrocode}
+% Tie accents.
+%
+% The tie accent was borrowed from the |cmmi| font. The tc fonts
+% now provide four tie accents, the first two are done in the
+% classical way with assymetric glyphs hanging out of their boxes;
+% the new ties are centered in their boxes like all other accents.
+% They need a name: please tell us if you know what to call them.
+%
+%    " =
+%    \begin{macrocode}
+\DeclareTextAccent{\t}{TS1}{26}
+\DeclareTextAccent{\capitaltie}{TS1}{27}
+\DeclareTextAccent{\newtie}{TS1}{28}
+\DeclareTextAccent{\capitalnewtie}{TS1}{29}
+%    \end{macrocode}
+%
+% Compund word marks.
+%
+% The text companion fonts contain two compound word marks of
+% different heights, one has |cap_height|, the other |asc_height|.
+%
+%    \begin{macrocode}
+\DeclareTextSymbol{\textcapitalcompwordmark}{TS1}{23}
+\DeclareTextSymbol{\textascendercompwordmark}{TS1}{31}
+%    \end{macrocode}
+%
+% The text companion symbols.
+%
+%    \begin{macrocode}
+\DeclareTextSymbol{\textquotestraightbase}{TS1}{13}
+%    \end{macrocode}
+%    "10 = 16
+%    \begin{macrocode}
+\DeclareTextSymbol{\textquotestraightdblbase}{TS1}{18}
+\DeclareTextSymbol{\texttwelveudash}{TS1}{21}
+\DeclareTextSymbol{\textthreequartersemdash}{TS1}{22}
+%    \end{macrocode}
+%    "18 = 24
+%    \begin{macrocode}
+\DeclareTextSymbol{\textleftarrow}{TS1}{24}
+\DeclareTextSymbol{\textrightarrow}{TS1}{25}
+%    \end{macrocode}
+%    "20 = 32
+%    \begin{macrocode}
+\DeclareTextSymbol{\textblank}{TS1}{32}
+\DeclareTextSymbol{\textdollar}{TS1}{36}
+\DeclareTextSymbol{\textquotesingle}{TS1}{39}
+%    \end{macrocode}
+%    "28 = 40
+%    \begin{macrocode}
+\DeclareTextSymbol{\textasteriskcentered}{TS1}{42}
+%    \end{macrocode}
+% Note that '054 is a comma and '056 is a full stop: these make
+% numbers using oldstyle digits easier to input.
+%    \begin{macrocode}
+\DeclareTextSymbol{\textdblhyphen}{TS1}{45}
+\DeclareTextSymbol{\textfractionsolidus}{TS1}{47}
+%    \end{macrocode}
+%
+% Oldstyle digits.
+%
+%    "30 = 48
+%    \begin{macrocode}
+\DeclareTextSymbol{\textzerooldstyle}{TS1}{48}
+\DeclareTextSymbol{\textoneoldstyle}{TS1}{49}
+\DeclareTextSymbol{\texttwooldstyle}{TS1}{50}
+\DeclareTextSymbol{\textthreeoldstyle}{TS1}{51}
+\DeclareTextSymbol{\textfouroldstyle}{TS1}{52}
+\DeclareTextSymbol{\textfiveoldstyle}{TS1}{53}
+\DeclareTextSymbol{\textsixoldstyle}{TS1}{54}
+\DeclareTextSymbol{\textsevenoldstyle}{TS1}{55}
+%    \end{macrocode}
+%    "38 = 56
+%    \begin{macrocode}
+\DeclareTextSymbol{\texteightoldstyle}{TS1}{56}
+\DeclareTextSymbol{\textnineoldstyle}{TS1}{57}
+%    \end{macrocode}
+%
+% More text companion symbols.
+%
+%    \begin{macrocode}
+\DeclareTextSymbol{\textlangle}{TS1}{60}
+\DeclareTextSymbol{\textminus}{TS1}{61}
+\DeclareTextSymbol{\textrangle}{TS1}{62}
+%    \end{macrocode}
+%    "48 = 72
+%    \begin{macrocode}
+\DeclareTextSymbol{\textmho}{TS1}{77}
+%    \end{macrocode}
+%
+% \changes{v1.9r}{1999/01/06}{Minor documentation fix.}
+% The big circle is here to define the command \cs{textcircled}.
+% Formerly it was taken from the |cmsy| font.
+% \changes{v1.9h}{1997/12/17}{Changed to decimal codes in \cs{ooalign}.}
+% \changes{v1.9k}{1998/01/12}{Adding missing braces and \cs{ushape}.}
+% \changes{v1.9y}{2000/01/30}{Use \cs{hmode@bgroup} where applicable
+%    (pr/3160)}
+%    \begin{macrocode}
+\DeclareTextSymbol{\textbigcircle}{TS1}{79}
+\DeclareTextCommand{\textcircled}{TS1}[1]{\hmode@bgroup
+   \ooalign{%
+      \hfil \raise .07ex\hbox {\upshape#1}\hfil \crcr
+      \char 79   % '117 = "4F
+   }%
+ \egroup}
+%    \end{macrocode}
+%
+% More text companion symbols.
+%
+%    "50 = 80
+%    \begin{macrocode}
+\DeclareTextSymbol{\textohm}{TS1}{87}
+%    \end{macrocode}
+%    "58 = 88
+%    \begin{macrocode}
+\DeclareTextSymbol{\textlbrackdbl}{TS1}{91}
+\DeclareTextSymbol{\textrbrackdbl}{TS1}{93}
+\DeclareTextSymbol{\textuparrow}{TS1}{94}
+\DeclareTextSymbol{\textdownarrow}{TS1}{95}
+%    \end{macrocode}
+%    "60 = 96
+%    \begin{macrocode}
+\DeclareTextSymbol{\textasciigrave}{TS1}{96}
+\DeclareTextSymbol{\textborn}{TS1}{98}
+\DeclareTextSymbol{\textdivorced}{TS1}{99}
+\DeclareTextSymbol{\textdied}{TS1}{100}
+%    \end{macrocode}
+%    "68 = 104
+%    \begin{macrocode}
+\DeclareTextSymbol{\textleaf}{TS1}{108}
+\DeclareTextSymbol{\textmarried}{TS1}{109}
+\DeclareTextSymbol{\textmusicalnote}{TS1}{110}
+%    \end{macrocode}
+%    "78 = 120
+%    \begin{macrocode}
+\DeclareTextSymbol{\texttildelow}{TS1}{126}
+%    \end{macrocode}
+%
+% This glyph, |\textdblhyphenchar| is hanging, like the hyphenchar of
+% the ec fonts.
+%
+%    \begin{macrocode}
+\DeclareTextSymbol{\textdblhyphenchar}{TS1}{127}
+%    \end{macrocode}
+%    "80 = 128
+%    \begin{macrocode}
+\DeclareTextSymbol{\textasciibreve}{TS1}{128}
+\DeclareTextSymbol{\textasciicaron}{TS1}{129}
+%    \end{macrocode}
+%
+% This next glyph is \emph{not} the same as |\textquotedbl|.
+%
+% \changes{v1.9p}{1998/06/12}{Corrected 130 and 131, see pr/2834}
+%    \begin{macrocode}
+\DeclareTextSymbol{\textacutedbl}{TS1}{130}
+\DeclareTextSymbol{\textgravedbl}{TS1}{131}
+\DeclareTextSymbol{\textdagger}{TS1}{132}
+\DeclareTextSymbol{\textdaggerdbl}{TS1}{133}
+\DeclareTextSymbol{\textbardbl}{TS1}{134}
+\DeclareTextSymbol{\textperthousand}{TS1}{135}
+%    \end{macrocode}
+%    "88 = 136
+%    \begin{macrocode}
+\DeclareTextSymbol{\textbullet}{TS1}{136}
+\DeclareTextSymbol{\textcelsius}{TS1}{137}
+\DeclareTextSymbol{\textdollaroldstyle}{TS1}{138}
+\DeclareTextSymbol{\textcentoldstyle}{TS1}{139}
+\DeclareTextSymbol{\textflorin}{TS1}{140}
+\DeclareTextSymbol{\textcolonmonetary}{TS1}{141}
+\DeclareTextSymbol{\textwon}{TS1}{142}
+\DeclareTextSymbol{\textnaira}{TS1}{143}
+%    \end{macrocode}
+%    "90 = 144
+%    \begin{macrocode}
+\DeclareTextSymbol{\textguarani}{TS1}{144}
+\DeclareTextSymbol{\textpeso}{TS1}{145}
+\DeclareTextSymbol{\textlira}{TS1}{146}
+\DeclareTextSymbol{\textrecipe}{TS1}{147}
+\DeclareTextSymbol{\textinterrobang}{TS1}{148}
+\DeclareTextSymbol{\textinterrobangdown}{TS1}{149}
+\DeclareTextSymbol{\textdong}{TS1}{150}
+\DeclareTextSymbol{\texttrademark}{TS1}{151}
+%    \end{macrocode}
+%    "98 = 152
+%    \begin{macrocode}
+\DeclareTextSymbol{\textpertenthousand}{TS1}{152}
+\DeclareTextSymbol{\textpilcrow}{TS1}{153}
+\DeclareTextSymbol{\textbaht}{TS1}{154}
+\DeclareTextSymbol{\textnumero}{TS1}{155}
+%    \end{macrocode}
+% This next name may change.
+% For the following sign we know only a german name, which is
+% abz\"uglich. The meaning is something like ``commercial minus''.
+% An ASCII ersatz is ./. (dot slash dot).
+% The temporary English name is |\textdiscount|.
+%    \begin{macrocode}
+\DeclareTextSymbol{\textdiscount}{TS1}{156}
+\DeclareTextSymbol{\textestimated}{TS1}{157}
+\DeclareTextSymbol{\textopenbullet}{TS1}{158}
+\DeclareTextSymbol{\textservicemark}{TS1}{159}
+%    \end{macrocode}
+%    "A0 = 160
+%    \begin{macrocode}
+\DeclareTextSymbol{\textlquill}{TS1}{160}
+\DeclareTextSymbol{\textrquill}{TS1}{161}
+\DeclareTextSymbol{\textcent}{TS1}{162}
+\DeclareTextSymbol{\textsterling}{TS1}{163}
+\DeclareTextSymbol{\textcurrency}{TS1}{164}
+\DeclareTextSymbol{\textyen}{TS1}{165}
+\DeclareTextSymbol{\textbrokenbar}{TS1}{166}
+\DeclareTextSymbol{\textsection}{TS1}{167}
+%    \end{macrocode}
+%    "A8 = 168
+%    \begin{macrocode}
+\DeclareTextSymbol{\textasciidieresis}{TS1}{168}
+\DeclareTextSymbol{\textcopyright}{TS1}{169}
+\DeclareTextSymbol{\textordfeminine}{TS1}{170}
+\DeclareTextSymbol{\textcopyleft}{TS1}{171}
+\DeclareTextSymbol{\textlnot}{TS1}{172}
+%    \end{macrocode}
+%
+% The meaning of the circled-P is ``sound recording copyright''.
+%
+% \changes{v1.9p}{1998/06/12}{Renamed \cs{textmacron} pr/2840}
+%    \begin{macrocode}
+\DeclareTextSymbol{\textcircledP}{TS1}{173}
+\DeclareTextSymbol{\textregistered}{TS1}{174}
+\DeclareTextSymbol{\textasciimacron}{TS1}{175}
+%    \end{macrocode}
+%    "B0 = 176
+%    \begin{macrocode}
+\DeclareTextSymbol{\textdegree}{TS1}{176}
+\DeclareTextSymbol{\textpm}{TS1}{177}
+\DeclareTextSymbol{\texttwosuperior}{TS1}{178}
+\DeclareTextSymbol{\textthreesuperior}{TS1}{179}
+\DeclareTextSymbol{\textasciiacute}{TS1}{180}
+\DeclareTextSymbol{\textmu}{TS1}{181} % micro sign
+\DeclareTextSymbol{\textparagraph}{TS1}{182}
+\DeclareTextSymbol{\textperiodcentered}{TS1}{183}
+%    \end{macrocode}
+%    "B8 = 184
+%    \begin{macrocode}
+\DeclareTextSymbol{\textreferencemark}{TS1}{184}
+\DeclareTextSymbol{\textonesuperior}{TS1}{185}
+\DeclareTextSymbol{\textordmasculine}{TS1}{186}
+\DeclareTextSymbol{\textsurd}{TS1}{187}
+\DeclareTextSymbol{\textonequarter}{TS1}{188}
+\DeclareTextSymbol{\textonehalf}{TS1}{189}
+\DeclareTextSymbol{\textthreequarters}{TS1}{190}
+\DeclareTextSymbol{\texteuro}{TS1}{191}
+%    \end{macrocode}
+%    "E0 = 208
+%    \begin{macrocode}
+\DeclareTextSymbol{\texttimes}{TS1}{214}
+%    \end{macrocode}
+%    "F0 = 240
+%    \begin{macrocode}
+\DeclareTextSymbol{\textdiv}{TS1}{246}
+%</TS1>
+%    \end{macrocode}
+%
+% \section{Package files}
+%
+% \changes{v1.9h}{1997/12/17}{Added section.}
+% \changes{v1.9h}{1997/12/17}{Added code for textcomp.sty.}
+%    This file now also contains some packages that provide access to
+%    the more specialised encodings.
+%
+% \subsection{The fontenc package}
+%
+% \changes{v1.5c}{1994/05/14}{Added the fontenc package}
+% \changes{v1.5g}{1994/05/16}{Removed the lowercasing of the filename.}
+% \changes{v1.7a}{1994/11/30}{Always load the enc.def file, so that
+%    the default encoding for the commands will change.}
+% \changes{v1.7x}{1996/05/18}{Produce error if encoding not found.
+%                             pr/2054}
+% \changes{v1.7y}{1996/05/21}{Corrected error message (CAR)}
+% \changes{v1.8d}{1996/11/18}
+%     {(DPC) lowercase external file names. internal/1044}%
+% This package allows authors to specify which encodings they will use.
+% For each encoding |FOO|, the package looks to see if the encoding
+% |FOO| has already been declared.  If it has not, the file |fooenc.def|
+% is loaded.  The default encoding is set to be |FOO|.
+%
+% In addition the package at the moment contains extra code to extend
+% the |\@uclclist| (list of upper/lower case pairs) for encodings that
+% involve cyrillic characters. THIS IS A TEMPORARY SOLUTION and will not
+% stay this way forever (or so we hope) but right now we are missing a
+% proper interface for this and didn't wanted to rush it.
+% \changes{v1.9r}{1999/01/07}{Hackery to temp support cyrillic uc/lc}
+% \changes{v1.9t}{1999/02/24}{Corrected hackery cyrillic uc/lc list}
+% \changes{v1.9x}{1999/12/08}{Changed \cs{CYRRHOOK} and  \cs{cyrrhook}
+%    to\cs{CYRRHK} and  \cs{cyrrhk} as name changed in the cyrillic
+%    bundle for naming consistency with other ``hook'' glyphs.}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% Here we define a macro that extends the |\@uclclist| if needed and
+% afterwards turns itself in a noop.
+%    \begin{macrocode}
+\def\update@uclc@with@cyrillic{%
+ \expandafter\def\expandafter\@uclclist\expandafter
+  {\@uclclist
+  \cyra\CYRA\cyrabhch\CYRABHCH\cyrabhchdsc\CYRABHCHDSC\cyrabhdze
+  \CYRABHDZE\cyrabhha\CYRABHHA\cyrae\CYRAE\cyrb\CYRB\cyrbyus
+  \CYRBYUS\cyrc\CYRC\cyrch\CYRCH\cyrchldsc\CYRCHLDSC\cyrchrdsc
+  \CYRCHRDSC\cyrchvcrs\CYRCHVCRS\cyrd\CYRD\cyrdelta\CYRDELTA
+  \cyrdje\CYRDJE\cyrdze\CYRDZE\cyrdzhe\CYRDZHE\cyre\CYRE\cyreps
+  \CYREPS\cyrerev\CYREREV\cyrery\CYRERY\cyrf\CYRF\cyrfita
+  \CYRFITA\cyrg\CYRG\cyrgdsc\CYRGDSC\cyrgdschcrs\CYRGDSCHCRS
+  \cyrghcrs\CYRGHCRS\cyrghk\CYRGHK\cyrgup\CYRGUP\cyrh\CYRH
+  \cyrhdsc\CYRHDSC\cyrhhcrs\CYRHHCRS\cyrhhk\CYRHHK\cyrhrdsn
+  \CYRHRDSN\cyri\CYRI\cyrie\CYRIE\cyrii\CYRII\cyrishrt\CYRISHRT
+  \cyrishrtdsc\CYRISHRTDSC\cyrizh\CYRIZH\cyrje\CYRJE\cyrk\CYRK
+  \cyrkbeak\CYRKBEAK\cyrkdsc\CYRKDSC\cyrkhcrs\CYRKHCRS\cyrkhk
+  \CYRKHK\cyrkvcrs\CYRKVCRS\cyrl\CYRL\cyrldsc\CYRLDSC\cyrlhk
+  \CYRLHK\cyrlje\CYRLJE\cyrm\CYRM\cyrmdsc\CYRMDSC\cyrmhk\CYRMHK
+  \cyrn\CYRN\cyrndsc\CYRNDSC\cyrng\CYRNG\cyrnhk\CYRNHK\cyrnje
+  \CYRNJE\cyrnlhk\CYRNLHK\cyro\CYRO\cyrotld\CYROTLD\cyrp\CYRP
+  \cyrphk\CYRPHK\cyrq\CYRQ\cyrr\CYRR\cyrrdsc\CYRRDSC\cyrrhk
+  \CYRRHK\cyrrtick\CYRRTICK\cyrs\CYRS\cyrsacrs\CYRSACRS
+  \cyrschwa\CYRSCHWA\cyrsdsc\CYRSDSC\cyrsemisftsn\CYRSEMISFTSN
+  \cyrsftsn\CYRSFTSN\cyrsh\CYRSH\cyrshch\CYRSHCH\cyrshha\CYRSHHA
+  \cyrt\CYRT\cyrtdsc\CYRTDSC\cyrtetse\CYRTETSE\cyrtshe\CYRTSHE
+  \cyru\CYRU\cyrushrt\CYRUSHRT\cyrv\CYRV\cyrw\CYRW\cyry\CYRY
+  \cyrya\CYRYA\cyryat\CYRYAT\cyryhcrs\CYRYHCRS\cyryi\CYRYI\cyryo
+  \CYRYO\cyryu\CYRYU\cyrz\CYRZ\cyrzdsc\CYRZDSC\cyrzh\CYRZH
+  \cyrzhdsc\CYRZHDSC}%
+ \let\update@uclc@with@cyrillic\relax
+}
+%    \end{macrocode}
+%
+% Here we process each option:
+%    \begin{macrocode}
+\DeclareOption*{%
+   \let\encodingdefault\CurrentOption
+   \edef\reserved@f{%
+     \lowercase{\def\noexpand\reserved@f{\CurrentOption enc.def}}}%
+   \reserved@f
+   \InputIfFileExists\reserved@f
+        {}{\PackageError{fontenc}%
+         {Encoding file `\reserved@f' not found.%
+          \MessageBreak
+           You might have misspelt the name of the encoding}%
+         {Necessary code for this encoding was not
+          loaded.\MessageBreak
+          Thus calling the encoding later on will
+          produce further error messages.}}%
+  \let\reserved@f\relax
+%    \end{macrocode}
+%
+% In case the current encoding is one of a list of known
+% cyrillic ones we extend the |\@uclclist|:
+%    \begin{macrocode}
+  \expandafter\in@\expandafter{\CurrentOption}%
+                              {T2A,T2B,T2C,X2,LCY,OT2}%
+  \ifin@
+%    \end{macrocode}
+%
+% But only if it hasn't already been extended. This might happen if
+% there are several calls to fontenc loading one of the above
+% encodings. If we don't do this check the |\@uclclist| gets
+% unnecessarily big, slowing down the processing at runtime.
+% \changes{v1.9v}{1999/06/12}{Extend \cs{@uclclist} only once}
+%    \begin{macrocode}
+     \expandafter\in@\expandafter\cyra\expandafter
+                              {\@uclclist}%
+     \ifin@
+     \else
+       \update@uclc@with@cyrillic
+     \fi
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions*
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fontencoding\encodingdefault\selectfont
+%    \end{macrocode}
+%
+% To save some space we get rid of the macro extending the
+% |\@uclclist| (might have happened already).
+%    \begin{macrocode}
+\let\update@uclc@with@cyrillic\relax
+%    \end{macrocode}
+%
+% Finally we pretend that the fontenc package wasn't read in. This
+% allows for using it several times, e.g., in a class file and in the
+% preamble (at the cost of not getting any version info).
+% That kind of hackery shows that using a general purpose
+% package just for loading an encoding is not the right kind
+% of interface for setting up encodings --- it will get replaced at
+% some point in the future.
+% \changes{v1.9r}{1999/01/07}{Hackery to allow using fontenc several
+%    times}
+% \changes{v1.9u}{1999/06/10}{Ensure that we also forget old options
+%                             (pr/2888)}
+%    \begin{macrocode}
+\global\expandafter\let\csname ver@fontenc.sty\endcsname\relax
+\global\expandafter\let\csname opt@fontenc.sty\endcsname\relax
+\global\let\@ifl@ter@@\@ifl@ter
+\def\@ifl@ter#1#2#3#4#5{\global\let\@ifl@ter\@ifl@ter@@}
+%</package>
+%    \end{macrocode}
+%
+%
+% \subsection{The textcomp package}
+%
+%    This one is for the |TS1| encoding which contains text symbols
+%    for use with the |T1|-encoded text fonts.  It therefore first
+%    inputs the file |TS1enc.def| and then sets (or resets) the
+%    defaults for the symbols it contains.  The result of this is that
+%    when one of these symbols is accessed and the current encoding
+%    does not provide it, the symbol will be supplied by a silent,
+%    local change to this encoding.
+%
+%    \begin{macrocode}
+%<*TS1sty>
+%    \end{macrocode}
+%    Since many PostScript fonts only implement a subset of |TS1| many
+%    commands only produce black blobs of ink. To resolve the
+%    resulting problems a number of options have been introduced and
+%    some code  has been developed to distinguish sub-encodings.
+%
+%    The sub-encodings have a numerical id and are defined as follows
+%    for \texttt{TS1}:
+% \begin{description}
+%
+% \item[\#5] those \texttt{TS1} symbols that are also in the ISO-Adobe
+%       character set; without \verb=textcurrency=, which is often
+%       misused for the Euro.  Older Type1 fonts from the non-\TeX{}
+%       world provide only this subset.
+%
+% \item[\#4] = \#5 + \verb=\texteuro=.  Most newer fonts provide this.
+%
+% \item[\#3] = \#4 + \verb=\textomega=.  Can also be described as
+%       $\texttt{TS1} \cap (\texttt{ISO-Adobe} \cup
+%       \texttt{MacRoman})$.  (Except for the missing "currency".)
+
+%
+% \item[\#2] = \#3 + \verb=\textestimated= + \verb=\textcurrency=.  Can
+%       also be described as $\texttt{TS1} \cap
+%       \texttt{Adobe-Western-2}$.  This may be relevant for OpenType
+%       fonts, which usually show the Adobe-Western-2 character set.
+%
+%    \item[\#1] = \texttt{TS1} without \verb=\textcircled= and \verb=\t=.
+%       These two glyphs are often not implemented and if their kernel
+%       defaults are changed commands like \verb=\copyright=
+%       unnecessarily fail.
+%
+%    \item[\#0] = full \texttt{TS1}
+% \end{description}
+%
+%    And here a summary to go in the transcript file:
+%    \begin{macrocode}
+\PackageInfo{textcomp}{Sub-encoding information:\MessageBreak
+    \space\space 5 = only ISO-Adobe without
+                              \string\textcurrency\MessageBreak
+    \space\space 4 = 5 + \string\texteuro\MessageBreak
+    \space\space 3 = 4 + \string\textohm\MessageBreak
+    \space\space 2 = 3 + \noexpand\textestimated+ 
+                                \string\textcurrency\MessageBreak
+    \space\space 1 = TS1 - \noexpand\textcircled-
+                                            \string\t\MessageBreak
+    \space\space 0 = TS1 (full)\MessageBreak
+    Font families with sub-encoding setting implement\MessageBreak
+    only a restricted character set as indicated.\MessageBreak
+    Family '?' is the default used for unknown fonts.\MessageBreak
+    See the documentation for details\@gobble}
+%    \end{macrocode}
+%
+% \begin{macro}{\DeclareEncodingSubset}
+%    An encoding subset to which a font family belongs is declared by
+%    the command |\DeclareEncodingSubset| that takes the major encoding as the
+%    first argument (e.g., |TS1|), the family name as the second
+%    argument (e.g., |cmr|), and the subset encoding id as a third,
+%    (e.g., |0| for |cmr|).
+%
+%    The default encoding subset to use when nothing is known about
+%    the current font family is named |?|.
+%    \begin{macrocode}
+\def\DeclareEncodingSubset#1#2#3{%
+   \@ifundefined{#1:#2}%
+     {\PackageInfo{textcomp}{Setting #2 sub-encoding to #1/#3}}%
+     {\PackageInfo{textcomp}{Changing #2 sub-encoding to #1/#3}}%
+   \@namedef{#1:#2}{#3}}
+\@onlypreamble\DeclareEncodingSubset
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  The options for the package are the following:
+%    \begin{description}
+%    \item[safe]
+%       for unknown font families enables only symbols that are also
+%       in the ISO-Adobe character set; without "currency", which is
+%       often misused for the Euro.  Older Type1 fonts from the
+%       non-TeX world provide only this subset.
+%
+%    \item[euro]
+%       enables the ``safe'' symbols plus the |\texteuro|
+%       command. Most newer fonts provide this.
+%
+%    \item[full] enables all |TS1| commands; useful only with fonts
+%       like EC or CM bright.
+%
+%    \item[almostfull]
+%       same as ``full'', except that |\textcircled|
+%       and |\t| are \emph{not} redefined from their defaults to avoid
+%       that commands like |\copyright| suddenly no longer work.
+%
+%    \item[force]
+%       ignore all subset encoding definitions stored in the package
+%       itself or in the configuration file and always use the default
+%       subset as specified by one of the other options (seldom useful,
+%       only dangerous).
+%    \end{description}
+
+% \begin{macro}{\iftc@forced}
+%    Switch used to implement the \texttt{force} option
+%    \begin{macrocode}
+\newif\iftc@forced   \tc@forcedfalse
+%    \end{macrocode}
+% \end{macro}
+
+%    This is implemented by defining the default subset:
+%    \begin{macrocode}
+\DeclareOption{full}{\DeclareEncodingSubset{TS1}{?}{0}}
+\DeclareOption{almostfull}{\DeclareEncodingSubset{TS1}{?}{1}}
+\DeclareOption{euro}{\DeclareEncodingSubset{TS1}{?}{4}}
+\DeclareOption{safe}{\DeclareEncodingSubset{TS1}{?}{5}}
+%    \end{macrocode}
+%    The default is ``almostfull'' which means that old documents will
+%    work except that |\textcircled| and |\t| will use the kernel
+%    defaults (with the advantage that this also works if the current
+%    font (as often the case) doesn't implement these glyphs.
+%
+%    The ``force'' option simply sets the switch to true.
+%    \begin{macrocode}
+\DeclareOption{force}{\tc@forcedtrue}
+%    \end{macrocode}
+%
+%    The suggestions to user is to use the ``safe'' option always
+%    unless that balks in which case they could switch to
+%    ``almostfull'' but then better check their output manually.
+%
+%    \begin{macrocode}
+\def\tc@errorwarn{\PackageError}
+\DeclareOption{warn}{\gdef\tc@errorwarn#1#2#3{\PackageWarning{#1}{#2}}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ExecuteOptions{almostfull}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% \begin{macro}{\CheckEncodingSubset}
+%    The command |\CheckEncodingSubset| will check if the current font
+%    family has the right encoding subset to typeset a certain
+%    command. It takes five arguments as follows:
+%    first argument is either |\UseTextSymbol|, |\UseTextAccent|
+%    depending on whether or not the symbol is a text symbol or a text
+%    accent.
+
+%    The second argument is the encoding from which this symbol should
+%    be fetched.
+%
+%    The third argument is either a fake accessor command or an error
+%    message. the code in that argument (if ever executed) receives
+%    two arguments: |#2| and |#5| of |\CheckEncodingSubset|.
+%
+%    Argument four is the subset encoding id to test against: if this
+%    value is higher than the subset id of the current font family
+%    then we typeset the symbol, i.e., execute |#1{#2}#5| otherwise
+%    it runs |#3#5|, e.g., to produce an error message or fake the
+%    glyph somehow.
+%
+%    Argument five is the symbol or accent command that is being
+%    checked.
+%
+%    For usage examples see definitions below.
+%    \begin{macrocode}
+\iftc@forced
+%    \end{macrocode}
+%    If the ``force'' option was given we always use the default for
+%    testing against.
+%    \begin{macrocode}
+\def\CheckEncodingSubset#1#2#3#4#5{%
+    \ifnum #4>%
+        0\csname #2:?\endcsname
+        \relax
+   \expandafter\@firstoftwo
+  \else
+   \expandafter\@secondoftwo
+ \fi
+  {#1{#2}}{#3}%
+  #5%
+}
+%    \end{macrocode}
+%    In normal circumstances the test is a bit more complicated: first
+%    check if there exists a macro
+%    |\|\meta{arg2}|:|\meta{current-family} and if so use that value
+%    to test against, otherwise use the default to test against.
+%    \begin{macrocode}
+\else
+\def\CheckEncodingSubset#1#2#3#4#5{%
+    \ifnum #4>%
+      \expandafter\ifx\csname #2:\f@family\endcsname\relax
+        0\csname #2:?\endcsname
+      \else
+        \csname #2:\f@family\endcsname
+      \fi
+   \relax
+   \expandafter\@firstoftwo
+  \else
+   \expandafter\@secondoftwo
+ \fi
+  {#1{#2}}{#3}%
+  #5%
+}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{tc@subst}
+%    \begin{macrocode}
+\def\tc@subst#1{%
+   \tc@errorwarn{textcomp}%  % should be latex error if general
+    {Symbol \string#1 not provided by\MessageBreak
+     font family \f@family\space
+     in TS1 encoding.\MessageBreak Default family used instead}\@eha
+  \bgroup\fontfamily\textcompsubstdefault\selectfont#1\egroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\textcompsubstdefault}
+%    \begin{macrocode}
+\def\textcompsubstdefault{cmr}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tc@error}
+%    |\tc@error| is going to be used in arg |#3| of
+%    |\CheckEncodingSubset| when a symbol is not available in a
+%    certain font family. It gets pass the encoding it normally lives
+%    in (arg one) and the name of the symbol or accent that has a
+%    problem.
+%
+%    \begin{macrocode}
+% error commands take argument:
+% #1 symbol to be used
+\def\tc@error#1{%
+   \PackageError{textcomp}%  % should be latex error if general
+    {Accent \string#1 not provided by\MessageBreak
+     font family \f@family\space
+     in TS1 encoding}\@eha
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tc@fake@euro}
+%    |\tc@fake@euro|  is an example of a ``fake'' definition to use in  arg |#3| of
+%    |\CheckEncodingSubset| when a symbol is not available in a
+%    certain font family. Here we produce an Euro symbol by combining
+%    a ``C'' with a ``=''.
+%    \begin{macrocode}
+\def\tc@fake@euro#1{%
+   \leavevmode
+   \PackageInfo{textcomp}{Faking \noexpand#1for font family
+                          \f@family\MessageBreak in TS1 encoding}%
+   \valign{##\cr
+      \vfil\hbox to 0.07em{\dimen@\f@size\p@
+                           \math@fontsfalse
+                           \fontsize{.7\dimen@}\z@\selectfont=\hss}%
+      \vfil\cr%
+      \hbox{C}\crcr
+   }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tc@check@symbol}
+% \begin{macro}{\tc@check@accent}
+%    These are two abbreviations that we use below to check symbols
+%    and accents in TS1. Only there to save some space, e.g., we can
+%    then write
+%\begin{verbatim}
+%\DeclareTextCommandDefault{\textcurrency}{\tc@check@symbol3\textcurrency}
+%\end{verbatim}
+%    to ensure that |\textcurrency| is only typeset if the current
+%    font has a \texttt{TS1} subset id of less than 3. Otherwise
+%    |\tc@error| is called telling the user that for this font family
+%    |\textcurreny| is not available.
+%    \begin{macrocode}
+\def\tc@check@symbol{\CheckEncodingSubset\UseTextSymbol{TS1}\tc@subst}
+\def\tc@check@accent{\CheckEncodingSubset\UseTextAccent{TS1}\tc@error}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    We start with the commands that are ``safe'' and which can be
+%    unconditionally set up, first the accents\ldots
+%    \begin{macrocode}
+\DeclareTextAccentDefault{\capitalcedilla}{TS1}
+\DeclareTextAccentDefault{\capitalogonek}{TS1}
+\DeclareTextAccentDefault{\capitalgrave}{TS1}
+\DeclareTextAccentDefault{\capitalacute}{TS1}
+\DeclareTextAccentDefault{\capitalcircumflex}{TS1}
+\DeclareTextAccentDefault{\capitaltilde}{TS1}
+\DeclareTextAccentDefault{\capitaldieresis}{TS1}
+\DeclareTextAccentDefault{\capitalhungarumlaut}{TS1}
+\DeclareTextAccentDefault{\capitalring}{TS1}
+\DeclareTextAccentDefault{\capitalcaron}{TS1}
+\DeclareTextAccentDefault{\capitalbreve}{TS1}
+\DeclareTextAccentDefault{\capitalmacron}{TS1}
+\DeclareTextAccentDefault{\capitaldotaccent}{TS1}
+%    \end{macrocode}
+%    \ldots and then the other glyphs.
+% \changes{v1.9p}{1998/06/12}{Renamed \cs{textmacron} pr/2840}
+%    \begin{macrocode}
+\DeclareTextSymbolDefault{\textcapitalcompwordmark}{TS1}
+\DeclareTextSymbolDefault{\textascendercompwordmark}{TS1}
+\DeclareTextSymbolDefault{\textquotestraightbase}{TS1}
+\DeclareTextSymbolDefault{\textquotestraightdblbase}{TS1}
+\DeclareTextSymbolDefault{\texttwelveudash}{TS1}
+\DeclareTextSymbolDefault{\textthreequartersemdash}{TS1}
+\DeclareTextSymbolDefault{\textdollar}{TS1}
+\DeclareTextSymbolDefault{\textquotesingle}{TS1}
+\DeclareTextSymbolDefault{\textasteriskcentered}{TS1}
+\DeclareTextSymbolDefault{\textfractionsolidus}{TS1}
+\DeclareTextSymbolDefault{\textminus}{TS1}
+\DeclareTextSymbolDefault{\textlbrackdbl}{TS1}
+\DeclareTextSymbolDefault{\textrbrackdbl}{TS1}
+\DeclareTextSymbolDefault{\textasciigrave}{TS1}
+\DeclareTextSymbolDefault{\texttildelow}{TS1}
+\DeclareTextSymbolDefault{\textasciibreve}{TS1}
+\DeclareTextSymbolDefault{\textasciicaron}{TS1}
+\DeclareTextSymbolDefault{\textgravedbl}{TS1}
+\DeclareTextSymbolDefault{\textacutedbl}{TS1}
+\DeclareTextSymbolDefault{\textdagger}{TS1}
+\DeclareTextSymbolDefault{\textdaggerdbl}{TS1}
+\DeclareTextSymbolDefault{\textbardbl}{TS1}
+\DeclareTextSymbolDefault{\textperthousand}{TS1}
+\DeclareTextSymbolDefault{\textbullet}{TS1}
+\DeclareTextSymbolDefault{\textcelsius}{TS1}
+\DeclareTextSymbolDefault{\textflorin}{TS1}
+\DeclareTextSymbolDefault{\texttrademark}{TS1}
+\DeclareTextSymbolDefault{\textcent}{TS1}
+\DeclareTextSymbolDefault{\textsterling}{TS1}
+\DeclareTextSymbolDefault{\textyen}{TS1}
+\DeclareTextSymbolDefault{\textbrokenbar}{TS1}
+\DeclareTextSymbolDefault{\textsection}{TS1}
+\DeclareTextSymbolDefault{\textasciidieresis}{TS1}
+\DeclareTextSymbolDefault{\textcopyright}{TS1}
+\DeclareTextSymbolDefault{\textordfeminine}{TS1}
+\DeclareTextSymbolDefault{\textlnot}{TS1}
+\DeclareTextSymbolDefault{\textregistered}{TS1}
+\DeclareTextSymbolDefault{\textasciimacron}{TS1}
+\DeclareTextSymbolDefault{\textdegree}{TS1}
+\DeclareTextSymbolDefault{\textpm}{TS1}
+\DeclareTextSymbolDefault{\texttwosuperior}{TS1}
+\DeclareTextSymbolDefault{\textthreesuperior}{TS1}
+\DeclareTextSymbolDefault{\textasciiacute}{TS1}
+\DeclareTextSymbolDefault{\textmu}{TS1}
+\DeclareTextSymbolDefault{\textparagraph}{TS1}
+\DeclareTextSymbolDefault{\textperiodcentered}{TS1}
+\DeclareTextSymbolDefault{\textonesuperior}{TS1}
+\DeclareTextSymbolDefault{\textordmasculine}{TS1}
+\DeclareTextSymbolDefault{\textonequarter}{TS1}
+\DeclareTextSymbolDefault{\textonehalf}{TS1}
+\DeclareTextSymbolDefault{\textthreequarters}{TS1}
+\DeclareTextSymbolDefault{\texttimes}{TS1}
+\DeclareTextSymbolDefault{\textdiv}{TS1}
+%    \end{macrocode}
+%
+%    The |\texteuro| is only available for subsets with id 4 or
+%    less. Otherwise we fake the glyph using |\tc@fake@euro|
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\texteuro}
+   {\CheckEncodingSubset\UseTextSymbol{TS1}\tc@fake@euro5\texteuro}
+%    \end{macrocode}
+%
+%    The |\textohm| is only available for subsets with id 3 or
+%    less. Otherwise we produce an error.
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textohm}{\tc@check@symbol4\textohm}
+%    \end{macrocode}
+%    The |\textestimated| and |\textcurrency| are only provided for
+%    fonts with subset encoding with id 2 or less.
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textestimated}%
+    {\tc@check@symbol3\textestimated}
+\DeclareTextCommandDefault{\textcurrency}%
+    {\tc@check@symbol3\textcurrency}
+%    \end{macrocode}
+%    Nearly all of the remaining glyphs are provided only with fonts
+%    with id 1 or 0, i.e., are essentially complete.
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\capitaltie}%
+    {\tc@check@accent2\capitaltie}
+\DeclareTextCommandDefault{\newtie}%
+    {\tc@check@accent2\newtie}
+\DeclareTextCommandDefault{\capitalnewtie}%
+    {\tc@check@accent2\capitalnewtie}
+\DeclareTextCommandDefault{\textleftarrow}%
+    {\tc@check@symbol2\textleftarrow}
+\DeclareTextCommandDefault{\textrightarrow}%
+    {\tc@check@symbol2\textrightarrow}
+\DeclareTextCommandDefault{\textblank}%
+    {\tc@check@symbol2\textblank}
+\DeclareTextCommandDefault{\textdblhyphen}%
+    {\tc@check@symbol2\textdblhyphen}
+\DeclareTextCommandDefault{\textzerooldstyle}%
+    {\tc@check@symbol2\textzerooldstyle}
+\DeclareTextCommandDefault{\textoneoldstyle}%
+    {\tc@check@symbol2\textoneoldstyle}
+\DeclareTextCommandDefault{\texttwooldstyle}%
+    {\tc@check@symbol2\texttwooldstyle}
+\DeclareTextCommandDefault{\textthreeoldstyle}%
+    {\tc@check@symbol2\textthreeoldstyle}
+\DeclareTextCommandDefault{\textfouroldstyle}%
+    {\tc@check@symbol2\textfouroldstyle}
+\DeclareTextCommandDefault{\textfiveoldstyle}%
+    {\tc@check@symbol2\textfiveoldstyle}
+\DeclareTextCommandDefault{\textsixoldstyle}%
+    {\tc@check@symbol2\textsixoldstyle}
+\DeclareTextCommandDefault{\textsevenoldstyle}%
+    {\tc@check@symbol2\textsevenoldstyle}
+\DeclareTextCommandDefault{\texteightoldstyle}%
+    {\tc@check@symbol2\texteightoldstyle}
+\DeclareTextCommandDefault{\textnineoldstyle}%
+    {\tc@check@symbol2\textnineoldstyle}
+\DeclareTextCommandDefault{\textlangle}%
+    {\tc@check@symbol2\textlangle}
+\DeclareTextCommandDefault{\textrangle}%
+    {\tc@check@symbol2\textrangle}
+\DeclareTextCommandDefault{\textmho}%
+    {\tc@check@symbol2\textmho}
+\DeclareTextCommandDefault{\textbigcircle}%
+    {\tc@check@symbol2\textbigcircle}
+\DeclareTextCommandDefault{\textuparrow}%
+    {\tc@check@symbol2\textuparrow}
+\DeclareTextCommandDefault{\textdownarrow}%
+    {\tc@check@symbol2\textdownarrow}
+\DeclareTextCommandDefault{\textborn}%
+    {\tc@check@symbol2\textborn}
+\DeclareTextCommandDefault{\textdivorced}%
+    {\tc@check@symbol2\textdivorced}
+\DeclareTextCommandDefault{\textdied}%
+    {\tc@check@symbol2\textdied}
+\DeclareTextCommandDefault{\textleaf}%
+    {\tc@check@symbol2\textleaf}
+\DeclareTextCommandDefault{\textmarried}%
+    {\tc@check@symbol2\textmarried}
+\DeclareTextCommandDefault{\textmusicalnote}%
+    {\tc@check@symbol2\textmusicalnote}
+\DeclareTextCommandDefault{\textdblhyphenchar}%
+    {\tc@check@symbol2\textdblhyphenchar}
+\DeclareTextCommandDefault{\textdollaroldstyle}%
+    {\tc@check@symbol2\textdollaroldstyle}
+\DeclareTextCommandDefault{\textcentoldstyle}%
+    {\tc@check@symbol2\textcentoldstyle}
+\DeclareTextCommandDefault{\textcolonmonetary}%
+    {\tc@check@symbol2\textcolonmonetary}
+\DeclareTextCommandDefault{\textwon}%
+    {\tc@check@symbol2\textwon}
+\DeclareTextCommandDefault{\textnaira}%
+    {\tc@check@symbol2\textnaira}
+\DeclareTextCommandDefault{\textguarani}%
+    {\tc@check@symbol2\textguarani}
+\DeclareTextCommandDefault{\textpeso}%
+    {\tc@check@symbol2\textpeso}
+\DeclareTextCommandDefault{\textlira}%
+    {\tc@check@symbol2\textlira}
+\DeclareTextCommandDefault{\textrecipe}%
+    {\tc@check@symbol2\textrecipe}
+\DeclareTextCommandDefault{\textinterrobang}%
+    {\tc@check@symbol2\textinterrobang}
+\DeclareTextCommandDefault{\textinterrobangdown}%
+    {\tc@check@symbol2\textinterrobangdown}
+\DeclareTextCommandDefault{\textdong}%
+    {\tc@check@symbol2\textdong}
+\DeclareTextCommandDefault{\textpertenthousand}%
+    {\tc@check@symbol2\textpertenthousand}
+\DeclareTextCommandDefault{\textpilcrow}%
+    {\tc@check@symbol2\textpilcrow}
+\DeclareTextCommandDefault{\textbaht}%
+    {\tc@check@symbol2\textbaht}
+\DeclareTextCommandDefault{\textnumero}%
+    {\tc@check@symbol2\textnumero}
+\DeclareTextCommandDefault{\textdiscount}%
+    {\tc@check@symbol2\textdiscount}
+\DeclareTextCommandDefault{\textopenbullet}%
+    {\tc@check@symbol2\textopenbullet}
+\DeclareTextCommandDefault{\textservicemark}%
+    {\tc@check@symbol2\textservicemark}
+\DeclareTextCommandDefault{\textlquill}%
+    {\tc@check@symbol2\textlquill}
+\DeclareTextCommandDefault{\textrquill}%
+    {\tc@check@symbol2\textrquill}
+\DeclareTextCommandDefault{\textcopyleft}%
+    {\tc@check@symbol2\textcopyleft}
+\DeclareTextCommandDefault{\textcircledP}%
+    {\tc@check@symbol2\textcircledP}
+\DeclareTextCommandDefault{\textreferencemark}%
+    {\tc@check@symbol2\textreferencemark}
+\DeclareTextCommandDefault{\textsurd}%
+    {\tc@check@symbol2\textsurd}
+%    \end{macrocode}
+%    The |\textcircled| and |\t| are handled specially, unless the
+%    current font has a subset id of 0 (i.e. full \texttt{TS1}) we
+%    pick the symbols up from the the math font encodings, i.e., the
+%    third argument to |\CheckEncodingSubset| uses |\UseTextAccent| to
+%    get them from there.
+%    \begin{macrocode}
+\DeclareTextCommandDefault{\textcircled}
+  {\CheckEncodingSubset\UseTextAccent{TS1}%
+    {\UseTextAccent{OMS}}1\textcircled}
+\DeclareTextCommandDefault{\t}
+  {\CheckEncodingSubset\UseTextAccent{TS1}%
+    {\UseTextAccent{OML}}1\t}
+%    \end{macrocode}
+
+
+%
+%    Finally input the encoding-specific definitions for
+%    \texttt{TS1} thus making the top-level definitions
+%    optimised for this encoding (and not for the default
+%    encoding, see section~\ref{sec:orderofdecls}).
+% \changes{v1.9o}{1998/03/20}{Load decls after defaults for speed.}
+%    \begin{macrocode}
+\input{ts1enc.def}
+%    \end{macrocode}
+%    Now having the new glyphs available we also want to make sure
+%    that they are used. For most cases this will automatically happen
+%    but for some glyphs there are inferior definitions already known
+%    to \LaTeX{} which will prevent the usage of the \texttt{TS1}
+%    versions (see section~\ref{sec:removeencspec} above). So we better
+%    get rid of them:
+% \changes{v1.9o}{1998/03/20}{Added various \cs{UndeclareTextCommand}
+%    declarations for pr/2783}
+%    \begin{macrocode}
+\UndeclareTextCommand{\textsterling}{OT1}
+\UndeclareTextCommand{\textdollar}  {OT1}
+%    \end{macrocode}
+%    Similar declarations should probably be made for other encodings
+%    like \texttt{OT4} if they are in use.
+%    \begin{macrocode}
+%\UndeclareTextCommand{\textsterling}{OT4}
+%\UndeclareTextCommand{\textdollar}  {OT4}
+%    \end{macrocode}
+%    From the \texttt{T1} encoding there are two candidates for removal:
+%    \textperthousand{} and \textpertenthousand{} since these are both
+%    constructed from \% followed by a tiny
+%    `{\fontencoding{T1}\selectfont \char 24}'
+%    rather than being a single glyph. The problem with this
+%    approach is that in PostScript fonts this small zero is usually not
+%    available resulting in \%\rule{3pt}{3pt} rather than
+%    \textperthousand{} while the real glyph (at least for
+%    |\textperthousand|) is available in the PostScript version of
+%    \texttt{TS1}.  So for the moment we compromise by removing the
+%    \texttt{T1} declaration for |\textperthousand| but keeping the one
+%    for |\textpertenthousand|. This will have the effect that with
+%    Computer Modern fonts everything will come out (although
+%    \textperthousand{} and \textpertenthousand{} are not taken from the
+%    same physical font) and with PostScript fonts \textperthousand{}
+%    will come out correctly while \textpertenthousand{} will most
+%    likely look like \%\rule{6pt}{3pt} --- which is probably an
+%    improvement over just getting a single `\rule{3pt}{3pt}' to
+%    indicate a completely missing glyph, which would happen if we
+%    also `undeclared' |\textpertenthousand|.
+%    \begin{macrocode}
+\UndeclareTextCommand{\textperthousand}{T1}
+%\UndeclareTextCommand{\textpertenthousand}{T1}
+%    \end{macrocode}
+%
+%
+%  \subsubsection{Supporting oldstyle digits}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand\oldstylenums[1]{%
+ \begingroup
+  \ifmmode
+   \mathgroup\symletters #1%
+  \else
+   \CheckEncodingSubset\@use@text@encoding{TS1}%
+       {\PackageWarning{textcomp}%
+          {Oldstyle digits unavailable for
+           family \f@family.\MessageBreak
+           Lining digits used instead}}%
+       \tw@{#1}%
+   \fi
+ \endgroup
+}
+%    \end{macrocode}
+%
+%  \subsubsection{Subset encoding defaults}
+%
+%    For many font families commonly used in the \TeX{} world we
+%    provide the subset encoding data here. Users can add additional
+%    font families in the file \texttt{textcomp.cfg} if they own other
+%    fonts.
+%
+%    However, if the option ``forced'' was given then all subset
+%    encoding specifications are ignored, so there is no point in
+%    setting any of them up:
+%    \begin{macrocode}
+\iftc@forced \else
+%    \end{macrocode}
+%
+%    Computer modern based fonts (e.g., CM, CM-Bright, Concrete):
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{cmr}     {0}
+\DeclareEncodingSubset{TS1}{cmss}    {0}
+\DeclareEncodingSubset{TS1}{cmtt}    {0}
+\DeclareEncodingSubset{TS1}{cmvtt}   {0}
+\DeclareEncodingSubset{TS1}{cmbr}    {0}
+\DeclareEncodingSubset{TS1}{cmtl}    {0}
+\DeclareEncodingSubset{TS1}{ccr}     {0}
+%    \end{macrocode}
+%
+%    PSNFSS fonts:
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{ptm}     {4}
+\DeclareEncodingSubset{TS1}{pcr}     {4}
+\DeclareEncodingSubset{TS1}{phv}     {4}
+\DeclareEncodingSubset{TS1}{ppl}     {3}
+\DeclareEncodingSubset{TS1}{pag}     {4}
+\DeclareEncodingSubset{TS1}{pbk}     {4}
+\DeclareEncodingSubset{TS1}{pnc}     {4}
+\DeclareEncodingSubset{TS1}{pzc}     {4}
+\DeclareEncodingSubset{TS1}{bch}     {4}
+\DeclareEncodingSubset{TS1}{put}     {5}
+%    \end{macrocode}
+%
+%    Other CTAN fonts (probably not complete):
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{uag}     {5}
+\DeclareEncodingSubset{TS1}{ugq}     {5}
+\DeclareEncodingSubset{TS1}{ul8}     {4}
+\DeclareEncodingSubset{TS1}{ul9}     {4}  % (LuxiSans, one day)
+\DeclareEncodingSubset{TS1}{augie}   {5}
+\DeclareEncodingSubset{TS1}{dayrom}  {3}
+\DeclareEncodingSubset{TS1}{dayroms} {3}
+\DeclareEncodingSubset{TS1}{pxr}     {0}
+\DeclareEncodingSubset{TS1}{pxss}    {0}
+\DeclareEncodingSubset{TS1}{pxtt}    {0}
+\DeclareEncodingSubset{TS1}{txr}     {0}
+\DeclareEncodingSubset{TS1}{txss}    {0}
+\DeclareEncodingSubset{TS1}{txtt}    {0}
+%    \end{macrocode}
+%
+%    Latin Modern and TeX Gyre:
+% \changes{v1.99k}{2009/10/28}{Added Latin Modern and TeX Gyre subsets}
+% \changes{v1.99l}{2009/11/04}{Added more Latin Modern and TeX Gyre subsets}
+% \changes{v1.99m}{2015/02/16}{Added lmtt (Heiko Oberdiek) latex/4415}
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{lmr}     {0}
+\DeclareEncodingSubset{TS1}{lmdh}    {0}
+\DeclareEncodingSubset{TS1}{lmss}    {0}
+\DeclareEncodingSubset{TS1}{lmssq}   {0}
+\DeclareEncodingSubset{TS1}{lmvtt}   {0}
+\DeclareEncodingSubset{TS1}{lmtt}    {0}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{qhv}     {0}
+\DeclareEncodingSubset{TS1}{qag}     {0}
+\DeclareEncodingSubset{TS1}{qbk}     {0}
+\DeclareEncodingSubset{TS1}{qcr}     {0}
+\DeclareEncodingSubset{TS1}{qcs}     {0}
+\DeclareEncodingSubset{TS1}{qpl}     {0}
+\DeclareEncodingSubset{TS1}{qtm}     {0}
+\DeclareEncodingSubset{TS1}{qzc}     {0}
+\DeclareEncodingSubset{TS1}{qhvc}    {0}
+%    \end{macrocode}
+%
+%    Fourier-GUTenberg:
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{futs}    {4}
+\DeclareEncodingSubset{TS1}{futx}    {4}
+\DeclareEncodingSubset{TS1}{futj}    {4}
+%    \end{macrocode}
+%
+%  Y\&Y's Lucida Bright
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{hlh}     {3}
+\DeclareEncodingSubset{TS1}{hls}     {3}
+\DeclareEncodingSubset{TS1}{hlst}    {3}
+%    \end{macrocode}
+%    The remaining settings for Lucida are conservative: the following
+%    fonts contain the |\textohm| character but not the |\texteuro|,
+%    i.e., belong to neither subset~4 nor subset~3. If you want to
+%    use the |\textohm| with these fonts copy these definition to
+%    \texttt{textcomp.cfg} and change the subset to~3. However in that
+%    case make sure that you do not use the |\texteuro|.
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{hlct}    {5}
+\DeclareEncodingSubset{TS1}{hlx}     {5}
+\DeclareEncodingSubset{TS1}{hlce}    {5}
+\DeclareEncodingSubset{TS1}{hlcn}    {5}
+\DeclareEncodingSubset{TS1}{hlcw}    {5}
+\DeclareEncodingSubset{TS1}{hlcf}    {5}
+%    \end{macrocode}
+%
+%    Other commercial families\ldots
+%    \begin{macrocode}
+\DeclareEncodingSubset{TS1}{pplx}    {3}
+\DeclareEncodingSubset{TS1}{pplj}    {3}
+\DeclareEncodingSubset{TS1}{ptmx}    {4}
+\DeclareEncodingSubset{TS1}{ptmj}    {4}
+%    \end{macrocode}
+%
+%    If the file \texttt{textcomp.cfg} exists it will be loaded at
+%    this point. This allows to define further subset encodings for
+%    font families not covered by default.
+%
+%    \begin{macrocode}
+\InputIfFileExists{textcomp.cfg}
+  {\PackageInfo{textcomp}{Local configuration file used}}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fi
+%</TS1sty>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

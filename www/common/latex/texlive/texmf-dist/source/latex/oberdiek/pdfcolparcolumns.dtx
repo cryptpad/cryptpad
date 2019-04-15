@@ -1,0 +1,840 @@
+% \iffalse meta-comment
+%
+% File: pdfcolparcolumns.dtx
+% Version: 2010/01/11 v1.3
+% Info: Color stacks for parcolumns
+%
+% Copyright (C) 2007, 2008, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pdfcolparcolumns.dtx
+% and the derived files
+%    pdfcolparcolumns.sty, pdfcolparcolumns.pdf, pdfcolparcolumns.ins,
+%    pdfcolparcolumns.drv, pdfcolparcolumns-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfcolparcolumns.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfcolparcolumns.pdf
+%
+% Unpacking:
+%    (a) If pdfcolparcolumns.ins is present:
+%           tex pdfcolparcolumns.ins
+%    (b) Without pdfcolparcolumns.ins:
+%           tex pdfcolparcolumns.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfcolparcolumns.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfcolparcolumns.drv is present:
+%           latex pdfcolparcolumns.drv
+%    (b) Without pdfcolparcolumns.drv:
+%           latex pdfcolparcolumns.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfcolparcolumns.dtx
+%       makeindex -s gind.ist pdfcolparcolumns.idx
+%       pdflatex pdfcolparcolumns.dtx
+%       makeindex -s gind.ist pdfcolparcolumns.idx
+%       pdflatex pdfcolparcolumns.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pdfcolparcolumns.sty
+%    TDS:doc/latex/oberdiek/pdfcolparcolumns.pdf
+%    TDS:doc/latex/oberdiek/test/pdfcolparcolumns-test1.tex
+%    TDS:source/latex/oberdiek/pdfcolparcolumns.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfcolparcolumns 2010/01/11 v1.3 Color stacks for parcolumns (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfcolparcolumns
+Version: 2010/01/11 v1.3
+
+Copyright (C) 2007, 2008, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pdfcolparcolumns.dtx
+and the derived files
+   pdfcolparcolumns.sty, pdfcolparcolumns.pdf, pdfcolparcolumns.ins,
+   pdfcolparcolumns.drv, pdfcolparcolumns-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfcolparcolumns.ins}{\from{pdfcolparcolumns.dtx}{install}}%
+  \file{pdfcolparcolumns.drv}{\from{pdfcolparcolumns.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pdfcolparcolumns.sty}{\from{pdfcolparcolumns.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdfcolparcolumns-test1.tex}{\from{pdfcolparcolumns.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfcolparcolumns.xml}{\from{pdfcolparcolumns.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfcolparcolumns.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfcolparcolumns.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfcolparcolumns.drv}%
+  [2010/01/11 v1.3 Color stacks for parcolumns (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pdfcolparcolumns.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{311}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfcolparcolumns.drv}
+%
+% \title{The \xpackage{pdfcolparcolumns} package}
+% \date{2010/01/11 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Since version 1.40 \pdfTeX\ supports several color stacks.
+% This package uses them to fix color problems in
+% package \xpackage{parcolumns}.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Usage}
+%
+% \begin{quote}
+% |\usepackage{pdfcolparcolumns}|
+% \end{quote}
+% The package \xpackage{pdfcolparcolumns} loads package \xpackage{parcolums}
+% \cite{parcolumns}. If color stacks are available then the
+% macros of \xpackage{parcolumns} are patched to add support
+% for color stacks.
+%
+% \subsection{Option \xoption{rulebetweencolor}}
+%
+% Package \xpackage{pdfcolparcolumns} also fixes the color for the
+% rule between columns (if \xoption{rulebetween} is set).
+% Default color is \cs{normalcolor}. But this can be changed by using
+% option \xoption{rulebetweencolor}. It takes a color specification
+% as value. If the value is empty, then the default (\cs{normalcolor})
+% is used.
+% Examples:
+% \begin{quote}
+%   |rulebetweencolor=blue|,\\
+%   |rulebetweencolor={red}|,\\
+%   |rulebetweencolor={}|, \textit{\% \cs{normalcolor} is used}\\
+%   |rulebetweencolor=[rgb]{1,0,.5}| \textit{\% see below}
+% \end{quote}
+% If used inside the optional argument of environment \textsf{parcolumns}
+% and the value contains an optional argument, then whole value
+% must be put in curly braces:
+%\begin{quote}
+%\begin{verbatim}
+%\begin{parcolumns}[
+%  rulebetween,
+%  rulebetweencolor={[rgb]{1,0,.5}},
+%]{2}
+%  ...
+%\end{parcolumns}
+%\end{verbatim}
+%\end{quote}
+% This option \xoption{rulebetweencolor} can also be set using
+% \cs{setkeys}:
+%\begin{quote}
+%\begin{verbatim}
+%\setkeys{parcolumns}{rulebetweencolor=green}
+%\end{verbatim}
+%\end{quote}
+%
+% \subsection{Future}
+%
+% Currently package \xpackage{parcolumns} does not seem to be
+% maintained. Nevertheless if there will be a new version that
+% adds support for color stacks, then this package may become
+% obsolete.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdfcolparcolumns}%
+  [2010/01/11 v1.3 Color stacks for parcolumns (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Load packages}
+%
+% \subsubsection{Package \xpackage{parcolumns}}
+%
+%    Currently package \xpackage{parcolumns} does not define options.
+%    Thus it is just a precaution that the options of
+%    package \xpackage{pdfcolparcolumns} are passed to
+%    package \xpackage{parcolumns}.
+%    \begin{macrocode}
+\DeclareOption*{%
+  \PassoptionsToPackage{\CurrentOption}{parcolumns}%
+}
+\ProcessOptions\relax
+\RequirePackage{parcolumns}[2004/11/25]
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{pdfcol}}
+%
+%    \begin{macrocode}
+\RequirePackage{pdfcol}[2007/09/09]
+\ifpdfcolAvailable
+\else
+  \PackageInfo{pdfcolparcolumns}{%
+    Loading aborted, because color stacks are not available%
+  }%
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{infwarerr}}
+%
+%    \begin{macrocode}
+\RequirePackage{infwarerr}[2007/09/09]
+%    \end{macrocode}
+%
+% \subsection{Color stack macros}
+%
+%    \begin{macro}{\pcpc@MaxStack}
+%    Macro \cs{pcpc@MaxStack} holds the highest number of
+%    allocated stacks.
+%    \begin{macrocode}
+\global\chardef\pcpc@MaxStack=\z@
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcpc@InitStacks}
+%    Macro \cs{pcpc@InitStacks} takes the number of columns
+%    as argument and ensures that there are enough color
+%    stacks for all columns.
+%    \begin{macrocode}
+\def\pcpc@InitStacks#1{%
+  \ifnum#1>\pcpc@MaxStack
+    \begingroup
+      \count@\pcpc@MaxStack
+      \loop
+        \advance\count@\@ne
+        \pdfcolInitStack{pcpc@\the\count@}%
+      \ifnum#1>\count@
+      \repeat
+      \global\chardef\pcpc@MaxStack=\count@
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pcpc@SwitchStack}
+%    \begin{macrocode}
+\def\pcpc@SwitchStack#1{%
+  \pdfcolSwitchStack{pcpc@\number#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pcpc@SetCurrent}
+%    \begin{macrocode}
+\def\pcpc@SetCurrent#1{%
+  \pdfcolSetCurrent{pcpc@\number#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Patches}
+%
+%     Now the color stack macros are patched into the macros
+%     of package \xpackage{parcolumns}.
+%
+% \subsubsection{Init stacks}
+%
+%    \cs{pcpc@InitStacks} should go into the definition of
+%    environment |parcolumns|. \cs{pc@alloccolumns} is executed
+%    there and nowhere else, thus we hook into it.
+%    \begin{macrocode}
+\g@addto@macro\pc@alloccolumns{%
+  \pcpc@InitStacks\pc@columncount
+}
+%    \end{macrocode}
+%
+% \subsubsection{Switch stack}
+%
+%    \cs{pcpc@SwitchStack} should be called by marco \cs{colchunk@}.
+%    However it is easier to patch \cs{pc@setcolumnwidth} that
+%    is executed in \cs{colchunk@} only.
+%    \begin{macrocode}
+\g@addto@macro\pc@setcolumnwidth{%
+  \pcpc@SwitchStack\pc@columnctr
+}
+%    \end{macrocode}
+%
+% \subsubsection{Set current stack color}
+%
+%    \cs{pcpc@SetCurrent} is set at the begin of each line.
+%    It must be inserted into \cs{pc@placeboxes}. Unhappily
+%    there is no easy way. Therefore we check and
+%    redefine \cs{pc@placeboxes}.
+%    \begin{macrocode}
+\begingroup
+  \def\x{%
+    \global\let\@tempa\relax
+    \count@\z@
+    \hb@xt@\linewidth{%
+      \vfuzz30ex %
+      \vbadness\@M
+      \splittopskip\z@skip
+      \loop
+      \ifnum\count@<\pc@columncount
+        \advance\count@\@ne
+        \expandafter\ifvoid\csname pc@column@\number\count@\endcsname
+          \hskip\csname pc@column@width@\number\count@\endcsname
+        \else
+          \expandafter\setbox\expandafter\@tempboxa\expandafter
+          \vsplit\csname pc@column@\number\count@\endcsname
+              to \dp\strutbox
+          \vbox{%
+            \unvbox\@tempboxa
+          }%
+        \fi
+        \expandafter\ifvoid\csname pc@column@\number\count@\endcsname
+        \else
+          \global\let\@tempa\pc@placeboxes
+        \fi
+        \ifnum\count@<\pc@columncount
+          \strut
+          \hfill
+          \ifpc@rulebetween
+            \vrule
+            \hfill
+          \fi
+        \fi
+      \repeat
+    }%
+    \@tempa
+  }%
+  \ifx\x\pc@placeboxes
+  \else
+    \@PackageWarningNoLine{pdfcolparcolumns}{%
+      Command \string\pc@placeboxes\space has changed.\MessageBreak
+      Supported versions of package `parcolumns':\MessageBreak
+      \space\space 2004/08/05.\MessageBreak
+      The redefinition of \string\pc@placeboxes\space may not%
+      \MessageBreak
+      behave correctly depending on the changes%
+    }%
+  \fi
+\endgroup
+%    \end{macrocode}
+%    \begin{macro}{\pc@placeboxes}
+%    \begin{macrocode}
+\renewcommand*{\pc@placeboxes}{%
+  \global\let\@tempa\relax
+  \count@\z@
+  \hb@xt@\linewidth{%
+    \vfuzz30ex %
+    \vbadness\@M
+    \splittopskip\z@skip
+    \loop
+    \ifnum\count@<\pc@columncount
+      \advance\count@\@ne
+      \expandafter\ifvoid\csname pc@column@\number\count@\endcsname
+        \hskip\csname pc@column@width@\number\count@\endcsname
+      \else
+        \expandafter\setbox\expandafter\@tempboxa\expandafter
+        \vsplit\csname pc@column@\number\count@\endcsname
+            to \dp\strutbox
+        \vbox{%
+          \pcpc@SetCurrent\count@
+          \unvbox\@tempboxa
+        }%
+      \fi
+      \expandafter\ifvoid\csname pc@column@\number\count@\endcsname
+      \else
+        \global\let\@tempa\pc@placeboxes
+      \fi
+      \ifnum\count@<\pc@columncount
+        \strut
+        \hfill
+        \ifpc@rulebetween
+          \begingroup
+            \pcpc@RuleBetweenColor
+            \vrule
+          \endgroup
+          \hfill
+        \fi
+      \fi
+    \repeat
+  }%
+  \@tempa
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcpc@RuleBetweenColorDefault}
+%    \begin{macrocode}
+\def\pcpc@RuleBetweenColorDefault{%
+  \normalcolor
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcpc@RuleBetweenColor}
+%    \begin{macrocode}
+\let\pcpc@RuleBetweenColor\pcpc@RuleBetweenColorDefault
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{parcolumns}{rulebetweencolor}{%
+  \edef\pcpc@temp{#1}%
+  \ifx\pcpc@temp\@empty
+    \let\pcpc@RuleBetweenColor\pcpc@RuleBetweenColorDefault
+  \else
+    \edef\pcpc@temp{%
+      \noexpand\@ifnextchar[{%
+        \def\noexpand\pcpc@RuleBetweenColor{%
+          \noexpand\color\pcpc@temp
+        }%
+        \noexpand\pcpc@GobbleNil
+      }{%
+        \def\noexpand\pcpc@RuleBetweenColor{%
+          \noexpand\color{\pcpc@temp}%
+        }%
+        \noexpand\pcpc@GobbleNil
+      }%
+      \pcpc@temp\noexpand\@nil
+    }%
+    \pcpc@temp
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\pcpc@GobbleNil}
+%    \begin{macrocode}
+\long\def\pcpc@GobbleNil#1\@nil{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    The test file is a modified version of the file that
+%    Donald Goodman has posted in \xnewsgroup{comp.text.tex}: ^^A
+%    \URL{``\link{Re: \xpackage{xcolor} glitches}''}^^A
+%    {http://groups.google.com/group/comp.text.tex/msg/8eda74ed292012bb}
+%    \begin{macrocode}
+%<*test1>
+\NeedsTeXFormat{LaTeX2e}
+\AtEndDocument{%
+  \typeout{}%
+  \typeout{**************************************}%
+  \typeout{*** \space Check the PDF file manually! \space ***}%
+  \typeout{**************************************}%
+  \typeout{}%
+}
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{pdfcolparcolumns}
+
+\newcommand{\instruct}[1]{%
+  \noindent
+  \footnotesize
+  \textcolor{red}{#1}%
+}
+
+\begin{document}
+  \begin{parcolumns}[colwidths={1=2.3in,2=2.3in},sloppy]{2}%
+    \colchunk[1]{%
+      \instruct{Et non dicitur versus} %
+      Fidelium anim\ae\ %
+      \instruct{%
+        sed immediate subiungitur antiphona finalis %
+        beat\ae\ Mari\ae\ Virginis%
+      } %
+      100.%
+    }%
+    \colchunk[2]{%
+      \instruct{%
+        And the verse %
+        \textcolor{black}{May the souls of the faithful} %
+        is not said, but the final antiphon of the %
+        Blessed Virgin Mary, %
+        \textcolor{black}{100,} %
+        is immediately joined.%
+      }%
+    }%
+  \end{parcolumns}%
+\end{document}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcolparcolumns.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcolparcolumns.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfcolparcolumns.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfcolparcolumns.sty & tex/latex/oberdiek/pdfcolparcolumns.sty\\
+%   pdfcolparcolumns.pdf & doc/latex/oberdiek/pdfcolparcolumns.pdf\\
+%   test/pdfcolparcolumns-test1.tex & doc/latex/oberdiek/test/pdfcolparcolumns-test1.tex\\
+%   pdfcolparcolumns.dtx & source/latex/oberdiek/pdfcolparcolumns.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfcolparcolumns.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfcolparcolumns.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfcolparcolumns.dtx
+%makeindex -s gind.ist pdfcolparcolumns.idx
+%pdflatex pdfcolparcolumns.dtx
+%makeindex -s gind.ist pdfcolparcolumns.idx
+%pdflatex pdfcolparcolumns.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfcolparcolumns.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcolparcolumns'>
+  <name>pdfcolparcolumns</name>
+  <caption>Fix colour problems in package 'parcolumns'.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    Since version 1.40 pdfTeX supports colour stacks.
+    This package uses them to fix colour problems in
+    package <xref refid='parcolumns'>parcolumns</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcolparcolumns.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcolparcolumns.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{parcolumns}
+%   Jonathan Sauer: \textit{The \xpackage{parcolumns} package};
+%   2004/11/25;\\
+%   \CTAN{macros/latex/contrib/sauerj/parcolumns.pdf}.
+%
+% \bibitem{pdfcol}
+%   Heiko Oberdiek: \textit{The \xpackage{pdfcol} package};
+%   2007/09/09;\\
+%   \CTAN{macros/latex/contrib/oberdiek/pdfcol.pdf}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/07/26 v1.0}
+%   \item
+%     First version, published in the newsgroup \xnewsgroup{comp.text.tex}
+%     with the name \xpackage{parcolumns-colorstacks}: ^^A no line break
+%     \URL{``\link{Re: \xpackage{xcolor} glitches}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/56bd897b11bca414}
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.1}
+%   \item
+%     CTAN version, package name renamed to \xpackage{pdfcolparcolumns}.
+%   \item
+%     Uses package \xpackage{pdfcol}.
+%   \item
+%     Documentation added.
+%   \item
+%     Test file added.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.2}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2010/01/11 v1.3}
+%   \item
+%     Fix for rule color.
+%   \item
+%     New option \xoption{rulebetweencolor} for environment |parcolumns|.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

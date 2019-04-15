@@ -1,0 +1,202 @@
+%%
+%% This is file `x-cp855.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `cp855')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-cp855.def}%
+  [2011/05/27 v1.10 Input encoding cp855 (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textblacksquare}{%
+  \vrule \@width .3em \@height .4em \@depth -.1em\relax
+}
+\ProvideTextCommandDefault{\textcurrency}{%
+  \TextSymbolUnavailable\textcurrency
+}
+\ProvideTextCommandDefault{\textnumero}{%
+  N%
+  \bgroup
+    \check@mathfonts
+    \fontsize\sf@size\z@
+    \math@fontsfalse
+    \selectfont
+    \ooalign{%
+      \raise0.5ex\hbox{o}%
+      \crcr
+      \hline
+    }%
+  \egroup
+}
+\DeclareInputText{128}{\cyrdje}
+\DeclareInputText{129}{\CYRDJE}
+\DeclareInputText{130}{\@tabacckludge'\cyrg}
+\DeclareInputText{131}{\@tabacckludge'\CYRG}
+\DeclareInputText{132}{\cyryo}
+\DeclareInputText{133}{\CYRYO}
+\DeclareInputText{134}{\cyrie}
+\DeclareInputText{135}{\CYRIE}
+\DeclareInputText{136}{\cyrdze}
+\DeclareInputText{137}{\CYRDZE}
+\DeclareInputText{138}{\cyrii}
+\DeclareInputText{139}{\CYRII}
+\DeclareInputText{140}{\cyryi}
+\DeclareInputText{141}{\CYRYI}
+\DeclareInputText{142}{\cyrje}
+\DeclareInputText{143}{\CYRJE}
+\DeclareInputText{144}{\cyrlje}
+\DeclareInputText{145}{\CYRLJE}
+\DeclareInputText{146}{\cyrnje}
+\DeclareInputText{147}{\CYRNJE}
+\DeclareInputText{148}{\cyrtshe}
+\DeclareInputText{149}{\CYRTSHE}
+\DeclareInputText{150}{\@tabacckludge'\cyrk}
+\DeclareInputText{151}{\@tabacckludge'\CYRK}
+\DeclareInputText{152}{\cyrushrt}
+\DeclareInputText{153}{\CYRUSHRT}
+\DeclareInputText{154}{\cyrdzhe}
+\DeclareInputText{155}{\CYRDZHE}
+\DeclareInputText{156}{\cyryu}
+\DeclareInputText{157}{\CYRYU}
+\DeclareInputText{158}{\cyrhrdsn}
+\DeclareInputText{159}{\CYRHRDSN}
+\DeclareInputText{160}{\cyra}
+\DeclareInputText{161}{\CYRA}
+\DeclareInputText{162}{\cyrb}
+\DeclareInputText{163}{\CYRB}
+\DeclareInputText{164}{\cyrc}
+\DeclareInputText{165}{\CYRC}
+\DeclareInputText{166}{\cyrd}
+\DeclareInputText{167}{\CYRD}
+\DeclareInputText{168}{\cyre}
+\DeclareInputText{169}{\CYRE}
+\DeclareInputText{170}{\cyrf}
+\DeclareInputText{171}{\CYRF}
+\DeclareInputText{172}{\cyrg}
+\DeclareInputText{173}{\CYRG}
+\DeclareInputText{174}{\guillemotleft}
+\DeclareInputText{175}{\guillemotright}
+\DeclareInputText{176}{\textltshade}
+\DeclareInputText{177}{\textshade}
+\DeclareInputText{178}{\textdkshade}
+\DeclareInputText{179}{\textSFxi}
+\DeclareInputText{180}{\textSFix}
+\DeclareInputText{181}{\cyrh}
+\DeclareInputText{182}{\CYRH}
+\DeclareInputText{183}{\cyri}
+\DeclareInputText{184}{\CYRI}
+\DeclareInputText{185}{\textSFxxiii}
+\DeclareInputText{186}{\textSFxxiv}
+\DeclareInputText{187}{\textSFxxv}
+\DeclareInputText{188}{\textSFxxvi}
+\DeclareInputText{189}{\cyrishrt}
+\DeclareInputText{190}{\CYRISHRT}
+\DeclareInputText{191}{\textSFiii}
+\DeclareInputText{192}{\textSFii}
+\DeclareInputText{193}{\textSFvii}
+\DeclareInputText{194}{\textSFvi}
+\DeclareInputText{195}{\textSFviii}
+\DeclareInputText{196}{\textSFx}
+\DeclareInputText{197}{\textSFv}
+\DeclareInputText{198}{\cyrk}
+\DeclareInputText{199}{\CYRK}
+\DeclareInputText{200}{\textSFxxxviii}
+\DeclareInputText{201}{\textSFxxxix}
+\DeclareInputText{202}{\textSFxl}
+\DeclareInputText{203}{\textSFxli}
+\DeclareInputText{204}{\textSFxlii}
+\DeclareInputText{205}{\textSFxliii}
+\DeclareInputText{206}{\textSFxliv}
+\DeclareInputText{207}{\textcurrency}
+\DeclareInputText{208}{\cyrl}
+\DeclareInputText{209}{\CYRL}
+\DeclareInputText{210}{\cyrm}
+\DeclareInputText{211}{\CYRM}
+\DeclareInputText{212}{\cyrn}
+\DeclareInputText{213}{\CYRN}
+\DeclareInputText{214}{\cyro}
+\DeclareInputText{215}{\CYRO}
+\DeclareInputText{216}{\cyrp}
+\DeclareInputText{217}{\textSFiv}
+\DeclareInputText{218}{\textSFi}
+\DeclareInputText{219}{\textblock}
+\DeclareInputText{220}{\textdnblock}
+\DeclareInputText{221}{\CYRP}
+\DeclareInputText{222}{\cyrya}
+\DeclareInputText{223}{\textupblock}
+\DeclareInputText{224}{\CYRYA}
+\DeclareInputText{225}{\cyrr}
+\DeclareInputText{226}{\CYRR}
+\DeclareInputText{227}{\cyrs}
+\DeclareInputText{228}{\CYRS}
+\DeclareInputText{229}{\cyrt}
+\DeclareInputText{230}{\CYRT}
+\DeclareInputText{231}{\cyru}
+\DeclareInputText{232}{\CYRU}
+\DeclareInputText{233}{\cyrzh}
+\DeclareInputText{234}{\CYRZH}
+\DeclareInputText{235}{\cyrv}
+\DeclareInputText{236}{\CYRV}
+\DeclareInputText{237}{\cyrsftsn}
+\DeclareInputText{238}{\CYRSFTSN}
+\DeclareInputText{239}{\textnumero}
+\DeclareInputText{240}{\-}
+\DeclareInputText{241}{\cyrery}
+\DeclareInputText{242}{\CYRERY}
+\DeclareInputText{243}{\cyrz}
+\DeclareInputText{244}{\CYRZ}
+\DeclareInputText{245}{\cyrsh}
+\DeclareInputText{246}{\CYRSH}
+\DeclareInputText{247}{\cyrerev}
+\DeclareInputText{248}{\CYREREV}
+\DeclareInputText{249}{\cyrshch}
+\DeclareInputText{250}{\CYRSHCH}
+\DeclareInputText{251}{\cyrch}
+\DeclareInputText{252}{\CYRCH}
+\DeclareInputText{253}{\textsection}
+\DeclareInputText{254}{\textblacksquare}
+\DeclareInputText{255}{\nobreakspace}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-cp855.def'.

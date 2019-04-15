@@ -1,0 +1,453 @@
+﻿% This is the file glpatter-utf8.tex, version 2.4
+% It is the source file for the Galician patterns
+%
+% (c) Javier A. Múgica; 2006, 2007, 2008, 2010
+% License: LPPL version 1.3
+%
+% LPPL maintenance status: maintained
+% Current Maintainer: Javier A. Múgica
+%
+%
+% The patterns follows approximately the scheme developed by Javier Bezos for esphyph.tex
+% In order to generate the patterns just type
+%     tex -ini -8bit glpatter-utf8.tex
+%
+%	For bug reports and comments:
+%
+%	Javier Múgica,   javier at digi21.eu
+\input mkpatter.tex
+\filename{hyph-gl.tex}
+\tracingexceptions=1
+
+&Va={a e o}
+&Vp={i u}
+&Vi={&Va u}
+&Va+={&Va á}
+&V={a e i o u á é í ó ú}
+&Vv={a e i}
+&Vai={a i}
+&Vvac={á é í}
+&L={l r}
+% ñ non se inclúe nos seguintes grupos
+&C={b c d f g h k l m n p r s t v x z} % Consoantes habituais
+&Cl={b c d f g k p t v} % As que van unidas á líquida, agás r e l
+&G={b c d l m n r s t x} % Posibles consoante precedente a certos grupos pouco frecuentes
+
+\templatedef{prefixos}{#1&{V}2}
+\templatedef{3a_ppi}{#2u3 \newline} % 3a. persoa do perfecto de indicativo, rematadas en -ou, -eu, -iu.
+                                    % O confilcto cun prefixo máis habitual é na primeira conxugación.
+%
+% Uncomment the %\letters line if  you want those characters to be catcode as letters
+% and the correspoding caplital ones to be assigned the right \lcode. In that case an utf-8
+% engine (luatex or xetex) to process this file is mandatory.
+%
+% \letters{á é í ó ú ñ ü ï}
+
+% The commented lines that follow will be placed in the generated file,
+% and do not apply to this file.
+\expandafter\let\expandafter\lee\csname ~~lee\endcsname
+\keepcomments
+% This is the file hyph-gl.tex, version 2.4
+% Hyphenation patterns for Galician, written in the utf8 encoding.
+%
+% Generated with the mkpattern utility (v. 1.2), on 2010/04/23
+% The original source file were glpatter-utf8.tex
+% This is a generated file
+%
+% (c) Javier A. Múgica; 2006, 2007, 2008, 2010
+% License: LPPL version 1.3
+%
+% LPPL maintenance status: maintained
+% Current Maintainer: Javier A. Múgica
+%
+%	For bug reports and comments:
+%
+%	Javier Múgica,   javier at digi21.eu
+\let\lee\relax
+\halfcomments
+\iwrite{%}
+\iwrite{% Note that there is no 'j' nor 'y' in Galician}
+\nocomments
+
+\begin{pseudopatterns}
+
+3ï3a \newline
+a1a e1e o1o zo2o a1á e1é o1ó 2&{Va}&{Vp}.
+&{Vi}1i&{Va+} 2i&{Va+}.
+
+\newline
+1ñ
+1&{C}&{V}
+1qu2 1c2h 2ch. 1g2h 2gh. 2k2h \newline % gh é normalmente usado para representar a gheada
+\newline
+\exceptions{1t2l 2tl.}{2t2l,}
+1&{Cl}2&L 2&{Cl}&L.
+
+1l4l 2ll. 1r2r 2rr.
+
+\template{&G1#}
+p2t c2t c2n p2s m2n g2n f2t p2n c2z t2s
+\end{template}
+san2c3t plan2c3t
+
+\template{2#.}
+pt ct cn ps mn gn ft pn cz ts
+\end{template}
+
+un2ha 2non. 3mente. o2hib alde2h \newline
+\newline
+% palabras malsonates
+4caca4 4cago4 4caga4 4cagas. 4puta4 4puto4 4meo. 4mea. \newline
+4meable. 4meables. 4peido4
+
+\exceptions{.co1á2}{}
+\exceptions{.pre1á2 .su2b1i2 .su2b1í2}{}      % If duplicate patterns were simply added...
+\exceptions{.pre2á}{.pre2á2}                  % This is error prone. I think that writting
+\exceptions{.sub2i .sub2í}{.su2b2i2,.su2b2í2} % all the exceptions here together is the best that can be done.
+\begin{prefixos} % Prefixos
+acto afro aero anfi anglo .ante .anti .arqui auto biblio bio
+cardio cefalo ciclo cito .co contra cripto cromo crono
+deca .deza dinamo ecano eco electro endo ento entre
+euco euro extra fono foto franco gastro xeo
+hecto helio hemato hemi hexa hidro hipe2r histo homeo homo
+ibero icono .in .indo infra .inte2r intra .iso kilo
+macro magneto maxi mega megalo melano micro mili mini
+multi miria mono .nano necro .neo norte octo octa
+omni paleo para penta piezo pluri poli .pos2t .pre
+.pro proto pseudo radio .re retro sobre semi
+socio .su2b supe2r supra .tele termo tetra topo
+.tri tropo ultra xeno
+\end{prefixos}
+
+\template{#3r} % prefixos rematados en r
+hiper .inter super
+\end{template}
+
+\newline
+ti2o3qu ti2o3co
+bi1u2ní
+o2i3de o2i3dal
+2al. 2a2is.
+pe3r2e3mia \newline
+
+\begin{3a_ppi}
+\put{% Terceiras persoas do pasado perfecto}\newline
+libero atopo enaxeno
+\end{3a_ppi}
+
+\newline
+2os. 2o3so. 2o3sos. 2o3sa. 2o3sas. 2o3samente. \newline
+2i3co. 2i3cos. 2i3ca. 2i3cas. \newline
+
+\newline
+\put{% Excepcións ó prefixo co}
+% Pode non ser prefixo (expecto os derivados de coar)
+\template{.co2# \newline}
+\put{% Formas do verbo coar con pronomes enclíticos}\newline ar á2 abá
+acerv andro ano añar año art etan enci erci inci ira iro ita
+\end{template}
+
+% Non é prefixo (os que non son da forma &V3 non necesitan ir un por un)
+\template{co2# \newline} % Non é necesario coia, coiote
+a3gul á3gul a3la. a3las. a3lescen a3lición. a3licions. a3na. a3nas.
+antriñ a3ñadeir a3tí. a3tís. e3ficien e3lernos. e3llo. e3lla. e3llos. e3llas.
+e3lleir enll enxía e3sita. e3sitas. e3táne e3vo. e3va. e3vos. e3vas.
+i3dado iei imbra imbrá intreau. í3ña i3ña i3ñei i3pú. i3pús.
+i3ra. i3ras. i3raza i3ro. i3ros. i3ta. i3tas. i3tado. i3to. i3tos.
+i3tel i3tío. i3tus. u3c u3lomb u3try u3qui u3rel
+u3sa. u3sas. u3so. u3sos. u3selo u3tad u3to. u3tos. u3vini u3z
+\end{template}
+
+deca2e3ment
+
+\newline
+\put{% O prefixo des}
+.de2s1&{V}2
+3se. 3s2es. 3sa. 3s2as. de3s2outr 3s2emos. 3s2edes. 3s2en.
+
+\exceptions{de3s2esper}{de3s2esper de4s3esperanz}
+\template{de3s2# \newline} % Prefixos .de (máis ou menos)
+a3crali a3guisa a3lini a3ngr a3ñ a3rrollis astr a3zo e3c e3que e3guid e3la
+ensib e3ñ ert ért esper e3pér e3x é3x i3der ign ígn i3nenc ingr iste isti o3lac o3lad old
+o3lidari uetud sulf
+\end{template}
+
+\template{.des2# \newline} % Prefixos dubidosos ou que sa non se notan. Non se inclúen os que por ser moi breves poderían coincidir con prefixos .des formados ad hoc, xa que impedirían a división de palabras comúns (desecar, deselar).
+abor afia afía afío air emboc embóc empeñ empéñ enlac enlaz enlác enláz
+envol envól idia ora
+\end{template}
+
+\keepcomments
+
+\newline
+% Excepcións ó prefixo in
+\template{.in2# \newline}
+a3misib. a3mov a3ne. a3nic a3nid á3nime antes. au e3dia é3dit e3fab e3narr
+epc ept erc ert erm erv e3siv e3xora i3ci i3cu i3mig i3miza i3qui
+o3cen o3cui o3cuo o3cul ó3cul o3pia. o3sili o3sit o3tróp o3trop uit u3lase u3lina
+unda u3sita ú3til
+\end{template}
+in2o4cular \newline
+
+\newline
+% Excepcións ó prefixo inter
+\template{.inte3r2#}
+és. e3sa é3sa e3sá e3so é3so e3só ior i3no. i3nos. i3na. i3nas. i3nid
+\end{template}
+
+\newline
+% Os prefixos mal e ben
+\exceptions{.be2n1e2 .be2n1é2 .ma2l1e2 .ma2l1é2}{.be2ne2,      ,.ma2le2,      }
+
+\halfcomments
+.be2n1&{V}2
+\template{be3n2# \newline} % Non é prefixo (ou non se nota)
+ign i3merí i3nés i3nes i3toíta
+\end{template}
+
+\newline
+.ma2l1&{V}2
+\template{.mal2# \newline} % Pode non ser prefixo
+abar abár aco acó armad ogr ura axa
+\end{template}
+\template{ma3l2# \newline} % Non é prefixo. Non é neceario malos, malas
+a3cía  a3citan a3gueñ aio aia andrín andrin a3quita ar. a3res. a3ria.
+a3to. a3tos. a3ta. a3tas. a3tión aui eabl eabil eico eolar e3ta. e3tas. e3tín e3teiro
+eza ia. ian i3cia i3cios ign i3kita inke ó3fago ó3nic o3nato o3nilue
+\end{template}
+ma4l3ianq
+\template{.mal1# \newline} % É prefixo e comenza por e
+educ encar ensin entend
+\end{template}
+
+\newline
+\put{% Excepcións ó prefixo mili}
+famili2a familia3r
+\template{mili#}
+2a3rio 2a3ria
+\end{template}
+
+mini2a3tur
+
+\newline
+\put{% Excepcións ó prefixo para}
+\template{para2#}
+u3gas í3so
+\end{template}
+
+\newline
+\put{% Excepcións ó prefixo poli}
+\template{poli2# \newline}
+u3r o3me arq árq éste andr antea
+\end{template}
+expoli2
+
+\newline
+\put{% Excepcións ó prefixo post}
+\template{.pos3t2# \newline}
+a. as. al. ais. a3llo e. es. ear. e3la. e3las. er. erg e3rid e3rior i3go i3la
+illón ín. i3te. i3zo. i3zos. i3za. i3zas. o. os. oiro ó3ni u3la u3lo u3le u3ra. u3ras.
+\end{template}
+
+\newline
+\put{% Excepcións ó prefixo pre}
+\template{.pre2# \newline} % Poden non ser prefixos
+amar \put{% Formas do verbo prear con pronomes enclíticos}\newline ar á abá
+\end{template}
+\template{pre2# \newline} % Non son prefixos
+as. a3da. a3das. á2 abá i3t o3cup o3cúp
+\end{template}
+
+\newline
+\put{% Excepcións ó prefixo pro}
+\template{pro2# \newline} % Non son prefixos. Non é necesario proer
+e3za í3do ust
+\end{template}
+
+\newline
+\put{% Excepcións ó prefixo re} % Faltan excepcións
+\template{.re2#}
+al a3liz a3lidade in i3no. i3nos i3nante iter \newline
+i3xa os. as. u3ma ú3ma ún uni
+\end{template}
+
+\put{% Verbo reunir}
+% No é tan problemáticos coma subir
+\template{re2u3n#}
+ión. ións. ir írmo íren \newline % ir inclúe varias formas. Penso que re3u4nirr no paga a pena
+ido. idos. ida. idas. ind \newline
+o. es. e. imos. ímo en. \newline % ides. incuído en ide, enbaixo
+ía i3amos. i3ades. \newline
+ín. iches. iu. istes. íst iron. \newline
+a. as. amos. ades. an. \newline
+ise íse \newline
+ide íde ámo áde
+\end{template}
+
+\put{% Verbo reinar}
+% No é tan problemáticos coma subir
+\template{re2i3n#}
+ar ado. ados. and \newline
+a. as. amos. ades. an. \newline % ides. incuído en ide, enbaixo
+aba. abas. abamos. ábamos. abades. ábades. \newline % hay moitas palabras que comenzan por inaba
+ei. aches. ou. astes. aron. \newline
+e. es. emos. edes. en. \newline
+ase. ases. asemo. asedes. áse asen. \newline % idem., inase
+ade.
+\end{template}
+
+\newline
+\put{% O prefixo sub: l, r e excepcións}\newline
+.su2b3l .su2b3r
+
+\template{.sub2# \newline} % Poden non ser prefixos
+\put{% Formas do verbo subir con pronomes enclíticos}\newline i í
+eriz orna
+\end{template}
+\newline
+sub3índic sub3indic sub3indiz
+
+\template{.sub4# \newline}
+lev lim
+\end{template}
+
+\template{su3b2# \newline} % Non son prefixos
+e3la. e3las. é3rico e3rina. e3rinas. eroso iote ulado orno. ornos. urbio
+\end{template}
+\template{su3b4# \newline}
+liminar repción reptici
+\end{template}
+
+\newline
+\put{% Excepcións ó prefixo tri}
+\template{tri2# \newline} % Non son prefixos (ou non se nota)
+a3ga. a3gas.  al. a3les. angul á3sico. estin % (De Trieste)
+unf unvir
+\end{template}
+
+\newline
+\put{% Excepcións a varios prefixos que son terminacións verbais}\newline
+\put{% Inclúense as variantes de acentuación abamos/ábamos, etc.}
+% As combinacións con pronomes enclíticos (son centos)
+% deberanse evitar nos patróns de cada prefixo cando sexa necesario
+% Inclúense as combinacións máis habituais
+\template{2&{Vai}#.}
+3do 3da 3dos 3das ndo r % inf. xer. part.
+\end{template}
+
+\template{2&{Vv}#.}
+3res rmos rdes 3ren \newline % inf. conx.
+rme rte rlle rnos rvos rlles % inf. con pron. indir.
+\end{template}
+
+\template{2&{Vv}3#.}
+dor dora dores doiro doiros doira doiras deiro deiros deira deiras % subst. deriv.
+lo los la las % inf. con pron. dir.
+rei rás rá remos redes rán \newline % futuro
+ría rías ri1amos ríamos ri1ades ríades rían \newline % cond.
+de % imp.
+\end{template}
+\template{2&{Vvac}3#.}
+deo dea deos deas % imp. con pron. dir.
+\end{template}
+
+\template{2#.}
+% coar, inar, entrenar, prear, superar
+as a3mos a3des an \newline
+a3ba a3bas a3bamos á3bamos a3bades á3bades a3ban \newline
+a3ches astes a3ron \newline
+es e3mos e3des en \newline
+a3se a3ses á3semos á3sedes a3sen \newline
+\end{template}
+% pero permitimos a ruptura para coar, prear, voar, cear, capear...
+% cando o "a" ou "e" temático é tónico (ou casi).
+\template{o3#.}
+ar ado ada ados adas ando \newline
+ares armos ardes aren \newline
+arme arte arlle arnos arvos arlles \newline
+alo alos ala alas \newline % incúe algunhas outras (coala)
+ade ádeo ádea ádeos ádeas \newline
+as amos ades an \newline
+aba abas abamos ábamos abades ábades aban \newline
+aches astes aron \newline
+es emos edes en \newline
+ase ases ásemos ásedes asen \newline
+\end{template}
+\template{e3#.}
+ar ado ada ados adas ando \newline
+ares armos ardes aren \newline
+arme arte arlle arnos arvos arlles \newline
+alo alos ala alas \newline % incúe algunhas outras (coala)
+ade ádeo ádea ádeos ádeas \newline
+as amos ades an \newline
+aba abas abamos ábamos abades ábades aban \newline
+aches astes aron \newline
+es emos edes en \newline
+ase ases ásemos ásedes asen \newline
+\end{template}
+
+\template{2#.}
+% subir
+i3mos i3des \newline
+ía ías íamos íades ían \newline % 2iamos, 2iades estropearía moitos verbos (ca-ia-mos... ) ...
+ín i3ches iu istes i3ron \newline
+% O pres. subx. coincide con pres. ind. da 1ª
+i3se i3ses í3semos í3sedes i3sen
+% contraer, decaer, extraer
+% Pres. subx. xa se divide ben
+\end{template}
+\newline
+í3do í3da í3dos í3das
+
+% Conxugación completa do verbo subir
+\template{.su3b#.}
+ir indo ido ida idos idas \newline
+ires irmos irdes iren \newline
+o es e imos ides en \newline
+ía ías 2i3amos íamos 2i3ades íades ían \newline % ... por eso incluímolos só aquí.
+ín iches iu istes iron \newline
+irei irás irá iremos iredes irán \newline
+iría irías iriamos iríamos iriades iríades irían \newline
+a as amos ades an \newline
+ise ises ísemos ísedes isen \newline
+ide ídeo ídeos ídea ídeas \newline
+ador adora adores adoras % posibles derivados
+\end{template}
+
+% Conxugación completa do verbo superar
+\template{.supe3r#.}
+ar ando ado ada ados adas \newline
+ares armos ardes aren \newline
+a as amos ades an \newline
+aba abas abamos ábamos abades ábades aban \newline
+ei aches ou astes aron \newline
+arei arás ará eremos eredes arán \newline
+aría arías ariamos aríamos ariades aríades arían \newline
+e es emos edes en \newline
+ase ases ásemos ásedes asen \newline
+ade ádeo ádeos ádea ádeas \newline
+ador adora adores adoras ación % derivados
+\end{template}
+
+supe3r2ior supe3r2a3ble supe3r2a3bilidade
+
+% para verbos rematados en -aer, permitimos a división
+% cando a vocal temática tónica e aberta e, salvo inf.,
+% non é a última sílaba.
+\template{a3#.}
+er endo \newline
+eres ermos erdes eren \newline
+erme erte erlle ernos ervos erlles \newline
+elo elos ela elas \newline
+ede édeo édea édeos édeas \newline
+emos edes eron \newline
+ese eses esemos ésemos esedes ésedes esen
+\end{template}
+
+% par-ti-a-mos, di-ci-amos, fa-ci-amos, etc., pero aso-cia-mos, etc.
+
+% The new programs allow to input patterns at run time, so including
+% the extras in the format is not right.
+% \mkinput{glhyextr.tex}
+\end{pseudopatterns}
+\end{}

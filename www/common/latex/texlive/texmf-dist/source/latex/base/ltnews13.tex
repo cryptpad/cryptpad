@@ -1,0 +1,201 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews13.tex 
+%
+% This is issue 13 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]     % uncomment this line to get Palatino
+   {ltnews}[2000/07/21]
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{June}  
+\publicationyear{2000}
+\publicationissue{13}
+
+
+\begin{document}
+
+\maketitle
+
+\raisefirstsection 
+\section{Yearly release cycle}
+
+We announced in \textit{\LaTeX{} News~11} that we intended to switch
+to a 12-monthly release schedule.  With the present (June~2000)
+release, this switch is being made: thus the next release of \LaTeX{}
+will be dated June~2001.  We shall of course continue, as in the past,
+to release patches as needed to fix significant bugs.
+
+
+\section{PSNFSS: \small Quote of the Month}
+
+\begin{quote}
+  You should say in the \LaTeX{} News that Walter Schmidt has taken over
+  \PSNFSS{} from me. It gives me a certain pleasure to be able to draw a
+  line under that part of my life\ldots
+
+  \begin{latexonly}
+    \vspace{-\baselineskip}
+  \end{latexonly}
+
+  \begin{flushright}
+    Sebastian Rahtz
+  \end{flushright}
+\end{quote}
+
+\begin{latexonly}
+  \vspace{-\baselineskip} 
+\end{latexonly}
+
+\noindent
+The \PSNFSS{} material, which supports the use\latex{\\}
+of common PostScript fonts with \LaTeX{}, has been thoroughly updated.
+Most noticeably, the \package{mathpple} package, which used to be
+distributed separately, is now part of the basic \PSNFSS{} bundle;
+this package provides mathematical typesetting with the Palatino
+typeface family.  In addition, numerous bugs and flaws have been fixed
+and the distribution has been `cleaned up'.  The file
+\file{changes.txt} contains a detailed list of these changes.
+\latex{\looseness=-1}   %%!!!!! It worked!
+
+The documentation (in \file{psnfss2e.pdf}) has been completely
+rewritten to provide a comprehensive introduction to the use
+of PostScript fonts. 
+
+Notice that the new \PSNFSS{} needs updated files for font metrics,
+virtual fonts and font definitions.  If you received the new
+version~(8.1) as part of a complete \TeX{} system then these new font
+files should also have been installed.  However, if you intend to
+install or update \PSNFSS{} yourself, please read the instructions in
+the file \file{00readme.txt} of the new \PSNFSS{} distribution.
+
+Support for commercial PostScript fonts, such as
+Lucida~Bright, has been removed from the basic distribution;
+it is now available from \ctan{}:
+\begin{latexonly}
+  \file{\ctanhttp macros/latex/\\
+    contrib/supported/psnfssx}.
+\end{latexonly}
+\begin{htmlonly}
+  \url{http://www.tex.ac.uk/tex-archive/macros/latex/contrib/supported/psnfssx}.
+\end{htmlonly}
+
+\section{New AMS-\LaTeX{}}
+
+Version 2.0 of AMS-\LaTeX{} was released on December 1, 1999. It can
+be obtained via \url{ftp://ftp.ams.org/pub/tex/} or
+\url{http://www.ams.org/tex/amslatex.html}, as well from \ctan{}:
+\begin{latexonly}
+  \file{\ctanhttp macros/latex/\\
+    required/amslatex}.
+\end{latexonly}
+\begin{htmlonly}
+  \url{http://www.tex.ac.uk/tex-archive/macros/latex/required/amslatex}.
+\end{htmlonly}
+
+This release consists chiefly of bug fixes and consolidation of the
+existing features. The division of AMS-\LaTeX{} into two main parts
+(the math packages;\latex{\\}
+the AMS document classes) has been made more pronounced.
+The files \file{diffs-m.txt}, \file{diffs-c.txt},
+\file{amsmath.faq}, and \file{amsclass.faq} describe the\latex{\\}
+changes and address some common questions.
+
+The primary documentation files remain \file{amsldoc.tex}, for the
+\package{amsmath} package, and \file{instr-l.tex}, for the AMS
+document classes.\latex{\\}
+The documentation for the \package{amsthm} package,\latex{\\}
+however, has been moved from \file{amsldoc.tex}\latex{\\}
+to a separate document \file{amsthdoc.tex}.
+
+\begin{latexonly}
+  \vfill
+\end{latexonly}
+
+\section{New input encoding \package{latin4}}
+
+The package \package{inputenc} has, thanks to Hana Skoumalov\'a,
+been extended to cover the \package{latin4} input encoding; this
+covers Baltic and Scandinavian languages as well as Greenland
+Inuit and Lappish.
+
+\begin{latexonly}
+  \vfill
+\end{latexonly}
+
+\section{New experimental code}
+
+In \textit{\LaTeX{} News~12} we announced some ongoing work towards a
+`Designer Interface for \LaTeX' and we presented some early results
+thereof.  Since then, at Gutenberg\,2000 in Toulouse and TUG\,2000 in
+Oxford, we described a new output routine and an improved method of
+handling vertical mode material between paragraphs.  In combination
+these support higher quality \emph{automated}\footnote
+                             {The stress here is on automated!}
+page-breaking and page make-up\latex{\\}
+for complex pages---the best yet achieved with \TeX{}!
+
+A paper describing the new output routine is 
+\begin{latexonly}
+  at\\
+  \file{http://www.latex-project.org/papers/xo-pfloat.pdf%
+   \hspace*{-16pt}}\\
+\end{latexonly}
+\begin{htmlonly}
+  at \url{http://www.latex-project.org/papers/xo-pfloat.pdf}. 
+\end{htmlonly}
+All code examples and documentation are available 
+\begin{latexonly}
+  at\\
+   \file{http://www.latex-project.org/code/experimental/%
+   \latex{\hspace*{-5pt}}}.\\[3pt]
+\end{latexonly}
+\begin{htmlonly}
+  at \url{http://www.latex-project.org/code/experimental/}.
+
+\end{htmlonly}
+This directory has been extended to contain
+\begin{description}
+ \item[galley] Prototype implementation of the interface\latex{\\}
+   for manipulating vertical material in galleys.
+ \item[xinitials] Prototype implementation of the interface\latex{\\}
+   for paragraph initials (needs the \texttt{galley} package.
+ \item[xtheorem] Contributed example using the \texttt{template}
+   package to provide a designer interface for theorem environments.
+ \item[xoutput] A prototype implementation of the new output routine
+   as described in the \texttt{xo-pfloat.pdf} paper. Expected
+   availability: at or shortly after\latex{\\}
+   the TUG\,2000 conference.
+\end{description}
+
+\end{document}
+
+

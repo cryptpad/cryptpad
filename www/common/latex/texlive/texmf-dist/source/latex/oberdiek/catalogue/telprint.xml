@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='telprint'>
+  <name>telprint</name>
+  <caption>Format German phone numbers.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1996,1997,2004-2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.10'/>
+  <description>
+    The package provides a command <tt>\telprint</tt> for formatting
+    German telephone numbers.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/telprint.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/telprint.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

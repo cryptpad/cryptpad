@@ -1,0 +1,1874 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \CheckSum{625}
+%
+%\iffalse   % this is a METACOMMENT !
+%
+%
+%% Package `verbatim' to use with LaTeX2e
+%% Copyright (C) 1989--2003 by Rainer Sch\"opf. All rights reserved.
+%
+% Copying of this file is authorized only if either
+% (1) you make absolutely no changes to your copy, including name, or
+% (2) if you do make changes, you name it something other than
+%     verbatim.dtx.
+% This restriction helps ensure that all styles developed here
+% remain identical.
+%
+%
+%
+% \section{Producing the documentation}
+%
+% We provide a short driver file that can be extracted by the
+% \textsf{DocStrip} program using the conditional `\textsf{driver}'.
+%
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+
+\pagestyle{myheadings}
+
+\title{A New Implementation of \LaTeX{}'s \\ \texttt{verbatim}
+       and \texttt{verbatim*} Environments.}
+\author{Rainer Sch\"opf\\
+        \and
+        Bernd Raichle\\
+        \and
+        Chris Rowley}
+
+\date{2001/03/12}
+\begin{document}
+\markboth{Verbatim style option}{Verbatim style option}
+\MaintainedByLaTeXTeam{tools}
+\maketitle
+  \DocInput{verbatim.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+%\fi
+%
+%
+% \changes{v1.5q}{2003/08/22}{Reintroduced \cs{@noligs}, by popular
+%                             request.}
+% \changes{v1.5i}{1996/06/04}{Move setting of verbatim font and
+%                             \cs{@noligs}.}
+% \changes{v1.5g}{1995/04/26}{Removed \cs{fileversion} and
+%                             \cs{filedate} from running head in
+%                             driver file, as these are no longer
+%                             defined.}
+% \changes{v1.5f}{1994/10/25}{Removed extra \cs{typeout} commands.}
+% \changes{v1.5e}{1994/06/10}{Added missing closing verbtest guard.}
+% \changes{v1.5d}{1994/05/30}{\cs{NeedsTeXFormat} and
+%                             \cs{ProvidesPackage} added.}
+% \changes{v1.5d}{1994/05/30}{\cs{addto@hook} removed, now in kernel.}
+% \changes{v1.5a}{1993/10/12}{Included \cs{newverbtext} command, as
+%          written by Chris Rowley.}
+% \changes{v1.5}{1993/10/11}{Included vrbinput style option by Bernd
+%          Raichle.}
+%
+% \changes{v1.4j}{1992/06/30}{Used \cs{lowercase}\{\cs{endgroup}
+%    \ldots\} trick proposed by Bernd Raichle; changed all \cs{gdef}
+%    to \cs{def} since no longer necessary.}
+% \changes{v1.4g}{1991/11/21}{Several improvements in the
+%                           documentation.}
+% \changes{v1.4f}{1991/08/05}{Corrected bug in documentation.
+%                           Found by Bernd Raichle.}
+% \changes{v1.4e}{1991/07/24}{Avoid reading this file twice.}
+% \changes{v1.4d}{1991/04/24}{\cs{penalty}\cs{interlinepenalty} added to
+%                           definition of \cs{par} in \cs{@verbatim}.
+%                           Necessary to avoid page breaks in
+%                           the scope of a \cs{samepage} declaration.}
+% \changes{v1.4c}{1990/10/18}{Added \cs{leavevmode} to definition of
+%       backquote macro.}
+% \changes{v1.4b}{1990/07/14}{Converted nearly all \cs{verb}'s to
+%       \texttt{\protect\string!|\ldots\protect\string!|}.}
+% \changes{v1.4a}{1990/04/04}{Added a number of percent characters
+%       to suppress blank space at the end of some code lines.}
+% \changes{v1.4}{1990/03/07}{\cs{verb} rewritten.}
+%
+% \changes{v1.3a}{1990/02/04}{Removed \texttt{verbatimwrite} environment
+%       from the code. Now only shown as an example.}
+%
+% \changes{v1.2g}{1990/02/01}{Revised documentation.}
+% \changes{v1.2e}{1990/01/15}{Added \cs{every@verbatim} hook.}
+% \changes{v1.2d}{1989/11/29}{Use token register \cs{@temptokena}
+%                           instead of macro \cs{@tempb}.}
+% \changes{v1.2d}{1989/11/29}{Use token register \cs{verbatim@line}
+%                           instead of macro \cs{@tempd}.}
+% \changes{v1.2b}{1989/10/25}{\cs{verbatimfile} renamed to
+%           \cs{verbatiminput}. Suggested by Reinhard Wonneberger.}
+%
+% \changes{v1.1a}{1989/10/16}{\cs{verb} added.}
+% \changes{v1.1}{1989/10/09}{Made the code more modular (as suggested by
+%                          Chris Rowley):  introduced
+%                          \cs{verbatim@addtoline}, etc.  Added
+%                          \cs{verbatimwrite} environment.}
+%
+% \changes{v1.0e}{1989/07/17}{Fixed bug in \cs{verbatimfile} (*-form
+%         handling, discovered by Dirk Kreimer).}
+% \changes{v1.0d}{1989/05/16}{Revised documentation, fixed silly bug
+%         in \cs{verbatim@@@}.}
+% \changes{v1.0c}{1989/05/12}{Added redefinition of \cs{@sverb}, change
+%         in end-of-line handling.}
+% \changes{v1.0b}{1989/05/09}{Change in \cs{verbatim@rescan}.}
+% \changes{v1.0a}{1989/05/07}{Change in \cs{verbatim@@testend}.}
+%
+%
+% \DoNotIndex{\ ,\!,\C,\[,\\,\],\^,\`,\{,\},\~}
+% \DoNotIndex{\@M,\@empty,\@flushglue,\@gobble,\@ifstar,\@ifundefined}
+% \DoNotIndex{\@namedef,\@spaces,\@tempa,\@tempb,\@tempc,\@tempd}
+% \DoNotIndex{\@temptokena,\@totalleftmargin,\@warning,\active}
+% \DoNotIndex{\aftergroup,\arabic,\begingroup,\catcode,\char,\closein}
+% \DoNotIndex{\csname,\def,\do,\docdate,\dospecials,\edef,\else}
+% \DoNotIndex{\endcsname,\endgraf,\endgroup,\endinput,\endlinechar}
+% \DoNotIndex{\endtrivlist,\expandafter,\fi,\filedate,\fileversion}
+% \DoNotIndex{\frenchspacing,\futurelet,\if,\ifcat,\ifeof,\ifnum}
+% \DoNotIndex{\ifx,\immediate,\item,\kern,\lccode,\leftskip,\let}
+% \DoNotIndex{\lowercase,\m@ne,\makeatletter,\makeatother,\newread}
+% \DoNotIndex{\newread,\next,\noexpand,\noindent,\openin,\parfillskip}
+% \DoNotIndex{\parindent,\parskip,\penalty,\read,\relax,\rightskip}
+% \DoNotIndex{\sloppy,\space,\string,\the,\toks@,\trivlist,\tt,\typeout}
+% \DoNotIndex{\vskip,\write,\z@}
+%
+% \begin{abstract}
+%   This package reimplements the \LaTeX{} \texttt{verbatim} and
+%   \texttt{verbatim*} environments.
+%   In addition it provides a \texttt{comment} environment
+%   that skips any commands or text between
+%   |\begin{comment}|
+%   and the next |\end{comment}|.
+%   It also defines the command \texttt{verbatiminput} to input a whole
+%   file verbatim.
+% \end{abstract}
+%
+% \section{Usage notes}
+%
+% \let\docDescribeMacro\DescribeMacro
+% \let\docDescribeEnv\DescribeEnv
+% \def\DescribeMacro#1{}
+% \def\DescribeEnv#1{}
+% \LaTeX's \texttt{verbatim} and \texttt{verbatim*} environments
+% have a few features that may give rise to problems. These are:
+% \begin{itemize}
+%   \item
+%     Due to the method used to detect the closing |\end{verbatim}|
+%     (i.e.\ macro parameter delimiting) you cannot leave spaces
+%     between the |\end| token and |{verbatim}|.
+%   \item
+%     Since \TeX{} has to read all the text between the
+%     |\begin{verbatim}| and the |\end{verbatim}| before it can output
+%     anything, long verbatim listings may overflow \TeX's memory.
+% \end{itemize}
+% Whereas the first     of these points can be considered
+% only a minor nuisance the other one is a real limitation.
+%
+%
+% \DescribeEnv{verbatim}
+% \DescribeEnv{verbatim*}
+% This package file contains a reimplementation of the \texttt{verbatim}
+% and \texttt{verbatim*} environments which overcomes these
+% restrictions.
+% There is, however, one incompatibility between the old and the
+% new implementations of these environments: the old version
+% would treat text on the same line as the |\end{verbatim}|
+% command as if it were on a line by itself.
+% \begin{center}
+%   \bf This new version will simply ignore it.
+% \end{center}
+% (This is the price one has to pay for the removal of the old
+% \texttt{verbatim} environment's size limitations.)
+% It will, however, issue a warning message of the form
+% \begin{verbatim}
+%LaTeX warning: Characters dropped after \end{verbatim*}!
+%\end{verbatim}
+% This is not a real problem since this text can easily be put
+% on the next line without affecting the output.
+%
+% This new implementation also solves the second problem mentioned
+% above: it is possible to leave spaces (but \emph{not} begin a new
+% line) between the |\end| and the |{verbatim}| or |{verbatim*}|:
+% \begin{verbatim}
+%\begin {verbatim*}
+%   test
+%   test
+%\end {verbatim*}
+%\end{verbatim}
+%
+% \DescribeEnv{comment}
+% Additionally we introduce a \texttt{comment} environment, with the
+% effect that the text between |\begin{comment}| and |\end{comment}|
+% is simply ignored, regardless of what it looks like.
+% At first sight this seems to be quite different from the purpose
+% of verbatim listing, but actually the implementation of these two
+% concepts turns out to be very similar.
+% Both rely on the fact that the text between |\begin{...}| and
+% |\end{...}| is read by \TeX{} without interpreting any commands or
+% special characters.
+% The remaining difference between \texttt{verbatim} and
+% \texttt{comment} is only that the text is to be typeset in the
+% first case and to be thrown away in the latter. Note that these
+% environments cannot be nested.
+%
+% \DescribeMacro{\verbatiminput}
+% |\verbatiminput| is a command with one argument that inputs a file
+% verbatim, i.e.\ the command |verbatiminput{xx.yy}|
+% has the same effect as\\[2pt]
+%   \hspace*{\MacroIndent}|\begin{verbatim}|\\
+%   \hspace*{\MacroIndent}\meta{Contents of the file \texttt{xx.yy}}\\
+%   \hspace*{\MacroIndent}|\end{verbatim}|\\[2pt]
+% This command has also a |*|-variant that prints spaces as \verb*+ +.
+%
+%
+% \StopEventually{}
+%
+%
+% \section{Interfaces for package writers}
+%
+% The \texttt{verbatim} environment of \LaTeXe{} does not
+% offer a good interface to programmers.
+% In contrast, this package provides a simple mechanism to
+% implement similar features, the \texttt{comment} environment
+% implemented here being an example of what can be done and how.
+%
+%
+% \subsection{Simple examples}
+%
+% It is now possible to use the \texttt{verbatim} environment to define
+% environments of your own.
+% E.g.,
+%\begin{verbatim}
+% \newenvironment{myverbatim}%
+%   {\endgraf\noindent MYVERBATIM:%
+%    \endgraf\verbatim}%
+%   {\endverbatim}
+%\end{verbatim}
+% can be used afterwards like the \texttt{verbatim} environment, i.e.
+% \begin{verbatim}
+%\begin {myverbatim}
+%  test
+%  test
+%\end {myverbatim}
+%\end{verbatim}
+% Another way to use it is to write
+% \begin{verbatim}
+%\let\foo=\comment
+%\let\endfoo=\endcomment
+%\end{verbatim}
+% and from that point on environment \texttt{foo} is the same as the
+% comment environment, i.e.\ everything inside its body is ignored.
+%
+% You may also add special commands after the |\verbatim| macro is
+% invoked, e.g.
+%\begin{verbatim}
+%\newenvironment{myverbatim}%
+%  {\verbatim\myspecialverbatimsetup}%
+%  {\endverbatim}
+%\end{verbatim}
+% though you may want to learn about the hook |\every@verbatim| at
+% this point.
+% \changes{v1.5h}{1995/09/21}{Clarified documentation on use of other
+%               environments to define new verbatim-type ones.}
+% However, there are still a number of restrictions:
+% \begin{enumerate}
+%   \item
+%     You must not use the |\begin| or the |\end| command inside a
+%     definition, e.g.~the following two examples will \emph{not} work:
+%\begin{verbatim*}
+%\newenvironment{myverbatim}%
+%{\endgraf\noindent MYVERBATIM:%
+% \endgraf\begin{verbatim}}%
+%{\end{verbatim}}
+%\newenvironment{fred}
+%{\begin{minipage}{30mm}\verbatim}
+%{\endverbatim\end{minipage}}
+%\end{verbatim*}
+%     If you try these examples, \TeX{} will report a
+%     ``runaway argument'' error.
+%     More generally, it is not possible to use
+%     |\begin|\ldots\allowbreak|\end|
+%     or the related environments in the definition of the new
+%     environment. Instead, the correct way to define this environment
+%     would be
+%    \begin{verbatim*}
+%\newenvironment{fred}
+%{\minipage{30mm}\verbatim}
+%{\endverbatim\endminipage}
+%\end{verbatim*}
+%   \item
+%     You can\emph{not} use the \texttt{verbatim} environment inside
+%     user defined \emph{commands}; e.g.,
+% \changes{v1.4g}{1991/11/21}{Corrected wrong position of optional
+%        argument to \cs{newcommand}. Discovered by Piet van Oostrum.}
+%     \begin{verbatim*}
+%\newcommand{\verbatimfile}[1]%
+%           {\begin{verbatim}\input{#1}\end{verbatim}}
+%\end{verbatim*}
+%     does \emph{not} work; nor does
+%     \begin{verbatim}
+%\newcommand{\verbatimfile}[1]{\verbatim\input{#1}\endverbatim}
+%\end{verbatim}
+%   \item The name of the newly defined environment must not contain
+%     characters with category code other than $11$ (letter) or
+%     $12$ (other), or this will not work.
+% \end{enumerate}
+%
+%
+% \subsection{The interfaces}
+%
+% \DescribeMacro{\verbatim@font}
+% Let us start with the simple things.
+% Sometimes it may be necessary to use a special typeface for your
+% verbatim text, or perhaps the usual computer modern typewriter shape
+% in a reduced size.
+%
+% You may select this by redefining the macro |\verbatim@font|.
+% This macro is executed at the beginning of every verbatim text to
+% select the font shape.
+% Do not use it for other purposes; if you find yourself abusing this
+% you may want to read about the |\every@verbatim| hook below.
+%
+% By default, |\verbatim@font| switches to the typewriter font and
+% disables the ligatures contained therein.
+%
+%
+% \DescribeMacro{\every@verbatim}
+% \DescribeMacro{\addto@hook}
+% There is a hook (i.e.\ a token register) called |\every@verbatim|
+% whose contents are inserted into \TeX's mouth just before every
+% verbatim text.
+% Please use the |\addto@hook| macro to add something to this hook.
+% It is used as follows:\\[2pt]
+% \hspace*{\MacroIndent}|\addto@hook|\meta{name of the hook}^^A
+%  |{|\meta{commands to be added}|}|
+% \vspace*{2pt}
+%
+%
+%
+% \DescribeMacro{\verbatim@start}
+% After all specific setup, like switching of category codes, has been
+% done, the |\verbatim@start| macro is called.
+% This starts the main loop of the scanning mechanism implemented here.
+% Any other environment that wants to make use of this feature should
+% execute this macro as its last action.
+%
+%
+% \DescribeMacro{\verbatim@startline}
+% \DescribeMacro{\verbatim@addtoline}
+% \DescribeMacro{\verbatim@processline}
+% \DescribeMacro{\verbatim@finish}
+% These are the things that concern the start of a verbatim
+% environment.
+% Once this (and other) setup has been done, the code in this package
+% reads and processes characters from the input stream in the
+% following way:
+% \begin{enumerate}
+%   \item Before the first character of an input line is read, it
+%     executes the macro |\verbatim@startline|.
+%   \item After some characters have been read, the macro
+%     |\verbatim@addtoline| is called with these characters as its only
+%     argument.
+%     This may happen several times per line (when an |\end| command is
+%     present on the line in question).
+%   \item When the end of the line is reached, the macro
+%     |\verbatim@processline| is called to process the characters that
+%     |\verbatim@addtoline| has accumulated.
+%   \item Finally, there is the macro |\verbatim@finish| that is called
+%     just before the environment is ended by a call to the |\end|
+%      macro.
+% \end{enumerate}
+%
+%
+% To make this clear let us consider the standard \texttt{verbatim}
+% environment.
+% In this case the three macros above are defined as follows:
+% \begin{enumerate}
+%   \item |\verbatim@startline| clears the character buffer
+%     (a token register).
+%   \item |\verbatim@addtoline| adds its argument to the character
+%     buffer.
+%   \item |\verbatim@processline| typesets the characters accumulated
+%     in the buffer.
+% \end{enumerate}
+% With this it is very simple to implement the \texttt{comment}
+% environment:
+% in this case |\verbatim@startline| and |\verbatim@processline| are
+% defined to be
+% no-ops whereas |\verbatim@addtoline| discards its argument.
+%
+%
+% Let's use this to define a variant of the |verbatim|
+% environment that prints line numbers in the left margin.
+% Assume that this would be done by a counter called |VerbatimLineNo|.
+% Assuming that this counter was initialized properly by the
+% environment, |\verbatim@processline| would be defined in this case as
+% \begin{verbatim}
+%\def\verbatim@processline{%
+%  \addtocounter{VerbatimLineNo}{1}%
+%  \leavevmode
+%  \llap{\theVerbatimLineNo\ \hskip\@totalleftmargin}%
+%  \the\verbatim@line\par}
+%\end{verbatim}
+%
+% A further possibility is to define a variant of the |verbatim|
+% environment that boxes and centers the whole verbatim text.
+% Note that the boxed text should be less than a page otherwise you
+% have to change this example.
+%
+%\begin{verbatim}
+%\def\verbatimboxed#1{\begingroup
+%  \def\verbatim@processline{%
+%    {\setbox0=\hbox{\the\verbatim@line}%
+%     \hsize=\wd0
+%     \the\verbatim@line\par}}%
+%  \setbox0=\vbox{\parskip=0pt\topsep=0pt\partopsep=0pt
+%                 \verbatiminput{#1}}%
+%  \begin{center}\fbox{\box0}\end{center}%
+% \endgroup}
+%\end{verbatim}
+%
+% As a final nontrivial example we describe the definition of an
+% environment called \texttt{verbatimwrite}.
+% It writes all text in its body to a file whose name is
+% given as an argument.
+% We assume that a stream number called |\verbatim@out| has already
+% been reserved by means of the |\newwrite| macro.
+%
+% Let's begin with the definition of the macro |\verbatimwrite|.
+% \begin{verbatim}
+%\def\verbatimwrite#1{%
+%\end{verbatim}
+% First we call |\@bsphack| so that this environment does not influence
+% the spacing.
+% Then we open the file and set the category codes of all special
+% characters:
+% \begin{verbatim}
+%  \@bsphack
+%  \immediate\openout \verbatim@out #1
+%  \let\do\@makeother\dospecials
+%  \catcode`\^^M\active
+%\end{verbatim}
+% The default definitions of the macros
+% \begin{verbatim}
+%  \verbatim@startline
+%  \verbatim@addtoline
+%  \verbatim@finish
+%\end{verbatim}
+% are also used in this environment.
+% Only the macro |\verbatim@processline| has to be changed before
+% |\verbatim@start| is called:
+% \begin{verbatim}
+%  \def\verbatim@processline{%
+%    \immediate\write\verbatim@out{\the\verbatim@line}}%
+%  \verbatim@start}
+%\end{verbatim}
+% The definition of |\endverbatimwrite| is very simple:
+% we close the stream and call |\@esphack| to get the spacing right.
+% \begin{verbatim}
+%\def\endverbatimwrite{\immediate\closeout\verbatim@out\@esphack}
+%\end{verbatim}
+%
+% \section{The implementation}
+%
+% \let\DescribeMacro\docDescribeMacro
+% \let\DescribeEnv\docDescribeEnv
+%
+% \changes{v1.4e}{1991/07/24}{Avoid reading this file twice.}
+% The very first thing we do is to ensure that this file is not read
+% in twice. To this end we check whether the macro |\verbatim@@@| is
+% defined. If so, we just stop reading this file. The `package'
+% guard here allows most of the code to be excluded when extracting
+% the driver file for testing this package.
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{verbatim}
+     [2014/10/28 v1.5q LaTeX2e package for verbatim enhancements]
+\@ifundefined{verbatim@@@}{}{\endinput}
+%    \end{macrocode}
+%
+% We use a mechanism similar to the one implemented for the
+% |\comment|\ldots\allowbreak|\endcomment| macro in \AmSTeX:
+% We input one line at a time and check if it contains the |\end{...}|
+% tokens.
+% Then we can decide whether we have reached the end of the verbatim
+% text, or must continue.
+%
+%
+% \subsection{Preliminaries}
+%
+% \begin{macro}{\every@verbatim}
+%    The hook (i.e.\ token register) |\every@verbatim|
+%    is initialized to \meta{empty}.
+%    \begin{macrocode}
+\newtoks\every@verbatim
+\every@verbatim={}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@makeother}
+% \changes{v1.1a}{1989/10/16}{\cs{@makeother} added.}
+%    |\@makeother| takes as argument a character and changes
+%    its category code to $12$ (other).
+%    \begin{macrocode}
+\def\@makeother#1{\catcode`#112\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@vobeyspaces}
+% \changes{v1.5}{1993/10/11}{Changed definition to not use \cs{gdef}.}
+% \changes{v1.1a}{1989/10/16}{\cs{@vobeyspaces} added.}
+%    The macro |\@vobeyspaces| causes spaces in the input
+%    to be printed as spaces in the output.
+%    \begin{macrocode}
+\begingroup
+ \catcode`\ =\active%
+ \def\x{\def\@vobeyspaces{\catcode`\ \active\let \@xobeysp}}
+ \expandafter\endgroup\x
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@xobeysp}
+% \changes{v1.1a}{1989/10/16}{\cs{@xobeysp} added.}
+%    The macro |\@xobeysp| produces exactly one space in
+%    the output, protected against breaking just before it.
+%    (|\@M| is an abbreviation for the number $10000$.)
+%    \begin{macrocode}
+\def\@xobeysp{\leavevmode\penalty\@M\ }
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\verbatim@line}
+% \changes{v1.2d}{1989/11/29}{Introduced token register
+%                \cs{verbatim@line}.}
+%    We use a newly defined token register called |\verbatim@line|
+%    that will be used as the character buffer.
+%    \begin{macrocode}
+\newtoks\verbatim@line
+%    \end{macrocode}
+% \end{macro}
+%
+% The following four macros are defined globally in a way suitable for
+% the \texttt{verbatim} and \texttt{verbatim*} environments.
+% \begin{macro}{\verbatim@startline}
+% \begin{macro}{\verbatim@addtoline}
+% \begin{macro}{\verbatim@processline}
+%    |\verbatim@startline| initializes processing of a line
+%    by emptying the character buffer (|\verbatim@line|).
+%    \begin{macrocode}
+\def\verbatim@startline{\verbatim@line{}}
+%    \end{macrocode}
+%    |\verbatim@addtoline| adds the tokens in its argument
+%    to our buffer register |\verbatim@line| without expanding
+%    them.
+%    \begin{macrocode}
+\def\verbatim@addtoline#1{%
+  \verbatim@line\expandafter{\the\verbatim@line#1}}
+%    \end{macrocode}
+%    Processing a line inside a \texttt{verbatim} or \texttt{verbatim*}
+%    environment means printing it.
+% \changes{v1.2c}{1989/10/31}{Changed \cs{@@par} to \cs{par} in
+%    \cs{verbatim@processline}.  Removed \cs{leavevmode} and \cs{null}
+%    (i.e.\ the empty \cs{hbox}).}
+%    Ending the line means that we have to begin a new paragraph.
+%    We use |\par| for this purpose.  Note that |\par|
+%    is redefined in |\@verbatim| to force \TeX{} into horizontal
+%    mode and to insert an empty box so that empty lines in the input
+%    do appear in the output.
+% \changes{v1.2f}{1990/01/31}{\cs{verbatim@startline} removed.}
+%    \begin{macrocode}
+\def\verbatim@processline{\the\verbatim@line\par}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@finish}
+%    As a default, |\verbatim@finish| processes the remaining
+%    characters.
+%    When this macro is called we are facing the following problem:
+%    when the |\end{verbatim}|
+%    command is encountered |\verbatim@processline| is called
+%    to process the characters preceding the command on the same
+%    line.  If there are none, an empty line would be output if we
+%    did not check for this case.
+%
+%    If the line is empty |\the\verbatim@line| expands to
+%    nothing.  To test this we use a trick similar to that on p.\ 376
+%    of the \TeX{}book, but with |$|\ldots|$| instead of
+%    the |!| tokens.  These |$| tokens can never have the same
+%    category code as a |$| token that might possibly appear in the
+%    token register |\verbatim@line|, as such a token will always have
+%    been read with category code $12$ (other).
+%    Note that |\ifcat| expands the following tokens so that
+%    |\the\verbatim@line| is replaced by the accumulated
+%    characters
+% \changes{v1.2d}{1989/11/29}{Changed \cs{ifx} to \cs{ifcat} test.}
+% \changes{v1.1b}{1989/10/18}{Corrected bug in if test (found by CRo).}
+%    \begin{macrocode}
+\def\verbatim@finish{\ifcat$\the\verbatim@line$\else
+  \verbatim@processline\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{The \texttt{verbatim} and \texttt{verbatim*} environments}
+%
+% \begin{macro}{\verbatim@font}
+% \changes{v1.2f}{1990/01/31}{\cs{@lquote} macro removed.}
+% \changes{v1.1b}{1989/10/18}{\cs{@noligs} removed.  Code inserted
+%                           directly into \cs{verbatim@font}.}
+% \changes{v1.1a}{1989/10/16}{\cs{verbatim@font} added.}
+% \changes{v1.1a}{1989/10/16}{\cs{@noligs} added.}
+% \changes{v1.1a}{1989/10/16}{\cs{@lquote} added.}
+%    We start by defining the macro |\verbatim@font| that is
+%    to select the font and to set font-dependent parameters.
+%    Then we expand |\@noligs| (defined in the \LaTeXe{} kernel). Among
+%    possibly other things, it will go through |\verbatim@nolig@list|
+%    to avoid certain ligatures.
+%    |\verbatim@nolig@list| is a macro defined in the \LaTeXe{} kernel
+%    to expand to
+%    \begin{verbatim}
+%    \do\`\do\<\do\>\do\,\do\'\do\-
+%\end{verbatim}
+%    All the characters in this list can be part of a ligature in some
+%    font or other.
+% \changes{v1.2f}{1990/01/31}{\cs{@lquote} macro removed.}
+% \changes{v1.4c}{1990/10/18}{Added \cs{leavevmode}.}
+% \changes{v1.4k}{1992/07/13}{Replaced Blank after $96$ by \cs{relax}.
+%                           (Proposed by Dan Dill.)}
+% \changes{v1.5}{1993/10/11}{Definition changed according to new code
+%          in latex.tex and to avoid global definition.}
+% \changes{v1.5c}{1994/02/07}{Changed to use new font switching
+%                           commands.}
+% \changes{v1.5m}{2000/01/07}{Disable hyphenation even if the font
+%    allows it.}
+% \changes{v1.5q}{2003/08/22}{Use \cs{@noligs}, as it is by now properly
+%    defined in the \LaTeXe{} kernel.}
+%    \begin{macrocode}
+\def\verbatim@font{\normalfont\ttfamily
+                   \hyphenchar\font\m@ne
+                   \@noligs}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@verbatim}
+% \changes{v1.1a}{1989/10/16}{\cs{@verbatim} added.}
+%    The macro |\@verbatim| sets up things properly.
+%    First of all, the tokens of the |\every@verbatim| hook
+%    are inserted.
+%    Then a \texttt{trivlist} environment is started and its first
+%    |\item| command inserted.
+%    Each line of the \texttt{verbatim} or \texttt{verbatim*}
+%    environment will be treated as a separate paragraph.
+% \changes{v1.2e}{1990/01/15}{Added \cs{every@verbatim} hook.}
+% \changes{v1.5b}{1994/01/24}{Removed optional argument of \cs{item}.}
+%    \begin{macrocode}
+\def\@verbatim{\the\every@verbatim
+  \trivlist \item \relax
+%    \end{macrocode}
+% \changes{v1.5b}{1994/01/24}{Set \texttt{@inlabel} switch to false.}
+% \changes{v1.5f}{1994/10/25}{Removed setting of \texttt{@inlabel}
+%                             switch again.}
+% \changes{v1.3c}{1990/02/26}{Removed extra vertical space.
+%           Suggested by Frank Mittelbach.}
+% \changes{v1.5h}{1995/09/21}{Added the space again, since it is
+%           necessary for correct vertical spacing if \texttt{verbatim}
+%           is nested inside \texttt{quote}.}
+%    The following extra vertical space is for compatibility with the
+%    \LaTeX kernel: otherwise, using the |verbatim| package changes
+%    the vertical spacing of a |verbatim| environment nested within a
+%    |quote| environment.
+%    \begin{macrocode}
+  \if@minipage\else\vskip\parskip\fi
+%    \end{macrocode}
+% \changes{v1.4k}{1992/07/13}{Added setting for
+%        \cs{@beginparpenalty}. Suggested by Frank Mittelbach.}
+%    The paragraph parameters are set appropriately:
+%    the penalty at the beginning of the environment,
+%    left and right margins, paragraph indentation, the glue to
+%    fill the last line, and the vertical space between paragraphs.
+%    The latter space has to be zero since we do not want to add
+%    extra space between lines.
+%    \begin{macrocode}
+  \@beginparpenalty \predisplaypenalty
+  \leftskip\@totalleftmargin\rightskip\z@
+  \parindent\z@\parfillskip\@flushglue\parskip\z@
+%    \end{macrocode}
+% \changes{v1.1b}{1989/10/18}{Added resetting of \cs{parshape}
+%                           if at beginning of a list.
+%                           (Problem pointed out by Chris Rowley.)}
+%    There's one point to make here:
+%    the \texttt{list} environment uses \TeX's |\parshape|
+%    primitive to get a special indentation for the first line
+%    of the  list.
+%    If the list begins with a \texttt{verbatim} environment
+%    this |\parshape| is still in effect.
+%    Therefore we have to reset this internal parameter explicitly.
+%    We could do this by assigning $0$ to |\parshape|.
+%    However, there is a simpler way to achieve this:
+%    we simply tell \TeX{} to start a new paragraph.
+%    As is explained on p.~103 of the \TeX{}book, this resets
+%    |\parshape| to zero.
+% \changes{v1.1c}{1989/10/19}{Replaced explicit resetting of
+%                           \cs{parshape} by \cs{@@par}.}
+%    \begin{macrocode}
+  \@@par
+%    \end{macrocode}
+%    We now ensure that |\par| has the correct definition,
+%    namely to force \TeX{} into horizontal mode
+%    and to include an empty box.
+%    This is to ensure that empty lines do appear in the output.
+%    Afterwards, we insert the |\interlinepenalty| since \TeX{}
+%    does not add a penalty between paragraphs (here: lines)
+%    by its own initiative. Otherwise a |verbatim| environment
+%    could be broken across pages even if a |\samepage|
+%    declaration were present.
+%
+%    However, in a top-aligned minipage, this will result in an extra
+%    empty line added at the top. Therefore, a slightly more
+%    complicated construct is necessary.
+%    One of the important things here is the inclusion of
+%    |\leavevmode| as the first macro in the first line, for example,
+%    a blank verbatim line is the first thing in a list item.
+% \changes{v1.2c}{1989/10/31}{Definition of \cs{par} added.
+%                           Ensures identical behaviour for
+%                           verbatim and \cs{verbatiminput}.
+%                           Problem pointed out by Chris.}
+% \changes{v1.4d}{1991/04/24}{\cs{penalty}\cs{interlinepenalty} added.
+%                           Necessary to avoid page breaks in
+%                           the scope of a \cs{samepage} declaration.}
+% \changes{v1.5b}{1994/01/24}{Improved definition of \cs{par} to work
+%                           under all circumstances.}
+% \changes{v1.5f}{1994/10/25}{\cs{leavevmode} added for first line.}
+%    \begin{macrocode}
+  \def\par{%
+    \if@tempswa
+      \leavevmode\null\@@par\penalty\interlinepenalty
+    \else
+      \@tempswatrue
+      \ifhmode\@@par\penalty\interlinepenalty\fi
+    \fi}%
+%    \end{macrocode}
+%    But to avoid an error message when the environment
+%    doesn't contain any text, we redefine |\@noitemerr|
+%    which will in this case be called by |\endtrivlist|.
+% \changes{v1.4j}{1992/06/30}{Introduced warning instead of error
+%        for empty body of verbatim text.
+%        Suggested by Nelson Beebe.}
+%    \begin{macrocode}
+  \def\@noitemerr{\@warning{No verbatim text}}%
+%    \end{macrocode}
+%    Now we call |\obeylines| to make the end of line character
+%    active,
+%    \begin{macrocode}
+  \obeylines
+%    \end{macrocode}
+%    change the category code of all special characters,
+%    to $12$ (other).
+%    \changes{v1.5i}{1996/06/04}{Moved \cs{verbatim@font} after
+%           \cs{dospecials}.}
+%    \begin{macrocode}
+  \let\do\@makeother \dospecials
+%    \end{macrocode}
+%    and switch to the font to be used.
+%    \begin{macrocode}
+  \verbatim@font
+%    \end{macrocode}
+%    To avoid a breakpoint after the labels box, we remove the penalty
+%    put there by the list macros: another use of |\unpenalty|!
+% \changes{v1.5f}{1994/10/25}{Change to \cs{everypar} added.}
+%    \begin{macrocode}
+  \everypar \expandafter{\the\everypar \unpenalty}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\verbatim}
+% \begin{macro}{\verbatim*}
+%    Now we define the toplevel macros.
+%    |\verbatim| is slightly changed:
+%    after setting up things properly it calls
+%    |\verbatim@start|.
+% \changes{v1.5l}{1999/12/14}{Added \cs{begingroup} for cases where
+%    \cs{verbatim} is used directly, rather than in \cs{begin}: see
+%    pr/3115.}
+%    This is done inside a group, so that |\verbatim| can be used
+%    directly, without |\begin|.
+%    \begin{macrocode}
+\def\verbatim{\begingroup\@verbatim \frenchspacing\@vobeyspaces
+              \verbatim@start}
+%    \end{macrocode}
+%    |\verbatim*| is defined accordingly.
+%    \begin{macrocode}
+\@namedef{verbatim*}{\begingroup\@verbatim\verbatim@start}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\endverbatim}
+% \begin{macro}{\endverbatim*}
+%    To end the \texttt{verbatim} and \texttt{verbatim*}
+%    environments it is only necessary to finish the
+%    \texttt{trivlist} environment started in |\@verbatim| and
+%    close the corresponding group.
+% \changes{v1.5l}{1999/12/14}{Added \cs{endgroup} for cases where
+%    \cs{endverbatim} is used directly, rather than in \cs{end}: see
+%    pr/3115.}
+% \changes{v1.5n}{2000/08/03}{Added \cs{@endpetrue}: needed when
+%    faking such a \cs{end} (pr/3234).}
+% \changes{v1.5o}{2000/08/23}{Changed \cs{@endpetrue} to \cs{@doendpe}:
+%    see (pr/3234).}
+%    \begin{macrocode}
+\def\endverbatim{\endtrivlist\endgroup\@doendpe}
+\expandafter\let\csname endverbatim*\endcsname =\endverbatim
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \subsection{The \texttt{comment} environment}
+%
+% \begin{macro}{\comment}
+% \begin{macro}{\endcomment}
+% \changes{v1.1c}{1989/10/19}{Added \cs{@bsphack}/\cs{@esphack} to the
+%            \texttt{comment} environment.  Suggested by Chris Rowley.}
+%    The |\comment| macro is similar to |\verbatim*|.
+%    However, we do not need to switch fonts or set special
+%    formatting parameters such as |\parindent| or |\parskip|.
+%    We need only set the category code of all special characters
+%    to $12$ (other) and that of |^^M| (the end of line character)
+%    to $13$ (active).
+%    The latter is needed for macro parameter delimiter matching in
+%    the internal macros defined below.
+%    In contrast to the default definitions used by the
+%    |\verbatim| and |\verbatim*| macros,
+%    we define |\verbatim@addtoline| to throw away its argument
+%    and |\verbatim@processline|, |\verbatim@startline|,
+%    and |\verbatim@finish| to act as no-ops.
+%    Then we call |\verbatim@|.
+%    But the first thing we do is to call |\@bsphack| so that
+%    this environment has no influence whatsoever upon the spacing.
+% \changes{v1.1c}{1989/10/19}{Changed \cs{verbatim@start} to
+%                           \cs{verbatim@}.  Suggested by Chris Rowley.}
+% \changes{v1.1c}{1989/10/19}{\cs{verbatim@startline} and
+%                           \cs{verbatim@finish} are now
+%                           also redefined to do nothing.}
+%    \begin{macrocode}
+\def\comment{\@bsphack
+             \let\do\@makeother\dospecials\catcode`\^^M\active
+             \let\verbatim@startline\relax
+             \let\verbatim@addtoline\@gobble
+             \let\verbatim@processline\relax
+             \let\verbatim@finish\relax
+             \verbatim@}
+%    \end{macrocode}
+%    |\endcomment| is very simple: it only calls
+%    |\@esphack| to take care of the spacing.
+%    The |\end| macro closes the group and therefore takes care
+%    of restoring everything we changed.
+%    \begin{macrocode}
+\let\endcomment=\@esphack
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+% \subsection{The main loop}
+%
+% Here comes the tricky part:
+% During the definition of the macros we need to use the special
+% characters |\|, |{|, and |}| not only with their
+% normal category codes,
+% but also with category code $12$ (other).
+% We achieve this by the following trick:
+% first we tell \TeX{} that |\|, |{|, and |}|
+% are the lowercase versions of |!|, |[|, and |]|.
+% Then we replace every occurrence of |\|, |{|, and |}|
+% that should be read with category code $12$ by |!|, |[|,
+% and |]|, respectively,
+% and give the whole list of tokens to |\lowercase|,
+% knowing that category codes are not altered by this primitive!
+%
+% But first we have ensure that
+% |!|, |[|, and |]| themselves have
+% the correct category code!
+% \changes{v1.3b}{1990/02/07}{Introduced \cs{vrb@catcodes} instead
+%                  of explicit setting of category codes.}
+% To allow special settings of these codes we hide their setting in
+% the macro |\vrb@catcodes|.  If it is already defined our new
+% definition is skipped.
+%    \begin{macrocode}
+\@ifundefined{vrb@catcodes}%
+  {\def\vrb@catcodes{%
+     \catcode`\!12\catcode`\[12\catcode`\]12}}{}
+%    \end{macrocode}
+% This trick allows us to use this code for applications where other
+% category codes are in effect.
+%
+% We start a group to keep the category code changes local.
+%    \begin{macrocode}
+\begingroup
+ \vrb@catcodes
+ \lccode`\!=`\\ \lccode`\[=`\{ \lccode`\]=`\}
+%    \end{macrocode}
+% \changes{v1.2f}{1990/01/31}{Code for TABs removed.}
+%    We also need the end-of-line character |^^M|,
+%    as an active character.
+%    If we were to simply write |\catcode`\^^M=\active|
+%    then we would get an unwanted active end of line character
+%    at the end of every line of the following macro definitions.
+%    Therefore we use the same trick as above:
+%    we write a tilde |~| instead of |^^M| and
+%    pretend that the
+%    latter is the lowercase variant of the former.
+%    Thus we have to ensure now that the tilde character has
+%    category code $13$ (active).
+%    \begin{macrocode}
+ \catcode`\~=\active \lccode`\~=`\^^M
+%    \end{macrocode}
+%    The use of the |\lowercase| primitive leads to one problem:
+%    the uppercase character `|C|' needs to be used in the
+%    code below and its case must be preserved.
+%    So we add the command:
+%    \begin{macrocode}
+ \lccode`\C=`\C
+%    \end{macrocode}
+%    Now we start the token list passed to |\lowercase|.
+%    We use the following little trick (proposed by Bernd Raichle):
+%    The very first token in the token list we give to |\lowercase| is
+%    the |\endgroup| primitive. This means that it is processed by
+%    \TeX{} immediately after |\lowercase| has finished its operation,
+%    thus ending the group started by |\begingroup| above. This avoids
+%    the global definition of all macros.
+%    \begin{macrocode}
+ \lowercase{\endgroup
+%    \end{macrocode}
+% \begin{macro}{\verbatim@start}
+%    The purpose of |\verbatim@start| is to check whether there
+%    are any characters on the same line as the |\begin{verbatim}|
+%    and to pretend that they were on a line by themselves.
+%    On the other hand, if there are no characters remaining
+%    on the current line we shall just find an end of line character.
+%    |\verbatim@start| performs its task by first grabbing the
+%    following character (its argument).
+%    This argument is then compared to an active |^^M|,
+%    the end of line character.
+%    \begin{macrocode}
+    \def\verbatim@start#1{%
+      \verbatim@startline
+      \if\noexpand#1\noexpand~%
+%    \end{macrocode}
+%    If this is true we transfer control to |\verbatim@|
+%    to process the next line.  We use
+%    |\next| as the macro which will continue the work.
+%    \begin{macrocode}
+        \let\next\verbatim@
+%    \end{macrocode}
+%    Otherwise, we define |\next| to expand to a call
+%    to |\verbatim@| followed by the character just
+%    read so that it is reinserted into the text.
+%    This means that those characters remaining on this line
+%    are handled as if they formed a line by themselves.
+%    \begin{macrocode}
+      \else \def\next{\verbatim@#1}\fi
+%    \end{macrocode}
+%    Finally we call |\next|.
+%    \begin{macrocode}
+      \next}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@}
+%    The three macros |\verbatim@|, |\verbatim@@|,
+%    and |\verbatim@@@| form the ``main loop'' of the
+%    \texttt{verbatim} environment.
+%    The purpose of |\verbatim@| is to read exactly one line
+%    of input.
+%    |\verbatim@@| and |\verbatim@@@| work together to
+%    find out whether the four characters
+%    |\end| (all with category code $12$ (other)) occur in that
+%    line.
+%    If so, |\verbatim@@@| will call
+%    |\verbatim@test| to check whether this |\end| is
+%    part of |\end{verbatim}| and will terminate the environment
+%    if this is the case.
+%    Otherwise we continue as if nothing had happened.
+%    So let's have a look at the definition of |\verbatim@|:
+% \changes{v1.1a}{1989/10/16}{Replaced \cs{verbatim@@@} by \cs{@nil}.}
+%    \begin{macrocode}
+    \def\verbatim@#1~{\verbatim@@#1!end\@nil}%
+%    \end{macrocode}
+%    Note that the |!| character will have been replaced by a
+%    |\| with category code $12$ (other) by the |\lowercase|
+%    primitive governing this code before the definition of this
+%    macro actually takes place.
+%    That means that
+%    it takes the line, puts |\end| (four character tokens)
+%    and |\@nil| (one control sequence token) as a
+%    delimiter behind it, and
+%    then calls |\verbatim@@|.
+% \end{macro}
+%
+% \begin{macro}{\verbatim@@}
+%    |\verbatim@@| takes everything up to the next occurrence of
+%    the four characters |\end| as its argument.
+%    \begin{macrocode}
+    \def\verbatim@@#1!end{%
+%    \end{macrocode}
+%    That means: if they do not occur in the original line, then
+%    argument |#1| is the
+%    whole input line, and |\@nil| is the next token
+%    to be processed.
+%    However, if the four characters |\end| are part of the
+%    original line, then
+%    |#1| consists of the characters in front of |\end|,
+%    and the next token is the following character (always remember
+%    that the line was lengthened by five tokens).
+%    Whatever |#1| may be, it is verbatim text,
+%    so |#1| is added to the line currently built.
+%    \begin{macrocode}
+       \verbatim@addtoline{#1}%
+%    \end{macrocode}
+%    The next token in the input stream
+%    is of special interest to us.
+%    Therefore |\futurelet| defines |\next| to be equal
+%    to it before calling |\verbatim@@@|.
+%    \begin{macrocode}
+       \futurelet\next\verbatim@@@}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@@@}
+% \changes{v1.1a}{1989/10/16}{Replaced \cs{verbatim@@@} by
+%                           \cs{@nil} where used as delimiter.}
+%    |\verbatim@@@| will now read the rest of the tokens on
+%    the current line,
+%    up to the final |\@nil| token.
+%    \begin{macrocode}
+    \def\verbatim@@@#1\@nil{%
+%    \end{macrocode}
+%    If the first of the above two cases occurred, i.e.\ no
+%    |\end| characters were on that line, |#1| is empty
+%    and |\next| is equal to |\@nil|.
+%    This is easily checked.
+%    \begin{macrocode}
+       \ifx\next\@nil
+%    \end{macrocode}
+%    If so, this was a simple line.
+%    We finish it by processing the line we accumulated so far.
+%    Then we prepare to read the next line.
+% \changes{v1.2f}{1990/01/31}{Added \cs{verbatim@startline}.}
+%    \begin{macrocode}
+         \verbatim@processline
+         \verbatim@startline
+         \let\next\verbatim@
+%    \end{macrocode}
+%    Otherwise we have to check what follows these |\end|
+%    tokens.
+%    \begin{macrocode}
+       \else
+%    \end{macrocode}
+%    Before we continue, it's a good idea to stop for a moment
+%    and remember where we are:
+%    We have just read the four character tokens |\end|
+%    and must now check whether the name of the environment (surrounded
+%    by braces) follows.
+%    To this end we define a macro called |\@tempa|
+%    that reads exactly one character and decides what to do next.
+%    This macro should do the following: skip spaces until
+%    it encounters either a left brace or the end of the line.
+%    But it is important to remember which characters are skipped.
+%    The |\end|\meta{optional spaces}|{| characters
+%    may be part of the verbatim text, i.e.\ these characters
+%    must be printed.
+%
+%    Assume for example that the current line contains
+%    \begin{verbatim*}
+%      \end {AVeryLongEnvironmentName}
+%\end{verbatim*}
+%    As we shall soon see, the scanning mechanism implemented here
+%    will not find out that this is text to be printed until
+%    it has read the right brace.
+%    Therefore we need a way to accumulate the characters read
+%    so that we can reinsert them if necessary.
+%    The token register |\@temptokena| is used for this purpose.
+%
+%    Before we do this we have to get rid of the superfluous
+%    |\end| tokens at the end of the line.
+% \changes{v1.4j}{1992/06/30}{Removed use of \cs{toks@}. Suggested by
+%           Bernd Raichle.}
+%    To this end we define a temporary macro whose argument
+%    is delimited by |\end\@nil| (four character tokens
+%    and one control sequence token) to be used below
+%    on the rest of the line, after appending a |\@nil| token to it.
+%    (Note that this token can never appear in |#1|.)
+%    We use the following definition of
+%    |\@tempa| to get the rest of the line (after the first
+%    |\end|).
+%    \begin{macrocode}
+         \def\@tempa##1!end\@nil{##1}%
+%    \end{macrocode}
+%    We mentioned already that we use token register
+%    |\@temptokena|
+%    to remember the characters we skip, in case we need them again.
+%    We initialize this with the |\end| we have thrown away
+%    in the call to |\@tempa|.
+%    \begin{macrocode}
+         \@temptokena{!end}%
+%    \end{macrocode}
+%    We shall now call |\verbatim@test|
+%    to process the characters
+%    remaining on the current line.
+%    But wait a moment: we cannot simply call this macro
+%    since we have already read the whole line.
+%    Therefore we have to first expand the macro |\@tempa| to insert
+%    them again after the |\verbatim@test| token.
+%    A |^^M| character is appended to denote the end of the line.
+%    (Remember that this character comes disguised as a tilde.)
+% \changes{v1.2}{1989/10/20}{Taken local definition of \cs{@tempa} out
+%                          of \cs{verbatim@@@} and introduced
+%                          \cs{verbatim@test} instead.}
+%    \begin{macrocode}
+         \def\next{\expandafter\verbatim@test\@tempa#1\@nil~}%
+%    \end{macrocode}
+%    That's almost all, but we still have to
+%    now call |\next| to do the work.
+%    \begin{macrocode}
+       \fi \next}%
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\verbatim@test}
+% \changes{v1.2}{1989/10/20}{Introduced \cs{verbatim@test}.}
+%    We define |\verbatim@test| to investigate every token
+%    in turn.
+%    \begin{macrocode}
+    \def\verbatim@test#1{%
+%    \end{macrocode}
+%    First of all we set |\next| equal to |\verbatim@test|
+%    in case this macro must call itself recursively in order to
+%    skip spaces.
+%    \begin{macrocode}
+           \let\next\verbatim@test
+%    \end{macrocode}
+%    We have to distinguish four cases:
+%    \begin{enumerate}
+%      \item The next token is a |^^M|, i.e.\ we reached
+%            the end of the line.  That means that nothing
+%            special was found.
+%            Note that we use |\if| for the following
+%            comparisons so that the category code of the
+%            characters is irrelevant.
+%    \begin{macrocode}
+           \if\noexpand#1\noexpand~%
+%    \end{macrocode}
+%            We add the characters accumulated in token register
+%            |\@temptokena| to the current line.  Since
+%            |\verbatim@addtoline| does not expand its argument,
+%            we have to do the expansion at this point.  Then we
+%            |\let| |\next| equal to |\verbatim@|
+%            to prepare to read the next line.
+% \changes{v1.2f}{1990/01/31}{Added \cs{verbatim@startline}.}
+%    \begin{macrocode}
+             \expandafter\verbatim@addtoline
+               \expandafter{\the\@temptokena}%
+             \verbatim@processline
+             \verbatim@startline
+             \let\next\verbatim@
+%    \end{macrocode}
+%      \item A space character follows.
+%            This is allowed, so we add it to |\@temptokena|
+%            and continue.
+%    \begin{macrocode}
+           \else \if\noexpand#1
+             \@temptokena\expandafter{\the\@temptokena#1}%
+%    \end{macrocode}
+% \changes{v1.2f}{1990/01/31}{Code for TABs removed.}
+%      \item An open brace follows.
+%            This is the most interesting case.
+%            We must now collect characters until we read the closing
+%            brace and check whether they form the environment name.
+%            This will be done by |\verbatim@testend|, so here
+%            we let |\next| equal this macro.
+%            Again we will process the rest of the line, character
+%            by character.
+% \changes{v1.2}{1989/10/20}{Moved the initialization of
+%                          \cs{@tempc} from \cs{verbatim@testend} into
+%                          \cs{verbatim@test}.}
+%            The characters forming the name of the environment will
+%            be accumulated in |\@tempc|.
+%            We initialize this macro to expand to nothing.
+% \changes{v1.3b}{1990/02/07}{\cs{noexpand} added.}
+%    \begin{macrocode}
+           \else \if\noexpand#1\noexpand[%
+             \let\@tempc\@empty
+             \let\next\verbatim@testend
+%    \end{macrocode}
+%            Note that the |[| character will be a |{| when
+%            this macro is defined.
+%      \item Any other character means that the |\end| was part
+%            of the verbatim text.
+%            Add the characters to the current line and prepare to call
+%            |\verbatim@| to process the rest of the line.
+%  \changes{v1.0f}{1989/10/09}{Fixed \cs{end} \cs{end} bug
+%                            found by Chris Rowley}
+%    \begin{macrocode}
+           \else
+             \expandafter\verbatim@addtoline
+               \expandafter{\the\@temptokena}%
+             \def\next{\verbatim@#1}%
+           \fi\fi\fi
+%    \end{macrocode}
+%    \end{enumerate}
+%    The last thing this macro does is to call |\next|
+%    to continue processing.
+%    \begin{macrocode}
+           \next}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@testend}
+%    |\verbatim@testend| is called when
+%    |\end|\meta{optional spaces}|{| was seen.
+%    Its task is to scan everything up to the next |}|
+%    and to call |\verbatim@@testend|.
+%    If no |}| is found it must reinsert the characters it read
+%    and return to |\verbatim@|.
+%    The following definition is similar to that of
+%    |\verbatim@test|:
+%    it takes the next character and decides what to do.
+% \changes{v1.2}{1989/10/20}{Removed local definition of \cs{@tempa}
+%                          from \cs{verbatim@testend} which now
+%                          does the work itself.}
+%    \begin{macrocode}
+    \def\verbatim@testend#1{%
+%    \end{macrocode}
+%    Again, we have four cases:
+%    \begin{enumerate}
+%      \item |^^M|: As no |}| is found in the current line,
+%            add the characters to the buffer.  To avoid a
+%            complicated construction for expanding
+%            |\@temptokena|
+%            and |\@tempc| we do it in two steps.  Then we
+%            continue with |\verbatim@| to process the
+%            next line.
+% \changes{v1.2f}{1990/01/31}{Added \cs{verbatim@startline}.}
+%    \begin{macrocode}
+         \if\noexpand#1\noexpand~%
+           \expandafter\verbatim@addtoline
+             \expandafter{\the\@temptokena[}%
+           \expandafter\verbatim@addtoline
+             \expandafter{\@tempc}%
+           \verbatim@processline
+           \verbatim@startline
+           \let\next\verbatim@
+%    \end{macrocode}
+%      \item |}|: Call |\verbatim@@testend| to check
+%            if this is the right environment name.
+% \changes{v1.3b}{1990/02/07}{\cs{noexpand} added.}
+%    \begin{macrocode}
+         \else\if\noexpand#1\noexpand]%
+           \let\next\verbatim@@testend
+%    \end{macrocode}
+%  \changes{v1.0f}{1989/10/09}{Introduced check for
+%              {\tt\string\verb!\string|!\string\!\string|} to fix
+%              single brace bug found by Chris Rowley}
+%      \item |\|: This character must not occur in the name of
+%            an environment.  Thus we stop collecting characters.
+%            In principle, the same argument would apply to other
+%            characters as well, e.g., |{|.
+%            However, |\| is a special case, since it may be
+%            the first character of |\end|.  This means that
+%            we have to look again for
+%            |\end{|\meta{environment name}|}|.
+%            Note that we prefixed the |!| by a |\noexpand|
+%            primitive, to protect ourselves against it being an
+%            active character.
+% \changes{v1.3b}{1990/02/07}{\cs{noexpand} added.}
+%    \begin{macrocode}
+         \else\if\noexpand#1\noexpand!%
+           \expandafter\verbatim@addtoline
+             \expandafter{\the\@temptokena[}%
+           \expandafter\verbatim@addtoline
+             \expandafter{\@tempc}%
+           \def\next{\verbatim@!}%
+%    \end{macrocode}
+%      \item Any other character: collect it and continue.
+%            We cannot use |\edef| to define |\@tempc|
+%            since its replacement text might contain active
+%            character tokens.
+%    \begin{macrocode}
+         \else \expandafter\def\expandafter\@tempc\expandafter
+           {\@tempc#1}\fi\fi\fi
+%    \end{macrocode}
+%    \end{enumerate}
+%    As before, the macro ends by calling itself, to
+%    process the next character if appropriate.
+%    \begin{macrocode}
+         \next}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@@testend}
+%    Unlike the previous macros |\verbatim@@testend| is simple:
+%    it has only to check if the |\end{|\ldots|}|
+%    matches the corresponding |\begin{|\ldots|}|.
+%    \begin{macrocode}
+    \def\verbatim@@testend{%
+%    \end{macrocode}
+%    We use |\next| again to define the things that are
+%    to be done.
+%    Remember that the name of the current environment is
+%    held in |\@currenvir|, the characters accumulated
+%    by |\verbatim@testend| are in |\@tempc|.
+%    So we simply compare these and prepare to execute
+%    |\end{|\meta{current environment}|}|
+%    macro if they match.
+%    Before we do this we call |\verbatim@finish| to process
+%    the last line.
+%    We define |\next| via |\edef| so that
+%    |\@currenvir| is replaced by its expansion.
+%    Therefore we need |\noexpand| to inhibit the expansion
+%    of |\end| at this point.
+%    \begin{macrocode}
+       \ifx\@tempc\@currenvir
+         \verbatim@finish
+         \edef\next{\noexpand\end{\@currenvir}%
+%    \end{macrocode}
+%    Without this trick the |\end| command would not be able
+%    to correctly check whether its argument matches the name of
+%    the current environment and you'd get an
+%    interesting \LaTeX{} error message such as:
+%    \begin{verbatim}
+%! \begin{verbatim*} ended by \end{verbatim*}.
+%\end{verbatim}
+%    But what do we do with the rest of the characters, those
+%    that remain on that line?
+%    We call |\verbatim@rescan| to take care of that.
+%    Its first argument is the name of the environment just
+%    ended, in case we need it again.
+%    |\verbatim@rescan| takes the list of characters to be
+%    reprocessed as its second argument.
+%    (This token list was inserted after the current macro
+%    by |\verbatim@@@|.)
+%    Since we are still in an |\edef| we protect it
+%    by means of|\noexpand|.
+%    \begin{macrocode}
+                    \noexpand\verbatim@rescan{\@currenvir}}%
+%    \end{macrocode}
+%    If the names do not match, we reinsert everything read up
+%    to now and prepare to call |\verbatim@| to process
+%    the rest of the line.
+%    \begin{macrocode}
+       \else
+         \expandafter\verbatim@addtoline
+           \expandafter{\the\@temptokena[}%
+           \expandafter\verbatim@addtoline
+             \expandafter{\@tempc]}%
+         \let\next\verbatim@
+       \fi
+%    \end{macrocode}
+%    Finally we call |\next|.
+%    \begin{macrocode}
+       \next}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@rescan}
+%    In principle |\verbatim@rescan| could be used to
+%    analyse the characters remaining after the |\end{...}|
+%    command and pretend that these were read
+%    ``properly'', assuming ``standard'' category codes are in
+%    force.\footnote{Remember that they were all read with
+%          category codes $11$ (letter) and $12$ (other) so
+%          that control sequences are not recognized as such.}
+%    But this is not always possible (when there are unmatched
+%    curly braces in the rest of the line).
+%    Besides, we think that this is not worth the effort:
+%    After a \texttt{verbatim} or \texttt{verbatim*} environment
+%    a new line in the output is begun anyway,
+%    and an |\end{comment}| can easily be put on a line by itself.
+%    So there is no reason why there should be any text here.
+%    For the benefit of the user who did put something there
+%    (a comment, perhaps)
+%    we simply issue a warning and drop them.
+%    The method of testing is explained in Appendix~D, p.\ 376 of
+%    the \TeX{}book. We use |^^M| instead of the |!|
+%    character used there
+%    since this is a character that cannot appear in |#1|.
+%    The two |\noexpand| primitives are necessary to avoid
+%    expansion of active characters and macros.
+%
+%    One extra subtlety should be noted here: remember that
+%    the token list we are currently building will first be
+%    processed by the |\lowercase| primitive before \TeX{}
+%    carries out the definitions.
+%    This means that the `|C|' character in the
+%    argument to the |\@warning| macro must be protected against
+%    being changed to `|c|'.  That's the reason why we added the
+%    |\lccode`\C=`\C| assignment above.
+%    We can now finish the argument to |\lowercase| as well as the
+%    group in which the category codes were changed.
+%    \begin{macrocode}
+    \def\verbatim@rescan#1#2~{\if\noexpand~\noexpand#2~\else
+        \@warning{Characters dropped after `\string\end{#1}'}\fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The \cs{verbatiminput} command}
+%
+% \begin{macro}{\verbatim@in@stream}
+%    We begin by allocating an input stream (out of the 16 available
+%    input streams).
+%\iffalse
+%  Vorstellbar ist auch der Aufruf von |`verbatiminput| innerhalb eines
+%  |`verbatiminput| (z.B: wenn man |`input|-Anweisungen im zu lesenden
+%  File hat und auch diese Files automatisch lesen will).  Dies kann
+%  man jedoch nur ermoeglichen, wenn man einen besseren Mechanismus
+%  verwendet als es das simple, statische |`newread| darstellt.
+%  Vorstellbar fuer eine neuere \LaTeX-Version ist eine (lokale)
+%  Allokation des Streams durch ein |`open| und eine Freigabe des
+%  Streams durch |`close| oder Verlassen der Gruppe.
+%\fi
+%    \begin{macrocode}
+\newread\verbatim@in@stream
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@readfile}
+%    The macro |\verbatim@readfile| encloses the main loop by calls to
+%    the macros |\verbatim@startline| and |\verbatim@finish|,
+%    respectively.  This makes sure
+%    that the user can initialize and finish the command when the file
+%    is empty or doesn't exist.  The \texttt{verbatim} environment has a
+%    similar behaviour when called with an empty text.
+%    \begin{macrocode}
+\def\verbatim@readfile#1{%
+  \verbatim@startline
+%    \end{macrocode}
+%    When the file is not found we issue a warning.
+%    \begin{macrocode}
+  \openin\verbatim@in@stream #1\relax
+  \ifeof\verbatim@in@stream
+    \typeout{No file #1.}%
+  \else
+%    \end{macrocode}
+%    At this point we pass the name of the file to |\@addtofilelist|
+%    so that its appears appears in the output of a |\listfiles|
+%    command.
+% \changes{v1.5j}{1996/09/25}{Add \cs{@addtofilelist} and
+%    \cs{ProvidesFile} so that the name of the file
+%    read in appears in the \cs{listfiles} output (Omission pointed
+%    out by Patrick W.~Daly).}
+%    In addition, we use |\ProvidesFile| to make a log entry in the
+%    transcript file and to distinguish files read in via
+%    |\verbatiminput| from others.
+%    \begin{macrocode}
+    \@addtofilelist{#1}%
+    \ProvidesFile{#1}[(verbatim)]%
+%    \end{macrocode}
+%    While reading from the file it is useful to switch off the
+%    recognition of the end-of-line character.  This saves us stripping
+%    off spaces from the contents of the line.
+%    \begin{macrocode}
+    \expandafter\endlinechar\expandafter\m@ne
+    \expandafter\verbatim@read@file
+    \expandafter\endlinechar\the\endlinechar\relax
+    \closein\verbatim@in@stream
+  \fi
+  \verbatim@finish
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@read@file}
+%    All the work is done in |\verbatim@read@file|.  It reads the input
+%    file line by line and recursively calls itself until the end of
+%    the file.
+%    \begin{macrocode}
+\def\verbatim@read@file{%
+  \read\verbatim@in@stream to\next
+  \ifeof\verbatim@in@stream
+  \else
+%    \end{macrocode}
+%    For each line we call |\verbatim@addtoline| with the contents of
+%    the line. \hskip0pt plus 3cm\penalty0\hskip0pt plus -3cm
+%    |\verbatim@processline| is called next.
+%    \begin{macrocode}
+    \expandafter\verbatim@addtoline\expandafter{\next}%
+    \verbatim@processline
+%    \end{macrocode}
+%    After processing the line we call |\verbatim@startline| to
+%    initialize all before we read the next line.
+%    \begin{macrocode}
+    \verbatim@startline
+%    \end{macrocode}
+%    Without |\expandafter| each call of |\verbatim@read@file| uses
+%    space in \TeX's input stack.\footnote{A standard \TeX\ would
+%    report an overflow error if you try to read a file with more than
+%    ca.\ 200~lines.  The same error occurs if the first line of code
+%    in \S 390 of \textsl{``TeX: The Program''\/} is missing.}
+%    \begin{macrocode}
+    \expandafter\verbatim@read@file
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\verbatiminput}
+%    |\verbatiminput| first starts a group to keep font and category
+%    changes local.
+%    Then it calls the macro |\verbatim@input| with additional
+%    arguments, depending on whether an asterisk follows.
+%    \begin{macrocode}
+\def\verbatiminput{\begingroup
+  \@ifstar{\verbatim@input\relax}%
+          {\verbatim@input{\frenchspacing\@vobeyspaces}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\verbatim@input}
+% \changes{1.5k}{1997/04/30}{Have \cs{verbatim@input} check for
+%    existence of file.}
+%    |\verbatim@input| first checks whether the file exists, using
+%    the standard macro |\IfFileExists| which leaves the name of the
+%    file found in |\@filef@und|.
+%    Then everything is set up as in the |\verbatim| macro.
+%    \begin{macrocode}
+\def\verbatim@input#1#2{%
+   \IfFileExists {#2}{\@verbatim #1\relax
+%    \end{macrocode}
+%    Then it reads in the file, finishes off the \texttt{trivlist}
+%    environment started by |\@verbatim| and closes the group.
+%    This restores everything to its normal settings.
+%    \begin{macrocode}
+    \verbatim@readfile{\@filef@und}\endtrivlist\endgroup\@doendpe}%
+%    \end{macrocode}
+%   If the file is not found a more or less helpful message is
+%    printed. The final |\endgroup| is  needed to close the group
+%    started in |\verbatiminput| above.
+%    \begin{macrocode}
+   {\typeout {No file #2.}\endgroup}}
+%</package>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Getting verbatim text into arguments.}
+%
+% One way of achieving this is to define a macro (command) whose
+% expansion is the required verbatim text.  This command can then be
+% used anywhere that the verbatim text is required.  It can be used in
+% arguments, even moving ones, but it is fragile (at least, the
+% version here is).
+%
+% Here is some code which claims to provide this.  It is a much revised
+% version of something I (Chris) did about 2 years ago.  Maybe it needs
+% further revision.
+%
+% It is only intended as an extension to |\verb|, not to the
+% \texttt{verbatim} environment.  It should therefore, perhaps, treat
+% line-ends similarly to whatever is best for |\verb|.
+%
+% \begin{macro}{\newverbtext}
+% This is the command to produce a new macro whose expansion is
+% verbatim text.  This command itself cannot be used in arguments,
+% of course! It is used as follows:
+%
+% \begin{verbatim}
+%    \newverbtext{\myverb}"^%{ &~_\}}@ #"
+% \end{verbatim}
+%
+% The rules for delimiting the verbatim text are the same as those for
+% |\verb|.
+%
+%    \begin{macrocode}
+%<*verbtext>
+\def \newverbtext {%
+  \@ifstar {\@tempswatrue \@verbtext }{\@tempswafalse \@verbtext *}%
+}
+%    \end{macrocode}
+% \end{macro}
+%    I think that a temporary switch is safe here: if not, then
+%    suitable |\let|s can be used.
+%    \changes{v1.5i}{1996/06/04}{Moved processing of
+%              \cs{verbatim@nolig@list} after \cs{dospecials}.}
+%    \changes{v1.5p}{2001/03/12}{Added missing right brace in
+%               definition of \cs{@verbtext} (PR 3314).}
+%    \begin{macrocode}
+\def \@verbtext *#1#2{%
+   \begingroup
+     \let\do\@makeother \dospecials
+     \let\do\do@noligs \verbatim@nolig@list
+     \@vobeyspaces
+     \catcode`#2\active
+     \catcode`~\active
+     \lccode`\~`#2%
+     \lowercase
+%    \end{macrocode}
+%    We use a temporary macro here and a trick so that the definition of
+%    the command itself can be done inside the group and be a local
+%    definition (there may be better ways to achieve this).
+%    \begin{macrocode}
+     {\def \@tempa ##1~%
+           {\whitespaces
+%    \end{macrocode}
+%    If these |\noexpand|s were |\noexpand\protect\noexpand|, would
+%    this make these things robust?
+%    \begin{macrocode}
+            \edef #1{\noexpand \@verbtextmcheck
+                     \bgroup
+                     \if@tempswa
+                       \noexpand \visiblespaces
+                     \fi
+                     \noexpand \@verbtextsetup
+                     ##1%
+                     \egroup}%
+            }%
+      \expandafter\endgroup\@tempa
+     }
+}
+%    \end{macrocode}
+%    This sets up the correct type of group for the mode: it must not
+%    be expanded at define time!
+%    \begin{macrocode}
+\def \@verbtextmcheck {%
+   \relax\ifmmode
+           \hbox
+         \else
+           \leavevmode
+           \null
+         \fi
+}
+%    \end{macrocode}
+%    This contains other things which should not be expanded during the
+%    definition.
+%    \begin{macrocode}
+\def \@verbtextsetup {%
+   \frenchspacing
+   \verbatim@font
+   \verbtextstyle
+}
+%    \end{macrocode}
+%    The command |\verbtextstyle| is a document-level hook which can be
+%    used to override the predefined typographic treatment of commands
+%    defined with |\newverbtext| commands.
+%
+%    |\visiblespaces| and |\whitespaces| are examples of possible values
+%    of this hook.
+%    \begin{macrocode}
+\let \verbtextstyle \relax
+\def \visiblespaces {\chardef \  32\relax}
+\def \whitespaces {\let \ \@@space}
+\let \@@space \ %
+%</verbtext>
+%    \end{macrocode}
+%
+%
+% \section{Testing the implementation}
+%
+% For testing the implementation and for demonstration we provide
+% an extra file. It can be extracted by using the conditional
+% `\textsf{testdriver}'. It uses a small input file called
+% `\texttt{verbtest.tst}' that is distributed separately.
+% Again, we use individual `+' guards.
+%    \begin{macrocode}
+%<*testdriver>
+\documentclass{article}
+
+\usepackage{verbatim}
+
+\newenvironment{myverbatim}%
+   {\endgraf\noindent MYVERBATIM:\endgraf\verbatim}%
+   {\endverbatim}
+
+\makeatletter
+
+\newenvironment{verbatimlisting}[1]%
+ {\def\verbatim@startline{\input{#1}%
+    \def\verbatim@startline{\verbatim@line{}}%
+    \verbatim@startline}%
+  \verbatim}{\endverbatim}
+
+\newwrite\verbatim@out
+
+\newenvironment{verbatimwrite}[1]%
+ {\@bsphack
+  \immediate\openout \verbatim@out #1
+  \let\do\@makeother\dospecials\catcode`\^^M\active
+  \def\verbatim@processline{%
+    \immediate\write\verbatim@out{\the\verbatim@line}}%
+  \verbatim@start}%
+ {\immediate\closeout\verbatim@out\@esphack}
+
+\makeatother
+
+\addtolength{\textwidth}{30pt}
+
+\begin{document}
+
+\typeout{}
+\typeout{===> Expect ``characters dropped''
+         warning messages in this test! <====}
+\typeout{}
+
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+  \begin{verbatim}
+    test
+    \end{verbatim*}
+    test
+    \end{verbatim
+    test of ligatures: <`!`?`>
+    \endverbatim
+    test
+    \end  verbatim
+    test
+    test of end of line:
+    \end
+    {verbatim}
+  \end{verbatim} Further text to be typeset: $\alpha$.
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+  \begin{verbatim*}
+    test
+    test
+  \end {verbatim*}
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+  \begin{verbatim*}  bla bla
+    test
+    test
+  \end {verbatim*}
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+
+First of Chris Rowley's fiendish tests:
+\begin{verbatim}
+the double end test<text>
+\end\end{verbatim}  or even \end \end{verbatim}
+%
+%not \end\ended??
+%\end{verbatim}
+
+Another of Chris' devils:
+\begin{verbatim}
+the single brace test<text>
+\end{not the end\end{verbatim}
+%
+%not \end}ed??
+%\end{verbatim}
+Back to my own tests:
+  \begin{myverbatim}
+    test
+    test
+  \end {myverbatim} rest of line
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+
+Test of empty verbatim:
+\begin{verbatim}
+\end{verbatim}
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+  \begin {verbatimlisting}{verbtest.tex}
+    Additional verbatim text
+      ...
+  \end{verbatimlisting}
+And here for listing a file:
+  \verbatiminput{verbtest.tex}
+And again, with explicit spaces:
+  \verbatiminput*{verbtest.tex}
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+  \begin{comment}
+    test
+    \end{verbatim*}
+    test
+    \end {comment
+    test
+    \endverbatim
+    test
+    \end  verbatim
+    test
+  \end {comment} Further text to be typeset: $\alpha$.
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+  \begin{comment}  bla bla
+    test
+    test
+  \end {comment}
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+Text Text Text Text Text Text Text Text Text Text Text
+
+\begin{verbatimwrite}{verbtest.txt}
+asfa<fa<df
+sdfsdfasd
+asdfa<fsa
+\end{verbatimwrite}
+
+\end{document}
+%</testdriver>
+%    \end{macrocode}
+%
+%
+% \Finale
+%
+\endinput
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%

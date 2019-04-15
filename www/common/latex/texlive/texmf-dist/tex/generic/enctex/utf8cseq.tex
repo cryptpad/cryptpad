@@ -1,0 +1,61 @@
+% utf8cseq.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% UTF-8 characters expanding to control sequences.
+% Independent on internal TeX encoding, provided the control sequences are
+% properly defined (either in plain.tex, or one of t1macro.tex and
+% csfmacro.tex).
+%
+% Copyright (C) 2003 David Necas (Yeti)
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+% Punctuation
+\let\nbsp~
+\mubyte \nbsp ^^c2^^a0\endmubyte % no-break space
+\mubyte \quad ^^e2^^80^^83\endmubyte % em space
+\mubyte \clqq ^^e2^^80^^9e\endmubyte % double low-9 quotation mark
+\mubyte \crqq ^^e2^^80^^9c\endmubyte % left double quotation mark
+\mubyte \flqq ^^c2^^ab\endmubyte % left-pointing double angle quotation mark
+\mubyte \frqq ^^c2^^bb\endmubyte % right-pointing double angle quotation mark
+\mubyte \dots ^^e2^^80^^a6\endmubyte % horizontal ellipsis
+\mubyte \clq ^^e2^^80^^9a\endmubyte % single low-9 quotation mark
+\mubyte \crq ^^e2^^80^^98\endmubyte % left single quotation mark
+\mubyte \- ^^c2^^ad\endmubyte % soft hyphen
+\def\utfhyphen{\discretionary{-}{-}{-}} % FIXME: hyphenchar?
+\mubyte \utfhyphen ^^e2^^80^^90\endmubyte % hyphen
+
+% Latin1 characters
+\mubyte \ss ^^c3^^9f\endmubyte % latin small letter sharp s
+\mubyte \AA ^^c3^^85\endmubyte % latin capital letter a with ring above
+\mubyte \aa ^^c3^^a5\endmubyte % latin small letter a with ring above
+\mubyte \AE ^^c3^^86\endmubyte % latin capital ligature ae
+\mubyte \ae ^^c3^^a6\endmubyte % latin small ligature ae
+\mubyte \OE ^^c5^^92\endmubyte % latin capital ligature oe
+\mubyte \oe ^^c5^^93\endmubyte % latin small ligature oe
+\mubyte \O ^^c3^^98\endmubyte % latin capital letter o slash
+\mubyte \o ^^c3^^b8\endmubyte % latin small letter o slash
+
+% Other text symbols
+\mubyte \promile ^^e2^^80^^b0\endmubyte % per mile sign
+\mubyte \pound ^^c2^^a3\endmubyte % pound sign
+% FIXME: \registered is already raised, while U+00AE is not
+\mubyte \registered ^^c2^^ae\endmubyte % registered
+\mubyte \copyright ^^c2^^a9\endmubyte % copyright
+\mubyte \dag ^^e2^^80^^a0\endmubyte % dagger
+\mubyte \ddag ^^e2^^80^^a1\endmubyte % double dagger
+\mubyte \S ^^c2^^a7\endmubyte % section sign
+\mubyte \P ^^c2^^b6\endmubyte % pilcrow sign
+
+\endinput

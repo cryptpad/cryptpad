@@ -1,0 +1,197 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltpar.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltpar.dtx}
+             [1995/04/29 v1.1c LaTeX Kernel (paragraphs)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltpar.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Tobias Oetiker \thanks{Tobi did the documentation update}\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{18}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \changes{v1.1a}{1994/05/16}{(ASAJ) Split from ltinit.dtx.}
+% \changes{v1.1b}{1995/04/29}{(TO) Comments clean-up.}
+%
+% \section{Paragraphs}
+%
+% This section of the kernel declares the commands used to set
+% |\par| and |\everypar| when ever their function needs to be
+% changed for a long time.
+%
+% \StopEventually{}
+%
+% \subsection{Implementation}
+%
+%
+% There are two situations in which |\par| may be changed:
+%
+% \begin{itemize}
+% \item Long-term changes, in which the new value is to remain in effect
+%     until the current environment is left.  The environments that
+%     change |\par| in this way are the following:
+%     \begin{itemize}
+%         \item All list environments (itemize, quote, etc.)
+%         \item Environments that turn |\par| into a noop:
+%              tabbing, array and tabular.
+%     \end{itemize}
+%  \item  Temporary changes, in which |\par| is restored to its previous
+%  value the next time it is executed. The following are all such uses.
+%      \begin{itemize}
+%        \item |\end| when preceded by |\@endparenv|, which is called by
+%                 |\endtrivlist|
+%        \item  The mechanism for avoiding page breaks and getting the
+%           spacing right after section heads.
+%       \end{itemize}
+% \end{itemize}
+%
+% \DescribeMacro{\@setpar}
+% To permit the proper interaction of these two situations, long-term
+% changes are made by the |\@setpar{|\meta{VAL}|}| command.
+% It's function is:
+% \begin{quote}
+%    To set |\par|. It |\def|'s |\par| and |\@par| to \meta{VAL}.
+% \end{quote}
+%
+% \DescribeMacro{\@restorepar}
+% Short-term changes are made by the usual |\def\par| commands.
+% The original values are restored after a short-term change
+% by the |\@restorepar| commands.
+%
+% \DescribeMacro{\@@par}
+% |\@@par| always is defined to be the original \TeX{} |\par|.
+%
+% \DescribeMacro{\everypar}
+% |\everypar| is changed only for the short term.  Whenever |\everypar|
+% is set non-null, it should restore itself to null when executed.
+%
+% The following commands change |\everypar| in this way:
+% \begin{itemize}
+%    \item |\item|
+%    \item |\end| when preceded by |\@endparenv|, which is called by
+%                 |endtrivlist|
+%    \item |\minipage|
+% \end{itemize}
+%
+% When dealing with |\par| and |\everypar| remember the following two
+% warnings:
+% \begin{enumerate}
+%  \item Commands that make short-term changes to |\par| and |\everypar|
+%     must take account of the possibility that the new commands and the
+%     ones that do the restoration may be executed inside a group.  In
+%     particular, |\everypar| is executed inside a group whenever a new
+%     paragraph  begins with a left brace.  The |\everypar| command
+%     that restores its  definition should be local to the current
+%     group (in case the command
+%     is inside a minipage used inside someplace where |\everypar| has
+%     been redefined).  Thus, if |\everypar| is redefined to do an
+%     |\everypar{}| it could take several executions of |\everypar|
+%     before the restoration ``holds''.  This usually causes no problem.
+%     However, to prevent the extra executions from doing harm,
+%     use a global switch to keep anything harmful in the new
+%     |\everypar| from being done twice.
+%   \item Commands that change |\everypar| should remember that
+%   |\everypar| might be supposed to set the following switches false:
+%      \begin{itemize}
+%        \item |@nobreak|
+%        \item |@minipage|
+%      \end{itemize}
+%      they should do the setting if necessary.
+%  \end{enumerate}
+%    \begin{macrocode}
+%<*2ekernel>
+\message{par,}
+%    \end{macrocode}
+%
+%
+% \begin{macro}{\@setpar}
+% \begin{macro}{\@par}
+%    Initiate a long-term change to |\par|.
+%    \begin{macrocode}
+\def\@setpar#1{\def\par{#1}\def\@par{#1}}
+%    \end{macrocode}
+%
+%    The default definition of |\@par| will ensure that if
+%    |\@restorepar| defines |\par| to execute |\@par| it will redefine
+%    itself to the primitive |\@@par| after one iteration.
+%    \begin{macrocode}
+\def\@par{\let\par\@@par\par}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@restorepar}
+%    Restore from a short-term change to |\par|.
+%    \begin{macrocode}
+\def\@restorepar{\def\par{\@par}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+\endinput
+

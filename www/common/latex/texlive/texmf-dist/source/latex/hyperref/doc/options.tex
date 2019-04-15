@@ -1,0 +1,132 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{geometry}
+\geometry{
+  includefoot,
+  hmargin=10mm,
+  vmargin=15mm,
+}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{ifluatex,ifxetex}
+\ifnum 0\ifluatex 1\else\ifxetex 1\fi\fi=0 %
+  \renewcommand*{\ttdefault}{lmvtt}%
+\else
+  \usepackage{fontspec}%
+  \renewcommand*{\ttdefault}{lmvtt}%
+\fi
+\title{hyperref package options}
+\author{Sebastian Rahtz, Heiko Oberdiek et al.}
+\date{July 28th 2012}% HO
+\newcommand{\optempty}{{\rmfamily\textit{empty}}}
+\newcommand{\optrelax}{{\rmfamily\textit{relax}}}
+\newcommand*{\for}[1]{{\rmfamily(#1)}}
+\begin{document}
+\maketitle
+\begin{longtable}{@{}>{\ttfamily}lp{70mm}>{\ttfamily}l@{}}
+\hline
+allbordercolors &set all border color options&\\
+allcolors &set all color options (without border and field options)&\\
+anchorcolor &set color of anchors&black\\
+backref &do bibliographical back references&false\\
+baseurl &set base URL for document&\optempty\\
+bookmarks &make bookmarks&true\\
+bookmarksnumbered &put section numbers in bookmarks&false\\
+bookmarksopen &open up bookmark tree&false\\
+bookmarksopenlevel &level to which bookmarks are open&\string\maxdimen\\
+bookmarkstype &to specify which `toc' file to mimic&toc\\
+breaklinks &allow links to break over lines&false\\
+citebordercolor &color of border around cites& 0 1 0\\
+citecolor &color of citation links&green\\
+colorlinks &color links&false\\
+&&true \for{tex4ht, dviwindo}\\
+debug &provide details of anchors defined&false\\
+destlabel &destinations are named by the first \verb|\label| after the anchor creation&false\\
+&same as verbose&\\
+draft &do not do any hyper linking&false\\
+driverfallback &Use this driver option, if no driver is given and cannot be autodetected\\
+dvipdfm &use dvipdfm backend\\
+dvipdfmx &use dvipdfmx backend (dvipdfm)\\
+dvips &use dvips backend\\
+dvipsone &use dvipsone backend\\
+dviwindo &use dviwindo backend\\
+encap &to set encap character for hyperindex\\
+extension &suffix of linked files&dvi\\
+filebordercolor &color of border around file links& 0 .5 .5\\
+filecolor &color of file links&cyan\\
+final &opposite of option draft&true\\
+frenchlinks &use small caps instead of color for links&false\\
+hidelinks&hide links (no color, no border)&\\
+hyperfigures &make figures hyper links&false\\
+hyperfootnotes &set up hyperlinked footnotes&true\\
+hyperindex &set up hyperlinked indices&true\\
+hypertex &use HyperTeX backend\\
+hypertexnames &use guessable names for links&true\\
+implicit &redefine \LaTeX\ internals&true\\
+latex2html &use \LaTeX2HTML backend\\
+linkbordercolor &color of border around links& 1 0 0\\
+linkcolor &color of links&red\\
+linktocpage &make page number, not text, be link on TOC, LOF and LOT&false\\
+menubordercolor &color of border around menu links& 1 0 0\\
+menucolor &color for menu links&red\\
+naturalnames &use \LaTeX-computed names for links&false\\
+nesting &allow nesting of links&false\\
+pageanchor &put an anchor on every page&true\\
+pagebackref &backreference by page number&false\\
+pdfauthor &text for PDF Author field&\optempty\\
+pdfborder &width of PDF link border&0 0 1\\
+&&0 0 0 \for{colorlinks}\\
+pdfcenterwindow &position the document window center of the screen&false\\
+pdfcreator &text for PDF Creator field&LaTeX with hyperref package\\
+pdfdirection & direction setting & \optempty\\
+pdfdisplaydoctitle &display document title instead of file name in title bar&false\\
+pdfduplex &paper handling option for print dialog& \optempty\\
+pdffitwindow &resize document window to fit document size&false\\
+pdfhighlight &set highlighting of PDF links& /I\\
+pdfinfo & alternative interface for document information & \optempty\\
+pdfkeywords &text for PDF Keywords field&\optempty\\
+pdflang &PDF language identifier (RFC 3066)&\optrelax\\
+pdfmenubar &make PDF  viewer's menu bar visible&true\\
+pdfnewwindow &make links that open another PDF file start a new window&false\\
+pdfnonfullscreenpagemode &page mode setting on exiting full-screen mode&\optempty\\
+pdfnumcopies &number of printed copies&\optempty\\
+pdfpagelayout &set layout of PDF pages&\optempty\\
+pdfpagemode &set default mode of PDF display&\optempty\\
+pdfpagelabels &set PDF page labels&false\\
+pdfpagescrop &set crop size of PDF document&\optempty\\
+pdfpagetransition &set PDF page transition style&\optempty\\
+pdfpicktrackbypdfsize &set option for print dialog&\optempty\\
+pdfprintarea &set /PrintArea of viewer preferences&\optempty\\
+pdfprintclip &set /PrintClip of viewer preferences&\optempty\\
+pdfprintpagerange &set /PrintPageRange of viewer preferences&\optempty\\
+pdfprintscaling &page scaling option for print dialog&\optempty\\
+pdfproducer &text for PDF Producer field&\optempty\\
+pdfremotestartview & starting view for links into remote PDF documents&Fit\\
+pdftrapped & set the document information Trapped entry&\optempty\\
+pdfstartpage &page at which PDF document opens&1\\
+pdfstartview &starting view of PDF document& Fit\\
+pdfsubject &text for PDF Subject field&\optempty\\
+pdftex &use pdf\TeX\ backend\\
+pdftitle &text for PDF Title field&\optempty\\
+pdftoolbar &make PDF toolbar visible&true\\
+pdfview &PDF `view' when on link traversal&\optempty\\
+pdfviewarea &set /ViewArea of viewer preferences&\optempty\\
+pdfviewclip &set /ViewClip of viewer preferences&\optempty\\
+pdfwindowui &make PDF user interface  elements visible&true\\
+plainpages &do page number anchors as plain arabic&true\\
+ps2pdf &use ps2pdf backend\\
+raiselinks &raise up links (for HyperTeX backend)&false\\
+runbordercolor &color of border around `run' links& 0 .7 .7\\
+runcolor & color of `run' links& filecolor\\
+setpagesize &set page size by special driver commands&true\\
+tex4ht &use \TeX4ht backend\\
+textures &use Textures backend\\
+unicode &Unicode encoded pdf strings\\
+urlbordercolor &color of border around URL links& 0 1 1\\
+urlcolor &color of URL links&magenta\\
+verbose &be chatty&false\\
+vtex &use V\TeX\ backend\\
+vtexpdfmark &use backend for V\TeX\ in PDF/PS mode (pdfmark specials)\\
+xetex &use XeTeX backend (dvipdfm)\\
+\hline
+\end{longtable}
+\end{document}

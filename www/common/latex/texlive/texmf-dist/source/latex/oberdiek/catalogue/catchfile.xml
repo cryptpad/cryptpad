@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='catchfile'>
+  <name>catchfile</name>
+  <caption>Catch an external file into a macro.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.6'/>
+  <description>
+    This package catches the contents of a file and puts it in a macro.
+    It requires <xref refid='etex'>e-TeX</xref>. Both
+    <xref refid='latex'>LaTeX</xref> and
+    <xref refid='plain'>plain TeX</xref> are supported.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/catchfile.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/catchfile.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

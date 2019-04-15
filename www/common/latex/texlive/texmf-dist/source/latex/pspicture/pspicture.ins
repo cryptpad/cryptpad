@@ -1,0 +1,14 @@
+\input docstrip
+\keepsilent
+\preamble
+\endpreamble
+
+\askforoverwritefalse
+\def\ps{\perCent!}
+
+\generate{\file{pspicture.sty}{\from{pspicture.dtx}{package,dvips}}
+\usepostamble\empty
+\usepreamble\ps
+          \file{pspicture.ps}{\from{pspicture.dtx}{ps}}}
+
+\endbatchfile

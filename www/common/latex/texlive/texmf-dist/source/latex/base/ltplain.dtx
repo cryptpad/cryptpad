@@ -1,0 +1,1582 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltplain.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltplain.dtx}
+             [2015/08/30 v2.1a LaTeX Kernel (Plain TeX)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltplain.dtx}
+\begin{document}
+\title{\filename\\(The file plain.tex, modified for \LaTeX)}
+\author{Donald~E.~Knuth\\
+ Modified by
+ Leslie Lamport, Frank Mittelbach,\\
+ Rainer Sch\"opf, David Carlisle}
+\date{\filedate}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1343}
+%
+% \changes{v1.0a}{1994/03/08}
+%         {Remove need for a driver file.}
+% \changes{v1.0b}{1994/03/12}
+%         {Name changed from lplain. The end of an era}
+% \changes{v1.0e}{1994/03/12}{Replaced remaining width, height, depth
+%       by \LaTeX{} macro names to save tokens.}
+% \changes{v1.1a}{1994/10/14}
+%         {Moved code to other files.}
+% \changes{v1.1b}{1994/11/10}
+%         {(CAR) added patch to \cs{loop}.}
+% \changes{v1.1f}{1994/11/25}
+%         {(DPC) Comment out lots of obsolete code}
+% \changes{v1.1g}{1994/12/01}
+%         {(DPC) More doc changes}
+% \changes{v1.1j}{1995/05/07}{Use \cs{hb@xt@}}
+% \changes{v1.1j}{1995/05/21}{Moved some code to other files}
+% \changes{v1.1n}{1995/07/02}{Removed surplus `by' and `\quotechar=' in
+%                             various places}
+% \changes{v1.1o}{1995/09/14}{Moved \cs{multispan} to lttab.dtx}
+% \changes{v1.1r}{1995/10/10}{Autoload tracing code}
+% \changes{v1.1u}{1996/10/28}{(CAR) More doc changes}
+% \changes{v2.0e}{2015/02/21}{Removed autoload code}
+%
+% \section{Plain \TeX}
+%
+% \LaTeX\ includes almost all of the functionality of Knuth's original
+% `Basic Macros' That is, the plain \TeX\ format described in Appendix~B
+% of the \TeX{}Book.  However, some of the user commands are not much
+% use so, in order to save memory, we may remove them from the kernel
+% into a package.  Here is a list of the commands that may be removed
+% (PROBABLY NOT COMPLETE).
+% \begin{verbatim}
+%    \magstep    \magstephalf
+%    \mathhexbox
+%    \vglue      \vgl@
+%    \hglue      \hgl@
+% \end{verbatim}
+%
+% This file is by now very small as most of it has been moved to more
+% appropriate kernel files: it may disappear completely one day.
+%
+% \LaTeX\ font definitions are done using NFSS2 so none of PLAIN's
+% font definitions are in \LaTeX.
+%
+% \LaTeX\ has its own tabbing environment, so PLAIN's is disabled.
+%
+% \LaTeX{} uses its own output routine, so most of the plain one was
+% removed.
+%
+% \StopEventually{}
+%
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\catcode`\$=3 % dollar sign is math shift
+\catcode`\&=4 % ampersand is alignment tab
+\catcode`\#=6 % hash mark is macro parameter character
+\catcode`\^=7 % circumflex and uparrow are for superscripts
+\catcode`\_=8 % underline and downarrow are for subscripts
+\catcode`\^^I=10 % ascii tab is a blank space
+\chardef\active=13 \catcode`\~=\active % tilde is active
+\catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\message{catcodes,}
+%    \end{macrocode}
+%
+% We had to define the |\catcodes| right away, before the message line,
+% since |\message| uses the |{| and |}| characters.
+% When INITEX (the \TeX\ initializer) starts up,
+% it has defined the following |\catcode| values:\\
+% |\catcode`\^^@=9 % | ascii null is ignored\\
+% |\catcode`\^^M=5 % | ascii return is end-line\\
+% |\catcode`\\=0 %   | backslash is TeX escape character\\
+% |\catcode`\%=14 %  | percent sign is comment character\\
+% |\catcode`\ =10 %  | ascii space is blank space\\
+% |\catcode`\^^?=15 %| ascii delete is invalid\\
+% |\catcode`\A=11 ... \catcode`\Z=11 %| uppercase letters\\
+% |\catcode`\a=11 ... \catcode`\z=11 %| lowercase letters\\
+% all others are type 12 (other)
+%
+% Here is a list of the characters that have been specially catcoded:
+%    \begin{macrocode}
+\def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
+  \do\#\do\^\do\_\do\%\do\~}
+%    \end{macrocode}
+% (not counting ascii null, tab, linefeed, formfeed, return, delete)
+% Each symbol in the list is preceded by \do, which can be defined
+% if you want to do something to every item in the list.
+%
+% We make |@| signs act like letters, temporarily, to avoid conflict
+% between user names and internal control sequences of plain format.
+%    \begin{macrocode}
+\catcode`@=11
+%    \end{macrocode}
+%
+% To make the plain macros more efficient in time and space,
+% several constant values are declared here as control sequences.
+% If they were changed, anything could happen;
+% so they are private symbols.
+% \begin{macro}{\@ne}
+% \begin{macro}{\tw@}
+% \begin{macro}{\thr@@}
+% \begin{macro}{\sixt@@n}
+% \begin{macro}{\@cclv}
+% Small constants are defined using |\chardef|.
+%    \begin{macrocode}
+\chardef\@ne=1
+\chardef\tw@=2
+\chardef\thr@@=3
+\chardef\sixt@@n=16
+\chardef\@cclv=255
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@cclvi}
+% \begin{macro}{\@m}
+% \begin{macro}{\@M}
+% \begin{macro}{\@MM}
+% Constants above 255 defined using |\mathchardef|.
+%    \begin{macrocode}
+\mathchardef\@cclvi=256
+\mathchardef\@m=1000
+\mathchardef\@M=10000
+\mathchardef\@MM=20000
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% Allocation of registers
+%
+% Here are macros for the automatic allocation of |\count|, |\box|,
+% |\dimen|, |\skip|, |\muskip|, and |\toks| registers, as well as
+% |\read| and |\write| stream numbers, |\fam| codes, |\language| codes,
+% and |\insert| numbers.
+%
+%    \begin{macrocode}
+\message{registers,}
+%    \end{macrocode}
+%
+% When a register is used only temporarily, it need not be allocated;
+% grouping can be used, making the value previously in the register
+% return after the close of the group.  The main use of these macros is
+% for registers that are defined by one macro and used by others,
+% possibly at different nesting levels.  All such registers should be
+% defined through these macros; otherwise conflicts may occur,
+% especially when two or more macro packages are being used at
+% the same time.
+%
+% \begin{oldcomments}
+% The following counters are reserved:
+%   0 to 9  page numbering
+%       10  count allocation
+%       11  dimen allocation
+%       12  skip allocation
+%       13  muskip allocation
+%       14  box allocation
+%       15  toks allocation
+%       16  read file allocation
+%       17  write file allocation
+%       18  math family allocation
+%       19  language allocation
+%       20  insert allocation
+%       21  the most recently allocated number
+%       22  constant -1
+% \end{oldcomments}
+%
+% New counters are allocated starting with 23, 24, etc.  Other registers
+% are allocated starting with 10.  This leaves 0 through 9 for the user
+% to play with safely, except that counts 0 to 9 are considered to be
+% the page and subpage numbers (since they are displayed during
+% output). In this scheme, |\count| 10 always contains the number of the
+% highest-numbered counter that has been allocated, |\count| 14 the
+% highest-numbered box, etc. Inserts are given numbers 254, 253, etc.,
+% since they require a |\count|, |\dimen|, |\skip|, and |\box| all with
+% the same number; |\count| 20 contains the lowest-numbered insert that
+% has been allocated. Of course, |\box|255 is reserved for |\output|;
+% |\count|255, |\dimen|255, and |\skip|255 can be used freely.
+%
+% It is recommended that macro designers always use
+% |\global| assignments with respect to registers numbered\\
+% 1, 3, 5, 7, 9,\\
+% and always non-|\global| assignments with respect to registers\\
+% 0, 2, 4, 6, 8, 255.\\
+% This will prevent ``save stack buildup'' that might otherwise occur.
+%
+%    \begin{macrocode}
+\count10=22 % allocates \count registers 23, 24, ...
+\count11=9 % allocates \dimen registers 10, 11, ...
+\count12=9 % allocates \skip registers 10, 11, ...
+\count13=9 % allocates \muskip registers 10, 11, ...
+\count14=9 % allocates \box registers 10, 11, ...
+\count15=9 % allocates \toks registers 10, 11, ...
+\count16=-1 % allocates input streams 0, 1, ...
+\count17=-1 % allocates output streams 0, 1, ...
+\count18=3 % allocates math families 4, 5, ...
+\count19=0 % allocates \language codes 1, 2, ...
+\count20=255 % allocates insertions 254, 253, ...
+%    \end{macrocode}
+%
+% \begin{macro}{\insc@unt}
+% \begin{macro}{\allocationnumber}
+% The insertion counter and most recent allocation.
+%    \begin{macrocode}
+\countdef\insc@unt=20
+\countdef\allocationnumber=21
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\m@ne}
+% The constant $-1$.
+%    \begin{macrocode}
+\countdef\m@ne=22 \m@ne=-1
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\wlog}
+% Write on log file (only)
+%    \begin{macrocode}
+\def\wlog{\immediate\write\m@ne}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\count@}
+% \begin{macro}{\dimen@}
+% \begin{macro}{\dimen@i}
+% \begin{macro}{\dimen@ii}
+% \begin{macro}{\skip@}
+% \begin{macro}{\toks@}
+% Here are abbreviations for the names of scratch registers
+% that don't need to be allocated.
+%    \begin{macrocode}
+\countdef\count@=255
+\dimendef\dimen@=0
+\dimendef\dimen@i=1 % global only
+\dimendef\dimen@ii=2
+\skipdef\skip@=0
+\toksdef\toks@=0
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\newcount}
+% \begin{macro}{\newdimen}
+% \begin{macro}{\newskip}
+% \begin{macro}{\newmuskip}
+% \begin{macro}{\newbox}
+% \begin{macro}{\newread}
+% \begin{macro}{\newwrite}
+% \begin{macro}{\newlanguage}
+% \changes{v1.0c}{1994/03/28}
+%         {Remove some \cs{outer} declarations.}
+% \changes{v1.1h}{1995/04/24}
+%         {Remove remaining \cs{outer} declarations.}
+% Now, we define |\newcount|, |\newbox|, etc. so that you can say
+% |\newcount\foo| and |\foo| will be defined (with |\countdef|) to
+% be the next counter.
+%
+% To find out which counter |\foo| is, you can look at
+% |\allocationnumber|.
+%
+% Since there's no |\boxdef| command, |\chardef| is used to define a
+% |\newbox|, |\newinsert|, |\newfam|, and so on.
+%
+% \LaTeX\ change: remove |\outer| from |\newcount| and |\newdimen| (FMi)
+%            This is necessary to use |\newcount| inside |\if...|
+%            later on. Also remove from |\newskip|, |\newbox|
+%            |\newwrite| and |\newfam| (DPC) to save later redefinition.
+% \changes{v2.0a}{2014/12/30}{New engine-specific allocation scheme (latexrelease)}
+% \changes{v2.0f}{2015/03/02}{allow 255 math groups in Unicode engines}
+% \changes{v2.0h}{2015/06/19}{Use $-1$ for first range to get contiguous allocation}
+%    \begin{macrocode}
+%</2ekernel>
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\newcount}{Extended Allocation}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\newcount {\e@alloc\count \countdef {\count10}\insc@unt\float@count}
+\def\newdimen {\e@alloc\dimen \dimendef {\count11}\insc@unt\float@count}
+\def\newskip  {\e@alloc\skip  \skipdef  {\count12}\insc@unt\float@count}
+\def\newmuskip
+           {\e@alloc\muskip\muskipdef{\count13}\m@ne\e@alloc@top}
+%    \end{macrocode}
+% For compatibility use |\chardef| in the classical range.
+%    \begin{macrocode}
+\def\newbox   {\e@alloc\box
+                  {\ifnum\allocationnumber<\@cclvi
+                     \expandafter\chardef
+                   \else
+                     \expandafter\e@alloc@chardef
+                   \fi}
+                                        {\count14}\insc@unt\float@count}
+\def\newtoks  {\e@alloc\toks \toksdef{\count15}\m@ne\e@alloc@top}
+\def\newread      {\e@alloc\read     \chardef{\count16}\m@ne\sixt@@n}
+\def\newwrite     {\e@alloc\write    \chardef{\count17}\m@ne\sixt@@n}
+\def\new@mathgroup
+  {\e@alloc\mathgroup\chardef{\count18}\m@ne\e@mathgroup@top}
+\def\newlanguage  {\e@alloc\language \chardef{\count19}\m@ne\@cclvi}
+\let\newfam\new@mathgroup
+%</2ekernel|latexrelease>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\newcount}{Extended Allocation}%
+%<latexrelease>\def\newcount{\alloc@0\count\countdef\insc@unt}
+%<latexrelease>\def\newdimen{\alloc@1\dimen\dimendef\insc@unt}
+%<latexrelease>\def\newskip{\alloc@2\skip\skipdef\insc@unt}
+%<latexrelease>\def\newmuskip{\alloc@3\muskip\muskipdef\@cclvi}
+%<latexrelease>\def\newbox{\alloc@4\box\chardef\insc@unt}
+%<latexrelease>\def\newtoks{\alloc@5\toks\toksdef\@cclvi}
+%<latexrelease>\def\newread{\alloc@6\read\chardef\sixt@@n}
+%<latexrelease>\def\newwrite{\alloc@7\write\chardef\sixt@@n}
+%<latexrelease>\def\new@mathgroup{\alloc@8\fam\chardef\sixt@@n}
+%<latexrelease>\def\newlanguage{\alloc@9\language\chardef\@cclvi}
+%<latexrelease>\let\newfam\new@mathgroup
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%\begin{macro}{\e@alloc@chardef}
+% \changes{v2.0a}{2014/12/30}{macro added}
+%\begin{macro}{\e@alloc@top}
+% \changes{v2.0a}{2014/12/30}{macro added}
+% The upper limit of  extended registers, which leaves
+% this number (eg |\dimen32767|) always unallocated
+% by these macros.
+% cf traditional |\dimen255|.
+%    \begin{macrocode}
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\e@alloc@chardef}{Extended Allocation}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifx\directlua\@undefined
+  \ifx\widowpenalties\@undefined
+%    \end{macrocode}
+% classic tex has $2^8$ registers.
+%    \begin{macrocode}
+    \mathchardef\e@alloc@top=255
+    \let\e@alloc@chardef\chardef
+  \else
+%    \end{macrocode}
+% etex and xetex have $2^{15}$ registers.
+%    \begin{macrocode}
+    \mathchardef\e@alloc@top=32767
+    \let\e@alloc@chardef\mathchardef
+  \fi
+\else
+%    \end{macrocode}
+% luatex has $2^{16}$ registers.
+%    \begin{macrocode}
+  \chardef\e@alloc@top=65535
+  \let\e@alloc@chardef\chardef
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\e@alloc@chardef}{Extended Allocation}%
+%<latexrelease>\let\e@alloc@top\@undefined
+%<latexrelease>\let\e@alloc@chardef\@undefined
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%\begin{macro}{\e@mathgroup@top}
+% \changes{v2.0f}{2015/03/02}{macro added}
+% The upper limit of extended math groups (|\fam|)
+% 16 in classic \TeX\ and e-\TeX, but 256 in Unicode TeX variants.
+%    \begin{macrocode}
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\e@mathgroup@top}{Extended Allocation}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifx\Umathcode\@undefined
+%    \end{macrocode}
+% classic and e tex have 16 fam (0--15).
+%    \begin{macrocode}
+  \chardef\e@mathgroup@top=16
+\else
+%    \end{macrocode}
+% xetex and luatex have 256 fam (0--255).
+%    \begin{macrocode}
+  \chardef\e@mathgroup@top=256
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\e@mathgroup@top}{Extended Allocation}%
+%<latexrelease>\let\e@mathgroup@top\@undefined
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\e@alloc}
+% \changes{v2.0a}{2014/12/30}{macro added}
+% A modified version of |\alloc@| that
+% takes the count register rather than just the final digit of its number
+% (assuming |\count|$1x$).
+% It also has an extra argument to give the top of the extended range.
+%
+% |           #1  #2      #3     #4    #5         #6    |
+%
+% | \e@alloc type defcmd current top extended-top newname|
+%
+% Note that if just a single allocation range is required
+% (not omitting a range up to 255 for inserts) then $-1$
+% should be used for the first upper bound argument, |#4|.
+%
+%    \begin{macrocode}
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\e@alloc}{Extended Allocation}%
+%    \end{macrocode}
+%
+% \changes{v2.0h}{2015/06/19}{extra braces in case arguments not single token}
+%    \begin{macrocode}
+\def\e@alloc#1#2#3#4#5#6{%
+  \global\advance#3\@ne
+  \e@ch@ck{#3}{#4}{#5}#1% 
+  \allocationnumber#3\relax
+  \global#2#6\allocationnumber
+  \wlog{\string#6=\string#1\the\allocationnumber}}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\e@alloc}{Extended Allocation}%
+%<latexrelease>\let\e@alloc\@undefined
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%\begin{macro}{\e@ch@ck}
+% \changes{v2.0a}{2014/12/30}{macro added}
+% Extended check command.
+% If the first range is exceeded, bump to 256 (or 266 for counts)
+% and try again, testing the extended range.
+%\begin{macro}{\extrafloats}
+% \changes{v2.0a}{2014/12/30}{macro added}
+% \changes{v2.0c}{2015/01/23}{reserve counts 256--265}
+% Allocate matching registers from the top of the extended range
+% and add to |\@freelist|.
+%    \begin{macrocode}
+%</2ekernel>
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/10/01}
+%<latexrelease>                 {\e@ch@ck}{Extended Allocation (checking)}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\e@ch@ck#1#2#3#4{%
+  \ifnum#1<#2\else
+%    \end{macrocode}
+%
+% If we've reached the classical top limit, bump to 256
+% or 266 for counts (count 256--265 are reserved by the allocation
+% system).
+%    \begin{macrocode}
+    \ifnum#1=#2\relax
+      #1\@cclvi
+      \ifx\count#4\advance#1 10 \fi
+    \fi
+%    \end{macrocode}
+% Check we are below the extended limit.
+% \changes{v2.0i}{2015/08/06}
+%         {Add \cs{string} in case argument is not an unexpandable primitive}
+%    \begin{macrocode}
+    \ifnum#1<#3\relax
+    \else
+      \errmessage{No room for a new \string#4}%
+    \fi
+  \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\e@ch@ck}{Extended Allocation (checking)}%
+%<latexrelease>\gdef\e@ch@ck#1#2#3#4{%
+%<latexrelease>  \ifnum#1<#2\else
+%<latexrelease>    \ifnum#1=#2\relax
+%<latexrelease>      #1\@cclvi
+%<latexrelease>      \ifx\count#4\advance#1 10 \fi
+%<latexrelease>    \fi
+%<latexrelease>    \ifnum#1<#3\relax
+%<latexrelease>    \else
+%<latexrelease>      \errmessage{No room for a new #4}%
+%<latexrelease>    \fi
+%<latexrelease>  \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\e@ch@ck}{Extended Allocation (checking)}%
+%<latexrelease>\let\e@ch@ck\@undefined
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\extrafloats}{Extra floats}%
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\let\float@count\e@alloc@top
+%    \end{macrocode}
+%
+% \begin{macro}{\extrafloats}
+%    \begin{macrocode}
+\ifx\numexpr\@undefined
+%    \end{macrocode}
+% In classic TeX use |\newinsert| to allocate float boxes.
+%    \begin{macrocode}
+\def\extrafloats#1{%
+\count@#1\relax
+\ifnum\count@>\z@
+\newinsert\reserved@a
+\expandafter\chardef
+            \csname bx@\the\allocationnumber\endcsname\allocationnumber
+\@cons\@freelist{\csname bx@\the\allocationnumber\endcsname}%
+\advance\count@\m@ne
+\expandafter\extrafloats
+\expandafter\count@
+\fi
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+% In e-tex take float boxes from the top of the extended range.
+%    \begin{macrocode}
+\def\extrafloats#1{%
+\ifnum#1>\z@
+\count@\numexpr\float@count-1\relax
+  \ch@ck0\count@\count
+  \ch@ck1\count@\dimen
+  \ch@ck2\count@\skip
+  \ch@ck4\count@\box
+\e@alloc@chardef\float@count\count@
+\expandafter\e@alloc@chardef
+            \csname bx@\the\float@count\endcsname\float@count
+\@cons\@freelist{\csname bx@\the\float@count\endcsname}%
+\expandafter
+\extrafloats\expandafter{\numexpr#1-1\relax}%
+\fi}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\extrafloats}{Extra floats}%
+%<latexrelease>\let\float@count\@undefined
+%<latexrelease>\let\extrafloats\@undefined
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\alloc@}
+%    \begin{macrocode}
+\def\alloc@#1#2#3#4#5{\global\advance\count1#1\@ne
+  \ch@ck#1#4#2% make sure there's still room
+  \allocationnumber\count1#1%
+  \global#3#5\allocationnumber
+  \wlog{\string#5=\string#2\the\allocationnumber}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\newinsert}
+% \changes{v2.1a}{2015/08/30}{new \cs{newinsert} implementation}
+%    \begin{macrocode}
+%</2ekernel>
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/10/01}
+%<latexrelease>                 {\newinsert}{Extended \newinsert}%
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifx\numexpr\@undefined
+%    \end{macrocode}
+% If e-\TeX\ is not available use the original plain \TeX\
+% definition of |\newinsert|.
+%    \begin{macrocode}
+\def\newinsert#1{\global\advance\insc@unt \m@ne
+  \ch@ck0\insc@unt\count
+  \ch@ck1\insc@unt\dimen
+  \ch@ck2\insc@unt\skip
+  \ch@ck4\insc@unt\box
+  \allocationnumber\insc@unt
+  \global\chardef#1\allocationnumber
+  \wlog{\string#1=\string\insert\the\allocationnumber}}
+%    \end{macrocode}
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+% The highest register allowed with |\insert|.
+%    \begin{macrocode}
+\ifx\directlua\@undefined
+  \chardef\e@insert@top255
+\else
+  \chardef\e@insert@top\e@alloc@top
+\fi
+%    \end{macrocode}
+% If the classic registers are exausted, take an insert from the free float list
+% and use |\extrafloats| to add a new float to that list.
+%    \begin{macrocode}
+\def\newinsert#1{%
+\@tempswafalse
+\ifnum\count10<\insc@unt
+\ifnum\count11<\insc@unt
+\ifnum\count12<\insc@unt
+\ifnum\count14<\insc@unt
+  \@tempswatrue
+\fi\fi\fi\fi
+\if@tempswa
+\global\advance\insc@unt\m@ne
+\allocationnumber\insc@unt
+\else
+  \extrafloats\@ne
+  \@next\@currbox\@freelist
+    {\ifnum\@currbox<\e@insert@top
+      \allocationnumber\@currbox
+     \else
+     \ch@ck0\m@ne\insert
+     \fi}%
+     {\ch@ck0\m@ne\insert}%
+\fi
+\global\chardef#1\allocationnumber
+\wlog{\string#1=\string\insert\the\allocationnumber}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\fi
+%</2ekernel|latexrelease>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\newinsert}{Extended \newinsert}%
+%<latexrelease>\let\e@insert@top\@undefined
+%<latexrelease>\def\newinsert#1{\global\advance\insc@unt \m@ne
+%<latexrelease>  \ch@ck0\insc@unt\count
+%<latexrelease>  \ch@ck1\insc@unt\dimen
+%<latexrelease>  \ch@ck2\insc@unt\skip
+%<latexrelease>  \ch@ck4\insc@unt\box
+%<latexrelease>  \allocationnumber\insc@unt
+%<latexrelease>  \global\chardef#1\allocationnumber
+%<latexrelease>  \wlog{\string#1=\string\insert\the\allocationnumber}}
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ch@ck}
+%    \begin{macrocode}
+\gdef\ch@ck#1#2#3{%
+  \ifnum\count1#1<#2\else
+    \errmessage{No room for a new #3}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v2.0h}{2015/06/19}{delete spurious old definition of \cs{newtoks}}
+% \begin{macro}{\newhelp}
+%    \begin{macrocode}
+\def\newhelp#1#2{\newtoks#1#1\expandafter{\csname#2\endcsname}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\maxdimen}
+% \begin{macro}{\hideskip}
+% Here are some examples of allocation.
+%    \begin{macrocode}
+\newdimen\maxdimen \maxdimen=16383.99999pt % the largest legal <dimen>
+\newskip\hideskip \hideskip=-1000pt plus 1fill % negative but can grow
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\p@}
+% \begin{macro}{\z@}
+% \begin{macro}{\z@skip}
+% \begin{macro}{\voidb@x}
+%    \begin{macrocode}
+\newdimen\p@ \p@=1pt % this saves macro space and time
+\newdimen\z@ \z@=0pt % can be used both for 0pt and 0
+\newskip\z@skip \z@skip=0pt plus0pt minus0pt
+\newbox\voidb@x % permanently void box register
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%  \changes{v1.1p}{1995/10/02}{Move \cs{newif} to ltdefns}
+%
+%    \begin{macrocode}
+\message{compatibility for TeX 2, }
+%    \end{macrocode}
+%
+% If this file is used in an old \TeX\ we define the new features
+% of \TeX\ 3.0 as simple macros or counters so that files that uses
+% these features can be processed in such an environment
+% (They will however produce some other results).
+%
+%    \begin{macrocode}
+\ifx\@undefined\inputlineno
+  \newcount\inputlineno
+%    \end{macrocode}
+% This could be used to detect that an old \TeX\ is in force
+%    \begin{macrocode}
+  \inputlineno-1
+%    \end{macrocode}
+% Extra test for MLTeX 2, RmS 91/11/07.
+%    \begin{macrocode}
+  \ifx\@undefined\language
+    \newcount\language
+  \fi
+  \newcount\lefthyphenmin
+  \newcount\righthyphenmin
+  \newcount\errorcontextlines
+  \newcount\holdinginserts
+  \newdimen\emergencystretch
+  \newcount\badness
+  \let\noboundary\relax
+  \newcount\setlanguage
+\fi
+%    \end{macrocode}
+%
+% Assign initial values to \TeX's parameters
+%
+%    \begin{macrocode}
+\message{parameters,}
+%    \end{macrocode}
+%
+% All of \TeX's numeric parameters are listed here,
+% but the code is commented out if no special value needs to be set.
+% INITEX makes all parameters zero except where noted.
+%
+% \begin{oldcomments}
+%    \begin{macrocode}
+\pretolerance=100
+\tolerance=200 % INITEX sets this to 10000
+\hbadness=1000
+\vbadness=1000
+\linepenalty=10
+\hyphenpenalty=50
+\exhyphenpenalty=50
+\binoppenalty=700
+\relpenalty=500
+\clubpenalty=150
+\widowpenalty=150
+\displaywidowpenalty=50
+\brokenpenalty=100
+\predisplaypenalty=10000
+%    \end{macrocode}
+% \postdisplaypenalty=0
+% \interlinepenalty=0
+% \floatingpenalty=0, set during \insert
+% \outputpenalty=0, set before TeX enters \output
+%    \begin{macrocode}
+\doublehyphendemerits=10000
+\finalhyphendemerits=5000
+\adjdemerits=10000
+%    \end{macrocode}
+% \looseness=0, cleared by TeX after each paragraph
+% \pausing=0
+% \holdinginserts=0
+% \tracingonline=0
+% \tracingmacros=0
+% \tracingstats=0
+% \tracingparagraphs=0
+% \tracingpages=0
+% \tracingoutput=0
+%    \begin{macrocode}
+\tracinglostchars=1
+%    \end{macrocode}
+% \tracingcommands=0
+% \tracingrestores=0
+% \language=0
+%    \begin{macrocode}
+\uchyph=1
+%    \end{macrocode}
+% \lefthyphenmin=2 \righthyphenmin=3 set below
+% \globaldefs=0
+% \maxdeadcycles=25 % INITEX does this
+% \hangafter=1 % INITEX does this, also TeX after each paragraph
+% \fam=0
+% \mag=1000 % INITEX does this
+% \escapechar=`\\ % INITEX does this
+%    \begin{macrocode}
+\defaulthyphenchar=`\-
+\defaultskewchar=-1
+%    \end{macrocode}
+% \endlinechar=`\^^M % INITEX does this
+% \newlinechar=-1     \LaTeX\ sets this in ltdefns.dtx.
+%    \begin{macrocode}
+\delimiterfactor=901
+%    \end{macrocode}
+% \time=now % TeX does this at beginning of job
+% \day=now % TeX does this at beginning of job
+% \month=now % TeX does this at beginning of job
+% \year=now % TeX does this at beginning of job
+%
+% \end{oldcomments}
+%    In \LaTeX{} we don't want box information in the transcript
+%    unless we do a full tracing.
+%  \changes{v1.0g}{1994/04/28}{Turn off overfull box tracing in log}
+%
+%    \begin{macrocode}
+\showboxbreadth=-1
+\showboxdepth=-1
+\errorcontextlines=-1
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\hfuzz=0.1pt
+\vfuzz=0.1pt
+\overfullrule=5pt
+\maxdepth=4pt
+\splitmaxdepth=\maxdimen
+\boxmaxdepth=\maxdimen
+%    \end{macrocode}
+%
+% \begin{oldcomments}
+% \lineskiplimit=0pt, changed by \normalbaselines
+%    \begin{macrocode}
+\delimitershortfall=5pt
+\nulldelimiterspace=1.2pt
+\scriptspace=0.5pt
+%    \end{macrocode}
+% \mathsurround=0pt
+% \predisplaysize=0pt, set before TeX enters $$
+% \displaywidth=0pt, set before TeX enters $$
+% \displayindent=0pt, set before TeX enters $$
+%    \begin{macrocode}
+\parindent=20pt
+%    \end{macrocode}
+% \hangindent=0pt, zeroed by TeX after each paragraph
+% \hoffset=0pt
+% \voffset=0pt
+%
+% \baselineskip=0pt, changed by \normalbaselines
+% \lineskip=0pt, changed by \normalbaselines
+%    \begin{macrocode}
+\parskip=0pt plus 1pt
+\abovedisplayskip=12pt plus 3pt minus 9pt
+\abovedisplayshortskip=0pt plus 3pt
+\belowdisplayskip=12pt plus 3pt minus 9pt
+\belowdisplayshortskip=7pt plus 3pt minus 4pt
+%    \end{macrocode}
+% \leftskip=0pt
+% \rightskip=0pt
+%    \begin{macrocode}
+\topskip=10pt
+\splittopskip=10pt
+%    \end{macrocode}
+% \tabskip=0pt
+% \spaceskip=0pt
+% \xspaceskip=0pt
+%    \begin{macrocode}
+\parfillskip=0pt plus 1fil
+%    \end{macrocode}
+% \end{oldcomments}
+%
+%
+% \begin{macro}{\normalbaselineskip}
+% \begin{macro}{\normallineskip}
+% \begin{macro}{\normallineskiplimit}
+% We also define special registers that function like parameters:
+%    \begin{macrocode}
+\newskip\normalbaselineskip \normalbaselineskip=12pt
+\newskip\normallineskip \normallineskip=1pt
+\newdimen\normallineskiplimit \normallineskiplimit=0pt
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\interfootlinepenalty}
+%    \begin{macrocode}
+\newcount\interfootnotelinepenalty \interfootnotelinepenalty=100
+%    \end{macrocode}
+% \end{macro}
+%
+% Definitions for preloaded fonts
+%
+% \begin{macro}{\magstephalf}
+% \begin{macro}{\magstep}
+%    \begin{macrocode}
+\def\magstephalf{1095 }
+\def\magstep#1{\ifcase#1 \@m\or 1200\or 1440\or 1728\or
+               2074\or 2488\fi\relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% Macros for setting ordinary text
+%
+% \begin{macro}{\frenchspacing}
+% \begin{macro}{\nonfrenchspacing}
+%    \begin{macrocode}
+\def\frenchspacing{\sfcode`\.\@m \sfcode`\?\@m \sfcode`\!\@m
+  \sfcode`\:\@m \sfcode`\;\@m \sfcode`\,\@m}
+\def\nonfrenchspacing{\sfcode`\.3000\sfcode`\?3000\sfcode`\!3000%
+  \sfcode`\:2000\sfcode`\;1500\sfcode`\,1250 }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\normalbaselines}
+%    \begin{macrocode}
+\def\normalbaselines{\lineskip\normallineskip
+  \baselineskip\normalbaselineskip \lineskiplimit\normallineskiplimit}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\M}
+% \begin{macro}{\I}
+% \changes{v1.1m}{1995/09/01}{Use \cs{let} to save space}
+% Save a bit of space by using |\let| here.
+%    \begin{macrocode}
+\def\^^M{\ } % control <return> = control <space>
+\let\^^I\^^M % same for <tab>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\lq}
+% \begin{macro}{\rq}
+%    \begin{macrocode}
+\def\lq{`}
+\def\rq{'}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\lbrack}
+% \begin{macro}{\rbrack}
+%    \begin{macrocode}
+\def\lbrack{[}
+\def\rbrack{]}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\aa}
+% \begin{macro}{\AA}
+% These are not from plain.tex but they are similar to other commands
+% found here and nowhere else, being alternate input forms for
+% characters.
+%    \begin{macrocode}
+\def \aa {\r a}
+\def \AA {\r A}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\endgraf}
+% \begin{macro}{\endline}
+%    \begin{macrocode}
+\let\endgraf=\par
+\let\endline=\cr
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\space}
+%    \begin{macrocode}
+\def\space{ }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\empty}
+% \changes{v1.1m}{1995/09/01}{Use \cs{let} to save space}
+% This probably ought to go altogether, but let it to the \LaTeX\
+% version to save space.
+%    \begin{macrocode}
+\let\empty\@empty
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\null}
+%    \begin{macrocode}
+\def\null{\hbox{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bgroup}
+% \begin{macro}{\egroup}
+%    \begin{macrocode}
+\let\bgroup={
+\let\egroup=}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\obeylines}
+% \begin{macro}{\obeyspaces}
+% In |\obeylines|, we say |\let^^M=\par| instead of |\def^^M{\par}|
+% since this allows, for example, |\let\par=\cr \obeylines \halign{...|
+%    \begin{macrocode}
+{\catcode`\^^M=\active % these lines must end with %
+  \gdef\obeylines{\catcode`\^^M\active \let^^M\par}%
+  \global\let^^M\par} % this is in case ^^M appears in a \write
+\def\obeyspaces{\catcode`\ \active}
+{\obeyspaces\global\let =\space}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\loop}
+% \changes{v1.0h}{1994/05/16}{Use Kabelschacht method}
+%  \begin{macro}{\iterate}
+% \changes{v1.1b}{1994/11/10}
+%         {(CAR) added extra \cs{relax}}
+% \changes{v1.1m}{1994/05/26}
+%         {(CAR) added \cs{long}}
+%  \begin{macro}{\repeat}
+%    We use Kabelschacht's method of doing loops, see TUB 8\#2 (1987).
+%    (unless that breaks something :-).  It turned out to need an
+%    extra |\relax|: see pr/642 (|\loop| could do one iteration too much
+%    in certain cases).
+%    \begin{macrocode}
+\long\def \loop #1\repeat{%
+  \def\iterate{#1\relax  % Extra \relax
+               \expandafter\iterate\fi
+               }%
+  \iterate
+  \let\iterate\relax
+}
+%    \end{macrocode}
+%    This setting of |\repeat| is needed to make |\loop...\if...\repeat|
+%    skippable within another |\if...|.
+%    \begin{macrocode}
+\let\repeat=\fi
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \LaTeX\ defines |\smallskip|, etc.\ in |ltspace.dtx|.
+%
+% \begin{macro}{\nointerlineskip}
+% \begin{macro}{\offinterlineskip}
+% \changes{v1.1n}{1995/07/02}{Replaced 1000 by \cs{@m}}
+%    \begin{macrocode}
+\def\nointerlineskip{\prevdepth-\@m\p@}
+\def\offinterlineskip{\baselineskip-\@m\p@
+  \lineskip\z@ \lineskiplimit\maxdimen}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\vglue}
+% \begin{macro}{\hglue}
+%    \begin{macrocode}
+\def\vglue{\afterassignment\vgl@\skip@=}
+\def\vgl@{\par \dimen@\prevdepth \hrule \@height\z@
+  \nobreak\vskip\skip@ \prevdepth\dimen@}
+\def\hglue{\afterassignment\hgl@\skip@=}
+\def\hgl@{\leavevmode \count@\spacefactor \vrule \@width\z@
+  \nobreak\hskip\skip@ \spacefactor\count@}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \LaTeX\ defines |~| in |ltdefns.dtx|.
+%
+% \begin{macro}{\slash}
+%    \begin{macrocode}
+\def\slash{/\penalty\exhyphenpenalty} % a `/' that acts like a `-'
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\break}
+% \begin{macro}{\nobreak}
+% \begin{macro}{\allowbreak}
+%    \begin{macrocode}
+\def\break{\penalty-\@M}
+\def\nobreak{\penalty \@M}
+\def\allowbreak{\penalty \z@}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\filbreak}
+% \begin{macro}{\goodbreak}
+%    \begin{macrocode}
+\def\filbreak{\par\vfil\penalty-200\vfilneg}
+\def\goodbreak{\par\penalty-500 }
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\eject}
+% \changes{v1.1s}{1995/10/17}{Move \cs{supereject} to compat file}
+% Define |\eject| as in plain \TeX\ but define |\supereject| only in
+% the compatibility file.
+%    \begin{macrocode}
+\def\eject{\par\break}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\removelastskip}
+%    \begin{macrocode}
+\def\removelastskip{\ifdim\lastskip=\z@\else\vskip-\lastskip\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\smallbreak}
+% \begin{macro}{\medbreak}
+% \begin{macro}{\bigbreak}
+%    \begin{macrocode}
+\def\smallbreak{\par\ifdim\lastskip<\smallskipamount
+  \removelastskip\penalty-50\smallskip\fi}
+\def\medbreak{\par\ifdim\lastskip<\medskipamount
+  \removelastskip\penalty-100\medskip\fi}
+\def\bigbreak{\par\ifdim\lastskip<\bigskipamount
+  \removelastskip\penalty-200\bigskip\fi}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\m@th}
+% \changes{v1.0h}{1994/05/16}{Remove unnecessary space}
+%    \begin{macrocode}
+\def\m@th{\mathsurround\z@}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\underbar}
+%    Due to \LaTeX's redefinition of |\underline| plain \TeX's
+%    |\underbar| can be done in a simpler fashion (but do we
+%    need it at all?).
+% \changes{v1.1m}{1994/05/26}
+%         {(CAR/FMi) changed to use box \cs{tw@}}
+% \changes{v1.1p}{1994/05/26}
+%         {(DPC) changed to use \cs{sbox}}
+%    \begin{macrocode}
+\def\underbar#1{\underline{\sbox\tw@{#1}\dp\tw@\z@\box\tw@}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\strutbox}
+% \begin{macro}{\strut}
+% \LaTeX\ sets |\strutbox| in |\set@fontsize|.
+%    \begin{macrocode}
+\newbox\strutbox
+\def\strut{\relax\ifmmode\copy\strutbox\else\unhcopy\strutbox\fi}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\hidewidth}
+% For alignment entries that can stick out.
+%    \begin{macrocode}
+\def\hidewidth{\hskip\hideskip}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v1.0h}{1994/05/16}{Remove unnecessary def for \cs{item}}
+% \changes{v1.1i}{1995/04/27}
+%   {Move \cs{hang} and \cs{textindent} to latex209.def}
+% \changes{RmS}{1991/11/04}{Removed \cs{itemitem} since never
+%    needed/useful with \LaTeX.}
+%
+% \begin{macro}{\narrower}
+%    \begin{macrocode}
+\def\narrower{%
+  \advance\leftskip\parindent
+  \advance\rightskip\parindent}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v1.1c}{1994/11/12}{Comment out more encoding specific
+%                             commands}
+% \LaTeX\ defines |\ae| and similar commands elsewhere.
+%
+%    \begin{macrocode}
+\chardef\%=`\%
+\chardef\&=`\&
+\chardef\#=`\#
+%    \end{macrocode}
+%
+% Most text commands are actually encoding specific and therefore
+% defined later, so commented out or removed from this file.
+% \changes{v1.0h}{1994/05/16}{Comment out encoding specific commands}
+%
+% \begin{macro}{\leavevmode}
+% begins a paragraph, if necessary
+%    \begin{macrocode}
+\def\leavevmode{\unhbox\voidb@x}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\mathhexbox}
+%    \begin{macrocode}
+\def\mathhexbox#1#2#3{\mbox{$\m@th \mathchar"#1#2#3$}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\ialign}
+%    \begin{macrocode}
+\def\ialign{\everycr{}\tabskip\z@skip\halign} % initialized \halign
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\oalign}
+% \begin{macro}{\o@lign}
+% \begin{macro}{\ooalign}
+%    \begin{macrocode}
+\def\oalign#1{\leavevmode\vtop{\baselineskip\z@skip \lineskip.25ex%
+  \ialign{##\crcr#1\crcr}}}
+\def\o@lign{\lineskiplimit\z@ \oalign}
+\def\ooalign{\lineskiplimit-\maxdimen \oalign}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\sh@ft}
+% \changes{v1.1t}{1996/07/26}{replace \cs{dimen}\cs{z@} by
+%          \cs{dimen@}}
+% \changes{v1.1y}{2005/09/27}{Macro no longer used but
+%   left for compatibility}
+% The definition of this macro in plain.tex was improved in
+% about 1997; but as a result its usage was changed and its new
+% definition is not appropriate for \LaTeX{}.
+%
+% Since the version given here has been in use by
+% \LaTeX{} for many years it does not seem prudent to remove it now.
+% As far as we can tell it has only been used to define~|\b| and~|\d|
+% but this cannot be certain.
+%    \begin{macrocode}
+\def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
+  \kern-.0156\dimen@} % compensate for slant in lowered accents
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\ltx@sh@ft}
+% \changes{v1.1y}{2005/09/27}{New macro}
+% This is the \LaTeX{} version of the second incarnation of the plain
+% macro |\sh@ft|, which takes a dimension as its argument.  It shifts
+% a pseudo-accent horizontally by an amount proportional to the product
+% of its argument and the slant-per-point (fontdimen 1).
+%
+%    \begin{macrocode}
+\def\ltx@sh@ft #1{%
+  \dimen@ #1%
+  \kern \strip@pt
+    \fontdimen1\font \dimen@
+  } % kern by #1 times the current slant
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \LaTeX{} change: the text commands such as
+% |\d|, |\b|, |\c|, |\copyright|,~|\TeX|
+% are now defined elsewhere.
+%
+% \changes{LaTeX2e}
+%     {1993/11/29}{All accents in decimals; suggested by Paul Taylor}
+% \changes{v1.0d}{1994/04/12}
+%         {Define \cs{@acci}}
+% \changes{v1.0h}{1994/05/16}{Remove \cs{@acci} and friends again}
+%
+% \LaTeX{} change: Make |\t| work in a moving argument.
+% Now defined elsewhere.
+%
+% \begin{macro}{\hrulefill}
+% \begin{macro}{\dotfill}
+% \LaTeX\ change: |\kern\z@| added to end of
+% |\hrulefill| and |\dotfill|
+% to make them work in `tabular' and `array' environments.
+% (Change made 24 July 1987).
+% \LaTeX\ change: |\leavevmode| added at beginning of
+% |\dotfill| and |\hrulefill|
+% so that they work as expected in vertical mode.
+%    \begin{macrocode}
+\def\hrulefill{\leavevmode\leaders\hrule\hfill\kern\z@}
+%    \end{macrocode}
+% The box in |\dotfill| originally contained (in plain.tex):\\
+% |\mkern 1.5mu .\mkern 1.5mu|;\\
+% the width of .44em differs from this
+% by .04pt which is probably an acceptable difference within leaders.
+% \changes{v1.1u}{1996/10/28}{Removed math mode}
+% \changes{v1.1v}{1996/10/29}{Got arithmetic correct (CAR)}
+% \changes{v1.1w}{1996/11/03}{Saved tokens by using \cs{hb@xt@}}
+%    \begin{macrocode}
+\def\dotfill{%
+  \leavevmode
+  \cleaders \hb@xt@ .44em{\hss.\hss}\hfill
+  \kern\z@}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% INITEX sets |\sfcode x=1000| for all x, except that |\sfcode`X=999|
+% for uppercase letters. The following changes are needed:
+%    \begin{macrocode}
+\sfcode`\)=0 \sfcode`\'=0 \sfcode`\]=0
+%    \end{macrocode}
+% The |\nonfrenchspacing| macro will make further changes to
+% |\sfcode| values.
+%
+%
+% Definitions related to output
+%
+%
+% \changes{v1.1k}{1995/05/22}{Definitions of \cs{footins} and
+%                 \cs{footnoterule} moved to ltfloat.}
+%
+%
+% |\magnification| doesn't work in \LaTeX.
+%\begin{verbatim}
+%\def\magnification{\afterassignment\m@g\count@}
+%\def\m@g{\mag\count@
+%  \hsize6.5truein\vsize8.9truein\dimen\footins8truein}
+%\end{verbatim}
+%
+% \begin{macro}{\showoverfull}
+% \changes{v0.1k ltfinal}{1994/05/19}{used \cs{@ne} not 1}
+% The following commands are used in debugging:
+%    \begin{macrocode}
+\def\showoverfull{\tracingonline\@ne}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\showoutput}
+% \changes{v0.1k ltfinal}{1994/05/19}
+%         {used \cs{maxdimen} not 99999}
+% \changes{v1.1n}{1995/07/02}{Use \cs{showoverfull} to save space}
+% \changes{v1.1x}{2002/02/24}{Use newly added \cs{loggingoutput}}
+% \begin{macro}{\loggingoutput}
+% \changes{v1.1x}{2002/02/24}{Macro added}
+%    \begin{macrocode}
+\gdef\loggingoutput{\tracingoutput\@ne
+    \showboxbreadth\maxdimen\showboxdepth\maxdimen\errorstopmode}
+\gdef\showoutput{\loggingoutput\showoverfull}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\tracingall}
+% \changes{LaTeX209}{1991/08/26}{Added
+%    \cs{errorcontextlines}!=\cs{maxdimen}, suggested by J. Schrod}
+% \changes{v1.1n}{1995/07/02}{Use \cs{showoutput} to save space}
+% \changes{v1.1x}{2002/02/24}{Use newly added \cs{loggingoutput}}
+% \begin{macro}{\loggingall}
+% \changes{v1.1x}{2002/02/24}{Macro added}
+% \changes{v2.0b}{2012/01/20}{etex tracing if available}
+% \changes{v2.0d}{2015/02/20}{Spell commands correctly :-)}
+% \changes{v2.0g}{2015/03/10}{Reorganise to be less noisy}
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/20}{\loggingall}{etex tracing}%
+%<*2ekernel|latexrelease>
+\ifx\tracingscantokens\@undefined
+\gdef\loggingall{%
+  \tracingstats\tw@
+  \tracingpages\@ne
+  \tracinglostchars\@ne
+  \tracingparagraphs\@ne
+  \errorcontextlines\maxdimen
+  \loggingoutput
+  \tracingmacros\tw@
+  \tracingcommands\tw@
+  \tracingrestores\@ne
+  }%
+\else
+\gdef\loggingall{%
+  \tracingstats\tw@
+  \tracingpages\@ne
+  \tracinglostchars\tw@
+  \tracingparagraphs\@ne
+  \tracinggroups\@ne
+  \tracingifs\@ne
+  \tracingscantokens\@ne
+  \tracingnesting\@ne
+  \errorcontextlines\maxdimen
+  \loggingoutput
+  \tracingmacros\tw@
+  \tracingcommands\thr@@
+  \tracingrestores\@ne
+  \tracingassigns\@ne
+}%
+\fi
+\gdef\tracingall{\showoverfull\loggingall}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\loggingall}{etex tracing}%
+%<latexrelease>\gdef\loggingall{\tracingcommands\tw@\tracingstats\tw@
+%<latexrelease>  \tracingpages\@ne\tracinglostchars\@ne
+%<latexrelease>  \tracingmacros\tw@\tracingparagraphs\@ne\tracingrestores\@ne
+%<latexrelease>  \errorcontextlines\maxdimen\loggingoutput}
+%<latexrelease>  \gdef\tracingall{\loggingall\showoverfull}
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\tracingnone}
+% \changes{v2.0g}{2015/03/10}{macro added}
+% \begin{macro}{\hideoutput}
+% \changes{v2.0g}{2015/03/10}{macro added}
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/20}{\tracingnone}%
+%<latexrelease>                             {turn off etex tracing}%
+%<*2ekernel|latexrelease>
+\ifx\tracingscantokens\@undefined
+\def\tracingnone{%
+  \tracingonline\z@
+  \tracingcommands\z@
+  \showboxdepth\m@ne
+  \showboxbreadth\m@ne
+  \tracingoutput\z@
+  \errorcontextlines\m@ne
+  \tracingrestores\z@
+  \tracingparagraphs\z@
+  \tracingmacros\z@
+  \tracinglostchars\@ne
+  \tracingpages\z@
+  \tracingstats\z@
+}%
+\else
+\def\tracingnone{%
+  \tracingassigns\z@
+  \tracingrestores\z@
+  \tracingonline\z@
+  \tracingcommands\z@
+  \showboxdepth\m@ne
+  \showboxbreadth\m@ne
+  \tracingoutput\z@
+  \errorcontextlines\m@ne
+  \tracingnesting\z@
+  \tracingscantokens\z@
+  \tracingifs\z@
+  \tracinggroups\z@
+  \tracingparagraphs\z@
+  \tracingmacros\z@
+  \tracinglostchars\@ne
+  \tracingpages\z@
+  \tracingstats\z@
+}%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\hideoutput{%
+  \tracingoutput\z@
+  \showboxbreadth\m@ne
+  \showboxdepth\m@ne
+  \tracingonline\m@ne
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\tracingnone}%
+%<latexrelease>                             {turn off etex tracing}%
+%<latexrelease>\let\tracingnone\@undefined
+%<latexrelease>\let\hideoutput\@undefined
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \LaTeX\ change: |\showhyphens| Defined later.
+%
+% Punctuation affects the spacing.
+%    \begin{macrocode}
+%<*2ekernel>
+\nonfrenchspacing
+%</2ekernel>
+%    \end{macrocode}
+%
+%
+% \Finale
+%

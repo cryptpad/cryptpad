@@ -1,0 +1,146 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews07.tex
+
+% This is issue 7 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]
+   {ltnews}
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{June}
+\publicationyear{1997}
+\publicationissue{7}
+
+\begin{document}
+
+\maketitle
+
+\section{T1 encoded Computer Modern fonts}
+As in the last release the base \LaTeX\ distribution contains
+three different sets of `fd' files for T1 encoded fonts.
+
+In this release the default installation uses \texttt{ec.ins}
+and so installs files suitable for the current `EC fonts'
+distribution. If you have still not updated to the EC fonts and
+are using the earlier test versions, known as DC then you should
+unpack \texttt{newdc.ins} (for DC release 1.2 or later) or
+\texttt{olddc.ins} (for the original releases of the DC fonts).
+This should be done after unpacking \texttt{unpack.ins} but
+before making the format by running ini\TeX{} on \texttt{latex.ltx}.
+There are further details in \texttt{install.txt}.
+
+
+\section{T1 encoded Concrete fonts}
+The Metafont sources for T1 encoded `Concrete' fonts have been
+removed from the \textsf{mfnss} distribution as they were based
+on the now obsolete DC fonts release 1.1. Similarly the
+\textsf{cmextra.ins} install file in the \textsf{base} distribution no
+longer generates fd files for the `Concrete' fonts.
+To use these fonts in either T1 or OT1 encoding it is
+recommended that you obtain Walter Schmidt's \textsf{ccfonts} package
+and fonts from CTAN \texttt{macros/latex/contrib/supported/ccfonts}.
+
+
+\section{Further input encodings}
+Two more \textsf{inputenc} packages have been added: for latin5,
+thanks to H. Turgut Uyar; and for latin3, thanks to J\"org Knappen.
+
+
+\section{Normalising spacing after punctuation}
+The command \verb|\normalsfcodes| was introduced at the last patch
+release. This is normally given the correct definition automatically
+and so need not be explicitly set. It is used to correct a problem,
+reported by Donald Arseneau, that punctuation in page headers has
+always (in all known \TeX\ formats) been potentially incorrect if the
+page break happens while a local setting of the space codes (for
+instance by the command \verb|\frenchspacing|) is in effect. A common
+example of this happening in \LaTeX\ is in the \textsf{verbatim}
+environment.
+
+
+\section{Accessing Bold Math Symbols}
+The \textsf{tools} distribution contains a new package, \textsf{bm},
+which defines a command \verb|\bm| that allows individual bold symbols
+to be accessed within a math expression (in contrast to
+\verb|\boldmath| which makes whole math expressions default to bold
+fonts). It is more general than the existing \textsf{amsbsy} package;
+however, to ease the translation of documents between these two
+packages, \textsf{bm} makes \verb|\boldsymbol| an alias for
+\verb|\bm|.
+
+This package was previously made available from the `contrib' area of
+the CTAN archives, and as part of Y\&Y's \LaTeX\ support for the
+MathTime fonts.
+
+
+\section{Policy on standard classes}
+
+Many of the problem reports we receive concerning the standard classes
+are not concerned with bugs but are suggesting, more or less politely,
+that the design decisions embodied in them are `not optimal' and
+asking us to modify them.
+
+There are several reasons why we have decided not to make such changes
+to these files.
+\begin{itemize}
+\item
+  However misguided, the current behaviour is clearly what was
+  intended when these classes were designed.
+\item
+  It is not good practice to change such aspects of `standard classes'
+  because many people will be relying on them.
+\end{itemize}
+
+We have therefore decided not to even consider making such
+modifications, nor to spend time justifying that decision.  This does
+not mean that we do not agree that there are many deficiencies in the
+design of these classes, but we have many tasks with higher priority
+than continually explaining why the standard classes for \LaTeX{}
+cannot be changed.
+
+We would, of course, welcome the production of better classes, or of
+packages that can be used to enhance these classes.
+
+
+\section{New addresses for TUG}
+For information about joining the \TeX{} Users Group, and about lots
+of other \LaTeX-related matters, please contact
+them at their new address:
+\begin{quote}\small
+   \TeX{} Users Group, P.O. Box 1239,\\
+   Three Rivers, CA~93271-1239, USA\\
+   Fax:~+1~209~561~4584\\
+   E-mail: \texttt{tug@mail.tug.org}\\
+   URL: \texttt{http://www.tug.org/}
+\end{quote}
+
+\end{document}

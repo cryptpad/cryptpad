@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='magicnum'>
+  <name>magicnum</name>
+  <caption>Access TeX systems' "magic numbers".</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    This package allows access to the various parameter values in
+    TeX (catcode values), e-TeX (group, if and node types, and
+    interaction mode), and LuaTeX (pdfliteral mode) by a hierarchical
+    name system.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/magicnum.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/magicnum.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

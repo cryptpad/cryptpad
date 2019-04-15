@@ -1,0 +1,833 @@
+% \iffalse meta-comment
+%
+% File: picture.dtx
+% Version: 2009/10/11 v1.3
+% Info: Dimens for picture macros
+%
+% Copyright (C) 2006-2009 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file picture.dtx
+% and the derived files
+%    picture.sty, picture.pdf, picture.ins, picture.drv,
+%    picture-example.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/picture.dtx
+%    CTAN:macros/latex/contrib/oberdiek/picture.pdf
+%
+% Unpacking:
+%    (a) If picture.ins is present:
+%           tex picture.ins
+%    (b) Without picture.ins:
+%           tex picture.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{picture.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If picture.drv is present:
+%           latex picture.drv
+%    (b) Without picture.drv:
+%           latex picture.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex picture.dtx
+%       makeindex -s gind.ist picture.idx
+%       pdflatex picture.dtx
+%       makeindex -s gind.ist picture.idx
+%       pdflatex picture.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/picture.sty
+%    TDS:doc/latex/oberdiek/picture.pdf
+%    TDS:doc/latex/oberdiek/picture-example.tex
+%    TDS:source/latex/oberdiek/picture.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: picture 2009/10/11 v1.3 Dimens for picture macros (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: picture
+Version: 2009/10/11 v1.3
+
+Copyright (C) 2006-2009 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file picture.dtx
+and the derived files
+   picture.sty, picture.pdf, picture.ins, picture.drv,
+   picture-example.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{picture.ins}{\from{picture.dtx}{install}}%
+  \file{picture.drv}{\from{picture.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{picture.sty}{\from{picture.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{picture-example.tex}{\from{picture.dtx}{example}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{picture.xml}{\from{picture.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     picture.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `picture.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{picture.drv}%
+  [2009/10/11 v1.3 Dimens for picture macros (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{picture.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{322}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{picture.drv}
+%
+% \title{The \xpackage{picture} package}
+% \date{2009/10/11 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% There are macro and environment arguments that expect numbers
+% that will internally be multiplicated with \cs{unitlength}.
+% This package extends the syntax of these arguments that
+% dimens with calculation support can be added for these arguments.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{User interface}
+%
+% \subsection{Introduction}
+%
+% The environment |picture| and macros such as \cs{put}, \cs{line},
+% \cs{vector} and other macros have arguments that expect numbers
+% that are used as factor for \cs{unitlength}.
+% This package redefines such macros and adds code that detects
+% whether such an argument is given as number or as length.
+% In the latter case, the length is used directly without multiplying
+% with \cs{unitlength}.
+%
+% \subsection{Options}
+%
+% Depending on the available features, also length expressions
+% can be given. Option \xoption{calc} loads package \xpackage{calc}.
+% Then expressions of these package may be used.
+% Otherwise \xoption{etex} wraps the length argument inside
+% \cs{dimexpr}\dots\cs{relax}, if \eTeX\ is available. Otherwise
+% option \xoption{plain} uses plain assignments without calculation
+% support.
+%
+% The default is \xoption{calc} if package \xpackage{calc}
+% is loaded before package \xoption{picture}. If you specify
+% option \xoption{calc} the loading of \xpackage{calc} is ensured.
+% Otherwise package \xpackage{picture} looks whether \cs{dimexpr}
+% is available and uses then option \xoption{etex} as default.
+% If \eTeX\ also could not be found, then \xoption{plain} is used.
+%
+% \subsection{Example}
+%
+%    \begin{macrocode}
+%<*example>
+\documentclass{article}
+
+\usepackage[calc]{picture}
+
+\begin{document}
+
+\setlength{\unitlength}{1pt}
+
+\begin{picture}(\widthof{Hello World}, 10mm)
+  \put(0, 0){\makebox(0,0)[lb]{Hello World}}%
+  \put(0, \heightof{Hello World} + \fboxsep){%
+    \line(1, 0){\widthof{Hello World}}%
+  }%
+  \put(\widthof{Hello World}, 10mm){%
+    \line(0, -1){10mm}%
+  }%
+\end{picture}
+
+\end{document}
+%</example>
+%    \end{macrocode}
+%
+% \subsection{Supported packages}
+%
+% Packages \xpackage{pspicture} and \xpackage{pict2e} are supported,
+% but they must be loaded before package \xpackage{picture}.
+%
+% New macros can be supported by \cs{picture@redefine}.
+% The first argument is the macro which contains the arguments
+% in its parameter text that you want to support by package \xpackage{picture}.
+% The second argument contains the parameter text. Change \# to \& for
+% the arguments in question.
+% Examples (already used by package \xpackage{picture}):
+% \begin{quote}
+% |\picture@redefine\put{(&1,&2)}|\\
+% |\picture@redefine\line{(#1,#2)&3}|
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{picture}%
+  [2009/10/11 v1.3 Dimens for picture macros (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\def\Pc@calcname{calc}
+\def\Pc@etexname{etex}
+\def\Pc@plainname{plain}
+%    \end{macrocode}
+%    \begin{macro}{\Pc@method}
+%    Macro \cs{Pc@method} stores the method to use for calculations.
+%    Check which features are available and set the default for \cs{Pc@method}.
+%    \begin{macrocode}
+\@ifpackageloaded{calc}{%
+  \let\Pc@method\Pc@calcname
+}{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname dimexpr\endcsname\relax
+    \let\Pc@method\Pc@plainname
+  \else
+    \let\Pc@method\Pc@etexname
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareOption{plain}{%
+  \let\Pc@method\Pc@plainname
+}
+\DeclareOption{etex}{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname dimexpr\endcsname\relax
+    \PackageError{picture}{%
+      e-TeX is not available%
+    }\@ehc
+  \else
+    \let\Pc@method\Pc@etexname
+  \fi
+}
+\DeclareOption{calc}{%
+  \let\Pc@method\Pc@calcname
+}
+\ProcessOptions*
+\begingroup
+  \let\on@line\@empty
+  \PackageInfo{picture}{Calculation method: \Pc@method}%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Calculation method}
+%
+%    \begin{macrocode}
+\ifx\Pc@method\Pc@calcname
+  \RequirePackage{calc}%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Method \xoption{calc}}
+%
+%    \begin{macrocode}
+\ifx\Pc@method\Pc@calcname
+  \def\Pc@tokslength#1{%
+    \begingroup
+      \let\calc@error\Pc@calc@error
+      \setlength\dimen@{#1\unitlength}\Pc@next\Pc@nil{#1}%
+  }%
+  \let\PcOrg@calc@error\calc@error
+  \@ifpackagelater{calc}{2007/08/22}{% v4.3
+    \def\Pc@calc@error#1{%
+      \expandafter\ifx\expandafter\unitlength\noexpand#1\relax
+        \def\calc@next##1!{%
+          \endgroup
+          \aftergroup\afterassignment
+          \aftergroup\Pc@next
+        }%
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \calc@next{#1}%
+      }{%
+        \PcOrg@calc@error{#1}%
+      }%
+    }%
+  }{%
+    \def\Pc@calc@error#1{%
+      \expandafter\ifx\expandafter\unitlength\noexpand#1\relax
+        \def\calc@next##1!{%
+          \endgroup
+          \aftergroup\afterassignment
+          \aftergroup\Pc@next
+        }%
+        \expandafter\@gobble
+      \else
+        \expandafter\@firstofone
+      \fi
+      {%
+        \PcOrg@calc@error{#1}%
+      }%
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Method \xoption{etex}}
+%
+%    \begin{macrocode}
+\ifx\Pc@method\Pc@etexname
+  \def\Pc@tokslength#1{%
+    \begingroup
+      \afterassignment\Pc@next
+      \dimen@=\dimexpr#1\unitlength\Pc@nil{#1}%
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Method \xoption{plain}}
+%
+%    \begin{macrocode}
+\ifx\Pc@method\Pc@plainname
+  \def\Pc@tokslength#1{%
+    \begingroup
+      \afterassignment\Pc@next
+      \dimen@=#1\unitlength\Pc@nil{#1}%
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Help macros}
+%
+%    \begin{macrocode}
+\def\Pc@next#1\Pc@nil#2{%
+  \ifx\\#1\\%
+    \endgroup
+    \Pc@addtoks{{#2}}%
+  \else
+    \expandafter\endgroup
+    \expandafter\Pc@addtoks\expandafter{%
+      \expandafter{\the\dimen@\@gobble}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\Pc@nil}
+%    \cs{Pc@nil} must not have the meaning of \cs{relax} because of
+%    \cs{dimexpr}.
+%    \begin{macrocode}
+\let\Pc@nil\message
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@addtoks}
+%    \begin{macrocode}
+\def\Pc@addtoks#1{%
+  \toks@=\expandafter{\the\toks@#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@init}
+%    \begin{macrocode}
+\def\Pc@init#1{%
+  \begingroup
+    \toks@={#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@finish}
+%    \begin{macrocode}
+\def\Pc@finish#1{%
+  \expandafter\endgroup
+  \expandafter#1\the\toks@
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Redefinitions}
+%
+%    \begin{macro}{\picture@redefine}
+%    \begin{tabular}[t]{@{}l@{ }l@{}}
+%    |#1|:& command name\\
+%    |#2|:& parameter text, length parameter with \& instead of \#
+%    \end{tabular}
+%    \begin{macrocode}
+\def\picture@redefine#1#2{%
+  \begingroup
+    \edef\reserved@a{%
+      \noexpand\noexpand
+      \expandafter\noexpand
+          \csname PcOrg@\expandafter\@gobble\string#1\endcsname
+    }%
+    \toks0{#1}%
+    \Pc@first#2&0%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@first}
+%    \begin{macrocode}
+\def\Pc@first#1&{%
+  \toks1={#1}%
+  \toks2={\Pc@init{#1}}%
+  \Pc@scanlength
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@scanlength}
+%    |#1|: number of length parameter or zero
+%    \begin{macrocode}
+\def\Pc@scanlength#1{%
+  \ifcase#1 %
+    \expandafter\Pc@last
+  \else
+    \toks1=\expandafter{\the\toks1 ###1}%
+    \toks2=\expandafter{\the\toks2 \Pc@tokslength{###1}}%
+    \expandafter\Pc@scannext
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@scannext}
+%    \begin{macrocode}
+\def\Pc@scannext#1&{%
+  \ifx\\#1\\%
+  \else
+    \toks1=\expandafter{\the\toks1 #1}%
+    \toks2=\expandafter{\the\toks2 \Pc@addtoks{#1}}%
+  \fi
+  \Pc@scanlength
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Pc@last}
+%    \begin{macrocode}
+\def\Pc@last{%
+  \edef\x{%
+    \endgroup
+    \let\reserved@a\the\toks0 %
+    \def\the\toks0 \the\toks1 {%
+      \the\toks2 %
+      \noexpand\Pc@finish\reserved@a
+    }%
+  }%
+  \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\LaTeX\ base macros}
+%
+%    \begin{macrocode}
+\picture@redefine\@picture{(&1,&2)(&3,&4)}
+\picture@redefine\put{(&1,&2)}
+\picture@redefine\multiput{(&1,&2)}
+\picture@redefine\@multiput{(&1,&2)}
+\picture@redefine\line{(#1,#2)&3}
+\picture@redefine\vector{(#1,#2)&3}
+\picture@redefine\dashbox{&1(&2,&3)}
+\picture@redefine\@circle{&1}
+\picture@redefine\@dot{&1}
+\picture@redefine\@bezier{#1(&2,&3)(&4,&5)(&6,&7)}
+\picture@redefine\@imakepicbox{(&1,&2)}
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{pspicture}}
+%
+%     Package \xpackage{pspicture} changes the signature of \cs{@oval}
+%     by adding an optional argument.
+%    \begin{macrocode}
+\@ifpackageloaded{pspicture}{%
+  \picture@redefine\@oval{[&1](&2,&3)}%
+  \picture@redefine\Line{(&1,&2)}%
+  \picture@redefine\Curve{(&1,&2)}%
+  \picture@redefine\Vector{(&1,&2)}%
+}{%
+  \picture@redefine\@oval{(&1,&2)}%
+}
+%    \end{macrocode}
+%
+% \subsection{Check package loading order}
+%
+%    \begin{macro}{\PC@checkpackage}
+%    \begin{macrocode}
+\def\Pc@checkpackage#1{%
+  \@ifpackageloaded{#1}{%
+  }{%
+    \AtBeginDocument{%
+      \@ifpackageloaded{#1}{%
+        \PackageWarningNoLine{picture}{%
+          Package `#1' is loaded after `picture'.\MessageBreak
+          Load package `picture' afterwards to get full support%
+          \MessageBreak
+          of its additional syntax with length specifications%
+        }%
+      }{}%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\Pc@checkpackage{pict2e}
+\Pc@checkpackage{pspicture}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/picture.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/picture.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex picture.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   picture.sty & tex/latex/oberdiek/picture.sty\\
+%   picture.pdf & doc/latex/oberdiek/picture.pdf\\
+%   picture-example.tex & doc/latex/oberdiek/picture-example.tex\\
+%   picture.dtx & source/latex/oberdiek/picture.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk picture.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{picture.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex picture.dtx
+%makeindex -s gind.ist picture.idx
+%pdflatex picture.dtx
+%makeindex -s gind.ist picture.idx
+%pdflatex picture.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{picture.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='picture'>
+  <name>picture</name>
+  <caption>Dimens for picture macros.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2009'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    There are macro and environment arguments that expect numbers
+    that will internally be multiplied by <tt>\unitlength</tt>.
+    This package extends the syntax of these arguments, so that
+    dimensions with calculation support may be used for these arguments.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/picture.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/picture.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2006/08/26 v1.0}
+%   \item
+%     First released version. (First start of the project was June/July 2002.)
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.1}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2008/11/26 v1.2}
+%   \item
+%     Package \xpackage{pict2e} added to documentation section ``Supported
+%     packages''.
+%   \item
+%     Package order of supported packages is checked.
+%   \end{Version}
+%   \begin{Version}{2009/10/11 v1.3}
+%   \item
+%     Fix because of new version v4.3 of package \xpackage{calc}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

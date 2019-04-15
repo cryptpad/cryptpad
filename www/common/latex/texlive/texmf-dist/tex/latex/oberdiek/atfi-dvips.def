@@ -1,0 +1,500 @@
+%%
+%% This is file `atfi-dvips.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% attachfile2.dtx  (with options: `dvips')
+%% 
+%% This is a generated file.
+%% 
+%% Project: attachfile2
+%% Version: 2012/04/18 v2.7
+%% 
+%% Copyright (C) 2005-2010, 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file attachfile2.dtx
+%% and the derived files
+%%    attachfile2.sty, attachfile2.pdf, attachfile2.ins, attachfile2.drv,
+%%    atfi-dvips.def, atfi-pdftex.def, atfi-dvipdfmx.def,
+%%    pdfatfi.pl.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atfi-dvips.def}%
+  [2012/04/18 v2.7 attachfile2 driver for dvips (HO)]%
+\def\atfi@literal#1{%
+  \special{ps:atfi_dict begin{#1}atfi_?pdfmark end}%
+}
+\def\atfi@header#1{%
+  \special{! #1}%
+}
+\atfi@header{%
+  userdict begin 20 dict dup /atfi_dict exch def end begin%
+    /atfi_?pdfmark systemdict %
+    dup/pdfmark known%
+    {%
+      /exec get def%
+    }{%
+      /pop get def%
+    } ifelse%
+    {%
+      %
+      % x y width height atfi_re ->
+      languagelevel 2 ge {%
+        /atfi_rectfill { rectfill } bind def%
+        /atfi_rectstroke { rectstroke } bind def%
+      }{%
+        /atfi_rect {%
+          /atfi_height exch def%
+          /atfi_width exch def%
+          /atfi_x exch def%
+          /atfi_y exch def %
+          newpath %
+          atfi_x atfi_y moveto %
+          atfi_x atfi_width add atfi_y lineto %
+          atfi_x atfi_width add atfi_y atfi_height add lineto %
+          atfi_x atfi_y atfi_height add lineto %
+          closepath%
+        } bind def%
+        /atfi_rectfill {%
+          atfi_rect fill%
+        } bind def%
+        /atfi_rectstroke {%
+          atfi_rect stroke%
+        } bind def%
+      } ifelse%
+      /atfi_curveto_v {%
+        currentpoint 6 2 roll curveto%
+      } bind def%
+      /atfi_curveto_y {%
+        2 copy curveto%
+      } bind def%
+      %
+      % help macro for atfi_convert_date
+      /atfi_two {%
+        dup 10 lt%
+        {%
+          1 string cvs %
+          exch 1 add exch%
+        }{%
+          2 string cvs%
+        } ifelse %
+        putinterval%
+      } bind def%
+      %
+      % <seconds since 1970-01-01> atfi_convert_date -> (D:...Z)
+      /atfi_convert_date {%
+        dup%
+        /atfi_days exch 3600 idiv 24 idiv def%
+        % calc date part
+        /atfi_year 1970 def%
+        {%
+          atfi_year 400 mod 0 eq %
+          atfi_year 100 mod 0 ne %
+          atfi_year 4   mod 0 eq %
+          and or%
+          {366} {365} ifelse %
+          dup atfi_days lt%
+          {%
+            atfi_days exch sub /atfi_days exch def%
+            /atfi_year atfi_year 1 add def%
+          }{%
+            exit%
+          } ifelse%
+        } loop%
+        /atfi_month 1 def%
+        /atfi_days atfi_days 1 add def %
+        31 atfi_days lt%
+        {%
+          atfi_days 31 sub /atfi_days exch def%
+          /atfi_month atfi_month 1 add def %
+          366 eq {29} {28} ifelse dup atfi_days lt%
+          {%
+            atfi_days exch sub /atfi_days exch def%
+            /atfi_month atfi_month 1 add def %
+          31 atfi_days lt%
+          {%
+            atfi_days 31 sub /atfi_days exch def%
+            /atfi_month atfi_month 1 add def %
+          30 atfi_days lt%
+          {%
+            atfi_days 30 sub /atfi_days exch def%
+            /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            30 atfi_days lt%
+            {%
+              atfi_days 30 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            30 atfi_days lt%
+            {%
+              atfi_days 30 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            30 atfi_days lt%
+            {%
+              atfi_days 30 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+          } { pop } ifelse%
+        }{ pop } ifelse %
+        % calc time part
+        3600 24 mul mod %
+        dup 3600 idiv dup /atfi_hour exch def %
+        3600 mul sub %
+        dup 60 idiv dup /atfi_min exch def %
+        60 mul sub %
+        /atfi_sec exch def%
+        (D:19700101000000Z)%
+        dup 2  atfi_year 4 string cvs putinterval %
+        dup 6  atfi_month atfi_two %
+        dup 8  atfi_days  atfi_two %
+        dup 10 atfi_hour  atfi_two %
+        dup 12 atfi_min   atfi_two %
+        dup 14 atfi_sec   atfi_two%
+      } bind def %
+      %
+      % <filename> atfi_calc_checksum -> /CheckSum <checksum>
+      % or returns nothing, if MD5Encode is not given
+      false %
+      languagelevel 2 ge {%
+        (MD5Encode)%
+        { pop true or }%
+        (MD5Encode) length string%
+        /Filter %
+        resourceforall%
+      } if%
+      {%
+        /atfi_calc_checksum {%
+          /atfi_checksum 16 string def%
+          /atfi_file exch (r) file def%
+          /atfi_md5sum atfi_checksum /MD5Encode filter def %
+          % not too efficient to read and write byte by byte,
+          % using a buffer is probably faster
+          atfi_size {%
+            atfi_file read%
+            {%
+              atfi_md5sum exch write%
+            } if%
+          } repeat %
+          atfi_md5sum closefile %
+          atfi_file closefile%
+          /CheckSum atfi_checksum%
+        } bind def%
+      }{%
+        /atfi_calc_checksum { pop } bind def%
+      } ifelse%
+      %
+      /atfi_pttobp { 72.27 div 72 mul } bind def%
+      /atfi_pdftodvipsx { 72.27 div Resolution mul } bind def%
+      /atfi_pdftodvipsy { 72.27 div VResolution mul } bind def%
+      %
+    } atfi_?pdfmark %
+  end%
+}
+\def\atfi@GSAVE{gsave }
+\def\atfi@GRESTORE{grestore }
+\def\atfi@SETLINEWIDTH{setlinewidth }
+\def\atfi@LINETO{lineto }
+\def\atfi@MOVETO{moveto }
+\def\atfi@STROKE{stroke }
+\def\atfi@FILL{fill }
+\def\atfi@FILLSTROKE#1#2{gsave #1 fill grestore #2 stroke }
+\def\atfi@SETRGBCOLORSTROKE{setrgbcolor }
+\def\atfi@SETRGBCOLORFILL{setrgbcolor }
+\def\atfi@SETGRAYSTROKE{setgray }
+\def\atfi@SETGRAYFILL{setgray }
+\def\atfi@SETCMYKCOLORSTROKE{setcmykcolor }
+\def\atfi@SETCMYKCOLORFILL{setcmykcolor }
+\def\atfi@RECTFILL{atfi_rectfill }
+\def\atfi@RECTSTROKEFILL#1#2#3{%
+  #3%
+  #1%
+  gsave atfi_rectfill grestore %
+  #2%
+  #3%
+  atfi_rectstroke %
+  #1%
+}
+\def\atfi@SETMITERLIMIT{setmiterlimit }
+\def\atfi@SETFLAT{setflat }
+\def\atfi@SETLINECAP{setlinecap }
+\def\atfi@CURVETO{curveto }
+\def\atfi@CURVETOV{atfi_curveto_v }
+\def\atfi@CURVETOY{atfi_curveto_y }
+\def\atfi@CLOSEPATH{closepath }
+\def\atfi@SETLINEJOIN{setlinejoin }
+\newcounter{atfi@obj}
+\renewcommand*{\theatfi@obj}{%
+  {atfi_obj_\number\c@atfi@obj}%
+}
+\define@key{AtFi@file}{Size}{}
+\def\atfi@embedfile#1{%
+  \ltx@IfUndefined{atfi@fileobj@#1}{%
+    \atfi@pdfstringdef\atfi@psfilename{#1}%
+    \stepcounter{atfi@obj}%
+    \expandafter\xdef\csname atfi@fileobj@#1\endcsname{\theatfi@obj}%
+    \begingroup
+      \let\atfi@params\ltx@empty
+      \expandafter\let\expandafter\atfi@temp
+          \csname atfi@file@#1\endcsname
+      \ifx\atfi@temp\ltx@empty
+        \let\atfi@temp\relax
+      \fi
+      \ifx\atfi@temp\relax
+        \atfi@pdftexdata{#1}%
+      \else
+        \edef\x{%
+          \noexpand\setkeys{AtFi@file}{\@nameuse{atfi@file@#1}}%
+        }%
+        \x
+      \fi
+      \atfi@literal{%
+        /atfi_filename(\atfi@psfilename)def %
+        atfi_filename status%
+        {%
+          /atfi_created exch def%
+          /atfi_referenced exch def%
+          /atfi_size exch def %
+          pop %
+          [%
+            /_objdef \theatfi@obj
+            /type/stream%
+          /OBJ pdfmark%
+          [%
+            \theatfi@obj
+            <<%
+              /Type/EmbeddedFile%
+              \atfi@mimetype
+              /Params%
+              <<%
+                \atfi@params
+                %
+                /Size atfi_size%
+                %
+                /product where%
+                {%
+                  pop %
+                  product (Ghostscript) search%
+                  {%
+                    pop pop pop %
+                    \ifatfi@creationdate
+                    \else
+                      false % TODO: test for windows
+                      {%
+                        /CreationDate atfi_created atfi_convert_date%
+                      } if%
+                    \fi
+                    \ifatfi@moddate
+                    \else
+                      /ModDate atfi_referenced atfi_convert_date%
+                    \fi
+                  } if%
+                } if %
+                \ifatfi@checksum
+                \else
+                  atfi_filename atfi_calc_checksum%
+                \fi
+              >>%
+            >>%
+          /PUT pdfmark%
+          [%
+            \theatfi@obj
+            atfi_filename (r) file%
+          /PUT pdfmark%
+          [%
+            \theatfi@obj
+          /CLOSE pdfmark%
+        }{%
+        } ifelse%
+      }%
+    \endgroup
+  }{%
+  }%
+}
+\def\atfi@xform@icon{%
+  \stepcounter{atfi@obj}%
+  \edef\atfi@appearanceobj{\theatfi@obj}%
+  \atfi@literal{%
+    [%
+      /_objdef \atfi@appearanceobj
+      /BBox[%
+        0 %
+        0 %
+        \strip@pt\wd\atfi@appearancebox\space atfi_pttobp %
+        \strip@pt\dimexpr\dp\atfi@appearancebox
+            +\ht\atfi@appearancebox\relax\space atfi_pttobp%
+      ]%
+    /BP pdfmark %
+    \csname atfi@acro\atfi@icon@icon @data\endcsname
+    [%
+    /EP pdfmark%
+  }%
+}
+\def\atfi@xform{%
+  \stepcounter{atfi@obj}%
+  \edef\atfi@appearanceobj{\theatfi@obj}%
+  \begingroup
+    \setbox\ltx@zero=\hbox{%
+      \atfi@literal{%
+        [%
+          /_objdef \atfi@appearanceobj
+          /BBox[%
+            currentpoint %
+              \strip@pt\dp\atfi@appearancebox\space sub %
+            currentpoint %
+              exch \strip@pt\wd\atfi@appearancebox\space add %
+              exch \strip@pt\ht\atfi@appearancebox\space add%
+          ]%
+        /BP pdfmark %
+        gsave %
+        currentpoint %
+        2 copy translate %
+        72.27 Resolution div 72.27 VResolution div neg scale %
+        exch neg exch neg translate%
+      }%
+      \usebox{\atfi@appearancebox}%
+      \atfi@literal{%
+        grestore%
+        [%
+        /EP pdfmark%
+      }%
+    }%
+    % do not allocate any space for xobject definition
+    \dp\ltx@zero=\z@
+    \ht\ltx@zero=\z@
+    \wd\ltx@zero=\z@
+    \mbox{\usebox\ltx@zero}%
+  \endgroup
+}
+\def\atfi@refxform#1{%
+  \raisebox{-\atfi@appearancedepth}{%
+    \atfi@literal{%
+      gsave %
+        currentpoint translate %
+        Resolution 72 div VResolution neg 72 div scale%
+        [#1 /SP pdfmark % hash-ok
+      grestore%
+    }%
+    \makebox[\atfi@appearancewidth]{}%
+  }%
+  \rule{0pt}{\atfi@appearanceheight}%
+}
+\def\atfi@insert@file@annot#1{%
+  \rule{0pt}{0pt}%
+  \ifatfi@appearance
+    \def\atfi@appearance@dict{%
+      /AP<<%
+        /N \atfi@appearanceobj
+        /R \atfi@appearanceobj
+        /D \atfi@appearanceobj
+      >>%
+    }%
+  \else
+    \let\atfi@appearance@dict\ltx@empty
+  \fi
+  \ltx@IfUndefined{atfi@fsobj@#1}{%
+    \stepcounter{atfi@obj}%
+    \expandafter
+    \xdef\csname atfi@fsobj@#1\endcsname{\theatfi@obj}%
+    \begingroup
+      \hypersetup{unicode=false}%
+      \atfi@pdfstringdef\atfi@file{#1}%
+      \atfi@literal{%
+        [%
+          /_objdef \theatfi@obj
+          /type/dict%
+        /OBJ pdfmark%
+        [%
+          \theatfi@obj
+          <<%
+            /Type/Filespec%
+            /F(\atfi@file)%
+            \ifx\atfi@ucfilespec\ltx@empty
+            \else
+              /UF(\atfi@ucfilespec)%
+            \fi
+            /EF<<%
+              /F \csname atfi@fileobj@#1\endcsname
+            >>%
+          >>%
+        /PUT pdfmark%
+      }%
+    \endgroup
+  }{%
+  }%
+  \atfi@literal{%
+    [%
+      /Subtype/FileAttachment%
+      \atfi@icon
+      \atfi@color@annot
+      \atfi@author
+      \atfi@date
+      \atfi@annotname
+      \atfi@description
+      \atfi@subject
+      \atfi@appearance@dict
+      /F \theatfi@flags
+      /FS \csname atfi@fsobj@#1\endcsname
+      /Rect[%
+        currentpoint %
+          \strip@pt\dimexpr\atfi@scale\atfi@appearancedepth\relax
+            \space atfi_pdftodvipsy add %
+        currentpoint %
+          exch %
+            \strip@pt\dimexpr\atfi@scale\atfi@appearancewidth\relax
+            \space atfi_pdftodvipsx add %
+          exch %
+            \strip@pt\dimexpr\atfi@scale\atfi@appearanceheight\relax
+            \space atfi_pdftodvipsy sub %
+      ]%
+    /ANN pdfmark%
+  }%
+  \rule{0pt}{\atfi@appearanceheight}%
+  \rule[-\atfi@appearancedepth]{0pt}{\atfi@appearancedepth}%
+  \rule{\atfi@appearancewidth}{0pt}%
+}
+\endinput
+%%
+%% End of file `atfi-dvips.def'.

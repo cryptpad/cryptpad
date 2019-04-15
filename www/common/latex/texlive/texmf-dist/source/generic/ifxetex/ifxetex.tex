@@ -1,0 +1,193 @@
+\RequirePackage{filecontents}
+\begin{filecontents*}{README.txt}
+------------------------
+THE IFXETEX PACKAGE v0.6
+
+This very simple package, for both Plain TeX and LaTeX, 
+defines the \ifxetex boolean for testing whether XeTeX 
+is being used for typesetting.
+
+Also provides the \RequireXeTeX command which throws
+an error if XeTeX is not the engine in use.
+
+To extract the package from the source file "ifxetex.tex", 
+execute `latex ifxetex.ins`. Executing `xelatex ifxetex.tex`
+compiles the documentation and generates this README.
+
+-------------------
+Will Robertson
+Copyright 2006-2010
+\end{filecontents*}
+%%%%%%%%%1%%%%%%%%%2%%%%%%%%%3%%%%%%%%%4%%%%%%%%%5
+
+\begin{filecontents*}{ifxetex.sty}
+% \iffalse
+% Copyright 2006-2010 by Will Robertson <wspr81@gmail.com>
+% 
+% Distributable under the LaTeX Project Public License,
+% version 1.3c or higher (your choice). The latest version of
+% this license is at: http://www.latex-project.org/lppl.txt
+%
+% This work is maintained by Will Robertson.
+% \fi
+
+% Ensure loading a single time only.
+\csname ifxetexloaded\endcsname
+\let\ifxetexloaded\endinput
+
+% Declare ourselves to \LaTeX.
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax\else
+  \ProvidesPackage{ifxetex}
+    [2010/09/12 v0.6 Provides ifxetex conditional]
+\fi
+
+% For \XeTeX-exclusive packages.
+\def\RequireXeTeX{%
+  \ifxetex\else
+    \begingroup
+      \errorcontextlines=-1\relax
+      \newlinechar=10\relax
+      \errmessage{^^J
+      ********************************************^^J
+      * XeTeX is required to compile this document.^^J
+      * Sorry!^^J
+      ********************************************}%
+    \endgroup
+  \fi}
+  
+% Abort if \cmd\ifxetex\ is already defined
+% (assume that it has already been set correctly)^^A
+% \footnote{Thanks to \textit{Dan Luecking} for suggesting this.} 
+\expandafter\ifx\csname ifxetex\endcsname\relax\else
+  \expandafter\endinput
+\fi
+
+% Create and set \cmd\ifxetex\ accordingly.
+\newif\ifxetex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname XeTeXrevision\endcsname\relax
+  \xetexfalse
+\else
+  \xetextrue
+\fi
+\end{filecontents*}
+%%%%%%%%%1%%%%%%%%%2%%%%%%%%%3%%%%%%%%%4%%%%%%%%%5
+
+
+
+% Conditionally compile the documentation & generate the .ins file:
+\providecommand\DocCompile{Y}
+\if\DocCompile N
+  \expandafter\csname @@end\expandafter\endcsname
+\fi
+
+
+
+
+\begin{filecontents*}{ifxetex.ins}
+%&latex
+\def\DocCompile{N}
+\input ifxetex.tex
+\csname@@end\endcsname
+\end{filecontents*}
+
+
+
+
+\makeatletter
+\documentclass{article}
+
+\usepackage[it,medium]{titlesec}
+
+\usepackage{bigfoot,ifthen,xcolor}
+\usepackage[colorlinks,linktocpage]{hyperref}
+
+\usepackage{gmdoc}
+\usepackage{gmverb}
+\dekclubs
+\stanzaskip=\bigskipamount 
+\CodeSpacesGrey
+
+\usepackage{tocloft,varwidth}
+\setcounter{tocdepth}{1}
+\def\tocwidthA{0.45}
+\def\tocwidthB{0.45}
+\def\cftpartfont{\scshape}
+\def\cftsecfont{\small}
+\cftbeforesecskip=0pt
+\def\cftpartleader{}
+\def\cftpartafterpnum{\cftparfillskip}
+\def\cftsecleader{}
+\def\cftsecafterpnum{\cftparfillskip}
+
+\let\pkg\textsf
+\def\pkgopt#1{\texttt{[#1]}}
+
+\def\PDF{\textsc{pdf}}
+\def\PS{\textsc{ps}}
+\def\DVI{\textsc{dvi}}
+\def\EPS{\textsc{eps}}
+
+\usepackage{amsmath,listings}
+\lstset{basicstyle=\ttfamily,columns=fullflexible}
+
+\frenchspacing
+
+\GetFileInfo{ifxetex.sty}
+\begin{document}
+
+\title{The \pkg{ifxetex} package}
+\author{%
+  \normalsize Will Robertson\footnote{\texttt{wspr81@gmail.com}}}
+\date{\fileversion\qquad\filedate}
+
+\maketitle
+
+\section{User documentation}
+
+This package provides a way to check if a document is being processed with \XeTeX. It may be loaded with
+
+\bigskip
+\begin{tabular}{l@{\quad}l}
+{|\usepackage{ifxetex}|} & for \LaTeX, or \\ 
+{|\input ifxetex.sty|} & for Plain \TeX.
+\end{tabular}
+\bigskip
+
+\noindent
+This defines the conditional \cmd\ifxetex\ that is used in the standard way:
+
+\bigskip
+|\ifxetex|\par
+\hspace{2em}\meta{material for \XeTeX}\par
+|\else|\par
+\hspace{2em}\meta{material not for \XeTeX}\par
+|\fi|
+\bigskip
+
+\noindent 
+Users of \LaTeX's \pkg{ifthen} package can also use it as |\boolean{xetex}|:
+
+\bigskip
+|\ifthenelse{ \boolean{xetex} }{|\texttt{\char`\%}\par
+\hspace{2em}\meta{material for \XeTeX}\par
+|}{|\texttt{\char`\%}\par
+\hspace{2em}\meta{material not for \XeTeX}\par
+|}|
+\bigskip
+
+\noindent
+Finally, this package also defines the |\RequireXeTeX| command,
+which tests for \XeTeX\ use and throws an error if a different engine 
+is being used. This is used for packages like \pkg{fontspec} that take 
+advantage of \XeTeX's new features and cannot be used otherwise.
+
+
+\clearpage
+\parindent=0pt
+\section{Implementation}
+\DocInput{ifxetex.sty}
+
+
+\end{document}

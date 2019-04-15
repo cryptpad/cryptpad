@@ -1,0 +1,913 @@
+% \iffalse meta-comment
+%
+% File: ifluatex.dtx
+% Version: 2010/03/01 v1.3
+% Info: Provides the ifluatex switch
+%
+% Copyright (C) 2007, 2009, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file ifluatex.dtx
+% and the derived files
+%    ifluatex.sty, ifluatex.pdf, ifluatex.ins, ifluatex.drv,
+%    ifluatex-test1.tex, ifluatex-test2.tex, ifluatex-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/ifluatex.dtx
+%    CTAN:macros/latex/contrib/oberdiek/ifluatex.pdf
+%
+% Unpacking:
+%    (a) If ifluatex.ins is present:
+%           tex ifluatex.ins
+%    (b) Without ifluatex.ins:
+%           tex ifluatex.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{ifluatex.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If ifluatex.drv is present:
+%           latex ifluatex.drv
+%    (b) Without ifluatex.drv:
+%           latex ifluatex.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex ifluatex.dtx
+%       makeindex -s gind.ist ifluatex.idx
+%       pdflatex ifluatex.dtx
+%       makeindex -s gind.ist ifluatex.idx
+%       pdflatex ifluatex.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/ifluatex.sty
+%    TDS:doc/latex/oberdiek/ifluatex.pdf
+%    TDS:doc/latex/oberdiek/test/ifluatex-test1.tex
+%    TDS:doc/latex/oberdiek/test/ifluatex-test2.tex
+%    TDS:doc/latex/oberdiek/test/ifluatex-test3.tex
+%    TDS:source/latex/oberdiek/ifluatex.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: ifluatex
+Version: 2010/03/01 v1.3
+
+Copyright (C) 2007, 2009, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file ifluatex.dtx
+and the derived files
+   ifluatex.sty, ifluatex.pdf, ifluatex.ins, ifluatex.drv,
+   ifluatex-test1.tex, ifluatex-test2.tex, ifluatex-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{ifluatex.ins}{\from{ifluatex.dtx}{install}}%
+  \file{ifluatex.drv}{\from{ifluatex.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{ifluatex.sty}{\from{ifluatex.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{ifluatex-test1.tex}{\from{ifluatex.dtx}{test1}}%
+  \file{ifluatex-test2.tex}{\from{ifluatex.dtx}{test-reload1}}%
+  \file{ifluatex-test3.tex}{\from{ifluatex.dtx}{test-reload2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{ifluatex.xml}{\from{ifluatex.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     ifluatex.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `ifluatex.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{ifluatex.drv}%
+  [2010/03/01 v1.3 Provides the ifluatex switch (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{ifluatex.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{570}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{ifluatex.drv}
+%
+% \title{The \xpackage{ifluatex} package}
+% \date{2010/03/01 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package looks for \LuaTeX\ regardless of its mode
+% and provides the switch \cs{ifluatex}. Also it makes
+% \cs{luatexversion} available if it is not present.
+% It works with \plainTeX\ or \LaTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% The package \xpackage{ifluatex} can be used with both \plainTeX\
+% and \LaTeX:
+% \begin{description}
+% \item[\plainTeX:] |\input ifluatex.sty|
+% \item[\LaTeXe:]   |\usepackage{ifluatex}|
+% \end{description}
+%
+% \DescribeMacro{\ifluatex}
+% The package provides the switch \cs{ifluatex}:
+% \begin{quote}
+%   |\ifluatex|\\
+%   \hspace{1.5em}\LuaTeX\ is running\\
+%   |\else|\\
+%   \hspace{1.5em}Without \LuaTeX\\
+%   |\fi|
+% \end{quote}
+%
+% Since version 0.39 \LuaTeX\ only provides \cs{directlua} at startup
+% time. Also the syntax of \cs{directlua} changed in version 0.36.
+% Thus the user might want to check the LuaTeX version.
+% Therefore this package also makes \cs{luatexversion} and
+% \cs{luatexrevision} available, if it is not yet done.
+%
+% If you want to detect the mode (DVI or PDF), then use package
+% \xpackage{ifpdf}. \LuaTeX\ has inherited \cs{pdfoutput} from \pdfTeX.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@ifluatex.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{ifluatex}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@ifluatex.sty\endcsname
+\ProvidesPackage{ifluatex}%
+  [2010/03/01 v1.3 Provides the ifluatex switch (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ifluatex@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ifluatex@AtEnd{%
+    \ifluatex@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifluatex@AtEnd{\ifluatex@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Macro for error messages}
+%
+%    \begin{macro}{\ifluatex@Error}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname PackageError\endcsname\relax
+  \def\ifluatex@Error#1#2{%
+    \begingroup
+      \newlinechar=10 %
+      \def\MessageBreak{^^J}%
+      \edef\x{\errhelp{#2}}%
+      \x
+      \errmessage{Package ifluatex Error: #1}%
+    \endgroup
+  }%
+\else
+  \def\ifluatex@Error{%
+    \PackageError{ifluatex}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Check for previously defined \cs{ifluatex}}
+%
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname ifluatex\endcsname\relax
+  \else
+    \edef\i/{\expandafter\string\csname ifluatex\endcsname}%
+    \ifluatex@Error{Name clash, \i/ is already defined}{%
+      Incompatible versions of \i/ can cause problems,\MessageBreak
+      therefore package loading is aborted.%
+    }%
+    \endgroup
+    \expandafter\ifluatex@AtEnd
+  \fi%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{\cs{ifluatex}}
+%
+%    \begin{macro}{\ifluatex}
+%    \begin{macrocode}
+\let\ifluatex\iffalse
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Test \cs{luatexversion}. Is it  defined and different from
+%    \cs{relax}? Someone could have used \LaTeX\ internal
+%    \cs{@ifundefined}, or something else involving.
+%    Notice, \cs{csname} is executed inside a group for the test
+%    to cancel the side effect of \cs{csname}.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname luatexversion\endcsname\relax
+\else
+  \expandafter\let\csname ifluatex\expandafter\endcsname
+                  \csname iftrue\endcsname
+\fi
+%    \end{macrocode}
+%
+% \subsection{Lua\TeX\ v0.39}
+%
+%     Starting with version 0.39 \LuaTeX\ wants to provide \cs{directlua}
+%     as only primitive at startup time beyond vanilla \TeX's primitives.
+%     Then \cs{directlua} exists, but \cs{luatexversion} cannot be found.
+%     Unhappily also the syntax of \cs{directlua} changed in v0.36,
+%     thus the user would want to check \cs{luatexversion}.
+%     Therefore we make \cs{luatexversion} available using
+%     \LuaTeX's Lua function |tex.enableprimitives|.
+%
+%    \begin{macrocode}
+\ifluatex
+\else
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname directlua\endcsname\relax
+  \else
+    \expandafter\let\csname ifluatex\expandafter\endcsname
+                    \csname iftrue\endcsname
+    \begingroup
+      \newlinechar=10 %
+      \endlinechar=\newlinechar%
+      \ifnum0%
+          \directlua{%
+            if tex.enableprimitives then
+              tex.enableprimitives('ifluatex', {'luatexversion'})
+              tex.print('1')
+            end
+          }%
+          \ifx\ifluatexluatexversion\@undefined\else 1\fi %
+          =11 %
+        \global\let\luatexversion\ifluatexluatexversion%
+      \else%
+        \ifluatex@Error{%
+          Missing \string\luatexversion%
+        }{%
+          Update LuaTeX.%
+        }%
+      \fi%
+    \endgroup%
+  \fi
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifluatex
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname luatexrevision\endcsname\relax
+    \ifnum\luatexversion<36 %
+    \else
+      \begingroup
+        \ifx\luatexrevision\relax
+          \let\luatexrevision\@undefined
+        \fi
+        \newlinechar=10 %
+        \endlinechar=\newlinechar%
+        \ifcase0%
+            \directlua{%
+              if tex.enableprimitives then
+                tex.enableprimitives('ifluatex', {'luatexrevision'})
+              else
+                tex.print('1')
+              end
+            }%
+            \ifx\ifluatexluatexrevision\@undefined 1\fi%
+            \relax%
+          \global\let\luatexrevision\ifluatexluatexrevision%
+        \fi%
+      \endgroup%
+    \fi
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname luatexrevision\endcsname\relax
+      \ifluatex@Error{%
+        Missing \string\luatexrevision%
+      }{%
+        Update LuaTeX.%
+      }%
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%
+% \subsection{Protocol entry}
+%
+%     Log comment:
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname PackageInfo\endcsname\relax
+    \def\x#1#2{%
+      \immediate\write-1{Package #1 Info: #2.}%
+    }%
+  \else
+    \let\x\PackageInfo
+    \expandafter\let\csname on@line\endcsname\empty
+  \fi
+  \x{ifluatex}{LuaTeX \ifluatex\else not \fi detected}%
+\endgroup
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifluatex@AtEnd%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input ifluatex.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Reload check for plain}
+%
+%    \begin{macrocode}
+%<*test-reload1>
+\input ifluatex.sty\relax
+\input ifluatex.sty\relax
+\csname @@end\endcsname\end
+%</test-reload1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test-reload2>
+\input miniltx.tex\relax
+\input ifluatex.sty\relax
+\input ifluatex.sty\relax
+\csname @@end\endcsname\end
+%</test-reload2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/ifluatex.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/ifluatex.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex ifluatex.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   ifluatex.sty & tex/generic/oberdiek/ifluatex.sty\\
+%   ifluatex.pdf & doc/latex/oberdiek/ifluatex.pdf\\
+%   test/ifluatex-test1.tex & doc/latex/oberdiek/test/ifluatex-test1.tex\\
+%   test/ifluatex-test2.tex & doc/latex/oberdiek/test/ifluatex-test2.tex\\
+%   test/ifluatex-test3.tex & doc/latex/oberdiek/test/ifluatex-test3.tex\\
+%   ifluatex.dtx & source/latex/oberdiek/ifluatex.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk ifluatex.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{ifluatex.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex ifluatex.dtx
+%makeindex -s gind.ist ifluatex.idx
+%pdflatex ifluatex.dtx
+%makeindex -s gind.ist ifluatex.idx
+%pdflatex ifluatex.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{ifluatex.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ifluatex'>
+  <name>ifluatex</name>
+  <caption>Provides the \ifluatex switch.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    The package looks for  LuaTeX regardless of its mode and provides
+    the switch <tt>\ifluatex</tt>; it works with Plain TeX or LaTeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ifluatex.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ifluatex.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='ifluatex'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/12/12 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v1.1}
+%   \item
+%     Test adopted for \LuaTeX\ 0.39.
+%   \item
+%     Makes \cs{luatexversion} available.
+%   \end{Version}
+%   \begin{Version}{2009/04/17 v1.2}
+%   \item
+%     Fixes (Manuel P\'egouri\'e-Gonnard).
+%   \item
+%     \cs{luatextrue} and \cs{luatexfalse} are no longer defined.
+%   \item
+%     Makes \cs{luatexrevision} available, too.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.3}
+%   \item
+%     Line ends fixed in case \cs{endlinechar} = \cs{newlinechar}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

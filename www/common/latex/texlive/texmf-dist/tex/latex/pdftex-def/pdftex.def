@@ -1,0 +1,1897 @@
+\ProvidesFile{pdftex.def}[2011/05/27 v0.06d Graphics/color for pdfTeX]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% LaTeX Colour and Graphics support for PDFTeX
+%%
+%% License
+%% =======
+%%
+%% Copyright (C) 2000-2011 David Carlisle, Sebastian Rahtz, Hans Hagen,
+%% Heiko Oberdiek and Martin Schr\"oder
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is
+%% Heiko Oberdiek and Martin Schr\"oder.
+%%
+%% This work consists of the file pdftex.def.
+%%
+%% Usage
+%% =====
+%%
+%% It may be used by specifying the pdftex option to any of the
+%% supported packages, for example:
+%%
+%% \usepackage[pdftex]{graphicx}
+%%
+%% * pdfTeX determines the bounding box of the images by means of
+%%   itself. Therefore the bounding box options should not be used.
+%%   In this cases a warning is issued and viewport is used instead.
+%% * Option "page" (graphicx) for selecting a page of a multipage
+%%   PDF document.
+%% * \pagecolor is supported. \nopagecolor disables the page color.
+%% * Option "quiet" (graphicx/experimental): log messages are suppressed.
+%% * Option "resolution" (graphicx/experimental): this sets
+%%   \pdfimageresolution, see pdfTeX documentation.
+%% * Option "print" (graphicx/experimental): specifies an alternate
+%%   print image (bitmaps only), see PDF specification.
+%% * pdftex.def can be used under plain-TeX with miniltx support.
+%%
+%% "Experimental" means that these features can change or vanish
+%% in later versions.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% History
+% ...
+% 2000/04/20 v0.02s:
+%  * gray color model directly supported (HO).
+% 2000/05/02 v0.02t:
+%  * \pagecolor supported (HO).
+% 2000/05/12 v0.02u:
+%  * support for multipage pdf files, option `page' added (HO).
+% 2000/05/31 v0.02v:
+%  * Option `page' is defined at begin document,
+%    if package `keyval' is loaded after `pdftex.def'.
+% 2000/06/16 v0.03a:
+%  * Added Heiko to author list (DPC).
+% 2000/08/31 v0.03b:
+%  * support for alternate print images: option `print' added (HO).
+%    * This feature is not supported by Ghostscript, xpdf, or AR3.
+%    * The images should have the same dimensions/resolution.
+%  * Two experimental options added (HO):
+%    * `quiet': log messages are suppressed.
+%    * `resolution': sets \pdfimageresolution.
+%    Because these options are not supported by graphicx,
+%    they have to be set after \usepackage{graphicx}, eg.
+%      \setkeys{Gin}{quiet,resolution=300}
+%    Option `quiet' (for pdftex) can be make known to graphic{s,x}
+%    with this line in graphics.cfg:
+%      \DeclareOption{quiet}{\let\Gin@log\@gobble}
+%    Caution: both options are experimental and can be
+%    change in next versions!
+%  * \pdfpage{width,height} are only set, if \paperwidth
+%    is defined (HO).
+% 2000/09/04 v0.03c
+%  * Redefinition of `natwidth' and `natheight' \AtBeginDocument (HO).
+% 2000/09/14 v0.03d
+%  * Fixes for `viewport' and `trim' (HO).
+%  * Clip support added for viewport and trim (HO).
+% 2000/09/14 v0.03e
+%  * Options `bbllx', `bblly', `bburx', `bbury' disabled,
+%    option `bb' redirected with a warning to `viewport' (HO).
+% 2000/11/10 v0.03f
+%  * Bug, that produces an error message, if package `graphics'
+%    is used (introduced in 0.03d), fixed: If \Gin@vllx is not
+%    defined (graphics), then clipping and the moves of options
+%    viewport/trim are silently disabled (HO).
+% 2001/05/25 v0.03g
+%  * \pdfpagewidth and \pdfpageheight are not set to zero,
+%    if \paperwidth and \paperheight are not set (HO).
+% 2001/09/01 v0.03h
+%  * Compatibilty for miniltx.tex, problems fixed:
+%    \@ifpackageloaded, \PackageWarning, \PackageWarningNoLine,
+%    \@currname.
+% 2001/11/29 v0.03i
+%  * Problem with \if@inlabel (plain format) fixed.
+% 2002/06/18 v0.03j
+%  * Contribution by P\'etiard Fran\c{c}ois <petiard@math.univ-fcomte.fr>:
+%    Improvement of \Ginclude@mps (support of viewport and clip).
+% 2002/06/19 v0.03k
+%  * Correction by P\'etiard Fran\c{c}ois for \GPT@DoEndClip.
+% 2005/06/15 v0.03l
+%  * \usebox patch fixed (\aftergroup part removed) (HO).
+% 2005/06/20 v0.03m
+%  * .tif support is removed for pdfTeX >= 1.10a (HO).
+% 2006/02/23 v0.03n
+%  * Compatibility for plain-TeX: file can be loaded multiple times;
+%    colorfix is not applied for undefined macros (HO).
+% 2006/02/24 v0.03o
+%  * Catcode protections mainly because of babel's shorthands (HO).
+% 2006/03/02 v0.03p
+%  * \pagecolor support for plain-TeX fixed (HO).
+% 2006/05/17 v0.03q
+%  * Error message if ConTeXt's supp-pdf.tex is missing and
+%    support of MPS files is not available (Markus Kohm = MK, HO).
+% 2006/06/06 v0.03r
+%  * \nopagecolor/\no@page@color added (HO).
+% 2006/07/16 v0.03s (HO)
+%  * LPPL 1.3c.
+%  * A little usage.
+%  * Test for \MessageBreak changed (comp.text.tex,
+%    message id: <44baca88$0$10529$9b4e6d93@newsread4.arcor-online.net>).
+% 2006/08/14 v0.03t (HO)
+%  * Extensions added: .jpeg, .JPG, .JPEG, .PNG, .PDF
+%    No variants for .tif, because TIFF support is no longer available.
+%    No need for uppercase variant of .mps.
+% 2007/01/01 v0.04a (HO)
+%  * Support of color stack, introduced in pdfTeX 1.40.0.
+%  * Support of transform matrix commands of pdfTeX 1.40.0.
+%  * The argument for option `page' can be a register.
+% 2007/01/02 v0.04b (HO)
+%  * Internal change: Switching of color stacks is easier by using
+%    \@pdfcolorstack for the stack number. Thus this command
+%    should be redefined, if someone wants to use another color stack
+%    (e.g. for footnotes). \main@pdfcolorstack should not be changed
+%    for this purpose.
+% 2007/01/06 v0.04c (HO)
+%  * Support for JBIG2 added (pdfTeX 1.40.0).
+% 2007/01/08 v0.04d (HO)
+%  * Bug fix: .mps forgotten for extension list if pdfTeX >= 1.40.0
+%  * .jbig2 and .jb2 are not listed in the extension list
+%    if \pdfminorversion < 4. Thus \pdfminorversion should have
+%    the correct value, if pdftex.def is loaded.
+% 2007/03/15 v0.04e (HO)
+%  * Missing comma in \Gin@extensions added (found by Reinhard Kotucha).
+% 2007/04/06 v0.04f (HO)
+%  * Fix for \pagecolor, text before page color can lead to an invalid
+%    page stream. Therefore "page" is now used instead of "direct"
+%    as modifier for \pdfliteral.
+%  * Boolean option `resetcolor' added (pdfTeX >= 0.12n).
+%    The current color is used for PDF or MPS images, unless
+%    the images contain their own color settings.
+%    If option `resetcolor' is set to `true', then the current color
+%    is reset to \normalcolor during image inclusion.
+% 2007/04/17 v0.04g (HO)
+%  * Small improvement of robustness of \pagecolor
+%    and using e-TeX if available.
+% 2007/06/12 v0.04h (HO)
+%  * Fix for \pagecolor: v0.04f uses keyword `page' for \pdfliteral,
+%    but this keyword is not available before pdfTeX 1.30.0.
+% 2007/12/04 v0.04i (HO)
+%  * Fatal error is avoided if image file does not exists.
+% 2007/12/06 v0.04j (HO)
+%  * Option xmpfile added for adding metadata (experimental).
+% 2008/07/16 v0.04k (HO)
+%  * \LoadMetaPostSpecialExtensions
+%    loads additional support for MetaPost images (transparency)
+%    by loading supp-mpe.tex and supp-mis.tex
+%    (method posted in comp.text.tex by Jeremy Lea).
+%    As side effect MetaPost images are put in separate objects
+%    and are not inlined in the page stream.
+%    Status: experimental.
+% 2008/09/08 v0.04l (HO)
+%  * Adds an error message, if pdfTeX is called in DVI mode.
+%  * Aborts loading of the package with an error message,
+%    if pdfTeX is missing.
+% 2009/08/25 v0.04m (HO)
+%  * Catcodes are preserved and initialized for loading of
+%    pdftex.def and ConTeXt's support files.
+%  * ConTeXt's support files have now the extension `.mkii' instead
+%    of `.tex'.
+% 2010/02/14 v0.04n (HO)
+%  * \GPT@catcodes extended for xmlTeX (pdftex.def loads
+%    supp-pdf.mkii at begin document where xmlTeX's catcodes
+%    are already active).
+% 2010/03/11 v0.04o (HO)
+%  * Ensure that \undefined is undefined during loading of
+%    ConTeXt files.
+% 2010/03/12 v0.04p (HO)
+%  * \undefined is also undefined during conversion of MPS.
+% 2010/04/14 v0.04q (HO)
+%  * Optimizations for rotating and scaling:
+%    * remove unnecessary identity transformations
+%    * numbers are normalized
+% 2010/04/15 v0.04r (HO)
+%  * Fix for scale values without integer part.
+% 2010/09/09 v0.05a (HO)
+%  * Option `pagebox' added for specifying the pdf page box
+%    of the included image. Values are `mediabox', `cropbox',
+%    `bleedbox', `trimbox' and `artbox'. Default is `cropbox'. (MS/HO)
+%  * Option `interpolate' added for bitmaps, see PDF specification.
+%    Values are `true' or `false', default is `false'.
+%  * Option `decodearray' added for bitmaps, see PDF specification,
+%    key /Decode of image dictionaries. The value for option
+%    `decodearray' is the value for /Decode without `[' and ']'.
+%  * Option `maskarray' added for bitmaps, see PDF specification,
+%    key /Mask of image dictionaries with array as value.
+%    The value of `maskarray' is the array value for /Mask
+%    without `[' and ']'.
+%  * Option `intent' added for the rendering intent of bitmap
+%    images, see PDF specification, key /Intent of image
+%    dictionaries. The value is a name without a leading slash,
+%    the standard names of the PDF specification:
+%    `AbsoluteColorimetric', `RelativeColorimetric',
+%    `Saturation', `Perceptual'.
+%  * Options `ocobjnum' and `ocobjref' are hooks for those who wants
+%    to work with optional content. The options can be used for both
+%    bitmap and PDF images and are unsupported for MPS.
+%    The optional content dictionary is given by an external
+%    object. Option `ocobjnum' expects the number of that object
+%    (e.g. \pdflastobj). It's a positive integer (greater than zero).
+%    Option `ocobjref' takes the full object reference
+%    (positive integer, followed by ` 0 R' in case of pdfTeX).
+%    Other drivers might support `ocobjref' as well, in case of
+%    PostScript/pdfmark drivers, the object is usually referenced by
+%    a name in curly braces.
+%  * Tiff support removed for driver versions between 1.10a and 1.30.
+% 2010/09/14 v0.05b (HO)
+%  * Fix, \pagecolor got broken accidentally (in v0.05a).
+% 2010/11/26 v0.05c (HO)
+%  * \stockwidth and \stockheight of class `memoir' respected.
+% 2011/01/28 v0.05d (HO)
+%  * Patching trig.sty is improved by doing it earlier in some
+%    cases, e.g. if one of class `memoir', package `scrlfile' or
+%    package `filehook' is loaded.
+% 2011/04/21 v0.06a (HO)
+%  * The use info on the screen goes with an information
+%    entry in the .log file that also tells the requested
+%    width (feature request of Axel Berger).
+%  * Use of packages `infwarerr' and `ltxcmds'.
+% 2011/04/25 v0.06b (HO)
+%  * Fix in \GPT@NormalizeNumber.
+%  * Date fixed in \ProvidesFile.
+% 2011/05/18 v0.06c (HO)
+%  * The ConTeXt support files `supp-pdf.*' and `supp-mpe.*' do
+%    not prevent reloading. Therefore `pdftex.def' only tries to load
+%    them if \convertMPtoPDF and \assignMPStransparency are not
+%    available. This fixes a compatibilty issue with class `combine'.
+% 2011/05/27 v0.06d (HO)
+%  * Fix for v0.06a, package `ltxcmds' was not loaded in plain TeX.
+%
+% Prefix of internal commands for this file `pdftex.def':
+%   \GPT@ (Graphics bundle PdfTex driver)
+
+\expandafter\edef\csname GPT@AtEnd\endcsname{%
+  \expandafter\noexpand\csname GPT@restore@\endcsname
+  \catcode35 \the\catcode35\relax % #
+  \catcode64 \the\catcode64\relax % @
+  \noexpand\endinput
+}
+\catcode35 6 % #
+\catcode64 11 % @
+\def\GPT@catcodes#1{%
+  \expandafter\edef\csname GPT@restore@#1\endcsname{%
+    \let\noexpand\undefined
+        \expandafter\noexpand\csname GPTorg@#1@undefined\endcsname
+    \let\expandafter\noexpand\csname GPTorg@#1@undefined\endcsname
+        \noexpand\@undefined
+    \endlinechar \the\endlinechar
+    \catcode9 \the\catcode9 % tab
+    \catcode13 \the\catcode13 % ^^M
+    \catcode32 \the\catcode32 % space
+    \catcode33 \the\catcode33 % !
+    \catcode34 \the\catcode34 % "
+    \catcode35 \the\catcode35 % #
+    \catcode36 \the\catcode36 % $
+    \catcode37 \the\catcode37 % %
+    \catcode38 \the\catcode38 % &
+    \catcode39 \the\catcode39 % '
+    \catcode40 \the\catcode40 % (
+    \catcode41 \the\catcode41 % )
+    \catcode42 \the\catcode42 % *
+    \catcode43 \the\catcode43 % +
+    \catcode44 \the\catcode44 % ,
+    \catcode45 \the\catcode45 % -
+    \catcode46 \the\catcode46 % .
+    \catcode47 \the\catcode47 % /
+    \catcode58 \the\catcode58 % :
+    \catcode59 \the\catcode59 % ;
+    \catcode60 \the\catcode60 % <
+    \catcode61 \the\catcode61 % =
+    \catcode62 \the\catcode62 % >
+    \catcode63 \the\catcode63 % ?
+    \catcode64 \the\catcode64 % @
+    \catcode91 \the\catcode91 % [
+    \catcode92 \the\catcode92 % \
+    \catcode93 \the\catcode93 % ]
+    \catcode94 \the\catcode94 % ^
+    \catcode95 \the\catcode95 % _
+    \catcode96 \the\catcode96 % `
+    \catcode123 \the\catcode123 % {
+    \catcode124 \the\catcode124 % |
+    \catcode125 \the\catcode125 % }
+    \catcode126 \the\catcode126 % ~
+  }%
+  \endlinechar 13 %
+  \catcode9 10 % tab
+  \catcode13 5 % ^^M (end of line)
+  \catcode64 11 %
+  \catcode61 12 % =
+  \catcode32 10 % space
+  \catcode33 12 % !
+  \catcode34 12 % "
+  \catcode35 6 % #
+  \catcode36 3 % $
+  \catcode37 14 % %
+  \catcode38 4 % &
+  \catcode39 12 % '
+  \catcode40 12 % (
+  \catcode41 12 % )
+  \catcode42 12 % *
+  \catcode43 12 % +
+  \catcode44 12 % ,
+  \catcode45 12 % -
+  \catcode46 12 % .
+  \catcode47 12 % /
+  \catcode58 12 % :
+  \catcode59 12 % ;
+  \catcode60 12 % <
+  \catcode61 12 % =
+  \catcode62 12 % >
+  \catcode63 12 % ?
+  \catcode64 11 % @
+  \catcode91 12 % [
+  \catcode92 0 % \
+  \catcode93 12 % ]
+  \catcode94 7 % ^
+  \catcode95 8 % _
+  \catcode96 12 % `
+  \catcode123 1 % {
+  \catcode124 12 % |
+  \catcode125 2 % }
+  \catcode126 13 % ~
+  \expandafter\let\csname GPTorg@#1@undefined\endcsname\undefined
+  \let\undefined\@undefined
+}
+\GPT@catcodes{}
+
+% 1.10a: .tif support was dropped
+% 1.10a: keywords mediabox|cropbox|... for \pdfximage
+% 1.30.0: keyword `page' for \pdfliteral added.
+% 1.40.0: JBIG2 support added in pdfTeX 1.40.0
+
+\ifx\pdftexversion\@undefined
+  \def\driver@release{1}%
+\else
+  \ifnum\pdftexversion<12 %
+    \def\driver@release{2}%
+  \else
+    \ifnum\pdftexversion<13 %
+      \ifnum\expandafter`\pdftexrevision<`n %
+        \def\driver@release{3}%
+      \else
+        \def\driver@release{4}%
+      \fi
+    \else
+      \ifnum\pdftexversion=13 %
+        \def\driver@release{5}%
+      \else
+        \ifnum\pdftexversion=14 %
+          \def\driver@release{6}%
+        \else
+          \ifnum\pdftexversion<110 %
+            \def\driver@release{7}%
+          \else
+            \ifnum\pdftexversion<130 %
+              \def\driver@release{8}%
+            \else
+              \ifnum\pdftexversion<140 %
+                \def\driver@release{9}%
+              \else
+                \def\driver@release{10}%
+              \fi
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+\fi
+
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ltxcmds}[2010/12/07]%
+\fi
+
+\def\GPT@error{\@PackageError{pdftex.def}}%
+\def\GPT@warn{\@PackageWarning{pdftex.def}}%
+\ifx\Gin@log\@undefined
+  \def\Gin@log{\message}%
+\fi
+\def\GPT@info{\@PackageInfoNoLine{pdftex.def}}%
+
+% Are we running under PDFTeX?
+\ltx@IfUndefined{pdftexversion}{%
+  \GPT@error{%
+    Option `pdftex' requires pdfTeX,\MessageBreak
+    but pdfTeX features are missing.\MessageBreak
+    Loading of this driver file is aborted%
+  }\@ehc
+  \expandafter\GPT@AtEnd
+}{}
+
+% Ensure PDF mode
+\ifnum\pdfoutput<1 %
+  \GPT@error{%
+    PDF mode expected, but DVI mode detected!\MessageBreak
+    If you are using `latex', then call `pdflatex'.\MessageBreak
+    Otherwise check and  correct the driver options.\MessageBreak
+    Error recovery by switching to PDF mode%
+  }\@ehc
+  \pdfoutput=1 %
+\fi
+
+\ltx@IfUndefined{stockwidth}{%
+  \ltx@IfUndefined{paperwidth}{%
+  }{%
+    \ifdim\paperwidth>0pt\relax
+      \ifdim\paperheight>0pt\relax
+        \pdfpagewidth=\paperwidth
+        \pdfpageheight=\paperheight
+      \fi
+    \fi
+  }%
+}{%
+  \ifdim\stockwidth>0pt\relax
+    \ifdim\stockheight>0pt\relax
+      \pdfpagewidth=\stockwidth
+      \pdfpageheight=\stockheight
+    \fi
+  \fi
+}
+
+% Colour Support. The following models may be used.
+%   * cmyk   supported directly.
+%   * rgb    supported directly.
+%   * RGB    converted to rgb by this file.
+%   * gray   supported directly.
+%   * named  converted to cmyk by this file.
+%
+\def\c@lor@arg#1{%
+  \dimen@#1\p@
+  \ifdim\dimen@<\z@\dimen@\maxdimen\fi
+  \ifdim\dimen@>\p@
+    \PackageError{color}{Argument `#1' not in range [0,1]}\@ehd
+  \fi
+}
+\def\color@cmyk#1#2{\c@lor@@cmyk#2\@@#1}
+\def\c@lor@@cmyk#1,#2,#3,#4\@@#5{%
+  \c@lor@arg{#4}%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#5{#1 #2 #3 #4 k #1 #2 #3 #4 K}%
+}
+\def\color@gray#1#2{%
+  \c@lor@arg{#2}%
+  \edef#1{#2 g #2 G}%
+}
+\def\color@rgb#1#2{\c@lor@@rgb#2\@@#1}
+\def\c@lor@@rgb#1,#2,#3\@@#4{%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#4{#1 #2 #3 rg #1 #2 #3 RG}%
+}
+\def\color@RGB#1#2{\c@lor@@RGB#2\@@#1}
+\def\c@lor@@RGB#1,#2,#3\@@#4{%
+  \c@lor@RGB@rgb{#1}\@tempa
+  \c@lor@RGB@rgb{#2}\@tempb
+  \c@lor@RGB@rgb{#3}\@tempc
+  \c@lor@@rgb\@tempa,\@tempb,\@tempc\@@#4%
+}
+\def\c@lor@RGB@rgb#1#2{%
+  \dimen@#1\p@
+  \divide\dimen@\@cclv
+  \edef#2{\strip@pt\dimen@}%
+}
+
+\def\color@named#1#2{\c@lor@@named#2,,\@@#1}
+\def\c@lor@@named#1,#2,#3\@@#4{%
+  \ltx@IfUndefined{col@#1}{%
+    \PackageError{color}{Undefined color `#1'}\@ehd
+  }{%
+    \edef#4{\csname col@#1\endcsname}%
+  }%
+}
+
+\ltx@IfUndefined{pdfcolorstack}{%
+  \def\set@color{%
+    \pdfliteral{\current@color}%
+    \aftergroup\reset@color
+  }%
+  \def\reset@color{%
+    \pdfliteral{\current@color}%
+  }%
+}{%
+  \chardef\main@pdfcolorstack=0 %
+  \ltx@ifundefined{@pdfcolorstack}{%
+    \def\@pdfcolorstack{\main@pdfcolorstack}%
+  }{}%
+  \def\set@color{%
+    \pdfcolorstack\@pdfcolorstack push{\current@color}%
+    \aftergroup\reset@color
+  }%
+  \def\reset@color{%
+    \pdfcolorstack\@pdfcolorstack pop\relax
+  }%
+}
+\def\define@color@named#1#2{%
+  \expandafter\edef\csname col@#1\endcsname{#2}%
+}
+\def\current@color{0 g 0 G}
+
+% v0.02t: support for \pagecolor
+% fixed in v0.02p by using a box register, see
+% http://tug.org/pipermail/pdftex/2005-August/005916.html
+%
+% v0.03r: \nopagecolor/\no@page@color added.
+\ltx@newglobalif\ifGPT@pagecolor
+\ltx@ifundefined{nopagecolor}{%
+  \def\nopagecolor{\no@page@color}%
+}{}
+\def\no@page@color{%
+  \GPT@pagecolorfalse
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+  \catcode`X=9  % ignore
+  \catcode`E=14 % comment
+\else
+  \catcode`X=14 % comment
+  \catcode`E=9  % ignore
+\fi
+\def\set@page@color{%
+  \GPT@pagecolortrue
+  \global\let\current@page@color\current@color
+  \ltx@ifundefined{GPT@outputbox}{%
+    % \newbox is outer in plain
+    \csname newbox\endcsname\GPT@outputbox
+  }{}%
+  \ltx@ifundefined{GPTorg@shipout}{%
+    \global\let\GPTorg@shipout\shipout
+    \gdef\shipout{%
+X     % ensure \GPT@outputbox is really void
+X     \begingroup
+X       \setbox\GPT@outputbox=\box\GPT@outputbox
+X     \endgroup
+E     \edef\GPT@saved@grouplevel{\number\currentgrouplevel}%
+      \afterassignment\GPT@shipout
+      \global\setbox\GPT@outputbox=%
+    }%
+    \gdef\GPT@shipout{%
+X     \ifvoid\GPT@outputbox\relax
+E     \ifnum\GPT@saved@grouplevel=\currentgrouplevel
+E     \else
+        \expandafter\aftergroup
+      \fi
+      \GPT@@shipout
+    }%
+    \gdef\GPT@@shipout{%
+      \ifvoid\GPT@outputbox\relax
+        \GPT@warn{Ignoring void output box}%
+      \else
+        \setbox\GPT@outputbox=\vbox{%
+          \GPT@pageliteral
+          \box\GPT@outputbox
+        }%
+        \GPTorg@shipout\box\GPT@outputbox\relax
+      \fi
+    }%
+    \gdef\GPT@pageliteral{%
+      \ifGPT@pagecolor
+        \pdfliteral\ifnum\driver@release>8 page\else direct\fi{%
+          q % gsave
+          \current@page@color\ltx@space
+          n % newpath
+          0 0 \strip@pt\pdfpagewidth\ltx@space
+          \strip@pt\pdfpageheight\ltx@space re % rectangle
+          % there is no need to convert to bp
+          f % fill
+          Q% grestore
+        }%
+      \fi
+    }%
+  }{}%
+}
+\catcode`\X=11 %
+\catcode`\E=11 %
+
+% Need the `colorfix' modifications as no internal colour stack
+% is maintained
+%<*colorfix>
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfcolorstack\endcsname\relax
+  \AtBeginDocument{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname color\endcsname\relax
+      % Without color we don't need any fixes.
+    \else
+      \ltx@ifundefined{@ldc@l@r}{%
+        \let\@ldc@l@r\color
+        \def\color{%
+          \ltx@IfUndefined{if@inlabel}{}{%
+            \csname if@inlabel\expandafter\endcsname
+            \expandafter\leavevmode\csname fi\endcsname
+          }%
+          \@ldc@l@r
+        }%
+      }{}%
+      \ltx@ifundefined{@lduseb@x}{%
+        \ltx@IfUndefined{usebox}{}{%
+          \let\@lduseb@x\usebox
+          \def\usebox#1{\@lduseb@x{#1}\reset@color}%
+        }%
+      }{}%
+    \fi
+  }%
+\fi
+%</colorfix>
+
+%
+% Graphic inclusion. Currently supports .png, .jpg, .mps and .pdf inclusion;
+% .tif support is dropped since pdfTeX 1.10a.
+% .mps is MetaPost output.
+% .mps inclusion depends on loading a CONTEXT module by Hans Hagen;
+% .pdf also needs a Context module unless pdftex 0.12n or later.
+%
+% PNG bitmaps may be scaled/rotated as usual
+% by the graphics commands or keyword arguments.
+%
+% Note the magic in front of the file name after \pdfimage, to
+% prevent it fouling up with file names starting with "depth".
+\def\Gread@png{%
+  \GPT@read\Gread@@png
+}
+\def\Gread@@png#1{%
+  \setbox\@tempboxa\hbox{%
+    \pdfimage\noexpand\noexpand\noexpand\ltx@empty#1\relax
+  }%
+  \def\Gin@llx{0}\let\Gin@lly\Gin@llx
+  \Gin@defaultbp\Gin@urx{\wd\@tempboxa}%
+  \Gin@defaultbp\Gin@ury{\ht\@tempboxa}%
+}
+
+%
+% support for
+% * multipage pdf images (pdfTeX v0.14+)
+% * alternate print image (bitmaps only)
+%   * driver version>=5 (0.14)
+%   * printed image can be resused, but not the base image,
+%     because it's dictionary contains the additional key /Alternates.
+%   * not supported by Ghostscript or xpdf.
+% * option quiet
+% * option resetcolor
+% * option xmpfile
+%
+% \GPT@page: page number of pdf image or \ltx@empty otherwise.
+\let\GPT@page\ltx@empty
+% \GPT@print: file name for alternate image or \ltx@empty otherwise.
+\let\GPT@print\ltx@empty
+\let\GPT@xmpfile\ltx@empty
+\let\GPT@pagebox\ltx@empty
+\let\GPT@pagebox@\ltx@empty
+\let\GPT@interpolate\ltx@empty
+\let\GPT@decodearray\ltx@empty
+\let\GPT@mask\ltx@empty
+\let\GPT@intent\ltx@empty
+\let\GPT@ocobjnum\ltx@empty
+\ltx@newif\ifGPT@ResetColor
+\let\GPT@ResetColorEnd\relax
+\def\GPT@ResetColorBegin{%
+  \ifGPT@ResetColor
+    \ifGPT@IsBitmap
+    \else
+      \begingroup
+      \normalcolor
+      \let\GPT@ResetColorEnd\endgroup
+    \fi
+  \fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfmatch\endcsname\relax
+  \def\GPT@match#1#2#3#4{}%
+  \def\GPT@pat@real/{}%
+\else
+  \def\GPT@match#1#2{%
+    \ifnum\pdfmatch{#2}{#1}=1 %
+      \expandafter\ltx@firstoftwo
+    \else
+      \expandafter\ltx@secondoftwo
+    \fi
+  }%
+  \def\GPT@pat@real/{%
+    (%
+      0(\ltx@backslashchar.[0-9]*)?|%
+      \ltx@backslashchar.[0-9]+|%
+      1(\ltx@backslashchar.0*)?%
+    )%
+  }%
+\fi
+\begingroup
+  \toks@{%
+    \define@key{Gin}{resetcolor}[true]{%
+      \csname GPT@ResetColor%
+        \expandafter\ifx\csname iftrue\expandafter\endcsname
+                        \csname if#1\endcsname
+          true%
+        \else
+          false%
+        \fi
+      \endcsname
+    }%
+    \ifnum\driver@release>5 %
+      \define@key{Gin}{page}{%
+        \def\GPT@page{#1}%
+        \ifx\GPT@page\ltx@empty
+        \else
+          \edef\GPT@page{\number\GPT@page}%
+        \fi
+      }%
+      \define@key{Gin}{print}{%
+        \def\GPT@print{#1}%
+      }%
+    \else
+      \define@key{Gin}{page}{%
+        \GPT@warn{%
+          pdfTeX >= 0.14 required for option\MessageBreak `page'%
+        }%
+      }%
+      \define@key{Gin}{print}{%
+        \GPT@warn{%
+          pdfTeX >= 0.14 required for option\MessageBreak `print'%
+        }%
+      }%
+    \fi
+    \ifnum\driver@release>7 %
+      % option pagebox
+      \define@key{Gin}{pagebox}{%
+        \expandafter\let\expandafter\GPT@pagebox
+            \csname GPT@pagebox@#1\endcsname
+        \ifx\GPT@pagebox\relax
+          \let\GPT@pagebox\ltx@empty
+          \GPT@warn{%
+            Unknown value `#1' for `pagebox'.\MessageBreak
+            Supported values:\MessageBreak
+            mediabox, cropbox, bleedbox, trimbox, artbox%
+          }%
+        \fi
+      }%
+      \def\GPT@pagebox@mediabox{mediabox}%
+      \let\GPT@pagebox@cropbox\ltx@empty
+      \def\GPT@pagebox@bleedbox{bleedbox}%
+      \def\GPT@pagebox@trimbox{trimbox}%
+      \def\GPT@pagebox@artbox{artbox}%
+      % option interpolate
+      \define@key{Gin}{interpolate}[true]{%
+        \expandafter\let\expandafter\GPT@interpolate
+            \csname GPT@interpolate@#1\endcsname
+        \ifx\GPT@interpolate\relax
+          \let\GPT@interpolate\ltx@empty
+          \GPT@warn{%
+            Unknown value `#1' for `interpolate'.\MessageBreak
+            Supported values: true, false%
+          }%
+        \fi
+      }%
+      \let\GPT@interpolate@false\ltx@empty
+      \def\GPT@interpolate@true{1}% non-empty, value does not matter
+      % option decodearray
+      \define@key{Gin}{decodearray}{%
+        \def\GPT@decodearray{#1}%
+        \ifx\GPT@decodearray\ltx@empty
+        \else
+          \GPT@match\GPT@decodearray{%
+            ((^| )\GPT@pat@real/ \GPT@pat@real/)+$%
+          }{}{%
+            \GPT@warn{%
+              Invalid value (\GPT@decodearray)\MessageBreak
+              for `decodearray' is ignored%
+            }%
+            \let\GPT@decodearray\ltx@empty
+          }%
+        \fi
+      }%
+      % option maskarray
+      \define@key{Gin}{maskarray}{%
+        \def\GPT@mask{#1}%
+        \ifx\GPT@mask\ltx@empty
+        \else
+          \GPT@match\GPT@mask{%
+            ((^| )[0-9]+ [0-9]+)+$%
+          }{}{%
+            \GPT@warn{%
+              Invalid value (\GPT@mask)\MessageBreak
+              for `maskarray' is ignored%
+            }%
+            \let\GPT@mask\ltx@empty
+          }%
+          \ifx\GPT@mask\ltx@empty
+          \else
+            \edef\GPT@mask{[\GPT@mask]}%
+          \fi
+        \fi
+      }%
+      % option intent
+      \define@key{Gin}{intent}{%
+        \def\GPT@intent{#1}%
+        \ifx\GPT@intent\ltx@empty
+        \else
+          \GPT@match\GPT@intent{%
+            ^((Absolute|Relative)Colorimetric|Saturation|Perceptual)$%
+          }{}{%
+            \GPT@match\GPT@intent{%
+              ^[A-Za-z0-9_]+$%
+            }{%
+              \GPT@warn{%
+                Rendering intent `\GPT@intent'\MessageBreak
+                is not a standard name of the PDF specification%
+              }%
+            }{%
+              \GPT@warn{%
+                Ignoring intent `\GPT@intent'\MessageBreak
+                with unusual characters%
+              }%
+              \let\GPT@intent\ltx@empty
+            }%
+          }%
+        \fi
+      }%
+      % option ocobjnum
+      \define@key{Gin}{ocobjnum}{%
+        \edef\GPT@ocobjnum{#1}%
+        \ifx\GPT@ocobjnum\ltx@empty
+        \else
+          \edef\GPT@ocobjnum{\number\GPT@ocobjnum}%
+          \GPT@match\GPT@ocobjnum{^[1-9]+[0-9]*$}{%
+          }{%
+            \GPT@warn{%
+              Invalid value (\GPT@ocobjnum)\MessageBreak
+              for `ocobjnum' is ignored%
+            }%
+            \let\GPT@ocobjnum\ltx@empty
+          }%
+          \ifx\GPT@ocobjnum\ltx@empty
+          \else
+            \edef\GPT@ocobjnum{\number\GPT@ocobjnum}%
+          \fi
+        \fi
+      }%
+      % option ocobjref
+      \define@key{Gin}{ocobjref}{%
+        \edef\GPT@ocobjnum{#1}%
+        \ifx\GPT@ocobjnum\ltx@empty
+        \else
+          \edef\GPT@ocobjnum{%
+            \expandafter\strip@prefix\meaning\GPT@ocobjnum
+          }%
+          \GPT@match\GPT@ocobjnum{^[1-9]+[0-9]* 0 R$}{%
+          }{%
+            \GPT@warn{%
+              Invalid value (\GPT@ocobjnum)\MessageBreak
+              for `ocobjref' is ignored%
+            }%
+            \let\GPT@ocobjnum\ltx@empty
+          }%
+          \ifx\GPT@ocobjnum\ltx@empty
+          \else
+            \begingroup
+              \def\GPT@temp##1 ##2\@nil{\endgroup
+                \def\GPT@ocobjnum{##1}%
+              }%
+            \expandafter\GPT@temp\GPT@ocobjnum\@nil
+            \edef\GPT@ocobjnum{\number\GPT@ocobjnum}%
+          \fi
+        \fi
+      }%
+    \else
+      \def\GPT@temp#1{%
+        \define@key{Gin}{#1}{%
+          \GPT@warn{%
+            pdfTeX >= 1.10a required for option `#1'%
+          }%
+        }%
+      }%
+      \GPT@temp{pagebox}%
+      \GPT@temp{interpolate}%
+      \GPT@temp{decodearray}%
+      \GPT@temp{maskarray}%
+      \GPT@temp{intent}%
+      \GPT@temp{ocobjnum}%
+      \GPT@temp{ocobjref}%
+    \fi
+    \define@key{Gin}{quiet}[]{%
+      \let\Gin@log\ltx@gobble
+    }%
+    \define@key{Gin}{resolution}{%
+      \pdfimageresolution#1\relax
+    }%
+    \define@key{Gin}{xmpfile}[\Gin@base.xmp]{%
+      \def\GPT@xmpfile{#1}%
+    }%
+  }%
+  \ltx@IfUndefined{define@key}{%
+    \edef\x{\endgroup
+      \noexpand\AtBeginDocument{%
+        \noexpand\ltx@IfUndefined{define@key}{}{\the\toks@}%
+      }%
+    }\x
+  }{%
+    \expandafter\endgroup\the\toks@
+  }%
+
+% redefinitions of some graphicx options:
+\def\GPT@disable#1{%
+  \GPT@warn{%
+    Option `#1' is not supported, use\MessageBreak
+    option `viewport' instead%
+  }%
+}
+\def\GPT@fix{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname define@key\endcsname\relax
+  \else
+    \def\KV@Gin@bb{%
+      \GPT@warn{%
+        Option `bb' does not make sense,\MessageBreak
+        using `viewport' instead%
+      }%
+      \KV@Gin@viewport
+    }%
+    \define@key{Gin}{bbllx}{\GPT@disable{bbllx}}%
+    \define@key{Gin}{bblly}{\GPT@disable{bblly}}%
+    \define@key{Gin}{bburx}{\GPT@disable{bburx}}%
+    \define@key{Gin}{bbury}{\GPT@disable{bbury}}%
+  \fi
+}
+\AtBeginDocument{\GPT@fix}
+
+%
+% Check for image file existence
+%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdffilesize\endcsname\relax
+  \ifnum\driver@release>9 %
+    \RequirePackage{pdftexcmds}\relax
+  \fi
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@filesize\endcsname\relax
+    \def\GPT@IfFileExists#1{%
+      \IfFileExists{#1}%
+    }%
+  \else
+    \def\GPT@IfFileExists#1{%
+      \expandafter\expandafter\expandafter\ifx
+      \expandafter\expandafter\expandafter\relax\pdf@filesize{#1}\relax
+        \expandafter\ltx@secondoftwo
+      \else
+        \expandafter\ltx@firstoftwo
+      \fi
+    }%
+  \fi
+\else
+  \def\GPT@IfFileExists#1{%
+    \expandafter\ifx\expandafter\relax\pdffilesize{#1}\relax
+      \expandafter\ltx@secondoftwo
+    \else
+      \expandafter\ltx@firstoftwo
+    \fi
+  }%
+\fi
+
+%
+% Wrapper for \Gread@... that checks image existence first.
+%
+\def\GPT@read#1#2{%
+  \GPT@IfFileExists{#2}%
+  {%
+    #1{#2}%
+  }{%
+    \def\Gin@llx{0}%
+    \let\Gin@lly\Gin@llx
+    \def\Gin@urx{72}%
+    \let\Gin@ury\Gin@urx
+    \ifGin@draft
+    \else
+      \GPT@error{File `#2' not found}{%
+        Using draft setting for this image.\MessageBreak
+        \@ehc
+      }%
+      \Gin@drafttrue
+    \fi
+  }%
+}
+
+%
+% mechanism for re-use of objects also
+% allows us to get the size by deriving it from the initial storage;
+% this works for all graphics types.
+%
+\ltx@ifundefined{Gread@gobject}{%
+  \csname newcount\endcsname\Gread@gobject
+}{}
+\def\GPT@ReusedName#1{%
+  \ifx\GPT@print\ltx@empty
+    #1%
+  \else
+    \GPT@print
+  \fi
+}
+\def\GPT@objref{ 0 R}
+\def\Gread@pdftex{%
+  \GPT@read\Gread@@pdftex
+}
+\def\Gread@@pdftex#1{%
+  % Ensure that option `print' works only on bitmap images.
+  \let\GPT@Attr\ltx@empty
+  \let\GPT@AttrShort\ltx@empty
+  \ifnum\driver@release>7 %
+    \ifx\GPT@ocobjnum\ltx@empty
+    \else
+      \edef\GPT@AttrShort{\GPT@AttrShort
+        :OC\GPT@ocobjnum
+      }%
+      \edef\GPT@Attr{\GPT@Attr
+        /OC \GPT@ocobjnum\GPT@objref
+      }%
+    \fi
+  \fi
+  \ifGPT@IsBitmap
+    \let\GPT@page\ltx@empty
+    \let\GPT@pagebox\ltx@empty
+    \ifnum\driver@release>7 %
+      \ifx\GPT@xmpfile\ltx@empty
+      \else
+        \ltx@IfUndefined{GPT@XMP@\GPT@xmpfile}{%
+          \GPT@IfFileExists{\GPT@xmpfile}{%
+            \begingroup
+              \pdfcompresslevel=0 %
+              \immediate\pdfobj stream attr{%
+                /Type/Metadata%
+                /Subtype/XML%
+              }file{\GPT@xmpfile}%
+              \expandafter\xdef\csname GPT@XMP@\GPT@xmpfile\endcsname{%
+                \the\pdflastobj
+              }%
+            \endgroup
+          }{%
+            \GPT@warn{Missing XMP file (\GPT@xmpfile)}%
+          }%
+        }{}%
+        \ltx@IfUndefined{GPT@XMP@\GPT@xmpfile}{}{%
+          \edef\GPT@Attr{\GPT@Attr
+            /Metadata \@nameuse{GPT@XMP@\GPT@xmpfile}\GPT@objref
+          }%
+          \edef\GPT@AttrShort{\GPT@AttrShort
+            :MD\@nameuse{GPT@XMP@\GPT@xmpfile}%
+          }%
+        }%
+      \fi
+      \ifx\GPT@interpolate\ltx@empty
+      \else
+        \edef\GPT@Attr{\GPT@Attr
+          /Interpolate true%
+        }%
+        \edef\GPT@AttrShort{\GPT@AttrShort
+          :I%
+        }%
+      \fi
+      \ifx\GPT@decodearray\ltx@empty
+      \else
+        \edef\GPT@Attr{\GPT@Attr
+          /Decode[\GPT@decodearray]%
+        }%
+        \edef\GPT@AttrShort{\GPT@AttrShort
+          :D[\GPT@decodearray]%
+        }%
+      \fi
+      \ifx\GPT@mask\ltx@empty
+      \else
+        \edef\GPT@Attr{\GPT@Attr
+          /Mask\GPT@mask
+        }%
+        \edef\GPT@AttrShort{\GPT@AttrShort
+          :M\GPT@mask
+        }%
+      \fi
+      \ifx\GPT@intent\ltx@empty
+      \else
+        \edef\GPT@AttrShort{\GPT@AttrShort
+          :RI\GPT@intent
+        }%
+        \expandafter\ifx\csname pdfescapename\endcsname\relax
+          \expandafter\ifx\csname pdf@escapename\endcsname\relax
+          \else
+            \edef\GPT@intent{\pdf@escapename{\GPT@intent}}%
+          \fi
+        \else
+          \edef\GPT@intent{\pdfescapename{\GPT@intent}}%
+        \fi
+        \edef\GPT@Attr{\GPT@Attr
+          /Intent/\GPT@intent
+        }%
+      \fi
+    \fi
+  \else
+    \let\GPT@interpolate\ltx@empty
+    \let\GPT@decodearray\ltx@empty
+    \let\GPT@mask\ltx@empty
+    \let\GPT@intent\ltx@empty
+    \ifx\GPT@page\ltx@empty
+    \else
+      \edef\GPT@AttrShort{\GPT@AttrShort
+        :P\GPT@page
+      }%
+    \fi
+    \ifx\GPT@pagebox\ltx@empty
+    \else
+      \edef\GPT@AttrShort{%
+        \GPT@AttrShort
+        :\expandafter\ltx@car\GPT@pagebox{}\@nil b%
+      }%
+    \fi
+    \ifx\GPT@print\ltx@empty
+    \else
+      \GPT@warn{%
+        Option `print' can only be used\MessageBreak
+        for bitmap images%
+      }%
+      \let\GPT@print\ltx@empty
+    \fi
+  \fi
+  % Check if print image exists.
+  \ifx\GPT@print\ltx@empty
+  \else
+    \GPT@IfFileExists{\GPT@print}{%
+    }{%
+      \GPT@error{Print image `\GPT@print' not found}{%
+        The print version of the image is ignored.\MessageBreak
+        \@ehc
+      }%
+      \let\GPT@print\ltx@empty
+    }%
+  \fi
+  % If option `print' is set, the screen image object
+  % will contain an additional /Alternate entry
+  % and will not be reused.
+  \ifx\GPT@print\ltx@empty
+  \else
+    \expandafter\expandafter\expandafter\ltx@firstoftwo\expandafter\ltx@gobbletwo
+  \fi
+  \ltx@ifundefined{#1 image\GPT@AttrShort}{%
+    \ifnum\driver@release>4 %
+      \ifnum\driver@release>5 %
+        \ifx\GPT@print\ltx@empty
+          \ifx\GPT@Attr\ltx@empty
+            \let\GPT@RuleAttr\ltx@empty
+          \else
+            \edef\GPT@RuleAttr{attr{\GPT@Attr}}%
+          \fi
+        \else
+          \ltx@ifundefined{\GPT@print\ltx@space image\GPT@AttrShort}{%
+            \immediate\pdfximage{\GPT@print}%
+            \setbox\@tempboxa=\hbox{\pdfrefximage\pdflastximage}%
+            \edef\GPT@PrintObj{\the\pdflastximage}%
+            \expandafter\xdef\csname\GPT@print\ltx@space
+                image\GPT@AttrShort\endcsname{%
+              \pdfrefximage\GPT@PrintObj\relax
+            }%
+            \immediate\pdfobj{%
+              [<<%
+                /Image \GPT@PrintObj\GPT@objref
+                /DefaultForPrinting true%
+              >>]%
+            }%
+            \def\GPT@RuleAttr{%
+              width\wd\@tempboxa height\ht\@tempboxa
+              attr{%
+                \GPT@Attr
+                /Alternates \the\pdflastobj\GPT@objref
+              }%
+            }%
+          }{%
+            \edef\GPT@PrintObj{%
+              \expandafter\expandafter\expandafter\ltx@gobble
+              \csname\GPT@print\ltx@space image\GPT@AttrShort\endcsname
+            }%
+            \immediate\pdfobj{%
+              [<<%
+                /Image \GPT@PrintObj\GPT@objref
+                /DefaultForPrinting true%
+              >>]%
+            }%
+            \def\GPT@RuleAttr{%
+              width \csname\GPT@print\ltx@space width\GPT@AttrShort\endcsname
+              height \csname\GPT@print\ltx@space height\GPT@AttrShort\endcsname
+              attr{%
+                \GPT@Attr
+                /Alternates \the\pdflastobj\GPT@objref
+              }%
+            }%
+          }%
+        \fi
+        \pdfximage\GPT@RuleAttr
+        \ifx\GPT@page\ltx@empty
+        \else
+          page \GPT@page
+        \fi
+        \GPT@pagebox
+        {#1}%
+        \setbox\@tempboxa=\hbox{\pdfrefximage\pdflastximage}%
+      \else
+        \setbox\@tempboxa=\hbox{\pdfimage{#1}}%
+      \fi
+    \else
+      \setbox\@tempboxa=\hbox{%
+        \pdfimage\noexpand\noexpand\noexpand\ltx@empty#1\relax
+      }%
+    \fi
+    \def\Gin@llx{0}\let\Gin@lly\Gin@llx
+    \Gin@defaultbp\Gin@urx{\wd\@tempboxa}%
+    \Gin@defaultbp\Gin@ury{\ht\@tempboxa}%
+    \expandafter\xdef\csname\GPT@ReusedName{#1} width\GPT@AttrShort\endcsname{%
+      \the\wd\@tempboxa
+    }%
+    \expandafter\xdef\csname\GPT@ReusedName{#1} height\GPT@AttrShort\endcsname{%
+      \the\ht\@tempboxa
+    }%
+    \ifnum\driver@release>5 %
+      \expandafter\xdef\csname #1 image\GPT@AttrShort
+        \ifx\GPT@print\ltx@empty\else!\fi\endcsname{%
+        \pdfrefximage\the\pdflastximage
+      }%
+    \else
+      \pdfform\@tempboxa
+      \Gread@gobject=\pdflastform
+      \expandafter\xdef\csname#1 image\endcsname{%
+        \pdfrefform\the\Gread@gobject
+      }%
+    \fi
+    \Gin@log{%
+       <#1, id=%
+       \ifnum\driver@release>5 %
+         \the\pdflastximage
+         \ifx\GPT@page\ltx@empty\else , page=\GPT@page\fi
+         \ifx\GPT@pagebox\ltx@empty\else, pagebox=\GPT@pagebox\fi
+         \ifx\GPT@interpolate\ltx@empty\else, interpolate=true\fi
+         \ifx\GPT@print\ltx@empty
+         \else
+            , print=\GPT@print, id=\GPT@PrintObj
+         \fi
+       \else
+         \the\Gread@gobject
+       \fi
+       , \the\wd\@tempboxa\ltx@space x \the\ht\@tempboxa
+       >%
+     }%
+  }{%
+    \def\Gin@llx{0}\let\Gin@lly\Gin@llx
+    \Gin@defaultbp\Gin@urx{\csname#1 width\GPT@AttrShort\endcsname}%
+    \Gin@defaultbp\Gin@ury{\csname#1 height\GPT@AttrShort\endcsname}%
+  }%
+}
+\def\Ginclude@pdftex#1{%
+  \def\@tempa{!}%
+  \ifx\Gin@scaley\@tempa
+    \let\Gin@scaley\Gin@scalex
+  \else
+    \ifx\Gin@scalex\@tempa\let\Gin@scalex\Gin@scaley\fi
+  \fi
+  \Gin@log{%
+    <use #1%
+    \ifx\GPT@page\ltx@empty\else, page \GPT@page\fi
+    >%
+  }%
+  \GPT@info{%
+    #1\ifx\GPT@page\ltx@empty\else, page\GPT@page\fi
+    \ltx@space used\on@line.\MessageBreak
+    Requested size: %
+    \the\Gin@req@width\ltx@space x \the\Gin@req@height
+  }%
+  \hbox{%
+    \GPT@ResetColorBegin
+    \Gscale@box{\Gin@scalex}[\Gin@scaley]{%
+      \ltx@IfUndefined{Gin@vllx}{%
+        \GPT@viewportfalse
+        % without viewport/trim clipping does not make sense
+        % for pdfTeX
+        \Gin@clipfalse
+      }{}%
+      \ifGin@clip
+        \ifnum\driver@release<6 %
+          \GPT@warn{No clipping support in pdfTeX < 0.14}%
+        \else
+          \if!\Gin@vllx\Gin@vlly\Gin@vurx\Gin@vury!%
+          \else
+            \let\GPT@clipend\GPT@DoClipEnd
+            \setbox\@tempboxa\hbox\bgroup
+          \fi
+        \fi
+      \fi
+      \ifGPT@viewport
+        \ifdim\Gin@vlly\p@=\z@
+        \else
+          \lower\Gin@vlly bp\hbox\bgroup
+        \fi
+        \ifdim\Gin@vllx\p@=\z@
+        \else
+          \hskip-\Gin@vllx bp\relax
+        \fi
+      \fi
+      \csname#1 image\GPT@AttrShort
+        \ifx\GPT@print\ltx@empty\else!\fi
+      \endcsname
+      \ifGPT@viewport
+        \ifdim\Gin@vlly\p@=\z@
+        \else
+          \egroup
+        \fi
+        \GPT@clipend
+      \fi
+    }%
+    \GPT@ResetColorEnd
+  }%
+}
+\ltx@newif\ifGPT@viewport
+\GPT@viewporttrue
+\let\GPT@clipend\relax
+\def\GPT@DoClipEnd{%
+  \egroup
+  \dp\@tempboxa\z@
+  % \Gin@urx and \Gin@ury already contain the correct values,
+  % so both cases viewport and trim can be handled together:
+  \dimen@\Gin@urx\p@
+  % v0.03k \Gin@vllx replaced by \Gin@llx
+  \advance\dimen@ -\Gin@llx\p@
+  \wd\@tempboxa\strip@pt\dimen@ bp\relax
+  \dimen@\Gin@ury\p@
+  % v0.03k \Gin@vlly replaced by \Gin@lly
+  \advance\dimen@ -\Gin@lly\p@
+  \ht\@tempboxa\strip@pt\dimen@ bp\relax
+  \let\GPT@temp\ltx@empty
+  \ifnum\driver@release>7 %
+    \ifx\GPT@ocobjnum\ltx@empty
+    \else
+      \edef\GPT@temp{attr{/OC \GPT@ocobjnum\GPT@objref}}%
+    \fi
+  \fi
+  \expandafter\pdfxform\GPT@temp\@tempboxa
+  \pdfrefxform\pdflastxform
+}
+\ltx@newif\ifGPT@IsBitmap
+\def\Gread@pdfbitmap#1{%
+  \GPT@IsBitmaptrue
+  \Gread@pdftex{#1}%
+  \GPT@IsBitmapfalse
+}
+
+\edef\Gread@MBox{/MediaBox}
+\def\Gread@pdf{%
+  \GPT@read\Gread@@pdf
+}
+\def\Gread@@pdf#1{%
+  \begingroup
+    \@tempcnta\z@
+    \loop
+    \ifnum\@tempcnta<\@xxxii
+      \catcode\@tempcnta14 %
+      \advance\@tempcnta\@ne
+    \repeat
+    \catcode127=14 %
+    \let\do\@makeother\dospecials\catcode`\ 10 %
+    \catcode\endlinechar5 %
+    \immediate\openin\@inputcheck#1 %
+    \ifeof\@inputcheck
+      \@latex@error{File `#1' not found}\@ehc
+    \else
+      \Gread@true
+      \let\@tempb\Gread@false
+      \loop
+% v0.02e: use \. not \@tempa so the space is preserved before [
+        \read\@inputcheck to\.%
+        \ifeof\@inputcheck
+          \Gread@false
+        \else
+          \expandafter\Gread@find@mbox\. []\\%
+        \fi
+      \ifGread@
+      \repeat
+      \immediate\closein\@inputcheck
+    \fi
+    \ifGin@bbox
+    \else
+      \@latex@error
+      {Cannot determine size of graphic in #1 (no BoundingBox)}%
+      \@ehc
+      \gdef\@gtempa{0 0 72 72 }%
+    \fi
+  \endgroup
+  \expandafter\Gread@parse@bb\@gtempa\\%
+}
+\long\def\Gread@find@mbox#1 [#2]#3\\{% hash-ok
+  \def\@tempa{#1}%
+  \ifx\@tempa\Gread@MBox
+    \gdef\@gtempa{#2 }%
+    \@tempb
+    \Gin@bboxtrue
+  \fi
+}
+\def\Ginclude@png#1{%
+  \hbox{%
+% v0.02f add \@depth\z@ (from Sebastian)
+    \pdfimage
+      \@height\Gin@req@height \@width\Gin@req@width \@depth\z@
+      \noexpand\noexpand\noexpand\ltx@empty#1\relax
+  }%
+}
+
+\def\Ginclude@mps#1{%
+  \def\@tempa{!}%
+  \ifx\Gin@scaley\@tempa
+    \let\Gin@scaley\Gin@scalex
+  \else
+    \ifx\Gin@scalex\@tempa\let\Gin@scalex\Gin@scaley\fi
+  \fi
+  \hbox{%
+    \GPT@ResetColorBegin
+    \Gscale@box{\Gin@scalex}[\Gin@scaley]{%
+      \ltx@IfUndefined{Gin@vllx}{%
+        \GPT@viewportfalse
+        % without viewport/trim clipping does not make sense
+        % for pdfTeX
+        \Gin@clipfalse
+      }{}%
+      \ifGin@clip
+        \ifnum\driver@release<6 %
+          \GPT@warn{No clipping support in pdfTeX < 0.14}%
+        \else
+          \if!\Gin@vllx\Gin@vlly\Gin@vurx\Gin@vury!%
+          \else
+            \let\GPT@clipend\GPT@DoClipEnd
+            \setbox\@tempboxa\hbox\bgroup
+          \fi
+        \fi
+      \fi
+      \ifGPT@viewport
+        \ifdim\Gin@vlly\p@=\z@
+        \else
+          \lower\Gin@vlly bp\hbox\bgroup
+        \fi
+        \ifdim\Gin@vllx\p@=\z@
+        \else
+          \hskip-\Gin@vllx bp\relax
+        \fi
+      \fi
+      \GPT@catcodes{mps}%
+      \convertMPtoPDF{#1}{1}{1}%
+      \GPT@restore@mps
+      \ifGPT@viewport
+        \ifdim\Gin@vlly\p@=\z@
+        \else
+          \egroup
+        \fi
+        \GPT@clipend
+      \fi
+    }%
+    \GPT@ResetColorEnd
+  }%
+}
+\def\Gread@mps{%
+  \GPT@read\Gread@eps
+}
+\ifnum\driver@release>3 %
+  \let\Ginclude@png\Ginclude@pdftex
+  \let\Ginclude@jpg\Ginclude@pdftex
+  \let\Ginclude@pdf\Ginclude@pdftex
+  \let\Gread@pdf\Gread@pdftex
+  \let\Gread@png\Gread@pdfbitmap
+  \let\Gread@jpg\Gread@pdfbitmap
+  \ifnum\driver@release>5 %
+    \ifnum\driver@release<8 %
+      \let\Gread@tif\Gread@pdfbitmap
+      \let\Ginclude@tif\Ginclude@pdftex
+    \else
+      \ifnum\driver@release>9 %
+        \expandafter\let\csname Gread@jbig2\endcsname\Gread@pdfbitmap
+        \expandafter\let\csname Ginclude@jbig2\endcsname\Ginclude@pdftex
+      \fi
+    \fi
+  \fi
+\else
+  \def\Ginclude@pdf#1{%
+    \def\@tempa{!}%
+    \ifx\Gin@scaley\@tempa
+      \let\Gin@scaley\Gin@scalex
+    \else
+      \ifx\Gin@scalex\@tempa\let\Gin@scalex\Gin@scaley\fi
+    \fi
+    \hbox{%
+      \GPT@catcodes{pdf}%
+      \convertPDFtoPDF{#1}{\Gin@scalex}{\Gin@scaley} {0bp} {0bp}%
+      {\Gin@req@width}{\Gin@req@height}%
+      \GPT@restore@pdf
+    }%
+  }%
+\fi
+
+% v0.02e: restrict the rules to just the types that pdftex can currently
+% deal with.
+\ifnum\driver@release>3 %
+  \def\Gin@extensions{.png,.pdf,.jpg,.mps,.jpeg,.PNG,.PDF,.JPG,.JPEG}%
+  \@namedef{Gin@rule@.jpg}#1{{jpg}{.jpg}{#1}}%
+  \@namedef{Gin@rule@.jpeg}#1{{jpg}{.jpeg}{#1}}%
+  \@namedef{Gin@rule@.JPG}#1{{jpg}{.JPG}{#1}}%
+  \@namedef{Gin@rule@.JPEG}#1{{jpg}{.JPEG}{#1}}%
+  \ifnum\driver@release>5 %
+    \ifnum\driver@release<8 %
+      \def\Gin@extensions{%
+        .png,.pdf,.jpg,.mps,.tif,.jpeg,%
+        .PNG,.PDF,.JPG,.JPEG%
+      }%
+      \@namedef{Gin@rule@.tif}#1{{tif}{.tif}{#1}}%
+    \else
+      \ifnum\driver@release>9 %
+        \ifnum\pdfminorversion>3 %
+          \def\Gin@extensions{%
+            .png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,%
+            .PNG,.PDF,.JPG,.JPEG,.JBIG2,.JB2%
+          }%
+        \fi
+        \@namedef{Gin@rule@.jb2}#1{{jbig2}{.jb2}{#1}}%
+        \@namedef{Gin@rule@.jbig2}#1{{jbig2}{.jbig2}{#1}}%
+      \fi
+    \fi
+  \fi
+\else
+  \def\Gin@extensions{.png,.pdf,.mps,.PNG,.PDF}%
+\fi
+\@namedef{Gin@rule@.png}#1{{png}{.png}{#1}}
+\@namedef{Gin@rule@.PNG}#1{{png}{.PNG}{#1}}
+\@namedef{Gin@rule@.mps}#1{{mps}{.mps}{#1}}
+\@namedef{Gin@rule@.pdf}#1{{pdf}{.pdf}{#1}}
+\@namedef{Gin@rule@.PDF}#1{{pdf}{.PDF}{#1}}
+
+
+% Rotation
+% slightly hacky, but set width of box 0 to 0pt otherwise
+% the CTM gets restored in the wrong place.
+
+\def\GPT@MatrixIdentity{1 0 0 1}
+\def\GPT@Zero{0}
+\def\GPT@Minus{-}
+\def\GPT@NormalizeNumber#1{%
+  \edef#1{#1}%
+  \edef#1{\expandafter\ltx@zapspace\expandafter{#1}}%
+  \edef#1{\expandafter\GPT@ZapPlus#1+\@nil}%
+  \edef#1{\expandafter\GPT@ZapMinusMinus#1--\@nil}%
+  \expandafter\GPT@Split#1..\@nil
+  \ifx\GPT@frac\ltx@empty
+  \else
+    \edef\GPT@frac{%
+      \expandafter\GPT@Reverse\expandafter{\expandafter}\GPT@frac\@nil
+    }%
+    \edef\GPT@frac{%
+      \expandafter\GPT@ZapLeadingZeros\GPT@frac\ltx@empty
+    }%
+    \ifx\GPT@frac\ltx@empty
+    \else
+      \edef\GPT@frac{%
+        \expandafter\GPT@Reverse\expandafter{\expandafter}\GPT@frac\@nil
+      }%
+    \fi
+  \fi
+  \edef\GPT@sign{\expandafter\ltx@car\GPT@int\ltx@empty\@nil}%
+  \ifx\GPT@sign\GPT@Minus
+    \edef\GPT@int{\expandafter\ltx@cdr\GPT@int\@nil}%
+  \else
+    \def\GPT@sign{}%
+  \fi
+  \edef\GPT@int{%
+    \expandafter\GPT@ZapLeadingZeros\GPT@int\ltx@empty
+  }%
+  \edef\GPT@temp{\GPT@int\GPT@frac}%
+  \ifx\GPT@temp\ltx@empty
+    \def#1{0}%
+  \else
+    \edef#1{%
+      \GPT@sign
+      \GPT@int
+      \ifx\GPT@frac\ltx@empty
+      \else
+        .\GPT@frac
+      \fi
+    }%
+  \fi
+}
+\def\GPT@ZapPlus#1+#2\@nil{%
+  #1%
+  \ifx\ltx@empty#2\ltx@empty
+    \expandafter\ltx@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \GPT@ZapPlus#2\@nil
+  }%
+}
+\def\GPT@ZapMinusMinus#1--#2\@nil{%
+  #1%
+  \ifx\ltx@empty#2\ltx@empty
+    \expandafter\ltx@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \GPT@ZapMinusMinus#2\@nil
+  }%
+}
+\def\GPT@Split#1.#2.#3\@nil{%
+  \def\GPT@int{#1}%
+  \ifx\ltx@empty#2\ltx@empty
+    \let\GPT@frac\ltx@empty
+  \else
+    \def\GPT@frac{#2}%
+  \fi
+}
+\def\GPT@Reverse#1#2#3\@nil{%
+  \ifx\ltx@empty#3\ltx@empty
+    #2#1%
+    \expandafter\ltx@gobble
+  \else
+    \expandafter\ltx@firstofone
+  \fi
+  {%
+    \GPT@Reverse{#2#1}#3\@nil
+  }%
+}
+\def\GPT@ZapLeadingZeros#1{%
+  \ifx0#1%
+    \expandafter\GPT@ZapLeadingZeros
+  \else
+    #1%
+  \fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfsetmatrix\endcsname\relax
+  % Patrick Daly found an error here with doubled minus signs when
+  % \Grot@sin is negative. Fixed.
+  \def\Grot@start{%
+    \GPT@NormalizeNumber\Grot@sin
+    \GPT@NormalizeNumber\Grot@cos
+    \edef\GPT@temp{%
+      \Grot@cos\ltx@space\Grot@sin\ltx@space
+      \if-\GPT@sin
+      \else
+        % avoid negative zero
+        \ifx\Grot@sin\GPT@Zero
+          \GPT@Zero
+        \else
+          -\Grot@sin
+        \fi
+      \fi
+      \ltx@space\Grot@cos
+    }%
+    \ifx\GPT@temp\GPT@MatrixIdentity
+      \def\Grot@end{}%
+    \else
+      \pdfliteral{ q \GPT@temp\ltx@space 0 0 cm}%
+      \wd\z@\z@
+    \fi
+    \wd\z@\z@
+  }%
+  \def\Grot@end{%
+    \pdfliteral{ Q}%
+  }%
+  % Scaling is OK, as graphics package does it right here.
+  \def\Gscale@start{%
+    \GPT@NormalizeNumber\Gscale@x
+    \GPT@NormalizeNumber\Gscale@y
+    \edef\GPT@temp{%
+      \Gscale@x\ltx@space0 0 \Gscale@y
+    }%
+    \ifx\GPT@temp\GPT@MatrixIdentity
+      \def\Gscale@end{}%
+    \else
+      \pdfliteral{ q \GPT@temp\ltx@space 0 0 cm}%
+    \fi
+  }%
+\else
+  \def\Grot@start{%
+    \GPT@NormalizeNumber\Grot@sin
+    \GPT@NormalizeNumber\Grot@cos
+    \edef\GPT@temp{%
+      \Grot@cos\ltx@space\Grot@sin\ltx@space
+      \if-\Grot@sin
+      \else
+        \ifx\Grot@sin\GPT@Zero
+          \GPT@Zero
+        \else
+          -\Grot@sin
+        \fi
+      \fi
+      \ltx@space\Grot@cos
+    }%
+    \ifx\GPT@temp\GPT@MatrixIdentity
+      \def\Grot@end{}%
+    \else
+      \pdfsave
+      \pdfsetmatrix{\GPT@temp}%
+      \wd\z@\z@
+    \fi
+  }%
+  \def\Grot@end{\pdfrestore}%
+  \def\Gscale@start{%
+    \GPT@NormalizeNumber\Gscale@x
+    \GPT@NormalizeNumber\Gscale@y
+    \edef\GPT@temp{%
+      \Gscale@x\ltx@space0 0 \Gscale@y
+    }%
+    \ifx\GPT@temp\GPT@MatrixIdentity
+      \def\Gscale@end{}%
+    \else
+      \pdfsave
+      \pdfsetmatrix{\GPT@temp}%
+    \fi
+  }%
+\fi
+\let\Gscale@end\Grot@end
+
+% undo the trig.sty `optimization' so that these 0 1 and -1 values
+% get written out as digits, not unexpandable TeX primitives.
+% 0.04q: space added to remain consistent with trig.sty.
+\def\GPT@PatchTrig{%
+  \def\GPT@temp##1(##2)=##3 {%
+    \expandafter\def\csname ##1(##2)\endcsname{##3 }%
+  }%
+  \GPT@temp sin(0)=0 %
+  \GPT@temp cos(0)=1 %
+  \GPT@temp sin(90)=1 %
+  \GPT@temp cos(90)=0 %
+  \GPT@temp sin(-90)=-1 %
+  \GPT@temp cos(-90)=0 %
+  \GPT@temp sin(180)=0 %
+  \GPT@temp cos(180)=-1 %
+  % added in 0.04q
+  \GPT@temp sin(270)=-1 %
+  \GPT@temp cos(270)=0 %
+  \GPT@temp sin(360)=0 %
+  \GPT@temp cos(360)=1 %
+  \GPT@temp sin(-180)=0 %
+  \GPT@temp cos(-180)=-1 %
+  \GPT@temp sin(-270)=1 %
+  \GPT@temp cos(-270)=0 %
+  \GPT@temp sin(-360)=0 %
+  \GPT@temp cos(-360)=1 %
+  \ltx@ifpackageloaded{trig}{%
+    \let\GPT@PatchTrig\relax
+  }{}%
+}
+\AtBeginDocument{\GPT@PatchTrig}
+\ltx@ifpackageloaded{trig}{\GPT@PatchTrig}{}
+\ltx@IfUndefined{AfterPackage}{}{% scrlfile.sty
+  \AfterPackage{trig}{\GPT@PatchTrig}%
+}
+\ltx@IfUndefined{AtEndOfPackageFile}{}{% filehook.sty
+  \AtEndOfPackageFile{trig}{\GPT@PatchTrig}%
+}
+\ltx@IfUndefined{AtEndPackage}{}{% memoir.cls
+  \AtEndPackage{trig}{\GPT@PatchTrig}%
+}
+
+% v0.02e: Restore catcodes of context letters.
+% Not needed with current version of supp-pdf
+% but protects against older versions.
+% v0.03o: Catcode protection of '=' because of turkish.ldf.
+\def\GPT@LoadSuppPdf{%
+  \ltx@IfUndefined{convertMPtoPDF}{%
+    \GPT@catcodes{supp}%
+    \InputIfFileExists{supp-pdf.mkii}{}{%
+      \InputIfFileExists{supp-pdf}{}{}%
+    }%
+    \GPT@restore@supp
+  }{%
+    % supp-pdf is probably already loaded.
+  }%
+  % If supp-pdf is not available, \convertMPtoPDF generates
+  % an error message. \providecommand inside the third argument
+  % of \InputIfFileExists will not work:
+  % * \InputIfFileExists has problems with parameters (#1).
+  % * Implementation of \providecommand is insufficient in miniltx.tex
+  \ltx@ifundefined{convertMPtoPDF}{%
+    \newcommand*{\convertMPtoPDF}[3]{%
+      \GPT@error{%
+        Cannot convert ##1 from MPS to PDF.\MessageBreak
+        The support file `supp-pdf.mkii' (supp-pdf.tex) is missing%
+      }{%
+        The graphics driver for pdfTeX needs `supp-pdf.mkii'\MessageBreak
+        (or `supp-pdf.tex' and/or `supp-mis.tex')\MessageBreak
+        to convert MetaPost output files to PDF.\MessageBreak
+        These files are part of ConTeXt and can also be found here:%
+        \MessageBreak
+        \ltx@space\ltx@space CTAN:macros/pdftex/graphics/\MessageBreak
+        You'll get more errors if you'll continue now.%
+      }%
+    }%
+  }{}%
+  \let\GPT@LoadSuppPdf\relax
+}
+\AtBeginDocument{%
+  \GPT@LoadSuppPdf
+}
+
+% Adds support for extended MetaPost features (transparency)
+\def\LoadMetaPostSpecialExtensions{%
+  \AtBeginDocument{%
+    \ltx@IfUndefined{assignMPStransparency}{%
+      \GPT@catcodes{mpe}%
+      \let\GPT@found=N%
+      \IfFileExists{supp-pdf.mkii}{\let\GPT@found=Y}{%
+        \IfFileExists{supp-pdf}{\let\GPT@found=Y}{}%
+      }%
+      \ifx Y\GPT@found
+        \InputIfFileExists{supp-mis.mkii}{}{%
+          \InputIfFileExists{supp-mis}{}{\let\GPT@found=N}%
+        }%
+        \ifx Y\GPT@found
+          \InputIfFileExists{supp-mpe.mkii}{}{%
+            \InputIfFileExists{supp-mpe}{}{\let\GPT@found=N}%
+          }%
+          \ifx Y\GPT@found
+            \MPcmykcolorstrue
+            \MPspotcolorstrue
+            \chardef\makeMPintoPDFobject=1 %
+          \else
+            \GPT@warn{%
+              Cannot enable MetaPost Special Extensions,\MessageBreak
+              because `supp-mpe.mkii' (or `supp-mpe.tex')\MessageBreak
+              is missing%
+            }%
+          \fi
+        \else
+          \GPT@warn{%
+            Cannot enable MetaPost Special Extensions,\MessageBreak
+            because `supp-mis.mkii' (or `supp-mis.tex')\MessageBreak
+            is missing%
+          }%
+        \fi
+      \else
+        \GPT@warn{%
+          Cannot enable support for MetaPost images,\MessageBreak
+          because `supp-pdf.mkii' (or `supp-pdf.tex')\MessageBreak
+          is missing%
+        }%
+      \fi
+      \GPT@restore@mpe
+    }{}%
+  }%
+  \let\LoadMetaPostSpecialExtensions\relax
+}
+\ltx@IfUndefined{@onlypreamble}{%
+}{%
+  \@onlypreamble\LoadMetaPostSpecialExtensions
+}
+
+% these seem to upset pdftex. ignore them. SPQR 1999/08/02
+% allow for plain graphics, not graphicx.
+% pdftex.def is loaded before the definition in graphicx,
+% so do all the stuff \AtBeginDocument:
+\AtBeginDocument{%
+  \ltx@IfUndefined{define@key}{}{%
+    \define@key{Gin}{natwidth}{}%
+    \define@key{Gin}{natheight}{}%
+  }%
+}%
+\GPT@AtEnd

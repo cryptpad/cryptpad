@@ -1,0 +1,809 @@
+%%
+%% This is file `attachfile2.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% attachfile2.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: attachfile2
+%% Version: 2012/04/18 v2.7
+%% 
+%% Copyright (C) 2005-2010, 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file attachfile2.dtx
+%% and the derived files
+%%    attachfile2.sty, attachfile2.pdf, attachfile2.ins, attachfile2.drv,
+%%    atfi-dvips.def, atfi-pdftex.def, atfi-dvipdfmx.def,
+%%    pdfatfi.pl.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{attachfile2}%
+  [2012/04/18 v2.7 Attach files into PDF (HO)]%
+\RequirePackage{ifpdf}[2009/04/10]
+\RequirePackage{ifxetex}
+\RequirePackage{ifluatex}[2009/04/10]
+\RequirePackage{keyval}
+\RequirePackage{color}
+\RequirePackage{infwarerr}[2010/04/08]
+\RequirePackage{ltxcmds}[2010/04/26]
+\RequirePackage{kvoptions}[2009/07/21]
+\RequirePackage{pdftexcmds}[2010/04/01]
+\RequirePackage{pdfescape}[2007/11/11]
+\RequirePackage{hyperref}
+\RequirePackage{hycolor}[2008/07/29]
+\ltx@IfUndefined{pdfmatch}{%
+  \def\atfi@Match#1#2#3#4#5{}%
+}{%
+  \def\atfi@Match#1#2#3{%
+    \begingroup
+    \edef\^{\ltx@backslashchar\string^}%
+    \edef\.{\ltx@backslashchar.}%
+    \let\#\ltx@hashchar
+    \edef\[{\ltx@backslashchar[}% ]]
+    \edef\${\ltx@backslashchar$}%
+    \let\%\ltx@percentchar
+    \edef\&{\string&}%
+    \edef\({\ltx@backslashchar(}%
+    \edef\){\ltx@backslashchar)}%
+    \edef\|{\ltx@backslashchar|}%
+    \edef\*{\ltx@backslashchar*}%
+    \edef\+{\ltx@backslashchar+}%
+    \edef\?{\ltx@backslashchar?}%
+    \edef\{{\ltx@backslashchar\ltx@leftbracechar}%
+    \edef\}{\ltx@rightbracechar}%
+    \edef\\{\ltx@backslashchar\ltx@backslashchar}%
+    \edef\~{\string~}%
+    \ifcase\pdfmatch#3{#2}{#1} %
+      \endgroup
+      \expandafter\ltx@secondoftwo
+    \or
+      \endgroup
+      \expandafter\ltx@firstoftwo
+    \else
+      \atfi@Warning{%
+        Internal error: Wrong pattern!\MessageBreak
+        --> #2 <--\MessageBreak
+        Pattern check ignored%
+      }%
+      \endgroup
+      \expandafter\ltx@firstoftwo
+    \fi
+  }%
+  \def\atfi@PatToken{%
+    [%
+      -% first character
+      !%
+      \#$\%\&'%
+      \*\+\.%
+      0-9%
+      A-Z%
+      \^_`%
+      a-z%
+      \{\}\|\~%
+    ]+%
+  }%
+  \begingroup
+    \lccode64=13 % @
+  \lowercase{\endgroup
+    \def\atfi@CR{@}%
+  }%
+  \def\atfi@PatQuotedString{%
+    "%
+    ([^"\\\atfi@CR]|\\.)*%
+    "%
+  }%
+  \ltx@ifpackagelater{ltxcmds}{2010/09/11}{}{%
+    \begingroup
+      \lccode`0=`\{\relax
+    \lowercase{\endgroup
+      \def\ltx@leftbracechar{0}%
+    }%
+    \begingroup
+      \lccode`0=`\}\relax
+    \lowercase{\endgroup
+      \def\ltx@rightbracechar{0}%
+    }%
+  }%
+}
+\def\atfi@Warning{\PackageWarning{attachfile2}}
+\SetupKeyvalOptions{%
+  family=AtFi,%
+  prefix=atfi@%
+}
+\def\atfi@setup{\setkeys{AtFi}}
+\DeclareBoolOption{draft}
+\DeclareComplementaryOption{final}{draft}
+\def\atfi@mimetype{}
+\define@key{AtFi}{mimetype}{%
+  \edef\atfi@mimetype{#1}%
+  \ifx\atfi@mimetype\ltx@empty
+  \else
+    \atfi@Match\atfi@mimetype{%
+      ^(application|audio|image|model|text|video|x-\atfi@PatToken)%
+      /%
+      ([a-z\-\+_\.0-9]+)%
+      (; ?\atfi@PatToken=(\atfi@PatToken|\atfi@PatQuotedString))*$%
+    }{icase}{}{%
+      \atfi@Warning{%
+        Invalid value `\atfi@mimetype'\MessageBreak
+        of option `mimetype'.\MessageBreak
+        Value is discarded%
+      }%
+      \let\atfi@mimetype\ltx@empty
+    }%
+  \fi
+  \ifx\atfi@mimetype\ltx@empty
+  \else
+    \EdefEscapeName\atfi@mimetype{\atfi@mimetype}%
+    \edef\atfi@mimetype{/Subtype/\atfi@mimetype}%
+  \fi
+}
+\define@key{AtFi}{icon}{%
+  \def\atfi@icon{/Name/#1}%
+  \def\atfi@icon@icon{#1}%
+}
+\atfi@setup{icon=PushPin}
+\define@key{AtFi}{color}{%
+  \HyColor@AttachfileColor{#1}%
+          \atfi@color@tex\atfi@color@inline\atfi@color@annot
+          {attachfile2}{color}%
+}
+\atfi@setup{color=1 0.9255 0.7765}
+\def\atfi@pad@ii#1{%
+  \ifnum#1>9 %
+    \number#1%
+  \else
+    0\number#1%
+  \fi%
+}
+\let\atfi@timezone\ltx@empty
+\define@key{AtFi}{timezone}{\def\atfi@timezone{#1}}
+\edef\atfi@time{\the\time}
+\def\atfi@hours{%
+  \numexpr\dimexpr0.01667\dimexpr\atfi@time sp\relax\relax\relax
+}
+\def\atfi@minutes{%
+  \numexpr\atfi@time-60*\atfi@hours\relax
+}
+\def\atfi@seconds{0}
+\def\atfi@date{%
+  /M(D:\the\year
+      \atfi@pad@ii\month
+      \atfi@pad@ii\day
+      \atfi@pad@ii\atfi@hours
+      \atfi@pad@ii\atfi@minutes
+      \atfi@pad@ii\atfi@seconds
+      \atfi@timezone)%
+}
+\define@key{AtFi}{date}{%
+  \EdefEscapeString\atfi@date{#1}%
+  \edef\atfi@date{/M(\atfi@date)}%
+}
+\DeclareRobustCommand{\atfi@pdfstringdef}[2]{%
+  \pdfstringdef\atfi@temp@string{#2}%
+  \edef#1{\atfi@temp@string}%
+}
+\def\atfi@NoValue{\NoValue}
+\def\atfi@DefNoValueName#1#2#3{%
+  \def#1{#3}%
+  \ifx#1\atfi@NoValue
+    \let#1\ltx@empty
+  \else
+    \atfi@pdfstringdef#1{#1}%
+    \edef#1{/#2(#1)}%
+  \fi
+}
+\let\atfi@annotname\ltx@empty
+\define@key{AtFi}{annotname}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@annotname{NM}{#1}%
+}
+\def\atfi@author{}
+\define@key{AtFi}{author}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@author{T}{#1}%
+}
+\def\atfi@description{}
+\define@key{AtFi}{description}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@description{Contents}{#1}%
+}
+\def\atfi@subject{}
+\define@key{AtFi}{subject}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@subject{Subj}{#1}%
+}
+\DeclareBoolOption[true]{print}
+\DeclareBoolOption[true]{zoom}
+\DeclareBoolOption[true]{appearance}
+\DeclareStringOption[1]{scale}
+\def\atfi@ucfilespec{}
+\define@key{AtFi}{ucfilespec}[1]{%
+  \def\atfi@ucfilespec{#1}%
+  \ifx\atfi@ucfilespec\ltx@empty
+  \else
+    \atfi@pdfstringdef\atfi@ucfilespec{#1}%
+  \fi
+}
+\DeclareBoolOption{nofiles}
+\let\atfi@driver\ltx@empty
+\def\atfi@driver@pdftex{pdftex}
+\def\atfi@driver@dvips{dvips}
+\def\atfi@driver@dvipdfmx{dvipdfmx}
+\DeclareVoidOption{pdftex}{%
+  \let\atfi@driver\atfi@driver@pdftex
+}
+\DeclareVoidOption{dvips}{%
+  \let\atfi@driver\atfi@driver@dvips
+}
+\DeclareVoidOption{dvipdfmx}{%
+  \let\atfi@driver\atfi@driver@dvipdfmx
+}
+\DeclareVoidOption{xetex}{%
+  \let\atfi@driver\atfi@driver@dvipdfmx
+}
+\DeclareStringOption{driverfallback}
+\DeclareRobustCommand{\attachfilesetup}[1]{\setkeys{AtFi}{#1}}
+\DeclareLocalOptions{%
+  annotname,%
+  appearance,%
+  author,%
+  color,%
+  date,%
+  description,%
+  icon,%
+  mimetype,%
+  nofiles,%
+  print,%
+  scale,%
+  subject,%
+  timezone,%
+  ucfilespec,%
+  zoom,%
+}
+\InputIfFileExists{attachfile.cfg}{}{}
+\ProcessKeyvalOptions*
+\def\atfi@DisableOption{%
+  \DisableKeyvalOption[action=error,package=attachfile2]{AtFi}%
+}
+\ifpdf
+  % ignoring other driver options
+  \let\atfi@driver\atfi@driver@pdftex
+\else
+  \ifx\atfi@driver\atfi@driver@pdftex
+    \let\atfi@driver\ltx@empty
+    \PackageError{attachfile2}{%
+      Wrong driver option `pdftex',\MessageBreak
+      because pdfTeX in PDF mode is not detected%
+    }\@ehc
+  \fi
+  \ifxetex
+    \let\atfi@driver\atfi@driver@dvipdfmx
+  \else
+    \ifx\atfi@driver\ltx@empty
+      \ifx\atfi@driverfallback\ltx@empty
+      \else
+        \expandafter\let\expandafter\atfi@driver
+            \csname atfi@driver@\atfi@driverfallback\endcsname
+        \ifx\atfi@driver\atfi@driver@dvips
+        \else
+          \ifx\atfi@driver\atfi@driver@dvipdfmx
+          \else
+             \let\atfi@driver\ltx@empty
+             \PackageWarningNoLine{attachfile2}{%
+               Option `driverfallback' with unsupported\MessageBreak
+               DVI driver (\atfi@driverfallback)%
+             }%
+          \fi
+        \fi
+      \fi
+      \ifx\atfi@driver\ltx@empty
+        \PackageWarningNoLine{attachfile2}{%
+          Driver is not specified,\MessageBreak
+          enforce draft settings%
+        }%
+        \atfi@drafttrue
+      \fi
+    \fi
+  \fi
+\fi
+\atfi@DisableOption{pdftex}
+\atfi@DisableOption{dvips}
+\atfi@DisableOption{dvipdfmx}
+\atfi@DisableOption{xetex}
+\atfi@DisableOption{driverfallback}
+\DeclareRobustCommand{\notextattachfile}[2][]{%
+  \begingroup
+    \atfi@setup{#1}%
+    \ifatfi@print
+      \leavevmode
+      \begingroup
+        \HyColor@UseColor\atfi@color@tex
+        #2\strut
+      \endgroup
+    \else
+      \sbox\ltx@zero{#2\strut}%
+      \makebox[\wd0]{}%
+    \fi
+  \endgroup
+}
+\atfi@DisableOption{draft}%
+\atfi@DisableOption{final}%
+\ifatfi@draft
+  \def\atfi@dummy@pushpin{%
+    \raisebox{-1.25bp}{\parbox[b][14bp]{24bp}{}}%
+  }%
+  \DeclareRobustCommand{\textattachfile}[3][]{%
+    \notextattachfile[{#1}]{#3}%
+  }%
+  \DeclareRobustCommand{\noattachfile}[1][]{%
+    \notextattachfile[{#1}]{\atfi@dummy@pushpin}%
+  }%
+  \DeclareRobustCommand{\attachfile}[2][]{%
+    \noattachfile[{#1}]%
+  }%
+   \expandafter\endinput
+\fi
+\input{atfi-\atfi@driver.def}
+\def\atfi@acroGraph@data{%
+  \atfi@GSAVE
+  0.5 \atfi@SETGRAYFILL
+  1.1133 0 20.7202 18.2754 \atfi@RECTFILL
+  0 \atfi@SETFLAT
+  0.5 \atfi@SETLINEWIDTH
+  4 \atfi@SETMITERLIMIT
+  \atfi@RECTSTROKEFILL{%
+    1 \atfi@SETGRAYFILL
+  }{%
+    0 \atfi@SETGRAYSTROKE
+  }{%
+    0.25 1.6453 20.145 17.7715 %
+  }%
+  0 \atfi@SETGRAYFILL
+  2.7319 4.1367 3.9571 13.8867 \atfi@RECTFILL
+  8.7031 4.1367 3.9571 9.8867 \atfi@RECTFILL
+  14.7471 4.1367 3.9571 11.8867 \atfi@RECTFILL
+  \atfi@color@inline{FILL}%
+  1.689 3.0938 3.9571 13.8867 \atfi@RECTFILL
+  7.6602 3.0938 3.9571 9.8867 \atfi@RECTFILL
+  13.7041 3.0938 3.9571 11.8867 \atfi@RECTFILL
+  \atfi@GRESTORE
+}
+\def\atfi@acroGraph{%
+  \raisebox{-1.5bp}{\parbox[b][20bp]{22bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroGraph@data}}%
+  }%
+}
+\newcommand{\atfi@acroPaperclip@data}{%
+  \atfi@GSAVE
+  0.75 \atfi@SETGRAYSTROKE
+  0 \atfi@SETFLAT
+  2.5 \atfi@SETLINEWIDTH
+  1 \atfi@SETLINECAP
+  4 \atfi@SETMITERLIMIT
+  1.9619 11.7559 \atfi@MOVETO
+  1.9619 3.3037 1.9619 2.5059 \atfi@CURVETOV
+  1.9619 1.707 4.0947 1.25 \atfi@CURVETOY
+  7.4141 1.25 \atfi@LINETO
+  9.4292 1.8223 9.4292 3.3066 \atfi@CURVETOV
+  9.4292 4.79 9.4292 16.8945 \atfi@CURVETOY
+  9.7852 18.1514 8.481 18.1514 \atfi@CURVETOV
+  7.1768 18.1514 5.1616 18.1514 \atfi@CURVETOY
+  3.8574 17.9209 3.8574 16.8945 \atfi@CURVETOV
+  3.8574 15.8652 3.8574 6.6172 \atfi@CURVETOY
+  4.3325 5.418 5.1025 5.418 \atfi@CURVETOV
+  5.8726 5.418 6.5845 5.418 \atfi@CURVETOY
+  7.6812 5.6455 7.6812 6.4736 \atfi@CURVETOV
+  7.6812 7.3027 7.6812 11.5264 \atfi@CURVETOY
+  \atfi@STROKE
+  0 \atfi@SETGRAYSTROKE
+  1.2495 12.4404 \atfi@MOVETO
+  1.2495 3.9883 1.2495 3.1895 \atfi@CURVETOV
+  1.2495 2.3906 3.3833 1.9326 \atfi@CURVETOY
+  6.7026 1.9326 \atfi@LINETO
+  8.7178 2.5068 8.7178 3.9902 \atfi@CURVETOV
+  8.7178 5.4736 8.7178 17.5781 \atfi@CURVETOY
+  9.0732 18.834 7.769 18.834 \atfi@CURVETOV
+  6.4653 18.834 4.4497 18.834 \atfi@CURVETOY
+  3.146 18.6055 3.146 17.5781 \atfi@CURVETOV
+  3.146 16.5498 3.146 7.3018 \atfi@CURVETOY
+  3.6201 6.1016 4.3911 6.1016 \atfi@CURVETOV
+  5.1611 6.1016 5.873 6.1016 \atfi@CURVETOY
+  6.9692 6.3301 6.9692 7.1572 \atfi@CURVETOV
+  6.9692 7.9863 6.9692 12.21 \atfi@CURVETOY
+  \atfi@STROKE
+  \atfi@color@inline{STROKE}%
+  1 \atfi@SETLINEWIDTH
+  1.2495 12.4404 \atfi@MOVETO
+  1.2495 3.9883 1.2495 3.1895 \atfi@CURVETOV
+  1.2495 2.3906 3.3833 1.9326 \atfi@CURVETOY
+  6.7026 1.9326 \atfi@LINETO
+  8.7178 2.5068 8.7178 3.9902 \atfi@CURVETOV
+  8.7178 5.4736 8.7178 17.5781 \atfi@CURVETOY
+  9.0732 18.834 7.769 18.834 \atfi@CURVETOV
+  6.4653 18.834 4.4497 18.834 \atfi@CURVETOY
+  3.146 18.6055 3.146 17.5781 \atfi@CURVETOV
+  3.146 16.5498 3.146 7.3018 \atfi@CURVETOY
+  3.6201 6.1016 4.3911 6.1016 \atfi@CURVETOV
+  5.1611 6.1016 5.873 6.1016 \atfi@CURVETOY
+  6.9692 6.3301 6.9692 7.1572 \atfi@CURVETOV
+  6.9692 7.9863 6.9692 12.21 \atfi@CURVETOY
+  \atfi@STROKE
+  \atfi@GRESTORE
+}
+\def\atfi@acroPaperclip{%
+  \raisebox{-1.25bp}{\parbox[b][21bp]{12bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroPaperclip@data}}%
+  }%
+}
+\def\atfi@acroPushPin@data{%
+  \atfi@GSAVE
+  1 \atfi@SETLINEWIDTH
+  1 6   \atfi@MOVETO
+  11 6  \atfi@LINETO
+  11 13 \atfi@LINETO
+  12 13 \atfi@LINETO
+  14 11 \atfi@LINETO
+  21 11 \atfi@LINETO
+  22 12 \atfi@LINETO
+  23 12 \atfi@LINETO
+  23 2  \atfi@LINETO
+  22 2  \atfi@LINETO
+  21 3  \atfi@LINETO
+  14 3  \atfi@LINETO
+  12 1  \atfi@LINETO
+  11 1  \atfi@LINETO
+  11 6  \atfi@LINETO
+  \atfi@FILLSTROKE{%
+    \atfi@color@inline{FILL}%
+  }{%
+    0 \atfi@SETGRAYSTROKE
+  }%
+  0.5 \atfi@SETGRAYSTROKE
+  0 7  \atfi@MOVETO
+  10 7 \atfi@LINETO
+  10 8 \atfi@LINETO
+  1 8  \atfi@LINETO
+  \atfi@STROKE
+  1 \atfi@SETGRAYSTROKE
+  12 12 \atfi@MOVETO
+  14 10 \atfi@LINETO
+  22 10 \atfi@LINETO
+  22 11 \atfi@LINETO
+  \atfi@STROKE
+  \atfi@GRESTORE
+}
+\def\atfi@acroPushPin{%
+  \raisebox{-1.25bp}{\parbox[b][14bp]{24bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroPushPin@data}}%
+  }%
+}
+\def\atfi@acroTag@data{%
+  \atfi@GSAVE
+  0.5 \atfi@SETGRAYFILL
+  10.0542 14.9873 \atfi@MOVETO
+  24.27 14.9873 \atfi@LINETO
+  25.252 14.0059 \atfi@LINETO
+  25.252 1.1455 \atfi@LINETO
+  24.1064 0 \atfi@LINETO
+  9.9609 0 \atfi@LINETO
+  6.0327 6.0088 \atfi@LINETO
+  6.0327 9.002 \atfi@LINETO
+  10.0542 14.9873 \atfi@LINETO
+  9.3994 9.376 \atfi@MOVETO
+  8.5215 9.376 7.8096 8.5596 7.8096 7.5527 \atfi@CURVETO
+  7.8096 6.5449 8.5215 5.7285 9.3994 5.7285 \atfi@CURVETO
+  10.2778 5.7285 10.9897 6.5449 10.9897 7.5527 \atfi@CURVETO
+  10.9897 8.5596 10.2778 9.376 9.3994 9.376 \atfi@CURVETO
+  \atfi@CLOSEPATH
+  \atfi@FILL
+  0 \atfi@SETFLAT
+  0.5 \atfi@SETLINEWIDTH
+  4 \atfi@SETMITERLIMIT
+  1 \atfi@SETLINEJOIN
+  8.5107 16.5313 \atfi@MOVETO
+  22.7266 16.5313 \atfi@LINETO
+  23.7085 15.5488 \atfi@LINETO
+  23.7085 2.6895 \atfi@LINETO
+  22.563 1.543 \atfi@LINETO
+  8.4175 1.543 \atfi@LINETO
+  4.4893 7.5527 \atfi@LINETO
+  4.4893 10.5449 \atfi@LINETO
+  8.5107 16.5313 \atfi@LINETO
+  7.856 10.9199 \atfi@MOVETO
+  6.978 10.9199 6.2661 10.1035 6.2661 9.0957 \atfi@CURVETO
+  6.2661 8.0879 6.978 7.2715 7.856 7.2715 \atfi@CURVETO
+  8.7344 7.2715 9.4463 8.0879 9.4463 9.0957 \atfi@CURVETO
+  9.4463 10.1035 8.7344 10.9199 7.856 10.9199 \atfi@CURVETO
+  \atfi@CLOSEPATH
+  \atfi@FILLSTROKE{%
+    \atfi@color@inline{FILL}%
+  }{%
+    0 \atfi@SETGRAYSTROKE
+  }%
+  1 \atfi@SETLINEWIDTH
+  12.3291 12.2656 \atfi@MOVETO
+  21.1206 12.2656 \atfi@LINETO
+  \atfi@STROKE
+  12.3291 9.1797 \atfi@MOVETO
+  21.1206 9.1797 \atfi@LINETO
+  \atfi@STROKE
+  12.3291 6.1875 \atfi@MOVETO
+  21.1206 6.1875 \atfi@LINETO
+  \atfi@STROKE
+  % 0 \atfi@SETGRAYSTROKE % redundant?
+  0.5 \atfi@SETLINEWIDTH
+  0 9.0488 \atfi@MOVETO
+  6.2661 9.0957 \atfi@LINETO
+  \atfi@STROKE
+  1.4028 5.2148 \atfi@MOVETO
+  1.4028 9.6094 \atfi@LINETO
+  1.6831 10.6387 2.4316 10.6387 \atfi@CURVETOV
+  3.6475 10.6387 3.5542 9.0488 \atfi@CURVETOY
+  \atfi@STROKE
+  \atfi@GRESTORE
+}
+\def\atfi@acroTag{%
+  \raisebox{-1.6bp}{\parbox[b][17bp]{25bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroTag@data}}%
+  }%
+}
+\def\attachfile@timezone#1{%
+  \ifx\\#1\\%
+    % no timezone information given
+  \else
+    \def\atfi@timezone{#1}%
+  \fi
+}
+\newcommand*{\attachfile@file}[2][]{%
+  \EdefUnescapeHex\atfi@filename{#2}%
+  \ifx\atfi@filename\ltx@empty
+    \PackageError{attachfile2}{Empty file name}\@ehc
+  \else
+    \@namedef{atfi@file@\atfi@filename}{#1}%
+  \fi
+}
+\InputIfFileExists{\jobname.atfi}{}{}%
+\newif\ifatfi@checksum
+\define@key{AtFi@file}{CheckSum}{%
+  \atfi@checksumtrue
+  \edef\atfi@params{\atfi@params/CheckSum<#1>}%
+}
+\newif\ifatfi@creationdate
+\define@key{AtFi@file}{CreationDateTZ}{%
+  \ifatfi@creationdate
+  \else
+    \atfi@creationdatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /CreationDate(#1)%
+    }%
+  \fi
+}
+\define@key{AtFi@file}{CreationDate}{%
+  \ifatfi@creationdate
+  \else
+    \atfi@creationdatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /CreationDate(#1\atfi@timezone)%
+    }%
+  \fi
+}
+\newif\ifatfi@moddate
+\define@key{AtFi@file}{ModDateTZ}{%
+  \ifatfi@moddate
+  \else
+    \atfi@moddatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /ModDate(#1)%
+    }%
+  \fi
+}
+\define@key{AtFi@file}{ModDate}{%
+  \ifatfi@moddate
+  \else
+    \atfi@moddatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /ModDate(D:#1\atfi@timezone)%
+    }%
+  \fi
+}
+\let\atfi@temp\ltx@one
+\ltx@IfUndefined{pdf@filesize}{%
+  \let\atfi@temp\ltx@zero
+}{}
+\ltx@IfUndefined{pdf@filemoddate}{%
+  \let\atfi@temp\ltx@zero
+}{}
+\ltx@IfUndefined{pdf@filemdfivesum}{%
+  \let\atfi@temp\ltx@zero
+}{}
+\ifcase\atfi@temp
+  \let\atfi@pdftexdata\ltx@gobble
+\or
+  \def\atfi@pdftexdata#1{%
+    \edef\atfi@temp{\pdf@filesize{#1}}%
+    \ifx\atfi@temp\ltx@empty
+    \else
+      \setkeys{AtFi@file}{Size=\atfi@temp}%
+      \edef\atfi@temp{\pdf@filemoddate{#1}}%
+      \ifx\atfi@temp\ltx@empty
+      \else
+        \setkeys{AtFi@file}{ModDateTZ=\atfi@temp}%
+      \fi
+      \edef\atfi@temp{\pdf@filemdfivesum{#1}}%
+      \ifx\atfi@temp\ltx@empty
+      \else
+        \setkeys{AtFi@file}{CheckSum=\atfi@temp}%
+      \fi
+    \fi
+  }%
+\fi
+\if@filesw
+\else
+  \atfi@nofilestrue
+\fi
+\ifatfi@nofiles
+  \PackageInfo{attachfile2}{%
+    File `\jobname.atfi' will not be written because of\MessageBreak
+    \string\nofiles\space or option `nofiles'%
+  }%
+  \let\atfi@writefile\ltx@gobble
+\else
+  \newwrite\atfi@stream
+  \immediate\openout\atfi@stream=\jobname.atfi\relax
+  \immediate\write\atfi@stream{%
+    \string\attachfile@timezone{\atfi@timezone}%
+  }%
+  \def\atfi@writefile#1{%
+    \begingroup
+      \EdefEscapeHex\atfi@temp{#1}%
+      \immediate\write\atfi@stream{%
+        \string\attachfile@file[%
+          \ltx@ifundefined{atfi@file@#1}{}{\@nameuse{atfi@file@#1}}%
+        ]{\atfi@temp}%
+      }%
+    \endgroup
+  }%
+\fi
+\atfi@DisableOption{nofiles}
+\def\atfi@attachfile#1#2{%
+  \ltx@IfUndefined{atfi@fileobj@#2}{%
+    \atfi@writefile{#2}%
+  }{%
+    % don't need duplicates
+  }%
+  \atfi@setup{#1}%
+  \atfi@embedfile{#2}%
+  \atfi@set@appearance@icon
+  \atfi@flags@to@int
+  \atfi@insert@file@annot{#2}%
+  \endgroup
+}
+\newlength{\atfi@appearancewidth}
+\newlength{\atfi@appearanceheight}
+\newlength{\atfi@appearancedepth}
+\newsavebox{\atfi@appearancebox}
+\def\atfi@set@appearance@icon{%
+  \ltx@IfUndefined{atfi@appobj@\atfi@icon@icon}{%
+    \savebox{\atfi@appearancebox}{%
+      \@nameuse{atfi@acro\atfi@icon@icon}%
+    }%
+    \expandafter
+    \xdef\csname atfi@appwidth@\atfi@icon@icon\endcsname{%
+      \the\wd\atfi@appearancebox
+    }%
+    \expandafter
+    \xdef\csname atfi@appheight@\atfi@icon@icon\endcsname{%
+      \the\ht\atfi@appearancebox
+    }%
+    \expandafter
+    \xdef\csname atfi@appdepth@\atfi@icon@icon\endcsname{%
+      \the\dp\atfi@appearancebox
+    }%
+    \atfi@xform@icon
+    \global\expandafter\let
+        \csname atfi@appobj@\atfi@icon@icon\endcsname
+        \atfi@appearanceobj
+  }{%
+  }%
+  % optimization: \setlength dropped
+  \atfi@appearancewidth=%
+      \@nameuse{atfi@appwidth@\atfi@icon@icon}\relax
+  \atfi@appearanceheight=%
+      \@nameuse{atfi@appheight@\atfi@icon@icon}\relax
+  \atfi@appearancedepth=%
+      \@nameuse{atfi@appdepth@\atfi@icon@icon}\relax
+  \expandafter\let\expandafter\atfi@appearanceobj
+      \csname atfi@appobj@\atfi@icon@icon\endcsname
+}
+\def\atfi@set@appearance#1{%
+  \savebox{\atfi@appearancebox}{#1}%
+  \atfi@appearancewidth=\wd\atfi@appearancebox
+  \atfi@appearanceheight=\ht\atfi@appearancebox
+  \atfi@appearancedepth=\dp\atfi@appearancebox
+  \atfi@xform
+}
+\newcounter{atfi@flags}
+\DeclareRobustCommand{\atfi@flags@to@int}{%
+  \setcounter{atfi@flags}{0}%
+  \ifatfi@print
+    \addtocounter{atfi@flags}{4}%
+  \fi%
+  \ifatfi@zoom
+  \else
+    \addtocounter{atfi@flags}{8}%
+  \fi%
+}
+\def\atfi@textattachfile#1#2{%
+    \endgroup
+    \atfi@textattachfile@i{#1}{#2}%
+}
+\def\atfi@textattachfile@i#1#2#3{%
+    \ltx@IfUndefined{atfi@fileobj@#2}{%
+      \atfi@writefile{#2}%
+    }{%
+      % don't need duplicates
+    }%
+    \atfi@setup{#1}%
+    \atfi@embedfile{#2}%
+    \atfi@set@appearance{%
+      \leavevmode
+      \begingroup
+        \HyColor@UseColor\atfi@color@tex
+        #3\strut
+      \endgroup
+    }%
+    \atfi@flags@to@int
+    \atfi@insert@file@annot{#2}%
+  \endgroup
+}
+\DeclareRobustCommand{\attachfile}[1][]{%
+  \begingroup
+    \let\do\@makeother
+    \dospecials
+    \catcode`\{=1\relax
+    \catcode`\}=2\relax
+    \atfi@attachfile{#1}%
+}
+\DeclareRobustCommand{\textattachfile}[1][]{%
+  \begingroup
+    \begingroup
+      \let\do\@makeother
+      \dospecials
+      \catcode`\{=1\relax
+      \catcode`\}=2\relax
+      \atfi@textattachfile{#1}%
+}
+\DeclareRobustCommand{\noattachfile}[1][]{%
+  \begingroup
+    \atfi@setup{#1}%
+    \atfi@set@appearance@icon
+    \ifatfi@print
+      \expandafter
+      \atfi@refxform\csname atfi@appobj@\atfi@icon@icon\endcsname
+    \else
+      \makebox[\atfi@appearancewidth]{}%
+    \fi
+  \endgroup
+}
+\endinput
+%%
+%% End of file `attachfile2.sty'.

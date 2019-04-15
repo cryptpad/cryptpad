@@ -1,0 +1,710 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%%
+%% $Id: trace.dtx 5291 2003-06-29 14:44:49Z mittelba $
+%%
+%% (C) Copyright 1999-2014 Frank Mittelbach
+%% All rights reserved.
+%%
+%<*dtx>
+          \ProvidesFile{trace.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{trace}
+%<driver>\ProvidesFile{trace.drv}
+% \fi
+%         \ProvidesFile{trace.dtx}
+          [2014/10/28 v1.1d trace LaTeX code]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{doc}
+\setcounter{StandardModuleDepth}{1}
+
+\usepackage{shortvrb}
+\MakeShortVerb\|
+
+\DeclareRobustCommand\eTeX{\ensuremath{\varepsilon}-\kern-.125em\TeX}
+
+\begin{document}
+\DocInput{trace.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{237}
+%
+% \GetFileInfo{trace.dtx}
+%
+% \title{The \textsf{trace} package\thanks{This file
+%         has version number \fileversion, last
+%         revised \filedate.}}
+% \author{Frank Mittelbach}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+%
+%
+% \section{Introduction}
+%
+% When writing new macros one often finds that they do not work as
+% expected (at least I do :-). If this happens and one can't
+% immediately figure out why there is a problem one has to start doing
+% some serious debugging. \TeX{} offers a lot of bells and whistles to
+% control what is being traced but often enough I find myself applying
+% the crude command |\tracingall| which essentially means ``give me
+% whatever tracing information is available''.
+%
+% In fact I normally use \eTeX{} in such a case, since that \TeX{}
+% extension offers me a number of additional tracing possibilities
+% which I find extremely helpful. The most important ones are
+% |\tracingassigns|, which will show you changes to register values
+% and changes to control sequences when they happen, and
+% |\tracinggroups|, which will tell you what groups are entered
+% or left (very useful if your grouping got out of sync).
+%
+% So what I really write is
+%\begin{verbatim}
+%  \tracingassigns=1\tracinggroups=1\tracingall
+%\end{verbatim}
+% That in itself is already a nuisance (since it is a mouthful) but
+% there is a worse catch: when using |\tracingall| you do get a awful
+% lot of information and some of it is really useless.
+%
+% For example, if \LaTeX{} has to load a new font it enters some
+% internal routines of NFSS which scan font definition tables etc.
+% And 99.9\% of the time you are not at all interested in that part of the
+% processing but in the two lines before and the five lines
+% after. However, you have to scan through a few hundred lines of
+% output to find the lines you need.
+%
+% Another example is the \texttt{calc} package. A simple statement
+% like |\setlength| |\linewidth| |{1cm}| inside your macro will result
+% in
+%
+% \renewcommand\MacroFont{\fontencoding\encodingdefault
+%                   \fontfamily\ttdefault
+%                   \fontseries\mddefault
+%                   \fontshape\updefault
+%                   \footnotesize}%
+%\begin{verbatim}
+%  \setlength ->\protect \setlength
+%  {\relax}
+%
+%  \setlength  ->\calc@assign@skip
+%
+%  \calc@assign@skip ->\calc@assign@generic \calc@Askip \calc@Bskip
+%
+%  \calc@assign@generic #1#2#3#4->\let \calc@A #1\let \calc@B #2\expandafter \calc
+%  @open \expandafter (#4!\global \calc@A \calc@B \endgroup #3\calc@B
+%  #1<-\calc@Askip
+%  #2<-\calc@Bskip
+%  #3<-\linewidth
+%  #4<-1cm
+%  {\let}
+%  {\let}
+%  {\expandafter}
+%  {\expandafter}
+%
+%  \calc@open (->\begingroup \aftergroup \calc@initB \begingroup \aftergroup \calc
+%  @initB \calc@pre@scan
+%  {\begingroup}
+%  {\aftergroup}
+%  {\begingroup}
+%  {\aftergroup}
+%
+%  \calc@pre@scan #1->\ifx (#1\expandafter \calc@open \else \ifx \widthof #1\expan
+%  dafter \expandafter \expandafter \calc@textsize \else \calc@numeric \fi \fi #1
+%  #1<-1
+%  {\ifx}
+%  {false}
+%  {\ifx}
+%  {false}
+%
+%  \calc@numeric ->\afterassignment \calc@post@scan \global \calc@A
+%  {\afterassignment}
+%  {\global}
+%  {\fi}
+%  {\fi}
+%
+%  \calc@post@scan #1->\ifx #1!\let \calc@next \endgroup \else \ifx #1+\let \calc@
+%  next \calc@add \else \ifx #1-\let \calc@next \calc@subtract \else \ifx #1*\let
+%  \calc@next \calc@multiplyx \else \ifx #1/\let \calc@next \calc@dividex \else \i
+%  fx #1)\let \calc@next \calc@close \else \calc@error #1\fi \fi \fi \fi \fi \fi \
+%  calc@next
+%  #1<-!
+%  {\ifx}
+%  {true}
+%  {\let}
+%  {\else}
+%  {\endgroup}
+%  {restoring \calc@next=undefined}
+%
+%  \calc@initB ->\calc@B \calc@A
+%  {\skip44}
+%  {\global}
+%  {\endgroup}
+%  {restoring \skip44=0.0pt}
+%
+%  \calc@initB ->\calc@B \calc@A
+%  {\skip44}
+%  {\dimen27}
+%\end{verbatim}
+%
+% \noindent Do you still remember what I was talking about?
+%
+% No? We're trying to find a problem in macro code without having to scan
+% too many uninteresting lines. To make this possible we have to
+% redefine a number of key commands to turn tracing off temporarily in
+% the hope that this will reduce the amount of noise during the
+% trace. For example, if we change one of the \texttt{calc} internals
+% slightly, the above tracing output can be reduced to:
+%
+%\begin{verbatim}
+%  \setlength ->\protect \setlength
+%  {\relax}
+%
+%  \setlength  ->\calc@assign@skip
+%
+%  \calc@assign@skip ->\calc@assign@generic \calc@Askip \calc@Bskip
+%
+%  \calc@assign@generic #1#2#3#4->\let \calc@A #1\let \calc@B #2\expandafter \calc
+%  @open \expandafter (#4!\global \calc@A \calc@B \endgroup #3\calc@B
+%  #1<-\calc@Askip
+%  #2<-\calc@Bskip
+%  #3<-\linewidth
+%  #4<-1cm
+%  {\let}
+%  {\let}
+%  {\expandafter}
+%  {\expandafter}
+%
+%  \calc@open (->\begingroup \conditionally@traceoff \aftergroup \calc@initB \begi
+%  ngroup \aftergroup \calc@initB \calc@pre@scan
+%  {\begingroup}
+%
+%  \conditionally@traceoff ->\tracingrestores \z@ \tracingcommands \z@ \tracingpag
+%  es \z@ \tracingmacros \z@ \tracingparagraphs \z@
+%  {\tracingrestores}
+%  {\tracingcommands}
+%  {restoring \tracingrestores=1}
+%
+%  \calc@initB ->\calc@B \calc@A
+%  {\skip44}
+%  {\dimen27}
+%\end{verbatim}
+%
+% \noindent\label{conttraceoffexample}
+% Still a lot of noise but definitely preferable to the
+% original case.
+%
+% I redefined those internals that I found most annoyingly
+% noisy. There are probably many others that could be treated in a
+% similar fashion, so if you think you found one worth adding please
+% drop me a short note.
+%
+% \[ * \quad * \quad * \]
+%
+% \DescribeMacro\traceon
+% \DescribeMacro\traceoff
+% The package defines the two macros |\traceon| and |\traceoff| to
+% unconditionally turn tracing on or off, respectively. |\traceon| is
+% like |\tracingall| but additionally adds |\tracingassigns| and
+% |\tracinggroups| if the \eTeX{} program (in extended mode) is
+% used. And |\traceoff| will turn tracing off again, a command which
+% is already badly missing in plain \TeX{}, since it is often not
+% desirable to restrict the tracing using extra groups in the
+% document.
+%
+% \DescribeMacro\conditionally@traceon
+% \DescribeMacro\conditionally@traceoff
+% There are also two internal macros that turn tracing on and off, but
+% only if the user requested tracing in the first place. These are the
+% ones that are used internally within the code below.
+%
+% Since the package overwrites some internals of other packages you
+% should load it as the last package in your preamble using
+% |\usepackage{trace}|.
+%
+% The package offers the option \texttt{logonly} that suppresses
+% terminal output during tracing (unless |\tracingall| is used). This
+% is useful if the \TeX{} implementation used gets rather slow when
+% writing a lot of information to the terminal.
+%
+% It also offers the option \texttt{full} in which case |\traceon|
+% will trace all parts of the code, i.e., essentially work like
+% |\tracingall|.
+%
+% \section{A sample file}
+%
+% The following small test file shows the benefits of the
+% \texttt{trace} package. If one uncomments the line loading the
+% package, the amount of tracing data will be drastically reduced.
+% Without the \texttt{trace} package we get 6594 lines in the log
+% file; adding the package will reduce this to 1618 lines.
+%
+%\begin{verbatim}
+%  \documentclass{article}
+%  \usepackage{calc}
+%  %\usepackage{trace} % uncomment to see difference
+%
+%  \begin{document}
+%  \ifx\traceon\undefined \tracingall \else \traceon \fi
+%
+%  \setlength\linewidth{1cm}
+%
+%  $foo=\bar a$
+%
+%  \small \texttt{\$}  \stop
+%\end{verbatim}
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+% \renewcommand\MacroFont{\fontencoding\encodingdefault
+%                   \fontfamily\ttdefault
+%                   \fontseries\mddefault
+%                   \fontshape\updefault
+%                   \small}
+%
+% This package is for use with \LaTeX{} (though something similar
+% could be produced for other formats).
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}[1998/12/01]
+%    \end{macrocode}
+%
+%    The package has a option that suppresses tracing on the
+%    terminal, i.e., if used will not set |\tracingonline| to
+%    one. This has been added in version 1.1a since some \TeX{}
+%    implementations get rather slow when outputting to a terminal.
+%    \begin{macrocode}
+\DeclareOption{logonly}
+   {\let\tracingonline@p\z@}
+%    \end{macrocode}
+%    The default is showing the tracing information on the terminal.
+%    \begin{macrocode}
+\let\tracingonline@p\@ne
+%    \end{macrocode}
+%
+%    If the option |full| is selected then all code should be traced,
+%    i.e., the commands |\conditionally@traceoff| and
+%    |\conditionally@traceon| should do nothing. We set them to
+%    |\@empty| not |\relax| since the latter might produce a math ord
+%    in certain circumstances.  We also have to make sure that
+%    |\traceon| (as defined further down) is not redefining
+%    |\conditionally@traceoff| again. To make this all work these
+%    redefinitions have to wait until the end of the package.
+%  \changes{v1.1c}{2003/04/30}{Option ``full'' added}
+%    \begin{macrocode}
+\DeclareOption{full}
+    {\AtEndOfPackage{\let\conditionally@traceoff\@empty
+                     \let\conditionally@traceon\@empty
+                     \let\traceon\tr@ce@n
+    }}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%
+%
+% \begin{macro}{\if@tracing}
+%    We need a switch to determine if we want any tracing at
+%    all. Otherwise, if we use |\traceoff|\ldots|\traceon|
+%    internally, we would unconditionally turn on tracing even when no
+%    tracing was asked for in the first place.
+%    \begin{macrocode}
+\newif\if@tracing
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\traceon}
+%    This macro ensures that |\conditionally@traceoff| is actually
+%    turning off switches (since |\tracinall| might have disabled it)
+%    and then calls |\tr@ce@n| to setup tracing.
+%    \begin{macrocode}
+\def\traceon{\let\conditionally@traceoff\unconditionally@traceoff
+             \tr@ce@n}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tr@ce@n}
+%  \changes{v1.1c}{2003/04/30}{Macro added}
+% \begin{macro}{\conditionally@traceoff}
+%    As stated in the introduction, the amount of tracing being done
+%    should depend on the formatter we use. So we first test if we are
+%    running with \eTeX{} in extended mode. In the latter case the command
+%    |\tracinggroups| is defined.\footnote{If some package writer has defined
+%    that command name for some reason---too bad---then we make the
+%    wrong deduction from this fact and as a result the package will fail.}
+%    \begin{macrocode}
+\ifx\tracinggroups\undefined
+%    \end{macrocode}
+%
+%    If we are using standard \TeX{} then |\tr@ce@n| is more or less
+%    another name for |\tracingall|. The only differences are that we
+%    set the above |@tracing| switch to true and reorder the
+%    assignments within it somewhat so that it will output no tracing
+%    information about itself. In contrast, |\tracingall| itself produces
+%
+%\begingroup
+%    \renewcommand\MacroFont{\fontencoding\encodingdefault
+%                   \fontfamily\ttdefault
+%                   \fontseries\mddefault
+%                   \fontshape\updefault
+%                   \footnotesize}%
+%\begin{verbatim}
+%  {vertical mode: \tracingstats}
+%  {\tracingpages}
+%  {\tracinglostchars}
+%  {\tracingmacros}
+%  {\tracingparagraphs}
+%  {\tracingrestores}
+%  {\errorcontextlines}
+%
+%  \showoutput ->\tracingoutput \@ne \showboxbreadth \maxdimen \showboxdepth \maxd
+%  imen \errorstopmode \showoverfull
+%  {\tracingoutput}
+%  {\showboxbreadth}
+%  {\showboxdepth}
+%  {\errorstopmode}
+%
+%  \showoverfull ->\tracingonline \@ne
+%  {\tracingonline}
+%\end{verbatim}
+%\endgroup
+%
+%    \noindent Which is quite a lot given that none of it is of any
+%    help to the task at hand. In contrast |\tr@ce@n| will produce
+%    nothing whatsoever since the noise generating switches are set at
+%    the very end.
+%    \begin{macrocode}
+  \def\tr@ce@n{%
+%    \end{macrocode}
+%    We start by setting the |@tracing| switch to signal that tracing
+%    is asked for. This is then followed by setting the various
+%    tracing primitives of \TeX.
+%    \begin{macrocode}
+    \@tracingtrue
+    \tracingstats\tw@
+    \tracingpages\@ne
+    \tracinglostchars\@ne
+    \tracingparagraphs\@ne
+    \errorcontextlines\maxdimen
+    \tracingoutput\@ne
+    \showboxbreadth\maxdimen
+    \showboxdepth\maxdimen
+    \errorstopmode
+    \tracingmacros\tw@
+    \tracingrestores\@ne
+    \tracingcommands\tw@
+%    \end{macrocode}
+%    The setting of |\tracingonline| depends on the option
+%    \texttt{logonly}:
+%    \begin{macrocode}
+    \tracingonline\tracingonline@p
+  }
+%    \end{macrocode}
+%
+%    Now what should |\conditionally@traceoff| do in this case? Should
+%    it revert all settings changed by |\tr@ce@n|? It should not, since
+%    our goal is to shorten the trace output, thus setting all of the
+%    uninteresting values back makes the output unnecessarily
+%    longer. Therefore we restrict ourselves to those |\tracing...|
+%    internals that really contribute to listings like the above.
+%
+%    And one additional point is worth mentioning. The order in which
+%    we turn the tracing internals off has effects on the output we
+%    see. So what needs to be turned off first? Either
+%    |\tracingrestores| or |\tracingcommands|; it makes no difference
+%    which, as long as they both come first. This is because those two
+%    are the only tracing switches that produce output while tracing
+%    the command |\conditionally@traceoff| itself (see example on
+%    page~\pageref{conttraceoffexample}).
+%
+%    In principle we would need to test the |@tracing| switch to see
+%    if there is anything to turn off; after all, this is the
+%    conditional trace off. However this would lead to
+%    extra output if we are currently tracing so we skip the test and
+%    instead accept that in case we are not doing any tracing we
+%    unnecessarily set the tracing primitives back to zero (i.e., the
+%    value they already have).
+%  \changes{v1.1c}{2003/04/30}{Turn off \cs{tracingoutput}}
+%    \begin{macrocode}
+  \def\conditionally@traceoff{%
+    \tracingrestores\z@
+    \tracingcommands\z@
+    \tracingpages\z@
+    \tracingmacros\z@
+    \tracingparagraphs\z@
+    \tracingoutput\z@
+    \showboxbreadth\m@ne
+    \showboxdepth\m@ne
+%    \end{macrocode}
+%
+%    As remarked above there are more tracing switches set by
+%    |\tr@ce@n|, however there is no point in resetting
+%    |\tracinglostchars| so we leave it alone.
+%  \changes{v1.1c}{2003/04/30}{Reset \cs{tracingstats} to one}
+%    \begin{macrocode}
+   \tracingstats\@ne
+% \tracinglostchars\z@
+%    \end{macrocode}
+%    Since this is the command that only conditionally turns off
+%    tracing we do not touch the |@tracing| switch. This way a
+%    |\conditionally@traceon| will be able to turn the tracing on
+%    again.
+%    \begin{macrocode}
+  }
+%    \end{macrocode}
+%
+%    That covers the case for the standard \TeX{} program. If
+%    |\tracingsgroups| was defined we assume that we are running with
+%    \eTeX{} in extended mode.
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%
+%    In that case |\tr@ce@n| does more than |\tracingall|: it also
+%    turns on tracing of assignments and tracing of
+%    grouping.\footnote{These are my personal preference settings;
+%    \eTeX{} does in fact offer some more tracing switches and perhaps
+%    one or or more of them should be added here as well.}
+%    To keep tracing at a minimum |\tracingassigns| should be turned
+%    on last (in fact like before we disassemble |\tracingall|
+%    and reorder it partially).
+%    \begin{macrocode}
+  \def\tr@ce@n{%
+    \@tracingtrue
+    \tracingstats\tw@
+    \tracingpages\@ne
+    \tracinglostchars\@ne
+    \tracingparagraphs\@ne
+    \errorcontextlines\maxdimen
+    \tracingoutput\@ne
+    \showboxbreadth\maxdimen
+    \showboxdepth\maxdimen
+    \errorstopmode
+    \tracingmacros\tw@
+    \tracinggroups\@ne
+    \tracingrestores\@ne
+    \tracingcommands\tw@
+    \tracingassigns\@ne
+    \tracingonline\tracingonline@p
+  }
+%    \end{macrocode}
+%
+%    When turning tracing off again we now also have to turn off those
+%    additional tracing switches. But what to turn off in what order?
+%    Since |\tracingassigns| is quite noisy (two lines of output per
+%    assignment) and the whole command expansion consists of
+%    assignments, we had best start with this switch and follow it again
+%    by |\tracingrestores| and |\tracingcommands|. The rest can be in
+%    any order, it doesn't make a difference.
+%
+%    With the same reasoning as before we omit testing for the
+%    |@tracing| switch and always set the primitives back to zero.
+%  \changes{v1.1c}{2003/04/30}{Turn off \cs{tracingoutput}}
+%  \changes{v1.1c}{2003/04/30}{Reset \cs{tracingstats} to one}
+%    \begin{macrocode}
+  \def\conditionally@traceoff{%
+    \tracingassigns\z@
+    \tracingrestores\z@
+    \tracingcommands\z@
+    \tracingpages\z@
+    \tracingmacros\z@
+    \tracingoutput\z@
+    \showboxbreadth\m@ne
+    \showboxdepth\m@ne
+    \tracingstats\@ne
+    \tracingparagraphs\z@
+    \tracinggroups\z@
+  }
+%    \end{macrocode}
+%
+%    This concludes the part that depends on the formatter being
+%    used.
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\unconditionally@traceoff}
+%  \changes{v1.1c}{2003/04/30}{Macro added}
+%    A saved version of whatever |\conditionally@traceoff| was defined
+%    to be. We need this since the latter might get disabled by
+%    |\tracingall| or by the \texttt{full} option.
+%    \begin{macrocode}
+\let\unconditionally@traceoff\conditionally@traceoff
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tracingall}
+%  \changes{v1.1c}{2003/04/30}{Macro added}
+%    We redefine |\tracingall| to trace the same stuff than |\tr@ce@n| (i.e.,
+%    more when \eTeX{} is being used) and ensure that everything gets
+%    traced by disabling |\conditionally@traceoff|. And, of course,
+%    |\tracingall| should always report on the terminal.
+%    \begin{macrocode}
+\def\tracingall{\let\conditionally@traceoff\@empty
+  \let\tracingonline@p\@ne
+  \tr@ce@n
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\traceoff}
+% \begin{macro}{\conditionally@traceon}
+%    Above we have defined |\conditionally@traceoff| and |\traceon| so
+%    now we have to define their counterparts.
+%
+%    To stop tracing unconditionally we call
+%    |\unconditionally@traceoff| and then reset the |@tracing| switch
+%    to false.
+%    \begin{macrocode}
+\def\traceoff{\unconditionally@traceoff \@tracingfalse}
+%    \end{macrocode}
+%
+%    Now the |\conditionally@traceon| command will look at the
+%    |@tracing| switch and if it is true it will call |\traceon| to
+%    restart tracing (note that the latter command unnecessarily sets
+%    the switch to true as well). The reason for the |\expandafter| is
+%    to get rid of the |\fi| primitive which would otherwise show up in
+%    the tracing output (and perhaps puzzle somebody).
+%    \begin{macrocode}
+\def\conditionally@traceon{\if@tracing \expandafter \traceon \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% The rest of the package now consists of redefinitions of certain
+% commands to make use of |\conditionally@traceoff|.
+%
+% \subsection{Taming \texttt{calc}}
+%
+% \begin{macro}{\calc@open}
+%    Near the start of parsing a calc expression the macro |\calc@open|
+%    is called. Since it already involves a group it is perfectly
+%    suitable for our task---we don't even have to restart the tracing as
+%    this is done automatically for us.
+%    \begin{macrocode}
+\def\calc@open({\begingroup
+   \conditionally@traceoff
+   \aftergroup\calc@initB
+   \begingroup\aftergroup\calc@initB
+   \calc@pre@scan}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Making NFSS less noisy}
+%
+% \begin{macro}{\define@newfont}
+%    Whenever NFSS determines that the font currently asked for is not
+%    already loaded, it will start looking through font definition
+%    files and then load the font. This results in a very large number
+%    of tracing lines which are  not normally of interest (unless there
+%    is a bug in that area---something we hope should have been found
+%    by now). Again the code already contains its own group so we only
+%    have to turn the tracing off.
+%    \begin{macrocode}
+\def\define@newfont{%
+  \begingroup
+    \conditionally@traceoff
+    \let\typeout\@font@info
+    \escapechar\m@ne
+    \expandafter\expandafter\expandafter
+       \split@name\expandafter\string\font@name\@nil
+      \try@load@fontshape % try always
+    \expandafter\ifx
+       \csname\curr@fontshape\endcsname \relax
+      \wrong@fontshape\else
+      \extract@font\fi
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\frozen@everymath}
+% \begin{macro}{\frozen@everydisplay}
+%    At the beginning of every math formula NFSS will check whether or
+%    not the math fonts are properly set up and if not will load
+%    whatever is needed. So we surround that part of the code
+%    with |\conditionally@traceoff| and |\conditionally@traceon|
+%    thereby avoiding all this uninteresting output.
+%    \begin{macrocode}
+\frozen@everymath =
+   {\conditionally@traceoff \check@mathfonts \conditionally@traceon
+    \the\everymath}
+\frozen@everydisplay =
+   {\conditionally@traceoff \check@mathfonts \conditionally@traceon
+    \the\everydisplay}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+% \section{Checking for italic corrections}
+%
+% \begin{macro}{\maybe@ic@}
+%    When executing |\textit| or its friends, \LaTeX{} looks ahead to
+%    determine whether or not to add an italic correction at the
+%    end. This involves looping through the |\nocorrlist| which
+%    outputs a lot of tracing lines we are normally not interested
+%    in. So we disable tracing for this part of the processing.
+%  \changes{v1.1d}{2014/04/21}{Use \cs{ifmaybe@ic} not
+%           \cs{if@tempswa} as the kernel does (pr/4200)}
+%    \begin{macrocode}
+\def \maybe@ic@ {%
+  \ifdim \fontdimen\@ne\font>\z@
+  \else
+    \conditionally@traceoff
+    \maybe@ictrue
+    \expandafter\@tfor\expandafter\reserved@a\expandafter:\expandafter=%
+        \nocorrlist
+    \do \t@st@ic
+    \ifmaybe@ic \sw@slant \fi
+    \conditionally@traceon
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+%
+% \Finale
+%
+% \endinput

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcolparallel'>
+  <name>pdfcolparallel</name>
+  <caption>Fix colour problems in package 'parallel'.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    Since version 1.40 pdfTeX supports colour stacks.
+    This package uses them to fix colour problems in
+    package <xref refid='parallel'>parallel</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcolparallel.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcolparallel.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

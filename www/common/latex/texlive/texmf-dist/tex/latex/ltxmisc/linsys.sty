@@ -1,0 +1,27 @@
+%%%%%%%%%%%%%%%%%%%%%%%
+%% Copyleft
+%% Walter A. Kehowski
+%% Department of Mathematics
+%% Glendale Community College
+%% walter.kehowski@gcmail.maricopa.edu
+%% \begin{linsys}{2}
+%% -x & + & 4y & = & 8\\
+%% -3x & - & 2y & = & 6
+%% \end{linsys}
+%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{array} % TLC p465
+\RequirePackage{pifont}
+\makeatletter
+%% math-mode column types ------------------
+\newcolumntype{\@R}{>{$}r<{$}}
+\newcolumntype{\@L}{>{$}l<{$}}
+\newcolumntype{\@C}{>{$}c<{$}}
+\newcounter{@dingctr}
+\newcommand{\@wding}{\ding{\value{@dingctr}}\stepcounter{@dingctr}}
+\newcommand{\@dinglabel}{\@wding}
+\newenvironment{linsys}[1]{%
+\setcounter{@dingctr}{192}%
+\begin{tabular}{!{\@dinglabel}*{#1}{\@R\@C}\@R}}%
+{\end{tabular}\setcounter{@dingctr}{192}}
+\makeatother
+\endinput

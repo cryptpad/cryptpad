@@ -1,0 +1,1590 @@
+% \iffalse meta-comment
+%
+% File: magicnum.dtx
+% Version: 2011/04/10 v1.4
+% Info: Magic numbers
+%
+% Copyright (C) 2007, 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file magicnum.dtx
+% and the derived files
+%    magicnum.sty, magicnum.pdf, magicnum.ins, magicnum.drv, magicnum.txt,
+%    magicnum-test1.tex, magicnum-test2.tex, magicnum-test3.tex,
+%    magicnum-test4.tex, magicnum.lua, oberdiek.magicnum.lua.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/magicnum.dtx
+%    CTAN:macros/latex/contrib/oberdiek/magicnum.pdf
+%
+% Unpacking:
+%    (a) If magicnum.ins is present:
+%           tex magicnum.ins
+%    (b) Without magicnum.ins:
+%           tex magicnum.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{magicnum.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If magicnum.drv is present:
+%           latex magicnum.drv
+%    (b) Without magicnum.drv:
+%           latex magicnum.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex magicnum.dtx
+%       makeindex -s gind.ist magicnum.idx
+%       pdflatex magicnum.dtx
+%       makeindex -s gind.ist magicnum.idx
+%       pdflatex magicnum.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/magicnum.sty
+%    TDS:scripts/oberdiek/magicnum.lua
+%    TDS:scripts/oberdiek/oberdiek.magicnum.lua
+%    TDS:doc/latex/oberdiek/magicnum.pdf
+%    TDS:doc/latex/oberdiek/magicnum.txt
+%    TDS:doc/latex/oberdiek/test/magicnum-test1.tex
+%    TDS:doc/latex/oberdiek/test/magicnum-test2.tex
+%    TDS:doc/latex/oberdiek/test/magicnum-test3.tex
+%    TDS:doc/latex/oberdiek/test/magicnum-test4.tex
+%    TDS:source/latex/oberdiek/magicnum.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: magicnum 2011/04/10 v1.4 Magic numbers (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: magicnum
+Version: 2011/04/10 v1.4
+
+Copyright (C) 2007, 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file magicnum.dtx
+and the derived files
+   magicnum.sty, magicnum.pdf, magicnum.ins, magicnum.drv, magicnum.txt,
+   magicnum-test1.tex, magicnum-test2.tex, magicnum-test3.tex,
+   magicnum-test4.tex, magicnum.lua, oberdiek.magicnum.lua.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{magicnum.ins}{\from{magicnum.dtx}{install}}%
+  \file{magicnum.drv}{\from{magicnum.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{magicnum.sty}{\from{magicnum.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{magicnum-test1.tex}{\from{magicnum.dtx}{test1}}%
+  \file{magicnum-test2.tex}{\from{magicnum.dtx}{testplain,testdata}}%
+  \file{magicnum-test3.tex}{\from{magicnum.dtx}{testlatex,testdata}}%
+  \file{magicnum-test4.tex}{\from{magicnum.dtx}{test4}}%
+  \nopreamble
+  \nopostamble
+  \usedir{doc/latex/oberdiek}%
+  \file{magicnum.txt}{\from{magicnum.dtx}{data}}%
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{magicnum.xml}{\from{magicnum.dtx}{catalogue}}%
+}
+\def\MetaPrefix{-- }
+\def\defaultpostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+\def\currentpostamble{\defaultpostamble}%
+\generate{%
+  \usedir{scripts/oberdiek}%
+  \file{magicnum.lua}{\from{magicnum.dtx}{lua}}%
+  \file{oberdiek.magicnum.lua}{\from{magicnum.dtx}{lua}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     magicnum.sty}
+\Msg{*}
+\Msg{* And install the following script files:}
+\Msg{*}
+\Msg{*     magicnum.lua, oberdiek.magicnum.lua}
+\Msg{*}
+\Msg{* To produce the documentation run the file `magicnum.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{magicnum.drv}%
+  [2011/04/10 v1.4 Magic numbers (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{array}
+\begin{document}
+  \DocInput{magicnum.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{755}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{magicnum.drv}
+%
+% \title{The \xpackage{magicnum} package}
+% \date{2011/04/10 v1.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This packages allows to access magic numbers by a hierarchical
+% name system.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \hypersetup{bookmarksopenlevel=2}
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% Especially since \eTeX\ there are many integer values
+% with special meanings, such as catcodes, group types, \dots
+% Package \xpackage{etex}, enabled by options, defines
+% macros in the user namespace for these values.
+%
+% This package goes another approach for storing the names and values.
+% \begin{itemize}
+% \item If \LuaTeX\ is available, they
+% are stored in Lua tables.
+% \item Without \LuaTeX\ they are remembered using internal
+% macros.
+% \end{itemize}
+%
+% \subsection{User interface}
+%
+% The integer values and names are organized in a hierarchical
+% scheme of categories with the property names as leaves.
+% Example: \eTeX's \cs{currentgrouplevel} reports |2| for a
+% group caused by \cs{hbox}. This package has choosen to organize
+% the group types in a main category |etex| and its subcategory
+% |grouptype|:
+% \begin{quote}
+%   |etex.grouptype.hbox| = |2|
+% \end{quote}
+% The property name |hbox| in category |etex.grouptype| has value |2|.
+% Dots are used to separate components.
+%
+% If you want to have the value, the access key is constructed by
+% the category with all its components and the property name.
+% For the opposite the value is used instead of the property name.
+%
+% Values are always integers (including negative numbers).
+%
+% \subsubsection{\cs{magicnum}}
+%
+% \begin{declcs}{magicnum} \M{access key}
+% \end{declcs}
+% Macro \cs{magicnum} expects an access key as argument and
+% expands to the requested data. The macro is always expandable.
+% In case of errors the expansion result is empty.
+%
+% The same macro is also used for getting a property name.
+% In this case the property name part in the access key is
+% replaced by the value.
+%
+% The catcodes
+% of the resulting numbers and strings follow \TeX's tradition of
+% \cs{string}, \cs{meaning}, \dots: The space has catcode 10
+% (|tex.catcode.space|) and the other characters have catcode
+% 12 (|tex.catcode.other|).
+%
+% Examples:
+% \begin{quote}
+%   |\magicnum{etex.grouptype.hbox}| $\Rightarrow$ |2|\\
+%   |\magicnum{tex.catcode.14}| $\Rightarrow$ |comment|\\
+%   |\magicnum{tex.catcode.undefined}| $\Rightarrow$ $\emptyset$
+% \end{quote}
+%
+% \subsubsection{Properties}
+%
+% \begin{itemize}
+% \item The components of a category are either subcategories or
+%       key value pairs, but not both.
+% \item The full specified property names are unique and thus
+%       has one integer value exactly.
+% \item Also the values inside a category are unique.
+%       This condition is a prerequisite for the reverse mapping
+%       of \cs{magicnum}.
+% \item All names start with a letter. Only letters or digits
+%       may follow.
+% \end{itemize}
+%
+% \subsection{Data}
+%
+%  \subsubsection{\texorpdfstring{Category }{}\texttt{tex.catcode}}
+%
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l>{\ttfamily}l@{}}
+%    tex.catcode.escape & 0\\
+%    tex.catcode.begingroup & 1\\
+%    tex.catcode.endgroup & 2\\
+%    tex.catcode.math & 3\\
+%    tex.catcode.align & 4\\
+%    tex.catcode.eol & 5\\
+%    tex.catcode.parameter & 6\\
+%    tex.catcode.superscript & 7\\
+%    tex.catcode.subscript & 8\\
+%    tex.catcode.ignore & 9\\
+%    tex.catcode.space & 10\\
+%    tex.catcode.letter & 11\\
+%    tex.catcode.other & 12\\
+%    tex.catcode.active & 13\\
+%    tex.catcode.comment & 14\\
+%    tex.catcode.invalid & 15\\
+%  \end{tabular}
+%  \end{quote}
+%
+%  \subsubsection{\texorpdfstring{Category }{}\texttt{etex.grouptype}}
+%
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l>{\ttfamily}l@{}}
+%    etex.grouptype.bottomlevel & 0\\
+%    etex.grouptype.simple & 1\\
+%    etex.grouptype.hbox & 2\\
+%    etex.grouptype.adjustedhbox & 3\\
+%    etex.grouptype.vbox & 4\\
+%    etex.grouptype.align & 5\\
+%    etex.grouptype.noalign & 6\\
+%    etex.grouptype.output & 8\\
+%    etex.grouptype.math & 9\\
+%    etex.grouptype.disc & 10\\
+%    etex.grouptype.insert & 11\\
+%    etex.grouptype.vcenter & 12\\
+%    etex.grouptype.mathchoice & 13\\
+%    etex.grouptype.semisimple & 14\\
+%    etex.grouptype.mathshift & 15\\
+%    etex.grouptype.mathleft & 16\\
+%  \end{tabular}
+%  \end{quote}
+%
+%  \subsubsection{\texorpdfstring{Category }{}\texttt{etex.iftype}}
+%
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l>{\ttfamily}l@{}}
+%    etex.iftype.none & 0\\
+%    etex.iftype.char & 1\\
+%    etex.iftype.cat & 2\\
+%    etex.iftype.num & 3\\
+%    etex.iftype.dim & 4\\
+%    etex.iftype.odd & 5\\
+%    etex.iftype.vmode & 6\\
+%    etex.iftype.hmode & 7\\
+%    etex.iftype.mmode & 8\\
+%    etex.iftype.inner & 9\\
+%    etex.iftype.void & 10\\
+%    etex.iftype.hbox & 11\\
+%    etex.iftype.vbox & 12\\
+%    etex.iftype.x & 13\\
+%    etex.iftype.eof & 14\\
+%    etex.iftype.true & 15\\
+%    etex.iftype.false & 16\\
+%    etex.iftype.case & 17\\
+%    etex.iftype.defined & 18\\
+%    etex.iftype.csname & 19\\
+%    etex.iftype.fontchar & 20\\
+%  \end{tabular}
+%  \end{quote}
+%
+%  \subsubsection{\texorpdfstring{Category }{}\texttt{etex.nodetype}}
+%
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l>{\ttfamily}l@{}}
+%    etex.nodetype.none & -1\\
+%    etex.nodetype.char & 0\\
+%    etex.nodetype.hlist & 1\\
+%    etex.nodetype.vlist & 2\\
+%    etex.nodetype.rule & 3\\
+%    etex.nodetype.ins & 4\\
+%    etex.nodetype.mark & 5\\
+%    etex.nodetype.adjust & 6\\
+%    etex.nodetype.ligature & 7\\
+%    etex.nodetype.disc & 8\\
+%    etex.nodetype.whatsit & 9\\
+%    etex.nodetype.math & 10\\
+%    etex.nodetype.glue & 11\\
+%    etex.nodetype.kern & 12\\
+%    etex.nodetype.penalty & 13\\
+%    etex.nodetype.unset & 14\\
+%    etex.nodetype.maths & 15\\
+%  \end{tabular}
+%  \end{quote}
+%
+%  \subsubsection{\texorpdfstring{Category }{}\texttt{etex.interactionmode}}
+%
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l>{\ttfamily}l@{}}
+%    etex.interactionmode.batch & 0\\
+%    etex.interactionmode.nonstop & 1\\
+%    etex.interactionmode.scroll & 2\\
+%    etex.interactionmode.errorstop & 3\\
+%  \end{tabular}
+%  \end{quote}
+%
+%  \subsubsection{\texorpdfstring{Category }{}\texttt{luatex.pdfliteral.mode}}
+%
+% \begin{quote}
+% \begin{tabular}{@{}>{\ttfamily}l>{\ttfamily}l@{}}
+%    luatex.pdfliteral.mode.setorigin & 0\\
+%    luatex.pdfliteral.mode.page & 1\\
+%    luatex.pdfliteral.mode.direct & 2\\
+%  \end{tabular}
+%  \end{quote}
+%
+%
+% \hypersetup{bookmarksopenlevel=1}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@magicnum.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{magicnum}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@magicnum.sty\endcsname
+\ProvidesPackage{magicnum}%
+  [2011/04/10 v1.4 Magic numbers (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname magicnum@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\magicnum@AtEnd{%
+    \magicnum@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\magicnum@AtEnd{\magicnum@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Check for previous definition}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newcommand\endcsname\relax
+  \expandafter\ifx\csname magicnum\endcsname\relax
+  \else
+    \input infwarerr.sty\relax
+    \@PackageError{magicnum}{%
+      \string\magicnum\space is already defined%
+    }\@ehc
+  \fi
+\else
+  \newcommand*{\magicnum}{}%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Without \LuaTeX}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname directlua\endcsname\relax
+%    \end{macrocode}
+%
+%    \begin{macro}{\magicnum}
+%    \begin{macrocode}
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname ifcsname\endcsname\relax
+    \def\magicnum#1{%
+      \expandafter\ifx\csname MG@#1\endcsname\relax
+      \else
+        \csname MG@#1\endcsname
+      \fi
+    }%
+  \else
+    \begingroup
+      \edef\x{\endgroup
+        \def\noexpand\magicnum##1{%
+          \expandafter\noexpand\csname
+          ifcsname\endcsname MG@##1\noexpand\endcsname
+            \noexpand\csname MG@##1%
+                 \noexpand\expandafter\noexpand\endcsname
+          \expandafter\noexpand\csname fi\endcsname
+        }%
+      }%
+    \x
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%
+% \subsection{With \LuaTeX}
+%
+%    \begin{macrocode}
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname RequirePackage\endcsname\relax
+    \input ifluatex.sty\relax
+    \input infwarerr.sty\relax
+  \else
+    \RequirePackage{ifluatex}[2010/03/01]%
+    \RequirePackage{infwarerr}[2010/04/08]%
+  \fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\magicnum@directlua}
+%    \begin{macrocode}
+  \ifnum\luatexversion<36 %
+    \def\magicnum@directlua{\directlua0 }%
+  \else
+    \let\magicnum@directlua\directlua
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \magicnum@directlua{%
+    require("oberdiek.magicnum")%
+  }%
+  \begingroup
+    \def\x{2011/04/10 v1.4}%
+    \def\StripPrefix#1>{}%
+    \edef\x{\expandafter\StripPrefix\meaning\x}%
+    \edef\y{%
+      \magicnum@directlua{%
+        if oberdiek.magicnum.getversion then %
+          oberdiek.magicnum.getversion()%
+        end%
+      }%
+    }%
+    \ifx\x\y
+    \else
+      \@PackageError{magicnum}{%
+        Wrong version of lua module.\MessageBreak
+        Package version: \x\MessageBreak
+        Lua module: \y
+      }\@ehc
+    \fi
+  \endgroup
+%    \end{macrocode}
+%    \begin{macro}{\luaescapestring}
+%    \begin{macrocode}
+  \begingroup
+    \expandafter\ifx\csname luaescapestring\endcsname\relax
+      \directlua{%
+        if tex.enableprimitives then %
+          tex.enableprimitives('magicnum@', {'luaescapestring'})%
+        end%
+      }%
+      \global\let\luaescapestring\magicnum@luaescapestring
+    \fi
+    \expandafter\ifx\csname luaescapestring\endcsname\relax
+      \escapechar=92 %
+      \@PackageError{magicnum}{%
+        Missing \string\luaescapestring
+      }\@ehc
+    \fi
+  \endgroup
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\magicnum}
+%    \begin{macrocode}
+  \def\magicnum#1{%
+    \magicnum@directlua{%
+      oberdiek.magicnum.get("\luaescapestring{#1}")%
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+  \expandafter\magicnum@AtEnd
+\fi%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Data}
+%
+% \subsubsection{Plain data}
+%
+%    \begin{macrocode}
+%<*data>
+tex.catcode
+  escape = 0
+  begingroup = 1
+  endgroup = 2
+  math = 3
+  align = 4
+  eol = 5
+  parameter = 6
+  superscript = 7
+  subscript = 8
+  ignore = 9
+  space = 10
+  letter = 11
+  other = 12
+  active = 13
+  comment = 14
+  invalid = 15
+etex.grouptype
+  bottomlevel = 0
+  simple = 1
+  hbox = 2
+  adjustedhbox = 3
+  vbox = 4
+  align = 5
+  noalign = 6
+  output = 8
+  math = 9
+  disc = 10
+  insert = 11
+  vcenter = 12
+  mathchoice = 13
+  semisimple = 14
+  mathshift = 15
+  mathleft = 16
+etex.iftype
+  none = 0
+  char = 1
+  cat = 2
+  num = 3
+  dim = 4
+  odd = 5
+  vmode = 6
+  hmode = 7
+  mmode = 8
+  inner = 9
+  void = 10
+  hbox = 11
+  vbox = 12
+  x = 13
+  eof = 14
+  true = 15
+  false = 16
+  case = 17
+  defined = 18
+  csname = 19
+  fontchar = 20
+etex.nodetype
+  none = -1
+  char = 0
+  hlist = 1
+  vlist = 2
+  rule = 3
+  ins = 4
+  mark = 5
+  adjust = 6
+  ligature = 7
+  disc = 8
+  whatsit = 9
+  math = 10
+  glue = 11
+  kern = 12
+  penalty = 13
+  unset = 14
+  maths = 15
+etex.interactionmode
+  batch = 0
+  nonstop = 1
+  scroll = 2
+  errorstop = 3
+luatex.pdfliteral.mode
+  setorigin = 0
+  page = 1
+  direct = 2
+%</data>
+%    \end{macrocode}
+%
+% \subsubsection{Data for \TeX}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    \begin{macro}{\magicnum@add}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname detokenize\endcsname\relax
+  \def\magicnum@add#1#2#3{%
+    \expandafter\magicnum@@add
+        \csname MG@#1.#2\expandafter\endcsname
+        \csname MG@#1.#3\endcsname
+       {#3}{#2}%
+  }%
+  \def\magicnum@@add#1#2#3#4{%
+    \def#1{#3}%
+    \def#2{#4}%
+    \edef#1{%
+      \expandafter\strip@prefix\meaning#1%
+    }%
+    \edef#2{%
+      \expandafter\strip@prefix\meaning#2%
+    }%
+  }%
+  \expandafter\ifx\csname strip@prefix\endcsname\relax
+    \def\strip@prefix#1->{}%
+  \fi
+\else
+  \def\magicnum@add#1#2#3{%
+    \expandafter\edef\csname MG@#1.#2\endcsname{%
+      \detokenize{#3}%
+    }%
+    \expandafter\edef\csname MG@#1.#3\endcsname{%
+      \detokenize{#2}%
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\magicnum@add{tex.catcode}{escape}{0}
+\magicnum@add{tex.catcode}{begingroup}{1}
+\magicnum@add{tex.catcode}{endgroup}{2}
+\magicnum@add{tex.catcode}{math}{3}
+\magicnum@add{tex.catcode}{align}{4}
+\magicnum@add{tex.catcode}{eol}{5}
+\magicnum@add{tex.catcode}{parameter}{6}
+\magicnum@add{tex.catcode}{superscript}{7}
+\magicnum@add{tex.catcode}{subscript}{8}
+\magicnum@add{tex.catcode}{ignore}{9}
+\magicnum@add{tex.catcode}{space}{10}
+\magicnum@add{tex.catcode}{letter}{11}
+\magicnum@add{tex.catcode}{other}{12}
+\magicnum@add{tex.catcode}{active}{13}
+\magicnum@add{tex.catcode}{comment}{14}
+\magicnum@add{tex.catcode}{invalid}{15}
+\magicnum@add{etex.grouptype}{bottomlevel}{0}
+\magicnum@add{etex.grouptype}{simple}{1}
+\magicnum@add{etex.grouptype}{hbox}{2}
+\magicnum@add{etex.grouptype}{adjustedhbox}{3}
+\magicnum@add{etex.grouptype}{vbox}{4}
+\magicnum@add{etex.grouptype}{align}{5}
+\magicnum@add{etex.grouptype}{noalign}{6}
+\magicnum@add{etex.grouptype}{output}{8}
+\magicnum@add{etex.grouptype}{math}{9}
+\magicnum@add{etex.grouptype}{disc}{10}
+\magicnum@add{etex.grouptype}{insert}{11}
+\magicnum@add{etex.grouptype}{vcenter}{12}
+\magicnum@add{etex.grouptype}{mathchoice}{13}
+\magicnum@add{etex.grouptype}{semisimple}{14}
+\magicnum@add{etex.grouptype}{mathshift}{15}
+\magicnum@add{etex.grouptype}{mathleft}{16}
+\magicnum@add{etex.iftype}{none}{0}
+\magicnum@add{etex.iftype}{char}{1}
+\magicnum@add{etex.iftype}{cat}{2}
+\magicnum@add{etex.iftype}{num}{3}
+\magicnum@add{etex.iftype}{dim}{4}
+\magicnum@add{etex.iftype}{odd}{5}
+\magicnum@add{etex.iftype}{vmode}{6}
+\magicnum@add{etex.iftype}{hmode}{7}
+\magicnum@add{etex.iftype}{mmode}{8}
+\magicnum@add{etex.iftype}{inner}{9}
+\magicnum@add{etex.iftype}{void}{10}
+\magicnum@add{etex.iftype}{hbox}{11}
+\magicnum@add{etex.iftype}{vbox}{12}
+\magicnum@add{etex.iftype}{x}{13}
+\magicnum@add{etex.iftype}{eof}{14}
+\magicnum@add{etex.iftype}{true}{15}
+\magicnum@add{etex.iftype}{false}{16}
+\magicnum@add{etex.iftype}{case}{17}
+\magicnum@add{etex.iftype}{defined}{18}
+\magicnum@add{etex.iftype}{csname}{19}
+\magicnum@add{etex.iftype}{fontchar}{20}
+\magicnum@add{etex.nodetype}{none}{-1}
+\magicnum@add{etex.nodetype}{char}{0}
+\magicnum@add{etex.nodetype}{hlist}{1}
+\magicnum@add{etex.nodetype}{vlist}{2}
+\magicnum@add{etex.nodetype}{rule}{3}
+\magicnum@add{etex.nodetype}{ins}{4}
+\magicnum@add{etex.nodetype}{mark}{5}
+\magicnum@add{etex.nodetype}{adjust}{6}
+\magicnum@add{etex.nodetype}{ligature}{7}
+\magicnum@add{etex.nodetype}{disc}{8}
+\magicnum@add{etex.nodetype}{whatsit}{9}
+\magicnum@add{etex.nodetype}{math}{10}
+\magicnum@add{etex.nodetype}{glue}{11}
+\magicnum@add{etex.nodetype}{kern}{12}
+\magicnum@add{etex.nodetype}{penalty}{13}
+\magicnum@add{etex.nodetype}{unset}{14}
+\magicnum@add{etex.nodetype}{maths}{15}
+\magicnum@add{etex.interactionmode}{batch}{0}
+\magicnum@add{etex.interactionmode}{nonstop}{1}
+\magicnum@add{etex.interactionmode}{scroll}{2}
+\magicnum@add{etex.interactionmode}{errorstop}{3}
+\magicnum@add{luatex.pdfliteral.mode}{setorigin}{0}
+\magicnum@add{luatex.pdfliteral.mode}{page}{1}
+\magicnum@add{luatex.pdfliteral.mode}{direct}{2}
+%    \end{macrocode}
+%    \begin{macrocode}
+\magicnum@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsubsection{Lua module}
+%
+%    \begin{macrocode}
+%<*lua>
+%    \end{macrocode}
+%    \begin{macrocode}
+module("oberdiek.magicnum", package.seeall)
+%    \end{macrocode}
+%    \begin{macrocode}
+function getversion()
+  tex.write("2011/04/10 v1.4")
+end
+%    \end{macrocode}
+%    \begin{macrocode}
+local data = {
+  ["tex.catcode"] = {
+    [0] = "escape",
+    [1] = "begingroup",
+    [2] = "endgroup",
+    [3] = "math",
+    [4] = "align",
+    [5] = "eol",
+    [6] = "parameter",
+    [7] = "superscript",
+    [8] = "subscript",
+    [9] = "ignore",
+    [10] = "space",
+    [11] = "letter",
+    [12] = "other",
+    [13] = "active",
+    [14] = "comment",
+    [15] = "invalid",
+    ["active"] = 13,
+    ["align"] = 4,
+    ["begingroup"] = 1,
+    ["comment"] = 14,
+    ["endgroup"] = 2,
+    ["eol"] = 5,
+    ["escape"] = 0,
+    ["ignore"] = 9,
+    ["invalid"] = 15,
+    ["letter"] = 11,
+    ["math"] = 3,
+    ["other"] = 12,
+    ["parameter"] = 6,
+    ["space"] = 10,
+    ["subscript"] = 8,
+    ["superscript"] = 7
+  },
+  ["etex.grouptype"] = {
+    [0] = "bottomlevel",
+    [1] = "simple",
+    [2] = "hbox",
+    [3] = "adjustedhbox",
+    [4] = "vbox",
+    [5] = "align",
+    [6] = "noalign",
+    [8] = "output",
+    [9] = "math",
+    [10] = "disc",
+    [11] = "insert",
+    [12] = "vcenter",
+    [13] = "mathchoice",
+    [14] = "semisimple",
+    [15] = "mathshift",
+    [16] = "mathleft",
+    ["adjustedhbox"] = 3,
+    ["align"] = 5,
+    ["bottomlevel"] = 0,
+    ["disc"] = 10,
+    ["hbox"] = 2,
+    ["insert"] = 11,
+    ["math"] = 9,
+    ["mathchoice"] = 13,
+    ["mathleft"] = 16,
+    ["mathshift"] = 15,
+    ["noalign"] = 6,
+    ["output"] = 8,
+    ["semisimple"] = 14,
+    ["simple"] = 1,
+    ["vbox"] = 4,
+    ["vcenter"] = 12
+  },
+  ["etex.iftype"] = {
+    [0] = "none",
+    [1] = "char",
+    [2] = "cat",
+    [3] = "num",
+    [4] = "dim",
+    [5] = "odd",
+    [6] = "vmode",
+    [7] = "hmode",
+    [8] = "mmode",
+    [9] = "inner",
+    [10] = "void",
+    [11] = "hbox",
+    [12] = "vbox",
+    [13] = "x",
+    [14] = "eof",
+    [15] = "true",
+    [16] = "false",
+    [17] = "case",
+    [18] = "defined",
+    [19] = "csname",
+    [20] = "fontchar",
+    ["case"] = 17,
+    ["cat"] = 2,
+    ["char"] = 1,
+    ["csname"] = 19,
+    ["defined"] = 18,
+    ["dim"] = 4,
+    ["eof"] = 14,
+    ["false"] = 16,
+    ["fontchar"] = 20,
+    ["hbox"] = 11,
+    ["hmode"] = 7,
+    ["inner"] = 9,
+    ["mmode"] = 8,
+    ["none"] = 0,
+    ["num"] = 3,
+    ["odd"] = 5,
+    ["true"] = 15,
+    ["vbox"] = 12,
+    ["vmode"] = 6,
+    ["void"] = 10,
+    ["x"] = 13
+  },
+  ["etex.nodetype"] = {
+    [-1] = "none",
+    [0] = "char",
+    [1] = "hlist",
+    [2] = "vlist",
+    [3] = "rule",
+    [4] = "ins",
+    [5] = "mark",
+    [6] = "adjust",
+    [7] = "ligature",
+    [8] = "disc",
+    [9] = "whatsit",
+    [10] = "math",
+    [11] = "glue",
+    [12] = "kern",
+    [13] = "penalty",
+    [14] = "unset",
+    [15] = "maths",
+    ["adjust"] = 6,
+    ["char"] = 0,
+    ["disc"] = 8,
+    ["glue"] = 11,
+    ["hlist"] = 1,
+    ["ins"] = 4,
+    ["kern"] = 12,
+    ["ligature"] = 7,
+    ["mark"] = 5,
+    ["math"] = 10,
+    ["maths"] = 15,
+    ["none"] = -1,
+    ["penalty"] = 13,
+    ["rule"] = 3,
+    ["unset"] = 14,
+    ["vlist"] = 2,
+    ["whatsit"] = 9
+  },
+  ["etex.interactionmode"] = {
+    [0] = "batch",
+    [1] = "nonstop",
+    [2] = "scroll",
+    [3] = "errorstop",
+    ["batch"] = 0,
+    ["errorstop"] = 3,
+    ["nonstop"] = 1,
+    ["scroll"] = 2
+  },
+  ["luatex.pdfliteral.mode"] = {
+    [0] = "setorigin",
+    [1] = "page",
+    [2] = "direct",
+    ["direct"] = 2,
+    ["page"] = 1,
+    ["setorigin"] = 0
+  }
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+function get(name)
+  local startpos, endpos, category, entry =
+      string.find(name, "^(%a[%a%d%.]*)%.(-?[%a%d]+)$")
+  if not entry then
+    return
+  end
+  local node = data[category]
+  if not node then
+    return
+  end
+  local num = tonumber(entry)
+  local value
+  if num then
+    value = node[num]
+    if not value then
+      return
+    end
+  else
+    value = node[entry]
+    if not value then
+      return
+    end
+    value = "" .. value
+  end
+  tex.write(value)
+end
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</lua>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input magicnum.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test data}
+%
+%    \begin{macrocode}
+%<*testplain>
+\input magicnum.sty\relax
+\def\Test#1#2{%
+  \edef\result{\magicnum{#1}}%
+  \edef\expect{#2}%
+  \edef\expect{\expandafter\stripprefix\meaning\expect}%
+  \ifx\result\expect
+  \else
+    \errmessage{%
+      Failed: [#1] % hash-ok
+      returns [\result] instead of [\expect]%
+    }%
+  \fi
+}
+\def\stripprefix#1->{}
+%</testplain>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*testlatex>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\usepackage{magicnum}[2011/04/10]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\newcommand*{\Test}[2]{%
+  \Expect*{\magicnum{#1}}{#2}%
+}
+\begin{qstest}{magicnum}{magicnum}
+%</testlatex>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*testdata>
+\Test{tex.catcode.escape}{0}
+\Test{tex.catcode.invalid}{15}
+\Test{tex.catcode.unknown}{}
+\Test{tex.catcode.0}{escape}
+\Test{tex.catcode.15}{invalid}
+\Test{etex.iftype.true}{15}
+\Test{etex.iftype.false}{16}
+\Test{etex.iftype.15}{true}
+\Test{etex.iftype.16}{false}
+\Test{etex.nodetype.none}{-1}
+\Test{etex.nodetype.-1}{none}
+\Test{luatex.pdfliteral.mode.direct}{2}
+\Test{luatex.pdfliteral.mode.1}{page}
+\Test{}{}
+\Test{unknown}{}
+\Test{unknown.foo.bar}{}
+\Test{unknown.foo.4}{}
+%</testdata>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*testplain>
+\csname @@end\endcsname
+\end
+%</testplain>
+%<*testlatex>
+\end{qstest}
+\csname @@end\endcsname
+%</testlatex>
+%    \end{macrocode}
+%
+% \subsection{Small test for \hologo{iniTeX}}
+%
+%    \begin{macrocode}
+%<*test4>
+\catcode`\{=1
+\catcode`\}=2
+\catcode`\#=6
+\input magicnum.sty\relax
+\edef\x{\magicnum{tex.catcode.15}}
+\edef\y{invalid}
+\def\Strip#1>{}
+\edef\y{\expandafter\Strip\meaning\y}
+\ifx\x\y
+  \immediate\write16{Ok}%
+\else
+  \errmessage{\x<>\y}%
+\fi
+\csname @@end\endcsname\end
+%</test4>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/magicnum.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/magicnum.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex magicnum.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   magicnum.sty & tex/generic/oberdiek/magicnum.sty\\
+%   magicnum.lua & scripts/oberdiek/magicnum.lua\\
+%   oberdiek.magicnum.lua & scripts/oberdiek/oberdiek.magicnum.lua\\
+%   magicnum.pdf & doc/latex/oberdiek/magicnum.pdf\\
+%   magicnum.txt & doc/latex/oberdiek/magicnum.txt\\
+%   test/magicnum-test1.tex & doc/latex/oberdiek/test/magicnum-test1.tex\\
+%   test/magicnum-test2.tex & doc/latex/oberdiek/test/magicnum-test2.tex\\
+%   test/magicnum-test3.tex & doc/latex/oberdiek/test/magicnum-test3.tex\\
+%   test/magicnum-test4.tex & doc/latex/oberdiek/test/magicnum-test4.tex\\
+%   magicnum.dtx & source/latex/oberdiek/magicnum.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk magicnum.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{magicnum.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex magicnum.dtx
+%makeindex -s gind.ist magicnum.idx
+%pdflatex magicnum.dtx
+%makeindex -s gind.ist magicnum.idx
+%pdflatex magicnum.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{magicnum.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='magicnum'>
+  <name>magicnum</name>
+  <caption>Access TeX systems' "magic numbers".</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    This package allows access to the various parameter values in
+    TeX (catcode values), e-TeX (group, if and node types, and
+    interaction mode), and LuaTeX (pdfliteral mode) by a hierarchical
+    name system.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/magicnum.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/magicnum.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/12/12 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v1.1}
+%   \item
+%     Adaptation to \LuaTeX\ 0.40.
+%   \end{Version}
+%   \begin{Version}{2010/03/09 v1.2}
+%   \item
+%     Adaptation to package \xpackage{luatex} 0.4.
+%   \end{Version}
+%   \begin{Version}{2011/03/24 v1.3}
+%   \item
+%     Catcode fixes.
+%   \end{Version}
+%   \begin{Version}{2011/04/10 v1.4}
+%   \item
+%     Compatibility for \hologo{iniTeX}.
+%   \item
+%     Dependency from package \xpackage{luatex} removed.
+%   \item
+%     Version check for lua module.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

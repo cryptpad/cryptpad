@@ -1,0 +1,743 @@
+%%
+%% This is file `ix-name.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `name')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{ix-name.def}%
+  [2011/05/27 v1.10 Name list (inputenx)]%
+\InputenxName{AE}{00C6}% LATIN CAPITAL LETTER AE
+\InputenxName{Aacute}{00C1}% LATIN CAPITAL LETTER A WITH ACUTE
+\InputenxName{Abreve}{0102}% LATIN CAPITAL LETTER A WITH BREVE
+\InputenxName{Acircumflex}{00C2}% LATIN CAPITAL LETTER A WITH CIRCUMFLEX
+\InputenxName{Acyrillic}{0410}% CYRILLIC CAPITAL LETTER A
+\InputenxName{Adieresis}{00C4}% LATIN CAPITAL LETTER A WITH DIAERESIS
+\InputenxName{Agrave}{00C0}% LATIN CAPITAL LETTER A WITH GRAVE
+\InputenxName{Amacron}{0100}% LATIN CAPITAL LETTER A WITH MACRON
+\InputenxName{Aogonek}{0104}% LATIN CAPITAL LETTER A WITH OGONEK
+\InputenxName{Aring}{00C5}% LATIN CAPITAL LETTER A WITH RING ABOVE
+\InputenxName{Atilde}{00C3}% LATIN CAPITAL LETTER A WITH TILDE
+\InputenxName{Bdotaccent}{1E02}% LATIN CAPITAL LETTER B WITH DOT ABOVE
+\InputenxName{Becyrillic}{0411}% CYRILLIC CAPITAL LETTER BE
+\InputenxName{CYRA}{0410}% CYRILLIC CAPITAL LETTER A
+\InputenxName{CYRB}{0411}% CYRILLIC CAPITAL LETTER BE
+\InputenxName{CYRC}{0426}% CYRILLIC CAPITAL LETTER TSE
+\InputenxName{CYRCH}{0427}% CYRILLIC CAPITAL LETTER CHE
+\InputenxName{CYRD}{0414}% CYRILLIC CAPITAL LETTER DE
+\InputenxName{CYRDJE}{0402}% CYRILLIC CAPITAL LETTER DJE
+\InputenxName{CYRDZE}{0405}% CYRILLIC CAPITAL LETTER DZE
+\InputenxName{CYRDZHE}{040F}% CYRILLIC CAPITAL LETTER DZHE
+\InputenxName{CYRE}{0415}% CYRILLIC CAPITAL LETTER IE
+\InputenxName{CYREREV}{042D}% CYRILLIC CAPITAL LETTER E
+\InputenxName{CYRERY}{042B}% CYRILLIC CAPITAL LETTER YERU
+\InputenxName{CYRF}{0424}% CYRILLIC CAPITAL LETTER EF
+\InputenxName{CYRG}{0413}% CYRILLIC CAPITAL LETTER GHE
+\InputenxName{CYRGUP}{0490}% CYRILLIC CAPITAL LETTER GHE WITH UPTURN
+\InputenxName{CYRH}{0425}% CYRILLIC CAPITAL LETTER HA
+\InputenxName{CYRHRDSN}{042A}% CYRILLIC CAPITAL LETTER HARD SIGN
+\InputenxName{CYRI}{0418}% CYRILLIC CAPITAL LETTER I
+\InputenxName{CYRIE}{0404}% CYRILLIC CAPITAL LETTER UKRAINIAN IE
+\InputenxName{CYRII}{0406}% CYRILLIC CAPITAL LETTER BYELORUSSIAN-UKRAINIAN I
+\InputenxName{CYRISHRT}{0419}% CYRILLIC CAPITAL LETTER SHORT I
+\InputenxName{CYRJE}{0408}% CYRILLIC CAPITAL LETTER JE
+\InputenxName{CYRK}{041A}% CYRILLIC CAPITAL LETTER KA
+\InputenxName{CYRL}{041B}% CYRILLIC CAPITAL LETTER EL
+\InputenxName{CYRLJE}{0409}% CYRILLIC CAPITAL LETTER LJE
+\InputenxName{CYRM}{041C}% CYRILLIC CAPITAL LETTER EM
+\InputenxName{CYRN}{041D}% CYRILLIC CAPITAL LETTER EN
+\InputenxName{CYRNJE}{040A}% CYRILLIC CAPITAL LETTER NJE
+\InputenxName{CYRO}{041E}% CYRILLIC CAPITAL LETTER O
+\InputenxName{CYRP}{041F}% CYRILLIC CAPITAL LETTER PE
+\InputenxName{CYRR}{0420}% CYRILLIC CAPITAL LETTER ER
+\InputenxName{CYRS}{0421}% CYRILLIC CAPITAL LETTER ES
+\InputenxName{CYRSFTSN}{042C}% CYRILLIC CAPITAL LETTER SOFT SIGN
+\InputenxName{CYRSH}{0428}% CYRILLIC CAPITAL LETTER SHA
+\InputenxName{CYRSHCH}{0429}% CYRILLIC CAPITAL LETTER SHCHA
+\InputenxName{CYRT}{0422}% CYRILLIC CAPITAL LETTER TE
+\InputenxName{CYRTSHE}{040B}% CYRILLIC CAPITAL LETTER TSHE
+\InputenxName{CYRU}{0423}% CYRILLIC CAPITAL LETTER U
+\InputenxName{CYRUSHRT}{040E}% CYRILLIC CAPITAL LETTER SHORT U
+\InputenxName{CYRV}{0412}% CYRILLIC CAPITAL LETTER VE
+\InputenxName{CYRYA}{042F}% CYRILLIC CAPITAL LETTER YA
+\InputenxName{CYRYI}{0407}% CYRILLIC CAPITAL LETTER YI
+\InputenxName{CYRYO}{0401}% CYRILLIC CAPITAL LETTER IO
+\InputenxName{CYRYU}{042E}% CYRILLIC CAPITAL LETTER YU
+\InputenxName{CYRZ}{0417}% CYRILLIC CAPITAL LETTER ZE
+\InputenxName{CYRZH}{0416}% CYRILLIC CAPITAL LETTER ZHE
+\InputenxName{Cacute}{0106}% LATIN CAPITAL LETTER C WITH ACUTE
+\InputenxName{Ccaron}{010C}% LATIN CAPITAL LETTER C WITH CARON
+\InputenxName{Ccedilla}{00C7}% LATIN CAPITAL LETTER C WITH CEDILLA
+\InputenxName{Ccircumflex}{0108}% LATIN CAPITAL LETTER C WITH CIRCUMFLEX
+\InputenxName{Cdot}{010A}% LATIN CAPITAL LETTER C WITH DOT ABOVE
+\InputenxName{Cdotaccent}{010A}% LATIN CAPITAL LETTER C WITH DOT ABOVE
+\InputenxName{Checyrillic}{0427}% CYRILLIC CAPITAL LETTER CHE
+\InputenxName{DH}{00D0}% LATIN CAPITAL LETTER ETH
+\InputenxName{DJ}{0110}% LATIN CAPITAL LETTER D WITH STROKE
+\InputenxName{Dcaron}{010E}% LATIN CAPITAL LETTER D WITH CARON
+\InputenxName{Dcroat}{0110}% LATIN CAPITAL LETTER D WITH STROKE
+\InputenxName{Ddotaccent}{1E0A}% LATIN CAPITAL LETTER D WITH DOT ABOVE
+\InputenxName{Decyrillic}{0414}% CYRILLIC CAPITAL LETTER DE
+\InputenxName{Delta}{2206}% INCREMENT
+\InputenxName{Djecyrillic}{0402}% CYRILLIC CAPITAL LETTER DJE
+\InputenxName{Dslash}{0110}% LATIN CAPITAL LETTER D WITH STROKE
+\InputenxName{Dzecyrillic}{0405}% CYRILLIC CAPITAL LETTER DZE
+\InputenxName{Dzhecyrillic}{040F}% CYRILLIC CAPITAL LETTER DZHE
+\InputenxName{Eacute}{00C9}% LATIN CAPITAL LETTER E WITH ACUTE
+\InputenxName{Ecaron}{011A}% LATIN CAPITAL LETTER E WITH CARON
+\InputenxName{Ecircumflex}{00CA}% LATIN CAPITAL LETTER E WITH CIRCUMFLEX
+\InputenxName{Ecyrillic}{0404}% CYRILLIC CAPITAL LETTER UKRAINIAN IE
+\InputenxName{Edieresis}{00CB}% LATIN CAPITAL LETTER E WITH DIAERESIS
+\InputenxName{Edot}{0116}% LATIN CAPITAL LETTER E WITH DOT ABOVE
+\InputenxName{Edotaccent}{0116}% LATIN CAPITAL LETTER E WITH DOT ABOVE
+\InputenxName{Efcyrillic}{0424}% CYRILLIC CAPITAL LETTER EF
+\InputenxName{Egrave}{00C8}% LATIN CAPITAL LETTER E WITH GRAVE
+\InputenxName{Elcyrillic}{041B}% CYRILLIC CAPITAL LETTER EL
+\InputenxName{Emacron}{0112}% LATIN CAPITAL LETTER E WITH MACRON
+\InputenxName{Emcyrillic}{041C}% CYRILLIC CAPITAL LETTER EM
+\InputenxName{Encyrillic}{041D}% CYRILLIC CAPITAL LETTER EN
+\InputenxName{Eng}{014A}% LATIN CAPITAL LETTER ENG
+\InputenxName{Eogonek}{0118}% LATIN CAPITAL LETTER E WITH OGONEK
+\InputenxName{Ercyrillic}{0420}% CYRILLIC CAPITAL LETTER ER
+\InputenxName{Ereversedcyrillic}{042D}% CYRILLIC CAPITAL LETTER E
+\InputenxName{Escyrillic}{0421}% CYRILLIC CAPITAL LETTER ES
+\InputenxName{Eth}{00D0}% LATIN CAPITAL LETTER ETH
+\InputenxName{Euro}{20AC}% EURO SIGN
+\InputenxName{Fdotaccent}{1E1E}% LATIN CAPITAL LETTER F WITH DOT ABOVE
+\InputenxName{Gamma}{0393}% GREEK CAPITAL LETTER GAMMA
+\InputenxName{Gbreve}{011E}% LATIN CAPITAL LETTER G WITH BREVE
+\InputenxName{Gcedilla}{0122}% LATIN CAPITAL LETTER G WITH CEDILLA
+\InputenxName{Gcircumflex}{011C}% LATIN CAPITAL LETTER G WITH CIRCUMFLEX
+\InputenxName{Gcommaaccent}{0122}% LATIN CAPITAL LETTER G WITH CEDILLA
+\InputenxName{Gdot}{0120}% LATIN CAPITAL LETTER G WITH DOT ABOVE
+\InputenxName{Gdotaccent}{0120}% LATIN CAPITAL LETTER G WITH DOT ABOVE
+\InputenxName{Gecyrillic}{0413}% CYRILLIC CAPITAL LETTER GHE
+\InputenxName{Gheupturncyrillic}{0490}% CYRILLIC CAPITAL LETTER GHE WITH UPTURN
+\InputenxName{Gjecyrillic}{0403}% CYRILLIC CAPITAL LETTER GJE
+\InputenxName{Hardsigncyrillic}{042A}% CYRILLIC CAPITAL LETTER HARD SIGN
+\InputenxName{Hbar}{0126}% LATIN CAPITAL LETTER H WITH STROKE
+\InputenxName{Hcircumflex}{0124}% LATIN CAPITAL LETTER H WITH CIRCUMFLEX
+\InputenxName{IAcyrillic}{042F}% CYRILLIC CAPITAL LETTER YA
+\InputenxName{IJ}{0132}% LATIN CAPITAL LIGATURE IJ
+\InputenxName{IUcyrillic}{042E}% CYRILLIC CAPITAL LETTER YU
+\InputenxName{Iacute}{00CD}% LATIN CAPITAL LETTER I WITH ACUTE
+\InputenxName{Icircumflex}{00CE}% LATIN CAPITAL LETTER I WITH CIRCUMFLEX
+\InputenxName{Icyrillic}{0406}% CYRILLIC CAPITAL LETTER BYELORUSSIAN-UKRAINIAN I
+\InputenxName{Idieresis}{00CF}% LATIN CAPITAL LETTER I WITH DIAERESIS
+\InputenxName{Idot}{0130}% LATIN CAPITAL LETTER I WITH DOT ABOVE
+\InputenxName{Idotaccent}{0130}% LATIN CAPITAL LETTER I WITH DOT ABOVE
+\InputenxName{Iecyrillic}{0415}% CYRILLIC CAPITAL LETTER IE
+\InputenxName{Igrave}{00CC}% LATIN CAPITAL LETTER I WITH GRAVE
+\InputenxName{Iicyrillic}{0418}% CYRILLIC CAPITAL LETTER I
+\InputenxName{Iishortcyrillic}{0419}% CYRILLIC CAPITAL LETTER SHORT I
+\InputenxName{Imacron}{012A}% LATIN CAPITAL LETTER I WITH MACRON
+\InputenxName{Iocyrillic}{0401}% CYRILLIC CAPITAL LETTER IO
+\InputenxName{Iogonek}{012E}% LATIN CAPITAL LETTER I WITH OGONEK
+\InputenxName{Itilde}{0128}% LATIN CAPITAL LETTER I WITH TILDE
+\InputenxName{Jcircumflex}{0134}% LATIN CAPITAL LETTER J WITH CIRCUMFLEX
+\InputenxName{Jecyrillic}{0408}% CYRILLIC CAPITAL LETTER JE
+\InputenxName{Kacyrillic}{041A}% CYRILLIC CAPITAL LETTER KA
+\InputenxName{Kcedilla}{0136}% LATIN CAPITAL LETTER K WITH CEDILLA
+\InputenxName{Kcommaaccent}{0136}% LATIN CAPITAL LETTER K WITH CEDILLA
+\InputenxName{Khacyrillic}{0425}% CYRILLIC CAPITAL LETTER HA
+\InputenxName{Kjecyrillic}{040C}% CYRILLIC CAPITAL LETTER KJE
+\InputenxName{Lacute}{0139}% LATIN CAPITAL LETTER L WITH ACUTE
+\InputenxName{Lcaron}{013D}% LATIN CAPITAL LETTER L WITH CARON
+\InputenxName{Lcedilla}{013B}% LATIN CAPITAL LETTER L WITH CEDILLA
+\InputenxName{Lcommaaccent}{013B}% LATIN CAPITAL LETTER L WITH CEDILLA
+\InputenxName{Ljecyrillic}{0409}% CYRILLIC CAPITAL LETTER LJE
+\InputenxName{Lslash}{0141}% LATIN CAPITAL LETTER L WITH STROKE
+\InputenxName{Mdotaccent}{1E40}% LATIN CAPITAL LETTER M WITH DOT ABOVE
+\InputenxName{NG}{014A}% LATIN CAPITAL LETTER ENG
+\InputenxName{Nacute}{0143}% LATIN CAPITAL LETTER N WITH ACUTE
+\InputenxName{Ncaron}{0147}% LATIN CAPITAL LETTER N WITH CARON
+\InputenxName{Ncedilla}{0145}% LATIN CAPITAL LETTER N WITH CEDILLA
+\InputenxName{Ncommaaccent}{0145}% LATIN CAPITAL LETTER N WITH CEDILLA
+\InputenxName{Njecyrillic}{040A}% CYRILLIC CAPITAL LETTER NJE
+\InputenxName{Ntilde}{00D1}% LATIN CAPITAL LETTER N WITH TILDE
+\InputenxName{OE}{0152}% LATIN CAPITAL LIGATURE OE
+\InputenxName{Oacute}{00D3}% LATIN CAPITAL LETTER O WITH ACUTE
+\InputenxName{Ocircumflex}{00D4}% LATIN CAPITAL LETTER O WITH CIRCUMFLEX
+\InputenxName{Ocyrillic}{041E}% CYRILLIC CAPITAL LETTER O
+\InputenxName{Odblacute}{0150}% LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
+\InputenxName{Odieresis}{00D6}% LATIN CAPITAL LETTER O WITH DIAERESIS
+\InputenxName{Ograve}{00D2}% LATIN CAPITAL LETTER O WITH GRAVE
+\InputenxName{Ohungarumlaut}{0150}% LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
+\InputenxName{Omacron}{014C}% LATIN CAPITAL LETTER O WITH MACRON
+\InputenxName{Omega}{03A9}% GREEK CAPITAL LETTER OMEGA
+\InputenxName{Omegagreek}{03A9}% GREEK CAPITAL LETTER OMEGA
+\InputenxName{Oslash}{00D8}% LATIN CAPITAL LETTER O WITH STROKE
+\InputenxName{Otilde}{00D5}% LATIN CAPITAL LETTER O WITH TILDE
+\InputenxName{Pdotaccent}{1E56}% LATIN CAPITAL LETTER P WITH DOT ABOVE
+\InputenxName{Pecyrillic}{041F}% CYRILLIC CAPITAL LETTER PE
+\InputenxName{Phi}{03A6}% GREEK CAPITAL LETTER PHI
+\InputenxName{Racute}{0154}% LATIN CAPITAL LETTER R WITH ACUTE
+\InputenxName{Rcaron}{0158}% LATIN CAPITAL LETTER R WITH CARON
+\InputenxName{Rcedilla}{0156}% LATIN CAPITAL LETTER R WITH CEDILLA
+\InputenxName{Rcommaaccent}{0156}% LATIN CAPITAL LETTER R WITH CEDILLA
+\InputenxName{SFi}{250C}% BOX DRAWINGS LIGHT DOWN AND RIGHT
+\InputenxName{SFii}{2514}% BOX DRAWINGS LIGHT UP AND RIGHT
+\InputenxName{SFiii}{2510}% BOX DRAWINGS LIGHT DOWN AND LEFT
+\InputenxName{SFiv}{2518}% BOX DRAWINGS LIGHT UP AND LEFT
+\InputenxName{SFix}{2524}% BOX DRAWINGS LIGHT VERTICAL AND LEFT
+\InputenxName{SFl}{2558}% BOX DRAWINGS UP SINGLE AND RIGHT DOUBLE
+\InputenxName{SFli}{2552}% BOX DRAWINGS DOWN SINGLE AND RIGHT DOUBLE
+\InputenxName{SFlii}{2553}% BOX DRAWINGS DOWN DOUBLE AND RIGHT SINGLE
+\InputenxName{SFliii}{256B}% BOX DRAWINGS VERTICAL DOUBLE AND HORIZONTAL SINGLE
+\InputenxName{SFliv}{256A}% BOX DRAWINGS VERTICAL SINGLE AND HORIZONTAL DOUBLE
+\InputenxName{SFv}{253C}% BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL
+\InputenxName{SFvi}{252C}% BOX DRAWINGS LIGHT DOWN AND HORIZONTAL
+\InputenxName{SFvii}{2534}% BOX DRAWINGS LIGHT UP AND HORIZONTAL
+\InputenxName{SFviii}{251C}% BOX DRAWINGS LIGHT VERTICAL AND RIGHT
+\InputenxName{SFx}{2500}% BOX DRAWINGS LIGHT HORIZONTAL
+\InputenxName{SFxi}{2502}% BOX DRAWINGS LIGHT VERTICAL
+\InputenxName{SFxix}{2561}% BOX DRAWINGS VERTICAL SINGLE AND LEFT DOUBLE
+\InputenxName{SFxl}{2569}% BOX DRAWINGS DOUBLE UP AND HORIZONTAL
+\InputenxName{SFxli}{2566}% BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL
+\InputenxName{SFxlii}{2560}% BOX DRAWINGS DOUBLE VERTICAL AND RIGHT
+\InputenxName{SFxliii}{2550}% BOX DRAWINGS DOUBLE HORIZONTAL
+\InputenxName{SFxliv}{256C}% BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL
+\InputenxName{SFxlix}{2559}% BOX DRAWINGS UP DOUBLE AND RIGHT SINGLE
+\InputenxName{SFxlv}{2567}% BOX DRAWINGS UP SINGLE AND HORIZONTAL DOUBLE
+\InputenxName{SFxlvi}{2568}% BOX DRAWINGS UP DOUBLE AND HORIZONTAL SINGLE
+\InputenxName{SFxlvii}{2564}% BOX DRAWINGS DOWN SINGLE AND HORIZONTAL DOUBLE
+\InputenxName{SFxlviii}{2565}% BOX DRAWINGS DOWN DOUBLE AND HORIZONTAL SINGLE
+\InputenxName{SFxx}{2562}% BOX DRAWINGS VERTICAL DOUBLE AND LEFT SINGLE
+\InputenxName{SFxxi}{2556}% BOX DRAWINGS DOWN DOUBLE AND LEFT SINGLE
+\InputenxName{SFxxii}{2555}% BOX DRAWINGS DOWN SINGLE AND LEFT DOUBLE
+\InputenxName{SFxxiii}{2563}% BOX DRAWINGS DOUBLE VERTICAL AND LEFT
+\InputenxName{SFxxiv}{2551}% BOX DRAWINGS DOUBLE VERTICAL
+\InputenxName{SFxxv}{2557}% BOX DRAWINGS DOUBLE DOWN AND LEFT
+\InputenxName{SFxxvi}{255D}% BOX DRAWINGS DOUBLE UP AND LEFT
+\InputenxName{SFxxvii}{255C}% BOX DRAWINGS UP DOUBLE AND LEFT SINGLE
+\InputenxName{SFxxviii}{255B}% BOX DRAWINGS UP SINGLE AND LEFT DOUBLE
+\InputenxName{SFxxxix}{2554}% BOX DRAWINGS DOUBLE DOWN AND RIGHT
+\InputenxName{SFxxxvi}{255E}% BOX DRAWINGS VERTICAL SINGLE AND RIGHT DOUBLE
+\InputenxName{SFxxxvii}{255F}% BOX DRAWINGS VERTICAL DOUBLE AND RIGHT SINGLE
+\InputenxName{SFxxxviii}{255A}% BOX DRAWINGS DOUBLE UP AND RIGHT
+\InputenxName{Sacute}{015A}% LATIN CAPITAL LETTER S WITH ACUTE
+\InputenxName{Scaron}{0160}% LATIN CAPITAL LETTER S WITH CARON
+\InputenxName{Scedilla}{015E}% LATIN CAPITAL LETTER S WITH CEDILLA
+\InputenxName{Scircumflex}{015C}% LATIN CAPITAL LETTER S WITH CIRCUMFLEX
+\InputenxName{Scommaaccent}{0218}% LATIN CAPITAL LETTER S WITH COMMA BELOW
+\InputenxName{Sdotaccent}{1E60}% LATIN CAPITAL LETTER S WITH DOT ABOVE
+\InputenxName{Shacyrillic}{0428}% CYRILLIC CAPITAL LETTER SHA
+\InputenxName{Shchacyrillic}{0429}% CYRILLIC CAPITAL LETTER SHCHA
+\InputenxName{Sigma}{03A3}% GREEK CAPITAL LETTER SIGMA
+\InputenxName{Softsigncyrillic}{042C}% CYRILLIC CAPITAL LETTER SOFT SIGN
+\InputenxName{TH}{00DE}% LATIN CAPITAL LETTER THORN
+\InputenxName{Tbar}{0166}% LATIN CAPITAL LETTER T WITH STROKE
+\InputenxName{Tcaron}{0164}% LATIN CAPITAL LETTER T WITH CARON
+\InputenxName{Tcedilla}{0162}% LATIN CAPITAL LETTER T WITH CEDILLA
+\InputenxName{Tcommaaccent}{0162}% LATIN CAPITAL LETTER T WITH CEDILLA
+\InputenxName{Tdotaccent}{1E6A}% LATIN CAPITAL LETTER T WITH DOT ABOVE
+\InputenxName{Tecyrillic}{0422}% CYRILLIC CAPITAL LETTER TE
+\InputenxName{Theta}{0398}% GREEK CAPITAL LETTER THETA
+\InputenxName{Thorn}{00DE}% LATIN CAPITAL LETTER THORN
+\InputenxName{Tsecyrillic}{0426}% CYRILLIC CAPITAL LETTER TSE
+\InputenxName{Tshecyrillic}{040B}% CYRILLIC CAPITAL LETTER TSHE
+\InputenxName{Tstroke}{0166}% LATIN CAPITAL LETTER T WITH STROKE
+\InputenxName{Uacute}{00DA}% LATIN CAPITAL LETTER U WITH ACUTE
+\InputenxName{Ubreve}{016C}% LATIN CAPITAL LETTER U WITH BREVE
+\InputenxName{Ucircumflex}{00DB}% LATIN CAPITAL LETTER U WITH CIRCUMFLEX
+\InputenxName{Ucyrillic}{0423}% CYRILLIC CAPITAL LETTER U
+\InputenxName{Udblacute}{0170}% LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
+\InputenxName{Udieresis}{00DC}% LATIN CAPITAL LETTER U WITH DIAERESIS
+\InputenxName{Ugrave}{00D9}% LATIN CAPITAL LETTER U WITH GRAVE
+\InputenxName{Uhungarumlaut}{0170}% LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
+\InputenxName{Umacron}{016A}% LATIN CAPITAL LETTER U WITH MACRON
+\InputenxName{Uogonek}{0172}% LATIN CAPITAL LETTER U WITH OGONEK
+\InputenxName{Uring}{016E}% LATIN CAPITAL LETTER U WITH RING ABOVE
+\InputenxName{Ushortcyrillic}{040E}% CYRILLIC CAPITAL LETTER SHORT U
+\InputenxName{Utilde}{0168}% LATIN CAPITAL LETTER U WITH TILDE
+\InputenxName{Vecyrillic}{0412}% CYRILLIC CAPITAL LETTER VE
+\InputenxName{Wacute}{1E82}% LATIN CAPITAL LETTER W WITH ACUTE
+\InputenxName{Wcircumflex}{0174}% LATIN CAPITAL LETTER W WITH CIRCUMFLEX
+\InputenxName{Wdieresis}{1E84}% LATIN CAPITAL LETTER W WITH DIAERESIS
+\InputenxName{Wgrave}{1E80}% LATIN CAPITAL LETTER W WITH GRAVE
+\InputenxName{Yacute}{00DD}% LATIN CAPITAL LETTER Y WITH ACUTE
+\InputenxName{Ycircumflex}{0176}% LATIN CAPITAL LETTER Y WITH CIRCUMFLEX
+\InputenxName{Ydieresis}{0178}% LATIN CAPITAL LETTER Y WITH DIAERESIS
+\InputenxName{Yericyrillic}{042B}% CYRILLIC CAPITAL LETTER YERU
+\InputenxName{Ygrave}{1EF2}% LATIN CAPITAL LETTER Y WITH GRAVE
+\InputenxName{Yicyrillic}{0407}% CYRILLIC CAPITAL LETTER YI
+\InputenxName{Zacute}{0179}% LATIN CAPITAL LETTER Z WITH ACUTE
+\InputenxName{Zcaron}{017D}% LATIN CAPITAL LETTER Z WITH CARON
+\InputenxName{Zdot}{017B}% LATIN CAPITAL LETTER Z WITH DOT ABOVE
+\InputenxName{Zdotaccent}{017B}% LATIN CAPITAL LETTER Z WITH DOT ABOVE
+\InputenxName{Zecyrillic}{0417}% CYRILLIC CAPITAL LETTER ZE
+\InputenxName{Zhecyrillic}{0416}% CYRILLIC CAPITAL LETTER ZHE
+\InputenxName{aacute}{00E1}% LATIN SMALL LETTER A WITH ACUTE
+\InputenxName{abreve}{0103}% LATIN SMALL LETTER A WITH BREVE
+\InputenxName{acircumflex}{00E2}% LATIN SMALL LETTER A WITH CIRCUMFLEX
+\InputenxName{acute}{00B4}% ACUTE ACCENT
+\InputenxName{acutedbl}{02DD}% DOUBLE ACUTE ACCENT
+\InputenxName{acyrillic}{0430}% CYRILLIC SMALL LETTER A
+\InputenxName{adieresis}{00E4}% LATIN SMALL LETTER A WITH DIAERESIS
+\InputenxName{ae}{00E6}% LATIN SMALL LETTER AE
+\InputenxName{agrave}{00E0}% LATIN SMALL LETTER A WITH GRAVE
+\InputenxName{alef}{05D0}% HEBREW LETTER ALEF
+\InputenxName{alefhebrew}{05D0}% HEBREW LETTER ALEF
+\InputenxName{alpha}{03B1}% GREEK SMALL LETTER ALPHA
+\InputenxName{amacron}{0101}% LATIN SMALL LETTER A WITH MACRON
+\InputenxName{aogonek}{0105}% LATIN SMALL LETTER A WITH OGONEK
+\InputenxName{approxequal}{2248}% ALMOST EQUAL TO
+\InputenxName{aring}{00E5}% LATIN SMALL LETTER A WITH RING ABOVE
+\InputenxName{asciiacute}{00B4}% ACUTE ACCENT
+\InputenxName{asciibreve}{02D8}% BREVE
+\InputenxName{asciicaron}{02C7}% CARON
+\InputenxName{asciicircum}{02C6}% MODIFIER LETTER CIRCUMFLEX ACCENT
+\InputenxName{asciidieresis}{00A8}% DIAERESIS
+\InputenxName{asciigrave}{02CB}% MODIFIER LETTER GRAVE ACCENT
+\InputenxName{asciimacron}{00AF}% MACRON
+\InputenxName{asciitilde}{02DC}% SMALL TILDE
+\InputenxName{atilde}{00E3}% LATIN SMALL LETTER A WITH TILDE
+\InputenxName{ayin}{05E2}% HEBREW LETTER AYIN
+\InputenxName{ayinhebrew}{05E2}% HEBREW LETTER AYIN
+\InputenxName{bdotaccent}{1E03}% LATIN SMALL LETTER B WITH DOT ABOVE
+\InputenxName{becyrillic}{0431}% CYRILLIC SMALL LETTER BE
+\InputenxName{bet}{05D1}% HEBREW LETTER BET
+\InputenxName{beta}{03B2}% GREEK SMALL LETTER BETA
+\InputenxName{bethebrew}{05D1}% HEBREW LETTER BET
+\InputenxName{blacksquare}{25A0}% BLACK SQUARE
+\InputenxName{block}{2588}% FULL BLOCK
+\InputenxName{breve}{02D8}% BREVE
+\InputenxName{brokenbar}{00A6}% BROKEN BAR
+\InputenxName{bullet}{2022}% BULLET
+\InputenxName{bulletoperator}{2219}% BULLET OPERATOR
+\InputenxName{cacute}{0107}% LATIN SMALL LETTER C WITH ACUTE
+\InputenxName{cap}{2227}% LOGICAL AND
+\InputenxName{caron}{02C7}% CARON
+\InputenxName{ccaron}{010D}% LATIN SMALL LETTER C WITH CARON
+\InputenxName{ccedilla}{00E7}% LATIN SMALL LETTER C WITH CEDILLA
+\InputenxName{ccircumflex}{0109}% LATIN SMALL LETTER C WITH CIRCUMFLEX
+\InputenxName{cdot}{010B}% LATIN SMALL LETTER C WITH DOT ABOVE
+\InputenxName{cdotaccent}{010B}% LATIN SMALL LETTER C WITH DOT ABOVE
+\InputenxName{cedilla}{00B8}% CEDILLA
+\InputenxName{cent}{00A2}% CENT SIGN
+\InputenxName{checyrillic}{0447}% CYRILLIC SMALL LETTER CHE
+\InputenxName{circumflex}{02C6}% MODIFIER LETTER CIRCUMFLEX ACCENT
+\InputenxName{contourintegral}{222E}% CONTOUR INTEGRAL
+\InputenxName{copyright}{00A9}% COPYRIGHT SIGN
+\InputenxName{currency}{00A4}% CURRENCY SIGN
+\InputenxName{cyra}{0430}% CYRILLIC SMALL LETTER A
+\InputenxName{cyrb}{0431}% CYRILLIC SMALL LETTER BE
+\InputenxName{cyrc}{0446}% CYRILLIC SMALL LETTER TSE
+\InputenxName{cyrch}{0447}% CYRILLIC SMALL LETTER CHE
+\InputenxName{cyrd}{0434}% CYRILLIC SMALL LETTER DE
+\InputenxName{cyrdje}{0452}% CYRILLIC SMALL LETTER DJE
+\InputenxName{cyrdze}{0455}% CYRILLIC SMALL LETTER DZE
+\InputenxName{cyrdzhe}{045F}% CYRILLIC SMALL LETTER DZHE
+\InputenxName{cyre}{0435}% CYRILLIC SMALL LETTER IE
+\InputenxName{cyrerev}{044D}% CYRILLIC SMALL LETTER E
+\InputenxName{cyrery}{044B}% CYRILLIC SMALL LETTER YERU
+\InputenxName{cyrf}{0444}% CYRILLIC SMALL LETTER EF
+\InputenxName{cyrg}{0433}% CYRILLIC SMALL LETTER GHE
+\InputenxName{cyrgup}{0491}% CYRILLIC SMALL LETTER GHE WITH UPTURN
+\InputenxName{cyrh}{0445}% CYRILLIC SMALL LETTER HA
+\InputenxName{cyrhrdsn}{044A}% CYRILLIC SMALL LETTER HARD SIGN
+\InputenxName{cyri}{0438}% CYRILLIC SMALL LETTER I
+\InputenxName{cyrie}{0454}% CYRILLIC SMALL LETTER UKRAINIAN IE
+\InputenxName{cyrii}{0456}% CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I
+\InputenxName{cyrishrt}{0439}% CYRILLIC SMALL LETTER SHORT I
+\InputenxName{cyrje}{0458}% CYRILLIC SMALL LETTER JE
+\InputenxName{cyrk}{043A}% CYRILLIC SMALL LETTER KA
+\InputenxName{cyrl}{043B}% CYRILLIC SMALL LETTER EL
+\InputenxName{cyrlje}{0459}% CYRILLIC SMALL LETTER LJE
+\InputenxName{cyrm}{043C}% CYRILLIC SMALL LETTER EM
+\InputenxName{cyrn}{043D}% CYRILLIC SMALL LETTER EN
+\InputenxName{cyrnje}{045A}% CYRILLIC SMALL LETTER NJE
+\InputenxName{cyro}{043E}% CYRILLIC SMALL LETTER O
+\InputenxName{cyrp}{043F}% CYRILLIC SMALL LETTER PE
+\InputenxName{cyrr}{0440}% CYRILLIC SMALL LETTER ER
+\InputenxName{cyrs}{0441}% CYRILLIC SMALL LETTER ES
+\InputenxName{cyrsftsn}{044C}% CYRILLIC SMALL LETTER SOFT SIGN
+\InputenxName{cyrsh}{0448}% CYRILLIC SMALL LETTER SHA
+\InputenxName{cyrshch}{0449}% CYRILLIC SMALL LETTER SHCHA
+\InputenxName{cyrt}{0442}% CYRILLIC SMALL LETTER TE
+\InputenxName{cyrtshe}{045B}% CYRILLIC SMALL LETTER TSHE
+\InputenxName{cyru}{0443}% CYRILLIC SMALL LETTER U
+\InputenxName{cyrushrt}{045E}% CYRILLIC SMALL LETTER SHORT U
+\InputenxName{cyrv}{0432}% CYRILLIC SMALL LETTER VE
+\InputenxName{cyrya}{044F}% CYRILLIC SMALL LETTER YA
+\InputenxName{cyryi}{0457}% CYRILLIC SMALL LETTER YI
+\InputenxName{cyryo}{0451}% CYRILLIC SMALL LETTER IO
+\InputenxName{cyryu}{044E}% CYRILLIC SMALL LETTER YU
+\InputenxName{cyrz}{0437}% CYRILLIC SMALL LETTER ZE
+\InputenxName{cyrzh}{0436}% CYRILLIC SMALL LETTER ZHE
+\InputenxName{dagger}{2020}% DAGGER
+\InputenxName{daggerdbl}{2021}% DOUBLE DAGGER
+\InputenxName{dalet}{05D3}% HEBREW LETTER DALET
+\InputenxName{dalethebrew}{05D3}% HEBREW LETTER DALET
+\InputenxName{dbllowline}{2017}% DOUBLE LOW LINE
+\InputenxName{dcaron}{010F}% LATIN SMALL LETTER D WITH CARON
+\InputenxName{dcroat}{0111}% LATIN SMALL LETTER D WITH STROKE
+\InputenxName{ddotaccent}{1E0B}% LATIN SMALL LETTER D WITH DOT ABOVE
+\InputenxName{decyrillic}{0434}% CYRILLIC SMALL LETTER DE
+\InputenxName{degree}{00B0}% DEGREE SIGN
+\InputenxName{delta}{03B4}% GREEK SMALL LETTER DELTA
+\InputenxName{dh}{00F0}% LATIN SMALL LETTER ETH
+\InputenxName{dieresis}{00A8}% DIAERESIS
+\InputenxName{div}{00F7}% DIVISION SIGN
+\InputenxName{divide}{00F7}% DIVISION SIGN
+\InputenxName{dj}{0111}% LATIN SMALL LETTER D WITH STROKE
+\InputenxName{djecyrillic}{0452}% CYRILLIC SMALL LETTER DJE
+\InputenxName{dkshade}{2593}% DARK SHADE
+\InputenxName{dmacron}{0111}% LATIN SMALL LETTER D WITH STROKE
+\InputenxName{dnblock}{2584}% LOWER HALF BLOCK
+\InputenxName{dotaccent}{02D9}% DOT ABOVE
+\InputenxName{dotlessi}{0131}% LATIN SMALL LETTER DOTLESS I
+\InputenxName{dzecyrillic}{0455}% CYRILLIC SMALL LETTER DZE
+\InputenxName{dzhecyrillic}{045F}% CYRILLIC SMALL LETTER DZHE
+\InputenxName{eacute}{00E9}% LATIN SMALL LETTER E WITH ACUTE
+\InputenxName{ecaron}{011B}% LATIN SMALL LETTER E WITH CARON
+\InputenxName{ecircumflex}{00EA}% LATIN SMALL LETTER E WITH CIRCUMFLEX
+\InputenxName{ecyrillic}{0454}% CYRILLIC SMALL LETTER UKRAINIAN IE
+\InputenxName{edieresis}{00EB}% LATIN SMALL LETTER E WITH DIAERESIS
+\InputenxName{edot}{0117}% LATIN SMALL LETTER E WITH DOT ABOVE
+\InputenxName{edotaccent}{0117}% LATIN SMALL LETTER E WITH DOT ABOVE
+\InputenxName{efcyrillic}{0444}% CYRILLIC SMALL LETTER EF
+\InputenxName{egrave}{00E8}% LATIN SMALL LETTER E WITH GRAVE
+\InputenxName{elcyrillic}{043B}% CYRILLIC SMALL LETTER EL
+\InputenxName{element}{2208}% ELEMENT OF
+\InputenxName{ellipsis}{2026}% HORIZONTAL ELLIPSIS
+\InputenxName{emacron}{0113}% LATIN SMALL LETTER E WITH MACRON
+\InputenxName{emcyrillic}{043C}% CYRILLIC SMALL LETTER EM
+\InputenxName{emdash}{2014}% EM DASH
+\InputenxName{encyrillic}{043D}% CYRILLIC SMALL LETTER EN
+\InputenxName{endash}{2013}% EN DASH
+\InputenxName{eng}{014B}% LATIN SMALL LETTER ENG
+\InputenxName{eogonek}{0119}% LATIN SMALL LETTER E WITH OGONEK
+\InputenxName{epsilon}{03B5}% GREEK SMALL LETTER EPSILON
+\InputenxName{equivalence}{2261}% IDENTICAL TO
+\InputenxName{ercyrillic}{0440}% CYRILLIC SMALL LETTER ER
+\InputenxName{ereversedcyrillic}{044D}% CYRILLIC SMALL LETTER E
+\InputenxName{escyrillic}{0441}% CYRILLIC SMALL LETTER ES
+\InputenxName{eth}{00F0}% LATIN SMALL LETTER ETH
+\InputenxName{euro}{20AC}% EURO SIGN
+\InputenxName{exclamdown}{00A1}% INVERTED EXCLAMATION MARK
+\InputenxName{fdotaccent}{1E1F}% LATIN SMALL LETTER F WITH DOT ABOVE
+\InputenxName{fi}{FB01}% LATIN SMALL LIGATURE FI
+\InputenxName{filledbox}{25A0}% BLACK SQUARE
+\InputenxName{finalkaf}{05DA}% HEBREW LETTER FINAL KAF
+\InputenxName{finalkafhebrew}{05DA}% HEBREW LETTER FINAL KAF
+\InputenxName{finalmem}{05DD}% HEBREW LETTER FINAL MEM
+\InputenxName{finalmemhebrew}{05DD}% HEBREW LETTER FINAL MEM
+\InputenxName{finalnun}{05DF}% HEBREW LETTER FINAL NUN
+\InputenxName{finalnunhebrew}{05DF}% HEBREW LETTER FINAL NUN
+\InputenxName{finalpe}{05E3}% HEBREW LETTER FINAL PE
+\InputenxName{finalpehebrew}{05E3}% HEBREW LETTER FINAL PE
+\InputenxName{finaltsadi}{05E5}% HEBREW LETTER FINAL TSADI
+\InputenxName{finaltsadihebrew}{05E5}% HEBREW LETTER FINAL TSADI
+\InputenxName{fl}{FB02}% LATIN SMALL LIGATURE FL
+\InputenxName{florin}{0192}% LATIN SMALL LETTER F WITH HOOK
+\InputenxName{fourthtonechinese}{02CB}% MODIFIER LETTER GRAVE ACCENT
+\InputenxName{fraction}{2044}% FRACTION SLASH
+\InputenxName{fractionsolidus}{2044}% FRACTION SLASH
+\InputenxName{gbreve}{011F}% LATIN SMALL LETTER G WITH BREVE
+\InputenxName{gcedilla}{0123}% LATIN SMALL LETTER G WITH CEDILLA
+\InputenxName{gcircumflex}{011D}% LATIN SMALL LETTER G WITH CIRCUMFLEX
+\InputenxName{gcommaaccent}{0123}% LATIN SMALL LETTER G WITH CEDILLA
+\InputenxName{gdot}{0121}% LATIN SMALL LETTER G WITH DOT ABOVE
+\InputenxName{gdotaccent}{0121}% LATIN SMALL LETTER G WITH DOT ABOVE
+\InputenxName{gecyrillic}{0433}% CYRILLIC SMALL LETTER GHE
+\InputenxName{germandbls}{00DF}% LATIN SMALL LETTER SHARP S
+\InputenxName{gheupturncyrillic}{0491}% CYRILLIC SMALL LETTER GHE WITH UPTURN
+\InputenxName{gimel}{05D2}% HEBREW LETTER GIMEL
+\InputenxName{gimelhebrew}{05D2}% HEBREW LETTER GIMEL
+\InputenxName{gjecyrillic}{0453}% CYRILLIC SMALL LETTER GJE
+\InputenxName{greaterequal}{2265}% GREATER-THAN OR EQUAL TO
+\InputenxName{guillemotleft}{00AB}% LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+\InputenxName{guillemotright}{00BB}% RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+\InputenxName{guilsinglleft}{2039}% SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+\InputenxName{guilsinglright}{203A}% SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+\InputenxName{hardsigncyrillic}{044A}% CYRILLIC SMALL LETTER HARD SIGN
+\InputenxName{hbar}{0127}% LATIN SMALL LETTER H WITH STROKE
+\InputenxName{hcircumflex}{0125}% LATIN SMALL LETTER H WITH CIRCUMFLEX
+\InputenxName{he}{05D4}% HEBREW LETTER HE
+\InputenxName{hebalef}{05D0}% HEBREW LETTER ALEF
+\InputenxName{hebayin}{05E2}% HEBREW LETTER AYIN
+\InputenxName{hebbet}{05D1}% HEBREW LETTER BET
+\InputenxName{hebdalet}{05D3}% HEBREW LETTER DALET
+\InputenxName{hebfinalkaf}{05DA}% HEBREW LETTER FINAL KAF
+\InputenxName{hebfinalmem}{05DD}% HEBREW LETTER FINAL MEM
+\InputenxName{hebfinalnun}{05DF}% HEBREW LETTER FINAL NUN
+\InputenxName{hebfinalpe}{05E3}% HEBREW LETTER FINAL PE
+\InputenxName{hebfinaltsadi}{05E5}% HEBREW LETTER FINAL TSADI
+\InputenxName{hebgimel}{05D2}% HEBREW LETTER GIMEL
+\InputenxName{hebhe}{05D4}% HEBREW LETTER HE
+\InputenxName{hebhet}{05D7}% HEBREW LETTER HET
+\InputenxName{hebkaf}{05DB}% HEBREW LETTER KAF
+\InputenxName{heblamed}{05DC}% HEBREW LETTER LAMED
+\InputenxName{hebmem}{05DE}% HEBREW LETTER MEM
+\InputenxName{hebnun}{05E0}% HEBREW LETTER NUN
+\InputenxName{hebpe}{05E4}% HEBREW LETTER PE
+\InputenxName{hebqof}{05E7}% HEBREW LETTER QOF
+\InputenxName{hebresh}{05E8}% HEBREW LETTER RESH
+\InputenxName{hebsamekh}{05E1}% HEBREW LETTER SAMEKH
+\InputenxName{hebshin}{05E9}% HEBREW LETTER SHIN
+\InputenxName{hebtav}{05EA}% HEBREW LETTER TAV
+\InputenxName{hebtet}{05D8}% HEBREW LETTER TET
+\InputenxName{hebtsadi}{05E6}% HEBREW LETTER TSADI
+\InputenxName{hebvav}{05D5}% HEBREW LETTER VAV
+\InputenxName{hebyod}{05D9}% HEBREW LETTER YOD
+\InputenxName{hebzayin}{05D6}% HEBREW LETTER ZAYIN
+\InputenxName{hehebrew}{05D4}% HEBREW LETTER HE
+\InputenxName{het}{05D7}% HEBREW LETTER HET
+\InputenxName{hethebrew}{05D7}% HEBREW LETTER HET
+\InputenxName{horizontalbar}{2015}% HORIZONTAL BAR
+\InputenxName{hungarumlaut}{02DD}% DOUBLE ACUTE ACCENT
+\InputenxName{iacute}{00ED}% LATIN SMALL LETTER I WITH ACUTE
+\InputenxName{iacyrillic}{044F}% CYRILLIC SMALL LETTER YA
+\InputenxName{icircumflex}{00EE}% LATIN SMALL LETTER I WITH CIRCUMFLEX
+\InputenxName{icyrillic}{0456}% CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I
+\InputenxName{idieresis}{00EF}% LATIN SMALL LETTER I WITH DIAERESIS
+\InputenxName{iecyrillic}{0435}% CYRILLIC SMALL LETTER IE
+\InputenxName{igrave}{00EC}% LATIN SMALL LETTER I WITH GRAVE
+\InputenxName{iicyrillic}{0438}% CYRILLIC SMALL LETTER I
+\InputenxName{iishortcyrillic}{0439}% CYRILLIC SMALL LETTER SHORT I
+\InputenxName{ij}{0133}% LATIN SMALL LIGATURE IJ
+\InputenxName{ilde}{02DC}% SMALL TILDE
+\InputenxName{imacron}{012B}% LATIN SMALL LETTER I WITH MACRON
+\InputenxName{increment}{2206}% INCREMENT
+\InputenxName{infinity}{221E}% INFINITY
+\InputenxName{integral}{222B}% INTEGRAL
+\InputenxName{intersection}{2229}% INTERSECTION
+\InputenxName{iocyrillic}{0451}% CYRILLIC SMALL LETTER IO
+\InputenxName{iogonek}{012F}% LATIN SMALL LETTER I WITH OGONEK
+\InputenxName{itilde}{0129}% LATIN SMALL LETTER I WITH TILDE
+\InputenxName{iucyrillic}{044E}% CYRILLIC SMALL LETTER YU
+\InputenxName{jcircumflex}{0135}% LATIN SMALL LETTER J WITH CIRCUMFLEX
+\InputenxName{jecyrillic}{0458}% CYRILLIC SMALL LETTER JE
+\InputenxName{kacyrillic}{043A}% CYRILLIC SMALL LETTER KA
+\InputenxName{kaf}{05DB}% HEBREW LETTER KAF
+\InputenxName{kafhebrew}{05DB}% HEBREW LETTER KAF
+\InputenxName{kcedilla}{0137}% LATIN SMALL LETTER K WITH CEDILLA
+\InputenxName{kcommaaccent}{0137}% LATIN SMALL LETTER K WITH CEDILLA
+\InputenxName{kgreenlandic}{0138}% LATIN SMALL LETTER KRA
+\InputenxName{khacyrillic}{0445}% CYRILLIC SMALL LETTER HA
+\InputenxName{kjecyrillic}{045C}% CYRILLIC SMALL LETTER KJE
+\InputenxName{kra}{0138}% LATIN SMALL LETTER KRA
+\InputenxName{lacute}{013A}% LATIN SMALL LETTER L WITH ACUTE
+\InputenxName{lamed}{05DC}% HEBREW LETTER LAMED
+\InputenxName{lamedhebrew}{05DC}% HEBREW LETTER LAMED
+\InputenxName{lcaron}{013E}% LATIN SMALL LETTER L WITH CARON
+\InputenxName{lcedilla}{013C}% LATIN SMALL LETTER L WITH CEDILLA
+\InputenxName{lcommaaccent}{013C}% LATIN SMALL LETTER L WITH CEDILLA
+\InputenxName{lessequal}{2264}% LESS-THAN OR EQUAL TO
+\InputenxName{lfblock}{258C}% LEFT HALF BLOCK
+\InputenxName{ljecyrillic}{0459}% CYRILLIC SMALL LETTER LJE
+\InputenxName{lnot}{00AC}% NOT SIGN
+\InputenxName{logicaland}{2227}% LOGICAL AND
+\InputenxName{logicalnot}{00AC}% NOT SIGN
+\InputenxName{logicalnotreversed}{2310}% REVERSED NOT SIGN
+\InputenxName{lozenge}{25CA}% LOZENGE
+\InputenxName{lslash}{0142}% LATIN SMALL LETTER L WITH STROKE
+\InputenxName{ltshade}{2591}% LIGHT SHADE
+\InputenxName{macron}{00AF}% MACRON
+\InputenxName{malteseH}{0126}% LATIN CAPITAL LETTER H WITH STROKE
+\InputenxName{malteseh}{0127}% LATIN SMALL LETTER H WITH STROKE
+\InputenxName{mdotaccent}{1E41}% LATIN SMALL LETTER M WITH DOT ABOVE
+\InputenxName{mem}{05DE}% HEBREW LETTER MEM
+\InputenxName{memhebrew}{05DE}% HEBREW LETTER MEM
+\InputenxName{middot}{00B7}% MIDDLE DOT
+\InputenxName{mu}{00B5}% MICRO SIGN
+\InputenxName{multiply}{00D7}% MULTIPLICATION SIGN
+\InputenxName{nacute}{0144}% LATIN SMALL LETTER N WITH ACUTE
+\InputenxName{nbspace}{00A0}% NO-BREAK SPACE
+\InputenxName{ncaron}{0148}% LATIN SMALL LETTER N WITH CARON
+\InputenxName{ncedilla}{0146}% LATIN SMALL LETTER N WITH CEDILLA
+\InputenxName{ncommaaccent}{0146}% LATIN SMALL LETTER N WITH CEDILLA
+\InputenxName{ng}{014B}% LATIN SMALL LETTER ENG
+\InputenxName{njecyrillic}{045A}% CYRILLIC SMALL LETTER NJE
+\InputenxName{nobreakspace}{00A0}% NO-BREAK SPACE
+\InputenxName{nonbreakingspace}{00A0}% NO-BREAK SPACE
+\InputenxName{notequal}{2260}% NOT EQUAL TO
+\InputenxName{nsuperior}{207F}% SUPERSCRIPT LATIN SMALL LETTER N
+\InputenxName{ntilde}{00F1}% LATIN SMALL LETTER N WITH TILDE
+\InputenxName{numero}{2116}% NUMERO SIGN
+\InputenxName{nun}{05E0}% HEBREW LETTER NUN
+\InputenxName{nunhebrew}{05E0}% HEBREW LETTER NUN
+\InputenxName{oacute}{00F3}% LATIN SMALL LETTER O WITH ACUTE
+\InputenxName{ocircumflex}{00F4}% LATIN SMALL LETTER O WITH CIRCUMFLEX
+\InputenxName{ocyrillic}{043E}% CYRILLIC SMALL LETTER O
+\InputenxName{odblacute}{0151}% LATIN SMALL LETTER O WITH DOUBLE ACUTE
+\InputenxName{odieresis}{00F6}% LATIN SMALL LETTER O WITH DIAERESIS
+\InputenxName{oe}{0153}% LATIN SMALL LIGATURE OE
+\InputenxName{ogonek}{02DB}% OGONEK
+\InputenxName{ograve}{00F2}% LATIN SMALL LETTER O WITH GRAVE
+\InputenxName{ohungarumlaut}{0151}% LATIN SMALL LETTER O WITH DOUBLE ACUTE
+\InputenxName{omacron}{014D}% LATIN SMALL LETTER O WITH MACRON
+\InputenxName{onehalf}{00BD}% VULGAR FRACTION ONE HALF
+\InputenxName{onequarter}{00BC}% VULGAR FRACTION ONE QUARTER
+\InputenxName{onesuperior}{00B9}% SUPERSCRIPT ONE
+\InputenxName{ordfeminine}{00AA}% FEMININE ORDINAL INDICATOR
+\InputenxName{ordmasculine}{00BA}% MASCULINE ORDINAL INDICATOR
+\InputenxName{oslash}{00F8}% LATIN SMALL LETTER O WITH STROKE
+\InputenxName{otilde}{00F5}% LATIN SMALL LETTER O WITH TILDE
+\InputenxName{overscore}{00AF}% MACRON
+\InputenxName{paragraph}{00B6}% PILCROW SIGN
+\InputenxName{partial}{2202}% PARTIAL DIFFERENTIAL
+\InputenxName{partialdiff}{2202}% PARTIAL DIFFERENTIAL
+\InputenxName{pdotaccent}{1E57}% LATIN SMALL LETTER P WITH DOT ABOVE
+\InputenxName{pe}{05E4}% HEBREW LETTER PE
+\InputenxName{pecyrillic}{043F}% CYRILLIC SMALL LETTER PE
+\InputenxName{pehebrew}{05E4}% HEBREW LETTER PE
+\InputenxName{periodcentered}{00B7}% MIDDLE DOT
+\InputenxName{perthousand}{2030}% PER MILLE SIGN
+\InputenxName{peseta}{20A7}% PESETA SIGN
+\InputenxName{phi}{03C6}% GREEK SMALL LETTER PHI
+\InputenxName{pi}{03C0}% GREEK SMALL LETTER PI
+\InputenxName{plusminus}{00B1}% PLUS-MINUS SIGN
+\InputenxName{pm}{00B1}% PLUS-MINUS SIGN
+\InputenxName{product}{220F}% N-ARY PRODUCT
+\InputenxName{qof}{05E7}% HEBREW LETTER QOF
+\InputenxName{qofhebrew}{05E7}% HEBREW LETTER QOF
+\InputenxName{questiondown}{00BF}% INVERTED QUESTION MARK
+\InputenxName{quotedblbase}{201E}% DOUBLE LOW-9 QUOTATION MARK
+\InputenxName{quotedblleft}{201C}% LEFT DOUBLE QUOTATION MARK
+\InputenxName{quotedblright}{201D}% RIGHT DOUBLE QUOTATION MARK
+\InputenxName{quoteleft}{2018}% LEFT SINGLE QUOTATION MARK
+\InputenxName{quoteright}{2019}% RIGHT SINGLE QUOTATION MARK
+\InputenxName{quotesinglbase}{201A}% SINGLE LOW-9 QUOTATION MARK
+\InputenxName{racute}{0155}% LATIN SMALL LETTER R WITH ACUTE
+\InputenxName{radical}{221A}% SQUARE ROOT
+\InputenxName{rcaron}{0159}% LATIN SMALL LETTER R WITH CARON
+\InputenxName{rcedilla}{0157}% LATIN SMALL LETTER R WITH CEDILLA
+\InputenxName{rcommaaccent}{0157}% LATIN SMALL LETTER R WITH CEDILLA
+\InputenxName{registered}{00AE}% REGISTERED SIGN
+\InputenxName{resh}{05E8}% HEBREW LETTER RESH
+\InputenxName{reshhebrew}{05E8}% HEBREW LETTER RESH
+\InputenxName{revlogicalnot}{2310}% REVERSED NOT SIGN
+\InputenxName{ring}{02DA}% RING ABOVE
+\InputenxName{rtblock}{2590}% RIGHT HALF BLOCK
+\InputenxName{sacute}{015B}% LATIN SMALL LETTER S WITH ACUTE
+\InputenxName{samekh}{05E1}% HEBREW LETTER SAMEKH
+\InputenxName{samekhhebrew}{05E1}% HEBREW LETTER SAMEKH
+\InputenxName{scaron}{0161}% LATIN SMALL LETTER S WITH CARON
+\InputenxName{scedilla}{015F}% LATIN SMALL LETTER S WITH CEDILLA
+\InputenxName{scircumflex}{015D}% LATIN SMALL LETTER S WITH CIRCUMFLEX
+\InputenxName{scommaaccent}{0219}% LATIN SMALL LETTER S WITH COMMA BELOW
+\InputenxName{sdotaccent}{1E61}% LATIN SMALL LETTER S WITH DOT ABOVE
+\InputenxName{section}{00A7}% SECTION SIGN
+\InputenxName{sfthyphen}{00AD}% SOFT HYPHEN
+\InputenxName{shacyrillic}{0448}% CYRILLIC SMALL LETTER SHA
+\InputenxName{shade}{2592}% MEDIUM SHADE
+\InputenxName{shadedark}{2593}% DARK SHADE
+\InputenxName{shadelight}{2591}% LIGHT SHADE
+\InputenxName{shademedium}{2592}% MEDIUM SHADE
+\InputenxName{shchacyrillic}{0449}% CYRILLIC SMALL LETTER SHCHA
+\InputenxName{shin}{05E9}% HEBREW LETTER SHIN
+\InputenxName{shinhebrew}{05E9}% HEBREW LETTER SHIN
+\InputenxName{sigma}{03C3}% GREEK SMALL LETTER SIGMA
+\InputenxName{softhyphen}{00AD}% SOFT HYPHEN
+\InputenxName{softsigncyrillic}{044C}% CYRILLIC SMALL LETTER SOFT SIGN
+\InputenxName{ss}{00DF}% LATIN SMALL LETTER SHARP S
+\InputenxName{sterling}{00A3}% POUND SIGN
+\InputenxName{summation}{2211}% N-ARY SUMMATION
+\InputenxName{surd}{221A}% SQUARE ROOT
+\InputenxName{tau}{03C4}% GREEK SMALL LETTER TAU
+\InputenxName{tav}{05EA}% HEBREW LETTER TAV
+\InputenxName{tavhebrew}{05EA}% HEBREW LETTER TAV
+\InputenxName{tbar}{0167}% LATIN SMALL LETTER T WITH STROKE
+\InputenxName{tcaron}{0165}% LATIN SMALL LETTER T WITH CARON
+\InputenxName{tcedilla}{0163}% LATIN SMALL LETTER T WITH CEDILLA
+\InputenxName{tcommaaccent}{0163}% LATIN SMALL LETTER T WITH CEDILLA
+\InputenxName{tdotaccent}{1E6B}% LATIN SMALL LETTER T WITH DOT ABOVE
+\InputenxName{tecyrillic}{0442}% CYRILLIC SMALL LETTER TE
+\InputenxName{tet}{05D8}% HEBREW LETTER TET
+\InputenxName{tethebrew}{05D8}% HEBREW LETTER TET
+\InputenxName{th}{00FE}% LATIN SMALL LETTER THORN
+\InputenxName{thorn}{00FE}% LATIN SMALL LETTER THORN
+\InputenxName{threequarters}{00BE}% VULGAR FRACTION THREE QUARTERS
+\InputenxName{threesuperior}{00B3}% SUPERSCRIPT THREE
+\InputenxName{tilde}{02DC}% SMALL TILDE
+\InputenxName{times}{00D7}% MULTIPLICATION SIGN
+\InputenxName{trademark}{2122}% TRADE MARK SIGN
+\InputenxName{tsadi}{05E6}% HEBREW LETTER TSADI
+\InputenxName{tsadihebrew}{05E6}% HEBREW LETTER TSADI
+\InputenxName{tsecyrillic}{0446}% CYRILLIC SMALL LETTER TSE
+\InputenxName{tshecyrillic}{045B}% CYRILLIC SMALL LETTER TSHE
+\InputenxName{tstroke}{0167}% LATIN SMALL LETTER T WITH STROKE
+\InputenxName{twosuperior}{00B2}% SUPERSCRIPT TWO
+\InputenxName{uacute}{00FA}% LATIN SMALL LETTER U WITH ACUTE
+\InputenxName{ubreve}{016D}% LATIN SMALL LETTER U WITH BREVE
+\InputenxName{ucircumflex}{00FB}% LATIN SMALL LETTER U WITH CIRCUMFLEX
+\InputenxName{ucyrillic}{0443}% CYRILLIC SMALL LETTER U
+\InputenxName{udblacute}{0171}% LATIN SMALL LETTER U WITH DOUBLE ACUTE
+\InputenxName{udieresis}{00FC}% LATIN SMALL LETTER U WITH DIAERESIS
+\InputenxName{ugrave}{00F9}% LATIN SMALL LETTER U WITH GRAVE
+\InputenxName{uhungarumlaut}{0171}% LATIN SMALL LETTER U WITH DOUBLE ACUTE
+\InputenxName{umacron}{016B}% LATIN SMALL LETTER U WITH MACRON
+\InputenxName{underscoredbl}{2017}% DOUBLE LOW LINE
+\InputenxName{uogonek}{0173}% LATIN SMALL LETTER U WITH OGONEK
+\InputenxName{upblock}{2580}% UPPER HALF BLOCK
+\InputenxName{uring}{016F}% LATIN SMALL LETTER U WITH RING ABOVE
+\InputenxName{ushortcyrillic}{045E}% CYRILLIC SMALL LETTER SHORT U
+\InputenxName{utilde}{0169}% LATIN SMALL LETTER U WITH TILDE
+\InputenxName{vav}{05D5}% HEBREW LETTER VAV
+\InputenxName{vavhebrew}{05D5}% HEBREW LETTER VAV
+\InputenxName{vecyrillic}{0432}% CYRILLIC SMALL LETTER VE
+\InputenxName{wacute}{1E83}% LATIN SMALL LETTER W WITH ACUTE
+\InputenxName{wcircumflex}{0175}% LATIN SMALL LETTER W WITH CIRCUMFLEX
+\InputenxName{wdieresis}{1E85}% LATIN SMALL LETTER W WITH DIAERESIS
+\InputenxName{wgrave}{1E81}% LATIN SMALL LETTER W WITH GRAVE
+\InputenxName{yacute}{00FD}% LATIN SMALL LETTER Y WITH ACUTE
+\InputenxName{ycircumflex}{0177}% LATIN SMALL LETTER Y WITH CIRCUMFLEX
+\InputenxName{ydieresis}{00FF}% LATIN SMALL LETTER Y WITH DIAERESIS
+\InputenxName{yen}{00A5}% YEN SIGN
+\InputenxName{yericyrillic}{044B}% CYRILLIC SMALL LETTER YERU
+\InputenxName{ygrave}{1EF3}% LATIN SMALL LETTER Y WITH GRAVE
+\InputenxName{yicyrillic}{0457}% CYRILLIC SMALL LETTER YI
+\InputenxName{yod}{05D9}% HEBREW LETTER YOD
+\InputenxName{yodhebrew}{05D9}% HEBREW LETTER YOD
+\InputenxName{zacute}{017A}% LATIN SMALL LETTER Z WITH ACUTE
+\InputenxName{zayin}{05D6}% HEBREW LETTER ZAYIN
+\InputenxName{zayinhebrew}{05D6}% HEBREW LETTER ZAYIN
+\InputenxName{zcaron}{017E}% LATIN SMALL LETTER Z WITH CARON
+\InputenxName{zdot}{017C}% LATIN SMALL LETTER Z WITH DOT ABOVE
+\InputenxName{zdotaccent}{017C}% LATIN SMALL LETTER Z WITH DOT ABOVE
+\InputenxName{zecyrillic}{0437}% CYRILLIC SMALL LETTER ZE
+\InputenxName{zhecyrillic}{0436}% CYRILLIC SMALL LETTER ZHE
+\endinput
+%%
+%% End of file `ix-name.def'.

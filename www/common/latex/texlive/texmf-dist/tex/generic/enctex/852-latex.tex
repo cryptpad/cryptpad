@@ -1,0 +1,73 @@
+
+% You can generate a special cslatex on web2c systems using encTeX. Run:
+
+% tex -ini 852-latex
+
+% 852-latex is able to input DOS files in CP 852 encoding and has the
+% internal encoding in ISO8859-2. Output to .log, .aux, .toc is in
+% CP 852. This format exactly emulates the cslatex on emTeX system
+% where CP 852 tcp table was choosen during initex.bat.
+
+\ifx\xprncode\undefined
+   \catcode`\{=1  \catcode`\}=2
+   \errhelp={The TeX binary must be compiled with encTeX patch
+             by Petr Olsak in order to possibility of re-encoding}
+   \errmessage{Sorry, I am not able to generate 852-latex}
+   \expandafter \endinput
+\else %% The encTeX is detected, OK!
+   \begingroup
+   \catcode`\{=1  \catcode`\}=2 \catcode`\#=6
+   \message{cslatex with ISO8859-2 internal and CP 852 input encoding}
+   \def\setcode #1 #2 {\xordcode#1=#2 \xchrcode#2=#1 \xprncode#2=1 }
+   \xordcode"1A="20  % DOS's EOF (^Z) is mapped to space
+   % The DOS's \r (^M) is ignored implicitly, see code texextra.c, line 866
+   %
+   %          852  il2
+   \setcode   "B5  "C1   % \'A
+   \setcode   "A0  "E1   % \'a
+   \setcode   "8E  "C4   % \"A
+   \setcode   "84  "E4   % \"a
+   \setcode   "AC  "C8   % \v C
+   \setcode   "9F  "E8   % \v c
+   \setcode   "D2  "CF   % \v D
+   \setcode   "D4  "EF   % \v d
+   \setcode   "90  "C9   % \'E
+   \setcode   "82  "E9   % \'e
+   \setcode   "B7  "CC   % \v E
+   \setcode   "D8  "EC   % \v e
+   \setcode   "D6  "CD   % \'I
+   \setcode   "A1  "ED   % \'i
+   \setcode   "91  "C5   % \'L
+   \setcode   "92  "E5   % \'l
+   \setcode   "95  "A5   % \v L
+   \setcode   "96  "B5   % \v l
+   \setcode   "D5  "D2   % \v N
+   \setcode   "E5  "F2   % \v n
+   \setcode   "E0  "D3   % \'O
+   \setcode   "A2  "F3   % \'o
+   \setcode   "E2  "D4   % \^O
+   \setcode   "93  "F4   % \^o
+   \setcode   "99  "D6   % \"O
+   \setcode   "94  "F6   % \"o
+   \setcode   "E8  "C0   % \'R
+   \setcode   "EA  "E0   % \'r
+   \setcode   "FC  "D8   % \v R
+   \setcode   "FD  "F8   % \v r
+   \setcode   "E6  "A9   % \v S
+   \setcode   "E7  "B9   % \v s
+   \setcode   "9B  "AB   % \v T
+   \setcode   "9C  "BB   % \v t
+   \setcode   "E9  "DA   % \'U
+   \setcode   "A3  "FA   % \'u
+   \setcode   "DE  "D9   % \r U
+   \setcode   "85  "F9   % \r u
+   \setcode   "9A  "DC   % \"U
+   \setcode   "81  "FC   % \"u
+   \setcode   "ED  "DD   % \'Y
+   \setcode   "EC  "FD   % \'y
+   \setcode   "A6  "AE   % \v Z
+   \setcode   "A7  "BE   % \v z
+   \endgroup
+\fi
+\input latex.ltx
+

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfescape'>
+  <name>pdfescape</name>
+  <caption>Implements pdfTeX's escape features using TeX or e-TeX.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.13'/>
+  <description>
+    This package implements <xref refid='pdftex'>pdfTeX</xref>'s
+    escape features (<tt>\pdfescapehex</tt>, <tt>\pdfunescapehex</tt>,
+    <tt>\pdfescapename</tt>, <tt>\pdfescapestring</tt>) using TeX or
+    e-TeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfescape.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfescape.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

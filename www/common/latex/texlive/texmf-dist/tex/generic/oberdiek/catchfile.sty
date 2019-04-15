@@ -1,0 +1,309 @@
+%%
+%% This is file `catchfile.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% catchfile.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: catchfile
+%% Version: 2011/03/01 v1.6
+%% 
+%% Copyright (C) 2007, 2010, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file catchfile.dtx
+%% and the derived files
+%%    catchfile.sty, catchfile.pdf, catchfile.ins, catchfile.drv,
+%%    catchfile-test1.tex, catchfile-test2.tex,
+%%    catchfile-test3.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@catchfile.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{catchfile}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@catchfile.sty\endcsname
+\ProvidesPackage{catchfile}%
+  [2011/03/01 v1.6 Catch the contents of a file (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname CatchFile@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\CatchFile@AtEnd{%
+    \CatchFile@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\CatchFile@AtEnd{\CatchFile@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ltxcmds}[2010/03/09]%
+\fi
+\begingroup
+  \escapechar=92\relax
+  \edef\TestString{\string\everyeof}%
+  \edef\TestMeaning{\meaning\everyeof}%
+  \ifx\TestString\TestMeaning
+  \else
+    \@PackageError{catchfile}{%
+      Cannot find e-TeX's \string\everyeof,\MessageBreak
+      package loading is aborted%
+    }\@ehd
+    \endgroup
+    \expandafter\CatchFile@AtEnd
+  \fi%
+\endgroup
+\begingroup
+  \def\Check#1#2#3#4\endgroup{%
+    \edef\TestString{\string#1}%
+    \edef\TestMeaning{\meaning#2}%
+    \ifx\TestString\TestMeaning
+      \endgroup
+      \let\CatchFile@Primitive#2%
+      \def\CatchFile@Input{\CatchFile@Primitive#3}%
+    \else
+      #4\endgroup
+    \fi
+  }%
+  \Check\input\input{}%
+  \Check\input\@@input{}%
+  \Check\pdfprimitive\pdfprimitive\input
+  \@PackageError{%
+    Cannot find primitive \string\input,\MessageBreak
+    package loading is aborted%
+  }\@ehd
+  \csname endgroup\endcsname
+  \CatchFile@AtEnd%
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname IfFileExists\endcsname\relax
+  \input pdftexcmds.sty\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@filesize\endcsname\relax
+    \def\CatchFile@CheckFileExists#1{%
+      \expandafter\ifx\csname @inputcheck\endcsname\relax
+        \csname newread\endcsname\@inputcheck
+      \fi
+      \openin\@inputcheck#1\relax
+      \expandafter\closein\expandafter\@inputcheck
+      \ifeof\@inputcheck
+        \let\CatchFile@File\relax
+      \else
+        \def\CatchFile@File{#1}%
+      \fi
+    }%
+  \else
+    \def\CatchFile@CheckFileExists#1{%
+      \expandafter\expandafter\expandafter\ifx
+      \expandafter\expandafter\expandafter\relax\pdf@filesize{#1}\relax
+        \let\CatchFile@File\relax
+      \else
+        \def\CatchFile@File{#1}%
+      \fi
+    }%
+  \fi
+\else
+  \def\CatchFile@CheckFileExists#1{%
+    \IfFileExists{#1}{%
+      \expandafter\CatchFile@DefFile\@filef@und\@nil
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname @addtofilelist\endcsname\relax
+      \else
+        \@addtofilelist\CatchFile@File
+      \fi
+    }{%
+      \let\CatchFile@File\relax
+    }%
+  }%
+  \def\CatchFile@DefFile#1 \@nil{%
+    \def\CatchFile@File{#1}%
+  }%
+\fi
+\def\CatchFile@NotFound#1#2{%
+  \def#1{}%
+  \@PackageError{catchfile}{%
+    File `#2' not found%
+  }\@ehc
+}
+\ltx@IfUndefined{RequirePackage}{%
+  \input etexcmds.sty\relax
+}{%
+  \RequirePackage{etexcmds}[2010/01/28]%
+}
+\long\def\CatchFileEdef#1#2#3{%
+  \CatchFile@CheckFileExists{#2}%
+  \ifx\CatchFile@File\relax
+    \CatchFile@NotFound{#1}{#2}%
+  \else
+    \begingroup
+      \everyeof{\noexpand}%
+      #3%
+      \xdef\CatchFile@Contents{\CatchFile@Input\CatchFile@File\space}%
+    \endgroup
+    \let#1\CatchFile@Contents
+  \fi
+}
+\long\def\CatchFileDef#1#2#3{%
+  \CatchFile@CheckFileExists{#2}%
+  \ifx\CatchFile@File\relax
+    \CatchFile@NotFound{#1}{#2}%
+  \else
+    \begingroup
+      \everyeof\expandafter{%
+        \CatchFile@EOF
+        \expandafter\CatchFile@Finish
+        \noexpand
+      }%
+      \ltx@ifundefined{etex@unexpanded}{%
+        \expandafter\long\expandafter\def\expandafter\CatchFile@Do
+            \expandafter##\expandafter1\CatchFile@EOF{%
+          \toks\ltx@zero{##1}%
+          \xdef\CatchFile@gtemp{\the\toks\ltx@zero}%
+          \def\CatchFile@Finish{%
+            \endgroup
+            \let#1\CatchFile@gtemp
+            \global\let\CatchFile@gtemp\ltx@undefined
+          }%
+        }%
+      }{%
+        \expandafter\long\expandafter\def\expandafter\CatchFile@Do
+            \expandafter##\expandafter1\CatchFile@EOF{%
+          \edef\CatchFile@Finish{%
+            \endgroup
+            \etex@unexpanded{%
+              \edef#1{\etex@unexpanded{##1}}%
+            }%
+          }%
+        }%
+      }%
+      #3\relax
+    \expandafter\expandafter\expandafter\CatchFile@Do
+    \CatchFile@Input\CatchFile@File\relax
+  \fi
+}
+\begingroup
+  \lccode65=64 % lowercase('A') = '@'
+  \lccode66=64 % lowercase('B') = '@'
+  \catcode65=8 % catcode('A') = subscript
+  \catcode66=3 % catcode('B') = math shift
+\lowercase{\endgroup
+  \def\CatchFile@EOF{AB}%
+}
+\CatchFile@AtEnd%
+\endinput
+%%
+%% End of file `catchfile.sty'.

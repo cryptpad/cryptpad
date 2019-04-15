@@ -1,0 +1,14 @@
+\documentclass[11pt]{article}
+\usepackage[]{color}
+\usepackage[letterpaper,colorlinks,breaklinks,backref]{hyperref}
+%\usepackage{url} %use as alternative to hyperref for testing
+\newcommand{\myurl}[1]{{\url{{#1}}}}
+
+\begin{document}
+\url{http://www.wmich.edu/mus-theo/etg/et_guide.html} %ok now with hyperref, ok with url
+\myurl{http://www.wmich.edu/mus-theo/etg/et_guide.html} %fails with hyperref, ok with url
+
+\cite{THE}
+\bibliographystyle{unsrt}
+\bibliography{testurl}%fails with hyperref, ok with url
+\end{document}

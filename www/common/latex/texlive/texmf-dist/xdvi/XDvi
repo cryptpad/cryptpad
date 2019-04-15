@@ -1,0 +1,370 @@
+!!! Global application defaults for XDvik
+!!! Install this file into $TEXMF/xdvi/XDvi
+!!! (use kpsewhich --expand-path '$TEXMF' to determine the location of
+!!! $TEXMF on you system).
+!!! 
+!!! Lines commented out (starting with `!') are examples of
+!!! how to customize Xdvi for your personal needs.
+!!! To use these settings, copy them into your $HOME/.Xdefaults file
+!!! (remove the comments), prefix each line with `xdvi', and activate
+!!! them with:
+!!! $ xrdb -merge $HOME/.Xdefaults
+
+!!!------------------------------------------------------------------------------
+!!!------------------------ useful global settings ------------------------------
+!!!------------------------------------------------------------------------------
+
+!!! Use `logical' (TeX) pages instead of physical pages for the `g' keystroke:
+*useTeXPages: True
+
+!!! A fairly high resolution, which usually gives better results for anti-aliasing
+!!! and greater flexibility for shrink values. Generating MF fonts shouldn't be an
+!!! issue when using T1lib.
+!*mfMode: ljfour
+*paper: a4
+
+!!! This should be the best choice for modern displays with large color depth.
+*thorough: true
+
+!!! Add some useful translations for the mouse wheel (bug #1422928)
+*wheelTranslations:\
+Shift<Btn4Down>:left(.08)\n\
+Shift<Btn5Down>:right(.08)\n\
+Ctrl<Btn4Down>:set-shrink-factor(+)\n\
+Ctrl<Btn5Down>:set-shrink-factor(-)\n\
+<Btn4Down>:wheel(-.7)\n\
+<Btn5Down>:wheel(.7)
+
+!!!------------------------------------------------------------------------------
+!!!------------------------------ Motif toolbar ---------------------------------
+!!!------------------------------------------------------------------------------
+
+!!! filename of the XPM file used for the toolbar pixmaps:
+*toolbarPixmapFile: toolbar.xpm
+
+!!! Use toolbar buttons that are non-raised by default and only appear raised
+!!! when the mouse is over a button, as in e.g. Netscape 4.x:
+*toolbarButtonsRaised: False
+
+!!! don't draw a border around armed buttons:
+*button*highlightThickness: 0
+
+!!! no extra margin above/below buttons
+*toolBar.marginHeight:0
+
+!!! some spacing around button icons and button edges
+*toolBar*button*marginHeight: 2
+*toolBar*button*marginWidth: 2
+
+
+!!! don't draw the small grey rectangle inside the armed button:
+*button*fillOnArm: false
+
+!!! Or, for a more traditional Motif look, use something like:
+!*toolbarButtonsRaised: True
+!*button*fillOnArm: True
+!*button*shadowThickness: 1
+!*toolBar.marginHeight: 0
+!*toolBarFrame.marginWidth: 0
+!*button*highlightThickness: 2
+
+!!!------------------------------------------------------------------------------
+!!!-------------------------------- Motif widgets -------------------------------
+!!!------------------------------------------------------------------------------
+!!! small shadows like in netscape 4.x
+*menuBar.shadowThickness: 1
+*button*shadowThickness: 2
+*toolBar.shadowThickness: 1
+*toolBarFrame.shadowThickness: 1
+*helppanel.shadowThickness: 1
+*toolBarFrame.marginWidth: 2
+*statusline*shadowThickness: 1
+
+!!! prevent the Motif file selector widget from resizing itself, and start with a reasonable default:
+*resizePolicy: XmRESIZE_NONE
+*textColumns: 50
+
+!!! make all text/entry fields white, for better contrasts:
+*XmDialogShell*XmTextField.background: white
+*XmDialogShell*XmText.background: white
+*XmDialogShell*XmList.background: white
+
+!!! adjust position of header in help window
+*help_window*right_form.topOffset: 10
+
+!!!------------------------------------------------------------------------------
+!!!----------------------------- Preferences window -----------------------------
+!!!------------------------------------------------------------------------------
+
+*XmComboBox*List*background: white
+*XmComboBox*Text*background: white
+*XmComboBox*Text*borderWidth: 2
+*XmComboBox*Text*borderColor: black
+
+!!!------------------------------------------------------------------------------
+!!!--------------------------------- Help window --------------------------------
+!!!------------------------------------------------------------------------------
+!!! (See also the fontList entries for TOPIC_LABEL and TOPIC_HEADING)
+!!!
+!!! Set this to something that fits to your font size:
+*help_text.rows: 23
+*help_text.columns: 56
+
+!!! fg/bg for help topics label
+*help_label*shadowThickness: 2
+!!! ... if you want a more colorful label:
+!*help_label*foreground: blue4
+!*help_label*background: grey90
+
+
+!!! help topics label for Xaw
+*help_label.font: -*-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*
+
+!!!------------------------------------------------------------------------------
+!!!-------------------------------- Motif tooltips ------------------------------
+!!!------------------------------------------------------------------------------
+!!! background color and font:
+*tipShell.background: cornsilk
+*tipShell.fontSet: -*-helvetica-medium-r-*-*-12-*-*-*-*-*-*
+
+!!! time the mouse needs to stay on a button until tooltips pop up,
+!!! in milliseconds; set to a negative value to disable:
+*tipShell.waitPeriod: 800
+
+
+!!!------------------------------------------------------------------------------
+!!!------------------------------ Fonts and colors ------------------------------
+!!!------------------------------------------------------------------------------
+*font:     -*-helvetica-medium-r-*-*-12-*-*-*-*-*-*
+!!! Use a smaller font for the statusline in the Xaw version:
+*statusline.font: -*-helvetica-medium-r-*-*-10-*-*-*-*-*-*
+
+!!! Motif fonts. Meaning of the tags is:
+!!! NORMAL: Ordinary text, labels etc.
+!!! UNMARKED: Unmarked entries in page list
+!!! MARKED: Marked entries in page list, emphasized entries in other lists
+!!! TOPIC_LABEL: Label for topics list in help window
+!!! TOPIC_HEADING: Heading for help text in help window
+!!!
+*fontList: \
+-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*=NORMAL,\
+-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*=UNMARKED,\
+-*-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*=MARKED,\
+-*-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*=TOPIC_LABEL,\
+-*-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*=TOPIC_HEADING
+
+
+!!! Color used for page border, image bounding boxes and the ruler in `Ruler mode'.
+*highlight: red
+
+!!! Color used for the magnifier and its rulers:
+*rulecolor: blue
+
+!!!------------------------------------------------------------------------------
+!!!---------------------------------- hyperlinks  -------------------------------
+!!!------------------------------------------------------------------------------
+
+!!! Colors for unvisited and visited hyperlinks (can be any valid X color spec,
+!!! also in hex format):
+*linkColor: Blue2
+*visitedLinkColor: Purple4
+
+!!! Link style:
+!!! 0: no highlighting at all
+!!! 1: underline with linkColor
+!!! 2: no underlining, text with linkColor
+!!! 3: underlining and text with linkColor
+*linkStyle: 3
+
+!!!------------------------------------------------------------------------------
+!!!------------------------------ helper applications ---------------------------
+!!!------------------------------------------------------------------------------
+
+!!! the editor used for `forward search'; can also be set via $EDITOR, $VISUAL
+!!! or $XEDITOR. Setting the X resource will override the environment variables.
+!!! The format strings `%l' and `%f' are optional.
+!!! You could use this for older emacsen that come with emacsclient:
+!*editor: emacsclient --no-wait +%l %f
+!!! and this for current emacs or xemacs that come with gnuclient (which is much better):
+!*editor: gnuclient -q +%l %f
+
+!!!------------------------------------------------------------------------------
+!!!------------------------------ Xaw buttons and helptexts ---------------------
+!!!------------------------------------------------------------------------------
+
+!!! The following sections are of a more esoteric nature, giving
+!!! examples for customizing the Xaw buttons and the help texts.
+!!! Maybe these are useful for i18n.
+
+!!!------------------------------
+!!! This is the default Xaw button configuration:
+!!!------------------------------
+! *buttonTranslations: \
+! File_Open ...:select-dvi-file()\n\
+! File_Reload:reread-dvi-file()\n\
+! File_Back Hyperref:htex-back()\n\
+! File_Quit:quit()\n\
+! Page_First page:goto-page(1)\n\
+! Page_Page-10:back-page(10)\n\
+! Page_Page-5:back-page(10)\n\
+! Page_Prev:back-page(1)\n\
+! Page_Next:forward-page(1)\n\
+! Page_Page+5:forward-page(5)\n\
+! Page_Page+10:forward-page(10)\n\
+! Page_Last page:goto-page()\n\
+! Zoom_Full size:set-shrink-factor(1)\n\
+! Zoom_$%%:shrink-to-dpi(150)\n\
+! Zoom_$%%:shrink-to-dpi(100)\n\
+! Zoom_$%%:shrink-to-dpi(50)\n\
+! Zoom_Fit in window:set-shrink-factor()\n\
+! Options_View PS:set-ps(toggle)\n\
+! Options_Keep position:set-keep-flag()\n\
+! Help_About ...:popup-help(helpGeneral)\n\
+! Help_Page Motion ...:popup-help(helpPagemotion)\n\
+! Help_Other Commands ...:popup-help(helpOthercommands)\n\
+! Help_HyperTeX commands ...:popup-help(helpHypertex)\n\
+! Help_Source specials ...:popup-help(helpSourcespecials)\n
+
+!!!------------------------------
+!!! help texts
+!!!------------------------------
+
+!!!------------------------------
+!!! about/general
+!!!------------------------------
+! *.helpGeneral: \
+! \n\
+! This is xdvik, CVS version.\n\
+! \n\
+! The xdvik project homepage is located at\n\
+! http://sourceforge.net/projects/xdvi,\n\
+! where you can find updates, report bugs and submit feature requests.\n\
+! \n\
+! Getting help and exiting xdvi\n\
+! \n\
+! h or ? or `Help' button\n\
+!      Displays this help text.\n\
+! \n\
+! q or Control-C or Control-D or Cancel or Stop or Control-Z (VAX VMS)\n\
+!      Quits the program.\n
+! 
+
+!!!------------------------------
+!!! other commands
+!!!------------------------------
+! *helpOthercommands: \
+! \n\
+! Other Commands\n\
+! \n\
+! \n\
+! Control-F\n\
+!      Find another DVI file.\n\
+! \n\
+! Control-L or Clear\n\
+!      Redisplays the current page.\n\
+! \n\
+! Control-P\n\
+!      Prints bitmap unit, bit order, and byte order.\n\
+! \n\
+! ^ or Home\n\
+!      Move to the ``home'' position of the page.  This is\n\
+!      normally the upper left-hand corner of the page,\n\
+!      depending on the margins as described in the -margins\n\
+!      option, above.\n\
+! \n\
+! c    Moves the page so that the point currently beneath the\n\
+!      cursor is moved to the middle of the window.  It also\n\
+!      (gasp!) warps the cursor to the same place.\n\
+! \n\
+! G    This key toggles the use of greyscale anti-aliasing for\n\
+!      displaying shrunken bitmaps.  In addition, the key\n\
+!      sequences `0G' and `1G' clear and set this flag,\n\
+!      respectively.  See also the -nogrey option.\n\
+! \n\
+! k    Normally when xdvi switches pages, it moves to the home\n\
+!      position as well.  The `k' keystroke toggles a `keep-\n\
+!      position' flag which, when set, will keep the same\n\
+!      position when moving between pages.  Also `0k' and `1k'\n\
+!      clear and set this flag, respectively.  See also the\n\
+!      -keep option.\n\
+! \n\
+! M    Sets the margins so that the point currently under the\n\
+!      cursor is the upper left-hand corner of the text in the\n\
+!      page.  Note that this command itself does not move the\n\
+!      image at all.  For details on how the margins are used,\n\
+!      see the -margins option.\n\
+! \n\
+! P    ``This is page number n.''  This can be used to make\n\
+!      the `g' keystroke refer to actual page numbers instead\n\
+!      of absolute page numbers.\n\
+! \n\
+! R    Forces the dvi file to be reread.  This allows you to\n\
+!      preview many versions of the same file while running\n\
+!      xdvi only once.\n\
+! \n\
+! s    Changes the shrink factor to the given number.  If no\n\
+!      number is given, the smallest factor that makes the\n\
+!      entire page fit in the window will be used.  (Margins\n\
+!      are ignored in this computation.)\n\
+! \n\
+! S    Sets the density factor to be used when shrinking\n\
+!      bitmaps.  This should be a number between 0 and 100;\n\
+!      higher numbers produce lighter characters.\n\
+! \n\
+! t    Toggles to the next unit in a sorted list of TeX dimension\n\
+!      units for the popup magnifier ruler.\n\
+! \n\
+! V    Toggles Ghostscript anti-aliasing.  Also `0V' and `1V' clear\n\
+!      and enables this mode, respectively.  See also the the\n\
+!      -gsalpha option.\n\
+! \n\
+! x    Toggles expert mode (in which the buttons do not appear).\n\
+!      `1x' toggles display of the statusline at the bottom of\n\
+!      the window.\n
+ 
+!!!------------------------------
+!!! page motion
+!!!------------------------------
+! *helpPagemotion: \
+! \n\
+! Moving around in the document\n\
+! \n\
+! \n\
+! \n\
+! n or f or Space or Return or LineFeed or PgDn\n\
+!      Moves to the next page (or to the nth next page if a\n\
+!      number is given).\n\
+! \n\
+! p or b or Control-H or BackSpace or DELete or PgUp\n\
+!      Moves to the previous page (or back n pages).\n\
+! \n\
+! u or Up-arrow\n\
+!      Moves up two thirds of a window-full.\n\
+! \n\
+! d or Down-arrow\n\
+!      Moves down two thirds of a window-full.\n\
+! \n\
+! l or Left-arrow\n\
+!      Moves left two thirds of a window-full.\n\
+! \n\
+! r or Right-arrow\n\
+!      Moves right two thirds of a window-full.\n\
+! \n\
+! g or j or End\n\
+!      Moves to the page with the given number.  Initially,\n\
+!      the first page is assumed to be page number 1, but this\n\
+!      can be changed with the `P' keystroke, below.  If no\n\
+!      page number is given, then it goes to the last page.\n\
+! \n\
+! <    Move to first page in document.\n\
+! >    Move to last page in document.\n
+
+!!!------------------------------
+!!! end of helptexts
+!!!------------------------------
+
+ 
+!!!------------------------------------------------------------------------------
+!!!-------------- used for internal checking - DO NOT CHANGE THIS! --------------
+!!!------------------------------------------------------------------------------
+*appDefaultsFileVersion: 20030303

@@ -1,0 +1,3352 @@
+% \iffalse meta-comment
+%
+% File: ltxcmds.dtx
+% Version: 2011/11/09 v1.22
+% Info: LaTeX kernel commands for general use
+%
+% Copyright (C) 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file ltxcmds.dtx
+% and the derived files
+%    ltxcmds.sty, ltxcmds.pdf, ltxcmds.ins, ltxcmds.drv,
+%    ltxcmds-test1.tex, ltxcmds-test-gobble.tex,
+%    ltxcmds-test-ifempty.tex, ltxcmds-test-zapspace.tex,
+%    ltxcmds-test-ifboxempty.tex, ltxcmds-test-nextchar.tex,
+%    ltxcmds-test-carcdr.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/ltxcmds.dtx
+%    CTAN:macros/latex/contrib/oberdiek/ltxcmds.pdf
+%
+% Unpacking:
+%    (a) If ltxcmds.ins is present:
+%           tex ltxcmds.ins
+%    (b) Without ltxcmds.ins:
+%           tex ltxcmds.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{ltxcmds.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If ltxcmds.drv is present:
+%           latex ltxcmds.drv
+%    (b) Without ltxcmds.drv:
+%           latex ltxcmds.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex ltxcmds.dtx
+%       makeindex -s gind.ist ltxcmds.idx
+%       pdflatex ltxcmds.dtx
+%       makeindex -s gind.ist ltxcmds.idx
+%       pdflatex ltxcmds.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/ltxcmds.sty
+%    TDS:doc/latex/oberdiek/ltxcmds.pdf
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test1.tex
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test-gobble.tex
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test-ifempty.tex
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test-zapspace.tex
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test-ifboxempty.tex
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test-nextchar.tex
+%    TDS:doc/latex/oberdiek/test/ltxcmds-test-carcdr.tex
+%    TDS:source/latex/oberdiek/ltxcmds.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: ltxcmds
+Version: 2011/11/09 v1.22
+
+Copyright (C) 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file ltxcmds.dtx
+and the derived files
+   ltxcmds.sty, ltxcmds.pdf, ltxcmds.ins, ltxcmds.drv,
+   ltxcmds-test1.tex, ltxcmds-test-gobble.tex,
+   ltxcmds-test-ifempty.tex, ltxcmds-test-zapspace.tex,
+   ltxcmds-test-ifboxempty.tex, ltxcmds-test-nextchar.tex,
+   ltxcmds-test-carcdr.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{ltxcmds.ins}{\from{ltxcmds.dtx}{install}}%
+  \file{ltxcmds.drv}{\from{ltxcmds.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{ltxcmds.sty}{\from{ltxcmds.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{ltxcmds-test1.tex}{\from{ltxcmds.dtx}{test1}}%
+  \file{ltxcmds-test-gobble.tex}{\from{ltxcmds.dtx}{test-gobble}}%
+  \file{ltxcmds-test-ifempty.tex}{\from{ltxcmds.dtx}{test-ifempty}}%
+  \file{ltxcmds-test-zapspace.tex}{\from{ltxcmds.dtx}{test-zapspace}}%
+  \file{ltxcmds-test-ifboxempty.tex}{\from{ltxcmds.dtx}{test-ifboxempty}}%
+  \file{ltxcmds-test-nextchar.tex}{\from{ltxcmds.dtx}{test-nextchar}}%
+  \file{ltxcmds-test-carcdr.tex}{\from{ltxcmds.dtx}{test-carcdr}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{ltxcmds.xml}{\from{ltxcmds.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     ltxcmds.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `ltxcmds.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{ltxcmds.drv}%
+  [2011/11/09 v1.22 LaTeX kernel commands for general use (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{zref-savepos}
+\usepackage{paralist}
+\hfuzz=1pt
+\begin{document}
+  \DocInput{ltxcmds.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2685}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{ltxcmds.drv}
+%
+% \title{The \xpackage{ltxcmds} package}
+% \date{2011/11/09 v1.22}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package \xpackage{ltxcmds} exports some utility macros
+% from the \LaTeX\ kernel into a separate namespace and
+% also provides them for other formats such as plain-\TeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newcounter{to}
+% \renewcommand*{\theto}{to\arabic{to}}
+% \newlength\tolength
+% \tolength=\dimexpr .5\linewidth+\oddsidemargin+1in+15mm\relax
+% \newcommand*{\TO}{^^A
+%   \quad
+%   \stepcounter{to}^^A
+%   \zsavepos\theto
+%   \ifdim\zposx\theto sp>0pt
+%     \ifdim\zposx\theto sp<\tolength
+%       \kern\dimexpr\tolength-\zposx\theto sp\relax
+%     \fi
+%   \fi
+%   $\rightarrow$\quad
+%   \ignorespaces
+% }
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% Many of my packages also support other formats such as plain-\TeX.
+% Because I am rather familiar with the utility macros from
+% \LaTeX's kernel (e.g. \cs{@gobble}, \cs{@firstoftwo}), I found
+% myself rewriting them again and again, because they are lacking
+% in plain-\TeX.
+%
+% Therefore this package provides often used macros and similar
+% ones with the name prefix \cs{ltx@}. This avoids also faulty
+% redefinitions. I remember an example where a package redefined
+% \cs{@firstoftwo} with forgetting \cs{long}.
+%
+% \subsection{Numbers}
+%
+% \begin{declcs}{ltx@zero} \TO 0\\
+%   \cs{ltx@one} \TO 1\\
+%   \cs{ltx@two} \TO 2\\
+%   \cs{ltx@cclv} \TO 255\\
+%   \cs{ltx@minusone} \TO -1
+% \end{declcs}
+% These commands are numbers 0, 1, 2, 255 and -1. They are not digits
+% and a space is not gobbled afterwards. Macro \cs{ltx@minusone}
+% is available since version 2010/12/12 v1.15.
+%
+% \subsection{Scratch registers}
+%
+% Following the conventions of \hologo{plainTeX} and \hologo{LaTeX}
+% the first ten registers are free to use. Even numbered registers
+% are for local, odd numbered for global use.
+%
+% \begin{declcs}{ltx@(Loc,Glob)(Toks,Dimen,Skip)(A,B,C,D,E)}
+% \end{declcs}
+% The name consists of the prefix \cs{ltx@}, then
+% \texttt{Loc} or \texttt{Glob} for local or global usage follows.
+% The register type is given by \texttt{Toks} for token register,
+% \texttt{Dimen} for dimen register and \texttt{Skip} for skip
+% register. As last part the registers are numbered from \texttt{A}
+% to \texttt{E}. Example: \cs{ltx@LocToksA}.
+%
+% Since 2011/04/14 v1.19.
+%
+% \subsection{Argument killers}
+%
+% \begin{declcs}{ltx@gobble} \M{1} \TO\\
+%   \cs{ltx@gobbletwo} \M{1} \M{2} \TO\\
+%   \cs{ltx@gobblethree} \M{1} \M{2} \M{3} \TO\\
+%   \cs{ltx@gobblefour} \M{1} \M{2} \M{3} \M{4} \TO
+% \end{declcs}
+%
+% \begin{declcs}{ltx@GobbleNum} \M{num} \M{1} \M{2} \dots\space
+%   \M{\meta{num}} \TO
+% \end{declcs}
+% The first argument \meta{num} of macro \cs{ltx@GobbleNum} specifies,
+% how many following arguments are eaten. Macro \cs{ltx@GobbleNum}
+% is expandable in exact two expansion steps.
+%
+% \subsection{Argument grabbers}
+%
+% \begin{declcs}{ltx@firstofone} \M{1} \TO \meta{1}\\[1ex]
+%  \cs{ltx@firstoftwo} \M{1} \M{2} \TO \meta{1}\\
+%  \cs{ltx@secondoftwo} \M{1} \M{2} \TO \meta{2}\\[1ex]
+%  \cs{ltx@firstofthree} \M{1} \M{2} \M{3} \TO \meta{1}\\
+%  \cs{ltx@secondofthree} \M{1} \M{2} \M{3} \TO \meta{2}\\
+%  \cs{ltx@thirdofthree} \M{1} \M{2} \M{3} \TO \meta{3}\\
+%  \cs{ltx@firstoffour} \M{1} \M{2} \M{3} \M{4} \TO \meta{1}\\
+%  \cs{ltx@secondoffour} \M{1} \M{2} \M{3} \M{4} \TO \meta{2}\\
+%  \cs{ltx@thirdoffour} \M{1} \M{2} \M{3} \M{4} \TO \meta{3}\\
+%  \cs{ltx@fourthoffour} \M{1} \M{2} \M{3} \M{4} \TO \meta{4}
+% \end{declcs}
+% Macros \cs{ltx@firstofthree}, \cs{ltx@secondofthree}
+% and \cs{ltx@thirdofthree} were added in version
+% 2010/11/12 v1.11.
+% Macros \cs{ltx@firstoffour}, \dots, \cs{ltx@fourthoffour}
+% were added in version 2011/02/04 v1.16.
+%
+% \subsection{List helpers}
+%
+% \begin{declcs}{ltx@carzero} \dots\ \cs{@nil} \TO\\
+%   \cs{ltx@cdrzero} \dots\ \cs{@nil} \TO \dots
+% \end{declcs}
+%
+% \begin{declcs}{ltx@car} \M{1} \dots\ \cs{@nil} \TO \meta{1}\\
+%   \cs{ltx@cdr} \M{1} \dots\ \cs{@nil} \TO \dots
+% \end{declcs}
+%
+% \begin{declcs}{ltx@cartwo} \M{1} \M{2} \dots\ \cs{@nil}
+%   \TO \meta{1}\meta{2}\\
+%   \cs{ltx@carsecond} \M{1} \M{2} \dots\ \cs{@nil} \TO \meta{2}\\
+%   \cs{ltx@cdrtwo} \M{1} \M{2} \dots\ \cs{@nil} \TO \dots
+% \end{declcs}
+%
+% \begin{declcs}{ltx@carthree} \M{1} \M{2} \M{3} \dots\ \cs{@nil}
+%       \TO \meta{1}\meta{2}\meta{3}\\
+%   \cs{ltx@carthird} \M{1} \M{2} \M{3} \dots\ \cs{@nil}
+%       \TO \meta{3}\\
+%   \cs{ltx@cdrthree} \M{1} \M{2} \M{3} \dots\ \cs{@nil} \TO \dots
+% \end{declcs}
+%
+% \begin{declcs}{ltx@carfour} \M{1} \M{2} \M{3} \M{4} \dots\ \cs{@nil}
+%       \TO \meta{1}\meta{2}\meta{3}\meta{4}\\
+%   \cs{ltx@carfourth} \M{1} \M{2} \M{3} \M{4} \dots\ \cs{@nil}
+%       \TO \meta{4}\\
+%   \cs{ltx@cdrfour} \M{1} \M{2} \M{3} \M{4} \dots\ \cs{@nil} \TO \dots
+% \end{declcs}
+%
+% \begin{declcs}{ltx@CarNum} \M{num} \M{1} \dots\ \M{\meta{num}}
+%   \M{\meta{num}+1} \dots\ \cs{@nil}\\
+%   \TO \M{1} \dots\ \M{\meta{num}} \dots\\
+%   \cs{ltx@CarNumth} \M{num} \M{1} \dots\ \M{\meta{num}}
+%   \M{\meta{num}+1} \dots\ \cs{@nil}\\
+%   \TO \M{\meta{num}} \dots\\
+%   \cs{ltx@CdrNum} \M{num} \M{1} \dots\ \M{\meta{num}}
+%   \M{\meta{num}+1} \dots\ \cs{@nil}\\
+%   \TO \M{\meta{num}+1} \dots
+% \end{declcs}
+%
+% Macros with uppercase letters are expandable in two expansion steps.
+% Changes in version 2011/11/09 v1.22:
+% \begin{itemize}
+% \item
+%   Macros \cs{ltx@carsecond}, \cs{ltx@carthird}, \cs{ltx@carfourth},
+%   \cs{ltx@CarNumth} added.
+% \item
+%   Macros \cs{ltx@cdr}, \cs{ltx@cdrtwo}, \cs{ltx@cdrthree}, \cs{ltx@cdrfour},
+%   \cs{ltx@CdrNum} are expandable in two expansion steps and retain
+%   spaces and braces after the first gobbled arguments.
+% \end{itemize}
+%
+% \subsection{Tail recursion}
+%
+% \begin{declcs}{ltx@ReturnAfterFi} \M{1} \cs{fi} \TO \cs{fi} \meta{1}\\
+%   \cs{ltx@ReturnAfterElseFi} \M{1} \cs{else} \M{2} \cs{fi}
+%     \TO \cs{fi} \meta{1}
+% \end{declcs}
+%
+% \subsection{Empty macro}
+%
+% \begin{declcs}{ltx@empty} \TO
+% \end{declcs}
+%
+% \subsection{Characters}
+%
+% \begin{declcs}{ltx@space} \TO \verb*| |\\
+%   \cs{ltx@percentchar} \TO \texttt{\%}\\
+%   \cs{ltx@backslashchar} \TO
+%      \makeatletter\texttt{\@backslashchar}\\
+%   \cs{ltx@hashchar} \TO \texttt{\#}\qquad(since v1.7)\\
+%   \cs{ltx@leftbracechar} \TO \texttt{\textbraceleft}\qquad(since v1.8)\\
+%   \cs{ltx@rightbracechar} \TO \texttt{\textbraceright}\qquad(since v1.8)
+% \end{declcs}
+%
+% \subsection{Boolean switch}
+%
+% \begin{declcs}{ltx@newif} \M{cmd}
+% \end{declcs}
+% \cs{ltx@newif} defines a new boolean switch \meta{cmd} like \cs{newif}.
+% Unlike \plainTeX's \cs{newif}, \cs{ltx@newif} is not \cs{outer}.
+% The command \meta{cmd} must start with the two characters |if|.
+%
+% \begin{declcs}{ltx@newglobalif} \M{cmd}
+% \end{declcs}
+% \cs{ltx@newglobalif} defines a new boolean switch \meta{cmd}
+% like \cs{ltx@newif}. However the switch setting commands,
+% \meta{cmd} without the prefix |if| and followed by |true| or |false|
+% are acting globally.
+%
+% \subsection{Command definitions}
+%
+% \begin{declcs}{ltx@ifundefined} \M{cmd} \M{yes} \M{no}
+% \end{declcs}
+% If \eTeX\ is available, \cs{ifcsname} is used that does
+% not have the side effect of defining undefined commands
+% with meaning of \cs{relax}. This command is always expandable.
+% Change in version 1.1: Also the meaning \cs{relax} is
+% always considered ``undefined''.
+%
+% \begin{declcs}{ltx@IfUndefined} \M{cmd} \M{yes} \M{no}
+% \end{declcs}
+% If \eTeX\ is available, \cs{ifcsname} is used that does
+% not have the side effect of defining undefined commands
+% with meaning of \cs{relax}. Also it always checks for
+% the meaning of \cs{relax} and considers this as undefined.
+% This macro is not expandable without \eTeX.
+%
+% \begin{declcs}{ltx@LocalExpandAfter}
+% \end{declcs}
+% It expands the token after the next token but in a local
+% context. That is the difference to \cs{expandafter}.
+% The local context discards the side effect of \cs{csname}
+% and let the command undefined after the expansion step.
+%
+% \subsection{Stripping}
+%
+% \begin{declcs}{ltx@RemovePrefix}\\
+%   \cs{ltx@StripPrefix}
+% \end{declcs}
+% All tokens up to and including the next available character
+% `\textgreater' are thrown away. Usually it is used to strip
+% the first part of the output of the commands \cs{meaning}
+% or \cs{pdflastmatch}. Macro \cs{ltx@RemovePrefix}
+% has the same meaning as \LaTeX's \cs{strip@prefix}, whereas
+% macro \cs{ltx@StripPrefix} expands the next token
+% once before stripping the prefix.
+%
+% \begin{declcs}{ltx@onelevel@sanitize} \M{macro}
+% \end{declcs}
+% Macro \cs{ltx@onelevel@sanitize} provides \hologo{LaTeX}'s
+% \cs{@onelevel@sanitize}. The macro is expanded once and
+% the contents is converted to characters with catcode 12 (other)
+% and space tokens with catcode 10 (space). Then then sanitized
+% contents is stored into the macro again. Since version 1.12.
+%
+% \subsection{File management}
+%
+% All macros in this section are expandable like
+% the counterparts of the \LaTeX\ kernel. Also they
+% can be used after the preamble.
+%
+% \subsubsection{File extensions}
+%
+% \begin{declcs}{ltx@clsextension}\\
+%   \cs{ltx@pkgextension}
+% \end{declcs}
+% Macros \cs{ltx@clsextension} and \cs{ltx@styextension}
+% stores the strings |cls| and |sty|. In opposite to \hologo{LaTeX}'s
+% \cs{@clsextension} and \cs{@styextension} they can also be
+% used after |\begin{document}|.
+%
+% \subsubsection{Load check}
+%
+% \begin{declcs}{ltx@ifclassloaded} \M{class} \M{yes} \M{no}\\
+%   \cs{ltx@ifpackageloaded} \M{package} \M{yes} \M{no}
+% \end{declcs}
+% Macros \cs{ltx@ifclassloaded}\slash\cs{ltx@ifpackageloaded}
+% execute \meta{yes}, if the \meta{class} or \meta{package} is loaded,
+% otherwise \meta{no} is called.
+% Both \meta{class} and \meta{package} are specified without
+% extension. The macros can also be used after |\begin{document}|.
+%
+% \begin{declcs}{ltx@iffileloaded} \M{file} \M{yes} \M{no}
+% \end{declcs}
+% If \LaTeX's \cs{ProvidesFile} macro was called before
+% using \meta{file} as argument, then \cs{ltx@iffileloaded}
+% calls \meta{yes}, otherwise \meta{no}.
+% Therefore it is possible
+% that the \meta{file} is loaded, but \meta{no} is executed because
+% of a missing \cs{ProvidesFile}. The \LaTeX\ kernel does not have
+% a counterpart of \cs{ltx@iffileloaded}.
+%
+% Note that the file name used in \cs{ProvidesFile} and
+% \cs{ltx@iffileloaded} must match. For example, if \TeX's
+% default extension \xext{tex} was given in the first command,
+% then it must also specified in the latter command and vice versa.
+%
+% \subsubsection{Version date check}
+%
+% \begin{declcs}{ltx@ifclasslater} \M{class} \M{date} \M{yes} \M{no}\\
+%   \cs{ltx@ifpackagelater} \M{package} \M{date} \M{yes} \M{no}\\
+%   \cs{ltx@iffilelater} \M{file} \M{date} \M{yes} \M{no}
+% \end{declcs}
+% If a \cs{ProvidesClass}\slash\cs{ProvidesPackage}\slash
+% \cs{ProvidesFile} command with exact the same class\slash package\slash
+% file was executed before with an optional
+% argument that starts with a \LaTeX\ version date, then
+% this version date is compared with the argument \meta{date}.
+% If they are equal or if the version date is the later date,
+% then \meta{yes} is called. In all other cases \meta{no} is executed.
+%
+% A \LaTeX\ date has the format |YYYY/MM/DD| with |YYYY| as year
+% with four digits, |MM| as month with two digits and |DD| as day
+% with two digits. If \pdfTeX's \cs{pdfmatch} is available, then
+% it is used to detect the version date, to reject invalid
+% date formats and to reject some invalid dates.
+% Dates before 1994/01/01 are always invalid, because version
+% dates are introduced with \LaTeXe\ in 1994.
+%
+% \subsection{Macro additions}
+%
+% \begin{declcs}{ltx@GlobalAppendToMacro} \M{cmd} \M{addition}\\
+%   \cs{ltx@LocalAppendToMacro} \M{cmd} \M{addition}
+% \end{declcs}
+% The \meta{addition} is appended to the parameterless macro \meta{cmd}.
+% If \meta{cmd} is undefined or has the meaning \cs{relax}, then
+% it will be initialized as empty macro beforehand. Due to a bug \meta{addition}
+% must not contain \cs{par} before version 2010/10/25 v1.9.
+%
+% \begin{declcs}{ltx@GlobalPrependToMacro} \M{cmd} \M{addition}\\
+%   \cs{ltx@LocalPrependToMacro} \M{cmd} \M{addition}
+% \end{declcs}
+% The \meta{addition} is prepended to the parameterless macro \meta{cmd}.
+% If \meta{cmd} is undefined or has the meaning \cs{relax}, then
+% it will be initialized as empty macro beforehand. The macros
+% were added in version 2011/08/22 v1.21.
+%
+% \subsection{Next character detection}
+%
+% \begin{declcs}{ltx@ifnextchar} \M{char} \M{yes} \M{no}
+% \end{declcs}
+% If next character is \meta{char} then \meta{yes} is called,
+% otherwise \meta{no}. The character is not removed.
+% Spaces are silently removed when looking for \meta{char}
+% as \hologo{LaTeX}'s version \cs{kernel@ifnextchar} does.
+% But there are also small differences:
+% \begin{itemize}
+% \item The space can be used as \meta{char}. In this case
+%   optional spaces before \meta{char} are not supported of course.
+% \item If the optional space is a command that is a character
+%   (defined by \cs{let} or \cs{futurelet}), then
+%   \cs{kernel@ifnextchar} breaks with an \hologo{TeX} error.
+%   \cs{ltx@ifnextchar} silently removes this token as
+%   optional space.
+% \end{itemize}
+% Since 2010/03/01 v1.3.
+%
+% \begin{declcs}{ltx@ifnextchar@nospace} \M{char} \M{yes} \M{no}
+% \end{declcs}
+% Macro \cs{ltx@ifnextchar@nospace} behaves like
+% macro \cs{ltx@ifnextchar} with the exception that
+% optional spaces are not supported before \meta{char}.
+% Since 2011/04/14 v1.19.
+%
+% \subsection{\cs{ltx@leavevmode}, \cs{ltx@mbox}}
+%
+% \begin{declcs}{ltx@leavevmode}
+% \end{declcs}
+% Macro \cs{ltx@leavevmode} calls \hologo{pdfTeX}'s \cs{quitvmode}.
+% Otherwise \cs{leavevmode} is used and defined if it is necessary.
+%
+% \begin{declcs}{ltx@mbox}
+% \end{declcs}
+% Macro \cs{ltx@mbox} reimplements \cs{mbox} with two changes.
+% Instead of \cs{leavevmode} it uses \cs{ltx@leavevmode} and
+% stops right after \cs{hbox}. Especially it does not grab
+% the argument and allows the extended syntax of \cs{hbox}.
+%
+% \subsection{Expandable test for emptiness}
+%
+% \begin{declcs}{ltx@ifempty} \M{stuff} \M{yes} \M{no}
+% \end{declcs}
+% Macro \cs{ltx@ifempty} checks in exact two expansion steps
+% whether \meta{stuff}
+% is empty or contains token. Depending on the result
+% \meta{yes} or \meta{no} is executed. The token in \meta{stuff}
+% may contain \cs{par} and unmatched conditionals (\cs{if}, \cs{else},
+% \cs{fi}, \dots). Since version 2010/11/12 v1.11.
+%
+% \begin{declcs}{ltx@ifblank} \M{stuff} \M{yes} \M{no}
+% \end{declcs}
+% Macro \cs{ltx@ifblank} tests in exact two expansion steps
+% if \meta{stuff} is empty or contain only blank spaces.
+% In this case argument \meta{yes} is called. If \meta{stuff}
+% contains other tokens than spaces then \meta{no} is executed.
+% Since version 2010/12/04 v1.13.
+%
+% \subsection{Stripping spaces}
+%
+% \begin{declcs}{ltx@zapspace} \M{stuff}
+% \end{declcs}
+% Macro \cs{ltx@zapspace} strips spaces from \meta{stuff}
+% that are not hidden inside curly braces. Like \hologo{LaTeX}'s
+% \cs{zap@space} it is expandable. Differences:
+% \begin{itemize}
+% \item
+% Syntax: \cs{zap@space} also expects a space token
+% and \cs{@empty} after \meta{stuff}.
+% \item
+% Macro \cs{ltx@zapspace} is expandable in exact two
+% expansion steps.
+% \item
+% Macro \cs{ltx@zapspace} always retains curly braces.
+% \item
+% Macro \cs{zap@space} has a bug. It stops stripping spaces
+% after a token group in curly braces if the first two tokens
+% inside the group are equal.
+% \item
+% Macro \cs{ltx@zapspace} also works with \cs{par}
+% and conditionals (\cs{if}, \cs{else}, \cs{fi}, \dots).
+% \end{itemize}
+% Macro \cs{ltx@zapspace} is available since version
+% 2010/12/07 v1.14.
+%
+% \subsection{Check for emptiness of boxes}
+%
+% \begin{declcs}{ltx@IfBoxEmpty} \M{box register number}
+%   \M{yes} \M{no}
+% \end{declcs}
+% Macro \cs{ltx@IfBoxEmpty} calls \meta{yes} if
+% the box exists (\cs{ifvoid} returns false) and the box
+% does not contain any content. Otherwise if the box
+% is void or contains something, then \meta{no} is executed.
+% Thus being empty means that the box exists and is either
+% an \cs{hbox} or a \cs{vbox} and may even have dimensions other than
+% 0.0\,pt, but the box does not contain anything.
+% Macro \cs{ltx@IfBoxEmpty} is available since 2010/02/04 v1.16.
+%
+% \begin{declcs}{ltx@IfBoxVoidOrEmpty} \M{box register number}
+%   \M{yes} \M{no}
+% \end{declcs}
+% Macro \cs{ltx@IfBoxVoidOrEmpty} calls \meta{yes} if
+% the box is either void or does not contain any content.
+% Otherwise \meta{no} is executed.
+% Macro \cs{ltx@IfBoxVoidOrEmpty} is available since 2010/02/04 v1.16.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@ltxcmds.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{ltxcmds}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@ltxcmds.sty\endcsname
+\ProvidesPackage{ltxcmds}%
+  [2011/11/09 v1.22 LaTeX kernel commands for general use (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname LTXcmds@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\LTXcmds@AtEnd{%
+    \LTXcmds@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{12}% ^ (superscript) (!)
+\TMP@EnsureCode{124}{12}% |
+\edef\LTXcmds@AtEnd{\LTXcmds@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Numbers}
+%
+%    \begin{macro}{\ltx@zero}
+%    \begin{macrocode}
+\chardef\ltx@zero=0 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@one}
+%    \begin{macrocode}
+\chardef\ltx@one=1 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@two}
+%    \begin{macrocode}
+\chardef\ltx@two=2 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@active}
+%    \begin{macrocode}
+\chardef\ltx@active=13 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@cclv}
+%    \begin{macrocode}
+\chardef\ltx@cclv=255 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@minusone}
+%    \begin{macrocode}
+\def\ltx@minusone{%
+  -\ltx@one
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Scratch registers}
+%
+%    \begin{macro}{\ltx@LocToksA}
+%    \begin{macrocode}
+\toksdef\ltx@LocToksA=0 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocToksB}
+%    \begin{macrocode}
+\toksdef\ltx@LocToksB=2 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocToksC}
+%    \begin{macrocode}
+\toksdef\ltx@LocToksC=4 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocToksD}
+%    \begin{macrocode}
+\toksdef\ltx@LocToksD=6 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocToksE}
+%    \begin{macrocode}
+\toksdef\ltx@LocToksE=8 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@GlobToksA}
+%    \begin{macrocode}
+\toksdef\ltx@GlobToksA=1 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobToksB}
+%    \begin{macrocode}
+\toksdef\ltx@GlobToksB=3 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobToksC}
+%    \begin{macrocode}
+\toksdef\ltx@GlobToksC=5 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobToksD}
+%    \begin{macrocode}
+\toksdef\ltx@GlobToksD=7 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobToksE}
+%    \begin{macrocode}
+\toksdef\ltx@GlobToksE=9 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@LocDimenA}
+%    \begin{macrocode}
+\dimendef\ltx@LocDimenA=0 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocDimenB}
+%    \begin{macrocode}
+\dimendef\ltx@LocDimenB=2 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocDimenC}
+%    \begin{macrocode}
+\dimendef\ltx@LocDimenC=4 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocDimenD}
+%    \begin{macrocode}
+\dimendef\ltx@LocDimenD=6 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocDimenE}
+%    \begin{macrocode}
+\dimendef\ltx@LocDimenE=8 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@GlobDimenA}
+%    \begin{macrocode}
+\dimendef\ltx@GlobDimenA=1 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobDimenB}
+%    \begin{macrocode}
+\dimendef\ltx@GlobDimenB=3 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobDimenC}
+%    \begin{macrocode}
+\dimendef\ltx@GlobDimenC=5 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobDimenD}
+%    \begin{macrocode}
+\dimendef\ltx@GlobDimenD=7 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobDimenE}
+%    \begin{macrocode}
+\dimendef\ltx@GlobDimenE=9 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@LocSkipA}
+%    \begin{macrocode}
+\skipdef\ltx@LocSkipA=0 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocSkipB}
+%    \begin{macrocode}
+\skipdef\ltx@LocSkipB=2 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocSkipC}
+%    \begin{macrocode}
+\skipdef\ltx@LocSkipC=4 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocSkipD}
+%    \begin{macrocode}
+\skipdef\ltx@LocSkipD=6 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocSkipE}
+%    \begin{macrocode}
+\skipdef\ltx@LocSkipE=8 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@GlobSkipA}
+%    \begin{macrocode}
+\skipdef\ltx@GlobSkipA=1 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobSkipB}
+%    \begin{macrocode}
+\skipdef\ltx@GlobSkipB=3 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobSkipC}
+%    \begin{macrocode}
+\skipdef\ltx@GlobSkipC=5 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobSkipD}
+%    \begin{macrocode}
+\skipdef\ltx@GlobSkipD=7 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@GlobSkipE}
+%    \begin{macrocode}
+\skipdef\ltx@GlobSkipE=9 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+% \subsection{Argument killers}
+%
+%    \begin{macro}{\ltx@gobble}
+%    \begin{macrocode}
+\long\def\ltx@gobble#1{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@gobbletwo}
+%    \begin{macrocode}
+\long\def\ltx@gobbletwo#1#2{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@gobblethree}
+%    \begin{macrocode}
+\long\def\ltx@gobblethree#1#2#3{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@gobblefour}
+%    \begin{macrocode}
+\long\def\ltx@gobblefour#1#2#3#4{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@GobbleNum}
+%    \begin{macrocode}
+\def\ltx@GobbleNum#1{%
+  \romannumeral
+  \csname ltx@zero%
+  \expandafter\LTXcmds@GobbleNum
+  \romannumeral\LTXcmds@num{#1}000{m\endcsname}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@GobbleNum}
+%    \begin{macrocode}
+\def\LTXcmds@GobbleNum#1{%
+  \csname LTXcmds@G#1\LTXcmds@GobbleNum
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@Gm}
+%    \begin{macrocode}
+\long\def\LTXcmds@Gm#1{%
+  \endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Argument grabbers}
+%
+%    \begin{macro}{\ltx@firstofone}
+%    \begin{macrocode}
+\long\def\ltx@firstofone#1{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@firstoftwo}
+%    \begin{macrocode}
+\long\def\ltx@firstoftwo#1#2{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@secondoftwo}
+%    \begin{macrocode}
+\long\def\ltx@secondoftwo#1#2{#2}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@firstofthree}
+%    \begin{macrocode}
+\long\def\ltx@firstofthree#1#2#3{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@secondofthree}
+%    \begin{macrocode}
+\long\def\ltx@secondofthree#1#2#3{#2}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@thirdofthree}
+%    \begin{macrocode}
+\long\def\ltx@thirdofthree#1#2#3{#3}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@firstoffour}
+%    \begin{macrocode}
+\long\def\ltx@firstoffour#1#2#3#4{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@secondoffour}
+%    \begin{macrocode}
+\long\def\ltx@secondoffour#1#2#3#4{#2}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@thirdoffour}
+%    \begin{macrocode}
+\long\def\ltx@thirdoffour#1#2#3#4{#3}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@fourthoffour}
+%    \begin{macrocode}
+\long\def\ltx@fourthoffour#1#2#3#4{#4}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{List helpers}
+%
+%    \begin{macro}{\ltx@carzero}
+%    \begin{macrocode}
+\long\def\ltx@carzero#1\@nil{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@cdrzero}
+%    \begin{macrocode}
+\long\def\LTXcmds@cdrzero#1\@nil{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@cdrzero}
+%    \begin{macrocode}
+\def\ltx@cdrzero{%
+  \romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@car}
+%    \begin{macrocode}
+\long\def\ltx@car#1#2\@nil{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@cdr}
+%    \begin{macrocode}
+\long\def\ltx@cdr#1{%
+  \romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@cartwo}
+%    \begin{macrocode}
+\long\def\ltx@cartwo#1#2#3\@nil{#1#2}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@carsecond}
+%    \begin{macrocode}
+\long\def\ltx@carsecond#1#2#3\@nil{#2}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@cdrtwo}
+%    \begin{macrocode}
+\long\def\ltx@cdrtwo#1#2{%
+  \romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@carthree}
+%    \begin{macrocode}
+\long\def\ltx@carthree#1#2#3#4\@nil{#1#2#3}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@carthird}
+%    \begin{macrocode}
+\long\def\ltx@carthird#1#2#3#4\@nil{#3}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@cdrthree}
+%    \begin{macrocode}
+\long\def\ltx@cdrthree#1#2#3{%
+  \romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@carfour}
+%    \begin{macrocode}
+\long\def\ltx@carfour#1#2#3#4#5\@nil{#1#2#3#4}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@carfourth}
+%    \begin{macrocode}
+\long\def\ltx@carfourth#1#2#3#4#5\@nil{#4}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@cdrfour}
+%    \begin{macrocode}
+\long\def\ltx@cdrfour#1#2#3#4{%
+  \romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@CarNum}
+%    \begin{macrocode}
+\def\ltx@CarNum#1{%
+  \romannumeral
+  \csname LTXcmds@CarNumFinish%
+  \expandafter\LTXcmds@CarNum
+  \romannumeral\LTXcmds@num{#1}000{x\endcsname}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@CarNum}
+%    \begin{macrocode}
+\def\LTXcmds@CarNum#1{%
+  \csname LTXcmds@C#1\LTXcmds@CarNum
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@Cm}
+%    \begin{macrocode}
+\long\def\LTXcmds@Cm#1#2{%
+  \endcsname{#1#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@Cx}
+%    \begin{macrocode}
+\def\LTXcmds@Cx#1{%
+  \endcsname{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@CarNumFinish}
+%    \begin{macrocode}
+\long\def\LTXcmds@CarNumFinish#1#2\@nil{%
+  \ltx@zero
+  #1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@CarNumth}
+%    \begin{macrocode}
+\def\ltx@CarNumth#1{%
+  \romannumeral
+  \expandafter\expandafter\expandafter
+  \LTXcmds@CarNumth
+  \ltx@GobbleNum{#1}{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@CarNumth}
+%    \begin{macrocode}
+\long\def\LTXcmds@CarNumth#1#2\@nil{%
+  \ltx@zero
+  #1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@CdrNum}
+%    \begin{macrocode}
+\def\ltx@CdrNum#1{%
+  \romannumeral%
+  \expandafter\expandafter\expandafter\ltx@cdrzero
+  \expandafter\expandafter\expandafter\ltx@zero
+  \ltx@GobbleNum{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Tail recursion}
+%
+%    \begin{macro}{\ltx@ReturnAfterFi}
+%    \begin{macrocode}
+\long\def\ltx@ReturnAfterFi#1\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@ReturnAfterElseFi}
+%    \begin{macrocode}
+\long\def\ltx@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Empty macro}
+%
+%    \begin{macro}{\ltx@empty}
+%    \begin{macrocode}
+\def\ltx@empty{}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Characters}
+%
+%    \begin{macro}{\ltx@space}
+%    \begin{macrocode}
+\def\ltx@space{ }
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@percentchar}
+%    \begin{macrocode}
+\begingroup
+  \lccode`0=`\%\relax
+\lowercase{\endgroup
+  \def\ltx@percentchar{0}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@backslashchar}
+%    \begin{macrocode}
+\begingroup
+  \lccode`0=`\\\relax
+\lowercase{\endgroup
+  \def\ltx@backslashchar{0}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@hashchar}
+%    \begin{macrocode}
+\begingroup
+  \lccode`0=`\#\relax
+\lowercase{\endgroup
+  \def\ltx@hashchar{0}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@leftbracechar}
+%    \begin{macrocode}
+\begingroup
+  \lccode`0=`\{\relax
+\lowercase{\endgroup
+  \def\ltx@leftbracechar{0}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@rightbracechar}
+%    \begin{macrocode}
+\begingroup
+  \lccode`0=`\}\relax
+\lowercase{\endgroup
+  \def\ltx@rightbracechar{0}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Boolean switch}
+%
+%    \begin{macro}{\ltx@newif}
+%    \begin{macrocode}
+\def\ltx@newif#1{%
+  \begingroup
+    \escapechar=-1 %
+  \expandafter\endgroup
+  \expandafter\LTXcmds@newif\string#1\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@newif}
+%    \begin{macrocode}
+\begingroup
+  \escapechar=-1 %
+\expandafter\endgroup
+\expandafter\def\expandafter\LTXcmds@newif\string\if#1\@nil{%
+  \expandafter\edef\csname#1true\endcsname{%
+    \let
+    \expandafter\noexpand\csname if#1\endcsname
+    \noexpand\iftrue
+  }%
+  \expandafter\edef\csname#1false\endcsname{%
+    \let
+    \expandafter\noexpand\csname if#1\endcsname
+    \noexpand\iffalse
+  }%
+  \csname#1false\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@newglobalif}
+%    \begin{macrocode}
+\def\ltx@newglobalif#1{%
+  \begingroup
+    \escapechar=-1 %
+  \expandafter\endgroup
+  \expandafter\LTXcmds@newglobalif\string#1\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@newglobalif}
+%    \begin{macrocode}
+\begingroup
+  \escapechar=-1 %
+\expandafter\endgroup
+\expandafter
+\def\expandafter\LTXcmds@newglobalif\string\if#1\@nil{%
+  \expandafter\edef\csname#1true\endcsname{%
+    \global\let
+    \expandafter\noexpand\csname if#1\endcsname
+    \noexpand\iftrue
+  }%
+  \expandafter\edef\csname#1false\endcsname{%
+    \global\let
+    \expandafter\noexpand\csname if#1\endcsname
+    \noexpand\iffalse
+  }%
+  \csname#1false\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Command definitions}
+%
+%    \begin{macro}{\ltx@LocalExpandAfter}
+%    \begin{macrocode}
+\def\ltx@LocalExpandAfter{%
+  \begingroup
+    \expandafter\expandafter\expandafter
+  \endgroup
+  \expandafter
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\ltx@LocalExpandAfter
+\ifx\csname ifcsname\endcsname\relax
+%    \end{macrocode}
+%    \begin{macro}{\ltx@ifundefined}
+%    \begin{macrocode}
+  \def\ltx@ifundefined#1{%
+    \expandafter\ifx\csname #1\endcsname\relax
+      \expandafter\ltx@firstoftwo
+    \else
+      \expandafter\ltx@secondoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@IfUndefined}
+%    \begin{macrocode}
+  \def\ltx@IfUndefined#1{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname #1\endcsname\relax
+      \expandafter\ltx@firstoftwo
+    \else
+      \expandafter\ltx@secondoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \expandafter\ltx@gobble
+\else
+  \expandafter\ltx@firstofone
+\fi
+{%
+%    \end{macrocode}
+%    \begin{macro}{\ltx@ifundefined}
+%    \begin{macrocode}
+  \def\ltx@ifundefined#1{%
+    \ifcsname #1\endcsname
+      \expandafter\ifx\csname #1\endcsname\relax
+        \expandafter\expandafter\expandafter\ltx@firstoftwo
+      \else
+        \expandafter\expandafter\expandafter\ltx@secondoftwo
+      \fi
+    \else
+      \expandafter\ltx@firstoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@IfUndefined}
+%    \begin{macrocode}
+  \let\ltx@IfUndefined\ltx@ifundefined
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+% \subsection{Stripping}
+%
+%    \begin{macro}{\ltx@RemovePrefix}
+%    \begin{macrocode}
+\def\ltx@RemovePrefix#1>{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@StripPrefix}
+%    \begin{macrocode}
+\def\ltx@StripPrefix{%
+  \expandafter\ltx@RemovePrefix
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@onelevel@sanitize}
+%    \begin{macrocode}
+\def\ltx@onelevel@sanitize#1{%
+  \edef#1{%
+    \expandafter
+    \ltx@RemovePrefix\meaning#1%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{File management}
+%
+% \subsubsection{File extensions}
+%
+%    \begin{macro}{\ltx@clsextension}
+%    \begin{macrocode}
+\def\ltx@clsextension{cls}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@pkgextension}
+%    \begin{macrocode}
+\def\ltx@pkgextension{sty}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Load check}
+%
+%    \begin{macro}{\ltx@iffileloaded}
+%    \begin{macrocode}
+\def\ltx@iffileloaded#1{%
+  \ltx@ifundefined{ver@#1}\ltx@secondoftwo\ltx@firstoftwo
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@ifclassloaded}
+%    \begin{macrocode}
+\def\ltx@ifclassloaded#1{%
+  \ltx@iffileloaded{#1.\ltx@clsextension}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@ifpackageloaded}
+%    \begin{macrocode}
+\def\ltx@ifpackageloaded#1{%
+  \ltx@iffileloaded{#1.\ltx@pkgextension}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Version date check}
+%
+%    \begin{macro}{\ltx@iffilelater}
+%    \begin{macrocode}
+\def\ltx@iffilelater#1#2{%
+  \ltx@iffileloaded{#1}{%
+    \expandafter\LTXcmds@IfLater\expandafter{%
+      \number
+      \expandafter\expandafter\expandafter\LTXcmds@ParseVersion
+      \expandafter\expandafter\expandafter{%
+        \csname ver@#1\endcsname
+      }%
+    \expandafter}\expandafter{%
+      \number
+      \expandafter\LTXcmds@ParseVersion\expandafter{#2}%
+    }%
+  }\ltx@secondoftwo
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@IfLater}
+%    \begin{macrocode}
+\def\LTXcmds@IfLater#1#2{%
+  \ifcase 0%
+      \ifnum#1<19940101 %
+      \else
+        \ifnum#2<19940101 %
+        \else
+          \ifnum#2>#1 %
+          \else
+            1%
+          \fi
+        \fi
+      \fi
+      \ltx@space
+    \expandafter\ltx@secondoftwo
+  \else
+    \expandafter\ltx@firstoftwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@ifclasslater}
+%    \begin{macrocode}
+\def\ltx@ifclasslater#1{%
+  \ltx@iffilelater{#1.\ltx@clsextension}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@ifpackagelater}
+%    \begin{macrocode}
+\def\ltx@ifpackagelater#1{%
+  \ltx@iffilelater{#1.\ltx@pkgextension}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\ltx@IfUndefined{pdfmatch}{%
+%    \end{macrocode}
+%    \begin{macro}{\LTXcmds@ParseVersion}
+%    \begin{macrocode}
+  \def\LTXcmds@ParseVersion#1{%
+    \LTXcmds@@ParseVersion#10000/00/00\@nil
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@@ParseVersion}
+%    \begin{macrocode}
+  \def\LTXcmds@@ParseVersion#1#2#3#4/#5#6/#7#8#9\@nil{%
+    #1#2#3#4#5#6#7#8%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}{%
+%    \end{macrocode}
+%    \begin{macro}{\LTXcmds@ParseVersion}
+%    \begin{macrocode}
+  \def\LTXcmds@ParseVersion#1{%
+    \ifnum\pdfmatch{%
+      ^%
+      (199[4-9]|[2-9][0-9][0-9][0-9])/%
+      (0[1-9]|1[0-2])/%
+      (0[1-9]|[1-2][0-9]|3[0-1])%
+    }{#1}=1 %
+      \ltx@StripPrefix\pdflastmatch1 %
+      \ltx@StripPrefix\pdflastmatch2 %
+      \ltx@StripPrefix\pdflastmatch3 %
+    \else
+      0%
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+% \subsection{Macro additions}
+%
+%    \begin{macro}{\ltx@GlobalAppendToMacro}
+%    \begin{macrocode}
+\long\def\ltx@GlobalAppendToMacro#1#2{%
+  \ifx\ltx@undefined#1%
+    \let#1\ltx@empty
+  \else
+    \ifx\relax#1%
+      \let#1\ltx@empty
+    \fi
+  \fi
+  \begingroup
+    \ltx@LocToksA\expandafter{#1#2}%
+    \xdef#1{\the\ltx@LocToksA}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocalAppendToMacro}
+%    \begin{macrocode}
+\long\def\ltx@LocalAppendToMacro#1#2{%
+  \global\let\LTXcmds@gtemp#1%
+  \ifx\ltx@undefined\LTXcmds@gtemp
+    \global\let\LTXcmds@gtemp\ltx@empty
+  \else
+    \ifx\relax\LTXcmds@gtemp
+      \global\letLTXcmds@gtemp\ltx@empty
+    \fi
+  \fi
+  \begingroup
+    \ltx@LocToksA\expandafter{\LTXcmds@gtemp#2}%
+    \xdef\LTXcmds@gtemp{\the\ltx@LocToksA}%
+  \endgroup
+  \let#1\LTXcmds@gtemp
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@GlobalPrependToMacro}
+%    \begin{macrocode}
+\long\def\ltx@GlobalPrependToMacro#1#2{%
+  \ifx\ltx@undefined#1%
+    \let#1\ltx@empty
+  \else
+    \ifx\relax#1%
+      \let#1\ltx@empty
+    \fi
+  \fi
+  \begingroup
+    \ltx@LocToksA{#2}%
+    \ltx@LocToksB\expandafter{#1}%
+    \xdef#1{\the\ltx@LocToksA\the\ltx@LocToksB}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@LocalPrependToMacro}
+%    \begin{macrocode}
+\long\def\ltx@LocalPrependToMacro#1#2{%
+  \global\let\LTXcmds@gtemp#1%
+  \ifx\ltx@undefined\LTXcmds@gtemp
+    \global\let\LTXcmds@gtemp\ltx@empty
+  \else
+    \ifx\relax\LTXcmds@gtemp
+      \global\letLTXcmds@gtemp\ltx@empty
+    \fi
+  \fi
+  \begingroup
+    \ltx@LocToksA{#2}%
+    \ltx@LocToksB\expandafter{\LTXcmds@gtemp}%
+    \xdef\LTXcmds@gtemp{\the\ltx@LocToksA\the\ltx@LocToksB}%
+  \endgroup
+  \let#1\LTXcmds@gtemp
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Next character detection}
+%
+%    \begin{macro}{\ltx@ifnextchar}
+%    \begin{macrocode}
+\long\def\ltx@ifnextchar#1#2#3{%
+  \begingroup
+  \let\LTXcmds@CharToken= #1\relax
+  \ltx@LocToksA{\endgroup#2}%
+  \ltx@LocToksB{\endgroup#3}%
+  \futurelet\LTXcmds@LetToken\LTXcmds@ifnextchar
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@ifnextchar}
+%    \begin{macrocode}
+\def\LTXcmds@ifnextchar{%
+  \ifx\LTXcmds@LetToken\LTXcmds@CharToken
+    \the\expandafter\ltx@LocToksA
+  \else
+    \expandafter
+      \ifx\csname LTXcmds@LetToken\endcsname\LTXcmds@SpaceToken
+      \expandafter\expandafter\expandafter\LTXcmds@@ifnextchar
+    \else
+      \the\expandafter\expandafter\expandafter\ltx@LocToksB
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@@ifnextchar}
+%    \cs{futurelet} does not distinguish between a
+%    character and a command that is a character
+%    (defined by using \cs{let} or \cs{futurelet}).
+%    Therefore the space is catched by \cs{romannumeral}
+%    with negative character constant that gobbles one
+%    optional space.
+%    \begin{macrocode}
+\def\LTXcmds@@ifnextchar{%
+  \expandafter\futurelet
+  \expandafter\LTXcmds@LetToken
+  \expandafter\LTXcmds@ifnextchar
+  \romannumeral-`\.%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@SpaceToken}
+%    \begin{macrocode}
+\ltx@firstofone{\let\LTXcmds@SpaceToken= } %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@ifnextchar@nospace}
+%    \begin{macrocode}
+\long\def\ltx@ifnextchar@nospace#1#2#3{%
+  \begingroup
+  \let\LTXcmds@CharToken= #1\relax
+  \ltx@LocToksA{\endgroup#2}%
+  \ltx@LocToksB{\endgroup#3}%
+  \futurelet\LTXcmds@LetToken\LTXcmds@ifnextchar@nospace
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@ifnextchar@nospace}
+%    \begin{macrocode}
+\def\LTXcmds@ifnextchar@nospace{%
+  \the
+  \ifx\LTXcmds@LetToken\LTXcmds@CharToken
+    \expandafter\ltx@LocToksA
+  \else
+    \expandafter\ltx@LocToksB
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+% \subsection{\cs{ltx@leavevmode}, \cs{ltx@mbox}}
+%
+%    \begin{macro}{\ltx@leavevmode}
+%    \begin{macrocode}
+\ltx@IfUndefined{quitvmode}{%
+  \ltx@IfUndefined{leavevmode}{%
+    \ltx@IfUndefined{voidb@x}{%
+      \ltx@IfUndefined{newbox}{%
+        \def\ltx@leavevmode{%
+          \begingroup
+            \setbox\ltx@zero=\hbox{}%
+            \begingroup
+              \setbox\ltx@zero=\hbox{\box\ltx@zero}%
+            \endgroup
+            \unhbox\ltx@zero
+          \endgroup
+        }%
+      }{%
+        \csname newbox\endcsname\LTXcmds@VoidBox
+        \ifvoid\LTXcmds@VoidBox
+        \else
+          \setbox\LTXcmds@VoidBox=\hbox{}%
+          \begingroup
+            \setbox\LTXcmds@VoidBox=\hbox{\box\LTXcmds@VoidBox}%
+          \endgroup
+        \fi
+        \def\ltx@leavevmode{\unhbox\LTXcmds@VoidBox}%
+      }%
+    }{%
+      \def\ltx@leavevmode{\unhbox\voidb@x}%
+    }%
+  }{%
+    \let\ltx@leavevmode\leavevmode
+  }%
+}{%
+  \let\ltx@leavevmode\quitvmode
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@mbox}
+%    \begin{macrocode}
+\def\ltx@mbox{%
+  \ltx@leavevmode
+  \hbox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Help macros}
+%
+%    \begin{macro}{\LTXcmds@num}
+%    \begin{macrocode}
+\ltx@IfUndefined{numexpr}{%
+  \def\LTXcmds@num#1{%
+    \expandafter\ltx@firstofone\expandafter{%
+      \number#1%
+    }%
+  }%
+}{%
+  \def\LTXcmds@num#1{%
+    \expandafter\ltx@firstofone\expandafter{%
+      \the\numexpr#1%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Expandable test for emptiness}
+%
+%    \begin{macrocode}
+\ltx@IfUndefined{detokenize}{%
+%    \end{macrocode}
+%
+% \subsubsection{Vanilla \hologo{TeX}}
+%
+%    \begin{macro}{\ltx@ifempty}
+%    The macro is based on \cs{@ifempty} of Robert R. Schneck
+%    \cite{ifempty:schneck}
+%    and \cs{@ifnull} of Ulrich Diez \cite{ifnull:diez}.
+%    There are three cases to consider:
+%    \begin{compactenum}
+%    \item |#1| is empty,
+%    \item |#1| is not empty and the first token
+%      is not a begingroup character,
+%    \item |#1| starts with a begingroup character (catcode 1).
+%    \end{compactenum}
+%    \begin{macrocode}
+  \def\LTXcmds@temp#1{%
+    \long\def\ltx@ifempty##1{%
+      \romannumeral0%
+      \iffalse{\fi
+        \expandafter\ltx@gobble\expandafter{%
+          \expandafter{\string##1}%
+          \expandafter\ltx@gobble\string
+        }%
+        \expandafter\ltx@firstofthree\expandafter
+        {\iffalse}\fi
+        \expandafter#1\ltx@secondoftwo
+      }%
+      \expandafter#1\ltx@firstoftwo
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@ifblank}
+%    \begin{macrocode}
+    \long\def\ltx@ifblank##1{%
+      \romannumeral0%
+      \iffalse{\fi
+        \expandafter\expandafter\expandafter\ltx@gobble
+        \expandafter\expandafter\expandafter{%
+          \expandafter\expandafter\expandafter{%
+            \expandafter\string\ltx@gobble##1.%
+          }%
+          \expandafter\ltx@gobble\string
+        }%
+        \expandafter\ltx@firstofthree\expandafter
+        {\iffalse}\fi
+        \expandafter#1\ltx@secondoftwo
+      }%
+      \expandafter#1\ltx@firstoftwo
+    }%
+  }%
+  \LTXcmds@temp{ }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}{%
+%    \end{macrocode}
+%
+% \subsubsection{With \cs{detokenize}}
+%
+%    Ahmed Musa provided \cs{ifstrempty} using \cs{detokenize}
+%    and \cs{pdfstrcmp} \cite{ifstrempty:musa}. Ulrich Diez, GL,
+%    Heiko Oberdiek
+%    improved it further by removing \cs{pdfstrcmp} and
+%    taking three arguments
+%    \cite{ifstrempty:diez1,ifstrempty:diez2,ifstrempty:diez3,^^A
+%      ifstrempty:gl,ifstrempty:ho}.
+%
+%    \begin{macro}{\ltx@ifempty}
+%    \begin{macrocode}
+  \long\def\ltx@ifempty#1{%
+    \romannumeral%
+    \csname
+      LTXcmds@ifempty%
+      \ifcat$\detokenize{#1}$%
+        @%
+      \fi
+    \endcsname
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@ifempty@}
+%    \begin{macrocode}
+  \long\def\LTXcmds@ifempty@#1#2{0 #1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@ifempty}
+%    \begin{macrocode}
+  \long\def\LTXcmds@ifempty#1#2{0 #2}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\cs{ltx@ifblank}}
+%
+%    \begin{macro}{\ltx@ifblank}
+%    \begin{macrocode}
+  \long\def\ltx@ifblank#1{%
+    \romannumeral%
+    \csname
+      LTXcmds@ifempty%
+      \ifcat$\detokenize\expandafter{\ltx@gobble#1.}$%
+        @%
+      \fi
+    \endcsname
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+% \subsection{\cs{ltx@zapspace}}
+%
+%    \begin{macro}{\ltx@zapspace}
+%    \begin{macrocode}
+\long\def\ltx@zapspace#1{%
+  \romannumeral
+  \LTXcmds@zapspace\ltx@zero#1 \@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LTXcmds@zapspace}
+%    \begin{macrocode}
+\long\def\LTXcmds@zapspace#1 #2\@nil{%
+  \ltx@ifempty{#2}{%
+    #1%
+  }{%
+    \LTXcmds@zapspace#1#2\@nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{ltx@IfBoxEmpty}}
+%
+%    In case of \hologo{eTeX} the test for an empty box
+%    is done via \cs{lastnodetype} as suggested
+%    by David Kastrup \cite{ifboxempty:dak}.
+%    \begin{macrocode}
+\ltx@IfUndefined{lastnodetype}{%
+  \catcode`\$=9 %
+  \catcode`\&=14 %
+}{%
+  \catcode`\$=14 %
+  \catcode`\&=9 %
+}
+%    \end{macrocode}
+%    \begin{macro}{\ltx@IfBoxEmpty}
+%    \begin{macrocode}
+\def\ltx@IfBoxEmpty#1{%
+  \ifvoid#1\relax
+    \expandafter\ltx@secondoftwo
+  \else
+%    \end{macrocode}
+%    Implementation using \hologo{eTeX}'s \cs{lastnodetype}.
+%    \begin{macrocode}
+&   \begingroup
+&     \setbox\ltx@zero=\ifhbox#1\hbox\else\vbox\fi{%
+&       \ifhmode\unhcopy\else\unvcopy\fi#1\relax
+&       \expandafter
+&     }%
+&   \expandafter\endgroup
+&   \ifnum\lastnodetype<\ltx@zero
+&     \expandafter\expandafter\expandafter\ltx@firstoftwo
+&   \else
+&     \expandafter\expandafter\expandafter\ltx@secondoftwo
+&   \fi
+%    \end{macrocode}
+%    Implementation without \hologo{eTeX} using a signature
+%    at the beginning of the test box.
+%    \begin{macrocode}
+$   \begingroup
+$     \setbox\ltx@zero=\ifhbox#1\hbox\else\vbox\fi{%
+$       \penalty\ltx@one
+$       \ifhmode\unhcopy\else\unvcopy\fi#1\relax
+$       \expandafter
+$     }%
+$     \ifnum\lastpenalty=\ltx@one
+%    \end{macrocode}
+%    Box 0 has been changed and is restored by
+%    closing the group.
+%    \begin{macrocode}
+$       \endgroup
+$       \begingroup
+$       \setbox\ltx@zero=\ifhbox#1\hbox\else\vbox\fi{%
+$         \penalty\ltx@two
+$         \ifhmode\unhcopy\else\unvcopy\fi#1\relax
+$         \expandafter
+$       }%
+$       \ifnum\lastpenalty=\ltx@two
+$         \def\next{\endgroup\expandafter\ltx@firstoftwo}%
+$       \else
+$         \def\next{\endgroup\expandafter\ltx@secondoftwo}%
+$       \fi
+$     \else
+$       \def\next{\endgroup\expandafter\ltx@secondoftwo}%
+$     \fi
+$   \next
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ltx@IfBoxVoidOrEmpty}
+%    \begin{macrocode}
+\def\ltx@IfBoxVoidOrEmpty#1{%
+  \ifvoid#1\relax
+    \expandafter\ltx@thirdoffour
+  \fi
+  \ltx@IfBoxEmpty{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\LTXcmds@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input ltxcmds.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test \cs{ltx@GobbleNum}}
+%
+%    \begin{macrocode}
+%<*test-gobble>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+\fi
+\catcode`\@=11 %
+\def\msg#{\immediate\write16}%
+\msg{[Test \string\ltx@GobbleNum]}%
+\long\def\Test#1=#2\\{%
+  \edef\StrA{\ltx@GobbleNum#1}%
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\StrAA
+  \expandafter\expandafter\expandafter{\ltx@GobbleNum#1}%
+  \edef\StrB{#2}%
+  \ifx\StrA\StrB
+    \ifx\StrAA\StrB
+      \msg{* ok.}%
+    \else
+      \msg{StrAA: \StrAA}%
+      \msg{StrB: \StrB}%
+      \errhelp{Test: #1=#2}%
+      \errmessage{Test (two expansions) failed}%
+    \fi
+  \else
+    \msg{StrA: \StrA}%
+    \msg{StrB: \StrB}%
+    \errhelp{Test: #1=#2}%
+    \errmessage{Test (edef) failed!}%
+  \fi
+}
+\Test0abc=abc\\
+\Test1abc=bc\\
+\Test2abc=c\\
+\Test3abcd=d\\
+\Test4abcde=e\\
+\Test5abcdef=f\\
+\Test6abcdefg=g\\
+\Test7abcdefgh=h\\
+\Test8abcdefghi=i\\
+\Test9abcdefghij=j\\
+\Test{10}0123456789X=X\\
+\Test{12}abcdefghijklm=m\\
+\Test{700}%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+X=X\\
+\Test{-1}abc=abc\\
+\Test2\par\par\relax=\relax\\
+
+\begingroup
+  \count1=2 %
+  \Test{\count1}abc=c\\%
+\endgroup
+
+\ltx@IfUndefined{numexpr}{%
+}{%
+  \Test{1+1}abc=c\\%
+}
+
+\msg{[Test \string\ltx@CdrNum]}%
+\long\def\Test#1=#2\\{%
+  \edef\StrA{\ltx@CdrNum#1\@nil}%
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\StrAA
+  \expandafter\expandafter\expandafter{\ltx@CdrNum#1\@nil}%
+  \edef\StrB{#2}%
+  \ifx\StrA\StrB
+    \ifx\StrAA\StrB
+      \msg{* ok.}%
+    \else
+      \msg{StrAA: \meaning\StrAA}%
+      \msg{StrB: \meaning\StrB}%
+      \errhelp{Test: #1=#2}%
+      \errmessage{Test (two expansions) failed}%
+    \fi
+  \else
+    \msg{StrA: \StrA}%
+    \msg{StrB: \StrB}%
+    \errhelp{Test: #1=#2}%
+    \errmessage{Test (edef) failed!}%
+  \fi
+}
+\Test0abc=abc\\
+\Test1abc=bc\\
+\Test2abc=c\\
+\Test3abcd=d\\
+\Test4abcde=e\\
+\Test5abcdef=f\\
+\Test6abcdefg=g\\
+\Test7abcdefgh=h\\
+\Test8abcdefghi=i\\
+\Test9abcdefghij=j\\
+\Test{10}0123456789X=X\\
+\Test{12}abcdefghijklm=m\\
+\Test{700}%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+X=X\\
+\Test{-1}abc=abc\\
+\Test2\par\par\relax=\relax\\
+
+\msg{[Test \string\ltx@CarNum]}%
+\long\def\Test#1=#2\\{%
+  \edef\StrA{\ltx@CarNum#1\@nil}%
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\StrAA
+  \expandafter\expandafter\expandafter{\ltx@CarNum#1\@nil}%
+  \edef\StrB{#2}%
+  \ifx\StrA\StrB
+    \ifx\StrAA\StrB
+      \msg{* ok.}%
+    \else
+      \msg{StrAA: \meaning\StrAA}%
+      \msg{StrB: \meaning\StrB}%
+      \errhelp{Test: #1=#2}%
+      \errmessage{Test (two expansions) failed}%
+    \fi
+  \else
+    \msg{StrA: \StrA}%
+    \msg{StrB: \StrB}%
+    \errhelp{Test: #1=#2}%
+    \errmessage{Test (edef) failed!}%
+  \fi
+}
+\Test0abc=\\
+\Test1abc=a\\
+\Test2abc=ab\\
+\Test3abc=abc\\
+\Test3abcd=abc\\
+\Test4abcde=abcd\\
+\Test{10}0123456789X=0123456789\\
+\Test{12}abcdefghijklm=abcdefghijkl\\
+\Test{700}%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+X=%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+0123456789012345678901234567890123456789012345678901234567890123456789%
+\\
+\Test{-1}abc=\\
+\Test2\par\par\relax=\par\par\\
+\csname @@end\endcsname\end
+%</test-gobble>
+%    \end{macrocode}
+%
+% \subsection{Test \cs{ltx@ifempty}}
+%
+%    \begin{macrocode}
+%<*test-ifempty>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\errorcontextlines=1000 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+\fi
+\def\msg#{\immediate\write16}
+\def\TestY{\Y}
+\def\TestN{\N}
+\msg{* \string\ltx@ifempty}
+\long\def\test#1{%
+  \begingroup
+    % Calculate expected test result via macro definition
+    \def\Stuff{#1}%
+    \ifx\Stuff\ltx@empty
+      \def\StuffEmpty{\Y}%
+    \else
+      \def\StuffEmpty{\N}%
+    \fi
+    % Test \ltx@ifempty
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\TestEmpty
+    \expandafter\expandafter\expandafter{%
+      \ltx@ifempty{#1}{\Y}{\N}%
+    }%
+    \ifx\StuffEmpty\TestEmpty
+      \msg{* Test OK}%
+    \else
+      \ltx@IfUndefined{detokenize}{}{%
+        \msg{Stuff: [\detokenize{\Stuff}]}%
+      }%
+      \errmessage{Test failed!}%
+    \fi
+  \endgroup
+}
+\test{}
+\test{a}
+\test{abc}
+\test{\par}
+\test{ }
+\test{\if}
+\test{{\if}}
+\test{\else}
+\test{{\else}}
+\test{\fi}
+\test{{}\fi}
+\test{\or\ifcase}
+\test{{}}
+\test{{a}}
+\test{{}abc}
+\test{{\par}}
+\test{{}\par}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\SpaceTwo#1{%
+  \def\SpaceTwo{#1#1}%
+}\SpaceTwo{ }
+\msg{* \string\ltx@ifblank}
+\long\def\test#1{%
+  \begingroup
+    % Calculate expected test result via macro definition
+    \def\Stuff{#1}%
+    \ifx\Stuff\ltx@empty
+      \def\StuffEmpty{\Y}%
+    \else
+      \ifx\Stuff\ltx@space
+        \def\StuffEmpty{\Y}%
+      \else
+        \ifx\Stuff\SpaceTwo
+          \def\StuffEmpty{\Y}%
+        \else
+          \def\StuffEmpty{\N}%
+        \fi
+      \fi
+    \fi
+    % Test \ltx@ifblank
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\TestEmpty
+    \expandafter\expandafter\expandafter{%
+      \ltx@ifblank{#1}{\Y}{\N}%
+    }%
+    \ifx\StuffEmpty\TestEmpty
+      \msg{* Test OK}%
+    \else
+      \ltx@IfUndefined{detokenize}{}{%
+        \msg{Stuff: [\detokenize{\Stuff}]}%
+      }%
+      \errmessage{Test failed!}%
+    \fi
+  \endgroup
+}
+\test{}
+\test{a}
+\test{\if}
+\test{\else}
+\test{\fi}
+\test{ \fi}
+\test{\par}
+\test{ \par}
+\test{{}}
+\test{ {}}
+\def\x#1{%
+  \test{#1#1}%
+  \test{#1#1{}}%
+  \test{#1#1\par}%
+  \test{#1#1\else}%
+}\x{ }
+\csname @@end\endcsname\end
+%</test-ifempty>
+%    \end{macrocode}
+%
+% \subsection{Test \cs{ltx@zap@space}}
+%
+%    \begin{macrocode}
+%<*test-zapspace>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\errorcontextlines=1000 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+\fi
+\def\msg#{\immediate\write16}
+\def\space{ }
+\def\empty{}
+\msg{* \string\ltx@zapspace}
+\long\def\test#1#2{%
+  \begingroup
+    \def\TestInput{#1}%
+    \def\TestExpected{#2}%
+    % Test \ltx@zapspace
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\TestResult
+    \expandafter\expandafter\expandafter{%
+      \ltx@zapspace{#1}%
+    }%
+    \ifx\TestResult\TestExpected
+      \msg{* Test OK}%
+    \else
+      \ltx@onelevel@sanitize\TestInput
+      \ltx@onelevel@sanitize\TestExpected
+      \ltx@onelevel@sanitize\TestResult
+      \msg{* Input: \space\space\space[\TestInput]}%
+      \msg{ \space Result: \space\space[\TestResult]}%
+      \msg{ \space Expected: [\TestExpected]}%
+      \errmessage{Test failed!}%
+    \fi
+  \endgroup
+}
+\long\def\etest#1#2{%
+  \begingroup
+    \edef\x{\endgroup
+      \noexpand\test{#1}{#2}%
+    }%
+  \x
+}
+\catcode`\~=13 %
+\let~\noexpand
+%    \end{macrocode}
+%    \begin{macrocode}
+\test{}{}
+\test{{}}{{}}
+\test{ {}}{{}}
+\test{{ }}{{ }}
+\test{{} }{{}}
+\test{ {} }{{}}
+\test{ { } }{{ }}
+\test{a {b} c}{a{b}c}
+\test{a bb ccc}{abbccc}
+\test{{a} {bb} {ccc}}{{a}{bb}{ccc}}
+\test{\par}{\par}
+\test{\if}{\if}
+\test{\space}{\space}
+\etest{\par\space\par}{\par\par}
+\etest{~\empty\space~\empty}{~\empty~\empty}
+\etest{~\fi\space~\else\space}{~\fi~\else}
+%    \end{macrocode}
+%    \begin{macrocode}
+\csname @@end\endcsname\end
+%</test-zapspace>
+%    \end{macrocode}
+%
+% \subsection{Test \cs{ltx@IfBoxEmpty}}
+%
+%    \begin{macrocode}
+%<*test-ifboxempty>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+\fi
+\def\msg#{\immediate\write16}
+ % make box 0 void
+\begingroup
+  \setbox0=\box0 %
+\endgroup
+\ifvoid0 %
+\else
+  \errmessage{Voiding box 0 failed}%
+\fi
+\setbox2=\box0 %
+\def\test#1#2{%
+  \@test{#1}{#2}%
+  \@@test{#1}{#2}%
+  \chardef\x=#1%
+  \@test\x{#2}%
+  \@@test\x{#2}%
+}
+\def\@test#1#2{%
+  \begingroup
+    \setbox9=\hbox{%
+      \def\TestExpected{#2}%
+      \ltx@IfBoxEmpty{#1}{%
+        \def\TestResult{Y}%
+      }{%
+        \def\TestResult{N}%
+      }%
+      \ifx\TestExpected\TestResult
+        \msg{* Test passed.}%
+      \else
+        \errmessage{Test failed!}%
+      \fi
+    }%
+    \ifdim\wd9=0pt %
+    \else
+      \errmessage{Unwanted space?}%
+    \fi
+  \endgroup
+}
+\def\@@test#1#2{%
+  \begingroup
+    \setbox9=\hbox{%
+      \def\TestExpected{#2}%
+      \ifvoid#1\def\TestExpected{Y}\fi
+      \ltx@IfBoxVoidOrEmpty{#1}{%
+        \def\TestResult{Y}%
+      }{%
+        \def\TestResult{N}%
+      }%
+      \ifx\TestExpected\TestResult
+        \msg{* Test passed.}%
+      \else
+        \errmessage{Test failed!}%
+      \fi
+    }%
+    \ifdim\wd9=0pt %
+    \else
+      \errmessage{Unwanted space?}%
+    \fi
+  \endgroup
+}
+\test0N
+\test2N
+\setbox0=\hbox{}
+\test0Y
+\setbox2=\hbox{}
+\test2Y
+\setbox0=\vbox{}
+\test0Y
+\setbox2=\vbox{}
+\test0Y
+\setbox0=\hbox{ }%
+\test0N
+\setbox2=\hbox{ }%
+\test2N
+\setbox0=\hbox{\penalty1}%
+\test0N
+\setbox2=\hbox{\penalty1}%
+\test2N
+\csname @@end\endcsname\end
+%</test-ifboxempty>
+%    \end{macrocode}
+%
+% \subsection{Test for next character detection}
+%
+%    \begin{macrocode}
+%<*test-nextchar>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+  \input eolgrab.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+  \RequirePackage{eolgrab}[2011/01/12]%
+\fi
+\def\msg#{\immediate\write16}
+\begingroup
+  \def\x#1{%
+    \endgroup
+    \let\TestSpaceToken= #1\relax
+  }%
+\x{ }
+\def\TestSpace{ }
+\begingroup
+  \lccode32=65 % space -> A
+\lowercase{%
+  \endgroup
+  \def\TestSpaceA{ }%
+}
+\def\TestCatch{%
+  \eolgrab\@TestCatch
+}
+\def\@TestCatch#1{%
+  \begingroup
+    \def\x{#1}%
+    \ifx\x\ltx@empty
+    \else
+      \ltx@onelevel@sanitize\x
+      \errmessage{Unparsed stuff on line [\x]}%
+    \fi
+  \endgroup
+}
+\def\TestCmdM#1{%
+  \TestCheckType{M}%
+  \TestCatch
+}
+\def\TestCmdOM[#1]#2{%
+  \TestCheckType{O}%
+  \TestCatch
+}
+\def\TestCheckType#1{%
+  \if\TestCmdType#1\relax
+  \else
+    \errmessage{Wrong type #1, expected: \TestCmdType}%
+  \fi
+}
+\def\TestCmd#1{%
+  \def\TestCmdType{#1}%
+  \ltx@ifnextchar[\TestCmdOM\TestCmdM
+}
+\def\TestCmdExp#1{%
+  \expandafter\TestCmd\expandafter#1%
+}
+\outer\def\TestOuter{}
+\TestCmd O[o]{m}
+\TestCmd M{m}
+\TestCmd O [o]{m}
+\TestCmd M {m}
+\def\x#1{\def\x{#1#1}}\x{ }
+\TestCmdExp O\x[o]{m}
+\TestCmdExp M\x{m}
+\def\x#1{\def\x{#1#1#1#1}}\x{ }
+\TestCmdExp O\x[o]{m}
+\TestCmdExp M\x{m}
+\def\x{\TestSpaceToken}
+\TestCmdExp O\x[o]{m}
+\TestCmdExp M\x{m}
+\def\x{\TestSpaceToken\TestSpaceToken\TestSpaceToken}
+\TestCmdExp O\x[o]{m}
+\TestCmdExp M\x{m}
+\TestCmd M\TestSpace
+\TestOuter
+\TestCmd M \TestSpace
+\TestOuter
+\TestCmd M\iftrue
+\TestOuter
+\TestCmd M\iffalse
+\TestOuter
+\TestCmd M\else
+\TestOuter
+\TestCmd M\fi
+\TestOuter
+\TestCmd M \iftrue
+\TestOuter
+\TestCmd M \iffalse
+\TestOuter
+\TestCmd M \else
+\TestOuter
+%
+\def\TestCmd#1{%
+  \def\TestCmdType{#1}%
+  \ltx@ifnextchar@nospace[\TestCmdOM\TestCmdM
+}
+\TestCmd O[o]{m}
+\TestCmd M{m}
+\TestCmd M [
+\TestOuter
+\TestCmd M {m}
+\TestCmd M\iftrue
+\TestOuter
+\TestCmd M\iffalse
+\TestOuter
+\TestCmd M\else
+\TestCmd M\fi
+\TestOuter
+\TestOuter
+%
+\def\TestCmd#1{%
+  \def\TestCmdType{#1}%
+  \ltx@ifnextchar(\TestCmdPM\TestCmdM
+}
+\def\TestCmdPM(#1)#2{%
+  \TestCheckType{P}%
+  \TestCatch
+}
+\TestCmd P(p){m}
+\TestCmd M{m}
+\TestCmd P (p){m}
+\TestCmd M {m}
+%
+\def\TestCmd#1{%
+  \def\TestCmdType{#1}%
+  \ltx@ifnextchar{ }\TestCmdSM\TestCmdM
+}
+\def\TestCmdSM#1#{%
+  \TestCheckType{S}%
+  \begingroup
+    \let\x= #1\relax
+    \ifx\x\TestSpaceToken
+    \else
+      \errmessage{unexpected space token: \meaning#1}%
+    \fi
+  \endgroup
+  \def\TestCmdType{M}%
+  \TestCmdM
+}
+\TestCmd S {m}
+\TestCmd M{m}
+\def\x#1{\def\x{#1#1}}\x{ }
+\TestCmdExp S\x{m}
+%
+\def\TestCmd#1{%
+  \def\TestCmdType{#1}%
+  \ltx@ifnextchar\iffalse\TestCmdIM\TestCmdM
+}
+\def\TestCmdIM\iffalse#1{%
+  \TestCheckType{I}%
+  \TestCatch
+}
+\TestCmd M\iftrue
+\TestOuter
+\TestCmd M \iftrue
+\TestCmd I\iffalse\iffalse
+\TestCmd I \iffalse\iffalse
+\TestOuter
+%
+\def\TestCmd#1{%
+  \def\TestCmdType{#1}%
+  \ltx@ifnextchar@nospace\iffalse\TestCmdIM\TestCmdM
+}
+\TestCmd M\iftrue
+\TestOuter
+\TestCmd I\iffalse\iffalse
+\TestOuter
+\csname @@end\endcsname\end
+%</test-nextchar>
+%    \end{macrocode}
+%
+% \subsection{Test for list helpers}
+%
+%    \begin{macrocode}
+%<*test-carcdr>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+  \input eolgrab.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+  \RequirePackage{eolgrab}[2011/01/12]%
+\fi
+\def\msg#{\immediate\write16}
+\def\space{ }
+\long\def\Test#1#2#3{%
+  \begingroup
+    \def\TestExpected{#3}%
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\TestResult
+    \expandafter\expandafter\expandafter{%
+      #1#2\@nil
+    }%
+    \ifx\TestResult\TestExpected
+    \else
+      \msg{\string\TestExpected: [\meaning\TestExpected]}%
+      \msg{\string\TestResult: \space\space[\meaning\TestResult]}%
+      \errmessage{Test failed!}%
+    \fi
+  \endgroup
+}
+\Test\ltx@carzero{abc}{}
+\Test\ltx@carzero{}{}
+\Test\ltx@carzero{\par\par}{}
+\Test\ltx@cdrzero{}{}
+\Test\ltx@cdrzero{abc}{abc}
+\Test\ltx@cdrzero{ \par}{ \par}
+\Test\ltx@cdrzero{\@empty}{\@empty}
+\Test\ltx@cdrzero{{}}{{}}
+\Test\ltx@car{abc}{a}
+\Test\ltx@car{\par}{\par}
+\Test\ltx@cdr{abc}{bc}
+\Test\ltx@cdr{a \par}{ \par}
+\Test\ltx@cdr{a\@empty}{\@empty}
+\Test\ltx@cartwo{abc}{ab}
+\Test\ltx@cartwo{\par\@empty}{\par\@empty}
+\Test\ltx@carsecond{abc}{b}
+\Test\ltx@carsecond{\@empty b\@empty}{b}
+\Test\ltx@carsecond{\par\par\par}{\par}
+\Test\ltx@cdrtwo{abc}{c}
+\Test\ltx@cdrtwo{ab \par}{ \par}
+\Test\ltx@cdrtwo{ab\@empty}{\@empty}
+\Test\ltx@cdrtwo{ab{}}{{}}
+\Test\ltx@cdrthree{abcdefg}{defg}
+\Test\ltx@cdrfour{abcdefg}{efg}
+\Test{\ltx@CdrNum{5}}{abcdefg}{fg}
+\Test{\ltx@CdrNum{0}}{\par}{\par}
+\Test{\ltx@CdrNum{0}}{\@empty}{\@empty}
+\Test{\ltx@CdrNum{0}}{{}}{{}}
+\Test{\ltx@CdrNum{0}}{ }{ }
+\Test{\ltx@CdrNum{2}}{abcd}{cd}
+\Test{\ltx@CdrNum{2}}{\vbox\par\hbox\par}{\hbox\par}
+\Test{\ltx@carthree}{abcdefg}{abc}
+\Test{\ltx@carfour}{abcdefg}{abcd}
+\Test{\ltx@CarNum{5}}{abcdefg}{abcde}
+\Test{\ltx@CarNum{2}}{\@empty\par}{\@empty\par}
+\Test\ltx@carthird{abcdefg}{c}
+\Test\ltx@carfourth{abcdefg}{d}
+\Test{\ltx@CarNumth{5}}{abcdefg}{e}
+\Test{\ltx@CarNumth{2}}{\@empty\@empty\@empty}{\@empty}
+\Test{\ltx@CarNumth{2}}{\par\par\par}{\par}
+\Test{\ltx@CarNumth{2}}{ab}{b}
+\csname @@end\endcsname\end
+%</test-carcdr>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/ltxcmds.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/ltxcmds.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex ltxcmds.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   ltxcmds.sty & tex/generic/oberdiek/ltxcmds.sty\\
+%   ltxcmds.pdf & doc/latex/oberdiek/ltxcmds.pdf\\
+%   test/ltxcmds-test1.tex & doc/latex/oberdiek/test/ltxcmds-test1.tex\\
+%   test/ltxcmds-test-gobble.tex & doc/latex/oberdiek/test/ltxcmds-test-gobble.tex\\
+%   test/ltxcmds-test-ifempty.tex & doc/latex/oberdiek/test/ltxcmds-test-ifempty.tex\\
+%   test/ltxcmds-test-zapspace.tex & doc/latex/oberdiek/test/ltxcmds-test-zapspace.tex\\
+%   test/ltxcmds-test-ifboxempty.tex & doc/latex/oberdiek/test/ltxcmds-test-ifboxempty.tex\\
+%   test/ltxcmds-test-nextchar.tex & doc/latex/oberdiek/test/ltxcmds-test-nextchar.tex\\
+%   test/ltxcmds-test-carcdr.tex & doc/latex/oberdiek/test/ltxcmds-test-carcdr.tex\\
+%   ltxcmds.dtx & source/latex/oberdiek/ltxcmds.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk ltxcmds.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{ltxcmds.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex ltxcmds.dtx
+%makeindex -s gind.ist ltxcmds.idx
+%pdflatex ltxcmds.dtx
+%makeindex -s gind.ist ltxcmds.idx
+%pdflatex ltxcmds.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{ltxcmds.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ltxcmds'>
+  <name>ltxcmds</name>
+  <caption>Some LaTeX kernel commands for general use.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.22'/>
+  <description>
+    This package exports some utility macros
+    from the LaTeX kernel into a separate namespace and
+    also makes them available for other formats such as plain TeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ltxcmds.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ltxcmds.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+%
+% \bibitem{ifempty:schneck}
+% Robert R. Schneck:
+% \textit{Re: \cs{ifempty} solution %
+%   (was Macro puzzle: maximally general \cs{ifempty})};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:3eef1ada_6@corp.newsgroups.com},
+% 2003-06-17.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/be03a159ec374895}}
+%
+% \bibitem{ifnull:diez}
+% Ulrich Diez:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:ibk3t8$ee7$1@news.albasani.net},
+% 2010-11-12.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/803bd57221a04996}}
+%
+% \bibitem{ifstrempty:musa}
+% Ahmed Musa:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:f5496afe-40ed-42bd-b629-a2419ecf7c0d@o14g2000prn.googlegroups.com},
+% 2010-12-03.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/fbf7d61a0c3a807d}}
+%
+% \bibitem{ifstrempty:diez1}
+% Ulrich Diez:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:idbo94$uka$1@four.albasani.net},
+% 2010-12-03.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/0c230ee479487962}}
+%
+% \bibitem{ifstrempty:diez2}
+% Ulrich Diez:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:idbpu4$cg1$1@news.albasani.net},
+% 2010-12-03.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/bbef4263390d647b}}
+%
+% \bibitem{ifstrempty:diez3}
+% Ulrich Diez:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:idd4ga$r83$1@four.albasani.net},
+% 2010-12-04.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/00dfd1ec103cd272}}
+%
+% \bibitem{ifstrempty:gl}
+% GL:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:4cfa2e27$0$7389$426a74cc@news.free.fr},
+% 2010-12-04.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/d3a75995c1cf267e}}
+%
+% \bibitem{ifstrempty:ho}
+% Heiko Oberdiek:
+% \textit{Re: TeX refuses to strip outer braces in argument};
+% newsgroup \xnewsgroup{comp.text.tex},
+% \url{news:iddhq1$3kj$1@news.eternal-september.org},
+% 2010-12-04.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/5f7a23e3ab70e347}}
+%
+% \bibitem{ifboxempty:dak}
+% David Kastrup:
+% \textit{How to detect if \cs{vbox} is empty};
+% newsgroup \xnewsgroup{comp.text.tex},
+% 2011-02-04.\\
+% {\small
+% \url{http://groups.google.com/group/comp.text.tex/msg/8d3cb89496a4d86d}}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2009/08/05 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2009/12/12 v1.1}
+%   \item
+%     Short title shortened.
+%   \item
+%     \cs{ltx@IfUndefined} added.
+%   \end{Version}
+%   \begin{Version}{2010/01/28 v1.2}
+%   \item
+%     \cs{ltx@RemovePrefix} and \cs{ltx@StripPrefix} added.
+%   \item
+%     \cs{ltx@ifclassloaded}, \cs{ltx@ifpackageloaded},
+%     \cs{ltx@iffileloaded},
+%     \cs{ltx@ifclasslater}, \cs{ltx@ifpackagelater},
+%     \cs{ltx@iffilelater},
+%     \cs{ltx@clsextension}, \cs{ltx@pkgextension} added.
+%   \item
+%     \cs{ltx@GlobalAppendToMacro}, \cs{ltx@LocalAppendToMacro} added.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.3}
+%   \item
+%     \cs{ltx@newif} added.
+%   \item
+%     \cs{ltx@ifnextchar} added.
+%   \item
+%     Numbers \cs{ltx@zero}, \cs{ltx@one}, \cs{ltx@two}, \cs{ltx@cclv} added.
+%   \end{Version}
+%   \begin{Version}{2010/03/09 v1.4}
+%   \item
+%     \cs{ltx@pkgextension} and \cs{ltx@clsextension} are hardcoded to
+%     avoid trouble with \cs{@onlypreamble}.
+%   \end{Version}
+%   \begin{Version}{2010/04/08 v1.5}
+%   \item
+%     \cs{ltx@cartwo}, \cs{ltx@cdrtwo},
+%     \cs{ltx@carthree}, \cs{ltx@cdrthree},
+%     \cs{ltx@carfour}, \cs{ltx@cdrfour} added.
+%   \item
+%     \cs{ltx@ReturnAfterFi} and \cs{ltx@ReturnAfterElseFi} fixed.
+%   \end{Version}
+%   \begin{Version}{2010/04/16 v1.6}
+%   \item
+%     \cs{ltx@leavevmode}, \cs{ltx@mbox} added.
+%   \end{Version}
+%   \begin{Version}{2010/04/26 v1.7}
+%   \item
+%     \cs{ltx@GobbleNum}, \cs{ltx@CdrNum}, \cs{ltx@CarNum} added.
+%   \item
+%     \cs{ltx@carzero}, \cs{ltx@cdrzero} added.
+%   \item
+%     \cs{ltx@hashchar} added.
+%   \end{Version}
+%   \begin{Version}{2010/09/11 v1.8}
+%   \item
+%     \cs{ltx@leftbracechar}, \cs{ltx@rightbracechar} added.
+%   \end{Version}
+%   \begin{Version}{2010/10/25 v1.9}
+%   \item
+%     \cs{ltx@LocalAppendToMacro} and \cs{ltx@GlobalAppendToMacro} are
+%     now \cs{long}.
+%   \end{Version}
+%   \begin{Version}{2010/10/31 v1.10}
+%   \item
+%     \cs{ltx@newglobalif} added.
+%   \end{Version}
+%   \begin{Version}{2010/11/12 v1.11}
+%   \item
+%     \cs{ltx@ifempty} added.
+%   \item
+%     \cs{ltx@firstofthree}, \cs{ltx@secondofthree}, \cs{ltx@thirdofthree}
+%     added.
+%   \end{Version}
+%   \begin{Version}{2010/12/02 v1.12}
+%   \item
+%     \cs{ltx@onelevel@sanitize} added.
+%   \item
+%     \cs{LTXcmds@num} fixed for the case with \cs{numexpr}
+%     (bug found by GL).
+%   \end{Version}
+%   \begin{Version}{2010/12/04 v1.13}
+%   \item
+%     \cs{ltx@ifblank} added.
+%   \item
+%     Optimization for \cs{ltx@ifempty}.
+%   \end{Version}
+%   \begin{Version}{2010/12/07 v1.14}
+%   \item
+%     \cs{ltx@zapspace} added.
+%   \end{Version}
+%   \begin{Version}{2010/12/12 v1.15}
+%   \item
+%     \cs{ltx@minusone} added.
+%   \end{Version}
+%   \begin{Version}{2011/02/04 v1.16}
+%   \item
+%     \cs{ltx@IfBoxEmpty} and \cs{ltx@IfBoxVoidOrEmpty} added.
+%   \item
+%     \cs{ltx@firstoffour}, \dots, \cs{ltx@fourthoffour} added.
+%   \end{Version}
+%   \begin{Version}{2011/02/05 v1.17}
+%   \item
+%     \cs{ltx@IfBoxEmpty}: an empty box may have non-zero dimensions.
+%   \end{Version}
+%   \begin{Version}{2011/03/16 v1.18}
+%   \item
+%     \cs{ltx@ifclasslater} fixed.
+%   \end{Version}
+%   \begin{Version}{2011/04/14 v1.19}
+%   \item
+%     \cs{ltx@ifnextchar}: detection of optional spaces modified.
+%   \item
+%     \cs{ltx(Loc,Glob)(Toks,Dimen,Skip)(A,B,C,D,E)} added.
+%   \end{Version}
+%   \begin{Version}{2011/04/18 v1.20}
+%   \item
+%     \cs{ltx@ifnextchar} with conditional support (thanks GL for
+%     bug report).
+%   \end{Version}
+%   \begin{Version}{2011/08/22 v1.21}
+%   \item
+%     \cs{ltx@GlobalPrependToMacro}, \cs{ltx@LocalPrependToMacro} added
+%     (feature request of Martin M\"unch).
+%   \end{Version}
+%   \begin{Version}{2011/11/09 v1.22}
+%   \item
+%     \cs{ltx@carsecond}, \cs{ltx@carthird}, \cs{ltx@carfourth},
+%     \cs{ltx@CarNumth} added.
+%   \item
+%     \cs{ltx@cdrzero}, \cs{ltx@cdr}, \cs{ltx@cdrtwo}, cs{ltx@cdrthree},
+%     \cs{ltx@cdrfour}, \cs{ltx@CdrNum} modified to retain braces and spaces.
+%     They are expandable in two expansion steps.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

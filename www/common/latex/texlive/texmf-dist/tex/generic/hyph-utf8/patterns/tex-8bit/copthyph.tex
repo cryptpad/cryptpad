@@ -1,0 +1,194 @@
+%
+% Hyphenation patterns for Coptic valid for the "copto" font which
+% does not comply with any official encoding scheme (does really exist
+% out here an official TeX compliant font encoding for coptic fonts?)
+% **********************************************
+% VVVVERY EXPERIMENTAL !!!!!!!!!!!!
+%
+% This pattern set allows hyphenation just before or between consonants
+% No attempt is made to distinguish diphthongs and/or hyathi.
+%
+% Rules 1. a consonant followed by a vowel belong to the same syllable
+%       2. a group of consonants is divided in such a way that the right
+%          syllable consonants may appear also at the beginning
+%          of a Coptic word
+%
+% Compound words are divided without any attention to component words;
+% manual intervention is required in case of bad divisions.
+%
+% The decimal TeX charcodes, the Coptic glyphs and the corresponding ASCII
+% signs (if any) are in the following table.
+% 21  "trema"           \textendash
+% 22  "emdash"          \texemdash
+% 33  "threepoints"     %
+% 35  epsi              #
+% 36  Epsi              $
+% 40  Thida             (
+% 41  exi               )
+% 42  Exi               *
+% 43  phi               +
+% 44  Phi               ,
+% 45  "hyphen"          -
+% 46  "period"          .
+% 47  hori              /
+% 48  Hori              0
+% 49  "ligature1"       1
+% 50  hori akh          2
+% 51  ti                3
+% 52  Ti                4
+% 53  "crux"            5
+% 56  thida             8
+% 57  i-trema           9
+% 58  "very short dash" :
+% 59  giangia           ;
+% 60  Giangia           <
+% 61  "double sloping dash"   =
+% 62  em (`m)           >
+% 64  en (`n)           ?
+% 65  Alpha             A
+% 66  Bida, Vida        B
+% 67  Cima              C
+% 68  Dalda             D
+% 69  Ei                E
+% 70  Fei               F
+% 71  Gamma             G
+% 72  Ita               H
+% 73  Iauda             I
+% 74  Hei               J
+% 75  Kabba             K
+% 76  Laula             L
+% 77  Mi, Mei           M
+% 78  Ni, Nei           N
+% 79  O                 O
+% 80  Pi, Pei           P
+% 81  Shima             Q
+% 82  Ro                R
+% 83  "ligatureS"       S
+% 84  Tau               T
+% 85  Ue                U
+% 86  "crucicula"       V
+% 87  Omega             W
+% 88  Chi               X
+% 89  Shei              Y
+% 90  Zida              Z
+% 91  "open bracket"    [
+% 93  "closed bracket"  ]
+% 96  "grave accent"    `
+% 97  alpha             a
+% 98  bida, vida        b
+% 99  cima              c
+%100  dalda             d
+%101  ei                e
+%102  fei               f
+%103  gamma             g
+%104  ita               h
+%105  iauda             i
+%106  hei               j
+%107  kabba             k
+%108  laula             l
+%109  mi, mei           m
+%110  ni, nei           n
+%111  o                 o
+%112  pi, pei           p
+%113  shima             q
+%114  ro                r
+%115  "ligatures"       s
+%116  tau               t
+%117  ue                u
+%118  ue-trema          v
+%119  omega             w
+%120  chi               x
+%121  shei              y
+%122  zida              z
+%
+% Most letters map to the latin letters(uppper and lower case); nevertheless
+% many catcodes, and lc codes have to be set.
+\begingroup
+% Self consistent catcodes and lccodes assigned to the various letters
+% although the patterns may not contain them
+%
+ \catcode`#=12 \catcode`$=12
+ \lccode`#=`# % exi
+ \lccode`$=`# % exi
+ \lccode`>=`> % `m
+ \lccode`?=`? % `n
+ \lccode`8=`8 % thida
+ \lccode`(=`8 % thida
+ \lccode`)=`) % exi
+ \lccode`*=`) % exi
+ \lccode`+=`+ % Phi
+ \lccode`,=`+ % phi
+ \lccode`/=`/ % hori
+ \lccode`0=`/ % hori
+ \lccode`1=`1 % ligature1
+ \lccode`2=`2 % ligature2
+ \lccode`3=`3 % ti
+ \lccode`4=`3 % ti
+ \lccode`9=`9 % i-trema
+ \lccode`v=`v % ue-trema
+ \lccode`;=`; % giangia
+ \lccode`<=`; % giangia
+
+\patterns{%
+ .b2 .c2 .d2 .f2 .g2 .j2 .k2 .l2 .m2 .n2 .p2 .q2  .r2 .t2 .w2 .x2 .y2 .z2
+ .0#2 .082 .0)2 .0+2 .0/2 .0;2 .0>2 .0?2 .092 .032
+%
+1b 2bb 2bg 2bd 2bz 2bj 2bk b2l 2bm 2bn 2bx 2bp b2r 2bc 2bt 2bf 2bq 2by 2b. 2b1#0 2b180 2b1)0 2b1+0 2b1/0 2b1;0 1b2>0 1b2?0 2b120 2b130
+%
+1g 2gb 2gg 2gd 2gz 2gj 2gk g2l 2gm 2gn 2gx 2gp g2r 2gc 2gt 2gf 2gq 2gy 2g. 2g1#0 2g180 2g1)0 2g1+0 2g1/0 2g1;0 1g2>0 1g2?0 2g120 2g130
+%
+1d 2db 2dg 2dd 2dz d2j 2dk 2dl 2dm 2dn 2dx 2dp d2r 2dc 2dt 2df 2dq 2dy 2d. 2d1#0 2d180 2d1)0 2d1+0 2d1/0 2d1;0 1d2>0 1d2?0 2d120 2d130
+%
+1z 2zb 2zg 2zd 2zz 2zj 2zk 2zl 2zm 2zn 2zx 2zp 2zr 2zc 2zt 2zf 2zq 2zy 2z. 2z1#0 2z180 2z1)0 2z1+0 2z1/0 2z1;0 1z2>0 1z2?0 2z120 2z130
+%
+1j 2jb 2jg 2jd 2jz 2jj 2jk j2l 2jm j2n 2jx 2jp 2jr 2jc 2jt 2jf 2jq 2jy 2j. 2j1#0 2j180 2j1)0 2j1+0 2j1/0 2j1;0 1j2>0 1j2?0 2j120 2j130
+%
+1k 2kb 2kg 2kd 2kz 2kj 2kk k2l 2km 2kn 2kx 2kp k2r 2kc k2t 2kf 2kq 2ky 2k. 2k1#0 2k180 2k1)0 2k1+0 2k1/0 2k1;0 1k2>0 1k2?0 2k120 2k130
+%
+1l 2lb 2lg 2ld 2lz 2lj 2lk 2ll 2lm 2ln 2lx 2lp 2lr 2lc 2lt 2lf 2lq 2ly 2l. 2l1#0 2l180 2l1)0 2l1+0 2l1/0 2l1;0 1l2>0 1l2?0 2l120 2l130
+%
+1m 2mb 2mg 2md 2mz 2mj 2mk 2ml 2mm 2mn 2mx 2mp 2mr 2mc 2mt 2mf 2mq 2my 2m. 2m1#0 2m180 2m1)0 2m1+0 2m1/0 2m1;0 1m2>0 1m2?0 2m120 2m130
+%
+1n 2nb 2ng 2nd 2nz 2nj 2nk 2nl 2nm 2nn 2nx 2np 2nr 2nc 2nt 2nf 2nq 2ny 2n. 2n1#0 2n180 2n1)0 2n1+0 2n1/0 2n1;0 1n2>0 1n2?0 2n120 2n130
+%
+1x 2xb 2xg 2xd 2xz 2xj 2xk 2xl 2xm 2xn 2xx 2xp 2xr 2xc 2xt 2xf 2xq 2xy 2x. 2x1#0 2x180 2x1)0 2x1+0 2x1/0 2x1;0 1x2>0 1x2?0 2x120 2x130
+%
+1p 2pb 2pg 2pd 2pz 2pj 2pk p2l 2pm p2n 2px 2pp p2r 2pc p2t 2pf 2pq 2py 2p. 2p1#0 2p180 2p1)0 2p1+0 2p1/0 2p1;0 1p2>0 1p2?0 2p120 2p130
+%
+1r 2rb 2rg 2rd 2rz 2rj 2rk 2rl 2rm 2rn 2rx 2rp 2rr 2rc 2rt 2rf 2rq 2ry 2r. 2r1#0 2r180 2r1)0 2r1+0 2r1/0 2r1;0 1r2>0 1r2?0 2r120 2r130
+%
+1c c2b c2g c2d 2cz 2cj c2k c2l c2m c2n 2cx c2p c2r 2cc c2t c2f 2cq 2cy 2c. 2c1#0 2c180 2c1)0 2c1+0 2c1/0 2c1;0 1c2>0 1c2?0 2c120 2c130
+%
+1t 2tb 2tg 2td t2z t2j 2tk 2tl t2m 2tn 2tx 2tp t2r t2c 2tt 2tf 2tq 2ty 2t. 2t1#0 2t180 2t1)0 2t1+0 2t1/0 2t1;0 1t2>0 1t2?0 2t120 2t130
+%
+1f 2fb 2fg 2fd 2fz 2fj 2fk f2l 2fm 2fn 2fx 2fp f2r 2fc f2t 2ff 2fq 2fy 2f. 2f1#0 2f180 2f1)0 2f1+0 2f1/0 2f1;0 1f2>0 1f2?0 2f120 2f130
+%
+1q 2qb 2qg 2qd 2qz q2j 2qk q2l 2qm q2n 2qx 2qp q2r 2qc q2t 2qf 2qq 2qy 2q. 2q1#0 2q180 2q1)0 2q1+0 2q1/0 2q1;0 1q2>0 1q2?0 2q120 2q130
+%
+1y 2yb 2yg 2yd 2yz 2yj 2yk 2yl 2ym 2yn 2yx 2yp 2yr 2yc 2yt 2yf 2yq 2yy 2y. 2y1#0 2y180 2y1)0 2y1+0 2y1/0 2y1;0 1y2>0 1y2?0 2y120 2y130
+%
+0>0 2>1b 2>1g 2>1d 2>1j 2>1k 2>1l 2>1m 2>1n 2>1x 2>1p 2>1r 2>1c 2>1t 2>1f 2>1q 2>1y 2>0. % `m
+%
+0?0 2?1b 2?1g 2?1d 2?1j 2?1k 2?1l 2?1m 2?1n 2?1x 2?1p 2?1r 2?1c 2?1t 2?1f 2?1q 2?1y 2?0. % `n
+%
+190 190. % {\"\i}
+1v0 1v0. % {\"u}
+2/1r 3/0 2/0. 2h211r 3h210 2h210.         % hori
+1+0 2+0. 1p210 2p210.                     % phi
+1)0 2)0. 1k2s 2k2s.                       % exi
+180 280. 18210 28210.                     % thida
+1#0 2#0. 1p2s 2p2ps.                      % epsi
+1;0 2;0. 1d210 2d210.                     % giangia
+1h2j0 2h2j0.                              % hei
+320 220. 3h220 2h220.                     % hori akh
+130 230. 2t2j.                            % ti
+%
+ a1e a1o a1h a1w a2ou a2e2i a1ia a1ie a1io a1iw
+ e1a e1o e1h e1w e2ou e2i
+ h1a h1e h1o h1w h1ia h1ie h1io h1iw h1ou .h2i
+ o1a o1e o1h o1w o1ia o1ie o1io o1iw o2ou
+ ou2a ou2e ou2h ou2o ou2u ou2w ou2i
+ w1ou .w2ou
+}
+\endgroup
+\endinput

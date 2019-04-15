@@ -1,0 +1,249 @@
+% \def\filename{amsopn.dtx}
+% \def\fileversion{2.01}
+% \def\filedate{1999/12/14}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 1999 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\begin{document}
+\title{The \pkg{amsopn} package}
+\author{Michael Downes}
+\date{Version \fileversion, \filedate}
+\DocInput{amsopn.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%
+%    The \pkg{amsopn} package provides a command
+%    \cn{DeclareMathOperator} for defining new `math operator names'
+%    similar to the standard function names \cn{sin}, \cn{lim},
+%    \cn{max}, etc.
+%
+% \StopEventually{}
+%
+%    Standard file identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must December 1994 or later
+\ProvidesPackage{amsopn}[1999/12/14 v2.01 operator names]
+%    \end{macrocode}
+%
+%    What \cs{nolimits@} does is keep a \cn{limits} typed by the user
+%    from having any effect. This is used for operatornames whose
+%    standard usage is never to have limits.
+%    \begin{macrocode}
+\def\nolimits@{\@ifnextchar\limits{\nolimits\@gobble}{\nolimits}}
+%    \end{macrocode}
+%
+%    In operator names, it is sometimes desired to have text-mode
+%    punctuation characters such as |*-/:'|.
+%    Because the body of an
+%    operator name is set in math mode, these few punctuation
+%    characters will not come out right (wrong symbol/and or wrong
+%    spacing). The purpose of \cs{newmcodes@} is to make them act like
+%    their normal text versions.
+%
+%    Where practical, we use decimal numbers to cut down main mem
+%    usage (\qc{\"} not needed).
+%    \begin{macrocode}
+\begingroup \catcode`\"=12
+\gdef\newmcodes@{\mathcode`\'39\mathcode`\*42\mathcode`\."613A%
+%    \end{macrocode}
+%    Define \cs{std@minus} for \cs{relbar} use; otherwise there are
+%    problems with arrows constructed with relbar.
+%    \begin{macrocode}
+  \ifnum\mathcode`\-=45 \else
+    \mathchardef\std@minus\mathcode`\-\relax
+  \fi
+  \mathcode`\-45\mathcode`\/47\mathcode`\:"603A\relax}
+\endgroup
+%    \end{macrocode}
+%
+%    The command \cs{operatorname} prints its argument as a `math
+%    operator' like \cs{sin} or \cs{det}, with proper font and spacing.
+%    \begin{macrocode}
+\DeclareRobustCommand{\operatorname}{%
+  \@ifstar{\qopname\newmcodes@ m}%
+          {\qopname\newmcodes@ o}}%
+%    \end{macrocode}
+%    In the interior of the \cs{mathop} we need a null object (we choose
+%    a zero kern for minimum waste of main mem) in order to guard
+%    against the case where \arg{3} is a single letter; \tex/ will seize
+%    it and center it on the math axis if there is nothing else inside
+%    the \cs{mathop} atom.
+%    \begin{macrocode}
+\DeclareRobustCommand{\qopname}[3]{%
+  \mathop{#1\kern\z@\operator@font#3}%
+  \csname n#2limits@\endcsname}
+%    \end{macrocode}
+%
+%  \begin{macro}{\DeclareMathOperator}
+%    The command \cn{DeclareMathOperator} defines the first argument to
+%    be an operator name whose text is the second argument. The star
+%    form means that the operator name should take limits (like \cn{max}
+%    or \cn{lim}).
+%    \begin{macrocode}
+\newcommand{\DeclareMathOperator}{%
+  \@ifstar{\@declmathop m}{\@declmathop o}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    In the basic set of operator names (below) we did not use
+%    \cn{DeclareRobustCommand} because of the hash table cost. But we
+%    use it here to minimize the chances of trouble, since we are
+%    producing a user-defined command.
+%    \begin{macrocode}
+\long\def\@declmathop#1#2#3{%
+  \@ifdefinable{#2}{%
+    \DeclareRobustCommand{#2}{\qopname\newmcodes@#1{#3}}}}
+%
+\@onlypreamble\DeclareMathOperator
+\@onlypreamble\@declmathop
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\arccos{\qopname\relax o{arccos}}
+\def\arcsin{\qopname\relax o{arcsin}}
+\def\arctan{\qopname\relax o{arctan}}
+\def\arg{\qopname\relax o{arg}}
+\def\cos{\qopname\relax o{cos}}
+\def\cosh{\qopname\relax o{cosh}}
+\def\cot{\qopname\relax o{cot}}
+\def\coth{\qopname\relax o{coth}}
+\def\csc{\qopname\relax o{csc}}
+\def\deg{\qopname\relax o{deg}}
+\def\det{\qopname\relax m{det}}
+\def\dim{\qopname\relax o{dim}}
+\def\exp{\qopname\relax o{exp}}
+\def\gcd{\qopname\relax m{gcd}}
+\def\hom{\qopname\relax o{hom}}
+\def\inf{\qopname\relax m{inf}}
+\def\injlim{\qopname\relax m{inj\,lim}}
+\def\ker{\qopname\relax o{ker}}
+\def\lg{\qopname\relax o{lg}}
+\def\lim{\qopname\relax m{lim}}
+\def\liminf{\qopname\relax m{lim\,inf}}
+\def\limsup{\qopname\relax m{lim\,sup}}
+\def\ln{\qopname\relax o{ln}}
+\def\log{\qopname\relax o{log}}
+\def\max{\qopname\relax m{max}}
+\def\min{\qopname\relax m{min}}
+\def\Pr{\qopname\relax m{Pr}}
+\def\projlim{\qopname\relax m{proj\,lim}}
+\def\sec{\qopname\relax o{sec}}
+\def\sin{\qopname\relax o{sin}}
+\def\sinh{\qopname\relax o{sinh}}
+\def\sup{\qopname\relax m{sup}}
+\def\tan{\qopname\relax o{tan}}
+\def\tanh{\qopname\relax o{tanh}}
+%    \end{macrocode}
+%
+% \begin{macro}{\operator@font}
+% \begin{macro}{\operatorfont}
+%    This command is provided to allow the document styles to decide in
+%    which way math operators like `max' or `log' are typeset. The
+%    default is to set them in \meta{math group} zero of the current
+%    math version. The original name was \cs{operator@font}, retained
+%    for compatibility; the second name was added to make it
+%    more accessible so that users can call this font for use in special
+%    constructs that are not ordinary operator names but conceptually
+%    related.
+%    \begin{macrocode}
+\def\operator@font{\mathgroup\symoperators}
+\def\operatorfont{\operator@font}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    For backwards compatibility we keep this old command name for the
+%    time being:
+%    \begin{macrocode}
+\def\operatornamewithlimits{\operatorname*}
+%    \end{macrocode}
+%
+%    These macros use \cs{mathpalette}s so that they will change size
+%    in script and scriptscript styles, though it's hard to imagine they
+%    will ever be used there (the arrows, particularly, look bad in
+%    subscript sizes). Notice that the use of \cs{ex@} means that the
+%    vertical spacing may not be optimal in script and scriptscript
+%    sizes. Unfortunately \tex/ provides no easy way to do math mode
+%    vertical spacing that varies with current math style like mu units.
+%    \begin{macrocode}
+\def\varlim@#1#2{%
+  \vtop{\m@th\ialign{##\cr
+    \hfil$#1\operator@font lim$\hfil\cr
+    \noalign{\nointerlineskip\kern1.5\ex@}#2\cr
+    \noalign{\nointerlineskip\kern-\ex@}\cr}}%
+}
+\def\varinjlim{%
+  \mathop{\mathpalette\varlim@{\rightarrowfill@\textstyle}}\nmlimits@
+}
+\def\varprojlim{%
+  \mathop{\mathpalette\varlim@{\leftarrowfill@\textstyle}}\nmlimits@
+}
+\def\varliminf{\mathop{\mathpalette\varliminf@{}}\nmlimits@}
+\def\varliminf@#1{\@@underline{\vrule\@depth.2\ex@\@width\z@
+   \hbox{$#1\m@th\operator@font lim$}}}
+\def\varlimsup{\mathop{\mathpalette\varlimsup@{}}\nmlimits@}
+\def\varlimsup@#1{\@@overline{\hbox{$#1\m@th\operator@font lim$}}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\nmlimits@\displaylimits
+\DeclareOption{namelimits}{\let\nmlimits@\displaylimits}
+\DeclareOption{nonamelimits}{\let\nmlimits@\nolimits}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%    If we don't load the \pkg{amsgen} package then the use of \cs{ex@}
+%    in \cs{varlim@} will lead to trouble.
+%    \begin{macrocode}
+\RequirePackage{amsgen}\relax
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \changes{v1.2a}{1995/02/20}{Fixed operatorname
+%   (shouldn't have same limits behavior as operatorname*)}
+% \CheckSum{300}
+% \Finale

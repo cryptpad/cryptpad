@@ -1,0 +1,177 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993-2015
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% This file is part of the LaTeX base system.
+%% -------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3b
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3b or later is part of all distributions of LaTeX 
+%% version 2005/12/01 or later.
+%% 
+%% This file has the LPPL maintenance status "maintained".
+%% 
+%% In particular, NO PERMISSION is granted to modify the contents of this
+%% file since it contains the legal notices that are placed in the files
+%% it generates.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
+%% 
+%% 
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+
+\input docstrip
+
+\preamble
+
+This is a generated file.
+
+The source is maintained by the LaTeX Project team and bug
+reports for it can be opened at http://latex-project.org/bugs.html
+(but please observe conditions on bug reports sent to that address!)
+
+
+Copyright 1993-2015
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+This file was generated from file(s) of the LaTeX base system.
+--------------------------------------------------------------
+
+It may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX 
+version 2005/12/01 or later.
+
+This file has the LPPL maintenance status "maintained".
+
+This file may only be distributed together with a copy of the LaTeX
+base system. You may however distribute the LaTeX base system without
+such generated files.
+
+The list of all files belonging to the LaTeX base distribution is
+given in the file `manifest.txt'. See also `legal.txt' for additional
+information.
+
+The list of derived (unpacked) files belonging to the distribution 
+and covered by LPPL is defined by the unpacking scripts (with 
+extension .ins) which are part of the distribution.
+\endpreamble
+
+\keepsilent
+\askonceonly
+
+\usedir{tex/latex/base}
+
+\Msg{*** Generating input encoding files ***}
+
+\generate{
+   \file{inputenc.sty}{
+        \from{inputenc.dtx}{package}}
+   \file{latin1.def}{
+        \from{inputenc.dtx}{latin1}}
+   \file{latin2.def}{
+        \from{inputenc.dtx}{latin2}}
+   \file{latin3.def}{
+        \from{inputenc.dtx}{latin3}}
+   \file{latin4.def}{
+        \from{inputenc.dtx}{latin4}}
+   \file{latin5.def}{
+        \from{inputenc.dtx}{latin5}}
+   \file{latin9.def}{
+        \from{inputenc.dtx}{latin9}}
+   \file{latin10.def}{
+        \from{inputenc.dtx}{latin10}}
+   }
+ 
+ 
+
+ \generate{
+   \file{cp850.def}{
+        \from{inputenc.dtx}{cp850}}
+   \file{cp852.def}{
+        \from{inputenc.dtx}{cp852}}
+   \file{cp858.def}{
+        \from{inputenc.dtx}{cp858}}
+   \file{cp865.def}{
+        \from{inputenc.dtx}{cp865}}
+   \file{cp437.def}{
+        \from{inputenc.dtx}{cp437}}
+   \file{cp437de.def}{
+        \from{inputenc.dtx}{cp437de}}
+   \file{decmulti.def}{
+        \from{inputenc.dtx}{decmulti}}
+   }
+ 
+ \generate{
+   \file{ascii.def}{
+        \from{inputenc.dtx}{ascii}}
+   \file{applemac.def}{
+        \from{inputenc.dtx}{applemac}}
+   \file{macce.def}{
+        \from{inputenc.dtx}{applemacce}}
+   \file{next.def}{
+        \from{inputenc.dtx}{next}}
+   \file{ansinew.def}{% synonym for cp1252
+        \from{inputenc.dtx}{cp1252,ansinew}}
+   \file{cp1250.def}{
+        \from{inputenc.dtx}{cp1250}}
+   \file{cp1252.def}{
+        \from{inputenc.dtx}{cp1252}}
+   \file{cp1257.def}{
+        \from{inputenc.dtx}{cp1257}}
+   }
+
+\Msg{*** Generating utf8 input encoding files ***}
+
+\generate{\file{utf8.def}{\from{utf8ienc.dtx}{utf8}}
+          \file{utf8-test.tex}{\from{utf8ienc.dtx}{test}}
+          \file{lcyenc.dfu}{\from{utf8ienc.dtx}{lcy}}
+          \file{ly1enc.dfu}{\from{utf8ienc.dtx}{ly1}}
+          \file{omsenc.dfu}{\from{utf8ienc.dtx}{oms}}
+          \file{ot1enc.dfu}{\from{utf8ienc.dtx}{ot1}}
+          \file{ot2enc.dfu}{\from{utf8ienc.dtx}{ot2}}
+          \file{t1enc.dfu}{\from{utf8ienc.dtx}{t1}}
+         }
+\generate{\file{t2aenc.dfu}{\from{utf8ienc.dtx}{t2a}}
+          \file{t2benc.dfu}{\from{utf8ienc.dtx}{t2b}}
+          \file{t2cenc.dfu}{\from{utf8ienc.dtx}{t2c}}
+          \file{ts1enc.dfu}{\from{utf8ienc.dtx}{ts1}}
+          \file{x2enc.dfu}{\from{utf8ienc.dtx}{x2}}
+          \file{utf8enc.dfu}{\from{utf8ienc.dtx}{all}}
+          \file{utf8test.tex}{\from{utf8ienc.dtx}{test}}
+          }
+
+\ifToplevel{
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space *.def *.dfu *.sty }
+\Msg{*}
+\Msg{* To produce the documentation run inputenc.dtx and }
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
+}
+
+\endbatchfile

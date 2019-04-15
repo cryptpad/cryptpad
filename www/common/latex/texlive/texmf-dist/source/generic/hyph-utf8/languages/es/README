@@ -1,0 +1,83 @@
+DIVISI'ON DE PALABRAS
+~~~~~~~~~~~~~~~~~~~~~
+
+The file eshyph.tex under /base is the base for the Spanish patters.
+It is intended mainly for backward compatibility.  New systems are
+best based on CTAN:language/hyph-utf8/, which has the same patterns.
+
+Why 4.x? Well, I know at least other three files with the same name,
+so this one is the fourth (there were at least 6 or 7 patterns files).
+The others should vanish as soon as posible.
+
+(c) Javier Bezos 1993 1997.
+(c) Javier Bezos and CervanTeX 2001-2009
+Some parts, (c) by Francesc Carmona
+Licence: LPPL
+
+- division.pdf is a draft of an article (in Spanish) explaining the
+rules to be applied and how they are being translated into TeX in a
+unified set of patterns (somewhat outdated).
+- eshyph-make.lua generates the patterns, with eshyph.src for prefixes
+and special cases.
+- eshyph-test.tex makes a comparison with strict syllabic rules.  It
+requires a file spanish-words.txt (not supplied) with a list of word,
+one per line.  You can (should) filter the words.
+
+For bug reports and comments:
+
+      http://www.tex-tipografia.com/spanish_hyphen.html
+
+I would like to thanks Francesc Carmona for his permission
+to steal parts of his work without restrictions. 
+
+The contrib directory, as its name implies, is not part of the
+official bundle. It has a different set of patterns, but it does not
+follow the rules by the Spanish Academy (despite its claims).
+
+What's new in 4.5 (2009-08-01)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Missing group -gl- added (a major bug). A few minor improvements
+for "des-" and "in-".
+
+What's new in 4.4 (2009-05-19)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some bad patterns fixed.
+
+What's new in 4.3 (2009-05-14)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some patterns fixed, particularly for "familia", "superar", "sub-" and
+final consonants.  Patterns are now generated with the help of a few
+lua/luatex files (whose status is alpha).
+
+What's new in 4.2
+~~~~~~~~~~~~~~~~~
+
+The encoding is UTF-8, so that it can be used with LuaTeX. Yet, it
+works without changes with standard TeX.
+
+What's new in 4.1
+~~~~~~~~~~~~~~~~~
+
+- Thanks to a list of about 750000 words and extensive
+tests, wrong hyphenations have been reduced dramatically
+and the number of patterns has been almost duplicated.
+
+- Since the Spanish Academy rules of 1999 are very vague,
+incomplete and even contradictory, they had to be
+completed with some traditional ones. The Academy has
+published new rules in November 2005 including many of
+the traditional ones employed here and therefore only
+minor adjustments have been necessary. 
+
+- Patterns for a few verbal endings are necessary, and
+now the "voseo" forms (used in many countries of Central
+and South America) have been included.
+
+2009-05-19
+_____________________________________________________________
+Javier Bezos                | http://www.cervantex.es/
+.............................................................
+TeX y tipografia            | http://www.tex-tipografia.com/

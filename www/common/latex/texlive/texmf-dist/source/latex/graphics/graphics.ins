@@ -1,0 +1,41 @@
+%%
+%% This file is part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.3c or, at your option, any later version.
+%%
+%% This file has the LPPL maintenance status "maintained".
+
+\input docstrip
+
+\preamble
+
+The source is maintained by the LaTeX Project team and bug
+reports for it can be opened at http://latex-project.org/bugs.html
+(but please observe conditions on bug reports sent to that address!)
+
+
+\endpreamble
+
+\keepsilent
+\askforoverwritefalse
+
+\usedir{tex/latex/graphics}
+
+% The packages
+
+\generate{\file{graphics.sty}{\from{graphics.dtx}{package}}}
+
+\generate{\file{color.sty}{\from{color.dtx}{package}}}
+
+\generate{\file{graphicx.sty}{\from{graphicx.dtx}{package}}}
+
+\generate{\file{trig.sty}{\from{trig.dtx}{package}}}
+
+\generate{\file{keyval.sty}{\from{keyval.dtx}{package}}}
+
+\generate{\file{epsfig.sty}{\from{epsfig.dtx}{package}}}
+
+\generate{\file{lscape.sty}{\from{lscape.dtx}{package}}}
+
+\endbatchfile

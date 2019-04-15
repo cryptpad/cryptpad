@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hycolor'>
+  <name>hycolor</name>
+  <caption>Implements colour for packages hyperref and bookmark.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.7'/>
+  <description>
+    This package provides the code for the color option
+    that is used by packages <xref refid='hyperref'>hyperref</xref>
+    and <xref refid='bookmark'>bookmark</xref>.
+    It is not intended as package for the user.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hycolor.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hycolor.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

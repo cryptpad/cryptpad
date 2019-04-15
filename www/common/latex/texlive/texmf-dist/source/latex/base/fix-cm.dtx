@@ -1,0 +1,845 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%
+%<*dtx>
+          \ProvidesFile{fix-cm.dtx}
+%</dtx>
+%<fix-cm>\NeedsTeXFormat{LaTeX2e}
+%<fix-cm>\ProvidesPackage{fix-cm}
+%<driver>\ProvidesFile{fix-cm.drv}
+% \fi
+%         \ProvidesFile{fix-cm.dtx}
+          [2015/01/14 v1.1t fixes to LaTeX]
+%
+% \iffalse
+%<*driver>
+ \documentclass{ltxdoc}
+ \newcommand\Lopt[1]{\textsf{#1}}
+ \let\Lpack\Lopt
+ \providecommand{\file}[1]{\texttt{#1}}
+ \providecommand{\MF}{\textsf{Metafont}}
+ \providecommand{\danger}{\marginpar[\hfill\protect\Huge!!]{\protect\Huge!!\hfill}}
+ \begin{document}
+ \DocInput{fix-cm.dtx}
+ \end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{161}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+%
+%
+% \let\package\textsf
+%
+%
+% \GetFileInfo{fix-cm.dtx}
+%
+% \title{The \Lpack{fix-cm} package\thanks{This file
+%         has version number \fileversion, last
+%         revised \filedate.}}
+% \author{Frank Mittelbach, David Carlisle, Chris Rowley, Walter
+%         Schmidt\thanks{Walter wrote \Lpack{fix-cm}}}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{latex}
+%  \maketitle
+%
+% \begin{abstract}
+%\Lpack{fix-cm} improves the definitions of the Computer Modern
+% font families.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newpage
+%
+% \section{Introduction}
+%
+%
+% \begin{sloppypar}
+% To use the \Lpack{fix-cm} package,
+% load \danger it \emph{before} \cmd{\documentclass},
+% and use the command \cmd{\RequirePackage} to do so, rather than the
+% normal \cmd{\usepackage}:
+% \end{sloppypar}
+% \begin{verse}
+%   |\RequirePackage{fix-cm}|\\
+%   |\documentclass| \dots
+% \end{verse}
+%
+%
+% \section{Using EC fonts (T1 encoding) makes my documents look
+%             different}
+%
+% No I'm not trying to collect any cites from the news group
+% discussion on this topic. In a nutshell, if one adds
+%\begin{verbatim}
+%\usepackage[T1]{fontenc}
+%\end{verbatim}
+% to a document that uses the Computer Modern typefaces,
+% then not only the T1 encoding is used but the fonts
+% used in the document look noticeably different. This is due to the fact
+% that the EC fonts have more font series designs, e.g.\ a 14.4\,pt bold
+% etc and those get used in the standard \texttt{.fd} files, while
+% with Computer Modern (in OT1 encoding) such sizes were scaled
+% versions of smaller sizes---with a noticeable different look and
+% feel.
+%
+% So we provide a package \Lpack{fix-cm} to ensure that comparable
+% definitions are used. In addition to that, the package
+% \Lpack{fix-cm} also enables continuous scaling of the CM fonts.
+% This package was written by Walter Schmidt.
+%
+%%
+%^^A The documentation in this section was prepared by Walter Schmidt.
+%
+%
+%
+% \subsection{What \Lpack{fix-cm} does}
+%
+
+% Loading the package \Lpack{fix-cm} changes the font definitions of the
+% Computer Modern fonts, in order to achieve the following effects:
+% \begin{itemize}
+%   \item
+%   The appearance of the T1 and TS1 encoded CM fonts (aka `EC') is
+%   made as similar as possible to the traditional (OT1 encoded) ones.
+%   Particularly, a number of broken or ugly design sizes are no
+%   longer used, the look of the bold sans serif typeface at large
+%   sizes is considerably improved, and mismatches between the text
+%   fonts and the corresponding math fonts are avoided.  As a side
+%   effect, PostScript and PDF documents may become smaller, because
+%   fewer fonts need to be embedded.
+%   \item
+%   The Computer Modern fonts are made available with arbitrary sizes.
+%   \item
+%   Only those design sizes of the fonts will be used, that are
+%   normally available in Type1 format, too.  You need not load the
+%   extra package \Lpack{cmmib57} for this purpose.
+% \end{itemize}
+% The package acts on the following font families:
+% \begin{itemize}
+%   \item
+%   The text font families \file{cmr}, \file{cmss}, \file{cmtt} and
+%   \file{cmvtt} with OT1, T1 and TS1 encoding.
+%   \item
+%   The default math fonts used by \LaTeX, i.e., the font families
+%   \file{cmm} with encoding OML and \file{cms} with encoding OMS.
+%   \item
+%   The symbols used by the package \Lpack{latexsym}, i.e., the font
+%   family \file{lasy}.
+% \end{itemize}
+% Note that the package does \emph{not} act on:
+% \begin{itemize}
+% \item Font families such as CM~Fibonacci, CM~Dunhill etc.,
+%   which are provided for experimental purposes or for fun only.
+% \item
+%   CM text fonts with character sets other than Latin, e.g.,
+%   Cyrillic.  Loading of the required font and encoding definitions
+%   while the fonts are not actually used, would not be a good idea.
+%   This should be addressed by particular packages or by changing the
+%   standard FDs of these fonts.
+% \item
+%   Extra math fonts such as the AMS symbol fonts.  While
+%   they match the style of Computer Modern, they are frequently used
+%   in conjunction with other font families, too.  Thus,
+%   \Lpack{fix-cm} is obviously not the right place to make sure that
+%   they can be scaled continuously.  Ask the maintainers of these
+%   fonts to provide this feature, which is badly needed!
+% \item
+%   The math extension font \file{cmex}.  Whether or not this font
+%   should be scaled is a question of its own, and there are other
+%   packages (\Lpack{exscale}, \Lpack{amsmath}, \Lpack{amsfonts}) to
+%   take care of it.
+% \end{itemize}
+%
+% \subsection{How to load the package}
+% \begin{sloppypar}
+% The package should be loaded \danger \emph{before} \cmd{\documentclass},
+% using the command |\RequirePackage{fix-cm}|, rather than the
+% normal \cmd{\usepackage}.
+% Rationale:
+% If the package is loaded in the preamble, a preceding package or
+% even the code of the document class may have used any of the CM
+% fonts already.  However, the definitions of those fonts, that are
+% already in use, cannot be changed any more.
+% \end{sloppypar}
+%
+% \subsection{Usage notes}
+% In contrast to what you may expect, \Lpack{fix-cm} does \emph{not}
+% ensure that line and page breaks stay the same, when you switch an
+% existing document from OT1 to T1 encoding.  The package does not
+% turn off all of the additional design sizes in the EC fonts
+% collection: Those, that contribute considerably to the typographical
+% quality and do not conflict with the math fonts,
+% are---indeed---used.
+%
+% Be careful when using arbitrary, non-standard font sizes with
+% applications that need bitmap fonts: You may end up \danger with
+% lots of possibly huge \file{.pk} files.  Also, \MF{} chokes
+% sometimes on extremely small or large sizes, because of arithmetic
+% problems.
+%
+% \Lpack{fix-cm} supersedes the experimental packages \Lpack{cmsd} and
+% \Lpack{fix-ec}, which are no longer distributed.
+%
+% The packages \Lpack{type1cm} and \Lpack{type1ec} must not be loaded
+% additionally; they enable only continuous scaling.
+%
+%
+%
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+% \subsection{Preliminaries}
+% The \LaTeX{} kernel does not declare the font encoding TS1.
+% However, we are going to set up font definitions for this encoding,
+% so we have to declare it now.
+%    \begin{macrocode}
+%<*fix-cm>
+\input{ts1enc.def}
+%    \end{macrocode}
+%
+% In case the package is loaded in the preamble, any of the CM fonts may
+% have been used already and cannot be redefined.  Yet we try to
+% intercept at least the problem that is most likely to occur, i.e.,
+% a hidden \cmd{\normalfont}.  Most of the standard definitions
+% are ok, but those for T1 encoding and 10.95\,pt need to be removed:
+%    \begin{macrocode}
+\expandafter \let \csname T1/cmr/m/n/10.95\endcsname \relax
+\expandafter \let \csname T1/cmss/m/n/10.95\endcsname \relax
+\expandafter \let \csname T1/cmtt/m/n/10.95\endcsname \relax
+\expandafter \let \csname T1/cmvtt/m/n/10.95\endcsname \relax
+%    \end{macrocode}
+%
+% \Lpack{fix-cm} may still fail, if the EC fonts are preloaded in the
+% \LaTeX{} format file. This situation is, however, very unlikely and could occur
+% only with a customized format.
+%
+% The remainder of the package is enclosed in a group, where the catcodes
+% are guaranteed to be appropriate for the processing of font definitions.
+%    \begin{macrocode}
+\begingroup
+\nfss@catcodes
+%    \end{macrocode}
+%
+% \subsection{T1 encoding}
+%
+% \paragraph{CM Roman}
+%    \begin{macrocode}
+\DeclareFontFamily{T1}{cmr}{}
+\DeclareFontShape{T1}{cmr}{m}{n}{
+        <-6>    ecrm0500
+        <6-7>   ecrm0600
+        <7-8>   ecrm0700
+        <8-9>   ecrm0800
+        <9-10>  ecrm0900
+        <10-12> ecrm1000
+        <12-17> ecrm1200
+        <17->   ecrm1728
+      }{}
+\DeclareFontShape{T1}{cmr}{m}{sl}{
+        <-6>    ecsl0500
+        <6-7>   ecsl0600
+        <7-8>   ecsl0700
+        <8-9>   ecsl0800
+        <9-10>  ecsl0900
+        <10-12> ecsl1000
+        <12-17> ecsl1200
+        <17->   ecsl1728
+      }{}
+\DeclareFontShape{T1}{cmr}{m}{it}{
+        <-8>    ecti0700
+        <8-9>   ecti0800
+        <9-10>  ecti0900
+        <10-12> ecti1000
+        <12-17> ecti1200
+        <17->   ecti1728
+      }{}
+\DeclareFontShape{T1}{cmr}{m}{sc}{
+        <-6>    eccc0500
+        <6-7>   eccc0600
+        <7-8>   eccc0700
+        <8-9>   eccc0800
+        <9-10>  eccc0900
+        <10-12> eccc1000
+        <12-17> eccc1200
+        <17->   eccc1728
+               }{}
+\DeclareFontShape{T1}{cmr}{m}{ui}{
+        <-8>    ecui0700
+        <8-9>   ecui0800
+        <9-10>  ecui0900
+        <10-12> ecui1000
+        <12-17> ecui1200
+        <17->   ecui1728
+      }{}
+\DeclareFontShape{T1}{cmr}{b}{n}{
+        <-6>    ecrb0500
+        <6-7>   ecrb0600
+        <7-8>   ecrb0700
+        <8-9>   ecrb0800
+        <9-10>  ecrb0900
+        <10-12> ecrb1000
+        <12-17> ecrb1200
+        <17->   ecrb1728
+      }{}
+\DeclareFontShape{T1}{cmr}{bx}{n}{
+        <-6>    ecbx0500
+        <6-7>   ecbx0600
+        <7-8>   ecbx0700
+        <8-9>   ecbx0800
+        <9-10>  ecbx0900
+        <10-12> ecbx1000
+        <12->   ecbx1200
+      }{}
+\DeclareFontShape{T1}{cmr}{bx}{sl}{
+        <-6>    ecbl0500
+        <6-7>   ecbl0600
+        <7-8>   ecbl0700
+        <8-9>   ecbl0800
+        <9-10>  ecbl0900
+        <10-12> ecbl1000
+        <12->   ecbl1200
+      }{}
+\DeclareFontShape{T1}{cmr}{bx}{it}{
+        <-8>    ecbi0700
+        <8-9>   ecbi0800
+        <9-10>  ecbi0900
+        <10-12> ecbi1000
+        <12->   ecbi1200
+      }{}
+\DeclareFontShape{T1}{cmr}{bx}{sc}{
+        <-6>    ecxc0500
+        <6-7>   ecxc0600
+        <7-8>   ecxc0700
+        <8-9>   ecxc0800
+        <9-10>  ecxc0900
+        <10-12> ecxc1000
+        <12->   ecxc1200
+      }{}
+%
+%    \end{macrocode}
+%
+% \paragraph{CM Sans}
+%    \begin{macrocode}
+\DeclareFontFamily{T1}{cmss}{}
+\DeclareFontShape{T1}{cmss}{m}{n}{
+        <-9>    ecss0800
+        <9-10>  ecss0900
+        <10-12> ecss1000
+        <12-17> ecss1200
+        <17->   ecss1728
+      }{}
+\DeclareFontShape{T1}{cmss}{m}{sl}{
+        <-9>    ecsi0800
+        <9-10>  ecsi0900
+        <10-12> ecsi1000
+        <12-17> ecsi1200
+        <17->   ecsi1728
+      }{}
+\DeclareFontShape{T1}{cmss}{m}{it}
+       {<->ssub*cmss/m/sl}{}
+\DeclareFontShape{T1}{cmss}{m}{sc}
+       {<->sub*cmr/m/sc}{}
+\DeclareFontShape{T1}{cmss}{sbc}{n}{
+        <->     ecssdc10
+       }{}
+\DeclareFontShape{T1}{cmss}{bx}{n}{
+        <-10>   ecsx0900
+        <10->   ecsx1000
+      }{}
+\DeclareFontShape{T1}{cmss}{bx}{sl}{
+        <-10>   ecso0900
+        <10->   ecso1000
+      }{}
+\DeclareFontShape{T1}{cmss}{bx}{it}
+       {<->ssub*cmss/bx/sl}{}
+%    \end{macrocode}
+% The following substitutions are not provided in the default
+% \file{.fd} files.  I have included them, so that you can
+% easily use the EC fonts with the default bold series being
+% \file{b} rather than \file{bx}.
+%    \begin{macrocode}
+\DeclareFontShape{T1}{cmss}{b}{n}
+       {<->ssub*cmss/bx/n}{}
+\DeclareFontShape{T1}{cmss}{b}{sl}
+       {<->ssub*cmss/bx/sl}{}
+\DeclareFontShape{T1}{cmss}{b}{it}
+       {<->ssub*cmss/bx/sl}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Typewriter}
+%    \begin{macrocode}
+\DeclareFontFamily{T1}{cmtt}{\hyphenchar \font\m@ne}
+\DeclareFontShape{T1}{cmtt}{m}{n}{
+        <-9>    ectt0800
+        <9-10>  ectt0900
+        <10-12> ectt1000
+        <12-17> ectt1200
+        <17->   ectt1728
+      }{}
+\DeclareFontShape{T1}{cmtt}{m}{it}{
+        <-9>    ecit0800
+        <9-10>  ecit0900
+        <10-12> ecit1000
+        <12-17> ecit1200
+        <17->   ecit1728
+      }{}
+\DeclareFontShape{T1}{cmtt}{m}{sl}{
+        <-9>    ecst0800
+        <9-10>  ecst0900
+        <10-12> ecst1000
+        <12-17> ecst1200
+        <17->   ecst1728
+      }{}
+\DeclareFontShape{T1}{cmtt}{m}{sc}{
+        <-9>    ectc0800
+        <9-10>  ectc0900
+        <10-12> ectc1000
+        <12-17> ectc1200
+        <17->   ectc1728
+      }{}
+\DeclareFontShape{T1}{cmtt}{bx}{n}
+       {<->sub * cmtt/m/n}{}
+\DeclareFontShape{T1}{cmtt}{bx}{it}
+       {<->sub * cmtt/m/it}{}
+\DeclareFontShape{T1}{cmtt}{bx}{sl}
+       {<->sub * cmtt/m/sl}{}
+%    \end{macrocode}
+% Substitutions not provided in the default \file{.fd} files:
+%    \begin{macrocode}
+\DeclareFontShape{T1}{cmtt}{b}{n}
+       {<->sub * cmtt/m/n}{}
+\DeclareFontShape{T1}{cmtt}{b}{it}
+       {<->sub * cmtt/m/it}{}
+\DeclareFontShape{T1}{cmtt}{b}{sl}
+       {<->sub * cmtt/m/sl}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Typewiter (var.)}
+%    \begin{macrocode}
+\DeclareFontFamily{T1}{cmvtt}{}
+\DeclareFontShape{T1}{cmvtt}{m}{n}{
+        <-9>    ecvt0800
+        <9-10>  ecvt0900
+        <10-12> ecvt1000
+        <12-17> ecvt1200
+        <17->   ecvt1728
+      }{}
+\DeclareFontShape{T1}{cmvtt}{m}{it}{
+        <-9>    ecvi0800
+        <9-10>  ecvi0900
+        <10-12> ecvi1000
+        <12-17> ecvi1200
+        <17->   ecvi1728
+      }{}
+%    \end{macrocode}
+%
+% \subsection{TS1 encoding}
+%
+% \paragraph{CM Roman}
+%    \begin{macrocode}
+\DeclareFontFamily{TS1}{cmr}{\hyphenchar\font\m@ne}
+\DeclareFontShape{TS1}{cmr}{m}{n}{
+        <-6>    tcrm0500
+        <6-7>   tcrm0600
+        <7-8>   tcrm0700
+        <8-9>   tcrm0800
+        <9-10>  tcrm0900
+        <10-12> tcrm1000
+        <12-17> tcrm1200
+        <17->   tcrm1728
+      }{}
+\DeclareFontShape{TS1}{cmr}{m}{sl}{
+        <-6>    tcsl0500
+        <6-7>   tcsl0600
+        <7-8>   tcsl0700
+        <8-9>   tcsl0800
+        <9-10>  tcsl0900
+        <10-12> tcsl1000
+        <12-17> tcsl1200
+        <17->   tcsl1728
+      }{}
+\DeclareFontShape{TS1}{cmr}{m}{it}{
+        <-8>    tcti0700
+        <8-9>   tcti0800
+        <9-10>  tcti0900
+        <10-12> tcti1000
+        <12-17> tcti1200
+        <17->   tcti1728
+      }{}
+\DeclareFontShape{TS1}{cmr}{m}{ui}{
+        <-8>    tcui0700
+        <8-9>   tcui0800
+        <9-10>  tcui0900
+        <10-12> tcui1000
+        <12-17> tcui1200
+        <17->   tcui1728
+      }{}
+\DeclareFontShape{TS1}{cmr}{b}{n}{
+        <-6>    tcrb0500
+        <6-7>   tcrb0600
+        <7-8>   tcrb0700
+        <8-9>   tcrb0800
+        <9-10>  tcrb0900
+        <10-12> tcrb1000
+        <12-17> tcrb1200
+        <17->   tcrb1728
+      }{}
+\DeclareFontShape{TS1}{cmr}{bx}{n}{
+        <-6>    tcbx0500
+        <6-7>   tcbx0600
+        <7-8>   tcbx0700
+        <8-9>   tcbx0800
+        <9-10>  tcbx0900
+        <10-12> tcbx1000
+        <12->   tcbx1200
+      }{}
+\DeclareFontShape{TS1}{cmr}{bx}{sl}{
+        <-6>    tcbl0500
+        <6-7>   tcbl0600
+        <7-8>   tcbl0700
+        <8-9>   tcbl0800
+        <9-10>  tcbl0900
+        <10-12> tcbl1000
+        <12->   tcbl1200
+      }{}
+\DeclareFontShape{TS1}{cmr}{bx}{it}{
+        <-8>    tcbi0700
+        <8-9>   tcbi0800
+        <9-10>  tcbi0900
+        <10-12> tcbi1000
+        <12->   tcbi1200
+      }{}
+%    \end{macrocode}
+%
+% \paragraph{CM Sans}
+%    \begin{macrocode}
+\DeclareFontFamily{TS1}{cmss}{\hyphenchar\font\m@ne}
+\DeclareFontShape{TS1}{cmss}{m}{n}{
+        <-9>    tcss0800
+        <9-10>  tcss0900
+        <10-12> tcss1000
+        <12-17> tcss1200
+        <17->   tcss1728
+      }{}
+\DeclareFontShape{TS1}{cmss}{m}{it}
+       {<->ssub*cmss/m/sl}{}
+\DeclareFontShape{TS1}{cmss}{m}{sl}{
+        <-9>    tcsi0800
+        <9-10>  tcsi0900
+        <10-12> tcsi1000
+        <12-17> tcsi1200
+        <17->   tcsi1728
+      }{}
+\DeclareFontShape{TS1}{cmss}{sbc}{n}{
+        <->     tcssdc10
+       }{}
+\DeclareFontShape{TS1}{cmss}{bx}{n}{
+        <-10>   tcsx0900
+        <10->   tcsx1000
+      }{}
+\DeclareFontShape{TS1}{cmss}{bx}{sl}{
+        <-10>   tcso0900
+        <10->   tcso1000
+      }{}
+\DeclareFontShape{TS1}{cmss}{bx}{it}
+       {<->ssub*cmss/bx/sl}{}
+%    \end{macrocode}
+% Substitutions not provided in the default \file{.fd} files:
+%    \begin{macrocode}
+\DeclareFontShape{TS1}{cmss}{b}{n}
+       {<->ssub*cmss/bx/n}{}
+\DeclareFontShape{TS1}{cmss}{b}{sl}
+       {<->ssub*cmss/bx/sl}{}
+\DeclareFontShape{TS1}{cmss}{b}{it}
+       {<->ssub*cmss/bx/sl}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Typewriter}
+%    \begin{macrocode}
+\DeclareFontFamily{TS1}{cmtt}{\hyphenchar \font\m@ne}
+\DeclareFontShape{TS1}{cmtt}{m}{n}{
+        <-9>    tctt0800
+        <9-10>  tctt0900
+        <10-12> tctt1000
+        <12-17> tctt1200
+        <17->   tctt1728
+      }{}
+\DeclareFontShape{TS1}{cmtt}{m}{it}{
+        <-9>    tcit0800
+        <9-10>  tcit0900
+        <10-12> tcit1000
+        <12-17> tcit1200
+        <17->   tcit1728
+      }{}
+\DeclareFontShape{TS1}{cmtt}{m}{sl}{
+        <-9>    tcst0800
+        <9-10>  tcst0900
+        <10-12> tcst1000
+        <12-17> tcst1200
+        <17->   tcst1728
+      }{}
+\DeclareFontShape{TS1}{cmtt}{bx}{n}
+       {<->sub * cmtt/m/n}{}
+\DeclareFontShape{TS1}{cmtt}{bx}{it}
+       {<->sub * cmtt/m/it}{}
+\DeclareFontShape{TS1}{cmtt}{bx}{sl}
+       {<->sub * cmtt/m/sl}{}
+%    \end{macrocode}
+% Substitutions not provided in the default \file{.fd} files:
+%    \begin{macrocode}
+\DeclareFontShape{TS1}{cmtt}{b}{n}
+       {<->sub * cmtt/m/n}{}
+\DeclareFontShape{TS1}{cmtt}{b}{it}
+       {<->sub * cmtt/m/it}{}
+\DeclareFontShape{TS1}{cmtt}{b}{sl}
+       {<->sub * cmtt/m/sl}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Typewriter (var.)}
+%    \begin{macrocode}
+\DeclareFontFamily{TS1}{cmvtt}{}
+\DeclareFontShape{TS1}{cmvtt}{m}{n}{
+        <-9>    tcvt0800
+        <9-10>  tcvt0900
+        <10-12> tcvt1000
+        <12-17> tcvt1200
+        <17->   tcvi1728
+      }{}
+\DeclareFontShape{TS1}{cmvtt}{m}{it}{
+        <-9>    tcvi0800
+        <9-10>  tcvi0900
+        <10-12> tcvi1000
+        <12-17> tcvi1200
+        <17->   tcvi1728
+      }{}
+%    \end{macrocode}
+%
+% \subsection{OT1 encoding}
+%
+% \paragraph{CM Roman}
+%    \begin{macrocode}
+\DeclareFontFamily{OT1}{cmr}{\hyphenchar\font45 }
+\DeclareFontShape{OT1}{cmr}{m}{n}{
+        <-6>    cmr5
+        <6-7>   cmr6
+        <7-8>   cmr7
+        <8-9>   cmr8
+        <9-10>  cmr9
+        <10-12> cmr10
+        <12-17> cmr12
+        <17->   cmr17
+      }{}
+\DeclareFontShape{OT1}{cmr}{m}{sl}{
+        <-9>    cmsl8
+        <9-10>  cmsl9
+        <10-12> cmsl10
+        <12->   cmsl12
+      }{}
+\DeclareFontShape{OT1}{cmr}{m}{it}{
+        <-8>    cmti7
+        <8-9>   cmti8
+        <9-10>  cmti9
+        <10-12> cmti10
+        <12->   cmti12
+      }{}
+\DeclareFontShape{OT1}{cmr}{m}{sc}{
+        <->     cmcsc10
+      }{}
+\DeclareFontShape{OT1}{cmr}{m}{ui}{
+        <->     cmu10
+      }{}
+\DeclareFontShape{OT1}{cmr}{b}{n}{
+        <->     cmb10
+      }{}
+\DeclareFontShape{OT1}{cmr}{bx}{n}{
+        <-6>    cmbx5
+        <6-7>   cmbx6
+        <7-8>   cmbx7
+        <8-9>   cmbx8
+        <9-10>  cmbx9
+        <10-12> cmbx10
+        <12->   cmbx12
+      }{}
+\DeclareFontShape{OT1}{cmr}{bx}{sl}{
+        <->     cmbxsl10
+      }{}
+\DeclareFontShape{OT1}{cmr}{bx}{it}{
+        <->     cmbxti10
+      }{}
+\DeclareFontShape{OT1}{cmr}{bx}{ui}
+      {<->sub*cmr/m/ui}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Sans}
+%    \begin{macrocode}
+\DeclareFontFamily{OT1}{cmss}{\hyphenchar\font45 }
+\DeclareFontShape{OT1}{cmss}{m}{n}{
+        <-9>    cmss8
+        <9-10>  cmss9
+        <10-12> cmss10
+        <12-17> cmss12
+        <17->   cmss17
+      }{}
+\DeclareFontShape{OT1}{cmss}{m}{it}
+      {<->sub*cmss/m/sl}{}
+\DeclareFontShape{OT1}{cmss}{m}{sl}{
+        <-9>    cmssi8
+        <9-10>  cmssi9
+        <10-12> cmssi10
+        <12-17> cmssi12
+        <17->   cmssi17
+      }{}
+\DeclareFontShape{OT1}{cmss}{m}{sc}
+       {<->sub*cmr/m/sc}{}
+\DeclareFontShape{OT1}{cmss}{m}{ui}
+       {<->sub*cmr/m/ui}{}
+\DeclareFontShape{OT1}{cmss}{sbc}{n}{
+        <->     cmssdc10
+      }{}
+\DeclareFontShape{OT1}{cmss}{bx}{n}{
+        <->     cmssbx10
+      }{}
+\DeclareFontShape{OT1}{cmss}{bx}{ui}
+       {<->sub*cmr/bx/ui}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Typewriter}
+%    \begin{macrocode}
+\DeclareFontFamily{OT1}{cmtt}{\hyphenchar \font\m@ne}
+\DeclareFontShape{OT1}{cmtt}{m}{n}{
+        <-9>    cmtt8
+        <9-10>  cmtt9
+        <10-12> cmtt10
+        <12->   cmtt12
+      }{}
+\DeclareFontShape{OT1}{cmtt}{m}{it}{
+        <->     cmitt10
+      }{}
+\DeclareFontShape{OT1}{cmtt}{m}{sl}{
+        <->     cmsltt10
+      }{}
+\DeclareFontShape{OT1}{cmtt}{m}{sc}{
+        <->     cmtcsc10
+      }{}
+\DeclareFontShape{OT1}{cmtt}{m}{ui}
+       {<->ssub*cmtt/m/it}{}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+       {<->ssub*cmtt/m/n}{}
+\DeclareFontShape{OT1}{cmtt}{bx}{it}
+       {<->ssub*cmtt/m/it}{}
+\DeclareFontShape{OT1}{cmtt}{bx}{ui}
+       {<->ssub*cmtt/m/it}{}
+%    \end{macrocode}
+%
+% \paragraph{CM Typewriter (var.)}
+%    \begin{macrocode}
+\DeclareFontFamily{OT1}{cmvtt}{\hyphenchar\font45 }
+\DeclareFontShape{OT1}{cmvtt}{m}{n}{
+        <->     cmvtt10
+      }{}
+\DeclareFontShape{OT1}{cmvtt}{m}{it}{
+        <->     cmvtti10
+      }{}
+%    \end{macrocode}
+%
+% \subsection{OML and OMS encoded math fonts}
+%    \begin{macrocode}
+\DeclareFontFamily{OML}{cmm}{\skewchar\font127 }
+\DeclareFontShape{OML}{cmm}{m}{it}{
+        <-6>    cmmi5
+        <6-7>   cmmi6
+        <7-8>   cmmi7
+        <8-9>   cmmi8
+        <9-10>  cmmi9
+        <10-12> cmmi10
+        <12->   cmmi12
+      }{}
+\DeclareFontShape{OML}{cmm}{b}{it}{<-6>cmmib5<6-8>cmmib7<8->cmmib10}{}
+\DeclareFontShape{OML}{cmm}{bx}{it}
+       {<->ssub*cmm/b/it}{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareFontFamily{OMS}{cmsy}{\skewchar\font48 }
+\DeclareFontShape{OMS}{cmsy}{m}{n}{
+        <-6>    cmsy5
+        <6-7>   cmsy6
+        <7-8>   cmsy7
+        <8-9>   cmsy8
+        <9-10>  cmsy9
+        <10->   cmsy10
+      }{}
+\DeclareFontShape{OMS}{cmsy}{b}{n}{<-6>cmbsy5<6-8>cmbsy7<8->cmbsy10}{}
+%    \end{macrocode}
+%
+% \subsection{\LaTeX{} symbols}
+%    \begin{macrocode}
+\DeclareFontFamily{U}{lasy}{}
+\DeclareFontShape{U}{lasy}{m}{n}{
+        <-6>    lasy5
+        <6-7>   lasy6
+        <7-8>   lasy7
+        <8-9>   lasy8
+        <9-10>  lasy9
+        <10->   lasy10
+      }{}
+\DeclareFontShape{U}{lasy}{b}{n}{
+        <-10>   ssub * lasy/m/n
+        <10->   lasyb10
+      }{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\endgroup
+%</fix-cm>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

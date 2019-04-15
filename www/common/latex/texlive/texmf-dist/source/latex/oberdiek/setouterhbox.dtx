@@ -1,0 +1,1219 @@
+% \iffalse meta-comment
+%
+% File: setouterhbox.dtx
+% Version: 2007/09/09 v1.7
+% Info: Set hbox in outer horizontal mode
+%
+% Copyright (C) 2005-2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file setouterhbox.dtx
+% and the derived files
+%    setouterhbox.sty, setouterhbox.pdf, setouterhbox.ins, setouterhbox.drv,
+%    setouterhbox-example.tex, setouterhbox-test1.tex,
+%    setouterhbox-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/setouterhbox.dtx
+%    CTAN:macros/latex/contrib/oberdiek/setouterhbox.pdf
+%
+% Unpacking:
+%    (a) If setouterhbox.ins is present:
+%           tex setouterhbox.ins
+%    (b) Without setouterhbox.ins:
+%           tex setouterhbox.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{setouterhbox.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If setouterhbox.drv is present:
+%           latex setouterhbox.drv
+%    (b) Without setouterhbox.drv:
+%           latex setouterhbox.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex setouterhbox.dtx
+%       makeindex -s gind.ist setouterhbox.idx
+%       pdflatex setouterhbox.dtx
+%       makeindex -s gind.ist setouterhbox.idx
+%       pdflatex setouterhbox.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/setouterhbox.sty
+%    TDS:doc/latex/oberdiek/setouterhbox.pdf
+%    TDS:doc/latex/oberdiek/setouterhbox-example.tex
+%    TDS:doc/latex/oberdiek/test/setouterhbox-test1.tex
+%    TDS:doc/latex/oberdiek/test/setouterhbox-test2.tex
+%    TDS:source/latex/oberdiek/setouterhbox.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: setouterhbox 2007/09/09 v1.7 Set hbox in outer horizontal mode (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: setouterhbox
+Version: 2007/09/09 v1.7
+
+Copyright (C) 2005-2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file setouterhbox.dtx
+and the derived files
+   setouterhbox.sty, setouterhbox.pdf, setouterhbox.ins, setouterhbox.drv,
+   setouterhbox-example.tex, setouterhbox-test1.tex,
+   setouterhbox-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{setouterhbox.ins}{\from{setouterhbox.dtx}{install}}%
+  \file{setouterhbox.drv}{\from{setouterhbox.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{setouterhbox.sty}{\from{setouterhbox.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{setouterhbox-example.tex}{\from{setouterhbox.dtx}{example}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{setouterhbox-test1.tex}{\from{setouterhbox.dtx}{test1}}%
+  \file{setouterhbox-test2.tex}{\from{setouterhbox.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{setouterhbox.xml}{\from{setouterhbox.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     setouterhbox.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `setouterhbox.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{setouterhbox.drv}%
+  [2007/09/09 v1.7 Set hbox in outer horizontal mode (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{setouterhbox.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{643}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{setouterhbox.drv}
+%
+% \title{The \xpackage{setouterhbox} package}
+% \date{2007/09/09 v1.7}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% If math stuff is set in an \cs{hbox}, then TeX
+% performs some optimization and omits the implicite
+% penalties \cs{binoppenalty} and \cs{relpenalty}.
+% This packages tries to put stuff into an \cs{hbox}
+% without getting lost of those penalties.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% There is a situation in \xpackage{hyperref}'s driver for dvips
+% where the user wants to have links that can be broken across
+% lines. However dvips doesn't support the feature. With option
+% \xoption{breaklinks} \xpackage{hyperref} sets the links as
+% usual, put them in a box and write the link data with
+% box dimensions into the appropriate \cs{special}s.
+% Then, however, it does not set the complete unbreakable
+% box, but it unwrappes the material inside to allow line
+% breaks. Of course line breaking and glue setting will falsify
+% the link dimensions, but line breaking was more important
+% for the user.
+%
+% \subsection{Acknowledgement}
+%
+% Jonathan Fine, Donald Arsenau and me discussed the problem
+% in the newsgroup \xnewsgroup{comp.text.tex} where Damian
+% Menscher has started the thread, see \cite{newsstart}.
+%
+% The discussion was productive and generated many ideas
+% and code examples. In order to have a more permanent
+% result I wrote this package and tried to implement
+% most of the ideas, a kind of summary of the discussion.
+% Thus I want and have to thank Jonathan Fine and Donald Arsenau
+% very much.
+%
+% Two weeks later David Kastrup (posting in
+% \xnewsgroup{comp.text.tex}, \cite{kastrup})
+% remembered an old article of Michael Downes (\cite{downes})
+% in TUGboat, where Michael Downes already presented the
+% method we discuss here. Nowadays we have \eTeX\ that extends
+% the tool set of a \TeX\ macro programmer. Especially useful
+% \eTeX\ was in this package for detecting and dealing with
+% errorneous situations.
+%
+% However also nowadays a perfect solution for the problem
+% is still missing at macro level. Probably someone has
+% to go deep in the internals of the \TeX\ compiler to
+% implement a switch that let penalties stay where otherwise
+% \TeX\ would remove them for optimization reasons.
+%
+% \subsection{Usage}
+%
+% \paragraph{Package loading.}
+% \LaTeX: as usually:
+% \begin{quote}
+%   |\usepackage{setouterhbox}|
+% \end{quote}
+% The package can also be included directly, thus \plainTeX\ users
+% write:
+% \begin{quote}
+%   |\input setouterhbox.sty|
+% \end{quote}
+%
+% \paragraph{Register allocation.}
+% The material will be put into a box, thus we need to know these
+% box number. If you need to allocate a new box register:
+% \begin{description}
+%  \item[\LaTeX:] |\newsavebox{\|\meta{name}|}|
+%  \item[\plainTeX:] |\newbox\|\meta{name}
+% \end{description}
+% Then |\|\meta{name} is a command that held the box number.
+%
+% \paragraph{Box wrapping.}
+% \LaTeX\ users put the material in the box with an environment
+% similar to \texttt{lrbox}. The environment \texttt{setouterhbox}
+% uses the same syntax and offers the same features, such
+% as verbatim stuff inside:
+% \begin{quote}
+%  |\begin{setouterhbox}{|\meta{box number}|}|\dots
+%  |\end{setouterhbox}|
+% \end{quote}
+% Users with \plainTeX\ do not have environments, they use instead:
+% \begin{quote}
+%   |\setouterhbox{|\meta{box number}|}|\dots|\endsetouterhbox|
+% \end{quote}
+% In both cases the material is put into an \cs{hbox} and assigned
+% to the given box, denoted by \meta{box number}. Note the
+% assignment is local, the same way \texttt{lrbox} behaves.
+%
+% \paragraph{Unwrapping.}
+% The box material is ready for unwrapping:
+% \begin{quote}
+%   |\unhbox|\meta{box number}
+% \end{quote}
+%
+% \subsection{Option \xoption{hyperref}}
+%
+% Package url uses math mode for typesetting urls.
+% Break points are inserted by \cs{binoppenalty} and
+% \cs{relpenalty}. Unhappily these break points are
+% removed, if \xpackage{hyperref}
+% is used with option {breaklinks}
+% and drivers that depend on \xoption{pdfmark}:
+% \xoption{dvips}, \xoption{vtexpdfmark}, \xoption{textures},
+% and \xoption{dvipsone}.
+% Thus the option \xoption{hyperref} enables the method
+% of this package to avoid the removal of \cs{relpenalty}
+% and \cs{binoppenalty}. Thus you get more break points.
+% However, the link areas are still wrong for these
+% drivers, because they are not supporting broken
+% links.
+%
+% Note, you need version 2006/08/16 v6.75c of package \xpackage{hyperref},
+% because starting with this version the necessary hook is provided
+% that package \xpackage{setouterhbox} uses.
+% \begin{quote}
+%   |\usepackage[|\dots|]{hyperref}[2006/08/16]|\\
+%   |\usepackage[hyperref]{setouterhbox}|
+% \end{quote}
+% Package order does not matter.
+%
+% \subsection{Example}
+%
+%    \begin{macrocode}
+%<*example>
+\documentclass[a5paper]{article}
+\usepackage{url}[2005/06/27]
+\usepackage{setouterhbox}
+
+\newsavebox{\testbox}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2em}
+
+\begin{document}
+\raggedright
+
+\url{http://this.is.a.very.long.host.name/followed/%
+by/a/very_long_long_long_path.html}%
+
+\sbox\testbox{%
+  \url{http://this.is.a.very.long.host.name/followed/%
+  by/a/very_long_long_long_path.html}%
+}%
+\unhbox\testbox
+
+\begin{setouterhbox}{\testbox}%
+  \url{http://this.is.a.very.long.host.name/followed/%
+  by/a/very_long_long_long_path.html}%
+\end{setouterhbox}
+\unhbox\testbox
+
+\end{document}
+%</example>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% Internal macros are prefixed by \cs{setouterhbox}, |@| is
+% not used inside names, thus we do not need to care of its
+% catcode if we are not using it as \LaTeX\ package.
+%
+% \subsection{Package start stuff}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% Prevent reloading more than one, necessary for \plainTeX:
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@setouterhbox.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{setouterhbox}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@setouterhbox.sty\endcsname
+\ProvidesPackage{setouterhbox}%
+  [2007/09/09 v1.7 Set hbox in outer horizontal mode (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname setouterhboxAtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\setouterhboxAtEnd{%
+    \setouterhboxAtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\setouterhboxAtEnd{\setouterhboxAtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Interface macros}
+%
+%    \begin{macro}{\setouterhboxBox}
+% The method requires a global box assignment. To be on the
+% safe side, a new box register is allocated for this
+% global box assignment.
+%    \begin{macrocode}
+\newbox\setouterhboxBox
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\setouterhboxFailure}
+% Error message for both \plainTeX\ and \LaTeX
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+\fi
+\edef\setouterhboxFailure#1#2{%
+  \expandafter\noexpand\csname @PackageError\endcsname
+      {setouterhbox}{#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Main part}
+%
+% eTeX provides much better means for checking
+% error conditions. Thus lines marked by "E" are executed
+% if eTeX is available, otherwise the lines marked by "T" are
+% used.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname lastnodetype\endcsname\relax
+  \catcode`T=9 % ignore
+  \catcode`E=14 % comment
+\else
+  \catcode`T=14 % comment
+  \catcode`E=9 % ignore
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\setouterhboxRemove}
+% Remove all kern, glue, and penalty nodes;
+% poor man's version, if \eTeX\ is not available
+%    \begin{macrocode}
+\def\setouterhboxRemove{%
+E \ifnum\lastnodetype<11 %
+E   \else
+E   \ifnum\lastnodetype>13 %
+E   \else
+      \unskip\unkern\unpenalty
+E     \expandafter\expandafter\expandafter\setouterhboxRemove
+E   \fi
+E \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\setouterhbox}
+% Passing the box contents by macro parameter would prevent
+% catcode changes in the box contents like by \cs{verb}.
+% Also \cs{bgroup} and \cs{egroup} does not work, because stuff
+% has to be added at the begin and end of the box, thus
+% the syntax
+% |\setouterhbox{|\meta{box number}|}|\dots|\endsetouterhbox|
+% is used. Also we automatically get an environment \texttt{setouterhbox}
+% if \LaTeX\ is used.
+%    \begin{macrocode}
+\def\setouterhbox#1{%
+  \begingroup
+    \def\setouterhboxNum{#1}%
+    \setbox0\vbox\bgroup
+T     \kern.123pt\relax % marker
+T     \kern0pt\relax % removed by \setouterhboxRemove
+      \begingroup
+        \everypar{}%
+        \noindent
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\endsetouterhbox}
+% Most of the work is done in the end part, thus the heart of
+% the method follows:
+%    \begin{macrocode}
+\def\endsetouterhbox{%
+      \endgroup
+%    \end{macrocode}
+% Omit the first pass to get the penalties
+% of the second pass.
+%    \begin{macrocode}
+      \pretolerance-1 %
+%    \end{macrocode}
+%  We don't want a third pass with \cs{emergencystretch}.
+%    \begin{macrocode}
+      \tolerance10000 %
+      \hsize\maxdimen
+%    \end{macrocode}
+% Line is not underfull:
+%    \begin{macrocode}
+      \parfillskip 0pt plus 1filll\relax
+      \leftskip0pt\relax
+%    \end{macrocode}
+% Suppress underful \cs{hbox} warnings,
+% is explicit line breaks are used.
+%    \begin{macrocode}
+      \rightskip0pt plus 1fil\relax
+      \everypar{}%
+%    \end{macrocode}
+% Ensure that there is a paragraph and
+% prevents \cs{endgraph} from eating terminal glue:
+%    \begin{macrocode}
+      \kern0pt%
+      \endgraf
+      \setouterhboxRemove
+E     \ifnum\lastnodetype=1 %
+E       \global\setbox\setouterhboxBox\lastbox
+E       \loop
+E         \setouterhboxRemove
+E       \ifnum\lastnodetype=1 %
+E         \setbox0=\lastbox
+E         \global\setbox\setouterhboxBox=\hbox{%
+E           \unhbox0 %
+%    \end{macrocode}
+% Remove \cs{rightskip}, a penalty with -10000 is part of the previous line.
+%    \begin{macrocode}
+E           \unskip
+E           \unhbox\setouterhboxBox
+E         }%
+E       \repeat
+E     \else
+E       \setouterhboxFailure{%
+E         Something is wrong%
+E       }{%
+E         Could not find expected line.%
+E         \MessageBreak
+E         (\string\lastnodetype: \number\lastnodetype, expected: 1)%
+E       }%
+E     \fi
+E     \setouterhboxRemove
+T     \global\setbox\setouterhboxBox\lastbox
+T     \loop
+T       \setouterhboxRemove
+T       \setbox0=\lastbox
+T     \ifcase\ifvoid0 1\else0\fi
+T       \global\setbox\setouterhboxBox=\hbox{%
+T         \unhbox0 %
+%    \end{macrocode}
+% Remove \cs{rightskip}, a penalty with -10000 is part of the previous line.
+%    \begin{macrocode}
+T         \unskip
+T         \unhbox\setouterhboxBox
+T       }%
+T     \repeat
+T     \ifdim.123pt=\lastkern
+T     \else
+T       \setouterhboxFailure{%
+T         Something is wrong%
+T       }{%
+T         Unexpected stuff was detected before the line.%
+T       }%
+T     \fi
+T   \egroup
+T   \ifcase \ifnum\wd0=0 \else 1\fi
+T           \ifdim\ht0=.123pt \else 1\fi
+T           \ifnum\dp0=0 \else 1\fi
+T           0 %
+E     \ifnum\lastnodetype=-1 %
+%    \end{macrocode}
+% There was just one line that we have caught.
+%    \begin{macrocode}
+      \else
+        \setouterhboxFailure{%
+            Something is wrong%
+        }{%
+            After fetching the line there is more unexpected stuff.%
+E           \MessageBreak
+E           (\string\lastnodetype: \number\lastnodetype, expected: -1)%
+        }%
+      \fi
+E   \egroup
+  \expandafter\endgroup
+  \expandafter\setouterhboxFinish\expandafter{%
+    \number\setouterhboxNum
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Environment support}
+%
+% Check \cs{@currenvir} for the case that \cs{setouterhbox}
+% was called as environment. Then the box assignment
+% must be put after the \cs{endgroup} of |\end{|\dots|}|.
+%    \begin{macrocode}
+\def\setouterhboxCurr{setouterhbox}
+\def\setouterhboxLast#1{%
+  \setbox#1\hbox{%
+    \unhbox\setouterhboxBox
+    \unskip % remove \rightskip glue
+    \unskip % remove \parfillskip glue
+    \unpenalty % remove paragraph ending \penalty 10000
+    \unkern % remove explicit kern inserted above
+  }%
+}
+%    \end{macrocode}
+%    \begin{macro}{\setouterhboxFinish}
+% |#1| is an explicit number.
+%    \begin{macrocode}
+\def\setouterhboxFinish#1{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @currenvir\endcsname\setouterhboxCurr
+    \aftergroup\setouterhboxLast
+    \aftergroup{%
+    \setouterhboxAfter #1\NIL
+    \aftergroup}%
+  \else
+    \setouterhboxLast{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\setouterhboxAfter}
+% |#1| is an explicit number.
+%    \begin{macrocode}
+\def\setouterhboxAfter#1#2\NIL{%
+  \aftergroup#1%
+  \ifx\\#2\\%
+  \else
+    \setouterhboxReturnAfterFi{%
+      \setouterhboxAfter#2\NIL
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\setouterhboxReturnAfterFi}
+% A utility macro to get tail recursion.
+%    \begin{macrocode}
+\long\def\setouterhboxReturnAfterFi#1\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+% Restore catcodes we have need to distinguish between
+% the implementation with and without \eTeX.
+%    \begin{macrocode}
+\catcode69=11\relax % E
+\catcode84=11\relax % T
+%    \end{macrocode}
+%
+% \subsection{Option \xoption{hyperref}}
+%    \begin{macrocode}
+\begingroup
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifx\x\fmtname
+\else
+  \expandafter\setouterhboxAtEnd
+\fi%
+%    \end{macrocode}
+%    \begin{macro}{\Hy@setouterhbox}
+% \cs{Hy@setouterhbox} is the internal hook that \xpackage{hyperref}
+% uses since 2006/02/12 v6.75a.
+%    \begin{macrocode}
+\DeclareOption{hyperref}{%
+  \long\def\Hy@setouterhbox#1#2{%
+    \setouterhbox{#1}#2\endsetouterhbox
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\setouterhboxAtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input setouterhbox.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test with package \xpackage{url}}
+%
+%    \begin{macrocode}
+%<*test2>
+\nofiles
+\documentclass[a5paper]{article}
+\usepackage{url}[2005/06/27]
+\usepackage{setouterhbox}
+
+\newsavebox{\testbox}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2em}
+
+\begin{document}
+\raggedright
+
+\url{http://this.is.a.very.long.host.name/followed/%
+by/a/very_long_long_long_path.html}%
+
+\sbox\testbox{%
+  \url{http://this.is.a.very.long.host.name/followed/%
+  by/a/very_long_long_long_path.html}%
+}%
+\unhbox\testbox
+
+\begin{setouterhbox}{\testbox}%
+  \url{http://this.is.a.very.long.host.name/followed/%
+  by/a/very_long_long_long_path.html}%
+\end{setouterhbox}
+\unhbox\testbox
+
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/setouterhbox.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/setouterhbox.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex setouterhbox.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   setouterhbox.sty & tex/generic/oberdiek/setouterhbox.sty\\
+%   setouterhbox.pdf & doc/latex/oberdiek/setouterhbox.pdf\\
+%   setouterhbox-example.tex & doc/latex/oberdiek/setouterhbox-example.tex\\
+%   test/setouterhbox-test1.tex & doc/latex/oberdiek/test/setouterhbox-test1.tex\\
+%   test/setouterhbox-test2.tex & doc/latex/oberdiek/test/setouterhbox-test2.tex\\
+%   setouterhbox.dtx & source/latex/oberdiek/setouterhbox.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk setouterhbox.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{setouterhbox.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex setouterhbox.dtx
+%makeindex -s gind.ist setouterhbox.idx
+%pdflatex setouterhbox.dtx
+%makeindex -s gind.ist setouterhbox.idx
+%pdflatex setouterhbox.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{setouterhbox.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='setouterhbox'>
+  <name>setouterhbox</name>
+  <caption>Set hbox in outer horizontal mode.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2005-2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.7'/>
+  <description>
+    If math stuff is set in an <tt>\hbox</tt>, then TeX
+    performs some optimization and omits the implicit
+    penalties <tt>\binoppenalty</tt> and <tt>\relpenalty</tt>.
+    This packages tries to put stuff into an <tt>\hbox</tt>
+    without losing those penalties.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/setouterhbox.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/setouterhbox.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{newsstart}
+%   Damian Menscher, \Newsgroup{comp.text.tex},
+%   \textit{overlong lines in List of Figures},
+%   \nolinkurl{<dh058t$qbd$1@news.ks.uiuc.edu>},
+%   23rd September 2005.
+%   \url{http://groups.google.com/group/comp.text.tex/msg/79648d4cf1f8bc13}
+%
+% \bibitem{kastrup}
+%   David Kastrup, \Newsgroup{comp.text.tex},
+%   \textit{Re: ANN: outerhbox.sty -- collect horizontal material,
+%   for unboxing into a paragraph},
+%   \nolinkurl{<85y855lrx3.fsf@lola.goethe.zz>},
+%   7th October 2005.
+%   \url{http://groups.google.com/group/comp.text.tex/msg/7cf0a345ef932e52}
+%
+% \bibitem{downes}
+%   Michael Downes, \textit{Line breaking in \cs{unhbox}ed Text},
+%   TUGboat 11 (1990), pp. 605--612.
+%
+% \bibitem{hyperref}
+%   Sebastian Rahtz, Heiko Oberdiek:
+%   \textit{The \xpackage{hyperref} package};
+%   2006/08/16 v6.75c;
+%   \CTAN{macros/latex/contrib/hyperref/}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2005/10/05 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2005/10/07 v1.1}
+%   \item
+%     Option \xoption{hyperref} added.
+%   \end{Version}
+%   \begin{Version}{2005/10/18 v1.2}
+%   \item
+%     Support for explicit line breaks added.
+%   \end{Version}
+%   \begin{Version}{2006/02/12 v1.3}
+%   \item
+%     DTX format.
+%   \item
+%     Documentation extended.
+%   \end{Version}
+%   \begin{Version}{2006/08/26 v1.4}
+%   \item
+%     Date of hyperref updated.
+%   \end{Version}
+%   \begin{Version}{2007/04/26 v1.5}
+%   \item
+%     Use of package \xpackage{infwarerr}.
+%   \end{Version}
+%   \begin{Version}{2007/05/17 v1.6}
+%   \item
+%     Standard header part for generic files.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.7}
+%   \item
+%     Catcode section added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

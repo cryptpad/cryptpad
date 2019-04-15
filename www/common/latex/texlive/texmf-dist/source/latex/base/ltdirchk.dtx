@@ -1,0 +1,986 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \ProvidesFile{ltdirchk.dtx}
+%              [2015/81/33 v1.2 LaTeX Kernel (System Dependent Parts)]
+%
+% \iffalse
+%%% From File: ltdirchk.dtx
+%
+%<*unstripped>
+\ifx\documentclass\undefined\let\next\relax\else\def\next{%
+%</unstripped>
+%<*driver>
+% \fi
+\ProvidesFile{ltdirchk.dtx}
+             [2015/10/02 v1.2a LaTeX Kernel (System Dependent Parts)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltdirchk.dtx}
+\title{\filename\thanks{%
+ this document also includes the source for
+ texsys.cfg and ltxcheck.tex}}
+\author{David Carlisle}
+\date{\filedate}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+%<*unstripped>
+}\fi\next
+%</unstripped>
+% \fi
+%
+% \changes{v0.2j}{1994/02/25}
+%         {Remove need for drv file}
+% \changes{v0.2k}{1994/03/01}
+%         {Add unstripped module,
+%          so that dircheck.dtx may be used with initex}
+% \changes{v1.0a}{1994/03/08}
+%         {Reorganise driver module into `new style'}
+% \changes{v1.0b}{1994/03/12}
+%         {Change name from dircheck.dtx}
+% \changes{v1.0b}{1994/03/12}
+%         {Minor edits to the typeouts in ltxcheck}
+% \changes{v1.0d}{1994/03/28}
+%         {Improve documentation}
+% \changes{v1.0i}{1994/11/03}
+%         {Generate an error if latex.ltx not used with clean initex}
+% \changes{v1.0j}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0r}{1996/06/13}
+%         {documentation improvements mainly from internal/2174}
+% \changes{v1.0v}{1997/06/16}
+%         {documentation improvements mainly from internal/2520}
+% \changes{v1.0w}{1998/08/17}{(RmS) Documentation improvements.}
+%
+% \CheckSum{627}
+%
+% \section{\LaTeX\ System Dependent Initialisations}
+%
+% \changes{v0.2g}{1994/01/21}
+%         {Improve documentation, reorganise docstrip module}
+%
+% This file implements the semi-automatic determination of various
+% system dependent parts of the initialisation. The actual definitions
+% may be placed in a file |texsys.cfg|. Thus for operating systems for
+% which the tests here do not result in acceptable settings, a `hand
+% written' |texsys.cfg| may be produced.
+%
+% The macros that must be defined are:
+%
+% \DescribeMacro{\@currdir}
+% |\@currdir|\meta{filename}\meta{space} should expand to a form of the
+% filename that uniquely refers to the `current directory' if this is
+% possible. (The expansion should also end with a space.) on UNIX,
+% this is |\def\@currdir{./}|. For more exotic operating systems you may
+% want to make |\@currdir| a macro with arguments delimited by |.|
+% and/or \meta{space}. If the operating system has no concept of
+% directory structure, this macro should be defined to be empty.
+%
+%
+% \DescribeMacro{\input@path}
+% If the primitive |\openin| searches the same directories as the
+% primitive |\input|, then it is possible to tell (using |\ifeof|)
+% whether a file exists before trying to input it. For systems like
+% this, |\input@path| should be left undefined.
+%
+% If |\openin| does not `follow' |\input| then |\input@path| must be
+% defined to be a list of directories to search for input files. The
+% format for each directory is as for |\@currdir|, normally just a
+% prefix is required, but it may be a macro with space-delimited
+% argument. That is, if \meta{dir} is an entry in the input path,
+% \TeX\ will try to load the expansion of
+%   \meta{dir}\meta{filename}\meta{space}
+%
+% So either \meta{dir} should be defined as a macro with argument
+% delimited by space, or it should just expand to a directory name,
+% including the final directory separator, so that it may be
+% concatenated with the \meta{filename}. This means that for UNIX-like
+% syntax, each \meta{dir} should end with a slash, |/|.
+%
+% |\input@path| should expand to a list of such directories, each in a
+% |{}| group.
+%
+% \DescribeMacro{\filename@parse}
+% After a call of the form: |\filename@parse{|\meta{filename}|}|, the
+% three macros |\filename@area|,|\filename@base|,|\filename@ext| should
+% be defined to be the `area' (or directory), basename and
+% extension respectively. If there was no extension specified in
+% \meta{filename}, |\filename@ext| should be |\let| to |\relax| (so this
+% case may be tested with |\@ifundefined{filename@ext}| and, perhaps a
+% default extension substituted).
+%
+% Normally one would not need to define this macro in |texsys.cfg| as
+% the automatic tests can supply parsers that work with UNIX and VMS and
+% Macintosh syntax, as well as a basic parser that will cover many other
+% cases. However some operating systems may need a `hand produced'
+% parser in which case it should be defined in this file.
+%
+% The UNIX parser also works for most MSDOS \TeX\ versions.
+% Currently if the UNIX, VMS or Macintosh parser is not used,
+% |\filename@parse| is  defined to always return an empty area, and to
+% split the argument into  basename and extension at the first `|.|'
+% that occurs in the name.
+% Parsers for other formats may be defined in |texsys.cfg|,
+% in which case they will be used in preference to the default
+% definitions.
+%
+% \DescribeMacro{\@TeXversion}
+% \changes{v1.0f}{1994/05/23}{Document \cs{@TeXversion}}
+% |\@TeXversion| is now set automatically by the initialisation tests
+% in this file. You should not need to set it in |texsys.cfg|, however
+% the following documentation is left for information. \LaTeX\ does
+% not set this variable exactly, the automatic tests set it to:\\
+%  |2| for any version, $v$,  $v < 3.0$\\
+%  |3| for any version, $v$,  $3.0 \leq v \leq 3.14$\\
+%  \meta{undefined} otherwise.\\
+% However these values are accurate enough for \LaTeX\ to take
+% appropriate action for these old \TeX{}s.
+%
+% If your \TeX\ is older than version 3.141, then you should define
+% |\@TeXversion| (using |\def|) to be the version number. If you do not
+% do this\footnote
+%       {Actually if your \TeX\ is really old, version~2, \LaTeX\ can
+%       detect this, and sets \cs{@TeXversion} to~2 if it is not set in
+%       the \texttt{cfg} file.}
+%, \LaTeX\ will not work around a bug in old \TeX\ versions, and
+% so error messages will appear in a very strange format, with |^^J|
+% appearing instead of line breaks:
+% \begingroup\catcode`\==\active \def=#1#2{}\hfuzz\maxdimen
+%\begin{verbatim}
+%! LaTeX Error: \rubbish undefined.^^J^^JSee the LaTeX manual or LaTeX=
+% Companion
+% for explanation.^^JType  H <return>  for immediate help.
+% ...
+%
+%l.3 \renewcommand{\rubbish}
+%                           {}
+%?
+%\end{verbatim}
+% \endgroup\noindent
+% However if you put |\def\@TeXversion{3.14}| in \texttt{texsys.cfg}
+% the following format will be used:
+%\begin{verbatim}
+%! LaTeX Error: \rubbish undefined.
+%
+%See the LaTeX manual or LaTeX Companion for explanation.
+%Type  H <return>  for immediate help.
+%! .
+% ...
+%
+%l.3 \renewcommand{\rubbish}
+%                           {}
+%?
+%\end{verbatim}
+% Note that this has an extra line |! .| which does not appear in
+% error messages that use the default settings with a current version of
+% \TeX, but this should not cause any confusion we hope.
+%
+% \StopEventually{}
+%
+% \section{Initialisation}
+% As this file is read at a very early stage, some definitions that
+% are normally considered to be part of the format must be made here.
+%
+% \subsection{INITEX}
+% \changes{v0.2i}{1994/01/25}
+%         {Protect against looping on \cs{@@input} and \cs{@@end}.}
+%    \begin{macrocode}
+%<*dircheck>
+%<*initex>
+%<initex>\ifnum\catcode`\{=1
+%<initex>  \errmessage
+%<initex>  {LaTeX must be made using an initex with no format preloaded}
+%<initex>\fi
+\catcode`\{=1
+\catcode`\}=2
+%    \end{macrocode}
+% \changes{v1.1}{2015/01/03}{Enable extra primitives when Lua\TeX{} is used}
+% \changes{v1.2}{2015/08/23}{Do not use luatex prefix}
+% \changes{v1.2a}{2015/10/02}{Allow backing out of unprefixed names}
+%    If Lua\TeX{} is in use the extensions and other new primitives
+%    have to be activated: this is done as early as possible. Older
+%    versions of Lua\TeX{} do not hide the primitives: a version check is
+%    not needed as the version itself will be missing in the case where
+%    action is needed!
+%    \begin{macrocode}
+\ifx\directlua\undefined
+\else
+  \ifx\luatexversion\undefined
+%    \end{macrocode}
+% Enable e-TeX/pdfTeX/Umath primitives with their natural names
+%    \begin{macrocode}
+    \directlua{tex.enableprimitives("",%
+                 tex.extraprimitives('etex', 'pdftex', 'umath'))}
+%    \end{macrocode}
+%
+% In current formats enable primitives with unprefixed names.
+% the \textsf{latexrelease} guards allow the primitives to be
+% defined with a |\luatex| prefix if older formats are specified.
+%    \begin{macrocode}
+%</initex>
+%</dircheck>
+%<*initex,latexrelease>
+%<latexrelease>\ifx\directlua\undefined\else
+%<latexrelease>\IncludeInRelease{2015/10/01}{\luatexluafunction}
+%<latexrelease>                             {LuaTeX (prefixed names)}%
+    \directlua{tex.enableprimitives("",%
+                 tex.extraprimitives("omega", "aleph", "luatex"))}
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\luatexluafunction}
+%<latexrelease>                             {LuaTeX (prefixed names)}%
+%<latexrelease>\directlua{
+%<latexrelease>  tex.enableprimitives(
+%<latexrelease>    "luatex",
+%<latexrelease>    tex.extraprimitives("core","omega", "aleph", "luatex")
+%<latexrelease>  )
+%<latexrelease>  local i
+%<latexrelease>  local t = { }
+%<latexrelease>  for _,i in pairs(tex.extraprimitives("luatex")) do
+%<latexrelease>    if not string.match(i,"^U") then
+%<latexrelease>      if not string.match(i, "^luatex") then
+%<latexrelease>        table.insert(t,i)
+%<latexrelease>      end
+%<latexrelease>    else
+%<latexrelease>      if string.match(i,"^Uchar$") then
+%<latexrelease>        table.insert(t,i)
+%<latexrelease>      end
+%<latexrelease>    end
+%<latexrelease>  end
+%<latexrelease>  for _,i in pairs(t) do
+%<latexrelease>    tex.print(
+%<latexrelease>      "\noexpand\\let\noexpand\\" .. i
+%<latexrelease>        .. "\noexpand\\undefined"
+%<latexrelease>    )
+%<latexrelease>  end
+%<latexrelease>}
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\fi
+%</initex,latexrelease>
+%<*dircheck>
+%<*initex>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \fi
+\fi
+%    \end{macrocode}
+%
+% That distraction over, back to the basics of a format.
+%    \begin{macrocode}
+\catcode`\#=6
+\catcode`\^=7
+\chardef\active=13
+\catcode`\@=11
+\countdef\count@=255
+\let\bgroup={ \let\egroup=}
+\ifx\@@input\@undefined\let\@@input\input\fi
+\ifx\@@end\@undefined\let\@@end\end\fi
+\chardef\@inputcheck0
+\chardef\sixt@@n=16
+\newlinechar`\^^J
+\def\typeout{\immediate\write17}
+\def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
+  \do\#\do\^\do\_\do\%\do\~}
+\def\@makeother#1{\catcode`#1=12\relax}
+\def\space{ }
+\def\@tempswafalse{\let\if@tempswa\iffalse}
+\def\@tempswatrue{\let\if@tempswa\iftrue}
+\let\if@tempswa\iffalse
+\def\loop#1\repeat{\def\iterate{#1\relax\expandafter\iterate\fi}%
+  \iterate \let\iterate\relax}
+\let\repeat\fi
+%</initex>
+%    \end{macrocode}
+%
+% \subsection{Some bits of 2e}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\two@digits#1{\ifnum#1<10 0\fi\number#1}
+\long\def\@firstoftwo#1#2{#1}
+\long\def\@secondoftwo#1#2{#2}
+%    \end{macrocode}
+% \changes{v1.0e}{1994/05/11}
+%         {Add \cs{ProvidesFile} as used in fd files.}
+% \changes{v1.0l}{1995/10/17}
+%         {Modify initex version of \cs{ProvidesFile}}
+% \changes{v1.0n}{1995/11/01}
+%         {Initialise \cs{@addtofilelist} to \cs{@gobble}}
+% This is a special version of |\ProvidesFile| for initex use.
+% \changes{v1.0x}{2001/05/25}{Explicitly set catcode of
+%                              \cs{endlinechar} to 10 (pr/3334)}
+% \changes{v1.0y}{2001/06/04}{But only if it is a char (pr/3334)}
+%    \begin{macrocode}
+\def\ProvidesFile#1{%
+  \begingroup
+    \catcode`\ 10 %
+    \ifnum \endlinechar<256 %
+      \ifnum \endlinechar>\m@ne
+        \catcode\endlinechar 10 %
+      \fi
+    \fi
+    \@makeother\/%
+    \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
+\def\@providesfile#1[#2]{%
+    \wlog{File: #1 #2}%
+    \@addtofilelist{ #2}%
+    \endgroup}
+\long\def\@addtofilelist#1{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@empty{}
+\catcode`\%=12
+\def\@percentchar{%}
+\catcode`\%=14
+\let\@currdir\@undefined
+\let\input@path\@undefined
+\let\filename@parse\@undefined
+%    \end{macrocode}
+% \begin{macro}{\strip@prefix}
+% \changes{v0.2a}{1993/12/13}
+%         {modified, name changed from \cs{stripmeaning}.}
+% \changes{v0.2e}{1994/01/19}
+%         {name changed from \cs{strip@meaning}, to match NFSS.}
+%    \begin{macrocode}
+\def\strip@prefix#1>{}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{texsys.cfg}
+% As mentioned above, any site specific definitions required to describe
+% the filename handling must be entered into a file |texsys.cfg|. If
+% |texsys.cfg| can not be located by |\openin|, we write a default
+% version out. The default version only contains comments, so we do not
+% actually input the file in that case. The automatic tests later will,
+% hopefully, correctly define the required macros.
+%
+% The tricky code below checks to see if |texsys.cfg| exists. If it does
+% not, all the text in this file between START and END is copied
+% verbatim to a new file |texsys,cfg|. If |texsys.cfg| is found, then it
+% is simply input. This is only done when this file is being used
+% unstripped.
+%    \begin{macrocode}
+%<*docstrip>
+\openin15=texsys.cfg
+\ifeof15
+\typeout{** Writing a default texsys.cfg}
+\immediate\openout15=texsys.cfg
+\begingroup
+\catcode`\^^M\active%
+\let^^M\par%
+\def\reserved@a#1^^M{%
+ \def\reserved@b{#1}%
+ \ifx\reserved@b\reserved@c\endgroup\else%
+     \immediate\write15{#1}%
+     \expandafter\reserved@a\fi}%
+\def\reserved@d#1START^^M{\let\do\@makeother\dospecials\reserved@a}%
+\catcode`\%=12
+\def\reserved@c{%END}
+\reserved@d
+%    \end{macrocode}
+%START
+% \subsection{texsys.cfg}
+%
+% This file contains the site specific definitions of the four macros\\
+% |\@currdir|, |\input@path|, |\filename@parse| and |\@TeXversion|.
+%
+% As distributed it only contains comments, however this `empty'
+% file will work on many systems because of the automatic tests built
+% into |ltdirchk.dtx|. You \emph{are} allowed to edit this file to add
+% definitions of these macros appropriate to your system.
+%
+%
+% The macros that must be defined are:
+%
+% \DescribeMacro{\@currdir}
+% |\@currdir|\meta{filename}\meta{space} should expand to a form of the
+% filename that uniquely refers to the `current directory' if this is
+% possible. (The expansion should also end with a space.) on UNIX,
+% this is |\def\@currdir{./}|. For more exotic operating systems you may
+% want to make |\@currdir| a macro with arguments delimited by |.|
+% and/or \meta{space}. If the operating system has no concept of
+% directory structure, this macro should be defined to be empty.
+%
+%
+% \DescribeMacro{\input@path}
+% If the primitive |\openin| searches the same directories as the
+% primitive |\input|, then it is possible to tell (using |\ifeof|)
+% whether a file exists before trying to input it. For systems like
+% this, |\input@path| should be left undefined.
+%
+% If |\openin| does not `follow' |\input| then |\input@path| must be
+% defined to be a list of directories to search for input files. The
+% format for each directory is as for |\@currdir|, normally just a
+% prefix is required, but it may be a macro with space-delimited
+% argument. That is, if \meta{dir} is an entry in the input path,
+% \TeX will try to load the expansion of
+%
+%   \meta{dir}\meta{filename}\meta{space}
+%
+% So either \meta{dir} should be defined as a macro with argument
+% delimited by space, or it should just expand to a directory name,
+% including the final directory separator, so that it may be
+% concatenated with the \meta{filename}. This means that for UNIX-like
+% syntax, each \meta{dir} should end with a slash, |/|. One exception to
+% this rule is that the input path should \emph{always} contain the
+% empty directory |{}| as this will allow `full pathnames' to be used,
+% and the  `current directory' to be searched.
+%
+% |\input@path| should expand to a list of such directories, each in a
+% |{}| group.
+%
+%
+% \DescribeMacro{\filename@parse}
+% After a call of the form: |\filename@parse{|\meta{filename}|}|, the
+% three macros |\filename@area|,|\filename@base|,|\filename@ext| should
+% be defined to be the `area' (or directory), basename and
+% extension respectively. If there was no extension specified in
+% \meta{filename}, |\filename@ext| should be |\let| to |\relax| (so this
+% case may be tested with |\@ifundefined{filename@ext}| and, perhaps a
+% default extension substituted).
+%
+% Normally one would not need to define this macro in |texsys.cfg| as
+% the automatic tests can supply parsers that work with UNIX and VMS
+% syntax, as well as a basic parser that willcover many other cases.
+% However some operating systems may need a `hand produced' parser
+% in which case it should be defined in this file.
+%
+% The UNIX parser also works for most MSDOS \TeX\ versions.
+% Currently if the UNIX or VMS parser is not used, |\filename@parse| is
+% defined to always return an empty area, and to split the argument into
+% basename and extension at the first `|.|' that occurs in the name.
+% Parsers for other formats may be defined in |texsys.cfg|,
+% in which case they will be used in preference to the default
+% definitions.
+%
+%
+% \DescribeMacro{\@TeXversion}
+% You should not need to set this macro in |texsys.cfg|. \LaTeX\
+% tests to set this automatically. See the comments in the opening
+% section of \texttt{ltdirchk.dtx}.
+%
+%
+% The following sections give examples of definitions which might
+% work on various systems. These are currently mainly untested as I only
+% have access to a few systems, all of which do not need this file as
+% the automatic tests work. All the code is commented out.
+%
+% \subsection{UNIX (web2c)}
+% This implementation does make |\openin| and |\input| look in the same
+% places. Acceptable settings are made by |ltdirchk.dtx|, and so this
+% file may be empty. The definitions below are therefore just for
+% information.
+%    \begin{macrocode}
+%\def\@currdir{./}
+%\let\input@path\@undefined
+%    \end{macrocode}
+%
+% \subsection{UNIX (other)}
+% Apparently some commercial UNIX implementations have different paths
+% for |\openin| and |\input|. For these one could use definitions like
+% the following (with whatever directories are used at your site):
+% note that the directory names should end with |/|.
+%    \begin{macrocode}
+% \def\@currdir{./}
+% \def\input@path{%
+%   {/usr/local/lib/tex/inputs/distrib/}%
+%   {/usr/local/lib/tex/inputs/contrib/}%
+%   {/usr/local/lib/tex/inputs/local/}%
+% }
+%    \end{macrocode}
+%
+% \subsection{MSDOS (emtex)}
+% This implementation does make |\openin| and |\input| look in the same
+% places. Acceptable settings are made by |ltdirchk.dtx|, and so this
+% file may be empty. The definitions below are therefore just for
+% information.
+%    \begin{macrocode}
+% \def\@currdir{./}
+% \let\input@path\@undefined
+%    \end{macrocode}
+%
+% \subsection{MSDOS (other)}
+% Some PC implementations have different paths
+% for |\openin| and |\input|. For these one could use definitions like
+% the following (with whatever directories are used at your site):
+% note that the directory names should end with |/|.
+% This assumes the implementation uses UNIX style |/| as the directory
+% separator.
+%    \begin{macrocode}
+% \def\@currdir{./}
+% \def\input@path{%
+%   {c:/tex/inputs/distrib/}%
+%   {c:/tex/inputs/contrib/}%
+%   {c:/tex/inputs/local/}%
+% }
+%    \end{macrocode}
+%
+% \subsection{VMS (DECUS \TeX, PD VMS 3.6)}
+% This implementation does make |\openin| and |\input| look in the same
+% places. Acceptable settings are made by |ltdirchk.dtx|, and so this
+% file may be empty. The definitions below are therefore just for
+% information.
+%    \begin{macrocode}
+% \def\@currdir{[]}
+% \let\input@path\@undefined
+%    \end{macrocode}
+%
+% \subsection{VMS (???)}
+% Some VMS implementations have different paths
+% for |\openin| and |\input|. For these one could use definitions like
+% the following:
+%    \begin{macrocode}
+% \def\@currdir{[]}
+% \def\input@path{%
+%   {tex_inputs:}%
+%   {SOMEDISK:[SOME.TEX.DIRECTORY]}%
+% }
+%    \end{macrocode}
+%
+% \subsection{MACINTOSH (OzTeX 1.6)}
+% This implementation does make |\openin| and |\input| look in the same
+% places. Acceptable settings are made by |ltdirchk.dtx|, and so this
+% file may be empty. The definitions below are therefore just for
+% information.
+%    \begin{macrocode}
+% \def\@currdir{:}
+% \let\input@path\@undefined
+%    \end{macrocode}
+%
+% \subsection{MACINTOSH (other)}
+% Some Macintosh implementations have different paths
+% for |\openin| and |\input|. For these one could use definitions like
+% the following (with whatever folders are used on your machine):
+% note that the directory names should end with |:|, and they should
+% contain {\em no\/} spaces.
+%    \begin{macrocode}
+% \def\@currdir{:}
+% \def\input@path{%
+%   {Hard-Disk:Applications:TeX:TeX-inputs:}%
+%   {Hard-Disk:Applications:TeX:My-inputs:}%
+% }
+%    \end{macrocode}
+%
+% \subsection{FAKE EXAMPLE}
+%  This example is for an operating system that has filenames of the
+%  form |<area>name|  For maximum compatibility with macro sets,
+%  you want |name.ext| to be mapped to |<ext>name|.
+%  and |<area>name.ext| to be mapped to |<area.ext>name|.
+%  |\input| does this mapping automatically, but |\openin| does not, and
+%  does not look in the same places as |\input|.
+%  |<>name| is the desired `current directory' syntax.
+%
+% the following code would possibly work:
+%    \begin{macrocode}
+% \def\@dir#1#2 {%
+%   \@d@r{#1}#2..\@nil}
+% \def\@d@r#1#2.#3.#4\@nil{%
+%   <\ifx\@dir#1\@dir\else#1\ifx\@dir#3\@dir\else.\fi\fi#3>#2 }
+%
+% \def\@currdir{\@dir{}}
+% \def\input@path{%
+%   {\@dir{area.one}}%
+%   {\@dir{area.two}}%
+% }
+%    \end{macrocode}
+%END
+%    \begin{macrocode}
+\immediate\closeout15
+%    \end{macrocode}
+% If |texsys.cfg| did exist, then input it.
+%    \begin{macrocode}
+\else
+\typeout{** Using the existing texsys.cfg}
+\closein15
+\input texsys.cfg
+\fi
+%</docstrip>
+%    \end{macrocode}
+%
+% If the stripped version of this file is being used (in latex2e.ltx)
+% then texsys.cfg should be there, so just input it.
+%    \begin{macrocode}
+%<dircheck>\input texsys.cfg
+%    \end{macrocode}
+%
+% \changes{v0.2f}{1994/01/20}
+%         {\cs{@copytexsys} and the texsys.new file removed}
+%
+% \section{Setting \texttt{\cs{@currdir}}}
+%
+% \begin{macro}{\@currdir}
+% \begin{macro}{\IfFileExists}
+% \changes{v0.2e}{1994/01/19}
+%         {name changed from \cs{test}}
+% This is a local definition of |\IfFileExists|. It tries to relocate
+% |texsxys.aux|. If it succeeds, then the |\@currdir| syntax has been
+% determined. If all the tests fail then |\@currdir| will be set to
+% |\@empty|, and |ltxcheck| will warn of this when it checks the format.
+%    \begin{macrocode}
+\begingroup
+\count@\time
+\divide\count@ 60
+\count2=-\count@
+\multiply\count2 60
+\advance\count2 \time
+%    \end{macrocode}
+%
+% \begin{macro}{\today}
+% The current date and time stamp.
+% \changes{v0.2g}{1994/01/21}
+%         {Name changed from \cs{stamp}, to save memory}
+%    \begin{macrocode}
+\edef\today{%
+  \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
+    \two@digits{\the\count@}:\two@digits{\the\count2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% Create a file |texsys.aux| (hopefully in the current directory),
+% then try to locate it again.
+%    \begin{macrocode}
+\immediate\openout15=texsys.aux
+\immediate\write15{\today^^J}
+\immediate\closeout15 %
+%    \end{macrocode}
+%
+% |#1| is the file to try, |#2| is what to do on success, |#3| on
+% failure.
+%    \begin{macrocode}
+\def\IfFileExists#1#2#3{%
+  \openin\@inputcheck#1 %
+  \ifeof\@inputcheck
+     #3\relax
+  \else
+    \read\@inputcheck to \reserved@a
+    \ifx\reserved@a\today
+      \typeout{#1 found}#2\relax
+    \else
+      \typeout{BAD: old file \reserved@a (should be \today)}%
+      #3\relax
+    \fi
+  \fi
+  \closein\@inputcheck}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\endlinechar=-1
+%    \end{macrocode}
+%
+% If |\@currdir| has not been pre-defined in |texsys.cfg| then test for
+%  UNIX, VMS and  Oz-\TeX-Mac. syntax.
+% \changes{v0.2h}{1994/01/24}
+%         {Stop testing once texsys.aux has been found}
+%    \begin{macrocode}
+\ifx\@currdir\@undefined
+  \IfFileExists{./texsys.aux}{\gdef\@currdir{./}}%
+    {\IfFileExists{[]texsys.aux}{\gdef\@currdir{[]}}%
+      {\IfFileExists{:texsys.aux}{\gdef\@currdir{:}}{}}}
+%    \end{macrocode}
+% If it is still undefined at this point, all the above tests failed.
+% Earlier versions interactively prompted for a definition at this
+% point, but it seems impossible to reliably obtain information from
+% users at this point in the installation. This version of the file
+% produces a format with no user-interaction. Later if the format is not
+% suitable for the system, |texsys.cfg| may be edited and the format
+% re-made.
+% \changes{v0.2a}{1993/12/13}
+%         {Removed interactive prompting for current directory syntax}
+% \changes{v0.2f}{1994/01/20}
+%         {\cs{@copytexsys} removed}
+% \changes{v1.0u}{1996/12/06}
+%         {*** removed from various messages for GNU Make.
+%         internal/2338}
+%    \begin{macrocode}
+  \ifx\@currdir\@undefined
+    \global\let\@currdir\@empty
+    \typeout{^^J^^J%
+      !! No syntax for the current directory could be found^^J%
+      }%
+  \fi
+%    \end{macrocode}
+% Otherwise |\@currdir| was defined in |texsys.cfg|. In this case check
+% that the syntax specified works on this system. (In case a complete
+% \LaTeX\  system has been copied from  one system to another.) If the
+% test fails, give up. The installer should remove or correct the
+% offending |texsys.cfg| and try again.
+%    \begin{macrocode}
+\else
+  \IfFileExists{\@currdir texsys.aux}{}{%
+    \edef\reserved@a{\errhelp{%
+      texsys.cfg specifies the current directory syntax to be^^J%
+      \meaning\@currdir^^J%
+      but this does not work on this system.^^J%
+      Remove texsys.cfg and restart.}}\reserved@a
+    \errmessage{Bad texsys.cfg file: \noexpand\@currdir}\@@end}
+%    \end{macrocode}
+% The version of |\@currdir| in |texsys.cfg| looks OK.
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+% \changes{v0.2d}{1994/01/14}
+%         {Close the texsys.aux output stream}
+%    \begin{macrocode}
+\immediate\closeout15 %
+\endgroup
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\typeout{^^J^^J%
+         \noexpand\@currdir set to:
+           \expandafter\strip@prefix\meaning\@currdir.^^J%
+         }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \changes{v0.2a}{1993/12/13}
+%         {on the `docstrip' pass, do not check openin path}
+%
+% Stop here if the file is being used unstripped.
+%    \begin{macrocode}
+%<*docstrip>
+\relax\endinput
+%</docstrip>
+%    \end{macrocode}
+%
+% \section{Setting \texttt{\cs{input@path}}}
+%
+% Earlier versions of this file attempted to automatically test whether
+% |\input@path| was required, and interactively prompt for a path if
+% necessary. This was not found to be very reliable The first-time
+% installer of \LaTeXe\ can not be expected to have enough information
+% to supply the correct information to the prompts. Now the interaction
+% is omitted. After the format is made the installer can attempt to run
+% the test document |ltxcheck.tex| through \LaTeXe. This will check,
+% amongst other things, whether |texsys.cfg| will need to be edited and
+% the format remade.
+%
+% \begin{macro}{\input@path}
+% Now set up the |\input@path|.
+%
+% |\input@path| should either be undefined, or a list of directories as
+% described in the introduction.
+% \changes{v0.2e}{1994/01/19}
+%         {No longer check that an empty group is in the path}
+%    \begin{macrocode}
+  \typeout{^^J%
+    Assuming \noexpand\openin and \noexpand\input^^J%
+    \ifx\input@path\@undefined
+%    \end{macrocode}
+% |\input@path| has not been pre-defined.
+%    \begin{macrocode}
+      have the same search path.^^J%
+    \else
+%    \end{macrocode}
+% |\input@path| has  been defined in |texsys.cfg|.
+%    \begin{macrocode}
+      have different  search paths.^^J%
+      LaTeX will use the path specified by \noexpand\input@path:^^J%
+    \fi
+    }
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{Filename Parsing}
+%
+% \begin{macro}{\filename@parse}
+% Split a filename into its components.
+% \changes{v0.2g}{1994/01/21}
+%         {Minor changes, and add Mac version (:)}
+%    \begin{macrocode}
+\ifx\filename@parse\@undefined
+  \def\reserved@a{./}\ifx\@currdir\reserved@a
+%    \end{macrocode}
+% |\filename@parse| was not specified in |texsys.cfg|, but |\@currdir|
+% looks like UNIX\ldots
+%    \begin{macrocode}
+    \typeout{^^JDefining UNIX/DOS style filename parser.^^J}
+    \def\filename@parse#1{%
+      \let\filename@area\@empty
+      \expandafter\filename@path#1/\\}
+%    \end{macrocode}
+%
+% Search for the last |/|.
+%    \begin{macrocode}
+    \def\filename@path#1/#2\\{%
+      \ifx\\#2\\%
+         \def\reserved@a{\filename@simple#1.\\}%
+      \else
+         \edef\filename@area{\filename@area#1/}%
+         \def\reserved@a{\filename@path#2\\}%
+      \fi
+      \reserved@a}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \else\def\reserved@a{[]}\ifx\@currdir\reserved@a
+%    \end{macrocode}
+% |\filename@parse| was not specified in |texsys.cfg|, but |\@currdir|
+% looks like VMS\ldots
+%    \begin{macrocode}
+    \typeout{^^JDefining VMS style filename parser.^^J}
+    \def\filename@parse#1{%
+      \let\filename@area\@empty
+      \expandafter\filename@path#1]\\}
+%    \end{macrocode}
+%
+% Search for the last |]|.
+%    \begin{macrocode}
+    \def\filename@path#1]#2\\{%
+      \ifx\\#2\\%
+         \def\reserved@a{\filename@simple#1.\\}%
+      \else
+         \edef\filename@area{\filename@area#1]}%
+         \def\reserved@a{\filename@path#2\\}%
+      \fi
+      \reserved@a}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \else\def\reserved@a{:}\ifx\@currdir\reserved@a
+%    \end{macrocode}
+% |\filename@parse| was not specified in |texsys.cfg|, but |\@currdir|
+% looks like Macintosh\ldots
+%    \begin{macrocode}
+    \typeout{^^JDefining Mac style filename parser.^^J}
+    \def\filename@parse#1{%
+      \let\filename@area\@empty
+      \expandafter\filename@path#1:\\}
+%    \end{macrocode}
+%
+% Search for the last |:|.
+% \changes{v1.0g}{1994/05/25}
+%         {Mac parser had " typo for :}
+%    \begin{macrocode}
+    \def\filename@path#1:#2\\{%
+      \ifx\\#2\\%
+         \def\reserved@a{\filename@simple#1.\\}%
+      \else
+         \edef\filename@area{\filename@area#1:}%
+         \def\reserved@a{\filename@path#2\\}%
+      \fi
+      \reserved@a}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \else
+%    \end{macrocode}
+% |\filename@parse| was not specified in |texsys.cfg|.
+% So just make a simple parser that always sets |\filename@area| to
+% empty.
+%    \begin{macrocode}
+    \typeout{^^JDefining generic filename parser.^^J}
+    \def\filename@parse#1{%
+      \let\filename@area\@empty
+      \expandafter\filename@simple#1.\\}
+  \fi\fi\fi
+%    \end{macrocode}
+%
+% |\filename@simple| is used by all three versions.
+% Finally we can split off the extension.
+%    \begin{macrocode}
+  \def\filename@simple#1.#2\\{%
+    \ifx\\#2\\%
+       \let\filename@ext\relax
+    \else
+       \edef\filename@ext{\filename@dot#2\\}%
+    \fi
+    \edef\filename@base{#1}}
+%    \end{macrocode}
+%
+% Remove a final dot, added earlier.
+%    \begin{macrocode}
+  \def\filename@dot#1.\\{#1}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+% Otherwise, |\filename@parse| was specified in |texsys.cfg|.
+%    \begin{macrocode}
+  \typeout{^^J^^J%
+    \noexpand\filename@parse was defined in texsys.cfg:^^J%
+    \expandafter\strip@prefix\meaning\filename@parse.^^J%
+    }
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{\TeX\ Versions}
+%
+% \begin{macro}{\@TeXversion}
+% \TeX\ versions older than than 3.141 require |\@TeXversion| to be
+% set. This can be determined automatically due to a trick suggested
+% by Bernd Raichle. (Actually this will not always get the correct
+% version number, eg \TeX3.14 would be detected as \TeX3, but \LaTeX\
+% only needs to take account of \TeX's older than 3, or between 3 and
+% 3.14.
+% \changes{v1.0h}{1994/10/11}
+%         {Check for TeX3.14}
+%    \begin{macrocode}
+\ifx\@TeXversion\@undefined
+  \ifx\@undefined\inputlineno
+    \def\@TeXversion{2}
+  \else
+   {\catcode`\^^J=\active
+     \def\reserved@a#1#2\@@{\if#1\string^3\fi}
+     \edef\reserved@a{\expandafter\reserved@a\string^^J\@@}
+     \ifx\reserved@a\@empty\else\gdef\@TeXversion{3}\fi}
+  \fi
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</dircheck>
+%    \end{macrocode}
+%
+% \section{ltxcheck.tex}
+% After the format has been made, and article.cls moved with the
+% other files to the `standard input directory' as specified in
+% |install.txt|, the format may be checked by running the file
+% |ltxcheck.tex|.
+% \changes{v0.2f}{1994/01/20}
+%         {Modify all of ltxcheck}
+% \changes{v1.0h}{1994/10/11}
+%         {Modify all of ltxcheck again}
+% \changes{v1.0t}{1996/09/25}
+%         {Move ltxcheck to separate file}
+%
+%
+%
+% \Finale
+%

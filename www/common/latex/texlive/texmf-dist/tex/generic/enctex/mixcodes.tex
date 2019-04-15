@@ -1,0 +1,103 @@
+% mixcodes.tex ... allows mix od UTF-8, ISO-8859-2 and CP1250 in input files
+% --------------------------------------------------------------------------
+% Petr Olsak, Oct. 2012
+%
+% You need to use the csplain initialised by encTeX with UTF-8 input
+%
+% After \input mixcodes
+%
+% you can input the files with czech+slovak alphabet encoded
+% by UTF-8 or ISO-8859-2 or CP1250 ecodings. You can input more files with
+% various of these three encodings. The output by \write is always done by
+% UTF-8 encoding and you can read these files again.
+
+% This is a little ,,dirty trick`` using encTeX :-)
+
+% Note: there is a conflict between the slovak lcaron and the czech zcaron
+% characters. See the end of this file of more information about it.
+
+\ifx\mubyte\undefined 
+  \message{WARNING: I need encTeX initialised, all settings are ignored}
+  \expandafter\endinput \fi
+
+% ISO-8859-2 on input needs one-to-one reencoding.
+% We need to re-declarare the original table defined in utf8unkn.tex.
+
+\mubyte  ^^c1 ^^c1\endmubyte % \'A
+\mubyte  ^^e1 ^^e1\endmubyte % \'a
+\mubyte  ^^c9 ^^c9\endmubyte % \'E
+\mubyte  ^^e9 ^^e9\endmubyte % \'e
+\mubyte  ^^cd ^^cd\endmubyte % \'I
+\mubyte  ^^ed ^^ed\endmubyte % \'i
+\mubyte  ^^d3 ^^d3\endmubyte % \'O
+\mubyte  ^^f3 ^^f3\endmubyte % \'o
+\mubyte  ^^da ^^da\endmubyte % \'U
+\mubyte  ^^fa ^^fa\endmubyte % \'u
+\mubyte  ^^dd ^^dd\endmubyte % \'Y
+\mubyte  ^^fd ^^fd\endmubyte % \'y
+\mubyte  ^^d4 ^^d4\endmubyte % \^O
+\mubyte  ^^f4 ^^f4\endmubyte % \^o
+\mubyte  ^^c4 ^^c4\endmubyte % \"A
+\mubyte  ^^e4 ^^e4\endmubyte % \"a
+\mubyte  ^^d6 ^^d6\endmubyte % \"O
+\mubyte  ^^f6 ^^f6\endmubyte % \"o
+\mubyte  ^^dc ^^dc\endmubyte % \"U
+\mubyte  ^^fc ^^fc\endmubyte % \"u
+\mubyte  ^^c8 ^^c8\endmubyte % \v C
+\mubyte  ^^e8 ^^e8\endmubyte % \v c
+\mubyte  ^^cf ^^cf\endmubyte % \v D
+\mubyte  ^^ef ^^ef\endmubyte % \v d
+\mubyte  ^^cc ^^cc\endmubyte % \v E
+\mubyte  ^^ec ^^ec\endmubyte % \v e
+\mubyte  ^^c5 ^^c5\endmubyte % \' L
+\mubyte  ^^e5 ^^e5\endmubyte % \' l
+\mubyte  ^^a5 ^^a5\endmubyte % \v L
+\mubyte  ^^b5 ^^b5\endmubyte % \v l
+\mubyte  ^^d2 ^^d2\endmubyte % \v N
+\mubyte  ^^f2 ^^f2\endmubyte % \v n
+\mubyte  ^^d8 ^^d8\endmubyte % \v R
+\mubyte  ^^f8 ^^f8\endmubyte % \v r
+\mubyte  ^^a9 ^^a9\endmubyte % \v S
+\mubyte  ^^b9 ^^b9\endmubyte % \v s
+\mubyte  ^^ab ^^ab\endmubyte % \v T
+\mubyte  ^^bb ^^bb\endmubyte % \v t
+\mubyte  ^^d9 ^^d9\endmubyte % \r U
+\mubyte  ^^f9 ^^f9\endmubyte % \r u
+\mubyte  ^^ae ^^ae\endmubyte % \v Z
+\mubyte  ^^be ^^be\endmubyte % \v z
+\mubyte  ^^c0 ^^c0\endmubyte % \' R
+\mubyte  ^^e0 ^^e0\endmubyte % \' r
+\mubyte  ^^a7 ^^c2^^a7\endmubyte % section sign ISO input, UTF-8 output
+
+% CP1250 to ISO8859-2 re-encoding: 
+
+\mubyte ^^a5 ^^bc\endmubyte % \v L, don't use zacute in ISO-8859-2 input
+\mubyte ^^a9 ^^8a\endmubyte % \v S, safe reencoding
+\mubyte ^^ab ^^8d\endmubyte % \v T, safe reencoding
+\mubyte ^^ae ^^8e\endmubyte % \v Z, safe reencoding
+\mubyte ^^b9 ^^9a\endmubyte % \v s, safe reencoding
+\mubyte ^^bb ^^9d\endmubyte % \v t, safe reencoding
+\mubyte ^^be ^^9e\endmubyte % \v z, safe reencoding
+\if\language=\slovak
+  \mubyte ^^e5 ^^be\endmubyte % see comments at the end of the file
+\fi
+
+% After setting \mubyte <code> <the-same-code>\endmubyte, the mubyte table
+% is removed. In order to work the UTF-8 input properly, we need to read
+% csenc-u.tex file again:
+
+\input csenc-u
+
+\endinput
+
+The character code ^^be is:  zcaron in ISO-8859-2 (used by Czech) but
+the same code is lcaron in CP1250 (used by Slovak language).
+
+Slovak users have to write \shyph before \input mixcodes in order to the
+lcaron works in both encodings (CP1250 and ISO-8859-2). The zcaron is not
+working in ISO-8859-2 in such case. Czech users don't write \shyph before
+\input mixcodes, thus the zcaron works in both encodings but lcaron doesn't
+work in CP1250. 
+
+The UTF-8 encoding is without problems in both languages, of course.
+

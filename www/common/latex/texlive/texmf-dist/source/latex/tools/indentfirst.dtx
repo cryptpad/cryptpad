@@ -1,0 +1,77 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005
+% 2006 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: indent.dtx Copyright (C) 1991-1994 David Carlisle
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{indentfirst}
+%<package>         [1995/11/23 v1.03 Indent first paragraph (DPC)]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{indentfirst}
+\GetFileInfo{indentfirst.sty}
+\begin{document}
+\title{The \textsf{indentfirst} package\thanks{This file
+        has version number \fileversion, last
+        revised \filedate.}}
+\author{David Carlisle}
+\date{\filedate}
+\MaintainedByLaTeXTeam{tools}
+\maketitle
+\DocInput{indentfirst.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \changes{v1.00}{1991/01/02}{Initial version}
+% \changes{v1.01}{1992/06/26}{Re-issue for the new doc and docstrip}
+% \changes{v1.02}{1994/01/31}{Re-issue for LaTeX2e}
+% \changes{v1.03}{1995/11/23}{Typo fixes in documentation}
+%
+% \begin{abstract}
+% Make the first line of all sections etc., be indented by the usual
+% paragraph indentation. This should work with all the standard document
+% classes.
+% \end{abstract}
+%
+% \CheckSum{4}^^A  Still I think a record:-)
+%
+% \StopEventually{}
+%
+% \begin{macro}{\if@afterindent}
+% \LaTeX\ uses the switch |\if@afterindent| to decide whether to indent
+% after a section heading. We just need to make sure that this is always
+% true.
+%    \begin{macrocode}
+%<*package>
+\let\@afterindentfalse\@afterindenttrue
+\@afterindenttrue
+%</package>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+%

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='zref'>
+  <name>zref</name>
+  <caption>A new reference scheme for LaTeX.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2012'/>
+  <license type='lppl1.3'/>
+  <version number='2.24'/>
+  <description>
+    This package offers a means to remove the limitation, of only two
+    properties, that is inherent in the way LaTeX&#x2019;s reference system
+    works.  The package implements an extensible referencing system,
+    where properties are handled in a more flexible way.  It provides
+    an interface for macro programmers to access the new reference
+    scheme and some applications that use it.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/zref.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/zref.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

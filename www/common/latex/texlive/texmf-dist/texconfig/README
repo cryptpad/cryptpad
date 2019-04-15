@@ -1,0 +1,23 @@
+Thomas Esser, 1999. Public domain.
+
+I hereby put this README file and the files g/generic, v/vt100 and
+x/xterm into the public donain.
+
+The files contained in the subdirectories are provided, because
+texconfig havily relies on a properly installed terminfo system.
+
+Some systems have buggy or touble-causing terminfo files and/or
+a buggy curses library. Therefore, the dialog program provided
+by me is linked against the ncurses library and uses its own
+terminfo files.
+
+Set the variable
+
+	DIALOG_TERMINFO to specify an alternate terminfo directory
+		(e.g. /usr/lib/terminfo)
+
+	DIALOG_TERM to use an alternate configuration file (e.g. xterm)
+
+before starting texconfig.
+
+texconfig sets DIALOG_TERM to generic by default.

@@ -1,0 +1,796 @@
+% \iffalse meta-comment
+%
+% File: hypcap.dtx
+% Version: 2011/02/16 v1.11
+% Info: Adjusting the anchors of captions
+%
+% Copyright (C) 1999-2001, 2006-2008, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file hypcap.dtx
+% and the derived files
+%    hypcap.sty, hypcap.pdf, hypcap.ins, hypcap.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hypcap.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hypcap.pdf
+%
+% Unpacking:
+%    (a) If hypcap.ins is present:
+%           tex hypcap.ins
+%    (b) Without hypcap.ins:
+%           tex hypcap.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hypcap.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hypcap.drv is present:
+%           latex hypcap.drv
+%    (b) Without hypcap.drv:
+%           latex hypcap.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hypcap.dtx
+%       makeindex -s gind.ist hypcap.idx
+%       pdflatex hypcap.dtx
+%       makeindex -s gind.ist hypcap.idx
+%       pdflatex hypcap.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/hypcap.sty
+%    TDS:doc/latex/oberdiek/hypcap.pdf
+%    TDS:source/latex/oberdiek/hypcap.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hypcap 2011/02/16 v1.11 Adjusting the anchors of captions (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hypcap
+Version: 2011/02/16 v1.11
+
+Copyright (C) 1999-2001, 2006-2008, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file hypcap.dtx
+and the derived files
+   hypcap.sty, hypcap.pdf, hypcap.ins, hypcap.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hypcap.ins}{\from{hypcap.dtx}{install}}%
+  \file{hypcap.drv}{\from{hypcap.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{hypcap.sty}{\from{hypcap.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hypcap.xml}{\from{hypcap.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hypcap.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hypcap.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hypcap.drv}%
+  [2011/02/16 v1.11 Adjusting the anchors of captions (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{hypcap.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{174}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hypcap.drv}
+%
+% \title{The \xpackage{hypcap} package}
+% \date{2011/02/16 v1.11}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package tries a solution of the problem with
+% hyperref, that links to floats points below the
+% caption and not at the beginning of the float.
+% Therefore this package divides the task into two
+% part, the link setting with \cs{capstart} or
+% automatically at the beginning of a float and
+% the rest in the \cs{caption} command.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newpage
+% \section{Usage}
+%    The package \Package{hypcap} requires that \Package{hyperref}
+%    is loaded first:
+%    \begin{quote}
+%      |\usepackage[...]{hyperref}|\\
+%      |\usepackage[...]{hypcap}|
+%    \end{quote}
+%
+% \subsection{Package options}
+%    The names of the four float environments |figure|, |figure*|,
+%    |table|, or |table*| can be used as option. Then the package
+%    redefines the environment in order to insert \cmd{\capstart}
+%    (see below) in the beginning of the environment automatically.
+%
+%    Option |all| enables the redefinitions of all four
+%    float environments. For other environments see
+%    the user command \cmd{\hypcapredef}.
+%
+% \subsection{User commands}
+%    \begin{description}
+%    \item[\cmd{\capstart}:]\DescribeMacro{\capstart}
+%      First this command increments the counter (\cmd{\@captype}).
+%      Then it makes an anchor for package \Package{hyperref}.
+%      At last \cmd{\caption} is redefined to remove the
+%      anchor setting part from \Package{hyperref}'s \cmd{\caption}.
+%
+%      The package expects the following structure of a float
+%      environment:
+%      \begin{quote}
+%        |\begin{|\textit{|float|}|}...|\\
+%        |\capstart|\\
+%        |...|\\
+%        |\caption{...}|\\
+%        |...|\\
+%        |\end{|\textit{|float|}|}|
+%      \end{quote}
+%      There can be several \cmd{\caption} commands. For these
+%      you need \cmd{\capstart} again:
+%      \begin{quote}
+%        |\capstart ... \caption... \capstart ... \caption...|
+%      \end{quote}
+%      And the \cmd{\caption} command itself can be put in a group.
+%
+%      With the options, described above, the extra
+%      writing of \cmd{\capstart} can be avoided.
+%      Consequently, there must be a \cmd{\caption} in every
+%      environment of this type, specified by the option.
+%      If you want to use more than one \cmd{\caption} in this
+%      environment, you have to state \cmd{\capstart} again.
+%    \item[\cmd{\hypcapspace}:]\DescribeMacro{\hypcapspace}
+%      Because it looks poor, if the link points exactly at top of
+%      the figure, there is additional space: \cmd{\hypcapspace},
+%      the default is |0.5\baselineskip|, examples:
+%      \begin{quote}
+%        |\renewcommand{\hypcapspace}{0pt}| removes the space\\
+%        |\renewcommand{\hypcapspace}{1pt}| sets a fix value
+%      \end{quote}
+%    \item[\cmd{\hypcapredef}:]\DescribeMacro{\hypcapredef}
+%      If there are other float environments, that
+%      should automatically execute \cmd{\capstart}, then
+%      a redefinition with \cmd{\hypcapredef} can be tried:
+%      \begin{quote}
+%        |\hypcapredef{myfloat}|
+%      \end{quote}
+%      Only environments with one optional parameter are
+%      supported.
+%    \item[\cs{capstartfalse}, \cs{capstarttrue}:]^^A
+%      \DescribeMacro{\capstartfalse}^^A
+%      \DescribeMacro{\capstarttrue}^^A
+%      Since 2008/09/08 v1.10.\\
+%      They disable and enable \cs{capstart}. They can be used to
+%      cancel the effect of a redefined float environment.
+%      Example:
+%\begin{quote}
+%\catcode`Y=\active
+%\def Y#1Z{\textit{\cs{#1}}}
+%\begin{verbatim}
+%\documentclass{article}
+%\usepackage{hyperref}
+%\usepackage[figure]{hypcap}[2008/09/08]
+%
+%\begin{document}
+%  \section{Hello World}
+%  \begin{figure}
+%    \caption{Figure with caption A}
+%  \end{figure}
+%  YcapstartfalseZ
+%  \begin{figure}
+%    Figure without caption
+%  \end{figure}
+%  YcapstarttrueZ
+%  \begin{figure}
+%    \caption{Figure with caption B}
+%  \end{figure}
+%\end{document}
+%\end{verbatim}
+%\end{quote}
+%    \end{description}
+%
+% \subsection{Limitations}
+%    \begin{itemize}
+%    \item Packages that redefine \cmd{\caption} or
+%          \cmd{\@caption}.
+%    \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypcap}%
+  [2011/02/16 v1.11 Adjusting the anchors of captions (HO)]
+%    \end{macrocode}
+%
+%    For unique command names this package uses |hc@| as prefix
+%    for internal command names.
+%
+%    First we check, if package \Package{hyperref} is loaded:
+%    \begin{macrocode}
+\@ifundefined{hyper@@anchor}{%
+  \PackageError{hypcap}{You have to load 'hyperref' first}\@ehc
+  \endinput
+}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{letltxmacro}[2008/06/24]
+%    \end{macrocode}
+%
+%    \begin{macro}{\hc@org@caption}
+%    Save the original meaning of \cmd{\caption}:
+%    \begin{macrocode}
+\newcommand*\hc@org@caption{}
+\let\hc@org@caption\caption
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \newcommand*{\BeginMacro}[1]{\expandafter\DoBeginMacro\csname#1\endcsname}
+%    \newcommand*{\DoBeginMacro}[1]{\begin{macro}{#1}}
+%    \newcommand*{\Cmd}[1]{\expandafter\cmd\csname#1\endcsname}
+%    \BeginMacro{if@capstart}
+%     The switch \Cmd{if@capstart} helps to detect
+%     \cmd{\capstart} commands with missing \cmd{\caption} macros.
+%     Because \cmd{\caption} can occur inside a group, assignments
+%     to the switch have to be made global.
+%    \begin{macrocode}
+\newif\if@capstart
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hypcapspace}
+%    The anchor is raised.by \cmd{\hypcapspace}.
+%    \begin{macrocode}
+\newcommand*\hypcapspace{.5\baselineskip}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ifcapstart}
+%    \begin{macrocode}
+\newif\ifcapstart
+\capstarttrue
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\capstart}
+%     The macro \cmd{\capstart} contains the first part of
+%     the \cmd{\caption} command: Incrementing the counter
+%     and setting the anchor.
+%    \begin{macrocode}
+\newcommand*\capstart{%
+  \ifcapstart
+    \H@refstepcounter\@captype % first part of caption
+    \hyper@makecurrent\@captype
+    \global\let\hc@currentHref\@currentHref
+    \vspace*{-\hypcapspace}%
+    \begingroup
+      \let\leavevmode\relax
+      \hyper@@anchor\@currentHref\relax
+    \endgroup
+    \vspace*{\hypcapspace}%
+    \hc@hyperref{\let\caption\hc@caption}%
+    \global\@capstarttrue
+    \global\advance\csname c@\@captype\endcsname\m@ne
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\@ifpackagelater{hyperref}{2007/04/09}{%
+  \let\hc@hyperref\@gobble
+}{%
+  \let\hc@hyperref\@firstofone
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\hc@caption}
+%    The new \cmd{\caption} command without the first part
+%    is defined in the macro \cmd{\hc@caption}.
+%    \begin{macrocode}
+\def\hc@caption{%
+  \global\advance\csname c@\@captype\endcsname\@ne
+  \@dblarg{\hc@@caption\@captype}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hc@@caption}
+%    This is a copy of package \Package{hyperref}'s \cmd{\@caption}
+%    macro without making the anchor, because this is already done
+%    in \cmd{\capstart}.
+%    \begin{macrocode}
+\long\def\hc@@caption#1[#2]#3{%
+  \let\caption\hc@org@caption
+  \global\@capstartfalse
+  \ifHy@hypertexnames
+    \hyper@makecurrent\@captype
+  \else
+    \global\let\@currentHref\hc@currentHref
+  \fi
+  \par\addcontentsline{%
+    \csname ext@#1\endcsname}{#1}{%
+    \protect\numberline{%
+      \csname the#1\endcsname
+    }{\ignorespaces #2}%
+  }%
+  \begingroup
+    \@parboxrestore
+    \normalsize
+    \@makecaption{\csname fnum@#1\endcsname}{%
+      \ignorespaces#3%
+    }%
+    \par
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hypcapredef}
+%    The macro \cmd{\hypcapredef} prepares the call of
+%    \cmd{\hc@redef} that will redefine the environment
+%    that is given in the argument.
+%    \begin{macrocode}
+\def\hypcapredef#1{%
+  \expandafter\hc@redef\csname hc@org#1\expandafter\endcsname
+                       \csname hc@orgend#1\expandafter\endcsname
+                       \expandafter{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\hc@redef}
+%    The old meaning of the environment is saved. Then
+%    \cmd{\capstart} is appended in the begin part.
+%    The end part contains a check
+%    that produces an error message in case of \cmd{\capstart}
+%    without \cmd{\capstart} (\cmd{\capstart} has incremented
+%    the counter).
+%    \begin{macrocode}
+\def\hc@redef#1#2#3{%
+  \newcommand#1{}%
+  \expandafter\LetLtxMacro\expandafter#1\csname#3\endcsname
+  \expandafter\LetLtxMacro\expandafter#2\csname end#3\endcsname
+  \renewenvironment*{#3}[1][]{%
+    \ifx\\##1\\%
+      #1\relax
+    \else
+      #1[##1]% hash-ok (compatibility for float)
+    \fi
+    \capstart
+  }{%
+    \if@capstart
+      \PackageError{hypcap}{You have forgotten to use \string\caption}%
+      \global\@capstartfalse
+    \else
+    \fi
+    #2%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%     At last the options are defined and processed.
+%    \begin{macrocode}
+\DeclareOption{figure}{\hypcapredef{\CurrentOption}}
+\DeclareOption{figure*}{\hypcapredef{\CurrentOption}}
+\DeclareOption{table}{\hypcapredef{\CurrentOption}}
+\DeclareOption{table*}{\hypcapredef{\CurrentOption}}
+\DeclareOption{all}{%
+  \hypcapredef{figure}%
+  \hypcapredef{figure*}%
+  \hypcapredef{table}%
+  \hypcapredef{table*}%
+}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypcap.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypcap.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hypcap.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hypcap.sty & tex/latex/oberdiek/hypcap.sty\\
+%   hypcap.pdf & doc/latex/oberdiek/hypcap.pdf\\
+%   hypcap.dtx & source/latex/oberdiek/hypcap.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hypcap.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hypcap.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hypcap.dtx
+%makeindex -s gind.ist hypcap.idx
+%pdflatex hypcap.dtx
+%makeindex -s gind.ist hypcap.idx
+%pdflatex hypcap.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hypcap.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hypcap'>
+  <name>hypcap</name>
+  <caption>Adjusting the anchors of captions.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999-2001,2006-2008,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.11'/>
+  <description>
+    The package offers a solution to the problem that when you link to
+    a float using <xref refid='hyperref'>hyperref</xref>, the link
+    anchors to below the float's caption, rather than the beginning of
+    the float.
+    <p/>
+    Hypcap defines a separate \capstart command, which you put where
+    you want links to end; you should have a \capstart command for each
+    \caption command.  Package options can be used to auto-insert a
+    \capstart at the start of a float environment.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hypcap.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hypcap.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1999/02/13 v1.0}
+%   \item
+%     A beginning version, published in newsgroup \xnewsgroup{comp.text.tex}:\\
+%     \URL{``\link{Re: \xpackage{hyperref} and figures}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/5c9b47b001a9379c}
+%   \end{Version}
+%   \begin{Version}{2000/08/14 v1.1}
+%   \item
+%     Global assignments of \cs{if@capstart}
+%     in order to allow \cs{caption} in groups.
+%   \item
+%     Option \texttt{all} added.
+%   \end{Version}
+%   \begin{Version}{2000/09/07 v1.2}
+%   \item
+%     Package in dtx format.
+%   \end{Version}
+%   \begin{Version}{2001/08/27 v1.3}
+%   \item
+%     Bug fix with hyperref's pdfmark driver\\
+%     (\cs{leavevmode} in
+%     \cs{hyper@@anchor}/\cs{pdf@rect}).
+%   \end{Version}
+%   \begin{Version}{2001/09/06 v1.4}
+%   \item
+%     Small fixes in the dtx file.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.5}
+%   \item
+%     Code is not changed.
+%   \item
+%     New DTX framework.
+%   \end{Version}
+%   \begin{Version}{2007/02/19 v1.6}
+%   \item
+%     Fix for hypertexnames=false.
+%   \end{Version}
+%   \begin{Version}{2007/04/09 v1.7}
+%   \item
+%     Stuff in \cs{caption} moved to \xpackage{hyperref}.
+%     This avoids redefinitions of \cs{caption} and \cs{@caption}
+%     (idea of Axel Sommerfeldt).
+%   \item
+%     Fix for subfigure (Marco Kuhlmann, Amilcar do Carmo Lucas).
+%   \end{Version}
+%   \begin{Version}{2008/04/14 v1.8}
+%   \item
+%     \cs{hc@redef} fixed to get package \xpackage{float} work
+%     (Axel Sommerfeldt).
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.9}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2008/09/08 v1.10}
+%   \item
+%     \cs{capstartfalse} and \cs{capstarttrue} added.
+%   \end{Version}
+%   \begin{Version}{2011/02/16 v1.11}
+%   \item
+%     \cs{hc@redef} fixed by using package \xpackage{letltxmacro}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

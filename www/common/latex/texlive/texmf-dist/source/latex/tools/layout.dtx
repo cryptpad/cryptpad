@@ -1,0 +1,1026 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \CheckSum{920}
+%\iffalse
+%    This file is built for \LaTeXe, so we make sure an error is
+%    generated when it is used with another format
+%<*dtx>
+\ProvidesFile{layout.dtx}
+%</dtx>
+%<+package>\NeedsTeXFormat{LaTeX2e}
+%<+package>\ProvidesPackage{layout}
+%<+driver>\ProvidesFile{layout.drv}
+%\ProvidesFile{layout.dtx}
+                [2014/10/28 v1.2c Show layout parameters]
+%
+%    A short driver is provided that can be extracted if necessary by
+%    the \textsf{DocStrip} program provided with \LaTeXe.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+
+\usepackage{layout}
+
+\newcommand\Lopt[1]{\textsf{#1}}
+\pagestyle{myheadings}
+\DisableCrossrefs
+\begin{document}
+\DocInput{layout.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%\fi
+% \changes{v1.1c}{1994/07/13}{Moved Identification code to the front
+%    and removed the permanent use of \cs{filedate} and friends}
+% \changes{v1.1d}{1994/09/08}{Stored texts in control sequences to
+%    allow other languages}
+%
+% \GetFileInfo{layout.dtx}
+% \title{Displaying page layout variables}
+% \author{Kent McPherson a.o.\thanks{Converted for \LaTeXe\ by
+%        Johannes Braams and modified by Hideo Umeki}}
+% \date{\filedate}
+%
+% \markboth{layout package version \fileversion\space as of \filedate}
+%          {layout package version \fileversion\space as of \filedate}
+%
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \section{Introduction}
+%
+%    This \LaTeXe\ package is a reimplementation of
+%    \texttt{layout.sty} by Kent McPherson. It defines the command
+%    |\layout| which produces an overview of the layout of the current
+%    document. The command |\layout*| recomputes the values it uses to
+%    produce the overview.
+%
+%    The figure on the next page shows the output of the |\layout|
+%    command for this document.
+%
+% \begin{figure}[p]
+% \layout
+% \end{figure}
+%
+% \StopEventually{}
+%
+% \section{The implementation}
+%
+% \changes{v1.1b}{1994/03/23}{removed the \cs{wlog} as
+%    \cs{ProvidesPackage} does that now}
+% \changes{v1.1d}{1994/09/08}{Added language options dutch and
+%    english}
+%
+%    This package prints a figure to illustrate the layout that is
+%    implemented by the document class. In the figure several words
+%    appear. They are stored in control sequences to be able to select
+%    a different language.
+% \changes{v1.1e}{1994/10/29}{The dutch texts should be one word.}
+% \changes{v1.1f}{1995/03/14}{Added \cs{notshown}}
+% \changes{v1.1f}{1995/03/14}{Added option french}
+% \changes{v1.1j}{1995/10/29}{Added the options spanish, brazilian and
+%    portuguese}
+% \changes{v1.1k}{1995/11/23}{Documentation fixes}
+% \changes{v1.2}{1998/04/13}{Redesign of the output by Hideo Umeki}
+% \changes{v1.2c}{2000/09/21}{Added option german}
+% \changes{v1.2c}{2000/09/25}{Added option for italian by Claudio Beccari}
+%    \begin{macrocode}
+%<*package>
+\DeclareOption{dutch}{%
+  \def\Headertext{Kopregel}
+  \def\Bodytext{Broodtekst}
+  \def\Footertext{Voetregel}
+  \def\MarginNotestext{Marge\\Notities}
+  \def\oneinchtext{een inch}
+  \def\notshown{niet getoond}
+  }
+\DeclareOption{german}{%
+  \def\Headertext{Kopfzeile}
+  \def\Bodytext{Haupttext}
+  \def\Footertext{Fu{\ss}zeile}
+  \def\MarginNotestext{Rand-\\ notizen}
+  \def\oneinchtext{ein Zoll}
+  \def\notshown{ohne Abbildung}
+  }
+\DeclareOption{ngerman}{\ExecuteOptions{german}}
+\DeclareOption{english}{%
+  \def\Headertext{Header}
+  \def\Bodytext{Body}
+  \def\Footertext{Footer}
+  \def\MarginNotestext{Margin\\Notes}
+  \def\oneinchtext{one inch}
+  \def\notshown{not shown}
+  }
+\DeclareOption{french}{%
+  \def\Headertext{Ent\^{e}te}
+  \def\Bodytext{Corps}
+  \def\Footertext{Pied de page}
+  \def\MarginNotestext{Marge\\Notes}
+  \def\oneinchtext{un pouce}
+  \def\notshown{non affich\'{e}}
+  }
+\DeclareOption{francais}{\ExecuteOptions{french}}
+\DeclareOption{spanish}{%
+  \def\Headertext{Encabezamiento}
+  \def\Bodytext{Cuerpo}
+  \def\Footertext{Pie de p\'agina}
+  \def\MarginNotestext{Notas\\ Marginales}
+  \def\oneinchtext{una pulgada}
+  \def\notshown{no mostradas}
+  }
+\DeclareOption{portuguese}{%
+  \def\Headertext{Cabe\c{c}alho}
+  \def\Bodytext{Corpo}
+  \def\Footertext{Rodap\'e}
+  \def\MarginNotestext{Notas\\ Marginais}
+  \def\oneinchtext{uma polegada}
+  \def\notshown{n\~ao mostradas}
+  }
+\DeclareOption{brazilian}{%
+  \def\Headertext{Cabe\c{c}alho}
+  \def\Bodytext{Corpo}
+  \def\Footertext{Rodap\'e}
+  \def\MarginNotestext{Notas\\ Marginais}
+  \def\oneinchtext{uma polegada}
+  \def\notshown{n\~ao mostradas}
+  }
+\DeclareOption{italian}{%
+  \def\Headertext{Testatina}
+  \def\Bodytext{Corpo}
+  \def\Footertext{Piedino}
+  \def\MarginNotestext{Note\\ Marginali}
+  \def\oneinchtext{un pollice}
+  \def\notshown{non mostrato}
+  }
+%    \end{macrocode}
+%
+%    This package has an option \Lopt{verbose}. Using it will make the
+%    command |\layout| type some of the parameters on the terminal.
+%    \begin{macrocode}
+\DeclareOption{verbose}{\let\LayOuttype\typeout}
+\DeclareOption{silent}{\let\LayOuttype\@gobble}
+%    \end{macrocode}
+%
+% \changes{v1.1h}{1995/04/07}{Added the options \Lopt{integers}
+%    (default) and \Lopt{reals}}
+%
+%    The normal behaviour of this package when showing the values of
+%    the parameters is to truncate them. However, if you want to see
+%    the real parameter values you can use the option \Lopt{reals} to
+%    get that effect.
+% \changes{v1.1i}{1995/06/25}{\LaTeX\ release 1995/06/01 no longer
+%    needs double hashmarks in the argument of \cs{DeclareOption}}
+%    \begin{macrocode}
+\def\lay@value{}
+\DeclareOption{integers}{%
+  \renewcommand*{\lay@value}[2]{%
+    \expandafter\number\csname #1@#2\endcsname pt}}
+\DeclareOption{reals}{%
+  \renewcommand*{\lay@value}[2]{\the\csname #2\endcsname}}
+%    \end{macrocode}
+%
+%    The default language is English, the default mode is
+%    \Lopt{silent} and the default way of showing parameter values is
+%    to use integers.
+%    \begin{macrocode}
+\ExecuteOptions{english,silent,integers}
+\ProcessOptions
+%    \end{macrocode}
+%
+% \begin{macro}{\LayOutbs}
+%    Define |\LayOutbs| to produce a backslash. We use a definition
+%    which also works with OT1 fonts.
+% \changes{v1.2b}{1998/06/21}{Renamed \cs{bs} to avoid possible conflicts
+%   with other packages}
+%    \begin{macrocode}
+\newcommand\LayOutbs{}
+\chardef\LayOutbs`\\
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ConvertToCount}
+%    This macro stores the value of a \emph{length} register in a
+%    \emph{count} register.
+%    \begin{macrocode}
+\def\ConvertToCount#1#2{%
+%    \end{macrocode}
+%    First copy the value
+%    \begin{macrocode}
+  #1=#2
+%    \end{macrocode}
+%    Then divide it by 65536.
+%    \begin{macrocode}
+  \divide #1 by 65536}
+%    \end{macrocode}
+%    The result of this is that the \emph{count} register holds the
+%    value of the \emph{length} register in points.
+% \end{macro}
+%
+% \begin{macro}{\SetToHalf}
+% \begin{macro}{\SetToQuart}
+%    Small macros used in computing positions.
+%    \begin{macrocode}
+\def\SetToHalf#1#2{#1=#2\relax\divide#1by\tw@}
+\def\SetToQuart#1#2{#1=#2\relax\divide#1by4}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Identify}
+%    A small macro used in identifying dimensions.
+%    \begin{macrocode}
+\def\Identify#1{%
+  \put(\PositionX,\PositionY){\circle{20}}
+  \put(\PositionX,\PositionY){\makebox(0,0){\tiny #1}}
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\InsideHArrow}
+%    This macro is used to produce two horizontal arrows inside a box.
+%    The argument gives the width of the box.
+% \changes{v1.1c}{1994/07/14}{Added check for a negative arrow length}
+%    \begin{macrocode}
+\def\InsideHArrow#1{{%
+  \ArrowLength = #1
+  \divide\ArrowLength by \tw@
+  \advance\ArrowLength by -10
+  \advance\PositionX by -10
+  \ifnum\ArrowLength<\z@
+    \put(\PositionX,\PositionY){\vector(1,0){-\ArrowLength}}
+    \advance\PositionX by 20
+    \put(\PositionX,\PositionY){\vector(-1,0){-\ArrowLength}}
+  \else
+    \put(\PositionX,\PositionY){\vector(-1,0){\ArrowLength}}
+    \advance\PositionX by 20
+    \put(\PositionX,\PositionY){\vector(+1,0){\ArrowLength}}
+  \fi
+}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\InsideVArrow}
+%    This macro is used to produce two vertical arrows inside a box.
+%    The argument gives the height of the box.
+%    \begin{macrocode}
+\def\InsideVArrow#1{{%
+  \ArrowLength = #1
+  \divide\ArrowLength by \tw@
+  \advance\ArrowLength by -10
+  \advance\PositionY by -10
+  \put(\PositionX,\PositionY){\vector(0,-1){\ArrowLength}}
+  \advance\PositionY by 20
+  \put(\PositionX,\PositionY){\vector(0,+1){\ArrowLength}}
+}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\OutsideHArrow}
+%    This macro is used to produce two horizontal arrows to delimit a
+%    length. The first argument is the position for the right arrow,
+%    the second argument gives the length and the third specifies the
+%    length of the arrows.
+%    \begin{macrocode}
+\def\OutsideHArrow#1#2#3{{%
+  \PositionX = #1
+  \advance\PositionX by #3
+  \put(\PositionX,\PositionY){\vector(-1,0){#3}}
+  \PositionX = #1 \advance\PositionX-#2
+  \advance\PositionX by -#3
+  \put(\PositionX,\PositionY){\vector(+1,0){#3}}
+}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\OutsideVArrow}
+%    This macro is used to produce two vertical arrows to delimit a
+%    length. The first argument is the position for the lower arrow,
+%    the second argument gives the length and the third and fourth
+%    specify the lenghts of the lower and upper arrow.
+%    \begin{macrocode}
+\def\OutsideVArrow#1#2#3#4{{%
+  \PositionY = #1
+  \advance\PositionY by -#3
+  \put(\PositionX,\PositionY){\vector(0,+1){#3}}
+  \PositionY = #1
+  \advance\PositionY#2
+  \advance\PositionY#4
+  \put(\PositionX,\PositionY){\vector(0,-1){#4}}
+}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Show}
+% \changes{v1.1g}{1995/04/03}{Simplified the definition, now show
+%    complete value}
+% \changes{v1.1h}{1995/04/07}{Use \cs{lay@value} to show the value
+%    because of the option which decides which of two ways of doing it
+%    should be used}
+%
+%    Macro used in the table that shows the setting of the parameters.
+%    \begin{macrocode}
+\def\Show#1#2{\LayOutbs #2 = \lay@value{#1}{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Type}
+% \changes{v1.1g}{1995/04/03}{Simplified the definition, now show
+%    complete value}
+% \changes{v1.1h}{1995/04/07}{Use \cs{lay@value} to show the value
+%    because of the option which decides which of two ways of doing it
+%    should be used}
+% \changes{v1.2b}{1998/06/21}{Renamed \cs{type} to \cs{LayOuttype}
+%   to avoid possible conflicts with other packages}
+%
+%    Macro used to show a setting of a parameter on the terminal.
+%    \begin{macrocode}
+\def\Type#1#2{%
+  \LayOuttype{#2 = \lay@value{#1}{#2}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\oneinch}
+%    A constant, giving the length of an inch in points (approximately)
+%    \begin{macrocode}
+\newcount\oneinch
+\oneinch=72
+%    \end{macrocode}
+% \end{macro}
+%
+%    Because the overview of the layout is produced in a figure
+%    environment we need to allocate a number of counters that are
+%    used to store the values of various dimensions.
+%
+% \begin{macro}{\cnt@paperwidth}
+% \begin{macro}{\cnt@paperheight}
+%    The dimensions of the paper
+%    \begin{macrocode}
+\newcount\cnt@paperwidth
+\newcount\cnt@paperheight
+\ConvertToCount\cnt@paperwidth\paperwidth
+\ConvertToCount\cnt@paperheight\paperheight
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cnt@hoffset}
+% \begin{macro}{\cnt@voffset}
+%    the offsets,
+%    \begin{macrocode}
+\newcount\cnt@hoffset
+\newcount\cnt@voffset
+\ConvertToCount\cnt@hoffset\hoffset
+\ConvertToCount\cnt@voffset\voffset
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cnt@textheight}
+% \begin{macro}{\cnt@textwidth}
+%    dimensions of the text area,
+%    \begin{macrocode}
+\newcount\cnt@textheight
+\newcount\cnt@textwidth
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cnt@topmargin}
+% \begin{macro}{\cnt@oddsidemargin}
+% \begin{macro}{\cnt@evensidemargin}
+%    margins,
+%    \begin{macrocode}
+\newcount\cnt@topmargin
+\newcount\cnt@oddsidemargin
+\newcount\cnt@evensidemargin
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cnt@headheight}
+% \begin{macro}{\cnt@headsep}
+%    dimensions of the running heads,
+%    \begin{macrocode}
+\newcount\cnt@headheight
+\newcount\cnt@headsep
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cnt@marginparsep}
+% \begin{macro}{\cnt@marginparwidth}
+% \begin{macro}{\cnt@marginparpush}
+%    marginal paragraphs,
+%    \begin{macrocode}
+\newcount\cnt@marginparsep
+\newcount\cnt@marginparwidth
+\newcount\cnt@marginparpush
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cnt@footskip}
+%    the distance between the running footers and the text,
+%    \begin{macrocode}
+\newcount\cnt@footskip
+%    \end{macrocode}
+% \end{macro}
+%    and the height of the footers, which is needed here to display a
+%    box, but which isn't used by \LaTeX.
+% \begin{macro}{\fheight}
+%    \begin{macrocode}
+\newcount\fheight
+\fheight=12
+%    \end{macrocode}
+% \end{macro}
+%
+%    Apart from integer representations of the page layout parameters
+%    we also need registers to store reference values in.
+%
+% \begin{macro}{\ref@top}
+%    The position of the top of the `printable area' is
+%    one inch below the top of the paper by default. The value of
+%    |\ref@top| is relative to the lower left corner of the picture
+%    environment that will be used.
+%
+%    \begin{macrocode}
+\newcount\ref@top
+\ref@top=\cnt@paperheight \advance\ref@top by -\oneinch
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ref@hoffset}
+% \begin{macro}{\ref@voffset}
+%    For the offsets,
+%    \begin{macrocode}
+\newcount\ref@hoffset
+\newcount\ref@voffset
+%    \end{macrocode}
+%    The |\hoffset| and |\voffset| values are added to the default
+%    offset of one inch.
+%    \begin{macrocode}
+\ref@hoffset=\cnt@hoffset  \advance\cnt@hoffset by \oneinch
+\ref@voffset=\cnt@voffset
+%    \end{macrocode}
+%
+%    |\cnt@voffset| is converted to be relative to the origin of the
+%    picture.
+%    \begin{macrocode}
+\cnt@voffset=\ref@top
+\advance\cnt@voffset by -\ref@voffset
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ref@head}
+%    and the text areas, running heads,
+%    \begin{macrocode}
+\newcount\ref@head
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ref@body}
+%    body of the text
+%    \begin{macrocode}
+\newcount\ref@body
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ref@foot}
+%    and running footers.
+%    \begin{macrocode}
+\newcount\ref@foot
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ref@margin}
+% \begin{macro}{\ref@marginwidth}
+% \begin{macro}{\ref@marginpar}
+%    These are different for even and odd pages, so they are computed
+%    by |\layout|.
+%    \begin{macrocode}
+\newcount\ref@margin
+\newcount\ref@marginwidth
+\newcount\ref@marginpar
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%    The following are a number of scratch registers, used in the
+%    positioning of the various pices of the picture.
+%    \begin{macrocode}
+\newcount\Interval
+\newcount\ExtraYPos
+\newcount\PositionX
+\newcount\PositionY
+\newcount\ArrowLength
+%    \end{macrocode}
+%
+%  \begin{macro}{\lay@getvalues}
+% \changes{v1.1j}{1995/10/30}{Added macro to compute values at later
+%    time}
+%    All values that might change during the document are computed by
+%    calling the macro |\lay@getvalues|. By default this macro is
+%    executed at |\begin{document}|.
+%    \begin{macrocode}
+\def\lay@getvalues{%
+  \ConvertToCount\cnt@textheight\textheight
+  \ConvertToCount\cnt@textwidth\textwidth
+  \ConvertToCount\cnt@topmargin\topmargin
+  \ConvertToCount\cnt@oddsidemargin\oddsidemargin
+  \ConvertToCount\cnt@evensidemargin\evensidemargin
+  \ConvertToCount\cnt@headheight\headheight
+  \ConvertToCount\cnt@headsep\headsep
+  \ConvertToCount\cnt@marginparsep\marginparsep
+  \ConvertToCount\cnt@marginparwidth\marginparwidth
+  \ConvertToCount\cnt@marginparpush\marginparpush
+  \ConvertToCount\cnt@footskip\footskip
+  \ref@head=\ref@top
+    \advance\ref@head by -\ref@voffset
+    \advance\ref@head by -\cnt@topmargin
+    \advance\ref@head by -\cnt@headheight
+  \ref@body=\ref@head
+    \advance\ref@body by -\cnt@headsep
+    \advance\ref@body by -\cnt@textheight
+  \ref@foot=\ref@body
+    \advance\ref@foot by -\cnt@footskip
+  }
+\AtBeginDocument{\lay@getvalues}
+%    \end{macrocode}
+%  \end{macro}
+%  \begin{macro}{\computevalues}
+%
+% \begin{macro}{\layout}
+% \begin{macro}{\layout*}
+%    The command |\layout| makes the picture and table that display
+%    the current settings of the layout parameters.
+%
+% \changes{v1.1b}{1994/03/23}{Produce two pages in twoside mode}
+% \changes{v1.1j}{1995/10/30}{Added \cs{layout*}}
+%    \begin{macrocode}
+\newcommand\layout{%
+  \@ifstar{\lay@getvalues\lay@xlayout}{\lay@xlayout}}
+\def\lay@xlayout{%
+  \lay@layout
+  \if@twoside
+    \lay@layout
+  \fi}
+%    \end{macrocode}
+%
+% \begin{macro}{\lay@layout}
+%    The internal macro |\lay@layout| does all the dirty work.
+%    \begin{macrocode}
+\newcommand\lay@layout{%
+  \thispagestyle{empty}
+%    \end{macrocode}
+%
+%    The actions of |\layout| depend on the pagestyle.
+%    \begin{macrocode}
+  \if@twoside
+    \ifodd\count\z@
+%    \end{macrocode}
+%
+%    Here we deal with an odd page in the twosided case.
+%
+%    \begin{macrocode}
+      \typeout{Two-sided document style, odd page.}
+%    \end{macrocode}
+%
+%    So we compute |\ref@marginwidth|, |\ref@marginpar| and
+%    |\ref@margin|.
+% \changes{v1.1}{1994/02/23}{Added check for reversemargin}
+%    \begin{macrocode}
+      \ref@marginwidth=\cnt@oddsidemargin
+      \ref@marginpar=\oneinch
+      \advance\ref@marginpar by \ref@hoffset
+      \advance\ref@marginpar by \cnt@oddsidemargin
+      \ref@margin\ref@marginpar
+      \if@reversemargin
+        \advance\ref@marginpar by -\cnt@marginparsep
+        \advance\ref@marginpar by -\cnt@marginparwidth
+      \else
+        \advance\ref@marginpar by \cnt@textwidth
+        \advance\ref@marginpar by \cnt@marginparsep
+      \fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \else
+%    \end{macrocode}
+%
+%    Here we deal with an even page in the twosided case.
+%
+%    \begin{macrocode}
+  \typeout{Two-sided document style, even page.}
+%    \end{macrocode}
+%
+%    So we compute |\ref@marginwidth|, |\ref@marginpar| and
+%    |\ref@margin|.
+% \changes{v1.1}{1994/02/23}{Added check for reversemargin}
+%    \begin{macrocode}
+      \ref@marginwidth=\cnt@evensidemargin
+      \ref@marginpar=\oneinch
+      \advance\ref@marginpar by \ref@hoffset
+      \advance\ref@marginpar by \cnt@evensidemargin
+      \ref@margin\ref@marginpar
+      \if@reversemargin
+        \advance\ref@marginpar by \cnt@textwidth
+        \advance\ref@marginpar by \cnt@marginparsep
+      \else
+        \advance\ref@marginpar by -\cnt@marginparsep
+        \advance\ref@marginpar by -\cnt@marginparwidth
+      \fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \fi
+  \else
+%    \end{macrocode}
+%
+%    Finally we the case for single sided printing.
+%
+% \changes{v1.1}{1994/02/23}{Added check for reversemargin}
+%    \begin{macrocode}
+    \typeout{One-sided document style.}
+    \ref@marginwidth=\cnt@oddsidemargin
+    \ref@marginpar=\oneinch
+    \advance\ref@marginpar by \ref@hoffset
+    \advance\ref@marginpar by \cnt@oddsidemargin
+    \ref@margin\ref@marginpar
+    \if@reversemargin
+      \advance\ref@marginpar by -\cnt@marginparsep
+      \advance\ref@marginpar by -\cnt@marginparwidth
+    \else
+      \advance\ref@marginpar by \cnt@textwidth
+      \advance\ref@marginpar by \cnt@marginparsep
+    \fi
+  \fi
+%    \end{macrocode}
+%
+%
+%  Now we begin the picture environment; dividing all the lengths by
+%  two is done by setting |\unitlength| to \texttt{0.5pt}
+%    \begin{macrocode}
+  \setlength{\unitlength}{.5pt}
+  \begin{picture}(\cnt@paperwidth,\cnt@paperheight)
+    \centering
+    \thicklines
+%    \end{macrocode}
+%
+%    First we have the pagebox and reference lines,
+%
+%    \begin{macrocode}
+    \put(0,0){\framebox(\cnt@paperwidth,\cnt@paperheight){\mbox{}}}
+    \put(0,\cnt@voffset){\dashbox{10}(\cnt@paperwidth,0){\mbox{}}}
+    \put(\cnt@hoffset,0){\dashbox{10}(0,\cnt@paperheight){\mbox{}}}
+%    \end{macrocode}
+%
+%    then the header,
+%
+%    \begin{macrocode}
+    \put(\ref@margin,\ref@head){%
+      \framebox(\cnt@textwidth,\cnt@headheight)%
+        {\footnotesize\Headertext}}
+%    \end{macrocode}
+%
+%    the body of the text area,
+%
+%    \begin{macrocode}
+    \put(\ref@margin,\ref@body){%
+      \framebox(\cnt@textwidth,\cnt@textheight){\Bodytext}}
+%    \end{macrocode}
+%
+%     the footer
+%
+%    \begin{macrocode}
+    \put(\ref@margin,\ref@foot){%
+      \framebox(\cnt@textwidth,\fheight){\footnotesize\Footertext}}
+%    \end{macrocode}
+%
+%    and the space for marginal notes.
+%
+%    \begin{macrocode}
+    \put(\ref@marginpar,\ref@body){%
+      \framebox(\cnt@marginparwidth,\cnt@textheight)%
+               {\footnotesize\shortstack{\MarginNotestext}}}
+%    \end{macrocode}
+%
+%    Then we start putting in `arrows' to mark the various parameters.
+%    From here we use |\thinlines|.
+%    \begin{macrocode}
+    \thinlines
+%    \end{macrocode}
+%
+%    |\PositionX| and |\PositionY| will be the coordinates of the center of
+%    the arrow displaying |\textwidth|.
+%    \begin{macrocode}
+    \SetToHalf\PositionX\cnt@textwidth
+    \advance\PositionX by \ref@margin
+%    \end{macrocode}
+%    The arrow should be a bit above the bottom of the `body box'.
+%    \begin{macrocode}
+    \PositionY = \ref@body
+    \advance\PositionY by 50
+%    \end{macrocode}
+%    An identifying number is put here, in a circle.
+%    \begin{macrocode}
+    \Identify{8}
+%    \end{macrocode}
+%    Then the arrow is drawn.
+%    \begin{macrocode}
+    \InsideHArrow\cnt@textwidth
+%    \end{macrocode}
+%
+%    Now the |\textheight|
+%    \begin{macrocode}
+    \SetToHalf\PositionY\cnt@textheight
+    \advance\PositionY by \ref@body
+%    \end{macrocode}
+%
+%    The x-position of the arrow is at $4/5$ of the width of the `body
+%    box'.
+%    \begin{macrocode}
+    \PositionX = \cnt@textwidth
+    \divide\PositionX by 5
+    \multiply \PositionX by 4
+    \advance\PositionX by \ref@margin
+%    \end{macrocode}
+%
+%    An identifying number is put here, in a circle.
+%    \begin{macrocode}
+    \Identify{7}
+    \InsideVArrow\cnt@textheight
+%    \end{macrocode}
+%
+%
+%    The |\hoffset|,
+% \changes{v1.2}{1998/04/13}{\cs{PositionY} for label 1 is
+%    fixed at 50}
+%    \begin{macrocode}
+    \PositionY = 50
+    \SetToHalf\PositionX\cnt@hoffset
+    \Identify{1}
+    \InsideHArrow\cnt@hoffset
+%    \end{macrocode}
+%
+%
+%    The width of the margin.
+% \changes{v1.2}{1998/04/13}{The direction of the arrows should be
+%    switched by the sign of \cs{oddsidemargin}}
+%    \begin{macrocode}
+    \SetToQuart\PositionY\cnt@textheight
+    \advance\PositionY by \ref@body
+    \ifnum\ref@marginwidth > 0
+      \OutsideHArrow\ref@margin\ref@marginwidth{20}
+      \PositionX = \cnt@hoffset
+    \else
+      \OutsideHArrow\cnt@hoffset{-\ref@marginwidth}{20}
+      \PositionX = \ref@margin
+    \fi
+    \advance\PositionX by -30
+    \Identify{3}
+%    \end{macrocode}
+%
+%    the |\marginparwidth|,
+%    \begin{macrocode}
+    \SetToQuart\PositionY\cnt@textheight
+    \advance\PositionY by \ref@body
+%    \end{macrocode}
+%    This arrow has to be bit below the one for the |\oddsidemargin|
+%    or\\ |\evensidemargin|.
+%    \begin{macrocode}
+    \advance\PositionY by 30
+    \SetToHalf\PositionX\cnt@marginparwidth
+    \advance\PositionX by \ref@marginpar
+    \Identify{10}
+    \InsideHArrow\cnt@marginparwidth
+%    \end{macrocode}
+%
+%
+%    The |\marginparsep|, this depends on single or double sided
+%    printing.
+%    \begin{macrocode}
+    \advance\PositionY by 30
+    \if@twoside
+%    \end{macrocode}
+%
+%    Twosided mode, reversemargin;
+% \changes{v1.1b}{1994/03/23}{\cs{OutSideHArrow} should be
+%    \cs{OutsideHArrow}}
+% \changes{v1.2}{1998/04/13}{Added check for reversemargin}
+%    \begin{macrocode}
+      \if@reversemargin
+        \ifodd\count\z@
+          \OutsideHArrow\ref@margin\cnt@marginparsep{20}
+          \PositionX = \ref@margin
+        \else
+          \OutsideHArrow\ref@marginpar\cnt@marginparsep{20}
+          \PositionX = \ref@marginpar
+        \fi
+      \else
+%    \end{macrocode}
+%    Not reversemargin;
+%    \begin{macrocode}
+        \ifodd\count\z@
+          \OutsideHArrow\ref@marginpar\cnt@marginparsep{20}
+          \PositionX = \ref@marginpar
+        \else
+          \OutsideHArrow\ref@margin\cnt@marginparsep{20}
+          \PositionX = \ref@margin
+        \fi
+      \fi
+    \else
+%    \end{macrocode}
+%
+%    Single sided mode.
+% \changes{v1.2}{1998/04/13}{Added check for reversemargin}
+%    \begin{macrocode}
+      \if@reversemargin
+        \OutsideHArrow\ref@margin\cnt@marginparsep{20}
+        \PositionX = \ref@margin
+      \else
+        \OutsideHArrow\ref@marginpar\cnt@marginparsep{20}
+        \PositionX = \ref@marginpar
+      \fi
+    \fi
+%    \end{macrocode}
+% \changes{v1.2}{1998/04/13}{The \cs{PositionX} of the label 9 is
+%    changed to the left side of the arrows}
+%    \begin{macrocode}
+    \advance\PositionX by -\cnt@marginparsep
+    \advance\PositionX by -30
+    \Identify{9}
+%    \end{macrocode}
+%
+%    Identify the |\footskip|. The arrow will be located on $1/8$th of
+%    the |\textwidth|.
+% \changes{v1.2}{1998/04/13}{The \cs{PositionY} of the label 11 is
+%    changed to the upper side of the arrows}
+%    \begin{macrocode}
+    \PositionX = \cnt@textwidth
+    \divide\PositionX by 8
+    \advance\PositionX by \ref@margin
+    \OutsideVArrow\ref@foot\cnt@footskip{20}{20}
+    \PositionY = \ref@foot
+    \advance\PositionY by \cnt@footskip
+    \advance\PositionY by 30
+    \Identify{11}
+%    \end{macrocode}
+%
+%    Identify the |\voffset|. The arrow will be located a bit to the
+%    left of the edge of the paper.
+%    \begin{macrocode}
+    \PositionX = \cnt@paperwidth
+    \advance\PositionX by -50
+    \PositionY = \cnt@paperheight
+    \ExtraYPos = \PositionY
+    \advance\ExtraYPos by -\cnt@voffset
+    \advance\PositionY by \cnt@voffset
+    \divide\PositionY by \tw@
+    \Identify{2}
+    \InsideVArrow\ExtraYPos
+%    \end{macrocode}
+%
+%    Identify |\topmargin|, |\headheight| and |\headsep|.
+%
+%    The arrows will be located on $1/8$th of the |\textwidth|, with
+%    intervals of the same size, stored in |\Interval|.
+%    \begin{macrocode}
+    \Interval = \cnt@textwidth
+    \divide\Interval by 8
+    \PositionX = \ref@margin
+    \advance\PositionX by \Interval
+%    \end{macrocode}
+%    First the |\topmargin|. If |\topmargin| has a positive value, the
+%    arrow is upward. Otherwise, it is downward. The number label is
+%    always placed at the base of the arrow.
+% \changes{v1.2}{1998/04/13}{The direction of the arrows should be
+%    switched by the sign of \cs{topmargin}}
+%    \begin{macrocode}
+    \ifnum\cnt@topmargin > \z@
+      \ExtraYPos = \ref@head
+      \advance\ExtraYPos\cnt@headheight
+      \OutsideVArrow\ExtraYPos\cnt@topmargin{20}{20}
+      \PositionY = \ExtraYPos
+      \advance\PositionY by \cnt@topmargin
+    \else
+      \ExtraYPos = \cnt@voffset
+      \OutsideVArrow\ExtraYPos{-\cnt@topmargin}{20}{20}
+      \PositionY = \ExtraYPos
+      \advance\PositionY by -\cnt@topmargin
+    \fi
+    \advance\PositionY by 30
+    \Identify{4}
+    \advance\PositionX by \Interval
+%    \end{macrocode}
+%    Then the |\headheight|
+% \changes{v1.2}{1998/04/13}{The \cs{PositionY} of the label 5 is
+%    fixed}
+%    \begin{macrocode}
+    \OutsideVArrow\ref@head\cnt@headheight{20}{20}
+    \PositionY = \ref@head
+    \advance\PositionY by \cnt@headheight
+    \advance\PositionY by 30
+    \Identify{5}
+    \advance\PositionX by \Interval
+%    \end{macrocode}
+%    and finally the |\headsep|
+% \changes{v1.2}{1998/04/13}{The \cs{PositionY} of the label 6 is
+%    fixed}
+%    \begin{macrocode}
+    \ExtraYPos=\ref@body
+    \advance\ExtraYPos\cnt@textheight
+    \OutsideVArrow\ExtraYPos\cnt@headsep{20}{20}
+    \PositionY = \ref@body
+    \advance\PositionY by \cnt@textheight
+    \advance\PositionY by -30
+    \Identify{6}
+%    \end{macrocode}
+%
+%    Here we can end the picture environment and insert a little
+%    space.
+%    \begin{macrocode}
+  \end{picture}
+
+  \medskip
+%    \end{macrocode}
+%
+%    Below the picture we put a table to show the actual values of the
+%    parameters.  Note that fractional points are truncated, i.e.,
+%    \texttt{72.27pt} is displayed as \texttt{72pt}
+%
+%    The table is typeset inside a box with a depth of 0 to always
+%    keep it on the same page as the picture.
+% \changes{v1.1b}{1994/03/23}{Showing oddside and evenside margins was
+%    defective}
+% \changes{v1.1c}{1994/07/14}{in compatibility mode \cs{footnotesize}
+%    calls \cs{normalfont}; therefore we need to switch to a tt font
+%    later}
+% \changes{v1.1f}{1995/03/14}{introduced \cs{notshown}}
+%    \begin{macrocode}
+  \vtop to 0pt{%
+    \@minipagerestore\footnotesize\ttfamily
+    \begin{tabular}{@{}rl@{\hspace{20pt}}rl}
+      1 & \oneinchtext\ + \LayOutbs\texttt{hoffset}
+        & 2 & \oneinchtext\ + \LayOutbs\texttt{voffset} \\
+      3 & \if@twoside
+            \ifodd\count\z@ \Show{cnt}{oddsidemargin}
+            \else \Show{cnt}{evensidemargin}
+            \fi
+          \else
+            \Show{cnt}{oddsidemargin}
+          \fi                    & 4 & \Show{cnt}{topmargin} \\
+      5 & \Show{cnt}{headheight} & 6 & \Show{cnt}{headsep} \\
+      7 & \Show{cnt}{textheight} & 8 & \Show{cnt}{textwidth} \\
+      9 & \Show{cnt}{marginparsep}&10& \Show{cnt}{marginparwidth} \\
+      11& \Show{cnt}{footskip}   &   & \Show{cnt}{marginparpush}
+       \rlap{(\notshown)}\\
+        & \Show{ref}{hoffset}    &   & \Show{ref}{voffset} \\
+        & \Show{cnt}{paperwidth} &   & \Show{cnt}{paperheight} \\
+
+  \end{tabular}\vss}
+%    \end{macrocode}
+%    When the option \Lopt{verbose} was used the following lines will
+%    show dimensions on the terminal.
+%    \begin{macrocode}
+  \Type{ref}{hoffset}
+  \Type{ref}{voffset}
+  \Type{cnt}{textheight}
+  \Type{cnt}{textwidth}
+%    \end{macrocode}
+%    Finally we start a new page.
+%    \begin{macrocode}
+  \newpage
+}
+%</package>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \Finale
+\endinput

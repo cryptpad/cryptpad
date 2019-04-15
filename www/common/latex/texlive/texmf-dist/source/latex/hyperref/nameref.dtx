@@ -1,0 +1,899 @@
+% \iffalse
+%% File: nameref.dtx
+%% Copyright (C) 1995-1999 Sebastian Rahtz
+%%               2000 Sebastian Rahtz, Heiko Oberdiek
+%%               2001-2012 Heiko Oberdiek
+%%
+%% This file is part of the `Hyperref Bundle'.
+%% -------------------------------------------
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Heiko Oberdiek.
+%%
+%% The list of all files belonging to the `Hyperref Bundle' is
+%% given in the file `manifest.txt'.
+%
+%<*dtx>
+\ProvidesFile{nameref.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{nameref}
+%<driver>\ProvidesFile{nameref.drv}
+% \fi
+% \ProvidesFile{nameref.dtx}
+  [2012/10/27 v2.43 Cross-referencing by name of section]%
+%
+% \CheckSum{714}
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[numbered]{hypdoc}
+\usepackage{bmhydoc}
+\usepackage{hologo}
+\EnableCrossrefs
+\CodelineIndex
+\newcommand*{\xpackage}[1]{\textsf{#1}}
+\begin{document}
+  \GetFileInfo{nameref.sty}%
+  \title{%
+    Section name references in \LaTeX
+    \thanks{%
+      This file has version number \fileversion, %
+      last revised \filedate.%
+    }%
+  }%
+  \author{Sebastian Rahtz}%
+  \date{\filedate}%
+  \maketitle
+  \makeatletter
+  \@ifundefined{HyperrefOverview}{}{%
+    \HyperrefOverview*%
+  }%
+  \tableofcontents
+  \DocInput{nameref.dtx}%
+  \PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \StopEventually{}
+%
+% \section{Introduction}
+% Cross-referencing to include the \emph{name} of the section, rather than
+% just the number or page. This works by redefining some of the inside
+% \LaTeX\ macros, so it is vulnerable to future changes.
+% \section{History}
+% Sebastian Rahtz, for Lou Burnard, March 15th 1994;\\
+% SPQR CERN July 1994;\\
+% Last mod. Sept. 3th MG;\\
+% Sept. 19th SPQR;\\
+% April 11th 1995 SPQR (added section formatting hook);\\
+% April 14th 1995 SPQR (compatibility with hyperref);\\
+% June 22 1995 SPQR (removed typeout from Sectionformat);\\
+% September 22 1997 added varioref hacks by Corey Minyard;\\
+% September 28th changes by David Carlisle.\\
+% More recent changes are recorded in ChangeLog.
+%
+% The versions before 2009/11/27 v2.32 did not expand the
+% title strings (of \cs{section}, \cs{caption}, \dots).
+% Then the behaviour switched to expanding, because this
+% allows to remove unwanted macros (\cs{label}, \dots).
+% Despite this method is used in package \textsf{titleref}
+% and class \textsf{memoir}, the first feedbacks let me conclude
+% that this is not robust enough. Therefore I wrote package
+% \textsf{gettitlestring} that uses the non-expanding
+% method as default. It also allows me to use this package
+% in package \textsf{zref-titleref}.
+% See the package documentation of package \textsf{gettitlestring}
+% how to change the method. It also provides a hook to remove
+% additional unwanted macros, not supported by the package.
+% Example:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{gettitlestring}
+%\GetTitleStringDisableCommands{%
+%  \let\mylabel\@gobble
+%  \renewcommand\myindex[2]{}%
+%}
+%\end{verbatim}
+%\end{quote}
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{refcount}[2006/02/12]
+\RequirePackage{gettitlestring}[2009/12/18]
+\RequirePackage{ltxcmds}[2009/12/12]
+%    \end{macrocode}
+%
+% We redefine |\label| so that it also writes the name of the
+% current section to the .aux file; if the name ends in a dot,
+% we zap it. To allow for the \xpackage{hyperref} package, also write
+% fourth and fifth fields (empty by default;
+% used for cross-ref name, and file).
+%    \begin{macro}{\NR@strip@period}
+%    \begin{macrocode}
+\def\NR@strip@period#1.\ltx@empty#2\@nil{#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\strip@period}
+% Macro \cs{strip@period} was removed in \xpackage{nameref}
+% 2012/07/28 v2.41 and reinserted in 2012/07/31 v2.42 for compatibilty
+% reasons with package \xpackage{subfig}.
+%    \begin{macrocode}
+\def\strip@period#1.\relax#2\@@@{#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\NR@sanitize@labelname{%
+  \@onelevel@sanitize\@currentlabelname
+  \edef\@currentlabelname{%
+    \expandafter\NR@strip@period\@currentlabelname
+    \ltx@empty.\ltx@empty\@nil
+  }%
+}
+%    \end{macrocode}
+%
+% \subsection{\cs{label} stuff}
+%
+%    Here is tested, whether package \xpackage{showkeys} is loaded.
+%    But if option final is used, the macros of \xpackage{showkeys}
+%    are not defined, so we have to check an additional
+%    test.
+%    \begin{macro}{\ifNR@showkeys}
+%    \begin{macrocode}
+\newif\ifNR@showkeys
+\NR@showkeysfalse
+\@ifpackageloaded{showkeys}{%
+  \begingroup
+    \@ifundefined{SK@@label}{%
+    }{%
+      \global\NR@showkeystrue
+    }%
+  \endgroup
+}{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\label@hook}
+%    \begin{macrocode}
+\providecommand*{\label@hook}{}
+\ltx@GlobalAppendToMacro{\label@hook}{%
+  \NR@sanitize@labelname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\label}
+%    \begin{macrocode}
+\def\label#1{%
+  \@bsphack
+  \begingroup
+    \def\label@name{#1}%
+    \label@hook
+    \protected@write\@auxout{}{%
+      \string\newlabel{#1}{%
+        {\@currentlabel}%
+        {\thepage}%
+        {\@currentlabelname}%
+        {\@currentHref}{}%
+      }%
+    }%
+  \endgroup
+  \@esphack
+}%
+\ifNR@showkeys
+  \def\label#1{%
+    \@bsphack
+    \SK@\SK@@label{#1}%
+    \begingroup
+      \def\label@name{#1}%
+      \label@hook
+      \protected@write\@auxout{}{%
+        \string\newlabel{#1}{%
+          {\@currentlabel}%
+          {\thepage}%
+          {\@currentlabelname}%
+          {\@currentHref}{}%
+        }%
+      }%
+    \endgroup
+    \@esphack
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@label}
+%    \begin{macrocode}
+\let\ltx@label\label
+%    \end{macrocode}
+%    \end{macro}
+% Needed for the \emph{subeqnarray} package.
+%    \begin{macro}{\slabel}
+%    \begin{macrocode}
+\@ifundefined{slabel}{}{%
+  \def\slabel#1{%
+    \@bsphack
+    \if@filesw
+      \begingroup
+        \def\label@name{#1}%
+        \label@hook
+        \let\thepage\relax
+        \def\protect{\noexpand\noexpand\noexpand}%
+        \edef\@tempa{%
+          \write\@auxout{%
+            \string\newlabel{#1}{%
+              {\thesubequation}%
+              {\thepage}%
+              {\@currentlabelname}%
+              {\@currentHref}{}%
+            }%
+          }%
+        }%
+      \expandafter\endgroup
+      \@tempa
+      \if@nobreak\ifvmode\nobreak\fi\fi
+    \fi
+    \@esphack
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+% Overload an AMS \hologo{LaTeX} command, which uses |\newlabel|. Sigh!
+%    \begin{macro}{\@writetocindents@}
+%    \begin{macrocode}
+\def\@writetocindents@{%
+  \begingroup
+  \@for\@tempa:=-1,0,1,2,3\do{%
+    \immediate\write\@auxout{%
+      \string\newlabel{tocindent\@tempa}{%
+        \csname r@tocindent\@tempa\endcsname{}{}{}{}%
+      }%
+    }%
+  }%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Changes of section macros}
+%
+% Add to the underlying section heading macros so that they
+% note the section name for use by label.
+%
+% If a section heading or the like has a |\label| in it,
+% we need to extract it, or subsequent processing breaks.
+%
+%    \begin{macro}{\NR@gettitle}
+%    \begin{macrocode}
+\def\NR@gettitle#1{%
+  \GetTitleString{#1}%
+  \let\@currentlabelname\GetTitleStringResult
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% First the numbered sections. While we are about it, put in
+% a useful section formatting macro.
+%    \begin{macro}{\NR@sect}
+%    \begin{macrocode}
+\let\NR@sect\@sect
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\newcounter{section@level}
+%    \end{macrocode}
+%    \begin{macro}{\@sect}
+%    \begin{macrocode}
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+  \setcounter{section@level}{#2}%
+  \NR@gettitle{#7}%
+  \NR@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}]{\Sectionformat{#8}{#2}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+% and now the unnumbered ones
+%    \begin{macro}{\NR@ssect}
+%    \begin{macrocode}
+\let\NR@ssect\@ssect
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\NR@ssect}
+%    \begin{macrocode}
+\def\@ssect#1#2#3#4#5{%
+  \NR@gettitle{#5}%
+  \NR@ssect{#1}{#2}{#3}{#4}{\Sectionformat{#5}{#1}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% Support for class memoir.
+%
+%    \begin{macrocode}
+\ltx@IfUndefined{ifheadnameref}{%
+}{%
+  \ltx@IfUndefined{M@sect}{%
+  }{%
+    \let\NRorg@M@sect\M@sect
+    \def\M@sect#1#2#3#4#5#6[#7][#8]{%
+      \ifheadnameref
+        \NR@gettitle{#8}%
+      \else
+        \NR@gettitle{#7}%
+      \fi
+      \NRorg@M@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}][{#8}]%
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+% Parts and chapters are treated differently. sigh.
+% \cs{@part} and \cs{@spart} are \cs{long} because of class memoir.
+%
+%    \begin{macrocode}
+\let\NR@part\@part
+\long\def\@part[#1]#2{%
+  \NR@gettitle{#1}%
+  \NR@part[{#1}]{#2}%
+}
+\let\NR@spart\@spart
+\long\def\@spart#1{%
+  \NR@gettitle{#1}%
+  \NR@spart{#1}%
+}
+\let\NR@chapter\@chapter
+\def\@chapter[#1]#2{%
+  \NR@gettitle{#1}%
+  \NR@chapter[{#1}]{#2}%
+}
+\@ifclassloaded{memoir}{%
+  \ltx@IfUndefined{ifheadnameref}{%
+  }{%
+    \def\@chapter[#1]#2{%
+      \ltx@IfUndefined{ch@pt@c}{%
+        \NR@gettitle{#1}%
+      }{%
+        \ifx\ch@pt@c\ltx@empty
+          \NR@gettitle{#2}%
+        \else
+          \def\NR@temp{#1}%
+          \ifx\NR@temp\ltx@empty
+            \expandafter\NR@gettitle\expandafter{\ch@pt@c}%
+          \else
+            \ifheadnameref
+              \NR@gettitle{#1}%
+            \else
+              \expandafter\NR@gettitle\expandafter{\ch@pt@c}%
+            \fi
+          \fi
+        \fi
+      }%
+      \NR@chapter[{#1}]{#2}%
+    }%
+  }%
+}{}
+\let\NR@schapter\@schapter
+\def\@schapter#1{%
+  \NR@gettitle{#1}%
+  \NR@schapter{#1}%
+}
+%    \end{macrocode}
+%
+% Captions
+%
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifpackageloaded{hyperref}{%
+    \@ifpackagelater{hyperref}{2009/12/05}\@gobble\@firstofone
+  }\@firstofone
+  {%
+    \let\NR@@caption\@caption
+    \long\def\@caption#1[#2]{%
+      \NR@gettitle{#2}%
+      \NR@@caption{#1}[{#2}]%
+    }%
+  }%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \@ifpackageloaded{longtable}{%
+    \let\NRorg@LT@c@ption\LT@c@ption
+    \def\LT@c@ption#1[#2]#3{%
+      \NRorg@LT@c@ption{#1}[{#2}]{#3}%
+      \def\@tempa{#2}%
+      \ifx\@tempa\@empty
+      \else
+        \NR@gettitle{#2}%
+      \fi
+    }%
+  }{}%
+%    \end{macrocode}
+%
+% Environment `description'.
+%    \begin{macrocode}
+  \ltx@IfUndefined{descriptionlabel}{%
+  }{%
+    \let\NRorg@descriptionlabel\descriptionlabel
+    \def\descriptionlabel#1{%
+      \NR@gettitle{#1}%
+      \NRorg@descriptionlabel{#1}%
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+% Compatibility for package titlesec.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifpackageloaded{titlesec}{%
+    \let\NRorg@ttl@sect@i\ttl@sect@i
+    \def\ttl@sect@i#1#2[#3]#4{%
+      \NR@gettitle{#4}%
+      \NRorg@ttl@sect@i{#1}{#2}[{#3}]{#4}%
+    }%
+  }{}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Class beamer}
+%
+%    \begin{macrocode}
+\@ifclassloaded{beamer}{%
+  \def\NR@PatchBeamer#1{%
+    \expandafter\let\csname NRorg@beamer@#1\expandafter\endcsname
+                    \csname beamer@#1\endcsname
+    \begingroup
+      \edef\x{\endgroup
+        \long\def\expandafter\noexpand\csname beamer@#1\endcsname
+            [####1]{% hash-ok
+          \noexpand\NR@gettitle{####1}%
+          \expandafter\noexpand\csname NRorg@beamer@#1\endcsname
+          [{####1}]%
+        }%
+      }%
+    \x
+  }%
+  \NR@PatchBeamer{section}%
+  \NR@PatchBeamer{subsection}%
+  \NR@PatchBeamer{subsubsection}%
+%    \end{macrocode}
+%
+%    Theorem names.
+%    \begin{macrocode}
+  \addtobeamertemplate{theorem begin}{%
+    \expandafter\NR@gettitle\expandafter{\inserttheoremaddition}%
+  }{}%
+%    \end{macrocode}
+%    \begin{macrocode}
+  \@ifdefinable{\NRorg@beamer@descriptionitem}{%
+    \let\NRorg@beamer@descriptionitem\beamer@descriptionitem
+    \renewcommand{\beamer@descriptionitem}[1]{%
+      \NR@gettitle{#1}%
+      \NRorg@beamer@descriptionitem{#1}%
+    }%
+  }%
+}{}
+%    \end{macrocode}
+%
+% \subsubsection{Theorems}
+%
+%    \begin{macrocode}
+\ltx@IfUndefined{@opargbegintheorem}{}{%
+  \let\NRorg@opargbegintheorem\@opargbegintheorem
+  \def\@opargbegintheorem#1#2#3{%
+    \NR@gettitle{#3}%
+    \NRorg@opargbegintheorem{#1}{#2}{#3}%
+  }%
+}
+\AtBeginDocument{%
+  \@ifpackageloaded{amsthm}{%
+    \let\NRorg@begintheorem\@begintheorem
+    \begingroup
+      \edef\x{macro:\string#1\string#2[\string#3]}%
+      \@onelevel@sanitize\x
+      \def\y#1->#2\@nil{#1}%
+      \edef\z{\expandafter\y\meaning\@begintheorem->\@nil}%
+      \@onelevel@sanitize\z
+    \expandafter\endgroup
+    \ifx\x\z
+      \def\@begintheorem#1#2[#3]{%
+        \NR@gettitle{#3}%
+        \NRorg@begintheorem{#1}{#2}[{#3}]%
+      }%
+    \fi
+  }{}%
+}
+%    \end{macrocode}
+%
+% \subsection{Referencing stuff}
+%
+% We default the label and hypertext reference to be empty.
+%    \begin{macrocode}
+\providecommand*{\@currentlabelname}{}
+\providecommand*{\@currentHref}{}
+%    \end{macrocode}
+% Since the second part of the preserved reference now has five parts
+% (number, page, name, hypertext reference and file), we need extra utility
+% macros:
+%    \begin{macro}{\@firstoffive}
+%    \begin{macrocode}
+\long\def\@firstoffive#1#2#3#4#5{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@secondoffive}
+%    \begin{macrocode}
+\long\def\@secondoffive#1#2#3#4#5{#2}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@thirdoffive}
+%    \begin{macrocode}
+\long\def\@thirdoffive#1#2#3#4#5{#3}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@fourthoffive}
+%    \begin{macrocode}
+\long\def\@fourthoffive#1#2#3#4#5{#4}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@offive}
+%    \begin{macrocode}
+\long\def\@fifthoffive#1#2#3#4#5{#5}
+%    \end{macrocode}
+%    \end{macro}
+% We have to redefine |\ref| and |\pageref| to know about extra
+% reference elements. Make them robust, and compatible with Babel.
+% The Babel switch is mimicked if not already defined.
+% Some support for package \xpackage{showkeys} is implemented. If
+% option |notref| of that package is set, |\SK@ref| has the
+% meaning of |\@empty|.
+%    \begin{macro}{\@safe@activestrue}
+%    \begin{macrocode}
+\providecommand*\@safe@activestrue{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@safe@activesfalse}
+%    \begin{macrocode}
+\providecommand*\@safe@activesfalse{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\NR@setref}
+%    \begin{macrocode}
+\def\NR@setref#1{%
+  \begingroup
+    \@safe@activestrue
+    \expandafter
+  \endgroup
+  \expandafter\NR@@setref\csname r@#1\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\NR@@setref}
+%    \begin{macrocode}
+\def\NR@@setref#1{%
+  \ifx\@undefined#1%
+    \let#1\relax
+  \fi
+  \@setref#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\T@ref}
+%    \begin{macrocode}
+\def\T@ref#1{%
+  \NR@setref{#1}\@firstoffive{#1}%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\T@pageref}
+%    \begin{macrocode}
+\def\T@pageref#1{%
+  \NR@setref{#1}\@secondoffive{#1}%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\ifNR@showkeys
+  \ifx\SK@ref\@empty
+  \else
+%    \end{macrocode}
+%    \begin{macro}{\T@ref}
+%    \begin{macrocode}
+    \def\T@ref#1{%
+      \@safe@activestrue
+      \SK@\SK@@ref{#1}%
+      \@safe@activesfalse
+      \NR@setref{#1}\@firstoffive{#1}%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\T@pageref}
+%    \begin{macrocode}
+    \def\T@pageref#1{%
+      \@safe@activestrue
+      \SK@\SK@@ref{#1}%
+      \@safe@activesfalse
+      \NR@setref{#1}\@secondoffive{#1}%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \fi
+\fi
+%    \end{macrocode}
+%    Package \xpackage{hyperref} uses its own definitions of |\ref| and
+%    |\pageref| because it extends the syntax by the star form.
+%    |\DeclareRobustCommand| is used by \xpackage{hyperref}.
+%    Package |nameref| can be loaded before, after
+%    \xpackage{hyperref} or after
+%    \xpackage{hyperref}'s definitions in |\AtBeginDocument|.
+%    \begin{macrocode}
+\@ifpackageloaded{hyperref}{%
+}{%
+%    \end{macrocode}
+%    \begin{macro}{\ref}
+%    \begin{macrocode}
+  \DeclareRobustCommand{\ref}{\T@ref}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pageref}
+%    \begin{macrocode}
+  \DeclareRobustCommand{\pageref}{\T@pageref}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+% \subsection{Usage and frontend}
+% Access the (third) name part with |\nameref|;
+%    \begin{macro}{\T@nameref}
+%    \begin{macrocode}
+\def\T@nameref#1{%
+  \begingroup
+    \let\label\@gobble
+    \NR@setref{#1}\@thirdoffive{#1}%
+  \endgroup
+}%
+\ifNR@showkeys
+  \ifx\SK@ref\@empty
+  \else
+    \def\T@nameref#1{%
+      \@safe@activestrue
+      \SK@\SK@@ref{#1}%
+      \@safe@activesfalse
+      \begingroup
+        \let\label\@gobble
+        \NR@setref{#1}\@thirdoffive{#1}%
+      \endgroup
+    }%
+  \fi
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%\@ifclassloaded{memoir}{%
+%  \ltx@IfUndefined{@mem@titlerefnolink}\ltx@secondoftwo{%
+%    \ltx@IfUndefined{@mem@titleref}\ltx@secondoftwo\ltx@firstoftwo
+%  }%
+%}\ltx@secondoftwo
+%{%
+%  \DeclareRobustCommand*{\nameref}{%
+%    \@ifstar\@mem@titlerefnolink\@mem@titleref
+%  }%
+%}{%
+%    \end{macrocode}
+%    \begin{macro}{\nameref}
+%    \begin{macrocode}
+  \DeclareRobustCommand*{\nameref}{%
+    \@ifstar\T@nameref\T@nameref
+  }%
+%}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Nameref}
+%    An extended form which gives title and page number.
+%    \begin{macrocode}
+\def\Nameref#1{`\nameref{#1}' on page~\pageref{#1}}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\Sectionformat}
+%    The default for |\Sectionformat|
+%    \begin{macrocode}
+\providecommand\Sectionformat[2]{#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Package ifthen support}
+%
+%    Package ifthen's \cmd{\isodd} does not work with
+%    \cmd{\pageref} because of the extra link and the
+%    star form. Therefore we need an expandable variant.
+%
+%    Unfortunately there is no hook in \cmd{\ifthenelse} in order
+%    to provide expandable versions without link of \cmd{\ref}
+%    and \cmd{\pageref}. As possible target I could only find
+%    \cmd{\begingroup}:
+%    \begin{macrocode}
+\@ifpackageloaded{ifthen}{%
+  \let\NROrg@ifthenelse\ifthenelse
+  \def\ifthenelse{%
+    \let\begingroup\NR@TE@begingroup
+    \NROrg@ifthenelse
+  }%
+  \let\NROrg@begingroup\begingroup
+  \def\NR@TE@begingroup{%
+    \let\begingroup\NROrg@begingroup
+    \begingroup
+    \def\ref##1{\getrefbykeydefault{##1}{}{??}}%
+    \def\pageref##1{\getrefbykeydefault{##1}{page}{0}}%
+  }%
+}{}
+%    \end{macrocode}
+%
+% \subsection{Compatibility with varioref}
+%
+% [This section was derived by Corey Minyard \texttt{minyard@acm.org}
+% from the \xpackage{varioref} package]
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \ifx\csname @@vpageref\endcsname\relax
+  \else
+    \def\@@vpageref#1[#2]#3{%
+      \begingroup
+        \csname @safe@activestrue\endcsname
+        \edef\x{#3}%
+        \@onelevel@sanitize\x
+        \toks@{%
+          \NR@@vpageref{#1}[{#2}]%
+        }%
+        \edef\x{\endgroup
+          \the\toks@{\x}%
+        }%
+      \x
+    }%
+    \def\NR@@vpageref#1[#2]#3{%
+      \leavevmode\unskip
+      \global\advance\c@vrcnt\@ne
+      \@ifundefined{r@\the\c@vrcnt @vr}%
+        {\@namedef{r@\the\c@vrcnt @vr}{{??}{??}{}{}{}}}{}%
+      \edef\@tempa{%
+        \expandafter\expandafter\expandafter
+        \@secondoffive\csname r@\the\c@vrcnt @vr\endcsname
+      }%
+      \@ifundefined{r@\the\c@vrcnt @xvr}%
+        {\@namedef{r@\the\c@vrcnt @xvr}{{??}{??}{}{}{}}}{}%
+      \edef\@tempb{%
+        \expandafter\expandafter\expandafter
+        \@secondoffive\csname r@\the\c@vrcnt @xvr\endcsname
+      }%
+      {%
+        \let\@currentlabel\@empty
+        \expandafter\label\expandafter{\the\c@vrcnt @xvr}%
+      }%
+      \ifx\@tempa\@tempb
+      \else
+        \vref@err{%
+          \noexpand\vref at page boundary %
+          \@tempb-\@tempa\space (may loop)%
+        }%
+      \fi
+      \@ifundefined{r@#3}{\@namedef{r@#3}{{??}{??}{}{}{}}}{}%
+      \edef\thevpagerefnum{%
+        \expandafter\expandafter\expandafter
+        \@secondoffive\csname r@#3\endcsname
+      }%
+      \ifx\vref@space\@undefined
+        \space
+      \else
+        \vref@space
+      \fi
+      \ifx\@tempa\thevpagerefnum
+        #1%
+      \else
+        #2%
+        \is@pos@number\thevpagerefnum{%
+          \is@pos@number\@tempa{%
+            \@tempcnta\@tempa
+            \advance\@tempcnta\@ne
+          }{%
+            \@tempcnta\maxdimen
+          }%
+          \ifnum \thevpagerefnum =\@tempcnta
+            \ifodd\@tempcnta
+              \if@twoside
+                \reftextfaceafter
+              \else
+                \reftextafter
+              \fi
+            \else
+              \reftextafter
+            \fi
+          \else
+            \advance\@tempcnta-2 %
+            \ifnum \thevpagerefnum =\@tempcnta
+              \ifodd\@tempcnta
+                \reftextbefore
+              \else
+                \if@twoside
+                  \reftextfacebefore
+                \else
+                  \reftextbefore
+                \fi
+              \fi
+            \else
+              \reftextfaraway{#3}%
+            \fi
+          \fi
+        }{%
+          \reftextfaraway{#3}%
+        }%
+      \fi
+      {%
+        \let\@currentlabel\@empty
+        \expandafter\label\expandafter{\the\c@vrcnt @vr}%
+      }%
+    }%
+    \DeclareRobustCommand\vnameref[1]{%
+      \unskip~\nameref{#1}%
+      \@vpageref[\unskip]{#1}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\@ifundefined{@Refstar}{%
+  \def\T@Ref#1{%
+    \NR@setref{#1}\NR@MakeUppercaseFirstOfFive{#1}%
+  }%
+  \def\NR@MakeUppercaseFirstOfFive#1#2#3#4#5{%
+    \MakeUppercase#1%
+  }%
+}{}%
+\AtBeginDocument{%
+  \@ifpackageloaded{varioref}{%
+    \@ifundefined{@Refstar}{%
+      \DeclareRobustCommand*{\Ref}[1]{%
+        \T@Ref{#1}%
+      }%
+    }{}%
+  }{}%
+}%
+%    \end{macrocode}
+%
+% \subsection{Support for package \xpackage{listings}}
+%
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifpackageloaded{listings}{%
+    \let\NROrg@lst@MakeCaption\lst@MakeCaption
+    \def\lst@MakeCaption{%
+      \ifx\lst@label\@empty
+      \else
+        \let\@currentlabelname\lst@@caption
+      \fi
+      \NROrg@lst@MakeCaption
+    }%
+  }{}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput

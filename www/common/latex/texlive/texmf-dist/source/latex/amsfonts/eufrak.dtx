@@ -1,0 +1,159 @@
+% \def\filename{eufrak.dtx}
+% \def\fileversion{3.00}
+% \def\filedate{2009/06/22}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 2001, 2009 American Mathematical Society.
+%
+% Unlimited copying and redistribution of this file are permitted as
+% long as this file is not modified.  Modifications, and distribution
+% of modified versions, are permitted, but only if the resulting file
+% is renamed.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\usepackage{eufrak}
+\begin{document}
+\title{The \pkg{eufrak} package}
+\author{Frank Mittelbach\and Rainer Sch\"opf\and Michael Downes\\
+Revised by David M. Jones}
+\date{Version \fileversion, \filedate}
+\DocInput{eufrak.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \section{Introduction}
+%
+%    This package was written originally by Frank Mittelbach and Rainer
+%    Sch\"opf; later it was moved into the AMS-\LaTeX{} distribution
+%    with only minor modifications.  It is now part of the AMSFonts
+%    distribution; it can be used with \LaTeXe{} with no dependency
+%    on the \pkg{amsmath} package.
+%
+%    This file sets up some font shape definitions to use the Euler
+%    Fraktur symbols in math mode. These fonts are part of the AMSFonts
+%    collection which can be found on many \TeX{} servers. It is also
+%    directly available from the AMS and from \TeX{} user groups.
+%
+% \DescribeMacro\EuFrak
+%    To access the Euler Fraktur alphabet a \meta{math alphabet
+%    identifier} called \cn{mathfrak} is provided. For example, the input
+% \begin{verbatim}
+% \[ \mathfrak{A} \neq \mathcal{A} \]
+%\end{verbatim}
+%    will produce
+%    \[ \mathfrak{A} \neq \mathcal{A} \]
+%
+%    Here is a complete table of the  beautiful letters drawn by Hermann
+%    Zapf:
+% \begin{displaymath}
+%   \newcommand{\E}[1]{\mathfrak{#1} &}
+%   \begin{array}{*{10}c}
+%     \E{A} \E{B} \E{C} \E{D} \E{E} \E{F} \E{G} \E{H} \E{I} \\
+%     \E{J} \E{K} \E{L} \E{M} \E{N} \E{O} \E{P} \E{Q} \E{R} \\
+%     \E{S} \E{T} \E{U} \E{V} \E{W} \E{X} \E{Y} \E{Z}
+%   \end{array}
+% \end{displaymath}
+%
+% \StopEventually{}
+%
+% \section{The Implementation}
+%
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must be December 1994 or later
+%    \end{macrocode}
+%
+%    If the \pkg{amsfonts} package is already loaded, it doesn't really
+%    make sense to load \pkg{eufrak} as well.
+%    \begin{macrocode}
+\@ifpackageloaded{amsfonts}{%
+  \PackageWarning{eufrak}{The eufrak package is redundant if the
+    amsfonts package is used}%
+  \def\EuFrak{\mathfrak}% for bulletproofing
+  \endinput
+}{}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProvidesPackage{eufrak}[2009/06/22 v3.00 Euler Fraktur fonts]
+%    \end{macrocode}
+%
+% \begin{macro}{\EuFrak}
+%    Now we define the \meta{math alphabet identifier} \cn{EuFrak}
+%    for both the normal and the bold math version
+%    \begin{macrocode}
+\DeclareMathAlphabet\EuFrak{U}{euf}{m}{n}
+\SetMathAlphabet\EuFrak{bold}{U}{euf}{b}{n}
+%    \end{macrocode}
+% \end{macro}
+%
+%    See the \pkg{amsfonts} package documentation for a discussion of
+%    the obsolescence of the \opt{psamfonts} option.
+%    \begin{macrocode}
+\DeclareOption{psamsfonts}{}
+%    \end{macrocode}
+%
+%    Here is a table describing the action of the \pkg{eucal},
+%    \pkg{euscript}, and \pkg{eufrak} packages.
+% \begin{center}
+% \begin{tabular}{lll}
+%    Package&  Option&    Commands provided\\
+%    \hline
+%    \pkg{eucal}&    none&      \cn{mathcal}\\
+%    \pkg{eucal}&    \opt{[mathcal]}& \cn{mathcal}\\
+%    \pkg{eucal}&    \opt{[mathscr]}& \cn{mathscr} (\cn{mathcal} unchanged)\\
+%    \pkg{euscript}& none&      \cn{EuScript} (obsolete)\\
+%    \pkg{euscript}& \opt{[mathcal]}& \cn{mathcal}\\
+%    \pkg{eufrak}&   none&      \parbox[t]{14pc}{\cn{mathfrak} (also
+%                               obsolete \cn{EuFrak} for compatibility)}
+% \end{tabular}
+% \end{center}
+%
+%    The preferred command name is \cn{mathfrak}, which for now just
+%    calls the old command name \cn{EuFrak}.
+%    \begin{macrocode}
+\newcommand{\mathfrak}{\EuFrak}
+%    \end{macrocode}
+%
+%    Process the package options.
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \changes{v2.1a}{93/12/12}{Update for LaTeX2e}
+% \changes{v2.1c}{1994/05/08}{Changed to new documentation standards.}
+% \changes{v2.1d}{1994/10/18}{Moved to AMS-LaTeX distribution (mjd)}
+% \changes{v2.1d}{1994/10/19}{Added psamsfonts option}
+% \changes{v2.1d}{1994/10/19}{Changed cmd name to mathfrak}
+% \changes{v2.1d}{1994/10/21}{Some documentation cleanup}
+% \changes{v2.2}{1995/01/06}{Moved to amsfonts distrib}
+% \changes{v2.2a}{1997/03/20}{%
+%    Removed dependency on mixed-case fd file names}
+%
+% \CheckSum{18}
+% \Finale

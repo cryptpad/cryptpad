@@ -1,0 +1,728 @@
+#! /usr/bin/env texlua
+--*- Lua -*-
+-- $Id: texconf.tlu 9900 2008-07-29 22:02:43Z preining $
+
+-- Copyright (C) 2008 Reinhard Kotucha, Norbert Preining.
+-- You may freely use, modify and/or distribute this file.
+
+-- texconf is a subset of Thomas Esser's texconfig shell script.
+
+if string.find(arg[0], '/') then -- UNIX path
+   filename=select(1, string.gsub(arg[0], '.*/', ''))
+elseif string.find(arg[0], '\\') then -- Windows path
+   filename=select(1, string.gsub(arg[0], '.*\\', ''))
+else -- no path
+   filename=arg[0]
+end
+
+basename=select(1, string.gsub(filename, '\.tlu$', ''))
+
+usageprogname = basename
+
+domktexlsr = false
+doformat = false
+sys=false
+noformatopt = false
+
+if string.find(basename, '-sys$') then
+   basename=select(1, string.gsub(basename, '-sys$', ''))
+   sys=true
+end
+
+-- this script does NOT appear in the patch, so we cannot use its basename
+-- for kpse.set_program_name
+-- thus we use simply mktexlsr, which always is in the path and which
+-- does not have any special settings in texmf.cnf
+-- kpse.set_program_name(filename, basename)
+kpse.set_program_name( "mktexlsr" )
+
+-- set the search path for lua libraries
+texmfmain = kpse.var_value('TEXMFMAIN')
+texmfdist = kpse.var_value('TEXMFDIST')
+package.path = texmfmain.."/scripts/texlive/lua/?.tlu"
+require("texlive.getopt")
+require("texlive.utils")
+
+-- do argument processing
+options = getopt ( { sys = 0, prog = 1, noformat = 0 } )
+if (options["sys"]) then
+  sys = true
+end
+if (options["prog"]) then
+  usageprogname = options["prog"]
+end
+if (options["noformat"]) then
+  noformatopt = true
+end
+ 
+if (sys) then
+  texmfconfig=kpse.var_value('TEXMFSYSCONFIG')
+  os.setenv('TEXMFCONFIG', texmfconfig)
+  texmfsysvar=kpse.var_value('TEXMFSYSVAR')
+  os.setenv('TEXMFVAR', texmfsysvar)
+else
+  texmfconfig=kpse.var_value('TEXMFCONFIG')
+  if string.match(texmfconfig, '^~') then
+    -- workaround for old texlua, new kpathsea which expands '~' not
+    -- integrated yet.
+    if os.type == 'windows' then
+      home = os.getenv('USERPROFILE')
+    else
+      home = os.getenv('HOME')
+    end
+    texmfconfig = string.gsub(texmfconfig, '^~', home)
+  end
+end
+
+
+pdftex_papersize={}
+pdftex_papersize['letter']={'8.5 true in', '11 true in'}
+pdftex_papersize['a4']={'210 true mm', '297 true mm'}
+
+xdvi_papersize={}
+xdvi_papersize['us']='8.5x11'
+xdvi_papersize['usr']='11x8.5'
+xdvi_papersize['legal']='8.5x14'
+xdvi_papersize['foolscap']='13.5x17.0'
+xdvi_papersize['a1']='59.4x84.0cm'
+xdvi_papersize['a2']='42.0x59.4cm'
+xdvi_papersize['a3']='29.7x42.0cm'
+xdvi_papersize['a4']='21.0x29.7cm'
+xdvi_papersize['a5']='14.85x21.0cm'
+xdvi_papersize['a6']='10.5x14.85cm'
+xdvi_papersize['a7']='7.42x10.5cm'
+xdvi_papersize['a1r']='84.0x59.4cm'
+xdvi_papersize['a2r']='59.4x42.0cm'
+xdvi_papersize['a3r']='42.0x29.7cm'
+xdvi_papersize['a4r']='29.7x21.0cm'
+xdvi_papersize['a5r']='21.0x14.85cm'
+xdvi_papersize['a6r']='14.85x10.5cm'
+xdvi_papersize['a7r']='10.5x7.42cm'
+xdvi_papersize['b1']='70.6x100.0cm'
+xdvi_papersize['b2']='50.0x70.6cm'
+xdvi_papersize['b3']='35.3x50.0cm'
+xdvi_papersize['b4']='25.0x35.3cm'
+xdvi_papersize['b5']='17.6x25.0cm'
+xdvi_papersize['b6']='13.5x17.6cm'
+xdvi_papersize['b7']='8.8x13.5cm'
+xdvi_papersize['b1r']='100.0x70.6cm'
+xdvi_papersize['b2r']='70.6x50.0cm'
+xdvi_papersize['b3r']='50.0x35.3cm'
+xdvi_papersize['b4r']='35.3x25.0cm'
+xdvi_papersize['b5r']='25.0x17.6cm'
+xdvi_papersize['b6r']='17.6x13.5cm'
+xdvi_papersize['b7r']='13.5x8.8cm'
+xdvi_papersize['c1']='64.8x91.6cm'
+xdvi_papersize['c2']='45.8x64.8cm'
+xdvi_papersize['c3']='32.4x45.8cm'
+xdvi_papersize['c4']='22.9x32.4cm'
+xdvi_papersize['c5']='16.2x22.9cm'
+xdvi_papersize['c6']='11.46x16.2cm'
+xdvi_papersize['c7']='8.1x11.46cm'
+xdvi_papersize['c1r']='91.6x64.8cm'
+xdvi_papersize['c2r']='64.8x45.8cm'
+xdvi_papersize['c3r']='45.8x32.4cm'
+xdvi_papersize['c4r']='32.4x22.9cm'
+xdvi_papersize['c5r']='22.9x16.2cm'
+xdvi_papersize['c6r']='16.2x11.46cm'
+xdvi_papersize['c7r']='11.46x8.1cm'
+
+dvipdfm_papersize={'letter', 'legal', 'ledger', 'tabloid', 'a4', 'a3'}
+
+function mkdirhier(path)
+  local dirs={}
+  local dir=path
+  while string.match(dir, '/') do
+    dirs[#dirs+1]=dir
+    dir=select(1, string.gsub(dir, '/[^/]*$', ''))
+  end
+  -- reverse the list
+  local dirlist={}
+  for i=1, #dirs do
+    dirlist[#dirlist+1]=dirs[#dirs-i+1]
+  end
+  for i=1, #dirlist do
+    if not lfs.isdir(dirlist[i]) then
+      lfs.mkdir(dirlist[i])
+    end
+  end
+end
+
+function set_dvips_papersize(papersize)
+  -- If the argument is 'list' then a list of available paper sizes is
+  -- returned to stdout.  It can be used by dialog(1) or */Tk
+  -- interfaces in order to build up the menu.  The topmost entry is
+  -- the one which is actually used by dvips.
+  local i, key, val
+  local partab={}
+  local par=1
+  local line
+  local lin=1
+  partab[par]={}
+  -- Read the file.  partab{} contains all paragraphs.
+  kpse.set_program_name('dvips')
+  local filename=kpse.find_file('config.ps', 'dvips config')
+  -- print ('< '..filename)
+  local infile=assert(io.open(filename, 'r'))
+  while true do
+    line=infile:read('*line')
+    if line == nil then break end
+    if string.find(line, '^\s*$') then
+      par=par+1
+      partab[par]={}
+      lin=1
+    else
+      partab[par][lin]=line
+      lin=lin+1
+    end
+  end
+  -- par_papersize{} is a list which associates papersizes with
+  -- paragraphs. Paregraphs containing no papersize information are
+  -- denoted by 'NO_SIZE_PAR'.
+  local par_papersize={}
+  for i=1, #partab do
+    par_papersize[i]='NO_SIZE_PAR'
+    for k=1, #partab[i] do
+      if string.find(partab[i][k], '^@%s') then
+        par_papersize[i]=string.match(partab[i][k], '^@%s+(%w+)%s')
+      end
+    end
+  end
+  infile:close()
+
+  local index=-1  --the papagraph wich contains the desired size.
+  if papersize=='--list' then
+    -- print a list of available sizes to stdout.
+    -- the topmost item is the one currently used by dvips.
+    for key, val in ipairs(par_papersize) do
+      if val ~= 'NO_SIZE_PAR' and val ~= 'unknown' then
+        io.stdout:write(val..'\n')
+      end
+    end
+  elseif papersize=='help' then
+    io.stdout:write('Usage: '..usageprogname..' dvips paper PAPER\n\n'..
+                    'Valid PAPER settings:\n ')
+    local buffer=''
+    for key, val in ipairs(par_papersize) do
+      if val ~= 'NO_SIZE_PAR' and val ~= 'unknown' then
+        if #buffer + #val < 77 then
+          buffer=buffer..' '..val
+        else 
+          io.stdout:write(buffer..'\n')
+          buffer='  '..val
+        end
+      end
+    end
+    io.stdout:write(buffer..'\n')
+  else --change paper size
+    for key, val in ipairs(par_papersize) do
+      if string.find(val, '^'..papersize..'$') then
+        index=key
+      end
+    end
+    if index == -1 then 
+      io.stderr:write('Error: Paper Size "'..papersize..
+                      '" undefined.  Aborting...\n')
+      os.exit(1)
+    end
+    -- print stuff which doesn't contain paper size information.
+    local outfile={}
+    for key, val in ipairs(par_papersize) do
+      if val == 'NO_SIZE_PAR' then
+        for i=1, #partab[key] do
+          outfile[#outfile+1]=partab[key][i]..'\n'
+        end
+        outfile[#outfile+1]='\n'
+      end   
+    end
+    -- print selected par
+    for i=1, #partab[index] do
+      outfile[#outfile+1]=partab[index][i]..'\n'
+    end
+    outfile[#outfile+1]='\n'    
+    -- print other pars to outfile table
+    for key, val in ipairs(par_papersize) do
+      if val ~= 'NO_SIZE_PAR' then
+        if key~=index then
+          for i=1, #partab[key] do
+            outfile[#outfile+1]=partab[key][i]..'\n'
+          end
+          outfile[#outfile+1]='\n'
+        end
+      end
+    end
+    -- write file
+    mkdirhier(texmfconfig..'/dvips/config')
+    local config=assert(io.open(texmfconfig..'/dvips/config/config.ps', 'w'))
+    for i=1, #outfile do
+      if not (string.match(outfile[i],'^%s*$') 
+            and string.match(outfile[i-1],'^%s*$')) then
+        config:write(outfile[i])
+      end
+    end    
+    config:close()
+    print ('> '..texmfconfig..'/dvips/config/config.ps')
+    domktexlsr = true
+  end
+end -- set_dvips_papersize
+
+
+function set_xdvi_papersize(papersize)
+  local current_setting
+  -- Read the file.
+  local filename
+  if os.type == 'windows' then
+    return
+  end
+
+  kpse.set_program_name('xdvi')
+  filename=kpse.find_file('XDvi', 'other text files')
+
+  -- print ('< '..filename)
+  local infile=assert(io.open(filename, 'r'))
+  local lines={}
+  while true do
+    line=infile:read('*line')
+    if line == nil then break end
+    lines[#lines+1]=line
+  end
+  infile:close()
+  
+  if papersize=='--list' then
+    current_setting='a4'
+    for n, line in ipairs(lines) do
+      if string.find(line, '^\*paper:') then
+        current_setting=string.match(line, '^\*paper:%s+(%S+)')
+        for ptype, psize in pairs(xdvi_papersize) do
+          if current_setting==psize then
+            current_setting=ptype
+          end
+        end
+      end
+    end
+    print (current_setting)
+    for key, val in pairs(xdvi_papersize) do
+      if key ~= current_setting then
+        print(key)
+      end
+    end
+  elseif papersize=='help' then
+    io.stdout:write('Usage: '..usageprogname..' xdvi paper PAPER\n\n'..
+                    'Valid PAPER settings:\n ')
+    local buffer=''
+    for ptype, psize in pairs(xdvi_papersize) do
+      if #buffer + #ptype < 77 then
+        buffer=buffer..' '..ptype
+      else 
+        io.stdout:write(buffer..'\n')
+        buffer='  '..ptype
+      end
+    end
+  io.stdout:write(buffer..'\n')
+  else --change paper size
+    mkdirhier(texmfconfig..'/xdvi')
+    local config=assert(io.open(texmfconfig..'/xdvi/XDvi', 'w'))
+    for n=1, #lines do
+      if string.find(lines[n], '^!*\*paper:') then
+        config:write('*paper: '..papersize..'\n')
+      else 
+        config:write(lines[n]..'\n')
+      end
+    end
+    config:close()
+    print ('> '..texmfconfig..'/xdvi/XDvi')
+    domktexlsr = true
+  end
+end
+
+
+function set_pdftex_papersize(papersize)
+  local current_setting
+  --Read the file.
+  kpse.set_program_name('pdftex')
+  local filename=kpse.find_file('pdftexconfig.tex', 'tex')
+  
+  -- print ('< '..filename)
+  local infile=assert(io.open(filename, 'r'))
+  local lines={}
+  while true do
+    line=infile:read('*line')
+    if line == nil then break end
+    if string.find(line, '^\\pdfpagewidth') then
+      pagewidth=string.match(line, '^\\pdfpagewidth%s*=?%s*(.+)%s*$')
+    end
+    if string.find(line, '^\\pdfpageheight') then
+      pageheight=string.match(line, '^\\pdfpageheight%s*=?%s*(.+)%s*$')
+    end
+    lines[#lines+1]=line
+  end
+  infile:close()
+  
+  current_setting='a4'
+  for ptype, sizes in pairs(pdftex_papersize) do
+    if pagewidth == pdftex_papersize[ptype][1] then
+      ptype_x=ptype
+    end
+    if pageheight == pdftex_papersize[ptype][2] then
+      ptype_y=ptype
+    end
+  end
+  if ptype_x == ptype_y then
+    current_setting=ptype_x
+  end
+  
+  if papersize=='--list' then
+    print(current_setting)
+    for ptype, sizes in pairs(pdftex_papersize) do
+      if ptype ~= current_setting then
+        print(ptype)
+      end
+    end
+  elseif papersize=='help' then
+    io.stdout:write('Usage: '..usageprogname..' pdftex paper PAPER\n\n'..
+                    'Valid PAPER settings:\n ')
+    local buffer=''
+    for ptype, sizes in pairs(pdftex_papersize) do
+      if #buffer + #ptype < 77 then
+        buffer=buffer..' '..ptype
+      else 
+        io.stdout:write(buffer..'\n')
+        buffer='  '..ptype
+      end
+    end
+    io.stdout:write(buffer..'\n')
+  else --change paper size
+    mkdirhier(texmfconfig..'/tex/generic/config')
+    local outfile=texmfconfig..'/tex/generic/config/pdftexconfig.tex'
+    local config=assert(io.open(outfile, 'w'))
+    for n=1, #lines do
+      line=lines[n]
+      if string.find(line, '^\\pdfpagewidth') then
+        config:write('\\pdfpagewidth='..pdftex_papersize[papersize][1]..'\n')
+      elseif string.find(line, '^\\pdfpageheight') then
+        config:write('\\pdfpageheight='..pdftex_papersize[papersize][2]..'\n')
+      else
+        config:write(line..'\n')
+      end
+    end
+    config:close()
+    print ('> '..outfile)
+    domktexlsr = true
+    doformat = true
+  end
+end
+
+
+function set_dvipdfm_papersize(papersize, program)
+  local current_setting
+  -- Read the file.
+  local filename
+  if program == 'dvipdfm' then
+    kpse.set_program_name('dvipdfm')
+    filename=kpse.find_file('config', 'other text files')
+  elseif program == 'dvipdfmx' then
+    kpse.set_program_name('dvipdfmx')
+    filename=kpse.find_file('dvipdfmx.cfg', 'other text files')
+  end
+  if not(filename) then
+    print ("Cannot find config file for "..program..", exiting!")
+    os.exit(1)
+  end
+  -- print ('< '..filename)
+  local infile=assert(io.open(filename, 'r'))
+  local lines={}
+  local current_setting='a4'
+  while true do
+    line=infile:read('*line')
+    if line == nil then break end
+    if string.find(line, '^p ') then
+      current_setting=string.match(line, '^p%s+(%S+)')
+    end
+    lines[#lines+1]=line
+  end
+  infile:close()
+  
+  if papersize=='--list' then
+    print(current_setting)
+    for i, ptype in ipairs(dvipdfm_papersize) do
+      if ptype ~= current_setting then
+        print (ptype)
+      end
+    end
+  elseif papersize=='help' then
+    io.stdout:write('Usage: '..usageprogname..' '..program..' paper PAPER\n\n'..
+                    'Valid PAPER settings:\n ')
+    local buffer=''
+    for i, ptype in pairs(dvipdfm_papersize) do
+      if #buffer + #ptype < 77 then
+        buffer=buffer..' '..ptype
+      else 
+        io.stdout:write(buffer..'\n')
+        buffer='  '..ptype
+      end
+    end
+    io.stdout:write(buffer..'\n')
+  else --change paper size
+    local outfile
+    mkdirhier(texmfconfig..'/dvipdfm/config')
+    if program == 'dvipdfm' then
+      outfile=texmfconfig..'/dvipdfm/config/config'
+      mkdirhier(texmfconfig..'/dvipdfm/config')
+    else
+      outfile=texmfconfig..'/dvipdfmx/dvipdfmx.cfg'
+      mkdirhier(texmfconfig..'/dvipdfmx')
+    end
+    print ('> '..outfile)
+    local config=assert(io.open(outfile, 'w'))
+    for n=1, #lines do
+      line=lines[n]
+      if string.find(line, '^p ') then
+        config:write('p '..papersize..'\n')
+      else
+        config:write(line..'\n')
+      end
+    end
+    config:close()
+    domktexlsr = true
+  end
+end
+
+
+function set_context_papersize(papersize)
+  local current_setting
+
+  -- we cannot guarantee that context is installed, so we check for the
+  -- file we would need for creating the configuration, and if that is
+  -- missing we just return (with a warning).
+  if not(lfs.isfile(texmfdist..'/tex/context/user/cont-sys.rme')) then
+    io.stderr:write('context not installed, skipping paper setting for it\n')
+    return
+  end
+
+  -- Read the file.
+  local filename
+
+  kpse.set_program_name('tex')
+  filename=kpse.find_file('cont-sys.tex', 'tex') 
+  if not(filename) then
+    filename=kpse.find_file('cont-sys.rme', 'other text files') 
+  end
+  if not(filename) then
+    print ("Cannot find config file for context, exiting!")
+    os.exit(1)
+  end
+  -- print ('< '..filename)
+
+  local infile=assert(io.open(filename, 'r'))
+  local lines={}
+  local current_setting='A4'
+  local papersize_regexp='^%s*\\setuppapersize%s*%[([^%[]*)%]'
+  while true do
+    line=infile:read('*line')
+    if line == nil then break end
+    if string.find(line, '^%s*\\setuppapersize') then
+      current_setting=string.match(line, papersize_regexp)
+    end
+    lines[#lines+1]=line
+  end
+  infile:close()
+
+  -- print ('current setting: '..current_setting)
+ 
+  if papersize=='--list' then
+    print(current_setting)
+    if (string.match (current_setting, '[aA]4')) then
+      print ('letter')
+    else 
+      print ('A4')
+    end 
+  elseif papersize=='help' then
+    io.stdout:write('Usage: '..usageprogname..' context paper PAPER\n\n'..
+                    'Valid PAPER settings:\n\nA4 letter\n')
+  else --change paper size
+    -- make sure we have uppercase A4 for paper size
+    if (string.match (papersize, 'a4')) then
+      papersize = 'A4'
+    end
+    local outfile
+    mkdirhier(texmfconfig..'/tex/context/user')
+    outfile=texmfconfig..'/tex/context/user/cont-sys.tex'
+    print ('> '..outfile)
+    local config=assert(io.open(outfile, 'w'))
+    for n=1, #lines do
+      line=lines[n]
+      if string.find(line, '\setuppapersize') then
+        config:write('\\setuppapersize['..papersize..']['..papersize..']\n')
+      else
+        config:write(line..'\n')
+      end
+    end
+    config:close()
+    domktexlsr = true
+  end
+end
+
+
+function set_papersize(papersize)
+  if papersize == '--list' then
+    set_pdftex_papersize('--list')
+  elseif papersize == 'help' then
+    io.stdout:write('Usage: '..usageprogname..' paper PAPER\n\n'..
+                    'Valid PAPER settings:\n  a4 letter\n')
+  end
+  if papersize ~= 'a4' and papersize ~= 'letter' then
+    io.stdout:write('Invalid paper size "'..papersize..'".'..
+                    '  Valid sizes: a4 letter\n')
+    os.exit(1)
+  else
+    set_dvips_papersize(papersize)
+    set_pdftex_papersize(papersize)
+    set_xdvi_papersize(papersize)
+    set_context_papersize(papersize)
+    set_dvipdfm_papersize(papersize, 'dvipdfm')
+    set_dvipdfm_papersize(papersize, 'dvipdfmx')
+  end
+end
+
+
+function usage_main()
+  local usage={
+    'help',
+    'xdvi paper PAPER      (xdvi paper size)',
+    'dvips paper PAPER     (dvips paper size)',
+    'pdftex paper PAPER    (pdftex paper size)',
+    'dvipdfm paper PAPER   (dvipdfm paper size)',
+    'dvipdfmx paper PAPER  (dvipdfmx paper size)',
+    'paper [a4|letter]     (paper size for all programs)',
+    'init [FORMAT] ...     (rebuild FORMATs, or all formats plus run updmap)',
+    'rehash                (rebuild ls-R files with mktexlsr)'
+  }
+  io.stdout:write('Usage:\n')
+  for i, msg in ipairs(usage) do 
+    io.stdout:write('      '..usageprogname..' '..msg..'\n')
+  end
+  os.exit(0)
+end
+
+
+function usage_paper(progname)
+  io.stdout:write('Usage: '..usageprogname..' '..progname..' paper PAPER\n')
+  io.stdout:write('       '..usageprogname..' '..progname..' help\n')
+  os.exit(0)
+end
+
+
+function set_prog_papersize(prog,size)
+  if (prog == 'dvips') then
+    set_dvips_papersize(size)
+  elseif (prog == 'xdvi') then
+    set_xdvi_papersize(size)
+  elseif (prog == 'pdftex') then
+    set_pdftex_papersize(size)
+  elseif (prog == 'dvipdfm') then
+    set_dvipdfm_papersize(size, "dvipdfm")
+  elseif (prog == 'dvipdfmx') then
+    set_dvipdfm_papersize(size, "dvipdfmx")
+  end
+end
+
+
+if arg[1] == 'help' then
+  usage_main()
+elseif arg[1] == 'paper' then
+  if arg[2] == 'help' or arg[2] == nil then
+    usage_main()
+  else
+    set_papersize(arg[2])
+  end
+elseif arg[1] == 'rehash' then
+  command = { "mktexlsr" }
+  command = fixwin(command)
+  os.exec(command)
+  -- does not return
+elseif arg[1] == 'init' then
+  if arg[2] == nil then
+    -- we have set TEXMFCONFIG and TEXMFVAR to the SYS variants above,
+    -- so we can run the normal fmtutil/updmap program
+    os.execute('fmtutil --all')
+    os.execute('updmap')
+  else
+    for i=2, #arg do
+      os.execute('fmtutil --byfmt "'..arg[i]..'"')
+    end
+  end
+elseif arg[1] == 'paper' then
+  set_papersize(arg[2])
+elseif arg[1] == 'dvips' then
+  if arg[2] == 'help' or arg[3]==nil then
+    usage_paper('dvips')
+  elseif arg[2]=='paper' then
+    set_dvips_papersize(arg[3])
+  end
+elseif arg[1] == 'xdvi' then
+  if arg[2] == 'help' or arg[3]==nil then
+    usage_paper('xdvi')
+  elseif arg[2]=='paper' then
+    set_xdvi_papersize(arg[3])
+  end
+elseif arg[1] == 'pdftex' then
+  if arg[2] == 'help' or arg[3]==nil then
+    usage_paper(pdftex)
+  elseif arg[2]=='paper' then
+    set_pdftex_papersize(arg[3])
+  end
+elseif arg[1] == 'dvipdfm' then
+  if arg[2] == 'help' or arg[3]==nil then
+    usage_paper('dvipdfm')
+  elseif arg[2]=='paper' then
+    set_dvipdfm_papersize(arg[3], 'dvipdfm')
+  end
+elseif arg[1] == 'dvipdfmx' then
+  if arg[2] == 'help' or arg[3]==nil then
+    usage_paper('dvipdfmx')
+  elseif arg[2]=='paper' then
+    set_dvipdfm_papersize(arg[3], 'dvipdfmx')
+  end
+elseif arg[1] == 'context' then
+  if arg[2] == 'help' or arg[3]==nil then
+    usage_paper('context')
+  elseif arg[2]=='paper' then
+    set_context_papersize(arg[3])
+  end
+else
+  usage_main()
+end
+
+
+if sys and domktexlsr then
+  command = { "mktexlsr", texmfconfig }
+  command = fixwin(command)
+  os.spawn(command)
+end
+
+if noformatopt then
+  doformat = false
+end
+
+if doformat then
+  -- we have to update the formats
+  -- I don't know how to select only those formats for which pdftexconfig.tex
+  -- is necessary, so we call fmtutil-sys --refresh
+  -- that will recreate a lot, sorry
+  --
+  -- on win32 texlua's os.spawn does not find fmtutil-sys.texlua as executable
+  -- even if I give it the full path. So we have to work around that
+  if sys then
+    command = 'fmtutil-sys --refresh'
+  else
+    command = 'fmtutil --refresh'
+  end
+  os.execute(command)
+end
+
+-- Local Variables:
+-- lua-indent-level: 2
+-- tab-width: 2
+-- indent-tabs-mode: nil
+-- End:
+-- vim:set tabstop=2 expandtab: #

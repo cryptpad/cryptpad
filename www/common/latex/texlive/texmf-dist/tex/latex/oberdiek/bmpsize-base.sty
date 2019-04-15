@@ -1,0 +1,1738 @@
+%%
+%% This is file `bmpsize-base.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bmpsize.dtx  (with options: `base')
+%% 
+%% This is a generated file.
+%% 
+%% Project: bmpsize
+%% Version: 2009/09/04 v1.6
+%% 
+%% Copyright (C) 2006-2009 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file bmpsize.dtx
+%% and the derived files
+%%    bmpsize.sty, bmpsize.pdf, bmpsize.ins, bmpsize.drv,
+%%    bmpsize-base.sty, bmpsize-test.tex, bmpsize-dvips.def,
+%%    bmpsize-dvipdfm.def, bmpsize-dvipdfmx.def.
+%% 
+\ProvidesPackage{bmpsize-base}%
+  [2009/09/04 v1.6 Basic part of bmpsize (HO)]%
+\RequirePackage{fp-basic}
+\RequirePackage{fp-snap}
+\long\def\@bmpsize@plain@loop#1\repeat{%
+  \def\iterate{%
+    #1\relax
+    \expandafter\iterate\fi
+  }%
+  \iterate
+  \let\iterate\relax
+}
+\RequirePackage{pdftexcmds}[2007/11/11]
+\newif\ifbmpsize@ok
+\let\@bmpsize@ok\bmpsize@oktrue
+
+\newif\if@bmpsize@bigendian
+\newif\if@bmpsize@absnum
+\newif\if@bmpsize@user@resolution
+\newif\if@bmpsize@fast
+\@bmpsize@fasttrue
+
+\def\@bmpsize@init{%
+  \let\@bmpsize@org@plain@loop\loop
+  \let\loop\@bmpsize@plain@loop
+  \bmpsize@okfalse
+  \@bmpsize@bigendiantrue
+  \@bmpsize@absnumfalse
+  \let\bmpsize@pixelwidth\relax
+  \let\bmpsize@pixelheight\relax
+  \let\bmpsize@pixelx\relax
+  \let\bmpsize@pixely\relax
+  \let\bmpsize@unit\relax
+  \let\bmpsize@pixelxdenom\relax
+  \let\bmpsize@pixelydenom\relax
+  \let\bmpsize@orientation\relax
+}
+
+\def\@bmpsize@stop#1\@nil{}
+
+\def\@bmpsize@loop#1{%
+  #1%
+  \@bmpsize@loop{#1}%
+}
+\def\@bmpsize@break#1\@bmpsize@loop#2{}
+
+\def\@bmpsize@size#1#2#3{%
+  \edef#3{\pdf@filesize{#1}}%
+  \ifx#3\@empty
+    \expandafter\@bmpsize@stop
+  \fi
+  \ifnum#3<#2\relax
+    \expandafter\@bmpsize@stop
+  \fi
+}
+
+\def\@bmpsize@read#1#2#3{%
+  \edef\@bmpsize@buf{\pdf@filedump{#3}{#2}{#1}}%
+  \edef\@bmpsize@temp{%
+    \noexpand\@bmpsize@check@byte{#2}\@bmpsize@buf{}{}\noexpand\\%
+  }%
+  \@bmpsize@temp
+}
+\def\@bmpsize@fillbuf#1{%
+  \ifx\@bmpsize@buf\@empty
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \edef\@bmpsize@buf{%
+      \pdf@filedump{\bmpsize@offset}{\bmpsize@fillbuflength}{#1}%
+    }%
+    \ifx\@bmpsize@buf\@empty
+      \expandafter\@bmpsize@stop
+    \fi
+    \edef\bmpsize@offset{\the\numexpr\bmpsize@offset+\bmpsize@fillbuflength}%
+  }%
+}
+\def\bmpsize@fillbuflength{10}
+
+\def\@bmpsize@append#1#2#3{%
+  \edef#1{#2#3}%
+}
+\def\@bmpsize@pushback#1{%
+  \edef\@bmpsize@buf{#1\@bmpsize@buf}%
+}
+
+\def\@bmpsize@iswhite#1{%
+  \ifnum\pdf@strcmp{#1}{09}=\z@
+  \else
+    \ifnum\pdf@strcmp{#1}{0A}=\z@
+    \else
+      \ifnum\pdf@strcmp{#1}{0D}=\z@
+      \else
+        \ifnum\pdf@strcmp{#1}{20}=\z@
+        \else
+          1%
+        \fi
+      \fi
+    \fi
+  \fi
+  \space
+}
+\def\@bmpsize@isdigit#1{%
+  \ifnum\pdf@strcmp{#1}{30}<\z@
+    1%
+  \else
+    \ifnum\pdf@strcmp{#1}{39}>\z@
+      1%
+    \fi
+  \fi
+  \space
+}
+
+\def\@bmpsize@check@byte#1#2#3{%
+  \ifnum#1<\@ne
+    \csname fi\endcsname
+    \@bmpsize@cleanup@end
+  \else
+    \csname fi\endcsname
+  \ifx!#2#3!%
+    \csname fi\endcsname
+    \@bmpsize@stop
+  \else
+    \csname fi\endcsname
+    \expandafter\@bmpsize@check@byte\expandafter{\the\numexpr#1-1}%
+}
+\def\@bmpsize@cleanup@end#1\\{}
+
+\def\@bmpsize@swap@maybe#1{%
+  \if@bmpsize@bigendian
+  \else
+    \edef#1{\expandafter\@bmpsize@@swap#1\@empty\@empty\@empty\@empty}%
+  \fi
+}
+\def\@bmpsize@@swap#1#2#3#4#5#6#7#8{%
+  #7#8#5#6#3#4#1#2%
+}
+
+\def\@bmpsize@skip@one{%
+  \edef\@bmpsize@buf{\expandafter\@gobbletwo\@bmpsize@buf}%
+}
+\def\@bmpsize@skip@two{%
+  \edef\@bmpsize@buf{\expandafter\@gobblefour\@bmpsize@buf}%
+}
+\def\@bmpsize@skip@four{%
+  \edef\@bmpsize@buf{%
+    \expandafter\expandafter\expandafter\@gobblefour\expandafter
+    \@gobblefour\@bmpsize@buf
+  }%
+}
+
+\def\@bmpsize@grab#1#2{%
+  \edef#1{\noexpand\@bmpsize@grab@byte#2=\@bmpsize@buf\noexpand\\}%
+  \edef#1{#1}%
+}
+\def\@bmpsize@grab@byte#1=#2#3{%
+  #2#3%
+  \ifnum#1>\@ne
+    \expandafter\@bmpsize@grab@byte\the\numexpr#1-1\expandafter=%
+  \else
+    \expandafter\@bmpsize@cleanup@end
+  \fi
+}
+
+\def\@bmpsize@abs@maybe#1{%
+  \let\@bmpsize@temp\relax
+  \if@bmpsize@absnum
+    \ifnum"\expandafter\@car#1\@nil>7 %
+      \edef#1{\expandafter\@bmpsize@abs@byte#1\relax}%
+      \ifnum\pdf@strcmp{#1}{7FFFFFFF}=\z@
+        \let\@bmpsize@temp\@bmpsize@stop
+      \else
+        \def\@bmpsize@temp{\edef#1{\the\numexpr#1+1}}%
+      \fi
+    \fi
+  \fi
+}
+\def\@bmpsize@abs@byte#1{%
+  \ifx#1\relax
+  \else
+    \ifcase"0#1 %
+      F\or E\or D\or C\or B\or A\or 9\or 8\or
+      7\or 6\or 5\or 4\or 3\or 2\or 1\or 0%
+    \fi
+    \expandafter\@bmpsize@abs@byte
+  \fi
+}
+
+\def\@bmpsize@num@one#1{%
+  \@bmpsize@grab#11%
+  \@bmpsize@abs@maybe#1%
+  \edef#1{\number"#1}%
+  \@bmpsize@temp
+  \@bmpsize@skip@one
+}
+\def\@bmpsize@num@two#1{%
+  \@bmpsize@grab#12%
+  \@bmpsize@swap@maybe#1%
+  \@bmpsize@abs@maybe#1%
+  \edef#1{\number"#1}%
+  \@bmpsize@temp
+  \@bmpsize@skip@two
+}
+\def\@bmpsize@num@four#1{%
+  \@bmpsize@grab#14%
+  \@bmpsize@swap@maybe#1%
+  \@bmpsize@abs@maybe#1%
+  \ifnum\pdf@strcmp{#1}{7FFFFFFF}>\z@
+    \expandafter\@bmpsize@stop
+  \fi
+  \edef#1{\number"#1}%
+  \@bmpsize@temp
+  \@bmpsize@skip@four
+}
+
+\def\@bmpsize@div#1#2#3{% #1 := #2/#3
+  \FPdiv#1{#2}{#3}%
+  \@bmpsize@beautify#1%
+}
+\def\@bmpsize@beautify#1{%
+  \FPifint#1%
+    \edef#1{\expandafter\@bmpsize@trunc#1.\@nil}%
+  \else
+    \edef#1{\expandafter\@bmpsize@cleanup@frac#1.\@nil}%
+  \fi
+}
+\def\@bmpsize@trunc#1.#2\@nil{#1}
+\def\@bmpsize@cleanup@frac#1.#2#3.#4\@nil{%
+  #1.#2%
+  \ifx\\#3\\%
+  \else
+    \@bmpsize@cleanup@fracdigits#3000000000\@nil
+  \fi
+}
+\def\@bmpsize@cleanup@fracdigits#1#2#3#4#5#6#7#8#9{%
+  \ifcase#9 %
+    \ifcase#8 %
+      \ifcase#7 %
+        \ifcase#6 %
+          \ifcase#5 %
+            \ifcase #4 %
+              \ifcase #3 %
+                \ifcase #2 %
+                  \ifcase #1 %
+                  \else
+                    #1%
+                  \fi
+                \else
+                  #1#2%
+                \fi
+              \else
+                #1#2#3%
+              \fi
+            \else
+              #1#2#3#4%
+            \fi
+          \else
+            #1#2#3#4#5%
+          \fi
+        \else
+          #1#2#3#4#5#6%
+        \fi
+      \else
+        #1#2#3#4#5#6#7%
+      \fi
+    \else
+      #1#2#3#4#5#6#7#8%
+    \fi
+  \else
+    #1#2#3#4#5#6#7#8#9%
+  \fi
+  \@bmpsize@trunc.%
+}
+
+\def\@bmpsize@end{%
+  \ifbmpsize@ok
+    \ifx\bmpsize@pixelwidth\relax
+      \bmpsize@okfalse
+    \fi
+    \ifx\bmpsize@pixelheight\relax
+      \bmpsize@okfalse
+    \fi
+  \fi
+  \ifbmpsize@ok
+    \ifnum\bmpsize@pixelwidth>\z@
+    \else
+      \bmpsize@okfalse
+    \fi
+    \ifnum\bmpsize@pixelheight>\z@
+    \else
+      \bmpsize@okfalse
+    \fi
+  \fi
+  \ifbmpsize@ok
+    \ifcase 0%
+      \ifx\bmpsize@pixelx\relax 1 \fi
+      \ifx\bmpsize@pixely\relax 1 \fi
+      \ifnum\bmpsize@pixelx>\z@\else 1 \fi
+      \ifnum\bmpsize@pixely>\z@\else 1 \fi
+      \ifx\bmpsize@pixelxdenom\relax
+         \ifx\bmpsize@pixelydenom\relax\else 1 \fi
+      \else
+        \ifnum\bmpsize@pixelxdenom>\z@\else 1 \fi
+      \fi
+      \ifx\bmpsize@pixelydenom\relax
+      \else
+        \ifnum\bmpsize@pixelydenom>\z@\else 1 \fi
+      \fi
+    \else
+      \let\bmpsize@pixelx\relax
+      \let\bmpsize@pixely\relax
+      \let\bmpsize@unit\relax
+      \let\bmpsize@pixelxdenom\relax
+      \let\bmpsize@pixelydenom\relax
+    \fi
+    \ifx\bmpsize@pixelxdenom\relax
+    \else
+      \@bmpsize@div\bmpsize@pixelx\bmpsize@pixelx\bmpsize@pixelxdenom
+      \@bmpsize@div\bmpsize@pixely\bmpsize@pixely\bmpsize@pixelydenom
+      \let\bmpsize@pixelxdenom\relax
+      \let\bmpsize@pixelydenom\relax
+    \fi
+    \ifcase 0\ifx\bmpsize@unit\relax 1\fi
+             \if@bmpsize@user@resolution 1\fi
+             \relax
+      \let\bmpsize@calc@unit\bmpsize@unit
+      \let\bmpsize@calc@pixelx\bmpsize@pixelx
+      \let\bmpsize@calc@pixely\bmpsize@pixely
+    \else
+      \let\bmpsize@calc@unit\bmpsize@unit@default
+      \let\bmpsize@calc@pixelx\bmpsize@pixelx@default
+      \let\bmpsize@calc@pixely\bmpsize@pixely@default
+      \ifx\bmpsize@calc@pixely\Gin@exclamation
+        \ifx\bmpsize@pixelx\relax
+          \let\bmpsize@calc@pixely\bmpsize@calc@pixelx
+        \else
+          \FPdiv\bmpsize@calc@pixely\bmpsize@calc@pixelx\bmpsize@pixelx
+          \FPmul\bmpsize@calc@pixely\bmpsize@calc@pixely\bmpsize@pixely
+        \fi
+      \else
+        \ifx\bmpsize@calc@pixelx\Gin@exclamation
+          \ifx\bmpsize@pixelx\relax
+            \let\bmpsize@calc@pixelx\bmpsize@calc@pixely
+          \else
+            \FPdiv\bmpsize@calc@pixelx\bmpsize@calc@pixely\bmpsize@pixely
+            \FPmul\bmpsize@calc@pixelx\bmpsize@calc@pixelx\bmpsize@pixelx
+          \fi
+        \fi
+      \fi
+    \fi
+    \FPdiv\bmpsize@width\bmpsize@pixelwidth\bmpsize@calc@pixelx
+    \FPdiv\bmpsize@height\bmpsize@pixelheight\bmpsize@calc@pixely
+    % calculation of width and height in bp for package graphics
+    % 1in = 72bp = 72.27pt, 72/72.27 = 8/8.03, 1pt = 65536sp
+    \if@bmpsize@fast
+      \edef\bmpsize@width{%
+        \strip@pt\dimexpr.99626\dimexpr
+        \bmpsize@width\dimexpr\bmpsize@calc@unit
+      }%
+      \edef\bmpsize@height{%
+        \strip@pt\dimexpr.99626\dimexpr
+        \bmpsize@height\dimexpr\bmpsize@calc@unit
+      }%
+    \else
+      \edef\@bmpsize@temp{\number\dimexpr\bmpsize@calc@unit}%
+      \ifnum\@bmpsize@temp>100000 %
+        \FPmul\@bmpsize@temp\@bmpsize@temp{0.00001}%
+        \def\@bmpsize@corr{100000}%
+      \else
+        \let\@bmpsize@corr\relax
+      \fi
+      \FPmul\bmpsize@width\bmpsize@width\@bmpsize@temp
+      \FPmul\bmpsize@height\bmpsize@height\@bmpsize@temp
+      \FPmul\bmpsize@width\bmpsize@width{8}%
+      \FPmul\bmpsize@height\bmpsize@height{8}%
+      \FPdiv\bmpsize@width\bmpsize@width{8.03}%
+      \FPdiv\bmpsize@height\bmpsize@height{8.03}%
+      \FPdiv\bmpsize@width\bmpsize@width{65536}%
+      \FPdiv\bmpsize@height\bmpsize@height{65536}%
+      \ifx\@bmpsize@corr\relax
+      \else
+        \FPmul\bmpsize@width\bmpsize@width\@bmpsize@corr
+        \FPmul\bmpsize@height\bmpsize@height\@bmpsize@corr
+      \fi
+      \FPround\bmpsize@width\bmpsize@width{5}%
+      \FPround\bmpsize@height\bmpsize@height{5}%
+      \@bmpsize@beautify\bmpsize@width
+      \@bmpsize@beautify\bmpsize@height
+    \fi
+  \fi
+  \let\loop\@bmpsize@org@plain@loop
+}
+\def\bmpsize@unit@default{72.27pt}% more accurate than 1in
+\def\bmpsize@pixelx@default{72}
+\let\bmpsize@pixely@default\Gin@exclamation
+
+\def\bmpsize@types{png,jpg,bmp,gif,tiff,pnm,pam,xpm,tga,pcx,msp,sgi}
+\def\bmpsize@read@png#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendiantrue
+  \@bmpsize@read{#1}{24}{0}%
+  \@bmpsize@grab\bmpsize@temp{8}%
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \ifnum\pdf@strcmp{\bmpsize@temp}{89504E470D0A1A0A}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@num@four\bmpsize@length
+  \@bmpsize@grab\bmpsize@temp{4}%
+  \@bmpsize@skip@four
+  \ifnum\pdf@strcmp{\bmpsize@temp}{49484452}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@num@four\bmpsize@pixelwidth
+  \@bmpsize@num@four\bmpsize@pixelheight
+  \@bmpsize@ok
+  \edef\bmpsize@offset{\the\numexpr20+\bmpsize@length}%
+  \@bmpsize@loop{%
+    \@bmpsize@read{#1}{8}{\bmpsize@offset}%
+    \@bmpsize@num@four\bmpsize@length
+    \@bmpsize@grab\bmpsize@temp{4}%
+    \@bmpsize@skip@four
+    \ifnum\pdf@strcmp{\bmpsize@temp}{49444154}=\z@
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@stop
+    }%
+    \ifnum\pdf@strcmp{\bmpsize@temp}{70485973}=\z@
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@read{#1}{9}{\numexpr\bmpsize@offset+8\relax}%
+      \@bmpsize@num@four\bmpsize@pixelx
+      \@bmpsize@num@four\bmpsize@pixely
+      \@bmpsize@grab\bmpsize@temp{1}%
+      \@bmpsize@skip@one
+      \ifnum\bmpsize@temp=1\relax
+        \expandafter\@firstofone
+      \else
+        \expandafter\@gobble
+      \fi
+      {%
+        \def\bmpsize@unit{100cm}%
+      }%
+      \@bmpsize@stop
+    }%
+    \edef\bmpsize@offset{\the\numexpr\bmpsize@offset+12+\bmpsize@length}%
+  }%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@jpg#1{%
+  \@bmpsize@init
+  \@bmpsize@read{#1}{3}{0}%
+  \@bmpsize@grab\bmpsize@temp{3}%
+  \@bmpsize@skip@two
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{FFD8FF}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \def\bmpsize@offset{2}%
+  \def\bmpsize@exifdensity{0}%
+  \@bmpsize@loop{%
+    \@bmpsize@read{#1}{4}{\bmpsize@offset}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifnum\pdf@strcmp{\bmpsize@temp}{FF}=\z@
+    \else
+      \expandafter\@bmpsize@stop
+    \fi
+    \@bmpsize@num@one\bmpsize@temp
+    \ifnum\bmpsize@temp=218\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@stop
+    }%
+    \ifnum\bmpsize@temp=224\relax
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \@bmpsize@num@two\bmpsize@length
+      \ifnum\bmpsize@exifdensity=0\relax
+        \expandafter\@firstofone
+      \else
+        \expandafter\@gobble
+      \fi
+      {%
+        \unless\ifnum\bmpsize@length<16\relax
+          \expandafter\@firstofone
+        \else
+          \expandafter\@gobble
+        \fi
+        {%
+          \@bmpsize@read{#1}{12}{\numexpr\bmpsize@offset+4\relax}%
+          \@bmpsize@grab\bmpsize@temp{5}%
+          \@bmpsize@skip@four
+          \@bmpsize@skip@one
+          \ifnum\pdf@strcmp{\bmpsize@temp}{4A46494600}=\z@
+            \expandafter\@firstofone
+          \else
+            \expandafter\@gobble
+          \fi
+          {%
+            \ifnum\bmpsize@length<16\relax
+              \expandafter\@bmpsize@stop
+            \fi
+            \@bmpsize@skip@two
+            \@bmpsize@num@one\bmpsize@temp
+            \ifnum\bmpsize@temp=1\relax
+              \expandafter\@firstoftwo
+            \else
+              \expandafter\@secondoftwo
+            \fi
+            {%
+              \def\bmpsize@unit{72.27pt}%
+            }{%
+              \ifnum\bmpsize@temp=2\relax
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \def\bmpsize@unit{1cm}%
+              }%
+            }%
+            \@bmpsize@num@two\bmpsize@pixelx
+            \@bmpsize@num@two\bmpsize@pixely
+          }%
+        }%
+      }%
+    }{%
+      \ifnum\bmpsize@temp=225\relax
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@num@two\bmpsize@length
+        \unless\ifnum\bmpsize@length<20\relax
+          \expandafter\@firstofone
+        \else
+          \expandafter\@gobble
+        \fi
+        {%
+          \@bmpsize@read{#1}{20}{\numexpr\bmpsize@offset+4\relax}%
+          \@bmpsize@grab\bmpsize@temp{6}%
+          \@bmpsize@skip@four
+          \@bmpsize@skip@two
+          \ifnum\pdf@strcmp{\bmpsize@temp}{457869660000}=\z@
+            \expandafter\@firstofone
+          \else
+            \expandafter\@gobble
+          \fi
+          {%
+            \edef\bmpsize@exifoffset{\the\numexpr\bmpsize@offset+10}%
+            \@bmpsize@grab\bmpsize@temp{2}%
+            \@bmpsize@skip@two
+            \ifnum\pdf@strcmp{\bmpsize@temp}{4949}=\z@
+              \expandafter\@firstoftwo
+            \else
+              \expandafter\@secondoftwo
+            \fi
+            {%
+              \@bmpsize@bigendianfalse
+            }{%
+              \ifnum\pdf@strcmp{\bmpsize@temp}{4D4D}=\z@
+              \else
+                \expandafter\@bmpsize@stop
+              \fi
+            }%
+            \@bmpsize@num@two\bmpsize@temp
+            \ifnum\bmpsize@temp=42\relax
+            \else
+              \expandafter\@bmpsize@stop
+            \fi
+            \@bmpsize@num@four\bmpsize@temp
+            \ifnum\bmpsize@temp>0\relax
+            \else
+              \expandafter\@bmpsize@stop
+            \fi
+            \edef\bmpsize@off{\the\numexpr\bmpsize@temp+\bmpsize@exifoffset}%
+            \@bmpsize@read{#1}{2}{\bmpsize@off}%
+            \@bmpsize@num@two\bmpsize@entries
+            \edef\bmpsize@off{\the\numexpr\bmpsize@off+2}%
+            \@bmpsize@loop{%
+              \ifnum\bmpsize@entries=0\relax
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \@bmpsize@break
+              }%
+              \edef\bmpsize@entries{\the\numexpr\bmpsize@entries-1}%
+              \@bmpsize@read{#1}{12}{\bmpsize@off}%
+              \edef\bmpsize@off{\the\numexpr\bmpsize@off+12}%
+              \@bmpsize@num@two\bmpsize@tag
+              \ifnum\bmpsize@tag=296\relax
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \@bmpsize@skip@four
+                \@bmpsize@skip@two
+                \@bmpsize@num@two\bmpsize@temp
+                \ifcase\bmpsize@temp\relax
+                \or
+                  \let\bmpsize@unit\relax
+                \or
+                  \def\bmpsize@unit{72.27pt}%
+                \or
+                  \def\bmpsize@unit{1cm}%
+                \else
+                  \let\bmpsize@unit\relax
+                \fi
+                \ifcase\bmpsize@temp\relax
+                \or
+                \or
+                  \def\bmpsize@exifdensity{1}%
+                \or
+                  \def\bmpsize@exifdensity{1}%
+                \else
+                  \let\bmpsize@exifdensity\bmpsize@exifdensity
+                \fi
+              }%
+              \ifnum\bmpsize@tag=274\relax
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \@bmpsize@skip@four
+                \@bmpsize@skip@two
+                \@bmpsize@num@two\bmpsize@temp
+                \unless\ifnum\bmpsize@temp<0\relax
+                  \expandafter\@firstofone
+                \else
+                  \expandafter\@gobble
+                \fi
+                {%
+                  \unless\ifnum\bmpsize@temp>8\relax
+                    \expandafter\@firstofone
+                  \else
+                    \expandafter\@gobble
+                  \fi
+                  {%
+                    \let\bmpsize@orientation\bmpsize@temp
+                  }%
+                }%
+              }%
+              \ifnum\bmpsize@tag=282\relax
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \@bmpsize@skip@four
+                \@bmpsize@skip@two
+                \@bmpsize@num@four\bmpsize@temp
+                \@bmpsize@read{#1}{8}{\numexpr\bmpsize@temp+\bmpsize@exifoffset\relax}%
+                \@bmpsize@num@four\bmpsize@pixelx
+                \@bmpsize@num@four\bmpsize@temp
+                \ifnum\bmpsize@temp=1\relax
+                  \expandafter\@gobble
+                \else
+                  \expandafter\@firstofone
+                \fi
+                {%
+                  \edef\bmpsize@pixelxdenom{\the\numexpr\bmpsize@temp}%
+                }%
+              }%
+              \ifnum\bmpsize@tag=283\relax
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \@bmpsize@skip@four
+                \@bmpsize@skip@two
+                \@bmpsize@num@four\bmpsize@temp
+                \@bmpsize@read{#1}{8}{\numexpr\bmpsize@temp+\bmpsize@exifoffset\relax}%
+                \@bmpsize@num@four\bmpsize@pixely
+                \@bmpsize@num@four\bmpsize@temp
+                \ifnum\bmpsize@temp=1\relax
+                  \expandafter\@gobble
+                \else
+                  \expandafter\@firstofone
+                \fi
+                {%
+                  \edef\bmpsize@pixelydenom{\the\numexpr\bmpsize@temp}%
+                }%
+              }%
+            }%
+            \@bmpsize@bigendiantrue
+          }%
+        }%
+      }{%
+        \edef\bmpsize@temp{\the\numexpr\bmpsize@temp-192}%
+        \ifcase\bmpsize@temp\relax
+        \or
+        \or
+        \or
+        \or
+          \def\bmpsize@temp{-1}%
+        \or
+        \or
+        \or
+        \or
+          \def\bmpsize@temp{-1}%
+        \or
+        \or
+        \or
+        \or
+          \def\bmpsize@temp{-1}%
+        \or
+        \or
+        \or
+        \else
+          \def\bmpsize@temp{-1}%
+        \fi
+        \ifnum\bmpsize@temp=-1\relax
+          \expandafter\@gobble
+        \else
+          \expandafter\@firstofone
+        \fi
+        {%
+          \@bmpsize@read{#1}{4}{\numexpr\bmpsize@offset+5\relax}%
+          \@bmpsize@num@two\bmpsize@pixelheight
+          \@bmpsize@num@two\bmpsize@pixelwidth
+          \ifnum\bmpsize@pixelheight=0\relax
+            \expandafter\@firstofone
+          \else
+            \expandafter\@gobble
+          \fi
+          {%
+            \let\bmpsize@pixelheight\relax
+            \@bmpsize@stop
+          }%
+          \@bmpsize@ok
+          \@bmpsize@stop
+        }%
+        \@bmpsize@num@two\bmpsize@length
+      }%
+    }%
+    \edef\bmpsize@offset{\the\numexpr\bmpsize@offset+\bmpsize@length+2}%
+  }%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@bmp#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendianfalse
+  \@bmpsize@read{#1}{26}{0}%
+  \@bmpsize@grab\bmpsize@temp{2}%
+  \@bmpsize@skip@two
+  \ifnum\pdf@strcmp{\bmpsize@temp}{424D}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@num@two\bmpsize@temp
+  \ifnum\bmpsize@temp=12\relax
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \@bmpsize@skip@two
+    \@bmpsize@num@two\bmpsize@pixelwidth
+    \@bmpsize@num@two\bmpsize@pixelheight
+    \@bmpsize@ok
+    \@bmpsize@stop
+  }%
+  \ifnum\bmpsize@temp=64\relax
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \@bmpsize@skip@two
+    \@bmpsize@num@two\bmpsize@pixelwidth
+    \@bmpsize@num@two\bmpsize@pixelheight
+    \@bmpsize@ok
+    \@bmpsize@stop
+  }%
+  \@bmpsize@skip@two
+  \@bmpsize@num@four\bmpsize@pixelwidth
+  \@bmpsize@absnumtrue
+  \@bmpsize@num@four\bmpsize@pixelheight
+  \@bmpsize@absnumfalse
+  \@bmpsize@ok
+  \@bmpsize@read{#1}{8}{38}%
+  \@bmpsize@num@four\bmpsize@pixelx
+  \@bmpsize@num@four\bmpsize@pixely
+  \def\bmpsize@unit{100cm}%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@gif#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendianfalse
+  \@bmpsize@read{#1}{13}{0}%
+  \@bmpsize@grab\bmpsize@temp{3}%
+  \@bmpsize@skip@two
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{474946}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@skip@two
+  \@bmpsize@skip@one
+  \@bmpsize@num@two\bmpsize@pixelwidth
+  \@bmpsize@num@two\bmpsize@pixelheight
+  \@bmpsize@skip@two
+  \@bmpsize@num@one\bmpsize@temp
+  \ifnum\bmpsize@temp=0\relax
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \edef\bmpsize@pixelx{\the\numexpr\bmpsize@temp+15}%
+    \def\bmpsize@pixely{64}%
+  }%
+  \@bmpsize@ok
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@tiff#1{%
+  \@bmpsize@init
+  \def\bmpsize@unit{72.27pt}%
+  \@bmpsize@read{#1}{8}{0}%
+  \@bmpsize@grab\bmpsize@temp{2}%
+  \@bmpsize@skip@two
+  \ifnum\pdf@strcmp{\bmpsize@temp}{4949}=\z@
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {%
+    \@bmpsize@bigendianfalse
+  }{%
+    \ifnum\pdf@strcmp{\bmpsize@temp}{4D4D}=\z@
+    \else
+      \expandafter\@bmpsize@stop
+    \fi
+    \@bmpsize@bigendiantrue
+  }%
+  \@bmpsize@num@two\bmpsize@temp
+  \ifnum\bmpsize@temp=42\relax
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@num@four\bmpsize@offset
+  \@bmpsize@read{#1}{2}{\bmpsize@offset}%
+  \edef\bmpsize@offset{\the\numexpr\bmpsize@offset+2}%
+  \@bmpsize@num@two\bmpsize@entries
+  \@bmpsize@ok
+  \@bmpsize@loop{%
+    \ifnum\bmpsize@entries=0\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@stop
+    }%
+    \edef\bmpsize@entries{\the\numexpr\bmpsize@entries-1}%
+    \@bmpsize@read{#1}{12}{\bmpsize@offset}%
+    \edef\bmpsize@offset{\the\numexpr\bmpsize@offset+12}%
+    \@bmpsize@num@two\bmpsize@tag
+    \ifnum\bmpsize@temp=296\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@skip@four
+      \@bmpsize@skip@two
+      \@bmpsize@num@two\bmpsize@temp
+      \ifcase\bmpsize@temp\relax
+      \or
+        \let\bmpsize@unit\relax
+      \or
+        \def\bmpsize@unit{72.27pt}%
+      \or
+        \def\bmpsize@unit{1cm}%
+      \else
+        \let\bmpsize@unit\relax
+      \fi
+    }%
+    \ifnum\bmpsize@tag=256\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@skip@four
+      \@bmpsize@skip@two
+      \@bmpsize@num@four\bmpsize@pixelwidth
+    }%
+    \ifnum\bmpsize@tag=257\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@skip@four
+      \@bmpsize@skip@two
+      \@bmpsize@num@four\bmpsize@pixelheight
+    }%
+    \ifnum\bmpsize@tag=282\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@skip@four
+      \@bmpsize@skip@two
+      \@bmpsize@num@four\bmpsize@temp
+      \@bmpsize@read{#1}{8}{\bmpsize@temp}%
+      \@bmpsize@num@four\bmpsize@pixelx
+      \@bmpsize@num@four\bmpsize@temp
+      \ifnum\bmpsize@temp=1\relax
+        \expandafter\@gobble
+      \else
+        \expandafter\@firstofone
+      \fi
+      {%
+        \edef\bmpsize@pixelxdenom{\the\numexpr\bmpsize@temp}%
+      }%
+    }%
+    \ifnum\bmpsize@tag=283\relax
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@skip@four
+      \@bmpsize@skip@two
+      \@bmpsize@num@four\bmpsize@temp
+      \@bmpsize@read{#1}{8}{\bmpsize@temp}%
+      \@bmpsize@num@four\bmpsize@pixely
+      \@bmpsize@num@four\bmpsize@temp
+      \ifnum\bmpsize@temp=1\relax
+        \expandafter\@gobble
+      \else
+        \expandafter\@firstofone
+      \fi
+      {%
+        \edef\bmpsize@pixelydenom{\the\numexpr\bmpsize@temp}%
+      }%
+    }%
+  }%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@pnm#1{%
+  \@bmpsize@init
+  \def\bmpsize@offset{0}%
+  \@bmpsize@read{#1}{3}{\bmpsize@offset}%
+  \def\bmpsize@offset{3}%
+  \@bmpsize@grab\bmpsize@temp{1}%
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{50}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@grab\bmpsize@temp{1}%
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{31}<\z@
+    \expandafter\@bmpsize@stop
+  \fi
+  \ifnum\pdf@strcmp{\bmpsize@temp}{36}>\z@
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@grab\bmpsize@temp{1}%
+  \@bmpsize@skip@one
+  \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \@bmpsize@stop
+  }%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+    {%
+      \ifnum\pdf@strcmp{\bmpsize@temp}{23}=\z@
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@loop{%
+          \@bmpsize@fillbuf{#1}%
+          \@bmpsize@grab\bmpsize@temp{1}%
+          \@bmpsize@skip@one
+          \ifnum\pdf@strcmp{\bmpsize@temp}{0A}=\z@
+            \expandafter\@firstoftwo
+          \else
+            \expandafter\@secondoftwo
+          \fi
+          {%
+            \@bmpsize@break
+          }{%
+            \ifnum\pdf@strcmp{\bmpsize@temp}{0D}=\z@
+              \expandafter\@firstofone
+            \else
+              \expandafter\@gobble
+            \fi
+            {%
+              \@bmpsize@break
+            }%
+          }%
+        }%
+      }{%
+        \@bmpsize@pushback\bmpsize@temp
+        \@bmpsize@break
+      }%
+    }%
+  }%
+  \def\bmpsize@tempnum{}%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+    }{%
+      \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@break
+      }{%
+        \@bmpsize@stop
+      }%
+    }%
+  }%
+  \edef\bmpsize@pixelwidth{\pdf@unescapehex{\bmpsize@tempnum}}%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+    {%
+      \@bmpsize@pushback\bmpsize@temp
+      \@bmpsize@break
+    }%
+  }%
+  \def\bmpsize@tempnum{}%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+    }{%
+      \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@break
+      }{%
+        \@bmpsize@stop
+      }%
+    }%
+  }%
+  \edef\bmpsize@pixelheight{\pdf@unescapehex{\bmpsize@tempnum}}%
+  \@bmpsize@ok
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@pam#1{%
+  \@bmpsize@init
+  \@bmpsize@read{#1}{3}{0}%
+  \def\bmpsize@offset{3}%
+  \let\bmpsize@off\bmpsize@offset
+  \@bmpsize@grab\bmpsize@temp{3}%
+  \@bmpsize@skip@two
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{50370A}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+    }{%
+      \ifnum\pdf@strcmp{\bmpsize@temp}{23}=\z@
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+        \@bmpsize@loop{%
+          \@bmpsize@fillbuf{#1}%
+          \@bmpsize@grab\bmpsize@temp{1}%
+          \@bmpsize@skip@one
+          \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+          \ifnum\pdf@strcmp{\bmpsize@temp}{0A}=\z@
+            \expandafter\@firstofone
+          \else
+            \expandafter\@gobble
+          \fi
+          {%
+            \@bmpsize@break
+          }%
+        }%
+      }{%
+        \@bmpsize@read{#1}{6}{\bmpsize@off}%
+        \edef\bmpsize@offset{\the\numexpr\bmpsize@off+6}%
+        \@bmpsize@grab\bmpsize@head{5}%
+        \@bmpsize@skip@four
+        \@bmpsize@skip@one
+        \ifnum\pdf@strcmp{\bmpsize@head}{5749445448}=\z@
+          \expandafter\@firstoftwo
+        \else
+          \expandafter\@secondoftwo
+        \fi
+        {%
+          \edef\bmpsize@off{\the\numexpr\bmpsize@off+5}%
+          \@bmpsize@loop{%
+            \@bmpsize@fillbuf{#1}%
+            \@bmpsize@grab\bmpsize@temp{1}%
+            \@bmpsize@skip@one
+            \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+              \expandafter\@firstoftwo
+            \else
+              \expandafter\@secondoftwo
+            \fi
+            {%
+              \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+            }{%
+              \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+                \expandafter\@firstoftwo
+              \else
+                \expandafter\@secondoftwo
+              \fi
+              {%
+                \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+                \@bmpsize@break
+              }{%
+                \@bmpsize@stop
+              }%
+            }%
+          }%
+          \let\bmpsize@tempnum\bmpsize@temp
+          \@bmpsize@loop{%
+            \@bmpsize@fillbuf{#1}%
+            \@bmpsize@grab\bmpsize@temp{1}%
+            \@bmpsize@skip@one
+            \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+              \expandafter\@firstoftwo
+            \else
+              \expandafter\@secondoftwo
+            \fi
+            {%
+              \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+              \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+            }{%
+              \@bmpsize@pushback\bmpsize@temp
+              \@bmpsize@break
+            }%
+          }%
+          \@bmpsize@loop{%
+            \@bmpsize@fillbuf{#1}%
+            \@bmpsize@grab\bmpsize@temp{1}%
+            \@bmpsize@skip@one
+            \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+            \ifnum\pdf@strcmp{\bmpsize@temp}{0A}=\z@
+              \expandafter\@firstofone
+            \else
+              \expandafter\@gobble
+            \fi
+            {%
+              \@bmpsize@break
+            }%
+          }%
+          \edef\bmpsize@pixelwidth{\pdf@unescapehex{\bmpsize@tempnum}}%
+        }{%
+          \@bmpsize@grab\bmpsize@temp{1}%
+          \@bmpsize@skip@one
+          \@bmpsize@append\bmpsize@head\bmpsize@head\bmpsize@temp
+          \ifnum\pdf@strcmp{\bmpsize@head}{454E44484452}=\z@
+            \expandafter\@firstoftwo
+          \else
+            \expandafter\@secondoftwo
+          \fi
+          {%
+            \@bmpsize@ok
+            \@bmpsize@stop
+          }{%
+            \ifnum\pdf@strcmp{\bmpsize@head}{484549474854}=\z@
+              \expandafter\@firstoftwo
+            \else
+              \expandafter\@secondoftwo
+            \fi
+            {%
+              \edef\bmpsize@off{\the\numexpr\bmpsize@off+6}%
+              \@bmpsize@loop{%
+                \@bmpsize@fillbuf{#1}%
+                \@bmpsize@grab\bmpsize@temp{1}%
+                \@bmpsize@skip@one
+                \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+                  \expandafter\@firstoftwo
+                \else
+                  \expandafter\@secondoftwo
+                \fi
+                {%
+                  \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+                }{%
+                  \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+                    \expandafter\@firstoftwo
+                  \else
+                    \expandafter\@secondoftwo
+                  \fi
+                  {%
+                    \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+                    \@bmpsize@break
+                  }{%
+                    \@bmpsize@stop
+                  }%
+                }%
+              }%
+              \let\bmpsize@tempnum\bmpsize@temp
+              \@bmpsize@loop{%
+                \@bmpsize@fillbuf{#1}%
+                \@bmpsize@grab\bmpsize@temp{1}%
+                \@bmpsize@skip@one
+                \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+                  \expandafter\@firstoftwo
+                \else
+                  \expandafter\@secondoftwo
+                \fi
+                {%
+                  \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+                  \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+                }{%
+                  \@bmpsize@pushback\bmpsize@temp
+                  \@bmpsize@break
+                }%
+              }%
+              \@bmpsize@loop{%
+                \@bmpsize@fillbuf{#1}%
+                \@bmpsize@grab\bmpsize@temp{1}%
+                \@bmpsize@skip@one
+                \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+                \ifnum\pdf@strcmp{\bmpsize@temp}{0A}=\z@
+                  \expandafter\@firstofone
+                \else
+                  \expandafter\@gobble
+                \fi
+                {%
+                  \@bmpsize@break
+                }%
+              }%
+              \edef\bmpsize@pixelheight{\pdf@unescapehex{\bmpsize@tempnum}}%
+            }{%
+              \@bmpsize@pushback\bmpsize@head
+              \@bmpsize@loop{%
+                \@bmpsize@fillbuf{#1}%
+                \@bmpsize@grab\bmpsize@temp{1}%
+                \@bmpsize@skip@one
+                \edef\bmpsize@off{\the\numexpr\bmpsize@off+1}%
+                \ifnum\pdf@strcmp{\bmpsize@temp}{0A}=\z@
+                  \expandafter\@firstofone
+                \else
+                  \expandafter\@gobble
+                \fi
+                {%
+                  \@bmpsize@break
+                }%
+              }%
+            }%
+          }%
+        }%
+      }%
+    }%
+  }%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@xpm#1{%
+  \@bmpsize@init
+  \@bmpsize@read{#1}{9}{0}%
+  \@bmpsize@grab\bmpsize@temp{9}%
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@skip@one
+  \def\bmpsize@offset{9}%
+  \ifnum\pdf@strcmp{\bmpsize@temp}{2F2A2058504D202A2F}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifnum\pdf@strcmp{\bmpsize@temp}{22}=\z@
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@break
+    }%
+    \ifnum\pdf@strcmp{\bmpsize@temp}{2F}=\z@
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+    {%
+      \@bmpsize@fillbuf{#1}%
+      \@bmpsize@grab\bmpsize@temp{1}%
+      \@bmpsize@skip@one
+      \ifnum\pdf@strcmp{\bmpsize@temp}{2A}=\z@
+        \expandafter\@firstofone
+      \else
+        \expandafter\@gobble
+      \fi
+      {%
+        \@bmpsize@loop{%
+          \@bmpsize@fillbuf{#1}%
+          \@bmpsize@grab\bmpsize@temp{1}%
+          \@bmpsize@skip@one
+          \ifnum\pdf@strcmp{\bmpsize@temp}{2A}=\z@
+            \expandafter\@firstofone
+          \else
+            \expandafter\@gobble
+          \fi
+          {%
+            \@bmpsize@loop{%
+              \@bmpsize@fillbuf{#1}%
+              \@bmpsize@grab\bmpsize@temp{1}%
+              \@bmpsize@skip@one
+              \ifnum\pdf@strcmp{\bmpsize@temp}{2F}=\z@
+                \expandafter\@firstofone
+              \else
+                \expandafter\@gobble
+              \fi
+              {%
+                \@bmpsize@break
+              }%
+              \ifnum\pdf@strcmp{\bmpsize@temp}{2A}=\z@
+                \expandafter\@gobble
+              \else
+                \expandafter\@firstofone
+              \fi
+              {%
+                \@bmpsize@break
+              }%
+            }%
+            \ifnum\pdf@strcmp{\bmpsize@temp}{2F}=\z@
+              \expandafter\@firstofone
+            \else
+              \expandafter\@gobble
+            \fi
+            {%
+              \@bmpsize@break
+            }%
+          }%
+        }%
+      }%
+    }%
+  }%
+  \def\bmpsize@tempnum{}%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+    {%
+      \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+        \@bmpsize@break
+      }{%
+        \@bmpsize@stop
+      }%
+    }%
+  }%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+    }{%
+      \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@break
+      }{%
+        \@bmpsize@stop
+      }%
+    }%
+  }%
+  \edef\bmpsize@pixelwidth{\pdf@unescapehex{\bmpsize@tempnum}}%
+  \def\bmpsize@tempnum{}%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+    {%
+      \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+        \@bmpsize@break
+      }{%
+        \@bmpsize@stop
+      }%
+    }%
+  }%
+  \@bmpsize@loop{%
+    \@bmpsize@fillbuf{#1}%
+    \@bmpsize@grab\bmpsize@temp{1}%
+    \@bmpsize@skip@one
+    \ifcase 0\@bmpsize@isdigit\bmpsize@temp
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+    {%
+      \@bmpsize@append\bmpsize@tempnum\bmpsize@tempnum\bmpsize@temp
+    }{%
+      \ifcase 0\@bmpsize@iswhite\bmpsize@temp
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \@bmpsize@break
+      }{%
+        \@bmpsize@stop
+      }%
+    }%
+  }%
+  \edef\bmpsize@pixelheight{\pdf@unescapehex{\bmpsize@tempnum}}%
+  \@bmpsize@ok
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@tga#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendianfalse
+  \@bmpsize@read{#1}{16}{1}%
+  \@bmpsize@grab\bmpsize@temp{1}%
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{00}=\z@
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \ifnum\pdf@strcmp{\bmpsize@temp}{01}=\z@
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+    {%
+      \@bmpsize@stop
+    }%
+  }%
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@skip@two
+  \@bmpsize@num@two\bmpsize@pixelwidth
+  \@bmpsize@num@two\bmpsize@pixelheight
+  \@bmpsize@ok
+  \@bmpsize@size{#1}{26}\bmpsize@temp  \@bmpsize@read{#1}{26}{\numexpr\bmpsize@temp-26\relax}%
+  \@bmpsize@num@four\bmpsize@offset
+  \@bmpsize@skip@four
+  \@bmpsize@grab\bmpsize@temp{18}%
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@skip@four
+  \@bmpsize@skip@two
+  \ifnum\pdf@strcmp{\bmpsize@temp}{54525545564953494F4E2D5846494C452E00}=\z@
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \@bmpsize@stop
+  }%
+  \ifnum\bmpsize@offset=0\relax
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \@bmpsize@stop
+  }%
+  \@bmpsize@read{#1}{4}{\numexpr\bmpsize@offset+474\relax}%
+  \@bmpsize@num@two\bmpsize@pixelx
+  \@bmpsize@num@two\bmpsize@pixely
+  \ifnum\bmpsize@pixely=0\relax
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \let\bmpsize@pixelx\relax
+    \let\bmpsize@pixely\relax
+  }%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@pcx#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendianfalse
+  \@bmpsize@read{#1}{16}{0}%
+  \@bmpsize@grab\bmpsize@temp{1}%
+  \@bmpsize@skip@one
+  \ifnum\pdf@strcmp{\bmpsize@temp}{0A}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@skip@one
+  \@bmpsize@num@one\bmpsize@temp
+  \ifnum\bmpsize@temp=1\relax
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@skip@one
+  \@bmpsize@num@two\bmpsize@pixelwidth
+  \@bmpsize@num@two\bmpsize@pixelheight
+  \@bmpsize@num@two\bmpsize@temp
+  \edef\bmpsize@pixelwidth{\the\numexpr\bmpsize@temp-\bmpsize@pixelwidth+1}%
+  \@bmpsize@num@two\bmpsize@temp
+  \edef\bmpsize@pixelheight{\the\numexpr\bmpsize@temp-\bmpsize@pixelheight+1}%
+  \ifnum\bmpsize@pixelwidth>0\relax
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \ifnum\bmpsize@pixelheight>0\relax
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@ok
+  \@bmpsize@num@two\bmpsize@pixelx
+  \@bmpsize@num@two\bmpsize@pixely
+  \def\bmpsize@unit{72.27pt}%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@msp#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendianfalse
+  \@bmpsize@read{#1}{16}{0}%
+  \@bmpsize@grab\bmpsize@temp{4}%
+  \@bmpsize@skip@four
+  \ifnum\pdf@strcmp{\bmpsize@temp}{44616E4D}=\z@
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \ifnum\pdf@strcmp{\bmpsize@temp}{4C696E53}=\z@
+    \else
+      \expandafter\@bmpsize@stop
+    \fi
+  }%
+  \@bmpsize@num@two\bmpsize@pixelwidth
+  \@bmpsize@num@two\bmpsize@pixelheight
+  \@bmpsize@ok
+  \@bmpsize@num@two\bmpsize@pixelx
+  \@bmpsize@num@two\bmpsize@pixely
+  \def\bmpsize@unit{72.27pt}%
+  \ifnum\bmpsize@pixelx=0\relax
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \@bmpsize@num@two\bmpsize@pixelx
+    \@bmpsize@num@two\bmpsize@pixely
+  }%
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\def\bmpsize@read@sgi#1{%
+  \@bmpsize@init
+  \@bmpsize@bigendiantrue
+  \@bmpsize@read{#1}{10}{0}%
+  \@bmpsize@grab\bmpsize@temp{2}%
+  \@bmpsize@skip@two
+  \ifnum\pdf@strcmp{\bmpsize@temp}{01DA}=\z@
+  \else
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@grab\bmpsize@temp{1}%
+  \@bmpsize@skip@one
+  \ifnum\bmpsize@temp<0\relax
+    \expandafter\@bmpsize@stop
+  \fi
+  \ifnum\bmpsize@temp>1\relax
+    \expandafter\@bmpsize@stop
+  \fi
+  \@bmpsize@skip@two
+  \@bmpsize@num@two\bmpsize@pixelwidth
+  \@bmpsize@num@two\bmpsize@pixelheight
+  \@bmpsize@ok
+  \@bmpsize@stop
+  \@nil
+  \@bmpsize@end
+}%
+\endinput
+%%
+%% End of file `bmpsize-base.sty'.

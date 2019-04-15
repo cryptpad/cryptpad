@@ -1,0 +1,337 @@
+% \iffalse meta-comment
+%
+% This is a module for hyphenation patterns loading for LuaTeX. It is under
+% the CC0 license (http://creativecommons.org/publicdomain/zero/1.0/).
+% 
+%<*ignore>
+\begingroup
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+
+\keepsilent
+\askforoverwritefalse
+
+\def\MetaPrefix{-- }
+
+\def\luapostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+
+\def\currentpostamble{\luapostamble}%
+
+\preamble
+
+This is a generated file (source: luatex-hyphen.dtx).
+
+Copyright (C) 2012-2013 by The LuaLaTeX development team.
+
+This work is under the CC0 license.
+
+\endpreamble
+
+\generate{%
+  \file{luatex-hyphen.lua}{\from{luatex-hyphen.dtx}{lua}}%
+}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{luatex-hyphen.drv}
+  [2013/05/16 v1.6 Hyphenation pattern loading for LuaTeX]
+\documentclass{ltxdoc}
+\usepackage[
+     pdftitle={The luatex-hyphen package},
+   pdfsubject={Hyphenation pattern loading for LuaTeX},
+    pdfauthor={Manuel Pégourié-Gonnard, Khaled Hosny & Elie Roux},
+  pdfkeywords={luatex, lualatex, unicode, hyphenation}
+]{hyperref}
+\usepackage{fontspec}
+\setmainfont[
+  Ligatures   = TeX,
+  BoldFont    = {Linux Libertine O Bold},
+  ItalicFont  = {Linux Libertine O Italic},
+  SlantedFont = {Linux Libertine O Italic},
+]{Linux Libertine O}
+\setmonofont[Ligatures=TeX,Scale=MatchLowercase]{Liberation Mono}
+\setsansfont[Ligatures=TeX,Scale=MatchLowercase]{Iwona Medium}
+\EnableCrossrefs
+\CodelineIndex
+\begin{document}
+  \DocInput{luatex-hyphen.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{luatex-hyphen.drv}
+%
+% \title{The \texttt{hyphen.cfg} file for Lua\TeX }
+% \date{2013/05/16 v1.6}
+% \author{Khaled Hosny, Élie Roux, and Manuel Pégourié-Gonnard\\
+% \texttt{khaledhosny@eglug.org} \\
+% \texttt{elie.roux@telecom-bretagne.eu} \\
+% \texttt{mpg@elzevir.fr}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package is mainly a Lua module, to be used by \textsf{Babel} and
+% \textsf{polyglossia} to adapt their hyphenation patterns loading mechanism to 
+% Lua\TeX's dynamic pattern loading capabilities. It makes use of a 
+% \texttt{language.dat.lua} file (whose format is described below) that should 
+% be present in the distribution, in addition to the regular 
+% \texttt{language.dat} file.
+%
+% \textsf{Babel} needed to be updated -- this used to be the goal of this 
+% package -- before version \textsf{3.9} (\TeX Live 2013)  and 
+% \textsf{polyglossia} handles Lua\TeX\ since version \textsf{1.3} (\TeX Live 
+% 2013).
+%
+% There is a version of \texttt{etex.src} modified for the same reasons using
+% similar code, which also makes use of the \texttt{luatex-hyphen.lua} and
+% \texttt{language.dat.lua} files described here.
+% \end{abstract}
+%
+% \section{Documentation}
+%
+% Hyphenation patterns should be loaded at runtime with Lua\TeX: if they appear
+% in the format, they will be rehashed when the format is loaded anyway, which
+% makes the format quite long to load (many seconds even on modern machines)
+% and provides for bad user experience. Hence, it is desirable to load as few
+% patterns as possible in the format, and load on-demand the needed patterns
+% at runtime.
+%
+% This package provides a modified version of hyphen.cfg adapted to Lua\TeX,
+% as well as a supporting Lua module. Since a lot of things, especially the
+% catcodes, are not as predictable at runtime than at format creation time, we
+% don't \verb+\input+ the usual pattern files, but rather load the patterns
+% using the Lua interface, using a special plain text version of the pattern
+% files if available.
+%
+% The existence and file name of such a version cannot be guessed, so we need
+% a specific database: the file \texttt{language.dat.lua}. This file should be
+% loadable by Lua and return a table whose keys are the canonical language
+% names as found in \texttt{language.dat}, and the values are Lua tables
+% consisting of:
+% \begin{enumerate}
+%   \item A fixed part with one mandatory field:
+%     \begin{quote}
+%       \verb+synonyms = { <string> alternative name, ...}+
+%     \end{quote}
+%     This field's value must be the same as in \texttt{language.dat}.
+%   \item A variable part consisting of either:
+%     \begin{itemize}
+%       \item For most languages:
+%         \begin{quote}
+%           \verb+patterns = <string> filenames for patterns+\\
+%           \verb+hyphenation = <string> filenames for exceptions+\\
+%         \end{quote}
+%         Each string contains a coma-separated list of file names (whitespace
+%         before or after the coma is not accepted).
+%         The files given by \verb+patterns+ (resp. \verb+hypenation+) must be
+%         plain text files encoded in UTF-8, with only patterns (resp.
+%         exceptions) and not even comments: their content will be used
+%         directly without being parsed by \TeX.  If one of these keys is
+%         missing or is the empty string, it is ignored and no patterns (resp.
+%         exceptions) are loaded for this language.
+%       \item Special cases are supported by a field \verb+special+. Currently,
+%         the following kind of values are recognized:
+%         \begin{description}
+%           \item[\texttt{'disabled:<reason>'}] allows to disable specific
+%             languages: when the user tries to load this language, an error
+%             will be issued, with the \verb+<reason>+.
+%           \item[\texttt{'language0'}] only \texttt{english} should use this
+%           type of special, to indicate it is normally dumped in the format
+%           as \verb+\language0+ (see below).
+%         \end{description}
+%         Special languages may have \texttt{*hyphenmin} information when it
+%         makes sense (mostly \verb+\language0+).
+%     \end{itemize}
+%   \item Optional fields may be added. For example:
+%     \begin{quote}
+%       \verb+loader = <string> name of the TeX loader+\\
+%       \verb+lefthyphenmin = <number> value for \lefthyphenmin+\\
+%       \verb+righthyphenmin = <number> value for \righthyphenmin+
+%     \end{quote}
+%     Those fields are present in \texttt{language.dat.lua} as generated by
+%     \texttt{tlmgr}, for example, but they \emph{are not} used by the present
+%     code in any way.
+% \end{enumerate}
+% Languages that are mentioned in \texttt{language.dat} but not in
+% \texttt{language.dat.lua} will be loaded in the format. So, if the
+% \texttt{language.dat.lua} file is missing or incomplete, languages will just
+% go back to the ``old'' behaviour, resulting in longer startup time, which
+% seems less bad than complete breakage.
+%
+% For backward compatibility, Knuth's original patterns for US English are
+% always loaded in the format, as \verb+\language0+.\footnote{It is assumed
+% to be the first entry in \texttt{language.dat}.}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*lua>
+%    \end{macrocode}
+%
+%    Start a Lua module, two functions for error and information reporting.
+%
+%    \begin{macrocode}
+luatexhyphen = luatexhyphen or {}
+local luatexhyphen = luatexhyphen
+local function wlog(msg, ...)
+    texio.write_nl('log', 'luatex-hyphen: '..msg:format(...))
+end
+local function err(msg, ...)
+    error('luatex-hyphen: '..msg:format(...), 2)
+end
+%    \end{macrocode}
+%
+%    Load the \texttt{language.dat.lua} file with the Lua version of the
+%    language database.
+%
+%    \begin{macrocode}
+local dbname = "language.dat.lua"
+local language_dat
+local dbfile = kpse.find_file(dbname, 'lua')
+if not dbfile then
+    err("file not found: "..dbname)
+else
+    wlog('using data file: %s', dbfile)
+    language_dat = dofile(dbfile)
+end
+%    \end{macrocode}
+%
+%    Look up a language in the database, and return the associated
+%    information, as well as the canonical name of the language.
+%
+%    \begin{macrocode}
+local function lookupname(name)
+    if language_dat[name] then
+        return language_dat[name], name
+    else
+        for canon, data in pairs(language_dat) do
+            for _,syn in ipairs(data.synonyms) do
+                if syn == name then
+                    return data, canon
+                end
+            end
+        end
+    end
+end
+luatexhyphen.lookupname = lookupname
+%    \end{macrocode}
+%
+%    Set hyphenation patterns and exceptions for a language given by its name
+%    (in the database) and number (value of \verb+\language+). Doesn't return
+%    anything, but will call \verb+error()+ if things go wrong.
+%
+%    \begin{macrocode}
+local function loadlanguage(lname, id)
+    if id == 0 then
+        return
+    end
+    local msg = "loading%s patterns and exceptions for: %s (\\language%d)"
+%    \end{macrocode}
+%
+%    Lookup the language in the database.
+%
+%    \begin{macrocode}
+    local ldata, cname = lookupname(lname)
+    if not ldata then
+        err("no entry in %s for this language: %s", dbname, lname)
+    end
+%    \end{macrocode}
+%
+%    Handle special languages.
+%
+%    \begin{macrocode}
+    if ldata.special then
+        if ldata.special:find('^disabled:') then
+            err("language disabled by %s: %s (%s)", dbname, cname,
+                ldata.special:gsub('^disabled:', ''))
+        elseif ldata.special == 'language0' then
+            err("\\language0 should be dumped in the format")
+        else
+            err("bad entry in %s for language %s")
+        end
+    end
+%    \end{macrocode}
+%
+%    The generic case: load hyphenation patterns and exceptions from files
+%    given by the language code.
+%
+%    \begin{macrocode}
+    wlog(msg, '', cname, id)
+    for _, item in ipairs{'patterns', 'hyphenation'} do
+        local filelist = ldata[item]
+        if filelist ~= nil and filelist ~= '' then
+          for _, file in ipairs(filelist:explode(',')) do
+            local file = kpse.find_file(file) or err("file not found: %s", file)
+            local fh = io.open(file, 'r')
+            local data = fh:read('*a') or err("file not readable: %s", f)
+            fh:close()
+            lang[item](lang.new(id), data)
+          end
+        else
+            if item == 'hyphenation' then item = item..' exceptions' end
+            wlog("info: no %s for this language", item)
+        end
+    end
+end
+luatexhyphen.loadlanguage = loadlanguage
+%    \end{macrocode}
+%
+%    Add \textsf{Babel}'s ``dialects'' as synonyms.
+%
+%    \begin{macrocode}
+local function adddialect(dialect, language)
+    if dialect ~= '0' then
+        dialect = dialect:gsub('l@', '')
+        language = language:gsub('l@', '')
+        data = lookupname(language)
+        if data then
+            data.synonyms[#data.synonyms+1] = dialect
+        end
+    end
+end
+luatexhyphen.adddialect = adddialect
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</lua>
+%    \end{macrocode}
+%
+% \Finale
+\endinput

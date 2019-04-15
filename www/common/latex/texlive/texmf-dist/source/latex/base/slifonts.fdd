@@ -1,0 +1,486 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+%
+%\iffalse        This is a META comment
+%
+% File `slifonts.fdd'.
+% Copyright (C) 1989-1998 LaTeX3 project, Frank Mittelbach and
+% Rainer Sch\"opf, all rights reserved.
+%
+%<lcmss&!ec>\ProvidesFile{ot1lcmss.fd}
+%<lcmtt&!ec>\ProvidesFile{ot1lcmtt.fd}
+%<lcmss&ec>\ProvidesFile{t1lcmss.fd}
+%<lcmtt&ec>\ProvidesFile{t1lcmtt.fd}
+%<lcmm,    >\ProvidesFile{omllcmm.fd}
+%<lcmsy,   >\ProvidesFile{omslcmsy.fd}
+%<lcmex,   >\ProvidesFile{omxlcmex.fd}
+%<llasy,   >\ProvidesFile{ullasy.fd}
+%<main,    >\ProvidesFile{sfonts.def}
+%<*driver, >
+            \ProvidesFile{sfonts.drv}
+%</driver, >
+        [1998/06/12 v2.2e Standard LaTeX slide font definitions]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\GetFileInfo{sfonts.drv}
+\providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+\title{The file \texttt{slifonts.fdd} for use with 
+      \LaTeXe.\thanks{This file has version
+           number \fileversion, dated \filedate.}}
+\date{\filedate}
+\author{Frank Mittelbach \and Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{slifonts.fdd}
+\end{document}
+%</driver>
+%
+%\fi
+%
+% \CheckSum{78}
+%
+%
+% \changes{v2.2c}{1997/05/26}{Removed spaces in and around arguments
+%    to \cs{DeclareFontShape} and \cs{EC@family}.}
+% \changes{v2.2a}{1997/01/15}
+%      {ec font support added}
+% \changes{v2.1m}{1996/11/20}
+%      {lowercase fd filenames /1044}
+% \changes{v2.1l}{1996/05/17}
+%      {Force \cs{hyphenchar} of OT1 fonts to 45, in case
+%       \cs{defaulthyphenchar} has changed.}
+% \changes{v2.1l}{1996/05/17}
+%      {Remove some spurious extra empty arguments to
+%       \cs{DeclareFontFamily} calls}
+% \changes{v2.1j}{1995/09/27}{Globally replaced scale factor 19.91 by
+%          19.907 in \cs{DeclareFontShape}, as this gives better
+%          rounded font sizes at 600dpi (suggested by Denis Roegel).}
+% \changes{v2.1i}{1995/09/19}{Corrected names of .fd files in argument
+%                           to \cs{ProvidesFile} commands.}
+% \changes{v2.1h}{1994/05/12}{Added \cs{ProvidesFile} commands.}
+% \changes{v2.1c}{1993/12/17}{Added size 8 to allow for \cs{LaTeX}
+%                           logo.}
+% \changes{v2.1a}{1993/12/13}{Removed \cs{CodelineIndex} from the
+%                           driver code.}
+% \changes{v2.1e}{1994/01/31}{Corrected extension in typeout.}
+% \changes{v2.1f}{1994/02/28}{Moved driver further up.}
+%
+%
+% \section{Introduction}
+%
+% This file contains the external font information for special
+% variants of the the Computer Modern fonts to be used for overhead
+% slides. They allow to produce slides in a similar fashion as it was
+% originally done by \SliTeX{}.
+%
+% With \LaTeXe{} it is now no longer necessary to maintain a special
+% format. Instead the standard format may be used and internally only
+% different font definition files come into play.
+%
+% Note, that that you therefore can easily produce slides in different
+% fonts just by calling an appropriate package (like |times|) in
+% your |\usepackage| command. This works, for example, with all
+% fonts that are defined to be scalable (eg PostScript fonts) since
+% they can be scaled to any size.
+%
+% However, minor styles like |pandora| won't work because the standard
+% |.fd| files shipped with \LaTeXe{} only contain small sizes. You can,
+% of course, produce additional sizes and change the |.fd| files
+% accordingly, but in this case it might be better to distinguish
+% |.fd| files for normal text and for slides by prefixing the family
+% name with an |l| (see below).
+%
+% All the standard family names for \SliTeX{} fonts start out with
+% with an |l| as the first character. This will distinguish them from
+% text font families with similar names.
+%
+% In addition, we introduce an additional convention for shapes: if
+% $x$ is a shape, then |I|$x$ represents the invisible form of the
+% shape. This is used by the color separation macros and the
+% |\invisible| command of the slides style file.
+%
+%
+% \StopEventually{}
+%
+% \section{A driver for this document}
+%
+% The next bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the 
+% \dst{} program.
+% \changes{v2.1b}{1993/12/14}{Corrected \cs{documentclass}.}
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+%\DisableCrossrefs  % Say \DisableCrossrefs if index is ready
+\RecordChanges      % Gather update information
+%\OnlyDescription   % comment out for implementation details
+%\OldMakeindex      % use if your MakeIndex is pre-v2.9
+\begin{document}
+   \DocInput{slifonts.fdd}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+% \section{The \dst{} modules}
+%
+% The following modules are used to direct \dst{} in
+% generating external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   main   & generate \texttt{sfonts.def} \\
+%   fd     & produce a font definition file \\
+%   ec     & Use the extended EC font set rather than cm \\[2pt]
+%   lccr    & Concrete Roman slide sizes \\
+%   lcmss   & Computer Modern Sans slide sizes \\
+%   lcmtt   & Computer Modern Typewriter slide sizes \\
+%   lcmm    & Computer Modern Math italic slide sizes \\
+%   lcmm    & Computer Modern Math symbols slide sizes \\
+%   lcmex   & Computer Modern Math extension symbols slide sizes \\
+%   llasy   & \LaTeX{} symbols slide sizes \\
+% \end{tabular}
+% \end{center}
+% A typical \dst{} command file would then have entries like:
+% \begin{verbatim}
+%\generateFile{OMSlcmsy.fd}{t}{\from{slifonts.fdd}{lcmsy,fd}}
+%\end{verbatim}
+%
+% \section{The font definition files}
+%
+%
+% \subsection{Concrete Roman}
+%
+% \changes{v2.2b}{1997/02/25}
+%      {typo fixed in cccsc10. latex/2395}
+%    \begin{macrocode}
+%<*lccr>
+\DeclareFontFamily{OT1}{lccr}{\hyphenchar\font45 }
+\DeclareFontShape{OT1}{lccr}{m}{sc}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>cccsc10%
+       }{}
+\DeclareFontShape{OT1}{lccr}{m}{sl}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>ccslc9%
+       }{}
+\DeclareFontShape{OT1}{lccr}{m}{n}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>ccr8%
+       }{}
+\DeclareFontShape{OT1}{lccr}{m}{In}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>iccr8%
+       }{}
+%</lccr>
+%    \end{macrocode}
+%    
+% \subsection{Computer Modern Sans}
+%
+%    \begin{macrocode}
+%<*lcmss>
+%<!ec> \DeclareFontFamily{OT1}{lcmss}{\hyphenchar\font45 }
+%<ec>  \DeclareFontFamily{T1}{lcmss}{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{m}{n}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{m}{n}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> lcmss8%
+%<ec>  eclq8%
+       }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{m}{In}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{m}{In}{%
+ <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> ilcmss8%
+%<ec>  ieclq8%
+       }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{m}{sl}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{m}{sl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> lcmssi8%
+%<ec>  ecli8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{m}{Isl}{%
+%<ec> \DeclareFontShape{T1}{lcmss}{m}{Isl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> ilcmssi8%
+%<ec>  iecli8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{m}{it}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{m}{it}{%
+      <->sub*lcmss/m/sl}{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{m}{Iit}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{m}{Iit}{%
+      <->sub*lcmss/m/Isl}{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{bx}{n}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{bx}{n}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> lcmssb8%
+%<ec>  eclb8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmss}{bx}{In}{%
+%<ec>  \DeclareFontShape{T1}{lcmss}{bx}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> ilcmssb8%
+%<ec>  ieclb8%
+      }{}
+%    \end{macrocode}
+%
+% EC fonts have a bold slanted font for the slides class.
+%    \begin{macrocode}
+%<*ec>
+\DeclareFontShape{T1}{lcmss}{bx}{sl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+   eclo8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{T1}{lcmss}{bx}{Isl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ieclo8%
+      }{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareFontShape{T1}{lcmss}{bx}{it}{%
+      <->sub*lcmss/bx/sl}{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{T1}{lcmss}{bx}{Iit}{%
+      <->sub*lcmss/bx/Isl}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</ec>
+%    \end{macrocode}
+%
+%    There are extra substitutions for the shape |ui| which are needed
+%    for |\pounds| to not come out as a \$ sign (mostly).
+% \changes{v2.1k}{1995/10/31}{Added substitutions to make \cs{pounds}
+% work right in slides.}
+%    \begin{macrocode}
+%<*!ec>
+\DeclareFontShape{OT1}{lcmss}{m}{ui}{%
+      <->sub*cmr/m/ui}{}
+\DeclareFontShape{OT1}{lcmss}{bx}{ui}{%
+      <->sub*cmr/m/ui}{}
+%</!ec>
+%</lcmss>
+%    \end{macrocode}
+%    
+% \subsection{Computer Modern Typewriter}
+%
+%    \begin{macrocode}
+%<*lcmtt>
+%<!ec> \DeclareFontFamily{OT1}{lcmtt}{\hyphenchar\font\m@ne}
+%<ec>  \DeclareFontFamily{T1}{lcmtt}{\hyphenchar\font\m@ne}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmtt}{m}{n}{%
+%<ec> \DeclareFontShape{T1}{lcmtt}{m}{n}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> cmtt8%
+%<ec>  ecltt8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmtt}{m}{In}{%
+%<ec>  \DeclareFontShape{T1}{lcmtt}{m}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> icmtt8%
+%<ec>  iecltt8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%<!ec> \DeclareFontShape{OT1}{lcmtt}{m}{it}{%
+%<ec>  \DeclareFontShape{T1}{lcmtt}{m}{it}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+%<!ec> cmitt10%
+%<ec>  ecit1000%
+      }{}
+%    \end{macrocode}
+%    There are extra substitutions for the shape |ui| which are needed
+%    for |\pounds| to not come out as a \$ sign (mostly).
+% \changes{v2.1k}{1995/10/31}{Added substitutions to make \cs{pounds}
+% work right in slides.}
+%    \begin{macrocode}
+%<*!ec>
+\DeclareFontShape{OT1}{lcmtt}{m}{ui}{%
+      <->sub*cmtt/m/it}{}
+\DeclareFontShape{OT1}{lcmtt}{bx}{ui}{%
+      <->sub*cmtt/m/it}{}
+%</!ec>
+%</lcmtt>
+%    \end{macrocode}
+%    
+% \subsection{Computer Modern Math}
+%
+%    \begin{macrocode}
+%<*lcmm>
+\DeclareFontFamily{OML}{lcmm}{\skewchar\font'177}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{OML}{lcmm}{m}{it}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>cmmi8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{OML}{lcmm}{m}{Iit}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>icmmi8%
+      }{}
+%</lcmm>
+%    \end{macrocode}
+%    
+% \subsection{Computer Modern Symbol}
+%
+%    \begin{macrocode}
+%<*lcmsy>
+\DeclareFontFamily{OMS}{lcmsy}{\skewchar\font'60}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{OMS}{lcmsy}{m}{n}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>cmsy8%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{OMS}{lcmsy}{m}{In}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>icmsy8%
+      }{}
+%</lcmsy>
+%    \end{macrocode}
+%    
+% \subsection{Computer Modern large symbols}
+%
+% \changes{v2.1g}{1994/03/01}{Removed extra pair of curly braces
+%              at end of \cs{DeclareFontFamily} command.}
+%    \begin{macrocode}
+%<*lcmex>
+\DeclareFontFamily{OMX}{lcmex}{}
+\DeclareFontShape{OMX}{lcmex}{m}{n}{%
+       <->sfixed*[17.28]cmex10%
+      }{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{OMX}{lcmex}{m}{In}{%
+       <->sfixed*[17.28]icmex10%
+      }{}
+%</lcmex>
+%    \end{macrocode}
+%    
+% \subsection{\LaTeX{} symbols}
+%
+% \changes{v2.2d}{1997/10/20}{Removed superfluous pair of braces at
+%    end of \cs{DeclareFontFamily} command.}
+%    \begin{macrocode}
+%<*llasy>
+\DeclareFontFamily{U}{llasy}{}
+\DeclareFontShape{U}{llasy}{m}{n}{%
+      <12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>lasy8%
+}{}
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+\DeclareFontShape{U}{llasy}{m}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>ilasy8%
+}{}
+%</llasy>
+%    \end{macrocode}
+%    
+% \section{Setting defaults}
+%
+%    The following statements go into the file \texttt{sfonts.def}
+%    which plays a r\^ole similar to \texttt{fontdef.ltx}. Thus, you may
+%    want to produce your own local variant of it if you intend to use
+%    different fonts in your slides.
+% \changes{v2.0b}{1993/03/09}{Added \cs{fd@prefix} for \cs{input}}
+% \changes{v2.2a}{1997/01/15}{lowercase fd file}
+%    \begin{macrocode}
+%<*main>
+\DeclareErrorFont{OT1}{lcmss}{m}{n}{19.907}
+\DeclareFontSubstitution{OT1}{lcmss}{m}{n}
+\input ot1lcmss.fd
+%</main>
+%    \end{macrocode}
+%
+%
+%    The next line goes into all files and in addition prevents \dst{}
+%    from adding any further code from the main source file (such as a
+%    character table.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \Finale
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

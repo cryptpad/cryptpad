@@ -1,0 +1,1046 @@
+% \iffalse meta-comment
+%
+% File: ifpdf.dtx
+% Version: 2011/01/30 v2.3
+% Info: Provides the ifpdf switch
+%
+% Copyright (C) 2001, 2005-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file ifpdf.dtx
+% and the derived files
+%    ifpdf.sty, ifpdf.pdf, ifpdf.ins, ifpdf.drv, ifpdf-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/ifpdf.dtx
+%    CTAN:macros/latex/contrib/oberdiek/ifpdf.pdf
+%
+% Unpacking:
+%    (a) If ifpdf.ins is present:
+%           tex ifpdf.ins
+%    (b) Without ifpdf.ins:
+%           tex ifpdf.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{ifpdf.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If ifpdf.drv is present:
+%           latex ifpdf.drv
+%    (b) Without ifpdf.drv:
+%           latex ifpdf.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex ifpdf.dtx
+%       makeindex -s gind.ist ifpdf.idx
+%       pdflatex ifpdf.dtx
+%       makeindex -s gind.ist ifpdf.idx
+%       pdflatex ifpdf.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/ifpdf.sty
+%    TDS:doc/latex/oberdiek/ifpdf.pdf
+%    TDS:doc/latex/oberdiek/test/ifpdf-test1.tex
+%    TDS:source/latex/oberdiek/ifpdf.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: ifpdf
+Version: 2011/01/30 v2.3
+
+Copyright (C) 2001, 2005-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file ifpdf.dtx
+and the derived files
+   ifpdf.sty, ifpdf.pdf, ifpdf.ins, ifpdf.drv, ifpdf-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{ifpdf.ins}{\from{ifpdf.dtx}{install}}%
+  \file{ifpdf.drv}{\from{ifpdf.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{ifpdf.sty}{\from{ifpdf.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{ifpdf-test1.tex}{\from{ifpdf.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{ifpdf.xml}{\from{ifpdf.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     ifpdf.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `ifpdf.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{ifpdf.drv}%
+  [2011/01/30 v2.3 Provides the ifpdf switch (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{ifpdf.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{600}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{ifpdf.drv}
+%
+% \title{The \xpackage{ifpdf} package}
+% \date{2011/01/30 v2.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package looks for \pdfTeX\ in pdf mode and
+% implements and sets the switch \cs{ifpdf}.
+% The detection is based on \cs{pdfoutput} and
+% the package will not change this value.
+% It works with plain or \LaTeX\ formats.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \hypersetup{bookmarksopenlevel=2}
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% It is commonly known that H\`an Th\^e Th\`anh's \pdfTeX\ generates
+% PDF output directly and many people uses \pdfTeX\ for this purpose.
+% However the DVI output was never thrown away. In contrary, he
+% new features for typesetting that works in both PDF and DVI mode.
+%
+% In the meantime many \TeX\ distributions replace the traditional
+% \TeX\ binary with \pdfTeX. Then, for example, called as |latex|
+% \pdfTeX\ works in DVI mode with the \LaTeX\ format preloaded,
+% called as |pdflatex| \pdfTeX\ starts in PDF mode.
+%
+% Often packages or users want to know, whether the current document
+% is typset by \pdfTeX\ in PDF mode, because the different modes
+% have different capabilities (color setting, graphics inclusion,
+% \dots). For this purpose \pdfTeX's
+% \cs{pdfoutput} can be asked.
+%
+% As regulary reader of \TeX\ newsgroups and mailing lists I could
+% observe many problems with this task. Common errors are:
+% \begin{itemize}
+% \item
+%   \pdfTeX\ has \emph{two} modes. Using \pdfTeX\ does not mean
+%   that the user always want to have PDF mode. For example, the
+%   PostScript support is better in DVI mode in conjunction with a
+%   PostScript aware DVI driver (e.g. dvips). Also the additional
+%   typesetting features are mode independent and also available
+%   in DVI mode.
+% \item
+%   \LaTeX's \cs{@ifundefined} inherited the side effect from
+%   \cs{csname}. Unknown commands are defined with the meaning
+%   of \cs{relax}. If it is checked, whether \cs{pdfoutput} is
+%   defined, then this should not be forgotten.
+% \item
+%   Having \cs{pdfoutput} does not automatically mean PDF mode.
+%   Also the value of \cs{pdfoutput} must be asked.
+% \item
+%   \cs{pdfoutput} must not be destroyed in some way. Later
+%   code and packages are fooled then and will perhaps make
+%   wrong decisions. For example they may drop support for
+%   PDF mode, because they do not know that \pdfTeX\ is
+%   running at all.
+% \end{itemize}
+%
+% Robin Fairbairns provides an entry for this topic in his
+% excellent FAQ (\url{http://www.tex.ac.uk/faq}):
+% \href{http://www.tex.ac.uk/cgi-bin/texfaq2html?label=ifpdf}^^A
+% {Am I using PDFTeX?}
+%
+% \subsection{Usage}
+%
+% The package \xpackage{ifpdf} can be used with both \plainTeX\
+% and \LaTeX:
+% \begin{description}
+% \item[\plainTeX:] |\input ifpdf.sty|
+% \item[\LaTeXe:]   |\usepackage{ifpdf}|
+% \end{description}
+%
+% \DescribeMacro{\ifpdf}
+% The package provides the switch \cs{ifpdf}:
+% \begin{quote}
+%   |\ifpdf|\\
+%   \hspace*{1.5em}\dots\ do things, if \pdfTeX\ is running in pdf mode \dots\\
+%   |\else|\\
+%   \hspace*{1.5em}\dots\ other \TeX\ or \pdfTeX\ in dvi mode \dots\\
+%   |\fi|
+% \end{quote}
+% Users of the package \xpackage{ifthen} can use the switch as boolean:
+% \begin{quote}
+%   |\boolean{pdf}|
+% \end{quote}
+% The package can also be used to set global
+% documentclass options:
+% \begin{quote}
+%   |\RequirePackage{ifpdf}|\\
+%   |\ifpdf|\\
+%   \hspace*{1.5em}|\documentclass[pdftex,|\dots|]{|\dots|}|\\
+%   |\else|\\
+%   \hspace*{1.5em}|\documentclass[|\dots|]{|\dots|}|\\
+%   |\fi|
+% \end{quote}
+%
+% \subsection{Specification}
+%
+% The package have the following properties:
+% \begin{itemize}
+% \item It asks the setting of \cs{pdfoutput} for detecting
+%   \pdfTeX\ in PDF mode.
+% \item It never changes \cs{pdfoutput}.
+% \item If \cs{pdfoutput} is undefined or has the meaning \cs{relax},
+%   but the engine provides the primitive \cs{pdfoutput},
+%   then \cs{pdfoutput} is enabled or restored if possible
+%   (only \LuaTeX, version 0.36.0 or higher).
+% \item It can be used with many formats including
+%   \plainTeX\ and \LaTeX.
+% \end{itemize}
+% The mode detection implements the following algorithm:
+% \begin{quote}
+% \def\={${:}{=}$}
+% \def\>{\null\qquad\ignorespaces}
+% \def\comment#1{^^A
+%   \textrm{\itshape\% #1}^^A
+% }
+% \sffamily
+% if undefined(\cs{pdfoutput})\\
+% \> \cs{ifpdf} \= \cs{iffalse} \comment{\pdfTeX is not running}\\
+% else\\
+% \> if \cs{pdfoutput} $\leq$ 0\\
+% \>\> \cs{ifpdf} \= \cs{iffalse} \comment{\pdfTeX\ in DVI mode}\\
+% \> else\\
+% \>\> \cs{ifpdf} \= \cs{iftrue} \comment{\pdfTeX\ in PDF mode}\\
+% \> fi\\
+% fi
+% \end{quote}
+% The function \textsf{undefined} checks both cases, undefined command
+% and \cs{relax}.
+%
+% \hypersetup{bookmarksopenlevel=1}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@ifpdf.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{ifpdf}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@ifpdf.sty\endcsname
+\ProvidesPackage{ifpdf}%
+  [2011/01/30 v2.3 Provides the ifpdf switch (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ifpdf@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ifpdf@AtEnd{%
+    \ifpdf@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifpdf@AtEnd{\ifpdf@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Check for previously defined \cs{ifpdf}}
+%
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname ifpdf\endcsname\relax
+  \else
+    \edef\i/{\expandafter\string\csname ifpdf\endcsname}%
+    \expandafter\ifx\csname PackageError\endcsname\relax
+      \def\x#1#2{%
+        \edef\z{#2}%
+        \expandafter\errhelp\expandafter{\z}%
+        \errmessage{Package ifpdf Error: #1}%
+      }%
+      \def\y{^^J}%
+      \newlinechar=10 %
+    \else
+      \def\x#1#2{%
+        \PackageError{ifpdf}{#1}{#2}%
+      }%
+      \def\y{\MessageBreak}%
+    \fi
+    \x{Name clash, \i/ is already defined}{%
+      Incompatible versions of \i/ can cause problems,\y
+      therefore package loading is aborted.%
+    }%
+    \endgroup
+    \expandafter\ifpdf@AtEnd
+  \fi%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{\cs{pdfoutput} and \LuaTeX}
+%
+%    It might happen, that \LuaTeX\ is running, but \cs{pdfoutput}
+%    does not exist. In version 0.40 only \cs{directlua}
+%    is available at startup time. The enabling Lua function was
+%    already added in version 0.36. Thus we can ignore older versions,
+%    here \cs{pdfoutput} is available at startup time.
+%
+%    \begin{macrocode}
+\begingroup
+  \def\skip#1\relax\begingroup{}%
+  \expandafter\ifx\csname pdfoutput\endcsname\relax
+  \else
+    \expandafter\skip
+  \fi
+  \expandafter\ifx\csname directlua\endcsname\relax
+    \expandafter\skip
+  \fi
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ifluatex}[2009/04/10]%
+\else
+  \RequirePackage{ifluatex}[2009/04/10]%
+\fi
+\ifluatex
+  \ifnum\luatexversion<36 %
+%    \end{macrocode}
+%    Unhappily \LuaTeX's \cs{primitive} (derived from
+%    pdfTeX's \cs{pdfprimitive}) cannot be used:
+%    \begin{quote}
+%    |\protected\gdef\pdfoutput{\primitive\pdfoutput}|
+%    \end{quote}
+%    Setting a value works, but getting fails,
+%    because \TeX\ does no longer see it as number. It
+%    is unexpandable and breaks numerical contexts.
+%    This was fixed in \hologo{pdfTeX} 1.40.10
+%    (bugfix \#4289: ``|\primitive\pdfoutput| cannot be queried'').
+%    \begin{macrocode}
+  \else
+    \begingroup
+      \directlua{tex.enableprimitives('ifpdf', {'pdfoutput'})}%
+      \global\let\pdfoutput\ifpdfpdfoutput
+    \endgroup
+  \fi
+\fi
+\relax\begingroup\endgroup
+%    \end{macrocode}
+%
+% \subsection{\cs{ifpdf}}
+%
+%    \begin{macro}{\ifpdf}
+%    Create and set the switch. \cs{newif} initializes the
+%    switch with \cs{iffalse}. \cs{newif} is \cs{outer}
+%    in \plainTeX.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newif\endcsname\relax
+  \edef\pdffalse{%
+    \let
+    \expandafter\noexpand\csname ifpdf\endcsname
+    \expandafter\noexpand\csname iffalse\endcsname
+  }%
+  \edef\pdftrue{%
+    \let
+    \expandafter\noexpand\csname ifpdf\endcsname
+    \expandafter\noexpand\csname iftrue\endcsname
+  }%
+  \pdffalse
+\else
+  \csname newif\expandafter\endcsname\csname ifpdf\endcsname
+\fi
+%    \end{macrocode}
+%    Test \cs{pdfoutput}. Is it  defined and different from
+%    \cs{relax}? Someone could have used \LaTeX\ internal
+%    \cs{@ifundefined}, or something else involving.
+%    Notice, \cs{csname} is executed inside a group for the test
+%    to cancel the side effect of \cs{csname}.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfoutput\endcsname\relax
+\else
+  \ifnum\pdfoutput<1 %
+%    \end{macrocode}
+%    \cs{pdfoutput}|=0| or negative, so not generating pdf.
+%    \begin{macrocode}
+  \else
+    \pdftrue
+  \fi
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Test for fool attempts}
+%
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname pdfoutput\endcsname\relax
+  \else
+    \escapechar=92 %
+    \edef\m{\meaning\pdfoutput}%
+    \edef\p{\string\pdfoutput}%
+    \ifx\m\p
+    \else
+      \expandafter\ifx\csname PackageWarningNoLine\endcsname\relax
+        \def\PackageWarningNoLine#1#2{%
+          \immediate\write16{%
+            Package `#1' Warning: #2.%
+          }%
+        }%
+      \fi
+      \PackageWarningNoLine{ifpdf}{%
+        Someone has redefined \string\pdfoutput%
+      }%
+    \fi
+  \fi
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Protocol entry}
+%
+%     Log comment:
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname PackageInfo\endcsname\relax
+    \def\x#1#2{%
+      \immediate\write-1{Package #1 Info: #2.}%
+    }%
+  \else
+    \let\x\PackageInfo
+    \expandafter\let\csname on@line\endcsname\empty
+  \fi
+  \x{ifpdf}{pdfTeX in PDF mode is \ifpdf\else not \fi detected}%
+\endgroup
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifpdf@AtEnd%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input ifpdf.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/ifpdf.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/ifpdf.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex ifpdf.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   ifpdf.sty & tex/generic/oberdiek/ifpdf.sty\\
+%   ifpdf.pdf & doc/latex/oberdiek/ifpdf.pdf\\
+%   test/ifpdf-test1.tex & doc/latex/oberdiek/test/ifpdf-test1.tex\\
+%   ifpdf.dtx & source/latex/oberdiek/ifpdf.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk ifpdf.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{ifpdf.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex ifpdf.dtx
+%makeindex -s gind.ist ifpdf.idx
+%pdflatex ifpdf.dtx
+%makeindex -s gind.ist ifpdf.idx
+%pdflatex ifpdf.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{ifpdf.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ifpdf'>
+  <name>ifpdf</name>
+  <caption>Provides the \ifpdf conditional.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2005-2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.3'/>
+  <description>
+      This package looks for pdfTeX in pdf mode and implements and
+      sets the switch <tt>\ifpdf</tt>. The detection is based on the
+      value of <tt>\pdfoutput</tt> (which the package will not
+      change).  The package works with plain or LaTeX formats.  To use
+      it with LaTeX simply <tt>\usepackage{ifpdf}</tt>. Then use
+      <tt>\ifpdf ... \else ... \fi</tt>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ifpdf.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ifpdf.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2001/06/14 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2001/07/14 v1.1}
+%   \item
+%     Documentation addition: global options
+%   \end{Version}
+%   \begin{Version}{2001/09/26 v1.2}
+%   \item
+%     Documentation typo corrected.
+%   \item
+%     Version number corrected.
+%   \item
+%     Line number in log entry removed.
+%   \end{Version}
+%   \begin{Version}{2005/07/22 v1.3}
+%   \item
+%     Some source code comments from Robin Fairbairns added.
+%   \item
+%     Bug fix for negative values of \cs{pdfoutput}
+%     (Oleg Katsitadze)
+%   \item
+%     LPPL 1.3
+%   \item
+%     Installation section with locations added.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.4}
+%   \item
+%     DTX framework.
+%   \item
+%     More robust check in case of undefined \cs{pdfoutput}.
+%   \item
+%     Extended documentation.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.5}
+%   \item
+%     Catcode settings added.
+%   \end{Version}
+%   \begin{Version}{2007/12/12 v1.6}
+%   \item
+%     Minor update.
+%   \end{Version}
+%   \begin{Version}{2008/12/12 v1.7}
+%   \item
+%     Fix in documentation for \cs{boolean} (found by S. Venkataraman).
+%   \item
+%     Code is not changed.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v2.0}
+%   \item
+%     Support for \LuaTeX\ 0.40 added.
+%   \item
+%     Checks, whether \cs{pdfoutput} was changed.
+%   \end{Version}
+%   \begin{Version}{2010/01/28 v2.1}
+%   \item
+%     Compatibility to ini\TeX\ added.
+%   \end{Version}
+%   \begin{Version}{2010/09/13 v2.2}
+%   \item
+%     Code with \cs{escapechar} rewritten because of
+%     LuaTeX bug: \cs{escapechar} does not work.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v2.3}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

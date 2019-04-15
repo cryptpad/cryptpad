@@ -1,0 +1,165 @@
+%%
+%% This is file `hypgotoe.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hypgotoe.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hypgotoe
+%% Version: 2007/10/30 v0.1
+%% 
+%% Copyright (C) 2007 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file hypgotoe.dtx
+%% and the derived files
+%%    hypgotoe.sty, hypgotoe.pdf, hypgotoe.ins, hypgotoe.drv,
+%%    hypgotoe-example.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypgotoe}%
+  [2007/10/30 v0.1 Links to embedded files (HO)]%
+\RequirePackage{ifpdf}[2007/09/09]
+\ifpdf
+\else
+  \PackageError{hypgotoe}{%
+    Other drivers than pdfTeX in PDF mode are not supported.%
+    \MessageBreak
+    Package loading is aborted%
+  }\@ehc
+  \expandafter\endinput
+\fi
+\RequirePackage{pdfescape}[2007/10/27]
+\RequirePackage{hyperref}[2007/10/30]
+\define@key{Hyp}{gotoebordercolor}{%
+  \HyColor@HyperrefBordercolor{#1}%
+  \@gotoebordercolor{hyperref}{gotoebordercolor}%
+}
+\providecommand*{\@gotoecolor}{\@filecolor}
+\providecommand*{\@gotoebordercolor}{\@filebordercolor}
+\def\@hyper@readexternallink#1#2#3#4:#5:#6\\#7{%
+  \ifx\\#6\\%
+    \expandafter\@hyper@linkfile file:#7\\{#3}{#2}%
+  \else
+    \ifx\\#4\\%
+      \expandafter\@hyper@linkfile file:#7\\{#3}{#2}%
+    \else
+      \def\@pdftempa{#4}%
+      \ifx\@pdftempa\@pdftempwordfile
+        \expandafter\@hyper@linkfile#7\\{#3}{#2}%
+      \else
+        \ifx\@pdftempa\@pdftempwordrun
+          \expandafter\@hyper@launch#7\\{#3}{#2}%
+        \else
+          \ifx\@pdftempa\@pdftempwordgotoe
+            \hyper@linkgotoe{#3}{#5}%
+          \else
+            \hyper@linkurl{#3}{#7\ifx\\#2\\\else\hyper@hash#2\fi}%
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+}
+\def\@pdftempwordgotoe{gotoe}
+\def\hyper@linkgotoe#1#2{%
+  \begingroup
+    \let\HyGoToE@Root\@empty
+    \let\HyGoToE@Dest\@empty
+    \let\HyGoToE@TBegin\@empty
+    \let\HyGoToE@TEnd\@empty
+    \setkeys{HyGoToE}{#2}%
+    \leavevmode
+    \pdfstartlink
+      attr{%
+        \Hy@setpdfborder
+        \ifx\@pdfhightlight\@empty
+        \else
+          /H\@pdfhighlight
+        \fi
+        \ifx\@urlbordercolor\relax
+        \else
+          /C[\@urlbordercolor]%
+        \fi
+      }%
+      user{%
+       /Subtype/Link%
+       /A<<%
+         /Type/Action%
+         /S/GoToE%
+         \Hy@SetNewWindow
+         \HyGoToE@Root
+         \HyGoToE@Dest
+         \HyGoToE@TBegin
+         \HyGoToE@TEnd
+       >>%
+      }%
+      \relax
+    \Hy@colorlink\@gotoecolor#1%
+    \close@pdflink
+  \endgroup
+}
+\define@key{HyGoToE}{root}{%
+  \EdefEscapeString\HyGoToE@temp{#1}%
+  \edef\HyGoToE@Root{%
+    /F<<%
+      /Type/Filespec%
+      /F(\HyGoToE@temp)%
+    >>%
+  }%
+}
+\define@key{HyGoToE}{dest}{%
+  \EdefEscapeString\HyGoToE@temp{#1}%
+  \edef\HyGoToE@Dest{%
+    /D(\HyGoToE@temp)%
+  }%
+}
+\define@key{HyGoToE}{parent}[]{%
+  \def\HyGoToE@temp{#1}%
+  \ifx\HyGoToE@temp\@empty
+  \else
+    \PackageWarning{hypgotoe}{Ignore value for `parent'}%
+  \fi
+  \edef\HyGoToE@TBegin{%
+    \HyGoToE@TBegin
+    /T<<%
+    /R/P%
+  }%
+  \edef\HyGoToE@TEnd{%
+    \HyGoToE@TEnd
+    >>%
+  }%
+}
+\define@key{HyGoToE}{embedded}{%
+  \EdefEscapeString\HyGoToE@temp{#1}%
+  \edef\HyGoToE@TBegin{%
+    \HyGoToE@TBegin
+    /T<<%
+    /R/C%
+    /N(\HyGoToE@temp)%
+  }%
+  \edef\HyGoToE@TEnd{%
+    \HyGoToE@TEnd
+    >>%
+  }%
+}
+\endinput
+%%
+%% End of file `hypgotoe.sty'.

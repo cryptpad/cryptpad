@@ -1,0 +1,613 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltfssini.dtx
+%% Copyright (C) 1989-2001 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+%
+%<*driver>
+% \fi
+%
+%
+\ProvidesFile{ltfssini.dtx}
+             [2015/01/09 v3.1a LaTeX Kernel (NFSS Initialisation)]
+% \iffalse
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{ltfssini.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \iffalse
+%<+checkmem>\def\CHECKMEM{\tracingstats=2
+%<+checkmem>  \newlinechar=`\^^J
+%<+checkmem>  \message{^^JMemory usage: \filename}\shipout\hbox{}}
+%<+checkmem>\CHECKMEM
+% \fi
+%
+% \CheckSum{325}
+%
+%
+% \GetFileInfo{ltfssini.dtx}
+% \title{A new font selection scheme for \TeX{} macro packages\\
+%        (Initialisation)\thanks
+%       {This file has version number
+%       \fileversion\ dated \filedate}}
+%
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This file contains the top level \LaTeX\ interface to the font
+% selection scheme commands. See other parts of the \LaTeX\
+% distribution, or \emph{The \LaTeX\ Companion} for higher level
+% documentation of these commands.
+%
+% \StopEventually{}
+%
+%
+% \changes{v3.0i}{1998/08/17}{(RmS) Minor documentation fixes.}
+% \changes{v3.0b}{1995/06/28}
+%      {(DPC) Fix documentation typos}
+% \changes{v3.0a}{1995/05/24}
+%      {(DPC) Make file from previous file, lfonts.dtx 1995/05/23 v2.2e}
+%
+%
+%
+% \section{NFSS Initialisation}
+%
+% \iffalse
+%<+checkmem>\CHECKMEM
+% \fi
+%
+%
+% \changes{v2.2a}{1994/10/14}{New coding for cfg files}
+% \changes{v2.1a}{1993/12/03}{update for LaTeX2e}
+% \changes{v1.2c}{1992/01/06}{added slitex code}
+% \changes{v1.2d}{1992/03/21}{Renamed \cs{text} to \cs{nfss@text}
+%                            to make it internal.}
+% \changes{v1.2a}{1991/11/27}{All \cs{family}, \cs{shape} etc. renamed
+%                        to \cs{fontfamily} etc.}
+% \changes{v1.1i}{1990/04/02}{\cs{input} of files now handled
+%                          by docstrip.}
+% \changes{v1.1g}{1990/02/08}{Protected the commands
+%         \cs{family}, \cs{series},
+%         \cs{shape}, \cs{size}, \cs{selectfont}, and \cs{mathversion}.}
+% \changes{v1.1c}{1989/12/03}{Some internal macros renamed to make them
+%           inaccessible.}
+% \changes{v1.1b}{1989/12/02}{\cs{rmmath} renamed to \cs{mathrm}}
+%
+% \changes{v1.0i}{1989/11/07}{All family, series, and shape names
+%           abbreviated.}
+% \changes{v1.0g}{1989/05/22}{Lines shortened to 72 characters}
+% \changes{v1.0f}{1989/04/29}{Corrections to \LaTeX\ tabular env.
+%                         added.}
+% \changes{v1.0e}{1989/04/27}{Definitions of \LaTeX\ symbols corrected.}
+% \changes{v1.0d}{1989/04/26}{\cs{xpt} added.}
+% \changes{v1.0c}{1989/04/21}{Changed to conform to fam.tex.}
+% \changes{v1.0b}{1989/04/15}{\cs{mathfontset} renamed to
+%                                              \cs{mathversion.}}
+% \changes{v1.0a}{1989/04/10}{Starting with version numbers!
+%           \cs{newif} for \cs{@tempswa} added since this switch is
+%           unknown at the time when this file is read in.
+%           (latex.tex is loaded later.)
+%           \cs{math@famname} changed to \cs{math@version.}}
+%
+%
+% \changes{v2.1j}{1994/05/13}{Removed file identification typeout}
+%
+% Finally, there are six commands that are to be used in \LaTeX{}
+% and that we will therefore protect against expansion at the
+% wrong point:
+% |\fontfamily|, |\fontseries|, |\fontshape|, |\fontsize|,
+% |\selectfont|, and |\mathversion|.
+%
+% \changes{v2.1i}{1994/05/12}{Moved \cs{fontfamily} to fam.dtx}
+% \changes{v2.1i}{1994/05/12}{Moved \cs{fontencoding} to fam.dtx}
+% \changes{v2.1i}{1994/05/12}{Moved \cs{fontseries} to fam.dtx}
+% \changes{v2.1i}{1994/05/12}{Moved \cs{fontshape} to fam.dtx}
+% \changes{v2.1i}{1994/05/12}{Moved \cs{fontsize} to fam.dtx}
+% \changes{v2.1i}{1994/05/12}{Moved \cs{mathversion} to fam.dtx}
+% \changes{v2.1i}{1994/05/12}{Moved \cs{selectfont} to tracefnt.dtx}
+%
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+% \subsection{Providing math \emph{versions}}
+%
+%  \LaTeX{} provides two \emph{versions}. We call them
+%  \textsf{normal} and \textsf{bold}, respectively.
+%    \begin{macrocode}
+\DeclareMathVersion{normal}
+\DeclareMathVersion{bold}
+%    \end{macrocode}
+%
+%
+%    Now we define the standard font change commands.
+%    We don't allow the use of |\rmfamily| etc.\ in math mode.
+%
+%    First the changes to another \emph{family}:
+%    \begin{macrocode}
+\DeclareRobustCommand\rmfamily
+        {\not@math@alphabet\rmfamily\mathrm
+         \fontfamily\rmdefault\selectfont}
+\DeclareRobustCommand\sffamily
+        {\not@math@alphabet\sffamily\mathsf
+         \fontfamily\sfdefault\selectfont}
+\DeclareRobustCommand\ttfamily
+        {\not@math@alphabet\ttfamily\mathtt
+         \fontfamily\ttdefault\selectfont}
+%    \end{macrocode}
+%    Then the commands changing the \emph{series}:
+%    \begin{macrocode}
+\DeclareRobustCommand\bfseries
+        {\not@math@alphabet\bfseries\mathbf
+         \fontseries\bfdefault\selectfont}
+\DeclareRobustCommand\mdseries
+        {\not@math@alphabet\mdseries\relax
+         \fontseries\mddefault\selectfont}
+\DeclareRobustCommand\upshape
+        {\not@math@alphabet\upshape\relax
+         \fontshape\updefault\selectfont}
+%    \end{macrocode}
+%    Then the commands changing the \emph{shape}:
+%    \begin{macrocode}
+\DeclareRobustCommand\slshape
+        {\not@math@alphabet\slshape\relax
+         \fontshape\sldefault\selectfont}
+\DeclareRobustCommand\scshape
+        {\not@math@alphabet\scshape\relax
+         \fontshape\scdefault\selectfont}
+\DeclareRobustCommand\itshape
+        {\not@math@alphabet\itshape\mathit
+         \fontshape\itdefault\selectfont}
+%    \end{macrocode}
+%
+%
+%
+% \begin{macro}{\em}
+% \changes{v1.2b}{1990/01/28}{Call to \cs{@nomath} added.}
+% \changes{v3.1a}{2015/01/09}{Allow \cs{emph} to produce small caps (latexrelease)}
+% \begin{macro}{\eminnershape}
+% \changes{v3.1a}{2015/01/09}{macro added (latexrelease)}
+% We also have to define the {\em emphasize\/} font change command
+% (i.e.\ |\em|). This command will look is the current font is
+% sloped (i.e.\ has a positive |\fontdimen1|) and will then
+% select either |\upshape| or |\itshape|.
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\eminnershape}{\eminnershape}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\em
+        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
+                       \eminnershape \else \itshape \fi}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\eminnershape{\upshape}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\eminnershape}{\eminnershape}%
+%<latexrelease>\DeclareRobustCommand\em
+%<latexrelease>        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
+%<latexrelease>                       \upshape \else \itshape \fi}%
+%<latexrelease>\let\eminnershape\@undefined
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%  \begin{macro}{\not@math@alphabet}
+%    This function generates an error message when it is called in
+%    math mode. The same function should be defined in
+%    \texttt{newlfont.sty}.
+% \changes{v1.4d}{1992/09/21}{Macro defined.}
+% \changes{v2.1e}{1994/01/17}{Message changed}
+% \changes{v2.1f}{1994/01/18}{Message corrected}
+% \changes{v2.1g}{1994/04/22}{Message changed again}
+% \changes{v2.2d}{1995/04/02}{add \cs{noexpand} to second part of message}
+%    \begin{macrocode}
+\def\not@math@alphabet#1#2{%
+   \relax
+   \ifmmode
+     \@latex@error{Command \noexpand#1invalid in math mode}%
+        {%
+         Please
+         \ifx#2\relax
+            define a new math alphabet^^J%
+            if you want to use a special font in math mode%
+          \else
+%    \end{macrocode}
+%    We have to a |\noexpand| below to prevent expansion of |#2|. In
+%    case of |#1| we can omit this (due to the current definition of
+%    robust commands since they do come out right there :-).
+%    \begin{macrocode}
+            use the math alphabet \noexpand#2instead of
+            the #1command%
+         \fi
+         .
+        }%
+   \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% Finally we provide two abbreviations to switch to the \LaTeX{}
+% \emph{versions}.
+%    \begin{macrocode}
+\def\boldmath{\@nomath\boldmath
+              \mathversion{bold}}
+\def\unboldmath{\@nomath\unboldmath
+              \mathversion{normal}}
+%    \end{macrocode}
+% Here we switch to the default math version by defining the internal
+% macro |\math@version|. We dare not to call |\mathversion|
+% at this place because this would call |\glb@settings|.
+%    \begin{macrocode}
+\def\math@version{normal}
+%    \end{macrocode}
+%
+% \subsection{Miscellaneous}
+%
+% \begin{macro}{\newfont}
+% \changes{v1.2g}{1991/03/30}{Definition added.}
+% \changes{v2.2e}{1995/05/23}{Font assignment made local again.}
+% \begin{macro}{\symbol}
+% \changes{v1.2g}{1991/03/30}{Definition added.}
+%    We start by defining a few macros that are part of
+%    standard \LaTeX's user interface. The use of these functions is
+%    not encouraged, but they will allow to process older documents
+%    without changes to the source.
+%    \begin{macrocode}
+\def\newfont#1#2{\@ifdefinable#1{\font#1=#2\relax}}
+\def\symbol#1{\char #1\relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@setfontsize}
+% \begin{macro}{\@setsize}
+%    This abbreviation is used by \LaTeX's user level size changing
+%    commands, such as |\large|.
+%    \begin{macrocode}
+\def\@setfontsize#1#2#3{\@nomath#1%
+%    \end{macrocode}
+%    For the benefit of people relying on keeping the name of the
+%    current font command saved in |\@currsize| we define it. To ensure
+%    that |\@setfontsize| keeps being robust we omit this assignment
+%    during times where |\protect| differs from |\@typeset@protect|.
+% \changes{v1.4b}{1992/08/20}{Added \cs{@currsize}.}
+% \changes{v2.2b}{1994/11/06}{Use \cs{@typeset@protect}}
+%    \begin{macrocode}
+    \ifx\protect\@typeset@protect
+      \let\@currsize#1%
+    \fi
+    \fontsize{#2}{#3}\selectfont}
+%    \end{macrocode}
+%    For compatibility  we also define |\@setsize| the 209 command
+%    \begin{macrocode}
+%<*compat>
+\def\@setsize#1#2#3#4{\@setfontsize#1{#4}{#2}}
+%</compat>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%  \begin{macro}{\oldstylenums}
+%    This macro implements old style numerals but only works if we
+%    assume that the standard math fonts are used. Thus it needs
+%    changing in case other math encodings are used.
+%    \begin{macrocode}
+\def\oldstylenums#1{%
+   \begingroup
+%    \end{macrocode}
+%    Provide spacing using the interword space of the current font.
+%    \begin{macrocode}
+    \spaceskip\fontdimen\tw@\font
+%    \end{macrocode}
+%    Then switch to the math italic font. We don't change the current
+%    value of |\f@series| which means that you can use bold numerals
+%    if |\bfseries| is in force. As family we use |\rmdefault| which
+%    means that this only works if there exist an |OML| encoded
+%    version of that font or rather a corresponding |.fd| file (which
+%    is the case for standard \LaTeX{} fonts even though they only
+%    contain substitutions).
+% \changes{v3.0j}{1999/02/12}{Use \cs{rmdefault} instead of \texttt{cmm}
+%                 (pr/2954)}
+%    \begin{macrocode}
+    \usefont{OML}{\rmdefault}{\f@series}{it}%
+    \mathgroup\symletters #1%
+   \endgroup
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\hexnumber@}
+%    To set up \LaTeX's special math character
+%    definitions we first provide a macro to generate hexadecimal
+%    numbers.  It is a rather simple |\ifcase|.
+% \changes{v?}{1992/11/13}{Made expandable.}
+% \changes{v?}{1992/12/03}{Make it accept counters.}
+%    \begin{macrocode}
+\def\hexnumber@#1{\ifcase\number#1
+ 0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or
+ 9\or A\or B\or C\or D\or E\or F\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \begin{macro}{\nfss@text}
+% \changes{v1.1e}{1990/01/25}{Macro added.}
+%    In it simplest form |\nfss@text| is an |\mbox|.  This will
+%    produce unbreakable text outside math and inside math you will
+%    get text with the same fonts as outside. The only drawback is
+%    that such item won't change sizes in subscripts. But this
+%    behavior can be easily changed. With the \texttt{amstex} style
+%    option one will get a sub style called \texttt{amstext} which will
+%    redefine the |\nfss@text| macro to produce correct text in all
+%    sizes.
+%
+%    We have to use |\def| instead of the shorter |\let| since
+%    |\mbox| is undefined when we reach this point.
+% \changes{v1.1k}{1990/06/23}{Changed to \cs{mbox}.}
+% \changes{v2.1n}{1994/05/17}{Added braces to allow use in subscripts}
+%    \begin{macrocode}
+\def\nfss@text#1{{\mbox{#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\copyright}
+%    The definition of |\copyright| was changed so
+%    that it works in other type styles,
+%    and to make it robust. We leave the family untouched so that
+%    the copyright notice will come out differently if a different
+%    font family is in use.
+%    This command is commented out, since it is now defined in
+%    ltoutenc.dtx.
+% \changes{v1.1m}{1991/03/28}{Extra braces added.}
+% \changes{v2.1n}{1994/05/17}{Really add extra braces}
+% \changes{v2.2c}{1994/12/02}{\cs{copyright} is now in ltoutenc.
+%    ASAJ}
+%    \begin{macrocode}
+%\DeclareRobustCommand\copyright
+%    {{\ooalign{\hfil
+%     \raise.07ex\hbox{\mdseries\upshape c}\hfil\crcr
+%     \mathhexbox20D}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v2.1a}{1993/11/24}{Removed \cs{xpt} stuff}
+%
+%
+% \begin{macro}{\normalfont}
+% \changes{v2.1a}{1993/11/11}{Macro added}
+% \begin{macro}{\reset@font}
+% \begin{macro}{\p@reset@font}
+% \changes{v1.1n}{1991/08/26}{Macro introduced}
+%    The macro |\reset@font| is used in \LaTeX{} to switch to a standard
+%    font, in order to initialize the current font in situations where
+%    typesetting is done in a new visual context (e.g.\ in a
+%    footnote). We define it here to allow the test for the new
+%    \LaTeX{} version above but nevertheless are able to run all kind
+%    of mixtures.
+% \changes{v1.1o}{1991/11/21}{Changed to protected version of macro.}
+% \changes{v1.1o}{1991/11/21}{Added extra braces for robustness.}
+%
+%    The user interface name for |\reset@font| is |\normalfont|:
+% \changes{v2.1k}{1994/05/14}{Remove surplus braces}
+% \changes{v3.0f}{1995/10/16}{Added \cs{relax} after \cs{usefont},
+%              as the latter eats up spaces.}
+%    \begin{macrocode}
+\DeclareRobustCommand\normalfont
+                 {\usefont\encodingdefault
+                          \familydefault
+                          \seriesdefault
+                          \shapedefault
+                  \relax}
+\let\reset@font\normalfont
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+% We left out the special \LaTeX{} fonts which are not automatically
+% included in the base version of the font selection since these fonts
+% contain only a few characters which are also included in the AMS
+% fonts so anybody who is using these fonts doesn't need them.
+% But for compatibility reasons we will define these symbols.
+%
+% \changes{v2.1g}{1994/02/22}{Correct error message}
+%    \begin{macrocode}
+\def\not@base#1{\@latex@error
+  {Command \noexpand#1not provided in base LaTeX2e}%
+  {Load the latexsym or the amsfonts package to
+   define this symbol}}
+\def\mho{\not@base\mho}
+\def\Join{\not@base\Join}
+\def\Box{\not@base\Box}
+\def\Diamond{\not@base\Diamond}
+\def\leadsto{\not@base\leadsto}
+\def\sqsubset{\not@base\sqsubset}
+\def\sqsupset{\not@base\sqsupset}
+\def\lhd{\not@base\lhd}
+\def\unlhd{\not@base\unlhd}
+\def\rhd{\not@base\rhd}
+\def\unrhd{\not@base\unrhd}
+%    \end{macrocode}
+%
+%
+%
+%    We now initialize all variables set by |\DeclareErrorFont|. These
+%    values are not really important since they will be overwritten
+%    later on by the definition in |fontdef.ltx|.
+%
+%    However, if \texttt{fontdef.cfg} is corrupted then at least a
+%    hopefully suitable error font is present.
+%
+% \changes{v2.1k}{1994/05/14}{Init error font just before checking for
+%                             fontdef.cfg}
+%    \begin{macrocode}
+\DeclareErrorFont{OT1}{cmr}{m}{n}{10}  %% don't modify this setting
+                                       %% overwrite it in fontdef.cfg
+                                       %% if necessary
+%    \end{macrocode}
+%
+%
+%
+%
+% We now load the customizable parts of NFSS.
+% \changes{v3.0d}{1995/07/19}
+%      {(DPC) TeX2 support}
+% \changes{v3.0e}{1995/09/15}
+%      {(DPC) Modify TeX2 message}
+% \changes{v3.0g}{1995/11/01}
+%      {(DPC) Switch meaning of \cs{@addtofilelist} for cfg files}
+% \changes{v3.0h}{1996/12/06}
+%      {(DPC) Remove *** from messages internal/2338}
+%    \begin{macrocode}
+\ifnum\inputlineno=\m@ne
+%    \end{macrocode}
+% Still using \TeX2. need a configuration file to avoid setting the 8bit
+% characters.
+%    \begin{macrocode}
+\InputIfFileExists{fonttext.cfg}
+           {\typeout{====================================^^J%
+                     ^^J%
+                      Local config file fonttext.cfg used^^J%
+                     ^^J%
+                     ====================================}%
+             \def\@addtofilelist##1{\xdef\@filelist{\@filelist,##1}}%
+            }
+           {\typeout{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+                     !^^J%
+                     ! You MUST use a fonttext.cfg file!^^J%
+                     ! As you are still using TeX2!!!!!^^J%
+                     !^^J%
+                     ! See the documentation file tex2.txt^^J%
+                     !^^J%
+                     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}%
+                    \batchmode \@@end}
+\else
+%    \end{macrocode}
+% With \TeX3 can use the standard |ltx| file if no configuration file
+% exists.
+%    \begin{macrocode}
+\InputIfFileExists{fonttext.cfg}
+           {\typeout{====================================^^J%
+                     ^^J%
+                      Local config file fonttext.cfg used^^J%
+                     ^^J%
+                     ====================================}%
+             \def\@addtofilelist##1{\xdef\@filelist{\@filelist,##1}}%
+            }
+           {\input{fonttext.ltx}}
+\fi
+\let\@addtofilelist\@gobble
+%    \end{macrocode}
+%
+% Ditto for math although I don't think that we will get a lot of
+% customisation :-)
+%    \begin{macrocode}
+\InputIfFileExists{fontmath.cfg}
+           {\typeout{====================================^^J%
+                     ^^J%
+                      Local config file fontmath.cfg used^^J%
+                     ^^J%
+                     ====================================}%
+             \def\@addtofilelist##1{\xdef\@filelist{\@filelist,##1}}%
+            }
+           {\input{fontmath.ltx}}
+\let\@addtofilelist\@gobble
+%    \end{macrocode}
+%
+% Then we preload several fonts. This file might be customized
+% \emph{without} changing the behavior of the format (i.e.\ necessary
+% font definitions will be loaded at runtime if they are not
+% preloaded).  This is done in the file \texttt{preload.ltx}.
+%    \begin{macrocode}
+\InputIfFileExists{preload.cfg}
+           {\typeout{====================================^^J%
+                     ^^J%
+                      Local config file preload.cfg used^^J%
+                     ^^J%
+                     =====================================}%
+             \def\@addtofilelist##1{\xdef\@filelist{\@filelist,##1}}%
+            }
+           {\input{preload.ltx}}
+\let\@addtofilelist\@gobble
+%    \end{macrocode}
+%
+%
+% \begin{macro}{\@acci}
+% \begin{macro}{\@accii}
+% \begin{macro}{\@acciii}
+% \changes{v2.1m}{1994/05/16}{Define saved versions of accents}
+%    We also save the values of some accents in |\@acci|, |\@accii|
+%    and |\@acciii| so they can be restored by a |minipage| inside a
+%    |tabbing| environment.
+%    \begin{macrocode}
+\let\@acci\' \let\@accii\` \let\@acciii\=
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\cal}
+% \changes{v3.0a}{1995/05/24}
+%      {(DPC) Remove definition}
+% \begin{macro}{\mit}
+% \changes{v3.0a}{1995/05/24}
+%      {(DPC) Remove definition}
+%    Here were the two old \meta{alphabet identifiers}.
+% \end{macro}
+% \end{macro}
+%
+%
+% \iffalse
+%<+checkmem>\CHECKMEM
+% \fi
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

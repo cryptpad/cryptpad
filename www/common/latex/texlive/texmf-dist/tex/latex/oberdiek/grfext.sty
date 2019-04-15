@@ -1,0 +1,274 @@
+%%
+%% This is file `grfext.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% grfext.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: grfext
+%% Version: 2010/08/19 v1.1
+%% 
+%% Copyright (C) 2007, 2010 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file grfext.dtx
+%% and the derived files
+%%    grfext.sty, grfext.pdf, grfext.ins, grfext.drv, grfext-test1.tex,
+%%    grfext-test2.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@grfext.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{grfext}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@grfext.sty\endcsname
+\ProvidesPackage{grfext}%
+  [2010/08/19 v1.1 Manage graphics extensions (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname grfext@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\grfext@AtEnd{%
+    \grfext@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\grfext@AtEnd{\grfext@AtEnd\noexpand\endinput}
+\@ifundefined{@expandtwoargs}{%
+  \def\@expandtwoargs#1#2#3{%
+    \edef\reserved@a{\noexpand#1{#2}{#3}}%
+    \reserved@a
+  }%
+}{}
+\newcommand*{\AppendGraphicsExtensions}{%
+  \@ifundefined{Gin@extensions}{%
+    \let\Gin@extensions\@empty
+  }{}%
+  \@ifstar{\grfext@Append\grfext@Check}{\grfext@Append\grfext@@Add}%
+}%
+\def\grfext@Append#1#2{%
+  \let\grfext@Print\@gobble
+  \edef\grfext@next{%
+    \noexpand\grfext@Add\noexpand#1{%
+      \zap@space#2 \@empty
+    }{\noexpand\Gin@extensions,}{}%
+  }%
+  \grfext@next
+  \let\grfext@Print\grfext@@Print
+  \grfext@Print\AppendGraphicsExtensions
+}
+\newcommand*{\PrependGraphicsExtensions}{%
+  \@ifundefined{Gin@extensions}{%
+    \let\Gin@extensions\@empty
+  }{}%
+  \@ifstar{\grfext@Prepend\grfext@Check}{\grfext@Prepend\grfext@@Add}%
+}%
+\def\grfext@Prepend#1#2{%
+  \let\grfext@Print\@gobble
+  \edef\grfext@next{%
+    \noexpand\grfext@Add\noexpand#1{%
+      \zap@space#2 \@empty
+    }{}{,\noexpand\Gin@extensions}%
+  }%
+  \grfext@next
+  \let\grfext@Print\grfext@@Print
+  \grfext@Print\PrependGraphicsExtensions
+}
+\def\grfext@Add#1#2{%
+  #1{#2}%
+}
+\def\grfext@@Add#1#2#3{%
+  \RemoveGraphicsExtensions{#1}%
+  \ifx\Gin@extensions\@empty
+    \def\Gin@extensions{#1}%
+  \else
+    \edef\Gin@extensions{#2#1#3}%
+  \fi
+}
+\def\grfext@Check#1{%
+  \let\grfext@tmp\@empty
+  \@for\grfext@ext:=#1\do{%
+    \@ifundefined{Gin@rule@\grfext@ext}{%
+    }{%
+      \ifx\grfext@tmp\@empty
+        \let\grfext@tmp\grfext@ext
+      \else
+        \edef\grfext@tmp{\grfext@tmp,\grfext@ext}%
+      \fi
+    }%
+  }%
+  \ifx\grfext@tmp\@empty
+    \def\grfext@next##1##2{}%
+  \else
+    \edef\grfext@next{%
+      \noexpand\grfext@@Add{\grfext@tmp}%
+    }%
+  \fi
+  \grfext@next
+}
+\newcommand*{\RemoveGraphicsExtensions}[1]{%
+  \@ifundefined{Gin@extensions}{%
+    \def\Gin@extensions{}%
+  }{%
+    \edef\grfext@tmp{\zap@space#1 \@empty}%
+    \@for\grfext@ext:=\grfext@tmp\do{%
+      \def\grfext@next{%
+        \let\grfext@tmp\Gin@extensions
+        \@expandtwoargs
+        \@removeelement\grfext@ext\Gin@extensions\Gin@extensions
+        \ifx\grfext@tmp\Gin@extensions
+          \let\grfext@next\relax
+        \fi
+        \grfext@next
+      }%
+      \grfext@next
+    }%
+  }%
+  \grfext@Print\RemoveGraphicsExtensions
+}
+\RequirePackage{infwarerr}[2007/09/09]
+\def\PrintGraphicsExtensions{%
+  \grfext@Print\PrintGraphicsExtensions
+}
+\def\grfext@Print#1{%
+  \@PackageInfo{grfext}{%
+    Graphics extension search list:\MessageBreak
+    \@ifundefined{Gin@extensions}{%
+      <unavailable>%
+    }{%
+      [\Gin@extensions]%
+    }\MessageBreak
+    \string#1%
+  }%
+}
+\let\grfext@@Print\grfext@Print
+\RequirePackage{kvdefinekeys}[2010/03/01]
+\kv@define@key{Gin}{AppendGraphicsExtensions}{%
+  \AppendGraphicsExtensions{#1}%
+}
+\kv@define@key{Gin}{AppendGraphicsExtensions*}{%
+  \AppendGraphicsExtensions*{#1}%
+}
+\kv@define@key{Gin}{PrependGraphicsExtensions}{%
+  \PrependGraphicsExtensions{#1}%
+}
+\kv@define@key{Gin}{PrependGraphicsExtensions*}{%
+  \PrependGraphicsExtensions*{#1}%
+}
+\kv@define@key{Gin}{RemoveGraphicsExtensions}{%
+  \RemoveGraphicsExtensions{#1}%
+}
+\kv@define@key{Gin}{PrintGraphicsExtensions}[]{%
+  \PrintGraphicsExtensions
+}
+\grfext@AtEnd%
+\endinput
+%%
+%% End of file `grfext.sty'.

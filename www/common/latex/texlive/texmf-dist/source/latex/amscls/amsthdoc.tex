@@ -1,0 +1,846 @@
+%% filename: amsthdoc.tex
+%% version: 2.20.2
+%% date: 2015/03/20
+%% 
+%% Copyright 1999, 2004, 2010, 2015 American Mathematical Society.
+%%
+%% American Mathematical Society
+%% Technical Support
+%% Publications Technical Group
+%% 201 Charles Street
+%% Providence, RI 02904
+%% USA
+%% tel: (401) 455-4080
+%%      (800) 321-4267 (USA and Canada only)
+%% fax: (401) 331-3842
+%% email: tech-support@ams.org
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is the American Mathematical
+%% Society.
+%%
+%% ====================================================================
+%%
+\documentclass[11pt,twoside]{article}
+\pagestyle{myheadings}
+
+% Use the same version number as for the public amsthm release.
+\def\instrversion{2.20.2}
+\def\instrdate{April 2015}
+
+\title{Using the \pkg{amsthm} Package}
+\author{Version \instrversion, \instrdate\\[.5ex]
+ Publications Technical Group\\American Mathematical Society}
+\date{}
+
+\providecommand{\qq}[1]{\textquotedblleft#1\textquotedblright}
+\providecommand{\mdash}{\textemdash\penalty\hyphenpenalty}
+
+% Some item adjustments
+
+\setlength\leftmargini{2em}
+\setlength\leftmarginii{1.5em}
+\renewcommand\labelitemii{$\circ$}
+
+% Embedded \index commands are a legacy from the time when this
+% documentation was part of amsldoc. Since they don't hurt anything,
+% let's leave them in. Maybe they will become useful again in the
+% future. [mjd,2000/06/06]
+
+\chardef\bslchar=`\\ % p. 424, TeXbook
+\newcommand{\ntt}{%
+  \fontfamily\ttdefault \fontseries\mddefault \fontshape\updefault
+  \selectfont
+}
+\DeclareRobustCommand{\cn}[1]{{\ntt\bslchar#1}}
+\DeclareRobustCommand{\cls}[1]{{\ntt#1}}
+\DeclareRobustCommand{\pkg}[1]{{\ntt#1}}
+\DeclareRobustCommand{\opt}[1]{{\ntt#1}}
+\DeclareRobustCommand{\env}[1]{{\ntt#1}}
+\DeclareRobustCommand{\fn}[1]{{\ntt#1}}
+
+\providecommand{\qedsymbol}{\leavevmode
+  \hbox to.77778em{%
+  \hfil\vrule
+  \vbox to.675em{\hrule width.6em\vfil\hrule}%
+  \vrule\hfil}}
+
+%%  Provide a meta-command facility; provide an alternate escape
+%%  character so it can be used within the verbatim environment.
+
+\catcode`\|=0
+\begingroup \catcode`\>=13 % in LaTeX2e verbatim env makes > active
+\gdef\?#1>{{\normalfont$\langle$\textit{#1}$\rangle$}}
+\gdef\0{\relax}
+\endgroup
+\def\<#1>{{\normalfont$\langle$\textit{#1}$\rangle$}}
+\def\ntnote#1{{\normalfont$^{#1}$}\hangindent.5em}
+
+\hfuzz4pt \vbadness9999 \hbadness5000
+\def\latex/{{\protect\LaTeX}}
+
+\setlength{\textwidth}{210mm}\addtolength{\textwidth}{-2in}
+\setlength{\oddsidemargin}{39pt}
+\setlength{\evensidemargin}{39pt}
+\addtolength{\textwidth}{-2\oddsidemargin}
+
+\setcounter{tocdepth}{2}
+
+\usepackage{url}
+\usepackage[breaklinks]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+\markboth{Using the \pkg{amsthm} package}{Using the \pkg{amsthm} package}
+
+\begingroup
+\small
+\tableofcontents
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage %%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+\begin{sloppypar}
+The \pkg{amsthm} package provides an enhanced version of \latex/'s
+\cn{newtheorem} command for defining theorem-like environments. The
+enhanced \cn{newtheorem} recognizes a
+\cn{theoremstyle} specification (as in Mittelbach's \pkg{theorem}
+package) and has a \verb+*+ form for defining unnumbered environments. The
+\pkg{amsthm} package also defines a \env{proof} environment that
+automatically adds a QED symbol at the end. AMS document classes
+incorporate the \pkg{amsthm} package, so everything described here
+applies to them as well.
+\end{sloppypar}
+
+As part of the AMS \latex/ support environment, \pkg{amsthm} follows
+AMS style.  This differs in some respects from the style provided by
+the base \latex/ classes and the package mentioned above; where a
+difference is known to be present, it will be noted in these instructions.
+One notable difference is that, after the end of a theorem or proof,
+the following line of text is assumed to start a new paragraph, and will
+always be indented, whether or not a blank line or \cn{par} is present.
+
+If the \pkg{amsthm} package is used with a non-AMS document class and
+with the \pkg{amsmath} package, \pkg{amsthm} must be loaded
+\emph{after} \pkg{amsmath}, not before.
+
+Since \pkg{amsthm} follows AMS publication style, formats that diverge
+significantly from that style may not be able to be accommodated.
+Other theorem packages \emph{do} exist, and users with incompatible
+requirements who are publishing elsewhere are advised to look for other
+possibilities on CTAN\@.  However, authors preparing files for
+publication by the AMS are expected to follow AMS style.
+
+This manual describes the features provided by \pkg{amsthm}.  Examples
+are given separately in the file \fn{thmtest.tex}.  For best understanding,
+examine the output side-by-side with the input.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\section{The \cn{newtheorem} command}
+\section{Setup and input of theorem elements}
+
+In mathematical research articles and books, theorems\index{theorems}
+and proofs\index{proofs} are among the most common elements, but authors
+also use many others that fall in the same general class: lemmas,
+propositions, axioms, corollaries, conjectures, definitions, remarks,
+cases, steps, and so forth (see page~\pageref{thmstyle:list}).
+It is natural to handle these elements as
+\latex/ environments, but document classes do not
+provide predefined environments for theorem-like elements because
+(a)~that would make it difficult for authors to exercise the necessary
+control over the automatic numbering, and (b)~the variety of such
+elements is so wide that it's not possible for a document class to
+provide every one that will ever be needed. Instead there is a command
+\cn{newtheorem}, similar in effect to \cn{newenvironment}, that makes it
+easy for authors to set up the elements required for a particular
+document.
+
+The \cn{newtheorem} command has two mandatory arguments: the first one
+is the environment name that the author would like to use for this
+element; the second one is the heading text. For example,
+\begin{verbatim}
+  \newtheorem{lem}{Lemma}
+\end{verbatim}
+means that instances in the document of
+\begin{verbatim}
+  \begin{lem} Text text ... \end{lem}
+\end{verbatim}
+will produce
+\[\makebox[.8\columnwidth]{%
+  \textbf{Lemma 1.} \textit{Text text \dots}\hfill}\]
+where the heading consists of the specified text \qq{Lemma} and an
+automatically generated number and punctuation.  Note that there are
+no fixed text assignments as there are with, e.g., \cn{chaptername}
+(usually ``Chapter'' or ``Appendix'', depending on context); the heading
+text in the output will be exactly what you specify in the input.
+
+If \cn{newtheorem*} is used instead of \cn{newtheorem} in this
+example, numbers will not be generated automatically for
+any of the lemmas in the document. This form of the command can be
+useful even if you have only one lemma and don't want it to be
+numbered; more often, though, it is used to produce a special named
+variant of one of the common theorem types. For example, if you have a
+lemma that should get the heading \qq{Klein's Lemma}, then the statement
+\begin{verbatim}
+  \newtheorem*{KL}{Klein's Lemma}
+\end{verbatim}
+would allow you to write
+\begin{verbatim}
+  \begin{KL} Text text ... \end{KL}
+\end{verbatim}
+and get the desired output.
+
+Sometimes additional information is desired in the heading of a
+theorem or lemma, often because it is cited from another source.
+An optional argument is used to provide this information:
+\begin{verbatim}
+  \begin{lem}[Alinhac-Lerner \cite{a-l}]
+\end{verbatim}
+yielding the output
+\[\makebox[.8\columnwidth]{%
+  \textbf{Lemma 2.} (Alinhac-Lerner [4]). \textit{Text text \dots}\hfill}\]
+If the citation includes page numbers, the brackets in the reference
+must be ``hidden'' to prevent the closing bracket from being interpreted
+as the end of the optional argument to the heading:
+\begin{verbatim}
+  \begin{lem}[Alinhac-Lerner {\cite[p.~37]{a-l}}]
+\end{verbatim}
+with the output
+\[\makebox[.8\columnwidth]{%
+  \textbf{Lemma 2.} (Alinhac-Lerner [4, p.~37]). \textit{Text text \dots}\hfill}\]
+
+Often, theorems are referred to elsewhere in a document.  The usual
+\latex/ \cn{label}-\cn{ref} mechanism works for this purpose.  However,
+problems can arise when the \cn{label} is separated from the heading.
+For this reason, it is recommended to place the label immediately
+after the \verb+\begin{...}[...]+ command; placing it on a separate line
+should not cause any adverse effects.
+
+\subsection{Theorems beginning with lists}
+\label{ThmWithList}
+
+Sometimes it's desired to state a theorem in discrete steps, using
+a list.  Preceding the list by text is recommended, to avoid problems
+both with linking (using \env{enumerate}) and with unattractive spacing.
+
+If no text is provided, the list will follow the heading on the same
+line.  This has three unwanted effects: the horizontal space between
+the theorem head and the first item will be unacceptably large, a
+hyperlink to the theorem will not be ``live'' in the PDF file
+(although it will be marked), and the extra vertical space that should
+follow the end of the list will be absent.
+
+The best way to avoid these problems is to allow the list to start
+on a new line.  One way to accomplish this is to follow the theorem
+head (and \cn{label}, if present) by the command \cn{leavevmode}.
+(For more information, see section~\ref{thmstyle:break}.) 
+However, if the theorem comes near the bottom of a page, the list
+might move to the top of the next page, leaving an orphaned heading.
+If this happens, it must be addressed as an exception, to be taken
+care of after the text is final; at that point, the recommended
+fix is to call on the \pkg{needspace} \cite{NDS} package, or insert
+an explicit page break.
+
+An alternative method of starting a new line after the heading is to
+provide a \verb+\newtheoremstyle{break}+; the definition is given below
+on page~\pageref{thmstyle:break}.  Like the \cn{leavevmode} approach,
+a \env{break} theorem environment is not perfect; known limitations
+accompany the definition.
+
+%The recommended remedy is to insert the command \cn{leavevmode}
+%after the heading (and label, if present).  This will move the first
+%item to a new line, and restore linking and the usual spacing.
+%Adding \cn{samepage} immediately following \cn{leavevmode} will
+%prevent the page break, but this has the side effect of treating the
+%entire theorem as a unit, so such an adjustment should be delayed until
+%the ``last pass'' to minimize possible problems with long theorems.
+
+%% see also "break" below
+
+%% reconsider the following
+%% to be explored: use of enumerate package to reset item id styles
+
+If the list \emph{must} start on the same line as the heading, enter
+the first item identifier manually, with adjustments: enter an
+ordinary space between the heading and the identifier, reset the left
+margin if the item text will require more than one line, and reset
+the item counter (for \env{enumerate}) so that it will start
+with 2 (or whatever is appropriate).
+\begin{verbatim}
+  \begin{thm}[|?optional modifier>]
+  \hangindent\leftmargini  % for a multi-line item
+  \label{thm:xxx}
+  \textup{(1)} First item ...
+  \begin{enumerate}
+  \setcounter{enumi}{1}
+  \item ...
+  \item ...
+  \end{enumerate}
+  \end{theorem}
+\end{verbatim}
+The style shown here for the item identifier matches the default for
+AMS document classes.  It may be different for other document classes;
+\pkg{amsthm} retains the class default.  (\cn{textup} should be
+applied to hand-coded item identifiers when using an AMS class; AMS
+style conforms to traditional math typography in this respect, with item
+identifiers, cross-references, and similar elements consistently set
+upright, even in italic environments.  However, an author should always
+try to match the style of the document class being used.)  To match the
+default style of a first-level item counter when using an AMS document
+class, a reference may be entered with \cn{eqref}; however, beware if
+a package such as \pkg{cleveref} is being used, as it may associate the
+wrong element type.
+
+An initial item input in this manner cannot be linked using a \cn{label},
+since it is not associated with a counter; the \cn{label} in the above
+example refers to the theorem element, not to the item in the list.
+This is an important concept: a \cn{label} will always refer to the
+value of the most recent counter that is automatically incremented;
+this counter will also be the anchor for a hyperlink if the
+\pkg{hyperref} package is used.
+
+%%% theorems starting with lists; linking -- xref
+
+%%% footnote on header -- Q-586
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\enlargethispage{1\baselineskip} %%%%%%%%%%%%%%%%%%%%
+
+\section{Theorem numbering}
+
+In addition to the two mandatory arguments, \cn{newtheorem} has two
+mutually exclusive optional arguments. These govern the
+sequencing\index{theorems!numbering} and hierarchy of the numbering.
+The numbering mechanism can be thought of this way:
+%\null\hfil\verb+\newtheorem{+\<environment name>\verb+}[+\<shared counter>%
+\begin{verbatim}
+  \newtheorem{|?env name>}{|?text>}[|?parent counter>]
+  \newtheorem{|?env name>}[|?shared counter>]{|?text>}
+\end{verbatim}
+%(Only one of these optional arguments can be present at one time.)
+The \<parent counter> is comparable to \cn{numberwithin}; that is,
+numbering will restart whenever that sectional level is encountered.
+If a \<shared counter> is specified, numbering will progress
+sequentially for all theorem elements using this counter.  See
+below for a more detailed explanation.
+
+%% ref tex.sx q/5244 for clear explanation
+
+By default each kind of theorem-like environment is numbered
+independently. Thus if you have three lemmas and two theorems
+interspersed, they will be numbered something like this: Lemma 1, Lemma
+2, Theorem 1, Lemma 3, Theorem 2. If you want lemmas and theorems to
+share the same numbering sequence\mdash Lemma 1, Lemma 2, Theorem 3, Lemma
+4, Theorem 5\mdash then you should use the \<shared counter> to indicate
+the desired relationship as follows:
+\begin{verbatim}
+  \newtheorem{thm}{Theorem}
+  \newtheorem{lem}[thm]{Lemma}
+\end{verbatim}
+The optional argument \verb+[thm]+ in the second statement means that
+the \env{lem} environment should share the \env{thm} numbering
+sequence instead of having its own independent sequence.
+
+To have a theorem environment numbered subordinately within a
+sectional unit\mdash e.g., to get propositions numbered Proposition 2.1,
+Proposition 2.2, and so on in Section~2\mdash put the name of the parent
+unit in square brackets in final position:
+\begin{verbatim}
+  \newtheorem{prop}{Proposition}[section]
+\end{verbatim}
+With the optional argument \verb+[section]+, the \verb+prop+ counter
+will be reset to 0 whenever the parent counter \verb+section+ is
+incremented, and the proposition heading will have the section number
+prepended.
+
+If any theorem elements are numbered by section, and (in a book) the
+first such element in a chapter comes before the first section,
+numbering will continue from the previous chapter.  In such a case,
+reset the counter by invoking this command before the affected element:
+\begin{verbatim}
+  \setcounter{thm}{0}
+\end{verbatim}
+
+Note that theorem numbering is not accomplished by the same method
+as the \cn{numberwithin} facility of \pkg{amsmath}, so an attempt to
+use that to relate theorem numbers to equation numbers will not work
+in the expected way.  A method for accomplishing that, as well as
+some other variations, is given in the AMS Author FAQ \cite{AF},
+in the section on
+\qq{\href{http://www.ams.org//faq?class_id=561}{Theorems in AMS-\LaTeX}}.
+
+\newpage %%%%%%%%%%%%%%%%%%%%
+
+\subsection{Related topics addressed in the AMS author FAQ}
+
+\begin{itemize}
+\item \href{http://www.ams.org/faq?faq_id=199}{``Number''
+  theorems with letters instead of numbers}
+
+\item \href{http://www.ams.org/faq?faq_id=200}{Restart numbering for each
+  chapter, but don't include chapter number as part of theorem number}
+ 
+\item \href{http://www.ams.org/faq?faq_id=202}{Number theorems by
+  section when chapters have sections, but by chapter only when a chapter
+  has no sections}
+
+\item \href{http://www.ams.org/faq?faq_id=289}{Number theorems and
+  equations with the same numbering sequence}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Changing styles for theorem-like environments}
+
+\subsection{The \texorpdfstring{\cn{theoremstyle}}{theoremstyle} command}
+
+The \pkg{amsthm} package supports the notion of a current theorem style,
+which determines what will be produced by a given \cn{newtheorem}
+command. The three theorem styles provided\mdash
+\env{plain},\index{plain theo@\env{plain} theorem style}\relax
+\index{definition theo@\env{definition} theorem style}\relax
+\index{remark theo@\env{remark} theorem style} \env{definition},
+and \env{remark}\mdash specify different degrees of
+visual emphasis corresponding to their relative importance. The
+details of this typographical treatment may vary depending on the
+document class, but typically the \env{plain} style produces italic
+body text, while the other two styles produce roman body text.  These
+default settings are provided:
+\begin{itemize}
+\item \env{plain}\,: italic text, extra space above and below;
+\item \env{definition}\,: upright text, extra space above and below;
+\item \env{remark}\,: upright text, no extra space above or below.
+\end{itemize}
+
+If no \cn{theoremstyle} command is given, the style used will be
+\env{plain}. To specify different styles, divide your \cn{newtheorem}
+commands into groups and preface each group with the appropriate
+\cn{theoremstyle}. Some examples:\label{thmstyle:list}
+\begin{verbatim}
+  \theoremstyle{plain}% default
+  \newtheorem{thm}{Theorem}[section]
+  \newtheorem{lem}[thm]{Lemma}
+  \newtheorem{prop}[thm]{Proposition}
+  \newtheorem*{cor}{Corollary}
+  \newtheorem*{KL}{Klein's Lemma}
+
+  \theoremstyle{definition}
+  \newtheorem{defn}{Definition}[section]
+  \newtheorem{exmp}{Example}[section]
+  \newtheorem{xca}[exmp]{Exercise}
+
+  \theoremstyle{remark}
+  \newtheorem*{rem}{Remark}
+  \newtheorem*{note}{Note}
+  \newtheorem{case}{Case}
+\end{verbatim}
+
+The following list summarizes the types of structures which are
+normally associated with each theorem style.
+
+\smallskip
+\begin{tabular}{ll}
+ \relax\env{plain} & Theorem, Lemma, Corollary, Proposition, Conjecture, \\
+                   & Criterion, Assertion \\
+ \relax\env{definition} \quad & Definition, Condition, Problem, Example, 
+		     Exercise, \\
+		   & Algorithm, Question, Axiom, Property, Assumption, \\
+		   & Hypothesis \\
+ \relax\env{remark} & Remark, Note, Notation, Claim, Summary, \\
+                    & Acknowledgment, Case, Conclusion
+\end{tabular}
+
+\subsection{Number swapping}
+
+A common style variation is to have the theorem number at the beginning
+of the heading instead of at the end, for example \qq{1.4 Theorem}
+instead of \qq{Theorem 1.4}.  As this variation is usually applied
+to all \cn{theoremstyle}s, it is done by
+placing a \cn{swapnumbers} command at the beginning of the list of
+\cn{newtheorem} statements that should be affected. For example:
+\begin{verbatim}
+  \swapnumbers
+  \theoremstyle{plain}
+  \newtheorem{thm}{Theorem}[section]
+  \theoremstyle{remark}
+  \newtheorem{rem}{Remark}
+\end{verbatim}
+
+When \pkg{amsthm} is used with a non-AMS document class, and numbers are
+swapped, no period is set following the number; this differs from the
+``basic'' \latex/ style.  A workaround will be given in the AMS Author
+FAQ~\cite{AF}.
+
+In some AMS document classes, the style of the swapped numbers matches
+that of section headings; this may not be the same style as the rest
+of the theorem heading.
+
+% amsart: lightface numbers, bold heading
+% amsproc: all lightface; section headings bold
+% amsbook: all lightface; section headings bold
+
+\newpage %%%%%%%%%%%%%%%%%%%%
+
+\enlargethispage{1\baselineskip} % to fit code on same page
+\subsection{New theorem styles}
+
+The \pkg{amsthm} package provides a \cn{newtheoremstyle} command
+to aid in the creation of custom styles, should the three predefined
+styles prove insufficient.  The following example illustrates the use
+of the \cn{newtheoremstyle} command.
+\begin{verbatim}
+  \newtheoremstyle{note}%  |?name>
+    {3pt}%      |?Space above>|ntnote1
+    {3pt}%      |?Space below>|ntnote1
+    {}%         |?Body font>
+    {}%         |?Indent amount>|ntnote2
+    {\itshape}% |?Theorem head font>
+    {:}%        |?Punctuation after theorem head>
+    {.5em}%     |?Space after theorem head>|ntnote3
+    {}%         |?Theorem head spec |textup(can be left empty, meaning `normal'|textup)>
+\end{verbatim}
+\noindent
+\ntnote1 Space above and below: these are equal, but the defaults differ
+ when using an AMS document class vs.\ \verb+\usepackage{amsthm}+. For
+ AMS classes, this is \verb+.5\baselineskip+$\pm$\verb+.2\baselineskip+;
+ for \pkg{amsthm} used as a separate package, it is the local value
+ of \cn{topsep}.  If these arguments are left empty, the current
+ defaults are used.
+
+\noindent
+\ntnote2 Indent amount: empty = no indent, \cn{parindent} = normal
+ paragraph indent
+
+\noindent
+\ntnote3 Space after theorem head: \verb+{ }+ = normal interword space; \\
+%\null\phantom{\ntnote2}
+ \cn{newline} = line break
+
+\smallskip
+Apply the new theorem style in the same manner as the predefined ones.
+
+Here are some styles that have been requested by authors.
+
+\subsubsection{Theorem style \texttt{break}}
+\label{thmstyle:break}
+This style will break after the theorem heading and start a new line.
+\begin{verbatim}
+\newtheoremstyle{break}%
+  {}{}%
+  {\itshape}{}%
+  {\bfseries}{}%  % Note that final punctuation is omitted.
+  {\newline}{}
+\end{verbatim}
+
+This style can be used for a theorem beginning with a list.
+When used with \env{enumerate} and an AMS document class, all items
+are properly labeled and will link.  However, the vertical spacing
+needs help; a conflict between definitions prevents the first
+item from starting on a new line---it looks almost the same as
+a default theorem beginning with an enumerated list.
+To repair this problem, begin the theorem like this:
+\begin{verbatim}
+  \begin{breakthm}[...]
+  \leavevmode \vspace{-\baselineskip}
+  \begin{enumerate}
+\end{verbatim}
+\verb+\leavevmode+ alone will leave a full blank line after the theorem head.
+
+One more problem may arise: if the theorem starts close to the end
+of a page, the list could be split to a new page, leaving an
+orphaned heading.  Make a note to address this when the text is
+final; then call on the \pkg{needspace} \cite{NDS} package, or insert
+an explicit page break.
+
+\subsubsection{Theorem with bold note field}
+
+If the note---with surrounding parentheses---is particularly important,
+setting the note field in bold may be desired.  This variation numbers
+the theorem, an option not available when using \cn{newtheorem*}.
+\begin{verbatim}
+\newtheoremstyle{bfnote}%
+  {}{}%
+  {\itshape}{}%
+  {\bfseries}{.}%
+  { }%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+\end{verbatim}
+
+Parentheses may be omitted from around the note using this trivial
+adaptation of the formulation with a bold note.
+\begin{verbatim}
+\newtheoremstyle{noparens}%
+  {}{}%
+  {\itshape}{}%
+  {\bfseries}{.}%
+  { }%
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+\end{verbatim}
+
+%\subsubsection*{other suggested examples (to be considered)}
+%
+%\begin{verbatim}
+% Q-353 [\newtheoremstyle, used with numbers omits parens on text]
+% Q-426 [\newtheoremstyle, number font doesn't change with \@thmheadfont]
+%\end{verbatim}
+
+\subsubsection{Other styles}
+For examples, see the file \fn{thmtest.tex}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage %%%%%%%%%%%%%%%%%%%%
+
+\section{Proofs}
+
+A predefined \env{proof} environment provided by the \pkg{amsthm}
+package produces the heading \qq{Proof} with appropriate spacing and
+punctuation. The proof environment is primarily intended for short
+proofs, no more than a page or two in length; longer proofs are
+usually better done as a separate \cn{section} or \cn{subsection} in
+your document.
+
+\subsection{The beginning of a proof}
+
+An optional argument of the proof environment allows you to substitute
+a different name for the standard \qq{Proof\/}. If you want
+the proof heading to be, say, \qq{Proof of the Main Theorem}, then write
+\begin{verbatim}
+  \begin{proof}[Proof of the Main Theorem]
+\end{verbatim}
+
+Because of the way the \env{proof} environment is defined (as a
+\latex/ list), a substitute ``name'' that is longer than one output
+line will not break as it should; this is on the list for repair.
+In the meantime, this redefinition in your preamble will accomplish
+the desired result.
+\begin{verbatim}
+  \makeatletter
+  \renewenvironment{proof}[1][\proofname]{\par
+    \pushQED{\qed}%
+    \normalfont \topsep6\p@\@plus6\p@\relax
+    \trivlist
+    \item\relax
+          {\itshape
+      #1\@addpunct{.}}\hspace\labelsep\ignorespaces
+  }{%
+    \popQED\endtrivlist\@endpefalse
+  }
+  \makeatother
+\end{verbatim}
+
+A proof beginning with a list can be approached in the same manner
+as a theorem; see section~\ref{ThmWithList}.
+
+\subsection{The end of a proof}
+
+A QED symbol, \qedsymbol, is automatically appended at the end of
+a \env{proof} environment. To substitute a different end-of-proof
+symbol, use \cn{renewcommand} to redefine the command \cn{qedsymbol}.
+For a long proof done as a subsection or section instead of with the
+\env{proof} environment, you can obtain the symbol and the usual
+amount of preceding space by using \cn{qed}; this will work properly
+only if it follows ordinary text.
+
+A blank line preceding \verb+\end{proof}+ (or before an explicit \cn{qed})
+disables the mechanism that places the QED symbol, and may even allow
+that symbol to be set at the top of a new page.
+
+Placement of the QED symbol can be problematic if the last part of
+a \env{proof} environment is a displayed equation or list environment
+or something of that nature. In that case put a \cn{qedhere} command at
+the place where the QED symbol should appear, for example,
+\begin{verbatim}
+  \begin{proof}
+  ...
+  \begin{equation}
+  G(t)=L\gamma!\,t^{-\gamma}+t^{-\delta}\eta(t) \qedhere
+  \end{equation}
+  \end{proof}
+\end{verbatim}
+When used with the \pkg{amsmath} package, version 2 or later, \cn{qedhere}
+will position the QED symbol flush right; with earlier versions, the
+symbol will be spaced a quad away from the end of the text or display.
+
+If \cn{qedhere} produces an error message in an equation, try using \\
+\verb+\mbox{\qedhere}+ instead.
+
+\cn{qedhere} does not work with \env{eqnarray} or with equations input
+with \verb+$$+; the display environments defined by \pkg{amsmath} and
+the \verb+\[ ... \]+ form of unnumbered equations have been specially
+crafted for this purpose.
+
+When a proof ends with a list environment, place \cn{qedhere} as the
+last thing before \verb+\end{enumerate}+ or \verb+\end{itemize}+.
+
+If, for some reason, it is desired to omit the QED symbol from the
+end of a proof, it can be suppressed by including this definition just
+before \verb+\end{proof}+:
+\begin{verbatim}
+  \renewcommand{\qedsymbol}{}
+\end{verbatim}
+If the symbol is to be omitted from \emph{all} proofs in the document,
+place the redefinition in the preamble.
+
+If the QED symbol is needed outside of the \env{proof} environment,
+use \cn{qed} rather than \cn{qedhere}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage %%%%%%%%%%%%%%%%%%%%
+
+\section{Known problems}
+
+The following problems are listed for attention with the next update
+of \pkg{amsthm}.
+
+\begin{itemize}
+\item Problems with \cn{qedhere}. % B-366
+ \begin{itemize}
+  \item When \cn{qedhere} is used with an unstarred multi-line display
+    structure, the final line is not numbered.  (This is relevant only
+    when numbers are on the left; \cn{qedhere} is inappropriate for
+    use with displays numbered on the right.)
+  \item In an alignment, if no \verb+&+ is present, the box does not
+    go flush to the right margin.
+  \item For a one-line equation, both the number and the box appear,
+    but the equation is shifted left.
+ \end{itemize}
+\item Other problems inherent in \pkg{amsthm}.
+ \begin{itemize}
+  \item Hyperlinking the first item when a theorem begins with a list.
+ \end{itemize}
+\item Problems of interaction with AMS document classes.  Corrections
+  will be made in the classes, not in \pkg{amsthm}.
+ \begin{itemize}
+  \item In \cls{amsbook}, when a theorem appears before a chapter's
+    first numbered section, theorem numbering continues from the
+    previous chapter.
+ \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Other packages}
+
+Some packages provide additional theorem functionality, with options
+that recognize the presence of \pkg{amsthm} and adjust for it.
+\begin{itemize}
+\itemsep=.5\itemsep
+\item \pkg{mdframed} \cite{MDF} provides the ability to set off theorems
+  (and other elements) with frames of various shapes and colors.
+  It should be loaded \emph{after} \pkg{amsthm} if both are used.
+\item \pkg{thmtools} \cite{THT} provides an alternate key-value syntax
+  for theorem specification, as well as variant presentation styles,
+  both predefined and user definable.  A QED symbol can be applied to any
+  theorem element, not just to proofs.  An adaptable \cn{listoftheorems}
+  is also available.
+\end{itemize}
+For details, refer to the package manuals.  Both packages are included
+in \TeX~Live, so can be accessed with
+\texttt{texdoc}~\<package>.
+
+Some packages that offer potentially useful features have limitations
+that conflict with the implementation of theorems with AMS document
+classes or \pkg{amsthm}.  Here are some we know about.
+\begin{itemize}
+\itemsep=.5\itemsep
+\item \pkg{paralist} overrides the settings in \pkg{amsthm} that apply
+  \cn{upshape} to item numbers in an \env{enumerate} environment within
+  a theorem; the numbers become italic, which is undesired.
+\item \pkg{wrapfig} documents that it does not coexist with lists.
+  Both theorems and proofs in \pkg{amsthm} are based on \cn{trivlist}.
+  An insertion using this method may cause succeeding paragraphs to be
+  indented by the width of the insert even if the depth of the
+  insertion does not warrant it.
+\item \pkg{floatflt} and \pkg{picinpar} suffer from the same limitation.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Potential modifications}
+
+Feedback from users and experience with AMS publications have pointed
+out several areas where added flexibility can benefit both users of
+\pkg{amsthm.sty} and developers of ``derivative'' document classes
+based on the AMS set.
+
+These suggestions are relatively easy to implement:
+
+\begin{itemize}
+\item Change hard-coded font specifications (e.g., \cn{itshape})
+  to commands (e.g., \cn{proofheadingfont}) to allow modification.
+\item Provide commands instead of hard-coded values for other elements,
+  such as punctuation.
+\end{itemize}
+
+The following suggestions, while having merit, require more work, including
+redesign of existing code:
+
+\begin{itemize}
+\item Extend applicability of \cn{qedhere} to theorem-class elements
+  as well as to proofs.
+\item Provide a means to ignore the definition of \env{proof} to
+  avoid name conflicts with some non-AMS document classes.
+\item Consider key-value mechanism for specifying \cn{newtheoremstyle}
+  options.
+\item Provide a new theorem style that begins with a list.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Providing feedback}
+
+Reports on bugs found in this package should be submitted to\\
+ \null\hfil \href{mailto:tech-support@ams.org}{\texttt{tech-support@ams.org}}
+
+\noindent
+For best results, a brief, compilable example should accompany the report.
+
+An alternate method is to use the
+  \href{http://latex-project.org/bugs-upload.html}{\LaTeX\ bugs}
+  reporting mechanism, specifying \texttt{AMS-LaTeX} as the bug category.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{[MDF]}
+
+\raggedright
+
+\bibitem[AF]{AF} AMS Author FAQ,
+  \url{http://www.ams.org/authors/author-faq}
+
+\bibitem[MDF]{MDF} The \pkg{mdframed} package,
+  Marco Daniel and Elke~Schubert, 2013/07/01, v1.9b,
+%  \url{http://mirror.ctan.org/macros/latex/contrib/mdframed/mdframed.pdf}
+  \url{http://mirror.ctan.org/macros/latex/contrib/mdframed}
+
+\bibitem[NDS]{NDS} The \pkg{needspace} package,
+  Peter Wilson, 2010/09/12, v1.3d,
+  \url{http://mirror.ctan.org/macros/latex/contrib/needspace}
+
+\bibitem[THT]{THT} \pkg{Thmtools} Users' Guide,
+  Ulrich M. Schwarz, 2014/04/21 v66,
+%  \url{http://mirror.ctan.org/macros/latex/exptl/thmtools/thmtools.pdf}
+  \url{http://mirror.ctan.org/macros/latex/exptl/thmtools}
+
+\end{thebibliography}
+
+\end{document}

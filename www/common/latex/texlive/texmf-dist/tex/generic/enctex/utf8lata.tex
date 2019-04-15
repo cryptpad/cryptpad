@@ -1,0 +1,185 @@
+% utf8lata.tex: UTF-8 input declaration, Latin Extended-A, U+0100 -- U+017F
+% -------------------------------------------------------------------------
+% Petr Olsak, 2012
+
+\message{UTF-8 declaration: LATIN EXTENDED-A, U+0100--U+017F}
+
+% You can define the \setucode texname htmlentity utf8code T1slot {TeX action} 
+% by yours opinion before \input utf8lata. If no definition is prepared by you,
+% the implicit one do following:
+% (1) Maps utf8code to \texname by encTeX's \mubytein ... \mubyteout
+% (2) if \texname is undefined do \def\texname{TeX action}
+% (3) The parameters htmlentity and T1slot are ignored
+%
+% If T1slot=* then the character is not provided by T1 encoding.
+% See the file t1code.tex for an alternative \setucode definition which uses T1slot.
+%
+% The \setcsucode is implicitly the same as \setucode, but csplain defines it as 
+% ,,do nothing`` because the code is mapped by csplain as a raw character.
+%
+% Some slots are defined as \uuchar (means UndefinedUtf8char) because there 
+% are not common tools for define them by plainTeX. You can redefine them, of course.
+
+
+
+\ifx\setucode\undefined
+
+\ifx\mubyte\undefined
+   \errhelp{Sorry, you can't use this file without encTeX initialised.}
+   \errmessage{The encTeX extension of TeX with \noexpand\mubyte is not found}
+   \expandafter\expandafter\expandafter \endinput
+\else
+
+% The implicit \setucode definition:
+
+\def\setucode #1 #2 #3 #4 #5{% 
+   \expandafter \mubyte \csname#1\endcsname #3\endmubyte
+   \expandafter \ifx \csname#1\endcsname \relax
+      \expandafter \def\csname#1\endcsname{#5}%
+   \fi
+}
+\ifx\setcsucode\undefined \let\setcsucode=\setucode \fi
+
+\fi\fi
+
+\def\uuchar#1#2{% Undefined Utf8 character
+   \message{WARNING: undefined UTF-8 slot \string#1: #2}%
+   \leavevmode\hbox{\vrule width.5em height.5em}%
+}
+
+\let\doaccent=\char % accents alone are declared as \doaccent<number>, implicitly \char<number>.
+    % you can set: \let\doaccent=\accent: then accents will be placed over the next character.
+\def\intext#1{\leavevmode\hbox{$#1$}} % the math construction working in text mode.
+
+\setucode Amacron * ^^c4^^80 * {\=A}
+\setucode amacron * ^^c4^^81 * {\=a}
+\setucode Abreve * ^^c4^^82 ^^80 {\u A}
+\setucode abreve * ^^c4^^83 ^^a0 {\u a}
+\setucode Aogonek * ^^c4^^84 ^^81 {\k A}
+\setucode aogonek * ^^c4^^85 ^^a1 {\k a}
+\setucode Cacute * ^^c4^^86 ^^82 {\'C}
+\setucode cacute * ^^c4^^87 ^^a2 {\'c}
+\setucode Ccircumflex * ^^c4^^88 * {\^C}
+\setucode ccircumflex * ^^c4^^89 * {\^c}
+\setucode Cdotabove * ^^c4^^8a * {\.C}
+\setucode cdotabove * ^^c4^^8b * {\.c}
+\setcsucode Ccaron * ^^c4^^8c ^^83 {\v C}
+\setcsucode ccaron * ^^c4^^8d ^^a3 {\v c}
+\setcsucode Dcaron * ^^c4^^8e ^^84 {\v D}
+\setcsucode dcaron * ^^c4^^8f ^^a4 {\v d}
+\setucode Dstroke * ^^c4^^90 * {\uuchar\Dstroke{LATIN CAPITAL LETTER D WITH STROKE}}
+\setucode dstroke * ^^c4^^91 * {\uuchar\dstroke{LATIN SMALL LETTER D WITH STROKE}}
+\setucode Emacron * ^^c4^^92 * {\=E}
+\setucode emacron * ^^c4^^93 * {\=e}
+\setucode Ebreve * ^^c4^^94 * {\u E}
+\setucode ebreve * ^^c4^^95 * {\u e}
+\setucode Edotabove * ^^c4^^96 * {\.E}
+\setucode edotabove * ^^c4^^97 * {\.e}
+\setucode Eogonek * ^^c4^^98 ^^86 {\k E}
+\setucode eogonek * ^^c4^^99 ^^a6 {\k e}
+\setcsucode Ecaron * ^^c4^^9a ^^85 {\v E}
+\setcsucode ecaron * ^^c4^^9b ^^a5 {\v e}
+\setucode Gcircumflex * ^^c4^^9c * {\^G}
+\setucode gcircumflex * ^^c4^^9d * {\^g}
+\setucode Gbreve * ^^c4^^9e ^^87 {\u G}
+\setucode gbreve * ^^c4^^9f ^^a7 {\u g}
+\setucode Gdotabove * ^^c4^^a0 * {\.G}
+\setucode gdotabove * ^^c4^^a1 * {\.g}
+\setucode Gcedilla * ^^c4^^a2 * {\c G}
+\setucode gcedilla * ^^c4^^a3 * {\c g}
+\setucode Hcircumflex * ^^c4^^a4 * {\^H}
+\setucode hcircumflex * ^^c4^^a5 * {\^h}
+\setucode Hstroke * ^^c4^^a6 * {\uuchar\Hstroke{LATIN CAPITAL LETTER H WITH STROKE}}
+\setucode hstroke * ^^c4^^a7 * {\uuchar\hstroke{LATIN SMALL LETTER H WITH STROKE}}
+\setucode Itilde * ^^c4^^a8 * {\~I}
+\setucode itilde * ^^c4^^a9 * {\~\i}
+\setucode Imacron * ^^c4^^aa * {\=I}
+\setucode imacron * ^^c4^^ab * {\=\i}
+\setucode Ibreve * ^^c4^^ac * {\u I}
+\setucode ibreve * ^^c4^^ad * {\u i}
+\setucode Iogonek * ^^c4^^ae * {\k I}
+\setucode iogonek * ^^c4^^af * {\k i}
+\setucode Idotabove * ^^c4^^b0 ^^9d {\.I}
+\setucode i * ^^c4^^b1 ^^19 {defined already}
+\setucode IJlig * ^^c4^^b2 ^^9c {IJ}
+\setucode ijlig * ^^c4^^b3 ^^bc {ij}
+\setucode Jcircumflex * ^^c4^^b4 * {\^J}
+\setucode jcircumflex * ^^c4^^b5 * {\^j}
+\setucode Kcedilla * ^^c4^^b6 * {\c K}
+\setucode kcedilla * ^^c4^^b7 * {\c k}
+\setucode krachar * ^^c4^^b8 * {\uuchar\krachar{LATIN SMALL LETTER KRA}}
+\setcsucode Lacute * ^^c4^^b9 ^^88 {\'L}
+\setcsucode lacute * ^^c4^^ba ^^a8 {\'l}
+\setucode Lcedilla * ^^c4^^bb * {\c L}
+\setucode lcedilla * ^^c4^^bc * {\c l}
+\setcsucode Lcaron * ^^c4^^bd ^^89 {\v L}
+\setcsucode lcaron * ^^c4^^be ^^a9 {\v l}
+\setucode Ldotmiddle * ^^c4^^bf * {L\llap{\raise.7ex\hbox{.\kern.1ex}}}
+
+\setucode ldotmiddle * ^^c5^^80 * {l\kern-.2ex\raise.7ex\hbox{.}}
+\setucode L * ^^c5^^81 ^^8a {defined already}
+\setucode l * ^^c5^^82 ^^aa {defined already}
+\setucode Nacute * ^^c5^^83 ^^8b {\'N}
+\setucode nacute * ^^c5^^84 ^^ab {\'n}
+\setucode Ncedilla * ^^c5^^85 * {\c N}
+\setucode ncedilla * ^^c5^^86 * {\c n}
+\setcsucode Ncaron * ^^c5^^87 ^^8c {\v N}
+\setcsucode ncaron * ^^c5^^88 ^^ac {\v n}
+\setucode napostrophe * ^^c5^^89 * {'n}
+\setucode ENGchar * ^^c5^^8a ^^8d {\uuchar\ENGchar{LATIN CAPITAL LETTER ENG}}
+\setucode engchar * ^^c5^^8b ^^ad {\uuchar\engchar{LATIN SMALL LETTER ENG}}
+\setucode Omacron * ^^c5^^8c * {\=O}
+\setucode omacron * ^^c5^^8d * {\=o}
+\setucode Obreve * ^^c5^^8e * {\u O}
+\setucode obreve * ^^c5^^8f * {\u o}
+\setucode Ohungarumlaut * ^^c5^^90 ^^8e {\H O}
+\setucode ohungarumlaut * ^^c5^^91 ^^ae {\H o}
+\setucode OE * ^^c5^^92 ^^d7 {defined already}
+\setucode oe * ^^c5^^93 ^^f7 {defined already}
+\setcsucode Racute * ^^c5^^94 ^^8f {\'R}
+\setcsucode racute * ^^c5^^95 ^^af {\'r}
+\setucode Rcedilla * ^^c5^^96 * {\c R}
+\setucode rcedilla * ^^c5^^97 * {\c r}
+\setcsucode Rcaron * ^^c5^^98 ^^90 {\v R}
+\setcsucode rcaron * ^^c5^^99 ^^b0 {\v r}
+\setucode Sacute * ^^c5^^9a ^^91 {\'S}
+\setucode sacute * ^^c5^^9b ^^b1 {\'s}
+\setucode Scircumflex * ^^c5^^9c * {\^S}
+\setucode scircumflex * ^^c5^^9d * {\^s}
+\setucode Scedilla * ^^c5^^9e ^^93 {\c S}
+\setucode scedilla * ^^c5^^9f ^^b3 {\c s}
+\setcsucode Scaron * ^^c5^^a0 ^^92 {\v S}
+\setcsucode scaron * ^^c5^^a1 ^^b2 {\v s}
+\setucode Tcedilla * ^^c5^^a2 ^^95 {\c T}
+\setucode tcedilla * ^^c5^^a3 ^^b5 {\c t}
+\setcsucode Tcaron * ^^c5^^a4 ^^94 {\v T}
+\setcsucode tcaron * ^^c5^^a5 ^^b4 {\v t}
+\setucode Tstroke * ^^c5^^a6 * {\uuchar\Tstroke{LATIN CAPITAL LETTER T WITH STROKE}}
+\setucode tstroke * ^^c5^^a7 * {\uuchar\tstroke{LATIN SMALL LETTER T WITH STROKE}}
+\setucode Utilde * ^^c5^^a8 * {\~U}
+\setucode utilde * ^^c5^^a9 * {\~u}
+\setucode Umacron * ^^c5^^aa * {\=U}
+\setucode umacron * ^^c5^^ab * {\=u}
+\setucode Ubreve * ^^c5^^ac * {\u U}
+\setucode ubreve * ^^c5^^ad * {\u u}
+\setcsucode Uring * ^^c5^^ae ^^97 {\r U}
+\setcsucode uring * ^^c5^^af ^^b7 {\r u}
+\setucode Uhungarumlaut * ^^c5^^b0 ^^96 {\H U}
+\setucode uhungarumlaut * ^^c5^^b1 ^^b6 {\H u}
+\setucode Uogonek * ^^c5^^b2 * {\k U}
+\setucode uogonek * ^^c5^^b3 * {\k u}
+\setucode Wcircumflex * ^^c5^^b4 * {\^W}
+\setucode wcircumflex * ^^c5^^b5 * {\^w}
+\setucode Ycircumflex * ^^c5^^b6 * {\^Y}
+\setucode ycircumflex * ^^c5^^b7 * {\^y}
+\setucode Ydieresis * ^^c5^^b8 ^^98 {\"Y}
+\setucode Zacute * ^^c5^^b9 ^^99 {\'Z}
+\setucode zacute * ^^c5^^ba ^^b9 {\'z}
+\setucode Zdotabove * ^^c5^^bb ^^9b {\.Z}
+\setucode zdotabove * ^^c5^^bc ^^bb {\.z}
+\setcsucode Zcaron * ^^c5^^bd ^^9a {\v Z}
+\setcsucode zcaron * ^^c5^^be ^^ba {\v z}
+\setucode longschar * ^^c5^^bf * {\uuchar\longschar{LATIN SMALL LETTER LONG S}}
+
+% end of file utf8lata.tex
+

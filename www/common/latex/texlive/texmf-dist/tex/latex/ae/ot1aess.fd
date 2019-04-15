@@ -1,0 +1,55 @@
+%% ot1aess.fd
+%% Copyright 1997 Lars Engebretsen
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ot1aess.fd}
+   [1997/11/16 Font definitions for OT1/aess.]
+
+\DeclareFontFamily{OT1}{aess}{}
+
+\DeclareFontShape{OT1}{aess}{m}{n}{
+   <-9> cmss8
+   <9-10> cmss9
+   <10-12> cmss10
+   <12-17> cmss12
+   <17-> cmss17
+}{}
+
+\DeclareFontShape{OT1}{aess}{m}{sl}{
+   <-9> cmssi8
+   <9-10> cmssi9
+   <10-12> cmssi10
+   <12-17> cmssi12
+   <17-> cmssi17
+}{}
+
+\DeclareFontShape{OT1}{aess}{sbc}{n}{
+   <-> cmssdc10
+}{}
+
+\DeclareFontShape{OT1}{aess}{bx}{n}{
+   <-> cmssbx10
+}{}
+
+\DeclareFontShape{OT1}{aess}{l}{n}{<->ssub * aess/m/n}{}
+\DeclareFontShape{OT1}{aess}{l}{sl}{<->ssub * aess/m/sl}{}
+\DeclareFontShape{OT1}{aess}{m}{it}{<->ssub * aess/m/sl}{}
+\DeclareFontShape{OT1}{aess}{l}{it}{<->ssub * aess/m/it}{}
+\DeclareFontShape{OT1}{aess}{b}{n}{<->ssub * aess/bx/n}{}
+
+\endinput

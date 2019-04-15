@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='soulutf8'>
+  <name>soulutf8</name>
+  <caption>Permit use of UTF-8 characters in soul.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    This package extends package <xref refid='soul'>soul</xref> and adds
+    some support for UTF-8. Namely the input encodings in
+    &#x2018;<tt>utf8.def</tt>&#x2019; from package
+    <xref refid='inputenc'>inputenc</xref> and
+    &#x2018;<tt>utf8x.def</tt>&#x2019; from package
+    <xref refid='unicode'>ucs</xref> are supported.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/soulutf8.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/soulutf8.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

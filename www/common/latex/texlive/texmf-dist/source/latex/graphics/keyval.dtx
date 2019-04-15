@@ -1,0 +1,420 @@
+%
+% \iffalse
+%% keyval.dtx Copyright (C) 1993 1994 1995 1997 1998 1999 David Carlisle
+%%            Copyright (C) 2000--2015 David Carlisle, LaTeX3 Project
+%%
+%% This file is part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.3c or, at your option, any later version.
+%%
+%
+%<*dtx>
+          \ProvidesFile{keyval.dtx}
+%</dtx>
+%<*!plain>
+%<package&!plain>\NeedsTeXFormat{LaTeX2e}
+%<package&!plain>\ProvidesPackage{keyval}
+%<driver>        \ProvidesFile{keyval.drv}
+% \fi
+%                \ProvidesFile{keyval.dtx}
+                 [2014/10/28 v1.15 key=value parser (DPC)]
+%
+% \iffalse
+%</!plain>
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{keyval}
+\begin{document}
+ \DocInput{keyval.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{keyval.dtx}
+% \title{The \textsf{keyval} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{David Carlisle}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{graphics}
+% \maketitle
+%
+% \begin{abstract}
+%  A \LaTeX\ package implementing a system allowing the setting
+%  of parameters (or `named arguments' with a
+%  \meta{key}${}={}$\meta{value} syntax.
+%
+%  Eg: |\foo[height=3in, shadow = true ]{bar}|
+% \end{abstract}
+%
+% \CheckSum{158}
+%
+% \changes{v1.03}
+%         {1993/10/13}{Initial version}
+% \changes{v1.04}{1993/11/15}
+%         {Upgrade after comments from Timothy van Zandt}
+% \changes{v1.05}{1993/11/17}
+%         {Further small improvements}
+% \changes{v1.06}{1994/02/01}
+%         {Update to LaTeX2e}
+% \changes{v1.07}{1994/03/15}
+%         {New style ltxdoc}
+% \changes{v1.08}{1994/09/12}
+%         {Improve docstrip handling}
+% \changes{v1.09}{1995/09/21}
+%         {Move a comma for graphics/1698}
+% \changes{v1.14}{2014/04/25}
+%         {Make most definitions \cs{long} to allow \cs{par} in values: graphics/3446}
+% \changes{v1.14}{2014/04/25}
+%         {Only strip a single brace pair from values: graphics/3446}
+% \changes{v1.15}{2014/05/08}
+%         {revert this change: Only strip a single brace pair from values: graphics/3446}
+%
+%
+% This package implements a system of defining and using sets of
+% parameters, which are set using the syntax \meta{key}=\meta{value}.
+%
+% For each keyword in such a set, there exists a function which is
+% called whenever the parameter appears in a parameter list. For
+% instance if the set |dpc| is to have the keyword |scale| then I
+% would define.\\
+% | \define@key{dpc}{scale}{scale ({\tt\string#1})\\}|\\
+% The first argument of |\define@key| is the  set of keywords being
+% used, the second is the keyword, and the third is the function to
+% call. This function will be given as |#1| the \meta{value} specified
+% by the user.
+%
+% Normally it is an error to omit the `=\meta{value}' however if an
+% optional \meta{value} is supplied when the keyword is defined, then
+% just the keyword need be supplied.\\
+% |\define@key{dpc}{clip}[true]{...}|\\
+% For `|clip|' you can go `|clip = true|' or `|clip = false|' or
+% just `|clip|', which is the same as `|clip = true|'
+%
+% To use these keywords, just call `|\setkeys|' with a comma
+% separated list of settings, each of the form
+% \meta{key}=\meta{value}, or just \meta{key}. Any white space around
+% the `|=|' and `|,|' is ignored.
+%
+% As the \meta{key} is passed as a macro argument, if it consists
+% entirely of a |{ }| group, the outer  braces are stripped off. Thus
+% |,key=foo,| and |,key={foo},| are equivalent. This fact enables one to
+% `hide' any commas or equals signs that must appear in the value. i.e.\
+% in |foo={1,2,3},bar=4|, |foo| gets the value |1,2,3|, the comma after
+% |1| does not terminate the keyval pair, as it is `hidden' by the
+% braces.
+%
+% Empty entries, with nothing between the commas, are silently ignored.
+% This means that it is not an error to have a comma after the last
+% term, or before the first.
+%
+% \section{Example}
+%
+% We may extend the examples above to give  a `fake' graphics
+% inclusion macro, with a syntax similar to that used in the psfig
+% macros.
+%
+% \makeatletter
+% \def\dpcgraphics{\@ifnextchar[\@dpcgraphics{\@dpcgraphics[]}}
+%
+% |\dpcgraphics| has one optional argument which is passed through
+% |\setkeys|, and one mandatory argument, the filename. It actually
+% just typesets its arguments, for demonstration.
+%
+% \def\@dpcgraphics[#1]#2{{\setkeys{dpc}{#1}INPUT: #2}}%
+%
+% \define@key{dpc}{scale}{scale ({\tt\string#1\relax})\\}
+% \define@key{dpc}{height}{height ({\tt#1})\\}
+% \define@key{dpc}{width}{width ({\tt#1})\\}
+% \define@key{dpc}{bb}{bounding box ({\tt#1})\\}
+% \define@key{dpc}{clip}[true]{clip ({\tt\string#1\relax})\\}
+% \makeatother
+%
+% The declared keys are: |scale|, |height|, |width|, |bb|,
+% and |clip|. Except for the last, they must all be given a value if
+% used.
+%
+% Note how in the following, any white space around |=| or |,| is
+% ignored, as are the `empty' arguments caused by extra commas. Note
+% also that each macro receives \emph{exactly} the tokens that you
+% specify as arguments, no premature expansion is done.
+%
+% \begin{verbatim}
+% \def\dpcgraphics{\@ifnextchar[\@dpcgraphics{\@dpcgraphics[]}}
+% \def\@dpcgraphics[#1]#2{{\setkeys{dpc}{#1}INPUT: #2}}
+%
+% \define@key{dpc}{scale}{scale ({\tt\string#1\relax})\\}
+% \define@key{dpc}{clip}[true]{clip ({\tt\string#1\relax})\\}
+% \end{verbatim}
+%
+% \begin{minipage}{.4\textwidth}
+% \begin{verbatim}
+% \def\scalemacro{9}
+% \dpcgraphics
+% [ height =4in, ,
+%   width = 3in,
+%   scale = \scalemacro,
+%   bb = 20 20 300 400 ,
+%   clip,
+%  ]{aaa}
+% \end{verbatim}
+% \end{minipage}
+% \hfill
+% \begin{minipage}{.4\textwidth}
+% \def\scalemacro{9}
+%\dpcgraphics
+% [ height =4in, ,
+%   width = 3in,
+%   scale = \scalemacro ,
+%   bb = 20 20 300 400 ,
+%   clip ,
+%  ]{aaa}
+% \end{minipage}
+%
+%
+% \section{The Internal Interface}
+% A declaration of the form:\\
+% |\define@key{family}{key}{...}|\\
+% Defines a macro |\KV@prefix@key| with one argument. When used in a
+% keyval list, the macro receives the value as its argument.
+%
+% A declaration of the form:\\
+% |\define@key{family}{key}[default]{...}|\\
+% Defines a macro |\KV@family@key| as above, however it also defines the
+% macro |\KV@family@key@default| as a macro with no arguments, and
+% definition\\
+%  |\KV@family@key{default}|.
+%
+% Thus if macros are defined using |\define@key|, the use of a key with
+% no value \ldots|,foo,|\ldots\ is always equivalent to the use of the
+% key with some value, \ldots|,foo=default,|\ldots. However a package
+% writer may wish that the `default' behaviour for some key is not
+% directly equivalent to using that key with a value. (In particular, as
+% pointed out to me by Timothy Van Zandt, you may wish to omit error
+% checking on the default value as you know it is correct.) In these
+% cases one simply needs to define the two macros
+% |\KV@|\meta{family}|@key| and |\KV@|\meta{family}|@key@default|
+% directly using |\def| (or |\newcommand|). I do not supply a user
+% interface for this type of definition, but it is supported in the
+% sense that I will try to ensure that any future upgrades of this
+% package do not break styles making use of these `low level'
+% definitions.
+%
+% \StopEventually{}
+%
+% \section{The Macros}
+%
+% From version~1.05, all `internal' macros associated to keys have names
+% of the form:\\
+% |\KV@|\meta{family}|@|\meta{key} or
+% |\KV@|\meta{family}|@|\meta{key}|@|\meta{default}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\setkeys}
+% The top level macro. |#2| should be a comma separated values of the
+% form  \meta{key} |=| \meta{value} or just simply \meta{key}.
+% The macro associated with this key in the `family' |#1| is called with
+% argument \meta{value}. The second form is only allowed if the key was
+% declared with a default value.
+%    \begin{macrocode}
+\long\def\setkeys#1#2{%
+%    \end{macrocode}
+%  Save the `family' for later. Then begin acting on the comma
+%  separated list.
+% \changes{v1.11}{1998/06/05}
+%         {Make \cs{@tempc} safe (in case it is an \cs{if}.}
+%    \begin{macrocode}
+  \def\KV@prefix{KV@#1@}%
+  \let\@tempc\relax
+  \KV@do#2,\relax,}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\KV@do}
+% Iterate down the list of comma separated argument pairs.
+% \changes{v1.14}{2014/04/25}
+%         {Add \cs{@empty} not \cs{empty}}
+%    \begin{macrocode}
+\long\def\KV@do#1,{%
+ \ifx\relax#1\@empty\else
+  \KV@split#1==\relax
+  \expandafter\KV@do\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\KV@split}
+% Split up the keyword and value, and call the appropriate command.
+% This macro was slightly reorganised for version 1.04, after some
+% suggestions from Timothy Van Zandt.
+%    \begin{macrocode}
+\long\def\KV@split#1=#2=#3\relax{%
+  \KV@@sp@def\@tempa{#1}%
+  \ifx\@tempa\@empty\else
+    \expandafter\let\expandafter\@tempc
+      \csname\KV@prefix\@tempa\endcsname
+    \ifx\@tempc\relax
+%<plain>      \KV@err
+%<!plain>      \KV@errx
+       {\@tempa\space undefined}%
+    \else
+      \ifx\@empty#3\@empty
+        \KV@default
+      \else
+        \KV@@sp@def\@tempb{#2}%
+        \expandafter\@tempc\expandafter{\@tempb}\relax
+      \fi
+    \fi
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\KV@default}
+% Run the default code, or raise an error.
+%    \begin{macrocode}
+\def\KV@default{%
+  \expandafter\let\expandafter\@tempb
+    \csname\KV@prefix\@tempa @default\endcsname
+  \ifx\@tempb\relax
+    \KV@err{No value specified for \@tempa}%
+  \else
+    \@tempb\relax
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\KV@err}
+% \changes{v1.10}{1997/11/10}
+%         {Use \cs{PackageError}}
+% \changes{v1.12}{1998/11/18}
+%         {Option system added}
+% Error messages.
+%    \begin{macrocode}
+%<plain>\def\KV@err#1{\errmessage{key-val: #1}}
+%<*!plain>
+\DeclareOption{unknownkeysallowed}{%
+  \def\KV@errx#1{\PackageInfo{keyval}{#1}}}
+\DeclareOption{unknownkeyserror}{%
+  \def\KV@errx#1{\PackageError{keyval}{#1}\@ehc}}
+\ExecuteOptions{unknownkeyserror}
+\let\KV@err\KV@errx
+\ProcessOptions
+%</!plain>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\KV@@sp@def}
+% \changes{v1.10}{1997/11/10}
+%         {Reorganise to not require doubled hash tokens, and to not
+%          lose initial brace groups.}
+% \begin{macro}{\KV@@sp@b}
+% \begin{macro}{\KV@@sp@c}
+% \begin{macro}{\KV@@sp@d}
+% |\KV@@sp@def|\meta{cmd}\meta{token list} is like |\def|, except that
+% a space token at the beginning or end of \meta{token list} is
+% removed before making the assignment. \meta{token list} may not
+% contain the token |\@nil|, unless it is within a brace group.
+% The names of these commands were changed at version~1.05 to ensure
+% that they do not clash with `internal' macros in a key family `sp'.
+%
+% Since v1.10, |#| may appear in the second argument without it
+% needing to be doubled as |##|. Also earlier versions would
+% drop any initial brace group, so |{abc}d| would incorrectly
+% be treated as |abcd|. The current version only removes brace
+% groups that surround the entire value, so |{abcd}| \emph{is} treated
+% correctly as |abcd|. Prior to v1.14, two levels of bracing are removed, if
+% you require the entire argument to be a single brace group, you had
+% use |{{{abcd}}}|, from v1.14 exactly one brace group is removed, so to make
+% the entire value be a brace group you need |{{abc}}|.
+%
+%    \begin{macrocode}
+\def\@tempa#1{%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\long\def\KV@@sp@def##1##2{%
+  \futurelet\KV@tempa\KV@@sp@d##2\@nil\@nil#1\@nil\relax##1}%
+%    \end{macrocode}
+%
+% Early release removed initial space by having an `extra' argument
+% in |\KV@@sp@b| but that removed too many braces, so now make
+% |\KV@@sp@b| explicitly remove a single space token. That unfortunately
+% means we need the new |\KV@@sp@d| command to add a space token if
+% one was not there before.
+%    \begin{macrocode}
+\def\KV@@sp@d{%
+  \ifx\KV@tempa\@sptoken
+    \expandafter\KV@@sp@b
+  \else
+    \expandafter\KV@@sp@b\expandafter#1%
+  \fi}%
+%    \end{macrocode}
+%
+% \changes{v1.14}{2014/04/25}
+%         {Add \cs{@empty} to avoid dropping a brace pair: graphics/3446}
+% \changes{v1.15}{2014/05/08}
+%         {revert last change}
+%    \begin{macrocode}
+\long\def\KV@@sp@b#1##1 \@nil{\KV@@sp@c##1}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<plain>\def\@sptoken{#1}%
+%    \end{macrocode}
+%
+% Make the above definitions, inserting the space token where needed.
+%    \begin{macrocode}
+  }
+\@tempa{ }
+%    \end{macrocode}
+%
+% \changes{v1.14}{2014/04/25}
+%         {Add \cs{expandafter} to remove the extra \cs{@empty} token: graphics/3446}
+% \changes{v1.15}{2014/05/08}
+%         {revert last change}
+%    \begin{macrocode}
+\long\def\KV@@sp@c#1\@nil#2\relax#3{\KV@toks@{#1}\edef#3{\the\KV@toks@}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\KV@toks@}
+% Macro register used above to prevent |#| doubling.
+% Avoid uding one of the normal scratch registers, as this code
+% is not in a local group.
+%    \begin{macrocode}
+\newtoks\KV@toks@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\define@key}
+% Define the command associated to the key |#2| in the family |#1|.
+% First looks for a default argument (the default value for the
+% key)
+%    \begin{macrocode}
+\def\define@key#1#2{%
+  \@ifnextchar[{\KV@def{#1}{#2}}{\long\@namedef{KV@#1@#2}####1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\KV@def}
+% Make the definitions of the command, and the default value.
+%    \begin{macrocode}
+\def\KV@def#1#2[#3]{%
+  \long\@namedef{KV@#1@#2@default\expandafter}\expandafter
+    {\csname KV@#1@#2\endcsname{#3}}%
+  \long\@namedef{KV@#1@#2}##1}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+% \Finale
+%
+\endinput

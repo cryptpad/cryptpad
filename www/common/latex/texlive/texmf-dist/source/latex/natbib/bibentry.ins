@@ -1,0 +1,79 @@
+% File: bibentry.ins
+% Copyright 1999 Patrick W. Daly
+%
+% This file can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Distributed from CTAN
+% archives in directory macros/latex/base/lppl.txt; either
+% version 1 of the License, or any later version.
+%
+% It is an installation file for extracting package and driver
+% files from the original source file. Simply process it under
+% TeX or LaTeX. It works with Docstrip versions before and after
+% December 1995.
+
+\def\batchfile{bibentry.ins}
+\input docstrip
+
+\preamble
+=============================================
+IMPORTANT NOTICE:
+
+This program can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt; either
+version 1 of the License, or any later version.
+
+This is a generated file.
+It may not be distributed without the original source file \inFileName.
+
+Full documentation can be obtained by LaTeXing that original file.
+Only a few abbreviated comments remain here to describe the usage.
+=============================================
+\endpreamble
+\postamble
+
+<<<<< End of generated file <<<<<<
+\endpostamble
+\keepsilent
+
+% Docstrip before Dec 95 does not have \generate syntax, nor
+%   \declarepreamble. Must redefine them. The \generateFile called
+%   for each output file individually.
+% Docstrip before Dec 96 cannot interprete multiline \if..\fi
+%   Thus for maximum compatibility, have only one-line conditionals
+
+\let\oldDS F\relax
+\expandafter\ifx\csname generate\endcsname\relax \let\oldDS T\relax\fi
+\if\oldDS T  \def\declarepreamble#1{\preamble}\fi
+\if\oldDS T  \def\declarepostamble#1{\postamble}\fi
+\if\oldDS T  \generateFile{bibentry.sty}{f}{\from{bibentry.dtx}{package}} \fi
+
+\declarepreamble\driver
+============================================
+This is the driver file to produce the LaTeX documentation
+from the original source file \inFileName.
+
+Make changes to it as needed. (Never change the file \inFileName!)
+============================================
+\endpreamble
+
+\declarepostamble\driverq
+
+End of documentation driver file.
+\endpostamble
+
+\ifx\oldDS T \generateFile{bibentry.drv}{f}{\from{bibentry.dtx}{driver}}\fi
+
+\ifx\oldDS T \let\askforoverwritefalse\relax\def\generate#1{}\fi
+
+\askforoverwritefalse
+\generate{\file{bibentry.sty}{\from{bibentry.dtx}{package}}
+          \file{bibentry.drv}{\usepreamble\driver\usepostamble\driverq
+                           \from{bibentry.dtx}{driver}}
+         }
+
+\obeyspaces
+\Msg{*******************************************}%
+\Msg{* For documentation, process bibentry.dtx *}%
+\Msg{*    or the driver file      bibentry.drv *}%
+\Msg{*******************************************}

@@ -1,0 +1,1596 @@
+% \iffalse meta-comment
+%
+% File: refcount.dtx
+% Version: 2011/10/16 v3.4
+% Info: Data extraction from label references
+%
+% Copyright (C) 1998, 2000, 2006, 2008, 2010, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file refcount.dtx
+% and the derived files
+%    refcount.sty, refcount.pdf, refcount.ins, refcount.drv,
+%    refcount-test1.tex, refcount-test2.tex, refcount-test3.tex,
+%    refcount-test4.tex, refcount-test5.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/refcount.dtx
+%    CTAN:macros/latex/contrib/oberdiek/refcount.pdf
+%
+% Unpacking:
+%    (a) If refcount.ins is present:
+%           tex refcount.ins
+%    (b) Without refcount.ins:
+%           tex refcount.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{refcount.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If refcount.drv is present:
+%           latex refcount.drv
+%    (b) Without refcount.drv:
+%           latex refcount.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex refcount.dtx
+%       makeindex -s gind.ist refcount.idx
+%       pdflatex refcount.dtx
+%       makeindex -s gind.ist refcount.idx
+%       pdflatex refcount.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/refcount.sty
+%    TDS:doc/latex/oberdiek/refcount.pdf
+%    TDS:doc/latex/oberdiek/test/refcount-test1.tex
+%    TDS:doc/latex/oberdiek/test/refcount-test2.tex
+%    TDS:doc/latex/oberdiek/test/refcount-test3.tex
+%    TDS:doc/latex/oberdiek/test/refcount-test4.tex
+%    TDS:doc/latex/oberdiek/test/refcount-test5.tex
+%    TDS:source/latex/oberdiek/refcount.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: refcount
+Version: 2011/10/16 v3.4
+
+Copyright (C) 1998, 2000, 2006, 2008, 2010, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file refcount.dtx
+and the derived files
+   refcount.sty, refcount.pdf, refcount.ins, refcount.drv,
+   refcount-test1.tex, refcount-test2.tex, refcount-test3.tex,
+   refcount-test4.tex, refcount-test5.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{refcount.ins}{\from{refcount.dtx}{install}}%
+  \file{refcount.drv}{\from{refcount.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{refcount.sty}{\from{refcount.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{refcount-test1.tex}{\from{refcount.dtx}{test1}}%
+  \file{refcount-test2.tex}{\from{refcount.dtx}{test2}}%
+  \file{refcount-test3.tex}{\from{refcount.dtx}{test3}}%
+  \file{refcount-test4.tex}{\from{refcount.dtx}{test3,test4}}%
+  \file{refcount-test5.tex}{\from{refcount.dtx}{test5}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{refcount.xml}{\from{refcount.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     refcount.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `refcount.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{refcount.drv}%
+  [2011/10/16 v3.4 Data extraction from label references (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{refcount.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1185}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{refcount.drv}
+%
+% \title{The \xpackage{refcount} package}
+% \date{2011/10/16 v3.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% References are not numbers, however they often store numerical
+% data such as section or page numbers. \cs{ref} or \cs{pageref}
+% cannot be used for counter assignments or calculations because
+% they are not expandable, generate warnings, or can even be links.
+% The package provides expandable macros to extract the data
+% from references. Packages \xpackage{hyperref}, \xpackage{nameref},
+% \xpackage{titleref}, and \xpackage{babel} are supported.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Usage}
+%
+% \subsection{Setting counters}
+%
+% The following commands are similar to \LaTeX's
+% \cs{setcounter} and \cs{addtocounter},
+% but they extract the number value from a reference:
+% \begin{quote}
+%   \cs{setcounterref}, \cs{addtocounterref}\\
+%   \cs{setcounterpageref}, \cs{addtocounterpageref}
+% \end{quote}
+% They take two arguments:
+% \begin{quote}
+%    \cs{...counter...ref} |{|\meta{\LaTeX\ counter}|}|
+%    |{|\meta{reference}|}|
+% \end{quote}
+% An undefined references produces the usual LaTeX warning
+% and its value is assumed to be zero.
+% Example:
+% \begin{quote}
+%\begin{verbatim}
+%\newcounter{ctrA}
+%\newcounter{ctrB}
+%\refstepcounter{ctrA}\label{ref:A}
+%\setcounterref{ctrB}{ref:A}
+%\addtocounterpageref{ctrB}{ref:A}
+%\end{verbatim}
+% \end{quote}
+%
+% \subsection{Expandable commands}
+%
+% These commands that can be used in expandible contexts
+% (inside calculations, \cs{edef}, \cs{csname}, \cs{write}, \dots):
+% \begin{quote}
+%   \cs{getrefnumber}, \cs{getpagerefnumber}
+% \end{quote}
+% They take one argument, the reference:
+% \begin{quote}
+%   \cs{get...refnumber} |{|\meta{reference}|}|
+% \end{quote}
+% The default for undefined references can be changed
+% with macro \cs{setrefcountdefault}, for example this
+% package calls:
+% \begin{quote}
+%   \cs{setrefcountdefault}|{0}|
+% \end{quote}
+%
+% Since version 2.0 of this package there is a new
+% command:
+% \begin{quote}
+%   \cs{getrefbykeydefault} |{|\meta{reference}|}|
+%   |{|\meta{key}|}| |{|\meta{default}|}|
+% \end{quote}
+% This generalized version allows the extraction
+% of further properties of a reference than the
+% two standard ones. Thus the following properties
+% are supported, if they are available:
+% \begin{quote}
+% \begin{tabular}{@{}l|l|l@{}}
+%    Key & Description & Package\\
+% \hline
+%   \meta{empty} & same as \cs{ref} & \LaTeX\\
+%   |page| & same as \cs{pageref} & \LaTeX\\
+%   |title| & section and caption titles & \xpackage{titleref}\\
+%   |name| & section and caption titles & \xpackage{nameref}\\
+%   |anchor| & anchor name & \xpackage{hyperref}\\
+%   |url| & url/file & \xpackage{hyperref}/\xpackage{xr}
+% \end{tabular}
+% \end{quote}
+%
+% Since version 3.2 the expandable macros described before
+% in this section
+% are expandable in exact two expansion steps.
+%
+% \subsection{Undefined references}
+%
+% Because warnings and assignments cannot be used in
+% expandible contexts, undefined references do not
+% produce a warning, their values are assumed to be zero.
+% Example:
+% \begin{quote}
+%\begin{verbatim}
+%\label{ref:here}% somewhere
+%\refused{ref:here}% see below
+%\ifodd\getpagerefnumber{ref:here}%
+%  reference is on an odd page
+%\else
+%  reference is on an even page
+%\fi
+%\end{verbatim}
+% \end{quote}
+%
+% In case of undefined references the user usually want's
+% to be informed. Also \LaTeX\ prints a warning at
+% the end of the \LaTeX\ run. To notify \LaTeX\ and
+% get a normal warning, just use
+% \begin{quote}
+%   \cs{refused} |{|\meta{reference}|}|
+% \end{quote}
+% outside the expanding context. Example, see above.
+%
+% \subsubsection{Check for undefined references}
+%
+% In version 3.2 macros were added, that test, whether references
+% are defined.
+% \begin{declcs}{IfRefUndefinedExpandable} \M{refname} \M{then} \M{else}\\
+%   \cs{IfRefUndefinedBabel} \M{refname} \M{then} \M{else}
+% \end{declcs}
+% If the reference is not available and therefore undefined, then
+% argument \meta{then} is executed, otherwise argument \meta{else}
+% is called. Macro \cs{IfRefUndefinedExpandable} is expandable,
+% but \meta{refname} must not contain babel shorthand characters.
+% Macro \cs{IfRefUndefinedBabel} supports shorthand characters of
+% babel, but it is not expandable.
+%
+% \subsection{Notes}
+%
+% \begin{itemize}
+% \item
+%   The method of extracting the number in this
+%   package also works in cases, where the
+%   reference cannot be used directly, because
+%   a package such as \xpackage{hyperref} has added
+%   extra stuff (hyper link), so that the reference cannot
+%   be used as number any more.
+% \item
+%   If the reference does not contain a number,
+%   assignments to a counter will fail of course.
+% \end{itemize}
+%
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@refcount.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{refcount}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@refcount.sty\endcsname
+\ProvidesPackage{refcount}%
+  [2011/10/16 v3.4 Data extraction from label references (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname rc@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\rc@AtEnd{%
+    \rc@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\rc@AtEnd{\rc@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Loading packages}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input ltxcmds.sty\relax
+  \input infwarerr.sty\relax
+\else
+  \RequirePackage{ltxcmds}[2011/11/09]%
+  \RequirePackage{infwarerr}[2010/04/08]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Defining commands}
+%
+%    \begin{macro}{\rc@IfDefinable}
+%    \begin{macrocode}
+\ltx@IfUndefined{@ifdefinable}{%
+  \def\rc@IfDefinable#1{%
+    \ifx#1\ltx@undefined
+      \expandafter\ltx@firstofone
+    \else
+      \ifx#1\relax
+        \expandafter\expandafter\expandafter\ltx@firstofone
+      \else
+        \@PackageError{refcount}{%
+          Command \string#1 is already defined.\MessageBreak
+          It will not redefined by this package%
+        }\@ehc
+        \expandafter\expandafter\expandafter\ltx@gobble
+      \fi
+    \fi
+  }%
+}{%
+  \let\rc@IfDefinable\@ifdefinable
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\rc@RobustDefOne}
+%    \begin{macro}{\rc@RobustDefZero}
+%    \begin{macrocode}
+\ltx@IfUndefined{protected}{%
+  \ltx@IfUndefined{DeclareRobustCommand}{%
+    \def\rc@RobustDefOne#1#2#3#4{%
+      \rc@IfDefinable#3{%
+        #1\def#3##1{#4}%
+      }%
+    }%
+    \def\rc@RobustDefZero#1#2{%
+      \rc@IfDefinable#1{%
+        \def#1{#2}%
+      }%
+    }%
+  }{%
+    \def\rc@RobustDefOne#1#2#3#4{%
+      \rc@IfDefinable#3{%
+        \DeclareRobustCommand#2#3[1]{#4}%
+      }%
+    }%
+    \def\rc@RobustDefZero#1#2{%
+      \rc@IfDefinable#1{%
+        \DeclareRobustCommand#1{#2}%
+      }%
+    }%
+  }%
+}{%
+  \def\rc@RobustDefOne#1#2#3#4{%
+    \rc@IfDefinable#3{%
+      \protected#1\def#3##1{#4}%
+    }%
+  }%
+  \def\rc@RobustDefZero#1#2{%
+    \rc@IfDefinable#1{%
+      \protected\def#1{#2}%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%
+%    \begin{macro}{\rc@newcommand}
+%    \begin{macrocode}
+\ltx@IfUndefined{newcommand}{%
+  \def\rc@newcommand*#1[#2]#3{% hash-ok
+    \rc@IfDefinable#1{%
+      \ifcase#2 %
+        \def#1{#3}%
+      \or
+        \def#1##1{#3}%
+      \or
+        \def#1##1##2{#3}%
+      \else
+        \rc@InternalError
+      \fi
+    }%
+  }%
+}{%
+  \let\rc@newcommand\newcommand
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{setrefcountdefault}}
+%
+%    \begin{macro}{\setrefcountdefault}
+%    \begin{macrocode}
+\rc@RobustDefOne\long{}\setrefcountdefault{%
+  \def\rc@default{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\setrefcountdefault{0}
+%    \end{macrocode}
+%
+% \subsection{\cs{refused}}
+%
+%    \begin{macro}{\refused}
+%    \begin{macrocode}
+\ltx@IfUndefined{G@refundefinedtrue}{%
+  \rc@RobustDefOne{}{*}\refused{%
+    \begingroup
+      \csname @safe@activestrue\endcsname
+      \ltx@IfUndefined{r@#1}{%
+        \protect\G@refundefinedtrue
+        \rc@WarningUndefined{#1}%
+      }{}%
+    \endgroup
+  }%
+}{%
+  \rc@RobustDefOne{}{*}\refused{%
+    \begingroup
+      \csname @safe@activestrue\endcsname
+      \ltx@IfUndefined{r@#1}{%
+        \csname protect\expandafter\endcsname
+        \csname G@refundefinedtrue\endcsname
+        \rc@WarningUndefined{#1}%
+      }{}%
+    \endgroup
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@WarningUndefined}
+%    \begin{macrocode}
+\ltx@IfUndefined{@latex@warning}{%
+  \def\rc@WarningUndefined#1{%
+    \ltx@ifundefined{thepage}{%
+      \def\thepage{\number\count0 }%
+    }{}%
+    \@PackageWarning{refcount}{%
+      Reference `#1' on page \thepage\space undefined%
+    }%
+  }%
+}{%
+  \def\rc@WarningUndefined#1{%
+    \@latex@warning{%
+      Reference `#1' on page \thepage\space undefined%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Setting counters by reference data}
+%
+% \subsubsection{Generic setting}
+%
+%    \begin{macro}{\rc@set}
+% Generic command for
+% |\|$\{$|set|$,$|addto|$\}$|counter|$\{$|page|$,\}$|ref|:
+%\begin{quote}
+%\begin{tabular}[t]{@{}l@{: }l@{}}
+% |#1|& \cs{setcounter}, \cs{addtocounter}\\
+% |#2|& \cs{ltx@car} (for \cs{ref}), \cs{ltx@cartwo} (for \cs{pageref})\\
+% |#3|& \hologo{LaTeX} counter\\
+% |#4|& reference\\
+%\end{tabular}
+%\end{quote}
+%    \begin{macrocode}
+\def\rc@set#1#2#3#4{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \refused{#4}%
+    \expandafter\rc@@set\csname r@#4\endcsname{#1}{#2}{#3}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@@set}
+%\begin{quote}
+%\begin{tabular}[t]{@{}l@{: }l@{}}
+% |#1|& \cs{r@<...>}\\
+% |#2|& \cs{setcounter}, \cs{addtocounter}\\
+% |#3|& \cs{ltx@car} (for \cs{ref}), \cs{ltx@carsecond} (for \cs{pageref})\\
+% |#4|& \hologo{LaTeX} counter\\
+%\end{tabular}
+%\end{quote}
+%    \begin{macrocode}
+\def\rc@@set#1#2#3#4{%
+  \ifx#1\relax
+    #2{#4}{\rc@default}%
+  \else
+    #2{#4}{%
+      \expandafter#3#1\rc@default\rc@default\@nil
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{User commands}
+%
+%    \begin{macro}{\setcounterref}
+%    \begin{macrocode}
+\rc@RobustDefZero\setcounterref{%
+  \rc@set\setcounter\ltx@car
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\addtocounterref}
+%    \begin{macrocode}
+\rc@RobustDefZero\addtocounterref{%
+  \rc@set\addtocounter\ltx@car
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\setcounterpageref}
+%    \begin{macrocode}
+\rc@RobustDefZero\setcounterpageref{%
+  \rc@set\setcounter\ltx@carsecond
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\addtocounterpageref}
+%    \begin{macrocode}
+\rc@RobustDefZero\addtocounterpageref{%
+  \rc@set\addtocounter\ltx@carsecond
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Extracting references}
+%
+%    \begin{macro}{\getrefnumber}
+%    \begin{macrocode}
+\rc@newcommand*{\getrefnumber}[1]{%
+  \romannumeral
+  \ltx@ifundefined{r@#1}{%
+    \expandafter\ltx@zero
+    \rc@default
+  }{%
+    \expandafter\expandafter\expandafter\rc@extract@
+    \expandafter\expandafter\expandafter!%
+    \csname r@#1\expandafter\endcsname
+    \expandafter{\rc@default}\@nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\getpagerefnumber}
+%    \begin{macrocode}
+\rc@newcommand*{\getpagerefnumber}[1]{%
+  \romannumeral
+  \ltx@ifundefined{r@#1}{%
+    \expandafter\ltx@zero
+    \rc@default
+  }{%
+    \expandafter\expandafter\expandafter\rc@extract@page
+    \expandafter\expandafter\expandafter!%
+    \csname r@#1\expandafter\expandafter\expandafter\endcsname
+    \expandafter\expandafter\expandafter{%
+      \expandafter\rc@default
+    \expandafter}\expandafter{\rc@default}\@nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\getrefbykeydefault}
+%    \begin{macrocode}
+\rc@newcommand*{\getrefbykeydefault}[2]{%
+  \romannumeral
+  \expandafter\rc@getrefbykeydefault
+    \csname r@#1\expandafter\endcsname
+    \csname rc@extract@#2\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@getrefbykeydefault}
+%\begin{quote}
+%\begin{tabular}[t]{@{}l@{: }l@{}}
+% |#1|& \cs{r@<...>}\\
+% |#2|& \cs{rc@extract@<...>}\\
+% |#3|& default\\
+%\end{tabular}
+%\end{quote}
+%    \begin{macrocode}
+\long\def\rc@getrefbykeydefault#1#2#3{%
+  \ifx#1\relax
+    % reference is undefined
+    \ltx@ReturnAfterElseFi{%
+      \ltx@zero
+      #3%
+    }%
+  \else
+    \ltx@ReturnAfterFi{%
+      \ifx#2\relax
+        % extract method is missing
+        \ltx@ReturnAfterElseFi{%
+          \ltx@zero
+          #3%
+        }%
+      \else
+        \ltx@ReturnAfterFi{%
+          \expandafter
+          \rc@generic#1{#3}{#3}{#3}{#3}{#3}\@nil#2{#3}%
+        }%
+      \fi
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@generic}
+%\begin{quote}
+%\begin{tabular}[t]{@{}l@{: }l@{}}
+% |#1|& first item in \cs{r@<...>}\\
+% |#2|& remaining items in \cs{r@<...>}\\
+% |#3|& \cs{rc@extract@<...>}\\
+% |#4|& default\\
+%\end{tabular}
+%\end{quote}
+%    \begin{macrocode}
+\long\def\rc@generic#1#2\@nil#3#4{%
+  #3{#1\TR@TitleReference\@empty{#4}\@nil}{#1}#2\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@extract@}
+%    \begin{macrocode}
+\long\def\rc@extract@#1#2#3\@nil{%
+  \ltx@zero
+  #2%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@extract@page}
+%    \begin{macrocode}
+\long\def\rc@extract@page#1#2#3#4\@nil{%
+  \ltx@zero
+  #3%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@extract@name}
+%    \begin{macrocode}
+\long\def\rc@extract@name#1#2#3#4#5\@nil{%
+  \ltx@zero
+  #4%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@extract@anchor}
+%    \begin{macrocode}
+\long\def\rc@extract@anchor#1#2#3#4#5#6\@nil{%
+  \ltx@zero
+  #5%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@extract@url}
+%    \begin{macrocode}
+\long\def\rc@extract@url#1#2#3#4#5#6#7\@nil{%
+  \ltx@zero
+  #6%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@extract@title}
+%    \begin{macrocode}
+\long\def\rc@extract@title#1#2\@nil{%
+  \rc@@extract@title#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\rc@@extract@title}
+%    \begin{macrocode}
+\long\def\rc@@extract@title#1\TR@TitleReference#2#3#4\@nil{%
+  \ltx@zero
+  #3%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Macros for checking undefined references}
+%
+%    \begin{macro}{\IfRefUndefinedExpandable}
+%    \begin{macrocode}
+\rc@newcommand*{\IfRefUndefinedExpandable}[1]{%
+  \ltx@ifundefined{r@#1}\ltx@firstoftwo\ltx@secondoftwo
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\IfRefUndefinedBabel}
+%    \begin{macrocode}
+\rc@RobustDefOne{}*\IfRefUndefinedBabel{%
+  \begingroup
+    \csname safe@actives@true\endcsname
+  \expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname r@#1\endcsname\relax
+    \expandafter\ltx@firstoftwo
+  \else
+    \expandafter\ltx@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\rc@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input refcount.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+%    \begin{macrocode}
+%<*test2>
+\errorcontextlines=10000 %
+\showboxbreadth=10000 %
+\showboxdepth=10000 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input refcount.sty\relax
+\else
+  \RequirePackage{refcount}[2011/10/16]%
+\fi
+\catcode`\@=11 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @onelevel@sanitize\endcsname\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname detokenize\endcsname\relax
+    \def\strip@prefix#1->{}%
+    \def\@onelevel@sanitize#1{%
+      \edef#1{%
+        \expandafter\strip@prefix\meaning#1%
+      }%
+    }%
+  \else
+    \def\@onelevel@sanitize#1{%
+      \edef#1{%
+        \detokenize\expandafter{#1}%
+      }%
+    }%
+  \fi
+\fi
+\def\msg#{\immediate\write16}
+\def\empty{}
+\def\space{ }
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\r@foo{{\empty 1}{\empty 2}}
+\long\def\test#1#2{%
+  \begingroup
+    \setbox0=\hbox{%
+      \def\TestTask{#1}%
+      \@onelevel@sanitize\TestTask
+      \msg{* \TestTask}%
+      \expandafter\expandafter\expandafter\def
+      \expandafter\expandafter\expandafter\TestResult
+      \expandafter\expandafter\expandafter{%
+        #1%
+      }%
+      \def\TestExpected{#2}%
+      \ifx\TestResult\TestExpected
+        \msg{ \space ok.}%
+      \else
+        \@onelevel@sanitize\TestResult
+        \@onelevel@sanitize\TestExpected
+        \msg{ \space Result: \space\space[\TestResult]}%
+        \msg{ \space Expected: [\TestExpected]}%
+        \errmessage{Test failed!}%
+      \fi
+    }%
+    \ifdim\wd0=0pt %
+    \else
+      \showbox0 %
+    \fi
+  \endgroup
+}
+\test{\getrefnumber{foo}}{\empty 1}
+\test{\getpagerefnumber{foo}}{\empty 2}
+\test{\getrefbykeydefault{foo}{}{\empty default}}{\empty 1}
+\test{\getrefbykeydefault{foo}{page}{\empty default}}{\empty 2}
+\test{\getrefbykeydefault{foo}{name}{\empty default}}{\empty default}
+\test{\getrefbykeydefault{foo}{anchor}{\empty default}}{\empty default}
+\test{\getrefbykeydefault{foo}{url}{\empty default}}{\empty default}
+\test{\getrefbykeydefault{foo}{title}{\empty default}}{\empty default}
+\msg{}
+\def\r@foo{{}{}{}{}{}{}{}{}{}{}}
+\def\Test#1#2\\{%
+  \test{#1{foo}#2}{}%
+}
+\def\TestGroup{%
+  \Test\getrefnumber\\%
+  \Test\getpagerefnumber\\%
+  \Test\getrefbykeydefault{}{}\\%
+  \Test\getrefbykeydefault{page}{}\\%
+  \Test\getrefbykeydefault{anchor}{}\\%
+  \Test\getrefbykeydefault{name}{}\\%
+  \Test\getrefbykeydefault{url}{}\\%
+}
+\TestGroup
+\Test\getrefbykeydefault{title}{}\\%
+\msg{}
+\def\r@foo{\par\par\par\par\par\par\par\par}
+\long\def\Test#1#2\\{%
+  \test{#1{foo}#2}{\par}%
+}
+\TestGroup
+\test{\getrefbykeydefault{title}{}{}}{}
+\msg{}
+\def\r@foo{{ }{ }{ }{ }{ }}
+\def\Test#1#2\\{%
+  \test{#1{foo}#2}{ }%
+}
+\TestGroup
+\msg{}
+\long\def\TestDefault#1{%
+  \begingroup
+    \setrefcountdefault{#1}%
+    \test{\getrefnumber{foo}}{#1}%
+    \test{\getpagerefnumber{foo}}{#1}%
+  \endgroup
+}
+\def\TestDefaultX{%
+  \TestDefault{}%
+  \TestDefault{\par}%
+  \TestDefault{ }%
+  \TestDefault{\space}%
+}
+\let\r@foo\@undefined
+\TestDefaultX
+\let\r@foo\relax
+\TestDefaultX
+\def\r@foo{}
+\TestDefaultX
+%    \end{macrocode}
+%    \begin{macrocode}
+\msg{}
+\long\def\Test#1#2#3#4{%
+  \begingroup
+    \def\TestTask{#1}%
+    \@onelevel@sanitize\TestTask
+    \msg{* [\TestTask]}%
+    \edef\TestResultA{\IfRefUndefinedExpandable{#1}{#2}{#3}}%
+    \IfRefUndefinedBabel{#1}{%
+      \def\TestResultB{#2}%
+    }{%
+      \def\TestResultB{#3}%
+    }%
+    \def\TestExpected{#4}%
+    \ifx\TestResultA\TestExpected
+      \msg{ \space ok.}%
+    \else
+      \begingroup
+        \@onelevel@sanitize\TestResultA
+        \@onelevel@sanitize\TestExpected
+        \msg{ \space Result: \space\space[\TestResultA]}%
+        \msg{ \space Expected: [\TestExpected]}%
+        \errmessage{Test failed!}%
+      \endgroup
+    \fi
+    \ifx\TestResultB\TestExpected
+      \msg{ \space ok.}%
+    \else
+      \begingroup
+        \@onelevel@sanitize\TestResultB
+        \@onelevel@sanitize\TestExpected
+        \msg{ \space Result: \space\space[\TestResultB]}%
+        \msg{ \space Expected: [\TestExpected]}%
+        \errmessage{Test failed!}%
+      \endgroup
+    \fi
+  \endgroup
+}
+\begingroup
+  \def\r@foo{{}{}}%
+  \let\r@bar\@undefined
+  \let\r@xyz\relax
+  \Test{foo}{true}{false}{false}%
+  \Test{bar}{true}{false}{true}%
+  \Test{xyz}{true}{false}{true}%
+\endgroup
+%    \end{macrocode}
+%    \begin{macrocode}
+\csname @@end\endcsname\end
+%</test2>
+%    \end{macrocode}
+% \subsection{Test with package \xpackage{titleref}}
+%
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage{refcount}[2011/10/16]
+%<test4>\usepackage{nameref}
+\usepackage{titleref}
+\begin{document}
+\section{Hello World}
+\label{sec:hello}
+\section{\hbox{xy}}
+\label{sec:foo}
+%
+\makeatletter
+\@ifundefined{r@sec:hello}{%
+  \typeout{==> Compile twice!}%
+}{%
+  \def\test#1#2{%
+    \begingroup
+      \def\TestTask{#1}%
+      \@onelevel@sanitize\TestTask
+      \typeout{* \TestTask}%
+      \expandafter\expandafter\expandafter\def
+      \expandafter\expandafter\expandafter\TestResult
+      \expandafter\expandafter\expandafter{%
+        #1%
+      }%
+      \def\TestExpected{#2}%
+      \ifx\TestResult\TestExpected
+        \typeout{ \space ok.}%
+      \else
+        \@onelevel@sanitize\TestResult
+        \@onelevel@sanitize\TestExpected
+        \typeout{ \space Result: \space\space[\TestResult]}%
+        \typeout{ \space Expected: [\TestExpected]}%
+        \errmessage{Test failed!}%
+      \fi
+    \endgroup
+  }%
+  \test{\getrefbykeydefault{sec:hello}{title}{}}{Hello World}%
+  \test{\getrefbykeydefault{sec:foo}{title}{}}{\hbox{xy}}%
+  \begingroup
+    \def\hbox#1{[#1]}% hash-ok
+    \test{\getrefbykeydefault{sec:foo}{title}{}}{\hbox{xy}}%
+  \endgroup
+}
+\makeatother
+%    \end{macrocode}
+%    \begin{macrocode}
+\end{document}
+%</test3>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test5>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{book}
+\usepackage{refcount}[2011/10/16]
+\usepackage{zref-runs}
+\newcounter{test}
+\begin{document}
+\ifnum\zruns>1 %
+  \makeatletter
+  \def\Test#1#2#3{%
+    \begingroup
+      \setcounter{test}{10}%
+      \sbox0{%
+        #1{test}{#2}%
+        \ifnum#3=\value{test}%
+        \else
+          \PackageError{test}{\string#1{#2} <> #3 (\the\value{test})}%
+        \fi
+      }%
+      \ifdim\wd0=0pt %
+      \else
+        \PackageError{test}{Non-empty box}\@ehc
+      \fi
+    \endgroup
+  }%
+  \makeatother
+  \Test\setcounterpageref{ch:two}{1}%
+  \Test\setcounterpageref{ch:three}{3}%
+  \Test\setcounterpageref{ch:four}{5}%
+  \Test\setcounterpageref{ch:five}{7}%
+  \Test\setcounterpageref{ch:six}{9}%
+  \Test\setcounterpageref{ch:seven}{13}%
+  \Test\addtocounterpageref{ch:two}{11}%
+  \Test\addtocounterpageref{ch:three}{13}%
+  \Test\addtocounterpageref{ch:four}{15}%
+  \Test\addtocounterpageref{ch:five}{17}%
+  \Test\addtocounterpageref{ch:six}{19}%
+  \Test\addtocounterpageref{ch:seven}{23}%
+  \Test\setcounterref{ch:two}{1}%
+  \Test\setcounterref{ch:three}{2}%
+  \Test\setcounterref{ch:four}{11}%
+  \Test\addtocounterref{ch:two}{11}%
+  \Test\addtocounterref{ch:three}{12}%
+  \Test\addtocounterref{ch:four}{21}%
+\fi
+\frontmatter
+\chapter{Chapter one}\label{ch:one}
+\cleardoublepage
+\mainmatter
+\chapter{Chapter two}\label{ch:two}
+\cleardoublepage
+\chapter{Chapter three}\label{ch:three}
+\cleardoublepage
+\setcounter{chapter}{10}
+\chapter{Chapter four}\label{ch:four}
+\cleardoublepage
+\appendix
+\chapter{Chapter five}\label{ch:five}
+\cleardoublepage
+\chapter{Chapter six}\label{ch:six}
+\cleardoublepage
+\null
+\cleardoublepage
+\chapter{Chapter seven}\label{ch:seven}
+\end{document}
+%</test5>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/refcount.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/refcount.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex refcount.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   refcount.sty & tex/latex/oberdiek/refcount.sty\\
+%   refcount.pdf & doc/latex/oberdiek/refcount.pdf\\
+%   test/refcount-test1.tex & doc/latex/oberdiek/test/refcount-test1.tex\\
+%   test/refcount-test2.tex & doc/latex/oberdiek/test/refcount-test2.tex\\
+%   test/refcount-test3.tex & doc/latex/oberdiek/test/refcount-test3.tex\\
+%   test/refcount-test4.tex & doc/latex/oberdiek/test/refcount-test4.tex\\
+%   test/refcount-test5.tex & doc/latex/oberdiek/test/refcount-test5.tex\\
+%   refcount.dtx & source/latex/oberdiek/refcount.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk refcount.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{refcount.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex refcount.dtx
+%makeindex -s gind.ist refcount.idx
+%pdflatex refcount.dtx
+%makeindex -s gind.ist refcount.idx
+%pdflatex refcount.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{refcount.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='refcount'>
+  <name>refcount</name>
+  <caption>Counter operations with label references.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1998,2000,2006,2008,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='3.4'/>
+  <description>
+    Provides commands <tt>\setcounterref</tt> and
+    <tt>\addtocounterref</tt> which use the section (or whatever)
+    number from the reference as the value to put into the counter, as
+    in:
+
+    <pre>
+    ...\label{sec:foo}
+    ...
+    \setcounterref{foonum}{sec:foo}
+    </pre>
+    Commands <tt>\setcounterpageref</tt> and
+    <tt>\addtocounterpageref</tt> do the corresponding thing with the
+    page reference of the label.
+    <p/>
+    No <tt>.ins</tt> file is distributed; process the
+    <tt>.dtx</tt> with plain TeX to create one.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/refcount.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/refcount.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1998/04/08 v1.0}
+%   \item
+%     First public release, written as answer in the
+%     newsgroup \xnewsgroup{comp.text.tex}:
+%     \URL{``\link{Re: Adding a \cs{ref} to a counter?}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/c3f2a135ef5ee528}
+%   \end{Version}
+%   \begin{Version}{2000/09/07 v2.0}
+%   \item
+%     Documentation added.
+%   \item
+%     LPPL 1.2
+%   \item
+%     Package rewritten, new commands added.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v3.0}
+%   \item
+%     Support for \xpackage{hyperref} and \xpackage{nameref} improved.
+%   \item
+%     Support for \xpackage{titleref} and \xpackage{babel}'s shorthands added.
+%   \item
+%     New: \cs{refused}, \cs{getrefbykeydefault}
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v3.1}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2010/12/01 v3.2}
+%   \item
+%     \cs{IfRefUndefinedExpandable} and \cs{IfRefUndefinedBabel} added.
+%   \item
+%     \cs{getrefnumber}, \cs{getpagerefnumber}, \cs{getrefbykeydefault}
+%     are expandable in exact two expansion steps.
+%   \item
+%     Non-expandable macros are made robust.
+%   \item
+%     Test files added.
+%   \end{Version}
+%   \begin{Version}{2011/06/22 v3.3}
+%   \item
+%     Bug fix: \cs{rc@refused} is undefined for \cs{setcounterpageref}
+%     and similar macros. (Bug found by Marc van Dongen.)
+%   \end{Version}
+%   \begin{Version}{2011/10/16 v3.4}
+%   \item
+%     Bug fix: \cs{setcounterpageref} and \cs{addtocounterpageref} fixed.
+%     (Bug found by Staz.)
+%   \item
+%     Macros \cs{(set|addto)counter(page|)ref} are made robust.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

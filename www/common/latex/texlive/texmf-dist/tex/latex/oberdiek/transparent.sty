@@ -1,0 +1,147 @@
+%%
+%% This is file `transparent.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% transparent.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: transparent
+%% Version: 2007/01/08 v1.0
+%% 
+%% Copyright (C) 2007 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file transparent.dtx
+%% and the derived files
+%%    transparent.sty, transparent.pdf, transparent.ins, transparent.drv,
+%%    transparent-example.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{transparent}%
+  [2007/01/08 v1.0 Transparency via pdfTeX's color stack (HO)]%
+\RequirePackage{ifpdf}
+\ifpdf
+\else
+  \PackageWarningNoLine{transparent}{%
+    Loading aborted, because pdfTeX is not running in PDF mode%
+  }%
+  \expandafter\endinput
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfcolorstackinit\endcsname\relax
+  \PackageWarningNoLine{transparent}{%
+    Your pdfTeX version does not support color stacks%
+  }%
+  \expandafter\endinput
+\fi
+\RequirePackage{auxhook}
+\AddLineBeginAux{%
+  \string\providecommand{\string\transparent@use}[1]{}%
+}
+\gdef\TRP@list{/TRP1<</ca 1/CA 1>>}
+\def\transparent@use#1{%
+  \@ifundefined{TRP#1}{%
+    \g@addto@macro\TRP@list{%
+      /TRP#1<</ca #1/CA #1>>%
+    }%
+    \expandafter\gdef\csname TRP#1\endcsname{/TRP#1 gs}%
+  }{%
+    % #1 is already known, nothing to do
+  }%
+}
+\AtBeginDocument{%
+  \TRP@addresource
+  \let\transparent@use\@gobble
+}
+\def\TRP@addresource{%
+  \begingroup
+    \edef\x{\endgroup
+      \pdfpageresources{%
+        \the\pdfpageresources
+        /ExtGState<<\TRP@list>>%
+      }%
+    }%
+  \x
+}
+\newif\ifTRP@rerun
+\xdef\TRP@colorstack{%
+  \pdfcolorstackinit page direct{/TRP1 gs}%
+}
+\newcommand*{\transparent}[1]{%
+  \begingroup
+    \dimen@=#1\p@\relax
+    \ifdim\dimen@>\p@
+      \dimen@=\p@
+    \fi
+    \ifdim\dimen@<\z@
+      \dimen@=\z@
+    \fi
+    \ifdim\dimen@=\p@
+      \def\x{1}%
+    \else
+      \ifdim\dimen@=\z@
+        \def\x{0}%
+      \else
+        \edef\x{\strip@pt\dimen@}%
+        \edef\x{\expandafter\@gobble\x}%
+      \fi
+    \fi
+    \if@filesw
+      \immediate\write\@auxout{%
+        \string\transparent@use{\x}%
+      }%
+    \fi
+    \edef\x{\endgroup
+      \def\noexpand\transparent@current{\x}%
+    }%
+  \x
+  \transparent@set
+}
+\AtEndDocument{%
+  \ifTRP@rerun
+    \PackageWarningNoLine{transparent}{%
+      Rerun to get transparencies right%
+    }%
+  \fi
+}
+\def\transparent@current{/TRP1 gs}
+\def\transparent@set{%
+  \@ifundefined{TRP\transparent@current}{%
+    \global\TRP@reruntrue
+  }{%
+    \pdfcolorstack\TRP@colorstack push{%
+      \csname TRP\transparent@current\endcsname
+    }%
+    \aftergroup\transparent@reset
+  }%
+}
+\def\transparent@reset{%
+  \pdfcolorstack\TRP@colorstack pop\relax
+}
+\newcommand*{\texttransparent}[2]{%
+  \protect\leavevmode
+  \begingroup
+    \transparent{#1}%
+    #2%
+  \endgroup
+}
+\endinput
+%%
+%% End of file `transparent.sty'.

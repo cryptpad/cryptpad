@@ -1,0 +1,3505 @@
+% \iffalse meta-comment
+%
+% File: bookmark.dtx
+% Version: 2011/12/02 v1.24
+% Info: PDF bookmarks
+%
+% Copyright (C) 2007-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file bookmark.dtx
+% and the derived files
+%    bookmark.sty, bookmark.pdf, bookmark.ins, bookmark.drv,
+%    bkm-dvipdfm.def, bkm-dvips.def, bkm-dvipsone.def,
+%    bkm-textures.def, bkm-pdftex.def, bkm-vtex.def,
+%    bookmark-example.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/bookmark.dtx
+%    CTAN:macros/latex/contrib/oberdiek/bookmark.pdf
+%
+% Unpacking:
+%    (a) If bookmark.ins is present:
+%           tex bookmark.ins
+%    (b) Without bookmark.ins:
+%           tex bookmark.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{bookmark.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If bookmark.drv is present:
+%           latex bookmark.drv
+%    (b) Without bookmark.drv:
+%           latex bookmark.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex bookmark.dtx
+%       makeindex -s gind.ist bookmark.idx
+%       pdflatex bookmark.dtx
+%       makeindex -s gind.ist bookmark.idx
+%       pdflatex bookmark.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/bookmark.sty
+%    TDS:tex/latex/oberdiek/bkm-dvipdfm.def
+%    TDS:tex/latex/oberdiek/bkm-dvips.def
+%    TDS:tex/latex/oberdiek/bkm-dvipsone.def
+%    TDS:tex/latex/oberdiek/bkm-textures.def
+%    TDS:tex/latex/oberdiek/bkm-pdftex.def
+%    TDS:tex/latex/oberdiek/bkm-vtex.def
+%    TDS:doc/latex/oberdiek/bookmark.pdf
+%    TDS:doc/latex/oberdiek/bookmark-example.tex
+%    TDS:source/latex/oberdiek/bookmark.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: bookmark 2011/12/02 v1.24 PDF bookmarks (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: bookmark
+Version: 2011/12/02 v1.24
+
+Copyright (C) 2007-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file bookmark.dtx
+and the derived files
+   bookmark.sty, bookmark.pdf, bookmark.ins, bookmark.drv,
+   bkm-dvipdfm.def, bkm-dvips.def, bkm-dvipsone.def,
+   bkm-textures.def, bkm-pdftex.def, bkm-vtex.def,
+   bookmark-example.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{bookmark.ins}{\from{bookmark.dtx}{install}}%
+  \file{bookmark.drv}{\from{bookmark.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{bookmark.sty}{\from{bookmark.dtx}{package}}%
+  \file{bkm-dvipdfm.def}{\from{bookmark.dtx}{dvipdfm}}%
+  \file{bkm-dvips.def}{\from{bookmark.dtx}{dvips,pdfmark}}%
+  \file{bkm-dvipsone.def}{\from{bookmark.dtx}{dvipsone,pdfmark}}%
+  \file{bkm-textures.def}{\from{bookmark.dtx}{textures,pdfmark}}%
+  \file{bkm-pdftex.def}{\from{bookmark.dtx}{pdftex}}%
+  \file{bkm-vtex.def}{\from{bookmark.dtx}{vtex}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{bookmark-example.tex}{\from{bookmark.dtx}{example}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{bookmark.xml}{\from{bookmark.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     bookmark.sty, bkm-dvipdfm.def, bkm-dvips.def,}
+\Msg{*     bkm-dvipsone.def, bkm-textures.def, bkm-pdftex.def,}
+\Msg{*     bkm-vtex.def}
+\Msg{*}
+\Msg{* To produce the documentation run the file `bookmark.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bookmark.drv}%
+  [2011/12/02 v1.24 PDF bookmarks (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{bookmark.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2326}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{bookmark.drv}
+%
+% \title{The \xpackage{bookmark} package}
+% \date{2011/12/02 v1.24}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package implements a new bookmark (outline) organization for
+% package \xpackage{hyperref}. Bookmark properties such
+% as style and color can now be set. Other action types
+% are available (URI, GoToR, Named). The bookmarks are
+% generated in the first compile run. Package \xpackage{hyperref}
+% uses two runs.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% This package \xpackage{bookmark} tries to provide a more modern
+% management for bookmarks:
+% \begin{itemize}
+% \item The bookmarks are already generated in the first \hologo{TeX} compile run.
+% \item The font style and color of the bookmarks can be changed.
+% \item More actions than simple GoTo actions are possible.
+% \end{itemize}
+%
+% In the same way as \xpackage{hyperref} \cite{hyperref}
+% the bookmarks are generated
+% in the order of the bookmark generating macros (\cs{bookmark}).
+% A level number is used to define the tree structure of the bookmarks.
+% The restrictions are less strict:
+% \begin{itemize}
+% \item The level values may jump and omit values. A \cs{subsubsection}
+%       may follow a \cs{chapter}. This was an error in \xpackage{hyperref},
+%       that prints a warning and tries to fix this.
+% \item Several bookmarks may point to the same destination.
+%       In \xpackage{hyperref} this would mess up the bookmark tree
+%       completely, because the algorithm assumes that the destination
+%       names are keys (unique).
+% \end{itemize}
+%
+% Note that this package is intended as experimentation platform
+% for bookmark management. Feedback is welcome. Also the interfaces
+% may change in future versions.
+%
+% \subsection{Options}
+%
+% Options can be given at four places:
+% \begin{enumerate}
+% \item \cs{usepackage}|[|\meta{options}|]{bookmark}|\\
+%       This is the only place for driver options
+%       and option \xoption{atend}.
+% \item \cs{bookmarksetup}|{|\meta{options}|}|\\
+%       This command is just for setting options.
+% \item \cs{bookmarksetupnext}|{|\meta{options}|}|\\
+%       The options are stored and called after the
+%       options of the next \cs{bookmark} command.
+% \item \cs{bookmark}|[|\meta{options}|]{|\meta{title}|}|\\
+%       This command sets the bookmark. The option settings remain
+%       limited to this bookmark.
+% \end{enumerate}
+% Exception: Driver options, option \xoption{atend} and
+% options \xoption{draft}\slash\xoption{final}
+% cannot be changed after the package is loaded.
+%
+% \subsubsection{Options \xoption{draft} and \xoption{final}}
+%
+% If a \LaTeX\ file is compiled several times, then a little
+% time can be saved, if option \xoption{draft} is used to
+% disable the bookmark stuff of this package. Default is
+% \xoption{final}.
+% Both options are boolean options, without
+% value the value |true| is used. |draft=true| is the same
+% as |final=false|.
+%
+% Options of package \xpackage{bookmark} are local options
+% with the exception of driver options. Therefore \xoption{draft}
+% or \xoption{final} given as class option is not seen by this
+% package. If you want to optimize first \LaTeX\ runs depending
+% on a global \xoption{draft}, then package \xpackage{ifdraft}
+% and \LaTeX's \cs{PassOptionsToPackage}
+% might help in the organization of the preamble, for example:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass[draft]{article}
+%\usepackage{ifdraft}
+%\ifdraft{%
+%   \PassOptionsToPackage{draft}{bookmark}%
+%}{}
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{Driver options}
+%
+% Supported drivers are \xoption{pdftex}, \xoption{dvips},
+% \xoption{dvipsone}, \xoption{textures},
+% \xoption{dvipdfm} (\xoption{xetex}), and \xoption{vtex}.
+% The \hologo{TeX} engines \hologo{pdfTeX}, \hologo{XeTeX},
+% and \hologo{VTeX} are automatically detected.
+% The default for the DVI drivers is \xoption{dvips}. This can
+% be changed in the configuration file \xfile{bookmark.cfg} by
+% \cs{BookmarkDefaultDriver}, e.g.:
+% \begin{quote}
+% |\def\BookmarkDefaultDriver{dvipdfm}|
+% \end{quote}
+%
+% \paragraph{Open bookmarks with dvipdfmx.} Since 2007-04-25 the
+% cvs version of dvipmdfmx contains a patch that extends the
+% \cs{special} for bookmarks in order to specify the open status of
+% an outline entry. Option \xoption{dvipdfmx-outline-open} notifies
+% the package that the dvi driver program understands this kind
+% of \cs{special}. Alternatively \cs{SpecialDvipdfmxOutlineOpen}
+% can be defined as number one in the configuration file or before
+% the package is loaded, e.g.:
+% \begin{quote}
+% |\chardef\SpecialDvipdfmxOutlineOpen=1\relax|
+% \end{quote}
+%
+% \subsubsection{Layout options}
+%
+% \paragraph{Font options.}
+%
+% \begin{description}
+% \item[\xoption{bold}:] The bookmark is shown with a bold font
+%   if the PDF viewer supports this (since PDF 1.4).
+% \item[\xoption{italic}:] An italic font is used (since PDF 1.4).
+% \end{description}
+% Both \xoption{bold} and \xoption{italic} can be used together.
+% Using value |false| disables the font option.
+%
+% \paragraph{Color option.}
+%
+% Colored bookmarks are a feature of PDF 1.4, they are not supported
+% by all PDF viewers.
+% \begin{description}
+% \item[\xoption{color}:] Here the color can be given as
+%   color specification of packages \xpackage{color} or \xpackage{xcolor}.
+%   An empty value means that the color property is not set.
+%   Without package \xpackage{xcolor} the recognized values
+%   are restricted to
+%   \begin{itemize}
+%   \item Empty value, no color is set,\\
+%         example: |color={}|
+%   \item Explicit color specification of color model rgb,\\
+%         example for red: |color=[rgb]{1,0,0}|
+%   \item Explicit color specification of color model gray,\\
+%         example for dark gray: |color=[gray]{0.25}|
+%   \end{itemize}
+%   Note that this restriction also holds if package \xpackage{color}
+%   is loaded. With \xpackage{xcolor}, however, the full range
+%   of color specifications can be used.
+% \end{description}
+%
+% \subsubsection{Action options}
+%
+% \begin{description}
+% \item[\xoption{dest}:] Destination name.
+% \item[\xoption{page}:] Page number, first page is 1.
+% \item[\xoption{view}:] View specification, examples:\\
+%   |view={FitB}|, |view={FitH 842}|, |view={XYZ 0 100 null}|
+%   Some view specification parameters expect numbers as parameters
+%   with unit bp. They can be given either as plain numbers or
+%   as length expressions inside \cs{calc}. Expressions of
+%   package \xpackage{calc} are supported if the package is loaded.
+%   Otherwise \hologo{eTeX}'s \cs{dimexpr} is used. Example:\\
+%   |view={FitH \calc{\paperheight-\topmargin-1in}}|\\
+%   |view={XYZ 0 \calc{\paperheight} null}|\\
+%   Note that \cs{calc} cannot be used for the third parameter
+%   of |XYZ|. This parameter is the zoom value, not a length.
+% \item[\xoption{named}:] Named action name:\\
+%   |FirstPage|, |LastPage|, |NextPage|, |PrevPage|
+% \item[\xoption{gotor}:] Name of the external PDF file.
+% \item[\xoption{uri}:] URI specification.
+% \item[\xoption{rawaction}:] Raw action specification.
+%   Because these specification depends on the driver this option
+%   should not be used.
+% \end{description}
+% The appropriate action for the bookmark is selected by
+% analyzing the specified options. The actions
+% are distinguished by different sets of options:
+% \begin{quote}
+% \begin{tabular}{@{}ll@{}}
+%   \textbf{Action} & \textbf{Options}\\
+%   \hline
+%   \textsf{GoTo}: & \xoption{dest}\\
+%   \textsf{GoTo}: & \xoption{page} + \xoption{view}\\
+%   \textsf{GoToR}: & \xoption{gotor} + \xoption{dest}\\
+%   \textsf{GoToR}: & \xoption{gotor} + \xoption{page} + \xoption{view}\\
+%   \textsf{Named}: & \xoption{named}\\
+%   \textsf{URI}: & \xoption{uri}
+% \end{tabular}
+% \end{quote}
+%
+% \paragraph{Missing actions.}
+% If the action is missing package \xpackage{bookmark} throws
+% an error message. Depending on the driver (\xoption{pdftex},
+% \xoption{dvips} and friends) the package detects it quite late
+% at the end of the document. Since version 2011/04/21 v1.21
+% the package tries printing the line number and file name
+% of the corresponding occurence of \cs{bookmark}.
+% However, \hologo{TeX} does provide the line number, but
+% unhappily the file name is a secret. The package supports
+% some ways to get the file name:
+% \begin{itemize}
+% \item If \hologo{LuaTeX} (indenpendently from DVI or PDF modus)
+%   is running, then its |status.filename| is used automatically.
+% \item Package \cs{currfile} \cite{currfile} redefines \hologo{LaTeX}
+%    internals to keep track of the file name. If the package
+%    is loaded, then its \cs{currfilepath} is detected and used
+%    automatically by package \xpackage{bookmark}.
+% \item The file name can be set manually by option \xoption{scrfile}
+%    in \cs{bookmarksetup} or \cs{bookmark}. But be careful,
+%    manual setting disables the previous ways for file name
+%    detection. And a wrong or missed file name setting might
+%    get you a wrong source location in the error message.
+% \end{itemize}
+%
+% \subsubsection{Level options}
+%
+% The order of the bookmark entries are defined by the
+% appearance order of \cs{bookmark} commands. The tree structure
+% is constructed by the property \xoption{level} of the bookmark nodes.
+% The values of \xoption{level} are integers. If the level of a
+% bookmark entry has a higher value than the previous node, then
+% the entry becomes a child of the previous node. The absolute
+% value of the difference does not matter.
+%
+% Package \xpackage{bookmark} remembers the level of the previous
+% bookmark entry in a global property `current level'.
+%
+% The behaviour of the level system can be configured by following
+% options:
+% \begin{description}
+% \item[\xoption{level}:]
+%    Sets the level, see the description above. If option \xoption{level}
+%    is given without value, then the default behaviour is restored,
+%    that the `current level' is used as level value.
+%    Since version 2010/10/19 v1.16 package \xpackage{bookmark}
+%    also supports names |part|, |section| and other,
+%    if the macros \cs{toclevel@part}, \cs{toclevel@section}
+%    are defined (done by package \xpackage{hyperref}, see
+%    option \xoption{bookmarkdepth}).
+% \item[\xoption{rellevel}:]
+%    Sets the level relative to the previous level.
+%    A positive value means that the bookmark entry become
+%    a child of the previous one.
+% \item[\xoption{keeplevel}:]
+%    Use the level, set by \xoption{level} or \xoption{rellevel},
+%    but do not change the global property `current level'.
+%    The option can be disabled by setting to |false|.
+% \item[\xoption{startatroot}:]
+%    At this time the bookmark tree starts at the top level again.
+%    The next bookmark entry is not sorted as child to a previous entry.
+%    Example scenario: A document uses part. However there are
+%    last chapters that should not be put below the last part:
+%    \begin{quote}
+%\begin{verbatim}
+%\documentclass{book}
+%[...]
+%\begin{document}
+%  \part{First part}
+%    \chapter{First chapter in first part}
+%    [...]
+%  \part{Second part}
+%    \chapter{First chapter in second part}
+%    [...]
+%  \bookmarksetup{startatroot}
+%  \chapter{Index}% does not belong to second part
+%\end{document}
+%\end{verbatim}
+%    \end{quote}
+% \end{description}
+%
+% \subsubsection{Style definitions}
+%
+% A style is a group of option settings. It can be defined
+% by macro \cs{bookmarkdefinestyle} and is used by option \xoption{style}.
+% \begin{declcs}{bookmarkdefinestyle} \M{name} \M{key value list}
+% \end{declcs}
+% The \meta{key value list} of option settings is assigned the
+% style \meta{name}.
+%
+% \begin{description}
+% \item[\xoption{style}:]
+%   The value of option \xoption{style} is the name of a previously
+%   defined style. Its option settings are now executed.
+%   The options may include option \xoption{style}.
+%   Endless recursion by calling the same style recursively
+%   is prevented and throws an error.
+% \end{description}
+%
+% \subsubsection{Hook support}
+%
+% A hook is called right after the processing the optional options
+% of macro \cs{bookmark}.
+% \begin{description}
+% \item[\xoption{addtohook}:]
+%   Code, given as value to this option is added to the hook.
+% \end{description}
+%
+% \begin{declcs}{bookmarkget} \M{option}
+% \end{declcs}
+% Macro \cs{bookmarkget} extracts the value of the latest option
+% setting of option \meta{option}. In case of boolean options number
+% one is returned, if the boolean option is enabled, otherwise the
+% result is zero.
+% The resulting numbers can directly be used in \cs{ifnum} or \cs{ifcase}.
+% If you want to have the digits \texttt{0} and \texttt{1}, then
+% prefix \cs{bookmarkget} with \cs{number}.
+% Macro \cs{bookmarkget} is expandable.
+% In case of
+% unsupported options an empty string is returned.
+% Supported boolean options are
+% \begin{quote}
+%   \xoption{bold},
+%   \xoption{italic},
+%   \xoption{open}
+% \end{quote}
+% Other supported options:
+% \begin{quote}
+%   \xoption{depth},
+%   \xoption{dest},
+%   \xoption{color},
+%   \xoption{gotor},
+%   \xoption{level},
+%   \xoption{named},
+%   \xoption{openlevel},
+%   \xoption{page},
+%   \xoption{rawaction},
+%   \xoption{uri},
+%   \xoption{view},
+% \end{quote}
+% Additionally the following key is available:
+% \begin{quote}
+%   \xoption{text}
+% \end{quote}
+% It returns the text of the outline entry.
+%
+% \paragraph{Option setting.}
+% Inside the hook an option can be set using \cs{bookmarksetup}.
+%
+% \subsection{Compatibility with \xpackage{hyperref}}
+%
+% Package \xpackage{bookmark} automatically disables
+% \xpackage{hyperref}'s bookmarks. However the package
+% uses some of the code of \xpackage{hyperref}. For example,
+% the package redefines the hook \cs{Hy@writebookmark} that
+% \xpackage{hyperref} inserts in \cs{addcontentsline} and
+% other commands. Therefore
+% \xpackage{hyperref}'s bookmarks should not be disabled.
+%
+% Package \xpackage{bookmark} uses \xpackage{hyperref}'s \cs{pdfstringdef}
+% and does not provide a replacement.
+%
+% Some options of \xpackage{hyperref} are also implemented
+% in package \xpackage{bookmark}:
+% \begin{quote}
+% \begin{tabular}{@{}ll@{}}
+%   \xpackage{hyperref} & \xpackage{bookmark}\\
+%   \hline
+%   \xoption{bookmarksdepth} & \xoption{depth}\\
+%   \xoption{bookmarksopen} & \xoption{open}\\
+%   \xoption{bookmarksopenlevel} & \xoption{openlevel}\\
+%   \xoption{bookmarksnumbered} & \xoption{numbered}\\
+% \end{tabular}
+% \end{quote}
+%
+% The following commands are also available:
+% \begin{quote}
+%   \cs{pdfbookmark}\\
+%   \cs{currentpdfbookmark}\\
+%   \cs{subpdfbookmark}\\
+%   \cs{belowpdfbookmark}
+% \end{quote}
+%
+% \subsection{Adding bookmarks at the end}
+%
+% Package option \xoption{atend} enables the following macro:
+% \begin{declcs}{BookmarkAtEnd}
+%   \M{stuff}
+% \end{declcs}
+% Macro \cs{BookmarkAtEnd} puts \meta{stuff} at the end
+% of the document. \meta{stuff} means bookmark commands.
+% Example:
+% \begin{quote}
+%\begin{verbatim}
+%\usepackage[atend]{bookmark}
+%\BookmarkAtEnd{%
+%  \bookmarksetup{startatroot}%
+%  \bookmark[named=LastPage, level=0]{Last page}%
+%}
+%\end{verbatim}
+% \end{quote}
+%
+% Alternatively, option \xoption{startatroot} can be given
+% in \cs{bookmark}:
+% \begin{quote}
+%\begin{verbatim}
+%\BookmarkAtEnd{%
+%  \bookmark[
+%    startatroot,
+%    named=LastPage,
+%    level=0,
+%  ]{Last page}%
+%}
+%\end{verbatim}
+% \end{quote}
+%
+% \paragraph{Remarks.}
+% \begin{itemize}
+% \item
+%   \cs{BookmarkAtEnd} hides the fact that the method for
+%   adding bookmarks at the end of the document depends
+%   on the driver.
+%
+%   Some drivers
+%   (\xoption{pdftex}, \xoption{dvips}, \xoption{dvipsone},
+%   \xoption{textures}) use package \xpackage{atveryend}'s
+%   for this purpose. \cs{AtEndDocument} is too early,
+%   the last page might not been shipped out. Because the \xext{aux}
+%   file is needed, these drivers use \cs{AfterLastShipout}.
+%
+%   The implementation of the other drivers
+%   (\xoption{dvipdfm}, \xoption{xetex}, \xoption{vtex})
+%   depends on
+%   \cs{special} that does not have an effect after the last
+%   page. In this case \cs{AtEndDvi} of package \xpackage{atenddvi}
+%   helps. It puts its argument on last page of the document.
+%   Two \hologo{LaTeX} runs are necessary at least, because
+%   the last page is detected by a reference.
+% \item
+%   The time of expansion of the argument of \cs{BookmarkAtEnd}
+%   is not specified. This can happen immediately or at the end
+%   of the document.
+% \end{itemize}
+%
+% \subsection{Limitations/ToDos}
+%
+% \begin{itemize}
+% \item Support for missing actions (Launch, \dots).
+% \item Better design for \xpackage{hyperref}'s option
+%       \xoption{bookmarkstype}.
+% \end{itemize}
+%
+% \section{Example}
+%
+%    \begin{macrocode}
+%<*example>
+%    \end{macrocode}
+%    \begin{macrocode}
+\documentclass{article}
+\usepackage{xcolor}[2007/01/21]
+\usepackage{hyperref}
+\usepackage[
+  open,
+  openlevel=2,
+  atend
+]{bookmark}[2011/12/02]
+
+\bookmarksetup{color=blue}
+
+\BookmarkAtEnd{%
+  \bookmarksetup{startatroot}%
+  \bookmark[named=LastPage, level=0]{End/Last page}%
+  \bookmark[named=FirstPage, level=1]{First page}%
+}
+
+\begin{document}
+\section{First section}
+\subsection{Subsection A}
+\begin{figure}
+  \hypertarget{fig}{}%
+  A figure.
+\end{figure}
+\bookmark[
+  rellevel=1,
+  keeplevel,
+  dest=fig
+]{A figure}
+\subsection{Subsection B}
+\subsubsection{Subsubsection C}
+\subsection{Umlauts: \"A\"O\"U\"a\"o\"u\ss}
+\newpage
+\bookmarksetup{
+  bold,
+  color=[rgb]{1,0,0}
+}
+\section{Very important section}
+\bookmarksetup{
+  italic,
+  bold=false,
+  color=blue
+}
+\subsection{Italic section}
+\bookmarksetup{
+  italic=false
+}
+\part{Misc}
+\section{Diverse}
+\subsubsection{Subsubsection, omitting subsection}
+\bookmarksetup{
+  startatroot
+}
+\section{Last section outside part}
+\subsection{Subsection}
+\bookmarksetup{
+  color={}
+}
+\begingroup
+  \bookmarksetup{level=0, color=green!80!black}
+  \bookmark[named=FirstPage]{First page}
+  \bookmark[named=LastPage]{Last page}
+  \bookmark[named=PrevPage]{Previous page}
+  \bookmark[named=NextPage]{Next page}
+\endgroup
+\bookmark[
+  page=2,
+  view=FitH 800
+]{Page 2, FitH 800}
+\bookmark[
+  page=2,
+  view=FitBH \calc{\paperheight-\topmargin-1in-\headheight-\headsep}
+]{Page 2, FitBH top of text body}
+\bookmark[
+  uri={http://www.dante.de/},
+  color=magenta
+]{Dante homepage}
+\bookmark[
+  gotor={t.pdf},
+  page=1,
+  view={XYZ 0 1000 null},
+  color=cyan!75!black
+]{File t.pdf}
+\bookmark[named=FirstPage]{First page}
+\bookmark[rellevel=1, named=LastPage]{Last page (rellevel=1)}
+\bookmark[named=PrevPage]{Previous page}
+\bookmark[level=0, named=FirstPage]{First page (level=0)}
+\bookmark[
+  rellevel=1,
+  keeplevel,
+  named=LastPage
+]{Last page (rellevel=1, keeplevel)}
+\bookmark[named=PrevPage]{Previous page}
+\end{document}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</example>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Package}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bookmark}%
+  [2011/12/02 v1.24 PDF bookmarks (HO)]%
+%    \end{macrocode}
+%
+% \subsubsection{Requirements}
+%
+% \paragraph{\hologo{eTeX}.}
+%
+%    \begin{macro}{\BKM@CalcExpr}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \def\BKM@CalcExpr#1#2#3#4{%
+    \begingroup
+      \count@=#2\relax
+      \advance\count@ by#3#4\relax
+      \edef\x{\endgroup
+        \def\noexpand#1{\the\count@}%
+      }%
+    \x
+  }%
+\else
+  \def\BKM@CalcExpr#1#2#3#4{%
+    \edef#1{%
+      \the\numexpr#2#3#4\relax
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Escape features of \hologo{pdfTeX}.}
+%
+%    \begin{macrocode}
+\RequirePackage{pdfescape}[2007/03/20]
+%    \end{macrocode}
+%    \begin{macro}{\BKM@EscapeName}
+%    \begin{macrocode}
+\def\BKM@EscapeName#1{%
+  \ifx#1\@empty
+  \else
+    \EdefEscapeName#1#1%
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@EscapeString}
+%    \begin{macrocode}
+\def\BKM@EscapeString#1{%
+  \ifx#1\@empty
+  \else
+    \EdefEscapeString#1#1%
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@EscapeHex}
+%    \begin{macrocode}
+\def\BKM@EscapeHex#1{%
+  \ifx#1\@empty
+  \else
+    \EdefEscapeHex#1#1%
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@UnescapeHex}
+%    \begin{macrocode}
+\def\BKM@UnescapeHex#1{%
+  \EdefUnescapeHex#1#1%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Packages.}
+%
+%    \begin{macrocode}
+\RequirePackage{ifpdf}[2009/04/10]
+\RequirePackage{ifxetex}
+\RequirePackage{ifvtex}[2008/11/04]
+\RequirePackage{ifluatex}[2010/03/01]
+\RequirePackage{pdftexcmds}[2010/11/04]
+\RequirePackage{hyperref}[2010/06/18]
+\RequirePackage{auxhook}[2007/04/06]
+\RequirePackage{kvsetkeys}[2010/03/01]
+\RequirePackage{kvoptions}[2009/08/13]
+\RequirePackage{hycolor}[2008/09/08]
+\RequirePackage{bitset}[2011/01/30]
+\RequirePackage{ltxcmds}[2011/04/14]
+%    \end{macrocode}
+%
+% \subsubsection{Package options}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{family=BKM,prefix=BKM@}
+\DeclareLocalOptions{%
+  atend,%
+  bold,%
+  color,%
+  depth,%
+  dest,%
+  draft,%
+  final,%
+  gotor,%
+  italic,%
+  keeplevel,%
+  level,%
+  named,%
+  numbered,%
+  open,%
+  openlevel,%
+  page,%
+  rawaction,%
+  rellevel,%
+  srcfile,%
+  srcline,%
+  startatroot,%
+  uri,%
+  view,%
+}
+%    \end{macrocode}
+%    \begin{macro}{\bookmarksetup}
+%    \begin{macrocode}
+\newcommand*{\bookmarksetup}{\kvsetkeys{BKM}}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@setup}
+%    \begin{macrocode}
+\def\BKM@setup#1{%
+  \bookmarksetup{#1}%
+  \ifx\BKM@HookNext\ltx@empty
+  \else
+    \expandafter\bookmarksetup\expandafter{\BKM@HookNext}%
+    \BKM@HookNextClear
+  \fi
+  \BKM@hook
+  \ifBKM@keeplevel
+  \else
+    \xdef\BKM@currentlevel{\BKM@level}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bookmarksetupnext}
+%    \begin{macrocode}
+\newcommand*{\bookmarksetupnext}[1]{%
+  \ltx@GlobalAppendToMacro\BKM@HookNext{,#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@setupnext}
+%    \begin{macrocode}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@HookNextClear}
+%    \begin{macrocode}
+\def\BKM@HookNextClear{%
+  \global\let\BKM@HookNext\ltx@empty
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@HookNext}
+%    \begin{macrocode}
+\BKM@HookNextClear
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\DeclareBoolOption{draft}
+\DeclareComplementaryOption{final}{draft}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@DisableOptions}
+%    \begin{macrocode}
+\def\BKM@DisableOptions{%
+  \DisableKeyvalOption[action=warning,package=bookmark]%
+      {BKM}{draft}%
+  \DisableKeyvalOption[action=warning,package=bookmark]%
+      {BKM}{final}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareBoolOption[\ifHy@bookmarksopen true\else false\fi]{open}
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@open}
+%    \begin{macrocode}
+\def\bookmark@open{%
+  \ifBKM@open\ltx@one\else\ltx@zero\fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareStringOption[\maxdimen]{openlevel}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@openlevel}
+%    \begin{macrocode}
+\edef\BKM@openlevel{\number\@bookmarksopenlevel}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%\DeclareStringOption[\c@tocdepth]{depth}
+\ltx@IfUndefined{Hy@bookmarksdepth}{%
+  \def\BKM@depth{\c@tocdepth}%
+}{%
+  \let\BKM@depth\Hy@bookmarksdepth
+}
+\define@key{BKM}{depth}[]{%
+  \edef\BKM@param{#1}%
+  \ifx\BKM@param\@empty
+    \def\BKM@depth{\c@tocdepth}%
+  \else
+    \ltx@IfUndefined{toclevel@\BKM@param}{%
+      \@onelevel@sanitize\BKM@param
+      \edef\BKM@temp{\expandafter\@car\BKM@param\@nil}%
+      \ifcase 0\expandafter\ifx\BKM@temp-1\fi
+              \expandafter\ifnum\expandafter`\BKM@temp>47 %
+                \expandafter\ifnum\expandafter`\BKM@temp<58 %
+                  1%
+                \fi
+              \fi
+              \relax
+        \PackageWarning{bookmark}{%
+          Unknown document division name (\BKM@param)\MessageBreak
+          for option `depth'%
+        }%
+      \else
+        \BKM@SetDepthOrLevel\BKM@depth\BKM@param
+      \fi
+    }{%
+      \BKM@SetDepthOrLevel\BKM@depth{%
+        \csname toclevel@\BKM@param\endcsname
+      }%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@depth}
+%    \begin{macrocode}
+\def\bookmark@depth{\BKM@depth}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@SetDepthOrLevel}
+%    \begin{macrocode}
+\def\BKM@SetDepthOrLevel#1#2{%
+  \begingroup
+    \setbox\z@=\hbox{%
+      \count@=#2\relax
+      \expandafter
+    }%
+  \expandafter\endgroup
+  \expandafter\def\expandafter#1\expandafter{\the\count@}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareStringOption[\BKM@currentlevel]{level}[\BKM@currentlevel]
+\define@key{BKM}{level}{%
+  \edef\BKM@param{#1}%
+  \ifx\BKM@param\BKM@MacroCurrentLevel
+    \let\BKM@level\BKM@param
+  \else
+    \ltx@IfUndefined{toclevel@\BKM@param}{%
+      \@onelevel@sanitize\BKM@param
+      \edef\BKM@temp{\expandafter\@car\BKM@param\@nil}%
+      \ifcase 0\expandafter\ifx\BKM@temp-1\fi
+              \expandafter\ifnum\expandafter`\BKM@temp>47 %
+                \expandafter\ifnum\expandafter`\BKM@temp<58 %
+                  1%
+                \fi
+              \fi
+              \relax
+        \PackageWarning{bookmark}{%
+          Unknown document division name (\BKM@param)\MessageBreak
+          for option `level'%
+        }%
+      \else
+        \BKM@SetDepthOrLevel\BKM@level\BKM@param
+      \fi
+    }{%
+      \BKM@SetDepthOrLevel\BKM@level{%
+        \csname toclevel@\BKM@param\endcsname
+      }%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@MacroCurrentLevel}
+%    \begin{macrocode}
+\def\BKM@MacroCurrentLevel{\BKM@currentlevel}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareBoolOption{keeplevel}
+\DeclareBoolOption{startatroot}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@startatrootfalse}
+%    \begin{macrocode}
+\def\BKM@startatrootfalse{%
+  \global\let\ifBKM@startatroot\iffalse
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@startatroottrue}
+%    \begin{macrocode}
+\def\BKM@startatroottrue{%
+  \global\let\ifBKM@startatroot\iftrue
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{BKM}{rellevel}{%
+  \BKM@CalcExpr\BKM@level{#1}+\BKM@currentlevel
+}
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@level}
+%    \begin{macrocode}
+\def\bookmark@level{\BKM@level}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@currentlevel}
+%    \begin{macrocode}
+\def\BKM@currentlevel{0}
+%    \end{macrocode}
+%    \end{macro}
+%    Make \xpackage{bookmark}'s option \xoption{numbered} an alias
+%    for \xpackage{hyperref}'s \xoption{bookmarksnumbered}.
+%    \begin{macrocode}
+\DeclareBoolOption[%
+  \ifHy@bookmarksnumbered true\else false\fi
+]{numbered}
+\g@addto@macro\BKM@numberedtrue{%
+  \let\ifHy@bookmarksnumbered\iftrue
+}
+\g@addto@macro\BKM@numberedfalse{%
+  \let\ifHy@bookmarksnumbered\iffalse
+}
+\g@addto@macro\Hy@bookmarksnumberedtrue{%
+  \let\ifBKM@numbered\iftrue
+}
+\g@addto@macro\Hy@bookmarksnumberedfalse{%
+  \let\ifBKM@numbered\iffalse
+}
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@numbered}
+%    \begin{macrocode}
+\def\bookmark@numbered{%
+  \ifBKM@numbered\ltx@one\else\ltx@zero\fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Redefinitions \xpackage{hyperref}'s options}
+%
+%    \begin{macro}{\BKM@PatchHyperrefOption}
+%    \begin{macrocode}
+\def\BKM@PatchHyperrefOption#1{%
+  \expandafter\BKM@@PatchHyperrefOption\csname KV@Hyp@#1\endcsname%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@@PatchHyperrefOption}
+%    \begin{macrocode}
+\def\BKM@@PatchHyperrefOption#1{%
+  \expandafter\BKM@@@PatchHyperrefOption#1{##1}\BKM@nil#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@@@PatchHyperrefOption}
+%    \begin{macrocode}
+\def\BKM@@@PatchHyperrefOption#1\BKM@nil#2#3{%
+  \def#2##1{%
+    #1%
+    \bookmarksetup{#3={##1}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\BKM@PatchHyperrefOption{bookmarksopen}{open}
+\BKM@PatchHyperrefOption{bookmarksopenlevel}{openlevel}
+\BKM@PatchHyperrefOption{bookmarksdepth}{depth}
+%    \end{macrocode}
+%
+% \paragraph{Font style options.}
+%
+%    Caution: Package \xpackage{bitset} is zero-based, the
+%    PDF specifications starts with one.
+%    \begin{macrocode}
+\bitsetReset{BKM@FontStyle}%
+\define@key{BKM}{italic}[true]{%
+  \expandafter\ifx\csname if#1\endcsname\iftrue
+    \bitsetSet{BKM@FontStyle}{0}%
+  \else
+    \bitsetClear{BKM@FontStyle}{0}%
+  \fi
+}%
+\define@key{BKM}{bold}[true]{%
+  \expandafter\ifx\csname if#1\endcsname\iftrue
+    \bitsetSet{BKM@FontStyle}{1}%
+  \else
+    \bitsetClear{BKM@FontStyle}{1}%
+  \fi
+}%
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@italic}
+%    \begin{macrocode}
+\def\bookmark@italic{%
+  \ifnum\bitsetGet{BKM@FontStyle}{0}=1 \ltx@one\else\ltx@zero\fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@bold}
+%    \begin{macrocode}
+\def\bookmark@bold{%
+  \ifnum\bitsetGet{BKM@FontStyle}{1}=1 \ltx@one\else\ltx@zero\fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@PrintStyle}
+%    \begin{macrocode}
+\def\BKM@PrintStyle{%
+  \bitsetGetDec{BKM@FontStyle}%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Options for color.}
+%
+%    \begin{macrocode}
+\define@key{BKM}{color}{%
+  \HyColor@BookmarkColor{#1}\BKM@color{bookmark}{color}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@color}
+%    \begin{macrocode}
+\let\BKM@color\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@color}
+%    \begin{macrocode}
+\def\bookmark@color{\BKM@color}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Action options}
+%
+%    \begin{macrocode}
+\def\BKM@temp#1{%
+  \DeclareStringOption{#1}%
+  \expandafter\edef\csname bookmark@#1\endcsname{%
+    \expandafter\noexpand\csname BKM@#1\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@dest}
+%    \begin{macrocode}
+\BKM@temp{dest}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@named}
+%    \begin{macrocode}
+\BKM@temp{named}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@uri}
+%    \begin{macrocode}
+\BKM@temp{uri}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@gotor}
+%    \begin{macrocode}
+\BKM@temp{gotor}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@rawaction}
+%    \begin{macrocode}
+\BKM@temp{rawaction}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\define@key{BKM}{page}{%
+  \def\BKM@page{#1}%
+  \ifx\BKM@page\@empty
+  \else
+    \edef\BKM@page{\number\BKM@page}%
+    \ifnum\BKM@page>\z@
+    \else
+      \PackageError{bookmark}{Page must be positive}\@ehc
+      \def\BKM@page{1}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@page}
+%    \begin{macrocode}
+\let\BKM@page\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@page}
+%    \begin{macrocode}
+\def\bookmark@page{\BKM@@page}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\define@key{BKM}{view}{%
+  \BKM@CheckView{#1}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\BKM@view}
+%    \begin{macrocode}
+\let\BKM@view\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\bookmark@view}
+%    \begin{macrocode}
+\def\bookmark@view{\BKM@view}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{BKM@CheckView}
+%    \begin{macrocode}
+\def\BKM@CheckView#1{%
+  \BKM@CheckViewType#1 \@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@CheckViewType}
+%    \begin{macrocode}
+\def\BKM@CheckViewType#1 #2\@nil{%
+  \def\BKM@type{#1}%
+  \@onelevel@sanitize\BKM@type
+  \BKM@TestViewType{Fit}{}%
+  \BKM@TestViewType{FitB}{}%
+  \BKM@TestViewType{FitH}{%
+    \BKM@CheckParam#2 \@nil{top}%
+  }%
+  \BKM@TestViewType{FitBH}{%
+    \BKM@CheckParam#2 \@nil{top}%
+  }%
+  \BKM@TestViewType{FitV}{%
+    \BKM@CheckParam#2 \@nil{bottom}%
+  }%
+  \BKM@TestViewType{FitBV}{%
+    \BKM@CheckParam#2 \@nil{bottom}%
+  }%
+  \BKM@TestViewType{FitR}{%
+    \BKM@CheckRect{#2}{ }%
+  }%
+  \BKM@TestViewType{XYZ}{%
+    \BKM@CheckXYZ{#2}{ }%
+  }%
+  \@car{%
+    \PackageError{bookmark}{%
+      Unknown view type `\BKM@type',\MessageBreak
+      using `FitH' instead%
+    }\@ehc
+    \def\BKM@view{FitH}%
+  }%
+  \@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@TestViewType}
+%    \begin{macrocode}
+\def\BKM@TestViewType#1{%
+  \def\BKM@temp{#1}%
+  \@onelevel@sanitize\BKM@temp
+  \ifx\BKM@type\BKM@temp
+    \let\BKM@view\BKM@temp
+    \expandafter\@car
+  \else
+    \expandafter\@gobble
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{BKM@CheckParam}
+%    \begin{macrocode}
+\def\BKM@CheckParam#1 #2\@nil#3{%
+  \def\BKM@param{#1}%
+  \ifx\BKM@param\@empty
+    \PackageWarning{bookmark}{%
+      Missing parameter (#3) for `\BKM@type',\MessageBreak
+      using 0%
+    }%
+    \def\BKM@param{0}%
+  \else
+    \BKM@CalcParam
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{BKM@CheckRect}
+%    \begin{macrocode}
+\def\BKM@CheckRect#1#2{%
+  \BKM@@CheckRect#1#2#2#2#2\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@@CheckRect}
+%    \begin{macrocode}
+\def\BKM@@CheckRect#1 #2 #3 #4 #5\@nil{%
+  \def\BKM@temp{0}%
+  \def\BKM@param{#1}%
+  \ifx\BKM@param\@empty
+    \def\BKM@param{0}%
+    \def\BKM@temp{1}%
+  \else
+    \BKM@CalcParam
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+  \def\BKM@param{#2}%
+  \ifx\BKM@param\@empty
+    \def\BKM@param{0}%
+    \def\BKM@temp{1}%
+  \else
+    \BKM@CalcParam
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+  \def\BKM@param{#3}%
+  \ifx\BKM@param\@empty
+    \def\BKM@param{0}%
+    \def\BKM@temp{1}%
+  \else
+    \BKM@CalcParam
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+  \def\BKM@param{#4}%
+  \ifx\BKM@param\@empty
+    \def\BKM@param{0}%
+    \def\BKM@temp{1}%
+  \else
+    \BKM@CalcParam
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+  \ifnum\BKM@temp>\z@
+    \PackageWarning{bookmark}{Missing parameters for `\BKM@type'}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@CheckXYZ}
+%    \begin{macrocode}
+\def\BKM@CheckXYZ#1#2{%
+  \BKM@@CheckXYZ#1#2#2#2\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@@CheckXYZ}
+%    \begin{macrocode}
+\def\BKM@@CheckXYZ#1 #2 #3 #4\@nil{%
+  \def\BKM@param{#1}%
+  \let\BKM@temp\BKM@param
+  \@onelevel@sanitize\BKM@temp
+  \ifx\BKM@param\@empty
+    \let\BKM@param\BKM@null
+  \else
+    \ifx\BKM@temp\BKM@null
+    \else
+      \BKM@CalcParam
+    \fi
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+  \def\BKM@param{#2}%
+  \let\BKM@temp\BKM@param
+  \@onelevel@sanitize\BKM@temp
+  \ifx\BKM@param\@empty
+    \let\BKM@param\BKM@null
+  \else
+    \ifx\BKM@temp\BKM@null
+    \else
+      \BKM@CalcParam
+    \fi
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+  \def\BKM@param{#3}%
+  \ifx\BKM@param\@empty
+    \let\BKM@param\BKM@null
+  \fi
+  \edef\BKM@view{\BKM@view\space\BKM@param}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@null}
+%    \begin{macrocode}
+\def\BKM@null{null}
+\@onelevel@sanitize\BKM@null
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BKM@CalcParam}
+%    \begin{macrocode}
+\def\BKM@CalcParam{%
+  \begingroup
+  \let\calc\@firstofone
+  \expandafter\BKM@@CalcParam\BKM@param\@empty\@empty\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@@CalcParam}
+%    \begin{macrocode}
+\def\BKM@@CalcParam#1#2#3\@nil{%
+  \ifx\calc#1%
+    \@ifundefined{calc@assign@dimen}{%
+      \@ifundefined{dimexpr}{%
+        \setlength{\dimen@}{#2}%
+      }{%
+        \setlength{\dimen@}{\dimexpr#2\relax}%
+      }%
+    }{%
+      \setlength{\dimen@}{#2}%
+    }%
+    \dimen@.99626\dimen@
+    \edef\BKM@param{\strip@pt\dimen@}%
+    \expandafter\endgroup
+    \expandafter\def\expandafter\BKM@param\expandafter{\BKM@param}%
+  \else
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Option \xoption{atend}}
+%
+%    \begin{macrocode}
+\DeclareBoolOption{atend}
+\g@addto@macro\BKM@DisableOptions{%
+  \DisableKeyvalOption[action=warning,package=bookmark]%
+      {BKM}{atend}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Option \xoption{style}}
+%
+%    \begin{macro}{\bookmarkdefinestyle}
+%    \begin{macrocode}
+\newcommand*{\bookmarkdefinestyle}[2]{%
+  \@ifundefined{BKM@style@#1}{%
+  }{%
+    \PackageInfo{bookmark}{Redefining style `#1'}%
+  }%
+  \@namedef{BKM@style@#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{BKM}{style}{%
+  \BKM@StyleCall{#1}%
+}
+\newif\ifBKM@ok
+%    \end{macrocode}
+%    \begin{macro}{\BKM@StyleCall}
+%    \begin{macrocode}
+\def\BKM@StyleCall#1{%
+  \@ifundefined{BKM@style@#1}{%
+    \PackageError{bookmark}{%
+      Undefined style `#1'%
+    }\@ehc
+  }{%
+%    \end{macrocode}
+%    Check style stack.
+%    \begin{macrocode}
+    \BKM@oktrue
+    \edef\BKM@StyleCurrent{#1}%
+    \@onelevel@sanitize\BKM@StyleCurrent
+    \let\BKM@StyleEntry\BKM@StyleEntryCheck
+    \BKM@StyleStack
+    \ifBKM@ok
+      \expandafter\@firstofone
+    \else
+      \PackageError{bookmark}{%
+        Ignoring recursive call of style `\BKM@StyleCurrent'%
+      }\@ehc
+      \expandafter\@gobble
+    \fi
+    {%
+%    \end{macrocode}
+%    Push current style on stack.
+%    \begin{macrocode}
+      \let\BKM@StyleEntry\relax
+      \edef\BKM@StyleStack{%
+        \BKM@StyleEntry{\BKM@StyleCurrent}%
+        \BKM@StyleStack
+      }%
+%    \end{macrocode}
+%   Call style.
+%    \begin{macrocode}
+      \expandafter\expandafter\expandafter\bookmarksetup
+      \expandafter\expandafter\expandafter{%
+        \csname BKM@style@\BKM@StyleCurrent\endcsname
+      }%
+%    \end{macrocode}
+%    Pop current style from stack.
+%    \begin{macrocode}
+      \BKM@StyleStackPop
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@StyleStackPop}
+%    \begin{macrocode}
+\def\BKM@StyleStackPop{%
+  \let\BKM@StyleEntry\relax
+  \edef\BKM@StyleStack{%
+    \expandafter\@gobbletwo\BKM@StyleStack
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@StyleEntryCheck}
+%    \begin{macrocode}
+\def\BKM@StyleEntryCheck#1{%
+  \def\BKM@temp{#1}%
+  \ifx\BKM@temp\BKM@StyleCurrent
+    \BKM@okfalse
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@StyleStack}
+%    \begin{macrocode}
+\def\BKM@StyleStack{}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Options for source file location}
+%
+%    \begin{macrocode}
+\DeclareStringOption{srcline}
+\DeclareStringOption{srcfile}
+%    \end{macrocode}
+%
+% \subsubsection{Hook support}
+%
+%    \begin{macro}{\BKM@hook}
+%    \begin{macrocode}
+\def\BKM@hook{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{BKM}{addtohook}{%
+  \ltx@LocalAppendToMacro\BKM@hook{#1}%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{bookmarkget}
+%    \begin{macrocode}
+\newcommand*{\bookmarkget}[1]{%
+  \romannumeral0%
+  \ltx@ifundefined{bookmark@#1}{%
+    \ltx@space
+  }{%
+    \expandafter\expandafter\expandafter\ltx@space
+    \csname bookmark@#1\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Driver setup and loading}
+%
+% \paragraph{Driver detection.}
+%
+%    \begin{macro}{\BKM@DefineDriverKey}
+%    \begin{macrocode}
+\def\BKM@DefineDriverKey#1{%
+  \define@key{BKM}{#1}[]{%
+    \def\BKM@driver{#1}%
+  }%
+  \g@addto@macro\BKM@DisableOptions{%
+    \DisableKeyvalOption[action=warning,package=bookmark]%
+        {BKM}{#1}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\BKM@DefineDriverKey{pdftex}
+\BKM@DefineDriverKey{dvips}
+\BKM@DefineDriverKey{dvipsone}
+\BKM@DefineDriverKey{textures}
+\BKM@DefineDriverKey{dvipdfm}
+\BKM@DefineDriverKey{dvipdfmx}
+\BKM@DefineDriverKey{xetex}
+\BKM@DefineDriverKey{vtex}
+\define@key{BKM}{dvipdfmx-outline-open}[true]{%
+  \expandafter\ifx\csname if#1\expandafter\endcsname
+                  \csname iftrue\endcsname
+    \chardef\SpecialDvipdfmxOutlineOpen\@ne
+  \else
+    \chardef\SpecialDvipdfmxOutlineOpen\z@
+  \fi
+}
+\g@addto@macro\BKM@DisableOptions{%
+  \DisableKeyvalOption{BKM}{dvipdfmx-outline-open}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\bookmark@driver}
+%    \begin{macrocode}
+\def\bookmark@driver{\BKM@driver}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\InputIfFileExists{bookmark.cfg}{}{}
+%    \end{macrocode}
+%    \begin{macro}{\BookmarkDriverDefault}
+%    \begin{macrocode}
+\providecommand*{\BookmarkDriverDefault}{dvips}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@driver}
+%    \begin{macrocode}
+\ifpdf
+  \def\BKM@driver{pdftex}%
+\else
+  \ifxetex
+    \def\BKM@driver{dvipdfm}%
+  \else
+    \ifvtex
+      \def\BKM@driver{vtex}%
+    \else
+      \edef\BKM@driver{\BookmarkDriverDefault}%
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Process options.}
+%
+%    \begin{macrocode}
+\ProcessKeyvalOptions*
+\BKM@DisableOptions
+%    \end{macrocode}
+%
+% \paragraph{Option \xoption{draft}}
+%
+%    \begin{macrocode}
+\ifBKM@draft
+  \PackageWarningNoLine{bookmark}{Draft mode on}%
+  \let\bookmarksetup\ltx@gobble
+  \let\BookmarkAtEnd\ltx@gobble
+  \let\bookmarkdefinestyle\ltx@gobbletwo
+  \let\bookmarkget\ltx@gobble
+  \let\pdfbookmark\ltx@undefined
+  \newcommand*{\pdfbookmark}[3][]{}%
+  \let\currentpdfbookmark\ltx@gobbletwo
+  \let\subpdfbookmark\ltx@gobbletwo
+  \let\belowpdfbookmark\ltx@gobbletwo
+  \newcommand*{\bookmark}[2][]{}%
+  \renewcommand*{\Hy@writebookmark}[5]{}%
+  \let\ReadBookmarks\relax
+  \let\BKM@DefGotoNameAction\ltx@gobbletwo % package `hypdestopt'
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+% \paragraph{Driver validation and loading.}
+%
+%    \begin{macrocode}
+\newif\ifBKM@DvipdfmxOutlineOpen
+\ltx@IfUndefined{SpecialDvipdfmxOutlineOpen}{%
+  \ifxetex
+    \ifdim\number\XeTeXversion\XeTeXrevision in<0.9995in %
+    \else
+      \chardef\SpecialDvipdfmxOutlineOpen\ltx@one
+      \BKM@DvipdfmxOutlineOpentrue
+    \fi
+  \fi
+}{%
+  \ifnum\SpecialDvipdfmxOutlineOpen>\z@
+    \BKM@DvipdfmxOutlineOpentrue
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\BKM@temp{dvipdfmx}%
+\ifx\BKM@temp\BKM@driver
+  \def\BKM@driver{dvipdfm}%
+\fi
+\def\BKM@temp{pdftex}%
+\ifpdf
+  \ifx\BKM@temp\BKM@driver
+  \else
+    \PackageWarningNoLine{bookmark}{%
+      Wrong driver `\BKM@driver', using `pdftex' instead%
+    }%
+    \let\BKM@driver\BKM@temp
+  \fi
+\else
+  \ifx\BKM@temp\BKM@driver
+    \PackageError{bookmark}{%
+      Wrong driver, pdfTeX is not running in PDF mode.\MessageBreak
+      Package loading is aborted%
+    }\@ehc
+    \expandafter\expandafter\expandafter\endinput
+  \fi
+  \def\BKM@temp{dvipdfm}%
+  \ifxetex
+    \ifx\BKM@temp\BKM@driver
+    \else
+      \PackageWarningNoLine{bookmark}{%
+        Wrong driver `\BKM@driver',\MessageBreak
+        using `dvipdfm' for XeTeX instead%
+      }%
+      \let\BKM@driver\BKM@temp
+    \fi
+  \else
+    \def\BKM@temp{vtex}%
+    \ifvtex
+      \ifx\BKM@temp\BKM@driver
+      \else
+        \PackageWarningNoLine{bookmark}{%
+          Wrong driver `\BKM@driver',\MessageBreak
+          using `vtex' for VTeX instead%
+        }%
+        \let\BKM@driver\BKM@temp
+      \fi
+    \else
+      \ifx\BKM@temp\BKM@driver
+        \PackageError{bookmark}{%
+          Wrong driver, VTeX is not running in PDF mode.\MessageBreak
+          Package loading is aborted%
+        }\@ehc
+        \expandafter\expandafter\expandafter\endinput
+      \fi
+    \fi
+  \fi
+\fi
+\InputIfFileExists{bkm-\BKM@driver.def}{}{%
+  \PackageError{bookmark}{%
+    Unsupported driver `\BKM@driver'.\MessageBreak
+    Package loading is aborted%
+  }\@ehc
+  \endinput
+}
+%    \end{macrocode}
+%
+% \subsubsection{Compatibility for \xpackage{hyperref}}
+%
+%    \begin{macro}{\pdfbookmark}
+%    \begin{macrocode}
+\let\pdfbookmark\ltx@undefined
+\newcommand*{\pdfbookmark}[3][0]{%
+  \bookmark[level=#1,dest={#3.#1}]{#2}%
+  \hyper@anchorstart{#3.#1}\hyper@anchorend
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\currentpdfbookmark}
+%    \begin{macrocode}
+\def\currentpdfbookmark{%
+  \pdfbookmark[\BKM@currentlevel]%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\subpdfbookmark}
+%    \begin{macrocode}
+\def\subpdfbookmark{%
+  \BKM@CalcExpr\BKM@CalcResult\BKM@currentlevel+1%
+  \expandafter\pdfbookmark\expandafter[\BKM@CalcResult]%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\belowpdfbookmark}
+%    \begin{macrocode}
+\def\belowpdfbookmark#1#2{%
+  \xdef\BKM@gtemp{\number\BKM@currentlevel}%
+  \subpdfbookmark{#1}{#2}%
+  \global\let\BKM@currentlevel\BKM@gtemp
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Section number, text, label, level, file
+%    \begin{macro}{\Hy@writebookmark}
+%    \begin{macrocode}
+\def\Hy@writebookmark#1#2#3#4#5{%
+  \ifnum#4>\BKM@depth\relax
+  \else
+    \def\BKM@type{#5}%
+    \ifx\BKM@type\Hy@bookmarkstype
+      \begingroup
+        \ifBKM@numbered
+          \let\numberline\Hy@numberline
+          \let\booknumberline\Hy@numberline
+          \let\partnumberline\Hy@numberline
+          \let\chapternumberline\Hy@numberline
+        \else
+          \let\numberline\@gobble
+          \let\booknumberline\@gobble
+          \let\partnumberline\@gobble
+          \let\chapternumberline\@gobble
+        \fi
+        \bookmark[level=#4,dest={#3}]{#2}%
+      \endgroup
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ReadBookmarks}
+%    \begin{macrocode}
+\let\ReadBookmarks\relax
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Driver for dvipdfm}
+%
+%    \begin{macrocode}
+%<*dvipdfm>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bkm-dvipdfm.def}%
+  [2011/12/02 v1.24 bookmark driver for dvipdfm (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macro}{\BKM@id}
+%    \begin{macrocode}
+\newcount\BKM@id
+\BKM@id=\z@
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BKM@0}
+%    \begin{macrocode}
+\@namedef{BKM@0}{000}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifBKM@sw}
+%    \begin{macrocode}
+\newif\ifBKM@sw
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bookmark}
+%    \begin{macrocode}
+\newcommand*{\bookmark}[2][]{%
+  \if@filesw
+    \begingroup
+      \def\bookmark@text{#2}%
+      \BKM@setup{#1}%
+      \edef\BKM@prev{\the\BKM@id}%
+      \global\advance\BKM@id\@ne
+      \BKM@swtrue
+      \@whilesw\ifBKM@sw\fi{%
+        \def\BKM@abslevel{1}%
+        \ifnum\ifBKM@startatroot\z@\else\BKM@prev\fi=\z@
+          \BKM@startatrootfalse
+          \expandafter\xdef\csname BKM@\the\BKM@id\endcsname{%
+            0{\BKM@level}\BKM@abslevel
+          }%
+          \BKM@swfalse
+        \else
+          \expandafter\expandafter\expandafter\BKM@getx
+              \csname BKM@\BKM@prev\endcsname
+          \ifnum\BKM@level>\BKM@x@level\relax
+            \BKM@CalcExpr\BKM@abslevel\BKM@x@abslevel+1%
+            \expandafter\xdef\csname BKM@\the\BKM@id\endcsname{%
+              {\BKM@prev}{\BKM@level}\BKM@abslevel
+            }%
+            \BKM@swfalse
+          \else
+            \let\BKM@prev\BKM@x@parent
+          \fi
+        \fi
+      }%
+      \csname HyPsd@XeTeXBigCharstrue\endcsname
+      \pdfstringdef\BKM@title{\bookmark@text}%
+      \edef\BKM@FLAGS{\BKM@PrintStyle}%
+      \let\BKM@action\@empty
+      \ifx\BKM@gotor\@empty
+        \ifx\BKM@dest\@empty
+          \ifx\BKM@named\@empty
+            \ifx\BKM@rawaction\@empty
+              \ifx\BKM@uri\@empty
+                \ifx\BKM@page\@empty
+                  \PackageError{bookmark}{Missing action}\@ehc
+                  \edef\BKM@action{/Dest[@page1/Fit]}%
+                \else
+                  \ifx\BKM@view\@empty
+                    \def\BKM@view{Fit}%
+                  \fi
+                  \edef\BKM@action{/Dest[@page\BKM@page/\BKM@view]}%
+                \fi
+              \else
+                \BKM@EscapeString\BKM@uri
+                \edef\BKM@action{%
+                  /A<<%
+                    /S/URI%
+                    /URI(\BKM@uri)%
+                  >>%
+                }%
+              \fi
+            \else
+              \edef\BKM@action{/A<<\BKM@rawaction>>}%
+            \fi
+          \else
+            \BKM@EscapeName\BKM@named
+            \edef\BKM@action{%
+              /A<</S/Named/N/\BKM@named>>%
+            }%
+          \fi
+        \else
+          \BKM@EscapeString\BKM@dest
+          \edef\BKM@action{%
+            /A<<%
+              /S/GoTo%
+              /D(\BKM@dest)%
+            >>%
+          }%
+        \fi
+      \else
+        \ifx\BKM@dest\@empty
+          \ifx\BKM@page\@empty
+            \def\BKM@page{0}%
+          \else
+            \BKM@CalcExpr\BKM@page\BKM@page-1%
+          \fi
+          \ifx\BKM@view\@empty
+            \def\BKM@view{Fit}%
+          \fi
+          \edef\BKM@action{/D[\BKM@page/\BKM@view]}%
+        \else
+          \BKM@EscapeString\BKM@dest
+          \edef\BKM@action{/D(\BKM@dest)}%
+        \fi
+        \BKM@EscapeString\BKM@gotor
+        \edef\BKM@action{%
+          /A<<%
+            /S/GoToR%
+            /F(\BKM@gotor)%
+            \BKM@action
+          >>%
+        }%
+      \fi
+      \special{pdf:%
+        out \ifBKM@DvipdfmxOutlineOpen
+              [%
+              \ifBKM@open
+                \ifnum\BKM@level<%
+                    \expandafter\ltx@firstofone\expandafter
+                    {\number\BKM@openlevel} %
+                \else
+                  -%
+                \fi
+              \else
+                -%
+              \fi
+              ] %
+            \fi
+            \BKM@abslevel
+        <<%
+          /Title(\BKM@title)%
+          \ifx\BKM@color\@empty
+          \else
+            /C[\BKM@color]%
+          \fi
+          \ifnum\BKM@FLAGS>\z@
+            /F \BKM@FLAGS
+          \fi
+          \BKM@action
+        >>%
+      }%
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@getx}
+%    \begin{macrocode}
+\def\BKM@getx#1#2#3{%
+  \def\BKM@x@parent{#1}%
+  \def\BKM@x@level{#2}%
+  \def\BKM@x@abslevel{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</dvipdfm>
+%    \end{macrocode}
+%
+% \subsection{Driver for \hologo{VTeX}}
+%
+%    \begin{macrocode}
+%<*vtex>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bkm-vtex.def}%
+  [2011/12/02 v1.24 bookmark driver for VTeX (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifvtexpdf
+\else
+  \PackageWarningNoLine{bookmark}{%
+    The VTeX driver only supports PDF mode%
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\BKM@id}
+%    \begin{macrocode}
+\newcount\BKM@id
+\BKM@id=\z@
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BKM@0}
+%    \begin{macrocode}
+\@namedef{BKM@0}{00}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifBKM@sw}
+%    \begin{macrocode}
+\newif\ifBKM@sw
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bookmark}
+%    \begin{macrocode}
+\newcommand*{\bookmark}[2][]{%
+  \if@filesw
+    \begingroup
+      \def\bookmark@text{#2}%
+      \BKM@setup{#1}%
+      \edef\BKM@prev{\the\BKM@id}%
+      \global\advance\BKM@id\@ne
+      \BKM@swtrue
+      \@whilesw\ifBKM@sw\fi{%
+        \ifnum\ifBKM@startatroot\z@\else\BKM@prev\fi=\z@
+          \BKM@startatrootfalse
+          \def\BKM@parent{0}%
+          \expandafter\xdef\csname BKM@\the\BKM@id\endcsname{%
+            0{\BKM@level}%
+          }%
+          \BKM@swfalse
+        \else
+          \expandafter\expandafter\expandafter\BKM@getx
+              \csname BKM@\BKM@prev\endcsname
+          \ifnum\BKM@level>\BKM@x@level\relax
+            \let\BKM@parent\BKM@prev
+            \expandafter\xdef\csname BKM@\the\BKM@id\endcsname{%
+              {\BKM@prev}{\BKM@level}%
+            }%
+            \BKM@swfalse
+          \else
+            \let\BKM@prev\BKM@x@parent
+          \fi
+        \fi
+      }%
+      \pdfstringdef\BKM@title{\bookmark@text}%
+      \BKM@vtex@title
+      \edef\BKM@FLAGS{\BKM@PrintStyle}%
+      \let\BKM@action\@empty
+      \ifx\BKM@gotor\@empty
+        \ifx\BKM@dest\@empty
+          \ifx\BKM@named\@empty
+            \ifx\BKM@rawaction\@empty
+              \ifx\BKM@uri\@empty
+                \ifx\BKM@page\@empty
+                  \PackageError{bookmark}{Missing action}\@ehc
+                  \def\BKM@action{!1}%
+                \else
+                  \edef\BKM@action{!\BKM@page}%
+                \fi
+              \else
+                \BKM@EscapeString\BKM@uri
+                \edef\BKM@action{%
+                  <u=%
+                    /S/URI%
+                    /URI(\BKM@uri)%
+                  >%
+                }%
+              \fi
+            \else
+              \edef\BKM@action{<u=\BKM@rawaction>}%
+            \fi
+          \else
+            \BKM@EscapeName\BKM@named
+            \edef\BKM@action{%
+              <u=%
+                /S/Named%
+                /N/\BKM@named
+              >%
+            }%
+          \fi
+        \else
+          \BKM@EscapeString\BKM@dest
+          \edef\BKM@action{\BKM@dest}%
+        \fi
+      \else
+        \ifx\BKM@dest\@empty
+          \ifx\BKM@page\@empty
+            \def\BKM@page{1}%
+          \fi
+          \ifx\BKM@view\@empty
+            \def\BKM@view{Fit}%
+          \fi
+          \edef\BKM@action{/D[\BKM@page/\BKM@view]}%
+        \else
+          \BKM@EscapeString\BKM@dest
+          \edef\BKM@action{/D(\BKM@dest)}%
+        \fi
+        \BKM@EscapeString\BKM@gotor
+        \edef\BKM@action{%
+          <u=%
+            /S/GoToR%
+            /F(\BKM@gotor)%
+            \BKM@action
+          >>%
+        }%
+      \fi
+      \ifx\BKM@color\@empty
+        \let\BKM@RGBcolor\@empty
+      \else
+        \expandafter\BKM@toRGB\BKM@color\@nil
+      \fi
+      \special{%
+        !outline \BKM@action;%
+        p=\BKM@parent,%
+        i=\number\BKM@id,%
+        s=%
+          \ifBKM@open
+            \ifnum\BKM@level<\BKM@openlevel
+              o%
+            \else
+              c%
+            \fi
+          \else
+            c%
+          \fi,%
+        \ifx\BKM@RGBcolor\@empty
+        \else
+          c=\BKM@RGBcolor,%
+        \fi
+        \ifnum\BKM@FLAGS>\z@
+          f=\BKM@FLAGS,%
+        \fi
+        t=\BKM@title
+      }%
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@getx}
+%    \begin{macrocode}
+\def\BKM@getx#1#2{%
+  \def\BKM@x@parent{#1}%
+  \def\BKM@x@level{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@toRGB}
+%    \begin{macrocode}
+\def\BKM@toRGB#1 #2 #3\@nil{%
+  \let\BKM@RGBcolor\@empty
+  \BKM@toRGBComponent{#1}%
+  \BKM@toRGBComponent{#2}%
+  \BKM@toRGBComponent{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@toRGBComponent}
+%    \begin{macrocode}
+\def\BKM@toRGBComponent#1{%
+  \dimen@=#1pt\relax
+  \ifdim\dimen@>\z@
+    \ifdim\dimen@<\p@
+      \dimen@=255\dimen@
+      \advance\dimen@ by 32768sp\relax
+      \divide\dimen@ by 65536\relax
+      \dimen@ii=\dimen@
+      \divide\dimen@ii by 16\relax
+      \edef\BKM@RGBcolor{%
+        \BKM@RGBcolor
+        \BKM@toHexDigit\dimen@ii
+      }%
+      \dimen@ii=16\dimen@ii
+      \advance\dimen@-\dimen@ii
+      \edef\BKM@RGBcolor{%
+        \BKM@RGBcolor
+        \BKM@toHexDigit\dimen@
+      }%
+    \else
+      \edef\BKM@RGBcolor{\BKM@RGBcolor FF}%
+    \fi
+  \else
+    \edef\BKM@RGBcolor{\BKM@RGBcolor00}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@toHexDigit}
+%    \begin{macrocode}
+\def\BKM@toHexDigit#1{%
+  \ifcase\expandafter\@firstofone\expandafter{\number#1} %
+    0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or
+    8\or 9\or A\or B\or C\or D\or E\or F%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\|=0 %
+  \catcode`\\=12 %
+%    \end{macrocode}
+%    \begin{macro}{\BKM@vtex@title}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@title{%
+    |@onelevel@sanitize|BKM@title
+    |edef|BKM@title{|expandafter|BKM@vtex@leftparen|BKM@title\(|@nil}%
+    |edef|BKM@title{|expandafter|BKM@vtex@rightparen|BKM@title\)|@nil}%
+    |edef|BKM@title{|expandafter|BKM@vtex@zero|BKM@title\0|@nil}%
+    |edef|BKM@title{|expandafter|BKM@vtex@one|BKM@title\1|@nil}%
+    |edef|BKM@title{|expandafter|BKM@vtex@two|BKM@title\2|@nil}%
+    |edef|BKM@title{|expandafter|BKM@vtex@three|BKM@title\3|@nil}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@vtex@leftparen}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@leftparen#1\(#2|@nil{%
+    #1%
+    |ifx||#2||%
+    |else
+      (%
+      |ltx@ReturnAfterFi{%
+        |BKM@vtex@leftparen#2|@nil
+      }%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@vtex@rightparen}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@rightparen#1\)#2|@nil{%
+    #1%
+    |ifx||#2||%
+    |else
+      )%
+      |ltx@ReturnAfterFi{%
+        |BKM@vtex@rightparen#2|@nil
+      }%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@vtex@zero}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@zero#1\0#2|@nil{%
+    #1%
+    |ifx||#2||%
+    |else
+      |noexpand|hv@pdf@char0%
+      |ltx@ReturnAfterFi{%
+        |BKM@vtex@zero#2|@nil
+      }%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@vtex@one}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@one#1\1#2|@nil{%
+    #1%
+    |ifx||#2||%
+    |else
+      |noexpand|hv@pdf@char1%
+      |ltx@ReturnAfterFi{%
+        |BKM@vtex@one#2|@nil
+      }%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@vtex@two}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@two#1\2#2|@nil{%
+    #1%
+    |ifx||#2||%
+    |else
+      |noexpand|hv@pdf@char2%
+      |ltx@ReturnAfterFi{%
+        |BKM@vtex@two#2|@nil
+      }%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@vtex@three}
+%    \begin{macrocode}
+  |gdef|BKM@vtex@three#1\3#2|@nil{%
+    #1%
+    |ifx||#2||%
+    |else
+      |noexpand|hv@pdf@char3%
+      |ltx@ReturnAfterFi{%
+        |BKM@vtex@three#2|@nil
+      }%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+|endgroup
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</vtex>
+%    \end{macrocode}
+%
+% \subsection{Driver for \hologo{pdfTeX}}
+%
+%    \begin{macrocode}
+%<*pdftex>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bkm-pdftex.def}%
+  [2011/12/02 v1.24 bookmark driver for pdfTeX (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macro}{\BKM@DO@entry}
+%    \begin{macrocode}
+\def\BKM@DO@entry#1#2{%
+  \begingroup
+    \kvsetkeys{BKM@DO}{#1}%
+    \def\BKM@DO@title{#2}%
+    \ifx\BKM@DO@srcfile\@empty
+    \else
+      \BKM@UnescapeHex\BKM@DO@srcfile
+    \fi
+    \BKM@UnescapeHex\BKM@DO@title
+    \expandafter\expandafter\expandafter\BKM@getx
+        \csname BKM@\BKM@DO@id\endcsname\@empty\@empty
+    \let\BKM@attr\@empty
+    \ifx\BKM@DO@flags\@empty
+    \else
+      \edef\BKM@attr{\BKM@attr/F \BKM@DO@flags}%
+    \fi
+    \ifx\BKM@DO@color\@empty
+    \else
+      \edef\BKM@attr{\BKM@attr/C[\BKM@DO@color]}%
+    \fi
+    \ifx\BKM@attr\@empty
+    \else
+      \edef\BKM@attr{attr{\BKM@attr}}%
+    \fi
+    \let\BKM@action\@empty
+    \ifx\BKM@DO@gotor\@empty
+      \ifx\BKM@DO@dest\@empty
+        \ifx\BKM@DO@named\@empty
+          \ifx\BKM@DO@rawaction\@empty
+            \ifx\BKM@DO@uri\@empty
+              \ifx\BKM@DO@page\@empty
+                \PackageError{bookmark}{%
+                  Missing action\BKM@SourceLocation
+                }\@ehc
+                \edef\BKM@action{goto page1{/Fit}}%
+              \else
+                \ifx\BKM@DO@view\@empty
+                  \def\BKM@DO@view{Fit}%
+                \fi
+                \edef\BKM@action{goto page\BKM@DO@page{/\BKM@DO@view}}%
+              \fi
+            \else
+              \BKM@UnescapeHex\BKM@DO@uri
+              \BKM@EscapeString\BKM@DO@uri
+              \edef\BKM@action{user{<</S/URI/URI(\BKM@DO@uri)>>}}%
+            \fi
+          \else
+            \BKM@UnescapeHex\BKM@DO@rawaction
+            \edef\BKM@action{%
+              user{%
+                <<%
+                  \BKM@DO@rawaction
+                >>%
+              }%
+            }%
+          \fi
+        \else
+          \BKM@EscapeName\BKM@DO@named
+          \edef\BKM@action{%
+            user{<</S/Named/N/\BKM@DO@named>>}%
+          }%
+        \fi
+      \else
+        \BKM@UnescapeHex\BKM@DO@dest
+        \BKM@DefGotoNameAction\BKM@action\BKM@DO@dest
+      \fi
+    \else
+      \ifx\BKM@DO@dest\@empty
+        \ifx\BKM@DO@page\@empty
+          \def\BKM@DO@page{0}%
+        \else
+          \BKM@CalcExpr\BKM@DO@page\BKM@DO@page-1%
+        \fi
+        \ifx\BKM@DO@view\@empty
+          \def\BKM@DO@view{Fit}%
+        \fi
+        \edef\BKM@action{/D[\BKM@DO@page/\BKM@DO@view]}%
+      \else
+        \BKM@UnescapeHex\BKM@DO@dest
+        \BKM@EscapeString\BKM@DO@dest
+        \edef\BKM@action{/D(\BKM@DO@dest)}%
+      \fi
+      \BKM@UnescapeHex\BKM@DO@gotor
+      \BKM@EscapeString\BKM@DO@gotor
+      \edef\BKM@action{%
+        user{%
+          <<%
+            /S/GoToR%
+            /F(\BKM@DO@gotor)%
+            \BKM@action
+          >>%
+        }%
+      }%
+    \fi
+    \pdfoutline\BKM@attr\BKM@action
+                count\ifBKM@DO@open\else-\fi\BKM@x@childs
+                {\BKM@DO@title}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@DefGotoNameAction}
+%    Macro \cs{BKM@DefGotoNameAction} is a hook for
+%    package \xpackage{hypdestopt}.
+%    \begin{macrocode}
+\def\BKM@DefGotoNameAction#1#2{%
+  \BKM@EscapeString\BKM@DO@dest
+  \edef#1{goto name{#2}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</pdftex>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*pdftex|pdfmark>
+%    \end{macrocode}
+%    \begin{macro}{\BKM@SourceLocation}
+%    \begin{macrocode}
+\def\BKM@SourceLocation{%
+  \ifx\BKM@DO@srcfile\@empty
+    \ifx\BKM@DO@srcline\@empty
+    \else
+      .\MessageBreak
+      Source: line \BKM@DO@srcline
+    \fi
+  \else
+    \ifx\BKM@DO@srcline\@empty
+      .\MessageBreak
+      Source: file `\BKM@DO@srcfile'%
+    \else
+      .\MessageBreak
+      Source: file `\BKM@DO@srcfile', line \BKM@DO@srcline
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</pdftex|pdfmark>
+%    \end{macrocode}
+%
+% \subsection{Drivers with pdfmark specials}
+%
+% \subsubsection{Driver dvips}
+%
+%    \begin{macrocode}
+%<*dvips>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bkm-dvips.def}%
+  [2011/12/02 v1.24 bookmark driver for dvips (HO)]%
+%    \end{macrocode}
+%    \begin{macro}{\BKM@PSHeaderFile}
+%    \begin{macrocode}
+\def\BKM@PSHeaderFile#1{%
+  \special{header=#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</dvips>
+%    \end{macrocode}
+%
+% \subsubsection{Driver dvipsone}
+%
+%    \begin{macrocode}
+%<*dvipsone>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bkm-dvipsone.def}%
+  [2011/12/02 v1.24 bookmark driver for dvipsone (HO)]%
+%    \end{macrocode}
+%    \begin{macro}{\BKM@PSHeaderFile}
+%    \begin{macrocode}
+\def\BKM@PSHeaderFile#1{%
+  \special{header=#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</dvipsone>
+%    \end{macrocode}
+%
+% \subsubsection{Driver textures}
+%
+%    \begin{macrocode}
+%<*textures>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bkm-textures.def}%
+  [2011/12/02 v1.24 bookmark driver for textures (HO)]%
+%    \end{macrocode}
+%    \begin{macro}{\BKM@PSHeaderFile}
+%    \begin{macrocode}
+\def\BKM@PSHeaderFile#1{%
+  \special{prePostScriptfile #1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</textures>
+%    \end{macrocode}
+%
+% \subsubsection{Common part}
+%
+%    \begin{macrocode}
+%<*pdfmark>
+%    \end{macrocode}
+%    \begin{macro}{\BKM@filename}
+%    \begin{macrocode}
+\def\BKM@filename{\jobname.out.ps}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\BKM@PSHeaderFile\BKM@filename
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{atveryend}[2009/12/07]
+\AfterLastShipout{\BKM@pdfmark@out}
+%    \end{macrocode}
+%
+%    \begin{macro}{\BKM@pdfmark@out}
+%    Do not use package \xpackage{rerunfilecheck} here, because
+%    the file \cs{BKM@filename} is not read during the \hologo{TeX} run.
+%    \begin{macrocode}
+\def\BKM@pdfmark@out{%
+  \if@filesw
+    \newwrite\BKM@file
+    \immediate\openout\BKM@file=\BKM@filename\relax
+    \BKM@write{\@percentchar!}%
+    \BKM@write{/pdfmark where{pop}}%
+    \BKM@write{%
+      {%
+        /globaldict where{pop globaldict}{userdict}ifelse%
+        /pdfmark/cleartomark load put%
+      }%
+    }%
+    \BKM@write{ifelse}%
+  \else
+    \let\BKM@write\@gobble
+    \let\BKM@DO@entry\@gobbletwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@write}
+%    \begin{macrocode}
+\def\BKM@write#{%
+  \immediate\write\BKM@file
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BKM@DO@entry}
+%    The specification for pdfmark says that |/Color| is the
+%    name of the key for color, however ghostscript only passes
+%    the key into the PDF file, thus the key name must be |/C|.
+%    \begin{macrocode}
+\def\BKM@DO@entry#1#2{%
+  \begingroup
+    \kvsetkeys{BKM@DO}{#1}%
+    \ifx\BKM@DO@srcfile\@empty
+    \else
+      \BKM@UnescapeHex\BKM@DO@srcfile
+    \fi
+    \def\BKM@DO@title{#2}%
+    \BKM@UnescapeHex\BKM@DO@title
+    \expandafter\expandafter\expandafter\BKM@getx
+        \csname BKM@\BKM@DO@id\endcsname\@empty\@empty
+    \let\BKM@attr\@empty
+    \ifx\BKM@DO@flags\@empty
+    \else
+      \edef\BKM@attr{\BKM@attr/F \BKM@DO@flags}%
+    \fi
+    \ifx\BKM@DO@color\@empty
+    \else
+      \edef\BKM@attr{\BKM@attr/C[\BKM@DO@color]}%
+    \fi
+    \let\BKM@action\@empty
+    \ifx\BKM@DO@gotor\@empty
+      \ifx\BKM@DO@dest\@empty
+        \ifx\BKM@DO@named\@empty
+          \ifx\BKM@DO@rawaction\@empty
+            \ifx\BKM@DO@uri\@empty
+              \ifx\BKM@DO@page\@empty
+                \PackageError{bookmark}{%
+                  Missing action\BKM@SourceLocation
+                }\@ehc
+                \edef\BKM@action{%
+                  /Action/GoTo%
+                  /Page 1%
+                  /View[/Fit]%
+                }%
+              \else
+                \ifx\BKM@DO@view\@empty
+                  \def\BKM@DO@view{Fit}%
+                \fi
+                \edef\BKM@action{%
+                  /Action/GoTo%
+                  /Page \BKM@DO@page
+                  /View[/\BKM@DO@view]%
+                }%
+              \fi
+            \else
+              \BKM@UnescapeHex\BKM@DO@uri
+              \BKM@EscapeString\BKM@DO@uri
+              \edef\BKM@action{%
+                /Action<<%
+                  /Subtype/URI%
+                  /URI(\BKM@DO@uri)%
+                >>%
+              }%
+            \fi
+          \else
+            \BKM@UnescapeHex\BKM@DO@rawaction
+            \edef\BKM@action{%
+              /Action<<%
+                \BKM@DO@rawaction
+              >>%
+            }%
+          \fi
+        \else
+          \BKM@EscapeName\BKM@DO@named
+          \edef\BKM@action{%
+            /Action<<%
+              /Subtype/Named%
+              /N/\BKM@DO@named
+            >>%
+          }%
+        \fi
+      \else
+        \BKM@UnescapeHex\BKM@DO@dest
+        \BKM@EscapeString\BKM@DO@dest
+        \edef\BKM@action{%
+          /Action/GoTo%
+          /Dest(\BKM@DO@dest)cvn%
+        }%
+      \fi
+    \else
+      \ifx\BKM@DO@dest\@empty
+        \ifx\BKM@DO@page\@empty
+          \def\BKM@DO@page{1}%
+        \fi
+        \ifx\BKM@DO@view\@empty
+          \def\BKM@DO@view{Fit}%
+        \fi
+        \edef\BKM@action{%
+          /Page \BKM@DO@page
+          /View[/\BKM@DO@view]%
+        }%
+      \else
+        \BKM@UnescapeHex\BKM@DO@dest
+        \BKM@EscapeString\BKM@DO@dest
+        \edef\BKM@action{%
+          /Dest(\BKM@DO@dest)cvn%
+        }%
+      \fi
+      \BKM@UnescapeHex\BKM@DO@gotor
+      \BKM@EscapeString\BKM@DO@gotor
+      \edef\BKM@action{%
+        /Action/GoToR%
+        /File(\BKM@DO@gotor)%
+        \BKM@action
+      }%
+    \fi
+    \BKM@write{[}%
+    \BKM@write{/Title(\BKM@DO@title)}%
+    \ifnum\BKM@x@childs>\z@
+      \BKM@write{/Count \ifBKM@DO@open\else-\fi\BKM@x@childs}%
+    \fi
+    \ifx\BKM@attr\@empty
+    \else
+      \BKM@write{\BKM@attr}%
+    \fi
+    \BKM@write{\BKM@action}%
+    \BKM@write{/OUT pdfmark}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</pdfmark>
+%    \end{macrocode}
+%
+% \subsection{Common part for \xoption{pdftex} and \xoption{pdfmark}}
+%
+%    \begin{macrocode}
+%<*pdftex|pdfmark>
+%    \end{macrocode}
+%
+% \subsubsection{Write auxiliary file}
+%
+%    \begin{macrocode}
+\RequirePackage{auxhook}
+%    \end{macrocode}
+%    \begin{macrocode}
+\AddLineBeginMainAux{%
+  \string\providecommand\string\BKM@entry[2]{}%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\BKM@id}
+%    \begin{macrocode}
+\newcount\BKM@id
+\BKM@id=\z@
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BKM@0}
+%    \begin{macrocode}
+\@namedef{BKM@0}{000}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifBKM@sw}
+%    \begin{macrocode}
+\newif\ifBKM@sw
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\bookmark}
+%    \begin{macrocode}
+\newcommand*{\bookmark}[2][]{%
+  \if@filesw
+    \begingroup
+      \BKM@InitSourceLocation
+      \def\bookmark@text{#2}%
+      \BKM@setup{#1}%
+      \ifx\BKM@srcfile\@empty
+      \else
+        \BKM@EscapeHex\BKM@srcfile
+      \fi
+      \edef\BKM@prev{\the\BKM@id}%
+      \global\advance\BKM@id\@ne
+      \BKM@swtrue
+      \@whilesw\ifBKM@sw\fi{%
+        \ifnum\ifBKM@startatroot\z@\else\BKM@prev\fi=\z@
+          \BKM@startatrootfalse
+          \expandafter\xdef\csname BKM@\the\BKM@id\endcsname{%
+            0{\BKM@level}0%
+          }%
+          \BKM@swfalse
+        \else
+          \expandafter\expandafter\expandafter\BKM@getx
+              \csname BKM@\BKM@prev\endcsname
+          \ifnum\BKM@level>\BKM@x@level\relax
+            \expandafter\xdef\csname BKM@\the\BKM@id\endcsname{%
+              {\BKM@prev}{\BKM@level}0%
+            }%
+            \ifnum\BKM@prev>\z@
+              \BKM@CalcExpr\BKM@CalcResult\BKM@x@childs+1%
+              \expandafter\xdef\csname BKM@\BKM@prev\endcsname{%
+                {\BKM@x@parent}{\BKM@x@level}{\BKM@CalcResult}%
+              }%
+            \fi
+            \BKM@swfalse
+          \else
+            \let\BKM@prev\BKM@x@parent
+          \fi
+        \fi
+      }%
+      \pdfstringdef\BKM@title{\bookmark@text}%
+      \edef\BKM@FLAGS{\BKM@PrintStyle}%
+      \csname BKM@HypDestOptHook\endcsname
+      \BKM@EscapeHex\BKM@dest
+      \BKM@EscapeHex\BKM@uri
+      \BKM@EscapeHex\BKM@gotor
+      \BKM@EscapeHex\BKM@rawaction
+      \BKM@EscapeHex\BKM@title
+      \immediate\write\@mainaux{%
+        \string\BKM@entry{%
+          id=\number\BKM@id
+          \ifBKM@open
+            \ifnum\BKM@level<\BKM@openlevel
+              ,open%
+            \fi
+          \fi
+          \BKM@auxentry{dest}%
+          \BKM@auxentry{named}%
+          \BKM@auxentry{uri}%
+          \BKM@auxentry{gotor}%
+          \BKM@auxentry{page}%
+          \BKM@auxentry{view}%
+          \BKM@auxentry{rawaction}%
+          \BKM@auxentry{color}%
+          \ifnum\BKM@FLAGS>\z@
+            ,flags=\BKM@FLAGS
+          \fi
+          \BKM@auxentry{srcline}%
+          \BKM@auxentry{srcfile}%
+        }{\BKM@title}%
+      }%
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@getx}
+%    \begin{macrocode}
+\def\BKM@getx#1#2#3{%
+  \def\BKM@x@parent{#1}%
+  \def\BKM@x@level{#2}%
+  \def\BKM@x@childs{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@auxentry}
+%    \begin{macrocode}
+\def\BKM@auxentry#1{%
+  \expandafter\ifx\csname BKM@#1\endcsname\@empty
+  \else
+    ,#1={\csname BKM@#1\endcsname}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\BKM@InitSourceLocation}
+%    \begin{macrocode}
+\def\BKM@InitSourceLocation{%
+  \edef\BKM@srcline{\the\inputlineno}%
+  \BKM@LuaTeX@InitFile
+  \ifx\BKM@srcfile\@empty
+    \ltx@IfUndefined{currfilepath}{}{%
+      \edef\BKM@srcfile{\currfilepath}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\BKM@LuaTeX@InitFile}
+%    \begin{macrocode}
+\ifluatex
+  \ifnum\luatexversion>36 %
+    \def\BKM@LuaTeX@InitFile{%
+      \begingroup
+        \ltx@LocToksA={}%
+      \edef\x{\endgroup
+        \def\noexpand\BKM@srcfile{%
+          \the\expandafter\ltx@LocToksA
+          \directlua{%
+             if status and status.filename then %
+               tex.settoks('ltx@LocToksA', status.filename)%
+             end%
+          }%
+        }%
+      }\x
+    }%
+  \else
+    \let\BKM@LuaTeX@InitFile\relax
+  \fi
+\else
+  \let\BKM@LuaTeX@InitFile\relax
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Read auxiliary data}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{family=BKM@DO,prefix=BKM@DO@}
+\DeclareStringOption[0]{id}
+\DeclareBoolOption{open}
+\DeclareStringOption{flags}
+\DeclareStringOption{color}
+\DeclareStringOption{dest}
+\DeclareStringOption{named}
+\DeclareStringOption{uri}
+\DeclareStringOption{gotor}
+\DeclareStringOption{page}
+\DeclareStringOption{view}
+\DeclareStringOption{rawaction}
+\DeclareStringOption{srcline}
+\DeclareStringOption{srcfile}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \let\BKM@entry\BKM@DO@entry
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</pdftex|pdfmark>
+%    \end{macrocode}
+%
+% \subsection{Option \xoption{atend}}
+%
+% \subsubsection{Hook}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifBKM@atend
+\else
+%    \end{macrocode}
+%    \begin{macro}{\BookmarkAtEnd}
+%    This is a dummy definition that generates a warning
+%    if option \xoption{atend} has not been given.
+%    \begin{macrocode}
+  \newcommand{\BookmarkAtEnd}[1]{%
+    \PackageWarning{bookmark}{%
+      Ignored, because option `atend' is missing%
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%    \begin{macro}{\BookmarkAtEnd}
+%    \begin{macrocode}
+\newcommand*{\BookmarkAtEnd}{%
+  \g@addto@macro\BKM@EndHook
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\let\BKM@EndHook\@empty
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \subsubsection{Drivers using hooks at end of document}
+%
+%    The following drivers use package \xpackage{atveryend}'s
+%    \cs{AfterLastShipout}, because they still need the
+%    \xext{aux} file.
+%    \begin{itemize}
+%    \item
+%      Driver \xoption{pdftex} uses \cs{pdfoutline} that can
+%      be used after the last page.
+%    \item
+%      PostScript drivers such as
+%      \xoption{dvips} use an external PostScript header file
+%      for the bookmarks. File writing can be done after
+%      the last shipout page, but before the \xext{aux} file is closed.
+%    \end{itemize}
+%    \begin{macrocode}
+%<*pdftex|pdfmark>
+\ifBKM@atend
+  \AfterLastShipout{%
+    \BKM@EndHook
+  }%
+\fi
+%</pdftex|pdfmark>
+%    \end{macrocode}
+%
+% \subsubsection{Drivers using \cs{AtEndDvi}}
+%
+%    The other drivers implement \cs{bookmark} using \cs{special}
+%    commands. Thus the last bookmarks must be put on the last page,
+%    not afterwards.
+%    \cs{AtEndDocument} cannot be used, because it is too late, the
+%    last page can already be output. Therefore we use package
+%    \xpackage{atenddvi} that uses the help of packages \xpackage{atbegshi}
+%    and \xpackage{zref}. The argument of \cs{AtEndDvi} is put
+%    at the end of the last page. At least two \hologo{LaTeX} runs are necessary.
+%    \begin{macrocode}
+%<*dvipdfm|vtex>
+\ifBKM@atend
+  \RequirePackage{atenddvi}%
+  \AtEndDvi{\BKM@EndHook}%
+\fi
+%</dvipdfm|vtex>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/bookmark.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/bookmark.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex bookmark.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   bookmark.sty & tex/latex/oberdiek/bookmark.sty\\
+%   bkm-dvipdfm.def & tex/latex/oberdiek/bkm-dvipdfm.def\\
+%   bkm-dvips.def & tex/latex/oberdiek/bkm-dvips.def\\
+%   bkm-dvipsone.def & tex/latex/oberdiek/bkm-dvipsone.def\\
+%   bkm-textures.def & tex/latex/oberdiek/bkm-textures.def\\
+%   bkm-pdftex.def & tex/latex/oberdiek/bkm-pdftex.def\\
+%   bkm-vtex.def & tex/latex/oberdiek/bkm-vtex.def\\
+%   bookmark.pdf & doc/latex/oberdiek/bookmark.pdf\\
+%   bookmark-example.tex & doc/latex/oberdiek/bookmark-example.tex\\
+%   bookmark.dtx & source/latex/oberdiek/bookmark.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk bookmark.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{bookmark.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex bookmark.dtx
+%makeindex -s gind.ist bookmark.idx
+%pdflatex bookmark.dtx
+%makeindex -s gind.ist bookmark.idx
+%pdflatex bookmark.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{bookmark.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='bookmark'>
+  <name>bookmark</name>
+  <caption>A new bookmark (outline) organization for hyperref.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.24'/>
+  <description>
+    This package implements a new bookmark (outline) organization for
+    package <xref refid='hyperref'>hyperref</xref>. Bookmark properties such
+    as style and color can now be set. Other action types
+    are available (URI, GoToR, Named). The bookmarks are
+    generated in the first compile run. Package
+    <xref refid='hyperref'>hyperref</xref> uses two runs.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/bookmark.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/bookmark.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{hyperref}
+%   Sebastian Rahtz, Heiko Oberdiek:
+%   \textit{The \xpackage{hyperref} package};
+%   2011/04/17 v6.82g;
+%   \CTAN{macros/latex/contrib/hyperref/}
+%
+% \bibitem{currfile}
+%   Martin Scharrer:
+%   \textit{The \xpackage{currfile} package};
+%   2011/01/09 v0.4.
+%   \CTAN{macros/latex/contrib/currfile/}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/02/19 v0.1}
+%   \item
+%     First experimental version.
+%   \end{Version}
+%   \begin{Version}{2007/02/20 v0.2}
+%   \item
+%     Option \xoption{startatroot} added.
+%   \item
+%     Dummies for \cs{pdf(un)escape...} commands added to get
+%     the package basically work for non-\hologo{pdfTeX} users.
+%   \end{Version}
+%   \begin{Version}{2007/02/21 v0.3}
+%   \item
+%     Dependency from \hologo{pdfTeX} 1.30 removed by using package
+%     \xpackage{pdfescape}.
+%   \end{Version}
+%   \begin{Version}{2007/02/22 v0.4}
+%   \item
+%     \xpackage{hyperref}'s \xoption{bookmarkstype} respected.
+%   \end{Version}
+%   \begin{Version}{2007/03/02 v0.5}
+%   \item
+%     Driver options \xoption{vtex} (PDF mode), \xoption{dvipsone},
+%     and \xoption{textures} added.
+%   \item
+%     Implementation of option \xoption{depth} completed. Division names
+%     are supported, see \xpackage{hyperref}'s
+%     option \xoption{bookmarksdepth}.
+%   \item
+%     \xpackage{hyperref}'s options \xoption{bookmarksopen},
+%     \xoption{bookmarksopenlevel}, and \xoption{bookmarksdepth} respected.
+%   \end{Version}
+%   \begin{Version}{2007/03/03 v0.6}
+%   \item
+%     Option \xoption{numbered} as alias for \xpackage{hyperref}'s
+%     \xoption{bookmarksnumbered}.
+%   \end{Version}
+%   \begin{Version}{2007/03/07 v0.7}
+%   \item
+%     Dependency from \hologo{eTeX} removed.
+%   \end{Version}
+%   \begin{Version}{2007/04/09 v0.8}
+%   \item
+%     Option \xoption{atend} added.
+%   \item
+%     Option \xoption{rgbcolor} removed.
+%     \verb|rgbcolor=<r> <g> <b>| can be replaced by
+%     \verb|color=[rgb]{<r>,<g>,<b>}|.
+%   \item
+%     Support of recent cvs version (2007-03-29) of dvipdfmx
+%     that extends the \cs{special} for bookmarks to specify
+%     open outline entries. Option \xoption{dvipdfmx-outline-open}
+%     or \cs{SpecialDvipdfmxOutlineOpen} notify the package.
+%   \end{Version}
+%   \begin{Version}{2007/04/25 v0.9}
+%   \item
+%     The syntax of \cs{special} of dvipdfmx, if feature
+%     \xoption{dvipdfmx-outline-open} is enabled, has changed.
+%     Now cvs version 2007-04-25 is needed.
+%   \end{Version}
+%   \begin{Version}{2007/05/29 v1.0}
+%   \item
+%     Bug fix in code for second parameter of XYZ.
+%   \end{Version}
+%   \begin{Version}{2007/07/13 v1.1}
+%   \item
+%     Fix for pdfmark with GoToR action.
+%   \end{Version}
+%   \begin{Version}{2007/09/25 v1.2}
+%   \item
+%     pdfmark driver respects \cs{nofiles}.
+%   \end{Version}
+%   \begin{Version}{2008/08/08 v1.3}
+%   \item
+%     Package \xpackage{flags} replaced by package \xpackage{bitset}.
+%     Now flags are also supported without \hologo{eTeX}.
+%   \item
+%     Hook for package \xpackage{hypdestopt} added.
+%   \end{Version}
+%   \begin{Version}{2008/09/13 v1.4}
+%   \item
+%     Fix for bug introduced in v1.3, package \xpackage{flags} is one-based,
+%     but package \xpackage{bitset} is zero-based. Thus options \xoption{bold}
+%     and \xoption{italic} are wrong in v1.3. (Daniel M\"ullner)
+%   \end{Version}
+%   \begin{Version}{2009/08/13 v1.5}
+%   \item
+%     Except for driver options the other options are now local options.
+%     This resolves a problem with KOMA-Script v3.00 and its option \xoption{open}.
+%   \end{Version}
+%   \begin{Version}{2009/12/06 v1.6}
+%   \item
+%     Use of package \xpackage{atveryend} for drivers \xoption{pdftex}
+%     and \xoption{pdfmark}.
+%   \end{Version}
+%   \begin{Version}{2009/12/07 v1.7}
+%   \item
+%     Use of package \xpackage{atveryend} fixed.
+%   \end{Version}
+%   \begin{Version}{2009/12/17 v1.8}
+%   \item
+%     Support of \xpackage{hyperref} 2009/12/17 v6.79v for \hologo{XeTeX}.
+%   \end{Version}
+%   \begin{Version}{2010/03/30 v1.9}
+%   \item
+%     Package name in an error message fixed.
+%   \end{Version}
+%   \begin{Version}{2010/04/03 v1.10}
+%   \item
+%     Option \xoption{style} and macro \cs{bookmarkdefinestyle} added.
+%   \item
+%     Hook support with option \xoption{addtohook} added.
+%   \item
+%     \cs{bookmarkget} added.
+%   \end{Version}
+%   \begin{Version}{2010/04/04 v1.11}
+%   \item
+%     Bug fix (introduced in v1.10).
+%   \end{Version}
+%   \begin{Version}{2010/04/08 v1.12}
+%   \item
+%     Requires \xpackage{ltxcmds} 2010/04/08.
+%   \end{Version}
+%   \begin{Version}{2010/07/23 v1.13}
+%   \item
+%     Support for \xclass{memoir}'s \cs{booknumberline} added.
+%   \end{Version}
+%   \begin{Version}{2010/09/02 v1.14}
+%   \item
+%     (Local) options \xoption{draft} and \xoption{final} added.
+%   \end{Version}
+%   \begin{Version}{2010/09/25 v1.15}
+%   \item
+%     Fix for option \xoption{dvipdfmx-outline-open}.
+%   \item
+%     Option \xoption{dvipdfmx-outline-open} is set automatically,
+%     if XeTeX $\geq$ 0.9995 is detected.
+%   \end{Version}
+%   \begin{Version}{2010/10/19 v1.16}
+%   \item
+%     Option `startatroot' now acts globally.
+%   \item
+%     Option `level' also accepts names the same way as option `depth'.
+%   \end{Version}
+%   \begin{Version}{2010/10/25 v1.17}
+%   \item
+%     \cs{bookmarksetupnext} added.
+%   \item
+%     Using \cs{kvsetkeys} of package \xpackage{kvsetkeys}, because
+%     \cs{setkeys} of package \xpackage{keyval} is not reentrant.
+%     This can cause problems (unknown keys) with older versions of
+%     hyperref that also uses \cs{setkeys} (found by GL).
+%   \end{Version}
+%   \begin{Version}{2010/11/05 v1.18}
+%   \item
+%     Use of \cs{pdf@ifdraftmode} of package \xpackage{pdftexcmds} for
+%     the default of option \xoption{draft}.
+%   \end{Version}
+%   \begin{Version}{2011/03/20 v1.19}
+%   \item
+%     Use of \cs{dimexpr} fixed, if \hologo{eTeX} is not used.
+%     (Bug found by Martin M\"unch.)
+%   \item
+%     Fix in documentation. Also layout options work without \hologo{eTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/04/13 v1.20}
+%   \item
+%     Bug fix: \cs{BKM@SetDepth} renamed to \cs{BKM@SetDepthOrLevel}.
+%   \end{Version}
+%   \begin{Version}{2011/04/21 v1.21}
+%   \item
+%     Some support for file name and line number in error messages
+%     at end of document (pdfTeX and pdfmark based drivers).
+%   \end{Version}
+%   \begin{Version}{2011/05/13 v1.22}
+%   \item
+%     Change of version 2010/11/05 v1.18 reverted, because otherwise
+%     draftmode disables some \xext{aux} file entries.
+%   \end{Version}
+%   \begin{Version}{2011/09/19 v1.23}
+%   \item
+%     Some \cs{renewcommand}s changed to \cs{def} to avoid trouble
+%     if the commands are not defined, because hyperref stopped early.
+%   \end{Version}
+%   \begin{Version}{2011/12/02 v1.24}
+%   \item
+%     Small optimization in \cs{BKM@toHexDigit}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

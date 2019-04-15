@@ -1,0 +1,474 @@
+%%
+%% This is file `babelbib.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,package')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+\NeedsTeXFormat{LaTeX2e}[1998/06/01]
+\ProvidesPackage{babelbib}
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\newif\ifbbbbfixlanguage
+\DeclareOption{fixlanguage}{\bbbbfixlanguagetrue}
+\DeclareOption{varlanguage}{\bbbbfixlanguagefalse}
+\newif\ifbbbblanguagenames
+\DeclareOption{nolanguagenames}{\bbbblanguagenamesfalse}
+\DeclareOption{languagenames}{\bbbblanguagenamestrue}
+\newif\ifbbbbannotations
+\DeclareOption{annote}{\bbbbannotationstrue}
+\DeclareOption{noannote}{\bbbbannotationsfalse}
+\newif\ifbtx@printISBN
+\newif\ifbtx@printISSN
+\DeclareOption{isbn}{\btx@printISBNtrue}
+\DeclareOption{noisbn}{\btx@printISBNfalse}
+\DeclareOption{issn}{\btx@printISSNtrue}
+\DeclareOption{noissn}{\btx@printISSNfalse}
+\newcommand\btxprintmonthyear[4]{}
+\newcommand*\btx@dateasis{%
+  \def\btxprintmonthyear##1##2##3##4{##2\ ##3}%
+}
+\newcommand*\btx@datenumeric{%
+  \def\btxprintmonthyear##1##2##3##4{%
+    \ifnumber{##2}{\btxprintmonthyearnum{##2}{##3}}{##2\ ##3}}%
+}
+\newcommand*\btx@datename{%
+  \def\btxprintmonthyear##1##2##3##4{%
+    \ifnumber{##2}{%
+      \ifcase ##2 \or
+      \csname btxmonjan##4\endcsname{##1}\or
+      \csname btxmonfeb##4\endcsname{##1}\or
+      \csname btxmonmar##4\endcsname{##1}\or
+      \csname btxmonapr##4\endcsname{##1}\or
+      \csname btxmonmay##4\endcsname{##1}\or
+      \csname btxmonjun##4\endcsname{##1}\or
+      \csname btxmonjul##4\endcsname{##1}\or
+      \csname btxmonaug##4\endcsname{##1}\or
+      \csname btxmonsep##4\endcsname{##1}\or
+      \csname btxmonoct##4\endcsname{##1}\or
+      \csname btxmonnov##4\endcsname{##1}\or
+      \csname btxmondec##4\endcsname{##1}\or
+      \PackageError{babelbib}{%
+        Month outside range 1 to 12 used}{%
+        Better use the BibTeX names jan, feb, mar, etc.}%
+      \fi
+      \ ##3%
+    }{%
+      ##2\ ##3}%
+  }%
+}
+\DeclareOption{dateasis}{\btx@dateasis}
+\DeclareOption{datenumeric}{\btx@datenumeric}
+\DeclareOption{datename}{\btx@datename}
+\DeclareOption*{%
+  \InputIfFileExists{\CurrentOption.bdf}{%
+    \expandafter\def\csname bbbb\CurrentOption loaded\endcsname{\@empty}%
+  }{%
+    \PackageError{babelbib}{%
+      Language definition file \CurrentOption.bdf not found}{%
+      Maybe you misspelled the language option?}%
+  }%
+}
+\ExecuteOptions{varlanguage,nolanguagenames,noannote,isbn,issn,datename}
+\ProcessOptions*
+\newcommand*{\bbbbifundefined}[1]{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+\newcommand\bbbbaddto[2]{%
+  \expandafter\bbbbifundefined{extras#1}{}{%
+    \expandafter\addto\expandafter{\csname extras#1\endcsname}{%
+      \csname #2\endcsname}%
+    \typeout{babelbib extension \@backslashchar #2 added to
+      \string\extras #1}%
+  }%
+}
+\newcommand\inputbdf[2]{%
+  \bbbbifundefined{date#1}{}{%
+    \@ifundefined{bbbb#2loaded}{%
+      \expandafter\def\csname bbbb#2loaded\endcsname{\@empty}%
+      \input{#2.bdf}%
+    }{}%
+  }%
+}
+\ifbbbbfixlanguage
+  \newcommand\selectbiblanguage[1]{%
+    \AtBeginDocument{\@selectbiblanguage{#1}}%
+  }
+  \AtBeginDocument{%
+    \renewcommand\selectbiblanguage[1]{\@selectbiblanguage{#1}}%
+  }
+  \newcommand\@selectbiblanguage[1]{%
+    \bbbbifundefined{bibs#1}{%
+      \bbbbifundefined{date#1}{%
+        \PackageError{babelbib}{Language #1 in bibliography not loaded
+          by babel}{%
+          The language #1 hasn't been loaded by babel.
+          Add it to the\MessageBreak
+          options of the \string\usepackage{babel} command or to the
+          global options.}%
+      }{%
+        \PackageError{babelbib}{Language #1 in bibliography unknown by
+          babelbib}{%
+          There are no definitions for #1 available in the
+          current\MessageBreak
+          version of babelbib. Please contact harald.harders@gmx.de.}%
+      }%
+    }{%
+      \typeout{babelbib: Set language for keywords in the bibliography fixed to #1}%
+      \csname bibs#1\endcsname
+    }%
+  }
+\else
+  \newcommand\selectbiblanguage[1]{%
+    \PackageWarning{babelbib}{Command \string\selectbiblanguage\space
+      used without package\MessageBreak
+      option fixlanguage. Ignored}%
+  }
+  \AtBeginDocument{%
+    \typeout{babelbib: Use citation-dependent languages in bibliography}%
+  }
+\fi
+\newcommand\btxselectlanguage[1]{%
+  \bbbbifundefined{bibs#1}{%
+    \bbbbifundefined{date#1}{%
+      \PackageError{babelbib}{Language #1 in bibliography not loaded
+        by babel}{%
+        The language #1 hasn't been loaded by babel.
+        Add it to the\MessageBreak
+        options of the \string\usepackage{babel} command or to the
+        global options.}%
+    }{%
+      \ifbbbbfixlanguage
+        \PackageWarning{babelbib}{Language #1 in bibliography
+          unknown\MessageBreak
+          by babelbib. Hyphenation will be\MessageBreak
+          incorrect}%
+      \else
+        \PackageError{babelbib}{Language #1 in bibliography unknown by
+          babelbib}{%
+          There are no definitions for #1 available in the
+          current\MessageBreak
+          version of babelbib. Please contact harald.harders@gmx.de.}%
+      \fi
+    }%
+  }{%
+    \csname extras#1\endcsname
+    \selectlanguage{#1}%
+  }%
+}
+\newcommand\biblanguage[1]{{%
+    \expandafter\selectlanguage\expandafter{\biblanguagename}#1}}
+\newcommand\btxlanguagename[1]{%
+  \bbbbifundefined{btxlanguagename#1}{%
+    \PackageError{babelbib}{Languagename for #1 not
+      defined\MessageBreak
+      in \languagename\space language}{%
+      Either you have forgotten to specify the option `languagenames'
+      when loading\MessageBreak
+      babelbib, or the command \string\bibs\languagename\space does
+      not contain a definition\MessageBreak
+      for the command \string\btxlanguagename#1.
+      In the latter case, please\MessageBreak
+      contact harald.harders@gmx.de.}%
+    #1%
+  }{%
+    \@nameuse{btxlanguagename#1}%
+  }%
+}
+\newcommand*\setbtxfallbacklanguage[1]{%
+  \edef\btxfallbacklanguage{#1}%
+  \typeout{babelbib: Set bibliography fall-back language to
+    \btxfallbacklanguage}%
+}
+\AtBeginDocument{%
+  \@ifundefined{btxfallbacklanguage}{%
+    \edef\btxfallbacklanguage{\languagename}%
+  \typeout{babelbib: Set bibliography fall-back language to
+    \btxfallbacklanguage}%
+  }{%
+    \typeout{babelbib: Bibliography fall-back language unchanged
+      (\btxfallbacklanguage)}%
+  }%
+}
+\newcommand*\declarebtxcommands[2]{%
+  \AtBeginDocument{%
+    \typeout{babelbib: Add a command to \string\bibs#1}%
+    \expandafter\g@addto@macro\csname bibs#1\endcsname{#2}%
+    \ifbbbbfixlanguage
+      \selectbiblanguage{\biblanguagename}%
+    \fi
+  }%
+}
+\@onlypreamble\declarebtxcommands
+\newcommand*\btxifchangecaseon{%
+  \def\btxifchangecase{\@firstoftwo}%
+}%
+\newcommand*\btxifchangecaseoff{%
+  \def\btxifchangecase{\@secondoftwo}%
+}%
+\newcommand\setbibliographyfont{%
+  \@ifnextchar*{\@@setbibliographyfont}{\@setbibliographyfont}%
+}
+\newcommand\@setbibliographyfont[2]{%
+  \bbbbifundefined{btx#1font}{%
+    \PackageError{babelbib}{Bibliography font `#1' can't be set}{%
+      You have tried to define a font for the bibliographic element
+      \MessageBreak
+      `#1', which is unknown to babelbib}%
+  }{%
+    \expandafter\renewcommand\csname btx#1font\endcsname{#2}%
+    \typeout{babelbib: Bibliography font for `#1' changed.}%
+  }%
+}
+\newcommand\@@setbibliographyfont[3]{%
+  \bbbbifundefined{btx#2font}{%
+    \expandafter\newcommand\csname btx#2font\endcsname{#3}%
+    \typeout{babelbib: Bibliography font for `#2' newly defined.}%
+  }{%
+    \expandafter\renewcommand\csname btx#2font\endcsname{#3}%
+    \typeout{babelbib: Bibliography font for `#2' changed.}%
+  }%
+}
+\newcommand\providebibliographyfont{%
+  \@ifnextchar*{\@@providebibliographyfont}{\@providebibliographyfont}%
+}
+\newcommand\@providebibliographyfont[2]{%
+  \bbbbifundefined{btx#1font}{%
+    \PackageError{babelbib}{Bibliography font `#1' can't be set}{%
+      You have tried to define a font for the bibliographic element
+      \MessageBreak
+      `#1', which is unknown to babelbib}%
+  }{%
+    \expandafter\ifx\csname btx#1font\endcsname\@empty
+      \expandafter\renewcommand\csname btx#1font\endcsname{#2}%
+      \typeout{babelbib: Using the BibTeX style's default font for `#1'.}%
+    \else
+      \typeout{babelbib: Using user changed font for `#1'.}%
+    \fi
+  }%
+}
+\newcommand\@@providebibliographyfont[3]{%
+  \bbbbifundefined{btx#2font}{%
+    \expandafter\newcommand\csname btx#2font\endcsname{#3}%
+    \typeout{babelbib: Using the BibTeX style's default font for `#2'.}%
+  }{%
+    \expandafter\ifx\csname btx#2font\endcsname\@empty
+      \expandafter\renewcommand\csname btx#2font\endcsname{#3}%
+      \typeout{babelbib: Using the BibTeX style's default font for `#2'.}%
+    \else
+      \typeout{babelbib: Using user changed font for `#2'.}%
+    \fi
+  }%
+}
+\newcommand*\btxnamefont{}
+\let\btxnamefont=\@empty
+\newcommand*\btxlastnamefont{}
+\let\btxlastnamefont=\@empty
+\newcommand\btxtitlefont{}
+\let\btxtitlefont=\@empty
+\newcommand\btxjtitlefont{}
+\let\btxjtitlefont=\@empty
+\newcommand\btxetalfont{}
+\let\btxetalfont=\@empty
+\newcommand\btxjournalfont{}
+\let\btxjournalfont=\@empty
+\newcommand\btxpublisherfont{}
+\let\btxpublisherfont=\@empty
+\newcommand\btxvolumefont{}
+\let\btxvolumefont=\@empty
+\newcommand\btxISBNfont{}
+\let\btxISBNfont=\@empty
+\newcommand\btxISSNfont{}
+\let\btxISSNfont=\@empty
+\newcommand\btxurlfont{}
+\let\btxurlfont=\@empty
+\newcommand\btxurldatefont{}
+\let\btxurldatefont=\@empty
+\newcommand\btxnumeralfont{}
+\let\btxnumeralfont=\@empty
+\newcommand\btxauthorcolon{:}
+\newcommand\btxISBN{ISBN}
+\newcommand\btxISSN{ISSN}
+\DeclareRobustCommand\ifbtxprintISBN[1]{\ifbtx@printISBN #1\fi}
+\DeclareRobustCommand\ifbtxprintISSN[1]{\ifbtx@printISSN #1\fi}
+\newcommand*\btxprintISBN[1]{\csname btx@printISBN#1\endcsname}
+\newcommand*\btxprintISSN[1]{\csname btx@printISSN#1\endcsname}
+\ifbbbbannotations
+  \DeclareRobustCommand\btxannotation[1]{%
+    \begin{quotation}%
+      \noindent
+      #1%
+    \end{quotation}%
+  }
+\else
+  \DeclareRobustCommand\btxannotation[1]{}%
+\fi
+\providecommand\ifnumber[3]{%
+ \begingroup\@tempswafalse\let\scr@next\test@number
+ \expandafter\scr@next#1\scr@next
+ \if@tempswa\endgroup#2\else\endgroup#3\fi
+}
+\providecommand*\test@number[1]{%
+ \ifx \scr@next#1%
+  \let\scr@next\relax
+ \else
+  \@tempcnta=\expandafter\expandafter\expandafter\number
+  \expandafter`#1\relax
+  \ifnum \@tempcnta>47\relax
+   \ifnum \@tempcnta<58\relax
+    \@tempswatrue
+   \else\@tempswafalse\fi
+  \else\@tempswafalse\fi
+  \if@tempswa\else\let\scr@next\gobble@till@next\fi\fi
+ \scr@next
+}
+\def\gobble@till@next#1\scr@next{}
+\def\btx@parsenum#1#2#3\@empty{%
+  #1%
+  \edef\btx@digitb{#3}%
+  \ifx\@empty\btx@digitb
+    #2%
+    \edef\btx@digita{#1}%
+    \edef\btx@digitb{#2}%
+  \else
+    \expandafter\btx@parsenum#2#3\@empty
+  \fi
+}
+\DeclareRobustCommand\btxnumeralfallback[2]{%
+  \foreignlanguage{#1}{%
+    \ifnumber{#2}{%
+      \PackageWarning{babelbib}{Handling of numerical editions not
+        handled\MessageBreak by language #1 for edition `#2'}%
+    }{}%
+    #2%
+  }%
+}%
+\DeclareRobustCommand\btxnumeraldot[2]{%
+  \foreignlanguage{#1}{\ifnumber{#2}{#2.}{#2}}%
+}
+\DeclareRobustCommand\btxnumeralenglish[2]{%
+  \foreignlanguage{#1}{%
+    \ifnumber{#2}{%
+      \expandafter\btx@parsenum#2\@empty\@empty\@empty
+      \btxnumeralfont{%
+        \ifx\btx@digitb\@empty
+          \ifcase\btx@digita th\or st\or nd\or rd\else th\fi
+        \else
+          \ifnum\btx@digita=1
+            th%
+          \else
+            \ifcase\btx@digitb th\or st\or nd\or rd\else th\fi
+          \fi
+        \fi
+        }%
+    }{#2}%
+  }%
+}
+\newcounter{btxromaniannumeral}%
+\renewcommand\thebtxromaniannumeral{\Roman{btxromaniannumeral}}%
+\DeclareRobustCommand\btxnumeralromanian[2]{%
+  \foreignlanguage{#1}{%
+    \ifnumber{#2}{%
+      \setcounter{btxromaniannumeral}{#2}%
+      \ifcase#2 0\or \thebtxromaniannumeral\else a \thebtxromaniannumeral-a \fi
+    }{#2}%
+  }%
+}
+\DeclareRobustCommand\btxnumeralswedish[2]{%
+  \foreignlanguage{#1}{%
+    \ifnumber{#2}{%
+      \expandafter\btx@parsenum#2\@empty\@empty\@empty
+      \btxnumeralfont{%
+        \ifx\btx@digitb\@empty
+          \ifcase\btx@digita :e\or :a\or :a\or :e\else :e\fi
+        \else
+          \ifnum\btx@digita=1
+            :a%
+          \else
+            \ifcase\btx@digitb :e\or :a\or :a\or :e\else :e\fi
+          \fi
+        \fi
+        }%
+    }{#2}%
+  }%
+}
+\AtBeginDocument{%
+  \providecommand\url[1]{%
+    \PackageError{babelbib}{No \string\url\space command defined but
+      field URL used\MessageBreak
+      in bibliography}{%
+      Please define a \string\url\space command for printing URLs
+      before \string\begin{document}, e.\,g.\MessageBreak
+        by loading the package `url.sty'.}%
+    \texttt{#1}%
+    }%
+}
+\AtBeginDocument{%
+  \RequirePackage{babel}
+  \inputbdf{afrikaans}{afrikaans}
+  \inputbdf{american}{english}
+  \inputbdf{austrian}{german}
+  \inputbdf{bahasa}{bahasa}
+  \inputbdf{brazil}{portuguese}
+  \inputbdf{brazilian}{portuguese}
+  \inputbdf{british}{english}
+  \inputbdf{canadian}{english}
+  \inputbdf{canadien}{french}
+  \inputbdf{catalan}{catalan}
+  \inputbdf{croatian}{croatian}
+  \inputbdf{czech}{czech}
+  \inputbdf{danish}{danish}
+  \inputbdf{dutch}{dutch}
+  \inputbdf{english}{english}
+  \inputbdf{esperanto}{esperanto}
+  \inputbdf{finnish}{finnish}
+  \inputbdf{francais}{french}
+  \inputbdf{french}{french}
+  \inputbdf{frenchb}{french}
+  \inputbdf{galician}{galician}
+  \inputbdf{german}{german}
+  \inputbdf{germanb}{german}
+  \inputbdf{greek}{greek}
+  \inputbdf{italian}{italian}
+  \inputbdf{norsk}{norsk}
+  \inputbdf{mexican}{spanish}
+  \inputbdf{naustrian}{german}
+  \inputbdf{ngerman}{german}
+  \inputbdf{portuges}{portuguese}
+  \inputbdf{portuguese}{portuguese}
+  \inputbdf{romanian}{romanian}
+  \inputbdf{russian}{russian}
+  \inputbdf{russianb}{russian}
+  \inputbdf{serbian}{serbian}
+  \inputbdf{spanish}{spanish}
+  \inputbdf{swedish}{swedish}
+  \inputbdf{UKenglish}{english}
+  \inputbdf{USenglish}{english}
+  \ifbbbbfixlanguage
+    \typeout{babelbib: Load BibTeX extensions
+      \string\bibs\bbl@main@language\space for \bbl@main@language}%
+    \selectbiblanguage{\bbl@main@language}%
+  \else
+    \expandafter\selectlanguage\expandafter{\bbl@main@language}%
+  \fi
+}
+
+\endinput
+%%
+%% End of file `babelbib.sty'.

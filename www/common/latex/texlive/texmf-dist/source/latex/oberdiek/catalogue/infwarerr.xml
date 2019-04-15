@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='infwarerr'>
+  <name>infwarerr</name>
+  <caption>Complete set of information/warning/error messages.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    This package provides a complete set of macros for information,
+    warning and error messages.  Under LaTeX, the commands are
+    wrappers for the corresponding LaTeX commands; under Plain TeX
+    they are also available as complete implementations.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/infwarerr.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/infwarerr.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

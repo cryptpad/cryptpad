@@ -1,0 +1,287 @@
+%%
+%% This is file `ix-utf8enc.dfu',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `dfu')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{ix-utf8enc.dfu}%
+  [2011/05/27 v1.10 Additions of inputenx for utf8enc.dfu]%
+\DeclareUnicodeCharacter{00A0}{\nobreakspace}
+\DeclareUnicodeCharacter{00AD}{\-}
+\DeclareUnicodeCharacter{0100}{\@tabacckludge=A}
+\DeclareUnicodeCharacter{0101}{\@tabacckludge=a}
+\DeclareUnicodeCharacter{0108}{\^C}
+\DeclareUnicodeCharacter{0109}{\^c}
+\DeclareUnicodeCharacter{010A}{\.C}
+\DeclareUnicodeCharacter{010B}{\.c}
+\DeclareUnicodeCharacter{0112}{\@tabacckludge=E}
+\DeclareUnicodeCharacter{0113}{\@tabacckludge=e}
+\DeclareUnicodeCharacter{0116}{\.E}
+\DeclareUnicodeCharacter{0117}{\.e}
+\DeclareUnicodeCharacter{011C}{\^G}
+\DeclareUnicodeCharacter{011D}{\^g}
+\DeclareUnicodeCharacter{0120}{\.G}
+\DeclareUnicodeCharacter{0121}{\.g}
+\DeclareUnicodeCharacter{0122}{\c G}
+\DeclareUnicodeCharacter{0123}{\c g}
+\DeclareUnicodeCharacter{0124}{\^H}
+\DeclareUnicodeCharacter{0125}{\^h}
+\DeclareUnicodeCharacter{0126}{\textmalteseH}
+\DeclareUnicodeCharacter{0127}{\textmalteseh}
+\DeclareUnicodeCharacter{0128}{\~I}
+\DeclareUnicodeCharacter{0129}{\~\i}
+\DeclareUnicodeCharacter{012A}{\@tabacckludge=I}
+\DeclareUnicodeCharacter{012B}{\@tabacckludge=\i}
+\DeclareUnicodeCharacter{012E}{\k I}
+\DeclareUnicodeCharacter{012F}{\k i}
+\DeclareUnicodeCharacter{0134}{\^J}
+\DeclareUnicodeCharacter{0135}{\^\j}
+\DeclareUnicodeCharacter{0136}{\c K}
+\DeclareUnicodeCharacter{0137}{\c k}
+\DeclareUnicodeCharacter{0138}{\textkra}
+\DeclareUnicodeCharacter{013B}{\c L}
+\DeclareUnicodeCharacter{013C}{\c l}
+\DeclareUnicodeCharacter{0145}{\c N}
+\DeclareUnicodeCharacter{0146}{\c n}
+\DeclareUnicodeCharacter{014C}{\@tabacckludge=O}
+\DeclareUnicodeCharacter{014D}{\@tabacckludge=o}
+\DeclareUnicodeCharacter{0156}{\c R}
+\DeclareUnicodeCharacter{0157}{\c r}
+\DeclareUnicodeCharacter{015C}{\^S}
+\DeclareUnicodeCharacter{015D}{\^s}
+\DeclareUnicodeCharacter{0166}{\textTstroke}
+\DeclareUnicodeCharacter{0167}{\texttstroke}
+\DeclareUnicodeCharacter{0168}{\~U}
+\DeclareUnicodeCharacter{0169}{\~u}
+\DeclareUnicodeCharacter{016A}{\@tabacckludge=U}
+\DeclareUnicodeCharacter{016B}{\@tabacckludge=u}
+\DeclareUnicodeCharacter{016C}{\u U}
+\DeclareUnicodeCharacter{016D}{\u u}
+\DeclareUnicodeCharacter{0172}{\k U}
+\DeclareUnicodeCharacter{0173}{\k u}
+\DeclareUnicodeCharacter{0174}{\^W}
+\DeclareUnicodeCharacter{0175}{\^w}
+\DeclareUnicodeCharacter{0176}{\^Y}
+\DeclareUnicodeCharacter{0177}{\^y}
+\DeclareUnicodeCharacter{01CD}{\v A}
+\DeclareUnicodeCharacter{01CE}{\v a}
+\DeclareUnicodeCharacter{01CF}{\v I}
+\DeclareUnicodeCharacter{01D0}{\v\i}
+\DeclareUnicodeCharacter{01D1}{\v O}
+\DeclareUnicodeCharacter{01D2}{\v o}
+\DeclareUnicodeCharacter{01D3}{\v U}
+\DeclareUnicodeCharacter{01D4}{\v u}
+\DeclareUnicodeCharacter{01E2}{\@tabacckludge=\AE}
+\DeclareUnicodeCharacter{01E3}{\@tabacckludge=\ae}
+\DeclareUnicodeCharacter{01E6}{\v G}
+\DeclareUnicodeCharacter{01E7}{\v g}
+\DeclareUnicodeCharacter{01E8}{\v K}
+\DeclareUnicodeCharacter{01E9}{\v k}
+\DeclareUnicodeCharacter{01F0}{\v\j}
+\DeclareUnicodeCharacter{01F4}{\@tabacckludge'G}
+\DeclareUnicodeCharacter{01F5}{\@tabacckludge'g}
+\DeclareUnicodeCharacter{01F8}{\@tabacckludge`N}
+\DeclareUnicodeCharacter{01F9}{\@tabacckludge`n}
+\DeclareUnicodeCharacter{01FC}{\@tabacckludge'\AE}
+\DeclareUnicodeCharacter{01FD}{\@tabacckludge'\ae}
+\DeclareUnicodeCharacter{0226}{\.A}
+\DeclareUnicodeCharacter{0227}{\.a}
+\DeclareUnicodeCharacter{0228}{\c E}
+\DeclareUnicodeCharacter{0229}{\c e}
+\DeclareUnicodeCharacter{022E}{\.O}
+\DeclareUnicodeCharacter{022F}{\.o}
+\DeclareUnicodeCharacter{0232}{\@tabacckludge=Y}
+\DeclareUnicodeCharacter{0232}{\@tabacckludge=y}
+\DeclareUnicodeCharacter{0232}{\@tabacckludge=y}
+\DeclareUnicodeCharacter{0237}{\j}
+\DeclareUnicodeCharacter{1E02}{\.B}
+\DeclareUnicodeCharacter{1E03}{\.b}
+\DeclareUnicodeCharacter{1E0A}{\.D}
+\DeclareUnicodeCharacter{1E0B}{\.d}
+\DeclareUnicodeCharacter{1E1E}{\.F}
+\DeclareUnicodeCharacter{1E1F}{\.f}
+\DeclareUnicodeCharacter{1E40}{\.M}
+\DeclareUnicodeCharacter{1E41}{\.m}
+\DeclareUnicodeCharacter{1E56}{\.P}
+\DeclareUnicodeCharacter{1E57}{\.p}
+\DeclareUnicodeCharacter{1E60}{\.S}
+\DeclareUnicodeCharacter{1E61}{\.s}
+\DeclareUnicodeCharacter{1E6A}{\.T}
+\DeclareUnicodeCharacter{1E6B}{\.t}
+\DeclareUnicodeCharacter{1E80}{\@tabacckludge`W}
+\DeclareUnicodeCharacter{1E81}{\@tabacckludge`w}
+\DeclareUnicodeCharacter{1E82}{\@tabacckludge'W}
+\DeclareUnicodeCharacter{1E83}{\@tabacckludge'w}
+\DeclareUnicodeCharacter{1E84}{\"W}
+\DeclareUnicodeCharacter{1E85}{\"w}
+\DeclareUnicodeCharacter{1EF2}{\@tabacckludge`Y}
+\DeclareUnicodeCharacter{1EF3}{\@tabacckludge`y}
+\DeclareUnicodeCharacter{0218}{\textcommabelow S}
+\DeclareUnicodeCharacter{0219}{\textcommabelow s}
+\DeclareUnicodeCharacter{021A}{\textcommabelow T}
+\DeclareUnicodeCharacter{021B}{\textcommabelow t}
+\DeclareUnicodeCharacter{02CB}{\textasciigrave}
+\DeclareUnicodeCharacter{02D9}{\.{}}
+\DeclareUnicodeCharacter{02DA}{\r{}}
+\DeclareUnicodeCharacter{02DB}{\k{}}
+\DeclareUnicodeCharacter{0393}{\textGamma}
+\DeclareUnicodeCharacter{0398}{\textTheta}
+\DeclareUnicodeCharacter{03A3}{\textSigma}
+\DeclareUnicodeCharacter{03A6}{\textPhi}
+\DeclareUnicodeCharacter{03A9}{\textOmega}
+\DeclareUnicodeCharacter{03B1}{\textalpha}
+\DeclareUnicodeCharacter{03B2}{\textbeta}
+\DeclareUnicodeCharacter{03B4}{\textdelta}
+\DeclareUnicodeCharacter{03B5}{\textepsilon}
+\DeclareUnicodeCharacter{03C0}{\textpi}
+\DeclareUnicodeCharacter{03C3}{\textsigma}
+\DeclareUnicodeCharacter{03C4}{\texttau}
+\DeclareUnicodeCharacter{03C6}{\textphi}
+\DeclareUnicodeCharacter{0403}{\@tabacckludge'\CYRG}
+\DeclareUnicodeCharacter{040C}{\@tabacckludge'\CYRK}
+\DeclareUnicodeCharacter{0453}{\@tabacckludge'\cyrg}
+\DeclareUnicodeCharacter{045C}{\@tabacckludge'\cyrk}
+\DeclareUnicodeCharacter{05D0}{\hebalef}
+\DeclareUnicodeCharacter{05D1}{\hebbet}
+\DeclareUnicodeCharacter{05D2}{\hebgimel}
+\DeclareUnicodeCharacter{05D3}{\hebdalet}
+\DeclareUnicodeCharacter{05D4}{\hebhe}
+\DeclareUnicodeCharacter{05D5}{\hebvav}
+\DeclareUnicodeCharacter{05D6}{\hebzayin}
+\DeclareUnicodeCharacter{05D7}{\hebhet}
+\DeclareUnicodeCharacter{05D8}{\hebtet}
+\DeclareUnicodeCharacter{05D9}{\hebyod}
+\DeclareUnicodeCharacter{05DA}{\hebfinalkaf}
+\DeclareUnicodeCharacter{05DB}{\hebkaf}
+\DeclareUnicodeCharacter{05DC}{\heblamed}
+\DeclareUnicodeCharacter{05DD}{\hebfinalmem}
+\DeclareUnicodeCharacter{05DE}{\hebmem}
+\DeclareUnicodeCharacter{05DF}{\hebfinalnun}
+\DeclareUnicodeCharacter{05E0}{\hebnun}
+\DeclareUnicodeCharacter{05E1}{\hebsamekh}
+\DeclareUnicodeCharacter{05E2}{\hebayin}
+\DeclareUnicodeCharacter{05E3}{\hebfinalpe}
+\DeclareUnicodeCharacter{05E4}{\hebpe}
+\DeclareUnicodeCharacter{05E5}{\hebfinaltsadi}
+\DeclareUnicodeCharacter{05E6}{\hebtsadi}
+\DeclareUnicodeCharacter{05E7}{\hebqof}
+\DeclareUnicodeCharacter{05E8}{\hebresh}
+\DeclareUnicodeCharacter{05E9}{\hebshin}
+\DeclareUnicodeCharacter{05EA}{\hebtav}
+\DeclareUnicodeCharacter{2015}{\texthorizontalbar}
+\DeclareUnicodeCharacter{2017}{\textdbllowline}
+\DeclareUnicodeCharacter{207F}{\textnsuperior}
+\DeclareUnicodeCharacter{20A7}{\textpeseta}
+\DeclareUnicodeCharacter{2202}{\textpartial}
+\DeclareUnicodeCharacter{2206}{\textincrement}
+\DeclareUnicodeCharacter{2208}{\textelement}
+\DeclareUnicodeCharacter{220F}{\textproduct}
+\DeclareUnicodeCharacter{2211}{\textsummation}
+\DeclareUnicodeCharacter{2219}{\textbullet}
+\DeclareUnicodeCharacter{221A}{\textsurd}
+\DeclareUnicodeCharacter{221E}{\textinfinity}
+\DeclareUnicodeCharacter{2227}{\textcap}
+\DeclareUnicodeCharacter{2229}{\textintersection}
+\DeclareUnicodeCharacter{222B}{\textintegral}
+\DeclareUnicodeCharacter{222E}{\textcontourintegral}
+\DeclareUnicodeCharacter{2248}{\textapproxequal}
+\DeclareUnicodeCharacter{2260}{\textnotequal}
+\DeclareUnicodeCharacter{2261}{\textequivalence}
+\DeclareUnicodeCharacter{2264}{\textlessequal}
+\DeclareUnicodeCharacter{2265}{\textgreaterequal}
+\DeclareUnicodeCharacter{2310}{\textrevlogicalnot}
+\DeclareUnicodeCharacter{25A0}{\textblacksquare}
+\DeclareUnicodeCharacter{25CA}{\textlozenge}
+\DeclareUnicodeCharacter{FB01}{fi}
+\DeclareUnicodeCharacter{FB02}{fl}
+\DeclareUnicodeCharacter{2500}{\textSFx}
+\DeclareUnicodeCharacter{2502}{\textSFxi}
+\DeclareUnicodeCharacter{250C}{\textSFi}
+\DeclareUnicodeCharacter{2510}{\textSFiii}
+\DeclareUnicodeCharacter{2514}{\textSFii}
+\DeclareUnicodeCharacter{2518}{\textSFiv}
+\DeclareUnicodeCharacter{251C}{\textSFviii}
+\DeclareUnicodeCharacter{2524}{\textSFix}
+\DeclareUnicodeCharacter{252C}{\textSFvi}
+\DeclareUnicodeCharacter{2534}{\textSFvii}
+\DeclareUnicodeCharacter{253C}{\textSFv}
+\DeclareUnicodeCharacter{2550}{\textSFxliii}
+\DeclareUnicodeCharacter{2551}{\textSFxxiv}
+\DeclareUnicodeCharacter{2552}{\textSFli}
+\DeclareUnicodeCharacter{2553}{\textSFlii}
+\DeclareUnicodeCharacter{2554}{\textSFxxxix}
+\DeclareUnicodeCharacter{2555}{\textSFxxii}
+\DeclareUnicodeCharacter{2556}{\textSFxxi}
+\DeclareUnicodeCharacter{2557}{\textSFxxv}
+\DeclareUnicodeCharacter{2558}{\textSFl}
+\DeclareUnicodeCharacter{2559}{\textSFxlix}
+\DeclareUnicodeCharacter{255A}{\textSFxxxviii}
+\DeclareUnicodeCharacter{255B}{\textSFxxviii}
+\DeclareUnicodeCharacter{255C}{\textSFxxvii}
+\DeclareUnicodeCharacter{255D}{\textSFxxvi}
+\DeclareUnicodeCharacter{255E}{\textSFxxxvi}
+\DeclareUnicodeCharacter{255F}{\textSFxxxvii}
+\DeclareUnicodeCharacter{2560}{\textSFxlii}
+\DeclareUnicodeCharacter{2561}{\textSFxix}
+\DeclareUnicodeCharacter{2562}{\textSFxx}
+\DeclareUnicodeCharacter{2563}{\textSFxxiii}
+\DeclareUnicodeCharacter{2564}{\textSFxlvii}
+\DeclareUnicodeCharacter{2565}{\textSFxlviii}
+\DeclareUnicodeCharacter{2566}{\textSFxli}
+\DeclareUnicodeCharacter{2567}{\textSFxlv}
+\DeclareUnicodeCharacter{2568}{\textSFxlvi}
+\DeclareUnicodeCharacter{2569}{\textSFxl}
+\DeclareUnicodeCharacter{256A}{\textSFliv}
+\DeclareUnicodeCharacter{256B}{\textSFliii}
+\DeclareUnicodeCharacter{256C}{\textSFxliv}
+\DeclareUnicodeCharacter{2580}{\textupblock}
+\DeclareUnicodeCharacter{2584}{\textdnblock}
+\DeclareUnicodeCharacter{2588}{\textblock}
+\DeclareUnicodeCharacter{258C}{\textlfblock}
+\DeclareUnicodeCharacter{2590}{\textrtblock}
+\DeclareUnicodeCharacter{2591}{\textltshade}
+\DeclareUnicodeCharacter{2592}{\textshade}
+\DeclareUnicodeCharacter{2593}{\textdkshade}
+\endinput
+%%
+%% End of file `ix-utf8enc.dfu'.

@@ -1,0 +1,214 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \CheckSum{108}
+% \iffalse
+%%
+%% File `alltt.dtx'.
+%% Copyright (C) 1987 by Leslie Lamport
+%% Copyright (C) 1994--1997 LaTeX3 project, Johannes Braams
+%%                       all rights reserved.
+%%
+%<*dtx>
+\ProvidesFile{alltt.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{alltt}
+%<driver>\ProvidesFile{alltt.drv}
+%\ProvidesFile{alltt.dtx}
+              [1997/06/16 v2.0g defines alltt environment]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\providecommand{\Lenv}[1]{\textsf{#1}}
+\providecommand{\pkg}[1]{\texttt{#1}}
+\providecommand{\file}[1]{\texttt{#1}}
+\DocInput{alltt.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \changes{v2.0g}{1997/06/16}{A few documentation fixes (PR 2520)}
+% \changes{v2.0d}{1995/04/02}{A few documentation fixes (PR 1517)}
+%
+%  \GetFileInfo{alltt.dtx}
+%  \title{The \texttt{alltt} environment\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+%  \author{Johannes Braams}
+%  \date{\filedate}
+%  \MaintainedByLaTeXTeam{latex}
+%  \maketitle
+%
+%    \begin{abstract}
+%    This package defines the \Lenv{alltt} environment, which is like
+%    the \Lenv{verbatim} environment except that |\|, |{|, and |}|
+%    have their usual meanings.
+%
+%    Thus, other commands and environments can appear within an
+%    \Lenv{alltt} environment.
+%    \end{abstract}
+%
+%  \section{Introduction}
+%
+%  \DescribeEnv{alltt}
+%   Here are some things you may want to do in an \Lenv{alltt}
+%   environment:
+%   \begin{itemize}
+%   \item Change fonts--e.g., by typing |{\em emphasized text\/}|
+%
+%   \item Insert text from a file \file{foo.tex} by typing
+%    |\input{foo}|. Beware that each |<return>| starts a new line, so
+%    if \file{foo.tex} ends with a |<return>| you can wind up with an
+%    extra blank line if you're not careful.
+%
+%   \item Insert a math formula.  Note that |$| just produces a dollar
+%   sign, so you'll have to type |\(...\)| or |\[...\]|.  Also, |^|
+%   and |_| just produce their characters; use |\sp| or |\sb| for
+%   super- and subscripts, as in |\(x\sp{2}\)|.
+%   \end{itemize}
+%
+%  \StopEventually{}
+%
+%  \section{The Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%  \begin{environment}{alltt}
+%    The \Lenv{alltt} environment is similar to the \Lenv{verbatim}
+%    environment, except that |\|, |{| and |}| have their usual
+%    behaviour.
+% \changes{v2.0b}{1994/10/29}{Added a missing \cs{dospecials}}
+% \changes{v2.0c}{1995/01/27}{Reset \cs{dospecials} after its changed
+%    version is executed}
+% \changes{v2.0e}{1995/05/13}{brought definition up to date with the
+%    verbatim environment}
+% \changes{v2.0e}{1995/05/13}{Save and restore (in math mode) the
+%    definition of the \texttt{'} character}
+%    \begin{macrocode}
+\begingroup
+\lccode`\~=`\'
+\lowercase{\endgroup
+\newenvironment{alltt}{%
+  \trivlist
+  \item\relax
+    \if@minipage
+    \else
+      \vskip\parskip
+    \fi
+    \leftskip\@totalleftmargin
+    \rightskip\z@skip
+    \parindent\z@
+    \parfillskip\@flushglue
+    \parskip\z@skip
+    \@@par
+    \@tempswafalse
+    \def\par{%
+      \if@tempswa
+        \leavevmode\null\@@par\penalty\interlinepenalty
+    \else
+      \@tempswatrue
+      \ifhmode\@@par\penalty\interlinepenalty\fi
+    \fi}
+    \obeylines
+    \verbatim@font
+    \let\org@prime~%
+    \@noligs
+%    \end{macrocode}
+% \changes{v2.0f}{1995/07/24}{Added setting of the \cs{catcode} of the
+%    \texttt{'} character}
+%    \begin{macrocode}
+    \everymath\expandafter{\the\everymath
+      \catcode`\'=12 \let~\org@prime}
+    \everydisplay\expandafter{\the\everydisplay
+      \catcode`\'=12 \let~\org@prime}
+    \let\org@dospecials\dospecials
+    \g@remfrom@specials{\\}
+    \g@remfrom@specials{\{}
+    \g@remfrom@specials{\}}
+    \let\do\@makeother
+    \dospecials
+    \let\dospecials\org@dospecials
+    \frenchspacing\@vobeyspaces
+    \everypar \expandafter{\the\everypar \unpenalty}}
+{\endtrivlist}}
+%    \end{macrocode}
+%  \end{environment}
+%
+%  \begin{macro}{\g@remfrom@specials}
+%    In the old implementation of the \pkg{alltt} package a fixed
+%    |\dospecials| was used. However nowadays the |\dospecials|
+%    command might contain more special characters at run-time then as
+%    was defined in the format. Therefore we remove the necessary
+%    special character from |\dospecials| at the start of the
+%    \Lenv{alltt} environment. For this we need a macro. Remember that
+%    the list of special characters in |\dospecials| contains the
+%    control sequence |\do| between the characters. We use that to
+%    check whether a character has to be removed.
+%
+%    The macro |\g@remfrom@specials| takes one argument, the chracter
+%    to be removed from the list.
+%    \begin{macrocode}
+\def\g@remfrom@specials#1{%
+%    \end{macrocode}
+%    We build up a new list in |\@new@speicals|.
+%    \begin{macrocode}
+  \def\@new@specials{}
+%    \end{macrocode}
+%    The command |\@remove| compares its argument with the argument of\\
+%    |\g@remfrom@specials|.
+%    \begin{macrocode}
+  \def\@remove##1{%
+    \ifx##1#1\else
+%    \end{macrocode}
+%    When they are not the same the argument of |\@remove| is added
+%    (together with |\do|) to the new list.
+%    \begin{macrocode}
+    \g@addto@macro\@new@specials{\do ##1}\fi}
+%    \end{macrocode}
+%    Now we |\let| |\do| be equal to |\@remove| and execute
+%    |\dospecials|.
+%    \begin{macrocode}
+  \let\do\@remove\dospecials
+%    \end{macrocode}
+%    All that's left is to make |\dospecials| point to the new list.
+%    \begin{macrocode}
+  \let\dospecials\@new@specials
+  }
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput

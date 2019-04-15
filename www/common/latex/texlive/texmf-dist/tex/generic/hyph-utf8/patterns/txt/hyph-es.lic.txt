@@ -1,0 +1,28 @@
+Spanish hyphenation patterns
+
+(more info about the licence to be added later)
+
+% DIVISI'ON DE PALABRAS
+% ~~~~~~~~~~~~~~~~~~~~~
+% hyph-es.tex 4.6
+% This files corresponds to eshyph.tex 4.6.
+%
+% (c) Javier Bezos 1993 1997.
+% (c) Javier Bezos and CervanTeX 2001-2010
+% Some parts, (c) by Francesc Carmona
+% Licence: LPPL
+%
+% For further info, bug reports and comments:
+%
+%       http://www.tex-tipografia.com/spanish_hyphen.html
+%
+% I would like to thanks Francesc Carmona for his permission
+% to steal parts of his work without restrictions.
+%
+% 2010-05-18
+%
+% _____________________________________________________________
+% Javier Bezos                | http://www.cervantex.es/
+% .............................................................
+% TeX y tipografia            | http://www.tex-tipografia.com/
+

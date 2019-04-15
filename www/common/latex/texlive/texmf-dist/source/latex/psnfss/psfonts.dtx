@@ -1,0 +1,1014 @@
+%\CheckSum{1106}
+%
+% \iffalse
+%
+% file: psfonts.dtx
+%
+% Copyright 1995--1998 Sebastian Rahtz
+% Copyright 1999--2005 Sebastian Rahtz, Walter Schmidt
+%
+% This program may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.2 or later is part of all distributions of LaTeX
+% version 1999/12/01 or later.
+%
+% This program consists of all files listed in manifest.txt.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{psfonts.drv}
+%</driver>
+%<times>\ProvidesPackage{times}%
+%<mathptm>\ProvidesPackage{mathptm}%
+%<mathptmx>\ProvidesPackage{mathptmx}%
+%<mathpple>\ProvidesPackage{mathpple}%
+%<palatino>\ProvidesPackage{palatino}%
+%<chancery>\ProvidesPackage{chancery}%
+%<pifont>\ProvidesPackage{pifont}%
+%<bookman>\ProvidesPackage{bookman}%
+%<newcent>\ProvidesPackage{newcent}%
+%<avant>\ProvidesPackage{avant}%
+%<helvet>\ProvidesPackage{helvet}%
+%<courier>\ProvidesPackage{courier}%
+%<charter>\ProvidesPackage{charter}%
+%<utopia>\ProvidesPackage{utopia}%
+%<mathpazo>\ProvidesPackage{mathpazo}%
+[2005/04/12 PSNFSS-v9.2a
+%<times>(SPQR)
+%<mathptm>Times w/ Math (SPQR, WaS)
+%<mathptmx>Times w/ Math, improved (SPQR, WaS)
+%<mathpple>Palatino w/ Math (WaS)
+%<palatino>(SPQR)
+%<chancery>(SPQR)
+%<pifont>Pi font support (SPQR)
+%<bookman>(SPQR)
+%<newcent>(SPQR)
+%<avant>(SPQR)
+%<helvet>(WaS)
+%<courier>(WaS)
+%<charter>(P.Dyballa)
+%<utopia>(P.Dyballa)
+%<mathpazo> Palatino w/ Pazo Math (D.Puga, WaS)
+]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+ \DocInput{psfonts.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \DeleteShortVerb{\|}
+% \MakeShortVerb{\+}
+% \GetFileInfo{psfonts.drv}
+% \title{The packages of the PSNFSS bundle}
+% \author{Walter Schmidt\thanks{\texttt{<w-a-schmidt@arcor.de>}}}
+% \date{\fileversion{} -- \filedate}
+% \maketitle
+%
+% \noindent
+%   The source file \texttt{psfonts.dtx} contains suitable package files
+%   to use common PostScript fonts with \LaTeX.
+%   See the file \texttt{00readme.txt} for the installation instructions;
+%   it also explains how to obtain the
+%   related Type1 fonts, font definition files, font metrics and virtual fonts.
+%
+%   See the document `Using common PostScript fonts with \LaTeX',
+%   filename \texttt{psnfss2e.pdf}, for a description of the user interface.
+%
+% \StopEventually{}
+%
+% \section{The \textsf{times} package}
+%    \begin{macrocode}
+%<*times>
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\rmdefault}{ptm}
+\renewcommand{\ttdefault}{pcr}
+%</times>
+%    \end{macrocode}
+%
+% \section{The \textsf{palatino} package}
+%    \begin{macrocode}
+%<*palatino>
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{pcr}
+%</palatino>
+%    \end{macrocode}
+%
+% \section{The \textsf{helvet} package}
+% Options processing uses the \textsf{keyval} package
+% and a hack borrowed from \textsf{hyperref}:
+%    \begin{macrocode}
+%<*helvet>
+\RequirePackage{keyval}
+\define@key{Hel}{scaled}[.95]{%
+  \def\Hv@scale{#1}}
+\def\ProcessOptionsWithKV#1{%
+  \let\@tempc\relax
+  \let\Hv@tempa\@empty
+  \ifx\@classoptionslist\relax\else
+    \@for\CurrentOption:=\@classoptionslist\do{%
+      \@ifundefined{KV@#1@\CurrentOption}%
+      {}%
+      {%
+        \edef\Hv@tempa{\Hv@tempa,\CurrentOption,}%
+        \@expandtwoargs\@removeelement\CurrentOption
+          \@unusedoptionlist\@unusedoptionlist
+      }%
+    }%
+  \fi
+  \edef\Hv@tempa{%
+    \noexpand\setkeys{#1}{%
+      \Hv@tempa\@ptionlist{\@currname.\@currext}%
+    }%
+  }%
+  \Hv@tempa
+  \let\CurrentOption\@empty
+}
+\ProcessOptionsWithKV{Hel}
+\AtEndOfPackage{%
+  \let\@unprocessedoptions\relax
+}
+%    \end{macrocode}
+% The +.fd+ files will evaluate the macro +\Hv@scale+ and scale
+% Helvetica appropriately.
+%
+% Now it's time to redefine the default sans font:
+%    \begin{macrocode}
+\renewcommand{\sfdefault}{phv}
+%</helvet>
+%    \end{macrocode}
+%
+% \section{The \textsf{avant} package}
+%    \begin{macrocode}
+%<*avant>
+\renewcommand{\sfdefault}{pag}
+%</avant>
+%    \end{macrocode}
+%
+% \section{The \textsf{newcent} package}
+%    \begin{macrocode}
+%<*newcent>
+\renewcommand{\rmdefault}{pnc}
+\renewcommand{\sfdefault}{pag}
+\renewcommand{\ttdefault}{pcr}
+%</newcent>
+%    \end{macrocode}
+%
+% \section{The \textsf{bookman} package}
+%    \begin{macrocode}
+%<*bookman>
+\renewcommand{\rmdefault}{pbk}
+\renewcommand{\sfdefault}{pag}
+\renewcommand{\ttdefault}{pcr}
+%</bookman>
+%    \end{macrocode}
+%
+% \section{The \textsf{courier} package}
+%    \begin{macrocode}
+%<*courier>
+\renewcommand{\ttdefault}{pcr}
+%</courier>
+%    \end{macrocode}
+%
+% \section{The \textsf{pifont} package}
+% Some useful commands for Pi fonts (Dingbats, Symbol etc); they
+% all assume you know the character number of the (unmapped) font
+%    \begin{macrocode}
+%<*pifont>
+\newcommand{\Pifont}[1]{\fontfamily{#1}\fontencoding{U}%
+\fontseries{m}\fontshape{n}\selectfont}
+\newcommand{\Pisymbol}[2]{{\Pifont{#1}\char#2}}
+\newcommand{\Pifill}[2]{\leavevmode
+  \leaders\hbox{\makebox[0.2in]{\Pisymbol{#1}{#2}}}\hfill
+  \kern\z@}
+\newcommand{\Piline}[2]{\par\noindent\hspace{0.5in}\Pifill{#1}{#2}%
+   \hspace{0.5in}\kern\z@\par}
+\newenvironment{Pilist}[2]%
+{\begin{list}{\Pisymbol{#1}{#2}}{}}%
+{\end{list}}%
+%    \end{macrocode}
+% A Pi number generator (from ideas by David Carlisle), for use in
+% lists where items are suffixed by symbols taken in sequence from a
+% Pi font. Usage is in lists just like enumerate.
+%
+% +\Pinumber+ outputs the appropriate symbol, where +#2+ is the name of a
+% \LaTeX\ counter  and +#1+ is the font family.
+%    \begin{macrocode}
+\def\Pinumber#1#2{\protect\Pisymbol{#1}{\arabic{#2}}}
+\newenvironment{Piautolist}[2]{%
+\ifnum \@enumdepth >3 \@toodeep\else
+  \advance\@enumdepth \@ne
+%    \end{macrocode}
+% We force the labels and cross-references into a very plain style (e.g.,
+% no brackets around `numbers', or dots after them).
+%    \begin{macrocode}
+      \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+  \expandafter\def\csname p@enum\romannumeral\the\@enumdepth\endcsname{}%
+  \expandafter\def\csname labelenum\romannumeral\the\@enumdepth\endcsname{%
+     \csname theenum\romannumeral\the\@enumdepth\endcsname}%
+  \expandafter\def\csname theenum\romannumeral\the\@enumdepth\endcsname{%
+     \Pinumber{#1}{enum\romannumeral\the\@enumdepth}}%
+  \list{\csname label\@enumctr\endcsname}{%
+        \@nmbrlisttrue
+        \def\@listctr{\@enumctr}%
+        \setcounter{\@enumctr}{#2}%
+        \addtocounter{\@enumctr}{-1}%
+        \def\makelabel##1{\hss\llap{##1}}}
+\fi
+}{\endlist}
+%    \end{macrocode}
+% All the old Dingbat commands still work;
+% they are now implemented using the +\Pi...+ commands.
+%    \begin{macrocode}
+\newcommand{\ding}{\Pisymbol{pzd}}
+\def\dingfill#1{\Pifill{pzd}{#1}}
+\def\dingline#1{\Piline{pzd}{#1}}
+\newenvironment{dinglist}[1]{\begin{Pilist}{pzd}{#1}}%
+  {\end{Pilist}}
+\newenvironment{dingautolist}[1]{\begin{Piautolist}{pzd}{#1}}%
+  {\end{Piautolist}}
+{\Pifont{pzd}}
+{\Pifont{psy}}
+%</pifont>
+%    \end{macrocode}
+%
+% \section{The \textsf{chancery} package}
+%    \begin{macrocode}
+%<*chancery>
+\renewcommand{\rmdefault}{pzc}
+%</chancery>
+%    \end{macrocode}
+%
+% \section{The \textsf{mathptm} and \textsf{mathptmx} packages}
+% Setting up the fonts for \textsf{mathptm}:
+%    \begin{macrocode}
+%<*mathptm>
+\PackageWarningNoLine{mathptm}{%
+  This package is to be regarded as obsolete.\MessageBreak
+  See the PSNFSS documentation}
+\def\rmdefault{ptm}
+\DeclareSymbolFont{operators}   {OT1}{ptmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ptmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{pzccm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{psycm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+%</mathptm>
+%    \end{macrocode}
+%
+% Setting up the fonts for \textsf{mathptmx}:
+%    \begin{macrocode}
+%<*mathptmx>
+\def\rmdefault{ptm}
+\DeclareSymbolFont{operators}   {OT1}{ztmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ztmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{ztmcm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{ztmcm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+%</mathptmx>
+%    \end{macrocode}
+%
+% Define +\mathbf+ and +\mathit+:
+%    \begin{macrocode}
+%<*mathptm|mathptmx>
+\@ifundefined{mathbf}{}{\DeclareMathAlphabet{\mathbf}{OT1}{ptm}{bx}{n}}
+\@ifundefined{mathit}{}{\DeclareMathAlphabet{\mathit}{OT1}{ptm}{m}{it}}
+%    \end{macrocode}
+%
+% An +\omicron+ command, to fill the gap:
+%    \begin{macrocode}
+\DeclareMathSymbol{\omicron}{0}{operators}{`\o}
+%    \end{macrocode}
+%
+% Lock unavailabe symbols:
+%    \begin{macrocode}
+\renewcommand{\jmath}{%
+  \PackageError
+%<mathptm>  {mathptm}
+%<mathptmx> {mathptmx}
+  {The symbols \protect\jmath, \protect\amalg\space and
+  \protect\coprod\MessageBreak
+  are not available with this package}
+  {Type \space <return> \space to proceed;
+  your command will be ignored.}}
+\let\amalg=\jmath
+\let\coprod=\jmath
+%    \end{macrocode}
+%
+% Reduce the space around math operators:
+%    \begin{macrocode}
+\thinmuskip=2mu
+\medmuskip=2.5mu plus 1mu minus 1mu
+\thickmuskip=4mu plus 1.5mu minus 1mu
+%</mathptm|mathptmx>
+%    \end{macrocode}
+%
+% Make +\hbar+ work with Times.
+%    \begin{macrocode}
+%<*mathptm>
+\def\hbar{{\mskip1.6mu\mathchar'26\mkern-7.6muh}}
+%</mathptm>
+%    \end{macrocode}
+% With \textsf{mathptmx}, PSNFSS 9.0 and later is using an improved definition,
+% which was adopted from Frank Mittelbach's \textsf{mathtime} package:
+%    \begin{macrocode}
+%<*mathptmx>
+\DeclareRobustCommand\hbar{{%
+ \dimen@.03em%
+ \dimen@ii.06em%
+ \def\@tempa##1##2{{%
+   \lower##1\dimen@\rlap{\kern##1\dimen@ii\the##2 0\char22}}}%
+ \mathchoice\@tempa\@ne\textfont
+            \@tempa\@ne\textfont
+            \@tempa\defaultscriptratio\scriptfont
+            \@tempa\defaultscriptscriptratio\scriptscriptfont
+  h}}
+%</mathptmx>
+%    \end{macrocode}
+%
+% No bold math:
+%    \begin{macrocode}
+%<*mathptm|mathptmx>
+\def\boldmath{%
+   \PackageWarning%
+%<mathptm>   {mathptm}%
+%<mathptmx>   {mathptmx}%
+   {There are no bold math fonts}%
+   \global\let\boldmath=\relax
+}
+%</mathptm|mathptmx>
+%    \end{macrocode}
+%
+% Use larger font sizes for super- and subscripts:
+%    \begin{macrocode}
+%<*mathptmx>
+\def\defaultscriptratio{.74}
+\def\defaultscriptscriptratio{.6}
+%</mathptmx>
+%<*mathptm|mathptmx>
+\DeclareMathSizes{5}{5}{5}{5}
+\DeclareMathSizes{6}{6}{5}{5}
+\DeclareMathSizes{7}{7}{5}{5}
+\DeclareMathSizes{8}{8}{6}{5}
+\DeclareMathSizes{9}{9}{7}{5}
+\DeclareMathSizes{10}{10}{7.4}{6}
+\DeclareMathSizes{10.95}{10.95}{8}{6}
+\DeclareMathSizes{12}{12}{9}{7}
+\DeclareMathSizes{14.4}{14.4}{10.95}{8}
+\DeclareMathSizes{17.28}{17.28}{12}{10}
+\DeclareMathSizes{20.74}{20.74}{14.4}{12}
+\DeclareMathSizes{24.88}{24.88}{17.28}{14.4}
+%</mathptm|mathptmx>
+%    \end{macrocode}
+%
+% Option: Use slanted greek capitals (with \textsf{mathptmx} only):
+%    \begin{macrocode}
+%<*mathptmx>
+\DeclareOption{slantedGreek}{%
+  \DeclareMathSymbol{\Gamma}{\mathalpha}{letters}{0}
+  \DeclareMathSymbol{\Delta}{\mathalpha}{letters}{1}
+  \DeclareMathSymbol{\Theta}{\mathalpha}{letters}{2}
+  \DeclareMathSymbol{\Lambda}{\mathalpha}{letters}{3}
+  \DeclareMathSymbol{\Xi}{\mathalpha}{letters}{4}
+  \DeclareMathSymbol{\Pi}{\mathalpha}{letters}{5}
+  \DeclareMathSymbol{\Sigma}{\mathalpha}{letters}{6}
+  \DeclareMathSymbol{\Upsilon}{\mathalpha}{letters}{7}
+  \DeclareMathSymbol{\Phi}{\mathalpha}{letters}{8}
+  \DeclareMathSymbol{\Psi}{\mathalpha}{letters}{9}
+  \DeclareMathSymbol{\Omega}{\mathalpha}{letters}{10}
+}
+\DeclareMathSymbol{\upGamma}{\mathord}{operators}{0}
+\DeclareMathSymbol{\upDelta}{\mathord}{operators}{1}
+\DeclareMathSymbol{\upTheta}{\mathord}{operators}{2}
+\DeclareMathSymbol{\upLambda}{\mathord}{operators}{3}
+\DeclareMathSymbol{\upXi}{\mathord}{operators}{4}
+\DeclareMathSymbol{\upPi}{\mathord}{operators}{5}
+\DeclareMathSymbol{\upSigma}{\mathord}{operators}{6}
+\DeclareMathSymbol{\upUpsilon}{\mathord}{operators}{7}
+\DeclareMathSymbol{\upPhi}{\mathord}{operators}{8}
+\DeclareMathSymbol{\upPsi}{\mathord}{operators}{9}
+\DeclareMathSymbol{\upOmega}{\mathord}{operators}{10}
+%    \end{macrocode}
+%
+% Options processing:
+%    \begin{macrocode}
+\ProcessOptions\relax
+%</mathptmx>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*mathptm|mathptmx>
+\let\s@vedhbar\hbar
+\AtBeginDocument{%
+%</mathptm|mathptmx>
+%    \end{macrocode}
+% Ensure proper scaling of the AMS fonts, even when not used
+% through the amssymb or amsfonts packages (\textsf{mathptmx} only):
+%    \begin{macrocode}
+%<*mathptmx>
+  \DeclareFontFamily{U}{msa}{}%
+  \DeclareFontShape{U}{msa}{m}{n}{<->msam10}{}%
+  \DeclareFontFamily{U}{msb}{}%
+  \DeclareFontShape{U}{msb}{m}{n}{<->msbm10}{}%
+  \DeclareFontFamily{U}{euf}{}%
+  \DeclareFontShape{U}{euf}{m}{n}{<-6>eufm5<6-8>eufm7<8->eufm10}{}%
+  \DeclareFontShape{U}{euf}{b}{n}{<-6>eufb5<6-8>eufb7<8->eufb10}{}%
+%</mathptmx>
+%    \end{macrocode}
+% In case the \textsf{amsfonts} package is loaded additionally,
+% we must restore our +\hbar+:
+%    \begin{macrocode}
+%<*mathptm|mathptmx>
+  \@ifpackageloaded{amsfonts}{\let\hbar\s@vedhbar}{}
+%    \end{macrocode}
+% Take care of +\big+ \&\ friends working with scaled math extension font,
+% unless amsmath.sty is also loaded:
+%    \begin{macrocode}
+  \@ifpackageloaded{amsmath}{}{%
+    \newdimen\big@size
+    \addto@hook\every@math@size{\setbox\z@\vbox{\hbox{$($}\kern\z@}%
+       \global\big@size 1.2\ht\z@}
+    \def\bBigg@#1#2{%
+       {\hbox{$\left#2\vcenter to#1\big@size{}\right.\n@space$}}}
+    \def\big{\bBigg@\@ne}
+    \def\Big{\bBigg@{1.5}}
+    \def\bigg{\bBigg@\tw@}
+    \def\Bigg{\bBigg@{2.5}}
+  }
+}
+%</mathptm|mathptmx>
+%    \end{macrocode}
+%
+% \subsection*{Credits}
+% The virtual mathptm and mathptmx fonts and the related packages
+% were created by Alan Jeffrey, Sebastian Rahtz and Ulrik Vieth.
+%
+% \section{The \textsf{mathpple} package}
+% Suppress info about math fonts being redefined:
+%    \begin{macrocode}
+%<*mathpple>
+\PackageWarningNoLine{mathpple}{%
+  This package is to be regarded as obsolete.\MessageBreak
+  See the PSNFSS documentation}
+\let\s@ved@info\@font@info
+\let\@font@info\@gobble
+%    \end{macrocode}
+%
+% Make Palatino the default roman font:
+%    \begin{macrocode}
+\renewcommand{\rmdefault}{ppl}
+%    \end{macrocode}
+%
+% Typeset mathematics using the mathpple fonts:
+%    \begin{macrocode}
+\DeclareSymbolFont{operators}   {OT1}{zpple}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{zpple}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{zpple}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{zpple}{m}{n}
+\DeclareMathAlphabet{\mathbf}   {OT1}{zpple}{b}{n}
+\DeclareMathAlphabet{\mathit}   {OT1}{ppl}{m}{it}
+%    \end{macrocode}
+%
+% Support for bold mathversion:
+%    \begin{macrocode}
+\SetSymbolFont{operators}{bold}{OT1}{zpple}{b}{n}
+\SetSymbolFont{letters}{bold}{OML}{zpple}{b}{it}
+\SetSymbolFont{symbols}{bold}{OMS}{zpple}{b}{n}
+\SetSymbolFont{largesymbols}{bold}{OMX}{zpple}{m}{n}
+\SetMathAlphabet\mathit{bold}{OT1}{ppl}{b}{it}
+%    \end{macrocode}
+%
+% Reduce the space around math operators:
+%    \begin{macrocode}
+%\thinmuskip=2.5mu
+\medmuskip=3.5mu plus 1mu minus 1mu
+%\thickmuskip=4.5mu plus 1.5mu minus 1mu
+%    \end{macrocode}
+%
+% Compensate for increased letter spacing
+%    \begin{macrocode}
+\def\joinrel{\mathrel{\mkern-3.45mu}}
+%    \end{macrocode}
+%
+% Make +\hbar+ work with Palatino:
+%    \begin{macrocode}
+\def\hbar{{\mathchar'26\mkern-7muh}}
+%    \end{macrocode}
+%
+% Define a new math alphabet for bold italic variables:
+%    \begin{macrocode}
+\DeclareMathAlphabet{\mathbold}{OML}{zpple}{b}{it}
+%    \end{macrocode}
+%
+% Make +\mathbold+ act on lowercase greek, too:
+%    \begin{macrocode}
+\DeclareMathSymbol{\alpha}{\mathalpha}{letters}{11}
+\DeclareMathSymbol{\beta}{\mathalpha}{letters}{12}
+\DeclareMathSymbol{\gamma}{\mathalpha}{letters}{13}
+\DeclareMathSymbol{\delta}{\mathalpha}{letters}{14}
+\DeclareMathSymbol{\epsilon}{\mathalpha}{letters}{15}
+\DeclareMathSymbol{\zeta}{\mathalpha}{letters}{16}
+\DeclareMathSymbol{\eta}{\mathalpha}{letters}{17}
+\DeclareMathSymbol{\theta}{\mathalpha}{letters}{18}
+\DeclareMathSymbol{\iota}{\mathalpha}{letters}{19}
+\DeclareMathSymbol{\kappa}{\mathalpha}{letters}{20}
+\DeclareMathSymbol{\lambda}{\mathalpha}{letters}{21}
+\DeclareMathSymbol{\mu}{\mathalpha}{letters}{22}
+\DeclareMathSymbol{\nu}{\mathalpha}{letters}{23}
+\DeclareMathSymbol{\xi}{\mathalpha}{letters}{24}
+\DeclareMathSymbol{\pi}{\mathalpha}{letters}{25}
+\DeclareMathSymbol{\rho}{\mathalpha}{letters}{26}
+\DeclareMathSymbol{\sigma}{\mathalpha}{letters}{27}
+\DeclareMathSymbol{\tau}{\mathalpha}{letters}{28}
+\DeclareMathSymbol{\upsilon}{\mathalpha}{letters}{29}
+\DeclareMathSymbol{\phi}{\mathalpha}{letters}{30}
+\DeclareMathSymbol{\chi}{\mathalpha}{letters}{31}
+\DeclareMathSymbol{\psi}{\mathalpha}{letters}{32}
+\DeclareMathSymbol{\omega}{\mathalpha}{letters}{33}
+\DeclareMathSymbol{\varepsilon}{\mathalpha}{letters}{34}
+\DeclareMathSymbol{\vartheta}{\mathalpha}{letters}{35}
+\DeclareMathSymbol{\varpi}{\mathalpha}{letters}{36}
+\DeclareMathSymbol{\varphi}{\mathalpha}{letters}{39}
+\let\varrho\rho
+\let\varsigma\sigma
+%    \end{macrocode}
+%
+% We redefine the default sizes for super- and subscripts.
+% Palatino, like most other type 1 fonts, is scaled linearly, so the
+% default ratios (.7 and .5) may produce unreadably small characters:
+%    \begin{macrocode}
+\def\defaultscriptratio{.76}
+\def\defaultscriptscriptratio{.6}
+%    \end{macrocode}
+%
+% These default ratios are not used for any sizes that have been
+% explicitly declared, so we redeclare the sizes used by the standard
+% classes. At least for the lower sizes this is important as we don't
+% want to end up with a 5pt font being reduced even further:
+%    \begin{macrocode}
+\DeclareMathSizes{5}    {5}    {5}    {5}
+\DeclareMathSizes{6}    {6}    {5}    {5}
+\DeclareMathSizes{7}    {7}    {5}    {5}
+\DeclareMathSizes{8}    {8}    {6}    {5}
+\DeclareMathSizes{9}    {9}    {7}    {5}
+\DeclareMathSizes{10}   {10}   {7.6}  {6}
+\DeclareMathSizes{10.95}{10.95}{8}    {6}
+\DeclareMathSizes{12}   {12}   {9}    {7}
+\DeclareMathSizes{14.4} {14.4} {10}   {8}
+\DeclareMathSizes{17.28}{17.28}{12}   {10}
+\DeclareMathSizes{20.74}{20.74}{14.4} {12}
+\DeclareMathSizes{24.88}{24.88}{20.74}{14.4}
+%    \end{macrocode}
+%
+% Option: Use slanted greek capitals:
+%    \begin{macrocode}
+\DeclareOption{slantedGreek}{%
+  \DeclareMathSymbol{\Gamma}{\mathalpha}{letters}{0}
+  \DeclareMathSymbol{\Delta}{\mathalpha}{letters}{1}
+  \DeclareMathSymbol{\Theta}{\mathalpha}{letters}{2}
+  \DeclareMathSymbol{\Lambda}{\mathalpha}{letters}{3}
+  \DeclareMathSymbol{\Xi}{\mathalpha}{letters}{4}
+  \DeclareMathSymbol{\Pi}{\mathalpha}{letters}{5}
+  \DeclareMathSymbol{\Sigma}{\mathalpha}{letters}{6}
+  \DeclareMathSymbol{\Upsilon}{\mathalpha}{letters}{7}
+  \DeclareMathSymbol{\Phi}{\mathalpha}{letters}{8}
+  \DeclareMathSymbol{\Psi}{\mathalpha}{letters}{9}
+  \DeclareMathSymbol{\Omega}{\mathalpha}{letters}{10}
+}
+\let\upOmega\Omega
+\let\upDelta\Delta
+%    \end{macrocode}
+%
+% Options processing:
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\s@vedhbar\hbar
+\AtBeginDocument{%
+%    \end{macrocode}
+% Ensure proper scaling of the AMS fonts, even when not used
+% through the amssymb or amsfonts packages:
+%    \begin{macrocode}
+  \DeclareFontFamily{U}{msa}{}%
+  \DeclareFontShape{U}{msa}{m}{n}{<->s*[1.042]msam10}{}%
+  \DeclareFontFamily{U}{msb}{}%
+  \DeclareFontShape{U}{msb}{m}{n}{<->s*[1.042]msbm10}{}%
+  \DeclareFontFamily{U}{euf}{}%
+  \DeclareFontShape{U}{euf}{m}{n}{<-6>eufm5<6-8>eufm7<8->eufm10}{}%
+  \DeclareFontShape{U}{euf}{b}{n}{<-6>eufb5<6-8>eufb7<8->eufb10}{}%
+%    \end{macrocode}
+% In case the \textsf{amsfonts} package is loaded additionally,
+% we must restore our +\hbar+:
+%    \begin{macrocode}
+  \@ifpackageloaded{amsfonts}{\let\hbar\s@vedhbar}{}
+%    \end{macrocode}
+% Take care of +\big+ \&\ friends working with scaled math extension font,
+% unless amsmath.sty is also loaded:
+%    \begin{macrocode}
+  \@ifpackageloaded{amsmath}{}{%
+    \newdimen\big@size
+    \addto@hook\every@math@size{\setbox\z@\vbox{\hbox{$($}\kern\z@}%
+       \global\big@size 1.2\ht\z@}
+    \def\bBigg@#1#2{%
+       {\hbox{$\left#2\vcenter to#1\big@size{}\right.\n@space$}}}
+    \def\big{\bBigg@\@ne}
+    \def\Big{\bBigg@{1.5}}
+    \def\bigg{\bBigg@\tw@}
+    \def\Bigg{\bBigg@{2.5}}
+  }
+}
+%    \end{macrocode}
+%
+% Restore font info:
+%    \begin{macrocode}
+\let\@font@info\s@ved@info
+%</mathpple>
+%    \end{macrocode}
+%
+% \subsection*{Credits}
+% \textsf{mathpple} is based on the package \textsf{mathppl}
+% and the related virtual fonts, created by Aloysius Helminck.
+% These were distributed in conjunction with \textsc{fontinst}~v1.335,
+% but are no longer available from CTAN.
+% The main changes with regard to Helminck's model are:
+% \begin{itemize}
+%  \item
+%  italic Greek letters from the Euler fonts;
+%  \item
+%  +\mathcal+ from CM instead of Zapf~Chancery;
+%  \item
+%  positioning of math accents substantially improved;
+%  \item
+%  improved spacing;
+%  \item
+%  use those Type~1 fonts only, which are part of the free
+%  `BlueSky' distribution.
+% \end{itemize}
+% Special thanks to Daniel Schlieper, who suggested the
+% development of the \textsf{mathpple} package,
+% contributed many good ideas and helped with testing.
+%
+%
+% \section{The \textsf{charter} package}
+%    \begin{macrocode}
+%<*charter>
+\renewcommand{\rmdefault}{bch}
+\renewcommand{\bfdefault}{b}
+%</charter>
+%    \end{macrocode}
+%
+% \section{The \textsf{utopia} package}
+%    \begin{macrocode}
+%<*utopia>
+\PackageWarningNoLine{utopia}{%
+  This package is to be regarded as obsolete.\MessageBreak
+  See the PSNFSS documentation}
+\renewcommand{\rmdefault}{put}
+\renewcommand\bfdefault{b}
+%</utopia>
+%    \end{macrocode}
+%
+%
+% \section{The \textsf{mathpazo} package}
+% Suppress info about math fonts being redefined:
+%    \begin{macrocode}
+%<*mathpazo>
+\let\s@ved@info\@font@info
+\let\@font@info\@gobble
+%    \end{macrocode}
+%
+% Options processing:
+%    \begin{macrocode}
+\newif\ifpazo@osf
+\newif\ifpazo@sc
+\newif\ifpazo@slGreek
+\newif\ifpazo@BB \pazo@BBtrue
+\DeclareOption{osf}{\pazo@osftrue}
+\DeclareOption{sc}{\pazo@sctrue}
+\DeclareOption{slantedGreek}{\pazo@slGreektrue}
+\DeclareOption{noBBpl}{\pazo@BBfalse}
+\DeclareOption{osfeqnnum}{\OptionNotUsed}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% Make Palatino (+ppl+) the default roman font.
+% If the options +osf+ or +sc+  were specified,
+% use +pplj+ or +pplx+ instead,
+% and make sure that +\oldstylenums+ switches to +pplj+, too.
+%    \begin{macrocode}
+\ifpazo@osf
+  \renewcommand{\rmdefault}{pplj}
+  \renewcommand{\oldstylenums}[1]{%
+    {\fontfamily{pplj}\selectfont #1}}
+\else\ifpazo@sc
+  \renewcommand{\rmdefault}{pplx}
+  \renewcommand{\oldstylenums}[1]{%
+    {\fontfamily{pplj}\selectfont #1}}
+\else
+  \renewcommand{\rmdefault}{ppl}
+\fi\fi
+%    \end{macrocode}
+%
+% The Pazo fonts provide an Euro symbol, which is now available in the
+% Palatino text companion fonts.  For the sake of compatibility, we still define
+% the macro +\ppleuro+, which was introduced with version 8.2, and
+% we make it work with the
+% \textsf{eurofont} and \textsf{europs} packages:
+%    \begin{macrocode}
+\newcommand{\ppleuro}{{\fontencoding{U}\fontfamily{fplm}\selectfont \char160}}
+\AtBeginDocument{\@ifpackageloaded{europs}{\renewcommand{\EURtm}{\ppleuro}}{}}
+%    \end{macrocode}
+%
+% Now we declare the math fonts. The \textsf{mathpazo} package uses
+% a Palatino text font family with OT1 encoding
+% as the +operators+ and +\mathit+ alphabets.
+% If the +sc+ option was specified, we use the family +pplx+.
+% Otherwise we just take +ppl+, thus making sure that no oldstyle digits are
+% used in math mode.  Note that specifying both +sc+ and +osf+ gives
+% oldstyle numbers in text and uses the family +pplx+ in math mode,
+% so that the +ppl+ family is not required at all.  Thus, the number
+% of TFM's loaded by \TeX{} is minimized.
+%    \begin{macrocode}
+\ifpazo@sc
+ \DeclareSymbolFont{operators}     {OT1}{pplx}{m}{n}
+ \SetSymbolFont{operators}{bold}   {OT1}{pplx}{b}{n}
+ \DeclareMathAlphabet{\mathit}     {OT1}{pplx}{m}{it}
+ \SetMathAlphabet{\mathit}{bold}   {OT1}{pplx}{b}{it}
+\else
+ \DeclareSymbolFont{operators}     {OT1}{ppl}{m}{n}
+ \SetSymbolFont{operators}{bold}   {OT1}{ppl}{b}{n}
+ \DeclareMathAlphabet{\mathit}     {OT1}{ppl}{m}{it}
+ \SetMathAlphabet{\mathit}{bold}   {OT1}{ppl}{b}{it}
+\fi
+%    \end{macrocode}
+% Uppercase upright Greek
+% and math symbols such as `plus', `equal' and others
+% are taken from a new symbol font named +upright+.
+% Its spacing is less tight than in the text font.
+%    \begin{macrocode}
+\DeclareSymbolFont{upright}       {OT1}{zplm}{m}{n}
+\DeclareSymbolFont{letters}       {OML}{zplm}{m}{it}
+\DeclareSymbolFont{symbols}       {OMS}{zplm}{m}{n}
+\DeclareSymbolFont{largesymbols}  {OMX}{zplm}{m}{n}
+%    \end{macrocode}
+%    \begin{macrocode}
+\SetSymbolFont{upright}{bold}     {OT1}{zplm}{b}{n}
+\SetSymbolFont{letters}{bold}     {OML}{zplm}{b}{it}
+\SetSymbolFont{symbols}{bold}     {OMS}{zplm}{b}{n}
+\SetSymbolFont{largesymbols}{bold}{OMX}{zplm}{m}{n}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareMathAlphabet{\mathbf}     {OT1}{zplm}{b}{n}
+\DeclareMathAlphabet{\mathbold}   {OML}{zplm}{b}{it}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareSymbolFontAlphabet{\mathrm}    {operators}
+\DeclareSymbolFontAlphabet{\mathnormal}{letters}
+\DeclareSymbolFontAlphabet{\mathcal}   {symbols}
+%    \end{macrocode}
+%
+% The following symbols used to come from `operators';
+% we take them from the `upright' symbol font now:
+%    \begin{macrocode}
+\DeclareMathSymbol{!}{\mathclose}{upright}{"21}
+\DeclareMathSymbol{+}{\mathbin}{upright}{"2B}
+\DeclareMathSymbol{:}{\mathrel}{upright}{"3A}
+% \DeclareMathSymbol{;}{\mathpunct}{operators}{"3B} % punctuation!
+\DeclareMathSymbol{=}{\mathrel}{upright}{"3D}
+\DeclareMathSymbol{?}{\mathclose}{upright}{"3F}
+\DeclareMathDelimiter{(}{\mathopen} {upright}{"28}{largesymbols}{"00}
+\DeclareMathDelimiter{)}{\mathclose}{upright}{"29}{largesymbols}{"01}
+\DeclareMathDelimiter{[}{\mathopen} {upright}{"5B}{largesymbols}{"02}
+\DeclareMathDelimiter{]}{\mathclose}{upright}{"5D}{largesymbols}{"03}
+\DeclareMathDelimiter{/}{\mathord}{upright}{"2F}{largesymbols}{"0E}
+% \DeclareMathSymbol{\colon}{\mathpunct}{operators}{"3A} % punctuation!
+\DeclareMathAccent{\acute}{\mathalpha}{upright}{"13}
+\DeclareMathAccent{\grave}{\mathalpha}{upright}{"12}
+\DeclareMathAccent{\ddot}{\mathalpha}{upright}{"7F}
+\DeclareMathAccent{\tilde}{\mathalpha}{upright}{"7E}
+\DeclareMathAccent{\bar}{\mathalpha}{upright}{"16}
+\DeclareMathAccent{\breve}{\mathalpha}{upright}{"15}
+\DeclareMathAccent{\check}{\mathalpha}{upright}{"14}
+\DeclareMathAccent{\hat}{\mathalpha}{upright}{"5E}
+\DeclareMathAccent{\dot}{\mathalpha}{upright}{"5F}
+\DeclareMathAccent{\mathring}{\mathalpha}{upright}{"17}
+\DeclareMathSymbol{\mathdollar}{\mathord}{upright}{"24}
+%    \end{macrocode}
+% As to uppercase Greek, see below!
+%
+% The follwowing symbols used to come from `letters'.
+% Now they are taken from `operators', with respect to
+% correct spacing of decimal numbers:
+%    \begin{macrocode}
+\DeclareMathSymbol{,}{\mathpunct}{operators}{44}
+\DeclareMathSymbol{.}{\mathord}{operators}{46}
+%    \end{macrocode}
+%
+% Use Pazo as (partial) +\mathbb+ font:
+%    \begin{macrocode}
+\ifpazo@BB
+  \AtBeginDocument{%
+  \let\mathbb\relax
+  \DeclareMathAlphabet\PazoBB{U}{fplmbb}{m}{n}
+  \newcommand{\mathbb}{\PazoBB}
+  }
+\fi
+%    \end{macrocode}
+%
+% Reduce the space around math operators:
+%    \begin{macrocode}
+%\thinmuskip=2.5mu
+\medmuskip=3.5mu plus 1mu minus 1mu
+%\thickmuskip=4.5mu plus 1.5mu minus 1mu
+%    \end{macrocode}
+%
+% Compensate for increased letter spacing:
+%    \begin{macrocode}
+\def\joinrel{\mathrel{\mkern-3.45mu}}
+%    \end{macrocode}
+%
+% Make +\hbar+ work with Palatino:
+%    \begin{macrocode}
+\renewcommand{\hbar}{{\mkern0.8mu\mathchar'26\mkern-6.8muh}}
+%    \end{macrocode}
+%
+% Optionally use slanted greek capitals:
+%    \begin{macrocode}
+\ifpazo@slGreek
+  \DeclareMathSymbol{\Gamma}  {\mathalpha}{letters}{"00}
+  \DeclareMathSymbol{\Delta}  {\mathalpha}{letters}{"01}
+  \DeclareMathSymbol{\Theta}  {\mathalpha}{letters}{"02}
+  \DeclareMathSymbol{\Lambda} {\mathalpha}{letters}{"03}
+  \DeclareMathSymbol{\Xi}     {\mathalpha}{letters}{"04}
+  \DeclareMathSymbol{\Pi}     {\mathalpha}{letters}{"05}
+  \DeclareMathSymbol{\Sigma}  {\mathalpha}{letters}{"06}
+  \DeclareMathSymbol{\Upsilon}{\mathalpha}{letters}{"07}
+  \DeclareMathSymbol{\Phi}    {\mathalpha}{letters}{"08}
+  \DeclareMathSymbol{\Psi}    {\mathalpha}{letters}{"09}
+  \DeclareMathSymbol{\Omega}  {\mathalpha}{letters}{"0A}
+\else
+  \DeclareMathSymbol{\Gamma}{\mathalpha}{upright}{"00}
+  \DeclareMathSymbol{\Delta}{\mathalpha}{upright}{"01}
+  \DeclareMathSymbol{\Theta}{\mathalpha}{upright}{"02}
+  \DeclareMathSymbol{\Lambda}{\mathalpha}{upright}{"03}
+  \DeclareMathSymbol{\Xi}{\mathalpha}{upright}{"04}
+  \DeclareMathSymbol{\Pi}{\mathalpha}{upright}{"05}
+  \DeclareMathSymbol{\Sigma}{\mathalpha}{upright}{"06}
+  \DeclareMathSymbol{\Upsilon}{\mathalpha}{upright}{"07}
+  \DeclareMathSymbol{\Phi}{\mathalpha}{upright}{"08}
+  \DeclareMathSymbol{\Psi}{\mathalpha}{upright}{"09}
+  \DeclareMathSymbol{\Omega}{\mathalpha}{upright}{"0A}
+\fi
+%    \end{macrocode}
+% These symbols should always be upright:
+%    \begin{macrocode}
+\DeclareMathSymbol{\upGamma}{\mathord}{upright}{0}
+\DeclareMathSymbol{\upDelta}{\mathord}{upright}{1}
+\DeclareMathSymbol{\upTheta}{\mathord}{upright}{2}
+\DeclareMathSymbol{\upLambda}{\mathord}{upright}{3}
+\DeclareMathSymbol{\upXi}{\mathord}{upright}{4}
+\DeclareMathSymbol{\upPi}{\mathord}{upright}{5}
+\DeclareMathSymbol{\upSigma}{\mathord}{upright}{6}
+\DeclareMathSymbol{\upUpsilon}{\mathord}{upright}{7}
+\DeclareMathSymbol{\upPhi}{\mathord}{upright}{8}
+\DeclareMathSymbol{\upPsi}{\mathord}{upright}{9}
+\DeclareMathSymbol{\upOmega}{\mathord}{upright}{10}
+%    \end{macrocode}
+% Make +\mathbold+ act on lowercase greek too
+%    \begin{macrocode}
+\DeclareMathSymbol{\alpha}{\mathalpha}{letters}{"0B}
+\DeclareMathSymbol{\beta}{\mathalpha}{letters}{"0C}
+\DeclareMathSymbol{\gamma}{\mathalpha}{letters}{"0D}
+\DeclareMathSymbol{\delta}{\mathalpha}{letters}{"0E}
+\DeclareMathSymbol{\epsilon}{\mathalpha}{letters}{"0F}
+\DeclareMathSymbol{\zeta}{\mathalpha}{letters}{"10}
+\DeclareMathSymbol{\eta}{\mathalpha}{letters}{"11}
+\DeclareMathSymbol{\theta}{\mathalpha}{letters}{"12}
+\DeclareMathSymbol{\iota}{\mathalpha}{letters}{"13}
+\DeclareMathSymbol{\kappa}{\mathalpha}{letters}{"14}
+\DeclareMathSymbol{\lambda}{\mathalpha}{letters}{"15}
+\DeclareMathSymbol{\mu}{\mathalpha}{letters}{"16}
+\DeclareMathSymbol{\nu}{\mathalpha}{letters}{"17}
+\DeclareMathSymbol{\xi}{\mathalpha}{letters}{"18}
+\DeclareMathSymbol{\pi}{\mathalpha}{letters}{"19}
+\DeclareMathSymbol{\rho}{\mathalpha}{letters}{"1A}
+\DeclareMathSymbol{\sigma}{\mathalpha}{letters}{"1B}
+\DeclareMathSymbol{\tau}{\mathalpha}{letters}{"1C}
+\DeclareMathSymbol{\upsilon}{\mathalpha}{letters}{"1D}
+\DeclareMathSymbol{\phi}{\mathalpha}{letters}{"1E}
+\DeclareMathSymbol{\chi}{\mathalpha}{letters}{"1F}
+\DeclareMathSymbol{\psi}{\mathalpha}{letters}{"20}
+\DeclareMathSymbol{\omega}{\mathalpha}{letters}{"21}
+\DeclareMathSymbol{\varepsilon}{\mathalpha}{letters}{"22}
+\DeclareMathSymbol{\vartheta}{\mathalpha}{letters}{"23}
+\DeclareMathSymbol{\varpi}{\mathalpha}{letters}{"24}
+\DeclareMathSymbol{\varrho}{\mathalpha}{letters}{"25}
+\DeclareMathSymbol{\varsigma}{\mathalpha}{letters}{"26}
+\DeclareMathSymbol{\varphi}{\mathalpha}{letters}{"27}
+%    \end{macrocode}
+%
+% Finally, we save our new definition of +\hbar+ and defer some code
+% until +\begin{document}+:
+%    \begin{macrocode}
+\let\s@vedhbar\hbar
+\AtBeginDocument{%
+%    \end{macrocode}
+% Ensure proper scaling of the AMS fonts, even when not used
+% through the amssymb or amsfonts packages:
+%    \begin{macrocode}
+  \DeclareFontFamily{U}{msa}{}%
+  \DeclareFontShape{U}{msa}{m}{n}{<->s*[1.042]msam10}{}%
+  \DeclareFontFamily{U}{msb}{}%
+  \DeclareFontShape{U}{msb}{m}{n}{<->s*[1.042]msbm10}{}%
+  \DeclareFontFamily{U}{euf}{}%
+  \DeclareFontShape{U}{euf}{m}{n}{<-6>eufm5<6-8>eufm7<8->eufm10}{}%
+  \DeclareFontShape{U}{euf}{b}{n}{<-6>eufb5<6-8>eufb7<8->eufb10}{}%
+%    \end{macrocode}
+% In case the \textsf{amsfonts} package is loaded additionally,
+% we must restore our +\hbar+:
+%    \begin{macrocode}
+  \@ifpackageloaded{amsfonts}{\let\hbar\s@vedhbar}{}
+%    \end{macrocode}
+% Take care of +\big+ \&\ friends working with scaled math extension font,
+% unless amsmath.sty is also loaded:
+%    \begin{macrocode}
+  \@ifpackageloaded{amsmath}{}{%
+  \newdimen\big@size
+  \addto@hook\every@math@size{\setbox\z@\vbox{\hbox{$($}\kern\z@}%
+  	\global\big@size 1.2\ht\z@}
+  \def\bBigg@#1#2{%
+  	{\hbox{$\left#2\vcenter to#1\big@size{}\right.\n@space$}}}
+  \def\big{\bBigg@\@ne}
+  \def\Big{\bBigg@{1.5}}
+  \def\bigg{\bBigg@\tw@}
+  \def\Bigg{\bBigg@{2.5}}
+  }
+}
+%    \end{macrocode}
+%
+% We redefine the default sizes for super and subscripts.
+% Palatino, like most other type 1 fonts, is scaled linearly, so the
+% default ratios (0.7 and 0.5) may produce unreadably small characters.
+%    \begin{macrocode}
+\def\defaultscriptratio{.76}
+\def\defaultscriptscriptratio{.6}
+%    \end{macrocode}
+% These default ratios are not used for any sizes that have been
+% explicitly declared, so we redeclare the sizes used by the standard
+% classes. At least for the lower sizes this is important as we don't
+% want to end up with a 5pt font being reduced even further.
+%    \begin{macrocode}
+\DeclareMathSizes{5}    {5}    {5}    {5}
+\DeclareMathSizes{6}    {6}    {5}    {5}
+\DeclareMathSizes{7}    {7}    {5}    {5}
+\DeclareMathSizes{8}    {8}    {6}    {5}
+\DeclareMathSizes{9}    {9}    {7}    {5}
+\DeclareMathSizes{10}   {10}   {7.6}  {6}
+\DeclareMathSizes{10.95}{10.95}{8}    {6}
+\DeclareMathSizes{12}   {12}   {9}    {7}
+\DeclareMathSizes{14.4} {14.4} {10}   {8}
+\DeclareMathSizes{17.28}{17.28}{12}   {10}
+\DeclareMathSizes{20.74}{20.74}{14.4} {12}
+\DeclareMathSizes{24.88}{24.88}{20.74}{14.4}
+%    \end{macrocode}
+%
+% Restore font info:
+%    \begin{macrocode}
+\let\@font@info\s@ved@info
+%</mathpazo>
+%    \end{macrocode}
+%
+% \subsection*{Credits}
+% The Pazo fonts and the related virtual fonts
+% were created by Diego Puga.
+% The \textsf{mathpazo} package was written by D.~Puga and W.~Schmidt.
+% \Finale
+%
+\endinput
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

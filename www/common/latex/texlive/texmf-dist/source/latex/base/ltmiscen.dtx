@@ -1,0 +1,802 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltmiscen.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltmiscen.dtx}
+             [2014/09/29 v1.1l LaTeX Kernel (Misc. Environments)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltmiscen.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{457}
+%
+% \changes{v1.0c}{1994/03/28}{Improve Documentation}
+% \changes{v1.0d}{1994/03/29}{Remove counter macros to ltcntlen}
+% \changes{v1.0g}{1994/05/02}{Changed 91 to 1991 and moved some bits}
+% \changes{v1.0i}{1994/05/05}{Removed braces from ifnextchar and
+% ifstar arguments}
+% \changes{v1.0m}{1994/05/20}{Use new warning commands}
+% \changes{v1.0n}{1994/05/21}{Use new error commands}
+% \changes{v1.0s}{1994/10/14}{Move math to other file}
+% \changes{v1.0v}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0x}{1995/04/22}{Removed extra def of \cs{@gobble}}
+% \changes{v1.0z}{1995/07/13}{Improve Documentation}
+% \changes{v1.1c}{1996/04/22}{Improve Documentation}
+% \changes{v1.1d}{1996/06/03}{Move setting of verbatim font and
+%         \cs{@noligs}.}
+% \changes{v1.1g}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+% \section{Miscellaneous Environments}
+%  This section implements the basic environment mechanism, and also
+% a few specific environments including |document|, The math
+% environments and related commands, the `flushing' environments,
+% (|center|, |flushleft|, |flushright|), and |verbatim|.
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{environments,}
+%    \end{macrocode}
+%
+% \subsection{Environments}
+%
+%  |\begin{foo}| and |\end{foo}| are used to delimit environment |foo|.
+%
+%  |\begin{foo}| starts a group and calls |\foo| if it is defined,
+%  otherwise it does nothing.
+%
+% |\end{foo}| checks to see that it matches the
+%  corresponding |\begin| and if so, it calls |\endfoo| and does an
+%  |\endgroup|.  Otherwise, |\end{foo}| does nothing.
+%
+%  If |\end{foo}| needs to ignore blanks after it, then |\endfoo| should
+%  globally set the |@ignore| switch true with |\@ignoretrue|
+%  (this will automatically be global).
+%
+%
+%  NOTE: |\@@end| is defined to be the |\end| command of \TeX82.
+%
+%  |\enddocument| is the user's command for ending the manuscript file.
+%
+%  |\stop| is a panic button --- to end \TeX\ in the middle.
+%
+% \begin{oldcomments}
+% \enddocument ==
+%   BEGIN
+%    \@checkend{document}   %% checks for unmatched \begin
+%    \clearpage
+%    \begingroup
+%      if @filesw = true
+%        then  close file @mainaux
+%              if G@refundefined = true
+%               then LaTeX Warning: 'There are undefined references.' fi
+%              if @multiplelabels = true
+%                then LaTeX Warning:
+%                    'One or more label(s) multiply defined.'
+%                else
+%                \@setckpt {ARG1}{ARG2} == null
+%                \newlabel{LABEL}{VAL} ==
+%                    BEGIN
+%                      \reserved@a == VAL
+%                      if def(\reserved@a) = def(\r@LABEL)
+%                        else @tempswa := true          fi
+%                    END
+%                \bibcite{LABEL}{VAL} == null
+%                    BEGIN
+%                      \reserved@a == VAL
+%                      if def(\reserved@a) = def(\g@LABEL)
+%                        else @tempswa := true          fi
+%                    END
+%                @tempswa := false
+%                make @ a letter
+%                \input \jobname.AUX
+%                if @tempswa = true
+%                  then LaTeX Warning: 'Label may have changed.
+%                                  Rerun to get cross-references right.'
+%       fi     fi     fi
+%    \endgroup
+%    finish up
+%   END
+%
+%  \@writefile{EXT}{ENTRY} ==
+%      if tf@EXT undefined
+%        else \write\tf@EXT{ENTRY}
+%      fi
+% \end{oldcomments}
+%
+% \begin{macro}{\@currenvir}
+%    The name of the current environment.  Initialized to
+%    \texttt{document} to so that |\end{document}| works correctly.
+%    \begin{macrocode}
+\def\@currenvir{document}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@ignore}
+% \begin{macro}{\@ignoretrue}
+% \begin{macro}{\@ignorefalse}
+% \changes{v1.1e}{1996/07/26}{put \cs{global} into definition}
+%    \begin{macrocode}
+\def\@ignorefalse{\global\let\if@ignore\iffalse}
+\def\@ignoretrue {\global\let\if@ignore\iftrue}
+\@ignorefalse
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\ignorespacesafterend}
+% \changes{v1.1e}{1996/07/26}{user level macro added}
+%    \begin{macrocode}
+\let\ignorespacesafterend\@ignoretrue
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\enddocument}
+% \changes{LaTeX2.09}{1993/08/03}
+%         {Changed redefinition of \cs{global} to redefinition
+%               of \cs{@setckpt}.}
+% \changes{LaTeX2.09}{1993/09/08}
+%         {Added warning in case of undefined references.}%
+% \changes{v0.9e}{1993/12/09}{Hook added}
+%    \begin{macrocode}
+\def\enddocument{%
+%    \end{macrocode}
+%    The |\end{document}| hook is executed first. If necessary it can
+%    contain a |\clearpage| to output dangling floats first. In this
+%    position it can also contain something like |\end{foo}| so that
+%    the whole document effectively starts and ends with some special
+%    environment. However, this must be used with care, eg if two
+%    applications would use this without knowledge of each other the
+%    order of the environments will be wrong after all.
+%    |\AtEndDocument| is redefined
+%    at this point so that and such commands that get into the hook do
+%    not chase their tail\ldots
+% \changes{v1.0y}{1995/04/27}{\cs{@checkend} moved after hook}
+% \changes{v1.0z}{1995/07/13}{Set \cs{@setckpt} to \cs{@gobbletwo}
+%                    instead of defining it by hand}
+% \changes{v1.1i}{2000/05/19}
+%            {Reset \cs{AtEndDocument} for latex/3060}
+%    \begin{macrocode}
+   \let\AtEndDocument\@firstofone
+   \@enddocumenthook
+   \@checkend{document}%
+   \clearpage
+   \begingroup
+     \if@filesw
+       \immediate\closeout\@mainaux
+       \let\@setckpt\@gobbletwo
+       \let\@newl@bel\@testdef
+%    \end{macrocode}
+% \changes{v1.0z}{1995/07/13}{Shorten redefinition of \cs{bibcite} and
+%          \cs{newlabel}}
+%    The previous line is equiv to setting
+%\begin{verbatim}
+%       \def\newlabel{\@testdef r}%
+%       \def\bibcite{\@testdef b}%
+%\end{verbatim}
+% \changes{v1.1k}{2010/08/17}{Use braces around \cs{input} arg (pr/4124)}
+% \changes{v1.1l}{2010/08/17}{Change of plan: use \cs{@@input} instead
+%                             (pr/4124)}
+%    We use |\@@input| to load the \texttt{.aux} file, so that it doesn't
+%    show up in the list of files produced by |\listfiles|.
+%    \begin{macrocode}
+       \@tempswafalse
+       \makeatletter \@@input\jobname.aux
+     \fi
+%    \end{macrocode}
+% \changes{v1.0w}{1994/11/30}
+%         {(DPC) Use \cs{@dofilelist}}
+%    \begin{macrocode}
+     \@dofilelist
+%    \end{macrocode}
+%    First we check for font size substitution bigger than
+%    |\fontsubfuzz|. The |\relax| is necessary because this is a macro
+%    not a register.
+% \changes{v1.0w}{1994/11/30}
+%         {(DPC) Do warnings even for \cs{nofiles}}
+%    \begin{macrocode}
+     \ifdim \font@submax >\fontsubfuzz\relax
+%    \end{macrocode}
+%    In case you wonder about the |\@gobbletwo| inside the message
+%    below, this is a horrible hack to remove the tokens |\on@line.|
+%    that are added by |\@font@warning| at the end.
+% \changes{v1.1j}{2000/07/11}{Fix typo in warning}
+%    \begin{macrocode}
+       \@font@warning{Size substitutions with differences\MessageBreak
+                  up to \font@submax\space have occurred.\@gobbletwo}%
+     \fi
+%    \end{macrocode}
+%    The macro |\@defaultsubs| is initially |\relax| but gets redefined
+%    to produce
+%    a warning if there have been some default font substitutions.
+% \changes{v1.0z}{1995/07/13}{Use \cs{@defaultsubs} instead of switch}
+%    \begin{macrocode}
+     \@defaultsubs
+%    \end{macrocode}
+%    The macro |\@refundefined| is initially |\relax| but gets redefined
+%    to produce a warning if there are undefined refs.
+% \changes{v1.1b}{1995/10/24}{Use \cs{@refundefined} instead of switch}
+%    \begin{macrocode}
+     \@refundefined
+%    \end{macrocode}
+%    If a label is defined more than once, |\@tempswa| will always be
+%    true and thus produce a ``Label(s) may \ldots'' warning. But
+%    since a rerun will not solve that problem (unless one uses a
+%    package like \texttt{varioref} that generates labels on the fly),
+%    we suppress this message.
+% \changes{v1.0e}{1994/04/20}{Changed logic for producing
+%                             warning messages}
+% \changes{v1.1b}{1995/10/24}{Changed logic for producing
+%                             warning messages and removed switch}
+%    \begin{macrocode}
+     \if@filesw
+       \ifx \@multiplelabels \relax
+         \if@tempswa
+           \@latex@warning@no@line{Label(s) may have changed.
+               Rerun to get cross-references right}%
+         \fi
+       \else
+         \@multiplelabels
+       \fi
+     \fi
+   \endgroup
+   \deadcycles\z@\@@end}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@testdef}
+%    \begin{macrocode}
+\def\@testdef #1#2#3{%
+  \def\reserved@a{#3}\expandafter \ifx \csname #1@#2\endcsname
+ \reserved@a  \else \@tempswatrue \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\@writefile}
+% \changes{v1.0l}{1994/05/20}{Added correct setting of \cs{protect}.}
+% \changes{v1.0t}{1994/11/04}{Removed setting of \cs{protect}. ASAJ.}
+% \changes{v1.0z}{1995/07/13}{Added missing percent and use \cs{relax}
+%  in the THEN case}
+%    \begin{macrocode}
+\long\def\@writefile#1#2{%
+  \@ifundefined{tf@#1}\relax
+    {\@temptokena{#2}%
+     \immediate\write\csname tf@#1\endcsname{\the\@temptokena}%
+    }%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\stop}
+%    \begin{macrocode}
+\def\stop{\clearpage\deadcycles\z@\let\par\@@par\@@end}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{oldcomments}
+%
+%    \begin{macrocode}
+\everypar{\@nodocument} %% To get an error if text appears before the
+\nullfont               %% \begin{document}
+%    \end{macrocode}
+%
+% \begin, \end, and \@checkend changed so \end{document} will catch
+% an unmatched \begin.  Changed 24 May 89 as suggested by
+% Frank Mittelbach and Rainer Sch\"opf.
+%
+% \begin{NAME} ==
+%  BEGIN
+%    IF \NAME undefined  THEN  \reserved@a == BEGIN report error END
+%                        ELSE  \reserved@a ==
+%                                   (\@currenvir :=L NAME) \NAME
+%    FI
+%    @ignore :=G F      %% Added 30 Nov 88
+%    \begingroup
+%    \@endpe := F
+%    \@currenvir :=L NAME
+%    \NAME
+%  END
+%
+% \end{NAME} ==
+%  BEGIN
+%   \endNAME
+%   \@checkend{NAME}
+%   \endgroup
+%   IF @endpe = T              %% @endpe set True by \@endparenv
+%     THEN \@doendpe           %% \@doendpe redefines \par and \everypar
+%                              %% to suppress paragraph indentation in
+%   FI                         %% immediately following text
+%   IF @ignore = T
+%     THEN @ignore :=G F
+%          \ignorespaces
+%   FI
+%  END
+%
+% \@checkend{NAME} ==
+%  BEGIN
+%   IF \@currenvir = NAME
+%     ELSE \@badend{NAME}
+%   FI
+%  END
+%
+% \end{oldcomments}
+%
+%
+% \begin{macro}{\begin}
+% \changes{LaTeX2.09}{1992/03/18}{Changed \cs{@ignoretrue} to
+%               \cs{@ignorefalse} (as documented)}
+% \changes{LaTeX2.09}{1992/08/24}{Added code to \cs{begin} to
+%      remember line number. Used by \cs{@badend} to display
+%      position of non-matching \cs{begin}.}
+% \changes{v1.1e}{1996/07/26}{remove \cs{global} before \cs{@ignore...}}
+%    \begin{macrocode}
+\def\begin#1{%
+  \@ifundefined{#1}%
+    {\def\reserved@a{\@latex@error{Environment #1 undefined}\@eha}}%
+    {\def\reserved@a{\def\@currenvir{#1}%
+     \edef\@currenvline{\on@line}%
+     \csname #1\endcsname}}%
+  \@ignorefalse
+  \begingroup\@endpefalse\reserved@a}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\end}
+% \changes{v1.1e}{1996/07/26}{remove \cs{global} before \cs{@ignore...}}
+%    \begin{macrocode}
+\def\end#1{%
+  \csname end#1\endcsname\@checkend{#1}%
+  \expandafter\endgroup\if@endpe\@doendpe\fi
+  \if@ignore\@ignorefalse\ignorespaces\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@checkend}
+%    \begin{macrocode}
+\def\@checkend#1{\def\reserved@a{#1}\ifx
+      \reserved@a\@currenvir \else\@badend{#1}\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@currenvline}
+%    We do need a default value for |\@currenvline| on top-level since
+%    the document environment cancels the brace group. This means that
+%    a mismatch with |\begin|\allowbreak|{document}| will not produce
+%    a line number. Thus the outer default must be |\@empty| or we
+%    will end up with two spaces.
+% \changes{v1.0q}{1994/05/24}{Use \cs{@empty} as outer default}
+%    \begin{macrocode}
+\let\@currenvline\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \subsection{Center, Flushright, Flushleft}
+%
+%    \begin{macrocode}
+\message{center,}
+%    \end{macrocode}
+%
+% \begin{oldcomments}
+%
+% \center, \flushright and \flushleft set
+%   \rightskip = 0pt or \@flushglue (as appropriate)
+%   \leftskip  = 0pt or \@flushglue (as appropriate)
+%   \parindent = 0pt
+%   \parfillskip   = 0pt. (except \flushleft)
+%   \\         == \par \vskip -\parskip
+%   \\[LENGTH] == \\ \vskip LENGTH
+%   \\*        == \par \penalty 10000 \vskip -\parskip
+%   \\*[LEN]   == \\* \vskip LENGTH
+%
+% They invoke the trivlist environment to handle vertical spacing before
+% and after them.
+%
+% \centering, \raggedright and \raggedleft are the declaration analogs
+% of the above.
+%
+% \raggedright has a more universal effect, however.  It sets
+% \@rightskip := flushglue.  Every environment, like the list
+% environments,
+% that set \rightskip to its 'normal' value set it to \@rightskip
+%
+% \end{oldcomments}
+%
+% \begin{macro}{\@centercr}
+% \changes{v1.0h}{1994/05/03}{\cs{@badcrerr} replaced by \cs{@nolnerr}}
+% \changes{v1.0z}{1995/07/13}{Use \cs{nobreak}}
+%    \begin{macrocode}
+\def\@centercr{\ifhmode \unskip\else \@nolnerr\fi
+       \par\@ifstar{\nobreak\@xcentercr}\@xcentercr}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xcentercr}
+%    \begin{macrocode}
+\def\@xcentercr{\addvspace{-\parskip}\@ifnextchar
+    [\@icentercr\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@icentercr}
+%    \begin{macrocode}
+\def\@icentercr[#1]{\vskip #1\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{environment}{center}
+% \changes{v0.9h}{1993/12/13}{Removed optional argument of \cs{item}}
+% \changes{v1.0u}{1994/11/12}{Changed end macro to \cs{def}: safer and
+% consistent}
+%    We use |\relax| to prevent |\item| scanning too far.
+%    \begin{macrocode}
+\def\center{\trivlist \centering\item\relax}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\endcenter{\endtrivlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\centering}
+%    \begin{macrocode}
+\def\centering{%
+  \let\\\@centercr
+  \rightskip\@flushglue\leftskip\@flushglue
+  \parindent\z@\parfillskip\z@skip}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@rightskip}
+%    \begin{macrocode}
+\newskip\@rightskip \@rightskip \z@skip
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{flushleft}
+% \changes{v0.9h}{1993/12/13}{Removed optional argument of \cs{item}}
+% \changes{v1.0u}{1994/11/12}{Changed end macro to \cs{def}: safer and
+% consistent}
+%    We use |\relax| to prevent |\item| scanning too far.
+%    \begin{macrocode}
+\def\flushleft{\trivlist \raggedright\item\relax}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\endflushleft{\endtrivlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\raggedright}
+%    \begin{macrocode}
+\def\raggedright{%
+  \let\\\@centercr\@rightskip\@flushglue \rightskip\@rightskip
+  \leftskip\z@skip
+  \parindent\z@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{flushright}
+% \changes{v0.9h}{1993/12/13}{Removed optional argument of \cs{item}}
+% \changes{v1.0u}{1994/11/12}{Changed end macro to \cs{def}: safer and
+% consistent}
+%    We use |\relax| to prevent |\item| scanning too far.
+%    \begin{macrocode}
+\def\flushright{\trivlist \raggedleft\item\relax}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\endflushright{\endtrivlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\raggedleft}
+%    \begin{macrocode}
+\def\raggedleft{%
+  \let\\\@centercr
+  \rightskip\z@skip\leftskip\@flushglue
+  \parindent\z@\parfillskip\z@skip}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\message{verbatim,}
+%    \end{macrocode}
+%
+% \subsection{Verbatim}
+%
+%
+%  The verbatim environment uses the fixed-width |\ttfamily| font, turns
+%  blanks into spaces, starts a new line for each carriage return (or
+%  sequence of consecutive carriage returns), and interprets
+%  \emph{every} character literally.
+%  I.e., all special characters |\, {, $|, etc.
+%   are |\catcode|'d to 'other'.
+%
+% The command |\verb| produces in-line verbatim text, where the argument
+% is delimited by any pair of characters.  E.g., |\verb #...#| takes
+%  `|...|' as its argument, and sets it verbatim in |\ttfamily| font.
+%
+%  The *-variants of these commands are the same, except that spaces
+%  print as the \TeX{}book's space character instead of as blank spaces.
+%
+%  \begin{macro}{\@vobeyspaces}
+%    \begin{macrocode}
+{\catcode`\ =\active%
+\gdef\@vobeyspaces{\catcode`\ \active\let \@xobeysp}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@xobeysp}
+% \changes{v1.0z}{1995/07/13}{Use \cs{nobreak}}
+% \changes{v1.1f}{1996/09/28}{Moved to ltspace.dtx}
+% \end{macro}
+%
+%
+%  \begin{macro}{\@xverbatim}
+%  \begin{macro}{\@sxverbatim}
+%    \begin{macrocode}
+\begingroup \catcode `|=0 \catcode `[= 1
+\catcode`]=2 \catcode `\{=12 \catcode `\}=12
+\catcode`\\=12 |gdef|@xverbatim#1\end{verbatim}[#1|end[verbatim]]
+|gdef|@sxverbatim#1\end{verbatim*}[#1|end[verbatim*]]
+|endgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@verbatim}
+% \changes{LaTeX2.09}{1991/07/24}{Added \cs{penalty}\cs{interlinepenalty}
+%               to definition of \cs{par} so that \cs{samepage} works}
+% \changes{v0.9h}{1993/12/13}{Removed optional argument of \cs{item}}
+%    Real start of verbatim environment
+%    We use |\relax| to prevent |\item| scanning too far.
+% \changes{v0.9p}{1994/01/18}
+%         {Add \cs{global}\cs{@inlabelfalse}}
+% \changes{v1.0b}{1994/03/16}
+%         {Remove \cs{global}\cs{@inlabelfalse} again.}
+%    \begin{macrocode}
+\def\@verbatim{\trivlist \item\relax
+  \if@minipage\else\vskip\parskip\fi
+  \leftskip\@totalleftmargin\rightskip\z@skip
+  \parindent\z@\parfillskip\@flushglue\parskip\z@skip
+%    \end{macrocode}
+% \changes{LaTeX2.09}{1991/08/26}{\cs{@@par} added}
+%    Added |\@@par| to clear possible |\parshape| definition
+%    from a surrounding list (the verbatim guru says).
+% \changes{v0.9p}{1994/01/18}
+%         {Only add \cs{penalty} if in hmode}
+%    \begin{macrocode}
+  \@@par
+  \@tempswafalse
+  \def\par{%
+    \if@tempswa
+%    \end{macrocode}
+%    A |\leavevmode| added: needed if, for example, a blank verbatim
+%    line is the first thing in a list item (wow!).
+% \changes{v1.0f}{1994/04/29}{\cs{leavevmode} added}
+%    \begin{macrocode}
+      \leavevmode \null \@@par\penalty\interlinepenalty
+    \else
+      \@tempswatrue
+      \ifhmode\@@par\penalty\interlinepenalty\fi
+    \fi}%
+%    \end{macrocode}
+%    To allow customization we hide the font used in a separate macro.
+%  \changes{v0.9a}{1993/11/21}{use \cs{verbatim@font} instead of \cs{tt}}
+%  \changes{v0.9h}{1993/12/13}{Readded \cs{@noligs}}
+%  \changes{v1.1d}{1996/06/03}{Exchanged the following two code lines
+%           so that \cs{dospecials} cannot reset the category code
+%           of characters handled by \cs{@noligs}.}
+%  \changes{v1.1h}{2000/01/07}{Disable hyphenation even if the font allows it.}
+%    \begin{macrocode}
+  \let\do\@makeother \dospecials
+  \obeylines \verbatim@font \@noligs
+  \hyphenchar\font\m@ne
+%    \end{macrocode}
+%    To avoid a breakpoint after the labels box, we remove the penalty
+%    put there by the list macros: another use of |\unpenalty|!
+% \changes{v1.0f}{1994/04/29}{Change to \cs{everypar} added}
+%    \begin{macrocode}
+  \everypar \expandafter{\the\everypar \unpenalty}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\verbatim}
+%  \begin{macro}{\endverbatim}
+%    (RmS 93/09/19) Protected against `missing item' error message
+%               triggered by empty verbatim environment.
+%    \begin{macrocode}
+\def\verbatim{\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\def\endverbatim{\if@newlist \leavevmode\fi\endtrivlist}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\verbatim@font}
+% \changes{v0.9a}{1993/11/21}{Macro added}
+%    Macro to select the font  used for verbatim typesetting.
+%    It also does other work if necessary for the font used.
+% \changes{v0.9s}{1994/01/21}{Removed unnecessary category code
+%                            hackery.}
+%    \begin{macrocode}
+\def\verbatim@font{\normalfont\ttfamily}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{environment}{verbatim*}
+%    \begin{macrocode}
+\@namedef{verbatim*}{\@verbatim\@sxverbatim}
+\expandafter\let\csname endverbatim*\endcsname =\endverbatim
+%    \end{macrocode}
+%  \end{environment}
+%
+%  \begin{macro}{\@makeother}
+%    \begin{macrocode}
+\def\@makeother#1{\catcode`#112\relax}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\verb@balance@group}
+% \changes{LaTeX2.09}{1993/09/07}
+%     {(RmS) Changed definition of \cs{verb} so that it detects a
+%              missing second delimiter.}
+%    \begin{macrocode}
+\let\verb@balance@group\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\verb@egroup}
+%    \begin{macrocode}
+\def\verb@egroup{\global\let\verb@balance@group\@empty\egroup}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\verb@eol@error}
+%    \begin{macrocode}
+\begingroup
+  \obeylines%
+  \gdef\verb@eol@error{\obeylines%
+    \def^^M{\verb@egroup\@latex@error{%
+            \noexpand\verb ended by end of line}\@ehc}}%
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\verb}
+% \changes{LaTeX2.09}{1992/08/24}
+%         {Changed \cs{verb} and \cs{@sverb} to work correctly
+%            in math mode}
+% \changes{v0.9a}{1993/11/21}{Use \cs{verbatim@font} instead of
+%                             \cs{tt}.}
+% \changes{v1.1a}{1995/09/19}{Put \cs{@noligs} after
+%                    \cs{verbatim@font} where it belongs.}
+%    Typesetting a small piece verbatim.
+%  \changes{v1.1d}{1996/06/03}{Put setting of verbatim font after
+%           \cs{dospecials}
+%           so that \cs{dospecials} cannot reset the category code
+%           of characters handled by \cs{@noligs}.}
+%    \begin{macrocode}
+\def\verb{\relax\ifmmode\hbox\else\leavevmode\null\fi
+  \bgroup
+    \verb@eol@error \let\do\@makeother \dospecials
+    \verbatim@font\@noligs
+    \@ifstar\@sverb\@verb}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\@sverb}
+% \changes{v1.0j}{1994/05/10}{Slight change in error message text.}
+% Definitions of |\@sverb| and |\@verb| changed so |\verb+ foo+|
+% does not lose leading blanks when it comes at the beginning of a line.
+% Change made 24 May 89. Suggested by Frank Mittelbach and Rainer
+% Sch\"opf.
+%
+%    \begin{macrocode}
+\def\@sverb#1{%
+  \catcode`#1\active
+  \lccode`\~`#1%
+  \gdef\verb@balance@group{\verb@egroup
+     \@latex@error{\noexpand\verb illegal in command argument}\@ehc}%
+  \aftergroup\verb@balance@group
+  \lowercase{\let~\verb@egroup}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@verb}
+%    \begin{macrocode}
+\def\@verb{\@vobeyspaces \frenchspacing \@sverb}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\verbatim@nolig@list}
+% \changes{LaTeX2.09}{1993/09/03}
+%         {Replaced \cs{@noligs} by extensible list}
+%    \begin{macrocode}
+\def\verbatim@nolig@list{\do\`\do\<\do\>\do\,\do\'\do\-}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\do@noligs}
+%    \begin{macrocode}
+\def\do@noligs#1{%
+  \catcode`#1\active
+  \begingroup
+     \lccode`\~`#1\relax
+     \lowercase{\endgroup\def~{\leavevmode\kern\z@\char`#1}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@noligs}
+%    To stay compatible with packages that use |\@noligs| we keep it.
+% \changes{v0.9h}{1993/12/13}{Readded \cs{@noligs}}
+%    \begin{macrocode}
+\def\@noligs{\let\do\do@noligs \verbatim@nolig@list}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v0.9i}{1993/12/16}{\cs{literal} added}
+% \changes{v1.0r}{1994/05/26/16}{\cs{literal} removed}
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

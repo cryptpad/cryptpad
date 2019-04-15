@@ -1,0 +1,527 @@
+% testbmgl.tex
+%
+% Function:
+% * How display a pdf reader the bookmarks?
+% * Do hyperref.sty and pd1enc.def work properly?
+% * Shows the LaTeX code to get the glyphs.
+%
+% Copyright (c) 1999, 2000, 2008 by Heiko Oberdiek.
+%
+% This file is part of the `Hyperref Bundle'.
+% -------------------------------------------
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The list of all files belonging to the `Hyperref Bundle' is
+% given in the file `manifest.txt'.
+%
+% Please send error reports and suggestions for improvements to
+%   Heiko Oberdiek <heiko.oberdiek at googlemail.com>.
+%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{testbmgl.tex}[2008/09/11 v1.3 Test bookmark glyphs (HO)]
+\documentclass[12pt,a4paper]{article}
+\usepackage[
+  bookmarks,
+  colorlinks,
+]{hyperref}[1999/08/31]% v6.65d or later
+\pdfstringdefDisableCommands{\let\\\textbackslash}
+\IfFileExists{times.sty}{\usepackage{times}}{}
+\pagestyle{empty}
+
+\makeatletter
+% from doc.sty:
+\def\GetFileInfo#1{%
+  \def\filename{#1}%
+  \def\@tempb##1 ##2 ##3\relax##4\relax{%
+    \def\filedate{##1}%
+    \def\fileversion{##2}%
+    \def\fileinfo{##3}%
+  }%
+  \edef\@tempa{\csname ver@#1\endcsname}%
+  \expandafter\@tempb\@tempa\relax? ? \relax\relax
+}
+\GetFileInfo{testbmgl.tex}
+\hypersetup{
+  pdftitle={\fileinfo},
+  pdfsubject={\filename\space[\filedate\space\fileversion]},
+  pdfauthor={Heiko Oberdiek},
+  pdfkeywords={bookmarks hyperref PDFDocEncoding glyph slot},
+}
+
+\edef\BackSlash{\expandafter\@car\string\\\@nil}%
+\edef\0{\string\0}%
+\edef\1{\string\1}%
+\edef\2{\string\2}%
+\edef\3{\string\3}%
+
+\newcommand*\oct[2]{%
+  \typeout{Processing glyphs #1#20..#1#27}%
+  \begingroup
+    \edef\x{\csname#1\endcsname#2}%
+    \pdfbookmark[1]{#1#20..#1#27:
+      \_\x0\_\x1\_\x2\_\x3\_\x4\_\x5\_\x6\_\x7\_%
+    }{#1#2}%
+  \endgroup
+}
+
+\newcommand*{\@defbookmarkverbcmd}[2]{%
+  \def#1{#2}%
+  \edef#1{\expandafter\strip@prefix\meaning#1}%
+  \edef#1{\expandafter\@removespace#1 \| \|\@nil#1}%
+  \edef\first{\expandafter\@car#1\@nil}%
+  \ifx\first\BackSlash
+    \edef#1{\noexpand\textbackslash\expandafter\@gobble#1}%
+  \fi
+}
+\def\@removespace#1 \|#2\@nil#3{\ifx\relax#2\relax#3\else#1\fi}
+
+\newcounter{alias}
+\renewcommand{\thealias}{\alph{alias}}
+
+% #1#2#3: octal code
+% #4: glyph name
+% #5: pd1enc-command
+\newcommand*\E[6]{%
+  \setcounter{alias}{0}%
+  \begingroup
+    \@defbookmarkverbcmd\x{#5}%
+    \def\comment{#6}%
+    \ifx\comment\@empty
+    \else
+      \def\comment{ (#6)}%
+    \fi
+    \pdfbookmark[2]{%
+      \textbackslash#1#2#3:
+      \_\csname#1\endcsname#2#3\_#5\_
+      #4 - \x\comment}{#1#2#3}%
+  \endgroup
+  \renewcommand*{\alias}[2][]{%
+    \stepcounter{alias}%
+    \begingroup
+      \ifx\relax##1\relax%
+        \@defbookmarkverbcmd\x{##2}%
+      \else
+        \def\x{##1}%
+      \fi
+      \pdfbookmark[3]{alias: \_##2\_ \x}{#1#2#3\thealias}%
+    \endgroup
+  }%
+}
+\newcommand*\alias[2][]{}
+\newcommand*\e[5]{\E#1#2#3{#4}{#5}{}}%
+
+\newcommand*\un[3]{%
+  \pdfbookmark[2]{\textbackslash#1#2#3: unused %
+  (\_\csname#1\endcsname#2#3\_)}{#1#2#3}%
+}
+
+\newcounter{symlist}
+\newcounter{symbol}[symlist]
+\newcommand*\symlist[1]{%
+  \stepcounter{symlist}%
+  \typeout{Processing symbol list \thesymlist}%
+  \begingroup
+    \def\x{\_}%
+    \@tfor\glyph:=#1\do{%
+      \expandafter\@addtox\glyph\_\@nil
+    }%
+    \pdfbookmark[1]{Symbols: \x}{symbol-\thesymlist}%
+    \@tfor\glyph:=#1\do{%
+      \stepcounter{symbol}%
+      \expandafter\@defbookmarkverbcmd\expandafter\x\expandafter{\glyph}%
+      \pdfbookmark[2]{\_\glyph\_ \x}{symbol-\thesymlist.\thesymbol}%
+    }%
+  \endgroup
+}
+\def\@addtox#1\@nil{%
+  \expandafter\def\expandafter\x\expandafter{\x#1}%
+}
+
+\makeatother
+
+\begin{document}
+  \oct00
+    \un000
+    \un001
+    \un002
+    \un003
+    \un004
+    \un005
+    \un006
+    \un007
+  \oct01
+    \un010
+    \e011{horizontal tab}\textHT
+    \e012{line feed}\textLF
+    \un013
+    \un014
+    \e015{carriage return}\textCR
+    \un016
+    \un017
+  \oct02
+    \un020
+    \un021
+    \un022
+    \un023
+    \un024
+    \un025
+    \un026
+    \un027
+  \oct03
+    \e030{breve}\textasciibreve
+    \e031{caron}\textasciicaron
+    \alias{\v{}}
+    \e032{circumflex}\textcircumflex
+    \alias{\^{}}
+    \e033{dotaccent}\textdotaccent
+    \alias{\.{}}
+    \e034{hungarumlaut}\texthungarumlaut
+    \e035{ogonek}\textogonek
+    \e036{ring}\textring
+    \alias{\r{}}
+    \e037{tilde}\texttilde
+    \alias{\~{}}
+  \oct04
+    \e040{space}\space
+    \alias[\\\space]\ %
+    \alias~
+    \e041{exclam}!
+    \e042{quotedbl}\textquotedbl
+    \e043{numbersign}\textnumbersign
+    \alias[\textbackslash\#]\#
+    \e044{dollar}\textdollar
+    \alias[\textbackslash\$]\$
+    \e045{percent}\textpercent
+    \alias[\textbackslash\%]\%
+    \e046{ampersand}\textampersand
+    \alias[\textbackslash\&]\&
+    \e047{quotesingle}'
+  \oct05
+    \e050{parenleft}\textparenleft
+    \e051{parenright}\textparenright
+    \e052{asterisk}*
+    \e053{plus}+
+    \e054{comma},
+    \e055{hyphen}-
+    \e056{period}.
+    \e057{slash}/
+  \oct06
+    \e060{zero}0
+    \e061{one}1
+    \e062{two}2
+    \e063{three}3
+    \e064{four}4
+    \e065{five}5
+    \e066{six}6
+    \e067{seven}7
+  \oct07
+    \e070{eight}8
+    \e071{nine}9
+    \e072{colon}:
+    \e073{semicolon};
+    \e074{less}\textless
+    \alias<
+    \e075{equal}=
+    \e076{greater}\textgreater
+    \alias>
+    \e077{question}?
+  \oct10
+    \e100{at}@
+    \e101AA
+    \e102BB
+    \e103CC
+    \e104DD
+    \e105EE
+    \e106FF
+    \e107GG
+  \oct11
+    \e110HH
+    \e111II
+    \e112JJ
+    \e113KK
+    \e114LL
+    \e115MM
+    \e116NN
+    \e117OO
+  \oct12
+    \e120PP
+    \e121QQ
+    \e122RR
+    \e123SS
+    \e124TT
+    \e125UU
+    \e126VV
+    \e127WW
+  \oct13
+    \e130XX
+    \e131YY
+    \e132ZZ
+    \e133{bracketleft}[
+    \e134{backslash}\textbackslash
+    \alias[\\\\]\\
+    \e135{bracketright}]
+    \e136{asciicircum}\textasciicircum
+    \e137{underscore}\textunderscore
+    \alias[\textbackslash\_]\_
+  \oct14
+    \e140{grave}\textasciigrave
+    \alias{\`{}}
+    \e141aa
+    \e142bb
+    \e143cc
+    \e144dd
+    \e145ee
+    \e146ff
+    \e147gg
+  \oct15
+    \e150hh
+    \e151ii
+    \e152jj
+    \e153kk
+    \e154ll
+    \e155mm
+    \e156nn
+    \e157oo
+  \oct16
+    \e160pp
+    \e161qq
+    \e162rr
+    \e163ss
+    \e164tt
+    \e165uu
+    \e166vv
+    \e167ww
+  \oct17
+    \e170xx
+    \e171yy
+    \e172zz
+    \e173{braceleft}\textbraceleft
+    \alias[\textbackslash\{]\{
+    \e174{bar}\textbar
+    \e175{braceright}\textbraceright
+    \alias[\textbackslash\}]\}
+    \e176{asciitilde}\textasciitilde
+    \un177
+  \oct20
+    \e200{bullet}\textbullet
+    \e201{dagger}\textdagger
+    \e202{daggerdbl}\textdaggerdbl
+    \e203{ellipsis}\textellipsis
+    \alias\dots
+    \alias\ldots
+    \e204{emdash}\textemdash
+    \e205{endash}\textendash
+    \e206{florin}\textflorin
+    \e207{fraction}\textfractionsolidus
+  \oct21
+    \e210{guilsinglleft}\guilsinglleft
+    \e211{guilsinglright}\guilsinglright
+    \e212{minus}\textminus
+    \e213{perthousand}\textperthousand
+    \e214{quotedblbase}\quotedblbase
+    \alias\textglqq
+    \alias\glqq
+    \e215{quotedblleft}\textquotedblleft
+    \alias\textgrqq
+    \alias\grqq
+    \e216{quotedblright}\textquotedblright
+    \e217{quoteleft}\textquoteleft
+  \oct22
+    \e220{quoteright}\textquoteright
+    \e221{quotesinglbase}\quotesinglbase
+    \e222{trademark}\texttrademark
+    \e223{fi}\textfi
+    \e224{fl}\textfl
+    \e225{Lslash}\L
+    \e226{OE}\OE
+    \e227{Scaron}{\v S}
+  \oct23
+    \e230{Ydieresis}{\"Y}
+    \E231{Zcaron}{\v Z}{PDF 1.3}
+    \e232{dotlessi}\i
+    \e233{lslash}\l
+    \e234{oe}\oe
+    \e235{scaron}{\v s}
+    \E236{zcaron}{\v z}{PDF 1.3}
+    \un237
+  \oct24
+    \E240{Euro}{\texteuro}{PDF 1.3}
+    \e241{exclamdown}\textexclamdown
+    \alias[!{}']{!`}
+    \e242{cent}\textcent
+    \e243{sterling}\textsterling
+    \e244{currency}\textcurrency
+    \e245{yen}\textyen
+    \e246{brokenbar}\textbrokenbar
+    \e247{section}\textsection
+  \oct25
+    \e250{dieresis}\textasciidieresis
+    \alias{\"{}}
+    \e251{copyright}\textcopyright
+    \e252{ordfeminine}\textordfeminine
+    \e253{guillemotleft}\guillemotleft
+    \alias\textflqq
+    \alias\flqq
+    \e254{logicalnot}\textlogicalnot
+    \alias\textneg
+    \un255
+    \e256{registered}\textregistered
+    \e257{macron}\textasciimacron
+  \oct26
+    \e260{degree}\textdegree
+    \e261{plusminus}\textplusminus
+    \alias\textpm
+    \e262{twosuperior}\texttwosuperior
+    \e263{threesuperior}\textthreesuperior
+    \e264{acute}\textacute
+    \alias{\'{}}
+    \e265{mu}\textmu
+    \e266{paragraph}\textparagraph
+    \alias\P
+    \e267{periodcentered}\textperiodcentered
+    \alias\textcdot
+  \oct27
+    \e270{cedilla}\textcedilla
+    \alias{\c{}}
+    \e271{onesuperior}\textonesuperior
+    \e272{ordmasculine}\textordmasculine
+    \e273{guillemotright}\guillemotright
+    \alias\textfrqq
+    \alias\frqq
+    \e274{onequarter}\textonequarter
+    \e275{onehalf}\textonehalf
+    \e276{threequarters}\textthreequarters
+    \e277{questiondown}\textquestiondown
+    \alias[?{}']{?`}
+  \oct30
+    \e300{Agrave}{\`A}
+    \e301{Aacute}{\'A}
+    \e302{Acircumflex}{\^A}
+    \e303{Atilde}{\~A}
+    \e304{Adieresis}{\"A}
+    \e305{Aring}{\r A}
+    \e306{AE}{\AE}
+    \e307{Ccedilla}{\c C}
+  \oct31
+    \e310{Egrave}{\`E}
+    \e311{Eacute}{\'E}
+    \e312{Ecircumflex}{\^E}
+    \e313{Edieresis}{\"E}
+    \e314{Igrave}{\`I}
+    \e315{Iacute}{\'I}
+    \e316{Icircumflex}{\^I}
+    \e317{Idieresis}{\"I}
+  \oct32
+    \e320{Eth}\DH
+    \alias\DJ
+    \e321{Ntilde}{\~N}
+    \e322{Ograve}{\`O}
+    \e323{Oacute}{\'O}
+    \e324{Ocircumflex}{\^O}
+    \e325{Otilde}{\~O}
+    \e326{Odieresis}{\"O}
+    \e327{multiply}\textmultiply
+    \alias\texttimes
+  \oct33
+    \e330{Oslash}\O
+    \e331{Ugrave}{\`U}
+    \e332{Uacute}{\'U}
+    \e333{Ucircumflex}{\^U}
+    \e334{Udieresis}{\"U}
+    \e335{Yacute}{\'Y}
+    \e336{Thorn}\TH
+    \e337{germandbls}\ss
+    \alias\textbeta
+  \oct34
+    \e340{agrave}{\`a}
+    \e341{aacute}{\'a}
+    \e342{acircumflex}{\^a}
+    \e343{atilde}{\~a}
+    \e344{adieresis}{\"a}
+    \e345{aring}{\r a}
+    \e346{ae}{\ae}
+    \e347{ccedilla}{\c c}
+  \oct35
+    \e350{egrave}{\`e}
+    \e351{eacute}{\'e}
+    \e352{ecircumflex}{\^e}
+    \e353{edieresis}{\"e}
+    \e354{igrave}{\`i}
+    \alias[\\`\\i]{\`\i}
+    \e355{iacute}{\'i}
+    \alias[\\'\\i]{\'\i}
+    \e356{icircumflex}{\^i}
+    \alias[\\\textcircumflex\\i]{\^\i}
+    \e357{idieresis}{\"i}
+    \alias[\\"\\i]{\"\i}
+  \oct36
+    \e360{eth}\dh
+    \e361{ntilde}{\~n}
+    \e362{ograve}{\`o}
+    \e363{oacute}{\'o}
+    \e364{ocircumflex}{\^o}
+    \e365{otilde}{\~o}
+    \e366{odieresis}{\"o}
+    \e367{divide}\textdivide
+    \alias\textdiv
+  \oct37
+    \e370{oslash}\o
+    \e371{ugrave}{\`u}
+    \e372{uacute}{\'u}
+    \e373{ucircumflex}{\^u}
+    \e374{udieresis}{\"u}
+    \e375{yacute}{\'y}
+    \e376{thorn}\th
+    \e377{ydieresis}{\"y}
+  \symlist{\SS\textcelsius}
+  \symlist{\TeX\LaTeX\LaTeXe}
+  \symlist{\eTeX\MF\MP}
+
+  \section*{\fileinfo}
+  Document: \textbf{\filename\space[\filedate\space\fileversion]}
+  \subsection*{Function}
+  This test file has several tasks:
+  \begin{itemize}
+  \item Testing package \emph{hyperref} with encoding file
+        \emph{pd1enc.def}.
+  \item Showing glyph commands and aliases that are supported by
+        package \emph{hyperref}.
+  \item Test for the pdf reader, especially \emph{AcrobatReader}.
+        Which glyphs of the \emph{PDFDocEncoding} are
+        correctly displayed?
+  \item These glyphs are shown that package \emph{hyperref}
+        replaces with simpler letters in order to avoid missing glyphs.
+  \end{itemize}
+  \subsection*{Short explanation of the bookmarks}
+  \begin{enumerate}
+  \item The outline entries of the first level show a summary of their
+        subentries. Second a screenshot with closed bookmarks
+        will contain all slots of the \emph{PDFDocEncoding}.
+  \item The second level of outline entries describes each slot or glyph:
+        \begin{enumerate}
+        \item \label{oct}%
+              Octal code of the slot in the \emph{PDFDocEncoding}.
+        \item The glyph is shown twice, surrounded by underscores:
+              The first one is produced by the octal sequence, see \ref{oct}.
+              The second one is the result of the higher glyph command,
+              see \ref{high}.
+        \item The glyph name of \emph{PDFDocEncoding}.
+        \item \label{high}%
+              The higher glyph \TeX-command, supported by
+              package \emph{hyperref}.
+        \end{enumerate}
+  \item Aliases of the glyph commands are shown as subentries of the
+        outline that describes the slot of that glyph command.
+  \end{enumerate}
+\end{document}

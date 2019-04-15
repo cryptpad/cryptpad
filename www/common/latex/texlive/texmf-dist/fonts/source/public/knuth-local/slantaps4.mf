@@ -1,0 +1,11 @@
+% slant font for slope 1/4 on the APS
+
+if mode<>aps: errmessage "This file is for aps only"; fi
+
+s=1/4;
+n=30;
+r#=.4;
+u=4; % an approximation to r in pixels
+
+font_identifier "SLANTAPS4";
+input slant

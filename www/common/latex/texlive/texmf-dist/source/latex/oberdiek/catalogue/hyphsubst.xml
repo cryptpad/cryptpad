@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hyphsubst'>
+  <name>hyphsubst</name>
+  <caption>Substitute hyphenation patterns.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2008'/>
+  <license type='lppl1.3'/>
+  <version number='0.2'/>
+  <description>
+    A TeX format file may include alternative hyphenation patterns
+    for a language with a different name. If the naming convention
+    follows <xref refid='babel'>babel&#x2019;s</xref> rules, then the
+    hyphenation patterns
+    for a language can be replaced by the alternative hyphenation patterns,
+    provided in the format file.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hyphsubst.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hyphsubst.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

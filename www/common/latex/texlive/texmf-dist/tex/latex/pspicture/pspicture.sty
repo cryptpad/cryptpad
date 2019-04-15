@@ -1,0 +1,111 @@
+%%
+%% This is file `pspicture.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pspicture.dtx  (with options: `package,dvips')
+%% 
+%%
+%% Source File `pspicture.dtx'.
+%% Copyright (C) 1992 1999 David Carlisle
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pspicture}
+          [1999/04/11/ v2.02 Picture mode via PS specials (DPC)]
+
+       \def\PS@header#1{\special{header=#1}}
+\PS@header{pspicture.ps}
+       \def\PS@special#1{\special{"#1}}
+{\catcode`t=12\catcode`p=12\gdef\noPT#1pt{#1}}
+\def\strippt#1{\expandafter\noPT\the#1\space}
+\def\@circle#1{%
+  \@tempdimb #1\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       \strippt\@tempdimb
+       !C}}
+\def\@dot#1{%
+  \@tempdimb #1\unitlength
+  \PS@special{%
+       \strippt\@tempdimb
+       !D}}
+\def\line(#1,#2)#3{%
+  \@linelen=#3\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       #1
+       #2
+       \strippt\@linelen
+       !L}}
+\def\vector(#1,#2)#3{%
+  \@linelen=#3\unitlength
+  \PS@special{%
+       \strippt\@arrowlength
+       \strippt\@wholewidth
+       #1
+       #2
+       \strippt\@linelen
+       !V}}
+\def\oval{%
+  \@ifnextchar[%
+   {\@ov@l}%
+   {\count@=\maxdimen \divide\count@ by \unitlength \@ov@l[\count@]}}
+\def\@ov@l[#1](#2,#3){%
+  \@ifnextchar[{\@oval[#1](#2,#3)}{\@oval[#1](#2,#3)[]}}%
+\def\@oval[#1](#2,#3)[#4]{\begingroup
+  \@tempdimb #1\unitlength
+  \@ovxx #2\unitlength
+  \@ovyy #3\unitlength
+  \def\r{\def\TL{0 }\def\BL{0 }}%
+  \def\l{\def\TR{0 }\def\BR{0 }}%
+  \def\t{\def\BL{0 }\def\BR{0 }}%
+  \def\b{\def\TL{0 }\def\TR{0 }}%
+  \def\TL{1 }\def\BL{1 }\def\TR{1 }\def\BR{1 }%
+  \@tfor\@tempa :=#4\do{\csname\@tempa\endcsname}%
+  \PS@special{%
+       \BR\BL\TR\TL
+       \strippt\@wholewidth
+       \strippt\@tempdimb
+       \strippt\@ovxx
+       \strippt\@ovyy
+       !O}%
+  \endgroup}
+\def\Line(#1,#2){%
+  \@ovxx #1\unitlength
+  \@ovyy #2\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       \strippt\@ovxx
+       \strippt\@ovyy
+       !L2}}
+\def\Curve(#1,#2)#3{%
+  \@ovxx #1\unitlength
+  \@ovyy #2\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       \strippt\@ovxx
+       \strippt\@ovyy
+       #3
+       !C2}}
+\def\Vector(#1,#2){%
+  \@ovxx #1\unitlength
+  \@ovyy #2\unitlength
+  \PS@special{%
+       \strippt\@arrowlength
+       \strippt\@wholewidth
+       \strippt\@ovxx
+       \strippt\@ovyy
+       !V2}}
+\newdimen\@arrowlength
+\def\arrowlength#1{\@arrowlength #1}
+\arrowlength{8pt}
+     \endinput
+
+
+
+\endinput
+%%
+%% End of file `pspicture.sty'.

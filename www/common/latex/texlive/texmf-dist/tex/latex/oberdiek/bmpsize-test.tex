@@ -1,0 +1,151 @@
+%%
+%% This is file `bmpsize-test.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bmpsize.dtx  (with options: `test')
+%% 
+%% This is a generated file.
+%% 
+%% Project: bmpsize
+%% Version: 2009/09/04 v1.6
+%% 
+%% Copyright (C) 2006-2009 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file bmpsize.dtx
+%% and the derived files
+%%    bmpsize.sty, bmpsize.pdf, bmpsize.ins, bmpsize.drv,
+%%    bmpsize-base.sty, bmpsize-test.tex, bmpsize-dvips.def,
+%%    bmpsize-dvipdfm.def, bmpsize-dvipdfmx.def.
+%% 
+\expandafter\ifx\csname NeedsTeXFormat\endcsname\relax
+  \input miniltx\relax
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfoutput\endcsname\relax
+\else
+  \pdfoutput=0 %
+\fi
+\RequirePackage{bmpsize}
+
+\endlinechar=-1
+\catcode`\@=11
+\def\msg#{\immediate\write16}
+
+\def\init{%
+  \msg{}%
+  \msg{File name menu}%
+  \msg{==============}%
+  \msg{* Option menu: use `opt' as file name}%
+  \msg{* Quit program: <return>}%
+  \msg{}%
+  \message{Image file name = }%
+  \read-1 to \imagename
+  \ifx\imagename\@empty
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {%
+    \csname @@end\endcsname
+    \end
+  }{%
+    \ifnum\pdf@strcmp{\imagename}{opt}=\z@
+      \expandafter\optionmenu
+    \else
+      \startimg
+      \expandafter\init
+    \fi
+  }%
+}
+\def\optionmenu{%
+  \msg{}%
+  \msg{Option menu}%
+  \msg{===========}%
+  \msg{Current setting:}%
+  \msg{* bmpsizefast = \if@bmpsize@fast true\else false\fi}%
+  \msg{* \if@bmpsize@user@resolution\else default\fi resolution = %
+    \bmpsize@pixelx@default
+    \space
+    \bmpsize@pixely@default
+  }%
+  \msg{* \if@bmpsize@user@resolution default\fi resolution: not set}%
+  \msg{* resolutionunit = \bmpsize@unit@default}%
+  \msg{* Quit option menu: <return>}%
+  \msg{}%
+  \message{Options = }%
+  \read-1 to \options
+  \ifx\options\empty
+    \expandafter\init
+  \else
+    \edef\@bmpsize@temp{%
+      \noexpand\setkeys{Gin}{\options}%
+    }%
+    \@bmpsize@temp
+    \expandafter\optionmenu
+  \fi
+}
+
+\def\startimg{%
+  \let\@found\@empty
+  \msg{}%
+  \msg{* File [\imagename]}%
+  \@for\@type:=\bmpsize@types\do{%
+    \ifx\@found\@empty
+      \csname bmpsize@read@\@type\endcsname\imagename
+      \ifbmpsize@ok
+        \let\@found\@type
+        \msg{\space\space Type: \@type}%
+        \msg{\space\space Pixel width: \bmpsize@pixelwidth\space px}%
+        \msg{\space\space Pixel height: \bmpsize@pixelheight\space px}%
+        \ifx\bmpsize@pixelx\relax
+        \else
+          \ifx\bmpsize@unit\relax
+            \let\@unit@spec\@empty
+            \def\@ratio@name{Ratio }%
+          \else
+            \def\@unit@spec{\space dots per \bmpsize@unit}%
+            \def\@ratio@name{Density }%
+          \fi
+          \msg{\space\space \@ratio@name x: \bmpsize@pixelx\@unit@spec}%
+          \msg{\space\space \@ratio@name y: \bmpsize@pixely\@unit@spec}%
+        \fi
+        \msg{\space\space Width: \bmpsize@width\space bp}%
+        \msg{\space\space Height: \bmpsize@height\space bp}%
+        \ifx\bmpsize@orientation\relax
+        \else
+          \msg{\space\space Orientation: \bmpsize@orientation}%
+        \fi
+      \fi
+    \fi
+  }%
+  \ifx\@found\@empty
+    \edef\@file@date{\pdf@filemoddate{\imagename}}%
+    \ifx\@file@date\@empty
+      \msg{\space\space --> File not found <--}%
+    \else
+      \msg{\space\space --> Unknown image type <--}%
+    \fi
+  \fi
+}
+
+\ifx\noinit!\else\expandafter\init\fi
+\endinput
+%%
+%% End of file `bmpsize-test.tex'.

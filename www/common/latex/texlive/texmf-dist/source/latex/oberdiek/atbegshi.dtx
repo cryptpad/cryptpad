@@ -1,0 +1,2445 @@
+% \iffalse meta-comment
+%
+% File: atbegshi.dtx
+% Version: 2011/10/05 v1.16
+% Info: At begin shipout hook
+%
+% Copyright (C) 2007-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file atbegshi.dtx
+% and the derived files
+%    atbegshi.sty, atbegshi.pdf, atbegshi.ins, atbegshi.drv,
+%    atbegshi-example1.tex, atbegshi-example2.tex,
+%    atbegshi-test1.tex, atbegshi-test2.tex, atbegshi-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/atbegshi.dtx
+%    CTAN:macros/latex/contrib/oberdiek/atbegshi.pdf
+%
+% Unpacking:
+%    (a) If atbegshi.ins is present:
+%           tex atbegshi.ins
+%    (b) Without atbegshi.ins:
+%           tex atbegshi.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{atbegshi.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If atbegshi.drv is present:
+%           latex atbegshi.drv
+%    (b) Without atbegshi.drv:
+%           latex atbegshi.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex atbegshi.dtx
+%       makeindex -s gind.ist atbegshi.idx
+%       pdflatex atbegshi.dtx
+%       makeindex -s gind.ist atbegshi.idx
+%       pdflatex atbegshi.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/atbegshi.sty
+%    TDS:doc/latex/oberdiek/atbegshi.pdf
+%    TDS:doc/latex/oberdiek/atbegshi-example1.tex
+%    TDS:doc/latex/oberdiek/atbegshi-example2.tex
+%    TDS:doc/latex/oberdiek/test/atbegshi-test1.tex
+%    TDS:doc/latex/oberdiek/test/atbegshi-test2.tex
+%    TDS:doc/latex/oberdiek/test/atbegshi-test3.tex
+%    TDS:source/latex/oberdiek/atbegshi.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: atbegshi 2011/10/05 v1.16 At begin shipout hook (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: atbegshi
+Version: 2011/10/05 v1.16
+
+Copyright (C) 2007-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file atbegshi.dtx
+and the derived files
+   atbegshi.sty, atbegshi.pdf, atbegshi.ins, atbegshi.drv,
+   atbegshi-example1.tex, atbegshi-example2.tex,
+   atbegshi-test1.tex, atbegshi-test2.tex, atbegshi-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{atbegshi.ins}{\from{atbegshi.dtx}{install}}%
+  \file{atbegshi.drv}{\from{atbegshi.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{atbegshi.sty}{\from{atbegshi.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{atbegshi-example1.tex}{\from{atbegshi.dtx}{example1}}%
+  \file{atbegshi-example2.tex}{\from{atbegshi.dtx}{example2}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{atbegshi-test1.tex}{\from{atbegshi.dtx}{test1}}%
+  \file{atbegshi-test2.tex}{\from{atbegshi.dtx}{test2}}%
+  \file{atbegshi-test3.tex}{\from{atbegshi.dtx}{test3}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{atbegshi.xml}{\from{atbegshi.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     atbegshi.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `atbegshi.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atbegshi.drv}%
+  [2011/10/05 v1.16 At begin shipout hook (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{atbegshi.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1889}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{atbegshi.drv}
+%
+% \title{The \xpackage{atbegshi} package}
+% \date{2011/10/05 v1.16}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package is a modern reimplementation of package \xpackage{everyshi}
+% without the burden of compatibility. It makes use of \eTeX's if available.
+% Both \LaTeX\ and \plainTeX\ are supported.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Package \xpackage{atbegshi} redefines \cs{shipout} to insert
+% hooks for user code that is executed before the page is shipped out.
+% The code may modify or even discard the output page.
+% Three hooks are implemented:
+% \begin{enumerate}
+% \item A hook that is executed for every page, see\\
+%       \cs{AtBeginShipout}
+% \item A hook that is executed for the next page only, see\\
+%       \cs{AtBeginShipoutNext}
+% \item A hook that is only executed for the first page, see\\
+%       \cs{AtBeginShipoutFirst}
+% \end{enumerate}
+% The hooks are executed in this order. The following three macros
+% provide the user interface for adding code to these hooks:
+%
+% \begin{declcs}{AtBeginShipout} \M{code}\\
+%   \cs{AtBeginShipoutBox}
+% \end{declcs}
+% Execute the \meta{code} for every page.
+% The page contents is held in box register \cs{AtBeginShipoutBox}
+% and may be modified. Use \cs{AtBeginShipoutDiscard} if you want to
+% discard the page.
+%
+% \emph{Note:} Package \xpackage{everyshi} uses box register 255. With
+% package \xpackage{atbegshi} you must use \cs{AtBeginShipoutBox} instead.
+%
+% If \LaTeX\ calls \cs{shipout} in \cs{@outputpage} (part of its output
+% routine),
+% the meaning of \cs{protect} is \cs{noexpand}. \LaTeX\ sets
+% \cs{protect} to the appropriate \cs{@typeset@protect} in the box
+% that is shipped out. This is too late for the hooks, they
+% are called earlier in the redefined \cs{shipout}. Therefore
+% package \xpackage{atbegshi} sets \cs{protect} to \cs{@typeset@protect}
+% before it calls the hooks.
+% (In \cs{EveryShipout} of package \xpackage{everyshi} the
+% user is responsible for the correct setting of \cs{protect}.)
+%
+% \begin{declcs}{AtBeginShipoutNext} \M{code}
+% \end{declcs}
+% This reimplements package \xpackage{everyshi}'s \cs{AtNextShipout}.
+% The \meta{code} is executed at shipout time of the next page only.
+% It is just a convenience macro, it can be easily replaced by something
+% like:
+%\begin{quote}
+%\begin{verbatim}
+%\newcommand{\MyShipoutHook}{}%
+%\AtBeginShipout{\MyShipoutHook}
+%\gdef\MyShipoutHook{%
+%  ... do something with next page ...
+%  \gdef\MyShipoutHook{}%
+% }
+%\end{verbatim}
+%\end{quote}
+% (This can be necessary, if hook order does matter).
+%
+% \begin{declcs}{AtBeginShipoutFirst} \M{code}
+% \end{declcs}
+% This reimplements \LaTeX's \cs{AtBeginDvi}. This hook is
+% usually used for \cs{special} commands that include PostScript
+% header files. The \cs{code} is directly executed in a \cs{vbox}
+% that is put at the beginning of the output page. Dealing with
+% the output box \cs{AtBeginShipoutBox} is not necessary and
+% not permitted here.
+%
+% \begin{declcs}{AtBeginShipoutDiscard}
+% \end{declcs}
+% This macro notifies package \xpackage{atbegshi} that
+% the output page is discarded. The remaining hook code
+% and the remaining hooks are not executed and the page is thrown away.
+% Also \cs{deadcycles} is cleared to zero like an ordinary \cs{shipout}
+% would do.
+%
+% \begin{declcs}{AtBeginShipoutInit}
+% \end{declcs}
+% Usually the redefinition of \cs{shipout} is delayed by
+% \cs{AtBeginDocument} (if this macro exists). This can be
+% too late, if other packages also redefines \cs{shipout}
+% and the order does matter.
+% \cs{AtBeginShipoutInit} forces the immediate redefinition
+% of \cs{shipout}.
+%
+% \begin{declcs}{AtBeginShipoutAddToBox} \M{stuff}\\
+%   \cs{AtBeginShipoutAddToBoxForeground} \M{stuff}
+% \end{declcs}
+% A quite common use case is the addition of \cs{special}
+% or other whatsits to the page output box. Macro
+% \cs{AtBeginShipoutAddToBox} puts \meta{stuff} in a
+% box with zeroed dimensions. The box with the \meta{stuff}
+% is put in the upper left corner of the shipout box
+% \cs{AtBeginShipoutBox}. Macro \cs{AtBeginShipoutAddToBox}
+% puts the \meta{stuff} in the background, the other macro
+% \cs{AtBeginShipoutAddToBoxForeground} in the foreground
+% after the original shipout box contents is set.
+%
+% A void shipout box (that means a discarded page)
+% remains void that means \meta{stuff} is ignored in this case.
+% The box type of \cs{AtBeginShipoutBox} is preserved.
+% Also the box nesting level for the original contents
+% of \cs{AtBeginShipoutBox} remains, for example, to avoid trouble
+% with links across pages in case of \hologo{pdfTeX}.
+%
+% \begin{declcs}{AtBeginShipoutUpperLeft} \M{background material}
+% \end{declcs}
+% This is a macro that puts material in the background of
+% box \cs{AtBeginShipoutBox}.
+% The \meta{background material} is set in an \cs{hbox}, the
+% reference point is the upper left corner of the output page.
+% In case of \pdfTeX\ in PDF mode, the settings of
+% \cs{pdfhorigin} and \cs{pdfvorigin} are respected.
+%
+% The macro \cs{AtBeginShipoutUpperLeft} is intended to be used
+% in one of the hook setting macros, such as
+% \cs{AtBeginShipout}, \cs{AtBeginShipoutFirst}, or
+% \cs{AtBeginShipoutNext}.
+%
+% For \LaTeX\ users the \meta{background material} is set
+% inside a \texttt{picture} environment:
+% \begin{quote}
+%   |\begin{picture}(0,0)|\\
+%   \mbox{}\quad |\setlength{\unitlength}{1pt}%|\\
+%   \mbox{}\quad \meta{background material}\\
+%   |\end{picture}|
+% \end{quote}
+%
+% \begin{declcs}{AtBeginShipoutUpperLeftForeground} \M{foreground material}
+% \end{declcs}
+% See \cs{AtBeginShipoutUpperLeft}. The difference is that the material
+% is put in the foreground.
+%
+% \begin{declcs}{AtBeginShipoutOriginalShipout} \meta{box}
+% \end{declcs}
+% It stores the meaning of \cs{shipout} at the time this package
+% is loaded.
+%
+% \begin{declcs}{AtBeginShipoutBoxWidth}\\
+%   \cs{AtBeginShipoutBoxHeight}\\
+%   \cs{AtBeginShipoutBoxDepth}\\
+% \end{declcs}
+% These macros store the dimensions of the output box \cs{AtBeginShipoutBox}
+% before the original shipout is called. If \cs{shipout} is not
+% redefined before the package loading or the box dimensions
+% are not changed by the redefined \cs{shipout}, these macros
+% contain the dimensions of the shipout box. These values can be
+% remembered by \cs{label} and \cs{ref}. For example, this is done
+% by the package module \xpackage{zref-pagelayout} of project \xpackage{zref}.
+% The dimensions of the shipout page can be used in some \hologo{TeX}
+% engines (\hologo{pdfTeX} in PDF mode, \hologo{XeTeX}) to calculate
+% the media size of the shipout page if \cs{pdfpagewidth} and
+% \cs{pdfpageheight} are not set.
+%
+% \subsection{Examples}
+%
+% \subsubsection{Example: circle in background}
+%
+% In this example we put a circle in the background in the middle
+% of the paper.
+%
+%    \begin{macrocode}
+%<*example1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\documentclass[a4paper]{article}
+\usepackage{color}
+\usepackage{atbegshi}
+%    \end{macrocode}
+%    Package \xpackage{picture} makes life a little easier, because
+%    we can now also use length specifications in |picture|'s commands.
+%    \begin{macrocode}
+\usepackage{picture}
+%    \end{macrocode}
+%    Now we draw the circle in the middle of the paper.
+%    \cs{put} moves downwards, because the origin is at the top
+%    of the page, not at its bottom.
+%    \begin{macrocode}
+\AtBeginShipout{%
+  \AtBeginShipoutUpperLeft{%
+    \put(0.5\paperwidth,-0.5\paperheight){\circle{10}}%
+  }%
+}
+\begin{document}
+\section{Hello World}
+\newpage
+\AtBeginShipoutNext{%
+  \AtBeginShipoutUpperLeft{%
+    \color{red}%
+    \put(0,-0.5\paperheight){\line(1,0){\paperwidth}}%
+    \put(0.5\paperwidth, 0){\line(0,-1){\paperheight}}%
+  }%
+}
+Only on this page we add a red cross.
+\newpage
+This page has the circle only.
+\par
+\vspace{\fill}
+The next page will be discarded.
+\newpage
+\AtBeginShipoutNext{%
+  \AtBeginShipoutDiscard
+}
+This page is discarded.
+\newpage
+The last page.
+\end{document}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</example1>
+%    \end{macrocode}
+%
+% \subsubsection{Example: adding TrimBox for dvipdfmx}
+%
+% Now an example from ``real life'' follows. Someone from the mailing  list
+% for dvipdfmx wants to put a TrimBox on every page. If we use
+% \cs{AtBeginShipout}, we have to put the \cs{special} inside the
+% box \cs{AtBeginShipoutBox} that gets shipped out.
+%    \begin{macrocode}
+%<*example2>
+\documentclass{minimal}
+\usepackage{atbegshi}
+\usepackage[
+  dvipdfm,
+  paperwidth=630bp,
+  paperheight=810bp
+]{geometry}
+\AtBeginShipout{%
+  \setbox\AtBeginShipoutBox=\hbox{%
+    \special{pdf: put @thispage <</TrimBox[9 9 621 801]>>}%
+    \box\AtBeginShipoutBox
+  }%
+}
+\begin{document}
+  First page
+  \newpage
+  Second page
+\end{document}
+%</example2>
+%    \end{macrocode}
+% Remember, in \cs{AtBeginShipoutBoxFirst} the \cs{setbox} wrapper code
+% is implicitly given and the \cs{special} is used directly.
+%
+% \section{Method of \cs{shipout} overloading}
+%
+% \subsection{\cs{shipout}}
+%
+% The \TeX\ primitive command \cs{shipout} takes a box specification
+% and puts the box as a new page in the output file.
+% There are two kinds of box specifications:
+% \begin{description}
+% \item[Direct boxes:]
+%   They are given by \cs{hbox}, \cs{vbox}, or \cs{vtop},\\
+%   e.g. |\shipout\hbox{Hello World}|.
+% \item[Indirect boxes:]
+%   \cs{box} or \cs{copy} references a box register by number.
+%   The box register contains the contents of the box.
+%
+%   \emph{Note:} \cs{box} also clears the box register globally.
+% \end{description}
+% Then we have to differentiate between void and empty boxes:
+% \begin{description}
+% \item[Void:]
+%   Initially or after \cs{box} there is no box in the box register.
+%   In this cases the box register is not empty, but \emph{void}.
+% \item[Empty:]
+%   A box with empty contents, such as
+%   |\hbox{}| (= \cs{null}) or |\vbox{}| is an \emph{empty \cs{hbox}}
+%   or \emph{empty \cs{vbox}}. If a box register holds such a
+%   box, the box still exists, therefore the box register is
+%   \emph{not void}.
+% \end{description}
+%
+% \subsection{\cs{afterassignment}}
+%
+% We want to overload \cs{shipout} to do something with the box.
+% It is quite impossible to do this reliable by catching the box
+% using macro arguments. The
+% variety of box specifications is too large, Examples:
+% \begin{quote}
+%   |\shipout\null|\\
+%   |\shipout\vbox{...}|\\
+%   |\shipout\vtop\bgroup ...\egroup|\\
+%   |\shipout\box255|
+% \end{quote}
+% Even worse, the braces don't need to be balanced:
+% \begin{quote}
+%   |\shipout\hbox\bgroup}|\\
+%   |\shipout\vbox{\egroup|
+% \end{quote}
+% Happily TeX provides a reliable way via \cs{afterassignment}.
+% It takes a macro name and executes it just after the assignment.
+%
+% Now we can redefine \cs{shipout}. The box specification that
+% follows \cs{shipout} is catched by \cs{setbox}. This is an
+% assignment to a box register. \cs{afterassignment}
+% notifies \TeX, that we want to call \cs{@test} right after
+% the assignment:
+%\begin{quote}
+%\begin{verbatim}
+%\shipout :=
+%  \afterassignment\@test
+%  \setbox\mybox=
+%\end{verbatim}
+%\end{quote}
+% We have seen different box specifications. Indirect boxes are easy
+% to understand:
+% \begin{quote}
+%   |\shipout\box0| $\Rightarrow$ |\setbox\mybox=\box0 |\fbox{\cs{@test}}
+% \end{quote}
+% However direct boxes can have arbitrary contents with lots of
+% other assignments. It would be quite inpredictable if \TeX\ would
+% put |\@test| after the first of such an assignment or after the
+% box specification if the box lacks of assignments.
+% Therefore \TeX\ puts |\@test| right at the beginning of the
+% box specification, e.g:
+% \begin{quote}
+%   |\shipout\hbox{Hello World}|\\
+%   $\Rightarrow$
+%   |\setbox\mybox=\hbox{|\fbox{\cs{@test}}| Hello World}|
+% \end{quote}
+%
+% \subsection{Test for direct or indirect boxes}
+%
+% Now we want to execute \cs{@test}, but where are we?
+% We can be after the completed box assignment, if \cs{shipout}
+% was called with an indirect box. Or we are right at the beginning
+% of a direct box.
+%
+% \subsubsection{With \eTeX}
+%
+% With the \eTeX's extensions the answer is very easy:
+% Being inside the direct box means that we are inside a new group.
+% The new primitive command \cs{currentgrouplevel} tells how
+% deeply the groups are currently nested. Macro \cs{@test} just
+% compares the previously stored group level with the current one:
+%\begin{quote}
+%\begin{verbatim}
+%\shipout :=
+%  \edef\saved@grouplevel{\number\currentgrouplevel}
+%  \afterassignment\@test
+%  \setbox\mybox=
+%
+%\@test :=
+%  \ifnum\saved@grouplevel=\currentgrouplevel
+%    % case: indirect box, the assignment is completed
+%    \@output
+%  \else
+%    % case: direct box, we are inside the box
+%    \aftergroup\@outbox
+%  \fi
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{Without \eTeX}
+%
+% Life becomes complicate without \eTeX. We cannot ask the
+% group level. However, if we are inside a direct box,
+% the box register \cs{mybox} is not yet changed by \cs{setbox}.
+% Thus we need a special initial value and compare
+% it in \cs{@test} with the current value of the box.
+%
+% What can be used as initial value? Arbitrary box contents cannot
+% be compared. \TeX\ only tells us a few properties:
+% \begin{itemize}
+% \item Box type:\cs{ifhbox}, \cs{ifvbox}
+% \item Dimensions: \cs{wd}, \cs{ht}, \cs{dp}
+% \item Voidness: \cs{ifvoid}
+% \end{itemize}
+% Unhappily all these qualities even combined are not sufficient
+% for constructing an initial box value, because \cs{shipout} can be
+% called with a box that is accidently just the same as the choosen
+% initial value.
+%
+% Nevertheless we have two alternatives for an initial value:
+% \begin{itemize}
+% \item A box of some type with some funny settings that are
+% unlikely to occur in real life, e.g a height of |4911sp-\maxdimen|.
+% \item A void box.
+% \end{itemize}
+% A collision between this initial value and an indirect \cs{shipout}
+% box with just the same value is possible.
+% Then \cs{@test} will make a wrong decision that it is executed
+% inside a direct box and delays \cs{@output} by \cs{aftergroup}.
+% Thus \cs{@output} is not called at the place we want.
+% In contrary, the result is an uncertainty about the place:
+% \begin{itemize}
+% \item \cs{shipout} is used in a group that perhaps closes some
+%   pages later. A bad place for \cs{@output}.
+% \item Without a surrounding group \cs{aftergroup} effectively kills
+%   its argument.
+% \end{itemize}
+% In the first case of a box with special dimensions we can even loose
+% the page. However in the case of the void box, this effect is even
+% desired, because the original \cs{shipout} does not output void boxes.
+% All we have to do is to ensure that our box \cs{mybox} is always
+% void except for the phase when the overloaded \cs{shipout} is executed.
+% And secondly we must keep this semantics of \cs{shipout} for the void case
+% in our macros, namely \cs{@output}.
+%\begin{quote}
+%\begin{verbatim}
+%\shipout :=
+%  % trick to get a void box \mybox
+%  \begingroup
+%    \setbox\mybox=\box\mybox
+%  \endgroup
+%  \afterassignment\@test
+%  \setbox\mybox=
+%
+%\@test :=
+%  \ifvoid\mybox
+%    \aftergroup\@output
+%  \else
+%    \@output
+%  \fi
+%\end{verbatim}
+%\end{quote}
+% The nasty case is |\shipout\box\voidb@x| where the indirect box
+% is void and that must not generate an output page.
+% If a surrounding group is missing the output is ignored
+% because of \cs{aftergroup}.
+% Otherwise \@output is called some time
+% later when the surrounding group closes.
+% But \cs{mybox} is void outside the execution phase
+% of the redefined \cs{shipout}. Also \cs{@output} checks for a
+% void box and cancels the page output.
+% The disadvantage remains that the hook in \cs{@output} is called
+% for a page that will not be output.
+%
+% \subsubsection{\cs{lastkern} method}
+%
+% At the beginning of a new box, there is no \cs{kern}, the contents
+% of the box is still empty and \cs{lastkern} returns 0\,pt.
+% This can be used to distinguish between direct and indirect boxes:
+% We execute \cs{setbox} in a box with a preceding non-zero kern.
+% After an indirect box, \cs{lastkern} sees this kern, otherwise
+% it returns 0\,pt.
+%\begin{quote}
+%\begin{verbatim}
+%\shipout :=
+%  \begingroup
+%    \setbox\mybox=\hbox\bgroup
+%      \kern1pt
+%      \afterassignment\shipout@test
+%      \global\setbox\mybox=
+%\@test :=
+%  \ifdim\lastkern=0pt
+%    % direct box
+%    \aftergroup\egroup
+%    \aftergroup\endgroup
+%    \aftergroup\@output
+%  \else
+%    \egroup
+%    \endgroup
+%    \@output
+%  \fi
+%\end{verbatim}
+%\end{quote}
+% We have two \cs{setbox} commands. The first creates a controlled
+% context box where we can safely insert a \cs{kern}. We get rid of
+% this temporarily used context box by putting the local \cs{setbox}
+% in a group.
+%
+% After the group we want to have our shipout box in \cs{mybox}.
+% Therefore we use a global assignment here.
+%
+% \subsection{Output}
+%
+% With or without \eTeX\ we ensure the original behaviour of
+% \cs{shipout} that void boxes do not generate output pages.
+%
+% Now we can place the hook \cs{@hook} for the user code that
+% wants to manipulate the output box.
+%\begin{quote}
+%\begin{verbatim}
+%\@output :=
+%  \ifvoid\mybox
+%    % cancel output of void box
+%  \else
+%    \@hook
+%    \ifvoid\mybox
+%      % user code in \@hook could has voided the box
+%    \else
+%      \original@shipout\box\mybox
+%    \fi
+%  \fi
+%\end{verbatim}
+%\end{quote}
+%
+% \subsection{Separate box register}
+%
+% So far we have said nothing about the box number of \cs{mybox}.
+% The following case that outputs the same page twice
+% shows that we are not free in the use
+% of the box register:
+% \begin{quote}
+%   |\shipout\copy<num> \shipout\box<num>|
+% \end{quote}
+% We manipulate the box by the hook and without \eTeX\ the box
+% must even be voided. However, the use case above requires that
+% the box contents does not change at all. Therefore we must
+% reserve a separate box register to avoid collisions with
+% user box registers.
+%
+% \emph{Note:} Box register number 255 is special for the output
+% routine, because TeX complains if this box is not voided
+% by the output routine.
+% However, this requirement does not apply to \cs{shipout} at all.
+% In fact \cs{shipout} does not change any box register. This is
+% usually done by a call of \cs{box}, but the output routine
+% can do it later \emph{after} invoking of \cs{shipout}.
+%
+% \subsection{Summary}
+%
+% \subsubsection{With \eTeX}
+%
+% Putting the pieces together we get for \eTeX:
+%\begin{quote}
+%\begin{verbatim}
+%\newbox\mybox
+%\let\original@shipout\shipout
+%
+%\shipout :=
+%  \edef\saved@grouplevel{\number\currentgrouplevel}
+%  \afterassignment\@test
+%  \setbox\mybox=
+%
+%\@test :=
+%  \ifnum\saved@grouplevel<\currentgrouplevel
+%    \expandafter\aftergroup
+%  \fi
+%  \@output
+%
+%\@output :=
+%  \ifvoid\mybox
+%    % cancel output of void box
+%  \else
+%    \@hook
+%    \ifvoid\mybox
+%      % user code in \@hook could have voided the box
+%    \else
+%      \original@shipout\box\mybox
+%    \fi
+%  \fi
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{Without \eTeX, traditional way}
+%
+% And for \TeX\ without \eTeX:
+%\begin{quote}
+%\begin{verbatim}
+%\newbox\mybox
+%\begingroup
+%   \setbox\mybox=\box\mybox % ensure \mybox is void
+%\endgroup
+%\let\original@shipout\shipout
+%
+%\shipout :=
+%  % trick to get a void box \mybox
+%  \begingroup
+%    \setbox\mybox=\box\mybox
+%  \endgroup
+%  \afterassignment\@test
+%  \setbox\mybox=
+%
+%\@test :=
+%  \ifvoid\mybox
+%    \expandafter\aftergroup
+%  \fi
+%  \@output
+%
+%\@output :=
+%  \ifvoid\mybox
+%    % cancel output of void box
+%  \else
+%    \@hook
+%    \ifvoid\mybox
+%      % user code in \@hook could have voided the box
+%    \else
+%      \original@shipout\box\mybox
+%    \fi
+%  \fi
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{\cs{lastkern} method}
+%
+% And for \TeX\ without \eTeX\ using the \cs{lastkern} method:
+%\begin{quote}
+%\begin{verbatim}
+%\newbox\mybox
+%\let\original@shipout\shipout
+%
+%\shipout :=
+%  \begingroup
+%  \setbox\mybox=\hbox\bgroup
+%  \kern1pt
+%  \afterassignment\@test
+%  \setbox\mybox=
+%
+%\@test :=
+%  \ifdim\lastkern=0pt
+%    \expandafter\aftergroup
+%  \fi
+%  \@output
+%
+%\@output :=
+%  \egroup
+%  \endgroup
+%  \ifvoid\mybox
+%    % cancel output of void box
+%  \else
+%    \@hook
+%    \ifvoid\mybox
+%      % user code in \@hook could have voided the box
+%    \else
+%      \original@shipout\box\mybox
+%    \fi
+%  \fi
+%\end{verbatim}
+%\end{quote}
+%
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% Package \xpackage{atbegshi} uses \eTeX's \cs{currentgrouplevel},
+% if it is available. Otherwise the \cs{lastkern} method is used.
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@atbegshi.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{atbegshi}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@atbegshi.sty\endcsname
+\ProvidesPackage{atbegshi}%
+  [2011/10/05 v1.16 At begin shipout hook (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname AtBegShi@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\AtBegShi@AtEnd{%
+    \AtBegShi@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^(superscript)
+\TMP@EnsureCode{96}{12}% `
+\edef\AtBegShi@AtEnd{\AtBegShi@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Preparations}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{infwarerr}[2007/09/09]%
+  \TMP@RequirePackage{ltxcmds}[2010/03/01]%
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ltxcmds}[2010/03/01]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\AtBegShi@CheckDefinable}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @ifdefinable\endcsname\relax
+  \def\AtBegShi@CheckDefinable#1{%
+    \ifcase\ifx#1\relax
+             \ltx@one
+           \else
+             \ifx#1\@undefined
+               \ltx@one
+             \else
+               \ltx@zero
+             \fi
+           \fi
+      \@PackageError{atbegshi}{%
+        \string#1\space is already defined%
+      }\@ehd
+    \fi
+  }%
+\else
+  \def\AtBegShi@CheckDefinable#1{%
+    \@ifdefinable{#1}{}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ifAtBegShi@Discarded}
+%    \begin{macrocode}
+\ltx@newif\ifAtBegShi@Discarded
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipoutDiscard}
+%    \begin{macrocode}
+\AtBegShi@CheckDefinable\AtBeginShipoutDiscard
+\def\AtBeginShipoutDiscard{%
+  \deadcycles=\ltx@zero
+  \global\AtBegShi@Discardedtrue
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+  \catcode`X=9  % ignore
+  \catcode`E=14 % comment
+\else
+  \catcode`X=14 % comment
+  \catcode`E=9  % ignore
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\AtBegShi@Shipout}
+%    \begin{macrocode}
+\def\AtBegShi@Shipout{%
+X \begingroup
+X \setbox\AtBeginShipoutBox=\hbox\bgroup
+X \kern\p@
+E \edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+  \afterassignment\AtBegShi@Test
+X \global
+  \setbox\AtBeginShipoutBox=%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@Test}
+%    \begin{macrocode}
+\def\AtBegShi@Test{%
+X \ifdim\lastkern=0pt %
+E \ifnum\AtBegShi@GroupLevel<\currentgrouplevel
+    \expandafter\aftergroup
+  \fi
+  \AtBegShi@Output
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@Output}
+%    \begin{macrocode}
+\def\AtBegShi@Output{%
+X \egroup
+X \endgroup
+  \ifvoid\AtBeginShipoutBox
+    \@PackageWarning{atbegshi}{Ignoring void shipout box}%
+  \else
+    \let\AtBegShi@OrgProtect\protect
+    \csname set@typeset@protect\endcsname
+    \global\AtBegShi@Discardedfalse
+    \AtBegShi@Hook
+    \expandafter\gdef\expandafter\AtBegShi@HookNext
+    \expandafter{\expandafter}%
+    \AtBegShi@HookNext
+    \ifAtBegShi@Discarded
+      \@PackageInfoNoLine{atbegshi}{Shipout page discarded}%
+      \global\AtBegShi@Discardedfalse
+      \begingroup
+        \setbox\AtBeginShipoutBox\box\AtBeginShipoutBox
+      \endgroup
+      \let\protect\AtBegShi@OrgProtect
+    \else
+      \AtBegShi@First
+      \let\protect\AtBegShi@OrgProtect
+      \AtBegShi@GetBoxSize\AtBeginShipoutBox
+      \ltx@ifundefined{AtNextShipout}{%
+      }{%
+        \AtNextShipout{\AtBegShi@GetBoxSize\@cclv}%
+      }%
+      \AtBeginShipoutOriginalShipout\box\AtBeginShipoutBox
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@GetBoxSize}
+%    \begin{macrocode}
+\def\AtBegShi@GetBoxSize#1{%
+  \xdef\AtBeginShipoutBoxWidth{\the\wd#1}%
+  \xdef\AtBeginShipoutBoxHeight{\the\ht#1}%
+  \xdef\AtBeginShipoutBoxDepth{\the\dp#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipoutBoxWidth}
+%    \begin{macrocode}
+\def\AtBeginShipoutBoxWidth{0pt}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipoutBoxHeight}
+%    \begin{macrocode}
+\def\AtBeginShipoutBoxHeight{0pt}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipoutBoxDepth}
+%    \begin{macrocode}
+\def\AtBeginShipoutBoxDepth{0pt}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\catcode`\X=11 %
+\catcode`\E=11 %
+%    \end{macrocode}
+%
+%    \begin{macro}{\AtBegShi@First}
+%    \begin{macrocode}
+\def\AtBegShi@First{%
+  \ifx\AtBegShi@HookFirst\ltx@empty
+  \else
+    \AtBeginShipoutAddToBox{\AtBegShi@HookFirst}%
+  \fi
+  \global\let\AtBegShi@First\ltx@empty
+  \global\let\AtBeginShipoutFirst\AtBegShi@FirstDisabled
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@Hook}
+%    \begin{macrocode}
+\gdef\AtBegShi@Hook{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBegShi@HookNext}
+%    \begin{macrocode}
+\gdef\AtBegShi@HookNext{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBegShi@HookFirst}
+%    \begin{macrocode}
+\gdef\AtBegShi@HookFirst{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipout}
+%    \begin{macrocode}
+\AtBegShi@CheckDefinable\AtBeginShipout
+\def\AtBeginShipout{%
+  \AtBegShi@AddHook\AtBegShi@Hook
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipoutNext}
+%    \begin{macrocode}
+\AtBegShi@CheckDefinable\AtBeginShipoutNext
+\def\AtBeginShipoutNext{%
+  \AtBegShi@AddHook\AtBegShi@HookNext
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBeginShipoutFirst}
+%    \begin{macrocode}
+\AtBegShi@CheckDefinable\AtBeginShipoutFirst
+\def\AtBeginShipoutFirst{%
+  \AtBegShi@AddTo\AtBegShi@HookFirst
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtBegShi@FirstDisabled}
+%    \begin{macrocode}
+\long\def\AtBegShi@FirstDisabled#1{%
+  \@PackageWarning{atbegshi}{%
+    First page is already shipped out, ignoring\MessageBreak
+    \string\AtBeginShipoutFirst
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@AddTo}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname g@addto@macro\endcsname\relax
+  \long\def\AtBegShi@AddTo#1#2{%
+    \begingroup
+      \toks\ltx@zero\expandafter{#1#2}%
+      \xdef#1{\the\toks\ltx@zero}%
+    \endgroup
+  }%
+\else
+  \let\AtBegShi@AddTo\g@addto@macro
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@AddHook}
+%    \begin{macrocode}
+\long\def\AtBegShi@AddHook#1#2{%
+  \AtBegShi@AddTo#1{\AtBegShi@Item{#2}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBegShi@Item}
+%    \begin{macrocode}
+\long\def\AtBegShi@Item#1{%
+  \ifAtBegShi@Discarded
+  \else
+    #1%
+    \ifAtBegShi@Discarded
+    \else
+      \ifvoid\AtBeginShipoutBox
+        \@PackageWarning{atbegshi}{%
+          Shipout box was voided by hook,\MessageBreak
+          ignoring shipout box%
+        }%
+        \AtBeginShipoutDiscard
+      \fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBeginShipoutInit}
+%    \begin{macrocode}
+\AtBegShi@CheckDefinable\AtBeginShipoutInit
+\def\AtBeginShipoutInit{%
+  \ltx@IfUndefined{newbox}{%
+    \@PackageError{atbegshi}{%
+      \string\AtBeginShipoutInit\space failed\MessageBreak
+       because of missing \expandafter\string\csname newbox\endcsname
+    }\@ehc
+  }{%
+    \csname newbox\endcsname\AtBeginShipoutBox
+    \AtBegShi@CheckDefinable\AtBeginShipoutOriginalShipout
+    \global\let\AtBeginShipoutOriginalShipout\shipout
+    \global\let\shipout\AtBegShi@Shipout
+  }%
+  \gdef\AtBeginShipoutInit{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname AtBeginDocument\endcsname\relax
+  \AtBeginShipoutInit
+\else
+  \AtBeginDocument{\AtBeginShipoutInit}%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Additions to the shipout box}
+%
+%    \begin{macro}{\AtBeginShipoutAddToBox}
+%    \begin{macrocode}
+\def\AtBeginShipoutAddToBox#1{%
+  \ifhbox\AtBeginShipoutBox
+    \edef\AtBegShi@restore{%
+      \hfuzz=\the\hfuzz\relax
+      \hbadness=\the\hbadness\relax
+    }%
+    \hfuzz=1073741823sp\relax
+    \hbadness=2147483647\relax
+    \setbox\AtBeginShipoutBox=\hbox to \wd\AtBeginShipoutBox{%
+      \setbox\ltx@zero=\hbox{%
+        \begingroup
+          \AtBegShi@restore
+          #1%
+        \endgroup
+      }%
+      \wd\ltx@zero=0pt\relax
+      \ht\ltx@zero=0pt\relax
+      \dp\ltx@zero=0pt\relax
+      \raise\ht\AtBeginShipoutBox\copy\ltx@zero
+      \unhcopy\AtBeginShipoutBox
+    }%
+    \AtBegShi@restore
+  \else
+    \ifvbox\AtBeginShipoutBox
+      \edef\AtBegShi@restore{%
+        \vfuzz=\the\vfuzz\relax
+        \vbadness=\the\vbadness\relax
+        \dimen\ltx@zero=\the\dimen\ltx@zero\relax
+      }%
+      \edef\AtBegShi@restorebox{%
+        \ht\AtBeginShipoutBox=\the\ht\AtBeginShipoutBox\relax
+        \dp\AtBeginShipoutBox=\the\dp\AtBeginShipoutBox\relax
+      }%
+      \vfuzz=1073741823sp\relax
+      \vbadness=2147483647\relax
+      \dimen\ltx@zero=\ht\AtBeginShipoutBox
+      \advance\dimen\ltx@zero by \dp\AtBeginShipoutBox
+      \setbox\AtBeginShipoutBox=\vbox to \dimen\ltx@zero{%
+        \setbox\ltx@zero=\hbox{%
+          \begingroup
+            \AtBegShi@restore
+            #1%
+          \endgroup
+        }%
+        \wd\ltx@zero=0pt\relax
+        \ht\ltx@zero=0pt\relax
+        \dp\ltx@zero=0pt\relax
+        \baselineskip=0pt\relax
+        \lineskip=0pt\relax
+        \lineskiplimit=0pt\relax
+        \copy\ltx@zero
+        \unvbox\AtBeginShipoutBox
+        \kern0pt%
+      }%
+      \AtBegShi@restore
+      \AtBegShi@restorebox
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBeginShipoutAddToBoxForeground}
+%    \begin{macrocode}
+\def\AtBeginShipoutAddToBoxForeground#1{%
+  \ifhbox\AtBeginShipoutBox
+    \edef\AtBegShi@restore{%
+      \hfuzz=\the\hfuzz\relax
+      \hbadness=\the\hbadness\relax
+    }%
+    \hfuzz=1073741823sp\relax
+    \hbadness=2147483647\relax
+    \setbox\AtBeginShipoutBox=\hbox to \wd\AtBeginShipoutBox{%
+      \unhcopy\AtBeginShipoutBox
+      \kern-\wd\AtBeginShipoutBox
+      \setbox\ltx@zero=\hbox{%
+        \begingroup
+          \AtBegShi@restore
+          #1%
+        \endgroup
+      }%
+      \wd\ltx@zero=0pt\relax
+      \ht\ltx@zero=0pt\relax
+      \dp\ltx@zero=0pt\relax
+      \raise\ht\AtBeginShipoutBox\copy\ltx@zero
+      \kern\wd\AtBeginShipoutBox
+    }%
+    \AtBegShi@restore
+  \else
+    \ifvbox\AtBeginShipoutBox
+      \edef\AtBegShi@restore{%
+        \vfuzz=\the\vfuzz\relax
+        \vbadness=\the\vbadness\relax
+        \dimen\ltx@zero=\the\dimen\ltx@zero\relax
+      }%
+      \edef\AtBegShi@restorebox{%
+        \ht\AtBeginShipoutBox=\the\ht\AtBeginShipoutBox\relax
+        \dp\AtBeginShipoutBox=\the\dp\AtBeginShipoutBox\relax
+      }%
+      \vfuzz=1073741823sp\relax
+      \vbadness=2147483647\relax
+      \dimen\ltx@zero=\ht\AtBeginShipoutBox
+      \advance\dimen\ltx@zero by \dp\AtBeginShipoutBox
+      \setbox\AtBeginShipoutBox=\vbox to \dimen\ltx@zero{%
+        \setbox\ltx@zero=\hbox{%
+          \begingroup
+            \AtBegShi@restore
+            #1%
+          \endgroup
+        }%
+        \wd\ltx@zero=0pt\relax
+        \ht\ltx@zero=0pt\relax
+        \dp\ltx@zero=0pt\relax
+        \baselineskip=0pt\relax
+        \lineskip=0pt\relax
+        \lineskiplimit=0pt\relax
+        \unvbox\AtBeginShipoutBox
+        \kern-\dimen\ltx@zero
+        \copy\ltx@zero
+        \kern\dimen\ltx@zero
+      }%
+      \AtBegShi@restore
+      \AtBegShi@restorebox
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Positioning}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ifpdf}[2011/01/30]%
+\else
+  \RequirePackage{ifpdf}[2011/01/30]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifpdf
+  \def\AtBegShi@horigin{\pdfhorigin}%
+  \def\AtBegShi@vorigin{\pdfvorigin}%
+\else
+  \def\AtBegShi@horigin{72.27pt}%
+  \def\AtBegShi@vorigin{72.27pt}%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup
+\ifcase
+    \expandafter\ifx\csname picture\endcsname\relax
+      1%
+    \else
+      \expandafter\ifx\csname endpicture\endcsname\relax
+        1%
+      \else
+        0%
+      \fi
+    \fi
+  \endgroup
+  \def\AtBegShi@BeginPicture{%
+    \begingroup
+    \picture(0,0)\relax
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname unitlength\endcsname\relax
+    \else
+      \unitlength=1pt\relax
+    \fi
+    \ignorespaces
+  }%
+  \def\AtBegShi@EndPicture{%
+    \endpicture
+    \endgroup
+  }%
+\else
+  \endgroup
+  \def\AtBegShi@BeginPicture{%
+    \setbox\ltx@zero=\hbox\bgroup
+    \begingroup
+    \ignorespaces
+  }%
+  \def\AtBegShi@EndPicture{%
+    \endgroup
+    \egroup
+    \ht\ltx@zero=0pt\relax
+    \dp\ltx@zero=0pt\relax
+    \copy\ltx@zero
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\AtBeginShipoutUpperLeft}
+%    A surrounding \cs{rlap} is not necessary, because
+%    the stuff is put in an \cs{hbox} with zero width.
+%    \begin{macrocode}
+\def\AtBeginShipoutUpperLeft#1{%
+  \AtBeginShipoutAddToBox{%
+    \kern-\AtBegShi@horigin\relax
+    \vbox to 0pt{%
+      \kern-\AtBegShi@vorigin\relax
+      \AtBegShi@BeginPicture
+      #1%
+      \AtBegShi@EndPicture
+      \vss
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtBeginShipoutUpperLeftForeground}
+%    \begin{macrocode}
+\def\AtBeginShipoutUpperLeftForeground#1{%
+  \AtBeginShipoutAddToBoxForeground{%
+    \kern-\AtBegShi@horigin\relax
+    \vbox to 0pt{%
+      \kern-\AtBegShi@vorigin\relax
+      \AtBegShi@BeginPicture
+      #1%
+      \AtBegShi@EndPicture
+      \vss
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Patches}
+%
+%    Patches for \LaTeX\ packages that redefine \cs{shipout}.
+%    \LaTeX\ is now supposed to use \eTeX. Thus we do not patch,
+%    without \LaTeX\ and \eTeX.
+%    \begin{macrocode}
+\def\AtBegShi@AbortIfUndefined#1{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname#1\endcsname\relax
+    \expandafter\AtBegShi@AtEnd
+  \fi
+}
+\AtBegShi@AbortIfUndefined{currentgrouplevel}%
+\AtBegShi@AbortIfUndefined{AtBeginDocument}%
+\AtBegShi@AbortIfUndefined{@ifpackageloaded}%
+\AtBegShi@AbortIfUndefined{@ifclassloaded}%
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{crop}}
+%
+% Fix of method and box.
+%    \begin{macrocode}
+\def\AtBegShi@PatchCrop{%
+  \begingroup
+    \def\AtBegShi@Crop@shipout{%
+      \afterassignment\CROP@ship
+      \setbox\@cclv=%
+    }%
+    \def\AtBegShi@Crop@ship{%
+      \ifvoid\@cclv
+        \expandafter\aftergroup
+      \fi
+      \CROP@@ship
+    }%
+    \def\AtBegShi@Crop@shiplist{%
+      \lineskip\z@
+      \lineskiplimit\z@
+      \baselineskip\z@
+      \CROP@kernel
+      \box\@cclv
+    }%
+    \def\AtBegShi@Crop@@ship{%
+      \CROP@shipout\vbox{%
+        \CROP@shiplist
+      }%
+    }%
+    \ifx\AtBegShi@Crop@ship\CROP@ship
+      \ifx\AtBegShi@Crop@shiplist\CROP@shiplist
+        \ifx\AtBegShi@Crop@@ship\CROP@@ship
+          \let\AtBegShi@found\relax
+          \ifx\shipout\AtBegShi@Crop@shipout
+            \def\AtBegShi@found{\shipout}%
+          \else\ifx\AtBeginShipoutOriginalShipout\AtBegShi@Crop@shipout
+            \def\AtBegShi@found{\AtBeginShipoutOriginalShipout}%
+          \else\ifx\@EveryShipout@Org@Shipout\AtBegShi@Crop@shipout
+            \def\AtBegShi@found{\@EveryShipout@Org@Shipout}%
+          \else\ifx\GPTorg@shipout\AtBegShi@Crop@shipout
+            \def\AtBegShi@found{\GPTorg@shipout}%
+          \else\ifx\THBorg@shipout\AtBegShi@Crop@shipout
+            \def\AtBegShi@found{\THBorg@shipout}%
+          \else\ifx\mem@oldshipout\AtBegShi@Crop@shipout
+            \def\AtBegShi@found{\mem@oldshipout}%
+          \fi\fi\fi\fi\fi\fi
+          \ifx\AtBegShi@found\relax
+          \else
+            \expandafter\endgroup
+            \expandafter\def\AtBegShi@found{%
+              \edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+              \afterassignment\CROP@ship
+              \setbox\AtBeginShipoutBox=%
+            }%
+            \def\CROP@ship{%
+              \ifnum\AtBegShi@GroupLevel=\currentgrouplevel
+              \else
+                \expandafter\aftergroup
+              \fi
+              \CROP@@ship
+            }%
+            \def\CROP@shiplist{%
+              \lineskip 0pt\relax
+              \lineskiplimit 0pt\relax
+              \baselineskip 0pt\relax
+              \CROP@kernel
+              \box\AtBeginShipoutBox
+            }%
+            \def\CROP@@ship{%
+              \ifvoid\AtBeginShipoutBox
+              \else
+                \setbox\AtBeginShipoutBox=\vbox{%
+                  \CROP@shiplist
+                }%
+                \AtBegShi@GetBoxSize\AtBeginShipoutBox
+                \expandafter\CROP@shipout
+                \expandafter\box
+                \expandafter\AtBeginShipoutBox
+              \fi
+            }%
+            \@PackageInfoNoLine{atbegshi}{Package `crop' patched}%
+            \begingroup
+          \fi
+        \fi
+      \fi
+    \fi
+  \endgroup
+  \let\AtBegShi@PatchCrop\relax
+}
+\@ifpackageloaded{crop}{%
+  \AtBegShi@PatchCrop
+}{%
+  \AtBeginDocument{\AtBegShi@PatchCrop}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{everyshi}}
+%
+%     Fix of method. Use of box 255 is not changed.
+%    \begin{macrocode}
+\def\AtBegShi@PatchEveryshi{%
+  \begingroup
+    \long\def\AtBegShi@Everyshi@shipout{%
+      \afterassignment\@EveryShipout@Test
+      \global\setbox\@cclv= %
+    }%
+    \long\def\AtBegShi@Everyshi@Test{%
+      \ifvoid\@cclv\relax
+        \aftergroup\@EveryShipout@Output
+      \else
+        \@EveryShipout@Output
+      \fi
+    }%
+    \ifx\AtBegShi@Everyshi@Test\@EveryShipout@Test
+      \let\AtBegShi@found\relax
+      \ifx\shipout\AtBegShi@Everyshi@shipout
+        \def\AtBegShi@found{\shipout}%
+      \else\ifx\AtBeginShipoutOriginalShipout\AtBegShi@Everyshi@shipout
+        \def\AtBegShi@found{\AtBeginShipoutOriginalShipout}%
+      \else\ifx\CROP@shipout\AtBegShi@Everyshi@shipout
+        \def\AtBegShi@found{\CROP@shipout}%
+      \else\ifx\GPTorg@shipout\AtBegShi@Everyshi@shipout
+        \def\AtBegShi@found{\GPTorg@shipout}%
+      \else\ifx\THBorg@shipout\AtBegShi@Everyshi@shipout
+        \def\AtBegShi@found{\THBorg@shipout}%
+      \else\ifx\mem@oldshipout\AtBegShi@Everyshi@shipout
+        \def\AtBegShi@found{\mem@oldshipout}%
+      \else
+        \expandafter\ifx\csname @EveryShipout@Org@Shipout\endcsname
+                        \relax
+           \ifx\@EveryShipout@Shipout\AtBegShi@Everyshi@shipout
+             \def\AtBegShi@found{\@EveryShipout@Shipout}%
+           \fi
+        \fi
+      \fi\fi\fi\fi\fi\fi
+      \ifx\AtBegShi@found\relax
+      \else
+        \expandafter\endgroup
+        \expandafter\def\AtBegShi@found{%
+          \edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+          \afterassignment\@EveryShipout@Test
+          \setbox\AtBeginShipoutBox=%
+        }%
+        \def\@EveryShipout@Test{%
+          \ifnum\AtBegShi@GroupLevel=\currentgrouplevel
+          \else
+            \expandafter\aftergroup
+          \fi
+          \AtBegShi@Everyshi@Output
+        }%
+        \def\AtBegShi@Everyshi@Output{%
+          \ifvoid\AtBeginShipoutBox
+          \else
+            \global\setbox\ltx@cclv\box\AtBeginShipoutBox
+            \expandafter\@EveryShipout@Output
+          \fi
+        }%
+        \@PackageInfoNoLine{atbegshi}{Package `everyshi' patched}%
+        \begingroup
+      \fi
+    \fi
+  \endgroup
+  \let\AtBegShi@PatchEveryshi\relax
+}
+\@ifpackageloaded{everyshi}{%
+  \AtBegShi@PatchEveryshi
+}{%
+  \AtBeginDocument{\AtBegShi@PatchEveryshi}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Class \xpackage{memoir}}
+%
+%     Fix of method and box.
+%    \begin{macrocode}
+\def\AtBegShi@PatchMemoir{%
+  \begingroup
+    \def\AtBegShi@Memoir@shipout{%
+      \afterassignment\mem@shipi
+      \setbox\@cclv=%
+    }%
+    \def\AtBegShi@Memoir@shipi{%
+      \ifvoid\@cclv
+        \expandafter\aftergroup
+      \fi
+      \mem@shipii
+    }%
+    \def\AtBegShi@Memoir@shipiiA{%
+      \mem@oldshipout\vbox{%
+        \trimmarks
+        \unvbox\@cclv
+      }%
+    }%
+    \def\AtBegShi@Memoir@shipiiB{%
+      \ifvoid\@cclv
+        \mem@oldshipout\box\@cclv
+      \else
+        \mem@oldshipout\vbox{%
+          \trimmarks
+          \unvbox\@cclv
+        }%
+      \fi
+    }%
+    \def\AtBegShi@Memoir@PatchAB{%
+      \ifvoid\AtBeginShipoutBox
+      \else
+        \setbox\AtBeginShipoutBox=\vbox{%
+          \trimmarks
+          \ifvbox\AtBeginShipoutBox
+            \unvbox\AtBeginShipoutBox
+          \else
+            \box\AtBeginShipoutBox
+          \fi
+        }%
+        \AtBegShi@GetBoxSize\AtBeginShipoutBox
+        \expandafter\mem@oldshipout
+        \expandafter\box
+        \expandafter\AtBeginShipoutBox
+      \fi
+    }%
+    \def\AtBegShi@Memoir@shipiiC{% 2008/08/07 v1.6180339a
+      \ifvoid\@cclv
+        \mem@oldshipout\box\@cclv
+      \else
+        \ifshowtrims
+          \mem@oldshipout\vbox{\trimmarks\unvbox\@cclv}%
+        \else
+          \mem@oldshipout\box\@cclv
+        \fi
+      \fi
+    }%
+    \def\AtBegShi@Memoir@shipiiD{% 2011/03/06 v3.6j
+      \ifvoid\@cclv
+        \mem@oldshipout\box\@cclv
+      \else
+        \ifshowtrims
+          \mem@oldshipout\vbox{%
+            \trimmarks
+            \nointerlineskip
+            \box\@cclv
+          }%
+        \else
+          \mem@oldshipout\box\@cclv
+        \fi
+      \fi
+    }%
+    \def\AtBegShi@Memoir@PatchCD{%
+      \ifvoid\AtBeginShipoutBox
+      \else
+        \ifshowtrims
+          \setbox\AtBeginShipoutBox=\vbox{%
+            \trimmarks
+            \nointerlineskip
+            \box\AtBeginShipoutBox
+          }%
+        \fi
+        \AtBegShi@GetBoxSize\AtBeginShipoutBox
+        \expandafter\mem@oldshipout
+        \expandafter\box
+        \expandafter\AtBeginShipoutBox
+      \fi
+    }%
+    \ifx\AtBegShi@Memoir@shipi\mem@shipi
+      \let\AtBegShi@found\ltx@one
+      \ifx\AtBegShi@Memoir@shipiiA\mem@shipii
+        \let\AtBegShi@found\ltx@zero
+        \global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchAB
+      \else\ifx\AtBegShi@Memoir@shipiiB\mem@shipii
+        \let\AtBegShi@found\ltx@zero
+        \global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchAB
+      \else\ifx\AtBegShi@Memoir@shipiiC\mem@shipii
+        \let\AtBegShi@found\ltx@zero
+        \global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchCD
+      \else\ifx\AtBegShi@Memoir@shipiiD\mem@shipii
+        \let\AtBegShi@found\ltx@zero
+        \global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchCD
+      \fi\fi\fi\fi
+      \ifcase\AtBegShi@found
+        \let\AtBegShi@found\relax
+        \ifx\shipout\AtBegShi@Memoir@shipout
+          \def\AtBegShi@found{\shipout}%
+        \else\ifx\AtBeginShipoutOriginalShipout\AtBegShi@Memoir@shipout
+          \def\AtBegShi@found{\AtBeginShipoutOriginalShipout}%
+        \else\ifx\CROP@shipout\AtBegShi@Memoir@shipout
+          \def\AtBegShi@found{\CROP@shipout}%
+        \else\ifx\GPTorg@shipout\AtBegShi@Memoir@shipout
+          \def\AtBegShi@found{\GPTorg@shipout}%
+        \else\ifx\THBorg@shipout\AtBegShi@Memoir@shipout
+          \def\AtBegShi@found{\THBorg@shipout}%
+        \else\ifx\@EveryShipout@Org@Shipout\AtBegShi@Memoir@shipout
+          \def\AtBegShi@found{\@EveryShipout@Org@Shipout}%
+        \fi\fi\fi\fi\fi\fi
+        \ifx\AtBegShi@found\relax
+        \else
+          \expandafter\endgroup
+          \expandafter\def\AtBegShi@found{%
+            \edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+            \afterassignment\mem@shipi
+            \setbox\AtBeginShipoutBox=%
+          }%
+          \def\mem@shipi{%
+            \ifnum\AtBegShi@GroupLevel=\currentgrouplevel
+            \else
+              \expandafter\aftergroup
+            \fi
+            \mem@shipii
+          }%
+          \let\mem@shipii\AtBegShi@Memoir@PatchX
+          \@PackageInfoNoLine{atbegshi}{Class `memoir' patched}%
+          \begingroup
+        \fi
+      \fi
+    \fi
+  \endgroup
+  \let\AtBegShi@PatchMemoir\relax
+}
+\@ifclassloaded{memoir}{%
+  \AtBegShi@PatchMemoir
+}{%
+  \AtBeginDocument{\AtBegShi@PatchMemoir}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AtBegShi@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input atbegshi.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2>
+\input atbegshi.sty\relax
+\def\msg#{\immediate\write16}
+\msg{File: atbegshi-test2.tex 2011/10/05 v1.16 Test file for plain-TeX}
+\def\testmsg#1#2{%
+  \msg{}%
+  \msg{*** Test with box (#1), expected page output [#2]}% hash-ok
+}
+
+\newbox\voidbox
+\def\void{\box\voidbox}
+\begingroup
+  \setbox\voidbox=\void
+\endgroup
+
+\count0=0\relax
+\AtBeginShipout{%
+  \global\advance\count0 by 1\relax
+  \msg{* Inside \string\AtBeginShipout: [\the\count0]}%
+}
+
+\AtBeginShipoutFirst{%
+  \msg{* Inside \string\AtBeginShipoutFirst}%
+  Hello World%
+}
+
+\testmsg{\string\null}{1}
+\shipout\null
+
+\AtBeginShipoutFirst{%
+  This is too late%
+}
+
+\testmsg{void}{}
+\shipout\void
+
+\testmsg{\string\copy255 (not void)}{2}
+\setbox255\hbox{\vrule height 10bp width 10bp}
+\shipout\copy255 %
+
+\testmsg{\string\copy255 (again)}{3}
+\shipout\copy255 %
+
+\testmsg{\string\box255}{4}
+\shipout\box255 %
+
+\testmsg{\string\box255 (again)}{}
+\shipout\box255 %
+
+\testmsg{\string\hbox}{5}
+\shipout\hbox{\vrule height 5bp width 20bp}
+
+\testmsg{\string\vbox}{6}
+\shipout\vbox{\hrule height 20bp width 5bp}
+
+\testmsg{\string\null, voided by hook}{}
+\def\VoidBox{%
+  \begingroup
+    \setbox\AtBeginShipoutBox=\box\AtBeginShipoutBox
+  \endgroup
+}
+\AtBeginShipout{\VoidBox}
+\shipout\null
+\def\VoidBox{}
+
+\msg{*** \string\begingroup}
+\begingroup
+  \testmsg{void}{}%
+  \shipout\void
+\msg{*** \string\endgroup}
+\endgroup
+
+\msg{*** \string\begingroup}
+\begingroup
+  \testmsg{void}{}%
+  \shipout\void
+  \testmsg{\string\null}{8}%
+  \shipout\null
+\msg{*** \string\endgroup}
+\endgroup
+
+\testmsg{output routine}{9}
+Hello World
+\vfill
+\eject
+
+\testmsg{\string\null\space(discarded)}{}
+\AtBeginShipout{%
+  \msg{* Inside \string\AtBeginShipout: DISCARD}%
+  \AtBeginShipoutDiscard
+}
+\shipout\null
+
+\end
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atbegshi-test3.tex}[2011/10/05 v1.16 Test file for LaTeX]
+\RequirePackage{color}
+\pagecolor{yellow}
+\documentclass[a5paper,showtrims]{memoir}
+\usepackage{atbegshi}
+\AtBeginShipout{%
+  \setbox\AtBeginShipoutBox=\vbox{%
+    \vbox to 0pt{%
+      \kern-1.5in %
+      \hbox to 0pt{%
+        \kern-1.5in %
+        \color{blue}%
+        \rule{1in}{1in}%
+        \hss
+      }%
+      \vss
+    }%
+    \hrule
+    \hbox{\vrule\box\AtBeginShipoutBox\vrule}%
+    \hrule
+  }%
+}
+\usepackage{eso-pic}
+\makeatletter
+\@ifundefined{@EveryShipout@Init}{%
+  \typeout{Test skipped}%
+  \@@end
+}{}
+\@EveryShipout@Init
+\let\@EveryShipout@Init\relax
+\makeatother
+\AddToShipoutPicture{%
+  \hspace{.52\paperwidth}%
+  \colorbox{cyan}{%
+    \rule{0mm}{\paperheight}%
+    \hspace{.48\paperwidth}%
+  }%
+}
+%    \end{macrocode}
+%    Newer versions of class \xclass{memoir} emulate package
+%    \xpackage{crop} and prevents its loading. This is undone
+%    in next line for this test file.
+%    \begin{macrocode}
+\expandafter\let\csname ver@crop.sty\endcsname\relax
+\usepackage[color=red,cross,a4,center]{crop}
+\begin{document}
+\shipout\null
+\shipout\box\csname voidb@x\endcsname
+\section{Hello World}
+\end{document}
+%</test3>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/atbegshi.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/atbegshi.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex atbegshi.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   atbegshi.sty & tex/generic/oberdiek/atbegshi.sty\\
+%   atbegshi.pdf & doc/latex/oberdiek/atbegshi.pdf\\
+%   atbegshi-example1.tex & doc/latex/oberdiek/atbegshi-example1.tex\\
+%   atbegshi-example2.tex & doc/latex/oberdiek/atbegshi-example2.tex\\
+%   test/atbegshi-test1.tex & doc/latex/oberdiek/test/atbegshi-test1.tex\\
+%   test/atbegshi-test2.tex & doc/latex/oberdiek/test/atbegshi-test2.tex\\
+%   test/atbegshi-test3.tex & doc/latex/oberdiek/test/atbegshi-test3.tex\\
+%   atbegshi.dtx & source/latex/oberdiek/atbegshi.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk atbegshi.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{atbegshi.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex atbegshi.dtx
+%makeindex -s gind.ist atbegshi.idx
+%pdflatex atbegshi.dtx
+%makeindex -s gind.ist atbegshi.idx
+%pdflatex atbegshi.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{atbegshi.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='atbegshi'>
+  <name>atbegshi</name>
+  <caption>Execute stuff at \shipout time.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.16'/>
+  <description>
+    This package is a modern reimplementation of package
+    <xref refid='everyshi'>everyshi</xref>, providing various commands
+    to be executed before a <tt>\shipout</tt> command.  It makes use of
+    e-TeX&#x2019;s facilities if they are available.  The package may
+    be used either with LaTeX or with plain TeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/atbegshi.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/atbegshi.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/04/17 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/04/18 v1.1}
+%   \item
+%     New method based on \cs{lastkern} is used if \eTeX\ is missing.
+%   \item
+%     \cs{AtBeginShipoutDiscard} also resets \cs{deadcycles}.
+%   \end{Version}
+%   \begin{Version}{2007/04/19 v1.2}
+%   \item
+%     \cs{AtBeginShipoutEarly} removed for simplification reasons.
+%   \item
+%     Forgotten definition of \cs{AtBegShi@Info} added.
+%   \item
+%     Patches for packages \xpackage{crop} and \xpackage{everyshi}
+%     and class \xclass{memoir} added.
+%   \end{Version}
+%   \begin{Version}{2007/04/26 v1.3}
+%   \item
+%     Use of package \xpackage{infwarerr}.
+%   \item
+%     Catcode section after generic header.
+%   \end{Version}
+%   \begin{Version}{2007/04/27 v1.4}
+%   \item
+%     Small optimizations.
+%   \end{Version}
+%   \begin{Version}{2007/06/06 v1.5}
+%   \item
+%     \cs{AtBeginShipoutUpperLeft} added.
+%   \item
+%     Example added.
+%   \item
+%     Fix in second test file for newer version of \xclass{memoir}.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.6}
+%   \item
+%     Catcode section rewritten.
+%   \end{Version}
+%   \begin{Version}{2008/07/18 v1.7}
+%   \item
+%     Documentation of \cs{AtBeginShipoutUpperLeft} fixed and extended.
+%   \end{Version}
+%   \begin{Version}{2008/07/19 v1.8}
+%   \item
+%     \cs{AtBeginShipoutUpperLeftForeground} added.
+%   \end{Version}
+%   \begin{Version}{2008/07/31 v1.9}
+%   \item
+%     Second example (TrimBox for dvipdfmx) added.
+%   \item
+%     No changes in package code.
+%   \end{Version}
+%   \begin{Version}{2009/12/02 v1.10}
+%   \item
+%     \cs{AtBeginShipoutOriginalShipout} added.
+%   \item
+%     Test file fixed.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.11}
+%   \item
+%     Compatibility with \iniTeX\ except for \cs{newbox}.
+%   \end{Version}
+%   \begin{Version}{2010/03/25 v1.12}
+%   \item
+%     \cs{AtBeginShipoutNext} can now be used inside
+%     \cs{AtBeginShipoutNext}.
+%   \end{Version}
+%   \begin{Version}{2010/08/18 v1.13}
+%   \item
+%     Fixes for \cs{AtBegShi@CheckDefinable}.
+%   \end{Version}
+%   \begin{Version}{2010/12/02 v1.14}
+%   \item
+%     Remove the warning because of void box if the hook
+%     calls \AtBeginShipoutDiscard.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.15}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/10/05 v1.16}
+%   \item
+%     \cs{AtBeginShipoutAddToBox}, \cs{AtBeginShipoutAddToBoxForeground} added.
+%   \item
+%     \cs{AtBeginShipoutBoxWidth}, \cs{AtBeginShipoutBoxHeight},
+%     \cs{AtBeginShipoutBoxDepth} added.
+%   \item
+%     Updates for patches of class \xclass{memoir}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

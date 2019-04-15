@@ -1,0 +1,165 @@
+% \def\filename{upref.dtx}
+% \def\fileversion{2.04}
+% \def\filedate{2007/03/14}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1996, 2010 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\begin{document}
+\title{The \pkg{upref} package}
+\author{American Mathematical Society\\ Michael Downes\\
+  updated by Barbara Beeton}
+\date{Version \fileversion, \filedate}
+\DocInput{upref.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%
+%    This package changes the \cn{ref} command so that it never applies
+%    a slanted font shape to its argument, regardless of context. This
+%    was the default behavior in \cls{amsart} version 1.1. Starting with
+%    \cls{amsart} version 1.2, upright references must be obtained via
+%    |\usepackage{upref}|.
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%    Give package name, date, version.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+\ProvidesPackage{upref}[2007/03/14 v2.04]
+%    \end{macrocode}
+%
+%  \begin{macro}{\@noref}
+%    Give a warning if a cited reference isn't defined.
+%    \begin{macrocode}
+\newcommand{\@noref}[1]{%
+  \G@refundefinedtrue
+  \nfss@text{\reset@font\bfseries ??}%
+  \@latex@warning{Reference `#1' on page \thepage\space undefined}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@setref}
+%    If the current fontshape is italic or slanted, we want to switch to
+%    upright/roman for printing the number of a \cn{ref}. This requires
+%    changing the \cs{@setref} command.
+%
+%    Since \cs{@setref} is modified by the \pkg{hyperref} package, delay
+%    the definition until \cs{AtBeginDocument}.  Then check whether
+%    \pkg{hyperref} is loaded.  If it is, we have to redefine some
+%    control sequences that \pkg{hyperref} defined in order to get
+%    upright references even in a \pkg{hyperref} environment.
+%    [tjk,bnb, 2004/07/29]
+%
+%    Get around a restriction in an internal AMS package (shaderef) by
+%    equating its command \cs{printref} to \cn{textup}; this applies
+%    consistently regardless of other circumstances that have unwanted
+%    effects.  [dmj,bnb, 2005/05/17]
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \providecommand\printref{\textup}%
+  \@ifpackageloaded{hyperref}{%
+%    \end{macrocode}
+%    We overload \cs{Hy@setref@link} as this is where the upright
+%    references get clobbered.  Used in overloaded \cs{@setref}.
+%    \cs{sw@slant} is usually applied by \cn{textup}, but the specials
+%    inserted by the hyperlink get in the way of testing for whether
+%    an italic correction is necessary; restore the test.
+%    [dmj,bnb, 2005/09/22]
+%
+%    If the link happens to be at the beginning of a paragraph,
+%    \cs{sw@slant} will produce an error, since neither \unpenalty
+%    nor a check for italic correction is valid in vertical mode.
+%    For reasons not apparent, this may also occur in some other
+%    situations, e.g., following a proof heading containing a cross
+%    reference (jams561el).  Add \cn{leavevmode} to compensate.
+%    [dmj,bnb, 2007/02/14]
+%    \begin{macrocode}
+    \def\Hy@setref@link#1#2#3#4#5#6\@nil#7{%
+      \begingroup
+      \leavevmode
+      \sw@slant
+      \toks0{\hyper@@link{#5}{#4}}%
+      \toks1\@xp{#7{\printref{#1}\hbox{}}{#2}{#3}{#4}{#5}}%
+      \edef\x{\endgroup\the\toks0{\the\toks1}}\x
+    }%
+%    \end{macrocode}
+%    We should not have to overload \cs{@setref}, but there is
+%    a chance that an author is using an old version of hyperref
+%    which does not use \cs{Hy@setref@link} in \cs{@setref}.
+%    \begin{macrocode}
+    \def\@setref#1#2#3{%
+      \ifx#1\relax
+        \@xp\protect\@noref{#3}%
+      \else
+        \@xp\Hy@setref@link#1\@empty\@empty\@nil{#2}%
+      \fi
+    }%
+  }{%
+    \def\@setref#1#2#3{\ifx#1\relax
+        \protect\@noref{#3}%
+      \else
+        \protect\printref{\@xp#2#1\hbox{}}%
+      \fi
+    }%
+  }%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@upn}
+%    The function \cs{\@upn} is used to force theorem numbers and
+%    similar elements to be upright in sloped or italic contexts.
+%    If a suitable italic font with upright numbers and punctuation is
+%    available, this function should be redefined to be a no-op.
+%    \begin{macrocode}
+\providecommand\@upn{\textup}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{66}
+% \Finale

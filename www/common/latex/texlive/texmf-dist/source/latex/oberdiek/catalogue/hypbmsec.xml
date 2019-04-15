@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hypbmsec'>
+  <name>hypbmsec</name>
+  <caption>Hypertext bookmarks in sectioning commands.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1998-2000,2006,2007'/>
+  <license type='lppl1.3'/>
+  <version number='2.4'/>
+  <description>
+    Bookmark entries can be given as another argument to the LaTeX
+    sectioning commands. The <xref refid='hyperref'>hyperref</xref>
+    package is required to get the bookmarks, but the syntax
+    works without it.
+    <p/>
+    This package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hypbmsec.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hypbmsec.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

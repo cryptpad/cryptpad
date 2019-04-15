@@ -1,0 +1,1638 @@
+% \iffalse meta-comment
+%
+% File: epstopdf.dtx
+% Version: 2010/02/09 v2.5
+% Info: Conversion with epstopdf on the fly
+%
+% Copyright (C) 2001, 2006-2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file epstopdf.dtx
+% and the derived files
+%    epstopdf.sty, epstopdf.pdf, epstopdf.ins, epstopdf.drv,
+%    epstopdf-base.sty, epstopdf-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/epstopdf.dtx
+%    CTAN:macros/latex/contrib/oberdiek/epstopdf.pdf
+%
+% Unpacking:
+%    (a) If epstopdf.ins is present:
+%           tex epstopdf.ins
+%    (b) Without epstopdf.ins:
+%           tex epstopdf.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{epstopdf.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If epstopdf.drv is present:
+%           latex epstopdf.drv
+%    (b) Without epstopdf.drv:
+%           latex epstopdf.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex epstopdf.dtx
+%       makeindex -s gind.ist epstopdf.idx
+%       pdflatex epstopdf.dtx
+%       makeindex -s gind.ist epstopdf.idx
+%       pdflatex epstopdf.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/epstopdf.sty
+%    TDS:tex/latex/oberdiek/epstopdf-base.sty
+%    TDS:doc/latex/oberdiek/epstopdf.pdf
+%    TDS:doc/latex/oberdiek/test/epstopdf-test1.tex
+%    TDS:source/latex/oberdiek/epstopdf.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: epstopdf 2010/02/09 v2.5 Conversion with epstopdf on the fly (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: epstopdf
+Version: 2010/02/09 v2.5
+
+Copyright (C) 2001, 2006-2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file epstopdf.dtx
+and the derived files
+   epstopdf.sty, epstopdf.pdf, epstopdf.ins, epstopdf.drv,
+   epstopdf-base.sty, epstopdf-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{epstopdf.ins}{\from{epstopdf.dtx}{install}}%
+  \file{epstopdf.drv}{\from{epstopdf.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{epstopdf.sty}{\from{epstopdf.dtx}{package}}%
+  \file{epstopdf-base.sty}{\from{epstopdf.dtx}{base}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{epstopdf-test1.tex}{\from{epstopdf.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{epstopdf-pkg.xml}{\from{epstopdf.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     epstopdf.sty, epstopdf-base.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `epstopdf.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{epstopdf.drv}%
+  [2010/02/09 v2.5 Conversion with epstopdf on the fly (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{epstopdf.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1040}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{epstopdf.drv}
+%
+% \title{The \xpackage{epstopdf} package}
+% \date{2010/02/09 v2.5}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This packages adds support of handling eps images
+% to package \xpackage{graphics} or \xpackage{graphicx}
+% with option \xoption{pdftex}. If an eps image is detected,
+% epstopdf is automatically called to convert it to pdf format.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \providecommand*{\xprogram}[1]{\textsf{#1}}
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% \LaTeX\ provides its graphics bundle to include graphics files.
+% Both packages \xpackage{graphics} or \xpackage{graphicx} may
+% be used. the latter one loads the first and adds options
+% in key value style for \cs{includegraphics}.
+%
+% Usually the drivers do not support all kind of graphics files.
+% Other image types must be converted, before they become
+% usuable. In case of driver \xprogram{dvips}, the graphics
+% rule may contain a conversion rule. Then all that package
+% \xpackage{graphics} must know is the bounding box, the command
+% is passed to \xprogram{dvips} that calls it and embeds the
+% converted image.
+%
+% However, \pdfTeX\ has its driver for PDF output already
+% build in. It's graphics inclusion commands (\cs{pdfximage})
+% does not allow the execution of external commands.
+% Therefore commands in the last argument of
+% \cs{DeclareGraphicsRule} were of no use.
+% But external programs can be called within \pdfTeX.
+% This feature is called ``shell escape'' or ``write 18''
+% and must usually enabled explicitely because of security reasons.
+% Now, this package \xpackage{epstopdf} hooks
+% into package \xpackage{graphics}' code to catch
+% that argument with the external command and executes it
+% to convert the graphics file to a supported format and
+% passes the control of graphics inclusion back to package
+% \xpackage{graphics}.
+%
+% \subsection{Requirements}
+%
+% \begin{itemize}
+% \item
+%   The feature \cs{write18} must be enabled. This allows the
+%   running of external programs during \TeX's compile run.
+%   Keep in mind that this is a security risk. The feature is an
+%   addition to \cs{TeX}. Mik\TeX, te\TeX, \TeX\ Live support it.
+%   In Web2C based \TeX\ distributions (te\TeX, \TeX\ Live) it can be
+%   enabled in the configuration file \xfile{texmf.cnf}:
+%   \begin{quote}
+%     |shell_escape = 1|
+%   \end{quote}
+%   Because of the security risk, it is better to do it on the
+%   command line only:
+%   \begin{quote}
+%   \texttt{--shell-escape} (te\TeX, \TeX\ Live)\\
+%   \texttt{--enable-write18} (MiK\TeX)
+%   \end{quote}
+%   Example:
+%   \begin{quote}
+%     |pdflatex -shell-escape test.tex|
+%   \end{quote}
+% \item
+%   The program \xprogram{epstopdf} for the conversion from EPS
+%   to PDF. However, other programs can
+%   be used and configured by \cs{DeclareGraphicsRule}.
+%   Example:
+%   \begin{quote}
+%   |\epstopdfDeclareGraphicsRule{.eps}{pdf}{.pdf}{%|\\
+%   |  ps2pdf -dEPSCrop #1 \OutputFile|\\
+%   |}|
+%   \end{quote}
+% \end{itemize}
+%
+% \subsection{Usage}
+%
+% The package is loaded after graphic\{s,x\}, e.g.:
+% \begin{quote}
+%   |\usepackage[pdftex]{graphicx}|\\
+%   |\usepackage{epstopdf}|
+% \end{quote}
+% Now images with file name extension \xfile{.eps} are detected
+% and supported using \cs{includegraphics}.
+%
+% If the graphics file name is explicitly specified with extension
+% \xfile{.eps} the new rule for EPS files is called and
+% the conversion performed. If option \xoption{update} is in force
+% then the conversion step is dropped if the target file already
+% exists and is not older then the EPS file.
+%
+% The situation is more complicate if the graphics file is
+% given without file name extension. Then the \xpackage{graphics}
+% package must search for a supported image file.
+% The possible extensions are stored in the graphics extension
+% list, that can be set by \cs{DeclareGraphicsExtensions}.
+% The algorithm:
+% \begin{quote}
+%    \def\>{\mbox{}\quad}
+%    function search( \meta{filebase} )\\
+%    \>foreach \meta{ext} in \meta{graphics extensions}\\
+%    \>\>foreach \meta{dir} in \meta{current directory}, \meta{\cs{graphicspath}}\\
+%    \>\>\>\meta{file} := \meta{dir} + \meta{filebase} + \meta{ext}\\
+%    \>\>\>if exist \meta{file}\\
+%    \>\>\>\>return found\\
+%    \>return not found
+% \end{quote}
+% Package \xpackage{epstopdf} puts \xfile{.eps} at the end of the
+% graphics extension search list. This is the behaviour of option
+% \xoption{append} that is enabled by default.
+% That means, the conversion is called last
+% unless a supported file type cannot be found earlier. This avoids
+% unnecessary conversion steps that slow down the \LaTeX\ run.
+% If you want to use option \xoption{update} and your \pdfTeX\ supports
+% it, then an outdated PDF file also would be found earlier unless
+% \xoption{suffix} is used that is the default since version 2.0.
+%
+% With an empty option \xoption{suffix} and option
+% \xoption{prepend} there is a risk that an original PDF file is overwritten:
+%
+% If the original image file is the PDF file and there is also a generated
+% EPS file, then the original PDF file can be regenerated (depending
+% on the option settings) and the original PDF file gets lost.
+% Therefore option \xoption{suffix} is introduced in version 1.9
+% to create a separate name space for generated output files.
+%
+% \textbf{Note:} Usually the conversion program needs the exact location
+% of the image file. Usually the current directory works.
+% Also if the image file is found using \cs{graphicspath}, the
+% location is known. However, if the image is somewhere
+% in a directory of environment variable |TEXINPUTS|, then
+% the package does not know the exact location and the
+% conversion program will not find the image file unless it
+% implements a search using |TEXINPUTS| (program \xprogram{kpsewhich}
+% may be of help in this task).
+%
+% \subsection{Options}
+%
+% Options can be given as package options or later using:
+% \begin{declcs}{epstopdfsetup} \M{key value list}
+% \end{declcs}
+% \LaTeX\ expands the option list before passing the option list
+% to the package's option handling code. This can fail
+% for option \xoption{suffix} if it contains some of the macros
+% described below. Use \cs{epstopdfsetup} after the package is loaded.
+% Or load package \xpackage{kvoptions-patch} before. This package
+% is also loaded by option \xoption{patch} of package \xpackage{kvoptions}.
+% \LaTeX's option code is redefined to respect key value options and
+% let the values untouched.
+%
+% \begin{description}
+% \def\It#1{\item[\xoption{#1}:]}^^A
+% \It{update}
+%   The conversion program is only called, if the target file
+%   does not exist or is older than the source image file.
+% \It{append}
+%   Puts the extension \xfile{.eps} at the end of the graphics extension list
+%   (default).
+% \It{prepend}
+%   Puts the extension \xfile{.eps} at the begin of the graphics extension list.
+% \It{outdir}
+%   The converted file may put in an other output directory.
+%   The value of \xoption{outdir} must include the directory separator.
+%   Example for the current directory:
+%   \begin{quote}
+%   |\epstopdfsetup{outdir=./}|
+%   \end{quote}
+%   For other directories ensure, that they can be found.
+%   See \cs{graphicspath} or |TEXINPUTS|.
+% \It{suffix}
+%   This option takes a string that is put between the file name base
+%   and the extension of the output file. Rationale: It can happen,
+%   that a PDF file is the original file and the EPS file the
+%   generated file. If now the package thinks, that the PDF file
+%   is the generated file, it will `regnerate' it. But in reality
+%   the original file is lost. Therefore I recommend to use this
+%   option always to generate a separate name space for generated
+%   files. Proposed value is \texttt{-generated} or \texttt{.generated}.
+%   The suffix \texttt{.generated} will also work here without the need for
+%   package \xpackage{grffile}).
+%
+%   Example:
+%   \begin{quote}
+%   |\epstopdfsetup{suffix=-generated}|\\
+%   Then \xfile{foo.eps} is converted to \xfile{foo-generated.pdf}.
+%   \end{quote}
+%   \cs{SourceExt} can be used inside the suffix string.
+%   It's will be replaced by the extension of the image source
+%   file without the leading dot, for instance:
+%   \begin{quote}
+%   |\epstopdfsetup{suffix=-\SourceExt-converted-to}|\\
+%   \xfile{foo.eps} $\Rightarrow$ \xfile{foo-eps-converted-to.pdf}
+%   \end{quote}
+%   See also the next option \xoption{prefersuffix} that
+%   modifies the behaviour of option \xoption{suffix} in some
+%   cases.
+%
+%   Default for \xoption{suffix} is `|-\SourceExt-converted-to|'.
+%
+% \It{prefersuffix}
+%   If a suffix is set by option \xoption{suffix}, then there can be
+%   two image file names that could be taken into account for inclusion:
+%   A image file name with the suffix string inside
+%   its name and a image file name without; e.g. for \xfile{foo.eps}
+%   the names could be:
+%   \begin{quote}
+%   \xfile{foo-suffix.pdf}, \xfile{foo.pdf}
+%   \end{quote}
+%   If option \xoption{perfersuffix} is turned on, the
+%   file \xfile{foo-suffix.pdf} and its generation is preferred
+%   over using \xfile{foo.pdf}. Otherwise \xfile{foo.pdf} is included
+%   without generating \xfile{foo-suffix.pdf}.
+%   The default of option \xoption{prefersuffix} is \texttt{true}.
+% \It{program@epstopdf}
+%   The name for the conversion program from EPS to PDF,
+%   default is `|epstopdf|'.
+% \It{verbose}
+%   It prints some information about the image in the \xfile{.log} file
+%   (default).
+% \end{description}
+%
+% \subsection{Configuration}
+%
+% \subsubsection{System configuration file \xfile{epstopdf-sys.cfg}}
+%
+% If \xfile{epstopdf-sys} exists it is loaded at the end of the
+% package \xpackage{epstopdf-base} and before the user configuration
+% file. It's intended for TeX distributors. Thus they could add
+% additional conversion rules (e.g., .gif -> .png) or set options.
+%
+% \subsubsection{User configuration file \xfile{epstopdf.cfg}}
+%
+% A configuration file \xfile{epstopdf.cfg} is loaded at the end
+% of the package if it exists. It can be used for changing
+% the default option setting. Example:
+% \begin{quote}
+% |\epstopdfsetup{verbose=false}|
+% \end{quote}
+%
+% \subsubsection{Conversion program}
+%
+% You can use \cs{DeclareGraphicsRule} in a similar way as the
+% route via \xprogram{dvips} to specify the conversion
+% command line.
+% The conversion argument starts with a back tick, followed
+% by the conversion command including parameters.
+%
+% The whole conversion argument should also be wrapped inside
+% \cs{epstopdfcall}. This reduces the problem with packages
+% (e.g. \xpackage{pst-pdf}) that use the conversion argument
+% and expands it. Macros \cs{SourceFile}, \cs{OutputFile}, and
+% \cs{SourceExt} are not defined outside \xpackage{epstopdf-base}'s
+% \cs{Gin@setfile} and error messages because of undefined
+% command names are the result. If \cs{epstopdfcall} detects that
+% it is called outside \xpackage{epstopdf-base}'s \cs{Gin@setfile}
+% then it replaces the conversion argument by
+% package \xpackage{graphics}'s
+% default, usually the image file.
+%
+% The following macros are available inside:
+% \begin{description}
+% \def\It#1{\item[\cs{#1}:]}
+% \It{OutputFile}: output file name (with known path and extension)
+% \It{SourceFile}: source file name (with known path and extension),
+%                  usually the same as |#1|,
+% \It{SourceExt}: source extension without leading dot.
+% \end{description}
+%
+% \paragraph{Conversion from EPS to PDF.}
+% Other programs than \xprogram{epstopdf} can be used to convert from
+% EPS to PDF. Example that uses \xprogram{Ghostscript}:
+% \begin{quote}
+%   |\DeclareGraphicsRule{.eps}{pdf}{.pdf}{%|\\
+%   |  \epstopdfcall{`ps2pdf -dEPSCrop #1 \noexpand\OutputFile}%|\\
+%   |}|
+% \end{quote}
+% \cs{DeclareGraphicsRule} expands the argument, therefore \cs{noexpand}
+% is necessary. As convenience package \xpackage{epstopdf-base} defines
+% \cs{epstopdfDeclareGraphicsRule}. Then the conversion argument
+% is not expanded, \cs{epstopdfcall} and the back tick are added:
+% \begin{quote}
+%   |\epstopdfDeclareGraphicsRule{.eps}{pdf}{.pdf}{%|\\
+%   |  ps2pdf -dEPSCrop #1 \OutputFile|\\
+%   |}|
+% \end{quote}
+%
+% Also \cs{OutputFile} respects the setting of option \xoption{outdir}.
+%
+% \subsection{Other image formats}
+%
+% The support that package \xpackage{epstopdf} implements is not
+% limited to EPS files. Other image conversions can be declared.
+% The following example shows it for GIF images under Unix with
+% ImageMagick's \xprogram{convert}:
+%\begin{quote}
+%\begin{verbatim}
+%\epstopdfDeclareGraphicsRule{.gif}{png}{.png}{%
+%  convert #1 \OutputFile
+%}
+%\end{verbatim}
+%\end{quote}
+% The file extension \xfile{.gif} can be added to the extension list that
+% package \xpackage{graphics} searches if the file extension
+% is not given in \cs{includegraphics}.
+% The list can be set by \cs{GraphicsExtensions}.
+% \begin{quote}
+% |\AppendGraphicsExtensions{.gif}|\\
+% or\\
+% |\PrependGraphicsExtensions{.gif}|
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Wrapper package}
+%
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@epstopdf.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{epstopdf}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@epstopdf.sty\endcsname
+\ProvidesPackage{epstopdf}%
+  [2010/02/09 v2.5 Conversion with epstopdf on the fly (HO)]%
+%    \end{macrocode}
+%    Larger catcode set because of configuration files needed.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ETE@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ETE@AtEnd{%
+    \ETE@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\ETE@AtEnd{\ETE@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\ETE@SavedAtEnd\ETE@AtEnd
+\RequirePackage{epstopdf-base}[2010/02/09]
+\let\ETE@AtEnd\ETE@SavedAtEnd
+%    \end{macrocode}
+%
+% \subsubsection{Option handling}
+%
+%    \begin{macrocode}
+\DeclareOption*{%
+  \expandafter\epstopdfsetup\expandafter{\CurrentOption}%
+}
+\ProcessOptions*\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ETE@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Base package}
+%
+%    \begin{macrocode}
+%<*base>
+%    \end{macrocode}
+%
+% \subsection{Preparations}
+%
+% \subsubsection{Relead check and identification}
+%
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@epstopdf-base.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{epstopdf-base}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@epstopdf-base.sty\endcsname
+\ProvidesPackage{epstopdf-base}%
+  [2010/02/09 v2.5 Base part for package epstopdf]%
+%    \end{macrocode}
+%
+% \subsubsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ETE@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ETE@AtEnd{%
+    \ETE@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{96}{12}% `
+\edef\ETE@AtEnd{\ETE@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsubsection{Load packages}
+%
+%    \begin{macrocode}
+\RequirePackage{infwarerr}[2007/09/09]
+\RequirePackage{grfext}\relax
+\RequirePackage{kvoptions}[2007/10/02]
+\RequirePackage{pdftexcmds}[2007/11/11]
+%    \end{macrocode}
+%
+% \subsection{Checks}
+%
+% Check, whether package graphics is loaded
+% (also graphicx loads graphics).
+% Because miniltx.tex does not know \cs{@ifpackageloaded}
+% we test for \cs{Gin@setfile} instead.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname Gin@setfile\endcsname\relax
+  \@PackageWarningNoLine{epstopdf}{%
+    No graphics package \string`graphic{s,x}\string' loaded%
+  }%
+  \newcommand*{\epstopdfsetup}[1]{}%
+  \expandafter\ETE@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% Check, whether pdftex.def is loaded. \cs{ver@pdftex.def} is not
+% available with miniltx.tex, thus we test for \cs{Gin@driver}.
+%    \begin{macrocode}
+\begingroup
+  \def\x{pdftex.def}%
+  \ifx\Gin@driver\x
+  \else
+    \@PackageWarningNoLine{epstopdf}{%
+      Drivers other than `pdftex.def' are not supported%
+    }%
+    \endgroup
+    \newcommand*{\epstopdfsetup}[1]{}%
+    \expandafter\ETE@AtEnd
+  \fi%
+\endgroup
+%    \end{macrocode}
+%
+% Check, whether the shell escape feature is enabled.
+%
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname pdf@shellescape\endcsname\relax
+  \else
+    \ifnum\pdf@shellescape>0 %
+    \else
+      \@PackageWarningNoLine{epstopdf}{%
+        Shell escape feature is not enabled%
+      }%
+    \fi
+  \fi
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Package loading}
+%
+%    \begin{macrocode}
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{family=ETE,prefix=ETE@}
+\DeclareBoolOption{update}
+\DeclareBoolOption{verbose}
+\newif\ifETE@prepend
+\DeclareVoidOption{prepend}{\ETE@prependtrue}
+\DeclareVoidOption{append}{\ETE@prependfalse}
+\DeclareStringOption{outdir}
+\DeclareStringOption{suffix}
+\DeclareBoolOption{prefersuffix}
+\DeclareStringOption{program@epstopdf}
+%    \end{macrocode}
+%    Options \xoption{disable} and \xoption{enable} are for testing
+%    only. Therefore they are not documented on purpose.
+%    \begin{macrocode}
+\DeclareBoolOption{disable}
+\DeclareComplementaryOption{enable}{disable}
+%    \end{macrocode}
+%    \begin{macrocode}
+\newcommand*{\epstopdfsetup}{\setkeys{ETE}}
+%    \end{macrocode}
+%
+% \subsubsection{Default setting}
+%
+%    \begin{macrocode}
+\epstopdfsetup{%
+  verbose,%
+  enable,%
+  append,%
+  update,%
+  prefersuffix,%
+  suffix=-\SourceExt-converted-to,%
+  program@epstopdf=epstopdf%
+}
+%    \end{macrocode}
+%
+% \subsection{Make and verbose}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filemoddate\endcsname\relax
+  \def\ETE@Make#1#2{%
+    \ifETE@update
+      \ETE@WarnModDate
+    \fi
+    \@firstofone
+  }%
+  \def\ETE@WarnModDate{%
+    \@PackageWarningNoLine{epstopdf}{%
+      \string\pdffilemoddate\space is not available,\MessageBreak
+      option `update' will be ignored%
+    }%
+    \global\let\ETE@WarnModDate\relax
+  }%
+  \def\ETE@FileInfo#1#2{#1 file: <#2>}%
+\else
+  \def\ETE@Make#1#2{%
+    \ifETE@update
+      \ifnum\pdf@strcmp{\pdf@filemoddate{#1}}{\pdf@filemoddate{#2}}>0 %
+        \expandafter\expandafter\expandafter\@firstofone
+      \else
+        \@PackageInfoNoLine{epstopdf}{%
+          Output file is already uptodate%
+        }%
+        \expandafter\expandafter\expandafter\@gobble
+      \fi
+    \else
+      \expandafter\@firstofone
+    \fi
+  }%
+  \def\ETE@FileInfo#1#2{%
+    #1 file: <#2>%
+    \expandafter\expandafter\expandafter
+    \ETE@Date\pdf@filemoddate{#2}\@nil
+    \expandafter\expandafter\expandafter
+    \ETE@Size\pdf@filesize{#2}\@nil
+  }%
+  \def\ETE@Date#1\@nil{%
+    \ifx\\#1\\%
+    \else
+      \ETE@@Date#1\@nil
+    \fi
+  }%
+  \def\ETE@@Date#1:#2#3#4#5#6#7#8#9{%
+    \MessageBreak
+    \@spaces\space\space\space date: #2#3#4#5-#6#7-#8#9 %
+    \ETE@@Time
+  }%
+  \def\ETE@@Time#1#2#3#4#5#6#7\@nil{%
+    #1#2:#3#4:#5#6%
+  }%
+  \def\ETE@Size#1\@nil{%
+    \ifx\\#1\\%
+    \else
+      \MessageBreak
+      \@spaces\space\space\space size: #1 bytes%
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Adding conversion support}
+%
+%    Patch \cs{Gin@setfile} to execute |#3|, if it contains
+%    a command.
+%    \begin{macrocode}
+\expandafter\ifx\csname ETE@OrgGin@setfile\endcsname\relax
+  \let\ETE@OrgGin@setfile\Gin@setfile
+\else
+  \@PackageError{epstopdf}{%
+    Command \string\ETE@OrgGin@setfile\space
+    already defined.\MessageBreak
+  }{%
+    Probably some package has included the code of this package%
+    \MessageBreak
+    instead of using \string\RequirePackage{epstopdf}.%
+    \MessageBreak
+    \@ehc
+  }%
+\fi
+\def\ETE@IfFileExists{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname grffile@IfFileExists\endcsname\relax
+    \expandafter\IfFileExists
+  \else
+    \global\let\ETE@IfFileExists\grffile@IfFileExists
+    \expandafter\grffile@IfFileExists
+  \fi
+}
+\def\ETE@Skip#1#2\x\fi\fi{%
+  \fi
+  \fi
+  \endgroup
+  \fi
+  \fi
+  #1%
+}
+\newif\ifETE@InsideSetfile
+\newcommand*{\epstopdfcall}[1]{%
+  \ifETE@InsideSetfile
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {`#1}%
+  {\Gin@base\Gin@ext}%
+}
+\def\ETE@DefCommandLine#1{%
+  \edef\CommandLine{\expandafter\fi\if`#1}%
+}
+\def\ETE@DefX#1{%
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\x
+  \expandafter\expandafter\expandafter{%
+    \expandafter\fi\if`#1\relax\else
+  }%
+}
+\def\ETE@Gin@setfile#1#2#3{%
+  \ifETE@disable
+    \ETE@OrgGin@setfile{#1}{#2}{#3}%
+  \else
+    \begingroup
+      \ETE@InsideSetfiletrue
+      \ETE@DefX{#3}%
+    \expandafter\endgroup
+    \ifx\x\@empty
+      \ETE@OrgGin@setfile{#1}{#2}{#3}%
+    \else
+      \begingroup
+        \ETE@InsideSetfiletrue
+        \def\GraphicsType{#1}%
+        \def\GraphicsRead{#2}%
+        \ifETE@prefersuffix
+        \else
+          \ifx\ETE@suffix\@empty
+          \else
+            \ETE@IfFileExists{\Gin@base\GraphicsRead}{%
+              \ETE@Skip{%
+                \ETE@OrgGin@setfile{#1}{#2}{\Gin@base#2}%
+              }%
+            }{%
+              \let\next\relax
+            }%
+            \next
+          \fi
+        \fi
+        \ifx\Gin@ext\relax
+          \let\SourceExt\Gin@eext
+          \def\SourceFile{\Gin@base\Gin@eext}%
+        \else
+          \let\SourceExt\Gin@ext
+          \def\SourceFile{\Gin@base\Gin@ext}%
+        \fi
+        \edef\SourceExt{% remove dot
+          \expandafter\@cdr\SourceExt\@empty\@nil
+        }%
+        \let\OutputDirectory\ETE@outdir
+        \ifx\OutputDirectory\@empty
+          \edef\OutputFile{\ETE@GenerateName{\Gin@base}{#2}}%
+        \else
+          \begingroup
+            \filename@parse{\Gin@base#2}%
+            \edef\x{\endgroup
+              \def\noexpand\OutputFile{%
+                \ETE@GenerateName{%
+                  \OutputDirectory\filename@base
+                }{#2}%
+              }%
+            }%
+          \x
+        \fi
+        \ETE@DefCommandLine{#3}%
+        \ifETE@verbose
+          \@PackageInfo{epstopdf}{%
+            \ETE@FileInfo{Source}\SourceFile\MessageBreak
+            \ETE@FileInfo{Output}\OutputFile\MessageBreak
+            Command: <\CommandLine>\MessageBreak
+            \string\includegraphics
+          }%
+        \fi
+        \ETE@Make\SourceFile\OutputFile{%
+          \pdf@system{\CommandLine}%
+          \ifETE@verbose
+            \@PackageInfoNoLine{epstopdf}{%
+              \ETE@FileInfo{Result}\OutputFile
+            }%
+          \fi
+        }%
+        \edef\x{\endgroup
+          \ifx\OutputDirectory\@empty
+          \else
+            \def\noexpand\Gin@base{%
+              \OutputDirectory\noexpand\filename@base
+            }%
+          \fi
+          \ifx\ETE@suffix\@empty
+          \else
+            \edef\noexpand\Gin@base{%
+              \noexpand\Gin@base\ETE@suffix
+            }%
+          \fi
+          \noexpand\ETE@OrgGin@setfile{%
+            \GraphicsType
+          }{%
+            \GraphicsRead
+          }{%
+            \OutputFile
+          }%
+        }%
+      \x
+    \fi
+  \fi
+}
+\let\Gin@setfile\ETE@Gin@setfile
+\def\ETE@GenerateName#1#2{%
+  #1\ETE@suffix#2%
+}
+%    \end{macrocode}
+%
+% \subsection{Declare graphics rule}
+%
+%    \begin{macrocode}
+\newcommand*{\epstopdfDeclareGraphicsRule}[4]{%
+  \ifx\\#4\\%
+    \@PackageError{epstopdf-base}{%
+      Conversion command is missing%
+    }\@ehc
+  \else
+    \begingroup
+      \@ifundefined{Gin@rule@#1}{%
+      }{%
+        \@PackageInfo{epstopdf-base}{%
+          Redefining graphics rule for `#1'%
+        }%
+      }%
+    \endgroup
+    \@namedef{Gin@rule@#1}##1{{#2}{#3}{\epstopdfcall{#4}}}%
+  \fi
+}
+%    \end{macrocode}
+%
+% \cs{DeclareGraphicsRule} for .eps
+%    \begin{macrocode}
+\epstopdfDeclareGraphicsRule{.eps}{pdf}{.pdf}{%
+  \ETE@epstopdf{#1}%
+}
+\def\ETE@epstopdf#1{%
+  \ETE@program@epstopdf\space
+  \ifcase\ifx\OutputDirectory\@empty
+           \ifx\ETE@suffix\@empty
+             1%
+           \fi
+         \fi
+         0 %
+    --outfile=\OutputFile\space
+  \fi
+  #1%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifETE@prepend
+  \expandafter\PrependGraphicsExtensions
+\else
+  \expandafter\AppendGraphicsExtensions
+\fi
+{.eps}
+\let\ETE@prepend\@undefined
+\DeclareVoidOption{prepend}{%
+  \PrependGraphicsExtensions{.eps}%
+}
+\let\ETE@append\@undefined
+\DeclareVoidOption{append}{%
+  \AppendGraphicsExtensions{.eps}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\InputIfFileExists{epstopdf-sys.cfg}{}{}
+\InputIfFileExists{epstopdf.cfg}{}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ETE@AtEnd%
+%</base>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Preface for standard catcode check}
+%
+%    \begin{macrocode}
+%<*test1>
+\input miniltx.tex\relax
+\def\Gin@driver{pdftex.def}
+\input graphicx.sty\relax
+\resetatcatcode
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input epstopdf.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/epstopdf.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/epstopdf.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex epstopdf.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   epstopdf.sty & tex/latex/oberdiek/epstopdf.sty\\
+%   epstopdf-base.sty & tex/latex/oberdiek/epstopdf-base.sty\\
+%   epstopdf.pdf & doc/latex/oberdiek/epstopdf.pdf\\
+%   test/epstopdf-test1.tex & doc/latex/oberdiek/test/epstopdf-test1.tex\\
+%   epstopdf.dtx & source/latex/oberdiek/epstopdf.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk epstopdf.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{epstopdf.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex epstopdf.dtx
+%makeindex -s gind.ist epstopdf.idx
+%pdflatex epstopdf.dtx
+%makeindex -s gind.ist epstopdf.idx
+%pdflatex epstopdf.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{epstopdf-pkg.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='epstopdf-pkg'>
+  <name>epstopdf-pkg</name>
+  <caption>Call epstopdf "on the fly"</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2006-2010'/>
+  <license type='lppl1.3'/>
+  <version number='2.5'/>
+  <description>
+    The package adds support for EPS files in the
+    <xref refid='graphicx'>graphicx</xref> package when running under
+    PDFTeX.  If an EPS graphic is detected, the package spawns a
+    process to convert the EPS to PDF, using the script
+    <xref refid='epstopdf'>epstopdf</xref>.  This of course requires
+    that shell escape is enabled for the PDFTeX run.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/epstopdf.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/epstopdf.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2001/01/06 v1.0}
+%   \item
+%     First public version,
+%     published in the \pdfTeX\ mailing list.
+%   \end{Version}
+%   \begin{Version}{2001/02/04 v1.1}
+%   \item
+%     Minor documentation update.
+%   \item
+%     CTAN.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.2}
+%   \item
+%     DTX framework.
+%   \item
+%     Compatibility for \xfile{miniltx.tex}.
+%   \end{Version}
+%   \begin{Version}{2006/08/26 v1.3}
+%   \item
+%     Check for \cs{write18} if available and print a warning
+%     if the feature is not enabled.
+%   \end{Version}
+%   \begin{Version}{2007/04/26 v1.4}
+%   \item
+%     Documentation rewritten and extended.
+%   \end{Version}
+%   \begin{Version}{2007/10/02 v1.5}
+%   \item
+%     New option \xoption{update}: If the converted file exists, it will be only
+%     converted if it is out of date.
+%   \item
+%     Updating the extension list is delegated to package \xpackage{grfext}.
+%     Fine tuning is done by the new options \xoption{append}, \xoption{prepend}.
+%   \item
+%     New option \xoption{outdir} for changing the output directory.
+%   \item
+%     New option \xoption{verbose}.
+%   \item
+%     \cs{SourceFile} and \cs{OutputFile} introduced.
+%   \item
+%     Configuration file support added.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.6}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+%   \begin{Version}{2008/05/06 v1.7}
+%   \item
+%     Warning messages uses ``loaded'' instead of ``found''.
+%   \end{Version}
+%   \begin{Version}{2009/03/01 v1.8}
+%   \item
+%     Warning message for missing \xfile{pdftex.def} changed.
+%   \end{Version}
+%   \begin{Version}{2009/07/06 v1.9}
+%   \item
+%     Option \xoption{suffix} added.
+%   \end{Version}
+%   \begin{Version}{2009/07/07 v1.10}
+%   \item
+%     \cs{SourceExt} added.
+%   \item
+%     If option \xoption{suffix} is set, the inclusion of
+%     an image without the suffix namespace is preferred over generating the
+%     the image within the suffix namespace.
+%   \end{Version}
+%   \begin{Version}{2009/07/12 v2.0}
+%   \item
+%     New default settings.
+%   \item
+%     Package is split into \xpackage{epstopdf} that only takes package
+%     options and loads \xpackage{epstopdf-base} that does the work.
+%   \item
+%     \cs{epstopdfDeclareGraphicsRule} and \cs{epstopdfcall} added.
+%   \item
+%     \xfile{epstopdf-sys.cfg} is loaded before \xfile{epstopdf.cfg}
+%     if \xfile{epstopdf-sys.cfg} exists.
+%   \end{Version}
+%   \begin{Version}{2009/07/15 v2.1}
+%   \item
+%     Default setting: \xoption{verbose} is now turned on as the
+%     documentation for v2.0 said.
+%   \item
+%     Documentation fixes.
+%   \end{Version}
+%   \begin{Version}{2009/07/16 v2.2}
+%   \item
+%     Fixed redefined \cs{Gin@setfile}.
+%   \item
+%     Documentation extended for package options.
+%   \end{Version}
+%   \begin{Version}{2009/09/24 v2.3}
+%   \item
+%     Bug fix for the case that both option \xoption{suffix} and
+%     \xoption{outdir} are used.
+%   \end{Version}
+%   \begin{Version}{2009/10/17 v2.4}
+%   \item
+%     The name of the program `epstopdf' can be configured via
+%     the new option \xoption{program@epstopdf}.
+%   \end{Version}
+%   \begin{Version}{2010/02/09 v2.5}
+%   \item
+%     Wording of warning message fixed (Karl Berry).
+%   \item
+%     \cs{ETE@Gin@setfile} added (Karl Berry).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

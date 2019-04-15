@@ -1,0 +1,169 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews15.tex 
+% 
+% This is issue 15 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]     % uncomment this line to get Palatino
+   {ltnews}[2004/02/28]
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{December}  
+\publicationyear{2003}
+\publicationissue{15}
+
+\begin{document}
+
+\maketitle
+
+%\raisefirstsection
+
+\section{Anniversary release}
+
+Yes, it's now 10~years since the first release in this series and, for
+Knuthists, this release also contains \textit{Issue 16}\,!
+
+Meanwhile this \textit{Issue~15} describes the major new features in
+the current release whilst \textit{Issue~16} looks\newline
+a little way into the future of \LaTeX{}.
+
+
+\section{LPPL -- new version}
+
+Most importantly, there is now a new version, 1.3, of the \LaTeX{}
+Project Public Licence.   Many of you will\newline
+be thrilled to know that, following the exchange of over 1600 e-mail
+messages dissecting various aspects of its philosophy such as `how
+many angels can appear in the name of a file before it becomes
+non-free', this version\newline
+is now officially a DFSG (Debian Free Software Guidelines) approved license.
+The discussions start at
+\url{http://lists.debian.org/debian-legal/2002/debian-legal-200207/threads.html}
+with high traffic throughout August to October~2002 and further
+heated discussions starting in April~2003 and concluding
+around June at
+\url{http://lists.debian.org/debian-legal/2003/debian-legal-200306/msg00206.html}.
+
+The important features of the new version are useful clarifications in
+the wording, and revised procedures\newline
+for making a change to the Current Maintainer of a package.  Special
+thanks to all those people from\newline Debian Legal who worked
+constructively with us\newline
+on this onerous task, especially but not exclusively\newline
+Jeff Licquia and Branden Robinson.
+
+
+\section{Small updates to varioref}
+
+The English has been corrected in \verb|\reftextbefore|
+(an incompatible change).  There are other extensions
+such as \verb|\labelformat|, \verb|\Ref|, \verb|\Vref| and \verb|\vpagerefnum|. 
+Some Dutch text has also been changed and two\newline
+new options added: \package{slovak} and \package{slovene}.
+
+
+\section{New and more robust commands}
+
+Many of the math mode commands for compound symbols have been made
+robust and a new robust command has been added: \verb|\nobreakdashes|.
+This last is a low-level command, borrowed from the \package{amsmath}
+package, for use only before hyphens or dashes.  It prevents the line
+break that is normally allowed\newline
+after the following sequence of dashes.
+
+
+\section{Fixing font sizes}
+
+The new \package{fix-cm} package, by Walter Schmidt, changes the CM font
+definition (\texttt{.fd}) files so that similar design sizes are used
+in both the \texttt{OT1} and \texttt{T1} encodings.
+
+
+\section{Font encodings}
+
+A number of options have been added to the \package{textcomp} package,
+enabling only available glyphs to be used.
+Also, the `NFSS font families' are now divided into five different groups
+according to the subset of glyphs each provides from the full
+collection of symbols in the TS1 encoding. 
+Given sufficient information about a font family 
+\package{textcomp} will use this in order to limit the\newline
+typesetting to those glyphs that are available.
+
+Use of this mechanism has also enhanced \verb|\oldstylenums|
+to use the current font if possible.
+
+
+\section{Displaying font tables}
+
+With the \package{nfssfont} package you can now
+specify the font to display by giving its `NFSS classification',
+rather than needing to know its external font file's name.
+It is also now possible to generate large collections of font
+tables in batch mode by providing a suitable input file.
+
+
+\section{New input encodings}
+
+The \package{inputenc} package has been extended as follows: 
+\package{macce} input encoding
+(Apple Central European),
+thanks to Radek Tryc and Marcin Wolinski; \package{cp1257}\newline
+for Baltic languages; \package{latin10},
+thanks to Ionel Ciob\^{i}c\u{a}.\newline
+The euro symbol has by
+now been added to several encodings:
+\package{ansinew}, \package{cp1250}
+and \package{cp1252} (which also\newline
+has another addition), whilst \package{cp858}
+adds it to \package{cp850}.
+
+
+\section{Unicode input}
+
+Partial, experimental support for text files that use the Unicode
+encoding form UTF-8 is now provided by the option \package{utf8} for
+the \package{inputenc} package.
+
+The only Unicode text file characters supported by the current version
+are those based on the most common inputs for glyphs from the small
+collection\newline
+of standard \LaTeX{} Latin encodings.
+
+
+\section{And finally \ldots\ pict2e}
+
+The old, non-functional version of this package has been removed 
+ as there is now a fully working version from Hubert G\"a{\ss}lein
+ and Rolf Niepraschk.  It is described
+ in \textit{The \LaTeX{} Manual}.
+
+\end{document}

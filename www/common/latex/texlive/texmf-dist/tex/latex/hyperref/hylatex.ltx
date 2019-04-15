@@ -1,0 +1,43 @@
+%
+% hylatex.ltx
+% Tanmoy Bhattacharya and Sebastian Rahtz, June 1995
+%
+% Use this file to make a format which includes the
+% hyperref package in every LaTeX job.
+%
+% In web2c 7-based TeX world, we create the format file with
+%   tex  -ini \&latex hylatex.ltx
+% and then use with
+%   tex \&hylatex
+%
+% In teTeX (TeX version 3.14159 (C version 6.1), LaTeX2e <1996/12/01>
+% patch level 1), I create the format file with
+%   initex \&latex hylatex.ltx
+% and then use with
+%   virtex \&hylatex
+%
+% This method is not supported by the LaTeX2e team, so
+% I will try to find a better way. \AtBeginDocument does not
+% work for reasons which I do not understand.
+%
+\makeatletter
+\expandafter\everyjob\expandafter{\the\everyjob
+ \typeout{ ********* Hyperref Macros loaded ******* }}
+%
+\expandafter\let\csname REAL document\endcsname\document
+%
+\def\document{%
+ \endgroup
+%
+% NOTE:
+% This setup sets up no options by default;
+% change to suit your needs, by writing a hyperref.cfg control
+% file.
+%
+ \RequirePackage{hyperref}
+ \begingroup
+ \@endpefalse\csname REAL document\endcsname
+}
+\makeatother
+\dump
+

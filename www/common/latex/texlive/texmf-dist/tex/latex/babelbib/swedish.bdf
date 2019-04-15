@@ -1,0 +1,176 @@
+%%
+%% This is file `swedish.bdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,swedish')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+%% Language definitions for Swedish by
+%%   Hans Fredrik Nordhaug <hansfn@mi.uib.no> and
+%%   Erik \"Osthols <erik.osthols@gmail.com>
+\ProvidesFile{swedish.bdf}
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\newcommand\bibsswedish[1][swedish]{%
+  \def\biblanguagename{#1}%
+  \def\btxetalshort##1{\protect\foreignlanguage{#1}{et~al##1{}}}%
+  \def\btxetallong##1{\protect\foreignlanguage{#1}{et~alii}}%
+  \def\btxandshort##1{\protect\foreignlanguage{#1}{och}}%
+  \def\btxandlong##1{\protect\foreignlanguage{#1}{och}}%
+  \def\btxandcomma##1{}%
+  \def\btxinlong##1{\protect\foreignlanguage{#1}{i}}%
+  \def\btxinshort##1{\protect\foreignlanguage{#1}{i}}%
+  \def\btxofseriesshort##1{\protect\foreignlanguage{#1}{av}}%
+  \def\btxinseriesshort##1{\protect\foreignlanguage{#1}{i}}%
+  \def\btxofserieslong##1{\protect\foreignlanguage{#1}{av}}%
+  \def\btxinserieslong##1{\protect\foreignlanguage{#1}{i}}%
+  \def\btxeditorshort##1{\protect\foreignlanguage{#1}{red##1{}}}%
+  \def\btxeditorlong##1{\protect\foreignlanguage{#1}{redakt\"or}}%
+  \def\btxeditorsshort##1{\protect\foreignlanguage{#1}{red##1{}}}%
+  \def\btxeditorslong##1{\protect\foreignlanguage{#1}{redakt\"orer}}%
+  \def\btxvolumeshort##1{\protect\foreignlanguage{#1}{vol##1{}}}%
+  \def\btxvolumelong##1{\protect\foreignlanguage{#1}{volym}}%
+  \def\btxnumbershort##1{\protect\foreignlanguage{#1}{nr##1{}}}%
+  \def\btxnumberlong##1{\protect\foreignlanguage{#1}{nummer}}%
+  \def\btxeditionshort##1{\protect\foreignlanguage{#1}{utg}}%
+  \def\btxeditionlong##1{\protect\foreignlanguage{#1}{utg\aa va}}%
+  \def\btxeditionnumshort##1##2{\btxnumeralshort{##1}~\btxeditionshort{##2}}%
+  \def\btxeditionnumlong##1##2{\btxnumerallong{##1}~\btxeditionlong{##2}}%
+  \def\btxchaptershort##1{\protect\foreignlanguage{#1}{kap##1{}}}%
+  \def\btxchapterlong##1{\protect\foreignlanguage{#1}{kapitel}}%
+  \def\btxpageshort##1{\protect\foreignlanguage{#1}{ss##1{}}}%
+  \def\btxpagelong##1{\protect\foreignlanguage{#1}{sida}}%
+  \def\btxpagesshort##1{\protect\foreignlanguage{#1}{s##1{}}}%
+  \def\btxpageslong##1{\protect\foreignlanguage{#1}{sidor}}%
+  \def\btxmastthesis##1{\protect\foreignlanguage{#1}{examensarbete}}%
+  \def\btxphdthesis##1{\protect\foreignlanguage{#1}{doktorsavhandling}}%
+  \def\btxtechrepshort##1{\protect\foreignlanguage{#1}{Tekn.\ rapp##1{}}}%
+  \def\btxtechreplong##1{\protect\foreignlanguage{#1}{Teknisk rapport}}%
+  \def\btxmonjanlong##1{\protect\foreignlanguage{#1}{januari}}%
+  \def\btxmonfeblong##1{\protect\foreignlanguage{#1}{februari}}%
+  \def\btxmonmarlong##1{\protect\foreignlanguage{#1}{mars}}%
+  \def\btxmonaprlong##1{\protect\foreignlanguage{#1}{april}}%
+  \def\btxmonmaylong##1{\protect\foreignlanguage{#1}{maj}}%
+  \def\btxmonjunlong##1{\protect\foreignlanguage{#1}{juni}}%
+  \def\btxmonjullong##1{\protect\foreignlanguage{#1}{juli}}%
+  \def\btxmonauglong##1{\protect\foreignlanguage{#1}{augusti}}%
+  \def\btxmonseplong##1{\protect\foreignlanguage{#1}{september}}%
+  \def\btxmonoctlong##1{\protect\foreignlanguage{#1}{oktober}}%
+  \def\btxmonnovlong##1{\protect\foreignlanguage{#1}{november}}%
+  \def\btxmondeclong##1{\protect\foreignlanguage{#1}{december}}%
+  \def\btxmonjanshort##1{\protect\foreignlanguage{#1}{jan##1{}}}%
+  \def\btxmonfebshort##1{\protect\foreignlanguage{#1}{feb##1{}}}%
+  \def\btxmonmarshort##1{\protect\foreignlanguage{#1}{mar}}%
+  \def\btxmonaprshort##1{\protect\foreignlanguage{#1}{apr##1{}}}%
+  \def\btxmonmayshort##1{\protect\foreignlanguage{#1}{maj}}%
+  \def\btxmonjunshort##1{\protect\foreignlanguage{#1}{jun##1{}}}%
+  \def\btxmonjulshort##1{\protect\foreignlanguage{#1}{jul##1{}}}%
+  \def\btxmonaugshort##1{\protect\foreignlanguage{#1}{aug##1{}}}%
+  \def\btxmonsepshort##1{\protect\foreignlanguage{#1}{sep##1{}}}%
+  \def\btxmonoctshort##1{\protect\foreignlanguage{#1}{okt##1{}}}%
+  \def\btxmonnovshort##1{\protect\foreignlanguage{#1}{nov##1{}}}%
+  \def\btxmondecshort##1{\protect\foreignlanguage{#1}{dec##1{}}}%
+  \def\Btxinlong##1{\protect\foreignlanguage{#1}{I}}%
+  \def\Btxinshort##1{\protect\foreignlanguage{#1}{I}}%
+  \def\Btxeditorshort##1{\protect\foreignlanguage{#1}{Red##1{}}}%
+  \def\Btxeditorlong##1{\protect\foreignlanguage{#1}{Redakt\"or}}%
+  \def\Btxeditorsshort##1{\protect\foreignlanguage{#1}{Red##1{}}}%
+  \def\Btxeditorslong##1{\protect\foreignlanguage{#1}{Redakt\"orer}}%
+  \def\Btxvolumeshort##1{\protect\foreignlanguage{#1}{Vol##1{}}}%
+  \def\Btxvolumelong##1{\protect\foreignlanguage{#1}{Volym}}%
+  \def\Btxnumbershort##1{\protect\foreignlanguage{#1}{Nr##1{}}}%
+  \def\Btxnumberlong##1{\protect\foreignlanguage{#1}{Nummer}}%
+  \def\Btxeditionshort##1{\protect\foreignlanguage{#1}{Utg}}%
+  \def\Btxeditionlong##1{\protect\foreignlanguage{#1}{Utg\aa va}}%
+  \def\Btxeditionnumshort##1##2{\btxnumeralshort{##1}~\Btxeditionshort{##2}}%
+  \def\Btxeditionnumlong##1##2{\btxnumerallong{##1}~\Btxeditionlong{##2}}%
+  \def\Btxchaptershort##1{\protect\foreignlanguage{#1}{Kap##1{}}}%
+  \def\Btxchapterlong##1{\protect\foreignlanguage{#1}{Kapitel}}%
+  \def\Btxpageshort##1{\protect\foreignlanguage{#1}{S##1{}}}%
+  \def\Btxpagelong##1{\protect\foreignlanguage{#1}{Sida}}%
+  \def\Btxpagesshort##1{\protect\foreignlanguage{#1}{Ss##1{}}}%
+  \def\Btxpageslong##1{\protect\foreignlanguage{#1}{Sida}}%
+  \def\Btxtechrepshort##1{\protect\foreignlanguage{#1}{Tekn.\ Rapp##1{}}}%
+  \def\Btxtechreplong##1{\protect\foreignlanguage{#1}{Teknisk Rapport}}%
+  \def\btxurldatecomment##1{\protect\foreignlanguage{#1}{, nedladdad ##1}}%
+  \def\btxfnamespaceshort{\,}%
+  \def\btxfnamespacelong{ }%
+  \def\btxnumeralshort#1{\btxnumeralswedish{swedish}{#1}}%
+  \def\btxnumerallong##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxnumerallong##1{%
+    \ifnumber{##1}{%
+      \ifcase##1 0:e\or f\"orsta\or andra\or tredje\or fj\"arde\or femte\or
+        sj\"atte\or sjunde\or {\aa}ttonde\or nionde\or tionde\else
+        \btxnumeralswedish{swedish}{##1}%
+      \fi}{##1}%
+  }%
+  \def\btxprintmonthyearnum##1##2{##1~##2}%
+  \def\btxkeywordlanguage##1{{\protect\selectlanguage{#1}##1}}%
+  \ifbbbblanguagenames
+    \def\btxlanguagenameamerican{\protect\foreignlanguage{#1}{engelska}}%
+    \def\btxlanguagenameaustrian{\protect\foreignlanguage{#1}{tyska}}%
+    \def\btxlanguagenamebrazil{\protect\foreignlanguage{#1}{portugisiska}}%
+    \def\btxlanguagenamebrazilian{\protect\foreignlanguage{#1}{portugisiska}}%
+    \def\btxlanguagenamebritish{\protect\foreignlanguage{#1}{engelska}}%
+    \def\btxlanguagenamebulgarian{\protect\foreignlanguage{#1}{bulgariska}}%
+    \def\btxlanguagenamecanadian{\protect\foreignlanguage{#1}{engelska}}%
+    \def\btxlanguagenamecanadien{\protect\foreignlanguage{#1}{franska}}%
+    \def\btxlanguagenamecatalan{\protect\foreignlanguage{#1}{katalanska}}%
+    \def\btxlanguagenamecroatian{\protect\foreignlanguage{#1}{kroatiska}}%
+    \def\btxlanguagenameczech{\protect\foreignlanguage{#1}{tjeckiska}}%
+    \def\btxlanguagenamedanish{\protect\foreignlanguage{#1}{danska}}%
+    \def\btxlanguagenamedutch{\protect\foreignlanguage{#1}{nederl\"andska}}%
+    \def\btxlanguagenameenglish{\protect\foreignlanguage{#1}{engelska}}%
+    \def\btxlanguagenameesperanto{\protect\foreignlanguage{#1}{esperanto}}%
+    \def\btxlanguagenamefinnish{\protect\foreignlanguage{#1}{finska}}%
+    \def\btxlanguagenamefrancais{\protect\foreignlanguage{#1}{franska}}%
+    \def\btxlanguagenamefrench{\protect\foreignlanguage{#1}{franska}}%
+    \def\btxlanguagenamefrenchb{\protect\foreignlanguage{#1}{franska}}%
+    \def\btxlanguagenamegerman{\protect\foreignlanguage{#1}{tyska}}%
+    \def\btxlanguagenamegermanb{\protect\foreignlanguage{#1}{tyska}}%
+    \def\btxlanguagenamegreek{\protect\foreignlanguage{#1}{grekiska}}%
+    \def\btxlanguagenamehebrew{\protect\foreignlanguage{#1}{hebreiska}}%
+    \def\btxlanguagenamehungarian{\protect\foreignlanguage{#1}{ungerska}}%
+    \def\btxlanguagenameicelandic{\protect\foreignlanguage{#1}{isl\"andska}}%
+    \def\btxlanguagenameirish{\protect\foreignlanguage{#1}{iriska}}%
+    \def\btxlanguagenameitalian{\protect\foreignlanguage{#1}{italienska}}%
+    \def\btxlanguagenamelatin{\protect\foreignlanguage{#1}{latin}}%
+    \def\btxlanguagenamenaustrian{\protect\foreignlanguage{#1}{tyska}}%
+    \def\btxlanguagenamengerman{\protect\foreignlanguage{#1}{tyska}}%
+    \def\btxlanguagenamenorsk{\protect\foreignlanguage{#1}{norska}}%
+    \def\btxlanguagenamenynorsk{\protect\foreignlanguage{#1}{nynorska}}%
+    \def\btxlanguagenamepolish{\protect\foreignlanguage{#1}{polska}}%
+    \def\btxlanguagenameportuges{\protect\foreignlanguage{#1}{portugisiska}}%
+    \def\btxlanguagenameportuguese{\protect\foreignlanguage{#1}{portugisiska}}%
+    \def\btxlanguagenamerussian{\protect\foreignlanguage{#1}{ryska}}%
+    \def\btxlanguagenamescottish{\protect\foreignlanguage{#1}{skotska}}%
+    \def\btxlanguagenameserbian{\protect\foreignlanguage{#1}{serbiska}}%
+    \def\btxlanguagenamespanish{\protect\foreignlanguage{#1}{spanska}}%
+    \def\btxlanguagenameswedish{\protect\foreignlanguage{#1}{svenska}}%
+    \def\btxlanguagenameturkish{\protect\foreignlanguage{#1}{turkiska}}%
+    \def\btxlanguagenameUKenglish{\protect\foreignlanguage{#1}{engelska}}%
+    \def\btxlanguagenameUSenglish{\protect\foreignlanguage{#1}{engelska}}%
+  \fi
+}
+\AtBeginDocument{%
+  \ifbbbbfixlanguage
+  \else
+    \bbbbaddto{swedish}{bibsswedish}
+  \fi
+  \bbbbaddto{swedish}{btxifchangecaseoff}
+}
+
+\endinput
+%%
+%% End of file `swedish.bdf'.

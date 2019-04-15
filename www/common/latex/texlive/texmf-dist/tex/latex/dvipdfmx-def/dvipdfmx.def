@@ -1,0 +1,393 @@
+%% This is file `dvipdfmx.def' for DVIPDFMx by J.-H. Cho and S. Hirata
+%% based upon `dvipdf.def' in the LaTeX `Graphics Bundle'.
+%%
+%% Copyright 2005-2015 Jin-Hwan Cho, Shunsaku Hirata
+%% (with contributions from many others)
+%% 
+%% This file is not part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+%% This driver is developed at:
+%%   http://puszcza.gnu.org.ua/projects/latexfmxdef
+%% Please report bugs and patches through the tracker there.
+%% Official releases, though, are made through CTAN:
+%%   http://www.ctan.org/pkg/dvipdfmx-def
+%% 
+%% The original source files were:
+%% drivers.dtx  (with options: `dvipdf,color1,psrulesZ')
+%%             Copyright (C) 1995 1996 1997 1998 1999, 2014 David Carlisle
+%%             Copyright (C) 1994 David Carlisle Sebastian Rahtz
+%%
+% emacs-page
+\ProvidesFile{dvipdfmx.def}
+  [2015/09/11 v4.06 LaTeX color/graphics driver for dvipdfmx (TeX Live/ChoF)]
+%
+\def\c@lor@arg#1{%
+  \dimen@#1\p@
+  \ifdim\dimen@<\z@\dimen@\maxdimen\fi
+  \ifdim\dimen@>\p@
+    \PackageError{color}{Argument `#1' not in range [0,1]}\@ehd
+  \fi}
+\def\color@gray#1#2{%
+  \c@lor@arg{#2}%
+  \edef#1{[#2]}%
+  }
+\def\color@cmyk#1#2{\c@lor@@cmyk#2\@@#1}
+\def\c@lor@@cmyk#1,#2,#3,#4\@@#5{%
+  \c@lor@arg{#4}%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#5{[#1 #2 #3 #4]}%
+  }
+\def\color@rgb#1#2{\c@lor@@rgb#2\@@#1}
+\def\c@lor@@rgb#1,#2,#3\@@#4{%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#4{[#1 #2 #3]}%
+  }
+\def\color@RGB#1#2{\c@lor@@RGB#2\@@#1}
+\def\c@lor@@RGB#1,#2,#3\@@#4{%
+ \c@lor@RGB@rgb{#1}\@tempa
+ \c@lor@RGB@rgb{#2}\@tempb
+ \c@lor@RGB@rgb{#3}\@tempc
+ \c@lor@@rgb\@tempa,\@tempb,\@tempc\@@#4%
+  }
+\def\c@lor@RGB@rgb#1#2{%
+  \dimen@#1\p@
+  \divide\dimen@\@cclv
+  \edef#2{\strip@pt\dimen@}}
+\def\color@hsb#1#2{\c@lor@@hsb#2\@@#1}
+\def\c@lor@@hsb#1,#2,#3\@@#4{%
+  \c@lor@arg{#1}%
+  \c@lor@arg{#2}%
+  \c@lor@arg{#3}%
+  \edef#4{[#1 #2 #3] hsb}%
+  }
+\def\color@named#1#2{\c@lor@@named#2,,\@@#1}
+\def\c@lor@@named#1,#2,#3\@@#4{%
+  \@ifundefined{col@#1}%
+    {\PackageError{color}{Undefined color `#1'}\@ehd}%
+  {\edef#4{ #1}}%
+  }
+\def\c@lor@to@ps#1 #2\@@{\csname c@lor@ps@#1\endcsname#2 \@@}
+\def\c@lor@ps@#1 #2\@@{TeXDict begin #1 end}
+\def\c@lor@ps@rgb#1\@@{#1 setrgbcolor}
+\def\c@lor@ps@hsb#1\@@{#1 sethsbcolor}
+\def\c@lor@ps@cmyk#1\@@{#1 setcmykcolor}
+\def\c@lor@ps@gray#1\@@{#1 setgray}
+\def\current@color{[0]}
+\def\set@color{%
+            \special{pdf:bcolor \current@color
+                          }\aftergroup\reset@color}
+\def\reset@color{\special{%
+         pdf:ecolor}}
+\def\set@page@color{\special{%
+         pdf:bgcolor \current@color}}
+\def\define@color@named#1#2{%
+  \expandafter\let\csname col@#1\endcsname\@nnil}
+%
+% Graphics
+%
+\def\declareimagemask{%
+  \@ifnextchar[\declareimagemask@i{\declareimagemask@i[]}}
+\def\declareimagemask@i[#1]#2#3{%
+  \special{pdf:image @#2\space hide (#3) #1}}
+%
+% import from pdftex.def
+%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ltxcmds}[2010/12/07]%
+\fi
+
+\def\GPT@error{\@PackageError{dvipdfmx.def}}%
+\def\GPT@warn{\@PackageWarning{dvipdfmx.def}}%
+\let\GPT@pagebox@option\ltx@empty
+\begingroup
+\toks@{%
+\define@key{Gin}{page}{\def\Gin@page{#1}}
+\define@key{Gin}{mask}{\def\Gin@mask{#1}}
+\define@key{Gin}{interpolate}[true]{%
+  \lowercase{\Gin@boolkey{#1}}{interpolate}}
+\define@key{Gin}{pagebox}{%
+  \expandafter\let\expandafter\GPT@pagebox%
+      \csname GPT@pagebox@#1\endcsname
+  \ifx\GPT@pagebox\relax
+    \let\GPT@pagebox\ltx@empty
+    \GPT@warn{%
+      Unknown value `#1' for `pagebox'.\MessageBreak
+      Supported values:\MessageBreak
+      mediabox, cropbox, bleedbox, trimbox, artbox%
+    }%
+  \else%
+    \def\GPT@pagebox@option{-B \GPT@pagebox\space}%
+  \fi%
+}%
+}
+\ltx@IfUndefined{define@key}{
+    \edef\x{\endgroup
+      \noexpand\AtBeginDocument{%
+        \noexpand\ltx@IfUndefined{define@key}{}{\the\toks@}%
+      }%
+    }\x
+  }{%
+    \expandafter\endgroup\the\toks@
+  }%
+
+\def\GPT@pagebox@cropbox{cropbox}%
+\def\GPT@pagebox@mediabox{mediabox}%
+\def\GPT@pagebox@artbox{artbox}%
+\def\GPT@pagebox@trimbox{trimbox}%
+\def\GPT@pagebox@bleedbox{bleedbox}%
+%
+% end (import from pdftex.def)
+%
+% improved by N. Abe to cache BoundingBox for pdfpages package
+%
+\def\Gread@pdf#1{%
+\edef\@tempa{pdf@bbox@cache@\Gin@page @\GPT@pagebox @#1}%
+\expandafter\expandafter\expandafter\@ifundefined\expandafter{\@tempa}{\Gread@@pdf{#1}}{%
+\edef\@gtempa{\csname\@tempa\endcsname}%
+\expandafter\Gread@parse@bb\@gtempa\\}}
+\def\Gread@@pdf#1{%
+  \begingroup
+  \@tempcnta\z@
+  \loop\ifnum\@tempcnta<\@xxxii
+     \catcode\@tempcnta14 %
+     \advance\@tempcnta\@ne
+  \repeat
+  \catcode`\^^?14 %
+  \let\do\@makeother
+  \dospecials
+  \catcode`\ 10 %
+  \catcode`\^^I10 %
+  \catcode\endlinechar5 %
+  \@makeother\:%
+  \@makeother\-%
+  \immediate\openin\@inputcheck#1 %
+  \ifeof\@inputcheck
+    \def\@tempc{!}%
+    \ifx\Gin@page\@tempc
+      \def\@tempc{}%
+    \else
+      \def\@tempc{-p \Gin@page\space}%
+    \fi
+    \immediate\openin\@inputcheck="|extractbb \GPT@pagebox@option \@tempc -O \Gin@base\Gin@ext"%
+  \fi
+  \Gread@true
+  \let\@tempb\Gread@false
+  \ifeof\@inputcheck
+    \@latex@error
+      {Cannot run pipe command. Try --shell-escape^^J%
+       (--enable-pipes in MikTeX) option}%
+      \@ehc
+  \else
+    \loop
+      \read\@inputcheck to\@tempa
+      \ifeof\@inputcheck
+        \Gread@false
+      \else
+        \expandafter\Gread@find@bb\@tempa:.\\%
+      \fi
+      \ifGread@
+      \repeat
+    \immediate\closein\@inputcheck
+  \fi
+%
+% If BoundingBox is not obtained, extractbb may be an old one which does not
+% support the -p and/or -B options, and usage of extractbb is printed to stdout.
+% Thus we retry without the -p and/or -B optons.
+%
+  \ifGin@bbox\else
+    \immediate\openin\@inputcheck="|extractbb -O \Gin@base\Gin@ext"%
+    \message{^^JI try without the new options^^J}%
+    \Gread@true
+    \let\@tempb\Gread@false
+    \ifeof\@inputcheck
+      \@latex@error
+        {Cannot run pipe command. Try --shell-escape^^J%
+         (--enable-pipes in MikTeX) option}%
+        \@ehc
+    \else
+      \loop
+        \read\@inputcheck to\@tempa
+        \ifeof\@inputcheck
+          \Gread@false
+        \else
+          \expandafter\Gread@find@bb\@tempa:.\\%
+        \fi
+        \ifGread@
+        \repeat
+      \immediate\closein\@inputcheck
+      \aftergroup\Gin@clear@pagebox
+    \fi
+  \fi
+%
+% improved by N. Abe to cache BoundingBox for pdfpages package
+%
+  \ifGin@bbox
+    \edef\@tempa{pdf@bbox@cache@\Gin@page @\GPT@pagebox @#1}%
+    \expandafter\expandafter\expandafter\xdef\expandafter\csname\@tempa\endcsname{\@gtempa}%
+  \else
+    \@latex@error
+      {Cannot determine size of image (no BoundingBox)}%
+      \@ehc
+    \gdef\@gtempa{0 0 72 72 }%
+  \fi
+  \endgroup
+  \expandafter\Gread@parse@bb\@gtempa\\}
+\def\Gin@clear@pagebox{%
+  \let\GPT@pagebox\@empty}
+\let\Gread@bmp\Gread@pdf
+\def\Gin@page{!}
+\def\Gin@mask{!}
+\newif\ifGin@interpolate\Gin@interpolatefalse
+\let\GPT@pagebox\ltx@empty
+\def\Ginclude@pdf#1{%
+ \message{<#1>}%
+  \bgroup
+  \def\@tempa{!}%
+    \special{pdf:epdf\space
+      \ifx\Gin@page\@tempa\else page\space\Gin@page\space\fi
+      \ifx\GPT@pagebox\ltx@empty\else pagebox\space\GPT@pagebox\space\fi
+      bbox\space\Gin@llx\space\Gin@lly\space\Gin@urx\space\Gin@ury\space
+      clip\space\ifGin@clip 1\else 0\fi\space
+      \ifx\Gin@scalex\@tempa\else width\space\the\Gin@req@width\space\fi
+      \ifx\Gin@scaley\@tempa\else height\space\the\Gin@req@height\space\fi
+      (#1)\space
+      \ifx\Gin@mask\@tempa
+        \ifGin@interpolate<</Interpolate\space true>>\fi
+      \else
+        <</SMask @\Gin@mask\space%
+        \ifGin@interpolate/Interpolate\space true\fi>>%
+      \fi}%
+  \egroup}
+\def\Ginclude@bmp#1{%
+ \message{<#1>}%
+  \bgroup
+  \def\@tempa{!}%
+    \special{pdf:image\space
+      \ifx\Gin@page\@tempa\else page\space\Gin@page\space\fi
+      % The next line was \ifGin@bbox previously. However, LaTeX can read
+      % BoundingBox from a .xbb file even when \Gin@bboxfalse.
+      % Thus, we give bbox in the cases of trim/viewport, since
+      % trim/viewport don't work without bbox.
+      \ifx\Gin@ollx\@undefined\else
+        bbox\space\Gin@llx\space\Gin@lly\space\Gin@urx\space\Gin@ury\space
+        clip\space\ifGin@clip 1\else 0\fi\space
+      \fi
+      \ifx\Gin@scalex\@tempa\else width\space\the\Gin@req@width\space\fi
+      \ifx\Gin@scaley\@tempa\else height\space\the\Gin@req@height\space\fi
+      (#1)\space
+      \ifx\Gin@mask\@tempa
+        \ifGin@interpolate<</Interpolate\space true>>\fi
+      \else
+        <</SMask @\Gin@mask\space%
+        \ifGin@interpolate/Interpolate\space true\fi>>%
+      \fi}%
+  \egroup}
+\newif\if@trim@vport
+\def\Ginclude@eps#1{%
+ \message{<#1>}%
+  \bgroup
+  \ifx\Undefined\Gin@vllx\else\@trim@vporttrue\fi
+  \def\@tempa{!}%
+  \dimen@\Gin@urx\p@
+  \advance\dimen@ -\Gin@llx\p@
+  \if@trim@vport
+  \advance\dimen@ \Gin@vllx\p@
+  \fi
+  \edef\Gin@urx{\strip@pt\dimen@}%
+  \dimen@\Gin@ury\p@
+  \advance\dimen@ -\Gin@lly\p@
+  \if@trim@vport
+  \advance\dimen@ \Gin@vlly\p@
+  \fi
+  \edef\Gin@ury{\strip@pt\dimen@}%
+  \dimen@\Gin@req@width
+  \dimen@ii.1bp%
+  \divide\dimen@\dimen@ii
+  \@tempdima\Gin@req@height
+  \divide\@tempdima\dimen@ii
+    \special{PSfile="#1"\space
+      \if@trim@vport
+      llx=\Gin@vllx\space
+      lly=\Gin@vlly\space
+      \fi
+      urx=\Gin@urx\space
+      ury=\Gin@ury\space
+      \ifx\Gin@scalex\@tempa\else rwi=\number\dimen@\space\fi
+      \ifx\Gin@scaley\@tempa\else rhi=\number\@tempdima\space\fi
+      \ifGin@clip clip\fi}%
+  \egroup}
+\def\Grot@start{%
+\special{pdf:btrans rotate \Grot@angle}}
+\def\Grot@end{\special{pdf:etrans}}
+\def\Gscale@start{%
+\special{pdf:btrans xscale \Gscale@x\space yscale \Gscale@y}}
+\def\Gscale@end{\special{pdf:etrans}}
+\def\Gin@PS@raw#1{\special{ps: #1}}
+\def\Gin@PS@restored#1{\special{" #1}}
+\def\Gin@PS@literal@header#1{\AtBeginDvi{\special{! #1}}}
+\def\Gin@PS@file@header#1{\AtBeginDvi{\special{header=#1}}}
+\def\Gin@extensions{% order here is like xetex.def, except for PS
+  .pdf,.PDF,.ai,.AI,%
+  .png,.PNG,.jpg,.JPG,.jpeg,.JPEG,.jp2,.JP2,.jpf,.JPF,.bmp,.BMP,%
+  .ps,.PS,.eps,.EPS,%
+  .pz,.eps.Z,.ps.Z,.ps.gz,.eps.gz}
+%
+\@namedef{Gin@rule@.pdf}#1{{pdf}{.xbb}{#1}}
+\@namedef{Gin@rule@.PDF}#1{{pdf}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.ai}#1{{pdf}{.xbb}{#1}}
+\@namedef{Gin@rule@.AI}#1{{pdf}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.jp2}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.JP2}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.jpf}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.JPF}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.png}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.PNG}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.jpg}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.JPG}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.jpeg}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.JPEG}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.jp2}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.JP2}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.jpf}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.JPF}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.bmp}#1{{bmp}{.xbb}{#1}}
+\@namedef{Gin@rule@.BMP}#1{{bmp}{.xbb}{#1}}
+%
+\@namedef{Gin@rule@.ps}#1{{eps}{.ps}{#1}}
+\@namedef{Gin@rule@.PS}#1{{eps}{.ps}{#1}}
+%
+\@namedef{Gin@rule@.eps}#1{{eps}{.eps}{#1}}
+\@namedef{Gin@rule@.EPS}#1{{eps}{.eps}{#1}}
+%
+% (don't bother with uppercase versions for these Unixish extensions)
+\@namedef{Gin@rule@.pz}#1{{eps}{.xbb}{`gunzip -c #1}}
+\@namedef{Gin@rule@.eps.Z}#1{{eps}{.eps.xbb}{`gunzip -c #1}}
+\@namedef{Gin@rule@.ps.Z}#1{{eps}{.ps.xbb}{`gunzip -c #1}}
+\@namedef{Gin@rule@.ps.gz}#1{{eps}{.ps.xbb}{`gunzip -c #1}}
+\@namedef{Gin@rule@.eps.gz}#1{{eps}{.eps.xbb}{`gunzip -c #1}}
+%
+\@namedef{Gin@rule@*}#1{{eps}{\Gin@ext}{#1}}
+\endinput
+%%
+%% End of file `dvipdfmx.def'.

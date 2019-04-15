@@ -1,0 +1,253 @@
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[spanish]{babel}
+\usepackage{calc}% or e-TeX, for \hypercalcbp
+
+\usepackage[%
+  verbose,
+  colorlinks=true,
+  naturalnames=true,
+  linkcolor=blue,
+]{hyperref}
+
+\addtolength{\topmargin}{-10mm}
+\setlength{\oddsidemargin}{-5mm}
+\setlength{\evensidemargin}{-5mm}
+\setlength{\textwidth}{165mm}
+\addtolength{\textheight}{3.5cm} % alargar longitud página
+
+\hypersetup{%
+  pdftitle={Notas sobre Control por computador, de Hilario Lopez},%
+  % Note /XYZ takes three arguments, the X and Y offsets and the
+  % zoom factor. Omitting these values breaks Distiller.
+  pdfstartview={%
+    XYZ \hypercalcbp{1in+\oddsidemargin-2mm} %
+        \hypercalcbp{\paperheight-1in-\topmargin
+            -\headheight-\headsep+2mm} %
+        1%
+  }%
+}
+
+% The numbering of the equations is done by the \tag command
+% explicitly. Problematic is the equation environment, because
+% it generates also an anchor named "equation.1". This would
+% produce a lot of warnings. Changing equation to gather
+% supresses the warnings. The links should work in both
+% cases.
+\let\equation\gather
+\let\endequation\endgather
+
+\newcommand{\fdt}{\hbox{f.d.t.\@}}
+
+\newcommand{\pagina}[1]{\textsl{{\tiny \mbox{[#1]}}}}% << la del fichero grainger-stevenson.tex
+\newcommand{\ingles}[1]{\emph{#1}}
+
+
+\newcommand{\ojo}[1]{ }
+%
+% Crear una caja de texto con borde para destacar ciertos párrafos
+%
+\newcommand{\destacaP}[1]{ }
+
+
+%
+\begin{document}
+
+\section{Diseño mediante síntesis directa}
+Se calculan reguladores por el método de Truxal.
+\begin{itemize}
+  \item Si el proceso tiene un tiempo muerto $d$, el sistema en cadena cerrada no puede
+  tener un valor menor.
+\begin{equation}\label{eq:SintesisDirectaGradosEnBucleCerrado}
+  gr[L(z)] -gr[N(z)] \ge gr[A(z)]-gr[B(z)] \tag{2.14}
+\end{equation}
+  \item Se obtendrá el mismo tiempo muerto  $d$, salvo que en el regulador $G_R$ se
+  introduzca un nuevo retardo por tener más ceros que polos.
+  \item Los polos y ceros del proceso externos a la circunferencia unidad no se deben
+  cancelar con los ceros y polos del regulador, por lo que dichos factores no pueden
+  aparecer en $G_R(z)$.
+  \item Asignación de polos (del sistema en cadena cerrada).
+  Permite especificar (en parte\footnote{Es debido a que los ceros que resulten del regulador
+  pueden modificar la dinámica que hemos calculado mediante los polos. Habrá que comprobar que
+  su efecto es despreciable, que implica que los ceros deben ser poco significativos
+  en comparación con las raíces de $z^2+ \alpha \, z + \beta = 0$} (interesa por tanto que
+  estén alejados de la circunferencia unidad).) la respuesta transitoria, a
+  través de un sistema de segundo orden, y poniendo el resto de los polos en $z=0$.
+  \item Tiempo finito. Todos sus polos están en el origen. Se caracterizan porque alcanzan
+  el valor final de la respuesta ante una entrada dada en un tiempo finito,
+  \textsc{sin oscilar la secuencia discreta}. En el caso de control en tiempo real, el
+  sistema continuo si oscilaría ligeramente. Se refiere a que aunque en los instantes de
+  muestreo los valores sean los dados por el sistema discreto, el sistema continuo
+  asociado podría tomar valores distintos entre los instantes de muestreo.
+  \item Tiempo mínimo. Como los de tiempo finito, pero realizando \textsc{todas}
+  las cancelaciones \textsc{posibles} (no se consideran posibles las de polos y ceros externos).
+  \item Respuesta en permanente. Si se desea obtener error de posición nulo y el proceso
+  no posee un polo en $z=1$, entonces el regulador debe incluir un polo (por lo menos) en
+  dicho punto. También es necesario esto para eliminar el efecto sobre el permanente de
+  las perturbaciones deterministas.
+  \item Simplicidad. Interesa que el número de polos y ceros del regulador sea mínimo.
+  Esta propiedad es opuesta a la minimización de $m$ (para obtener un sistema de tiempo mínimo).
+\end{itemize}
+\subsection{Métodos de cálculo}
+\subsubsection{Método de asignación de polos} El transitorio puede venir especificado por
+$M_p$, $n_p$, y $n_s$. Las fórmulas aplicables son
+\begin{align}\label{eq:AsignacionPolosFormulasParametrosTransitorio}
+ n_p &= \frac{\pi}{\theta}        \tag{2.27} \\
+ M_p &= |p|^{n_p}                 \tag{2.28} \\
+ n_s &=  \frac{\pi}{\sigma}       \tag{2.29} \\
+ |p| &= e^{-\sigma}               \tag{2.30}
+\end{align}
+La ecuación característica para realimentación unitaria ($H=1$) es
+\begin{equation}\label{eq:AsignacionPolosEcuacionCaracteristica}
+  1 + G_R(z) \, BG(z) = 0 \tag{2.32}
+\end{equation}
+o sea
+\begin{equation}\label{eq:AsignacionPolosEcuacionCaracteristicaFactorizada}
+  1 + \frac{Q(z)}{P(z)} \, \frac{B(z)}{A(z)}  = 0 \tag{2.33}
+\end{equation}
+en la que se observa que puede haber factores que se anulen entre numerador de $G_R$ y
+denominador de $G_P$, y viceversa. Operando, resultaría que
+\begin{equation}\label{eq:AsignacionPolosEcuacionCaracteristicaNumerador}
+ A(z) \, P(z) + B(z) \, Q(z)  = 0 \tag{2.34}
+\end{equation}
+%
+Debe hacerse notar que si en la ec.
+(\ref{eq:AsignacionPolosEcuacionCaracteristicaFactorizada}) se hubiesen anulado factores
+entre numerador y denominador, la ecuación
+(\ref{eq:AsignacionPolosEcuacionCaracteristicaNumerador}) una vez simplificada sería del
+estilo
+\begin{equation}\label{eq:AsignacionPolosEcuacionCaracteristicaNumeradorSimplificada}
+ A'(z) \, P'(z) + B'(z) \, Q'(z)  = 0 \tag{2.34-bis}
+\end{equation}
+en la que  $A'(z)$ sería los polos de $A(z)$ que no se cancelan, $B'(z)$ los ceros del
+proceso no cancelados (y que por tanto aparecerán en la \fdt de cadena cerrada), y $P'(z)$
+y $Q'(z)$ los polinomios que necesitamos calcular. El factor $Q'(z)$ no se deja como tal,
+sino que se pone en función del polinomio $N(z)$, que es el numerador de la \fdt de cadena
+cerrada. Para ello se hace uso de la propiedad que dice que los ceros en cadena cerrada
+son los del sistema más los del regulador (a menos que se hayan cancelado ceros del
+proceso con polos del regulador).
+%
+La ecuación que debemos plantear para hallar los coeficientes del regulador es
+\begin{equation}\label{eq:AsignacionPolosIdentificacionCoeficientes}
+  z^m (z^2+ \alpha \, z + \beta) = A(z) \, P(z) + B(z) \, Q(z) \tag{2.35}
+\end{equation}
+%
+La solución es única cuando se tengan tantas ecuaciones como incógnitas. Igualando grados,
+se tiene que
+\begin{equation}\label{eq:AsignacionPolosGradosPolinomios}
+ m+2 = p+a \tag{2.36}
+\end{equation}
+y al aplicar la condición (\ref{eq:SintesisDirectaGradosEnBucleCerrado}) a la ecuación
+(\ref{eq:AsignacionPolosIdentificacionCoeficientes}) resulta
+\begin{equation}\label{AsignacionPolosCondicionGradosBucleCerrado}
+  (m+2)-n \ge a-b \tag{2.38}
+\end{equation}
+\subsubsection{Método de tiempo finito}
+Todos los polos de cadena cerrada están en el origen ($z=0$). En dichos sistemas, la
+respuesta impulsional se puede obtener fácilmente como la secuencia formada por los
+coeficientes de $\{b_0, b_1, b_2, \ldots \}$, que es la que resulta de multiplicar la \fdt
+por $z^{-m}$, siendo $m$ en número de polos en cadena cerrada (todos en el origen). La
+respuesta ante escalón se puede conseguir como suma de la secuencia impulsional:  $\{b_0,
+b_0+b_1, b_0+b_1+b_2, \ldots \}$.
+\ojo{Para los reguladores de tiempo finito, el número de muestras en el origen (valor
+cero) coincide con el tiempo muerto, mientras que el número de muestras del transitorio
+coincide con el número de ceros. Revisar\pagina{H26} ¿Por que se consideran tres muestras
+de transitorio, y no se cuenta la del origen ni la que marca el fin del transitorio, si en
+un sistema continuo se contaría todo el tiempo?}
+\subsubsection{Método de tiempo mínimo}
+Se cancelan todos los polos y ceros de $BG(z)$ interiores a la circunferencia unidad.
+\subsection{Mejora del régimen permanente}
+Para evitar errores en permanente, puede interesar poner una serie de polos en $z=1$, lo
+que se traduce en que en el denominador del regulador habrá un factor $(z-1)^i$, siendo
+$G_R$, por tanto, de la forma
+\begin{equation}\label{SintesisDirectaPolosEnZIgualAUno}
+ G_R = \frac{Q(z)}{(z-1)^i \, P(z)} \tag{2.29}
+\end{equation}
+\subsection{Mejora del régimen transitorio}
+Pueden conseguirse respuestas menos bruscas (menor sobreoscilación, etc.) dando más tiempo
+para que el sistema se estabilice, lo cual puede conseguirse aumentando $m$ en una unidad,
+mientras se mantiene fijo $T_m$, por lo que tendremos un grado de libertad. Otra
+posibilidad es poner un filtro entre la señal de consigna y la entrada al bucle de
+realimentación, de forma que éste perciba una variación más lenta de la señal de consigna
+\pagina{28}.
+\subsection{Notas acerca de los problemas propuestos}
+\begin{itemize}
+  \item Son interesantes los ejemplos para ver como se aplican en la práctica las
+  ecuaciones del estilo a la (\ref{eq:AsignacionPolosIdentificacionCoeficientes}), sobre
+  todo al cálculo de los valores del grado $n$ y a la aplicación correcta de la
+  ecuación (\ref{AsignacionPolosCondicionGradosBucleCerrado}).
+  \item Al incluir integrador en el regulador, la sobreoscilación tiende a aumentar\pagina{40}.
+  \item Se indica un ejemplo donde se permite incrementar $m$ para obtener el grado de
+  libertad que nos permita obtener menor sobreoscilación. También se hace uso del
+  ``truco'' de poner el denominador $z^m$ en la forma $((z-1) + 1)^m$, por lo que haciendo
+  el desarrollo del binomio de Newton, nos permite poner la \fdt de cadena cerrada como
+  factores de $(z-1)^k$ en vez de $z^k$, lo que permite simplificar a la hora de igualar
+  coeficientes, a la vez que garantizamos que no habrá error en permanente, ya que $M(1) =
+  1$.
+  Hay que andarse con ojo si el factor $K$ que multiplica al proceso no es 1 (estando dicho
+  proceso expresado en la forma de factores $K \cdot \prod (z-c_i)/\prod (z-p_j)$).
+  En ese caso\pagina{45}, el factor $K$ aparecería multiplicando al cociente de polinomios
+  que definen $M(z)$ y el coeficiente $n_0$ no sería 1, sino $1/K$. Un ejemplo de este
+  caso, si se intenta resolver de esta forma, está en el examen del $1^{\textrm{er}}$ parcial
+  del 25 de Marzo de 1999.
+\end{itemize}
+\ojo{¿Es cierto que si no se cancelan ceros del proceso, entonces se tiene que la señal de
+control $u(k)$ también presenta un comportamiento de tiempo finito? ¿De dónde se deduce
+dicha propiedad?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Algoritmos de diseño (I)}
+\subsection{Algoritmos de tiempo finito (reguladores de Isermann)}
+\begin{itemize}
+  \item La función de transferencia en cadena cerrada no es preespecificada, sino que
+  viene determinada como resultado del diseño. Todos los polos estarán en el origen.
+  \item No se cancela ningún cero, pero sí todos los polos.
+  \item Se incluye integrador, que anula el error en permanente
+  \item Son muy sencillos de calcular.
+\end{itemize}
+\subsection{Regulador de tiempo finito de orden normal}
+La señal de control $u$ estará estabilizada tras $m$ periodos de muestreo, y la de salida
+$y$ tras $m+d$, siendo $d$ el tiempo muerto del proceso.
+\subsubsection{Para procesos con tiempo muerto %
+  \texorpdfstring{$d=0$}{d=0}}
+Los coeficientes resultantes para el
+regulador son:
+\begin{equation}\label{eq:IsermannTiempoFinitoOrdenNormalCoeficientesQCero}
+  q_0 = \frac{1}{\sum b_i}  \tag{3.20a}
+\end{equation}
+%
+\begin{equation}\label{eq:IsermannTiempoFinitoOrdenNormalCoeficientesQi}
+  q_i = q_0 \, a_i, \quad i=1,\ldots,m
+        \quad \textrm{(además $\sum q_i = u(m)$, por (3.12, H53))}\tag{3.20b}
+\end{equation}
+%
+\begin{equation}\label{eq:IsermannTiempoFinitoOrdenNormalCoeficientesPi}
+  p_i = q_0 \, b_i, \quad i=1,\ldots,m
+       \quad \textrm{(además $\sum p_i = 1$, por (3.11))}\tag{3.20c}
+\end{equation}
+%
+El regulador resultante ($d=0$) es
+\begin{equation}\label{eq:IsermannTiempoFinitoOrdenNormalSinTiempoMuerto}
+  G_R = \frac{Q(z^{-1}))}{1-P(z^{-1}))} =
+  \frac{q_0 \, A(z^{-1})}{1-q_0 \, B(z^{-1})} \tag{3.21}
+\end{equation}
+El primer valor de la acción de control es
+\begin{equation}\label{eq:IsermannTiempoFinitoOrdenNormalUCero}
+  u(0) = q_0 = \frac{1}{\sum b_i} \tag{3.22}
+\end{equation}
+
+
+\end{document}
+
+--
++----------------------------------------------------------------------------+
+| Oscar Fernandez Sierra                                                     |
+| Escuela Tecnica Superior de Ingenieros Industriales de Gijon               |
+| Departamento de Construccion e Ingenieria de Fabricacion                   |
+| Campus de Viesques 33204 - Gijon (Spain)                                   |
+|                                                                            |
+| E-mail: oscar@charpy.etsiig.uniovi.es   Voice: INT +34+ 985.18.22.29/19.30 |
+|    WWW: http://www1.uniovi.es/            FAX: INT +34+ 985.18.20.55       |
++----------------------------------------------------------------------------+

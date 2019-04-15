@@ -1,0 +1,1846 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltfsstrc.dtx
+%% Copyright (C) 1989-97 by Frank Mittelbach and Rainer Sch\"opf.
+%% Copyright (C) 1994-97 by LaTeX3 project. All rights reserved.
+%
+%<package>\NeedsTeXFormat{LaTeX2e}[1995/05/16]
+%<package>\ProvidesPackage{tracefnt}
+%<package>     [2015/02/21 v3.0k  Standard LaTeX package (font tracing)]
+% \fi
+% \ProvidesFile{ltfsstrc.dtx}
+%              [2015/02/21 v3.0k LaTeX Kernel (NFSS tracing)]
+%
+% \iffalse
+%<+checkmem>\CHECKMEM
+% \fi
+%
+% \CheckSum{1034}
+%
+%
+%
+% \changes{v3.0g}{1995/11/28}
+%        {documentation fixes}
+% \changes{v3.0f}{1995/10/22}{Added `genb' and `sgenb' size functions
+%    to support new DC font naming scheme.}
+% \changes{v3.0e}{1995/10/20}
+%        {(DPC) Modify autoload code}
+% \changes{v3.0d}{1995/10/04}
+%        {(DPC) Modify autoload code}
+% \changes{v3.0b}{1995/05/24}
+%        {(DPC) Fix \cs{ProvidesFile} usage}
+% \changes{v3.0a}{1995/05/24}
+%        {(DPC) Make file from previous file, tracefnt 1995/05/16 v2.3o}
+% \changes{v3.0k}{2015/02/21}
+%         {Removed autoload code}
+%
+% \changes{v2.3m}{1994/11/18}
+%         {\cs{next} to \cs{reserved@f}}
+% \changes{v2.3l}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v2.3i}{1994/05/20}{Use new error command names}
+% \changes{v2.3g}{1994/05/13}{Removed typeouts as
+%             \cs{ProvidesPackage} writes to log.}
+% \changes{v2.3e}{1994/04/27}{Corrected item that was forgotten
+%                               in last change.}
+% \changes{v2.3d}{1994/04/18}{Changed to new error/warning scheme}
+% \changes{v2.3a}{1994/01/17}{New math font setup}
+% \changes{v2.2a}{1993/11/11}{Option concept added for LaTeX2e}
+% \changes{v2.1j}{1993/09/15}{Corrected spelling of \cs{noxpand}.}
+% \changes{v2.1i}{1993/09/02}{Corrected name of sgen size function.}
+% \changes{v2.1h}{1993/07/16}{Changed layout of info messages}
+% \changes{v2.1b}{1993/03/18}
+%      {Changed all \cs{@tempdimb} in \cs{@tempdimx}
+%                  to avoid killing \cs{numberline}}
+% \changes{v2.1b}{1993/03/18}
+%      {Changed all \cs{@tempdima} in \cs{@tempdimb}
+%                           to avoid killing \cs{numberline}}
+% \changes{v1.0l}{1990/04/01}{Part of code moved to fam.dtx.}
+% \changes{v1.0k}{1990/03/14}{Added code for TeX3.}
+% \changes{v1.0h}{1990/01/18}{\cs{tracingfonts} meaning changed.}
+%
+% \newcommand\module[1]{\texttt{#1}}
+% \providecommand{\dst}{\textsc{DocStrip}}
+% \newcommand\Loption[1]{\texttt{#1}}
+%
+% \GetFileInfo{ltfsstrc.dtx}
+% \title{The \texttt{tracefnt} package\thanks
+%               {This file has version number \fileversion, dated
+%                \filedate.} \\
+%       for use with the new font selection scheme}
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Introduction}
+%
+% This package contains the code for tracing font loading and font
+% changes.  It basically overlays some of the low-level functions of
+% NFSS with additional code used for tracing.
+%
+% The package accepts the following options:
+% \begin{description}
+% \item[errorshow]      Write all information about font changes etc.\
+%   only to the transcript file unless an error happens. This means
+%   that information about font substitution will not be shown on the
+%   terminal.
+%
+% \item[warningshow]    Show all NFSS warnings on the terminal. This
+%   setting corresponds to the default behaviour of NFSS if the
+%   \texttt{tracefnt} package is \emph{not} loaded!
+%
+% \item[infoshow]       Show all NFSS warning and all NFSS info
+%   messages (that are normally only written to the transcript file)
+%   also on the terminal. This is the default if the \texttt{tracefnt}
+%   package is loaded.
+%
+% \item[debugshow]      In addition to \texttt{infoshow} show also
+%   changing of math fonts as far as possible (this option can produce a
+%   large amount of output.
+%
+% \item[loading]        Show the name of external fonts when they are
+%   loaded. This option shows only ``newly'' loaded fonts not those
+%   already preloaded in the format or the class file before the
+%   \texttt{tracefnt} package became active.
+%
+% \item[pausing]
+%   Turn all font warnings into errors so that \LaTeX{} will stop.
+%
+% \end{description}
+%
+%
+% \StopEventually{}
+%
+% \section{A driver for this document}
+%
+%    The next bit of code contains the documentation driver file for
+%    \TeX{}, i.e., the file that will produce the documentation you
+%    are currently reading. It will be extracted from this file by the
+%    \dst{} program.
+%
+%    When this file is processed directly by \LaTeX{} this will
+%    produce the documentation as well.
+%
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+
+
+%\OnlyDescription  % comment out for implementation details
+
+\begin{document}
+   \DocInput{ltfsstrc.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+% \section{The Implementation}
+%
+% \begin{quote}
+%   \textbf{Warning:} Read the macro documentation with a grain of
+%   salt. It is still basically the documentation from the first NFSS
+%   release and therefore in some cases probably not completely
+%   accurate.
+% \end{quote}
+%
+% If we are making a package file it is a good idea to test whether
+% we are running under 2e.
+% This code is actually placed at the very beginning of this file
+% for easier maintenance, thus commented out here.
+%    \begin{macrocode}
+%<*package>
+%\NeedsTeXFormat{LaTeX2e}
+%\ProvidesPackage{tracefnt}[??/??/?? v?.??
+%                           Standard LaTeX package (font tracing)]
+%</package>
+%    \end{macrocode}
+%
+%
+% The \texttt{debug} module makes use of commands contained in a
+% special package file named \texttt{trace.sty}.\footnote{This package
+% is not in distribution at the moment (and probably doesn't any
+% longer work). Think of this part of the code as being historical
+% artefacts.}
+%    \begin{macrocode}
+%<+debug> \input trace.sty
+%    \end{macrocode}
+%
+%
+% \section{Handling Options}
+%
+% \begin{macro}{\tracingfonts}
+%    Here is the definition of the integer register for the font
+%    trace.  As a default in a package file we use $1$ to give error
+%    messages if fonts are substituted. If this code is used for
+%    debugging or tracing reasons in the format file (i.e.\ in
+%    \texttt{fam.dtx}) we use $0$ as the default.  But if no font
+%    trace is used we build a definition that will produce a warning
+%    message.
+% \changes{v1.0l}{1990/04/01}
+%      {Check if \cs{tracingfonts} already defined.}
+% \changes{v1.0o}{1990/04/01}
+%      {Check if \cs{tracingfonts} defined removed again.}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\tracingfonts{%
+  \@font@warning{Command \noexpand\tracingfonts
+           not provided.\MessageBreak
+           Use the `tracefnt' package.\MessageBreak Command found:}%
+       \count@}
+%</2ekernel>
+%    \end{macrocode}
+%    The |\count@| in the line above will remove the number after
+%    |\tracingfonts|. Note that this definition will be overwritten be
+%    the next line if one of these modules are included.
+%    \begin{macrocode}
+%<*package,trace,debug>
+\newcount\tracingfonts
+\tracingfonts=0
+%</package,trace,debug>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%    The option \Loption{errorshow} turns off all warnings so that only
+%    real errors are shown. \Loption{warningshow} corresponds  to the
+%    NFSS default (when \texttt{tracefnt} is not loaded).
+%    \Loption{infoshow} is the default for this package here; and
+%    \Loption{debugshow}, \Loption{loading}, and
+%    \Loption{pausing} extend the amount of information even further.
+% \changes{v2.3o}{1995/05/13}
+%      {Use single hash mark in \cs{DeclareOption}}
+%    \begin{macrocode}
+%<*package>
+\DeclareOption{errorshow}{%
+   \def\@font@info#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                     {LaTeX Font Info: \space\space\space#1}}%
+    \def\@font@warning#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                        {LaTeX Font Warning: #1}}%
+     }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareOption{warningshow}{%
+   \def\@font@info#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                     {LaTeX Font Info: \space\space\space#1}}%
+    \def\@font@warning#1{%
+         \GenericWarning{(Font)\@spaces\@spaces\@spaces\space\space}%
+                        {LaTeX Font Warning: #1}}%
+     }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareOption{infoshow}{%
+   \def\@font@info#1{%
+         \GenericWarning{(Font)\@spaces\@spaces\@spaces\space\space}%
+                     {LaTeX Font Info: \space\space\space#1}}%
+    \def\@font@warning#1{%
+         \GenericWarning{(Font)\@spaces\@spaces\@spaces\space\space}%
+                        {LaTeX Font Warning: #1}}%
+     }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareOption{loading}{%
+    \tracingfonts\tw@
+   }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareOption{debugshow}{%
+    \ExecuteOptions{infoshow}%
+    \tracingfonts\thr@@
+   }
+%    \end{macrocode}
+%
+% \changes{v3.0j}{1997/05/29}{Replaced \texttt{\symbol{92}\symbol{92}}
+%        by \cs{MessageBreak}, as suggested by Donald Arseneau.}
+%    \begin{macrocode}
+\DeclareOption{pausing}{%
+    \def\@font@warning#1{%
+      \GenericError
+             {(Font)\@spaces\@spaces\@spaces\space\space}%
+             {LaTeX Font Warning: #1}%
+             {See the LaTeX Companion for details.}%
+             {I'll stop for every LaTeX Font Warning because
+              you requested\MessageBreak the `pausing' option
+              to the tracefnt package.}}%
+   }
+%    \end{macrocode}
+%    We make |infoshow| the default, which in turn defines
+%    |\font@warning| and |\font@info|.
+%    \begin{macrocode}
+\ExecuteOptions{infoshow}
+\ProcessOptions
+%</package>
+%    \end{macrocode}
+%
+%    We also need a default definition inside the kernel:
+%    \begin{macrocode}
+%<*2ekernel>
+\def\@font@info#1{%
+         \GenericInfo{(Font)\@spaces\@spaces\@spaces\space\space}%
+                     {LaTeX Font Info: \space\space\space#1}}%
+\def\@font@warning#1{%
+         \GenericWarning{(Font)\@spaces\@spaces\@spaces\space\space}%
+                        {LaTeX Font Warning: #1}}%
+%</2ekernel>
+%    \end{macrocode}
+%
+%
+% \section{Macros common to \texttt{fam.tex} and \texttt{tracefnt.sty}}
+%
+% In the first versions of \texttt{tracefnt.dtx} some macros of
+% \texttt{fam.dtx}\footnote{This file is currently not distributed in
+%     documented form. Its code is part of \texttt{ltfss.dtx}.}
+% were redefined to included the extra tracing
+% information. Now these macros are all defined in this file (i.e.\
+% removed from \texttt{fam.dtx}) and different production versions can
+% be obtained simply by specifying a different set of modules to
+% include when generating \texttt{ltfss.dtx}.
+%
+%
+%
+% \subsection{General font loading}
+%
+%
+% \begin{macro}{\extract@font}
+%
+%    This macro organizes the font loading.
+%    It first calls |\get@external@font|
+%    which will return in |\external@font| the name of the external
+%    font file (the \texttt{.tfm}) as it was determined by the NFSS
+%    tables.
+%    \begin{macrocode}
+%<*2ekernel|package>
+\def\extract@font{%
+   \get@external@font
+%    \end{macrocode}
+%    Then the external font is loaded and assigned to the font
+%    identifier stored inside |\font@name|
+%    (for this reason we need |\expandafter|).
+%    \begin{macrocode}
+   \global\expandafter\font\font@name\external@font\relax
+%    \end{macrocode}
+%    When tracing we typeout the internal and external font name.
+%    \changes{v1.0k}{1990/03/14}{Added code for TeX3.}
+%    \begin{macrocode}
+%<*trace>
+    \ifnum \tracingfonts >\@ne
+    \@font@info{External font `\external@font'
+              loaded as\MessageBreak \font@name}\fi
+%</trace>
+%    \end{macrocode}
+%    Finally we call the corresponding ``loading action'' macros to
+%    finish things. First the font is locally selected to allow the
+%    use of |\font| inside the loading action macros.
+%    \begin{macrocode}
+    \font@name \relax
+%    \end{macrocode}
+%    The next two lines execute the ``loading actions'' for the
+%    family and then for the individual font shape.
+%    \begin{macrocode}
+    \csname \f@encoding+\f@family\endcsname
+    \csname\curr@fontshape\endcsname
+    \relax
+       }
+%</2ekernel|package>
+%    \end{macrocode}
+%    The |\relax| at the end needs to be explained.
+%    This is inserted to prevent \TeX{} from scanning too far
+%    when it is executing the replacement text of the loading
+%    code macros.
+%    \end{macro}
+%
+%
+%  \begin{macro}{\get@external@font}
+%    This function tries to find an external font name. It will place
+%    the name into the macro
+%    |\external@font|. If no font is found it will return the one
+%    that was defined via |\DeclareErrorFont|.
+%    \begin{macrocode}
+%<*2ekernel>
+\def\get@external@font{%
+%    \end{macrocode}
+%    We don't know the external font name at the beginning.
+%    \begin{macrocode}
+   \let\external@font\@empty
+   \edef\font@info{\expandafter\expandafter\expandafter\string
+        \csname \curr@fontshape \endcsname}%
+   \try@size@range
+%    \end{macrocode}
+%    If this failed, we'll try to substitute another size of the same
+%    font.  This is done by the |\try@size@substitution| macro.  It
+%    ``knows about'' |\do@extract@font|, |\font@name|, |\f@size|, and
+%    so on.
+%    \begin{macrocode}
+   \ifx\external@font\@empty
+      \try@size@substitution
+      \ifx\external@font\@empty
+         \@latex@error{Font \expandafter \string\font@name\space
+                     not found}\@eha
+         \error@fontshape
+         \get@external@font
+   \fi\fi
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \changes{v1.0j}{1990/02/18}
+%      {Redefine unprotected version \cs{p@selectfont}
+%                           instead of \cs{selectfont}.}
+%
+%
+% \begin{macro}{\selectfont}
+% \changes{v1.1a}{1989/12/16}{Changed order of calls.}
+% \changes{v2.3f}{1994/05/12}{Use \cs{DeclareRobustCommand}}
+%    The macro |\selectfont| is called whenever a font change must
+%    take place.
+%    \begin{macrocode}
+%<*2ekernel|package>
+\DeclareRobustCommand\selectfont
+        {%
+%    \end{macrocode}
+%    When \module{debug} is specified we actually want something like
+%    `undebug'. The font selection is now stable so that using
+%    |\tracingall| on some other macros will show us a lot of unwanted
+%    information about font loading. Therefore we disable tracing during
+%    font loading as long as |\tracingfonts| is less than $4$.
+% \changes{v1.0m}{1990/04/05}
+%      {Call \cs{tracingon} only if \cs{tracingfonts} greater than 3.}
+% \changes{v1.0n}{1990/05/05}{\cs{tracingon} with new syntax.}
+%    \begin{macrocode}
+%<+debug>  \pushtracing
+%<+debug>  \ifnum\tracingfonts<4 \tracingoff
+%<+debug>  \else \tracingon\p@selectfont \fi
+%    \end{macrocode}
+%    If |\baselinestretch| was redefined by the user it will not
+%    longer match its internal counterpart |\f@linespread|. If so we
+%    call |\set@fontsize| to prepare |\size@update|.
+%    \begin{macrocode}
+    \ifx\f@linespread\baselinestretch \else
+      \set@fontsize\baselinestretch\f@size\f@baselineskip \fi
+%    \end{macrocode}
+%    Then we generate the internal name of the font
+%    by concatenating {\em family}, {\em series},
+%    {\em shape}, and current {\em size},
+%    with slashes as delimiters between them.
+%    This is much more readable than standard
+%    \LaTeX's |\twfbf|, etc.
+%    We define |\font@name| globally, as always.
+%    The reason for this is explained later on.
+% \changes{v2.0b}{1992/07/26}{}
+%    \begin{macrocode}
+    \xdef\font@name{%
+      \csname\curr@fontshape/\f@size\endcsname}%
+%    \end{macrocode}
+%    We call the macro |\pickup@font| which will load the font if
+%    necessary.
+%    \begin{macrocode}
+    \pickup@font
+%    \end{macrocode}
+%    Then we select the font.
+%    \begin{macrocode}
+    \font@name
+%    \end{macrocode}
+%    If |\tracingfonts| is
+%    greater than 2 we also show the font switch.
+%    We do this before |\glb@settings| is called since this
+%    macro might redefine |\font@name|.
+% \changes{v1.0k}{1990/03/14}{Added code for TeX3.}
+% \changes{v1.0i}{1990/02/16}{Changed \cs{f@size} to \cs{lcl@currsize}
+%         (see fam file).}
+%    \begin{macrocode}
+%<*trace>
+    \ifnum \tracingfonts>\tw@
+      \@font@info{Switching to \font@name}\fi
+%</trace>
+%    \end{macrocode}
+%    Finally we call |\size@update|. This macro is normally empty but
+%    will contain actions (like setting the |\baselineskip|) that have
+%    to be carried out when the font size, the base |\baselineskip| or
+%    the |\baselinestretch| have changed.
+%    \begin{macrocode}
+    \size@update
+%    \end{macrocode}
+%    A similar function is called to handle anything related to
+%    encoding updates. This one is changed from |\relax| by
+%    |\fontencoding|.
+% \changes{v2.3h}{1994/05/14}{Added \cs{enc@update}}
+%    \begin{macrocode}
+    \enc@update
+%    \end{macrocode}
+%    Just before ending this macro we have to pop the tracing stack
+%    if it was pushed before.
+%    \begin{macrocode}
+%<+debug> \poptracing
+    }
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%  \begin{macro}{\set@fontsize}
+%    The macro |\set@fontsize| does the actual work. First it assigns
+%    new values to |\f@size|, |\f@baselineskip| and |\f@linespread|.
+%    \begin{macrocode}
+\def\set@fontsize#1#2#3{%
+    \@defaultunits\@tempdimb#2pt\relax\@nnil
+    \edef\f@size{\strip@pt\@tempdimb}%
+    \@defaultunits\@tempskipa#3pt\relax\@nnil
+    \edef\f@baselineskip{\the\@tempskipa}%
+    \edef\f@linespread{#1}%
+%    \end{macrocode}
+%    For backward compatibility and for later testing within
+%    |\selectfont| the internal value of |\f@linespread| is passed
+%    back to |\baselinestretch|.
+%    \begin{macrocode}
+    \let\baselinestretch\f@linespread
+%    \end{macrocode}
+%    Additional processing will happen within |\selectfont|. For this
+%    reason the macro |\size@update| (which will be called in
+%    |\selectfont|) will be defined to be:
+%    \begin{macrocode}
+      \def\size@update{%
+%    \end{macrocode}
+%    First calculate the new |\baselineskip| and also store it in
+%    |normalbaselineskip|
+%    \begin{macrocode}
+        \baselineskip\f@baselineskip\relax
+        \baselineskip\f@linespread\baselineskip
+        \normalbaselineskip\baselineskip
+%    \end{macrocode}
+%    then to set up a new |\strutbox|
+%    \begin{macrocode}
+        \setbox\strutbox\hbox{%
+          \vrule\@height.7\baselineskip
+                \@depth.3\baselineskip
+                \@width\z@}%
+%    \end{macrocode}
+%    We end with a bit of tracing information.
+%    \begin{macrocode}
+%<*trace>
+   \ifnum \tracingfonts>\tw@
+      \ifx\f@linespread\@empty
+        \let\reserved@a\@empty
+      \else
+        \def\reserved@a{\f@linespread x}%
+      \fi
+      \@font@info{Changing size to \f@size/\reserved@a
+                \f@baselineskip}%
+      \aftergroup\type@restoreinfo \fi
+%</trace>
+%    \end{macrocode}
+%    When all this is processed |\size@update| redefines itself to
+%    |\relax| so that in later calls of |\selectfont| no extra code
+%    will be executed.
+%    \begin{macrocode}
+        \let\size@update\relax}%
+  }
+%    \end{macrocode}
+%  Instead of defining this macro internally we might speed things
+%  up by placing the code into a separate macro and use |\let|!
+%  \end{macro}
+%
+%
+%  \begin{macro}{\size@update}
+%    Normally this macro does nothing; it will be redefined by
+%    |\set@fontsize| to initiate an update.
+%    \begin{macrocode}
+\let\size@update\relax
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\type@restoreinfo}
+%    This macro produces some info when a font size and/or baseline
+%    change will get restored.
+% \changes{1.0r}{1990/08/27}{Some extra tracing info.}
+%    \begin{macrocode}
+%<*trace>
+   \def\type@restoreinfo{%
+      \ifx\f@linespread\@empty
+        \let\reserved@a\@empty
+      \else
+        \def\reserved@a{\f@linespread x}%
+      \fi
+      \@font@info{Restoring size to
+                \f@size/\reserved@a\f@baselineskip}}
+%</trace>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\glb@settings}
+% \begin{macro}{\glb@currsize}
+% \changes{v2.3a}{1994/01/17}{New math font setup}
+% \changes{v2.3k}{1994/11/06}{New implementation}
+%    The macro |\glb@settings| globally selects
+%    all math fonts for the current size if necessary.
+%    \begin{macrocode}
+\def\glb@settings{%
+%    \end{macrocode}
+%    When |\glb@settings| gains control a size
+%    change was requested and all previous font assignments need to
+%    be replaced.
+%    Therefore the old values of the fonts are no longer needed.
+%    For every {\em math group\/} the new assignments are appended to
+%    |\math@fonts|.
+%    But this happens only if the |math@fonts| switch
+%    is set to true.
+%    However, we always set up the correct math sizes for script and
+%    scriptscript  fonts since they may be needed even if we don't set
+%    up the whole math machinery.
+%
+%    Here we set the math size, script size and scriptscript size.
+%    If the |S@|\ldots{} macro is not defined we have to first
+%    calculate the three sizes.
+%    \begin{macrocode}
+     \expandafter\ifx\csname S@\f@size\endcsname\relax
+       \calculate@math@sizes
+     \fi
+%    \end{macrocode}
+%    The effect of this is that |\calculate@math@sizes|
+%    may or may not define the |S@|\ldots{} macro. In the
+%    first case the next time the same size is requested
+%    this macro is used, otherwise |\calculate@math@sizes| is
+%    called again.
+%    This also sets the |math@fonts| switch.
+%    If it is true we must switch the math fonts.
+%    \begin{macrocode}
+     \csname S@\f@size\endcsname
+     \ifmath@fonts
+%<*trace>
+       \ifnum \tracingfonts>\tw@
+         \@font@info{Setting up math fonts for
+                     \f@size/\f@baselineskip}\fi
+%</trace>
+%    \end{macrocode}
+%    Inside a group we execute the macro for the current math {\em
+%    version}.  This sets |\math@fonts| to a list of
+%    |\textfont|\dots{} assignments.  |\getanddefine@fonts| (which may
+%    be called at this point) needs the |\escapechar| parameter to be
+%    set to $-1$.
+%    \begin{macrocode}
+       \begingroup
+         \escapechar\m@ne
+         \csname mv@\math@version \endcsname
+%    \end{macrocode}
+%    Then we set |\globaldefs| to 1 so that all following changes are
+%    done globally.  The math font assignments recorded in
+%    |\math@fonts| are executed and |\glb@currsize| is set equal to
+%    |\f@size|.  This signals that the fonts for math in this size are
+%    set up.
+%    \begin{macrocode}
+         \globaldefs\@ne
+         \math@fonts
+         \let \glb@currsize \f@size
+       \endgroup
+%    \end{macrocode}
+%       Finally we execute any code that is supposed to happen
+%       whenever the math font setup changes. This register will
+%       be executed in local mode which means that everything that is
+%       supposed to have any effect should be done globally inside.
+%       We can't execute it within |\globaldefs\@ne| as we don't know
+%       what ends up inside this register, e.g., it might contain
+%       calculations which use some local registers to calculate the
+%       final (global) value.
+%    \begin{macrocode}
+        \the\every@math@size
+%    \end{macrocode}
+%    Otherwise we announce that the math fonts are not set up for this
+%    size.
+%    \begin{macrocode}
+%<*trace>
+       \else
+         \ifnum \tracingfonts>\tw@
+           \@font@info{No math setup for
+                       \f@size/\f@baselineskip}\fi
+%</trace>
+     \fi
+}
+%</2ekernel|package>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\baselinestretch}
+% \changes{v1.0o}{1990/06/24}{Moved to tracefnt.dtx.}
+%    In |\selectfont| we used |\baselinestretch| as
+%    a factor when assigning a value to |\baselineskip|.
+%    We use 1 as a default (i.e.\ no stretch).
+%    \begin{macrocode}
+%<*2ekernel>
+\def\baselinestretch{1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\every@math@size}
+% \changes{v1.0u fam.dtx}{1989/12/05}{Hook \cs{every@size} added.}
+% \changes{v23.k}{1994/10/23}{Renamed to \cs{every@math@size}}
+%    We must still define the hook |\every@math@size| we used in
+%   |\glb@settings|.  We initialize it to nothing.  It is important to
+%   remember that everything that goes into this hook should to global
+%   updates, local changes will have weird effects.
+%    \begin{macrocode}
+\newtoks\every@math@size
+\every@math@size={}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \subsection{Math fonts setup}
+%
+%
+% \subsubsection{Outline of algorithm for math font sizes}
+%
+% \TeX{} uses the the math fonts that are current when the end of a
+% formula is reached. If we don't want to keep font setups local to
+% every formula (which would result in an enormous overhead, we have
+% to be careful not to end up with the wrong setup in case formulas
+% are nested, e.g., we need to be able to handle
+% \begin{verbatim}
+% $ a=b+c \mbox{ \small for all $b$ and $c\in Z$}$
+%\end{verbatim}
+% Here the inner formulae |b| and |c\in Z| are typeset in |\small| but
+% we have to return to |\normalsize| before we reach the closing |$|
+% of the outer formula.
+%
+% This is handled in the following way:
+% \begin{enumerate}
+% \item At any point in the document the global variable
+%   |\gbl@currsize| contains the point size for which the math fonts
+%   currently are set up.
+%
+% \item \label{it:everymath} Whenever we start a formula we compare
+%   its value with the local variable |\f@size| that describes the
+%   current text font size.
+%
+% \item If both are the same we assume that we can use the current
+%   math font setup without adjustment.
+%
+% \item \label{it:everymathend} If they differ we call |\gbl@settings|
+%   which changes the math font setup and updates |\gbl@currsize|.
+%   \begin{enumerate}
+% \item If we are recursively inside another formula (|\if@inmath|) we
+%      ensure that |\gbl@settings| is executed again in the outer
+%      formula, so that the old setup is automatically restored.
+% \item Otherwise, we set the switch |@inmath| locally to |true| so
+%      that all nested formulae will be able to detect that they are
+%      nested in some outer formula.
+%   \end{enumerate}
+% \end{enumerate}
+%
+%
+% The above algorithm has the following features:
+% \begin{itemize}
+% \item For sizes which are not containing any formula no math setup
+%   is done. Compared to the original algorithm of NFSS this results
+%   in the following savings:
+%   \begin{itemize}
+%   \item No unnecessary loading of math fonts for sizes that are not
+%      used to typeset any math formulae (explicit or implicit ones).
+%   \item No time overhead due to unnecessary changes of the math font
+%      setup on entrance and exit of the text font size.
+%   \end{itemize}
+%
+% \item Math font setup changes for top-level formulae will survive
+%   (there is no restoration after the formula) thus any following
+%   formula in the same size will be directly typesetable. Compared to
+%   original implementation in NFSS2
+%   the new algorithm has the overhead of one test per formula
+%   to see if the current math setup is valid (in the original
+%   algorithm the setup was always valid, thus no test was necessary).
+%
+% \item In nested formulae the math font setup is restored in the
+%   outer formula by a series of |\aftergroup| commands and checks.
+%   Compared to the original algorithm this involves additional checks
+%   ($2 \times \langle\mbox{non-math levels}\rangle$ per inner
+%   formula).
+% \end{itemize}
+%
+% \subsubsection{Code for math font size setting}
+%
+% \begin{macro}{\check@mathfonts}
+% \changes{v2.3a}{1994/01/17}{New math font setup}
+% \changes{v2.3c}{1994/01/26}{Correct trace info placement}
+%    In the |\check@mathfonts| macros we implement the steps
+%    \ref{it:everymath} to \ref{it:everymathend} except that instead
+%     of a switch the macro |\init@restore@glb@settings| is used.
+%    \begin{macrocode}
+%<*2ekernel|package>
+\def\check@mathfonts{%
+  \ifx \glb@currsize \f@size
+%<*trace>
+    \ifnum \tracingfonts>\thr@@
+        \@font@info{*** MATH: no change \f@size\space
+         curr/global (\curr@math@size/\glb@currsize)}\fi
+%</trace>
+  \else
+%<*trace>
+    \ifnum \tracingfonts>\thr@@
+        \@font@info{*** MATH: setting up \f@size\space
+         curr/global (\curr@math@size/\glb@currsize)}\fi
+%</trace>
+     \glb@settings
+     \init@restore@glb@settings
+  \fi
+  \let\curr@math@size\f@size
+  \def\init@restore@glb@settings{\aftergroup\restglb@settings}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%
+% \begin{macro}{\init@restore@glb@settings}
+% \changes{v3.0i}{1996/07/26}{macro added replacing \cs{if@inmath} switch}
+%    This macros does by default nothing but get redefined inside
+%    |\check@mathfonts| to initiate fontsize restoring in nested
+%    formulas.
+%    \begin{macrocode}
+%<-trace>\let\init@restore@glb@settings\relax
+%<*trace>
+\def\init@restore@glb@settings{%
+       \ifnum \tracingfonts>\thr@@
+        \@font@info{*** MATH: no resetting (not in
+                    nested math)}\fi
+}
+%</trace>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\restglb@settings}
+% \changes{v2.3a}{1994/01/17}{New math font setup}
+% \changes{v2.3c}{1994/01/26}{Correct trace info placement}
+%    This macro will be executed the first time after the current
+%    formula.
+%    \begin{macrocode}
+\def\restglb@settings{%
+%<*trace>
+    \ifnum \tracingfonts>\thr@@
+        \@font@info{*** MATH: restoring}\fi
+%</trace>
+      \begingroup
+        \let\f@size\curr@math@size
+        \ifx\glb@currsize \f@size
+%<*trace>
+    \ifnum \tracingfonts>\thr@@
+        \@font@info{*** MATH: ... already okay (\f@size)}\fi
+%</trace>
+        \else
+%<*trace>
+    \ifnum \tracingfonts>\thr@@
+        \@font@info{*** MATH: ... to \f@size}\fi
+%</trace>
+          \glb@settings
+        \fi
+      \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection{Other code for math}
+%
+%
+% \begin{macro}{\use@mathgroup}
+% \changes{v1.2b}{1990/01/21}{Macro added to allow cleaner interface.}
+% \changes{v1.2h}{1990/03/30}{Third argument removed (see
+%    \cs{math@egroup}).}
+%    The |\use@mathgroup| macro should be used in user
+%    macros to select a math group. Depending on whether or not the
+%    \texttt{margid} option is in force it has two or three arguments.
+%    For this reason it should be called as the last macro.
+%
+%    First we test if we are inside math mode since we don't want to
+%    apply a useless definition.
+% \changes{v1.1a}{1989/12/16}{Usage of `\quotechar=' macro added.}
+% \changes{v1.1a}{1989/12/16}{Redefinition of alphabet now simpler.}
+%    \begin{macrocode}
+\def\use@mathgroup#1#2{\relax\ifmmode
+%    \end{macrocode}
+% \changes{v1.0o}{1990/06/24}{Tracing code added.}
+% \changes{v1.0q}{1990/07/07}{Group number added to tracing.}
+%    \begin{macrocode}
+%<*trace>
+  \ifnum \tracingfonts>\tw@
+    \count@#2\relax
+    \@font@info{Using \noexpand\mathgroup
+             (\the\count@) #2}\fi
+%</trace>
+%    \end{macrocode}
+%    If so we first call the `=' macro (i.e.\ argument three) to set
+%    up special things for the selected math group. Then we call
+%    |\mathgroup| to select the group given by argument two and
+%    finally we place |#1| (i.e.\ the argument of the \meta{math
+%    alphabet identifier} at the end. This part of the code is
+%    surrounded by two commands which behave like |\begingroup|
+%    and |\endgroup| if we want \meta{math alphabet identifier}s
+%    but will expand into |\@empty| if we want simply switches to
+%    a new math group.
+% \changes{v1.0p}{1990/06/30}{Added \cs{relax} after math group number.}
+%    Since argument number $2$ may be a digit instead of a control
+%    sequence we add a |\relax|.
+%    Otherwise something like |\mit{1}| would switch to math group
+%    $11$ (and back) instead of printing an oldstyle $\mit {1}$.
+% \changes{v2.0b}{1992/07/26}{}
+%    \begin{macrocode}
+     \math@bgroup
+         \expandafter\ifx\csname M@\f@encoding\endcsname#1\else
+         #1\fi
+         \mathgroup#2\relax
+%    \end{macrocode}
+%    Before we reinsert the swallowed token (arg.\ three) into the
+%    input stream, in the case that the \meta{math alphabet
+%    identifier} isn't called in math mode, we remove the |\fi|
+%    with the |\expandafter| trick.  This is necessary if the
+%    token is actually an macro with arguments. In such a case the
+%    |\fi| will be misinterpreted as the first argument which
+%    would be disastrous.
+% \changes{v1.0f}{1989/12/13}
+%      {\cs{expandafter} added before final \cs{fi}.}
+%    \begin{macrocode}
+     \expandafter\math@egroup\fi}%
+%    \end{macrocode}
+%    The surrounding macros equal |\begingroup| and |\endgroup|.  But
+%    using internal names makes it possible to overwrite their meaning
+%    in certain cases. This is for example used in \AmSTeX{} macros
+%    for placing accents.
+% \end{macro}
+%
+% \begin{macro}{\math@egroup}
+% \changes{v1.0q}{1990/07/07}{Tracing code added.} If the
+%    \texttt{margid} option is in force (which can be tested by
+%    looking at the definition of |\math@bgroup| we change the
+%    |\math@egroup| command a bit to display the current \meta{math
+%    group number} after it closes the scope of \meta{math alphabet}
+%    with |\endgroup|.
+% \changes{v3.0h}{1996/05/08}{Use \cs{bgroup} instead of \cs{begingroup}
+%    to match a kernel change made in 1994!!!!}
+%    \begin{macrocode}
+%<*trace>
+  \ifx\math@bgroup\bgroup
+    \def\math@egroup#1{#1\egroup
+      \ifnum \tracingfonts>\tw@
+     \@font@info{Restoring \noexpand\mathgroup
+        (\ifnum\mathgroup=\m@ne default\else \the\mathgroup \fi)%
+        }\fi}
+  \fi
+%</trace>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\getanddefine@fonts}
+% \changes{v1.0o}{1990/06/24}{\cs{Macro} moved from fam.dtx.}
+%    |\getanddefine@fonts| has two arguments: the \meta{math
+%    group number} and the {\em family/series/shape\/} name as a
+%    control sequence.
+%    \begin{macrocode}
+\def\getanddefine@fonts#1#2{%
+%    \end{macrocode}
+%    First we turn of tracing when |\tracingfonts| is less than $4$.
+% \changes{v1.0o}{1990/06/24}{Adding debug code.}
+% \changes{v1.0r}{1990/08/27}
+%      {Correcting missing name after \cs{tracingon}.}
+%    \begin{macrocode}
+%<+debug>  \pushtracing
+%<+debug>  \ifnum\tracingfonts<4 \tracingoff
+%<+debug>  \else \tracingon\getanddefine@fonts \fi
+%    \end{macrocode}
+% \changes{v1.0o}{1990/06/24}{\cs{Adding} tracing code.}
+% \changes{v1.0q}{1990/07/07}{Group number added to tracing.}
+% \changes{v2.1a}{1992/09/22}{Introduced \cs{tf@size} for math size.}
+%    \begin{macrocode}
+%<*trace>
+  \ifnum \tracingfonts>\tw@
+  \count@#1\relax
+    \@font@info{\noexpand\mathgroup (\the\count@) #1 :=\MessageBreak
+              \string#2 \tf@size/\sf@size/\ssf@size}\fi
+%</trace>
+%    \end{macrocode}
+%    We append the current |\tf@size| to |#2| to obtain the font
+%    name.\footnote{One might ask why this expansion does not generate
+%    a macro name that starts with an additional \texttt{\bslash}
+%    character.  The solution is that \texttt{\bslash escapechar} is
+%    set to $-1$ before \texttt{\bslash getanddefine@fonts} is
+%    called.} Again, |font@name| is defined globally, for the reasons
+%    explained in the description of |\wrong@fontshape|.
+%    \begin{macrocode}
+  \xdef\font@name{\csname \string#2/\tf@size\endcsname}%
+%    \end{macrocode}
+%    Then we call |\pickup@font| to load it if necessary.
+%    We remember the internal name as |\textfont@name|.
+%    \begin{macrocode}
+  \pickup@font \let\textfont@name\font@name
+%    \end{macrocode}
+%    Same game for |\scriptfont| and |\scriptscriptfont|:
+%    \begin{macrocode}
+  \xdef\font@name{\csname \string#2/\sf@size\endcsname}%
+  \pickup@font \let\scriptfont@name\font@name
+  \xdef\font@name{\csname \string#2/\ssf@size\endcsname}%
+  \pickup@font
+%    \end{macrocode}
+%    Then we append the new |\textfont|\ldots{} assignments to
+%    the |\math@fonts|.
+%    \begin{macrocode}
+  \edef\math@fonts{\math@fonts
+               \textfont#1\textfont@name
+               \scriptfont#1\scriptfont@name
+               \scriptscriptfont#1\font@name}%
+%    \end{macrocode}
+%    Just before ending this macro we have to pop the tracing stack
+%    if it was pushed before.
+%    \begin{macrocode}
+%<+debug> \poptracing
+    }
+%</2ekernel|package>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \section{Scaled font extraction}
+%
+%  \begin{macro}{\ifnot@nil}
+%    We begin with a simple auxiliary macro. It checks
+%    whether its argument is the token |\@nil|. If so,
+%    it expands to |\@gobble| which discards the following
+%    argument, otherwise it expands to |\@firstofone| which
+%    reproduces it argument.
+% \changes{v2.3n}{1995/05/08}{Use \cs{@firstofone}}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\ifnot@nil#1{\def\reserved@a{#1}%
+  \ifx\reserved@a\@nnil \expandafter\@gobble
+  \else \expandafter\@firstofone\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\remove@to@nnil}
+%  \begin{macro}{\remove@angles}
+%  \begin{macro}{\remove@star}
+%    Three other auxiliary macros will be needed in the following:
+%    |\remove@to@nnil| gobbles up everything up to, and including,
+%    the next |\@nnil| token, and |\remove@angles| and |\remove@star|
+%    do the same
+%    for the character |>| and |*|, respectively, instead of |\@nnil|.
+%    \begin{macrocode}
+\def\remove@to@nnil#1\@nnil{}
+\def\remove@angles#1>{\set@simple@size@args}
+\def\remove@star#1*{#1}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+% \changes{v3.0c}{1995/08/24}{Macro \cs{gobble@font@spec} removed}
+%
+%  \begin{macro}{\extract@sizefn}
+%    This macro takes a size specification and parses it into size
+%    function and the optional and mandatory arguments.
+%    \begin{macrocode}
+\def\extract@sizefn#1*#2\@nil{%
+  \if>#2>\set@size@funct@args#1\@nil
+         \let\sizefn@info\@empty
+  \else\expandafter\set@size@funct@args\remove@star#2\@nil
+       \def\sizefn@info{#1}\fi
+  }
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\try@simple@size}
+%    This function tries to extract the given size (specified by
+%    |\f@size|) for the requested font shape. The font information
+%    must already be present in |\font@info|.
+%    The central macro that does the real work is |\extract@fontinfo|.
+%    We will first give a simple example how this macro works, and
+%    describe it in full generality later.
+%
+%    Assume that the requested parameters are: {\em encoding scheme\/}
+%    `OT1', {\em family\/} `cm', {\em series\/} `sansserif',
+%    {\em shape\/} `normal', and {\em size\/} `$12$'.
+%    The corresponding font definitions have already been
+%    extracted from the macro |\OT1/cm/sansserif/normal| and
+%    stored in |font@info|.
+%    (Otherwise |\extract@fontinfo| doesn't get called.)
+%    This information consists of a token list made of characters
+%    of category code $12$ of the form
+%    \begin{verbatim}
+%       <10*>cmss10<12*>cmss12<17*>cmss17
+%\end{verbatim}
+%    For reasonable packages one usually needs more sizes but this is
+%    sufficient to get the flavour.
+%    We will define a macro |\extract@fontinfo| to find
+%    the external font name (`cmss12') for us:
+%    \begin{verbatim}
+%      \def\extract@fontinfo#1<12*#2>#3<#4\@nnil{%
+%          \set@simple@size@args#3<#4\@nnil
+%          \execute@size@function{#2}}
+%\end{verbatim}
+%    so that when it gets called via
+%    \begin{verbatim}
+%      \extract@fontinfo<10*>cmss10<12*>cmss12<17*>cmss17\@nnil
+%\end{verbatim}
+%    |#1| will contain all characters before |<12*>|,
+%    |#2| will be empty, |#3| will be exactly |cmss12|,
+%    and |#3| will be |17>cmss17|.
+%    The expansion is therefore
+%    \begin{verbatim}
+%      \set@simple@size@args cmss12<17*>cmss17\@nnil
+%      \execute@size@function{}
+%\end{verbatim}
+%    This means: the default (empty) size function will be executed,
+%    with its optional argument argument set to empty and its mandatory
+%    argument set to |cmss12| by |\set@simple@size@args|.
+%    As we discussed earlier, the effect of the default size function
+%    is to load the given external font (cmss12) at the specified size
+%    (12)---which is exactly what was intended.
+%
+%    But this is only part of the whole story.
+%    It may be that the size requested does not occur
+%    in the token list |\font@info|.
+%    And the simple definition of |\extract@fontinfo| we gave
+%    above does not allow to specify give more than one
+%    size specification in front of the external font name.
+%
+%    Let's address these two problems separately. The first one
+%    is solved with the following trick:
+%    We define |\extract@fontinfo| as follows:
+%    \begin{verbatim}
+%      \def\extract@fontinfo#1<12*#2>#3<#4\@nnil{%
+%        \ifnot@nil{#3}%
+%          {\set@simple@size@args#3<#4\@nnil
+%           \execute@size@function{#2}%
+%          }}%
+%\end{verbatim}
+%    How does this work?
+%    We call |\extract@fontinfo| via
+%    \begin{verbatim}
+%      \expandafter\extract@fontinfo\font@info<12*>\@nil<\@nnil
+%\end{verbatim}
+%    i.e. by appending |<12*>\@nil<\@nnil|.
+%    If the size (`12' in this case) appears in |\font@info|
+%    everything works as explained above, the only difference being
+%    that argument |#4| of |\extract@fontinfo|
+%    additionally gets the tokens |<12*>\@nil<\@nnil|.
+%    However, if the size is not found everything up to the final
+%    |<12*>| is in argument |#1|,
+%    |#3| gets |\@nil|,
+%    and |#2| and |#4| are empty.
+%    The macro |\ifnot@nil| will discard the calls to
+%    |\set@simple@size@args| and |execute@size@function|, and
+%    hence |\font@info| will continue to be equal to |\@empty|.
+%    This means that no simple size specification matching the
+%    requested size could be found.
+%
+%    The second problem (more than one simple size specification
+%    for one external font name) will be addressed in
+%    |\set@simple@size@args| below.
+%
+%    The macros are hidden inside other control sequences
+%    so that we have to build |\extract@fontinfo| in
+%    several steps.
+%
+%    So here's the actual definition of |\extract@font| in
+%    |\try@simple@size|.
+%    \begin{macrocode}
+% % this could be replaced by \try@size@range making the subst slower!
+\def\try@simple@size{%
+%    \end{macrocode}
+%    |\reserved@a| is made an abbreviation for the head of the
+%    definition of the macro  |\extract@fontinfo|.
+%    \begin{macrocode}
+    \def\reserved@a{\def\extract@fontinfo####1}%
+%    \end{macrocode}
+%    Now we can define |\extract@fontinfo|. Here we handle a small
+%    but convenient variation: in case of the default (empty) size
+%    function it is allowed to omit the |*| character.
+% \changes{v2.0b}{1992/07/26}{}
+% \changes{v2.0c}{1992/09/19}{}
+%    \begin{macrocode}
+    \expandafter\reserved@a\expandafter<\f@size>##2<##3\@nnil{%
+          \ifnot@nil{##2}%
+            {\set@simple@size@args##2<##3\@nnil
+             \execute@size@function\sizefn@info
+            }}%
+%    \end{macrocode}
+% \changes{v2.0b}{1992/07/26}{}
+%    Now we call |\extract@fontinfo|.  Note the |<\@nil| \textsf{tokens}
+%    at the end.
+%    \begin{macrocode}
+    \expandafter\expandafter
+    \expandafter\extract@fontinfo\expandafter\font@info
+    \expandafter<\f@size>\@nil<\@nnil
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\set@simple@size@args}
+%    As promised above, the macro |\set@simple@size@args| will handle
+%    the case of several size specifications in a row.
+%    If another size specification follows, the very first token of
+%    its argument list is the character |<|.
+%    By starting the definition as follows,
+%    \begin{macrocode}
+\def\set@simple@size@args#1<{%
+%    \end{macrocode}
+%    parameter |#1| is empty in this case, and contains the size
+%    function's arguments otherwise. We distinguish these two cases
+%    (Note that the character |<| cannot appear in |#1|) by calling
+%    |\remove@angles| for empty |#1| and |\extract@sizefn|
+%    otherwise. In the latter case we have to take care of the
+%    remaining character tokens and discard them. This is done by
+%    |\remove@to@nnil|. Note also the use of Kabelschacht's method.
+%    \begin{macrocode}
+          \if<#1<%
+            \expandafter\remove@angles
+          \else
+            \extract@sizefn#1*\@nil
+            \expandafter\remove@to@nnil
+          \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  Now, we are through with the case of a simple size, except for
+%  calling the size function. This will be handled later, as it is
+%  the same mechanism for all types of size specification. We will
+%  now proceed to macors for extraction of size range specification.
+%
+%
+%
+%  \begin{macro}{\extract@rangefontinfo}
+%    |\extract@rangefontinfo| goes through a font shape definition
+%    in the input until it recognizes the tokens |<\@nil->|.
+%    It looks for font ranges with font size functions. It's operation
+%    is rather simple: it discards everything up to the next size
+%    specification and passes this on to |\is@range| for inspection.
+%    The specification (parameter |#2| is inserted again, in case
+%    it is needed later.
+%    \begin{macrocode}
+\def\extract@rangefontinfo#1<#2>{%
+       \is@range#2->\@nil#2>}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\is@range}
+%    |\is@range| is again a sort of dispatcher macro: if the size
+%    specification it is looking at is not a range specification
+%    it discards it and calls |\extract@rangefontinfo| to continue
+%    the search. Otherwise it calls |\check@range| to check the
+%    requested size against the specified range.
+%
+%    From the way |\is@range| is called inside |\extract@rangefontinfo|
+%    we see that |#2| is the character |>| if the size specification
+%    found is a simple one (as it does not contain a |-| character.
+%    This is checked easily enough and |\extract@rangefontinfo|
+%    called again. Note that the extra tokens inserted after the
+%    |\@nil| in the call to |\is@range| appear at the beginning of
+%    the first argument to |\extract@rangefontinfo| and are hence
+%    ignored.
+%    \begin{macrocode}
+\def\is@range#1-#2\@nil{%
+   \if>#2\expandafter\check@single\else
+      \expandafter\check@range\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\check@range}
+%    |\check@range| takes lower bound as parameter |#1|, upper bound
+%    as |#2|, size function as |#3| and the size function's arguments
+%    as |#4|. If |#3| is the special token |\@nil| |\font@info| is
+%    exhausted and we can stop searching.
+%    \begin{macrocode}
+\def\check@range#1-#2>#3<#4\@nnil{%
+  \ifnot@nil{#3}{%
+%    \end{macrocode}
+%    If |#3| wasn't |\@nil| we have a range. We start by assuming that
+%    we have to recurse. Note that we have to reinsert an |<| as it
+%    was already removed by scanning.
+%    \begin{macrocode}
+     \def\reserved@f{\extract@rangefontinfo<#4\@nnil}%
+%    \end{macrocode}
+%    We have to make sure that both boundaries are present, if not we
+%    have to set them.  Here we check the upper bound. If |\upper@bound|
+%    is zero after the assignment we set it to |\maxdimen| (upper open
+%    range). We need to use a \meta{dimen} register for the scan since
+%    we may have a decimal number as the boundary.
+%    \begin{macrocode}
+     \upper@bound0#2\p@
+     \ifdim\upper@bound=\z@ \upper@bound\maxdimen\fi
+%    \end{macrocode}
+%    Now we check the upper boundary against |\f@size|.
+%    If it is larger or equal than |\f@size| this
+%    range is no good and we have to recurse.
+%    \begin{macrocode}
+     \ifdim \f@size \p@<\upper@bound
+%    \end{macrocode}
+%    Otherwise we have to check the lower bound. This time it is not
+%    necessary to scan the boundary value into a register because if
+%    it is empty we get zero as desired. We could even omit the |0|
+%    which would result in |1pt| as default lower boundary. If
+%    |\f@size| is smaller than the boundary we have to recurse.
+%    \begin{macrocode}
+       \lower@bound0#1\p@
+       \ifdim \f@size \p@<\lower@bound
+        \else
+%    \end{macrocode}
+%    If both tests are passed we can try executing the size function.
+%    \begin{macrocode}
+          \set@simple@size@args#3<#4\@nnil
+          \execute@size@function\sizefn@info
+%    \end{macrocode}
+%    If the function was successful it should have left an external
+%    font name in |\external@font|. We use this to see if we can stop
+%    scanning. Otherwise we recurse.
+%    \begin{macrocode}
+         \ifx\external@font\@empty
+         \else
+           \let\reserved@f\@empty
+         \fi
+       \fi
+     \fi
+     \reserved@f}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\lower@bound}
+%  \begin{macro}{\upper@bound}
+%    We use two dimen registers |\lower@bound| and |\upper@bound|
+%    to store the lower and upper endpoints of the range we found.
+%    \begin{macrocode}
+\newdimen\lower@bound
+\newdimen\upper@bound
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\check@single}
+%    |\check@single| takes the size as parameter |#1|, size function
+%    as |#2| and the size function's arguments as |#3|. We can assume
+%    that there is always something in the pipeline since the very
+%    last entry is a faked range (see above).
+%    \begin{macrocode}
+\def\check@single#1>#2<#3\@nnil{%
+%    \end{macrocode}
+%    We start by assuming that
+%    we have to recurse. Note that we have to reinsert an |<| as it
+%    was already removed by scanning.
+%    \begin{macrocode}
+     \def\reserved@f{\extract@rangefontinfo<#3\@nnil}%
+%    \end{macrocode}
+%    Now we check the the size against |\f@size|.  If it is not equal
+%    |\f@size| it is no good and we have to recurse.
+%    \begin{macrocode}
+     \ifdim \f@size \p@=#1\p@
+%    \end{macrocode}
+%    Otherwise if this test is passed we can try executing the size
+%    function.
+%    \begin{macrocode}
+        \set@simple@size@args#2<#3\@nnil
+        \execute@size@function\sizefn@info
+%    \end{macrocode}
+%    If the function was successful it should have left an external
+%    font name in |\external@font|. We use this to see if we can stop
+%    scanning. Otherwise we recurse.
+%    \begin{macrocode}
+        \ifx\external@font\@empty
+        \else
+          \let\reserved@f\@empty
+        \fi
+     \fi
+     \reserved@f}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\set@size@funct@args}
+%  \begin{macro}{\set@size@funct@args@}
+%    This macro sets the optional and mandatory arguments for a size
+%    function. If the optional argument is not present it is set to
+%    the empty token list. The mandatory argument is delimited by the
+%    token |\@nil|.
+%    \begin{macrocode}
+\def\set@size@funct@args{\@ifnextchar[%
+  \set@size@funct@args@{\set@size@funct@args@[]}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\set@size@funct@args@[#1]#2\@nil{%
+  \def\mandatory@arg{#2}%
+  \def\optional@arg{#1}}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\DeclareSizeFunction}
+%    This function defines a new size function hiding the internal
+%    from the designer. The body of the size function may use
+%    |\optional@arg| and |\mandatory@arg| denoting the optional and
+%    mandatory argument that may follow the size specification |<...>|.
+% \changes{v2.1c}{1993/03/18}{Added all args to avoid blanks problems}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\DeclareSizeFunction#1#2{\@namedef{s@fct@#1}{#2}}
+\@onlypreamble\DeclareSizeFunction
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\execute@size@function}
+%    This macro is very simple. The only point worth noting
+%    is that calling an undefined size function will do nothing
+%    (actually execute a |\relax|).
+%    \begin{macrocode}
+%<*2ekernel|package>
+\def\execute@size@function#1{%
+%<*trace>
+         \@ifundefined{s@fct@#1}%
+           {\errmessage{Undefined font size function #1}%
+            \s@fct@}%
+           {\csname s@fct@#1\endcsname}%
+%</trace>
+%<-trace>      \csname s@fct@#1\endcsname
+}
+%</2ekernel|package>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v2.3j}{1994/05/23}{Removed def of \cs{f@warn@break}}
+%
+%
+%  \begin{macro}{\try@size@range}
+%    This macro tries to find a suitable range for requested size
+%    (specified by |\f@size|) in |\font@info|. All the relevant
+%    action is done in |\extract@rangefontinfo|. All that needs
+%    to be done is to stuff in the token list in |\font@info| so
+%    that |\extract@rangefontinfo| can inspect it.
+%    Note the |<-*\@nil><| token at the end to stop scanning.
+% \changes{v2.0b}{1992/07/26}{}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\try@size@range{%
+    \expandafter\extract@rangefontinfo\font@info <-*>\@nil<\@nnil
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\try@size@substitution}
+% \changes{v2.3k}{1994/11/06}{New implementation}
+%    This is the last thing that can be tried. If the desired |\f@size|
+%    is found neither among the simple size specifications nor in one
+%    of the ranges the whole list of size specifications is searched for
+%    a nearby simple size.
+%    \begin{macrocode}
+\gdef\try@size@substitution{%
+%    \end{macrocode}
+%    First we do some initializations. |\@tempdimb|
+%    will hold the difference between the wanted size and the best
+%    solution found so far, so we initialise it with |\maxdimen|.
+%    The macro |\best@size| will hold the best size found, nothing
+%    found is indicated by the empty value.
+%    \begin{macrocode}
+  \@tempdimb \maxdimen
+  \let \best@size \@empty
+%    \end{macrocode}
+%    Now we loop over the specification
+%    \begin{macrocode}
+  \expandafter \try@simples \font@info <\number\@M>\@nil<\@nnil
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\font@submax}
+% \changes{v2.3d}{1994/04/18}{Changed dimen to macro}
+%  \begin{macro}{\fontsubfuzz}
+% \changes{v2.3d}{1994/04/18}{Changed dimen to macro}
+%    The macro |\font@submax| records the maximal deviation from the
+%    desired size encountered so far. Its value is used in a warning
+%     message at |\end{document}|. The macro
+%    |\fontsubfuzz| contains the amount that will not cause terminal
+%    warnings (warnings still go into the transcript file).
+%    \begin{macrocode}
+\def\font@submax{0pt}
+\def\fontsubfuzz{.4pt}
+%</2ekernel>
+%<+package>\def\fontsubfuzz{0pt}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\try@simples}
+% \changes{v2.3k}{1994/11/06}{New implementation}
+%    |\try@simples| goes through a font shape definition
+%    in the input until it recognizes the tokens |<*\@nil><|.
+%    It looks for simple sizes to determine the two closest sizes.
+%    It is assumed that simple sizes are in increasing order.
+%    \begin{macrocode}
+%<*2ekernel>
+\gdef\try@simples#1<#2>{%
+  \tryif@simple#2->\tryif@simple}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\tryis@simple}
+% \changes{v2.3k}{1994/11/06}{New implementation}
+%   |\tryis@simple| is similar to |\is@range|. If it sees a simple size,
+%   it checks it against the value of |\f@size| and sets
+%   |\lower@font@size| or |\higher@font@size|. In the latter case, it
+%   stops the iteration. By adding |<\number\@M>| at the end of the
+%   line we always have an end point. This is a hack which probably
+%   should be corrected.
+%
+%    First it checks whether it is finished already, then whether the
+%    size specification in question is a simple one.
+%    \begin{macrocode}
+\gdef\tryif@simple#1-#2\tryif@simple{%
+%    \end{macrocode}
+%    Most common case for |\reserved@f| first:
+%    \begin{macrocode}
+  \let \reserved@f \try@simples
+  \if>#2%
+%    \end{macrocode}
+%    If so, it compares it to the value of |\f@size|. This is done using
+%    a dimen register since there may be fractional numbers.
+%    \begin{macrocode}
+    \dimen@ #1\p@
+    \ifdim \dimen@<\@M\p@
+%    \end{macrocode}
+%    If |\dimen@| is |\@M\p@| we have reached the end of the fontspec
+%    (hopefully) otherwise we compare the value with |\f@size| and
+%    compute in |\@tempdimc| the absolute value of the difference
+%    between the two values.
+%    \begin{macrocode}
+      \ifdim \f@size\p@<\dimen@
+        \@tempdimc \dimen@
+        \advance\@tempdimc -\f@size\p@
+      \else
+        \@tempdimc \f@size\p@
+        \advance\@tempdimc -\dimen@
+      \fi
+%    \end{macrocode}
+%    The result is then compared with the smallest difference we have
+%    encountered, if the new value (in |\@tempdimc| is smaller) we
+%    have found a size which is a better approximation so we make it
+%    the |\best@size| and adjust |\@tempdimb|.
+%    \begin{macrocode}
+      \ifdim \@tempdimc<\@tempdimb
+        \@tempdimb \@tempdimc
+        \def \best@size{#1}%
+      \fi
+%    \end{macrocode}
+%    When we have reached the end of the fontspec we substitute the
+%    best size found (if any). We code this inline to save macro
+%    space; in the past this was done by a macro called |\subst@size|.
+%    \begin{macrocode}
+    \else
+%    \end{macrocode}
+%
+%
+%  \begin{macro}{\subst@size}
+%    This macro substitutes the size recorded in |\best@size| for
+%    the unavailable size |\f@size|. |\font@submax| records the maximum
+%    difference between desired size and selected size in the
+%    whole run.
+% \changes{v2.3d}{1994/04/18}{\cs{font@submax} and \cs{fontsubfuzz}
+%                             now macros}
+%    \begin{macrocode}
+% %\subst@size             %% coded inline
+% %\def\subst@size{%
+  \ifx \external@font\@empty
+    \ifx \best@size\@empty
+    \else
+      \ifdim \@tempdimb>\font@submax \relax
+        \xdef \font@submax {\the\@tempdimb}%
+      \fi
+      \let \f@user@size \f@size
+      \let \f@size \best@size
+      \ifdim \@tempdimb>\fontsubfuzz\relax
+        \@font@warning{Font\space shape\space
+            `\curr@fontshape'\space in\space size\space
+             <\f@user@size>\space not\space available\MessageBreak
+             size\space <\f@size>\space substituted}%
+      \fi
+      \try@simple@size
+      \do@subst@correction
+    \fi
+ \fi
+% %}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    This brings us back into the main part of |\tryif@simple|.
+%    Finally we get rid of any rubbish left over on the input stack.
+%
+% \changes{v3.0c}{1995/08/24}{}
+%    \begin{macrocode}
+      \let \reserved@f \remove@to@nnil
+    \fi
+  \fi
+%    \end{macrocode}
+%    If it's a range iterate also.
+%    \begin{macrocode}
+  \reserved@f}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \subsection{Sizefunctions}
+%
+%  In the following we define some useful size functions.
+%
+%
+%  \begin{macro}{\s@fct@}
+%    This is the default size function. Mandatory argument is an
+%    external font name, optional argument a scale factor.
+%    The font is scaled
+%    to |\f@size| if no optional argument is present, and to
+%    |\f@size| multiplied by the optional argument otherwise.
+% \changes{v2.0b}{1992/07/26}{}
+%    \begin{macrocode}
+\DeclareSizeFunction{}{\empty@sfcnt\@font@warning}
+\DeclareSizeFunction{s}{\empty@sfcnt\@font@info}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\empty@sfcnt#1{%
+      \@tempdimb \f@size\p@
+      \ifx\optional@arg\@empty
+      \else
+        \@tempdimb \optional@arg\@tempdimb
+        #1{Font\space shape\space `\curr@fontshape'\space
+           will\space be\MessageBreak
+           scaled\space to\space size\space \the\@tempdimb}%
+      \fi
+      \edef\external@font{\mandatory@arg\space at\the\@tempdimb}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\s@fct@gen}
+%  \begin{macro}{\s@fct@sgen}
+%    This size function generates the external name from the mandatory
+%    argument and the requested user size, and thus can be used for
+%    external names where the size is encoded in the font name. The
+%    optional argument a scale factor.  The font is scaled to |\f@size|
+%    if no optional argument is present, and to |\f@size| multiplied
+%    by the optional argument otherwise.
+%    \begin{macrocode}
+\DeclareSizeFunction{gen}{\gen@sfcnt\@font@warning}
+\DeclareSizeFunction{sgen}{\gen@sfcnt\@font@info}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\gen@sfcnt{%
+      \edef\mandatory@arg{\mandatory@arg\f@size}%
+      \empty@sfcnt}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\s@fct@genb}
+%  \begin{macro}{\s@fct@sgenb}
+%    This size function is similar to |gen|, but for fonts where the
+%    size is encoded in the font name in centipoints, as in the DC
+%    fonts version 1.2.  The font is scaled to |\f@size|
+%    if no optional argument is present, and to |\f@size| multiplied
+%    by the optional argument otherwise.
+%    \begin{macrocode}
+\DeclareSizeFunction{genb}{\genb@sfcnt\@font@warning}
+\DeclareSizeFunction{sgenb}{\genb@sfcnt\@font@info}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\genb@sfcnt{%
+    \edef\mandatory@arg{\mandatory@arg\expandafter\genb@x\f@size..\@@}%
+    \empty@sfcnt}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\genb@x}
+%  \begin{macro}{\genb@y}
+%    The auxiliary macros |\genb@x| and |\genb@y| are used to convert
+%    the |\f@size| into centipoints.
+%    \begin{macrocode}
+\def\genb@x#1.#2.#3\@@{\two@digits{#1}\genb@y#200\@@}
+\def\genb@y#1#2#3\@@{#1#2}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\s@fct@sub}
+%    This size function handles font substitution.
+%    The mandatory argument is a family/series/shape combination,
+%    the optional argument (if present) is ignored. The font encoding
+%    scheme cannot be changed. Therefore, the first thing we do is to
+%    prepend the encoding scheme.
+% \changes{v2.0b}{1992/07/26}{}
+%    \begin{macrocode}
+\DeclareSizeFunction{sub}{\sub@sfcnt\@font@warning}
+\DeclareSizeFunction{ssub}{\sub@sfcnt\@font@info}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\sub@sfcnt#1{%
+    \edef\mandatory@arg{\f@encoding/\mandatory@arg}%
+%    \end{macrocode}
+%    Next action is split the arg into its individual components and
+%    allow for a late font shape load.
+%    \begin{macrocode}
+    \begingroup
+     \expandafter\split@name\mandatory@arg/\@nil
+     \try@load@fontshape
+    \endgroup
+%    \end{macrocode}
+%    Then we record the current |\f@size| since it may get clobbered.
+%    \begin{macrocode}
+    \let\f@user@size\f@size
+%    \end{macrocode}
+%    Then we check whether this new combination is defined and
+%    give an error message if not. In this case we also switch to
+%    |\error@fontshape|.
+%    \begin{macrocode}
+    \expandafter
+    \ifx\csname\mandatory@arg\endcsname\relax
+      \errmessage{No\space declaration\space for\space
+                  shape\space \mandatory@arg}%
+      \error@fontshape
+    \else
+%    \end{macrocode}
+%    Otherwise we warn the user about the substitution taking place.
+%    \begin{macrocode}
+      #1{Font\space shape\space `\curr@fontshape'\space in\space
+         size\space <\f@size>\space not\space available\MessageBreak
+         Font\space shape\space `\mandatory@arg'\space tried\space
+         instead}%
+      \expandafter\split@name\mandatory@arg/\@nil
+    \fi
+%    \end{macrocode}
+%    Then we restart the font specification scan by calling
+%    |\get@external@font|.
+%    \begin{macrocode}
+    \edef\f@size{\f@user@size}%
+    \get@external@font
+%    \end{macrocode}
+%    Finally |\do@subst@correction| is called to get the font name
+%    right.
+%    \begin{macrocode}
+    \do@subst@correction
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\s@fct@subf}
+%    The |subf| size function allows substitution of another font. The
+%    mandatory argument is the external name of the font to be
+%    substituted, the optional argument a size scaling factor like
+%    in the default size function.
+%    The main difference to the default size function is the warning
+%    message.
+%    \begin{macrocode}
+\DeclareSizeFunction{subf}{\subf@sfcnt\@font@warning}
+\DeclareSizeFunction{ssubf}{\subf@sfcnt\@font@info}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\subf@sfcnt#1{%
+      #1{Font\space shape\space `\curr@fontshape'\space in\space
+         size\space \f@size\space not\space available\MessageBreak
+        external\space font\space `\mandatory@arg'\space used}%
+      \empty@sfcnt#1%
+      }
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\s@fct@fixed}
+%    The |fixed| size function is for using a font at a different size
+%    than requested. A warning message is printed, and the external
+%    font to be used is taken from the mandatory argument.
+%    If an optional argument is present it is used as the `at'
+%    size for the font. Otherwise the font is loaded at its design size.
+%    \begin{macrocode}
+\DeclareSizeFunction{fixed}{\fixed@sfcnt\@font@warning}
+\DeclareSizeFunction{sfixed}{\fixed@sfcnt\@font@info}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\fixed@sfcnt#1{%
+  \ifx\optional@arg\@empty
+    \let\external@font\mandatory@arg
+  \else
+    \edef\external@font{\mandatory@arg\space at\optional@arg pt}%
+  \fi
+  #1{External\space font\space `\external@font'\space loaded\space
+     for\space size\MessageBreak
+     <\f@size>}%
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \iffalse
+%<+checkmem>\CHECKMEM
+% \fi
+%
+%
+% \Finale

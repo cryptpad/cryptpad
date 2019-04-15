@@ -1,0 +1,9 @@
+% temporary kludge to make the APS font for proofmode with new MF
+magnification 1.0;
+tfmmode;
+fontfacebyte 84;
+ppi=722.909; % pixels per inch, according to DRF
+fontidentifier "FIG";
+codingscheme "GFGRAY";
+input gray;
+end

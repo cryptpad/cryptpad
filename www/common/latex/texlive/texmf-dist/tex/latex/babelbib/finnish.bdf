@@ -1,0 +1,168 @@
+%%
+%% This is file `finnish.bdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,finnish')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+%% Language definitions for Finnish by
+%%   Taneli Huuskonen <huuskone@cc.helsinki.fi>
+\ProvidesFile{finnish.bdf}
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\newcommand\bibsfinnish[1][finnish]{%
+  \def\biblanguagename{#1}%
+  \def\btxetalshort##1{\protect\foreignlanguage{#1}{et~al##1{}}}%
+  \def\btxetallong##1{\protect\foreignlanguage{#1}{et~alii}}%
+  \def\btxandshort##1{\protect\foreignlanguage{#1}{ja}}%
+  \def\btxandlong##1{\protect\foreignlanguage{#1}{ja}}%
+  \def\btxandcomma##1{}%
+  \def\btxinlong##1{\protect\foreignlanguage{#1}{teoksessa}}%
+  \def\btxinshort##1{\protect\foreignlanguage{#1}{teoksessa}}%
+  \def\btxofseriesshort##1{\protect\foreignlanguage{#1}{sarjassa}}%
+  \def\btxinseriesshort##1{\protect\foreignlanguage{#1}{sarjassa}}%
+  \def\btxofserieslong##1{\protect\foreignlanguage{#1}{sarjassa}}%
+  \def\btxinserieslong##1{\protect\foreignlanguage{#1}{sarjassa}}%
+  \def\btxeditorshort##1{\protect\foreignlanguage{#1}{toim##1{}}}%
+  \def\btxeditorlong##1{\protect\foreignlanguage{#1}{toimittaja}}%
+  \def\btxeditorsshort##1{\protect\foreignlanguage{#1}{toim##1{}}}%
+  \def\btxeditorslong##1{\protect\foreignlanguage{#1}{toimittajat}}%
+  \def\btxvolumeshort##1{\protect\foreignlanguage{#1}{nide}}%
+  \def\btxvolumelong##1{\protect\foreignlanguage{#1}{nide}}%
+  \def\btxnumbershort##1{\protect\foreignlanguage{#1}{nro##1{}}}%
+  \def\btxnumberlong##1{\protect\foreignlanguage{#1}{numero}}%
+  \def\btxeditionshort##1{\protect\foreignlanguage{#1}{p##1{}}}%
+  \def\btxeditionlong##1{\protect\foreignlanguage{#1}{painos}}%
+  \def\btxeditionnumshort##1##2{\btxnumeralshort{##1}~\btxeditionshort{##2}}%
+  \def\btxeditionnumlong##1##2{\btxnumerallong{##1}~\btxeditionlong{##2}}%
+  \def\btxchaptershort##1{\protect\foreignlanguage{#1}{l##1{}}}%
+  \def\btxchapterlong##1{\protect\foreignlanguage{#1}{luku}}%
+  \def\btxpageshort##1{\protect\foreignlanguage{#1}{s##1{}}}%
+  \def\btxpagelong##1{\protect\foreignlanguage{#1}{sivu}}%
+  \def\btxpagesshort##1{\protect\foreignlanguage{#1}{ss##1{}}}%
+  \def\btxpageslong##1{\protect\foreignlanguage{#1}{sivut}}%
+  \def\btxmastthesis##1{\protect\foreignlanguage{#1}{Pro Gradu -ty\"o}}%
+  \def\btxphdthesis##1{\protect\foreignlanguage{#1}{v\"ait\"oskirja}}%
+  \def\btxtechrepshort##1{\protect\foreignlanguage{#1}{tekn.\ rap##1{}}}%
+  \def\btxtechreplong##1{\protect\foreignlanguage{#1}{tekninen raportti}}%
+  \def\btxmonjanlong##1{\protect\foreignlanguage{#1}{tammikuu}}%
+  \def\btxmonfeblong##1{\protect\foreignlanguage{#1}{helmikuu}}%
+  \def\btxmonmarlong##1{\protect\foreignlanguage{#1}{maaliskuu}}%
+  \def\btxmonaprlong##1{\protect\foreignlanguage{#1}{huhtikuu}}%
+  \def\btxmonmaylong##1{\protect\foreignlanguage{#1}{toukokuu}}%
+  \def\btxmonjunlong##1{\protect\foreignlanguage{#1}{kes\"akuu}}%
+  \def\btxmonjullong##1{\protect\foreignlanguage{#1}{hein\"akuu}}%
+  \def\btxmonauglong##1{\protect\foreignlanguage{#1}{elokuu}}%
+  \def\btxmonseplong##1{\protect\foreignlanguage{#1}{syyskuu}}%
+  \def\btxmonoctlong##1{\protect\foreignlanguage{#1}{lokakuu}}%
+  \def\btxmonnovlong##1{\protect\foreignlanguage{#1}{marraskuu}}%
+  \def\btxmondeclong##1{\protect\foreignlanguage{#1}{joulukuu}}%
+  \def\btxmonjanshort##1{\protect\foreignlanguage{#1}{tam##1{}}}%
+  \def\btxmonfebshort##1{\protect\foreignlanguage{#1}{hel##1{}}}%
+  \def\btxmonmarshort##1{\protect\foreignlanguage{#1}{maa##1{}}}%
+  \def\btxmonaprshort##1{\protect\foreignlanguage{#1}{huh##1{}}}%
+  \def\btxmonmayshort##1{\protect\foreignlanguage{#1}{tou##1{}}}%
+  \def\btxmonjunshort##1{\protect\foreignlanguage{#1}{kes##1{}}}%
+  \def\btxmonjulshort##1{\protect\foreignlanguage{#1}{hei##1{}}}%
+  \def\btxmonaugshort##1{\protect\foreignlanguage{#1}{elo##1{}}}%
+  \def\btxmonsepshort##1{\protect\foreignlanguage{#1}{syy##1{}}}%
+  \def\btxmonoctshort##1{\protect\foreignlanguage{#1}{lok##1{}}}%
+  \def\btxmonnovshort##1{\protect\foreignlanguage{#1}{mar##1{}}}%
+  \def\btxmondecshort##1{\protect\foreignlanguage{#1}{jou##1{}}}%
+  \def\Btxinlong##1{\protect\foreignlanguage{#1}{Teoksessa}}%
+  \def\Btxinshort##1{\protect\foreignlanguage{#1}{Teoksessa}}%
+  \def\Btxeditorshort##1{\protect\foreignlanguage{#1}{Toim##1{}}}%
+  \def\Btxeditorlong##1{\protect\foreignlanguage{#1}{Toimittaja}}%
+  \def\Btxeditorsshort##1{\protect\foreignlanguage{#1}{Toim##1{}}}%
+  \def\Btxeditorslong##1{\protect\foreignlanguage{#1}{Toimittajat}}%
+  \def\Btxvolumeshort##1{\protect\foreignlanguage{#1}{Nide##1{}}}%
+  \def\Btxvolumelong##1{\protect\foreignlanguage{#1}{Nide}}%
+  \def\Btxnumbershort##1{\protect\foreignlanguage{#1}{Nro##1{}}}%
+  \def\Btxnumberlong##1{\protect\foreignlanguage{#1}{Numero}}%
+  \def\Btxeditionshort##1{\protect\foreignlanguage{#1}{P##1{}}}%
+  \def\Btxeditionlong##1{\protect\foreignlanguage{#1}{Painos}}%
+  \def\Btxeditionnumshort##1##2{\btxnumeralshort{##1}~\Btxeditionshort{##2}}%
+  \def\Btxeditionnumlong##1##2{\btxnumerallong{##1}~\Btxeditionlong{##2}}%
+  \def\Btxchaptershort##1{\protect\foreignlanguage{#1}{L##1{}}}%
+  \def\Btxchapterlong##1{\protect\foreignlanguage{#1}{Luku}}%
+  \def\Btxpageshort##1{\protect\foreignlanguage{#1}{S##1{}}}%
+  \def\Btxpagelong##1{\protect\foreignlanguage{#1}{Sivu}}%
+  \def\Btxpagesshort##1{\protect\foreignlanguage{#1}{Ss##1{}}}%
+  \def\Btxpageslong##1{\protect\foreignlanguage{#1}{Sivut}}%
+  \def\Btxtechrepshort##1{\protect\foreignlanguage{#1}{Tekn.\ rap##1{}}}%
+  \def\Btxtechreplong##1{\protect\foreignlanguage{#1}{Tekninen raportti}}%
+  \def\btxurldatecomment##1{\protect\foreignlanguage{#1}{, vierailtu ##1}}%
+  \def\btxfnamespaceshort{\,}%
+  \def\btxfnamespacelong{ }%
+  \def\btxnumeralshort##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxnumerallong##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxprintmonthyearnum##1##2{##1/##2}%
+  \def\btxkeywordlanguage##1{{\protect\selectlanguage{#1}##1}}%
+  \ifbbbblanguagenames
+    \def\btxlanguagenameamerican{\protect\foreignlanguage{#1}{englanti}}%
+    \def\btxlanguagenameaustrian{\protect\foreignlanguage{#1}{saksa}}%
+    \def\btxlanguagenamebrazil{\protect\foreignlanguage{#1}{portugali}}%
+    \def\btxlanguagenamebrazilian{\protect\foreignlanguage{#1}{portugali}}%
+    \def\btxlanguagenamebritish{\protect\foreignlanguage{#1}{englanti}}%
+    \def\btxlanguagenamebulgarian{\protect\foreignlanguage{#1}{bulgaria}}%
+    \def\btxlanguagenamecanadian{\protect\foreignlanguage{#1}{englanti}}%
+    \def\btxlanguagenamecanadien{\protect\foreignlanguage{#1}{ranska}}%
+    \def\btxlanguagenamecatalan{\protect\foreignlanguage{#1}{katalaani}}%
+    \def\btxlanguagenamecroatian{\protect\foreignlanguage{#1}{kroaati}}%
+    \def\btxlanguagenameczech{\protect\foreignlanguage{#1}{tsekki}}%
+    \def\btxlanguagenamedanish{\protect\foreignlanguage{#1}{tanska}}%
+    \def\btxlanguagenamedutch{\protect\foreignlanguage{#1}{hollanti}}%
+    \def\btxlanguagenameenglish{\protect\foreignlanguage{#1}{englanti}}%
+    \def\btxlanguagenameesperanto{\protect\foreignlanguage{#1}{esperanto}}%
+    \def\btxlanguagenamefinnish{\protect\foreignlanguage{#1}{suomi}}%
+    \def\btxlanguagenamefrancais{\protect\foreignlanguage{#1}{ranska}}%
+    \def\btxlanguagenamefrench{\protect\foreignlanguage{#1}{ranska}}%
+    \def\btxlanguagenamefrenchb{\protect\foreignlanguage{#1}{ranska}}%
+    \def\btxlanguagenamegerman{\protect\foreignlanguage{#1}{saksa}}%
+    \def\btxlanguagenamegermanb{\protect\foreignlanguage{#1}{saksa}}%
+    \def\btxlanguagenamegreek{\protect\foreignlanguage{#1}{kreikka}}%
+    \def\btxlanguagenamehebrew{\protect\foreignlanguage{#1}{heprea}}%
+    \def\btxlanguagenamehungarian{\protect\foreignlanguage{#1}{unkari}}%
+    \def\btxlanguagenameicelandic{\protect\foreignlanguage{#1}{islanti}}%
+    \def\btxlanguagenameirish{\protect\foreignlanguage{#1}{iiri}}%
+    \def\btxlanguagenameitalian{\protect\foreignlanguage{#1}{italia}}%
+    \def\btxlanguagenamelatin{\protect\foreignlanguage{#1}{latina}}%
+    \def\btxlanguagenamenaustrian{\protect\foreignlanguage{#1}{saksa}}%
+    \def\btxlanguagenamengerman{\protect\foreignlanguage{#1}{saksa}}%
+    \def\btxlanguagenamenorsk{\protect\foreignlanguage{#1}{norja}}%
+    \def\btxlanguagenamenynorsk{\protect\foreignlanguage{#1}{uusnorja}}%
+    \def\btxlanguagenamepolish{\protect\foreignlanguage{#1}{puola}}%
+    \def\btxlanguagenameportuges{\protect\foreignlanguage{#1}{portugali}}%
+    \def\btxlanguagenameportuguese{\protect\foreignlanguage{#1}{portugali}}%
+    \def\btxlanguagenamerussian{\protect\foreignlanguage{#1}{ven\"j\"a}}%
+    \def\btxlanguagenamescottish{\protect\foreignlanguage{#1}{skotti}}%
+    \def\btxlanguagenameserbian{\protect\foreignlanguage{#1}{serbi}}%
+    \def\btxlanguagenamespanish{\protect\foreignlanguage{#1}{espanja}}%
+    \def\btxlanguagenameswedish{\protect\foreignlanguage{#1}{ruotsi}}%
+    \def\btxlanguagenameturkish{\protect\foreignlanguage{#1}{turkki}}%
+    \def\btxlanguagenameUKenglish{\protect\foreignlanguage{#1}{englanti}}%
+    \def\btxlanguagenameUSenglish{\protect\foreignlanguage{#1}{englanti}}%
+  \fi
+}
+\AtBeginDocument{%
+  \ifbbbbfixlanguage
+  \else
+    \bbbbaddto{finnish}{bibsfinnish}
+  \fi
+  \bbbbaddto{finnish}{btxifchangecaseoff}
+}
+
+\endinput
+%%
+%% End of file `finnish.bdf'.

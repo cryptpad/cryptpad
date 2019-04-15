@@ -1,0 +1,2342 @@
+%%% ====================================================================
+%%% @LaTeX-file{
+%%%   filename  = "testmath.tex",
+%%%   version   = "2.0",
+%%%   date      = "1999/11/15",
+%%%   time      = "15:09:17 EST",
+%%%   checksum  = "07762 2342 7811 82371",
+%%%   author    = "American Mathematical Society",
+%%%   copyright = "Copyright 1995, 1999 American Mathematical Society,
+%%%                all rights reserved.  Copying of this file is
+%%%                authorized only if either:
+%%%                (1) you make absolutely no changes to your copy,
+%%%                including name; OR
+%%%                (2) if you do make changes, you first rename it
+%%%                to some other name.",
+%%%   address   = "American Mathematical Society,
+%%%                Technical Support,
+%%%                Electronic Products and Services,
+%%%                P. O. Box 6248,
+%%%                Providence, RI 02940,
+%%%                USA",
+%%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%%                800-321-4AMS (321-4267)",
+%%%   FAX       = "401-331-3842",
+%%%   email     = "tech-support@ams.org (Internet)",
+%%%   codetable = "ISO/ASCII",
+%%%   keywords  = "latex, amsmath, examples, documentation",
+%%%   supported = "yes",
+%%%   abstract  = "This is a test file containing extensive examples of
+%%%                mathematical constructs supported by the amsmath
+%%%                package.",
+%%%   docstring = "The checksum field above contains a CRC-16
+%%%                checksum as the first value, followed by the
+%%%                equivalent of the standard UNIX wc (word
+%%%                count) utility output of lines, words, and
+%%%                characters.  This is produced by Robert
+%%%                Solovay's checksum utility.",
+%%% }
+%%% ====================================================================
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must December 1994 or later
+\documentclass[draft]{article}
+\pagestyle{headings}
+
+\title{Sample Paper for the \pkg{amsmath} Package\\
+File name: \fn{testmath.tex}}
+\author{American Mathematical Society}
+\date{Version 2.0, 1999/11/15}
+
+\usepackage{amsmath,amsthm}
+
+%    Some definitions useful in producing this sort of documentation:
+\chardef\bslash=`\\ % p. 424, TeXbook
+%    Normalized (nonbold, nonitalic) tt font, to avoid font
+%    substitution warning messages if tt is used inside section
+%    headings and other places where odd font combinations might
+%    result.
+\newcommand{\ntt}{\normalfont\ttfamily}
+%    command name
+\newcommand{\cn}[1]{{\protect\ntt\bslash#1}}
+%    LaTeX package name
+\newcommand{\pkg}[1]{{\protect\ntt#1}}
+%    File name
+\newcommand{\fn}[1]{{\protect\ntt#1}}
+%    environment name
+\newcommand{\env}[1]{{\protect\ntt#1}}
+\hfuzz1pc % Don't bother to report overfull boxes if overage is < 1pc
+
+%       Theorem environments
+
+%% \theoremstyle{plain} %% This is the default
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{ax}{Axiom}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}[section]
+\newtheorem*{notation}{Notation}
+
+%\numberwithin{equation}{section}
+
+\newcommand{\thmref}[1]{Theorem~\ref{#1}}
+\newcommand{\secref}[1]{\S\ref{#1}}
+\newcommand{\lemref}[1]{Lemma~\ref{#1}}
+
+\newcommand{\bysame}{\mbox{\rule{3em}{.4pt}}\,}
+
+%       Math definitions
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\st}{\sigma}
+\newcommand{\XcY}{{(X,Y)}}
+\newcommand{\SX}{{S_X}}
+\newcommand{\SY}{{S_Y}}
+\newcommand{\SXY}{{S_{X,Y}}}
+\newcommand{\SXgYy}{{S_{X|Y}(y)}}
+\newcommand{\Cw}[1]{{\hat C_#1(X|Y)}}
+\newcommand{\G}{{G(X|Y)}}
+\newcommand{\PY}{{P_{\mathcal{Y}}}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\wt}{\widetilde}
+\newcommand{\wh}{\widehat}
+
+\DeclareMathOperator{\per}{per}
+\DeclareMathOperator{\cov}{cov}
+\DeclareMathOperator{\non}{non}
+\DeclareMathOperator{\cf}{cf}
+\DeclareMathOperator{\add}{add}
+\DeclareMathOperator{\Cham}{Cham}
+\DeclareMathOperator{\IM}{Im}
+\DeclareMathOperator{\esssup}{ess\,sup}
+\DeclareMathOperator{\meas}{meas}
+\DeclareMathOperator{\seg}{seg}
+
+%    \interval is used to provide better spacing after a [ that
+%    is used as a closing delimiter.
+\newcommand{\interval}[1]{\mathinner{#1}}
+
+%    Notation for an expression evaluated at a particular condition. The
+%    optional argument can be used to override automatic sizing of the
+%    right vert bar, e.g. \eval[\biggr]{...}_{...}
+\newcommand{\eval}[2][\right]{\relax
+  \ifx#1\right\relax \left.\fi#2#1\rvert}
+
+%    Enclose the argument in vert-bar delimiters:
+\newcommand{\envert}[1]{\left\lvert#1\right\rvert}
+\let\abs=\envert
+
+%    Enclose the argument in double-vert-bar delimiters:
+\newcommand{\enVert}[1]{\left\lVert#1\right\rVert}
+\let\norm=\enVert
+
+\begin{document}
+\maketitle
+\markboth{Sample paper for the {\protect\ntt\lowercase{amsmath}} package}
+{Sample paper for the {\protect\ntt\lowercase{amsmath}} package}
+\renewcommand{\sectionmark}[1]{}
+
+\section{Introduction}
+
+This paper contains examples of various features from \AmS-\LaTeX{}.
+
+\section{Enumeration of Hamiltonian paths in a graph}
+
+Let $\mathbf{A}=(a_{ij})$ be the adjacency matrix of graph $G$. The
+corresponding Kirchhoff matrix $\mathbf{K}=(k_{ij})$ is obtained from
+$\mathbf{A}$ by replacing in $-\mathbf{A}$ each diagonal entry by the
+degree of its corresponding vertex; i.e., the $i$th diagonal entry is
+identified with the degree of the $i$th vertex. It is well known that
+\begin{equation}
+\det\mathbf{K}(i|i)=\text{ the number of spanning trees of $G$},
+\quad i=1,\dots,n
+\end{equation}
+where $\mathbf{K}(i|i)$ is the $i$th principal submatrix of
+$\mathbf{K}$.
+\begin{verbatim}
+\det\mathbf{K}(i|i)=\text{ the number of spanning trees of $G$},
+\end{verbatim}
+
+Let $C_{i(j)}$ be the set of graphs obtained from $G$ by attaching edge
+$(v_iv_j)$ to each spanning tree of $G$. Denote by $C_i=\bigcup_j
+C_{i(j)}$. It is obvious that the collection of Hamiltonian cycles is a
+subset of $C_i$. Note that the cardinality of $C_i$ is $k_{ii}\det
+\mathbf{K}(i|i)$. Let $\wh X=\{\hat x_1,\dots,\hat x_n\}$.
+\begin{verbatim}
+$\wh X=\{\hat x_1,\dots,\hat x_n\}$
+\end{verbatim}
+Define multiplication for the elements of $\wh X$ by
+\begin{equation}\label{multdef}
+\hat x_i\hat x_j=\hat x_j\hat x_i,\quad \hat x^2_i=0,\quad
+i,j=1,\dots,n.
+\end{equation}
+Let $\hat k_{ij}=k_{ij}\hat x_j$ and $\hat k_{ij}=-\sum_{j\not=i} \hat
+k_{ij}$. Then the number of Hamiltonian cycles $H_c$ is given by the
+relation \cite{liuchow:formalsum}
+\begin{equation}\label{H-cycles}
+\biggl(\prod^n_{\,j=1}\hat x_j\biggr)H_c=\frac{1}{2}\hat k_{ij}\det
+\wh{\mathbf{K}}(i|i),\qquad i=1,\dots,n.
+\end{equation}
+The task here is to express \eqref{H-cycles}
+in a form free of any $\hat x_i$,
+$i=1,\dots,n$. The result also leads to the resolution of enumeration of
+Hamiltonian paths in a graph.
+
+It is well known that the enumeration of Hamiltonian cycles and paths in
+a complete graph $K_n$ and in a complete bipartite graph $K_{n_1n_2}$
+can only be found from \textit{first combinatorial principles}
+\cite{hapa:graphenum}. One wonders if there exists a formula which can
+be used very efficiently to produce $K_n$ and $K_{n_1n_2}$. Recently,
+using Lagrangian methods, Goulden and Jackson have shown that $H_c$ can
+be expressed in terms of the determinant and permanent of the adjacency
+matrix \cite{gouja:lagrmeth}. However, the formula of Goulden and
+Jackson determines neither $K_n$ nor $K_{n_1n_2}$ effectively. In this
+paper, using an algebraic method, we parametrize the adjacency matrix.
+The resulting formula also involves the determinant and permanent, but
+it can easily be applied to $K_n$ and $K_{n_1n_2}$. In addition, we
+eliminate the permanent from $H_c$ and show that $H_c$ can be
+represented by a determinantal function of multivariables, each variable
+with domain $\{0,1\}$. Furthermore, we show that $H_c$ can be written by
+number of spanning trees of subgraphs. Finally, we apply the formulas to
+a complete multigraph $K_{n_1\dots n_p}$.
+
+The conditions $a_{ij}=a_{ji}$, $i,j=1,\dots,n$, are not required in
+this paper. All formulas can be extended to a digraph simply by
+multiplying $H_c$ by 2.
+
+\section{Main Theorem}
+\label{s:mt}
+
+\begin{notation} For $p,q\in P$ and $n\in\omega$ we write
+$(q,n)\le(p,n)$ if $q\le p$ and $A_{q,n}=A_{p,n}$.
+\begin{verbatim}
+\begin{notation} For $p,q\in P$ and $n\in\omega$
+...
+\end{notation}
+\end{verbatim}
+\end{notation}
+
+Let $\mathbf{B}=(b_{ij})$ be an $n\times n$ matrix. Let $\mathbf{n}=\{1,
+\dots,n\}$. Using the properties of \eqref{multdef}, it is readily seen
+that
+
+\begin{lem}\label{lem-per}
+\begin{equation}
+\prod_{i\in\mathbf{n}}
+\biggl(\sum_{\,j\in\mathbf{n}}b_{ij}\hat x_i\biggr)
+=\biggl(\prod_{\,i\in\mathbf{n}}\hat x_i\biggr)\per \mathbf{B}
+\end{equation}
+where $\per \mathbf{B}$ is the permanent of $\mathbf{B}$.
+\end{lem}
+
+Let $\wh Y=\{\hat y_1,\dots,\hat y_n\}$. Define multiplication
+for the elements of $\wh Y$ by
+\begin{equation}
+\hat y_i\hat y_j+\hat y_j\hat y_i=0,\quad i,j=1,\dots,n.
+\end{equation}
+Then, it follows that
+\begin{lem}\label{lem-det}
+\begin{equation}\label{detprod}
+\prod_{i\in\mathbf{n}}
+\biggl(\sum_{\,j\in\mathbf{n}}b_{ij}\hat y_j\biggr)
+=\biggl(\prod_{\,i\in\mathbf{n}}\hat y_i\biggr)\det\mathbf{B}.
+\end{equation}
+\end{lem}
+
+Note that all basic properties of determinants are direct consequences
+of Lemma ~\ref{lem-det}. Write
+\begin{equation}\label{sum-bij}
+\sum_{j\in\mathbf{n}}b_{ij}\hat y_j=\sum_{j\in\mathbf{n}}b^{(\lambda)}
+_{ij}\hat y_j+(b_{ii}-\lambda_i)\hat y_i\hat y
+\end{equation}
+where
+\begin{equation}
+b^{(\lambda)}_{ii}=\lambda_i,\quad b^{(\lambda)}_{ij}=b_{ij},
+\quad i\not=j.
+\end{equation}
+Let $\mathbf{B}^{(\lambda)}=(b^{(\lambda)}_{ij})$. By \eqref{detprod}
+and \eqref{sum-bij}, it is
+straightforward to show the following
+result:
+\begin{thm}\label{thm-main}
+\begin{equation}\label{detB}
+\det\mathbf{B}=
+\sum^n_{l =0}\sum_{I_l \subseteq n}
+\prod_{i\in I_l}(b_{ii}-\lambda_i)
+\det\mathbf{B}^{(\lambda)}(I_l |I_l ),
+\end{equation}
+where $I_l =\{i_1,\dots,i_l \}$ and $\mathbf{B}^{(\lambda)}(I_l |I_l )$
+is the principal submatrix obtained from $\mathbf{B}^{(\lambda)}$
+by deleting its $i_1,\dots,i_l $ rows and columns.
+\end{thm}
+
+\begin{rem}
+Let $\mathbf{M}$ be an $n\times n$ matrix. The convention
+$\mathbf{M}(\mathbf{n}|\mathbf{n})=1$ has been used in \eqref{detB} and
+hereafter.
+\end{rem}
+
+Before proceeding with our discussion, we pause to note that
+\thmref{thm-main} yields immediately a fundamental formula which can be
+used to compute the coefficients of a characteristic polynomial
+\cite{mami:matrixth}:
+\begin{cor}\label{BI}
+Write $\det(\mathbf{B}-x\mathbf{I})=\sum^n_{l =0}(-1)
+^l b_l x^l $. Then
+\begin{equation}\label{bl-sum}
+b_l =\sum_{I_l \subseteq\mathbf{n}}\det\mathbf{B}(I_l |I_l ).
+\end{equation}
+\end{cor}
+Let
+\begin{equation}
+\mathbf{K}(t,t_1,\dots,t_n)
+=\begin{pmatrix} D_1t&-a_{12}t_2&\dots&-a_{1n}t_n\\
+-a_{21}t_1&D_2t&\dots&-a_{2n}t_n\\
+\hdotsfor[2]{4}\\
+-a_{n1}t_1&-a_{n2}t_2&\dots&D_nt\end{pmatrix},
+\end{equation}
+\begin{verbatim}
+\begin{pmatrix} D_1t&-a_{12}t_2&\dots&-a_{1n}t_n\\
+-a_{21}t_1&D_2t&\dots&-a_{2n}t_n\\
+\hdotsfor[2]{4}\\
+-a_{n1}t_1&-a_{n2}t_2&\dots&D_nt\end{pmatrix}
+\end{verbatim}
+where
+\begin{equation}
+D_i=\sum_{j\in\mathbf{n}}a_{ij}t_j,\quad i=1,\dots,n.
+\end{equation}
+
+Set
+\begin{equation*}
+D(t_1,\dots,t_n)=\frac{\delta}{\delta t}\eval{\det\mathbf{K}(t,t_1,\dots,t_n)
+}_{t=1}.
+\end{equation*}
+Then
+\begin{equation}\label{sum-Di}
+D(t_1,\dots,t_n)
+=\sum_{i\in\mathbf{n}}D_i\det\mathbf{K}(t=1,t_1,\dots,t_n; i|i),
+\end{equation}
+where $\mathbf{K}(t=1,t_1,\dots,t_n; i|i)$ is the $i$th principal
+submatrix of $\mathbf{K}(t=1,t_1,\dots,t_n)$.
+
+Theorem ~\ref{thm-main} leads to
+\begin{equation}\label{detK1}
+\det\mathbf{K}(t_1,t_1,\dots,t_n)
+=\sum_{I\in\mathbf{n}}(-1)^{\envert{I}}t^{n-\envert{I}}
+\prod_{i\in I}t_i\prod_{j\in I}(D_j+\lambda_jt_j)\det\mathbf{A}
+^{(\lambda t)}(\overline{I}|\overline I).
+\end{equation}
+Note that
+\begin{equation}\label{detK2}
+\det\mathbf{K}(t=1,t_1,\dots,t_n)=\sum_{I\in\mathbf{n}}(-1)^{\envert{I}}
+\prod_{i\in I}t_i\prod_{j\in I}(D_j+\lambda_jt_j)\det\mathbf{A}
+^{(\lambda)}(\overline{I}|\overline{I})=0.
+\end{equation}
+
+Let $t_i=\hat x_i,i=1,\dots,n$. Lemma ~\ref{lem-per} yields
+\begin{multline}
+\biggl(\sum_{\,i\in\mathbf{n}}a_{l _i}x_i\biggr)
+\det\mathbf{K}(t=1,x_1,\dots,x_n;l |l )\\
+=\biggl(\prod_{\,i\in\mathbf{n}}\hat x_i\biggr)
+\sum_{I\subseteq\mathbf{n}-\{l \}}
+(-1)^{\envert{I}}\per\mathbf{A}^{(\lambda)}(I|I)
+\det\mathbf{A}^{(\lambda)}
+(\overline I\cup\{l \}|\overline I\cup\{l \}).
+\label{sum-ali}
+\end{multline}
+\begin{verbatim}
+\begin{multline}
+\biggl(\sum_{\,i\in\mathbf{n}}a_{l _i}x_i\biggr)
+\det\mathbf{K}(t=1,x_1,\dots,x_n;l |l )\\
+=\biggl(\prod_{\,i\in\mathbf{n}}\hat x_i\biggr)
+\sum_{I\subseteq\mathbf{n}-\{l \}}
+(-1)^{\envert{I}}\per\mathbf{A}^{(\lambda)}(I|I)
+\det\mathbf{A}^{(\lambda)}
+(\overline I\cup\{l \}|\overline I\cup\{l \}).
+\label{sum-ali}
+\end{multline}
+\end{verbatim}
+
+By \eqref{H-cycles}, \eqref{detprod}, and \eqref{sum-bij}, we have
+\begin{prop}\label{prop:eg}
+\begin{equation}
+H_c=\frac1{2n}\sum^n_{l =0}(-1)^{l}
+D_{l},
+\end{equation}
+where
+\begin{equation}\label{delta-l}
+D_{l}=\eval[2]{\sum_{I_{l}\subseteq \mathbf{n}}
+D(t_1,\dots,t_n)}_{t_i=\left\{\begin{smallmatrix}
+0,& \text{if }i\in I_{l}\quad\\% \quad added for centering
+1,& \text{otherwise}\end{smallmatrix}\right.\;,\;\; i=1,\dots,n}.
+\end{equation}
+\end{prop}
+
+\section{Application}
+\label{lincomp}
+
+We consider here the applications of Theorems~\ref{th-info-ow-ow} and
+~\ref{th-weak-ske-owf} to a complete
+multipartite graph $K_{n_1\dots n_p}$. It can be shown that the
+number of spanning trees of $K_{n_1\dots n_p}$
+may be written
+\begin{equation}\label{e:st}
+T=n^{p-2}\prod^p_{i=1}
+(n-n_i)^{n_i-1}
+\end{equation}
+where
+\begin{equation}
+n=n_1+\dots+n_p.
+\end{equation}
+
+It follows from Theorems~\ref{th-info-ow-ow} and
+~\ref{th-weak-ske-owf} that
+\begin{equation}\label{e:barwq}
+\begin{split}
+H_c&=\frac1{2n}
+\sum^n_{{l}=0}(-1)^{l}(n-{l})^{p-2}
+\sum_{l _1+\dots+l _p=l}\prod^p_{i=1}
+\binom{n_i}{l _i}\\
+&\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+\biggl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\biggr].\end{split}
+\end{equation}
+\begin{verbatim}
+... \binom{n_i}{l _i}\\
+\end{verbatim}
+and
+\begin{equation}\label{joe}
+\begin{split}
+H_c&=\frac12\sum^{n-1}_{l =0}
+(-1)^{l}(n-l )^{p-2}
+\sum_{l _1+\dots+l _p=l}
+\prod^p_{i=1}\binom{n_i}{l _i}\\
+&\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}
+\left(1-\frac{l _p}{n_p}\right)
+[(n-l )-(n_p-l _p)].
+\end{split}
+\end{equation}
+
+The enumeration of $H_c$ in a $K_{n_1\dotsm n_p}$ graph can also be
+carried out by Theorem ~\ref{thm-H-param} or ~\ref{thm-asym}
+together with the algebraic method of \eqref{multdef}.
+Some elegant representations may be obtained. For example, $H_c$ in
+a $K_{n_1n_2n_3}$ graph may be written
+\begin{equation}\label{j:mark}
+\begin{split}
+H_c=&
+\frac{n_1!\,n_2!\,n_3!}
+{n_1+n_2+n_3}\sum_i\left[\binom{n_1}{i}
+\binom{n_2}{n_3-n_1+i}\binom{n_3}{n_3-n_2+i}\right.\\
+&+\left.\binom{n_1-1}{i}
+\binom{n_2-1}{n_3-n_1+i}
+\binom{n_3-1}{n_3-n_2+i}\right].\end{split}
+\end{equation}
+
+\section{Secret Key Exchanges}
+\label{SKE}
+
+Modern cryptography is fundamentally concerned with the problem of
+secure private communication.  A Secret Key Exchange is a protocol
+where Alice and Bob, having no secret information in common to start,
+are able to agree on a common secret key, conversing over a public
+channel.  The notion of a Secret Key Exchange protocol was first
+introduced in the seminal paper of Diffie and Hellman
+\cite{dihe:newdir}. \cite{dihe:newdir} presented a concrete
+implementation of a Secret Key Exchange protocol, dependent on a
+specific assumption (a variant on the discrete log), specially
+tailored to yield Secret Key Exchange. Secret Key Exchange is of
+course trivial if trapdoor permutations exist. However, there is no
+known implementation based on a weaker general assumption.
+
+The concept of an informationally one-way function was introduced
+in \cite{imlelu:oneway}. We give only an informal definition here:
+
+\begin{defn} A polynomial time
+computable function $f = \{f_k\}$ is informationally
+one-way if there is no probabilistic polynomial time algorithm which
+(with probability of the form $1 - k^{-e}$ for some $e > 0$)
+returns on input $y \in \{0,1\}^{k}$ a random element of $f^{-1}(y)$.
+\end{defn}
+In the non-uniform setting \cite{imlelu:oneway} show that these are not
+weaker than one-way functions:
+\begin{thm}[\cite{imlelu:oneway} (non-uniform)]
+\label{th-info-ow-ow}
+The existence of informationally one-way functions
+implies the existence of one-way functions.
+\end{thm}
+We will stick to the convention introduced above of saying
+``non-uniform'' before the theorem statement when the theorem
+makes use of non-uniformity. It should be understood that
+if nothing is said then the result holds for both the uniform and
+the non-uniform models.
+
+It now follows from \thmref{th-info-ow-ow} that
+
+\begin{thm}[non-uniform]\label{th-weak-ske-owf} Weak SKE
+implies the existence of a one-way function.
+\end{thm}
+
+More recently, the polynomial-time, interior point algorithms for linear
+programming have been extended to the case of convex quadratic programs
+\cite{moad:quadpro,ye:intalg}, certain linear complementarity problems
+\cite{komiyo:lincomp,miyoki:lincomp}, and the nonlinear complementarity
+problem \cite{komiyo:unipfunc}. The connection between these algorithms
+and the classical Newton method for nonlinear equations is well
+explained in \cite{komiyo:lincomp}.
+
+\section{Review}
+\label{computation}
+
+We begin our discussion with the following definition:
+
+\begin{defn}
+
+A function $H\colon \Re^n \to \Re^n$ is said to be
+\emph{B-differentiable} at the point $z$ if (i)~$H$ is Lipschitz
+continuous in a neighborhood of $z$, and (ii)~ there exists a positive
+homogeneous function $BH(z)\colon \Re^n \to \Re^n$, called the
+\emph{B-derivative} of $H$ at $z$, such that
+\[ \lim_{v \to 0} \frac{H(z+v) - H(z) - BH(z)v}{\enVert{v}} = 0. \]
+The function $H$ is \textit{B-differentiable in set $S$} if it is
+B-differentiable at every point in $S$. The B-derivative $BH(z)$ is said
+to be \textit{strong} if
+\[ \lim_{(v,v') \to (0,0)} \frac{H(z+v) - H(z+v') - BH(z)(v
+ -v')}{\enVert{v - v'}} = 0. \]
+\end{defn}
+
+
+\begin{lem}\label{limbog} There exists a smooth function $\psi_0(z)$
+defined for $\abs{z}>1-2a$ satisfying the following properties\textup{:}
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+\item $\psi_0(z)$ is bounded above and below by positive constants
+$c_1\leq \psi_0(z)\leq c_2$.
+\item If $\abs{z}>1$, then $\psi_0(z)=1$.
+\item For all $z$ in the domain of $\psi_0$, $\Delta_0\ln \psi_0\geq 0$.
+\item If $1-2a<\abs{z}<1-a$, then $\Delta_0\ln \psi_0\geq
+c_3>0$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+We choose $\psi_0(z)$ to be a radial function depending only on $r=\abs{z}$.
+Let $h(r)\geq 0$ be a suitable smooth function satisfying $h(r)\geq c_3$
+for $1-2a<\abs{z}<1-a$, and $h(r)=0$ for $\abs{z}>1-\tfrac a2$. The radial
+Laplacian
+\[\Delta_0\ln\psi_0(r)=\left(\frac {d^2}{dr^2}+\frac
+1r\frac d{dr}\right)\ln\psi_0(r)\]
+has smooth coefficients for $r>1-2a$. Therefore, we may
+apply the existence and uniqueness theory for ordinary differential
+equations. Simply let $\ln \psi_0(r)$ be the solution of the differential
+equation
+\[\left(\frac{d^2}{dr^2}+\frac 1r\frac d{dr}\right)\ln \psi_0(r)=h(r)\]
+with initial conditions given by $\ln \psi_0(1)=0$ and
+$\ln\psi_0'(1)=0$.
+
+Next, let $D_\nu$ be a finite collection of pairwise disjoint disks,
+all of which are contained in the unit disk centered at the origin in
+$C$. We assume that $D_\nu=\{z\mid \abs{z-z_\nu}<\delta\}$. Suppose that
+$D_\nu(a)$ denotes the smaller concentric disk $D_\nu(a)=\{z\mid
+\abs{z-z_\nu}\leq (1-2a)\delta\}$. We define a smooth weight function
+$\Phi_0(z)$ for $z\in C-\bigcup_\nu D_\nu(a)$ by setting $\Phi_
+0(z)=1$ when $z\notin \bigcup_\nu D_\nu$ and $\Phi_
+0(z)=\psi_0((z-z_\nu)/\delta)$ when $z$ is an element of $D_\nu$. It
+follows from \lemref{limbog} that $\Phi_ 0$ satisfies the properties:
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+\item \label{boundab}$\Phi_ 0(z)$ is bounded above and below by
+positive constants $c_1\leq \Phi_ 0(z)\leq c_2$.
+\item \label{d:over}$\Delta_0\ln\Phi_ 0\geq 0$ for all
+$z\in C-\bigcup_\nu D_\nu(a)$,
+the domain where the function $\Phi_ 0$ is defined.
+\item \label{d:ad}$\Delta_0\ln\Phi_ 0\geq c_3\delta^{-2}$
+when $(1-2a)\delta<\abs{z-z_\nu}<(1-a)\delta$.
+\end{enumerate}
+Let $A_\nu$ denote the annulus $A_\nu=\{(1-2a)\delta<\abs{z-z_\nu}<(1-a)
+\delta \}$, and set $A=\bigcup_\nu A_\nu$. The
+properties (\ref{d:over}) and (\ref{d:ad}) of $\Phi_ 0$
+may be summarized as $\Delta_0\ln \Phi_ 0\geq c_3\delta^{-2}\chi_A$,
+where $\chi _A$ is the characteristic function of $A$.
+\end{proof}
+
+Suppose that $\alpha$ is a nonnegative real constant. We apply
+Proposition~\ref{prop:eg} with $\Phi(z)=\Phi_ 0(z) e^{\alpha\abs{z}^2}$. If
+$u\in C^\infty_0(R^2-\bigcup_\nu D_\nu(a))$, assume that $\mathcal{D}$
+is a bounded domain containing the support of $u$ and $A\subset
+\mathcal{D}\subset R^2-\bigcup_\nu D_\nu(a)$. A calculation gives
+\[\int_{\mathcal{D}}\abs{\overline\partial u}^2\Phi_ 0(z) e^{\alpha\abs{z}^2}
+\geq c_4\alpha\int_{\mathcal{D}}\abs{u}^2\Phi_ 0e^{\alpha\abs{z}^2}
++c_5\delta^{-2}\int_ A\abs{u}^2\Phi_ 0e^{\alpha\abs{z}^2}.\]
+
+The boundedness, property (\ref{boundab}) of $\Phi_ 0$, then yields
+\[\int_{\mathcal{D}}\abs{\overline\partial u}^2e^{\alpha\abs{z}^2}\geq c_6\alpha
+\int_{\mathcal{D}}\abs{u}^2e^{\alpha\abs{z}^2}
++c_7\delta^{-2}\int_ A\abs{u}^2e^{\alpha\abs{z}^2}.\]
+
+Let $B(X)$ be the set of blocks of $\Lambda_{X}$
+and let $b(X) = \abs{B(X)}$. If $\phi \in Q_{X}$ then
+$\phi$ is constant on the blocks of $\Lambda_{X}$.
+\begin{equation}\label{far-d}
+ P_{X} = \{ \phi \in M \mid \Lambda_{\phi} = \Lambda_{X} \},
+\qquad
+Q_{X} = \{\phi \in M \mid \Lambda_{\phi} \geq \Lambda_{X} \}.
+\end{equation}
+If $\Lambda_{\phi} \geq \Lambda_{X}$ then
+$\Lambda_{\phi} = \Lambda_{Y}$ for some $Y \geq X$ so that
+\[ Q_{X} = \bigcup_{Y \geq X} P_{Y}. \]
+Thus by M\"obius inversion
+\[ \abs{P_{Y}}= \sum_{X\geq Y} \mu (Y,X)\abs{Q_{X}}.\]
+Thus there is a bijection from $Q_{X}$ to $W^{B(X)}$.
+In particular $\abs{Q_{X}} = w^{b(X)}$.
+
+Next note that $b(X)=\dim X$. We see this by choosing a
+basis for $X$ consisting of vectors $v^{k}$ defined by
+\[v^{k}_{i}=
+\begin{cases} 1 & \text{if $i \in \Lambda_{k}$},\\
+0 &\text{otherwise.} \end{cases}
+\]
+\begin{verbatim}
+\[v^{k}_{i}=
+\begin{cases} 1 & \text{if $i \in \Lambda_{k}$},\\
+0 &\text{otherwise.} \end{cases}
+\]
+\end{verbatim}
+
+\begin{lem}\label{p0201}
+Let $\A$ be an arrangement. Then
+\[ \chi (\A,t) = \sum_{\B \subseteq \A}
+(-1)^{\abs{\B}} t^{\dim T(\B)}. \]
+\end{lem}
+
+In order to compute $R''$ recall the definition
+of $S(X,Y)$ from \lemref{lem-per}. Since $H \in \B$,
+$\A_{H} \subseteq \B$. Thus if $T(\B) = Y$ then
+$\B \in S(H,Y)$. Let $L'' = L(\A'')$. Then
+\begin{equation}\label{E_SXgYy}
+\begin{split}
+R''&= \sum_{H\in \B \subseteq \A} (-1)^{\abs{\B}}
+t^{\dim T(\B)}\\
+&= \sum_{Y \in L''} \sum_{\B \in S(H,Y)}
+(-1)^{\abs{\B}}t^{\dim Y} \\
+&= -\sum_{Y \in L''} \sum_{\B \in S(H,Y)} (-1)^
+{\abs{\B - \A_{H}}} t^{\dim Y} \\
+&= -\sum_{Y \in L''} \mu (H,Y)t^{\dim Y} \\
+&= -\chi (\A '',t).
+\end{split}
+\end{equation}
+
+\begin{cor}\label{tripleA}
+Let $(\A,\A',\A'')$ be a triple of arrangements. Then
+\[ \pi (\A,t) = \pi (\A',t) + t \pi (\A'',t). \]
+\end{cor}
+
+\begin{defn}
+Let $(\A,\A',\A'')$ be a triple with respect to
+the hyperplane $H \in \A$. Call $H$ a \textit{separator}
+if $T(\A) \not\in L(\A')$.
+\end{defn}
+
+\begin{cor}\label{nsep}
+Let $(\A,\A',\A'')$ be a triple with respect to $H \in \A$.
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+\item
+If $H$ is a separator then
+\[ \mu (\A) = - \mu (\A'') \]
+and hence
+\[ \abs{\mu (\A)} = \abs{ \mu (\A'')}. \]
+
+\item If $H$ is not a separator then
+\[\mu (\A) = \mu (\A') - \mu (\A'') \]
+and
+\[ \abs{\mu (\A)} = \abs{\mu (\A')} + \abs{\mu (\A'')}. \]
+\end{enumerate}
+\end{cor}
+
+\begin{proof}
+It follows from \thmref{th-info-ow-ow} that $\pi(\A,t)$
+has leading term
+\[(-1)^{r(\A)}\mu (\A)t^{r(\A)}.\]
+The conclusion
+follows by comparing coefficients of the leading
+terms on both sides of the equation in
+Corollary~\ref{tripleA}. If $H$ is a separator then
+$r(\A') < r(\A)$ and there is no contribution
+from $\pi (\A',t)$.
+\end{proof}
+
+The Poincar\'e polynomial of an arrangement
+will appear repeatedly
+in these notes. It will be shown to equal the
+Poincar\'e polynomial
+of the graded algebras which we are going to
+associate with $\A$. It is also the Poincar\'e
+polynomial of the complement $M(\A)$ for a
+complex arrangement. Here we prove
+that the Poincar\'e polynomial is the chamber
+counting function for a real arrangement. The
+complement $M(\A)$ is a disjoint union of chambers
+\[M(\A) = \bigcup_{C \in \Cham(\A)} C.\]
+The number
+of chambers is determined by the Poincar\'e
+polynomial as follows.
+
+\begin{thm}\label{th-realarr}
+Let $\A_{\mathbf{R}}$ be a real arrangement. Then
+\[ \abs{\Cham(\A_{\mathbf{R}})} = \pi (\A_{\mathbf{R}},1). \]
+\end{thm}
+
+\begin{proof}
+We check the properties required in Corollary~\ref{nsep}:
+(i) follows from $\pi (\Phi_{ l},t) = 1$, and (ii) is a
+consequence of Corollary~\ref{BI}.
+\end{proof}
+
+\begin{figure}
+\vspace{5cm}
+\caption[]{$Q(\A_{1}) = xyz(x-z)(x+z)(y-z)(y+z)$}
+\end{figure}
+
+\begin{figure}
+\vspace{5cm}
+\caption[]{$Q(\A_{2})= xyz(x+y+z)(x+y-z)(x-y+z)(x-y-z)$}
+\end{figure}
+
+
+\begin{thm}
+\label{T_first_the_int}
+Let $\phi$ be a protocol for a random pair $\XcY$.
+If one of $\st_\phi(x',y)$ and $\st_\phi(x,y')$ is a prefix of the other
+and $(x,y)\in\SXY$, then
+\[
+\langle \st_j(x',y)\rangle_{j=1}^\infty
+=\langle \st_j(x,y)\rangle_{j=1}^\infty
+=\langle \st_j(x,y')\rangle_{j=1}^\infty .
+\]
+\end{thm}
+\begin{proof}
+We show by induction on $i$ that
+\[
+\langle \st_j(x',y)\rangle_{j=1}^i
+=\langle \st_j(x,y)\rangle_{j=1}^i
+=\langle \st_j(x,y')\rangle_{j=1}^i.
+\]
+The induction hypothesis holds vacuously for $i=0$. Assume it holds for
+$i-1$, in particular
+$[\st_j(x',y)]_{j=1}^{i-1}=[\st_j(x,y')]_{j=1}^{i-1}$. Then one of
+$[\st_j(x',y)]_{j=i}^{\infty}$ and $[\st_j(x,y')]_{j=i}^{\infty}$ is a
+prefix of the other which implies that one of $\st_i(x',y)$ and
+$\st_i(x,y')$ is a prefix of the other. If the $i$th message is
+transmitted by $P_\X$ then, by the separate-transmissions property and
+the induction hypothesis, $\st_i(x,y)=\st_i(x,y')$, hence one of
+$\st_i(x,y)$ and $\st_i(x',y)$ is a prefix of the other. By the
+implicit-termination property, neither $\st_i(x,y)$ nor $\st_i(x',y)$
+can be a proper prefix of the other, hence they must be the same and
+$\st_i(x',y)=\st_i(x,y)=\st_i(x,y')$. If the $i$th message is
+transmitted by $\PY$ then, symmetrically, $\st_i(x,y)=\st_i(x',y)$ by
+the induction hypothesis and the separate-transmissions property, and,
+then, $\st_i(x,y)=\st_i(x,y')$ by the implicit-termination property,
+proving the induction step.
+\end{proof}
+
+If $\phi$ is a protocol for $(X,Y)$, and $(x,y)$, $(x',y)$ are distinct
+inputs in $\SXY$, then, by the correct-decision property,
+$\langle\st_j(x,y)\rangle_{j=1}^\infty\ne\langle
+\st_j(x',y)\rangle_{j=1}^\infty$.
+
+Equation~(\ref{E_SXgYy}) defined $\PY$'s ambiguity set $\SXgYy$
+to be the set of possible $X$ values when $Y=y$.
+The last corollary implies that for all $y\in\SY$,
+the multiset%
+\footnote{A multiset allows multiplicity of elements.
+Hence, $\{0,01,01\}$ is prefix free as a set, but not as a multiset.}
+of codewords $\{\st_\phi(x,y):x\in\SXgYy\}$ is prefix free.
+
+\section{One-Way Complexity}
+\label{S_Cp1}
+
+$\Cw1$, the one-way complexity of a random pair $\XcY$,
+is the number of bits $P_\X$ must transmit in the worst case
+when $\PY$ is not permitted to transmit any feedback messages.
+Starting with $\SXY$, the support set of $\XcY$, we define $\G$,
+the \textit{characteristic hypergraph} of $\XcY$, and show that
+\[
+\Cw1=\lceil\,\log\chi(\G)\rceil\ .
+\]
+
+Let $\XcY$ be a random pair. For each $y$ in $\SY$, the support set of
+$Y$, Equation~(\ref{E_SXgYy}) defined $\SXgYy$ to be the set of possible
+$x$ values when $Y=y$. The \textit{characteristic hypergraph} $\G$ of
+$\XcY$ has $\SX$ as its vertex set and the hyperedge $\SXgYy$ for each
+$y\in\SY$.
+
+
+We can now prove a continuity theorem.
+\begin{thm}\label{t:conl}
+Let $\Omega \subset\mathbf{R}^n$ be an open set, let
+$u\in BV(\Omega ;\mathbf{R}^m)$, and let
+\begin{equation}\label{quts}
+T^u_x=\left\{y\in\mathbf{R}^m:
+ y=\tilde u(x)+\left\langle \frac{Du}{\abs{Du}}(x),z
+\right\rangle \text{ for some }z\in\mathbf{R}^n\right\}
+\end{equation}
+for every $x\in\Omega \backslash S_u$. Let $f\colon \mathbf{R}^m\to
+\mathbf{R}^k$ be a Lipschitz continuous function such that $f(0)=0$, and
+let $v=f(u)\colon \Omega \to \mathbf{R}^k$. Then $v\in BV(\Omega
+;\mathbf{R}^k)$ and
+\begin{equation}
+Jv=\eval{(f(u^+)-f(u^-))\otimes \nu_u\cdot\,
+\mathcal{H}_{n-1}}_{S_u}.
+\end{equation}
+In addition, for $\abs{\wt{D}u}$-almost every $x\in\Omega $ the
+restriction of the function $f$ to $T^u_x$ is differentiable at $\tilde
+u(x)$ and
+\begin{equation}
+\wt{D}v=\nabla (\eval{f}_{T^u_x})(\tilde u)
+\frac{\wt{D}u}{\abs{\wt{D}u}}\cdot\abs{\wt{D}u}.\end{equation}
+\end{thm}
+
+Before proving the theorem, we state without proof three elementary
+remarks which will be useful in the sequel.
+\begin{rem}\label{r:omb}
+Let $\omega\colon \left]0,+\infty\right[\to \left]0,+\infty\right[$
+be a continuous function such that $\omega (t)\to 0$ as $t\to
+0$. Then
+\[\lim_{h\to 0^+}g(\omega(h))=L\Leftrightarrow\lim_{h\to
+0^+}g(h)=L\]
+for any function $g\colon \left]0,+\infty\right[\to \mathbf{R}$.
+\end{rem}
+\begin{rem}\label{r:dif}
+Let $g \colon  \mathbf{R}^n\to \mathbf{R}$ be a Lipschitz
+continuous function and assume that
+\[L(z)=\lim_{h\to 0^+}\frac{g(hz)-g(0)}h\]
+exists for every $z\in\mathbf{Q}^n$ and that $L$ is a linear function of
+$z$. Then $g$ is differentiable at 0.
+\end{rem}
+\begin{rem}\label{r:dif0}
+Let $A \colon \mathbf{R}^n\to \mathbf{R}^m$ be a linear function, and
+let $f \colon \mathbf{R}^m\to \mathbf{R}$ be a function. Then the
+restriction of $f$ to the range of $A$ is differentiable at 0 if and
+only if $f(A)\colon \mathbf{R}^n\to \mathbf{R}$ is differentiable at 0
+and
+\[\nabla(\eval{f}_{\IM(A)})(0)A=\nabla (f(A))(0).\]
+\end{rem}
+
+\begin{proof}
+ We begin by showing that $v\in BV(\Omega;\mathbf{R}^k)$ and
+\begin{equation}\label{e:bomb}
+\abs{Dv}(B)\le K\abs{Du}(B)\qquad\forall B\in\mathbf{B}(\Omega ),
+\end{equation}
+where $K>0$ is the Lipschitz constant of $f$. By \eqref{sum-Di} and by
+the approximation result quoted in \secref{s:mt}, it is possible to find
+a sequence $(u_h)\subset C^1(\Omega ;\mathbf{R}^m)$ converging to $u$ in
+$L^1(\Omega ;\mathbf{R}^m)$ and such that
+\[\lim_{h\to +\infty}\int_\Omega \abs{\nabla u_h}\,dx=\abs{Du}(\Omega ).\]
+The functions $v_h=f(u_h)$ are locally Lipschitz continuous in $\Omega
+$, and the definition of differential implies that $\abs{\nabla v_h}\le
+K\abs{\nabla u_h}$ almost everywhere in $\Omega $. The lower semicontinuity
+of the total variation and \eqref{sum-Di} yield
+\begin{equation}
+\begin{split}
+\abs{Dv}(\Omega )\le\liminf_{h\to +\infty}\abs{Dv_h}(\Omega) &
+=\liminf_{h\to +\infty}\int_\Omega \abs{\nabla v_h}\,dx\\
+&\le K\liminf_{h\to +\infty}\int_\Omega
+\abs{\nabla u_h}\,dx=K\abs{Du}(\Omega).
+\end{split}\end{equation}
+Since $f(0)=0$, we have also
+\[\int_\Omega \abs{v}\,dx\le K\int_\Omega \abs{u}\,dx;\]
+therefore $u\in BV(\Omega ;\mathbf{R}^k)$. Repeating the same argument
+for every open set $A\subset\Omega $, we get \eqref{e:bomb} for every
+$B\in\mathbf{B}(\Omega)$, because $\abs{Dv}$, $\abs{Du}$ are Radon measures. To
+prove \lemref{limbog}, first we observe that
+\begin{equation}\label{e:SS}
+S_v\subset S_u,\qquad\tilde v(x)=f(\tilde u(x))\qquad \forall x\in\Omega
+\backslash S_u.\end{equation}
+In fact, for every $\varepsilon >0$ we have
+\[\{y\in B_\rho(x): \abs{v(y)-f(\tilde u(x))}>\varepsilon \}\subset \{y\in
+B_\rho(x): \abs{u(y)-\tilde u(x)}>\varepsilon /K\},\]
+hence
+\[\lim_{\rho\to 0^+}\frac{\abs{\{y\in B_\rho(x): \abs{v(y)-f(\tilde u(x))}>
+\varepsilon \}}}{\rho^n}=0\]
+whenever $x\in\Omega \backslash S_u$. By a similar argument, if $x\in
+S_u$ is a point such that there exists a triplet $(u^+,u^-,\nu_u)$
+satisfying \eqref{detK1}, \eqref{detK2}, then
+\[
+(v^+(x)-v^-(x))\otimes \nu_v=(f(u^+(x))-f(u^-(x)))\otimes\nu_u\quad
+\text{if }x\in S_v
+\]
+and $f(u^-(x))=f(u^+(x))$ if $x\in S_u\backslash S_v$. Hence, by (1.8)
+we get
+\begin{equation*}\begin{split}
+Jv(B)=\int_{B\cap S_v}(v^+-v^-)\otimes \nu_v\,d\mathcal{H}_{n-1}&=
+\int_{B\cap S_v}(f(u^+)-f(u^-))\otimes \nu_u\,d\mathcal{H}_{n-1}\\
+&=\int_{B\cap S_u}(f(u^+)-f(u^-))\otimes \nu_u\,d\mathcal{H}_{n-1}
+\end{split}\end{equation*}
+and \lemref{limbog} is proved.
+\end{proof}
+
+To prove \eqref{e:SS}, it is not restrictive to assume that $k=1$.
+Moreover, to simplify our notation, from now on we shall assume that
+$\Omega = \mathbf{R}^n$. The proof of \eqref{e:SS} is divided into two
+steps. In the first step we prove the statement in the one-dimensional
+case $(n=1)$, using \thmref{th-weak-ske-owf}. In the second step we
+achieve the general result using \thmref{t:conl}.
+
+\subsection*{Step 1}
+Assume that $n=1$. Since $S_u$ is at most countable, \eqref{sum-bij}
+yields that $\abs{\wt{D}v}(S_u\backslash S_v)=0$, so that
+\eqref{e:st} and \eqref{e:barwq} imply that $Dv=\wt{D}v+Jv$ is
+the Radon-Nikod\'ym decomposition of $Dv$ in absolutely continuous and
+singular part with respect to $\abs{\wt{D} u}$. By
+\thmref{th-weak-ske-owf}, we have
+\begin{equation*}
+\frac{\wt{D}v}{\abs{\wt{D}u}}(t)=\lim_{s\to t^+}
+\frac{Dv(\interval{\left[t,s\right[})}
+{\abs{\wt{D}u}(\interval{\left[t,s\right[})},\qquad
+\frac{\wt{D}u}{\abs{\wt{D}u}}(t)=\lim_{s\to t^+}
+\frac{Du(\interval{\left[t,s\right[})}
+{\abs{\wt{D}u}(\interval{\left[t,s\right[})}
+\end{equation*}
+$\abs{\wt{D}u}$-almost everywhere in $\mathbf{R}$. It is well known
+(see, for instance, \cite[2.5.16]{ste:sint}) that every one-dimensional
+function of bounded variation $w$ has a unique left continuous
+representative, i.e., a function $\hat w$ such that $\hat w=w$ almost
+everywhere and $\lim_{s\to t^-}\hat w(s)=\hat w(t)$ for every $t\in
+\mathbf{R}$. These conditions imply
+\begin{equation}
+\hat u(t)=Du(\interval{\left]-\infty,t\right[}),
+\qquad \hat v(t)=Dv(\interval{\left]-\infty,t\right[})\qquad
+\forall t\in\mathbf{R}
+\end{equation}
+and
+\begin{equation}\label{alimo}
+\hat v(t)=f(\hat u(t))\qquad\forall t\in\mathbf{R}.\end{equation}
+Let $t\in\mathbf{R}$ be such that
+$\abs{\wt{D}u}(\interval{\left[t,s\right[})>0$ for every $s>t$ and
+assume that the limits in \eqref{joe} exist. By \eqref{j:mark} and
+\eqref{far-d} we get
+\begin{equation*}\begin{split}
+\frac{\hat v(s)-\hat
+v(t)}{\abs{\wt{D}u}(\interval{\left[t,s\right[})}&=\frac {f(\hat
+u(s))-f(\hat u(t))}{\abs{\wt{D}u}(\interval{\left[t,s\right[})}\\
+&=\frac{f(\hat u(s))-f(\hat
+u(t)+\dfrac{\wt{D}u}{\abs{\wt{D}u}}(t)\abs{\wt{D}u
+}(\interval{\left[t,s\right[}))}%
+{\abs{\wt{D}u}(\interval{\left[t,s\right[})}\\
+&+\frac
+{f(\hat u(t)+\dfrac{\wt{D}u}{\abs{\wt{D}u}}(t)\abs{\wt{D}
+u}(\interval{\left[t,s\right[}))-f(\hat
+u(t))}{\abs{\wt{D}u}(\interval{\left[t,s\right[})}
+\end{split}\end{equation*}
+for every $s>t$. Using the Lipschitz condition on $f$ we find
+{\setlength{\multlinegap}{0pt}
+\begin{multline*}
+\left\lvert\frac{\hat v(s)-\hat
+v(t)}{\abs{\wt{D}u}(\interval{\left[t,s\right[})} -\frac{f(\hat
+u(t)+\dfrac{\wt{D}u}{\abs{\wt{D}u}}(t)
+\abs{\wt{D}u}(\interval{\left[t,s\right[}))-f(\hat
+u(t))}{\abs{\wt{D}u}(\interval{\left[t,s\right[})}\right\rvert\\
+\le K\left\lvert
+\frac{\hat u(s)-\hat u(t)}
+  {\abs{\wt{D}u}(\interval{\left[t,s\right[})}
+-\frac{\wt{D}u}{\abs{
+\wt{D}u}}(t)\right\rvert.\end{multline*}
+}% end of group with \multlinegap=0pt
+By \eqref{e:bomb}, the function $s\to
+\abs{\wt{D}u}(\interval{\left[t,s\right[})$ is continuous and
+converges to 0 as $s\downarrow t$. Therefore Remark~\ref{r:omb} and the
+previous inequality imply
+\[\frac{\wt{D}v}{\abs{\wt{D}u}}(t)=\lim_{h\to 0^+}
+\frac{f(\hat u(t)+h\dfrac{\wt{D}u}{\abs{\wt{D}u}}
+(t))-f(\hat u(t))}h\quad\abs{\wt{D}u}\text{-a.e. in }\mathbf{R}.\]
+By \eqref{joe}, $\hat u(x)=\tilde u(x)$ for every
+$x\in\mathbf{R}\backslash S_u$; moreover, applying the same argument to
+the functions $u'(t)=u(-t)$, $v'(t)=f(u'(t))=v(-t)$, we get
+\[\frac{\wt{D}v}{\abs{\wt{D}u}}(t)=\lim_{h\to 0}
+\frac{f(\tilde u(t)
++h\dfrac{\wt{D}u}{\abs{\wt{D}u}}(t))-f(\tilde u(t))}{h}
+\qquad\abs{\wt{D}u}\text{-a.e. in }\mathbf{R}\]
+and our statement is proved.
+
+\subsection*{Step 2}
+
+Let us consider now the general case $n>1$. Let $\nu\in \mathbf{R}^n$ be
+such that $\abs{\nu}=1$, and let $\pi_\nu=\{y\in\mathbf{R}^n: \langle
+y,\nu\rangle =0\}$. In the following, we shall identify $\mathbf{R}^n$
+with $\pi_\nu\times\mathbf{R}$, and we shall denote by $y$ the variable
+ranging in $\pi_\nu$ and by $t$ the variable ranging in $\mathbf{R}$. By
+the just proven one-dimensional result, and by \thmref{thm-main}, we get
+\[\lim_{h\to 0}\frac{f(\tilde u(y+t\nu)+h\dfrac{\wt{D}u_y}{\abs{
+\wt{D}u_y}}(t))-f(\tilde u(y+t\nu))}h=\frac{\wt{D}v_y}{\abs{
+\wt{D}u_y}}(t)\qquad\abs{\wt{D}u_y}\text{-a.e. in }\mathbf{R}\]
+for $\mathcal{H}_{n-1}$-almost every $y\in \pi_\nu$. We claim that
+\begin{equation}
+\frac{\langle \wt{D}u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle
+}}(y+t\nu)=\frac{\wt{D}u_y}
+{\abs{\wt{D}u_y}}(t)\qquad\abs{\wt{D}u_y}\text{-a.e. in }\mathbf{R}
+\end{equation}
+for $\mathcal{H}_{n-1}$-almost every $y\in\pi_\nu$. In fact, by
+\eqref{sum-ali} and \eqref{delta-l} we get
+\begin{multline*}
+\int_{\pi_\nu}\frac{\wt{D}u_y}{\abs{\wt{D}u_y}}\cdot\abs{\wt{D}u_y
+}\,d\mathcal{H}_{n-1}(y)=\int_{\pi_\nu}\wt{D}u_y\,d\mathcal{H}_{n-1}(y)\\
+=\langle \wt{D}u,\nu\rangle =\frac
+{\langle \wt{D}u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle}}\cdot
+\abs{\langle \wt{D}u,\nu\rangle }=\int_{\pi_\nu}\frac{
+\langle \wt{D}u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle }}
+(y+\cdot \nu)\cdot\abs{\wt{D}u_y}\,d\mathcal{H}_{n-1}(y)
+\end{multline*}
+and \eqref{far-d} follows from \eqref{sum-Di}. By the same argument it
+is possible to prove that
+\begin{equation}
+\frac{\langle \wt{D}v,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle
+}}(y+t\nu)=\frac{\wt{D}v_y}{\abs{\wt{D}u_y}}(t)\qquad\abs{
+\wt{D}u_y}\text{-a.e. in }\mathbf{R}\end{equation}
+for $\mathcal{H}_{n-1}$-almost every $y\in \pi_\nu$. By \eqref{far-d}
+and \eqref{E_SXgYy} we get
+\[
+\lim_{h\to 0}\frac{f(\tilde u(y+t\nu)+h\dfrac{\langle \wt{D}
+u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle }}(y+t\nu))-f(\tilde
+u(y+t\nu))}{h}
+=\frac{\langle \wt{D}v,\nu\rangle }{\abs{\langle
+\wt{D}u,\nu\rangle }}(y+t\nu)\]
+for $\mathcal{H}_{n-1}$-almost every $y\in\pi_\nu$, and using again
+\eqref{detK1}, \eqref{detK2} we get
+\[
+\lim_{h\to 0}\frac{f(\tilde u(x)+h\dfrac{\langle
+\wt{D}u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle }}(x))-f(\tilde
+u(x))}{h}=\frac{\langle \wt{D}v,\nu\rangle }{\abs{\langle \wt{D}u,\nu
+\rangle }}(x)
+\]
+$\abs{\langle \wt{D}u,\nu\rangle}$-a.e. in $\mathbf{R}^n$.
+
+Since the function $\abs{\langle \wt{D}u,\nu\rangle }/\abs{\wt{D}u}$
+is strictly positive $\abs{\langle \wt{D}u,\nu\rangle }$-almost everywhere,
+we obtain also
+\begin{multline*}
+\lim_{h\to 0}\frac{f(\tilde u(x)+h\dfrac{\abs{\langle
+\wt{D}u,\nu\rangle }}{\abs{\wt{D}u}}(x)\dfrac{\langle \wt{D}
+u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle }}(x))-f(\tilde u(x))}{h}\\
+=\frac{\abs{\langle \wt{D}u,\nu\rangle }}{\abs{\wt{D}u}}(x)\frac
+{\langle \wt{D}v,\nu\rangle }{\abs{\langle
+\wt{D}u,\nu\rangle }}(x)
+\end{multline*}
+$\abs{\langle \wt{D}u,\nu\rangle }$-almost everywhere in $\mathbf{R}^n$.
+
+Finally, since
+\begin{align*}
+&\frac{\abs{\langle \wt{D}u,\nu\rangle }}{\abs{\wt{D}u}}
+\frac{\langle \wt{D}u,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle}}
+=\frac{\langle \wt{D}u,\nu\rangle }{\abs{\wt{D}u}}
+=\left\langle \frac{\wt{D}u}{\abs{\wt{D}u}},\nu\right\rangle
+        \qquad\abs{\wt{D}u}\text{-a.e. in }\mathbf{R}^n\\
+&\frac{\abs{\langle \wt{D}u,\nu\rangle }}{\abs{\wt{D}u}}
+\frac{\langle \wt{D}v,\nu\rangle }{\abs{\langle \wt{D}u,\nu\rangle}}
+=\frac{\langle \wt{D}v,\nu\rangle }{\abs{\wt{D}u}}
+=\left\langle \frac{\wt{D}v}{\abs{\wt{D}u}},\nu\right\rangle
+        \qquad\abs{\wt{D}u}\text{-a.e. in }\mathbf{R}^n
+\end{align*}
+and since both sides of \eqref{alimo}
+are zero $\abs{\wt{D}u}$-almost everywhere
+on $\abs{\langle \wt{D}u,\nu\rangle }$-negligible sets, we conclude that
+\[
+\lim_{h\to 0}\frac{f\left(
+\tilde u(x)+h\left\langle \dfrac{\wt{D}
+u}{\abs{\wt{D}u}}(x),\nu\right\rangle \right)-f(\tilde u(x))}h
+=\left\langle \frac{\wt{D}v}{\abs{\wt{D}u}}(x),\nu\right\rangle,
+\]
+$\abs{\wt{D}u}$-a.e. in $\mathbf{R}^n$.
+Since $\nu$ is arbitrary, by Remarks \ref{r:dif} and~\ref{r:dif0}
+the restriction of $f$ to
+the affine space $T^u_x$ is differentiable at $\tilde u(x)$ for $\abs{\wt{D}
+u}$-almost every $x\in \mathbf{R}^n$ and \eqref{quts} holds.\qed
+
+It follows from \eqref{sum-Di}, \eqref{detK1}, and \eqref{detK2} that
+\begin{equation}\label{Dt}
+D(t_1,\dots,t_n)=\sum_{I\in\mathbf{n}}(-1)^{\abs{I}-1}\abs{I}
+\prod_{i\in I}t_i\prod_{j\in I}(D_j+\lambda_jt_j)\det\mathbf{A}^{(\lambda)}
+(\overline I|\overline I).
+\end{equation}
+Let $t_i=\hat x_i$, $i=1,\dots,n$. Lemma 1 leads to
+\begin{equation}\label{Dx}
+D(\hat x_1,\dots,\hat x_n)=\prod_{i\in\mathbf{n}}\hat x_i
+\sum_{I\in\mathbf{n}}(-1)^{\abs{I}-1}\abs{I}\per \mathbf{A}
+^{(\lambda)}(I|I)\det\mathbf{A}^{(\lambda)}(\overline I|\overline I).
+\end{equation}
+By \eqref{H-cycles}, \eqref{sum-Di}, and \eqref{Dx},
+we have the following result:
+\begin{thm}\label{thm-H-param}
+\begin{equation}\label{H-param}
+H_c=\frac{1}{2n}\sum^n_{l =1}l (-1)^{l -1}A_{l}
+^{(\lambda)},
+\end{equation}
+where
+\begin{equation}\label{A-l-lambda}
+A^{(\lambda)}_l =\sum_{I_l \subseteq\mathbf{n}}\per \mathbf{A}
+^{(\lambda)}(I_l |I_l )\det\mathbf{A}^{(\lambda)}
+(\overline I_{l}|\overline I_l ),\abs{I_{l}}=l .
+\end{equation}
+\end{thm}
+
+It is worth noting that $A_l ^{(\lambda)}$ of \eqref{A-l-lambda} is
+similar to the coefficients $b_l $ of the characteristic polynomial of
+\eqref{bl-sum}. It is well known in graph theory that the coefficients
+$b_l $ can be expressed as a sum over certain subgraphs. It is
+interesting to see whether $A_l $, $\lambda=0$, structural properties
+of a graph.
+
+We may call \eqref{H-param} a parametric representation of $H_c$. In
+computation, the parameter $\lambda_i$ plays very important roles. The
+choice of the parameter usually depends on the properties of the given
+graph. For a complete graph $K_n$, let $\lambda_i=1$, $i=1,\dots,n$.
+It follows from \eqref{A-l-lambda} that
+\begin{equation}\label{compl-gr}
+A^{(1)}_l =\begin{cases} n!,&\text{if }l =1\\
+0,&\text{otherwise}.\end{cases}
+\end{equation}
+By \eqref{H-param}
+\begin{equation}
+H_c=\frac 12(n-1)!.
+\end{equation}
+For a complete bipartite graph $K_{n_1n_2}$, let $\lambda_i=0$, $i=1,\dots,n$.
+By \eqref{A-l-lambda},
+\begin{equation}
+A_l =
+\begin{cases} -n_1!n_2!\delta_{n_1n_2},&\text{if }l =2\\
+0,&\text{otherwise }.\end{cases}
+\label{compl-bip-gr}
+\end{equation}
+Theorem ~\ref{thm-H-param}
+leads to
+\begin{equation}
+H_c=\frac1{n_1+n_2}n_1!n_2!\delta_{n_1n_2}.
+\end{equation}
+
+Now, we consider an asymmetrical approach. Theorem \ref{thm-main} leads to
+\begin{multline}
+\det\mathbf{K}(t=1,t_1,\dots,t_n;l |l )\\
+=\sum_{I\subseteq\mathbf{n}-\{l \}}
+(-1)^{\abs{I}}\prod_{i\in I}t_i\prod_{j\in I}
+(D_j+\lambda_jt_j)\det\mathbf{A}^{(\lambda)}
+(\overline I\cup\{l \}|\overline I\cup\{l \}).
+\end{multline}
+
+By \eqref{H-cycles} and \eqref{sum-ali} we have the following asymmetrical
+result:
+\begin{thm}\label{thm-asym}
+\begin{equation}
+H_c=\frac12\sum_{I\subseteq\mathbf{n}-\{l \}}
+(-1)^{\abs{I}}\per\mathbf{A}^{(\lambda)}(I|I)\det
+\mathbf{A}^{(\lambda)}
+(\overline I\cup\{l \}|\overline I\cup\{l \})
+\end{equation}
+which reduces to Goulden--Jackson's formula when $\lambda_i=0,i=1,\dots,n$
+\cite{mami:matrixth}.
+\end{thm}
+
+\section{Various font features of the \pkg{amsmath} package}
+\label{s:font}
+\subsection{Bold versions of special symbols}
+
+In the \pkg{amsmath} package \cn{boldsymbol} is used for getting
+individual bold math symbols and bold Greek letters---everything in
+math except for letters of the Latin alphabet,
+where you'd use \cn{mathbf}.  For example,
+\begin{verbatim}
+A_\infty + \pi A_0 \sim
+\mathbf{A}_{\boldsymbol{\infty}} \boldsymbol{+}
+\boldsymbol{\pi} \mathbf{A}_{\boldsymbol{0}}
+\end{verbatim}
+looks like this:
+\[A_\infty + \pi A_0 \sim \mathbf{A}_{\boldsymbol{\infty}}
+\boldsymbol{+} \boldsymbol{\pi} \mathbf{A}_{\boldsymbol{0}}\]
+
+\subsection{``Poor man's bold''}
+If a bold version of a particular symbol doesn't exist in the
+available fonts,
+then \cn{boldsymbol} can't be used to make that symbol bold.
+At the present time, this means that
+\cn{boldsymbol} can't be used with symbols from
+the \fn{msam} and \fn{msbm} fonts, among others.
+In some cases, poor man's bold (\cn{pmb}) can be used instead
+of \cn{boldsymbol}:
+%  Can't show example from msam or msbm because this document is
+%  supposed to be TeXable even if the user doesn't have
+%  AMSFonts.  MJD 5-JUL-1990
+\[\frac{\partial x}{\partial y}
+\pmb{\bigg\vert}
+\frac{\partial y}{\partial z}\]
+\begin{verbatim}
+\[\frac{\partial x}{\partial y}
+\pmb{\bigg\vert}
+\frac{\partial y}{\partial z}\]
+\end{verbatim}
+So-called ``large operator'' symbols such as $\sum$ and $\prod$
+require an additional command, \cn{mathop},
+to produce proper spacing and limits when \cn{pmb} is used.
+For further details see \textit{The \TeX book}.
+\[\sum_{\substack{i<B\\\text{$i$ odd}}}
+\prod_\kappa \kappa F(r_i)\qquad
+\mathop{\pmb{\sum}}_{\substack{i<B\\\text{$i$ odd}}}
+\mathop{\pmb{\prod}}_\kappa \kappa(r_i)
+\]
+\begin{verbatim}
+\[\sum_{\substack{i<B\\\text{$i$ odd}}}
+\prod_\kappa \kappa F(r_i)\qquad
+\mathop{\pmb{\sum}}_{\substack{i<B\\\text{$i$ odd}}}
+\mathop{\pmb{\prod}}_\kappa \kappa(r_i)
+\]
+\end{verbatim}
+
+\section{Compound symbols and other features}
+\label{s:comp}
+\subsection{Multiple integral signs}
+
+\cn{iint}, \cn{iiint}, and \cn{iiiint} give multiple integral signs
+with the spacing between them nicely adjusted,  in both text and
+display style.  \cn{idotsint} gives two integral signs with dots
+between them.
+\begin{gather}
+\iint\limits_A f(x,y)\,dx\,dy\qquad\iiint\limits_A
+f(x,y,z)\,dx\,dy\,dz\\
+\iiiint\limits_A
+f(w,x,y,z)\,dw\,dx\,dy\,dz\qquad\idotsint\limits_A f(x_1,\dots,x_k)
+\end{gather}
+
+\subsection{Over and under arrows}
+
+Some extra over and under arrow operations are provided in
+the \pkg{amsmath} package.  (Basic \LaTeX\ provides
+\cn{overrightarrow} and \cn{overleftarrow}).
+\begin{align*}
+\overrightarrow{\psi_\delta(t) E_t h}&
+=\underrightarrow{\psi_\delta(t) E_t h}\\
+\overleftarrow{\psi_\delta(t) E_t h}&
+=\underleftarrow{\psi_\delta(t) E_t h}\\
+\overleftrightarrow{\psi_\delta(t) E_t h}&
+=\underleftrightarrow{\psi_\delta(t) E_t h}
+\end{align*}
+\begin{verbatim}
+\begin{align*}
+\overrightarrow{\psi_\delta(t) E_t h}&
+=\underrightarrow{\psi_\delta(t) E_t h}\\
+\overleftarrow{\psi_\delta(t) E_t h}&
+=\underleftarrow{\psi_\delta(t) E_t h}\\
+\overleftrightarrow{\psi_\delta(t) E_t h}&
+=\underleftrightarrow{\psi_\delta(t) E_t h}
+\end{align*}
+\end{verbatim}
+These all scale properly in subscript sizes:
+\[\int_{\overrightarrow{AB}} ax\,dx\]
+\begin{verbatim}
+\[\int_{\overrightarrow{AB}} ax\,dx\]
+\end{verbatim}
+
+\subsection{Dots}
+
+Normally you need only type \cn{dots} for ellipsis dots in a
+math formula.  The main exception is when the dots
+fall at the end of the formula; then you need to
+specify one of \cn{dotsc} (series dots, after a comma),
+\cn{dotsb} (binary dots, for binary relations or operators),
+\cn{dotsm} (multiplication dots), or \cn{dotsi} (dots after
+an integral).  For example, the input
+\begin{verbatim}
+Then we have the series $A_1,A_2,\dotsc$,
+the regional sum $A_1+A_2+\dotsb$,
+the orthogonal product $A_1A_2\dotsm$,
+and the infinite integral
+\[\int_{A_1}\int_{A_2}\dotsi\].
+\end{verbatim}
+produces
+\begin{quotation}
+Then we have the series $A_1,A_2,\dotsc$,
+the regional sum $A_1+A_2+\dotsb$,
+the orthogonal product $A_1A_2\dotsm$,
+and the infinite integral
+\[\int_{A_1}\int_{A_2}\dotsi\]
+\end{quotation}
+
+\subsection{Accents in math}
+
+Double accents:
+\[\Hat{\Hat{H}}\quad\Check{\Check{C}}\quad
+\Tilde{\Tilde{T}}\quad\Acute{\Acute{A}}\quad
+\Grave{\Grave{G}}\quad\Dot{\Dot{D}}\quad
+\Ddot{\Ddot{D}}\quad\Breve{\Breve{B}}\quad
+\Bar{\Bar{B}}\quad\Vec{\Vec{V}}\]
+\begin{verbatim}
+\[\Hat{\Hat{H}}\quad\Check{\Check{C}}\quad
+\Tilde{\Tilde{T}}\quad\Acute{\Acute{A}}\quad
+\Grave{\Grave{G}}\quad\Dot{\Dot{D}}\quad
+\Ddot{\Ddot{D}}\quad\Breve{\Breve{B}}\quad
+\Bar{\Bar{B}}\quad\Vec{\Vec{V}}\]
+\end{verbatim}
+This double accent operation is complicated
+and tends to slow down the processing of a \LaTeX\ file.
+
+
+\subsection{Dot accents}
+\cn{dddot} and \cn{ddddot} are available to
+produce triple and quadruple dot accents
+in addition to the \cn{dot} and \cn{ddot} accents already available
+in \LaTeX:
+\[\dddot{Q}\qquad\ddddot{R}\]
+\begin{verbatim}
+\[\dddot{Q}\qquad\ddddot{R}\]
+\end{verbatim}
+
+\subsection{Roots}
+
+In the \pkg{amsmath} package \cn{leftroot} and \cn{uproot} allow you to adjust
+the position of the root index of a radical:
+\begin{verbatim}
+\sqrt[\leftroot{-2}\uproot{2}\beta]{k}
+\end{verbatim}
+gives good positioning of the $\beta$:
+\[\sqrt[\leftroot{-2}\uproot{2}\beta]{k}\]
+
+\subsection{Boxed formulas} The command \cn{boxed} puts a box around its
+argument, like \cn{fbox} except that the contents are in math mode:
+\begin{verbatim}
+\boxed{W_t-F\subseteq V(P_i)\subseteq W_t}
+\end{verbatim}
+\[\boxed{W_t-F\subseteq V(P_i)\subseteq W_t}.\]
+
+\subsection{Extensible arrows}
+\cn{xleftarrow} and \cn{xrightarrow} produce
+arrows that extend automatically to accommodate unusually wide
+subscripts or superscripts.  The text of the subscript or superscript
+are given as an optional resp.\@ mandatory argument:
+Example:
+\[0 \xleftarrow[\zeta]{\alpha} F\times\triangle[n-1]
+  \xrightarrow{\partial_0\alpha(b)} E^{\partial_0b}\]
+\begin{verbatim}
+\[0 \xleftarrow[\zeta]{\alpha} F\times\triangle[n-1]
+  \xrightarrow{\partial_0\alpha(b)} E^{\partial_0b}\]
+\end{verbatim}
+
+\subsection{\cn{overset}, \cn{underset}, and \cn{sideset}}
+Examples:
+\[\overset{*}{X}\qquad\underset{*}{X}\qquad
+\overset{a}{\underset{b}{X}}\]
+\begin{verbatim}
+\[\overset{*}{X}\qquad\underset{*}{X}\qquad
+\overset{a}{\underset{b}{X}}\]
+\end{verbatim}
+
+The command \cn{sideset} is for a rather special
+purpose: putting symbols at the subscript and superscript
+corners of a large operator symbol such as $\sum$ or $\prod$,
+without affecting the placement of limits.
+Examples:
+\[\sideset{_*^*}{_*^*}\prod_k\qquad
+\sideset{}{'}\sum_{0\le i\le m} E_i\beta x
+\]
+\begin{verbatim}
+\[\sideset{_*^*}{_*^*}\prod_k\qquad
+\sideset{}{'}\sum_{0\le i\le m} E_i\beta x
+\]
+\end{verbatim}
+
+\subsection{The \cn{text} command}
+The main use of the command \cn{text} is for words or phrases in a
+display:
+\[\mathbf{y}=\mathbf{y}'\quad\text{if and only if}\quad
+y'_k=\delta_k y_{\tau(k)}\]
+\begin{verbatim}
+\[\mathbf{y}=\mathbf{y}'\quad\text{if and only if}\quad
+y'_k=\delta_k y_{\tau(k)}\]
+\end{verbatim}
+
+\subsection{Operator names}
+The more common math functions such as $\log$, $\sin$, and $\lim$
+have predefined control sequences: \verb=\log=, \verb=\sin=,
+\verb=\lim=.
+The \pkg{amsmath} package provides \cn{DeclareMathOperator} and
+\cn{DeclareMathOperator*}
+for producing new function names that will have the
+same typographical treatment.
+Examples:
+\[\norm{f}_\infty=
+\esssup_{x\in R^n}\abs{f(x)}\]
+\begin{verbatim}
+\[\norm{f}_\infty=
+\esssup_{x\in R^n}\abs{f(x)}\]
+\end{verbatim}
+\[\meas_1\{u\in R_+^1\colon f^*(u)>\alpha\}
+=\meas_n\{x\in R^n\colon \abs{f(x)}\geq\alpha\}
+\quad \forall\alpha>0.\]
+\begin{verbatim}
+\[\meas_1\{u\in R_+^1\colon f^*(u)>\alpha\}
+=\meas_n\{x\in R^n\colon \abs{f(x)}\geq\alpha\}
+\quad \forall\alpha>0.\]
+\end{verbatim}
+\cn{esssup} and \cn{meas} would be defined in the document preamble as
+\begin{verbatim}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\DeclareMathOperator{\meas}{meas}
+\end{verbatim}
+
+The following special operator names are predefined in the \pkg{amsmath}
+package: \cn{varlimsup}, \cn{varliminf}, \cn{varinjlim}, and
+\cn{varprojlim}. Here's what they look like in use:
+\begin{align}
+&\varlimsup_{n\rightarrow\infty}
+       \mathcal{Q}(u_n,u_n-u^{\#})\le0\\
+&\varliminf_{n\rightarrow\infty}
+  \left\lvert a_{n+1}\right\rvert/\left\lvert a_n\right\rvert=0\\
+&\varinjlim (m_i^\lambda\cdot)^*\le0\\
+&\varprojlim_{p\in S(A)}A_p\le0
+\end{align}
+\begin{verbatim}
+\begin{align}
+&\varlimsup_{n\rightarrow\infty}
+       \mathcal{Q}(u_n,u_n-u^{\#})\le0\\
+&\varliminf_{n\rightarrow\infty}
+  \left\lvert a_{n+1}\right\rvert/\left\lvert a_n\right\rvert=0\\
+&\varinjlim (m_i^\lambda\cdot)^*\le0\\
+&\varprojlim_{p\in S(A)}A_p\le0
+\end{align}
+\end{verbatim}
+
+\subsection{\cn{mod} and its relatives}
+The commands \cn{mod} and \cn{pod} are variants of
+\cn{pmod} preferred by some authors; \cn{mod} omits the parentheses,
+whereas \cn{pod} omits the `mod' and retains the parentheses.
+Examples:
+\begin{align}
+x&\equiv y+1\pmod{m^2}\\
+x&\equiv y+1\mod{m^2}\\
+x&\equiv y+1\pod{m^2}
+\end{align}
+\begin{verbatim}
+\begin{align}
+x&\equiv y+1\pmod{m^2}\\
+x&\equiv y+1\mod{m^2}\\
+x&\equiv y+1\pod{m^2}
+\end{align}
+\end{verbatim}
+
+\subsection{Fractions and related constructions}
+\label{fracs}
+
+The usual notation for binomials is similar to the fraction concept,
+so it has a similar command \cn{binom} with two arguments. Example:
+\begin{equation}
+\begin{split}
+\sum_{\gamma\in\Gamma_C} I_\gamma&
+=2^k-\binom{k}{1}2^{k-1}+\binom{k}{2}2^{k-2}\\
+&\quad+\dots+(-1)^l\binom{k}{l}2^{k-l}
++\dots+(-1)^k\\
+&=(2-1)^k=1
+\end{split}
+\end{equation}
+\begin{verbatim}
+\begin{equation}
+\begin{split}
+[\sum_{\gamma\in\Gamma_C} I_\gamma&
+=2^k-\binom{k}{1}2^{k-1}+\binom{k}{2}2^{k-2}\\
+&\quad+\dots+(-1)^l\binom{k}{l}2^{k-l}
++\dots+(-1)^k\\
+&=(2-1)^k=1
+\end{split}
+\end{equation}
+\end{verbatim}
+There are also abbreviations
+\begin{verbatim}
+\dfrac        \dbinom
+\tfrac        \tbinom
+\end{verbatim}
+for the commonly needed constructions
+\begin{verbatim}
+{\displaystyle\frac ... }   {\displaystyle\binom ... }
+{\textstyle\frac ... }      {\textstyle\binom ... }
+\end{verbatim}
+
+The generalized fraction command \cn{genfrac} provides full access to
+the six \TeX{} fraction primitives:
+\begin{align}
+\text{\cn{over}: }&\genfrac{}{}{}{}{n+1}{2}&
+\text{\cn{overwithdelims}: }&
+  \genfrac{\langle}{\rangle}{}{}{n+1}{2}\\
+\text{\cn{atop}: }&\genfrac{}{}{0pt}{}{n+1}{2}&
+\text{\cn{atopwithdelims}: }&
+  \genfrac{(}{)}{0pt}{}{n+1}{2}\\
+\text{\cn{above}: }&\genfrac{}{}{1pt}{}{n+1}{2}&
+\text{\cn{abovewithdelims}: }&
+  \genfrac{[}{]}{1pt}{}{n+1}{2}
+\end{align}
+\begin{verbatim}
+\text{\cn{over}: }&\genfrac{}{}{}{}{n+1}{2}&
+\text{\cn{overwithdelims}: }&
+  \genfrac{\langle}{\rangle}{}{}{n+1}{2}\\
+\text{\cn{atop}: }&\genfrac{}{}{0pt}{}{n+1}{2}&
+\text{\cn{atopwithdelims}: }&
+  \genfrac{(}{)}{0pt}{}{n+1}{2}\\
+\text{\cn{above}: }&\genfrac{}{}{1pt}{}{n+1}{2}&
+\text{\cn{abovewithdelims}: }&
+  \genfrac{[}{]}{1pt}{}{n+1}{2}
+\end{verbatim}
+
+\subsection{Continued fractions}
+The continued fraction
+\begin{equation}
+\cfrac{1}{\sqrt{2}+
+ \cfrac{1}{\sqrt{2}+
+  \cfrac{1}{\sqrt{2}+
+   \cfrac{1}{\sqrt{2}+
+    \cfrac{1}{\sqrt{2}+\dotsb
+}}}}}
+\end{equation}
+can be obtained by typing
+\begin{verbatim}
+\cfrac{1}{\sqrt{2}+
+ \cfrac{1}{\sqrt{2}+
+  \cfrac{1}{\sqrt{2}+
+   \cfrac{1}{\sqrt{2}+
+    \cfrac{1}{\sqrt{2}+\dotsb
+}}}}}
+\end{verbatim}
+Left or right placement of any of the numerators is accomplished by using
+\cn{cfrac[l]} or \cn{cfrac[r]} instead of \cn{cfrac}.
+
+\subsection{Smash}
+
+In \pkg{amsmath} there are optional arguments \verb"t" and \verb"b" for
+the plain \TeX\ command \cn{smash}, because sometimes it is advantageous
+to be able to `smash' only the top or only the bottom of something while
+retaining the natural depth or height. In the formula
+$X_j=(1/\sqrt{\smash[b]{\lambda_j}})X_j'$ \cn{smash}\verb=[b]= has been
+used to limit the size of the radical symbol.
+\begin{verbatim}
+$X_j=(1/\sqrt{\smash[b]{\lambda_j}})X_j'$
+\end{verbatim}
+Without the use of \cn{smash}\verb=[b]= the formula would have appeared
+thus: $X_j=(1/\sqrt{\lambda_j})X_j'$, with the radical extending to
+encompass the depth of the subscript $j$.
+
+\subsection{The `cases' environment}
+`Cases' constructions like the following can be produced using
+the \env{cases} environment.
+\begin{equation}
+P_{r-j}=
+  \begin{cases}
+    0&  \text{if $r-j$ is odd},\\
+    r!\,(-1)^{(r-j)/2}&  \text{if $r-j$ is even}.
+  \end{cases}
+\end{equation}
+\begin{verbatim}
+\begin{equation} P_{r-j}=
+  \begin{cases}
+    0&  \text{if $r-j$ is odd},\\
+    r!\,(-1)^{(r-j)/2}&  \text{if $r-j$ is even}.
+  \end{cases}
+\end{equation}
+\end{verbatim}
+Notice the use of \cn{text} and the embedded math.
+
+\subsection{Matrix}
+
+Here are samples of the matrix environments,
+\cn{matrix}, \cn{pmatrix}, \cn{bmatrix}, \cn{Bmatrix}, \cn{vmatrix}
+and \cn{Vmatrix}:
+\begin{equation}
+\begin{matrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{matrix}\quad
+\begin{pmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{pmatrix}\quad
+\begin{bmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{bmatrix}\quad
+\begin{Bmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{Bmatrix}\quad
+\begin{vmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{vmatrix}\quad
+\begin{Vmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{Vmatrix}
+\end{equation}
+%
+\begin{verbatim}
+\begin{matrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{matrix}\quad
+\begin{pmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{pmatrix}\quad
+\begin{bmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{bmatrix}\quad
+\begin{Bmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{Bmatrix}\quad
+\begin{vmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{vmatrix}\quad
+\begin{Vmatrix}
+\vartheta& \varrho\\\varphi& \varpi
+\end{Vmatrix}
+\end{verbatim}
+
+To produce a small matrix suitable for use in text, use the
+\env{smallmatrix} environment.
+\begin{verbatim}
+\begin{math}
+  \bigl( \begin{smallmatrix}
+      a&b\\ c&d
+    \end{smallmatrix} \bigr)
+\end{math}
+\end{verbatim}
+To show
+the effect of the matrix on the surrounding lines of
+a paragraph, we put it here: \begin{math}
+  \bigl( \begin{smallmatrix}
+      a&b\\ c&d
+    \end{smallmatrix} \bigr)
+\end{math}
+and follow it with enough text to ensure that there will
+be at least one full line below the matrix.
+
+\cn{hdotsfor}\verb"{"\textit{number}\verb"}" produces a row of dots in a matrix
+spanning the given number of columns:
+\[W(\Phi)= \begin{Vmatrix}
+\dfrac\varphi{(\varphi_1,\varepsilon_1)}&0&\dots&0\\
+\dfrac{\varphi k_{n2}}{(\varphi_2,\varepsilon_1)}&
+\dfrac\varphi{(\varphi_2,\varepsilon_2)}&\dots&0\\
+\hdotsfor{5}\\
+\dfrac{\varphi k_{n1}}{(\varphi_n,\varepsilon_1)}&
+\dfrac{\varphi k_{n2}}{(\varphi_n,\varepsilon_2)}&\dots&
+\dfrac{\varphi k_{n\,n-1}}{(\varphi_n,\varepsilon_{n-1})}&
+\dfrac{\varphi}{(\varphi_n,\varepsilon_n)}
+\end{Vmatrix}\]
+\begin{verbatim}
+\[W(\Phi)= \begin{Vmatrix}
+\dfrac\varphi{(\varphi_1,\varepsilon_1)}&0&\dots&0\\
+\dfrac{\varphi k_{n2}}{(\varphi_2,\varepsilon_1)}&
+\dfrac\varphi{(\varphi_2,\varepsilon_2)}&\dots&0\\
+\hdotsfor{5}\\
+\dfrac{\varphi k_{n1}}{(\varphi_n,\varepsilon_1)}&
+\dfrac{\varphi k_{n2}}{(\varphi_n,\varepsilon_2)}&\dots&
+\dfrac{\varphi k_{n\,n-1}}{(\varphi_n,\varepsilon_{n-1})}&
+\dfrac{\varphi}{(\varphi_n,\varepsilon_n)}
+\end{Vmatrix}\]
+\end{verbatim}
+The spacing of the dots can be varied through use of a square-bracket
+option, for example, \verb"\hdotsfor[1.5]{3}".  The number in square brackets
+will be used as a multiplier; the normal value is 1.
+
+\subsection{The \cn{substack} command}
+
+The \cn{substack} command can be used to produce a multiline
+subscript or superscript:
+for example
+\begin{verbatim}
+\sum_{\substack{0\le i\le m\\ 0<j<n}} P(i,j)
+\end{verbatim}
+produces a two-line subscript underneath the sum:
+\begin{equation}
+\sum_{\substack{0\le i\le m\\ 0<j<n}} P(i,j)
+\end{equation}
+A slightly more generalized form is the \env{subarray} environment which
+allows you to specify that each line should be left-aligned instead of
+centered, as here:
+\begin{equation}
+\sum_{\begin{subarray}{l}
+        0\le i\le m\\ 0<j<n
+      \end{subarray}}
+ P(i,j)
+\end{equation}
+\begin{verbatim}
+\sum_{\begin{subarray}{l}
+        0\le i\le m\\ 0<j<n
+      \end{subarray}}
+ P(i,j)
+\end{verbatim}
+
+
+\subsection{Big-g-g delimiters}
+Here are some big delimiters, first in \cn{normalsize}:
+\[\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  \biggr)
+\]
+\begin{verbatim}
+\[\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  \biggr)
+\]
+\end{verbatim}
+and now in \cn{Large} size:
+{\Large
+\[\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  \biggr)
+\]}
+\begin{verbatim}
+{\Large
+\[\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  \biggr)
+\]}
+\end{verbatim}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+
+%% This turns on vertical rules at the right and left margins, to
+%% better illustrate the spacing for certain multiple-line equation
+%% structures.
+\def\@makecol{\ifvoid\footins \setbox\@outputbox\box\@cclv
+   \else\setbox\@outputbox
+     \vbox{\boxmaxdepth \maxdepth
+     \unvbox\@cclv\vskip\skip\footins\footnoterule\unvbox\footins}\fi
+  \xdef\@freelist{\@freelist\@midlist}\gdef\@midlist{}\@combinefloats
+  \setbox\@outputbox\hbox{\vrule width\marginrulewidth
+        \vbox to\@colht{\boxmaxdepth\maxdepth
+         \@texttop\dimen128=\dp\@outputbox\unvbox\@outputbox
+         \vskip-\dimen128\@textbottom}%
+        \vrule width\marginrulewidth}%
+     \global\maxdepth\@maxdepth}
+\newdimen\marginrulewidth
+\setlength{\marginrulewidth}{.1pt}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\section{Examples of multiple-line equation structures}
+\label{s:eq}
+
+\textbf{\large Note: Starting on this page, vertical rules are
+added at the margins so that the positioning of various display elements
+with respect to the margins can be seen more clearly.}
+
+\subsection{Split}
+The \env{split} environment is not an independent environment
+but should be used inside something else such as \env{equation}
+or \env{align}.
+
+If there is not enough room for it, the equation number for  a
+\env{split} will be shifted to the previous line, when equation numbers are
+on the left; the number shifts down to the next line when numbers are on
+the right.
+\begin{equation}
+\begin{split}
+f_{h,\varepsilon}(x,y)
+&=\varepsilon\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+L_{x,y_\varepsilon(\varepsilon u)}\varphi(x)\,du\\
+&= h\int L_{x,z}\varphi(x)\rho_x(dz)\\
+&\quad+h\biggl[\frac{1}{t_\varepsilon}\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  -t_\varepsilon\int L_{x,z}\varphi(x)\rho_x(dz)\biggr)\\
+&\phantom{{=}+h\biggl[}+\frac{1}{t_\varepsilon}
+  \biggl(\mathbf{E}_{y}\int_0^{t_\varepsilon}L_{x,y^x(s)}
+    \varphi(x)\,ds -\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+   L_{x,y_\varepsilon(\varepsilon s)}
+   \varphi(x)\,ds\biggr)\biggr]\\
+&=h\wh{L}_x\varphi(x)+h\theta_\varepsilon(x,y),
+\end{split}
+\end{equation}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{equation}
+\begin{split}
+f_{h,\varepsilon}(x,y)
+&=\varepsilon\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+L_{x,y_\varepsilon(\varepsilon u)}\varphi(x)\,du\\
+&= h\int L_{x,z}\varphi(x)\rho_x(dz)\\
+&\quad+h\biggl[\frac{1}{t_\varepsilon}\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  -t_\varepsilon\int L_{x,z}\varphi(x)\rho_x(dz)\biggr)\\
+&\phantom{{=}+h\biggl[}+\frac{1}{t_\varepsilon}
+  \biggl(\mathbf{E}_{y}\int_0^{t_\varepsilon}L_{x,y^x(s)}
+    \varphi(x)\,ds -\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+   L_{x,y_\varepsilon(\varepsilon s)}
+   \varphi(x)\,ds\biggr)\biggr]\\
+&=h\wh{L}_x\varphi(x)+h\theta_\varepsilon(x,y),
+\end{split}
+\end{equation}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+Unnumbered version:
+\begin{equation*}
+\begin{split}
+f_{h,\varepsilon}(x,y)
+&=\varepsilon\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+L_{x,y_\varepsilon(\varepsilon u)}\varphi(x)\,du\\
+&= h\int L_{x,z}\varphi(x)\rho_x(dz)\\
+&\quad+h\biggl[\frac{1}{t_\varepsilon}\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  -t_\varepsilon\int L_{x,z}\varphi(x)\rho_x(dz)\biggr)\\
+&\phantom{{=}+h\biggl[}+\frac{1}{t_\varepsilon}
+  \biggl(\mathbf{E}_{y}\int_0^{t_\varepsilon}L_{x,y^x(s)}
+    \varphi(x)\,ds -\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+   L_{x,y_\varepsilon(\varepsilon s)}
+   \varphi(x)\,ds\biggr)\biggr]\\
+&=h\wh{L}_x\varphi(x)+h\theta_\varepsilon(x,y),
+\end{split}
+\end{equation*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{equation*}
+\begin{split}
+f_{h,\varepsilon}(x,y)
+&=\varepsilon\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+L_{x,y_\varepsilon(\varepsilon u)}\varphi(x)\,du\\
+&= h\int L_{x,z}\varphi(x)\rho_x(dz)\\
+&\quad+h\biggl[\frac{1}{t_\varepsilon}\biggl(\mathbf{E}_{y}
+  \int_0^{t_\varepsilon}L_{x,y^x(s)}\varphi(x)\,ds
+  -t_\varepsilon\int L_{x,z}\varphi(x)\rho_x(dz)\biggr)\\
+&\phantom{{=}+h\biggl[}+\frac{1}{t_\varepsilon}
+  \biggl(\mathbf{E}_{y}\int_0^{t_\varepsilon}L_{x,y^x(s)}
+    \varphi(x)\,ds -\mathbf{E}_{x,y}\int_0^{t_\varepsilon}
+   L_{x,y_\varepsilon(\varepsilon s)}
+   \varphi(x)\,ds\biggr)\biggr]\\
+&=h\wh{L}_x\varphi(x)+h\theta_\varepsilon(x,y),
+\end{split}
+\end{equation*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+If the option \env{centertags} is included in the options
+list of the \pkg{amsmath} package,
+the equation numbers for \env{split} environments will be
+centered vertically on the height
+of  the \env{split}:
+{\makeatletter\ctagsplit@true
+\begin{equation}
+\begin{split}
+ \abs{I_2}&=\left\lvert \int_{0}^T \psi(t)\left\{u(a,t)-\int_{\gamma(t)}^a
+  \frac{d\theta}{k(\theta,t)}
+  \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi\right\}dt\right\rvert\\
+&\le C_6\left\lvert \left\lvert f\int_\Omega\left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}
+\end{equation}}%
+Some text after to test the below-display spacing.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+Use of \env{split} within \env{align}:
+{\delimiterfactor750
+\begin{align}
+\begin{split}\abs{I_1}
+  &=\left\lvert \int_\Omega gRu\,d\Omega\right\rvert\\
+&\le C_3\left[\int_\Omega\left(\int_{a}^x
+  g(\xi,t)\,d\xi\right)^2d\Omega\right]^{1/2}\\
+&\quad\times \left[\int_\Omega\left\{u^2_x+\frac{1}{k}
+  \left(\int_{a}^x cu_t\,d\xi\right)^2\right\}
+  c\Omega\right]^{1/2}\\
+&\le C_4\left\lvert \left\lvert f\left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}\label{eq:A}\\
+\begin{split}\abs{I_2}&=\left\lvert \int_{0}^T \psi(t)\left\{u(a,t)
+  -\int_{\gamma(t)}^a\frac{d\theta}{k(\theta,t)}
+  \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi\right\}dt\right\rvert\\
+&\le C_6\left\lvert \left\lvert f\int_\Omega
+ \left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}
+\end{align}}%
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{align}
+\begin{split}\abs{I_1}
+  &=\left\lvert \int_\Omega gRu\,d\Omega\right\rvert\\
+&\le C_3\left[\int_\Omega\left(\int_{a}^x
+  g(\xi,t)\,d\xi\right)^2d\Omega\right]^{1/2}\\
+&\quad\times \left[\int_\Omega\left\{u^2_x+\frac{1}{k}
+  \left(\int_{a}^x cu_t\,d\xi\right)^2\right\}
+  c\Omega\right]^{1/2}\\
+&\le C_4\left\lvert \left\lvert f\left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}\label{eq:A}\\
+\begin{split}\abs{I_2}&=\left\lvert \int_{0}^T \psi(t)\left\{u(a,t)
+  -\int_{\gamma(t)}^a\frac{d\theta}{k(\theta,t)}
+  \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi\right\}dt\right\rvert\\
+&\le C_6\left\lvert \left\lvert f\int_\Omega
+  \left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}
+\end{align}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%
+
+\newpage
+Unnumbered \env{align}, with a number on the second \env{split}:
+\begin{align*}
+\begin{split}\abs{I_1}&=\left\lvert \int_\Omega gRu\,d\Omega\right\rvert\\
+  &\le C_3\left[\int_\Omega\left(\int_{a}^x
+  g(\xi,t)\,d\xi\right)^2d\Omega\right]^{1/2}\\
+&\phantom{=}\times \left[\int_\Omega\left\{u^2_x+\frac{1}{k}
+  \left(\int_{a}^x cu_t\,d\xi\right)^2\right\}
+  c\Omega\right]^{1/2}\\
+&\le C_4\left\lvert \left\lvert f\left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}\\
+\begin{split}\abs{I_2}&=\left\lvert \int_{0}^T \psi(t)\left\{u(a,t)
+  -\int_{\gamma(t)}^a\frac{d\theta}{k(\theta,t)}
+  \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi\right\}dt\right\rvert\\
+&\le C_6\left\lvert \left\lvert f\int_\Omega
+  \left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}\tag{\theequation$'$}
+\end{align*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{align*}
+\begin{split}\abs{I_1}&=\left\lvert \int_\Omega gRu\,d\Omega\right\rvert\\
+  &\le C_3\left[\int_\Omega\left(\int_{a}^x
+  g(\xi,t)\,d\xi\right)^2d\Omega\right]^{1/2}\\
+&\phantom{=}\times \left[\int_\Omega\left\{u^2_x+\frac{1}{k}
+  \left(\int_{a}^x cu_t\,d\xi\right)^2\right\}
+  c\Omega\right]^{1/2}\\
+&\le C_4\left\lvert \left\lvert f\left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}\\
+\begin{split}\abs{I_2}&=\left\lvert \int_{0}^T \psi(t)\left\{u(a,t)
+  -\int_{\gamma(t)}^a\frac{d\theta}{k(\theta,t)}
+  \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi\right\}dt\right\rvert\\
+&\le C_6\left\lvert \left\lvert f\int_\Omega
+  \left\lvert \wt{S}^{-1,0}_{a,-}
+  W_2(\Omega,\Gamma_l)\right\rvert\right\rvert
+  \left\lvert \abs{u}\overset{\circ}\to W_2^{\wt{A}}
+  (\Omega;\Gamma_r,T)\right\rvert\right\rvert.
+\end{split}\tag{\theequation$'$}
+\end{align*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\subsection{Multline}
+Numbered version:
+\begin{multline}\label{eq:E}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline}
+To test the use of \verb=\label= and
+\verb=\ref=, we refer to the number of this
+equation here: (\ref{eq:E}).
+
+\begin{verbatim}
+\begin{multline}\label{eq:E}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Unnumbered version:
+\begin{multline*}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{multline*}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\iffalse % bugfix needed, error message "Multiple \tag"
+         % [mjd,24-Jan-1995]
+\newpage
+And now an ``unnumbered'' version numbered with a literal tag:
+\begin{multline*}\tag*{[a]}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{multline*}\tag*{[a]}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline*}
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The same display with \verb=\multlinegap= set to zero.
+Notice that the space on the left in
+the first line does not change, because of the equation number, while
+the second line is pushed over to the right margin.
+{\setlength{\multlinegap}{0pt}
+\begin{multline*}\tag*{[a]}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline*}}%
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+{\setlength{\multlinegap}{0pt}
+\begin{multline*}\tag*{[a]}
+\int_a^b\biggl\{\int_a^b[f(x)^2g(y)^2+f(y)^2g(x)^2]
+ -2f(x)g(x)f(y)g(y)\,dx\biggr\}\,dy \\
+ =\int_a^b\biggl\{g(y)^2\int_a^bf^2+f(y)^2
+  \int_a^b g^2-2f(y)g(y)\int_a^b fg\biggr\}\,dy
+\end{multline*}}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\fi % matches \iffalse above [mjd,24-Jan-1995]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\subsection{Gather}
+Numbered version with \verb;\notag; on the second line:
+\begin{gather}
+D(a,r)\equiv\{z\in\mathbf{C}\colon \abs{z-a}<r\},\\
+\seg(a,r)\equiv\{z\in\mathbf{C}\colon
+\Im z= \Im a,\ \abs{z-a}<r\},\notag\\
+c(e,\theta,r)\equiv\{(x,y)\in\mathbf{C}
+\colon \abs{x-e}<y\tan\theta,\ 0<y<r\},\\
+C(E,\theta,r)\equiv\bigcup_{e\in E}c(e,\theta,r).
+\end{gather}
+\begin{verbatim}
+\begin{gather}
+D(a,r)\equiv\{z\in\mathbf{C}\colon \abs{z-a}<r\},\\
+\seg(a,r)\equiv\{z\in\mathbf{C}\colon
+\Im z= \Im a,\ \abs{z-a}<r\},\notag\\
+c(e,\theta,r)\equiv\{(x,y)\in\mathbf{C}
+\colon \abs{x-e}<y\tan\theta,\ 0<y<r\},\\
+C(E,\theta,r)\equiv\bigcup_{e\in E}c(e,\theta,r).
+\end{gather}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Unnumbered version.
+\begin{gather*}
+D(a,r)\equiv\{z\in\mathbf{C}\colon \abs{z-a}<r\},\\
+\seg (a,r)\equiv\{z\in\mathbf{C}\colon
+\Im z= \Im a,\ \abs{z-a}<r\},\\
+c(e,\theta,r)\equiv\{(x,y)\in\mathbf{C}
+ \colon \abs{x-e}<y\tan\theta,\ 0<y<r\},\\
+C(E,\theta,r)\equiv\bigcup_{e\in E}c(e,\theta,r).
+\end{gather*}
+Some text after to test the below-display spacing.
+\begin{verbatim}
+\begin{gather*}
+D(a,r)\equiv\{z\in\mathbf{C}\colon \abs{z-a}<r\},\\
+\seg (a,r)\equiv\{z\in\mathbf{C}\colon
+\Im z= \Im a,\ \abs{z-a}<r\},\\
+c(e,\theta,r)\equiv\{(x,y)\in\mathbf{C}
+ \colon \abs{x-e}<y\tan\theta,\ 0<y<r\},\\
+C(E,\theta,r)\equiv\bigcup_{e\in E}c(e,\theta,r).
+\end{gather*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\subsection{Align}
+Numbered version:
+\begin{align}
+\gamma_x(t)&=(\cos tu+\sin tx,v),\\
+\gamma_y(t)&=(u,\cos tv+\sin ty),\\
+\gamma_z(t)&=\left(\cos tu+\frac\alpha\beta\sin tv,
+  -\frac\beta\alpha\sin tu+\cos tv\right).
+\end{align}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{align}
+\gamma_x(t)&=(\cos tu+\sin tx,v),\\
+\gamma_y(t)&=(u,\cos tv+\sin ty),\\
+\gamma_z(t)&=\left(\cos tu+\frac\alpha\beta\sin tv,
+  -\frac\beta\alpha\sin tu+\cos tv\right).
+\end{align}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Unnumbered version:
+\begin{align*}
+\gamma_x(t)&=(\cos tu+\sin tx,v),\\
+\gamma_y(t)&=(u,\cos tv+\sin ty),\\
+\gamma_z(t)&=\left(\cos tu+\frac\alpha\beta\sin tv,
+  -\frac\beta\alpha\sin tu+\cos tv\right).
+\end{align*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{align*}
+\gamma_x(t)&=(\cos tu+\sin tx,v),\\
+\gamma_y(t)&=(u,\cos tv+\sin ty),\\
+\gamma_z(t)&=\left(\cos tu+\frac\alpha\beta\sin tv,
+  -\frac\beta\alpha\sin tu+\cos tv\right).
+\end{align*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A variation:
+\begin{align}
+x& =y && \text {by (\ref{eq:C})}\\
+x'& = y' && \text {by (\ref{eq:D})}\\
+x+x' & = y+y' && \text {by Axiom 1.}
+\end{align}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{align}
+x& =y && \text {by (\ref{eq:C})}\\
+x'& = y' && \text {by (\ref{eq:D})}\\
+x+x' & = y+y' && \text {by Axiom 1.}
+\end{align}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\subsection{Align and split within gather}
+When using the \env{align} environment within the \env{gather}
+environment, one or the other, or both, should be unnumbered (using the
+\verb"*" form); numbering both the outer and inner environment would
+cause a conflict.
+
+Automatically numbered \env{gather} with \env{split} and \env{align*}:
+\begin{gather}
+\begin{split} \varphi(x,z)
+&=z-\gamma_{10}x-\gamma_{mn}x^mz^n\\
+&=z-Mr^{-1}x-Mr^{-(m+n)}x^mz^n
+\end{split}\\[6pt]
+\begin{align*}
+\zeta^0 &=(\xi^0)^2,\\
+\zeta^1 &=\xi^0\xi^1,\\
+\zeta^2 &=(\xi^1)^2,
+\end{align*}
+\end{gather}
+Here the \env{split} environment gets a number from the outer
+\env{gather} environment; numbers for individual lines of the
+\env{align*} are suppressed because of the star.
+
+\begin{verbatim}
+\begin{gather}
+\begin{split} \varphi(x,z)
+&=z-\gamma_{10}x-\gamma_{mn}x^mz^n\\
+&=z-Mr^{-1}x-Mr^{-(m+n)}x^mz^n
+\end{split}\\[6pt]
+\begin{align*}
+\zeta^0 &=(\xi^0)^2,\\
+\zeta^1 &=\xi^0\xi^1,\\
+\zeta^2 &=(\xi^1)^2,
+\end{align*}
+\end{gather}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The \verb"*"-ed form of \env{gather} with the non-\verb"*"-ed form of
+\env{align}.
+\begin{gather*}
+\begin{split} \varphi(x,z)
+&=z-\gamma_{10}x-\gamma_{mn}x^mz^n\\
+&=z-Mr^{-1}x-Mr^{-(m+n)}x^mz^n
+\end{split}\\[6pt]
+\begin{align} \zeta^0&=(\xi^0)^2,\\
+\zeta^1 &=\xi^0\xi^1,\\
+\zeta^2 &=(\xi^1)^2,
+\end{align}
+\end{gather*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{gather*}
+\begin{split} \varphi(x,z)
+&=z-\gamma_{10}x-\gamma_{mn}x^mz^n\\
+&=z-Mr^{-1}x-Mr^{-(m+n)}x^mz^n
+\end{split}\\[6pt]
+\begin{align} \zeta^0&=(\xi^0)^2,\\
+\zeta^1 &=\xi^0\xi^1,\\
+\zeta^2 &=(\xi^1)^2,
+\end{align}
+\end{gather*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\subsection{Alignat}
+Numbered version:
+\begin{alignat}{3}
+V_i & =v_i - q_i v_j, & \qquad X_i & = x_i - q_i x_j,
+ & \qquad U_i & = u_i,
+ \qquad \text{for $i\ne j$;}\label{eq:B}\\
+V_j & = v_j, & \qquad X_j & = x_j,
+  & \qquad U_j & u_j + \sum_{i\ne j} q_i u_i.
+\end{alignat}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{alignat}{3}
+V_i & =v_i - q_i v_j, & \qquad X_i & = x_i - q_i x_j,
+ & \qquad U_i & = u_i,
+ \qquad \text{for $i\ne j$;}\label{eq:B}\\
+V_j & = v_j, & \qquad X_j & = x_j,
+  & \qquad U_j & u_j + \sum_{i\ne j} q_i u_i.
+\end{alignat}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Unnumbered version:
+\begin{alignat*}3
+V_i & =v_i - q_i v_j, & \qquad X_i & = x_i - q_i x_j,
+ & \qquad U_i & = u_i,
+ \qquad \text{for $i\ne j$;} \\
+V_j & = v_j, & \qquad X_j & = x_j,
+  & \qquad U_j & u_j + \sum_{i\ne j} q_i u_i.
+\end{alignat*}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{alignat*}3
+V_i & =v_i - q_i v_j, & \qquad X_i & = x_i - q_i x_j,
+ & \qquad U_i & = u_i,
+ \qquad \text{for $i\ne j$;} \\
+V_j & = v_j, & \qquad X_j & = x_j,
+  & \qquad U_j & u_j + \sum_{i\ne j} q_i u_i.
+\end{alignat*}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+The most common use for \env{alignat} is for things like
+\begin{alignat}{2}
+x& =y && \qquad \text {by (\ref{eq:A})}\label{eq:C}\\
+x'& = y' && \qquad \text {by (\ref{eq:B})}\label{eq:D}\\
+x+x' & = y+y' && \qquad \text {by Axiom 1.}
+\end{alignat}
+Some text after to test the below-display spacing.
+
+\begin{verbatim}
+\begin{alignat}{2}
+x& =y && \qquad \text {by (\ref{eq:A})}\label{eq:C}\\
+x'& = y' && \qquad \text {by (\ref{eq:B})}\label{eq:D}\\
+x+x' & = y+y' && \qquad \text {by Axiom 1.}
+\end{alignat}
+\end{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\setlength{\marginrulewidth}{0pt}
+
+\begin{thebibliography}{10}
+
+\bibitem{dihe:newdir}
+W.~Diffie and E.~Hellman, \emph{New directions in cryptography}, IEEE
+Transactions on Information Theory \textbf{22} (1976), no.~5, 644--654.
+
+\bibitem{fre:cichon}
+D.~H. Fremlin, \emph{Cichon's diagram}, 1983/1984, presented at the
+S{\'e}minaire Initiation {\`a} l'Analyse, G. Choquet, M. Rogalski, J.
+Saint Raymond, at the Universit{\'e} Pierre et Marie Curie, Paris, 23e
+ann{\'e}e.
+
+\bibitem{gouja:lagrmeth}
+I.~P. Goulden and D.~M. Jackson, \emph{The enumeration of directed
+closed {E}uler trails and directed {H}amiltonian circuits by
+{L}angrangian methods}, European J. Combin. \textbf{2} (1981), 131--212.
+
+\bibitem{hapa:graphenum}
+F.~Harary and E.~M. Palmer, \emph{Graphical enumeration}, Academic
+Press, 1973.
+
+\bibitem{imlelu:oneway}
+R.~Impagliazzo, L.~Levin, and M.~Luby, \emph{Pseudo-random generation
+from one-way functions}, Proc. 21st STOC (1989), ACM, New York,
+pp.~12--24.
+
+\bibitem{komiyo:unipfunc}
+M.~Kojima, S.~Mizuno, and A.~Yoshise, \emph{A new continuation method
+for complementarity problems with uniform p-functions}, Tech. Report
+B-194, Tokyo Inst. of Technology, Tokyo, 1987, Dept. of Information
+Sciences.
+
+\bibitem{komiyo:lincomp}
+\bysame, \emph{A polynomial-time algorithm for a class of linear
+complementarity problems}, Tech. Report B-193, Tokyo Inst. of
+Technology, Tokyo, 1987, Dept. of Information Sciences.
+
+\bibitem{liuchow:formalsum}
+C.~J. Liu and Yutze Chow, \emph{On operator and formal sum methods for
+graph enumeration problems}, SIAM J. Algorithms Discrete Methods
+\textbf{5} (1984), 384--438.
+
+\bibitem{mami:matrixth}
+M.~Marcus and H.~Minc, \emph{A survey of matrix theory and matrix
+inequalities}, Complementary Series in Math. \textbf{14} (1964), 21--48.
+
+\bibitem{miyoki:lincomp}
+S.~Mizuno, A.~Yoshise, and T.~Kikuchi, \emph{Practical polynomial time
+algorithms for linear complementarity problems}, Tech. Report~13, Tokyo
+Inst. of Technology, Tokyo, April 1988, Dept. of Industrial Engineering
+and Management.
+
+\bibitem{moad:quadpro}
+R.~D. Monteiro and I.~Adler, \emph{Interior path following primal-dual
+algorithms, part {II}: Quadratic programming}, August 1987, Working
+paper, Dept. of Industrial Engineering and Operations Research.
+
+\bibitem{ste:sint}
+E.~M. Stein, \emph{Singular integrals and differentiability properties
+of functions}, Princeton Univ. Press, Princeton, N.J., 1970.
+
+\bibitem{ye:intalg}
+Y.~Ye, \emph{Interior algorithms for linear, quadratic and linearly
+constrained convex programming}, Ph.D. thesis, Stanford Univ., Palo
+Alto, Calif., July 1987, Dept. of Engineering--Economic Systems,
+unpublished.
+
+\end{thebibliography}
+
+\end{document}
+\endinput

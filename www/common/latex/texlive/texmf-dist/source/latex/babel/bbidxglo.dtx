@@ -1,0 +1,124 @@
+% \iffalse meta-comment
+%
+% Copyright 1989-2008 Johannes L. Braams and any individual authors
+% listed elsewhere in this file.  All rights reserved.
+% 
+% This file is part of the Babel system.
+% --------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2003/12/01 or later.
+% 
+% This work has the LPPL maintenance status "maintained".
+% 
+% The Current Maintainer of this work is Javier Bezos.
+% 
+% The list of all files belonging to the Babel system is
+% given in the file `manifest.bbl. See also `legal.bbl' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+% \fi
+% \CheckSum{66}
+%
+% \iffalse
+%
+%    \begin{macrocode}
+%<*driver>
+\ProvidesFile{bbidxglo.drv}[2008/03/21 v1.0b]
+\documentclass{ltxdoc}
+\GetFileInfo{bbidxglo.drv}
+\newcommand{\babel}{\textsf{babel}}
+\newcommand{\mkidx}{\texttt{MakeIndex}}
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\Lopt}[1]{\textsf{#1}}
+\begin{document}
+\DocInput{bbidxglo.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+% \fi
+% \title{Generating the index and chage log for the Babel system}
+% \author{Johannes Braams}
+% \date{\filedate}
+% \maketitle
+%
+% \section{Description}
+%
+%    This file contains the source for the style files for the \mkidx\
+%    program. These are needed to produce the index for the complete
+%    source listing and to produce the listing of the changes.
+%
+% \StopEventually{}
+%
+% \section{The index and the list of changes } Most of the entries are
+%    the same as in the files \file{gind.ist} and \file{gglo.ist} from
+%    the \Lopt{doc} package.
+%
+%    \begin{macrocode}
+%<*idx|glo>
+actual '='
+quote '!'
+level '>'
+%</idx|glo>
+%    \end{macrocode}
+%
+%    Because the \babel\ system consists of so many files the default
+%    codeline numbering scheme of the \Lopt{doc} package has been
+%    adapted. The line numbers consist of two parts seperated with a
+%    dot. This has to made known to the \mkidx\ program when it
+%    produces the index.
+%
+%    \begin{macrocode}
+%<+idx>page_compositor "."
+%    \end{macrocode}
+%
+%    Any further entries are again copied from \file{gind.ist} and
+%    \file{gglo.ist}.
+%
+%    \begin{macrocode}
+%<*idx>
+preamble
+"\n \\begin{theindex} \n \\makeatletter\\scan@allowedfalse\n"
+postamble
+"\n\n \\end{theindex}\n"
+%</idx>
+%<*glo>
+preamble
+"\n \\begin{theglossary} \n
+    \\makeatletter\\scan@allowedfalse\n"
+postamble
+"\n\n \\end{theglossary}\n"
+keyword "\\glossaryentry"
+%</glo>
+%<+idx|glo>item_x1   "\\efill \n \\subitem "
+%<+idx>item_x2   "\\efill \n \\subsubitem "
+%<+glo>item_x2   "\\ "
+%<*idx|glo>
+delim_0   "\\pfill "
+delim_1   "\\pfill "
+delim_2   "\\pfill "
+% The next lines will produce some warnings when
+% running Makeindex as they try to cover two different
+% versions of the program:
+lethead_prefix   "{\\bfseries\\hfil "
+lethead_suffix   "\\hfil}\\nopagebreak\n"
+%</idx|glo>
+%<+idx>lethead_flag       1
+%<+glo>lethead_flag       0
+%<*idx|glo>
+heading_prefix   "{\\bfseries\\hfil "
+heading_suffix   "\\hfil}\\nopagebreak\n"
+%</idx|glo>
+%<+idx>headings_flag       1
+%<+glo>headings_flag       0
+%    \end{macrocode}
+%

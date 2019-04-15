@@ -1,0 +1,1345 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\newcommand*{\Title}{Overview}
+\newcommand*{\CTANdir}{macros/latex/contrib/oberdiek/}
+\newcommand*{\CTANroot}{ftp://ftp.ctan.org/tex-archive/}
+\newcommand*{\Subject}{CTAN:\CTANdir}
+\newcommand*{\Author}{Heiko Oberdiek}
+\newcommand*{\Email}{heiko.oberdiek at googlemail.com}
+\newcommand*{\Date}{2012/05/28}
+
+% Copyright (C) 2006-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2003/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the overview "oberdiek.pdf", its source
+% "oberdiek.tex", and the installation script "oberdiek.ins"
+% for the projects in CTAN:macros/latex/contrib/oberdiek/.
+%
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{ifluatex}
+\ifluatex
+  \usepackage{fontspec}[2011/09/18]%
+  \usepackage{unicode-math}[2011/09/19]%
+  \setmathfont{lmmath-regular.otf}%
+\fi
+
+\usepackage[
+  ignorehead,
+  top=1in,
+]{geometry}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage[ngerman,english]{babel}
+\usepackage{hologo}
+\usepackage{biblatex}% for internals in .toc files
+
+\definecolor{link}{rgb}{1,0,0}% red
+\definecolor{file}{rgb}{0,0,1}% blue
+\definecolor{url}{cmyk}{0.1,1,0,0.1}
+
+\definecolor{file}{rgb}{1,0,0}% red
+\definecolor{url}{rgb}{0,0,1}% blue
+\definecolor{link}{rgb}{0,0.75,0}%
+
+\usepackage[
+  colorlinks,
+]{hyperref}[2006/02/12]
+\hypersetup{
+  pdftitle={CTAN:\CTANdir},
+  pdfsubject={Package Overview},
+  pdfauthor={\Author\ <\Email>},
+  bookmarksnumbered,
+  bookmarksopen,
+  bookmarksopenlevel=2,
+  bookmarksdepth=2,
+  filecolor=file,
+  urlcolor=url,
+  linkcolor=link,
+}
+\usepackage{bookmark}
+\usepackage{hypdestopt}
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{1}
+
+\title{%
+  \href{\CTANroot\CTANdir}{CTAN:\CTANdir}%
+}
+\author{%
+  \Author\\
+  \textless
+  \href{mailto:\Email}{\texttt{\Email}}%
+  \textgreater
+}
+\date{\Date}
+
+\providecommand*{\pdfTeX}{pdf\TeX}
+\providecommand*{\plainTeX}{\mbox{plain-\TeX}}
+\providecommand*{\iniTeX}{\mbox{ini-\TeX}}
+\providecommand*{\VTeX}{V\TeX}
+\providecommand*{\eTeX}{$\csname m@th\endcsname\varepsilon$-\TeX}
+\providecommand*{\LuaTeX}{%
+  L\textsc{ua}\TeX
+}
+\newcommand*{\xpackage}[1]{\textsf{#1}}
+\newcommand*{\xmodule}[1]{\textsf{#1}}
+\newcommand*{\xfile}[1]{\texttt{#1}}
+\newcommand*{\xext}[1]{\texttt{.#1}}
+\newcommand*{\xoption}[1]{\textsf{#1}}
+\newcommand*{\cs}[1]{\texttt{\textbackslash#1}}
+\newcommand*{\meta}[1]{%
+  \ensuremath\langle
+  \textit{#1}%
+  \ensuremath\rangle
+}
+
+\makeatletter
+\g@addto@macro\abstract{\noindent\ignorespaces}
+
+\newcommand*{\tocinclude}[1]{%
+  \setcounter{tocdepth}{3}%
+  \begingroup
+    \makeatletter
+    \def\@prj{#1}%
+    \let\contentsline\foreign@contentsline
+    \input{../\@prj/\@prj.toc}%
+  \endgroup
+}
+\def\foreign@contentsline#1#2#3#4{%
+  \ifx\\#4\\%
+    \csname l@#1\endcsname{#2}{#3}%
+  \else
+    \ifHy@linktocpage
+      \csname l@#1\endcsname{{#2}}{%
+        \hyper@linkfile{#3}{\@prj.pdf}{#4}%
+      }%
+    \else
+      \csname l@#1\endcsname{%
+        \hyper@linkfile{#2}{\@prj.pdf}{#4}%
+      }{#3}%
+    \fi
+  \fi
+}%
+
+\newenvironment{overview}{%
+  \setlength{\tabcolsep}{0.8\tabcolsep}%
+  \setlength{\LTleft}{0pt}%
+  \longtable{@{}llll@{}}
+}{%
+  \endlongtable
+}
+\newcommand*{\entry}[4]{%
+  \href{file:#1.pdf}{%
+    \bfseries\xpackage{#1}%
+  }%
+  & #2%
+  & v#3%
+  & \href{\CTANroot\CTANdir #1.pdf}{[pdf]} %
+    \href{\CTANroot\CTANdir #1.dtx}{[dtx]}
+  \\*%
+  \hyperref[{#1}]{\small (contents)}%
+  &
+  \multicolumn{2}{l}{%
+    #4%
+  }%
+  \\%
+}
+\newcommand*{\entrysep}{1.5ex}
+
+\newcommand*{\pkgsectformat}[1]{%
+  \texorpdfstring{%
+    \textcolor{link}{The} %
+    \xpackage{#1} %
+    \textcolor{link}{package}%
+  }{#1}%
+}
+
+\makeatother
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+\begin{overview}
+\entry{accsupp}{2010/01/16}{0.3}{Accessibility support by marked content}%
+[\entrysep]
+\entry{aliascnt}{2009/09/08}{1.3}{Alias counters}%
+[\entrysep]
+\entry{alphalph}{2011/05/13}{2.4}{Convert numbers to letters}%
+[\entrysep]
+\entry{askinclude}{2011/12/02}{2.2}{Interactive asking of included files}%
+[\entrysep]
+\entry{atbegshi}{2011/10/05}{1.16}{At begin shipout hook}%
+[\entrysep]
+\entry{atenddvi}{2007/04/17}{1.1}{At end DVI hook}%
+[\entrysep]
+\entry{attachfile2}{2012/04/18}{2.7}{Attach files into PDF}%
+[\entrysep]
+\entry{atveryend}{2011/06/30}{1.8}{Hooks at the very end of document}%
+[\entrysep]
+\entry{auxhook}{2011/03/04}{1.3}{Hooks for auxiliary files}%
+[\entrysep]
+\entry{bigintcalc}{2012/04/08}{1.3}{Expandable calculations on big integers}%
+[\entrysep]
+\entry{bitset}{2011/01/30}{1.1}{Handle bit-vector datatype}%
+[\entrysep]
+\entry{bmpsize}{2009/09/04}{1.6}{Extract size/resolution from bitmap files}%
+[\entrysep]
+\entry{bookmark}{2011/12/02}{1.24}{PDF bookmarks}%
+[\entrysep]
+\entry{catchfile}{2011/03/01}{1.6}{Catch the contents of a file}%
+[\entrysep]
+\entry{centernot}{2011/07/11}{1.3}{Centers the not symbol horizontally}%
+[\entrysep]
+\entry{chemarr}{2006/02/20}{1.2}{Arrows for chemical reactions}%
+[\entrysep]
+\entry{classlist}{2011/10/17}{1.4}{Record classes used in a document}%
+[\entrysep]
+\entry{colonequals}{2006/08/01}{1.0}{Colon equals symbols}%
+[\entrysep]
+\entry{dvipscol}{2008/08/11}{1.2}{Alter the usage of the dvips color stack}%
+[\entrysep]
+\entry{embedfile}{2011/04/13}{2.6}{Embed files into PDF}%
+[\entrysep]
+\entry{engord}{2010/03/01}{1.8}{Provides English ordinal numbers}%
+[\entrysep]
+\entry{enparen}{2012/01/07}{1.0}{Parentheses nesting}%
+[\entrysep]
+\entry{eolgrab}{2011/01/12}{1.0}{Catch arguments delimited by end of line}%
+[\entrysep]
+\entry{epstopdf}{2010/02/09}{2.5}{Conversion with epstopdf on the fly}%
+[\entrysep]
+\entry{etexcmds}{2011/02/16}{1.5}{Avoid name clashes with \hologo{eTeX} commands}%
+[\entrysep]
+\entry{fibnum}{2012/04/08}{1.0}{Fibonacci numbers}%
+[\entrysep]
+\entry{flags}{2007/09/30}{0.4}{Setting/clearing of flags in bit fields}%
+[\entrysep]
+\entry{gettitlestring}{2010/12/03}{1.4}{Cleanup title references}%
+[\entrysep]
+\entry{grfext}{2010/08/19}{1.1}{Manage graphics extensions}%
+[\entrysep]
+\entry{grffile}{2012/04/05}{1.16}{Extended file name support for graphics}%
+[\entrysep]
+\entry{hobsub}{2012/05/28}{1.13}{Construct package bundles}%
+[\entrysep]
+\entry{hologo}{2012/04/26}{1.10}{A logo collection with bookmark support}%
+[\entrysep]
+\entry{holtxdoc}{2012/03/21}{0.24}{Private additional ltxdoc support}%
+[\entrysep]
+\entry{hopatch}{2012/05/28}{1.2}{Wrapper for package hooks}%
+[\entrysep]
+\entry{hycolor}{2011/01/30}{1.7}{Color options for hyperref/bookmark}%
+[\entrysep]
+\entry{hypbmsec}{2007/04/11}{2.4}{Bookmarks in sectioning commands}%
+[\entrysep]
+\entry{hypcap}{2011/02/16}{1.11}{Adjusting the anchors of captions}%
+[\entrysep]
+\entry{hypdestopt}{2011/05/13}{2.3}{Hyperref destination optimizer}%
+[\entrysep]
+\entry{hypdoc}{2011/08/19}{1.11}{Hyper extensions for doc.sty}%
+[\entrysep]
+\entry{hypgotoe}{2007/10/30}{0.1}{Links to embedded files}%
+[\entrysep]
+\entry{hyphsubst}{2008/06/09}{0.2}{Substitute hyphenation patterns}%
+[\entrysep]
+\entry{ifdraft}{2008/08/11}{1.3}{Detect class options draft and final}%
+[\entrysep]
+\entry{iflang}{2007/11/11}{1.5}{Checks for the current language}%
+[\entrysep]
+\entry{ifluatex}{2010/03/01}{1.3}{Provides the ifluatex switch}%
+[\entrysep]
+\entry{ifpdf}{2011/01/30}{2.3}{Provides the ifpdf switch}%
+[\entrysep]
+\entry{ifvtex}{2010/03/01}{1.5}{Detect \hologo{VTeX} and its facilities}%
+[\entrysep]
+\entry{infwarerr}{2010/04/08}{1.3}{Providing info/warning/error messages}%
+[\entrysep]
+\entry{inputenx}{2011/05/27}{1.10}{Enhanced input encoding handling}%
+[\entrysep]
+\entry{intcalc}{2007/09/27}{1.1}{Expandable calculations with integers}%
+[\entrysep]
+\entry{kvdefinekeys}{2011/04/07}{1.3}{Define keys}%
+[\entrysep]
+\entry{kvoptions}{2011/06/30}{3.11}{Key value format for package options}%
+[\entrysep]
+\entry{kvsetkeys}{2012/04/25}{1.16}{Key value parser}%
+[\entrysep]
+\entry{letltxmacro}{2010/09/02}{1.4}{Let assignment for \hologo{LaTeX} macros}%
+[\entrysep]
+\entry{listingsutf8}{2011/11/10}{1.2}{Allow UTF-8 in listings input}%
+[\entrysep]
+\entry{ltxcmds}{2011/11/09}{1.22}{\hologo{LaTeX} kernel commands for general use}%
+[\entrysep]
+\entry{luacolor}{2011/11/01}{1.8}{Color support via \hologo{LuaTeX}'s attributes}%
+[\entrysep]
+\entry{luatex}{2010/03/09}{0.4}{\hologo{LuaTeX} basic definition package}%
+[\entrysep]
+\entry{magicnum}{2011/04/10}{1.4}{Magic numbers}%
+[\entrysep]
+\entry{makerobust}{2006/03/18}{1.0}{Make existing macro robust}%
+[\entrysep]
+\entry{mleftright}{2010/09/25}{1.0}{Math left/right delim.\@ as open/close}%
+[\entrysep]
+\entry{pagegrid}{2009/12/04}{1.4}{Print page grid in background}%
+[\entrysep]
+\entry{pagesel}{2008/08/11}{1.8}{Select pages of a document for output}%
+[\entrysep]
+\entry{pdfcol}{2007/12/12}{1.2}{Handle new color stacks for \hologo{pdfTeX}}%
+[\entrysep]
+\entry{pdfcolfoot}{2012/01/02}{1.2}{Color stack for footnotes with \hologo{pdfTeX}}%
+[\entrysep]
+\entry{pdfcolmk}{2008/08/11}{1.2}{Color support for \hologo{pdfTeX} via marks}%
+[\entrysep]
+\entry{pdfcolparallel}{2010/01/11}{1.3}{Color stacks support for parallel}%
+[\entrysep]
+\entry{pdfcolparcolumns}{2010/01/11}{1.3}{Color stacks for parcolumns}%
+[\entrysep]
+\entry{pdfcrypt}{2007/04/26}{1.0}{Allows the setting of PDF encryption}%
+[\entrysep]
+\entry{pdfescape}{2011/11/25}{1.13}{Implements \hologo{pdfTeX}'s escape features}%
+[\entrysep]
+\entry{pdflscape}{2008/08/11}{0.10}{Display of landscape pages in PDF}%
+[\entrysep]
+\entry{pdfrender}{2010/01/28}{1.2}{Access to some PDF graphics parameters}%
+[\entrysep]
+\entry{pdftexcmds}{2011/11/29}{0.20}{Utility functions of \hologo{pdfTeX} for \hologo{LuaTeX}}%
+[\entrysep]
+\entry{picture}{2009/10/11}{1.3}{Dimens for picture macros}%
+[\entrysep]
+\entry{pmboxdraw}{2011/03/24}{1.1}{Poor man's box drawing characters}%
+[\entrysep]
+\entry{protecteddef}{2011/01/31}{1.0}{Define protected commands}%
+[\entrysep]
+\entry{refcount}{2011/10/16}{3.4}{Data extraction from label references}%
+[\entrysep]
+\entry{rerunfilecheck}{2011/04/15}{1.7}{Rerun checks for auxiliary files}%
+[\entrysep]
+\entry{resizegather}{2010/03/01}{1.2}{Resize overly large equations}%
+[\entrysep]
+\entry{rotchiffre}{2010/11/12}{1.0}{Perform simple rotation ciphers}%
+[\entrysep]
+\entry{scrindex}{2008/08/11}{1.1}{Package index with \hologo{KOMAScript} classes}%
+[\entrysep]
+\entry{selinput}{2007/09/09}{1.2}{Semi-automatic input encoding detection}%
+[\entrysep]
+\entry{setouterhbox}{2007/09/09}{1.7}{Set hbox in outer horizontal mode}%
+[\entrysep]
+\entry{settobox}{2008/08/11}{1.4}{Assign box dimensions to length registers}%
+[\entrysep]
+\entry{soulutf8}{2007/09/09}{1.0}{Permit use of UTF-8 characters in soul}%
+[\entrysep]
+\entry{stackrel}{2007/11/11}{1.2}{Adding subscript option to stackrel}%
+[\entrysep]
+\entry{stampinclude}{2008/07/14}{1.0}{Include files based on time stamps}%
+[\entrysep]
+\entry{stringenc}{2011/12/02}{1.10}{Convert strings between diff.\@ encodings}%
+[\entrysep]
+\entry{tabularht}{2007/04/11}{2.5}{Tabular with height specified}%
+[\entrysep]
+\entry{tabularkv}{2006/02/20}{1.1}{Tabular with key value interface}%
+[\entrysep]
+\entry{telprint}{2008/08/11}{1.10}{Format German phone numbers}%
+[\entrysep]
+\entry{thepdfnumber}{2011/11/24}{1.0}{Print PDF numbers with minimal digits}%
+[\entrysep]
+\entry{transparent}{2007/01/08}{1.0}{Transparency via \hologo{pdfTeX}'s color stack}%
+[\entrysep]
+\entry{twoopt}{2008/08/11}{1.5}{Definitions with two optional arguments}%
+[\entrysep]
+\entry{uniquecounter}{2011/01/30}{1.2}{Provide unlimited unique counter}%
+[\entrysep]
+\entry{zref}{2012/04/04}{2.24}{A new reference scheme for \hologo{LaTeX}}%
+\end{overview}
+
+\section{Packages}
+\hypersetup{bookmarksnumbered=false}
+
+\subsection{\pkgsectformat{accsupp}}
+\label{accsupp}
+\begin{abstract}
+Since PDF 1.5 portions of a page can be marked for better
+accessibility support.
+For example, replacement texts or expansions of abbreviations can be
+provided. Package \xpackage{accsupp} starts with providing a minimal
+low-level interface for programmers. Status is experimental.
+\end{abstract}
+\tocinclude{accsupp}
+
+\newpage
+\subsection{\pkgsectformat{aliascnt}}
+\label{aliascnt}
+\begin{abstract}
+Package \xpackage{aliascnt} introduces \emph{alias counters} that
+share the same counter register and clear list.
+\end{abstract}
+\tocinclude{aliascnt}
+
+\newpage
+\subsection{\pkgsectformat{alphalph}}
+\label{alphalph}
+\begin{abstract}
+The package provides methods to represent numbers with a limited
+set of symbols. Both \hologo{LaTeX} and \hologo{plainTeX} are supported.
+\end{abstract}
+\tocinclude{alphalph}
+
+\newpage
+\subsection{\pkgsectformat{askinclude}}
+\label{askinclude}
+\begin{abstract}
+This package replaces \cs{includeonly} by an interactive user
+interface.
+\end{abstract}
+\tocinclude{askinclude}
+
+\newpage
+\subsection{\pkgsectformat{atbegshi}}
+\label{atbegshi}
+\begin{abstract}
+This package is a modern reimplementation of package \xpackage{everyshi}
+without the burden of compatibility. It makes use of \eTeX's if available.
+Both \LaTeX\ and \plainTeX\ are supported.
+\end{abstract}
+\tocinclude{atbegshi}
+
+\newpage
+\subsection{\pkgsectformat{atenddvi}}
+\label{atenddvi}
+\begin{abstract}
+\LaTeX\ offers \cs{AtBeginDvi}. This package \xpackage{atenddvi}
+provides the counterpart \cs{AtEndDvi}. The execution of its
+argument is delayed to the end of the document at the end of the
+last page. Thus \cs{special} and \cs{write} remain effective, because
+they are put into the last page. This is the main difference
+to \cs{AtEndDocument}.
+\end{abstract}
+\tocinclude{atenddvi}
+
+\newpage
+\subsection{\pkgsectformat{attachfile2}}
+\label{attachfile2}
+\begin{abstract}
+This package can be used to attach files to a PDF document.
+It is a further development of Scott Pakin's package
+\xpackage{attachfile} for \pdfTeX. Apart from bug fixes,
+package \xpackage{attachfile2} adds support for \xoption{dvips},
+some new options, gets and writes meta information data about
+the attached files.
+\end{abstract}
+\tocinclude{attachfile2}
+
+\newpage
+\subsection{\pkgsectformat{atveryend}}
+\label{atveryend}
+\begin{abstract}
+This \LaTeX\ package provides two hooks for \verb|\end{document}|
+that are executed after the hook of \cs{AtEndDocument}.
+\cs{AfterLastShipout} can be used for code that is to be executed
+right after the last \cs{clearpage} before the \xext{aux} file
+is closed. \cs{AtVeryEndDocument} is used for code after closing
+and final reading of the \xext{aux} file.
+\end{abstract}
+\tocinclude{atveryend}
+
+\newpage
+\subsection{\pkgsectformat{auxhook}}
+\label{auxhook}
+\begin{abstract}
+Package \xpackage{auxhook} provides hooks for adding stuff at
+the begin of \xfile{.aux} files.
+\end{abstract}
+\tocinclude{auxhook}
+
+\newpage
+\subsection{\pkgsectformat{bigintcalc}}
+\label{bigintcalc}
+\begin{abstract}
+This package provides expandable arithmetic operations
+with big integers that can exceed \TeX's number limits.
+\end{abstract}
+\tocinclude{bigintcalc}
+
+\newpage
+\subsection{\pkgsectformat{bitset}}
+\label{bitset}
+\begin{abstract}
+This package defines and implements the data type bit set,
+a vector of bits. The size of the vector may grow dynamically.
+Individual bits can be manipulated.
+\end{abstract}
+\tocinclude{bitset}
+
+\newpage
+\subsection{\pkgsectformat{bmpsize}}
+\label{bmpsize}
+\begin{abstract}
+Package \xpackage{bmpsize} analyzes bitmap images to extract
+size and resolution data. It adds this feature to the graphics package
+that now do not need separate bounding box files for bitmap images.
+Additionally the implementation for the inclusion of bitmap images
+in some drivers of package \xpackage{graphicx} are rewritten to support
+options \xoption{viewport}, \xoption{trim} and \xoption{clip}.
+\end{abstract}
+\tocinclude{bmpsize}
+
+\newpage
+\subsection{\pkgsectformat{bookmark}}
+\label{bookmark}
+\begin{abstract}
+This package implements a new bookmark (outline) organization for
+package \xpackage{hyperref}. Bookmark properties such
+as style and color can now be set. Other action types
+are available (URI, GoToR, Named). The bookmarks are
+generated in the first compile run. Package \xpackage{hyperref}
+uses two runs.
+\end{abstract}
+\tocinclude{bookmark}
+
+\newpage
+\subsection{\pkgsectformat{catchfile}}
+\label{catchfile}
+\begin{abstract}
+This package catches the contents of a file and puts it in a macro.
+It requires \eTeX. Both \LaTeX\ and \plainTeX\ are supported.
+\end{abstract}
+\tocinclude{catchfile}
+
+\newpage
+\subsection{\pkgsectformat{centernot}}
+\label{centernot}
+\begin{abstract}
+This package provides \cs{centernot} that prints the symbol
+\cs{not} on the following argument. Unlike \cs{not} the symbol
+is horizontally centered.
+\end{abstract}
+\tocinclude{centernot}
+
+\newpage
+\subsection{\pkgsectformat{chemarr}}
+\label{chemarr}
+\begin{abstract}
+Very often chemists need a longer version
+of reaction arrows (\cs{rightleftharpoons}) with
+the possibility to put text above and below.
+Analogous to \xpackage{amsmath}'s \cs{xrightarrow} and
+\cs{xleftarrow} this package provides the macro
+\cs{xrightleftharpoons}.
+\end{abstract}
+\tocinclude{chemarr}
+
+\newpage
+\subsection{\pkgsectformat{classlist}}
+\label{classlist}
+\begin{abstract}
+This package records the loaded classes and stores
+them in a list.
+\end{abstract}
+\tocinclude{classlist}
+
+\newpage
+\subsection{\pkgsectformat{colonequals}}
+\label{colonequals}
+\begin{abstract}
+Package \xpackage{colonequals} defines poor man's symbols
+for math relation symbols such as ``colon equals''.
+The colon is centered around the horizontal math axis.
+\end{abstract}
+\tocinclude{colonequals}
+
+\newpage
+\subsection{\pkgsectformat{dvipscol}}
+\label{dvipscol}
+\begin{abstract}
+Color support for dvips in \xfile{dvips.def} involves the
+color stack of dvips. The package tries to remove unnecessary
+uses of the stack to avoid the error ``out of coor stack space''.
+\end{abstract}
+\tocinclude{dvipscol}
+
+\newpage
+\subsection{\pkgsectformat{embedfile}}
+\label{embedfile}
+\begin{abstract}
+This package embeds files to a PDF document.
+Currently the only supported driver is \pdfTeX\ $>=$ 1.30 in PDF mode.
+\end{abstract}
+\tocinclude{embedfile}
+
+\newpage
+\subsection{\pkgsectformat{engord}}
+\label{engord}
+\begin{abstract}
+The package generates the suffix of English ordinal numbers.
+It can be used with plain and \LaTeX\ formats.
+\end{abstract}
+\tocinclude{engord}
+
+\newpage
+\subsection{\pkgsectformat{enparen}}
+\label{enparen}
+\begin{abstract}
+The package defines macros to set parentheses that automatically
+change the symbols from inner to outer fences.
+\end{abstract}
+\tocinclude{enparen}
+
+\newpage
+\subsection{\pkgsectformat{eolgrab}}
+\label{eolgrab}
+\begin{abstract}
+This package implements a generic argument grabber
+to catch an argument that is delimited by the line end.
+\end{abstract}
+\tocinclude{eolgrab}
+
+\newpage
+\subsection{\pkgsectformat{epstopdf}}
+\label{epstopdf}
+\begin{abstract}
+This packages adds support of handling eps images
+to package \xpackage{graphics} or \xpackage{graphicx}
+with option \xoption{pdftex}. If an eps image is detected,
+epstopdf is automatically called to convert it to pdf format.
+\end{abstract}
+\tocinclude{epstopdf}
+
+\newpage
+\subsection{\pkgsectformat{etexcmds}}
+\label{etexcmds}
+\begin{abstract}
+New primitive commands are introduced in \eTeX. Sometimes the
+names collide with existing macros. This package solves this
+name clashes by adding a prefix to \eTeX's commands. For example,
+\eTeX's \cs{unexpanded} is provided as \cs{etex@unexpanded}.
+\end{abstract}
+\tocinclude{etexcmds}
+
+\newpage
+\subsection{\pkgsectformat{fibnum}}
+\label{fibnum}
+\begin{abstract}
+The package \xpackage{fibnum} provides expandable fibonacci
+numbers for both \hologo{LaTeX} and \hologo{plainTeX}.
+\end{abstract}
+\tocinclude{fibnum}
+
+\newpage
+\subsection{\pkgsectformat{flags}}
+\label{flags}
+\begin{abstract}
+Package \xpackage{flags} allows the setting and clearing
+of flags in bit fields and converts the bit field into a
+decimal number. Currently the bit field is limited to 31 bits.
+\end{abstract}
+\tocinclude{flags}
+
+\newpage
+\subsection{\pkgsectformat{gettitlestring}}
+\label{gettitlestring}
+\begin{abstract}
+The \LaTeX\ package addresses packages that are dealing with
+references to titles (\cs{section}, \cs{caption}, \dots).
+The package tries to remove \cs{label} and other
+commands from title strings.
+\end{abstract}
+\tocinclude{gettitlestring}
+
+\newpage
+\subsection{\pkgsectformat{grfext}}
+\label{grfext}
+\begin{abstract}
+This package provides macros for adding and reordering
+graphics extensions of package \xpackage{graphics}.
+\end{abstract}
+\tocinclude{grfext}
+
+\newpage
+\subsection{\pkgsectformat{grffile}}
+\label{grffile}
+\begin{abstract}
+The package extends the file name processing of package \xpackage{graphics}
+to support a larger range of file names. For example, the file name
+may contain several dots. Or in case of \pdfTeX\ in PDF mode the file name may
+contain spaces.
+\end{abstract}
+\tocinclude{grffile}
+
+\newpage
+\subsection{\pkgsectformat{hobsub}}
+\label{hobsub}
+\begin{abstract}
+Package \xpackage{hobsub} implements the idea of loading
+several packages in one big collection package.
+\end{abstract}
+\tocinclude{hobsub}
+
+\newpage
+\subsection{\pkgsectformat{hologo}}
+\label{hologo}
+\begin{abstract}
+This package starts a collection of logos with support for bookmarks
+strings.
+\end{abstract}
+\tocinclude{hologo}
+
+\newpage
+\subsection{\pkgsectformat{holtxdoc}}
+\label{holtxdoc}
+\begin{abstract}
+The package is used for the documentation of my packages in
+DTX format. It contains some private macros and setup for
+my needs. Thus do not use it. I have separated the part
+that may be useful for others in package \xpackage{hypdoc}.
+\end{abstract}
+\tocinclude{holtxdoc}
+
+\newpage
+\subsection{\pkgsectformat{hopatch}}
+\label{hopatch}
+\begin{abstract}
+This packages provides a wrapper to various package hooks
+provided by other packages or classes, but does not define
+own hooks.
+\end{abstract}
+\tocinclude{hopatch}
+
+\newpage
+\subsection{\pkgsectformat{hycolor}}
+\label{hycolor}
+\begin{abstract}
+Package \xpackage{hycolor} implements the color option stuff that
+is used by packages \xpackage{hyperref} and \xpackage{bookmark}.
+It is not intended as package for the user.
+\end{abstract}
+\tocinclude{hycolor}
+
+\newpage
+\subsection{\pkgsectformat{hypbmsec}}
+\label{hypbmsec}
+\begin{abstract}
+This package expands the syntax of the sectioning commands. If the
+argument of the sectioning commands isn't usable as outline entry,
+a replacement for the bookmarks can be given.
+\end{abstract}
+\tocinclude{hypbmsec}
+
+\newpage
+\subsection{\pkgsectformat{hypcap}}
+\label{hypcap}
+\begin{abstract}
+This package tries a solution of the problem with
+hyperref, that links to floats points below the
+caption and not at the beginning of the float.
+Therefore this package divides the task into two
+part, the link setting with \cs{capstart} or
+automatically at the beginning of a float and
+the rest in the \cs{caption} command.
+\end{abstract}
+\tocinclude{hypcap}
+
+\newpage
+\subsection{\pkgsectformat{hypdestopt}}
+\label{hypdestopt}
+\begin{abstract}
+Package \xpackage{hypdestopt} supports \xpackage{hyperref}'s
+\xoption{pdftex} driver. It removes unnecessary destinations
+and shortens the destination names or uses numbered destinations
+to get smaller PDF files.
+\end{abstract}
+\tocinclude{hypdestopt}
+
+\newpage
+\subsection{\pkgsectformat{hypdoc}}
+\label{hypdoc}
+\begin{abstract}
+This package adds hyper features to the package
+\xpackage{doc} that is used in the documentation
+system of \LaTeXe. Bookmarks are added and references
+are linked as far as possible.
+\end{abstract}
+\tocinclude{hypdoc}
+
+\newpage
+\subsection{\pkgsectformat{hypgotoe}}
+\label{hypgotoe}
+\begin{abstract}
+Experimental package for links to embedded files.
+\end{abstract}
+\tocinclude{hypgotoe}
+
+\newpage
+\subsection{\pkgsectformat{hyphsubst}}
+\label{hyphsubst}
+\begin{abstract}
+A \TeX\ format file may include alternative hyphenation patterns
+for a language with a different name. If the naming convention
+follows \xpackage{babel's} rules, then the hyphenation patterns
+for a language can be replaced by the alternative hyphenation patterns,
+provided in the format file.
+\end{abstract}
+\tocinclude{hyphsubst}
+
+\newpage
+\subsection{\pkgsectformat{ifdraft}}
+\label{ifdraft}
+\begin{abstract}
+The package provides an interface for selecting code depending
+on the options \xoption{draft} and \xoption{final}.
+\end{abstract}
+\tocinclude{ifdraft}
+
+\newpage
+\subsection{\pkgsectformat{iflang}}
+\label{iflang}
+\begin{abstract}
+This package provides expandible checks for the current language
+based on macro \cs{languagename} or hyphenation patterns.
+\end{abstract}
+\tocinclude{iflang}
+
+\newpage
+\subsection{\pkgsectformat{ifluatex}}
+\label{ifluatex}
+\begin{abstract}
+This package looks for \LuaTeX\ regardless of its mode
+and provides the switch \cs{ifluatex}. Also it makes
+\cs{luatexversion} available if it is not present.
+It works with \plainTeX\ or \LaTeX.
+\end{abstract}
+\tocinclude{ifluatex}
+
+\newpage
+\subsection{\pkgsectformat{ifpdf}}
+\label{ifpdf}
+\begin{abstract}
+This package looks for \pdfTeX\ in pdf mode and
+implements and sets the switch \cs{ifpdf}.
+The detection is based on \cs{pdfoutput} and
+the package will not change this value.
+It works with plain or \LaTeX\ formats.
+\end{abstract}
+\tocinclude{ifpdf}
+
+\newpage
+\subsection{\pkgsectformat{ifvtex}}
+\label{ifvtex}
+\begin{abstract}
+This package looks for \VTeX, implements
+and sets the switches \cs{ifvtex}, \cs{ifvtex}\texttt{\meta{mode}},
+\cs{ifvtexgex}. It works with plain or \LaTeX\ formats.
+\end{abstract}
+\tocinclude{ifvtex}
+
+\newpage
+\subsection{\pkgsectformat{infwarerr}}
+\label{infwarerr}
+\begin{abstract}
+This package provides a complete set of macros for informations,
+warnings and error messages with support for \plainTeX.
+\end{abstract}
+\tocinclude{infwarerr}
+
+\newpage
+\subsection{\pkgsectformat{inputenx}}
+\label{inputenx}
+\begin{abstract}
+This package provides input encodings using
+standard mappings and covers nearly all slots. Thus it
+serves as more uptodate replacement for package \xpackage{inputenc}.
+\end{abstract}
+\tocinclude{inputenx}
+
+\newpage
+\subsection{\pkgsectformat{intcalc}}
+\label{intcalc}
+\begin{abstract}
+This package provides expandable arithmetic operations
+with integers.
+\end{abstract}
+\tocinclude{intcalc}
+
+\newpage
+\subsection{\pkgsectformat{kvdefinekeys}}
+\label{kvdefinekeys}
+\begin{abstract}
+Package \xpackage{kvdefinekeys} provides \cs{kv@define@key} to define
+keys the same way as \xpackage{keyval}'s \cs{define@key}. However, it
+works also using \iniTeX.
+\end{abstract}
+\tocinclude{kvdefinekeys}
+
+\newpage
+\subsection{\pkgsectformat{kvoptions}}
+\label{kvoptions}
+\begin{abstract}
+This package is intended for package authors who want to
+use options in key value format for their package options.
+\end{abstract}
+\tocinclude{kvoptions}
+
+\newpage
+\subsection{\pkgsectformat{kvsetkeys}}
+\label{kvsetkeys}
+\begin{abstract}
+Package \xpackage{kvsetkeys} provides \cs{kvsetkeys}, a variant
+of package \xpackage{keyval}'s \cs{setkeys}. It allows to specify
+a handler that deals with unknown options. Active commas and equal
+signs may be used (e.g. see \xpackage{babel}'s shorthands) and
+only one level of curly braces is removed from the values.
+\end{abstract}
+\tocinclude{kvsetkeys}
+
+\newpage
+\subsection{\pkgsectformat{letltxmacro}}
+\label{letltxmacro}
+\begin{abstract}
+\TeX's \cs{let} assignment does not work for \LaTeX\ macros
+with optional arguments or for macros that are defined
+as robust macros by \cs{DeclareRobustCommand}. This package
+defines \cs{LetLtxMacro} that also takes care of the involved
+internal macros.
+\end{abstract}
+\tocinclude{letltxmacro}
+
+\newpage
+\subsection{\pkgsectformat{listingsutf8}}
+\label{listingsutf8}
+\begin{abstract}
+Package \xpackage{listings} does not support files with multi-byte
+encodings such as UTF-8. In case of \cs{lstinputlisting} a simple
+workaround is possible if an one-byte encoding exists that the file
+can be converted to. Also \eTeX\ and \pdfTeX\ regardless of its mode
+are required.
+\end{abstract}
+\tocinclude{listingsutf8}
+
+\newpage
+\subsection{\pkgsectformat{ltxcmds}}
+\label{ltxcmds}
+\begin{abstract}
+The package \xpackage{ltxcmds} exports some utility macros
+from the \LaTeX\ kernel into a separate namespace and
+also provides them for other formats such as plain-\TeX.
+\end{abstract}
+\tocinclude{ltxcmds}
+
+\newpage
+\subsection{\pkgsectformat{luacolor}}
+\label{luacolor}
+\begin{abstract}
+Package \xpackage{luacolor} implements color support based
+on \LuaTeX's node attributes.
+\end{abstract}
+\tocinclude{luacolor}
+
+\newpage
+\subsection{\pkgsectformat{luatex}}
+\label{luatex}
+\begin{abstract}
+This package manages the new and extended features and resources
+that \LuaTeX\ provides. Examples are attributes and catcode
+tables.
+\end{abstract}
+\tocinclude{luatex}
+
+\newpage
+\subsection{\pkgsectformat{magicnum}}
+\label{magicnum}
+\begin{abstract}
+This packages allows to access magic numbers by a hierarchical
+name system.
+\end{abstract}
+\tocinclude{magicnum}
+
+\newpage
+\subsection{\pkgsectformat{makerobust}}
+\label{makerobust}
+\begin{abstract}
+Package \xpackage{makerobust} provides \cs{MakeRobustCommand}
+that converts an existing macro to a robust one.
+\end{abstract}
+\tocinclude{makerobust}
+
+\newpage
+\subsection{\pkgsectformat{mleftright}}
+\label{mleftright}
+\begin{abstract}
+\TeX\ sets subformulas by \cs{left} and \cs{right} as inner formulas
+with additional surrounding spaces in some situations. This package
+provides \cs{mleft} and \cs{mright} that call \cs{left} and \cs{right},
+but the delimiters will act as normal \cs{mathopen} and \cs{mathclose}
+delimiters without the additional space of an inner formula.
+\end{abstract}
+\tocinclude{mleftright}
+
+\newpage
+\subsection{\pkgsectformat{pagegrid}}
+\label{pagegrid}
+\begin{abstract}
+The \LaTeX\ package prints a page grid in the background.
+\end{abstract}
+\tocinclude{pagegrid}
+
+\newpage
+\subsection{\pkgsectformat{pagesel}}
+\label{pagesel}
+\begin{abstract}
+Single pages or page areas can be selected for output.
+\end{abstract}
+\tocinclude{pagesel}
+
+\newpage
+\subsection{\pkgsectformat{pdfcol}}
+\label{pdfcol}
+\begin{abstract}
+Since version 1.40 \pdfTeX\ supports color stacks.
+The driver file \xfile{pdftex.def} for package \xpackage{color}
+defines and uses a main color stack since version v0.04b.
+Package \xpackage{pdfcol} is intended for package writers.
+It defines macros for setting and maintaining new color stacks.
+\end{abstract}
+\tocinclude{pdfcol}
+
+\newpage
+\subsection{\pkgsectformat{pdfcolfoot}}
+\label{pdfcolfoot}
+\begin{abstract}
+Since version 1.40 \pdfTeX\ supports several color stacks. This
+package uses a separate color stack for footnotes that can break
+across pages.
+\end{abstract}
+\tocinclude{pdfcolfoot}
+
+\newpage
+\subsection{\pkgsectformat{pdfcolmk}}
+\label{pdfcolmk}
+\begin{abstract}
+This package tries a solution for the missing color
+stack of \pdfTeX.
+\end{abstract}
+\tocinclude{pdfcolmk}
+
+\newpage
+\subsection{\pkgsectformat{pdfcolparallel}}
+\label{pdfcolparallel}
+\begin{abstract}
+This packages fixes bugs in \xpackage{parallel} and
+improves color support by using several color stacks
+that are provided by \pdfTeX\ since version 1.40.
+\end{abstract}
+\tocinclude{pdfcolparallel}
+
+\newpage
+\subsection{\pkgsectformat{pdfcolparcolumns}}
+\label{pdfcolparcolumns}
+\begin{abstract}
+Since version 1.40 \pdfTeX\ supports several color stacks.
+This package uses them to fix color problems in
+package \xpackage{parcolumns}.
+\end{abstract}
+\tocinclude{pdfcolparcolumns}
+
+\newpage
+\subsection{\pkgsectformat{pdfcrypt}}
+\label{pdfcrypt}
+\begin{abstract}
+This package supports the setting of pdf encryption options
+for \VTeX\ and some older versions of \pdfTeX.
+\end{abstract}
+\tocinclude{pdfcrypt}
+
+\newpage
+\subsection{\pkgsectformat{pdfescape}}
+\label{pdfescape}
+\begin{abstract}
+This package implements \pdfTeX's escape features
+(\cs{pdfescapehex}, \cs{pdfunescapehex}, \cs{pdfescapename},
+\cs{pdfescapestring}) using \TeX\ or \eTeX.
+\end{abstract}
+\tocinclude{pdfescape}
+
+\newpage
+\subsection{\pkgsectformat{pdflscape}}
+\label{pdflscape}
+\begin{abstract}
+Package \xpackage{pdflscape} adds PDF support to the
+environment \texttt{landscape} of package \xpackage{lscape}
+by setting the PDF page attribute \texttt{/Rotate}.
+\end{abstract}
+\tocinclude{pdflscape}
+
+\newpage
+\subsection{\pkgsectformat{pdfrender}}
+\label{pdfrender}
+\begin{abstract}
+The PDF format has some graphics parameter like
+line width or text rendering mode. This package
+provides an interface for setting these parameters.
+\end{abstract}
+\tocinclude{pdfrender}
+
+\newpage
+\subsection{\pkgsectformat{pdftexcmds}}
+\label{pdftexcmds}
+\begin{abstract}
+\hologo{LuaTeX} provides most of the commands of \hologo{pdfTeX} 1.40. However
+a number of utility functions are removed. This package tries to fill
+the gap and implements some of the missing primitive using Lua.
+\end{abstract}
+\tocinclude{pdftexcmds}
+
+\newpage
+\subsection{\pkgsectformat{picture}}
+\label{picture}
+\begin{abstract}
+There are macro and environment arguments that expect numbers
+that will internally be multiplicated with \cs{unitlength}.
+This package extends the syntax of these arguments that
+dimens with calculation support can be added for these arguments.
+\end{abstract}
+\tocinclude{picture}
+
+\newpage
+\subsection{\pkgsectformat{pmboxdraw}}
+\label{pmboxdraw}
+\begin{abstract}
+Package \xpackage{pmboxdraw} declares box drawings characters of
+old code pages, e.g. cp437. It uses rules instead of using a font.
+\end{abstract}
+\tocinclude{pmboxdraw}
+
+\newpage
+\subsection{\pkgsectformat{protecteddef}}
+\label{protecteddef}
+\begin{abstract}
+This packages provides \cs{ProtectedDef} for defining
+robust macros for both \hologo{plainTeX} and \hologo{LaTeX}.
+First \hologo{eTeX}'s \cs{protected} is tried, then
+\hologo{LaTeX}'s \cs{DeclareRobustCommand} is used.
+Otherwise the macro is not made robust.
+\end{abstract}
+\tocinclude{protecteddef}
+
+\newpage
+\subsection{\pkgsectformat{refcount}}
+\label{refcount}
+\begin{abstract}
+References are not numbers, however they often store numerical
+data such as section or page numbers. \cs{ref} or \cs{pageref}
+cannot be used for counter assignments or calculations because
+they are not expandable, generate warnings, or can even be links.
+The package provides expandable macros to extract the data
+from references. Packages \xpackage{hyperref}, \xpackage{nameref},
+\xpackage{titleref}, and \xpackage{babel} are supported.
+\end{abstract}
+\tocinclude{refcount}
+
+\newpage
+\subsection{\pkgsectformat{rerunfilecheck}}
+\label{rerunfilecheck}
+\begin{abstract}
+The package provides additional rerun warnings if some
+auxiliary files have changed. It is based on MD5 checksum,
+provided by \pdfTeX.
+\end{abstract}
+\tocinclude{rerunfilecheck}
+
+\newpage
+\subsection{\pkgsectformat{resizegather}}
+\label{resizegather}
+\begin{abstract}
+Equations that are too large are resized to fit the available
+space. The environment \textsf{gather} of package \xpackage{amsmath}
+is supported. Also the environments \textsf{equation} and
+\textsf{displaymath} are redefined using \textsf{gather}
+and its starred version.
+\end{abstract}
+\tocinclude{resizegather}
+
+\newpage
+\subsection{\pkgsectformat{rotchiffre}}
+\label{rotchiffre}
+\begin{abstract}
+This package implements chiffres ROT13 with its variants
+ROT5, ROT18, and ROT47.
+\end{abstract}
+\tocinclude{rotchiffre}
+
+\newpage
+\subsection{\pkgsectformat{scrindex}}
+\label{scrindex}
+\begin{abstract}
+This package redefines environment `theindex' of package \xpackage{index},
+if a class from KOMA-Script is loaded. Also option \xoption{idxtotoc}
+is supported. Index preambles can be given either by means of package
+\xpackage{index} or via the interface provided by KOMA-Script.
+\end{abstract}
+\tocinclude{scrindex}
+
+\newpage
+\subsection{\pkgsectformat{selinput}}
+\label{selinput}
+\begin{abstract}
+This package selects the input encoding by specifying between
+input characters and their glyph names.
+\end{abstract}
+\tocinclude{selinput}
+
+\newpage
+\subsection{\pkgsectformat{setouterhbox}}
+\label{setouterhbox}
+\begin{abstract}
+If math stuff is set in an \cs{hbox}, then TeX
+performs some optimization and omits the implicite
+penalties \cs{binoppenalty} and \cs{relpenalty}.
+This packages tries to put stuff into an \cs{hbox}
+without getting lost of those penalties.
+\end{abstract}
+\tocinclude{setouterhbox}
+
+\newpage
+\subsection{\pkgsectformat{settobox}}
+\label{settobox}
+\begin{abstract}
+Commands are defined for getting box sizes similar
+to \LaTeX's \cs{settowidth} commands.
+\end{abstract}
+\tocinclude{settobox}
+
+\newpage
+\subsection{\pkgsectformat{soulutf8}}
+\label{soulutf8}
+\begin{abstract}
+This package extends package \xpackage{soul} and adds some support
+for UTF-8. Namely the input encodings \xfile{utf8.def}
+from package \xpackage{inputenc} and
+package \xpackage{ucs}'s \xfile{utf8x.def} are supported.
+\end{abstract}
+\tocinclude{soulutf8}
+
+\newpage
+\subsection{\pkgsectformat{stackrel}}
+\label{stackrel}
+\begin{abstract}
+This package adds an optional argument to \cs{stackrel} for
+putting something below the relational symbol and defines
+\cs{stackbin} for binary symbols.
+\end{abstract}
+\tocinclude{stackrel}
+
+\newpage
+\subsection{\pkgsectformat{stampinclude}}
+\label{stampinclude}
+\begin{abstract}
+The package replaces \cs{includeonly} and selects the files for
+\cs{include} by inspecting the time stamp of the \xext{aux} file.
+The file is selected for inclusion if the \xext{aux} file does
+not yet exist or is older than the corresponding \xext{tex} file.
+\end{abstract}
+\tocinclude{stampinclude}
+
+\newpage
+\subsection{\pkgsectformat{stringenc}}
+\label{stringenc}
+\begin{abstract}
+This package provides \cs{StringEncodingConvert} for converting
+a string between different encodings.
+Both \LaTeX\ and \plainTeX\ are supported.
+\end{abstract}
+\tocinclude{stringenc}
+
+\newpage
+\subsection{\pkgsectformat{tabularht}}
+\label{tabularht}
+\begin{abstract}
+This package defines some environments that adds
+a height specification to tabular and array.
+\end{abstract}
+\tocinclude{tabularht}
+
+\newpage
+\subsection{\pkgsectformat{tabularkv}}
+\label{tabularkv}
+\begin{abstract}
+This package adds a key value interface for tabular
+by the new environment \texttt{tabularkv}. Thus the
+\TeX\ source code looks better by named parameters,
+especially if package \xpackage{tabularht} is used.
+\end{abstract}
+\tocinclude{tabularkv}
+
+\newpage
+\subsection{\pkgsectformat{telprint}}
+\label{telprint}
+\begin{abstract}
+Package \xpackage{telprint} provides \cs{telprint} for formatting
+German phone numbers.
+\end{abstract}
+\tocinclude{telprint}
+
+\newpage
+\subsection{\pkgsectformat{thepdfnumber}}
+\label{thepdfnumber}
+\begin{abstract}
+The package converts real numbers to a minimal representation
+that is stripped from leading or trailing zeros,
+plus signs and decimal point if not necessary.
+\end{abstract}
+\tocinclude{thepdfnumber}
+
+\newpage
+\subsection{\pkgsectformat{transparent}}
+\label{transparent}
+\begin{abstract}
+Since version 1.40 \pdfTeX\ supports several color stacks. This
+package shows, how a separate color stack can be used for transparency,
+a property besides color.
+\end{abstract}
+\tocinclude{transparent}
+
+\newpage
+\subsection{\pkgsectformat{twoopt}}
+\label{twoopt}
+\begin{abstract}
+This package provides commands to define macros with two
+optional arguments.
+\end{abstract}
+\tocinclude{twoopt}
+
+\newpage
+\subsection{\pkgsectformat{uniquecounter}}
+\label{uniquecounter}
+\begin{abstract}
+This package provides a kind of counter that provides unique
+number values. Several counters can be created by different names.
+The numeric values are not limited.
+\end{abstract}
+\tocinclude{uniquecounter}
+
+\newpage
+\subsection{\pkgsectformat{zref}}
+\label{zref}
+\begin{abstract}
+Package \xpackage{zref} tries to get rid of the restriction
+in \hologo{LaTeX}'s reference system that only two properties are
+supported. The package implements an extensible referencing
+system, where properties are handled in a more flexible way.
+It offers an interface for macro programmers for the access
+to the system and some applications that uses the new
+reference scheme.
+\end{abstract}
+\tocinclude{zref}
+\end{document}

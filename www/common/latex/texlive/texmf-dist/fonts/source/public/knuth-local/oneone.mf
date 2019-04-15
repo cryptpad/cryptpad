@@ -1,0 +1,10 @@
+% Black font for Imagen with proofsheet resolution 300 pixels per inch
+
+if mode<>imagen: errmessage "This file is for imagen only"; fi
+
+font_identifier "BLACKIMAGEN";
+picture pix_picture; pix_wd := pix_ht := 1;
+pix_picture := unitpixel;
+dotsize:=10;
+
+input grayf

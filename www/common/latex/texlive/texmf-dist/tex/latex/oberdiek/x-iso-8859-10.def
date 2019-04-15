@@ -1,0 +1,165 @@
+%%
+%% This is file `x-iso-8859-10.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `iso-8859-10')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-iso-8859-10.def}%
+  [2011/05/27 v1.10 Input encoding iso-8859-10 (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textTstroke}{%
+  \TextSymbolUnavailable\textTstroke
+}
+\ProvideTextCommandDefault{\textdegree}{%
+  \ensuremath{{^\circ}}%
+}
+\ProvideTextCommandDefault{\texthorizontalbar}{%
+  \mbox{---}\kern-.5em---%
+}
+\ProvideTextCommandDefault{\textkra}{%
+  \TextSymbolUnavailable\textkra
+}
+\ProvideTextCommandDefault{\texttstroke}{%
+  \TextSymbolUnavailable\texttstroke
+}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{161}{\k A}
+\DeclareInputText{162}{\@tabacckludge=E}
+\DeclareInputText{163}{\c G}
+\DeclareInputText{164}{\@tabacckludge=I}
+\DeclareInputText{165}{\~I}
+\DeclareInputText{166}{\c K}
+\DeclareInputText{167}{\textsection}
+\DeclareInputText{168}{\c L}
+\DeclareInputText{169}{\DJ}
+\DeclareInputText{170}{\v S}
+\DeclareInputText{171}{\textTstroke}
+\DeclareInputText{172}{\v Z}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\@tabacckludge=U}
+\DeclareInputText{175}{\NG}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{177}{\k a}
+\DeclareInputText{178}{\@tabacckludge=e}
+\DeclareInputText{179}{\c g}
+\DeclareInputText{180}{\@tabacckludge=\i}
+\DeclareInputText{181}{\~\i}
+\DeclareInputText{182}{\c k}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{184}{\c l}
+\DeclareInputText{185}{\dj}
+\DeclareInputText{186}{\v s}
+\DeclareInputText{187}{\texttstroke}
+\DeclareInputText{188}{\v z}
+\DeclareInputText{189}{\texthorizontalbar}
+\DeclareInputText{190}{\@tabacckludge=u}
+\DeclareInputText{191}{\ng}
+\DeclareInputText{192}{\@tabacckludge=A}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{195}{\~A}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{197}{\r A}
+\DeclareInputText{198}{\AE}
+\DeclareInputText{199}{\k I}
+\DeclareInputText{200}{\v C}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\k E}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{204}{\.E}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{207}{\"I}
+\DeclareInputText{208}{\DH}
+\DeclareInputText{209}{\c N}
+\DeclareInputText{210}{\@tabacckludge=O}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{213}{\~O}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{215}{\~U}
+\DeclareInputText{216}{\O}
+\DeclareInputText{217}{\k U}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{221}{\@tabacckludge'Y}
+\DeclareInputText{222}{\TH}
+\DeclareInputText{223}{\ss}
+\DeclareInputText{224}{\@tabacckludge=a}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{229}{\r a}
+\DeclareInputText{230}{\ae}
+\DeclareInputText{231}{\k i}
+\DeclareInputText{232}{\v c}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\k e}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{236}{\.e}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{239}{\"\i}
+\DeclareInputText{240}{\dh}
+\DeclareInputText{241}{\c n}
+\DeclareInputText{242}{\@tabacckludge=o}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{247}{\~u}
+\DeclareInputText{248}{\o}
+\DeclareInputText{249}{\k u}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{253}{\@tabacckludge'y}
+\DeclareInputText{254}{\th}
+\DeclareInputText{255}{\textkra}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-iso-8859-10.def'.

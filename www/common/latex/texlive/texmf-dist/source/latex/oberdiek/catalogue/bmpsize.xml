@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='bmpsize'>
+  <name>bmpsize</name>
+  <caption>Extract size and resolution data from bitmap files.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2009'/>
+  <license type='lppl1.3'/>
+  <version number='1.6'/>
+  <description>
+    This package analyzes bitmap images to extract size and resolution
+    data.  It adds this feature to the graphics package so it is no
+    longer necessary to provide a separate bounding box files for
+    bitmap images.  dditionally the implementation for the inclusion
+    of bitmap images in some drivers of package
+    <xref refid='graphicx'>graphicx</xref> are rewritten to support
+    options viewport, trim and clip.  The package requires
+    <xref refid='pdftex'>pdfTeX</xref> version 1.30.0 or later (the
+    relevant pdfTeX primitive operates in both DVI and PDF output
+    modes).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/bmpsize.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/bmpsize.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

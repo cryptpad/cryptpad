@@ -1,0 +1,252 @@
+%%
+%% This is file `x-nextstep.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `nextstep')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-nextstep.def}%
+  [2011/05/27 v1.10 Input encoding nextstep (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textacutedbl}{%
+  \H{}%
+}
+\ProvideTextCommandDefault{\textasciiacute}{%
+  \@tabacckludge'{}%
+}
+\ProvideTextCommandDefault{\textasciibreve}{%
+  \u{}%
+}
+\ProvideTextCommandDefault{\textasciicaron}{%
+  \v{}%
+}
+\ProvideTextCommandDefault{\textasciidieresis}{%
+  \"{}%
+}
+\ProvideTextCommandDefault{\textasciigrave}{%
+  \@tabacckludge`{}%
+}
+\ProvideTextCommandDefault{\textasciimacron}{%
+  \@tabacckludge={}%
+}
+\ProvideTextCommandDefault{\textbrokenbar}{%
+  \TextSymbolUnavailable\textbrokenbar
+}
+\ProvideTextCommandDefault{\textcent}{%
+  \TextSymbolUnavailable\textcent
+}
+\ProvideTextCommandDefault{\textcurrency}{%
+  \TextSymbolUnavailable\textcurrency
+}
+\ProvideTextCommandDefault{\textdiv}{%
+  \TextSymbolUnavailable\textdiv
+}
+\ProvideTextCommandDefault{\textflorin}{%
+  \textit{f}%
+}
+\ProvideTextCommandDefault{\textfractionsolidus}{%
+  /%
+}
+\ProvideTextCommandDefault{\textlnot}{%
+  \ensuremath\lnot
+}
+\ProvideTextCommandDefault{\textmu}{%
+  \ensuremath\mu
+}
+\ProvideTextCommandDefault{\textonehalf}{%
+  \ensuremath{\frac12}%
+}
+\ProvideTextCommandDefault{\textonequarter}{%
+  \ensuremath{\frac14}%
+}
+\ProvideTextCommandDefault{\textonesuperior}{%
+  \ensuremath{{^1}}%
+}
+\ProvideTextCommandDefault{\textpm}{%
+  \ensuremath\pm
+}
+\ProvideTextCommandDefault{\textthreequarters}{%
+  \ensuremath{\frac34}%
+}
+\ProvideTextCommandDefault{\textthreesuperior}{%
+  \ensuremath{{^3}}%
+}
+\ProvideTextCommandDefault{\texttimes}{%
+  \ensuremath\times
+}
+\ProvideTextCommandDefault{\texttwosuperior}{%
+  \ensuremath{{^2}}%
+}
+\ProvideTextCommandDefault{\textyen}{%
+  \TextSymbolUnavailable\textyen
+}
+\DeclareInputText{128}{\nobreakspace}
+\DeclareInputText{129}{\@tabacckludge`A}
+\DeclareInputText{130}{\@tabacckludge'A}
+\DeclareInputText{131}{\^A}
+\DeclareInputText{132}{\~A}
+\DeclareInputText{133}{\"A}
+\DeclareInputText{134}{\r A}
+\DeclareInputText{135}{\c C}
+\DeclareInputText{136}{\@tabacckludge`E}
+\DeclareInputText{137}{\@tabacckludge'E}
+\DeclareInputText{138}{\^E}
+\DeclareInputText{139}{\"E}
+\DeclareInputText{140}{\@tabacckludge`I}
+\DeclareInputText{141}{\@tabacckludge'I}
+\DeclareInputText{142}{\^I}
+\DeclareInputText{143}{\"I}
+\DeclareInputText{144}{\DH}
+\DeclareInputText{145}{\~N}
+\DeclareInputText{146}{\@tabacckludge`O}
+\DeclareInputText{147}{\@tabacckludge'O}
+\DeclareInputText{148}{\^O}
+\DeclareInputText{149}{\~O}
+\DeclareInputText{150}{\"O}
+\DeclareInputText{151}{\@tabacckludge`U}
+\DeclareInputText{152}{\@tabacckludge'U}
+\DeclareInputText{153}{\^U}
+\DeclareInputText{154}{\"U}
+\DeclareInputText{155}{\@tabacckludge'Y}
+\DeclareInputText{156}{\TH}
+\DeclareInputText{157}{\textmu}
+\DeclareInputText{158}{\texttimes}
+\DeclareInputText{159}{\textdiv}
+\DeclareInputText{160}{\textcopyright}
+\DeclareInputText{161}{\textexclamdown}
+\DeclareInputText{162}{\textcent}
+\DeclareInputText{163}{\textsterling}
+\DeclareInputText{164}{\textfractionsolidus}
+\DeclareInputText{165}{\textyen}
+\DeclareInputText{166}{\textflorin}
+\DeclareInputText{167}{\textsection}
+\DeclareInputText{168}{\textcurrency}
+\DeclareInputText{169}{\textquoteright}
+\DeclareInputText{170}{\textquotedblleft}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{172}{\guilsinglleft}
+\DeclareInputText{173}{\guilsinglright}
+\DeclareInputText{174}{fi}
+\DeclareInputText{175}{fl}
+\DeclareInputText{176}{\textregistered}
+\DeclareInputText{177}{\textendash}
+\DeclareInputText{178}{\textdagger}
+\DeclareInputText{179}{\textdaggerdbl}
+\DeclareInputText{180}{\textperiodcentered}
+\DeclareInputText{181}{\textbrokenbar}
+\DeclareInputText{182}{\textparagraph}
+\DeclareInputText{183}{\textbullet}
+\DeclareInputText{184}{\quotesinglbase}
+\DeclareInputText{185}{\quotedblbase}
+\DeclareInputText{186}{\textquotedblright}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\textellipsis}
+\DeclareInputText{189}{\textperthousand}
+\DeclareInputText{190}{\textlnot}
+\DeclareInputText{191}{\textquestiondown}
+\DeclareInputText{192}{\textonesuperior}
+\DeclareInputText{193}{\textasciigrave}
+\DeclareInputText{194}{\textasciiacute}
+\DeclareInputText{195}{\textasciicircum}
+\DeclareInputText{196}{\textasciitilde}
+\DeclareInputText{197}{\textasciimacron}
+\DeclareInputText{198}{\textasciibreve}
+\DeclareInputText{199}{\.{}}
+\DeclareInputText{200}{\textasciidieresis}
+\DeclareInputText{201}{\texttwosuperior}
+\DeclareInputText{202}{\r{}}
+\DeclareInputText{203}{\c\ }
+\DeclareInputText{204}{\textthreesuperior}
+\DeclareInputText{205}{\textacutedbl}
+\DeclareInputText{206}{\k{}}
+\DeclareInputText{207}{\textasciicaron}
+\DeclareInputText{208}{\textemdash}
+\DeclareInputText{209}{\textpm}
+\DeclareInputText{210}{\textonequarter}
+\DeclareInputText{211}{\textonehalf}
+\DeclareInputText{212}{\textthreequarters}
+\DeclareInputText{213}{\@tabacckludge`a}
+\DeclareInputText{214}{\@tabacckludge'a}
+\DeclareInputText{215}{\^a}
+\DeclareInputText{216}{\~a}
+\DeclareInputText{217}{\"a}
+\DeclareInputText{218}{\r a}
+\DeclareInputText{219}{\c c}
+\DeclareInputText{220}{\@tabacckludge`e}
+\DeclareInputText{221}{\@tabacckludge'e}
+\DeclareInputText{222}{\^e}
+\DeclareInputText{223}{\"e}
+\DeclareInputText{224}{\@tabacckludge`\i}
+\DeclareInputText{225}{\AE}
+\DeclareInputText{226}{\@tabacckludge'\i}
+\DeclareInputText{227}{\textordfeminine}
+\DeclareInputText{228}{\^\i}
+\DeclareInputText{229}{\"\i}
+\DeclareInputText{230}{\dh}
+\DeclareInputText{231}{\~n}
+\DeclareInputText{232}{\L}
+\DeclareInputText{233}{\O}
+\DeclareInputText{234}{\OE}
+\DeclareInputText{235}{\textordmasculine}
+\DeclareInputText{236}{\@tabacckludge`o}
+\DeclareInputText{237}{\@tabacckludge'o}
+\DeclareInputText{238}{\^o}
+\DeclareInputText{239}{\~o}
+\DeclareInputText{240}{\"o}
+\DeclareInputText{241}{\ae}
+\DeclareInputText{242}{\@tabacckludge`u}
+\DeclareInputText{243}{\@tabacckludge'u}
+\DeclareInputText{244}{\^u}
+\DeclareInputText{245}{\i}
+\DeclareInputText{246}{\"u}
+\DeclareInputText{247}{\@tabacckludge'y}
+\DeclareInputText{248}{\l}
+\DeclareInputText{249}{\o}
+\DeclareInputText{250}{\oe}
+\DeclareInputText{251}{\ss}
+\DeclareInputText{252}{\th}
+\DeclareInputText{253}{\"y}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-nextstep.def'.

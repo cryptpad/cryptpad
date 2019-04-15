@@ -1,0 +1,225 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the Standard LaTeX `MFNFSS Bundle'.
+% --------------------------------------------------------
+% 
+% This file may be distributed under the terms of the LaTeX Project
+% Public License, as described in lppl.txt in the base LaTeX distribution.
+% Either version 1.0 or, at your option, any later version.
+% 
+% \fi
+%
+% \CheckSum{27}
+%
+% \iffalse
+% File: pandora.dtx
+% Copyright (C) 1994 1994 1997 by LaTeX3 project and Frank Mittelbach.
+% All rights reserved.
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{pandora}
+%<panr>\ProvidesFile{ot1panr.fd}
+%<pss>\ProvidesFile{ot1pss.fd}
+%<-driver>             [1997/12/18 v2.1g
+%<package>                 Standard LaTeX2e package (Pandora fonts)]
+%<panr>              Pandora roman font definitions]
+%<pss>              Pandora sans font definitions]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{pandora}
+\GetFileInfo{pandora.sty}
+\providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+\title{The \texttt{pandora} fonts for use with
+        \LaTeXe}
+\date{\filedate}
+\author{Frank Mittelbach}
+\begin{document}
+\maketitle
+ \DocInput{pandora.dtx}
+\end{document}
+%</driver>
+%
+% \fi
+% 
+% \changes{v2.0d}{1993/05/15}{Changed file names}
+% \changes{v2.0c}{1993/04/23}{Changed external font names}
+% \changes{v2.1a}{1993/11/10}{Update for \LaTeXe}
+% \changes{v2.1e}{1994/02/03}{Correct checksum}
+% \changes{v2.1g}{1994/05/27}{Change for new driver format.}
+%
+%
+% \section{Introduction}
+%
+% This file defines the font shape groups for the pandora fonts
+% designed by Nazeen N. Billawala \cite{StanCS:NBi89,Stanford:NBi89}
+% as well as a package file for loading Pandora Roman with the
+% |\rmfamily| command and Pandora Sans with the |\sffamily| command.
+%
+% To make Pandora the main document font specify the \texttt{pandora}
+% package in a |\usepackage| command.
+%
+% \StopEventually{
+% \begin{thebibliography}{1}
+%
+% \bibitem{StanCS:NBi89}
+%   Nazeen~N. Billawala.
+% \newblock Metamarks: Preliminary studies for a pandora's box of
+%    shapes.
+% \newblock Technical Report STAN-CS-89-1256, Stanford University,
+%    Department of Computer Science, Stanford, California 94305, 1989.
+%
+% \bibitem{Stanford:NBi89}
+% Neenie Billawala.
+% \newblock {{Opening Pandora's Box}}.
+% \newblock In Christina Thiele, editor, {\em 1989 Conference
+%     Proceedings}, volume 10\#4 of {TUG}boat, pages 481--489. {\TeX}
+%     Users Group, December 1989.
+% 
+% \end{thebibliography}
+%
+%^^A   \bibliographystyle{plain}
+%^^A   \bibliography{string,techrep,proceed}
+% }
+%
+%
+% \section{The \dst{} modules}
+%
+% The following modules are used in the implementation to direct
+% \dst{} in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   package  & produce a package file \\
+%   fd     & produce a font definition file \\[2pt]
+% \end{tabular}
+% \end{center}
+%
+% \section{A driver for this document}
+%
+% The next bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the 
+% \dst{} program.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+ %\OnlyDescription  % comment out for implementation details
+\begin{document}
+   \DocInput{pandora.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+% \section{The Implementation}
+%
+% \subsection{Identification}
+%
+% We start by writing to the transcript file.
+% \changes{v2.1d}{1994/01/05}{\cs{NeedsFormat} changed to
+%                             \cs{NeedsTeXFormat}.}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+% This package does not support options.
+%
+% \subsection{The Main Package Code}
+%
+%    We change the ensure that |OT1| is the default encoding and also
+%    change the substitution defaults for the this encoding. If
+%    |\familydefault| is not changed directly, then the change to
+%    |\rmdefault| will automatically change the main font too.
+% \changes{v2.0b}{1993/03/09}{Added missing backslash}
+%    \begin{macrocode}
+\renewcommand{\encodingdefault}{OT1}
+\DeclareFontSubstitution{OT1}{panr}{m}{n}
+%    \end{macrocode}
+%    Default for |\rmfamily| will be Pandora Roman and for |\sffamily|
+%    Pandora Sans.
+%    \begin{macrocode}
+\renewcommand{\rmdefault}{panr}
+\renewcommand{\sfdefault}{pss}
+\renewcommand{\bfdefault}{b}
+\renewcommand{\itdefault}{sl}
+%</package>
+%    \end{macrocode}
+%
+%    We assume that for \LaTeX{} use at least the standard
+%    magifications are available. If you don't like that setup copy
+%    the corresponding code into your own font shape definition file
+%    and make adjustments.
+%
+%  \subsection{The Font-Definition Files}
+%
+%    The Pandora Roman family exists with in medium and bold series
+%    and contains in the medium series a slanted shape beside the
+%    normal one. We define a substitution shape for italic to point to
+%    the slanted one so that a request for |\itshape| will be partly
+%    honored.
+%    \begin{macrocode}
+%<*panr>
+\DeclareFontFamily{OT1}{panr}{}
+\DeclareFontShape{OT1}{panr}{m}{n}{
+   <5> <6> <7> <8> <9> <10> <10.95> <12>
+   <14.4> <17.28> <20.74> <24.88> pnr10  }{}
+\DeclareFontShape{OT1}{panr}{b}{n}{
+   <5> <6> <7> <8> <9> <10> <10.95> <12>
+   <14.4> <17.28> <20.74> <24.88> pnb10  }{}
+\DeclareFontShape{OT1}{panr}{m}{sl}{
+   <5> <6> <7> <8> <9> <10> <10.95> <12>
+   <14.4> <17.28> <20.74> <24.88> pnsl10 }{}
+\DeclareFontShape{OT1}{panr}{m}{it}{ <-> sub * panr/m/sl }{}
+%</panr>
+%    \end{macrocode}
+%
+%    The Pandora Sans family has the same members.
+%    \begin{macrocode}
+%<*pss>
+\DeclareFontFamily{OT1}{pss}{}
+\DeclareFontShape{OT1}{pss}{m}{n}{
+   <5> <6> <7> <8> <9> <10> <10.95> <12>
+   <14.4> <17.28> <20.74> <24.88> pnss10  }{}
+\DeclareFontShape{OT1}{pss}{b}{n}{
+   <5> <6> <7> <8> <9> <10> <10.95> <12>
+   <14.4> <17.28> <20.74> <24.88> pnssb10 }{}
+\DeclareFontShape{OT1}{pss}{m}{sl}{
+   <5> <6> <7> <8> <9> <10> <10.95> <12>
+   <14.4> <17.28> <20.74> <24.88> pnssi10 }{}
+\DeclareFontShape{OT1}{pss}{m}{it}{ <-> sub * pss/m/sl }{}
+%</pss>
+%    \end{macrocode}
+%
+%
+%    The next line goes into all files and in addition prevents \dst{}
+%    from adding any further code from the main source file (such as a
+%    character table.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \Finale
+%
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

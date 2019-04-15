@@ -1,0 +1,348 @@
+%%
+%% This is file `colortbl.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% colortbl.dtx  (with options: `package')
+%% 
+%%
+%% Source File: `colortbl.dtx'.
+%% Copyright 1996 1998 1999 2012 David Carlisle
+%%
+%% This file may be distributed under the terms of the LPPL.
+%% See readme for details.
+%%
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+\ProvidesPackage{colortbl}
+          [2012/02/13 v1.0a Color table columns (DPC)]
+\edef\@tempa{%
+  \noexpand\AtEndOfPackage{%
+    \catcode`\noexpand\^^A\the\catcode`\^^A\relax}}
+\@tempa
+\catcode`\^^A=\catcode`\%
+\DeclareOption{debugshow}{\catcode`\^^A=9 }
+\DeclareOption*{\PassOptionsToPackage\CurrentOption{color}}
+\ProcessOptions
+\RequirePackage{array,color}
+\def\@classz{\@classx
+   \@tempcnta \count@
+   \prepnext@tok
+\expandafter\CT@extract\the\toks\@tempcnta\columncolor!\@nil
+   \@addtopreamble{%
+    \setbox\z@\hbox\bgroup\bgroup
+      \CT@everycr{}%
+      \ifcase \@chnum
+      \hskip\stretch{.5}\kern\z@
+      \d@llarbegin
+      \insert@column
+      \d@llarend\hskip\stretch{.5}\or
+      \d@llarbegin \insert@column \d@llarend \hfill \or
+      \hfill\kern\z@ \d@llarbegin \insert@column \d@llarend \or
+   $\vcenter
+   \@startpbox{\@nextchar}\insert@column \@endpbox $\or
+   \vtop \@startpbox{\@nextchar}\insert@column \@endpbox \or
+   \vbox \@startpbox{\@nextchar}\insert@column \@endpbox
+  \fi
+ \egroup\egroup
+\begingroup
+  \CT@setup
+  \CT@column@color
+  \CT@row@color
+  \CT@cell@color
+  \CT@do@color
+\endgroup
+        \@tempdima\ht\z@
+        \advance\@tempdima\minrowclearance
+        \vrule\@height\@tempdima\@width\z@
+        \unhbox\z@}%
+  \prepnext@tok}
+\def\CT@setup{%
+  \@tempdimb\col@sep
+  \@tempdimc\col@sep
+  \def\CT@color{%
+    \global\let\CT@do@color\CT@@do@color
+    \color}}
+\def\CT@@do@color{%
+  \global\let\CT@do@color\relax
+        \@tempdima\wd\z@
+        \advance\@tempdima\@tempdimb
+        \advance\@tempdima\@tempdimc
+        \kern-\@tempdimb
+        \leaders\vrule
+^^A                     \@height\p@\@depth\p@
+                \hskip\@tempdima\@plus  1fill
+        \kern-\@tempdimc
+        \hskip-\wd\z@ \@plus -1fill }
+\def\CT@extract#1\columncolor#2#3\@nil{%
+  \if!#2%
+    \let\CT@column@color\@empty
+  \else
+    \if[#2%
+      \CT@extractb{#1}#3\@nil
+    \else
+      \def\CT@column@color{%
+        \CT@color{#2}}%
+      \CT@extractd{#1}#3\@nil
+    \fi
+  \fi}
+\def\CT@extractb#1#2]#3{%
+  \def\CT@column@color{%
+    \CT@color[#2]{#3}}%
+  \CT@extractd{#1}}%
+\def\CT@extractd#1{\@testopt{\CT@extracte{#1}}\col@sep}
+\def\CT@extracte#1[#2]{\@testopt{\CT@extractf{#1}[#2]}{#2}}
+\def\CT@extractf#1[#2][#3]#4\columncolor#5\@nil{%
+  \@tempdimb#2\relax
+  \@tempdimc#3\relax
+  \edef\CT@column@color{%
+    \CT@column@color
+    \@tempdimb\the\@tempdimb\@tempdimc\the\@tempdimc\relax}%
+  \toks\@tempcnta{#1#4}}%
+\let\CT@everycr\everycr
+\newtoks\everycr
+\CT@everycr{\noalign{\global\let\CT@row@color\relax}\the\everycr}
+\def\CT@start{%
+  \let\CT@arc@save\CT@arc@
+  \let\CT@drsc@save\CT@drsc@
+  \let\CT@row@color@save\CT@row@color
+  \let\CT@cell@color@save\CT@cell@color
+  \global\let\CT@cell@color\relax}
+\def\CT@end{%
+  \global\let\CT@arc@\CT@arc@save
+  \global\let\CT@drsc@\CT@drsc@save
+  \global\let\CT@row@color\CT@row@color@save
+  \global\let\CT@cell@color\CT@cell@color@save}
+\gdef\@ishortstack#1{%
+  \CT@start\ialign{\mb@l {##}\unskip\mb@r\cr #1\crcr}\CT@end\egroup}
+\AtBeginDocument{%
+  \expandafter\def\expandafter\@tabarray\expandafter{%
+    \expandafter\CT@start\@tabarray}}
+\def\endarray{\crcr \egroup \egroup \gdef\@preamble{}\CT@end}
+\long\def\multicolumn#1#2#3{%
+   \multispan{#1}\begingroup
+   \def\@addamp{\if@firstamp \@firstampfalse \else
+                \@preamerr 5\fi}%
+   \@mkpream{#2}\@addtopreamble\@empty
+   \endgroup
+   \def\@sharp{#3}%
+   \let\CT@cell@color\relax
+   \let\CT@column@color\relax
+   \let\CT@do@color\relax
+   \@arstrut \@preamble
+   \null
+   \ignorespaces}
+\def\@classvi{\ifcase \@lastchclass
+      \@acol \or
+      \ifx\CT@drsc@\relax
+        \@addtopreamble{\hskip\doublerulesep}%
+      \else
+        \@addtopreamble{{\CT@drsc@\vrule\@width\doublerulesep}}%
+      \fi\or
+      \@acol \or
+      \@classvii
+      \fi}
+\def\doublerulesepcolor#1#{\CT@drs{#1}}
+\def\CT@drs#1#2{%
+ \ifdim\baselineskip=\z@\noalign\fi
+  {\gdef\CT@drsc@{\color#1{#2}}}}
+\let\CT@drsc@\relax
+\def\arrayrulecolor#1#{\CT@arc{#1}}
+\def\CT@arc#1#2{%
+  \ifdim\baselineskip=\z@\noalign\fi
+  {\gdef\CT@arc@{\color#1{#2}}}}
+\let\CT@arc@\relax
+\def\@arrayrule{\@addtopreamble {{\CT@arc@\vline}}}
+\def\hline{%
+  \noalign{\ifnum0=`}\fi
+              \let\hskip\vskip
+               \let\vrule\hrule
+               \let\@width\@height
+  {\CT@arc@\vline}%
+  \futurelet
+   \reserved@a\@xhline}
+\def\@xhline{\ifx\reserved@a\hline
+               {\ifx\CT@drsc@\relax
+                  \vskip
+               \else
+                  \CT@drsc@\hrule\@height
+               \fi
+               \doublerulesep}%
+             \fi
+      \ifnum0=`{\fi}}
+\def\@cline#1-#2\@nil{%
+  \omit
+  \@multicnt#1%
+  \advance\@multispan\m@ne
+  \ifnum\@multicnt=\@ne\@firstofone{&\omit}\fi
+  \@multicnt#2%
+  \advance\@multicnt-#1%
+  \advance\@multispan\@ne
+  {\CT@arc@\leaders\hrule\@height\arrayrulewidth\hfill}%
+  \cr
+  \noalign{\vskip-\arrayrulewidth}}
+\newlength\minrowclearance
+\minrowclearance=0pt
+\expandafter\def\expandafter\@mkpream\expandafter#\expandafter1%
+  \expandafter{%
+    \expandafter\let\expandafter\CT@setup\expandafter\relax
+    \expandafter\let\expandafter\CT@color\expandafter\relax
+    \expandafter\let\expandafter\CT@do@color\expandafter\relax
+    \expandafter\let\expandafter\color\expandafter\relax
+    \expandafter\let\expandafter\CT@column@color\expandafter\relax
+    \expandafter\let\expandafter\CT@row@color\expandafter\relax
+    \expandafter\let\expandafter\CT@cell@color\expandafter\relax
+    \@mkpream{#1}}
+\let\CT@do@color\relax
+\def\rowcolor{%
+  \noalign{\ifnum0=`}\fi
+  \global\let\CT@do@color\CT@@do@color
+  \@ifnextchar[\CT@rowa\CT@rowb}
+\def\CT@rowa[#1]#2{%
+  \gdef\CT@row@color{\CT@color[#1]{#2}}%
+  \CT@rowc}
+\def\CT@rowb#1{%
+  \gdef\CT@row@color{\CT@color{#1}}%
+  \CT@rowc}
+\def\CT@rowc{%
+  \@ifnextchar[\CT@rowd{\ifnum`{=0\fi}}}
+\def\CT@rowd[#1]{\@testopt{\CT@rowe[#1]}{#1}}
+\def\CT@rowe[#1][#2]{%
+  \@tempdimb#1%
+  \@tempdimc#2%
+  \xdef\CT@row@color{%
+    \expandafter\noexpand\CT@row@color
+    \@tempdimb\the\@tempdimb
+    \@tempdimc\the\@tempdimc
+    \relax}%
+  \ifnum0=`{\fi}}
+\edef\cellcolor{\noexpand\protect
+  \expandafter\noexpand\csname cellcolor \endcsname}
+\@namedef{cellcolor }{%
+  \@ifnextchar[{\CT@cellc\@firstofone}{\CT@cellc\@gobble[]}%
+}
+\def\CT@cellc#1[#2]#3{%
+  \expandafter\gdef\expandafter\CT@cell@color\expandafter{%
+    \expandafter\CT@color#1{[#2]}{#3}%
+    \global\let\CT@cell@color\relax
+}}
+\global\let\CT@cell@color\relax
+\AtBeginDocument{%
+  \def\@tempa{$\hfil\egroup\box\z@\box\tw@}%
+  \ifx\@tempa\DC@endright
+    \def\DC@endright{%
+      $\hfil\egroup
+    \ifx\DC@rl\bgroup
+      \hskip\stretch{-.5}\box\z@\box\tw@\hskip\stretch{-.5}%
+    \else
+      \box\z@\box\tw@
+    \fi}%
+  \else
+    \def\@tempa{$\hfil\egroup\hfill\box\z@\box\tw@}%
+    \ifx\@tempa\DC@endright
+      \def\DC@endright{%
+        $\hfil\egroup%
+        \hskip\stretch{.5}\box\z@\box\tw@\hskip\stretch{-.5}}%
+    \fi
+  \fi}
+\AtBeginDocument{%
+  \ifx\hhline\@undefined\else
+\def\HH@box#1#2{\vbox{{%
+  \ifx\CT@drsc@\relax\else
+    \global\dimen\thr@@\tw@\arrayrulewidth
+    \global\advance\dimen\thr@@\doublerulesep
+    {\CT@drsc@
+     \hrule \@height\dimen\thr@@
+     \vskip-\dimen\thr@@}%
+  \fi
+  \CT@arc@
+  \hrule \@height \arrayrulewidth \@width #1
+  \vskip\doublerulesep
+  \hrule \@height \arrayrulewidth \@width #2}}}
+\def\HH@loop{%
+  \ifx\@tempb`\def\next##1{\the\toks@\cr}\else\let\next\HH@let
+  \ifx\@tempb|\if@tempswa
+          \ifx\CT@drsc@\relax
+           \HH@add{\hskip\doublerulesep}%
+          \else
+           \HH@add{{\CT@drsc@\vrule\@width\doublerulesep}}%
+           \fi
+          \fi\@tempswatrue
+          \HH@add{{\CT@arc@\vline}}\else
+  \ifx\@tempb:\if@tempswa
+          \ifx\CT@drsc@\relax
+           \HH@add{\hskip\doublerulesep}%
+          \else
+           \HH@add{{\CT@drsc@\vrule\@width\doublerulesep}}%
+           \fi
+              \fi\@tempswatrue
+      \HH@add{\@tempc\HH@box\arrayrulewidth\arrayrulewidth\@tempc}\else
+  \ifx\@tempb##\if@tempswa\HH@add{\hskip\doublerulesep}\fi\@tempswatrue
+         \HH@add{{\CT@arc@\vline\copy\@ne\@tempc\vline}}\else
+  \ifx\@tempb~\@tempswafalse
+           \if@firstamp\@firstampfalse\else\HH@add{&\omit}\fi
+              \ifx\CT@drsc@\relax
+                \HH@add{\hfil}\else
+                 \HH@add{{%
+                   \CT@drsc@\leaders\hrule\@height\HH@height\hfil}}%
+               \fi
+                 \else
+  \ifx\@tempb-\@tempswafalse
+           \gdef\HH@height{\arrayrulewidth}%
+           \if@firstamp\@firstampfalse\else\HH@add{&\omit}\fi
+              \HH@add{{%
+                \CT@arc@\leaders\hrule\@height\arrayrulewidth\hfil}}%
+                           \else
+  \ifx\@tempb=\@tempswafalse
+       \gdef\HH@height{\dimen\thr@@}%
+       \if@firstamp\@firstampfalse\else\HH@add{&\omit}\fi
+       \HH@add
+          {\rlap{\copy\@ne}\leaders\copy\@ne\hfil\llap{\copy\@ne}}\else
+  \ifx\@tempb t\HH@add{%
+    \def\HH@height{\dimen\thr@@}%
+    \HH@box\doublerulesep\z@}\@tempswafalse\else
+  \ifx\@tempb b\HH@add{%
+    \def\HH@height{\dimen\thr@@}%
+    \HH@box\z@\doublerulesep}\@tempswafalse\else
+  \ifx\@tempb>\def\next##1##2{%
+     \HH@add{%
+      {\baselineskip\p@\relax
+       ##2%
+      \global\setbox\@ne\HH@box\doublerulesep\doublerulesep}}%
+       \HH@let!}\else
+  \PackageWarning{hhline}%
+      {\meaning\@tempb\space ignored in \noexpand\hhline argument%
+       \MessageBreak}%
+  \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+  \next}
+\fi}
+\AtBeginDocument{
+  \ifx\longtable\@undefined\else
+    \def\LT@@hline{%
+      \ifx\LT@next\hline
+        \global\let\LT@next\@gobble
+        \ifx\CT@drsc@\relax
+          \gdef\CT@LT@sep{%
+            \noalign{\penalty-\@medpenalty\vskip\doublerulesep}}%
+        \else
+          \gdef\CT@LT@sep{%
+            \multispan\LT@cols{%
+              \CT@drsc@\leaders\hrule\@height\doublerulesep\hfill}\cr}%
+        \fi
+      \else
+        \global\let\LT@next\empty
+        \gdef\CT@LT@sep{%
+          \noalign{\penalty-\@lowpenalty\vskip-\arrayrulewidth}}%
+      \fi
+      \ifnum0=`{\fi}%
+      \multispan\LT@cols
+       {\CT@arc@\leaders\hrule\@height\arrayrulewidth\hfill}\cr
+      \CT@LT@sep
+      \multispan\LT@cols
+       {\CT@arc@\leaders\hrule\@height\arrayrulewidth\hfill}\cr
+      \noalign{\penalty\@M}%
+      \LT@next}
+    \fi}
+\endinput
+%%
+%% End of file `colortbl.sty'.

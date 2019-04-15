@@ -1,0 +1,93 @@
+%%
+%% This is file `settobox.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% settobox.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: settobox
+%% Version: 2008/08/11 v1.4
+%% 
+%% Copyright (C) 2000, 2006-2008 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file settobox.dtx
+%% and the derived files
+%%    settobox.sty, settobox.pdf, settobox.ins, settobox.drv,
+%%    settobox-example.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{settobox}%
+  [2008/08/11 v1.4 Assign box dimensions to length registers (HO)]
+\newcommand*{\settoboxwidth}[2]{\setlength{#1}{\wd#2}}
+\newcommand*{\settoboxheight}[2]{\setlength{#1}{\ht#2}}
+\newcommand*{\settoboxdepth}[2]{\setlength{#1}{\dp#2}}
+\newcommand*{\settoboxtotalheight}[2]{%
+  \setlength{#1}{\ht#2}%
+  \addtolength{#1}{\dp#2}%
+}
+\newcommand*{\setboxwidth}[2]{%
+  \settobox@length\wd{#1}{#2}%
+}
+\newcommand*{\setboxheight}[2]{%
+  \settobox@length\ht{#1}{#2}%
+}
+\newcommand*{\setboxdepth}[2]{%
+  \settobox@length\dp{#1}{#2}%
+}
+\newcommand*{\setboxmoveleft}[2]{%
+  \settobox@horiz{-}{#1}{#2}%
+}
+\newcommand*{\setboxmoveright}[2]{%
+  \settobox@horiz{}{#1}{#2}%
+}
+\newcommand*{\setboxlower}[2]{%
+  \settobox@vert\lower{#1}{#2}%
+}
+\newcommand*{\setboxraise}[2]{%
+  \settobox@vert\raise{#1}{#2}%
+}
+\def\settobox@length#1#2#3{%
+  \settobox@calc{#2}{#3}{#1#2=##1sp\relax}%
+}
+\def\settobox@horiz#1#2#3{%
+  \settobox@calc{#2}{#3}{\setbox#2=\hbox{\kern#1##1sp\copy#2}}%
+}
+\def\settobox@vert#1#2#3{%
+  \settobox@calc{#2}{#3}{\setbox#2=\hbox{#1##1sp\copy#2}}%
+}
+\def\settobox@calc#1#2#3{%
+  \begingroup
+    \def\width{\wd#1}%
+    \def\height{\ht#1}%
+    \def\depth{\dp#1}%
+    \dimen@\ht#1\relax
+    \advance\dimen@\dp#1\relax
+    \def\totalheight{\dimen@}%
+    \setlength{\dimen@}{#2}%
+    \count@\dimen@
+    \def\x##1{\endgroup
+      #3%
+    }%
+  \expandafter\x\expandafter{\the\count@}%
+}
+\endinput
+%%
+%% End of file `settobox.sty'.

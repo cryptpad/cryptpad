@@ -1,0 +1,787 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltfinal.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltfinal.dtx}
+             [2015/06/23 v2.0h LaTeX Kernel (Final Settings)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltfinal.dtx}
+\title{\filename}
+\date{\filedate}
+\author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{ltfinal.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{593}
+%
+% \section{Final settings}
+% This section contains the final settings for \LaTeX.  It initialises
+% some debugging and typesetting parameters, sets the default
+% |\catcode|s and uc/lc codes, and inputs the hyphenation file.
+%
+% \StopEventually{}
+%
+% \changes{v0.1a}{1994/03/07}{Initial version, split from latex.dtx}
+% \changes{v0.1a}{1994/03/07}{Remove oldcomments environment}
+% \changes{v0.1c}{1994/04/21}{Added comments, set the catcodes of
+%    128--255.}
+% \changes{v0.1d}{1994/04/23}{Check that \cs{font@submax} is still zero}
+% \changes{v0.1e}{1994/05/02}{Set all the catcodes}
+% \changes{v0.1f}{1994/05/03}{Set the catcode of control-J to be
+%    `other', for use in messages.}
+% \changes{v0.1g}{1994/05/05}{Added empty errhelp.}
+% \changes{v0.1h}{1994/05/13}{Added package ot1enc, and defined
+%    \cs{@acci}, \cs{@accii} and \cs{@acciii}.}
+% \changes{v0.1j}{1994/05/18}{Corrected the lccode for d-bar.}
+% \changes{v0.1k}{1994/05/19}{Removed \cs{makeat...}}
+% \changes{v1.0n}{1994/05/31}{Renamed lthyphen.* to lthyphen.*.}
+% \changes{v1.0o}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0p}{1994/12/01}
+%         {Renamed lthyphen.* to hyphen.*.}
+% \changes{v1.0r}{1995/06/05}
+%         {Added \cs{MakeUppercase} and \cs{MakeLowercase}.}
+% \changes{v1.0s}{1995/06/06}
+%         {Made \cs{MakeUppercase} and \cs{MakeLowercase} brace their
+%         argument.}
+%
+% \subsection{Debugging}
+%
+% By default, \LaTeX{} shows statistics:
+%    \begin{macrocode}
+%<*2ekernel>
+\tracingstats1
+%    \end{macrocode}
+%
+% \subsection{Typesetting parameters}
+%
+% \begin{macro}{\@lowpenalty}
+% \begin{macro}{\@medpenalty}
+% \begin{macro}{\@highpenalty}
+%    These are penalties used internally.
+%    \begin{macrocode}
+\newcount\@lowpenalty
+\newcount\@medpenalty
+\newcount\@highpenalty
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%\begin{macro}{\newmarks}
+% \changes{v2.0a}{2014/12/30}{macro added}
+% \changes{v2.0b}{2015/01/23}{use reserved count 256}
+% \changes{v2.0g}{2015/06/19}{Use $-1$ for first range to get contiguous allocation}
+% Allocate extended marks types if etex is active.
+% Placed here at the end of the format
+% to increase compatibility with count allocations
+% in earlier releases.
+%    \begin{macrocode}
+%</2ekernel>
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\newmarks}{Extended Allocation}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifx\marks\@undefined\else
+\def\newmarks{%
+  \e@alloc\marks \e@alloc@chardef{\count256}\m@ne\e@alloc@top}
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\newmarks}{Extended Allocation}%
+%<latexrelease>\let\newmarks\@undefined
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%\begin{macro}{\newXeTeXintercharclass}
+% \changes{v2.0a}{2014/12/30}{macro added}
+% \changes{v2.0b}{2015/01/23}{use reserved count 257}
+% \changes{v2.0f}{2015/04/28}{define \cs{xe@alloc@intercharclass} for compatibility with older xelatex initilisation}
+% Allocate |\XeTeXintercharclass|  types if xetex is active.
+% previously defined in |xetex.ini|.
+%
+%    \begin{macrocode}
+%</2ekernel>
+%<*2ekernel|latexrelease>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>              {\newXeTeXintercharclass}{Extended Allocation}%
+%    \end{macrocode}
+%
+% Classes allocatedfrom 4 (1,2 and 3 are used by CJK), up to 254.
+% \changes{v2.0g}{2015/06/19}{Use $-1$ for first range to get contiguous allocation}
+%    \begin{macrocode}
+\ifx\XeTeXcharclass\@undefined
+\else
+\countdef\xe@alloc@intercharclass=257
+\xe@alloc@intercharclass=\thr@@
+\def\newXeTeXintercharclass{%
+ \e@alloc\XeTeXcharclass\chardef\xe@alloc@intercharclass\m@ne\@cclv}
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>              {\newXeTeXintercharclass}{Extended Allocation}%
+%<latexrelease> \ifx\XeTeXcharclass\@undefined
+%<latexrelease> \else
+%<latexrelease>   \newcount\xe@alloc@intercharclass
+%<latexrelease>    \xe@alloc@intercharclass=\thr@@
+%<latexrelease>    \def\xe@alloc@#1#2#3#4#5{\global\advance#1\@ne
+%<latexrelease>     \xe@ch@ck#1#4#2%
+%<latexrelease>     \allocationnumber#1%
+%<latexrelease>     \global#3#5\allocationnumber
+%<latexrelease>     \wlog{\string#5=\string#2\the\allocationnumber}}
+%<latexrelease>    \def\xe@ch@ck#1#2#3{%
+%<latexrelease>     \ifnum#1<#2\else
+%<latexrelease>      \errmessage{No room for a new #3}%
+%<latexrelease>     \fi}
+%<latexrelease>    \def\newXeTeXintercharclass{%
+%<latexrelease>     \xe@alloc@\xe@alloc@intercharclass
+%<latexrelease>                    \XeTeXcharclass\chardef\@cclv}
+%<latexrelease> \fi
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% The default values of the picture and |\fbox| parameters:
+%    \begin{macrocode}
+\unitlength = 1pt
+\fboxsep = 3pt
+\fboxrule = .4pt
+%    \end{macrocode}
+% The saved value of \TeX's |\maxdepth|:
+%    \begin{macrocode}
+\@maxdepth       = \maxdepth
+%    \end{macrocode}
+% |\vsize| initialized because a |\clearpage| with |\vsize < \topskip|
+%  causes trouble.
+% |\@colroom| and |\@colht| also initialized because |\vsize| may be
+%  set to them if a |\clearpage| is done before the |\begin{document}|
+%
+%    \begin{macrocode}
+\vsize = 1000pt
+\@colroom = \vsize
+\@colht = \vsize
+%    \end{macrocode}
+% Initialise |\textheight| |\textwidth| and page style, to avoid
+% internal errors if they are not set by the class.
+% \changes{v0.1b}{1994/04/18}
+%         {Initialise \cs{textheight}, \cs{textwidth} and page style}
+%    \begin{macrocode}
+\textheight=.5\maxdimen
+\textwidth=\textheight
+\ps@empty
+%    \end{macrocode}
+%
+% \subsection{Lccodes for hyphenation}
+% 
+% \changes{v2.0a}{2015/01/03}{Unicode data loading added}
+% \changes{v2.0c}{2015/01/24}{Skip T1-code entirely with Unicode engines}
+% \changes{v2.0d}{2015/03/26}{Use renamed 
+%   \texttt{unicode-letters.def}}
+%  For $7$- and $8$-bit engines the assumption of T1 encodings is the
+%  basis for the hyphenation patterns. That's not the case for the Unicode
+%  engines, where the assumption is engine-native working. The file
+%  |unicode-letters.def| contains data extracted from the 
+%  master Unicode Consortium
+%  information covering not only |\lccode| but also other related data. The
+%  |\lccode| part of that at least needs to be loaded before hyphenation is
+%  tackled: Xe\TeX{} follows the standard \TeX{} route of building patterns
+%  into the format. Lua\TeX{} doesn't require this data be loaded \emph{here}
+%  but it does need to be loaded somewhere. Rather than test for the Unicode
+%  engines by name, the approach here is to look for the extended math mode
+%  handling both provide: any other engine developed in this area will
+%  presumably also provide |\Umathcode| (older Xe\TeX{} versions use
+%  |\XeTeXmathcode| so that is covered too).
+%    \begin{macrocode}
+\ifnum 0%
+  \ifx\Umathcode\@undefined\else 1\fi
+  \ifx\XeTeXmathcode\@undefined\else 1\fi
+  >\z@
+  \message{ Unicode character data,}
+  \input{unicode-letters.def}
+%    \end{macrocode}
+% \changes{v2.0d}{2015/02/03}{Set \cs{lccode} for \texttt{-} with Unicode
+%   engines}
+% There is one over-ride that makes sense here (see below for the same for
+% $8$-bit engines): setting the lccode for |-| to itself.
+%    \begin{macrocode}
+  \lccode`\- =`\- % default hyphen char
+%    \end{macrocode}
+% The alternative is that a ``traditional'' engine is in use.
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+% \changes{v1.1b}{1998/05/20}{Set up lccodes before loading
+%    hyphenation files: pr/2639}
+%    We set things up so that hyphenation files can assume that the
+%    default (T1) lccodes are in use (at present this also sets up the
+%    uccodes).
+%    We temporarily define |\reserved@a| to apply |\reserved@c| to
+%    all the numbers in the range of its arguments.
+%    \begin{macrocode}
+\def\reserved@a#1#2{%
+   \@tempcnta#1\relax
+   \@tempcntb#2\relax
+   \reserved@b
+}
+\def\reserved@b{%
+   \ifnum\@tempcnta>\@tempcntb\else
+      \reserved@c\@tempcnta
+      \advance\@tempcnta\@ne
+      \expandafter\reserved@b
+   \fi
+}
+%    \end{macrocode}
+%    Depending on the \TeX{} version, we might not be allowed to do
+%    this for non-ASCII characters.
+% \changes{v1.0n}{1994/06/09}{For \TeX2, do not set codes for higher
+%                   half of character table.}
+%    \begin{macrocode}
+\def\reserved@c#1{%
+   \count@=#1\advance\count@ by -"20
+   \uccode#1=\count@
+   \lccode#1=#1
+}
+\reserved@a{`\a}{`\z}
+\ifnum\inputlineno=\m@ne\else
+  \reserved@a{"A0}{"BC}
+  \reserved@a{"E0}{"FF}
+\fi
+%    \end{macrocode}
+% The upper case characters need their |\uccode| and |\lccode| values
+% set, and their |\sfcode| set to 999.
+%    \begin{macrocode}
+\def\reserved@c#1{%
+   \count@=#1\advance\count@ by "20
+   \uccode#1=#1
+   \lccode#1=\count@
+   \sfcode#1=999
+}
+\reserved@a{`\A}{`\Z}
+\ifnum\inputlineno=\m@ne\else
+  \reserved@a{"80}{"9C}
+  \reserved@a{"C0}{"DF}
+\fi
+%    \end{macrocode}
+% Well, it would be nice if that were correct, but unfortunately, the
+% Cork encoding contains some odd slots whose uccode or lccode isn't
+% quite what you'd expect.
+%    \begin{macrocode}
+\uccode`\^^Y=`\I     % dotless i
+\lccode`\^^Y=`\^^Y   % dotless i
+\uccode`\^^Z=`\J     % dotless j, ae in OT1
+\lccode`\^^Z=`\^^Z   % dotless j, ae in OT1
+\ifnum\inputlineno=\m@ne\else
+  \lccode`\^^9d=`\i    % dotted I
+  \uccode`\^^9d=`\^^9d % dotted I
+  \lccode`\^^9e=`\^^9e % d-bar
+  \uccode`\^^9e=`\^^d0 % d-bar
+\fi
+%    \end{macrocode}
+% Finally here is one that helps hyphenation in the OT1 encoding.
+% \changes{v1.0z}{1996/10/31}
+%    {Added extra \cs{lcode}, hoping it does no harm in T1 (pr/1969)}
+%    \begin{macrocode}
+\lccode`\^^[=`\^^[   % oe in OT1
+%    \end{macrocode}
+%
+% And we also set the |\lccode| of |\-| and |\textcompwordmark| so
+% that they do not prevent hyphenation in the remainder of the word
+% (as suggested by Lars Helstr\"om).
+% \changes{v1.1e}{2003/10/13}
+%    {Added extra \cs{lccode} for \cs{-} and \cs{textcompwordmark}}
+%    \begin{macrocode}
+\lccode`\- =`\-   % default hyphen char
+\lccode 127=127   % alternate hyphen char
+\lccode 23 =23    % textcompwordmark in T1
+%    \end{macrocode}
+%
+% End of the conditional to select either Unicode or T1 encoding defaults.
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+%  This is as good a place as any to active a few Xe\TeX{}-specific
+%  settings
+%    \begin{macrocode}
+\ifx\XeTeXuseglyphmetrics\@undefined
+\else
+  \XeTeXuseglyphmetrics=1 %
+  \XeTeXdashbreakstate=1 %
+\fi
+%    \end{macrocode}
+%
+% \subsection{Hyphenation}
+%
+% \changes{v0.1a}{1994/03/07}{move code here from lhyphen.dtx}
+% \changes{v0.1a}{1994/03/07}
+%         {use \cs{InputIfFileExists} not \cs{IfFileExists}}
+% \changes{v1.0x}{1995/11/01}
+%      {(DPC) Switch meaning of \cs{@addtofilelist} for cfg files}%
+% The following code will be compiled into the format file. It checks
+% for the existence of \texttt{hyphen.cfg} in inputs that file if
+% found. Otherwise it inputs \texttt{hyphen.ltx}.  Note that these
+% are loaded in \emph{before} the |\catcode|s are set, so local
+% hyphenation files can use 8-bit input.
+%
+% We try to load the customized hyphenation description file.
+%    \begin{macrocode}
+\InputIfFileExists{hyphen.cfg}
+           {\typeout{===========================================^^J%
+                      Local configuration file hyphen.cfg used^^J%
+                     ===========================================}%
+             \def\@addtofilelist##1{\xdef\@filelist{\@filelist,##1}}%
+           }
+           {\input{hyphen.ltx}}
+\let\@addtofilelist\@gobble
+%    \end{macrocode}
+%
+%
+%
+% \subsection{Font loading}
+%    Fonts loaded during the formatting process might already have
+%    changed the |\font@submax| from |0pt| to something higher.
+%    If so, we put out a bold warning.
+% \changes{v0.1l}{1994/05/20}{Use new font warning commands}
+%    \begin{macrocode}
+% \changes{v1.1c}{2000/08/23}{Fix typo in warning}
+\ifdim \font@submax >\z@
+   \@font@warning{Size substitutions with differences\MessageBreak
+                 up to \font@submax\space have occurred.\MessageBreak
+                \MessageBreak
+                Please check the transcript file
+                carefully\MessageBreak
+                and redo the format generation if necessary!
+                \@gobbletwo}%
+   \errhelp{Only stopped, to give you time to
+            read the above message.}
+   \errmessage{}
+%    \end{macrocode}
+%    We reset the macro. Otherwise every user will get a warning on
+%    every job.
+%    \begin{macrocode}
+\def\font@submax{0pt}
+\fi
+%    \end{macrocode}
+%
+% \subsection{Input encoding}
+%
+% We temporarily define |\reserved@a| to apply |\reserved@c| to all the
+% numbers in the range of its arguments.
+%    \begin{macrocode}
+\def\reserved@a#1#2{%
+   \@tempcnta#1\relax
+   \@tempcntb#2\relax
+   \reserved@b
+}
+\def\reserved@b{%
+   \ifnum\@tempcnta>\@tempcntb\else
+      \reserved@c\@tempcnta
+      \advance\@tempcnta\@ne
+      \expandafter\reserved@b
+   \fi
+}
+%    \end{macrocode}
+% \changes{v0.1e}{1994/05/02}{Added setting the special catcodes.}
+% \changes{v0.1f}{1994/05/02}{Set the catcode of control-J.}
+% Set the special catcodes (although some of these are useless, since an
+% error will have occurred if the catcodes have changed).  Note that
+% |^^J| has catcode `other' for use in warning messages.
+%    \begin{macrocode}
+\catcode`\ =10
+\catcode`\#=6
+\catcode`\$=3
+\catcode`\%=14
+\catcode`\&=4
+\catcode`\\=0
+\catcode`\^=7
+\catcode`\_=8
+\catcode`\{=1
+\catcode`\}=2
+\catcode`\~=13
+\catcode`\@=11
+\catcode`\^^I=10
+\catcode`\^^J=12
+\catcode`\^^L=13
+\catcode`\^^M=5
+%    \end{macrocode}
+% \changes{v0.1e}{1994/05/02}{Added setting the `other' catcodes.}
+% Set the `other' catcodes.
+%    \begin{macrocode}
+\def\reserved@c#1{\catcode#1=12\relax}
+\reserved@c{`\!}
+\reserved@c{`\"}
+\reserved@a{`\'}{`\?}
+\reserved@c{`\[}
+\reserved@c{`\]}
+\reserved@c{`\`}
+\reserved@c{`\|}
+%    \end{macrocode}
+% \changes{v0.1e}{1994/05/02}{Added setting the `letter' catcodes.}
+% Set the `letter' catcodes.
+%    \begin{macrocode}
+\def\reserved@c#1{\catcode#1=11\relax}
+\reserved@a{`\A}{`\Z}
+\reserved@a{`\a}{`\z}
+%    \end{macrocode}
+% \changes{v0.1e}{1994/05/02}{Made slot 127 illegal}
+% \changes{v1.0n}{1994/11/18}
+%         {re-allow slots 127--255}
+% All the characters in the range 0--31 and 127--255 are illegal,
+% \emph{except} tab (|^^I|), nl (|^^J|), ff (|^^L|) and cr (|^^M|).
+%
+% Now allow 8-bit characters, although their use in this way is
+% strongly discouraged. See |inputenc.dtx| for a supported mechanism
+% for 8-bit input.
+%    \begin{macrocode}
+\def\reserved@c#1{\catcode#1=15\relax}
+\reserved@a{0}{`\^^H}
+\reserved@c{`\^^K}
+\reserved@a{`\^^N}{31}
+%\ifnum\inputlineno=\m@ne
+  \catcode"7F=15
+%\else
+%  \reserved@a{"7F}{"FF}
+%\fi
+%    \end{macrocode}
+%
+% \subsection{Lccodes and uccodes}
+%
+% \changes{v1.1b}{1998/05/20}{Set up uc/lccodes after loading
+%    hyphenation files: pr/2639}
+%    We now again set up the default (T1) uc/lccodes.
+%    The lower case characters need their |\uccode| and |\lccode| values
+%    set. Some of this is a repeat of the set-up before loading
+%    hyphenation files.
+%    Depending on the \TeX{} version, we might not be allowed to do
+%    this for non-ASCII characters.
+% \changes{v1.0n}{1994/06/09}{For \TeX2, do not set codes for higher
+%                   half of character table.}
+% \changes{v2.0a}{2015/01/03}{Skip resetting codes with Unicode engines}
+%   For the Unicode engines (Xe\TeX{} and Lua\TeX{}) there is no need to
+%   do any of this: they use hyphenation data which does not alter any
+%   of the set up and so this entire block is skipped.
+%    \begin{macrocode}
+\ifnum 0%
+  \ifx\Umathcode\@undefined\else 1\fi
+  \ifx\XeTeXmathcode\@undefined\else 1\fi
+  >\z@
+\else
+\def\reserved@c#1{%
+   \count@=#1\advance\count@ by -"20
+   \uccode#1=\count@
+   \lccode#1=#1
+}
+\reserved@a{`\a}{`\z}
+\ifnum\inputlineno=\m@ne\else
+  \reserved@a{"A0}{"BC}
+  \reserved@a{"E0}{"FF}
+\fi
+%    \end{macrocode}
+% The upper case characters need their |\uccode| and |\lccode| values
+% set, and their |\sfcode| set to 999.
+%    \begin{macrocode}
+\def\reserved@c#1{%
+   \count@=#1\advance\count@ by "20
+   \uccode#1=#1
+   \lccode#1=\count@
+   \sfcode#1=999
+}
+\reserved@a{`\A}{`\Z}
+\ifnum\inputlineno=\m@ne\else
+  \reserved@a{"80}{"9C}
+  \reserved@a{"C0}{"DF}
+\fi
+%    \end{macrocode}
+% Well, it would be nice if that were correct, but unfortunately, the
+% Cork encoding contains some odd slots whose uccode or lccode isn't
+% quite what you'd expect.
+%    \begin{macrocode}
+\uccode`\^^Y=`\I     % dotless i
+\lccode`\^^Y=`\^^Y   % dotless i
+\uccode`\^^Z=`\J     % dotless j, ae in OT1
+\lccode`\^^Z=`\^^Z   % dotless j, ae in OT1
+\ifnum\inputlineno=\m@ne\else
+  \lccode`\^^9d=`\i    % dotted I
+  \uccode`\^^9d=`\^^9d % dotted I
+  \lccode`\^^9e=`\^^9e % d-bar
+  \uccode`\^^9e=`\^^d0 % d-bar
+\fi
+%    \end{macrocode}
+% Finally here is one that helps hyphenation in the OT1 encoding.
+% \changes{v1.0z}{1996/10/31}
+%    {Added extra \cs{lcode}, hoping it does no harm in T1 (pr/1969)}
+%    \begin{macrocode}
+\lccode`\^^[=`\^^[   % oe in OT1
+\fi % End of reset block for 8-bit engines
+%    \end{macrocode}
+%
+% \begin{macro}{\MakeUppercase}
+% \begin{macro}{\MakeUppercase}
+% \begin{macro}{\@uclclist}
+%
+% \changes{v1.1a}{1997/10/20}{Removed \cs{aa} and \cs{AA} from
+%    \cs{@uclclist} as these are macros.}
+%
+%    And whilst we're doing things with uc/lc tables, here are two
+%    commands to upper- and lower-case a string.
+%
+%    \emph{Note} that this implementation is subject to change!  At
+%    the moment we're not providing any way to extend the list of
+%    uc/lc commands, since finding a good interface is difficult.
+%    These commands have some nasty features, such as uppercasing
+%    mathematics, environment names, labels, etc.  A much better
+%    long-term solution is to use all-caps fonts, but these aren't
+%    generally available.
+%    \begin{macrocode}
+\DeclareRobustCommand{\MakeUppercase}[1]{{%
+      \def\i{I}\def\j{J}%
+      \def\reserved@a##1##2{\let##1##2\reserved@a}%
+      \expandafter\reserved@a\@uclclist\reserved@b{\reserved@b\@gobble}%
+      \protected@edef\reserved@a{\uppercase{#1}}%
+      \reserved@a
+   }}
+\DeclareRobustCommand{\MakeLowercase}[1]{{%
+      \def\reserved@a##1##2{\let##2##1\reserved@a}%
+      \expandafter\reserved@a\@uclclist\reserved@b{\reserved@b\@gobble}%
+      \protected@edef\reserved@a{\lowercase{#1}}%
+      \reserved@a
+   }}
+\def\@uclclist{\oe\OE\o\O\ae\AE
+      \dh\DH\dj\DJ\l\L\ng\NG\ss\SS\th\TH}
+%    \end{macrocode}
+%    The above code works, but has the nasty side-effect that if you
+%    say something like:
+%\begin{verbatim}
+%    \markboth{\MakeUppercase\contentsname}
+%             {\MakeUppercase\contentsname}
+%\end{verbatim}
+%    then the uppercasing is only done to the first letter of the
+%    contents name, since the mark expands out to:
+%\begin{verbatim}
+%    \mark{\protect\MakeUppercase Table of Contents}
+%         {\protect\MakeUppercase Table of Contents}
+%\end{verbatim}
+%    In order to get round this, we redefine |\MakeUppercase| and
+%    |\MakeLowercase| to grab their argument and brace it.  This is a
+%    very low-level hack, and is \emph{not} recommended practice!
+%    This is an instance of a general problem that makes it unsafe to
+%    grab arguments unbraced, and probably needs a more general
+%    solution.  For the moment though, this hack will do:
+%    \begin{macrocode}
+\protected@edef\MakeUppercase#1{\MakeUppercase{#1}}
+\protected@edef\MakeLowercase#1{\MakeLowercase{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.0h}{1994/05/13}{Added output enc stuff}
+% \changes{v1.0i}{1994/05/16}{moved output enc stuff to lfonts}
+%
+% \changes{v0.1a}{1994/03/07}{Add code from the old dump.dtx}
+%
+% \subsection{Applying Patch files}
+% Between major releases, small patches will be distributed in
+% files |ltpatch.ltx| which must be added at this point.
+% \changes{v1.0m}{1994/06/08}{Add patch file system}
+% \changes{v2.0h}{2015/06/23}
+%     {set \cs{patch@level} in ltvers rather than in ltfinal/ltpatch}
+%
+% Patch file code removed.
+%    \begin{macrocode}
+%\IfFileExists{ltpatch.ltx}
+%  {\typeout{=================================^^J%
+%             Applying patch file ltpatch.ltx^^J%
+%            =================================}
+%   \def\fmtversion@topatch{unknown}
+%   \input{ltpatch.ltx}
+%   \ifx\fmtversion\fmtversion@topatch
+%      \ifx\patch@level\@undefined
+%        \typeout{^^J^^J^^J%
+%         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+%         !! Patch file `ltpatch.ltx' not suitable for this^^J%
+%         !! version of LaTeX.^^J^^J%
+%         !! Please check if initex found an old patch file:^^J%
+%         !! --- if so, rename it or delete it, and redo the^^J%
+%         !! initex run.^^J%
+%         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J}%
+%        \batchmode \@@end
+%      \else
+%    \end{macrocode}
+% \changes{v1.0q}{1995/04/21}
+%         {Allow initial patch level 0}
+% \changes{v1.0t}{1995/06/13}
+%         {Add patch level string more carefully}
+% The code below adds the `patch level' string to the first |\typeout|
+% in the startup banner.
+%    \begin{macrocode}
+%        \def\fmtversion@topatch{0}%
+%        \ifx\fmtversion@topatch\patch@level\else
+%          \def\reserved@a\typeout##1##2\reserved@a{%
+%                 \typeout{##1 patch level \patch@level}##2}
+%          \everyjob\expandafter\expandafter\expandafter{%
+%             \expandafter\reserved@a\the\everyjob\reserved@a}
+%          \let\reserved@a\relax
+%          \the\everyjob
+%        \fi
+%      \fi
+%   \else
+%      \typeout{^^J^^J^^J%
+%    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+%    !! Patch file `ltpatch.ltx' (for version <\fmtversion@topatch>)^^J%
+%    !! is not suitable for version <\fmtversion> of LaTeX.^^J^^J%
+%    !! Please check if initex found an old patch file:^^J%
+%    !! --- if so, rename it or delete it, and redo the^^J%
+%    !!     initex run.^^J%
+%    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J}%
+%       \batchmode \@@end
+%   \fi
+%   \let\fmtversion@topatch\relax
+%  }{}
+%    \end{macrocode}
+%
+% \subsection{Freeing Memory}
+%
+% \begin{macro}{\reserved@a}
+% \begin{macro}{\reserved@b}
+% \changes{v1.0v}{1995/10/17}{reset here after the \cs{input} above}
+% And just to make sure nobody relies on those definitions of
+% |\reserved@b| and friends.
+% These macros are reserved for use in the kernel. \emph{Do not use
+% them as general scratch macros}.
+%    \begin{macrocode}
+\let\reserved@a\@filelist
+\let\reserved@b=\@undefined
+\let\reserved@c=\@undefined
+\let\reserved@d=\@undefined
+\let\reserved@e=\@undefined
+\let\reserved@f=\@undefined
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\toks}
+% \changes{v1.0y}{1996/07/10}
+%      {Free up memory from scratch registers /2213}
+%    \begin{macrocode}
+\toks0{}
+\toks2{}
+\toks4{}
+\toks6{}
+\toks8{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\errhelp}
+% \changes{v0.1g}{1994/05/05}{Set error help empty.}
+% \changes{v1.1d}{2000/09/01}{Set error help empty at very end
+%                             (pr/449 done correctly).}
+% Empty the error help message, which may have some rubbish:
+%    \begin{macrocode}
+\errhelp{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Initialise file list}
+%
+% \begin{macro}{\@providesfile}
+% \changes{v1.0v}{1995/10/17}{reset macro}
+% Initialise for use in the document. During initex a modified version
+% has been used which leaves debugging information for |latexbug.tex|.
+%    \begin{macrocode}
+\def\@providesfile#1[#2]{%
+    \wlog{File: #1 #2}%
+    \expandafter\xdef\csname ver@#1\endcsname{#2}%
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@filelist}
+% \changes{v1.0w}{1995/10/19}{Move after \cs{reserved@a} setting:-)}
+% \begin{macro}{\@addtofilelist}
+% Reset |\@filelist| so files input while making the format are not
+% listed. The list built up so far may take up a lot of memory and so
+% it is moved to |\reserved@a| where it will be overwritten as soon
+% as almost any \LaTeX\ command is issued in a class file.
+% However the |latexbug.tex| program will be able to access this
+% information and insert it into a bug report.
+%    \begin{macrocode}
+\let\@filelist\@gobble
+\def\@addtofilelist#1{\xdef\@filelist{\@filelist,#1}}%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Dumping the format}
+%    Finally we make |@| into a letter, ensure the format will
+% be in the `normal' error mode, and dump everything into the
+%    format file.
+% \changes{v1.0t}{1995/06/13}
+%         {Call \cs{errorstopmode}}
+%    \begin{macrocode}
+\makeatother
+\errorstopmode
+\dump
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

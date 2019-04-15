@@ -1,0 +1,61 @@
+
+See:
+- http://mirror.ctan.org/language/turkish/hyphen/turk_hyf.c
+- http://www.tug.org/TUGboat/Articles/tb09-1/tb20mackay.pdf
+
+-------
+Original encoding:
+
+a
+a=  â
+e
+i   ı
+i=  î
+i:  i
+o
+o=  ô
+o:  ö
+u
+u:  ü
+
+-------
+
+character / UTF-8 letter / EC code / Unicode / Unicode name
+
+@      -- arabic hamza
+#      -- ayn
+b
+c
+c:  ç  E7 U+00E7   LATIN SMALL LETTER C WITH CEDILLA
+d
+d!  ḍ  -- U+1E0D   LATIN SMALL LETTER D WITH DOT BELOW
+d=  ḏ  -- U+1E0F   LATIN SMALL LETTER D WITH LINE BELOW
+f
+g
+g=  ğ  A7 U+011F   LATIN SMALL LETTER G WITH BREVE
+g:  ġ  -- U+0121   LATIN SMALL LETTER G WITH DOT ABOVE
+h
+h!  ḥ  -- U+1E25   LATIN SMALL LETTER H WITH DOT BELOW
+h=  ẖ  -- U+1E96   LATIN SMALL LETTER H WITH LINE BELOW
+j
+k
+k!  ḳ  -- U+1E33   LATIN SMALL LETTER K WITH DOT BELOW
+l
+m
+n
+n=  ñ  F1 U+00F1   LATIN SMALL LETTER N WITH TILDE
+p
+r
+s
+s!  ṣ  -- U+1E63   LATIN SMALL LETTER S WITH DOT BELOW
+s=     --    s with line below - not even in unicode
+s:  ş  B3 U+015F   LATIN SMALL LETTER S WITH CEDILLA
+t
+t!  ṭ  -- U+1E6D   LATIN SMALL LETTER T WITH DOT BELOW
+t=  ṯ  -- U+1E6F   LATIN SMALL LETTER T WITH LINE BELOW
+v
+y
+z
+z!  ẓ  -- U+1E93   LATIN SMALL LETTER Z WITH DOT BELOW
+z=  ẕ  -- U+1E95   LATIN SMALL LETTER Z WITH LINE BELOW
+z:  ż  BB U+017C   LATIN SMALL LETTER Z WITH DOT ABOVE

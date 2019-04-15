@@ -1,0 +1,1049 @@
+% \iffalse meta-comment
+%
+% File: uniquecounter.dtx
+% Version: 2011/01/30 v1.2
+% Info: Provide unlimited unique counter
+%
+% Copyright (C) 2009, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file uniquecounter.dtx
+% and the derived files
+%    uniquecounter.sty, uniquecounter.pdf, uniquecounter.ins,
+%    uniquecounter.drv, uniquecounter-example.tex,
+%    uniquecounter-test1.tex, uniquecounter-test2.tex,
+%    uniquecounter-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/uniquecounter.dtx
+%    CTAN:macros/latex/contrib/oberdiek/uniquecounter.pdf
+%
+% Unpacking:
+%    (a) If uniquecounter.ins is present:
+%           tex uniquecounter.ins
+%    (b) Without uniquecounter.ins:
+%           tex uniquecounter.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{uniquecounter.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If uniquecounter.drv is present:
+%           latex uniquecounter.drv
+%    (b) Without uniquecounter.drv:
+%           latex uniquecounter.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex uniquecounter.dtx
+%       makeindex -s gind.ist uniquecounter.idx
+%       pdflatex uniquecounter.dtx
+%       makeindex -s gind.ist uniquecounter.idx
+%       pdflatex uniquecounter.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/uniquecounter.sty
+%    TDS:doc/latex/oberdiek/uniquecounter.pdf
+%    TDS:doc/latex/oberdiek/uniquecounter-example.tex
+%    TDS:doc/latex/oberdiek/test/uniquecounter-test1.tex
+%    TDS:doc/latex/oberdiek/test/uniquecounter-test2.tex
+%    TDS:doc/latex/oberdiek/test/uniquecounter-test3.tex
+%    TDS:source/latex/oberdiek/uniquecounter.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: uniquecounter 2011/01/30 v1.2 Provide unlimited unique counter (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: uniquecounter
+Version: 2011/01/30 v1.2
+
+Copyright (C) 2009, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file uniquecounter.dtx
+and the derived files
+   uniquecounter.sty, uniquecounter.pdf, uniquecounter.ins,
+   uniquecounter.drv, uniquecounter-example.tex,
+   uniquecounter-test1.tex, uniquecounter-test2.tex,
+   uniquecounter-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{uniquecounter.ins}{\from{uniquecounter.dtx}{install}}%
+  \file{uniquecounter.drv}{\from{uniquecounter.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{uniquecounter.sty}{\from{uniquecounter.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{uniquecounter-example.tex}{\from{uniquecounter.dtx}{example}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{uniquecounter-test1.tex}{\from{uniquecounter.dtx}{test1}}%
+  \file{uniquecounter-test2.tex}{\from{uniquecounter.dtx}{test2}}%
+  \file{uniquecounter-test3.tex}{\from{uniquecounter.dtx}{test3}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{uniquecounter.xml}{\from{uniquecounter.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     uniquecounter.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `uniquecounter.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{uniquecounter.drv}%
+  [2011/01/30 v1.2 Provide unlimited unique counter (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{uniquecounter.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{720}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{uniquecounter.drv}
+%
+% \title{The \xpackage{uniquecounter} package}
+% \date{2011/01/30 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package provides a kind of counter that provides unique
+% number values. Several counters can be created by different names.
+% The numeric values are not limited.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \begin{declcs}{UniqueCounterNew} \M{name}
+% \end{declcs}
+% Macro \cs{UniqueCounterNew} creates a new unique counter \meta{name}.
+% An error is thrown, if the counter already exists.
+%
+% \begin{declcs}{UniqueCounterCall} \M{name} \M{code}
+% \end{declcs}
+% Macro \cs{UniqueCounterCall} calls the given \meta{code} with a new
+% value of counter \meta{name} as argument.
+%
+% \begin{declcs}{UniqueCounterIncrement} \M{name}
+% \end{declcs}
+% Macro \cs{UniqueCounterIncrement} generates a new value for the counter
+% \meta{name}
+% by incrementing by one (globally).
+%
+% \begin{declcs}{UniqueCounterGet} \M{name}
+% \end{declcs}
+% Expandable macro \cs{UniqueCounterGet} returns the current value
+% of counter \meta{name}
+%
+% \subsection{Example}
+%
+%    \begin{macrocode}
+%<*example>
+\documentclass{minimal}
+\usepackage{uniquecounter}
+\UniqueCounterNew{anchor}
+\makeatletter
+\newcommand*{\DefNewAnchorName}[2]{%
+  % #1 is unique counter value
+  % #2 is name of anchor
+  \@namedef{anchor@#2}{a#1}%
+}
+\newcommand*{\NewAnchorName}[1]{%
+  \UniqueCounterCall{anchor}\DefNewAnchorName{#1}%
+}
+\newcommand*{\PrintAnchorName}[1]{%
+  \@nameuse{anchor@#1}%
+}
+\begin{document}
+  \NewAnchorName{Top}%
+  \NewAnchorName{Left}%
+  \noindent
+  Top: \PrintAnchorName{Top}\\%
+  Left: \PrintAnchorName{Left}%
+\end{document}
+%</example>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@uniquecounter.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{uniquecounter}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@uniquecounter.sty\endcsname
+\ProvidesPackage{uniquecounter}%
+  [2011/01/30 v1.2 Provide unlimited unique counter (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname uqc@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\uqc@AtEnd{%
+    \uqc@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\uqc@AtEnd{\uqc@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{bigintcalc}[2007/11/11]%
+  \TMP@RequirePackage{infwarerr}[2007/09/09]%
+\else
+  \RequirePackage{bigintcalc}[2007/11/11]%
+  \RequirePackage{infwarerr}[2007/09/09]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\uqc@IncNum}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \def\uqc@IncNum#1{%
+    \begingroup
+      \count@=\csname uqc@cnt@#1\endcsname\relax
+      \advance\count@\@ne
+      \expandafter\xdef\csname uqc@cnt@#1\endcsname{%
+        \number\count@
+      }%
+      \ifnum\count@=2147483647 %
+        \global\expandafter\let\csname uqc@inc@#1\endcsname
+        \uqc@IncBig
+      \fi
+    \endgroup
+  }%
+\else
+  \def\uqc@IncNum#1{%
+    \expandafter\xdef\csname uqc@cnt@#1\endcsname{%
+      \number\numexpr\csname uqc@cnt@#1\endcsname+1%
+    }%
+    \ifnum\csname uqc@cnt@#1\endcsname=2147483647 %
+      \global\expandafter\let\csname uqc@inc@#1\endcsname
+      \uqc@IncBig
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\uqc@IncBig}
+%    \begin{macrocode}
+\def\uqc@IncBig#1{%
+  \expandafter\xdef\csname uqc@cnt@#1\endcsname{%
+    \expandafter\expandafter\expandafter
+    \BigIntCalcInc\csname uqc@cnt@#1\endcsname!%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\uqc@Def}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newcommand\endcsname\relax
+  \def\uqc@Def#1{\def#1##1}%
+\else
+  \def\uqc@Def#1{\newcommand*{#1}[1]}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\UniqueCounterNew}
+%    \begin{macrocode}
+\uqc@Def\UniqueCounterNew{%
+  \expandafter\ifx\csname uqc@cnt@#1\endcsname\relax
+    \expandafter\xdef\csname uqc@cnt@#1\endcsname{0}%
+    \global\expandafter\let\csname uqc@inc@#1\endcsname\uqc@IncNum
+    \@PackageInfo{uniquecounter}{New unique counter `#1'}%
+  \else
+    \@PackageError{uniquecounter}{Unique counter `#1' is already defined}\@ehc
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\UniqueCounterIncrement}
+%    \begin{macrocode}
+\uqc@Def\UniqueCounterIncrement{%
+  \expandafter\ifx\csname uqc@cnt@#1\endcsname\relax
+    \@PackageError{uniquecounter}{Unique counter `#1' is undefined}\@ehc
+  \else
+    \csname uqc@inc@#1\endcsname{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\UniqueCounterGet}
+%    \begin{macrocode}
+\uqc@Def\UniqueCounterGet{%
+  \csname uqc@cnt@#1\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\UniqueCounterCall}
+%    \begin{macrocode}
+\uqc@Def\UniqueCounterCall{%
+  \expandafter\ifx\csname uqc@cnt@#1\endcsname\relax
+    \@PackageError{uniquecounter}{Unique counter `#1' is undefined}\@ehc
+    \expandafter\uqc@Call\expandafter0%
+  \else
+    \UniqueCounterIncrement{#1}%
+    \expandafter\expandafter\expandafter\uqc@Call
+    \expandafter\expandafter\expandafter{%
+      \csname uqc@cnt@#1\expandafter\endcsname\expandafter
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\uqc@Call}
+%    \begin{macrocode}
+\long\def\uqc@Call#1#2{#2{#1}}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\uqc@AtEnd%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input uniquecounter.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+% \subsubsection{Test with \LaTeX}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{minimal}
+\usepackage{uniquecounter}[2011/01/30]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+
+\newcommand*{\CheckValue}[2]{%
+  \Expect*{#2}*{\UniqueCounterGet{#1}}%
+}
+\newcommand*{\CheckSpace}[1]{%
+  \sbox0{#1}%
+  \Expect{0.0pt}*{\the\wd0}%
+}
+
+\begin{qstest}{creation}{creation}
+  \CheckSpace{%
+    \UniqueCounterNew{test}%
+  }%
+  \CheckValue{test}{0}%
+\end{qstest}
+
+\begin{qstest}{increment}{increment}
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{1}%
+  \makeatletter
+  \def\uqc@cnt@test{2147483645}%
+  \CheckValue{test}{2147483645}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{2147483646}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \Expect{true}*{\ifx\uqc@inc\uqc@NumInc true\else false\fi}%
+  \CheckValue{test}{2147483647}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{2147483648}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{2147483649}%
+\end{qstest}
+
+\begin{qstest}{call}{call}
+  \def\CheckCall#1#2{%
+    \Expect{#1}{#2}%
+  }%
+  \CheckSpace{%
+    \UniqueCounterNew{foo}%
+  }%
+  \CheckValue{foo}{0}%
+  \def\Check#1{%
+    \CheckSpace{%
+      \UniqueCounterCall{foo}{\CheckCall}{#1}%
+    }%
+    \CheckValue{foo}{#1}%
+  }%
+  \Check{1}%
+  \Check{2}%
+  \Check{3}%
+  \Check{4}%
+  \Check{5}%
+  \Check{6}%
+  \Check{7}%
+  \Check{8}%
+  \Check{9}%
+  \Check{10}%
+  \Check{11}%
+  \Check{12}%
+\end{qstest}
+
+\csname @@end\endcsname
+%</test2>
+%    \end{macrocode}
+% \subsubsection{Test with plain-\TeX}
+%
+%    \begin{macrocode}
+%<*test3>
+\input uniquecounter.sty\relax
+\catcode`\@=11 %
+\def\CheckValue#1#2{%
+  \begingroup
+    \edef\A{#2}%
+    \edef\B{\UniqueCounterGet{#1}}%
+    \ifx\A\B
+    \else
+      \@PackageError{TEST}{Failed: \A\space<> \B}\@ehc
+    \fi
+  \endgroup
+}
+\def\CheckSpace#1{%
+  \setbox0=\hbox{#1}%
+  \ifdim\wd0=\z@
+  \else
+    \@PackageError{TEST}{Failed: 0.0pt <> \the\wd0}\@ehc
+  \fi
+}
+
+\begingroup
+  \CheckSpace{%
+    \UniqueCounterNew{test}%
+  }%
+  \CheckValue{test}{0}%
+\endgroup
+
+\begingroup
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{1}%
+  \def\uqc@cnt@test{2147483645}%
+  \CheckValue{test}{2147483645}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{2147483646}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \ifx\uqc@inc\uqc@NumInc
+  \else
+    \@PackageError{TEST}{Failed: wrong inc function}\@ehc
+  \fi
+  \CheckValue{test}{2147483647}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{2147483648}%
+  \CheckSpace{%
+    \UniqueCounterIncrement{test}%
+  }%
+  \CheckValue{test}{2147483649}%
+\endgroup
+\begingroup
+  \def\CheckCall#1#2{%
+    \begingroup
+      \def\A{#1}%
+      \def\B{#2}%
+      \ifx\A\B
+      \else
+        \@PackageError{TEST}{Failed: \A\space <> \B}\@ehc
+      \fi
+    \endgroup
+  }%
+  \CheckSpace{%
+    \UniqueCounterNew{foo}%
+  }%
+  \CheckValue{foo}{0}%
+  \CheckSpace{%
+    \UniqueCounterCall{foo}{\CheckCall}{1}%
+  }%
+  \CheckSpace{%
+    \UniqueCounterCall{foo}{\CheckCall}{2}%
+  }%
+  \CheckValue{foo}{2}%
+\endgroup
+\csname @@end\endcsname\end
+%</test3>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/uniquecounter.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/uniquecounter.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex uniquecounter.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   uniquecounter.sty & tex/generic/oberdiek/uniquecounter.sty\\
+%   uniquecounter.pdf & doc/latex/oberdiek/uniquecounter.pdf\\
+%   uniquecounter-example.tex & doc/latex/oberdiek/uniquecounter-example.tex\\
+%   test/uniquecounter-test1.tex & doc/latex/oberdiek/test/uniquecounter-test1.tex\\
+%   test/uniquecounter-test2.tex & doc/latex/oberdiek/test/uniquecounter-test2.tex\\
+%   test/uniquecounter-test3.tex & doc/latex/oberdiek/test/uniquecounter-test3.tex\\
+%   uniquecounter.dtx & source/latex/oberdiek/uniquecounter.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk uniquecounter.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{uniquecounter.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex uniquecounter.dtx
+%makeindex -s gind.ist uniquecounter.idx
+%pdflatex uniquecounter.dtx
+%makeindex -s gind.ist uniquecounter.idx
+%pdflatex uniquecounter.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{uniquecounter.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='uniquecounter'>
+  <name>uniquecounter</name>
+  <caption>Provides unlimited unique counter.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    This package provides a kind of counter that provides unique
+    number values. Several counters can be created with different names.
+    The numeric values are not limited.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/uniquecounter.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/uniquecounter.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2009/09/11 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2009/12/18 v1.1}
+%   \item
+%     Bug fix in \cs{UniqueCounterCall} for values \textgreater\ 9
+%     (bug report of Lev Bishop).
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.2}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

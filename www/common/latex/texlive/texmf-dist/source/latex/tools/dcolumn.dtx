@@ -1,0 +1,362 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: dcolumn.dtx Copyright (C) 1992-1996 1999-2001 David Carlisle
+%
+%<*dtx>
+          \ProvidesFile{dcolumn.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{dcolumn}
+%<driver>\ProvidesFile{dcolumn.drv}
+% \fi
+%         \ProvidesFile{dcolumn.dtx}
+          [2014/10/28 v1.06 decimal alignment package (DPC)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+ \usepackage{dcolumn}
+ \DeleteShortVerb{\|}
+\begin{document}
+ \DocInput{dcolumn.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{dcolumn.dtx}
+%
+% \title{The \textsf{dcolumn} package\thanks{This file
+%         has version number \fileversion, last
+%         revised \filedate.}}
+% \author{David Carlisle}
+% \date{\filedate}
+% \author{David Carlisle}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+%
+% \changes{v1.00}{1992/02/17}{Initial version}
+% \changes{v1.01}{1992/06/12}{Re-issue for the new doc and docstrip.}
+% \changes{v1.02}{1994/03/14}{Re-issue for LaTeX2e}
+% \changes{v1.03}{1996/02/28}{New feature, after tools/2093}
+% \changes{v1.05}{1999/07/05}
+%      {Minor doc changes latex/3058}
+% \changes{v1.06}{2001/05/28}
+%      {More doc changes (suggested by BNB, done by CAR) latex/3315}
+%
+% \CheckSum{143}
+%
+%
+% \begin{abstract}
+% This package defines a system for defining columns of entries in an
+% \texttt{array} or \texttt{tabular} which are to be aligned on a
+% `decimal point'.
+% \end{abstract}
+%
+% \MakeShortVerb{\"}
+%
+% This package defines {\tt D} to be a column specifier with three
+% arguments.\\
+% "D{"\meta{sep.tex}"}{"\meta{sep.dvi}"}{"\meta{decimal
+% places}"}"
+%
+% \meta{sep.tex} should be a single character, this is used as the
+% separator in the {\tt .tex} file. Thus it will usually be `{\tt.}' or
+% `{\tt,}'.
+%
+% \mbox{\meta{sep.dvi}} is used as the separator in the output, this may
+% be the same as the first argument, but may be any math-mode
+% expression, such as "\cdot". It should be noted that \texttt{dcolumn}
+% always uses math mode for the digits as well as the separator.
+%
+% \meta{decimal places} should be the maximum number of decimal places
+% in the column. If this is negative, any number of decimal places can
+% be used in the column, and all entries will be centred on
+% (the leading edge of) the
+% separator. Note that this can cause a column to be too wide, compare
+% the first two columns in the example below. If this argument is
+% positive, the column uses macros equivalent to "\rightdots"
+% "\endrightdots" of {\tt array.sty}, otherwise the macros are
+% essentially equivalent to "\centerdots" "\endcenterdots".
+%
+% You may not want to use all three entries in the {\tt array} or {\tt
+% tabular} preamble, so you may define your own preamble specifiers
+% using "\newcolumntype".
+%
+% For example we may say:
+%
+% \noindent"\newcolumntype{d}[1]{D{.}{\cdot}{#1}}"
+%
+% {\tt d} takes a single argument specifying the number of decimal
+% places, and the {\tt .tex} file should use {\tt.}, with $\cdot$ being
+% used in the output.
+%
+% \noindent"\newcolumntype{.}{D{.}{.}{-1}}"
+%
+% {\tt .} specifies a column of entries to be centred on the~$.$.
+%
+% \noindent"\newcolumntype{,}{D{,}{,}{2}}"
+%
+% {\tt ,} specifies takes a column of entries with at most two decimal
+% places after a~$,$.
+%
+% \newcolumntype{d}[1]{D{.}{\cdot}{#1}}
+% \newcolumntype{.}{D{.}{.}{-1}}
+% \newcolumntype{,}{D{,}{,}{2}}
+%
+% The following table begins "\begin{tabular}{|d{-1}|d{2}|.|,|}"
+%
+% \begin{center}
+% \begin{tabular}{|d{-1}|d{2}|.|,|}
+% 1.2   & 1.2   &1.2    &1,2    \\
+% 1.23  & 1.23  &12.5   &300,2  \\
+% 1121.2& 1121.2&861.20 &674,29 \\
+% 184   & 184   &10     &69     \\
+% .4    & .4    &       &,4     \\
+%       &       &.4     &
+% \end{tabular}
+% \end{center}
+%
+% Note that the first column, which had a negative \meta{decimal places}
+% argument is wider than the second column, so that the decimal point
+% appears in the middle of the column.
+% Also note that this package deals correctly with entries with no
+% decimal part, no integer part, and blank entries.
+%
+% If you have table headings (inserted with "\multicolumn{1}{c}{..}"
+% to over-ride the "D" column type) then it may be that neither of the
+% above `centred' or `right aligned' forms is quite what you want.
+% \begin{center}\small
+% \begin{tabular}[t]{|D..{-1}|D..{1}|D..{5.1}|}
+%\multicolumn{1}{|c|}{head}&
+%\multicolumn{1}{c|}{head}&
+%\multicolumn{1}{c|}{head}\\[3pt]
+% 1.2  & 1.2  &1.2 \\
+% 11212.2& 11212.2&11212.2  \\
+% .4    & .4    &.4
+% \end{tabular}
+% \hfill
+% \begin{tabular}[t]{|D..{-1}|D..{1}|D..{1.1}|}
+%\multicolumn{1}{|c|}{wide heading}&
+%\multicolumn{1}{c|}{wide heading}&
+%\multicolumn{1}{c|}{wide heading}\\[3pt]
+% 1.2  & 1.2  &1.2 \\
+% .4    & .4    &.4
+% \end{tabular}
+% \end{center}
+%
+% In both of these tables the first column is set with "D{.}{.}{-1}"
+% to produce a column centered on the ".", and the second column is
+% set with "D{.}{.}{1}" to produce a right aligned column.
+%
+% The centered column produces columns that are wider than necessary
+% to fit in the numbers under a heading as it has to ensure that the
+% decimal point is centred. The right aligned column two does not have
+% this drawback, but under a wide heading a column of small right
+% aligned figures looks a bit odd.
+%
+% In version v1.03 a third possibility is introduced. The third
+% \meta{decimal places} argument may specify \emph{both} the number of
+% digits to the left and to the right of the decimal place. The third
+% column in the first table above is set with "D{.}{.}{5.1}" and in the
+% second  table,  "D{.}{.}{1.1}", to specify
+% `five places to the left and one to the right' and `one place to the
+% left and% one to the right' respectively.  (You may use `,' or other
+% tokens, not necessarily `.' in this argument.) The column of figures
+% is then positioned such that a number with the specified numbers of
+% digits is centred in the column.
+%
+% This notation also enables columns that are centred on the mid-point
+% of the separator, rather than its leading edge; for example
+% "D{+}{\,\pm\,}{3,3}" will give nice, symmetric layout of up to three
+% digits on either side of a $\pm$ sign.
+%
+% \StopEventually{}
+%
+%
+% \section{The Macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% First we load {\tt array.sty} if it not already loaded.
+%    \begin{macrocode}
+\RequirePackage{array}
+%    \end{macrocode}
+%
+% The basic ideas behind these macros are explained in the documentation
+% for {\tt array.sty}. However they use three
+% tricks which may be useful in other contexts.
+% \begin{itemize}
+% \item The separator is surrounded in extra "{ }", so that it is set
+% with "\mathord" spacing, otherwise, for instance a `,' would have
+% extra space after it.
+% \item The separator is not given its special definition by making it
+% active, as this would not work for an entry such as "& .5 &", as the
+% first token of an alignment entry is read {\em before\/} the preamble
+% part, in case it is an "\omit", in which case the preamble is to be
+% omitted. Instead we switch the mathcode to (hex) 8000, which makes the
+% token act as if it were active.
+% \item Although \verb|\mathcode`.="8000|  makes {\tt.} act as if it
+% were active, it is still not allowed in constructions such as
+% "\def.{}", even in math-mode, so we have to construct an active
+% version of the separator, this is done by making it the uppercase of
+% "~", and then using the construct\\
+% "\uppercase{\def~}{"\meta{definition}"}".\\
+% Note that the \meta{definition} is not uppercased, so the definition
+% can refer to the standard, non-active use of the separator.
+% \end{itemize}
+%
+% \begin{macro}{\DC@}
+% \changes{v1.03}{1996/02/28}{New feature, after tools/2093}
+% Set up uppercase tables as required, and then grab the first part of
+% the numerical argument into "\count@".
+%    \begin{macrocode}
+\def\DC@#1#2#3{%
+  \uccode`\~=`#1\relax
+  \m@th
+  \afterassignment\DC@x\count@#3\relax{#1}{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DC@x}
+% \changes{v1.03}{1996/02/28}{Macro added}
+% If "\count@" is negative, centre on the decimal point. If it is
+% positive either "#1" will be empty in which case bad out decimal
+% part to the number of digits specified by "\count@" or (new feature
+% in v1.03) it is none empty in which case "\count@" contains the
+% number of digits to the left of the point, and "#1" contains a junk
+% token (probably ".") followed by the number of digits to the right
+% of the point. In either of these latter cases, "\DC@right" is used.
+%    \begin{macrocode}
+\def\DC@x#1\relax#2#3{%
+  \ifnum\z@>\count@
+    \expandafter\DC@centre
+  \else
+    \expandafter\DC@right
+  \fi
+  {#2}{#3}{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DC@centre}
+% If centering on the decimal point, just need to box up the two halves.
+%    \begin{macrocode}
+\def\DC@centre#1#2#3{%
+  \let\DC@end\DC@endcentre
+  \uppercase{\def~}{$\egroup\setbox\tw@=\hbox\bgroup${#2}}%
+  \setbox\tw@=\hbox{${\phantom{{#2}}}$}%
+  \setbox\z@=\hbox\bgroup$\mathcode`#1="8000 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DC@endcentre}
+% and then pad out the smaller of the two boxes so there is the same
+% amount of stuff either side of the point.
+%    \begin{macrocode}
+\def\DC@endcentre{$\egroup
+    \ifdim \wd\z@>\wd\tw@
+      \setbox\tw@=\hbox to\wd\z@{\unhbox\tw@\hfill}%
+    \else
+      \setbox\z@=\hbox to\wd\tw@{\hfill\unhbox\z@}\fi
+    \box\z@\box\tw@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DC@right}
+% \changes{v1.03}{1996/02/28}{Re-implemented, after tools/2093}
+% This deals with both the cases where a specified number of decimal
+% places is given.
+%    \begin{macrocode}
+\def\DC@right#1#2#3{%
+  \ifx\relax#3\relax
+%    \end{macrocode}
+% If "#3" is empty, add "\hfill" to right align the column, and
+% Just set "\DC@rl" to begin a group, so nothing fancy is done with
+% the whole number part.
+%    \begin{macrocode}
+    \hfill
+    \let\DC@rl\bgroup
+  \else
+%    \end{macrocode}
+% Otherwise  set "\DC@rl" so that the whole number part is put in a
+% box "\count@" times as wide as a digit.
+% In order to share code with the other branch, then move "#3" (the
+% number of decimal places) into "\count@" throwing away the `.' from
+% the user syntax.
+% \changes{v1.04}{1996/09/23}{Add \cs{hfill} so integer part
+%               is still flush right if no decimal point used.}
+%    \begin{macrocode}
+    \edef\DC@rl{to\the\count@\dimen@ii\bgroup\hss\hfill}%
+    \count@\@gobble#3\relax
+  \fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \let\DC@end\DC@endright
+%    \end{macrocode}
+% Box 2 contains the decimal part, set to "\dimen@" which is
+% calculated below to be "\count@" times the width of a digit, plus
+% the with of the `decimal point'.
+%    \begin{macrocode}
+  \uppercase{\def~}{$\egroup\setbox\tw@\hbox to\dimen@\bgroup${#2}}%
+   \setbox\z@\hbox{$1$}\dimen@ii\wd\z@
+   \dimen@\count@\dimen@ii
+   \setbox\z@\hbox{${#2}$}\advance\dimen@\wd\z@
+   \setbox\tw@\hbox to\dimen@{}%
+%    \end{macrocode}
+% Box 0 contains the whole number part, either just at its natural
+% size for right aligned columns, or set to (the old value of)
+% "\count@" times the width of a digit. "\DC@rl" defined above
+% determines the two cases.
+%    \begin{macrocode}
+   \setbox\z@\hbox\DC@rl$\mathcode`#1="8000 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DC@endright}
+% \changes{v1.03}{1996/02/28}{Re-implemented, after tools/2093}
+% Just finish off the second box, and then put out both boxes.
+%    \begin{macrocode}
+\def\DC@endright{$\hfil\egroup\box\z@\box\tw@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{D}
+% The user interface, define the {\tt D} column to take three arguments.
+% For special purposes, you may need to directly access "\DC@" rather
+% than the "D" column, eg to get a bold version you could use
+%\begin{verbatim}
+% \newcolumntype{E}[3]{>{\boldmath\DC@{#1}{#2}{#3}}c<{\DC@end}}
+%\end{verbatim}
+%    \begin{macrocode}
+\newcolumntype{D}[3]{>{\DC@{#1}{#2}{#3}}c<{\DC@end}}
+%</package>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \Finale
+\endinput

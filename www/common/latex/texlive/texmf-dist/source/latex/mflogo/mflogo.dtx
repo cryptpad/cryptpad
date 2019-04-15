@@ -1,0 +1,348 @@
+% \CheckSum{33}
+% \iffalse
+%
+% mflogo.dtx --- LaTeX package for Metafont and MetaPost logos.
+%
+% Copyright (C) 1994--99 Ulrik Vieth
+%
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the LaTeX Project Public License
+% as described in lppl.txt in the base LaTeX distribution; either
+% version 1 of the License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{mflogo}
+\GetFileInfo{mflogo.sty}
+\begin{document}
+  \DocInput{mflogo.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \changes{1.0} {1994/05/02}{initial version}
+% \changes{1.1} {1994/05/06}{changed assignments for bold series}
+% \changes{1.1a}{1994/05/10}{revised documentation}
+% \changes{1.1b}{1994/05/12}{revised documentation}
+% \changes{1.1c}{1994/05/16}{renamed \cs{MPS} to \cs{MP}}
+% \changes{1.1d}{1994/05/18}{updated TTN reference}
+% \changes{1.2} {1994/05/21}{clean-up for public release}
+% \changes{1.3} {1994/08/21}{update for June 94 LaTeX2e distribution,
+%   never released}
+% \changes{1.4} {1994/12/26}{changed font selection, assume Knuth's
+%   local variants are available}
+% \changes{1.4a}{1994/12/26}{use \cs{\@} to correct space factor
+%   after \cs{\MF} and \cs{\MP}}
+% \changes{1.4b}{1994/12/26}{eliminated \cs{filename}, \cs{filedate},
+%   use \cs{GetFileInfo}}
+% \changes{1.5} {1995/05/14}{major documentation rewrite}
+% \changes{1.5a}{1995/08/28}{minor documentation fixes}
+% \changes{1.5b}{1995/08/29}{added copyright notice similar to PSNFSS}
+% \changes{1.5c}{1995/12/04}{replaced \cs{\-} by \cs{@dischyph} 
+%   to fix problem in tabbing environment}
+% \changes{2.0} {1999/03/10}{use the LaTeX Project Public License}
+%
+%
+% \title{The \texttt{mflogo} package}
+% \author{Ulrik Vieth}
+% \date{1999-03-10 v2.0}
+%
+% \maketitle
+%
+% \section{Introduction}
+%
+%    This \LaTeX{} package provides the font declarations needed to
+%    access the \texttt{logo} font family in terms of \textsf{NFSS2},
+%    the no-longer-new font selection scheme used in \LaTeXe{}.
+%    It also provides a package file that ilustrates how to define the
+%    \MF{} and \MP{} logos and some appropriate font changing commands
+%    in these terms.
+%
+%    Using this package, there should no longer be a need to define
+%    special macros for the slanted version of these logos, and
+%    it should be possible to avoid such errors as on page~2 of
+%    \textit{The \LaTeX{} Companion} where the \MF{} logo appears
+%    in upright shape within an italics context of a book title.
+%
+% \DescribeMacro{\logofamily}
+% \DescribeMacro{\textlogo}
+%    Once you have installed the font definition file
+%    \texttt{ulogo.fd} provided here, you can use low-level \LaTeX{}
+%    font commands to access the \texttt{logo} fonts in your
+%    documents, even if you do not plan to use the package file
+%    \texttt{mflogo.sty}.  Apart from defining the \MF{} and \MP{}
+%    logos in terms of \LaTeX{} font commands this package file also
+%    provides a declarative font changing command |\logofamily| and
+%    a font changing command |\textlogo| that takes one argument.
+%
+%
+% \section{The \MF{} source files}
+%    
+%    In this package, we assume that your \TeX{} distribution includes
+%    the \MF{} sources for the \texttt{logo} font family, available
+%    from the directory \texttt{/systems/knuth/lib} on CTAN archives.
+%    These consists of the \MF{} program file \texttt{logo.mf} and a
+%    number of \MF{} driver files for various font shapes and sizes,
+%    all of which are described in \textit{The \MF{}book}.  
+%    (Please note that the file \texttt{logo.mf} has been updated by
+%    DEK in 1993, adding the letters `\textlogo{P}' and~`\textlogo{S}'
+%    for the \MP{} logo. If \TeX{} complains about missing characters
+%    in some of the \texttt{logo} fonts while processing this
+%    documentation, you should consider updating your copy
+%    of~\texttt{logo.mf} and regenerating all the \texttt{logo}
+%    fonts.)
+%
+%    We also assume that your installation has the additional variants 
+%    of the \texttt{logo} fonts (\texttt{logosl9} and \texttt{logod10})
+%    from the directory \texttt{/systems/knuth/local/lib}.
+%    Many modern \TeX{} distributions already have them included,
+%    but in case you don't have them, it shouldn't be too difficult
+%    to retrieve them individually.
+%
+%    Finally, in order to provide a reasonably orthogonal range of
+%    sizes and shapes, this package uses another non-standard variant
+%    of the \texttt{logo} fonts (\texttt{logosl8}), which is derived
+%    from the existing variants by analogy.^^A
+%    \footnote{This is just a simple matter of replacing `9' by `8'.}
+%
+%    The \MF{} source for this font shape is distributed separately
+%    with this package since we want to avoid the overhead of
+%    \textsc{DOCSTRIP} headers in such a trivial file, which would
+%    result if it were generated from the same |.dtx| file as the
+%    \LaTeX{} font definitions and the package file.
+%
+%
+% \StopEventually{}
+%
+%
+% \section{Hello, World!}
+%
+%    First, we announce the package and the font definition file.
+%
+%    \begin{macrocode}
+%<package>\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+%<package>\ProvidesPackage{mflogo}
+%<Ulogo>\ProvidesFile{ulogo.fd}
+%<+package>[1999/03/10 v2.0 LaTeX package for Metafont and MetaPost logos]
+%<-package>[1999/03/10 v2.0 LaTeX font defs for Metafont and MetaPost logos]
+%    \end{macrocode}
+%
+%
+% \section{The font definition file: \texttt{Ulogo.fd}}
+%    
+%    The first thing to do is to declare a new font family
+%    \texttt{logo} using an appropriate encoding scheme.  According to
+%    \textit{The \MF{}book} the \texttt{logo} fonts have the font
+%    encoding scheme \texttt{"AEFMNOT only"} (or maybe
+%    \texttt{"AEFMNOPST only"} after the recent changes).  Clearly,
+%    this is a well-defined encoding scheme, but not one of those
+%    presently supported in \LaTeX{}.  One might be tempted to define
+%    some new encoding scheme~`MF', but the letter~`M' is already
+%    reserved for 256-character math fonts. Therefore, we will use the
+%    encoding scheme~`U' for the font family~\texttt{logo}.
+%    \begin{macrocode}
+%<*Ulogo>
+\DeclareFontFamily{U}{logo}{}
+%    \end{macrocode}
+%
+% \subsection{Font shape declarations for medium series}
+%
+%    Now, we will discuss the font shape declarations for the medium
+%    series. We will support sizes in the range from 8\,pt up to
+%    magstep~5, which should be sufficient to cover the range from
+%    |\footnotesize| to~|\Huge|. We assign the \texttt{logosl} fonts
+%    to |\itshape| because their slant parameter matches that of 
+%    Computer Modern Italics rather than that of Computer Modern
+%    Slanted.^^A
+%    \footnote{This might be due to the fact that the \texttt{logosl} 
+%       fonts were first used in combination with Computer Modern 
+%       Italics in the running heads of \textit{The \MF{}book}. 
+%       Thus they may have been tuned for this purpose.}
+%    For |\slshape| we provide a silent font substitution.
+%    \begin{macrocode}
+\DeclareFontShape{U}{logo}{m}{n}{
+  <8> <9> gen * logo
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logo10
+}{}
+\DeclareFontShape{U}{logo}{m}{it}{
+  <8> <9> gen * logosl
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logosl10
+}{}
+\DeclareFontShape{U}{logo}{m}{sl}{
+  <-> ssub * logo/m/it
+}{}
+%    \end{macrocode}
+%
+% \subsection{Font shape delarations for bold series}
+%
+%    Finally, we turn to the font shape declarations for the bold
+%    and bold extended series. At present, there are no slanted
+%    versions of bold \texttt{logo} fonts, but they could be created
+%    easily, if desired. However, we do not attempt to create them
+%    here, because the resulting name would be too long to fit into
+%    8~characters and it isn't clear how it should be abbreviated.
+%
+%    We assign the \texttt{logobf} font shape to the semibold condensed
+%    series because there are some indications that it was designed
+%    to match Computer Modern Sans Serif Demibold Condensed, the
+%    font that was used in chapter headings in the \TeX{} and \MF{}
+%    manuals. In sizes below 10\,pt, we simply substitute medium
+%    series because we want to avoid scaling down fonts below their
+%    design size.
+%    \begin{macrocode}
+\DeclareFontShape{U}{logo}{sbc}{n}{
+  <8> <9> sub * logo/m/n
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logobf10
+}{}
+%    \end{macrocode}
+%
+%    Since we assume that the extra variants of the \texttt{logo} fonts
+%    are available at your installation, we will use the \texttt{logod} 
+%    font shape in the bold and bold extended series.
+%
+%    As the name \texttt{logod} implies a demibold version, this
+%    decision may seem a little odd, but there is a good reason
+%    behind it: As mentioned before, \texttt{logobf} was originally
+%    designed to match the semibold condensed version of Computer
+%    Modern Sans Serif. It also fits well in combination with the
+%    bold extended version of that font family because the weight
+%    of these two versions is not too different. However, when
+%    used in combination with the bold or bold extended version
+%    of Computer Modern Roman, the \texttt{logobf} font turns out
+%    to be slightly too heavy, and the \texttt{logod} font seems
+%    to be a more appropriate alternative.^^A
+%    \footnote{The history of the \texttt{logod} font is not very
+%       clear. It was first released together with updates for
+%       \TeX{} and \MF{} in March~1992. It might have been used
+%       in DEK's book \textit{Literate Programming} where bold
+%       extended Computer Modern Roman is used in headings.}
+%
+%    For this reason, we assign the \texttt{logod} font to the bold
+%    series (only available in Computer Modern Roman) and set up 
+%    a silent font substitution for the bold extended series, based 
+%    on the assumption that Computer Modern Roman will be used in 
+%    |bfseries| much more frequently than Computer Modern Sans Serif. 
+%    However, when using bold extended Computer Modern Sans Serif, 
+%    \texttt{logod} will be the wrong choice and one would prefer 
+%    \texttt{logobf} instead. 
+%
+%    Unfortunately, there doesn't seem to be a completely satisfactory 
+%    solution to this conflict of interests, short of modifying the 
+%    standard font definitions for the Computer Modern family in 
+%    a way that bold extended CM Sans Serif would be classified as
+%    ultrabold compared to bold extended CM Roman.
+%    \begin{macrocode}
+\DeclareFontShape{U}{logo}{b}{n}{
+  <8> <9> sub * logo/m/n
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logod10
+}{}
+\DeclareFontShape{U}{logo}{bx}{n}{
+  <-> ssub * logo/b/n
+}{}
+%</Ulogo>
+%    \end{macrocode}
+%
+%
+% \section{The package file: \texttt{mflogo.sty}}
+%
+%    After having discussed the font definition file, we now turn
+%    to the package file that shows how to access the \texttt{logo}
+%    font family by defining high-level macros based on the low-level
+%    \LaTeX{} font commands.
+%
+% \begin{macro}{\logofamily}
+%    First, we define the declarative font changing command |\logofamily|.
+%    This is accomplished using the low-level font commands
+%    |\fontencoding| and |\fontfamily| followed by |\selectfont|.
+%    If |\logofamily| is encountered in math mode, an error message
+%    will be issued.
+%
+%    In the definition of |\logofamily| we now use |\DeclareRobustCommand| 
+%    provided in the production \LaTeXe{} releases dated |1994/06/01|
+%    or later. 
+%    \begin{macrocode}
+%<*package>
+\DeclareRobustCommand\logofamily{%
+  \not@math@alphabet\logofamily\relax
+  \fontencoding{U}\fontfamily{logo}\selectfont}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\textlogo}
+%    Next, we define a font changing command |\textlogo| with one
+%    argument using |\DeclareTextFontCommand| also provided in the
+%    latest \LaTeXe{} release.
+%    \begin{macrocode}
+\DeclareTextFontCommand{\textlogo}{\logofamily}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\MF}
+% \begin{macro}{\MP}
+%    Finally, we define macros for the \MF{} and \MP{} logos.  Since
+%    the letters `\textlogo{P}' and~`\textlogo{S}' needed for the
+%    \MP{} logo were added as recently as 1993, this will only work 
+%    if you have an up-to-date version of the \texttt{logo} fonts.  
+%    To update them, you just have to install the new version of the
+%    \MF{} program file \texttt{logo.mf} and regenerate the
+%    \texttt{logo} fonts using exactly the same \MF{} driver files as
+%    before.
+%
+%    There should be no doubt that |\MF| is the standard abbreviation 
+%    for the \MF{} logo. For \MP{}, we use the abbreviation |\MP|,
+%    which also seems to be the standard abbreviation used for \MP{}
+%    input files and the program itself. 
+%    
+%    According to an e-mail message from John Hobby, he personally 
+%    prefers the spelling ``MetaPost'' (in plain roman) instead of 
+%    the \texttt{logo} font, but since it was Don Knuth himself who 
+%    introduced the alternate spelling, it is acceptable to use 
+%    the \texttt{logo} font for \MP{} as well, if you prefer that. 
+% \changes{1.4a}{1994/12/26}{use \cs{\@} to correct space factor 
+%   after \cs{MF} and \cs{MP}}
+% \changes{1.5c}{1995/12/04}{replaced \cs{\-} by \cs{@dischyph} 
+%   to fix problem in tabbing environment}
+%    \begin{macrocode}
+\def\MF{\textlogo{META}\@dischyph\textlogo{FONT}\@}
+\def\MP{\textlogo{META}\@dischyph\textlogo{POST}\@}
+%</package>
+%    \end{macrocode}
+%    In order to fix the space factor after the logos in all uppercase 
+%    letters, we better add |\@|, which expands to |\spacefactor\@m|,
+%    at the end of our macro definitions.  This is exactly how it is 
+%    done for the |\TeX| and |\LaTeX| logos in the \LaTeXe{} sources
+%    (see |ltspace.dtx| and |ltlogos.dtx|).
+% 
+%    In closing, it should be pointed out that the above definitions of 
+%    the \MF{} and \MP{} logos will make them honor all font changing 
+%    commands just like the \TeX{} logo does and always did. Thus both 
+%    logos will finally behave identically with respect to font changes, 
+%    thanks to \LaTeXe{} and \textsf{NFSS2}.
+% \end{macro}
+% \end{macro}
+%
+% \Finale
+%
+\endinput
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

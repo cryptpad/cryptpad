@@ -1,0 +1,43 @@
+#!/usr/bin/env texlua
+--*-Lua-*-
+-- $Id: rungs.tlu 30101 2013-04-25 17:29:00Z karl $
+-- rungs - Run Ghostscript (gs on Unix, gswin32c on Windows)
+-- (Maintained in TeX Live:Master/texmf-dist/scripts/texlive.)
+
+-- Copyright (C) 2008-2013 Reinhard Kotucha.
+-- You may freely use, modify and/or distribute this file.
+
+function fixwin(args_unix)
+   if os.type == 'windows' then
+      local args_win={}  -- new table
+      args_win[0]=args_unix[1]
+      for i=1, #args_unix do  
+	 args_win[i]='"'..args_unix[i]..'"'
+      end
+      return args_win
+   else
+      return args_unix
+   end
+end
+
+if os.type == 'windows' then
+   command={'gswin32c'}
+else
+   command={'gs'}
+end
+
+for i=1, #arg do
+   command[#command+1]=arg[i]
+end
+
+command=fixwin(command)
+
+--[[ prepend an additional hyphen to activate this code
+for i=0, #command do
+   print (command[i])
+end
+os.exit(ret)
+--]]
+
+ret=os.spawn(command)
+os.exit(ret)

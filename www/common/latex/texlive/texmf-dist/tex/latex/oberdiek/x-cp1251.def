@@ -1,0 +1,216 @@
+%%
+%% This is file `x-cp1251.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `cp1251')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-cp1251.def}%
+  [2011/05/27 v1.10 Input encoding cp1251 (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textbrokenbar}{%
+  \TextSymbolUnavailable\textbrokenbar
+}
+\ProvideTextCommandDefault{\textcurrency}{%
+  \TextSymbolUnavailable\textcurrency
+}
+\ProvideTextCommandDefault{\textdegree}{%
+  \ensuremath{{^\circ}}%
+}
+\ProvideTextCommandDefault{\texteuro}{%
+  \TextSymbolUnavailable\texteuro
+}
+\ProvideTextCommandDefault{\textlnot}{%
+  \ensuremath\lnot
+}
+\ProvideTextCommandDefault{\textmu}{%
+  \ensuremath\mu
+}
+\ProvideTextCommandDefault{\textnumero}{%
+  N%
+  \bgroup
+    \check@mathfonts
+    \fontsize\sf@size\z@
+    \math@fontsfalse
+    \selectfont
+    \ooalign{%
+      \raise0.5ex\hbox{o}%
+      \crcr
+      \hline
+    }%
+  \egroup
+}
+\ProvideTextCommandDefault{\textpm}{%
+  \ensuremath\pm
+}
+\DeclareInputText{128}{\CYRDJE}
+\DeclareInputText{129}{\@tabacckludge'\CYRG}
+\DeclareInputText{130}{\quotesinglbase}
+\DeclareInputText{131}{\@tabacckludge'\cyrg}
+\DeclareInputText{132}{\quotedblbase}
+\DeclareInputText{133}{\textellipsis}
+\DeclareInputText{134}{\textdagger}
+\DeclareInputText{135}{\textdaggerdbl}
+\DeclareInputText{136}{\texteuro}
+\DeclareInputText{137}{\textperthousand}
+\DeclareInputText{138}{\CYRLJE}
+\DeclareInputText{139}{\guilsinglleft}
+\DeclareInputText{140}{\CYRNJE}
+\DeclareInputText{141}{\@tabacckludge'\CYRK}
+\DeclareInputText{142}{\CYRTSHE}
+\DeclareInputText{143}{\CYRDZHE}
+\DeclareInputText{144}{\cyrdje}
+\DeclareInputText{145}{\textquoteleft}
+\DeclareInputText{146}{\textquoteright}
+\DeclareInputText{147}{\textquotedblleft}
+\DeclareInputText{148}{\textquotedblright}
+\DeclareInputText{149}{\textbullet}
+\DeclareInputText{150}{\textendash}
+\DeclareInputText{151}{\textemdash}
+\DeclareInputText{153}{\texttrademark}
+\DeclareInputText{154}{\cyrlje}
+\DeclareInputText{155}{\guilsinglright}
+\DeclareInputText{156}{\cyrnje}
+\DeclareInputText{157}{\@tabacckludge'\cyrk}
+\DeclareInputText{158}{\cyrtshe}
+\DeclareInputText{159}{\cyrdzhe}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{161}{\CYRUSHRT}
+\DeclareInputText{162}{\cyrushrt}
+\DeclareInputText{163}{\CYRJE}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{165}{\CYRGUP}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{167}{\textsection}
+\DeclareInputText{168}{\CYRYO}
+\DeclareInputText{169}{\textcopyright}
+\DeclareInputText{170}{\CYRIE}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{172}{\textlnot}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{175}{\CYRYI}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{177}{\textpm}
+\DeclareInputText{178}{\CYRII}
+\DeclareInputText{179}{\cyrii}
+\DeclareInputText{180}{\cyrgup}
+\DeclareInputText{181}{\textmu}
+\DeclareInputText{182}{\textparagraph}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{184}{\cyryo}
+\DeclareInputText{185}{\textnumero}
+\DeclareInputText{186}{\cyrie}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\cyrje}
+\DeclareInputText{189}{\CYRDZE}
+\DeclareInputText{190}{\cyrdze}
+\DeclareInputText{191}{\cyryi}
+\DeclareInputText{192}{\CYRA}
+\DeclareInputText{193}{\CYRB}
+\DeclareInputText{194}{\CYRV}
+\DeclareInputText{195}{\CYRG}
+\DeclareInputText{196}{\CYRD}
+\DeclareInputText{197}{\CYRE}
+\DeclareInputText{198}{\CYRZH}
+\DeclareInputText{199}{\CYRZ}
+\DeclareInputText{200}{\CYRI}
+\DeclareInputText{201}{\CYRISHRT}
+\DeclareInputText{202}{\CYRK}
+\DeclareInputText{203}{\CYRL}
+\DeclareInputText{204}{\CYRM}
+\DeclareInputText{205}{\CYRN}
+\DeclareInputText{206}{\CYRO}
+\DeclareInputText{207}{\CYRP}
+\DeclareInputText{208}{\CYRR}
+\DeclareInputText{209}{\CYRS}
+\DeclareInputText{210}{\CYRT}
+\DeclareInputText{211}{\CYRU}
+\DeclareInputText{212}{\CYRF}
+\DeclareInputText{213}{\CYRH}
+\DeclareInputText{214}{\CYRC}
+\DeclareInputText{215}{\CYRCH}
+\DeclareInputText{216}{\CYRSH}
+\DeclareInputText{217}{\CYRSHCH}
+\DeclareInputText{218}{\CYRHRDSN}
+\DeclareInputText{219}{\CYRERY}
+\DeclareInputText{220}{\CYRSFTSN}
+\DeclareInputText{221}{\CYREREV}
+\DeclareInputText{222}{\CYRYU}
+\DeclareInputText{223}{\CYRYA}
+\DeclareInputText{224}{\cyra}
+\DeclareInputText{225}{\cyrb}
+\DeclareInputText{226}{\cyrv}
+\DeclareInputText{227}{\cyrg}
+\DeclareInputText{228}{\cyrd}
+\DeclareInputText{229}{\cyre}
+\DeclareInputText{230}{\cyrzh}
+\DeclareInputText{231}{\cyrz}
+\DeclareInputText{232}{\cyri}
+\DeclareInputText{233}{\cyrishrt}
+\DeclareInputText{234}{\cyrk}
+\DeclareInputText{235}{\cyrl}
+\DeclareInputText{236}{\cyrm}
+\DeclareInputText{237}{\cyrn}
+\DeclareInputText{238}{\cyro}
+\DeclareInputText{239}{\cyrp}
+\DeclareInputText{240}{\cyrr}
+\DeclareInputText{241}{\cyrs}
+\DeclareInputText{242}{\cyrt}
+\DeclareInputText{243}{\cyru}
+\DeclareInputText{244}{\cyrf}
+\DeclareInputText{245}{\cyrh}
+\DeclareInputText{246}{\cyrc}
+\DeclareInputText{247}{\cyrch}
+\DeclareInputText{248}{\cyrsh}
+\DeclareInputText{249}{\cyrshch}
+\DeclareInputText{250}{\cyrhrdsn}
+\DeclareInputText{251}{\cyrery}
+\DeclareInputText{252}{\cyrsftsn}
+\DeclareInputText{253}{\cyrerev}
+\DeclareInputText{254}{\cyryu}
+\DeclareInputText{255}{\cyrya}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-cp1251.def'.

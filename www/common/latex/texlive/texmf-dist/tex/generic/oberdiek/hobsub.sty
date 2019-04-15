@@ -1,0 +1,221 @@
+%%
+%% This is file `hobsub.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hobsub.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hobsub
+%% Version: 2012/05/28 v1.13
+%% 
+%% Copyright (C) 2011, 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file hobsub.dtx
+%% and the derived files
+%%    hobsub.sty, hobsub.pdf, hobsub.ins, hobsub.drv, hobsub-generic.sty,
+%%    hobsub-hyperref.sty, hobsub-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@hobsub.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{hobsub}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@hobsub.sty\endcsname
+\ProvidesPackage{hobsub}%
+  [2012/05/28 v1.13 Construct package bundles (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname HOBsub@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\HOBsub@AtEnd{%
+    \HOBsub@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{96}{12}% `
+\edef\HOBsub@AtEnd{\HOBsub@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname HOBsub@OrgEndinput\endcsname\relax
+  \let\HOBsub@OrgEndinput\endinput
+\fi
+\def\hobsub@GobbleRemainingPackage{%
+  \begingroup
+  \catcode92=14 % backslash: comment
+  \catcode32=14 % space: comment
+  \catcode35=14 % hash: comment
+  \catcode123=14 % left brace: comment
+  \catcode125=14 % right brace: comment
+  \catcode60=3 % less: math
+  \catcode62=4 % greater: align
+  \endlinechar=-1 %
+  \HOBsub@GobbleRemainingPackage
+}
+\catcode60=3 % less: dollar
+\catcode62=4 % greater: align
+\long\def\HOBsub@GobbleRemainingPackage#1<hobsub>{%
+  \endgroup
+}
+\catcode60=12 % less: other
+\catcode62=12 % greater: other
+\def\hobsub@StartPackage#1{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+    \let\HOBsub@OrgCurrName\@currname
+    \let\HOBsub@OrgCurrExt\@currext
+    \csname @pushfilename\endcsname
+    \def\@currname{#1}%
+    \def\@currext{sty}%
+    \expandafter\def\csname\@currname.\@currext-h@@k\endcsname{}%
+    \let\endinput\hobsub@GobbleRemainingPackage
+    \def\hobsub@StopPackage{%
+      \let\hobsub@StopPackage\relax
+      \HOBsub@StopPackage
+    }%
+    \hobsub@AddToFileList{#1.sty}%
+  \else
+    \hobsub@Info{hobsub}{Skipping package `#1' (already loaded)}%
+    \let\hobsub@StopPackage\relax
+    \expandafter\hobsub@GobbleRemainingPackage
+  \fi
+}
+\let\hobsub@StopPackage\relax
+\def\hobsub@Info#1#2{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @PackageInfoNoLine\endcsname\relax
+    \immediate\write-1{Package #1 Info: #2.}%
+  \else
+    \let\hobsub@Info\@PackageInfoNoLine
+    \hobsub@Info{#1}{#2}%
+  \fi
+}
+\def\HOBsub@StopPackage{%
+  \csname\@currname.\@currext-h@@k\endcsname
+  \let\endinput\HOBsub@OrgEndinput
+  \csname @popfilename\endcsname
+  \let\@currname\HOBsub@OrgCurrName
+  \let\@currext\HOBsub@OrgCurrExt
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @addtofilelist\endcsname\relax
+  \def\hobsub@AddToFileList#1{}%
+\else
+  \def\hobsub@AddToFileList#1{%
+    \@addtofilelist{#1}%
+  }%
+\fi
+\HOBsub@AtEnd%
+\endinput
+%%
+%% End of file `hobsub.sty'.

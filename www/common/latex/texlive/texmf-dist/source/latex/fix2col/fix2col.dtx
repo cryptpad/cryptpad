@@ -1,0 +1,631 @@
+% \iffalse
+%% Source File: fix2col.dtx Copyright 1997 1998 David Carlisle
+%%
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%
+%<*dtx>
+          \ProvidesFile{fix2col.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{fix2col}
+%<driver> \ProvidesFile{fix2col.drv}
+% \fi
+%         \ProvidesFile{fix2col.dtx}
+       [1998/08/17 v0.03 Output Routine fixes for two column mode (DPC,FMi)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{fix2col.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{fix2col.dtx}
+% \CheckSum{579}
+%
+% \changes{v0.01}{1997/11/07}
+%    {Initial version}
+%
+% \changes{v0.02}{1997/11/11}
+%    {\cs{@ztryfc}}
+%
+% \title{The \textsf{fix2col} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{David Carlisle\thanks{%^^A
+% Part one is essentially a copy of the fixmarks package by
+% Piet van Oostrum, itself based on earlier work by Joe Pallas.
+% Part two is loosely based on the fixfloats package, originally
+% by Ed Sznyter, with some modifications by Bil Kleb.}}
+% 
+% \date{\filedate}
+%
+% \let\package\textsf
+% \let\env\textsf
+% \let\url\texttt
+%
+%  \maketitle
+%
+% \section{Introduction}
+% This package makes two independent changes to \LaTeX's two column
+% output routine to fix the following two longstanding `features'.
+%
+% \begin{itemize}
+% \item
+% If the \TeX\ mark system is used (for example using the 
+% `headings' page style in the standard \LaTeX\ classes) then any marks
+% that originate on the first column are `lost' as \LaTeX\ constructs
+% the second column. An example document showing how this can result
+% in incorrect page headings may be found in the latex bug database:\\
+% \url{http://www.uni-mainz.de/cgi-bin/ltxbugs2html?pr=latex/2613}
+%
+% \item
+% The second feature is documented in the \LaTeX\ book. By default
+% \LaTeX\ does not attempt to keep double and single column floats in
+% sequence, so if `Figure 1' is a double column float produced with
+% |figure*|, then it may float 
+% after `Figure 2' if that is a single column, |figure|, float.
+% Further correspondence about this may also be found in the
+% bug database:\\
+% \url{http://www.uni-mainz.de/cgi-bin/ltxbugs2html?pr=latex/2346}
+% \end{itemize}
+%
+% \StopEventually{}
+%
+% \section{Notes on the Implementation Strategies}
+%
+% \subsection{Preserving Marks}
+%
+% The standard \LaTeX\ twocolumn system works internally by making
+% each column a separate `page' that is passed independently to \TeX's
+% pagebreaker. (Unlike say the \package{multicol} package, where all
+% columns are gathered together and then split into columns later,
+% using |\vsplit|.) This means that the primitive \TeX\ marks that are
+% normally used for header information, are globally reset after the
+% first column. By default \LaTeX\ does nothing about this.
+% A good solution is provided by Piet van Oostrum (building on earlier
+% work of Joe Pallas) in his \package{fixmarks} package.
+%
+% After the first column box has been collected the mark information
+% for that box is saved, so that any |\firstmark| can be
+% `artificially' used to set the page-level marks after the second
+% column has been collected. (The second column |\firstmark| is not
+% normally required.) Unfortunately \TeX\ does not provide a direct
+% way of knowing if any marks are in the page, |\firstmark| always has a
+% value from previous pages, even if there is no mark in this page.
+% The solution is to make a copy of the box and then |\vsplit| it
+% so that any marks show up as |\splitfirstmark|.
+%
+% The use of |\vsplit| does mean that the output routine will globally
+% change the value of |\splitfirstmark| and
+% |\splitbotmark|. The \package{fixmarks} package goes to some trouble
+% to save and restore these values so that the output routine does
+% \emph{not} change the values. This part of \package{fixmarks} is not
+% copied here as it is quite costly (having to be run on every page) and
+% there is no reason why anyone writing code using |\vsplit| should
+% allow the output routine to be triggered before the split marks have
+% been accessed.
+%
+% \subsection{Preserving Float Order}
+%
+% The standard output routine maintains two lists of floats that have
+% been `deferred' for later consideration. One list for single column
+% floats, and one for double column floats (which are always
+% immediately put onto their deferred list). This mechanism means
+% that \LaTeX\ `knows' which type of float is contained in each box
+% by the list that it is processing, but having two lists means
+% that there is no mechanism for preserving the order between the
+% floats in each list.
+%
+% The solution to this problem consists of two small changes to
+% the output routine.
+%
+% Firstly, abandon the `double column float list' |\@dbldeferlist|
+% and change every command where it is used so that instead the
+% same |\@deferlist| is used as for single column floats.
+% That one change ensures that double and single column floats
+% stay in the same sequence, but as \LaTeX\ no longer `knows'
+% whether a float is double or single column, it will happily
+% insert a double float into a single column, overprinting the
+% other column, or the margin.
+%
+% The second change is to provide an alternative mechanism for
+% recording the two column floats. \LaTeX\ already has a compact
+% mechanism for recording float information, an integer count register
+% assigned to each float records information about the `type' of float
+% `figure', `table' and the position information `htp' etc.
+%
+% The type information is stored in the `high' bits, one bit position
+% (above `32') allocated to each float type. The `low' bits store
+% information about the allowed positions, one bit each allocated for
+% |h t b p|.  In the \LaTeX2.09 system, the bit corresponding to `16'
+% formed a `boundary' between these two sets of information, and it
+% was never actually used by the system. Ed Sznyter's
+% \package{fixfloats} package not unreasonably used this position to
+% store the double column information, setting the bit for double
+% column floats. Then at each point in the output routine at which a
+% float is committed to a certain region, an additional check must be
+% made to check that the float is (or is not) double column. If it
+% spans the wrong number of columns it is deferred rather than being
+% added. 
+%
+% Unfortunately the bit `16' is not available in \LaTeXe. It is used
+% to encode the extra float position possibility `|!|' that was added
+% in that system. It would be possible to use position `32' and to
+% move the flags for `table', `figure',\ldots\ up one position, to
+% start at 64, but this would mean that in principle one less float
+% type would be supported, and more importantly is likely to break
+% any other packages that assume anything about the output routine
+% internals. So here I instead use another mechanism for flagging
+% double column floats: By default all floats have depth 0pt.
+% This package arranges that double column ones have depth 1sp.
+% This information may then be used in the same manner as in
+% the \package{fixfloats} package, to defer any floats that are not of
+% the correct column spanning type.
+%
+% Use of the package showed that one also has to change the way
+% \LaTeX{} handles star-form floats: if they are immediately deferred
+% (as done normally) certain situations can still result in the float
+% sequence getting out of order. This happens when a floats are placed
+% in the middle of a paragraph.  In that case the wide float is
+% deferred immediately while a column wide float early on in the same
+% paragraph might not be handled until the end of the paragraph when
+% it is finally seen by the output routine. Since by that time the
+% wide float is already on the |\@deferlist| the column float will
+% also end up there (which is not only incorrect because it may have
+% fitted onto the page but also because it is then placed at the end
+% of this list). Version v0.03 now fixes this problem.
+%
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Preserving Marks}
+%
+% This is just a change to the single command |\@outputdblcol|
+% so that it saves mark information for the first column and restores
+% it in the second column.
+%    \begin{macrocode}
+\def\@outputdblcol{%
+  \if@firstcolumn
+    \global\@firstcolumnfalse
+%    \end{macrocode}
+% Save the left column
+%    \begin{macrocode}
+    \global\setbox\@leftcolumn\copy\@outputbox
+%    \end{macrocode}
+%
+% Remember the marks from the first column
+%    \begin{macrocode}
+    \splitmaxdepth\maxdimen
+    \vbadness\maxdimen
+    \setbox\@outputbox\vsplit\@outputbox to\maxdimen
+%    \end{macrocode}
+%
+% One minor difference from the current \package{fixmarks}, pass the 
+% marks through a token register to stop any |#| tokens causing an
+% error in a |\def|.
+%    \begin{macrocode}
+    \toks@\expandafter{\topmark}%
+    \xdef\@firstcoltopmark{\the\toks@}%
+    \toks@\expandafter{\splitfirstmark}%
+    \xdef\@firstcolfirstmark{\the\toks@}%
+%    \end{macrocode}
+%
+% This test does not work if truly empty marks have been inserted, but
+% \LaTeX\ marks should always have (at least) two brace groups.
+% (Except before the first mark is used, when the marks are empty,
+% but that is OK here.)
+%    \begin{macrocode}
+    \ifx\@firstcolfirstmark\@empty
+      \global\let\@setmarks\relax
+    \else
+      \gdef\@setmarks{%
+        \let\firstmark\@firstcolfirstmark
+        \let\topmark\@firstcoltopmark}%
+    \fi
+%    \end{macrocode}
+%
+% End of change
+%    \begin{macrocode}
+  \else
+    \global\@firstcolumntrue
+    \setbox\@outputbox\vbox{%
+     \hb@xt@\textwidth{%
+        \hb@xt@\columnwidth{\box\@leftcolumn \hss}%
+        \hfil
+        \vrule \@width\columnseprule
+        \hfil
+       \hb@xt@\columnwidth{\box\@outputbox \hss}}}%
+  \@combinedblfloats
+%    \end{macrocode}
+% Override current first and top with those of first column if necessary
+%    \begin{macrocode}
+    \@setmarks
+%    \end{macrocode}
+% End of change
+%    \begin{macrocode}
+    \@outputpage
+    \begingroup
+      \@dblfloatplacement
+      \@startdblcolumn
+      \@whilesw\if@fcolmade \fi{\@outputpage\@startdblcolumn}%
+    \endgroup
+  \fi}
+%    \end{macrocode}
+%
+% \subsection{Preserving Float Order}
+%
+% Changes |\@dbldeferlist| to |\@deferlist| are not explicitly noted
+% but are flagged by blank comment lines around the changed line.
+%
+%
+%    \begin{macrocode}
+\def\end@dblfloat{%
+\if@twocolumn
+  \@endfloatbox
+  \ifnum\@floatpenalty <\z@
+    \@largefloatcheck
+%    \end{macrocode}
+%
+%  Force the depth of two column float boxes.
+%    \begin{macrocode}
+    \global\dp\@currbox1sp %
+%    \end{macrocode}
+%
+% \changes{v0.03}{1998/08/17}{FMi: use output routine to
+%    defer float}
+%    Next line assumes that first token of |\end@float| is
+%    |\@endfloatbox| so we gobble that.
+%    \begin{macrocode}
+%    \@cons\@deferlist\@currbox
+     \expandafter\@gobble\end@float
+%    \end{macrocode}
+%    |\@Esphack| is then added by |\@endfloat| above.
+%    \begin{macrocode}
+  \fi
+%    \ifnum \@floatpenalty =-\@Mii \@Esphack\fi
+\else
+  \end@float
+\fi
+}
+%    \end{macrocode}
+%
+% Test if the float box has the wrong width. (Actually as noted above
+% the test is for a conventional depth setting rather than for the
+% width of the float).
+%    \begin{macrocode}
+\def\@testwrongwidth #1{%
+  \ifdim\dp#1=\f@depth 
+  \else
+    \global\@testtrue
+  \fi}
+%    \end{macrocode}
+%
+% Normally looking for single column floats, which have zero depth.
+%    \begin{macrocode}
+\let\f@depth\z@
+%    \end{macrocode}
+%
+% but when making two column float area, look for floats with 1sp
+% depth.
+%    \begin{macrocode}
+\def\@dblfloatplacement{\global\@dbltopnum\c@dbltopnumber
+   \global\@dbltoproom \dbltopfraction\@colht
+   \@textmin \@colht
+   \advance \@textmin -\@dbltoproom
+   \@fpmin \dblfloatpagefraction\textheight
+   \@fptop \@dblfptop
+   \@fpsep \@dblfpsep
+   \@fpbot \@dblfpbot
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+   \def\f@depth{1sp}}
+%    \end{macrocode}
+%
+% All the remaining changes are replacing the double column defer list
+% or insering the extra test |\@testwrongwidth|\marg{box} at suitable
+% places. That is at plces where a box is taken off the deferlist.
+%    \begin{macrocode}
+\def \@doclearpage {%
+     \ifvoid\footins
+       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
+       \setbox\@tempboxa\box\@cclv
+       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
+       \global \let \@toplist \@empty
+       \global \let \@botlist \@empty
+       \global \@colroom \@colht
+       \ifx \@currlist\@empty
+       \else
+          \@latexerr{Float(s) lost}\@ehb
+          \global \let \@currlist \@empty
+       \fi
+       \@makefcolumn\@deferlist
+       \@whilesw\if@fcolmade \fi{\@opcol\@makefcolumn\@deferlist}%
+       \if@twocolumn
+         \if@firstcolumn
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \xdef\@deferlist{\@dbltoplist\@deferlist}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \global \let \@dbltoplist \@empty
+           \global \@colht \textheight
+           \begingroup
+              \@dblfloatplacement
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+              \@makefcolumn\@deferlist
+              \@whilesw\if@fcolmade \fi{\@outputpage
+                                        \@makefcolumn\@deferlist}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \endgroup
+         \else
+           \vbox{}\clearpage
+         \fi
+       \fi
+%    \end{macrocode}
+%    the next line is needed to avoid losing floats in certain 
+%    circumstances a single call to the original |\doclearpage|
+%    will now no longer output all floats.
+% \changes{v0.03}{1998/08/17}{FMi: ensure \cs{doclearpage} is called again
+%     until all floats are output}
+%    \begin{macrocode}
+       \ifx\@deferlist\@empty \else\clearpage \fi
+     \else
+       \setbox\@cclv\vbox{\box\@cclv\vfil}%
+       \@makecol\@opcol
+       \clearpage
+     \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def \@startdblcolumn {%
+  \@tryfcolumn \@deferlist
+  \if@fcolmade
+  \else
+    \begingroup
+      \let \reserved@b \@deferlist
+      \global \let \@deferlist \@empty
+      \let \@elt \@sdblcolelt
+      \reserved@b
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@addtonextcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \@reqcolroom \ht\@currbox
+       \advance \@reqcolroom \@textmin
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum\@colnum>\z@
+            \@bitor\@currtype\@deferlist
+            \@testwrongwidth\@currbox
+            \if@test
+            \else
+              \@addtotoporbot
+            \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@deferlist\@currbox
+   \fi
+  \endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@addtodblcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \@getfpsbit \tw@
+   \ifodd\@tempcnta
+     \@flsetnum \@dbltopnum
+     \ifnum \@dbltopnum>\z@
+       \@tempswafalse
+       \ifdim \@dbltoproom>\ht\@currbox
+         \@tempswatrue
+       \else
+         \ifnum \@fpstype<\sixt@@n
+           \advance \@dbltoproom \@textmin
+           \ifdim \@dbltoproom>\ht\@currbox
+             \@tempswatrue
+           \fi
+           \advance \@dbltoproom -\@textmin
+         \fi
+       \fi
+       \if@tempswa
+           \@bitor \@currtype \@deferlist
+%    \end{macrocode}
+%
+% not in fixfloats?
+%    \begin{macrocode}
+          \@testwrongwidth\@currbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \if@test
+           \else
+              \@tempdima -\ht\@currbox
+              \advance\@tempdima
+                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
+                                          \dblfloatsep \fi
+              \global \advance \@dbltoproom \@tempdima
+              \global \advance \@colht \@tempdima
+              \global \advance \@dbltopnum \m@ne
+              \@cons \@dbltoplist \@currbox
+              \@inserttrue
+           \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@deferlist\@currbox
+   \fi
+  \endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def \@addtocurcol {%
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \advance \@textmin \@textfloatsheight
+       \@reqcolroom \@pageht
+       \ifdim \@textmin>\@reqcolroom
+         \@reqcolroom \@textmin
+       \fi
+       \advance \@reqcolroom \ht\@currbox
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum \@colnum>\z@
+           \@bitor\@currtype\@deferlist
+%    \end{macrocode}
+%    We need to defer the float also if its width
+%    doesn't fit.
+% \changes{v0.03}{1998/08/17}{FMi: test for wide float was
+%    in wrong place}
+%    \begin{macrocode}
+          \@testwrongwidth\@currbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \if@test
+           \else
+             \@bitor\@currtype\@botlist
+             \if@test
+               \@addtobot
+             \else
+               \ifodd \count\@currbox
+                 \advance \@reqcolroom \intextsep
+                 \ifdim \@colroom>\@reqcolroom
+                   \global \advance \@colnum \m@ne
+                   \global \advance \@textfloatsheight \ht\@currbox
+                   \global \advance \@textfloatsheight 2\intextsep
+                   \@cons \@midlist \@currbox
+                   \if@nobreak
+                     \nobreak
+                     \@nobreakfalse
+                     \everypar{}%
+                   \else
+                     \addpenalty \interlinepenalty
+                   \fi
+                   \vskip \intextsep
+                   \box\@currbox
+                   \penalty\interlinepenalty
+                   \vskip\intextsep
+                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
+                   \outputpenalty \z@
+                   \@inserttrue
+                 \fi
+               \fi
+               \if@insert
+               \else
+                 \@addtotoporbot
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@resethfps
+     \@cons\@deferlist\@currbox
+   \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@xtryfc #1{%
+  \@next\reserved@a\@trylist{}{}%
+  \@currtype \count #1%
+  \divide\@currtype\@xxxii
+  \multiply\@currtype\@xxxii
+  \@bitor \@currtype \@failedlist
+  \@testfp #1%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \@testwrongwidth #1%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \ifdim \ht #1>\@colht
+     \@testtrue
+  \fi
+  \if@test 
+    \@cons\@failedlist #1%
+  \else
+    \@ytryfc #1%
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@ztryfc #1{%
+  \@tempcnta\count #1%
+  \divide\@tempcnta\@xxxii
+  \multiply\@tempcnta\@xxxii 
+  \@bitor \@tempcnta {\@failedlist \@flfail}%
+  \@testfp #1%
+%    \end{macrocode}
+%
+% not in fixfloats?
+%    \begin{macrocode}
+  \@testwrongwidth #1%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \@tempdimb\@tempdima
+  \advance\@tempdimb\ht #1%
+  \advance\@tempdimb\@fpsep
+  \ifdim \@tempdimb >\@colht
+    \@testtrue
+  \fi
+  \if@test
+    \@cons\@flfail #1%
+  \else
+    \@cons\@flsucceed #1%
+    \@tempdima\@tempdimb
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%

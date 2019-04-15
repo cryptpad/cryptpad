@@ -1,0 +1,391 @@
+% \def\filename{amsgen.dtx}
+% \def\fileversion{2.0}
+% \def\filedate{1999/11/30}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 1999 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\documentclass{amsdtx}
+\begin{document}
+\title{The \pkg{amsgen} package}
+\author{American Mathematical Society\\Michael Downes}
+\date{Version \fileversion, \filedate}
+\DocInput{amsgen.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%    This is an internal package for storing common functions
+%    that are shared by more than one package in the \amslatex/
+%    distribution. Some of these might eventually make it into the \latex/
+%    kernel.
+%
+% \StopEventually{}
+%
+%    Standard package info.
+%    Using \cs{ProvidesFile} rather than \cs{ProvidesPackage} because
+%    the latter, when input by, e.g, \cls{amsbook}, results in
+%    \texttt{LaTeX warning: You have requested document class `amsbook',
+%    but the document class provides `amsgen'.}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must December 1994 or later
+\ProvidesFile{amsgen.sty}[1999/11/30 v2.0]
+%    \end{macrocode}
+%
+% \section{Implementation}
+%    Some general macros shared by \fn{amsart.dtx}, \fn{amsmath.dtx},
+%    \fn{amsfonts.dtx}, \dots
+%
+% \begin{macro}{\@saveprimitive}
+%    The \pkg{amsmath} package redefines a number of \tex/ primitives.
+%    In case some preceding package also decided to redefine one of
+%    those same primitives, we had better do some checking to make
+%    sure that we are able to save the primitive meaning for internal
+%    use. This is handled by the \cs{@saveprimitive} function. We
+%    follow the example of \cs{@@input} where the primitive meaning is
+%    stored in an internal control sequence with a |@@| prefix.
+%    Primitive control sequences can be distinguished by the fact that
+%    \cs{string} and \cs{meaning} return the same information.
+%    \begin{macrocode}
+\providecommand{\@saveprimitive}[2]{\begingroup\escapechar`\\\relax
+  \edef\@tempa{\string#1}\edef\@tempb{\meaning#1}%
+  \ifx\@tempa\@tempb \global\let#2#1%
+  \else
+%    \end{macrocode}
+%    Check to see if \arg{2} was already given the desired primitive
+%    meaning somewhere else.
+%    \begin{macrocode}
+    \edef\@tempb{\meaning#2}%
+    \ifx\@tempa\@tempb
+    \else
+      \@latex@error{Unable to properly define \string#2; primitive
+      \noexpand#1no longer primitive}\@eha
+    \fi
+  \fi
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xp}
+% \begin{macro}{\@nx}
+%    Shorthands for long command names.
+%    \begin{macrocode}
+\let\@xp=\expandafter
+\let\@nx=\noexpand
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%
+%  \begin{macro}{\@emptytoks}
+%    A token register companion for \cs{@empty}. Saves a little main mem and
+%    probably makes initializations such as |\toks@{}| run faster too.
+%    \begin{macrocode}
+\newtoks\@emptytoks
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@oparg}
+%    Use of \cs{@oparg} simplifies some constructions where a macro
+%    takes an optional argument in square brackets. We can't use
+%    \cn{newcommand} here because this function might be previously
+%    defined by the \pkg{amsmath} package in a loading sequence such as
+% \begin{verbatim}
+% \usepackage{amsmath,amsthm}
+% \end{verbatim}
+%    \begin{macrocode}
+\def\@oparg#1[#2]{\@ifnextchar[{#1}{#1[#2]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ifempty}
+% \begin{macro}{\@ifnotempty}
+%    |\@ifnotempty| and |\@ifempty| use category 11 |@| characters to
+%    test whether the argument is empty or not, since these are highly
+%    unlikely to occur in the argument. As with \cn{@oparg}, there is a
+%    possibility that these commands were defined previously in
+%    \fn{amsmath.sty}.
+%    \begin{macrocode}
+\long\def\@ifempty#1{\@xifempty#1@@..\@nil}
+\long\def\@xifempty#1#2@#3#4#5\@nil{%
+  \ifx#3#4\@xp\@firstoftwo\else\@xp\@secondoftwo\fi}
+%    \end{macrocode}
+%    \cs{@ifnotempty} is a shorthand that makes code read better when
+%    no action is needed in the empty case. At a cost of double
+%    argument-reading---so for often-executed code, avoiding
+%    \cs{@ifnotempty} might be wise.
+%    \begin{macrocode}
+\long\def\@ifnotempty#1{\@ifempty{#1}{}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    Some abbreviations to conserve token mem.
+%    \begin{macrocode}
+\def\FN@{\futurelet\@let@token}
+\def\DN@{\def\next@}
+\def\RIfM@{\relax\ifmmode}
+\def\setboxz@h{\setbox\z@\hbox}
+\def\wdz@{\wd\z@}
+\def\boxz@{\box\z@}
+\def\relaxnext@{\let\@let@token\relax}
+%    \end{macrocode}
+%
+% \begin{macro}{\new@ifnextchar}
+%    This macro is a new version of \latex/'s \verb+\@ifnextchar+,
+%    macro that does not skip over spaces.
+%    \begin{macrocode}
+\long\def\new@ifnextchar#1#2#3{%
+%    \end{macrocode}
+%    By including the space after the equals sign, we make it possible
+%    for \cs{new@ifnextchar} to do look-ahead for any token, including a
+%    space!
+%    \begin{macrocode}
+  \let\reserved@d= #1%
+  \def\reserved@a{#2}\def\reserved@b{#3}%
+  \futurelet\@let@token\new@ifnch
+}
+%
+\def\new@ifnch{%
+  \ifx\@let@token\reserved@d \let\reserved@b\reserved@a \fi
+  \reserved@b
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ifstar}
+%    There will essentially never be a space before the \qc{\*}, so
+%    using \cs{@ifnextchar} is unnecessarily slow.
+%    \begin{macrocode}
+\def\@ifstar#1#2{\new@ifnextchar *{\def\reserved@a*{#1}\reserved@a}{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+%    The hook \cs{every@size} was changed to \cs{every@math@size} in the
+%    December 1994 release of \latex/ and its calling procedures changed.
+%    If \cs{every@math@size} is undefined it means the user has an older
+%    version of \latex/ so we had better define it and patch a couple of
+%    functions (\cs{glb@settings} and \cs{set@fontsize}).
+%    \begin{macrocode}
+\@ifundefined{every@math@size}{%
+%    \end{macrocode}
+%    Reuse the same token register; since it was never used except for
+%    the purposes that are affected below, this is OK.
+%    \begin{macrocode}
+\let\every@math@size=\every@size
+\def\glb@settings{%
+     \expandafter\ifx\csname S@\f@size\endcsname\relax
+       \calculate@math@sizes
+     \fi
+     \csname S@\f@size\endcsname
+      \ifmath@fonts
+%       \ifnum \tracingfonts>\tw@
+%          \@font@info{Setting up math fonts for
+%                  \f@size/\f@baselineskip}\fi
+        \begingroup
+          \escapechar\m@ne
+          \csname mv@\math@version \endcsname
+          \globaldefs\@ne
+          \let \glb@currsize \f@size
+          \math@fonts
+        \endgroup
+        \the\every@math@size
+      \else
+%       \ifnum \tracingfonts>\tw@
+%        \@font@info{No math setup for \f@size/\f@baselineskip}%
+%       \fi
+      \fi
+}
+%    \end{macrocode}
+%    Remove |\the\every@size| from \cs{size@update}.
+%    \begin{macrocode}
+\def\set@fontsize#1#2#3{%
+    \@defaultunits\@tempdimb#2pt\relax\@nnil
+    \edef\f@size{\strip@pt\@tempdimb}%
+    \@defaultunits\@tempskipa#3pt\relax\@nnil
+    \edef\f@baselineskip{\the\@tempskipa}%
+    \edef\f@linespread{#1}%
+    \let\baselinestretch\f@linespread
+      \def\size@update{%
+        \baselineskip\f@baselineskip\relax
+        \baselineskip\f@linespread\baselineskip
+        \normalbaselineskip\baselineskip
+        \setbox\strutbox\hbox{%
+          \vrule\@height.7\baselineskip
+                \@depth.3\baselineskip
+                \@width\z@}%
+%%%     \the\every@size
+        \let\size@update\relax}%
+  }
+}{}% end \@ifundefined test
+%    \end{macrocode}
+%
+% \begin{macro}{\ex@}
+%    The \cs{ex@} variable provides a small unit of space for use in
+%    math-mode constructions, that varies according to the current type
+%    size. For example, the \cn{pmb} command uses \cs{ex@} units.
+%    Since a macro or mu unit solution for the \meta{dimen} \cs{ex@} won't
+%    work without changing a lot of current code in the \pkg{amsmath}
+%    package, we set \cs{ex@} through the \cs{every@math@size} hook.
+%    The value of \cs{ex@} is scaled nonlinearly in a range of roughly
+%    0.5pt to 1.5pt, by the function \cs{compute@ex@}.
+%    \begin{macrocode}
+\newdimen\ex@
+\addto@hook\every@math@size{\compute@ex@}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \cs{compute@ex@} computes \cs{ex@} as a nonlinear scaling from 10pt
+%    to current font size (\cs{f@size}). Using .97 as the multiplier makes 1
+%    |ex@| $\approx$ .9pt when the current type size is 8pt and 1 |ex@|
+%    $\approx$ 1.1pt when the current type size is 12pt.
+%
+%    The formula is essentially
+% \begin{displaymath}
+% \newcommand{\points}{\mbox{pt}}
+% \newcommand{\floor}[1]{\lfloor#1\rfloor}
+%      1\points \pm (1\points - (.97)^{\floor{\vert 10 - n\vert}})
+% \end{displaymath}
+%    where $n$ = current type size, but adjusted to differentiate
+%    half-point sizes as well as whole point sizes, and there is a
+%    cutoff for extraordinarily large values of \cs{f@size} ($>$ 20pt)
+%    so that the value of \cs{ex@} never exceeds 1.5pt.
+%
+%    \begin{macrocode}
+\def\compute@ex@{%
+  \begingroup
+  \dimen@-\f@size\p@
+  \ifdim\dimen@<-20\p@
+%    \end{macrocode}
+%    Never make \cs{ex@} larger than 1.5pt.
+%    \begin{macrocode}
+    \global\ex@ 1.5\p@
+  \else
+%    \end{macrocode}
+%    Adjust by the reference size and multiply by 2 to allow for
+%    half-point sizes.
+%    \begin{macrocode}
+    \advance\dimen@10\p@ \multiply\dimen@\tw@
+%    \end{macrocode}
+%    Save information about the current sign of \cs{dimen@}.
+%    \begin{macrocode}
+    \edef\@tempa{\ifdim\dimen@>\z@ -\fi}%
+%    \end{macrocode}
+%    Get the absolute value of \cs{dimen@}.
+%    \begin{macrocode}
+    \dimen@ \ifdim\dimen@<\z@ -\fi \dimen@
+    \advance\dimen@-\@m sp % fudge factor
+%    \end{macrocode}
+%    Here we use \cs{vfuzz} merely as a convenient scratch register
+%    \begin{macrocode}
+    \vfuzz\p@
+%    \end{macrocode}
+%    Multiply in a loop.
+%    \begin{macrocode}
+    \def\do{\ifdim\dimen@>\z@
+      \vfuzz=.97\vfuzz
+      \advance\dimen@ -\p@
+%\message{\vfuzz: \the\vfuzz, \dimen@: \the\dimen@}%
+      \@xp\do \fi}%
+    \do
+    \dimen@\p@ \advance\dimen@-\vfuzz
+    \global\ex@\p@
+    \global\advance\ex@ \@tempa\dimen@
+  \fi
+  \endgroup
+%\typeout{\string\f@size: \f@size}\showthe\ex@
+}
+%    \end{macrocode}
+%    Tests of the \cs{compute@ex@} function yield the following results:
+%
+% \begin{center}\begin{tabular}{rlrl}
+%    \cs{f@size}& \cs{ex@}&   \cs{f@size}& \cs{ex@}\\
+%    10&          1.0pt&      9&           0.94089pt\\
+%    11&          1.05911pt&  8.7&         0.91266pt\\
+%    12&          1.11473pt&  8.5&         0.91266pt\\
+%    14.4&        1.23982pt&  8.4&         0.88527pt\\
+%    17.28&       1.36684pt&  8&           0.88527pt\\
+%    20.74&       1.5pt&      7&           0.83293pt\\
+%    19.5&        1.4395pt&   6&           0.78369pt\\
+%                       &&    5&           0.73737pt\\
+%                       &&    1&           0.57785pt
+% \end{tabular}\end{center}
+%
+%  \begin{macro}{\@addpunct}
+%    Use of the \cs{@addpunct} function allows ending punctuation in
+%    section headings and elsewhere to be intelligently omitted
+%    when punctuation is already present.
+%    \begin{macrocode}
+\def\@addpunct#1{\ifnum\spacefactor>\@m \else#1\fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\frenchspacing}
+%    Change \cn{frenchspacing} to ensure that \cs{@addpunct} will
+%    continue to work properly even when `french' spacing is in effect.
+%    \begin{macrocode}
+\def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
+  \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }
+%    \end{macrocode}
+%  \end{macro}
+%
+% \subsection{Miscellaneous}
+%    \begin{macrocode}
+\def\nomath@env{\@amsmath@err{%
+  \string\begin{\@currenvir} allowed only in paragraph mode%
+}\@ehb% "You've lost some text"
+}
+%    \end{macrocode}
+%     A trade-off between main memory space and hash size; using
+%     \verb+\Invalid@@+ saves 14 bytes of main memory for each use of
+%     \verb+\Invalid@+, at the cost of one control sequence name.
+%     \verb+\Invalid@+ is currently used about five times and
+%     \verb+\Invalid@@+ is used by itself in some other instances,
+%     which means that it saves us more memory than \verb+\FN@+,
+%     \verb+\RIfM@+, and some of the other abbreviations above.
+%    \begin{macrocode}
+\def\Invalid@@{Invalid use of \string}
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{337}
+% \Finale

@@ -1,0 +1,1102 @@
+%%
+%% This is file `ix-uc.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `uc')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{ix-uc.def}%
+  [2011/05/27 v1.10 UC to LICR (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\InputenxUC{00A0}{\nobreakspace}{}
+\InputenxUC{00A1}{\textexclamdown}{}
+\InputenxUC{00A2}{\textcent}{%
+  \ProvideTextCommandDefault{\textcent}{%
+    \TextSymbolUnavailable\textcent
+  }%
+}
+\InputenxUC{00A3}{\textsterling}{}
+\InputenxUC{00A4}{\textcurrency}{%
+  \ProvideTextCommandDefault{\textcurrency}{%
+    \TextSymbolUnavailable\textcurrency
+  }%
+}
+\InputenxUC{00A5}{\textyen}{%
+  \ProvideTextCommandDefault{\textyen}{%
+    \TextSymbolUnavailable\textyen
+  }%
+}
+\InputenxUC{00A6}{\textbrokenbar}{%
+  \ProvideTextCommandDefault{\textbrokenbar}{%
+    \TextSymbolUnavailable\textbrokenbar
+  }%
+}
+\InputenxUC{00A7}{\textsection}{}
+\InputenxUC{00A8}{\textasciidieresis}{%
+  \ProvideTextCommandDefault{\textasciidieresis}{%
+    \"{}%
+  }%
+}
+\InputenxUC{00A9}{\textcopyright}{}
+\InputenxUC{00AA}{\textordfeminine}{}
+\InputenxUC{00AB}{\guillemotleft}{}
+\InputenxUC{00AC}{\textlnot}{%
+  \ProvideTextCommandDefault{\textlnot}{%
+    \ensuremath\lnot
+  }%
+}
+\InputenxUC{00AD}{\-}{}
+\InputenxUC{00AE}{\textregistered}{}
+\InputenxUC{00AF}{\textasciimacron}{%
+  \ProvideTextCommandDefault{\textasciimacron}{%
+    \@tabacckludge={}%
+  }%
+}
+\InputenxUC{00B0}{\textdegree}{%
+  \ProvideTextCommandDefault{\textdegree}{%
+    \ensuremath{{^\circ}}%
+  }%
+}
+\InputenxUC{00B1}{\textpm}{%
+  \ProvideTextCommandDefault{\textpm}{%
+    \ensuremath\pm
+  }%
+}
+\InputenxUC{00B2}{\texttwosuperior}{%
+  \ProvideTextCommandDefault{\texttwosuperior}{%
+    \ensuremath{{^2}}%
+  }%
+}
+\InputenxUC{00B3}{\textthreesuperior}{%
+  \ProvideTextCommandDefault{\textthreesuperior}{%
+    \ensuremath{{^3}}%
+  }%
+}
+\InputenxUC{00B4}{\textasciiacute}{%
+  \ProvideTextCommandDefault{\textasciiacute}{%
+    \@tabacckludge'{}%
+  }%
+}
+\InputenxUC{00B5}{\textmu}{%
+  \ProvideTextCommandDefault{\textmu}{%
+    \ensuremath\mu
+  }%
+}
+\InputenxUC{00B6}{\textparagraph}{}
+\InputenxUC{00B7}{\textperiodcentered}{}
+\InputenxUC{00B8}{\c\ }{}
+\InputenxUC{00B9}{\textonesuperior}{%
+  \ProvideTextCommandDefault{\textonesuperior}{%
+    \ensuremath{{^1}}%
+  }%
+}
+\InputenxUC{00BA}{\textordmasculine}{}
+\InputenxUC{00BB}{\guillemotright}{}
+\InputenxUC{00BC}{\textonequarter}{%
+  \ProvideTextCommandDefault{\textonequarter}{%
+    \ensuremath{\frac14}%
+  }%
+}
+\InputenxUC{00BD}{\textonehalf}{%
+  \ProvideTextCommandDefault{\textonehalf}{%
+    \ensuremath{\frac12}%
+  }%
+}
+\InputenxUC{00BE}{\textthreequarters}{%
+  \ProvideTextCommandDefault{\textthreequarters}{%
+    \ensuremath{\frac34}%
+  }%
+}
+\InputenxUC{00BF}{\textquestiondown}{}
+\InputenxUC{00C0}{\@tabacckludge`A}{}
+\InputenxUC{00C1}{\@tabacckludge'A}{}
+\InputenxUC{00C2}{\^A}{}
+\InputenxUC{00C3}{\~A}{}
+\InputenxUC{00C4}{\"A}{}
+\InputenxUC{00C5}{\r A}{}
+\InputenxUC{00C6}{\AE}{}
+\InputenxUC{00C7}{\c C}{}
+\InputenxUC{00C8}{\@tabacckludge`E}{}
+\InputenxUC{00C9}{\@tabacckludge'E}{}
+\InputenxUC{00CA}{\^E}{}
+\InputenxUC{00CB}{\"E}{}
+\InputenxUC{00CC}{\@tabacckludge`I}{}
+\InputenxUC{00CD}{\@tabacckludge'I}{}
+\InputenxUC{00CE}{\^I}{}
+\InputenxUC{00CF}{\"I}{}
+\InputenxUC{00D0}{\DH}{}
+\InputenxUC{00D1}{\~N}{}
+\InputenxUC{00D2}{\@tabacckludge`O}{}
+\InputenxUC{00D3}{\@tabacckludge'O}{}
+\InputenxUC{00D4}{\^O}{}
+\InputenxUC{00D5}{\~O}{}
+\InputenxUC{00D6}{\"O}{}
+\InputenxUC{00D7}{\texttimes}{%
+  \ProvideTextCommandDefault{\texttimes}{%
+    \ensuremath\times
+  }%
+}
+\InputenxUC{00D8}{\O}{}
+\InputenxUC{00D9}{\@tabacckludge`U}{}
+\InputenxUC{00DA}{\@tabacckludge'U}{}
+\InputenxUC{00DB}{\^U}{}
+\InputenxUC{00DC}{\"U}{}
+\InputenxUC{00DD}{\@tabacckludge'Y}{}
+\InputenxUC{00DE}{\TH}{}
+\InputenxUC{00DF}{\ss}{}
+\InputenxUC{00E0}{\@tabacckludge`a}{}
+\InputenxUC{00E1}{\@tabacckludge'a}{}
+\InputenxUC{00E2}{\^a}{}
+\InputenxUC{00E3}{\~a}{}
+\InputenxUC{00E4}{\"a}{}
+\InputenxUC{00E5}{\r a}{}
+\InputenxUC{00E6}{\ae}{}
+\InputenxUC{00E7}{\c c}{}
+\InputenxUC{00E8}{\@tabacckludge`e}{}
+\InputenxUC{00E9}{\@tabacckludge'e}{}
+\InputenxUC{00EA}{\^e}{}
+\InputenxUC{00EB}{\"e}{}
+\InputenxUC{00EC}{\@tabacckludge`\i}{}
+\InputenxUC{00ED}{\@tabacckludge'\i}{}
+\InputenxUC{00EE}{\^\i}{}
+\InputenxUC{00EF}{\"\i}{}
+\InputenxUC{00F0}{\dh}{}
+\InputenxUC{00F1}{\~n}{}
+\InputenxUC{00F2}{\@tabacckludge`o}{}
+\InputenxUC{00F3}{\@tabacckludge'o}{}
+\InputenxUC{00F4}{\^o}{}
+\InputenxUC{00F5}{\~o}{}
+\InputenxUC{00F6}{\"o}{}
+\InputenxUC{00F7}{\textdiv}{%
+  \ProvideTextCommandDefault{\textdiv}{%
+    \TextSymbolUnavailable\textdiv
+  }%
+}
+\InputenxUC{00F8}{\o}{}
+\InputenxUC{00F9}{\@tabacckludge`u}{}
+\InputenxUC{00FA}{\@tabacckludge'u}{}
+\InputenxUC{00FB}{\^u}{}
+\InputenxUC{00FC}{\"u}{}
+\InputenxUC{00FD}{\@tabacckludge'y}{}
+\InputenxUC{00FE}{\th}{}
+\InputenxUC{00FF}{\"y}{}
+\InputenxUC{0100}{\@tabacckludge=A}{}
+\InputenxUC{0101}{\@tabacckludge=a}{}
+\InputenxUC{0102}{\u A}{}
+\InputenxUC{0103}{\u a}{}
+\InputenxUC{0104}{\k A}{}
+\InputenxUC{0105}{\k a}{}
+\InputenxUC{0106}{\@tabacckludge'C}{}
+\InputenxUC{0107}{\@tabacckludge'c}{}
+\InputenxUC{0108}{\^C}{}
+\InputenxUC{0109}{\^c}{}
+\InputenxUC{010A}{\.C}{}
+\InputenxUC{010B}{\.c}{}
+\InputenxUC{010C}{\v C}{}
+\InputenxUC{010D}{\v c}{}
+\InputenxUC{010E}{\v D}{}
+\InputenxUC{010F}{\v d}{}
+\InputenxUC{0110}{\DJ}{}
+\InputenxUC{0111}{\dj}{}
+\InputenxUC{0112}{\@tabacckludge=E}{}
+\InputenxUC{0113}{\@tabacckludge=e}{}
+\InputenxUC{0116}{\.E}{}
+\InputenxUC{0117}{\.e}{}
+\InputenxUC{0118}{\k E}{}
+\InputenxUC{0119}{\k e}{}
+\InputenxUC{011A}{\v E}{}
+\InputenxUC{011B}{\v e}{}
+\InputenxUC{011C}{\^G}{}
+\InputenxUC{011D}{\^g}{}
+\InputenxUC{011E}{\u G}{}
+\InputenxUC{011F}{\u g}{}
+\InputenxUC{0120}{\.G}{}
+\InputenxUC{0121}{\.g}{}
+\InputenxUC{0122}{\c G}{}
+\InputenxUC{0123}{\c g}{}
+\InputenxUC{0124}{\^H}{}
+\InputenxUC{0125}{\^h}{}
+\InputenxUC{0126}{\textmalteseH}{%
+  \ProvideTextCommandDefault{\textmalteseH}{%
+    \TextSymbolUnavailable\textmalteseH
+  }%
+}
+\InputenxUC{0127}{\textmalteseh}{%
+  \ProvideTextCommandDefault{\textmalteseh}{%
+    \TextSymbolUnavailable\textmalteseh
+  }%
+}
+\InputenxUC{0128}{\~I}{}
+\InputenxUC{0129}{\~\i}{}
+\InputenxUC{012A}{\@tabacckludge=I}{}
+\InputenxUC{012B}{\@tabacckludge=\i}{}
+\InputenxUC{012E}{\k I}{}
+\InputenxUC{012F}{\k i}{}
+\InputenxUC{0130}{\.I}{}
+\InputenxUC{0131}{\i}{}
+\InputenxUC{0132}{\IJ}{}
+\InputenxUC{0133}{\ij}{}
+\InputenxUC{0134}{\^J}{}
+\InputenxUC{0135}{\^\j}{}
+\InputenxUC{0136}{\c K}{}
+\InputenxUC{0137}{\c k}{}
+\InputenxUC{0138}{\textkra}{%
+  \ProvideTextCommandDefault{\textkra}{%
+    \TextSymbolUnavailable\textkra
+  }%
+}
+\InputenxUC{0139}{\@tabacckludge'L}{}
+\InputenxUC{013A}{\@tabacckludge'l}{}
+\InputenxUC{013B}{\c L}{}
+\InputenxUC{013C}{\c l}{}
+\InputenxUC{013D}{\v L}{}
+\InputenxUC{013E}{\v l}{}
+\InputenxUC{0141}{\L}{}
+\InputenxUC{0142}{\l}{}
+\InputenxUC{0143}{\@tabacckludge'N}{}
+\InputenxUC{0144}{\@tabacckludge'n}{}
+\InputenxUC{0145}{\c N}{}
+\InputenxUC{0146}{\c n}{}
+\InputenxUC{0147}{\v N}{}
+\InputenxUC{0148}{\v n}{}
+\InputenxUC{014A}{\NG}{}
+\InputenxUC{014B}{\ng}{}
+\InputenxUC{014C}{\@tabacckludge=O}{}
+\InputenxUC{014D}{\@tabacckludge=o}{}
+\InputenxUC{0150}{\H O}{}
+\InputenxUC{0151}{\H o}{}
+\InputenxUC{0152}{\OE}{}
+\InputenxUC{0153}{\oe}{}
+\InputenxUC{0154}{\@tabacckludge'R}{}
+\InputenxUC{0155}{\@tabacckludge'r}{}
+\InputenxUC{0156}{\c R}{}
+\InputenxUC{0157}{\c r}{}
+\InputenxUC{0158}{\v R}{}
+\InputenxUC{0159}{\v r}{}
+\InputenxUC{015A}{\@tabacckludge'S}{}
+\InputenxUC{015B}{\@tabacckludge's}{}
+\InputenxUC{015C}{\^S}{}
+\InputenxUC{015D}{\^s}{}
+\InputenxUC{015E}{\c S}{}
+\InputenxUC{015F}{\c s}{}
+\InputenxUC{0160}{\v S}{}
+\InputenxUC{0161}{\v s}{}
+\InputenxUC{0162}{\c T}{}
+\InputenxUC{0163}{\c t}{}
+\InputenxUC{0164}{\v T}{}
+\InputenxUC{0165}{\v t}{}
+\InputenxUC{0166}{\textTstroke}{%
+  \ProvideTextCommandDefault{\textTstroke}{%
+    \TextSymbolUnavailable\textTstroke
+  }%
+}
+\InputenxUC{0167}{\texttstroke}{%
+  \ProvideTextCommandDefault{\texttstroke}{%
+    \TextSymbolUnavailable\texttstroke
+  }%
+}
+\InputenxUC{0168}{\~U}{}
+\InputenxUC{0169}{\~u}{}
+\InputenxUC{016A}{\@tabacckludge=U}{}
+\InputenxUC{016B}{\@tabacckludge=u}{}
+\InputenxUC{016C}{\u U}{}
+\InputenxUC{016D}{\u u}{}
+\InputenxUC{016E}{\r U}{}
+\InputenxUC{016F}{\r u}{}
+\InputenxUC{0170}{\H U}{}
+\InputenxUC{0171}{\H u}{}
+\InputenxUC{0172}{\k U}{}
+\InputenxUC{0173}{\k u}{}
+\InputenxUC{0174}{\^W}{}
+\InputenxUC{0175}{\^w}{}
+\InputenxUC{0176}{\^Y}{}
+\InputenxUC{0177}{\^y}{}
+\InputenxUC{0178}{\"Y}{}
+\InputenxUC{0179}{\@tabacckludge'Z}{}
+\InputenxUC{017A}{\@tabacckludge'z}{}
+\InputenxUC{017B}{\.Z}{}
+\InputenxUC{017C}{\.z}{}
+\InputenxUC{017D}{\v Z}{}
+\InputenxUC{017E}{\v z}{}
+\InputenxUC{0192}{\textflorin}{%
+  \ProvideTextCommandDefault{\textflorin}{%
+    \textit{f}%
+  }%
+}
+\InputenxUC{01CD}{\v A}{}
+\InputenxUC{01CE}{\v a}{}
+\InputenxUC{01CF}{\v I}{}
+\InputenxUC{01D0}{\v\i}{}
+\InputenxUC{01D1}{\v O}{}
+\InputenxUC{01D2}{\v o}{}
+\InputenxUC{01D3}{\v U}{}
+\InputenxUC{01D4}{\v u}{}
+\InputenxUC{01E2}{\@tabacckludge=\AE}{}
+\InputenxUC{01E3}{\@tabacckludge=\ae}{}
+\InputenxUC{01E6}{\v G}{}
+\InputenxUC{01E7}{\v g}{}
+\InputenxUC{01E8}{\v K}{}
+\InputenxUC{01E9}{\v k}{}
+\InputenxUC{01F0}{\v\j}{}
+\InputenxUC{01F4}{\@tabacckludge'G}{}
+\InputenxUC{01F5}{\@tabacckludge'g}{}
+\InputenxUC{01F8}{\@tabacckludge`N}{}
+\InputenxUC{01F9}{\@tabacckludge`n}{}
+\InputenxUC{01FC}{\@tabacckludge'\AE}{}
+\InputenxUC{01FD}{\@tabacckludge'\ae}{}
+\InputenxUC{0218}{\textcommabelow S}{%
+  \ProvideTextCommandDefault{\textcommabelow}[1]{%
+    \hmode@bgroup
+      \ooalign{%
+        \null#1\crcr
+        \hidewidth
+        \raise-.31ex\hbox{%
+          \check@mathfonts
+          \fontsize\ssf@size\z@
+          \math@fontsfalse\selectfont,%
+        }%
+        \hidewidth
+      }%
+    \egroup
+  }%
+}
+\InputenxUC{0219}{\textcommabelow s}{%
+  \ProvideTextCommandDefault{\textcommabelow}[1]{%
+    \hmode@bgroup
+      \ooalign{%
+        \null#1\crcr
+        \hidewidth
+        \raise-.31ex\hbox{%
+          \check@mathfonts
+          \fontsize\ssf@size\z@
+          \math@fontsfalse\selectfont,%
+        }%
+        \hidewidth
+      }%
+    \egroup
+  }%
+}
+\InputenxUC{021A}{\textcommabelow T}{%
+  \ProvideTextCommandDefault{\textcommabelow}[1]{%
+    \hmode@bgroup
+      \ooalign{%
+        \null#1\crcr
+        \hidewidth
+        \raise-.31ex\hbox{%
+          \check@mathfonts
+          \fontsize\ssf@size\z@
+          \math@fontsfalse\selectfont,%
+        }%
+        \hidewidth
+      }%
+    \egroup
+  }%
+}
+\InputenxUC{021B}{\textcommabelow t}{%
+  \ProvideTextCommandDefault{\textcommabelow}[1]{%
+    \hmode@bgroup
+      \ooalign{%
+        \null#1\crcr
+        \hidewidth
+        \raise-.31ex\hbox{%
+          \check@mathfonts
+          \fontsize\ssf@size\z@
+          \math@fontsfalse\selectfont,%
+        }%
+        \hidewidth
+      }%
+    \egroup
+  }%
+}
+\InputenxUC{0226}{\.A}{}
+\InputenxUC{0227}{\.a}{}
+\InputenxUC{0228}{\c E}{}
+\InputenxUC{0229}{\c e}{}
+\InputenxUC{022E}{\.O}{}
+\InputenxUC{022F}{\.o}{}
+\InputenxUC{0232}{\@tabacckludge=y}{}
+\InputenxUC{0237}{\j}{}
+\InputenxUC{02C6}{\textasciicircum}{}
+\InputenxUC{02C7}{\textasciicaron}{%
+  \ProvideTextCommandDefault{\textasciicaron}{%
+    \v{}%
+  }%
+}
+\InputenxUC{02CB}{\textasciigrave}{%
+  \ProvideTextCommandDefault{\textasciigrave}{%
+    \@tabacckludge`{}%
+  }%
+}
+\InputenxUC{02D8}{\textasciibreve}{%
+  \ProvideTextCommandDefault{\textasciibreve}{%
+    \u{}%
+  }%
+}
+\InputenxUC{02D9}{\.{}}{}
+\InputenxUC{02DA}{\r{}}{}
+\InputenxUC{02DB}{\k{}}{}
+\InputenxUC{02DC}{\textasciitilde}{}
+\InputenxUC{02DD}{\textacutedbl}{%
+  \ProvideTextCommandDefault{\textacutedbl}{%
+    \H{}%
+  }%
+}
+\InputenxUC{0393}{\textGamma}{%
+  \ProvideTextCommandDefault{\textGamma}{%
+    \ensuremath\Gamma
+  }%
+}
+\InputenxUC{0398}{\textTheta}{%
+  \ProvideTextCommandDefault{\textTheta}{%
+    \ensuremath\Theta
+  }%
+}
+\InputenxUC{03A3}{\textSigma}{%
+  \ProvideTextCommandDefault{\textSigma}{%
+    \ensuremath\Sigma
+  }%
+}
+\InputenxUC{03A6}{\textPhi}{%
+  \ProvideTextCommandDefault{\textPhi}{%
+    \ensuremath\Phi
+  }%
+}
+\InputenxUC{03A9}{\textOmega}{%
+  \ProvideTextCommandDefault{\textOmega}{%
+    \ensuremath\Omega
+  }%
+}
+\InputenxUC{03B1}{\textalpha}{%
+  \ProvideTextCommandDefault{\textalpha}{%
+    \ensuremath\alpha
+  }%
+}
+\InputenxUC{03B2}{\textbeta}{%
+  \ProvideTextCommandDefault{\textbeta}{%
+    \ensuremath\beta
+  }%
+}
+\InputenxUC{03B4}{\textdelta}{%
+  \ProvideTextCommandDefault{\textdelta}{%
+    \ensuremath\delta
+  }%
+}
+\InputenxUC{03B5}{\textepsilon}{%
+  \ProvideTextCommandDefault{\textepsilon}{%
+    \ensuremath\varepsilon
+  }%
+}
+\InputenxUC{03C0}{\textpi}{%
+  \ProvideTextCommandDefault{\textpi}{%
+    \ensuremath\pi
+  }%
+}
+\InputenxUC{03C3}{\textsigma}{%
+  \ProvideTextCommandDefault{\textsigma}{%
+    \ensuremath\sigma
+  }%
+}
+\InputenxUC{03C4}{\texttau}{%
+  \ProvideTextCommandDefault{\texttau}{%
+    \ensuremath\tau
+  }%
+}
+\InputenxUC{03C6}{\textphi}{%
+  \ProvideTextCommandDefault{\textphi}{%
+    \ensuremath\phi
+  }%
+}
+\InputenxUC{0401}{\CYRYO}{}
+\InputenxUC{0402}{\CYRDJE}{}
+\InputenxUC{0403}{\@tabacckludge'\CYRG}{}
+\InputenxUC{0404}{\CYRIE}{}
+\InputenxUC{0405}{\CYRDZE}{}
+\InputenxUC{0406}{\CYRII}{}
+\InputenxUC{0407}{\CYRYI}{}
+\InputenxUC{0408}{\CYRJE}{}
+\InputenxUC{0409}{\CYRLJE}{}
+\InputenxUC{040A}{\CYRNJE}{}
+\InputenxUC{040B}{\CYRTSHE}{}
+\InputenxUC{040C}{\@tabacckludge'\CYRK}{}
+\InputenxUC{040E}{\CYRUSHRT}{}
+\InputenxUC{040F}{\CYRDZHE}{}
+\InputenxUC{0410}{\CYRA}{}
+\InputenxUC{0411}{\CYRB}{}
+\InputenxUC{0412}{\CYRV}{}
+\InputenxUC{0413}{\CYRG}{}
+\InputenxUC{0414}{\CYRD}{}
+\InputenxUC{0415}{\CYRE}{}
+\InputenxUC{0416}{\CYRZH}{}
+\InputenxUC{0417}{\CYRZ}{}
+\InputenxUC{0418}{\CYRI}{}
+\InputenxUC{0419}{\CYRISHRT}{}
+\InputenxUC{041A}{\CYRK}{}
+\InputenxUC{041B}{\CYRL}{}
+\InputenxUC{041C}{\CYRM}{}
+\InputenxUC{041D}{\CYRN}{}
+\InputenxUC{041E}{\CYRO}{}
+\InputenxUC{041F}{\CYRP}{}
+\InputenxUC{0420}{\CYRR}{}
+\InputenxUC{0421}{\CYRS}{}
+\InputenxUC{0422}{\CYRT}{}
+\InputenxUC{0423}{\CYRU}{}
+\InputenxUC{0424}{\CYRF}{}
+\InputenxUC{0425}{\CYRH}{}
+\InputenxUC{0426}{\CYRC}{}
+\InputenxUC{0427}{\CYRCH}{}
+\InputenxUC{0428}{\CYRSH}{}
+\InputenxUC{0429}{\CYRSHCH}{}
+\InputenxUC{042A}{\CYRHRDSN}{}
+\InputenxUC{042B}{\CYRERY}{}
+\InputenxUC{042C}{\CYRSFTSN}{}
+\InputenxUC{042D}{\CYREREV}{}
+\InputenxUC{042E}{\CYRYU}{}
+\InputenxUC{042F}{\CYRYA}{}
+\InputenxUC{0430}{\cyra}{}
+\InputenxUC{0431}{\cyrb}{}
+\InputenxUC{0432}{\cyrv}{}
+\InputenxUC{0433}{\cyrg}{}
+\InputenxUC{0434}{\cyrd}{}
+\InputenxUC{0435}{\cyre}{}
+\InputenxUC{0436}{\cyrzh}{}
+\InputenxUC{0437}{\cyrz}{}
+\InputenxUC{0438}{\cyri}{}
+\InputenxUC{0439}{\cyrishrt}{}
+\InputenxUC{043A}{\cyrk}{}
+\InputenxUC{043B}{\cyrl}{}
+\InputenxUC{043C}{\cyrm}{}
+\InputenxUC{043D}{\cyrn}{}
+\InputenxUC{043E}{\cyro}{}
+\InputenxUC{043F}{\cyrp}{}
+\InputenxUC{0440}{\cyrr}{}
+\InputenxUC{0441}{\cyrs}{}
+\InputenxUC{0442}{\cyrt}{}
+\InputenxUC{0443}{\cyru}{}
+\InputenxUC{0444}{\cyrf}{}
+\InputenxUC{0445}{\cyrh}{}
+\InputenxUC{0446}{\cyrc}{}
+\InputenxUC{0447}{\cyrch}{}
+\InputenxUC{0448}{\cyrsh}{}
+\InputenxUC{0449}{\cyrshch}{}
+\InputenxUC{044A}{\cyrhrdsn}{}
+\InputenxUC{044B}{\cyrery}{}
+\InputenxUC{044C}{\cyrsftsn}{}
+\InputenxUC{044D}{\cyrerev}{}
+\InputenxUC{044E}{\cyryu}{}
+\InputenxUC{044F}{\cyrya}{}
+\InputenxUC{0451}{\cyryo}{}
+\InputenxUC{0452}{\cyrdje}{}
+\InputenxUC{0453}{\@tabacckludge'\cyrg}{}
+\InputenxUC{0454}{\cyrie}{}
+\InputenxUC{0455}{\cyrdze}{}
+\InputenxUC{0456}{\cyrii}{}
+\InputenxUC{0457}{\cyryi}{}
+\InputenxUC{0458}{\cyrje}{}
+\InputenxUC{0459}{\cyrlje}{}
+\InputenxUC{045A}{\cyrnje}{}
+\InputenxUC{045B}{\cyrtshe}{}
+\InputenxUC{045C}{\@tabacckludge'\cyrk}{}
+\InputenxUC{045E}{\cyrushrt}{}
+\InputenxUC{045F}{\cyrdzhe}{}
+\InputenxUC{0462}{\CYRYAT}{}
+\InputenxUC{0463}{\cyryat}{}
+\InputenxUC{046A}{\CYRBYUS}{}
+\InputenxUC{046B}{\cyrbyus}{}
+\InputenxUC{0472}{\CYRFITA}{}
+\InputenxUC{0473}{\cyrfita}{}
+\InputenxUC{0474}{\CYRIZH}{}
+\InputenxUC{0475}{\cyrizh}{}
+\InputenxUC{048C}{\CYRSEMISFTSN}{}
+\InputenxUC{048D}{\cyrsemisftsn}{}
+\InputenxUC{048E}{\CYRRTICK}{}
+\InputenxUC{048F}{\cyrrtick}{}
+\InputenxUC{0490}{\CYRGUP}{}
+\InputenxUC{0491}{\cyrgup}{}
+\InputenxUC{0492}{\CYRGHCRS}{}
+\InputenxUC{0493}{\cyrghcrs}{}
+\InputenxUC{0494}{\CYRGHK}{}
+\InputenxUC{0495}{\cyrghk}{}
+\InputenxUC{0496}{\CYRZHDSC}{}
+\InputenxUC{0497}{\cyrzhdsc}{}
+\InputenxUC{0498}{\CYRZDSC}{}
+\InputenxUC{0499}{\cyrzdsc}{}
+\InputenxUC{049A}{\CYRKDSC}{}
+\InputenxUC{049B}{\cyrkdsc}{}
+\InputenxUC{049C}{\CYRKVCRS}{}
+\InputenxUC{049D}{\cyrkvcrs}{}
+\InputenxUC{049E}{\CYRKHCRS}{}
+\InputenxUC{049F}{\cyrkhcrs}{}
+\InputenxUC{04A0}{\CYRKBEAK}{}
+\InputenxUC{04A1}{\cyrkbeak}{}
+\InputenxUC{04A2}{\CYRNDSC}{}
+\InputenxUC{04A3}{\cyrndsc}{}
+\InputenxUC{04A4}{\CYRNG}{}
+\InputenxUC{04A5}{\cyrng}{}
+\InputenxUC{04A6}{\CYRPHK}{}
+\InputenxUC{04A7}{\cyrphk}{}
+\InputenxUC{04A8}{\CYRABHHA}{}
+\InputenxUC{04A9}{\cyrabhha}{}
+\InputenxUC{04AA}{\CYRSDSC}{}
+\InputenxUC{04AB}{\cyrsdsc}{}
+\InputenxUC{04AC}{\CYRTDSC}{}
+\InputenxUC{04AD}{\cyrtdsc}{}
+\InputenxUC{04AE}{\CYRY}{}
+\InputenxUC{04AF}{\cyry}{}
+\InputenxUC{04B0}{\CYRYHCRS}{}
+\InputenxUC{04B1}{\cyryhcrs}{}
+\InputenxUC{04B2}{\CYRHDSC}{}
+\InputenxUC{04B3}{\cyrhdsc}{}
+\InputenxUC{04B4}{\CYRTETSE}{}
+\InputenxUC{04B5}{\cyrtetse}{}
+\InputenxUC{04B6}{\CYRCHRDSC}{}
+\InputenxUC{04B7}{\cyrchrdsc}{}
+\InputenxUC{04B8}{\CYRCHVCRS}{}
+\InputenxUC{04B9}{\cyrchvcrs}{}
+\InputenxUC{04BA}{\CYRSHHA}{}
+\InputenxUC{04BB}{\cyrshha}{}
+\InputenxUC{04BC}{\CYRABHCH}{}
+\InputenxUC{04BD}{\cyrabhch}{}
+\InputenxUC{04BE}{\CYRABHCHDSC}{}
+\InputenxUC{04BF}{\cyrabhchdsc}{}
+\InputenxUC{04C0}{\CYRpalochka}{}
+\InputenxUC{04C3}{\CYRKHK}{}
+\InputenxUC{04C4}{\cyrkhk}{}
+\InputenxUC{04C5}{\CYRLDSC}{}
+\InputenxUC{04C6}{\cyrldsc}{}
+\InputenxUC{04C7}{\CYRNHK}{}
+\InputenxUC{04C8}{\cyrnhk}{}
+\InputenxUC{04CB}{\CYRCHLDSC}{}
+\InputenxUC{04CC}{\cyrchldsc}{}
+\InputenxUC{04CD}{\CYRMDSC}{}
+\InputenxUC{04CE}{\cyrmdsc}{}
+\InputenxUC{04D4}{\CYRAE}{}
+\InputenxUC{04D5}{\cyrae}{}
+\InputenxUC{04D8}{\CYRSCHWA}{}
+\InputenxUC{04D9}{\cyrschwa}{}
+\InputenxUC{04E0}{\CYRABHDZE}{}
+\InputenxUC{04E1}{\cyrabhdze}{}
+\InputenxUC{04E8}{\CYROTLD}{}
+\InputenxUC{04E9}{\cyrotld}{}
+\InputenxUC{05D0}{\hebalef}{}
+\InputenxUC{05D1}{\hebbet}{}
+\InputenxUC{05D2}{\hebgimel}{}
+\InputenxUC{05D3}{\hebdalet}{}
+\InputenxUC{05D4}{\hebhe}{}
+\InputenxUC{05D5}{\hebvav}{}
+\InputenxUC{05D6}{\hebzayin}{}
+\InputenxUC{05D7}{\hebhet}{}
+\InputenxUC{05D8}{\hebtet}{}
+\InputenxUC{05D9}{\hebyod}{}
+\InputenxUC{05DA}{\hebfinalkaf}{}
+\InputenxUC{05DB}{\hebkaf}{}
+\InputenxUC{05DC}{\heblamed}{}
+\InputenxUC{05DD}{\hebfinalmem}{}
+\InputenxUC{05DE}{\hebmem}{}
+\InputenxUC{05DF}{\hebfinalnun}{}
+\InputenxUC{05E0}{\hebnun}{}
+\InputenxUC{05E1}{\hebsamekh}{}
+\InputenxUC{05E2}{\hebayin}{}
+\InputenxUC{05E3}{\hebfinalpe}{}
+\InputenxUC{05E4}{\hebpe}{}
+\InputenxUC{05E5}{\hebfinaltsadi}{}
+\InputenxUC{05E6}{\hebtsadi}{}
+\InputenxUC{05E7}{\hebqof}{}
+\InputenxUC{05E8}{\hebresh}{}
+\InputenxUC{05E9}{\hebshin}{}
+\InputenxUC{05EA}{\hebtav}{}
+\InputenxUC{0E3F}{\textbaht}{%
+  \ProvideTextCommandDefault{\textbaht}{%
+    \hmode@bgroup
+      \ooalign{%
+        B%
+        \crcr%
+        \hidewidth
+        \setbox\z@\hbox{B}%
+        \dimen@\ht\z@
+        \advance\dimen@\dp\z@
+        \setbox\z@\hbox{\textbar}%
+        \advance\dimen@-\ht\z@
+        \advance\dimen@\dp\z@
+        \raise.5\dimen@\hbox{\textbar}%
+        \hidewidth
+      }%
+    \egroup
+  }%
+}
+\InputenxUC{1E02}{\.B}{}
+\InputenxUC{1E03}{\.b}{}
+\InputenxUC{1E0A}{\.D}{}
+\InputenxUC{1E0B}{\.d}{}
+\InputenxUC{1E1E}{\.F}{}
+\InputenxUC{1E1F}{\.f}{}
+\InputenxUC{1E40}{\.M}{}
+\InputenxUC{1E41}{\.m}{}
+\InputenxUC{1E56}{\.P}{}
+\InputenxUC{1E57}{\.p}{}
+\InputenxUC{1E60}{\.S}{}
+\InputenxUC{1E61}{\.s}{}
+\InputenxUC{1E6A}{\.T}{}
+\InputenxUC{1E6B}{\.t}{}
+\InputenxUC{1E80}{\@tabacckludge`W}{}
+\InputenxUC{1E81}{\@tabacckludge`w}{}
+\InputenxUC{1E82}{\@tabacckludge'W}{}
+\InputenxUC{1E83}{\@tabacckludge'w}{}
+\InputenxUC{1E84}{\"W}{}
+\InputenxUC{1E85}{\"w}{}
+\InputenxUC{1EF2}{\@tabacckludge`Y}{}
+\InputenxUC{1EF3}{\@tabacckludge`y}{}
+\InputenxUC{200C}{\textcompwordmark}{}
+\InputenxUC{2013}{\textendash}{}
+\InputenxUC{2014}{\textemdash}{}
+\InputenxUC{2015}{\texthorizontalbar}{%
+  \ProvideTextCommandDefault{\texthorizontalbar}{%
+    \mbox{---}\kern-.5em---%
+  }%
+}
+\InputenxUC{2016}{\textbardbl}{}
+\InputenxUC{2017}{\textdbllowline}{%
+  \ProvideTextCommandDefault{\textdbllowline}{%
+    \begingroup
+      \sbox0{\textunderscore}%
+      \leavevmode
+      \ifdim\dp0<.2ex\relax
+        \rlap{\raisebox{-.2ex}[0pt]{\textunderscore}}%
+      \else
+        \rlap{\raisebox{.2ex}[0pt]{\textunderscore}}%
+      \fi
+      \textunderscore
+    \endgroup
+  }%
+}
+\InputenxUC{2018}{\textquoteleft}{}
+\InputenxUC{2019}{\textquoteright}{}
+\InputenxUC{201A}{\quotesinglbase}{}
+\InputenxUC{201C}{\textquotedblleft}{}
+\InputenxUC{201D}{\textquotedblright}{}
+\InputenxUC{201E}{\quotedblbase}{}
+\InputenxUC{2020}{\textdagger}{}
+\InputenxUC{2021}{\textdaggerdbl}{}
+\InputenxUC{2022}{\textbullet}{}
+\InputenxUC{2026}{\textellipsis}{}
+\InputenxUC{2030}{\textperthousand}{}
+\InputenxUC{2031}{\textpertenthousand}{}
+\InputenxUC{2039}{\guilsinglleft}{}
+\InputenxUC{203A}{\guilsinglright}{}
+\InputenxUC{203B}{\textreferencemark}{}
+\InputenxUC{203D}{\textinterrobang}{%
+  \ProvideTextCommandDefault{\textinterrobang}{%
+    \hmode@bgroup\ooalign{?\crcr\hidewidth!\hidewidth}\egroup
+  }%
+}
+\InputenxUC{2044}{\textfractionsolidus}{%
+  \ProvideTextCommandDefault{\textfractionsolidus}{%
+    /%
+  }%
+}
+\InputenxUC{204E}{\textasteriskcentered}{}
+\InputenxUC{2052}{\textdiscount}{}
+\InputenxUC{207F}{\textnsuperior}{%
+  \ProvideTextCommandDefault{\textnsuperior}{%
+    \ensuremath{{^n}}%
+  }%
+}
+\InputenxUC{20A1}{\textcolonmonetary}{}
+\InputenxUC{20A4}{\textlira}{}
+\InputenxUC{20A6}{\textnaira}{}
+\InputenxUC{20A7}{\textpeseta}{%
+  \ProvideTextCommandDefault{\textpeseta}{%
+    Pt%
+  }%
+}
+\InputenxUC{20A9}{\textwon}{}
+\InputenxUC{20AB}{\textdong}{}
+\InputenxUC{20AC}{\texteuro}{%
+  \ProvideTextCommandDefault{\texteuro}{%
+    \TextSymbolUnavailable\texteuro
+  }%
+}
+\InputenxUC{20B1}{\textpeso}{}
+\InputenxUC{2103}{\textcelsius}{%
+  \ProvideTextCommandDefault{\textcelsius}{%
+    \ensuremath{{^\circ}}C%
+  }%
+}
+\InputenxUC{2116}{\textnumero}{%
+  \ProvideTextCommandDefault{\textnumero}{%
+    N%
+    \bgroup
+      \check@mathfonts
+      \fontsize\sf@size\z@
+      \math@fontsfalse
+      \selectfont
+      \ooalign{%
+        \raise0.5ex\hbox{o}%
+        \crcr
+        \hline
+      }%
+    \egroup
+  }%
+}
+\InputenxUC{2117}{\textcircledP}{%
+  \ProvideTextCommandDefault{\textcircledP}{%
+    \textcircled{%
+      \check@mathfonts
+      \fontsize\sf@size\z@
+      \math@fontsfalse
+      \selectfont
+      P%
+    }%
+  }%
+}
+\InputenxUC{211E}{\textrecipe}{}
+\InputenxUC{2120}{\textservicemark}{%
+  \ProvideTextCommandDefault{\textservicemark}{%
+    \textsuperscript{SM}%
+  }%
+}
+\InputenxUC{2122}{\texttrademark}{}
+\InputenxUC{2126}{\textohm}{%
+  \ProvideTextCommandDefault{\textohm}{%
+    \ensuremath\Omega
+  }%
+}
+\InputenxUC{2127}{\textmho}{}
+\InputenxUC{212E}{\textestimated}{}
+\InputenxUC{2190}{\textleftarrow}{%
+  \ProvideTextCommandDefault{\textleftarrow}{%
+    \ensuremath\leftarrow
+  }%
+}
+\InputenxUC{2191}{\textuparrow}{%
+  \ProvideTextCommandDefault{\textuparrow}{%
+    \ensuremath\uparrow
+  }%
+}
+\InputenxUC{2192}{\textrightarrow}{%
+  \ProvideTextCommandDefault{\textrightarrow}{%
+    \ensuremath\rightarrow
+  }%
+}
+\InputenxUC{2193}{\textdownarrow}{%
+  \ProvideTextCommandDefault{\textdownarrow}{%
+    \ensuremath\downarrow
+  }%
+}
+\InputenxUC{2202}{\textpartial}{%
+  \ProvideTextCommandDefault{\textpartial}{%
+    \ensuremath\partial
+  }%
+}
+\InputenxUC{2206}{\textincrement}{%
+  \ProvideTextCommandDefault{\textincrement}{%
+    \ensuremath\Delta
+  }%
+}
+\InputenxUC{2208}{\textelement}{%
+  \ProvideTextCommandDefault{\textelement}{%
+    \ensuremath\in
+  }%
+}
+\InputenxUC{220F}{\textproduct}{%
+  \ProvideTextCommandDefault{\textproduct}{%
+    \ensuremath\Pi
+  }%
+}
+\InputenxUC{2211}{\textsummation}{%
+  \ProvideTextCommandDefault{\textsummation}{%
+    \ensuremath\Sigma
+  }%
+}
+\InputenxUC{2219}{\textbullet}{}
+\InputenxUC{221A}{\textsurd}{%
+  \ProvideTextCommandDefault{\textsurd}{%
+    \ensuremath\surd
+  }%
+}
+\InputenxUC{221E}{\textinfinity}{%
+  \ProvideTextCommandDefault{\textinfinity}{%
+    \ensuremath\infty
+  }%
+}
+\InputenxUC{2227}{\textcap}{%
+  \ProvideTextCommandDefault{\textcap}{%
+    \ensuremath\cap
+  }%
+}
+\InputenxUC{2229}{\textintersection}{%
+  \ProvideTextCommandDefault{\textintersection}{%
+    \ensuremath\cap
+  }%
+}
+\InputenxUC{222B}{\textintegral}{%
+  \ProvideTextCommandDefault{\textintegral}{%
+    \ensuremath\int
+  }%
+}
+\InputenxUC{222E}{\textcontourintegral}{%
+  \ProvideTextCommandDefault{\textcontourintegral}{%
+    \ensuremath\oint
+  }%
+}
+\InputenxUC{2248}{\textapproxequal}{%
+  \ProvideTextCommandDefault{\textapproxequal}{%
+    \ensuremath\approx
+  }%
+}
+\InputenxUC{2260}{\textnotequal}{%
+  \ProvideTextCommandDefault{\textnotequal}{%
+    \ensuremath\neq
+  }%
+}
+\InputenxUC{2261}{\textequivalence}{%
+  \ProvideTextCommandDefault{\textequivalence}{%
+    \ensuremath\equiv
+  }%
+}
+\InputenxUC{2264}{\textlessequal}{%
+  \ProvideTextCommandDefault{\textlessequal}{%
+    \ensuremath\leq
+  }%
+}
+\InputenxUC{2265}{\textgreaterequal}{%
+  \ProvideTextCommandDefault{\textgreaterequal}{%
+    \ensuremath\geq
+  }%
+}
+\InputenxUC{2310}{\textrevlogicalnot}{%
+  \ProvideTextCommandDefault{\textrevlogicalnot}{%
+    \begingroup
+      \@ifundefined{reflectbox}{%
+        \TextSymbolUnavailable\textrevlogicalnot
+      }{%
+        \def\@revlogicalnot##1##2{%
+          \reflectbox{$##1##2$}%
+        }%
+        \ensuremath{\mathpalette\@revlogicalnot\lnot}%
+      }%
+    \endgroup
+  }%
+}
+\InputenxUC{2329}{\textlangle}{%
+  \ProvideTextCommandDefault{\textlangle}{%
+    \ensuremath\langle
+  }%
+}
+\InputenxUC{232A}{\textrangle}{%
+  \ProvideTextCommandDefault{\textrangle}{%
+    \ensuremath\rangle
+  }%
+}
+\InputenxUC{2422}{\textblank}{}
+\InputenxUC{2423}{\textvisiblespace}{}
+\InputenxUC{2500}{\textSFx}{}
+\InputenxUC{2502}{\textSFxi}{}
+\InputenxUC{250C}{\textSFi}{}
+\InputenxUC{2510}{\textSFiii}{}
+\InputenxUC{2514}{\textSFii}{}
+\InputenxUC{2518}{\textSFiv}{}
+\InputenxUC{251C}{\textSFviii}{}
+\InputenxUC{2524}{\textSFix}{}
+\InputenxUC{252C}{\textSFvi}{}
+\InputenxUC{2534}{\textSFvii}{}
+\InputenxUC{253C}{\textSFv}{}
+\InputenxUC{2550}{\textSFxliii}{}
+\InputenxUC{2551}{\textSFxxiv}{}
+\InputenxUC{2552}{\textSFli}{}
+\InputenxUC{2553}{\textSFlii}{}
+\InputenxUC{2554}{\textSFxxxix}{}
+\InputenxUC{2555}{\textSFxxii}{}
+\InputenxUC{2556}{\textSFxxi}{}
+\InputenxUC{2557}{\textSFxxv}{}
+\InputenxUC{2558}{\textSFl}{}
+\InputenxUC{2559}{\textSFxlix}{}
+\InputenxUC{255A}{\textSFxxxviii}{}
+\InputenxUC{255B}{\textSFxxviii}{}
+\InputenxUC{255C}{\textSFxxvii}{}
+\InputenxUC{255D}{\textSFxxvi}{}
+\InputenxUC{255E}{\textSFxxxvi}{}
+\InputenxUC{255F}{\textSFxxxvii}{}
+\InputenxUC{2560}{\textSFxlii}{}
+\InputenxUC{2561}{\textSFxix}{}
+\InputenxUC{2562}{\textSFxx}{}
+\InputenxUC{2563}{\textSFxxiii}{}
+\InputenxUC{2564}{\textSFxlvii}{}
+\InputenxUC{2565}{\textSFxlviii}{}
+\InputenxUC{2566}{\textSFxli}{}
+\InputenxUC{2567}{\textSFxlv}{}
+\InputenxUC{2568}{\textSFxlvi}{}
+\InputenxUC{2569}{\textSFxl}{}
+\InputenxUC{256A}{\textSFliv}{}
+\InputenxUC{256B}{\textSFliii}{}
+\InputenxUC{256C}{\textSFxliv}{}
+\InputenxUC{2580}{\textupblock}{}
+\InputenxUC{2584}{\textdnblock}{}
+\InputenxUC{2588}{\textblock}{}
+\InputenxUC{258C}{\textlfblock}{}
+\InputenxUC{2590}{\textrtblock}{}
+\InputenxUC{2591}{\textltshade}{}
+\InputenxUC{2592}{\textshade}{}
+\InputenxUC{2593}{\textdkshade}{}
+\InputenxUC{25A0}{\textblacksquare}{%
+  \ProvideTextCommandDefault{\textblacksquare}{%
+    \vrule \@width .3em \@height .4em \@depth -.1em\relax
+  }%
+}
+\InputenxUC{25CA}{\textlozenge}{%
+  \ProvideTextCommandDefault{\textlozenge}{%
+    \ensuremath\diamond
+  }%
+}
+\InputenxUC{25E6}{\textopenbullet}{%
+  \ProvideTextCommandDefault{\textopenbullet}{%
+    \ensuremath\circ
+  }%
+}
+\InputenxUC{25EF}{\textbigcircle}{}
+\InputenxUC{266A}{\textmusicalnote}{}
+\InputenxUC{FB01}{fi}{}
+\InputenxUC{FB02}{fl}{}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `ix-uc.def'.

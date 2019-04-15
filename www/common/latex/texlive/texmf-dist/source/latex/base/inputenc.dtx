@@ -1,0 +1,3048 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[ascii]{inputenc}
+\GetFileInfo{inputenc.sty}
+\title{\filename}
+\date{\fileversion\space\filedate}
+ \author{%
+  Alan Jeffrey\and
+  Frank Mittelbach}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \setlength\hfuzz{20pt}
+ \DocInput{inputenc.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{3534}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+% \changes{v0.01}{1994/03/09}{Created file.}
+% \changes{v0.02}{1994/07/14}{Replaced \cs{Dh} by \cs{DH} and \cs{Th}
+%    by \cs{TH}.}
+% \changes{v0.02}{1994/07/14}{Added \cs{ensuremath} to some math
+%    commands.}
+% \changes{v0.02}{1994/07/14}{Added \cs{inputencoding}.}
+% \changes{v0.03}{1994/09/04}{Added \cs{DeclareInputComposite} and the
+%    \cs{ProvidesCommand}s to the encoding files.}
+% \changes{v0.03}{1994/09/04}{Removed the definition of the accent slots
+%     in Latin-1.}
+% \changes{v0.04}{1994/10/20}{Replaced \cs{DeclareInputCharacter} by
+%     \cs{DeclareInputText} and \cs{DeclareInputMath}.}
+% \changes{v0.04}{1994/10/20}{Removed \cs{DeclareInputComposite}.}
+% \changes{v0.04}{1994/10/20}{Made many Latin-1 characters math-only.}
+% \changes{v0.05}{1994/10/27}{Updated for the new version of ltoutenc.}
+% \changes{v0.06}{1994/11/21}{Added \cs{textregistered}.}
+% \changes{v0.06}{1994/11/21}{Added slot hex A0 to Latin-1.}
+% \changes{v0.07}{1994/11/22}{Fixed typo A1 rather than A0.}
+% \changes{v0.07}{1994/11/28}{Fixed where docstrip option had moved a
+%    line.}
+% \changes{v0.09}{1994/12/10}{Added `beta test' message.}
+% \changes{v0.09}{1994/12/10}{Made letters active and undefined by
+%    default, rather than illegal.}
+%
+% \changes{v0.9b}{1995/05/23}{Added Mac encoding, applemac.def}
+% \changes{v0.9d}{1995/06/06}{Added cp437}
+% \changes{v0.9f}{1995/09/21}{Added Next encoding, next.def}
+% \changes{v0.9h}{1995/10/22}{Added Windows 3.1 ANSI encoding,
+%                             ansinew.def}
+% \changes{v0.9i}{1995/11/02}{Wrapped long lines}
+% \changes{v0.9i}{1995/11/02}{Changed internal name \cs{a} to
+% \cs{@tabacckludge} to protect against redefinition by malicious
+% users.}
+% \changes{v0.9j}{1995/11/14}{Remove \cs{endinput} so docstrip reaches
+%    ansinew encoding}
+% \changes{v0.9k}{1995/11/29}{Replaced uses of \cs{textsterling} with
+%    \cs{pounds}.}
+% \changes{v0.9m}{1995/12/04}{Added German version}
+% \changes{v0.9m}{1995/12/04}{Replaced \cs{textasciitilde} by
+%    \cs{nobreakspace}.}
+% \changes{v0.9m}{1995/12/04}{Made bullet and periodcentered text
+%    glyphs rather than math glyphs.}
+% \changes{v0.9m}{1995/12/04}{Added \cs{@tabacckludge} hacks.}
+% \changes{v0.9o}{1996/02/14}
+%      {Cedilla (\cs{c}\cs{ }) rather than (\cs{c}\{\}) latex/2077,
+%      finished on 1996/10/28}
+% \changes{v0.9o}{1996/02/14}
+%      {0F0 corrected in cp850 latex/2080}
+% \changes{v0.9o}{1996/02/14}
+%      {0B2 corrected in latin2 latex/2079}
+% \changes{v0.9r}{1996/05/10}{Added cp852.def}
+% \changes{v0.9t}{1996/10/28}{Added cp865.def}
+% \changes{v0.9t}{1996/10/28}
+%      {Changed \cs{aa} and \cs{AA} to \cs{r} a and \cs{r} A}
+% \changes{v0.9u}{1996/10/29}{Added more to cp865.def}
+% \changes{v0.9y}{1997/04/30}{Added latin5.def (provided by
+%       H. Turgut Uyar: uyar@cs.itu.edu.tr)}
+% \changes{v0.9z}{1997/05/10}{Added latin3.def (provided by
+%       J\"org Knappen and modified by Chris Rowley)}
+% \changes{v0.91}{1997/08/19}{Put
+%       \cs{makeatletter}\ldots\cs{makeatother} around all .def files.}
+% \changes{v0.92}{1997/09/08}{Added decmulti.def
+%       provided by M.Y. Chartoire. pr/2599}
+% \changes{v0.93}{1997/11/23}{\cs{textperthousand} not
+%       \cs{textpermill}. pr/2673}
+% \changes{v0.94}{1997/12/17}{Made degree a text glyph}
+% \changes{v0.94}{1997/12/17}{Added to and tidied documentation}
+% \changes{v0.94}{1997/12/17}{Ogonek: changed
+%       \cs{k}\{\} to \cs{k}\cs{ }}
+% \changes{v0.94}{1997/12/17}{NOTE: for consistency, when available
+%       the robust text-or-math internal form is always used --
+%       THIS MAY CHANGE}
+% \changes{v0.95}{1997/12/20}{Updated documentation}
+% \changes{v0.97}{1998/03/05}{Spanish ords changed to text chars, pr/2579}
+% \changes{v1.1b}{2006/03/04}{Number of normalisations in the LICR
+%                             representation (pr/3849)}
+% \changes{v1.1c}{2006/11/18}{Added missing \cs{ProvidesFile} line for cp1257 (pr/3892)}
+%
+%
+% \section{Introduction}
+%
+% This package allows the user to specify an input encoding (for
+% example, ASCII, ISO Latin-1 or Macintosh) by saying:
+% \begin{quote}
+%    |\usepackage[|\emph{encoding name}|]{inputenc}|
+% \end{quote}
+% The encoding can also be selected in the document with:
+% \begin{quote}
+%    |\inputencoding{|\emph{encoding name}|}|
+% \end{quote}
+%    Originally this command was only to be used in vertical mode (with
+%    the idea that it should be only  within a document when
+%    using text from several documents to build up a composite work such
+%    as a volume of journal articles.  However, usages in certain
+%    languages suggested that it might be preferable to allow changing
+%    the input encoding at any time, which is what is possible now
+%    (though that is quite computing resource intensive).
+%
+% The encodings provided by this package are:
+% \begin{itemize}
+% \item |ascii| ASCII encoding for the range 32--127 (all others are made
+%        invalid, i.e., this really defines a 7-bit encoding).
+% \item |latin1| ISO Latin-1 encoding.
+% \item |latin2| ISO Latin-2 encoding.
+% \item |latin3| ISO Latin-3 encoding.
+% \item |latin4| ISO Latin-4 encoding.
+% \item |latin5| ISO Latin-5 encoding.
+% \item |latin9| ISO Latin-9 encoding.
+% \item |latin10| ISO Latin-10 encoding.
+% \item |decmulti| DEC Multinational Character Set encoding.
+% \item |cp850| IBM 850 code page.
+% \item |cp852| IBM 852 code page.
+% \item |cp858| IBM 858 code page (this is 850 with Euro symbol).
+% \item |cp437| IBM 437 code page.
+% \item |cp437de| IBM 437 code page (German version).
+% \item |cp865| IBM 865 code page.
+% \item |applemac| Macintosh encoding.
+% \item |macce| Macintosh Central European code page.
+% \item |next| Next encoding.
+% \item |cp1250| Windows 1250 (central and eastern Europe) code page.
+% \item |cp1252| Windows 1252 (Western Europe) code page.
+% \item |cp1257| Windows 1257 (Baltic) code page.
+% \item |ansinew| Windows 3.1 ANSI encoding, extension of Latin-1
+%       (synonym\footnote{It is now generated using the guards
+%       \texttt{cp1252,ansinew} the latter only used for the provides
+%       file line.} for |cp1252|).
+% \item |utf8| Unicode UTF-8 encoding support.
+% \end{itemize}
+%
+%
+%
+% \subsection{8-bit input encoding support}
+%
+% The \texttt{inputenc} package makes the upper 8-bit characters active and
+%    assigns to all of them an error message. It then waits for the
+%    input encoding definitions to change this set-up.  Similarly, whenever
+%    |\inputencoding| is encountered in a document, first the upper
+%    8-bit characters are set back to produce an error and then the
+%    definitions for the new input encoding are loaded, changing some of the
+%    previous settings.
+%
+%
+%
+% Each encoding has an associated |.def| file, for example
+% |latin1.def| which defines the behaviour of each input character,
+% using the commands:
+% \begin{quote}
+%    |\DeclareInputText{|\emph{slot}|}{|\emph{text}|}| \\
+%    |\DeclareInputMath{|\emph{slot}|}{|\emph{math}|}|
+% \end{quote}
+% This defines the input character \emph{slot} to be the
+% \emph{text} material or \emph{math} material respectively.
+% For example, |latin1.def| defines slots |"D6| (\AE)
+% and |"B5| ($\mu$) by saying:
+%\begin{verbatim}
+%    \DeclareInputText{214}{\AE}
+%    \DeclareInputMath{181}{\mu}
+%\end{verbatim}
+% Note that the \emph{commands} should be robust, and should not be
+% dependent on the output encoding.  The same \emph{slot} should not
+% have both a text and a math declaration for it. (This restriction
+% may be removed in future releases of inputenc).
+%
+% The |.def| file may also define
+% commands using the declarations:\\
+% |\providecommand| or |\ProvideTextCommandDefault|.
+% For example:
+%\begin{verbatim}
+%    \ProvideTextCommandDefault{\textonequarter}{\ensuremath{\frac14}}
+%    \DeclareInputText{188}{\textonequarter}
+%\end{verbatim}
+%    The use of the `provide' forms here will ensure that a
+%    better definition will not be over-written; their use is
+%    recommended since, in general, the best definition depends on the
+%    fonts available.
+%
+%    See the documentation in |fntguide.tex| and |ltoutenc.dtx| for
+%    details of how to declare text commands.
+%
+%
+% \subsection{UTF-8 encoding support}
+%
+%
+% The Unicode UTF-8 support works differently. It too uses a |.def| file
+% (i.e., |utf8.def|) but this file does not contain code point declarations
+% via the commands |\DeclareInputText| or |\DeclareInputMath|.
+% Instead it defines a number of
+% parsing commands that parse UTF-8 characters and then provides the
+% corresponding \LaTeX{} definitions (if possible).
+%
+% Unfortunately the number of Unicode characters that in theory could be
+% contained in a document is enormous. Thus even with today's amount of
+% computer memory it would be unrealistic to predefine all of them. Therefore the
+% approach taken by \LaTeX{} is as follows:
+% \begin{itemize}
+% \item
+%   At the start of the document (|\begin{document}|) it examines all font
+%   encodings that are being used within the current document.
+% \item
+%   For each such font encoding it loads all known UTF-8 mappings that generate
+%   characters from this font encoding.
+% \item
+%   All other UTF-8 characters remain undefined and will produce an error
+%   message if they appear in the document.
+% \end{itemize}
+%
+% The rationale behind this approach is that UTF-8 characters that do not
+% correspond to any glyph within the used font encodings cannot be represented
+% by \LaTeX{} anyway (without loading a font containing the glyph, which in
+% turn should ``hopefully'' set up the corresponding UTF-8 mapping).
+%
+% This works well enough for the main Western languages for which \LaTeX{}
+% has proper font encoding support, but currently already falls short on
+% languages like Greek (which has some semi-official font support, but for
+% which corresponding UTF-8 mappings still need to be defined).
+%
+% For some languages (such as Greek mentioned above) all that remains doing is
+% to provide the necessary mappings and stick them into |utf8ienc.dtx|, so
+% volunteers are welcome. For other languages that do not fit well into
+% \LaTeX{} font selection scheme, e.g., Asian languages the outlined inputenc
+% approach will not work. If that is the case one can try using Dominique
+% Unruh's option |utf8x| for inputenc which has a somewhat different approach
+% and encodes many more UTF-8 characters than the standard |utf8| option.
+% However, we recommend to do so only if you really need such alphabets as
+% there are problems with this extended approach which were precisely the
+% reason that we decided to limit the support to what is properly supported
+% within the boundaries of \LaTeX's font selection.
+%
+% If a UTF-8 mapping is missing and it is known to what \LaTeX{} definition it
+% should map to, one can manually define it using a |\DeclareUnicodeCharacter|
+% declaration. This declaration is available after inputenc has been loaded
+% with the |utf8| option.
+%
+% The |\DeclareUnicodeCharacter| takes UTF-8 code point as its first argument
+% (in form of a a hexadecimal number) and the definition that this maps to as
+% its second argument. For example, the code point |00E4| which is
+% ``LATIN SMALL LETTER A WITH DIAERESIS'' would be set up via:
+%\begin{verbatim}
+%   \DeclareUnicodeCharacter{00E4}{\"a}
+%\end{verbatim}
+% Conceptually the second argument should only contain ``encoding-specific
+% commands'' as defined by \LaTeX{} font encoding concept, i.e., commands that
+% automatically change behavior if the font encoding changes (see chapter~7 of
+% the \LaTeX{} Companion for details).
+%
+% For details of the mappings per font encoding and some more technical
+% information see the file \texttt{utf8ienc.dtx} that provides UTF-8 support
+% using the \textsf{inputenc} package interface.
+%
+%
+%
+%
+% \subsection{Error messages}
+%
+% In certain situations the inputenc package generates one of the following
+% three error messages.
+%
+% \subsubsection{\normalfont\ttfamily Keyboard character used is undefined  in
+% inputencoding `\meta{name}'}
+
+% The document contains an 8-bit character that is not defined by the
+% current input encoding in force. This means that either there is a
+% mismatch between the document encoding that the document claims it
+% is in (the option to inputenc) and the real encoding this document
+% is encoded in. These days more often you find that UTF-8 is used as
+% the encoding when saving a file in some text editor.
+%
+% Of course, it is also possible that the input encoding |.def| file is
+% defective and the offending code point is simply missing from that file.
+% Please check if the encoding file is one of the list above prior to
+% reporting an error---on the net there are many additional encoding files
+% supported by third parties.
+%
+%
+%
+% \subsubsection{\normalfont\ttfamily Cannot define Unicode char value < 00A0}
+%
+% This error message is shown if one tries to define a UTF-8 character
+% with a code point lower than |00A0|. Those cannot be defined in
+% \LaTeX{} through the |\DeclareUnicodeCharacter|.
+%
+%
+% \subsubsection{\normalfont\ttfamily Unicode char \meta{charcode} not set up
+% for use with LaTeX}
+%
+% This is the dreaded error message that one will receive if the
+% document contains an UTF-8 character that isn't known to \LaTeX{}.
+% It is quite possible that the character looks very unsuspicious and
+% is rendered perfectly in the editor.
+%
+% For example, when entering a Euro symbol from the keyboard one may receive
+% this error rather than a typeset symbol. But if this happens the reason is
+% simply that the document doesn't load a font containing the Euro symbol,
+% e.g., via the |textcomp| package. Thus \LaTeX{} does not know how to typeset
+% one and therefore responds with this error message.
+%
+% However, even if \LaTeX{} can type that character in question it may not
+% have been set up in which case you would need to do that yourself via
+% |\DeclareUnicodeCharacter|. If you provide these declarations for a full
+% font encoding then please contribute that work to this package so that
+% others can benefit too.
+%
+%
+%
+%
+
+% \subsection{Programmers interface}
+%
+% To better support packages that manage their own character mappings and
+% therefore have to react to input encoding changes, the following three
+% commands have been added in version 1.1a:
+%
+% \DescribeMacro\inputencodingname This command stores the name of the current
+% input encoding.
+%
+% \DescribeMacro\inpenc@prehook
+% \DescribeMacro\inpenc@posthook These two are token registers that are
+% executed whenever an |\inputencoding| change happens. The first is executed at
+% the very beginning, i.e., with |\inputencodingname| still pointing to the
+% encoding name currently in place while the second one is executed at the very
+% end, i.e., when |\inputencoding| has build a new mapping.
+%
+% Packages making use of this new features should consider including the
+% following line
+%\begin{verbatim}
+%   \NeedsTeXFormat{LaTeX2e}[2005/12/01]
+%\end{verbatim}
+% as these commands haven't been available in \textsf{inputenc} distributed
+% with older releases of \LaTeX{}.
+%
+
+% \StopEventually{}
+%
+% \section{Announcing the files}
+%
+% We announce the files:
+%    \begin{macrocode}
+%<package>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%<package>\ProvidesPackage{inputenc}
+%<ascii> \ProvidesFile{ascii.def}
+%<latin1> \ProvidesFile{latin1.def}
+%<latin2> \ProvidesFile{latin2.def}
+%<latin3> \ProvidesFile{latin3.def}
+%<latin4> \ProvidesFile{latin4.def}
+%<latin5> \ProvidesFile{latin5.def}
+%<latin9> \ProvidesFile{latin9.def}
+%<latin10> \ProvidesFile{latin10.def}
+%<decmulti> \ProvidesFile{decmulti.def}
+%<cp850>  \ProvidesFile{cp850.def}
+%<cp852>  \ProvidesFile{cp852.def}
+%<cp858>  \ProvidesFile{cp858.def}
+%<cp437>  \ProvidesFile{cp437.def}
+%<cp437de>  \ProvidesFile{cp437de.def}
+%<cp865>  \ProvidesFile{cp865.def}
+%<applemac>  \ProvidesFile{applemac.def}
+%<applemacce>  \ProvidesFile{macce.def}
+%<next>  \ProvidesFile{next.def}
+%<ansinew>  \ProvidesFile{ansinew.def}
+%<cp1252&!ansinew>  \ProvidesFile{cp1252.def}
+%<cp1250>  \ProvidesFile{cp1250.def}
+%<cp1257>  \ProvidesFile{cp1257.def}
+   [2015/03/17 v1.2c Input encoding file]
+%<cp850>%%
+%<cp850>%% If you need a Euro symbol, try cp858 instead.
+%<cp850>%%
+%    \end{macrocode}
+%
+%
+% \section{The package}
+%
+% \changes{v0.99c}{2002/11/11}{Added cp858 (pr/3464)}
+%
+% \changes{v0.04}{1994/10/20}{Improved coding of \cs{DeclareInputText}
+%    and changed name from \cs{DeclareInputCharacter}.}
+%
+% \changes{v0.9g}{1995/10/19}{Replaced \cs{'} \cs{`} \cs{!=} by
+%    \cs{a'} \cs{a`} \cs{a!=} in order to get correct accents in
+%    a tabbing environment.}
+%
+% \changes{v0.9w}{1996/11/23}{Correct documentation
+%    of \cs{@tabacckludge}}
+%
+% \changes{v0.9x}{1997/03/21}{Use decimal rather than hex
+%  to avoid active character problems. latex/2451.}
+%
+% Before we start with the code, an important comment is in order:
+% as you may or may not know, the |tabbing| environment changes the
+% definition of the commands |\'|, |\`|, and |\=|. Outside such an
+% environment these commands produce the corresponding accents, inside
+% they are used for special text positioning, and the accents can be
+% accessed using |\a'|, |\a`|, and |\a=|. Therefore we \emph{must} use
+% the latter instead of the former in the second argument to
+% |\DeclareInputText|, e.g. (from |latin1.def|):
+% \begin{verbatim}
+%     \DeclareInputText{224}{\@tabacckludge`a}
+%\end{verbatim}
+% The command |\@tabacckludge| is defined (in |ltoutenc.dtx|) in such
+% a way that |\@tabacckludge'| will expand to the internal form of |\'|.
+% Thus it is |\'| that is carried around \emph{internally} (the
+% same applies to the other two accent commands).
+%
+% \begin{macro}{\DeclareInputText}
+% \begin{macro}{\DeclareInputMath}
+% \begin{macro}{\IeC}
+%    These commands declare the expansion of an active character.  The
+%    math declaration is the usual trick with |\uppercase|.
+%    The text declaration is sneakier, since in text space matters.
+%    We look to see if the definition ends in a macro, by checking
+%    whether it's |\meaning| ends in a space.  If it does, then we
+%    add an irrelevant |\IeC| and braces around the definition, in
+%    order to avoid any space after the active char being gobbled up
+%    once the text is written out to an auxiliary file.
+%
+%    The definition should contain only robust commands (and, for
+%    correct ligatures and kerning, they must be defined via the
+%    interfaces in the fontenc package).
+%
+% \changes{v0.9b}{1995/05/23}{Added hackery with \cs{IeC} in order to
+%       avoid space being gobbled.}
+%
+%    \begin{macrocode}
+%<*package>
+\def\DeclareInputMath#1{%
+   \@inpenc@test
+   \bgroup
+      \uccode`\~#1%
+      \uppercase{%
+   \egroup
+      \def~%
+   }%
+}
+%    \end{macrocode}
+%    \changes{v1.0a}{2003/01/17}{Now coding according to suggestion by David (pr/2004)}
+%    \changes{v1.0b}{2003/12/29}{but better do it properly}
+%    \changes{v1.0?}{2004/01/19}{or even correctly}
+%    \begin{macrocode}
+\def\DeclareInputText#1#2{%
+   \def\reserved@a##1 ${}%
+   \def\reserved@b{#2}%
+   \ifcat_\expandafter\reserved@a\meaning\reserved@b$ $_%
+      \DeclareInputMath{#1}{#2}%
+   \else
+      \DeclareInputMath{#1}{\IeC{#2}}%
+   \fi
+}
+%    \end{macrocode}
+%    The definition of |\IeC| was modified not to insert a |\protect|
+%    unless it is needed, this means it works in |\hyphenation|
+%    commands, and other such delicate places.  It was then further
+%    changed to never insert a |\protect| as one is never needed; this
+%    makes it work in even more places.
+%
+%    This still needs some attention.
+%
+% \changes{v0.9m}{1995/12/12}{Modified \cs{IeC} in order to
+%       work in \cs{hyphenation} latex/2004.}
+%
+% \changes{v0.94}{1997/12/17}{Changed non-typeset case from
+%       \cs{protect} to \cs{noexpand}: temporary fix.}
+%
+%    \begin{macrocode}
+\def\IeC{%
+  \ifx\protect\@typeset@protect
+    \expandafter\@firstofone
+  \else
+    \noexpand\IeC
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\inputencoding}
+% \changes{v0.9q}{1996/05/09}
+%      {Allow characters below 32 for latex/2071}
+% \changes{v0.9q}{1996/05/09}
+%      {Check the def file was reasonable for latex/2136}
+% \changes{v0.94}{1997/12/17}{Changed to work only in outer vmode, see
+%       latex/2608}
+% \changes{v0.94}{1997/12/17}{Warning message reworded and line
+%       number added, also for latex/2608}
+% \changes{v0.95}{1997/12/20}{Changed to work in any vmode, for David}
+% \changes{v1.2a}{2014/04/20}{Added alternative definition for xe/lua tex (pr/4024)}%
+% \changes{v1.2b}{2014/04/30}{Allow (x-)ascii and utf8x aliases for utf8 in xetex/luatex}%
+%    This sets the encoding to be |#1|.  It first sets all the
+%    characters 128--255 to be active (and sets their initial
+%    definition to be |\@inpenc@undefined|).
+%    It now also does this for some `low' codes below 32, but
+%    misses out Null, control-I, control-J, control-L and control-M.
+%
+%    It then inputs |#1.def|.  But it first sets up a test that
+%    produces a warning message if no suitable definitions get read.
+%
+%    \begin{macrocode}
+\ifx\Umathchar\@undefined
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\inputencoding#1{%
+%    \end{macrocode}
+%    We start with a hook to be executed before the encoding change
+%    happens.
+% \changes{v1.1a}{2006/02/22}{Added \cs{inpenc@prehook}}
+%    \begin{macrocode}
+  \the\inpenc@prehook
+  \gdef\@inpenc@test{\global\let\@inpenc@test\relax}%
+%    \end{macrocode}
+%    Keyboard characters which don't get a definition will be mapped to
+%    the command
+%    |\@inpenc@undefined| which gets a definition producing an error
+%    message indicating in which input encoding the current keyboard
+%    character is undefined:
+% \changes{v0.98}{1998/07/04}{Give better error message if key used
+%    is undefined (pr/2845)}
+% \changes{v0.993}{2000/01/24}{Fix error message for undefined chars
+%    (pr/3158)}
+% \changes{v1.2a}{2014/04/20}{add \cs{protect} so undefined characters are robust (pr/4182)}%
+%    \begin{macrocode}
+  \edef\@inpenc@undefined{\noexpand\protect\noexpand\@inpenc@undefined@{#1}}%
+%    \end{macrocode}
+%    The |\edef| in the above definition is essential as |#1| may be
+%    |\CurrentOption| in which case a later use would return incorrect
+%    information (at best nothing).
+%
+%    For external lookup by other packages we also store the new encoding name
+%    in a user accessible macro.
+% \changes{v1.1a}{2006/02/22}{Added \cs{inputencodingname}}
+%    \begin{macrocode}
+  \edef\inputencodingname{#1}%
+%    \end{macrocode}
+%
+%    Now we make all potential input characters active.
+% \changes{v0.994}{2000/01/27}{Allow change also in horizontal mode
+%      (pr/2888)}
+%    \begin{macrocode}
+  \@inpenc@loop\^^A\^^H%
+  \@inpenc@loop\^^K\^^K%
+  \@inpenc@loop\^^N\^^_%
+  \@inpenc@loop\^^?\^^ff%
+%    \end{macrocode}
+%
+%    To be able to process the input encoding file in horizontal mode
+%    we need to ensure that we don't get any stray spaces into the
+%    horizontal mode or else we end up with extra space in the
+%    paragraph.
+% \changes{v0.998}{2001/05/25}{Suppress all spaces for horizontal mode
+%                              (pr/3273)}
+% \changes{v1.0f}{2004/05/06}{Really do (pr/3273)}
+% \changes{v1.1d}{2007/08/06}{Set \cs{endlinechar} properly (pr/3926)}
+% \changes{v1.1e}{2012/06/06}{Save and restore \cs{catcode} of @ (pr/4192)}
+% \changes{v1.2c}{2015/03/17}{Save and restore \cs{catcode} of percent (pr/4420)}
+%    \begin{macrocode}
+  \xdef\saved@endlinechar@code{\the\endlinechar}%
+  \endlinechar\m@ne
+  \xdef\saved@space@catcode{\the\catcode`\ }%
+  \catcode`\ 9\relax
+  \xdef\saved@at@catcode{\the\catcode`\@}%
+  \makeatletter
+  \xdef\saved@percent@catcode{\the\catcode`\%}%
+  \catcode`\%14\relax
+  \input{#1.def}%
+  \endlinechar\saved@endlinechar@code\relax
+  \catcode`\ \saved@space@catcode\relax
+  \catcode`\@\saved@at@catcode\relax
+  \catcode`\%\saved@percent@catcode\relax
+%    \end{macrocode}
+%
+% If there have been no |\DeclareInputText| or |\DeclareInputMath|
+% commands read then something is amiss.
+%    \begin{macrocode}
+  \ifx\@inpenc@test\relax\else
+    \PackageWarning{inputenc}%
+             {No characters defined\MessageBreak
+              by input encoding change to `#1'\MessageBreak}%
+  \fi
+%    \end{macrocode}
+%    We finish with a hook to be executed after the encoding change
+%    happens.
+% \changes{v1.1a}{2006/02/22}{Added \cs{inpenc@posthook}}
+%    \begin{macrocode}
+  \the\inpenc@posthook
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+% Unicode based TeX engines do not require this package at all, and always use UTF-8
+% input. Allow the package to be used if |[uf8]| or |[ascii]| options are used to simplify
+% switching between TeX engines.
+%    \begin{macrocode}
+\def\inputencoding#1{%
+\edef\reserved@a{#1}%
+\def\reserved@b{utf8x}%
+\ifx\reserved@a\reserved@b\def\reserved@a{utf8}\fi
+\def\reserved@b{utf8}%
+\ifx\reserved@a\reserved@b
+\PackageWarningNoLine
+    {inputenc}%
+    {inputenc package ignored with utf8 based engines}%
+\else
+\def\reserved@b{x-ascii}%
+\ifx\reserved@a\reserved@b\def\reserved@a{ascii}\fi
+\def\reserved@b{ascii}%
+\ifx\reserved@a\reserved@b
+\PackageWarningNoLine
+    {inputenc}%
+    {inputenc can't be used to ensure 7bit clean source\MessageBreak
+    with a utf engine: Package ignored: utf8 assumed}%
+\else
+\PackageError
+    {inputenc}%
+    {inputenc is not designed for xetex or luatex.\MessageBreak
+     only UTF-8 supported}%
+    {For xelatex or lualatex save the document in UTF-8 encoding\MessageBreak
+    and do not use inputenc, or use the [utf8] option.}
+\fi
+\fi
+}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\inpenc@prehook}
+% \changes{v1.1a}{2006/02/22}{Hook added}
+% \begin{macro}{\inpenc@posthook}
+% \changes{v1.1a}{2006/02/22}{Hook added}
+%    Two hooks to be executed before and after an encoding changes happened.
+%    \begin{macrocode}
+\newtoks\inpenc@prehook
+\newtoks\inpenc@posthook
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@inpenc@undefined@}
+%    This command will assigned to any active character unless it
+%    get a proper definition by the encoding. The argument is the
+%    current encoding name.
+% \changes{v0.993}{2000/01/24}{Fix error message for undefined chars
+%    (pr/3158)}
+%    \begin{macrocode}
+\def\@inpenc@undefined@#1{\PackageError{inputenc}%
+        {Keyboard character used is undefined\MessageBreak
+         in inputencoding `#1'}%
+       {You need to provide a  definition with
+        \noexpand\DeclareInputText\MessageBreak or
+        \noexpand\DeclareInputMath before using this key.}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@inpenc@loop}
+% \changes{v0.9q}{1996/05/09}
+%      {Macro added}
+% \changes{v0.9v}{1996/11/07}
+%      {Exit from the top of loop fixed for latex/2257}
+% Make characters |#1| to |#2| inclusive active and undefined.
+%    \begin{macrocode}
+\def\@inpenc@loop#1#2{%
+  \@tempcnta`#1\relax
+  \loop
+    \catcode\@tempcnta\active
+    \bgroup
+      \uccode`\~\@tempcnta
+      \uppercase{%
+    \egroup
+         \let~\@inpenc@undefined
+      }%
+  \ifnum\@tempcnta<`#2\relax
+     \advance\@tempcnta\@ne
+  \repeat}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%    Then for each option, we input that encoding file.
+%    \begin{macrocode}
+\DeclareOption*{\inputencoding{\CurrentOption}}
+\ProcessOptions
+%</package>
+%    \end{macrocode}
+%
+%
+% \section{Default definitions for characters}
+%
+%    Some input characters map to internal functions which are not in
+%    either the |T1| or |OT1| font encoding. For this reason default
+%    definitions are provided in the encoding file: these will be
+%    used unless some other output encoding is used which supports
+%    those glyphs.  In some cases this default definition has to be
+%    simply an error message.
+%
+%    Note that this works reasonably well only because the encoding
+%    files for both |OT1| and |T1| are loaded in the standard LaTeX
+%    format.
+%
+% \changes{v0.9a}{1995/04/23}{Default settings moved to own section}
+%
+% \changes{v0.9b}{1995/05/23}{Corrected ordmasc and ordfem which had
+%    been switched by mistake.}
+%
+% \changes{v0.9k}{1995/11/29}{Moved \cs{textregistered} and
+%    \cs{texttrademark} to the kernel.}
+% \changes{v0.9k}{1995/11/29}{Added default commands for Next input
+%    encoding.}
+%
+% \changes{v0.9m}{1995/12/04}{Added \cs{ensuremath} to definitions of
+%    the fraction glyphs.}
+%
+% \changes{v0.9t}{1996/10/28}
+%      {Added \cs{textblacksquare}}
+% \changes{v0.9u}{1996/10/29}
+%      {Corrected code for \cs{textblacksquare}}
+%
+% \changes{v0.9u}{1996/10/29}
+%      {Added cp865 and corrected cp850, cp852 and cp437 guards}
+% \changes{v0.94}{1997/12/17}{Removed entries that were solely in
+%       next.def}
+% \changes{v0.995}{2000/05/22}{Added latin2 option for textdegree
+%    (pr/3207) CAR}
+%
+% The name |\textblacksquare| is derived from the AMS symbol name since
+% Adobe seem not to want this symbol.  The default definition, as a
+% rule, makes no claim to being a good design.
+%
+% Some entries are repeated in case guards must all be on one line.
+%    \begin{macrocode}
+%<*latin1|decmulti|latin2|latin3|latin4|latin5|latin9|applemacce|latin10>
+\ProvideTextCommandDefault{\textdegree}{\ensuremath{{^\circ}}}
+%</latin1|decmulti|latin2|latin3|latin4|latin5|latin9|applemacce|latin10>
+%<*cp850|cp858|cp852|cp865|cp437|cp437de|applemac|cp1252|cp1250|cp1257|next>
+\ProvideTextCommandDefault{\textdegree}{\ensuremath{{^\circ}}}
+%</cp850|cp858|cp852|cp865|cp437|cp437de|applemac|cp1252|cp1250|cp1257|next>
+%<*latin1|decmulti|latin3|latin5|cp850|cp858|cp852|cp1252|cp1257|next>
+\ProvideTextCommandDefault{\textonehalf}{\ensuremath{\frac12}}
+%</latin1|decmulti|latin3|latin5|cp850|cp858|cp852|cp1252|cp1257|next>
+%<*latin1|decmulti|latin5|cp850|cp858|cp852|cp1252|cp1257|next>
+\ProvideTextCommandDefault{\textonequarter}{\ensuremath{\frac14}}
+%</latin1|decmulti|latin5|cp850|cp858|cp852|cp1252|cp1257|next>
+%<*latin1|latin5|cp850|cp858|cp852|cp1252|cp1257|next>
+\ProvideTextCommandDefault{\textthreequarters}{\ensuremath{\frac34}}
+%</latin1|latin5|cp850|cp858|cp852|cp1252|cp1257|next>
+%<*applemac|cp850|cp858|cp865|cp437|cp437de|cp1252|next>
+\ProvideTextCommandDefault{\textflorin}{\textit{f}}
+%</applemac|cp850|cp858|cp865|cp437|cp437de|cp1252|next>
+%<*cp865|cp437|cp437de>
+\ProvideTextCommandDefault{\textpeseta}{Pt}
+%</cp865|cp437|cp437de>
+%<*cp850|cp858|cp852|cp865|cp437|cp437de>
+\ProvideTextCommandDefault{\textblacksquare}
+{\vrule \@width .3em \@height .4em \@depth -.1em\relax}
+%</cp850|cp858|cp852|cp865|cp437|cp437de>
+%    \end{macrocode}
+%
+% \changes{v0.9k}{1995/11/29}{Added error messages for unavailable
+%    characters.}
+%
+% Some commands can't be faked, so we have them generate an error
+% message.
+%     \begin{macrocode}
+%<*latin1|decmulti|latin5|latin9|cp850|cp858|cp865|cp437|cp437de>
+\ProvideTextCommandDefault{\textcent}
+   {\TextSymbolUnavailable\textcent}
+\ProvideTextCommandDefault{\textyen}
+   {\TextSymbolUnavailable\textyen}
+%</latin1|decmulti|latin5|latin9|cp850|cp858|cp865|cp437|cp437de>
+%<*applemac|cp1252|next>
+\ProvideTextCommandDefault{\textcent}
+   {\TextSymbolUnavailable\textcent}
+\ProvideTextCommandDefault{\textyen}
+   {\TextSymbolUnavailable\textyen}
+%</applemac|cp1252|next>
+%<*cp1257>
+\ProvideTextCommandDefault{\textcent}
+   {\TextSymbolUnavailable\textcent}
+%</cp1257>
+%<*latin9|cp1252|cp1257|latin10>
+\ProvideTextCommandDefault{\texteuro}
+   {\TextSymbolUnavailable\texteuro}
+%</latin9|cp1252|cp1257|latin10>
+%<*latin1|decmulti|latin2|latin3|latin4|latin5|cp850|cp858|cp852|cp865>
+\ProvideTextCommandDefault{\textcurrency}
+   {\TextSymbolUnavailable\textcurrency}
+%</latin1|decmulti|latin2|latin3|latin4|latin5|cp850|cp858|cp852|cp865>
+%<*applemac|cp1252|cp1250|cp1257|next>
+\ProvideTextCommandDefault{\textcurrency}
+   {\TextSymbolUnavailable\textcurrency}
+%</applemac|cp1252|cp1250|cp1257|next>
+%<*latin1|latin5|cp850|cp858|cp852|cp1252|cp1250|cp1257>
+\ProvideTextCommandDefault{\textbrokenbar}
+   {\TextSymbolUnavailable\textbrokenbar}
+%</latin1|latin5|cp850|cp858|cp852|cp1252|cp1250|cp1257>
+%<*latin3>
+\ProvideTextCommandDefault{\textmalteseH}
+   {\TextSymbolUnavailable\textmalteseH}
+\ProvideTextCommandDefault{\textmalteseh}
+   {\TextSymbolUnavailable\textmalteseh}
+%</latin3>
+%<*latin4>
+\ProvideTextCommandDefault{\textkra}
+  {\TextSymbolUnavailable\textkra}
+\ProvideTextCommandDefault{\textTstroke}
+  {\TextSymbolUnavailable\textTstroke}
+\ProvideTextCommandDefault{\texttstroke}
+  {\TextSymbolUnavailable\texttstroke}
+%</latin4>
+%<*cp1250|cp1252|cp1257|applemac|next>
+\ProvideTextCommandDefault{\textperthousand}
+   {\TextSymbolUnavailable\textperthousand}
+%</cp1250|cp1252|cp1257|applemac|next>
+%<*applemacce>
+\ProvideTextCommandDefault{\textdiv}
+   {\TextSymbolUnavailable\textdiv}
+%</applemacce>
+%    \end{macrocode}
+%
+% \changes{v0.9l}{1995/12/01}{Removed extraneous braces from the
+%    `superior' glyphs.}
+% \changes{v0.97}{1998/03/05}{Removed ords:
+%    changed to text chars, pr/2579}
+%
+% Characters that are supposed to be used only in math will be defined
+% by |\providecommand| because \LaTeXe{} assumes that the font
+% encoding for math fonts is static.
+%
+%    \begin{macrocode}
+%<*latin1|decmulti|latin5|latin9|cp850|cp858|cp1252|cp1257|next>
+\providecommand{\mathonesuperior}{{^1}}
+%</latin1|decmulti|latin5|latin9|cp850|cp858|cp1252|cp1257|next>
+%<*latin1|decmulti|latin3|latin5|latin9|cp850|cp858|cp1252|cp1257|next>
+\providecommand{\maththreesuperior}{{^3}}
+%</latin1|decmulti|latin3|latin5|latin9|cp850|cp858|cp1252|cp1257|next>
+%<*latin1|decmulti|latin3|latin5|latin9|cp850|cp858|cp865|cp437|cp437de>
+\providecommand{\mathtwosuperior}{{^2}}
+%</latin1|decmulti|latin3|latin5|latin9|cp850|cp858|cp865|cp437|cp437de>
+%<*cp1252|cp1257|next>
+\providecommand{\mathtwosuperior}{{^2}}
+%</cp1252|cp1257|next>
+%<*cp865|cp437|cp437de>
+\providecommand{\mathnsuperior}{{^n}}
+%</cp865|cp437|cp437de>
+%    \end{macrocode}
+%
+% \section{The ASCII encoding}
+%
+% The ASCII encoding only allows characters in the range 32--127, so
+% we only need to provide a more or less empty |.def| file.
+% But we suppress the warning that would normally appear if there are no
+% encoding definitions.
+%
+% \changes{v1.1b}{2006/03/03}{Suppress unnecessary warning (pr/3849)}
+%    \begin{macrocode}
+%<ascii>\@inpenc@test
+%    \end{macrocode}
+%
+% \changes{v0.94}{1997/12/17}{Merged latin1 with ansinew/cp1252}
+%
+% \section{The ISO Latin-2 encoding}
+%
+% The ISO Latin-2 encoding file defines the characters
+% in the ISO 8859-2 encoding. It was contributed by
+% Petr Sojka (\texttt{sojka@muni.cz}) with small technical
+% updates by Frank Mittelbach.
+%
+% \changes{v0.9e}{1995/08/31}{Redeclared "AD to be soft hyphen.}
+% \changes{v0.91}{1997/08/19}{Replaced \cs{dh}/\cs{DH} by
+%    \cs{dj}/\cs{DJ}.}
+% \changes{v0.94}{1997/12/17}{Changed 176 to \cs{textdegree}}
+%
+%    \begin{macrocode}
+%<*latin2>
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{161}{\k A}
+\DeclareInputText{177}{\k a}
+\DeclareInputText{162}{\u{}}
+\DeclareInputText{178}{\k\ }
+\DeclareInputText{163}{\L}
+\DeclareInputText{179}{\l}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputText{165}{\v L}
+\DeclareInputText{181}{\v l}
+\DeclareInputText{166}{\@tabacckludge'S}
+\DeclareInputText{182}{\@tabacckludge's}
+\DeclareInputText{167}{\S}
+\DeclareInputText{183}{\v{}}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{184}{\c\ }
+\DeclareInputText{169}{\v S}
+\DeclareInputText{185}{\v s}
+\DeclareInputText{170}{\c S}
+\DeclareInputText{186}{\c s}
+\DeclareInputText{171}{\v T}
+\DeclareInputText{187}{\v t}
+\DeclareInputText{172}{\@tabacckludge'Z}
+\DeclareInputText{188}{\@tabacckludge'z}
+\DeclareInputText{173}{\-}
+\DeclareInputText{189}{\H{}}
+\DeclareInputText{174}{\v Z}
+\DeclareInputText{190}{\v z}
+\DeclareInputText{175}{\.Z}
+\DeclareInputText{191}{\.z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge'R}
+\DeclareInputText{208}{\DJ}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{209}{\@tabacckludge'N}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{210}{\v N}
+\DeclareInputText{195}{\u A}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{197}{\@tabacckludge'L}
+\DeclareInputText{213}{\H O}
+\DeclareInputText{198}{\@tabacckludge'C}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{199}{\c C}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{200}{\v C}
+\DeclareInputText{216}{\v R}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{217}{\r U}
+\DeclareInputText{202}{\k E}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{219}{\H U}
+\DeclareInputText{204}{\v E}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{221}{\@tabacckludge'Y}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{222}{\c T}
+\DeclareInputText{207}{\v D}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge'r}
+\DeclareInputText{240}{\dj}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{241}{\@tabacckludge'n}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{242}{\v n}
+\DeclareInputText{227}{\u a}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{229}{\@tabacckludge'l}
+\DeclareInputText{245}{\H o}
+\DeclareInputText{230}{\@tabacckludge'c}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{231}{\c c}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{232}{\v c}
+\DeclareInputText{248}{\v r}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{249}{\r u}
+\DeclareInputText{234}{\k e}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{251}{\H u}
+\DeclareInputText{236}{\v e}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{253}{\@tabacckludge'y}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{254}{\c t}
+\DeclareInputText{239}{\v d}
+\DeclareInputText{255}{\.{}}
+%</latin2>
+%    \end{macrocode}
+%
+% \section{The ISO Latin-3 encoding}
+%
+% The ISO Latin-3 encoding file defines the characters
+% in the ISO 8859-3 encoding.  It was contributed by
+% by J\"org Knappen (\texttt{joerg.knappen@uni-mainz.de}) and
+% adapted by Chris Rowley.
+%
+% It can be used for general purpose applications in
+% typical office environments in the following languages:
+% Afrikaans, Catalan, English, Esperanto, French, Galician, German,
+% Italian, Maltese, and Turkish.
+%
+%    \begin{macrocode}
+%<*latin3>
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{161}{\textmalteseH}
+\DeclareInputText{177}{\textmalteseh}
+\DeclareInputText{162}{\u{}}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputText{163}{\pounds}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{180}{\@tabacckludge'{}}
+% \DeclareInputText{165}{\notdef}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{166}{\^H}
+% NOT: \DeclareInputText{182}{h\llap{\^{}}} % \^h would be too tall
+\DeclareInputText{182}{\^h}
+\DeclareInputText{167}{\S}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{184}{\c\ }
+\DeclareInputText{169}{\.I}
+\DeclareInputText{185}{\i}
+\DeclareInputText{170}{\c S}
+\DeclareInputText{186}{\c s}
+\DeclareInputText{171}{\u G}
+\DeclareInputText{187}{\u g}
+\DeclareInputText{172}{\^J}
+\DeclareInputText{188}{\^\j}
+\DeclareInputText{173}{\-}
+\DeclareInputText{189}{\textonehalf}
+% \DeclareInputText{174}{\notdef}
+% \DeclareInputText{190}{\notdef}
+\DeclareInputText{175}{\.Z}
+\DeclareInputText{191}{\.z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge`A}
+% \DeclareInputText{208}{\notdef}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{209}{\~N}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{210}{\@tabacckludge`O}
+% \DeclareInputText{195}{\notdef}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{197}{\.C}
+\DeclareInputText{213}{\.G}
+\DeclareInputText{198}{\^C}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{199}{\c C}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{200}{\@tabacckludge`E}
+\DeclareInputText{216}{\^G}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{217}{\@tabacckludge`U}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{204}{\@tabacckludge`I}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{221}{\u U}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{222}{\^S}
+\DeclareInputText{207}{\"I}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge`a}
+% \DeclareInputText{240}{\notdef}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{241}{\~n}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{242}{\@tabacckludge`o}
+% \DeclareInputText{227}{\notdef}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{229}{\.c}
+\DeclareInputText{245}{\.g}
+\DeclareInputText{230}{\^c}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{231}{\c c}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{248}{\^g}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{236}{\@tabacckludge`\i}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{253}{\u u}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{254}{\^s}
+\DeclareInputText{239}{\"\i}
+\DeclareInputText{255}{\.{}}
+%</latin3>
+%    \end{macrocode}
+%
+% \section{The ISO Latin-4 encoding}
+%
+% The ISO Latin-4 encoding file defines the characters in the ISO
+% 8859-4 encoding. It was contributed by Hana Skoumalov\'a
+% (\texttt{hana.skoumalova@ff.cuni.cz}).
+%
+% It was created for Estonian, Latvian, Lithuanian, Finnish, Lappish,
+% Swedish, Norwegian, Danish, Icelandic and Greenlandic Inuit. Some
+% alphabets, however, are incomplete (Greenlandic, Icelandic and Lappish).
+% Some glyphs are not available in the fonts. For example, the
+% Greenlandic character `kra' is not available at all;
+% the Latvian and Lithuanian characters not
+% contained in other encodings are constructed from components and
+% they do not look good.
+%
+% \changes{v0.999}{2001/06/04}{Added \cs{textkra}, \cs{texttstroke} and
+%                              \cs{textTstroke} (pr/3336)}
+%    \begin{macrocode}
+%<*latin4>
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{161}{\k A}
+\DeclareInputText{162}{\textkra}%% Greenlandic Inuit
+\DeclareInputText{163}{\c R}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{165}{\~I}
+\DeclareInputText{166}{\c L}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{169}{\v S}
+\DeclareInputText{170}{\@tabacckludge=E}
+\DeclareInputText{171}{\c G}
+\DeclareInputText{172}{\textTstroke}%% Northern Sami
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\v Z}
+\DeclareInputText{175}{\@tabacckludge={}}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{177}{\k a}
+\DeclareInputText{178}{\k\ }
+\DeclareInputText{179}{\c r}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputText{181}{\~\i}
+\DeclareInputText{182}{\c l}
+\DeclareInputText{183}{\v{}}
+\DeclareInputText{184}{\c\ }
+\DeclareInputText{185}{\v s}
+\DeclareInputText{186}{\@tabacckludge=e}
+\DeclareInputText{187}{\c g}
+\DeclareInputText{188}{\texttstroke}%% Northern Sami
+\DeclareInputText{189}{\NG}
+\DeclareInputText{190}{\v z}
+\DeclareInputText{191}{\ng}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge=A}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{195}{\~A}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{197}{\r A}
+\DeclareInputText{198}{\AE}
+\DeclareInputText{199}{\k I}
+\DeclareInputText{200}{\v C}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\k E}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{204}{\.{E}}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{207}{\@tabacckludge=I}
+\DeclareInputText{208}{\DJ}
+\DeclareInputText{209}{\c N}
+\DeclareInputText{210}{\@tabacckludge=O}
+\DeclareInputText{211}{\c K}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{213}{\~O}
+\DeclareInputText{214}{\"O}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{216}{\O}
+\DeclareInputText{217}{\k U}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{221}{\~U}
+\DeclareInputText{222}{\@tabacckludge=U}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge=a}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{229}{\r a}
+\DeclareInputText{230}{\ae}
+\DeclareInputText{231}{\k i}
+\DeclareInputText{232}{\v c}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\k e}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{236}{\.{e}}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{239}{\@tabacckludge=\i}
+\DeclareInputText{240}{\dj}
+\DeclareInputText{241}{\c n}
+\DeclareInputText{242}{\@tabacckludge=o}
+\DeclareInputText{243}{\c k}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{246}{\"o}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{248}{\o}
+\DeclareInputText{249}{\k u}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{253}{\~u}
+\DeclareInputText{254}{\@tabacckludge=u}
+\DeclareInputText{255}{\.{}}
+%</latin4>
+%    \end{macrocode}
+%
+% \section{The ISO Latin-5 encoding}
+%
+% \changes{v0.991}{1999/08/23}{Corrected description for Latin-5.}
+% The ISO Latin-5 encoding file defines the characters
+% in the ISO 8859-9 encoding, which describes Latin Alphabet No. 5.
+% It was contributed by H.~Turgut Uyar (\texttt{uyar@cs.itu.edu.tr});
+% it is used for Turkish.
+%
+%    \begin{macrocode}
+%<*latin5>
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{161}{\textexclamdown}
+\DeclareInputMath{177}{\pm}
+\DeclareInputText{162}{\textcent}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputText{163}{\pounds}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputText{165}{\textyen}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{182}{\P}
+\DeclareInputText{167}{\S}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{184}{\c\ }
+\DeclareInputText{169}{\copyright}
+\DeclareInputMath{185}{\mathonesuperior}
+\DeclareInputText{170}{\textordfeminine}
+\DeclareInputText{186}{\textordmasculine}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputMath{172}{\lnot}
+\DeclareInputText{188}{\textonequarter}
+\DeclareInputText{173}{\-}
+\DeclareInputText{189}{\textonehalf}
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{190}{\textthreequarters}
+\DeclareInputText{175}{\@tabacckludge={}}
+\DeclareInputText{191}{\textquestiondown}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge`A}
+\DeclareInputText{208}{\u G}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{209}{\~N}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{210}{\@tabacckludge`O}
+\DeclareInputText{195}{\~A}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{197}{\r A}
+\DeclareInputText{213}{\~O}
+\DeclareInputText{198}{\AE}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{199}{\c C}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{200}{\@tabacckludge`E}
+\DeclareInputText{216}{\O}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{217}{\@tabacckludge`U}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{204}{\@tabacckludge`I}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{221}{\.I}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{222}{\c S}
+\DeclareInputText{207}{\"I}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge`a}
+\DeclareInputText{240}{\u g}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{241}{\~n}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{242}{\@tabacckludge`o}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{229}{\r a}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{230}{\ae}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{231}{\c c}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{248}{\o}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{236}{\@tabacckludge`\i}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{253}{\i}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{254}{\c s}
+\DeclareInputText{239}{\"\i}
+\DeclareInputText{255}{\"y}
+%</latin5>
+%    \end{macrocode}
+%
+% \section{DEC Multinational Character Set}
+%
+% The DECMultinational character set, used by the OpenVMS operating
+% system, is slightly different from the ISO Latin 1 character set.
+%
+% Reference: Digital Equipment Corporation VT330/VT340 Programmer
+%    Reference Manual, Volume 1: Text Programming, page 22.
+%
+% This encoding was provided by  M.Y. Chartoire IPNL-IN2P3 \\
+% \texttt{m.chartoire@ipnl.in2p3.fr}
+%
+%    \begin{macrocode}
+%<*decmulti>
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{161}{\textexclamdown}
+\DeclareInputMath{177}{\pm}
+\DeclareInputText{162}{\textcent}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputText{163}{\pounds}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{165}{\textyen}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{182}{\P}
+\DeclareInputText{167}{\S}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{168}{\textcurrency}
+\DeclareInputText{169}{\copyright}
+\DeclareInputMath{185}{\mathonesuperior}
+\DeclareInputText{170}{\textordfeminine}
+\DeclareInputText{186}{\textordmasculine}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\textonequarter}
+\DeclareInputText{189}{\textonehalf}
+\DeclareInputText{191}{\textquestiondown}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge`A}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{209}{\~N}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{210}{\@tabacckludge`O}
+\DeclareInputText{195}{\~A}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{197}{\r A}
+\DeclareInputText{213}{\~O}
+\DeclareInputText{198}{\AE}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{199}{\c C}
+\DeclareInputText{215}{\OE}
+\DeclareInputText{200}{\@tabacckludge`E}
+\DeclareInputText{216}{\O}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{217}{\@tabacckludge`U}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{204}{\@tabacckludge`I}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{221}{\"Y}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{207}{\"I}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge`a}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{241}{\~n}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{242}{\@tabacckludge`o}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{229}{\r a}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{230}{\ae}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{231}{\c c}
+\DeclareInputText{247}{\oe}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{248}{\o}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{236}{\@tabacckludge`\i}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{253}{\"y}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{239}{\"\i}
+%</decmulti>
+%    \end{macrocode}
+%
+%
+% \section{The IBM code pages 850 and 858}
+%
+% This input encoding was contributed by
+% Timo Knuutila (\texttt{knuutila@\linebreak[0]cs.utu.fi}),
+% and edited by Christian Bartels
+% (\texttt{ii140ba@\linebreak[0]vm1.rz.rwth-aachen.de}).
+%
+% The DOS graphics `letters' and a few
+% other positions are ignored (left undefined).
+%
+% The 858 code page is identical to the 850 except that
+%
+% \changes{v0.9d}{1995/06/06}{Made changes to cp850 suggested by
+%    Christian Bartels}
+% \changes{v0.9s}{1995/08/31}
+%      {Swapped ordfeminine and masculine. /2203}
+%
+%    \begin{macrocode}
+%<*cp850|cp858>
+\DeclareInputText{128}{\c C}
+\DeclareInputText{144}{\@tabacckludge'E}
+\DeclareInputText{129}{\"u}
+\DeclareInputText{145}{\ae}
+\DeclareInputText{130}{\@tabacckludge'e}
+\DeclareInputText{146}{\AE}
+\DeclareInputText{131}{\^a}
+\DeclareInputText{147}{\^o}
+\DeclareInputText{132}{\"a}
+\DeclareInputText{148}{\"o}
+\DeclareInputText{133}{\@tabacckludge`a}
+\DeclareInputText{149}{\@tabacckludge`o}
+\DeclareInputText{134}{\r a}
+\DeclareInputText{150}{\^u}
+\DeclareInputText{135}{\c c}
+\DeclareInputText{151}{\@tabacckludge`u}
+\DeclareInputText{136}{\^e}
+\DeclareInputText{152}{\"y}
+\DeclareInputText{137}{\"e}
+\DeclareInputText{153}{\"O}
+\DeclareInputText{138}{\@tabacckludge`e}
+\DeclareInputText{154}{\"U}
+\DeclareInputText{139}{\"\i}
+\DeclareInputText{155}{\o}
+\DeclareInputText{140}{\^\i}
+\DeclareInputText{156}{\pounds}
+\DeclareInputText{141}{\@tabacckludge`\i}
+\DeclareInputText{157}{\O}
+\DeclareInputText{142}{\"A}
+\DeclareInputMath{158}{\times}
+\DeclareInputText{143}{\r A}
+\DeclareInputText{159}{\textflorin}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\@tabacckludge'a}
+\DeclareInputText{161}{\@tabacckludge'\i}
+\DeclareInputText{162}{\@tabacckludge'o}
+\DeclareInputText{163}{\@tabacckludge'u}
+\DeclareInputText{164}{\~n}               %% "B0-"B4: DG
+\DeclareInputText{165}{\~N}
+\DeclareInputText{181}{\@tabacckludge'A}
+\DeclareInputText{166}{\textordfeminine}
+\DeclareInputText{182}{\^A}
+\DeclareInputText{167}{\textordmasculine}
+\DeclareInputText{183}{\@tabacckludge`A}
+\DeclareInputText{168}{\textquestiondown}
+\DeclareInputText{184}{\copyright}
+\DeclareInputText{169}{\textregistered}
+\DeclareInputMath{170}{\lnot}
+\DeclareInputText{171}{\textonehalf}
+\DeclareInputText{172}{\textonequarter}   %% "B9-"BC: DG
+\DeclareInputText{173}{\textexclamdown}
+\DeclareInputText{189}{\textcent}
+\DeclareInputText{174}{\guillemotleft}
+\DeclareInputText{190}{\textyen}
+\DeclareInputText{175}{\guillemotright}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+% "BF-"C5: DG
+\DeclareInputText{208}{\dh}
+\DeclareInputText{209}{\DH}
+\DeclareInputText{210}{\^E}
+\DeclareInputText{211}{\"E}
+\DeclareInputText{212}{\@tabacckludge`E}
+%    \end{macrocode}
+%    Here is the only point in which the two code pages differ!
+%    \begin{macrocode}
+%<-cp858>\DeclareInputText{213}{\i}
+%<-cp850>\DeclareInputText{213}{\texteuro}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{198}{\~a}
+\DeclareInputText{214}{\@tabacckludge'I}
+\DeclareInputText{199}{\~A}
+\DeclareInputText{215}{\^I}
+\DeclareInputText{216}{\"I}
+% "C8-"CE: DG
+% "D9-"DC: DG
+\DeclareInputText{221}{\textbrokenbar}
+\DeclareInputText{222}{\@tabacckludge`I}
+\DeclareInputText{207}{\textcurrency}  %% "DF: DG
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge'O}
+\DeclareInputText{240}{\-}
+\DeclareInputText{225}{\ss}
+\DeclareInputMath{241}{\pm}
+\DeclareInputText{226}{\^O}
+% "F2: DG (not double underline, or equals?)
+\DeclareInputText{227}{\@tabacckludge`O}
+\DeclareInputText{243}{\textthreequarters}
+\DeclareInputText{228}{\~o}
+\DeclareInputText{244}{\P}
+\DeclareInputText{229}{\~O}
+\DeclareInputText{245}{\S}
+\DeclareInputMath{230}{\mu}
+\DeclareInputMath{246}{\div}
+\DeclareInputText{231}{\th}
+\DeclareInputText{247}{\c\ }
+\DeclareInputText{232}{\TH}
+\DeclareInputText{248}{\textdegree}
+\DeclareInputText{233}{\@tabacckludge'U}
+\DeclareInputText{249}{\"{}}
+\DeclareInputText{234}{\^U}
+\DeclareInputText{250}{\textperiodcentered}
+\DeclareInputText{235}{\@tabacckludge`U}
+\DeclareInputMath{251}{\mathonesuperior}
+\DeclareInputText{236}{\@tabacckludge'y}
+\DeclareInputMath{252}{\maththreesuperior}
+\DeclareInputText{237}{\@tabacckludge'Y}
+\DeclareInputMath{253}{\mathtwosuperior}
+\DeclareInputText{238}{\@tabacckludge={}}
+\DeclareInputText{254}{\textblacksquare} % right name?
+\DeclareInputText{239}{\@tabacckludge'{}}
+\DeclareInputText{255}{\nobreakspace}
+%</cp850|cp858>
+%    \end{macrocode}
+%
+% \section{The IBM code page 852}
+%
+% This input encoding was contributed by
+% Petr Sojka (\texttt{sojka@\linebreak[0]Muni.cz}).
+%
+% \changes{v0.9t}{1996/10/28}{Added extra \cs{nobreakspace}: OK?}
+% \changes{v0.9z}{1997/05/10}{Corrected typo in slot 213}
+% \changes{v0.91}{1997/08/19}{Replaced \cs{dh}/\cs{DH} by
+%    \cs{dj}/\cs{DJ}.}
+% \changes{v0.99}{1999/04/14}{Changed 212, see pr/2992}
+%
+%    \begin{macrocode}
+%<*cp852>
+\DeclareInputText{128}{\c C}
+\DeclareInputText{144}{\@tabacckludge'E}
+\DeclareInputText{129}{\"u}
+\DeclareInputText{145}{\@tabacckludge'L}
+\DeclareInputText{130}{\@tabacckludge'e}
+\DeclareInputText{146}{\@tabacckludge'l}
+\DeclareInputText{131}{\^a}
+\DeclareInputText{147}{\^o}
+\DeclareInputText{132}{\"a}
+\DeclareInputText{148}{\"o}
+\DeclareInputText{133}{\r u}
+\DeclareInputText{149}{\v L}
+\DeclareInputText{134}{\@tabacckludge'c}
+\DeclareInputText{150}{\v l}
+\DeclareInputText{135}{\c c}
+\DeclareInputText{151}{\@tabacckludge'S}
+\DeclareInputText{136}{\l}
+\DeclareInputText{152}{\@tabacckludge's}
+\DeclareInputText{137}{\"e}
+\DeclareInputText{153}{\"O}
+\DeclareInputText{138}{\H O}
+\DeclareInputText{154}{\"U}
+\DeclareInputText{139}{\H o}
+\DeclareInputText{155}{\v T}
+\DeclareInputText{140}{\^\i}
+\DeclareInputText{156}{\v t}
+\DeclareInputText{141}{\@tabacckludge'Z}
+\DeclareInputText{157}{\L}
+\DeclareInputText{142}{\"A}
+\DeclareInputMath{158}{\times}
+\DeclareInputText{143}{\@tabacckludge'C}
+\DeclareInputText{159}{\v c}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\@tabacckludge'a}
+\DeclareInputText{161}{\@tabacckludge'\i}
+\DeclareInputText{162}{\@tabacckludge'o}
+\DeclareInputText{163}{\@tabacckludge'u}
+\DeclareInputText{164}{\k A}
+\DeclareInputText{165}{\k a}
+\DeclareInputText{166}{\v Z}
+\DeclareInputText{167}{\v z}
+\DeclareInputText{168}{\k E}
+\DeclareInputText{169}{\k e}
+\DeclareInputMath{170}{\lnot}
+\DeclareInputText{171}{\@tabacckludge'z}
+\DeclareInputText{172}{\v C}
+\DeclareInputText{173}{\c s}
+\DeclareInputText{174}{\guillemotleft}
+\DeclareInputText{175}{\guillemotright}
+\DeclareInputText{181}{\@tabacckludge'A}
+\DeclareInputText{182}{\^A}
+\DeclareInputText{183}{\v E}
+\DeclareInputText{184}{\c S}
+\DeclareInputText{189}{\.Z}
+\DeclareInputText{190}{\.z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{198}{\u A}
+\DeclareInputText{199}{\u a}
+\DeclareInputText{207}{\textcurrency}
+\DeclareInputText{208}{\dj}
+\DeclareInputText{209}{\DJ}
+\DeclareInputText{210}{\v D}
+\DeclareInputText{211}{\"E}
+\DeclareInputText{212}{\v d} % d caron
+\DeclareInputText{213}{\v N}
+\DeclareInputText{214}{\@tabacckludge'I}
+\DeclareInputText{215}{\^I}
+\DeclareInputText{216}{\v e}
+\DeclareInputText{221}{\c T}
+\DeclareInputText{222}{\r U}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge'O}
+\DeclareInputText{240}{\-}
+\DeclareInputText{225}{\ss}
+\DeclareInputText{241}{\H{}}
+\DeclareInputText{226}{\^O}
+\DeclareInputText{242}{\k\ }
+\DeclareInputText{227}{\@tabacckludge'N}
+\DeclareInputText{243}{\v{}}
+\DeclareInputText{228}{\@tabacckludge'n}
+\DeclareInputText{244}{\u{}}
+\DeclareInputText{229}{\v n}
+\DeclareInputText{245}{\S}
+\DeclareInputText{230}{\v S}
+\DeclareInputMath{246}{\div}
+\DeclareInputText{231}{\v s}
+\DeclareInputText{247}{\c\ }
+\DeclareInputText{232}{\@tabacckludge'R}
+\DeclareInputText{248}{\textdegree}
+\DeclareInputText{233}{\@tabacckludge'U}
+\DeclareInputText{249}{\"{}}
+\DeclareInputText{234}{\@tabacckludge'r}
+\DeclareInputText{250}{\.{}}
+\DeclareInputText{235}{\H U}
+\DeclareInputText{251}{\H u}
+\DeclareInputText{236}{\@tabacckludge'y}
+\DeclareInputText{252}{\v R}
+\DeclareInputText{237}{\@tabacckludge'Y}
+\DeclareInputText{253}{\v r}
+\DeclareInputText{238}{\c t}
+\DeclareInputText{254}{\textblacksquare} % right name?
+\DeclareInputText{239}{\@tabacckludge'{}}
+\DeclareInputText{255}{\nobreakspace}
+%</cp852>
+%    \end{macrocode}
+%
+% \section{The IBM code pages 437 and 865}
+%
+% This input encoding is based on work by\\
+% Volker Kunert
+% (\texttt{volker@\linebreak[0]numsun1.mathematik.uni-halle.de})\\
+% and \texttt{bontus@\linebreak[0]al6000.physik.uni-siegen.de}.\\
+% The changes for cp865 are based on work by S\o ren Sandmann
+% (\texttt{sandmann@\linebreak[0]daimi.aau.dk}), with thanks to
+% them all.
+%
+% The DOS graphics `letters' and a few
+% other positions are ignored (left undefined).
+%
+% Unfortunately, in cp437 there is no agreement as to whether slot E1
+% should be `$\beta$' or `\ss', so we provide two variants,
+% one (cp437) with `$\beta$' and one (cp437de) with `\ss'.
+%
+% \changes{v0.9e}{1995/08/31}{Added a 0 to all character codes}
+%
+% \changes{v0.9m}{1995/12/04}{Made uumlaut and pounds text characters}
+% \changes{v0.9t}{1996/10/28}{Added \cs{textflorin} and \cs{textpeseta}}
+% \changes{v0.9t}{1996/10/28}{Removed \cs{textbrokenbar}}
+% \changes{v0.9t}{1996/10/28}{Removed \cs{textendash}}
+% \changes{v0.9t}{1996/10/28}{Changed \cs{Theta} to \cs{Phi}}
+% \changes{v0.9t}{1996/10/28}{Changed \cs{Pi} to \cs{pi}, perhaps}
+% \changes{v0.9t}{1996/10/28}{Changed \cs{emptyset} to \cs{phi}}
+% \changes{v0.9t}{1996/10/28}{Changed \cs{maththreesuperior} to
+%                             \cs{mathnsuperior}}
+% \changes{v0.94}{1997/12/17}{Changed 158 to \cs{DeclareInputText}}
+%
+%    \begin{macrocode}
+%<*cp437|cp437de|cp865>
+\DeclareInputText{128}{\c C}
+\DeclareInputText{129}{\"u}
+\DeclareInputText{130}{\@tabacckludge'e}
+\DeclareInputText{131}{\^a}
+\DeclareInputText{132}{\"a}
+\DeclareInputText{133}{\@tabacckludge`a}
+\DeclareInputText{134}{\r a}
+\DeclareInputText{135}{\c c}
+\DeclareInputText{136}{\^e}
+\DeclareInputText{137}{\"e}
+\DeclareInputText{138}{\@tabacckludge`e}
+\DeclareInputText{139}{\"\i}
+\DeclareInputText{140}{\^\i}
+\DeclareInputText{141}{\@tabacckludge`\i}
+\DeclareInputText{142}{\"A}
+\DeclareInputText{143}{\r A}
+\DeclareInputText{144}{\@tabacckludge'E}
+\DeclareInputText{145}{\ae}
+\DeclareInputText{146}{\AE}
+\DeclareInputText{147}{\^o}
+\DeclareInputText{148}{\"o}
+\DeclareInputText{149}{\@tabacckludge`o}
+\DeclareInputText{150}{\^u}
+\DeclareInputText{151}{\@tabacckludge`u}
+\DeclareInputText{152}{\"y}
+\DeclareInputText{153}{\"O}
+\DeclareInputText{154}{\"U}
+%</cp437|cp437de|cp865>
+%<*cp437|cp437de>
+\DeclareInputText{155}{\textcent}
+\DeclareInputText{156}{\pounds}
+\DeclareInputText{157}{\textyen}
+%</cp437|cp437de>
+%<*cp865>
+\DeclareInputText{155}{\o}
+\DeclareInputText{156}{\pounds}
+\DeclareInputText{157}{\O}
+%</cp865>
+%<*cp437|cp437de|cp865>
+\DeclareInputText{158}{\textpeseta} % Pt
+\DeclareInputText{159}{\textflorin}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\@tabacckludge'a} % 160
+\DeclareInputText{161}{\@tabacckludge'\i}
+\DeclareInputText{162}{\@tabacckludge'o}
+\DeclareInputText{163}{\@tabacckludge'u}
+\DeclareInputText{164}{\~n}
+\DeclareInputText{165}{\~N}
+\DeclareInputText{166}{\textordfeminine}
+\DeclareInputText{167}{\textordmasculine}
+\DeclareInputText{168}{\textquestiondown}
+%\DeclareInputText{169}{} % left upper corner
+\DeclareInputMath{170}{\lnot}
+\DeclareInputText{171}{\textonehalf}
+\DeclareInputText{172}{\textonequarter}
+\DeclareInputText{173}{\textexclamdown}
+\DeclareInputText{174}{\guillemotleft}
+%<cp437|cp437de>\DeclareInputText{175}{\guillemotright}
+%<cp865>\DeclareInputText{175}{\textcurrency}
+%\DeclareInputText{176}{\textlightgraybox}
+%\DeclareInputText{177}{\textgraybox}
+%\DeclareInputText{178}{\textdarkgraybox}
+%\DeclareInputMath{179}{} % vertical bar
+%\DeclareInputText{180}{} % vertical bar with branch to left
+%\DeclareInputText{181}{} % vertical bar with double branch to left
+%\DeclareInputText{182}{} % double bar with single branch to left
+%\DeclareInputText{183}{} % graphic
+%\DeclareInputText{184}{} % graphic
+%\DeclareInputMath{185}{} % vertical double bar with branch to left
+%\DeclareInputMath{186}{} % vertical double bar
+%\DeclareInputText{187}{} % double upper right corner
+%\DeclareInputMath{188}{} % double lower right corner
+%\DeclareInputText{189}{} % graphic
+%\DeclareInputText{190}{} % graphic
+%\DeclareInputMath{191}{\ensuremath{\rceil}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%\DeclareInputMath{192}{\ensuremath{\lfloor}}
+%\DeclareInputText{193}{} % dash with branch up
+%\DeclareInputText{194}{} % dash with branch down
+%\DeclareInputText{195}{} % vertical bar with branch to right
+%\DeclareInputText{196}{} % horizontal bar, not endash
+%\DeclareInputText{197}{} % vertical bar crossed with dash
+%\DeclareInputText{198}{} % graphic
+%\DeclareInputText{199}{} % graphic
+%\DeclareInputText{200}{} % double lower left corner
+%\DeclareInputText{201}{} % double upper left corner
+%\DeclareInputText{202}{} % double dash with branch up
+%\DeclareInputText{203}{} % double dash with branch down
+%\DeclareInputText{204}{} % double bar with branch right
+%\DeclareInputText{205}{=} % double dash
+%\DeclareInputText{206}{} % double bar crossing double dash
+%\DeclareInputText{207}{} % graphic
+%\DeclareInputMath{208}{}
+%\DeclareInputText{209}{}
+%\DeclareInputText{210}{}
+%\DeclareInputText{211}{}
+%\DeclareInputText{212}{}
+%\DeclareInputText{213}{}
+%\DeclareInputText{214}{}
+%\DeclareInputText{215}{}
+%\DeclareInputText{216}{}
+%\DeclareInputMath{217}{\ensuremath{\rfloor}} % lower right corner
+%\DeclareInputMath{218}{\ensuremath{\lceil}}  % upper left corner
+%\DeclareInputText{219}{} % black box
+%\DeclareInputText{220}{} % lower half of black box
+%\DeclareInputText{221}{} % left bar
+%\DeclareInputText{222}{} % right bar
+%\DeclareInputText{223}{} % upper half of black box
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputMath{224}{\alpha}
+%</cp437|cp437de|cp865>
+%<cp437|cp865>\DeclareInputMath{225}{\beta}
+%<cp437de>\DeclareInputText{225}{\ss}
+%<*cp437|cp437de|cp865>
+\DeclareInputMath{226}{\Gamma}
+\DeclareInputMath{227}{\pi}
+\DeclareInputMath{228}{\Sigma}
+\DeclareInputMath{229}{\sigma}
+\DeclareInputMath{230}{\mu}
+\DeclareInputMath{231}{\gamma}
+\DeclareInputMath{232}{\Phi}
+\DeclareInputMath{233}{\theta}
+\DeclareInputMath{234}{\Omega}
+\DeclareInputMath{235}{\delta}
+\DeclareInputMath{236}{\infty}
+\DeclareInputMath{237}{\phi}
+\DeclareInputMath{238}{\varepsilon}
+\DeclareInputMath{239}{\cap}
+\DeclareInputMath{240}{\equiv}
+\DeclareInputMath{241}{\pm}
+\DeclareInputMath{242}{\geq}
+\DeclareInputMath{243}{\leq}
+%\DeclareInputMath{244}{}   % upper part of integral sign
+%\DeclareInputMath{245}{}   % lower part of integral sign
+\DeclareInputMath{246}{\div}
+\DeclareInputMath{247}{\approx}
+\DeclareInputText{248}{\textdegree}
+\DeclareInputText{249}{\textperiodcentered}
+\DeclareInputText{250}{\textbullet}
+\DeclareInputMath{251}{\surd}
+\DeclareInputMath{252}{\mathnsuperior}
+\DeclareInputMath{253}{\mathtwosuperior}
+\DeclareInputText{254}{\textblacksquare} % right name?
+\DeclareInputText{255}{\nobreakspace}
+%</cp437|cp437de|cp865>
+%    \end{macrocode}
+%
+% \section{The Macintosh encodings}
+%
+% This input encoding was contributed by
+% Constantin Kahn (\texttt{kahn@\linebreak[0]math.toronto.edu}),
+% with minor modifications by Alan Jeffrey.
+%
+% \changes{v0.09c}{1995/05/30}{Made mac encoding `active German quote
+%    safe', and added the correct docstrip magic.}
+%
+%    \begin{macrocode}
+%<*applemac>
+\DeclareInputText{128}{\"A}
+\DeclareInputText{129}{\r A}
+\DeclareInputText{130}{\c C}
+\DeclareInputText{131}{\@tabacckludge'E}
+\DeclareInputText{132}{\~N}
+\DeclareInputText{133}{\"O}
+\DeclareInputText{134}{\"U}
+\DeclareInputText{135}{\@tabacckludge'a}
+\DeclareInputText{136}{\@tabacckludge`a}
+\DeclareInputText{137}{\^a}
+\DeclareInputText{138}{\"a}
+\DeclareInputText{139}{\~a}
+\DeclareInputText{140}{\r a}
+\DeclareInputText{141}{\c c}
+\DeclareInputText{142}{\@tabacckludge'e}
+\DeclareInputText{143}{\@tabacckludge`e}
+\DeclareInputText{144}{\^e}
+\DeclareInputText{145}{\"e}
+\DeclareInputText{146}{\@tabacckludge'\i}
+\DeclareInputText{147}{\@tabacckludge`\i}
+\DeclareInputText{148}{\^\i}
+\DeclareInputText{149}{\"\i}
+\DeclareInputText{150}{\~n}
+\DeclareInputText{151}{\@tabacckludge'o}
+\DeclareInputText{152}{\@tabacckludge`o}
+\DeclareInputText{153}{\^o}
+\DeclareInputText{154}{\"o}
+\DeclareInputText{155}{\~o}
+\DeclareInputText{156}{\@tabacckludge'u}
+\DeclareInputText{157}{\@tabacckludge`u}
+\DeclareInputText{158}{\^u}
+\DeclareInputText{159}{\"u}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\dag}
+\DeclareInputText{161}{\textdegree}
+\DeclareInputText{162}{\textcent}
+\DeclareInputText{163}{\pounds}
+\DeclareInputText{164}{\S}
+\DeclareInputText{165}{\textbullet}
+\DeclareInputText{166}{\P}
+\DeclareInputText{167}{\ss}
+\DeclareInputText{168}{\textregistered}
+\DeclareInputText{169}{\copyright}
+\DeclareInputText{170}{\texttrademark}
+\DeclareInputText{171}{\@tabacckludge'{}}
+\DeclareInputText{172}{\"{}}
+\DeclareInputMath{173}{\neq}
+\DeclareInputText{174}{\AE}
+\DeclareInputText{175}{\O}
+\DeclareInputMath{176}{\infty}
+\DeclareInputMath{177}{\pm}
+\DeclareInputMath{178}{\leq}
+\DeclareInputMath{179}{\geq}
+\DeclareInputText{180}{\textyen}
+\DeclareInputMath{181}{\mu}
+\DeclareInputMath{182}{\partial}
+\DeclareInputMath{183}{\Sigma}
+\DeclareInputMath{184}{\Pi}
+\DeclareInputMath{185}{\pi}
+\DeclareInputMath{186}{\int}
+\DeclareInputText{187}{\textordfeminine}
+\DeclareInputText{188}{\textordmasculine}
+\DeclareInputMath{189}{\Omega}
+\DeclareInputText{190}{\ae}
+\DeclareInputText{191}{\o}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\textquestiondown}
+\DeclareInputText{193}{\textexclamdown}
+\DeclareInputMath{194}{\lnot}
+\DeclareInputMath{195}{\surd}
+\DeclareInputText{196}{\textflorin}
+\DeclareInputMath{197}{\approx}
+\DeclareInputMath{198}{\Delta}
+\DeclareInputText{199}{\guillemotleft}
+\DeclareInputText{200}{\guillemotright}
+\DeclareInputText{201}{\dots}
+\DeclareInputText{202}{\nobreakspace}
+\DeclareInputText{203}{\@tabacckludge`A}
+\DeclareInputText{204}{\~A}
+\DeclareInputText{205}{\~O}
+\DeclareInputText{206}{\OE}
+\DeclareInputText{207}{\oe}
+\DeclareInputText{208}{\textendash}
+\DeclareInputText{209}{\textemdash}
+\DeclareInputText{210}{\textquotedblleft}
+\DeclareInputText{211}{\textquotedblright}
+\DeclareInputText{212}{\textquoteleft}
+\DeclareInputText{213}{\textquoteright}
+\DeclareInputMath{214}{\div}
+\DeclareInputMath{215}{\diamond}
+\DeclareInputText{216}{\"y}
+\DeclareInputText{217}{\"Y}
+\DeclareInputMath{218}{/}
+\DeclareInputText{219}{\textcurrency}
+\DeclareInputText{220}{\guilsinglleft}
+\DeclareInputText{221}{\guilsinglright}
+\DeclareInputText{222}{fi}
+\DeclareInputText{223}{fl}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\ddag}
+\DeclareInputText{225}{\textperiodcentered}
+\DeclareInputText{226}{\quotesinglbase}
+\DeclareInputText{227}{\quotedblbase}
+\DeclareInputText{228}{\textperthousand}
+\DeclareInputText{229}{\^A}
+\DeclareInputText{230}{\^E}
+\DeclareInputText{231}{\@tabacckludge'A}
+\DeclareInputText{232}{\"E}
+\DeclareInputText{233}{\@tabacckludge`E}
+\DeclareInputText{234}{\@tabacckludge'I}
+\DeclareInputText{235}{\^I}
+\DeclareInputText{236}{\"I}
+\DeclareInputText{237}{\@tabacckludge`I}
+\DeclareInputText{238}{\@tabacckludge'O}
+\DeclareInputText{239}{\^O}
+\DeclareInputText{240}{\textapplelogo}
+\DeclareInputText{241}{\@tabacckludge`O}
+\DeclareInputText{242}{\@tabacckludge'U}
+\DeclareInputText{243}{\^U}
+\DeclareInputText{244}{\@tabacckludge`U}
+\DeclareInputText{245}{\i}
+\DeclareInputText{246}{\^{}}
+\DeclareInputText{247}{\~{}}
+\DeclareInputText{248}{\@tabacckludge={}}
+\DeclareInputText{249}{\u{}}
+\DeclareInputText{250}{\.{}}
+\DeclareInputText{251}{\r{}}
+\DeclareInputText{252}{\c\ }
+\DeclareInputText{253}{\H{}}
+\DeclareInputText{254}{\k\ }
+\DeclareInputText{255}{\v{}}
+%</applemac>
+%    \end{macrocode}
+%
+% This input encoding for the Apple Central European code page was
+% contributed by Radek Tryc and Marcin Woli\'nski
+%    \verb=<wolinski@mimuw.edu.pl>=.
+%
+% \changes{v0.99b}{2002/06/16}{Added macce encoding (pr/3433)}
+% \changes{v1.0d}{2004/02/05}{Reordered code}
+% \changes{v1.0g}{2004/05/22}{Changed \cs{textellipsis} to \cs{dots}
+%    for consistency.}
+% \changes{v1.0g}{2004/05/22}{Changed \cs{textdagger} to \cs{dag}
+%    for consistency.}
+% \changes{v1.0g}{2004/05/22}{Changed \cs{textparagraph} to \cs{P}
+%    for consistency.}
+% \changes{v1.0g}{2004/05/22}{Changed \cs{textsection} to \cs{S}
+%    for consistency.}
+% \changes{v1.0g}{2004/05/22}{Changed \cs{textcopyright} to \cs{copyright}
+%    for consistency.}
+%    \begin{macrocode}
+%<*applemacce>
+\DeclareInputText{128}{\"A}
+\DeclareInputText{131}{\@tabacckludge'E}
+\DeclareInputText{132}{\k A}
+\DeclareInputText{133}{\"O}
+\DeclareInputText{134}{\"U}
+\DeclareInputText{136}{\k a}
+\DeclareInputText{137}{\v C}
+\DeclareInputText{138}{\"a}
+\DeclareInputText{139}{\v c}
+\DeclareInputText{140}{\@tabacckludge'C}
+\DeclareInputText{141}{\@tabacckludge'c}
+\DeclareInputText{143}{\@tabacckludge'Z}
+\DeclareInputText{144}{\@tabacckludge'z}
+\DeclareInputText{151}{\@tabacckludge'o}
+\DeclareInputText{159}{\"u}
+\DeclareInputText{154}{\"o}
+\DeclareInputText{133}{\"O}
+\DeclareInputText{134}{\"U}
+\DeclareInputText{153}{\^o}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\dag}
+\DeclareInputText{161}{\textdegree}
+\DeclareInputText{162}{\k E}
+\DeclareInputText{163}{\pounds}
+\DeclareInputText{164}{\S}
+\DeclareInputText{165}{\textbullet}
+\DeclareInputText{166}{\P}
+\DeclareInputText{167}{\ss}
+\DeclareInputText{168}{\textregistered}
+\DeclareInputText{171}{\k e}
+\DeclareInputText{193}{\@tabacckludge'N}
+\DeclareInputText{169}{\copyright}
+\DeclareInputText{184}{\l}
+\DeclareInputText{196}{\@tabacckludge'n}
+\DeclareInputText{199}{\guillemotleft}
+\DeclareInputText{200}{\guillemotright}
+\DeclareInputText{201}{\dots}
+\DeclareInputText{202}{\nobreakspace}
+\DeclareInputText{208}{\textendash}
+\DeclareInputText{209}{\textemdash}
+%    \end{macrocode}
+%
+% \changes{v1.0e}{2004/05/03}{Typo in \cs{textquotedblleft} (pr/3673)}
+%    \begin{macrocode}
+\DeclareInputText{210}{\textquotedblleft}
+\DeclareInputText{211}{\textquotedblright}
+\DeclareInputText{212}{\textquoteleft}
+\DeclareInputText{213}{\textquoteright}
+\DeclareInputText{214}{\textdiv}
+\DeclareInputText{220}{\guilsinglleft}
+\DeclareInputText{221}{\guilsinglright}
+\DeclareInputText{222}{\v r}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{226}{\quotesinglbase}
+\DeclareInputText{227}{\quotedblbase}
+\DeclareInputText{229}{\@tabacckludge'S}
+\DeclareInputText{230}{\@tabacckludge's}
+\DeclareInputText{238}{\@tabacckludge'O}
+\DeclareInputText{239}{\^O}
+\DeclareInputText{251}{\.Z}
+\DeclareInputText{252}{\L}
+\DeclareInputText{253}{\.z}
+%</applemacce>
+%    \end{macrocode}
+%
+% \section{The Next encoding}
+%
+% This input encoding is based on work by Stefan Ried
+% (\texttt{stef@\linebreak[0]theo-phys.uni-essen.de} and Holger Uhr
+% (\texttt{huhr@\linebreak[0]uni-paderborn.de}).
+%
+% Further extended by
+% Jens Heise (\texttt{heisbeee@calvados.zrz.TU-Berlin.DE}).
+%
+% \changes{v0.9k}{1995/11/29}{Tidied up this encoding.}
+%
+% \changes{v0.9m}{1995/12/04}{Made fraction a math character.}
+% \changes{v0.9n}{1995/12/10}{Made fraction a text character.}
+%
+% \changes{v0.94}{1997/12/17}{Changed \cs{textellipsis} to \cs{dots}
+%    for consistency.}
+% \changes{v0.94}{1997/12/17}{Changed \cs{textquotesinglbase} to
+%    \cs{quotesinglbase}: this may be temporary.}
+% \changes{v0.94}{1997/12/17}{Changed \cs{textquotedblbase} to
+%    \cs{quotedblbase}: this may be temporary.}
+% \changes{v0.96}{1998/03/02}{Fixed typo in slot 159.}
+% \changes{v0.997}{2000/12/02}{Added all missing chars. (pr/3281)}
+%
+%    \begin{macrocode}
+%<*next>
+\DeclareInputText{128}{\nobreakspace}
+\DeclareInputText{129}{\@tabacckludge`A}
+\DeclareInputText{130}{\@tabacckludge'A}
+\DeclareInputText{131}{\^A}
+\DeclareInputText{132}{\~A}
+\DeclareInputText{133}{\"A}
+\DeclareInputText{134}{\r A}
+\DeclareInputText{135}{\c C}
+\DeclareInputText{136}{\@tabacckludge`E}
+\DeclareInputText{137}{\@tabacckludge'E}
+\DeclareInputText{138}{\^E}
+\DeclareInputText{139}{\"E}
+\DeclareInputText{140}{\@tabacckludge`I}
+\DeclareInputText{141}{\@tabacckludge'I}
+\DeclareInputText{142}{\^I}
+\DeclareInputText{143}{\"I}
+\DeclareInputText{144}{\DH}
+\DeclareInputText{145}{\~N}
+\DeclareInputText{146}{\@tabacckludge`O}
+\DeclareInputText{147}{\@tabacckludge'O}
+\DeclareInputText{148}{\^O}
+\DeclareInputText{149}{\~O}
+\DeclareInputText{150}{\"O}
+\DeclareInputText{151}{\@tabacckludge`U}
+\DeclareInputText{152}{\@tabacckludge'U}
+\DeclareInputText{153}{\^U}
+\DeclareInputText{154}{\"U}
+\DeclareInputText{155}{\@tabacckludge'Y}
+\DeclareInputText{156}{\TH}
+\DeclareInputMath{157}{\mu}
+\DeclareInputMath{158}{\times}
+\DeclareInputMath{159}{\div}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\copyright}
+\DeclareInputText{161}{\textexclamdown}
+\DeclareInputText{162}{\textcent}
+\DeclareInputText{163}{\pounds}
+\DeclareInputMath{164}{/}
+\DeclareInputText{165}{\textyen}
+\DeclareInputText{166}{\textflorin}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\textcurrency}
+\DeclareInputText{169}{\textquoteright}
+\DeclareInputText{170}{\textquotedblleft}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{172}{\guilsinglleft}
+\DeclareInputText{173}{\guilsinglright}
+\DeclareInputText{174}{fi}
+\DeclareInputText{175}{fl}
+\DeclareInputText{176}{\textregistered}
+\DeclareInputText{177}{\textendash}
+\DeclareInputText{178}{\dag}
+\DeclareInputText{179}{\ddag}
+\DeclareInputText{180}{\textperiodcentered}
+\DeclareInputText{181}{\textbrokenbar}
+\DeclareInputText{182}{\P}
+\DeclareInputText{183}{\textbullet}
+\DeclareInputText{184}{\quotesinglbase}
+\DeclareInputText{185}{\quotedblbase}
+\DeclareInputText{186}{\textquotedblright}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\dots}
+\DeclareInputText{189}{\textperthousand}
+\DeclareInputMath{190}{\lnot}
+\DeclareInputText{191}{\textquestiondown}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputMath{192}{\mathonesuperior}
+\DeclareInputText{193}{\@tabacckludge`{}}
+\DeclareInputText{194}{\@tabacckludge'{}}
+\DeclareInputText{195}{\^{}}
+\DeclareInputText{196}{\~{}}
+\DeclareInputText{197}{\@tabacckludge={}}
+\DeclareInputText{198}{\u{}}
+\DeclareInputText{199}{\.{}}
+\DeclareInputText{200}{\"{}}
+\DeclareInputMath{201}{\mathtwosuperior}
+\DeclareInputText{202}{\r{}}
+\DeclareInputText{203}{\c\ }
+\DeclareInputMath{204}{\maththreesuperior}
+\DeclareInputText{205}{\H{}}
+\DeclareInputText{206}{\k\ }
+\DeclareInputText{207}{\v{}}
+\DeclareInputText{208}{\textemdash}
+\DeclareInputMath{209}{\pm}
+\DeclareInputText{210}{\textonequarter}
+\DeclareInputText{211}{\textonehalf}
+\DeclareInputText{212}{\textthreequarters}
+\DeclareInputText{213}{\@tabacckludge`a}
+\DeclareInputText{214}{\@tabacckludge'a}
+\DeclareInputText{215}{\^a}
+\DeclareInputText{216}{\~a}
+\DeclareInputText{217}{\"a}
+\DeclareInputText{218}{\r a}
+\DeclareInputText{219}{\c c}
+\DeclareInputText{220}{\@tabacckludge`e}
+\DeclareInputText{221}{\@tabacckludge'e}
+\DeclareInputText{222}{\^e}
+\DeclareInputText{223}{\"e}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge`\i}
+\DeclareInputText{225}{\AE}
+\DeclareInputText{226}{\@tabacckludge'\i}
+\DeclareInputText{227}{\textordfeminine}
+\DeclareInputText{228}{\^\i}
+\DeclareInputText{229}{\"\i}
+\DeclareInputText{230}{\dh}
+\DeclareInputText{231}{\~n}
+\DeclareInputText{232}{\L}
+\DeclareInputText{233}{\O}
+\DeclareInputText{234}{\OE}
+\DeclareInputText{235}{\textordmasculine}
+\DeclareInputText{236}{\@tabacckludge`o}
+\DeclareInputText{237}{\@tabacckludge'o}
+\DeclareInputText{238}{\^o}
+\DeclareInputText{239}{\~o}
+\DeclareInputText{240}{\"o}
+\DeclareInputText{241}{\ae}
+\DeclareInputText{242}{\@tabacckludge`u}
+\DeclareInputText{243}{\@tabacckludge'u}
+\DeclareInputText{244}{\^u}
+\DeclareInputText{245}{\i}
+\DeclareInputText{246}{\"u}
+\DeclareInputText{247}{\@tabacckludge'y}
+\DeclareInputText{248}{\l}
+\DeclareInputText{249}{\o}
+\DeclareInputText{250}{\oe}
+\DeclareInputText{251}{\ss}
+\DeclareInputText{252}{\th}
+\DeclareInputText{253}{\"y}
+%</next>
+%    \end{macrocode}
+%
+%
+%
+% \changes{v0.9a}{1995/04/23}{\cs{textonequarter} and friends should
+%                     be declared with \cs{DeclareInputText}}
+% \section{The MS Windows ANSI encoding cp1252,\\
+%          and the ISO Latin-1 and Latin-9 encodings}
+%
+% The MS Windows ANSI, cp 1252, input encoding was contributed by
+% Berthold K.P. Horn (\texttt{bkph@\linebreak[0]ai.mit.edu}).
+%
+% It has two very different names so the same code produces two files.
+% These encoding files both define the characters in the
+% MS Windows 3.1 ANSI encoding (Western Europe), also known as code
+% page 1252, which is based on ISO Latin-1 but has important additions
+% in the 128--159 range.
+%
+% Designed for:
+%       Danish, Dutch, English, Finnish, French, German, Icelandic,
+%       Italian, Norwegian, Portuguese, Spanish, and Swedish.
+%
+% Note: Windows ANSI --- like Macintosh standard Roman encoding ---
+%       has quotesingle at 39, and grave at 96 --- which is here
+%       ignored.
+%
+% The ISO Latin-1 encoding file defines only the restricted range of
+% characters available in the ISO~8859-1 encoding.
+%
+% The ISO~Latin-9 encoding file defines the characters in the
+%    ISO~8859-15 encoding. It was contributed by Karsten Tinnefeld
+%    (\texttt{karsten@tinnefeld.com}).
+%    It differs only a small amount from ISO~Latin-1 and is a
+%    replacement for it that contains a few characters that are needed for
+%    French and Finnish. Further, a slot for the Euro currency sign has
+%    been added and this could be the killer argument for many 8-bit
+%    texts to be written in Latin-9 in the future.
+%
+% According to a Linux man page, ISO~Latin-9 supports Albanian, Basque,
+%    Breton, Catalan, Danish, Dutch,
+% English, Estonian, Faroese, Finnish, French, Frisian, Galician, German,
+% Greenlandic, Icelandic, Irish Gaelic, Italian, Latin, Luxemburgish,
+% Norwegian, Portuguese, Rhaeto-Romanic, Scottish Gaelic, Spanish and
+% Swedish.
+%
+%    The characters added in |latin9.def| are (in \LaTeX{} notation):
+% \begin{verbatim}
+%     \texteuro, \v S   \v s   \v Z   \v z   \OE   \oe   \" Y
+% \end{verbatim}
+%    They displace the following characters from |latin1.def|:
+% \begin{verbatim}
+%       \textcurrency   \textbrokenbar   \"{}   \'{}   \c{}
+%       \textonequarter   \textonehalf   \textthreequarters
+% \end{verbatim}
+%
+% \changes{v0.9e}{1995/08/31}{Redeclared "AD to be soft hyphen.}
+% \changes{v0.9e}{1995/08/31}{Swapped ordfeminine and ordmasculine.}
+%
+% \changes{v0.9p}{1996/04/11}{ansinew 09f is \"Y not \"y, latex/2119}
+%
+% \changes{v0.91}{1997/08/19}{Exchanged codes for
+%          \cs{textendash} and \cs{textemdash}.}
+%
+% \changes{v0.94}{1997/12/17}{Added cp1252 and merged latin1}
+% \changes{v0.94}{1997/12/17}{Changed \cs{ldots} to \cs{dots}, this
+%          should be undetectable since \cs{ldots} is not robust.}
+%
+% \changes{v0.99a}{2001/07/10}{Added latin9 (from Karsten Tinnefeld)}
+% \changes{v0.99b}{2002/06/16}{Added code points 142,158 for cp1252 (pr/3441)}
+% \changes{v0.99b}{2002/07/08}{Added code 128 (texteuro) for cp1252 (pr/3423)}
+%
+%    \begin{macrocode}
+%<*cp1252>
+\DeclareInputText{128}{\texteuro}
+\DeclareInputText{130}{\quotesinglbase}
+\DeclareInputText{131}{\textflorin}
+\DeclareInputText{132}{\quotedblbase}
+\DeclareInputText{133}{\dots}
+\DeclareInputText{134}{\dag}
+\DeclareInputText{135}{\ddag}
+\DeclareInputText{136}{\^{}}
+\DeclareInputText{137}{\textperthousand}
+\DeclareInputText{138}{\v S}
+\DeclareInputText{139}{\guilsinglleft}
+\DeclareInputText{140}{\OE}
+\DeclareInputText{142}{\v Z}
+\DeclareInputText{145}{\textquoteleft}
+\DeclareInputText{146}{\textquoteright}
+\DeclareInputText{147}{\textquotedblleft}
+\DeclareInputText{148}{\textquotedblright}
+\DeclareInputText{149}{\textbullet}
+\DeclareInputText{150}{\textendash}
+\DeclareInputText{151}{\textemdash}
+\DeclareInputText{152}{\~{}}
+\DeclareInputText{153}{\texttrademark}
+\DeclareInputText{154}{\v s}
+\DeclareInputText{155}{\guilsinglright}
+\DeclareInputText{156}{\oe}
+\DeclareInputText{158}{\v z}
+\DeclareInputText{159}{\"Y}
+%</cp1252>
+%    \end{macrocode}
+%
+%  This (somewhat confused) table is now even more disordered: first
+%  we deal with those few characters that are different in latin9,
+%  then with the rest.
+%
+%    \begin{macrocode}
+%<*cp1252|latin1>
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputText{184}{\c\ }
+\DeclareInputText{188}{\textonequarter}
+\DeclareInputText{189}{\textonehalf}
+\DeclareInputText{190}{\textthreequarters}
+%</cp1252|latin1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*latin9>
+\DeclareInputText{164}{\texteuro}
+\DeclareInputText{166}{\v S}
+\DeclareInputText{168}{\v s}
+\DeclareInputText{180}{\v Z}
+\DeclareInputText{184}{\v z}
+\DeclareInputText{188}{\OE}
+\DeclareInputText{189}{\oe}
+\DeclareInputText{190}{\"Y}
+%</latin9>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*cp1252|latin1|latin9>
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{161}{\textexclamdown}
+\DeclareInputMath{177}{\pm}
+\DeclareInputText{162}{\textcent}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputText{163}{\pounds}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{165}{\textyen}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{182}{\P}
+\DeclareInputText{167}{\S}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{169}{\copyright}
+\DeclareInputMath{185}{\mathonesuperior}
+\DeclareInputText{170}{\textordfeminine}
+\DeclareInputText{186}{\textordmasculine}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputMath{172}{\lnot}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{175}{\@tabacckludge={}}
+\DeclareInputText{191}{\textquestiondown}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge`A}
+\DeclareInputText{208}{\DH}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{209}{\~N}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{210}{\@tabacckludge`O}
+\DeclareInputText{195}{\~A}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{197}{\r A}
+\DeclareInputText{213}{\~O}
+\DeclareInputText{198}{\AE}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{199}{\c C}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{200}{\@tabacckludge`E}
+\DeclareInputText{216}{\O}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{217}{\@tabacckludge`U}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{204}{\@tabacckludge`I}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{221}{\@tabacckludge'Y}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{222}{\TH}
+\DeclareInputText{207}{\"I}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge`a}
+\DeclareInputText{240}{\dh}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{241}{\~n}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{242}{\@tabacckludge`o}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{229}{\r a}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{230}{\ae}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{231}{\c c}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{248}{\o}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{236}{\@tabacckludge`\i}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{253}{\@tabacckludge'y}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{254}{\th}
+\DeclareInputText{239}{\"\i}
+\DeclareInputText{255}{\"y}
+%</cp1252|latin1|latin9>
+%    \end{macrocode}
+%
+%
+%\section{The ISO 8859-16 (Latin10) encoding}
+%
+% \changes{v1.0c}{2004/02/04}{Added ISO 8859-16 Latin10 (pr/3568)}
+%
+%  This set of coded graphic characters is intended for use in data and
+%  text processing applications and also for information interchange. The
+%  set contains graphic characters used for general purpose applications in
+%  typical office environments in at least the following languages:
+%  Albanian, Croatian, English, Finnish, French, German, Hungarian, Irish
+%  Gaelic (new orthography), Italian, Latin, Polish, Romanian, and
+%  Slovenian. This set of coded graphic characters may be regarded as a
+%  version of an 8-bit code according to ISO/IEC 2022 or ISO/IEC 4873 at
+%  level 1. [ISO 8859-16:2001(E), p. 1]
+%
+%  ISO 8859-16 was primarily designed for single-byte encoding the Romanian
+%  language. The UTF-8 charset is the preferred and in today's MIME software
+%  more widely implemented encoding suitable for Romanian.
+%
+% Data for the \LaTeX{} support was mainly provided by  Ionel Ciob\^{i}c\u{a}
+% with additions and corrections taken from\\
+% \texttt{http://www.unicode.org/Public/MAPPINGS/ISO8859/8859-16.TXT}.
+%
+% \changes{v1.1b}{2006/03/03}{Corrections (pr/3849)}
+%
+%    \begin{macrocode}
+%<*latin10>
+%    \end{macrocode}
+%    The ``comma below'' accent is provided here in a crude (better
+%    than nothing) version.
+%    \begin{macrocode}
+\ProvideTextCommandDefault\textcommabelow[1]
+  {\hmode@bgroup\ooalign{\null#1\crcr\hidewidth
+     \raise-.31ex\hbox{\check@mathfonts
+%    \end{macrocode}
+%     Use |\sf@size| instead of |\ssf@size| if the comma looks too small:
+%    \begin{macrocode}
+                       \fontsize\ssf@size\z@
+                       \math@fontsfalse\selectfont,}\hidewidth}\egroup}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProvideTextCommandDefault\textpm{\ensuremath\pm}
+%    \end{macrocode}
+%    But why only for this one encoding? (Answer: because it is a new encoding:
+%    it contains only LICR objects --- Frank)
+% \changes{v1.0g}{2004/05/22}{Changed \cs{textpm} to \cs{pm}}
+% \changes{v1.1b}{2006/03/03}{Reverted back to \cs{textpm}
+%    for consistency.}
+%    \begin{macrocode}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{161}{\k A}
+\DeclareInputText{162}{\k a}
+\DeclareInputText{163}{\L}
+\DeclareInputText{164}{\texteuro}
+\DeclareInputText{165}{\quotedblbase}
+\DeclareInputText{166}{\v S}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\v s}
+\DeclareInputText{169}{\textcopyright}
+\DeclareInputText{170}{\textcommabelow S}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputText{172}{\@tabacckludge'Z}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\@tabacckludge'z}
+\DeclareInputText{175}{\.Z}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputText{177}{\textpm}
+\DeclareInputText{178}{\v C}
+\DeclareInputText{179}{\l}
+\DeclareInputText{180}{\v Z}
+\DeclareInputText{181}{\textquotedblright}
+\DeclareInputText{182}{\P}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{184}{\v z}
+\DeclareInputText{185}{\v c}
+\DeclareInputText{186}{\textcommabelow s}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\OE}
+\DeclareInputText{189}{\oe}
+\DeclareInputText{190}{\"Y}
+\DeclareInputText{191}{\.z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge`A}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{195}{\u A}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{197}{\@tabacckludge'C}
+\DeclareInputText{198}{\AE}
+\DeclareInputText{199}{\c C}
+\DeclareInputText{200}{\@tabacckludge`E}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{204}{\@tabacckludge`I}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{207}{\"I}
+\DeclareInputText{208}{\DJ}
+\DeclareInputText{209}{\@tabacckludge'N}
+\DeclareInputText{210}{\@tabacckludge`O}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{213}{\H O}
+\DeclareInputText{214}{\"O}
+\DeclareInputText{215}{\@tabacckludge'S}
+\DeclareInputText{216}{\H U}
+\DeclareInputText{217}{\@tabacckludge`U}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{219}{\^U}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{221}{\k E}
+\DeclareInputText{222}{\textcommabelow T}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{223}{\ss}
+\DeclareInputText{224}{\@tabacckludge`a}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{227}{\u a}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{229}{\@tabacckludge'c}
+\DeclareInputText{230}{\ae}
+\DeclareInputText{231}{\c c}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{236}{\@tabacckludge`\i}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{239}{\"\i}
+\DeclareInputText{240}{\dj}
+\DeclareInputText{241}{\@tabacckludge'n}
+\DeclareInputText{242}{\@tabacckludge`o}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{245}{\H o}
+\DeclareInputText{246}{\"o}
+\DeclareInputText{247}{\@tabacckludge's}
+\DeclareInputText{248}{\H u}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{251}{\^u}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{253}{\k e}
+\DeclareInputText{254}{\textcommabelow t}
+\DeclareInputText{255}{\"y}
+%</latin10>
+%    \end{macrocode}
+%
+%\section{The MS Windows encoding cp1250}
+%
+%    This is an MS Windows encoding for Central and Eastern Europe,
+%    known as Code Page 1250; it was provided by Marcin Woli\'nski
+%    \texttt{wolinski@melkor.mimuw.edu.pl} and edited by Chris Rowley
+%    (see v0.94 below) to make it consistent with other files.
+%
+% \changes{v0.94}{1997/12/17}{Changed \cs{textellipsis} to \cs{dots}
+%    for consistency.}
+% \changes{v0.94}{1997/12/17}{Changed \cs{textdagger} to \cs{dag}
+%    for consistency.}
+% \changes{v0.94}{1997/12/17}{Changed \cs{textparagraph} to \cs{P}
+%    for consistency.}
+% \changes{v0.94}{1997/12/17}{Changed \cs{textsection} to \cs{S}
+%    for consistency.}
+% \changes{v0.99b}{2002/07/28}{Added code 128 (texteuro) for cp1250}
+%    \begin{macrocode}
+%<*cp1250>
+\DeclareInputText{128}{\texteuro}
+%\DeclareInputText{129}{} % n/u
+\DeclareInputText{130}{\quotesinglbase}
+%\DeclareInputText{131}{} % n/u
+\DeclareInputText{132}{\quotedblbase}
+\DeclareInputText{133}{\dots}
+\DeclareInputText{134}{\dag}
+\DeclareInputText{135}{\ddag}
+%\DeclareInputText{136}{} % n/u
+\DeclareInputText{137}{\textperthousand}
+\DeclareInputText{138}{\v S}
+\DeclareInputText{139}{\guilsinglleft}
+\DeclareInputText{140}{\@tabacckludge'S}
+\DeclareInputText{141}{\v T}
+\DeclareInputText{142}{\v Z}
+\DeclareInputText{143}{\@tabacckludge'Z}
+%\DeclareInputText{144}{} % n/u
+\DeclareInputText{145}{\textquoteleft}
+\DeclareInputText{146}{\textquoteright}
+\DeclareInputText{147}{\textquotedblleft}
+\DeclareInputText{148}{\textquotedblright}
+\DeclareInputText{149}{\textbullet}
+\DeclareInputText{150}{\textendash}
+\DeclareInputText{151}{\textemdash}
+%\DeclareInputText{152}{} % n/u
+\DeclareInputText{153}{\texttrademark}
+\DeclareInputText{154}{\v s}
+\DeclareInputText{155}{\guilsinglright}
+\DeclareInputText{156}{\@tabacckludge's}
+\DeclareInputText{157}{\v t} % t caron (t') ?
+\DeclareInputText{158}{\v z}
+\DeclareInputText{159}{\@tabacckludge'z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{161}{\v{}}
+\DeclareInputText{162}{\u{}}
+\DeclareInputText{163}{\L}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{165}{\k A}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{169}{\copyright}
+\DeclareInputText{170}{\c S}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputMath{172}{\lnot}
+\DeclareInputText{173}{\-}% soft hyphen
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{175}{\.Z}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputMath{177}{\pm}% plus-minus
+\DeclareInputText{178}{\k\ }
+\DeclareInputText{179}{\l}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputMath{181}{\mu}% micro sign
+\DeclareInputText{182}{\P}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{184}{\c\ }
+\DeclareInputText{185}{\k a}
+\DeclareInputText{186}{\c s}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\v L}% L caron (L') ?
+\DeclareInputText{189}{\H{}}
+\DeclareInputText{190}{\v l}% l caron (l') ?
+\DeclareInputText{191}{\.z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\@tabacckludge'R}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{195}{\u A}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{197}{\@tabacckludge'L}
+\DeclareInputText{198}{\@tabacckludge'C}
+\DeclareInputText{199}{\c C}
+\DeclareInputText{200}{\v C}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\k E}
+\DeclareInputText{203}{\"E}
+\DeclareInputText{204}{\v E}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{206}{\^I}
+\DeclareInputText{207}{\v D}
+\DeclareInputText{208}{\DJ} % D stroke
+\DeclareInputText{209}{\@tabacckludge'N}
+\DeclareInputText{210}{\v N}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{213}{\H O}
+\DeclareInputText{214}{\"O}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{216}{\v R}
+\DeclareInputText{217}{\r U}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{219}{\H U}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{221}{\@tabacckludge'Y}
+\DeclareInputText{222}{\c T}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\@tabacckludge'r}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{227}{\u a}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{229}{\@tabacckludge'l}
+\DeclareInputText{230}{\@tabacckludge'c}
+\DeclareInputText{231}{\c c}
+\DeclareInputText{232}{\v c}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\k e}
+\DeclareInputText{235}{\"e}
+\DeclareInputText{236}{\v e}
+\DeclareInputText{237}{\@tabacckludge'\i}
+\DeclareInputText{238}{\^\i}
+\DeclareInputText{239}{\v d} % d caron (d') ?
+\DeclareInputText{240}{\dj} % d stroke
+\DeclareInputText{241}{\@tabacckludge'n}
+\DeclareInputText{242}{\v n}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{245}{\H o}
+\DeclareInputText{246}{\"o}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{248}{\v r}
+\DeclareInputText{249}{\r u}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{251}{\H u}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{253}{\@tabacckludge'y}
+\DeclareInputText{254}{\c t}
+\DeclareInputText{255}{\.{}}
+%</cp1250>
+%    \end{macrocode}
+%
+%
+%\section{The MS Windows encoding cp1257}
+%
+%    This is an MS Windows encoding for Baltic languages,
+%    known as Code Page 1257; provided by Heiko Oberdiek
+%    using the mappings to Unicode in\\
+%    \texttt{http://www.unicode.org/\\Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1257.TXT}\\
+%    and\\
+%    \texttt{http://www.microsoft.com/globaldev/reference/sbcs/1257.mspx}.
+%
+% \changes{v1.1b}{2006/03/03}{Large number of corrections (pr/3849)}
+%    \begin{macrocode}
+%<*cp1257>
+\DeclareInputText{128}{\texteuro}
+\DeclareInputText{130}{\quotesinglbase}
+\DeclareInputText{132}{\quotedblbase}
+\DeclareInputText{133}{\dots}
+\DeclareInputText{134}{\dag}
+\DeclareInputText{135}{\ddag}
+\DeclareInputText{137}{\textperthousand}
+\DeclareInputText{139}{\guilsinglleft}
+\DeclareInputText{141}{\"{}}
+\DeclareInputText{142}{\v{}}
+\DeclareInputText{143}{\c\ }
+\DeclareInputText{145}{\textquoteleft}
+\DeclareInputText{146}{\textquoteright}
+\DeclareInputText{147}{\textquotedblleft}
+\DeclareInputText{148}{\textquotedblright}
+\DeclareInputText{149}{\textbullet}
+\DeclareInputText{150}{\textendash}
+\DeclareInputText{151}{\textemdash}
+\DeclareInputText{153}{\texttrademark}
+\DeclareInputText{155}{\guilsinglright}
+\DeclareInputText{157}{\@tabacckludge={}}
+\DeclareInputText{158}{\k\ }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{162}{\textcent}
+\DeclareInputText{163}{\pounds}
+\DeclareInputText{164}{\textcurrency}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\O}
+\DeclareInputText{169}{\copyright}
+\DeclareInputText{170}{\c R}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputMath{172}{\lnot}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{175}{\AE}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputMath{177}{\pm}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{182}{\P}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputText{184}{\o}
+\DeclareInputMath{185}{\mathonesuperior}
+\DeclareInputText{186}{\c r}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\textonequarter}
+\DeclareInputText{189}{\textonehalf}
+\DeclareInputText{190}{\textthreequarters}
+\DeclareInputText{191}{\ae}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{192}{\k A}
+\DeclareInputText{193}{\k I}
+\DeclareInputText{194}{\@tabacckludge=A}
+\DeclareInputText{195}{\@tabacckludge'C}
+\DeclareInputText{196}{\"A}
+\DeclareInputText{197}{\r A}
+\DeclareInputText{198}{\k E}
+\DeclareInputText{199}{\@tabacckludge=E}
+\DeclareInputText{200}{\v C}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\@tabacckludge'Z}
+\DeclareInputText{203}{\.{E}}
+\DeclareInputText{204}{\c G}
+\DeclareInputText{205}{\c K}
+\DeclareInputText{206}{\@tabacckludge=I}
+\DeclareInputText{207}{\c L}
+\DeclareInputText{208}{\v S}
+\DeclareInputText{209}{\@tabacckludge'N}
+\DeclareInputText{210}{\c N}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{212}{\@tabacckludge=O}
+\DeclareInputText{213}{\~O}
+\DeclareInputText{214}{\"O}
+\DeclareInputMath{215}{\times}
+\DeclareInputText{216}{\k U}
+\DeclareInputText{217}{\L}
+\DeclareInputText{218}{\@tabacckludge'S}
+\DeclareInputText{219}{\@tabacckludge=U}
+\DeclareInputText{220}{\"U}
+\DeclareInputText{221}{\.Z}
+\DeclareInputText{222}{\v Z}
+\DeclareInputText{223}{\ss}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareInputText{224}{\k a}
+\DeclareInputText{225}{\k i}
+\DeclareInputText{226}{\@tabacckludge=a}
+\DeclareInputText{227}{\@tabacckludge'c}
+\DeclareInputText{228}{\"a}
+\DeclareInputText{229}{\r a}
+\DeclareInputText{230}{\k e}
+\DeclareInputText{231}{\@tabacckludge=e}
+\DeclareInputText{232}{\v c}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\@tabacckludge'z}
+\DeclareInputText{235}{\.{e}}
+\DeclareInputText{236}{\c g}
+\DeclareInputText{237}{\c k}
+\DeclareInputText{238}{\@tabacckludge=\i}
+\DeclareInputText{239}{\c l}
+\DeclareInputText{240}{\v s}
+\DeclareInputText{241}{\@tabacckludge'n}
+\DeclareInputText{242}{\c n}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{244}{\@tabacckludge=o}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{246}{\"o}
+\DeclareInputMath{247}{\div}
+\DeclareInputText{248}{\k u}
+\DeclareInputText{249}{\l}
+\DeclareInputText{250}{\@tabacckludge's}
+\DeclareInputText{251}{\@tabacckludge=u}
+\DeclareInputText{252}{\"u}
+\DeclareInputText{253}{\.z}
+\DeclareInputText{254}{\v z}
+\DeclareInputText{255}{\.{}}
+%</cp1257>
+%    \end{macrocode}
+%
+% \DeleteShortVerb{\|}
+% \Finale
+\endinput

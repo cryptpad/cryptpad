@@ -1,0 +1,534 @@
+% \iffalse meta-comment
+%
+% File: stackrel.dtx
+% Version: 2007/11/11 v1.2
+% Info: Adding subscript option to stackrel
+%
+% Copyright (C) 2006, 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file stackrel.dtx
+% and the derived files
+%    stackrel.sty, stackrel.pdf, stackrel.ins, stackrel.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/stackrel.dtx
+%    CTAN:macros/latex/contrib/oberdiek/stackrel.pdf
+%
+% Unpacking:
+%    (a) If stackrel.ins is present:
+%           tex stackrel.ins
+%    (b) Without stackrel.ins:
+%           tex stackrel.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{stackrel.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If stackrel.drv is present:
+%           latex stackrel.drv
+%    (b) Without stackrel.drv:
+%           latex stackrel.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex stackrel.dtx
+%       makeindex -s gind.ist stackrel.idx
+%       pdflatex stackrel.dtx
+%       makeindex -s gind.ist stackrel.idx
+%       pdflatex stackrel.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/stackrel.sty
+%    TDS:doc/latex/oberdiek/stackrel.pdf
+%    TDS:source/latex/oberdiek/stackrel.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: stackrel 2007/11/11 v1.2 Adding subscript option to stackrel (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: stackrel
+Version: 2007/11/11 v1.2
+
+Copyright (C) 2006, 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file stackrel.dtx
+and the derived files
+   stackrel.sty, stackrel.pdf, stackrel.ins, stackrel.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{stackrel.ins}{\from{stackrel.dtx}{install}}%
+  \file{stackrel.drv}{\from{stackrel.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{stackrel.sty}{\from{stackrel.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{stackrel.xml}{\from{stackrel.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     stackrel.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `stackrel.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{stackrel.drv}%
+  [2007/11/11 v1.2 Adding subscript option to stackrel (HO)]%
+\documentclass{ltxdoc}
+\usepackage{amsmath}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{stackrel}[2007/11/11]
+\begin{document}
+  \DocInput{stackrel.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{93}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{stackrel.drv}
+%
+% \title{The \xpackage{stackrel} package}
+% \date{2007/11/11 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package adds an optional argument to \cs{stackrel} for
+% putting something below the relational symbol and defines
+% \cs{stackbin} for binary symbols.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{User interface}
+%
+% \LaTeX's \cs{stackrel} allows a superscript above a relational symbol,
+% but pure \LaTeX\ does not provide a macro for putting a subscript
+% below the symbol. This is supported by \AmS\LaTeX's \cs{underset}
+% macro that works on both relational and binary symbols. A combination
+% of \cs{underset} and \cs{overset} can be used to put \mbox{sub-} and
+% superscripts to the same symbol.
+%
+% This package \xpackage{stackrel} extends the syntax of \cs{stackrel}
+% by adding an optional argument for the subscript position.
+% It follows the syntax of extensible arrows of packages
+% \xpackage{amsmath} and \xpackage{mathtools}.
+%
+% \begin{declcs}{stackrel}
+%   |[|\meta{subscript}|]| \M{superscript} \M{rel}\\
+%   \cs{stackbin}
+%   |[|\meta{subscript}|]| \M{superscript} \M{bin}
+% \end{declcs}
+% Example:
+% \begin{quote}
+% |A \stackbin[\text{and}]{}{+} B \stackrel[x]{!}{=} C|\\
+% $A \stackbin[\text{and}]{}{+} B \stackrel[x]{!}{=} C$
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{stackrel}
+  [2007/11/11 v1.2 Adding subscript option to stackrel (HO)]%
+%    \end{macrocode}
+%
+%    Given the original definition of \cs{stackrel} the addition
+%    of the optional argument is straightforward. If an argument
+%    is empty, then the corresponding sub- or superscript is
+%    suppressed.
+%
+%    Depending on the available resources (\eTeX, \pdfTeX)
+%    three methods are given for testing emptyness. All tests
+%    allow the hash to be used inside the arguments without
+%    doubling (for the unlikely case that someone wants to
+%    define macros with arguments).
+%    \begin{macro}{\stack@relbin}
+%    \begin{macrocode}
+\RequirePackage{etexcmds}[2007/09/09]
+\ifetex@unexpanded
+  \RequirePackage{pdftexcmds}[2007/11/11]%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@strcmp\endcsname\relax
+    \newcommand*{\stack@relbin}[3][]{%
+      \mathop{#3}\limits
+      \edef\reserved@a{\etex@unexpanded{#1}}%
+      \ifx\reserved@a\@empty\else_{#1}\fi
+      \edef\reserved@a{\etex@unexpanded{#2}}%
+      \ifx\reserved@a\@empty\else^{#2}\fi
+      \egroup
+    }%
+  \else
+    \newcommand*{\stack@relbin}[3][]{%
+      \mathop{#3}\limits
+      \ifcase\pdf@strcmp{\detokenize{#1}}{}\else_{#1}\fi
+      \ifcase\pdf@strcmp{\detokenize{#2}}{}\else^{#2}\fi
+      \egroup
+    }%
+  \fi
+\else
+  \newcommand*{\stack@relbin}[3][]{%
+    \mathop{#3}\limits
+    \toks@{#1}%
+    \edef\reserved@a{\the\toks@}%
+    \ifx\reserved@a\@empty\else_{#1}\fi
+    \toks@{#2}%
+    \edef\reserved@a{\the\toks@}%
+    \ifx\reserved@a\@empty\else^{#2}\fi
+    \egroup
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\stackrel}
+%    \begin{macrocode}
+\renewcommand*{\stackrel}{%
+  \mathrel\bgroup\stack@relbin
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\stackbin}
+%    \begin{macrocode}
+\newcommand*{\stackbin}{%
+  \mathbin\bgroup\stack@relbin
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/stackrel.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/stackrel.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex stackrel.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   stackrel.sty & tex/latex/oberdiek/stackrel.sty\\
+%   stackrel.pdf & doc/latex/oberdiek/stackrel.pdf\\
+%   stackrel.dtx & source/latex/oberdiek/stackrel.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk stackrel.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{stackrel.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex stackrel.dtx
+%makeindex -s gind.ist stackrel.idx
+%pdflatex stackrel.dtx
+%makeindex -s gind.ist stackrel.idx
+%pdflatex stackrel.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{stackrel.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='stackrel'>
+  <name>stackrel</name>
+  <caption>Enhancement to the \stackrel command.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006,2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    This package adds an optional argument to <tt>\stackrel</tt> for
+    putting something below the relational symbol and defines
+    <tt>\stackbin</tt> for binary symbols.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/stackrel.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/stackrel.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2006/12/02 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/05/06 v1.1}
+%   \item
+%     Uses package \xpackage{etexcmds}.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.2}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

@@ -1,0 +1,1201 @@
+% \iffalse meta-comment
+%
+% File: letltxmacro.dtx
+% Version: 2010/09/02 v1.4
+% Info: Let assignment for LaTeX macros
+%
+% Copyright (C) 2008, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file letltxmacro.dtx
+% and the derived files
+%    letltxmacro.sty, letltxmacro.pdf, letltxmacro.ins, letltxmacro.drv,
+%    letltxmacro-showcases.tex, letltxmacro-test1.tex,
+%    letltxmacro-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/letltxmacro.dtx
+%    CTAN:macros/latex/contrib/oberdiek/letltxmacro.pdf
+%
+% Unpacking:
+%    (a) If letltxmacro.ins is present:
+%           tex letltxmacro.ins
+%    (b) Without letltxmacro.ins:
+%           tex letltxmacro.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{letltxmacro.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If letltxmacro.drv is present:
+%           latex letltxmacro.drv
+%    (b) Without letltxmacro.drv:
+%           latex letltxmacro.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex letltxmacro.dtx
+%       makeindex -s gind.ist letltxmacro.idx
+%       pdflatex letltxmacro.dtx
+%       makeindex -s gind.ist letltxmacro.idx
+%       pdflatex letltxmacro.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/letltxmacro.sty
+%    TDS:doc/latex/oberdiek/letltxmacro.pdf
+%    TDS:doc/latex/oberdiek/letltxmacro-showcases.tex
+%    TDS:doc/latex/oberdiek/test/letltxmacro-test1.tex
+%    TDS:doc/latex/oberdiek/test/letltxmacro-test2.tex
+%    TDS:source/latex/oberdiek/letltxmacro.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: letltxmacro 2010/09/02 v1.4 Let assignment for LaTeX macros (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: letltxmacro
+Version: 2010/09/02 v1.4
+
+Copyright (C) 2008, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file letltxmacro.dtx
+and the derived files
+   letltxmacro.sty, letltxmacro.pdf, letltxmacro.ins, letltxmacro.drv,
+   letltxmacro-showcases.tex, letltxmacro-test1.tex,
+   letltxmacro-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{letltxmacro.ins}{\from{letltxmacro.dtx}{install}}%
+  \file{letltxmacro.drv}{\from{letltxmacro.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{letltxmacro.sty}{\from{letltxmacro.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{letltxmacro-showcases.tex}{\from{letltxmacro.dtx}{showcases}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{letltxmacro-test1.tex}{\from{letltxmacro.dtx}{test1}}%
+  \file{letltxmacro-test2.tex}{\from{letltxmacro.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{letltxmacro.xml}{\from{letltxmacro.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     letltxmacro.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `letltxmacro.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{letltxmacro.drv}%
+  [2010/09/02 v1.4 Let assignment for LaTeX macros (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{letltxmacro.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{990}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{letltxmacro.drv}
+%
+% \title{The \xpackage{letltxmacro} package}
+% \date{2010/09/02 v1.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% \TeX's \cs{let} assignment does not work for \LaTeX\ macros
+% with optional arguments or for macros that are defined
+% as robust macros by \cs{DeclareRobustCommand}. This package
+% defines \cs{LetLtxMacro} that also takes care of the involved
+% internal macros.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% If someone wants to redefine a macro with using the old
+% meaning, then one method is \TeX's command \cs{let}:
+%\begin{quote}
+%\begin{verbatim}
+%\newcommand{\Macro}{\typeout{Test Macro}}
+%\let\SavedMacro=\Macro
+%\renewcommand{\Macro}{%
+%  \typeout{Begin}%
+%  \SavedMacro
+%  \typeout{End}%
+%}
+%\end{verbatim}
+%\end{quote}
+% However, this method fails, if \cs{Macro} is defined
+% by \cs{DeclareRobustCommand} and/or has an optional argument.
+% In both cases \LaTeX\ defines an additional internal macro
+% that is forgotten in the simple \cs{let} assignment of
+% the example above.
+%
+% \begin{declcs}{LetLtxMacro} \M{new macro} \M{old macro}
+% \end{declcs}
+% Macro \cs{LetLtxMacro} behaves similar to \TeX's \cs{let}
+% assignment, but it takes care of macros that are
+% defined by \cs{DeclareRobustCommand} and/or have optional
+% arguments. Example:
+%\begin{quote}
+%\begin{verbatim}
+%\DeclareRobustCommand{\Macro}[1][default]{...}
+%\LetLtxMacro{\SavedMacro}{\Macro}
+%\end{verbatim}
+%\end{quote}
+% Then macro \cs{SavedMacro} only uses internal macro names
+% that are derived from \cs{SavedMacro}'s macro name. Macro \cs{Macro}
+% can now be redefined without affecting \cs{SavedMacro}.
+%
+% \begin{declcs}{GlobalLetLtxMacro} \M{new macro} \M{old macro}
+% \end{declcs}
+% Like \cs{LetLtxMacro}, but the \meta{new macro} is defined globally.
+% Since version 2010/09/02~v1.4.
+%
+% \subsection{Supported macro definition commands}
+%
+% \begin{quote}
+%   \begin{tabular}{@{}ll@{}}
+%     \cs{newcommand}, \cs{renewcommand} & latex/base\\
+%     \cs{newenvironment}, \cs{renewenvironment} & latex/base\\
+%     \cs{DeclareRobustCommand}& latex/base\\
+%     \cs{newrobustcmd}, \cs{renewrobustcmd} & etoolbox\\
+%     \cs{robustify} & etoolbox 2008/06/22 v1.6\\
+%   \end{tabular}
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Show cases}
+%
+% \subsubsection{\xfile{letltxmacro-showcases.tex}}
+%
+%    \begin{macrocode}
+%<*showcases>
+\NeedsTeXFormat{LaTeX2e}
+\makeatletter
+%    \end{macrocode}
+%    \begin{macro}{\Line}
+%    The result is displayed by macro \cs{Line}. The percent symbol
+%    at line start allows easy grepping and inserting into the DTX
+%    file.
+%    \begin{macrocode}
+\newcommand*{\Line}[1]{%
+  \typeout{\@percentchar#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\newcommand*{\ShowCmdName}[1]{%
+  \@ifundefined{#1}{}{%
+    \Line{%
+      \space\space(\expandafter\string\csname#1\endcsname) = %
+      (\expandafter\meaning\csname#1\endcsname)%
+    }%
+  }%
+}
+\newcommand*{\ShowCmds}[1]{%
+  \ShowCmdName{#1}%
+  \ShowCmdName{#1 }%
+  \ShowCmdName{\\#1}%
+  \ShowCmdName{\\#1 }%
+}
+\let\\\@backslashchar
+%    \end{macrocode}
+%    \begin{macro}{\ShowDef}
+%    \begin{macrocode}
+\newcommand*{\ShowDef}[2]{%
+  \begingroup
+    \Line{}%
+    \newcommand*{\DefString}{#2}%
+    \@onelevel@sanitize\DefString
+    \Line{\DefString}%
+    #2%
+    \ShowCmds{#1}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\typeout{}
+\Line{* LaTeX definitions:}
+\ShowDef{cmd}{%
+  \newcommand{\cmd}[2][default]{}%
+}
+\ShowDef{cmd}{%
+  \DeclareRobustCommand{\cmd}{}%
+}
+\ShowDef{cmd}{%
+  \DeclareRobustCommand{\cmd}[2][default]{}%
+}
+\typeout{}
+%    \end{macrocode}
+% The minimal version of package \xpackage{etoolbox} is 2008/06/12 v1.6a
+% because it fixes \cs{robustify}.
+%    \begin{macrocode}
+\RequirePackage{etoolbox}[2008/06/12]%
+\Line{}
+\Line{* etoolbox's robust definitions:}
+\ShowDef{cmd}{%
+  \newrobustcmd{\cmd}{}%
+}
+\ShowDef{cmd}{%
+  \newrobustcmd{\cmd}[2][default]{}%
+}
+\Line{}
+\Line{* etoolbox's \string\robustify:}
+\ShowDef{cmd}{%
+  \newcommand{\cmd}[2][default]{} %
+  \robustify{\cmd}%
+}
+\ShowDef{cmd}{%
+  \DeclareRobustCommand{\cmd}{} %
+  \robustify{\cmd}%
+}
+\ShowDef{cmd}{%
+  \DeclareRobustCommand{\cmd}[2][default]{} %
+  \robustify{\cmd}%
+}
+\typeout{}
+\@@end
+%</showcases>
+%    \end{macrocode}
+%
+% \subsubsection{Result}
+%
+% \begingroup
+%   \makeatletter
+%   \let\org@verbatim\@verbatim
+%   \def\@verbatim{^^A
+%     \org@verbatim
+%     \catcode`\~=\active
+%   }^^A
+%   \let~\textvisiblespace
+%\begin{verbatim}
+%* LaTeX definitions:
+%
+%\newcommand {\cmd }[2][default]{}
+%  (\cmd) = (macro:->\@protected@testopt \cmd \\cmd {default})
+%  (\\cmd) = (\long macro:[#1]#2->)
+%
+%\DeclareRobustCommand {\cmd }{}
+%  (\cmd) = (macro:->\protect \cmd~ )
+%  (\cmd~) = (\long macro:->)
+%
+%\DeclareRobustCommand {\cmd }[2][default]{}
+%  (\cmd) = (macro:->\protect \cmd~ )
+%  (\cmd~) = (macro:->\@protected@testopt \cmd~ \\cmd~ {default})
+%  (\\cmd~) = (\long macro:[#1]#2->)
+%
+%* etoolbox's robust definitions:
+%
+%\newrobustcmd {\cmd }{}
+%  (\cmd) = (\protected\long macro:->)
+%
+%\newrobustcmd {\cmd }[2][default]{}
+%  (\cmd) = (\protected macro:->\@testopt \\cmd {default})
+%  (\\cmd) = (\long macro:[#1]#2->)
+%
+%* etoolbox's \robustify:
+%
+%\newcommand {\cmd }[2][default]{} \robustify {\cmd }
+%  (\cmd) = (\protected macro:->\@protected@testopt \cmd \\cmd {default})
+%  (\\cmd) = (\long macro:[#1]#2->)
+%
+%\DeclareRobustCommand {\cmd }{} \robustify {\cmd }
+%  (\cmd) = (\protected macro:->)
+%
+%\DeclareRobustCommand {\cmd }[2][default]{} \robustify {\cmd }
+%  (\cmd) = (\protected macro:->\@protected@testopt \cmd~ \\cmd~ {default})
+%  (\cmd~) = (macro:->\@protected@testopt \cmd~ \\cmd~ {default})
+%  (\\cmd~) = (\long macro:[#1]#2->)
+%\end{verbatim}
+% \endgroup
+%
+% \subsection{Package}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsubsection{Catcodes and identification}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname llm@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\llm@AtEnd{%
+    \llm@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\llm@AtEnd{%
+  \llm@AtEnd
+  \escapechar\the\escapechar\relax
+  \noexpand\endinput
+}
+\escapechar=92 % `\\
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{letltxmacro}%
+  [2010/09/02 v1.4 Let assignment for LaTeX macros (HO)]
+%    \end{macrocode}
+%
+% \subsubsection{Main macros}
+%
+%    \begin{macro}{\LetLtxMacro}
+%    \begin{macrocode}
+\newcommand*{\LetLtxMacro}{%
+  \llm@ModeLetLtxMacro{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\GlobalLetLtxMacro}
+%    \begin{macrocode}
+\newcommand*{\GlobalLetLtxMacro}{%
+  \llm@ModeLetLtxMacro\global
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\llm@ModeLetLtxMacro}
+%    \begin{macrocode}
+\newcommand*{\llm@ModeLetLtxMacro}[3]{%
+  \edef\llm@escapechar{\the\escapechar}%
+  \escapechar=-1 %
+  \edef\reserved@a{%
+    \noexpand\protect
+    \expandafter\noexpand
+    \csname\string#3 \endcsname
+  }%
+  \ifx\reserved@a#3\relax
+    #1\edef#2{%
+      \noexpand\protect
+      \expandafter\noexpand
+      \csname\string#2 \endcsname
+    }%
+    #1\expandafter\let
+    \csname\string#2 \expandafter\endcsname
+    \csname\string#3 \endcsname
+    \expandafter\llm@LetLtxMacro
+        \csname\string#2 \expandafter\endcsname
+        \csname\string#3 \endcsname{#1}%
+  \else
+    \llm@LetLtxMacro{#2}{#3}{#1}%
+  \fi
+  \escapechar=\llm@escapechar\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\llm@LetLtxMacro}
+%    \begin{macrocode}
+\def\llm@LetLtxMacro#1#2#3{%
+  \escapechar=92 %
+  \expandafter\llm@CheckParams\meaning#2:->\@nil{%
+    \begingroup
+      \def\@protected@testopt{%
+        \expandafter\@testopt\@gobble
+      }%
+      \def\@testopt##1##2{%
+        \toks@={##2}%
+      }%
+      \let\llm@testopt\@empty
+      \edef\x{%
+        \noexpand\@protected@testopt
+        \noexpand#2%
+        \expandafter\noexpand\csname\string#2\endcsname
+      }%
+      \expandafter\expandafter\expandafter\def
+      \expandafter\expandafter\expandafter\y
+      \expandafter\expandafter\expandafter{%
+        \expandafter\llm@CarThree#2{}{}{}\llm@nil
+      }%
+      \ifx\x\y
+        #2%
+        \def\llm@testopt{%
+          \noexpand\@protected@testopt
+          \noexpand#1%
+        }%
+      \else
+        \edef\x{%
+          \noexpand\@testopt
+          \expandafter\noexpand
+          \csname\string#2\endcsname
+        }%
+        \expandafter\expandafter\expandafter\def
+        \expandafter\expandafter\expandafter\y
+        \expandafter\expandafter\expandafter{%
+          \expandafter\llm@CarTwo#2{}{}\llm@nil
+        }%
+        \ifx\x\y
+          #2%
+          \def\llm@testopt{%
+            \noexpand\@testopt
+          }%
+        \fi
+      \fi
+      \ifx\llm@testopt\@empty
+      \else
+        \llm@protected\xdef\llm@GlobalTemp{%
+          \llm@testopt
+          \expandafter\noexpand
+          \csname\string#1\endcsname
+          {\the\toks@}%
+        }%
+      \fi
+    \expandafter\endgroup\ifx\llm@testopt\@empty
+      #3\let#1=#2\relax
+    \else
+      #3\let#1=\llm@GlobalTemp
+      #3\expandafter\let
+          \csname\string#1\expandafter\endcsname
+          \csname\string#2\endcsname
+    \fi
+  }{%
+    #3\let#1=#2\relax
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\llm@CheckParams}
+%    \begin{macrocode}
+\def\llm@CheckParams#1:->#2\@nil{%
+  \begingroup
+    \def\x{#1}%
+  \ifx\x\llm@macro
+    \endgroup
+    \def\llm@protected{}%
+    \expandafter\@firstoftwo
+  \else
+    \ifx\x\llm@protectedmacro
+      \endgroup
+      \def\llm@protected{\protected}%
+      \expandafter\expandafter\expandafter\@firstoftwo
+    \else
+      \endgroup
+      \expandafter\expandafter\expandafter\@secondoftwo
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\llm@macro}
+%    \begin{macrocode}
+\def\llm@macro{macro}
+\@onelevel@sanitize\llm@macro
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\llm@protectedmacro}
+%    \begin{macrocode}
+\def\llm@protectedmacro{\protected macro}
+\@onelevel@sanitize\llm@protectedmacro
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\llm@CarThree}
+%    \begin{macrocode}
+\def\llm@CarThree#1#2#3#4\llm@nil{#1#2#3}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\llm@CarTwo}
+%    \begin{macrocode}
+\def\llm@CarTwo#1#2#3\llm@nil{#1#2}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\llm@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\makeatletter
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@\@ne
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@\@ne
+  \repeat
+}
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{127}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\{=1 %
+  \catcode`\}=2 %
+  \catcode`\#=6 %
+  \catcode`\[=12 %
+  \catcode`\]=12 %
+  \catcode`\%=14 %
+  \catcode`\ =10 %
+  \catcode13=5 %
+  \RequirePackage{letltxmacro}[2010/09/02]\relax
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Package tests}
+%
+%    \begin{macrocode}
+%<*test2>
+%    \end{macrocode}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{minimal}
+
+\usepackage{letltxmacro}[2010/09/02]
+
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+
+\makeatletter
+
+\def\TestDef#1{%
+  \begingroup
+    \@makeother\\%
+    \@makeother\ %
+    \expandafter\@TestDef\csname #1\endcsname
+}
+\def\@TestDef#1#2{%
+    \edef\a{\expandafter\strip@prefix\meaning#1}%
+    \edef\b{\detokenize{#2}}%
+    \ifx\a\b
+    \else
+      \typeout{1 [\a]}%
+      \typeout{2 [\b]}%
+    \fi
+  \endgroup
+  \Expect*{\expandafter\strip@prefix\meaning#1}*{\detokenize{#2}}%
+}
+\def\TestEquals#1#2{%
+  \Expect*{%
+    \expandafter\ifx\csname#1\expandafter\endcsname
+                    \csname#2\endcsname
+      equals%
+    \else
+      wrong%
+    \fi
+  }{equals}%
+}
+\def\SaveA{%
+  \let\SavedA\TestA
+  \expandafter\let\csname\string\SavedA\expandafter\endcsname
+                  \csname\string\TestA\endcsname
+  \expandafter\let\csname SavedA \expandafter\endcsname
+                  \csname TestA \endcsname
+}
+\def\CheckA{%
+  \TestEquals{SavedA}{TestA}%
+  \TestEquals{\string\SavedA}{\string\TestA}%
+  \TestEquals{SavedA }{TestA }%
+}
+
+\begin{qstest}{robust}{robust}
+  \begingroup
+    \DeclareRobustCommand*{\TestA}{Test}%
+    \SaveA
+    \TestDef{TestA}{\protect \TestA  }%
+    \CheckA
+    \DeclareRobustCommand{\TestA}{Test}%
+    \SaveA
+    \TestDef{TestA}{\protect \TestA  }%
+    \LetLtxMacro\TestB\TestA
+    \TestDef{TestB}{\protect \TestB  }%
+    \TestEquals{TestB }{TestA }%
+    \CheckA
+    \GlobalLetLtxMacro\TestC\TestA
+    \CheckA
+  \endgroup
+  \TestDef{TestC}{\protect \TestC  }%
+  \DeclareRobustCommand{\TestA}{Test}%
+  \TestEquals{TestC }{TestA }%
+\end{qstest}
+
+\begin{qstest}{default}{default}
+  \begingroup
+    \newcommand{\TestA}[1][\relax default \empty]{TestA #1}%
+    \SaveA
+    \TestDef
+    {TestA}{\@protected@testopt \TestA \\TestA {\relax default \empty }}%
+    \LetLtxMacro\TestB\TestA
+    \TestDef
+    {TestB}{\@protected@testopt \TestB \\TestB {\relax default \empty }}%
+    \CheckA
+    \TestEquals{\string\TestB}{\string\TestA}%
+    \GlobalLetLtxMacro\TestC\TestA
+    \CheckA
+  \endgroup
+  \TestDef
+  {TestC}{\@protected@testopt \TestC \\TestC {\relax default \empty }}%
+  \newcommand{\TestA}[1][\relax default \empty]{TestA #1}%
+  \TestEquals{\string\TestC}{\string\TestA}%
+\end{qstest}
+
+\begin{qstest}{robustdefault}{robustdefault}
+  \begingroup
+    \DeclareRobustCommand{\TestA}[1][\default]{TestA}%
+    \SaveA
+    \LetLtxMacro\TestB\TestA
+    \TestDef{TestB}{\protect \TestB  }%
+    \TestDef{TestB }{\@protected@testopt \TestB  \\TestB  {\default }}%
+    \CheckA
+    \GlobalLetLtxMacro\TestC\TestA
+    \CheckA
+  \endgroup
+  \TestDef{TestC}{\protect \TestC  }%
+  \TestDef{TestC }{\@protected@testopt \TestC  \\TestC  {\default }}%
+\end{qstest}
+
+\begin{qstest}{plain}{plain}
+  \LetLtxMacro\NewRelax\relax
+  \Expect*{\meaning\relax}*{\string\relax}%
+  \Expect*{\meaning\NewRelax}*{\string\relax}%
+  \LetLtxMacro\NewHbox\hbox
+  \Expect*{\meaning\hbox}*{\string\hbox}%
+  \Expect*{\meaning\NewHbox}*{\string\hbox}%
+  \LetLtxMacro\NewEmpty\empty
+  \Expect*{\meaning\empty}{macro:->}%
+  \Expect*{\meaning\NewEmpty}{macro:->}%
+  \def\TestA{\iffalse}%
+  \LetLtxMacro\TestB\TestA
+  \TestDef{TestB}{\iffalse }%
+  \TestEquals{TestA}{TestB}%
+\end{qstest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\usepackage{etoolbox}[2008/06/22]
+
+\begin{qstest}{oldnewrobustcmd}{oldnewrobustcmd}
+  \begingroup
+    \protected\edef\TestA{%
+      \noexpand\@protected@testopt
+      \noexpand\TestA
+      \expandafter\noexpand\csname\string\TestA\endcsname
+      {\noexpand\default}%
+    }%
+    \expandafter\protected\expandafter
+    \def\csname\string\TestA\endcsname{TestA}%
+    \SaveA
+    \LetLtxMacro\TestB\TestA
+    \TestDef{TestB}{\@protected@testopt \TestB \\TestB {\default }}%
+    \protected\edef\TestC{%
+      \noexpand\@protected@testopt
+      \noexpand\TestB
+      \expandafter\noexpand\csname\string\TestB\endcsname
+      {\noexpand\default}%
+    }%
+    \TestEquals{TestB}{TestC}%
+    \CheckA
+    \GlobalLetLtxMacro\TestD\TestA
+    \CheckA
+  \endgroup
+  \TestDef{TestD}{\@protected@testopt \TestD \\TestD {\default }}%
+  \protected\edef\TestC{%
+    \noexpand\@protected@testopt
+    \noexpand\TestD
+    \expandafter\noexpand\csname\string\TestD\endcsname
+    {\noexpand\default}%
+  }%
+  \TestEquals{TestD}{TestC}%
+\end{qstest}
+
+\begin{qstest}{newrobustcmd}{newrobustcmd}
+  \begingroup
+    \newrobustcmd{\TestA}[1][\default]{TestA}%
+    \SaveA
+    \LetLtxMacro\TestB\TestA
+    \TestDef{TestB}{\@testopt \\TestB {\default }}%
+    \protected\edef\TestC{%
+      \noexpand\@testopt
+      \expandafter\noexpand\csname\string\TestB\endcsname
+      {\noexpand\default}%
+    }%
+    \TestEquals{TestB}{TestC}%
+    \CheckA
+    \GlobalLetLtxMacro\TestD\TestA
+    \CheckA
+  \endgroup
+  \TestDef{TestD}{\@testopt \\TestD {\default }}%
+  \protected\edef\TestC{%
+    \noexpand\@testopt
+    \expandafter\noexpand\csname\string\TestD\endcsname
+    {\noexpand\default}%
+  }%
+  \TestEquals{TestD}{TestC}%
+\end{qstest}
+
+\begin{qstest}{robustifyopt}{robustifyopt}
+  \newcommand{\TestA}[2][\default]{}%
+  \TestDef{TestA}{\@protected@testopt \TestA \\TestA {\default }}%
+  \robustify\TestA
+  \TestDef{TestA}{\@protected@testopt \TestA \\TestA {\default }}%
+  \protected\edef\TestC{%
+    \noexpand\@protected@testopt
+    \noexpand\TestA
+    \expandafter\noexpand\csname\string\TestA\endcsname
+    {\noexpand\default}%
+  }%
+  \TestEquals{TestA}{TestC}%
+  \SaveA
+  \LetLtxMacro\TestB\TestA
+  \TestDef{TestB}{\@protected@testopt \TestB \\TestB {\default }}%
+  \protected\edef\TestC{%
+    \noexpand\@protected@testopt
+    \noexpand\TestB
+    \expandafter\noexpand\csname\string\TestB\endcsname
+    {\noexpand\default}%
+  }%
+  \TestEquals{TestB}{TestC}%
+  \CheckA
+\end{qstest}
+
+\begin{qstest}{robustifydeclare}{robustifydeclare}
+  \DeclareRobustCommand\TestA{\iffalse}%
+  \robustify\TestA
+  \SaveA
+  \LetLtxMacro\TestB\TestA
+  \TestDef{TestB}{\iffalse }%
+  % before etoolbox 2008/06/22: \protected\long\def
+  % since etoolbox 2008/06/22: \protected\def
+  \protected\def\TestC{\iffalse}%
+  \TestEquals{TestB}{TestC}%
+  \CheckA
+\end{qstest}
+
+\begin{qstest}{robustifydeclarelong}{robustifydeclarelong}
+  \DeclareRobustCommand\TestA[1]{\iffalse}%
+  \robustify\TestA
+  \SaveA
+  \LetLtxMacro\TestB\TestA
+  \TestDef{TestB}{\iffalse }%
+  % before etoolbox 2008/06/22: \protected\long\def
+  % since etoolbox 2008/06/22: \protected\def
+  \protected\long\def\TestC#1{\iffalse}%
+  \TestEquals{TestB}{TestC}%
+  \CheckA
+\end{qstest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\csname @@end\endcsname
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/letltxmacro.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/letltxmacro.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex letltxmacro.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   letltxmacro.sty & tex/latex/oberdiek/letltxmacro.sty\\
+%   letltxmacro.pdf & doc/latex/oberdiek/letltxmacro.pdf\\
+%   letltxmacro-showcases.tex & doc/latex/oberdiek/letltxmacro-showcases.tex\\
+%   test/letltxmacro-test1.tex & doc/latex/oberdiek/test/letltxmacro-test1.tex\\
+%   test/letltxmacro-test2.tex & doc/latex/oberdiek/test/letltxmacro-test2.tex\\
+%   letltxmacro.dtx & source/latex/oberdiek/letltxmacro.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk letltxmacro.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{letltxmacro.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex letltxmacro.dtx
+%makeindex -s gind.ist letltxmacro.idx
+%pdflatex letltxmacro.dtx
+%makeindex -s gind.ist letltxmacro.idx
+%pdflatex letltxmacro.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{letltxmacro.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='letltxmacro'>
+  <name>letltxmacro</name>
+  <caption>Let assignment for LaTeX macros.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    TeX&#x2019;s <tt>\let</tt> assignment does not work for LaTeX macros
+    with optional arguments or for macros that are defined
+    as robust macros by <tt>\DeclareRobustCommand</tt>.  This package
+    defines <tt>\LetLtxMacro</tt> that also takes care of the involved
+    internal macros.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/letltxmacro.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/letltxmacro.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2008/06/09 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2008/06/12 v1.1}
+%   \item
+%     Support for \xpackage{etoolbox}'s \cs{newrobustcmd} added.
+%   \end{Version}
+%   \begin{Version}{2008/06/13 v1.2}
+%   \item
+%     Support for \xpackage{etoolbox}'s \cs{robustify} added.
+%   \end{Version}
+%   \begin{Version}{2008/06/24 v1.3}
+%   \item
+%     Test file adapted for etoolbox 2008/06/22 v1.6.
+%   \end{Version}
+%   \begin{Version}{2010/09/02 v1.4}
+%   \item
+%     \cs{GlobalLetLtxMacro} added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

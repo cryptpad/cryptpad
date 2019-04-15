@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='epstopdf-pkg'>
+  <name>epstopdf-pkg</name>
+  <caption>Call epstopdf "on the fly"</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2006-2010'/>
+  <license type='lppl1.3'/>
+  <version number='2.5'/>
+  <description>
+    The package adds support for EPS files in the
+    <xref refid='graphicx'>graphicx</xref> package when running under
+    PDFTeX.  If an EPS graphic is detected, the package spawns a
+    process to convert the EPS to PDF, using the script
+    <xref refid='epstopdf'>epstopdf</xref>.  This of course requires
+    that shell escape is enabled for the PDFTeX run.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/epstopdf.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/epstopdf.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

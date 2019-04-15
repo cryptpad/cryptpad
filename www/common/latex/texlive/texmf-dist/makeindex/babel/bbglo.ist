@@ -1,0 +1,38 @@
+%%
+%% This is file `bbglo.ist',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bbidxglo.dtx  (with options: `glo')
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright (C) 2008 Johannes Braams. All rights reserved.
+%% 
+%% This file is a style file for the MakeIndex program
+%% 
+actual '='
+quote '!'
+level '>'
+preamble
+"\n \\begin{theglossary} \n
+    \\makeatletter\\scan@allowedfalse\n"
+postamble
+"\n\n \\end{theglossary}\n"
+keyword "\\glossaryentry"
+item_x1   "\\efill \n \\subitem "
+item_x2   "\\ "
+delim_0   "\\pfill "
+delim_1   "\\pfill "
+delim_2   "\\pfill "
+lethead_prefix   "{\\bfseries\\hfil "
+lethead_suffix   "\\hfil}\\nopagebreak\n"
+lethead_flag       0
+heading_prefix   "{\\bfseries\\hfil "
+heading_suffix   "\\hfil}\\nopagebreak\n"
+headings_flag       0
+%% 
+%%
+%% End of file `bbglo.ist'.

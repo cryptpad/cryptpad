@@ -1,0 +1,25 @@
+This directory contains seven files + README, licensed all but one under lppl 1.3:
+
+glpatter-utf8.tex:
+	The source file, version 2.4. When processed under the program
+	mkpatter ---by typing 'tex -ini -8bit glpatter-utf8.tex' (without the quotes)
+	at the command line, provided you have the utility
+	mkpattern installed--- it generates the file hyph-utf8-gl.tex.
+
+(hyph-gl.tex):
+	The generated file containing the patterns in UTF-8 (belongs to TEXMF/tex).
+
+
+glhyextr.tex:	##This file is in the public domain##
+	A configuration file, to include additional patterns other
+	than the ones in glpatter-utf8.tex. It is not \input by glpatter-utf8.tex
+	(iin contrast with the single-byte encoded version glpatter.tex)
+	as modern tools allow the addition of patterns at run time.
+
+glhybiox.tex, glhymed.tex, glhyquim.tex, glhytec.tex & glhyxeog.tex:
+	Files with aditional patterns drawn from serveral fields of
+	the language, so that you may input them from glhyextr.tex.
+
+The files for specific patterns are very incomplete and feedback is welcome.
+
+--Javier A. Múgica

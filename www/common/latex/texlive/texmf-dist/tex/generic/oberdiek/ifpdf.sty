@@ -1,0 +1,269 @@
+%%
+%% This is file `ifpdf.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ifpdf.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: ifpdf
+%% Version: 2011/01/30 v2.3
+%% 
+%% Copyright (C) 2001, 2005-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file ifpdf.dtx
+%% and the derived files
+%%    ifpdf.sty, ifpdf.pdf, ifpdf.ins, ifpdf.drv, ifpdf-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@ifpdf.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{ifpdf}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@ifpdf.sty\endcsname
+\ProvidesPackage{ifpdf}%
+  [2011/01/30 v2.3 Provides the ifpdf switch (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ifpdf@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ifpdf@AtEnd{%
+    \ifpdf@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifpdf@AtEnd{\ifpdf@AtEnd\noexpand\endinput}
+\begingroup
+  \expandafter\ifx\csname ifpdf\endcsname\relax
+  \else
+    \edef\i/{\expandafter\string\csname ifpdf\endcsname}%
+    \expandafter\ifx\csname PackageError\endcsname\relax
+      \def\x#1#2{%
+        \edef\z{#2}%
+        \expandafter\errhelp\expandafter{\z}%
+        \errmessage{Package ifpdf Error: #1}%
+      }%
+      \def\y{^^J}%
+      \newlinechar=10 %
+    \else
+      \def\x#1#2{%
+        \PackageError{ifpdf}{#1}{#2}%
+      }%
+      \def\y{\MessageBreak}%
+    \fi
+    \x{Name clash, \i/ is already defined}{%
+      Incompatible versions of \i/ can cause problems,\y
+      therefore package loading is aborted.%
+    }%
+    \endgroup
+    \expandafter\ifpdf@AtEnd
+  \fi%
+\endgroup
+\begingroup
+  \def\skip#1\relax\begingroup{}%
+  \expandafter\ifx\csname pdfoutput\endcsname\relax
+  \else
+    \expandafter\skip
+  \fi
+  \expandafter\ifx\csname directlua\endcsname\relax
+    \expandafter\skip
+  \fi
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ifluatex}[2009/04/10]%
+\else
+  \RequirePackage{ifluatex}[2009/04/10]%
+\fi
+\ifluatex
+  \ifnum\luatexversion<36 %
+  \else
+    \begingroup
+      \directlua{tex.enableprimitives('ifpdf', {'pdfoutput'})}%
+      \global\let\pdfoutput\ifpdfpdfoutput
+    \endgroup
+  \fi
+\fi
+\relax\begingroup\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newif\endcsname\relax
+  \edef\pdffalse{%
+    \let
+    \expandafter\noexpand\csname ifpdf\endcsname
+    \expandafter\noexpand\csname iffalse\endcsname
+  }%
+  \edef\pdftrue{%
+    \let
+    \expandafter\noexpand\csname ifpdf\endcsname
+    \expandafter\noexpand\csname iftrue\endcsname
+  }%
+  \pdffalse
+\else
+  \csname newif\expandafter\endcsname\csname ifpdf\endcsname
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfoutput\endcsname\relax
+\else
+  \ifnum\pdfoutput<1 %
+  \else
+    \pdftrue
+  \fi
+\fi
+\begingroup
+  \expandafter\ifx\csname pdfoutput\endcsname\relax
+  \else
+    \escapechar=92 %
+    \edef\m{\meaning\pdfoutput}%
+    \edef\p{\string\pdfoutput}%
+    \ifx\m\p
+    \else
+      \expandafter\ifx\csname PackageWarningNoLine\endcsname\relax
+        \def\PackageWarningNoLine#1#2{%
+          \immediate\write16{%
+            Package `#1' Warning: #2.%
+          }%
+        }%
+      \fi
+      \PackageWarningNoLine{ifpdf}{%
+        Someone has redefined \string\pdfoutput%
+      }%
+    \fi
+  \fi
+\endgroup
+\begingroup
+  \expandafter\ifx\csname PackageInfo\endcsname\relax
+    \def\x#1#2{%
+      \immediate\write-1{Package #1 Info: #2.}%
+    }%
+  \else
+    \let\x\PackageInfo
+    \expandafter\let\csname on@line\endcsname\empty
+  \fi
+  \x{ifpdf}{pdfTeX in PDF mode is \ifpdf\else not \fi detected}%
+\endgroup
+\ifpdf@AtEnd%
+\endinput
+%%
+%% End of file `ifpdf.sty'.

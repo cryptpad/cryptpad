@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='bookmark'>
+  <name>bookmark</name>
+  <caption>A new bookmark (outline) organization for hyperref.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.24'/>
+  <description>
+    This package implements a new bookmark (outline) organization for
+    package <xref refid='hyperref'>hyperref</xref>. Bookmark properties such
+    as style and color can now be set. Other action types
+    are available (URI, GoToR, Named). The bookmarks are
+    generated in the first compile run. Package
+    <xref refid='hyperref'>hyperref</xref> uses two runs.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/bookmark.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/bookmark.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

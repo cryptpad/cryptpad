@@ -1,0 +1,887 @@
+% file: psnfss2e.tex as of 2004-09-15
+%
+% Copyright 2000--2004 Walter Schmidt
+%
+%  This file may be distributed and/or modified under the
+%  conditions of the LaTeX Project Public License, either version 1.2
+%  of this license or (at your option) any later version.
+%  The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+%  and version 1.2 or later is part of all distributions of LaTeX
+%  version 1999/12/01 or later.
+
+\newif\ifutopia
+
+% \utopiatrue
+% If you have got the Utopia fonts, uncomment the above line,
+% or put \utopiatrue into your ltxguide.cfg.
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+
+\documentclass[11pt]{ltxguide}[1995/11/28]
+\DeleteShortVerb{\|}
+
+% You may  provide a configuration file ltxguide.cfg
+% to set up your preferred paper size and page layout.
+% The .cfg file should, however, not change the fonts used!
+
+\usepackage{mathptmx,courier}
+\usepackage[scaled=0.92]{helvet}
+\normalfont
+\usepackage{pifont,tabularx,varioref,url}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{ragged2e}
+
+\usepackage[colorlinks=false, pdfborder={0 0 0}]{hyperref}
+
+% some dirty hacks to make the ltxguide class look better:
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+{-3.5ex \@plus -.75ex}%
+{1ex}%
+{\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+{-2.5ex plus -.5ex}%
+{.75ex}%
+{\normalfont\large\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+{-2.5ex plus -.5ex}%
+{.5ex}%
+{\normalsize\bfseries}}
+\setlength{\parskip}{1ex plus 2pt minus 1pt \relax}
+% borrowed from tdsguide.cls:
+\labelsep=1.1em         % increase distance between item & text
+\topsep=0pt             % no extra skip above list in paragraph
+\partopsep=0pt          % no extra skip above list starting par.
+\itemsep=0pt            % no extra space between items
+\parsep=.9\parskip      % between paragraphs in items
+\def\@listI{%
+    \leftmargin\leftmargini
+    }
+\let\@listi\@listI
+\@listi
+\def\@listii{%
+    \leftmargin\leftmarginii
+    \labelwidth\leftmarginii  \advance \labelwidth-\labelsep
+    }
+\def\@listiii{%
+    \leftmargin\leftmarginiii
+    \labelwidth\leftmarginiii  \advance \labelwidth-\labelsep
+    }
+\makeatother
+
+% the (La)TeX logos for use with Times:
+\def\ptmTeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.075emX\@}
+\makeatletter
+\DeclareRobustCommand{\ptmLaTeX}{L\kern-.25em
+        {\setbox0\hbox{T}%
+         \vbox to\ht0{\hbox{%
+                            \csname S@\f@size\endcsname
+                            \fontsize\sf@size\z@
+                            \math@fontsfalse\selectfont
+                            A}%
+                      \vss}%
+        }%
+        \kern-.10em
+        \TeX}
+\makeatother
+\let\TeX=\ptmTeX
+\let\LaTeX=\ptmLaTeX
+
+% a bit of logical markup:
+\newcommand{\ps}{PostScript}
+\newcommand{\Lpack}[1]{\textsf{#1}}
+
+% the macros for the typeface samples:
+\newlength{\rightwidth}
+  \rightwidth=11cm
+\newlength{\leftwidth}
+  \leftwidth=\textwidth
+  \addtolength{\leftwidth}{-\rightwidth}
+  \addtolength{\leftwidth}{-1em} % ?
+\newcommand{\sample}[5]{%
+  \parbox[t]{\leftwidth}{%
+    {\raggedright\footnotesize
+    #1\\
+    #3/#4\par}}
+  \hfill
+  \parbox[t]{\rightwidth}{
+  {\RaggedRight \fontfamily{#2}\fontsize{#3}{#4}\selectfont #5
+  The sun was just rising as Dr.\ Robert entered his wife's room.
+  An orange glow, and against it the jagged silhouette of the mountains.
+  Then suddenly a dazzling sickle of incandescence between two peaks.
+  The sickle became a half circle and the first long shadows,
+  the first shafts of golden light crossed the garden outside the window.
+  And when one looked up again at the mountains there was the whole
+  unbearable glory of the risen sun.
+  \par}}
+  \par
+  \medskip}
+
+
+\title{Using common \ps\ fonts with \LaTeX}
+
+\author{Walter Schmidt}
+
+\date{PSNFSS version 9.2 \\ 2004-09-15}
+
+
+\hypersetup{pdfauthor={Walter Schmidt},
+            pdftitle={Using common PostScript fonts with LaTeX},
+            pdfsubject={PSNFSS v9.2},
+            pdfkeywords={LaTeX PSNFSS PostScript fonts}}
+
+
+\begin{document}
+\MakeShortVerb{\+}
+
+\maketitle
+
+\tableofcontents
+%\pagebreak
+
+
+\section{What is PSNFSS\,?}
+
+The PSNFSS collection includes a set of files
+that provide a complete working setup of the \LaTeX{} font selection scheme
+(NFSS2) for use with common \ps\ fonts.
+It covers the so-called `Base~35' fonts
+(which are built into any Level~2 \ps\ printing device
+and the Ghostscript interpreter)
+and %the free Charter, Utopia and Pazo fonts.
+a number of free fonts.
+
+
+
+\section{Package overview}
+
+The easiest way to make use of the above-mentioned typefaces is to completely
+replace one or more of the font families used by \LaTeX{} as
+`roman', `sans serif' and `typewriter' family and for math.
+This is accomplished by the packages listed in table \ref{tab:packages}.
+Its first row lists the default (Computer Modern) font families.
+An empty column indicates that a package does not change the particular
+font family.  Some of these packages need more detailed explanation and
+are described in the below sections \ref{sec:helvet}, \ref{sec:mathpazo}
+and \ref{sec:mathptmx}.
+
+The PSNFSS distribution includes also a package
+\Lpack{pifont}, which serves for accessing symbol fonts (aka `Pi~fonts'),
+such as Symbol and Zapf Dingbats, see section~\ref{sec:pifont}.
+
+
+\begin{table}[h!]
+\caption{Packages for using common \ps\ fonts}
+\label{tab:packages}
+\medskip
+{\footnotesize
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|p{1.8cm}p{2.2cm}p{2.4cm}p{2.2cm}|}
+\hline
+\textbf{package} & \textbf{roman}  & \textbf{sans serif} & \textbf{typewriter} & \textbf{formulas} \\\hline\hline
+(none)           & CM Roman        & CM Sans Serif       & CM Typewriter       & $\approx$ CM Roman\\\hline
+\Lpack{mathpazo} & Palatino
+                 &
+                 &
+                 & $\approx$ Palatino\\\hline
+\Lpack{mathptmx} & Times
+                 &
+                 &
+                 & $\approx$ Times\\\hline
+\Lpack{helvet}   &
+                 & Helvetica
+                 &
+                 & \\\hline
+\Lpack{avant}    &
+                 & Avant~Garde
+                 &
+                 & \\\hline
+\Lpack{courier}  &
+                 &
+                 & Courier
+                 & \\\hline
+\Lpack{chancery} & Zapf Chancery
+                 &
+                 &
+                 & \\\hline
+\Lpack{bookman}  & Bookman
+                 & Avant~Garde
+                 & Courier
+                 & \\\hline
+\Lpack{newcent}  & New Century Schoolbook
+                 & Avant~Garde
+                 & Courier
+                 & \\\hline
+\Lpack{charter}  & Charter
+                 &
+                 &
+                 & \\\hline
+\end{tabular}
+\end{center}
+}
+\end{table}
+
+
+
+\section{Special considerations}
+
+\subsection{Output font encoding}
+None of the packages listed in table~\ref{tab:packages} changes the
+output font encoding from its default setting OT1.
+It is, however, highly recommended to use the fonts with the extended
+T1 and TS1 (text symbols) encodings by means of the commands:
+\begin{quote}
+  +\usepackage[T1]{fontenc}+\\
+  +\usepackage{textcomp}+
+\end{quote}
+When using \ps\ fonts that  come from `outside the \TeX{} world',
+there is no reason at all to stay with the obsolete OT1~encoding,
+which would not provide access to all available glyphs.
+However, since these fonts were not particularly designed
+for use with \TeX{}, they do \emph{not} include all of the
+text companion (TS1) symbols.
+
+
+\subsection{Euro support}
+%% \NEWfeature{2003-11-17 v9.1}
+From PSNFSS version~9.1 on, all supported text font families,
+with the exception of \texttt{put} (Utopia), provide
+a built-in Euro symbol +\texteuro+.
+Using this command requires the \Lpack{textcomp} package; see above.
+
+
+\subsection{Inter-line spacing}
+With certain font families, the leading of the standard \LaTeX{}
+document classes may be too small.
+This results from the larger x-height of these typefaces, as compared with
+Computer Modern.
+Since it is a question of document design and line width,
+the packages of the PSNFSS bundle do \emph{not} take care of this.
+Issuing the command
+\begin{quote}
+  +\linespread+ \arg{factor}
+\end{quote}
+in the preamble will globally enlarge the leading by the given factor.
+Typical values for \m{factor} are in the range of $1.04\dots1.1$.
+
+
+\subsection{Using sans serif fonts}
+The packages \Lpack{helvet} and \Lpack{avant} do not change the
+default text font family from `roman'.
+If required, the additional command
+\begin{quote}
+  +\renewcommand{\familydefault}{\sfdefault}+
+\end{quote}
+makes \LaTeX{} use the sans serif font family (Helvetica or Avant~Garde)
+as the default one in text mode.  Notice, however, that this does not change the fonts
+used in the formulas!
+
+
+
+\section{The package \Lpack{helvet}}
+\label{sec:helvet}
+Helvetica is actually somewhat larger than other typefaces
+of the same nominal size.
+As a result, mixing, \eg Times and Helvetica within running text
+may look bad.
+\begin{decl}
+  \texttt{[scaled=}\m{scale}\texttt{]}\\
+  \texttt{[scaled]}
+\end{decl}
+This can be fixed by loading the package with the option
+\texttt{[scaled=}\m{scale}\texttt{]},
+for instance:
++\usepackage[scaled=.92]{helvet}+.
+As a result, the font family \texttt{phv} (Helvetica) will be
+scaled down to 92\% of its `natural' size, which is suitable
+for use with Adobe Times.
+Specifying +[scaled]+ alone is equivalent to +[scaled=0.95]+% and makes
+%the height of the Helvetica capital letters comply with many other typeface
+%families
+.
+
+
+
+\section{The package \Lpack{mathpazo}}
+\label{sec:mathpazo}
+Loading
+%% \NEWfeature{2001-06-04 v8.2}
+this package changes the default roman font family
+to Adobe Palatino, and the virtual `mathpazo' fonts will be used
+for math.
+These virtual fonts are made up basically from Palatino Italic, with the
+missing math symbols coming from the CM and Pazo math fonts.
+
+\subsection{Package options}
+
+\begin{decl}
+  +[sc]+\\
+  +[osf]+
+\end{decl}
+By default, the package \Lpack{mathpazo} uses
+the typeface family +ppl+ as the roman text font family.
+The option +[sc]+ selects Palatino with real smallcaps (family +pplx+) insread.
+Correspondingly, the option +[osf]+ selects Palatino with smallcaps and default
+oldstyle figures (family +pplj+).
+Of course, oldstyle figures will be used only in text mode, as opposed to formulas.
+\NEWfeature{2004-09-15 v9.2}
+Using either option is strongly recommended:
+Beside the real smallcaps, the font families +pplx+ and +pplj+ show  further
+improvements over +ppl+: Increased word space, enhanced kerning tables,
+additional `dotlessj' glyph.
+
+\begin{decl}
+  +[slantedGreek]+
+\end{decl}
+When the package is loaded with the +[slantedGreek]+ option,
+uppercase Greek letters in math will be italic by default.
+
+\begin{decl}
+  +[noBBpl]+
+\end{decl}
+This option disables the use of the Pazo fonts as a partial
++\mathbb+ alphabet -- see below.  The option should be specified,
+if you want to use a different `blackboard bold' font.
+
+
+\subsection{New commands}
+
+\begin{decl}
+  +\upGamma+, +\upDelta+ \dots +\upOmega+
+\end{decl}
+\NEWfeature{2004-09-15 v9.2}
+Regardless of the \texttt{slantedGreek} option,
+these commands always yield upright uppercase Greek letters.
+Upright \emph{lowercase} Greek is, however, not available.
+
+\begin{decl}
+  +\mathbold+\\
+  +\mathbb+
+\end{decl}
++\mathbold+ is a math alphabet for typesetting variables (incl.\ Greek)
+in a {\bfseries\itshape bold italic} style.  Do not mix this up with +\mathbf+,
+which selects a {\bfseries\upshape bold upright} text font
+for use in math!
+
++\mathbb+ is a `blackboard bold' alphabet, whose characters
+are taken from the Pazo fonts.  %% \NEWfeature{2002-04-10 v9.0}
+All upper case letters and the numeral `1' are available.
+If you want to use a different, external, doublestroke  alphabet,
+load the package \Lpack{mathpazo} with the package option +[noBBppl]+, see above.
+
+\iffalse
+\begin{decl}
+  +\ppleuro+
+\end{decl}
+The command +\ppleuro+ typesets the Euro
+symbol in a way that suits Palatino using the appropriate glyphs
+from the Pazo Math font family.  It is compatible with both the
+\Lpack{eurofont} and \Lpack{europs} packages, and one can continue to use either
+one of these packages, using the +\euro+ command from the
+\Lpack{eurofont} package or the +\EUR+ command from the \Lpack{europs} package.
+\fi
+
+
+\subsection{Font size of the `large' math symbols}
+With \Lpack{mathpazo}, the `large' math symbols are automatically
+scaled to fit the base font size.
+In contrast to standard \LaTeX{} you need not
+load the package \Lpack{exscale} for this purpose!
+
+
+\subsection{Known problems}
+
+In contrast to the standard CM fonts, the virtual \Lpack{mathpazo} fonts
+do not provide any Greek letters in the math alphabet +\mathrm+.
+Applying this math alphabet command to Greek letters
+will result in garbage output.
+
+
+
+\section{The package \Lpack{mathptmx}}
+\label{sec:mathptmx}
+Loading this package changes the default roman font family
+to Times, and the virtual `mathptmx' fonts will be used
+for math.
+These virtual fonts are made up basically from Times Italic, with the
+missing math symbols coming from CM, RSFS (for +\mathcal+) and
+Adobe~Symbol.
+
+\subsection{Package options}
+\begin{decl}
+  +[slantedGreek]+
+\end{decl}
+%% \NEWfeature{2001-06-04 v8.2}
+When the package is loaded with this option,
+uppercase Greek letters in math will be italic by default.
+
+\subsection{New commands}
+\begin{decl}
+  +\upGamma+, +\upDelta+ \dots +\upOmega+
+\end{decl}
+\NEWfeature{2004-09-15 v9.2}
+Regardless of the \texttt{slantedGreek} option,
+these commands always yield upright uppercase Greek letters.
+Upright \emph{lowercase} Greek is, however, not available.
+
+
+\subsection{Font size of the `large' math symbols}
+With \Lpack{mathptmx}, the `large' math symbols are automatically scaled
+to fit the base font size.  In contrast to standard \LaTeX{} you need not
+load the package \Lpack{exscale} for this purpose!
+
+
+\subsection{Known bugs and deficiencies}
+\begin{itemize}
+  \item There are no bold math fonts, and +\boldmath+ has no effect.
+  Use of the package \Lpack{bm} in conjunction with \Lpack{mathptmx}
+  is not recommended.
+  \item The symbols
+   +\jmath+, +\coprod +and +\amalg+
+   are not available.
+\end{itemize}
+
+
+
+\section{The package \Lpack{pifont}}
+\label{sec:pifont}
+
+Using symbol fonts is supported by means of the
+\Lpack{pifont} package, providing commands for using the Zapf Dingbats font,
+as well as an interface to other families.\footnote{%
+This section was adopted, with minor changes,
+from \cite{companion}, 1st ed.}
+
+\subsection{Commands for using Zapf Dingbats}
+
+\begin{decl}
+  +\ding+ \arg{number}
+\end{decl}
+
+A given character can be chosen via the +\ding+ command.
+Its parameter is an integer that specifies the character to be
+typeset.  For example, +\ding{38}+ gives \ding{38};
+see table~\vref{tab:dingbats}.
+
+\begin{decl}
+  +\begin{dinglist}+ \arg{number}\\
+  +\begin{dingautolist}+ \arg{number}
+\end{decl}
+
+The +dinglist+ environment is a special itemized list.
+The argument specifies the number of the character to be used
+as the beginning of each item.  For example,
+\begin{verbatim}
+\begin{dinglist}{43}
+  \item The first item in the list
+  \item The second item in the list
+  \item The third item in the list
+\end{dinglist}
+\end{verbatim}
+prints
+\begin{dinglist}{43}
+  \item The first item in the list
+  \item The second item in the list
+  \item The third item in the list
+\end{dinglist}
+
+There also exists an environment +dingautolist+, which
+allows you to build an enumerated list with a set of Zapf Dingbats
+characters.  In this case, the argument specifies the number
+of the first character in the list.  Subsequent items will be numbered
+with the character following the previous one.  E.g.,
+\begin{verbatim}
+\begin{dingautolist}{192}
+  \item The first item
+  \item The second item
+  \item The third item
+\end{dingautolist}
+\end{verbatim}
+prints
+\begin{dingautolist}{192}
+  \item The first item
+  \item The second item
+  \item The third item
+\end{dingautolist}
+
+\begin{decl}
+  +\dingfill+ \arg{number}\\
+  +\dingline+ \arg{number}
+\end{decl}
+
++\dingfill+ acts like the other filling commands in \TeX, but
+fills the space with a chosen symbol \dingfill{224} like that.
+
++\dingline+ generates a freestanding line filled with the given symbol,
+with a little space on the left and right:
+\dingline{34}
+
+
+\begin{table}[bt!]
+  \caption{The characters in the \ps{} font Zapf Dingbats}
+  \label{tab:dingbats}
+  \medskip
+
+{\footnotesize
+\begin{tabular}{|rr|rr|rr|rr|rr|rr|rr|rr|}
+\hline
+32 &  \ding{32} & 33 &  \ding{33} & 34 &  \ding{34} & 35 &  \ding{35} & 36 &  \ding{36} & 37 &  \ding{37} & 38 &  \ding{38} & 39 &  \ding{39}  \\ \hline
+40 &  \ding{40} & 41 &  \ding{41} & 42 &  \ding{42} & 43 &  \ding{43} & 44 &  \ding{44} & 45 &  \ding{45} & 46 &  \ding{46} & 47 &  \ding{47}  \\ \hline
+48 &  \ding{48} & 49 &  \ding{49} & 50 &  \ding{50} & 51 &  \ding{51} & 52 &  \ding{52} & 53 &  \ding{53} & 54 &  \ding{54} & 55 &  \ding{55}  \\ \hline
+56 &  \ding{56} & 57 &  \ding{57} & 58 &  \ding{58} & 59 &  \ding{59} & 60 &  \ding{60} & 61 &  \ding{61} & 62 &  \ding{62} & 63 &  \ding{63}  \\ \hline
+64 &  \ding{64} & 65 &  \ding{65} & 66 &  \ding{66} & 67 &  \ding{67} & 68 &  \ding{68} & 69 &  \ding{69} & 70 &  \ding{70} & 71 &  \ding{71}  \\ \hline
+72 &  \ding{72} & 73 &  \ding{73} & 74 &  \ding{74} & 75 &  \ding{75} & 76 &  \ding{76} & 77 &  \ding{77} & 78 &  \ding{78} & 79 &  \ding{79}  \\ \hline
+80 &  \ding{80} & 81 &  \ding{81} & 82 &  \ding{82} & 83 &  \ding{83} & 84 &  \ding{84} & 85 &  \ding{85} & 86 &  \ding{86} & 87 &  \ding{87}  \\ \hline
+88 &  \ding{88} & 89 &  \ding{89} & 90 &  \ding{90} & 91 &  \ding{91} & 92 &  \ding{92} & 93 &  \ding{93} & 94 &  \ding{94} & 95 &  \ding{95}  \\ \hline
+96 &  \ding{96} & 97 &  \ding{97} & 98 &  \ding{98} & 99 &  \ding{99} & 100 &  \ding{100} & 101 &  \ding{101} & 102 &  \ding{102} & 103 &  \ding{103}  \\ \hline
+104 &  \ding{104} & 105 &  \ding{105} & 106 &  \ding{106} & 107 &  \ding{107} & 108 &  \ding{108} & 109 &  \ding{109} & 110 &  \ding{110} & 111 &  \ding{111}  \\ \hline
+112 &  \ding{112} & 113 &  \ding{113} & 114 &  \ding{114} & 115 &  \ding{115} & 116 &  \ding{116} & 117 &  \ding{117} & 118 &  \ding{118} & 119 &  \ding{119}  \\ \hline
+120 &  \ding{120} & 121 &  \ding{121} & 122 &  \ding{122} & 123 &  \ding{123} & 124 &  \ding{124} & 125 &  \ding{125} & 126 &  \ding{126} &     &              \\ \hline
+    &             & 161 &  \ding{161} & 162 &  \ding{162} & 163 &  \ding{163} & 164 &  \ding{164} & 165 &  \ding{165} & 166 &  \ding{166} & 167 &  \ding{167}  \\ \hline
+168 &  \ding{168} & 169 &  \ding{169} & 170 &  \ding{170} & 171 &  \ding{171} & 172 &  \ding{172} & 173 &  \ding{173} & 174 &  \ding{174} & 175 &  \ding{175}  \\ \hline
+176 &  \ding{176} & 177 &  \ding{177} & 178 &  \ding{178} & 179 &  \ding{179} & 180 &  \ding{180} & 181 &  \ding{181} & 182 &  \ding{182} & 183 &  \ding{183}  \\ \hline
+184 &  \ding{184} & 185 &  \ding{185} & 186 &  \ding{186} & 187 &  \ding{187} & 188 &  \ding{188} & 189 &  \ding{189} & 190 &  \ding{190} & 191 &  \ding{191}  \\ \hline
+192 &  \ding{192} & 193 &  \ding{193} & 194 &  \ding{194} & 195 &  \ding{195} & 196 &  \ding{196} & 197 &  \ding{197} & 198 &  \ding{198} & 199 &  \ding{199}  \\ \hline
+200 &  \ding{200} & 201 &  \ding{201} & 202 &  \ding{202} & 203 &  \ding{203} & 204 &  \ding{204} & 205 &  \ding{205} & 206 &  \ding{206} & 207 &  \ding{207}  \\ \hline
+208 &  \ding{208} & 209 &  \ding{209} & 210 &  \ding{210} & 211 &  \ding{211} & 212 &  \ding{212} & 213 &  \ding{213} & 214 &  \ding{214} & 215 &  \ding{215}  \\ \hline
+216 &  \ding{216} & 217 &  \ding{217} & 218 &  \ding{218} & 219 &  \ding{219} & 220 &  \ding{220} & 221 &  \ding{221} & 222 &  \ding{222} & 223 &  \ding{223}  \\ \hline
+224 &  \ding{224} & 225 &  \ding{225} & 226 &  \ding{226} & 227 &  \ding{227} & 228 &  \ding{228} & 229 &  \ding{229} & 230 &  \ding{230} & 231 &  \ding{231}  \\ \hline
+232 &  \ding{232} & 233 &  \ding{233} & 234 &  \ding{234} & 235 &  \ding{235} & 236 &  \ding{236} & 237 &  \ding{237} & 238 &  \ding{238} & 239 &  \ding{239}  \\ \hline
+    &             & 241 &  \ding{241} & 242 &  \ding{242} & 243 &  \ding{243} & 244 &  \ding{244} & 245 &  \ding{245} & 246 &  \ding{246} & 247 &  \ding{247}  \\ \hline
+248 &  \ding{248} & 249 &  \ding{249} & 250 &  \ding{250} & 251 &  \ding{251} & 252 &  \ding{252} & 253 &  \ding{253} & 254 &  \ding{254} &     &              \\ \hline
+\end{tabular}
+\par}
+
+\end{table}
+
+\subsection{Generic commands}
+The \Lpack{pifont} package has a general mechanism for coping with
+Pi fonts. It provides the following generic commands with, in each case,
+the first argument \m{family} specifying the name of the
+Pi font family in question (such as \texttt{psy} for the Symbol font,
+and \texttt{pzd} for the Zapf Dingbats font, see table~\vref{tab:families}).
+If indicated, a second argument \m{number}
+specifies the decimal position of a symbol in that font.
+
+\begin{decl}
+  +\Pifont+ \arg{family}
+\end{decl}
+
+This switches to the font family \m{family}
+and the encoding U.
+
+\begin{decl}
+  +\Pisymbol+ \arg{family} \arg{number}
+\end{decl}
+
+This command typesets the specified symbol
+(compare this with the +\ding+ command).
+
+\begin{decl}
+  +\begin{Pilist}+ \arg{family} \arg{number}\\
+  +\begin{Piautolist}+ \arg{family} \arg{number}
+\end{decl}
+
+In the +Pilist+ environment the specified symbol is used in front
+of each item in an itemized list (compare with the +dinglist+
+environment).
+
++Piautolist+ is an environment where a series of symbols starting
+with the one at the decimal position \m{number} in font family
+\m{family} is used to number the items in an enumerated list
+(compare with the +dingautolist+ environment).
+
+\begin{decl}
+  +\Pifill+ \arg{family} \arg{number}\\
+  +\Piline+ \arg{family} \arg{number}
+\end{decl}
+
++\Pifill+ acts like the other filling commands in \TeX, but
+fills the space with a chosen symbol (compare with +\dingfill+).
+
++\Piline+ typesets a line consisting of several copies of
+the specified symbol, with some space at the left and right
+(compare with +\dingline+).
+
+
+
+\section{NFSS classification}
+Table~\vref{tab:families} lists all text and symbol font shapes
+supported by the basic PSNFSS distribution,
+and the related \ps\ fonts.
+\NEWdescription{2004-09-15 v9.2}
+With the exception of Charter and Utopia, these fonts are commercial products.
+Therefore, most \TeX\ systems include free substitutes instead.
+
+Available encodings are OT1, T1 and TS1, except for
+Symbol and Zapf~Dingbats, which are implemented with encoding U.
+See \cite{fntguide} for how to access a given font shape directly.
+
+Only the font families +pplx+ and +pplj+ provide true small capitals
+(and only in the regular series).
+With the other families the shape `sc' refers to so-called `faked' small capitals,
+whose typographical quality is -- at least -- questionable.
+
+The math font families loaded by the
+\Lpack{mathptm}, \Lpack{mathptmx}, \Lpack{mathpazo} and \Lpack{mathpple} packages
+are not listed here.
+See the documented source file \texttt{psfonts.dtx}
+for information on this topic.
+
+\begin{table}[p]
+  \caption{Font shapes supported by the basic PSNFSS distribution}
+  \label{tab:families}
+  \medskip
+
+  {\small
+  \begin{tabularx}{\linewidth}{|l|l|l|>{\raggedright\arraybackslash}X|}
+  \hline
+  \textbf{family} & \textbf{series} & \textbf{shape(s)} & \textbf{\ps{} font names}\\
+  \hline\hline
+  \multicolumn{4}{|c|}{\textit{Avant Garde}}\\ \hline
+   pag & m & n, sl, sc & AvantGarde-Book, AvantGarde-BookOblique\\ \hline
+   pag & b & n, sl, sc & AvantGarde-Demi, AvantGarde-DemiOblique\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Bookman}}\\ \hline
+   pbk & l & n, sl, it, sc & Bookman-Light, Bookman-LightItalic\\ \hline
+   pbk & db & n, sl, it, sc & Bookman-Demi, Bookman-DemiItalic\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Charter}}\\ \hline
+   bch & m & n, sl, it, sc & CharterBT-Roman, CharterBT-Italic\\ \hline
+   bch & b & n, sl, it, sc & CharterBT-Bold, CharterBT-BoldItalic\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Courier}}\\ \hline
+   pcr & m & n, sl, sc & Courier, CourierOblique\\ \hline
+   pcr & b & n, sl, sc & Courier-Bold, Courier-BoldOblique\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Helvetica}}\\ \hline
+   phv & m & n, sl, sc & Helvetica, Helvetica-Oblique\\ \hline
+   phv & b & n, sl, sc & Helvetica-Bold, Helvetica-BoldOblique\\ \hline
+   phv & mc & n, sl, sc & Helvetica-Narrow, Helvetica-Narrow-Oblique\\ \hline
+   phv & bc & n, sl, sc & Helvetica-Narrow-Bold, Helvetica-Narrow-BoldOblique\\\hline \hline
+  \multicolumn{4}{|c|}{\textit{New Century Schoolbook}}\\ \hline
+   pnc & m & n, sl, it, sc & NewCenturySchlbk-Roman, NewCenturySchlbk-Italic\\ \hline
+   pnc & b & n, sl, it, sc & NewCenturySchlbk-Bold, NewCenturySchlbk-BoldItalic\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Palatino}}\\ \hline
+   ppl & m & n, sl, it, sc & Palatino-Roman, Palatino-Italic\\ \hline
+   ppl & b & n, sl, it, sc & Palatino-Bold, Palatino-BoldItalic\\ \hline
+   pplx & m & n, it, sc & Palatino-Roman, Palatino-Italic, Palatino-SC\\ \hline
+   pplx & b & n, it     & Palatino-Bold, Palatino-BoldItalic\\ \hline
+   pplj & m & n, it, sc & Palatino-Roman, Palatino-SC, Palatino-Italic, Palatino-ItalicOsF\\ \hline
+   pplj & b & n, it     & Palatino-Bold, Palatino-BoldOsF, Palatino-BoldItalic, Palatino-BoldItalicOsF\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Times}}\\ \hline
+   ptm & m & n, sl, it, sc  & Times-Roman, Times-Italic\\ \hline
+   ptm & b & n, sl, it, sc  & Times-Bold, Times-BoldItalic\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Zapf Chancery}}\\ \hline
+   pzc & mb & it & ZapfChancery-MediumItalic\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Utopia}}\\ \hline
+   put & m & n, sl, it, sc & Utopia-Regular, Utopia-Italic\\ \hline
+   put & b & n, sl, it, sc & Utopia-Bold, Utopia-BoldItalic\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Symbol}}\\ \hline
+   psy & m & n & Symbol\\ \hline \hline
+  \multicolumn{4}{|c|}{\textit{Zapf Dingbats}}\\ \hline
+   pzd & m & n & ZapfDingbats\\ \hline
+  \end{tabularx}
+  \par}
+\end{table}
+
+
+
+\section{Obsolete packages}
+The macro packages listed in table \vref{tab:obsolete} should be considered as obsolete.
+They are provided for compatibility with existing documents only.
+
+\begin{table}[hbt]
+\caption{Obsolete packages in the PSNFSS collection}
+\label{tab:obsolete}
+\medskip
+{\footnotesize
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|p{1.8cm}p{2.2cm}p{2.4cm}p{2.2cm}|}
+\hline
+\textbf{package} & \textbf{roman}  & \textbf{sans serif} & \textbf{typewriter} & \textbf{math} \\\hline\hline
+\Lpack{times}    & Times
+                 & Helvetica
+                 & Courier
+                 & \\\hline
+\Lpack{palatino} & Palatino
+                 & Helvetica
+                 & Courier
+                 & \\\hline
+\Lpack{mathptm}  & Times
+                 &
+                 &
+                 & $\approx$ Times\\\hline
+\Lpack{mathpple} & Palatino
+                 &
+                 &
+                 & $\approx$ Palatino\\\hline
+\Lpack{utopia}   & Utopia
+                 &
+                 &
+                 & \\\hline
+\end{tabular}
+\end{center}
+}
+\end{table}
+
+
+\subsection{The packages \Lpack{times} and \Lpack{palatino}}
+These packages do not load suitable math fonts,
+and they do not scale the Helvetica fonts appropriately
+to match Times and Palatino -- see section \ref{sec:helvet}.
+Use \Lpack{mathptmx} or \Lpack{mathpazo} in conjunction with
+\Lpack{helvet} and \Lpack{courier} instead!
+
+In case you need to load Times or Palatino \emph{without} the
+related math fonts of the PSNFSS bundle, you can still use the
+basic NFSS commands.  For instance,
+\begin{quote}
++\renewcommand{\rmdefault}{ptm}+
+\end{quote}
+changes only the default roman font family to
+\texttt{ptm}, i.e.\ Times.
+
+\subsection{The package \Lpack{mathptm}}
+The package \Lpack{mathptm} is a predecessor to \Lpack{mathptmx}.
+In contrast to the latter and to \LaTeX's standard behavior,
+lowercase Greek in math is typeset upright.
+Zapf Chancery is used as the calligraphic math alphabet,
+which causes some problems with proper spacing.
+\Lpack{mathptm} needs the font \texttt{cmex9}, which may not
+be available in Type~1 format.
+
+\subsection{The package \Lpack{mathpple}}
+\Lpack{mathpple} is a predecessor to \Lpack{mathpazo},
+using also a set of virtual math fonts to go with Palatino.
+The Greek alphabet is, however, taken from the
+Euler fonts (which get slanted), rather than from the Pazo fonts.
+The package \Lpack{mathpple} does not support the
+Palatino SC/OsF fonts, and there is no `blackboard bold' math alphabet.
+Further flaws are:
+\begin{itemize}
+  \item The spacing within numbers and function names in formulas
+   is somewhat too loose.
+  \item The +\coprod+ symbol is missing.
+  \item There are no bold variants of +\partial+ and +\infty+.
+  \item +\jmath+ is taken from the CM math italic font, which does
+  not blend well with Palatino.
+  \item DVI viewers may exhibit problems as to rendering of the artificially slanted
+  Greek letters.
+\end{itemize}
+The newer \Lpack{mathpazo} package can  be considered as
+superior; yet you may still use \Lpack{mathpple}, if you prefer
+the shape of its Greek letters.
+
+\subsection{The package \Lpack{utopia}}
+Use %%\NEWdescription{2003-11-17 v9.1}
+of the \Lpack{utopia}
+package is no longer recommended, because
+the newer package \Lpack{fourier} provides a basically improved
+interface to the Utopia typeface and loads suitable math fonts, too.
+Notice that this package does \emph{not} belong to the PSNFSS collection!
+
+Furthermore, the \LaTeX3 team does no longer regard the Utopia
+fonts as a \emph{required} component of \LaTeX{},
+because their license does not comply with the strict
+guidelines of the FSF.
+
+
+\section{Typeface samples}
+
+The following samples show the regular font of each typeface family
+supported by PSNFSS.
+The particular font size and baselineskip is indicated below the font name.
+Notice that Helvetica is scaled to 92\,\% of the nominal size.
+
+\medskip
+
+\sample{Times}{ptm}{10}{12pt}{}
+
+\sample{Palatino}{pplx}{10}{12.4pt}{}
+
+\sample{Bookman}{pbk}{9.6}{11.5pt}{}
+
+\sample{Charter}{bch}{10}{12.4pt}{}
+
+\sample{New Century Schoolbook}{pnc}{9.6}{12pt}{}
+
+\ifutopia
+  \sample{Utopia}{put}{9.6}{12pt}{}
+\fi
+
+\sample{Helvetica}{phv}{10}{12pt}{}
+
+\parbox[t]{\leftwidth}{%
+  {\raggedright\footnotesize
+  \mbox{}Avant\-Garde\\
+  9.6pt
+  \par}}
+\hfill
+\parbox[t]{\rightwidth}{
+{\fontfamily{pag}\fontsize{9.6}{11.5pt}\selectfont\raggedright
+ Don't use Avant Garde for typesetting larger portions of text\,!
+\par}}\medskip
+
+\parbox[t]{\leftwidth}{
+  {\raggedright\footnotesize
+  Courier\\
+  10/12pt
+  \par}}
+\hfill
+\parbox[t]{\rightwidth}{
+{\fontfamily{pcr}\fontsize{10}{12pt}\selectfont\raggedright
+ A monospaced typeface, suitable for typesetting filenames, URLs etc.
+\par}}\medskip
+
+\parbox[t]{\leftwidth}{
+  {\raggedright\footnotesize
+  Zapf Chancery\\
+  14.4pt
+  \par}}
+\hfill
+\parbox[t]{\rightwidth}{
+{\fontfamily{pzc}\Large\raggedright
+To Hermann Zapf -- whose strokes are the best.
+\par}}\medskip
+
+
+
+\section*{Credits}
+The PSNFSS system was originally developed by Sebastian Rahtz.
+
+The virtual \Lpack{mathptm} and \Lpack{mathptmx} fonts and the related packages
+were created by Alan Jeffrey, Sebastian Rathz and Ulrik Vieth.
+
+The \Lpack{mathpple} package and its virtual fonts are based
+on earlier work by Aloysius Helminck. Special thanks to Daniel Schlieper
+without whose initiative the package would not have been developed.
+
+The Pazo math fonts and the related virtual fonts were created
+by Diego Puga.
+
+
+
+\begin{thebibliography}{1}
+\raggedright
+
+\bibitem{companion}
+Frank Mittelbach et al.:
+\textit{The LaTeX Companion}.\\
+2nd edition. Addison Wesley, 2004.
+
+%\bibitem{gcompanion}
+%Michel Goossens, Sebastian Rahtz, and
+%Frank Mittelbach:\\
+%\textit{The LaTeX Graphics Companion}.\\
+%Addison Wesley Longman, 1997.
+
+\bibitem{fntguide}
+\LaTeX3 Project Team (Ed.):
+\textit{LaTeX2e font selection.}\\
+CTAN: \path{macros/latex/doc/fntguide.pdf}\\
+(Part of the \LaTeX{} online documentation)
+\end{thebibliography}
+
+
+\end{document}

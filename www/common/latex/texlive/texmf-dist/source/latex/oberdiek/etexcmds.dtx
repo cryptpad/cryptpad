@@ -1,0 +1,979 @@
+% \iffalse meta-comment
+%
+% File: etexcmds.dtx
+% Version: 2011/02/16 v1.5
+% Info: Avoid name clashes with e-TeX commands
+%
+% Copyright (C) 2007, 2010, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file etexcmds.dtx
+% and the derived files
+%    etexcmds.sty, etexcmds.pdf, etexcmds.ins, etexcmds.drv,
+%    etexcmds-test1.tex, etexcmds-test2.tex, etexcmds-test3.tex,
+%    etexcmds-test4.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/etexcmds.dtx
+%    CTAN:macros/latex/contrib/oberdiek/etexcmds.pdf
+%
+% Unpacking:
+%    (a) If etexcmds.ins is present:
+%           tex etexcmds.ins
+%    (b) Without etexcmds.ins:
+%           tex etexcmds.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{etexcmds.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If etexcmds.drv is present:
+%           latex etexcmds.drv
+%    (b) Without etexcmds.drv:
+%           latex etexcmds.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex etexcmds.dtx
+%       makeindex -s gind.ist etexcmds.idx
+%       pdflatex etexcmds.dtx
+%       makeindex -s gind.ist etexcmds.idx
+%       pdflatex etexcmds.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/etexcmds.sty
+%    TDS:doc/latex/oberdiek/etexcmds.pdf
+%    TDS:doc/latex/oberdiek/test/etexcmds-test1.tex
+%    TDS:doc/latex/oberdiek/test/etexcmds-test2.tex
+%    TDS:doc/latex/oberdiek/test/etexcmds-test3.tex
+%    TDS:doc/latex/oberdiek/test/etexcmds-test4.tex
+%    TDS:source/latex/oberdiek/etexcmds.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: etexcmds
+Version: 2011/02/16 v1.5
+
+Copyright (C) 2007, 2010, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file etexcmds.dtx
+and the derived files
+   etexcmds.sty, etexcmds.pdf, etexcmds.ins, etexcmds.drv,
+   etexcmds-test1.tex, etexcmds-test2.tex, etexcmds-test3.tex,
+   etexcmds-test4.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{etexcmds.ins}{\from{etexcmds.dtx}{install}}%
+  \file{etexcmds.drv}{\from{etexcmds.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{etexcmds.sty}{\from{etexcmds.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{etexcmds-test1.tex}{\from{etexcmds.dtx}{test1}}%
+  \file{etexcmds-test2.tex}{\from{etexcmds.dtx}{test2}}%
+  \file{etexcmds-test3.tex}{\from{etexcmds.dtx}{test3}}%
+  \file{etexcmds-test4.tex}{\from{etexcmds.dtx}{test4}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{etexcmds.xml}{\from{etexcmds.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     etexcmds.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `etexcmds.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{etexcmds.drv}%
+  [2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{etexcmds.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{658}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{etexcmds.drv}
+%
+% \title{The \xpackage{etexcmds} package}
+% \date{2011/02/16 v1.5}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% New primitive commands are introduced in \eTeX. Sometimes the
+% names collide with existing macros. This package solves this
+% name clashes by adding a prefix to \eTeX's commands. For example,
+% \eTeX's \cs{unexpanded} is provided as \cs{etex@unexpanded}.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{\cs{unexpanded}}
+%
+% \begin{declcs}{etex@unexpanded}
+% \end{declcs}
+% New primitive commands are introduced in \eTeX. Unhappily
+% \cs{unexpanded} collides with a macro in Con\TeX t with the
+% same name. This also affects the \LaTeX\ world. For example,
+% package \xpackage{m-ch-de} loads \xfile{base/syst-gen.tex}
+% that redefines \cs{unexpanded}. Thus this package defines
+% \cs{etex@unexpanded} to get rid of the name clash.
+%
+% \begin{declcs}{ifetex@unexpanded}
+% \end{declcs}
+% Package \xpackage{etexcmds} can be loaded even if \eTeX\ is not
+% present or \cs{unexpanded} cannot be found. The switch
+% \cs{ifetex@unexpanded} tells whether it is safe to use
+% \cs{etex@unexpanded}.
+% The switch is true (\cs{iftrue}) only if the
+% primitive \cs{unexpanded} has been found and \cs{etex@unexpanded}
+% is available.
+%
+% \subsection{\cs{expanded}}
+%
+% Probably \cs{expanded} will be added in \pdfTeX\ 1.50 and
+% \LuaTeX. Again Con\TeX t defines this as macro.
+% Therefore version 1.2 of this packages also provides
+% \cs{etex@expanded} and \cs{ifetex@unexpanded}.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@etexcmds.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{etexcmds}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@etexcmds.sty\endcsname
+\ProvidesPackage{etexcmds}%
+  [2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname etexcmds@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\etexcmds@AtEnd{%
+    \etexcmds@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\etexcmds@AtEnd{%
+  \etexcmds@AtEnd
+  \escapechar\the\escapechar\relax
+  \noexpand\endinput
+}
+\escapechar=92 % backslash
+%    \end{macrocode}
+%
+% \subsection{Provide \cs{newif}}
+%
+%    \begin{macro}{\etexcmds@newif}
+%    \begin{macrocode}
+\def\etexcmds@newif#1{%
+  \expandafter\edef\csname etex@#1false\endcsname{%
+    \let
+    \expandafter\noexpand\csname ifetex@#1\endcsname
+    \noexpand\iffalse
+  }%
+  \expandafter\edef\csname etex@#1true\endcsname{%
+    \let
+    \expandafter\noexpand\csname ifetex@#1\endcsname
+    \noexpand\iftrue
+  }%
+  \csname etex@#1false\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Load package \xpackage{infwarerr}}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{infwarerr}[2007/09/09]%
+  \TMP@RequirePackage{ifluatex}[2010/03/01]%
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ifluatex}[2010/03/01]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{\cs{unexpanded}}
+%
+%    \begin{macro}{\ifetex@unexpanded}
+%    \begin{macrocode}
+\etexcmds@newif{unexpanded}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\etex@unexpanded}
+%    \begin{macrocode}
+\begingroup
+\edef\x{\string\unexpanded}%
+\edef\y{\meaning\unexpanded}%
+\ifx\x\y
+  \endgroup
+  \let\etex@unexpanded\unexpanded
+  \etex@unexpandedtrue
+\else
+  \edef\y{\meaning\normalunexpanded}%
+  \ifx\x\y
+    \endgroup
+    \let\etex@unexpanded\normalunexpanded
+    \etex@unexpandedtrue
+  \else
+    \edef\y{\meaning\@@unexpanded}%
+    \ifx\x\y
+      \endgroup
+      \let\etex@unexpanded\@@unexpanded
+      \etex@unexpandedtrue
+    \else
+      \ifluatex
+        \ifnum\luatexversion<36 %
+        \else
+          \begingroup
+            \directlua{%
+              tex.enableprimitives('etex@',{'unexpanded'})%
+            }%
+            \global\let\etex@unexpanded\etex@unexpanded
+          \endgroup
+        \fi
+      \fi
+      \edef\y{\meaning\etex@unexpanded}%
+      \ifx\x\y
+        \endgroup
+        \etex@unexpandedtrue
+      \else
+        \endgroup
+        \@PackageInfoNoLine{etexcmds}{%
+          Could not find \string\unexpanded.\MessageBreak
+          That can mean that you are not using e-TeX or%
+          \MessageBreak
+          that some package has redefined \string\unexpanded.%
+          \MessageBreak
+          In the latter case, load this package earlier%
+        }%
+        \etex@unexpandedfalse
+      \fi
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{expanded}}
+%
+%    \begin{macro}{\ifetex@expanded}
+%    \begin{macrocode}
+\etexcmds@newif{expanded}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\etex@expanded}
+%    \begin{macrocode}
+\begingroup
+\edef\x{\string\expanded}%
+\edef\y{\meaning\expanded}%
+\ifx\x\y
+  \endgroup
+  \let\etex@expanded\expanded
+  \etex@expandedtrue
+\else
+  \edef\y{\meaning\normalexpanded}%
+  \ifx\x\y
+    \endgroup
+    \let\etex@expanded\normalexpanded
+    \etex@expandedtrue
+  \else
+    \edef\y{\meaning\@@expanded}%
+    \ifx\x\y
+      \endgroup
+      \let\etex@expanded\@@expanded
+      \etex@expandedtrue
+    \else
+      \ifluatex
+        \ifnum\luatexversion<36 %
+        \else
+          \begingroup
+            \directlua{%
+              tex.enableprimitives('etex@',{'expanded'})%
+            }%
+            \global\let\etex@expanded\etex@expanded
+          \endgroup
+        \fi
+      \fi
+      \edef\y{\meaning\etex@expanded}%
+      \ifx\x\y
+        \endgroup
+        \etex@expandedtrue
+      \else
+        \endgroup
+        \@PackageInfoNoLine{etexcmds}{%
+          Could not find \string\expanded.\MessageBreak
+          That can mean that you are not using pdfTeX 1.50 or%
+          \MessageBreak
+          that some package has redefined \string\expanded.%
+          \MessageBreak
+          In the latter case, load this package earlier%
+        }%
+        \etex@expandedfalse
+      \fi
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\etexcmds@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input etexcmds.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+%    \begin{macrocode}
+%<*test2>
+\immediate\write16{etexcmds-test2.tex: test file for plainTeX}
+\input etexcmds.sty\relax
+\catcode`\@=11 %
+\edef\x{\string\unexpanded}
+\edef\y{\meaning\etex@unexpanded}
+\ifx\x\y
+\else
+  \@PackageError{etexcmds-test2}{Test failed}\@ehc
+\fi
+\end
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{etexcmds-test3.tex}[2011/02/16 v1.5 Test file for LaTeX]
+\RequirePackage{etexcmds}
+\makeatletter
+\edef\x{\string\unexpanded}
+\edef\y{\meaning\etex@unexpanded}
+\ifx\x\y
+\else
+  \@PackageError{etexcmds-test3}{Test failed}\@ehc
+\fi
+\stop
+%</test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test4>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{etexcmds-test4.tex}[2011/02/16 v1.5 Test file for LaTeX]
+\documentclass{article}
+\usepackage{m-pictex}
+\def\normalwritestatus#1#2{%
+  \typeout{EMERGENCY HACK \string\normalwritestatus}%
+  \typeout{#1: #2}%
+}
+\usepackage{m-ch-de}
+\usepackage{etexcmds}
+\makeatletter
+\ifetex@unexpanded
+  \edef\x{\string\unexpanded}%
+  \edef\y{\meaning\etex@unexpanded}%
+  \ifx\x\y
+  \else
+    \@PackageWarningNoLine{etexcmds-test4}{Test failed}%
+  \fi
+\else
+  \@PackageWarningNoLine{etexcmds-test4}{%
+    Test failed because of ConTeXt%
+  }%
+\fi
+\stop
+%</test4>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/etexcmds.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/etexcmds.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex etexcmds.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   etexcmds.sty & tex/generic/oberdiek/etexcmds.sty\\
+%   etexcmds.pdf & doc/latex/oberdiek/etexcmds.pdf\\
+%   test/etexcmds-test1.tex & doc/latex/oberdiek/test/etexcmds-test1.tex\\
+%   test/etexcmds-test2.tex & doc/latex/oberdiek/test/etexcmds-test2.tex\\
+%   test/etexcmds-test3.tex & doc/latex/oberdiek/test/etexcmds-test3.tex\\
+%   test/etexcmds-test4.tex & doc/latex/oberdiek/test/etexcmds-test4.tex\\
+%   etexcmds.dtx & source/latex/oberdiek/etexcmds.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk etexcmds.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{etexcmds.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex etexcmds.dtx
+%makeindex -s gind.ist etexcmds.idx
+%pdflatex etexcmds.dtx
+%makeindex -s gind.ist etexcmds.idx
+%pdflatex etexcmds.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{etexcmds.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='etexcmds'>
+  <name>etexcmds</name>
+  <caption>Avoid name clashes with e-TeX commands.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.5'/>
+  <description>
+    New primitive commands are introduced in e-TeX; sometimes the
+    names collide with existing macros.  This package solves the
+    name clashes by adding a prefix to e-TeX&#x2019;s commands.  For
+    example, eTeX&#x2019;s <tt>\unexpanded</tt> is provided as
+    <tt>\etex@unexpanded</tt>.
+
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/etexcmds.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/etexcmds.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/05/06 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.1}
+%   \item
+%     Documentation for \cs{ifetex@unexpanded} added.
+%   \item
+%     Catcode section rewritten.
+%   \end{Version}
+%   \begin{Version}{2007/12/12 v1.2}
+%   \item
+%     \cs{etex@expanded} added.
+%   \end{Version}
+%   \begin{Version}{2010/01/28 v1.3}
+%   \item
+%     Compatibility to \hologo{iniTeX} added.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.4}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/02/16 v1.5}
+%   \item
+%     Using \hologo{LuaTeX}'s \texttt{tex.enableprimitives} if available.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

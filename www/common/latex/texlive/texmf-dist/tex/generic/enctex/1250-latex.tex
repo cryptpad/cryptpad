@@ -1,0 +1,72 @@
+
+% You can generate a special cslatex on web2c systems using encTeX. Run:
+
+% tex -ini 1250-latex
+
+% 1250-latex is able to input DOS files in CP 1250 encoding and has the
+% internal encoding in ISO8859-2. Output to .log, .aux, .toc is in
+% CP 1250. This format exactly emulates the cslatex on emTeX system
+% where CP 1250 tcp table was choosen during initex.bat.
+
+\ifx\xprncode\undefined
+   \catcode`\{=1  \catcode`\}=2
+   \errhelp={The TeX binary must be compiled with encTeX patch
+             by Petr Olsak in order to possibility of re-encoding}
+   \errmessage{Sorry, I am not able to generate 1250-latex}
+   \expandafter \endinput
+\else %% The encTeX is detected, OK!
+   \begingroup
+   \catcode`\{=1  \catcode`\}=2 \catcode`\#=6
+   \message{UNIX cslatex with ISO8859-2 internal and CP 1250 input encoding}
+   \def\setcode #1 #2 {\xordcode#1=#2 \xchrcode#2=#1 \xprncode#2=1 }
+   \xordcode"1A="20  % DOS's EOF (^Z) is mapped to space
+   % The DOS's \r (^M) is ignored implicitly, see code texextra.c, line 866
+   %
+   %          1250 il2
+   \setcode   "C1  "C1   % \'A
+   \setcode   "E1  "E1   % \'a
+   \setcode   "C4  "C4   % \"A
+   \setcode   "E4  "E4   % \"a
+   \setcode   "C8  "C8   % \v C
+   \setcode   "E8  "E8   % \v c
+   \setcode   "CF  "CF   % \v D
+   \setcode   "EF  "EF   % \v d
+   \setcode   "C9  "C9   % \'E
+   \setcode   "E9  "E9   % \'e
+   \setcode   "CC  "CC   % \v E
+   \setcode   "EC  "EC   % \v e
+   \setcode   "CD  "CD   % \'I
+   \setcode   "ED  "ED   % \'i
+   \setcode   "C5  "C5   % \'L
+   \setcode   "E5  "E5   % \'l
+   \setcode   "BC  "A5   % \v L
+   \setcode   "BE  "B5   % \v l
+   \setcode   "D2  "D2   % \v N
+   \setcode   "F2  "F2   % \v n
+   \setcode   "D3  "D3   % \'O
+   \setcode   "F3  "F3   % \'o
+   \setcode   "D4  "D4   % \^O
+   \setcode   "F4  "F4   % \^o
+   \setcode   "D6  "D6   % \"O
+   \setcode   "F6  "F6   % \"o
+   \setcode   "C0  "C0   % \'R
+   \setcode   "E0  "E0   % \'r
+   \setcode   "D8  "D8   % \v R
+   \setcode   "F8  "F8   % \v r
+   \setcode   "8A  "A9   % \v S
+   \setcode   "9A  "B9   % \v s
+   \setcode   "8D  "AB   % \v T
+   \setcode   "9D  "BB   % \v t
+   \setcode   "DA  "DA   % \'U
+   \setcode   "FA  "FA   % \'u
+   \setcode   "D9  "D9   % \r U
+   \setcode   "F9  "F9   % \r u
+   \setcode   "DC  "DC   % \"U
+   \setcode   "FC  "FC   % \"u
+   \setcode   "DD  "DD   % \'Y
+   \setcode   "FD  "FD   % \'y
+   \setcode   "8E  "AE   % \v Z
+   \setcode   "9E  "BE   % \v z
+   \endgroup
+\fi
+\input latex.ltx

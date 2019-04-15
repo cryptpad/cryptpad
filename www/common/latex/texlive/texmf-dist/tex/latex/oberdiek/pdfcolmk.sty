@@ -1,0 +1,483 @@
+%%
+%% This is file `pdfcolmk.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pdfcolmk.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pdfcolmk
+%% Version: 2008/08/11 v1.2
+%% 
+%% Copyright (C) 2000, 2005-2008 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pdfcolmk.dtx
+%% and the derived files
+%%    pdfcolmk.sty, pdfcolmk.pdf, pdfcolmk.ins, pdfcolmk.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdfcolmk}%
+  [2008/08/11 v1.2 Color support for pdfTeX via marks (HO)]
+\@ifundefined{ver@pdftex.def}{%
+  \PackageWarningNoLine{pdfcolmk}{%
+    Nothing to fix, because \string`pdftex.def\string' not loaded%
+  }%
+  \endinput
+}{}
+\@ifpackageloaded{color}{}{%
+  \PackageWarningNoLine{pdfcolmk}{%
+    Nothing to fix, because \string`color.sty\string' not loaded%
+  }%
+  \endinput
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname main@pdfcolorstack\endcsname\relax
+\else
+  % pdftex.def >= 2007/01/01 0.04a and pdfTeX >= 1.40.0
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{pdfcolmk}{%
+      The color stack of pdfTeX \string>\string= 1.40 is used. %
+      Therefore\MessageBreak
+      this package is not necessary and not loaded%
+    }%
+  \endgroup
+  \expandafter\endinput
+\fi
+
+\PackageInfo{pdfcolmk}{%
+  This package tries to simulate dvips's color stack\MessageBreak
+  for pdfTeX based on a mark register of e-TeX.\MessageBreak
+  It redefines LaTeX's output routine. Therefore\MessageBreak
+  use with care, no warranties%
+}
+
+\ifx\marks\@undefined
+
+  \let\pec@mark\mark
+  \let\pec@value\empty
+  \long\def\mark#1{%
+    \protected@xdef\pec@value{#1}%
+    \pec@setmark
+  }%
+  \def\pec@setmark{%
+    \begingroup
+      \@temptokena\expandafter{\pec@value}%
+      \pec@mark{{\current@color}\the\@temptokena}%
+    \endgroup
+  }%
+  \def\pec@getmark{%
+    \xdef\pec@botcolor{%
+      \expandafter\@firstofthree\botmark\@empty\@empty\@empty
+    }%
+  }%
+  \long\def\@firstofthree#1#2#3{#1}%
+  \CheckCommand{\@leftmark}[2]{#1}%
+  \CheckCommand{\@rightmark}[2]{#2}%
+  \CheckCommand*{\leftmark}{%
+    \expandafter\@leftmark\botmark\@empty\@empty
+  }%
+  \CheckCommand*{\rightmark}{%
+    \expandafter\@rightmark\firstmark\@empty\@empty
+  }%
+  \long\def\@leftmark#1#2#3{#2}%
+  \long\def\@rightmark#1#2#3{#3}%
+  \g@addto@macro\leftmark\@empty
+  \g@addto@macro\rightmark\@empty
+
+\else
+
+  \RequirePackage{etex}[1998/03/26]%
+  \newmarks\pec@marks
+  \def\pec@setmark{\marks\pec@marks{\current@color}}%
+  \def\pec@getmark{\xdef\pec@botcolor{\botmarks\pec@marks}}%
+
+\fi
+\chardef\pec@result\z@
+\def\pec@temp#1{%
+  \chardef\pec@result\@ne
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{pdfcolmk}{%
+      Patch for \string\@addmarginpar\space applied (#1)%
+    }%
+  \endgroup
+}
+\def\pec@addmarginpar{%
+  \@next\@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \@tempcnta\@ne
+  \if@twocolumn
+    \if@firstcolumn
+      \@tempcnta\m@ne
+    \fi
+  \else
+    \if@mparswitch
+      \ifodd\c@page
+      \else
+        \@tempcnta\m@ne
+      \fi
+    \fi
+    \if@reversemargin \@tempcnta -\@tempcnta \fi
+  \fi
+  \ifnum\@tempcnta <\z@  \global\setbox\@marbox\box\@currbox \fi
+  \@tempdima\@mparbottom
+  \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+    \@latex@warning@no@line{Marginpar on page \thepage\space moved}%
+  \else
+    \@tempdima\z@
+  \fi
+  \global\@mparbottom\@pageht
+  \global\advance\@mparbottom\@tempdima
+  \global\advance\@mparbottom\dp\@marbox
+  \global\advance\@mparbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\setbox\@marbox\vbox{%
+    \vskip \@tempdima
+    \box \@marbox
+  }%
+  \global \ht\@marbox \z@
+  \global \dp\@marbox \z@
+  \kern -\@pagedp
+  \nointerlineskip
+  \hb@xt@\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \box\@marbox \hss
+  }%
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{latex/base}%
+\fi
+\def\pec@addmarginpar{%
+  \checkoddpage
+  \@next\@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \@tempcnta\@ne
+  \if@twocolumn
+    \if@firstcolumn
+      \@tempcnta\m@ne
+    \fi
+  \else
+    \if@mparswitch
+      \ifoddpage
+      \else
+        \@tempcnta\m@ne
+      \fi
+    \fi
+    \if@reversemargin
+      \@tempcnta -\@tempcnta
+    \fi
+  \fi
+  \ifnum\@tempcnta <\z@
+    \global\setbox\@marbox\box\@currbox
+  \fi
+  \@tempdima\@mparbottom
+  \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+    \@latex@warning@no@line{%
+      Marginpar on page \thepage\space moved by \the\@tempdima
+    }%
+  \else
+    \@tempdima\z@
+  \fi
+  \global\@mparbottom\@pageht
+  \global\advance\@mparbottom\@tempdima
+  \global\advance\@mparbottom\dp\@marbox
+  \global\advance\@mparbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\setbox\@marbox\vbox{%
+    \vskip \@tempdima
+    \box \@marbox
+  }%
+  \global \ht\@marbox \z@
+  \global \dp\@marbox \z@
+  \kern -\@pagedp
+  \nointerlineskip
+  \hb@xt@\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \box\@marbox
+    \hss
+  }%
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}%
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{memoir.cls}%
+\fi
+\def\pec@addmarginpar{%
+  \@next \@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \global\advance\@mpar@count\m@ne
+  \@ifundefined{@marn@\the\@mpar@count @}{% was location logged last time?
+    \@tempcnta\@ne % NO: use original LaTeX logic
+    \if@twocolumn
+      \if@firstcolumn
+        \@tempcnta\m@ne
+      \fi
+    \else
+      \if@mparswitch
+        \ifodd\c@page
+        \else
+          \@tempcnta\m@ne
+        \fi
+      \fi
+      \if@reversemargin
+        \@tempcnta -\@tempcnta
+      \fi
+    \fi
+  }{%
+    \@tempcnta %    YES: use record from last time to decide side.
+    \@nameuse{@marn@\the\@mpar@count @}%
+    \if@reversemargin -\fi \@ne
+  }%
+  \ifnum\@tempcnta <\z@
+    \global\setbox\@marbox\box\@currbox
+    \global\let\@marnbottom\@mparbottoml
+  \else
+    \global\let\@marnbottom\@mparbottom
+  \fi
+  \@tempdima\@marnbottom \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+    \@@warning{Marginpar on page \thepage\space moved}%
+  \else
+    \@tempdima\z@
+  \fi
+  \global\@marnbottom\@pageht
+  \global\advance\@marnbottom\@tempdima
+  \global\advance\@marnbottom\dp\@marbox
+  \global\advance\@marnbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\ht\@marbox\z@
+  \global\dp\@marbox\z@
+  \vskip -\@pagedp
+  \vskip\@tempdima\nointerlineskip
+  \hbox to\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \if@filesw % record where this is for use next time:
+       \@marn@log\@mpar@count
+    \fi
+    \box\@marbox
+    \hss
+  }%
+  \nobreak   %% RmS 91/06/21 \nobreak added
+  \vskip -\@tempdima
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{poemscol/(new)marn.sty}%
+\fi
+\def\pec@addmarginpar{%
+  \@next\@marbox\@currlist{%
+    \@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox
+  }\@latexbug
+  \@tempcnta\@ne
+  \if@twocolumn
+    \if@firstcolumn
+      \@tempcnta\m@ne
+    \fi
+  \else
+    \@tempcnta\m@ne
+  \fi
+  \ifnum\@tempcnta <\z@
+    \global\setbox\@marbox\box\@currbox
+  \fi
+  \@tempdima\@mparbottom
+  \advance\@tempdima -\@pageht
+  \advance\@tempdima\ht\@marbox
+  \ifdim\@tempdima >\z@
+     \@@warning{Marginpar on page \thepage\space moved}%
+  \else
+     \@tempdima\z@
+  \fi
+  \global\@mparbottom\@pageht
+  \global\advance\@mparbottom\@tempdima
+  \global\advance\@mparbottom\dp\@marbox
+  \global\advance\@mparbottom\marginparpush
+  \advance\@tempdima -\ht\@marbox
+  \global\setbox\@marbox\vbox{%
+    \vskip \@tempdima \box \@marbox
+  }%
+  \global \ht\@marbox \z@
+  \global \dp\@marbox \z@
+  \kern -\@pagedp
+  \nointerlineskip
+  \hb@xt@\columnwidth{%
+    \ifnum \@tempcnta >\z@
+      \hskip\columnwidth
+      \hskip\marginparsep
+    \else
+      \hskip -\marginparsep
+      \hskip -\marginparwidth
+    \fi
+    \box\@marbox
+    \hss
+  }%
+  \nointerlineskip
+  \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}%
+}
+\ifx\pec@addmarginpar\@addmarginpar
+  \pec@temp{ref(art|rep).cls}%
+\fi
+
+\ifcase\pec@result
+  \PackageInfo{pdfcolmk}{%
+    Fix for \string\@addmarginpar\space is omitted, %
+    because this variant\MessageBreak
+    of \string\@addmarginpar\space
+      is not recognized%
+  }%
+\else
+  % apply patch for \@addmarginpar
+  \def\pec@PatchAddMarginpar#1\columnwidth#2#3\@nil{%
+    \pec@PatchAddMarginparI#2\@nil{#1}{#3}%
+  }%
+  \def\pec@PatchAddMarginparI#1\box\@marbox\hss#2\@nil#3#4{%
+    \def\@addmarginpar{%
+      #3%
+      \columnwidth{%
+        #1%
+        \pdfliteral{q}%
+        \rlap{%
+          \box\@marbox
+        }%
+        \pdfliteral{Q}%
+        \hss
+        #2%
+      }%
+      #4%
+    }%
+  }%
+  \expandafter\pec@PatchAddMarginpar\@addmarginpar\@nil
+\fi
+\def\set@color{%
+  \pdfliteral{\current@color}%
+  \ifinner
+  \else
+    \pec@setmark
+  \fi
+  \aftergroup\reset@color
+}
+\def\reset@color{%
+  \pdfliteral{\current@color}%
+  \ifinner
+  \else
+    \pec@setmark
+  \fi
+}
+
+\let\pec@botcolor\current@color
+
+\def\pec@PatchVBoxCCLV{%
+  \ifx\pec@botcolor\@empty
+  \else
+    \setbox\@cclv\vbox{%
+      \pdfliteral{\pec@botcolor}%
+      \unvbox\@cclv
+    }%
+  \fi
+  \pec@getmark
+}
+
+\def\pec@PatchAlreadyInBox{%
+  \ifx\pec@botcolor\@empty
+  \else
+    \pdfliteral{\pec@botcolor}%
+  \fi
+  \pec@getmark
+}
+
+\@ifclassloaded{memoir}{%
+  \expandafter\def\expandafter\mem@makecol\expandafter{%
+    \expandafter\pec@PatchVBoxCCLV
+    \mem@makecol
+  }%
+  \endinput
+}{}
+
+\@ifclassloaded{seminar}{%
+  \newcommand\pec@org@makeslide{}%
+  \let\pec@org@makeslide\@makeslide
+  \def\@makeslide{%
+    \pec@PatchVBoxCCLV
+    \pec@org@makeslide
+  }%
+  \endinput
+}{}
+
+\long\def\pec@output#1\@specialoutput\else#2\pec@end{%
+  \begingroup
+    \def\x{#2}%
+  \expandafter\endgroup
+  \ifx\x\@empty
+    \PackageWarningNoLine{pdfcolmk}{%
+      Unexpected \string\output\space routine detected,%
+      \MessageBreak
+      loading of package stopped%
+    }%
+    \expandafter\endinput
+  \fi
+}
+\expandafter\expandafter\expandafter\pec@output
+\expandafter\@firstofone\the\output\@specialoutput\else\pec@end
+
+\long\def\pec@output#1\@specialoutput\else#2\pec@end{%
+  \output{%
+    #1\@specialoutput\else
+    \pec@PatchVBoxCCLV
+    #2%
+  }%
+}
+\expandafter\expandafter\expandafter\pec@output
+\expandafter\@firstofone\the\output\pec@end
+\endinput
+%%
+%% End of file `pdfcolmk.sty'.

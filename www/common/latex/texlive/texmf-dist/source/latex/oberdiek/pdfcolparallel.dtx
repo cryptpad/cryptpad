@@ -1,0 +1,1154 @@
+% \iffalse meta-comment
+%
+% File: pdfcolparallel.dtx
+% Version: 2010/01/11 v1.3
+% Info: Color stacks support for parallel
+%
+% Copyright (C) 2007, 2008, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pdfcolparallel.dtx
+% and the derived files
+%    pdfcolparallel.sty, pdfcolparallel.pdf, pdfcolparallel.ins,
+%    pdfcolparallel.drv, pdfcolparallel-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfcolparallel.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfcolparallel.pdf
+%
+% Unpacking:
+%    (a) If pdfcolparallel.ins is present:
+%           tex pdfcolparallel.ins
+%    (b) Without pdfcolparallel.ins:
+%           tex pdfcolparallel.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfcolparallel.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfcolparallel.drv is present:
+%           latex pdfcolparallel.drv
+%    (b) Without pdfcolparallel.drv:
+%           latex pdfcolparallel.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfcolparallel.dtx
+%       makeindex -s gind.ist pdfcolparallel.idx
+%       pdflatex pdfcolparallel.dtx
+%       makeindex -s gind.ist pdfcolparallel.idx
+%       pdflatex pdfcolparallel.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pdfcolparallel.sty
+%    TDS:doc/latex/oberdiek/pdfcolparallel.pdf
+%    TDS:doc/latex/oberdiek/test/pdfcolparallel-test1.tex
+%    TDS:source/latex/oberdiek/pdfcolparallel.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfcolparallel 2010/01/11 v1.3 Color stacks support for parallel (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfcolparallel
+Version: 2010/01/11 v1.3
+
+Copyright (C) 2007, 2008, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pdfcolparallel.dtx
+and the derived files
+   pdfcolparallel.sty, pdfcolparallel.pdf, pdfcolparallel.ins,
+   pdfcolparallel.drv, pdfcolparallel-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfcolparallel.ins}{\from{pdfcolparallel.dtx}{install}}%
+  \file{pdfcolparallel.drv}{\from{pdfcolparallel.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pdfcolparallel.sty}{\from{pdfcolparallel.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdfcolparallel-test1.tex}{\from{pdfcolparallel.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfcolparallel.xml}{\from{pdfcolparallel.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfcolparallel.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfcolparallel.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfcolparallel.drv}%
+  [2010/01/11 v1.3 Color stacks support for parallel (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pdfcolparallel.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{763}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfcolparallel.drv}
+%
+% \title{The \xpackage{pdfcolparallel} package}
+% \date{2010/01/11 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This packages fixes bugs in \xpackage{parallel} and
+% improves color support by using several color stacks
+% that are provided by \pdfTeX\ since version 1.40.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Usage}
+%
+% \begin{quote}
+% |\usepackage{pdfcolparallel}|
+% \end{quote}
+% The package \xpackage{pdfcolparallel} loads package \xpackage{parallel}
+% \cite{parallel} and redefines some macros to fix bugs.
+%
+% If color stacks are available then package \xpackage{parallel}
+% is further patched to support them.
+%
+% \subsection{Option \xoption{rulebetweencolor}}
+%
+% Package \xpackage{pdfcolparallel} also fixes the color for the
+% rule between columns.
+% Default color is \cs{normalcolor}. But this can be changed by using
+% option \xoption{rulebetweencolor} for |\setkeys{parallel}|
+% (see package \xpackage{keyval}). The option takes a color specification
+% as value. If the value is empty, then the default (\cs{normalcolor})
+% is used.
+% Examples:
+% \begin{quote}
+%   |\setkeys{parallel}{rulebetweencolor=blue}|,\\
+%   |\setkeys{parallel}{rulebetweencolor={red}}|,\\
+%   |\setkeys{parallel}{rulebetweencolor={}}|,
+%     \textit{\% \cs{normalcolor} is used}\\
+%   |\setkeys{parallel}{rulebetweencolor=[rgb]{1,0,.5}}|
+% \end{quote}
+%
+% \subsection{Future}
+%
+% If there will be a new version of package \xpackage{parallel}
+% that adds support for color stacks, then this package may become
+% obsolete.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdfcolparallel}%
+  [2010/01/11 v1.3 Color stacks support for parallel (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Load and fix package \xpackage{parallel}}
+%
+%    Package \xpackage{parallel} is loaded. Before options of package
+%    \xpackage{pdfcolparallel} are passed to package \xpackage{parallel}.
+%    \begin{macrocode}
+\DeclareOption*{%
+  \PassoptionsToPackage{\CurrentOption}{parallel}%
+}
+\ProcessOptions\relax
+\RequirePackage{parallel}[2003/04/13]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{infwarerr}[2007/09/09]
+%    \end{macrocode}
+%
+%    \begin{macro}{\pcp@ColorPatch}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+  \def\pcp@ColorPatch{}%
+\else
+  \def\pcp@ColorPatch{%
+    \@ifundefined{set@color}{%
+      \gdef\pcp@ColorPatch{}%
+    }{%
+      \gdef\pcp@ColorPatch{%
+        \gdef\pcp@ColorResets{}%
+        \bgroup
+        \aftergroup\pcp@ColorResets
+        \aftergroup\egroup
+        \let\pcp@OrgSetColor\set@color
+        \let\set@color\pcp@SetColor
+        \edef\pcp@GroupLevel{\the\currentgrouplevel}%
+      }%
+    }%
+    \pcp@ColorPatch
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcp@SetColor}
+%    \begin{macrocode}
+  \def\pcp@SetColor{%
+    \ifnum\pcp@GroupLevel=\currentgrouplevel
+      \let\pcp@OrgAfterGroup\aftergroup
+      \def\aftergroup{%
+        \g@addto@macro\pcp@ColorResets
+      }%
+      \pcp@OrgSetColor
+      \let\aftergroup\pcp@OrgAfterGroup
+    \else
+      \pcp@OrgSetColor
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pcp@CmdCheckRedef}
+%    \begin{macrocode}
+\def\pcp@CmdCheckRedef#1{%
+  \begingroup
+    \def\pcp@cmd{#1}%
+    \afterassignment\pcp@CmdDo
+    \long\def\reserved@a
+}
+\def\pcp@CmdDo{%
+    \expandafter\ifx\pcp@cmd\reserved@a
+    \else
+      \edef\x*{\expandafter\string\pcp@cmd}%
+      \@PackageWarningNoLine{pdfcolparallel}{%
+        Command \x* has changed.\MessageBreak
+        Supported versions of package `parallel':\MessageBreak
+        \space\space 2003/04/13\MessageBreak
+        The redefinition of \x* may\MessageBreak
+        not behave correctly depending on the changes%
+      }%
+    \fi
+  \expandafter\endgroup
+  \expandafter\def\pcp@cmd
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\pcp@SwitchStack#1#2{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\pcp@SetCurrent#1{}
+%    \end{macrocode}
+%
+%    \begin{macro}{\ParallelLText}
+%    \begin{macrocode}
+\pcp@CmdCheckRedef\ParallelLText{%
+  \everypar{}%
+  \@restorepar
+  \begingroup
+    \hbadness=3000 %
+    \let\footnote=\ParallelLFootnote
+    \ParallelWhichBox=0 %
+    \global\setbox\ParallelLBox=\vbox\bgroup
+      \hsize=\ParallelLWidth
+      \aftergroup\ParallelAfterText
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}{%
+  \everypar{}%
+  \@restorepar
+  \@nobreakfalse
+  \begingroup
+    \hbadness=3000 %
+    \let\footnote=\ParallelLFootnote
+    \ParallelWhichBox=0 %
+    \global\setbox\ParallelLBox=\vbox\bgroup
+      \hsize=\ParallelLWidth
+      \linewidth=\ParallelLWidth
+      \pcp@SwitchStack{Left}\ParallelLBox
+      \aftergroup\ParallelAfterText
+      \pcp@ColorPatch
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ParallelRText}
+%    \begin{macrocode}
+\pcp@CmdCheckRedef\ParallelRText{%
+  \everypar{}%
+  \@restorepar
+  \begingroup
+    \hbadness=3000 %
+    \ifnum\ParallelFNMode=\@ne
+      \let\footnote=\ParallelRFootnote
+    \else
+      \let\footnote=\ParallelLFootnote
+    \fi
+    \ParallelWhichBox=\@ne
+    \global\setbox\ParallelRBox=\vbox\bgroup
+      \hsize=\ParallelRWidth
+      \aftergroup\ParallelAfterText
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}{%
+  \everypar{}%
+  \@restorepar
+  \@nobreakfalse
+  \begingroup
+    \hbadness=3000 %
+    \ifnum\ParallelFNMode=\@ne
+      \let\footnote=\ParallelRFootnote
+    \else
+      \let\footnote=\ParallelLFootnote
+    \fi
+    \ParallelWhichBox=\@ne
+    \global\setbox\ParallelRBox=\vbox\bgroup
+      \hsize=\ParallelRWidth
+      \linewidth=\ParallelRWidth
+      \pcp@SwitchStack{Right}\ParallelRBox
+      \aftergroup\ParallelAfterText
+      \pcp@ColorPatch
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ParallelParTwoPages}
+%    \begin{macrocode}
+\pcp@CmdCheckRedef\ParallelParTwoPages{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \global\ParallelWhichBox=\@ne
+      \newpage
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop%
+        \ifnum\ParallelBoolVar=\@ne%
+          \ifnum\ParallelWhichBox=\@ne
+            \ifvoid\ParallelLBox
+              \mbox{} %
+              \newpage
+            \else
+              \global\ParallelWhichBox=\z@
+            \fi
+          \else
+            \ifvoid\ParallelRBox
+              \mbox{} %
+              \newpage
+            \else
+              \global\ParallelWhichBox=\@ne
+            \fi
+          \fi
+          \ifnum\ParallelWhichBox=\z@
+            \ifodd\thepage
+              \mbox{} %
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \vbox{\vsplit\ParallelLBox to.98\textheight}%
+            }%
+          \else
+            \ifodd\thepage\relax
+            \else
+              \mbox{} %
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \vbox{\vsplit\ParallelRBox to.98\textheight}%
+            }%
+          \fi
+          \vspace*{\fill}%
+          \newpage
+        \fi
+        \ifvoid\ParallelLBox
+          \ifvoid\ParallelRBox
+            \global\ParallelBoolVar=\z@
+          \fi
+        \fi
+      \ifnum\ParallelBoolVar=\@ne
+      \repeat
+      \par
+    \endgroup
+  \fi
+}{%
+%    \end{macrocode}
+%    Additional fixes:
+%    \begin{itemize}
+%    \item Unnecessary white space removed.
+%    \item |\ifodd\thepage| changed to |\ifodd\value{page}|.
+%    \end{itemize}
+%    \begin{macrocode}
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \global\ParallelWhichBox=\@ne
+      \newpage
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop%
+        \ifnum\ParallelBoolVar=\@ne%
+          \ifnum\ParallelWhichBox=\@ne
+            \ifvoid\ParallelLBox
+              \mbox{}%
+              \newpage
+            \else
+              \global\ParallelWhichBox=\z@
+            \fi
+          \else
+            \ifvoid\ParallelRBox
+              \null
+              \newpage
+            \else
+              \global\ParallelWhichBox=\@ne
+            \fi
+          \fi
+          \ifnum\ParallelWhichBox=\z@
+            \ifodd\value{page}%
+              \null
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \pcp@SetCurrent{Left}%
+              \setbox\z@=\vsplit\ParallelLBox to.98\textheight
+              \vbox to.98\textheight{%
+                \@texttop
+                \unvbox\z@
+                \@textbottom
+              }%
+            }%
+          \else
+            \ifodd\value{page}%
+            \else
+              \mbox{}%
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \pcp@SetCurrent{Right}%
+              \setbox\z@=\vsplit\ParallelRBox to.98\textheight
+              \vbox to.98\textheight{%
+                \@texttop
+                \unvbox\z@
+                \@textbottom
+              }%
+            }%
+          \fi
+          \vspace*{\fill}%
+          \newpage
+        \fi
+        \ifvoid\ParallelLBox
+          \ifvoid\ParallelRBox
+            \global\ParallelBoolVar=\z@
+          \fi
+        \fi
+      \ifnum\ParallelBoolVar=\@ne
+      \repeat
+      \par
+    \endgroup
+    \pcp@SetCurrent{}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Color stack support}
+%
+%    \begin{macrocode}
+\RequirePackage{pdfcol}[2007/12/12]
+\ifpdfcolAvailable
+\else
+  \PackageInfo{pdfcolparallel}{%
+    Loading aborted, because color stacks are not available%
+  }%
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\pdfcolInitStack{pcp@Left}
+\pdfcolInitStack{pcp@Right}
+%    \end{macrocode}
+%    \begin{macro}{\pcp@Box}
+%    \begin{macrocode}
+\newbox\pcp@Box
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcp@SwitchStack}
+%    \begin{macrocode}
+\def\pcp@SwitchStack#1#2{%
+  \pdfcolSwitchStack{pcp@#1}%
+  \global\setbox\pcp@Box=\vbox to 0pt{%
+    \pdfcolSetCurrentColor
+  }%
+  \aftergroup\pcp@FixBox
+  \aftergroup#2%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcp@FixBox}
+%    \begin{macrocode}
+\def\pcp@FixBox#1{%
+  \global\setbox#1=\vbox{%
+    \unvbox\pcp@Box
+    \unvbox#1%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcp@SetCurrent}
+%    \begin{macrocode}
+\def\pcp@SetCurrent#1{%
+  \ifx\\#1\\%
+    \pdfcolSetCurrent{}%
+  \else
+    \pdfcolSetCurrent{pcp@#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Redefinitions}
+%
+%    \begin{macro}{\ParallelParOnePage}
+%    \begin{macrocode}
+\pcp@CmdCheckRedef\ParallelParOnePage{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \leftmargin=\z@
+      \rightmargin=\z@
+      \parskip=\z@skip
+      \parindent=\z@
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop
+        \ifnum\ParallelBoolVar=\@ne
+          \noindent
+          \hbox to\textwidth{%
+            \hskip\ParallelLeftMargin
+            \hbox to\ParallelTextWidth{%
+              \ifvoid\ParallelLBox
+                \hskip\ParallelLWidth
+              \else
+                \ParallelWhichBox=\z@
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelLBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+              \strut
+              \ifnum\ParallelBoolMid=\@ne
+                \hskip\ParallelMainMidSkip
+                \vrule
+              \else
+                \hss
+              \fi
+              \hss
+              \ifvoid\ParallelRBox
+                \hskip\ParallelRWidth
+              \else
+                \ParallelWhichBox=\@ne
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelRBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+            }%
+          }%
+          \ifvoid\ParallelLBox
+            \ifvoid\ParallelRBox
+              \global\ParallelBoolVar=\z@
+            \fi
+          \fi%
+        \fi%
+      \ifnum\ParallelBoolVar=\@ne
+        \penalty\interlinepenalty
+      \repeat
+      \par
+    \endgroup
+  \fi
+}{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \leftmargin=\z@
+      \rightmargin=\z@
+      \parskip=\z@skip
+      \parindent=\z@
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop
+        \ifnum\ParallelBoolVar=\@ne
+          \noindent
+          \hbox to\textwidth{%
+            \hskip\ParallelLeftMargin
+            \hbox to\ParallelTextWidth{%
+              \ifvoid\ParallelLBox
+                \hskip\ParallelLWidth
+              \else
+                \pcp@SetCurrent{Left}%
+                \ParallelWhichBox=\z@
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelLBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+              \strut
+              \ifnum\ParallelBoolMid=\@ne
+                \hskip\ParallelMainMidSkip
+                \begingroup
+                  \pcp@RuleBetweenColor
+                  \vrule
+                \endgroup
+              \else
+                \hss
+              \fi
+              \hss
+              \ifvoid\ParallelRBox
+                \hskip\ParallelRWidth
+              \else
+                \pcp@SetCurrent{Right}%
+                \ParallelWhichBox=\@ne
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelRBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+            }%
+          }%
+          \ifvoid\ParallelLBox
+            \ifvoid\ParallelRBox
+              \global\ParallelBoolVar=\z@
+            \fi
+          \fi%
+        \fi%
+      \ifnum\ParallelBoolVar=\@ne
+        \penalty\interlinepenalty
+      \repeat
+      \par
+    \endgroup
+    \pcp@SetCurrent{}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcp@RuleBetweenColorDefault}
+%    \begin{macrocode}
+\def\pcp@RuleBetweenColorDefault{%
+  \normalcolor
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pcp@RuleBetweenColor}
+%    \begin{macrocode}
+\let\pcp@RuleBetweenColor\pcp@RuleBetweenColorDefault
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\RequirePackage{keyval}
+\define@key{parallel}{rulebetweencolor}{%
+  \edef\pcp@temp{#1}%
+  \ifx\pcp@temp\@empty
+    \let\pcp@RuleBetweenColor\pcp@RuleBetweenColorDefault
+  \else
+    \edef\pcp@temp{%
+      \noexpand\@ifnextchar[{%
+        \def\noexpand\pcp@RuleBetweenColor{%
+          \noexpand\color\pcp@temp
+        }%
+        \noexpand\pcp@GobbleNil
+      }{%
+        \def\noexpand\pcp@RuleBetweenColor{%
+          \noexpand\color{\pcp@temp}%
+        }%
+        \noexpand\pcp@GobbleNil
+      }%
+      \pcp@temp\noexpand\@nil
+    }%
+    \pcp@temp
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\pcp@GobbleNil}
+%    \begin{macrocode}
+\long\def\pcp@GobbleNil#1\@nil{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    The test file is a modified version of the file that
+%    Alexander Hirsch has posted in \xnewsgroup{de.comp.text.tex}:
+%    \URL{``\link{\texttt{parallel.sty} und farbiger Text}''}^^A
+%    {http://groups.google.com/group/de.comp.text.tex/msg/6a759cf33bb071a5}
+%    \begin{macrocode}
+%<*test1>
+\AtEndDocument{%
+  \typeout{}%
+  \typeout{**************************************}%
+  \typeout{*** \space Check the PDF file manually! \space ***}%
+  \typeout{**************************************}%
+  \typeout{}%
+}
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{pdfcolparallel}[2010/01/11]
+
+\begin{document}
+  \color{green}%
+  Green%
+  \begin{Parallel}{0.47\textwidth}{0.47\textwidth}%
+    \ParallelLText{%
+      \textcolor{red}{%
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll.%
+      }%
+    }%
+    \ParallelRText{%
+      \textcolor{blue}{%
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll.%
+      }%
+    }%
+    \ParallelPar
+    \ParallelLText{%
+      Default %
+      \color{red}%
+      Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+      Ein Absatz, der sich ueber zwei Zeilen erstrecken soll.%
+    }%
+    \ParallelRText{%
+      Default %
+      \color{blue}%
+      Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+      Ein Absatz, der sich ueber zwei Zeilen erstrecken soll.%
+    }%
+    \ParallelPar
+    \ParallelLText{%
+      \begin{enumerate}%
+      \item left text, left text, left text, left text, %
+            left text, left text, left text, left text,%
+      \item left text, left text, left text, left text, %
+            left text, left text, left text, left text.%
+      \end{enumerate}%
+    }%
+    \ParallelRText{%
+      \begin{enumerate}%
+      \item right text, right text, right text, right text, %
+            right text, right text, right text, right text.%
+      \item right text, right text, right text, right text, %
+            right text, right text, right text, right text.%
+      \end{enumerate}%
+    }%
+  \end{Parallel}%
+  \begin{Parallel}[p]{\textwidth}{\textwidth}%
+    \ParallelLText{%
+      \textcolor{red}{%
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+        Foo bar bla bla bla.%
+      }%
+      \par
+      Und noch ein Absatz.%
+    }%
+    \ParallelRText{%
+      \textcolor{blue}{%
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+        Ein Absatz, der sich ueber zwei Zeilen erstrecken soll. %
+        Foo bar bla bla bla.%
+      }%
+    }%
+  \end{Parallel}%
+  \begin{Parallel}[p]{\textwidth}{\textwidth}%
+    \ParallelLText{%
+      \rule{1pt}{.98\textheight}\Huge g%
+    }%
+    \ParallelRText{%
+      \rule{1pt}{.98\textheight}y%
+    }%
+  \end{Parallel}%
+  Green%
+\end{document}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcolparallel.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcolparallel.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfcolparallel.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfcolparallel.sty & tex/latex/oberdiek/pdfcolparallel.sty\\
+%   pdfcolparallel.pdf & doc/latex/oberdiek/pdfcolparallel.pdf\\
+%   test/pdfcolparallel-test1.tex & doc/latex/oberdiek/test/pdfcolparallel-test1.tex\\
+%   pdfcolparallel.dtx & source/latex/oberdiek/pdfcolparallel.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfcolparallel.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfcolparallel.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfcolparallel.dtx
+%makeindex -s gind.ist pdfcolparallel.idx
+%pdflatex pdfcolparallel.dtx
+%makeindex -s gind.ist pdfcolparallel.idx
+%pdflatex pdfcolparallel.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfcolparallel.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcolparallel'>
+  <name>pdfcolparallel</name>
+  <caption>Fix colour problems in package 'parallel'.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    Since version 1.40 pdfTeX supports colour stacks.
+    This package uses them to fix colour problems in
+    package <xref refid='parallel'>parallel</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcolparallel.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcolparallel.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{parallel}
+%   Matthias Eckermann: \textit{The \xpackage{parallel}-package};
+%   2003/04/13;\\
+%   \CTAN{macros/latex/contrib/parallel/}.
+%
+% \bibitem{pdfcol}
+%   Heiko Oberdiek: \textit{The \xpackage{pdfcol} package};
+%   2007/09/09;\\
+%   \CTAN{macros/latex/contrib/oberdiek/pdfcol.pdf}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/09/09 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/12/12 v1.1}
+%   \item
+%     Adds patch for setting \cs{linewidth} to fix bug
+%     in package \xpackage{parallel}.
+%   \item
+%     Package \xpackage{parallel} is also fixed if color
+%     stacks are not available.
+%   \item
+%     Bug fix, switched stacks now initialized with current color.
+%   \item
+%     Fix for package \xpackage{parallel}: \cs{raggedbottom} is respected.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.2}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2010/01/11 v1.3}
+%   \item
+%     Option `rulebetweencolor' added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

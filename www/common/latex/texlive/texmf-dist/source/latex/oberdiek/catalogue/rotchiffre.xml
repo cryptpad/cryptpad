@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='rotchiffre'>
+  <name>rotchiffre</name>
+  <caption>Perform simple rotation cyphers.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    The package defines a command <tt>\EdefRot</tt> that defines a
+    macro (whose name is given as an argument) to the rotation of the
+    given string.  Available rotations are <tt>ROT13</tt> (for
+    letters), <tt>ROT5</tt> (for digits), <tt>ROT18</tt> (for digits
+    and letters together) and <tt>ROT47</tt> (for all ASCII
+    characters).
+    <p/>
+    The package is part of the
+    <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/rotchiffre.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/rotchiffre.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

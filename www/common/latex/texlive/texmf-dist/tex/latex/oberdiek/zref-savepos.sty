@@ -1,0 +1,123 @@
+%%
+%% This is file `zref-savepos.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% zref.dtx  (with options: `savepos')
+%% 
+%% This is a generated file.
+%% 
+%% Project: zref
+%% Version: 2012/04/04 v2.24
+%% 
+%% Copyright (C) 2006-2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file zref.dtx
+%% and the derived files
+%%    zref.sty, zref.pdf, zref.ins, zref.drv, zref-base.sty,
+%%    zref-abspage.sty, zref-abspos.sty, zref-counter.sty,
+%%    zref-dotfill.sty, zref-env.sty, zref-hyperref.sty,
+%%    zref-lastpage.sty, zref-marks.sty, zref-nextpage.sty,
+%%    zref-pageattr.sty, zref-pagelayout.sty, zref-perpage.sty,
+%%    zref-runs.sty, zref-savepos.sty, zref-thepage.sty,
+%%    zref-titleref.sty, zref-totpages.sty, zref-user.sty,
+%%    zref-xr.sty, zref-example.tex, zref-example-lastpage.tex,
+%%    zref-example-nextpage.tex, zref-test1.tex,
+%%    zref-test-base.tex, zref-test-runs.tex,
+%%    zref-test-titleref-memoir.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{zref-savepos}%
+  [2012/04/04 v2.24 Module savepos for zref (HO)]%
+\RequirePackage{zref-base}[2012/04/04]
+\ifx\ZREF@base@ok Y%
+\else
+  \expandafter\endinput
+\fi
+\ltx@IfUndefined{pdfsavepos}{%
+  \PackageError\ZREF@name{%
+    \string\pdfsavepos\space is not supported.\MessageBreak
+    It is provided by pdfTeX (1.40) or XeTeX%
+  }\ZREF@UpdatePdfTeX
+  \endinput
+}{}%
+\RequirePackage{ifpdf}
+\ifpdf
+\else
+  \ltx@IfUndefined{pdftexversion}{%
+  }{%
+    \ifnum\pdftexversion<140 %
+      \PackageError\ZREF@name{%
+        \string\pdfsavepos\space is not supported in DVI mode%
+        \MessageBreak
+        of this pdfTeX version%
+      }\ZREF@UpdatePdfTeX
+      \expandafter\expandafter\expandafter\endinput
+    \fi
+  }%
+\fi
+\zref@newlist{savepos}
+\zref@newprop*{posx}[0]{\the\pdflastxpos}
+\zref@newprop*{posy}[0]{\the\pdflastypos}
+\zref@addprops{savepos}{posx,posy}
+\def\zref@savepos{%
+  \if@filesw
+    \pdfsavepos
+  \fi
+}
+\def\ZREF@zsavepos#1#2#3{%
+  \@bsphack
+  \if@filesw
+    \zref@savepos
+    #1{#3}{#2}%
+    \ltx@IfUndefined{TeXXeTstate}{%
+    }{%
+      \ifnum\TeXXeTstate=\ltx@zero
+      \else
+        \zref@savepos
+      \fi
+    }%
+  \fi
+  \@esphack
+}
+\ZREF@IfDefinable\zsavepos\def{%
+  {%
+    \ZREF@zsavepos\zref@labelbylist{savepos}%
+  }%
+}
+\ZREF@IfDefinable\zsaveposx\def{%
+  {%
+    \ZREF@zsavepos\zref@labelbyprops{posx}%
+  }%
+}
+\ZREF@IfDefinable\zsaveposy\def{%
+  {%
+    \ZREF@zsavepos\zref@labelbyprops{posy}%
+  }%
+}
+\newcommand*{\zposx}[1]{%
+  \zref@extract{#1}{posx}%
+}%
+\newcommand*{\zposy}[1]{%
+  \zref@extract{#1}{posy}%
+}%
+\let\ZREF@savepos@ok=Y
+\endinput
+%%
+%% End of file `zref-savepos.sty'.

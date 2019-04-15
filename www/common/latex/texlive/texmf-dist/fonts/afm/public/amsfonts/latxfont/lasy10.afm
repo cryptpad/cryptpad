@@ -1,0 +1,40 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName LASY10
+FullName LASY10
+FamilyName LaTeX
+Weight Medium
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name LASY10.)
+ItalicAngle -14.035
+IsFixedPitch false
+UnderlinePosition 0
+UnderlineThickness 0
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox -19 -192 944 683
+StartCharMetrics 23
+C 1 ; WX 777 ; N a1 ; B 83 -38 694 539 ;
+C 2 ; WX 777 ; N a2 ; B 83 -135 694 636 ;
+C 3 ; WX 777 ; N a3 ; B 83 -38 694 539 ;
+C 4 ; WX 777 ; N a4 ; B 83 -135 694 636 ;
+C 32 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 40 ; WX 333 ; N a40 ; B 56 72 249 428 ;
+C 41 ; WX 333 ; N a41 ; B 85 72 278 428 ;
+C 42 ; WX 500 ; N a42 ; B 72 -192 428 0 ;
+C 43 ; WX 500 ; N a43 ; B 72 0 428 193 ;
+C 48 ; WX 722 ; N a48 ; B 44 -21 678 683 ;
+C 49 ; WX 722 ; N a49 ; B 63 47 659 637 ;
+C 50 ; WX 747 ; N a50 ; B 91 59 656 624 ;
+C 51 ; WX 791 ; N a51 ; B 56 1 736 682 ;
+C 58 ; WX 666 ; N a58 ; B -19 118 687 383 ;
+C 59 ; WX 1000 ; N a59 ; B -19 72 944 428 ;
+C 60 ; WX 777 ; N a60 ; B 94 -38 714 539 ;
+C 61 ; WX 777 ; N a61 ; B 63 -38 683 539 ;
+C 128 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 162 ; WX 777 ; N a1 ; B 83 -38 694 539 ;
+C 163 ; WX 777 ; N a2 ; B 83 -135 694 636 ;
+C 164 ; WX 777 ; N a3 ; B 83 -38 694 539 ;
+C 165 ; WX 777 ; N a4 ; B 83 -135 694 636 ;
+C 195 ; WX 333 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+EndFontMetrics

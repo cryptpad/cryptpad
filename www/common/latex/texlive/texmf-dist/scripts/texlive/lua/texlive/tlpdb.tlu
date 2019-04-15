@@ -1,0 +1,259 @@
+#! /usr/bin/env texlua
+-- texlive/tlpdb.tlu
+-- $Id: tlpdb.tlu 17011 2010-02-14 14:24:05Z mpg $
+-- 
+-- Copyright (C) 2008 Norbert Preining
+-- This file is licensed under the GNU General Public License version 2
+-- or any later version.
+--
+-- TODO: tag evaluation of docfiles lines ...
+-- 
+-- providing the tlpdb as a lua table
+--
+-- format
+--  tlpobj = tlpdb[packagename]
+--  tlpobj.name string
+--  tlpobj.revision string
+--  tlpobj.category string
+--  tlpobj.shortdesc string
+--  tlpobj.longdesc string
+--  tlpobj.catalogue string
+--  tlpobj.cataloguedata table indexed by various catalogue values
+--  tlpobj.containersize string
+--  tlpobj.srccontainersize string
+--  tlpobj.doccontainersize string
+--  tlpobj.containermd5 string
+--  tlpobj.srccontainermd5 string
+--  tlpobj.doccontainermd5 string
+--  tlpobj.binfiles table indexed by archs giving table indexed by numbers
+--  tlpobj.binsize table indexed by archs giving strings
+--  tlpobj.docfiles = table indexed by numbers
+--  tlpobj.docfiledata[docfile][tag] = value
+--  tlpobj.docsize string
+--  tlpobj.srcfiles = table indexed by numbers
+--  tlpobj.srcsize string
+--  tlpobj.runfiles = table indexed by numbers
+--  tlpobj.runsize string
+--  tlpobj.depend = table indexed by numbers
+--  tlpobj.execute = table of strings indexed by numbers
+--  tlpobj.postaction = table of strings indexed by numbers
+--  tlpobj.relocated = boolean
+--
+--*-Lua-*-
+
+function read_tlpdb(root)
+  local fn = root..'/tlpkg/texlive.tlpdb'
+  if (lfs.isfile(fn)) then -- tlpdb exists
+    local lineno = 0 -- current line number
+    local errline = '' -- current line
+    local function die(msg)
+      io.stderr:write(msg..' in '..fn..' at line '..tostring(lineno)
+        ..'\n>>'..errline..'<<\n')
+      -- for now, exit, but this is bad behaviour if we want to be used
+      -- as a library. FIXME.
+      os.exit(1)
+    end
+    local started = false
+    local lastcmd = ""
+    local arch
+    local size
+    local tlpobj = {}
+    local name
+    local tlpdb = {}
+    for line in io.lines(fn) do
+      lineno = lineno + 1
+      errline = line
+      if string.match(line, '^%s*$') then
+        if started then
+          -- we have encountered an empty line while creating a tlpobj, so
+          -- stop that tlpobj, add it to the tlpdb, and restart
+          --tlpdb[name] = tlpobj
+          tlpdb[name] = tlpobj
+          tlpobj = {}
+          --print ("adding "..name.." to tlpdb")
+          started = false
+        end
+      else
+        if string.match(line, '^ ') then
+          if lastcmd == 'runfiles' or
+             lastcmd == 'binfiles' or
+             lastcmd == 'docfiles' or
+             lastcmd == 'srcfiles' or
+             lastcmd == 'execute' or
+             lastcmd == 'depend' then
+            line = string.gsub(line, '^ ',  lastcmd.."continued ")
+          else
+            die('Continuation of '..lastcmd..' not allowed')
+          end
+        end
+        local first
+        local rest
+        first, rest = string.match(line,'^(%S+)%s*(.*)%s*$')
+        --print ("DEBUG: line = "..line)
+        --print ("DEBUG: first = "..first)
+        lastcmd = first
+        if first == "name" then
+          tlpobj.name = rest
+          name = rest
+          started = true
+        elseif first == "revision" then
+          tlpobj.revision = rest
+        elseif first == "category" then
+          tlpobj.category = rest
+        elseif first == "shortdesc" then
+          tlpobj.shortdesc = rest
+        elseif first == "catalogue" then
+          tlpobj.catalogue = rest
+        elseif string.match(first,'^catalogue%-') then
+          --local data = string.match(first,'^catalogue-(.*)$')
+          local cdata = string.gsub(first,'^catalogue%-', '')
+          --print("DEBUG: cdata = "..cdata..", first = "..first)
+          if not(tlpobj.cataloguedata) then
+            tlpobj.cataloguedata = {}
+          end
+          tlpobj.cataloguedata[cdata] = rest
+        elseif first == "containersize" then
+          tlpobj.containersize = rest
+        elseif first == "srccontainersize" then
+          tlpobj.srccontainersize = rest
+        elseif first == "doccontainersize" then
+          tlpobj.doccontainersize = rest
+        elseif first == "containermd5" then
+          tlpobj.containermd5 = rest
+        elseif first == "srccontainermd5" then
+          tlpobj.srccontainermd5 = rest
+        elseif first == "doccontainermd5" then
+          tlpobj.doccontainermd5 = rest
+        elseif first == "runfiles" then
+          local rsize = string.match(rest,'size=([0-9]*)')
+          if (rsize) then
+            tlpobj.runsize = rsize
+          else
+            if #rest > 0 then
+              die('Unknown tag')
+            end
+          end
+        elseif first == "docfiles" then
+          local dsize = string.match(rest,'size=([0-9]*)')
+          if (dsize) then
+            tlpobj.docsize = dsize
+          else
+            if #rest > 0 then
+              die('Unknown tag')
+            end
+          end
+        elseif first == "srcfiles" then
+          local ssize = string.match(rest,'size=([0-9]*)')
+          if (ssize) then
+            tlpobj.srcsize = ssize
+          else
+            if #rest > 0 then
+              die('Unknown tag')
+            end
+          end
+        elseif first == "binfiles" then
+          arch = ""
+          local barch
+          local bsize
+          for aaa in string.gmatch(rest,'%S+') do
+            if string.match(aaa,'^arch=(%S*)$') then
+              barch = string.match(aaa,'^arch=(%S*)$')
+            elseif string.match(aaa,'^size=(%S*)$') then
+              bsize = string.match(aaa,'^size=(%S*)$')
+            else
+              die('Unknown tag')
+            end
+          end
+          if barch and bsize then
+            if not(tlpobj.binsize) then
+              tlpobj.binsize = {}
+            end
+            tlpobj.binsize[barch] = bsize
+            arch = barch
+          else
+            die('Incomplete binfile tags ')
+          end
+        elseif first == "runfilescontinued" then
+          if not(tlpobj.runfiles) then
+            tlpobj.runfiles = {}
+          end
+          table.insert(tlpobj.runfiles,rest)
+          lastcmd = "runfiles"
+        elseif first == "docfilescontinued" then
+          local dfile,tags = string.match(rest,'^(%S+)%s*(.*)%s*$')
+          if not(tlpobj.docfiles) then
+            tlpobj.docfiles = {}
+          end
+          table.insert(tlpobj.docfiles,dfile)
+          for aaa,bbb in string.gmatch(tags,'(%S+)=(%b"")') do
+            if not(tlpobj.docfiledata) then
+              tlpobj.docfiledata = {}
+            end
+            if aaa == "details" or aaa == "language" then
+              if not(tlpobj.docfiledata[dfile]) then
+                tlpobj.docfiledata[dfile] = {}
+              end
+              tlpobj.docfiledata[dfile][aaa] = bbb
+            else
+              die('Unknown docfile tag')
+            end
+          end
+          lastcmd = "docfiles"
+        elseif first == "srcfilescontinued" then
+          if not(tlpobj.srcfiles) then
+            tlpobj.srcfiles = {}
+          end
+          table.insert(tlpobj.srcfiles,rest)
+          lastcmd = "srcfiles"
+        elseif first == "binfilescontinued" then
+          if not(tlpobj.binfiles) then
+            tlpobj.binfiles = {}
+          end
+          if not(tlpobj.binfiles[arch]) then
+            tlpobj.binfiles[arch] = {}
+          end
+          table.insert(tlpobj.binfiles[arch],rest)
+          lastcmd = "binfiles"
+        elseif first == "depend" then
+          if not(tlpobj.depend) then
+            tlpobj.depend = {}
+          end
+          table.insert(tlpobj.depend,rest)
+        elseif first == "longdesc" then
+          if tlpobj.longdesc then
+            tlpobj.longdesc = tlpobj.longdesc.." "..rest
+          else
+            tlpobj.longdesc = rest
+          end
+        elseif first == "execute" then
+          if not(tlpobj.execute) then
+            tlpobj.execute = {}
+          end
+          table.insert(tlpobj.execute,rest)
+        elseif first == 'postaction' then
+          tlpobj.postaction = tlpobj.postaction or {}
+          table.insert(tlpobj.postaction, rest)
+        elseif first == 'relocated' then
+          -- don't even try to validate the value
+          tlpobj.relocated = (rest == '1')
+        else
+          die('Unknown directive')
+        end
+        if not(first) then
+          die('Missing directive')
+        end
+      end
+    end
+    return tlpdb
+  else
+    print (fn..' not found.')
+  end
+end
+
+
+-- Local Variables:
+-- lua-indent-level: 2
+-- tab-width: 2
+-- indent-tabs-mode: nil
+-- End:
+-- vim:set tabstop=2 shiftwidth=2 expandtab: #

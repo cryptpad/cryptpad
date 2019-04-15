@@ -1,0 +1,2661 @@
+% \iffalse meta-comment
+%
+% File: pdftexcmds.dtx
+% Version: 2011/11/29 v0.20
+% Info: Utility functions of pdfTeX for LuaTeX
+%
+% Copyright (C) 2007, 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file pdftexcmds.dtx
+% and the derived files
+%    pdftexcmds.sty, pdftexcmds.pdf, pdftexcmds.ins, pdftexcmds.drv,
+%    pdftexcmds.bib, pdftexcmds-test1.tex, pdftexcmds-test2.tex,
+%    pdftexcmds-test-shell.tex, pdftexcmds-test-escape.tex,
+%    oberdiek.pdftexcmds.lua, pdftexcmds.lua.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdftexcmds.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdftexcmds.pdf
+%
+% Unpacking:
+%    (a) If pdftexcmds.ins is present:
+%           tex pdftexcmds.ins
+%    (b) Without pdftexcmds.ins:
+%           tex pdftexcmds.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdftexcmds.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdftexcmds.drv is present:
+%           latex pdftexcmds.drv
+%    (b) Without pdftexcmds.drv:
+%           latex pdftexcmds.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdftexcmds.dtx
+%       bibtex pdftexcmds.aux
+%       makeindex -s gind.ist pdftexcmds.idx
+%       pdflatex pdftexcmds.dtx
+%       makeindex -s gind.ist pdftexcmds.idx
+%       pdflatex pdftexcmds.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/pdftexcmds.sty
+%    TDS:scripts/oberdiek/oberdiek.pdftexcmds.lua
+%    TDS:scripts/oberdiek/pdftexcmds.lua
+%    TDS:doc/latex/oberdiek/pdftexcmds.pdf
+%    TDS:doc/latex/oberdiek/test/pdftexcmds-test1.tex
+%    TDS:doc/latex/oberdiek/test/pdftexcmds-test2.tex
+%    TDS:doc/latex/oberdiek/test/pdftexcmds-test-shell.tex
+%    TDS:doc/latex/oberdiek/test/pdftexcmds-test-escape.tex
+%    TDS:source/latex/oberdiek/pdftexcmds.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdftexcmds
+Version: 2011/11/29 v0.20
+
+Copyright (C) 2007, 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file pdftexcmds.dtx
+and the derived files
+   pdftexcmds.sty, pdftexcmds.pdf, pdftexcmds.ins, pdftexcmds.drv,
+   pdftexcmds.bib, pdftexcmds-test1.tex, pdftexcmds-test2.tex,
+   pdftexcmds-test-shell.tex, pdftexcmds-test-escape.tex,
+   oberdiek.pdftexcmds.lua, pdftexcmds.lua.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdftexcmds.ins}{\from{pdftexcmds.dtx}{install}}%
+  \file{pdftexcmds.drv}{\from{pdftexcmds.dtx}{driver}}%
+  \nopreamble
+  \nopostamble
+  \file{pdftexcmds.bib}{\from{pdftexcmds.dtx}{bib}}%
+  \usepreamble\defaultpreamble
+  \usepostamble\defaultpostamble
+  \usedir{tex/generic/oberdiek}%
+  \file{pdftexcmds.sty}{\from{pdftexcmds.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdftexcmds-test1.tex}{\from{pdftexcmds.dtx}{test1}}%
+  \file{pdftexcmds-test2.tex}{\from{pdftexcmds.dtx}{test2}}%
+  \file{pdftexcmds-test-shell.tex}{\from{pdftexcmds.dtx}{test-shell}}%
+  \file{pdftexcmds-test-escape.tex}{\from{pdftexcmds.dtx}{test-escape}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdftexcmds.xml}{\from{pdftexcmds.dtx}{catalogue}}%
+}
+\def\MetaPrefix{-- }
+\def\defaultpostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+\def\currentpostamble{\defaultpostamble}%
+\generate{%
+  \usedir{scripts/oberdiek}%
+  \file{oberdiek.pdftexcmds.lua}{\from{pdftexcmds.dtx}{lua}}%
+  \file{pdftexcmds.lua}{\from{pdftexcmds.dtx}{lua}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdftexcmds.sty}
+\Msg{*}
+\Msg{* And install the following script files:}
+\Msg{*}
+\Msg{*     oberdiek.pdftexcmds.lua, pdftexcmds.lua}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdftexcmds.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*bib>
+@online{AndyThomas:Analog,
+  author={Thomas, Andy},
+  title={Analog of {\texttt{\textbackslash}pdfelapsedtime} for
+      {\hologo{LuaTeX}} and {\hologo{XeTeX}}},
+  url={http://tex.stackexchange.com/a/32531},
+  urldate={2011-11-29},
+}
+%</bib>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdftexcmds.drv}%
+  [2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{paralist}
+\usepackage{csquotes}
+\usepackage[
+  bibencoding=ascii,
+  alldates=iso8601,
+]{biblatex}[2011/11/13]
+\bibliography{oberdiek-source}
+\bibliography{pdftexcmds}
+\begin{document}
+  \DocInput{pdftexcmds.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1756}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdftexcmds.drv}
+%
+% \title{The \xpackage{pdftexcmds} package}
+% \date{2011/11/29 v0.20}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% \hologo{LuaTeX} provides most of the commands of \hologo{pdfTeX} 1.40. However
+% a number of utility functions are removed. This package tries to fill
+% the gap and implements some of the missing primitive using Lua.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \def\csi#1{\texttt{\textbackslash\textit{#1}}}
+%
+% \section{Documentation}
+%
+% Some primitives of \hologo{pdfTeX} \cite{pdftex-manual}
+% are not defined by \hologo{LuaTeX} \cite{luatex-manual}.
+% This package implements macro based solutions using Lua code
+% for the following missing \hologo{pdfTeX} primitives;
+% \begin{compactitem}
+% \item \cs{pdfstrcmp}
+% \item \cs{pdfunescapehex}
+% \item \cs{pdfescapehex}
+% \item \cs{pdfescapename}
+% \item \cs{pdfescapestring}
+% \item \cs{pdffilesize}
+% \item \cs{pdffilemoddate}
+% \item \cs{pdffiledump}
+% \item \cs{pdfmdfivesum}
+% \item \cs{pdfresettimer}
+% \item \cs{pdfelapsedtime}
+% \item |\immediate\write18|
+% \end{compactitem}
+% The original names of the primitives cannot be used:
+% \begin{itemize}
+% \item
+% The syntax for their arguments cannot easily
+% simulated by macros. The primitives using key words
+% such as |file| (\cs{pdfmdfivesum}) or |offset| and |length|
+% (\cs{pdffiledump}) and uses \meta{general text} for the other
+% arguments. Using token registers assignments, \meta{general text} could
+% be catched. However, the simulated primitives are expandable
+% and register assignments would destroy this important property.
+% (\meta{general text} allows something like |\expandafter\bgroup ...}|.)
+% \item
+% The original primitives can be expanded using one expansion step.
+% The new macros need two expansion steps because of the additional
+% macro expansion. Example:
+% \begin{quote}
+%   |\expandafter\foo\pdffilemoddate{file}|\\
+%   vs.\\
+%   |\expandafter\expandafter\expandafter|\\
+%   |\foo\pdf@filemoddate{file}|
+% \end{quote}
+% \end{itemize}
+%
+% \hologo{LuaTeX} isn't stable yet and thus the status of this package is
+% \emph{experimental}. Feedback is welcome.
+%
+% \subsection{General principles}
+%
+% \begin{description}
+% \item[Naming convention:]
+%   Usually this package defines a macro |\pdf@|\meta{cmd} if
+%   \hologo{pdfTeX} provides |\pdf|\meta{cmd}.
+% \item[Arguments:] The order of arguments in |\pdf@|\meta{cmd}
+%   is the same as for the corresponding primitive of \hologo{pdfTeX}.
+%   The arguments are ordinary undelimited \hologo{TeX} arguments,
+%   no \meta{general text} and without additional keywords.
+% \item[Expandibility:]
+%   The macro |\pdf@|\meta{cmd} is expandable if the
+%   corresponding \hologo{pdfTeX} primitive has this property.
+%   Exact two expansion steps are necessary (first is the macro
+%   expansion) except for \cs{pdf@primitive} and \cs{pdf@ifprimitive}.
+%   The latter ones are not macros, but have the direct meaning of the
+%   primitive.
+% \item[Without \hologo{LuaTeX}:]
+%   The macros |\pdf@|\meta{cmd} are mapped to the commands
+%   of \hologo{pdfTeX} if they are available. Otherwise they are undefined.
+% \item[Availability:]
+%   The macros that the packages provides are undefined, if
+%   the necessary primitives are not found and cannot be
+%   implemented by Lua.
+% \end{description}
+%
+% \subsection{Macros}
+%
+% \subsubsection[Strings]{Strings \cite[``7.15 Strings'']{pdftex-manual}}
+%
+% \begin{declcs}{pdf@strcmp} \M{stringA} \M{stringB}
+% \end{declcs}
+% Same as |\pdfstrcmp{|\meta{stringA}|}{|\meta{stringB}|}|.
+%
+% \begin{declcs}{pdf@unescapehex} \M{string}
+% \end{declcs}
+% Same as |\pdfunescapehex{|\meta{string}|}|.
+% The argument is a byte string given in hexadecimal notation.
+% The result are character tokens from 0 until 255 with
+% catcode 12 and the space with catcode 10.
+%
+% \begin{declcs}{pdf@escapehex} \M{string}\\
+%   \cs{pdf@escapestring} \M{string}\\
+%   \cs{pdf@escapename} \M{string}
+% \end{declcs}
+% Same as the primitives of \hologo{pdfTeX}. However \hologo{pdfTeX} does not
+% know about characters with codes 256 and larger. Thus the
+% string is treated as byte string, characters with more than
+% eight bits are ignored.
+%
+% \subsubsection[Files]{Files \cite[``7.18 Files'']{pdftex-manual}}
+%
+% \begin{declcs}{pdf@filesize} \M{filename}
+% \end{declcs}
+% Same as |\pdffilesize{|\meta{filename}|}|.
+%
+% \begin{declcs}{pdf@filemoddate} \M{filename}
+% \end{declcs}
+% Same as |\pdffilemoddate{|\meta{filename}|}|.
+%
+% \begin{declcs}{pdf@filedump} \M{offset} \M{length} \M{filename}
+% \end{declcs}
+% Same as |\pdffiledump offset| \meta{offset} |length| \meta{length}
+% |{|\meta{filename}|}|. Both \meta{offset} and \meta{length} must
+% not be empty, but must be a valid \hologo{TeX} number.
+%
+% \begin{declcs}{pdf@mdfivesum} \M{string}
+% \end{declcs}
+% Same as |\pdfmdfivesum{|\meta{string}|}|. Keyword |file| is supported
+% by macro \cs{pdf@filemdfivesum}.
+%
+% \begin{declcs}{pdf@filemdfivesum} \M{filename}
+% \end{declcs}
+% Same as |\pdfmdfivesum file{|\meta{filename}|}|.
+%
+% \subsubsection[Timekeeping]{Timekeeping \cite[``7.17 Timekeeping'']{pdftex-manual}}
+%
+% The timekeeping macros are based on Andy Thomas' work \cite{AndyThomas:Analog}.
+%
+% \begin{declcs}{pdf@resettimer}
+% \end{declcs}
+% Same as \cs{pdfresettimer}, it resets the internal timer.
+%
+% \begin{declcs}{pdf@elapsedtime}
+% \end{declcs}
+% Same as \cs{pdfelapsedtime}. It behaves like a read-only integer.
+% For printing purposes it can be prefixed by \cs{the} or \cs{number}.
+% It measures the time in scaled seconds (seconds multiplied with 65536)
+% since the latest call of \cs{pdf@resettimer} or start of
+% program/package. The resolution, the shortest time interval that
+% can be measured, depends on the program and system.
+% \begin{itemize}
+% \item \hologo{pdfTeX} with |gettimeofday|: $\ge$ 1/65536\,s
+% \item \hologo{pdfTeX} with |ftime|: $\ge$ 1\,ms
+% \item \hologo{pdfTeX} with |time|: $\ge$ 1\,s
+% \item \hologo{LuaTeX}: $\ge$ 10\,ms\\
+%  (|os.clock()| returns a float number with two decimal digits in
+%  \hologo{LuaTeX} beta-0.70.1-2011061416 (rev 4277)).
+% \end{itemize}
+%
+% \subsubsection[Miscellaneous]{Miscellaneous \cite[``7.21 Miscellaneous'']{pdftex-manual}}
+%
+% \begin{declcs}{pdf@draftmode}
+% \end{declcs}
+% If the \TeX\ compiler knows \cs{pdfdraftmode} (\hologo{pdfTeX},
+% \hologo{LuaTeX}), then \cs{pdf@draftmode} returns, whether
+% this mode is enabled. The result is an implicite number:
+% one means the draft mode is available and enabled.
+% If the value is zero, then the mode is not active or
+% \cs{pdfdraftmode} is not available.
+% An explicite number is yielded by \cs{number}\cs{pdf@draftmode}.
+% The macro cannot
+% be used to change the mode, see \cs{pdf@setdraftmode}.
+%
+% \begin{declcs}{pdf@ifdraftmode} \M{true} \M{false}
+% \end{declcs}
+% If \cs{pdfdraftmode} is available and enabled, \meta{true} is
+% called, otherwise \meta{false} is executed.
+%
+% \begin{declcs}{pdf@setdraftmode} \M{value}
+% \end{declcs}
+% Macro \cs{pdf@setdraftmode} expects the number zero or one as
+% \meta{value}. Zero deactivates the mode and one enables the draft mode.
+% The macro does not have an effect, if the feature \cs{pdfdraftmode} is not
+% available.
+%
+% \begin{declcs}{pdf@shellescape}
+% \end{declcs}
+% Same as |\pdfshellescape|. It is or expands to |1| if external
+% commands can be executed and |0| otherwise. In \hologo{pdfTeX} external
+% commands must be enabled first by command line option or
+% configuration option. In \hologo{LuaTeX} option |--safer| disables
+% the execution of external commands.
+%
+% In \hologo{LuaTeX} before 0.68.0 \cs{pdf@shellescape} is not
+% available due to a bug in |os.execute()|. The argumentless form
+% crashes in some circumstances with segmentation fault.
+% (It is fixed in version 0.68.0 or revision 4167 of \hologo{LuaTeX}.
+% and packported to some version of 0.67.0).
+%
+% Hints for usage:
+% \begin{itemize}
+% \item Before its use \cs{pdf@shellescape} should be tested,
+% whether it is available. Example with package \xpackage{ltxcmds}
+% (loaded by package \xpackage{pdftexcmds}):
+%\begin{quote}
+%\begin{verbatim}
+%\ltx@IfUndefined{pdf@shellescape}{%
+%  % \pdf@shellescape is undefined
+%}{%
+%  % \pdf@shellescape is available
+%}
+%\end{verbatim}
+%\end{quote}
+% Use \cs{ltx@ifundefined} in expandable contexts.
+% \item \cs{pdf@shellescape} might be a numerical constant,
+% expands to the primitive, or expands to a plain number.
+% Therefore use it in contexts where these differences does not matter.
+% \item Use in comparisons, e.g.:
+%   \begin{quote}
+%     |\ifnum\pdf@shellescape=0 ...|
+%   \end{quote}
+% \item Print the number: |\number\pdf@shellescape|
+% \end{itemize}
+%
+% \begin{declcs}{pdf@system} \M{cmdline}
+% \end{declcs}
+% It is a wrapper for |\immediate\write18| in \hologo{pdfTeX} or
+% |os.execute| in \hologo{LuaTeX}.
+%
+% In theory |os.execute|
+% returns a status number. But its meaning is quite
+% undefined. Are there some reliable properties?
+% Does it make sense to provide an user interface to
+% this status exit code?
+%
+% \begin{declcs}{pdf@primitive} \csi{cmd}
+% \end{declcs}
+% Same as \cs{pdfprimitive} in \hologo{pdfTeX} or \hologo{LuaTeX}.
+% In \hologo{XeTeX} the
+% primitive is called \cs{primitive}. Despite the current definition
+% of the command \csi{cmd}, it's meaning as primitive is used.
+%
+% \begin{declcs}{pdf@ifprimitive} \csi{cmd}
+% \end{declcs}
+% Same as \cs{ifpdfprimitive} in \hologo{pdfTeX} or
+% \hologo{LuaTeX}. \hologo{XeTeX} calls
+% it \cs{ifprimitive}. It is a switch that checks if the command
+% \csi{cmd} has it's primitive meaning.
+%
+% \subsubsection{Additional macro: \cs{pdf@isprimitive}}
+%
+% \begin{declcs}{pdf@isprimitive} \csi{cmd1} \csi{cmd2} \M{true} \M{false}
+% \end{declcs}
+% If \csi{cmd1} has the primitive meaning given by the primitive name
+% of \csi{cmd2}, then the argument \meta{true} is executed, otherwise
+% \meta{false}. The macro \cs{pdf@isprimitive} is expandable.
+% Internally it checks the result of \cs{meaning} and is therefore
+% available for all \hologo{TeX} variants, even the original \hologo{TeX}.
+% Example with \hologo{LaTeX}:
+%\begin{quote}
+%\begin{verbatim}
+%\makeatletter
+%\pdf@isprimitive{@@input}{input}{%
+%  \typeout{\string\@@input\space is original\string\input}%
+%}{%
+%  \typeout{Oops, \string\@@input\space is not the %
+%           original\string\input}%
+%}
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{Experimental}
+%
+% \begin{declcs}{pdf@unescapehexnative} \M{string}\\
+%   \cs{pdf@escapehexnative} \M{string}\\
+%   \cs{pdf@escapenamenative} \M{string}\\
+%   \cs{pdf@mdfivesumnative} \M{string}
+% \end{declcs}
+% The variants without |native| in the macro name are supposed to
+% be compatible with \hologo{pdfTeX}. However characters with more than
+% eight bits are not supported and are ignored. If \hologo{LuaTeX} is
+% running, then its UTF-8 coded strings are used. Thus the full
+% unicode character range is supported. However the result
+% differs from \hologo{pdfTeX} for characters with eight or more bits.
+%
+% \begin{declcs}{pdf@pipe} \M{cmdline}
+% \end{declcs}
+% It calls \meta{cmdline} and returns the output of the external
+% program in the usual manner as byte string (catcode 12, space with
+% catcode 10). The Lua documentation says, that the used |io.popen|
+% may not be available on all platforms. Then macro \cs{pdf@pipe}
+% is undefined.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pdftexcmds.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pdftexcmds}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pdftexcmds.sty\endcsname
+\ProvidesPackage{pdftexcmds}%
+  [2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname pdftexcmds@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\pdftexcmds@AtEnd{%
+    \pdftexcmds@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{0}{12}%
+\TMP@EnsureCode{1}{12}%
+\TMP@EnsureCode{2}{12}%
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{12}% _ (other)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{126}{12}% ~ (other)
+\edef\pdftexcmds@AtEnd{%
+  \pdftexcmds@AtEnd
+  \escapechar=\number\escapechar\relax
+  \noexpand\endinput
+}
+\escapechar=92 %
+%    \end{macrocode}
+%
+% \subsection{Load packages}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{infwarerr}[2007/09/09]%
+  \TMP@RequirePackage{ifluatex}[2010/03/01]%
+  \TMP@RequirePackage{ltxcmds}[2010/12/02]%
+  \TMP@RequirePackage{ifpdf}[2010/09/13]%
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ifluatex}[2010/03/01]%
+  \RequirePackage{ltxcmds}[2010/12/02]%
+  \RequirePackage{ifpdf}[2010/09/13]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Without \hologo{LuaTeX}}
+%
+%    \begin{macrocode}
+\ifluatex
+\else
+  \@PackageInfoNoLine{pdftexcmds}{LuaTeX not detected}%
+  \def\pdftexcmds@nopdftex{%
+    \@PackageInfoNoLine{pdftexcmds}{pdfTeX >= 1.30 not detected}%
+    \let\pdftexcmds@nopdftex\relax
+  }%
+  \def\pdftexcmds@temp#1{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname pdf#1\endcsname\relax
+      \pdftexcmds@nopdftex
+    \else
+      \expandafter\def\csname pdf@#1\expandafter\endcsname
+      \expandafter##\expandafter{%
+        \csname pdf#1\endcsname
+      }%
+    \fi
+  }%
+  \pdftexcmds@temp{strcmp}%
+  \pdftexcmds@temp{escapehex}%
+  \let\pdf@escapehexnative\pdf@escapehex
+  \pdftexcmds@temp{unescapehex}%
+  \let\pdf@unescapehexnative\pdf@unescapehex
+  \pdftexcmds@temp{escapestring}%
+  \pdftexcmds@temp{escapename}%
+  \pdftexcmds@temp{filesize}%
+  \pdftexcmds@temp{filemoddate}%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdfshellescape\endcsname\relax
+    \pdftexcmds@nopdftex
+    \ltx@IfUndefined{pdftexversion}{%
+    }{%
+      \ifnum\pdftexversion>120 % 1.21a supports \ifeof18
+        \ifeof18 %
+          \chardef\pdf@shellescape=0 %
+        \else
+          \chardef\pdf@shellescape=1 %
+        \fi
+      \fi
+    }%
+  \else
+    \def\pdf@shellescape{%
+      \pdfshellescape
+    }%
+  \fi
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdffiledump\endcsname\relax
+    \pdftexcmds@nopdftex
+  \else
+    \def\pdf@filedump#1#2#3{%
+      \pdffiledump offset#1 length#2{#3}%
+    }%
+  \fi
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdfmdfivesum\endcsname\relax
+    \pdftexcmds@nopdftex
+  \else
+    \def\pdf@mdfivesum#{\pdfmdfivesum}%
+    \let\pdf@mdfivesumnative\pdf@mdfivesum
+    \def\pdf@filemdfivesum#{\pdfmdfivesum file}%
+  \fi
+  \def\pdf@system#{%
+    \immediate\write18%
+  }%
+  \def\pdftexcmds@temp#1{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname pdf#1\endcsname\relax
+      \pdftexcmds@nopdftex
+    \else
+      \expandafter\let\csname pdf@#1\expandafter\endcsname
+      \csname pdf#1\endcsname
+    \fi
+  }%
+  \pdftexcmds@temp{resettimer}%
+  \pdftexcmds@temp{elapsedtime}%
+\fi
+%    \end{macrocode}
+%
+% \subsection{\cs{pdf@primitive}, \cs{pdf@ifprimitive}}
+%
+%    Since version 1.40.0 \hologo{pdfTeX} has \cs{pdfprimitive} and
+%    \cs{ifpdfprimitive}. And \cs{pdfprimitive} was fixed in
+%    version 1.40.4.
+%
+%    \hologo{XeTeX} provides them under the name \cs{primitive} and
+%    \cs{ifprimitive}. \hologo{LuaTeX} knows both name variants,
+%    but they have possibly to be enabled first (|tex.enableprimitives|).
+%
+%    Depending on the format TeX Live uses a prefix |luatex|.
+%
+%    Caution: \cs{let} must be used for the definition of
+%    the macros, especially because of \cs{ifpdfprimitive}.
+%
+% \subsubsection{Using \hologo{LuaTeX}'s \texttt{tex.enableprimitives}}
+%
+%    \begin{macrocode}
+\ifluatex
+%    \end{macrocode}
+%    \begin{macro}{\pdftexcmds@directlua}
+%    \begin{macrocode}
+  \ifnum\luatexversion<36 %
+    \def\pdftexcmds@directlua{\directlua0 }%
+  \else
+    \let\pdftexcmds@directlua\directlua
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+  \begingroup
+    \newlinechar=10 %
+    \endlinechar=\newlinechar
+    \pdftexcmds@directlua{%
+      if tex.enableprimitives then
+        tex.enableprimitives(
+          'pdf@',
+          {'primitive', 'ifprimitive', 'pdfdraftmode'}
+        )
+        tex.enableprimitives('', {'luaescapestring'})
+      end
+    }%
+  \endgroup %
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Trying various names to find the primitives}
+%
+%    \begin{macro}{\pdftexcmds@strip@prefix}
+%    \begin{macrocode}
+\def\pdftexcmds@strip@prefix#1>{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\def\pdftexcmds@temp#1#2#3{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@#1\endcsname\relax
+    \begingroup
+      \def\x{#3}%
+      \edef\x{\expandafter\pdftexcmds@strip@prefix\meaning\x}%
+      \escapechar=-1 %
+      \edef\y{\expandafter\meaning\csname#2\endcsname}%
+    \expandafter\endgroup
+    \ifx\x\y
+      \expandafter\let\csname pdf@#1\expandafter\endcsname
+      \csname #2\endcsname
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\pdf@primitive}
+%    \begin{macrocode}
+\pdftexcmds@temp{primitive}{pdfprimitive}{pdfprimitive}% pdfTeX, LuaTeX
+\pdftexcmds@temp{primitive}{primitive}{primitive}% XeTeX
+\pdftexcmds@temp{primitive}{luatexprimitive}{pdfprimitive}% LuaTeX
+\pdftexcmds@temp{primitive}{luatexpdfprimitive}{pdfprimitive}% LuaTeX
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@ifprimitive}
+%    \begin{macrocode}
+\pdftexcmds@temp{ifprimitive}{ifpdfprimitive}{ifpdfprimitive}% pdfTeX, LuaTeX
+\pdftexcmds@temp{ifprimitive}{ifprimitive}{ifprimitive}% XeTeX
+\pdftexcmds@temp{ifprimitive}{luatexifprimitive}{ifpdfprimitive}% LuaTeX
+\pdftexcmds@temp{ifprimitive}{luatexifpdfprimitive}{ifpdfprimitive}% LuaTeX
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Disable broken \cs{pdfprimitive}.
+%    \begin{macrocode}
+\begingroup
+  \expandafter\ifx\csname pdf@primitive\endcsname\relax
+  \else
+    \expandafter\ifx\csname pdftexversion\endcsname\relax
+    \else
+      \ifnum\pdftexversion=140 %
+        \expandafter\ifx\csname pdftexrevision\endcsname\relax
+        \else
+          \ifnum\pdftexrevision<4 %
+            \endgroup
+            \let\pdf@primitive\@undefined
+            \@PackageInfoNoLine{pdftexcmds}{%
+              \string\pdf@primitive\space disabled, %
+              because\MessageBreak
+              \string\pdfprimitive\space is broken until pdfTeX 1.40.4%
+            }%
+            \begingroup
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+\endgroup
+%    \end{macrocode}
+%
+% \subsubsection{Result}
+%
+%    \begin{macrocode}
+\begingroup
+  \@PackageInfoNoLine{pdftexcmds}{%
+    \string\pdf@primitive\space is %
+    \expandafter\ifx\csname pdf@primitive\endcsname\relax not \fi
+    available%
+  }%
+  \@PackageInfoNoLine{pdftexcmds}{%
+    \string\pdf@ifprimitive\space is %
+    \expandafter\ifx\csname pdf@ifprimitive\endcsname\relax not \fi
+    available%
+  }%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{\hologo{XeTeX}}
+%
+%    Look for primitives \cs{shellescape}, \cs{strcmp}.
+%    \begin{macrocode}
+\def\pdftexcmds@temp#1{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@#1\endcsname\relax
+    \begingroup
+      \escapechar=-1 %
+      \edef\x{\expandafter\meaning\csname#1\endcsname}%
+      \def\y{#1}%
+      \def\z##1->{}%
+      \edef\y{\expandafter\z\meaning\y}%
+    \expandafter\endgroup
+    \ifx\x\y
+      \expandafter\def\csname pdf@#1\expandafter\endcsname
+      \expandafter{%
+        \csname#1\endcsname
+      }%
+    \fi
+  \fi
+}%
+\pdftexcmds@temp{shellescape}%
+\pdftexcmds@temp{strcmp}%
+%    \end{macrocode}
+%
+% \subsection{\cs{pdf@isprimitive}}
+%
+%    \begin{macrocode}
+\def\pdf@isprimitive{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@strcmp\endcsname\relax
+    \long\def\pdf@isprimitive##1{%
+      \expandafter\pdftexcmds@isprimitive\expandafter{\meaning##1}%
+    }%
+    \long\def\pdftexcmds@isprimitive##1##2{%
+      \expandafter\pdftexcmds@@isprimitive\expandafter{\string##2}{##1}%
+    }%
+    \def\pdftexcmds@@isprimitive##1##2{%
+      \ifnum0\pdftexcmds@equal##1\delimiter##2\delimiter=1 %
+        \expandafter\ltx@firstoftwo
+      \else
+        \expandafter\ltx@secondoftwo
+      \fi
+    }%
+    \def\pdftexcmds@equal##1##2\delimiter##3##4\delimiter{%
+      \ifx##1##3%
+        \ifx\relax##2##4\relax
+          1%
+        \else
+          \ifx\relax##2\relax
+          \else
+            \ifx\relax##4\relax
+            \else
+              \pdftexcmds@equalcont{##2}{##4}%
+            \fi
+          \fi
+        \fi
+      \fi
+    }%
+    \def\pdftexcmds@equalcont##1{%
+      \def\pdftexcmds@equalcont####1####2##1##1##1##1{%
+        ##1##1##1##1%
+        \pdftexcmds@equal####1\delimiter####2\delimiter
+      }%
+    }%
+    \expandafter\pdftexcmds@equalcont\csname fi\endcsname
+  \else
+    \long\def\pdf@isprimitive##1##2{%
+      \ifnum\pdf@strcmp{\meaning##1}{\string##2}=0 %
+        \expandafter\ltx@firstoftwo
+      \else
+        \expandafter\ltx@secondoftwo
+      \fi
+    }%
+  \fi
+}
+\ifluatex
+\else
+  \pdf@isprimitive
+\fi
+%    \end{macrocode}
+%
+% \subsection{\cs{pdf@draftmode}}
+%
+%
+%    \begin{macrocode}
+\let\pdftexcmds@temp\ltx@zero %
+\ltx@IfUndefined{pdfdraftmode}{%
+  \@PackageInfoNoLine{pdftexcmds}{\ltx@backslashchar pdfdraftmode not found}%
+}{%
+  \ifpdf
+    \let\pdftexcmds@temp\ltx@one
+    \@PackageInfoNoLine{pdftexcmds}{\ltx@backslashchar pdfdraftmode found}%
+  \else
+    \@PackageInfoNoLine{pdftexcmds}{%
+      \ltx@backslashchar pdfdraftmode is ignored in DVI mode%
+    }%
+  \fi
+}
+\ifcase\pdftexcmds@temp
+%    \end{macrocode}
+%    \begin{macro}{\pdf@draftmode}
+%    \begin{macrocode}
+  \let\pdf@draftmode\ltx@zero
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@ifdraftmode}
+%    \begin{macrocode}
+  \let\pdf@ifdraftmode\ltx@secondoftwo
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdftexcmds@setdraftmode}
+%    \begin{macrocode}
+  \def\pdftexcmds@setdraftmode#1{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macro}{\pdftexcmds@draftmode}
+%    \begin{macrocode}
+  \let\pdftexcmds@draftmode\pdfdraftmode
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@ifdraftmode}
+%    \begin{macrocode}
+  \def\pdf@ifdraftmode{%
+    \ifnum\pdftexcmds@draftmode=\ltx@one
+      \expandafter\ltx@firstoftwo
+    \else
+      \expandafter\ltx@secondoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@draftmode}
+%    \begin{macrocode}
+  \def\pdf@draftmode{%
+    \ifnum\pdftexcmds@draftmode=\ltx@one
+      \expandafter\ltx@one
+    \else
+      \expandafter\ltx@zero
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdftexcmds@setdraftmode}
+%    \begin{macrocode}
+  \def\pdftexcmds@setdraftmode#1{%
+    \pdftexcmds@draftmode=#1\relax
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%    \begin{macro}{\pdf@setdraftmode}
+%    \begin{macrocode}
+\def\pdf@setdraftmode#1{%
+  \begingroup
+    \count\ltx@cclv=#1\relax
+  \edef\x{\endgroup
+    \noexpand\pdftexcmds@@setdraftmode{\the\count\ltx@cclv}%
+  }%
+  \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdftexcmds@@setdraftmode}
+%    \begin{macrocode}
+\def\pdftexcmds@@setdraftmode#1{%
+  \ifcase#1 %
+    \pdftexcmds@setdraftmode{#1}%
+  \or
+    \pdftexcmds@setdraftmode{#1}%
+  \else
+    \@PackageWarning{pdftexcmds}{%
+      \string\pdf@setdraftmode: Ignoring\MessageBreak
+      invalid value `#1'%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Load Lua module}
+%
+%    \begin{macrocode}
+\ifluatex
+\else
+  \expandafter\pdftexcmds@AtEnd
+\fi%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{luatex-loader}[2009/04/10]%
+\else
+  \RequirePackage{luatex-loader}[2009/04/10]%
+\fi
+\pdftexcmds@directlua{%
+  require("oberdiek.pdftexcmds")%
+}
+\ifnum\luatexversion>37 %
+  \ifnum0%
+      \pdftexcmds@directlua{%
+        if status.ini_version then %
+          tex.write("1")%
+        end%
+      }>0 %
+    \everyjob\expandafter{%
+      \the\everyjob
+      \pdftexcmds@directlua{%
+        require("oberdiek.pdftexcmds")%
+      }%
+    }%
+  \fi
+\fi
+\begingroup
+  \def\x{2011/11/29 v0.20}%
+  \ltx@onelevel@sanitize\x
+  \edef\y{%
+    \pdftexcmds@directlua{%
+      if oberdiek.pdftexcmds.getversion then %
+        oberdiek.pdftexcmds.getversion()%
+      end%
+    }%
+  }%
+  \ifx\x\y
+  \else
+    \@PackageError{pdftexcmds}{%
+      Wrong version of lua module.\MessageBreak
+      Package version: \x\MessageBreak
+      Lua module: \y
+    }\@ehc
+  \fi
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Lua functions}
+%
+% \subsubsection{Helper macros}
+%
+%    \begin{macro}{\pdftexcmds@toks}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newtoks\endcsname\relax
+  \toksdef\pdftexcmds@toks=0 %
+\else
+  \csname newtoks\endcsname\pdftexcmds@toks
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdftexcmds@Patch}
+%    \begin{macrocode}
+\def\pdftexcmds@Patch{0}
+\ifnum\luatexversion>40 %
+  \ifnum\luatexversion<66 %
+    \def\pdftexcmds@Patch{1}%
+  \fi
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\ifcase\pdftexcmds@Patch
+  \catcode`\&=14 %
+\else
+  \catcode`\&=9 %
+%    \end{macrocode}
+%    \begin{macro}{\pdftexcmds@PatchDecode}
+%    \begin{macrocode}
+  \def\pdftexcmds@PatchDecode#1\@nil{%
+    \pdftexcmds@DecodeA#1^^A^^A\@nil{}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdftexcmds@DecodeA}
+%    \begin{macrocode}
+  \def\pdftexcmds@DecodeA#1^^A^^A#2\@nil#3{%
+    \ifx\relax#2\relax
+      \ltx@ReturnAfterElseFi{%
+        \pdftexcmds@DecodeB#3#1^^A^^B\@nil{}%
+      }%
+    \else
+      \ltx@ReturnAfterFi{%
+        \pdftexcmds@DecodeA#2\@nil{#3#1^^@}%
+      }%
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdftexcmds@DecodeB}
+%    \begin{macrocode}
+  \def\pdftexcmds@DecodeB#1^^A^^B#2\@nil#3{%
+    \ifx\relax#2\relax%
+      \ltx@ReturnAfterElseFi{%
+        \ltx@zero
+        #3#1%
+      }%
+    \else
+      \ltx@ReturnAfterFi{%
+        \pdftexcmds@DecodeB#2\@nil{#3#1^^A}%
+      }%
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifnum\luatexversion<36 %
+\else
+  \catcode`\0=9 %
+\fi
+%    \end{macrocode}
+%
+% \subsubsection[Strings]{Strings \cite[``7.15 Strings'']{pdftex-manual}}
+%
+%    \begin{macro}{\pdf@strcmp}
+%    \begin{macrocode}
+\long\def\pdf@strcmp#1#2{%
+  \directlua0{%
+    oberdiek.pdftexcmds.strcmp("\luaescapestring{#1}",%
+        "\luaescapestring{#2}")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\pdf@isprimitive
+%    \end{macrocode}
+%    \begin{macro}{\pdf@escapehex}
+%    \begin{macrocode}
+\long\def\pdf@escapehex#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.escapehex("\luaescapestring{#1}", "byte")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@escapehexnative}
+%    \begin{macrocode}
+\long\def\pdf@escapehexnative#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.escapehex("\luaescapestring{#1}")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@unescapehex}
+%    \begin{macrocode}
+\def\pdf@unescapehex#1{%
+& \romannumeral\expandafter\pdftexcmds@PatchDecode
+  \the\expandafter\pdftexcmds@toks
+  \directlua0{%
+    oberdiek.pdftexcmds.toks="pdftexcmds@toks"%
+    oberdiek.pdftexcmds.unescapehex("\luaescapestring{#1}", "byte", \pdftexcmds@Patch)%
+  }%
+& \@nil
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@unescapehexnative}
+%    \begin{macrocode}
+\def\pdf@unescapehexnative#1{%
+& \romannumeral\expandafter\pdftexcmds@PatchDecode
+  \the\expandafter\pdftexcmds@toks
+  \directlua0{%
+    oberdiek.pdftexcmds.toks="pdftexcmds@toks"%
+    oberdiek.pdftexcmds.unescapehex("\luaescapestring{#1}", \pdftexcmds@Patch)%
+  }%
+& \@nil
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@escapestring}
+%    \begin{macrocode}
+\long\def\pdf@escapestring#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.escapestring("\luaescapestring{#1}", "byte")%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@escapename}
+%    \begin{macrocode}
+\long\def\pdf@escapename#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.escapename("\luaescapestring{#1}", "byte")%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@escapenamenative}
+%    \begin{macrocode}
+\long\def\pdf@escapenamenative#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.escapename("\luaescapestring{#1}")%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection[Files]{Files \cite[``7.18 Files'']{pdftex-manual}}
+%
+%    \begin{macro}{\pdf@filesize}
+%    \begin{macrocode}
+\def\pdf@filesize#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.filesize("\luaescapestring{#1}")%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@filemoddate}
+%    \begin{macrocode}
+\def\pdf@filemoddate#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.filemoddate("\luaescapestring{#1}")%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@filedump}
+%    \begin{macrocode}
+\def\pdf@filedump#1#2#3{%
+  \directlua0{%
+    oberdiek.pdftexcmds.filedump("\luaescapestring{\number#1}",%
+        "\luaescapestring{\number#2}",%
+        "\luaescapestring{#3}")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@mdfivesum}
+%    \begin{macrocode}
+\long\def\pdf@mdfivesum#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.mdfivesum("\luaescapestring{#1}", "byte")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@mdfivesumnative}
+%    \begin{macrocode}
+\long\def\pdf@mdfivesumnative#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.mdfivesum("\luaescapestring{#1}")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@filemdfivesum}
+%    \begin{macrocode}
+\def\pdf@filemdfivesum#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.filemdfivesum("\luaescapestring{#1}")%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection[Timekeeping]{Timekeeping \cite[``7.17 Timekeeping'']{pdftex-manual}}
+%
+%    \begin{macro}{\protected}
+%    \begin{macrocode}
+\let\pdftexcmds@temp=Y%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+  \pdftexcmds@directlua0{%
+    if tex.enableprimitives then %
+      tex.enableprimitives('', {'protected'})%
+    end%
+  }%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+  \let\pdftexcmds@temp=N%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\numexpr}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \pdftexcmds@directlua0{%
+    if tex.enableprimitives then %
+      tex.enableprimitives('', {'numexpr'})%
+    end%
+  }%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \let\pdftexcmds@temp=N%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\ifx\pdftexcmds@temp N%
+  \@PackageWarningNoLine{pdftexcmds}{%
+    Definitions of \ltx@backslashchar pdf@resettimer and%
+    \MessageBreak
+    \ltx@backslashchar pdf@elapsedtime are skipped, because%
+    \MessageBreak
+    e-TeX's \ltx@backslashchar protected or %
+    \ltx@backslashchar numexpr are missing%
+  }%
+\else
+%    \end{macrocode}
+%
+%    \begin{macro}{\pdf@resettimer}
+%    \begin{macrocode}
+  \protected\def\pdf@resettimer{%
+    \pdftexcmds@directlua0{%
+      oberdiek.pdftexcmds.resettimer()%
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdf@elapsedtime}
+%    \begin{macrocode}
+  \protected\def\pdf@elapsedtime{%
+    \numexpr
+      \pdftexcmds@directlua0{%
+        oberdiek.pdftexcmds.elapsedtime()%
+      }%
+    \relax
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Shell escape}
+%
+%    \begin{macro}{\pdf@shellescape}
+%    Caution: Catcode of digit zero might be `ignore'.
+%    \begin{macrocode}
+\ifnum\luatexversion<68 %
+\else
+  \def\pdf@shellescape{%
+    \directlua0{%
+      oberdiek.pdftexcmds.shellescape()%
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdf@system}
+%    \begin{macrocode}
+\def\pdf@system#1{%
+  \directlua0{%
+    oberdiek.pdftexcmds.system("\luaescapestring{#1}")%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdf@lastsystemstatus}
+%    \begin{macrocode}
+\def\pdf@lastsystemstatus{%
+  \directlua0{%
+    oberdiek.pdftexcmds.lastsystemstatus()%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdf@lastsystemexit}
+%    \begin{macrocode}
+\def\pdf@lastsystemexit{%
+  \directlua0{%
+    oberdiek.pdftexcmds.lastsystemexit()%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\catcode`\0=12 %
+%    \end{macrocode}
+%
+%    \begin{macro}{\pdf@pipe}
+%    Check availability of |io.popen| first.
+%    \begin{macrocode}
+\ifnum0%
+    \pdftexcmds@directlua{%
+      if io.popen then %
+        tex.write("1")%
+      end%
+    }%
+    =1 %
+  \def\pdf@pipe#1{%
+&   \romannumeral\expandafter\pdftexcmds@PatchDecode
+    \the\expandafter\pdftexcmds@toks
+    \pdftexcmds@directlua{%
+      oberdiek.pdftexcmds.toks="pdftexcmds@toks"%
+      oberdiek.pdftexcmds.pipe("\luaescapestring{#1}", \pdftexcmds@Patch)%
+    }%
+&   \@nil
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\pdftexcmds@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Lua module}
+%
+%    \begin{macrocode}
+%<*lua>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+module("oberdiek.pdftexcmds", package.seeall)
+local systemexitstatus
+function getversion()
+  tex.write("2011/11/29 v0.20")
+end
+%    \end{macrocode}
+%
+% \subsubsection[Strings]{Strings \cite[``7.15 Strings'']{pdftex-manual}}
+%
+%    \begin{macrocode}
+function strcmp(A, B)
+  if A == B then
+    tex.write("0")
+  elseif A < B then
+    tex.write("-1")
+  else
+    tex.write("1")
+  end
+end
+local function utf8_to_byte(str)
+  local i = 0
+  local n = string.len(str)
+  local t = {}
+  while i < n do
+    i = i + 1
+    local a = string.byte(str, i)
+    if a < 128 then
+      table.insert(t, string.char(a))
+    else
+      if a >= 192 and i < n then
+        i = i + 1
+        local b = string.byte(str, i)
+        if b < 128 or b >= 192 then
+          i = i - 1
+        elseif a == 194 then
+          table.insert(t, string.char(b))
+        elseif a == 195 then
+          table.insert(t, string.char(b + 64))
+        end
+      end
+    end
+  end
+  return table.concat(t)
+end
+function escapehex(str, mode)
+  if mode == "byte" then
+    str = utf8_to_byte(str)
+  end
+  tex.write((string.gsub(str, ".",
+    function (ch)
+      return string.format("%02X", string.byte(ch))
+    end
+  )))
+end
+%    \end{macrocode}
+%    See procedure |unescapehex| in file \xfile{utils.c} of \hologo{pdfTeX}.
+%    Caution: |tex.write| ignores leading spaces.
+%    \begin{macrocode}
+function unescapehex(str, mode, patch)
+  local a = 0
+  local first = true
+  local result = {}
+  for i = 1, string.len(str), 1 do
+    local ch = string.byte(str, i)
+    if ch >= 48 and ch <= 57 then
+      ch = ch - 48
+    elseif ch >= 65 and ch <= 70 then
+      ch = ch - 55
+    elseif ch >= 97 and ch <= 102 then
+      ch = ch - 87
+    else
+      ch = nil
+    end
+    if ch then
+      if first then
+        a = ch * 16
+        first = false
+      else
+        table.insert(result, a + ch)
+        first = true
+      end
+    end
+  end
+  if not first then
+    table.insert(result, a)
+  end
+  if patch == 1 then
+    local temp = {}
+    for i, a in ipairs(result) do
+      if a == 0 then
+        table.insert(temp, 1)
+        table.insert(temp, 1)
+      else
+        if a == 1 then
+          table.insert(temp, 1)
+          table.insert(temp, 2)
+        else
+          table.insert(temp, a)
+        end
+      end
+    end
+    result = temp
+  end
+  if mode == "byte" then
+    local utf8 = {}
+    for i, a in ipairs(result) do
+      if a < 128 then
+        table.insert(utf8, a)
+      else
+        if a < 192 then
+          table.insert(utf8, 194)
+          a = a - 128
+        else
+          table.insert(utf8, 195)
+          a = a - 192
+        end
+        table.insert(utf8, a + 128)
+      end
+    end
+    result = utf8
+  end
+  tex.settoks(toks, string.char(unpack(result)))
+end
+%    \end{macrocode}
+%    See procedure |escapestring| in file \xfile{utils.c} of \hologo{pdfTeX}.
+%    \begin{macrocode}
+function escapestring(str, mode)
+  if mode == "byte" then
+    str = utf8_to_byte(str)
+  end
+  tex.write((string.gsub(str, ".",
+    function (ch)
+      local b = string.byte(ch)
+      if b < 33 or b > 126 then
+        return string.format("\\%.3o", b)
+      end
+      if b == 40 or b == 41 or b == 92 then
+        return "\\" .. ch
+      end
+%    \end{macrocode}
+%    Lua 5.1 returns the match in case of return value |nil|.
+%    \begin{macrocode}
+      return nil
+    end
+  )))
+end
+%    \end{macrocode}
+%    See procedure |escapename| in file \xfile{utils.c} of \hologo{pdfTeX}.
+%    \begin{macrocode}
+function escapename(str, mode)
+  if mode == "byte" then
+    str = utf8_to_byte(str)
+  end
+  tex.write((string.gsub(str, ".",
+    function (ch)
+      local b = string.byte(ch)
+      if b == 0 then
+%    \end{macrocode}
+%    In Lua 5.0 |nil| could be used for the empty string,
+%    But |nil| returns the match in Lua 5.1, thus we use
+%    the empty string explicitly.
+%    \begin{macrocode}
+        return ""
+      end
+      if b <= 32 or b >= 127
+          or b == 35 or b == 37 or b == 40 or b == 41
+          or b == 47 or b == 60 or b == 62 or b == 91
+          or b == 93 or b == 123 or b == 125 then
+        return string.format("#%.2X", b)
+      else
+%    \end{macrocode}
+%    Lua 5.1 returns the match in case of return value |nil|.
+%    \begin{macrocode}
+        return nil
+      end
+    end
+  )))
+end
+%    \end{macrocode}
+%
+% \subsubsection[Files]{Files \cite[``7.18 Files'']{pdftex-manual}}
+%
+%    \begin{macrocode}
+function filesize(filename)
+  local foundfile = kpse.find_file(filename, "tex", true)
+  if foundfile then
+    local size = lfs.attributes(foundfile, "size")
+    if size then
+      tex.write(size)
+    end
+  end
+end
+%    \end{macrocode}
+%    See procedure |makepdftime| in file \xfile{utils.c} of \hologo{pdfTeX}.
+%    \begin{macrocode}
+function filemoddate(filename)
+  local foundfile = kpse.find_file(filename, "tex", true)
+  if foundfile then
+    local date = lfs.attributes(foundfile, "modification")
+    if date then
+      local d = os.date("*t", date)
+      if d.sec >= 60 then
+        d.sec = 59
+      end
+      local u = os.date("!*t", date)
+      local off = 60 * (d.hour - u.hour) + d.min - u.min
+      if d.year ~= u.year then
+        if d.year > u.year then
+          off = off + 1440
+        else
+          off = off - 1440
+        end
+      elseif d.yday ~= u.yday then
+        if d.yday > u.yday then
+          off = off + 1440
+        else
+          off = off - 1440
+        end
+      end
+      local timezone
+      if off == 0 then
+        timezone = "Z"
+      else
+        local hours = math.floor(off / 60)
+        local mins = math.abs(off - hours * 60)
+        timezone = string.format("%+03d'%02d'", hours, mins)
+      end
+      tex.write(string.format("D:%04d%02d%02d%02d%02d%02d%s",
+          d.year, d.month, d.day, d.hour, d.min, d.sec, timezone))
+    end
+  end
+end
+function filedump(offset, length, filename)
+  length = tonumber(length)
+  if length and length > 0 then
+    local foundfile = kpse.find_file(filename, "tex", true)
+    if foundfile then
+      offset = tonumber(offset)
+      if not offset then
+        offset = 0
+      end
+      local filehandle = io.open(foundfile, "r")
+      if filehandle then
+        if offset > 0 then
+          filehandle:seek("set", offset)
+        end
+        local dump = filehandle:read(length)
+        escapehex(dump)
+      end
+    end
+  end
+end
+function mdfivesum(str, mode)
+  if mode == "byte" then
+    str = utf8_to_byte(str)
+  end
+  escapehex(md5.sum(str))
+end
+function filemdfivesum(filename)
+  local foundfile = kpse.find_file(filename, "tex", true)
+  if foundfile then
+    local filehandle = io.open(foundfile, "r")
+    if filehandle then
+      local contents = filehandle:read("*a")
+      escapehex(md5.sum(contents))
+    end
+  end
+end
+%    \end{macrocode}
+%
+% \subsubsection[Timekeeping]{Timekeeping \cite[``7.17 Timekeeping'']{pdftex-manual}}
+%
+%    The functions for timekeeping are based on
+%    Andy Thomas' work \cite{AndyThomas:Analog}.
+%    Changes:
+%    \begin{itemize}
+%    \item Overflow check is added.
+%    \item |string.format| is used to avoid exponential number
+%          representation for sure.
+%    \item |tex.write| is used instead of |tex.print| to get
+%          tokens with catcode 12 and without appended \cs{endlinechar}.
+%    \end{itemize}
+%    \begin{macrocode}
+local basetime = 0
+function resettimer()
+  basetime = os.clock()
+end
+function elapsedtime()
+  local val = (os.clock() - basetime) * 65536 + .5
+  if val > 2147483647 then
+    val = 2147483647
+  end
+  tex.write(string.format("%d", val))
+end
+%    \end{macrocode}
+%
+% \subsubsection[Miscellaneous]{Miscellaneous \cite[``7.21 Miscellaneous'']{pdftex-manual}}
+%
+%    \begin{macrocode}
+function shellescape()
+  if os.execute then
+    if status
+        and status.luatex_version
+        and status.luatex_version >= 68 then
+      tex.write(os.execute())
+    else
+      local result = os.execute()
+      if result == 0 then
+        tex.write("0")
+      else
+        if result == nil then
+          tex.write("0")
+        else
+          tex.write("1")
+        end
+      end
+    end
+  else
+    tex.write("0")
+  end
+end
+function system(cmdline)
+  systemexitstatus = nil
+  texio.write_nl("log", "system(" .. cmdline .. ") ")
+  if os.execute then
+    texio.write("log", "executed.")
+    systemexitstatus = os.execute(cmdline)
+  else
+    texio.write("log", "disabled.")
+  end
+end
+function lastsystemstatus()
+  local result = tonumber(systemexitstatus)
+  if result then
+    local x = math.floor(result / 256)
+    tex.write(result - 256 * math.floor(result / 256))
+  end
+end
+function lastsystemexit()
+  local result = tonumber(systemexitstatus)
+  if result then
+    tex.write(math.floor(result / 256))
+  end
+end
+function pipe(cmdline, patch)
+  local result
+  systemexitstatus = nil
+  texio.write_nl("log", "pipe(" .. cmdline ..") ")
+  if io.popen then
+    texio.write("log", "executed.")
+    local handle = io.popen(cmdline, "r")
+    if handle then
+      result = handle:read("*a")
+      handle:close()
+    end
+  else
+    texio.write("log", "disabled.")
+  end
+  if result then
+    if patch == 1 then
+      local temp = {}
+      for i, a in ipairs(result) do
+        if a == 0 then
+          table.insert(temp, 1)
+          table.insert(temp, 1)
+        else
+          if a == 1 then
+            table.insert(temp, 1)
+            table.insert(temp, 2)
+          else
+            table.insert(temp, a)
+          end
+        end
+      end
+      result = temp
+    end
+    tex.settoks(toks, result)
+  else
+    tex.settoks(toks, "")
+  end
+end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</lua>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input pdftexcmds.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test for \cs{pdf@isprimitive}}
+%
+%    \begin{macrocode}
+%<*test2>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\input pdftexcmds.sty\relax
+\def\msg#1{%
+  \begingroup
+    \escapechar=92 %
+    \immediate\write16{#1}%
+  \endgroup
+}
+\long\def\test#1#2#3#4{%
+  \begingroup
+    #4%
+    \def\str{%
+      Test \string\pdf@isprimitive
+      {\string #1}{\string #2}{...}: %
+    }%
+    \pdf@isprimitive{#1}{#2}{%
+      \ifx#3Y%
+        \msg{\str true ==> OK.}%
+      \else
+        \errmessage{\str false ==> FAILED}%
+      \fi
+    }{%
+      \ifx#3Y%
+        \errmessage{\str true ==> FAILED}%
+      \else
+        \msg{\str false ==> OK.}%
+      \fi
+    }%
+  \endgroup
+}
+\test\relax\relax Y{}
+\test\foobar\relax Y{\let\foobar\relax}
+\test\foobar\relax N{}
+\test\hbox\hbox Y{}
+\test\foobar@hbox\hbox Y{\let\foobar@hbox\hbox}
+\test\if\if Y{}
+\test\if\ifx N{}
+\test\ifx\if N{}
+\test\par\par Y{}
+\test\hbox\par N{}
+\test\par\hbox N{}
+\csname @@end\endcsname\end
+%</test2>
+%    \end{macrocode}
+%
+% \subsection{Test for \cs{pdf@shellescape}}
+%
+%    \begin{macrocode}
+%<*test-shell>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\input pdftexcmds.sty\relax
+\def\msg#{\immediate\write16}
+\def\MaybeEnd{}
+\ifx\luatexversion\UnDeFiNeD
+\else
+  \ifnum\luatexversion<68 %
+    \ifx\pdf@shellescape\@undefined
+      \msg{SHELL=U}%
+      \msg{OK (LuaTeX < 0.68)}%
+    \else
+      \msg{SHELL=defined}%
+      \errmessage{Failed (LuaTeX < 0.68)}%
+    \fi
+    \def\MaybeEnd{\csname @@end\endcsname\end}%
+  \fi
+\fi
+\MaybeEnd
+\ifx\pdf@shellescape\@undefined
+  \msg{SHELL=U}%
+\else
+  \msg{SHELL=\number\pdf@shellescape}%
+\fi
+\ifx\expected\@undefined
+\else
+  \ifx\expected\relax
+    \msg{EXPECTED=U}%
+    \ifx\pdf@shellescape\@undefined
+      \msg{OK}%
+    \else
+      \errmessage{Failed}%
+    \fi
+  \else
+    \msg{EXPECTED=\number\expected}%
+    \ifnum\pdf@shellescape=\expected\relax
+      \msg{OK}%
+    \else
+      \errmessage{Failed}%
+    \fi
+  \fi
+\fi
+\csname @@end\endcsname\end
+%</test-shell>
+%    \end{macrocode}
+%
+% \subsection{Test for escape functions}
+%
+%    \begin{macrocode}
+%<*test-escape>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\^=7 %
+\catcode`\@=11 %
+\errorcontextlines=1000 %
+\input pdftexcmds.sty\relax
+\def\msg#1{%
+  \begingroup
+    \escapechar=92 %
+    \immediate\write16{#1}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\@=11 %
+  \countdef\count@=255 %
+  \def\space{ }%
+  \long\def\@whilenum#1\do #2{%
+    \ifnum #1\relax
+      #2\relax
+      \@iwhilenum{#1\relax#2\relax}%
+    \fi
+  }%
+  \long\def\@iwhilenum#1{%
+    \ifnum #1%
+      \expandafter\@iwhilenum
+    \else
+      \expandafter\ltx@gobble
+    \fi
+    {#1}%
+  }%
+  \gdef\AllBytes{}%
+  \count@=0 %
+  \catcode0=12 %
+  \@whilenum\count@<256 \do{%
+    \lccode0=\count@
+    \ifnum\count@=32 %
+      \xdef\AllBytes{\AllBytes\space}%
+    \else
+      \lowercase{%
+        \xdef\AllBytes{\AllBytes^^@}%
+      }%
+    \fi
+    \advance\count@ by 1 %
+  }%
+\endgroup
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\AllBytesHex{%
+  000102030405060708090A0B0C0D0E0F%
+  101112131415161718191A1B1C1D1E1F%
+  202122232425262728292A2B2C2D2E2F%
+  303132333435363738393A3B3C3D3E3F%
+  404142434445464748494A4B4C4D4E4F%
+  505152535455565758595A5B5C5D5E5F%
+  606162636465666768696A6B6C6D6E6F%
+  707172737475767778797A7B7C7D7E7F%
+  808182838485868788898A8B8C8D8E8F%
+  909192939495969798999A9B9C9D9E9F%
+  A0A1A2A3A4A5A6A7A8A9AAABACADAEAF%
+  B0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF%
+  C0C1C2C3C4C5C6C7C8C9CACBCCCDCECF%
+  D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF%
+  E0E1E2E3E4E5E6E7E8E9EAEBECEDEEEF%
+  F0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF%
+}
+\ltx@onelevel@sanitize\AllBytesHex
+\expandafter\lowercase\expandafter{%
+  \expandafter\def\expandafter\AllBytesHexLC
+      \expandafter{\AllBytesHex}%
+}
+\begingroup
+  \catcode`\#=12 %
+  \xdef\AllBytesName{%
+    #01#02#03#04#05#06#07#08#09#0A#0B#0C#0D#0E#0F%
+    #10#11#12#13#14#15#16#17#18#19#1A#1B#1C#1D#1E#1F%
+    #20!"#23$#25&'#28#29*+,-.#2F%
+    0123456789:;#3C=#3E?%
+    @ABCDEFGHIJKLMNO%
+    PQRSTUVWXYZ#5B\ltx@backslashchar#5D^_%
+    `abcdefghijklmno%
+    pqrstuvwxyz#7B|#7D\string~#7F%
+    #80#81#82#83#84#85#86#87#88#89#8A#8B#8C#8D#8E#8F%
+    #90#91#92#93#94#95#96#97#98#99#9A#9B#9C#9D#9E#9F%
+    #A0#A1#A2#A3#A4#A5#A6#A7#A8#A9#AA#AB#AC#AD#AE#AF%
+    #B0#B1#B2#B3#B4#B5#B6#B7#B8#B9#BA#BB#BC#BD#BE#BF%
+    #C0#C1#C2#C3#C4#C5#C6#C7#C8#C9#CA#CB#CC#CD#CE#CF%
+    #D0#D1#D2#D3#D4#D5#D6#D7#D8#D9#DA#DB#DC#DD#DE#DF%
+    #E0#E1#E2#E3#E4#E5#E6#E7#E8#E9#EA#EB#EC#ED#EE#EF%
+    #F0#F1#F2#F3#F4#F5#F6#F7#F8#F9#FA#FB#FC#FD#FE#FF%
+  }%
+\endgroup
+\ltx@onelevel@sanitize\AllBytesName
+\edef\AllBytesFromName{\expandafter\ltx@gobble\AllBytes}
+\begingroup
+  \def\|{|}%
+  \edef\%{\ltx@percentchar}%
+  \catcode`\|=0 %
+  \catcode`\#=12 %
+  \catcode`\~=12 %
+  \catcode`\\=12 %
+  |xdef|AllBytesString{%
+    \000\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017%
+    \020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037%
+    \040!"#$|%&'\(\)*+,-./%
+    0123456789:;<=>?%
+    @ABCDEFGHIJKLMNO%
+    PQRSTUVWXYZ[\\]^_%
+    `abcdefghijklmno%
+    pqrstuvwxyz{||}~\177%
+    \200\201\202\203\204\205\206\207\210\211\212\213\214\215\216\217%
+    \220\221\222\223\224\225\226\227\230\231\232\233\234\235\236\237%
+    \240\241\242\243\244\245\246\247\250\251\252\253\254\255\256\257%
+    \260\261\262\263\264\265\266\267\270\271\272\273\274\275\276\277%
+    \300\301\302\303\304\305\306\307\310\311\312\313\314\315\316\317%
+    \320\321\322\323\324\325\326\327\330\331\332\333\334\335\336\337%
+    \340\341\342\343\344\345\346\347\350\351\352\353\354\355\356\357%
+    \360\361\362\363\364\365\366\367\370\371\372\373\374\375\376\377%
+  }%
+|endgroup
+\ltx@onelevel@sanitize\AllBytesString
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\Test#1#2#3{%
+  \begingroup
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\TestResult
+    \expandafter\expandafter\expandafter{%
+      #1{#2}%
+    }%
+    \ifx\TestResult#3%
+    \else
+      \newlinechar=10 %
+      \msg{Expect:^^J#3}%
+      \msg{Result:^^J\TestResult}%
+      \errmessage{\string#2 -\string#1-> \string#3}%
+    \fi
+  \endgroup
+}
+\def\test#1#2#3{%
+  \edef\TestFrom{#2}%
+  \edef\TestExpect{#3}%
+  \ltx@onelevel@sanitize\TestExpect
+  \Test#1\TestFrom\TestExpect
+}
+\test\pdf@unescapehex{74657374}{test}
+\begingroup
+  \catcode0=12 %
+  \catcode1=12 %
+  \test\pdf@unescapehex{740074017400740174}{t^^@t^^At^^@t^^At}%
+\endgroup
+\Test\pdf@escapehex\AllBytes\AllBytesHex
+\Test\pdf@unescapehex\AllBytesHex\AllBytes
+\Test\pdf@escapename\AllBytes\AllBytesName
+\Test\pdf@escapestring\AllBytes\AllBytesString
+%    \end{macrocode}
+%    \begin{macrocode}
+\csname @@end\endcsname\end
+%</test-escape>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdftexcmds.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdftexcmds.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdftexcmds.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdftexcmds.sty & tex/generic/oberdiek/pdftexcmds.sty\\
+%   oberdiek.pdftexcmds.lua & scripts/oberdiek/oberdiek.pdftexcmds.lua\\
+%   pdftexcmds.lua & scripts/oberdiek/pdftexcmds.lua\\
+%   pdftexcmds.pdf & doc/latex/oberdiek/pdftexcmds.pdf\\
+%   test/pdftexcmds-test1.tex & doc/latex/oberdiek/test/pdftexcmds-test1.tex\\
+%   test/pdftexcmds-test2.tex & doc/latex/oberdiek/test/pdftexcmds-test2.tex\\
+%   test/pdftexcmds-test-shell.tex & doc/latex/oberdiek/test/pdftexcmds-test-shell.tex\\
+%   test/pdftexcmds-test-escape.tex & doc/latex/oberdiek/test/pdftexcmds-test-escape.tex\\
+%   pdftexcmds.dtx & source/latex/oberdiek/pdftexcmds.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdftexcmds.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdftexcmds.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdftexcmds.dtx
+%bibtex pdftexcmds.aux
+%makeindex -s gind.ist pdftexcmds.idx
+%pdflatex pdftexcmds.dtx
+%makeindex -s gind.ist pdftexcmds.idx
+%pdflatex pdftexcmds.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdftexcmds.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdftexcmds'>
+  <name>pdftexcmds</name>
+  <caption>LuaTeX support for pdfTeX utility functions.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='0.20'/>
+  <description>
+    LuaTeX provides most of the commands of
+    <xref refid='pdftex'>pdfTeX</xref> 1.40. However, a number of
+    utility functions are not available.  This package tries to fill
+    the gap and implements some of the missing primitives using Lua.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdftexcmds.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdftexcmds.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \printbibliography[
+%   heading=bibnumbered,
+% ]
+%
+% \begin{History}
+%   \begin{Version}{2007/11/11 v0.1}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/11/12 v0.2}
+%   \item
+%     Short description fixed.
+%   \end{Version}
+%   \begin{Version}{2007/12/12 v0.3}
+%   \item
+%     Organization of Lua code as module.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v0.4}
+%   \item
+%     Adaptation for syntax change of \cs{directlua} in
+%     \hologo{LuaTeX} 0.36.
+%   \end{Version}
+%   \begin{Version}{2009/09/22 v0.5}
+%   \item
+%     \cs{pdf@primitive}, \cs{pdf@ifprimitive} added.
+%   \item
+%     \hologo{XeTeX}'s variants are detected for
+%     \cs{pdf@shellescape}, \cs{pdf@strcmp}, \cs{pdf@primitive},
+%     \cs{pdf@ifprimitive}.
+%   \end{Version}
+%   \begin{Version}{2009/09/23 v0.6}
+%   \item
+%     Macro \cs{pdf@isprimitive} added.
+%   \end{Version}
+%   \begin{Version}{2009/12/12 v0.7}
+%   \item
+%     Short info shortened.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v0.8}
+%   \item
+%     Required date for package \xpackage{ifluatex} updated.
+%   \end{Version}
+%   \begin{Version}{2010/04/01 v0.9}
+%   \item
+%     Use \cs{ifeof18} for defining \cs{pdf@shellescape} between
+%     \hologo{pdfTeX} 1.21a (inclusive) and 1.30.0 (exclusive).
+%   \end{Version}
+%   \begin{Version}{2010/11/04 v0.10}
+%   \item
+%     \cs{pdf@draftmode}, \cs{pdf@ifdraftmode} and
+%     \cs{pdf@setdraftmode} added.
+%   \end{Version}
+%   \begin{Version}{2010/11/11 v0.11}
+%   \item
+%     Missing \cs{RequirePackage} for package \xpackage{ifpdf} added.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v0.12}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/03/04 v0.13}
+%   \item
+%     Improved Lua function \texttt{shellescape} that also
+%     uses the result of \texttt{os.execute()} (thanks to Philipp Stephani).
+%   \end{Version}
+%   \begin{Version}{2011/04/10 v0.14}
+%   \item
+%     Version check of loaded module added.
+%   \item
+%     Patch for bug in \hologo{LuaTeX} between 0.40.6 and 0.65 that
+%     is fixed in revision 4096.
+%   \end{Version}
+%   \begin{Version}{2011/04/16 v0.15}
+%   \item
+%     \hologo{LuaTeX}: \cs{pdf@shellescape} is only supported
+%     for version 0.70.0 and higher due to a bug, \texttt{os.execute()}
+%     crashes in some circumstances. Fixed in \hologo{LuaTeX}
+%     beta-0.70.0, revision 4167.
+%   \end{Version}
+%   \begin{Version}{2011/04/22 v0.16}
+%   \item
+%     Previous fix was not working due to a wrong catcode of digit
+%     zero (due to easily support the old \cs{directlua0}).
+%     The version border is lowered to 0.68, because some
+%     beta-0.67.0 seems also to work.
+%   \end{Version}
+%   \begin{Version}{2011/06/29 v0.17}
+%   \item
+%     Documentation addition to \cs{pdf@shellescape}.
+%   \end{Version}
+%   \begin{Version}{2011/07/01 v0.18}
+%   \item
+%     Add Lua module loading in \cs{everyjob} for \hologo{iniTeX}
+%     (\hologo{LuaTeX} only).
+%   \end{Version}
+%   \begin{Version}{2011/07/28 v0.19}
+%   \item
+%     Missing space in an info message added (Martin M\"unch).
+%   \end{Version}
+%   \begin{Version}{2011/11/29 v0.20}
+%   \item
+%     \cs{pdf@resettimer} and \cs{pdf@elapsedtime} added
+%     (thanks Andy Thomas).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

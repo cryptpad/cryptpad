@@ -1,0 +1,11 @@
+% slant font for slope 1/4 on the Linotronic
+
+if mode<>linohi: errmessage "This file is for lino only"; fi
+
+s=1/4;
+n=30;
+r#=.4;
+u=7; % an approximation to r in pixels
+
+font_identifier "SLANTLINO4";
+input slant

@@ -1,0 +1,18 @@
+
+% input the fontinst (needs test version from the psfonts area)
+\input fontinst.sty
+
+% Squash a courier
+  \transformfont{pcrr8rn}{%
+    \xscalefont{850}{%
+         \reencodefont{8r}{\fromafm{pcrr8a}}
+                     }
+                          }
+
+% make condensed courier in OT1 and T1
+\installfonts
+\installfont{pcrr7tn}{pcrr8rn,psyr,latin}{OT1tt}{OT1}{pcr}{c}{n}{}
+\installfont{pcrr8tn}{pcrr8rn,psyr,latin}{T1}{T1}{pcr}{c}{n}{}
+\endinstallfonts
+
+

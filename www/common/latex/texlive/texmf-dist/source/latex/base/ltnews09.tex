@@ -1,0 +1,142 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews09.tex
+
+% This is issue 9 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]
+   {ltnews}[1999/02/23]
+
+%\usepackage[T1]{fontenc}
+
+\publicationmonth{June}
+\publicationyear{1998}
+\publicationissue{9}
+
+\begin{document}
+
+\maketitle
+
+
+\section{New math font encodings}
+
+A joint working group of the \TeX{} Users Group and the \LaTeX3
+Project is developing a new 8-bit math font encoding for \TeX{}.  
+It is designed to overcome several limitations and implementation
+problems of the old math font encodings and to simplify switching
+between different sets of math fonts, much as the \LaTeX{} font
+selection interface has simplified switching between text fonts.
+
+Since the work on this project relies entirely on volunteer work, we
+cannot give a specific release date yet.  However, a prototype
+implementation already exists.  This contains several sets of virtual
+fonts, some \LaTeX{} packages and a kernel module; we hope to
+integrate it into the main \LaTeX{} distribution for the next
+release.
+
+Documents using only standard \LaTeX{} commands for math symbols
+should not be affected by switching to the new math font encodings  
+However, documents, classes or packages making specific assumptions
+about the encoding of math symbol fonts are likely to break.
+
+Further information about the Math Font Group may be found on
+the World Wide Web at \texttt{http://www.tug.org/twg/mfg/}.
+
+
+\section{A new math accent}
+
+A new math accent, \verb|\mathring|, has been added. This is a math mode
+version of the ring accent (\r{}) which is available in text 
+mode with the command \verb|\r|.
+
+\section{Extended \cs{DeclareMathDelimiter}}
+
+The command \verb|\DeclareMathDelimiter| has been extended.
+Normally this command takes six arguments. Previously, when being used
+to declare a character (such as \texttt{[}) as a delimiter, a variant
+form was used with only five arguments. The argument specifying the
+default `math class' was omitted. Now the full six-argument form may be
+used in this case. The extra information is used to implicitly declare
+the character via \verb|\DeclareMathSymbol| for use when the symbol is
+not used with \verb|\left| or \verb|\right|.
+
+The old five-argument form is detected and will work as before.
+
+\newpage
+
+\section{Tools distribution}
+
+The \texttt{multicol} package now supports the production of multiple
+columns without balancing the last page. To get this effect use the
+\texttt{multicols*} environment.
+
+The \texttt{layout} package was partly recoded by Hideo Umeki to
+display page layout effects in a better way.
+
+As suggested by Donald Arseneau, the \texttt{calc} package was extended
+to support the new commands \verb|\widthof{<text>}|,
+\verb|\heightof{<text>}|, and \verb|\depthof{<text>}| within a
+\texttt{calc}-expression.  At the same time we modified a few kernel
+commands so that \texttt{calc}-expressions can now be used in various
+useful places such as the dimension arguments to the \texttt{tabular}
+environment and the \verb|\rule| command. For many other standard
+\LaTeX{} commands this was already possible.
+
+
+\section{Support for Cyrillic encodings}
+ 
+We are very pleased that, after a lengthy period of development, a set
+of fonts, encodings and support files for using \LaTeX\ with Cyrillic
+characters will soon be available.
+ 
+Test versions of the `LH' fonts for these Cyrillic encodings, based on
+the Computer Modern design, are available from CTAN archives in the
+directory \texttt{fonts/cyrillic/lh-test}.  The \LaTeX\ support files
+(by Werner Lemberg and Vladimir Volovich) are also available from CTAN
+archives in\\
+ \texttt{macros/latex/contrib/supported/t2}
+ 
+ 
+\section{Default docstrip header}
+
+Many \LaTeX\ users now distribute packages in documented source form
+using the \textsf{docstrip} system. Docstrip allows a header to be
+placed on generated package files, suitable for giving copyright
+information, or distribution conditions.
+
+We have changed the default version of this header so that it allows
+stripped files to be distributed in ready-to-run installations such as
+the \TeX{}Live CD\@.  If you use the default header for distributing
+your files you should check that the new copyright text is acceptable
+to you.  The file \texttt{docstrip.dtx} explains how to produce your own
+header if you wish to do so.
+
+
+\end{document}

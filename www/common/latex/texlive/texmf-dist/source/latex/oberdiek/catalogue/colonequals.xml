@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='colonequals'>
+  <name>colonequals</name>
+  <caption>Colon equals symbols.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    This package defines poor man&#x2018;s symbols for mathematical
+    relation symbols such as &#x201C;colon equals&#x201D;.
+    The colon is centered around the horizontal math axis.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/colonequals.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/colonequals.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

@@ -1,0 +1,484 @@
+%% filename: amsfndoc.ins
+%% version: 2.2f
+%% date: 2002/01/30
+%%
+%% American Mathematical Society
+%% Technical Support
+%% Publications Technical Group
+%% 201 Charles Street
+%% Providence, RI 02904
+%% USA
+%% tel: (401) 455-4080
+%%      (800) 321-4267 (USA and Canada only)
+%% fax: (401) 331-3842
+%% email: tech-support@ams.org
+%% 
+%% Copyright 1994, 2002, 2009 American Mathematical Society.
+%% 
+%% Unlimited copying and redistribution of this file are permitted as
+%% long as this file is not modified.  Modifications, and distribution
+%% of modified versions, are permitted, but only if the resulting file
+%% is renamed.
+%%
+%% ====================================================================
+%    If these installation instructions are processed by themselves, we
+%    will add a bit of extra information \InstName in the appendix titles.
+\ifx\undefined\InstName
+  \let\InstName\relax \input amsfndoc.def \def\InstName{ for AMSFonts 2.2d}%
+\fi
+
+\def\AFUG{{\sl AMSFonts 2.2d User's Guide\/}}
+
+\def\TEXMF{{\tt TEXMF}}
+
+\appendix{A}{Installation Procedures\InstName}
+
+\instsec Introduction
+
+``AMSFonts'' is a collection of fonts that supplement the basic Computer
+Modern fonts, for use with the \TeX\ typesetting system. These fonts were
+originally intended for use with the \AmSTeX\ or \AmS-\LaTeX\ macro packages,
+but they can also be used with plain \TeX{} or \LaTeX, independently of the
+AMS formatting packages.
+
+AMSFonts can be used with any full implementation of \TeX.  Many \TeX{}
+distributions include the AMSFonts; check the documentation that came
+with the \TeX{} distribution you are using.  When a new version of
+AMSFonts is released, all distributors are notified, so if your \TeX{}
+system is up to date, it is likely that you don't need to do anything at
+all.
+
+Most current \TeX{} installations are organized according to the
+\TeX{} Directory Structure (TDS)\null.  This is a tree structure whose
+root is identified as something like {\tt /usr/local/share/texmf} or
+{\tt c:\char`\\sw\char`\\texmf}.  In the following instructions,
+we will use the name \TEXMF{} to identify the root directory of a
+TDS or similar structure.  (For detailed documentation of the TDS,
+see the report at\newline
+\null\indent {\tt http://www.ctan.org/tex-archive/tds/standard/tds/}\newline
+for a browsable version, or the file {\tt tds.pdf} in the same area if
+you prefer a copy formatted for printing.)
+
+When installing a new release of the AMSFonts, you may want to first
+back up your old version, if you have existing documents that use it.
+Although new releases are intended to be backward compatible, a backup
+provides insurance in case something goes wrong.
+
+
+\instsec Location of AMSFonts files in a TDS tree
+
+Files in the AMSFonts distribution fall into several categories:
+\fn{.tfm} (metric) files, macro files for use with \TeX{}, source files,
+documentation, and raster image (\fn{.pk}) files.  The following list
+shows the files in the current distribution, along with their recommended
+locations in a TDS tree.
+
+\medskip
+\begingroup
+\parskip=0pt
+\obeylines\obeyspaces\tt%
+TEXMF/
+\  fonts/source/
+\    ams/
+\      README
+\      amsfonts.lst
+\      cmextra/
+\        cmbsy*.mf    \hbox{\rm(5 files)}
+\        cmcsc*.mf    \hbox{\rm(2 files)}
+\        cmex*.mf     \hbox{\rm(3 files)}
+\        cmmib*.mf    \hbox{\rm(5 files)}
+\ \null
+\      cyrillic/      \phantom{\rm(99 files)}%
+\       cyr-alt/
+\        cyr*.mf      \hbox{\rm(9 files)\phantom{9}}%
+\         README
+\        serb*.mf     \hbox{\rm(2 files)\phantom{9}}%
+\         wkcy*.vpl    \hbox{\rm(5 files)}
+\        wncy*.mf     \hbox{\rm(22 files)}%
+\         wlcy*.vpl    \hbox{\rm(5 files)}
+\                     \phantom{\rm(99 files)}%
+\         wvcy*.vpl    \hbox{\rm(5 files)}
+\      euler/         \phantom{\rm(99 files)}%
+\       symbols/
+\        ebigop.mf    \phantom{\rm(99 files)}%
+\         amsy*.mf     \hbox{\rm(2 files)}
+\        eubase.mf    \phantom{\rm(99 files)}%
+\         *symbols.mf  \hbox{\rm(2 files)}
+\        euex*.mf     \hbox{\rm(4 files)\phantom{9}}%
+\         msam*.mf     \hbox{\rm(6 files)}
+\        eufb*.mf     \hbox{\rm(7 files)\phantom{9}}%
+\         msbm*.mf     \hbox{\rm(6 files)}
+\        eufm*.mf     \hbox{\rm(7 files)\phantom{9}}%
+\         xb*.mf       \hbox{\rm(3 files)}
+\        eurb*.mf     \hbox{\rm(7 files)}
+\        eurm*.mf     \hbox{\rm(7 files)}
+\        eusb*.mf     \hbox{\rm(7 files)}
+\        eusm*.mf     \hbox{\rm(7 files)}
+\    public/misc/
+\      dummy.mf
+\  fonts/pk/
+\      \<device resolution>/ %
+\        \hbox{\rm (not included in bundled collection)}
+\  fonts/tfm/
+\    ams/
+\      cmextra/
+\      cyrillic/
+\      euler/
+\      symbols/
+\    public/misc/
+\      dummy.tfm
+\  tex/latex/amsfonts/
+\    amsdtx.cls          %
+\             eucal.sty
+\    amsfonts.sty        %
+\             eufrak.sty
+\    amssymb.sty         %
+\             euscript.sty
+\    cmmib7.sty          %
+\             ueu*.fd     \hbox{\rm(8 files)}
+\                        %
+\             ums*.fd     \hbox{\rm(4 files)}
+\  tex/plain/amsfonts/   %
+\           doc/ams/amsfonts/
+\    amssym.def          %
+\             amsfndoc.ps
+\    amssym.tex          %
+\             amsfonts.bug
+\    cyracc.def          %
+\             amsfonts.faq
+\  source/fonts/amsfonts/%
+\           source/latex/amsfonts/
+\    amsfndoc.tex        %
+\             amsfonts.dtx
+\    amsfndoc.def        %
+\             amsfonts.fdd
+\    amsfndoc.cyr        %
+\             amsfonts.ins
+\    amsfndoc.fnt        %
+\             amssymb.dtx
+\    amsfndoc.ins        %
+\             cmmib57.dtx
+\                        %
+\             eufrak.dtx
+\                        %
+\             euscript.dtx
+\endgroup
+
+\medskip
+\noindent
+The AMSFonts distribution can be retrieved in bundled form from the AMS
+web site, e.g., as a \fn{.zip}, \fn{.tar} or \fn{.hqx} file.  In this
+form, the files are already arranged according to the TDS structure.
+The \fn{.pk} files are not included in the main bundle; they are
+bundled separately, by output device resolution or by platform.
+To install the main bundle, place the bundled file into a convenient
+directory and unpack it using the \TEXMF{} directory as the ``Extract to''
+target.  Some examples:
+
+\halign{\quad#\hfil\quad & #\hfil \cr
+ WinZip: & Click on ``Extract'' and then in the ``Extract to'' box, enter\cr
+         & {\tt\char`\\sw\char`\\texmf}\quad (or whatever {\tt TEXMF} is
+           on your system)\cr
+ gzip:   & {\tt gzip -dc amstex.tgz \char`\|\ (cd TEXMF; tar xvf -)}\cr
+ unzip:  & {\tt unzip amstex2.zip -d TEXMF}\cr
+}
+
+\noindent
+The bundled file may be deleted after unpacking.
+
+\goodbreak
+
+\instsec Installing the \fn{.pk} files
+
+Many modern \TeX{} installations incorporate a feature called MakeTeXPk
+that creates a \fn{.pk} file only when it has actually been requested by
+a job.  Check the documentation that came with your system; if MakeTeXPk
+is available, you may choose to omit installing any \fn{.pk} files, but
+let the system generate them on demand.
+
+Alternatively, if you are using a PostScript output device, you will
+probably want to use Postscript (Type~1) outline files rather than
+\fn{.pk} files.  Type~1 versions of the AMSFonts are available separately
+from the AMS web site,\newline
+\null\indent{\tt http://www.ams.org/tex/amsfonts.html}\newline
+The fonts in the Type~1 collection do not include all sizes; for details,
+see the appropriate section of the \AFUG{} and the documentation that
+comes with the collection.
+
+If you do decide you want to install the \fn{.pk} files from the AMS server,
+consult the TDS tree shown above to identify the proper location.
+
+The amount of disk space required for installation of the AMSFonts depends on
+the resolution of your output device and on which families of fonts you choose
+to install. There are five families of fonts, and you may choose to install
+any or all of these families.  Also, you may choose to install all
+magnifications or only magnifications 100\%, 109.5\% and 120\% (\TeX{}
+magsteps 0, $1\over 2$ and 1).  For a more complete description of these
+families and magnifications, please see the appropriate sections of the
+\AFUG{}.
+
+The following table lists all the families and the disk space required
+for their installation. Before you begin the installation, decide which
+fonts and which magnifications you will choose, and make sure that
+you have enough disk space available.
+
+
+%%%%%%%%%%%%%%%%%%% this is the table of required disk space
+\bigskip
+
+\centerline{\bf Approximate Disk Space Required for AMSFonts
+		Installation}
+\nobreak
+\bigskip
+\begingroup
+\parindent0pt
+\leavevmode\hfil\vbox{\font\eightrm=cmr9
+\eightrm
+%\def\1#1<{\def\\{\cr}\baselineskip=10pt
+%    \vbox{\halign{\hss##\hss\cr#1\crcr}}}
+\def\dropentry#1{\smash{\lower.5\baselineskip\hbox{#1}}}
+\setbox0\hbox{9}
+\def~{\kern\wd0 }
+\settabs\+400dpi\ \ &100\% thru 120\%\ \ &\hskip3pc&\hskip3pc
+        &\hskip3pc&\hskip3pc&\hskip3pc&\hskip3pc&\cr
+\newbox\tablerulebox
+\setbox\tablerulebox=\vbox{\+400dpi\ \ &100\% thru 120\%\ \ &\hskip3pc
+	&\hskip3pc&\hskip3pc&\hskip3pc&\hskip3pc&\hskip3pc&\cr}
+\def\tablerule{\smallskip\hrule width 1\wd\tablerulebox \smallskip}
+
+\baselineskip=10pt
+\+&&\hss Extra\hss&\hss Euler\hss&\hss Other\hss&\hss Extra\hss&\hss
+                                       \hss&\hss All\hss&\cr
+\+&&\hss CM\hss&\hss Fraktur\hss&\hss Euler\hss&\hss Symbols\hss&\hss
+                                       Cyrillic\hss&\hss Fonts\hss&\cr
+
+%\+&&\relax\1Extra\\CM<&\relax\1Euler\\Fraktur<&\relax\1Other\\Euler<&
+%    \relax\1Extra\\Symbols<&\relax\1Cyrillic<&\relax\1All\\Fonts<&\cr
+\tablerule
+
+\baselineskip=11pt
+\+\dropentry{118dpi}&100\% thru 120\%\hss&\hss~200K\hss&\hss~150K\hss&\hss
+        ~350K\hss&\hss~150K\hss&\hss~250K\hss&\hss 1100K\hss&\cr
+\+&all mags\hss&\hss\ 550K\hss&\hss\ 350K\hss&\hss~850K\hss&\hss
+        ~450K\hss&\hss~750K\hss&\hss 2950K\hss&\cr
+\tablerule
+
+\+\dropentry{180dpi}&100\% thru 120\%\hss&\hss~250K\hss&\hss~150K\hss&\hss
+        ~350K\hss&\hss~200K\hss&\hss~300K\hss&\hss 1250K\hss&\cr
+\+&all mags\hss&\hss~750K\hss&\hss~450K\hss&\hss~950K\hss&\hss
+        ~650K\hss&\hss 1000K\hss&\hss 3800K\hss&\cr
+\tablerule
+\+\dropentry{240dpi}&100\% thru 120\%\hss&\hss~300K\hss&\hss~150K\hss&\hss
+        ~350K\hss&\hss~250K\hss&\hss~400K\hss&\hss 1450K\hss&\cr
+\+&all mags\hss&\hss~900K\hss&\hss~500K\hss&\hss 1000K\hss&\hss
+        ~800K\hss&\hss 1200K\hss&\hss 4400K\hss&\cr
+\tablerule
+
+\+\dropentry{300dpi}&100\% thru 120\%\hss&\hss~350K\hss&\hss~200K\hss&\hss
+        ~450K\hss&\hss~350K\hss&\hss~500K\hss&\hss 1850K\hss&\cr
+\+&all mags\hss&\hss 1100K\hss&\hss~700K\hss&\hss 1300K\hss&\hss\
+        1000K\hss&\hss 1500K\hss&\hss 5600K\hss&\cr
+\tablerule
+
+\+\dropentry{400dpi}&100\% thru 120\%\hss&\hss~450K\hss&\hss~250K\hss&\hss
+        ~500K\hss&\hss~400K\hss&\hss~550K\hss&\hss 2150K\hss&\cr
+\+&all mags\hss&\hss 1450K\hss&\hss~825K\hss&\hss 1625K\hss&\hss
+        1250K\hss&\hss 1850K\hss&\hss 7000K\hss&\cr
+\tablerule
+
+\+\dropentry{600dpi}&100\% thru 120\%\hss&\hss~650K\hss&\hss~325K\hss&\hss
+        ~600K\hss&\hss~500K\hss&\hss~725K\hss&\hss 2800K\hss&\cr
+\+&all mags\hss&\hss 2000K\hss&\hss1150K\hss&\hss 2150K\hss&\hss
+        1750K\hss&\hss 2650K\hss&\hss 9700K\hss&\cr
+\tablerule
+}\endgraf
+\endgroup
+%%%%%%%%%%%%%%%%%%%%%%%%%%% end of table
+
+\instsec What if your \TeX{} system isn't in a TDS tree?
+
+If your \TeX{} system is arranged in some other way, you must consult
+the user documentation for guidance.  The hints that follow are just
+that---hints.  If your \TeX{} system documentation recommends something
+different, you should follow that procedure.
+
+We recommend placing AMSFonts files into distinct subdirectories or
+folders, to simplify installation of future versions.
+
+First, determine where \TeX{} will look for its files.  The AMSFonts
+collection contains not only fonts, but also support for their use with
+plain \TeX{} and \LaTeX.  Look first for files listed in the tree above;
+if you find them, you should simply install the new versions in the
+same areas.  If you don't find them, some more specific hints follow.
+
+To install plain \TeX{} support files, look on your system for the file
+\fn{plain.tex}; the files listed above under {\tt tex/plain/amsfonts/}
+should go into (a subarea of) that area.
+
+To install \LaTeX{} support files, look for the file \fn{article.sty};
+the files listed above under {\tt tex/latex/amsfonts/} should go into
+(a subarea of) that area.
+
+To install the \fn{.tfm} files, look for the file \fn{cmr10.tfm}.
+
+Raster image files may or may not have {\tt pk} in the file extension,
+depending on the system.  These files are used by the output device
+drivers, not by \TeX{} itself.  Consult the documentation for your
+drivers to see where they look for \fn{.pk} files.  In the AMSFonts
+distribution, the directories are labeled {\tt \bs amsfonts\bs dpiXXX},
+where {\tt XXX} is the resolution of the output device multiplied by
+the magnification (for example, for a 300dpi printer, {\tt XXX} would
+be {\tt 300} for a font at 100\% or {\tt 360} for a font at 120\%).
+Unix users will have to rename the \fn{.pk} files in each directory to
+the extension \fn{.XXXpk}, where \filename{XXX} is the number in the
+directory \filename{dpiXXX} in which the file is located.  Once all
+the files have been renamed, they can be placed all together in the
+directory where your drivers will find them.
+
+
+\instsec Font definition files for \LaTeX{}
+
+{\bf Warning:} If your version of \LaTeXe{} is earlier than December
+1996, {\it and} if your operating system and \TeX{} implementation
+both refer to filenames in a case-sensitive manner, the \fn{.fd} files
+you need are not included in the bundled AMSFonts distribution; you will
+need to retrieve them explicitly from the AMS FTP server, at\newline
+\null\indent{\tt ftp://ftp.ams.org/pub/tex/amsfonts/latex/obsolete/}\newline
+This warning may apply to users of Unix systems; it does not generally
+apply to users of Windows or DOS.
+
+A better option, which we recommend strongly, is to update your version
+of \LaTeX{}; the case-sensitive \fn{.fd} filenames were made obsolete
+with the December 1996 release of \LaTeX{}, so if you are still using an
+older version, it is overdue for update.
+
+\instsec Additional note for all users of AMSFonts
+
+The device driver with which you are using these fonts may have a font
+table that needs to be updated in order for the driver to recognize
+the fonts.  In order to use AMSFonts with any software that uses such
+a table, you must enter the names of each of the fonts in the AMSFonts
+package and the effective resolutions at which you have them installed.
+The file \fn{amsfonts.lst}, which appears at the same level in the TDS
+tree as the \fn{README} file, contains a list of all of the font names and
+all of the resolutions contained in the distribution. You may have to
+alter the format of this file to make it conform to your driver's
+needs or to reflect installation of only some of the fonts, but it
+provides you with the necessary data. See the documentation for your
+device driver to see what format is required. If your device driver
+does not depend on such a table, this step is not necessary.
+
+\instsec Note for users of \Textures{} on Macintosh
+
+The AMSFonts distribution for \Textures{} is different from what has
+been described above; the fonts are distributed in several different
+suitcase files rather than in a TDS tree.  This distribution is
+bundled in the file\newline
+\null\indent{\tt /pub/macintosh/amsfonts2-2.hqx}\newline
+which is available from the AMS FTP server or web site.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix{B}{Using the PostScript (Type 1) AMSFonts}
+
+The AMSFonts were reimplemented in Type 1 outline form jointly by Blue
+Sky Research and Y\&Y, and made freely available for general use through
+a consortium of scientific publishers.  These Type~1 fonts are not part
+of the main AMSFonts distribution, but are available separately from the
+AMS web site:\newline
+\null\indent{\tt http://www.ams.org/tex/type1-fonts.html}\newline
+The web page contains a more detailed history of these fonts than is
+given here.
+
+This collection can also be found on CTAN (the Comprehensive \TeX{}
+Archive Network), at\newline
+\null\indent{\tt http://www.ctan.org/tex-archive/amsfonts/ps-type1/}\newline
+The CTAN entry is mirrored directly from the AMS server.
+
+The symbols and fonts of mathematical alphabets in the Type~1 collection
+are provided only in sizes 5, 7, and 10 point, with additional sizes
+produced by interpolation.  To accommodate this reduced set of sizes, a
+``PS AMS fonts'' option is provided with both \LaTeX{} and \AmSTeX; see the
+relevant sections of this guide for details.  Papers and monographs
+submitted to the AMS for publication are required to use this option.
+
+\Warn Adding the ``PS AMS fonts'' option to an existing file may result
+  in changed line and page breaks, owing to the fact that sizes
+  6, 8, and 9 are produced by interpolation.
+\endx
+
+The Type~1 cyrillic fonts are provided only in 10 point.  The ``PS AMS fonts''
+option does not apply to cyrillic at the present time.
+
+Some output device drivers (e.g., {\tt dvips}) require a ``map'' file
+to identify Type~1 fonts; for details, see the documentation for your
+device driver.
+
+If you are using the Type~1 AMSFonts, you may wish to rename the \fn{.tfm}
+files for the intermediate sizes---6, 8, and 9 point for the math fonts
+and all sizes but 10 point for the cyrillic---so that \TeX{} won't find
+them.  This will insure that the bitmaps aren't used inadvertently, or
+created on demand by systems that use the MakeTeXPk facility.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix{C}{For further information}
+
+The AMSFonts collection was implemented and packaged by the Society's
+Publications Technical Group.
+Questions or suggestions for improvements should be directed to that
+group at the following address:
+\begingroup
+\smallskip
+\parskip=0pt
+\TextAddr Publications Technical Group
+  \AMS{}
+  \POBox 6248
+  Providence, RI 02940
+  \smallskip Phone: 800-321-4AMS (4267)\quad or\quad 401-455-4080
+  Internet: {\tt tech-support@ams.org}<
+\endgroup
+
+\smallskip
+
+\noindent
+Questions or comments concerning \Textures{} can be directed to:
+\begingroup
+\smallskip\parskip0pt
+\TextAddr
+  Blue Sky Research
+  516 Southeast Morrison
+  Portland, OR 97204
+  \smallskip
+  Phone: 800-622-8398 \quad or \quad 503-222-9571
+  Internet: {\tt help@bluesky.com}<
+
+\endgroup
+
+\smallskip
+
+%\noindent
+%The \TUG{} is a good source of general information about fonts for use
+%with \TeX.  Inquiries can be directed to:
+%\begingroup
+%\smallskip
+%\parskip=0pt
+%\TextAddr \TUG{}
+%  1850 Union Street, \#1637
+%  San Francisco, CA 94123 USA
+%  \smallskip Phone: 415-982-8449
+%  Internet: {\tt tug@tug.org}<
+%\endgroup
+
+\noindent
+The Internet newsgroup {\tt comp.text.tex} is an excellent source of
+general information about anything related to \TeX, and fonts are no
+exception.  The newsgroup and its archives can be accessed at
+{\tt http://groups.google.com/}.
+
+The \TeX{} Resources pages at the AMS web site
+({\tt http://www.ams.org/tex/}) contain pointers to additional sources
+of \TeX{}-related information, including answers to Frequently Asked
+Questions (FAQ).
+
+\bye

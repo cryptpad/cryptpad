@@ -1,0 +1,631 @@
+% \iffalse meta-comment
+%
+% File: aliascnt.dtx
+% Version: 2009/09/08 v1.3
+% Info: Alias counters
+%
+% Copyright (C) 2006, 2009 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file aliascnt.dtx
+% and the derived files
+%    aliascnt.sty, aliascnt.pdf, aliascnt.ins, aliascnt.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/aliascnt.dtx
+%    CTAN:macros/latex/contrib/oberdiek/aliascnt.pdf
+%
+% Unpacking:
+%    (a) If aliascnt.ins is present:
+%           tex aliascnt.ins
+%    (b) Without aliascnt.ins:
+%           tex aliascnt.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{aliascnt.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If aliascnt.drv is present:
+%           latex aliascnt.drv
+%    (b) Without aliascnt.drv:
+%           latex aliascnt.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex aliascnt.dtx
+%       makeindex -s gind.ist aliascnt.idx
+%       pdflatex aliascnt.dtx
+%       makeindex -s gind.ist aliascnt.idx
+%       pdflatex aliascnt.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/aliascnt.sty
+%    TDS:doc/latex/oberdiek/aliascnt.pdf
+%    TDS:source/latex/oberdiek/aliascnt.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: aliascnt 2009/09/08 v1.3 Alias counters (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: aliascnt
+Version: 2009/09/08 v1.3
+
+Copyright (C) 2006, 2009 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file aliascnt.dtx
+and the derived files
+   aliascnt.sty, aliascnt.pdf, aliascnt.ins, aliascnt.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{aliascnt.ins}{\from{aliascnt.dtx}{install}}%
+  \file{aliascnt.drv}{\from{aliascnt.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{aliascnt.sty}{\from{aliascnt.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{aliascnt.xml}{\from{aliascnt.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     aliascnt.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `aliascnt.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{aliascnt.drv}%
+  [2009/09/08 v1.3 Alias counters (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{aliascnt.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{78}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{aliascnt.drv}
+%
+% \title{The \xpackage{aliascnt} package}
+% \date{2009/09/08 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{aliascnt} introduces \emph{alias counters} that
+% share the same counter register and clear list.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{User interface}
+%
+% \subsection{Introduction}
+%
+% There are features that rely on the name of counters. For
+% example, \xpackage{hyperref}'s \cs{autoref} indirectly uses
+% the counter name to determine which label text it puts in front
+% of the reference number (\cite{hyperref}).
+% In some circumstances this fail: several theorem environments
+% are defined by \cs{newtheorem} that share the same counter.
+%
+% \subsection{Syntax}
+%
+% Macro names in user land contain the package name
+% \texttt{aliascnt} in order to prevent name clashes.
+%
+% \newenvironment{desc}{^^A
+%   \list{}{^^A
+%     \setlength{\labelwidth}{0pt}^^A
+%     \setlength{\itemindent}{-.5\marginparwidth}^^A
+%     \setlength{\leftmargin}{0pt}^^A
+%     \let\makelabel\desclabel
+%   }^^A
+% }{^^A
+%   \endlist
+% }
+% \newcommand*{\desclabel}[1]{^^A
+%   \hspace{\labelsep}^^A
+%   \normalfont
+%   #1^^A
+% }
+% \newcommand*{\itemcs}[2]{^^A
+%   \item[^^A
+%      \expandafter\SpecialUsageIndex\csname #1\endcsname
+%      {\cs{#1}#2}^^A
+%   ]\mbox{}\\*[.5ex]^^A
+%   \ignorespaces
+% }
+% \begin{desc}
+% \itemcs{newaliascnt}{\marg{ALIASCNT}\marg{BASECNT}}
+%    An alias counter ALIASCNT is created that does not allocate
+%    a new \TeX\ counter register. It shares the count register and
+%    the clear list with counter BASECNT. If the value of either
+%    the two registers is changed, the changes affects both.
+% \itemcs{aliascntresetthe}{\marg{ALIASCNT}}
+%    This fixes a problem with \cs{newtheorem} if it
+%    is fooled by an alias counter with the same name:
+%    \begin{quote}
+%\begin{verbatim}
+%\newtheorem{foo}{Foo}% counter "foo"
+%\newaliascnt{bar}{foo}% alias counter "bar"
+%\newtheorem{bar}[bar]{Bar}
+%\aliascntresetthe{bar}
+%\end{verbatim}
+%    \end{quote}
+% \end{desc}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{aliascnt}%
+  [2009/09/08 v1.3 Alias counters (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Create new alias counter}
+%
+%    \begin{macro}{\newaliascnt}
+%    A new alias counter is set up by \cs{newaliascnt}.
+%    The following properties are added for the new counter CNT:
+%    \begin{description}
+%    \item[\mdseries\cs{theH}\meta{CNT}:] Compatibility for \xpackage{hyperref}
+%    \item[\mdseries\cs{AC@cnt@}\meta{CNT}:] Name of the referenced counter
+%      in the definition.
+%    \end{description}
+%    \begin{macrocode}
+\newcommand*{\newaliascnt}[2]{%
+  \begingroup
+    \def\AC@glet##1{%
+      \global\expandafter\let\csname##1#1\expandafter\endcsname
+        \csname##1#2\endcsname
+    }%
+    \@ifundefined{c@#2}{%
+      \@nocounterr{#2}%
+    }{%
+      \expandafter\@ifdefinable\csname c@#1\endcsname{%
+        \AC@glet{c@}%
+        \AC@glet{the}%
+        \AC@glet{theH}%
+        \AC@glet{p@}%
+        \expandafter\gdef\csname AC@cnt@#1\endcsname{#2}%
+        \expandafter\gdef\csname cl@#1\expandafter\endcsname
+        \expandafter{\csname cl@#2\endcsname}%
+      }%
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\aliascntresetthe}
+%    The \cs{the}\meta{CNT} macro is restored using the
+%    main counter.
+%    \begin{macrocode}
+\newcommand*{\aliascntresetthe}[1]{%
+  \@ifundefined{AC@cnt@#1}{%
+    \PackageError{aliascnt}{%
+      `#1' is not an alias counter%
+    }\@ehc
+  }{%
+    \expandafter\let\csname the#1\expandafter\endcsname
+      \csname the\csname AC@cnt@#1\endcsname\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Counter clear list}
+%
+%    The alias counters share the same register and clear list.
+%    Therefore we must ensure that manipulations to the clear list
+%    are done with the clear list macro of a real counter.
+%    \begin{macro}{\AC@findrootcnt}
+%    \cs{AC@findrootcnt} walks throught the aliasing relations
+%    to find the base counter.
+%    \begin{macrocode}
+\newcommand*{\AC@findrootcnt}[1]{%
+  \@ifundefined{AC@cnt@#1}{%
+    #1%
+  }{%
+    \expandafter\AC@findrootcnt\csname AC@cnt@#1\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Clear lists are manipulated by \cs{@addtoreset} and
+%    \cs{@removefromreset}. The latter one is provided by
+%    the \xpackage{remreset} package (\cite{remreset}).
+%
+%    \begin{macro}{\AC@patch}
+%    The same patch principle is applicable to both
+%    \cs{@addtoreset} and \cs{@removefromreset}.
+%    \begin{macrocode}
+\def\AC@patch#1{%
+  \expandafter\let\csname AC@org@#1reset\expandafter\endcsname
+    \csname @#1reset\endcsname
+  \expandafter\def\csname @#1reset\endcsname##1##2{%
+    \csname AC@org@#1reset\endcsname{##1}{\AC@findrootcnt{##2}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    If \xpackage{remreset} is not loaded we cannot delay
+%    the patch to \cs{AtBeginDocumen}, because \cs{@removefromreset}
+%    can be called in between. Therefore we force the loading of
+%    the package.
+%    \begin{macrocode}
+\RequirePackage{remreset}
+\AC@patch{addto}
+\AC@patch{removefrom}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/aliascnt.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/aliascnt.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex aliascnt.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   aliascnt.sty & tex/latex/oberdiek/aliascnt.sty\\
+%   aliascnt.pdf & doc/latex/oberdiek/aliascnt.pdf\\
+%   aliascnt.dtx & source/latex/oberdiek/aliascnt.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk aliascnt.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{aliascnt.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex aliascnt.dtx
+%makeindex -s gind.ist aliascnt.idx
+%pdflatex aliascnt.dtx
+%makeindex -s gind.ist aliascnt.idx
+%pdflatex aliascnt.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{aliascnt.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='aliascnt'>
+  <name>aliascnt</name>
+  <caption>Alias counters.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006,2009'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    This package introduces aliases for counters, that
+    share the same counter register and clear list.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/aliascnt.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/aliascnt.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Ulrich Schwarz:] The package is based on his draft for
+%   ``Die \TeX nische Kom\"odie'', see \cite{schwarz}.
+% \end{description}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{schwarz}
+%   Ulrich Schwarz:
+%   \textit{Was hinten herauskommt z\"ahlt: Counter Aliasing in \LaTeX},
+%   \textit{Die \TeX nische Kom\"odie}, 3/2006, pages 8--14, Juli 2006.
+%
+% \bibitem{remreset}
+%   David Carlisle: \textit{The \xpackage{remreset} package};
+%   1997/09/28;
+%   \CTAN{macros/latex/contrib/carlisle/remreset.sty}.
+%
+% \bibitem{hyperref}
+%   Sebastian Rahtz, Heiko Oberdiek:
+%   \textit{The \xpackage{hyperref} package};
+%   2006/08/16 v6.75c;
+%   \CTAN{macros/latex/contrib/hyperref/}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2006/02/20 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2006/08/16 v1.1}
+%   \item
+%     Update of bibliography.
+%   \end{Version}
+%   \begin{Version}{2006/09/25 v1.2}
+%   \item
+%     Bug fix (\cs{aliascntresetthe}).
+%   \end{Version}
+%   \begin{Version}{2009/09/08 v1.3}
+%   \item
+%     Bug fix of \cs{@ifdefinable}'s use (thanks to Uwe L\"uck).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

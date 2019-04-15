@@ -1,0 +1,47 @@
+Basque hyphenation patterns
+
+(more info about the licence to be added later)
+
+% Hyphenation patterns for Basque.
+%
+% This file has first been written by Juan M. Aguirregabiria
+% (juanmari.aguirregabiria@ehu.es) on February 1997 based on the
+% shyphen.sh script that generates the Spanish patterns as compiled
+% by Julio Sanchez (jsanchez@gmv.es) on September 1991.
+%
+% In June 2008 the generating script has been rewritten into ruby and
+% adapted for native UTF-8 TeX engines. Patterns became part of hyph-utf8
+% package and were renamed from bahyph.tex into hyph-eu.tex.
+% Functionality should not change apart from adding ñ by default.
+%
+% The original Copyright followed and applied also to precessor of this file
+% whose last version will be always available by anonymous ftp
+% from tp.lc.ehu.es or by poynting your Web browser to
+%     http://tp.lc.ehu.es/jma/basque.html
+%
+% For more information about the new UTF-8 hyphenation patterns and
+% links to this file see
+%     http://www.tug.org/tex-hyphen/
+%
+%          COPYRIGHT NOTICE
+%
+% These patterns and the generating script are Copyright (c) JMA 1997, 2008
+% These patterns are made public in the hope that they will benefit others.
+% You can use this software for any purpose.
+% However, this is given for free and WITHOUT ANY WARRANTY.
+%
+% You are kindly requested to send any changes to the author.
+% If you change the generating script, you must include code
+% in it such that any output is clearly labeled as generated
+% by a modified script.
+%
+%               END OF COPYRIGHT NOTICE
+%
+% Open vowels: a e o
+% Closed vowels: i u
+% Consonants: b c d f g j k l m n ñ p q r s t v w x y z
+%
+% Some of the patterns below represent combinations that never
+% happen in Basque. Would they happen, they would be hyphenated
+% according to the rules.
+%

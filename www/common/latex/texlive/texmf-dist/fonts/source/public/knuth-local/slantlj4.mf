@@ -1,0 +1,11 @@
+% slant font for slope 1/4 on the LaserJet
+
+if mode<>ljfour: errmessage "This file is for LaserJet only"; fi
+
+s=1/4;
+n=30;
+r#=.4;
+u=3; % an approximation to r in pixels
+
+font_identifier "SLANTLJ4";
+input slant

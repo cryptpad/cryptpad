@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ifvtex'>
+  <name>ifvtex</name>
+  <caption>Detects use of VTeX and its facilities.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2006-2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.5'/>
+  <description>
+    The package looks for VTeX and sets the switch <tt>\ifvtex</tt>.
+    In the presence of VTeX, the mode switches <tt>\ifvtexdvi</tt>,
+    <tt>\ifvtexpdf</tt> and <tt>\ifvtexps</tt> are set;
+    <tt>\ifvtexgex</tt> tells you whether GeX is operating.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ifvtex.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ifvtex.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='stampinclude'>
+  <name>stampinclude</name>
+  <caption>Inclusion based on .aux file date stamps.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    This package replaces <tt>\includeonly</tt> and selects the files for
+    <tt>\include</tt> by inspecting the timestamp of the <tt>.aux</tt> file.
+    The file is selected for inclusion if the <tt>.aux</tt> file does
+    not yet exist or is older than the corresponding <tt>.tex</tt> file.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/stampinclude.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/stampinclude.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

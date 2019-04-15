@@ -1,0 +1,1956 @@
+% \iffalse meta-comment
+%
+% File: alphalph.dtx
+% Version: 2011/05/13 v2.4
+% Info: Convert numbers to letters
+%
+% Copyright (C) 1999, 2006-2008, 2010, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file alphalph.dtx
+% and the derived files
+%    alphalph.sty, alphalph.pdf, alphalph.ins, alphalph.drv,
+%    alphalph-test1.tex, alphalph-test2.tex, alphalph-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/alphalph.dtx
+%    CTAN:macros/latex/contrib/oberdiek/alphalph.pdf
+%
+% Unpacking:
+%    (a) If alphalph.ins is present:
+%           tex alphalph.ins
+%    (b) Without alphalph.ins:
+%           tex alphalph.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{alphalph.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If alphalph.drv is present:
+%           latex alphalph.drv
+%    (b) Without alphalph.drv:
+%           latex alphalph.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex alphalph.dtx
+%       makeindex -s gind.ist alphalph.idx
+%       pdflatex alphalph.dtx
+%       makeindex -s gind.ist alphalph.idx
+%       pdflatex alphalph.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/alphalph.sty
+%    TDS:doc/latex/oberdiek/alphalph.pdf
+%    TDS:doc/latex/oberdiek/test/alphalph-test1.tex
+%    TDS:doc/latex/oberdiek/test/alphalph-test2.tex
+%    TDS:doc/latex/oberdiek/test/alphalph-test3.tex
+%    TDS:source/latex/oberdiek/alphalph.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: alphalph 2011/05/13 v2.4 Convert numbers to letters (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: alphalph
+Version: 2011/05/13 v2.4
+
+Copyright (C) 1999, 2006-2008, 2010, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file alphalph.dtx
+and the derived files
+   alphalph.sty, alphalph.pdf, alphalph.ins, alphalph.drv,
+   alphalph-test1.tex, alphalph-test2.tex, alphalph-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{alphalph.ins}{\from{alphalph.dtx}{install}}%
+  \file{alphalph.drv}{\from{alphalph.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{alphalph.sty}{\from{alphalph.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{alphalph-test1.tex}{\from{alphalph.dtx}{test1}}%
+  \file{alphalph-test2.tex}{\from{alphalph.dtx}{test2,etex}}%
+  \file{alphalph-test3.tex}{\from{alphalph.dtx}{test2,noetex}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{alphalph.xml}{\from{alphalph.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     alphalph.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `alphalph.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{alphalph.drv}%
+  [2011/05/13 v2.4 Convert numbers to letters (HO)]%
+\documentclass{ltxdoc}
+\usepackage{alphalph}[2011/05/13]
+\makeatletter
+\newalphalph{\fnsymbolwrap}[wrap]{\@fnsymbol}{}
+\newcommand*{\fnsymbolsingle}[1]{%
+  \ensuremath{%
+    \ifcase#1%
+    \or *%
+    \or \dagger
+    \or \ddagger
+    \or \mathsection
+    \or \mathparagraph
+    \else
+      \@ctrerr
+    \fi
+  }%
+}
+\makeatother
+\newalphalph{\fnsymbolmult}[mult]{\fnsymbolsingle}{}
+\usepackage{amsmath}
+\DeclareMathOperator{\opDiv}{div}
+\DeclareMathOperator{\opMod}{mod}
+\newcommand*{\Def}{%
+  \ensuremath{%
+    \mathrel{\mathop{:}}=%
+  }%
+}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{alphalph.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1218}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{alphalph.drv}
+%
+% \title{The \xpackage{alphalph} package}
+% \date{2011/05/13 v2.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package provides methods to represent numbers with a limited
+% set of symbols. Both \hologo{LaTeX} and \hologo{plainTeX} are supported.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+% \hologo{LaTeX} counters can be represented in different ways
+% by using presentation commands:
+% \begin{quote}
+%   \cs{arabic}, \cs{roman}, \cs{Roman},\\
+%   \cs{alph}, \cs{Alph}, \cs{fnsymbol}
+% \end{quote}
+% The ranges of supported counter values are more or less
+% restricted. Only \cs{arabic} can be used with any counter
+% value \hologo{TeX} supports.
+% \begin{quote}
+% \catcode`\|=12 %
+% \begin{tabular}{@{}l|l|l|l@{}}
+% Presentation & Supported & Ignored & Error message\\
+% command      & domain    & values  & ``Counter too large''\\
+% \hline
+% \cs{arabic}
+%   & \ttfamily -MAX..MAX & &\\
+% \cs{roman}, \cs{Roman}
+%   & \ttfamily 1..MAX & \ttfamily -MAX..0 &\\
+% \cs{alph}, \cs{Alph}
+%   & \ttfamily 1..26 & 0 & \ttfamily -MAX..-1, 27..MAX\\
+% \cs{fnsymbol}
+%   & \ttfamily 1..9 & 0 & \ttfamily -MAX..-1, 10..MAX\\
+% \hline
+% \end{tabular}\\[1ex]
+% \texttt{MAX} = \texttt{2147483647}
+% \end{quote}
+% Ordinal numbers are often used in documents: numbering
+% of chapters, sections, figures, footnotes and so on.
+% The layouter chooses \cs{Alph} for chapter numbers
+% and \cs{fnsymbol} for footnotes. But what can be done
+% if there are more than 26 chapters or more than 10 footnotes?
+% This package \xpackage{alphalph} allows to define new
+% presentation commands. They rely on a existing command
+% and define presentations for values greater the limits.
+% Three different methods are provided by the package.
+% In the following use cases they are presentated.
+%
+% \subsection{Use cases}
+%
+% \subsubsection{Number system based on symbols}
+%
+% Asume you are writing a book and your lecturer demands
+% that chapter numbers must be letters. But you have already
+% 30 chapters and you have only 26 letters?
+%
+% In the decimal system the situation would be clear.
+% If you run out of digits, you are using more digits
+% to represent a number. This method can be also be used
+% for letters. After chapter 26 with |Z| we us |AA|, |AB|, |AC|, and |AD|
+% for the remaining chapters.
+%
+% Happily this package already defines this presentation command:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{alphalph}
+%\renewcommand*{\thechapter}{%
+%  \AlphAlph{\value{chapter}}%
+%}
+%\end{verbatim}
+%\end{quote}
+% \cs{AlphAlph} generates:
+%   \AlphAlph{1}, \AlphAlph{2}, \AlphAlph{3}, \dots,
+%   \AlphAlph{26}, \AlphAlph{27}, \AlphAlph{28}, \dots
+%
+% The other presentation command is \cs{alphalph} for lowercase letters.
+%
+% \subsubsection{Wrap symbols around}
+%
+% Nine footnote symbols are quite a few.
+% Too soon the symbols are consumed
+% and \hologo{LaTeX} complains with the error ``Counter too large''.
+% However, it could be acceptable to start again with the symbols
+% from the beginning, especially if there are less than nine symbols
+% on a page.
+% This could be achieved by a counter reset.
+% But finding the right place can be difficult or needs manual
+% actions. Also a
+% unique counter value can be desirable (e.g. for generating
+% unique anchor/link names).
+% Package \xpackage{alphalph} allows you to define
+% a macro that implements a ``wrap around'', but letting
+% the value of the counter untouched:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{alphalph}
+%\makeatletter
+%\newalphalph{\fnsymbolwrap}[wrap]{\@fnsymbol}{}
+%\makeatother
+%\renewcommand*{\thefootnote}{%
+%  \fnsymbolwrap{\value{footnote}}%
+%}
+%\end{verbatim}
+%\end{quote}
+% \cs{fnsymbolwrap} generates:
+% \fnsymbolwrap{1}~(1), \fnsymbolwrap{2}~(2), \fnsymbolwrap{3}~(3), \dots,
+% \fnsymbolwrap{9}~(9), \fnsymbolwrap{10}~(10), \fnsymbolwrap{11}~11, \dots
+%
+% \subsubsection{Multiple symbols}
+%
+% \Hologo{LaTeX}'s standard set of footnote symbols contains doubled
+% symbols at the higher positions. Could this principle
+% be generalized?
+% Yes, but first we need a clean footnote symbol list without
+% doubled entries, example:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{alphalph}
+%\makeatletter
+%\newcommand*{\fnsymbolsingle}[1]{%
+%  \ensuremath{%
+%    \ifcase#1%
+%    \or *%
+%    \or \dagger
+%    \or \ddagger
+%    \or \mathsection
+%    \or \mathparagraph
+%    \else
+%      \@ctrerr
+%    \fi
+%  }%
+%}
+%\makeatother
+%\newalphalph{\fnsymbolmult}[mult]{\fnsymbolsingle}{}
+%\renewcommand*{\thefootnote}{%
+%  \fnsymbolmult{\value{footnote}}%
+%}
+%\end{verbatim}
+%\end{quote}
+% The own definition of \cs{fnsymbolsingle} has the
+% advantage that this list can easily modified.
+% Otherwise you can use \cs{@fnsymbol} directly,
+% because it uses the same first five symbols.
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{alphalph}
+%\makeatletter
+%\newalphalph{\fnsymbolmult}[mult]{\@fnsymbol}{5}
+%\makeatother
+%\renewcommand*{\thefootnote}{%
+%  \fnsymbolmult{\value{footnote}}%
+%}
+%\end{verbatim}
+%\end{quote}
+% \cs{fnsymbolmult} generates:
+% \fnsymbolmult{1}~(1), \fnsymbolmult{2}~(2), \fnsymbolmult{3}~(3),
+% \fnsymbolmult{4}~(4), \fnsymbolmult{5}~(5), \fnsymbolmult{6}~(6),
+% \dots, \fnsymbolmult{16}~16, \fnsymbolmult{17}~17, \dots
+%
+% \bigskip
+% The same method can also be used for the chapter problem
+% in the first discussed use case:
+%\begin{quote}
+%\begin{verbatim}
+%\usepackage{alphalph}
+%\makeatletter
+%\newalphalph{\AlphMult}[mult]{\@Alph}{26}
+%\makeatother
+%\renewcommand*{\chapter}{%
+%  \AlphMult{\value{chapter}}%
+%}
+%\end{verbatim}
+%\end{quote}
+% \cs{AlphMult} then generates AA, BB, CC, and DD for chapters 27--30.
+%
+% \subsection{Glossary}
+%
+% \begin{description}
+% \item[Counter presentation command] is a macro that
+%   expects a \hologo{LaTeX} counter name as argument.
+%   Numbers cannot be used. Examples:
+%   \cs{arabic}, \cs{alph}, \cs{fnsymbol}.
+% \item[Number presentation command] is a macro that
+%   expects a number as argument. A number is anything
+%   that \hologo{TeX} accepts as number including \cs{value}.
+%   Examples: \cs{alphalph}, \cs{AlphAlph}, \cs{alphalph@alph}
+%
+%   However, \cs{alph} or \cs{fnsymbol} are not number
+%   presentation commands because they expect a counter
+%   name as argument. Happily \hologo{LaTeX} counter presentation
+%   commands internally uses number presentation commands
+%   with the same name, but prefixed by `@'. Thus
+%   \cs{@alph}, \cs{@fnsymbol} are number presentation commands.
+% \item[Symbols provider] is a command that can be used
+%   to get a list of symbols. For example, \cs{@Alph}
+%   provides the 26 uppercase letters from `A' to `Z'.
+%   Basically a symbol provider is a number presentation
+%   command, usually with a limited range.
+% \item[Number of symbols] is the number of the
+%   last symbol slot of a symbol provider. Thus \cs{@Alph}
+%   generates 26 symbols, \cs{@fnsymbol} provides 9 symbols.
+% \end{description}
+%
+% \subsection{Package usage}
+%
+% The package \Package{alphalph} can be used with both \hologo{plainTeX}
+% and \hologo{LaTeX}:
+% \begin{description}
+% \item[\hologo{plainTeX}:] |\input alphalph.sty|
+% \item[\hologo{LaTeX2e}:]   |\usepackage{alphalph}|\\
+%      There aren't any options.
+% \end{description}
+%
+% \subsection{User commands}
+%
+% \begin{declcs}{AlphAlph} \M{number}\\
+%   \cs{alphalph} \M{number}
+% \end{declcs}
+% Both macros are number presentation commands that
+% expects a number as argument. \hologo{LaTeX} counters
+% are used with \cs{value}.
+%
+% The macros represents a number by letters.
+% First single letters |A..Z| are used, then
+% two letters |AA..ZZ|, three letters |AAA...ZZZ|, \dots
+% follow.
+%
+% Macro \cs{AlphAlph} uses uppercase letters,
+% \cs{alphalph} generates the lowercase variant.
+% \begin{quote}
+%   \catcode`\|=12
+%   \def\entry#1{
+%     \texttt{#1}
+%     & \texttt{\AlphAlph{#1}}
+%     & \texttt{\alphalph{#1}}
+%   }
+%   \begin{tabular}{@{}l|l|l@{}}
+%     \meta{number} & \verb|\AlphAlph{|\meta{number}\verb|}|
+%                   & \verb|\alphalph{|\meta{number}\verb|}|\\
+%     \hline
+%     \entry{1}\\
+%     \entry{2}\\
+%     \entry{26}\\
+%     \entry{27}\\
+%     \entry{30}\\
+%     \entry{2000}\\
+%     \entry{3752127}\\
+%     \entry{10786572}\\
+%     \entry{2147483647}\\
+%   \end{tabular}
+% \end{quote}
+%
+% \begin{declcs}{newalphalph}
+%   \M{cmd}
+%   |[|\meta{method}|]|
+%   \M{symbols provider}
+%   \M{number of symbols}
+% \end{declcs}
+% Macro \cs{newalphalph} defines \meta{cmd} as new
+% number presentation command. Like \cs{newcommand} an error
+% is thrown, if macro \meta{cmd} already exists.
+%
+% The \meta{method} is one of |alph|, |wrap|, or |mult|.
+% The default is |alph|.
+%
+% As symbol provider a number presentation command
+% can be used, e.g. \cs{@fnsymbol}, \cs{@Alph}, or
+% \cs{alphalph@alph}.
+%
+% The last argument is the number of symbols.
+% If the argument is empty, then \cs{newalphalph} tries
+% to find this number itself. \hologo{LaTeX}'s number presentation
+% commands throw an error message, if the number is too large.
+% This error message is put in a macro \cs{@ctrerr}.
+% Thus \cs{newalphalph} calls the symbol provider and tests
+% a number by typesetting it in a temporary box. The error
+% macro \cs{@ctrerr} is catched, it proofs that the number
+% is not supported. Also if the width of the result is zero
+% the number is considered as unavailable.
+%
+% The empty argument is useful for potentially variable lists.
+% However if the end cannot be detected, then the number of
+% symbols must be given. This is also a lot faster. Therefore don't
+% let the argument empty without reason.
+%
+% \subsection{Programmer commands}
+%
+% \begin{declcs}{alphalph@Alph} \M{number}\\
+%   \cs{alphalph@alph} \M{number}
+% \end{declcs}
+% They are basically the same as \cs{@Alph} and \cs{@alph}.
+% Some languages of package \xpackage{babel} redefine
+% \hologo{LaTeX}'s macros to include some font setup that
+% breaks expandibility. Therefore \cs{AlphAlph} and \cs{alphalph}
+% are based on \cs{alphalph@Alph} and \cs{alphalph@alph} to get
+% the letters. The behaviour of these symbol providers for numbers
+% outside the range |1..26| is undefined.
+%
+% \subsection{Design principles}
+%
+% \subsubsection{Number presentation commands}
+%
+% All number presentation commands that this package defines
+% (including \cs{alphalph} and \cs{AlphAlph}) have the following
+% properties:
+% \begin{itemize}
+% \item They are fully expandable. This means that they can safely
+%       \begin{itemize}
+%       \item be written to a file,
+%       \item used in moving arguments (\hologo{LaTeX}: they are \emph{robust}),
+%       \item used in a \cmd{\csname}-\cmd{\endcsname} pair.
+%       \end{itemize}
+% \item If the argument is zero or negative, the commands expand
+%       to nothing like \cmd{\romannumeral}.
+% \item The argument is a \hologo{TeX} number. Anything that would be
+%       accepted by \cmd{\number} is a valid argument:
+%       \begin{itemize}
+%       \item explicite constants,
+%       \item macros that expand to a number,
+%       \item count registers, \hologo{LaTeX} counter can used
+%             via \cmd{\value}, e.\,g.:\\
+%             |\alphalph{\value{page}}|
+%       \item \dots
+%       \end{itemize}
+% \item \hologo{eTeX}'s numeric expressions are supported, if \hologo{eTeX} is
+%       available. Then \cs{numexpr} is applied to the argument.
+%       Package \cs{calc}'s expressions are not supported.
+%       That would violate the expandibility.
+% \end{itemize}
+%
+% \subsubsection{General usability}
+%
+% \begin{description}
+% \item[\hologo{TeX} format:]
+%   The package does not depend on \hologo{LaTeX}, it can also be used
+%   by \hologo{plainTeX}, for example.
+% \item[\hologo{eTeX}:] \eTeX is supported, the macros are shorter and
+%   faster. But \eTeX's extensions are not requirements.
+%   Without \hologo{eTeX}, just the implementation changes. The properties
+%   remain unchanged.
+% \end{description}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+% \subsection{Begin\texorpdfstring{ of package}{}}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@alphalph.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{alphalph}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@alphalph.sty\endcsname
+\ProvidesPackage{alphalph}%
+  [2011/05/13 v2.4 Convert numbers to letters (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname AlPh@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\AlPh@AtEnd{%
+    \AlPh@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\edef\AlPh@AtEnd{\AlPh@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Package loading}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input intcalc.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{intcalc}[2007/09/09]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{\hologo{eTeX} detection}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \catcode124=9 % '!': ignore
+  \catcode43=14 % '+': comment
+\else
+  \catcode124=14 % '!': comment
+  \catcode43=9   % '+': ignore
+\fi
+%    \end{macrocode}
+%
+% \subsection{Help macros}
+%
+%    \begin{macro}{\AlPh@Error}
+%    \begin{macrocode}
+\def\AlPh@Error#1{%
+  \begingroup
+    \escapechar=92 % backslash
+    \@PackageError{alphalph}{#1}\@ehc
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AlPh@IfDefinable}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @ifdefinable\endcsname\relax
+  \def\AlPh@IfDefinable#1#2{%
+    \ifcase\ifx#1\@undefined\else\ifx#1\relax\else1\fi\fi0 %
+      #2%
+    \else
+      \AlPh@Error{%
+        Command \string#1 already defined%
+      }%
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macro}{\AlPh@IfDefinable}
+%    \begin{macrocode}
+  \let\AlPh@IfDefinable\@ifdefinable
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\@ReturnAfterElseFi}
+%    \begin{macro}{\@ReturnAfterFi}
+%    The following commands moves the `then' and `else' part respectively
+%    behind the |\if|-construct. This prevents a too deep |\if|-nesting
+%    and so a \hologo{TeX} capacity error because of a limited input stack size.
+%    I use this trick in several packages, so I don't prefix these internal
+%    commands in order not to have the same macros with different names.
+%    (It saves memory.)
+%    \begin{macrocode}
+\long\def\@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%
+%    \begin{macro}{\@gobblefour}
+%    \Hologo{LaTeX} defines commands for eating arguments.
+%    Define \cs{@gobblefour} if it is not defined (\hologo{plainTeX}).
+%    \begin{macrocode}
+\expandafter\ifx\csname @gobblefour\endcsname\relax
+  \long\def\@gobblefour#1#2#3#4{}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{AlPh@IfOptArg}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname kernel@ifnextchar\endcsname\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @ifnextchar\endcsname\relax
+    \def\AlPh@IfOptArg#1#2{%
+      \def\AlPh@TempA{#1}%
+      \def\AlPh@TempB{#2}%
+      \futurelet\AlPh@Token\AlPh@IfOptArgNext
+    }%
+    \let\AlPh@BracketLeft=[%]
+    \def\AlPh@IfOptArgNext{%
+      \ifx\AlPh@Token\AlPh@BracketLeft
+        \expandafter\AlPh@TempA
+      \else
+        \expandafter\AlPh@TempB
+      \fi
+    }%
+  \else
+    \def\AlPh@IfOptArg{\@ifnextchar[}%]
+  \fi
+\else
+  \def\AlPh@IfOptArg{\kernel@ifnextchar[}%]
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Symbol provider}
+%
+% \subsubsection{Alphabet}
+%
+%    The output of \cs{alphalph} and \cs{AlphAlph} should be
+%    usable as part of command names (see \cs{@namedef}, \cs{csname}, \dots).
+%    Unhappily some languages of package \xpackage{babel}
+%    redefine \hologo{LaTeX}'s \cs{@alph} and \cs{@Alph} in a manner that
+%    they cannot be used in expandable context any more.
+%    Therefore package \xpackage{alphalph} provides its own
+%    commands.
+%
+%    \begin{macro}{\alphalph@Alph}
+%    \begin{macro}{\alphalph@alph}
+%    The two commands \cmd{\AlPh@Alph} and \cmd{\AlPh@alph} convert a
+%    number into a letter (uppercase and lowercase respectivly).
+%    The character |@| is used as an error symbol,
+%    if the number isn't in the range of 1 until 26.
+%    Here we need no space after the number |#1|, because the error
+%    symbol |@| for the zero case stops scanning the number.
+%    This error symbol should not appear anywhere (except for bugs).
+%    \begin{macrocode}
+\def\alphalph@Alph#1{%
+  \ifcase#1%
+    @%
+  \or A\or B\or C\or D\or E\or F\or G\or H\or I\or J\or K\or L\or M%
+  \or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or Y\or Z%
+  \else
+    \AlPh@ctrerr
+    @%
+  \fi
+}
+\def\alphalph@alph#1{%
+  \ifcase#1%
+    @%
+  \or a\or b\or c\or d\or e\or f\or g\or h\or i\or j\or k\or l\or m%
+  \or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or y\or z%
+  \else
+    \AlPh@ctrerr
+    @%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%    \begin{macro}{\AlPh@ctrerr}
+%    Macro \cs{AlPh@ctrerr} is used as hook for the algorithm
+%    to get the available number of symbols.
+%    \begin{macrocode}
+\def\AlPh@ctrerr{}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Finding number of symbols}
+%
+%    \begin{macro}{\AlPh@GetNumberOfSymbols}
+%    \noindent
+%    |#1|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@GetNumberOfSymbols#1{%
+  \AlPh@TestNumber1!{#1}%
+  \ifAlPh@Unavailable
+    \def\AlPh@Number{0}%
+    \AlPh@Error{No symbols found}%
+  \else
+    \def\AlPh@Number{1}%
+    \AlPh@ExpSearch2!{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifAlPh@Unavailable}
+%    \begin{macrocode}
+\let\ifAlPh@Unavailable\iffalse
+\def\AlPh@Unavailabletrue{%
+  \global\let\ifAlPh@Unavailable\iftrue
+}
+\def\AlPh@Unavailablefalse{%
+  \global\let\ifAlPh@Unavailable\iffalse
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@TestNumber}
+%    |#1|: number to be tested\\
+%    |#2|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@TestNumber#1!#2{%
+  \AlPh@Unavailablefalse
+  \begingroup
+    \setbox0=\hbox{%
+      \begingroup % color
+        \let\@ctrerr\AlPh@Unavailabletrue
+        \let\AlPh@ctrerr\AlPh@Unavailabletrue
+        #2{#1}%
+      \endgroup
+    }%
+    \ifdim\wd0=0pt %
+      \AlPh@Unavailabletrue
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@ExpSearch}
+%    |#1|: number to be tested\\
+%    |#2|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@ExpSearch#1!#2{%
+  \let\AlPh@Next\relax
+  \AlPh@TestNumber#1!{#2}%
+  \ifAlPh@Unavailable
+    \expandafter\AlPh@BinSearch\AlPh@Number!#1!{#2}%
+  \else
+    \def\AlPh@Number{#1}%
+    \ifnum#1>1073741823 %
+      \AlPh@TestNumber2147483647!{#2}%
+      \ifAlPh@Unavailable
+        \AlPh@BinSearch#1!2147483647!{#2}%
+      \else
+        \def\AlPh@Number{0}%
+        \AlPh@Error{%
+          Maximal symbol number not found%
+        }%
+      \fi
+    \else
+      \def\AlPh@Next{%
+        \expandafter\AlPh@ExpSearch\number\intcalcShl{#1}!{#2}%
+      }%
+    \fi
+  \fi
+  \AlPh@Next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@BinSearch}
+%    |#1|: available number\\
+%    |#2|: unavailable number, |#2| $>$ |#1|\\
+%    |#3|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@BinSearch#1!#2!#3{%
+  \expandafter\AlPh@ProcessBinSearch
+  \number\intcalcShr{\intcalcAdd{#1}{#2}}!%
+  #1!#2!{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@ProcessBinSearch}
+%    |#1|: number to be tested, |#2| $\leq$ |#1| $\leq$ |#3|\\
+%    |#2|: available number\\
+%    |#3|: unavailable number\\
+%    |#4|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@ProcessBinSearch#1!#2!#3!#4{%
+  \let\AlPh@Next\relax
+  \ifnum#1>#2 %
+    \ifnum#1<#3 %
+      \AlPh@TestNumber#1!{#4}%
+      \ifAlPh@Unavailable
+        \def\AlPh@Next{%
+          \AlPh@BinSearch#2!#1!{#4}%
+        }%
+      \else
+        \def\AlPh@Next{%
+          \AlPh@BinSearch#1!#3!{#4}%
+        }%
+      \fi
+    \else
+      \def\AlPh@Number{#2}%
+    \fi
+  \else
+    \def\AlPh@Number{#2}%
+  \fi
+  \AlPh@Next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Methods}
+%
+%    The names of method macros start with \cs{AlPh@Method}.
+%    These macros do the main job in converting a number to
+%    its representation.
+%    A method command is called with three arguments.
+%    The first argument is the number of symbols. The
+%    second argument is the basic macro for converting
+%    a number with limited number range. The last parameter
+%    is the number that needs converting.
+%
+% \subsubsection{Common methods}
+%
+%    \begin{macro}{\AlPh@CheckPositive}
+%    \noindent
+%    |#1|: number to be checked
+%    |#2|: continuation macro\\
+%    |#3|: number of symbols (hidden here)\\
+%    |#4|: symbol provider (hidden here)
+%    \begin{macrocode}
+\def\AlPh@CheckPositive#1!#2{%
+  \ifnum#1<1 %
+    \expandafter\@gobblefour
+  \fi
+  #2{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Method `alph'}
+%
+%    \begin{macro}{\AlPh@Method@alph}
+%    \noindent
+%    |#1|: number of symbols\\
+%    |#2|: symbols provider\\
+%    |#3|: number to be converted
+%    \begin{macrocode}
+\def\AlPh@Method@alph#1#2#3{%
+  \expandafter\AlPh@CheckPositive
+|   \number#3!%
++   \the\numexpr#3!%
+    \AlPh@ProcessAlph
+    {#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@ProcessAlph}
+%    |#1|: current number\\
+%    |#2|: number of symbols\\
+%    |#3|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@ProcessAlph#1#2#3{%
+  \ifnum#1>#2 %
+    \@ReturnAfterElseFi{%
+      \expandafter\AlPh@StepAlph\number
+        \intcalcInc{%
+          \intcalcMod{\intcalcDec{#1}}{#2}%
+        }%
+      \expandafter!\number
+        \intcalcDiv{\intcalcDec{#1}}{#2}%
+      !{#2}{#3}%
+    }%
+  \else
+    \@ReturnAfterFi{%
+      #3{#1}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@StepAlph}
+%    |#1|: current last digit\\
+%    |#2|: new current number\\
+%    |#3|: number of symbols\\
+%    |#4|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@StepAlph#1!#2!#3#4{%
+  \AlPh@ProcessAlph{#2}{#3}{#4}%
+  #4{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Method `wrap'}
+%
+%    \begin{macro}{\AlPh@Method@wrap}
+%    \noindent
+%    |#1|: number of symbols\\
+%    |#2|: symbols provider\\
+%    |#3|: number to be converted
+%    \begin{macrocode}
+\def\AlPh@Method@wrap#1#2#3{%
+  \expandafter\AlPh@CheckPositive
+|   \number#3!%
++   \the\numexpr#3!%
+    \AlPh@ProcessWrap
+    {#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AlPh@ProcessWrap}
+%    |#1|: number to be converted\\
+%    |#2|: number of symbols\\
+%    |#3|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@ProcessWrap#1#2#3{%
+  \ifnum#1>#2 %
+    \@ReturnAfterElseFi{%
+      \expandafter\AlPh@StepWrap\number
+        \intcalcInc{\intcalcMod{\intcalcDec{#1}}{#2}}%
+      !{#3}%
+    }%
+  \else
+    \@ReturnAfterFi{%
+      #3{#1}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@StepWrap}
+%    |#1|: final number\\
+%    |#2|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@StepWrap#1!#2{%
+  #2{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Method `mult'}
+%
+%    After the number of symbols is exhausted,
+%    repetitions of the symbol are used.
+%    \begin{gather*}
+%      x \Def \text{number to be converted}\\
+%      n \Def \text{number of symbols}\\
+%      r \Def \text{repetition length}\\
+%      s \Def \text{symbol slot}\\
+%      r = ((x - 1) \div n) + 1\\
+%      s = ((x - 1) \mod n) + 1
+%    \end{gather*}
+%    \begin{macro}{\AlPh@Method@mult}
+%    \noindent
+%    |#1|: number of symbols\\
+%    |#2|: symbols provider\\
+%    |#3|: number to be converted
+%    \begin{macrocode}
+\def\AlPh@Method@mult#1#2#3{%
+  \expandafter\AlPh@CheckPositive
+|   \number#3!%
++   \the\numexpr#3!%
+    \AlPh@ProcessMult
+    {#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AlPh@ProcessMult}
+%    |#1|: number to be converted\\
+%    |#2|: number of symbols\\
+%    |#3|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@ProcessMult#1#2#3{%
+  \ifnum#1>#2 %
+    \@ReturnAfterElseFi{%
+      \expandafter\AlPh@StepMult\romannumeral
+        \intcalcInc{\intcalcDiv{\intcalcDec{#1}}{#2}}%
+        000%
+      \expandafter!\number
+        \intcalcInc{\intcalcMod{\intcalcDec{#1}}{#2}}%
+      !{#3}%
+    }%
+  \else
+    \@ReturnAfterFi{%
+      #3{#1}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@StepMult}
+%    |#1#2|: repetitions coded as list of character `m'\\
+%    |#3|: symbol slot\\
+%    |#4|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@StepMult#1#2!#3!#4{%
+  \ifx\\#2\\%
+  \else
+    \@ReturnAfterFi{%
+      \AlPh@StepMult#2!#3!{#4}%
+    }%
+  \fi
+  #4{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{User interface}
+%
+%    \begin{macro}{\newalphalph}
+%    Macro \cs{newalphalph} had three arguments in versions below 2.0.
+%    For the new method argument we use an optional argument an first
+%    position.\\
+%    |#1|: cmd\\
+%    |[#2]|: method name: |alph| (default), |wrap|, |mult|\\ % hash-ok
+%    |#3|: symbols provider\\
+%    |#4|: number of symbols
+%    \begin{macrocode}
+\AlPh@IfDefinable\newalphalph{%
+  \def\newalphalph#1{%
+    \AlPh@IfOptArg{%
+      \AlPh@newalphalph{#1}%
+    }{%
+      \AlPh@newalphalph{#1}[alph]%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@newalphalph}
+%    |#1|: cmd
+%    |#2|: method name\\
+%    |#3|: symbols provider\\
+%    |#4|: number of symbols
+%    \begin{macrocode}
+\def\AlPh@newalphalph#1[#2]#3#4{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname AlPh@Method@#2\endcsname\relax
+    \AlPh@Error{%
+      Unknown method %
+|     `#2'%
++     `\detokenize{#2}'%
+    }%
+  \else
+    \ifx\\#4\\%
+      \AlPh@GetNumberOfSymbols{#3}%
+      \ifcase\AlPh@Number
+      \else
+        \begingroup
+          \escapechar=92 % backslash
+          \@PackageInfo{alphalph}{%
+            Number of symbols for \string#1 is \AlPh@Number
+          }%
+        \endgroup
+        \expandafter\AlPh@NewAlphAlph
+        \csname AlPh@Method@#2\expandafter\endcsname
+        \AlPh@Number!{#1}{#3}%
+      \fi
+    \else
+      \expandafter\AlPh@NewAlphAlph
+      \csname AlPh@Method@#2\expandafter\endcsname
+|     \number#4!%
++     \the\numexpr#4!%
+      {#1}{#3}%
+    \fi
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AlPh@NewAlphAlph}
+%    |#1|: method macro\\
+%    |#2|: number of symbols\\
+%    |#3|: cmd\\
+%    |#4|: symbols provider
+%    \begin{macrocode}
+\def\AlPh@NewAlphAlph#1#2!#3#4{%
+  \AlPh@IfDefinable#3{%
+    \ifnum#2>0 %
+      \def#3{#1{#2}{#4}}%
+    \else
+      \AlPh@Error{%
+          Definition of \string#3 failed,\MessageBreak
+          because number of symbols (#2) is not positive%
+        }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AlphAlph}
+%    \begin{macrocode}
+\newalphalph\AlphAlph\alphalph@Alph{26}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\alphalph}
+%    \begin{macrocode}
+\newalphalph\alphalph\alphalph@alph{26}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\AlPh@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input alphalph.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Macro tests}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{article}
+%<*noetex>
+\makeatletter
+\let\saved@numexpr\numexpr
+\newcommand*{\DisableNumexpr}{%
+  \let\numexpr\@undefined
+}
+\newcommand*{\RestoreNumexpr}{%
+  \let\numexpr\saved@numexpr
+}
+\DisableNumexpr
+%</noetex>
+\usepackage{alphalph}[2011/05/13]
+%<noetex>\RestoreNumexpr
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+
+\newcommand*{\TestCmd}[3]{%
+  \setbox0=\hbox{%
+%<noetex>    \DisableNumexpr
+    \edef\TestString{#1{#2}}%
+    \expandafter\Expect\expandafter{\TestString}{#3}%
+    \edef\TestString{#1{#2} }%
+    \expandafter\Expect\expandafter{\TestString}{#3 }%
+  }%
+  \Expect*{\the\wd0}{0.0pt}%
+}
+
+\makeatletter
+\newalphalph\LaTeXAlphAlph\@Alph{26}
+\newalphalph\LaTeXalphalph\@alph{26}
+\newalphalph\AlphWrap[wrap]\alphalph@Alph{26}
+\newalphalph\alphwrap[wrap]\alphalph@alph{26}
+\newalphalph\LaTeXAlphWrap[wrap]\@Alph{26}
+\newalphalph\LaTeXalphwrap[wrap]\@alph{26}
+\def\LastSymbol#1{%
+  \ifx\\#1\\%
+  \else
+    \@LastSymbol#1\@nil
+  \fi
+}
+\def\@LastSymbol#1#2\@nil{%
+  \ifx\\#2\\%
+    #1%
+  \else
+    \@LastSymbol#2\@nil
+  \fi
+}
+\makeatother
+\newcommand*{\TestAlph}[2]{%
+  \uppercase{\TestCallCmd\AlphAlph{#2}}{#1}%
+  \lowercase{\TestCallCmd\alphalph{#2}}{#1}%
+  \uppercase{\TestCallCmd\LaTeXAlphAlph{#2}}{#1}%
+  \lowercase{\TestCallCmd\LaTeXalphalph{#2}}{#1}%
+  \edef\WrapString{\LastSymbol{#2}}%
+  \expandafter\TestAlphWrap\expandafter{\WrapString}{#1}%
+}
+\newcommand*{\TestAlphWrap}[2]{%
+  \uppercase{\TestCallCmd\AlphWrap{#1}}{#2}%
+  \lowercase{\TestCallCmd\alphwrap{#1}}{#2}%
+  \uppercase{\TestCallCmd\LaTeXAlphWrap{#1}}{#2}%
+  \lowercase{\TestCallCmd\LaTeXalphwrap{#1}}{#2}%
+}
+\newcommand*{\TestCallCmd}[3]{%
+  \TestCmd#1{#3}{#2}%
+}
+\begin{qstest}{AlphSymbols}{alphalph, AlphAlph, symbols}
+  \TestAlph{1}{a}%
+  \TestAlph{2}{b}%
+  \TestAlph{3}{c}%
+  \TestAlph{4}{d}%
+  \TestAlph{5}{e}%
+  \TestAlph{6}{f}%
+  \TestAlph{7}{g}%
+  \TestAlph{8}{h}%
+  \TestAlph{9}{i}%
+  \TestAlph{10}{j}%
+  \TestAlph{11}{k}%
+  \TestAlph{12}{l}%
+  \TestAlph{13}{m}%
+  \TestAlph{14}{n}%
+  \TestAlph{15}{o}%
+  \TestAlph{16}{p}%
+  \TestAlph{17}{q}%
+  \TestAlph{18}{r}%
+  \TestAlph{19}{s}%
+  \TestAlph{20}{t}%
+  \TestAlph{21}{u}%
+  \TestAlph{22}{v}%
+  \TestAlph{23}{w}%
+  \TestAlph{24}{x}%
+  \TestAlph{25}{y}%
+  \TestAlph{26}{z}%
+\end{qstest}
+\begin{qstest}{AlphRange}{alphalph, range}
+  \TestAlph{0}{}%
+  \TestAlph{-1}{}%
+  \TestAlph{-2147483647}{}%
+  \TestAlph{27}{aa}%
+  \TestAlph{28}{ab}%
+  \TestAlph{52}{az}%
+  \TestAlph{53}{ba}%
+  \TestAlph{78}{bz}%
+  \TestAlph{79}{ca}%
+  \TestAlph{702}{zz}%
+  \TestAlph{703}{aaa}%
+  \TestAlph{2147483647}{fxshrxw}%
+\end{qstest}
+
+\makeatletter
+\newcommand*{\myvocals}[1]{%
+  \ifcase#1X\or A\or E\or I\or O\or U\else Y\fi
+}
+\makeatother
+\newalphalph\vocalsvocals\myvocals{5}
+\newcommand*{\TestVocals}{%
+  \TestCmd\vocalsvocals
+}
+\begin{qstest}{vocals}{vocals}
+  \TestVocals{0}{}%
+  \TestVocals{1}{A}%
+  \TestVocals{2}{E}%
+  \TestVocals{3}{I}%
+  \TestVocals{4}{O}%
+  \TestVocals{5}{U}%
+  \TestVocals{6}{AA}%
+  \TestVocals{7}{AE}%
+  \TestVocals{8}{AI}%
+  \TestVocals{9}{AO}%
+  \TestVocals{10}{AU}%
+  \TestVocals{11}{EA}%
+  \TestVocals{24}{OO}%
+  \TestVocals{25}{OU}%
+  \TestVocals{26}{UA}%
+  \TestVocals{29}{UO}%
+  \TestVocals{30}{UU}%
+  \TestVocals{31}{AAA}%
+  \TestVocals{155}{UUU}%
+  \TestVocals{156}{AAAA}%
+  \TestVocals{2147483647}{AIIOOEEIOIIUOE}%
+\end{qstest}
+
+\makeatletter
+\newalphalph\AlphMult[mult]{\alphalph@Alph}{26}
+\newalphalph\alphmult[mult]{\alphalph@alph}{26}
+\newalphalph\LaTeXAlphMult[mult]{\@Alph}{26}
+\newalphalph\LaTeXalphmult[mult]{\@alph}{26}
+\makeatother
+\newcommand*{\TestMult}[2]{%
+  \uppercase{\TestCallCmd\AlphMult{#2}}{#1}%
+  \lowercase{\TestCallCmd\alphmult{#2}}{#1}%
+  \uppercase{\TestCallCmd\LaTeXAlphMult{#2}}{#1}%
+  \lowercase{\TestCallCmd\LaTeXalphmult{#2}}{#1}%
+}
+\begin{qstest}{mult}{mult}
+  \TestMult{0}{}%
+  \TestMult{-1}{}%
+  \TestMult{-2147483647}{}%
+  \TestMult{1}{a}%
+  \TestMult{2}{b}%
+  \TestMult{26}{z}%
+  \TestMult{27}{aa}%
+  \TestMult{28}{bb}%
+  \TestMult{52}{zz}%
+  \TestMult{53}{aaa}%
+  \TestMult{54}{bbb}%
+  \TestMult{259}{yyyyyyyyyy}%
+  \TestMult{260}{zzzzzzzzzz}%
+  \TestMult{261}{aaaaaaaaaaa}%
+  \TestMult{262}{bbbbbbbbbbb}%
+\end{qstest}
+
+\def\myvocalsB#1{%
+  \ifcase#1\or A\or E\or I\or O\or U\fi
+}
+\begin{qstest}{symbolnum}{symbolnum}
+  \makeatletter
+  \def\Test#1#2{%
+    \let\TestCmd\relax
+    \newalphalph\TestCmd{#1}{}%
+    \Expect*{\AlPh@Number}{#2}%
+  }%
+  \Test\@alph{26}%
+  \Test\@Alph{26}%
+  \Test\@fnsymbol{9}%
+  \Test\myvocalsB{5}%
+  \Test\alphalph@alph{26}%
+  \Test\alphalph@Alph{26}%
+\end{qstest}
+
+\begin{qstest}{list}{list}
+  \makeatletter
+  \def\catch#1\relax{%
+    \def\FoundList{\catch#1}%
+  }%
+  \def\Test[#1]#2#3#4{%
+    \let\testcmd\relax
+    \newalphalph\testcmd[{#1}]{\catch}{#2}%
+    \testcmd{#3}|\relax
+    \expandafter\Expect\expandafter{\FoundList}{#4|}%
+    %
+    \let\SavedCatch\catch
+    \def\catch{\noexpand\catch\noexpand\foo}%
+    \edef\Result{#4|}%
+    \@onelevel@sanitize\Result
+    \let\catch\SavedCatch
+    \let\testcmd\relax
+    \newalphalph\testcmd[{#1}]{\catch\foo}{#2}%
+    \testcmd{#3}|\relax
+    \@onelevel@sanitize\FoundList
+    \Expect*{\FoundList}*{\Result}%
+  }%
+  \Test[alph]{26}{3}{\catch{3}}%
+  \Test[alph]{26}{12}{\catch{12}}%
+  \Test[alph]{26}{27}{\catch{1}\catch{1}}%
+  \Test[alph]{26}{78}{\catch{2}\catch{26}}%
+  \Test[wrap]{26}{7}{\catch{7}}%
+  \Test[wrap]{26}{14}{\catch{14}}%
+  \Test[wrap]{26}{80}{\catch{2}}%
+  \Test[wrap]{26}{700}{\catch{24}}%
+  \Test[mult]{26}{4}{\catch{4}}%
+  \Test[mult]{26}{17}{\catch{17}}%
+  \Test[mult]{26}{54}{\catch{2}\catch{2}\catch{2}}%
+\end{qstest}
+
+\begin{document}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/alphalph.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/alphalph.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex alphalph.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   alphalph.sty & tex/generic/oberdiek/alphalph.sty\\
+%   alphalph.pdf & doc/latex/oberdiek/alphalph.pdf\\
+%   test/alphalph-test1.tex & doc/latex/oberdiek/test/alphalph-test1.tex\\
+%   test/alphalph-test2.tex & doc/latex/oberdiek/test/alphalph-test2.tex\\
+%   test/alphalph-test3.tex & doc/latex/oberdiek/test/alphalph-test3.tex\\
+%   alphalph.dtx & source/latex/oberdiek/alphalph.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk alphalph.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{alphalph.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex alphalph.dtx
+%makeindex -s gind.ist alphalph.idx
+%pdflatex alphalph.dtx
+%makeindex -s gind.ist alphalph.idx
+%pdflatex alphalph.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{alphalph.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='alphalph'>
+  <name>alphalph</name>
+  <caption>Convert numbers to letters.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999,2006-2008,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.4'/>
+  <description>
+    Provides commands <tt>\alphalph</tt> and <tt>\AlphAlph.</tt> They
+    are like <tt>\number</tt> but the expansion consists of lowercase
+    and uppercase letters respectively (1 to a, 26 to z, 27 to aa, 52
+    to zz, 53 to ba, 702 to zz, 703 to aaa, etc.). Can be used as a
+    replacement for LaTeX's <tt>\@alph</tt> and <tt>\@Alph</tt>
+    macros.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/alphalph.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/alphalph.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1999/03/19 v0.1}
+%   \item
+%     The first version was built as a response to a
+%     \URL{\link{question}}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/17a74cd721641038}^^A
+%     of \NameEmail{Will Douglas}{william.douglas@wolfson.ox.ac.uk}
+%     and the
+%     \URL{\link{request}}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/8f9768825640315f}^^A
+%     of \NameEmail{Donald Arsenau}{asnd@reg.triumf.ca},
+%     published in the newsgroup
+%     \href{news:comp.text.tex}{comp.text.tex}:
+%     \URL{``\link{Re: alph counters \textgreater\ 26}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/cec563eef8bf65d0}
+%   \item
+%     Copyright: LPPL (\CTAN{macros/latex/base/lppl.txt})
+%   \end{Version}
+%   \begin{Version}{1999/04/12 v1.0}
+%   \item
+%     Documentation added in dtx format.
+%   \item
+%     \hologo{eTeX} support added.
+%   \end{Version}
+%   \begin{Version}{1999/04/13 v1.1}
+%   \item
+%     Minor documentation change.
+%   \item
+%     First CTAN release.
+%   \end{Version}
+%   \begin{Version}{1999/06/26 v1.2}
+%   \item
+%     First generic code about \cmd{\ProvidesPackage} improved.
+%   \item
+%     Documentation: Installation part revised.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.3}
+%   \item
+%     Reload check (for \hologo{plainTeX})
+%   \item
+%     New DTX framework.
+%   \item
+%     LPPL 1.3
+%   \end{Version}
+%   \begin{Version}{2006/05/30 v1.4}
+%   \item
+%     \cs{newalphalph} added.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.5}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v2.0}
+%   \item
+%     New implementation that uses package \cs{intcalc}.
+%     This removes the dependency on \hologo{eTeX}.
+%   \item
+%     \cs{newalphalph} is extended to support new methods `wrap' and 'multi'.
+%   \item
+%     Documentation rewritten.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v2.1}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated from \texttt{www.dejanews.com}
+%     to \texttt{groups.google.com}.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v2.2}
+%   \item
+%     Compatibility with \hologo{iniTeX}.
+%   \end{Version}
+%   \begin{Version}{2010/04/18 v2.3}
+%   \item
+%     Documentation fixes (Martin M\"unch).
+%   \end{Version}
+%   \begin{Version}{2011/05/13 v2.4}
+%   \item
+%     Documentation fixes (Jim Diamond) and using package
+%     \xpackage{hologo} for the documentation.
+%   \item
+%     Catalogue file added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

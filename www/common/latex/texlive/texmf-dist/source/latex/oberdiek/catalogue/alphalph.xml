@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='alphalph'>
+  <name>alphalph</name>
+  <caption>Convert numbers to letters.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999,2006-2008,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.4'/>
+  <description>
+    Provides commands <tt>\alphalph</tt> and <tt>\AlphAlph.</tt> They
+    are like <tt>\number</tt> but the expansion consists of lowercase
+    and uppercase letters respectively (1 to a, 26 to z, 27 to aa, 52
+    to zz, 53 to ba, 702 to zz, 703 to aaa, etc.). Can be used as a
+    replacement for LaTeX's <tt>\@alph</tt> and <tt>\@Alph</tt>
+    macros.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/alphalph.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/alphalph.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

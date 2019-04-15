@@ -1,0 +1,353 @@
+%%
+%% This is file `babel.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babel.dtx  (with options: `package')
+%% This is a generated file.
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright 1989-2008 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% The Current Maintainer of this work is Javier Bezos.
+%% 
+%% This file may only be distributed together with a copy of the Babel
+%% system. You may however distribute the Babel system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the Babel distribution is
+%% given in the file `manifest.bbl'. See also `legal.bbl for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%% File 'babel.dtx'
+%%\ProvidesFile{babel.dtx}[2015/08/03 v3.9m The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989-2008 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%% Copyright (C) 2013-2014 by Johannes Braams
+%%                            TeXniek
+%%                            by Javier Bezos
+%%                            all rights reserved.
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{babel}[2015/08/03 3.9m The Babel package]
+\@ifpackagewith{babel}{debug}
+ {\input switch.def\relax}
+ {\def\bbl@tempa{3.9m}%
+\ifx\bbl@version\bbl@tempa\else
+  \input switch.def\relax
+\fi}
+\def\bbl@add#1#2{%
+  \@ifundefined{\expandafter\@gobble\string#1}%
+    {\def#1{#2}}%
+    {\expandafter\def\expandafter#1\expandafter{#1#2}}}
+\def\bbl@csarg#1#2{\expandafter#1\csname bbl@#2\endcsname}%
+\long\def\bbl@afterelse#1\else#2\fi{\fi#1}
+\long\def\bbl@afterfi#1\fi{\fi#1}
+\def\bbl@loop#1#2#3{\bbl@@loop#1{#3}#2,\@nnil,}
+\def\bbl@loopx#1#2{\expandafter\bbl@loop\expandafter#1\expandafter{#2}}
+\def\bbl@@loop#1#2#3,{%
+  \ifx\@nnil#3\relax\else
+    \def#1{#3}#2\bbl@afterfi\bbl@@loop#1{#2}%
+  \fi}
+\def\bbl@for#1#2#3{\bbl@loopx#1{#2}{\ifx#1\@empty\else#3\fi}}
+\def\AfterBabelLanguage#1{%
+  \global\expandafter\bbl@add\csname#1.ldf-h@@k\endcsname}%
+\@ifpackagewith{babel}{base}{%
+  \DeclareOption*{\bbl@patterns{\CurrentOption}}%
+  \DeclareOption{base}{}%
+  \ProcessOptions
+  \global\expandafter\let\csname opt@babel.sty\endcsname\relax
+  \global\expandafter\let\csname ver@babel.sty\endcsname\relax
+  \global\let\@ifl@ter@@\@ifl@ter
+  \def\@ifl@ter#1#2#3#4#5{\global\let\@ifl@ter\@ifl@ter@@}%
+  \endinput}{}%
+\bbl@csarg\let{tempa\expandafter}\csname opt@babel.sty\endcsname
+\def\bbl@tempb#1.#2{%
+   #1\ifx\@empty#2\else,\bbl@afterfi\bbl@tempb#2\fi}%
+\def\bbl@tempd#1.#2\@nnil{%
+  \ifx\@empty#2%
+    \edef\bbl@tempc{\ifx\bbl@tempc\@empty\else\bbl@tempc,\fi#1}%
+  \else
+    \in@{=}{#1}\ifin@
+      \edef\bbl@tempc{\ifx\bbl@tempc\@empty\else\bbl@tempc,\fi#1.#2}%
+    \else
+      \edef\bbl@tempc{\ifx\bbl@tempc\@empty\else\bbl@tempc,\fi#1}%
+      \bbl@csarg\edef{mod@#1}{\bbl@tempb#2}%
+    \fi
+  \fi}
+\let\bbl@tempc\@empty
+\bbl@for\bbl@tempa\bbl@tempa{%
+  \expandafter\bbl@tempd\bbl@tempa.\@empty\@nnil}
+\expandafter\let\csname opt@babel.sty\endcsname\bbl@tempc
+\DeclareOption{KeepShorthandsActive}{}
+\DeclareOption{activeacute}{}
+\DeclareOption{activegrave}{}
+\DeclareOption{debug}{}
+\DeclareOption{noconfigs}{}
+\DeclareOption{showlanguages}{}
+\DeclareOption{silent}{}
+\DeclareOption{shorthands=off}{\bbl@tempa shorthands=\bbl@tempa}
+\DeclareOption{math=active}{}
+\DeclareOption{math=normal}{\def\bbl@mathnormal{\noexpand\textormath}}
+\DeclareOption{nocase}{}
+\let\bbl@opt@strings\@nnil % accept strings=value
+\DeclareOption{strings}{\def\bbl@opt@strings{\BabelStringsDefault}}
+\DeclareOption{strings=encoded}{\let\bbl@opt@strings\relax}
+\def\BabelStringsDefault{generic}
+\DeclareOption{hyphenmap=off}{\chardef\bbl@hymapopt\z@}
+\DeclareOption{hyphenmap=first}{\chardef\bbl@hymapopt\@ne}
+\DeclareOption{hyphenmap=select}{\chardef\bbl@hymapopt\tw@}
+\DeclareOption{hyphenmap=other}{\chardef\bbl@hymapopt\thr@@}
+\DeclareOption{hyphenmap=other*}{\chardef\bbl@hymapopt4\relax}
+\DeclareOption{safe=none}{\let\bbl@opt@safe\@empty}
+\DeclareOption{safe=bib}{\def\bbl@opt@safe{B}}
+\DeclareOption{safe=ref}{\def\bbl@opt@safe{R}}
+\let\bbl@opt@shorthands\@nnil
+\let\bbl@opt@config\@nnil
+\let\bbl@opt@main\@nnil
+\let\bbl@opt@headfoot\@nnil
+\def\bbl@tempa#1=#2\bbl@tempa{%
+  \expandafter\ifx\csname bbl@opt@#1\endcsname\@nnil
+    \expandafter\edef\csname bbl@opt@#1\endcsname{#2}%
+  \else
+    \bbl@error{%
+      Bad option `#1=#2'. Either you have misspelled the\\%
+      key or there is a previous setting of `#1'}{%
+      Valid keys are `shorthands', `config', `strings', `main',\\%
+      `headfoot', `safe', `math'}
+  \fi}
+\let\bbl@language@opts\@empty
+\DeclareOption*{%
+  \@expandtwoargs\in@{\string=}{\CurrentOption}%
+  \ifin@
+    \expandafter\bbl@tempa\CurrentOption\bbl@tempa
+  \else
+    \edef\bbl@language@opts{%
+      \ifx\bbl@language@opts\@empty\else\bbl@language@opts,\fi
+      \CurrentOption}%
+  \fi}
+\ProcessOptions*
+\def\bbl@sh@string#1{%
+  \ifx#1\@empty\else
+    \ifx#1t\string~%
+    \else\ifx#1c\string,%
+    \else\string#1%
+    \fi\fi
+    \expandafter\bbl@sh@string
+  \fi}
+\ifx\bbl@opt@shorthands\@nnil
+  \def\bbl@ifshorthand#1#2#3{#2}%
+\else\ifx\bbl@opt@shorthands\@empty
+  \def\bbl@ifshorthand#1#2#3{#3}%
+\else
+  \def\bbl@ifshorthand#1{%
+    \@expandtwoargs\in@{\string#1}{\bbl@opt@shorthands}%
+    \ifin@
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi}
+  \edef\bbl@opt@shorthands{%
+    \expandafter\bbl@sh@string\bbl@opt@shorthands\@empty}%
+  \bbl@ifshorthand{'}%
+    {\PassOptionsToPackage{activeacute}{babel}}{}
+  \bbl@ifshorthand{`}%
+    {\PassOptionsToPackage{activegrave}{babel}}{}
+\fi\fi
+\ifx\bbl@opt@headfoot\@nnil\else
+  \g@addto@macro\@resetactivechars{%
+    \set@typeset@protect
+    \expandafter\select@language@x\expandafter{\bbl@opt@headfoot}%
+    \let\protect\noexpand}
+\fi
+\@ifundefined{bbl@opt@safe}{\def\bbl@opt@safe{BR}}{}
+\ifx\bbl@opt@main\@nnil\else
+  \edef\bbl@language@opts{%
+    \ifx\bbl@language@opts\@empty\else\bbl@language@opts,\fi
+      \bbl@opt@main}
+\fi
+\ifx\bbl@languages\@undefined\else
+  \begingroup
+    \catcode`\^^I=12
+    \@ifpackagewith{babel}{showlanguages}{%
+      \begingroup
+        \def\bbl@elt#1#2#3#4{\wlog{#2^^I#1^^I#3^^I#4}}%
+        \wlog{<*languages>}%
+        \bbl@languages
+        \wlog{</languages>}%
+      \endgroup}{}
+  \endgroup
+  \def\bbl@elt#1#2#3#4{%
+    \ifnum#2=\z@
+      \gdef\bbl@nulllanguage{#1}%
+      \def\bbl@elt##1##2##3##4{}%
+    \fi}%
+  \bbl@languages
+\fi
+\let\bbl@afterlang\relax
+\let\BabelModifiers\relax
+\let\bbl@loaded\@empty
+\def\bbl@load@language#1{%
+  \InputIfFileExists{#1.ldf}%
+    {\edef\bbl@loaded{\CurrentOption
+       \ifx\bbl@loaded\@empty\else,\bbl@loaded\fi}%
+     \expandafter\let\expandafter\bbl@afterlang
+        \csname\CurrentOption.ldf-h@@k\endcsname
+     \expandafter\let\expandafter\BabelModifiers
+        \csname bbl@mod@\CurrentOption\endcsname}%
+    {\bbl@error{%
+       Unknown option `\CurrentOption'. Either you misspelled it\\%
+       or the language definition file \CurrentOption.ldf was not found}{%
+       Valid options are: shorthands=, KeepShorthandsActive,\\%
+       activeacute, activegrave, noconfigs, safe=, main=, math=\\%
+       headfoot=, strings=, config=, hyphenmap=, or a language name.}}}
+\DeclareOption{acadian}{\bbl@load@language{frenchb}}
+\DeclareOption{afrikaans}{\bbl@load@language{dutch}}
+\DeclareOption{american}{\bbl@load@language{english}}
+\DeclareOption{australian}{\bbl@load@language{english}}
+\DeclareOption{bahasa}{\bbl@load@language{bahasai}}
+\DeclareOption{bahasai}{\bbl@load@language{bahasai}}
+\DeclareOption{bahasam}{\bbl@load@language{bahasam}}
+\DeclareOption{brazil}{\bbl@load@language{portuges}}
+\DeclareOption{brazilian}{\bbl@load@language{portuges}}
+\DeclareOption{british}{\bbl@load@language{english}}
+\DeclareOption{canadian}{\bbl@load@language{english}}
+\DeclareOption{canadien}{\bbl@load@language{frenchb}}
+\DeclareOption{francais}{\bbl@load@language{frenchb}}
+\DeclareOption{french}{\bbl@load@language{frenchb}}%
+\DeclareOption{hebrew}{%
+  \input{rlbabel.def}%
+  \bbl@load@language{hebrew}}
+\DeclareOption{hungarian}{\bbl@load@language{magyar}}
+\DeclareOption{indon}{\bbl@load@language{bahasai}}
+\DeclareOption{indonesian}{\bbl@load@language{bahasai}}
+\DeclareOption{lowersorbian}{\bbl@load@language{lsorbian}}
+\DeclareOption{malay}{\bbl@load@language{bahasam}}
+\DeclareOption{meyalu}{\bbl@load@language{bahasam}}
+\DeclareOption{melayu}{\bbl@load@language{bahasam}}
+\DeclareOption{newzealand}{\bbl@load@language{english}}
+\DeclareOption{nynorsk}{\bbl@load@language{norsk}}
+\DeclareOption{polutonikogreek}{%
+  \bbl@load@language{greek}%
+  \languageattribute{greek}{polutoniko}}
+\DeclareOption{portuguese}{\bbl@load@language{portuges}}
+\DeclareOption{russian}{\bbl@load@language{russianb}}
+\DeclareOption{UKenglish}{\bbl@load@language{english}}
+\DeclareOption{ukrainian}{\bbl@load@language{ukraineb}}
+\DeclareOption{uppersorbian}{\bbl@load@language{usorbian}}
+\DeclareOption{USenglish}{\bbl@load@language{english}}
+\ifx\bbl@opt@config\@nnil
+  \@ifpackagewith{babel}{noconfigs}{}%
+    {\InputIfFileExists{bblopts.cfg}%
+      {\typeout{*************************************^^J%
+               * Local config file bblopts.cfg used^^J%
+               *}}%
+      {}}%
+\else
+  \InputIfFileExists{\bbl@opt@config.cfg}%
+    {\typeout{*************************************^^J%
+             * Local config file \bbl@opt@config.cfg used^^J%
+             *}}%
+    {\bbl@error{%
+       Local config file `\bbl@opt@config.cfg' not found}{%
+       Perhaps you misspelled it.}}%
+\fi
+\bbl@for\bbl@tempa\bbl@language@opts{%
+  \@ifundefined{ds@\bbl@tempa}%
+    {\edef\bbl@tempb{%
+       \noexpand\DeclareOption
+         {\bbl@tempa}%
+         {\noexpand\bbl@load@language{\bbl@tempa}}}%
+     \bbl@tempb}%
+     \@empty}
+\bbl@for\bbl@tempa\@classoptionslist{%
+  \@ifundefined{ds@\bbl@tempa}%
+    {\IfFileExists{\bbl@tempa.ldf}%
+      {\edef\bbl@tempb{%
+         \noexpand\DeclareOption
+           {\bbl@tempa}%
+           {\noexpand\bbl@load@language{\bbl@tempa}}}%
+       \bbl@tempb}%
+      \@empty}%
+    \@empty}
+\ifx\bbl@opt@main\@nnil\else
+  \expandafter
+  \let\expandafter\bbl@loadmain\csname ds@\bbl@opt@main\endcsname
+  \DeclareOption{\bbl@opt@main}{}
+\fi
+\def\AfterBabelLanguage#1{%
+  \bbl@ifsamestring\CurrentOption{#1}{\global\bbl@add\bbl@afterlang}{}}
+\DeclareOption*{}
+\ProcessOptions*
+\ifx\bbl@opt@main\@nnil
+  \edef\bbl@tempa{\@classoptionslist,\bbl@language@opts}
+  \let\bbl@tempc\@empty
+  \bbl@for\bbl@tempb\bbl@tempa{%
+    \@expandtwoargs\in@{,\bbl@tempb,}{,\bbl@loaded,}%
+    \ifin@\edef\bbl@tempc{\bbl@tempb}\fi}
+  \def\bbl@tempa#1,#2\@nnil{\def\bbl@tempb{#1}}
+  \expandafter\bbl@tempa\bbl@loaded,\@nnil
+  \ifx\bbl@tempb\bbl@tempc\else
+    \bbl@warning{%
+      Last declared language option is `\bbl@tempc,\\%
+      but the last processed one was `\bbl@tempb'.\\%
+      The main language cannot be set as both a global\\%
+      and a package option. Use `main=\bbl@tempc' as\\%
+      option. Reported}%
+  \fi
+\else
+  \DeclareOption{\bbl@opt@main}{\bbl@loadmain}
+  \ExecuteOptions{\bbl@opt@main}
+  \DeclareOption*{}
+  \ProcessOptions*
+\fi
+\def\AfterBabelLanguage{%
+  \bbl@error
+    {Too late for \string\AfterBabelLanguage}%
+    {Languages have been loaded, so I can do nothing}}
+\ifx\bbl@main@language\@undefined
+  \bbl@error{%
+    You haven't specified a language option}{%
+    You need to specify a language, either as a global option\\%
+    or as an optional argument to the \string\usepackage\space
+    command;\\%
+    You shouldn't try to proceed from here, type x to quit.}
+\fi
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `babel.sty'.

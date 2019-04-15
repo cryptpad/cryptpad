@@ -1,0 +1,145 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews03.tex
+
+% This is issue 3 of LaTeX News.
+
+\documentclass
+%   [lw35fonts]
+   {ltnews}
+
+\publicationmonth{June}
+\publicationyear{1995}
+\publicationissue{3}
+
+\begin{document}
+
+\maketitle
+
+\section{Welcome to \LaTeXNews~3}
+
+An issue of \emph{\LaTeXNews} will accompany every future release of
+\LaTeX.  It will tell you about important events, such as major bug
+fixes, newly available packages, or any other \LaTeX{} news.
+
+\section{June 1995 release of \LaTeX}
+
+June 1995 sees the third release of \LaTeXe.  We are on schedule
+to deliver a release of \LaTeX{} every six months, in December and
+June.
+
+In the last \emph{\LaTeXNews}, we said ``we don't expect so much
+activity in the next six months,'' which has turned out not to be
+true! 
+
+\section{Additional input encodings}
+
+In the last release of \LaTeX{} we distributed a test version of the
+\texttt{inputenc} package which allows the use of input characters
+other than just a--z and A--Z.  The package has proved to be robust,
+so we are now distributing an expanded version.
+The new release comes with a number of input encodings:
+
+\begin{itemize}
+\item \texttt{ascii} the standard encoding,
+\item \texttt{latin1} the ISO Western European alphabet,
+\item \texttt{latin2} the ISO Eastern European alphabet,
+\item \texttt{cp437} the IBM codepage 437,
+\item \texttt{cp850} the IBM codepage 850, and
+\item \texttt{applemac} the Apple Macintosh encoding.
+\end{itemize}
+These can be used by specifying an option to the \texttt{inputenc}
+package, for example:
+\begin{verbatim}
+   \usepackage[latin1]{inputenc}
+\end{verbatim}
+The new input encodings are currently being tested, but we don't
+expect any major changes.
+
+\section{\LaTeX\ getting smaller}
+
+In the past releases of \LaTeXe, the amount of memory \LaTeX{}
+requires has increased, but we are pleased to say that this trend has
+been reversed.  We hope that future releases of \LaTeX{} will continue
+to get smaller.
+
+For example, on this document, the December 1994 release used 52,622
+words of memory, and the June 1995 release uses 51,216 words of
+memory, which is a 2.7\% reduction.
+
+We are currently experimenting with other ways of reducing the size of
+\LaTeX.  For example, we are experimenting with an option to remove
+the \texttt{picture} and \texttt{tabbing} environments from the
+\LaTeX{} kernel, and to load them from a file the first time they are
+used.  This should help \LaTeX{} to run on machines with limited
+memory.  See \texttt{autoload.txt} for details.
+
+\section{Distribution and modification}
+
+One topic of discussion that has kept us busy is the distribution and
+modification conditions of \LaTeX.  We are committed to keeping
+\LaTeX{} as free reliable software, and ensuring that (as far as
+possible) \LaTeX{} documents will produce the same results on all
+systems. 
+
+The modification conditions are currently under discussion, and we
+would like to hear from anyone interested.  Please read
+\texttt{modguide.tex} for more information.
+
+\section{AMS-\LaTeX\ full release}
+
+The AMS-\LaTeX\ packages were still in beta test in the December 1994
+release of \LaTeX, and the full release came out in January 1995.
+
+AMS-\LaTeX\ is described in the \emph{User's Guide}
+(\texttt{amsldoc.tex}) and in \emph{The \LaTeX{} Companion}.
+
+\section{PostScript fonts}
+
+There is a new test release of the PSNFSS packages for accessing
+PostScript fonts in \LaTeXe.  This includes an update to all of the
+fonts, to remove many of the underfull and overfull \verb|\hbox|
+warnings, and improve the setting of non-English languages.
+
+The new release of \LaTeX{} removes all of the `hidden' uses of
+Computer Modern mathematics.  For example, the footnote markers used
+to use math mode, so always used Computer Modern digits rather than
+ones from the current text font.  This has now been fixed.
+
+\section{Further information}
+
+For more information on \TeX{} and \LaTeX, get in touch with your local
+\TeX{} Users Group, or the international \TeX{} Users Group,
+P.~O.~Box~869, Santa~Barbara, CA~93102-0869, USA, Fax:~+1~805~963~8358,
+EMail:~tug@tug.org.
+
+The \LaTeX{} home page is \verb|http://www.tex.ac.uk/ctan/latex/|
+and contains links to other WWW resources for \LaTeX.
+
+\end{document}

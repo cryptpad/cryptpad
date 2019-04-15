@@ -1,0 +1,11 @@
+% slant font for slope 1/4 on the Imagen
+
+if mode<>imagen: errmessage "This file is for imagen only"; fi
+
+s=1/4;
+n=30;
+r#=.4;
+u=2; % an approximation to r in pixels
+
+font_identifier "SLANTIMAGEN4";
+input slant

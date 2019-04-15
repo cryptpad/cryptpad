@@ -1,0 +1,52 @@
+%%
+%% This is file `bibentry.drv',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bibentry.dtx  (with options: `driver')
+%% ============================================
+%% This is the driver file to produce the LaTeX documentation
+%% from the original source file bibentry.dtx.
+%% 
+%% Make changes to it as needed. (Never change the file bibentry.dtx!)
+%% ============================================
+%% Copyright 1997-2007 Patrick W Daly
+%% Max-Planck-Institut f\"ur Sonnensystemforschung
+%% Max-Planck-Str. 2
+%% D-37191 Katlenburg-Lindau
+%% Germany
+%% E-mail: daly@mps.mpg.de
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{bibentry.drv}
+          [2007/10/30 1.5 (PWD)]
+\documentclass{ltxdoc}
+%\documentclass[twoside]{ltxdoc}
+%\documentclass[a4paper]{ltxdoc}
+%\documentclass[twoside,a4paper]{ltxdoc}
+\raggedbottom
+
+ %** To include the detailed explanation of the coding, comment out
+ %**   the next line
+\OnlyDescription
+
+ %** To produce a command index: add the following line for one run,
+ %**   then run  makeindex -s gind.ist bibentry
+ %**   and reprocess, with or without this line (much faster without)
+% \EnableCrossrefs\CodelineIndex
+
+ %** To produce a change history: add the following line for one run,
+ %**   then run  makeindex -s gglo.ist -o bibentry.gls bibentry.glo
+ %**   and reprocess, with or without this line (faster without)
+% \RecordChanges
+
+\DisableCrossrefs %May stay; zapped by \EnableCrossrefs
+\CodelineNumbered %May stay
+
+\begin{document}
+   \DocInput{bibentry.dtx}
+\end{document}
+%% 
+%% End of documentation driver file.
+%%
+%% End of file `bibentry.drv'.

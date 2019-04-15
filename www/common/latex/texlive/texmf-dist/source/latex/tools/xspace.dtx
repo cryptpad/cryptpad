@@ -1,0 +1,508 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: xspace.dtx Copyright (C) 1991-1997 David Carlisle
+%% File: xspace.dtx Copyright (C) 2004-2006 David Carlisle,
+%%                                          Morten H\o gholm
+%
+%<*dtx>
+          \ProvidesFile{xspace.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{xspace}
+%<driver>\ProvidesFile{xspace.drv}
+% \fi
+%         \ProvidesFile{xspace.dtx}
+          [2014/10/28 v1.13 Space after command names (DPC,MH)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\makeatletter
+\providecommand*\eTeX{{%
+  \if b\expandafter\@car\f@series\@nil\boldmath\fi$\m@th
+  \varepsilon$-\TeX}}
+\makeatother
+\usepackage{xspace}[2006/05/08]
+\begin{document}
+\DocInput{xspace.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{xspace.dtx}
+% \title{The \textsf{xspace} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{David Carlisle \and Morten H\o gholm}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \CheckSum{218}
+%
+% \changes{v1.00}{1991/08/30}{Initial version}
+% \changes{v1.01}{1992/06/26}{Re-issue for the new doc and docstrip}
+% \changes{v1.02}{1994/01/31}{Re-issue for LaTeX2e (no change to
+%   code)}
+% \changes{v1.07}{2004/12/07}{Make extensible. tools/3712}
+% \changes{v1.07}{2004/12/07}{Fix active characters. tools/3747}
+% \changes{v1.07}{2004/12/07}{Update documentation}
+% \changes{v1.08}{2005/05/07}{Better fix for active characters}
+% \changes{v1.09}{2005/07/26}{Improve test by exiting if
+%   \cs{@let@token} is a letter}
+% \changes{v1.10}{2005/10/04}{Use higher level functions for
+% conditional processing}
+% \changes{v1.10}{2005/10/04}{Improve expansion method}
+%
+% \begin{abstract}
+% |\xspace| should be used at the end of a macro designed to
+% be used mainly in text. It adds a space unless the macro is
+% followed by certain punctuation characters.
+% \end{abstract}
+%
+% \section{Introduction}
+% \newcommand{\gb}{Great Britain\xspace}\DescribeMacro{\xspace}
+% After defining |\newcommand{\gb}{Great Britain\xspace}|,
+% the command |\gb| will determine when to insert a space
+% after itself and when not. Thus the input
+% \begin{quote}
+% |\gb is a very nice place to live.\\| \\
+% |\gb, a small island off the coast of France.\\|\\
+% |\gb\footnote{The small island off the coast of France.}|\\
+% |is a very nice place to live.|
+% \end{quote}
+% results in the output
+% \begin{quote}
+% \gb is a very nice place to live. \\
+% \gb, a small island off the coast of France.\\
+% \gb\footnote{The small island off the coast of France.}
+% is a very nice place to live.
+% \end{quote}
+% |\xspace| saves the user from having to type \verb*+\ + or
+% |{}| after most occurrences of a macro name in text.
+% However if either of these constructions follows |\xspace|,
+% a space is not added by |\xspace|. This means that it is
+% safe to add |\xspace| to the end of an existing macro
+% without making too many changes in your document. In particular,
+% |\xspace| will always insert a space if the thing following it is
+% a normal letter which is the usual case.
+%
+% Sometimes |\xspace| may make the wrong decision, and add a
+% space when it is not required. There may be different
+% reasons for this behavior but it can always be handled by
+% following the macro with |{}|, as this has the effect of
+% suppressing the space.
+%
+%
+% \subsection{Adding new exceptions}
+%
+% One of the most common reasons for |\xspace| to add an
+% unwanted space is when it is followed by a macro not on its
+% list of exceptions.
+% \DescribeMacro{\xspaceaddexceptions}%
+% With |\xspaceaddexceptions| you can add new commands or
+% characters to be recognized by |\xspace|'s scanning
+% mechanism. Users of advanced footnote packages like
+% \textsf{manyfoot} will often define new footnote macros
+% that should not cause a command ``enhanced'' with |\xspace|
+% to insert a space. If you define the additional footnote
+% macros |\footnoteA| and |\footnoteB|, simply add the
+% following line to your preamble:
+% \begin{quote}
+% |\xspaceaddexceptions{\footnoteA \footnoteB}|
+% \end{quote}
+%
+%
+% \subsection{Support for active characters}
+%
+%
+% The other common instance of |\xspace| not working quite right
+% happens with active characters. Generally this package must be
+% loaded \emph{after} any language (or other) packages that make
+% punctuation characters `active'. This makes it difficult for
+% \textsf{xspace} to work flawlessly with the popular \textsf{babel}
+% package especially since the punctuation characters can switch
+% between being `active' and `other'. Starting at \textsf{xspace}
+% version~1.08 there are two different ways to handle this depending
+% on which engine your \LaTeX-format uses:
+% \begin{description}
+%   \item[\TeX] The punctuation characters are added to the
+%   exception list in both their normal and active states thus
+%   ensuring that they are always recognized.
+%   \item[\eTeX] The characters are re-read when going through
+%   the exception list which means the internal comparison will test
+%   against the current state of the character. This works for
+%   whatever category code tricks some packages may use.
+% \end{description}
+%
+% At the time of writing all major \TeX\ distributions are using
+% \eTeX\ as engine for \LaTeX\ so usually everything should work out
+% of the box. If you find that you're running normal \TeX\ and
+% |\xspace| seems to be making the wrong choice then either use |{}|
+% as described above to fix it or add the character to the list but
+% with the desired category code. See the implementation for an example
+% of how to do that.
+%
+% \subsection{Still not satisfied?}
+%
+% Some people don't like the default list of exceptions so they can
+% remove one item at a time with the command
+% \DescribeMacro{\xspaceremoveexception}^^A
+% \cs{xspaceremoveexception}\marg{token}.  Furthermore the command
+% \DescribeMacro{\@xspace@hook}\cs{@xspace@hook} can be redefined to
+% scan forward in the input stream in case you want to check more
+% tokens. It is called after \cs{xspace} has determined if it needed
+% to insert a space or if an exception was found (the default
+% definition is for \cs{@xspace@hook} to be empty). Hence you can use
+% \cs{unskip} to remove the space inserted if \cs{@let@token} matches
+% something special. Below is an example of how one can make sure an
+% endash gets a space inserted before it but a single dash not.
+% \begin{verbatim}
+% \xspaceremoveexception{-}
+% \makeatletter
+% \renewcommand*\@xspace@hook{%
+%   \ifx\@let@token-%
+%     \expandafter\@xspace@dash@i
+%   \fi
+% }
+% \def\@xspace@dash@i-{\futurelet\@let@token\@xspace@dash@ii}
+% \def\@xspace@dash@ii{%
+%   \ifx\@let@token-%
+%   \else
+%     \unskip
+%   \fi
+%   -%
+% }
+% \makeatother
+% \end{verbatim}
+%
+%
+% \StopEventually{}
+%
+% \section{The Macros}
+%
+% |\xspace| peeks ahead for the next token. If the token is in our
+% exception list we break the loop and do nothing; else we try to
+% expand the token once and start over again. If this leads us to an
+% unexpandable token without finding one of the exceptions we insert a
+% space.
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\xspace}
+% |\xspace| just looks ahead, and then calls |\@xspace|.
+% \changes{v1.03}{1994/11/15}{Make robust}
+%    \begin{macrocode}
+\DeclareRobustCommand\xspace{\@xspace@firsttrue
+  \futurelet\@let@token\@xspace}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@xspace@first}
+% \changes{v1.11}{2006/02/12}{Added macro}
+% \begin{macro}{\@xspace@simple}
+% \changes{v1.11}{2006/02/12}{Added macro}
+% Some helpers to avoid multiple calls of |\@xspace@eTeX@setup|.
+%    \begin{macrocode}
+\newif\if@xspace@first
+\def\@xspace@simple{\futurelet\@let@token\@xspace}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@xspace@exceptions@tlp}
+% \changes{v1.07}{2004/12/07}{Added macro}
+% The exception list. If the scanning mechanism finds one of
+% these, it won't insert a space after the command. The
+% \texttt{tlp} in the name means `token list pointer.'
+%    \begin{macrocode}
+\def\@xspace@exceptions@tlp{%
+  ,.'/?;:!~-)\ \/\bgroup\egroup\@sptoken\space\@xobeysp
+  \footnote\footnotemark
+  \xspace@check@icr
+}
+%    \end{macrocode}
+% And here we get the non-empty definition of \cs{check@icr}.
+% \changes{v1.13}{2009/10/20}{fix for "tools/3895": `text font commands fool xspace'}
+%    \begin{macrocode}
+\begingroup
+  \text@command\relax
+  \global\let\xspace@check@icr\check@icr
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\xspaceaddexceptions}
+% \changes{v1.07}{2004/12/07}{Added macro}
+% The user command, which just adds tokens to the list.
+%    \begin{macrocode}
+\newcommand*\xspaceaddexceptions{%
+  \g@addto@macro\@xspace@exceptions@tlp
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\xspaceremoveexception}
+% \changes{v1.10}{2005/10/04}{Use higher level functions for
+% conditional processing}
+% This command removes an exception globally.
+%    \begin{macrocode}
+\newcommand*\xspaceremoveexception[1]{%
+%    \end{macrocode}
+% First check that it is in the list at all.
+%    \begin{macrocode}
+  \def\reserved@a##1#1##2##3\@@{%
+    \@xspace@if@q@nil@NF##2{%
+%    \end{macrocode}
+% It's in the list, remove it.
+%    \begin{macrocode}
+      \def\reserved@a####1#1####2\@@{%
+        \gdef\@xspace@exceptions@tlp{####1####2}}%
+      \expandafter\reserved@a\@xspace@exceptions@tlp\@@
+    }%
+  }%
+  \expandafter\reserved@a\@xspace@exceptions@tlp#1\@xspace@q@nil\@@
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xspace@break@loop}
+% \changes{v1.08}{2005/04/28}{Added macro}
+% \changes{v1.10}{2005/10/04}{Use quark instead}
+% To stop the loop.
+%    \begin{macrocode}
+\def\@xspace@break@loop#1\@nil{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xspace@hook}
+% \changes{v1.09}{2005/07/26}{Added macro}
+% A hook for users with special needs.
+%    \begin{macrocode}
+\providecommand*\@xspace@hook{}
+%    \end{macrocode}
+% \end{macro}
+%
+% Now we check if we're running \eTeX. We can't use \cs{@ifundefined}
+% as that will lock catcodes and we need to change some of those.
+% As there is a small risk that someone already set \cs{eTeXversion}
+% to \cs{relax} by accident we make sure we check for that case but
+% without setting it to \cs{relax} if it wasn't already.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname eTeXversion\endcsname\relax
+%    \end{macrocode}
+% If we are running normal \TeX\ we add the most common cases of active
+% punctuation characters. First we make them active.
+%    \begin{macrocode}
+  \begingroup
+    \catcode`\;=\active  \catcode`\:=\active
+    \catcode`\?=\active  \catcode`\!=\active
+%    \end{macrocode}
+%  The \texttt{alltt} environment also makes |,|, |'|, and |-| active
+%  so we add them as well.
+%    \begin{macrocode}
+    \catcode`\,=\active  \catcode`\'=\active  \catcode`\-=\active
+    \xspaceaddexceptions{;:?!,'-}
+  \endgroup
+  \let\@xspace@eTeX@setup\relax
+%    \end{macrocode}
+% \begin{macro}{\@xspace@eTeX@setup}
+% \changes{v1.10}{2005/10/04}{Added macro}
+% \changes{v1.12}{2006/05/08}{Bug fix for verbatim in output routine}
+% When we're running \eTeX, we have the advantage of \cs{scantokens}
+% which will rescan tokens with current catcodes. This little
+% expansion trick makes sure that the exception list is redefined to
+% itself but with the contents of it exposed to the current catcode
+% regime. That is why we must make sure the catcode of space is 10,
+% since we have a \verb*|\ | inside the list.
+%    \begin{macrocode}
+\else
+  \def\@xspace@eTeX@setup{%
+    \begingroup
+      \everyeof{}%
+      \endlinechar=-1\relax
+      \catcode`\ =10\relax
+      \makeatletter
+%    \end{macrocode}
+% We may also be so unfortunate that the re-reading of the list takes
+% place when the catcodes of |\|, |{| and |}| are ``other,'' e.g., if
+% it takes place in a header and the output routine was called in the
+% middle of a \texttt{verbatim} environment.
+%    \begin{macrocode}
+      \catcode`\\\z@
+      \catcode`\{\@ne
+      \catcode`\}\tw@
+      \scantokens\expandafter{\expandafter\gdef
+        \expandafter\@xspace@exceptions@tlp
+        \expandafter{\@xspace@exceptions@tlp}}%
+    \endgroup
+  }
+\fi
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@xspace}
+% \changes{v1.03}{1994/11/15}{Add exclamation mark}
+% \changes{v1.04}{1996/05/17}{Add slash}
+% \changes{v1.05}{1996/12/06}{Add space for alltt etc. tools/2322}
+% \changes{v1.06}{1997/10/13}{Add normal space. tools/2632}
+% \changes{v1.07}{2004/12/07}{Now runs through a list of exceptions}
+% \changes{v1.07}{2004/12/07}{Added \cs{footnote} and
+% \cs{footnotemark}}
+% \changes{v1.08}{2005/05/07}{Use recursive loop instead of \cs{@tfor}}
+% \changes{v1.09}{2005/07/26}{Only check non-letters and add hook}
+% \changes{v1.10}{2005/10/04}{Use higher level functions for
+% conditional processing}
+% \changes{v1.10}{2005/10/04}{Improve expansion method}
+% If the next token is one of a specified list of characters,
+% do nothing, otherwise add a space. With version~1.07 the
+% approach was altered dramatically to run through the
+% exception list |\@xspace@exceptions@tlp| and check each
+% token one at a time.
+%    \begin{macrocode}
+\def\@xspace{%
+%    \end{macrocode}
+% Before we start checking the exception list it makes sense to
+% perform a quick check on the token in question. Most of the time
+% \cs{xspace} is used in regular text so \cs{@let@token} is set equal
+% to a letter. In that case there is no point in checking the list
+% because it will definitely not contain any tokens with catcode~11.
+%
+% You may wonder why there are special functions here instead of
+% simpler \cs{ifx} conditionals. The reason is that a)~this way we
+% don't have to add many, many \cs{expandafter}s to get the nesting
+% right and b)~we don't get into trouble when \cs{@let@token} has been
+% let equal to \cs{if} etc.
+%    \begin{macrocode}
+  \@xspace@lettoken@if@letter@TF \space{%
+%    \end{macrocode}
+% Otherwise we start testing after setting up a few things. If running
+% \eTeX{} we rescan the catcodes but only the first time around.
+%    \begin{macrocode}
+    \if@xspace@first
+      \@xspace@firstfalse
+      \let\@xspace@maybespace\space
+      \@xspace@eTeX@setup
+    \fi
+    \expandafter\@xspace@check@token
+      \@xspace@exceptions@tlp\@xspace@q@nil\@nil
+%    \end{macrocode}
+% If an exception was found \cs{@xspace@maybespace} is let to
+% \cs{relax} and we do nothing.
+%    \begin{macrocode}
+    \@xspace@token@if@equal@NNT \space \@xspace@maybespace
+%    \end{macrocode}
+% Otherwise we check to see if we found something expandable and try
+% again with that token one level expanded. If no expandable token is
+% found we insert a space and then execute the hook.
+%    \begin{macrocode}
+    {%
+      \@xspace@lettoken@if@expandable@TF
+      {\expandafter\@xspace@simple}%
+      {\@xspace@maybespace\@xspace@hook}%
+    }%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xspace@check@token}
+% \changes{v1.07}{2004/12/07}{Added macro}
+% \changes{v1.08}{2005/05/07}{Made function recursive}
+% \changes{v1.10}{2005/10/04}{Use higher level functions for
+% conditional processing}
+% \changes{v1.11}{2006/02/12}{Modified so the \cs{@let@token} can be
+%   \cs{outer}}
+% This macro just checks the current item in the exception list
+% against the \cs{@let@token}. If they are equal we make sure that no
+% space is inserted and break the loop.
+%    \begin{macrocode}
+\def\@xspace@check@token #1{%
+  \ifx\@xspace@q@nil#1%
+    \expandafter\@xspace@break@loop
+  \fi
+  \expandafter\ifx\csname @let@token\endcsname#1%
+    \let\@xspace@maybespace\relax
+    \expandafter\@xspace@break@loop
+  \fi
+  \@xspace@check@token
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% That's all, folks! That is, if we were running \LaTeX3. In that case
+% we would have had nice functions for all the conditionals but here
+% we must define them ourselves. We also optimize them here as
+% \cs{@let@token} will always be the argument in some cases.
+%
+% \begin{macro}{\@xspace@if@lettoken@letter@TF}
+% \begin{macro}{\@xspace@if@lettoken@expandable@TF}
+% \begin{macro}{\@xspace@cs@if@equal@NNF}
+% First a few comparisons.
+%    \begin{macrocode}
+\def\@xspace@lettoken@if@letter@TF{%
+  \ifcat\noexpand\@let@token @% letter
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi}
+\def\@xspace@lettoken@if@expandable@TF{%
+  \expandafter\ifx\noexpand\@let@token\@let@token%
+    \expandafter\@secondoftwo
+  \else
+    \expandafter\@firstoftwo
+  \fi
+}
+\def\@xspace@token@if@equal@NNT#1#2{%
+  \ifx#1#2%
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\@xspace@q@nil}
+% \begin{macro}{\@xspace@if@q@nil@NF}
+% Some macros dealing with quarks.
+%    \begin{macrocode}
+\def\@xspace@q@nil{\@xspace@q@nil}
+\def\@xspace@if@q@nil@NF#1{%
+  \ifx\@xspace@q@nil#1%
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale

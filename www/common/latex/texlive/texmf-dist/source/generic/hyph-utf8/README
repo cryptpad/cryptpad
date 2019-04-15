@@ -1,0 +1,57 @@
+generate-converters.rb
+======================
+INPUT:
+- source/generic/hyph-utf8/data/encodings/*.dat
+OUTPUT:
+- tex/generic/hyph-utf8/conversions/conv-utf8-*.dat
+
+Auto-generates conversions from UTF-8 to some particular encoding.
+
+Needs to be run only in case that a new encoding is added or an old encoding is fixed.
+
+generate-pattern-loaders.rb
+===========================
+INPUT:
+- language.rb with data
+OUTPUT:
+- tex/generic/hyph-utf8/loadhyph/loadhyph-*.tex
+
+Auto-generates pattern loaders for languages that should be used in TeX Live or other distros.
+
+Needs to be run when a new language is added, a bug needs to be fixed or a strategy is changed.
+
+generate-tl-files.rb
+====================
+Has been used once for the very first TL script generation.
+Out-of-date and not maintaned; will probably be removed.
+
+generate-webpage.rb
+===================
+Used to generated webpage with language overview.
+
+languages.rb
+============
+Database with language information used for almost every script.
+Needs some clean-up and some updates.
+
+
+languages/eu/generate_patterns_eu.rb
+====================================
+Generator for patterns for Basque.
+Author: Juan M. Aguirregabiria, adapted by Mojca Miklavec
+
+languages/gl
+============
+Generator for patterns for Galician.
+Author: Javier A. Múgica
+
+languages/tr/generate_patterns_tr.rb
+====================================
+Generator for patterns for Turkish.
+Author: See file, modified by Mojca Miklavec
+
+
+contributed/make-exhyph.pl
+==========================
+Imported script for hack related to breaking compound words.
+

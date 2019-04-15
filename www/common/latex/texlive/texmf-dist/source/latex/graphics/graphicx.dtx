@@ -1,0 +1,868 @@
+%
+% \iffalse
+%
+%% graphicx.dtx Copyright (C) 1994      David Carlisle Sebastian Rahtz
+%%              Copyright (C) 1995--2015 David Carlisle, LaTeX3 Project
+%%
+%% This file is part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.3c or, at your option, any later version.
+%%
+%<*dtx>
+          \ProvidesFile{graphicx.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%<package>\ProvidesPackage{graphicx}
+%<driver> \ProvidesFile{graphicx.drv}
+% \fi
+%         \ProvidesFile{graphicx.dtx}
+          [2014/10/28 v1.0g  Enhanced LaTeX Graphics (DPC,SPQR)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\newenvironment{key}[2]{\expandafter\macro\expandafter{%
+   \csname KV@#1@#2\endcsname}}{\endmacro}
+%
+\begin{document}
+ \DocInput{graphicx.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{graphicx.dtx}
+%
+% \title{The \textsf{graphicx} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{D. P. Carlisle\and S. P. Q. Rahtz}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{graphics}
+% \maketitle
+%
+% \CheckSum{596}
+%
+% \changes{v0.3}{1994/03/01}
+%     {First DPC version (after prototype by SPQR).}
+% \changes{v0.4b}{1994/05/30}
+%     {Rename from egraphics. 8+3 name for CDROM}
+% \changes{v1.0}{1996/05/29}
+%     {Version 1 at last}
+%
+% \def\star{{\ttfamily*}}
+% \makeatletter
+% \def\Describe@Macro#1{\endgroup
+%              \setbox0=\lastbox\llap{\PrintDescribeMacro{#1}}}%
+% \makeatother
+% \marginparsep0pt
+%
+% \section{Introduction}
+%
+% This package provides an alternative interface to the \LaTeXe\
+% graphics functions. The command names provided are the same as in the
+% standard package, and they use the same internal functions. However
+% the meaning of the optional arguments is different. Note \emph{only}
+% the optional arguments have changed: any document which only uses the
+% graphics commands with the mandatory arguments and/or the star-forms
+% will work identically (with essentially identical implementation) with
+% the two packages.
+%
+% \section{Key=Value Interface}
+% When the decision to produce \LaTeXe\ was made, certain `guiding
+% principles' were made (and published in the original announcement).
+% One of these was that all new features would `conform to the
+% conventions of version 2.09'. Specifically this meant that new
+% commands would obey the same basic syntax rules for arguments as the
+% existing commands.
+%
+% Standard \LaTeX\ optional arguments are \emph{positional}. If a
+% command were to take three optional arguments, then there would be no
+% way of specifying only the third, one would have to give all three,
+% even if  the first two were repeats of the default values. Basically
+% this means that `standard' optional arguments are not suitable if
+% there is more than one option. Various existing packages (for
+% \LaTeX~2.09) have recognised this, and used `named arguments' in
+% various forms. Perhaps the two most noticeable are |psfig| and
+% |pstricks|. With `named arguments' (sometimes called `attributes')
+% each option is not tied to a particular position, but rather given a
+% name (or key) and any options that must be set are set by explicitly
+% associating this name with the desired value.
+%
+% The members of the \LaTeX3 project do appreciate the importance of
+% this kind of syntax, but felt that rather than extending the syntax of
+% \LaTeX\ in an uncoordinated way, it would be better to keep with
+% `standard arguments' in \LaTeXe, which is intended as a `consolidation
+% of existing \LaTeX\ variants'. The long term planning for an eventual
+% \LaTeX3 release will then be able to consider the whole \LaTeX\
+% user interface, and a suitable syntax for named arguments. It is
+% important that such an interface design is not hampered by having to
+% retain compatibility with earlier attempts at a named argument
+% syntax. For this reason this |graphicx| package, which uses the named
+% argument mechanism from the |keyval| package should be considered `non
+% standard' although it is supported by the same mechanism, and same
+% authors as the `standard' |graphics| package.
+%
+% \section{The User Interface}
+%
+% \DescribeMacro
+%     \includegraphics\star\oarg{key-val list}\marg{file}\\
+% \DescribeMacro
+%     \includegraphics\star\oarg{llx,lly}\oarg{urx,ury}\marg{file}\\
+% Include a graphics file.
+%
+% The star form is just for
+% compatibility with the standard interface, and essentially just adds
+% |clip| to the keys specified. Similarly the second, two-optional
+% argument form is for increased compatibility with the standard
+% package. The two optional argument form is not needed in the |keyval|
+% interface.
+%
+% Various `keys' or named arguments are supported.
+% \begin{description}
+% \item[bb] Set the bounding box. The argument should be four
+% dimensions, separated by spaces.
+% \item[bbllx,bblly,bburx,bbury] Set the bounding box. Mainly for
+% compatibility with older packages. |bbllx=a,bblly=b,bburx=c,bbury=d|
+% is equivalent to |bb = a b c d|.
+% \item[natwidth,natheight] Again an alternative to |bb|.
+% |natheight=h,natwidth=w| is equivalent to |bb = 0 0 h w|.
+% \item[viewport] Modify the bounding box specified in the file.
+% The four values specify a bounding box \emph{relative} to the
+% |llx|,|lly| coordinate of the original box.
+% \item[trim] Modify the bounding box specified in the file.
+% The four values specify the amounts to remove from
+% the left, bottom, right and top of the original box.
+% \item[hiresbb] Boolean valued key. Defaults to |true|.
+% Causes \TeX\ to look for |%%HiResBoundingBox| comments rather than
+% the standard |%%BoundingBox|. May be set to |false| to override
+% a default setting of true specified by the |hiresbb| package option.
+% \item[angle] Rotation angle.
+% \item[origin] Rotation origin (see |\rotatebox|, below).
+% \item[width] Required width, a dimension (default units |bp|). The
+% graphic will be scaled to make the width the specified dimension.
+% \item[height] Required height. a dimension (default units |bp|).
+% \item[totalheight] Required totalheight (i.e., height $+$ depth). a
+% dimension (default units |bp|). Most useful after a rotation (when the
+% height might be zero).
+% \item[keepaspectratio] Boolean valued key (like |clip|). If it is set
+%  to true, modify the meaning of the |width| and |height| (and
+% |totalheight|) keys such that if both are specified then rather than
+% distort the figure the figure is scaled such that neither dimension
+% \emph{exceeds} the stated dimensions.
+% \item[scale] Scale factor.
+% \item[clip] Either `true' or `false' (or no value, which is equivalent
+% to `true'). Clip the graphic to the bounding box (or viewport if one
+% is specified).
+% \item[draft] a boolean valued key, like `clip'. locally switches to
+% draft mode, ie.\ do not include the graphic, but leave the
+% correct space, and print the filename.
+% \item[type] Specify the file type. (Normally determined from the file
+% extension.)
+% \item[ext] Specify the file extension.
+%        \emph{Only} for use with |type|.
+% \item[read] Specify the `read file' which is used for determining the
+% size of the graphic. \emph{Only} for use with |type|.
+% \item[command] Specify the file command.
+%         \emph{Only} for use with |type|.
+% \end{description}
+%
+% The arguments are interpreted left to right. |clip|, |draft|, |bb|,,
+% and |bbllx| etc.\ have the same effect wherever they appear. but the
+% scaling and rotation keys interact.
+%
+% Any scaling that is specified \emph{before} rotation, is handled by
+% the internal graphics inclusion function. Rotation, or any later
+% scaling is handled by implicitly calling |\rotatebox| or |\scalebox|.
+% So |[height=1in,angle=90]| scales the graphic to 1in, then rotates it,
+% so it is one inch wide. |[angle=90,height=1in]|  first rotates, then
+% scales the result so that it is 1in high. A driver that can scale
+% included graphics, but not arbitrary text will not be able to support
+% the second form, as it will require a call to |\scalebox|, but the
+% first form should work as there the scaling is handled by
+% |\Ginclude@graphics|.
+%
+% \DescribeMacro
+%      \rotatebox\oarg{key-val list}\marg{angle}\marg{text}\\
+% Rotate \emph{text}.
+%
+% The keys supported by |\rotatebox| are:
+% \begin{description}
+% \item[origin] Specify the centre of rotation. |origin=|\meta{label},
+% where the labels are up to two of |lrctbB| (|B| denotes the
+% baseline, as for PSTricks).
+% \item[x,y] An alternative to
+% |origin|. |x=|\meta{dimen}|,y=|\meta{dimen} The $x,y$ coordinate of
+% the centre of rotation. As usual |\height| etc may be used.
+% \item[units] Specify the units used in the main argument. eg
+% |units=-360| would mean that the argument referred to degrees
+% \emph{clockwise} instead of the default anti-clockwise rotation.
+% \end{description}
+%
+% As an example |\rotatebox[origin=c]{180}{text}| will rotate ``text''
+% around its centre, thus creating a final box of the same dimensions as
+% the original box. This is to be contrasted to the default behaviour,
+% which rotates around the reference point on the baseline, thus
+% producing a box that is mainly \emph{below} the baseline.
+%
+% \StopEventually{}
+%
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% One  new option is  handled by keyval. It suppresses the error
+% normally generated if an unknow keyval key is used.
+% (This helps porting between drivers that use extended interfaces.)
+% \changes{v1.0e}{1999/01/10}{new unknownkeysallowed option}
+%    \begin{macrocode}
+\DeclareOption{unknownkeysallowed}
+  {\PassOptionsToPackage\CurrentOption{keyval}}
+%    \end{macrocode}
+%
+% All other options are handled by the \textsf{graphics} package.
+%    \begin{macrocode}
+\DeclareOption*{\PassOptionsToPackage\CurrentOption{graphics}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+% This package requires these two building blocks.
+%    \begin{macrocode}
+\RequirePackage{keyval,graphics}
+%    \end{macrocode}
+%
+%
+% \subsection{Graphics Inclusion}
+%
+%
+% First we declare the `bounding box' keys. These all use
+% |\Gin@defaultbp| so that the \meta{value} can be given as a length in
+% the usual \TeX\ units such as |cm| or as an integer, taken as |bp|.
+%
+% \begin{key}{Gin}{bb}
+%    \begin{macrocode}
+\define@key{Gin}{bb}
+           {\Gin@bboxtrue\Gread@parse@bb#1 \\}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{bbllx}
+% \begin{key}{Gin}{bblly}
+% \begin{key}{Gin}{bburx}
+% \begin{key}{Gin}{bbury}
+% \changes{v0.3b}{1994/03/11}{use bbllx not llx}
+% \changes{v0.3b}{1994/03/11}{add natheight and natwidth}
+% \changes{v0.6a}{1995/04/11}{New \cs{Gin@defaultbb} code}
+% \changes{v0.6b}{1995/06/26}{typos fixed for graphics/1685}
+%    \begin{macrocode}
+\define@key{Gin}{bbllx}
+           {\Gin@bboxtrue\Gin@defaultbp\Gin@llx{#1}}
+\define@key{Gin}{bblly}
+           {\Gin@bboxtrue\Gin@defaultbp\Gin@lly{#1}}
+\define@key{Gin}{bburx}
+           {\Gin@bboxtrue\Gin@defaultbp\Gin@urx{#1}}
+\define@key{Gin}{bbury}
+           {\Gin@bboxtrue\Gin@defaultbp\Gin@ury{#1}}
+%    \end{macrocode}
+% \end{key}
+% \end{key}
+% \end{key}
+% \end{key}
+%
+% \begin{key}{Gin}{hiresbb}
+% \changes{v1.0b}{1996/10/29}
+%      {hiresbb key added}
+% If set to true (the default)  \TeX\ will look for bounding box
+% comments of the form |%%HiResBoundingBox| (which typically have
+% real values) instead of the standard |%%BoundingBox| (which should
+% have integer values).
+% It may be set to false to override a package option of hiresbb.
+%    \begin{macrocode}
+\define@key{Gin}{hiresbb}[true]{%
+  \edef\Gread@BBox{%
+    \@percentchar\@percentchar
+    \csname if#1\endcsname HiRes\fi
+    BoundingBox}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{natheight}
+% \begin{key}{Gin}{natheight}
+% \changes{v0.6d}{1995/09/22}
+%      {typos fixed in natheight and natwidth keys}
+%    \begin{macrocode}
+\let\KV@Gin@natwidth\KV@Gin@bburx
+\let\KV@Gin@natheight\KV@Gin@bbury
+%    \end{macrocode}
+% \end{key}
+% \end{key}
+%
+% \begin{key}{Gin}{viewport}
+% \begin{key}{Gin}{trim}
+% \changes{v0.6a}{1995/04/11}{viewport and trim keys added}
+% \changes{v0.6c}{1995/09/07}{arithmetic in viewport key fixed}
+% A `viewport' is a user-specified area of the graphic to be included.
+% It should not be confused with the `Bounding Box' of a PS file.
+% In fact, the origin for a viewport specification is the (llx,lly)
+% lower left coordinate of the bounding box. If a viewport is
+% specified, and clipping is turned on, clipping is based on the
+% viewport, not on the boundingbox.
+%
+% Both `viewport' and `trim' were suggested (and originally, but
+% differently, implemented) by Arthur Ogawa.
+%    \begin{macrocode}
+\define@key{Gin}{viewport}
+           {\let\Gin@viewport@code\Gin@viewport\Gread@parse@vp#1 \\}
+\define@key{Gin}{trim}
+           {\let\Gin@viewport@code\Gin@trim\Gread@parse@vp#1 \\}
+%    \end{macrocode}
+% \end{key}
+% \end{key}
+%
+% \begin{macro}{\Gread@parse@vp}
+% Grabs four bounding box values like |\Gread@parse@bp| but saves them
+% in alternative macros that are used in the viewport and trim cases to
+% modify the bounding box read from the file.
+%    \begin{macrocode}
+\def\Gread@parse@vp#1 #2 #3 #4 #5\\{%
+  \Gin@defaultbp\Gin@vllx{#1}%
+  \Gin@defaultbp\Gin@vlly{#2}%
+  \Gin@defaultbp\Gin@vurx{#3}%
+  \Gin@defaultbp\Gin@vury{#4}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@viewport}
+% \changes{v1.0c}{1996/10/31}{Original bb saved}
+% If a viewport is specified, reset the bounding box coordinates
+% by adding the original origin, |\Gin@llx|, |\Gin@lly| to the new
+% values specified as the viewport. The original Bounding box
+% coordinates are saved in |\Gin@ollx|\ldots\ some drivers
+% might need this information (currently just |tcidvi|).
+%    \begin{macrocode}
+\def\Gin@viewport{%
+  \let\Gin@ollx\Gin@llx
+  \let\Gin@olly\Gin@lly
+  \let\Gin@ourx\Gin@urx
+  \let\Gin@oury\Gin@ury
+  \dimen@\Gin@llx\p@\advance\dimen@ \Gin@vurx\p@
+                      \edef\Gin@urx{\strip@pt\dimen@}%
+  \dimen@\Gin@lly\p@\advance\dimen@ \Gin@vury\p@
+                      \edef\Gin@ury{\strip@pt\dimen@}%
+  \dimen@\Gin@llx\p@\advance\dimen@ \Gin@vllx\p@
+                      \edef\Gin@llx{\strip@pt\dimen@}%
+  \dimen@\Gin@lly\p@\advance\dimen@ \Gin@vlly\p@
+                      \edef\Gin@lly{\strip@pt\dimen@}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@trim}
+% \changes{v1.0c}{1996/10/31}{Original bb saved}
+% If a trim is specified, reset the bounding box coordinates
+% by trimming the four specified values off each side of the
+% graphic.
+%    \begin{macrocode}
+\def\Gin@trim{%
+  \let\Gin@ollx\Gin@llx
+  \let\Gin@olly\Gin@lly
+  \let\Gin@ourx\Gin@urx
+  \let\Gin@oury\Gin@ury
+  \dimen@\Gin@llx\p@\advance\dimen@ \Gin@vllx\p@
+                      \edef\Gin@llx{\strip@pt\dimen@}%
+  \dimen@\Gin@lly\p@\advance\dimen@ \Gin@vlly\p@
+                      \edef\Gin@lly{\strip@pt\dimen@}%
+  \dimen@\Gin@urx\p@\advance\dimen@ -\Gin@vurx\p@
+                      \edef\Gin@urx{\strip@pt\dimen@}%
+  \dimen@\Gin@ury\p@\advance\dimen@ -\Gin@vury\p@
+                      \edef\Gin@ury{\strip@pt\dimen@}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@vllx}
+% \begin{macro}{\Gin@vlly}
+% \begin{macro}{\Gin@vurx}
+% \begin{macro}{\Gin@vury}
+% Four macros to hold the modifiers for the bounding box for viewport
+% and trim specifications.
+%    \begin{macrocode}
+\let\Gin@vllx\Gin@llx\let\Gin@vlly\Gin@llx
+\let\Gin@vurx\Gin@llx\let\Gin@vury\Gin@llx
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{key}{Gin}{angle}
+% Specify a rotation. This is just handled by wrapping the
+% |\includegraphics| command in a call to the internal version of
+% |\rotatebox|. Normally this is the `standard' version but if an
+% |origin| key is used in |\includegraphics| then the \emph{keyval}
+% version of origin is used, and the |origin| key is passed on.
+%    \begin{macrocode}
+\define@key{Gin}{angle}
+           {\Gin@esetsize
+            \@tempswatrue
+            \edef\@tempa{\toks@{\noexpand\Gin@erotate{#1}{\the\toks@}}}%
+            \@tempa}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{origin}
+% Pass the origin key value on to |\rotatebox|. |\Gin@erotate| is
+% initialised to |\Grot@box@std| later in the file, after the latter has
+% been defined.
+% \changes{v0.6e}{1995/09/28}
+%     {key added}
+%    \begin{macrocode}
+\define@key{Gin}{origin}[c]{%
+  \def\Gin@erotate{\Grot@box@kv[origin=#1]}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{width}
+% \begin{key}{Gin}{height}
+% Save the required height and width. The actual scaling is done later.
+%    \begin{macrocode}
+\define@key{Gin}{width}{\def\Gin@ewidth{#1}}
+\define@key{Gin}{height}{\def\Gin@eheight{#1}}
+%    \end{macrocode}
+% \end{key}
+% \end{key}
+%
+% \begin{key}{Gin}{totalheight}
+% \changes{v0.6a}{1995/04/11}{New totalheight key}
+% The same as |height| key, but locally changes |\Gin@eresize| to
+% |\totalheight| from its default value of |\height|.
+%    \begin{macrocode}
+\define@key{Gin}{totalheight}{%
+  \def\Gin@eresize{\totalheight}\def\Gin@eheight{#1}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{keepaspectratio}
+% Boolean valued key (like |clip|). If it is set to true,
+% modify the meaning of the |width| and |height| (and |totalheight|)
+% keys such that if both are specified then rather than distort the
+% figure the figure is scaled such that neither dimension \emph{exceeds}
+% the stated dimensions.
+% \changes{v0.6e}{1995/09/28}
+%     {key added}
+% \changes{v0.6h}{1995/12/06}
+%     {Name changed to keepaspectratio}
+%    \begin{macrocode}
+\define@key{Gin}{keepaspectratio}[true]{%
+  \lowercase{\Gin@boolkey{#1}}{iso}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{scale}
+% \changes{v0.6h}{1995/12/06}
+%     {Use \cs{Gin@exclamation}}
+% If the scaling is being handled externally, wrap |\includegraphics| in
+% the internal form of |\scalebox|, otherwise locally define
+% |\Gin@req@sizes| to calculate the required sizes based on
+% scale factor.
+%    \begin{macrocode}
+\define@key{Gin}{scale}{%
+  \if@tempswa
+    \edef\@tempa{\toks@{\noexpand\Gscale@box{#1}[#1]{\the\toks@}}}%
+    \@tempa
+  \else
+    \def\Gin@req@sizes{%
+      \def\Gin@scalex{#1}\let\Gin@scaley\Gin@exclamation
+      \Gin@req@height\Gin@scalex\Gin@nat@height
+      \Gin@req@width\Gin@scalex\Gin@nat@width}%
+  \fi
+  \@tempswatrue}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{draft}
+% Locally set the draft switch to true. This is used by the code in
+% \textsf{graphics} package to suppress the file inclusion.
+%    \begin{macrocode}
+\define@key{Gin}{draft}[true]{%
+  \lowercase{\Gin@boolkey{#1}}{draft}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{clip}
+% Locally set the clip switch to true. This is used by the code in
+% \textsf{graphics} package to suppress the printing of anything outside
+% the bounding box specified.
+%    \begin{macrocode}
+\define@key{Gin}{clip}[true]{%
+  \lowercase{\Gin@boolkey{#1}}{clip}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{type}
+% If you use `type' you must use no extension in the main argument
+% and you must use `ext'. You can also use `read' and `command'.
+% \changes{v0.5a}{1994/11/29}
+%     {remove \cs{Gin@sep}}
+%    \begin{macrocode}
+\define@key{Gin}{type}{%
+  \def\Ginclude@graphics##1{%
+    \begingroup
+    \def\Gin@base{##1}%
+    \edef\@tempa{{#1}{\Gin@eread}{\Gin@ecom{##1\Gin@eext}}}%
+    \expandafter\Gin@setfile\@tempa
+    \endgroup}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{ext}
+% \changes{v1.0d}{1997/06/09}{initialise ext to empty}
+% Specify an extension, for use with the `type' key.
+%    \begin{macrocode}
+\define@key{Gin}{ext}{\def\Gin@eext{#1}}
+\let\Gin@eext\@empty
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{read}
+% Specify a read file, for use with the `type' key.
+% You may want to globally set this to |*| using |\setkeys|.
+% |*| means read the graphic file for size info, as in
+% |\DeclareGraphicsRule|.
+% \changes{v0.5a}{1994/11/29}
+%     {Add default * possibility.}
+%    \begin{macrocode}
+\define@key{Gin}{read}{%
+ \def\Gin@eread{#1}%
+ \def\@tempa{*}\ifx\@tempa\Gin@eread\def\Gin@eread{\Gin@eext}\fi}
+\let\Gin@eread\@empty
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Gin}{command}
+% Specify a command, for use with the `type' key.
+%    \begin{macrocode}
+\define@key{Gin}{command}{\def\Gin@ecom##1{#1}}
+\let\Gin@ecom\@firstofone
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{macro}{\Gin@boolkey}
+% Helper function for defining boolean valued functions. The order of
+% arguments allows |\lowercase| to only act on the user-supplied
+% argument.
+% \changes{v0.4a}{1994/04/14}{Make `empty'!=true so clip!= works}
+%    \begin{macrocode}
+\def\Gin@boolkey#1#2{%
+  \csname Gin@#2\ifx\relax#1\relax true\else#1\fi\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@esetsize}
+% \changes{v0.6h}{1995/12/06}
+%     {Use \cs{Gin@exclamation}}
+% Arrange for the final size to be set, either by wrapping the include
+% graphics call in |\scalebox|, or by redefining |\Gin@req@sizes|
+% appropriately.
+%    \begin{macrocode}
+\def\Gin@eresize{\height}
+\def\Gin@esetsize{%
+  \let\@tempa\Gin@exclamation
+  \if@tempswa
+%    \end{macrocode}
+%  External. Wrap the |\includegraphics| command in a call to the
+%  internal form of |\scalebox| to handle the rotation.
+%    \begin{macrocode}
+    \edef\@tempa{\toks@{\noexpand
+             \Gscale@@box\noexpand\Gin@eresize
+              {\Gin@ewidth}{\Gin@eheight}{\the\toks@}}}%
+    \@tempa
+  \else
+%    \end{macrocode}
+% Internal. Handle scaling with the |\includegraphics| command directly
+% rather than calling |\scalebox|.
+%    \begin{macrocode}
+    \ifx\Gin@ewidth\@tempa
+      \ifx\Gin@eheight\@tempa
+%    \end{macrocode}
+% No resizing.
+%    \begin{macrocode}
+      \else
+%    \end{macrocode}
+% Just height specified.
+% \changes{v0.6e}{1995/09/28}
+%     {Use \cs{setlength} to support calc package}
+% \changes{v0.6h}{1995/12/06}
+%     {Use \cs{Gin@exclamation}}
+%    \begin{macrocode}
+         \let\Gin@@eheight\Gin@eheight
+         \def\Gin@req@sizes{%
+           \Gscale@div\Gin@scaley\Gin@@eheight\Gin@nat@height
+           \let\Gin@scalex\Gin@exclamation
+           \setlength\Gin@req@height\Gin@@eheight
+           \Gin@req@width\Gin@scaley\Gin@nat@width}%
+      \fi
+    \else
+      \ifx\Gin@eheight\@tempa
+%    \end{macrocode}
+% Just width specified.
+% \changes{v0.6e}{1995/09/28}
+%     {Use \cs{setlength} to support calc package}
+% \changes{v0.6h}{1995/12/06}
+%     {Use \cs{Gin@exclamation}}
+%    \begin{macrocode}
+         \let\Gin@@ewidth\Gin@ewidth
+         \def\Gin@req@sizes{%
+           \Gscale@div\Gin@scalex\Gin@@ewidth\Gin@nat@width
+           \let\Gin@scaley\Gin@exclamation
+           \setlength\Gin@req@width\Gin@@ewidth
+           \Gin@req@height\Gin@scalex\Gin@nat@height}%
+      \else
+%    \end{macrocode}
+% Both height and width specified.
+%    \begin{macrocode}
+         \let\Gin@@ewidth\Gin@ewidth
+         \let\Gin@@eheight\Gin@eheight
+%    \end{macrocode}
+% \changes{v0.6g}{1995/11/10}
+%     {Use \cs{ifGin@iso} to support isoscale key}
+% At this point can locally redefine |\Gin@nosize|. Instead
+% of generating an error, just set the `natural' size to be the
+% `requested size'. Previous versions of this package did not
+% allow the use of |height| and |width| unless the natural size was
+% known as otherwise \LaTeX\ can not calculate the scale factor.
+% However many drivers (especially for bitmap formats) can work this out
+% themselves, so as long as both |height| and |width| are given, so
+% \LaTeX\ knows the size to leave, accept this. This assumes the code in
+% the driver file will use the `required height' information, not the
+% scale factors, which will be set to 1!.
+% \changes{v1.0a}{1996/08/05}
+%     {Missing percent added for graphics/2244}
+%    \begin{macrocode}
+         \def\Gin@nosize##1{%
+           \KV@Gin@natwidth\Gin@@ewidth
+           \KV@Gin@natheight\Gin@@eheight}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+         \def\Gin@req@sizes{%
+           \Gscale@div\Gin@scalex\Gin@@ewidth\Gin@nat@width
+           \Gscale@div\Gin@scaley\Gin@@eheight\Gin@nat@height
+%    \end{macrocode}
+% \changes{v0.6f}{1995/09/29}
+%     {Use \cs{ifGin@iso} to support isoscale key}
+% Donald Arseneau requested this feature. If both |height|
+% and |width| are chosen, choose the smaller scale factor rather than
+% distort the graphic. This mode is turned on with the
+% \textsf{keepaspectratio} key.
+%    \begin{macrocode}
+           \ifGin@iso
+             \ifdim\Gin@scaley\p@>\Gin@scalex\p@
+               \let\Gin@scaley\Gin@scalex
+             \else
+               \let\Gin@scalex\Gin@scaley
+             \fi
+           \fi
+           \Gin@req@width\Gin@scalex\Gin@nat@width
+           \Gin@req@height\Gin@scaley\Gin@nat@height}%
+       \fi
+     \fi
+  \fi
+  \let\Gin@ewidth\Gin@exclamation
+  \let\Gin@eheight\Gin@ewidth}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@req@height}
+% \begin{macro}{\Gin@req@width}
+% The required final size.
+%    \begin{macrocode}
+\newdimen\Gin@req@height
+\newdimen\Gin@req@width
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Gin@outer@scalex}
+% \begin{macro}{\Gin@outer@scaley}
+% Scale factors to pass to |\scalebox|.
+%    \begin{macrocode}
+\let\Gin@outer@scalex\relax
+\let\Gin@outer@scaley\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Gin@angle}
+% Rotation angle.
+%    \begin{macrocode}
+\let\Gin@angle\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@ewidth}
+% \changes{v0.6h}{1995/12/06}
+%     {Use \cs{Gin@exclamation}}
+% \begin{macro}{\Gin@eheight}
+% Final size, initialised for no scaling.
+%    \begin{macrocode}
+\let\Gin@ewidth\Gin@exclamation
+\let\Gin@eheight\Gin@ewidth
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Gin@scalex}
+% \begin{macro}{\Gin@scaley}
+% \changes{v0.6h}{1995/12/06}
+%     {Use \cs{Gin@exclamation}}
+% Scale factors. Initialised for no scaling.
+%    \begin{macrocode}
+\def\Gin@scalex{1}
+\let\Gin@scaley\Gin@exclamation
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Gin@i}
+% Use the same top level |\includegraphics| command as the standard
+% interface. This will set the clipping switch, and then call |\Gin@i|.
+% \changes{v0.3c}{1994/03/15}{Dont locally initialise width/height}
+% \changes{v0.3c}{1994/03/15}{Always call \cmd{\Gin@ii}}
+% \changes{v0.4c}{1994/09/12}{Use `standard' version if two opt.\ args.}
+%    \begin{macrocode}
+\def\Gin@i{%
+ \def\Gin@req@sizes{%
+   \Gin@req@height\Gin@nat@height
+   \Gin@req@width\Gin@nat@width}%
+ \@ifnextchar[\Gin@ii{\Gin@ii[]}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\Gin@ii}
+% Look for a second optional argument.
+% If one optional argument is present, call |\setkeys| to process it,
+%    \begin{macrocode}
+\def\Gin@ii[#1]#2{%
+    \def\@tempa{[}\def\@tempb{#2}%
+    \ifx\@tempa\@tempb
+      \def\@tempa{\Gin@iii[#1][}%
+      \expandafter\@tempa
+    \else
+     \begingroup
+       \@tempswafalse
+       \toks@{\Ginclude@graphics{#2}}%
+       \setkeys{Gin}{#1}%
+       \Gin@esetsize
+       \the\toks@
+     \endgroup
+     \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v0.4b}{1994/05/06}
+%     {Remove incorrect initialisation of \cs{Gin@scalex}}
+%
+% \section{Rotation}
+%
+% \begin{macro}{\rotatebox}
+% Look for an optional argument.
+% \changes{v0.3b}{1994/03/11}{Remove star form}
+% \changes{v1.0g}{2014/04/25}{\cs{leavevmode} added graphics/1521}
+%    \begin{macrocode}
+\def\rotatebox{%
+  \leavevmode
+  \@ifnextchar[\Grot@box@kv\Grot@box@std}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Grot@box@std}
+% If no KV argument, just repeat the standard definition.
+% \changes{v1.0g}{2014/04/25}{Made long  graphics/4296}
+%    \begin{macrocode}
+\long\def\Grot@box@std#1#2{%
+  \Grot@setangle{#1}%
+  \setbox\z@\hbox{{#2}}%
+  \Grot@x\z@
+  \Grot@y\z@
+  \Grot@box}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Grot@box@kv}
+% \changes{v1.0g}{2014/04/25}{Made long  graphics/4296}
+%    \begin{macrocode}
+\long\def\Grot@box@kv[#1]#2#3{%
+  \@begin@tempboxa\hbox{#3}%
+    \Grot@x\width \divide\Grot@x\tw@
+    \Grot@y\height \advance\Grot@y-\depth \divide\Grot@y\tw@
+    \setkeys{Grot}{#1}%
+    \setbox\z@\box\@tempboxa
+    \Grot@setangle{#2}%
+    \Grot@box
+  \@end@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% There are two ways of specifying the centre of rotation.
+%
+% \begin{key}{Grot}{origin}
+% |origin=|\meta{label}, where the labels are up to two of |lrctbB|
+% (|B| denotes the baseline, as for PSTricks).
+%    \begin{macrocode}
+\define@key{Grot}{origin}[c]{%
+ \@tfor\@tempa:=#1\do{%
+    \if l\@tempa \Grot@x\z@\else
+    \if r\@tempa \Grot@x\width\else
+    \if t\@tempa \Grot@y\height\else
+    \if b\@tempa \Grot@y-\depth\else
+    \if B\@tempa \Grot@y\z@\fi\fi\fi\fi\fi}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{key}{Grot}{x}
+% \begin{key}{Grot}{y}
+% |x=|\meta{dimen}|,y=|\meta{dimen} The $x,y$ coordinate of the centre
+% of rotation. As usual |\height| etc may be used.
+%    \begin{macrocode}
+\define@key{Grot}{x}{\setlength\Grot@x{#1}}
+\define@key{Grot}{y}{\setlength\Grot@y{#1}}
+%    \end{macrocode}
+% \end{key}
+% \end{key}
+%
+% \begin{key}{Grot}{units}
+% `units' specifies the number or units in one anti-clockwise circle.
+%  So the default is $360$. $-360$ gives clockwise rotation, $6.283185$
+%  gives radians etc.
+%    \begin{macrocode}
+\define@key{Grot}{units}{%
+  \def\Grot@setangle##1{%
+  \dimen@##1\p@
+  \dimen@ii#1\p@
+  \divide\dimen@ii360\relax
+  \divide\dimen@\dimen@ii
+  \edef\Grot@angle{\number\dimen@}}}
+%    \end{macrocode}
+% \end{key}
+%
+% \begin{macro}{\Gin@erotate}
+% Initialise the rotation command to use in |\includegraphics|.
+% \changes{v0.6e}{1995/09/28}{macro added}
+%    \begin{macrocode}
+\let\Gin@erotate\Grot@box@std
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%

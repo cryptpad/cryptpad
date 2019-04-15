@@ -1,0 +1,119 @@
+% This macro file is for business letters
+
+\def\today{\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi
+  \space\number\day, \number\year}
+\def\narrower{\advance\leftskip by 20pt \advance\rightskip by 20pt }
+
+\raggedbottom
+\interlinepenalty=1000
+\hsize=6.25truein \voffset=24pt \advance\vsize by-\voffset
+\parindent=0pt \parskip=0pt
+\nopagenumbers
+\headline={\ifnum\pageno>1
+  \tenrm To \addressee\hfil\today\hfil Page \folio
+  \else\hfil\fi}
+
+\def\beginlinemode{\endmode
+  \begingroup\obeylines\def\endmode{\par\endgroup}}
+\def\beginparmode{\endmode
+  \begingroup\parskip=\medskipamount \def\endmode{\par\endgroup}}
+\let\endmode=\par
+\def\endletter{\endmode\vfill\supereject \pageno=1 }
+
+\newdimen\longindentation \longindentation=4truein
+\newbox\theaddress
+\def\address{\beginlinemode\getaddress}
+{\obeylines\gdef\getaddress#1
+  #2
+  {\gdef\addressee{#2\unskip}%
+    \global\setbox\theaddress=\vbox\bgroup\raggedright%
+    \hsize=\longindentation \everypar{\hangindent2em}#2
+    \def\endmode{\egroup\endgroup \copy\theaddress \bigskip}}}
+
+\def\body{\beginparmode}
+\def\closing{\beginlinemode\getclosing}
+{\obeylines\gdef\getclosing #1
+  #2
+  {\nobreak\bigskip \leftskip=\longindentation #2
+    \nobreak\bigskip\bigskip\bigskip % space for signature
+    \def
+    {\endgraf\nobreak}}}
+\def\annotations{\beginlinemode\def\par{\endgraf\nobreak}\obeylines\par}
+\def\ps{\beginparmode\nobreak
+  \interlinepenalty5000\def\par{\endgraf\penalty5000}}
+\def\cc{\beginparmode\nobreak
+  \interlinepenalty5000\def\par{\endgraf\penalty5000}}
+
+\def\up#1{\leavevmode \raise.16ex\hbox{#1}}
+\font\smallheadfont=cmr8 at 8truept
+\font\largeheadfont=cmbx10 at 14.4truept
+\font\logofont=stan70 at 70truept
+\def\stanfordseal{\vbox{\kern-3truept\hbox{\logofont A}\kern-3truept}}
+
+\def\csdreturn{Computer Science Department\par \stanfordreturn}
+\def\stanfordreturn{Stanford University\par
+    Stanford, CA 94305\kern.5pt-21\kern-.5pt40 USA\par}
+\def\letterhead{\pageno=1 \univletterhead
+  {\leftskip=\longindentation
+    {\baselineskip9truept\smallheadfont\sendingaddress}
+    \bigskip\bigskip\rm\today\bigskip}}
+\def\specrule#1{\nointerlineskip
+  \line{\hbox to 60truept{\hrulefill
+      \hphantom{\stanfordseal\kern-#1truept}%
+    \hrulefill}\hrulefill}\nointerlineskip}
+\def\univletterhead{\vglue-34pt
+  \specrule{11}\vskip8truept
+  \hbox{\hbox to\longindentation{\smash{\hbox to60truept{\hfil\kern2.5truept
+        \lower10truept\stanfordseal\hfil}}%
+      \largeheadfont STANFORD UNIVERSITY\hfil}%
+    \smallheadfont STANFORD, CALIFORNIA 94305\kern.5pt-21\kern-.5pt40}
+  \vskip6truept\specrule{17}\vskip13truept }
+
+\def\deklet{
+  \def\sendingaddress{DONALD E. KNUTH\par
+    Professor Emeritus of The Art of\par
+    \qquad Computer Programming\par
+    Department of Computer Science\par
+    Telephone \up[415\up]\thinspace 723-4367\par}
+  \def\returnaddress{Prof.~D. E. Knuth\par \csdreturn}
+  \letterhead}
+
+\def\memoto{\beginlinemode\parindent=60truept
+  \everypar{\hangindent70truept}\startmemo}
+\def\bigmemoto{\beginlinemode\parindent=60pt % use this for magstep>1!
+  \everypar{\hangindent70pt}\startmemo}
+\def\textin#1{\noindent\hbox to\parindent{#1\hss}\ignorespaces}
+{\obeylines\gdef\startmemo #1
+  {\gdef\addressee{#1}%
+  \global\pageno=1 \vglue-34pt\specrule{11}\vskip8truept
+  \leftline{\smash{\hbox to60truept{\hfil\kern2.5truept
+        \lower10truept\stanfordseal\hfil}}%
+    \largeheadfont Stanford Computer Science Department %
+    \rm\today}%
+  \vskip6truept\specrule{20}\bigskip\bigskip\bigskip%
+  \textin{Memo to:}#1
+  \def\endmode{\par\endgroup\bigskip}}
+  \gdef\from #1
+  {\smallskip\textin{From:}#1
+  }
+  \gdef\subject #1
+  {\smallskip\textin{Subject:}#1
+  }
+}
+
+\def\makelabel{\endletter\hbox{\vrule
+    \vbox{\hrule \kern6truept
+      \hbox{\kern6truept\stanfordseal\kern3pt
+          \vbox{\smallheadfont\baselineskip9truept\hsize=2truein\returnaddress}
+        \kern6truept}\kern6truept\hrule}\vrule}
+  \kern.1truein
+  \hbox{\vrule
+    \vbox{\hrule \kern12truept
+      \hbox{\kern12truept\copy\theaddress
+        \kern12truept}\kern12truept\hrule}\vrule}
+  \pageno=0\vfill\eject}
+
+\def\frac#1/#2{\leavemode\kern.1em\raise.5ex\hbox{\the\scriptfont0 
+ #1}\kern-.1em/\kern-.15em\lower.25ex\hbox{\the\scriptfont0 #2}}

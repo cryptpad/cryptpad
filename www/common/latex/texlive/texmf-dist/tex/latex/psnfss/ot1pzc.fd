@@ -1,0 +1,15 @@
+\ProvidesFile{ot1pzc.fd}
+   [2001/06/04 font definitions for OT1/pzc.]
+
+\DeclareFontFamily{OT1}{pzc}{}
+
+\DeclareFontShape{OT1}{pzc}{mb}{it}{
+   <-> pzcmi7t
+}{}
+
+\DeclareFontShape{OT1}{pzc}{m}{it}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{OT1}{pzc}{mb}{sl}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{OT1}{pzc}{m}{sl}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{OT1}{pzc}{m}{n}{<->ssub * pzc/mb/it}{}
+
+\endinput

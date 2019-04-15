@@ -1,0 +1,1263 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltboxes.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltboxes.dtx}
+             [2015/01/08 v1.1h LaTeX Kernel (Box Commands)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltboxes.dtx}
+\title{\filename}
+\date{\filedate}
+\author{David Carlisle\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{846}
+%
+% \changes{v1.1e}{1998/08/17}{(RmS) Minor Documentation fixes.}
+% \section{\LaTeX\ Box commands}
+%
+%
+% \DescribeMacro\makebox
+% |\makebox[|\meta{wid}|][|\meta{pos}|]{|\meta{obj}|}|\\
+% Puts \meta{obj} in an |\hbox| of width \meta{wid}, positioned by
+% \meta{pos}.
+%
+% The possible \meta{pos} are:\\
+% \begin{tabular}{ll}
+% |s| stretched,\\
+% |l| flushleft,\\
+% |r| flushright,\\
+% |c| (default) centred.
+% \end{tabular}
+%
+% If \meta{wid} is missing, then \meta{pos} is also missing and
+% \meta{obj} is put in an |\hbox| of its natural width.
+%
+%  |\makebox(|\meta{x}|,|\meta{y}|)[|\meta{pos}|]{|\meta{obj}|}|\\
+%  Puts \meta{obj} in an |\hbox| of width $x * |\unitlength|$
+%            and height $y * |\unitlength|$.
+% \meta{pos} arguments are
+%  |s|, |l|, |r| or |c| (default) for stretched, flushleft, flushright
+%  or centred, and  |t| or |b|
+%            for top, bottom -- or combinations like  |tr| or |rb|.
+%            Default for horizontal and vertical are centered.
+% Note that in this picture mode version of |\makebox| a [b] aligns on
+% the \emph{bottom} of the text as documented. If you want to align on
+% the \emph{baseline} use
+%  |\makebox( , )[b]{\raisebox{0pt}[\height][0pt]{xyz}}}|
+%  or |\makebox( , )[b]{\smash{xyz}}|
+%
+% \DescribeMacro\mbox
+%  |\mbox{|\meta{obj}|}| The same as |\makebox{|\meta{obj}|}|, but is
+%  more efficient as no checking for optional arguments is done.
+%
+% \DescribeMacro\newsavebox
+%  |\newsavebox{\cmd}| : If |\cmd| is undefined, then defines it
+%           to be a \TeX\ box register.
+%
+% \DescribeMacro\savebox
+%  |\savebox{\cmd}| ... : |\cmd| is defined to be a \TeX\ box register,
+%            and the '...' are any |\makebox| arguments.  It is
+%            like |\makebox|, except it doesn't produce text but
+%            saves the value in |\box| |\cmd|.
+%
+% \DescribeMacro\sbox
+% |\sbox{|\meta{cmd}|}{|\meta{obj}|}| is an efficient abbreviation for\\
+% |\savebox{|\meta{cmd}|}{|\meta{obj}|}|.
+%
+% \DescribeEnv{lrbox}
+%  |\begin{lrbox}{|\meta{cmd}|}|\meta{text}|\end{lrbox}| is equivalent
+%  to\\
+%  |\sbox{|\meta{cmd}|}{|\meta{text}|}|\\
+%  except that any white space at the beginning and end of \meta{text}
+%  is ignored.
+%
+% \DescribeMacro\framebox
+%  |\framebox| ...  : like |\makebox|, except it puts a `frame' around
+%            the box.  The frame is made of lines of thickness
+%            |\fboxrule|, separated by space |\fboxsep| from the
+%            text -- except for |\framebox(X,Y)| ... , where the
+%            thickness of the lines is as for the picture environment,
+%            and there is no separation added.
+%
+% \DescribeMacro\fbox
+% |\fbox{|\meta{obj}|}| is an abbreviation for
+% |\framebox{|\meta{obj}|}|.
+%
+% \DescribeMacro\parbox
+%  |\parbox[|\meta{pos}|][|\meta{height}|][|\meta{inner-pos}|]{|^^A
+%                    \meta{width}|}{|\meta{text}|}| :
+% Makes a box with |\hsize| \meta{width}, positioned by \meta{pos} as
+% follows:
+%              c : |\vcenter| (placed in |$...$| if not in math mode)
+%              b : |\vbox|
+%              t : |\vtop|
+%         default value is c.
+%    Sets |\hsize| := \meta{width} and calls |\@parboxrestore|, which
+%    does the following:
+%         Restores the original definitions of:
+%
+%              \begin{tabular}{l}
+%              |\par|\\
+%              |\\|\\
+%              |\-|\\
+%              |\'|\\
+%              | \`|\\
+%              |\=|
+%              \end{tabular}
+%
+%         Resets the following parameters:
+%
+%              \begin{tabular}{l@{\quad=\quad}ll}
+%              |\parindent|        & 0pt \\
+%              |\parskip|          & 0pt           & added 20 Jan 87\\
+%              |\linewidth|        & |\hsize|\\
+%              |\@totalleftmargin| & 0pt\\
+%              |\leftskip|         & 0pt\\
+%              |\rightskip|        & 0pt\\
+%              |\@rightskip|       & 0pt\\
+%              |\parfillskip|      & 0pt plus 1fil\\
+%              |\lineskip|         & |\normallineskip|\\
+%              |\baselineskip|     & |\normalbaselineskip|
+%              \end{tabular}
+%
+%         Calls |\sloppy|
+%
+%  Note: |\@arrayparboxrestore| same as |\@parboxrestore|
+%         but it doesn't restore |\\|.
+%
+% \DescribeEnv{minipage}
+% |minipage|  :  Similar to |\parbox|, except it also
+%        makes this look like a page by setting
+%
+%              |\textwidth| == |\columnwidth| == box width
+%
+%        changes footnotes by redefining:\\%
+%              |\@mpfn|         == mpfootnote \\
+%              |\thempfn|       == |\thempfootnote|\\
+%              |\@footnotetext| == |\@mpfootnotetext|
+%
+%        resets the following list environment parameters:\\
+%              |\@listdepth|    == |\@mplistdepth|\\
+%        where  |\@mplistdepth| is initialized to zero,
+%
+%        and executes |\@minipagerestore| to allow the document
+%        style to reset any other parameters it desires.
+%        It sets |@minipage| true, and resets |\everypar| to set
+%        it false.  This switch keeps |\addvspace| from putting space
+%        at the top of a minipage.
+%
+%        Change added 24 May 89: |\minipage| sets |@minipage| globally;
+%        |\endminipage| resets it false.
+%
+%
+% \DescribeMacro\rule
+% |\rule[|\meta{raised}|]{|\meta{width}|}{|\meta{height}|}| :
+% Makes a $\meta{width}*\meta{height}$ rule, raised \meta{raised}.
+%
+% \DescribeMacro\underline
+% |\underline{|\meta{text}|}| : Makes an underlined hbox with
+% \meta{text} in it.
+%
+% \DescribeMacro\raisebox
+% |\raisebox{|\meta{distance}|}[|\meta{height}|][|\meta{depth}^^A
+%                 |]{|\meta{box}|}| :\\
+% Raises \meta{box} up by \meta{distance} length (down if
+% \meta{distance} negative).  Makes \TeX\ think that the new box extends
+% \meta{height} above the line and \meta{depth} below, for a total
+% vertical length of \meta{height}+\meta{depth}.  Default values of
+% \meta{height} \& \meta{depth} = actual height and depth of box in new
+% position.
+%
+% \StopEventually{}
+%
+% \changes{v0.1e}{1994/03/02}{Remove need for drv file}
+% \changes{v0.1e}{1994/03/02}{Add 2ekernel module}
+% \changes{v1.0a}{1994/03/07}{Unify format with other Kernel files}
+% \changes{v1.0f}{1994/05/11}
+%     {Superfluous braces removed from several commands}
+% \changes{v1.0j}{1994/10/18}
+%         {stuff from ltpatch done}
+% \changes{v1.0p}{1994/11/09}
+%         {more colour changes\ldots}
+% \changes{v1.0q}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0t}{1995/05/07}{Use \cs{hb@xt@}}
+% \changes{v1.0w}{1995/10/16}{Clarify makebox description}
+%    \begin{macrocode}
+%<*2ekernel>
+\message{boxes,}
+%    \end{macrocode}
+%
+% \begin{macro}{\makebox}
+% \changes{v0.1a}{1993/12/03}
+%         {modified}
+% |\makebox| User level command just looks for optional |[| or |(|.
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\makebox}{Make \makebox robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\makebox{%
+  \leavevmode
+  \@ifnextchar(%)
+    \@makepicbox
+    {\@ifnextchar[\@makebox\mbox}}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\makebox}{Make \makebox robust}%
+%<latexrelease>\def\makebox{%
+%<latexrelease>  \leavevmode
+%<latexrelease>  \@ifnextchar(%)
+%<latexrelease>    \@makepicbox
+%<latexrelease>    {\@ifnextchar[\@makebox\mbox}}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\mbox}
+% \changes{v0.1a}{1993/12/03}
+%         {extra group}
+% \changes{v1.0j}{1994/10/18}
+%         {\cs{long} added}
+% The basic horizontal box command for \LaTeX.
+%    \begin{macrocode}
+\long\def\mbox#1{\leavevmode\hbox{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@makebox}
+% \changes{v0.1a}{1993/12/03}
+%         {default changed from x to c}
+% Look for a possible second optional argument (defaults to |c|).
+%    \begin{macrocode}
+\def\@makebox[#1]{%
+  \@ifnextchar [{\@imakebox[#1]}{\@imakebox[#1][c]}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@begin@tempboxa}
+% \changes{v0.1a}{1993/12/03}
+%         {macro added}
+% \changes{v0.1b}{1993/12/08}
+%         {Extra braces for color support
+%          (braces removed from other macros)}
+% \changes{v1.0f}{1994/05/11}
+%         {Use new \cs{color@setgroup} concept.}
+% Helper macro for supporting |\height|, |\width| etc. Grab |#1| into
+% |\@tempboxa| and measure it.
+%    \begin{macrocode}
+\long\def\@begin@tempboxa#1#2{%
+   \begingroup
+     \setbox\@tempboxa#1{\color@begingroup#2\color@endgroup}%
+     \def\width{\wd\@tempboxa}%
+     \def\height{\ht\@tempboxa}%
+     \def\depth{\dp\@tempboxa}%
+     \let\totalheight\@ovri
+     \totalheight\height
+     \advance\totalheight\depth}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@end@tempboxa}
+% \changes{v0.1a}{1993/12/03}
+%         {macro added}
+% End the group started by |\@begin@tempboxa|, so that the scope of
+% |\height| only includes the `length' argument to the user-command.
+%    \begin{macrocode}
+\let\@end@tempboxa\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bm@c}
+% \begin{macro}{\bm@l}
+% \begin{macro}{\bm@r}
+% \begin{macro}{\bm@s}
+% \begin{macro}{\bm@t}
+% \begin{macro}{\bm@b}
+% \changes{v0.1a}{1993/12/03}
+%         {macros added}
+% Set up spacing.
+%    \begin{macrocode}
+\def\bm@c{\hss\unhbox\@tempboxa\hss}
+\def\bm@l{\unhbox\@tempboxa\hss}\let\bm@t\bm@l
+\def\bm@r{\hss\unhbox\@tempboxa}\let\bm@b\bm@r
+\def\bm@s{\unhbox\@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@imakebox}
+% \changes{v0.1a}{1993/12/03}
+%         {macro modified}
+% Internal form of |\makebox|.
+%    \begin{macrocode}
+\long\def\@imakebox[#1][#2]#3{%
+  \@begin@tempboxa\hbox{#3}%
+    \setlength\@tempdima{#1}%       support calc
+    \hb@xt@\@tempdima{\csname bm@#2\endcsname}%
+  \@end@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@makepicbox}
+% \changes{v0.1a}{1993/12/03}
+%         {macro modified}
+% Picture mode form of |\makebox|.
+%    \begin{macrocode}
+\def\@makepicbox(#1,#2){%
+  \@ifnextchar[{\@imakepicbox(#1,#2)}{\@imakepicbox(#1,#2)[]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@imakepicbox}
+% picture mode version
+%    \begin{macrocode}
+\long\def\@imakepicbox(#1,#2)[#3]#4{%
+  \vbox to#2\unitlength
+   {\let\mb@b\vss \let\mb@l\hss\let\mb@r\hss
+    \let\mb@t\vss
+    \@tfor\reserved@a :=#3\do{%
+      \if s\reserved@a
+        \let\mb@l\relax\let\mb@r\relax
+      \else
+        \expandafter\let\csname mb@\reserved@a\endcsname\relax
+      \fi}%
+    \mb@t
+    \hb@xt@ #1\unitlength{\mb@l #4\mb@r}%
+    \mb@b
+%    \end{macrocode}
+% This kern ensures that a |b| option aligns on the bottom of the
+% text rather than the baseline. this is the documented behaviour in
+% the \LaTeX Book. The kern is removed in compatibility mode.
+%    \begin{macrocode}
+    \kern\z@}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\set@color}
+% \changes{v0.1a}{1993/12/03}
+%         {macro added}
+% \changes{v0.1a}{1993/12/03}
+%         {color support}
+% This macro is initially a no-op, but the colour package will redefine
+% it to insert a |\special|.
+%    \begin{macrocode}
+\let\set@color\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\color@begingroup}
+% \changes{v1.0b}{1994/03/14}
+%         {macro added for colour support}
+% \begin{macro}{\color@endgroup}
+% \changes{v1.0b}{1994/03/14}
+%         {macro added for colour support}
+% \begin{macro}{\color@setgroup}
+% \changes{v1.0f}{1994/05/11}
+%         {macro added for colour support}
+% \begin{macro}{\normalcolor}
+% \changes{v1.0g}{1994/05/12}
+%         {macro added for colour support}
+% \begin{macro}{\color@hbox}
+% \changes{v1.0n}{1994/11/05}
+%         {macro added for colour support}
+% \begin{macro}{\color@vbox}
+% \changes{v1.0r}{1994/11/18}
+%         {macro added for colour support}
+% \begin{macro}{\color@endbox}
+% \changes{v1.0n}{1994/11/05}
+%         {macro added for colour support}
+% These macros are initially a no-op, but the colour package will
+% redefine them to be |\begingroup|, |\endgroup|,
+% |\begingroup\set@color|,\\ |\hbox\bgroup\color@begingroup|,
+% |\color@endgroup\egroup|.
+% and \meta{set to main document colour} respectively.
+%    \begin{macrocode}
+\let\color@begingroup\relax
+\let\color@endgroup\relax
+\let\color@setgroup\relax
+\let\normalcolor\relax
+\let\color@hbox\relax
+\let\color@vbox\relax
+\let\color@endbox\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\newsavebox}
+% \changes{v0.1a}{1993/12/03}
+%         {Pass the whole of arg 1 to \cs{@ifdefinable}}
+% Allocate a new `savebox'.
+%    \begin{macrocode}
+\def\newsavebox#1{\@ifdefinable{#1}{\newbox#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\savebox}
+% Save |#1| in a box register.
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\savebox}{Make \savebox robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\savebox[1]{%
+  \@ifnextchar(%)
+    {\@savepicbox#1}{\@ifnextchar[{\@savebox#1}{\sbox#1}}}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\savebox}{Make \savebox robust}%
+%<latexrelease>\def\savebox#1{%
+%<latexrelease>  \@ifnextchar(%)
+%<latexrelease>    {\@savepicbox#1}{\@ifnextchar[{\@savebox#1}{\sbox#1}}}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\sbox}
+% \changes{v0.1a}{1993/12/03}
+%         {extra group}
+% \changes{v0.1a}{1993/12/03}
+%         {color support}
+% \changes{v1.0b}{1994/03/14}
+%         {Use \cs{color@setgroup}}
+% \changes{v1.0j}{1994/10/18}
+%         {\cs{long} added}
+% Save |#1| in a box register.
+%    \begin{macrocode}
+\long\def\sbox#1#2{\setbox#1\hbox{%
+  \color@setgroup#2\color@endgroup}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@savebox}
+% \changes{v0.1a}{1993/12/03}
+%         {default c not x}
+% Look for second optional argument.
+%    \begin{macrocode}
+\def\@savebox#1[#2]{%
+  \@ifnextchar [{\@isavebox#1[#2]}{\@isavebox#1[#2][c]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@isavebox}
+% \changes{v0.1a}{1993/12/03}
+%         {extra group}
+% \changes{v0.1a}{1993/12/03}
+%         {color support}
+% \changes{v1.0b}{1994/03/14}
+%         {Use \cs{color@setgroup}}
+% \changes{v1.0d}{1994/04/15}
+%         {Added missing procent character.}
+% \changes{v1.0v}{1995/07/20}
+%         {Use \cs{sbox}}
+%    \begin{macrocode}
+\long\def\@isavebox#1[#2][#3]#4{%
+  \sbox#1{\@imakebox[#2][#3]{#4}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@savepicbox}
+% Picture mode version of |\savebox|.
+%    \begin{macrocode}
+\def\@savepicbox#1(#2,#3){%
+  \@ifnextchar[%]
+    {\@isavepicbox#1(#2,#3)}{\@isavepicbox#1(#2,#3)[]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@isavepicbox}
+% \changes{v0.1a}{1993/12/03}
+%         {extra group}
+% \changes{v1.0b}{1994/03/14}
+%         {Use \cs{color@setgroup}}
+% \changes{v1.0l}{1994/10/25}
+%         {missing percent (moved from ltpatch)}
+% \changes{v1.0v}{1995/07/20}
+%         {Use \cs{sbox}}
+% Picture mode version of |\savebox|.
+%    \begin{macrocode}
+\long\def\@isavepicbox#1(#2,#3)[#4]#5{%
+  \sbox#1{\@imakepicbox(#2,#3)[#4]{#5}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\lrbox}
+% \changes{v0.1a}{1993/12/03}
+%         {macro added}
+% \changes{v0.1a}{1993/12/03}
+%         {color support}
+% \changes{v0.1b}{1993/12/08}
+%         {move \cs{@endpefalse} out of the inner group}
+% \changes{v1.0b}{1994/03/14}
+%         {Use \cs{color@setgroup}}
+% |lrbox|: the new environment form of |\sbox|. Use |\aftergroup| tricks
+% to enable a \emph{local} assignment to be made to the box, in a way
+% that it still has an effect \emph{outside} the |lrbox| environment.
+%    \begin{macrocode}
+\def\lrbox#1{%
+  \edef\reserved@a{%
+    \endgroup
+    \setbox#1\hbox{%
+      \begingroup\aftergroup}%
+        \def\noexpand\@currenvir{\@currenvir}%
+        \def\noexpand\@currenvline{\on@line}}%
+  \reserved@a
+    \@endpefalse
+    \color@setgroup
+      \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endlrbox}
+% \changes{v0.1a}{1993/12/03}
+%         {macro added}
+% End the |lrbox| environment.
+%    \begin{macrocode}
+\def\endlrbox{\unskip\color@endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\usebox}
+% unchanged
+%    \begin{macrocode}
+\def\usebox#1{\leavevmode\copy #1\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\frame}
+%
+% The following definition of |\frame| was written by Pavel Curtis
+% (Extra space removed 14 Jan 88)
+% RmS 92/08/24: Replaced occurrence of |\@halfwidth| by |\@wholewidth|
+%    \begin{macrocode}
+\long\def\frame#1{%
+  \leavevmode
+  \hbox{%
+    \hskip-\@wholewidth
+    \vbox{%
+      \vskip-\@wholewidth
+      \hrule \@height\@wholewidth
+      \hbox{%
+        \vrule\@width\@wholewidth
+        #1%
+        \vrule\@width\@wholewidth}%
+      \hrule\@height\@wholewidth
+      \vskip-\@wholewidth}%
+    \hskip-\@wholewidth}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\fboxrule}
+% \begin{macro}{\fboxsep}
+% user level parameters,
+%    \begin{macrocode}
+\newdimen\fboxrule
+\newdimen\fboxsep
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fbox}
+% Abbreviated framed box command.
+% \changes{v0.1a}{1993/12/03}
+%         {extra group}
+% \changes{v1.0g}{1994/05/12}
+%         {New definition, merged with \cs{framebox}}
+% \changes{v1.0i}{1994/06/01}
+%         {New version, using \cs{@frameb@x}}
+% \changes{v1.0j}{1994/10/18}
+%         {\cs{long} added}
+% \changes{v1.0k}{1994/10/24}
+%         {Inner braces added (to fix latex/1061)}
+% \changes{v1.0s}{1995/04/27}
+%         {Move \cs{leavevmode} for graphics/1512}
+%    \begin{macrocode}
+\long\def\fbox#1{%
+  \leavevmode
+  \setbox\@tempboxa\hbox{%
+    \color@begingroup
+      \kern\fboxsep{#1}\kern\fboxsep
+    \color@endgroup}%
+  \@frameb@x\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\framebox}
+% Framed version of |\makebox|.
+% \changes{v1.0g}{1994/05/12}
+%         {Merged \cs{fbox} and \cs{framebox}}
+% \changes{v1.0i}{1994/06/01}
+%         {New version, so \cs{width} is correct in \cs{framebox}}
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\framebox}{Make \framebox robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\framebox{%
+  \@ifnextchar(%)
+    \@framepicbox{\@ifnextchar[\@framebox\fbox}}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\framebox}{Make \framebox robust}%
+%<latexrelease>\def\framebox{%
+%<latexrelease>  \@ifnextchar(%)
+%<latexrelease>    \@framepicbox{\@ifnextchar[\@framebox\fbox}}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@framebox}
+% Deal with optional arguments.
+%    \begin{macrocode}
+\def\@framebox[#1]{%
+  \@ifnextchar[%]
+    {\@iframebox[#1]}%
+    {\@iframebox[#1][c]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iframebox}
+% The handling the optional arguments.
+% \changes{v1.0i}{1994/06/01}
+%         {New version, so \cs{width} is correct in \cs{framebox}}
+% \changes{v1.0j}{1994/10/18}
+%         {\cs{leavevmode} moved to \cs{@frameb@x}}
+% \changes{v1.0s}{1995/04/27}
+%         {Move \cs{leavevmode} for graphics/1512}
+%    In order to set the whole box, including the frame to the
+%    specified dimension, we first determine that dimension
+%    from the natural size of the text, |#3|.
+%    calculated width.
+%    \begin{macrocode}
+\long\def\@iframebox[#1][#2]#3{%
+  \leavevmode
+  \@begin@tempboxa\hbox{#3}%
+    \setlength\@tempdima{#1}%
+    \setbox\@tempboxa\hb@xt@\@tempdima
+         {\kern\fboxsep\csname bm@#2\endcsname\kern\fboxsep}%
+    \@frameb@x{\kern-\fboxrule}%
+  \@end@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@frameb@x}
+% Common part of |\framebox| and |\fbox|. |#1| is a negative kern
+% in the |\framebox| case so that the vertical rules do not add to the
+% width of the box.
+% \changes{v1.0i}{1994/06/01}
+%         {Macro added.}
+% \changes{v1.0j}{1994/10/18}
+%         {\cs{leavevmode} added}
+% \changes{v1.0s}{1995/04/27}
+%         {Move \cs{leavevmode} for graphics/1512}
+%    \begin{macrocode}
+\def\@frameb@x#1{%
+  \@tempdima\fboxrule
+  \advance\@tempdima\fboxsep
+  \advance\@tempdima\dp\@tempboxa
+  \hbox{%
+    \lower\@tempdima\hbox{%
+      \vbox{%
+        \hrule\@height\fboxrule
+        \hbox{%
+          \vrule\@width\fboxrule
+          #1%
+          \vbox{%
+            \vskip\fboxsep
+            \box\@tempboxa
+            \vskip\fboxsep}%
+          #1%
+          \vrule\@width\fboxrule}%
+        \hrule\@height\fboxrule}%
+                          }%
+        }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@framepicbox}
+% Picture mode version.
+%    \begin{macrocode}
+\def\@framepicbox(#1,#2){%
+  \@ifnextchar[{\@iframepicbox(#1,#2)}{\@iframepicbox(#1,#2)[]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iframepicbox}
+% Picture mode version.
+%    \begin{macrocode}
+\long\def\@iframepicbox(#1,#2)[#3]#4{%
+  \frame{\@imakepicbox(#1,#2)[#3]{#4}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\parbox}
+% \changes{v0.1a}{1993/12/03}
+%         {Redefined to support extra optional arguments}
+% \changes{v0.1d}{1993/12/15}
+%         {Changed default from `c' to `s'}
+% The main vertical-box command for \LaTeX.
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\parbox}{Make \parbox robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\parbox{%
+  \@ifnextchar[%]
+    \@iparbox
+    {\@iiiparbox c\relax[s]}}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\parbox}{Make \parbox robust}%
+%<latexrelease>\def\parbox{%
+%<latexrelease>  \@ifnextchar[%]
+%<latexrelease>    \@iparbox
+%<latexrelease>    {\@iiiparbox c\relax[s]}}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iparbox}
+% \changes{v0.1d}{1993/12/15}
+%         {Changed default from `c' to `s'}
+% Optional argument handling.
+%    \begin{macrocode}
+\def\@iparbox[#1]{%
+  \@ifnextchar[%]
+    {\@iiparbox{#1}}%
+    {\@iiiparbox{#1}\relax[s]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iiparbox}
+% Optional argument handling.
+%    \begin{macrocode}
+\def\@iiparbox#1[#2]{%
+  \@ifnextchar[%]
+    {\@iiiparbox{#1}{#2}}%
+    {\@iiiparbox{#1}{#2}[#1]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iiiparbox}
+% \begin{macro}{\@parboxto}
+% \changes{v1.0j}{1994/10/18}
+%         {Macro added to remove misuse of \cs{@empty}}
+% \changes{v0.1b}{1993/12/08}
+%    {\cs{endgraf} added due to extra group in \cs{@begin@tempboxa}}
+% \changes{v1.0y}{1996/06/10}
+%         {(DPC) Changed \cs{endgraf} to \cs{@@par}}
+% \changes{v1.1f}{1999/04/27}
+%         {(CAR) Changed \cs{@empty} to \cs{relax} as flag for natural
+%          width: pr/2975}
+% \changes{v1.1g}{2006/05/18}
+%         {Ensure \cs{@parboxto} holds the value of \cs{@tempdimb} not the
+%          register itself (pr/3867)}
+% The internal version of |\parbox|.
+%    \begin{macrocode}
+\let\@parboxto\@empty
+\long\def\@iiiparbox#1#2[#3]#4#5{%
+  \leavevmode
+  \@pboxswfalse
+  \setlength\@tempdima{#4}%
+  \@begin@tempboxa\vbox{\hsize\@tempdima\@parboxrestore#5\@@par}%
+    \ifx\relax#2\else
+      \setlength\@tempdimb{#2}%
+      \edef\@parboxto{to\the\@tempdimb}%
+    \fi
+    \if#1b\vbox
+    \else\if #1t\vtop
+    \else\ifmmode\vcenter
+    \else\@pboxswtrue $\vcenter
+    \fi\fi\fi
+    \@parboxto{\let\hss\vss\let\unhbox\unvbox
+       \csname bm@#3\endcsname}%
+    \if@pboxsw \m@th$\fi
+  \@end@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.0c}{1994/04/12}
+%         {Remove \cs{@acci}, now defined in ltplain.dtx}
+% \changes{v1.0c}{1994/04/12}
+%         {Remove \cs{@dischyph}, now defined in ltinit.dtx}
+%
+% \begin{macro}{\@arrayparboxrestore}
+% Restore various paragraph parameters.
+%
+% The rational for allowing two normally global flags to be set
+% locally here was stated originally by
+% Donald Arsenau and extended by Chris Rowley.
+% It is because these flags are only set globally to
+% true by section commands, and these should never appear within
+% boxes or, indeed, in any group; and they are only ever
+% set globally to false when they are definitely true.
+%
+% If anyone is unhappy with this argument then both flags should be
+% treated as in |\set@nobreak|; otherwise this command will be
+% redundant.
+% \changes{v1.1a}{1996/10/24}{Added local settings of flags: dangerous!!}
+%    \begin{macrocode}
+\def\@arrayparboxrestore{%
+  \let\if@nobreak\iffalse
+  \let\if@noskipsec\iffalse
+  \let\par\@@par
+  \let\-\@dischyph
+%    \end{macrocode}
+% Redefined accents to allow changes in font encoding
+% \changes{v1.0h}{1994/05/13}
+%     {New accent system, use \cs{let} not \cs{def}}
+%    \begin{macrocode}
+  \let\'\@acci\let\`\@accii\let\=\@acciii
+  \parindent\z@ \parskip\z@skip
+  \everypar{}%
+  \linewidth\hsize
+  \@totalleftmargin\z@
+  \leftskip\z@skip \rightskip\z@skip \@rightskip\z@skip
+  \parfillskip\@flushglue \lineskip\normallineskip
+  \baselineskip\normalbaselineskip
+  \sloppy}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\parboxrestore}
+% Restore various paragraph parameters, and also |\\|.
+%    \begin{macrocode}
+\def\@parboxrestore{\@arrayparboxrestore\let\\\@normalcr}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@minipage}
+% Switch that is true at the start of a minipage.
+% \changes{v1.0z}{1996/07/26}{put \cs{global} into definition}
+%    \begin{macrocode}
+\def\@minipagefalse{\global\let\if@minipage\iffalse}
+\def\@minipagetrue {\global\let\if@minipage\iftrue}
+\@minipagefalse
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\minipage}
+% \changes{v0.1a}{1993/12/03}
+%         {Redefined to support extra optional arguments}
+% \changes{v0.1d}{1993/12/15}
+%         {extra space removed.}
+% \changes{v0.1d}{1993/12/15}
+%         {Changed default from `c' to `s'}
+% Essentially an environment form of |\parbox|.
+%    \begin{macrocode}
+\def\minipage{%
+  \@ifnextchar[%]
+    \@iminipage
+    {\@iiiminipage c\relax[s]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iminipage}
+% \changes{v0.1d}{1993/12/15}
+%         {Changed default from `c' to `s'}
+% Optional argument handling.
+%    \begin{macrocode}
+\def\@iminipage[#1]{%
+  \@ifnextchar[%]
+    {\@iiminipage{#1}}%
+    {\@iiiminipage{#1}\relax[s]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iiminipage}
+% Optional argument handling.
+%    \begin{macrocode}
+\def\@iiminipage#1[#2]{%
+  \@ifnextchar[%]
+    {\@iiiminipage{#1}{#2}}%
+    {\@iiiminipage{#1}{#2}[#1]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iiiminipage}
+% \changes{v1.0e}{1994/04/21}
+%     {Extra \cs{bgroup} for colour}
+% \changes{v1.0f}{1994/05/11}
+%         {Use new \cs{color@setgroup} concept.}
+% Internal form of |minipage|.
+% \changes{v1.1a}{1996/10/24}{Use it or lose it (@setminpage): Frank
+%                             will want to lose it}
+%    \begin{macrocode}
+\def\@iiiminipage#1#2[#3]#4{%
+  \leavevmode
+  \@pboxswfalse
+  \setlength\@tempdima{#4}%
+  \def\@mpargs{{#1}{#2}[#3]{#4}}%
+  \setbox\@tempboxa\vbox\bgroup
+    \color@begingroup
+      \hsize\@tempdima
+      \textwidth\hsize \columnwidth\hsize
+      \@parboxrestore
+      \def\@mpfn{mpfootnote}\def\thempfn{\thempfootnote}\c@mpfootnote\z@
+      \let\@footnotetext\@mpfootnotetext
+      \let\@listdepth\@mplistdepth \@mplistdepth\z@
+      \@minipagerestore
+      \@setminipage}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@minipagerestore}
+% Hook so that other styles can reset other commands in a minipage.
+%    \begin{macrocode}
+ \let\@minipagerestore=\relax
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\endminipage}
+% \changes{LaTeX209}{1992/08/14}
+%     {(RmS) replaced \cs{vskip}-\cs{lastskip} by \cs{unskip}
+%       (proposed by FMi)}
+% \changes{v1.0e}{1994/04/21}
+%     {Extra \cs{egroup} for colour}
+% \changes{v1.0f}{1994/05/11}
+%         {Use new \cs{color@setgroup} concept.}
+% \changes{v1.0n}{1994/11/05}
+%     {Colour resetting for footnotes moved to here: as for main
+%     page.}
+%    \begin{macrocode}
+\def\endminipage{%
+    \par
+    \unskip
+    \ifvoid\@mpfootins\else
+      \vskip\skip\@mpfootins
+      \normalcolor
+      \footnoterule
+      \unvbox\@mpfootins
+    \fi
+    \@minipagefalse   %% added 24 May 89
+  \color@endgroup
+  \egroup
+  \expandafter\@iiiparbox\@mpargs{\unvbox\@tempboxa}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@mplistdepth}
+% \begin{macro}{\@mpfootins}
+% Versions of |\@listdepth| and |\footins| local to minipage.
+%    \begin{macrocode}
+\newcount\@mplistdepth
+\newinsert\@mpfootins
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@mpfootnotetext}
+% Minipage version of |\@footnotetext|.
+%
+% Final |\strut| added 27 Mar 89, on suggestion by Don Hosek
+% \changes{LaTeX2.09}{1991/09/29}{(RmS) added \cs{reset@font}}
+% \changes{LaTeX2.09}{1992/11/26}{(RmS) added protection for \cs{edef}}
+% \changes{v0.1a}{1994/03/07}{Extra group for colour}
+% \changes{v1.0e}{1994/04/21}
+%     {Extra \cs{endgraf} for colour}
+% \changes{v1.0f}{1994/05/11}
+%         {Use new \cs{color@setgroup} concept.}
+% \changes{v1.0f}{1994/05/11}
+%         {Use new \cs{normalcolor} and \cs{@finalstrut}.}
+% \changes{v1.0m}{1994/11/04}
+%         {Added \cs{protected@edef}. ASAJ.}
+% \changes{v1.0n}{1994/11/05}
+%     {Colour resetting for footnotes moved to endminipage: as for main
+%     page.}
+% \changes{v1.0o}{1994/11/05}
+%     {Colour groups restored here.}
+%    \begin{macrocode}
+\long\def\@mpfootnotetext#1{%
+  \global\setbox\@mpfootins\vbox{%
+    \unvbox\@mpfootins
+    \reset@font\footnotesize
+    \hsize\columnwidth
+    \@parboxrestore
+    \protected@edef\@currentlabel
+         {\csname p@mpfootnote\endcsname\@thefnmark}%
+    \color@begingroup
+      \@makefntext{%
+        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
+    \color@endgroup}}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\newif\if@pboxsw
+%    \end{macrocode}
+%
+% \begin{macro}{\rule}
+% Draw a rule of the specified size.
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\rule}{Make \rule robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\rule{\@ifnextchar[\@rule{\@rule[\z@]}}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\rule}{Make \rule robust}%
+%<latexrelease>\def\rule{\@ifnextchar[\@rule{\@rule[\z@]}}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@rule}
+% Internal form of |\rule|.
+% \changes{v1.1c}{1998/06/04}{Support calc-expressions}
+%    \begin{macrocode}
+ \def\@rule[#1]#2#3{%
+   \leavevmode
+   \hbox{%
+     \setlength\@tempdima{#1}%
+     \setlength\@tempdimb{#2}%
+     \setlength\@tempdimc{#3}%
+     \advance\@tempdimc\@tempdima
+     \vrule\@width\@tempdimb\@height\@tempdimc\@depth-\@tempdima}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@underline}
+% Saved primitive |\underline|.
+%    \begin{macrocode}
+\let\@@underline\underline
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\underline}
+% \LaTeX\ version works outside math.
+% \task{???}{why the second `relax in `underline ?}
+%    \begin{macrocode}
+\def\underline#1{%
+  \relax
+  \ifmmode\@@underline{#1}%
+  \else $\@@underline{\hbox{#1}}\m@th$\relax\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\raisebox}
+% \changes{v0.1a}{1993/12/03}
+%         {redefined to support \cs{height}}
+% \changes{v1.0s}{1995/04/27}
+%         {Move \cs{leavevmode} for graphics/1512}
+% Raise a box, and change its vertical dimensions.
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\raisebox}{Make \raisebox robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\raisebox[1]{%
+  \leavevmode
+  \@ifnextchar[{\@rsbox{#1}}{\@irsbox{#1}[]}}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\raisebox}{Make \raisebox robust}%
+%<latexrelease>\def\raisebox#1{%
+%<latexrelease>  \leavevmode
+%<latexrelease>  \@ifnextchar[{\@rsbox{#1}}{\@irsbox{#1}[]}}
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@rsbox}
+% Optional argument handling.
+%    \begin{macrocode}
+\def\@rsbox#1[#2]{%
+  \@ifnextchar[{\@iirsbox{#1}[#2]}{\@irsbox{#1}[#2]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@argrsbox}
+% \changes{v0.1a}{1993/12/03}
+%         {macro removed}
+% ...
+% \end{macro}
+%
+% \begin{macro}{\@irsbox}
+% \changes{v0.1a}{1993/12/03}
+%         {redefined to support \cs{height}}
+% \changes{v0.1b}{1993/12/08}
+%         {fix typo}
+% \changes{v0.1c}{1993/12/09}
+%         {fix another typo}
+% \changes{v0.1f}{1994/03/03}
+%         {Replaced a missing \cs{else}}
+% \changes{v1.0s}{1995/04/27}
+%         {Move \cs{leavevmode} for graphics/1512}
+% \changes{v1.0u}{1995/05/17}
+%         {Removed surplus braces}
+% Internal version of |\raisebox| (less than two optional args).
+%    \begin{macrocode}
+\long\def\@irsbox#1[#2]#3{%
+  \@begin@tempboxa\hbox{#3}%
+    \setlength\@tempdima{#1}%
+    \ifx\\#2\\\else\setlength\@tempdimb{#2}\fi
+    \setbox\@tempboxa\hbox{\raise\@tempdima\box\@tempboxa}%
+    \ifx\\#2\\\else\ht\@tempboxa\@tempdimb\fi
+    \box\@tempboxa
+  \@end@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@iirsbox}
+% \changes{v0.1a}{1993/12/03}
+%         {redefined to support \cs{height}}
+% \changes{v1.0s}{1995/04/27}
+%         {Move \cs{leavevmode} for graphics/1512}
+% Internal version of |\raisebox| (two optional args).
+%    \begin{macrocode}
+\long\def\@iirsbox#1[#2][#3]#4{%
+  \@begin@tempboxa\hbox{#4}%
+    \setlength\@tempdima{#1}%
+    \setlength\@tempdimb{#2}%
+    \setlength\dimen@{#3}%
+    \setbox\@tempboxa\hbox{\raise\@tempdima\box\@tempboxa}%
+    \ht\@tempboxa\@tempdimb
+    \dp\@tempboxa\dimen@
+    \box\@tempboxa
+  \@end@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@finalstrut}
+% This macro adds a special strut the \emph{depth} of the box given as
+% |#1|, and height and width 0pt. It is used for ensuring that the
+% last line of a paragraph has the correct depth in `p' columns of
+% tables and in footnotes. In vertical mode nothing is done, as adding
+% the strut (as done in 2.09) would start a new paragraph. It would be
+% possible to inspect |\prevdepth| to check the depth of the
+% just-completed paragraph, but we do not do that here.
+% \changes{v1.0g}{1994/05/12}
+%         {macro added}
+% Actually we do even less now, skip the vmode test as it broke tabular
+% `p' columns.
+% \changes{v1.0p}{1994/11/09}
+%         {Revert \cs{finalstrut} to 2.09 equivalent (from ltpatch)}.
+% \changes{v1.0x}{1995/10/31}
+%         {Add \cs{nobreak} in horiz mode to allow hyphenation.
+%                   internal/1931}
+%
+% The |\nobreak| was added (1995/10/31) to allow hyphenation of the
+% final word of the paragraph.
+%    \begin{macrocode}
+\def\@finalstrut#1{%
+  \unskip\ifhmode\nobreak\fi\vrule\@width\z@\@height\z@\@depth\dp#1}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \subsection{Some low-level constructs}
+%
+% The following commands are basically inherited from plain \TeX.
+%
+%  \begin{macro}{\leftline}
+%  \begin{macro}{\rightline}
+%  \begin{macro}{\centerline}
+%  \begin{macro}{\@@line}
+%    These macros place text on a full line either centred or left or
+%    right adjusted.
+%    \begin{macrocode}
+\def\@@line{\hb@xt@\hsize}
+\def\leftline#1{\@@line{#1\hss}}
+\def\rightline#1{\@@line{\hss#1}}
+\def\centerline#1{\@@line{\hss#1\hss}}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\rlap}
+%  \begin{macro}{\llap}
+%    These macros place text to the left or right of the current
+%    reference point without taking up space.
+%  \end{macro}
+%    \begin{macrocode}
+\def\rlap#1{\hb@xt@\z@{#1\hss}}
+\def\llap#1{\hb@xt@\z@{\hss#1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+\endinput
+%
+% \Finale
+%

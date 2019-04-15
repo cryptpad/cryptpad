@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ifpdf'>
+  <name>ifpdf</name>
+  <caption>Provides the \ifpdf conditional.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2005-2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.3'/>
+  <description>
+      This package looks for pdfTeX in pdf mode and implements and
+      sets the switch <tt>\ifpdf</tt>. The detection is based on the
+      value of <tt>\pdfoutput</tt> (which the package will not
+      change).  The package works with plain or LaTeX formats.  To use
+      it with LaTeX simply <tt>\usepackage{ifpdf}</tt>. Then use
+      <tt>\ifpdf ... \else ... \fi</tt>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ifpdf.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ifpdf.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

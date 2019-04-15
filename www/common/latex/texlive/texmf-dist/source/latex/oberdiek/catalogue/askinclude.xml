@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='askinclude'>
+  <name>askinclude</name>
+  <caption>Interactive use of \includeonly</caption>
+  <authorref id='auth:straub'/>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner="Pablo A. Straub" year='1991-1994'/>
+  <copyright owner="Heiko Oberdiek" year='2007,2008,2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.2'/>
+  <description>
+    The package asks the user which files to put in a \includeonly
+    command.  There is provision for answering &#x201C;same as last
+    time&#x201D; or &#x201C;all files&#x201D;.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/askinclude.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/askinclude.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

@@ -1,0 +1,289 @@
+%%
+%% This is file `zref-titleref.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% zref.dtx  (with options: `titleref')
+%% 
+%% This is a generated file.
+%% 
+%% Project: zref
+%% Version: 2012/04/04 v2.24
+%% 
+%% Copyright (C) 2006-2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file zref.dtx
+%% and the derived files
+%%    zref.sty, zref.pdf, zref.ins, zref.drv, zref-base.sty,
+%%    zref-abspage.sty, zref-abspos.sty, zref-counter.sty,
+%%    zref-dotfill.sty, zref-env.sty, zref-hyperref.sty,
+%%    zref-lastpage.sty, zref-marks.sty, zref-nextpage.sty,
+%%    zref-pageattr.sty, zref-pagelayout.sty, zref-perpage.sty,
+%%    zref-runs.sty, zref-savepos.sty, zref-thepage.sty,
+%%    zref-titleref.sty, zref-totpages.sty, zref-user.sty,
+%%    zref-xr.sty, zref-example.tex, zref-example-lastpage.tex,
+%%    zref-example-nextpage.tex, zref-test1.tex,
+%%    zref-test-base.tex, zref-test-runs.tex,
+%%    zref-test-titleref-memoir.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{zref-titleref}%
+  [2012/04/04 v2.24 Module titleref for zref (HO)]%
+\RequirePackage{zref-base}[2012/04/04]
+\ifx\ZREF@base@ok Y%
+\else
+  \expandafter\endinput
+\fi
+\RequirePackage{gettitlestring}[2009/12/08]
+\RequirePackage{keyval}
+\ZREF@NewPropTitle
+\zref@addprop\ZREF@mainlist{title}%
+\newif\ifzref@titleref@expand
+\let\ZREF@titleref@hook\ltx@empty
+\ZREF@Robust\def\zref@titleref@cleanup#1{%
+   \begingroup
+    \toks@\expandafter{%
+      \ZREF@titleref@hook
+      #1%
+    }%
+  \expandafter\endgroup
+  \expandafter\def\expandafter\ZREF@titleref@hook\expandafter{%
+    \the\toks@
+  }%
+}%
+\newif\ifzref@titleref@stripperiod
+\zref@titleref@stripperiodtrue
+\ZREF@Robust\def\zref@titleref@setcurrent#1{%
+  \ifzref@titleref@expand
+    \GetTitleStringExpand{#1}%
+  \else
+    \GetTitleStringNonExpand{#1}%
+  \fi
+  \edef\zref@titleref@current{%
+    \detokenize\expandafter{\GetTitleStringResult}%
+  }%
+  \ifzref@titleref@stripperiod
+    \edef\zref@titleref@current{%
+      \expandafter\ZREF@stripperiod\zref@titleref@current
+      \ltx@empty.\ltx@empty\@nil
+    }%
+  \fi
+}%
+\GetTitleStringDisableCommands{%
+  \ZREF@titleref@hook
+}
+\def\ZREF@stripperiod#1.\ltx@empty#2\@nil{#1}%
+\define@key{ZREF@TR}{expand}[true]{%
+  \csname zref@titleref@expand#1\endcsname
+}%
+\define@key{ZREF@TR}{stripperiod}[true]{%
+  \csname zref@titleref@stripperiod#1\endcsname
+}%
+\define@key{ZREF@TR}{cleanup}{%
+  \zref@titleref@cleanup{#1}%
+}%
+\define@key{ZREF@TR}{title}{%
+  \def\zref@titleref@current{#1}%
+}%
+\ZREF@IfDefinable\ztitlerefsetup\def{%
+  {\kvsetkeys{ZREF@TR}}%
+}%
+\ZREF@IfDefinable\ztitleref\def{%
+  {\zref@wrapper@babel\ZREF@titleref}%
+}%
+\def\ZREF@titleref#1{%
+  \begingroup
+    \zref@refused{#1}%
+    \let\label\ltx@gobble
+    \zref@extract{#1}{title}%
+  \endgroup
+}%
+\AtBeginDocument{%
+  \ZREF@patch{@caption}{%
+    \long\def\@caption#1[#2]{%
+      \zref@titleref@setcurrent{#2}%
+      \ZREF@org@@caption{#1}[{#2}]%
+    }%
+  }%
+  \ZREF@patch{@part}{%
+    \def\@part[#1]{%
+      \zref@titleref@setcurrent{#1}%
+      \ZREF@org@@part[{#1}]%
+    }%
+  }%
+  \ZREF@patch{@chapter}{%
+    \def\@chapter[#1]{%
+      \zref@titleref@setcurrent{#1}%
+      \ZREF@org@@chapter[{#1}]%
+    }%
+  }%
+  \ZREF@patch{@sect}{%
+    \def\@sect#1#2#3#4#5#6[#7]{%
+      \zref@titleref@setcurrent{#7}%
+      \ZREF@org@@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}]%
+    }%
+  }%
+  \ZREF@patch{@spart}{%
+    \def\@spart#1{%
+      \zref@titleref@setcurrent{#1}%
+      \ZREF@org@@spart{#1}%
+    }%
+  }%
+  \ZREF@patch{@schapter}{%
+    \def\@schapter#1{%
+      \zref@titleref@setcurrent{#1}%
+      \ZREF@org@@schapter{#1}%
+    }%
+  }%
+  \ZREF@patch{@ssect}{%
+    \def\@ssect#1#2#3#4#5{%
+      \zref@titleref@setcurrent{#5}%
+      \ZREF@org@@ssect{#1}{#2}{#3}{#4}{#5}%
+    }%
+  }%
+  \ZREF@patch{descriptionlabel}{%
+    \def\descriptionlabel#1{%
+      \zref@titleref@setcurrent{#1}%
+      \ZREF@org@descriptionlabel{#1}%
+    }%
+  }%
+  \@ifclassloaded{memoir}{%
+    \ltx@IfUndefined{ifheadnameref}{}{%
+      \def\@chapter[#1]#2{%
+        \ltx@IfUndefined{ch@pt@c}{%
+          \zref@titleref@setcurrent{#1}%
+        }{%
+          \ifx\ch@pt@c\ltx@empty
+            \zref@titleref@setcurrent{#2}%
+          \else
+            \def\NR@temp{#1}%
+            \ifx\NR@temp\ltx@empty
+              \expandafter\zref@titleref@setcurrent
+              \expandafter{\ch@pt@c}%
+            \else
+              \ifheadnameref
+                \zref@titleref@setcurrent{#1}%
+              \else
+                \expandafter\zref@titleref@setcurrent
+                \expandafter{\ch@pt@c}%
+              \fi
+            \fi
+          \fi
+        }%
+        \ZREF@org@@chapter[{#1}]{#2}%
+      }%
+      \ZREF@patch{M@sect}{%
+        \def\M@sect#1#2#3#4#5#6[#7][#8]{%
+          \ifheadnameref
+            \zref@titleref@setcurrent{#8}%
+          \else
+            \zref@titleref@setcurrent{#7}%
+          \fi
+          \ZREF@org@M@sect{#1}{#2}{#3}{#4}{#5}{#6}[{#7}][{#8}]%
+        }%
+      }%
+    }%
+  }{}%
+  \@ifclassloaded{beamer}{%
+    \ZREF@patch{beamer@section}{%
+      \long\def\beamer@section[#1]{%
+        \zref@titleref@setcurrent{#1}%
+        \ZREF@org@beamer@section[{#1}]%
+      }%
+    }%
+    \ZREF@patch{beamer@subsection}{%
+      \long\def\beamer@subsection[#1]{%
+        \zref@titleref@setcurrent{#1}%
+        \ZREF@org@beamer@subsection[{#1}]%
+      }%
+    }%
+    \ZREF@patch{beamer@subsubsection}{%
+      \long\def\beamer@subsubsection[#1]{%
+        \zref@titleref@setcurrent{#1}%
+        \ZREF@org@beamer@subsubsection[{#1}]%
+      }%
+    }%
+  }{}%
+  \@ifpackageloaded{titlesec}{%
+    \ZREF@patch{ttl@sect@i}{%
+      \def\ttl@sect@i#1#2[#3]#4{%
+        \zref@titleref@setcurrent{#4}%
+        \ZREF@org@ttl@sect@i{#1}{#2}[{#3}]{#4}%
+      }%
+    }%
+    \ZREF@patch{ttl@straight@i}{%
+      \def\ttl@straight@i#1[#2]#3{%
+        \def\ZREF@temp{#2}%
+        \ifx\ZREF@temp\ltx@empty
+          \zref@titleref@setcurrent{#3}%
+        \else
+          \zref@titleref@setcurrent{#2}%
+        \fi
+        \ZREF@org@ttl@straight@i{#1}[{#2}]{#3}%
+      }%
+    }%
+  }{}%
+  \@ifpackageloaded{longtable}{%
+    \ZREF@patch{LT@c@ption}{%
+      \def\LT@c@ption#1[#2]#3{%
+        \ZREF@org@LT@c@ption{#1}[{#2}]{#3}%
+        \zref@titleref@setcurrent{#2}%
+      }%
+    }%
+  }{}%
+  \@ifpackageloaded{listings}{%
+    \ZREF@patch{lst@MakeCaption}{%
+      \def\lst@MakeCaption{%
+        \ifx\lst@label\ltx@empty
+        \else
+          \expandafter\zref@titleref@setcurrent\expandafter{%
+            \lst@@caption
+          }%
+        \fi
+        \ZREF@org@lst@MakeCaption
+      }%
+    }%
+  }{}%
+  \ZREF@patch{@opargbegintheorem}{%
+    \def\@opargbegintheorem#1#2#3{%
+      \zref@titleref@setcurrent{#3}%
+      \ZREF@org@@opargbegintheorem{#1}{#2}{#3}%
+    }%
+  }%
+  \@ifpackageloaded{amsthm}{%
+    \begingroup
+      \edef\x{macro:\string#1\string#2[\string#3]}%
+      \@onelevel@sanitize\x
+      \def\y#1->#2\@nil{#1}%
+      \edef\z{\expandafter\y\meaning\@begintheorem->\@nil}%
+      \@onelevel@sanitize\z
+    \expandafter\endgroup
+    \ifx\x\z
+      \ZREF@patch{@begintheorem}{%
+        \def\@begintheorem#1#2[#3]{%
+          \zref@titleref@setcurrent{#3}%
+          \ZREF@org@@begintheorem{#1}{#2}[{#3}]%
+        }%
+      }%
+    \fi
+  }{}%
+}
+\endinput
+%%
+%% End of file `zref-titleref.sty'.

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='uniquecounter'>
+  <name>uniquecounter</name>
+  <caption>Provides unlimited unique counter.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    This package provides a kind of counter that provides unique
+    number values. Several counters can be created with different names.
+    The numeric values are not limited.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/uniquecounter.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/uniquecounter.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

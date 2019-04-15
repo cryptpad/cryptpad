@@ -1,0 +1,1172 @@
+% \iffalse meta-comment
+%
+% File: fibnum.dtx
+% Version: 2012/04/08 v1.0
+% Info: Fibonacci numbers
+%
+% Copyright (C) 2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file fibnum.dtx
+% and the derived files
+%    fibnum.sty, fibnum.pdf, fibnum.ins, fibnum.drv, fibnum.bib,
+%    fibnum-test1.tex, fibnum-test-calc.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/fibnum.dtx
+%    CTAN:macros/latex/contrib/oberdiek/fibnum.pdf
+%
+% Unpacking:
+%    (a) If fibnum.ins is present:
+%           tex fibnum.ins
+%    (b) Without fibnum.ins:
+%           tex fibnum.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{fibnum.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If fibnum.drv is present:
+%           latex fibnum.drv
+%    (b) Without fibnum.drv:
+%           latex fibnum.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex fibnum.dtx
+%       bibtex fibnum.aux
+%       makeindex -s gind.ist fibnum.idx
+%       pdflatex fibnum.dtx
+%       makeindex -s gind.ist fibnum.idx
+%       pdflatex fibnum.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/fibnum.sty
+%    TDS:doc/latex/oberdiek/fibnum.pdf
+%    TDS:doc/latex/oberdiek/test/fibnum-test1.tex
+%    TDS:doc/latex/oberdiek/test/fibnum-test-calc.tex
+%    TDS:source/latex/oberdiek/fibnum.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: fibnum 2012/04/08 v1.0 Fibonacci numbers (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: fibnum
+Version: 2012/04/08 v1.0
+
+Copyright (C) 2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file fibnum.dtx
+and the derived files
+   fibnum.sty, fibnum.pdf, fibnum.ins, fibnum.drv, fibnum.bib,
+   fibnum-test1.tex, fibnum-test-calc.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{fibnum.ins}{\from{fibnum.dtx}{install}}%
+  \file{fibnum.drv}{\from{fibnum.dtx}{driver}}%
+  \nopreamble
+  \nopostamble
+  \file{fibnum.bib}{\from{fibnum.dtx}{bib}}%
+  \usepreamble\defaultpreamble
+  \usepostamble\defaultpostamble
+  \usedir{tex/generic/oberdiek}%
+  \file{fibnum.sty}{\from{fibnum.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{fibnum-test1.tex}{\from{fibnum.dtx}{test1}}%
+  \file{fibnum-test-calc.tex}{\from{fibnum.dtx}{test-calc}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     fibnum.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `fibnum.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*bib>
+@online{texhax:abraham,
+  author={Abraham, Jan},
+  title={[texhax] Beginner in TEX MACRO to compute functions},
+  date={2012-04-07},
+  url={http://tug.org/pipermail/texhax/2012-April/019146.html},
+  urldate={2012-04-08},
+}
+@article{knuth:negafibonacci,
+  author={Knuth, Donald E.},
+  title={Negafibonacci Numbers and the Hyperbolic Plane},
+  date={2008-12-11},
+  url={http://research.allacademic.com/meta/p206842_index.html},
+}
+@online{wikipedia:negafibonacci,
+  author={{Wikipedia contributors}},
+  organization={{Wikipedia, The Free Encyclopedia}},
+  title={Fibonacci numbers},
+  language={langenglish},
+  version={486266088},
+  date={2012-04-08},
+  url={http://en.wikipedia.org/w/index.php?title=Fibonacci_number&oldid=486266088},
+  urldate={2012-04-08},
+}
+%</bib>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{fibnum.drv}%
+  [2012/04/08 v1.0 Fibonacci numbers (HO)]%
+\documentclass{ltxdoc}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{fibnum}[2012/04/08]
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{csquotes}
+\usepackage[
+  bibencoding=ascii,
+  alldates=iso8601,
+]{biblatex}[2011/11/13]
+\bibliography{oberdiek-source}
+\bibliography{fibnum}
+\begin{document}
+  \DocInput{fibnum.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{786}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{fibnum.drv}
+%
+% \title{The \xpackage{fibnum} package}
+% \date{2012/04/08 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package \xpackage{fibnum} provides expandable fibonacci
+% numbers for both \hologo{LaTeX} and \hologo{plainTeX}.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% In the mailing list \textsf{texhax} Jan Abraham asked the question,
+% how to get Fibonacci numbers in \hologo{TeX} \cite{texhax:abraham}:
+% \begin{quote}
+% Write a Macro in \hologo{TeX} that compute the function |\fib{m}|
+% All fibonacci numbers from 1 to $m$ ($m < 40$).
+% \end{quote}
+% This packages provides an expandable implementation for the
+% calculation of these numbers for a much larger set of indexes.
+% For practical reasons the index is restricted to the same limitations
+% that apply for \hologo{TeX} integer numbers.
+% The range of the Fibonacci numbers, however, are not limited
+% by the algorithm. They are only restricted to memory limitations,
+% if they are hit.
+%
+% The package is loaded as \hologo{LaTeX} package in \hologo{LaTeX}:
+% \begin{quote}
+%   |\usepackage{fibnum}|
+% \end{quote}
+% and as file in \hologo{plainTeX}:
+% \begin{quote}
+%   |\input fibnum.sty|
+% \end{quote}
+% The package does not know any options and it provides
+% the macros \cs{fibnum} and \cs{fibnumPreCalc}.
+%
+% \begin{declcs}{fibnum} \M{index}
+% \end{declcs}
+% Macro \cs{fibnum} expects a \hologo{TeX} number as \meta{index}
+% in the official \hologo{TeX} number range from $-(2^{31}-1)$ up to
+% $2^{31}-1$. In exact two expansion steps the macro expands to
+% the Fibnoacci number $F_{\text{\meta{index}}}$. In case of a negative
+% \meta{index}, the ``negafibonacci'' number \cite{wikipedia:negafibonacci}
+% is used. Formally the Fibonacci number $F_n$ with integer
+% index~$n$, $n\in\mathbb{Z}$ and
+% $n\in[\num{-2147483647},\num{2147483647}]$ that is returned by macro
+% \cs{fibnum} with numerical argument $n$ is defined the following way:
+% \begin{gather}
+%   \label{eq:def}
+%   F_n =
+%   \begin{cases}
+%     0 & \text{for $n=0$}\\
+%     1 & \text{for $n=1$}\\
+%     F_{n-1} + F_{n-2} & \text{for $n>1$}\\
+%     (-1)^{n+1}F_n & \text{for $n<0$}
+%   \end{cases}
+% \end{gather}
+% Examples:
+% \begin{quote}
+%   \makeatletter
+%   \def\x#1{\cs{fibnum}\{#1\}&
+%     \edef\X{\fibnum{#1}}\edef\Y{\expandafter\ltx@car\X\@nil}^^A
+%     \if-\Y
+%       \edef\X{\expandafter\ltx@cdr\X\@nil}^^A
+%       \noindent
+%       \llap{-}\X
+%     \else
+%       \X
+%     \fi
+%     \tabularnewline
+%   }
+%   \def\y{\multicolumn{1}{@{}c@{}}{$\vdots$}\tabularnewline}
+%   \DeclareUrlCommand\UrlNum{^^A
+%     \urlstyle{tt}^^A
+%     \def\UrlBreaks{\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9}^^A
+%   }
+%   \begin{tabularx}{\dimexpr\linewidth+5.7pt\relax}{@{}>{\ttfamily}l@{ $\rightarrow$ \hphantom{\ttfamily-}}>{\ttfamily}X@{}}
+%     \x{-6}
+%     \x{-5}
+%     \x{-4}
+%     \x{-3}
+%     \x{-2}
+%     \x{-1}
+%     \x{0}
+%     \x{1}
+%     \x{2}
+%     \x{3}
+%     \x{4}
+%     \x{5}
+%     \x{6}
+%     \y
+%     \x{10}
+%     \y
+%     \x{46}
+%     \y
+%     \cs{fibnum}\{100\} & 354224848179261915075
+%     \tabularnewline
+%     \y
+%     \cs{fibnum}\{200\} & 280571172992510140037611932413038677189525
+%     \tabularnewline
+%     \y
+%     \cs{fibnum}\{1000\} &
+%       \raggedright
+%       \UrlNum{^^A
+%         434665576869374564356885276750406258025646^^A
+%         605173717804024817290895365554179490518904^^A
+%         038798400792551692959225930803226347752096^^A
+%         896232398733224711616429964409065331879382^^A
+%         98969649928516003704476137795166849228875^^A
+%       }
+%     \tabularnewline
+%   \end{tabularx}\kern-5.7pt\mbox{}
+% \end{quote}
+%
+% \begin{declcs}{fibnumPreCalc} \M{index}
+% \end{declcs}
+% The package already provides precalculated Fibonacci numbers up to
+% index~46. That means that calculations are not necessary for
+% Fibonacci numbers that fit into the range of \hologo{TeX}
+% numbers. Because macro \cs{fibnum} is expandable, it cannot
+% store calculated Fibonacci numbers for later use. Macro definitions
+% are forbidden in expandable contexts. If larger Fibonacci numbers
+% are used more than once, than the compilation time can be shortened
+% by calculating and storing the Fibonacci numbers beforehand.
+% The argument \meta{index} is a \hologo{TeX} number and macro
+% \cs{fibnumPreCalc} ensures that the Fibonacci numbers
+% $F_0$ up to $F_{\lvert\text{\meta{index}}\rvert}$ that are not
+% already known are calculated
+% and stored in internal macros. Internally only non-negative
+% Fibonacci numbers are stored. If \meta{index} is negative, then
+% the needed positive Fibonacci numbers are calculated and stored.
+% Example:
+% \begin{quote}
+%   \def\x#1{\begingroup\itshape\texttt{\%} #1\endgroup}
+%   |\fibnumPreCalc{50}|\\
+%   \x{calculates and stores the values for indexes 47..50.}\\
+%   \x{(Values for 0..46 are already stored by the package.)}\\
+%   |\fibnum{49}| \x{uses the stored value}\\
+%   |\fibnum{51}|
+%   \x{only calculates $F_{51}$ from stored values $F_{49}$ and $F_{50}$}\\
+%   |\fibnumPreCalc{100}|\\
+%   \x{calculates and stores the values for indexes 51..100}\\
+%   |\fibnum{100}| \x{uses the stored value for $F_{100}$}\\
+%   |\fibnum{-100}|
+%   \x{uses the stored value for $F_{100}$}\\
+%   \x{$F_{-100}=-F_{100}$ according to equation \eqref{eq:def}.}
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@fibnum.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{fibnum}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@fibnum.sty\endcsname
+\ProvidesPackage{fibnum}%
+  [2012/04/08 v1.0 Fibonacci numbers (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname FibNum@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\FibNum@AtEnd{%
+    \FibNum@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+%\TMP@EnsureCode{36}{3}% $
+%\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+%\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{93}{12}% ]
+%\TMP@EnsureCode{94}{12}% ^ (superscript) (!)
+%\TMP@EnsureCode{124}{12}% |
+\edef\FibNum@AtEnd{\FibNum@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Package resources}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ltxcmds}[2011/04/18]%
+  \TMP@RequirePackage{intcalc}[2007/09/27]%
+  \TMP@RequirePackage{bigintcalc}[2007/11/11]%
+\else
+  \RequirePackage{ltxcmds}[2011/04/18]%
+  \RequirePackage{intcalc}[2007/09/27]%
+  \RequirePackage{bigintcalc}[2007/11/11]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Setup precalculated values}
+%
+%    \begin{macrocode}
+\def\FibNum@temp#1{%
+  \expandafter\def\csname FibNum@#1\endcsname
+}
+\catcode46=9 % dots are ignored
+\FibNum@temp{0}{0}
+\FibNum@temp{1}{1}
+\FibNum@temp{2}{1}
+\FibNum@temp{3}{2}
+\FibNum@temp{4}{3}
+\FibNum@temp{5}{5}
+\FibNum@temp{6}{8}
+\FibNum@temp{7}{13}
+\FibNum@temp{8}{21}
+\FibNum@temp{9}{34}
+\FibNum@temp{10}{55}
+\FibNum@temp{11}{89}
+\FibNum@temp{12}{144}
+\FibNum@temp{13}{233}
+\FibNum@temp{14}{377}
+\FibNum@temp{15}{610}
+\FibNum@temp{16}{987}
+\FibNum@temp{17}{1.597}
+\FibNum@temp{18}{2.584}
+\FibNum@temp{19}{4.181}
+\FibNum@temp{20}{6.765}
+\FibNum@temp{21}{10.946}
+\FibNum@temp{22}{17.711}
+\FibNum@temp{23}{28.657}
+\FibNum@temp{24}{46.368}
+\FibNum@temp{25}{75.025}
+\FibNum@temp{26}{121.393}
+\FibNum@temp{27}{196.418}
+\FibNum@temp{28}{317.811}
+\FibNum@temp{29}{514.229}
+\FibNum@temp{30}{832.040}
+\FibNum@temp{31}{1.346.269}
+\FibNum@temp{32}{2.178.309}
+\FibNum@temp{33}{3.524.578}
+\FibNum@temp{34}{5.702.887}
+\FibNum@temp{35}{9.227.465}
+\FibNum@temp{36}{14.930.352}
+\FibNum@temp{37}{24.157.817}
+\FibNum@temp{38}{39.088.169}
+\FibNum@temp{39}{63.245.986}
+\FibNum@temp{40}{102.334.155}
+\FibNum@temp{41}{165.580.141}
+\FibNum@temp{42}{267.914.296}
+\FibNum@temp{43}{433.494.437}
+\FibNum@temp{44}{701.408.733}
+\FibNum@temp{45}{1.134.903.170}
+\FibNum@temp{46}{1.836.311.903}
+%    \end{macrocode}
+%    \begin{macro}{\FibNum@max}
+%    \begin{macrocode}
+\def\FibNum@max{46}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Macros for precalculating values}
+%
+%    \begin{macro}{\fibnumPreCalc}
+%    \begin{macrocode}
+\def\fibnumPreCalc#1{%
+  \expandafter\expandafter\expandafter
+  \FibNum@PreCalc\intcalcNum{#1}/%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\FibNum@PreCalc}
+%    \begin{macrocode}
+\def\FibNum@PreCalc#1/{%
+  \ifnum#1<\ltx@zero
+    \expandafter\FibNum@PreCalc\ltx@gobble#1/%
+  \else
+    \ifnum#1>\FibNum@max
+      \begingroup
+        \ltx@LocDimenA=#1sp\relax
+        \countdef\FibNum@i=255\relax
+        \FibNum@i=\FibNum@max\relax
+        \edef\FibNum@temp{%
+          \csname FibNum@\the\FibNum@i\endcsname/%
+        }%
+        \advance\FibNum@i by -1\relax
+        \edef\FibNum@temp{%
+          \FibNum@temp
+          \csname FibNum@\the\FibNum@i\endcsname
+        }%
+        \advance\FibNum@i\ltx@two
+        \iftrue
+          \expandafter\FibNum@PreCalcAux\FibNum@temp
+        \fi
+      \endgroup
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\FibNum@PreCalcAux}
+%    \begin{macrocode}
+\def\FibNum@PreCalcAux#1/#2\fi{%
+  \fi
+  \edef\FibNum@temp{\BigIntCalcAdd#1!#2!}%
+  \global\expandafter
+  \let\csname FibNum@\the\FibNum@i\endcsname\FibNum@temp
+  \ifnum\FibNum@i=\ltx@LocDimenA
+    \xdef\FibNum@max{\the\FibNum@i}%
+  \else
+    \advance\FibNum@i\ltx@one
+    \expandafter\FibNum@PreCalcAux\FibNum@temp/#1%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Expandable calculations}
+%
+%    \begin{macro}{\fibnum}
+%    \begin{macrocode}
+\def\fibnum#1{%
+  \romannumeral
+  \expandafter\expandafter\expandafter\FibNum@Do\intcalcNum{#1}/%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\FibNum@Do}
+%    \begin{macrocode}
+\def\FibNum@Do#1/{%
+  \ifnum#1<\ltx@zero
+    \FibNum@ReturnAfterElseFiFi{%
+      \ifodd#1 %
+        \expandafter\expandafter\expandafter\ltx@zero
+      \else
+        \expandafter\expandafter\expandafter\ltx@zero
+        \expandafter\expandafter\expandafter-%
+      \fi
+      \romannumeral
+      \expandafter\FibNum@Do\ltx@gobble#1/%
+    }%
+  \else
+    \ifnum\FibNum@max<#1 %
+      \ltx@ReturnAfterElseFi{%
+        \expandafter
+        \FibNum@ExpCalc\number\expandafter\IntCalcInc\FibNum@max!%
+        \expandafter\expandafter\expandafter/%
+        \csname FibNum@\FibNum@max
+        \expandafter\expandafter\expandafter\endcsname
+        \expandafter\expandafter\expandafter/%
+        \csname FibNum@\expandafter\IntCalcDec\FibNum@max!%
+        \endcsname/%
+        #1%
+      }%
+    \else
+      \expandafter\expandafter\expandafter\ltx@zero
+      \csname FibNum@#1\expandafter\expandafter\expandafter\endcsname
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\FibNum@ReturnAfterElseFiFi}
+%    \begin{macrocode}
+\def\FibNum@ReturnAfterElseFiFi#1\else#2\fi\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\FibNum@ExpCalc}
+%    \begin{macrocode}
+\def\FibNum@ExpCalc#1/#2/#3/#4\fi{%
+  \fi
+  \ifnum#1=#4 %
+    \ltx@ReturnAfterElseFi{%
+      \expandafter\expandafter\expandafter\ltx@zero
+      \BigIntCalcAdd#2!#3!%
+    }%
+  \else
+    \expandafter\FibNum@ExpCalc
+    \number\IntCalcInc#1!%
+    \expandafter\expandafter\expandafter/%
+    \BigIntCalcAdd#2!#3!/%
+    #2/#4%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\FibNum@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input fibnum.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test calculations}
+%
+%    \begin{macrocode}
+%<*test-calc>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input fibnum.sty\relax
+\else
+  \RequirePackage{fibnum}[2012/04/08]%
+\fi
+\def\TestSet{%
+  \test{0}{0}%
+  \test{1}{1}%
+  \test{2}{1}%
+  \test{3}{2}%
+  \test{4}{3}%
+  \test{5}{5}%
+  \test{6}{8}%
+  \test{7}{13}%
+  \test{8}{21}%
+  \test{9}{34}%
+  \test{10}{55}%
+  \test{11}{89}%
+  \test{12}{144}%
+  \test{13}{233}%
+  \test{14}{377}%
+  \test{15}{610}%
+  \test{16}{987}%
+  \test{17}{1597}%
+  \test{18}{2584}%
+  \test{19}{4181}%
+  \test{20}{6765}%
+  \test{21}{10946}%
+  \test{22}{17711}%
+  \test{23}{28657}%
+  \test{24}{46368}%
+  \test{25}{75025}%
+  \test{26}{121393}%
+  \test{27}{196418}%
+  \test{28}{317811}%
+  \test{29}{514229}%
+  \test{30}{832040}%
+  \test{31}{1346269}%
+  \test{32}{2178309}%
+  \test{33}{3524578}%
+  \test{34}{5702887}%
+  \test{35}{9227465}%
+  \test{36}{14930352}%
+  \test{37}{24157817}%
+  \test{38}{39088169}%
+  \test{39}{63245986}%
+  \test{40}{102334155}%
+  \test{41}{165580141}%
+  \test{42}{267914296}%
+  \test{43}{433494437}%
+  \test{44}{701408733}%
+  \test{45}{1134903170}%
+  \test{46}{1836311903}%
+  \test{47}{2971215073}%
+  \test{48}{4807526976}%
+  \test{49}{7778742049}%
+  \test{50}{12586269025}%
+  \test{51}{20365011074}%
+  \test{52}{32951280099}%
+  \test{53}{53316291173}%
+  \test{54}{86267571272}%
+  \test{55}{139583862445}%
+  \test{56}{225851433717}%
+  \test{57}{365435296162}%
+  \test{58}{591286729879}%
+  \test{59}{956722026041}%
+  \test{60}{1548008755920}%
+  \test{61}{2504730781961}%
+  \test{62}{4052739537881}%
+  \test{63}{6557470319842}%
+  \test{64}{10610209857723}%
+  \test{65}{17167680177565}%
+  \test{66}{27777890035288}%
+  \test{67}{44945570212853}%
+  \test{68}{72723460248141}%
+  \test{69}{117669030460994}%
+  \test{70}{190392490709135}%
+  \test{71}{308061521170129}%
+  \test{72}{498454011879264}%
+  \test{73}{806515533049393}%
+}
+\def\msg#{\immediate\write16}
+\def\test#1#2{%
+  \TestAux{#1}{#2}%
+  \ifnum#1=0 %
+  \else
+    \ifodd#1 %
+      \TestAux{-#1}{#2}%
+    \else
+      \TestAux{-#1}{-#2}%
+    \fi
+  \fi
+}
+\def\TestAux#1#2{%
+  \def\Expected{#2}%
+  \expandafter\expandafter\expandafter\def
+  \expandafter\expandafter\expandafter\Result
+  \expandafter\expandafter\expandafter{%
+    \fibnum{#1}%
+  }%
+  \ltx@onelevel@sanitize\Result
+  \ifx\Result\Expected
+    \msg{* #1: ok.}%
+  \else
+    \msg{! fib(#1) = #2}%
+    \errmessage{fib(#1) <> \Result}%
+  \fi
+}
+\TestSet
+\setbox0=\hbox{%
+  \msg{* PreCalc{73}}%
+  \fibnumPreCalc{73}%
+}
+\ifdim\wd0=0pt
+\else
+  \errmessage{Unwanted stuff in PreCalc}%
+\fi
+\TestSet
+\csname @@end\endcsname\end
+%</test-calc>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/fibnum.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/fibnum.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex fibnum.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   fibnum.sty & tex/generic/oberdiek/fibnum.sty\\
+%   fibnum.pdf & doc/latex/oberdiek/fibnum.pdf\\
+%   test/fibnum-test1.tex & doc/latex/oberdiek/test/fibnum-test1.tex\\
+%   test/fibnum-test-calc.tex & doc/latex/oberdiek/test/fibnum-test-calc.tex\\
+%   fibnum.dtx & source/latex/oberdiek/fibnum.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk fibnum.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{fibnum.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex fibnum.dtx
+%bibtex fibnum.aux
+%makeindex -s gind.ist fibnum.idx
+%pdflatex fibnum.dtx
+%makeindex -s gind.ist fibnum.idx
+%pdflatex fibnum.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \printbibliography[
+%   heading=bibnumbered,
+% ]
+%
+% \begin{History}
+%   \begin{Version}{2012/04/08 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

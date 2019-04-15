@@ -1,0 +1,135 @@
+%%
+%% This is file `hypcap.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hypcap.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hypcap
+%% Version: 2011/02/16 v1.11
+%% 
+%% Copyright (C) 1999-2001, 2006-2008, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file hypcap.dtx
+%% and the derived files
+%%    hypcap.sty, hypcap.pdf, hypcap.ins, hypcap.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypcap}%
+  [2011/02/16 v1.11 Adjusting the anchors of captions (HO)]
+\@ifundefined{hyper@@anchor}{%
+  \PackageError{hypcap}{You have to load 'hyperref' first}\@ehc
+  \endinput
+}{}
+\RequirePackage{letltxmacro}[2008/06/24]
+\newcommand*\hc@org@caption{}
+\let\hc@org@caption\caption
+\newif\if@capstart
+\newcommand*\hypcapspace{.5\baselineskip}
+\newif\ifcapstart
+\capstarttrue
+\newcommand*\capstart{%
+  \ifcapstart
+    \H@refstepcounter\@captype % first part of caption
+    \hyper@makecurrent\@captype
+    \global\let\hc@currentHref\@currentHref
+    \vspace*{-\hypcapspace}%
+    \begingroup
+      \let\leavevmode\relax
+      \hyper@@anchor\@currentHref\relax
+    \endgroup
+    \vspace*{\hypcapspace}%
+    \hc@hyperref{\let\caption\hc@caption}%
+    \global\@capstarttrue
+    \global\advance\csname c@\@captype\endcsname\m@ne
+  \fi
+}
+\@ifpackagelater{hyperref}{2007/04/09}{%
+  \let\hc@hyperref\@gobble
+}{%
+  \let\hc@hyperref\@firstofone
+}
+\def\hc@caption{%
+  \global\advance\csname c@\@captype\endcsname\@ne
+  \@dblarg{\hc@@caption\@captype}%
+}
+\long\def\hc@@caption#1[#2]#3{%
+  \let\caption\hc@org@caption
+  \global\@capstartfalse
+  \ifHy@hypertexnames
+    \hyper@makecurrent\@captype
+  \else
+    \global\let\@currentHref\hc@currentHref
+  \fi
+  \par\addcontentsline{%
+    \csname ext@#1\endcsname}{#1}{%
+    \protect\numberline{%
+      \csname the#1\endcsname
+    }{\ignorespaces #2}%
+  }%
+  \begingroup
+    \@parboxrestore
+    \normalsize
+    \@makecaption{\csname fnum@#1\endcsname}{%
+      \ignorespaces#3%
+    }%
+    \par
+  \endgroup
+}
+\def\hypcapredef#1{%
+  \expandafter\hc@redef\csname hc@org#1\expandafter\endcsname
+                       \csname hc@orgend#1\expandafter\endcsname
+                       \expandafter{#1}%
+}
+\def\hc@redef#1#2#3{%
+  \newcommand#1{}%
+  \expandafter\LetLtxMacro\expandafter#1\csname#3\endcsname
+  \expandafter\LetLtxMacro\expandafter#2\csname end#3\endcsname
+  \renewenvironment*{#3}[1][]{%
+    \ifx\\##1\\%
+      #1\relax
+    \else
+      #1[##1]% hash-ok (compatibility for float)
+    \fi
+    \capstart
+  }{%
+    \if@capstart
+      \PackageError{hypcap}{You have forgotten to use \string\caption}%
+      \global\@capstartfalse
+    \else
+    \fi
+    #2%
+  }%
+}
+\DeclareOption{figure}{\hypcapredef{\CurrentOption}}
+\DeclareOption{figure*}{\hypcapredef{\CurrentOption}}
+\DeclareOption{table}{\hypcapredef{\CurrentOption}}
+\DeclareOption{table*}{\hypcapredef{\CurrentOption}}
+\DeclareOption{all}{%
+  \hypcapredef{figure}%
+  \hypcapredef{figure*}%
+  \hypcapredef{table}%
+  \hypcapredef{table*}%
+}
+\ProcessOptions\relax
+\endinput
+%%
+%% End of file `hypcap.sty'.

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='settobox'>
+  <name>settobox</name>
+  <caption>Assigning dimensions of a box to a length register.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2000,2006-2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    Commands to assist the reuse of boxes (set up by <tt>\sbox</tt> or
+    by the <tt>lrbox</tt> environment); the <tt>\settobox...</tt>
+    commands behave similarly to the <tt>\settowidth</tt> (etc.)
+    commands.  For example:
+    <pre>
+      \newsavebox{\mybox}
+      \newlength{\mylength}
+      \sbox{\mybox}{Hello World}
+      \settoboxwidth{\mylength}{\mybox}
+    </pre>
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/settobox.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/settobox.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

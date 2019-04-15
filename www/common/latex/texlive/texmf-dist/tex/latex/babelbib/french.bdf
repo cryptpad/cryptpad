@@ -1,0 +1,201 @@
+%%
+%% This is file `french.bdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,french')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+\ProvidesFile{french.bdf}
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\makeatletter
+\@ifpackageloaded{french}{}{\newcommand\bibsfrench{}}
+\makeatother
+\renewcommand\bibsfrench[1][french]{%
+  \def\biblanguagename{#1}%
+  \def\btxetalshort##1{\protect\foreignlanguage{#1}{et~al##1{}}}%
+  \def\btxetallong##1{\protect\foreignlanguage{#1}{et~alii}}%
+  \def\btxandshort##1{\protect\foreignlanguage{#1}{et}}%
+  \def\btxandlong##1{\protect\foreignlanguage{#1}{et}}%
+  \def\btxandcomma##1{}%
+  \def\btxinlong##1{\protect\foreignlanguage{#1}{dans}}%
+  \def\btxinshort##1{\protect\foreignlanguage{#1}{dans}}%
+  \def\btxofseriesshort##1{\protect\foreignlanguage{#1}{de}}%
+  \def\btxinseriesshort##1{\protect\foreignlanguage{#1}{dans}}%
+  \def\btxofserieslong##1{\protect\foreignlanguage{#1}{de}}%
+  \def\btxinserieslong##1{\protect\foreignlanguage{#1}{dans}}%
+  \def\btxeditorshort##1{\protect\foreignlanguage{#1}{r\'ed##1{}}}%
+  \def\btxeditorlong##1{\protect\foreignlanguage{#1}{r\'edacteur}}%
+  \def\btxeditorsshort##1{\protect\foreignlanguage{#1}{r\'eds##1{}}}%
+  \def\btxeditorslong##1{\protect\foreignlanguage{#1}{r\'edacteurs}}%
+  \def\btxvolumeshort##1{\protect\foreignlanguage{#1}{t##1{}}}%
+  \def\btxvolumelong##1{\protect\foreignlanguage{#1}{tome}}%
+  \def\btxnumbershort##1{\protect\foreignlanguage{#1}{%
+      n\textsuperscript{o}\kern.2em\relax{}}}%
+  \def\btxnumberlong##1{\protect\foreignlanguage{#1}{num\'ero}}%
+  \def\btxeditionshort##1{\protect\foreignlanguage{#1}{\'ed##1{}}}%
+  \def\btxeditionlong##1{\protect\foreignlanguage{#1}{\'edition}}%
+  \def\btxeditionnumshort##1##2{\btxnumeralshort{##1}~\btxeditionshort{##2}}%
+  \def\btxeditionnumlong##1##2{\btxnumerallong{##1}~\btxeditionlong{##2}}%
+  \def\btxchaptershort##1{\protect\foreignlanguage{#1}{chap##1{}}}%
+  \def\btxchapterlong##1{\protect\foreignlanguage{#1}{chapitre}}%
+  \def\btxpageshort##1{\protect\foreignlanguage{#1}{p##1{}}}%
+  \def\btxpagelong##1{\protect\foreignlanguage{#1}{page}}%
+  \def\btxpagesshort##1{\protect\foreignlanguage{#1}{p##1{}}}%
+  \def\btxpageslong##1{\protect\foreignlanguage{#1}{pages}}%
+  \def\btxmastthesis##1{\protect\foreignlanguage{#1}{M\'emoire de ma\^itrise}}%
+  \def\btxphdthesis##1{\protect\foreignlanguage{#1}{Th\`ese de doctorat}}%
+  \def\btxtechrepshort##1{\protect\foreignlanguage{#1}{rap.\ tech##1{}}}%
+  \def\btxtechreplong##1{\protect\foreignlanguage{#1}{rapport technique}}%
+  \def\btxmonjanlong##1{\protect\foreignlanguage{#1}{janvier}}%
+  \def\btxmonfeblong##1{\protect\foreignlanguage{#1}{f\'evrier}}%
+  \def\btxmonmarlong##1{\protect\foreignlanguage{#1}{mars}}%
+  \def\btxmonaprlong##1{\protect\foreignlanguage{#1}{avril}}%
+  \def\btxmonmaylong##1{\protect\foreignlanguage{#1}{mai}}%
+  \def\btxmonjunlong##1{\protect\foreignlanguage{#1}{juin}}%
+  \def\btxmonjullong##1{\protect\foreignlanguage{#1}{juillet}}%
+  \def\btxmonauglong##1{\protect\foreignlanguage{#1}{ao\^ut}}%
+  \def\btxmonseplong##1{\protect\foreignlanguage{#1}{septembre}}%
+  \def\btxmonoctlong##1{\protect\foreignlanguage{#1}{octobre}}%
+  \def\btxmonnovlong##1{\protect\foreignlanguage{#1}{novembre}}%
+  \def\btxmondeclong##1{\protect\foreignlanguage{#1}{d\'ecembre}}%
+  \def\btxmonjanshort##1{\protect\foreignlanguage{#1}{jan##1{}}}%
+  \def\btxmonfebshort##1{\protect\foreignlanguage{#1}{f\'ev##1{}}}%
+  \def\btxmonmarshort##1{\protect\foreignlanguage{#1}{mar##1{}}}%
+  \def\btxmonaprshort##1{\protect\foreignlanguage{#1}{avr##1{}}}%
+  \def\btxmonmayshort##1{\protect\foreignlanguage{#1}{mai}}%
+  \def\btxmonjunshort##1{\protect\foreignlanguage{#1}{juin}}%
+  \def\btxmonjulshort##1{\protect\foreignlanguage{#1}{juil##1{}}}%
+  \def\btxmonaugshort##1{\protect\foreignlanguage{#1}{ao\^ut}}%
+  \def\btxmonsepshort##1{\protect\foreignlanguage{#1}{sept##1{}}}%
+  \def\btxmonoctshort##1{\protect\foreignlanguage{#1}{oct##1{}}}%
+  \def\btxmonnovshort##1{\protect\foreignlanguage{#1}{nov##1{}}}%
+  \def\btxmondecshort##1{\protect\foreignlanguage{#1}{d\'ec##1{}}}%
+  \def\Btxinlong##1{\protect\foreignlanguage{#1}{Dans}}%
+  \def\Btxinshort##1{\protect\foreignlanguage{#1}{Dans}}%
+  \def\Btxeditorshort##1{\protect\foreignlanguage{#1}{R\'ed##1{}}}%
+  \def\Btxeditorlong##1{\protect\foreignlanguage{#1}{R\'edacteur}}%
+  \def\Btxeditorsshort##1{\protect\foreignlanguage{#1}{R\'eds##1{}}}%
+  \def\Btxeditorslong##1{\protect\foreignlanguage{#1}{R\'edacteurs}}%
+  \def\Btxvolumeshort##1{\protect\foreignlanguage{#1}{T##1{}}}%
+  \def\Btxvolumelong##1{\protect\foreignlanguage{#1}{Tome}}%
+  \def\Btxnumbershort##1{\protect\foreignlanguage{#1}{%
+      N\textsuperscript{o}\kern.2em\relax}}%
+  \def\Btxnumberlong##1{\protect\foreignlanguage{#1}{Num\'ero}}%
+  \def\Btxeditionshort##1{\protect\foreignlanguage{#1}{\'Ed##1{}}}%
+  \def\Btxeditionlong##1{\protect\foreignlanguage{#1}{\'Edition}}%
+  \def\Btxeditionnumshort##1##2{\btxnumeralshort{##1}~\Btxeditionshort{##2}}%
+  \def\Btxeditionnumlong##1##2{\btxnumerallong{##1}~\Btxeditionlong{##2}}%
+  \def\Btxchaptershort##1{\protect\foreignlanguage{#1}{Chap##1{}}}%
+  \def\Btxchapterlong##1{\protect\foreignlanguage{#1}{Chapitre}}%
+  \def\Btxpageshort##1{\protect\foreignlanguage{#1}{P##1{}}}%
+  \def\Btxpagelong##1{\protect\foreignlanguage{#1}{Page}}%
+  \def\Btxpagesshort##1{\protect\foreignlanguage{#1}{P##1{}}}%
+  \def\Btxpageslong##1{\protect\foreignlanguage{#1}{Pages}}%
+  \def\Btxtechrepshort##1{\protect\foreignlanguage{#1}{Rap. tech##1{}}}%
+  \def\Btxtechreplong##1{\protect\foreignlanguage{#1}{Rapport technique}}%
+  \def\btxurldatecomment##1{\protect\foreignlanguage{#1}{, visit\'e le ##1}}%
+  \def\btxfnamespaceshort{\,}%
+  \def\btxfnamespacelong{ }%
+  \def\btxnumeralshort##1{\btxnumeralfrench{#1}{##1}}%
+  \def\btxnumerallong##1{\btxnumeralfrench{#1}{##1}}%
+  \def\btxprintmonthyearnum##1##2{##1/##2}%
+  \def\btxkeywordlanguage##1{{\protect\selectlanguage{#1}##1}}%
+  \ifbbbblanguagenames
+    \def\btxlanguagenameamerican{\protect\foreignlanguage{#1}{anglais}}%
+    \def\btxlanguagenameaustrian{\protect\foreignlanguage{#1}{allemand}}%
+    \def\btxlanguagenamebrazil{\protect\foreignlanguage{#1}{portugais}}%
+    \def\btxlanguagenamebrazilian{\protect\foreignlanguage{#1}{portugais}}%
+    \def\btxlanguagenamebritish{\protect\foreignlanguage{#1}{anglais}}%
+    \def\btxlanguagenamebulgarian{\protect\foreignlanguage{#1}{bulgare}}%
+    \def\btxlanguagenamecanadian{\protect\foreignlanguage{#1}{anglais}}%
+    \def\btxlanguagenamecanadien{\protect\foreignlanguage{#1}{fran\c{c}ais}}%
+    \def\btxlanguagenamecatalan{\protect\foreignlanguage{#1}{catalan}}%
+    \def\btxlanguagenamecroatian{\protect\foreignlanguage{#1}{croate}}%
+    \def\btxlanguagenameczech{\protect\foreignlanguage{#1}{tch\`eque}}%
+    \def\btxlanguagenamedanish{\protect\foreignlanguage{#1}{danois}}%
+    \def\btxlanguagenamedutch{\protect\foreignlanguage{#1}{n\'eerlandais}}%
+    \def\btxlanguagenameenglish{\protect\foreignlanguage{#1}{anglais}}%
+    \def\btxlanguagenameesperanto{\protect\foreignlanguage{#1}{esperanto}}%
+    \def\btxlanguagenamefinnish{\protect\foreignlanguage{#1}{finnois}}%
+    \def\btxlanguagenamefrancais{\protect\foreignlanguage{#1}{fran\c{c}ais}}%
+    \def\btxlanguagenamefrench{\protect\foreignlanguage{#1}{fran\c{c}ais}}%
+    \def\btxlanguagenamefrenchb{\protect\foreignlanguage{#1}{fran\c{c}ais}}%
+    \def\btxlanguagenamegerman{\protect\foreignlanguage{#1}{allemand}}%
+    \def\btxlanguagenamegermanb{\protect\foreignlanguage{#1}{allemand}}%
+    \def\btxlanguagenamegreek{\protect\foreignlanguage{#1}{grec}}%
+    \def\btxlanguagenamehebrew{\protect\foreignlanguage{#1}{h\'ebreu}}%
+    \def\btxlanguagenamehungarian{\protect\foreignlanguage{#1}{hongrois}}%
+    \def\btxlanguagenameicelandic{\protect\foreignlanguage{#1}{islandais}}%
+    \def\btxlanguagenameirish{\protect\foreignlanguage{#1}{irlandais}}%
+    \def\btxlanguagenameitalian{\protect\foreignlanguage{#1}{italien}}%
+    \def\btxlanguagenamelatin{\protect\foreignlanguage{#1}{latin}}%
+    \def\btxlanguagenamenaustrian{\protect\foreignlanguage{#1}{allemand}}%
+    \def\btxlanguagenamengerman{\protect\foreignlanguage{#1}{allemand}}%
+    \def\btxlanguagenamenorsk{\protect\foreignlanguage{#1}{norv\'egien}}%
+    \def\btxlanguagenamenynorsk{\protect\foreignlanguage{#1}{nouveau
+        norv\'egien}}%
+    \def\btxlanguagenamepolish{\protect\foreignlanguage{#1}{polonais}}%
+    \def\btxlanguagenameportuges{\protect\foreignlanguage{#1}{portugais}}%
+    \def\btxlanguagenameportuguese{\protect\foreignlanguage{#1}{portugais}}%
+    \def\btxlanguagenamerussian{\protect\foreignlanguage{#1}{russe}}%
+    \def\btxlanguagenamescottish{\protect\foreignlanguage{#1}{\'ecossais}}%
+    \def\btxlanguagenameserbian{\protect\foreignlanguage{#1}{serbe}}%
+    \def\btxlanguagenamespanish{\protect\foreignlanguage{#1}{espagnol}}%
+    \def\btxlanguagenameswedish{\protect\foreignlanguage{#1}{su\'edois}}%
+    \def\btxlanguagenameturkish{\protect\foreignlanguage{#1}{turc}}%
+    \def\btxlanguagenameUKenglish{\protect\foreignlanguage{#1}{anglais}}%
+    \def\btxlanguagenameUSenglish{\protect\foreignlanguage{#1}{anglais}}%
+  \fi
+}
+\newcommand\bibsfrancais{\bibsfrench[francais]}
+\newcommand\bibsfrenchb{\bibsfrench[frenchb]}
+\newcommand\bibscanadien{\bibsfrench[canadien]}
+\AtBeginDocument{%
+  \ifbbbbfixlanguage
+  \else
+    \bbbbaddto{francais}{bibsfrancais}
+    \bbbbaddto{french}{bibsfrench}
+    \bbbbaddto{frenchb}{bibsfrenchb}
+    \bbbbaddto{canadien}{bibscanadien}
+  \fi
+  \bbbbaddto{francais}{btxifchangecaseoff}
+  \bbbbaddto{french}{btxifchangecaseoff}
+  \bbbbaddto{frenchb}{btxifchangecaseoff}
+  \bbbbaddto{canadien}{btxifchangecaseoff}
+}
+\makeatletter
+\DeclareRobustCommand\btxnumeralfrench[2]{%
+  \foreignlanguage{#1}{%
+    \ifnumber{#2}{%
+      \expandafter\btx@parsenum#2\@empty\@empty\@empty
+      \btxnumeralfont{%
+        \ifx\btx@digitb\@empty
+          \ifcase\btx@digita \ieme\or \iere\else \ieme\fi
+        \else
+          \ifnum\btx@digita=1
+            th%
+          \else
+            \ifcase\btx@digitb \ieme\or \iere\else \ieme\fi
+          \fi
+        \fi
+        }%
+    }{#2}%
+  }%
+}
+\makeatother
+
+\endinput
+%%
+%% End of file `french.bdf'.

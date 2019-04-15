@@ -1,0 +1,165 @@
+% \def\filename{euscript.dtx}
+% \def\fileversion{3.00}
+% \def\filedate{2009/06/22}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 2001, 2009 American Mathematical Society.
+%
+% Unlimited copying and redistribution of this file are permitted as
+% long as this file is not modified.  Modifications, and distribution
+% of modified versions, are permitted, but only if the resulting file
+% is renamed.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\usepackage{eucal}
+\begin{document}
+\title{The \pkg{eucal} and \pkg{euscript} packages}
+\author{Frank Mittelbach\and Rainer Sch\"opf\and Michael Downes\\
+Revised by David M. Jones}
+\date{Version \fileversion, \filedate}
+\DocInput{euscript.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \section{Introduction}
+%
+%    This package was written originally by Frank Mittelbach and Rainer
+%    Sch\"opf; later it was moved into the AMSFonts distribution
+%    with only minor modifications. It can be used with \LaTeXe{} with
+%    no dependency on the \pkg{amsmath} package.
+%
+%    This file sets up some font shape definitions to use the Euler
+%    script symbols in math mode. These fonts are part of the AMSFonts
+%    collection which can be found on many \TeX{} servers. It is also
+%    directly available from the AMS and from \TeX{} user groups.
+%
+% \DescribeMacro\EuScript
+%    The expected normal use of the Euler Script alphabet is as a
+%    substitute for the Computer Modern calligraphic alphabet found in
+%    \fn{cmsy}. Therefore we change the meaning of \cn{mathcal}.
+% \begin{verbatim}
+% \[ \mathcal{A} = \EuScript{A} \neq \CMcal{A} \]
+%\end{verbatim}
+%     will produce
+% \[ \mathcal{A} = \EuScript{A} \neq \CMcal{A} \]
+%
+% Here is a complete table of the  beautiful letters drawn by Hermann
+% Zapf:
+% \begin{displaymath}
+%   \newcommand{\E}[1]{\EuScript{#1} &}
+%   \begin{array}{*{10}c}
+%     \E{A} \E{B} \E{C} \E{D} \E{E} \E{F} \E{G} \E{H} \E{I} \\
+%     \E{J} \E{K} \E{L} \E{M} \E{N} \E{O} \E{P} \E{Q} \E{R} \\
+%     \E{S} \E{T} \E{U} \E{V} \E{W} \E{X} \E{Y} \E{Z}
+%   \end{array}
+% \end{displaymath}
+%
+% \StopEventually{}
+%
+% \section{The Implementation}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must be December 1994 or later
+%<euscript>\ProvidesPackage{euscript}[2009/06/22 v3.00 Euler Script fonts]
+%<eucal>\ProvidesPackage{eucal}[2009/06/22 v3.00 Euler Script fonts]
+%    \end{macrocode}
+%
+%    We have three things to do: 1) identify the current package,
+%    2) enlarge the font shape tables and 3) define the \meta{math
+%    alphabet identifier}.
+%
+% \begin{macro}{\EuScript}
+%    Now we define the \meta{math alphabet identifier} \cn{EuScript}
+%    both for the normal and the bold math version
+%    \begin{macrocode}
+\DeclareMathAlphabet\EuScript{U}{eus}{m}{n}
+\SetMathAlphabet\EuScript{bold}{U}{eus}{b}{n}
+%    \end{macrocode}
+% \end{macro}
+%
+%    For flexibility and backward compatibility with versions 2.1c and
+%    earlier, we save the old meaning of \cn{mathcal} as \cn{CMcal}, and
+%    use \cn{EuScript} as the initial name of the new math alphabet.
+%    Notice that we don't do any checking to make sure the previous
+%    version of \cn{mathcal} actually refers to \fn{cmsy}.
+%    \begin{macrocode}
+\newcommand{\CMcal}{}
+\let\CMcal=\mathcal
+%    \end{macrocode}
+%
+%    See the \pkg{amsfonts} package documentation for a discussion of
+%    the obsolescence of the \opt{psamfonts} option.
+%    \begin{macrocode}
+\DeclareOption{psamsfonts}{}
+%    \end{macrocode}
+%
+%    Here is a table describing the action of the \pkg{eucal},
+%    \pkg{euscript}, and \pkg{eufrak} packages.
+% \begin{center}
+% \begin{tabular}{lll}
+%    Package&  Option&    Commands provided\\
+%    \hline
+%    \pkg{eucal}&    none&      \cn{mathcal}\\
+%    \pkg{eucal}&    \opt{[mathcal]}& \cn{mathcal}\\
+%    \pkg{eucal}&    \opt{[mathscr]}& \cn{mathscr} (\cn{mathcal} unchanged)\\
+%    \pkg{euscript}& none&      \cn{EuScript} (obsolete)\\
+%    \pkg{euscript}& \opt{[mathcal]}& \cn{mathcal}\\
+%    \pkg{eufrak}&   none&      \parbox[t]{14pc}{\cn{mathfrak} (also
+%                               obsolete \cn{EuFrak} for compatibility)}
+% \end{tabular}
+% \end{center}
+%
+%    \begin{macrocode}
+\DeclareOption{mathcal}{\renewcommand{\mathcal}{\EuScript}}
+\DeclareOption{mathscr}{%
+  \providecommand{\mathscr}{}\renewcommand{\mathscr}{\EuScript}%
+%<eucal>  \let\mathcal=\CMcal
+}
+%    \end{macrocode}
+%
+%    Process the package options.
+%    \begin{macrocode}
+%<eucal>\ExecuteOptions{mathcal}
+\ProcessOptions
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \changes{v2.1a}{93/12/12}{Update for LaTeX2e}
+% \changes{v2.1c}{1994/05/08}{Changed to new documentation standards.}
+% \changes{v2.1d}{1994/10/14}{Moved to AMS-LaTeX distribution (mjd).}
+% \changes{v2.1d}{1994/10/18}{Added psamsfonts option}
+% \changes{v2.1d}{1994/10/18}{Changed cmd names to mathcal/mathscr}
+% \changes{v2.1d}{1994/10/18}{Added eucal package}
+% \changes{v2.1d}{1994/10/21}{Some documentation cleanup}
+% \changes{v2.2}{1995/01/06}{Moved to amsfonts distrib}
+% \changes{v2.2c}{1997/05/15}{%
+%    Removed dependency on mixed-case fd file names}
+%
+% \CheckSum{29}
+% \Finale

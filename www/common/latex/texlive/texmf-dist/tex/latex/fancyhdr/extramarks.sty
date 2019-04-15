@@ -1,0 +1,145 @@
+% Extra marks for latex. Version 2.0.
+% Piet van Oostrum, 
+% Dept of Computer and Information Sciences, University of Utrecht,
+% Padualaan 14, P.O. Box 80.089, 3508 TB Utrecht, The Netherlands
+% Telephone: +31 30 2532180. Email: piet@cs.uu.nl
+% ========================================================================
+% LICENCE:
+% This file may be distributed under the terms of the LaTeX Project Public
+% License, as described in lppl.txt in the base LaTeX distribution.
+% Either version 1 or, at your option, any later version.
+% ========================================================================
+% MODIFICATION HISTORY:
+% Oct 11, 2000
+% version 1.99e
+% Added a few % marks to get rid of unwanted spaces, and \endinput.
+% Added LPPL license clause.
+% March 12, 2002
+% version 2.0beta
+% Adapted for the new implementation of marks in LaTeX to solve bug
+% latex/3203. 
+% Added symmetric commands \firstrightmark, \lastleftmark, \firstleftxmark,
+% \firstrightxmark, \lastrightxmark, \lastleftxmark, \topleftxmark and
+% \toprightxmark.
+% March 3, 2004
+% version 2.0
+% Release.
+
+% This package gives you two additional marks. 
+% \extramarks{m1}{m2} define two extra marks for headers/footers 
+% (especially for use with fancyheadings), which can be retrieved 
+% by \firstxmark and \lastxmark resp. Usually m1 is what would 
+% appear at the top of the page, m2 at the bottom of the page.
+% Typical usage:
+% \pagestyle{fancy}
+% \lhead{\firstxmark}
+% \rfoot{\lastxmark}
+%
+% \extramarks{}{Continued on next page...}
+% text text text text text text text text text text text text text text text 
+% text text text text text text text text text text text text text text text 
+% text text text text text text text text text text text text text text text 
+% text text text text text text text text text text text text text text text 
+% text text text text text text text text text text text text text text text 
+% \extramarks{Continued}{}
+% \extramarks{}{}
+
+% This package also provides two extra handles to the standard LaTeX marks,
+% namely \firstleftmark and \lastrightmark (the standard \leftmark and
+% \rightmark of LaTeX always give you the last and first, respectively.
+% These are the complementary values). For symmetry reasons \firstrightmark
+% is an alias for \rightmark and \lastleftmark is an alias for \leftmark
+
+% Similarly there are now \firstleftxmark \firstrightxmark \lastrightxmark
+% \lastleftxmark. Here first and last apply to the position on the page,
+% left and right select the m1 and m2 values, respectively.
+ 
+% Note: there is an extra command \topxmark, but this doesn't work properly
+% if marginpars or floats are used, as LaTeX clobbers TeX's topmark in this
+% case. 
+
+\newtoks\@temptokenb
+
+%Just in case.
+\providecommand\unrestored@protected@xdef{%
+   \let\protect\@unexpandable@protect
+   \xdef
+}
+
+\def\markboth#1#2{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \expandafter\@markboth\@themark{#1}{#2}%
+    \@temptokena \expandafter{\@themark}%
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+% This definitions is in latex.ltx. No use to duplicate here
+%\def\markright#1{%
+%  \begingroup
+%    \let\label\relax \let\index\relax \let\glossary\relax
+%    \expandafter\@markright\@themark {#1}%
+%    \@temptokena \expandafter{\@themark}%
+%    \mark{\the\@temptokena}%
+%  \endgroup
+%  \if@nobreak\ifvmode\nobreak\fi\fi}
+
+% Old definition:
+%\def\@markboth#1#2#3#4#5#6{\gdef\@themark{{#5}{#6}{#3}{#4}}}
+%\def\@markright#1#2#3#4#5{\gdef\@themark{{#1}{#5}{#3}{#4}}}
+
+% Note: put #3#4 in toks register.
+\def\@markboth#1#2#3#4#5#6{\@temptokena {{#3}{#4}}%
+  \unrestored@protected@xdef\@themark{{#5}{#6}\the\@temptokena}}
+
+% Note: put #1 and #3#4 in toks register.
+% Maybe I can get rid of the extra temptokenb by doing the expansion of #5
+% to a temp separately.
+\def\@markright#1#2#3#4#5{\@temptokena {#1}\@temptokenb {{#3}{#4}}%
+  \unrestored@protected@xdef\@themark{{\the\@temptokena}{#5}\the\@temptokenb}}
+
+\def\@leftmark#1#2#3#4{#1} 
+\def\@rightmark#1#2#3#4{#2}
+
+\def\leftmark{\expandafter\@leftmark
+      \botmark\@empty\@empty\@empty\@empty}
+\def\rightmark{\expandafter\@rightmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\firstleftmark{\expandafter\@leftmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\lastrightmark{\expandafter\@rightmark
+      \botmark\@empty\@empty\@empty\@empty}
+\let\firstrightmark \rightmark
+\let\lastleftmark \leftmark
+
+\def\@themark{{}{}{}{}}
+
+\def\extramarks#1#2{%
+  \begingroup
+    \let\label\relax \let\index\relax \let\glossary\relax
+    \expandafter\@markextra\@themark{#1}{#2}%
+    \@temptokena \expandafter{\@themark}%
+    \mark{\the\@temptokena}%
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi}
+%Note Put #1#2 in toks register
+\def\@markextra#1#2#3#4#5#6{\@temptokena {{#1}{#2}}%
+  \unrestored@protected@xdef\@themark{\the\@temptokena{#5}{#6}}}
+\def\firstleftxmark{\expandafter\@leftxmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\firstrightxmark{\expandafter\@rightxmark
+      \firstmark\@empty\@empty\@empty\@empty}
+\def\topleftxmark{\expandafter\@leftxmark
+      \topmark\@empty\@empty\@empty\@empty}
+\def\toprightxmark{\expandafter\@rightxmark
+      \topmark\@empty\@empty\@empty\@empty}
+\def\lastleftxmark{\expandafter\@leftxmark
+      \botmark\@empty\@empty\@empty\@empty}
+\def\lastrightxmark{\expandafter\@rightxmark
+      \botmark\@empty\@empty\@empty\@empty}
+\let\firstxmark\firstleftxmark
+\let\lastxmark\lastrightxmark
+\let\topxmark\topleftxmark
+\def\@leftxmark#1#2#3#4{#3}
+\def\@rightxmark#1#2#3#4{#4}
+\endinput

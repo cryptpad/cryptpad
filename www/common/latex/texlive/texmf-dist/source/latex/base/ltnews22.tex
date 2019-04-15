@@ -1,0 +1,244 @@
+% \iffalse meta-comment
+%
+% Copyright 2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% Filename: ltnews22.tex
+%
+% This is issue 22 of LaTeX News.
+
+\documentclass{ltnews}
+\usepackage[T1]{fontenc}
+
+\usepackage{lmodern,url,hologo}
+
+\publicationmonth{January}
+\publicationyear{2015}
+
+\publicationissue{22}
+
+\begin{document}
+
+\maketitle
+
+\section{New \LaTeXe\ bug-fix policy}
+
+\subsection{Introduction}
+
+For some years we have supplied bug fixes to the \LaTeXe\ kernel via the
+\textsf{fixltx2e} package. This
+kept the kernel stable, but at the expense of meaning that most users did not
+benefit from bug fixes, and that some compromises 
+which were made to save space in the
+machines of the time are still affecting most users today.
+
+In this release we have started a new update policy. All the fixes previously
+available via \textsf{fixltx2e} are now enabled \emph{by default} in the
+format, as are some further extensions for extended \TeX\ engines, \eTeX,
+\hologo{XeTeX} and \hologo{LuaTeX}. Compatibility and stability are still
+important considerations, and while most users will not notice these
+improvements, or will want to benefit from them, a new \textsf{latexrelease}
+package is provided that will revert all the changes and re-instate the
+definitions from earlier releases. The package can also be used with older
+releases to effectively \emph{update} the kernel to be equivalent to this 2015
+release.
+
+A new document, \textsf{latexchanges}, is distributed with the release
+that documents all the changes to documented commands since the 2014
+\LaTeX\ release, and will be updated in future releases if further
+changes have been made.
+
+\subsection{The \textsf{latexrelease} package}
+
+As noted above a new package is available to manage differences between \LaTeX\
+releases. If you wish to revert all changes back to the definitions as they
+were in previous releases you may start your document requesting the \LaTeX{} release from May~2014:
+\begin{verbatim}
+\RequirePackage[2014/05/01]{latexrelease}
+\documentclass{article}
+\end{verbatim}
+Conversely if you start a large project now and want to protect yourself
+against possible future changes, you may start your document
+\begin{verbatim}
+\RequirePackage[2015/01/01]{latexrelease}
+\documentclass{article}
+\end{verbatim}
+Then the version of \textsf{latexrelease} distributed with any future \LaTeX\
+release will revert any changes made in that format, and revert to the
+definitions as they where at the beginning of 2015.
+
+If you wish to share a document using the latest features with a
+user restricted to use an older
+format, you may use the form above and make the \textsf{latexrelease} package
+available on the older institution.  The package will then update the format
+definitions as needed to enable the older format to work as if dated on the date
+specified in the package option.
+
+\subsection{The \cs{IncludeInRelease} command}
+
+The mechanism used in the \textsf{latexrelease} package is available for use in
+package code. If in your \textsf{zzz} package you have
+\begin{verbatim}
+\RequirePackage{latexrelease}
+\IncludeInRelease{2015/06/01}
+    {\zzz}{\zzz definition}
+  \def\zzz......new code
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}
+  {\zzz}{\zzz definition}
+  \def\zzz....original
+\EndIncludeInRelease
+\end{verbatim}
+then in a document using a format dated 2015/06/01 or later, the ``new code''
+will be used, and for documents being processed with an older format, the
+``original'' code will be used. Note the format date here may be the original
+format date as shown at the start of every \LaTeX\ run, or a format date
+specified as a package option to the \textsf{latexrelease} package. 
+
+So if the document has
+\begin{verbatim}
+\RequirePackage[2014/05/01]{latexrelease}
+\documentclass{article}
+\usepackage{zzz}
+\end{verbatim}
+then it will use the \emph{original} definition of \verb|\zzz| even if
+processed with the current format, as the format acts as if dated 2014/05/01.
+
+
+\subsection{Limitations of the approach}
+
+The new concept provides full backward and forward compatibility for
+the \LaTeX{} format, i.e., with the help of a current
+\textsf{latexrelease} package the kernel can emulate all released
+formats (starting with 2014/06/01\footnote{Patching an older format
+  most likely works too, given that the changes in the past have been
+  minimal, though this isn't guaranteed and hasn't been tested.}).
+
+
+However, this is not necessarily true for all packages.
+ Only if a package makes use of the \cs{IncludeInRelease}
+functionality will it adjust to the
+requested \LaTeX{} release date. Initially this will only be true for
+a few selected package and in general it may not even be advisable for packages
+that have their own well-established release cycles and methods.
+
+Thus, to regenerate a document with 100\,\% compatible behavior
+it will still be necessary
+to archive it together with all its inputs, for example, by archiving
+the base distribution trees (and any modifications made). However, the
+fact that a document requests a specific \LaTeX{} release date should
+help identifying what release tree to use to achieve perfect accuracy.
+
+
+\section{Updates to the kernel}
+
+\subsection{Updates incorporated from \textsf{fixltx2e}}
+
+The detailed list of changes incorporated from \textsf{fixltx2e} is
+available in the new \textsf{latexchanges} document that is
+distributed with this release. The main changes are that $2$-column
+floats are kept in sequence with one column floats, corrections are
+made to the \verb|\mark| system to ensure correct page headings in
+$2$-column documents, several additional commands are made robust.
+
+\subsection{\eTeX\ register allocation}
+
+\LaTeX\ has traditionally used allocation routines inherited from plain \TeX\
+that allocated registers in the range $0$--$255$. Almost all distributions have
+for some years used \eTeX\ based formats (or \hologo{XeTeX} or \hologo{LuaTeX})
+which have $2^{15}$ registers of each type ($2^{16}$ in the case of
+\hologo{LuaTeX}). The \textsf{etex} package has been available to provided an
+allocation mechanism for these extended registers but now the format will by
+default allocate in a range suitable for the engine being used. The new
+allocation mechanism is different to the \textsf{etex} package mechanism, and
+supports \hologo{LuaTeX}'s full range and an allocation mechanism for \LaTeX\
+floats as described below.
+
+On \eTeX\ based engines, an additional command, \verb|\newmarks| is available
+(as with the \textsf{etex} package) that allocates extended \eTeX\ marks, and
+similarly if \hologo{XeTeX} is detected a new command
+\verb|\newXeTeXintercharclass| is available, this is similar to the command
+previously defined in the \texttt{xelatex.ini} file used to build the
+\texttt{xelatex} format.
+
+\subsection{Additional \LaTeX{} float storage}
+
+\LaTeX's float placement algorithm needs to store floats (figures and tables)
+until it finds a suitable page to output them. It allocates $18$ registers for
+this storage, but this can often be insufficient.
+ The contributed \textsf{morefloats} package has
+been available to extend this list, however it also only allocates from the
+standard range $0$--$255$ so can not take advantage of the extended registers.
+The new allocation mechanism in this release incorporates a new command
+\verb|\extrafloats|. If you get the error:
+\mbox{\texttt{Too many unprocessed floats.}}
+then you can add (say) \verb|\extrafloats{500}| to the document preamble to
+make many more boxes available to hold floats. 
+
+
+\subsection{Built-in support for Unicode engines}
+
+The kernel sources now detect the engine being used and adjust definitions
+accordingly, this reduces the need for the ``\texttt{.ini}'' files used to make
+the formats to patch definitions defined in \texttt{latex.ltx}.
+ 
+As noted above the format now includes extended allocation routines.
+
+The distribution includes a file \textsf{unicode-letters.def} derived from the
+Unicode Consortium's Unicode Character Data files that details the upper and
+lower case transformation data for the full Unicode range. This is used to set
+the \verb|lccode| and \verb|uccode| values if a Unicode engine is being used,
+rather than the values derived from the T1 font encoding which are used with
+8-bit engines.
+
+Finally \verb|\typein| is modified if \hologo{LuaTeX} is detected
+such that it works with this engine.
+
+\section{l3build}
+
+This release has been tested and built using a new build system implemented in
+\textsf{lua} intended to be run on the \textsf{texlua} interpreter distributed
+with modern \TeX\ distributions. It is already separately available
+from CTAN. This replaces earlier build systems (based at various times on
+\textsf{make}, \textsf{cons}, and Windows \textsf{bat} files). It allows the
+sources to be tested and packaged on a range of platforms (within the team,
+OS X, Windows, Linux and cygwin platforms are used). It also allows the
+format to be tested on \hologo{XeTeX} and \hologo{LuaTeX} as well as the
+standard \hologo{pdfTeX}/\eTeX\ engines.
+
+\section{Hyperlinked documentation and TDS zip files}
+
+As well as updating the build system, the team have looked again at exactly
+what gets released to \textsc{ctan}. Taking inspiration from Heiko Oberdiek's
+\textsf{latex-tds} bundle, the PDF documentation provided now includes
+hyperlinks where appropriate. This has been done without modifying the sources
+such that users without \textsf{hyperref} available can still typeset the
+documentation using only the core distribution. At the same time, the release
+now includes ready-to-install TDS-style zip files. This will be of principal
+interest to \TeX\ system maintainers, but end users with older machines who
+wish to manually update \LaTeX\ will also benefit.
+
+\end{document}

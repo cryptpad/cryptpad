@@ -1,0 +1,147 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993-2015
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% This file is part of the LaTeX base system.
+%% -------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3b
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3b or later is part of all distributions of LaTeX 
+%% version 2005/12/01 or later.
+%% 
+%% This file has the LPPL maintenance status "maintained".
+%% 
+%% In particular, NO PERMISSION is granted to modify the contents of this
+%% file since it contains the legal notices that are placed in the files
+%% it generates.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
+%% 
+%% 
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+
+\input docstrip
+
+\preamble
+
+This is a generated file.
+
+The source is maintained by the LaTeX Project team and bug
+reports for it can be opened at http://latex-project.org/bugs.html
+(but please observe conditions on bug reports sent to that address!)
+
+
+Copyright 1993-2015
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+This file was generated from file(s) of the LaTeX base system.
+--------------------------------------------------------------
+
+It may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX 
+version 2005/12/01 or later.
+
+This file may only be distributed together with a copy of the LaTeX
+base system. You may however distribute the LaTeX base system without
+such generated files.
+
+The list of all files belonging to the LaTeX base distribution is
+given in the file `manifest.txt'. See also `legal.txt' for additional
+information.
+
+In particular, permission is granted to customize the declarations in
+this file to serve the needs of your installation.
+
+However, NO PERMISSION is granted to distribute a modified version
+of this file under its original name.
+
+\endpreamble
+
+\keepsilent
+\usedir{tex/latex/base}
+
+% Concrete font support removed: Use the contributed package available
+% from ctan:macros/latex/contrib/supported/ccfonts.
+%
+% \Ask\answer{%
+%      **************************************************************
+%   ^^J* 
+%   ^^J* Do you have the Concrete Roman fonts installed on your system,
+%   ^^J* or do you intend to install them?
+%   ^^J*  
+%   ^^J* If so please answer with `y' otherwise with `n' below.
+%   ^^J*
+%   ^^J* You can easily redo this installation later in case you 
+%   ^^J* change your mind.
+%   ^^J**************************************************************}
+% 
+% {\ifx\answer\y
+% 
+% \Msg{*** Generating font defs for Cork encoded fonts ***}
+% \Msg{*** Generating font defs for old TeX Text encoding ***}
+% \Msg{*** Generating font defs for math italic encoding ***}
+% 
+% \generate{%
+%   \file{t1ccr.fd}{\from{cmfonts.fdd}{fd,T1ccr}}
+%   \file{ot1ccr.fd}{\from{cmfonts.fdd}{fd,OT1ccr}}
+%   \file{omlccm.fd}{\from{cmfonts.fdd}{fd,OMLccm}}}
+% 
+% \fi}
+
+\Ask\answer{%
+     **************************************************************
+  ^^J* 
+  ^^J* Do you have the cyrillic fonts from the University of
+  ^^J* Washington installed on your system,
+  ^^J* or do you intend to install them?
+  ^^J*  
+  ^^J* If so please answer with `y' otherwise with `n' below.
+  ^^J*
+  ^^J* You can easily redo this installation later in case you 
+  ^^J* change your mind.
+  ^^J**************************************************************}
+
+{\ifx\answer\y
+
+\Msg{*** Generating font defs for old TeX cyrillic text encoding ***}
+
+\generate{%
+  \file{ot2cmr.fd}{\from{cmfonts.fdd}{fd,OT2cmr}}
+  \file{ot2cmss.fd}{\from{cmfonts.fdd}{fd,OT2cmss}}}
+
+\fi}
+
+
+
+\ifToplevel{
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space All *.fd}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
+}
+
+\endbatchfile

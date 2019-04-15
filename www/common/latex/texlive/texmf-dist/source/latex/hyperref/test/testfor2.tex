@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[dvips]{web}
+
+\def\r{\string\r}
+\def\n{\string\n}
+
+\begin{document}
+\begin{Form}
+
+\noindent First Sub total.
+
+\medskip\noindent
+\makebox[.75in][l]{Number 1:} \TextField[width=1in,name=firstnum,
+keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+\medskip\noindent
+\makebox[.75in][l]{Number 2:} \TextField[width=1in,name=secondnum,
+keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+\medskip\noindent
+\makebox[.75in][l]{Sub total:} \TextField[width=1in,name=total1,align={0 /_objdef {total1}},
+format={AFNumber_Format(2,0,0,0,"",true);}, keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+calculate={AFSimple_Calculate("SUM",new Array("firstnum", "secondnum"));\string\040},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+\bigskip\noindent Second Sub total:
+
+\medskip\noindent
+\makebox[.75in][l]{Number 1:} \TextField[width=1in,name=Number.1,
+keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+\medskip\noindent
+\makebox[.75in][l]{Number 2:} \TextField[width=1in,name=Number.2,
+keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+\medskip\noindent
+\makebox[.75in][l]{Total:} \TextField[width=1in,name=total2,
+format={AFNumber_Format(2,0,0,0,"",true);},align={0 /_objdef {total2}},
+keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+calculate={AFSimple_Calculate("SUM",new Array("Number"));\r},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+
+
+\bigskip\noindent
+\makebox[.75in][l]{Grand Total:} \TextField[width=1in,name=total,
+format={AFNumber_Format(2,0,0,0,"",true);},align={0 /_objdef {total}},
+keystroke={AFNumber_Keystroke(2,0,0,0,"",true);},
+calculate={this.getField("total").value=this.getField("total1").value+%
+   this.getField("total2").value;\r},
+format={AFNumber_Format(2,0,0,0,"",true);}]{}
+
+
+\special{! [ {corder} 0 [ {total1} {total2} {total} ] /PUTINTERVAL pdfmark}
+
+\end{Form}
+\end{document}

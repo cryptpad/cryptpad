@@ -1,0 +1,458 @@
+
+\ProvidesPackage{pslatex}[1996/07/24 v1.2 pslatex emulation (DPC)]
+
+% Copyright 1994 1996 David Carlisle
+% This file may be distributed under the terms of the LPPL.
+% See 00readme.txt for details.
+
+% 1994/06/28 v1.0 
+% 1996/07/22 v1.1 update to `8r' encoded base fonts.
+% 1996/07/24 v1.2 New way of resolving \pounds/\$ problem
+
+%%% pslatex emulation for LaTeX2e
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% This file consists of verbatim copies of times.sty and mathptm.sty
+% to get a basic times/helvetica/courier setup.
+%
+% It then has a copy of OT1pcr.fd
+% modified to load a narrowed version of courier.
+%             and make the ui substitution silent (ui now removed v1.2)
+%
+% It then has a copy of OT1phv.fd
+% modified to load helvetica at 90%.
+%             and make the ui substitution silent  (ui now removed v1.2)
+%
+% It then has a copy of OT1ptm.fd
+% modified to make the ui substitution silent  (ui now removed v1.2)
+%
+%
+% It finally runs \normalfont (if run by the pslatex script
+% it is loaded after \begin{document} has run \normalfont).
+
+
+% (Not) supporting \pounds in OT1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% But before that it tells LaTeX that OT1 fonts have not got
+% a pound sign, and that if any encoding has not got a pound sign,
+% to use the one from the T1 encoding.
+%
+% NOTE!!! This means that any font in which you want a \pounds must
+% be available in T1 encoded form. This is no problem for all the
+% PostScript fonts as they are distributed in T1 and OT1. But if
+% you mix postscript fonts with Computer Modern, you'll need the T1
+% encoded Computer Modern (dc) fonts available.
+% Because of this change all substitutions for the ui font shape
+% (which is only ever used for \pounds) are removed.
+
+
+\DeclareTextSymbolDefault{\textsterling}{T1}
+
+\expandafter\let
+         \csname OT1\string\textsterling\endcsname\@undefined
+
+
+%%%% TIMES.STY
+
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\rmdefault}{ptm}
+\renewcommand{\ttdefault}{pcr}
+
+
+%%%% MATHPTM.STY
+
+\DeclareSymbolFont{operators}   {OT1}{ptmcm}{m}{n}
+\DeclareSymbolFont{letters}     {OML}{ptmcm}{m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{pzccm}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{psycm}{m}{n}
+\DeclareSymbolFont{bold}        {OT1}{ptm}{bx}{n}
+\DeclareSymbolFont{italic}      {OT1}{ptm}{m}{it}
+
+% If we're in compatibility mode, defined \mathbf and \mathit.
+
+\@ifundefined{mathbf}{}{\DeclareMathAlphabet{\mathbf}{OT1}{ptm}{bx}{n}}
+\@ifundefined{mathit}{}{\DeclareMathAlphabet{\mathit}{OT1}{ptm}{m}{it}}
+
+% An \omicron command, to fill the gap.
+
+\DeclareMathSymbol{\omicron}{0}{operators}{`\o}
+
+% Reduce the space around math operators
+
+\thinmuskip=2mu
+\medmuskip=2.5mu plus 1mu minus 1mu
+\thickmuskip=4mu plus 1.5mu minus 1mu
+
+% No bold math.
+
+\def\boldmath{%
+   \@warning{there is no bold Symbol font}%
+   \global\let\boldmath=\relax
+}
+
+% Larger scripts.
+
+\DeclareMathSizes{5}{5}{5}{5}
+\DeclareMathSizes{6}{6}{5}{5}
+\DeclareMathSizes{7}{7}{5}{5}
+\DeclareMathSizes{8}{8}{6}{5}
+\DeclareMathSizes{9}{9}{7}{5}
+\DeclareMathSizes{10}{10}{7.4}{6}
+\DeclareMathSizes{10.95}{10.95}{8}{6}
+\DeclareMathSizes{12}{12}{9}{7}
+\DeclareMathSizes{14.4}{14.4}{10.95}{8}
+\DeclareMathSizes{17.28}{17.28}{12}{10}
+\DeclareMathSizes{20.74}{20.74}{14.4}{12}
+\DeclareMathSizes{24.88}{24.88}{17.28}{14.4}
+
+
+\DeclareFontSubstitution{OMS}{pzccm}{m}{n}
+
+\begingroup
+\nfss@catcodes
+
+%%%%% ``OMSptm.fd''
+\DeclareFontFamily{OMS}{ptm}{}
+\DeclareFontShape{OMS}{ptm}{m}{n}
+   {<-> ssub * pzccm/m/n}{}
+\DeclareFontShape{OMS}{ptm}{m}{it}
+   {<-> ssub * pzccm/m/n}{}
+\DeclareFontShape{OMS}{ptm}{m}{sl}
+   {<-> ssub * pzccm/m/n}{}
+\DeclareFontShape{OMS}{ptm}{m}{sc}
+   {<-> ssub * pzccm/m/n}{}
+\DeclareFontShape{OMS}{ptm}{bx}{n}
+   {<-> ssub * pzccm/b/n}{}
+\DeclareFontShape{OMS}{ptm}{bx}{it}
+   {<-> ssub * pzccm/b/n}{}
+\DeclareFontShape{OMS}{ptm}{bx}{sl}
+   {<-> ssub * pzccm/b/n}{}
+\DeclareFontShape{OMS}{ptm}{bx}{sc}
+   {<-> ssub * pzccm/b/n}{}
+
+
+
+%%%% OT1pcr.fd
+%
+\DeclareFontFamily{OT1}{pcr}{\hyphenchar \font =-1}%
+%
+\DeclareFontShape{OT1}{pcr}{b}{n}{%
+   <-> pcrb7t%
+}{}%
+%
+\DeclareFontShape{OT1}{pcr}{b}{sc}{%
+   <-> pcrbc7t%
+}{}%
+%
+\DeclareFontShape{OT1}{pcr}{b}{sl}{%
+   <-> pcrbo7t%
+}{}%
+%
+%%%% pslatex's condenced courier
+\DeclareFontShape{OT1}{pcr}{m}{n}{%
+   <-> pcrr7tn%
+}{}%
+%
+\DeclareFontShape{OT1}{pcr}{m}{sc}{%
+   <-> pcrrc7t%
+}{}%
+%
+\DeclareFontShape{OT1}{pcr}{m}{sl}{%
+   <-> pcrro7t%
+}{}%
+
+%
+\DeclareFontShape{OT1}{pcr}{bx}{n}{<->ssub * pcr/b/n}{}%
+\DeclareFontShape{OT1}{pcr}{bx}{sc}{<->ssub * pcr/b/sc}{}%
+\DeclareFontShape{OT1}{pcr}{bx}{sl}{<->ssub * pcr/b/sl}{}%
+\DeclareFontShape{OT1}{pcr}{b}{it}{<->ssub * pcr/b/sl}{}%
+\DeclareFontShape{OT1}{pcr}{bx}{it}{<->ssub * pcr/b/it}{}%
+\DeclareFontShape{OT1}{pcr}{m}{it}{<->ssub * pcr/m/sl}{}%
+
+%
+
+
+
+
+%%%% OT1phv.fd
+
+%%Filename: OT1phv.fd
+%%Created by: tex 16273helvetic
+%%Created using fontinst v1.328
+
+%%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\DeclareFontFamily{OT1}{phv}{}
+
+\DeclareFontShape{OT1}{phv}{b}{n}{
+   <-> s * [.9] phvb7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{b}{sc}{
+   <-> s * [.9] phvbc7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{b}{sl}{
+   <-> s * [.9] phvbo7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{bc}{n}{
+   <-> s * [.9] phvbrn7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{bc}{sc}{
+   <-> s * [.9] phvbcn7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{bc}{sl}{
+   <-> s * [.9] phvbon7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{m}{n}{
+   <-> s * [.9] phvr7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{m}{sc}{
+   <-> s * [.9] phvrc7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{m}{sl}{
+   <-> s * [.9] phvro7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{mc}{n}{
+   <-> s * [.9] phvrrn7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{mc}{sc}{
+   <-> s * [.9] phvrcn7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{mc}{sl}{
+   <-> s * [.9] phvron7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{OT1}{phv}{bx}{sc}{<->ssub * phv/b/sc}{}
+\DeclareFontShape{OT1}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{OT1}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{OT1}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{OT1}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+\DeclareFontShape{OT1}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{OT1}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+
+
+
+%%%% OT1ptm.fd
+
+%Filename: OT1ptm.fd
+%Created by: tex 16594times
+%Created using fontinst v1.328
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\DeclareFontFamily{OT1}{ptm}{}
+
+\DeclareFontShape{OT1}{ptm}{b}{n}{
+   <-> ptmb7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{b}{sc}{
+   <-> ptmbc7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{b}{it}{
+   <-> ptmbi7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{b}{sl}{
+   <-> ptmbo7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{m}{n}{
+   <-> ptmr7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{m}{sc}{
+   <-> ptmrc7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{m}{it}{
+   <-> ptmri7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{m}{sl}{
+   <-> ptmro7t
+}{}
+
+\DeclareFontShape{OT1}{ptm}{bx}{n}{<->ssub * ptm/b/n}{}
+\DeclareFontShape{OT1}{ptm}{bx}{sc}{<->ssub * ptm/b/sc}{}
+\DeclareFontShape{OT1}{ptm}{bx}{it}{<->ssub * ptm/b/it}{}
+\DeclareFontShape{OT1}{ptm}{bx}{sl}{<->ssub * ptm/b/sl}{}
+
+
+
+%%%% T1pcr.fd
+%
+\DeclareFontFamily{T1}{pcr}{\hyphenchar \font =-1}%
+%
+\DeclareFontShape{T1}{pcr}{b}{n}{%
+   <-> pcrb8t%
+}{}%
+%
+\DeclareFontShape{T1}{pcr}{b}{sc}{%
+   <-> pcrbc8t%
+}{}%
+%
+\DeclareFontShape{T1}{pcr}{b}{sl}{%
+   <-> pcrbo8t%
+}{}%
+%
+%%%% pslatex's condensed courier
+\DeclareFontShape{T1}{pcr}{m}{n}{%
+   <-> pcrr8tn%
+}{}%
+%
+\DeclareFontShape{T1}{pcr}{m}{sc}{%
+   <-> pcrrc8t%
+}{}%
+%
+\DeclareFontShape{T1}{pcr}{m}{sl}{%
+   <-> pcrro8t%
+}{}%
+%
+\DeclareFontShape{T1}{pcr}{bx}{n}{<->ssub * pcr/b/n}{}%
+\DeclareFontShape{T1}{pcr}{bx}{sc}{<->ssub * pcr/b/sc}{}%
+\DeclareFontShape{T1}{pcr}{bx}{sl}{<->ssub * pcr/b/sl}{}%
+\DeclareFontShape{T1}{pcr}{b}{it}{<->ssub * pcr/b/sl}{}%
+\DeclareFontShape{T1}{pcr}{bx}{it}{<->ssub * pcr/b/it}{}%
+\DeclareFontShape{T1}{pcr}{m}{it}{<->ssub * pcr/m/sl}{}%
+%
+
+
+
+
+%%%% T1phv.fd
+
+%%Filename: T1phv.fd
+%%Created by: tex 16273helvetic
+%%Created using fontinst v1.328
+
+%%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\DeclareFontFamily{T1}{phv}{}
+
+\DeclareFontShape{T1}{phv}{b}{n}{
+   <-> s * [.9] phvb8t
+}{}
+
+\DeclareFontShape{T1}{phv}{b}{sc}{
+   <-> s * [.9] phvbc8t
+}{}
+
+\DeclareFontShape{T1}{phv}{b}{sl}{
+   <-> s * [.9] phvbo8t
+}{}
+
+\DeclareFontShape{T1}{phv}{bc}{n}{
+   <-> s * [.9] phvbrn8t
+}{}
+
+\DeclareFontShape{T1}{phv}{bc}{sc}{
+   <-> s * [.9] phvbcn8t
+}{}
+
+\DeclareFontShape{T1}{phv}{bc}{sl}{
+   <-> s * [.9] phvbon8t
+}{}
+
+\DeclareFontShape{T1}{phv}{m}{n}{
+   <-> s * [.9] phvr8t
+}{}
+
+\DeclareFontShape{T1}{phv}{m}{sc}{
+   <-> s * [.9] phvrc8t
+}{}
+
+\DeclareFontShape{T1}{phv}{m}{sl}{
+   <-> s * [.9] phvro8t
+}{}
+
+\DeclareFontShape{T1}{phv}{mc}{n}{
+   <-> s * [.9] phvrrn8t
+}{}
+
+\DeclareFontShape{T1}{phv}{mc}{sc}{
+   <-> s * [.9] phvrcn8t
+}{}
+
+\DeclareFontShape{T1}{phv}{mc}{sl}{
+   <-> s * [.9] phvron8t
+}{}
+
+\DeclareFontShape{T1}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{T1}{phv}{bx}{sc}{<->ssub * phv/b/sc}{}
+\DeclareFontShape{T1}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T1}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{T1}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{T1}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+\DeclareFontShape{T1}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{T1}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+
+
+
+%%%% T1ptm.fd
+
+%Filename: T1ptm.fd
+%Created by: tex 16594times
+%Created using fontinst v1.328
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\DeclareFontFamily{T1}{ptm}{}
+
+\DeclareFontShape{T1}{ptm}{b}{n}{
+   <-> ptmb8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{b}{sc}{
+   <-> ptmbc8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{b}{it}{
+   <-> ptmbi8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{b}{sl}{
+   <-> ptmbo8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{m}{n}{
+   <-> ptmr8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{m}{sc}{
+   <-> ptmrc8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{m}{it}{
+   <-> ptmri8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{m}{sl}{
+   <-> ptmro8t
+}{}
+
+\DeclareFontShape{T1}{ptm}{bx}{n}{<->ssub * ptm/b/n}{}
+\DeclareFontShape{T1}{ptm}{bx}{sc}{<->ssub * ptm/b/sc}{}
+\DeclareFontShape{T1}{ptm}{bx}{it}{<->ssub * ptm/b/it}{}
+\DeclareFontShape{T1}{ptm}{bx}{sl}{<->ssub * ptm/b/sl}{}
+
+\endgroup
+
+% And finally...
+
+\normalfont
+
+\endinput

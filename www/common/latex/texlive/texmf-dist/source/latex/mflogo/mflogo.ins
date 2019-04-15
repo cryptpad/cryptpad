@@ -1,0 +1,31 @@
+\input docstrip.tex
+
+\keepsilent
+\askonceonly
+
+\preamble
+
+Copyright (C) 1994--1999 Ulrik Vieth
+
+This file is part of the `mflogo' package.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the LaTeX Project Public License
+as described in lppl.txt in the base LaTeX distribution; either
+version 1 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+\endpreamble
+
+\usedir{tex/latex/mflogo}
+
+\generate{%
+    \file{mflogo.sty}{\from{mflogo.dtx}{package}}
+    \file{ulogo.fd}  {\from{mflogo.dtx}{Ulogo}}
+}
+
+\endbatchfile
+\endinput

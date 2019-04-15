@@ -1,0 +1,45 @@
+#! /usr/bin/env texlua
+--*- Lua -*-
+
+-- Copyright (C) 2008 Norbert Preining.
+-- You may freely use, modify and/or distribute this file.
+
+-- test the functionality of tlpdb.tlu
+
+kpse.set_program_name(arg[-1])
+texmfmain = kpse.var_value('TEXMFMAIN')
+package.path = texmfmain.."/scripts/texlive/lua/?.tlu"
+require("texlive.tlpdb")
+master=kpse.var_value('SELFAUTOPARENT')
+io.stderr:write('reading tlpdb ... ')
+tlpdb = read_tlpdb(master)
+io.stderr:write('done\n')
+
+--os.exit(0)
+
+for a,b in pairs(tlpdb) do
+  print ("package = "..a)
+  for c,d in pairs(b) do
+    if (type(d) == "table") then
+      print ("  "..c..":")
+      for cdata,cvalue in pairs(d) do
+        if (type(cvalue) == "table") then
+          print ("    "..cdata..":")
+          for aaa,bbb in pairs(cvalue) do
+            print ("      "..aaa.." = "..bbb)
+          end
+        else
+          print ("    "..cdata.." = "..cvalue)
+        end
+      end
+    else
+      print ("  "..c.." = "..tostring(d))
+    end
+  end
+end
+-- Local Variables:
+-- lua-indent-level: 2
+-- tab-width: 2
+-- indent-tabs-mode: nil
+-- End:
+-- vim:set tabstop=2 shiftwidth=2 expandtab: #

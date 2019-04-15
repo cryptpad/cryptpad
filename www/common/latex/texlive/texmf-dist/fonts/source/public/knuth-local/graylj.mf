@@ -1,0 +1,10 @@
+% Gray font for HP LaserJet; proofsheet resolution is 150 pixels per inch.
+% Each pixel is represented by a 4x4 square, with 4/16 of the dots on.
+
+if mode<>ljfour: errmessage "This file is for laserjet only"; fi
+
+font_identifier "GRAYLJ";
+
+boolean lightweight;
+
+input grayf

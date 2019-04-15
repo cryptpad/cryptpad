@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcolfoot'>
+  <name>pdfcolfoot</name>
+  <caption>Separate color stack for footnotes with pdfTeX.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Since version 1.40 <xref refid='pdftex'>pdfTeX</xref> supports
+    several colour stacks. This package uses a separate colour stack
+    for footnotes that can break across pages.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcolfoot.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcolfoot.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

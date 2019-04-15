@@ -1,0 +1,171 @@
+% Warnings for all undeclared UTF-8 codes
+% =======================================
+% Petr+Mirek Olsak              Sep. 2009
+ 
+% Note: this file is an old version of utf8unkn.tex which is currently 
+% used by csplain by default (since Dec. 2012). If you are using
+% csplain then you need not this file (utf8unkn.tex is preloaded already).
+% This file is saved in enctex package only for archive purposes.
+%      Petr Olsak, May 2014
+
+% Suppose, you are using encTeX for reading UTF-8 codes in input.
+% Possibly, not all UTF-8 codes are declared by \mubyte..\endmubyte 
+% in your macros. You can do
+% 
+% \input utf8warn
+% 
+% in order to print warning messages for all undeclared UTF-8 codes
+% scanned in input. The \mubytein have to be positive, of course.
+% 
+% If undeclared UTF-8 code occures in input, the message
+% 
+% WARNING: UTF-8 code <native-code> (^^hexa-code) is undeclared.  
+% 
+% will be printed on terminal and into log file. The \failedchar
+% (implicitly defined as black box) will be printed into document.
+% 
+% Example:  WARNING: UTF-8 code “ (^^e2^^80^^9c) is undeclared
+% means that double quote is not declared in your \mubyte table.
+% You can correct it by adding (for example):
+% 
+% \mubyte \leftqquote ^^e2^^80^^9c\endmubyte
+% \def\leftqquote{``}
+
+\ifx\mubyte\undefined 
+   \message{SORRY: the encTeX have to be active to use this macro}
+\endinput\fi
+
+% \warntwobytes, \warnthreebytes etc. will be inserted by encTeX before
+% all undeclared UTF-8 codes:
+
+\mubyte \warntwobytes #2^^c0\endmubyte
+\mubyte \warntwobytes #2^^c1\endmubyte
+\mubyte \warntwobytes #2^^c2\endmubyte
+\mubyte \warntwobytes #2^^c3\endmubyte
+\mubyte \warntwobytes #2^^c4\endmubyte
+\mubyte \warntwobytes #2^^c5\endmubyte
+\mubyte \warntwobytes #2^^c6\endmubyte
+\mubyte \warntwobytes #2^^c7\endmubyte
+\mubyte \warntwobytes #2^^c8\endmubyte
+\mubyte \warntwobytes #2^^c9\endmubyte
+\mubyte \warntwobytes #2^^ca\endmubyte
+\mubyte \warntwobytes #2^^cb\endmubyte
+\mubyte \warntwobytes #2^^cc\endmubyte
+\mubyte \warntwobytes #2^^cd\endmubyte
+\mubyte \warntwobytes #2^^ce\endmubyte
+\mubyte \warntwobytes #2^^cf\endmubyte
+\mubyte \warntwobytes #2^^d0\endmubyte
+\mubyte \warntwobytes #2^^d1\endmubyte
+\mubyte \warntwobytes #2^^d2\endmubyte
+\mubyte \warntwobytes #2^^d3\endmubyte
+\mubyte \warntwobytes #2^^d4\endmubyte
+\mubyte \warntwobytes #2^^d5\endmubyte
+\mubyte \warntwobytes #2^^d6\endmubyte
+\mubyte \warntwobytes #2^^d7\endmubyte
+\mubyte \warntwobytes #2^^d8\endmubyte
+\mubyte \warntwobytes #2^^d9\endmubyte
+\mubyte \warntwobytes #2^^da\endmubyte
+\mubyte \warntwobytes #2^^db\endmubyte
+\mubyte \warntwobytes #2^^dc\endmubyte
+\mubyte \warntwobytes #2^^dd\endmubyte
+\mubyte \warntwobytes #2^^de\endmubyte
+\mubyte \warntwobytes #2^^df\endmubyte
+
+\mubyte \warnthreebytes #3^^e0\endmubyte
+\mubyte \warnthreebytes #3^^e1\endmubyte
+\mubyte \warnthreebytes #3^^e2\endmubyte
+\mubyte \warnthreebytes #3^^e3\endmubyte
+\mubyte \warnthreebytes #3^^e4\endmubyte
+\mubyte \warnthreebytes #3^^e5\endmubyte
+\mubyte \warnthreebytes #3^^e6\endmubyte
+\mubyte \warnthreebytes #3^^e7\endmubyte
+\mubyte \warnthreebytes #3^^e8\endmubyte
+\mubyte \warnthreebytes #3^^e9\endmubyte
+\mubyte \warnthreebytes #3^^ea\endmubyte
+\mubyte \warnthreebytes #3^^eb\endmubyte
+\mubyte \warnthreebytes #3^^ec\endmubyte
+\mubyte \warnthreebytes #3^^ed\endmubyte
+\mubyte \warnthreebytes #3^^ee\endmubyte
+\mubyte \warnthreebytes #3^^ef\endmubyte
+
+\mubyte \warnfourbytes #4^^f0\endmubyte
+\mubyte \warnfourbytes #4^^f1\endmubyte
+\mubyte \warnfourbytes #4^^f2\endmubyte
+\mubyte \warnfourbytes #4^^f3\endmubyte
+\mubyte \warnfourbytes #4^^f4\endmubyte
+\mubyte \warnfourbytes #4^^f5\endmubyte
+\mubyte \warnfourbytes #4^^f6\endmubyte
+\mubyte \warnfourbytes #4^^f7\endmubyte
+
+\mubyte \warnfivebytes #5^^f8\endmubyte
+\mubyte \warnfivebytes #5^^f9\endmubyte
+\mubyte \warnfivebytes #5^^fa\endmubyte
+\mubyte \warnfivebytes #5^^fb\endmubyte
+
+\mubyte \warnsixbytes #6^^fc\endmubyte
+\mubyte \warnsixbytes #6^^fd\endmubyte
+
+% \failedchar will be inserted to document instead the real character.
+% It is defined as black box. You can re-define it, of course
+
+\def\failedchar{\leavevmode
+   \kern.05em\vrule height.7em depth.1em width.4em\kern.05em }
+
+% defs:
+
+\def\warntwobytes   #1#2{\utfwarnmessage{#1#2}}
+\def\warnthreebytes #1#2#3{\utfwarnmessage{#1#2#3}}
+\def\warnfourbytes  #1#2#3#4{\utfwarnmessage{#1#2#3#4}}
+\def\warnfivebytes  #1#2#3#4#5{\utfwarnmessage{#1#2#3#4#5}}
+\def\warnsixbytes   #1#2#3#4#5#6{\utfwarnmessage{#1#2#3#4#5#6}}
+
+\def\utfwarnmessage#1{\message{WARNING: UTF-8 code \printutfcode#1\end\space 
+   (\printhexcode#1\end) is undefined.}\failedchar}
+
+\def\printutfcode#1{\ifx#1\end\else \noconvert#1\expandafter\printutfcode\fi}
+
+\def\printhexcode#1{\ifx#1\end\else^\empty^\hexx#1\expandafter\printhexcode\fi}
+
+\def\hexx#1{\ifcase`#1 00\or 01\or 02\or 03\or 04\or 05\or 06\or 07\or
+                       08\or 09\or 0a\or 0b\or 0c\or 0d\or 0e\or 0f\or
+                       10\or 11\or 12\or 13\or 14\or 15\or 16\or 17\or
+                       18\or 19\or 1a\or 1b\or 1c\or 1d\or 1e\or 1f\or
+                       20\or 21\or 22\or 23\or 24\or 25\or 26\or 27\or
+                       28\or 29\or 2a\or 2b\or 2c\or 2d\or 2e\or 2f\or
+                       30\or 31\or 32\or 33\or 34\or 35\or 36\or 37\or
+                       38\or 39\or 3a\or 3b\or 3c\or 3d\or 3e\or 3f\or
+                       40\or 41\or 42\or 43\or 44\or 45\or 46\or 47\or
+                       48\or 49\or 4a\or 4b\or 4c\or 4d\or 4e\or 4f\or
+                       50\or 51\or 52\or 53\or 54\or 55\or 56\or 57\or
+                       58\or 59\or 5a\or 5b\or 5c\or 5d\or 5e\or 5f\or
+                       60\or 61\or 62\or 63\or 64\or 65\or 66\or 67\or
+                       68\or 69\or 6a\or 6b\or 6c\or 6d\or 6e\or 6f\or
+                       70\or 71\or 72\or 73\or 74\or 75\or 76\or 77\or
+                       78\or 79\or 7a\or 7b\or 7c\or 7d\or 7e\or 7f\or
+                       80\or 81\or 82\or 83\or 84\or 85\or 86\or 87\or
+                       88\or 89\or 8a\or 8b\or 8c\or 8d\or 8e\or 8f\or
+                       90\or 91\or 92\or 93\or 94\or 95\or 96\or 97\or
+                       98\or 99\or 9a\or 9b\or 9c\or 9d\or 9e\or 9f\or
+                       a0\or a1\or a2\or a3\or a4\or a5\or a6\or a7\or
+                       a8\or a9\or aa\or ab\or ac\or ad\or ae\or af\or
+                       b0\or b1\or b2\or b3\or b4\or b5\or b6\or b7\or
+                       b8\or b9\or ba\or bb\or bc\or bd\or be\or bf\or
+                       c0\or c1\or c2\or c3\or c4\or c5\or c6\or c7\or
+                       c8\or c9\or ca\or cb\or cc\or cd\or ce\or cf\or
+                       d0\or d1\or d2\or d3\or d4\or d5\or d6\or d7\or
+                       d8\or d9\or da\or db\or dc\or dd\or de\or df\or
+                       e0\or e1\or e2\or e3\or e4\or e5\or e6\or e7\or
+                       e8\or e9\or ea\or eb\or ec\or ed\or ee\or ef\or
+                       f0\or f1\or f2\or f3\or f4\or f5\or f6\or f7\or
+                       f8\or f9\or fa\or fb\or fc\or fd\or fe\or ff\fi}
+
+% You can use macro \relaxutfwarn if you are \edefing scanned text,
+% because the scanned text may include the \warntwobytes
+% etc. sequences inserted by encTeX. Example:
+% \def\scansometext#1\par{{\relaxutfwarn\xdef\scanned{#1\scanned}...}...}
+
+\def\relaxutfwarn{\let\warntwobytes=\relax \let\warnthreebytes=\relax
+   \let\warnfourbytes=\relax \let\warnfivebytes=\relax \let\warnsixbytes=\relax}
+
+\endinput
+

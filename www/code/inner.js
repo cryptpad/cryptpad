@@ -43,8 +43,9 @@ define([
     '/common/latex/latex.js',
     'css!/common/latex/css/katex.css',
     'css!/common/latex/css/article.css',
-    'css!/common/latex/css/base.css'
-
+    'css!/common/latex/css/base.css',
+    '/common/latex/promise.js',
+    '/common/latex/pdftex.js',
 ], function (
     $,
     DiffMd,
@@ -77,6 +78,10 @@ define([
         'velocity',
         'xml',
     ]);
+    var PDF_MODES = Object.freeze([
+        'stex',
+    ]);
+    var $pdfButton;
 
     var mkPrintButton = function (framework, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
@@ -331,7 +336,7 @@ define([
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {
-        evModeChange.reg(function (mode) {
+       evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is endabled
                 framework.setMediaTagEmbedder(function (mt) {
@@ -343,6 +348,82 @@ define([
             }
         });
     };
+
+/*
+       var pdftex = new PDFTeX();
+        pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+          pdftex.FS_createLazyFile('/', 'snowden.jpg', 'snowden.jpg', true, true);
+
+          pdftex.on_stdout = appendOutput;
+          pdftex.on_stderr = appendOutput;
+
+          var start_time = new Date().getTime();
+
+          pdftex.compile(source_code).then(function(pdf_dataurl) {
+            var end_time = new Date().getTime();
+            console.info("Execution time: " + (end_time-start_time)/1000+' sec');
+
+            showLoadingIndicator(false);
+
+            if(pdf_dataurl === false)
+              return;
+            showOpenButton(true);
+            window.location.href = "#open_pdf";
+            document.getElementById("open_pdf_btn").focus();
+          });
+        });
+      }
+*/
+
+
+    var pdfOutput = function(msg) {
+         console.log("PDF compile: " + msg);
+    }
+
+
+    var mkPDFMaker = function (framework, editor, evModeChange) {
+       evModeChange.reg(function (mode) {
+            if (PDF_MODES.indexOf(mode) !== -1) {
+               if (!$pdfButton) {
+                $pdfButton = framework._.sfCommon.createButton('pdf', true);
+                $pdfButton.click(function () {
+                  var source = editor.getValue();
+                  // console.log("PDF " + source);
+                  try {
+                   var pdftex = new PDFTeX();
+                   pdftex.on_stdout = pdfOutput;
+                   pdftex.on_stderr = pdfOutput;
+                   pdftex.set_TOTAL_MEMORY(80*1024*1024).then(function() {
+                      pdftex.FS_createLazyFile('/', 'snowden.jpg', 'snowden.jpg', true, true);
+                      console.log("PDF launch compile");
+                      pdftex.compile(source).then(function(pdf_dataurl) { 
+                        console.log("PDF end compile opening window");
+                        console.log(pdf_dataurl);
+                        var link = document.createElement("a");
+                        link.download = "file.pdf";
+                        link.href = pdf_dataurl;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        delete link;
+                      });
+                      console.log("PDF end launch compile");
+                   });
+                   console.log("PDF end prelaunch");
+                  } catch (e) {
+                   console.log("Error outputing pdf: " + e);
+	          }
+                });
+                framework._.toolbar.$drawer.append($pdfButton);
+              } else {
+                $pdfButton.show();
+              }
+            } else {
+                if ($pdfButton) 
+                 $pdfButton.hide();
+            }
+        });
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -365,6 +446,9 @@ define([
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
         evModeChange.reg(markdownTb.modeChange);
+
+        // Add pdf in stex mode
+        mkPDFMaker(framework, editor, evModeChange);
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);

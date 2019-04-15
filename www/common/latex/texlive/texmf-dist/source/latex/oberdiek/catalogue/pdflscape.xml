@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdflscape'>
+  <name>pdflscape</name>
+  <caption>Make landscape pages display as landscape.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2004,2006-2008'/>
+  <license type='lppl1.3'/>
+  <version number='0.10'/>
+  <description>
+    The package adds PDF support to the landscape environment of
+    package <xref refid='lscape'>lscape</xref>, by setting the PDF
+    <tt>/Rotate</tt> page attribute.  Pages with this attribute will be
+    displayed in landscape orientation by conforming PDF viewers.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdflscape.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdflscape.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

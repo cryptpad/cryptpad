@@ -1,0 +1,78 @@
+-- texlive/utils.tlu
+-- $Id: utils.tlu 9910 2008-07-30 19:44:28Z reinhardk $
+-- 
+-- Copyright (C) 2008 Reinhard Kotucha, Norbert Preining
+-- You may freely use, modify and/or distribute this file.
+--
+-- general utilities for TeX Live lua scripts
+
+function setupperl()
+  -- For Windows we use the shipped perl interpreter, otherwise we expect
+  -- a perl to be installed
+  local perlbin
+  if os.type == 'windows' then
+    perlbin=TEXDIR..'/tlpkg/tlperl/bin/perl.exe'
+    os.setenv('PERL5LIB', TEXDIR..'/tlpkg/tlperl/lib')
+  else
+    perlbin = 'perl'
+  end
+  return perlbin
+end
+
+function findscript(scriptname)
+  local script = kpse.find_file(scriptname, 'texmfscripts')
+  if script then
+    return script
+  else
+    io.stderr:write(filename..': Cannot find script '..scriptname)
+    return false
+  end
+end
+
+-- fix arguments for windows
+function fixwin(args_unix)
+   if os.type == 'windows' then
+      local args_win={}  -- new table
+      args_win[0]=args_unix[1]
+      for i=1, #args_unix do  
+         args_win[i]='"'..args_unix[i]..'"'
+      end
+      return args_win
+   else
+      return args_unix
+   end
+end
+
+function rmtree (path)
+  if lfs.isdir(path) then
+    for file in lfs.dir(path) do
+      if file ~= '.' and file ~= '..' then
+        local f = path..'/'..file
+        if lfs.isdir(f) then
+          rmtree(f)
+          lfs.rmdir(f)
+        else
+          os.remove(f)
+        end
+      end
+    end
+    lfs.rmdir(path)
+  end
+end
+
+
+function list (t)
+    local i = 0
+    return function ()
+        i = i + 1
+        return t[i]
+    end
+end
+
+
+-- Local Variables:
+-- lua-indent-level: 2
+-- tab-width: 2
+-- indent-tabs-mode: nil
+-- End:
+-- vim:set tabstop=2 expandtab: #

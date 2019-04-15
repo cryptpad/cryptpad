@@ -1,0 +1,1099 @@
+% \iffalse meta-comment
+%
+% File: rerunfilecheck.dtx
+% Version: 2011/04/15 v1.7
+% Info: Rerun checks for auxiliary files
+%
+% Copyright (C) 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file rerunfilecheck.dtx
+% and the derived files
+%    rerunfilecheck.sty, rerunfilecheck.pdf, rerunfilecheck.ins,
+%    rerunfilecheck.drv, rerunfilecheck-example.cfg,
+%    rerunfilecheck-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/rerunfilecheck.dtx
+%    CTAN:macros/latex/contrib/oberdiek/rerunfilecheck.pdf
+%
+% Unpacking:
+%    (a) If rerunfilecheck.ins is present:
+%           tex rerunfilecheck.ins
+%    (b) Without rerunfilecheck.ins:
+%           tex rerunfilecheck.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{rerunfilecheck.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If rerunfilecheck.drv is present:
+%           latex rerunfilecheck.drv
+%    (b) Without rerunfilecheck.drv:
+%           latex rerunfilecheck.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex rerunfilecheck.dtx
+%       makeindex -s gind.ist rerunfilecheck.idx
+%       pdflatex rerunfilecheck.dtx
+%       makeindex -s gind.ist rerunfilecheck.idx
+%       pdflatex rerunfilecheck.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/rerunfilecheck.sty
+%    TDS:doc/latex/oberdiek/rerunfilecheck.pdf
+%    TDS:doc/latex/oberdiek/rerunfilecheck-example.cfg
+%    TDS:doc/latex/oberdiek/test/rerunfilecheck-test1.tex
+%    TDS:source/latex/oberdiek/rerunfilecheck.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: rerunfilecheck
+Version: 2011/04/15 v1.7
+
+Copyright (C) 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file rerunfilecheck.dtx
+and the derived files
+   rerunfilecheck.sty, rerunfilecheck.pdf, rerunfilecheck.ins,
+   rerunfilecheck.drv, rerunfilecheck-example.cfg,
+   rerunfilecheck-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{rerunfilecheck.ins}{\from{rerunfilecheck.dtx}{install}}%
+  \file{rerunfilecheck.drv}{\from{rerunfilecheck.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{rerunfilecheck.sty}{\from{rerunfilecheck.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{rerunfilecheck-test1.tex}{\from{rerunfilecheck.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{doc/latex/oberdiek}%
+  \file{rerunfilecheck-example.cfg}{\from{rerunfilecheck.dtx}{cfg}}%
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{rerunfilecheck.xml}{\from{rerunfilecheck.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     rerunfilecheck.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `rerunfilecheck.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{rerunfilecheck.drv}%
+  [2011/04/15 v1.7 Rerun checks for auxiliary files (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{rerunfilecheck.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{604}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{rerunfilecheck.drv}
+%
+% \title{The \xpackage{rerunfilecheck} package}
+% \date{2011/04/15 v1.7}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package provides additional rerun warnings if some
+% auxiliary files have changed. It is based on MD5 checksum,
+% provided by \pdfTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \LaTeX\ informs the user, when to run \LaTeX\ again, if the
+% references have changed. It has the old references from the
+% first reading of the \xext{aux} files already in memory, thus
+% it compares them with the new version of the \xext{aux} file
+% at the end of the document. However this rerun warnings are
+% not given for the table of contents and other data stored
+% in the \xext{aux} files or other auxiliary files.
+% Usually many of these data as the table of contents is not keep
+% in memory. If someone wants to detect changes, he has either
+% to keep the data in memory. This does not scale well with huge
+% documents. Or he copies the file before they are changed. Slow
+% I/O operations cost time.
+%
+% Since version 1.30.0 \pdfTeX\ provides \cs{pdfmdfivesum}
+% and \cs{pdffilesize}.
+% These features are also available in \LuaTeX, provided by package
+% \xpackage{pdftexcmds}.
+% Thus this package \xpackage{rerunfilecheck} uses these features to
+% detect file changes. This saves the packages from keeping
+% the whole files in memory or in file copies.
+% The drawback are different files with the same size and the
+% same MD5 checksum (seldom, hopefully).
+%
+% \subsection{Options}
+%
+% All options are key value options of boolean type.
+% No option or |true| turns an option on, |false| disables
+% an option.
+% \begin{description}
+% \item[\xoption{mainaux}:]
+%   Check the main \xext{aux} file.
+% \item[\xoption{partaux}:]
+%   Check the \xext{aux} files from \cs{include} files.
+% \item[\xoption{starttoc}:]
+%   Add the rerun checks in \cs{@starttoc} that is called by
+%   \cs{tableofcontents}, \cs{listoffigures}, \dots
+% \item[\xoption{index}, \xoption{glossary}:]
+%   \LaTeX's original \cs{makeindex} and \cs{makeglossary} are
+%   redefined to add the rerun checks. The options do not have
+%   an effect, if \cs{makeindex}/\cs{makeglossary} are already
+%   called or if a package or class had redefined or will
+%   redefine them.
+% \item[\xoption{aux}:]
+%   This option turns all previous options on or off.
+%   ``aux'' means auxiliary file.
+% \end{description}
+% The default for the options is |false|, because
+% some internals must be redefined to insert the
+% rerun checks.
+% The options can be set in \cs{usepackage} or
+% the configuration file \xfile{rerunfilecheck.cfg}.
+% Global options are ignored (since 1.4).
+%
+% \begin{declcs}{RerunFileCheckSetup} \M{key value list}
+% \end{declcs}
+% Options can also be set using \cs{RerunFileCheckSetup}.
+% Currently all options are disabled after the package
+% is loaded. Thus \cs{RerunFileCheckSetup} makes sense in
+% the configuration file only.
+%
+% Example for the configuration file:
+%    \begin{macrocode}
+%<*cfg>
+\ProvidesFile{rerunfilecheck.cfg}[2011/04/15 Default configuration]%
+\RerunFileCheckSetup{aux}
+%</cfg>
+%    \end{macrocode}
+%
+% \subsection{Interface for class/package authors}
+%
+% \begin{declcs}{RerunFileCheck} \M{file} \M{file closing action} \M{rerun warning}
+% \end{declcs}
+% If you want to add a rerun check, call \cs{RerunFileCheck} right before
+% an output file is opened for writing. The macro first remembers
+% the current checksum of \meta{file}.
+% The file is checked again right before the end of the job.
+% Macro \cs{AtVeryEndDocument} of package \xpackage{atveryend}
+% is used to place the check after the main aux file is closed
+% in |\end{document}|. Before reading the file again, it must be
+% closed. Provide the code for closing in argument \meta{file closing action}.
+% Do not forget \cs{immediate} before \cs{openout}. Otherwise the
+% closing action would be delayed to the next shipout that never happens
+% (the last page is already shipped out).
+% If the file has changed, \cs{RerunFileCheck} informs the user with
+% a warning that the file has changed and says the magic word ``Rerun''.
+% If the last argument \meta{rerun warning} is not empty, then
+% the rerun sentence is replaced by it. Usually the phrase
+% ``to get something right'' is added.
+% As example the relevant part of the redefined \cs{makeindex}
+% is shown, see package code:
+%\begin{quote}
+%\begin{verbatim}
+%\newwrite\@indexfile
+%\RerunFileCheck{\jobname.idx}{%
+%  \immediate\closeout\@indexfile
+%}{%
+%  Rerun LaTeX/makeindex to get index right%
+%}%
+%\immediate\openout\@indexfile=\jobname.idx %
+%\end{verbatim}
+%\end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ReFiCh@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ReFiCh@AtEnd{%
+    \ReFiCh@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\ReFiCh@AtEnd{\ReFiCh@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{rerunfilecheck}%
+  [2011/04/15 v1.7 Rerun checks for auxiliary files (HO)]
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\RequirePackage{kvoptions}[2010/02/22]
+\SetupKeyvalOptions{%
+  family=rerunfilecheck,%
+  prefix=ReFiCh@%
+}
+%    \end{macrocode}
+%    \begin{macro}{\RerunFileCheckSetup}
+%    \begin{macrocode}
+\newcommand*{\RerunFileCheckSetup}{%
+  \setkeys{rerunfilecheck}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareBoolOption{mainaux}
+\DeclareBoolOption{partaux}
+\DeclareBoolOption{starttoc}
+\DeclareBoolOption{index}
+\DeclareBoolOption{glossary}
+\define@key{rerunfilecheck}{aux}[true]{%
+  \RerunFileCheckSetup{%
+    mainaux={#1},%
+    partaux={#1},%
+    starttoc={#1},%
+    index={#1},%
+    glossary={#1}%
+  }%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\InputIfFileExists{rerunfilecheck.cfg}{}{}
+\ProcessLocalKeyvalOptions*
+%    \end{macrocode}
+%
+%    \begin{macro}{\ReFiCh@DisableOption}
+%    \begin{macrocode}
+\def\ReFiCh@DisableOption{%
+  \DisableKeyvalOption[%
+    action=warning,%
+    package=rerunfilecheck%
+  ]{rerunfilecheck}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Check for checksum feature}
+%
+%    \begin{macrocode}
+\RequirePackage{infwarerr}[2007/09/09]
+\RequirePackage{pdftexcmds}[2009/04/10]
+%    \end{macrocode}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filemdfivesum\endcsname\relax
+  \@PackageInfoNoLine{rerunfilecheck}{%
+    Feature \string\pdfmdfivesum\space is not available\MessageBreak
+    (e.g. pdfTeX or LuaTeX with package `pdftexcmds').\MessageBreak
+    Therefore file contents cannot be checked efficiently\MessageBreak
+    and the loading of the package is aborted%
+  }%
+  \newcommand*{\RerunFileCheck}[3]{}%
+  \renewcommand*{\RerunFileCheckSetup}[1]{}%
+  \expandafter\ReFiCh@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Standard \xext{aux} files}
+%
+%    \begin{macrocode}
+\ifReFiCh@partaux
+  \let\ReFiCh@org@include\@include
+  \def\@include#1 {%
+    \if@filesw
+      \RerunFileCheck{#1.aux}{}{}%
+    \fi
+    \ReFiCh@org@include{#1} %
+  }%
+\fi
+\ifReFiCh@mainaux
+  \AtBeginDocument{%
+    \ReFiCh@mainauxfalse
+  }%
+  \ifReFiCh@mainaux
+    \AtEndOfPackage{%
+      \RerunFileCheck{\jobname.aux}{}{}%
+    }%
+  \else
+    \if@filesw
+      \@PackageWarningNoLine{rerunfilecheck}{%
+        Main aux file check is disabled,\MessageBreak
+        because the file is already opened.\MessageBreak
+        Load the package before \string\begin{document}%
+      }%
+    \fi
+  \fi
+\fi
+\ifReFiCh@starttoc
+  \let\ReFiCh@org@starttoc\@starttoc
+  \def\@starttoc#1{%
+    \if@filesw
+      \RerunFileCheck{\jobname.#1}{%
+        \@ifundefined{tf@#1}{%
+        }{%
+          \immediate\closeout\csname tf@#1\endcsname
+        }%
+      }{}%
+    \fi
+    \ReFiCh@org@starttoc{#1}%
+  }%
+\fi
+\ifReFiCh@index
+  \ifx\makeindex\@empty
+    \@PackageWarningNoLine{rerunfilecheck}{%
+      Option `index' ignored,\MessageBreak
+      because \string\makeindex\space has already been called%
+    }%
+  \else
+    \def\ReFiCh@temp{%
+      \newwrite\@indexfile
+      \immediate\openout\@indexfile=\jobname.idx %
+      \def\index{%
+        \@bsphack
+        \begingroup
+        \@sanitize
+        \@wrindex
+      }%
+      \typeout{Writing index file \jobname.idx}%
+      \let\makeindex\@empty
+    }%
+    \ifx\ReFiCh@temp\makeindex
+      \def\makeindex{%
+        \newwrite\@indexfile
+        \RerunFileCheck{\jobname.idx}{%
+          \immediate\closeout\@indexfile
+        }{%
+          Rerun LaTeX/makeindex to get index right%
+        }%
+        \immediate\openout\@indexfile=\jobname.idx %
+        \def\index{%
+          \@bsphack
+          \begingroup
+          \@sanitize
+          \@wrindex
+        }%
+        \typeout{Writing index file \jobname.idx}%
+        \let\makeindex\@empty
+      }%
+    \else
+      \@PackageInfoNoLine{rerunfilecheck}{%
+        Option `index': unsupported version of \string\makeindex
+      }%
+    \fi
+  \fi
+\fi
+\ifReFiCh@glossary
+  \ifx\makeglossary\@empty
+    \@PackageWarningNoLine{rerunfilecheck}{%
+      Option `glossary' ignored,\MessageBreak
+      because \string\makeglossary\space has already been called%
+    }%
+  \else
+    \def\ReFiCh@temp{%
+      \newwrite\@glossaryfile
+      \immediate\openout\@glossaryfile=\jobname.glo %
+      \def\glossary{%
+        \@bsphack
+        \begingroup
+        \@sanitize
+        \@wrglossary
+      }%
+      \typeout{Writing glossary file \jobname.glo }%
+      \let\makeglossary\@empty
+    }%
+    \ifx\ReFiCh@temp\makeglossary
+      \def\ReFiCh@temp{%
+        \newwrite\@glossaryfile
+        \RerunFileCheck{\jobname.glo}{%
+          \immediate\closeout\@glossaryfile
+        }{%
+          Rerun LaTeX/makeindex to get glossary right%
+        }%
+        \immediate\openout\@glossaryfile=\jobname.glo %
+        \def\glossary{%
+          \@bsphack
+          \begingroup
+          \@sanitize
+          \@wrglossary
+        }%
+        \typeout{Writing glossary file \jobname.glo}%
+        \let\makeglossary\@empty
+      }%
+    \else
+      \@PackageInfoNoLine{rerunfilecheck}{%
+        Option `glossary': unsupported version of \string\makeglossary
+      }%
+    \fi
+  \fi
+\fi
+\ReFiCh@DisableOption{mainaux}
+\ReFiCh@DisableOption{partaux}
+\ReFiCh@DisableOption{starttoc}
+\ReFiCh@DisableOption{index}
+\ReFiCh@DisableOption{glossary}
+\ReFiCh@DisableOption{aux}
+%    \end{macrocode}
+%
+% \subsection{Rerun check}
+%
+%    \begin{macrocode}
+\RequirePackage{atveryend}[2011/04/15]
+\RequirePackage{uniquecounter}[2009/12/18]
+%    \end{macrocode}
+%
+%    \begin{macro}{\ReFiCh@CheckSum}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filesize\endcsname\relax
+  \def\ReFiCh@CheckSum{%
+    \pdf@filemdfivesum
+  }%
+\else
+  \def\ReFiCh@CheckSum#1{%
+    \pdf@filemdfivesum{#1}%
+    \ReFiCh@Separator
+    \pdf@filesize{#1}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ReFiCh@NoFile}
+%    \begin{macrocode}
+\def\ReFiCh@Separator{;}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ReFiCh@NoFile}
+%    \begin{macrocode}
+\def\ReFiCh@NoFile{<no file>}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\UniqueCounterNew{rerunfilecheck}
+%    \end{macrocode}
+%
+%    \begin{macro}{\RerunFileCheck}
+%    \begin{macrocode}
+\newcommand*{\RerunFileCheck}{%
+  \UniqueCounterCall{rerunfilecheck}\ReFiCh@RerunFileCheck
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ReFiCh@RerunFileCheck}
+%    \begin{macrocode}
+\def\ReFiCh@RerunFileCheck#1{%
+  \expandafter\ReFiCh@@RerunFileCheck\csname ReFiCh@#1\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ReFiCh@Check}
+%    \begin{macrocode}
+\def\ReFiCh@Check#1#2#3{%
+%  \IfFileExists{#3}{%
+    #1\edef#2{\ReFiCh@CheckSum{#3}}%
+    \ifx#2\ReFiCh@Separator
+      #1\let#2\ReFiCh@NoFile
+    \fi
+%  }{%
+%    #1\let#2\ReFiCh@NoFile
+%  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ReFiCh@@RerunFileCheck}
+%    \begin{macrocode}
+\def\ReFiCh@@RerunFileCheck#1#2#3#4{%
+  \ReFiCh@Check\global#1{#2}%
+  \AtEndAfterFileList{%
+    \begingroup
+      #3%
+      \ReFiCh@Check{}\x{#2}%
+      \ifx#1\x
+        \@PackageInfoNoLine{rerunfilecheck}{%
+          File `#2' has not changed.\MessageBreak
+          Checksum: \x
+        }%
+      \else
+        \ifnum
+          \ReFiCh@IsAux#2\relax.aux\relax\@nil
+          \ifx#1\ReFiCh@NoFile 1\else 0\fi
+          \ifx\x\ReFiCh@AuxEmptyUnix 1%
+          \else
+            \ifx\x\ReFiCh@AuxEmptyDos 1\fi
+          \fi
+        =111 %
+          \@PackageInfoNoLine{rerunfilecheck}{%
+            File `#2' is empty .aux file.\MessageBreak
+            Before: #1\MessageBreak
+            After: \space\x
+          }%
+        \else
+          \@PackageWarningNoLine{rerunfilecheck}{%
+            File `#2' has changed.%
+            \ifx\\#4\\%
+              \space Rerun%
+            \else
+              \MessageBreak
+              #4%
+            \fi
+          }%
+          \@PackageInfoNoLine{rerunfilecheck}{%
+            Checksums for `#2':\MessageBreak
+            Before: #1\MessageBreak
+            After: \space\x
+          }%
+        \fi
+      \fi
+    \endgroup
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\def\ReFiCh@IsAux#1.aux\relax#2\@nil{%
+  \ifx\hbox#2\hbox
+    0%
+  \else
+    1%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\ReFiCh@AuxEmptyUnix{A94A2480D3289E625EEA47CD1B285758;8}%
+\@onelevel@sanitize\ReFiCh@AuxEmptyUnix
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\ReFiCh@AuxEmptyDos{A62A15ECE803E2EBE94952FCC9933BC0;9}%
+\@onelevel@sanitize\ReFiCh@AuxEmptyDos
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ReFiCh@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test1>
+\def\LoadCommand{\RequirePackage{rerunfilecheck}[2011/04/15]}
+%</test1>
+%    \end{macrocode}
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input rerunfilecheck.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/rerunfilecheck.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/rerunfilecheck.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex rerunfilecheck.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   rerunfilecheck.sty & tex/latex/oberdiek/rerunfilecheck.sty\\
+%   rerunfilecheck.pdf & doc/latex/oberdiek/rerunfilecheck.pdf\\
+%   rerunfilecheck-example.cfg & doc/latex/oberdiek/rerunfilecheck-example.cfg\\
+%   test/rerunfilecheck-test1.tex & doc/latex/oberdiek/test/rerunfilecheck-test1.tex\\
+%   rerunfilecheck.dtx & source/latex/oberdiek/rerunfilecheck.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk rerunfilecheck.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{rerunfilecheck.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex rerunfilecheck.dtx
+%makeindex -s gind.ist rerunfilecheck.idx
+%pdflatex rerunfilecheck.dtx
+%makeindex -s gind.ist rerunfilecheck.idx
+%pdflatex rerunfilecheck.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{rerunfilecheck.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='rerunfilecheck'>
+  <name>rerunfilecheck</name>
+  <caption>Checksum based rerun checks on auxiliary files.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.7'/>
+  <description>
+    The package provides additional rerun warnings if some
+    auxiliary files have changed. It is based on MD5 checksum,
+    provided by pdfTeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/rerunfilecheck.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/rerunfilecheck.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2009/12/10 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+%   \begin{Version}{2009/12/12 v1.1}
+%   \item
+%     Short info shortened.
+%   \end{Version}
+%   \begin{Version}{2009/12/18 v1.2}
+%   \item
+%     Required date for package \xpackage{uniquecounter} updated
+%     because of bug in this package.
+%   \end{Version}
+%   \begin{Version}{2010/01/25 v1.3}
+%   \item
+%     Moved from \texttt{TDS:*/generic/*} to \texttt{TDS:*/latex/*}.
+%   \end{Version}
+%   \begin{Version}{2010/02/22 v1.4}
+%   \item
+%     The options of this package are recognized only if they are
+%     package options. Global options are ignored. This avoids
+%     name clashes with class and other package options
+%     (for example, class option `index=totoc').
+%   \end{Version}
+%   \begin{Version}{2010/03/15 v1.5}
+%   \item
+%     Call of \cs{pdffivesum} is wrapped in \cs{IfFileExists} to avoid
+%     calls of \textsf{mktextex} if this feature is enabled.
+%     However \cs{IfFileExists} has file name limitations.
+%   \end{Version}
+%   \begin{Version}{2010/03/16 v1.6}
+%   \item
+%     Reverted to version 1.4 and \cs{IfFileExists} wrapper of
+%     version 1.5 is removed.
+%   \end{Version}
+%   \begin{Version}{2011/04/15 v1.7}
+%   \item
+%     Using \cs{AtEndAfterFileList} of package \xpackage{atveryend}
+%     2011/04/15 v1.6 instead of \cs{AtVeryEndDocument}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

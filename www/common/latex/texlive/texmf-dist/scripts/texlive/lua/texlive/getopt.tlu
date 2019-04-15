@@ -1,0 +1,99 @@
+#! /usr/bin/env texlua
+--*-Lua-*-
+-- getopt.tlu
+--
+-- (tex)lua library function for argument processing
+-- $Id: getopt.tlu 9660 2008-07-18 21:19:57Z reinhardk $
+--
+-- Copyright 2008 Norbert Preining
+--
+-- This code will presumably be changed in the near future. Don't use
+-- it for your own scripts!
+--
+-- This file is licensed under the GNU General Public License version 2
+-- or any later version.
+--
+-- The file provides a basic getopt function
+-- it takes as argument a table with the argument names as keys and the
+-- number of argument options as values
+--
+-- It returns a tables with the found arguments as keys and
+--   . true as value for an option not taking any values
+--   . a single value for an option taking one value
+--   . an array of values for an option taking more than one value
+--
+-- Example:
+--   options = getopt( { help = 0, foo = 1, bar = 2 } )
+-- and calling the script with
+--   script a --help b --bar c d e --foo f g h
+-- will leave a b e g h in the arguments and will return
+--   options["help"] = true
+--   options["foo"] = "f"
+--   options["bar"] = { "c", "d" }
+-- 
+-- Options can start with a single or a double dash, but values may NOT be
+-- separated with a =, but need to be seprate arguments!
+--
+-- Example code for printing out the options:
+-- print ("OPTIONS:")
+-- for o,v in pairs(options) do
+--   if (type(v) == "boolean") then
+--     print ("option "..o)
+--   elseif (type(v) == "table") then
+--     for a,b in ipairs(v) do
+--       print ("option "..o.."["..a.."] = "..b)
+--     end
+--   else
+--     print ("option "..o.." = "..v)
+--   end
+-- end
+  
+function getopt(spec)
+  local newarg = {}
+  local retargs = {}
+  do
+    local i, limit = 1, #arg
+    while (i <= limit) do
+      local found = false
+      for k,v in pairs(spec) do
+        if (arg[i] == "--"..k or arg[i] == "-"..k) then
+          found = true
+          if (v == 0) then
+            -- boolean argument
+            retargs[k] = true
+          elseif (v == 1) then
+            -- one single argument
+            retargs[k] = arg[i+1]
+            i = i + 1
+          else
+            local bla = {}
+            for n=1, v do
+              bla[n] = arg[i+n]
+            end
+            retargs[k] = bla
+            -- we have to shift the next i!!!
+            i = i + v
+          end
+          -- we have found the arg, so stop processing further spec arguments
+          break
+        end
+      end
+      if not(found) then
+        -- non of the spec args did hit, so we push the arg to the newargs
+        newarg[#newarg+1] = arg[i]
+      end
+      i = i + 1
+    end
+  end
+  -- replace the global arg with the cleaned newarg
+  arg = newarg
+  -- return the found arguments
+  return retargs
+end
+
+-- Local Variables:
+-- lua-indent-level: 2
+-- tab-width: 2
+-- indent-tabs-mode: nil
+-- End:
+-- vim:set tabstop=2 expandtab: #

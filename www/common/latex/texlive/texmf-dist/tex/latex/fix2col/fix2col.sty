@@ -1,0 +1,303 @@
+%%
+%% This is file `fix2col.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% fix2col.dtx  (with options: `package')
+%% 
+%% Source File: fix2col.dtx Copyright 1997 1998 David Carlisle
+%%
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fix2col}
+       [1998/08/17 v0.03 Output Routine fixes for two column mode (DPC,FMi)]
+\def\@outputdblcol{%
+  \if@firstcolumn
+    \global\@firstcolumnfalse
+    \global\setbox\@leftcolumn\copy\@outputbox
+    \splitmaxdepth\maxdimen
+    \vbadness\maxdimen
+    \setbox\@outputbox\vsplit\@outputbox to\maxdimen
+    \toks@\expandafter{\topmark}%
+    \xdef\@firstcoltopmark{\the\toks@}%
+    \toks@\expandafter{\splitfirstmark}%
+    \xdef\@firstcolfirstmark{\the\toks@}%
+    \ifx\@firstcolfirstmark\@empty
+      \global\let\@setmarks\relax
+    \else
+      \gdef\@setmarks{%
+        \let\firstmark\@firstcolfirstmark
+        \let\topmark\@firstcoltopmark}%
+    \fi
+  \else
+    \global\@firstcolumntrue
+    \setbox\@outputbox\vbox{%
+     \hb@xt@\textwidth{%
+        \hb@xt@\columnwidth{\box\@leftcolumn \hss}%
+        \hfil
+        \vrule \@width\columnseprule
+        \hfil
+       \hb@xt@\columnwidth{\box\@outputbox \hss}}}%
+  \@combinedblfloats
+    \@setmarks
+    \@outputpage
+    \begingroup
+      \@dblfloatplacement
+      \@startdblcolumn
+      \@whilesw\if@fcolmade \fi{\@outputpage\@startdblcolumn}%
+    \endgroup
+  \fi}
+\def\end@dblfloat{%
+\if@twocolumn
+  \@endfloatbox
+  \ifnum\@floatpenalty <\z@
+    \@largefloatcheck
+    \global\dp\@currbox1sp %
+     \expandafter\@gobble\end@float
+  \fi
+\else
+  \end@float
+\fi
+}
+\def\@testwrongwidth #1{%
+  \ifdim\dp#1=\f@depth
+  \else
+    \global\@testtrue
+  \fi}
+\let\f@depth\z@
+\def\@dblfloatplacement{\global\@dbltopnum\c@dbltopnumber
+   \global\@dbltoproom \dbltopfraction\@colht
+   \@textmin \@colht
+   \advance \@textmin -\@dbltoproom
+   \@fpmin \dblfloatpagefraction\textheight
+   \@fptop \@dblfptop
+   \@fpsep \@dblfpsep
+   \@fpbot \@dblfpbot
+   \def\f@depth{1sp}}
+\def \@doclearpage {%
+     \ifvoid\footins
+       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
+       \setbox\@tempboxa\box\@cclv
+       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
+       \global \let \@toplist \@empty
+       \global \let \@botlist \@empty
+       \global \@colroom \@colht
+       \ifx \@currlist\@empty
+       \else
+          \@latexerr{Float(s) lost}\@ehb
+          \global \let \@currlist \@empty
+       \fi
+       \@makefcolumn\@deferlist
+       \@whilesw\if@fcolmade \fi{\@opcol\@makefcolumn\@deferlist}%
+       \if@twocolumn
+         \if@firstcolumn
+           \xdef\@deferlist{\@dbltoplist\@deferlist}%
+           \global \let \@dbltoplist \@empty
+           \global \@colht \textheight
+           \begingroup
+              \@dblfloatplacement
+              \@makefcolumn\@deferlist
+              \@whilesw\if@fcolmade \fi{\@outputpage
+                                        \@makefcolumn\@deferlist}%
+           \endgroup
+         \else
+           \vbox{}\clearpage
+         \fi
+       \fi
+       \ifx\@deferlist\@empty \else\clearpage \fi
+     \else
+       \setbox\@cclv\vbox{\box\@cclv\vfil}%
+       \@makecol\@opcol
+       \clearpage
+     \fi
+}
+\def \@startdblcolumn {%
+  \@tryfcolumn \@deferlist
+  \if@fcolmade
+  \else
+    \begingroup
+      \let \reserved@b \@deferlist
+      \global \let \@deferlist \@empty
+      \let \@elt \@sdblcolelt
+      \reserved@b
+    \endgroup
+  \fi
+}
+\def\@addtonextcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \@reqcolroom \ht\@currbox
+       \advance \@reqcolroom \@textmin
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum\@colnum>\z@
+            \@bitor\@currtype\@deferlist
+            \@testwrongwidth\@currbox
+            \if@test
+            \else
+              \@addtotoporbot
+            \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@deferlist\@currbox
+   \fi
+  \endgroup
+}
+\def\@addtodblcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \@getfpsbit \tw@
+   \ifodd\@tempcnta
+     \@flsetnum \@dbltopnum
+     \ifnum \@dbltopnum>\z@
+       \@tempswafalse
+       \ifdim \@dbltoproom>\ht\@currbox
+         \@tempswatrue
+       \else
+         \ifnum \@fpstype<\sixt@@n
+           \advance \@dbltoproom \@textmin
+           \ifdim \@dbltoproom>\ht\@currbox
+             \@tempswatrue
+           \fi
+           \advance \@dbltoproom -\@textmin
+         \fi
+       \fi
+       \if@tempswa
+           \@bitor \@currtype \@deferlist
+          \@testwrongwidth\@currbox
+           \if@test
+           \else
+              \@tempdima -\ht\@currbox
+              \advance\@tempdima
+                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
+                                          \dblfloatsep \fi
+              \global \advance \@dbltoproom \@tempdima
+              \global \advance \@colht \@tempdima
+              \global \advance \@dbltopnum \m@ne
+              \@cons \@dbltoplist \@currbox
+              \@inserttrue
+           \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@deferlist\@currbox
+   \fi
+  \endgroup
+}
+\def \@addtocurcol {%
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \advance \@textmin \@textfloatsheight
+       \@reqcolroom \@pageht
+       \ifdim \@textmin>\@reqcolroom
+         \@reqcolroom \@textmin
+       \fi
+       \advance \@reqcolroom \ht\@currbox
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum \@colnum>\z@
+           \@bitor\@currtype\@deferlist
+          \@testwrongwidth\@currbox
+           \if@test
+           \else
+             \@bitor\@currtype\@botlist
+             \if@test
+               \@addtobot
+             \else
+               \ifodd \count\@currbox
+                 \advance \@reqcolroom \intextsep
+                 \ifdim \@colroom>\@reqcolroom
+                   \global \advance \@colnum \m@ne
+                   \global \advance \@textfloatsheight \ht\@currbox
+                   \global \advance \@textfloatsheight 2\intextsep
+                   \@cons \@midlist \@currbox
+                   \if@nobreak
+                     \nobreak
+                     \@nobreakfalse
+                     \everypar{}%
+                   \else
+                     \addpenalty \interlinepenalty
+                   \fi
+                   \vskip \intextsep
+                   \box\@currbox
+                   \penalty\interlinepenalty
+                   \vskip\intextsep
+                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
+                   \outputpenalty \z@
+                   \@inserttrue
+                 \fi
+               \fi
+               \if@insert
+               \else
+                 \@addtotoporbot
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@resethfps
+     \@cons\@deferlist\@currbox
+   \fi
+}
+\def\@xtryfc #1{%
+  \@next\reserved@a\@trylist{}{}%
+  \@currtype \count #1%
+  \divide\@currtype\@xxxii
+  \multiply\@currtype\@xxxii
+  \@bitor \@currtype \@failedlist
+  \@testfp #1%
+  \@testwrongwidth #1%
+  \ifdim \ht #1>\@colht
+     \@testtrue
+  \fi
+  \if@test
+    \@cons\@failedlist #1%
+  \else
+    \@ytryfc #1%
+  \fi}
+\def\@ztryfc #1{%
+  \@tempcnta\count #1%
+  \divide\@tempcnta\@xxxii
+  \multiply\@tempcnta\@xxxii
+  \@bitor \@tempcnta {\@failedlist \@flfail}%
+  \@testfp #1%
+  \@testwrongwidth #1%
+  \@tempdimb\@tempdima
+  \advance\@tempdimb\ht #1%
+  \advance\@tempdimb\@fpsep
+  \ifdim \@tempdimb >\@colht
+    \@testtrue
+  \fi
+  \if@test
+    \@cons\@flfail #1%
+  \else
+    \@cons\@flsucceed #1%
+    \@tempdima\@tempdimb
+  \fi}
+\endinput
+%%
+%% End of file `fix2col.sty'.

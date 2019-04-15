@@ -1,0 +1,55 @@
+%% t1aess.fd
+%% Copyright 1997 Lars Engebretsen
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1aess.fd}
+   [1997/11/16 Font definitions for T1/aess.]
+
+\DeclareFontFamily{T1}{aess}{}
+
+\DeclareFontShape{T1}{aess}{m}{n}{
+   <-9> aess8
+   <9-10> aess9
+   <10-12> aess10
+   <12-17> aess12
+   <17-> aess17
+}{}
+
+\DeclareFontShape{T1}{aess}{m}{sl}{
+   <-9> aessi8
+   <9-10> aessi9
+   <10-12> aessi10
+   <12-17> aessi12
+   <17-> aessi17
+}{}
+
+\DeclareFontShape{T1}{aess}{sbc}{n}{
+   <-> aessdc10
+}{}
+
+\DeclareFontShape{T1}{aess}{bx}{n}{
+   <-> aessbx10
+}{}
+
+\DeclareFontShape{T1}{aess}{l}{n}{<->ssub * aess/m/n}{}
+\DeclareFontShape{T1}{aess}{l}{sl}{<->ssub * aess/m/sl}{}
+\DeclareFontShape{T1}{aess}{m}{it}{<->ssub * aess/m/sl}{}
+\DeclareFontShape{T1}{aess}{l}{it}{<->ssub * aess/m/it}{}
+\DeclareFontShape{T1}{aess}{b}{n}{<->ssub * aess/bx/n}{}
+
+\endinput

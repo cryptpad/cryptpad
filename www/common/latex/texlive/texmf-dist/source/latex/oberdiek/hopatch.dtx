@@ -1,0 +1,957 @@
+% \iffalse meta-comment
+%
+% File: hopatch.dtx
+% Version: 2012/05/28 v1.2
+% Info: Wrapper for package hooks
+%
+% Copyright (C) 2011, 2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file hopatch.dtx
+% and the derived files
+%    hopatch.sty, hopatch.pdf, hopatch.ins, hopatch.drv,
+%    hopatch-test1.tex, hopatch-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hopatch.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hopatch.pdf
+%
+% Unpacking:
+%    (a) If hopatch.ins is present:
+%           tex hopatch.ins
+%    (b) Without hopatch.ins:
+%           tex hopatch.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hopatch.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hopatch.drv is present:
+%           latex hopatch.drv
+%    (b) Without hopatch.drv:
+%           latex hopatch.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hopatch.dtx
+%       makeindex -s gind.ist hopatch.idx
+%       pdflatex hopatch.dtx
+%       makeindex -s gind.ist hopatch.idx
+%       pdflatex hopatch.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/hopatch.sty
+%    TDS:doc/latex/oberdiek/hopatch.pdf
+%    TDS:doc/latex/oberdiek/test/hopatch-test1.tex
+%    TDS:doc/latex/oberdiek/test/hopatch-test2.tex
+%    TDS:source/latex/oberdiek/hopatch.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hopatch 2012/05/28 v1.2 Wrapper for package hooks (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hopatch
+Version: 2012/05/28 v1.2
+
+Copyright (C) 2011, 2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file hopatch.dtx
+and the derived files
+   hopatch.sty, hopatch.pdf, hopatch.ins, hopatch.drv,
+   hopatch-test1.tex, hopatch-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hopatch.ins}{\from{hopatch.dtx}{install}}%
+  \file{hopatch.drv}{\from{hopatch.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{hopatch.sty}{\from{hopatch.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{hopatch-test1.tex}{\from{hopatch.dtx}{test1}}%
+  \file{hopatch-test2.tex}{\from{hopatch.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hopatch.xml}{\from{hopatch.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hopatch.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hopatch.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hopatch.drv}%
+  [2012/05/28 v1.2 Wrapper for package hooks (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{caption}
+\usepackage{array}
+\setlength{\extrarowheight}{1pt}
+\renewcommand*{\arraystretch}{1.1}
+\begin{document}
+  \DocInput{hopatch.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{466}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hopatch.drv}
+%
+% \title{The \xpackage{hopatch} package}
+% \date{2012/05/28 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This packages provides a wrapper to various package hooks
+% provided by other packages or classes, but does not define
+% own hooks.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Sometimes I want to add code right after a package
+% has been loaded. Examples are bug fixes, adaptations,
+% or added features as needed by package \xpackage{hyperref},
+% for instance.
+%
+% Unhappily \hologo{LaTeX} does not provide this kind of
+% hook. \cs{AtEndOfPackage} can be used inside the package
+% only, because \hologo{LaTeX} clears the hook right before
+% it loads the package.
+%
+% However, there are already many packages and classes
+% that provide hooks that are executed after the package
+% is loaded, see table~\ref{tab:hooks}.
+%
+% \begin{table}
+% \caption{After package hooking}
+% \label{tab:hooks}
+% \begin{tabular}{ll}
+% \bfseries Macro & \bfseries Provider\\
+% \hline
+% \cs{AfterPackage} & package \xpackage{scrlfile} \cite{scrlfile}\\
+% \cs{AtEndOfPackageFile} & package \xpackage{filehook} \cite{filehook}\\
+% \cs{AtEndPackage} & class \xclass{memoir} \cite{memoir}
+% \end{tabular}
+% \end{table}
+%
+% Package \xpackage{hopatch} can be used without the packages
+% of table~\ref{tab:hooks}. But for an early executing right
+% after a package is loaded, one of the following class or
+% packages should be loaded before using \cs{hopatch@AfterPackage}:
+% \begin{itemize}
+%  \item package \xpackage{filehook}
+%  \item package \xpackage{scrlfile}
+%  \item class \xclass{memoir}
+% \end{itemize}
+%
+% \begin{table}
+% \caption{After begin document hooking}
+% \begin{tabular}{ll}
+% \bfseries Macro & \bfseries Provider\\
+% \hline
+% \cs{AtBeginDocument} & \hologo{LaTeX}'s kernel\\
+% \cs{AtEndPreamble} & package \xpackage{etoolbox} \cite{etoolbox}\\
+% \cs{AfterEndPreamble} & package \xpackage{etoolbox}
+% \end{tabular}
+% \end{table}
+%
+% Therefore I skip writing a new package for hooking into
+% \hologo{LaTeX}'s package management and use this package
+% to provide a wrapper to patch a package after it is loaded.
+%
+% \begin{declcs}{hopatch@AfterPackage} \M{package} \M{patch code}
+% \end{declcs}
+% If the package is already loaded, the \meta{patch code} is executed
+% immediately.
+% Otherwise the \meta{patch code} is stored in a command and tried
+% at later locations until the package is available.
+%
+% The patch is tried in the following order:
+% \begin{enumerate}
+% \item If the package is already loaded, the patch is
+%   applied immediately. Further locations are not tried.
+% \item \cs{AtEndPackage}, provided by class \xclass{memoir} \cite{memoir},
+%   and \cs{AfterPackage}, provided by package \xpackage{scrlfile} \cite{scrlfile},
+%   are called right after the package file is input before
+%   the hook of \hologo{LaTeX}'s \cs{AtEndOfPackage}.
+% \item \cs{AtEndOfPackageFile}, provided by package \xpackage{filehook} \cite{filehook},
+%   is called after the package is loaded and after the hook of
+%   \hologo{LaTeX}'s \cs{AtEndOfPackage}.
+% \item \cs{AtEndPreamble}, provided by package \xpackage{etoolbox} \cite{etoolbox},
+%   is called at the beginning of |\begin{document}| before the hook
+%   of \hologo{LaTeX}'s \cs{AtBeginDocument}.
+% \item \cs{AtBeginDocument}, provided by \hologo{LaTeX}.
+% \item \cs{AfterEndDocument}, provided by package \xpackage{etoolbox} \cite{etoolbox},
+%   is called at the very end of |\begin{document}|. Preamble commands are
+%   already forbidden there.
+% \end{enumerate}
+% Because of the various locations the patch code is restricted to
+% limitations:
+% \begin{itemize}
+% \item
+% Preamble commands, see \hologo{LaTeX}'s \cs{@onlypreamble}
+% throw an error if used after |\begin{document}|. This is already
+% the case for \cs{AfterEndDocument}. Therefore preamble commands
+% are forbidden in the patching code.
+% There are four exceptions \cs{@ifpackageloaded}, \cs{@ifclassloaded},
+% \cs{@ifpackagelater} and \cs{@ifclasslater}. They are redefined
+% during \cs{AfterEndDocument} using the counterparts of
+% package \xpackage{ltxcmds} \cite{ltxcmds}.
+% \item
+% \cs{AfterPackage} of package \xpackage{scrlfile} and \cs{AtEndPackage}
+% of class \xclass{memoir} call the hook before \hologo{LaTeX}'s
+% \cs{AtEndOfPackage}.
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Catcodes and package identification}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname HOpatch@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\HOpatch@AtEnd{%
+    \HOpatch@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\HOpatch@AtEnd{\HOpatch@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hopatch}%
+  [2012/05/28 v1.2 Wrapper for package hooks (HO)]
+%    \end{macrocode}
+%
+% \subsection{Resources}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ltxcmds}[2010/12/12]%
+\else
+  \RequirePackage{ltxcmds}[2010/12/12]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\HOpatch@counter}
+%    \begin{macrocode}
+\def\HOpatch@counter{0}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HOpatch@StepCounter}
+%    \begin{macrocode}
+\ltx@ifundefined{numexpr}{%
+  \def\HOpatch@StepCounter{%
+    \begingroup
+      \count@\HOpatch@counter\relax
+      \advance\count@\ltx@one\relax
+    \edef\x{\endgroup
+      \noexpand\def\noexpand\HOpatch@counter{\the\count@}%
+    }%
+    \x
+  }%
+}{%
+  \def\HOpatch@StepCounter{%
+    \edef\HOpatch@counter{%
+      \the\numexpr\HOpatch@counter+\ltx@one\relax
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HOpatch@list}
+%    \begin{macrocode}
+\def\HOpatch@list{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HOpatch@Add}
+%    \begin{macrocode}
+\def\HOpatch@Add{%
+  \ltx@LocalAppendToMacro\HOpatch@list
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Package patching}
+%
+%    \begin{macro}{\hopatch@AfterPackage}
+%    \begin{macrocode}
+\def\hopatch@AfterPackage#1{%
+  \ltx@ifpackageloaded{#1}{%
+    \ltx@firstofone
+  }{%
+    \HOpatch@AfterPackage{#1}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HOpatch@AfterPackage}
+%    \begin{macrocode}
+\def\HOpatch@AfterPackage#1{%
+  \edef\HOpatch@temp{#1}%
+  \HOpatch@StepCounter
+  \expandafter\HOpatch@@AfterPackage
+  \csname HOpatch@\HOpatch@counter\expandafter\endcsname{%
+    \HOpatch@temp
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HOpatch@@AfterPackage}
+%    \begin{macrocode}
+\def\HOpatch@@AfterPackage#1#2#3{%
+  \begingroup
+    \toks@{#3}%
+    \xdef\HOpatch@gtemp{%
+      \noexpand\ltx@ifpackageloaded{#2}{%
+        \noexpand\let\noexpand#1\noexpand\relax
+        \the\toks@
+      }{}%
+    }%
+  \endgroup
+  \let#1\HOpatch@gtemp
+  \HOpatch@Add#1%
+  \HOpatch@Try{AfterPackage}{#2}#1%
+  \HOpatch@Try{AtEndPackage}{#2}#1%
+  \HOpatch@Try{AtEndOfPackageFile}{#2}#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HOpatch@Try}
+%    \begin{macrocode}
+\def\HOpatch@Try#1#2#3{%
+  \ltx@ifundefined{#1}{}{%
+    \csname #1\endcsname{#2}{#3}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\AtBeginDocument{\HOpatch@list}
+\ltx@ifundefined{AtEndPreamble}{}{%
+  \ltx@ifundefined{@endpreamblehook}{}{%
+    \AtEndPreamble{\HOpatch@list}%
+  }%
+}
+\ltx@ifundefined{AfterEndPreamble}{}{%
+  \ltx@ifundefined{@afterendpreamblehook}{}{%
+    \AfterEndPreamble{%
+      \let\HOpatch@OrgIfPackageLoaded\@ifpackageloaded
+      \let\HOpatch@OrgIfPackageLater\@ifpackagelater
+      \let\HOpatch@OrgIfClassLoaded\@ifclassloaded
+      \let\HOpatch@OrgIfClassLater\@ifclasslater
+      \let\@ifpackageloaded\ltx@ifpackageloaded
+      \let\@ifpackagelater\ltx@ifpackagelater
+      \let\@ifclassloaded\ltx@ifclassloaded
+      \let\@ifclasslater\ltx@ifclasslater
+      \HOpatch@list
+      \let\@ifpackageloaded\HOpatch@OrgIfPackageLoaded
+      \let\@ifpackagelater\HOpatch@OrgIfPackageLater
+      \let\@ifclassloaded\HOpatch@OrgIfClassLoaded
+      \let\@ifclasslater\HOpatch@OrgIfClassLater
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\HOpatch@AtEnd%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test1>
+\def\LoadCommand{\RequirePackage{hopatch}[2012/05/28]}
+%</test1>
+%    \end{macrocode}
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input hopatch.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\providecommand\variant{0}
+\RequirePackage{filecontents}
+\begin{filecontents}{foo.sty}
+\ProvidesPackage{foo}
+\def\msg#{\immediate\write16}
+\def\foo#1{%
+  \msg{\fooformat{#1}}%
+}
+\def\fooformat#1{[#1]}% hash-ok
+\foo{* Executing foo at package loading}
+\end{filecontents}
+
+\ifnum\variant=1 %
+  \documentclass{memoir}%
+\else
+  \documentclass{article}%
+\fi
+
+\ifcase\variant\relax
+\or % 1
+\or % 2
+  \usepackage{etoolbox}%
+\or % 3
+  \usepackage{scrlfile}%
+\or % 4
+  \usepackage{filehook}%
+\fi
+
+\AtBeginDocument{\foo{* AtBeginDocument before hopatch}}
+\usepackage{hopatch}
+\AtBeginDocument{\foo{* AtBeginDocument after hopatch}}
+
+\makeatletter
+\hopatch@AfterPackage{foo}{%
+  \def\fooformat#1{<<#1>>}%
+}
+\makeatother
+
+\AtBeginDocument{\foo{* AtBeginDocument before foo}}
+\usepackage{foo}
+\AtBeginDocument{\foo{* AtBeginDocument after foo}}
+
+\foo{* Executing in preamble}
+
+\begin{document}
+\foo{* Executing in document}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hopatch.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hopatch.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hopatch.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hopatch.sty & tex/latex/oberdiek/hopatch.sty\\
+%   hopatch.pdf & doc/latex/oberdiek/hopatch.pdf\\
+%   test/hopatch-test1.tex & doc/latex/oberdiek/test/hopatch-test1.tex\\
+%   test/hopatch-test2.tex & doc/latex/oberdiek/test/hopatch-test2.tex\\
+%   hopatch.dtx & source/latex/oberdiek/hopatch.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hopatch.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hopatch.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hopatch.dtx
+%makeindex -s gind.ist hopatch.idx
+%pdflatex hopatch.dtx
+%makeindex -s gind.ist hopatch.idx
+%pdflatex hopatch.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hopatch.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hopatch'>
+  <name>hopatch</name>
+  <caption>Load patches for packages.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011,2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    The hopatch package provides a command with which the user may
+    register a piece of patch code for a particular package.  Hopatch
+    will apply the patch immediately, if the relevant package has
+    already been loaded; otherwise it will store the patch until the
+    package appears.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hopatch.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hopatch.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+%
+% \bibitem{etoolbox}
+% Philipp Lehman:
+% \textit{The etoolbox Package}
+% 2011-01-03.
+% \CTAN{macros/latex/contrib/etoolbox/etoolbox.pdf}
+%
+% \bibitem{filehook}
+% Martin Scharrer:
+% \textit{The filehook Package};
+% 2011-01-09.
+% \CTAN{macros/latex/contrib/filehook/filehook.pdf}
+%
+% \bibitem{ltxcmds}
+% Heiko Oberdiek:
+% \textit{The ltxcmds Package};
+% 2010-12-12.
+% \CTAN{macros/latex/contrib/oberdiek/ltxcmds.pdf}
+%
+% \bibitem{memoir}
+% Peter Wilson, Lars Madsen:
+% \textit{The Memoir Class for Configurable Typesetting, User Guide};
+% 2010.
+% \CTAN{macros/latex/contrib/memoir/memman.pdf}
+%
+% \bibitem{scrlfile}
+% Markus Kohm, Jens-Uwe Morawski:
+% \textit{The Guide KOMA-Script};
+% 2011-01-20.
+% \CTAN{macros/latex/contrib/koma-script/scrguien.pdf}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2011/01/30 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2011/06/24 v1.1}
+%   \item
+%     Fix the use of \cs{AtEndPreamble} and \cs{AfterEndPreamble}.
+%     They are redefined by package \xpackage{etoolbox} after their
+%     hooks are used and generate an error message then.
+%   \end{Version}
+%   \begin{Version}{2012/05/28 v1.2}
+%   \item
+%     Fix for use without \hologo{eTeX}
+%     (thanks Gordon Lee).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

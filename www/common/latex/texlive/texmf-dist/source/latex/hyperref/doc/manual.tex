@@ -1,0 +1,1689 @@
+% This is the manual for the LaTeX hyperref package.
+%
+% Copyright (C) 1998, 2003 Sebastian Rahtz.
+%
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.1 or
+% any later version published by the Free Software Foundation; with no
+% Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+% Texts.  A copy of the license is included in the section entitled
+% ``GNU Free Documentation License.''
+%
+% Manual updates:
+% * Steve Peter and Karl Berry, 7/03.
+% * Heiko Oberdiek, 2006-2012.
+%
+
+\def\mydate{November 2012}
+
+\RequirePackage{ifpdf}
+\ifpdf % We are running pdfTeX in pdf mode
+\documentclass[pdftex]{article}
+\else
+\documentclass{article}
+\fi
+
+\usepackage{etex}% for \eTeX
+
+\usepackage{pifont}
+\usepackage{calc}
+
+\usepackage{hologo}
+
+\def\OzTeX{O\kern-0.03em z\kern-0.15em \TeX}
+
+\newcommand*{\cs}[1]{%
+  \texttt{\textbackslash #1}%
+}
+\newcommand*{\xpackage}[1]{\textsf{#1}}
+
+% from doc.sty
+\makeatletter
+\DeclareRobustCommand\meta[1]{%
+  \ensuremath\langle
+  \ifmmode \expandafter \nfss@text \fi
+  {%
+    \meta@font@select
+    \edef\meta@hyphen@restore
+      {\hyphenchar\the\font\the\hyphenchar\font}%
+    \hyphenchar\font\m@ne
+    \language\l@nohyphenation
+    #1\/%
+    \meta@hyphen@restore
+  }%
+  \ensuremath\rangle
+}
+\def\meta@font@select{\ttfamily\itshape}
+\makeatother
+
+% Page layout.
+\advance\textwidth by 1.1in
+\advance\oddsidemargin by -.55in
+\advance\evensidemargin by -.55in
+%
+\advance\textheight by 1in
+\advance\topmargin by -.5in
+\advance\footskip by -.5in
+%
+\pagestyle{headings}
+%
+% Avoid some overfull boxes.
+\emergencystretch=.1\hsize
+\hbadness = 3000
+
+% these are from lshort.sty, but lshort.sty pulls in so many other
+% packages it seems cleaner to just include them here.
+%
+\newcommand{\bs}{\symbol{'134}}%Print backslash
+\newcommand{\ci}[1]{\texttt{\bs#1}}
+
+\makeatletter
+\@ifpackageloaded{tex4ht}{%
+  % separate definition for HTML case to avoid
+  % nasty borders with double horizontal lines with
+  % large gaps.
+  \newsavebox{\cmdsyntaxbox}%
+  \newenvironment{cmdsyntax}{%
+    \par
+    % \small
+    \addvspace{3.2ex plus 0.8ex minus 0.2ex}%
+    \vskip -\parskip
+    \noindent
+    \begin{lrbox}{\cmdsyntaxbox}%
+      \begin{tabular}{l}%
+        \rule{0pt}{1em}%
+        \ignorespaces
+  }{%
+      \end{tabular}%
+    \end{lrbox}%
+    \fbox{\usebox{\cmdsyntaxbox}}%
+    \par
+    \nopagebreak
+    \addvspace{3.2ex plus 0.8ex minus 0.2ex}%
+    \vskip -\parskip
+  }%
+}{%
+  \newenvironment{cmdsyntax}{%
+    \par
+    \small
+    \addvspace{3.2ex plus 0.8ex minus 0.2ex}%
+    \vskip -\parskip
+    \noindent
+    \begin{tabular}{|l|}%
+      \hline
+      \rule{0pt}{1em}%
+      \ignorespaces
+  }{%
+      \\%
+      \hline
+    \end{tabular}%
+    \par
+    \nopagebreak
+    \addvspace{3.2ex plus 0.8ex minus 0.2ex}%
+    \vskip -\parskip
+  }%
+}
+\makeatother
+
+\usepackage{array,longtable}
+\usepackage{ifluatex,ifxetex}
+\ifnum 0\ifluatex 1\else\ifxetex 1\fi\fi=0 %
+  \usepackage[T1]{fontenc}%
+  \usepackage{lmodern}%
+  \renewcommand*{\ttdefault}{lmvtt}%
+\else
+  \usepackage{fontspec}%
+  \renewcommand*{\ttdefault}{lmvtt}%
+\fi
+
+\newcommand*{\Quote}[1]{\textquotedblleft#1\textquotedblright}
+
+\def\Hanh{H\`an Th\^e\llap{\raise 0.5ex\hbox{\'{}}} Th\`anh}
+
+\ifpdf
+  \usepackage[%
+    pdftex,%
+    colorlinks,%
+    hyperindex,%
+    plainpages=false,%
+    bookmarksopen,%
+    bookmarksnumbered,
+    pdfusetitle,%
+  ]{hyperref}
+  %%?? \def\pdfBorderAttrs{/Border [0 0 0] } % No border arround Links
+  \usepackage{thumbpdf}
+\else
+  \usepackage{hyperref}
+\fi
+
+\makeatletter
+\@ifpackageloaded{tex4ht}{%
+}{%
+  \usepackage{bmhydoc}%
+}
+\makeatother
+
+\title{Hypertext marks in \hologo{LaTeX}: a manual for \xpackage{hyperref}}
+\author{Sebastian Rahtz \and  Heiko Oberdiek}
+\date{\mydate}
+
+\begin{document}
+
+% comes out too close to the toc, and we know it's page one anyway.
+\thispagestyle{empty}
+\maketitle
+\tableofcontents
+\setcounter{tocdepth}{2}% for bookmark levels
+
+\section{Introduction}
+
+The package derives from, and builds on, the work of the Hyper\hologo{TeX}
+project, described at \url{http://xxx.lanl.gov/hypertex/}. It extends
+the functionality of all the \hologo{LaTeX} cross-referencing commands
+(including the table of contents, bibliographies etc) to produce
+\cs{special} commands which a driver can turn into hypertext links;
+it also provides new commands to allow the user to write \emph{ad hoc}
+hypertext links, including those to external documents and URLs.
+
+This manual provides a brief overview of the \xpackage{hyperref}
+package. For more details, you should read the additional documentation
+distributed with the package, as well as the complete documentation by
+processing \texttt{hyperref.dtx}. You should also read the chapter on
+\xpackage{hyperref} in \textit{The \hologo{LaTeX} Web Companion}, where you will
+find additional examples.
+
+The Hyper\hologo{TeX} specification\footnote{This is borrowed from an article
+by Arthur Smith.} says that conformant viewers/translators must
+recognize the following set of \cs{special} constructs:
+
+\begin{description}
+\item[href:] \verb|html:<a href = "href_string">|
+\item[name:] \verb|html:<a name = "name_string">|
+\item[end:] \verb|html:</a>|
+\item[image:] \verb|html:<img src = "href_string">|
+\item[base\_name:] \verb|html:<base href = "href_string">|
+\end{description}
+
+The \emph{href}, \emph{name} and \emph{end} commands are used to do the
+basic hypertext operations of establishing links between sections of
+documents. The \emph{image} command is intended (as with current HTML
+viewers) to place an image of arbitrary graphical format on the page in
+the current location. The \emph{base\_name} command is be used to
+communicate to the DVI viewer the full (URL) location of the current
+document so that files specified by relative URLs may be retrieved
+correctly.
+
+The \emph{href} and \emph{name} commands must be paired with an
+\emph{end} command later in the \TeX\ file---the \TeX\ commands between
+the two ends of a pair form an \emph{anchor} in the document. In the
+case of an \emph{href} command, the \emph{anchor} is to be highlighted
+in the \emph{DVI viewer}, and when clicked on will cause the scene to
+shift to the destination specified by \emph{href\_string}. The
+\emph{anchor} associated with a name command represents a possible
+location to which other hypertext links may refer, either as local
+references (of the form \verb|href="#name_string"| with the
+\emph{name\_string} identical to the one in the name command) or as part
+of a URL (of the form \emph{URL\#name\_string}). Here
+\emph{href\_string} is a valid URL or local identifier, while
+\emph{name\_string} could be any string at all: the only caveat is that
+`$\verb|"|$' characters should be escaped with a backslash
+($\backslash$), and if it looks like a URL name it may cause problems.
+
+However, the drivers intended to produce \emph{only} PDF use literal
+PostScript or PDF \verb|\special| commands. The commands are defined in
+configuration files for different drivers, selected by package options;
+at present, the following drivers are supported:
+
+\begin{description}
+\item[hypertex] DVI processors conforming to the Hyper\TeX\ guidelines (i.e.\ \textsf{xdvi}, \textsf{dvips} (with
+the \textsf{-z} option), \textsf{\OzTeX}, and \textsf{Textures})
+\item[dvips] produces \verb|\special| commands tailored for \textsf{dvips}
+\item[dvipsone] produces \verb|\special| commands tailored for \textsf{dvipsone}
+\item[ps2pdf] a special case of output suitable for processing by earlier versions of Ghost\-script's
+PDF writer; this is basically the same as that for \textsf{dvips}, but a few variations remained before version 5.21
+\item[tex4ht] produces \verb|\special| commands for use with \textsf{\TeX4ht}
+\item[pdftex] pdf\TeX, \Hanh{}'s \TeX{} variant that writes PDF directly
+\item[dvipdfm] produces \verb|\special| commands for Mark Wicks' DVI to PDF driver \textsf{dvipdfm}
+\item[dvipdfmx] produces \verb|\special| commands for driver
+     \textsf{dvipdfmx}, a successor of \textsf{dvipdfm}
+\item[dviwindo] produces \verb|\special| commands that Y\&Y's Windows previewer interprets as hypertext jumps within the previewer
+\item[vtex] produces \verb|\special| commands that MicroPress' HTML and
+     PDF-producing \TeX\ variants interpret as hypertext jumps within the
+     previewer
+\item[textures] produces \verb|\special| commands that \textsf{Textures} interprets as hypertext jumps within the previewer
+\item[xetex] produces \verb|\special| commands for Xe\TeX{}
+\end{description}
+
+Output from \textsf{dvips} or \textsf{dvipsone} must be processed using
+Acrobat Distiller to obtain a PDF file.\footnote{Make sure you turn off
+the partial font downloading supported by \textsf{dvips} and
+\textsf{dvipsone} in favor of Distiller's own system.} The result is
+generally preferable to that produced by using the \textsf{hypertex}
+driver, and then processing with \textsf{dvips -z}, but the DVI file is
+not portable. The main advantage of using the Hyper\TeX\ \ci{special}
+commands is that you can also use the document in hypertext DVI viewers,
+such as \textsf{xdvi}.
+
+\begin{description}
+\item[driverfallback]
+  If a driver is not given and cannot be autodetected, then use
+  the driver option, given as value to this option \textsf{driverfallback}.
+  Example:
+  \begin{quote}
+    \texttt{driverfallback=dvipdfm}
+  \end{quote}
+  Autodetected drivers (\textsf{pdftex}, \textsf{xetex}, \textsf{vtex},
+  \textsf{vtexpdfmark}) are recognized from within \TeX\ and
+  therefore cannot be given as value to option \textsf{driverfallback}.
+  However a DVI driver program is run after the \TeX\ run is finished.
+  Thus it cannot be detected at \TeX\ macro level. Then package
+  \xpackage{hyperref}
+  uses the driver, given by \textsf{driverfallback}. If the driver
+  is already specified or can be autodetected, then option
+  \textsf{driverfallback} is ignored.
+\end{description}
+
+\section{Implicit behavior}
+
+This package can be used with more or less any normal \LaTeX\ document
+by specifying in the document preamble
+
+\begin{verbatim}
+\usepackage{hyperref}
+\end{verbatim}
+
+Make sure it comes \emph{last} of your loaded packages, to give it a
+fighting chance of not being over-written, since its job is to redefine
+many \LaTeX\ commands. Hopefully you will find that all cross-references
+work correctly as hypertext. For example, \ci{section} commands will
+produce a bookmark and a link, whereas \ci{section*} commands will only
+show links when paired with a corresponding \ci{addcontentsline}
+command.
+
+In addition, the \texttt{hyperindex} option (see below) attempts to make
+items in the index by hyperlinked back to the text, and the option
+\texttt{backref} inserts extra `back' links into the bibliography for
+each entry. Other options control the appearance of links, and give
+extra control over PDF output. For example, \texttt{colorlinks}, as its
+name well implies, colors the links instead of using boxes; this is the
+option used in this document.
+
+
+\section{Package options}
+
+All user-configurable aspects of \xpackage{hyperref} are set using a
+single `key=value' scheme (using the \xpackage{keyval} package) with the
+key \texttt{Hyp}. The options can be set either in the optional argument
+to the \cs{usepackage} command, or using the \cs{hypersetup}
+macro. When the package is loaded, a file \texttt{hyperref.cfg} is read
+if it can be found, and this is a convenient place to set options on a
+site-wide basis.
+
+As an example, the behavior of a particular file could be controlled by:
+\begin{itemize}
+
+\item	a site-wide \texttt{hyperref.cfg} setting up the look of links,
+adding backreferencing, and setting a PDF display default:
+
+\begin{verbatim}
+\hypersetup{backref,
+pdfpagemode=FullScreen,
+colorlinks=true}
+\end{verbatim}
+
+\item	A global option in the file, which is passed down to
+\textsf{hyperref}:
+
+\begin{verbatim}
+\documentclass[dvips]{article}
+\end{verbatim}
+
+\item	File-specific options in the \cs{usepackage} commands, which
+override the ones set in \texttt{hyperref.cfg}:
+
+\begin{verbatim}
+\usepackage[colorlinks=false]{hyperref}
+\hypersetup{pdftitle={A Perfect Day}}
+\end{verbatim}
+\end{itemize}
+
+As seen in the previous example, information entries
+(pdftitle, pdfauthor, \dots) should be set after the package is loaded.
+Otherwise \LaTeX\ expands the values of these options prematurely.
+Also \LaTeX\ strips spaces in options. Especially option `pdfborder'
+requires some care. Curly braces protect the value, if given
+as package option. They are not necessary in \verb|\hypersetup|.
+
+\begin{verbatim}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\hypersetup{pdfborder=0 0 0}
+\end{verbatim}
+
+Package `kvoptions-patch' patches \LaTeX\ to make it aware
+of key value options and to prevent premature value expansions.
+
+Some options can be given at any time, but many are restricted: before
+\verb|\begin{document}|, only in \verb|\usepackage[...]{hyperref}|,
+before first use, etc.
+
+In the key descriptions that follow, many options do not need a value,
+as they default to the value true if used. These are the ones classed as
+`boolean'. The values true and false can always be specified, however.
+
+\subsection{General options}
+
+Firstly, the options to specify general behavior and page size.
+
+\medskip
+\noindent\begin{longtable}{>{\ttfamily}ll>{\itshape}ll}
+draft          & boolean & false & all hypertext options are turned off \\
+final          & boolean & true  & all hypertext options are turned on \\
+debug          & boolean & false & extra diagnostic messages are printed in \\
+               &         &       & the log file \\
+verbose        & boolean & false & same as debug \\
+implicit       & boolean & true  & redefines \LaTeX\ internals \\
+setpagesize    & boolean & true  & sets page size by special driver commands
+\end{longtable}
+
+\subsection{Options for destination names}
+
+Destinations names (also anchor, target or link names) are internal
+names that identify a position on a page in the document. They
+are used in link targets for inner document links or the bookmarks,
+for example.
+
+Usually anchor are set, if \cs{refstepcounter} is called.
+Thus there is a counter name and value. Both are used to
+construct the destination name. By default the counter value
+follows the counter name separated by a dot. Example for
+the fourth chapter:
+\begin{quote}
+  \verb|chapter.4|
+\end{quote}
+This scheme is used by:
+\begin{description}
+\item[\cs{autoref}] displays the description label for the
+  reference depending on the counter name.
+\item[\cs{hyperpage}] is used by the index to get
+page links. Page anchor setting (\verb|pageanchor|) must not
+be turned off.
+\end{description}
+
+It is very important that the destination names are unique,
+because two destinations must not share the same name.
+The counter value \cs{the<counter>} is not always unique
+for the counter. For example, table and figures can be numbered
+inside the chapter without having the chapter number in their
+number. Therefore \xpackage{hyperref} has introduced \cs{theH<counter>}
+that allows a unique counter value without messing up with
+the appearance of the counter number. For example, the number
+of the second table in the third chapter might be printed
+as \texttt{2}, the result of \cs{thetable}. But the
+destination name \texttt{table.2.4} is unique because it
+has used \cs{theHtable} that gives \verb|2.4| in this case.
+
+Often the user do not need to set \cs{theH<counter>}. Defaults
+for standard cases (chapter, \dots) are provided. And after \xpackage{hyperref}
+is loaded, new counters with parent counters also define
+\cs{theH<counter>} automatically, if \cs{newcounter}, \cs{@addtoreset}
+or \cs{numberwithin} of package \xpackage{amsmath} are used.
+
+Usually problems with duplicate destination names can be solved
+by an appropriate definition of \cs{theH<counter>}. If option
+\texttt{hypertexnames} is disabled, then a unique artificial
+number is used instead of the counter value. In case of page
+anchors the absolute page anchor is used. With option \texttt{plainpages}
+the page anchors use the arabic form. In both latter cases \cs{hyperpage}
+for index links is affected and might not work properly.
+
+If an unnumbered entity gets an anchor (starred forms of
+chapters, sections, \dots) or \cs{phantomsection} is used,
+then the dummy counter name \texttt{section*} and an artificial
+unique number is used.
+
+If the final PDF file is going to be merged with another file, than
+the destination names might clash, because both documents might
+contain \texttt{chapter.1} or \texttt{page.1}. Also \xpackage{hyperref}
+sets anchor with name \texttt{Doc-Start} at the begin of the document.
+This can be resolved by redefining \cs{HyperDestNameFilter}.
+Package \xpackage{hyperref} calls this macro each time, it uses a
+destination name.
+The macro must be expandable and expects the destination name
+as only argument. As example, the macro is redefined to add
+a prefix to all destination names:
+\begin{quote}
+\begin{verbatim}
+\renewcommand*{\HyperDestNameFilter}[1]{\jobname-#1}
+\end{verbatim}
+\end{quote}
+In document \texttt{docA} the destination name \texttt{chapter.2}
+becomes \texttt{docA-chapter.2}.
+
+Destination names can also be used from the outside in URIs(, if the
+driver has not removed or changed them), for example:
+\begin{quote}
+\begin{verbatim}
+http://somewhere/path/file.pdf#nameddest=chapter.4
+\end{verbatim}
+\end{quote}
+However using a number seems unhappy. If another chapter is added
+before, the number changes. But it is very difficult to pass
+a new name for the destination to the anchor setting process that
+is usually deep hidden in the internals. The first name of
+\cs{label} after the anchor setting seems a good approximation:
+\begin{quote}
+\begin{verbatim}
+  \section{Introduction}
+  \label{intro}
+\end{verbatim}
+\end{quote}
+Option \texttt{destlabel} checks for each \cs{label}, if there is
+a new destination name active and replaces the destination
+name by the label name. Because the destination name is already in use
+because of the anchor setting, the new name is recorded in the \texttt{.aux}
+file and used in the subsequent \hologo{LaTeX} run. The renaming is done by
+a redefinition of \cs{HyperDestNameFilter}. That leaves the old
+destination names intact (e.g., they are needed for \cs{autoref}).
+This redefinition is also available as \cs{HyperDestLabelReplace},
+thus that an own redefinition can use it.
+The following example also adds a prefix for \emph{all} destination names:
+\begin{quote}
+\begin{verbatim}
+\renewcommand*{\HyperDestNameFilter}[1]{%
+  \jobname-\HyperDestLabelReplace{#1}%
+}
+\end{verbatim}
+\end{quote}
+The other case that only files prefixed that do not have a corresponding
+\cs{label} is more complicate, because \cs{HyperDestLabelReplace} needs
+the unmodified destination name as argument. This is solved by an
+expandable string test (\cs{pdfstrcmp} of \hologo{pdfTeX}
+or \cs{strcmp} of \hologo{XeTeX}, package \xpackage{pdftexcmds} also supports
+\hologo{LuaTeX}):
+\begin{quote}
+\begin{verbatim}
+\usepackage{pdftexcmds}
+\makeatletter
+\renewcommand*{\HyperDestNameFilter}[1]{%
+  \ifcase\pdf@strcmp{#1}{\HyperDestLabelReplace{#1}} %
+    \jobname-#1%
+  \else
+    \HyperDestLabelReplace{#1}%
+  \fi
+}
+\makeatother
+\end{verbatim}
+\end{quote}
+
+With option \texttt{destlabel} destinations can also named manually,
+if the destination is not yet renamed:
+\begin{quote}
+\verb|\HyperDestRename{|\meta{destination}\verb|}{|\meta{newname}\verb|}|
+\end{quote}
+
+Hint: Anchors can also be named and set by \cs{hypertarget}.
+
+\medskip
+\noindent\begin{longtable}{>{\ttfamily}ll>{\itshape}ll}
+destlabel      & boolean & false & destinations are named by first \cs{label}\\
+               &         &       & after anchor creation\\
+hypertexnames  & boolean & true  & use guessable names for links \\
+naturalnames   & boolean & false & use \LaTeX-computed names for links \\
+plainpages     & boolean & false & Forces page anchors to be named by the Arabic form \\
+               &         &       & of the page number, rather than the formatted form. \\
+\end{longtable}
+
+\subsection{Configuration options}
+
+\noindent\begin{longtable}{>{\ttfamily}ll>{\itshape}lp{7cm}}
+raiselinks & boolean & true  & In the hypertex driver, the height of links is normally calculated by the driver as
+                               simply the base line of contained text; this options forces \verb|\special| commands to
+                               reflect the real height of the link (which could contain a graphic) \\
+breaklinks & boolean & false & Allows link text to break across lines; since this cannot be accommodated in PDF, it is
+                               only set true by default if the pdftex driver is used. This makes links on multiple lines
+                               into different PDF links to the same target. \\
+pageanchor & boolean & true  & Determines whether every page is given an implicit anchor at the top left corner. If this
+                               is turned off, \verb|\printindex| will not contain
+                               valid hyperlinks. \\
+nesting    & boolean & false & Allows links to be nested; no drivers currently support this.
+\end{longtable}
+
+Note for option \verb|breaklinks|:
+The correct value is automatically set according to the driver features.
+It can be overwritten for drivers that do not support broken links.
+However, at any case, the link area will be wrong and displaced.
+
+\subsection{Backend drivers}
+
+If no driver is specified, the package tries to find a driver in
+the following order:
+\begin{enumerate}
+\item Autodetection, some \TeX\ processors can be detected at \TeX\ macro
+  level (pdf\TeX, Xe\TeX, V\TeX).
+\item Option \textsf{driverfallback}. If this option is set, its value
+  is taken as driver option.
+\item Macro \cs{Hy@defaultdriver}. The macro takes a driver file
+  name (without file extension).
+\item Package default is \textsf{hypertex}.
+\end{enumerate}
+Many distributions are using a driver file \texttt{hypertex.cfg} that
+define \cs{Hy@defaultdriver} with \texttt{hdvips}. This is recommended
+because driver \textsf{dvips} provides much more features than
+\textsf{hypertex} for PDF generation.
+
+\noindent\begin{longtable}{>{\ttfamily}lp{.8\hsize}}
+driverfallback & Its value is used as driver option\\
+            & if the driver is not given or autodetected.\\
+dvipdfm     & Sets up \textsf{hyperref} for use with the \textsf{dvipdfm} driver.\\
+dvipdfmx    & Sets up \textsf{hyperref} for use with the \textsf{dvipdfmx} driver.\\
+dvips       & Sets up \textsf{hyperref} for use with the \textsf{dvips} driver. \\
+dvipsone    & Sets up \textsf{hyperref} for use with the \textsf{dvipsone} driver. \\
+dviwindo    & Sets up \textsf{hyperref} for use with the \textsf{dviwindo} Windows previewer. \\
+hypertex    & Sets up \textsf{hyperref} for use with the Hyper\TeX-compliant drivers. \\
+latex2html  & Redefines a few macros for compatibility with \textsf{latex2html}. \\
+nativepdf   & An alias for \textsf{dvips} \\
+pdfmark     & An alias for \textsf{dvips} \\
+pdftex      & Sets up \textsf{hyperref} for use with the \textsf{pdftex} program.\\
+ps2pdf      & Redefines a few macros for compatibility with
+              Ghostscript's PDF writer, otherwise identical to
+              \textsf{dvips}. \\
+tex4ht      & For use with \textsf{\TeX4ht} \\
+textures    & For use with \textsf{Textures} \\
+vtex        & For use with MicroPress' \textsf{VTeX}; the PDF
+                       and HTML backends are detected automatically. \\
+vtexpdfmark & For use with \textsf{VTeX}'s PostScript backend. \\
+xetex       & For use with Xe\TeX (using backend for dvipdfm).
+\end{longtable}
+\smallskip
+
+If you use \textsf{dviwindo}, you may need to redefine the macro
+\ci{wwwbrowser} (the default is \verb|C:\netscape\netscape|) to tell
+\textsf{dviwindo} what program to launch. Thus, users of Internet
+Explorer might add something like this to hyperref.cfg:
+
+\begin{verbatim}
+\renewcommand{\wwwbrowser}{C:\string\Program\space
+  Files\string\Plus!\string\Microsoft\space
+  Internet\string\iexplore.exe}
+\end{verbatim}
+
+\subsection{Extension options}
+\noindent\begin{longtable}{>{\ttfamily}ll>{\itshape}lp{6cm}}
+extension      & text    &         & Set the file extension (e.g.\ \textsf{dvi}) which will be appended to file links
+                                     created if you use the \xpackage{xr} package. \\
+hyperfigures   & boolean &         & \\
+backref        & text    & false   & Adds `backlink' text to the end of each item in the bibliography, as a list of
+                                     section numbers. This can only work properly \emph{if} there is a blank line after
+                                     each \verb|\bibitem|. Supported values are \verb|section|, \verb|slide|, \verb|page|,
+                                     \verb|none|, or \verb|false|. If no value is given, \verb|section| is taken as default.\\
+pagebackref    & boolean & false   & Adds `backlink' text to the end of each item in the bibliography, as a list of page
+                                     numbers. \\
+hyperindex     & boolean & true    & Makes the page numbers of index entries into hyperlinks. Relays on unique
+                                     page anchors (\verb|pageanchor|, \ldots)\\
+                                     \verb|pageanchors| and \verb|plainpages=false|. \\
+hyperfootnotes & boolean & true    & Makes the footnote marks into hyperlinks to the footnote text.
+                                     Easily broken \ldots\\
+encap          &         &         & Sets encap character for hyperindex \\
+linktocpage    & boolean & false   & make page number, not text, be link on TOC, LOF and LOT \\
+breaklinks     & boolean & false   & allow links to break over lines by making links over multiple lines into PDF links to
+                                     the same target \\
+colorlinks     & boolean & false   & Colors the text of links and anchors. The colors chosen depend on the the type of
+                                     link. At present the only types of link distinguished are citations, page references,
+                                     URLs, local file references, and other links.
+                                     Unlike colored boxes, the colored
+                                     text remains when printing.\\
+linkcolor      & color   & red     & Color for normal internal links. \\
+anchorcolor    & color   & black   & Color for anchor text. \\
+citecolor      & color   & green   & Color for bibliographical citations in text. \\
+filecolor      & color   & cyan    & Color for URLs which open local files. \\
+menucolor      & color   & red     & Color for Acrobat menu items. \\
+runcolor       & color   & filecolor & Color for run links (launch annotations). \\
+urlcolor       & color   & magenta & Color for linked URLs. \\
+allcolors      & color   &         & Set all color options (without border and field options).\\
+frenchlinks    & boolean & false   & Use small caps instead of color for links.\\
+hidelinks      &         &         & Hide links (removing color and border). \\
+\end{longtable} \smallskip
+
+Note that all color names must be defined before use, following the
+normal system of the standard \LaTeX\ \xpackage{color} package.
+
+\subsection{PDF-specific display options}
+\noindent\begin{longtable}{@{}>{\ttfamily}ll>{\itshape}lp{7.5cm}@{}}
+bookmarks          & boolean   & true   & A set of Acrobat bookmarks are written, in a manner similar to the
+                                           table of contents, requiring two passes of \LaTeX. Some postprocessing
+                                           of the bookmark file (file extension \texttt{.out}) may be needed to
+                                           translate \LaTeX\ codes, since bookmarks must be written in  PDFEncoding.
+                                           To aid this  process, the \texttt{.out} file is not rewritten by \LaTeX\
+                                           if it is edited to contain a line \verb|\let\WriteBookmarks\relax| \\
+bookmarksopen      & boolean   & false   & If Acrobat bookmarks are requested, show them with all the subtrees
+                                           expanded. \\
+bookmarksopenlevel & parameter &         & level (\ci{maxdimen}) to which bookmarks are open \\
+bookmarksnumbered  & boolean   & false   & If Acrobat bookmarks are requested, include section numbers. \\
+bookmarkstype      & text      & toc     & to specify which `toc' file to mimic \\
+CJKbookmarks       & boolean   & false   &
+    This option should be used to produce CJK bookmarks.
+    Package \verb|hyperref|
+    supports both normal and preprocessed mode of the \xpackage{CJK} package;
+    during the creation of bookmarks, it simply replaces CJK's macros
+    with special versions which expand to the corresponding character
+    codes.  Note that without the `unicode' option of hyperref you get
+    PDF files which actually violate the PDF specification because
+    non-Unicode character codes are used -- some PDF readers localized
+    for CJK languages (most notably Acroread itself) support this.
+    Also note that option `CJKbookmarks' cannot be used together
+    with option `unicode'.
+
+    No mechanism is provided to translate non-Unicode bookmarks to
+    Unicode; for portable PDF documents only Unicode encoding should
+    be used.\\
+pdfhighlight       & name      & /I      & How link buttons behave when selected; /I is for inverse (the default);
+                                           the other possibilities are /N (no effect), /O (outline), and /P (inset
+                                           highlighting). \\
+citebordercolor    & RGB color & 0 1 0   & The color of the box around citations \\
+filebordercolor    & RGB color & 0 .5 .5 & The color of the box around links to files \\
+linkbordercolor    & RGB color & 1 0 0   & The color of the box around normal links \\
+menubordercolor    & RGB color & 1 0 0   & The color of the box around Acrobat menu links \\
+urlbordercolor     & RGB color & 0 1 1   & The color of the box around links to URLs \\
+runbordercolor     & RGB color & 0 .7 .7 & Color of border around `run' links \\
+allbordercolors    &           &         & Set all border color options \\
+pdfborder          &           & 0 0 1   & The style of box around links; defaults to a box with lines of 1pt thickness,
+                                           but the colorlinks option resets it to produce no border.
+\end{longtable}
+
+Note that the color of link borders can be specified \emph{only} as 3
+numbers in the range 0..1, giving an RGB color. You cannot use colors
+defined in \TeX. Since version 6.76a this is no longer true.
+Especially with the help of package \xpackage{xcolor} the usual
+color specifications of package \xpackage{(x)color} can be used.
+For further information see description of package \xpackage{hycolor}.
+
+The bookmark commands are stored in a file called
+\textit{jobname}\texttt{.out}. The files is not processed by \LaTeX\ so
+any markup is passed through. You can postprocess this file as needed;
+as an aid for this, the \texttt{.out} file is not overwritten on the
+next \TeX\ run if it is edited to contain the line \\
+
+\begin{verbatim}
+\let\WriteBookmarks\relax
+\end{verbatim}
+
+\subsection{PDF display and information options}
+\noindent\begin{longtable}{@{}>{\ttfamily}l>{\raggedright}p{\widthof{key value}}>{\itshape}lp{7cm}@{}}
+baseurl            & URL     &       & Sets the base URL of the PDF document \\
+pdfpagemode        & text    & empty & Determines how the file is opening in Acrobat; the possibilities are
+                                       \texttt{UseNone}, \texttt{UseThumbs} (show thumbnails), \texttt{UseOutlines}
+                                       (show bookmarks), \texttt{FullScreen}, \texttt{UseOC} (PDF 1.5),
+                                       and \texttt{UseAttachments} (PDF 1.6). If no mode if explicitly chosen, but the
+                                       bookmarks option is set, \texttt{UseOutlines} is used. \\
+pdftitle           & text    &       & Sets the document information Title field \\
+pdfauthor          & text    &       & Sets the document information Author field \\
+pdfsubject         & text    &       & Sets the document information Subject field \\
+pdfcreator         & text    &       & Sets the document information Creator field \\
+pdfproducer        & text    &       & Sets the document information Producer field \\
+pdfkeywords        & text    &       & Sets the document information Keywords field \\
+pdftrapped         & text    & empty & Sets the document information Trapped entry.\\
+&&& Possible values are \texttt{True}, \texttt{False} and \texttt{Unknown}.\\
+&&& An empty value means, the entry is not set.\\
+pdfinfo            & key value list & empty & Alternative interface for setting the
+                                              document information.\\
+pdfview            & text    & XYZ   & Sets the default PDF `view' for each link \\
+pdfstartpage       & text    & 1     & Determines on which page the PDF file is opened. \\
+pdfstartview       & text    & Fit   & Set the startup page view \\
+pdfremotestartview & text    & Fit   & Set the startup page view of remote PDF files \\
+pdfpagescrop       & n n n n &       & Sets the default PDF crop box for pages. This should be a set of four numbers \\
+pdfcenterwindow    & boolean & false & position the document window in the center of the screen \\
+pdfdirection       & text    & empty & direction setting \\
+pdfdisplaydoctitle & boolean & false & display document title instead of
+                                       file name in title bar\\
+pdfduplex          & text    & empty & paper handling option for print dialog\\
+pdffitwindow       & boolean & false & resize document window to fit document size \\
+pdflang            & text    & relax & PDF language identifier (RFC 3066)\\
+pdfmenubar         & boolean & true  & make PDF viewer's menu bar visible \\
+pdfnewwindow       & boolean & false & make links that open another PDF file start a new window \\
+pdfnonfullscreenpagemode
+                   & boolean & empty & page mode setting on exiting
+                                       full-screen mode\\
+pdfnumcopies       & integer & empty & number of printed copies \\
+pdfpagelayout      & text    & empty & set layout of PDF pages \\
+pdfpagelabels      & boolean & true  & set PDF page labels \\
+pdfpagetransition  & text    & empty & set PDF page transition style \\
+pdfpicktraybypdfsize & text & empty & set option for print dialog \\
+pdfprintarea       & text    & empty & set /PrintArea of viewer preferences \\
+pdfprintclip       & text    & empty & set /PrintClip of viewer preferences \\
+pdfprintpagerange  & n n (n n)*
+                             & empty & set /PrintPageRange of viewer
+                                       preferences\\
+pdfprintscaling    & text    & empty & page scaling option for print dialog
+                                       (option /PrintScaling of viewer
+                                       preferences, PDF 1.6);
+                                       valid values are \texttt{None} and
+                                       \texttt{AppDefault} \\
+pdftoolbar         & boolean & true  & make PDF toolbar visible \\
+pdfviewarea        & text    & empty & set /ViewArea of viewer preferences \\
+pdfviewclip        & text    & empty & set /ViewClip of viewer preferences \\
+pdfwindowui        & boolean & true  & make PDF user interface elements visible \\
+unicode            & boolean & false & Unicode encoded PDF strings
+\end{longtable}
+
+Each link in Acrobat carries its own magnification level, which is set
+using PDF coordinate space, which is not the same as \TeX's. The unit
+is bp and the origin is in the lower left corner. See also
+\verb|\hypercalcbp| that is explained on page \pageref{hypercalcbp}.
+pdf\TeX\
+works by supplying default values for \texttt{XYZ} (horizontal $\times$
+vertical $\times$ zoom) and \texttt{FitBH}. However, drivers using
+\texttt{pdfmark} do not supply defaults, so \textsf{hyperref} passes in
+a value of -32768, which causes Acrobat to set (usually) sensible
+defaults. The following are possible values for the \texttt{pdfview},
+\texttt{pdfstartview} and \texttt{pdfremotestartview} parameters.
+
+\noindent\begin{longtable}{>{\ttfamily}l>{\itshape}lp{7cm}}
+XYZ   & left top zoom         & Sets a coordinate and a zoom factor. If any one is null, the source link value is used.
+                                \textit{null null null} will give the same values as the current page. \\
+Fit   &                       & Fits the page to the window. \\
+FitH  & top                   & Fits the width of the page to the window. \\
+FitV  & left                  & Fits the height of the page to the window. \\
+FitR  & left bottom right top & Fits the rectangle specified by the four coordinates to the window. \\
+FitB  &                       & Fits the page bounding box to the window. \\
+FitBH & top                   & Fits the width of the page bounding box to the window. \\
+FitBV & left                  & Fits the height of the page bounding box to the window. \\
+\end{longtable}
+
+The \texttt{pdfpagelayout} can be one of the following values.
+
+\noindent\begin{longtable}{>{\ttfamily}lp{10cm}}
+SinglePage     & Displays a single page; advancing flips the page \\
+OneColumn      & Displays the document in one column; continuous scrolling. \\
+TwoColumnLeft  & Displays the document in two columns, odd-numbered pages to the left. \\
+TwoColumnRight & Displays the document in two columns, odd-numbered pages to the right.\\
+TwoPageLeft    & Displays two pages, odd-numbered pages to the left (since PDF 1.5).\\
+TwoPageRight   & Displays two pages, odd-numbered pages to the right (since PDF 1.5).
+\end{longtable}
+
+Finally, the \texttt{pdfpagetransition} can be one of the following
+values, where \textit{/Di} stands for direction of motion in degrees,
+generally in 90$^{\circ}$\ steps, \textit{/Dm} is a horizontal
+(\texttt{/H}) or vertical (\texttt{/V}) dimension (e.g.\ \texttt{Blinds
+/Dm /V}), and \textit{/M} is for motion, either in (\texttt{/I}) or out
+(\texttt{/O}).
+
+\noindent\begin{longtable}{>{\ttfamily}llp{8.5cm}}
+Blinds   & /Dm    & Multiple lines distributed evenly across the screen sweep in the same direction to reveal the new
+                    page. \\
+Box      & /M     & A box sweeps in or out. \\
+Dissolve &        & The page image dissolves in a piecemeal fashion to reveal the new page. \\
+Glitter  & /Di    & Similar to Dissolve, except the effect sweeps across the screen. \\
+Split    & /Dm /M & Two lines sweep across the screen to reveal the new page. \\
+Wipe     & /Di    & A single line sweeps across the screen to reveal the new page.
+\end{longtable}
+
+\subsection{Option \texttt{pdfinfo}}
+
+The information entries can be set using \texttt{pdftitle},
+\texttt{pdfsubject}, \dots. Option \texttt{pdfinfo} provides an alternative
+interface. It takes a key value list. The key names are the names that
+appear in the PDF information dictionary directly. Known keys such as
+\texttt{Title}, \texttt{Subject}, \texttt{Trapped} and other are mapped to
+options \texttt{pdftitle}, \texttt{subject}, \texttt{trapped}, \dots
+Unknown keys are added to the information dictionary. Their values are text
+strings (see PDF specification).
+Example:
+\begin{quote}
+\begin{verbatim}
+\hypersetup{
+  pdfinfo={
+    Title={My Title},
+    Subject={My Subject},
+    NewKey={Foobar},
+    % ...
+  }
+}
+\end{verbatim}
+\end{quote}
+
+\subsection{Big alphabetical list}
+
+The following is a complete listing of available options for
+\textsf{hyperref}, arranged alphabetically.
+
+\noindent\begin{longtable}{@{}>{\ttfamily}llp{7cm}@{}}
+anchorcolor        & \textit{black}         & set color of anchors \\
+backref            & \textit{false}         & do bibliographical back references \\
+baseurl            & \textit{empty}         & set base URL for document \\
+bookmarks          & \textit{true}          & make bookmarks \\
+bookmarksnumbered  & \textit{false}         & put section numbers in bookmarks \\
+bookmarksopen      & \textit{false}         & open up bookmark tree \\
+bookmarksopenlevel & \ttfamily\ci{maxdimen} & level to which bookmarks are open \\
+bookmarkstype      & \textit{toc}           & to specify which `toc' file to mimic \\
+breaklinks         & \textit{false}         & allow links to break over lines \\
+CJKbookmarks       & \textit{false}         & to produce CJK bookmarks\\
+citebordercolor    & \textit{0 1 0}         & color of border around cites \\
+citecolor          & \textit{green}         & color of citation links \\
+colorlinks         & \textit{false}         & color links \\
+                   & \textit{true}          & (\textsf{tex4ht}, \textsf{dviwindo}) \\
+debug              & \textit{false}         & provide details of anchors defined; same as verbose \\
+destlabel          & \textit{false}         & destinations are named by the first \verb|\label| after the anchor creation \\
+draft              & \textit{false}         & do not do any hyperlinking \\
+dvipdfm            &                        & use \textsf{dvipdfm} backend \\
+dvipdfmx           &                        & use \textsf{dvipdfmx} backend \\
+dvips              &                        & use \textsf{dvips} backend \\
+dvipsone           &                        & use \textsf{dvipsone} backend \\
+dviwindo           &                        & use \textsf{dviwindo} backend \\
+encap              &                        & to set encap character for hyperindex \\
+extension          & \textit{dvi}           & suffix of linked files \\
+filebordercolor    & \textit{0 .5 .5}       & color of border around file links \\
+filecolor          & \textit{cyan}          & color of file links \\
+final              & \textit{true}          & opposite of option draft \\
+frenchlinks        & \textit{false}         & use small caps instead of color for links \\
+hyperfigures       & \textit{false}         & make figures hyper links \\
+hyperfootnotes     & \textit{true}          & set up hyperlinked footnotes \\
+hyperindex         & \textit{true}          & set up hyperlinked indices \\
+hypertex           &                        & use \textsf{Hyper\TeX} backend \\
+hypertexnames      & \textit{true}          & use guessable names for links \\
+implicit           & \textit{true}          & redefine \LaTeX\ internals \\
+latex2html         &                        & use \textsf{\LaTeX2HTML} backend \\
+linkbordercolor    & \textit{1 0 0}         & color of border around links \\
+linkcolor          & \textit{red}           & color of links \\
+linktocpage        & \textit{false}         & make page number, not text, be link on TOC, LOF and LOT \\
+menubordercolor    & \textit{1 0 0}         & color of border around menu links \\
+menucolor          & \textit{red}           & color for menu links \\
+nativepdf          & \textit{false}         & an alias for \textsf{dvips} \\
+naturalnames       & \textit{false}         & use \LaTeX-computed names for links \\
+nesting            & \textit{false}         & allow nesting of links \\
+pageanchor         & \textit{true}          & put an anchor on every page \\
+pagebackref        & \textit{false}         & backreference by page number \\
+pdfauthor          & \textit{empty}         & text for PDF Author field \\
+pdfborder          & \textit{0 0 1}         & width of PDF link border \\
+                   & \textit{0 0 0}         & (\texttt{colorlinks)} \\
+pdfcenterwindow    & \textit{false}         & position the document window in the center of the screen \\
+pdfcreator         & \textit{LaTeX with}    & text for PDF Creator field \\
+                   & \textit{hyperref}      & \\
+                   & \textit{package}       & \\
+pdfdirection       & \textit{empty}         & direction setting \\
+pdfdisplaydoctitle & \textit{false}         & display document title instead
+                                              of file name in title bar\\
+pdfduplex          & \textit{empty}         & paper handling option for
+                                              print dialog\\
+pdffitwindow       & \textit{false}         & resize document window to fit document size \\
+pdfhighlight       & \textit{/I}            & set highlighting of PDF links \\
+pdfinfo            & \textit{empty}         & alternative interface for setting document information\\
+pdfkeywords        & \textit{empty}         & text for PDF Keywords field \\
+pdflang            & \textit{relax}         & PDF language identifier (RFC 3066) \\
+pdfmark            & \textit{false}         & an alias for \textsf{dvips} \\
+pdfmenubar         & \textit{true}          & make PDF viewer's menu bar visible \\
+pdfnewwindow       & \textit{false}         & make links that open another PDF \\
+                   &                        & file start a new window \\
+pdfnonfullscreenpagemode
+                   & \textit{empty}         & page mode setting on exiting
+                                              full-screen mode\\
+pdfnumcopies       & \textit{empty}         & number of printed copies\\
+pdfpagelayout      & \textit{empty}         & set layout of PDF pages \\
+pdfpagemode        & \textit{empty}         & set default mode of PDF display \\
+pdfpagelabels      & \textit{true}          & set PDF page labels \\
+pdfpagescrop       & \textit{empty}         & set crop size of PDF document \\
+pdfpagetransition  & \textit{empty}         & set PDF page transition style \\
+pdfpicktraybypdfsize
+                   & \textit{empty}         & set option for print dialog \\
+pdfprintarea       & \textit{empty}         & set /PrintArea of viewer preferences \\
+pdfprintclip       & \textit{empty}         & set /PrintClip of viewer preferences \\
+pdfprintpagerange  & \textit{empty}         & set /PrintPageRange of viewer preferences \\
+pdfprintscaling    & \textit{empty}         & page scaling option for print dialog \\
+pdfproducer        & \textit{empty}         & text for PDF Producer field \\
+pdfremotestartview & \textit{Fit}           & starting view of remote PDF documents \\
+pdfstartpage       & \textit{1}             & page at which PDF document opens \\
+pdfstartview       & \textit{Fit}           & starting view of PDF document \\
+pdfsubject         & \textit{empty}         & text for PDF Subject field \\
+pdftex             &                        & use \textsf{pdf\TeX} backend \\
+pdftitle           & \textit{empty}         & text for PDF Title field \\
+pdftoolbar         & \textit{true}          & make PDF toolbar visible \\
+pdftrapped         & \textit{empty} & Sets the document information Trapped entry.
+  Possible values are \texttt{True}, \texttt{False} and \texttt{Unknown}.
+  An empty value means, the entry is not set.\\
+pdfview            & \textit{XYZ}           & PDF `view' when on link traversal \\
+pdfviewarea        & \textit{empty}         & set /ViewArea of viewer preferences \\
+pdfviewclip        & \textit{empty}         & set /ViewClip of viewer preferences \\
+pdfwindowui        & \textit{true}          & make PDF user interface elements visible \\
+plainpages         & \textit{false}         & do page number anchors as plain Arabic \\
+ps2pdf             &                        & use \textsf{ps2pdf} backend \\
+raiselinks         & \textit{false}         & raise up links (for \textsf{Hyper\TeX} backend) \\
+runbordercolor     & \textit{0 .7 .7}       & color of border around `run' links \\
+runcolor           & \textit{filecolor}     & color of `run' links\\
+setpagesize        & \textit{true}          & set page size by special driver commands \\
+tex4ht             &                        & use \textsf{\TeX4ht} backend \\
+textures           &                        & use \textsf{Textures} backend \\
+unicode            & \textit{false}         & Unicode encoded pdf strings \\
+urlbordercolor     & \textit{0 1 1}         & color of border around URL links \\
+urlcolor           & \textit{magenta}       & color of URL links \\
+verbose            & \textit{false}         & be chatty \\
+vtex               &                        & use \textsf{VTeX} backend\\
+xetex              &                        & use \textsf{Xe\TeX} backend\\
+\end{longtable}
+
+\section{Additional user macros}
+
+If you need to make references to URLs, or write explicit links, the
+following low-level user macros are provided:
+
+\begin{cmdsyntax}
+\ci{href}\verb|[|\emph{options}\verb|]|\verb|{|\emph{URL}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent The \emph{text} is made a hyperlink to the \emph{URL}; this
+must be a full URL (relative to the base URL, if that is defined). The
+special characters \# and \~{} do \emph{not} need to be escaped in any
+way.
+
+The optional argument \emph{options} recognizes the hyperref options
+\texttt{pdfremotestartview}, \texttt{pdfnewwindow} and the following
+key value options:
+\begin{description}
+\item[\texttt{page}:] Specifies the start page number of remote
+PDF documents. First page is \verb|1|.
+\item[\texttt{ismap}:] Boolean key, if set to |true|, the
+URL should appended by the coordinates as query parameters by
+the PDF viewer.
+\item[\texttt{nextactionraw}:] The value of key |/Next| of
+action dictionaries, see PDF specification.
+\end{description}
+
+\begin{cmdsyntax}
+\ci{url}\verb|{|\emph{URL}\verb|}|
+\end{cmdsyntax}
+
+\noindent Similar to
+\ci{href}\verb|{|\emph{URL}\verb|}{|\ci{nolinkurl}\verb|{|\emph{URL}\verb|}}|.
+Depending on the driver \verb|\href| also tries to detect the link type.
+Thus the result can be a url link, file link, \dots
+
+\begin{cmdsyntax}
+\ci{nolinkurl}\verb|{|\emph{URL}\verb|}|
+\end{cmdsyntax}
+
+\noindent Write \emph{URL} in the same way as \verb|\url|,
+  without creating a hyperlink.
+
+\begin{cmdsyntax}
+\ci{hyperbaseurl}\verb|{|\emph{URL}\verb|}|
+\end{cmdsyntax}
+
+\noindent A base \emph{URL} is established, which is prepended to other
+specified URLs, to make it easier to write portable documents.
+
+\begin{cmdsyntax}
+\ci{hyperimage}\verb|{|\emph{imageURL}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent The link to the image referenced by the URL is inserted, using
+\emph{text} as the anchor.
+
+  For drivers that produce HTML, the image itself is inserted by the
+browser, with the \emph{text} being ignored completely.
+
+\begin{cmdsyntax}
+\ci{hyperdef}\verb|{|\emph{category}\verb|}{|\emph{name}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent A target area of the document (the \emph{text}) is marked, and
+given the name \emph{category.name}
+
+\begin{cmdsyntax}
+\ci{hyperref}\verb|{|\emph{URL}\verb|}{|\emph{category}\verb|}{|\emph{name}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent \emph{text} is made into a link to \emph{URL\#category.name}
+
+\begin{cmdsyntax}
+\ci{hyperref}\verb|[|\emph{label}\verb|]{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent
+\emph{text} is made into a link to the same place as
+\verb|\ref{|\emph{label}\verb|}| would be linked.
+
+\begin{cmdsyntax}
+\ci{hyperlink}\verb|{|\emph{name}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+\begin{cmdsyntax}
+\ci{hypertarget}\verb|{|\emph{name}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent A simple internal link is created with \verb|\hypertarget|,
+with two parameters of an anchor \emph{name}, and anchor
+\emph{text}. \verb|\hyperlink| has two arguments, the name of a
+hypertext object defined somewhere by \verb|\hypertarget|, and the
+\emph{text} which be used as the link on the page.
+
+Note that in HTML parlance, the \verb|\hyperlink| command inserts a
+notional \# in front of each link, making it relative to the current
+testdocument; \verb|\href| expects a full URL.
+
+\begin{cmdsyntax}
+\ci{phantomsection}
+\end{cmdsyntax}
+
+\noindent
+This sets an anchor at this location. It works similar to
+\verb|\hypertarget{}{}| with an automatically chosen anchor name.
+Often it is used in conjunction
+with \verb|\addcontentsline| for sectionlike things (index, bibliography,
+preface). \verb|\addcontentsline| refers to the latest previous location
+where an anchor is set. Example:
+\begin{quote}
+\begin{verbatim}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\indexname}
+\printindex
+\end{verbatim}
+\end{quote}
+Now the entry in the table of contents (and bookmarks) for the
+index points to the start of the index page, not to a location
+before this page.
+
+\begin{cmdsyntax}
+\ci{autoref}\verb|{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\noindent
+This is a replacement for the usual \verb|\ref| command that places a
+contextual label in front of the reference. This gives your users a
+bigger target to click for hyperlinks (e.g.\ `section 2' instead of
+merely the number `2').
+
+The label is worked out from the context of the original \verb|\label|
+command by \textsf{hyperref} by using the macros listed below (shown
+with their default values). The macros can be (re)defined in documents
+using \verb|\(re)newcommand|; note that some of these macros are already
+defined in the standard document classes. The mixture of lowercase and
+uppercase initial letters is deliberate and corresponds to the author's
+practice.
+
+For each macro below, \textsf{hyperref} checks \ci{*autorefname} before
+\ci{*name}.  For instance, it looks for \ci{figureautorefname} before
+\ci{figurename}.
+
+\noindent\begin{longtable}{lp{10cm}}
+\textit{Macro}         & \textit{Default} \\
+\ci{figurename}        & Figure \\
+\ci{tablename}         & Table \\
+\ci{partname}          & Part \\
+\ci{appendixname}      & Appendix \\
+\ci{equationname}      & Equation \\
+\ci{Itemname}          & item \\
+\ci{chaptername}       & chapter \\
+\ci{sectionname}       & section \\
+\ci{subsectionname}    & subsection \\
+\ci{subsubsectionname} & subsubsection \\
+\ci{paragraphname}     & paragraph \\
+\ci{Hfootnotename}     & footnote \\
+\ci{AMSname}           & Equation \\
+\ci{theoremname}       & Theorem\\
+\ci{page}              & page\\
+\end{longtable}
+
+Example for a redefinition if \textsf{babel} is used:
+\begin{quote}
+\begin{verbatim}
+\usepackage[ngerman]{babel}
+\addto\extrasngerman{%
+  \def\subsectionautorefname{Unterkapitel}%
+}
+\end{verbatim}
+\end{quote}
+
+Hint: \cs{autoref} works via the counter name that the reference
+is based on. Sometimes \cs{autoref} chooses the wrong name, if
+the counter is used for different things. For example, it happens
+with \cs{newtheorem} if a lemma shares a counter with theorems.
+Then package \xpackage{aliascnt} provides a method to generate a
+simulated second counter that allows the differentiation between
+theorems and lemmas:
+\begin{quote}
+\begin{verbatim}
+\documentclass{article}
+
+\usepackage{aliascnt}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+
+\providecommand*{\lemmaautorefname}{Lemma}
+
+\begin{document}
+
+We will use \autoref{a} to prove \autoref{b}.
+
+\begin{lemma}\label{a}
+  Nobody knows.
+\end{lemma}
+
+\begin{theorem}\label{b}
+  Nobody is right.
+\end{theorem}.
+
+\end{document}
+\end{verbatim}
+\end{quote}
+
+\begin{cmdsyntax}
+\ci{autopageref}\verb|{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\noindent
+It replaces \verb|\pageref| and adds the name for page in front of
+the page reference. First \ci{pageautorefname} is checked before
+\ci{pagename}.
+
+For instances where you want a reference to use the correct counter, but
+not to create a link, there are starred forms:
+
+\begin{cmdsyntax}
+\ci{ref*}\verb|{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{pageref*}\verb|{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{autoref*}\verb|{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{autopageref*}\verb|{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+A typical use would be to write
+\begin{verbatim}
+\hyperref[other]{that nice section (\ref*{other}) we read before}
+\end{verbatim}
+
+We want \verb|\ref*{other}| to generate the correct number, but not to
+form a link, since we do this ourselves with \ci{hyperref}.
+
+\begin{cmdsyntax}
+\ci{pdfstringdef}\verb|{|\emph{macroname}\verb|}{|\emph{\TeX string}\verb|}|
+\end{cmdsyntax}
+
+\ci{pdfstringdef} returns a macro containing the PDF string. (Currently
+this is done globally, but do not rely on it.) All the following tasks,
+definitions and redefinitions are made in a group to keep them local:
+
+\begin{itemize}
+\item Switching to PD1 or PU encoding
+\item Defining the \Quote{octal sequence commands} (\verb|\345|): \verb|\edef\3{\string\3}|
+\item Special glyphs of \TeX: \verb|\{|, \verb|\%|, \verb|\&|, \verb|\space|, \verb|\dots|, etc.
+\item National glyphs (\textsf{german.sty}, \textsf{french.sty}, etc.)
+\item Logos: \verb|\TeX|, \verb|\eTeX|, \verb|\MF|, etc.
+\item Disabling commands that do not provide useful functionality in bookmarks:
+\verb|\label|, \verb|\index|, \verb|\glossary|, \verb|\discretionary|, \verb|\def|, \verb|\let|, etc.
+\item \LaTeX's font commands like \verb|\textbf|, etc.
+\item Support for \verb|\xspace| provided by the \xpackage{xspace} package
+\end{itemize}
+
+In addition, parentheses are protected to avoid the danger of unsafe
+unbalanced parentheses in the PDF string. For further details, see Heiko
+Oberdiek's Euro\TeX\ paper distributed with \textsf{hyperref}.
+
+\subsection{Bookmark macros}
+
+\subsubsection{Setting bookmarks}
+
+Usually \textsf{hyperref} automatically adds bookmarks for
+\verb|\section| and similar macros. But they can also set manually.
+
+\begin{cmdsyntax}
+\ci{pdfbookmark}\verb|[|\emph{level}\verb|]{|text\verb|}{|\emph{name}\verb|}|
+\end{cmdsyntax}
+creates a bookmark with the specified text and at the given level (default is
+0). As name for the internal anchor name is used (in conjunction with
+level). Therefore the name must be unique (similar to \verb|\label|).
+
+\begin{cmdsyntax}
+\ci{currentpdfbookmark}\verb|{|\emph{text}\verb|}{|\emph{name}\verb|}|
+\end{cmdsyntax}
+creates a bookmark at the current level.
+
+\begin{cmdsyntax}
+\ci{subpdfbookmark}\verb|{|\emph{text}\verb|}{|\emph{name}\verb|}|
+\end{cmdsyntax}
+creates a bookmark one step down in the bookmark hierarchy.
+Internally the current level is increased by one.
+
+\begin{cmdsyntax}
+\ci{belowpdfbookmark}\verb|{|\emph{text}\verb|}{|\emph{name}\verb|}|
+\end{cmdsyntax}
+creates a bookmark below the current bookmark level. However after the
+command the current bookmark level has not changed.
+
+\noindent \textbf{Hint:} Package \textsf{bookmark} replaces
+\textsf{hyperref}'s bookmark organization by a new algorithm:
+\begin{itemize}
+\item Usually only one \LaTeX\ run is needed.
+\item More control over the bookmark appearance (color, font).
+\item Different bookmark actions are supported (external file links,
+  URLs, \dots).
+\end{itemize}
+Therefore I recommend using this package.
+
+\subsubsection{Replacement macros}
+
+\textsf{hyperref} takes the text for bookmarks from the arguments of
+commands like \ci{section}, which can contain things like math, colors,
+or font changes, none of which will display in bookmarks as is.
+
+\begin{cmdsyntax}
+\ci{texorpdfstring}\verb|{|\emph{\TeX string}\verb|}{|\emph{PDFstring}\verb|}|
+\end{cmdsyntax}
+
+For example,
+\begin{verbatim}
+\section{Pythagoras:
+  \texorpdfstring{$ a^2 + b^2 = c^2 $}{%
+    a\texttwosuperior\ + b\texttwosuperior\ =
+    c\texttwosuperior
+  }%
+}
+\section{\texorpdfstring{\textcolor{red}}{}{Red} Mars}
+\end{verbatim}
+
+\ci{pdfstringdef} executes the hook \pdfstringdefPreHook before it
+expands the string. Therefore, you can use this hook to perform
+additional tasks or to disable additional commands.
+
+\begin{verbatim}
+\expandafter\def\expandafter\pdfstringdefPreHook
+\expandafter{%
+  \pdfstringdefPreHook
+  \renewcommand{\mycommand}[1]{}%
+}
+\end{verbatim}
+
+However, for disabling commands, an easier way is via
+\ci{pdfstringdefDisableCommands}, which adds its argument to the
+definition of \ci{pdfstringdefPreHook} (`@' can here be used as letter in
+command names):
+
+\begin{verbatim}
+\pdfstringdefDisableCommands{%
+  \let~\textasciitilde
+  \def\url{\pdfstringdefWarn\url}%
+  \let\textcolor\@gobble
+}
+\end{verbatim}
+
+\subsection{Utility macros}
+
+\label{hypercalcbp}
+\begin{cmdsyntax}
+\ci{hypercalcbp}\verb|{|\emph{dimen specification}\verb|}|
+\end{cmdsyntax}
+\noindent
+\verb|\hypercalcbp| takes a \TeX\ dimen specification and
+converts it to bp and returns the number without the unit.
+This is useful for options \verb|pdfview|, \verb|pdfstartview|
+and \verb|pdfremotestartview|.
+Example:
+\begin{quote}
+\begin{verbatim}
+\hypersetup{
+  pdfstartview={FitBH \hypercalcbp{\paperheight-\topmargin-1in
+    -\headheight-\headsep}
+}
+\end{verbatim}
+\end{quote}
+The origin of the PDF coordinate system is the lower left corner.
+
+Note, for calculations you need either package \xpackage{calc} or
+\hologo{eTeX}. Nowadays the latter should automatically be enabled
+for \hologo{LaTeX} formats. Users without \hologo{eTeX}, please, look
+in the source documentation \verb|hyperref.dtx| for further
+limitations.
+
+Also \cs{hypercalcbp} cannot be used in option specifications
+of \cs{documentclass} and \cs{usepackage}, because
+\hologo{LaTeX} expands the option lists of these commands. However
+package \xpackage{hyperref} is not yet loaded and an undefined control
+sequence error would arise.
+
+\section{Acrobat-specific behavior}
+If you want to access the menu options of Acrobat Reader or Exchange, the following
+macro is provided in the appropriate drivers:
+
+\begin{cmdsyntax}
+\ci{Acrobatmenu}\verb|{|\emph{menuoption}\verb|}{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+\noindent The \emph{text} is used to create a button which activates the appropriate \emph{menuoption}. The following table lists the option names you can use---comparison of this with the menus in Acrobat Reader or Exchange will show what they do. Obviously some are only appropriate to Exchange.
+
+\medskip
+\noindent\begin{longtable}{lp{9cm}}
+File                          & Open, Close, Scan, Save, SaveAs, Optimizer:SaveAsOpt, Print, PageSetup, Quit \\
+File$\rightarrow$Import       & ImportImage, ImportNotes, AcroForm:ImportFDF \\
+File$\rightarrow$Export       & ExportNotes, AcroForm:ExportFDF \\
+File$\rightarrow$DocumentInfo & GeneralInfo, OpenInfo, FontsInfo, SecurityInfo, Weblink:Base, AutoIndex:DocInfo \\
+File$\rightarrow$Preferences  & GeneralPrefs, NotePrefs, FullScreenPrefs, Weblink:Prefs, AcroSearch:Preferences(Windows)
+                                or, AcroSearch:Prefs(Mac), Cpt:Capture \\
+Edit                          & Undo, Cut, Copy, Paste, Clear, SelectAll, Ole:CopyFile, TouchUp:TextAttributes,
+                                TouchUp:FitTextToSelection, TouchUp:ShowLineMarkers, TouchUp:ShowCaptureSuspects,
+                                TouchUp:FindSuspect, \\
+                              & Properties \\
+Edit$\rightarrow$Fields       & AcroForm:Duplicate, AcroForm:TabOrder \\
+Document                      & Cpt:CapturePages, AcroForm:Actions, CropPages, RotatePages, InsertPages, ExtractPages,
+                                ReplacePages, DeletePages, NewBookmark, SetBookmarkDest, CreateAllThumbs,
+                                DeleteAllThumbs \\
+View                          & ActualSize, FitVisible, FitWidth, FitPage, ZoomTo, FullScreen, FirstPage, PrevPage,
+                                NextPage, LastPage, GoToPage, GoBack, GoForward, SinglePage, OneColumn, TwoColumns,
+                                ArticleThreads, PageOnly, ShowBookmarks, ShowThumbs \\
+Tools                         & Hand, ZoomIn, ZoomOut, SelectText, SelectGraphics, Note, Link, Thread, AcroForm:Tool,
+                                Acro\_Movie:MoviePlayer, TouchUp:TextTool, Find, FindAgain, FindNextNote,
+                                CreateNotesFile \\
+Tools$\rightarrow$Search      & AcroSrch:Query, AcroSrch:Indexes, AcroSrch:Results, AcroSrch:Assist, AcroSrch:PrevDoc,
+                                AcroSrch:PrevHit, AcroSrch:NextHit, AcroSrch:NextDoc \\
+Window                        & ShowHideToolBar, ShowHideMenuBar, ShowHideClipboard, Cascade, TileHorizontal,
+                                TileVertical, CloseAll \\
+Help                          & HelpUserGuide, HelpTutorial, HelpExchange, HelpScan, HelpCapture, HelpPDFWriter,
+                                HelpDistiller, HelpSearch, HelpCatalog, HelpReader, Weblink:Home \\
+Help(Windows)                 & About
+\end{longtable}
+
+\section{PDF and HTML forms}
+You must put your fields inside a \texttt{Form} environment (only one per file).
+
+There are six macros to prepare fields:
+
+\begin{cmdsyntax}
+\ci{TextField}\verb|[|\emph{parameters}\verb|]{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{CheckBox}\verb|[|\emph{parameters}\verb|]{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{ChoiceMenu}\verb|[|\emph{parameters}\verb|]{|\emph{label}\verb|}{|\emph{choices}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{PushButton}\verb|[|\emph{parameters}\verb|]{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{Submit}\verb|[|\emph{parameters}\verb|]{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{Reset}\verb|[|\emph{parameters}\verb|]{|\emph{label}\verb|}|
+\end{cmdsyntax}
+
+The way forms and their labels are laid out is determined by:
+\begin{cmdsyntax}
+\ci{LayoutTextField}\verb|{|\emph{label}\verb|}{|\emph{field}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{LayoutChoiceField}\verb|{|\emph{label}\verb|}{|\emph{field}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{LayoutCheckField}\verb|{|\emph{label}\verb|}{|\emph{field}\verb|}|
+\end{cmdsyntax}
+
+These macros default to \#1 \#2
+
+What is actually shown in as the field is determined by:
+\begin{cmdsyntax}
+\ci{MakeRadioField}\verb|{|\emph{width}\verb|}{|\emph{height}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{MakeCheckField}\verb|{|\emph{width}\verb|}{|\emph{height}\verb|}|
+\end{cmdsyntax}
+\begin{cmdsyntax}
+\ci{MakeTextField}\verb|{|\emph{width}\verb|}{|\emph{height}\verb|}|
+\end{cmdsyntax}
+\begin{cmdsyntax}
+\ci{MakeChoiceField}\verb|{|\emph{width}\verb|}{|\emph{height}\verb|}|
+\end{cmdsyntax}
+
+\begin{cmdsyntax}
+\ci{MakeButtonField}\verb|{|\emph{text}\verb|}|
+\end{cmdsyntax}
+
+These macros default to \verb|\vbox to #2{\hbox to #1{\hfill}\vfill}|, except the
+last, which defaults to \#1; it is used for buttons, and the special \ci{Submit} and \ci{Reset}
+macros.
+
+You may also want to redefine the following macros:
+\begin{verbatim}
+\def\DefaultHeightofSubmit{12pt}
+\def\DefaultWidthofSubmit{2cm}
+\def\DefaultHeightofReset{12pt}
+\def\DefaultWidthofReset{2cm}
+\def\DefaultHeightofCheckBox{0.8\baselineskip}
+\def\DefaultWidthofCheckBox{0.8\baselineskip}
+\def\DefaultHeightofChoiceMenu{0.8\baselineskip}
+\def\DefaultWidthofChoiceMenu{0.8\baselineskip}
+\def\DefaultHeightofText{\baselineskip}
+\def\DefaultHeightofTextMultiline{4\baselineskip}
+\def\DefaultWidthofText{3cm}
+\end{verbatim}
+
+\subsection{Forms environment parameters}
+
+\smallskip\noindent\begin{longtable}{>{\ttfamily}l>{\itshape}lp{9cm}}
+action   & URL  & The URL that will receive the form data if a \textsf{Submit} button is included in the form \\
+encoding & name & The encoding for the string set to the URL; FDF-encoding is usual, and \texttt{html} is the only
+                  valid value \\
+method   & name & Used only when generating HTML; values can be \texttt{post} or \texttt{get} \\
+\end{longtable}
+
+\subsection{Forms optional parameters}
+Note that all colors must be expressed as RGB triples, in the range 0..1 (i.e.\ \texttt{color=0 0
+0.5})
+
+\smallskip\noindent\begin{longtable}{>{\ttfamily}ll>{\itshape}ll}
+accesskey       & key     &       & (as per HTML) \\
+align           & number  & 0     & alignment within text field; 0 is left-aligned,\\*
+                &         &       & 1 is centered, 2 is right-aligned. \\
+altname         & name    &       & alternative name,\\*
+                &         &       & the name shown in the user interface\\
+backgroundcolor &         &       & color of box \\
+bordercolor     &         &       & color of border \\
+bordersep       &         &       & box border gap \\
+borderwidth     &         & 1     & width of box border, the value is a dimension\\
+                &         &       & or a number with default unit bp\\
+calculate       &         &       & JavaScript code to calculate the value of the field \\
+charsize        & dimen   &       & font size of field text \\
+checkboxsymbol  & char    & 4 (\ding{\number`4}) & symbol used for check boxes (ZapfDingbats), \\
+&&& the value is a character or \cs{ding}\verb|{|\texttt{\itshape number}\verb|}|, \\
+&&& see package \xpackage{pifont} from bundle \xpackage{psnfss} \\
+checked         & boolean & false & whether option selected by default \\
+color           &         &       & color of text in box \\
+combo           & boolean & false & choice list is `combo' style \\
+default         &         &       & default value \\
+disabled        & boolean & false & field disabled \\
+format          &         &       & JavaScript code to format the field \\
+height          & dimen   &       & height of field box \\
+hidden          & boolean & false & field hidden \\
+keystroke       &         &       & JavaScript code to control the keystrokes on entry \\
+mappingname     & name    &       & the mapping name to be used when exporting\\*
+                &         &       & the field data\\
+maxlen          & number  & 0     & number of characters allowed in text field \\
+menulength      & number  & 4     & number of elements shown in list \\
+multiline       & boolean & false & whether text box is multiline \\
+name            & name    &       & name of field (defaults to label) \\
+onblur          &         &       & JavaScript code \\
+onchange        &         &       & JavaScript code \\
+onclick         &         &       & JavaScript code \\
+ondblclick      &         &       & JavaScript code \\
+onfocus         &         &       & JavaScript code \\
+onkeydown       &         &       & JavaScript code \\
+onkeypress      &         &       & JavaScript code \\
+onkeyup         &         &       & JavaScript code \\
+onmousedown     &         &       & JavaScript code \\
+onmousemove     &         &       & JavaScript code \\
+onmouseout      &         &       & JavaScript code \\
+onmouseover     &         &       & JavaScript code \\
+onmouseup       &         &       & JavaScript code \\
+onselect        &         &       & JavaScript code \\
+password        & boolean & false & text field is `password' style \\
+popdown         & boolean & false & choice list is `popdown' style \\
+radio           & boolean & false & choice list is `radio' style \\
+radiosymbol     & char    & H (\ding{\number`H}) & symbol used for radio fields (ZapfDingbats), \\
+&&& the value is a character or \cs{ding}\verb|{|\texttt{\itshape number}\verb|}|, \\
+&&& see package \xpackage{pifont} from bundle \xpackage{psnfss} \\
+readonly        & boolean & false & field is readonly \\
+rotation        & number  & 0     & rotation of the widget annotation \\*
+                &         &       & (degree, counterclockwise, multiple of 90)\\
+tabkey          &         &       & (as per HTML) \\
+validate        &         &       & JavaScript code to validate the entry \\
+value           &         &       & initial value \\
+width           & dimen   &       & width of field box
+\end{longtable}
+
+\section{Defining a new driver}
+A hyperref driver has to provide definitions for eight macros:
+
+\smallskip
+\noindent 1. \verb|\hyper@anchor|
+
+\noindent 2. \verb|\hyper@link|
+
+\noindent 3. \verb|\hyper@linkfile|
+
+\noindent 4. \verb|\hyper@linkurl|
+
+\noindent 5. \verb|\hyper@anchorstart|
+
+\noindent 6. \verb|\hyper@anchorend|
+
+\noindent 7. \verb|\hyper@linkstart|
+
+\noindent 8. \verb|\hyper@linkend|
+\smallskip
+
+The draft option defines the macros as follows
+\qquad\begin{verbatim}
+\let\hyper@@anchor\@gobble
+\gdef\hyper@link##1##2##3{##3}%
+\def\hyper@linkurl##1##2{##1}%
+\def\hyper@linkfile##1##2##3{##1}%
+\let\hyper@anchorstart\@gobble
+\let\hyper@anchorend\@empty
+\let\hyper@linkstart\@gobbletwo
+\let\hyper@linkend\@empty
+\end{verbatim}
+
+\section{Special support for other packages}
+
+Package \xpackage{hyperref} aims to cooperate with other packages, but there are
+several possible sources for conflict, such as
+
+\begin{itemize}
+
+\item Packages that manipulate the bibliographic mechanism. Peter
+William's \xpackage{harvard} package is supported. However, the
+recommended package is Patrick Daly's \xpackage{natbib} package that has
+specific \xpackage{hyperref} hooks to allow reliable interaction. This
+package covers a very wide variety of layouts and citation styles, all
+of which work with \xpackage{hyperref}.
+
+\item Packages that typeset the contents of the \ci{label} and \ci{ref}
+macros, such as \xpackage{showkeys}. Since the \xpackage{hyperref} package
+redefines these commands, you must set \texttt{implicit=false} for these
+packages to work.
+
+\item Packages that do anything serious with the index.
+\end{itemize}
+
+The \xpackage{hyperref} package is distributed with variants on two useful
+packages designed to work especially well with it. These are \xpackage{xr}
+and \xpackage{minitoc}, which support crossdocument links using \hologo{LaTeX}'s
+normal \cs{label}/\cs{ref} mechanisms and per-chapter tables of contents,
+respectively.
+
+\section{History and acknowledgments}
+
+The original authors of \textsf{hyperbasics.tex} and
+\textsf{hypertex.sty}, from which this package descends, are Tanmoy
+Bhattacharya and Thorsten Ohl. Package \xpackage{hyperref}
+started as a simple port of their work to \hologo{LaTeXe} standards, but
+eventually I rewrote nearly everything, because I didn't understand a
+lot of the original, and was only interested in getting it to work with
+\hologo{LaTeX}. I would like to thank Arthur Smith, Tanmoy Bhattacharya, Mark
+Doyle, Paul Ginsparg, David Carlisle, T.\ V.\ Raman and Leslie Lamport
+for comments, requests, thoughts and code to get the package into its
+first useable state. Various other people are mentioned at the point in
+the source where I had to change the code in later versions because of
+problems they found.
+
+Tanmoy found a great many of the bugs, and (even better) often provided
+fixes, which has made the package more robust. The days spent on
+Rev\TeX\ are entirely due to him! The investigations of Bill Moss
+into the later versions including
+native PDF support uncovered a good many bugs, and his testing is
+appreciated. Hans Hagen provided a lot of
+insight into PDF.
+
+Berthold Horn provided help, encouragement and sponsorship for the
+\textsf{dvipsone} and \textsf{dviwindo} drivers. Sergey Lesenko provided
+the changes needed for \textsf{dvipdf}, and \Hanh{} supplied all the
+information needed for \textsf{pdftex}. Patrick Daly kindly updated his
+\xpackage{natbib} package to allow easy integration with
+\xpackage{hyperref}. Michael Mehlich's \xpackage{hyper} package (developed
+in parallel with \textsf{hyperref}) showed me solutions for some
+problems. Hopefully the two packages will combine one day.
+
+The forms creation section owes a great deal to: T.\ V.\ Raman, for
+encouragement, support and ideas; Thomas Merz, whose book \emph{Web
+Publishing with Acrobat/PDF} provided crucial insights; D.\ P.\ Story,
+whose detailed article about pdfmarks and forms solved many practical
+problems; and Hans Hagen, who explained how to do it in \textsf{pdftex}.
+
+Steve Peter recreated the manual source in July 2003 after it had been
+lost.
+
+Especial extra thanks to David Carlisle for the \xpackage{backref} module,
+the ps2pdf and dviwindo support, frequent general rewrites of my bad
+code, and for working on changes to the \xpackage{xr} package to suit
+\xpackage{hyperref}.
+
+\begingroup
+  \makeatletter
+  \let\chapter=\section
+  % subsections goes into bookmarks but not toc
+  \hypersetup{bookmarksopenlevel=1}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+  % The \section command acts as \subsection.
+  % Additionally the title is converted to lowercase except
+  % for the first letter.
+  \def\section{%
+    \let\section\lc@subsection
+    \lc@subsection
+  }
+  \def\lc@subsection{%
+    \@ifstar{\def\mystar{*}\lc@sec}%
+            {\let\mystar\@empty\lc@sec}%
+  }
+  \def\lc@sec#1{%
+    \lc@@sec#1\@nil
+  }
+  \def\lc@@sec#1#2\@nil{%
+    \begingroup
+      \def\a{#1}%
+      \lowercase{%
+        \edef\x{\endgroup
+          \noexpand\subsection\mystar{\a#2}%
+        }%
+      }%
+    \x
+  }
+  \include{fdl}
+\endgroup
+
+\end{document}

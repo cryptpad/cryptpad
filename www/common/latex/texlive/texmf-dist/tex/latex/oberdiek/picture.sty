@@ -1,0 +1,237 @@
+%%
+%% This is file `picture.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% picture.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: picture
+%% Version: 2009/10/11 v1.3
+%% 
+%% Copyright (C) 2006-2009 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file picture.dtx
+%% and the derived files
+%%    picture.sty, picture.pdf, picture.ins, picture.drv,
+%%    picture-example.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{picture}%
+  [2009/10/11 v1.3 Dimens for picture macros (HO)]%
+\def\Pc@calcname{calc}
+\def\Pc@etexname{etex}
+\def\Pc@plainname{plain}
+\@ifpackageloaded{calc}{%
+  \let\Pc@method\Pc@calcname
+}{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname dimexpr\endcsname\relax
+    \let\Pc@method\Pc@plainname
+  \else
+    \let\Pc@method\Pc@etexname
+  \fi
+}
+\DeclareOption{plain}{%
+  \let\Pc@method\Pc@plainname
+}
+\DeclareOption{etex}{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname dimexpr\endcsname\relax
+    \PackageError{picture}{%
+      e-TeX is not available%
+    }\@ehc
+  \else
+    \let\Pc@method\Pc@etexname
+  \fi
+}
+\DeclareOption{calc}{%
+  \let\Pc@method\Pc@calcname
+}
+\ProcessOptions*
+\begingroup
+  \let\on@line\@empty
+  \PackageInfo{picture}{Calculation method: \Pc@method}%
+\endgroup
+\ifx\Pc@method\Pc@calcname
+  \RequirePackage{calc}%
+\fi
+\ifx\Pc@method\Pc@calcname
+  \def\Pc@tokslength#1{%
+    \begingroup
+      \let\calc@error\Pc@calc@error
+      \setlength\dimen@{#1\unitlength}\Pc@next\Pc@nil{#1}%
+  }%
+  \let\PcOrg@calc@error\calc@error
+  \@ifpackagelater{calc}{2007/08/22}{% v4.3
+    \def\Pc@calc@error#1{%
+      \expandafter\ifx\expandafter\unitlength\noexpand#1\relax
+        \def\calc@next##1!{%
+          \endgroup
+          \aftergroup\afterassignment
+          \aftergroup\Pc@next
+        }%
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \calc@next{#1}%
+      }{%
+        \PcOrg@calc@error{#1}%
+      }%
+    }%
+  }{%
+    \def\Pc@calc@error#1{%
+      \expandafter\ifx\expandafter\unitlength\noexpand#1\relax
+        \def\calc@next##1!{%
+          \endgroup
+          \aftergroup\afterassignment
+          \aftergroup\Pc@next
+        }%
+        \expandafter\@gobble
+      \else
+        \expandafter\@firstofone
+      \fi
+      {%
+        \PcOrg@calc@error{#1}%
+      }%
+    }%
+  }%
+\fi
+\ifx\Pc@method\Pc@etexname
+  \def\Pc@tokslength#1{%
+    \begingroup
+      \afterassignment\Pc@next
+      \dimen@=\dimexpr#1\unitlength\Pc@nil{#1}%
+  }%
+\fi
+\ifx\Pc@method\Pc@plainname
+  \def\Pc@tokslength#1{%
+    \begingroup
+      \afterassignment\Pc@next
+      \dimen@=#1\unitlength\Pc@nil{#1}%
+  }%
+\fi
+\def\Pc@next#1\Pc@nil#2{%
+  \ifx\\#1\\%
+    \endgroup
+    \Pc@addtoks{{#2}}%
+  \else
+    \expandafter\endgroup
+    \expandafter\Pc@addtoks\expandafter{%
+      \expandafter{\the\dimen@\@gobble}%
+    }%
+  \fi
+}
+\let\Pc@nil\message
+\def\Pc@addtoks#1{%
+  \toks@=\expandafter{\the\toks@#1}%
+}
+\def\Pc@init#1{%
+  \begingroup
+    \toks@={#1}%
+}
+\def\Pc@finish#1{%
+  \expandafter\endgroup
+  \expandafter#1\the\toks@
+}
+\def\picture@redefine#1#2{%
+  \begingroup
+    \edef\reserved@a{%
+      \noexpand\noexpand
+      \expandafter\noexpand
+          \csname PcOrg@\expandafter\@gobble\string#1\endcsname
+    }%
+    \toks0{#1}%
+    \Pc@first#2&0%
+}
+\def\Pc@first#1&{%
+  \toks1={#1}%
+  \toks2={\Pc@init{#1}}%
+  \Pc@scanlength
+}
+\def\Pc@scanlength#1{%
+  \ifcase#1 %
+    \expandafter\Pc@last
+  \else
+    \toks1=\expandafter{\the\toks1 ###1}%
+    \toks2=\expandafter{\the\toks2 \Pc@tokslength{###1}}%
+    \expandafter\Pc@scannext
+  \fi
+}
+\def\Pc@scannext#1&{%
+  \ifx\\#1\\%
+  \else
+    \toks1=\expandafter{\the\toks1 #1}%
+    \toks2=\expandafter{\the\toks2 \Pc@addtoks{#1}}%
+  \fi
+  \Pc@scanlength
+}
+\def\Pc@last{%
+  \edef\x{%
+    \endgroup
+    \let\reserved@a\the\toks0 %
+    \def\the\toks0 \the\toks1 {%
+      \the\toks2 %
+      \noexpand\Pc@finish\reserved@a
+    }%
+  }%
+  \x
+}
+\picture@redefine\@picture{(&1,&2)(&3,&4)}
+\picture@redefine\put{(&1,&2)}
+\picture@redefine\multiput{(&1,&2)}
+\picture@redefine\@multiput{(&1,&2)}
+\picture@redefine\line{(#1,#2)&3}
+\picture@redefine\vector{(#1,#2)&3}
+\picture@redefine\dashbox{&1(&2,&3)}
+\picture@redefine\@circle{&1}
+\picture@redefine\@dot{&1}
+\picture@redefine\@bezier{#1(&2,&3)(&4,&5)(&6,&7)}
+\picture@redefine\@imakepicbox{(&1,&2)}
+\@ifpackageloaded{pspicture}{%
+  \picture@redefine\@oval{[&1](&2,&3)}%
+  \picture@redefine\Line{(&1,&2)}%
+  \picture@redefine\Curve{(&1,&2)}%
+  \picture@redefine\Vector{(&1,&2)}%
+}{%
+  \picture@redefine\@oval{(&1,&2)}%
+}
+\def\Pc@checkpackage#1{%
+  \@ifpackageloaded{#1}{%
+  }{%
+    \AtBeginDocument{%
+      \@ifpackageloaded{#1}{%
+        \PackageWarningNoLine{picture}{%
+          Package `#1' is loaded after `picture'.\MessageBreak
+          Load package `picture' afterwards to get full support%
+          \MessageBreak
+          of its additional syntax with length specifications%
+        }%
+      }{}%
+    }%
+  }%
+}
+\Pc@checkpackage{pict2e}
+\Pc@checkpackage{pspicture}
+\endinput
+%%
+%% End of file `picture.sty'.

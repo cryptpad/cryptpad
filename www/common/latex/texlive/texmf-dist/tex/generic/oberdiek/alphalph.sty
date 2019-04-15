@@ -1,0 +1,470 @@
+%%
+%% This is file `alphalph.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% alphalph.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: alphalph
+%% Version: 2011/05/13 v2.4
+%% 
+%% Copyright (C) 1999, 2006-2008, 2010, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file alphalph.dtx
+%% and the derived files
+%%    alphalph.sty, alphalph.pdf, alphalph.ins, alphalph.drv,
+%%    alphalph-test1.tex, alphalph-test2.tex, alphalph-test3.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@alphalph.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{alphalph}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@alphalph.sty\endcsname
+\ProvidesPackage{alphalph}%
+  [2011/05/13 v2.4 Convert numbers to letters (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname AlPh@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\AlPh@AtEnd{%
+    \AlPh@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\edef\AlPh@AtEnd{\AlPh@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input intcalc.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{intcalc}[2007/09/09]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \catcode124=9 % '!': ignore
+  \catcode43=14 % '+': comment
+\else
+  \catcode124=14 % '!': comment
+  \catcode43=9   % '+': ignore
+\fi
+\def\AlPh@Error#1{%
+  \begingroup
+    \escapechar=92 % backslash
+    \@PackageError{alphalph}{#1}\@ehc
+  \endgroup
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @ifdefinable\endcsname\relax
+  \def\AlPh@IfDefinable#1#2{%
+    \ifcase\ifx#1\@undefined\else\ifx#1\relax\else1\fi\fi0 %
+      #2%
+    \else
+      \AlPh@Error{%
+        Command \string#1 already defined%
+      }%
+    \fi
+  }%
+\else
+  \let\AlPh@IfDefinable\@ifdefinable
+\fi
+\long\def\@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+\expandafter\ifx\csname @gobblefour\endcsname\relax
+  \long\def\@gobblefour#1#2#3#4{}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname kernel@ifnextchar\endcsname\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @ifnextchar\endcsname\relax
+    \def\AlPh@IfOptArg#1#2{%
+      \def\AlPh@TempA{#1}%
+      \def\AlPh@TempB{#2}%
+      \futurelet\AlPh@Token\AlPh@IfOptArgNext
+    }%
+    \let\AlPh@BracketLeft=[%]
+    \def\AlPh@IfOptArgNext{%
+      \ifx\AlPh@Token\AlPh@BracketLeft
+        \expandafter\AlPh@TempA
+      \else
+        \expandafter\AlPh@TempB
+      \fi
+    }%
+  \else
+    \def\AlPh@IfOptArg{\@ifnextchar[}%]
+  \fi
+\else
+  \def\AlPh@IfOptArg{\kernel@ifnextchar[}%]
+\fi
+\def\alphalph@Alph#1{%
+  \ifcase#1%
+    @%
+  \or A\or B\or C\or D\or E\or F\or G\or H\or I\or J\or K\or L\or M%
+  \or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or Y\or Z%
+  \else
+    \AlPh@ctrerr
+    @%
+  \fi
+}
+\def\alphalph@alph#1{%
+  \ifcase#1%
+    @%
+  \or a\or b\or c\or d\or e\or f\or g\or h\or i\or j\or k\or l\or m%
+  \or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or y\or z%
+  \else
+    \AlPh@ctrerr
+    @%
+  \fi
+}
+\def\AlPh@ctrerr{}
+\def\AlPh@GetNumberOfSymbols#1{%
+  \AlPh@TestNumber1!{#1}%
+  \ifAlPh@Unavailable
+    \def\AlPh@Number{0}%
+    \AlPh@Error{No symbols found}%
+  \else
+    \def\AlPh@Number{1}%
+    \AlPh@ExpSearch2!{#1}%
+  \fi
+}
+\let\ifAlPh@Unavailable\iffalse
+\def\AlPh@Unavailabletrue{%
+  \global\let\ifAlPh@Unavailable\iftrue
+}
+\def\AlPh@Unavailablefalse{%
+  \global\let\ifAlPh@Unavailable\iffalse
+}
+\def\AlPh@TestNumber#1!#2{%
+  \AlPh@Unavailablefalse
+  \begingroup
+    \setbox0=\hbox{%
+      \begingroup % color
+        \let\@ctrerr\AlPh@Unavailabletrue
+        \let\AlPh@ctrerr\AlPh@Unavailabletrue
+        #2{#1}%
+      \endgroup
+    }%
+    \ifdim\wd0=0pt %
+      \AlPh@Unavailabletrue
+    \fi
+  \endgroup
+}
+\def\AlPh@ExpSearch#1!#2{%
+  \let\AlPh@Next\relax
+  \AlPh@TestNumber#1!{#2}%
+  \ifAlPh@Unavailable
+    \expandafter\AlPh@BinSearch\AlPh@Number!#1!{#2}%
+  \else
+    \def\AlPh@Number{#1}%
+    \ifnum#1>1073741823 %
+      \AlPh@TestNumber2147483647!{#2}%
+      \ifAlPh@Unavailable
+        \AlPh@BinSearch#1!2147483647!{#2}%
+      \else
+        \def\AlPh@Number{0}%
+        \AlPh@Error{%
+          Maximal symbol number not found%
+        }%
+      \fi
+    \else
+      \def\AlPh@Next{%
+        \expandafter\AlPh@ExpSearch\number\intcalcShl{#1}!{#2}%
+      }%
+    \fi
+  \fi
+  \AlPh@Next
+}
+\def\AlPh@BinSearch#1!#2!#3{%
+  \expandafter\AlPh@ProcessBinSearch
+  \number\intcalcShr{\intcalcAdd{#1}{#2}}!%
+  #1!#2!{#3}%
+}
+\def\AlPh@ProcessBinSearch#1!#2!#3!#4{%
+  \let\AlPh@Next\relax
+  \ifnum#1>#2 %
+    \ifnum#1<#3 %
+      \AlPh@TestNumber#1!{#4}%
+      \ifAlPh@Unavailable
+        \def\AlPh@Next{%
+          \AlPh@BinSearch#2!#1!{#4}%
+        }%
+      \else
+        \def\AlPh@Next{%
+          \AlPh@BinSearch#1!#3!{#4}%
+        }%
+      \fi
+    \else
+      \def\AlPh@Number{#2}%
+    \fi
+  \else
+    \def\AlPh@Number{#2}%
+  \fi
+  \AlPh@Next
+}
+\def\AlPh@CheckPositive#1!#2{%
+  \ifnum#1<1 %
+    \expandafter\@gobblefour
+  \fi
+  #2{#1}%
+}
+\def\AlPh@Method@alph#1#2#3{%
+  \expandafter\AlPh@CheckPositive
+|   \number#3!%
++   \the\numexpr#3!%
+    \AlPh@ProcessAlph
+    {#1}{#2}%
+}
+\def\AlPh@ProcessAlph#1#2#3{%
+  \ifnum#1>#2 %
+    \@ReturnAfterElseFi{%
+      \expandafter\AlPh@StepAlph\number
+        \intcalcInc{%
+          \intcalcMod{\intcalcDec{#1}}{#2}%
+        }%
+      \expandafter!\number
+        \intcalcDiv{\intcalcDec{#1}}{#2}%
+      !{#2}{#3}%
+    }%
+  \else
+    \@ReturnAfterFi{%
+      #3{#1}%
+    }%
+  \fi
+}
+\def\AlPh@StepAlph#1!#2!#3#4{%
+  \AlPh@ProcessAlph{#2}{#3}{#4}%
+  #4{#1}%
+}
+\def\AlPh@Method@wrap#1#2#3{%
+  \expandafter\AlPh@CheckPositive
+|   \number#3!%
++   \the\numexpr#3!%
+    \AlPh@ProcessWrap
+    {#1}{#2}%
+}
+\def\AlPh@ProcessWrap#1#2#3{%
+  \ifnum#1>#2 %
+    \@ReturnAfterElseFi{%
+      \expandafter\AlPh@StepWrap\number
+        \intcalcInc{\intcalcMod{\intcalcDec{#1}}{#2}}%
+      !{#3}%
+    }%
+  \else
+    \@ReturnAfterFi{%
+      #3{#1}%
+    }%
+  \fi
+}
+\def\AlPh@StepWrap#1!#2{%
+  #2{#1}%
+}
+\def\AlPh@Method@mult#1#2#3{%
+  \expandafter\AlPh@CheckPositive
+|   \number#3!%
++   \the\numexpr#3!%
+    \AlPh@ProcessMult
+    {#1}{#2}%
+}
+\def\AlPh@ProcessMult#1#2#3{%
+  \ifnum#1>#2 %
+    \@ReturnAfterElseFi{%
+      \expandafter\AlPh@StepMult\romannumeral
+        \intcalcInc{\intcalcDiv{\intcalcDec{#1}}{#2}}%
+        000%
+      \expandafter!\number
+        \intcalcInc{\intcalcMod{\intcalcDec{#1}}{#2}}%
+      !{#3}%
+    }%
+  \else
+    \@ReturnAfterFi{%
+      #3{#1}%
+    }%
+  \fi
+}
+\def\AlPh@StepMult#1#2!#3!#4{%
+  \ifx\\#2\\%
+  \else
+    \@ReturnAfterFi{%
+      \AlPh@StepMult#2!#3!{#4}%
+    }%
+  \fi
+  #4{#3}%
+}
+\AlPh@IfDefinable\newalphalph{%
+  \def\newalphalph#1{%
+    \AlPh@IfOptArg{%
+      \AlPh@newalphalph{#1}%
+    }{%
+      \AlPh@newalphalph{#1}[alph]%
+    }%
+  }%
+}
+\def\AlPh@newalphalph#1[#2]#3#4{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname AlPh@Method@#2\endcsname\relax
+    \AlPh@Error{%
+      Unknown method %
+|     `#2'%
++     `\detokenize{#2}'%
+    }%
+  \else
+    \ifx\\#4\\%
+      \AlPh@GetNumberOfSymbols{#3}%
+      \ifcase\AlPh@Number
+      \else
+        \begingroup
+          \escapechar=92 % backslash
+          \@PackageInfo{alphalph}{%
+            Number of symbols for \string#1 is \AlPh@Number
+          }%
+        \endgroup
+        \expandafter\AlPh@NewAlphAlph
+        \csname AlPh@Method@#2\expandafter\endcsname
+        \AlPh@Number!{#1}{#3}%
+      \fi
+    \else
+      \expandafter\AlPh@NewAlphAlph
+      \csname AlPh@Method@#2\expandafter\endcsname
+|     \number#4!%
++     \the\numexpr#4!%
+      {#1}{#3}%
+    \fi
+  \fi
+}%
+\def\AlPh@NewAlphAlph#1#2!#3#4{%
+  \AlPh@IfDefinable#3{%
+    \ifnum#2>0 %
+      \def#3{#1{#2}{#4}}%
+    \else
+      \AlPh@Error{%
+          Definition of \string#3 failed,\MessageBreak
+          because number of symbols (#2) is not positive%
+        }%
+    \fi
+  }%
+}
+\newalphalph\AlphAlph\alphalph@Alph{26}
+\newalphalph\alphalph\alphalph@alph{26}
+\AlPh@AtEnd%
+\endinput
+%%
+%% End of file `alphalph.sty'.

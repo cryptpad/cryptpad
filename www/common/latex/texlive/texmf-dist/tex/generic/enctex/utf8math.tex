@@ -1,0 +1,59 @@
+% utf8math.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% UTF-8 characters expanding to math control sequences.
+% Control sequecnes not defined here are supposed to be defined either in
+% plain.tex or amssym.tex.
+%
+% Copyright (C) 2003 David Necas (Yeti)
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+% Some regressions
+\mathchardef\utfminus"2200
+\mathchardef\utfslash"013D
+\def\degree{{}^\circ}
+\def\degreeC{{\degree\mkern-2mu\rm C}}
+\def\degreeF{{\degree\rm F}}
+\mathchardef\Kelvin="004B
+\def\Angstrom{{\rm\AA}}
+\mathchardef\omicron"016F
+\mathchardef\Alpha"0041
+\mathchardef\Beta"0042
+\mathchardef\Epsilon"0045
+\mathchardef\Zeta"005A
+\mathchardef\Eta"0048
+\mathchardef\Iota"0049
+\mathchardef\Kappa"004B
+\mathchardef\Mu"004D
+\mathchardef\Nu"004E
+\mathchardef\Omicron"004F
+\mathchardef\Rho"0050
+\mathchardef\Tau"0054
+\mathchardef\Chi"0058
+
+% Roman numerals (more an example than anything else).
+\begingroup
+\let\ex\expandafter
+\def\name{romannum}
+\def\exdef#1{\ex\xdef\csname\name#1\endcsname{#1}}
+\def\\#1 {\edef\temp{\romannumeral#1}\exdef\temp
+  \uppercase\ex{\ex\edef\ex\temp\ex{\romannumeral#1}}\exdef\temp}
+\\1 \\2 \\3 \\4 \\5 \\6 \\7 \\8 \\9 \\10 \\11 \\12 \\50 \\100 \\500 \\1000 %
+\endgroup
+
+% Include the generated UTF-8 -> control sequence mapping.
+\input utf8raw.tex
+
+\endinput

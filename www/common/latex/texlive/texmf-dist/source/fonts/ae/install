@@ -1,0 +1,4 @@
+#!/bin/bash
+rm -f ../tfm/*.tfm ../vf/*.vf
+mv *.tfm ../tfm
+mv *.vf ../vf

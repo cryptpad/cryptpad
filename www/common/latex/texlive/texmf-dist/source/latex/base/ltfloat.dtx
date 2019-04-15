@@ -1,0 +1,1521 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltfloat.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltfloat.dtx}[2015/02/21 v1.2c LaTeX Kernel (Floats)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltfloat.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{869}
+%
+% \section{Floats}
+%
+%  The different types of floats are identified by a \meta{type} name,
+%  which is the name of the counter for that kind of float.  For
+%  example, figures are of type `figure' and tables are of type `table'.
+%  Each \meta{type} has associated a positive \meta{type number}, which
+%  is a power of two.  E.g.,\\
+%  figures might be have type number~1, tables type number~2, programs
+%  type number~4, etc.
+%
+%  The locations where a float can go are specified by a
+%  \meta{placement specifier}, which is a list of the possible
+%  locations, each denoted by a letter as follows:
+%    \begin{center}
+%    \begin{tabular}{l@{ : }l@{ --- }l}
+%     h & here   & at the current location in the text.\\
+%     t & top    & at the top of a text page.\\
+%     b & bottom & at the bottom of a text page.\\
+%     p & page   & on a separate float page
+%    \end{tabular}
+%    \end{center}
+%  In addition, in conjunction with these, you can use `!' which means
+%  that the current values of the float positioning parameters are
+%  ignored for this float. (Has no effect on `p', float page
+%  positioning.)
+%  For example, `pht' specifies that the float can appear in any of
+%  three locations: page, here or top.
+%
+% \StopEventually{}
+%
+%
+% \changes{v1.0a}{1994/03/04}{Initial version, split from latex.dtx}
+% \changes{v1.0b}{1994/03/28}{Split further from ltherest.dtx}
+% \changes{v1.0e}{1994/04/25}{Changed warning messages}
+% \changes{v1.0e}{1994/04/25}{Removed obsolete tracing code}
+% \changes{v1.0f}{1994/05/03}
+%     {(CAR) Added \cs{@largefloatcheck}}
+% \changes{v1.0f}{1994/05/03}{Removed unnecessary braces from
+% arguments of \cs{@ifnextchar}}
+% \changes{v1.0i}{1994/05/22}{Use new warning commands}
+% \changes{v1.1e}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.1g}{1994/12/10}{Some temps reinserted temporarily}
+% \changes{v1.1n}{1995/11/28}{documentation fixes}
+% \changes{v1.1s}{1997/06/16}{documentation fixes}
+%
+% \subsection{Floating Environments}
+%    \begin{macrocode}
+%<*2ekernel>
+\message{floats,}
+%    \end{macrocode}
+% \begin{oldcomments}
+%
+% Where floats may appear on a page, and how many may appear there
+% are specified by the following float placement parameters.  The
+% numbers are named like counters so the user can set them with
+% the ordinary counter-setting commands.
+%
+%  \c@topnumber      : Number of floats allowed at the top of a column.
+%  \topfraction      : Fraction of column that can be devoted to floats.
+%  \c@dbltopnumber, \dbltopfraction
+%                    : Same as above, but for double-column floats.
+%  \c@bottomnumber, \bottomfraction
+%                    : Same as above for bottom of page.
+%  \c@totalnumber    : Number of floats allowed in a single column,
+%                          including in-text floats.
+%  \textfraction     :Minimum fraction of column that must contain text.
+%  \floatpagefraction: Minimum fraction of page that must be taken
+%                          up by float page.
+%  \dblfloatpagefraction
+%                    : Same as above, for double-column floats.
+%
+% The document style must define the following.
+%
+%    \fps@TYPE   : The default placement specifier for floats of type
+%                  TYPE.
+%
+%    \ftype@TYPE : The type number for floats of type TYPE.
+%
+%    \ext@TYPE   : The file extension indicating the file on which the
+%                  contents list for float type TYPE is stored.
+%                    For example,  \ext@figure = 'lof'.
+%
+%    \fnum@TYPE  : A macro to generate the figure number for a caption.
+%                  For example, \fnum@TYPE == Figure \thefigure.
+%
+%    \@makecaption{NUM}{TEXT} :
+%              A macro to make a caption, with NUM the value
+%              produced by \fnum@... and TEXT the text of the caption.
+%              It can assume it's in a \parbox of the appropriate width.
+%
+% \@float{TYPE}[PLACEMENT] : This macro begins a float environment for a
+%     single-column float of type TYPE with PLACEMENT as the placement
+%     specifier.  The default value of PLACEMENT is defined by
+%     \fps@TYPE.  The environment is ended by \end@float.
+%     E.g., \figure == \@float{figure}, \endfigure == \end@float.
+%
+%  \@float{TYPE}[PLACEMENT] ==
+%   BEGIN
+%     if hmode then \@bsphack
+%                   \@floatpenalty := -10002
+%              else \@floatpenalty := -10003
+%     fi
+%     \@captype ==L TYPE
+%     \@dblflset
+%     \@fps     ==L PLACEMENT
+%     \@onelevel@sanitize \@fps
+%     add default PLACEMENT if at most ! in PLACEMENT == \@fpsadddefault
+%     if inner
+%       then LaTeX Error: 'Not in outer paragraph mode.'
+%            \@floatpenalty := 0
+%       else if \@freelist nonempty
+%              then \@currbox  :=L head of \@freelist
+%                   \@freelist :=G tail of \@freelist
+%                   \count\@currbox :=G 32*\ftype@TYPE +
+%                                          bits determined by PLACEMENT
+%              else \@floatpenalty := 0
+%                   LaTeX Error: 'Too many unprocessed floats'
+%            fi
+%     fi
+%     \@currbox :=G   \color@vbox
+%                       \normalcolor
+%                         \vbox{
+%                          %% 15 Dec 87 --
+%                          %% removed \boxmaxdepth :=L 0pt
+%                          %% that made box 0 depth because it screwed
+%                          %% things up. Instead, added \vskip0pt at end
+%                               \hsize = \columnwidth
+%                               \@parboxrestore
+%                               \@floatboxreset
+%   END
+%
+%  \caption ==
+%    BEGIN
+%     \refstepcounter{\@captype}
+%     \@dblarg{\@caption{\@captype}}
+%    END
+%
+% In following definition, \par moved from after \addcontentsline to
+% before \addcontentsline because the \write could cause
+% an extra blank line to be added to the paragraph above the
+% caption.  (Change made 12 Jun 87)
+%
+%  \@caption{TYPE}[STEXT]{TEXT} ==
+%   BEGIN
+%     \par
+%     \addcontentsline{\ext@TYPE}{TYPE}{\numberline{\theTYPE}{STEXT}}
+%     \begingroup
+%       \@parboxrestore
+%       \@normalsize
+%       \@makecaption{\fnum@TYPE}{TEXT}
+%       \par
+%     \endgroup
+%   END
+%
+%
+%  \@dblfloat{TYPE}[PLACEMENT] : Macro to begin a float environment for
+%     a double-column float of type TYPE with PLACEMENT as the placement
+%     specifier.  The default value of PLACEMENT is 'tp'
+%     The environment is ended by \end@dblfloat.
+%     E.g., \figure* == \@dblfloat{figure},
+%           \endfigure* == \end@dblfloat.
+%
+%  \@dblfloat{TYPE}[PLACEMENT] ==
+%     Identical to \@float{TYPE}[PLACEMENT] except \hsize and \linewidth
+%     are set to \textwidth.
+% \end{oldcomments}
+%
+% \begin{macro}{\@floatpenalty}
+%    \begin{macrocode}
+\newcount\@floatpenalty
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\caption}
+%
+%    This is set to be an error message outside a float since no
+%    captype is defined there; this may need to be changed by some
+%    classes.
+% \changes{v1.1u}{1999/04/19}
+%    {Made caption an error outside a float: latex/2815}
+%    \begin{macrocode}
+\def\caption{%
+   \ifx\@captype\@undefined
+     \@latex@error{\noexpand\caption outside float}\@ehd
+     \expandafter\@gobble
+   \else
+     \refstepcounter\@captype
+     \expandafter\@firstofone
+   \fi
+   {\@dblarg{\@caption\@captype}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@caption}
+% \changes{v1.0b}{1994/03/28}
+%     {Use \cs{normalsize} not \cs{@normalsize}}
+% \changes{v1.1r}{1996/12/06}
+%     {Call \cs{@setminpage} if needed. latex/2318}
+%    \begin{macrocode}
+\long\def\@caption#1[#2]#3{%
+  \par
+  \addcontentsline{\csname ext@#1\endcsname}{#1}%
+    {\protect\numberline{\csname the#1\endcsname}{\ignorespaces #2}}%
+  \begingroup
+%    \end{macrocode}
+%
+% The paragraph setting parameters are normalised at this point, however
+% |\@parboxrestore| resets |\everypar| which is not correct in this
+% context so |\@setminipage| is called if needed.
+%
+% The float mechanism, like minipage, sets the flag |@minipage| true
+% before executing the user-supplied text. Many \LaTeX\ constructs
+% test for this flag and do not add vertical space when it is true.
+% The intention is that this emulates \TeX's `top of page' behaviour.
+% The flag must be set false at the start of the first paragraph. This
+% is achieved by a redefinition of |\everypar|, but the call to
+% |\@parboxrestore| removes that redefinition, so it is re-inserted
+% if needed. If the flag is already false then the |\caption| was not
+% the first entry in the float, and so some other paragraph has already
+% activated the special |\everypar|. In this case no further action is
+% needed.
+%    \begin{macrocode}
+    \@parboxrestore
+    \if@minipage
+      \@setminipage
+    \fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \normalsize
+    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@float}
+% \begin{macro}{\@dblflset}
+% \changes{v1.1a}{1994/10/31}{Macro added}
+% \changes{v1.1g}{1994/12/10}{Macro removed temporarily}
+% \changes{v1.1a}{1994/10/31}
+%    {Major changes to parameter parsing, setting of local variables,
+%    etc; two-column and one-column cases merged; space hacks moved}
+% \changes{v1.1c}{1994/11/05}
+%         {Add compatibility with old version of \cs{@xfloat}.}
+% \changes{v1.1g}{1994/12/10}{Old version reinstated temporarily}
+%
+%    \begin{macrocode}
+\def\@float#1{%
+  \@ifnextchar[%
+    {\@xfloat{#1}}%
+    {\edef\reserved@a{\noexpand\@xfloat{#1}[\csname fps@#1\endcsname]}%
+     \reserved@a}}
+%    \end{macrocode}
+%
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@dblfloat}
+% \changes{v1.1a}{1994/10/31}
+%     {Major changes since two-column and one-column cases merged}
+% \changes{v1.1g}{1994/12/10}{Old version reinstated temporarily}
+%
+%    \begin{macrocode}
+\def\@dblfloat{%
+  \if@twocolumn\let\reserved@a\@dbflt\else\let\reserved@a\@float\fi
+  \reserved@a}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\fps@dbl}
+% \changes{v1.1a}{1994/10/31}{Macro added}
+% \changes{v1.1g}{1994/12/10}{Macro removed temporarily}
+%  Note that all double floats have default fps `tp'.
+%  \end{macro}
+%
+%  \begin{macro}{\@setfps}
+% \changes{v1.1a}{1994/10/31}{Macro added}
+% \changes{v1.1c}{1994/11/05}
+%         {Add compatibility with old version of \cs{@xfloat}.}
+% \changes{v1.1g}{1994/12/10}{Macro removed temporarily}
+%    This sets the fps, dealing with error conditions by adding
+%    the default.
+%
+%  \end{macro}
+%
+%  \begin{macro}{\@xfloat}
+% \changes{LaTeX2e}{1993/12/05}{Command changed}
+% \changes{LaTeX2e}{1994/01/21}{Added missing percent characters.}
+% \changes{v1.1a}{1994/10/31}
+%     {Major changes, removing setting of local variables, space hacks
+%     etc; two-column and one-column cases merged}
+% \changes{v1.1c}{1994/11/05}
+%         {Add compatibility with old version of \cs{@xfloat}: but the
+%         arguments, provided at exorbitant cost, are now completely
+%         ignored}
+% \changes{v1.1f}{1994/11/21}
+%     {Missing percents reinserted after 4, 8: these are not numbers.}
+% \changes{v1.1g}{1994/12/10}{Old version reinstated temporarily}
+% \changes{v1.1g}{1994/12/10}{Sanitisation added temporarily}
+%     The first part of this sets the count register that stores all
+%     the information about the type and fps of the float.
+%
+%    We assume here that the default specifiers already contain no
+%    active characters.
+%
+%    It may be better to store the defaults as numbers, rather than
+%    symbol strings.
+%
+% \changes{v1.1p}{1996/10/24}{Added \cs{@nodocument} to trap
+%                  floats in the preamble}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\@xfloat}{Check float options}%
+%<*2ekernel|latexrelease>
+\def\@xfloat #1[#2]{%
+  \@nodocument
+  \def \@captype {#1}%
+   \def \@fps {#2}%
+   \@onelevel@sanitize \@fps
+   \def \reserved@b {!}%
+   \ifx \reserved@b \@fps
+     \@fpsadddefault
+   \else
+     \ifx \@fps \@empty
+       \@fpsadddefault
+     \fi
+   \fi
+   \ifhmode
+     \@bsphack
+     \@floatpenalty -\@Mii
+   \else
+     \@floatpenalty-\@Miii
+   \fi
+  \ifinner
+     \@parmoderr\@floatpenalty\z@
+  \else
+    \@next\@currbox\@freelist
+      {%
+       \@tempcnta \sixt@@n
+       \expandafter \@tfor \expandafter \reserved@a
+         \expandafter :\expandafter =\@fps
+         \do
+%    \end{macrocode}
+% \changes{v1.2b}{2015/01/11}{Check for valid option (latexrelease)}
+% Start of changes, use a nested if structure, ending in an error.
+%    \begin{macrocode}
+          {%
+           \if \reserved@a h%
+             \ifodd \@tempcnta
+             \else
+               \advance \@tempcnta \@ne
+             \fi
+           \else\if \reserved@a t%
+             \@setfpsbit \tw@
+           \else\if \reserved@a b%
+             \@setfpsbit 4%
+           \else\if \reserved@a p%
+             \@setfpsbit 8%
+           \else\if \reserved@a !%
+             \ifnum \@tempcnta>15
+               \advance\@tempcnta -\sixt@@n\relax
+             \fi
+           \else
+             \@latex@error{Unknown float option `\reserved@a'}%
+             {Option `\reserved@a' ignored and `p' used.}%
+             \@setfpsbit 8%
+           \fi\fi\fi\fi\fi
+           }%
+%    \end{macrocode}
+% End of changes
+%    \begin{macrocode}
+       \@tempcntb \csname ftype@\@captype \endcsname
+       \multiply \@tempcntb \@xxxii
+       \advance \@tempcnta \@tempcntb
+       \global \count\@currbox \@tempcnta
+       }%
+    \@fltovf
+  \fi
+%    \end{macrocode}
+%    The remainder sets up the box in which the float is typeset, and
+%    the typesetting environment to be used.  It is essential to have
+%    the extra box to avoid the unwanted space that would otherwise
+%    often be put at the top of the float.
+%
+%    It ends with a hook; not sure how useful this is but it is needed
+%    at present to deal with double-column floats.
+% \task{CAR?}{Sort out hooks}
+% \changes{v1.0a}{1994/03/07}
+%     {(DPC) Extra group for colour}
+% \changes{v1.0c}{1994/03/14}
+%     {(DPC) Use \cs{color@begingroup}}
+% \changes{v1.0g}{1994/05/13}
+%     {(DPC) Use \cs{normalcolor}}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Extra box added to remove colour resetting from vmode}
+% \changes{v1.1a}{1994/10/31}{Reset hook added}
+% \changes{v1.1c}{1994/11/05}
+%         {Use new \cs{color@hbox} concept.}
+% \changes{v1.1f}{1994/11/21}
+%         {Changed to \cs{color@vbox} so that large floats overflow
+%          at the bottom}
+% \changes{v1.1f}{1994/11/21}{Use \cs{@setnobreak}}
+% \changes{v1.1f}{1994/11/21}{Added \cs{@setminipage}}
+% \changes{v1.1f}{1994/11/21}{Added resetting of size and font}
+% \changes{v1.1m}{1995/05/25}{(CAR) Resettings moved to hook}
+%    \begin{macrocode}
+  \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox \bgroup
+        \hsize\columnwidth
+        \@parboxrestore
+        \@floatboxreset
+}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\@xfloat}{Check float options}%
+%<latexrelease>\def\@xfloat #1[#2]{%
+%<latexrelease>  \@nodocument
+%<latexrelease>  \def \@captype {#1}%
+%<latexrelease>   \def \@fps {#2}%
+%<latexrelease>   \@onelevel@sanitize \@fps
+%<latexrelease>   \def \reserved@b {!}%
+%<latexrelease>   \ifx \reserved@b \@fps
+%<latexrelease>     \@fpsadddefault
+%<latexrelease>   \else
+%<latexrelease>     \ifx \@fps \@empty
+%<latexrelease>       \@fpsadddefault
+%<latexrelease>     \fi
+%<latexrelease>   \fi
+%<latexrelease>   \ifhmode
+%<latexrelease>     \@bsphack
+%<latexrelease>     \@floatpenalty -\@Mii
+%<latexrelease>   \else
+%<latexrelease>     \@floatpenalty-\@Miii
+%<latexrelease>   \fi
+%<latexrelease>  \ifinner
+%<latexrelease>     \@parmoderr\@floatpenalty\z@
+%<latexrelease>  \else
+%<latexrelease>    \@next\@currbox\@freelist
+%<latexrelease>      {%
+%<latexrelease>       \@tempcnta \sixt@@n
+%<latexrelease>       \expandafter \@tfor \expandafter \reserved@a
+%<latexrelease>         \expandafter :\expandafter =\@fps
+%<latexrelease>         \do
+%<latexrelease>          {%
+%<latexrelease>           \if \reserved@a h%
+%<latexrelease>             \ifodd \@tempcnta
+%<latexrelease>             \else
+%<latexrelease>               \advance \@tempcnta \@ne
+%<latexrelease>             \fi
+%<latexrelease>           \fi
+%<latexrelease>           \if \reserved@a t%
+%<latexrelease>             \@setfpsbit \tw@
+%<latexrelease>           \fi
+%<latexrelease>           \if \reserved@a b%
+%<latexrelease>             \@setfpsbit 4%
+%<latexrelease>           \fi
+%<latexrelease>           \if \reserved@a p%
+%<latexrelease>             \@setfpsbit 8%
+%<latexrelease>           \fi
+%<latexrelease>           \if \reserved@a !%
+%<latexrelease>             \ifnum \@tempcnta>15
+%<latexrelease>               \advance\@tempcnta -\sixt@@n\relax
+%<latexrelease>             \fi
+%<latexrelease>           \fi
+%<latexrelease>           }%
+%<latexrelease>       \@tempcntb \csname ftype@\@captype \endcsname
+%<latexrelease>       \multiply \@tempcntb \@xxxii
+%<latexrelease>       \advance \@tempcnta \@tempcntb
+%<latexrelease>       \global \count\@currbox \@tempcnta
+%<latexrelease>       }%
+%<latexrelease>    \@fltovf
+%<latexrelease>  \fi
+%<latexrelease>  \global \setbox\@currbox
+%<latexrelease>    \color@vbox
+%<latexrelease>      \normalcolor
+%<latexrelease>      \vbox \bgroup
+%<latexrelease>        \hsize\columnwidth
+%<latexrelease>        \@parboxrestore
+%<latexrelease>        \@floatboxreset
+%<latexrelease>}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@floatboxreset}
+% \changes{v1.1a}{1994/10/31}{Macro added}
+%
+% The rational for allowing these normally global flags to be set
+% locally here, via |\@parboxrestore|, was stated originally by
+% Donald Arseneau and extended by Chris Rowley.
+% It is because these flags are only set globally to
+% true by section commands, and these should never appear within
+% marginals or floats or, indeed, in any group; and they are only ever
+% set globally to false when they are definitely true.
+%
+% If anyone is unhappy with this argument then both flags should be
+% treated as in |\set@nobreak|; otherwise this command will be
+% redundant.
+% \changes{v1.1p}{1996/10/24}
+%     {Added local settings of flags: dangerous!!}
+%    \begin{macrocode}
+\def \@floatboxreset {%
+        \reset@font
+        \normalsize
+        \@setminipage
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@setnobreak}
+% \changes{v1.1f}{1994/11/21}{Macro added}
+% \changes{v1.1n}{1996/07/26}{remove unecessary \cs{global} before
+%                 \cs{@nobreak...}}
+%    \begin{macrocode}
+\def \@setnobreak{%
+  \if@nobreak
+    \let\outer@nobreak\@nobreaktrue
+    \@nobreakfalse
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@setminipage}
+% \changes{v1.1f}{1994/11/21}{Macro added}
+% \changes{v1.1n}{1996/07/26}{remove unecessary \cs{global} before
+%                 \cs{@minipage...}}
+%    \begin{macrocode}
+\def \@setminipage{%
+  \@minipagetrue
+  \everypar{\@minipagefalse\everypar{}}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\end@float}
+% \changes{v1.0f}{1994/05/03}
+%     {(CAR) Added \cs{@largefloatcheck}}
+% \changes{v1.1n}{1995/10/25}{(CAR) unify code for double and
+%    single versions}
+%    \begin{macrocode}
+\def\end@float{%
+  \@endfloatbox
+  \ifnum\@floatpenalty <\z@
+%    \end{macrocode}
+% We make sure that we never exceed |\textheight|, otherwise float
+% will never get typeset (91/03/15 FMi).
+%    \begin{macrocode}
+    \@largefloatcheck
+    \@cons\@currlist\@currbox
+    \ifnum\@floatpenalty <-\@Mii
+      \penalty -\@Miv
+%    \end{macrocode}
+% Saving and restoring |\prevdepth| added 26 May 87 to prevent extra
+% vertical space when used in vertical mode.
+%    \begin{macrocode}
+      \@tempdima\prevdepth
+      \vbox{}%
+      \prevdepth\@tempdima
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+      \penalty\@floatpenalty
+%    \end{macrocode}
+% \changes{LaTeX2.09}{1992/03/18}
+%         {(RmS) changed \cs{@esphack} to \cs{@Esphack}}
+%    \begin{macrocode}
+    \else
+      \vadjust{\penalty -\@Miv \vbox{}\penalty\@floatpenalty}\@Esphack
+    \fi
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\end@dblfloat}
+% \changes{v1.0f}{1994/05/03}{\cs{@largefloatcheck} added}
+% \changes{v1.1n}{1995/10/25}{(CAR) unify code for double and
+%    single versions}
+% \changes{v1.2b}{2015/01/11}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\end@dblfloat}{float order in 2-column}%
+%<*2ekernel|latexrelease>
+\def\end@dblfloat{%
+  \if@twocolumn
+    \@endfloatbox
+    \ifnum\@floatpenalty <\z@
+      \@largefloatcheck
+%    \end{macrocode}
+%
+%  Force the depth of two column float boxes.
+%    \begin{macrocode}
+      \global\dp\@currbox1sp %
+%    \end{macrocode}
+%    What follows is essentially |\end@float| without a starting
+%    |\@endfloatbox|.
+% \changes{v1.2b}{2000/09/24}{FMi: use output routine to
+%    defer float}
+% \changes{v1.2b}{2014/04/27}{Inline the code to allow some
+%   coexistence with packages that hook into \cs{end@float} and do not
+%   know about the algorithm change}
+%    \begin{macrocode}
+      \@cons\@currlist\@currbox
+      \ifnum\@floatpenalty <-\@Mii
+        \penalty -\@Miv
+        \@tempdima\prevdepth
+        \vbox{}%
+        \prevdepth\@tempdima
+        \penalty\@floatpenalty
+      \else
+        \vadjust{\penalty -\@Miv \vbox{}\penalty\@floatpenalty}\@Esphack
+      \fi
+%    \end{macrocode}
+% \changes{v1.2b}{2014/06/10}{missing \cs{fi} added}
+%    \begin{macrocode}
+    \fi
+  \else
+    \end@float
+  \fi
+}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\end@dblfloat}{float order in 2-column}%
+%<latexrelease>\def\end@dblfloat{%
+%<latexrelease>\if@twocolumn
+%<latexrelease>  \@endfloatbox
+%<latexrelease>  \ifnum\@floatpenalty <\z@
+%    \end{macrocode}
+% We make sure that we never exceed |\textheight|, otherwise float
+% will never get typeset (91/03/15 FMi).
+%    \begin{macrocode}
+%<latexrelease>    \@largefloatcheck
+%<latexrelease>    \@cons\@dbldeferlist\@currbox
+%<latexrelease>  \fi
+%    \end{macrocode}
+% RmS 92/03/18 changed |\@esphack| to |\@Esphack|.
+%    \begin{macrocode}
+%<latexrelease>    \ifnum \@floatpenalty =-\@Mii \@Esphack\fi
+%<latexrelease>\else
+%<latexrelease>  \end@float
+%<latexrelease>\fi
+%<latexrelease>}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@endfloatbox}
+% \changes{v1.1n}{1995/10/25}{(CAR) macro added: to unify code for
+%    double and single versions}
+%    This macro is not intended to be a hook; it is designed to help
+%    maintain the integrity of this code, which is used twice and, as
+%    can be seen, is subject to frequent changes.
+%    \begin{macrocode}
+\def \@endfloatbox{%
+      \par\vskip\z@skip      %% \par\vskip\z@ added 15 Dec 87
+%    \end{macrocode}
+% \changes{v1.0a}
+%     {1994/03/07}{(DPC) Extra group for colour}
+% \changes{v1.0c}{1994/03/14}
+%     {(DPC) Use \cs{color@endgroup}}
+% \changes{v1.0h}{1994/05/20}{Restore outer value of @nobreak switch.}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Extra box added to remove colour resetting from vmode}
+% \changes{v1.1c}{1994/11/05}
+%         {Use new \cs{color@hbox} concept.}
+% \changes{v1.1f}{1994/11/21}{Corrected position of \cs{outer@nobreak}}
+% \changes{v1.1f}{1994/11/21}{Added reset of minipage flag}
+% \changes{v1.1n}{1996/07/26}{remove unecessary \cs{global} before
+%                 \cs{@minipage...}}
+%    \begin{macrocode}
+      \@minipagefalse
+      \outer@nobreak
+    \egroup                  %% end of vbox
+  \color@endbox
+}
+%
+% \begin{macro}{\outer@nobreak}
+% \changes{v1.0h}{1994/05/20}{Macro added: default is to do nothing.}
+%    \begin{macrocode}
+\let\outer@nobreak\@empty
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\@largefloatcheck}
+% \changes{v1.0e}{1994/04/25}{Command added}
+%
+%    This calculates by how much a float is oversize for the page and
+%    prints this in a warning message.
+%
+%    \begin{macrocode}
+\def \@largefloatcheck{%
+  \ifdim \ht\@currbox>\textheight
+    \@tempdima -\textheight
+    \advance \@tempdima \ht\@currbox
+%    \end{macrocode}
+% \changes{v1.0e}{1994/04/25}{Changed warning message to give more
+% info}
+%    \begin{macrocode}
+    \@latex@warning {Float too large for page by \the\@tempdima}%
+    \ht\@currbox \textheight
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@dbflt}
+%  \begin{macro}{\@xdblfloat}
+% \changes{v1.1a}{1994/10/31}
+%     {Macros removed: \cs{@dbflt}, \cs{@xdblfloat}}
+% \changes{v1.1g}{1994/12/10}{Macros reinserted temporarily}
+%
+%
+%    \begin{macrocode}
+\def\@dbflt#1{\@ifnextchar[{\@xdblfloat{#1}}{\@xdblfloat{#1}[tp]}}
+\def\@xdblfloat#1[#2]{%
+  \@xfloat{#1}[#2]\hsize\textwidth\linewidth\textwidth}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% Moved to ltoutput 93/12/16
+%    \begin{macrocode}
+%\newcount\c@topnumber
+%\newcount\c@dbltopnumber
+%\newcount\c@bottomnumber
+%\newcount\c@totalnumber
+%    \end{macrocode}
+%
+%  \begin{macro}{\@dblfloatplacement}
+% An analysis of |\@floatplacement|:
+%
+% This should be called whenever |\@colht| has been set.
+%    \begin{macrocode}
+\def\@floatplacement{\global\@topnum\c@topnumber
+    % Textpage bit, global:
+   \global\@toproom \topfraction\@colht
+   \global\@botnum  \c@bottomnumber
+   \global\@botroom \bottomfraction\@colht
+   \global\@colnum  \c@totalnumber
+    % Floatpage bit, local:
+   \@fpmin   \floatpagefraction\@colht}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@dblfloatplacement}
+% \changes{LaTeX2e}{1993/12/05}{Command changed}
+%
+%     This should be called only within a group.  Now changed to
+%     provide extra checks in |\@addtodblcol|, needed when processing a
+%     BANG float.
+%
+% \changes{v1.2b}{2015/01/11}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>          {\@dblfloatplacement}{float order in 2-column}%
+%<*2ekernel|latexrelease>
+%    \end{macrocode}
+% When making two column float area, look for floats with 1sp
+% depth.
+%    \begin{macrocode}
+\def\@dblfloatplacement{\global\@dbltopnum\c@dbltopnumber
+   \global\@dbltoproom \dbltopfraction\@colht
+   \@textmin \@colht
+   \advance \@textmin -\@dbltoproom
+   \@fpmin \dblfloatpagefraction\textheight
+   \@fptop \@dblfptop
+   \@fpsep \@dblfpsep
+   \@fpbot \@dblfpbot
+%    \end{macrocode}
+%    |\f@depth| is used in |\@testwrongwidth| to look for either
+%   column or dbl-column floats. A value of |1sp| signals the
+%   latter. Because of this setting here, |\@dblfloatplacment| needs to
+%   be called inside a group which is a questionable design.
+%    \begin{macrocode}
+   \def\f@depth{1sp}}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>          {\@dblfloatplacement}{float order in 2-column}%
+%<latexrelease>\def \@dblfloatplacement {%
+%    \end{macrocode}
+%    Textpage bit: global, but need not be.
+%    \begin{macrocode}
+%<latexrelease>  \global \@dbltopnum \c@dbltopnumber
+%<latexrelease>  \global \@dbltoproom \dbltopfraction\@colht
+%    \end{macrocode}
+%   This new bit uses |\@textmin| to locally store the amount of extra
+%   room in the column.
+%    \begin{macrocode}
+%<latexrelease>  \@textmin \@colht
+%<latexrelease>  \advance \@textmin -\@dbltoproom
+%    \end{macrocode}
+%    Floatpage bit: must be local.
+%    \begin{macrocode}
+%<latexrelease>  \@fpmin \dblfloatpagefraction\textheight
+%<latexrelease>  \@fptop \@dblfptop
+%<latexrelease>  \@fpsep \@dblfpsep
+%<latexrelease>  \@fpbot \@dblfpbot
+%<latexrelease>}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{oldcomments}
+%   MARGINAL NOTES:
+%
+%   Marginal notes use the same mechanism as floats to communicate
+%   with the \output routine.  Marginal notes are distinguished from
+%   floats by having a negative placement specification.  The command
+%   \marginpar [LTEXT]{RTEXT} generates a marginal note in a parbox,
+%   using LTEXT if it's on the left and RTEXT if it's on the right.
+%   (Default is RTEXT = LTEXT.)  It uses the following parameters.
+%
+%   \marginparwidth : Width of marginal notes.
+%   \marginparsep   : Distance between marginal note and text.
+%        the page layout to determine how to move the marginal
+%        note into the margin.   E.g., \@leftmarginskip ==
+%        \hskip -\marginparwidth \hskip -\marginparsep .
+%   \marginparpush  :  Minimum vertical separation between \marginpar's
+%
+%  Marginal notes are normally put on the outside of the page
+%  if @mparswitch = true, and on the right if @mparswitch = false.
+%  The command \reversemarginpar reverses the side where they
+%  are put.  \normalmarginpar undoes \reversemarginpar.
+%  These commands have no effect for two-column output.
+%
+%  SURPRISE: if two marginal notes appear on the same line of
+%  text, then the second one could appear on the next page, in
+%  a funny position.
+%
+%
+%  \marginpar [LTEXT]{RTEXT} ==
+%   BEGIN
+%     if hmode then \@bsphack
+%                   \@floatpenalty := -10002
+%              else \@floatpenalty := -10003
+%     fi
+%     if inner
+%       then LaTeX Error: 'Not in outer paragraph mode.'
+%            \@floatpenalty := 0
+%       else if \@freelist has two elements:
+%              then get \@marbox, \@currbox  from \@freelist
+%                   \count\@marbox :=G -1
+%              else \@floatpenalty := 0
+%                   LaTeX Error: 'Too many unprocessed floats'
+%                   \@currbox, \@marbox := \@tempboxa    %%use \def
+%            fi
+%     fi
+%     if optional argument
+%       then %% \@xmpar ==
+%            \@savemarbox\@marbox{LTEXT}
+%            \@savemarbox\@currbox{RTEXT}
+%       else %% \@ympar ==
+%            \@savemarbox\@marbox{RTEXT}
+%            \box\@currbox :=G \box\@marbox
+%    fi
+%    \@xympar
+%   END
+%
+% \reversemarginpar == BEGIN \@mparbottom   :=G 0
+%                            @reversemargin :=G true
+%                      END
+%
+% \normalmarginpar  == BEGIN \@mparbottom   :=G 0
+%                            @reversemargin :=G false
+%                      END
+%
+% \end{oldcomments}
+%
+% \begin{macro}{\marginpar}
+%    \begin{macrocode}
+\def\marginpar{%
+  \ifhmode
+    \@bsphack
+    \@floatpenalty -\@Mii
+  \else
+    \@floatpenalty-\@Miii
+  \fi
+  \ifinner
+    \@parmoderr
+    \@floatpenalty\z@
+  \else
+    \@next\@currbox\@freelist{}{}%
+    \@next\@marbox\@freelist{\global\count\@marbox\m@ne}%
+       {\@floatpenalty\z@
+        \@fltovf\def\@currbox{\@tempboxa}\def\@marbox{\@tempboxa}}%
+  \fi
+  \@ifnextchar [\@xmpar\@ympar}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xmpar}
+%    \begin{macrocode}
+\long\def\@xmpar[#1]#2{%
+  \@savemarbox\@marbox{#1}%
+  \@savemarbox\@currbox{#2}%
+  \@xympar}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ympar}
+%    \begin{macrocode}
+\long\def\@ympar#1{%
+  \@savemarbox\@marbox{#1}%
+  \global\setbox\@currbox\copy\@marbox
+  \@xympar}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@savemarbox}
+% \changes{v1.0b}{1994/03/12}
+%     {(DPC) Extra group for colour}
+% \changes{v1.0c}{1994/03/14}
+%     {(DPC) Use \cs{color@begingroup}}
+% \changes{v1.0d}{1994/04/18}
+%     {(DPC) Remove Colour support}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Extra box added for colour}
+% \changes{v1.1c}{1994/11/05}
+%         {Use new \cs{color@hbox} concept.}
+% \changes{v1.1f}{1994/11/21}{Changed to \cs{color@vbox} }
+% \changes{v1.1f}{1994/11/21}{Use \cs{@setnobreak} etc}
+% \changes{v1.1f}{1994/11/21}{Added \cs{@setminipage} etc}
+% \changes{v1.1f}{1994/11/21}{Added resetting of size and font}
+% \changes{v1.1m}{1995/05/25}{(CAR) Resettings moved to hook}
+% \changes{v1.1n}{1996/07/26}{remove unecessary \cs{global} before
+%                 \cs{@minipage...}}
+%    \begin{macrocode}
+\long\def \@savemarbox #1#2{%
+  \global\setbox #1%
+    \color@vbox
+      \vtop{%
+        \hsize\marginparwidth
+        \@parboxrestore
+        \@marginparreset
+        #2%
+        \@minipagefalse
+        \outer@nobreak
+        }%
+    \color@endbox
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@marginparreset}
+% \changes{v1.1f}{1994/11/21}{Macro added}
+%
+% The rational for allowing these normally global flags to be set
+% locally here, via |\@parboxrestore| was stated originally by
+% Donald Arsenau and extended by Chris Rowley.
+% It is because these flags are only set globally to
+% true by section commands, and these should never appear within
+% marginals or floats or, indeed, in any group; and they are only ever
+% set globally to false when they are definitely true.
+%
+% If anyone is unhappy with this argument then both flags should be
+% treated as in |\set@nobreak|; otherwise this command will be
+% redundant.
+% \changes{v1.1p}{1996/10/24}
+%     {Added local settings of flags: dangerous!!}
+%    \begin{macrocode}
+\def \@marginparreset {%
+        \reset@font
+        \normalsize
+%        \let\if@nobreak\iffalse
+%        \let\if@noskipsec\iffalse
+%        \@setnobreak
+        \@setminipage
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@xympar}
+%    \begin{macrocode}
+%    \end{macrocode}
+% \changes{LaTeX2.09}{1992/03/18}
+%     {(RmS) added \cs{global}\cs{@ignorefalse}}
+% \changes{v1.0b}{1994/03/12}
+%     {(DPC) Extra bgroup for colour}
+% \changes{1.0c}{1994/03/14}
+%     {(DPC) Use \cs{color@begingroup}}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Extra box added since needed for floats}
+% \changes{v1.1c}{1994/11/05}
+%         {Use new \cs{color@hbox} concept.}
+% \changes{v1.1f}{1994/11/21}{Changed to \cs{color@vbox} }
+%     Setting the box here is done only because the code
+%     uses \cs{end@float}; it will be empty and gets discarded.
+% \changes{v1.1o}{1996/08/02}{Remove \cs{global} before \cs{@ignore...}}
+%    \begin{macrocode}
+\def \@xympar{%
+  \ifnum\@floatpenalty <\z@\@cons\@currlist\@marbox\fi
+  \setbox\@tempboxa
+    \color@vbox
+      \vbox \bgroup
+  \end@float
+  \@ignorefalse
+  \@esphack
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\reversemarginpar}
+% \begin{macro}{\normalmarginpar}
+%    \begin{macrocode}
+\def\reversemarginpar{\global\@mparbottom\z@ \@reversemargintrue}
+\def\normalmarginpar{\global\@mparbottom\z@ \@reversemarginfalse}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+\message{footnotes,}
+%    \end{macrocode}
+%
+% \subsection{Footnotes}
+%
+% \begin{oldcomments}
+%
+%   \footnote{NOTE}       : User command to insert a footnote.
+%
+%   \footnote[NUM]{NOTE}: User command to insert a footnote numbered
+%                       NUM, where NUM is a number -- 1, 2,
+%                       etc.  For example, if footnotes are numbered
+%                       *, **, etc. within pages, then \footnote[2]{...}
+%                       produces footnote '**'.  This command does not
+%                       step the footnote counter.
+%
+%   \footnotemark[NUM] : Command to produce just the footnote mark in
+%                        the text, but no footnote.  With no argument,
+%                        it steps the footnote counter before generating
+%                        the mark.
+%
+%   \footnotetext[NUM]{TEXT} : Command to produce the footnote but
+%                              no mark.  \footnote is equivalent to
+%                              \footnotemark \footnotetext .
+%
+%   As in PLAIN, footnotes use \insert\footins, and the following
+%   parameters:
+%
+%   \footnotesize   : Size-changing command for footnotes.
+%
+%   \footnotesep    : The height of a strut placed at the beginning of
+%                     every footnote.
+%   \skip\footins   : Space between main text and footnotes.  The rule
+%                     separating footnotes from text occurs in this
+%                     space. This space lies above the strut of height
+%                     \footnotesep which is at the beginning of the
+%                     first footnote.
+%   \footnoterule   : Macro to draw the rule separating footnotes from
+%                     text. It is executed right after a \vspace of
+%                     \skip\footins. It should take zero vertical
+%                     space--i.e., it should to a negative skip to
+%                     compensate for any positive space it occupies.
+%                     (See PLAIN.TEX.)
+%
+%   \interfootnotelinepenalty : Interline penalty for footnotes.
+%
+%   \thefootnote : In usual LaTeX style, produces the footnote number.
+%                  If footnotes are to be numbered within pages, then
+%                  the document style file must include an \@addtoreset
+%                  command to cause the footnote counter to be reset
+%                  when the page counter is stepped.  This is not a good
+%                  idea, though, because the counter will not always be
+%                  reset in time to ensure that the first footnote on a
+%                  page is footnote number one.
+%
+%   \@thefnmark : Holds the current footnote's mark--e.g., \dag or '1'
+%                 or 'a'.
+%
+%   \@mpfnnumber  : A macro that generates the numbers for \footnote
+%                  and \footnotemark commands. It == \thefootnote
+%                  outside a minipage environment, but can be
+%                  changed inside to generate numbers for
+%                  \footnote's.
+%
+%   \@makefnmark : A macro to generate the footnote marker from
+%                 \@thefnmark The default definition was
+%                 \hbox{$^\@thefnmark$}.
+%
+%                 This is now replaced by
+%                 \textsuperscript{\@thefnmark}
+%
+%   \@makefntext{NOTE} :
+%        Must produce the actual footnote, using \@thefnmark as the mark
+%        of the footnote and NOTE as the text.  It is called when
+%        effectively  inside a \parbox, with \hsize = \columnwidth.
+%          For example, it might be as simple as
+%               $^{\@thefnmark}$  NOTE
+%
+% In a minipage environment, \footnote and \footnotetext are redefined
+% so that
+%    (a) they use the counter mpfootnote
+%    (b) the footnotes they produce go at the bottom of the minipage.
+% The switch is accomplished by letting \@mpfn == footnote or mpfootnote
+% and \thempfn == \thefootnote or \thempfootnote, and by redefining
+% \@footnotetext to be \@mpfootnotetext in the minipage.
+%
+% \footnote{NOTE}  ==
+%  BEGIN
+%    \stepcounter{\@mpfn}
+%    begingroup
+%       \protect == \noexpand
+%       \@thefnmark :=G eval (\thempfn)
+%    endgroup
+%    \@footnotemark
+%    \@footnotetext{NOTE}
+%  END
+%
+% \footnote[NUM]{NOTE} ==
+%  BEGIN
+%    begingroup
+%       \protect == \noexpand
+%       counter \@mpfn :=L NUM
+%       \@thefnmark :=G eval (\thempfn)
+%    endgroup
+%    \@footnotemark
+%    \@footnotetext{NOTE}
+%  END
+%
+% \footnotemark      ==
+%  BEGIN \stepcounter{footnote}
+%        begingroup
+%           \protect == \noexpand
+%           \@thefnmark :=G eval(\thefootnote)
+%        endgroup
+%        \@footnotemark
+%  END
+%
+% \footnotemark[NUM] ==
+%   BEGIN
+%       begingroup
+%         footnote counter :=L NUM
+%         \protect == \noexpand
+%        \@thefnmark :=G eval(\thefootnote)
+%       endgroup
+%       \@footnotemark
+%   END
+%
+% \@footnotemark ==
+%   BEGIN
+%    \leavevmode
+%    IF hmode THEN \@x@sf := \the\spacefactor FI
+%    \@makefnmark          % put number in main text
+%    IF hmode THEN \spacefactor := \@x@sf FI
+%   END
+%
+% \footnotetext      ==
+%    BEGIN begingroup \protect == \noexpand
+%                     \@thefnmark :=G eval (\thempfn)
+%          endgroup
+%          \@footnotetext
+%    END
+%
+% \footnotetext[NUM] ==
+%    BEGIN begingroup  counter \@mpfn :=L NUM
+%                      \protect == \noexpand
+%                      \@thefnmark :=G eval (\thempfn)
+%          endgroup
+%          \@footnotetext
+%    END
+%
+% \end{oldcomments}
+%
+%
+% \changes{v1.1l}{1995/05/24}{Moved definition of \cs{footins}
+%                   and \cs{footnoterule} from ltplain.}
+%
+% \begin{macro}{\footins}
+% \LaTeX\ does use the same insert for footnotes as PLAIN.
+%    \begin{macrocode}
+\newinsert\footins
+%    \end{macrocode}
+%
+% \LaTeX\ leaves these initializations for the |\footins| insert.
+%
+%    \begin{macrocode}
+\skip\footins=\bigskipamount % space added when footnote is present
+\count\footins=1000 % footnote magnification factor (1 to 1)
+\dimen\footins=8in % maximum footnotes per page
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\footnoterule}
+% \LaTeX\ keeps PLAIN \TeX's |\footnoterule| as the default.
+%
+%    \begin{macrocode}
+\def\footnoterule{\kern-3\p@
+  \hrule \@width 2in \kern 2.6\p@} % the \hrule is .4pt high
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\thefootnote}
+% \changes{v1.1i}{1995/05/16}{Streamlined parts of code.}
+%    \begin{macrocode}
+\@definecounter{footnote}
+\def\thefootnote{\@arabic\c@footnote}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\thempfootnote}
+% \changes{v1.1j}{1995/05/18}{Added \cs{itshape}.}
+% \changes{v1.1v}{2002/10/01}{Use braces around \cs{itshape}
+%    to keep font change local (pr/3460).}
+%    The default display for the footnote counter in minipages is to
+%    use italic letters. We use |\itshape| not |\textit| as the latter
+%    would add an italic correction.
+%    \begin{macrocode}
+\@definecounter{mpfootnote}
+\def\thempfootnote{{\itshape\@alph\c@mpfootnote}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@makefnmark}
+% \changes{v1.1i}{1995/05/16}{Now use \cs{textsuperscript}.}
+% \changes{v1.1j}{1995/05/18}{Added \cs{normalfont}.}
+% \changes{v1.1k}{1995/05/20}{Moved \cs{normalfont} to
+%                             \cs{textsuperscript}}
+% \changes{v1.1k}{1995/05/20}{Moved \cs{normalfont} back
+%                        and use \cs{@textsuperscript}}
+%    Default definition.
+%    \begin{macrocode}
+%\def\@makefnmark{\hbox{$^{\@thefnmark}\m@th$}}
+\def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\textsuperscript}
+% \changes{v1.1i}{1995/05/16}{Command added./pr1503}
+% \changes{v1.1k}{1995/05/20}{Use \cs{normalfont}.}
+% \changes{v1.1l}{1995/05/24}{Use \cs{@textsuperscript}}
+%    This command provides superscript characters in the current text
+%    font. It's implementation might change!!!
+%    \begin{macrocode}
+\DeclareRobustCommand*\textsuperscript[1]{%
+  \@textsuperscript{\selectfont#1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@textsuperscript}
+% \changes{v1.1l}{1995/05/24}{Command added.}
+% \changes{v1.1n}{1995/12/05}{Use \cs{ensuremath} for latex/1984.}
+% \changes{v1.1m}{1995/12/07}
+%      {Move \cs{m@th} out of the \cs{ensuremath} for latex/1984.}
+%    This command should not be used directly, but may be used to define
+%   other commands |\textsuperscript|, |\@makefnmark|. |#1| should
+%   always start with a font selection command, to activate the font
+%   size switch.
+%    \begin{macrocode}
+\def\@textsuperscript#1{%
+  {\m@th\ensuremath{^{\mbox{\fontsize\sf@size\z@#1}}}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\textsubscript}
+% \changes{v1.2a}{2014/12/30}{Command added (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\textsubscript}{\textsubscript}%
+%<*2ekernel|latexrelease>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand*\textsubscript[1]{%
+  \@textsubscript{\selectfont#1}}%
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@textsubscript}
+% \changes{v1.2a}{2014/12/30}{Command added (latexrelease)}
+%
+%    \begin{macrocode}
+\def\@textsubscript#1{%
+  {\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}%
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\textsubscript}{\textsubscript}%
+%<latexrelease>\let\textsubscript\@undefined
+%<latexrelease>\let\@textsubscript\@undefined
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@textsubscript#1{%
+  {\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
+%    \end{macrocode}
+%
+% \begin{macro}{\footnotesep}
+%    \begin{macrocode}
+\newdimen\footnotesep
+%    \end{macrocode}
+%
+% \end{macro}
+%
+% \begin{macro}{\footnote}
+% \changes{LaTeX2.09}{1991/11/01}
+%         {(RmS) Added \cs{let}\cs{protect}\cs{noexpand} in
+%          \cs{footnote}, \cs{footnotemark},
+%               and \cs{footnotetext}, since \cs{xdef} is used}
+% \changes{LaTeX2.09}{1991/11/22}
+%         {(RmS) Added \cs{let}\cs{protect}\cs{noexpand} in
+%             \cs{@xfootnote}, \cs{@xfootnotemark},
+%               and \cs{@xfootnotetext}}
+% \changes{LaTeX2.09}{1992/11/26}
+%         {(RmS) Changed all to
+%             `def`protect\string{`noexpand`protect`noexpand\string}}
+% \changes{v1.1b}{1994/11/26}
+%         {(ASAJ) Added \cs{protected@xdef}.}
+%
+%    \begin{macrocode}
+\def\footnote{\@ifnextchar[\@xfootnote{\stepcounter\@mpfn
+     \protected@xdef\@thefnmark{\thempfn}%
+     \@footnotemark\@footnotetext}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xfootnote}
+%    \begin{macrocode}
+\def\@xfootnote[#1]{%
+   \begingroup
+     \csname c@\@mpfn\endcsname #1\relax
+     \unrestored@protected@xdef\@thefnmark{\thempfn}%
+   \endgroup
+   \@footnotemark\@footnotetext}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@footnotetext}
+% \changes{LaTeX2.09}{1991/09/29}
+%     {(RmS) added \cs{reset@font}}
+% \changes{LaTeX2.09}{1992/11/26}
+%     {(RmS) added protection for \cs{edef}}
+% \changes{v1.0a}{1994/03/07}
+%     {(DPC) Extra group for colour}
+% \changes{v1.0c}{1994/03/14}
+%     {(DPC) Use \cs{color@begingroup}, add \cs{endgraf}}
+% \changes{v1.0d}{1994/04/18}
+%     {(DPC) Remove Colour support}
+% \changes{v1.0g}{1994/05/13}
+%     {(DPC) Add new style colour support: \cs{normalcolor}}
+% \changes{v1.0g}{1994/05/13}
+%     {(DPC) Use \cs{@finalstrut}}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Move colour setting to output routine}
+% \changes{v1.1b}{1994/11/04}
+%     {(ASAJ) Added \cs{protected@edef}.}
+% \changes{v1.1c}{1994/11/05}
+%         {Removed \cs{normalcolor} (again)}
+% \changes{v1.1t}{1997/11/19}
+%         {Missing percent, again}
+%    \begin{macrocode}
+\long\def\@footnotetext#1{\insert\footins{%
+    \reset@font\footnotesize
+    \interlinepenalty\interfootnotelinepenalty
+    \splittopskip\footnotesep
+    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM
+    \hsize\columnwidth \@parboxrestore
+    \protected@edef\@currentlabel{%
+       \csname p@footnote\endcsname\@thefnmark
+    }%
+    \color@begingroup
+      \@makefntext{%
+        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
+    \color@endgroup}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footnotemark}
+% \changes{v1.1b}{1994/11/04}{Added \cs{protected@xdef} to
+%    \cs{footnotemark}.}
+%    \begin{macrocode}
+\def\footnotemark{%
+   \@ifnextchar[\@xfootnotemark
+     {\stepcounter{footnote}%
+      \protected@xdef\@thefnmark{\thefootnote}%
+      \@footnotemark}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xfootnotemark}
+%    \begin{macrocode}
+\def\@xfootnotemark[#1]{%
+   \begingroup
+      \c@footnote #1\relax
+      \unrestored@protected@xdef\@thefnmark{\thefootnote}%
+   \endgroup
+   \@footnotemark}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@footnotemark}
+% \changes{v1.1h}{1995/05/12}
+%         {Add \cs{nobreak} to allow hyphenation. latex/1605}
+%    \begin{macrocode}
+\def\@footnotemark{%
+  \leavevmode
+  \ifhmode\edef\@x@sf{\the\spacefactor}\nobreak\fi
+  \@makefnmark
+  \ifhmode\spacefactor\@x@sf\fi
+  \relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footnotetext}
+%    \begin{macrocode}
+\def\footnotetext{%
+     \@ifnextchar [\@xfootnotenext
+       {\protected@xdef\@thefnmark{\thempfn}%
+    \@footnotetext}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xfootnotenext}
+%    \begin{macrocode}
+\def\@xfootnotenext[#1]{%
+  \begingroup
+     \csname c@\@mpfn\endcsname #1\relax
+     \unrestored@protected@xdef\@thefnmark{\thempfn}%
+  \endgroup
+  \@footnotetext}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\thempfn}
+% \begin{macro}{\@mpfn}
+%    \begin{macrocode}
+\def\@mpfn{footnote}
+\def\thempfn{\thefootnote}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \Finale
+%

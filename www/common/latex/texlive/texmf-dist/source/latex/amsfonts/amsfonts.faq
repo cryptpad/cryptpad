@@ -1,0 +1,131 @@
+amsfonts.faq, last updated 2002/01/18
+
+     Frequently Asked Questions about the AMSFonts Distribution
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(1) I'm using LaTeX -- How do I get bold greek, or bold italic letters
+a,A,b,B,... in math?
+
+Get the amsbsy.sty package in the amslatex distribution, which provides
+a \boldsymbol command that can be applied to Greek and Latin letters
+(e.g., \boldsymbol{\beta} or \boldsymbol{M}).
+
+This package is not included in the AMSFonts distribution because the
+bold fonts that will most often be required -- cmmib and cmbsy -- have
+since 1994 been considered to be part of the standard LaTeX font set,
+so they should be at your disposal whether or not you have the AMSFonts
+collection installed.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(2) I use a 360dpi printer. Can I use one of the sets of .pk files which
+are posted on the archive, or do I need to generate my own files from
+the Metafont source code?
+
+If you want pk files for a 360dpi printer, the simplest thing to do is
+to retrieve the 300dpi pk files and install them. Since they include
+the fonts at magsteps 0 through 5, and since each magstep is 1.2 times
+the previous one, 300dpi at magsteps 0 through 5 is also 360dpi at
+magsteps 0 through 4.  All you will be missing is magstephalf and
+magstep 5, which most people don't use anyway.  In other words, if you
+look at the contents of the 300dpi distribution, you will see for each
+font a 300, 329, 360, 432, 518, 622, and 746 dpi pk file. The last five
+of these are useful for a 360dpi printer.
+
+If you wish to have pk files for magstephalf and magstep5 at 360dpi,
+you will have to generate them yourself using Metafont, but you can
+very likely get along without them.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(3) How can I get PostScript outlines of AMSFonts?
+
+PostScript Type 1 versions of the AMSFonts can be obtained from the AMS
+web server at  http://www.ams.org/tex/type1-fonts.html.  The collection
+is mirrored onto CTAN, in the area  fonts/amsfonts/ps-type1.
+
+Only sizes 5, 7, and 10-point are included in this collection.  When
+using these fonts, it is generally advisable to use the `psamsfonts'
+option to access them.  This option is supported for both (AMS-)LaTeX
+and AMS-TeX; see the AMSFonts User's Guide for details.
+
+Warning: If `psamsfonts' is added to an existing document, it may result
+in some differences in line and page breaks.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(4) I use OzTeX. The Macintosh AMSFonts package is for use with Textures.
+What do I do?
+
+OzTeX is an implementation of TeX on the Macintosh which behaves similarly
+to implementations in DOS or Unix. The files for use with DOS and Unix can 
+be used in OzTeX on the Macintosh. In the installation instructions,
+simply substitute "folder" for "directory" in all cases.
+
+The current OzTeX distribution includes the version of the AMSFonts as
+of when the distribution was compiled. If your version of OzTeX is not
+the most recent, updating it may be the simplest way of installing the
+AMSFonts.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(5) Why isn't a 10-point font for cmcsc, cmmib, cmbsy, or cmex included
+in the AMSFonts package?
+
+All of these fonts at 10-point are included in the standard set of fonts
+with any implementation of TeX. If you do not have them available on
+your system, re-install the fonts from the original distribution files
+of your TeX implementation or contact the distributor/vendor of that
+implementation of TeX.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(6) What happened to the fonts msxm* and msym*?
+
+A very early release of AMSFonts in the mid-1980s included fonts called
+msxm5-10 and msym5-10. These were replaced in the late 1980s by the
+fonts msam5-10 and msbm5-10 (included in this distribution). The msxm
+and msym fonts were done in a very early version of Metafont which is
+no longer available. The Metafont code for these fonts will not work
+with current implementations of Metafont in current operating systems.
+This means that the msxm and msym fonts cannot be generated. They are
+not supported by the AMS, and their use or distribution is strongly
+discouraged.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(7) I've seen a fancy script font used in AMS publications. Why isn't it
+included in AMSFonts, and where can I get it?
+
+Many AMS publications use some proprietary fonts which were purchased
+from commercial font vendors and are not in the public domain. This
+includes the script font which appears in many of our books and
+journals. Users who wish to purchase such a font in PostScript or
+TrueType outline form from a commercial font vendor will also need to
+convert the metrics file from the vendor into a .tfm file using one of
+the available programs for doing to (Tomas Rokicki's afm2tfm is in the
+public domain, and Y&Y's afmtotfm is a proprietary program).
+
+Another option that may prove satisfactory is to use the rsfs font --
+`Ralph Smith's Fancy Script'.  This can be found on CTAN in the area
+fonts/rsfs/ ; both Metafont and Type 1 versions are available.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(8) I'm using Textures on a Macintosh, and I followed the instructions
+for installing msam* and msbm*, but some of the symbols won't print or
+display properly on the screen. What's wrong?
+
+Although there are several possible causes, the easiest one to put right
+is a setting for the monitor that instructs it to use more than 256
+colors.  If this is reset to exactly 256, the symbols should appear as
+expected.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(9) I'm using babel with the polish option as well as the amssymb package.
+There is an error: ! LaTeX Error: Command `\lll' already defined.  How
+can I avoid this error?
+
+In amssymb, there is a synonum for \lll, namely \llless, so anyone who
+needs to use babel with the polish option does not lose access to this
+symbol. In polish.ldf, \lll is used as an internal command. It has been
+suggested to replace this by a command using `@' to avoid conflicts of
+this sort; whether or not that is done, the error can be avoided by
+loading amssymb before babel:
+    \usepackage{amssymb}
+    \usepackage[polish]{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

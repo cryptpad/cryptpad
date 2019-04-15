@@ -1,0 +1,319 @@
+amsfonts.bug [2009/06/22]
+
+History of bug reports and fixes for the AMSFonts collection
+
+Please direct bug reports or related questions to the AMS technical
+support address: tech-support@math.ams.org (or by phone: 401-455-4080;
+in the USA or Canada, 1-800-321-4267 ext 4080).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Open bugs:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cmbsy5.mf, other cm*.mf
+Date reported: 2000/04/12 (Boguslaw Jackowski)
+
+Numerous instances where parameters violate vol. e diktat that thin_join
+and others must be greater or equal to crisp/tiny/fine.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: xbbold.mf
+Date reported: 2000/01/28 (Walter Schmidt)
+
+"computational overflow" in Metafont for high res (mode=linolttz = 3386dpi)
+line         if pixels_per_inch*designsize < 1500:
+should be    if pixels_per_inch < 1500/designsize:
+rounding may be different at low resolutions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: bsymbols.mf
+Date reported: 1998/11/20 (Benedikt Loewe)
+
+\Game ("The Reversed inverted letter G", oct"141") should be a G rotated
+180\degrees, not inverted.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: bsymbols.mf
+Date reported: 1997/09/26 (Ulrik Vieth)
+
+digamma ("stylized F", oct"172") is not affected by parameter changes.
+Elliptical pen defined in terms of rule_thickness should be redefined in
+terms of CM parameters.
+
+Hebrew letters beth, gimel, daleth also don't seem to be affected by
+parameter changes (unlike the aleph from cmsy10).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cmbsy*.mf
+Date reported: 1997/08/31 (Matthias Clasen) latexbug amslatex/2593
+
+In cmbsy7.mf, crisp#:=11pt#, should be crisp#:=11/36pt#.
+Affects spacing around vertical arrows.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: serb.mf
+Date reported: 1997/01/14 (barbara beeton)
+
+Letter "short I" is excessively high; this is demonstrated in AMSFonts
+User's Guide chart, where it is centered rather than on baseline because
+it exceeds the expected height (wncyr, wncyi).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: bsymbols.mf
+Date reported: 1996/06/24 (Ernst Reissner)
+
+Hebrew letter gimel lacks the notch at lower right, and thus has the shape
+of the letter nun.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: ebigop.mf
+Date reported: 1996/02/15 (Frank Jensen)
+
+There are no real characters associated with positions oct"100", oct"101"
+so TeX reports "missing character" for
+  extensible oct"100": oct"070",0,oct"073",oct"076";  % left moustache
+  extensible oct"101": oct"071",0,oct"072",oct"076";  % left moustache
+This could be cured by changing these as follows:
+  extensible oct"074": oct"070",0,oct"073",oct"076";  % left moustache
+  extensible oct"075": oct"071",0,oct"072",oct"076";  % left moustache
+Because Metafont shouldn't permit this, bug should be submitted to DEK.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: xbbase.mf
+Date reported: 1995/07/21 (Denis B. Roegel)
+
+Letter \Bbb N has the wrong shape at certain resolutions; presumably the
+result of a typo in the definition of leftserif@ :
+           if ypart A>ypart B:reverse fi
+should be  if ypart A>ypart Bl:reverse fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssymb.sty
+Date reported: 1995/03/28 (Andreas Amann) latexbug amslatex/1524
+
+Braces (from cmex) in \small environment are larger than those in \normalsize.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+VERSION 3.0 RELEASED: 2009/03/21
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Note: This release does not affect any .mf sources; all shape changes made
+ directly in Type 1 files.  Also, some updates made to the Plain TeX and
+ LaTeX support.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: eusmch.mf, eufmch.mf, eurmch.mf
+Date reported: 1997/11/01 (Matthias Clasen) latexbug amslatex/2657
+
+Wrong glyph dimensions:
+   Depth of letter Y in eusm, can be fixed by replacing
+         charbegin( "Y", 2006h#, capheight*v#, baseline );
+   with  charbegin( "Y", 2006h#, capheight*v#, 2/3descender*v# );
+Other glyphs with suspicious dimensions:
+   eusmch.mf -- character 120 (smss)
+   eufmch.mf -- letter j
+   eurmch.mf -- character 125 (gm175)
+
+Corrected: 2008/01/19  eu*.mf superseded by new Type 1
+Version: 3.0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: eufmch.mf
+Date reported: 1995/10/14 (Christian Schwarz)
+
+Rule for minus is too thin; it disappears on previewer.
+
+Corrected: 2008/01/19  eu*.mf superseded by new Type 1
+Version: 3.0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+VERSION 2.2d RELEASED: 2002/01/22
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Note: This release does not affect any .mf sources or the fonts themselves;
+ it updates only the Plain TeX and LaTeX support.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: all .dtx./sty and .fdd/.fd files (LaTeX support)
+Date reported: 1998/03/06
+
+Reported versions and dates do not match header information.
+
+Corrected: 2001/10/18
+Version: various 2.2 sub-versions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssymb.sty
+Date reported: 1997/09/06 (T. Michniewski) latexbug amslatex/2596
+
+Conflict: \lll defined in polish.ldf to be suppressed l.
+Add documentation suggesting reordering of packages to avoid error message.
+
+Addressed: 2001/10/01
+Added documentation to amsfonts.faq on how to avoid the error
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssymb.sty
+
+Double-quote character may be active (e.g., if german.sty is loaded first),
+in conflict with the hex value input to \DeclareMathSymbol.  Change it to
+\catcode=12 for the duration.
+
+Corrected: 2002/01/22
+Version: 2.2d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cmmib57.sty
+Date reported: 1999/01/04 (Walter Schmidt) latexbug amslatex/2935
+
+Changed font shape from bx to b for both cmmib and cmbsy.
+
+Corrected: 2001/10/01
+Version: 2.2g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cyracc.def
+Date reported: 1997/09/04 (Tomasz Michniewski)
+
+Add documentation to the header that says this file is for use only with
+plain TeX, not LaTeX.  Latexbug amslatex/2597 reported that this does not
+work with babel, but it was never designed to.
+
+Corrected: 2001/10/01
+Version: 2.2b (no version change)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+VERSION 2.2c RELEASED: 1996/11/07
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amsfonts.sty
+Date reported: 1996/03/03 (Joerg Knappen) latexbug amslatex/2096
+
+\Bbb, \frak and \bold caused endless loop (in titles, not in ordinary text)
+owing to a misdefinition of \@obsolete; fixed by making these robust commands
+with one argument.
+
+Corrected: 1996/11/03
+Version: 2.2c
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amsfonts.sty
+Date reported: 1995/02/02 (Piet van Oostrum) latexbug amslatex/1415
+               1995/04/07 (Klaus Barthel)
+
+Symbols in lasy (latexsym.sty) not defined except in compatibility mode:
+\leadsto, \Box, \Diamond, ...
+
+Corrected: 1996/11/03
+Version: 2.2c
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amsfonts.sty
+Date reported: 30-Jan-1995 (G. Gratzer)
+
+Complications with the `cmex10' option of the amsmath package---sensitive
+to relative loading order with the amsfonts package.
+
+Corrected: 1-Feb-1995
+Version: 2.2b
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssymb.sty
+Date reported: 30-Jan-1995 (mjd)
+
+The psamsfonts option was missing.
+
+Corrected: 1-Feb-1995
+Version: 2.2a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amsfonts.sty
+Date reported: 30-Jan-1995 (C. Jonsson)
+
+Missing definition of \@mathmeasure in amsfonts.dtx/sty.
+
+Corrected: 30-Jan-1995
+Version: 2.2a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+VERSION 2.2 RELEASED: January 27, 1995
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cmmib*.mf
+Date reported: 13 Jul 1993
+
+The values of "crisp" in cmmib*.mf (except cmmib9.mf) are incorrect: The
+values are whole numbers which should be divided by 36 (as the values for
+cmmib10 and cmmib9 are). 
+
+Corrected: 3-Jan-1995
+Version: 2.2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssym.tex
+Date reported: 1-Jul-1992 (M. Spivak)
+
+\diagup and \diagdown should be class 0 instead of class 3.
+
+Corrected: 22-Dec-1994 mjd
+Version: 2.2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssym.def
+Date reported: 14-Mar-1993 (bnb)
+
+Space at the end of \mathhexbox@ calls is wrong. Doesn't disappear if
+used outside of math mode.
+
+\def\yen{{\mathhexbox@\msafam@55 }}
+\def\checkmark{{\mathhexbox@\msafam@58 }}
+\def\circledR{{\mathhexbox@\msafam@72 }}
+\def\maltese{{\mathhexbox@\msafam@7A }}
+
+Corrected: 22-Dec-1994 mjd
+Version: 2.2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: xbcaps.mf
+Date reported: 11-MAY-1993 
+
+Blackboard Bold N breaks down at certain resolutions, noticeably at 600dpi.
+
+Corrected: 12-Dec-1994 ngb
+Version: 2.2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Reported:  19-NOV-1991  wncy*.tfm, wncy?.mf
+Reported by:  Piet Tutelaers (rcpt@urc.tue.nl)
+
+In the cyrillic fonts, the ligature commands for e0 and i0 are reversed
+(i0 produces \"e and e0 produces \u\i).  For an interim fix, the .tfm
+files can be run through TFtoPL, changes made in the .pl files to the
+affected ligature instructions, and the .pl files run through PLtoTF.
+Thomas Ridgeway notified 23-DEC-1991 (bnb).
+
+Corrected: 26-Aug-93
+Version: 2.1a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Reported:  12-DEC-1991  
+File: userdoc.tex
+
+p. 21, under "negated arrows", \leftarrow should be \nleftarrow.
+Reference number (now 2320) should be 2338, and arrow should be slashed.
+
+Corrected: 24-DEC-1991  bnb
+Version: 2.1b
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Reported:  22-SEP-1991   
+File: eubase.mf
+
+Euler fonts generate characters at the wrong height when the aspect
+ratio is not 1. John Hobby suggested a fix which NGB inserted at the top
+of the file. 
+
+Corrected: 5-NOV-1991   NGB
+Version: 2.1a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Reported: 27-SEP-1991   xbbold characters
+
+There is an incompatibility between the code for Blackboard Bold and the
+code in Karl Berry's modes.mf. The result is that characters generated with a
+magnification other than \magstep0 come out larger than they should.
+
+Corrected: 15-OCT-1991  NGB
+Version:  2.1a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Reported: 17-SEP-1991 ebigop.mf (euex)
+
+Integral signs appear slanted; in Euler they should be upright.
+NGB consulted John Hobby, who provided instructions which corrected
+the problem.
+
+Corrected: 25-SEP-1991  NGB
+Version: 2.1a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

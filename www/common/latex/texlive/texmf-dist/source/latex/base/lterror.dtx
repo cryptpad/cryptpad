@@ -1,0 +1,766 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: lterror.dtx
+%<*driver>
+% \fi
+\ProvidesFile{lterror.dtx}
+             [2015/02/21 v1.2o LaTeX Kernel (errors)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{lterror.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{375}
+%
+% \changes{v1.1a}{1994/05/16}{(ASAJ) Split from ltinit.dtx.}
+% \changes{v1.1a}{1994/05/16}{(ASAJ) Completely new error interface.}
+% \changes{v1.1b}{1994/05/17}{(ASAJ) Moved error stuff from
+%    ltdefns.dtx.}
+% \changes{v1.1c}{1994/05/20}{(ASAJ) Added \cs{@latex@info@no@line}.}
+% \changes{v1.1c}{1994/05/20}{(ASAJ) Added missing full stops.}
+% \changes{v1.1c}{1994/05/20}{(ASAJ) Fixed a bug with
+%    \cs{@inmatherr}.}
+% \changes{v1.1d}{1994/05/21}{(ASAJ) Made the error commands robust.}
+% \changes{v1.1e}{1994/05/22}{(ASAJ) Replaced bgroup by begingroup in
+%    error messages, to stop extra mathords creeping into math mode.}
+% \changes{v1.2a}{1994/05/22}{(ASAJ) Replaced \cs{@generic@message} and
+%    \cs{@generic@error} by \cs{GenericError}, \cs{GenericWarning} and
+%    \cs{GenericInfo}.}
+% \changes{v1.2a}{1994/05/22}{(ASAJ) Made \cs{GenericError},
+%    \cs{GenericWarning} and \cs{GenericInfo} robust.}
+% \changes{v1.2a}{1994/05/22}{(ASAJ) Replaced \cmd\\ and tilde by
+%    \cs{MessageBreak} and \cs{space}.}
+% \changes{v1.2a}{1994/05/22}{(ASAJ) Replaces \cs{string} by
+%    \cs{protect} in some messages.}
+% \changes{v1.2f}{1994/05/24}{(DPC) wrap long lines}
+% \changes{v1.2h}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.2i}{1995/09/01}
+%         {Add autoload support}
+% \changes{v1.2j}{1995/10/09}
+%         {Modify autoload support}
+% \changes{v1.2o}{2015/02/21}
+%         {Removed autoload support}
+%
+% \section{Error handling}
+%
+% This section defines \LaTeX's error commands.
+%
+% \StopEventually{}
+%
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+% The `2ekernel' code ensures that a |\usepackage{autoerr}| is
+% essentially ignored if a `full' format is being used that has
+% the error messages already in the format.
+%
+% These days we don't support autoloading approach any longer, but
+%   this part bit is kept in case it is used in old documents. 
+%    \begin{macrocode}
+\expandafter\let\csname ver@autoerr.sty\endcsname\fmtversion
+%    \end{macrocode}
+%
+%
+% \subsection{General commands}
+%
+% \begin{macro}{\MessageBreak}
+%    This command prints a new-line inside a message, followed by a
+%    continuation line begun with |\@msg@continuation|.  Normally it is
+%    defined to be |\relax|, but inside messages, it is let to
+%    |\@message@break|.
+%    \begin{macrocode}
+\let\MessageBreak\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.2g}{1994/11/04}{Added \cs{set@display@protect} to
+%    \cs{Generic*} commands.  ASAJ.}
+%
+% \begin{macro}{\GenericInfo}
+%    This takes two arguments: a continuation and a message, and sends
+%    the result to the log file.
+%    \begin{macrocode}
+\DeclareRobustCommand{\GenericInfo}[2]{%
+   \begingroup
+      \def\MessageBreak{^^J#1}%
+      \set@display@protect
+      \immediate\write\m@ne{#2\on@line.}%
+   \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\GenericWarning}
+%    This takes two arguments: a continuation and a message, and sends
+%    the result to the screen.
+%    \begin{macrocode}
+\DeclareRobustCommand{\GenericWarning}[2]{%
+   \begingroup
+      \def\MessageBreak{^^J#1}%
+      \set@display@protect
+      \immediate\write\@unused{^^J#2\on@line.^^J}%
+   \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\GenericError}
+% This macro takes four arguments: a continuation,
+% an error message, where to go for further information, and the help
+% information.  It displays the error message, and sets the error help
+% (the result of typing |h| to the prompt), and does a horrible hack
+% to turn the last context line (which by default is the only context
+% line) into just three dots.  This could be made more efficient.
+% \changes{v1.2d}{1994/05/22}
+%     {(DPC) New version using long command name.}
+% \changes{v1.2d}{1994/05/22}
+%     {(DPC) Alternative version added for old TeXs}
+%    \begin{macrocode}
+\bgroup
+\lccode`\@=`\ %
+\lccode`\~=`\ %
+\lccode`\}=`\ %
+\lccode`\{=`\ %
+\lccode`\T=`\T%
+\lccode`\H=`\H%
+\catcode`\ =11\relax%
+\lowercase{%
+\egroup%
+%    \end{macrocode}
+%
+% Unfortunately \TeX\ versions older than 3.141 have a bug which means
+% that |^^J| does not force a linebreak in |\message| and |\errmessage|
+% commands. So for these old \TeX's we use |\typeout| to produce the
+% message, and then have an empty |\errmessage| command. This causes an
+% extra line of the form
+%\begin{verbatim}
+%! .
+%\end{verbatim}
+% To appear on the terminal, but if you do not like it, you can always
+% upgrade your \TeX! In order for your format to use this version, you
+% must define the macro |\@TeXversion| to be the version number, e.g.,
+% 3.14 of the underlying \TeX. See the comments in
+% \texttt{ltdircheck.dtx}.
+%    \begin{macrocode}
+\dimen@\ifx\@TeXversion\@undefined4\else\@TeXversion\fi\p@%
+\ifdim\dimen@>3.14\p@%
+%    \end{macrocode}
+%
+% First the `standard case'.
+%    \begin{macrocode}
+\DeclareRobustCommand{\GenericError}[4]{%
+\begingroup%
+\immediate\write\@unused{}%
+\def\MessageBreak{^^J}%
+\set@display@protect%
+\edef%
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+{{#4}}%
+\errhelp
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+\let
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+\@empty
+\def\MessageBreak{^^J#1}%
+\def~{\errmessage{%
+#2.^^J^^J%
+#3^^J%
+Type  H <return>  for immediate help%
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+}}%
+~%
+\endgroup}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\else%
+%    \end{macrocode}
+%
+% Secondly the version for old \TeX's.
+%    \begin{macrocode}
+\DeclareRobustCommand{\GenericError}[4]{%
+\begingroup%
+\immediate\write\@unused{}%
+\def\MessageBreak{^^J}%
+\set@display@protect%
+\edef%
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+{{#4}}%
+\errhelp
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+\let
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+\errmessage
+\def\MessageBreak{^^J#1}%
+\def~{\typeout{! %
+#2.^^J^^J%
+#3^^J%
+Type  H <return>  for immediate help.}%
+%    %<-------------------do not delete this space!------------------->%
+\@err@                                                                 %
+{}}%
+~%
+\endgroup}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fi}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PackageError}
+% \begin{macro}{\PackageWarning}
+% \begin{macro}{\PackageWarningNoLine}
+% \begin{macro}{\PackageInfo}
+% \begin{macro}{\ClassError}
+% \begin{macro}{\ClassWarning}
+% \begin{macro}{\ClassWarningNoLine}
+% \begin{macro}{\ClassInfo}
+%  These commands are intended for use by package and class writers, to
+%  give information to authors.  The syntax is:
+%    \begin{quote}
+%       |\PackageError{|\meta{package}|}{|^^A
+%          \meta{error}|}{|\meta{help}|}| \\
+%       |\PackageWarning{|\meta{package}|}{|\meta{warning}|}| \\
+%       |\PackageWarningNoLine{|\meta{package}|}{|\meta{warning}|}| \\
+%       |\PackageInfo{|\meta{package}|}{|\meta{info}|}|
+%    \end{quote}
+%    and similarly for classes.  The |Error| commands print the
+%    \meta{error} message, and present the interactive prompt; if the
+%    author types |h|, then the \meta{help} information is displayed.
+%    The |Warning| commands produce a warning but do not present the
+%    interactive prompt.  The |WarningNoLine| commands do the same,
+%    but don't print the input line number.  The |Info| commands write
+%    the message to the
+%    |log| file.  Within the messages, the command
+%    |\MessageBreak| can be used to
+%    break a line, |\protect| can be used to protect command names,
+%    and |\space| is a space, for example:
+% \begin{verbatim}
+%    \newcommand{\foo}{FOO}
+%    \PackageWarning{ethel}{%
+%       Your hovercraft is full of eels,\MessageBreak
+%       and \protect\foo\space is \foo}
+% \end{verbatim}
+%    produces:
+% \begin{verbatim}
+%    Package ethel warning: Your hovercraft is full of eels,
+%    (ethel)                and \foo is FOO on input line 54.
+% \end{verbatim}
+%
+%    \begin{macrocode}
+\gdef\PackageError#1#2#3{%
+   \GenericError{%
+      (#1)\@spaces\@spaces\@spaces\@spaces
+   }{%
+      Package #1 Error: #2%
+   }{%
+      See the #1 package documentation for explanation.%
+   }{#3}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\PackageWarning#1#2{%
+   \GenericWarning{%
+      (#1)\@spaces\@spaces\@spaces\@spaces
+   }{%
+      Package #1 Warning: #2%
+   }%
+}
+\def\PackageWarningNoLine#1#2{%
+   \PackageWarning{#1}{#2\@gobble}%
+}
+\def\PackageInfo#1#2{%
+   \GenericInfo{%
+      (#1) \@spaces\@spaces\@spaces
+   }{%
+      Package #1 Info: #2%
+   }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\ClassError#1#2#3{%
+   \GenericError{%
+      (#1) \space\@spaces\@spaces\@spaces
+   }{%
+      Class #1 Error: #2%
+   }{%
+      See the #1 class documentation for explanation.%
+   }{#3}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ClassWarning#1#2{%
+   \GenericWarning{%
+      (#1) \space\@spaces\@spaces\@spaces
+   }{%
+      Class #1 Warning: #2%
+   }%
+}
+\def\ClassWarningNoLine#1#2{%
+   \ClassWarning{#1}{#2\@gobble}%
+}
+\def\ClassInfo#1#2{%
+   \GenericInfo{%
+      (#1) \space\space\@spaces\@spaces
+   }{%
+      Class #1 Info: #2%
+   }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@latex@error}
+% \begin{macro}{\@latex@warning}
+% \begin{macro}{\@latex@warning@no@line}
+% \begin{macro}{\@latex@info}
+% \begin{macro}{\@latex@info@no@line}
+% \changes{v1.2e}{1994/05/24}{Macro added}
+%    Errors and other info, for use in the \LaTeX{} core.
+%    \begin{macrocode}
+\gdef\@latex@error#1#2{%
+   \GenericError{%
+      \space\space\space\@spaces\@spaces\@spaces
+   }{%
+      LaTeX Error: #1%
+   }{%
+      See the LaTeX manual or LaTeX Companion for explanation.%
+   }{#2}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@latex@warning#1{%
+   \GenericWarning{%
+      \space\space\space\@spaces\@spaces\@spaces
+   }{%
+      LaTeX Warning: #1%
+   }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@latex@warning@no@line#1{%
+   \@latex@warning{#1\@gobble}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@latex@info#1{%
+   \GenericInfo{%
+      \@spaces\@spaces\@spaces
+   }{%
+      LaTeX Info: #1%
+   }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@latex@info@no@line#1{%
+  \@latex@info{#1\@gobble}}
+%    \end{macrocode}
+%
+%    |\@font@warning| and |\@font@info| are defined later since they
+%    have to be redefined by the \texttt{tracefnt} package.
+%\begin{verbatim}
+%\def\@font@warning#1{%
+%   \GenericWarning{%
+%      {(font)\@spaces\@spaces}%
+%      {Font Warning: #1}%
+% }
+%\def\@font@info#1{%
+%   \GenericInfo{%
+%      (font)\space\@spaces
+%   }{%
+%      Font Info: #1%
+%   }%
+% }
+%\end{verbatim}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\c@errorcontextlines}
+% \changes{LaTeX2e}{1993/11/22}{Macro added}
+%  |\errorcontextlines| as a \LaTeX\ counter, so that it may be be
+%  manipulated with |\setcounter| (once it is defined :-)
+%    \begin{macrocode}
+\let\c@errorcontextlines\errorcontextlines
+\c@errorcontextlines=-1
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.0d}{1994/03/28}
+%     {Remove test for \cs{inputlineno} undefined.}
+% \begin{macro}{\on@line}
+%    The message ` on input line~$n$', if possible.
+%    \begin{macrocode}
+\ifnum\inputlineno=\m@ne
+  \let\on@line\@empty
+\else
+  \def\on@line{ on input line \the\inputlineno}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@warning}
+%  \begin{macro}{\@@warning}
+%  \begin{macro}{\@latexerr}
+%     Older \LaTeX{} messages.  For the moment, these
+%     |\let| to the new message commands.  They may be changed later,
+%     once only obsolete packages and classes contain them.
+% \changes{v1.0b}{1993/12/03}{Set \cs{c@errorcontextlines} to -1}
+% \changes{v1.0e}{1993/04/09}{Mention The Companion}
+% \changes{v1.0f}{1993/04/11}{Remove setting of errorcontextlines}
+% \changes{v1.0k}{1994/05/01}{(CAR) Added draft \cs{@latexinfo}.}
+% \changes{v1.0n}{1994/05/10}{(ASAJ) Added extra blank lines to
+%           \cs{@latexerr}.}
+% \changes{v1.0o}{1994/05/11}
+%     {(ASAJ) Removed one of the extra blank lines to \cs{@latexerr}.}
+%    \begin{macrocode}
+\let\@warning\@latex@warning
+\let\@@warning\@latex@warning@no@line
+\global\let\@latexerr\@latex@error
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\@spaces}
+%    Four spaces.
+%    \begin{macrocode}
+\def\@spaces{\space\space\space\space}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Specific errors}
+%
+% \begin{macro}{\@eha}
+% \begin{macro}{\@ehb}
+% \begin{macro}{\@ehc}
+% \begin{macro}{\@ehd}
+%    The more common error help messages.
+%    \begin{macrocode}
+\gdef\@eha{%
+  Your command was ignored.\MessageBreak
+  Type \space I <command> <return> \space to replace it %
+  with another command,\MessageBreak
+  or \space <return> \space to continue without it.}
+\gdef\@ehb{%
+  You've lost some text. \space \@ehc}
+\gdef\@ehc{%
+  Try typing \space <return> %
+  \space to proceed.\MessageBreak
+  If that doesn't work, type \space X <return> \space to quit.}
+\gdef\@ehd{%
+  You're in trouble here.  \space\@ehc}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@notdefinable}
+%    Error message generated in |\@ifdefinable| from calls
+%    to one of the commands |\newcommand|, |\newlength| or |\newtheorem|
+%    specifying an already-defined command name or one that begins
+%    |\end...|.
+% \changes{v1.2n}{1998/05/28}{Added message re `end...' pr/1555}
+%    \begin{macrocode}
+\gdef\@notdefinable{%
+ \@latex@error{%
+   Command \@backslashchar\reserved@a\space
+   already defined.\MessageBreak
+   Or name \@backslashchar\@qend... illegal,
+   see p.192 of the manual}\@eha}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@nolnerr}
+% Generated by |\newline| and |\\| when called in vertical mode.
+%    \begin{macrocode}
+\gdef\@nolnerr{%
+  \@latex@error{There's no line here to end}\@eha}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@nocounterr}
+% \changes{v1.0h}{1994/04/17}{New name for error message,
+%       old error message (without arg) kept}
+%  Generated by |\setcounter|, |\addtocounter| or
+%  |\newcounter| if applied to an undefined counter \meta{cnt}.
+%
+% \begin{macro}{\@nocnterr}
+% Obsolete error message generated in \LaTeX2.09 by
+% |\setcounter|, |\addtocounter| or |\newcounter|
+% for undefined counter.
+% DO NOT use for \LaTeXe\ it MIGHT vanish!
+% Use |\@nocounterr|\marg{cnt} instead.
+%    \begin{macrocode}
+\gdef\@nocounterr#1{%
+  \@latex@error{No counter '#1' defined}\@eha}
+\gdef\@nocnterr{\@nocounterr?}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@ctrerr}
+% Called when trying to print the value of a counter
+% numbered by letters that's greater than 26.
+%    \begin{macrocode}
+\gdef\@ctrerr{%
+  \@latex@error{Counter too large}\@ehb}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@nodocument}
+% Error produced if paragraphs are typeset in the preamble.
+% \changes{v1.2m}{1996/11/04}{Always define \cs{@nodocument}
+%           in kernel, so that it can be cleared by \cs{document}.}
+%    \begin{macrocode}
+\gdef\@nodocument{%
+  \@latex@error{Missing \protect\begin{document}}\@ehd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badend}
+% Called by |\end| that doesn't match its |\begin|.
+% RmS 1992/08/24: added code to |\@badend| to display position of
+%               non-matching |\begin|.
+% FMi 1993/01/14: missing space added.
+%    \begin{macrocode}
+\gdef\@badend#1{%
+  \@latex@error{\protect\begin{\@currenvir}\@currenvline
+                     \space ended by \protect\end{#1}}\@eha}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badmath}
+% Called by |\[|, |\]|, |\(| or |\)| when used in wrong mode.
+%    \begin{macrocode}
+\gdef\@badmath{%
+  \@latex@error{Bad math environment delimiter}\@eha}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@toodeep}
+% Called by a list environment nested more than six levels
+% deep, or an enumerate or itemize nested more than four levels.
+%    \begin{macrocode}
+\gdef\@toodeep{%
+  \@latex@error{Too deeply nested}\@ehd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badpoptabs}
+% Called by |\endtabbing| when not enough |\poptabs| have
+% occurred, or by |\poptabs| when too many have occurred.
+%    \begin{macrocode}
+\gdef\@badpoptabs{%
+  \@latex@error{\protect\pushtabs\space and \protect\poptabs
+      \space don't match}\@ehd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badtab}
+% Called by |\>|, |\+| , |\-| or |\<| when stepping to an undefined tab.
+%    \begin{macrocode}
+\gdef\@badtab{%
+ \@latex@error{Undefined tab position}\@ehd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@preamerr}
+%    This error is special: it appears in places where we normally have
+%    to |\protect| expansions. However, to prevent a protection of
+%    the error message itself (which would result in the message
+%    getting printed not issued on the terminal) we need to locally
+%    reset |\protect| to |\relax|.
+%    \begin{macrocode}
+\gdef\@preamerr#1{%
+  \begingroup
+    \let\protect\relax
+    \@latex@error{\ifcase #1 Illegal character\or
+     Missing @-exp\or Missing p-arg\fi\space
+     in array arg}\@ehd
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badlinearg}
+% Occurs in |\line| and |\vector| command when a bad slope
+% argument is encountered.
+%    \begin{macrocode}
+\gdef\@badlinearg{%
+  \@latex@error{%
+       Bad \protect\line\space or \protect\vector
+       \space argument}\@ehb}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@parmoderr}
+% Occurs in a float environment or a |\marginpar| when
+% encountered in inner vertical mode.
+%    \begin{macrocode}
+\gdef\@parmoderr{%
+  \@latex@error{Not in outer par mode}\@ehb}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@fltovf}
+% Occurs in float environment or |\marginpar| when there
+% are no more free boxes for storing floats.
+%    \begin{macrocode}
+\gdef\@fltovf{%
+  \@latex@error{Too many unprocessed floats}\@ehb}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@latexbug}
+% Occurs in output routine.  This is bad news.
+%    \begin{macrocode}
+\gdef\@latexbug{%
+  \@latex@error{This may be a LaTeX bug}{Call for help}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badcrerr}
+%    This error was removed and replaced by |\@nolnerr|.
+% \changes{v1.0m}{1994/05/04}{Error message removed}
+%    \begin{macrocode}
+%\def\@badcrerr {\@latex@error{Bad use of \protect\\}\@ehc}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@noitemerr}
+% |\addvspace| or |\addpenalty| was called when not in
+%  vmode. Probably caused by a missing |\item|.
+%    \begin{macrocode}
+\gdef\@noitemerr{%
+  \@latex@error{Something's wrong--perhaps a missing %
+      \protect\item}\@ehc}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@notprerr}
+% A command that can be used only in the preamble
+% appears after the command |\begin{document}|.
+%    \begin{macrocode}
+\gdef\@notprerr{%
+  \@latex@error{Can be used only in preamble}\@eha}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@inmatherr}
+% \changes{v1.0j}{1994/04/28}{Macro added}
+% \changes{v1.1c}{1994/04/28}{Replaced \cs{noexpand} with \cs{protect}.}
+%    Issued by commands that don't work correctly within math (like
+%    |\item|). There is no real error recovery happening, e.g., the
+%    user might get additional errors afterwards.
+%    \begin{macrocode}
+\gdef\@inmatherr#1{%
+   \relax
+   \ifmmode
+    \@latex@error{Command \protect#1 invalid in math mode}\@ehc
+   \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@invalidchar}
+% \changes{LaTeX2.09}{1993/09/19}
+%     {(RmS) Error message for invalid input characters.}
+% \changes{v1.0d}{1994/03/28}
+%     {(DPC) Comment out (use catcode15 instead)}
+%    An error for use with invalid characters.  This is commented
+%    out, since we decided to use catcode 15 instead.
+%    \begin{macrocode}
+%\def\@invalidchar{\@latex@error{Invalid character in input}\@ehc}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% As well as the above error commands some error messages are directly
+% coded to save space. The Messages already present in \LaTeX2.09
+% inlcuded:
+%
+% |Environment --- undefined|\\
+%  Issued by |\begin| for undefined environment.
+%
+% |tab overflow|\\
+%  Occurs in |\= when| maximum number of tabs exceeded.
+%
+% |\< in mid line|\\
+% Occurs in |\<| when it appears in middle of line.
+%
+% |Float(s) lost|\\
+% In output routine, caused by a float environment or
+% |\marginpar| occurring in inner vertical mode.
+%
+%\Finale
+\endinput

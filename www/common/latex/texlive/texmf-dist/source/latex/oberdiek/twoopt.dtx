@@ -1,0 +1,651 @@
+% \iffalse meta-comment
+%
+% File: twoopt.dtx
+% Version: 2008/08/11 v1.5
+% Info: Definitions with two optional arguments
+%
+% Copyright (C) 1999, 2006, 2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file twoopt.dtx
+% and the derived files
+%    twoopt.sty, twoopt.pdf, twoopt.ins, twoopt.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/twoopt.dtx
+%    CTAN:macros/latex/contrib/oberdiek/twoopt.pdf
+%
+% Unpacking:
+%    (a) If twoopt.ins is present:
+%           tex twoopt.ins
+%    (b) Without twoopt.ins:
+%           tex twoopt.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{twoopt.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If twoopt.drv is present:
+%           latex twoopt.drv
+%    (b) Without twoopt.drv:
+%           latex twoopt.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex twoopt.dtx
+%       makeindex -s gind.ist twoopt.idx
+%       pdflatex twoopt.dtx
+%       makeindex -s gind.ist twoopt.idx
+%       pdflatex twoopt.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/twoopt.sty
+%    TDS:doc/latex/oberdiek/twoopt.pdf
+%    TDS:source/latex/oberdiek/twoopt.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: twoopt 2008/08/11 v1.5 Definitions with two optional arguments (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: twoopt
+Version: 2008/08/11 v1.5
+
+Copyright (C) 1999, 2006, 2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file twoopt.dtx
+and the derived files
+   twoopt.sty, twoopt.pdf, twoopt.ins, twoopt.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{twoopt.ins}{\from{twoopt.dtx}{install}}%
+  \file{twoopt.drv}{\from{twoopt.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{twoopt.sty}{\from{twoopt.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{twoopt.xml}{\from{twoopt.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     twoopt.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `twoopt.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{twoopt.drv}%
+  [2008/08/11 v1.5 Definitions with two optional arguments (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{twoopt.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{108}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{twoopt.drv}
+%
+% \title{The \xpackage{twoopt} package}
+% \date{2008/08/11 v1.5}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package provides commands to define macros with two
+% optional arguments.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newenvironment{param}{^^A
+%   \newcommand{\entry}[1]{\meta{\###1}:&}^^A
+%   \begin{tabular}[t]{@{}l@{ }l@{}}^^A
+% }{^^A
+%   \end{tabular}^^A
+% }
+%
+% \section{Usage}
+%    \DescribeMacro{\newcommandtwoopt}
+%    \DescribeMacro{\renewcommandtwoopt}
+%    \DescribeMacro{\providecommandtwoopt}
+%    Similar to \cmd{\newcommand}, \cmd{\renewcommand}
+%    and \cmd{\providecommand} this package provides commands
+%    to define macros with two optional arguments.
+%    The names of the commands are built by appending the
+%    package name to the \LaTeX-pendants:
+%    \begingroup
+%      \def\x{\marg{cmd} \oarg{num} \oarg{default1}^^A
+%             \oarg{default2} \marg{def.}}^^A
+%      \begin{tabbing}
+%        \cmd{\providecommandtwoopt} \=\kill
+%        \cmd{\newcommandtwoopt}\>\x\\
+%        \cmd{\renewcommandtwoopt}\>\x\\
+%        \cmd{\providecommandtwoopt}\>\x\\
+%      \end{tabbing}
+%    \endgroup
+%
+%    Also the |*|-forms are supported. Indeed it is better to
+%    use this ones, unless it is intended to hold
+%    whole paragraphs in some of the arguments. If the macro
+%    is defined with the |*|-form, missing braces
+%    can be detected earlier.
+%
+%    Example:
+%    \begin{quote}
+%      |\newcommandtwoopt{\bsp}[3][AA][BB]{%|\\
+%      |  \typeout{\string\bsp: #1,#2,#3}%|\\
+%      |}|\\
+%      \begin{tabular}{@{}l@{\quad$\rightarrow$\quad}l@{}}
+%      |\bsp[aa][bb]{cc}|&|\bsp: aa,bb,cc|\\
+%      |\bsp[aa]{cc}|&|\bsp: aa,BB,cc|\\
+%      |\bsp{cc}|&|\bsp: AA,BB,cc|\\
+%      \end{tabular}
+%    \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{twoopt}
+  [2008/08/11 v1.5 Definitions with two optional arguments (HO)]%
+%    \end{macrocode}
+%    \begin{macro}{\newcommandtwoopt}
+%    \begin{macrocode}
+\newcommand{\newcommandtwoopt}{%
+  \@ifstar{\@newcommandtwoopt*}{\@newcommandtwoopt{}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@newcommandtwoopt}
+%    \begin{param}
+%      \entry1 star\\
+%      \entry2 macro name to be defined
+%    \end{param}
+%    \begin{macrocode}
+\newcommand{\@newcommandtwoopt}{}
+\long\def\@newcommandtwoopt#1#2{%
+  \expandafter\@@newcommandtwoopt
+    \csname2\string#2\endcsname{#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@@newcommandtwoopt}
+%    \begin{param}
+%      \entry1 help command to be defined
+%        (\expandafter\cmd\csname 2\bslash<name>\endcsname)\\
+%      \entry2 star\\
+%      \entry3 macro name to be defined\\
+%      \entry4 number of total arguments\\
+%      \entry5 default for optional argument one\\
+%      \entry6 default for optional argument two
+%    \end{param}
+%    \begin{macrocode}
+\newcommand{\@@newcommandtwoopt}{}
+\long\def\@@newcommandtwoopt#1#2#3[#4][#5][#6]{%
+  \newcommand#2#3[1][{#5}]{%
+    \to@ScanSecondOptArg#1{##1}{#6}%
+  }%
+  \newcommand#2#1[{#4}]%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\renewcommandtwoopt}
+%    \begin{macrocode}
+\newcommand{\renewcommandtwoopt}{%
+  \@ifstar{\@renewcommandtwoopt*}{\@renewcommandtwoopt{}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@renewcommandtwoopt}
+%    \begin{param}
+%      \entry1 star\\
+%      \entry2 command name to be defined
+%    \end{param}
+%    \begin{macrocode}
+\newcommand{\@renewcommandtwoopt}{}
+\long\def\@renewcommandtwoopt#1#2{%
+  \begingroup
+    \escapechar\m@ne
+    \xdef\@gtempa{{\string#2}}%
+  \endgroup
+  \expandafter\@ifundefined\@gtempa{%
+    \@latex@error{\noexpand#2undefined}\@ehc
+  }{}%
+  \let#2\@undefined
+  \expandafter\let\csname2\string#2\endcsname\@undefined
+  \expandafter\@@newcommandtwoopt
+    \csname2\string#2\endcsname{#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\providecommandtwoopt}
+%    \begin{macrocode}
+\newcommand{\providecommandtwoopt}{%
+  \@ifstar{\@providecommandtwoopt*}{\@providecommandtwoopt{}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@providecommandtwoopt}
+%    \begin{param}
+%      \entry1 star\\
+%      \entry2 command name to be defined
+%    \end{param}
+%    \begin{macrocode}
+\newcommand{\@providecommandtwoopt}{}
+\long\def\@providecommandtwoopt#1#2{%
+  \begingroup
+    \escapechar\m@ne
+    \xdef\@gtempa{{\string#2}}%
+  \endgroup
+  \expandafter\@ifundefined\@gtempa{%
+    \expandafter\@@newcommandtwoopt
+      \csname2\string#2\endcsname{#1}{#2}%
+  }{%
+    \let\to@dummyA\@undefined
+    \let\to@dummyB\@undefined
+    \@@newcommandtwoopt\to@dummyA{#1}\to@dummyB
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\to@ScanSecondOptArg}
+%    \begin{param}
+%      \entry1 help command to be defined
+%        (\expandafter\cmd\csname 2\bslash<name>\endcsname)\\
+%      \entry2 first arg of command to be defined\\
+%      \entry3 default for second opt. arg.
+%    \end{param}
+%    \begin{macrocode}
+\newcommand{\to@ScanSecondOptArg}[3]{%
+  \@ifnextchar[{%
+    \expandafter#1\to@ArgOptToArgArg{#2}%
+  }{%
+    #1{#2}{#3}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\to@ArgOptToArgArg}
+%    \begin{macrocode}
+\newcommand{\to@ArgOptToArgArg}{}
+\long\def\to@ArgOptToArgArg#1[#2]{{#1}{#2}}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/twoopt.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/twoopt.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex twoopt.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   twoopt.sty & tex/latex/oberdiek/twoopt.sty\\
+%   twoopt.pdf & doc/latex/oberdiek/twoopt.pdf\\
+%   twoopt.dtx & source/latex/oberdiek/twoopt.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk twoopt.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{twoopt.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex twoopt.dtx
+%makeindex -s gind.ist twoopt.idx
+%pdflatex twoopt.dtx
+%makeindex -s gind.ist twoopt.idx
+%pdflatex twoopt.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{twoopt.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='twoopt'>
+  <name>twoopt</name>
+  <caption>Definitions with two optional arguments.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999,2006,2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.5'/>
+  <description>
+    Variants of <tt>\newcommand</tt>, <tt>\renewcommand</tt> and
+    <tt>\providecommand</tt> are provided.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/twoopt.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/twoopt.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1998/10/30 v1.0}
+%   \item
+%     The first version was built as a response to a question
+%     of \NameEmail{Rebecca and Rowland}{rebecca@astrid.u-net.com},
+%     published in the newsgroup
+%     \href{news:comp.text.tex}{comp.text.tex}:\\
+%     \URL{``Re: [Q] LaTeX command with two optional arguments?''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/0ab1afde7b172d37}
+%   \end{Version}
+%   \begin{Version}{1998/10/30 v1.1}
+%   \item
+%     Improvements added in response to
+%     \NameEmail{Stefan Ulrich}{ulrich@cis.uni-muenchen.de}
+%     in the same thread:\\
+%     \URL{``Re: [Q] LaTeX command with two optional arguments?''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/b8d84d4336f302c4}
+%   \end{Version}
+%   \begin{Version}{1998/11/04 v1.2}
+%   \item
+%     Fixes for LaTeX bugs 2896, 2901, 2902 added.
+%   \end{Version}
+%   \begin{Version}{1999/04/12 v1.3}
+%   \item
+%     Fixes removed because of LaTeX [1998/12/01].
+%   \item
+%     Documentation in dtx format.
+%   \item
+%     Copyright: LPPL (\CTAN{macros/latex/base/lppl.txt})
+%   \item
+%     First CTAN release.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.4}
+%   \item
+%     Code is not changed.
+%   \item
+%     New DTX framework.
+%   \item
+%     LPPL 1.3
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.5}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated from \texttt{www.dejanews.com}
+%     to \texttt{groups.google.com}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

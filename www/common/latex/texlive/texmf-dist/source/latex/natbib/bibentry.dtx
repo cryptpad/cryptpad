@@ -1,0 +1,554 @@
+% \iffalse      THIS IS A META-COMMENT
+%<*dtx>
+\ProvidesFile
+%========================================================================
+                       {BIBENTRY.DTX}
+%========================================================================
+%</dtx>
+%% Copyright 1997-2007 Patrick W Daly
+%% Max-Planck-Institut f\"ur Sonnensystemforschung
+%% Max-Planck-Str. 2
+%% D-37191 Katlenburg-Lindau
+%% Germany
+%% E-mail: daly@mps.mpg.de
+%
+% This program can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Distributed from CTAN
+% archives in directory macros/latex/base/lppl.txt; either
+% version 1 of the License, or any later version.
+%
+% This is a contributed file to the LaTeX2e system.
+% -------------------------------------------------
+%         This is a LaTeX package to all bibliography entries to be placed
+%           anywhere in text.
+% Installation:
+%    LaTeX this file: creates docstrip installation file bibentry.ins
+%                         AND the LaTeX documentation
+%    (La)TeX bibentry.ins: creates package file bibentry.sty, and optionally
+%                         the documentation driver bibentry.drv
+%    (bibentry.ins and bibentry.drv may be edited as needed)
+% Docstrip options available:
+%        package - to produce a (LaTeX2e) package .sty file
+%        driver  - to produce a driver file to print the documentation
+%--------------------------------------------------------------------------
+%  *** Identify the package file:-
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{bibentry}
+%
+%  *** Identify the driver file:-
+%<driver>\NeedsTeXFormat{LaTeX2e}
+%<driver>\ProvidesFile{bibentry.drv}
+%
+%  *** The DATE, VERSION, and other INFO
+%\fi
+%\ProvidesFile{bibentry}
+          [2007/10/30 1.5 (PWD)]
+% \changes{1.0}{1997 Jun 13}{Initial version}
+% \changes{1.1}{1997 Nov 11}{Refine for use with \cs{bibliography}}
+% \changes{1.1a}{1998 Mar 2}{Fix bug by using \cs{ifx} instead of \cs{if}}
+% \changes{1.2}{1999 Feb 23}{Update copyright notice}
+% \changes{1.3}{1999 Aug 26}{Works with \texttt{url} package}
+% \changes{1.4}{2000 Jun 20}{Add \texttt{hyperref} compatibility}
+% \changes{1.5}{2007 Oct 30}{Add \cs{doi} definition}
+%
+% \CheckSum{135}
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \iffalse
+%<*install>
+%^^A =============================================
+%^^A    Here is the docstrip installation file
+%^^A    It is written on first LaTeX run if it
+%^^A    does not already exist
+%^^A =============================================
+\begin{filecontents*}{bibentry.ins}
+% File: bibentry.ins
+% Copyright 1999,2000 Patrick W. Daly
+%
+% This file can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Distributed from CTAN
+% archives in directory macros/latex/base/lppl.txt; either
+% version 1 of the License, or any later version.
+%
+% It is an installation file for extracting package and driver
+% files from the original source file. Simply process it under
+% TeX or LaTeX. It works with Docstrip versions before and after
+% December 1995.
+
+\def\batchfile{bibentry.ins}
+\input docstrip
+
+\preamble
+=============================================
+IMPORTANT NOTICE:
+
+This program can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt; either
+version 1 of the License, or any later version.
+
+This is a generated file.
+It may not be distributed without the original source file \inFileName.
+
+Full documentation can be obtained by LaTeXing that original file.
+Only a few abbreviated comments remain here to describe the usage.
+=============================================
+\endpreamble
+\postamble
+
+<<<<< End of generated file <<<<<<
+\endpostamble
+\keepsilent
+
+% Docstrip before Dec 95 does not have \generate syntax, nor
+%   \declarepreamble. Must redefine them. The \generateFile called
+%   for each output file individually.
+% Docstrip before Dec 96 cannot interprete multiline \if..\fi
+%   Thus for maximum compatibility, have only one-line conditionals
+
+\let\oldDS F\relax
+\expandafter\ifx\csname generate\endcsname\relax \let\oldDS T\relax\fi
+\if\oldDS T  \def\declarepreamble#1{\preamble}\fi
+\if\oldDS T  \def\declarepostamble#1{\postamble}\fi
+\if\oldDS T  \generateFile{bibentry.sty}{f}{\from{bibentry.dtx}{package}} \fi
+
+\declarepreamble\driver
+============================================
+This is the driver file to produce the LaTeX documentation
+from the original source file \inFileName.
+
+Make changes to it as needed. (Never change the file \inFileName!)
+============================================
+\endpreamble
+
+\declarepostamble\driverq
+
+End of documentation driver file.
+\endpostamble
+
+\ifx\oldDS T \generateFile{bibentry.drv}{f}{\from{bibentry.dtx}{driver}}\fi
+
+\ifx\oldDS T \let\askforoverwritefalse\relax\def\generate#1{}\fi
+
+\askforoverwritefalse
+\generate{\file{bibentry.sty}{\from{bibentry.dtx}{package}}
+          \file{bibentry.drv}{\usepreamble\driver\usepostamble\driverq
+                           \from{bibentry.dtx}{driver}}
+         }
+
+\obeyspaces
+\Msg{*******************************************}%
+\Msg{* For documentation, process bibentry.dtx *}%
+\Msg{*    or the driver file      bibentry.drv *}%
+\Msg{*******************************************}
+\end{filecontents*}
+%</install>
+%<*driver>
+\documentclass{ltxdoc}
+%<driver>%\documentclass[twoside]{ltxdoc}
+%<driver>%\documentclass[a4paper]{ltxdoc}
+%<driver>%\documentclass[twoside,a4paper]{ltxdoc}
+\raggedbottom
+
+ %** To include the detailed explanation of the coding, comment out
+ %**   the next line
+\OnlyDescription
+
+ %** To produce a command index: add the following line for one run,
+ %**   then run  makeindex -s gind.ist bibentry
+ %**   and reprocess, with or without this line (much faster without)
+%<driver>% \EnableCrossrefs\CodelineIndex
+
+ %** To produce a change history: add the following line for one run,
+ %**   then run  makeindex -s gglo.ist -o bibentry.gls bibentry.glo
+ %**   and reprocess, with or without this line (faster without)
+%<driver>% \RecordChanges
+
+\DisableCrossrefs %May stay; zapped by \EnableCrossrefs
+\CodelineNumbered %May stay
+
+\begin{document}
+   \DocInput{bibentry.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \DoNotIndex{\begin,\CodelineIndex,\CodelineNumbered,\def,\DisableCrossrefs}
+% \DoNotIndex{\DocInput,\documentclass,\EnableCrossrefs,\end,\GetFileInfo}
+% \DoNotIndex{\NeedsTeXFormat,\OnlyDescription,\RecordChanges,\usepackage}
+% \DoNotIndex{\ProvidesClass,\ProvidesPackage,\ProvidesFile,\RequirePackage}
+% \DoNotIndex{\filename,\fileversion,\filedate,\let}
+% \DoNotIndex{\@listctr,\@nameuse,\csname,\else,\endcsname,\expandafter}
+% \DoNotIndex{\gdef,\global,\if,\item,\newcommand,\nobibliography}
+% \DoNotIndex{\par,\providecommand,\relax,\renewcommand,\renewenvironment}
+% \DoNotIndex{\stepcounter,\usecounter,\nocite,\fi}
+% \DoNotIndex{\@fileswfalse,\@gobble,\@ifstar,\@unexpandable@protect}
+% \DoNotIndex{\AtBeginDocument,\AtEndDocument,\begingroup,\endgroup}
+% \DoNotIndex{\frenchspacing,\MessageBreak,\newif,\PackageWarningNoLine}
+% \DoNotIndex{\protect,\string,\xdef,\ifx,\texttt,\@biblabel,\bibitem}
+%
+% \setcounter{IndexColumns}{2}
+% \setlength{\IndexMin}{10cm}
+% \setcounter{StandardModuleDepth}{1}
+%
+% \GetFileInfo{bibentry}
+%
+% \title{\bfseries A \LaTeX\ Package to Place Bibliography Entries in Text}
+%
+% \author{Patrick W. Daly}
+%
+% \date{This paper describes package \texttt{\filename}\\
+%       version \fileversion{} from \filedate
+%  }
+%
+% \maketitle
+%
+% \pagestyle{myheadings}
+% \markboth{P. W. Daly}{Bibliography Entries in Text}
+%
+%^^A In order to keep all marginal notes on the one (left) side:
+%^^A (otherwise they switch sides disasterously with twoside option)
+% \makeatletter \@mparswitchfalse \makeatother
+%
+%\begin{small}\begin{center}\textbf{Summary}\end{center}
+% The stripped version of this file contains the following brief description:
+%\iffalse
+%<*package>
+%\fi
+% \begin{verbatim}
+ % Bibliography Entries in Text
+ %
+ % In place of \bibliography{database}, enter \nobibliography{database}
+ % No bibliography is written at this point, but afterwards,
+ % \bibentry{key}  prints the bibliography entry for citation <key>
+ % (whereas \cite{key} prints the citation, not the bib entry)
+ %
+ % If \bibliography is also to be given, then issue the starred variant
+ % \nobibliography* (without argument).
+% \end{verbatim}
+%\iffalse
+ %-----------------------------------------------------------
+ % See documentation in the source .dtx file for more details.
+%</package>
+%\fi
+%\end{small}
+%
+% \section{Introduction}
+% This package allows one to be able to place bibliographic entries anywhere
+% in the text. It is to be used to produce annotated bibliographies, such as
+% \begin{quote}
+%   For an intoduction to this topic, see Jones, J.~R., Basics on this topic,
+%   {\it J.\ Last Resorts}, \textbf{13}, 234--254, 1994. For more advanced
+%   information, see \dots.
+% \end{quote}
+%
+% The idea is that the full reference is used, not just the citation Jones
+% [1994].
+%
+% \section{Invoking the Package}
+% The macros in this package are included in the main document
+% with the |\usepackage| command of \LaTeXe,
+% \begin{quote}
+% |\documentclass[..]{...}|\\
+% |\usepackage{|\texttt{\filename}|}|
+% \end{quote}
+%
+% \section{Usage}
+%
+% \newcommand\btx{\textsc{Bib}\TeX}
+% This package must be used with \btx, not with a hand-written
+% \texttt{thebibliography} environment.
+%
+% More precisely, there must be a \texttt{.bbl} file external to the \LaTeX\
+% file; whether this is written by hand or by \btx\ is unimportant.
+%
+% \DescribeMacro{\nobibliography}
+% The bibliography entries are stored with the command
+% |\nobibliography|\marg{bibfiles}, which is like the usual
+% |\bibliography|\marg{bibfiles} except no bibliography is printed. The
+% \texttt{.bbl} file is read in as usual but the \texttt{thebibliography} is
+% redefined so that all the entries are stored, not printed.
+%
+% \DescribeMacro{\bibentry}
+% The text of the entries may be printed with the command
+% \begin{quote}
+%    |\bibentry|\marg{key}
+% \end{quote}
+% These commands may only be issued after |\nobibliography|, for otherwise
+% the reference texts are not known.
+%
+% The final period of the original text will be missing, so that one can add
+% punctuation as one pleases.
+%
+% Regular |\cite| (or the \texttt{natbib} versions) may be issued anywhere as
+% usual.
+%
+% \DescribeMacro{\nobibliography*}
+% If a regular list of references is to be given too, with the
+% |\bibliography|\marg{bibfiles} command, issue the starred version
+% |\nobibliography*| (without argument) in order to store the bib entry texts.
+% This will load the same \texttt{.bbl} file as |\bibliography|, but will avoid
+% messages from \btx\ about multiple |\bibdata| commands and warnings from
+% \LaTeX\ about multiply defined citations.
+%
+% The processing procedure is as usual:
+% \begin{enumerate}
+%  \item \LaTeX\ the file;
+%  \item Run \btx;
+%  \item \LaTeX\ the file twice.
+% \end{enumerate}
+%
+% \noindent
+% \textbf{Note:} it is highly recommended to make use of the \texttt{url}
+% package, which will nicely format both url and doi addresses; in particular,
+% they will break at convenient locations without a hyphen.
+%
+% \section{Caveats}
+%
+% The entries in the \texttt{.bbl} must be of the form
+% \begin{quote}
+%  |\bibitem|\oarg{label}\marg{key}\\
+%  \emph{Text of the reference entry.}\\[1ex]
+%  |\bibitem|\dots
+% \end{quote}
+% That is, there must be a new line after the \marg{key} (or at least a space)
+% and a blank line before the next |\bibitem|. The final period in the text
+% will be removed, if present, allowing one to place the |\bibentry| commands
+% in mid-sentence. Of course, there may be other periods within the text that
+% might look funny.
+%
+% The \texttt{\filename} package will work with \texttt{natbib} with its
+% native |\bibitem| format, and with standard \LaTeX. Nothing else can be
+% guaranteed.
+%
+% It will also work with Donald Arseneau's \texttt{url} package. This is
+% highly recommended (almost obligatory) if the references contain Internet
+% addresses (URLs) and any of my bibliography styles are being used. My styles
+% pack the URL text into the |\url| command. Without the \texttt{url} package,
+% this command defaults to |\texttt| which does a horrible job of printing URL
+% addresses, especially if they contain special characters.
+%
+% The use of both |\nobibliography*| and |\bibliography| together is limited and
+% perhaps unsatisfactory. There is only one \texttt{.bbl} file, and hence one
+% list of references. Since |\nobibliography*| does not have its own list of
+% database files, one cannot take the |\bibentry| citations from separate
+% databases. Also, any |\bibentry| citation must appear in the list of
+% references, something that one might reasonably not care for. (It must be
+% in the \texttt{.bbl} file else its text cannot be stored for |\bibentry|
+% use.)
+%
+% It would be better if |\nobibliography| and |\bibliography| could be used
+% independently of each other, with different databases, different
+% \texttt{.bbl} files. However, this involves enormous complications, with
+% separate \texttt{.aux} files and naming problems for the \texttt{.bbl}s.
+%
+% \StopEventually{\PrintIndex\PrintChanges}
+%
+% \section{Options with \texttt{docstrip}}
+% The source \texttt{.dtx} file is meant to be processed with
+% \texttt{docstrip}, for which a number of options are available:
+% \begin{description}
+% \item[\ttfamily package] to produce a \texttt{.sty} package file with most
+%     comments removed;
+%
+% \item[\ttfamily driver] to produce a driver \texttt{.drv} file that will
+%     print out the documentation under \LaTeXe. The documentation cannot
+%     be printed under \LaTeX~2.09.
+%
+% \end{description}
+% The source file \texttt{\filename.dtx} is itself a driver file and can
+% be processed directly by \LaTeXe.
+%
+% \section{The Coding}
+% This section presents and explains the actual coding of the macros.
+% It is nested between |%<*package>| and |%</package>|, which
+% are indicators to \texttt{docstrip} that this coding belongs to the package
+% file.
+%
+% \begin{macro}{\nobibliography}
+% \changes{1.1}{1997 Nov 11}{Add starred version; make changes local}
+% The |\nobibliography| is used just as |\bibliography|; it locally redefines
+% the \texttt{thebibliography} environment to do nothing, while |\bibitem| is
+% redefined to save the ensuring entry text. Then |\bibliography| is called to
+% input the |\jobname.bbl| file.
+%
+% The business with the counters is just for standard \LaTeX; \texttt{natbib}
+% does not need it.
+%
+% The starred form is to be used when a true |\bibliography| command is also
+% given. Thus we want to prevent writing duplicate |\bibdata| and |\bibcite|
+% commands to the auxiliary file. Setting the |\ifBR@star| flag accomplishes
+% this by turning off |\if@filesw| and |\BR@bibitem|.
+%    \begin{macrocode}
+%<*package>
+\newif\ifBR@star
+\newcommand\nobibliography{\@ifstar{\BR@nobib{}}{\BR@nobib}}
+\newcommand\BR@nobib[1]{%
+  \ifx\relax#1\relax\global\BR@startrue\else\global\BR@starfalse\fi
+  \begingroup
+  \ifBR@star\@fileswfalse\fi
+  \renewenvironment{thebibliography}[1]{%
+    \usecounter{enumiv}%
+    \renewcommand\item[1][]{%
+          \ifx\relax####1\relax\stepcounter\@listctr\fi}%
+    \ifBR@star \newcommand\BR@bibitem[2][]{}\else
+    \let\BR@bibitem=\bibitem\fi
+    \let\bibitem=\BR@b@bibitem}{}%
+    \let\@biblabel\@gobble
+  \bibliography{#1}\endgroup
+  \ifx\relax#1\relax\global\BR@startrue\else\global\BR@starfalse\fi}
+%    \end{macrocode}
+% Note: |\BR@star| must be set once again at the end since |\bibliography|
+% always sets it to \meta{false}.
+% \end{macro}
+%
+% \begin{macro}{\BR@b@bibitem}
+% The new |\bibitem|; test for optional argument, call the old |\bibitem|
+% (stored as |\BR@bibitem|) and then call the macro to store the remaining
+% text. The old |\bibitem| must be called so the |\cite| can work.
+%
+% In the case of the starred |\nobibliography|, |\BR@bibitem| is not the old
+% |\bibitem|, but one that throws away its arguments. This prevents an entry
+% being made to the auxiliary file, an entry that is made by the real
+% |\bibliography| command.
+%    \begin{macrocode}
+\newcommand\BR@b@bibitem[2][]{\ifx\relax#1\relax\BR@bibitem{#2}%
+   \else \BR@bibitem[#1]{#2}\fi \BR@c@bibitem{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\BR@c@bibitem}
+% \changes{1.1}{1997 Nov 11}{Remove need for reference to end with period}
+% This macro stores all the text that follows up to ``space newpar'', removing a
+% final period if present. It is assumed that a new line ($\equiv$space) comes
+% between the |\bibitem| \marg{key} and the text, and that a blank line
+% ($\equiv$|\par|) comes between references. These conditions are generally met
+% by all bibliography styles.
+%
+% \changes{1.3}{1999 Aug 26}{Store with \cs{gdef} instead of \cs{xdef}}
+% Originally I used |\xdef| to store the text, but this causes problems with
+% the |\url| command of the \texttt{url} package. The simplest solution is to
+% use |\gdef| instead so that |\url| is executed when the text is printed,
+% not when it is stored.
+%    \begin{macrocode}
+\def\BR@c@bibitem#1 #2 \par{{\let\protect\@unexpandable@protect
+      \expandafter \gdef\csname BR@r@#1\@extra@b@citeb\endcsname
+      {\BR@nodot#2\relax.\relax\relax}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\BR@nodot}
+% \changes{1.1}{1997 Nov 11}{Add macro}
+% To remove a possible final period. This macro always adds a terminal
+% |\relax|.
+%    \begin{macrocode}
+\def\BR@nodot#1.\relax#2\relax{#1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bibentry}
+% \changes{1.4}{2000 Jun 20}{Add \texttt{hyperref} commands}
+% The macro that prints the stored text. It also calls |\nocite| in order
+% that the reference be entered in the \texttt{.aux} file for \btx\
+% processing.
+%    \begin{macrocode}
+\newcommand\bibentry[1]{\nocite{#1}{\frenchspacing
+     \hyper@natanchorstart{#1\@extra@b@citeb}%
+     \@nameuse{BR@r@#1\@extra@b@citeb}\hyper@natanchorend}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@extra@b@citeb}
+% This macro is provided to work with the \texttt{chapterbib} package.
+%    \begin{macrocode}
+\providecommand\@extra@b@citeb{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\hyper@natanchorstart}
+% \changes{1.4}{2000 Jun 20}{Add default definition}
+% \begin{macro}{\hyper@natanchorend}
+% \changes{1.4}{2000 Jun 20}{Add default definition}
+% Provide dummy definitions for when \texttt{hyperref} package not present.
+%    \begin{macrocode}
+\providecommand\hyper@natanchorstart[1]{}
+\providecommand\hyper@natanchorend{}
+%    \end{macrocode}
+% \end{macro}\end{macro}
+% \begin{macro}{\urlprefix}
+% \changes{1.3}{1999 Aug 26}{Add macro}
+% \begin{macro}{\url}
+% \changes{1.3}{1999 Aug 26}{Add macro}
+% My \texttt{bst} files that support URL addresses make use of commands
+% |\url| and |\urlprefix|, which are given default definitions in the
+% \texttt{bbl} file. However, these definitions are local to the
+% \texttt{thebibliography} environment. Since the bibliography text is stored
+% unexpanded (|\gdef| instead of |\xdef|) these default definitions are lost
+% when the text is printed. Thus they must be provided in this package as well.
+%
+% Define |\url| after the preamble in case \texttt{url} is loaded
+% after \texttt{\filename}.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \providecommand*{\urlprefix}{URL }
+  \providecommand*{\url}[1]{\texttt{#1}}
+}
+%    \end{macrocode}
+% Note: it is highly recommended always to use the \texttt{url} package; this
+% default for |\url| will not allow line breaks within the URL text and any
+% special characters like |$ _ #| will create serious problems.
+% \end{macro}\end{macro}
+%
+% \begin{macro}{bibliography}
+% \changes{1.1}{1997 Nov 11}{Add warning for missing \cs{bibliography}}
+% \changes{1.3}{1999 Aug 26}{Set flag via \cs{bibliography}
+%    not \cs{thebibliography}}
+% Finally, test at the end of the document if |\nobibliography*| was used
+% without a following |\bibliography| and issue a warning. Is this useful?
+% Strictly speaking, the order could be interchanged and then a warning would
+% be erroneously given. Or, one could produce the \texttt{.bbl} file and then
+% remove the |\bibliography| command, and the |\bibentry| commands will still
+% function. (Hence the warning is only that \btx\ will not process, not the
+% |\bibentry| will not work.) Will there be problems with \texttt{chapterbib}?
+%
+% For all these reasons, this warning could be questionable. Keep it for now
+% anyway.
+%    \begin{macrocode}
+\AtBeginDocument{\let\BR@bib\bibliography
+  \def\bibliography{\global\BR@starfalse\BR@bib}}
+\AtEndDocument{\ifBR@star\PackageWarningNoLine{bibentry}
+  {You have used \string\nobibliography* \MessageBreak
+   without a following \string\bibliography.\MessageBreak
+   You may not be able to run BibTeX}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\doi}
+% \changes{1.5}{2007 Oct 30}{Add macro}
+% The |\doi| command is used in the modern \texttt{.bst} files, and is in fact
+%  defined inside the |thebibliography| environment for these styles. However,
+%  that means, it is undefined outside where |\bibentry| is used. So it is
+%  necessary to provide a definition globally.
+%    \begin{macrocode}
+\AtBeginDocument{\@ifpackageloaded{url}
+  {\providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}}
+  {\providecommand{\doi}[1]{doi: #1}}}
+%</package>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale

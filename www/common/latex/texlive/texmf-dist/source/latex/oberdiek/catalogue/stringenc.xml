@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='stringenc'>
+  <name>stringenc</name>
+  <caption>Converting a string between different encodings.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.10'/>
+  <description>
+    This package provides <tt>\StringEncodingConvert</tt> for converting
+    a string between different encodings.
+    Both <xref refid='latex'>LaTeX</xref> and
+    <xref refid='plain'>plain-TeX</xref> are supported.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/stringenc.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/stringenc.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

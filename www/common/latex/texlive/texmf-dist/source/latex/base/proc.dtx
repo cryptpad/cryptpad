@@ -1,0 +1,457 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \CheckSum{173}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+% \iffalse
+% Copyright (C) 1991,1992 by Leslie Lamport \and
+% Copyright (C) 1994,1995 by the \LaTeX3 project \and Johannes Braams
+%
+% \changes{v1.1}{1994/01/25}{Made `proc' a document class and provide
+%    a .sty file for compatibility mode}
+% \changes{v1.2}{1994/01/26}{Removed the setting of a number of
+%    variables that became superfluous by passing the twocolumn option
+%    to the article class}
+% \changes{v1.3}{1994/03/01}{Moved driver further up; added overview
+%    of docstrip modules; added \cs{CheckSum}, \cs{StopEventually} and
+%    \cs{Finale}}
+% \changes{v1.3e}{1994/05/22}{Use new warning and error commands}
+% \changes{v1.3f}{1994/05/26}{Inserted missing 'v's in \cs{changes}
+%    entries}
+% \changes{v1.3f}{1994/05/26}{Moved identification and driver to the
+%    front of the file; these sections now no longer print}
+%
+% \subsection{Identification}
+%
+%    This document class can only be used with \LaTeXe, so it is made
+%    sure that an appropriate message is displayed when another \TeX{}
+%    format is used.
+% \changes{v1.3l}{1995/11/30}{Added date of \LaTeX\ format to argument
+%    of \cs{NeedsTeXFormat}}
+%    \begin{macrocode}
+%<+class|style>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%    \end{macrocode}
+%
+%    Announce the document class and its version.
+% \changes{v1.3c}{1994/04/15}{Added missing / guard}
+% \changes{v1.3d}{1994/05/01}{Removed the use of variables such as
+%    \cs{fileversion}}
+% \changes{v1.3b}{1994/03/16}{Removed use of \cs{wlog}, no longer
+%    needed}
+% \changes{v1.3f}{1994/05/26}{Removed \cs{typeout} from .sty file;
+%    changed description}
+% \changes{v1.3h}{1994/05/26}{The second argument to \cs{ProvidesFile}
+%    wasn't closed in the driver and the style file}
+%
+%    \begin{macrocode}
+%<*driver>
+\ProvidesFile{proc.drv}
+%</driver>
+%<+class>\ProvidesClass{proc}
+%<+style>\ProvidesFile{proc.sty}
+              [2014/09/29 v1.3l
+%<+class>               Standard LaTeX document class]
+%<+style>               LaTeX 2.09 compatibility style option `proc']
+%    \end{macrocode}
+%
+% \subsection{The documentation driver file}
+%
+%    This bit of code contains the documentation driver file for
+%    \TeX{}, i.e., the file that will produce the documentation you
+%    are currently reading. It can be extracted from this file by the
+%    {\sc docstrip} program.
+%    \begin{macrocode}
+%<*driver>
+]
+\documentclass{ltxdoc}
+\GetFileInfo{proc.drv}
+\begin{document}
+\newcommand\Lopt[1]{\textsf {#1}}
+\DocInput{proc.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+% \fi
+%
+% \title{Producing proceedings articles with \LaTeXe\thanks
+%    {File version \fileversion, dated \filedate}}
+%
+% \author{%
+%  Johannes Braams\and
+%  David Carlisle\and
+%  Alan Jeffrey\and
+%  Leslie Lamport\and
+%  Frank Mittelbach\and
+%  Chris Rowley\and
+%  Rainer Sch\"opf}
+%
+% \date{\filedate}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Description}
+%
+%    This \LaTeXe\ document class is designed to produce camera-ready
+%    conference proceedings. It is based upon the document class
+%    \texttt{article}, but modifies some of its layout decisions.
+%    It also adds one command.
+%
+%    For compatibility with \LaTeX2.09 a \texttt{.sty} version is
+%    provided because \texttt{proc} used to be a style file. The
+%    \texttt{.sty} file can \emph{not} be used as a package however.
+%
+% \DescribeMacro\copyrightspace
+%    The |\copyrightspace| command is used to produce a blank space in
+%    the first column where a copyright notice belongs.  Note that it
+%    should appear after any |\footnote| commands that produce
+%    footnotes for the first column.
+%
+% \StopEventually{}
+%
+% \section{The {\sc docstrip} modules}
+%
+% The following modules are used in the implementation to direct
+% {\sc docstrip} in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   class   & produce the proc document class\\
+%   sty     & produce proc.sty for compatibility mode\\
+%   driver  & produce a documentation driver file \\
+% \end{tabular}
+% \end{center}
+%
+% \section{Implementation}
+%
+%    In this case a check is needed to see wether \LaTeXe\ runs in
+%    compatibility mode.
+% \changes{v1.3i}{1994/05/27}{Added missing docstrip guard}
+%    \begin{macrocode}
+%<*style>
+\if@compatibility
+%    \end{macrocode}
+%    In this case processing silently continues, but in the |\else|
+%    case a warning is issued and reading of this file stops.
+%    \begin{macrocode}
+\else
+  \ClassWarningNoLine{proc}{^^J\@spaces%
+    You requested the use of `proc' as a package^^J\@spaces%
+    but it has been turned into a document class.^^J\@spaces%
+    Please change your file to use `proc' as a class.^^J}
+  \expandafter\endinput
+\fi
+%</style>
+%    \end{macrocode}
+%
+%    Paper sizes smaller than A4 are not supported.
+%    \begin{macrocode}
+%<*class>
+\DeclareOption{a5paper}
+    {\ClassError{proc}{Option `a5paper' not supported}{}}
+\DeclareOption{b5paper}
+    {\ClassError{proc}{Option `b5paper' not supported}{}}
+%    \end{macrocode}
+%
+%    Also the \Lopt{onecolumn} option is disabled in this document
+%    class.
+%    \begin{macrocode}
+\DeclareOption{onecolumn}%
+    {\ClassError{proc}{Option `onecolumn' not supported}{}}
+%    \end{macrocode}
+%
+%    Proceedings articles never have separate titlepages, therefore
+%    this option is disabled.
+%    \begin{macrocode}
+\DeclareOption{titlepage}%
+    {\ClassError{proc}{Option `titlepage' not supported}{}}
+%    \end{macrocode}
+%
+%    Always print in two column mode.
+%    \begin{macrocode}
+\PassOptionsToClass{twocolumn}{article}
+%    \end{macrocode}
+%
+%    Any other options are passed on to the article class on which
+%    this document class is based.
+%    \begin{macrocode}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+%    \end{macrocode}
+%
+%    Now we can process the options
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+%    and load the article document class.
+%    \begin{macrocode}
+\LoadClass{article}
+%</class>
+%    \end{macrocode}
+%
+% \section{Document Layout}
+%
+%    Proceedings articles have a different layout than normal
+%    articles. Therefore some of the layout parameters are given
+%    different values here.
+%
+% \subsection{Page Layout}
+%
+% \subsubsection{Vertical spacing}
+%
+% \begin{macro}{\footskip}
+%    The distance from the baseline of the box which contains the
+%    running footer to the baseline of last line of text is controlled
+%    by the |\footskip|.
+%    \begin{macrocode}
+%<*class|style>
+\setlength\footskip{75\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{The dimension of text}
+%
+% \begin{macro}{\textwidth}
+%    When \LaTeXe\ runs in compatibility mode it has to be made sure
+%    that the dimensions of the printed area are not different from
+%    what the user was used to see.
+%
+%    \begin{macrocode}
+\if@compatibility
+  \setlength\textwidth{6.75in}
+\else
+  \setlength\textwidth{\paperwidth}
+  \addtolength\textwidth{-126\p@}
+  \@settopoint\textwidth
+\fi
+%    \end{macrocode}
+%
+%    Here the width of the text a little is modified to be a whole
+%    number of points.
+%    \begin{macrocode}
+\if@compatibility
+\else
+  \@settopoint\textwidth
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\textheight}
+%    Now that we have computed the width of the text, we have to take
+%    care of the height. The |\textheight| is the height of text
+%    (including footnotes and figures, excluding running head and
+%    foot).
+%
+%    \begin{macrocode}
+\if@compatibility
+  \setlength\textheight{9in}
+\else
+  \ifcase\@ptsize
+    \setlength\textheight{53\baselineskip}
+  \or
+    \setlength\textheight{47\baselineskip}
+  \or
+    \setlength\textheight{44\baselineskip}
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    The first line on the page has a height of |\topskip|.
+%    \begin{macrocode}
+\advance\textheight by \topskip
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Margins}
+%
+% \begin{macro}{\oddsidemargin}
+% \begin{macro}{\evensidemargin}
+%    The width of the text is quite large, therefore the margins
+%    have a negative width.
+%    \begin{macrocode}
+\setlength\oddsidemargin{-10\p@}
+\setlength\evensidemargin{-10\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\marginparwidth}
+%    Because we have such a large |\textwidth| there is no real room
+%    for notes in the margins.
+%    \begin{macrocode}
+\setlength\marginparwidth {\z@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\topmargin}
+%    The |\topmargin| is the distance between the top of `the
+%    printable area' --which is 1 inch below the top of the paper--
+%    and the top of the box which contains the running head.
+%    \begin{macrocode}
+\setlength\topmargin{-47\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\columnsep}
+%    Proceedings articles are always set in |\twocolumn| mode,
+%    therefore the distance between the two columns  (|\columnsep|)is
+%    set to a non zero value.
+%    \begin{macrocode}
+\setlength\columnsep{.375in}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The page style}
+%
+%    The user can use |\markright| (or |\markboth|) to put an
+%    identification in the lower left side of the page.  The page
+%    number is printed in the lower right side of the page.
+%
+%    This works as long as he doesn't use either |\pagestyle| or
+%    |\thispagestyle| commands.
+% \changes{v1.3f}{1994/05/26}{changed \cs{rm} to
+%    \cs{normalfont}\cs{rmfamily}}
+% \changes{v1.3j}{1995/05/26}{Removed \cs{rmfamily} (PR 1578)}
+%    \begin{macrocode}
+\let\@oddhead\@empty
+\let\@evenhead\@empty
+\def\@oddfoot{\normalfont\rightmark \hfil
+              \pagename{} \thepage}
+\def\@evenfoot{\@oddfoot}
+%    \end{macrocode}
+%
+%
+% \section{Document Markup}
+%
+% \subsection{The title}
+%
+% \begin{macro}{\maketitle}
+% \changes{v1.3k}{1995/07/18}{Modify footnote handling (PR 1735)}
+%    The definition of |\maketitle| here is basically the same as the
+%    one in the document class \texttt{article}, but the pagestyle is
+%    \emph{not} set to \texttt{plain}.
+%
+%    \begin{macrocode}
+\def\maketitle{\par
+ \begingroup
+   \renewcommand\thefootnote{\fnsymbol{footnote}}%
+    \def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
+     \long\def\@makefntext##1{\parindent 1em\noindent
+             \hb@xt@1.8em{%
+                 \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+%    \end{macrocode}
+%    This document class always uses two column mode but the title is
+%    set to the full width of the text.
+%    \begin{macrocode}
+   \twocolumn[\@maketitle]%
+   \@thanks
+ \endgroup
+ \setcounter{footnote}{0}%
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@maketitle}
+%    This macro takes care of formatting the title information.
+%
+%    The information is set inside |\vbox| with a width of
+%    |\textwidth| and a height of 2.25in. The text is vertically and
+%    horizontally centered.
+%    \begin{macrocode}
+\def\@maketitle{%
+  \vbox to 2.25in{%
+    \hsize\textwidth
+    \linewidth\hsize
+    \vfil
+    \centering
+    {\LARGE \@title \par}
+    \vskip 2em
+    {\large \begin{tabular}[t]{c}\@author \end{tabular}\par}
+    \vfil}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\copyrightspace}
+%    The |\copyrightspace| command is used to produce a blank space in
+%    the first column where a copyright notice belongs.  It works by
+%    producing a blank footnote of the appropriate size.
+%
+%    \begin{macrocode}
+\def\copyrightspace{%
+  \footnotetext[0]{\mbox{}\vrule \@height 97\p@ \@width \z@}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Modifying environments}
+%
+% \subsubsection{Abstract}
+%
+% \begin{macro}{\abstract}
+%    For this document class the definition of the abstract
+%    environment is quit simple.
+%
+%    \begin{macrocode}
+\renewenvironment{abstract}%
+  {\section*{\abstractname}}
+  {\par}
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{Initialization}
+%
+% \subsection{Words}
+%
+% \begin{macro}{\pagename}
+%    This document class is for documents prepared in the English
+%    language. To prepare a version for another language, one English
+%    word must be replaced.  It is defined below in a command name.
+%    \begin{macrocode}
+\newcommand\pagename{Page}
+%</class|style>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+%
+\endinput

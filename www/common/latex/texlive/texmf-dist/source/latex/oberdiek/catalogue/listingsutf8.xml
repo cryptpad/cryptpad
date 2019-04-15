@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='listingsutf8'>
+  <name>listingsutf8</name>
+  <caption>Allow UTF-8 in listings input.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Package <xref refid='listings'>listings</xref> does not support files
+    with multi-byte encodings such as UTF-8.  In the case of
+    <tt>\lstinputlisting</tt>, a simple workaround is possible if a
+    one-byte encoding exists that the file can be converted to.  The
+    package requires the e-TeX extensions under pdfTeX (in either PDF
+    or DVI output mode).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/listingsutf8.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/listingsutf8.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

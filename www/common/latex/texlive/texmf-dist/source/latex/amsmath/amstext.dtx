@@ -1,0 +1,308 @@
+% \def\filename{amstext.dtx}
+% \def\fileversion{2.01}
+% \def\filedate{2000/06/29}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 1999 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\documentclass{amsdtx}
+\usepackage{amstext}
+\begin{document}
+\title{The \pkg{amstext} package}
+\author{Frank Mittelbach \and Rainer Sch\"opf}
+\date{Version \fileversion, \filedate}
+\DocInput{amstext.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%
+%    This style file implements the \AmSTeX{} macro \cn{text} for use
+%    with the new font selection scheme.  The \cn{text} macro is a
+%    sophisticated command which allows the user to insert ``normal text''
+%    into math formulas without worrying about correct sizes in sub- or
+%    superscripts. It can also be used in ordinary text; there it
+%    produces an unbreakable unit similar to \cn{mbox}.
+%
+%    Here is an example demonstrating some of its features:
+% \[
+%^^A mathbin spacing is nonscript glue, disappears in superscript
+%    x^{2\,\times\,\text{size of $y$}}
+%    \leq
+%    z_{i_{\text{upper bound of the array}}}
+% \]
+%    This was produced by
+% \begin{verbatim}
+% \[
+%    x^{2\,\times\,\text{size of $y$}}
+%    \leq
+%    z_{i_{\text{upper bound of the array}}}
+% \]
+% \end{verbatim}
+%
+%    Additionally this style file redefines an internal \fn{plain.tex}
+%    macro called \cs{mathhexbox} so that commands like \cn{dag}
+%    or \cn{P} will change sizes if used in math subscripts.
+%
+% \StopEventually{}
+%    Package information.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must be December 1994 or later
+\ProvidesPackage{amstext}[2000/06/29 v2.01]
+%    \end{macrocode}
+%
+% \section{The implementation}
+%    We need a few tools from \fn{amsgen.sty}.
+%    \begin{macrocode}
+\RequirePackage{amsgen}
+%    \end{macrocode}
+%
+% \begin{macro}{\text}
+%    Now we come to the \cn{text} macro which is used to place
+%    ordinary text inside of math formulas. If it is used outside
+%    math it will produce an unbreakable unit of text.
+%    \begin{macrocode}
+\DeclareRobustCommand{\text}{%
+  \ifmmode\expandafter\text@\else\expandafter\mbox\fi}
+%    \end{macrocode}
+%    At the present time (late 1994) the \latex/ internal function
+%    |\nfss@text| is used in |\ref|, in font commands like |\textbf|,
+%    and in a few text symbol definitions like |\$| and |\pounds|. By
+%    equating |\nfss@text| to |\text| we give it the ability of
+%    |\text| to change sizes properly if used in a subscript.
+%    \begin{macrocode}
+\let\nfss@text\text
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\text@}
+%    If \cn{text} is encountered inside math mode the macro
+%    \cs{text@} is called.  It has one mandatory argument, the text
+%    which should be produced.  Since we do not know in which math
+%    style we are currently in we call \cs{mathchoice} to tyeset
+%    our text in all four possible styles.
+%    \begin{macrocode}
+\def\text@#1{{\mathchoice
+%    \end{macrocode}
+%    To save token space we call a macro \cs{textdef@} which takes
+%    three arguments: the current math style, the corresponding size
+%    macro and the text to typeset possibly with some additional
+%    information for typesetting.
+%    \begin{macrocode}
+  {\textdef@\displaystyle\f@size{#1}}%
+%    \end{macrocode}
+%    The other three cases are similar except for the
+%    \cs{iffirstchoice} switch which we set to false. This is
+%    done to prevent \LaTeX{} macros like \cn{ref} or \cn{index}
+%    from writing their arguments more than once.
+%    \begin{macrocode}
+  {\textdef@\textstyle\f@size{\firstchoice@false #1}}%
+  {\textdef@\textstyle\sf@size{\firstchoice@false #1}}%
+  {\textdef@\textstyle \ssf@size{\firstchoice@false #1}}%
+%    \end{macrocode}
+%    Here we need to check whether a math size-change occurred inside
+%    the argument of \cn{text}. If so, restore
+%    \begin{macrocode}
+  \check@mathfonts
+  }%
+}
+%    \end{macrocode}
+%    The macros \cs{f@size}, \cs{sf@size} and \cs{ssf@size} hold the
+%    sizes which should be used when we are loading a new font for use
+%    in \cs{textfont}, \cs{scriptfont} and \cs{scriptscriptfont}. There
+%    is some question whether we should use use \cs{tf@size} or
+%    \cs{f@size} for the main size, but since the primary purpose of the
+%    \cn{text} macro is to switch back to text within a display, it
+%    seems that \cs{f@size} is the better choice. (Indeed it could be
+%    said that the \cn{text} actually provides two different functions:
+%    one for escaping out of math mode in a display to print some words,
+%    and the other for handling math objects that are named by a
+%    fragment of text, when \cn{operatorname} isn't the right choice.
+%    For the latter \cs{tf@size} might be more correct but for the
+%    former \cs{f@size} is clearly better.)
+% \end{macro}
+%
+% \begin{macro}{\textdef@}
+%    To typeset the argument of \cn{text} correctly we have to make
+%    several actions. We start by placing everything inside an
+%    \cs{hbox}.  But this is not enough: we need one extra level of
+%    grouping.  These extra braces are necessary because of the new
+%    font selection scheme which might produce an \cs{aftergroup}
+%    to globally restore some font values after the current group. To
+%    prevent any damage by this mechanism we add the braces thereby
+%    bringing the token inserted by \cs{aftergroup} inside the
+%    \cs{hbox}.\footnote{The mechanism will not produce a second
+%    \cs{aftergroup}. For more details see the technical documentation
+%    for NFSS2.}
+%    \begin{macrocode}
+\def\textdef@#1#2#3{\hbox{{%
+%    \end{macrocode}
+%    Since text typeset inside an \cs{hbox} always stays in the size
+%    of the text surrounding the formula we have to adjust this for
+%    script and scriptscript sizes.  For any math formula inside this
+%    argument this will be achieved by setting \cs{everymath} to
+%    the first argument of \cs{textdef@} since this argument
+%    contains the math size in the current typeset case of
+%    \cs{mathchoice}.
+%    Since \latex/ also knows about \cn{parbox}es and the
+%    \env{minipage} environment it might be neccessary to adjust
+%    \cs{everydisplay} too but this has to be tested further.
+%    \begin{macrocode}
+                    \everymath{#1}%
+%    \end{macrocode}
+%    The next line of code changes locally (i.e.\ inside the current
+%    \cs{hbox}) the value of \cs{f@size}. This macro holds the
+%    size for typesetting ordinary text (e.g.\ loading or selecting a
+%    new font via \cs{selectfont}). By changing it to a smaller
+%    value a following \cs{selectfont} will switch to the wanted
+%    size.
+%    \begin{macrocode}
+                    \let\f@size#2\selectfont
+%    \end{macrocode}
+%    Now we simply call the third argument and close all open groups.
+%    \begin{macrocode}
+                    #3}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\iffirstchoice@}
+%    Here is the switch that we use to decide if \cn{ref} etc.\
+%    should print its warnings.  The default is true since
+%    normally these warnings shouldn't be suppressed.
+%    \begin{macrocode}
+\newif\iffirstchoice@
+\firstchoice@true
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Re-definition of \latex/ macros to work with \cn{text}}
+%
+%    If a counter-changing command occurs inside the argument of
+%    \cn{text}, we don't want the counter to be changed four times
+%    because \cn{stepcounter} and \cn{addtocounter} have global effect.
+%    So we add the \cs{iffirstchoice@} test to make the counter
+%    operations execute only once.
+%
+% \begin{macro}{\stepcounter}
+%    Use \cs{def} rather than \cn{renewcommand*} because the star-form
+%    (for non-\cs{long} definitions) doesn't work with the June 1994
+%    release of \latex/.
+%    \begin{macrocode}
+\def\stepcounter#1{%
+  \iffirstchoice@
+     \addtocounter{#1}\@ne
+     \begingroup \let\@elt\@stpelt \csname cl@#1\endcsname \endgroup
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\addtocounter}
+%    \begin{macrocode}
+\def\addtocounter#1#2{%
+  \iffirstchoice@
+  \@ifundefined {c@#1}{\@nocounterr {#1}}%
+    {\global \advance \csname c@#1\endcsname #2\relax}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%    For \cn{ref}, \cn{pageref}, and indeed anything else that issues a
+%    warning or error, \cn{text} will produce four copies of the
+%    warning/error message. To suppress the last three copies, we change
+%    \cs{GenericInfo}, \cs{GenericWarning}, \cs{GenericError}.
+%    \begin{macrocode}
+\let\m@gobble\@empty
+\@xp\let\csname m@gobble4\endcsname\@gobblefour
+\long\@xp\def\csname m@gobble6\endcsname#1#2#3#4#5#6{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\toks@{%
+  \csname m@gobble\iffirstchoice@\else 4\fi\endcsname
+  \protect}
+\edef\GenericInfo{\the\toks@
+  \@xp\@nx\csname GenericInfo \endcsname}
+%
+\edef\GenericWarning{\the\toks@
+  \@xp\@nx\csname GenericWarning \endcsname}
+%
+\toks@{%
+  \csname m@gobble\iffirstchoice@\else 6\fi\endcsname
+  \protect}
+\edef\GenericError{\the\toks@
+  \@xp\@nx\csname GenericError \endcsname}
+%    \end{macrocode}
+%
+%    At one time \cn{label}, \cs{@wrindex} and \cs{@wrglossary} were
+%    changed here too to use the \cs{iffirstchoice@} test but it seems
+%    that was a mistake because those are non-immediate writes.
+%    Something like
+% \begin{verbatim}
+% \text{something \index{foo}}
+% \end{verbatim}
+%    within a math formula would therefore \emph{lose the index term} if
+%    the surrounding context was not displaystyle. (Unlikely in
+%    practice, but not impossible.) [mjd,1994/12/09]
+%
+%\subsection{Applications of \cn{text}}
+%
+% \begin{macro}{\mathhexbox}
+%    We start with an re-definition of the \fn{plain.tex} macro
+%    \cs{mathhexbox}. (Although M. Spivak in \amstex/ uses the name
+%    \cs{mathhexbox@} for this purpose, I [FMi] don't see any reason
+%    to use a new name since the new definition is superior, has the
+%    same syntax and is used for the same purpose.)
+%    \begin{macrocode}
+\begingroup \catcode`\"=12
+\gdef\mathhexbox#1#2#3{\text{$\m@th\mathchar"#1#2#3$}}
+\endgroup
+%    \end{macrocode}
+%    This redefinition means that now symbols like \S, \P, \dag, \ldots,
+%    which are defined via \cs{mathhexbox} in \fn{plain.tex} or
+%    elsewhere now correctly change sizes if they are used in math mode.
+% \end{macro}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{129}
+% \Finale

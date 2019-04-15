@@ -1,0 +1,132 @@
+% \def\filename{amsxtra.dtx}
+% \def\fileversion{1.2c}
+% \def\filedate{1999/11/15}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 1999 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\begin{document}
+\title{The \pkg{amsxtra} package}
+\author{American Mathematical Society\\Michael Downes}
+\date{Version \fileversion, \filedate}
+\DocInput{amsxtra.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%    The \pkg{amsxtra} package contains a few rarely used commands that
+%    were present in version 1.1 of the \pkg{amstex} package:
+%    \cn{fracwithdelims}, {accentedsymbol}, \cn{sphat}, \cn{spcheck},
+%    \cn{sptilde}, \cn{spdot}, \cn{spddot}, \cn{spdddot}, \cn{spbreve}.
+%    If any of these commands were used in existing documents, the
+%    \pkg{amsxtra} package provides a way to get them. But for 99\% of
+%    documents using the \pkg{amstex} package these commands are just
+%    wasted overhead.
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+\ProvidesPackage{amsxtra}[1999/11/15 v1.2c]
+%    \end{macrocode}
+%    We need to ensure that either the \pkg{amstex} package or the
+%    \pkg{amsmath} package is loaded. This means we need something a
+%    little more complicated than \cn{RequirePackage}.
+%    \begin{macrocode}
+\@ifpackageloaded{amstex}{}{%
+  \RequirePackage{amsmath}[1996/10/01 v1.2]}
+%    \end{macrocode}
+%
+%    Superscripted accent characters.
+%    \begin{macrocode}
+\def\sphat{^{\mathchoice{}{}%
+ {\,\,\smash[b]{\hbox{\lower4\ex@\hbox{$\m@th\widehat{\null}$}}}}%
+ {\,\smash[b]{\hbox{\lower3\ex@\hbox{$\m@th\hat{\null}$}}}}}}
+\def\spcheck{^\vee}
+\def\sptilde{^\sim}
+\def\spdot{^{\hbox{\raise\ex@\hbox{\normalfont .}}}}
+\def\spddot{^{\hbox{\raise\ex@\hbox{\normalfont ..}}}}
+\def\spdddot{^{\hbox{\raise\ex@\hbox{\normalfont...}}}}
+\def\spbreve{^{\!\smash[b]{\hbox{\lower4\ex@\hbox{\u{}}}}}}
+%    \end{macrocode}
+%
+%    The \cn{fracwithdelims} command is skipped if the base package is
+%    \pkg{amsmath}; it is only needed if the base package is
+%    \pkg{amstex}.
+%    \begin{macrocode}
+\@ifpackageloaded{amstex}{%
+\def\fracwithdelims#1#2{\new@ifnextchar[{\fracwithdelims@#1#2}%
+  {\fracwithdelims@#1#2[\@empty]}}
+\def\fracwithdelims@#1#2[#3]#4#5{\relax
+  \ifx\@empty#3{#4\overwithdelims#1#2#5}\else
+  {#4\abovewithdelims#1#2#3\relax#5}\fi}
+}{}
+%    \end{macrocode}
+%
+%    Perhaps |\accentedsymbol| should use |\newsavebox|, but I don't
+%    know of any compelling reason at the moment.[mjd,5-Sep-1994]
+%    |\accentedsymbol| can only produce a single size of
+%    the given symbol, so you'd need two different versions for main
+%    size and subscript size.
+%    \begin{macrocode}
+\def\accentedsymbol#1#2{%
+  \expandafter\newbox
+    \csname\expandafter\@gobble\string#1@box\endcsname
+  \expandafter\setbox
+    \csname\expandafter\@gobble\string#1@box\endcsname
+      \hbox{$\m@th#2$}%
+  \newcommand{#1}{%
+    \expandafter\copy
+      \csname\expandafter\@gobble\string#1@box\endcsname{}}%
+}
+%    \end{macrocode}
+%
+%    Change the definition of \qc{\~} to automatically remove a
+%    preceding space as well as a following space, if present.
+%    \begin{macrocode}
+\def~{\nobreakspace}
+\DeclareRobustCommand{\nobreakspace}{\unskip\nobreak\ \ignorespaces}
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{113}
+% \Finale

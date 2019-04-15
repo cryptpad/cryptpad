@@ -1,0 +1,202 @@
+%%% ====================================================================
+%%%  @LaTeX-file{
+%%%     filename  = "subeqn.tex",
+%%%     version   = "1.2c",
+%%%     date      = "1999/11/29",
+%%%     time      = "14:49:29 EST",
+%%%     checksum  = "29866 202 668 6426",
+%%%     author    = "American Mathematical Society",
+%%%     copyright = "Copyright 1999 American Mathematical Society,
+%%%                  all rights reserved.  Copying of this file is
+%%%                  authorized only if either:
+%%%                  (1) you make absolutely no changes to your copy,
+%%%                  including name; OR
+%%%                  (2) if you do make changes, you first rename it
+%%%                  to some other name.",
+%%%     address   = "American Mathematical Society,
+%%%                  Technical Support,
+%%%                  Electronic Products and Services,
+%%%                  P. O. Box 6248,
+%%%                  Providence, RI 02940,
+%%%                  USA",
+%%%     telephone = "401-455-4080 or (in the USA and Canada)
+%%%                  800-321-4AMS (321-4267)",
+%%%     FAX       = "401-331-3842",
+%%%     email     = "tech-support@ams.org (Internet)",
+%%%     supported = "yes",
+%%%     keywords  = "latex, amslatex, ams-latex, amstex",
+%%%     abstract  = "This is part of the AMS-\LaTeX{} distribution.
+%%%                  It is a sample document illustrating the use of
+%%%                  the subequations environment and the effect of
+%%%                  the fleqn option.",
+%%%     docstring = "The checksum field above contains a CRC-16
+%%%                  checksum as the first value, followed by the
+%%%                  equivalent of the standard UNIX wc (word
+%%%                  count) utility output of lines, words, and
+%%%                  characters.  This is produced by Robert
+%%%                  Solovay's checksum utility.",
+%%%  }
+%%% ====================================================================
+\documentclass[fleqn]{article}
+
+\title{Test of subequations environment}
+\author{mjd}
+
+\usepackage{amsmath}
+\numberwithin{equation}{section}
+
+\newcommand{\env}[1]{{\normalfont\texttt{#1}}}
+
+\AtEndDocument{\multipasswarning}
+\newcommand{\multipasswarning}{%
+  \clearpage
+  \typeout{%
+  **********************************************************************}
+  \typeout{%
+  Note: This document needs to run through LaTeX three times, instead of}
+  \typeout{%
+  the usual two, to resolve indirect cross-references.}
+  \typeout{%
+  **********************************************************************}
+}
+
+\makeatletter
+%    Omit the warning message if three passes have been completed (on
+%    first pass \ref{check} is undefined and it is set to 0; on second
+%    pass \ref{check} is 0 and set to 1; on third pass it is 1).
+\def\checkref{\begingroup
+  \@ifundefined{r@check}{\def\@currentlabel{0}}{\def\@currentlabel{1}}%
+  \ifnum1=0\expandafter\@firstoftwo\r@check\relax
+    \global\let\multipasswarning\relax
+  \fi
+  \label{check}%
+  \endgroup}
+\makeatother
+
+\begin{document}
+\section{Prime equation numbers}
+
+First an equation.
+\begin{equation}\label{e:previous}
+A=B
+\end{equation}
+That was equation \eqref{e:previous}.
+
+Then the same, with a prime on the number.\checkref
+\begin{equation}
+\tag{\ref{e:previous}$'$}\label{e:prevprime}
+C=D
+\end{equation}
+And that was equation \eqref{e:prevprime}.
+
+Notice, by the way, that when a \verb"\ref" occurs inside a \verb"\tag",
+and that \verb"\tag" is then \verb"\label"'d, a \verb"\ref" for the the
+second \verb"\label" requires \emph{three} runs of \LaTeX{} in order to
+get the proper value. (If you run through the logic of \LaTeX{}'s
+cross-referencing mechanisms as they apply in this case, you will see
+that this is necessary.)
+
+\section{Subnumbered equations}
+
+Here is a,b,c sub-numbering.
+\begin{subequations}
+\begin{eqnarray}
+A&=&B\\
+D&=&C \label{e:middle}\\
+E&=&F
+\end{eqnarray}
+\end{subequations}
+That was produced with the \env{eqnarray} environment; the middle line
+was labeled as \eqref{e:middle}.
+
+An equation following the end of the \verb"subequations" environment
+should revert to normal numbering:
+\begin{equation}\label{e:check}
+H<K
+\end{equation}
+A check on the labeling: that was equation~\eqref{e:check}.
+
+The sub-numbered equations can be spread out through the text, like
+this:
+\begin{subequations}
+\begin{equation}
+A=B
+\end{equation}
+The \verb"subequations" environment can span arbitrary text between
+subsidiary equations. The only restriction is that if there are any
+numbered equations inside the \verb"subequations" environment that break
+out of the subequation numbering sequence, they would have to be handled
+specially.
+\begin{equation}
+D=C \label{e:newmiddle}
+\end{equation}
+More arbitrary text.
+\begin{equation}
+E=F
+\end{equation}
+\end{subequations}
+Label check: the middle one was \eqref{e:newmiddle}
+
+A final equation for a numbering check.
+\begin{equation}\label{e:final}
+G=H
+\end{equation}
+That equation was labeled as \eqref{e:final}.
+
+\section{Tests of \env{align}, \env{gather}, and other
+AMS-\protect\LaTeX{} environments}
+
+The \env{align} environment:
+\begin{subequations}
+\begin{align}
+\label{align:a}A+B&=B+A\\
+\label{align:b}C&=D+E\\
+\label{align:c}E&=F
+\end{align}
+\end{subequations}
+Label check: that was \eqref{align:a}, \eqref{align:b}, and
+\eqref{align:c}.
+
+The \env{align} environment again:
+\begin{subequations}
+\begin{align}
+\label{xalign:a}A+B&=B&     B&=B+A\\
+\label{xalign:b}C&=D+E&     C\oplus D&=E\\
+\label{xalign:c}E&=F&       E'&=F'
+\end{align}
+\end{subequations}
+Label check: that was \eqref{xalign:a}, \eqref{xalign:b}, and
+\eqref{xalign:c}.
+
+The \env{gather} environment. For the third line we refer to one of the
+numbers in the first \env{align} structure.
+\begin{subequations}
+\begin{gather}
+\label{gather:a}A+B=B\\
+\label{gather:b}C=D+E\\
+\tag{\ref{align:c}$'$}\label{gather:c}E=F
+\end{gather}
+\end{subequations}
+Label check: that was \eqref{gather:a},
+\eqref{gather:b}, and
+\eqref{gather:c}.
+
+The next \env{subequations} environment encompasses two separate
+equations. A \env{split} environment:
+\begin{subequations}
+\begin{equation}
+\label{split:x}
+\begin{split}
+A&=B+C+F\\
+&=G
+\end{split}
+\end{equation}
+and a \env{multline} environment:
+\begin{multline}\label{multline:x}
+A[B]C[D]E[F]G[[H[I]J[K]L[M]N]]=\\
+H[I]J[K]L[M]N[O]P[Q]R[S]T[U]V[W]X[Y]Z
+\end{multline}
+\end{subequations}
+Label check: That was \eqref{split:x} and \eqref{multline:x}.
+
+\end{document}

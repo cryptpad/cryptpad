@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage{hyperref}
+\begin{document}
+\section{Pointing to dvi names}
+\href{dvi::TeX-docs:nasty.dvi}{relative path to nasty.dvi}!\par
+\href{:TeX-docs:nasty.dvi}{relative path to nasty.dvi}!\par
+\href{HD:OzTeX:TeX-docs:nasty.dvi}{full path to nasty.dvi}!\par
+\href{dvi:HD:OzTeX:TeX-docs:nasty.dvi}{full path to nasty.dvi}!\par
+\href{dvi:nasty.dvi}{nasty.dvi in current folder}!\par
+\href{dvi:nasty.dvi@3}{page 3 in nasty.dvi}!\par
+\href{nasty.dvi@3}{page 3 in nasty.dvi}!\par
+\href{nasty.dvi}{nasty.dvi}!\par
+\href{file:nasty.dvi}{nasty.dvi}!\par
+\href{file:HD:OzTeX:TeX-docs:nasty.dvi}{full path to nasty.dvi}!\par
+\href{dvi:ozuser.dvi#section.12}{section 12 in user guide}!\par
+
+\href{x/y/z.dvi}{x/y/z.dvi}
+\href{/x/y/z.dvi}{/x/y/z.dvi}
+\href{http://x/y/z.dvi}{http://x/y/z.dvi}
+\href{http://x:80/y/z.dvi}{http://x:80/y/z.dvi}
+\section{Pointing to pdf names}
+\href{dvi::TeX-docs:nasty.pdf}{relative path to nasty.pdf}!\par
+\href{:TeX-docs:nasty.pdf}{relative path to nasty.pdf}!\par
+\href{HD:OzTeX:TeX-docs:nasty.pdf}{full path to nasty.pdf}!\par
+\href{dvi:HD:OzTeX:TeX-docs:nasty.pdf}{full path to nasty.pdf}!\par
+\href{dvi:nasty.pdf}{nasty.pdf in current folder}!\par
+\href{dvi:nasty.pdf@3}{page 3 in nasty.pdf}!\par
+\href{nasty.pdf@3}{page 3 in nasty.pdf}!\par
+\href{nasty.pdf}{nasty.pdf}!\par
+\href{file:nasty.pdf}{nasty.pdf}!\par
+\href{file:HD:OzTeX:TeX-docs:nasty.pdf}{full path to nasty.pdf}!\par
+\href{dvi:ozuser.pdf#section.12}{section 12 in user guide}!\par
+
+\href{x/y/z.pdf}{x/y/z.pdf}
+\href{/x/y/z.pdf}{/x/y/z.pdf}
+\href{http://x/y/z.pdf}{http://x/y/z.pdf}
+\href{http://x:80/y/z.pdf}{http://x:80/y/z.pdf}
+\end{document}

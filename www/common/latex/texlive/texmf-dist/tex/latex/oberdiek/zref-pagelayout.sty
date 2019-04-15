@@ -1,0 +1,229 @@
+%%
+%% This is file `zref-pagelayout.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% zref.dtx  (with options: `pagelayout')
+%% 
+%% This is a generated file.
+%% 
+%% Project: zref
+%% Version: 2012/04/04 v2.24
+%% 
+%% Copyright (C) 2006-2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file zref.dtx
+%% and the derived files
+%%    zref.sty, zref.pdf, zref.ins, zref.drv, zref-base.sty,
+%%    zref-abspage.sty, zref-abspos.sty, zref-counter.sty,
+%%    zref-dotfill.sty, zref-env.sty, zref-hyperref.sty,
+%%    zref-lastpage.sty, zref-marks.sty, zref-nextpage.sty,
+%%    zref-pageattr.sty, zref-pagelayout.sty, zref-perpage.sty,
+%%    zref-runs.sty, zref-savepos.sty, zref-thepage.sty,
+%%    zref-titleref.sty, zref-totpages.sty, zref-user.sty,
+%%    zref-xr.sty, zref-example.tex, zref-example-lastpage.tex,
+%%    zref-example-nextpage.tex, zref-test1.tex,
+%%    zref-test-base.tex, zref-test-runs.tex,
+%%    zref-test-titleref-memoir.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{zref-pagelayout}%
+  [2012/04/04 v2.24 Module pagelayout for zref (HO)]%
+\RequirePackage{zref-base}[2012/04/04]
+\ifx\ZREF@base@ok Y%
+\else
+  \expandafter\endinput
+\fi
+\RequirePackage{zref-thepage}[2012/04/04]
+\RequirePackage{ifluatex}[2010/03/01]
+\RequirePackage{atveryend}[2010/03/24]
+\ifluatex
+  \ifnum\luatexversion<39 %
+  \else
+    \begingroup
+      \escapechar=-1 %
+      \def\ZREF@temp#1{%
+        \ltx@IfUndefined{\string#1}{%
+          \let#1\ltx@undefined
+          \directlua{%
+            if tex.enableprimitives then %
+              tex.enableprimitives('', {'\string#1'})%
+            end%
+          }%
+          \ltx@ifundefined{\string#1}{%
+          }{%
+            \global#1=#1%
+            \@PackageInfoNoLine{zref-pagelayout}{%
+              \string#1 enabled%
+            }%
+          }%
+        }{}%
+      }%
+      \ZREF@temp\pdfpagewidth
+      \ZREF@temp\pdfpageheight
+      \ZREF@temp\pdfhorigin
+      \ZREF@temp\pdfvorigin
+    \endgroup
+  \fi
+\fi
+\def\ZREF@temp#1{%
+  \begingroup
+    \escapechar=-1 %
+  \ltx@ifundefined{\string#1}{\endgroup}{%
+    \edef\x{%
+      \endgroup
+      \noexpand\zref@newprop*{\string#1}%
+                             [\noexpand\number\noexpand#1]% hash-ok
+                             {\noexpand\number\noexpand#1}%
+      \noexpand\zref@addprop{thepage}{\string#1}%
+    }%
+    \x
+  }%
+}
+\ZREF@temp\mag
+\ZREF@temp\paperwidth
+\ZREF@temp\paperheight
+\ZREF@temp\stockwidth % memoir.cls, crop.sty
+\ZREF@temp\stockheight % memoir.cls, crop.sty
+\ZREF@temp\mediawidth % VTeX
+\ZREF@temp\mediaheight % VTeX
+\ZREF@temp\pdfpagewidth
+\ZREF@temp\pdfpageheight
+\ZREF@temp\pdfhorigin
+\ZREF@temp\pdfvorigin
+\ZREF@temp\hoffset
+\ZREF@temp\voffset
+\ZREF@temp\topmargin
+\ZREF@temp\oddsidemargin
+\ZREF@temp\evensidemargin
+\ZREF@temp\textwidth
+\ZREF@temp\textheight
+\ZREF@temp\headheight
+\ZREF@temp\headsep
+\ZREF@temp\footskip
+\ZREF@temp\marginparwidth
+\ZREF@temp\marginparsep
+\ZREF@temp\columnwidth
+\ZREF@temp\columnsep
+\ZREF@temp\trimedge % memoir.cls
+\ZREF@temp\spinemargin % memoir.cls
+\ZREF@temp\foremargin % memoir.cls
+\ZREF@temp\trimtop % memoir.cls
+\ZREF@temp\uppermargin % memoir.cls
+\ZREF@temp\headmargin % memoir.cls
+\zref@newprop*{outputboxwd}[0pt]{\AtBeginShipoutBoxWidth}
+\zref@newprop*{outputboxht}[0pt]{\AtBeginShipoutBoxHeight}
+\zref@newprop*{outputboxdp}[0pt]{\AtBeginShipoutBoxDepth}
+\zref@addprops{thepage}{outputboxwd,outputboxht,outputboxdp}
+\ltx@newif\ifZREF@pl@list
+\ZREF@IfDefinable\zlistpagelayout\def{%
+  {\global\ZREF@pl@listtrue}%
+}
+\def\ZREF@pl@AfterLastShipout{%
+  \ifZREF@pl@list
+    \edef\ZREF@page@max{\the\value{abspage}}%
+    \ltx@ifundefined{ZREF@org@testdef}{%
+      \let\ZREF@org@testdef\@testdef
+      \def\@testdef##1##2##3{%
+        \ZREF@org@testdef{##1}{##2}{##3}%
+        \def\ZREF@temp{##1}%
+        \ifx\ZREF@temp\ZREF@RefPrefix
+          \expandafter\gdef\csname##1@##2\endcsname{##3}%
+        \fi
+      }%
+    }{}%
+    \AtVeryEndDocument{\ZREF@pl@AtVeryEnd}%
+  \fi
+}
+\def\ZREF@pl@AtVeryEnd{%
+  \begingroup
+    \toks@{Page layout parameters:\MessageBreak}%
+    \count@=1 %
+    \ZREF@pl@ListPage
+    \edef\x{\endgroup
+      \noexpand\@PackageInfoNoLine{zref-pagelayout}{\the\toks@}%
+    }%
+  \x
+}
+\def\ZREF@pl@ListPage{%
+  \edef\x{%
+    \toks@={%
+      \the\toks@
+      Page \the\count@:\noexpand\MessageBreak
+      \zref@ifrefundefined{thepage\the\count@}{}{%
+        \ltx@space\ltx@space mag = %
+        \zref@extract{thepage\the\count@}{mag}%
+        \noexpand\MessageBreak
+        \ZREF@pl@ListEntry{paperwidth}%
+        \ZREF@pl@ListEntry{paperheight}%
+        \ZREF@pl@ListEntry{stockwidth}%
+        \ZREF@pl@ListEntry{stockheight}%
+        \ZREF@pl@ListEntry{mediawidth}%
+        \ZREF@pl@ListEntry{mediaheight}%
+        \ZREF@pl@ListEntry{pdfpagewidth}%
+        \ZREF@pl@ListEntry{pdfpageheight}%
+        \ZREF@pl@ListEntry{pdfhorigin}%
+        \ZREF@pl@ListEntry{pdfvorigin}%
+        \ZREF@pl@ListEntry{hoffset}%
+        \ZREF@pl@ListEntry{voffset}%
+        \ZREF@pl@ListEntry{topmargin}%
+        \ZREF@pl@ListEntry{oddsidemargin}%
+        \ZREF@pl@ListEntry{evensidemargin}%
+        \ZREF@pl@ListEntry{textwidth}%
+        \ZREF@pl@ListEntry{textheight}%
+        \ZREF@pl@ListEntry{headheight}%
+        \ZREF@pl@ListEntry{headsep}%
+        \ZREF@pl@ListEntry{footskip}%
+        \ZREF@pl@ListEntry{marginparwidth}%
+        \ZREF@pl@ListEntry{marginparsep}%
+        \ZREF@pl@ListEntry{columnwidth}%
+        \ZREF@pl@ListEntry{columnsep}%
+        \ZREF@pl@ListEntry{trimedge}%
+        \ZREF@pl@ListEntry{spinemargin}%
+        \ZREF@pl@ListEntry{foremargin}%
+        \ZREF@pl@ListEntry{trimtop}%
+        \ZREF@pl@ListEntry{uppermargin}%
+        \ZREF@pl@ListEntry{headmargin}%
+      }%
+    }%
+  }\x
+  \ifnum\ZREF@page@max>\count@
+    \advance\count@ by\ltx@one
+  \else
+    \expandafter\ltx@gobble
+  \fi
+  \ZREF@pl@ListPage
+}
+\def\ZREF@pl@ListEntry#1{%
+  \zref@ifpropundefined{#1}{%
+  }{%
+    \zref@ifrefcontainsprop{thepage\the\count@}{#1}{%
+      \ltx@space\ltx@space#1 = %
+      \zref@extract{thepage\the\count@}{#1}sp = %
+      \the\dimexpr\zref@extract{thepage\the\count@}{#1}sp\relax
+      \noexpand\MessageBreak
+    }{}%
+  }%
+}
+\AfterLastShipout{%
+  \ZREF@pl@AfterLastShipout
+}
+\endinput
+%%
+%% End of file `zref-pagelayout.sty'.

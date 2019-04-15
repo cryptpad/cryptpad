@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='inputenx'>
+  <name>inputenx</name>
+  <caption>Enhanced input encoding handling.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.10'/>
+  <description>
+    This package deals with input encodings. The first stage
+    provides input encodings using
+    standard mappings and covers nearly all slots. Thus it
+    serves as more uptodate replacement for package
+    <xref refid='inputenc'>inputenc</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/inputenx.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/inputenx.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

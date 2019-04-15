@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ltxcmds'>
+  <name>ltxcmds</name>
+  <caption>Some LaTeX kernel commands for general use.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.22'/>
+  <description>
+    This package exports some utility macros
+    from the LaTeX kernel into a separate namespace and
+    also makes them available for other formats such as plain TeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ltxcmds.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ltxcmds.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

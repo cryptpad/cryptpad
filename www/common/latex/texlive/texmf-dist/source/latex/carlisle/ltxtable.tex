@@ -1,0 +1,230 @@
+%
+%% User documentation and source for ltxtable package
+%% (C) 1995 David Carlisle
+%
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%
+% Save this file as ltxtable.tex, then
+% latex ltxtable
+%
+% This will write the ltxtable.sty package file on to your system
+% and produce some rather terse typeset documentation.
+%
+\begin{filecontents}{ltx1.tex}
+\begin{longtable}{|cXX|}
+the & head& line\endhead
+the & foot& line\endfoot
+a&b&b\\
+\multicolumn{2}{c}{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}&c\\
+a&b&b b b b b b b b b b b b b b b b b b b b b b b b b b \\
+a a& b b& c c\\
+a a& b b& 
+  c c c c c c c c c c c c c c c c c c c c c c c c c c c c c cc cc\\
+a a  aaaa& b b& c ccccc\\
+\end{longtable}
+\end{filecontents}
+
+\begin{filecontents}{ltxtable.sty}
+%
+%% ltxtable package (C) 1995 David Carlisle
+%%
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%
+% User documentation is in the file ltxtable.tex
+%
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ltxtable}
+                [1995/12/11 v0.2 longtable/tabularx merge (DPC)]
+%    \end{macrocode}
+% 
+% May as get these in, going to need them...
+%    \begin{macrocode}
+\RequirePackage{tabularx,longtable}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\LTXtable#1#2{%
+\begingroup
+\TX@target#1\relax
+\expandafter\TX@newcol\expandafter{\tabularxcolumn{\TX@col@width}}%
+  \def\@elt##1{\global\value{##1}\the\value{##1}\relax}%
+  \edef\TX@ckpt{\cl@@ckpt}%
+  \let\@elt\relax
+  \TX@old@table=\maxdimen
+  \TX@col@width=\TX@target
+  \global\TX@cols=\@ne
+  \TX@typeout@
+    {\@spaces Table Width\@spaces Column Width\@spaces X Columns}%
+%    \end{macrocode}
+% Need to modify |\TX@trial| so that |longtable| functions are
+% Subverted to do the measuring that |tabularx| normally does.
+% Also during the trial runs each `chunk' is not unboxed so it just
+% gets thrown away when the next chunk starts.
+%    \begin{macrocode}
+\def\TX@trial##1{%
+  \setbox\@tempboxa=\hbox{%
+%    \end{macrocode}
+% |\multicolum| A sad tale, For now just stop |longtable| messing with
+% it, so that |tabularx| can mess with it.
+%    \begin{macrocode}
+\let\LTmulticolumn\multicolumn
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\endlongtable{%
+  \LT@echunk
+\global\setbox\@ne\hbox{\unhbox\@ne}%
+  \kern\wd\@ne
+  \LT@get@widths%
+  \endgroup}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\LT@ntabularcr{%
+  \ifnum0=`{}\fi
+  \LT@echunk
+  \LT@get@widths
+  \LT@bchunk}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\LT@argtabularcr[####1]{%
+  \ifnum0=`{}\fi
+  \ifdim ####1>\z@
+  \unskip\@xargarraycr{####1}\else \@yargarraycr{####1}\fi
+  \LT@echunk
+  \LT@get@widths
+  \LT@bchunk}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+% Any extra commands. This is used on the first run to count the number
+% of {\ttfamily X} columns.
+%    \begin{macrocode}
+    ##1\relax
+%    \end{macrocode}
+% Added at v1.05: dissable "\write"s during a trial run. This trick is
+% from the \TeX{}Book.
+%    \begin{macrocode}
+   \let\immediate=\relax\def\write####1####{{\afterassignment}\toks@=}%
+%    \end{macrocode}
+% Turn off warnings (see appendix D). Also prevent them being turned
+% back on by setting the parameter names to be registers.
+%    \begin{macrocode}
+    \hbadness=\@M\hfuzz=\maxdimen
+    \let\hbadness=\@tempcnta\let\hfuzz=\@tempdima
+%    \end{macrocode}
+% Make the table, and finish the hbox.
+% Since v1.06, "\toks@" contains the preamble specification,
+% and possible optional argument, as well as the table body.
+% Well it does in |tabularx|, here the body is in an external file so
+% just input it.
+%    \begin{macrocode}
+    \input{#2}\unskip}%
+%    \end{macrocode}
+% Since v1.05 reset all \LaTeX\ counters, by executing "\TX@ckpt".
+%    \begin{macrocode}
+\TX@ckpt
+%    \end{macrocode}
+% Print some statistics.
+% Added "\TX@align" in v1.05, to line up the columns.
+%    \begin{macrocode}
+  \TX@typeout@{\@spaces
+     \expandafter\TX@align
+        \the\wd\@tempboxa\space\space\space\space\space\@@
+     \expandafter\TX@align
+        \the\TX@col@width\space\space\space\space\space\@@
+     \@spaces\the\TX@cols}}%
+%    \end{macrocode}
+% \end{macro}
+  \TX@trial{\def\NC@rewrite@X{%
+          \global\advance\TX@cols\@ne\NC@find p{\TX@col@width}}}%
+\let\LT@make@row\LT@blank@row
+  \loop
+    \TX@arith
+    \ifTX@
+    \TX@trial{}%
+  \repeat
+%    \end{macrocode}
+% On the last run, may as well run with |\setlongtables|.
+%    \begin{macrocode}
+\let\LT@make@row\relax
+\input{#2}%
+\endgroup}
+%    \end{macrocode}
+
+
+\end{filecontents}
+
+\documentclass{article}
+\setlength{\textheight}{5in}
+\usepackage{ltxtable}
+
+\tracingtabularx
+\begin{document}
+
+\title{ltxtable: longtable meets tabularx}
+\author{David Carlisle}
+\date{1995/12/11}
+\maketitle
+
+Since \texttt{tabularx} was put on the archives in 1992 or so I have
+had a constant stream of email messages asking for a merged
+\texttt{tabularx}/\texttt{longtable} package.
+
+Well here it is!  (First draft, anyway.)
+
+Rules of the game:
+
+\begin{itemize}
+\item Put the \texttt{longtable} environment using \texttt{tabularx}
+  style \texttt{X} column specifiers in a file \emph{file} on its
+  own. (You can use the \texttt{filecontents} environment to include
+  it back into the main document file, if you wish.)
+\item If you want to input the file at some point, using the
+  \texttt{X} columns to force the table width to be \emph{width} wide,
+  go \verb|\LTXtable{|\emph{width}\verb|}{|\emph{file}\verb|}|.
+\item \verb|\multicolumn|: If you read the \texttt{tabularx} and
+  \texttt{longtable} docs you will find that both packages have a lot
+  of fun with this command. In order to keep my sanity, for this
+  merger I disable \texttt{longtable}'s version of \verb|\multicolumn|.
+  This means that the column widths calculated are not always the same
+  (not as good as) the widths that would be calculated by an
+  equivalent \texttt{tabularx} environment. Perhaps one day I will do
+  something about this. Perhaps.
+\end{itemize}
+
+\clearpage
+
+\centering
+
+
+A 300pt rule, just so can see the required width.
+
+\mbox{\vrule width 300pt height 1pt}
+
+First a tabularx
+
+
+\begingroup
+\renewenvironment{longtable}{\noindent\tabularx{300pt}}{\endtabularx}
+\def\endhead{\\}\def\endfoot{\rlap{ !!!}\\}
+\input{ltx1}
+\endgroup
+
+
+Then a longtable
+
+
+
+\LTXtable{300pt}{ltx1}
+
+\end{document}
+
+1995/11/07 v0.1  first release
+1995/12/11 v0.2  (Petr Sojka) Typos fixed so the package works!
+                 (Initial release *always* read the same table file,
+                  ignoring the argument...)

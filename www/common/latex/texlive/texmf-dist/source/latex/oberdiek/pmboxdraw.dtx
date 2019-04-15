@@ -1,0 +1,5636 @@
+% \iffalse meta-comment
+%
+% File: pmboxdraw.dtx
+% Version: 2011/03/24 v1.1
+% Info: Poor man's box drawing characters
+%
+% Copyright (C) 2006, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pmboxdraw.dtx
+% and the derived files
+%    pmboxdraw.sty, pmboxdraw.pdf, pmboxdraw.ins, pmboxdraw.drv,
+%    pmboxdrawenc.dfu, pmboxdraw-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pmboxdraw.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pmboxdraw.pdf
+%
+% Unpacking:
+%    (a) If pmboxdraw.ins is present:
+%           tex pmboxdraw.ins
+%    (b) Without pmboxdraw.ins:
+%           tex pmboxdraw.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pmboxdraw.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pmboxdraw.drv is present:
+%           latex pmboxdraw.drv
+%    (b) Without pmboxdraw.drv:
+%           latex pmboxdraw.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pmboxdraw.dtx
+%       makeindex -s gind.ist pmboxdraw.idx
+%       pdflatex pmboxdraw.dtx
+%       makeindex -s gind.ist pmboxdraw.idx
+%       pdflatex pmboxdraw.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pmboxdraw.sty
+%    TDS:tex/latex/oberdiek/pmboxdrawenc.dfu
+%    TDS:doc/latex/oberdiek/pmboxdraw.pdf
+%    TDS:doc/latex/oberdiek/test/pmboxdraw-test1.tex
+%    TDS:source/latex/oberdiek/pmboxdraw.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pmboxdraw 2011/03/24 v1.1 Poor man's box drawing characters (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pmboxdraw
+Version: 2011/03/24 v1.1
+
+Copyright (C) 2006, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pmboxdraw.dtx
+and the derived files
+   pmboxdraw.sty, pmboxdraw.pdf, pmboxdraw.ins, pmboxdraw.drv,
+   pmboxdrawenc.dfu, pmboxdraw-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pmboxdraw.ins}{\from{pmboxdraw.dtx}{install}}%
+  \file{pmboxdraw.drv}{\from{pmboxdraw.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pmboxdraw.sty}{\from{pmboxdraw.dtx}{package}}%
+  \file{pmboxdrawenc.dfu}{\from{pmboxdraw.dtx}{utf8}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pmboxdraw-test1.tex}{\from{pmboxdraw.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pmboxdraw.xml}{\from{pmboxdraw.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pmboxdraw.sty, pmboxdrawenc.dfu}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pmboxdraw.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pmboxdraw.drv}%
+  [2011/03/24 v1.1 Poor man's box drawing characters (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{color}
+\let\orgdimexpr\dimexpr
+%\let\dimexpr\relax
+\usepackage{pmboxdraw}
+\let\dimexpr\orgdimexpr
+\usepackage{longtable}
+\setcounter{tocdepth}{2}
+\hypersetup{bookmarksdepth=3}
+\begin{document}
+  \DocInput{pmboxdraw.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{8447}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pmboxdraw.drv}
+%
+% \title{The \xpackage{pmboxdraw} package}
+% \date{2011/03/24 v1.1}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{pmboxdraw} declares box drawings characters of
+% old code pages, e.g. cp437. It uses rules instead of using a font.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \DoNotIndex{\dimen,\dimen@,\z@,\tw@,\wd,\ht,\dp}
+% \DoNotIndex{\@width,\@height,\@depth}
+% \DoNotIndex{\advance,\hss,\kern,\rlap,\vrule}
+%
+% \section{User interface}
+%
+% \begin{quote}
+% \ttfamily
+% \catcode`=\active
+% \catcode`|\active
+% \catcode`-\active
+% \def={\textSFxliii}
+% \def|{\textSFxxiv}
+% \def-{\textSFx}
+% \def~{\mbox{ }}
+% \textSFxxxix===================\textSFxxv\\
+% | P M B O X D R A W |\\
+% \textSFxxxviii ==\textSFxlvii============\textSFxlvii===\textSFxxvi\\
+% ~~~\textSFxi~2011/03/24 \textSFxi\\
+% ~~~\textSFii------------\textSFiv
+% \end{quote}
+%
+% \subsection{Introduction}
+%
+% In old code pages (CP 437, \dots) many slots are occupied
+% by graphical characters. The definition files for the input
+% encodings that come with \LaTeX's package \xpackage{inputenc}
+% ignore these characters. This packages tries to close this gap.
+% Package \xpackage{inputenx} provides more complete definitions
+% files of input encodings (\cite{inputenx}).
+%
+% The graphical characters are available in some fonts, mostly
+% some derivates of Courier. However, the symbols are usually
+% used to gegnerate some kind of ASCII art. Thus it should fit
+% with the current typewriter font in use. That means:
+% \begin{itemize}
+% \item Same and constant symbol width.
+% \item Use of the full line height. Vertical lines should not be
+%       interrupted if the symbols that contribute to that lines
+%       are in adjacent text lines.
+% \end{itemize}
+% Therefore I decided to generate the symbols by rules.
+% Parameters such as rule width and box dimensions are accessible
+% at macro level. This avoids to generate many fonts for the used
+% typewriter fonts (Courier, LuxiMono, Computer/Latin Modern, \dots).
+%
+% The disadvantage is that there are no characters in the output
+% file, just rules. Thus operations such as cut and paste or text
+% search will not detect these graphical characters.
+%
+% \subsection{Setup}
+%
+% Usually the box drawings symbols of this package derive its parameters
+% from the current font. But they can be set explicitly.
+%
+% \begin{declcs}{pmboxdrawbox} \M{template}
+% \end{declcs}
+% The \meta{template} is used as size template for the symbols.
+% It is initialized by |\strut0|. (Usually |\strut| carries the information
+% about the \cs{baselineskip} and |0| the symbol width.)
+%
+% \begin{declcs}{pmboxdrawrulewidth} \M{dimen}
+% \end{declcs}
+% This macro allows the setup of the rule width used in the symbols.
+% It is initialized with |0.1\width|, that means 10\,\% of the symbol
+% width. \cs{width}, \cs{height}, and \cs{depth} can be used here and
+% are set to the corresponding symbol box parameter.
+%
+% \begin{declcs}{pmboxdrawdoublerulesep} \M{dimen}
+% \end{declcs}
+% Some symbols have double lines. The distance between the lines is
+% configured by this macro. It is set to |0.25\width|, a quarter of
+% the symbol width. Also \cs{height} and \cs{depth} are available.
+%
+% \subsection{Symbol list}
+%
+% The macro names for the symbols in \LaTeX\ (LICR) are derived
+% from Adobe's glyph names for these characters (\cite{aglfn}).
+% Example:
+% \begin{quote}
+%   U+2580 (\textupblock) with glyph name \textsf{upblock}: \cs{textupblock}
+% \end{quote}
+% Some glyph names start with |SF|, two individual digits follow and
+% the name is closed by four digits zero. For the LICR name the
+% two individual digits form a number that is converted to lowercase
+% roman number. The trailing zeros are dropped. Example:
+% \begin{quote}
+%   U+2556 (\textSFxxi) with glyph name \textsf{SF210000}: \cs{textSFxxi}
+% \end{quote}
+%
+% The three gray symbols require package \xpackage{color}:
+% \begin{quote}
+%   U+2591 (\textltshade) light shade: \cs{textltshade}\\
+%   U+2592 (\textshade) medium shade: \cs{textshade}\\
+%   U+2593 (\textdkshade) dark shade: \cs{textdkshade}
+% \end{quote}
+%
+% It follows a list with all graphical symbols provided by this
+% package:
+%
+% \begingroup
+% \def\entrygen#1#2#3#4{%
+%   \textcolor{blue}{^^A
+%     \fbox{\color{black}\texttt{\csname text#3\endcsname}}^^A
+%   }
+%   & \texttt{U+25#1}
+%   & \texttt{#2}
+%   & \texttt{\textbackslash text#3}
+%   \\*[-\fboxsep]
+%   &
+%   \multicolumn{3}{l}{\lowercase{#4}}\\^^A
+% }
+% \def\entryU#1#2{%
+%   \textcolor{blue}{^^A
+%     \fbox{\color{black}\texttt{\pmboxdrawuni{25#1}}}^^A
+%   }
+%   & \texttt{U+25#1}
+%   & \texttt{uni25#1}
+%   & \texttt{\textbackslash pmboxdrawuni\{25#1\}}
+%   \\*[-\fboxsep]
+%   &
+%   \multicolumn{3}{l}{\lowercase{#2}}\\^^A
+% }
+% \def\entry#1#2{\entrygen{#1}{SF#20000}{SF\romannumeral#2}}
+% \def\entryB#1#2{\entrygen{#1}{#2}{#2}}
+% \begin{longtable}{clll}
+% Symbol & Unicode & Glyph name & LICR\\
+% \hline
+% \endhead
+% \entry{00}{10}{BOX DRAWINGS LIGHT HORIZONTAL}
+% \entryU{01}{BOX DRAWINGS HEAVY HORIZONTAL}
+% \entry{02}{11}{BOX DRAWINGS LIGHT VERTICAL}
+% \entryU{03}{BOX DRAWINGS HEAVY VERTICAL}
+% \entry{0C}{01}{BOX DRAWINGS LIGHT DOWN AND RIGHT}
+% \entryU{0D}{BOX DRAWINGS DOWN LIGHT AND RIGHT HEAVY}
+% \entryU{0E}{BOX DRAWINGS DOWN HEAVY AND RIGHT LIGHT}
+% \entryU{0F}{BOX DRAWINGS HEAVY DOWN AND RIGHT}
+% \entry{10}{03}{BOX DRAWINGS LIGHT DOWN AND LEFT}
+% \entryU{11}{BOX DRAWINGS DOWN LIGHT AND LEFT HEAVY}
+% \entryU{12}{BOX DRAWINGS DOWN HEAVY AND LEFT LIGHT}
+% \entryU{13}{BOX DRAWINGS HEAVY DOWN AND LEFT}
+% \entry{14}{02}{BOX DRAWINGS LIGHT UP AND RIGHT}
+% \entryU{15}{BOX DRAWINGS UP LIGHT AND RIGHT HEAVY}
+% \entryU{16}{BOX DRAWINGS UP HEAVY AND RIGHT LIGHT}
+% \entryU{17}{BOX DRAWINGS HEAVY UP AND RIGHT}
+% \entry{18}{04}{BOX DRAWINGS LIGHT UP AND LEFT}
+% \entryU{19}{BOX DRAWINGS UP LIGHT AND LEFT HEAVY}
+% \entryU{1A}{BOX DRAWINGS UP HEAVY AND LEFT LIGHT}
+% \entryU{1B}{BOX DRAWINGS HEAVY UP AND LEFT}
+% \entry{1C}{08}{BOX DRAWINGS LIGHT VERTICAL AND RIGHT}
+% \entryU{1D}{BOX DRAWINGS VERTICAL LIGHT AND RIGHT HEAVY}
+% \entryU{1E}{BOX DRAWINGS UP HEAVY AND RIGHT DOWN LIGHT}
+% \entryU{1F}{BOX DRAWINGS DOWN HEAVY AND RIGHT UP LIGHT}
+% \entryU{20}{BOX DRAWINGS VERTICAL HEAVY AND RIGHT LIGHT}
+% \entryU{21}{BOX DRAWINGS DOWN LIGHT AND RIGHT UP HEAVY}
+% \entryU{22}{BOX DRAWINGS UP LIGHT AND RIGHT DOWN HEAVY}
+% \entryU{23}{BOX DRAWINGS HEAVY VERTICAL AND RIGHT}
+% \entry{24}{09}{BOX DRAWINGS LIGHT VERTICAL AND LEFT}
+% \entryU{25}{BOX DRAWINGS VERTICAL LIGHT AND LEFT HEAVY}
+% \entryU{26}{BOX DRAWINGS UP HEAVY AND LEFT DOWN LIGHT}
+% \entryU{27}{BOX DRAWINGS DOWN HEAVY AND LEFT UP LIGHT}
+% \entryU{28}{BOX DRAWINGS VERTICAL HEAVY AND LEFT LIGHT}
+% \entryU{29}{BOX DRAWINGS DOWN LIGHT AND LEFT UP HEAVY}
+% \entryU{2A}{BOX DRAWINGS UP LIGHT AND LEFT DOWN HEAVY}
+% \entryU{2B}{BOX DRAWINGS HEAVY VERTICAL AND LEFT}
+% \entry{2C}{06}{BOX DRAWINGS LIGHT DOWN AND HORIZONTAL}
+% \entryU{2D}{BOX DRAWINGS LEFT HEAVY AND RIGHT DOWN LIGHT}
+% \entryU{2E}{BOX DRAWINGS RIGHT HEAVY AND LEFT DOWN LIGHT}
+% \entryU{2F}{BOX DRAWINGS DOWN LIGHT AND HORIZONTAL HEAVY}
+% \entryU{30}{BOX DRAWINGS DOWN HEAVY AND HORIZONTAL LIGHT}
+% \entryU{31}{BOX DRAWINGS RIGHT LIGHT AND LEFT DOWN HEAVY}
+% \entryU{32}{BOX DRAWINGS LEFT LIGHT AND RIGHT DOWN HEAVY}
+% \entryU{33}{BOX DRAWINGS HEAVY DOWN AND HORIZONTAL}
+% \entry{34}{07}{BOX DRAWINGS LIGHT UP AND HORIZONTAL}
+% \entryU{35}{BOX DRAWINGS LEFT HEAVY AND RIGHT UP LIGHT}
+% \entryU{36}{BOX DRAWINGS RIGHT HEAVY AND LEFT UP LIGHT}
+% \entryU{37}{BOX DRAWINGS UP LIGHT AND HORIZONTAL HEAVY}
+% \entryU{38}{BOX DRAWINGS UP HEAVY AND HORIZONTAL LIGHT}
+% \entryU{39}{BOX DRAWINGS RIGHT LIGHT AND LEFT UP HEAVY}
+% \entryU{3A}{BOX DRAWINGS LEFT LIGHT AND RIGHT UP HEAVY}
+% \entryU{3B}{BOX DRAWINGS HEAVY UP AND HORIZONTAL}
+% \entry{3C}{05}{BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL}
+% \entryU{3D}{BOX DRAWINGS LEFT HEAVY AND RIGHT VERTICAL LIGHT}
+% \entryU{3E}{BOX DRAWINGS RIGHT HEAVY AND LEFT VERTICAL LIGHT}
+% \entryU{3F}{BOX DRAWINGS VERTICAL LIGHT AND HORIZONTAL HEAVY}
+% \entryU{40}{BOX DRAWINGS UP HEAVY AND DOWN HORIZONTAL LIGHT}
+% \entryU{41}{BOX DRAWINGS DOWN HEAVY AND UP HORIZONTAL LIGHT}
+% \entryU{42}{BOX DRAWINGS VERTICAL HEAVY AND HORIZONTAL LIGHT}
+% \entryU{43}{BOX DRAWINGS LEFT UP HEAVY AND RIGHT DOWN LIGHT}
+% \entryU{44}{BOX DRAWINGS RIGHT UP HEAVY AND LEFT DOWN LIGHT}
+% \entryU{45}{BOX DRAWINGS LEFT DOWN HEAVY AND RIGHT UP LIGHT}
+% \entryU{46}{BOX DRAWINGS RIGHT DOWN HEAVY AND LEFT UP LIGHT}
+% \entryU{47}{BOX DRAWINGS DOWN LIGHT AND UP HORIZONTAL HEAVY}
+% \entryU{48}{BOX DRAWINGS UP LIGHT AND DOWN HORIZONTAL HEAVY}
+% \entryU{49}{BOX DRAWINGS RIGHT LIGHT AND LEFT VERTICAL HEAVY}
+% \entryU{4A}{BOX DRAWINGS LEFT LIGHT AND RIGHT VERTICAL HEAVY}
+% \entryU{4B}{BOX DRAWINGS HEAVY VERTICAL AND HORIZONTAL}
+% \entry{50}{43}{BOX DRAWINGS DOUBLE HORIZONTAL}
+% \entry{51}{24}{BOX DRAWINGS DOUBLE VERTICAL}
+% \entry{52}{51}{BOX DRAWINGS DOWN SINGLE AND RIGHT DOUBLE}
+% \entry{53}{52}{BOX DRAWINGS DOWN DOUBLE AND RIGHT SINGLE}
+% \entry{54}{39}{BOX DRAWINGS DOUBLE DOWN AND RIGHT}
+% \entry{55}{22}{BOX DRAWINGS DOWN SINGLE AND LEFT DOUBLE}
+% \entry{56}{21}{BOX DRAWINGS DOWN DOUBLE AND LEFT SINGLE}
+% \entry{57}{25}{BOX DRAWINGS DOUBLE DOWN AND LEFT}
+% \entry{58}{50}{BOX DRAWINGS UP SINGLE AND RIGHT DOUBLE}
+% \entry{59}{49}{BOX DRAWINGS UP DOUBLE AND RIGHT SINGLE}
+% \entry{5A}{38}{BOX DRAWINGS DOUBLE UP AND RIGHT}
+% \entry{5B}{28}{BOX DRAWINGS UP SINGLE AND LEFT DOUBLE}
+% \entry{5C}{27}{BOX DRAWINGS UP DOUBLE AND LEFT SINGLE}
+% \entry{5D}{26}{BOX DRAWINGS DOUBLE UP AND LEFT}
+% \entry{5E}{36}{BOX DRAWINGS VERTICAL SINGLE AND RIGHT DOUBLE}
+% \entry{5F}{37}{BOX DRAWINGS VERTICAL DOUBLE AND RIGHT SINGLE}
+% \entry{60}{42}{BOX DRAWINGS DOUBLE VERTICAL AND RIGHT}
+% \entry{61}{19}{BOX DRAWINGS VERTICAL SINGLE AND LEFT DOUBLE}
+% \entry{62}{20}{BOX DRAWINGS VERTICAL DOUBLE AND LEFT SINGLE}
+% \entry{63}{23}{BOX DRAWINGS DOUBLE VERTICAL AND LEFT}
+% \entry{64}{47}{BOX DRAWINGS DOWN SINGLE AND HORIZONTAL DOUBLE}
+% \entry{65}{48}{BOX DRAWINGS DOWN DOUBLE AND HORIZONTAL SINGLE}
+% \entry{66}{41}{BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL}
+% \entry{67}{45}{BOX DRAWINGS UP SINGLE AND HORIZONTAL DOUBLE}
+% \entry{68}{46}{BOX DRAWINGS UP DOUBLE AND HORIZONTAL SINGLE}
+% \entry{69}{40}{BOX DRAWINGS DOUBLE UP AND HORIZONTAL}
+% \entry{6A}{54}{BOX DRAWINGS VERTICAL SINGLE AND HORIZONTAL DOUBLE}
+% \entry{6B}{53}{BOX DRAWINGS VERTICAL DOUBLE AND HORIZONTAL SINGLE}
+% \entry{6C}{44}{BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL}
+% \entryU{74}{BOX DRAWINGS LIGHT LEFT}
+% \entryU{75}{BOX DRAWINGS LIGHT UP}
+% \entryU{76}{BOX DRAWINGS LIGHT RIGHT}
+% \entryU{77}{BOX DRAWINGS LIGHT DOWN}
+% \entryU{78}{BOX DRAWINGS HEAVY LEFT}
+% \entryU{79}{BOX DRAWINGS HEAVY UP}
+% \entryU{7A}{BOX DRAWINGS HEAVY RIGHT}
+% \entryU{7B}{BOX DRAWINGS HEAVY DOWN}
+% \entryU{7C}{BOX DRAWINGS LIGHT LEFT AND HEAVY RIGHT}
+% \entryU{7D}{BOX DRAWINGS LIGHT UP AND HEAVY DOWN}
+% \entryU{7E}{BOX DRAWINGS HEAVY LEFT AND LIGHT RIGHT}
+% \entryU{7F}{BOX DRAWINGS HEAVY UP AND LIGHT DOWN}
+% \entryB{80}{upblock}{UPPER HALF BLOCK}
+% \entryU{81}{LOWER ONE EIGHTH BLOCK}
+% \entryU{82}{LOWER ONE QUARTER BLOCK}
+% \entryU{83}{LOWER THREE EIGHTHS BLOCK}
+% \entryB{84}{dnblock}{LOWER HALF BLOCK}
+% \entryU{85}{LOWER FIVE EIGHTHS BLOCK}
+% \entryU{86}{LOWER THREE QUARTERS BLOCK}
+% \entryU{87}{LOWER SEVEN EIGHTHS BLOCK}
+% \entryB{88}{block}{FULL BLOCK}
+% \entryU{89}{LEFT SEVEN EIGHTHS BLOCK}
+% \entryU{8A}{LEFT THREE QUARTERS BLOCK}
+% \entryU{8B}{LEFT FIVE EIGHTHS BLOCK}
+% \entryB{8C}{lfblock}{LEFT HALF BLOCK}
+% \entryU{8D}{LEFT THREE EIGHTHS BLOCK}
+% \entryU{8E}{LEFT ONE QUARTER BLOCK}
+% \entryU{8F}{LEFT ONE EIGHTH BLOCK}
+% \entryB{90}{rtblock}{RIGHT HALF BLOCK}
+% \entryB{91}{ltshade}{LIGHT SHADE}
+% \entryB{92}{shade}{MEDIUM SHADE}
+% \entryB{93}{dkshade}{DARK SHADE}
+% \entryU{94}{UPPER ONE EIGHTH BLOCK}
+% \entryU{95}{RIGHT ONE EIGHTH BLOCK}
+% \entryU{96}{QUADRANT LOWER LEFT}
+% \entryU{97}{QUADRANT LOWER RIGHT}
+% \entryU{98}{QUADRANT UPPER LEFT}
+% \entryU{99}{QUADRANT UPPER LEFT AND LOWER LEFT AND LOWER RIGHT}
+% \entryU{9A}{QUADRANT UPPER LEFT AND LOWER RIGHT}
+% \entryU{9B}{QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER LEFT}
+% \entryU{9C}{QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER RIGHT}
+% \entryU{9D}{QUADRANT UPPER RIGHT}
+% \entryU{9E}{QUADRANT UPPER RIGHT AND LOWER LEFT}
+% \entryU{9F}{QUADRANT UPPER RIGHT AND LOWER LEFT AND LOWER RIGHT}
+% \end{longtable}
+% \endgroup
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Initial stuff}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pmboxdraw.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pmboxdraw}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pmboxdraw.sty\endcsname
+\ProvidesPackage{pmboxdraw}%
+  [2011/03/24 v1.1 Poor man's box drawing characters (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname pmbd@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\pmbd@AtEnd{%
+    \pmbd@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\pmbd@AtEnd{\pmbd@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Resources}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+\else
+  \let\TMP@RequirePackage\RequirePackage
+\fi
+\TMP@RequirePackage{ltxcmds}[2010/12/12]%
+\TMP@RequirePackage{kvsetkeys}[2011/01/30]%
+\TMP@RequirePackage{kvdefinekeys}[2011/01/30]%
+\TMP@RequirePackage{infwarerr}[2010/04/08]%
+%    \end{macrocode}
+%    \begin{macro}{\ifpmbd@latex}
+%    \begin{macrocode}
+\ltx@newif\ifpmbd@latex
+\ltx@IfUndefined{fmtname}{}{%
+  \def\pmbd@tmp{LaTeX2e}%
+  \ifx\pmbd@tmp\fmtname
+    \pmbd@latextrue
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Dummy font encoding}
+%
+%    Using a dummy font encoding because of
+%    \begin{quote}
+%    |\usepackage[utf8]{inputenc}|
+%    \end{quote}
+%    \begin{macrocode}
+\ifpmbd@latex
+  \DeclareFontEncoding{pmboxdraw}{}{}%
+  \DeclareFontFamily{pmboxdraw}{pmboxdraw}{}%
+  \DeclareFontShape{pmboxdraw}{pmboxdraw}{m}{n}{ <-> cmr10 }{}%
+  \DeclareFontSubstitution{pmboxdraw}{pmboxdraw}{m}{n}%
+%    \end{macrocode}
+%
+% \subsection{Setup}
+%
+% \subsubsection{Options}
+%
+%    \begin{macrocode}
+  \RequirePackage{kvoptions}[2010/02/22]%
+  \SetupKeyvalOptions{%
+    family=PMBD,%
+    prefix=pmbd@%
+  }%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\ltx@IfUndefined{dimexpr}{%
+  \catcode36=9 %
+  \catcode38=14 %
+}{%
+  \catcode36=14 %
+  \catcode38=9 %
+}
+%    \end{macrocode}
+%    \begin{macro}{\pmbd@ProtectedDef}
+%    \begin{macrocode}
+\ltx@IfUndefined{protected}{%
+  \def\pmbd@ProtectedDef#1{%
+    \let\pmbd@temp\ltx@gobble
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\DeclareRobustCommand*#1}%
+    }%
+    \pmbd@temp
+  }%
+  \def\pmbd@ProtectedDefOne#1{%
+    \let\pmbd@temp\ltx@gobble
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\DeclareRobustCommand*#1[1]}%
+    }%
+    \pmbd@temp
+  }%
+}{%
+  \def\pmbd@ProtectedDef#1{%
+    \let\pmbd@temp\ltx@gobble
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\protected\def#1}%
+    }%
+    \pmbd@temp
+  }%
+  \def\pmbd@ProtectedDefOne#1{%
+    \let\pmbd@temp\ltx@gobblethree
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\protected\def#1}%
+    }%
+    \pmbd@temp##1%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmboxdrawsetup}
+%    \begin{macrocode}
+\pmbd@ProtectedDef\pmboxdrawsetup{%
+  \kvsetkeys{PMBD}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\catcode47=11 %
+\def\pmbd@temp#1#2{%
+  \DeclareStringOption[\width]{#1/width}%
+  \DeclareStringOption[\height]{#1/height}%
+  \DeclareStringOption[\depth]{#1/depth}%
+  \DeclareStringOption[{#2}]{#1/box/default}%
+  \expandafter\DeclareStringOption\expandafter[%
+    \csname pmbd@#1/box/default\endcsname
+  ]{#1/box}%
+}
+\pmbd@temp{BoxDrawing}{\strut0}%
+\pmbd@temp{Block}{%
+  \begingroup
+    \sbox\z@{\strut}%
+    \dimen@=\ht\z@
+    \advance\dimen@\dp\z@
+    \wd\z@=\dimen@
+    \box\z@
+  \endgroup
+}%
+\pmbd@temp{Shade}{%
+  \begingroup
+    \sbox\z@{\strut}%
+    \dimen@=\ht\z@
+    \advance\dimen@\dp\z@
+    \wd\z@=\dimen@
+    \box\z@
+  \endgroup
+}%
+\pmbd@temp{TerminalGraphic}{%
+  \begingroup
+    \sbox\z@{\"A}%
+    \wd\z@=\ht\z@
+    \dp\z@=\z@
+    \box\z@
+  \endgroup
+}%
+\DeclareStringOption[.1\width]{BoxDrawing/thinlinewidth}
+\DeclareStringOption[.25\width]{BoxDrawing/thicklinewidth}
+\DeclareStringOption[.25\width]{BoxDrawing/doublelinesep}
+%
+\DeclareStringOption[\strut0]{box} %%
+\DeclareStringOption[.1\width]{rulewidth}
+\DeclareStringOption[.25\width]{doublerulesep}
+%    \end{macrocode}
+%
+%    \begin{macro}{\pmboxdrawUniRobust}
+%    \begin{macrocode}
+\pmbd@ProtectedDefOne\pmboxdrawUniRobust{%
+  \comma@parse{#1}{%
+    \ltx@IfUndefined{pmbd@U+\comma@entry}{%
+      \begingroup\expandafter\endgroup
+      \expandafter
+      \TextSymbolUnavailable\csname U+\comma@entry\endcsname
+    }{%
+      \csname pmbd@U+\comma@entry\endcsname
+    }%
+    \@gobble
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmboxdrawuni}
+%    \begin{macrocode}
+\newcommand*{\pmboxdrawuni}[1]{%
+  \ifx\texorpdfstring\ltx@undefined
+    \expandafter\ltx@firstoftwo
+  \else
+    \ifx\texorpdfstring\relax
+      \expandafter\expandafter\expandafter\ltx@firstoftwo
+    \else
+      \expandafter\expandafter\expandafter\texorpdfstring
+    \fi
+  \fi
+  {%
+    \pmboxdrawUniRobust{#1}%
+  }{%
+    \expandafter\ifx\csname ifHy@unicode\expandafter\endcsname
+        \csname iftrue\endcsname
+      \expandafter\unichar\expandafter{\number"#1}%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Setup commands of version 1.0}
+%
+%    \begin{macro}{\pmboxdrawbox}
+%    \begin{macrocode}
+\pmbd@ProtectedDefOne\pmboxdrawbox{%
+  \def\pmbd@box{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmboxdrawrulewidth}
+%    \begin{macrocode}
+\pmbd@ProtectedDefOne\pmboxdrawrulewidth{%
+  \def\pmbd@rulewidth{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmboxdrawdoublerulesep}
+%    \begin{macrocode}
+\pmbd@ProtectedDefOne\pmboxdrawdoublerulesep{%
+  \def\pmbd@doublerulesep{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Utils}
+%
+%    \begin{macro}{\pmbd@UniDef}
+%    \begin{macrocode}
+\def\pmbd@UniDef#1#2{%
+  \expandafter\pmbd@ProtectedDef\expandafter#1\expandafter{%
+    \csname pmbd@U+#2\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmbd@SetLength}
+%    \begin{macrocode}
+\ltx@ifpackageloaded{calc}{%
+  \def\pmbd@SetLength{%
+    \setlength
+  }%
+}{%
+  \ltx@IfUndefined{dimexpr}{%
+    \def\pmbd@SetDim#1#2{%
+      #1=#2\relax
+    }%
+  }{%
+    \def\pmbd@SetDim#1#2{%
+      #1=\dimexpr#2\relax
+    }%
+  }%
+  \def\pmbd@SetLength{%
+    \ltx@ifpackageloaded{calc}{%
+      \setlength
+    }{%
+      \pmbd@SetDim
+    }%
+  }%
+  \AtBeginDocument{%
+    \ltx@ifpackageloaded{calc}{%
+      \def\pmbd@SetLength{\setlength}%
+    }{%
+      \let\pmbd@SetLength\pmbd@SetDim
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmbd@W}
+%    \begin{macrocode}
+\newdimen\pmbd@W
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@H}
+%    \begin{macrocode}
+\newdimen\pmbd@H
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@L}
+%    \begin{macrocode}
+\newdimen\pmbd@L
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@Thin}
+%    \begin{macrocode}
+\newdimen\pmbd@Thin
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@Thick}
+%    \begin{macrocode}
+\newdimen\pmbd@Thick
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@Sep}
+%    \begin{macrocode}
+\newdimen\pmbd@Sep
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@A}
+%    \begin{macrocode}
+\dimendef\pmbd@A=2 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@B}
+%    \begin{macrocode}
+\dimendef\pmbd@B=4 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@C}
+%    \begin{macrocode}
+\dimendef\pmbd@C=6 %
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@D}
+%    \begin{macrocode}
+\dimendef\pmbd@D=8 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmbd@BeginBox}
+%    \begin{macrocode}
+\def\pmbd@BeginBox#1{%
+  \ltx@leavevmode
+  \@begin@tempboxa\hbox{%
+    \csname pmbd@#1/box\endcsname
+  }%
+  \pmbd@SetLength\pmbd@W{%
+    \csname pmbd@#1/width\endcsname
+  }%
+  \pmbd@SetLength\pmbd@H{%
+    \csname pmbd@#1/height\endcsname
+  }%
+  \pmbd@SetLength\pmbd@L{%
+    \csname pmbd@#1/depth\endcsname
+  }%
+  \advance\pmbd@H\pmbd@L
+  \setbox\ltx@zero\hbox to \pmbd@W\bgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@EndBox}
+%    \begin{macrocode}
+\def\pmbd@EndBox{%
+  \hss
+  \egroup
+  \ht\ltx@zero=\pmbd@H
+  \dp\ltx@zero=\z@
+  \ifdim\pmbd@L=\z@
+  \else
+    \lower\pmbd@L
+  \fi
+  \box\ltx@zero
+  \@end@tempboxa
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmbd@Rule}
+%    \begin{macrocode}
+\def\pmbd@Rule#1#2#3{%
+  \vrule\@width#1\@height#2\@depth#3\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+% \subsection{Block elements}
+%
+%    \begin{macrocode}
+\def\pmbd@begin{%
+  \begingroup
+  \sbox\z@{\pmbd@box}%
+  \ltx@leavevmode
+  \setbox\tw@\hb@xt@\wd\z@\bgroup
+}
+\def\pmbd@end{%
+  \egroup
+  \ht\tw@\ht\z@
+  \dp\tw@\dp\z@
+  \box\tw@
+  \endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\pmbd@LowerBlock}
+%    \begin{macrocode}
+\def\pmbd@LowerBlock#1{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule\pmbd@W{#1\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmbd@LeftBlock}
+%    \begin{macrocode}
+\def\pmbd@LeftBlock#1{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule{#1\pmbd@W}\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2580} UPPER HALF BLOCK
+%    \begin{macro}{\textupblock}
+%    \begin{macrocode}
+\pmbd@UniDef\textupblock{2580}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2580}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2580}{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule\pmbd@W\pmbd@H{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2581} LOWER ONE EIGHTH BLOCK
+%    \begin{macro}{\pmbd@U+2581}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2581}{%
+  \pmbd@LowerBlock{.125}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2582} LOWER ONE QUARTER BLOCK
+%    \begin{macro}{\pmbd@U+2582}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2582}{%
+  \pmbd@LowerBlock{.25}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2583} LOWER THREE EIGHTHS BLOCK
+%    \begin{macro}{pmbd@U+2583}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2583}{%
+  \pmbd@LowerBlock{.375}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2584} LOWER HALF BLOCK
+%    \begin{macro}{\textdnblock}
+%    \begin{macrocode}
+\pmbd@UniDef\textdnblock{2584}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2584}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2584}{%
+  \pmbd@LowerBlock{.5}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2585} LOWER FIVE EIGHTHS BLOCK
+%    \begin{macro}{pmbd@U+2585}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2585}{%
+  \pmbd@LowerBlock{.625}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2586} LOWER THREE QUARTERS BLOCK
+%    \begin{macro}{pmbd@U+2586}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2586}{%
+  \pmbd@LowerBlock{.75}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2587} LOWER SEVEN EIGHTHS BLOCK
+%    \begin{macro}{pmbd@U+2587}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2587}{%
+  \pmbd@LowerBlock{.875}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2588} FULL BLOCK
+%    \begin{macro}{\textblock}
+%    \begin{macrocode}
+\pmbd@UniDef\textblock{2588}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{pmbd@U+2588}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2588}{%
+  \pmbd@LowerBlock{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2589} LEFT SEVEN EIGHTHS BLOCK
+%    \begin{macro}{\pmbd@U+2589}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2589}{%
+  \pmbd@LeftBlock{.875}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+258A} LEFT THREE QUARTERS BLOCK
+%    \begin{macro}{\pmbd@U+258A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+258A}{%
+  \pmbd@LeftBlock{.75}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+258B} LEFT FIVE EIGHTHS BLOCK
+%    \begin{macro}{\pmbd@U+258B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+258B}{%
+  \pmbd@LeftBlock{.625}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+258C} LEFT HALF BLOCK
+%    \begin{macro}{\textlfblock}
+%    \begin{macrocode}
+\pmbd@UniDef\textlfblock{258C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+258C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+258C}{%
+  \pmbd@LeftBlock{.5}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+258D} LEFT THREE EIGHTHS BLOCK
+%    \begin{macro}{\pmbd@U+258D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+258D}{%
+  \pmbd@LeftBlock{.375}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+258E} LEFT ONE QUARTER BLOCK
+%    \begin{macro}{\pmbd@U+258E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+258E}{%
+  \pmbd@LeftBlock{.25}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+258F} LEFT ONE EIGHTH BLOCK
+%    \begin{macro}{\pmbd@U+258F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+258F}{%
+  \pmbd@LeftBlock{.125}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2590} RIGHT HALF BLOCK
+%    \begin{macro}{\textrtblock}
+%    \begin{macrocode}
+\pmbd@UniDef\textrtblock{2590}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2590}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2590}{%
+  \pmbd@BeginBox{Block}%
+  \kern.5\pmbd@W
+  \pmbd@Rule{.5\pmbd@W}\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2594} UPPER ONE EIGHTH BLOCK
+%    \begin{macro}{\pmbd@U+2594}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2594}{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule\pmbd@W\pmbd@H{-.875\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2595} RIGHT ONE EIGHTH BLOCK
+%    \begin{macro}{\pmbd@U+2595}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2595}{%
+  \pmbd@BeginBox{Block}%
+  \kern.875\pmbd@W
+  \pmbd@Rule{.125\pmbd@W}\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Shade characters}
+%
+%    \begin{macro}{\pmbd@BeginShade}
+%    \begin{macrocode}
+\def\pmbd@Shade#1#2{%
+  \pmbd@BeginBox{Shade}%
+    \ltx@ifundefined{textcolor}{%
+      \pmbd@colorwarning{#1}%
+    }{%
+      \textcolor[gray]{\csname pmbd@Shade/#2\endcsname}%
+    }{%
+      \pmbd@Rule\pmbd@W\pmbd@H\z@
+    }%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2591} LIGHT SHADE
+%    \begin{macrocode}
+\DeclareStringOption[.75]{Shade/light}
+%    \end{macrocode}
+%    \begin{macro}{\textltshade}
+%    \begin{macrocode}
+\pmbd@UniDef\textltshade{2591}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2591}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2591}{%
+  \pmbd@Shade{2591}{light}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2592} MEDIUM SHADE
+%    \begin{macrocode}
+\DeclareStringOption[.5]{Shade/medium}
+%    \end{macrocode}
+%    \begin{macro}{\textshade}
+%    \begin{macrocode}
+\pmbd@UniDef\textshade{2592}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2592}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2592}{%
+  \pmbd@Shade{2592}{medium}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2593} DARK SHADE
+%    \begin{macrocode}
+\DeclareStringOption[.25]{Shade/dark}
+%    \end{macrocode}
+%    \begin{macro}{\textdkshade}
+%    \begin{macrocode}
+\pmbd@UniDef\textdkshade{2593}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2593}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2593}{%
+  \pmbd@Shade{2593}{dark}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{Color warning}
+%
+%    \begin{macro}{\pmbd@colorwarning}
+%    \begin{macrocode}
+\def\pmbd@colorwarning#1{%
+  \PackageWarning{pmboxdraw}{%
+    U+#1 requires package \string`color\string'\MessageBreak
+  }%
+%  \PackageWarningNoLine{pmboxdraw}{%
+%    Package \string`color\string' is required for\MessageBreak
+%    \string\textltshade, \string\textshade, and \string\textdkshade
+%  }%
+%  \global\let\pmbd@colorwarning\@secondoftwo
+  \@firstofone
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Terminal graphics characters}
+%
+%    \begin{macro}{\pmbd@BeginTerminal}
+%    \begin{macrocode}
+\def\pmbd@BeginTerminal{%
+  \pmbd@BeginBox{TerminalGraphic}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2596} QUADRANT LOWER LEFT
+%    \begin{macro}{\pmbd@U+2596}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2596}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2597} QUADRANT LOWER RIGHT
+%    \begin{macro}{\pmbd@U+2597}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2597}{%
+  \pmbd@BeginTerminal
+  \kern.5\pmbd@W
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2598} QUADRANT UPPER LEFT
+%    \begin{macro}{\pmbd@U+2598}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2598}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2599} QUADRANT UPPER LEFT AND LOWER LEFT AND LOWER RIGHT
+%    \begin{macro}{\pmbd@U+2599}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2599}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+259A} QUADRANT UPPER LEFT AND LOWER RIGHT
+%    \begin{macro}{\pmbd@U+259A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+259A}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+259B} QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER LEFT
+%    \begin{macro}{\pmbd@U+259B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+259B}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+259C} QUADRANT UPPER LEFT AND UPPER RIGHT AND LOWER RIGHT
+%    \begin{macro}{\pmbd@U+259C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+259C}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+259D} QUADRANT UPPER RIGHT
+%    \begin{macro}{\pmbd@U+259D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+259D}{%
+  \pmbd@BeginTerminal
+  \kern.5\pmbd@W
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+259E} QUADRANT UPPER RIGHT AND LOWER LEFT
+%    \begin{macro}{\pmbd@U+259E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+259E}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+259F} QUADRANT UPPER RIGHT AND LOWER LEFT AND LOWER RIGHT
+%    \begin{macro}{\pmbd@U+259F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+259F}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+% \subsection{Box drawing}
+%
+%    \begin{macro}{\pmbd@BeginDraw}
+%    \begin{macrocode}
+\def\pmbd@BeginDraw#1#2{%
+  \pmbd@BeginBox{BoxDrawing}%
+  \ifx#1X%
+    \pmbd@SetLength\pmbd@Thin\pmbd@BoxDrawing/thinlinewidth%
+  \fi
+  \ifx#2X%
+    \pmbd@SetLength\pmbd@Thick\pmbd@BoxDrawing/thicklinewidth%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2500} BOX DRAWINGS LIGHT HORIZONTAL
+%    \begin{macro}{\textSFx}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFx{2500}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2500}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2500}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2501} BOX DRAWINGS HEAVY HORIZONTAL
+%    \begin{macro}{\pmbd@U+2501}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2501}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@W\pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2502} BOX DRAWINGS LIGHT VERTICAL
+%    \begin{macro}{\textSFxi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxi{2502}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2502}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2502}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2503} BOX DRAWINGS HEAVY VERTICAL
+%    \begin{macro}{\pmbd@U+2503}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2503}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+250C} BOX DRAWINGS LIGHT DOWN AND RIGHT
+%    \begin{macro}{\textSFi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFi{250C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+250C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+250C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+250D} BOX DRAWINGS DOWN LIGHT AND RIGHT HEAVY
+%    \begin{macro}{\pmbd@U+250D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+250D}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+250E} BOX DRAWINGS DOWN HEAVY AND RIGHT LIGHT
+%    \begin{macro}{\pmbd@U+250E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+250E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+250F} BOX DRAWINGS HEAVY DOWN AND RIGHT
+%    \begin{macro}{\pmbd@U+250F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+250F}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2510} BOX DRAWINGS LIGHT DOWN AND LEFT
+%    \begin{macro}{\textSFiii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFiii{2510}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2510}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2510}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2511} BOX DRAWINGS DOWN LIGHT AND LEFT HEAVY
+%    \begin{macro}{\pmbd@U+2511}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2511}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2512} BOX DRAWINGS DOWN HEAVY AND LEFT LIGHT
+%    \begin{macro}{\pmbd@U+2512}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2512}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2513} BOX DRAWINGS HEAVY DOWN AND LEFT
+%    \begin{macro}{\pmbd@U+2513}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2513}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2514} BOX DRAWINGS LIGHT UP AND RIGHT
+%    \begin{macro}{\textSFii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFii{2514}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2514}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2514}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2515} BOX DRAWINGS UP LIGHT AND RIGHT HEAVY
+%    \begin{macro}{\pmbd@U+2515}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2515}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2516} BOX DRAWINGS UP HEAVY AND RIGHT LIGHT
+%    \begin{macro}{\pmbd@U+2516}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2516}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2517} BOX DRAWINGS HEAVY UP AND RIGHT
+%    \begin{macro}{\pmbd@U+2517}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2517}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2518} BOX DRAWINGS LIGHT UP AND LEFT
+%    \begin{macro}{\textSFiv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFiv{2518}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2518}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2518}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2519} BOX DRAWINGS UP LIGHT AND LEFT HEAVY
+%    \begin{macro}{\pmbd@U+2519}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2519}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+251A} BOX DRAWINGS UP HEAVY AND LEFT LIGHT
+%    \begin{macro}{\pmbd@U+251A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+251A}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+251B} BOX DRAWINGS HEAVY UP AND LEFT
+%    \begin{macro}{\pmbd@U+251B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+251B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+251C} BOX DRAWINGS LIGHT VERTICAL AND RIGHT
+%    \begin{macro}{\textSFviii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFviii{251C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+251C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+251C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+251D} BOX DRAWINGS VERTICAL LIGHT AND RIGHT HEAVY
+%    \begin{macro}{\pmbd@U+251D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+251D}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+251E} BOX DRAWINGS UP HEAVY AND RIGHT DOWN LIGHT
+%    \begin{macro}{\pmbd@U+251E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+251E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+251F} BOX DRAWINGS DOWN HEAVY AND RIGHT UP LIGHT
+%    \begin{macro}{\pmbd@U+251F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+251F}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2520} BOX DRAWINGS VERTICAL HEAVY AND RIGHT LIGHT
+%    \begin{macro}{\pmbd@U+2520}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2520}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2521} BOX DRAWINGS DOWN LIGHT AND RIGHT UP HEAVY
+%    \begin{macro}{\pmbd@U+2521}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2521}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2522} BOX DRAWINGS UP LIGHT AND RIGHT DOWN HEAVY
+%    \begin{macro}{\pmbd@U+2522}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2522}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2523} BOX DRAWINGS HEAVY VERTICAL AND RIGHT
+%    \begin{macro}{\pmbd@U+2523}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2523}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2524} BOX DRAWINGS LIGHT VERTICAL AND LEFT
+%    \begin{macro}{\textSFix}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFix{2524}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2524}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2524}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2525} BOX DRAWINGS VERTICAL LIGHT AND LEFT HEAVY
+%    \begin{macro}{\pmbd@U+2525}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2525}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2526} BOX DRAWINGS UP HEAVY AND LEFT DOWN LIGHT
+%    \begin{macro}{\pmbd@U+2526}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2526}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \kern.5\pmbd@D
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A\pmbd@B
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2527} BOX DRAWINGS DOWN HEAVY AND LEFT UP LIGHT
+%    \begin{macro}{\pmbd@U+2527}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2527}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \kern.5\pmbd@D
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2528} BOX DRAWINGS VERTICAL HEAVY AND LEFT LIGHT
+%    \begin{macro}{\pmbd@U+2528}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2528}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2529} BOX DRAWINGS DOWN LIGHT AND LEFT UP HEAVY
+%    \begin{macro}{\pmbd@U+2529}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2529}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+252A} BOX DRAWINGS UP LIGHT AND LEFT DOWN HEAVY
+%    \begin{macro}{\pmbd@U+252A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+252A}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&  \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+252B} BOX DRAWINGS HEAVY VERTICAL AND LEFT
+%    \begin{macro}{\pmbd@U+252B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+252B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+252C} BOX DRAWINGS LIGHT DOWN AND HORIZONTAL
+%    \begin{macro}{\textSFvi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFvi{252C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+252C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+252C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+252D} BOX DRAWINGS LEFT HEAVY AND RIGHT DOWN LIGHT
+%    \begin{macro}{\pmbd@U+252D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+252D}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+252E} BOX DRAWINGS RIGHT HEAVY AND LEFT DOWN LIGHT
+%    \begin{macro}{\pmbd@U+252E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+252E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \kern\pmbd@C
+$   \advance\pmbd@C-\pmbd@W
+$   \pmbd@Rule{-\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+252F} BOX DRAWINGS DOWN LIGHT AND HORIZONTAL HEAVY
+%    \begin{macro}{\pmbd@U+252F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+252F}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2530} BOX DRAWINGS DOWN HEAVY AND HORIZONTAL LIGHT
+%    \begin{macro}{\pmbd@U+2530}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2530}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+&   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2531} BOX DRAWINGS RIGHT LIGHT AND LEFT DOWN HEAVY
+%    \begin{macro}{\pmbd@U+2531}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2531}{%
+  \pmbd@BeginDraw XX%
+$  \pmbd@A=\pmbd@H
+$  \advance\pmbd@A\pmbd@Thick
+$  \pmbd@A=.5\pmbd@A
+$  \pmbd@B=-\pmbd@A
+$  \advance\pmbd@B\pmbd@Thick
+$  \pmbd@C=\pmbd@W
+$  \advance\pmbd@C\pmbd@Thick
+$  \pmbd@C=.5\pmbd@C
+$  \rlap{%
+$    \pmbd@A=\pmbd@H
+$    \advance\pmbd@A\pmbd@Thin
+$    \pmbd@A=.5\pmbd@A
+$    \pmbd@B=-\pmbd@A
+$    \advance\pmbd@B\pmbd@Thin
+$    \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$  }%
+$  \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$  \kern-\pmbd@Thick
+$  \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2532} BOX DRAWINGS LEFT LIGHT AND RIGHT DOWN HEAVY
+%    \begin{macro}{\pmbd@U+2532}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2532}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2533} BOX DRAWINGS HEAVY DOWN AND HORIZONTAL
+%    \begin{macro}{\pmbd@U+2533}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2533}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+&   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2534} BOX DRAWINGS LIGHT UP AND HORIZONTAL
+%    \begin{macro}{\textSFvii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFvii{2534}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2534}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2534}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2535} BOX DRAWINGS LEFT HEAVY AND RIGHT UP LIGHL
+%    \begin{macro}{\pmbd@U+2535}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2535}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2536} BOX DRAWINGS RIGHT HEAVY AND LEFT UP LIGHT
+%    \begin{macro}{\pmbd@U+2536}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2536}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \kern\pmbd@C
+$   \advance\pmbd@C-\pmbd@W
+$   \pmbd@Rule{-\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2537} BOX DRAWINGS UP LIGHT AND HORIZONTAL HEAVY
+%    \begin{macro}{\pmbd@U+2537}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2537}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2538} BOX DRAWINGS UP HEAVY AND HORIZONTAL LIGHT
+%    \begin{macro}{\pmbd@U+2538}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2538}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2539} BOX DRAWINGS RIGHT LIGHT AND LEFT UP HEAVY
+%    \begin{macro}{\pmbd@U+2539}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2539}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+253A} BOX DRAWINGS LEFT LIGHT AND RIGHT UP HEAVY
+%    \begin{macro}{\pmbd@U+253A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+253A}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+253B} BOX DRAWINGS HEAVY UP AND HORIZONTAL
+%    \begin{macro}{\pmbd@U+253B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+253B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+253C} BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL
+%    \begin{macro}{\textSFv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFv{253C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+253C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+253C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+253D} BOX DRAWINGS LEFT HEAVY AND RIGHT VERTICAL LIGHT
+%    \begin{macro}{\pmbd@U+253D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+253D}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+253E} BOX DRAWINGS RIGHT HEAVY AND LEFT VERTICAL LIGHT
+%    \begin{macro}{\pmbd@U+253E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+253E}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+    \kern.5\pmbd@W
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+253F} BOX DRAWINGS RIGHT HEAVY AND LEFT VERTICAL LIGHT
+%    \begin{macro}{\pmbd@U+253F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+253F}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thick\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2540} BOX DRAWINGS UP HEAVY AND DOWN HORIZONTAL LIGHT
+%    \begin{macro}{\pmbd@U+2540}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2540}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thick
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+    \pmbd@Rule\pmbd@Thick\pmbd@H{-.5\pmbd@H}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2541} BOX DRAWINGS DOWN HEAVY AND UP HORIZONTAL LIGHT
+%    \begin{macro}{\pmbd@U+2541}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2541}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thick
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+    \pmbd@Rule\pmbd@Thick{.5\pmbd@H}\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \subsubsection{U+2542} BOX DRAWINGS VERTICAL HEAVY AND HORIZONTAL LIGHT
+%    \begin{macro}{\pmbd@U+2542}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2542}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2543} BOX DRAWINGS LEFT UP HEAVY AND RIGHT DOWN LIGHT
+%    \begin{macro}{\pmbd@U+2543}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2543}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@D=\pmbd@W
+$   \advance\pmbd@D-\pmbd@C
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&     \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2544} BOX DRAWINGS RIGHT UP HEAVY AND LEFT DOWN LIGHT
+%    \begin{macro}{\pmbd@U+2544}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2544}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2545} BOX DRAWINGS LEFT DOWN HEAVY AND RIGHT UP LIGHT
+%    \begin{macro}{\pmbd@U+2545}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2545}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@D=\pmbd@W
+$   \advance\pmbd@D-\pmbd@C
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2546} BOX DRAWINGS RIGHT DOWN HEAVY AND LEFT UP LIGHT
+%    \begin{macro}{\pmbd@U+2546}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2546}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A\pmbd@B
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2547} BOX DRAWINGS DOWN LIGHT AND UP HORIZONTAL HEAVY
+%    \begin{macro}{\pmbd@U+2547}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2547}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@W
+$   \advance\pmbd@A-\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \kern\pmbd@A
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+    \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2548} BOX DRAWINGS UP LIGHT AND DOWN HORIZONTAL HEAVY
+%    \begin{macro}{\pmbd@U+2548}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2548}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@W
+$   \advance\pmbd@A-\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \kern\pmbd@A
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+    \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+&   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2549} BOX DRAWINGS RIGHT LIGHT AND LEFT VERTICAL HEAVY
+%    \begin{macro}{\pmbd@U+2549}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2549}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+&   \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+254A} BOX DRAWINGS LEFT LIGHT AND RIGHT VERTICAL HEAVY
+%    \begin{macro}{\pmbd@U+254A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+254A}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+&   \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+254B} BOX DRAWINGS HEAVY VERTICAL AND HORIZONTAL
+%    \begin{macro}{\pmbd@U+254B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+254B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thick\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Box drawing, double lines}
+%
+%    \begin{macro}{\pmbd@BeginDouble}
+%    \begin{macrocode}
+\def\pmbd@BeginDouble{%
+  \pmbd@BeginDraw X-%
+  \pmbd@SetLength\pmbd@Sep\pmbd@BoxDrawing/doublelinesep%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pmbd@beginB}
+%    \begin{macrocode}
+\def\pmbd@beginB{%
+  \pmbd@beginA
+  \setlength{\dimen@}{\pmbd@doublerulesep}%
+  \edef\pmbd@doublesepH{\number\dimen@ sp}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@beginC}
+%    \begin{macrocode}
+\def\pmbd@beginC{%
+  \pmbd@beginB
+  \advance\dimen@\pmbd@rulewidth
+  \edef\pmbd@doublesepV{\number\dimen@ sp}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2550} BOX DRAWINGS DOUBLE HORIZONTAL
+%    \begin{macro}{\textSFxliii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxliii{2550}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2550}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2550}{%
+  \pmbd@BeginDouble
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A-\pmbd@Sep
+$ \pmbd@A=.5\pmbd@A
+& \pmbd@A=.5\dimexpr\pmbd@H-\pmbd@Sep\relax
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \kern-\pmbd@W
+$ \advance\pmbd@A\pmbd@Sep
+$ \advance\pmbd@A\pmbd@Thin
+$ \advance\pmbd@B-\pmbd@Sep
+$ \advance\pmbd@B-\pmbd@Thin
+& \pmbd@A=\dimexpr\pmbd@A+\pmbd@Sep+\pmbd@Thin\relax
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2551} BOX DRAWINGS DOUBLE VERTICAL
+%    \begin{macro}{\textSFxxiv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxiv{2551}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{pmbd@U+2551}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2551}{%
+  \pmbd@BeginDouble
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Sep
+$ \pmbd@A=.5\pmbd@A
+$ \advance\pmbd@A-.5\pmbd@Thin
+$ \kern\pmbd@A
+& \kern\dimexpr.5\dimexpr\pmbd@W-\pmbd@Sep\relax-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \kern\pmbd@Sep
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2552} BOX DRAWINGS DOWN SINGLE AND RIGHT DOUBLE
+%    \begin{macro}{\textSFli}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFli{2552}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2552}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2552}{%
+  \pmbd@BeginDouble
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C-\pmbd@Thin
+  \pmbd@C=.5\pmbd@C
+  \kern\pmbd@C
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A\pmbd@Sep
+  \pmbd@A=.5\pmbd@A
+  \advance\pmbd@A\pmbd@Thin
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern-\pmbd@Thin
+  \pmbd@D=\pmbd@W
+  \advance\pmbd@D-\pmbd@C
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \kern-\pmbd@D
+  \advance\pmbd@A-\pmbd@Sep
+  \advance\pmbd@A-\pmbd@Thin
+  \advance\pmbd@B\pmbd@Sep
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2553} BOX DRAWINGS DOWN DOUBLE AND RIGHT SINGLE
+%    \begin{macro}{\textSFlii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFlii{2553}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2553}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2553}{%
+  \pmbd@BeginDouble
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C-\pmbd@Sep
+  \pmbd@C=.5\pmbd@C
+  \advance\pmbd@C-\pmbd@Thin
+  \kern\pmbd@C
+  \pmbd@D=\pmbd@W
+  \advance\pmbd@D-\pmbd@C
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A\pmbd@Thin
+  \pmbd@A=.5\pmbd@A
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \kern-\pmbd@D
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern\pmbd@Sep
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \subsubsection{U+2554} BOX DRAWINGS DOUBLE DOWN AND RIGHT
+%    \begin{macro}{\textSFxxxix}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxxix{2554}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2554}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2554}{%
+  \pmbd@BeginDouble
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C-\pmbd@Sep
+  \pmbd@C=.5\pmbd@C
+  \advance\pmbd@C-\pmbd@Thin
+  \kern\pmbd@C
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A\pmbd@Sep
+  \pmbd@A=.5\pmbd@A
+  \advance\pmbd@A\pmbd@Thin
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@D=\pmbd@W
+  \advance\pmbd@D-\pmbd@C
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern-\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \advance\pmbd@D-\pmbd@Sep
+  \advance\pmbd@D-\pmbd@Thin
+  \kern-\pmbd@D
+  \advance\pmbd@A-\pmbd@Sep
+  \advance\pmbd@A-\pmbd@Thin
+  \advance\pmbd@B\pmbd@Sep
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern-\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2555} BOX DRAWINGS DOWN SINGLE AND LEFT DOUBLE
+%    \begin{macro}{\textSFxxii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxii{2555}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2555}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2555}{%
+  \pmbd@BeginDouble
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A-\pmbd@Sep
+  \pmbd@A=.5\pmbd@A
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C\pmbd@Thin
+  \pmbd@C=.5\pmbd@C
+  \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+  \kern-\pmbd@C
+  \advance\pmbd@A\pmbd@Sep
+  \advance\pmbd@A\pmbd@Thin
+  \advance\pmbd@B-\pmbd@Sep
+  \advance\pmbd@B-\pmbd@Thin
+  \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+  \kern-\pmbd@Thin
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2556} BOX DRAWINGS DOWN DOUBLE AND LEFT SINGLE
+%    \begin{macro}{\textSFxxi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxi{2556}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2556}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2556}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 \pmbd@doublesepH
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2557} BOX DRAWINGS DOUBLE DOWN AND LEFT
+%    \begin{macro}{\textSFxxv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxv{2557}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2557}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2557}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \advance\dimen4 \pmbd@doublesepH
+      \rlap{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \kern\pmbd@rulewidth
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height.5\dimen@\@depth\dp\z@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \advance\dimen4 -\pmbd@doublesepH
+    \rlap{%
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \kern\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2558} BOX DRAWINGS UP SINGLE AND RIGHT DOUBLE
+%    \begin{macro}{\textSFl}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFl{2558}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2558}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2558}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \kern.5\wd\z@
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \kern.5\wd\z@
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2559} BOX DRAWINGS UP DOUBLE AND RIGHT SINGLE
+%    \begin{macro}{\textSFxlix}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxlix{2559}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2559}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2559}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 \pmbd@doublesepH
+      \hb@xt@\wd\z@{%
+        \hfill
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+255A} BOX DRAWINGS DOUBLE UP AND RIGHT
+%    \begin{macro}{\textSFxxxviii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxxviii{255A}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+255A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+255A}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \advance\dimen4 -\pmbd@doublesepH
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \kern\pmbd@rulewidth
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \advance\dimen4 \pmbd@doublesepH
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \kern\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+255B} BOX DRAWINGS UP SINGLE AND LEFT DOUBLE
+%    \begin{macro}{\textSFxxviii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxviii{255B}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+255B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+255B}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+255C} BOX DRAWINGS UP DOUBLE AND LEFT SINGLE
+%    \begin{macro}{\textSFxxvii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxvii{255C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+255C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+255C}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 \pmbd@doublesepH
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+255D} BOX DRAWINGS DOUBLE UP AND LEFT
+%    \begin{macro}{\textSFxxvi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxvi{255D}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+255D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+255D}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \advance\dimen4 -\pmbd@doublesepH
+      \rlap{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \kern\pmbd@rulewidth
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \advance\dimen4 \pmbd@doublesepH
+    \rlap{%
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \kern\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+255E} BOX DRAWINGS VERTICAL SINGLE AND RIGHT DOUBLE
+%    \begin{macro}{\textSFxxxvi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxxvi{255E}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+255E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+255E}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \kern.5\wd\z@
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \rlap{%
+      \kern.5\wd\z@
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+255F} BOX DRAWINGS VERTICAL DOUBLE AND RIGHT SINGLE
+%    \begin{macro}{\textSFxxxvii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxxvii{255F}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+255F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+255F}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 -\pmbd@doublesepH
+      \hb@xt@\wd\z@{%
+        \hfill
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2560} BOX DRAWINGS DOUBLE VERTICAL AND RIGHT
+%    \begin{macro}{\textSFxlii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxlii{2560}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2560}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2560}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \kern\pmbd@rulewidth
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2561} BOX DRAWINGS VERTICAL SINGLE AND LEFT DOUBLE
+%    \begin{macro}{\textSFxix}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxix{2561}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2561}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2561}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \rlap{%
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2562} BOX DRAWINGS VERTICAL DOUBLE AND LEFT SINGLE
+%    \begin{macro}{\textSFxx}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxx{2562}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2562}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2562}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 -\pmbd@doublesepH
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2563} BOX DRAWINGS DOUBLE VERTICAL AND LEFT
+%    \begin{macro}{\textSFxxiii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxxiii{2563}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2563}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2563}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \kern\pmbd@rulewidth
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2564} BOX DRAWINGS DOWN SINGLE AND HORIZONTAL DOUBLE
+%    \begin{macro}{\textSFxlvii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxlvii{2564}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2564}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2564}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2565} BOX DRAWINGS DOWN DOUBLE AND HORIZONTAL SINGLE
+%    \begin{macro}{\textSFxlviii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxlviii{2565}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2565}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2565}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2566} BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL
+%    \begin{macro}{\textSFxli}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxli{2566}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2566}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2566}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2567} BOX DRAWINGS UP SINGLE AND HORIZONTAL DOUBLE
+%    \begin{macro}{\textSFxlv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxlv{2567}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2567}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2567}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@\pmbd@doublesepV
+    \advance\dimen\tw@\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2568} BOX DRAWINGS UP DOUBLE AND HORIZONTAL SINGLE
+%    \begin{macro}{\textSFxlvi}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxlvi{2568}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2568}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2568}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2569} BOX DRAWINGS DOUBLE UP AND HORIZONTAL
+%    \begin{macro}{\textSFxl}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxl{2569}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+2569}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2569}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+256A} BOX DRAWINGS VERTICAL SINGLE AND HORIZONTAL DOUBLE
+%    \begin{macro}{\textSFliv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFliv{256A}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+256A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+256A}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \rlap{%
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+256B} BOX DRAWINGS VERTICAL DOUBLE AND HORIZONTAL SINGLE
+%    \begin{macro}{\textSFliii}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFliii{256B}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+256B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+256B}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+256C} BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL
+%    \begin{macro}{\textSFxliv}
+%    \begin{macrocode}
+\pmbd@UniDef\textSFxliv{256C}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pmbd@U+256C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+256C}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2574} BOX DRAWINGS LIGHT LEFT
+%    \begin{macro}{\pmbd@U+2574}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2574}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2575} BOX DRAWINGS LIGHT UP
+%    \begin{macro}{\pmbd@U+2575}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2575}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2576} BOX DRAWINGS LIGHT RIGHT
+%    \begin{macro}{\pmbd@U+2576}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2576}{%
+  \pmbd@BeginDraw X-%
+  \kern.5\pmbd@W
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2577} BOX DRAWINGS LIGHT DOWN
+%    \begin{macro}{\pmbd@U+2577}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2577}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2578} BOX DRAWINGS HEAVY LEFT
+%    \begin{macro}{\pmbd@U+2578}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2578}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+2579} BOX DRAWINGS HEAVY UP
+%    \begin{macro}{\pmbd@U+2579}
+%    \begin{macrocode}
+\@namedef{pmbd@U+2579}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+257A} BOX DRAWINGS HEAVY RIGHT
+%    \begin{macro}{\pmbd@U+257A}
+%    \begin{macrocode}
+\@namedef{pmbd@U+257A}{%
+  \pmbd@BeginDraw -X%
+  \kern.5\pmbd@W
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+257B} BOX DRAWINGS HEAVY DOWN
+%    \begin{macro}{\pmbd@U+257B}
+%    \begin{macrocode}
+\@namedef{pmbd@U+257B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+257C} BOX DRAWINGS LIGHT LEFT AND HEAVY RIGHT
+%    \begin{macro}{\pmbd@U+257C}
+%    \begin{macrocode}
+\@namedef{pmbd@U+257C}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+257D} BOX DRAWINGS LIGHT UP AND HEAVY DOWN
+%    \begin{macro}{\pmbd@U+257D}
+%    \begin{macrocode}
+\@namedef{pmbd@U+257D}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+    \pmbd@Rule\pmbd@Thin\pmbd@H{-.5\pmbd@H}%
+  }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+257E} BOX DRAWINGS HEAVY LEFT AND LIGHT RIGHT
+%    \begin{macro}{\pmbd@U+257E}
+%    \begin{macrocode}
+\@namedef{pmbd@U+257E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \subsubsection{U+257F} BOX DRAWINGS HEAVY UP AND LIGHT DOWN
+%    \begin{macro}{\pmbd@U+257F}
+%    \begin{macrocode}
+\@namedef{pmbd@U+257F}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thick
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+    \pmbd@Rule\pmbd@Thick\pmbd@H{-.5\pmbd@H}%
+  }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Box drawing, light single lines}
+%
+%    \begin{macro}{\pmbd@beginA}
+%    \begin{macrocode}
+\def\pmbd@beginA{%
+  \pmbd@begin
+  \def\width{\wd\z@}%
+  \def\height{\ht\z@}%
+  \def\depth{\dp\z@}%
+  \setlength{\dimen@}{\pmbd@rulewidth}%
+  \edef\pmbd@rulewidth{\number\dimen@ sp}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+%    \begin{macrocode}
+\pmbd@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Unicode support file}
+%
+%    \begin{macrocode}
+%<*utf8>
+\ProvidesFile{pmboxdrawenc.dfu}%
+  [2011/03/24 v1.1 UTF-8 support for box drawing characters]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareUnicodeCharacter{2500}{\textSFx}
+\DeclareUnicodeCharacter{2501}{\pmboxdrawuni{2501}}
+\DeclareUnicodeCharacter{2502}{\textSFxi}
+\DeclareUnicodeCharacter{2503}{\pmboxdrawuni{2503}}
+\DeclareUnicodeCharacter{250C}{\textSFi}
+\DeclareUnicodeCharacter{250D}{\pmboxdrawuni{250D}}
+\DeclareUnicodeCharacter{250E}{\pmboxdrawuni{250E}}
+\DeclareUnicodeCharacter{250F}{\pmboxdrawuni{250F}}
+\DeclareUnicodeCharacter{2510}{\textSFiii}
+\DeclareUnicodeCharacter{2511}{\pmboxdrawuni{2511}}
+\DeclareUnicodeCharacter{2512}{\pmboxdrawuni{2512}}
+\DeclareUnicodeCharacter{2513}{\pmboxdrawuni{2513}}
+\DeclareUnicodeCharacter{2514}{\textSFii}
+\DeclareUnicodeCharacter{2515}{\pmboxdrawuni{2515}}
+\DeclareUnicodeCharacter{2516}{\pmboxdrawuni{2516}}
+\DeclareUnicodeCharacter{2517}{\pmboxdrawuni{2517}}
+\DeclareUnicodeCharacter{2518}{\textSFiv}
+\DeclareUnicodeCharacter{2519}{\pmboxdrawuni{2519}}
+\DeclareUnicodeCharacter{251A}{\pmboxdrawuni{251A}}
+\DeclareUnicodeCharacter{251B}{\pmboxdrawuni{251B}}
+\DeclareUnicodeCharacter{251C}{\textSFviii}
+\DeclareUnicodeCharacter{251D}{\pmboxdrawuni{251D}}
+\DeclareUnicodeCharacter{251E}{\pmboxdrawuni{251E}}
+\DeclareUnicodeCharacter{251F}{\pmboxdrawuni{251F}}
+\DeclareUnicodeCharacter{2520}{\pmboxdrawuni{2520}}
+\DeclareUnicodeCharacter{2521}{\pmboxdrawuni{2521}}
+\DeclareUnicodeCharacter{2522}{\pmboxdrawuni{2522}}
+\DeclareUnicodeCharacter{2523}{\pmboxdrawuni{2523}}
+\DeclareUnicodeCharacter{2524}{\textSFix}
+\DeclareUnicodeCharacter{252C}{\textSFvi}
+\DeclareUnicodeCharacter{252D}{\pmboxdrawuni{252D}}
+\DeclareUnicodeCharacter{252E}{\pmboxdrawuni{252E}}
+\DeclareUnicodeCharacter{252F}{\pmboxdrawuni{252F}}
+\DeclareUnicodeCharacter{2530}{\pmboxdrawuni{2530}}
+\DeclareUnicodeCharacter{2531}{\pmboxdrawuni{2531}}
+\DeclareUnicodeCharacter{2532}{\pmboxdrawuni{2532}}
+\DeclareUnicodeCharacter{2533}{\pmboxdrawuni{2533}}
+\DeclareUnicodeCharacter{2534}{\textSFvii}
+\DeclareUnicodeCharacter{2535}{\pmboxdrawuni{2535}}
+\DeclareUnicodeCharacter{2536}{\pmboxdrawuni{2536}}
+\DeclareUnicodeCharacter{2537}{\pmboxdrawuni{2537}}
+\DeclareUnicodeCharacter{2538}{\pmboxdrawuni{2538}}
+\DeclareUnicodeCharacter{2539}{\pmboxdrawuni{2539}}
+\DeclareUnicodeCharacter{253A}{\pmboxdrawuni{253A}}
+\DeclareUnicodeCharacter{253B}{\pmboxdrawuni{253B}}
+\DeclareUnicodeCharacter{253C}{\textSFv}
+\DeclareUnicodeCharacter{253D}{\pmboxdrawuni{253D}}
+\DeclareUnicodeCharacter{253E}{\pmboxdrawuni{253E}}
+\DeclareUnicodeCharacter{253F}{\pmboxdrawuni{253F}}
+\DeclareUnicodeCharacter{2540}{\pmboxdrawuni{2540}}
+\DeclareUnicodeCharacter{2541}{\pmboxdrawuni{2541}}
+\DeclareUnicodeCharacter{2542}{\pmboxdrawuni{2542}}
+\DeclareUnicodeCharacter{2543}{\pmboxdrawuni{2543}}
+\DeclareUnicodeCharacter{2544}{\pmboxdrawuni{2544}}
+\DeclareUnicodeCharacter{2545}{\pmboxdrawuni{2545}}
+\DeclareUnicodeCharacter{2546}{\pmboxdrawuni{2546}}
+\DeclareUnicodeCharacter{2547}{\pmboxdrawuni{2547}}
+\DeclareUnicodeCharacter{2548}{\pmboxdrawuni{2548}}
+\DeclareUnicodeCharacter{2549}{\pmboxdrawuni{2549}}
+\DeclareUnicodeCharacter{254A}{\pmboxdrawuni{254A}}
+\DeclareUnicodeCharacter{254B}{\pmboxdrawuni{254B}}
+\DeclareUnicodeCharacter{2550}{\textSFxliii}
+\DeclareUnicodeCharacter{2551}{\textSFxxiv}
+\DeclareUnicodeCharacter{2552}{\textSFli}
+\DeclareUnicodeCharacter{2553}{\textSFlii}
+\DeclareUnicodeCharacter{2554}{\textSFxxxix}
+\DeclareUnicodeCharacter{2555}{\textSFxxii}
+\DeclareUnicodeCharacter{2556}{\textSFxxi}
+\DeclareUnicodeCharacter{2557}{\textSFxxv}
+\DeclareUnicodeCharacter{2558}{\textSFl}
+\DeclareUnicodeCharacter{2559}{\textSFxlix}
+\DeclareUnicodeCharacter{255A}{\textSFxxxviii}
+\DeclareUnicodeCharacter{255B}{\textSFxxviii}
+\DeclareUnicodeCharacter{255C}{\textSFxxvii}
+\DeclareUnicodeCharacter{255D}{\textSFxxvi}
+\DeclareUnicodeCharacter{255E}{\textSFxxxvi}
+\DeclareUnicodeCharacter{255F}{\textSFxxxvii}
+\DeclareUnicodeCharacter{2560}{\textSFxlii}
+\DeclareUnicodeCharacter{2561}{\textSFxix}
+\DeclareUnicodeCharacter{2562}{\textSFxx}
+\DeclareUnicodeCharacter{2563}{\textSFxxiii}
+\DeclareUnicodeCharacter{2564}{\textSFxlvii}
+\DeclareUnicodeCharacter{2565}{\textSFxlviii}
+\DeclareUnicodeCharacter{2566}{\textSFxli}
+\DeclareUnicodeCharacter{2567}{\textSFxlv}
+\DeclareUnicodeCharacter{2568}{\textSFxlvi}
+\DeclareUnicodeCharacter{2569}{\textSFxl}
+\DeclareUnicodeCharacter{256A}{\textSFliv}
+\DeclareUnicodeCharacter{256B}{\textSFliii}
+\DeclareUnicodeCharacter{256C}{\textSFxliv}
+\DeclareUnicodeCharacter{2574}{\pmboxdrawuni{2574}}
+\DeclareUnicodeCharacter{2575}{\pmboxdrawuni{2575}}
+\DeclareUnicodeCharacter{2576}{\pmboxdrawuni{2576}}
+\DeclareUnicodeCharacter{2577}{\pmboxdrawuni{2577}}
+\DeclareUnicodeCharacter{2578}{\pmboxdrawuni{2578}}
+\DeclareUnicodeCharacter{2579}{\pmboxdrawuni{2579}}
+\DeclareUnicodeCharacter{257A}{\pmboxdrawuni{257A}}
+\DeclareUnicodeCharacter{257B}{\pmboxdrawuni{257B}}
+\DeclareUnicodeCharacter{257C}{\pmboxdrawuni{257C}}
+\DeclareUnicodeCharacter{257D}{\pmboxdrawuni{257D}}
+\DeclareUnicodeCharacter{257E}{\pmboxdrawuni{257E}}
+\DeclareUnicodeCharacter{257F}{\pmboxdrawuni{257R}}
+\DeclareUnicodeCharacter{2580}{\textupblock}
+\DeclareUnicodeCharacter{2581}{\pmboxdrawuni{2581}}
+\DeclareUnicodeCharacter{2582}{\pmboxdrawuni{2582}}
+\DeclareUnicodeCharacter{2583}{\pmboxdrawuni{2583}}
+\DeclareUnicodeCharacter{2584}{\textdnblock}
+\DeclareUnicodeCharacter{2585}{\pmboxdrawuni{2585}}
+\DeclareUnicodeCharacter{2586}{\pmboxdrawuni{2586}}
+\DeclareUnicodeCharacter{2587}{\pmboxdrawuni{2587}}
+\DeclareUnicodeCharacter{2588}{\textblock}
+\DeclareUnicodeCharacter{2589}{\pmboxdrawuni{2589}}
+\DeclareUnicodeCharacter{258A}{\pmboxdrawuni{258A}}
+\DeclareUnicodeCharacter{258B}{\pmboxdrawuni{258B}}
+\DeclareUnicodeCharacter{258C}{\textlfblock}
+\DeclareUnicodeCharacter{258D}{\pmboxdrawuni{258D}}
+\DeclareUnicodeCharacter{258E}{\pmboxdrawuni{258E}}
+\DeclareUnicodeCharacter{258F}{\pmboxdrawuni{258F}}
+\DeclareUnicodeCharacter{2590}{\textrtblock}
+\DeclareUnicodeCharacter{2591}{\textltshade}
+\DeclareUnicodeCharacter{2592}{\textshade}
+\DeclareUnicodeCharacter{2593}{\textdkshade}
+\DeclareUnicodeCharacter{2594}{\pmboxdrawuni{2594}}
+\DeclareUnicodeCharacter{2595}{\pmboxdrawuni{2595}}
+\DeclareUnicodeCharacter{2596}{\pmboxdrawuni{2596}}
+\DeclareUnicodeCharacter{2597}{\pmboxdrawuni{2597}}
+\DeclareUnicodeCharacter{2598}{\pmboxdrawuni{2598}}
+\DeclareUnicodeCharacter{2599}{\pmboxdrawuni{2599}}
+\DeclareUnicodeCharacter{259A}{\pmboxdrawuni{259A}}
+\DeclareUnicodeCharacter{259B}{\pmboxdrawuni{259B}}
+\DeclareUnicodeCharacter{259C}{\pmboxdrawuni{259C}}
+\DeclareUnicodeCharacter{259D}{\pmboxdrawuni{259D}}
+\DeclareUnicodeCharacter{259E}{\pmboxdrawuni{259E}}
+\DeclareUnicodeCharacter{259F}{\pmboxdrawuni{259F}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</utf8>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test1>
+\def\LoadCommand{\RequirePackage{pmboxdraw}[2011/03/24]}
+%</test1>
+%    \end{macrocode}
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input pmboxdraw.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pmboxdraw.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pmboxdraw.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pmboxdraw.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pmboxdraw.sty & tex/latex/oberdiek/pmboxdraw.sty\\
+%   pmboxdrawenc.dfu & tex/latex/oberdiek/pmboxdrawenc.dfu\\
+%   pmboxdraw.pdf & doc/latex/oberdiek/pmboxdraw.pdf\\
+%   test/pmboxdraw-test1.tex & doc/latex/oberdiek/test/pmboxdraw-test1.tex\\
+%   pmboxdraw.dtx & source/latex/oberdiek/pmboxdraw.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pmboxdraw.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pmboxdraw.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pmboxdraw.dtx
+%makeindex -s gind.ist pmboxdraw.idx
+%pdflatex pmboxdraw.dtx
+%makeindex -s gind.ist pmboxdraw.idx
+%pdflatex pmboxdraw.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pmboxdraw.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pmboxdraw'>
+  <name>pmboxdraw</name>
+  <caption>Poor man's box drawing characters.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.1'/>
+  <description>
+    This package declares box drawing characters of
+    old code pages, e.g. cp437. It uses rules instead of using a font.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pmboxdraw.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pmboxdraw.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{inputenx}
+%   Heiko Oberdiek, The \xpackage{inputenx} Package (Enhanced input encoding
+%   handling), 2006/03/05 v1.0,
+%   \url{ftp://ftp.ctan.org/tex-archive/macros/latex/contrib/oberdiek/inputenx.pdf}.
+%
+% \bibitem{aglfn}
+%   Adobe Systems Incorporated,
+%   Adobe Glyph List for New Fonts (AGLFN), version 1.5, 2005/09/18,
+%   \url{http://partners.adobe.com/public/developer/en/opentype/aglfn13.txt}.
+%
+% \bibitem{2500}
+%   Unicode Inc.,
+%   The Unicode Standard, Version 4.1, Box Drawing, Range: 2500--257F,
+%   2005.
+%   \url{http://www.unicode.org/charts/PDF/U2500.pdf}
+%
+% \bibitem{2580}
+%   Unicode Inc.,
+%   The Unicode Standard, Version 4.1, Block Elements, Range: 2580--259F,
+%   2005.
+%   \url{http://www.unicode.org/charts/PDF/U2580.pdf}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2006/05/03 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2011/03/24 v1.1}
+%   \item
+%     Support of more characters.
+%   \item
+%     Catcode section added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

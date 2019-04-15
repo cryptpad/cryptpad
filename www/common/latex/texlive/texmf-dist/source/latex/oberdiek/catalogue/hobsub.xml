@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hobsub'>
+  <name>hobsub</name>
+  <caption>Construct package bundles</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011,2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.13'/>
+  <description>
+    The package offers a means of loading a bundle of (other) packages
+    &#x201C;at once&#x201D;, offering a means of reducing the amount of log output
+    as the packages are loaded, and an aide-memoire for complicated
+    requirements.  In some ways, loading a package via hobsub behaves
+    much like loading the package in the normal way; for example,
+    reloads are suppressed, as in LaTeX proper, and correct
+    <tt>\listfiles</tt> output is produced.
+    <p/>
+    Examples provided are a &#x2018;generic&#x2019; bundle (comprising the author&#x2019;s
+    packages that can be used with Plain TeX) and a &#x2018;hyperref&#x2019; bundle
+    (comprising packages useful when generating hypertext output with
+    LaTeX).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hobsub.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hobsub.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

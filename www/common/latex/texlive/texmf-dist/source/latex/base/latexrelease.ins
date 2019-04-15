@@ -1,0 +1,123 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993-2015
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% This file is part of the LaTeX base system.
+%% -------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3b
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3b or later is part of all distributions of LaTeX 
+%% version 2005/12/01 or later.
+%% 
+%% This file has the LPPL maintenance status "maintained".
+%% 
+%% In particular, NO PERMISSION is granted to modify the contents of this
+%% file since it contains the legal notices that are placed in the files
+%% it generates.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
+%% 
+%% 
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+
+\input docstrip
+
+\preamble
+
+This is a generated file.
+
+The source is maintained by the LaTeX Project team and bug
+reports for it can be opened at http://latex-project.org/bugs.html
+(but please observe conditions on bug reports sent to that address!)
+
+
+Copyright 1993-2015
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+This file was generated from file(s) of the LaTeX base system.
+--------------------------------------------------------------
+
+It may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX 
+version 2005/12/01 or later.
+
+This file has the LPPL maintenance status "maintained".
+
+This file may only be distributed together with a copy of the LaTeX
+base system. You may however distribute the LaTeX base system without
+such generated files.
+
+The list of all files belonging to the LaTeX base distribution is
+given in the file `manifest.txt'. See also `legal.txt' for additional
+information.
+
+The list of derived (unpacked) files belonging to the distribution 
+and covered by LPPL is defined by the unpacking scripts (with 
+extension .ins) which are part of the distribution.
+\endpreamble
+
+%\keepsilent
+\usedir{tex/latex/base}
+
+\generateFile{latexrelease.sty}{t}{%
+  \from{ltvers.dtx}      {latexrelease}%
+  \from{latexrelease.dtx}{latexrelease}%
+  \from{ltdirchk.dtx}    {latexrelease}%
+  \from{ltdefns.dtx}     {latexrelease}%
+  \from{ltboxes.dtx}     {latexrelease}%
+  \from{ltmath.dtx}      {latexrelease}%
+  \from{ltoutenc.dtx}    {latexrelease}%
+  \from{ltcounts.dtx}    {latexrelease}%
+  \from{ltlength.dtx}    {latexrelease}%
+  \from{ltfloat.dtx}     {latexrelease}%
+  \from{ltoutput.dtx}    {latexrelease}%
+  \from{ltspace.dtx}     {latexrelease}%
+  \from{ltplain.dtx}     {latexrelease}%
+  \from{ltfssdcl.dtx}    {latexrelease}%
+  \from{ltfssini.dtx}    {latexrelease}%
+  \from{ltfssbas.dtx}    {latexrelease}%
+  \from{ltfsscmp.dtx}    {latexrelease}%
+  \from{ltluatex.dtx}    {latexrelease}%
+  \from{ltfinal.dtx}     {latexrelease}%
+}
+
+
+\ifToplevel{
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space latexrelease.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the files ending with}
+\Msg{* `.dtx' through LaTeX2e.}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
+}
+
+
+\generateFile{fixltx2e.sty}{t}{%
+  \from{latexrelease.dtx}{fixltx2e}}
+
+\endbatchfile

@@ -1,0 +1,3398 @@
+%%
+%% This is file `pmboxdraw.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pmboxdraw.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pmboxdraw
+%% Version: 2011/03/24 v1.1
+%% 
+%% Copyright (C) 2006, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pmboxdraw.dtx
+%% and the derived files
+%%    pmboxdraw.sty, pmboxdraw.pdf, pmboxdraw.ins, pmboxdraw.drv,
+%%    pmboxdrawenc.dfu, pmboxdraw-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pmboxdraw.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pmboxdraw}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pmboxdraw.sty\endcsname
+\ProvidesPackage{pmboxdraw}%
+  [2011/03/24 v1.1 Poor man's box drawing characters (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname pmbd@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\pmbd@AtEnd{%
+    \pmbd@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\pmbd@AtEnd{\pmbd@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+\else
+  \let\TMP@RequirePackage\RequirePackage
+\fi
+\TMP@RequirePackage{ltxcmds}[2010/12/12]%
+\TMP@RequirePackage{kvsetkeys}[2011/01/30]%
+\TMP@RequirePackage{kvdefinekeys}[2011/01/30]%
+\TMP@RequirePackage{infwarerr}[2010/04/08]%
+\ltx@newif\ifpmbd@latex
+\ltx@IfUndefined{fmtname}{}{%
+  \def\pmbd@tmp{LaTeX2e}%
+  \ifx\pmbd@tmp\fmtname
+    \pmbd@latextrue
+  \fi
+}
+\ifpmbd@latex
+  \DeclareFontEncoding{pmboxdraw}{}{}%
+  \DeclareFontFamily{pmboxdraw}{pmboxdraw}{}%
+  \DeclareFontShape{pmboxdraw}{pmboxdraw}{m}{n}{ <-> cmr10 }{}%
+  \DeclareFontSubstitution{pmboxdraw}{pmboxdraw}{m}{n}%
+  \RequirePackage{kvoptions}[2010/02/22]%
+  \SetupKeyvalOptions{%
+    family=PMBD,%
+    prefix=pmbd@%
+  }%
+\fi
+\ltx@IfUndefined{dimexpr}{%
+  \catcode36=9 %
+  \catcode38=14 %
+}{%
+  \catcode36=14 %
+  \catcode38=9 %
+}
+\ltx@IfUndefined{protected}{%
+  \def\pmbd@ProtectedDef#1{%
+    \let\pmbd@temp\ltx@gobble
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\DeclareRobustCommand*#1}%
+    }%
+    \pmbd@temp
+  }%
+  \def\pmbd@ProtectedDefOne#1{%
+    \let\pmbd@temp\ltx@gobble
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\DeclareRobustCommand*#1[1]}%
+    }%
+    \pmbd@temp
+  }%
+}{%
+  \def\pmbd@ProtectedDef#1{%
+    \let\pmbd@temp\ltx@gobble
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\protected\def#1}%
+    }%
+    \pmbd@temp
+  }%
+  \def\pmbd@ProtectedDefOne#1{%
+    \let\pmbd@temp\ltx@gobblethree
+    \@ifdefinable#1{%
+      \def\pmbd@temp{\protected\def#1}%
+    }%
+    \pmbd@temp##1%
+  }%
+}
+\pmbd@ProtectedDef\pmboxdrawsetup{%
+  \kvsetkeys{PMBD}%
+}
+\catcode47=11 %
+\def\pmbd@temp#1#2{%
+  \DeclareStringOption[\width]{#1/width}%
+  \DeclareStringOption[\height]{#1/height}%
+  \DeclareStringOption[\depth]{#1/depth}%
+  \DeclareStringOption[{#2}]{#1/box/default}%
+  \expandafter\DeclareStringOption\expandafter[%
+    \csname pmbd@#1/box/default\endcsname
+  ]{#1/box}%
+}
+\pmbd@temp{BoxDrawing}{\strut0}%
+\pmbd@temp{Block}{%
+  \begingroup
+    \sbox\z@{\strut}%
+    \dimen@=\ht\z@
+    \advance\dimen@\dp\z@
+    \wd\z@=\dimen@
+    \box\z@
+  \endgroup
+}%
+\pmbd@temp{Shade}{%
+  \begingroup
+    \sbox\z@{\strut}%
+    \dimen@=\ht\z@
+    \advance\dimen@\dp\z@
+    \wd\z@=\dimen@
+    \box\z@
+  \endgroup
+}%
+\pmbd@temp{TerminalGraphic}{%
+  \begingroup
+    \sbox\z@{\"A}%
+    \wd\z@=\ht\z@
+    \dp\z@=\z@
+    \box\z@
+  \endgroup
+}%
+\DeclareStringOption[.1\width]{BoxDrawing/thinlinewidth}
+\DeclareStringOption[.25\width]{BoxDrawing/thicklinewidth}
+\DeclareStringOption[.25\width]{BoxDrawing/doublelinesep}
+\DeclareStringOption[\strut0]{box} %%
+\DeclareStringOption[.1\width]{rulewidth}
+\DeclareStringOption[.25\width]{doublerulesep}
+\pmbd@ProtectedDefOne\pmboxdrawUniRobust{%
+  \comma@parse{#1}{%
+    \ltx@IfUndefined{pmbd@U+\comma@entry}{%
+      \begingroup\expandafter\endgroup
+      \expandafter
+      \TextSymbolUnavailable\csname U+\comma@entry\endcsname
+    }{%
+      \csname pmbd@U+\comma@entry\endcsname
+    }%
+    \@gobble
+  }%
+}
+\newcommand*{\pmboxdrawuni}[1]{%
+  \ifx\texorpdfstring\ltx@undefined
+    \expandafter\ltx@firstoftwo
+  \else
+    \ifx\texorpdfstring\relax
+      \expandafter\expandafter\expandafter\ltx@firstoftwo
+    \else
+      \expandafter\expandafter\expandafter\texorpdfstring
+    \fi
+  \fi
+  {%
+    \pmboxdrawUniRobust{#1}%
+  }{%
+    \expandafter\ifx\csname ifHy@unicode\expandafter\endcsname
+        \csname iftrue\endcsname
+      \expandafter\unichar\expandafter{\number"#1}%
+    \fi
+  }%
+}
+\pmbd@ProtectedDefOne\pmboxdrawbox{%
+  \def\pmbd@box{#1}%
+}
+\pmbd@ProtectedDefOne\pmboxdrawrulewidth{%
+  \def\pmbd@rulewidth{#1}%
+}
+\pmbd@ProtectedDefOne\pmboxdrawdoublerulesep{%
+  \def\pmbd@doublerulesep{#1}%
+}
+\def\pmbd@UniDef#1#2{%
+  \expandafter\pmbd@ProtectedDef\expandafter#1\expandafter{%
+    \csname pmbd@U+#2\endcsname
+  }%
+}
+\ltx@ifpackageloaded{calc}{%
+  \def\pmbd@SetLength{%
+    \setlength
+  }%
+}{%
+  \ltx@IfUndefined{dimexpr}{%
+    \def\pmbd@SetDim#1#2{%
+      #1=#2\relax
+    }%
+  }{%
+    \def\pmbd@SetDim#1#2{%
+      #1=\dimexpr#2\relax
+    }%
+  }%
+  \def\pmbd@SetLength{%
+    \ltx@ifpackageloaded{calc}{%
+      \setlength
+    }{%
+      \pmbd@SetDim
+    }%
+  }%
+  \AtBeginDocument{%
+    \ltx@ifpackageloaded{calc}{%
+      \def\pmbd@SetLength{\setlength}%
+    }{%
+      \let\pmbd@SetLength\pmbd@SetDim
+    }%
+  }%
+}
+\newdimen\pmbd@W
+\newdimen\pmbd@H
+\newdimen\pmbd@L
+\newdimen\pmbd@Thin
+\newdimen\pmbd@Thick
+\newdimen\pmbd@Sep
+\dimendef\pmbd@A=2 %
+\dimendef\pmbd@B=4 %
+\dimendef\pmbd@C=6 %
+\dimendef\pmbd@D=8 %
+\def\pmbd@BeginBox#1{%
+  \ltx@leavevmode
+  \@begin@tempboxa\hbox{%
+    \csname pmbd@#1/box\endcsname
+  }%
+  \pmbd@SetLength\pmbd@W{%
+    \csname pmbd@#1/width\endcsname
+  }%
+  \pmbd@SetLength\pmbd@H{%
+    \csname pmbd@#1/height\endcsname
+  }%
+  \pmbd@SetLength\pmbd@L{%
+    \csname pmbd@#1/depth\endcsname
+  }%
+  \advance\pmbd@H\pmbd@L
+  \setbox\ltx@zero\hbox to \pmbd@W\bgroup
+}
+\def\pmbd@EndBox{%
+  \hss
+  \egroup
+  \ht\ltx@zero=\pmbd@H
+  \dp\ltx@zero=\z@
+  \ifdim\pmbd@L=\z@
+  \else
+    \lower\pmbd@L
+  \fi
+  \box\ltx@zero
+  \@end@tempboxa
+}
+\def\pmbd@Rule#1#2#3{%
+  \vrule\@width#1\@height#2\@depth#3\relax
+}
+\def\pmbd@begin{%
+  \begingroup
+  \sbox\z@{\pmbd@box}%
+  \ltx@leavevmode
+  \setbox\tw@\hb@xt@\wd\z@\bgroup
+}
+\def\pmbd@end{%
+  \egroup
+  \ht\tw@\ht\z@
+  \dp\tw@\dp\z@
+  \box\tw@
+  \endgroup
+}
+\def\pmbd@LowerBlock#1{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule\pmbd@W{#1\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\def\pmbd@LeftBlock#1{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule{#1\pmbd@W}\pmbd@H\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textupblock{2580}
+\@namedef{pmbd@U+2580}{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule\pmbd@W\pmbd@H{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2581}{%
+  \pmbd@LowerBlock{.125}%
+}
+\@namedef{pmbd@U+2582}{%
+  \pmbd@LowerBlock{.25}%
+}
+\@namedef{pmbd@U+2583}{%
+  \pmbd@LowerBlock{.375}%
+}
+\pmbd@UniDef\textdnblock{2584}
+\@namedef{pmbd@U+2584}{%
+  \pmbd@LowerBlock{.5}%
+}
+\@namedef{pmbd@U+2585}{%
+  \pmbd@LowerBlock{.625}%
+}
+\@namedef{pmbd@U+2586}{%
+  \pmbd@LowerBlock{.75}%
+}
+\@namedef{pmbd@U+2587}{%
+  \pmbd@LowerBlock{.875}%
+}
+\pmbd@UniDef\textblock{2588}
+\@namedef{pmbd@U+2588}{%
+  \pmbd@LowerBlock{}%
+}
+\@namedef{pmbd@U+2589}{%
+  \pmbd@LeftBlock{.875}%
+}
+\@namedef{pmbd@U+258A}{%
+  \pmbd@LeftBlock{.75}%
+}
+\@namedef{pmbd@U+258B}{%
+  \pmbd@LeftBlock{.625}%
+}
+\pmbd@UniDef\textlfblock{258C}
+\@namedef{pmbd@U+258C}{%
+  \pmbd@LeftBlock{.5}%
+}
+\@namedef{pmbd@U+258D}{%
+  \pmbd@LeftBlock{.375}%
+}
+\@namedef{pmbd@U+258E}{%
+  \pmbd@LeftBlock{.25}%
+}
+\@namedef{pmbd@U+258F}{%
+  \pmbd@LeftBlock{.125}%
+}
+\pmbd@UniDef\textrtblock{2590}
+\@namedef{pmbd@U+2590}{%
+  \pmbd@BeginBox{Block}%
+  \kern.5\pmbd@W
+  \pmbd@Rule{.5\pmbd@W}\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2594}{%
+  \pmbd@BeginBox{Block}%
+  \pmbd@Rule\pmbd@W\pmbd@H{-.875\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2595}{%
+  \pmbd@BeginBox{Block}%
+  \kern.875\pmbd@W
+  \pmbd@Rule{.125\pmbd@W}\pmbd@H\z@
+  \pmbd@EndBox
+}
+\def\pmbd@Shade#1#2{%
+  \pmbd@BeginBox{Shade}%
+    \ltx@ifundefined{textcolor}{%
+      \pmbd@colorwarning{#1}%
+    }{%
+      \textcolor[gray]{\csname pmbd@Shade/#2\endcsname}%
+    }{%
+      \pmbd@Rule\pmbd@W\pmbd@H\z@
+    }%
+  \pmbd@EndBox
+}
+\DeclareStringOption[.75]{Shade/light}
+\pmbd@UniDef\textltshade{2591}
+\@namedef{pmbd@U+2591}{%
+  \pmbd@Shade{2591}{light}%
+}
+\DeclareStringOption[.5]{Shade/medium}
+\pmbd@UniDef\textshade{2592}
+\@namedef{pmbd@U+2592}{%
+  \pmbd@Shade{2592}{medium}%
+}
+\DeclareStringOption[.25]{Shade/dark}
+\pmbd@UniDef\textdkshade{2593}
+\@namedef{pmbd@U+2593}{%
+  \pmbd@Shade{2593}{dark}%
+}
+\def\pmbd@colorwarning#1{%
+  \PackageWarning{pmboxdraw}{%
+    U+#1 requires package \string`color\string'\MessageBreak
+  }%
+  \@firstofone
+}
+\def\pmbd@BeginTerminal{%
+  \pmbd@BeginBox{TerminalGraphic}%
+}
+\@namedef{pmbd@U+2596}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2597}{%
+  \pmbd@BeginTerminal
+  \kern.5\pmbd@W
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2598}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2599}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+259A}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+259B}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+259C}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+259D}{%
+  \pmbd@BeginTerminal
+  \kern.5\pmbd@W
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+259E}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+259F}{%
+  \pmbd@BeginTerminal
+  \pmbd@Rule{.5\pmbd@W}{.5\pmbd@H}\z@
+  \pmbd@Rule{.5\pmbd@W}{\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\def\pmbd@BeginDraw#1#2{%
+  \pmbd@BeginBox{BoxDrawing}%
+  \ifx#1X%
+    \pmbd@SetLength\pmbd@Thin\pmbd@BoxDrawing/thinlinewidth%
+  \fi
+  \ifx#2X%
+    \pmbd@SetLength\pmbd@Thick\pmbd@BoxDrawing/thicklinewidth%
+  \fi
+}
+\pmbd@UniDef\textSFx{2500}
+\@namedef{pmbd@U+2500}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2501}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@W\pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFxi{2502}
+\@namedef{pmbd@U+2502}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2503}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFi{250C}
+\@namedef{pmbd@U+250C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+250D}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+250E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+250F}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFiii{2510}
+\@namedef{pmbd@U+2510}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2511}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2512}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2513}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFii{2514}
+\@namedef{pmbd@U+2514}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2515}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2516}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2517}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFiv{2518}
+\@namedef{pmbd@U+2518}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2519}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+251A}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+251B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFviii{251C}
+\@namedef{pmbd@U+251C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+251D}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+251E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+251F}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2520}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2521}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2522}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \rlap{%
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2523}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFix{2524}
+\@namedef{pmbd@U+2524}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2525}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2526}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \kern.5\pmbd@D
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A\pmbd@B
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2527}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \kern.5\pmbd@D
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2528}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2529}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+252A}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ }%
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&  \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+252B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFvi{252C}
+\@namedef{pmbd@U+252C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+252D}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+252E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \kern\pmbd@C
+$   \advance\pmbd@C-\pmbd@W
+$   \pmbd@Rule{-\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+252F}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2530}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+&   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2531}{%
+  \pmbd@BeginDraw XX%
+$  \pmbd@A=\pmbd@H
+$  \advance\pmbd@A\pmbd@Thick
+$  \pmbd@A=.5\pmbd@A
+$  \pmbd@B=-\pmbd@A
+$  \advance\pmbd@B\pmbd@Thick
+$  \pmbd@C=\pmbd@W
+$  \advance\pmbd@C\pmbd@Thick
+$  \pmbd@C=.5\pmbd@C
+$  \rlap{%
+$    \pmbd@A=\pmbd@H
+$    \advance\pmbd@A\pmbd@Thin
+$    \pmbd@A=.5\pmbd@A
+$    \pmbd@B=-\pmbd@A
+$    \advance\pmbd@B\pmbd@Thin
+$    \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$  }%
+$  \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$  \kern-\pmbd@Thick
+$  \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2532}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2533}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+&   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFvii{2534}
+\@namedef{pmbd@U+2534}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2535}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2536}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \kern\pmbd@C
+$   \advance\pmbd@C-\pmbd@W
+$   \pmbd@Rule{-\pmbd@C}\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&     \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2537}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2538}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2539}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+253A}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& }%
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+253B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFv{253C}
+\@namedef{pmbd@U+253C}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+253D}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \kern-\pmbd@Thin
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+253E}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+    \kern.5\pmbd@W
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thick
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thick
+$   \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+&   \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&     {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thin
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+& \kern-\pmbd@Thin
+& \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+253F}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thick\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2540}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thick
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+    \pmbd@Rule\pmbd@Thick\pmbd@H{-.5\pmbd@H}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2541}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thick
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+    \pmbd@Rule\pmbd@Thick{.5\pmbd@H}\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2542}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2543}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@D=\pmbd@W
+$   \advance\pmbd@D-\pmbd@C
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&     \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2544}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thin\relax}%
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2545}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@D=\pmbd@W
+$   \advance\pmbd@D-\pmbd@C
+$   \kern\pmbd@C
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+&   \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+&   \kern\pmbd@C
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A\pmbd@B
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2546}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C\pmbd@Thin
+$   \pmbd@C=.5\pmbd@C
+$   \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+$   \kern-\pmbd@Thin
+$   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+&   \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thin\relax
+&   \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thin\relax}%
+&     \pmbd@A\pmbd@B
+&   \kern-\pmbd@Thin
+&   \pmbd@Rule\pmbd@Thin\pmbd@H\pmbd@B
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}%
+&   \pmbd@A{-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2547}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@W
+$   \advance\pmbd@A-\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \kern\pmbd@A
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+    \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+$ }%
+$ \kern.5\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@B=\dimexpr-\pmbd@A+\pmbd@Thick\relax
+& \rlap{%
+&   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& }%
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@Thick\pmbd@H\pmbd@B
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2548}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@W
+$   \advance\pmbd@A-\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \kern\pmbd@A
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+    \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \rlap{%
+$   \kern.5\pmbd@C
+$   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+$ }%
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \rlap{%
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+&   \pmbd@Rule\pmbd@Thick\pmbd@A\z@
+& }%
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2549}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+&   \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@C}\pmbd@A\pmbd@B
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\dimexpr\pmbd@W+\pmbd@Thick\relax}%
+&   \pmbd@A{\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+& \kern-\pmbd@Thick
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+254A}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@A=\pmbd@H
+$   \advance\pmbd@A\pmbd@Thin
+$   \pmbd@A=.5\pmbd@A
+$   \pmbd@B=-\pmbd@A
+$   \advance\pmbd@B\pmbd@Thin
+$   \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+&   \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+&   \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thin\relax}
+  }%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \pmbd@C=.5\pmbd@C
+$ \pmbd@D=\pmbd@W
+$ \advance\pmbd@D-\pmbd@C
+$ \kern\pmbd@C
+$ \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+$ \kern-\pmbd@Thick
+$ \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@C=.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+& \kern\pmbd@C
+& \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+& \kern-\pmbd@Thick
+& \pmbd@Rule{\dimexpr\pmbd@W-\pmbd@C\relax}\pmbd@A
+&   {-\dimexpr\pmbd@A-\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+254B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \dimen@=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule\pmbd@W\dimen@{-\dimexpr\dimen@-\pmbd@Thick\relax}%
+  \kern-\pmbd@W
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \kern\pmbd@A
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H\z@
+  \pmbd@EndBox
+}
+\def\pmbd@BeginDouble{%
+  \pmbd@BeginDraw X-%
+  \pmbd@SetLength\pmbd@Sep\pmbd@BoxDrawing/doublelinesep%
+}
+\def\pmbd@beginB{%
+  \pmbd@beginA
+  \setlength{\dimen@}{\pmbd@doublerulesep}%
+  \edef\pmbd@doublesepH{\number\dimen@ sp}%
+}
+\def\pmbd@beginC{%
+  \pmbd@beginB
+  \advance\dimen@\pmbd@rulewidth
+  \edef\pmbd@doublesepV{\number\dimen@ sp}%
+}
+\pmbd@UniDef\textSFxliii{2550}
+\@namedef{pmbd@U+2550}{%
+  \pmbd@BeginDouble
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A-\pmbd@Sep
+$ \pmbd@A=.5\pmbd@A
+& \pmbd@A=.5\dimexpr\pmbd@H-\pmbd@Sep\relax
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \kern-\pmbd@W
+$ \advance\pmbd@A\pmbd@Sep
+$ \advance\pmbd@A\pmbd@Thin
+$ \advance\pmbd@B-\pmbd@Sep
+$ \advance\pmbd@B-\pmbd@Thin
+& \pmbd@A=\dimexpr\pmbd@A+\pmbd@Sep+\pmbd@Thin\relax
+$ \pmbd@Rule\pmbd@W\pmbd@A\pmbd@B
+& \pmbd@Rule\pmbd@W\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFxxiv{2551}
+\@namedef{pmbd@U+2551}{%
+  \pmbd@BeginDouble
+$ \pmbd@A=\pmbd@W
+$ \advance\pmbd@A-\pmbd@Sep
+$ \pmbd@A=.5\pmbd@A
+$ \advance\pmbd@A-.5\pmbd@Thin
+$ \kern\pmbd@A
+& \kern\dimexpr.5\dimexpr\pmbd@W-\pmbd@Sep\relax-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \kern\pmbd@Sep
+  \pmbd@Rule\pmbd@Thin\pmbd@H\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFli{2552}
+\@namedef{pmbd@U+2552}{%
+  \pmbd@BeginDouble
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C-\pmbd@Thin
+  \pmbd@C=.5\pmbd@C
+  \kern\pmbd@C
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A\pmbd@Sep
+  \pmbd@A=.5\pmbd@A
+  \advance\pmbd@A\pmbd@Thin
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern-\pmbd@Thin
+  \pmbd@D=\pmbd@W
+  \advance\pmbd@D-\pmbd@C
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \kern-\pmbd@D
+  \advance\pmbd@A-\pmbd@Sep
+  \advance\pmbd@A-\pmbd@Thin
+  \advance\pmbd@B\pmbd@Sep
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFlii{2553}
+\@namedef{pmbd@U+2553}{%
+  \pmbd@BeginDouble
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C-\pmbd@Sep
+  \pmbd@C=.5\pmbd@C
+  \advance\pmbd@C-\pmbd@Thin
+  \kern\pmbd@C
+  \pmbd@D=\pmbd@W
+  \advance\pmbd@D-\pmbd@C
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A\pmbd@Thin
+  \pmbd@A=.5\pmbd@A
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \kern-\pmbd@D
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern\pmbd@Sep
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFxxxix{2554}
+\@namedef{pmbd@U+2554}{%
+  \pmbd@BeginDouble
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C-\pmbd@Sep
+  \pmbd@C=.5\pmbd@C
+  \advance\pmbd@C-\pmbd@Thin
+  \kern\pmbd@C
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A\pmbd@Sep
+  \pmbd@A=.5\pmbd@A
+  \advance\pmbd@A\pmbd@Thin
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@D=\pmbd@W
+  \advance\pmbd@D-\pmbd@C
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern-\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \advance\pmbd@D-\pmbd@Sep
+  \advance\pmbd@D-\pmbd@Thin
+  \kern-\pmbd@D
+  \advance\pmbd@A-\pmbd@Sep
+  \advance\pmbd@A-\pmbd@Thin
+  \advance\pmbd@B\pmbd@Sep
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \kern-\pmbd@Thin
+  \pmbd@Rule\pmbd@D\pmbd@A\pmbd@B
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFxxii{2555}
+\@namedef{pmbd@U+2555}{%
+  \pmbd@BeginDouble
+  \pmbd@A=\pmbd@H
+  \advance\pmbd@A-\pmbd@Sep
+  \pmbd@A=.5\pmbd@A
+  \pmbd@B=-\pmbd@A
+  \advance\pmbd@B\pmbd@Thin
+  \pmbd@C=\pmbd@W
+  \advance\pmbd@C\pmbd@Thin
+  \pmbd@C=.5\pmbd@C
+  \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+  \kern-\pmbd@C
+  \advance\pmbd@A\pmbd@Sep
+  \advance\pmbd@A\pmbd@Thin
+  \advance\pmbd@B-\pmbd@Sep
+  \advance\pmbd@B-\pmbd@Thin
+  \pmbd@Rule\pmbd@C\pmbd@A\pmbd@B
+  \kern-\pmbd@Thin
+  \pmbd@Rule\pmbd@Thin\pmbd@A\z@
+  \pmbd@EndBox
+}
+\pmbd@UniDef\textSFxxi{2556}
+\@namedef{pmbd@U+2556}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 \pmbd@doublesepH
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxv{2557}
+\@namedef{pmbd@U+2557}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \advance\dimen4 \pmbd@doublesepH
+      \rlap{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \kern\pmbd@rulewidth
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height.5\dimen@\@depth\dp\z@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \advance\dimen4 -\pmbd@doublesepH
+    \rlap{%
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \kern\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFl{2558}
+\@namedef{pmbd@U+2558}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \kern.5\wd\z@
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \kern.5\wd\z@
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxlix{2559}
+\@namedef{pmbd@U+2559}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 \pmbd@doublesepH
+      \hb@xt@\wd\z@{%
+        \hfill
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxxviii{255A}
+\@namedef{pmbd@U+255A}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \advance\dimen4 -\pmbd@doublesepH
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \kern\pmbd@rulewidth
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \advance\dimen4 \pmbd@doublesepH
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \kern\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxviii{255B}
+\@namedef{pmbd@U+255B}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxvii{255C}
+\@namedef{pmbd@U+255C}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 \pmbd@doublesepH
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxvi{255D}
+\@namedef{pmbd@U+255D}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \advance\dimen4 -\pmbd@doublesepH
+      \rlap{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \kern\pmbd@rulewidth
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \advance\dimen4 \pmbd@doublesepH
+    \rlap{%
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \kern\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxxvi{255E}
+\@namedef{pmbd@U+255E}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \kern.5\wd\z@
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \rlap{%
+      \kern.5\wd\z@
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxxvii{255F}
+\@namedef{pmbd@U+255F}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 -\pmbd@doublesepH
+      \hb@xt@\wd\z@{%
+        \hfill
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxlii{2560}
+\@namedef{pmbd@U+2560}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \kern\pmbd@rulewidth
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxix{2561}
+\@namedef{pmbd@U+2561}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \rlap{%
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width.5\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxx{2562}
+\@namedef{pmbd@U+2562}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \dimen4 \wd\z@
+      \advance\dimen4 -\pmbd@doublesepH
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxxiii{2563}
+\@namedef{pmbd@U+2563}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \kern\pmbd@rulewidth
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxlvii{2564}
+\@namedef{pmbd@U+2564}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxlviii{2565}
+\@namedef{pmbd@U+2565}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxli{2566}
+\@namedef{pmbd@U+2566}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxlv{2567}
+\@namedef{pmbd@U+2567}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \advance\dimen@\pmbd@doublesepV
+    \advance\dimen\tw@\pmbd@doublesepV
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxlvi{2568}
+\@namedef{pmbd@U+2568}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@depth-.5\dimen\tw@
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxl{2569}
+\@namedef{pmbd@U+2569}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+  \pmbd@end
+}
+\pmbd@UniDef\textSFliv{256A}
+\@namedef{pmbd@U+256A}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \rlap{%
+      \advance\dimen@-\pmbd@doublesepV
+      \advance\dimen\tw@-\pmbd@doublesepV
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFliii{256B}
+\@namedef{pmbd@U+256B}{%
+  \pmbd@beginB
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \rlap{%
+      \vrule\@width\wd\z@\@height.5\dimen@\@depth-.5\dimen\tw@
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth
+    \hss
+  \pmbd@end
+}
+\pmbd@UniDef\textSFxliv{256C}
+\@namedef{pmbd@U+256C}{%
+  \pmbd@beginC
+    \dimen@\ht\z@
+    \advance\dimen@-\dp\z@
+    \dimen\tw@\dimen@
+    \advance\dimen@\pmbd@rulewidth
+    \advance\dimen\tw@-\pmbd@rulewidth
+    \dimen4 \wd\z@
+    \advance\dimen4 -\pmbd@doublesepH
+    \begingroup
+      \advance\dimen@\pmbd@doublesepV
+      \advance\dimen\tw@\pmbd@doublesepV
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+          \hss
+          \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        }%
+      }%
+      \rlap{%
+        \hb@xt@\wd\z@{%
+          \hss
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \kern\pmbd@doublesepH
+          \vrule\@width\pmbd@rulewidth\@height\ht\z@\@depth-.5\dimen\tw@
+          \hss
+        }%
+      }%
+    \endgroup
+    \advance\dimen@-\pmbd@doublesepV
+    \advance\dimen\tw@-\pmbd@doublesepV
+    \rlap{%
+      \hb@xt@\wd\z@{%
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+        \hss
+        \vrule\@width.5\dimen4 \@height.5\dimen@\@depth-.5\dimen\tw@
+      }%
+    }%
+    \hss
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \kern\pmbd@doublesepH
+    \vrule\@width\pmbd@rulewidth\@height.5\dimen@
+    \hss
+  \pmbd@end
+}
+\@namedef{pmbd@U+2574}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2575}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin\pmbd@H{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2576}{%
+  \pmbd@BeginDraw X-%
+  \kern.5\pmbd@W
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2577}{%
+  \pmbd@BeginDraw X-%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2578}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+2579}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick\pmbd@H{-.5\pmbd@H}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+257A}{%
+  \pmbd@BeginDraw -X%
+  \kern.5\pmbd@W
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+257B}{%
+  \pmbd@BeginDraw -X%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+257C}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+257D}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thin
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+    \pmbd@Rule\pmbd@Thin\pmbd@H{-.5\pmbd@H}%
+  }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thick
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+  \pmbd@Rule\pmbd@Thick{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+257E}{%
+  \pmbd@BeginDraw XX%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thick
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thick
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thick\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thick\relax}%
+$ \pmbd@A=\pmbd@H
+$ \advance\pmbd@A\pmbd@Thin
+$ \pmbd@A=.5\pmbd@A
+$ \pmbd@B=-\pmbd@A
+$ \advance\pmbd@B\pmbd@Thin
+$ \pmbd@Rule{.5\pmbd@W}\pmbd@A\pmbd@B
+& \pmbd@A=.5\dimexpr\pmbd@H+\pmbd@Thin\relax
+& \pmbd@Rule{.5\pmbd@W}\pmbd@A
+&   {\dimexpr-\pmbd@A+\pmbd@Thin\relax}%
+  \pmbd@EndBox
+}
+\@namedef{pmbd@U+257F}{%
+  \pmbd@BeginDraw XX%
+  \rlap{%
+$   \pmbd@C=\pmbd@W
+$   \advance\pmbd@C-\pmbd@Thick
+$   \kern.5\pmbd@C
+&   \kern.5\dimexpr\pmbd@W-\pmbd@Thick\relax
+    \pmbd@Rule\pmbd@Thick\pmbd@H{-.5\pmbd@H}%
+  }%
+$ \pmbd@C=\pmbd@W
+$ \advance\pmbd@C-\pmbd@Thin
+$ \kern.5\pmbd@C
+& \kern.5\dimexpr\pmbd@W-\pmbd@Thin\relax
+  \pmbd@Rule\pmbd@Thin{.5\pmbd@H}\z@
+  \pmbd@EndBox
+}
+\def\pmbd@beginA{%
+  \pmbd@begin
+  \def\width{\wd\z@}%
+  \def\height{\ht\z@}%
+  \def\depth{\dp\z@}%
+  \setlength{\dimen@}{\pmbd@rulewidth}%
+  \edef\pmbd@rulewidth{\number\dimen@ sp}%
+}
+\pmbd@AtEnd%
+\endinput
+%%
+%% End of file `pmboxdraw.sty'.

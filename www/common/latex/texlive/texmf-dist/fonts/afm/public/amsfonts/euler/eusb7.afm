@@ -1,0 +1,72 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jun 13 12:00:00 2011
+FontName EUSB7
+FullName EUSB7
+FamilyName Euler
+Weight Bold
+Notice (Copyright (c) 1997, 2009, 2011 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name EUSB7.)
+ItalicAngle 0
+IsFixedPitch false
+UnderlinePosition -100
+UnderlineThickness 50
+Version 003.003
+EncodingScheme FontSpecific
+FontBBox 28 -194 1189 738
+CapHeight 465
+Descender -2147483648
+StartCharMetrics 46
+C 0 ; WX 981 ; N minus ; B 88 231 886 281 ;
+C 24 ; WX 733 ; N similar ; B 59 178 673 347 ;
+C 32 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 48 ; WX 0 ; N ghost ; B 0 0 0 0 ;
+C 58 ; WX 894 ; N logicalnot ; B 64 205 791 401 ;
+C 60 ; WX 1068 ; N Rfractur ; B 51 -29 1029 689 ;
+C 61 ; WX 737 ; N Ifractur ; B 64 -25 667 683 ;
+C 64 ; WX 1003 ; N aleph ; B 127 1 866 689 ;
+C 65 ; WX 1015 ; N A ; B 43 -17 952 711 ;
+C 66 ; WX 991 ; N B ; B 73 -1 882 727 ;
+C 67 ; WX 795 ; N C ; B 95 -15 721 709 ;
+C 68 ; WX 1071 ; N D ; B 62 -1 975 727 ;
+C 69 ; WX 802 ; N E ; B 97 -12 704 708 ;
+C 70 ; WX 875 ; N F ; B 65 -14 890 731 ;
+C 71 ; WX 797 ; N G ; B 88 -138 675 705 ;
+C 72 ; WX 1136 ; N H ; B 63 -12 1091 699 ;
+C 73 ; WX 669 ; N I ; B 62 -18 573 703 ;
+C 74 ; WX 678 ; N J ; B 65 -137 610 701 ;
+C 75 ; WX 1062 ; N K ; B 61 -9 998 709 ;
+C 76 ; WX 932 ; N L ; B 60 -12 825 710 ;
+C 77 ; WX 1255 ; N M ; B 61 -17 1189 710 ;
+C 78 ; WX 1003 ; N N ; B 59 -13 983 712 ;
+C 79 ; WX 922 ; N O ; B 80 -20 822 707 ;
+C 80 ; WX 865 ; N P ; B 63 -13 794 726 ;
+C 81 ; WX 885 ; N Q ; B 77 -42 808 705 ;
+C 82 ; WX 940 ; N R ; B 63 -12 933 732 ;
+C 83 ; WX 707 ; N S ; B 39 -18 625 715 ;
+C 84 ; WX 766 ; N T ; B 60 -11 818 697 ;
+C 85 ; WX 922 ; N U ; B 42 -13 885 709 ;
+C 86 ; WX 870 ; N V ; B 61 -16 796 702 ;
+C 87 ; WX 1263 ; N W ; B 61 -8 1189 710 ;
+C 88 ; WX 933 ; N X ; B 61 -11 860 712 ;
+C 89 ; WX 795 ; N Y ; B 28 -135 673 709 ;
+C 90 ; WX 861 ; N Z ; B 93 -14 796 705 ;
+C 94 ; WX 1004 ; N logicaland ; B 46 -8 961 714 ;
+C 95 ; WX 1004 ; N logicalor ; B 39 -12 946 688 ;
+C 102 ; WX 453 ; N braceleft ; B 28 -178 385 730 ;
+C 103 ; WX 453 ; N braceright ; B 59 -178 416 730 ;
+C 106 ; WX 324 ; N bar ; B 134 -172 187 738 ;
+C 110 ; WX 673 ; N backslash ; B 78 -194 597 728 ;
+C 120 ; WX 689 ; N section ; B 99 -107 577 701 ;
+C 128 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 160 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 161 ; WX 981 ; N minus ; B 88 231 886 281 ;
+C 187 ; WX 733 ; N similar ; B 59 178 673 347 ;
+C 195 ; WX 333 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+StartKernData
+StartKernPairs 3
+KPX A ghost 168
+KPX I ghost 67
+KPX J ghost 67
+EndKernPairs
+EndKernData
+EndFontMetrics

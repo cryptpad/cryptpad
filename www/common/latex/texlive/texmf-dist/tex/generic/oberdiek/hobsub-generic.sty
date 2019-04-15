@@ -1,0 +1,9533 @@
+%%
+%% This is file `hobsub-generic.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hobsub.dtx  (with options: `generic,preamble,infwarerr')
+%% infwarerr.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,ltxcmds')
+%% ltxcmds.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,ifluatex')
+%% ifluatex.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,ifvtex')
+%% ifvtex.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,intcalc')
+%% intcalc.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,ifpdf')
+%% ifpdf.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,etexcmds')
+%% etexcmds.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,kvsetkeys')
+%% kvsetkeys.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,kvdefinekeys')
+%% kvdefinekeys.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,luatex-loader')
+%% luatex.dtx  (with options: `loader')
+%% hobsub.dtx  (with options: `post,pdftexcmds')
+%% pdftexcmds.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,pdfescape')
+%% pdfescape.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,bigintcalc')
+%% bigintcalc.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,bitset')
+%% bitset.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,uniquecounter')
+%% uniquecounter.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,atend')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hobsub
+%% Version: 2012/05/28 v1.13
+%% 
+%% Copyright (C) 2011, 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file hobsub.dtx
+%% and the derived files
+%%    hobsub.sty, hobsub.pdf, hobsub.ins, hobsub.drv, hobsub-generic.sty,
+%%    hobsub-hyperref.sty, hobsub-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@hobsub-generic.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{hobsub-generic}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@hobsub-generic.sty\endcsname
+\ProvidesPackage{hobsub-generic}%
+ [2012/05/28 v1.13 Bundle oberdiek, subset generic (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname HOBsub@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\HOBsub@AtEnd{%
+\HOBsub@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{96}{12}% `
+\edef\HOBsub@AtEnd{\HOBsub@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@hobsub.sty\endcsname\relax
+\else
+\expandafter\hobsub@GobbleRemainingPackage
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname HOBsub@OrgEndinput\endcsname\relax
+\let\HOBsub@OrgEndinput\endinput
+\fi
+\def\hobsub@GobbleRemainingPackage{%
+\begingroup
+\catcode92=14 % backslash: comment
+\catcode32=14 % space: comment
+\catcode35=14 % hash: comment
+\catcode123=14 % left brace: comment
+\catcode125=14 % right brace: comment
+\catcode60=3 % less: math
+\catcode62=4 % greater: align
+\endlinechar=-1 %
+\HOBsub@GobbleRemainingPackage
+}
+\catcode60=3 % less: dollar
+\catcode62=4 % greater: align
+\long\def\HOBsub@GobbleRemainingPackage#1<hobsub>{%
+\endgroup
+}
+\catcode60=12 % less: other
+\catcode62=12 % greater: other
+\def\hobsub@StartPackage#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\let\HOBsub@OrgCurrName\@currname
+\let\HOBsub@OrgCurrExt\@currext
+\csname @pushfilename\endcsname
+\def\@currname{#1}%
+\def\@currext{sty}%
+\expandafter\def\csname\@currname.\@currext-h@@k\endcsname{}%
+\let\endinput\hobsub@GobbleRemainingPackage
+\def\hobsub@StopPackage{%
+\let\hobsub@StopPackage\relax
+\HOBsub@StopPackage
+}%
+\hobsub@AddToFileList{#1.sty}%
+\else
+\hobsub@Info{hobsub}{Skipping package `#1' (already loaded)}%
+\let\hobsub@StopPackage\relax
+\expandafter\hobsub@GobbleRemainingPackage
+\fi
+}
+\let\hobsub@StopPackage\relax
+\def\hobsub@Info#1#2{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @PackageInfoNoLine\endcsname\relax
+\immediate\write-1{Package #1 Info: #2.}%
+\else
+\let\hobsub@Info\@PackageInfoNoLine
+\hobsub@Info{#1}{#2}%
+\fi
+}
+\def\HOBsub@StopPackage{%
+\csname\@currname.\@currext-h@@k\endcsname
+\let\endinput\HOBsub@OrgEndinput
+\csname @popfilename\endcsname
+\let\@currname\HOBsub@OrgCurrName
+\let\@currext\HOBsub@OrgCurrExt
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @addtofilelist\endcsname\relax
+\def\hobsub@AddToFileList#1{}%
+\else
+\def\hobsub@AddToFileList#1{%
+\@addtofilelist{#1}%
+}%
+\fi
+\hobsub@GobbleRemainingPackage
+<hobsub>
+\hobsub@StartPackage{hobsub}%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\immediate\write-1{%
+ Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)%
+}%
+\else
+\ProvidesPackage{hobsub}%
+ [2012/05/28 v1.13 Construct package bundles (HO)]%
+\fi
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{infwarerr}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@infwarerr.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{infwarerr}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@infwarerr.sty\endcsname
+\ProvidesPackage{infwarerr}%
+ [2010/04/08 v1.3 Providing info/warning/error messages (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname InfWarErr@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\InfWarErr@AtEnd{%
+\InfWarErr@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{94}{7}% ^
+\edef\InfWarErr@AtEnd{\InfWarErr@AtEnd\noexpand\endinput}
+\begingroup
+\let\x=Y%
+\def\check#1{%
+\@check{Generic}{#1}%
+\@check{Package}{#1}%
+\@check{Class}{#1}%
+}%
+\def\@check#1#2{%
+\expandafter\ifx\csname #1#2\endcsname\relax
+\let\x=N%
+\fi
+}%
+\check{Info}%
+\check{Warning}%
+\check{Error}%
+\@check{Package}{WarningNoLine}%
+\@check{Class}{WarningNoLine}%
+\@check{}{@ehc}%
+\@check{}{@ehd}%
+\expandafter\endgroup
+\ifx\x Y%
+\let\@PackageInfo\PackageInfo
+\def\@PackageInfoNoLine#1#2{%
+\PackageInfo{#1}{#2\@gobble}%
+}%
+\let\@ClassInfo\ClassInfo
+\def\@ClassInfoNoLine#1#2{%
+\ClassInfo{#1}{#2\@gobble}%
+}%
+\let\@PackageWarning\PackageWarning
+\let\@PackageWarningNoLine\PackageWarningNoLine
+\let\@ClassWarning\ClassWarning
+\let\@ClassWarningNoLine\ClassWarningNoLine
+\let\@PackageError\PackageError
+\let\@ClassError\ClassError
+\expandafter\InfWarErr@AtEnd
+\fi%
+\begingroup\expandafter\endgroup
+\ifcase\expandafter\ifx\csname inputlineno\endcsname\relax
+ 0 %
+\else
+\ifnum\inputlineno<0 %
+ 0 %
+\else
+ 1 %
+\fi
+\fi
+\def\InfWarErr@online{}%
+\else
+\def\InfWarErr@online{ on input line \the\inputlineno}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+\def\InfWarErr@protected{}%
+\else
+\let\InfWarErr@protected\protected
+\fi
+\chardef\InfWarErr@unused=16 %
+\def\InfWarErr@ehc{%
+ Try typing \space <return> \space to proceed.\MessageBreak
+ If that doesn't work, type \space X <return> \space to quit.%
+}
+\def\InfWarErr@ehd{%
+ You're in trouble here. \space\@ehc
+}
+\InfWarErr@protected\def\InfWarErr@GenericInfo#1#2{%
+\begingroup
+\let\on@line\InfWarErr@online
+\long\def\@gobble##1{}%
+\def\space{ }%
+\def\@spaces{\space\space\space\space}%
+\def\MessageBreak{^^J#1}%
+\newlinechar=10 %
+\escapechar=92 %
+\immediate\write-1{#2\on@line.}%
+\endgroup
+}
+\InfWarErr@protected\def\InfWarErr@GenericWarning#1#2{%
+\begingroup
+\let\on@line\InfWarErr@online
+\long\def\@gobble##1{}%
+\def\space{ }%
+\def\@spaces{\space\space\space\space}%
+\def\MessageBreak{^^J#1}%
+\newlinechar=10 %
+\escapechar=92 %
+\immediate\write\InfWarErr@unused{^^J#2\on@line.^^J}%
+\endgroup
+}
+\InfWarErr@protected\def\InfWarErr@GenericError#1#2#3#4{%
+\begingroup
+\immediate\write\InfWarErr@unused{}%
+\def\space{ }%
+\def\@spaces{\space\space\space\space}%
+\let\@ehc\InfWarErr@ehc
+\let\@ehd\InfWarErr@ehd
+\let\on@line\InfWarErr@online
+\def\MessageBreak{^^J}%
+\newlinechar=10 %
+\escapechar=92 %
+\edef\InfWarErr@help{\noexpand\errhelp{#4}}%
+\InfWarErr@help
+\def\MessageBreak{^^J#1}%
+\errmessage{%
+#2.^^J^^J%
+#3^^J%
+ Type \space H <return> \space for immediate help.^^J ...^^J%
+}%
+\endgroup
+}
+\def\@PackageInfo#1#2{%
+\InfWarErr@GenericInfo{%
+ (#1) \@spaces\@spaces\@spaces
+}{%
+ Package #1 Info: #2%
+}%
+}
+\def\@PackageInfoNoLine#1#2{%
+\@PackageInfo{#1}{#2\@gobble}%
+}
+\def\@ClassInfo#1#2{%
+\InfWarErr@GenericInfo{%
+ (#1) \space\space\@spaces\@spaces
+}{%
+ Class #1 Info: #2%
+}%
+}
+\def\@ClassInfoNoLine#1#2{%
+\@ClassInfo{#1}{#2\@gobble}%
+}
+\def\@PackageWarning#1#2{%
+\InfWarErr@GenericWarning{%
+ (#1)\@spaces\@spaces\@spaces\@spaces
+}{%
+ Package #1 Warning: #2%
+}%
+}
+\def\@PackageWarningNoLine#1#2{%
+\@PackageWarning{#1}{#2\@gobble}%
+}
+\def\@ClassWarning#1#2{%
+\InfWarErr@GenericWarning{%
+ (#1) \space\@spaces\@spaces\@spaces
+}{%
+ Class #1 Warning: #2%
+}%
+}
+\def\@ClassWarningNoLine#1#2{%
+\@ClassWarning{#1}{#2\@gobble}%
+}
+\def\@PackageError#1#2#3{%
+\InfWarErr@GenericError{%
+ (#1)\@spaces\@spaces\@spaces\@spaces
+}{%
+ Package #1 Error: #2%
+}{%
+ See the #1 package documentation for explanation.%
+}{#3}%
+}
+\def\@ClassError#1#2#3{%
+\InfWarErr@GenericError{%
+ (#1) \space\@spaces\@spaces\@spaces
+}{%
+ Class #1 Error: #2%
+}{%
+ See the #1 class documentation for explanation.%
+}{#3}%
+}
+\InfWarErr@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{ltxcmds}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@ltxcmds.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{ltxcmds}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@ltxcmds.sty\endcsname
+\ProvidesPackage{ltxcmds}%
+ [2011/11/09 v1.22 LaTeX kernel commands for general use (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname LTXcmds@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\LTXcmds@AtEnd{%
+\LTXcmds@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{12}% ^ (superscript) (!)
+\TMP@EnsureCode{124}{12}% |
+\edef\LTXcmds@AtEnd{\LTXcmds@AtEnd\noexpand\endinput}
+\chardef\ltx@zero=0 %
+\chardef\ltx@one=1 %
+\chardef\ltx@two=2 %
+\chardef\ltx@active=13 %
+\chardef\ltx@cclv=255 %
+\def\ltx@minusone{%
+ -\ltx@one
+}
+\toksdef\ltx@LocToksA=0 %
+\toksdef\ltx@LocToksB=2 %
+\toksdef\ltx@LocToksC=4 %
+\toksdef\ltx@LocToksD=6 %
+\toksdef\ltx@LocToksE=8 %
+\toksdef\ltx@GlobToksA=1 %
+\toksdef\ltx@GlobToksB=3 %
+\toksdef\ltx@GlobToksC=5 %
+\toksdef\ltx@GlobToksD=7 %
+\toksdef\ltx@GlobToksE=9 %
+\dimendef\ltx@LocDimenA=0 %
+\dimendef\ltx@LocDimenB=2 %
+\dimendef\ltx@LocDimenC=4 %
+\dimendef\ltx@LocDimenD=6 %
+\dimendef\ltx@LocDimenE=8 %
+\dimendef\ltx@GlobDimenA=1 %
+\dimendef\ltx@GlobDimenB=3 %
+\dimendef\ltx@GlobDimenC=5 %
+\dimendef\ltx@GlobDimenD=7 %
+\dimendef\ltx@GlobDimenE=9 %
+\skipdef\ltx@LocSkipA=0 %
+\skipdef\ltx@LocSkipB=2 %
+\skipdef\ltx@LocSkipC=4 %
+\skipdef\ltx@LocSkipD=6 %
+\skipdef\ltx@LocSkipE=8 %
+\skipdef\ltx@GlobSkipA=1 %
+\skipdef\ltx@GlobSkipB=3 %
+\skipdef\ltx@GlobSkipC=5 %
+\skipdef\ltx@GlobSkipD=7 %
+\skipdef\ltx@GlobSkipE=9 %
+\long\def\ltx@gobble#1{}
+\long\def\ltx@gobbletwo#1#2{}
+\long\def\ltx@gobblethree#1#2#3{}
+\long\def\ltx@gobblefour#1#2#3#4{}
+\def\ltx@GobbleNum#1{%
+\romannumeral
+\csname ltx@zero%
+\expandafter\LTXcmds@GobbleNum
+\romannumeral\LTXcmds@num{#1}000{m\endcsname}%
+}
+\def\LTXcmds@GobbleNum#1{%
+\csname LTXcmds@G#1\LTXcmds@GobbleNum
+}
+\long\def\LTXcmds@Gm#1{%
+\endcsname
+}
+\long\def\ltx@firstofone#1{#1}
+\long\def\ltx@firstoftwo#1#2{#1}
+\long\def\ltx@secondoftwo#1#2{#2}
+\long\def\ltx@firstofthree#1#2#3{#1}
+\long\def\ltx@secondofthree#1#2#3{#2}
+\long\def\ltx@thirdofthree#1#2#3{#3}%
+\long\def\ltx@firstoffour#1#2#3#4{#1}
+\long\def\ltx@secondoffour#1#2#3#4{#2}
+\long\def\ltx@thirdoffour#1#2#3#4{#3}%
+\long\def\ltx@fourthoffour#1#2#3#4{#4}%
+\long\def\ltx@carzero#1\@nil{}%
+\long\def\LTXcmds@cdrzero#1\@nil{#1}
+\def\ltx@cdrzero{%
+\romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+\long\def\ltx@car#1#2\@nil{#1}
+\long\def\ltx@cdr#1{%
+\romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+\long\def\ltx@cartwo#1#2#3\@nil{#1#2}
+\long\def\ltx@carsecond#1#2#3\@nil{#2}
+\long\def\ltx@cdrtwo#1#2{%
+\romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+\long\def\ltx@carthree#1#2#3#4\@nil{#1#2#3}
+\long\def\ltx@carthird#1#2#3#4\@nil{#3}
+\long\def\ltx@cdrthree#1#2#3{%
+\romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+\long\def\ltx@carfour#1#2#3#4#5\@nil{#1#2#3#4}
+\long\def\ltx@carfourth#1#2#3#4#5\@nil{#4}
+\long\def\ltx@cdrfour#1#2#3#4{%
+\romannumeral\LTXcmds@cdrzero\ltx@zero
+}
+\def\ltx@CarNum#1{%
+\romannumeral
+\csname LTXcmds@CarNumFinish%
+\expandafter\LTXcmds@CarNum
+\romannumeral\LTXcmds@num{#1}000{x\endcsname}%
+}
+\def\LTXcmds@CarNum#1{%
+\csname LTXcmds@C#1\LTXcmds@CarNum
+}
+\long\def\LTXcmds@Cm#1#2{%
+\endcsname{#1#2}%
+}
+\def\LTXcmds@Cx#1{%
+\endcsname{}%
+}
+\long\def\LTXcmds@CarNumFinish#1#2\@nil{%
+\ltx@zero
+#1%
+}
+\def\ltx@CarNumth#1{%
+\romannumeral
+\expandafter\expandafter\expandafter
+\LTXcmds@CarNumth
+\ltx@GobbleNum{#1}{}%
+}
+\long\def\LTXcmds@CarNumth#1#2\@nil{%
+\ltx@zero
+#1%
+}
+\def\ltx@CdrNum#1{%
+\romannumeral%
+\expandafter\expandafter\expandafter\ltx@cdrzero
+\expandafter\expandafter\expandafter\ltx@zero
+\ltx@GobbleNum{#1}%
+}
+\long\def\ltx@ReturnAfterFi#1\fi{\fi#1}
+\long\def\ltx@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+\def\ltx@empty{}
+\def\ltx@space{ }
+\begingroup
+\lccode`0=`\%\relax
+\lowercase{\endgroup
+\def\ltx@percentchar{0}%
+}
+\begingroup
+\lccode`0=`\\\relax
+\lowercase{\endgroup
+\def\ltx@backslashchar{0}%
+}
+\begingroup
+\lccode`0=`\#\relax
+\lowercase{\endgroup
+\def\ltx@hashchar{0}%
+}
+\begingroup
+\lccode`0=`\{\relax
+\lowercase{\endgroup
+\def\ltx@leftbracechar{0}%
+}
+\begingroup
+\lccode`0=`\}\relax
+\lowercase{\endgroup
+\def\ltx@rightbracechar{0}%
+}
+\def\ltx@newif#1{%
+\begingroup
+\escapechar=-1 %
+\expandafter\endgroup
+\expandafter\LTXcmds@newif\string#1\@nil
+}
+\begingroup
+\escapechar=-1 %
+\expandafter\endgroup
+\expandafter\def\expandafter\LTXcmds@newif\string\if#1\@nil{%
+\expandafter\edef\csname#1true\endcsname{%
+\let
+\expandafter\noexpand\csname if#1\endcsname
+\noexpand\iftrue
+}%
+\expandafter\edef\csname#1false\endcsname{%
+\let
+\expandafter\noexpand\csname if#1\endcsname
+\noexpand\iffalse
+}%
+\csname#1false\endcsname
+}
+\def\ltx@newglobalif#1{%
+\begingroup
+\escapechar=-1 %
+\expandafter\endgroup
+\expandafter\LTXcmds@newglobalif\string#1\@nil
+}
+\begingroup
+\escapechar=-1 %
+\expandafter\endgroup
+\expandafter
+\def\expandafter\LTXcmds@newglobalif\string\if#1\@nil{%
+\expandafter\edef\csname#1true\endcsname{%
+\global\let
+\expandafter\noexpand\csname if#1\endcsname
+\noexpand\iftrue
+}%
+\expandafter\edef\csname#1false\endcsname{%
+\global\let
+\expandafter\noexpand\csname if#1\endcsname
+\noexpand\iffalse
+}%
+\csname#1false\endcsname
+}
+\def\ltx@LocalExpandAfter{%
+\begingroup
+\expandafter\expandafter\expandafter
+\endgroup
+\expandafter
+}
+\ltx@LocalExpandAfter
+\ifx\csname ifcsname\endcsname\relax
+\def\ltx@ifundefined#1{%
+\expandafter\ifx\csname #1\endcsname\relax
+\expandafter\ltx@firstoftwo
+\else
+\expandafter\ltx@secondoftwo
+\fi
+}%
+\def\ltx@IfUndefined#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname #1\endcsname\relax
+\expandafter\ltx@firstoftwo
+\else
+\expandafter\ltx@secondoftwo
+\fi
+}%
+\expandafter\ltx@gobble
+\else
+\expandafter\ltx@firstofone
+\fi
+{%
+\def\ltx@ifundefined#1{%
+\ifcsname #1\endcsname
+\expandafter\ifx\csname #1\endcsname\relax
+\expandafter\expandafter\expandafter\ltx@firstoftwo
+\else
+\expandafter\expandafter\expandafter\ltx@secondoftwo
+\fi
+\else
+\expandafter\ltx@firstoftwo
+\fi
+}%
+\let\ltx@IfUndefined\ltx@ifundefined
+}
+\def\ltx@RemovePrefix#1>{}
+\def\ltx@StripPrefix{%
+\expandafter\ltx@RemovePrefix
+}
+\def\ltx@onelevel@sanitize#1{%
+\edef#1{%
+\expandafter
+\ltx@RemovePrefix\meaning#1%
+}%
+}
+\def\ltx@clsextension{cls}
+\def\ltx@pkgextension{sty}
+\def\ltx@iffileloaded#1{%
+\ltx@ifundefined{ver@#1}\ltx@secondoftwo\ltx@firstoftwo
+}
+\def\ltx@ifclassloaded#1{%
+\ltx@iffileloaded{#1.\ltx@clsextension}%
+}
+\def\ltx@ifpackageloaded#1{%
+\ltx@iffileloaded{#1.\ltx@pkgextension}%
+}
+\def\ltx@iffilelater#1#2{%
+\ltx@iffileloaded{#1}{%
+\expandafter\LTXcmds@IfLater\expandafter{%
+\number
+\expandafter\expandafter\expandafter\LTXcmds@ParseVersion
+\expandafter\expandafter\expandafter{%
+\csname ver@#1\endcsname
+}%
+\expandafter}\expandafter{%
+\number
+\expandafter\LTXcmds@ParseVersion\expandafter{#2}%
+}%
+}\ltx@secondoftwo
+}
+\def\LTXcmds@IfLater#1#2{%
+\ifcase 0%
+\ifnum#1<19940101 %
+\else
+\ifnum#2<19940101 %
+\else
+\ifnum#2>#1 %
+\else
+ 1%
+\fi
+\fi
+\fi
+\ltx@space
+\expandafter\ltx@secondoftwo
+\else
+\expandafter\ltx@firstoftwo
+\fi
+}
+\def\ltx@ifclasslater#1{%
+\ltx@iffilelater{#1.\ltx@clsextension}%
+}
+\def\ltx@ifpackagelater#1{%
+\ltx@iffilelater{#1.\ltx@pkgextension}%
+}
+\ltx@IfUndefined{pdfmatch}{%
+\def\LTXcmds@ParseVersion#1{%
+\LTXcmds@@ParseVersion#10000/00/00\@nil
+}%
+\def\LTXcmds@@ParseVersion#1#2#3#4/#5#6/#7#8#9\@nil{%
+#1#2#3#4#5#6#7#8%
+}%
+}{%
+\def\LTXcmds@ParseVersion#1{%
+\ifnum\pdfmatch{%
+ ^%
+ (199[4-9]|[2-9][0-9][0-9][0-9])/%
+ (0[1-9]|1[0-2])/%
+ (0[1-9]|[1-2][0-9]|3[0-1])%
+}{#1}=1 %
+\ltx@StripPrefix\pdflastmatch1 %
+\ltx@StripPrefix\pdflastmatch2 %
+\ltx@StripPrefix\pdflastmatch3 %
+\else
+ 0%
+\fi
+}%
+}
+\long\def\ltx@GlobalAppendToMacro#1#2{%
+\ifx\ltx@undefined#1%
+\let#1\ltx@empty
+\else
+\ifx\relax#1%
+\let#1\ltx@empty
+\fi
+\fi
+\begingroup
+\ltx@LocToksA\expandafter{#1#2}%
+\xdef#1{\the\ltx@LocToksA}%
+\endgroup
+}
+\long\def\ltx@LocalAppendToMacro#1#2{%
+\global\let\LTXcmds@gtemp#1%
+\ifx\ltx@undefined\LTXcmds@gtemp
+\global\let\LTXcmds@gtemp\ltx@empty
+\else
+\ifx\relax\LTXcmds@gtemp
+\global\letLTXcmds@gtemp\ltx@empty
+\fi
+\fi
+\begingroup
+\ltx@LocToksA\expandafter{\LTXcmds@gtemp#2}%
+\xdef\LTXcmds@gtemp{\the\ltx@LocToksA}%
+\endgroup
+\let#1\LTXcmds@gtemp
+}
+\long\def\ltx@GlobalPrependToMacro#1#2{%
+\ifx\ltx@undefined#1%
+\let#1\ltx@empty
+\else
+\ifx\relax#1%
+\let#1\ltx@empty
+\fi
+\fi
+\begingroup
+\ltx@LocToksA{#2}%
+\ltx@LocToksB\expandafter{#1}%
+\xdef#1{\the\ltx@LocToksA\the\ltx@LocToksB}%
+\endgroup
+}
+\long\def\ltx@LocalPrependToMacro#1#2{%
+\global\let\LTXcmds@gtemp#1%
+\ifx\ltx@undefined\LTXcmds@gtemp
+\global\let\LTXcmds@gtemp\ltx@empty
+\else
+\ifx\relax\LTXcmds@gtemp
+\global\letLTXcmds@gtemp\ltx@empty
+\fi
+\fi
+\begingroup
+\ltx@LocToksA{#2}%
+\ltx@LocToksB\expandafter{\LTXcmds@gtemp}%
+\xdef\LTXcmds@gtemp{\the\ltx@LocToksA\the\ltx@LocToksB}%
+\endgroup
+\let#1\LTXcmds@gtemp
+}
+\long\def\ltx@ifnextchar#1#2#3{%
+\begingroup
+\let\LTXcmds@CharToken= #1\relax
+\ltx@LocToksA{\endgroup#2}%
+\ltx@LocToksB{\endgroup#3}%
+\futurelet\LTXcmds@LetToken\LTXcmds@ifnextchar
+}
+\def\LTXcmds@ifnextchar{%
+\ifx\LTXcmds@LetToken\LTXcmds@CharToken
+\the\expandafter\ltx@LocToksA
+\else
+\expandafter
+\ifx\csname LTXcmds@LetToken\endcsname\LTXcmds@SpaceToken
+\expandafter\expandafter\expandafter\LTXcmds@@ifnextchar
+\else
+\the\expandafter\expandafter\expandafter\ltx@LocToksB
+\fi
+\fi
+}
+\def\LTXcmds@@ifnextchar{%
+\expandafter\futurelet
+\expandafter\LTXcmds@LetToken
+\expandafter\LTXcmds@ifnextchar
+\romannumeral-`\.%
+}
+\ltx@firstofone{\let\LTXcmds@SpaceToken= } %
+\long\def\ltx@ifnextchar@nospace#1#2#3{%
+\begingroup
+\let\LTXcmds@CharToken= #1\relax
+\ltx@LocToksA{\endgroup#2}%
+\ltx@LocToksB{\endgroup#3}%
+\futurelet\LTXcmds@LetToken\LTXcmds@ifnextchar@nospace
+}
+\def\LTXcmds@ifnextchar@nospace{%
+\the
+\ifx\LTXcmds@LetToken\LTXcmds@CharToken
+\expandafter\ltx@LocToksA
+\else
+\expandafter\ltx@LocToksB
+\fi
+}
+\ltx@IfUndefined{quitvmode}{%
+\ltx@IfUndefined{leavevmode}{%
+\ltx@IfUndefined{voidb@x}{%
+\ltx@IfUndefined{newbox}{%
+\def\ltx@leavevmode{%
+\begingroup
+\setbox\ltx@zero=\hbox{}%
+\begingroup
+\setbox\ltx@zero=\hbox{\box\ltx@zero}%
+\endgroup
+\unhbox\ltx@zero
+\endgroup
+}%
+}{%
+\csname newbox\endcsname\LTXcmds@VoidBox
+\ifvoid\LTXcmds@VoidBox
+\else
+\setbox\LTXcmds@VoidBox=\hbox{}%
+\begingroup
+\setbox\LTXcmds@VoidBox=\hbox{\box\LTXcmds@VoidBox}%
+\endgroup
+\fi
+\def\ltx@leavevmode{\unhbox\LTXcmds@VoidBox}%
+}%
+}{%
+\def\ltx@leavevmode{\unhbox\voidb@x}%
+}%
+}{%
+\let\ltx@leavevmode\leavevmode
+}%
+}{%
+\let\ltx@leavevmode\quitvmode
+}
+\def\ltx@mbox{%
+\ltx@leavevmode
+\hbox
+}
+\ltx@IfUndefined{numexpr}{%
+\def\LTXcmds@num#1{%
+\expandafter\ltx@firstofone\expandafter{%
+\number#1%
+}%
+}%
+}{%
+\def\LTXcmds@num#1{%
+\expandafter\ltx@firstofone\expandafter{%
+\the\numexpr#1%
+}%
+}%
+}
+\ltx@IfUndefined{detokenize}{%
+\def\LTXcmds@temp#1{%
+\long\def\ltx@ifempty##1{%
+\romannumeral0%
+\iffalse{\fi
+\expandafter\ltx@gobble\expandafter{%
+\expandafter{\string##1}%
+\expandafter\ltx@gobble\string
+}%
+\expandafter\ltx@firstofthree\expandafter
+{\iffalse}\fi
+\expandafter#1\ltx@secondoftwo
+}%
+\expandafter#1\ltx@firstoftwo
+}%
+\long\def\ltx@ifblank##1{%
+\romannumeral0%
+\iffalse{\fi
+\expandafter\expandafter\expandafter\ltx@gobble
+\expandafter\expandafter\expandafter{%
+\expandafter\expandafter\expandafter{%
+\expandafter\string\ltx@gobble##1.%
+}%
+\expandafter\ltx@gobble\string
+}%
+\expandafter\ltx@firstofthree\expandafter
+{\iffalse}\fi
+\expandafter#1\ltx@secondoftwo
+}%
+\expandafter#1\ltx@firstoftwo
+}%
+}%
+\LTXcmds@temp{ }%
+}{%
+\long\def\ltx@ifempty#1{%
+\romannumeral%
+\csname
+ LTXcmds@ifempty%
+\ifcat$\detokenize{#1}$%
+ @%
+\fi
+\endcsname
+}%
+\long\def\LTXcmds@ifempty@#1#2{0 #1}%
+\long\def\LTXcmds@ifempty#1#2{0 #2}%
+\long\def\ltx@ifblank#1{%
+\romannumeral%
+\csname
+ LTXcmds@ifempty%
+\ifcat$\detokenize\expandafter{\ltx@gobble#1.}$%
+ @%
+\fi
+\endcsname
+}%
+}
+\long\def\ltx@zapspace#1{%
+\romannumeral
+\LTXcmds@zapspace\ltx@zero#1 \@nil
+}
+\long\def\LTXcmds@zapspace#1 #2\@nil{%
+\ltx@ifempty{#2}{%
+#1%
+}{%
+\LTXcmds@zapspace#1#2\@nil
+}%
+}
+\ltx@IfUndefined{lastnodetype}{%
+\catcode`\$=9 %
+\catcode`\&=14 %
+}{%
+\catcode`\$=14 %
+\catcode`\&=9 %
+}
+\def\ltx@IfBoxEmpty#1{%
+\ifvoid#1\relax
+\expandafter\ltx@secondoftwo
+\else
+&   \begingroup
+&     \setbox\ltx@zero=\ifhbox#1\hbox\else\vbox\fi{%
+&       \ifhmode\unhcopy\else\unvcopy\fi#1\relax
+&       \expandafter
+&     }%
+&   \expandafter\endgroup
+&   \ifnum\lastnodetype<\ltx@zero
+&     \expandafter\expandafter\expandafter\ltx@firstoftwo
+&   \else
+&     \expandafter\expandafter\expandafter\ltx@secondoftwo
+&   \fi
+$   \begingroup
+$     \setbox\ltx@zero=\ifhbox#1\hbox\else\vbox\fi{%
+$       \penalty\ltx@one
+$       \ifhmode\unhcopy\else\unvcopy\fi#1\relax
+$       \expandafter
+$     }%
+$     \ifnum\lastpenalty=\ltx@one
+$       \endgroup
+$       \begingroup
+$       \setbox\ltx@zero=\ifhbox#1\hbox\else\vbox\fi{%
+$         \penalty\ltx@two
+$         \ifhmode\unhcopy\else\unvcopy\fi#1\relax
+$         \expandafter
+$       }%
+$       \ifnum\lastpenalty=\ltx@two
+$         \def\next{\endgroup\expandafter\ltx@firstoftwo}%
+$       \else
+$         \def\next{\endgroup\expandafter\ltx@secondoftwo}%
+$       \fi
+$     \else
+$       \def\next{\endgroup\expandafter\ltx@secondoftwo}%
+$     \fi
+$   \next
+\fi
+}
+\def\ltx@IfBoxVoidOrEmpty#1{%
+\ifvoid#1\relax
+\expandafter\ltx@thirdoffour
+\fi
+\ltx@IfBoxEmpty{#1}%
+}
+\LTXcmds@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{ifluatex}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@ifluatex.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{ifluatex}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@ifluatex.sty\endcsname
+\ProvidesPackage{ifluatex}%
+ [2010/03/01 v1.3 Provides the ifluatex switch (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname ifluatex@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\ifluatex@AtEnd{%
+\ifluatex@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifluatex@AtEnd{\ifluatex@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname PackageError\endcsname\relax
+\def\ifluatex@Error#1#2{%
+\begingroup
+\newlinechar=10 %
+\def\MessageBreak{^^J}%
+\edef\x{\errhelp{#2}}%
+\x
+\errmessage{Package ifluatex Error: #1}%
+\endgroup
+}%
+\else
+\def\ifluatex@Error{%
+\PackageError{ifluatex}%
+}%
+\fi
+\begingroup
+\expandafter\ifx\csname ifluatex\endcsname\relax
+\else
+\edef\i/{\expandafter\string\csname ifluatex\endcsname}%
+\ifluatex@Error{Name clash, \i/ is already defined}{%
+ Incompatible versions of \i/ can cause problems,\MessageBreak
+ therefore package loading is aborted.%
+}%
+\endgroup
+\expandafter\ifluatex@AtEnd
+\fi%
+\endgroup
+\let\ifluatex\iffalse
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname luatexversion\endcsname\relax
+\else
+\expandafter\let\csname ifluatex\expandafter\endcsname
+\csname iftrue\endcsname
+\fi
+\ifluatex
+\else
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname directlua\endcsname\relax
+\else
+\expandafter\let\csname ifluatex\expandafter\endcsname
+\csname iftrue\endcsname
+\begingroup
+\newlinechar=10 %
+\endlinechar=\newlinechar%
+\ifnum0%
+\directlua{%
+ if tex.enableprimitives then
+ tex.enableprimitives('ifluatex', {'luatexversion'})
+ tex.print('1')
+ end
+}%
+\ifx\ifluatexluatexversion\@undefined\else 1\fi %
+ =11 %
+\global\let\luatexversion\ifluatexluatexversion%
+\else%
+\ifluatex@Error{%
+ Missing \string\luatexversion%
+}{%
+ Update LuaTeX.%
+}%
+\fi%
+\endgroup%
+\fi
+\fi
+\ifluatex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname luatexrevision\endcsname\relax
+\ifnum\luatexversion<36 %
+\else
+\begingroup
+\ifx\luatexrevision\relax
+\let\luatexrevision\@undefined
+\fi
+\newlinechar=10 %
+\endlinechar=\newlinechar%
+\ifcase0%
+\directlua{%
+ if tex.enableprimitives then
+ tex.enableprimitives('ifluatex', {'luatexrevision'})
+ else
+ tex.print('1')
+ end
+}%
+\ifx\ifluatexluatexrevision\@undefined 1\fi%
+\relax%
+\global\let\luatexrevision\ifluatexluatexrevision%
+\fi%
+\endgroup%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname luatexrevision\endcsname\relax
+\ifluatex@Error{%
+ Missing \string\luatexrevision%
+}{%
+ Update LuaTeX.%
+}%
+\fi
+\fi
+\fi
+\begingroup
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\let\x\PackageInfo
+\expandafter\let\csname on@line\endcsname\empty
+\fi
+\x{ifluatex}{LuaTeX \ifluatex\else not \fi detected}%
+\endgroup
+\ifluatex@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{ifvtex}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@ifvtex.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{ifvtex}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@ifvtex.sty\endcsname
+\ProvidesPackage{ifvtex}%
+ [2010/03/01 v1.5 Detect VTeX and its facilities (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname ifvtex@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\ifvtex@AtEnd{%
+\ifvtex@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifvtex@AtEnd{\ifvtex@AtEnd\noexpand\endinput}
+\begingroup
+\expandafter\ifx\csname ifvtex\endcsname\relax
+\else
+\edef\i/{\expandafter\string\csname ifvtex\endcsname}%
+\expandafter\ifx\csname PackageError\endcsname\relax
+\def\x#1#2{%
+\edef\z{#2}%
+\expandafter\errhelp\expandafter{\z}%
+\errmessage{Package ifvtex Error: #1}%
+}%
+\def\y{^^J}%
+\newlinechar=10 %
+\else
+\def\x#1#2{%
+\PackageError{ifvtex}{#1}{#2}%
+}%
+\def\y{\MessageBreak}%
+\fi
+\x{Name clash, \i/ is already defined}{%
+ Incompatible versions of \i/ can cause problems,\y
+ therefore package loading is aborted.%
+}%
+\endgroup
+\expandafter\ifvtex@AtEnd
+\fi%
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newif\endcsname\relax
+\def\ifvtex@newif#1{%
+\begingroup
+\escapechar=-1 %
+\expandafter\endgroup
+\expandafter\ifvtex@@newif\string#1\@nil
+}%
+\def\ifvtex@@newif#1#2#3\@nil{%
+\expandafter\edef\csname#3true\endcsname{%
+\let
+\expandafter\noexpand\csname if#3\endcsname
+\expandafter\noexpand\csname iftrue\endcsname
+}%
+\expandafter\edef\csname#3false\endcsname{%
+\let
+\expandafter\noexpand\csname if#3\endcsname
+\expandafter\noexpand\csname iffalse\endcsname
+}%
+\csname#3false\endcsname
+}%
+\else
+\expandafter\let\expandafter\ifvtex@newif\csname newif\endcsname
+\fi
+\ifvtex@newif\ifvtex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname VTeXversion\endcsname\relax
+\else
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname OpMode\endcsname\relax
+\else
+\vtextrue
+\fi
+\fi
+\ifvtex@newif\ifvtexdvi
+\ifvtex@newif\ifvtexpdf
+\ifvtex@newif\ifvtexps
+\ifvtex@newif\ifvtexhtml
+\ifvtex@newif\ifvtexgex
+\ifvtex
+\ifcase\OpMode\relax
+\vtexdvitrue
+\or % 1
+\vtexpdftrue
+\or % 2
+\vtexpstrue
+\or % 3
+\vtexpstrue
+\or\or\or\or\or\or\or % 10
+\vtexhtmltrue
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname gexmode\endcsname\relax
+\else
+\ifnum\gexmode>0 %
+\vtexgextrue
+\fi
+\fi
+\fi
+\begingroup
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\let\x\PackageInfo
+\expandafter\let\csname on@line\endcsname\empty
+\fi
+\x{ifvtex}{%
+ VTeX %
+\ifvtex
+ in \ifvtexdvi DVI\fi
+\ifvtexpdf PDF\fi
+\ifvtexps PS\fi
+\ifvtexhtml HTML\fi
+\space mode %
+ with\ifvtexgex\else out\fi\space GeX %
+\else
+ not %
+\fi
+ detected%
+}%
+\endgroup
+\ifvtex@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{intcalc}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@intcalc.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{intcalc}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@intcalc.sty\endcsname
+\ProvidesPackage{intcalc}%
+ [2007/09/27 v1.1 Expandable calculations with integers (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname InCa@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\InCa@AtEnd{%
+\InCa@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{11}% : (letter!)
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{14}% ? (comment!)
+\edef\InCa@AtEnd{\InCa@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname InCa@TestMode\endcsname\relax
+\else
+\catcode63=9 % ? (ignore)
+\fi
+? \let\InCa@@TestMode\InCa@TestMode
+\def\InCa@Abs#1#2!{%
+\ifx#1-%
+#2%
+\else
+#1#2%
+\fi
+}
+\def\InCa@Sgn#1#2!{%
+\ifx#1-%
+ -1%
+\else
+\ifx#10%
+ 0%
+\else
+ 1%
+\fi
+\fi
+}
+\def\InCa@Min#1!#2!{%
+\ifnum#1<#2 %
+#1%
+\else
+#2%
+\fi
+}
+\def\InCa@Max#1!#2!{%
+\ifnum#1>#2 %
+#1%
+\else
+#2%
+\fi
+}
+\def\InCa@Cmp#1!#2!{%
+\ifnum#1=#2 %
+ 0%
+\else
+\ifnum#1<#2 %
+ -%
+\fi
+ 1%
+\fi
+}
+\def\InCa@Fac#1!{%
+\ifcase#1 1% 0!
+\or 1% 1!
+\or 2% 2!
+\or 6% 3!
+\or 24% 4!
+\or 120% 5!
+\or 720% 6!
+\or 5040% 7!
+\or 40320% 8!
+\or 362880% 9!
+\or 3628800% 10!
+\or 39916800% 11!
+\or 479001600% 12!
+\else
+\ifnum#1<\z@
+ 0\IntCalcError:FacNegative%
+\else
+ 0\IntCalcError:FacOverflow%
+\fi
+\fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\else
+\def\intcalcNum#1{%
+\the\numexpr#1\relax
+}%
+\def\intcalcInv#1{%
+\number-\intcalcNum{#1} %
+}%
+\def\intcalcAbs#1{%
+\number\expandafter\InCa@Abs\the\numexpr#1! %
+}%
+\def\intcalcSgn#1{%
+\number\expandafter\InCa@Sgn\the\numexpr#1! %
+}%
+\def\intcalcMin#1#2{%
+\number\expandafter\InCa@Min
+\the\numexpr#1\expandafter!%
+\the\numexpr#2! %
+}%
+\def\intcalcMax#1#2{%
+\number\expandafter\InCa@Max
+\the\numexpr#1\expandafter!%
+\the\numexpr#2! %
+}%
+\def\intcalcCmp#1#2{%
+\number\expandafter\InCa@Cmp
+\the\numexpr#1\expandafter!\the\numexpr#2! %
+}%
+\def\intcalcInc#1{%
+\the\numexpr#1+1\relax
+}%
+\def\intcalcDec#1{%
+\the\numexpr#1-1\relax
+}%
+\def\IntCalcInc#1!{%
+\the\numexpr#1+1\relax
+}%
+\def\IntCalcDec#1!{%
+\the\numexpr#1-1\relax
+}%
+\def\intcalcAdd#1#2{%
+\the\numexpr#1+(#2)\relax
+}%
+\def\intcalcSub#1#2{%
+\the\numexpr#1-(#2)\relax
+}%
+\def\IntCalcAdd#1!#2!{%
+\the\numexpr#1+#2\relax
+}%
+\def\IntCalcSub#1!#2!{%
+\the\numexpr#1-#2\relax
+}%
+\def\intcalcShl#1{%
+\the\numexpr(#1)*2\relax
+}%
+\def\intcalcShr#1{%
+\number\expandafter\InCa@Shr\the\numexpr#1! %
+}%
+\def\IntCalcShl#1!{%
+\the\numexpr#1*2\relax
+}%
+\def\IntCalcShr#1!{%
+\the\numexpr\ifodd#1 (#1-1)\else#1\fi/2\relax
+}%
+\def\InCa@Shr#1#2!{%
+\ifx#1-%
+ -\InCa@Shr#2!%
+\else
+\ifodd#1#2 %
+\the\numexpr(#1#2-1)/2\relax
+\else
+\the\numexpr#1#2/2\relax
+\fi
+\fi
+}%
+\def\intcalcMul#1#2{%
+\the\numexpr(#1)*(#2)\relax
+}%
+\def\IntCalcMul#1!#2!{%
+\the\numexpr#1*#2\relax
+}%
+\def\intcalcSqr#1{%
+\number\expandafter\InCa@Sqr\the\numexpr#1! %
+}%
+\def\InCa@Sqr#1!{%
+\the\numexpr#1*#1\relax
+}%
+\def\intcalcFac#1{%
+\number\expandafter\InCa@Fac\the\numexpr#1! %
+}%
+\def\intcalcPow#1#2{%
+\number\expandafter\InCa@Pow
+\the\numexpr#1\expandafter!%
+\the\numexpr#2! %
+}%
+\def\InCa@Pow#1#2!#3#4!{%
+\ifcase#3#4 % power = 0
+ 1%
+\or % power = 1
+#1#2%
+\or % power = 2
+\the\numexpr#1#2*#1#2\relax
+\else
+\ifcase#1#2 % basis = 0, power <> 0
+ 0%
+\ifx#3-% power < 0
+ 0\IntCalcError:DivisionByZero%
+\fi
+\or
+ 1% basis = 1
+\else
+\ifnum#1#2=\m@ne % basis = -1
+\ifodd#3#4 %
+ -%
+\fi
+ 1%
+\else % |basis| > 1
+\ifx#3-% power < 0
+ 0%
+\else % power > 2
+\InCa@PowRec#1#2!#3#4!1!%
+\fi
+\fi
+\fi
+\fi
+}%
+\def\InCa@PowRec#1!#2!#3!{%
+\ifnum#2=\@ne
+\the\numexpr#1*#3\relax
+\else
+\ifodd#2 %
+\expandafter\InCa@PowRec
+\the\numexpr#1*#1\expandafter!%
+\the\numexpr(#2-1)/2\expandafter!%
+\the\numexpr#1*#3\expandafter\expandafter\expandafter!%
+\else
+\expandafter\InCa@PowRec
+\the\numexpr#1*#1\expandafter!%
+\the\numexpr(#2-1)/2\expandafter!%
+\number#3\expandafter\expandafter\expandafter!%
+\fi
+\fi
+}%
+\def\intcalcDiv#1#2{%
+\number\expandafter\InCa@Div
+\the\numexpr#1\expandafter!%
+\the\numexpr#2! %
+}%
+\def\InCa@Div#1!#2!{%
+\ifcase#2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase#1 %
+ 0%
+\else
+\expandafter\InCa@@Div
+\romannumeral 0%
+\ifnum#1<\z@
+\expandafter-\number-#1%
+\else
+\expandafter+\number#1%
+\fi
+\expandafter!%
+\romannumeral 0%
+\ifnum#2<\z@
+\expandafter-\number-#2%
+\else
+\expandafter+\number#2%
+\fi
+ !%
+\fi
+\fi
+}%
+\def\InCa@Temp#1{%
+\def\IntCalcDiv##1!##2!{%
+\number
+\ifcase##2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase##1 %
+ 0%
+\else
+\the\numexpr(##1-(##2-1)/2)/##2\relax
+\fi
+\fi
+#1%
+}%
+}%
+\InCa@Temp{ }%
+\def\InCa@@Div#1#2!#3#4!{%
+#1#3%
+\the\numexpr(#2-(#4-1)/2)/#4\relax
+}%
+\def\intcalcMod#1#2{%
+\number\expandafter\InCa@Mod
+\the\numexpr#1\expandafter!%
+\the\numexpr#2! %
+}%
+\def\InCa@Mod#1!#2!{%
+\ifcase#2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase#1 %
+ 0%
+\else
+\expandafter\InCa@@Mod
+\romannumeral 0%
+\ifnum#1<\z@
+\expandafter-\number-#1%
+\else
+\expandafter+\number#1%
+\fi
+\expandafter!%
+\romannumeral 0%
+\ifnum#2<\z@
+\expandafter-\number-#2%
+\else
+\expandafter+\number#2%
+\fi
+ !%
+\fi
+\fi
+}%
+\def\InCa@Temp#1{%
+\def\IntCalcMod##1!##2!{%
+\number
+\ifcase##2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase##1 %
+ 0%
+\else
+\the\numexpr##1-(##1-(##2-1)/2)/##2*##2\relax
+\fi
+\fi
+#1%
+}%
+}%
+\InCa@Temp{ }%
+\def\InCa@@Mod#1#2!#3#4!{%
+\if#3+%
+\if#1+%
+\the\numexpr#2-\InCa@@Div+#2!+#4!*#4\relax
+\else
+\expandafter\InCa@ModX
+\the\numexpr-#2+\InCa@@Div+#2!+#4!*#4!#4!%
+\fi
+\else
+ -%
+\if#1+%
+\expandafter\InCa@ModX
+\the\numexpr-#2+\InCa@@Div+#2!+#4!*#4!#4!%
+\else
+\the\numexpr#2-\InCa@@Div+#2!+#4!*#4\relax
+\fi
+\fi
+}%
+\def\InCa@ModX#1!#2!{%
+\ifcase#1 %
+ 0%
+\else
+\the\numexpr#1+#2\relax
+\fi
+}%
+\expandafter\InCa@AtEnd
+\fi%
+\def\intcalcNum#1{%
+\number\expandafter\InCa@FirstOfOne\number#1! %
+}
+\def\intcalcInv#1{%
+\number\expandafter\InCa@FirstOfOne\number-#1! %
+}
+\def\InCa@FirstOfOne#1!{#1}
+\def\intcalcAbs#1{%
+\number\expandafter\InCa@Abs\number#1! %
+}
+\def\intcalcSgn#1{%
+\number\expandafter\InCa@Sgn\number#1! %
+}
+\def\intcalcMin#1#2{%
+\number\expandafter\InCa@Min
+\number\number#1\expandafter!\number#2! %
+}
+\def\intcalcMax#1#2{%
+\number\expandafter\InCa@Max
+\number\number#1\expandafter!\number#2! %
+}
+\def\intcalcCmp#1#2{%
+\number\expandafter\InCa@Cmp
+\number\number#1\expandafter!\number#2! %
+}%
+\def\intcalcInc#1{%
+\number\expandafter\InCa@IncSwitch\number#1! %
+}
+\def\InCa@IncSwitch#1#2!{%
+\ifx#1-%
+ -%
+\csname InCa@Empty%
+\InCa@Dec#2!%
+\else
+\csname InCa@Empty%
+\InCa@Inc#1#2!%
+\fi
+}
+\def\intcalcDec#1{%
+\number\expandafter\InCa@DecSwitch\number#1! %
+}
+\def\InCa@DecSwitch#1#2!{%
+\ifx#1-%
+ -%
+\csname InCa@Empty%
+\expandafter\InCa@Inc#2!%
+\else
+\ifx#10%
+ -1%
+\else
+\csname InCa@Empty%
+\InCa@Dec#1#2!%
+\fi
+\fi
+}
+\def\IntCalcInc#1!{%
+\number\csname InCa@Empty\InCa@Inc#1! %
+}
+\def\IntCalcDec#1!{%
+\number\csname InCa@Empty\InCa@Dec#1! %
+}
+\def\InCa@Inc#1#2{%
+\ifx#2!%
+\csname InCa@IncDigit#1\endcsname1%
+\else
+\csname InCa@IncDigit#1%
+\expandafter\InCa@Inc\expandafter#2%
+\fi
+}
+\def\InCa@Temp#1#2{%
+\expandafter\def\csname InCa@IncDigit#1\endcsname##1{%
+\endcsname
+ 0%
+\ifcase##1 %
+#1%
+\else
+#2%
+\fi
+}%
+}
+\InCa@Temp 01
+\InCa@Temp 12
+\InCa@Temp 23
+\InCa@Temp 34
+\InCa@Temp 45
+\InCa@Temp 56
+\InCa@Temp 67
+\InCa@Temp 78
+\InCa@Temp 89
+\expandafter\def\csname InCa@IncDigit9\endcsname#1{%
+\expandafter\endcsname
+\ifcase#1 %
+ 09%
+\else
+ 10%
+\fi
+}
+\def\InCa@Dec#1#2{%
+\ifx#2!%
+\csname InCa@DecDigit#1\endcsname1%
+\else
+\csname InCa@DecDigit#1%
+\expandafter\InCa@Dec\expandafter#2%
+\fi
+}
+\def\InCa@Temp#1#2{%
+\expandafter\def\csname InCa@DecDigit#1\endcsname##1{%
+\endcsname
+ 0%
+\ifcase##1 %
+#1%
+\else
+#2%
+\fi
+}%
+}
+\InCa@Temp 98
+\InCa@Temp 87
+\InCa@Temp 76
+\InCa@Temp 65
+\InCa@Temp 54
+\InCa@Temp 43
+\InCa@Temp 32
+\InCa@Temp 21
+\InCa@Temp 10
+\expandafter\def\csname InCa@DecDigit0\endcsname#1{%
+\expandafter\endcsname
+\ifcase#1 %
+ 00%
+\else
+ 19%
+\fi
+}
+\def\intcalcAdd#1#2{%
+\number
+\expandafter\InCa@AddSwitch
+\number\number#1\expandafter!%
+\number#2! %
+}
+\def\intcalcSub#1#2{%
+\number
+\expandafter\InCa@AddSwitch
+\number\number#1\expandafter!%
+\number-\number#2! %
+}
+\def\InCa@AddSwitch#1!#2!{%
+\ifnum#1<\z@
+\ifnum#2<\z@
+ -%
+\ifnum#1<#2 %
+\expandafter\InCa@Add\number-#1\expandafter!%
+\@gobble#2!%
+\else
+\expandafter\InCa@Add\number-#2\expandafter!%
+\@gobble#1!%
+\fi
+\else
+\ifnum-#1>#2 %
+ -%
+\expandafter\InCa@Sub\@gobble#1!#2!%
+\else
+\expandafter\InCa@Sub\number#2\expandafter!%
+\@gobble#1!%
+\fi
+\fi
+\else
+\ifnum#2<\z@
+\ifnum#1>-#2 %
+\expandafter\InCa@Sub\number#1\expandafter!%
+\@gobble#2!%
+\else
+ -%
+\expandafter\InCa@Sub\@gobble#2!#1!%
+\fi
+\else
+\ifnum#1>#2 %
+\InCa@Add#1!#2!%
+\else
+\InCa@Add#2!#1!%
+\fi
+\fi
+\fi
+}
+\def\IntCalcAdd#1!#2!{%
+\number\InCa@Add#1!#2! %
+}
+\def\IntCalcSub#1!#2!{%
+\number\InCa@Sub#1!#2! %
+}
+\begingroup
+\def\x#1{\endgroup
+\let\InCa@Space= #1%
+}%
+\x{ }
+\def\InCa@Add#1!#2!{%
+\ifcase#2 %
+#1%
+\else
+\InCa@@Add#1!#2!000000000\InCa@Space
+\fi
+}
+\def\InCa@Sub#1!#2!{%
+\ifnum#1=#2 %
+ 0%
+\else
+\InCa@@Sub#1!#2!000000000\InCa@Space
+\fi
+}
+\def\InCa@@Add#1!#2#3!{%
+\ifx\InCa@Empty#3\InCa@Empty
+\@ReturnAfterElseFi{%
+\InCa@@@Add!!#1!#2%
+}%
+\else
+\@ReturnAfterFi{%
+\InCa@@Add#1!#3!#2%
+}%
+\fi
+}
+\def\InCa@@Sub#1!#2#3!{%
+\ifx\InCa@Empty#3\InCa@Empty
+\@ReturnAfterElseFi{%
+\InCa@@@Sub!!#1!#2%
+}%
+\else
+\@ReturnAfterFi{%
+\InCa@@Sub#1!#3!#2%
+}%
+\fi
+}
+\def\InCa@@@Add#1!#2!#3#4!#5{%
+\ifx\InCa@Empty#4\InCa@Empty
+\csname InCa@Empty%
+\@ReturnAfterElseFi{%
+\InCa@ProcessAdd#1#3!#5#2%
+}%
+\else
+\@ReturnAfterFi{%
+\InCa@@@Add#1#3!#5#2!#4!%
+}%
+\fi
+}
+\def\InCa@@@Sub#1!#2!#3#4!#5{%
+\ifx\InCa@Empty#4\InCa@Empty
+\csname @gobble%
+\@ReturnAfterElseFi{%
+\InCa@ProcessSub#1#3!#5#2%
+}%
+\else
+\@ReturnAfterFi{%
+\InCa@@@Sub#1#3!#5#2!#4!%
+}%
+\fi
+}
+\def\InCa@ProcessAdd#1#2!#3#4{%
+\ifx\InCa@Empty#2\InCa@Empty
+\csname InCa@AddDigit#1\endcsname#3%
+\romannumeral0#4%
+\else
+\csname InCa@AddDigit#1\csname InCa@DigitCarry#3%
+\@ReturnAfterFi{%
+\InCa@ProcessAdd#2!#4%
+}%
+\fi
+}
+\def\InCa@ProcessSub#1#2!#3#4{%
+\ifx\InCa@Empty#2\InCa@Empty
+\csname InCa@SubDigit#1\endcsname#3%
+\romannumeral0#4%
+\else
+\csname InCa@SubDigit#1\csname InCa@DigitCarry#3%
+\@ReturnAfterFi{%
+\InCa@ProcessSub#2!#4%
+}%
+\fi
+}
+\def\InCa@Temp#1#2{%
+\expandafter\def\csname InCa@DigitCarry#1\endcsname##1{%
+\ifcase##1 %
+\endcsname#1%
+\else
+\endcsname#2%
+\fi
+}%
+}
+\InCa@Temp 01
+\InCa@Temp 12
+\InCa@Temp 23
+\InCa@Temp 34
+\InCa@Temp 45
+\InCa@Temp 56
+\InCa@Temp 67
+\InCa@Temp 78
+\InCa@Temp 89
+\InCa@Temp 9{{10}}
+\expandafter\def\csname InCa@AddDigit0\endcsname#1{%
+\ifnum#1>9 %
+\endcsname10%
+\else
+\endcsname0#1%
+\fi
+}
+\def\InCa@Temp#1#2#3{%
+\expandafter\def\csname InCa@AddDigit#1\endcsname##1{%
+\ifnum##1>#2 %
+\endcsname 1%
+\else
+\endcsname 0%
+\fi
+\ifcase##1 #1% 0
+#3%
+\else #1% 10
+\fi
+}%
+}
+\InCa@Temp 18{%
+\or 2% 1
+\or 3% 2
+\or 4% 3
+\or 5% 4
+\or 6% 5
+\or 7% 6
+\or 8% 7
+\or 9% 8
+\or 0% 9
+}%
+\InCa@Temp 27{%
+\or 3% 1
+\or 4% 2
+\or 5% 3
+\or 6% 4
+\or 7% 5
+\or 8% 6
+\or 9% 7
+\or 0% 8
+\or 1% 9
+}%
+\InCa@Temp 36{%
+\or 4% 1
+\or 5% 2
+\or 6% 3
+\or 7% 4
+\or 8% 5
+\or 9% 6
+\or 0% 7
+\or 1% 8
+\or 2% 9
+}%
+\InCa@Temp 45{%
+\or 5% 1
+\or 6% 2
+\or 7% 3
+\or 8% 4
+\or 9% 5
+\or 0% 6
+\or 1% 7
+\or 2% 8
+\or 3% 9
+}%
+\InCa@Temp 54{%
+\or 6% 1
+\or 7% 2
+\or 8% 3
+\or 9% 4
+\or 0% 5
+\or 1% 6
+\or 2% 7
+\or 3% 8
+\or 4% 9
+}%
+\InCa@Temp 63{%
+\or 7% 1
+\or 8% 2
+\or 9% 3
+\or 0% 4
+\or 1% 5
+\or 2% 6
+\or 3% 7
+\or 4% 8
+\or 5% 9
+}%
+\InCa@Temp 72{%
+\or 8% 1
+\or 9% 2
+\or 0% 3
+\or 1% 4
+\or 2% 5
+\or 3% 6
+\or 4% 7
+\or 5% 8
+\or 6% 9
+}%
+\InCa@Temp 81{%
+\or 9% 1
+\or 0% 2
+\or 1% 3
+\or 2% 4
+\or 3% 5
+\or 4% 6
+\or 5% 7
+\or 6% 8
+\or 7% 9
+}%
+\InCa@Temp 90{%
+\or 0% 1
+\or 1% 2
+\or 2% 3
+\or 3% 4
+\or 4% 5
+\or 5% 6
+\or 6% 7
+\or 7% 8
+\or 8% 9
+}%
+\def\InCa@Temp#1#2{%
+\expandafter\def\csname InCa@SubDigit#1\endcsname##1{%
+\ifnum##1>#1 %
+\endcsname 1%
+\else
+\endcsname 0%
+\fi
+\ifcase##1 #1% 0
+#2%
+\else #1% 10
+\fi
+}%
+}
+\InCa@Temp 0{%
+\or 9% 1
+\or 8% 2
+\or 7% 3
+\or 6% 4
+\or 5% 5
+\or 4% 6
+\or 3% 7
+\or 2% 8
+\or 1% 9
+}
+\InCa@Temp 1{%
+\or 0% 1
+\or 9% 2
+\or 8% 3
+\or 7% 4
+\or 6% 5
+\or 5% 6
+\or 4% 7
+\or 3% 8
+\or 2% 9
+}
+\InCa@Temp 2{%
+\or 1% 1
+\or 0% 2
+\or 9% 3
+\or 8% 4
+\or 7% 5
+\or 6% 6
+\or 5% 7
+\or 4% 8
+\or 3% 9
+}
+\InCa@Temp 3{%
+\or 2% 1
+\or 1% 2
+\or 0% 3
+\or 9% 4
+\or 8% 5
+\or 7% 6
+\or 6% 7
+\or 5% 8
+\or 4% 9
+}
+\InCa@Temp 4{%
+\or 3% 1
+\or 2% 2
+\or 1% 3
+\or 0% 4
+\or 9% 5
+\or 8% 6
+\or 7% 7
+\or 6% 8
+\or 5% 9
+}
+\InCa@Temp 5{%
+\or 4% 1
+\or 3% 2
+\or 2% 3
+\or 1% 4
+\or 0% 5
+\or 9% 6
+\or 8% 7
+\or 7% 8
+\or 6% 9
+}
+\InCa@Temp 6{%
+\or 5% 1
+\or 4% 2
+\or 3% 3
+\or 2% 4
+\or 1% 5
+\or 0% 6
+\or 9% 7
+\or 8% 8
+\or 7% 9
+}
+\InCa@Temp 7{%
+\or 6% 1
+\or 5% 2
+\or 4% 3
+\or 3% 4
+\or 2% 5
+\or 1% 6
+\or 0% 7
+\or 9% 8
+\or 8% 9
+}
+\InCa@Temp 8{%
+\or 7% 1
+\or 6% 2
+\or 5% 3
+\or 4% 4
+\or 3% 5
+\or 2% 6
+\or 1% 7
+\or 0% 8
+\or 9% 9
+}
+\InCa@Temp 9{%
+\or 8% 1
+\or 7% 2
+\or 6% 3
+\or 5% 4
+\or 4% 5
+\or 3% 6
+\or 2% 7
+\or 1% 8
+\or 0% 9
+}
+\def\intcalcShl#1{%
+\number\expandafter\InCa@ShlSwitch\number#1! %
+}
+\def\InCa@ShlSwitch#1#2!{%
+\ifx#1-%
+ -\csname InCa@Empty%
+\InCa@Shl#2!%
+\else
+\csname InCa@Empty%
+\InCa@Shl#1#2!%
+\fi
+}
+\def\IntCalcShl#1!{%
+\number
+\csname InCa@Empty%
+\InCa@Shl#1! %
+}
+\def\InCa@Shl#1#2{%
+\ifx#2!%
+\csname InCa@ShlDigit#1\endcsname0%
+\else
+\csname InCa@ShlDigit#1%
+\@ReturnAfterFi{%
+\InCa@Shl#2%
+}%
+\fi
+}
+\expandafter\def\csname InCa@ShlDigit0\endcsname{%
+\endcsname0%
+}
+\def\InCa@Temp#1#2#3#4#5{%
+\expandafter\def\csname InCa@ShlDigit#1\endcsname##1{%
+\expandafter\endcsname
+\ifcase##1 %
+#2#3%
+\else
+#4#5%
+\fi
+}%
+}
+\InCa@Temp 10203
+\InCa@Temp 20405
+\InCa@Temp 30607
+\InCa@Temp 40809
+\InCa@Temp 51011
+\InCa@Temp 61213
+\InCa@Temp 71415
+\InCa@Temp 81617
+\InCa@Temp 91819
+\def\intcalcShr#1{%
+\number\expandafter\InCa@ShrSwitch\number#1! %
+}
+\def\InCa@ShrSwitch#1#2!{%
+\ifx#1-%
+ -\InCa@Shr#2!%
+\else
+\InCa@Shr#1#2!%
+\fi
+}
+\def\IntCalcShr#1!{%
+\number\InCa@Shr#1! %
+}
+\def\InCa@Shr#1#2{%
+\InCa@ShrDigit#1!%
+\ifx#2!%
+\else
+\@ReturnAfterFi{%
+\ifodd#1 %
+\@ReturnAfterElseFi{%
+\InCa@Shr{1#2}%
+}%
+\else
+\expandafter\InCa@Shr\expandafter#2%
+\fi
+}%
+\fi
+}
+\def\InCa@ShrDigit#1!{%
+\ifcase#1 0% 0
+\or 0% 1
+\or 1% 2
+\or 1% 3
+\or 2% 4
+\or 2% 5
+\or 3% 6
+\or 3% 7
+\or 4% 8
+\or 4% 9
+\or 5% 10
+\or 5% 11
+\or 6% 12
+\or 6% 13
+\or 7% 14
+\or 7% 15
+\or 8% 16
+\or 8% 17
+\or 9% 18
+\or 9% 19
+\fi
+}
+\def\InCa@Temp#1{%
+\def\InCa@Tim##1##2{%
+\number
+\ifcase##2 % 0
+ 0%
+\or % 1
+##1%
+\else % 2-9
+\csname InCa@Empty%
+\InCa@ProcessTim##2##1!%
+\fi
+#1%
+}%
+}
+\InCa@Temp{ }
+\def\InCa@ProcessTim#1#2#3{%
+\ifx#3!%
+\csname InCa@TimDigit#2\endcsname#10%
+\else
+\csname InCa@TimDigit#2\csname InCa@Param#1%
+\@ReturnAfterFi{%
+\InCa@ProcessTim#1#3%
+}%
+\fi
+}
+\def\InCa@Temp#1{%
+\expandafter\def\csname InCa@Param#1\endcsname{%
+\endcsname#1%
+}%
+}
+\InCa@Temp 0%
+\InCa@Temp 1%
+\InCa@Temp 2%
+\InCa@Temp 3%
+\InCa@Temp 4%
+\InCa@Temp 5%
+\InCa@Temp 6%
+\InCa@Temp 7%
+\InCa@Temp 8%
+\InCa@Temp 9%
+\expandafter\def\csname InCa@TimDigit0\endcsname#1#2{%
+\endcsname
+ 0#2%
+}
+\expandafter\def\csname InCa@TimDigit1\endcsname#1#2{%
+\ifcase#2 %
+\endcsname 0#1%
+\else
+\csname InCa@AddDigit#1\endcsname #2%
+\fi
+}
+\def\InCa@Temp#1#2{%
+\expandafter\def\csname InCa@TimDigit#1\endcsname##1{%
+\expandafter\InCa@TimDigitCarry
+\number
+\ifcase##1 0% 0
+#2%
+\fi
+ !%
+}%
+}
+\InCa@Temp 2{%
+\or  2% 1
+\or  4% 2
+\or  6% 3
+\or  8% 4
+\or 10% 5
+\or 12% 6
+\or 14% 7
+\or 16% 8
+\or 18% 9
+}
+\InCa@Temp 3{%
+\or  3% 1
+\or  6% 2
+\or  9% 3
+\or 12% 4
+\or 15% 5
+\or 18% 6
+\or 21% 7
+\or 24% 8
+\or 27% 9
+}
+\InCa@Temp 4{%
+\or  4% 1
+\or  8% 2
+\or 12% 3
+\or 16% 4
+\or 20% 5
+\or 24% 6
+\or 28% 7
+\or 32% 8
+\or 36% 9
+}
+\InCa@Temp 5{%
+\or  5% 1
+\or 10% 2
+\or 15% 3
+\or 20% 4
+\or 25% 5
+\or 30% 6
+\or 35% 7
+\or 40% 8
+\or 45% 9
+}
+\InCa@Temp 6{%
+\or  6% 1
+\or 12% 2
+\or 18% 3
+\or 24% 4
+\or 30% 5
+\or 36% 6
+\or 42% 7
+\or 48% 8
+\or 54% 9
+}
+\InCa@Temp 7{%
+\or  7% 1
+\or 14% 2
+\or 21% 3
+\or 28% 4
+\or 35% 5
+\or 42% 6
+\or 49% 7
+\or 56% 8
+\or 63% 9
+}
+\InCa@Temp 8{%
+\or  8% 1
+\or 16% 2
+\or 24% 3
+\or 32% 4
+\or 40% 5
+\or 48% 6
+\or 56% 7
+\or 64% 8
+\or 72% 9
+}
+\InCa@Temp 9{%
+\or  9% 1
+\or 18% 2
+\or 27% 3
+\or 36% 4
+\or 45% 5
+\or 54% 6
+\or 63% 7
+\or 72% 8
+\or 81% 9
+}
+\def\InCa@TimDigitCarry#1!{%
+\ifnum#1<10 %
+\csname InCa@AddDigit#1\expandafter\endcsname
+\else
+\@ReturnAfterFi{%
+\InCa@@TimDigitCarry#1!%
+}%
+\fi
+}
+\def\InCa@@TimDigitCarry#1#2!#3{%
+\csname InCa@DigitCarry#1%
+\csname InCa@AddDigit#2\endcsname #3%
+}
+\def\intcalcMul#1#2{%
+\number
+\expandafter\InCa@MulSwitch
+\number\number#1\expandafter!%
+\number#2! %
+}
+\def\InCa@MulSwitch#1!#2!{%
+\ifnum#1<\z@
+\ifnum#2<\z@
+\ifnum#1<#2 %
+\expandafter\InCa@Mul\number-#1\expandafter!%
+\@gobble#2!%
+\else
+\expandafter\InCa@Mul\number-#2\expandafter!%
+\@gobble#1!%
+\fi
+\else
+ -%
+\ifnum-#1>#2 %
+\expandafter\InCa@Mul\@gobble#1!#2!%
+\else
+\expandafter\InCa@Mul\number#2\expandafter!%
+\@gobble#1!%
+\fi
+\fi
+\else
+\ifnum#2<\z@
+ -%
+\ifnum#1>-#2 %
+\expandafter\InCa@Mul\number#1\expandafter!%
+\@gobble#2!%
+\else
+\expandafter\InCa@Mul\@gobble#2!#1!%
+\fi
+\else
+\ifnum#1>#2 %
+\InCa@Mul#1!#2!%
+\else
+\InCa@Mul#2!#1!%
+\fi
+\fi
+\fi
+}
+\def\IntCalcMul#1!#2!{%
+\number\InCa@Mul#1!#2! %
+}
+\def\InCa@Mul#1!#2!{%
+\ifcase#2 %
+ 0%
+\or
+#1%
+\or
+\csname InCa@Empty%
+\expandafter\InCa@Shl#1!%
+\else
+\ifnum#2<10 %
+\InCa@Tim{#1}#2%
+\else
+\InCa@ProcessMul!#2!#1!%
+\fi
+\fi
+}
+\def\InCa@ProcessMul#1!#2#3!#4!{%
+\ifx\InCa@Empty#3\InCa@Empty
+\expandafter\InCa@Add\number
+#10\expandafter\expandafter\expandafter!%
+\InCa@Tim{#4}#2!%
+\else
+\ifx\InCa@Empty#1\InCa@Empty
+\expandafter\expandafter\expandafter\InCa@ProcessMul
+\InCa@Tim{#4}#2!%
+#3!#4!%
+\else
+\expandafter\InCa@ProcessMul\number
+\expandafter\InCa@Add\number%
+#10\expandafter\expandafter\expandafter!%
+\InCa@Tim{#4}#2!!%
+#3!#4!%
+\fi
+\fi
+}
+\def\intcalcSqr#1{%
+\number\expandafter\InCa@Sqr\number#1! %
+}
+\def\InCa@Sqr#1#2!{%
+\ifx#1-%
+\InCa@Mul#2!#2!%
+\else
+\InCa@Mul#1#2!#1#2!%
+\fi
+}
+\def\intcalcFac#1{%
+\number\expandafter\InCa@Fac\number#1! %
+}
+\def\intcalcPow#1#2{%
+\number\expandafter\InCa@Pow
+\number\number#1\expandafter!%
+\number#2! %
+}
+\def\InCa@Pow#1#2!#3#4!{%
+\ifcase#3#4 % power = 0
+ 1%
+\or % power = 1
+#1#2%
+\or % power = 2
+\ifx#1-%
+\InCa@Mul#2!#2!%
+\else
+\InCa@Mul#1#2!#1#2!%
+\fi
+\else
+\ifcase#1#2 % basis = 0, power <> 0
+ 0%
+\ifx#3-% power < 0
+ 0\IntCalcError:DivisionByZero%
+\fi
+\or
+ 1% basis = 1
+\else
+\ifnum#1#2=\m@ne % basis = -1
+\ifodd#3#4 %
+ -%
+\fi
+ 1%
+\else % |basis| > 1
+\ifx#3-% power < 0
+ 0%
+\else % power > 2
+\ifx#1-% basis < 0
+\ifodd#3#4 %
+ -%
+\fi
+\InCa@PowRec#2!#3#4!1!%
+\else
+\InCa@PowRec#1#2!#3#4!1!%
+\fi
+\fi
+\fi
+\fi
+\fi
+}
+\def\InCa@PowRec#1!#2!#3!{%
+\ifnum#2=\@ne
+\ifnum#1>#3 %
+\InCa@Mul#1!#3!%
+\else
+\InCa@Mul#3!#1!%
+\fi
+\else
+\expandafter\InCa@PowRec
+\number\InCa@Mul#1!#1!\expandafter!%
+\number\intcalcShr{#2}\expandafter!%
+\number
+\ifodd#2 %
+\ifnum#1>#3 %
+\InCa@Mul#1!#3!%
+\else
+\InCa@Mul#3!#1!%
+\fi
+\else
+#3%
+\fi
+\expandafter!%
+\fi
+}
+\def\intcalcDiv#1#2{%
+\number\expandafter\InCa@Div
+\number\number#1\expandafter!%
+\number#2! %
+}
+\def\InCa@Div#1!#2!{%
+\ifcase#2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase#1 %
+ 0%
+\else
+\expandafter\InCa@DivSwitch
+\number#1\expandafter!%
+\number#2!%
+\fi
+\fi
+}
+\def\InCa@Temp#1{%
+\def\IntCalcDiv##1!##2!{%
+\number
+\ifcase##2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase##1 %
+ 0%
+\else
+\InCa@@Div##1!##2!%
+\fi
+\fi
+#1%
+}%
+}
+\InCa@Temp{ }%
+\def\InCa@DivSwitch#1!#2!{%
+\ifnum#1<\z@
+\ifnum#2<\z@
+\expandafter\InCa@@Div\number-#1\expandafter!%
+\@gobble#2!%
+\else
+ -%
+\expandafter\InCa@@Div\@gobble#1!#2!%
+\fi
+\else
+\ifnum#2<\z@
+ -%
+\expandafter\InCa@@Div\number#1\expandafter!%
+\@gobble#2!%
+\else
+\InCa@@Div#1!#2!%
+\fi
+\fi
+}
+\def\InCa@@Div#1!#2!{%
+\ifnum#1>#2 %
+\ifcase#2 % 0 already catched
+?     \IntCalcError:ThisCannotHappen%
+\or % 1
+#1%
+\or % 2
+\InCa@Shr#1!%
+\else
+\InCa@DivStart!#1!#2!#2!%
+\fi
+\else
+\ifnum#1=#2 %
+ 1%
+\else
+ 0%
+\fi
+\fi
+}
+\def\InCa@DivStart#1!#2#3!#4#5{%
+\ifx#5!%
+\@ReturnAfterElseFi{%
+\InCa@DivStartI{#1#2}#3=!%
+}%
+\else
+\@ReturnAfterFi{%
+\InCa@DivStart{#1#2}!#3!#5%
+}%
+\fi
+}
+\def\InCa@DivStartI#1!#2!{%
+\expandafter\InCa@DivStartII
+\number#2\expandafter\expandafter\expandafter!%
+\intcalcShl{#2}!%
+#1!%
+}
+\def\InCa@DivStartII#1!#2!{%
+\expandafter\InCa@DivStartIII
+\number#1\expandafter!%
+\number#2\expandafter\expandafter\expandafter!%
+\intcalcShl{#2}!%
+}
+\def\InCa@DivStartIII#1!#2!#3!{%
+\expandafter\InCa@DivStartIV
+\number#1\expandafter!%
+\number#2\expandafter!%
+\number#3\expandafter!%
+\number\InCa@Add#3!#2!\expandafter\expandafter\expandafter!%
+\intcalcShl{#3}!%
+}
+\def\InCa@DivStartIV#1!#2!#3!#4!#5!#6!{%
+\InCa@ProcessDiv#6!#1!#2!#3!#4!#5!/%
+}
+\def\InCa@ProcessDiv#1#2#3!#4!#5!#6!#7!#8!#9/{%
+#9%
+\ifnum#1<#4 % 0
+ 0%
+\ifx#2=%
+\else
+\InCa@ProcessDiv{#1#2}#3!#4!#5!#6!#7!#8!%
+\fi
+\else % 1-9
+\ifnum#1<#5 % 1
+ 1%
+\ifx#2=%
+\else
+\expandafter\InCa@ProcessDiv\expandafter{%
+\number\InCa@Sub#1!#4!%
+#2%
+}#3!#4!#5!#6!#7!#8!%
+\fi
+\else % 2-9
+\ifnum#1<#7 % 2 3 4 5
+\ifnum#1<#6 % 2 3
+\@ReturnAfterElseFi{%
+\expandafter\InCa@@ProcessDiv
+\number\InCa@Sub#1!#5!!%
+ 23%
+}%
+\else % 4 5
+\@ReturnAfterFi{%
+\expandafter\InCa@@ProcessDiv
+\number\InCa@Sub#1!#6!!%
+ 45%
+}%
+\fi
+#2#3!#4!#5!#6!#7!#8!%
+\else % 6 7 8 9
+\ifnum#1<#8 % 6 7
+\@ReturnAfterElseFi{%
+\expandafter\InCa@@ProcessDiv
+\number\InCa@Sub#1!#7!!%
+ 67%
+}%
+\else % 8 9
+\@ReturnAfterFi{%
+\expandafter\InCa@@ProcessDiv
+\number\InCa@Sub#1!#8!!%
+ 89%
+}%
+\fi
+#2#3!#4!#5!#6!#7!#8!%
+\fi
+\fi
+\fi
+\ifx#2=%
+\expandafter\@gobble
+\fi
+ /%
+}
+\def\InCa@@ProcessDiv#1!#2#3#4#5!#6!{%
+\ifnum#1<#6 %
+#2%
+\@ReturnAfterElseFi{%
+\ifx#4=%
+\expandafter\InCa@CleanupIV
+\else
+\@ReturnAfterFi{%
+\InCa@ProcessDiv{#1#4}#5!#6!%
+}%
+\fi
+}%
+\else
+#3%
+\@ReturnAfterFi{%
+\ifx#4=%
+\expandafter\InCa@CleanupIV
+\else
+\@ReturnAfterFi{%
+\expandafter\InCa@ProcessDiv\expandafter{%
+\number\InCa@Sub#1!#6! %
+#4%
+}#5!#6!%
+}%
+\fi
+}%
+\fi
+}
+\def\InCa@CleanupIV#1!#2!#3!#4!{}
+\def\intcalcMod#1#2{%
+\number\expandafter\InCa@Mod
+\number\number#1\expandafter!%
+\number#2! %
+}
+\def\InCa@Mod#1!#2!{%
+\ifcase#2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifnum#2<\z@
+ -%
+\expandafter\InCa@Mod
+\number-#1\expandafter!%
+\number-#2!%
+\else
+\ifcase#1 %
+ 0%
+\else
+\ifcase#2 % 0 already catched
+?         \IntCalcError:ThisCannotHappen%
+\or % 1
+ 0%
+\or % 2
+\ifodd#1 1\else 0\fi
+\else
+\ifnum#1<\z@
+\expandafter\InCa@ModShift
+\number-%
+\expandafter\InCa@Sub
+\number\@gobble#1\expandafter!%
+\number\intcalcMul{#2}{%
+\expandafter\InCa@Div\@gobble#1!#2!%
+}!%
+ !#2!%
+\else
+\expandafter\InCa@Sub\number#1\expandafter!%
+\number\intcalcMul{#2}{\InCa@Div#1!#2!}!%
+\fi
+\fi
+\fi
+\fi
+\fi
+}
+\def\InCa@Temp#1{%
+\def\IntCalcMod##1!##2!{%
+\number
+\ifcase##2 %
+ 0\IntCalcError:DivisionByZero%
+\else
+\ifcase##1 %
+ 0%
+\else
+\ifcase##2 % 0 already catched
+?         \IntCalcError:ThisCannotHappen
+\or % 1
+ 0%
+\or % 2
+\ifodd ##1 1\else 0\fi
+\else
+\expandafter\InCa@Sub\number##1\expandafter!%
+\number\intcalcMul{##2}{\InCa@Div##1!##2!}!%
+\fi
+\fi
+\fi
+#1%
+}%
+}
+\InCa@Temp{ }%
+\def\InCa@ModShift#1!#2!{%
+\ifnum#1<\z@
+\expandafter\InCa@Sub\number#2\expandafter!%
+\@gobble#1!%
+\else
+#1%
+\fi
+}
+\def\InCa@Empty{}
+\expandafter\ifx\csname @gobble\endcsname\relax
+\long\def\@gobble#1{}%
+\fi
+\long\def\@ReturnAfterFi#1\fi{\fi#1}%
+\long\def\@ReturnAfterElseFi#1\else#2\fi{\fi#1}%
+\InCa@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{ifpdf}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@ifpdf.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{ifpdf}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@ifpdf.sty\endcsname
+\ProvidesPackage{ifpdf}%
+ [2011/01/30 v2.3 Provides the ifpdf switch (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname ifpdf@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\ifpdf@AtEnd{%
+\ifpdf@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^
+\TMP@EnsureCode{96}{12}% `
+\edef\ifpdf@AtEnd{\ifpdf@AtEnd\noexpand\endinput}
+\begingroup
+\expandafter\ifx\csname ifpdf\endcsname\relax
+\else
+\edef\i/{\expandafter\string\csname ifpdf\endcsname}%
+\expandafter\ifx\csname PackageError\endcsname\relax
+\def\x#1#2{%
+\edef\z{#2}%
+\expandafter\errhelp\expandafter{\z}%
+\errmessage{Package ifpdf Error: #1}%
+}%
+\def\y{^^J}%
+\newlinechar=10 %
+\else
+\def\x#1#2{%
+\PackageError{ifpdf}{#1}{#2}%
+}%
+\def\y{\MessageBreak}%
+\fi
+\x{Name clash, \i/ is already defined}{%
+ Incompatible versions of \i/ can cause problems,\y
+ therefore package loading is aborted.%
+}%
+\endgroup
+\expandafter\ifpdf@AtEnd
+\fi%
+\endgroup
+\begingroup
+\def\skip#1\relax\begingroup{}%
+\expandafter\ifx\csname pdfoutput\endcsname\relax
+\else
+\expandafter\skip
+\fi
+\expandafter\ifx\csname directlua\endcsname\relax
+\expandafter\skip
+\fi
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{ifluatex}[2009/04/10]%
+\else
+\RequirePackage{ifluatex}[2009/04/10]%
+\fi
+\ifluatex
+\ifnum\luatexversion<36 %
+\else
+\begingroup
+\directlua{tex.enableprimitives('ifpdf', {'pdfoutput'})}%
+\global\let\pdfoutput\ifpdfpdfoutput
+\endgroup
+\fi
+\fi
+\relax\begingroup\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newif\endcsname\relax
+\edef\pdffalse{%
+\let
+\expandafter\noexpand\csname ifpdf\endcsname
+\expandafter\noexpand\csname iffalse\endcsname
+}%
+\edef\pdftrue{%
+\let
+\expandafter\noexpand\csname ifpdf\endcsname
+\expandafter\noexpand\csname iftrue\endcsname
+}%
+\pdffalse
+\else
+\csname newif\expandafter\endcsname\csname ifpdf\endcsname
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfoutput\endcsname\relax
+\else
+\ifnum\pdfoutput<1 %
+\else
+\pdftrue
+\fi
+\fi
+\begingroup
+\expandafter\ifx\csname pdfoutput\endcsname\relax
+\else
+\escapechar=92 %
+\edef\m{\meaning\pdfoutput}%
+\edef\p{\string\pdfoutput}%
+\ifx\m\p
+\else
+\expandafter\ifx\csname PackageWarningNoLine\endcsname\relax
+\def\PackageWarningNoLine#1#2{%
+\immediate\write16{%
+ Package `#1' Warning: #2.%
+}%
+}%
+\fi
+\PackageWarningNoLine{ifpdf}{%
+ Someone has redefined \string\pdfoutput%
+}%
+\fi
+\fi
+\endgroup
+\begingroup
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\let\x\PackageInfo
+\expandafter\let\csname on@line\endcsname\empty
+\fi
+\x{ifpdf}{pdfTeX in PDF mode is \ifpdf\else not \fi detected}%
+\endgroup
+\ifpdf@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{etexcmds}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@etexcmds.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{etexcmds}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@etexcmds.sty\endcsname
+\ProvidesPackage{etexcmds}%
+ [2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname etexcmds@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\etexcmds@AtEnd{%
+\etexcmds@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\etexcmds@AtEnd{%
+\etexcmds@AtEnd
+\escapechar\the\escapechar\relax
+\noexpand\endinput
+}
+\escapechar=92 % backslash
+\def\etexcmds@newif#1{%
+\expandafter\edef\csname etex@#1false\endcsname{%
+\let
+\expandafter\noexpand\csname ifetex@#1\endcsname
+\noexpand\iffalse
+}%
+\expandafter\edef\csname etex@#1true\endcsname{%
+\let
+\expandafter\noexpand\csname ifetex@#1\endcsname
+\noexpand\iftrue
+}%
+\csname etex@#1false\endcsname
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{infwarerr}[2007/09/09]%
+\TMP@RequirePackage{ifluatex}[2010/03/01]%
+\else
+\RequirePackage{infwarerr}[2007/09/09]%
+\RequirePackage{ifluatex}[2010/03/01]%
+\fi
+\etexcmds@newif{unexpanded}
+\begingroup
+\edef\x{\string\unexpanded}%
+\edef\y{\meaning\unexpanded}%
+\ifx\x\y
+\endgroup
+\let\etex@unexpanded\unexpanded
+\etex@unexpandedtrue
+\else
+\edef\y{\meaning\normalunexpanded}%
+\ifx\x\y
+\endgroup
+\let\etex@unexpanded\normalunexpanded
+\etex@unexpandedtrue
+\else
+\edef\y{\meaning\@@unexpanded}%
+\ifx\x\y
+\endgroup
+\let\etex@unexpanded\@@unexpanded
+\etex@unexpandedtrue
+\else
+\ifluatex
+\ifnum\luatexversion<36 %
+\else
+\begingroup
+\directlua{%
+ tex.enableprimitives('etex@',{'unexpanded'})%
+}%
+\global\let\etex@unexpanded\etex@unexpanded
+\endgroup
+\fi
+\fi
+\edef\y{\meaning\etex@unexpanded}%
+\ifx\x\y
+\endgroup
+\etex@unexpandedtrue
+\else
+\endgroup
+\@PackageInfoNoLine{etexcmds}{%
+ Could not find \string\unexpanded.\MessageBreak
+ That can mean that you are not using e-TeX or%
+\MessageBreak
+ that some package has redefined \string\unexpanded.%
+\MessageBreak
+ In the latter case, load this package earlier%
+}%
+\etex@unexpandedfalse
+\fi
+\fi
+\fi
+\fi
+\etexcmds@newif{expanded}
+\begingroup
+\edef\x{\string\expanded}%
+\edef\y{\meaning\expanded}%
+\ifx\x\y
+\endgroup
+\let\etex@expanded\expanded
+\etex@expandedtrue
+\else
+\edef\y{\meaning\normalexpanded}%
+\ifx\x\y
+\endgroup
+\let\etex@expanded\normalexpanded
+\etex@expandedtrue
+\else
+\edef\y{\meaning\@@expanded}%
+\ifx\x\y
+\endgroup
+\let\etex@expanded\@@expanded
+\etex@expandedtrue
+\else
+\ifluatex
+\ifnum\luatexversion<36 %
+\else
+\begingroup
+\directlua{%
+ tex.enableprimitives('etex@',{'expanded'})%
+}%
+\global\let\etex@expanded\etex@expanded
+\endgroup
+\fi
+\fi
+\edef\y{\meaning\etex@expanded}%
+\ifx\x\y
+\endgroup
+\etex@expandedtrue
+\else
+\endgroup
+\@PackageInfoNoLine{etexcmds}{%
+ Could not find \string\expanded.\MessageBreak
+ That can mean that you are not using pdfTeX 1.50 or%
+\MessageBreak
+ that some package has redefined \string\expanded.%
+\MessageBreak
+ In the latter case, load this package earlier%
+}%
+\etex@expandedfalse
+\fi
+\fi
+\fi
+\fi
+\etexcmds@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{kvsetkeys}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@kvsetkeys.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{kvsetkeys}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@kvsetkeys.sty\endcsname
+\ProvidesPackage{kvsetkeys}%
+ [2012/04/25 v1.16 Key value parser (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname KVS@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\KVS@AtEnd{%
+\KVS@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{126}{13}% ~ (active)
+\edef\KVS@AtEnd{\KVS@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{infwarerr}[2007/09/09]%
+\TMP@RequirePackage{etexcmds}[2010/01/28]%
+\else
+\RequirePackage{infwarerr}[2007/09/09]%
+\RequirePackage{etexcmds}[2010/01/28]%
+\fi
+\expandafter\ifx\csname toks@\endcsname\relax
+\toksdef\toks@=0 %
+\fi
+\begingroup\expandafter\endgroup
+\ifcase0\ifetex@unexpanded
+\expandafter\ifx\csname ifcsname\endcsname\relax
+\else
+\expandafter\ifx\csname unless\endcsname\relax
+\else
+ 1%
+\fi
+\fi
+\fi
+\catcode`\$=9 % ignore
+\catcode`\&=14 % comment
+\else % e-TeX
+\catcode`\$=14 % comment
+\catcode`\&=9  % ignore
+\fi
+\def\KVS@Empty{}
+\long\def\KVS@FirstOfTwo#1#2{#1}
+\long\def\KVS@SecondOfTwo#1#2{#2}
+\long\def\KVS@IfEmpty#1{%
+& \edef\KVS@Temp{\etex@unexpanded{#1}}%
+$ \begingroup
+$   \toks@{#1}%
+$   \edef\KVS@Temp{\the\toks@}%
+$ \expandafter\endgroup
+\ifx\KVS@Temp\KVS@Empty
+\expandafter\KVS@FirstOfTwo
+\else
+\expandafter\KVS@SecondOfTwo
+\fi
+}
+\long\def\kv@normalize#1{%
+\begingroup
+\toks@{,#1,}%
+\KVS@Comma
+\KVS@SpaceComma
+\KVS@CommaSpace
+\KVS@CommaComma
+\KVS@Equals
+\KVS@SpaceEquals
+\KVS@EqualsSpace
+\xdef\KVS@Global{\the\toks@}%
+\endgroup
+\let\kv@list\KVS@Global
+}
+\def\comma@normalize#1{%
+\begingroup
+\toks@{,#1,}%
+\KVS@Comma
+\KVS@SpaceComma
+\KVS@CommaSpace
+\KVS@CommaComma
+\xdef\KVS@Global{\the\toks@}%
+\endgroup
+\let\comma@list\KVS@Global
+}
+\begingroup
+\lccode`\,=`\,%
+\lccode`\~=`\,%
+\lowercase{\endgroup
+\def\KVS@Comma{%
+\toks@\expandafter{\expandafter}\expandafter
+\KVS@@Comma\the\toks@~\KVS@Nil
+}%
+\long\def\KVS@@Comma#1~#2\KVS@Nil{%
+\toks@\expandafter{\the\toks@#1}%
+\KVS@IfEmpty{#2}{%
+}{%
+\KVS@@Comma,#2\KVS@Nil
+}%
+}%
+}
+\def\KVS@SpaceComma#1{%
+\def\KVS@SpaceComma{%
+\expandafter\KVS@@SpaceComma\the\toks@#1,\KVS@Nil
+}%
+}
+\KVS@SpaceComma{ }
+\long\def\KVS@@SpaceComma#1 ,#2\KVS@Nil{%
+\KVS@IfEmpty{#2}{%
+\toks@{#1}%
+}{%
+\KVS@@SpaceComma#1,#2\KVS@Nil
+}%
+}
+\def\KVS@CommaSpace{%
+\expandafter\KVS@@CommaSpace\the\toks@, \KVS@Nil
+}
+\long\def\KVS@@CommaSpace#1, #2\KVS@Nil{%
+\KVS@IfEmpty{#2}{%
+\toks@{#1}%
+}{%
+\KVS@@CommaSpace#1,#2\KVS@Nil
+}%
+}
+\def\KVS@CommaComma{%
+\expandafter\KVS@@CommaComma\the\toks@,\KVS@Nil
+}
+\long\def\KVS@@CommaComma#1,,#2\KVS@Nil{%
+\KVS@IfEmpty{#2}{%
+\toks@{#1,}% (!)
+}{%
+\KVS@@CommaComma#1,#2\KVS@Nil
+}%
+}
+\begingroup
+\lccode`\==`\=%
+\lccode`\~=`\=%
+\lowercase{\endgroup
+\def\KVS@Equals{%
+\toks@\expandafter{\expandafter}\expandafter
+\KVS@@Equals\the\toks@~\KVS@Nil
+}%
+\long\def\KVS@@Equals#1~#2\KVS@Nil{%
+\edef\KVS@Temp{\the\toks@}%
+\ifx\KVS@Temp\KVS@Empty
+\expandafter\KVS@FirstOfTwo
+\else
+\expandafter\KVS@SecondOfTwo
+\fi
+{%
+\toks@{#1}%
+}{%
+\toks@\expandafter{\the\toks@=#1}%
+}%
+\KVS@IfEmpty{#2}{%
+}{%
+\KVS@@Equals#2\KVS@Nil
+}%
+}%
+}
+\def\KVS@SpaceEquals#1{%
+\def\KVS@SpaceEquals{%
+\expandafter\KVS@@SpaceEquals\the\toks@#1=\KVS@Nil
+}%
+}
+\KVS@SpaceEquals{ }
+\long\def\KVS@@SpaceEquals#1 =#2\KVS@Nil{%
+\KVS@IfEmpty{#2}{%
+\toks@{#1}%
+}{%
+\KVS@@SpaceEquals#1=#2\KVS@Nil
+}%
+}
+\def\KVS@EqualsSpace{%
+\expandafter\KVS@@EqualsSpace\the\toks@= \KVS@Nil
+}
+\long\def\KVS@@EqualsSpace#1= #2\KVS@Nil{%
+\KVS@IfEmpty{#2}{%
+\toks@{#1}%
+}{%
+\KVS@@EqualsSpace#1=#2\KVS@Nil
+}%
+}
+\long\def\kv@parse#1{%
+\kv@normalize{#1}%
+\expandafter\kv@parse@normalized\expandafter{\kv@list}%
+}
+\long\def\kv@parse@normalized#1#2{%
+\KVS@Parse#1,\KVS@Nil{#2}%
+}
+\long\def\KVS@Parse#1,#2\KVS@Nil#3{%
+\KVS@IfEmpty{#1}{%
+}{%
+\KVS@Process#1=\KVS@Nil{#3}%
+}%
+\KVS@MaybeBreak
+\KVS@IfEmpty{#2}{%
+}{%
+\KVS@Parse#2\KVS@Nil{#3}%
+}%
+}
+\long\def\KVS@Process#1=#2\KVS@Nil#3{%
+\let\KVS@MaybeBreak\relax
+\def\kv@key{#1}%
+\KVS@IfEmpty{#2}{%
+\let\kv@value\relax
+#3{#1}{}%
+}{%
+\KVS@@Process{#1}#2\KVS@Nil{#3}%
+}%
+}
+\long\def\KVS@@Process#1#2=\KVS@Nil#3{%
+& \edef\kv@value{\etex@unexpanded{#2}}%
+$ \begingroup
+$   \toks@{#2}%
+$   \xdef\KVS@Global{\the\toks@}%
+$ \endgroup
+$ \let\kv@value\KVS@Global
+#3{#1}{#2}%
+}
+\let\KVS@MaybeBreak\relax
+\def\KVS@break#1#2#3#4{%
+\let\KVS@MaybeBreak\relax
+}
+\def\kv@break{%
+\let\KVS@MaybeBreak\KVS@break
+}
+\def\comma@parse#1{%
+\comma@normalize{#1}%
+\expandafter\comma@parse@normalized\expandafter{\comma@list}%
+}
+\def\comma@parse@normalized#1#2{%
+\KVS@CommaParse#1,\KVS@Nil{#2}%
+}
+\def\KVS@CommaParse#1,#2\KVS@Nil#3{%
+\KVS@IfEmpty{#1}{%
+}{%
+\def\comma@entry{#1}%
+#3{#1}%
+}%
+\KVS@MaybeBreak
+\KVS@IfEmpty{#2}{%
+}{%
+\KVS@CommaParse#2\KVS@Nil{#3}%
+}%
+}
+\def\comma@break{%
+\let\KVS@MaybeBreak\KVS@break
+}
+\def\kv@handled@false{%
+\let\ifkv@handled@\iffalse
+}
+\def\kv@handled@true{%
+\let\ifkv@handled@\iftrue
+}
+\kv@handled@true
+\def\kv@processor@default#1#2{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\let\ifincsname\iftrue
+\edef\KVS@temp{\endgroup
+\noexpand\KVS@ProcessorDefault{#1}{#2}%
+}%
+\KVS@temp
+}
+\long\def\KVS@ProcessorDefault#1#2#3{%
+\def\kv@fam{#1}%
+& \unless\ifcsname KV@#1@#2\endcsname
+$ \begingroup\expandafter\expandafter\expandafter\endgroup
+$ \expandafter\ifx\csname KV@#1@#2\endcsname\relax
+&   \unless\ifcsname KVS@#1@handler\endcsname
+$   \begingroup\expandafter\expandafter\expandafter\endgroup
+$   \expandafter\ifx\csname KVS@#1@handler\endcsname\relax
+\kv@error@unknownkey{#1}{#2}%
+\else
+\kv@handled@true
+\csname KVS@#1@handler\endcsname{#2}{#3}%
+\relax
+\ifkv@handled@
+\else
+\kv@error@unknownkey{#1}{#2}%
+\fi
+\fi
+\else
+\ifx\kv@value\relax
+&     \unless\ifcsname KV@#1@#2@default\endcsname
+$     \begingroup\expandafter\expandafter\expandafter\endgroup
+$     \expandafter\ifx\csname KV@#1@#2@default\endcsname\relax
+\kv@error@novalue{#1}{#2}%
+\else
+\csname KV@#1@#2@default\endcsname
+\relax
+\fi
+\else
+\csname KV@#1@#2\endcsname{#3}%
+\fi
+\fi
+}
+\def\kv@processor@known#1#2#3{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\let\ifincsname\iftrue
+\edef\KVS@temp{\endgroup
+\noexpand\KVS@ProcessorKnown{#1}\noexpand#2{#3}%
+}%
+\KVS@temp
+}
+\long\def\KVS@ProcessorKnown#1#2#3#4{%
+\def\kv@fam{#1}%
+& \unless\ifcsname KV@#1@#3\endcsname
+$ \begingroup\expandafter\expandafter\expandafter\endgroup
+$ \expandafter\ifx\csname KV@#1@#3\endcsname\relax
+&   \unless\ifcsname KVS@#1@handler\endcsname
+$   \begingroup\expandafter\expandafter\expandafter\endgroup
+$   \expandafter\ifx\csname KVS@#1@handler\endcsname\relax
+\KVS@AddUnhandled#2{#3}{#4}%
+\else
+\kv@handled@true
+\csname KVS@#1@handler\endcsname{#3}{#4}%
+\relax
+\ifkv@handled@
+\else
+\KVS@AddUnhandled#2{#3}{#4}%
+\fi
+\fi
+\else
+\ifx\kv@value\relax
+&     \unless\ifcsname KV@#1@#2@default\endcsname
+$     \begingroup\expandafter\expandafter\expandafter\endgroup
+$     \expandafter\ifx\csname KV@#1@#3@default\endcsname\relax
+\kv@error@novalue{#1}{#3}%
+\else
+\csname KV@#1@#3@default\endcsname
+\relax
+\fi
+\else
+\csname KV@#1@#3\endcsname{#4}%
+\fi
+\fi
+}
+\long\def\KVS@AddUnhandled#1#2#3{%
+& \edef#1{%
+&   \ifx#1\KVS@empty
+&   \else
+&     \etex@unexpanded{#1},%
+&   \fi
+&   \etex@unexpanded{{#2}={#3}}%
+& }%
+$ \begingroup
+$   \ifx#1\KVS@empty
+$     \toks@{{#2}={#3}}%
+$   \else
+$     \toks@\expandafter{#1,{#2}={#3}}%
+$   \fi
+$   \xdef\KVS@Global{\the\toks@}%
+$ \endgroup
+$ \let#1\KVS@Global
+}
+\long\def\kv@set@family@handler#1#2{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\let\ifincsname\iftrue
+\expandafter\endgroup
+\expandafter\def\csname KVS@#1@handler\endcsname##1##2{#2}%
+}
+\long\def\kv@unset@family@handler#1#2{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\let\ifincsname\iftrue
+\expandafter\endgroup
+\expandafter\let\csname KVS@#1@handler\endcsname\@UnDeFiNeD
+}
+\def\kv@error@novalue{%
+\kv@error@generic{No value specified for}%
+}
+\def\kv@error@unknownkey{%
+\kv@error@generic{Undefined}%
+}
+\def\kv@error@generic#1#2#3{%
+\@PackageError{kvsetkeys}{%
+#1 key `#3'%
+}{%
+ The keyval family of the key `#3' is `#2'.\MessageBreak
+ The setting of the key is ignored because of the error.\MessageBreak
+\MessageBreak
+\@ehc
+}%
+}
+\long\def\kvsetkeys#1#2{%
+\kv@parse{#2}{\kv@processor@default{#1}}%
+}
+\def\kvsetkeys@expandafter#1#2{%
+\expandafter\kv@parse\expandafter{#2}{%
+\kv@processor@default{#1}%
+}%
+}
+\def\KVS@cmd{0}%
+\def\KVS@cmd@inc{%
+& \edef\KVS@cmd{\the\numexpr\KVS@cmd+1}%
+$ \begingroup
+$   \count255=\KVS@cmd\relax
+$   \advance\count255 by 1\relax
+$ \edef\x{\endgroup
+$   \noexpand\def\noexpand\KVS@cmd{\number\count255}%
+$ }%
+$ \x
+}
+\def\KVS@cmd@dec{%
+& \edef\KVS@cmd{\the\numexpr\KVS@cmd-1}%
+$ \begingroup
+$   \count255=\KVS@cmd\relax
+$   \advance\count255 by -1\relax
+$ \edef\x{\endgroup
+$   \noexpand\def\noexpand\KVS@cmd{\number\count255}%
+$ }%
+$ \x
+}
+\def\KVS@empty{}
+\def\kvsetknownkeys{%
+\expandafter
+\KVS@setknownkeys\csname KVS@cmd\KVS@cmd\endcsname{}%
+}
+\long\def\KVS@setknownkeys#1#2#3#4#5{%
+\let#1\KVS@empty
+\KVS@cmd@inc
+#2\kv@parse#2{#5}{\kv@processor@known{#3}#1}%
+\KVS@cmd@dec
+\let#4=#1%
+}
+\def\kvsetknownkeys@expandafter{%
+\expandafter
+\KVS@setknownkeys
+\csname KVS@cmd\KVS@cmd\endcsname\expandafter
+}
+\KVS@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{kvdefinekeys}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@kvdefinekeys.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{kvdefinekeys}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@kvdefinekeys.sty\endcsname
+\ProvidesPackage{kvdefinekeys}%
+ [2011/04/07 v1.3 Define keys (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname KVD@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\KVD@AtEnd{%
+\KVD@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\KVD@AtEnd{\KVD@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{ltxcmds}[2010/03/01]%
+\else
+\RequirePackage{ltxcmds}[2010/03/01]%
+\fi
+\ltx@IfUndefined{protected}{%
+\ltx@IfUndefined{DeclareRobustCommand}{%
+\def\kv@define@key#1#2%
+}{%
+\DeclareRobustCommand*{\kv@define@key}[2]%
+}%
+}{%
+\protected\def\kv@define@key#1#2%
+}%
+{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\let\ifincsname\iftrue
+\edef\KVD@temp{\endgroup
+\noexpand\KVD@DefineKey{#1}{#2}%
+}%
+\KVD@temp
+}
+\def\KVD@DefineKey#1#2{%
+\ltx@ifnextchar[{%
+\KVD@DefineKeyWithDefault{#1}{#2}%
+}{%
+\long\expandafter\def\csname KV@#1@#2\endcsname##1%
+}%
+}
+\long\def\KVD@DefineKeyWithDefault#1#2[#3]{%
+\expandafter\def\csname KV@#1@#2@default\expandafter\endcsname
+\expandafter{%
+\csname KV@#1@#2\endcsname{#3}%
+}%
+\long\expandafter\def\csname KV@#1@#2\endcsname##1%
+}
+\KVD@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\ifluatex
+\else
+\expandafter\hobsub@GobbleRemainingPackage
+\fi
+\hobsub@StartPackage{luatex-loader}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@luatex-loader.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{luatex-loader}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@luatex-loader.sty\endcsname
+\ProvidesPackage{luatex-loader}%
+ [2010/03/09 v0.4 Lua module loader (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5\endlinechar=13\relax%
+\catcode10=12 % ^^J
+\catcode34=12 % "
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode46=12 % .
+\catcode60=12 % <
+\catcode61=12 % =
+\catcode95=12 % _ (other!)
+\catcode96=12 % `
+\catcode123=1 % {
+\catcode125=2 % }
+\endlinechar=10 %
+\ifnum\luatexversion<36 %
+\directlua0%
+\else %
+\expandafter\directlua %
+\fi %
+{%
+ do
+ local script = "oberdiek.luatex.lua"
+ local file = kpse.find_file(script, "texmfscripts")
+ if file then
+ texio.write_nl("(" .. file .. ")")
+ dofile(file)
+ else
+ error("File `" .. script .. "' not found")
+ end
+ end
+}%
+\endgroup\endinput%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{pdftexcmds}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@pdftexcmds.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{pdftexcmds}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@pdftexcmds.sty\endcsname
+\ProvidesPackage{pdftexcmds}%
+ [2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname pdftexcmds@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\pdftexcmds@AtEnd{%
+\pdftexcmds@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{0}{12}%
+\TMP@EnsureCode{1}{12}%
+\TMP@EnsureCode{2}{12}%
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{12}% _ (other)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{126}{12}% ~ (other)
+\edef\pdftexcmds@AtEnd{%
+\pdftexcmds@AtEnd
+\escapechar=\number\escapechar\relax
+\noexpand\endinput
+}
+\escapechar=92 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{infwarerr}[2007/09/09]%
+\TMP@RequirePackage{ifluatex}[2010/03/01]%
+\TMP@RequirePackage{ltxcmds}[2010/12/02]%
+\TMP@RequirePackage{ifpdf}[2010/09/13]%
+\else
+\RequirePackage{infwarerr}[2007/09/09]%
+\RequirePackage{ifluatex}[2010/03/01]%
+\RequirePackage{ltxcmds}[2010/12/02]%
+\RequirePackage{ifpdf}[2010/09/13]%
+\fi
+\ifluatex
+\else
+\@PackageInfoNoLine{pdftexcmds}{LuaTeX not detected}%
+\def\pdftexcmds@nopdftex{%
+\@PackageInfoNoLine{pdftexcmds}{pdfTeX >= 1.30 not detected}%
+\let\pdftexcmds@nopdftex\relax
+}%
+\def\pdftexcmds@temp#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf#1\endcsname\relax
+\pdftexcmds@nopdftex
+\else
+\expandafter\def\csname pdf@#1\expandafter\endcsname
+\expandafter##\expandafter{%
+\csname pdf#1\endcsname
+}%
+\fi
+}%
+\pdftexcmds@temp{strcmp}%
+\pdftexcmds@temp{escapehex}%
+\let\pdf@escapehexnative\pdf@escapehex
+\pdftexcmds@temp{unescapehex}%
+\let\pdf@unescapehexnative\pdf@unescapehex
+\pdftexcmds@temp{escapestring}%
+\pdftexcmds@temp{escapename}%
+\pdftexcmds@temp{filesize}%
+\pdftexcmds@temp{filemoddate}%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfshellescape\endcsname\relax
+\pdftexcmds@nopdftex
+\ltx@IfUndefined{pdftexversion}{%
+}{%
+\ifnum\pdftexversion>120 % 1.21a supports \ifeof18
+\ifeof18 %
+\chardef\pdf@shellescape=0 %
+\else
+\chardef\pdf@shellescape=1 %
+\fi
+\fi
+}%
+\else
+\def\pdf@shellescape{%
+\pdfshellescape
+}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdffiledump\endcsname\relax
+\pdftexcmds@nopdftex
+\else
+\def\pdf@filedump#1#2#3{%
+\pdffiledump offset#1 length#2{#3}%
+}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfmdfivesum\endcsname\relax
+\pdftexcmds@nopdftex
+\else
+\def\pdf@mdfivesum#{\pdfmdfivesum}%
+\let\pdf@mdfivesumnative\pdf@mdfivesum
+\def\pdf@filemdfivesum#{\pdfmdfivesum file}%
+\fi
+\def\pdf@system#{%
+\immediate\write18%
+}%
+\def\pdftexcmds@temp#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf#1\endcsname\relax
+\pdftexcmds@nopdftex
+\else
+\expandafter\let\csname pdf@#1\expandafter\endcsname
+\csname pdf#1\endcsname
+\fi
+}%
+\pdftexcmds@temp{resettimer}%
+\pdftexcmds@temp{elapsedtime}%
+\fi
+\ifluatex
+\ifnum\luatexversion<36 %
+\def\pdftexcmds@directlua{\directlua0 }%
+\else
+\let\pdftexcmds@directlua\directlua
+\fi
+\begingroup
+\newlinechar=10 %
+\endlinechar=\newlinechar
+\pdftexcmds@directlua{%
+ if tex.enableprimitives then
+ tex.enableprimitives(
+ 'pdf@',
+{'primitive', 'ifprimitive', 'pdfdraftmode'}
+ )
+ tex.enableprimitives('', {'luaescapestring'})
+ end
+}%
+\endgroup %
+\fi
+\def\pdftexcmds@strip@prefix#1>{}
+\def\pdftexcmds@temp#1#2#3{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@#1\endcsname\relax
+\begingroup
+\def\x{#3}%
+\edef\x{\expandafter\pdftexcmds@strip@prefix\meaning\x}%
+\escapechar=-1 %
+\edef\y{\expandafter\meaning\csname#2\endcsname}%
+\expandafter\endgroup
+\ifx\x\y
+\expandafter\let\csname pdf@#1\expandafter\endcsname
+\csname #2\endcsname
+\fi
+\fi
+}
+\pdftexcmds@temp{primitive}{pdfprimitive}{pdfprimitive}% pdfTeX, LuaTeX
+\pdftexcmds@temp{primitive}{primitive}{primitive}% XeTeX
+\pdftexcmds@temp{primitive}{luatexprimitive}{pdfprimitive}% LuaTeX
+\pdftexcmds@temp{primitive}{luatexpdfprimitive}{pdfprimitive}% LuaTeX
+\pdftexcmds@temp{ifprimitive}{ifpdfprimitive}{ifpdfprimitive}% pdfTeX, LuaTeX
+\pdftexcmds@temp{ifprimitive}{ifprimitive}{ifprimitive}% XeTeX
+\pdftexcmds@temp{ifprimitive}{luatexifprimitive}{ifpdfprimitive}% LuaTeX
+\pdftexcmds@temp{ifprimitive}{luatexifpdfprimitive}{ifpdfprimitive}% LuaTeX
+\begingroup
+\expandafter\ifx\csname pdf@primitive\endcsname\relax
+\else
+\expandafter\ifx\csname pdftexversion\endcsname\relax
+\else
+\ifnum\pdftexversion=140 %
+\expandafter\ifx\csname pdftexrevision\endcsname\relax
+\else
+\ifnum\pdftexrevision<4 %
+\endgroup
+\let\pdf@primitive\@undefined
+\@PackageInfoNoLine{pdftexcmds}{%
+\string\pdf@primitive\space disabled, %
+ because\MessageBreak
+\string\pdfprimitive\space is broken until pdfTeX 1.40.4%
+}%
+\begingroup
+\fi
+\fi
+\fi
+\fi
+\fi
+\endgroup
+\begingroup
+\@PackageInfoNoLine{pdftexcmds}{%
+\string\pdf@primitive\space is %
+\expandafter\ifx\csname pdf@primitive\endcsname\relax not \fi
+ available%
+}%
+\@PackageInfoNoLine{pdftexcmds}{%
+\string\pdf@ifprimitive\space is %
+\expandafter\ifx\csname pdf@ifprimitive\endcsname\relax not \fi
+ available%
+}%
+\endgroup
+\def\pdftexcmds@temp#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@#1\endcsname\relax
+\begingroup
+\escapechar=-1 %
+\edef\x{\expandafter\meaning\csname#1\endcsname}%
+\def\y{#1}%
+\def\z##1->{}%
+\edef\y{\expandafter\z\meaning\y}%
+\expandafter\endgroup
+\ifx\x\y
+\expandafter\def\csname pdf@#1\expandafter\endcsname
+\expandafter{%
+\csname#1\endcsname
+}%
+\fi
+\fi
+}%
+\pdftexcmds@temp{shellescape}%
+\pdftexcmds@temp{strcmp}%
+\def\pdf@isprimitive{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@strcmp\endcsname\relax
+\long\def\pdf@isprimitive##1{%
+\expandafter\pdftexcmds@isprimitive\expandafter{\meaning##1}%
+}%
+\long\def\pdftexcmds@isprimitive##1##2{%
+\expandafter\pdftexcmds@@isprimitive\expandafter{\string##2}{##1}%
+}%
+\def\pdftexcmds@@isprimitive##1##2{%
+\ifnum0\pdftexcmds@equal##1\delimiter##2\delimiter=1 %
+\expandafter\ltx@firstoftwo
+\else
+\expandafter\ltx@secondoftwo
+\fi
+}%
+\def\pdftexcmds@equal##1##2\delimiter##3##4\delimiter{%
+\ifx##1##3%
+\ifx\relax##2##4\relax
+ 1%
+\else
+\ifx\relax##2\relax
+\else
+\ifx\relax##4\relax
+\else
+\pdftexcmds@equalcont{##2}{##4}%
+\fi
+\fi
+\fi
+\fi
+}%
+\def\pdftexcmds@equalcont##1{%
+\def\pdftexcmds@equalcont####1####2##1##1##1##1{%
+##1##1##1##1%
+\pdftexcmds@equal####1\delimiter####2\delimiter
+}%
+}%
+\expandafter\pdftexcmds@equalcont\csname fi\endcsname
+\else
+\long\def\pdf@isprimitive##1##2{%
+\ifnum\pdf@strcmp{\meaning##1}{\string##2}=0 %
+\expandafter\ltx@firstoftwo
+\else
+\expandafter\ltx@secondoftwo
+\fi
+}%
+\fi
+}
+\ifluatex
+\else
+\pdf@isprimitive
+\fi
+\let\pdftexcmds@temp\ltx@zero %
+\ltx@IfUndefined{pdfdraftmode}{%
+\@PackageInfoNoLine{pdftexcmds}{\ltx@backslashchar pdfdraftmode not found}%
+}{%
+\ifpdf
+\let\pdftexcmds@temp\ltx@one
+\@PackageInfoNoLine{pdftexcmds}{\ltx@backslashchar pdfdraftmode found}%
+\else
+\@PackageInfoNoLine{pdftexcmds}{%
+\ltx@backslashchar pdfdraftmode is ignored in DVI mode%
+}%
+\fi
+}
+\ifcase\pdftexcmds@temp
+\let\pdf@draftmode\ltx@zero
+\let\pdf@ifdraftmode\ltx@secondoftwo
+\def\pdftexcmds@setdraftmode#1{}%
+\else
+\let\pdftexcmds@draftmode\pdfdraftmode
+\def\pdf@ifdraftmode{%
+\ifnum\pdftexcmds@draftmode=\ltx@one
+\expandafter\ltx@firstoftwo
+\else
+\expandafter\ltx@secondoftwo
+\fi
+}%
+\def\pdf@draftmode{%
+\ifnum\pdftexcmds@draftmode=\ltx@one
+\expandafter\ltx@one
+\else
+\expandafter\ltx@zero
+\fi
+}%
+\def\pdftexcmds@setdraftmode#1{%
+\pdftexcmds@draftmode=#1\relax
+}%
+\fi
+\def\pdf@setdraftmode#1{%
+\begingroup
+\count\ltx@cclv=#1\relax
+\edef\x{\endgroup
+\noexpand\pdftexcmds@@setdraftmode{\the\count\ltx@cclv}%
+}%
+\x
+}
+\def\pdftexcmds@@setdraftmode#1{%
+\ifcase#1 %
+\pdftexcmds@setdraftmode{#1}%
+\or
+\pdftexcmds@setdraftmode{#1}%
+\else
+\@PackageWarning{pdftexcmds}{%
+\string\pdf@setdraftmode: Ignoring\MessageBreak
+ invalid value `#1'%
+}%
+\fi
+}
+\ifluatex
+\else
+\expandafter\pdftexcmds@AtEnd
+\fi%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{luatex-loader}[2009/04/10]%
+\else
+\RequirePackage{luatex-loader}[2009/04/10]%
+\fi
+\pdftexcmds@directlua{%
+ require("oberdiek.pdftexcmds")%
+}
+\ifnum\luatexversion>37 %
+\ifnum0%
+\pdftexcmds@directlua{%
+ if status.ini_version then %
+ tex.write("1")%
+ end%
+}>0 %
+\everyjob\expandafter{%
+\the\everyjob
+\pdftexcmds@directlua{%
+ require("oberdiek.pdftexcmds")%
+}%
+}%
+\fi
+\fi
+\begingroup
+\def\x{2011/11/29 v0.20}%
+\ltx@onelevel@sanitize\x
+\edef\y{%
+\pdftexcmds@directlua{%
+ if oberdiek.pdftexcmds.getversion then %
+ oberdiek.pdftexcmds.getversion()%
+ end%
+}%
+}%
+\ifx\x\y
+\else
+\@PackageError{pdftexcmds}{%
+ Wrong version of lua module.\MessageBreak
+ Package version: \x\MessageBreak
+ Lua module: \y
+}\@ehc
+\fi
+\endgroup
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newtoks\endcsname\relax
+\toksdef\pdftexcmds@toks=0 %
+\else
+\csname newtoks\endcsname\pdftexcmds@toks
+\fi
+\def\pdftexcmds@Patch{0}
+\ifnum\luatexversion>40 %
+\ifnum\luatexversion<66 %
+\def\pdftexcmds@Patch{1}%
+\fi
+\fi
+\ifcase\pdftexcmds@Patch
+\catcode`\&=14 %
+\else
+\catcode`\&=9 %
+\def\pdftexcmds@PatchDecode#1\@nil{%
+\pdftexcmds@DecodeA#1^^A^^A\@nil{}%
+}%
+\def\pdftexcmds@DecodeA#1^^A^^A#2\@nil#3{%
+\ifx\relax#2\relax
+\ltx@ReturnAfterElseFi{%
+\pdftexcmds@DecodeB#3#1^^A^^B\@nil{}%
+}%
+\else
+\ltx@ReturnAfterFi{%
+\pdftexcmds@DecodeA#2\@nil{#3#1^^@}%
+}%
+\fi
+}%
+\def\pdftexcmds@DecodeB#1^^A^^B#2\@nil#3{%
+\ifx\relax#2\relax%
+\ltx@ReturnAfterElseFi{%
+\ltx@zero
+#3#1%
+}%
+\else
+\ltx@ReturnAfterFi{%
+\pdftexcmds@DecodeB#2\@nil{#3#1^^A}%
+}%
+\fi
+}%
+\fi
+\ifnum\luatexversion<36 %
+\else
+\catcode`\0=9 %
+\fi
+\long\def\pdf@strcmp#1#2{%
+\directlua0{%
+ oberdiek.pdftexcmds.strcmp("\luaescapestring{#1}",%
+ "\luaescapestring{#2}")%
+}%
+}%
+\pdf@isprimitive
+\long\def\pdf@escapehex#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.escapehex("\luaescapestring{#1}", "byte")%
+}%
+}%
+\long\def\pdf@escapehexnative#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.escapehex("\luaescapestring{#1}")%
+}%
+}%
+\def\pdf@unescapehex#1{%
+& \romannumeral\expandafter\pdftexcmds@PatchDecode
+\the\expandafter\pdftexcmds@toks
+\directlua0{%
+ oberdiek.pdftexcmds.toks="pdftexcmds@toks"%
+ oberdiek.pdftexcmds.unescapehex("\luaescapestring{#1}", "byte", \pdftexcmds@Patch)%
+}%
+& \@nil
+}%
+\def\pdf@unescapehexnative#1{%
+& \romannumeral\expandafter\pdftexcmds@PatchDecode
+\the\expandafter\pdftexcmds@toks
+\directlua0{%
+ oberdiek.pdftexcmds.toks="pdftexcmds@toks"%
+ oberdiek.pdftexcmds.unescapehex("\luaescapestring{#1}", \pdftexcmds@Patch)%
+}%
+& \@nil
+}%
+\long\def\pdf@escapestring#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.escapestring("\luaescapestring{#1}", "byte")%
+}%
+}
+\long\def\pdf@escapename#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.escapename("\luaescapestring{#1}", "byte")%
+}%
+}
+\long\def\pdf@escapenamenative#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.escapename("\luaescapestring{#1}")%
+}%
+}
+\def\pdf@filesize#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.filesize("\luaescapestring{#1}")%
+}%
+}
+\def\pdf@filemoddate#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.filemoddate("\luaescapestring{#1}")%
+}%
+}
+\def\pdf@filedump#1#2#3{%
+\directlua0{%
+ oberdiek.pdftexcmds.filedump("\luaescapestring{\number#1}",%
+ "\luaescapestring{\number#2}",%
+ "\luaescapestring{#3}")%
+}%
+}%
+\long\def\pdf@mdfivesum#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.mdfivesum("\luaescapestring{#1}", "byte")%
+}%
+}%
+\long\def\pdf@mdfivesumnative#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.mdfivesum("\luaescapestring{#1}")%
+}%
+}%
+\def\pdf@filemdfivesum#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.filemdfivesum("\luaescapestring{#1}")%
+}%
+}%
+\let\pdftexcmds@temp=Y%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+\pdftexcmds@directlua0{%
+ if tex.enableprimitives then %
+ tex.enableprimitives('', {'protected'})%
+ end%
+}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+\let\pdftexcmds@temp=N%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\pdftexcmds@directlua0{%
+ if tex.enableprimitives then %
+ tex.enableprimitives('', {'numexpr'})%
+ end%
+}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\let\pdftexcmds@temp=N%
+\fi
+\ifx\pdftexcmds@temp N%
+\@PackageWarningNoLine{pdftexcmds}{%
+ Definitions of \ltx@backslashchar pdf@resettimer and%
+\MessageBreak
+\ltx@backslashchar pdf@elapsedtime are skipped, because%
+\MessageBreak
+ e-TeX's \ltx@backslashchar protected or %
+\ltx@backslashchar numexpr are missing%
+}%
+\else
+\protected\def\pdf@resettimer{%
+\pdftexcmds@directlua0{%
+ oberdiek.pdftexcmds.resettimer()%
+}%
+}%
+\protected\def\pdf@elapsedtime{%
+\numexpr
+\pdftexcmds@directlua0{%
+ oberdiek.pdftexcmds.elapsedtime()%
+}%
+\relax
+}%
+\fi
+\ifnum\luatexversion<68 %
+\else
+\def\pdf@shellescape{%
+\directlua0{%
+ oberdiek.pdftexcmds.shellescape()%
+}%
+}%
+\fi
+\def\pdf@system#1{%
+\directlua0{%
+ oberdiek.pdftexcmds.system("\luaescapestring{#1}")%
+}%
+}
+\def\pdf@lastsystemstatus{%
+\directlua0{%
+ oberdiek.pdftexcmds.lastsystemstatus()%
+}%
+}
+\def\pdf@lastsystemexit{%
+\directlua0{%
+ oberdiek.pdftexcmds.lastsystemexit()%
+}%
+}
+\catcode`\0=12 %
+\ifnum0%
+\pdftexcmds@directlua{%
+ if io.popen then %
+ tex.write("1")%
+ end%
+}%
+ =1 %
+\def\pdf@pipe#1{%
+&   \romannumeral\expandafter\pdftexcmds@PatchDecode
+\the\expandafter\pdftexcmds@toks
+\pdftexcmds@directlua{%
+ oberdiek.pdftexcmds.toks="pdftexcmds@toks"%
+ oberdiek.pdftexcmds.pipe("\luaescapestring{#1}", \pdftexcmds@Patch)%
+}%
+&   \@nil
+}%
+\fi
+\pdftexcmds@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{pdfescape}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@pdfescape.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{pdfescape}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@pdfescape.sty\endcsname
+\ProvidesPackage{pdfescape}%
+ [2011/11/25 v1.13 Implements pdfTeX's escape features (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123 1 % {
+\catcode125 2 % }
+\catcode64 11 %
+\def\x{\endgroup
+\expandafter\edef\csname PE@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2#3{%
+\edef\PE@AtEnd{%
+\PE@AtEnd
+#1#2=\the#1#2\relax
+}%
+#1#2=#3\relax
+}
+\TMP@EnsureCode\catcode{0}{12}% ^^@
+\TMP@EnsureCode\catcode{34}{12}% "
+\TMP@EnsureCode\catcode{36}{3}% $
+\TMP@EnsureCode\catcode{38}{4}% &
+\TMP@EnsureCode\catcode{39}{12}% '
+\TMP@EnsureCode\catcode{42}{12}% *
+\TMP@EnsureCode\catcode{45}{12}% -
+\TMP@EnsureCode\catcode{46}{12}% .
+\TMP@EnsureCode\catcode{47}{12}% /
+\TMP@EnsureCode\catcode{60}{12}% <
+\TMP@EnsureCode\catcode{62}{12}% >
+\TMP@EnsureCode\catcode{91}{12}% [
+\TMP@EnsureCode\catcode{93}{12}% ]
+\TMP@EnsureCode\catcode{94}{7}% ^
+\TMP@EnsureCode\catcode{96}{12}% `
+\TMP@EnsureCode\uccode{34}{0}% "
+\TMP@EnsureCode\uccode{48}{0}% 0
+\TMP@EnsureCode\uccode{61}{0}% =
+\edef\PE@AtEnd{\PE@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{ltxcmds}[2010/04/08]%
+\else
+\RequirePackage{ltxcmds}[2010/04/08]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname detokenize\endcsname\relax
+\long\def\EdefSanitize#1#2{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\edef#1{#2}%
+\PE@onelevel@sanitize#1%
+\expandafter\endgroup
+\expandafter\def\expandafter#1\expandafter{#1}%
+}%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @onelevel@sanitize\endcsname\relax
+\def\PE@onelevel@sanitize#1{%
+\edef#1{\expandafter\PE@strip@prefix\meaning#1}%
+}%
+\def\PE@strip@prefix#1>{}%
+\else
+\let\PE@onelevel@sanitize\@onelevel@sanitize
+\fi
+\else
+\long\def\EdefSanitize#1#2{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\edef#1{#2}%
+\expandafter\endgroup
+\expandafter\def\expandafter#1\expandafter{%
+\detokenize\expandafter{#1}%
+}%
+}%
+\def\PE@onelevel@sanitize#1{%
+\edef#1{\detokenize\expandafter{#1}}%
+}%
+\fi
+\let\PE@sanitize\EdefSanitize
+\begingroup
+\catcode`\ =12\relax%
+\def\x{\endgroup\def\PE@space@other{ }}\x\relax
+\def\PE@space@space{ }
+\def\PE@SanitizeSpaceOther#1{%
+\edef#1{\expandafter\PE@SpaceToOther#1 \relax}%
+}
+\def\PE@SpaceToOther#1 #2\relax{%
+#1%
+\ifx\\#2\\%
+\else
+\PE@space@other
+\ltx@ReturnAfterFi{%
+\PE@SpaceToOther#2\relax
+}%
+\fi
+}
+\def\EdefUnescapeName#1#2{%
+\EdefSanitize#1{#2}%
+\PE@SanitizeSpaceOther#1%
+\PE@UnescapeName#1%
+\PE@onelevel@sanitize#1%
+}
+\begingroup
+\catcode`\$=6  % hash
+\catcode`\#=12 % other
+\gdef\PE@UnescapeName$1{%
+\begingroup
+\PE@InitUccodeHexDigit
+\def\PE@result{}%
+\expandafter\PE@DeName$1#\relax\relax
+\expandafter\endgroup
+\expandafter\def\expandafter$1\expandafter{\PE@result}%
+}%
+\gdef\PE@DeName$1#$2$3{%
+\ifx\relax$2%
+\edef\PE@result{\PE@result$1}%
+\let\PE@next\relax
+\else
+\ifx\relax$3%
+% wrong escape sequence in input
+\edef\PE@result{\PE@result$1#}%
+\let\PE@next\relax
+\else
+\uppercase{%
+\def\PE@testA{$2}%
+\def\PE@testB{$3}%
+}%
+\ifcase\ifcase\expandafter\PE@TestUcHexDigit\PE@testA
+\ifcase\expandafter\PE@TestUcHexDigit\PE@testB
+\ltx@zero
+\else
+\ltx@one
+\fi
+\else
+\ltx@one
+\fi
+\uccode\ltx@zero="\PE@testA\PE@testB\relax
+\uppercase{%
+\def\PE@temp{^^@}%
+}%
+\uccode\ltx@zero=\ltx@zero
+\edef\PE@result{\PE@result$1\PE@temp}%
+\let\PE@next\PE@DeName
+\else
+% wrong escape sequence in input
+\edef\PE@result{\PE@result$1#}%
+\def\PE@next{\PE@DeName$2$3}%
+\fi
+\fi
+\fi
+\PE@next
+}%
+\endgroup
+\def\PE@InitUccodeHexDigit{%
+\uccode`a=`A\relax
+\uccode`b=`B\relax
+\uccode`c=`C\relax
+\uccode`d=`D\relax
+\uccode`e=`E\relax
+\uccode`f=`F\relax
+\uccode`A=\ltx@zero
+\uccode`B=\ltx@zero
+\uccode`C=\ltx@zero
+\uccode`D=\ltx@zero
+\uccode`E=\ltx@zero
+\uccode`F=\ltx@zero
+\uccode`0=\ltx@zero
+\uccode`1=\ltx@zero
+\uccode`2=\ltx@zero
+\uccode`3=\ltx@zero
+\uccode`4=\ltx@zero
+\uccode`5=\ltx@zero
+\uccode`6=\ltx@zero
+\uccode`7=\ltx@zero
+\uccode`8=\ltx@zero
+\uccode`9=\ltx@zero
+}
+\def\PE@TestUcHexDigit#1{%
+\ifnum`#1<48 % 0
+\ltx@one
+\else
+\ifnum`#1>70 % F
+\ltx@one
+\else
+\ifnum`#1>57 % 9
+\ifnum`#1<65 % A
+\ltx@one
+\else
+\ltx@zero
+\fi
+\else
+\ltx@zero
+\fi
+\fi
+\fi
+}
+\def\EdefUnescapeString#1#2{%
+\EdefSanitize#1{#2}%
+\PE@SanitizeSpaceOther#1%
+\PE@NormalizeLineEnd#1%
+\PE@UnescapeString#1%
+\PE@onelevel@sanitize#1%
+}
+\begingroup
+\uccode`\8=10 % lf
+\uccode`\9=13 % cr
+\def\x#1#2{\endgroup
+\def\PE@NormalizeLineEnd##1{%
+\def\PE@result{}%
+\expandafter\PE@@NormalizeLineEnd##1#2\relax
+\let##1\PE@result
+}%
+\def\PE@@NormalizeLineEnd##1#2##2{%
+\ifx\relax##2%
+\edef\PE@result{\PE@result##1}%
+\let\PE@next\relax
+\else
+\edef\PE@result{\PE@result##1#1}%
+\ifx#1##2% lf
+\let\PE@next\PE@@NormalizeLineEnd
+\else
+\def\PE@next{\PE@@NormalizeLineEnd##2}%
+\fi
+\fi
+\PE@next
+}%
+}%
+\uppercase{%
+\x 89%
+}
+\begingroup
+\catcode`\|=0 %
+\catcode`\\=12 %
+ |gdef|PE@UnescapeString#1{%
+ |begingroup
+ |def|PE@result{}%
+ |expandafter|PE@DeString#1\|relax
+ |expandafter|endgroup
+ |expandafter|def|expandafter#1|expandafter{|PE@result}%
+}%
+ |gdef|PE@DeString#1\#2{%
+ |ifx|relax#2%
+ |edef|PE@result{|PE@result#1}%
+ |let|PE@next|relax
+ |else
+ |if n#2%
+ |uccode|ltx@zero=10 %
+ |else|if r#2%
+ |uccode|ltx@zero=13 %
+ |else|if t#2%
+ |uccode|ltx@zero=9 %
+ |else|if b#2%
+ |uccode|ltx@zero=8 %
+ |else|if f#2%
+ |uccode|ltx@zero=12 %
+ |else
+ |uccode|ltx@zero=|ltx@zero
+ |fi|fi|fi|fi|fi
+ |ifnum|uccode|ltx@zero>|ltx@zero
+ |uppercase{%
+ |edef|PE@temp{^^@}%
+}%
+ |edef|PE@result{|PE@result#1|PE@temp}%
+ |let|PE@next|PE@DeString
+ |else
+ |if\#2% backslash
+ |edef|PE@result{|PE@result#1}%
+ |let|PE@next|PE@CheckEndBackslash
+ |else
+ |ifnum`#2=10 % linefeed
+ |edef|PE@result{|PE@result#1}%
+ |let|PE@next|PE@DeString
+ |else
+ |ifcase|PE@TestOctDigit#2%
+ |edef|PE@result{|PE@result#1}%
+ |def|PE@next{|PE@OctI#2}%
+ |else
+ |edef|PE@result{|PE@result#1#2}%
+ |let|PE@next|PE@DeString
+ |fi
+ |fi
+ |fi
+ |fi
+ |fi
+ |PE@next
+}%
+ |gdef|PE@CheckEndBackslash#1{%
+ |ifx|relax#1%
+ |else
+ |edef|PE@result{|PE@result\}%
+ |expandafter|PE@DeString|expandafter#1%
+ |fi
+}%
+|endgroup
+\def\PE@TestOctDigit#1{%
+\ifnum`#1<48 % 0
+\ltx@one
+\else
+\ifnum`#1>55 % 7
+\ltx@one
+\else
+\ltx@zero
+\fi
+\fi
+}
+\def\PE@OctI#1#2{%
+\ifcase\PE@TestOctDigit#2%
+\def\PE@next{\PE@OctII{#1#2}}%
+\else
+\def\PE@next{\PE@OctAll#1#2}%
+\fi
+\PE@next
+}
+\def\PE@OctII#1#2{%
+\ifcase\PE@TestOctDigit#2%
+\def\PE@next{\PE@OctIII#1#2}%
+\else
+\def\PE@next{\PE@OctAll{#1}#2}%
+\fi
+\PE@next
+}
+\ltx@IfUndefined{numexpr}{%
+\catcode`\$=9 %
+\catcode`\&=14 %
+}{%
+\catcode`\$=14 %
+\catcode`\&=9 %
+}
+\def\PE@OctIII#1#2#3{%
+\ifnum#1<4 %
+\def\PE@next{\PE@OctAll{#1#2#3}}%
+\else
+$   \count\ltx@cclv#1 %
+$   \advance\count\ltx@cclv -4 %
+\edef\PE@next{%
+\noexpand\PE@OctAll{%
+$       \the\count\ltx@cclv
+&       \the\numexpr#1-4\relax
+#2#3%
+}%
+}%
+\fi
+\PE@next
+}
+\def\PE@OctAll#1{%
+\uccode\ltx@zero='#1\relax
+\uppercase{%
+\edef\PE@result{\PE@result^^@}%
+}%
+\PE@DeString
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{pdftexcmds}[2007/11/11]%
+\else
+\RequirePackage{pdftexcmds}[2007/11/11]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapehex\endcsname\relax
+\long\def\EdefEscapeHex#1#2{%
+\EdefSanitize#1{#2}%
+\PE@SanitizeSpaceOther#1%
+\PE@EscapeHex#1%
+}%
+\def\EdefUnescapeHex#1#2{%
+\EdefSanitize#1{#2}%
+\PE@UnescapeHex#1%
+}%
+\long\def\EdefEscapeName#1#2{%
+\EdefSanitize#1{#2}%
+\PE@SanitizeSpaceOther#1%
+\PE@EscapeName#1%
+}%
+\long\def\EdefEscapeString#1#2{%
+\EdefSanitize#1{#2}%
+\PE@SanitizeSpaceOther#1%
+\PE@EscapeString#1%
+}%
+\else
+\long\def\PE@edefbabel#1#2#3{%
+\begingroup
+\csname @save@activestrue\endcsname
+\edef#1{#2{#3}}%
+\expandafter\endgroup
+\expandafter\def\expandafter#1\expandafter{#1}%
+}%
+\long\def\EdefEscapeHex#1#2{%
+\PE@edefbabel#1\pdf@escapehex{#2}%
+}%
+\def\EdefUnescapeHex#1#2{%
+\PE@edefbabel#1\pdf@unescapehex{#2}%
+}%
+\long\def\EdefEscapeName#1#2{%
+\PE@edefbabel#1\pdf@escapename{#2}%
+}%
+\long\def\EdefEscapeString#1#2{%
+\PE@edefbabel#1\pdf@escapestring{#2}%
+}%
+\expandafter\PE@AtEnd
+\fi%
+\edef\PE@hash{\string#}
+\begingroup
+\escapechar=-1 %
+\edef\x{\endgroup
+\def\noexpand\PE@backslash{\string\\}%
+}
+\x
+\ltx@newif\ifPE@etex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\else
+\PE@etextrue
+\fi
+\ifPE@etex
+\def\PE@EscapeHex#1{%
+\edef#1{\expandafter\PE@ToHex#1\relax}%
+}%
+\else
+\def\PE@EscapeHex#1{%
+\def\PE@result{}%
+\expandafter\PE@ToHex#1\relax
+\let#1\PE@result
+}%
+\fi
+\def\PE@ToHex#1{%
+\ifx\relax#1%
+\else
+\PE@HexChar{#1}%
+\expandafter\PE@ToHex
+\fi
+}%
+\ifPE@etex
+\def\PE@HexChar#1{%
+\PE@HexDigit{\numexpr\dimexpr.0625\dimexpr`#1sp\relax\relax\relax}%
+\PE@HexDigit{%
+\numexpr`#1-16*\dimexpr.0625\dimexpr`#1sp\relax\relax\relax
+}%
+}%
+\else
+\def\PE@HexChar#1{%
+\dimen0=`#1sp%
+\dimen2=.0625\dimen0 %
+\advance\dimen0-16\dimen2 %
+\edef\PE@result{%
+\PE@result
+\PE@HexDigit{\dimen2 }%
+\PE@HexDigit{\dimen0 }%
+}%
+}%
+\fi
+\def\PE@HexDigit#1{%
+\expandafter\string
+\ifcase#1%
+ 0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or 9\or
+ A\or B\or C\or D\or E\or F%
+\fi
+}
+\ifPE@etex
+\def\PE@OctChar#1{%
+\expandafter\PE@@OctChar
+\the\numexpr\dimexpr.015625\dimexpr`#1sp\relax\relax
+\expandafter\relax
+\expandafter\relax
+\the\numexpr\dimexpr.125\dimexpr`#1sp\relax\relax\relax
+\relax
+#1%
+}%
+\def\PE@@OctChar#1\relax#2\relax#3{%
+\PE@backslash
+#1%
+\the\numexpr#2-8*#1\relax
+\the\numexpr\dimexpr`#3sp\relax-8*#2\relax
+}%
+\else
+\def\PE@OctChar#1{%
+\dimen0=`#1sp%
+\dimen2=.125\dimen0 %
+\dimen4=.125\dimen2 %
+\advance\dimen0-8\dimen2 %
+\advance\dimen2-8\dimen4 %
+\edef\PE@result{%
+\PE@result
+\PE@backslash
+\number\dimen4 %
+\number\dimen2 %
+\number\dimen0 %
+}%
+}%
+\fi
+\def\PE@UnescapeHex#1{%
+\begingroup
+\PE@InitUccodeHexDigit
+\def\PE@result{}%
+\expandafter\PE@DeHex#1\relax\relax
+\expandafter\endgroup
+\expandafter\def\expandafter#1\expandafter{\PE@result}%
+}
+\def\PE@DeHex#1#2{%
+\ifx#2\relax
+\ifx#1\relax
+\let\PE@next\relax
+\else
+\uppercase{%
+\def\PE@testA{#1}%
+}%
+\ifcase\expandafter\PE@TestUcHexDigit\PE@testA
+\def\PE@next{%
+\PE@DeHex#10\relax\relax
+}%
+\else
+\let\PE@next\relax
+\fi
+\fi
+\else
+\uppercase{%
+\def\PE@testA{#1}%
+\def\PE@testB{#2}%
+}%
+\ifcase\expandafter\PE@TestUcHexDigit\PE@testA
+\ifcase\expandafter\PE@TestUcHexDigit\PE@testB
+\uccode\ltx@zero="\PE@testA\PE@testB\relax
+\ifnum\uccode\ltx@zero=32 %
+\let\PE@temp\PE@space@space
+\else
+\uppercase{%
+\def\PE@temp{^^@}%
+}%
+\fi
+\edef\PE@result{\PE@result\PE@temp}%
+\let\PE@next\PE@DeHex
+\else
+% invalid input sequence
+\def\PE@next{%
+\PE@DeHex#1%
+}%
+\fi
+\else
+% invalid input sequence
+\def\PE@next{\PE@DeHex#2}%
+\fi
+\fi
+\PE@next
+}
+\ifPE@etex
+\def\PE@EscapeName#1{%
+\edef#1{\expandafter\PE@EscapeNameTokens#1\relax}%
+}%
+\else
+\def\PE@EscapeName#1{%
+\def\PE@result{}%
+\expandafter\PE@EscapeNameTokens#1\relax
+\let#1\PE@result
+}%
+\fi
+\def\PE@EscapeNameTokens#1{%
+\ifx\relax#1%
+\else
+\ifnum`#1<33 %
+\ifcase`#1 %
+% drop illegal zero
+\else
+\PE@EscapeNameAdd\PE@hash
+\PE@HexChar#1%
+\fi
+\else
+\ifnum`#1>126 %
+\PE@EscapeNameAdd\PE@hash
+\PE@HexChar#1%
+\else  \ifnum`#1=35  \PE@EscapeNameHashChar 23% #
+\else\ifnum`#1=37  \PE@EscapeNameHashChar 25% %
+\else\ifnum`#1=40  \PE@EscapeNameHashChar 28% (
+\else\ifnum`#1=41  \PE@EscapeNameHashChar 29% )
+\else\ifnum`#1=47  \PE@EscapeNameHashChar 2F% /
+\else\ifnum`#1=60  \PE@EscapeNameHashChar 3C% <
+\else\ifnum`#1=62  \PE@EscapeNameHashChar 3E% >
+\else\ifnum`#1=91  \PE@EscapeNameHashChar 5B% [
+\else\ifnum`#1=93  \PE@EscapeNameHashChar 5D% ]
+\else\ifnum`#1=123 \PE@EscapeNameHashChar 7B% {
+\else\ifnum`#1=125 \PE@EscapeNameHashChar 7D% }
+\else
+\PE@EscapeNameAdd{#1}%
+\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+\fi
+\fi
+\expandafter\PE@EscapeNameTokens
+\fi
+}%
+\def\PE@EscapeNameHashChar#1#2{%
+\PE@EscapeNameAdd{\PE@hash\string#1\string#2}%
+}%
+\ifPE@etex
+\def\PE@EscapeNameAdd#1{#1}%
+\else
+\def\PE@EscapeNameAdd#1{%
+\edef\PE@result{%
+\PE@result
+#1%
+}%
+}%
+\fi
+\ifPE@etex
+\def\PE@EscapeString#1{%
+\edef#1{\expandafter\PE@EscapeStringTokens#1\relax}%
+}%
+\else
+\def\PE@EscapeString#1{%
+\begingroup
+\def\PE@result{}%
+\expandafter\PE@EscapeStringTokens#1\relax
+\expandafter\endgroup
+\expandafter\def\expandafter#1\expandafter{\PE@result}%
+}%
+\fi
+\def\PE@EscapeStringTokens#1{%
+\ifx\relax#1%
+\else
+\ifnum`#1<33 %
+\PE@OctChar#1%
+\else
+\ifnum`#1>126 %
+\PE@OctChar#1%
+\else  \ifnum`#1=40 \PE@EscapeStringAdd{\string\(}% (
+\else\ifnum`#1=41 \PE@EscapeStringAdd{\string\)}% )
+\else\ifnum`#1=92 \PE@EscapeStringAdd{\string\\}% \
+\else
+\PE@EscapeStringAdd{#1}%
+\fi\fi\fi
+\fi
+\fi
+\expandafter\PE@EscapeStringTokens
+\fi
+}%
+\ifPE@etex
+\def\PE@EscapeStringAdd#1{#1}%
+\else
+\def\PE@EscapeStringAdd#1{%
+\edef\PE@result{%
+\PE@result
+#1%
+}%
+}%
+\fi
+\PE@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{bigintcalc}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@bigintcalc.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{bigintcalc}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@bigintcalc.sty\endcsname
+\ProvidesPackage{bigintcalc}%
+ [2012/04/08 v1.3 Expandable calculations on big integers (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname BIC@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\BIC@AtEnd{%
+\BIC@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{14}% $ (comment!)
+\TMP@EnsureCode{38}{14}% & (comment!)
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{11}% : (letter!)
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{14}% ? (comment!)
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\BIC@AtEnd{\BIC@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname BIC@TestMode\endcsname\relax
+\else
+\catcode63=9 % ? (ignore)
+\fi
+? \let\BIC@@TestMode\BIC@TestMode
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\catcode36=9 % $ (ignore)
+\else
+\catcode38=9 % & (ignore)
+\fi
+\let\BIC@Fi\fi
+\def\BIC@AfterFi#1#2\BIC@Fi{\fi#1}%
+\def\BIC@AfterFiFi#1#2\BIC@Fi{\fi\fi#1}%
+\def\BIC@AfterFiFiFi#1#2\BIC@Fi{\fi\fi\fi#1}%
+\begingroup
+\def\x#1{\endgroup
+\let\BIC@Space= #1%
+}%
+\x{ }
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{pdftexcmds}[2007/11/11]%
+\else
+\RequirePackage{pdftexcmds}[2007/11/11]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapehex\endcsname\relax
+\def\BIC@Expand#1{%
+\romannumeral0%
+\BIC@@Expand#1!\@nil{}%
+}%
+\def\BIC@@Expand#1#2\@nil#3{%
+\expandafter\ifcat\noexpand#1\relax
+\expandafter\@firstoftwo
+\else
+\expandafter\@secondoftwo
+\fi
+{%
+\expandafter\BIC@@Expand#1#2\@nil{#3}%
+}{%
+\ifx#1!%
+\expandafter\@firstoftwo
+\else
+\expandafter\@secondoftwo
+\fi
+{ #3}{%
+\BIC@@Expand#2\@nil{#3#1}%
+}%
+}%
+}%
+\expandafter\ifx\csname @firstoftwo\endcsname\relax
+\long\def\@firstoftwo#1#2{#1}%
+\fi
+\expandafter\ifx\csname @secondoftwo\endcsname\relax
+\long\def\@secondoftwo#1#2{#2}%
+\fi
+\else
+\def\BIC@Expand#1{%
+\romannumeral0\expandafter\expandafter\expandafter\BIC@Space
+\pdf@unescapehex{%
+\expandafter\expandafter\expandafter
+\BIC@StripHexSpace\pdf@escapehex{#1}20\@nil
+}%
+}%
+\def\BIC@StripHexSpace#120#2\@nil{%
+#1%
+\ifx\\#2\\%
+\else
+\BIC@AfterFi{%
+\BIC@StripHexSpace#2\@nil
+}%
+\BIC@Fi
+}%
+\fi
+\def\BIC@Normalize#1#2{%
+\ifx#2-%
+\ifx\\#1\\%
+\BIC@AfterFiFi{%
+\BIC@Normalize-%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@Normalize{}%
+}%
+\fi
+\else
+\ifx#2+%
+\BIC@AfterFiFi{%
+\BIC@Normalize{#1}%
+}%
+\else
+\ifx#20%
+\BIC@AfterFiFiFi{%
+\BIC@NormalizeZero{#1}%
+}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@NormalizeDigits#1#2%
+}%
+\fi
+\fi
+\BIC@Fi
+}
+\def\BIC@NormalizeZero#1#2{%
+\ifx#2!%
+\BIC@AfterFi{ 0}%
+\else
+\ifx#20%
+\BIC@AfterFiFi{%
+\BIC@NormalizeZero{#1}%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@NormalizeDigits#1#2%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@NormalizeDigits#1!{ #1}
+\def\bigintcalcNum#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Normalize
+\expandafter\expandafter\expandafter{%
+\expandafter\expandafter\expandafter}%
+\BIC@Expand{#1}!%
+}
+\def\bigintcalcInv#1{%
+\romannumeral0\expandafter\expandafter\expandafter\BIC@Space
+\bigintcalcNum{-#1}%
+}
+\def\bigintcalcAbs#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Abs
+\bigintcalcNum{#1}%
+}
+\def\BIC@Abs#1{%
+\ifx#1-%
+\expandafter\BIC@Space
+\else
+\expandafter\BIC@Space
+\expandafter#1%
+\fi
+}
+\def\bigintcalcSgn#1{%
+\number
+\expandafter\expandafter\expandafter\BIC@Sgn
+\bigintcalcNum{#1}! %
+}
+\def\BIC@Sgn#1#2!{%
+\ifx#1-%
+ -1%
+\else
+\ifx#10%
+ 0%
+\else
+ 1%
+\fi
+\fi
+}
+\def\bigintcalcCmp#1#2{%
+\number
+\expandafter\expandafter\expandafter\BIC@Cmp
+\bigintcalcNum{#2}!{#1}%
+}
+\def\BIC@Cmp#1!#2{%
+\expandafter\expandafter\expandafter\BIC@@Cmp
+\bigintcalcNum{#2}!#1!%
+}
+\def\BIC@@Cmp#1#2!#3#4!{%
+\ifx#1-%
+\ifx#3-%
+\BIC@AfterFiFi{%
+\BIC@@Cmp#4!#2!%
+}%
+\else
+\BIC@AfterFiFi{%
+ -1 %
+}%
+\fi
+\else
+\ifx#3-%
+\BIC@AfterFiFi{%
+ 1 %
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@CmpLength#1#2!#3#4!#1#2!#3#4!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@PosCmp#1!#2!{%
+\BIC@CmpLength#1!#2!#1!#2!%
+}
+\def\BIC@CmpLength#1#2!#3#4!{%
+\ifx\\#2\\%
+\ifx\\#4\\%
+\BIC@AfterFiFi\BIC@CmpDiff
+\else
+\BIC@AfterFiFi{%
+\BIC@CmpResult{-1}%
+}%
+\fi
+\else
+\ifx\\#4\\%
+\BIC@AfterFiFi{%
+\BIC@CmpResult1%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@CmpLength#2!#4!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@CmpResult#1#2!#3!{#1 }
+\def\BIC@CmpDiff#1#2!#3#4!{%
+\ifnum#1<#3 %
+\BIC@AfterFi{%
+ -1 %
+}%
+\else
+\ifnum#1>#3 %
+\BIC@AfterFiFi{%
+ 1 %
+}%
+\else
+\ifx\\#2\\%
+\BIC@AfterFiFiFi{%
+ 0 %
+}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@CmpDiff#2!#4!%
+}%
+\fi
+\fi
+\BIC@Fi
+}
+\def\bigintcalcMin#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@MinMax
+\bigintcalcNum{#1}!-!%
+}
+\def\bigintcalcMax#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@MinMax
+\bigintcalcNum{#1}!!%
+}
+\def\BIC@MinMax#1!#2!#3{%
+\expandafter\expandafter\expandafter\BIC@@MinMax
+\bigintcalcNum{#3}!#1!#2!%
+}
+\def\BIC@@MinMax#1!#2!#3!{%
+\ifnum\BIC@@Cmp#1!#2!=#31 %
+\BIC@AfterFi{ #1}%
+\else
+\BIC@AfterFi{ #2}%
+\BIC@Fi
+}
+\def\bigintcalcOdd#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Odd
+\bigintcalcAbs{#1}!%
+}
+\def\BigIntCalcOdd#1!{%
+\romannumeral0%
+\BIC@Odd#1!%
+}
+\def\BIC@Odd#1#2{%
+\ifx#2!%
+\ifodd#1 %
+\BIC@AfterFiFi{ 1}%
+\else
+\BIC@AfterFiFi{ 0}%
+\fi
+\else
+\expandafter\BIC@Odd\expandafter#2%
+\BIC@Fi
+}
+\def\bigintcalcInc#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@IncSwitch
+\bigintcalcNum{#1}!%
+}
+\def\BIC@IncSwitch#1#2!{%
+\ifcase\BIC@@Cmp#1#2!-1!%
+\BIC@AfterFi{ 0}%
+\or
+\BIC@AfterFi{%
+\BIC@Inc#1#2!{}%
+}%
+\else
+\BIC@AfterFi{%
+\expandafter-\romannumeral0%
+\BIC@Dec#2!{}%
+}%
+\BIC@Fi
+}
+\def\bigintcalcDec#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@DecSwitch
+\bigintcalcNum{#1}!%
+}
+\def\BIC@DecSwitch#1#2!{%
+\ifcase\BIC@Sgn#1#2! %
+\BIC@AfterFi{ -1}%
+\or
+\BIC@AfterFi{%
+\BIC@Dec#1#2!{}%
+}%
+\else
+\BIC@AfterFi{%
+\expandafter-\romannumeral0%
+\BIC@Inc#2!{}%
+}%
+\BIC@Fi
+}
+\def\BigIntCalcInc#1!{%
+\romannumeral0\BIC@Inc#1!{}%
+}
+\def\BigIntCalcDec#1!{%
+\romannumeral0\BIC@Dec#1!{}%
+}
+\def\BIC@Inc#1#2!#3{%
+\ifx\\#2\\%
+\BIC@AfterFi{%
+\BIC@@Inc1#1#3!{}%
+}%
+\else
+\BIC@AfterFi{%
+\BIC@Inc#2!{#1#3}%
+}%
+\BIC@Fi
+}
+\def\BIC@@Inc#1#2#3!#4{%
+\ifcase#1 %
+\ifx\\#3\\%
+\BIC@AfterFiFi{ #2#4}%
+\else
+\BIC@AfterFiFi{%
+\BIC@@Inc0#3!{#2#4}%
+}%
+\fi
+\else
+\ifnum#2<9 %
+\BIC@AfterFiFi{%
+&       \expandafter\BIC@@@Inc\the\numexpr#2+1\relax
+$       \expandafter\expandafter\expandafter\BIC@@@Inc
+$       \ifcase#2 \expandafter1%
+$       \or\expandafter2%
+$       \or\expandafter3%
+$       \or\expandafter4%
+$       \or\expandafter5%
+$       \or\expandafter6%
+$       \or\expandafter7%
+$       \or\expandafter8%
+$       \or\expandafter9%
+$?      \else\BigIntCalcError:ThisCannotHappen%
+$       \fi
+ 0#3!{#4}%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@@@Inc01#3!{#4}%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@@@Inc#1#2#3!#4{%
+\ifx\\#3\\%
+\ifnum#2=1 %
+\BIC@AfterFiFi{ 1#1#4}%
+\else
+\BIC@AfterFiFi{ #1#4}%
+\fi
+\else
+\BIC@AfterFi{%
+\BIC@@Inc#2#3!{#1#4}%
+}%
+\BIC@Fi
+}
+\def\BIC@Dec#1#2!#3{%
+\ifx\\#2\\%
+\BIC@AfterFi{%
+\BIC@@Dec1#1#3!{}%
+}%
+\else
+\BIC@AfterFi{%
+\BIC@Dec#2!{#1#3}%
+}%
+\BIC@Fi
+}
+\def\BIC@@Dec#1#2#3!#4{%
+\ifcase#1 %
+\ifx\\#3\\%
+\BIC@AfterFiFi{ #2#4}%
+\else
+\BIC@AfterFiFi{%
+\BIC@@Dec0#3!{#2#4}%
+}%
+\fi
+\else
+\ifnum#2>0 %
+\BIC@AfterFiFi{%
+&       \expandafter\BIC@@@Dec\the\numexpr#2-1\relax
+$       \expandafter\expandafter\expandafter\BIC@@@Dec
+$       \ifcase#2
+$?        \BigIntCalcError:ThisCannotHappen%
+$       \or\expandafter0%
+$       \or\expandafter1%
+$       \or\expandafter2%
+$       \or\expandafter3%
+$       \or\expandafter4%
+$       \or\expandafter5%
+$       \or\expandafter6%
+$       \or\expandafter7%
+$       \or\expandafter8%
+$?      \else\BigIntCalcError:ThisCannotHappen%
+$       \fi
+ 0#3!{#4}%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@@@Dec91#3!{#4}%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@@@Dec#1#2#3!#4{%
+\ifx\\#3\\%
+\ifcase#1 %
+\ifx\\#4\\%
+\BIC@AfterFiFiFi{ 0}%
+\else
+\BIC@AfterFiFiFi{ #4}%
+\fi
+\else
+\BIC@AfterFiFi{ #1#4}%
+\fi
+\else
+\BIC@AfterFi{%
+\BIC@@Dec#2#3!{#1#4}%
+}%
+\BIC@Fi
+}
+\def\bigintcalcAdd#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Add
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Add#1!#2{%
+\expandafter\expandafter\expandafter
+\BIC@AddSwitch\bigintcalcNum{#2}!#1!%
+}
+\def\bigintcalcSub#1#2{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Add
+\bigintcalcNum{-#2}!{#1}%
+}
+\def\BIC@AddSwitch#1#2!#3#4!{%
+\ifx#1-% x < 0
+\ifx#3-% y < 0
+\expandafter-\romannumeral0%
+\ifnum\BIC@PosCmp#2!#4!=1 % -x > -y
+\BIC@AfterFiFiFi{%
+\BIC@AddXY#2!#4!!!%
+}%
+\else % -x <= -y
+\BIC@AfterFiFiFi{%
+\BIC@AddXY#4!#2!!!%
+}%
+\fi
+\else % y >= 0
+\ifcase\BIC@PosCmp#2!#3#4!% -x = y
+\BIC@AfterFiFiFi{ 0}%
+\or % -x > y
+\expandafter-\romannumeral0%
+\BIC@AfterFiFiFi{%
+\BIC@SubXY#2!#3#4!!!%
+}%
+\else % -x <= y
+\BIC@AfterFiFiFi{%
+\BIC@SubXY#3#4!#2!!!%
+}%
+\fi
+\fi
+\else % x >= 0
+\ifx#3-% y < 0
+\ifcase\BIC@PosCmp#1#2!#4!% x = -y
+\BIC@AfterFiFiFi{ 0}%
+\or % x > -y
+\BIC@AfterFiFiFi{%
+\BIC@SubXY#1#2!#4!!!%
+}%
+\else % x <= -y
+\expandafter-\romannumeral0%
+\BIC@AfterFiFiFi{%
+\BIC@SubXY#4!#1#2!!!%
+}%
+\fi
+\else % y >= 0
+\ifnum\BIC@PosCmp#1#2!#3#4!=1 % x > y
+\BIC@AfterFiFiFi{%
+\BIC@AddXY#1#2!#3#4!!!%
+}%
+\else % x <= y
+\BIC@AfterFiFiFi{%
+\BIC@AddXY#3#4!#1#2!!!%
+}%
+\fi
+\fi
+\BIC@Fi
+}
+\def\BigIntCalcAdd#1!#2!{%
+\romannumeral0\BIC@AddXY#1!#2!!!%
+}
+\def\BigIntCalcSub#1!#2!{%
+\romannumeral0\BIC@SubXY#1!#2!!!%
+}
+\def\BIC@AddXY#1#2!#3#4!#5!#6!{%
+\ifx\\#2\\%
+\ifx\\#3\\%
+\BIC@AfterFiFi{%
+\BIC@DoAdd0!#1#5!#60!%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@DoAdd0!#1#5!#3#6!%
+}%
+\fi
+\else
+\ifx\\#4\\%
+\ifx\\#3\\%
+\BIC@AfterFiFiFi{%
+\BIC@AddXY#2!{}!#1#5!#60!%
+}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@AddXY#2!{}!#1#5!#3#6!%
+}%
+\fi
+\else
+\BIC@AfterFiFi{%
+\BIC@AddXY#2!#4!#1#5!#3#6!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@DoAdd#1#2!#3#4!#5#6!{%
+\ifx\\#4\\%
+\BIC@AfterFi{%
+&     \expandafter\BIC@Space
+&     \the\numexpr#1+#3+#5\relax#2%
+$     \expandafter\expandafter\expandafter\BIC@AddResult
+$     \BIC@AddDigit#1#3#5#2%
+}%
+\else
+\BIC@AfterFi{%
+\expandafter\expandafter\expandafter\BIC@DoAdd
+\BIC@AddDigit#1#3#5#2!#4!#6!%
+}%
+\BIC@Fi
+}
+$ \def\BIC@AddResult#1{%
+$   \ifx#10%
+$     \expandafter\BIC@Space
+$   \else
+$     \expandafter\BIC@Space\expandafter#1%
+$   \fi
+$ }%
+\def\BIC@AddDigit#1#2#3{%
+\romannumeral0%
+& \expandafter\BIC@@AddDigit\the\numexpr#1+#2+#3!%
+$ \expandafter\BIC@@AddDigit\number%
+$ \csname
+$   BIC@AddCarry%
+$   \ifcase#1 %
+$     #2%
+$   \else
+$     \ifcase#2 1\or2\or3\or4\or5\or6\or7\or8\or9\or10\fi
+$   \fi
+$ \endcsname#3!%
+}
+\def\BIC@@AddDigit#1!{%
+\ifnum#1<10 %
+\BIC@AfterFi{ 0#1}%
+\else
+\BIC@AfterFi{ #1}%
+\BIC@Fi
+}
+$ \expandafter\def\csname BIC@AddCarry0\endcsname#1{#1}%
+$ \expandafter\def\csname BIC@AddCarry10\endcsname#1{1#1}%
+$ \def\BIC@Temp#1#2{%
+$   \expandafter\def\csname BIC@AddCarry#1\endcsname##1{%
+$     \ifcase##1 #1\or
+$     #2%
+$?    \else\BigIntCalcError:ThisCannotHappen%
+$     \fi
+$   }%
+$ }%
+$ \BIC@Temp 0{1\or2\or3\or4\or5\or6\or7\or8\or9}%
+$ \BIC@Temp 1{2\or3\or4\or5\or6\or7\or8\or9\or10}%
+$ \BIC@Temp 2{3\or4\or5\or6\or7\or8\or9\or10\or11}%
+$ \BIC@Temp 3{4\or5\or6\or7\or8\or9\or10\or11\or12}%
+$ \BIC@Temp 4{5\or6\or7\or8\or9\or10\or11\or12\or13}%
+$ \BIC@Temp 5{6\or7\or8\or9\or10\or11\or12\or13\or14}%
+$ \BIC@Temp 6{7\or8\or9\or10\or11\or12\or13\or14\or15}%
+$ \BIC@Temp 7{8\or9\or10\or11\or12\or13\or14\or15\or16}%
+$ \BIC@Temp 8{9\or10\or11\or12\or13\or14\or15\or16\or17}%
+$ \BIC@Temp 9{10\or11\or12\or13\or14\or15\or16\or17\or18}%
+\def\BIC@SubXY#1#2!#3#4!#5!#6!{%
+\ifx\\#2\\%
+\ifx\\#3\\%
+\BIC@AfterFiFi{%
+\BIC@DoSub0!#1#5!#60!%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@DoSub0!#1#5!#3#6!%
+}%
+\fi
+\else
+\ifx\\#4\\%
+\ifx\\#3\\%
+\BIC@AfterFiFiFi{%
+\BIC@SubXY#2!{}!#1#5!#60!%
+}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@SubXY#2!{}!#1#5!#3#6!%
+}%
+\fi
+\else
+\BIC@AfterFiFi{%
+\BIC@SubXY#2!#4!#1#5!#3#6!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@DoSub#1#2!#3#4!#5#6!{%
+\ifx\\#4\\%
+\BIC@AfterFi{%
+\expandafter\expandafter\expandafter\BIC@SubResult
+\BIC@SubDigit#1#3#5#2%
+}%
+\else
+\BIC@AfterFi{%
+\expandafter\expandafter\expandafter\BIC@DoSub
+\BIC@SubDigit#1#3#5#2!#4!#6!%
+}%
+\BIC@Fi
+}
+\def\BIC@SubResult#1{%
+\ifx#10%
+\expandafter\BIC@SubResult
+\else
+\expandafter\BIC@Space\expandafter#1%
+\fi
+}
+\def\BIC@SubDigit#1#2#3{%
+\romannumeral0%
+& \expandafter\BIC@@SubDigit\the\numexpr#2-#3-#1!%
+$ \expandafter\BIC@@AddDigit\number
+$   \csname
+$     BIC@SubCarry%
+$     \ifcase#1 %
+$       #3%
+$     \else
+$       \ifcase#3 1\or2\or3\or4\or5\or6\or7\or8\or9\or10\fi
+$     \fi
+$   \endcsname#2!%
+}
+& \def\BIC@@SubDigit#1!{%
+&   \ifnum#1<0 %
+&     \BIC@AfterFi{%
+&       \expandafter\BIC@Space
+&       \expandafter1\the\numexpr#1+10\relax
+&     }%
+&   \else
+&     \BIC@AfterFi{ 0#1}%
+&   \BIC@Fi
+& }%
+$ \expandafter\def\csname BIC@SubCarry0\endcsname#1{#1}%
+$ \expandafter\def\csname BIC@SubCarry10\endcsname#1{1#1}%
+$ \def\BIC@Temp#1#2{%
+$   \expandafter\def\csname BIC@SubCarry#1\endcsname##1{%
+$     \ifcase##1 #2%
+$?    \else\BigIntCalcError:ThisCannotHappen%
+$     \fi
+$   }%
+$ }%
+$ \BIC@Temp 1{19\or0\or1\or2\or3\or4\or5\or6\or7\or8}%
+$ \BIC@Temp 2{18\or19\or0\or1\or2\or3\or4\or5\or6\or7}%
+$ \BIC@Temp 3{17\or18\or19\or0\or1\or2\or3\or4\or5\or6}%
+$ \BIC@Temp 4{16\or17\or18\or19\or0\or1\or2\or3\or4\or5}%
+$ \BIC@Temp 5{15\or16\or17\or18\or19\or0\or1\or2\or3\or4}%
+$ \BIC@Temp 6{14\or15\or16\or17\or18\or19\or0\or1\or2\or3}%
+$ \BIC@Temp 7{13\or14\or15\or16\or17\or18\or19\or0\or1\or2}%
+$ \BIC@Temp 8{12\or13\or14\or15\or16\or17\or18\or19\or0\or1}%
+$ \BIC@Temp 9{11\or12\or13\or14\or15\or16\or17\or18\or19\or0}%
+\def\bigintcalcShl#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Shl
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Shl#1#2!{%
+\ifx#1-%
+\BIC@AfterFi{%
+\expandafter-\romannumeral0%
+&     \BIC@@Shl#2!!%
+$     \BIC@AddXY#2!#2!!!%
+}%
+\else
+\BIC@AfterFi{%
+&     \BIC@@Shl#1#2!!%
+$     \BIC@AddXY#1#2!#1#2!!!%
+}%
+\BIC@Fi
+}
+\def\BigIntCalcShl#1!{%
+\romannumeral0%
+& \BIC@@Shl#1!!%
+$ \BIC@AddXY#1!#1!!!%
+}
+& \def\BIC@@Shl#1#2!{%
+&   \ifx\\#2\\%
+&     \BIC@AfterFi{%
+&       \BIC@@@Shl0!#1%
+&     }%
+&   \else
+&     \BIC@AfterFi{%
+&       \BIC@@Shl#2!#1%
+&     }%
+&   \BIC@Fi
+& }%
+& \def\BIC@@@Shl#1#2!#3#4!{%
+&   \ifx\\#4\\%
+&     \BIC@AfterFi{%
+&       \expandafter\BIC@Space
+&       \the\numexpr#3*2+#1\relax#2%
+&     }%
+&   \else
+&     \BIC@AfterFi{%
+&       \expandafter\BIC@@@@Shl\the\numexpr#3*2+#1!#2!#4!%
+&     }%
+&   \BIC@Fi
+& }%
+& \def\BIC@@@@Shl#1!{%
+&   \ifnum#1<10 %
+&     \BIC@AfterFi{%
+&       \BIC@@@Shl0#1%
+&     }%
+&   \else
+&     \BIC@AfterFi{%
+&       \BIC@@@Shl#1%
+&     }%
+&   \BIC@Fi
+& }%
+\def\bigintcalcShr#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Shr
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Shr#1#2!{%
+\ifx#1-%
+\expandafter-\romannumeral0%
+\BIC@AfterFi{%
+\BIC@@Shr#2!%
+}%
+\else
+\BIC@AfterFi{%
+\BIC@@Shr#1#2!%
+}%
+\BIC@Fi
+}
+\def\BigIntCalcShr#1!{%
+\romannumeral0%
+\BIC@@Shr#1!%
+}
+\def\BIC@@Shr#1#2!{%
+\ifcase#1 %
+\BIC@AfterFi{ 0}%
+\or
+\ifx\\#2\\%
+\BIC@AfterFiFi{ 0}%
+\else
+\BIC@AfterFiFi{%
+\BIC@@@Shr#1#2!!%
+}%
+\fi
+\else
+\BIC@AfterFi{%
+\BIC@@@Shr0#1#2!!%
+}%
+\BIC@Fi
+}
+\def\BIC@@@Shr#1#2#3!#4!{%
+\ifx\\#3\\%
+\ifodd#1#2 %
+\BIC@AfterFiFi{%
+&       \expandafter\BIC@ShrResult\the\numexpr(#1#2-1)/2\relax
+$       \expandafter\expandafter\expandafter\BIC@ShrResult
+$       \csname BIC@ShrDigit#1#2\endcsname
+#4!%
+}%
+\else
+\BIC@AfterFiFi{%
+&       \expandafter\BIC@ShrResult\the\numexpr#1#2/2\relax
+$       \expandafter\expandafter\expandafter\BIC@ShrResult
+$       \csname BIC@ShrDigit#1#2\endcsname
+#4!%
+}%
+\fi
+\else
+\ifodd#1#2 %
+\BIC@AfterFiFi{%
+&       \expandafter\BIC@@@@Shr\the\numexpr(#1#2-1)/2\relax1%
+$       \expandafter\expandafter\expandafter\BIC@@@@Shr
+$       \csname BIC@ShrDigit#1#2\endcsname
+#3!#4!%
+}%
+\else
+\BIC@AfterFiFi{%
+&       \expandafter\BIC@@@@Shr\the\numexpr#1#2/2\relax0%
+$       \expandafter\expandafter\expandafter\BIC@@@@Shr
+$       \csname BIC@ShrDigit#1#2\endcsname
+#3!#4!%
+}%
+\fi
+\BIC@Fi
+}
+& \def\BIC@ShrResult#1#2!{ #2#1}%
+$ \def\BIC@ShrResult#1#2#3!{ #3#1}%
+\def\BIC@@@@Shr#1#2#3!#4!{%
+\BIC@@@Shr#2#3!#4#1!%
+}
+$ \def\BIC@Temp#1#2#3#4{%
+$   \expandafter\def\csname BIC@ShrDigit#1#2\endcsname{#3#4}%
+$ }%
+$ \BIC@Temp 0000%
+$ \BIC@Temp 0101%
+$ \BIC@Temp 0210%
+$ \BIC@Temp 0311%
+$ \BIC@Temp 0420%
+$ \BIC@Temp 0521%
+$ \BIC@Temp 0630%
+$ \BIC@Temp 0731%
+$ \BIC@Temp 0840%
+$ \BIC@Temp 0941%
+$ \BIC@Temp 1050%
+$ \BIC@Temp 1151%
+$ \BIC@Temp 1260%
+$ \BIC@Temp 1361%
+$ \BIC@Temp 1470%
+$ \BIC@Temp 1571%
+$ \BIC@Temp 1680%
+$ \BIC@Temp 1781%
+$ \BIC@Temp 1890%
+$ \BIC@Temp 1991%
+\def\BIC@Tim#1!#2{%
+\romannumeral0%
+\ifcase#2 % 0
+\BIC@AfterFi{ 0}%
+\or % 1
+\BIC@AfterFi{ #1}%
+\or % 2
+\BIC@AfterFi{%
+\BIC@Shl#1!%
+}%
+\else % 3-9
+\BIC@AfterFi{%
+\BIC@@Tim#1!!#2%
+}%
+\BIC@Fi
+}
+\def\BIC@@Tim#1#2!{%
+\ifx\\#2\\%
+\BIC@AfterFi{%
+\BIC@ProcessTim0!#1%
+}%
+\else
+\BIC@AfterFi{%
+\BIC@@Tim#2!#1%
+}%
+\BIC@Fi
+}
+\def\BIC@ProcessTim#1#2!#3#4!#5{%
+\ifx\\#4\\%
+\BIC@AfterFi{%
+\expandafter\BIC@Space
+&     \the\numexpr#3*#5+#1\relax
+$     \romannumeral0\BIC@TimDigit#3#5#1%
+#2%
+}%
+\else
+\BIC@AfterFi{%
+\expandafter\BIC@@ProcessTim
+&     \the\numexpr#3*#5+#1%
+$     \romannumeral0\BIC@TimDigit#3#5#1%
+ !#2!#4!#5%
+}%
+\BIC@Fi
+}
+\def\BIC@@ProcessTim#1#2!{%
+\ifx\\#2\\%
+\BIC@AfterFi{%
+\BIC@ProcessTim0#1%
+}%
+\else
+\BIC@AfterFi{%
+\BIC@ProcessTim#1#2%
+}%
+\BIC@Fi
+}
+$ \def\BIC@TimDigit#1#2#3{%
+$   \ifcase#1 % 0
+$     \BIC@AfterFi{ #3}%
+$   \or % 1
+$     \BIC@AfterFi{%
+$       \expandafter\BIC@Space
+$       \number\csname BIC@AddCarry#2\endcsname#3 %
+$     }%
+$   \else
+$     \ifcase#3 %
+$       \BIC@AfterFiFi{%
+$         \expandafter\BIC@Space
+$         \number\csname BIC@MulDigit#2\endcsname#1 %
+$       }%
+$     \else
+$       \BIC@AfterFiFi{%
+$         \expandafter\BIC@Space
+$         \romannumeral0%
+$         \expandafter\BIC@AddXY
+$         \number\csname BIC@MulDigit#2\endcsname#1!%
+$         #3!!!%
+$       }%
+$     \fi
+$   \BIC@Fi
+$ }%
+$ \def\BIC@Temp#1#2{%
+$   \expandafter\def\csname BIC@MulDigit#1\endcsname##1{%
+$     \ifcase##1 0%
+$     \or ##1%
+$     \or #2%
+$?    \else\BigIntCalcError:ThisCannotHappen%
+$     \fi
+$   }%
+$ }%
+$ \BIC@Temp 3{6\or9\or12\or15\or18\or21\or24\or27}%
+$ \BIC@Temp 4{8\or12\or16\or20\or24\or28\or32\or36}%
+$ \BIC@Temp 5{10\or15\or20\or25\or30\or35\or40\or45}%
+$ \BIC@Temp 6{12\or18\or24\or30\or36\or42\or48\or54}%
+$ \BIC@Temp 7{14\or21\or28\or35\or42\or49\or56\or63}%
+$ \BIC@Temp 8{16\or24\or32\or40\or48\or56\or64\or72}%
+$ \BIC@Temp 9{18\or27\or36\or45\or54\or63\or72\or81}%
+\def\bigintcalcMul#1#2{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Mul
+\bigintcalcNum{#1}!{#2}%
+}
+\def\BIC@Mul#1!#2{%
+\expandafter\expandafter\expandafter\BIC@MulSwitch
+\bigintcalcNum{#2}!#1!%
+}
+\def\BIC@MulSwitch#1#2!#3#4!{%
+\ifcase\BIC@Sgn#1#2! % x = 0
+\BIC@AfterFi{ 0}%
+\or % x > 0
+\ifcase\BIC@Sgn#3#4! % y = 0
+\BIC@AfterFiFi{ 0}%
+\or % y > 0
+\ifnum\BIC@PosCmp#1#2!#3#4!=1 % x > y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#1#2!#3#4!%
+}%
+\else % x <= y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#3#4!#1#2!%
+}%
+\fi
+\else % y < 0
+\expandafter-\romannumeral0%
+\ifnum\BIC@PosCmp#1#2!#4!=1 % x > -y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#1#2!#4!%
+}%
+\else % x <= -y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#4!#1#2!%
+}%
+\fi
+\fi
+\else % x < 0
+\ifcase\BIC@Sgn#3#4! % y = 0
+\BIC@AfterFiFi{ 0}%
+\or % y > 0
+\expandafter-\romannumeral0%
+\ifnum\BIC@PosCmp#2!#3#4!=1 % -x > y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#2!#3#4!%
+}%
+\else % -x <= y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#3#4!#2!%
+}%
+\fi
+\else % y < 0
+\ifnum\BIC@PosCmp#2!#4!=1 % -x > -y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#2!#4!%
+}%
+\else % -x <= -y
+\BIC@AfterFiFiFi{%
+\BIC@ProcessMul0!#4!#2!%
+}%
+\fi
+\fi
+\BIC@Fi
+}
+\def\BigIntCalcMul#1!#2!{%
+\romannumeral0%
+\BIC@ProcessMul0!#1!#2!%
+}
+\def\BIC@ProcessMul#1!#2!#3#4!{%
+\ifx\\#4\\%
+\BIC@AfterFi{%
+\expandafter\expandafter\expandafter\BIC@Space
+\bigintcalcAdd{\BIC@Tim#2!#3}{#10}%
+}%
+\else
+\BIC@AfterFi{%
+\expandafter\expandafter\expandafter\BIC@ProcessMul
+\bigintcalcAdd{\BIC@Tim#2!#3}{#10}!#2!#4!%
+}%
+\BIC@Fi
+}
+\def\bigintcalcSqr#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Sqr
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Sqr#1{%
+\ifx#1-%
+\expandafter\BIC@@Sqr
+\else
+\expandafter\BIC@@Sqr\expandafter#1%
+\fi
+}
+\def\BIC@@Sqr#1!{%
+\BIC@ProcessMul0!#1!#1!%
+}
+\def\bigintcalcFac#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Fac
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Fac#1#2!{%
+\ifx#1-%
+\BIC@AfterFi{ 0\BigIntCalcError:FacNegative}%
+\else
+\ifnum\BIC@PosCmp#1#2!13!<0 %
+\ifcase#1#2 %
+\BIC@AfterFiFiFi{ 1}% 0!
+\or\BIC@AfterFiFiFi{ 1}% 1!
+\or\BIC@AfterFiFiFi{ 2}% 2!
+\or\BIC@AfterFiFiFi{ 6}% 3!
+\or\BIC@AfterFiFiFi{ 24}% 4!
+\or\BIC@AfterFiFiFi{ 120}% 5!
+\or\BIC@AfterFiFiFi{ 720}% 6!
+\or\BIC@AfterFiFiFi{ 5040}% 7!
+\or\BIC@AfterFiFiFi{ 40320}% 8!
+\or\BIC@AfterFiFiFi{ 362880}% 9!
+\or\BIC@AfterFiFiFi{ 3628800}% 10!
+\or\BIC@AfterFiFiFi{ 39916800}% 11!
+\or\BIC@AfterFiFiFi{ 479001600}% 12!
+?     \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessFac#1#2!479001600!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@ProcessFac#1!#2!{%
+\ifnum\BIC@PosCmp#1!12!=0 %
+\BIC@AfterFi{ #2}%
+\else
+\BIC@AfterFi{%
+\expandafter\BIC@@ProcessFac
+\romannumeral0\BIC@ProcessMul0!#2!#1!%
+ !#1!%
+}%
+\BIC@Fi
+}
+\def\BIC@@ProcessFac#1!#2!{%
+\expandafter\BIC@ProcessFac
+\romannumeral0\BIC@Dec#2!{}%
+ !#1!%
+}
+\def\bigintcalcPow#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Pow
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Pow#1!#2{%
+\expandafter\expandafter\expandafter\BIC@PowSwitch
+\bigintcalcNum{#2}!#1!%
+}
+\def\BIC@PowSwitch#1#2!#3#4!{%
+\ifcase\ifx\\#2\\%
+\ifx#100 % y = 0
+\else\ifx#111 % y = 1
+\else\ifx#122 % y = 2
+\else4 % y > 2
+\fi\fi\fi
+\else
+\ifx#1-3 % y < 0
+\else4 % y > 2
+\fi
+\fi
+\BIC@AfterFi{ 1}% y = 0
+\or % y = 1
+\BIC@AfterFi{ #3#4}%
+\or % y = 2
+\ifx#3-% x < 0
+\BIC@AfterFiFi{%
+\BIC@ProcessMul0!#4!#4!%
+}%
+\else % x >= 0
+\BIC@AfterFiFi{%
+\BIC@ProcessMul0!#3#4!#3#4!%
+}%
+\fi
+\or % y < 0
+\ifcase\ifx\\#4\\%
+\ifx#300 % x = 0
+\else\ifx#311 % x = 1
+\else3 % x > 1
+\fi\fi
+\else
+\ifcase\BIC@MinusOne#3#4! %
+ 3 % |x| > 1
+\or
+ 2 % x = -1
+?            \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\fi
+\BIC@AfterFiFi{ 0\BigIntCalcError:DivisionByZero}% x = 0
+\or % x = 1
+\BIC@AfterFiFi{ 1}% x = 1
+\or % x = -1
+\ifcase\BIC@ModTwo#2! % even(y)
+\BIC@AfterFiFiFi{ 1}%
+\or % odd(y)
+\BIC@AfterFiFiFi{ -1}%
+?     \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\or % |x| > 1
+\BIC@AfterFiFi{ 0}%
+?   \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\or % y > 2
+\ifcase\ifx\\#4\\%
+\ifx#300 % x = 0
+\else\ifx#311 % x = 1
+\else4 % x > 1
+\fi\fi
+\else
+\ifx#3-%
+\ifcase\BIC@MinusOne#3#4! %
+ 3 % x < -1
+\else
+ 2 % x = -1
+\fi
+\else
+ 4 % x > 1
+\fi
+\fi
+\BIC@AfterFiFi{ 0}% x = 0
+\or % x = 1
+\BIC@AfterFiFi{ 1}% x = 1
+\or % x = -1
+\ifcase\BIC@ModTwo#1#2! % even(y)
+\BIC@AfterFiFiFi{ 1}%
+\or % odd(y)
+\BIC@AfterFiFiFi{ -1}%
+?     \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\or % x < -1
+\ifcase\BIC@ModTwo#1#2! % even(y)
+\BIC@AfterFiFiFi{%
+\BIC@PowRec#4!#1#2!1!%
+}%
+\or % odd(y)
+\expandafter-\romannumeral0%
+\BIC@AfterFiFiFi{%
+\BIC@PowRec#4!#1#2!1!%
+}%
+?     \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\or % x > 1
+\BIC@AfterFiFi{%
+\BIC@PowRec#3#4!#1#2!1!%
+}%
+?   \else\BigIntCalcError:ThisCannotHappen%
+\fi
+? \else\BigIntCalcError:ThisCannotHappen%
+\BIC@Fi
+}
+\def\BIC@ModTwo#1#2!{%
+\ifx\\#2\\%
+\ifodd#1 %
+\BIC@AfterFiFi1%
+\else
+\BIC@AfterFiFi0%
+\fi
+\else
+\BIC@AfterFi{%
+\BIC@ModTwo#2!%
+}%
+\BIC@Fi
+}
+\def\BIC@MinusOne#1#2!{%
+\ifx#1-%
+\BIC@@MinusOne#2!%
+\else
+ 0%
+\fi
+}
+\def\BIC@@MinusOne#1#2!{%
+\ifx#11%
+\ifx\\#2\\%
+ 1%
+\else
+ 0%
+\fi
+\else
+ 0%
+\fi
+}
+\def\BIC@PowRec#1!#2#3!#4!{%
+\ifcase\ifx#21\ifx\\#3\\0 \else1 \fi\else1 \fi % y = 1
+\ifnum\BIC@PosCmp#1!#4!=1 % x > r
+\BIC@AfterFiFi{%
+\BIC@ProcessMul0!#1!#4!%
+}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessMul0!#4!#1!%
+}%
+\fi
+\or
+\ifcase\BIC@ModTwo#2#3! % even(y)
+\BIC@AfterFiFi{%
+\expandafter\BIC@@PowRec\romannumeral0%
+\BIC@@Shr#2#3!%
+ !#1!#4!%
+}%
+\or % odd(y)
+\ifnum\BIC@PosCmp#1!#4!=1 % x > r
+\BIC@AfterFiFiFi{%
+\expandafter\BIC@@@PowRec\romannumeral0%
+\BIC@ProcessMul0!#1!#4!%
+ !#1!#2#3!%
+}%
+\else
+\BIC@AfterFiFiFi{%
+\expandafter\BIC@@@PowRec\romannumeral0%
+\BIC@ProcessMul0!#1!#4!%
+ !#1!#2#3!%
+}%
+\fi
+?   \else\BigIntCalcError:ThisCannotHappen%
+\fi
+? \else\BigIntCalcError:ThisCannotHappen%
+\BIC@Fi
+}
+\def\BIC@@PowRec#1!#2!#3!{%
+\expandafter\BIC@PowRec\romannumeral0%
+\BIC@ProcessMul0!#2!#2!%
+ !#1!#3!%
+}
+\def\BIC@@@PowRec#1!#2!#3!{%
+\expandafter\BIC@@PowRec\romannumeral0%
+\BIC@@Shr#3!%
+ !#2!#1!%
+}
+\def\bigintcalcDiv#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Div
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Div#1!#2{%
+\expandafter\expandafter\expandafter\BIC@DivSwitchSign
+\bigintcalcNum{#2}!#1!%
+}
+\def\BigIntCalcDiv#1!#2!{%
+\romannumeral0%
+\BIC@DivSwitchSign#2!#1!%
+}
+\def\BIC@DivSwitchSign#1#2!#3#4!{%
+\ifcase\BIC@Sgn#1#2! % y = 0
+\BIC@AfterFi{ 0\BigIntCalcError:DivisionByZero}%
+\or % y > 0
+\ifcase\BIC@Sgn#3#4! % x = 0
+\BIC@AfterFiFi{ 0}%
+\or % x > 0
+\BIC@AfterFiFi{%
+\BIC@DivSwitch{}#3#4!#1#2!%
+}%
+\else % x < 0
+\BIC@AfterFiFi{%
+\BIC@DivSwitch-#4!#1#2!%
+}%
+\fi
+\else % y < 0
+\ifcase\BIC@Sgn#3#4! % x = 0
+\BIC@AfterFiFi{ 0}%
+\or % x > 0
+\BIC@AfterFiFi{%
+\BIC@DivSwitch-#3#4!#2!%
+}%
+\else % x < 0
+\BIC@AfterFiFi{%
+\BIC@DivSwitch{}#4!#2!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@DivSwitch#1#2!#3#4!{%
+\ifcase\BIC@PosCmp#3#4!#2!% y = x
+\BIC@AfterFi{ #11}%
+\or % y > x
+\BIC@AfterFi{ 0}%
+\else % y < x
+\ifx\\#1\\%
+\else
+\expandafter-\romannumeral0%
+\fi
+\ifcase\ifx\\#4\\%
+\ifx#310 % y = 1
+\else\ifx#321 % y = 2
+\else\ifx#342 % y = 4
+\else3 % y > 2
+\fi\fi\fi
+\else
+ 3 % y > 2
+\fi
+\BIC@AfterFiFi{ #2}% y = 1
+\or % y = 2
+\BIC@AfterFiFi{%
+\BIC@@Shr#2!%
+}%
+\or % y = 4
+\BIC@AfterFiFi{%
+\expandafter\BIC@@Shr\romannumeral0%
+\BIC@@Shr#2!!%
+}%
+\or % y > 2
+\BIC@AfterFiFi{%
+\BIC@DivStartX#2!#3#4!!!%
+}%
+?   \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\BIC@Fi
+}
+\def\BIC@DivStartX#1#2!#3#4!#5!#6!{%
+\ifx\\#4\\%
+\BIC@AfterFi{%
+\BIC@DivStartYii#6#3#4!{#5#1}#2=!%
+}%
+\else
+\BIC@AfterFi{%
+\BIC@DivStartX#2!#4!#5#1!#6#3!%
+}%
+\BIC@Fi
+}
+\def\BIC@DivStartYii#1!{%
+\expandafter\BIC@DivStartYiv\romannumeral0%
+\BIC@Shl#1!%
+ !#1!%
+}
+\def\BIC@DivStartYiv#1!{%
+\expandafter\BIC@DivStartYvi\romannumeral0%
+\BIC@Shl#1!%
+ !#1!%
+}
+\def\BIC@DivStartYvi#1!#2!{%
+\expandafter\BIC@DivStartYviii\romannumeral0%
+\BIC@AddXY#1!#2!!!%
+ !#1!#2!%
+}
+\def\BIC@DivStartYviii#1!#2!{%
+\expandafter\BIC@DivStart\romannumeral0%
+\BIC@Shl#2!%
+ !#1!#2!%
+}
+\def\BIC@DivStart#1!#2!#3!#4!#5!#6!{%
+\BIC@ProcessDiv#6!!#5!#4!#3!#2!#1!=%
+}
+\def\BIC@ProcessDiv#1#2#3!#4!#5!{%
+\ifcase\BIC@PosCmp#5!#1!% y = #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#41}}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessDiv#2#3!#41!#5!%
+}%
+\fi
+\or % y > #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#40}}%
+\else
+\ifx\\#4\\%
+\BIC@AfterFiFiFi{%
+\BIC@ProcessDiv{#1#2}#3!!#5!%
+}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@ProcessDiv{#1#2}#3!#40!#5!%
+}%
+\fi
+\fi
+\else % y < #1
+\BIC@AfterFi{%
+\BIC@@ProcessDiv{#1}#2#3!#4!#5!%
+}%
+\BIC@Fi
+}
+\def\BIC@DivCleanup#1#2={ #1}%
+\def\BIC@@ProcessDiv#1#2#3!#4!#5!#6!#7!{%
+\ifcase\BIC@PosCmp#7!#1!% 4y = #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#44}}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessDiv#2#3!#44!#5!#6!#7!%
+}%
+\fi
+\or % 4y > #1
+\ifcase\BIC@PosCmp#6!#1!% 2y = #1
+\ifx#2=%
+\BIC@AfterFiFiFi{\BIC@DivCleanup{#42}}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@ProcessDiv#2#3!#42!#5!#6!#7!%
+}%
+\fi
+\or % 2y > #1
+\ifx#2=%
+\BIC@AfterFiFiFi{\BIC@DivCleanup{#41}}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@DivSub#1!#5!#2#3!#41!#5!#6!#7!%
+}%
+\fi
+\else % 2y < #1
+\BIC@AfterFiFi{%
+\expandafter\BIC@ProcessDivII\romannumeral0%
+\BIC@SubXY#1!#6!!!%
+ !#2#3!#4!#5!23%
+#6!#7!%
+}%
+\fi
+\else % 4y < #1
+\BIC@AfterFi{%
+\BIC@@@ProcessDiv{#1}#2#3!#4!#5!#6!#7!%
+}%
+\BIC@Fi
+}
+\def\BIC@DivSub#1!#2!#3{%
+\expandafter\BIC@ProcessDiv\expandafter{%
+\romannumeral0%
+\BIC@SubXY#1!#2!!!%
+#3%
+}%
+}
+\def\BIC@ProcessDivII#1!#2#3!#4!#5!#6#7{%
+\ifcase\BIC@PosCmp#5!#1!% y = #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#4#7}}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessDiv#2#3!#4#7!#5!%
+}%
+\fi
+\or % y > #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#4#6}}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessDiv{#1#2}#3!#4#6!#5!%
+}%
+\fi
+\else % y < #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#4#7}}%
+\else
+\BIC@AfterFiFi{%
+\BIC@DivSub#1!#5!#2#3!#4#7!#5!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@@@ProcessDiv#1#2#3!#4!#5!#6!#7!#8!#9!{%
+\ifcase\BIC@PosCmp#8!#1!% 6y = #1
+\ifx#2=%
+\BIC@AfterFiFi{\BIC@DivCleanup{#46}}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ProcessDiv#2#3!#46!#5!#6!#7!#8!#9!%
+}%
+\fi
+\or % 6y > #1
+\BIC@AfterFi{%
+\expandafter\BIC@ProcessDivII\romannumeral0%
+\BIC@SubXY#1!#7!!!%
+ !#2#3!#4!#5!45%
+#6!#7!#8!#9!%
+}%
+\else % 6y < #1
+\ifcase\BIC@PosCmp#9!#1!% 8y = #1
+\ifx#2=%
+\BIC@AfterFiFiFi{\BIC@DivCleanup{#48}}%
+\else
+\BIC@AfterFiFiFi{%
+\BIC@ProcessDiv#2#3!#48!#5!#6!#7!#8!#9!%
+}%
+\fi
+\or % 8y > #1
+\BIC@AfterFiFi{%
+\expandafter\BIC@ProcessDivII\romannumeral0%
+\BIC@SubXY#1!#8!!!%
+ !#2#3!#4!#5!67%
+#6!#7!#8!#9!%
+}%
+\else % 8y < #1
+\BIC@AfterFiFi{%
+\expandafter\BIC@ProcessDivII\romannumeral0%
+\BIC@SubXY#1!#9!!!%
+ !#2#3!#4!#5!89%
+#6!#7!#8!#9!%
+}%
+\fi
+\BIC@Fi
+}
+\def\bigintcalcMod#1{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BIC@Mod
+\bigintcalcNum{#1}!%
+}
+\def\BIC@Mod#1!#2{%
+\expandafter\expandafter\expandafter\BIC@ModSwitchSign
+\bigintcalcNum{#2}!#1!%
+}
+\def\BigIntCalcMod#1!#2!{%
+\romannumeral0%
+\BIC@ModSwitchSign#2!#1!%
+}
+\def\BIC@ModSwitchSign#1#2!#3#4!{%
+\ifcase\ifx\\#2\\%
+\ifx#100 % y = 0
+\else1 % y > 0
+\fi
+\else
+\ifx#1-2 % y < 0
+\else1 % y > 0
+\fi
+\fi
+\BIC@AfterFi{ 0\BigIntCalcError:DivisionByZero}%
+\or % y > 0
+\ifcase\ifx\\#4\\\ifx#300 \else1 \fi\else1 \fi % x = 0
+\BIC@AfterFiFi{ 0}%
+\else
+\BIC@AfterFiFi{%
+\BIC@ModSwitch{}#3#4!#1#2!%
+}%
+\fi
+\else % y < 0
+\ifcase\ifx\\#4\\%
+\ifx#300 % x = 0
+\else1 % x > 0
+\fi
+\else
+\ifx#3-2 % x < 0
+\else1 % x > 0
+\fi
+\fi
+\BIC@AfterFiFi{ 0}%
+\or % x > 0
+\BIC@AfterFiFi{%
+\BIC@ModSwitch--#3#4!#2!%
+}%
+\else % x < 0
+\BIC@AfterFiFi{%
+\BIC@ModSwitch-#4!#2!%
+}%
+\fi
+\BIC@Fi
+}
+\def\BIC@ModSwitch#1#2#3!#4#5!{%
+\ifcase\ifx\\#5\\%
+\ifx#410 % y = 1
+\else\ifx#421 % y = 2
+\else2 % y > 2
+\fi\fi
+\else2 % y > 2
+\fi
+\BIC@AfterFi{ 0}% y = 1
+\or % y = 2
+\ifcase\BIC@ModTwo#2#3! % even(x)
+\BIC@AfterFiFi{ 0}%
+\or % odd(x)
+\BIC@AfterFiFi{ #11}%
+?   \else\BigIntCalcError:ThisCannotHappen%
+\fi
+\or % y > 2
+\ifx\\#1\\%
+\else
+\expandafter\BIC@Space\romannumeral0%
+\expandafter\BIC@ModMinus\romannumeral0%
+\fi
+\ifx#2-% x < 0
+\BIC@AfterFiFi{%
+\expandafter\expandafter\expandafter\BIC@ModX
+\bigintcalcSub{#2#3}{%
+\bigintcalcMul{#4#5}{\bigintcalcDiv{#2#3}{#4#5}}%
+}!#4#5!%
+}%
+\else % x > 0
+\BIC@AfterFiFi{%
+\expandafter\expandafter\expandafter\BIC@Space
+\bigintcalcSub{#2#3}{%
+\bigintcalcMul{#4#5}{\bigintcalcDiv{#2#3}{#4#5}}%
+}%
+}%
+\fi
+? \else\BigIntCalcError:ThisCannotHappen%
+\BIC@Fi
+}
+\def\BIC@ModMinus#1{%
+\ifx#10%
+\BIC@AfterFi{ 0}%
+\else
+\BIC@AfterFi{ -#1}%
+\BIC@Fi
+}
+\def\BIC@ModX#1#2!#3!{%
+\ifx#1-% z < 0
+\BIC@AfterFi{%
+\expandafter\BIC@Space\romannumeral0%
+\BIC@SubXY#3!#2!!!%
+}%
+\else % z >= 0
+\BIC@AfterFi{ #1#2}%
+\BIC@Fi
+}
+\BIC@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{bitset}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@bitset.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{bitset}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@bitset.sty\endcsname
+\ProvidesPackage{bitset}%
+ [2011/01/30 v1.1 Handle bit-vector datatype (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname BitSet@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\BitSet@AtEnd{%
+\BitSet@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{11}% : (letter!)
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{14}% ? (comment!)
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\BitSet@AtEnd{\BitSet@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname BitSet@TestMode\endcsname\relax
+\else
+\catcode63=9 % ? (ignore)
+\fi
+? \let\BitSet@@TestMode\BitSet@TestMode
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{infwarerr}[2007/09/09]%
+\TMP@RequirePackage{intcalc}[2007/09/27]%
+\TMP@RequirePackage{bigintcalc}[2007/09/27]%
+\else
+\RequirePackage{infwarerr}[2007/09/09]%
+\RequirePackage{intcalc}[2007/09/27]%
+\RequirePackage{bigintcalc}[2007/09/27]%
+\fi
+\def\BitSet@MaxSize{2147483647}%
+\def\BitSet@Empty{}
+\def\BitSet@FirstOfOne#1{#1}
+\def\BitSet@Gobble#1{}
+\def\BitSet@FirstOfTwo#1#2{#1}
+\def\BitSet@SecondOfTwo#1#2{#2}
+\def\BitSet@Space{ }
+\def\BitSet@ZapSpace#1 #2{%
+#1%
+\ifx\BitSet@Empty#2%
+\else
+\expandafter\BitSet@ZapSpace
+\fi
+#2%
+}
+\let\BitSet@Fi\fi
+\def\BitSet@AfterFi#1#2\BitSet@Fi{\fi#1}
+\def\BitSet@AfterFiFi#1#2\BitSet@Fi{\fi\fi#1}%
+\def\BitSet@AfterFiFiFi#1#2\BitSet@Fi{\fi\fi\fi#1}%
+\def\BitSet@IfUndefined#1{%
+\expandafter\ifx\csname BS@#1\endcsname\relax
+\expandafter\BitSet@FirstOfTwo
+\else
+\expandafter\BitSet@SecondOfTwo
+\fi
+}
+\def\BitSet@CheckIndex#1#2#3{%
+\BitSet@IfUndefined{#2}{\bitsetReset{#2}}{}%
+\expandafter\expandafter\expandafter\BitSet@@CheckIndex
+\intcalcNum{#3}!%
+{#2}{#1}%
+}
+\def\BitSet@@CheckIndex#1!#2#3{%
+\ifnum#1<0 %
+\BitSet@AfterFi{%
+\@PackageError{bitset}{%
+ Invalid negative index (#1)%
+}\@ehc
+}%
+\else
+\BitSet@AfterFi{%
+#3{#2}{#1}%
+}%
+\BitSet@Fi
+}
+\def\bitsetReset#1{%
+\expandafter\def\csname BS@#1\endcsname{0}%
+}
+\def\bitsetLet#1#2{%
+\BitSet@IfUndefined{#2}{%
+\bitsetReset{#1}%
+}{%
+\expandafter\let\csname BS@#1\expandafter\endcsname
+\csname BS@#2\endcsname
+}%
+}
+\def\bitsetSetBin#1#2{%
+\edef\BitSet@Temp{#2}%
+\edef\BitSet@Temp{%
+\expandafter\expandafter\expandafter\BitSet@ZapSpace
+\expandafter\BitSet@Temp\BitSet@Space\BitSet@Empty
+}%
+\edef\BitSet@Temp{%
+\expandafter\BitSet@KillZeros\BitSet@Temp\BitSet@Empty
+}%
+\ifx\BitSet@Temp\BitSet@Empty
+\expandafter\let\csname BS@#1\endcsname\BitSet@Zero
+\else
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\BitSet@Reverse\BitSet@Temp!%
+}%
+\fi
+}
+\def\BitSet@KillZeros#1{%
+\ifx#10%
+\expandafter\BitSet@KillZeros
+\else
+#1%
+\fi
+}
+\def\BitSet@Reverse#1#2!{%
+\ifx\\#2\\%
+#1%
+\else
+\BitSet@AfterFi{%
+\BitSet@Reverse#2!#1%
+}%
+\BitSet@Fi
+}
+\def\bitsetSetOct{%
+\BitSet@SetOctHex\BitSet@FromFirstOct
+}
+\def\bitsetSetHex{%
+\BitSet@SetOctHex\BitSet@FromFirstHex
+}
+\def\BitSet@SetOctHex#1#2#3{%
+\edef\BitSet@Temp{#3}%
+\edef\BitSet@Temp{%
+\expandafter\expandafter\expandafter\BitSet@ZapSpace
+\expandafter\BitSet@Temp\BitSet@Space\BitSet@Empty
+}%
+\edef\BitSet@Temp{%
+\expandafter\BitSet@KillZeros\BitSet@Temp\BitSet@Empty
+}%
+\ifx\BitSet@Temp\BitSet@Empty
+\expandafter\let\csname BS@#2\endcsname\BitSet@Zero
+\else
+\edef\BitSet@Temp{%
+\expandafter#1\BitSet@Temp!%
+}%
+\ifx\BitSet@Temp\BitSet@Empty
+\expandafter\let\csname BS@#2\endcsname\BitSet@Zero
+\else
+\expandafter\edef\csname BS@#2\endcsname{%
+\expandafter\BitSet@Reverse\BitSet@Temp!%
+}%
+\fi
+\fi
+}
+\def\BitSet@FromFirstOct#1{%
+\ifx#1!%
+\else
+\ifcase#1 \BitSet@AfterFiFi\BitSet@FromFirstOct
+\or 1%
+\or 10%
+\or 11%
+\or 100%
+\or 101%
+\or 110%
+\or 111%
+\else \BitSetError:WrongOctalDigit%
+\fi
+\expandafter\BitSet@FromOct
+\BitSet@Fi
+}
+\def\BitSet@FromOct#1{%
+\ifx#1!%
+\else
+\ifcase#1 000%
+\or 001%
+\or 010%
+\or 011%
+\or 100%
+\or 101%
+\or 110%
+\or 111%
+\else \BitSetError:WrongOctalDigit%
+\fi
+\expandafter\BitSet@FromOct
+\fi
+}
+\def\BitSet@FromFirstHex#1{%
+\ifx#1!%
+\else
+\ifx#10%
+\BitSet@AfterFiFi\BitSet@FromFirstHex
+\fi
+\expandafter\ifx\csname BitSet@Hex#1\endcsname\relax
+\BitSetError:InvalidHexDigit%
+\else
+\expandafter\expandafter\expandafter\BitSet@KillZeros
+\csname BitSet@Hex#1\endcsname
+\fi
+\expandafter\BitSet@FromHex
+\BitSet@Fi
+}
+\def\BitSet@FromHex#1{%
+\ifx#1!%
+\else
+\expandafter\ifx\csname BitSet@Hex#1\endcsname\relax
+\BitSetError:InvalidHexDigit%
+\else
+\csname BitSet@Hex#1\endcsname
+\fi
+\expandafter\BitSet@FromHex
+\fi
+}
+\def\BitSet@Temp#1{%
+\expandafter\def\csname BitSet@Hex#1\endcsname
+}
+\BitSet@Temp 0{0000}%
+\BitSet@Temp 1{0001}%
+\BitSet@Temp 2{0010}%
+\BitSet@Temp 3{0011}%
+\BitSet@Temp 4{0100}%
+\BitSet@Temp 5{0101}%
+\BitSet@Temp 6{0110}%
+\BitSet@Temp 7{0111}%
+\BitSet@Temp 8{1000}%
+\BitSet@Temp 9{1001}%
+\BitSet@Temp A{1010}%
+\BitSet@Temp B{1011}%
+\BitSet@Temp C{1100}%
+\BitSet@Temp D{1101}%
+\BitSet@Temp E{1110}%
+\BitSet@Temp F{1111}%
+\BitSet@Temp a{1010}%
+\BitSet@Temp b{1011}%
+\BitSet@Temp c{1100}%
+\BitSet@Temp d{1101}%
+\BitSet@Temp e{1110}%
+\BitSet@Temp f{1111}%
+\def\bitsetSetDec#1#2{%
+\edef\BitSet@Temp{#2}%
+\edef\BitSet@Temp{%
+\expandafter\expandafter\expandafter\BitSet@ZapSpace
+\expandafter\BitSet@Temp\BitSet@Space\BitSet@Empty
+}%
+\edef\BitSet@Temp{%
+\expandafter\BitSet@KillZeros\BitSet@Temp\BitSet@Empty
+}%
+\ifx\BitSet@Temp\BitSet@Empty
+\expandafter\let\csname BS@#1\endcsname\BitSet@Zero
+\else
+\ifcase\bigintcalcSgn{\BitSet@Temp} %
+\expandafter\let\csname BS@#1\endcsname\BitSet@Zero
+\or
+\ifnum\bigintcalcCmp\BitSet@Temp\BitSet@MaxSize>0 %
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\BitSet@SetDecBig\BitSet@Temp!%
+}%
+\else
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\BitSet@SetDec\BitSet@Temp!%
+}%
+\fi
+\else
+\@PackageError{bitset}{%
+ Bit sets cannot be negative%
+}\@ehc
+\fi
+\fi
+}
+\def\BitSet@SetDecBig#1#2#3#4#5#6#7#8#9!{%
+\ifx\\#9\\%
+\BitSet@SetDec#1#2#3#4#5#6#7#8!%
+\else
+\ifcase\BigIntCalcOdd#1#2#4#5#6#7#8#9! %
+ 0%
+\or
+ 1%
+?   \else\BitSetError:ThisCannotHappen%
+\fi
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@SetDecBig
+\BigIntCalcShr#1#2#3#4#5#6#7#8#9!!%
+}%
+\BitSet@Fi
+}
+\def\BitSet@SetDec#1!{%
+\ifcase#1 %
+\or 1%
+\else
+\ifodd#1 %
+ 1%
+\else
+ 0%
+\fi
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@SetDec
+\IntCalcShr#1!!%
+}%
+\BitSet@Fi
+}
+\def\bitsetGetBin#1#2{%
+\romannumeral0%
+\expandafter\expandafter\expandafter\BitSet@@GetBin
+\intcalcNum{#2}!{#1}%
+}
+\def\BitSet@@GetBin#1!#2{%
+\BitSet@IfUndefined{#2}{%
+\ifnum#1>1 %
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@Fill
+\IntCalcDec#1!!0%
+}%
+\else
+\BitSet@AfterFi{ 0}%
+\BitSet@Fi
+}{%
+\expandafter\expandafter\expandafter\BitSet@NumBinRev
+\expandafter\expandafter\expandafter1%
+\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!!#1!%
+}%
+}
+\def\BitSet@Fill#1!{%
+\ifnum#1>0 %
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@Fill
+\IntCalcDec#1!!0%
+}%
+\else
+\BitSet@AfterFi{ }%
+\BitSet@Fi
+}
+\def\BitSet@NumBinRev#1!#2#3!{%
+\ifx\\#3\\%
+\BitSet@AfterFi{%
+\BitSet@NumBinFill#1!#2%
+}%
+\else
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@NumBinRev
+\IntCalcInc#1!!#3!#2%
+}%
+\BitSet@Fi
+}
+\def\BitSet@NumBinFill#1!#2!#3!{%
+\ifnum#3>#1 %
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@Fill
+\IntCalcSub#3!#1!!#2%
+}%
+\else
+\BitSet@AfterFi{ #2}%
+\BitSet@Fi
+}
+\def\bitsetGetOct#1#2{%
+\romannumeral0%
+\bitsetIsEmpty{#1}{%
+\expandafter\expandafter\expandafter\BitSet@@GetOctHex
+\intcalcNum{#2}!3!230%
+}{%
+\expandafter\expandafter\expandafter\BitSet@@GetOct
+\expandafter\expandafter\expandafter1%
+\expandafter\expandafter\expandafter!%
+\expandafter\expandafter\expandafter!%
+\csname BS@#1\endcsname00%
+\BitSet@Empty\BitSet@Empty\BitSet@Empty!{#2}%
+}%
+}
+\def\bitsetGetHex#1#2{%
+\romannumeral0%
+\bitsetIsEmpty{#1}{%
+\expandafter\expandafter\expandafter\BitSet@@GetOctHex
+\intcalcNum{#2}!4!340%
+}{%
+\expandafter\expandafter\expandafter\BitSet@@GetHex
+\expandafter\expandafter\expandafter1%
+\expandafter\expandafter\expandafter!%
+\expandafter\expandafter\expandafter!%
+\csname BS@#1\endcsname000%
+\BitSet@Empty\BitSet@Empty\BitSet@Empty\BitSet@Empty!{#2}%
+}%
+}
+\def\BitSet@@GetOct#1!#2!#3#4#5{%
+\ifx#5\BitSet@Empty
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@GetOctHex
+\IntCalcDec#1!!#2!23%
+}%
+\else
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@@GetOct
+\number\IntCalcInc#1!\expandafter\expandafter\expandafter!%
+\csname BitSet@Oct#5#4#3\endcsname#2!%
+}%
+\BitSet@Fi
+}
+\def\BitSet@Temp#1#2#3#4{%
+\expandafter\def\csname BitSet@Oct#1#2#3\endcsname{#4}%
+}
+\BitSet@Temp0000%
+\BitSet@Temp0011%
+\BitSet@Temp0102%
+\BitSet@Temp0113%
+\BitSet@Temp1004%
+\BitSet@Temp1015%
+\BitSet@Temp1106%
+\BitSet@Temp1117%
+\def\BitSet@@GetHex#1!#2!#3#4#5#6{%
+\ifx#6\BitSet@Empty
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@GetOctHex
+\IntCalcDec#1!!#2!34%
+}%
+\else
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@@GetHex
+\number\IntCalcInc#1!\expandafter\expandafter\expandafter!%
+\csname BitSet@Hex#6#5#4#3\endcsname#2!%
+}%
+\BitSet@Fi
+}
+\def\BitSet@Temp#1#2#3#4#5{%
+\expandafter\def\csname BitSet@Hex#1#2#3#4\endcsname{#5}%
+}
+\BitSet@Temp00000%
+\BitSet@Temp00011%
+\BitSet@Temp00102%
+\BitSet@Temp00113%
+\BitSet@Temp01004%
+\BitSet@Temp01015%
+\BitSet@Temp01106%
+\BitSet@Temp01117%
+\BitSet@Temp10008%
+\BitSet@Temp10019%
+\BitSet@Temp1010A%
+\BitSet@Temp1011B%
+\BitSet@Temp1100C%
+\BitSet@Temp1101D%
+\BitSet@Temp1110E%
+\BitSet@Temp1111F%
+\def\BitSet@GetOctHex#1!#2!#3#4#5!#6{%
+\expandafter\BitSet@@GetOctHex
+\number\intcalcNum{#6}\expandafter\expandafter\expandafter!%
+\IntCalcMul#1!#4!!#3#4#2%
+}
+\def\BitSet@@GetOctHex#1!#2!#3#4{%
+\ifnum#1>#2 %
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\expandafter
+\expandafter\expandafter\expandafter\BitSet@Fill
+\expandafter\IntCalcDiv\number
+\expandafter\expandafter\expandafter\IntCalcAdd
+\IntCalcSub#1!#2!!#3!!#4!!%
+}%
+\else
+\BitSet@AfterFi{ }%
+\BitSet@Fi
+}
+\def\bitsetGetDec#1{%
+\romannumeral0%
+\BitSet@IfUndefined{#1}{ 0}{%
+\expandafter\expandafter\expandafter\BitSet@GetDec
+\csname BS@#1\endcsname!%
+}%
+}
+\def\BitSet@GetDec#1#2!{%
+\ifx\\#2\\%
+\BitSet@AfterFi{ #1}%
+\else
+\BitSet@AfterFi{%
+\BitSet@@GetDec2!#1!#2!%
+}%
+\BitSet@Fi
+}
+\def\BitSet@@GetDec#1!#2!#3#4!{%
+\ifx\\#4\\%
+\ifx#31%
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@Space
+\IntCalcAdd#1!#2!%
+}%
+\else
+\BitSet@AfterFiFi{ #2}%
+\fi
+\else
+\ifx#31%
+\BitSet@AfterFiFi{%
+\csname BitSet@N#1%
+\expandafter\expandafter\expandafter\endcsname
+\IntCalcAdd#1!#2!!#4!%
+}%
+\else
+\BitSet@AfterFiFi{%
+\csname BitSet@N#1\endcsname#2!#4!%
+}%
+\fi
+\BitSet@Fi
+}
+\def\BitSet@Temp#1#2{%
+\expandafter\def\csname BitSet@N#1\endcsname{%
+\BitSet@@GetDec#2!%
+}%
+}
+\BitSet@Temp{1}{2}
+\BitSet@Temp{2}{4}
+\BitSet@Temp{4}{8}
+\BitSet@Temp{8}{16}
+\BitSet@Temp{16}{32}
+\BitSet@Temp{32}{64}
+\BitSet@Temp{64}{128}
+\BitSet@Temp{128}{256}
+\BitSet@Temp{256}{512}
+\BitSet@Temp{512}{1024}
+\BitSet@Temp{1024}{2048}
+\BitSet@Temp{2048}{4096}
+\BitSet@Temp{4096}{8192}
+\BitSet@Temp{8192}{16384}
+\BitSet@Temp{16384}{32768}
+\BitSet@Temp{32768}{65536}
+\BitSet@Temp{65536}{131072}
+\BitSet@Temp{131072}{262144}
+\BitSet@Temp{262144}{524288}
+\BitSet@Temp{524288}{1048576}
+\BitSet@Temp{1048576}{2097152}
+\BitSet@Temp{2097152}{4194304}
+\BitSet@Temp{4194304}{8388608}
+\BitSet@Temp{8388608}{16777216}
+\BitSet@Temp{16777216}{33554432}
+\BitSet@Temp{33554432}{67108864}
+\BitSet@Temp{67108864}{134217728}
+\BitSet@Temp{134217728}{268435456}
+\BitSet@Temp{268435456}{536870912}
+\BitSet@Temp{536870912}{1073741824}
+\expandafter\def\csname BitSet@N1073741824\endcsname{%
+\BitSet@GetDecBig2147483648!%
+}%
+\def\BitSet@GetDecBig#1!#2!#3#4!{%
+\ifx\\#4\\%
+\ifx#31%
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@Space
+\BigIntCalcAdd#1!#2!%
+}%
+\else
+\BitSet@AfterFiFi{ #2}%
+\fi
+\else
+\ifx#31%
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@@GetDecBig
+\BigIntCalcAdd#1!#2!!#1!#4!%
+}%
+\else
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@GetDecBig
+\BigIntCalcShl#1!!#2!#4!%
+}%
+\fi
+\BitSet@Fi
+}
+\def\BitSet@@GetDecBig#1!#2!{%
+\expandafter\expandafter\expandafter\BitSet@GetDecBig
+\BigIntCalcShl#2!!#1!%
+}
+\def\bitsetAnd#1#2{%
+\bitsetIsEmpty{#1}{%
+\bitsetReset{#1}%
+}{%
+\bitsetIsEmpty{#2}{%
+\bitsetReset{#1}%
+}{%
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\expandafter\expandafter\BitSet@And
+\csname BS@#1\expandafter\expandafter\expandafter\endcsname
+\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!!%
+}%
+\expandafter\ifx\csname BS@#1\endcsname\BitSet@Empty
+\bitsetReset{#1}%
+\fi
+}%
+}%
+}
+\def\BitSet@And#1#2!#3#4!#5!{%
+\ifx\\#2\\%
+\ifnum#1#3=11 #51\fi
+\else
+\ifx\\#4\\%
+\ifnum#1#3=11 #51\fi
+\else
+\ifnum#1#3=11 %
+#51%
+\BitSet@AfterFiFiFi{%
+\BitSet@And#2!#4!!%
+}%
+\else
+\BitSet@AfterFiFiFi{%
+\BitSet@And#2!#4!#50!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\bitsetAndNot#1#2{%
+\bitsetIsEmpty{#1}{%
+\bitsetReset{#1}%
+}{%
+\bitsetIsEmpty{#2}{%
+}{%
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\expandafter\expandafter\BitSet@AndNot
+\csname BS@#1\expandafter\expandafter\expandafter\endcsname
+\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!!%
+}%
+\expandafter\ifx\csname BS@#1\endcsname\BitSet@Empty
+\bitsetReset{#1}%
+\fi
+}%
+}%
+}
+\def\BitSet@AndNot#1#2!#3#4!#5!{%
+\ifx\\#2\\%
+\ifnum#1#3=10 #51\fi
+\else
+\ifx\\#4\\%
+#5%
+\ifnum#1#3=10 1\else 0\fi
+#2%
+\else
+\ifnum#1#3=10 %
+#51%
+\BitSet@AfterFiFiFi{%
+\BitSet@AndNot#2!#4!!%
+}%
+\else
+\BitSet@AfterFiFiFi{%
+\BitSet@AndNot#2!#4!#50!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\bitsetOr#1#2{%
+\bitsetIsEmpty{#2}{%
+\BitSet@IfUndefined{#1}{\bitsetReset{#1}}{}%
+}{%
+\bitsetIsEmpty{#1}{%
+\expandafter\let\csname BS@#1\expandafter\endcsname
+\csname BS@#2\endcsname
+}{%
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\expandafter\expandafter\BitSet@Or
+\csname BS@#1\expandafter\expandafter\expandafter\endcsname
+\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!%
+}%
+}%
+}%
+}
+\def\BitSet@Or#1#2!#3#4!{%
+\ifnum#1#3>0 1\else 0\fi
+\ifx\\#2\\%
+#4%
+\else
+\ifx\\#4\\%
+#2%
+\else
+\BitSet@AfterFiFi{%
+\BitSet@Or#2!#4!%
+}%
+\fi
+\BitSet@Fi
+}
+\def\bitsetXor#1#2{%
+\bitsetIsEmpty{#2}{%
+\BitSet@IfUndefined{#1}{\bitsetReset{#1}}{}%
+}{%
+\bitsetIsEmpty{#1}{%
+\expandafter\let\csname BS@#1\expandafter\endcsname
+\csname BS@#2\endcsname
+}{%
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\expandafter\expandafter\BitSet@Xor
+\csname BS@#1\expandafter\expandafter\expandafter\endcsname
+\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!!%
+}%
+\expandafter\ifx\csname BS@#1\endcsname\BitSet@Empty
+\bitsetReset{#1}%
+\fi
+}%
+}%
+}
+\def\BitSet@Xor#1#2!#3#4!#5!{%
+\ifx\\#2\\%
+\ifx#1#3%
+\ifx\\#4\\%
+\else
+#50#4%
+\fi
+\else
+#51#4%
+\fi
+\else
+\ifx\\#4\\%
+#5%
+\ifx#1#30\else 1\fi
+#2%
+\else
+\ifx#1#3%
+\BitSet@AfterFiFiFi{%
+\BitSet@Xor#2!#4!#50!%
+}%
+\else
+#51%
+\BitSet@AfterFiFiFi{%
+\BitSet@Xor#2!#4!!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\bitsetShiftLeft#1#2{%
+\BitSet@IfUndefined{#1}{%
+\bitsetReset{#1}%
+}{%
+\bitsetIsEmpty{#1}{%
+}{%
+\expandafter\expandafter\expandafter\BitSet@ShiftLeft
+\intcalcNum{#2}!{#1}%
+}%
+}%
+}
+\def\BitSet@ShiftLeft#1!#2{%
+\ifcase\intcalcSgn{#1} %
+\or
+\begingroup
+\uccode`m=`0 %
+\uppercase\expandafter{\expandafter\endgroup
+\expandafter\edef\csname BS@#2\expandafter\endcsname
+\expandafter{%
+\romannumeral#1000\expandafter\BitSet@Space
+\csname BS@#2\endcsname
+}%
+}%
+\else
+\expandafter\BitSet@ShiftRight\BitSet@Gobble#1!{#2}%
+\fi
+}
+\def\bitsetShiftRight#1#2{%
+\BitSet@IfUndefined{#1}{%
+\bitsetReset{#1}%
+}{%
+\bitsetIsEmpty{#1}{%
+}{%
+\expandafter\expandafter\expandafter\BitSet@ShiftRight
+\intcalcNum{#2}!{#1}%
+}%
+}%
+}
+\def\BitSet@ShiftRight#1!#2{%
+\ifcase\intcalcSgn{#1} %
+\or
+\expandafter\edef\csname BS@#2\endcsname{%
+\expandafter\expandafter\expandafter\BitSet@Kill
+\csname BS@#2\expandafter\endcsname\expandafter\BitSet@Empty
+\expandafter=%
+\expandafter{\expandafter}\expandafter{\expandafter}%
+\romannumeral#1000!%
+}%
+\else
+\expandafter\BitSet@ShiftLeft\BitSet@Gobble#1!{#2}%
+\fi
+}
+\def\BitSet@Kill#1#2=#3#4#5{%
+#3#4%
+\ifx#5!%
+\ifx#1\BitSet@Empty
+ 0%
+\else
+#1#2%
+\fi
+\else
+\ifx#1\BitSet@Empty
+ 0%
+\BitSet@AfterFiFi\BitSet@Cleanup
+\else
+\BitSet@Kill#2=%
+\fi
+\BitSet@Fi
+}
+\def\bitsetClear{%
+\BitSet@CheckIndex\BitSet@Clear
+}
+\def\bitsetSet{%
+\BitSet@CheckIndex\BitSet@Set
+}
+\def\bitsetFlip{%
+\BitSet@CheckIndex\BitSet@Flip
+}
+\def\bitsetSetValue#1#2#3{%
+\expandafter\expandafter\expandafter\BitSet@SetValue
+\intcalcNum{#3}!{#1}{#2}%
+}
+\def\BitSet@SetValue#1!{%
+\BitSet@CheckIndex{%
+\ifcase#1 %
+\expandafter\BitSet@Clear
+\or
+\expandafter\BitSet@Set
+\else
+\BitSet@ErrorInvalidBitValue{#1}%
+\expandafter\expandafter\expandafter\BitSet@Gobble
+\expandafter\BitSet@Gobble
+\fi
+}%
+}
+\def\BitSet@ErrorInvalidBitValue#1{%
+\@PackageError{bitset}{%
+ Invalid bit value (#1) not in range 0..1%
+}\@ehc
+}
+\def\BitSet@Clear#1#2{%
+\edef\BitSet@Temp{%
+\expandafter\expandafter\expandafter\BitSet@@Clear
+\csname BS@#1\expandafter\endcsname
+\expandafter\BitSet@Empty\expandafter=\expandafter!%
+\romannumeral#2000!%
+}%
+\expandafter\let\csname BS@#1\expandafter\endcsname
+\ifx\BitSet@Temp\BitSet@Empty
+\BitSet@Zero
+\else
+\BitSet@Temp
+\fi
+}
+\def\BitSet@@Clear#1#2=#3!#4{%
+\ifx#4!%
+\ifx#1\BitSet@Empty
+\else
+\ifx\BitSet@Empty#2%
+\else
+#30#2%
+\fi
+\fi
+\else
+\ifx#1\BitSet@Empty
+\BitSet@AfterFiFi\BitSet@Cleanup
+\else
+\ifx#10%
+\BitSet@AfterFiFiFi{%
+\BitSet@@Clear#2=#30!%
+}%
+\else
+#31%
+\BitSet@AfterFiFiFi{%
+\BitSet@@Clear#2=!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\BitSet@Set#1#2{%
+\expandafter\edef\csname BS@#1\endcsname{%
+\expandafter\expandafter\expandafter\BitSet@@Set
+\csname BS@#1\expandafter\endcsname
+\expandafter\BitSet@Empty\expandafter=%
+\expandafter{\expandafter}\expandafter{\expandafter}%
+\romannumeral#2000!%
+}%
+}
+\def\BitSet@@Set#1#2=#3#4#5{%
+#3#4%
+\ifx#5!%
+ 1#2%
+\else
+\ifx#1\BitSet@Empty
+ 0%
+\BitSet@AfterFiFi\BitSet@@@Set
+\else
+#1%
+\BitSet@@Set#2=%
+\fi
+\BitSet@Fi
+}
+\def\BitSet@@@Set#1{%
+\ifx#1!%
+ 1%
+\else
+ 0%
+\expandafter\BitSet@@@Set
+\fi
+}
+\def\BitSet@Flip#1#2{%
+\edef\BitSet@Temp{%
+\expandafter\expandafter\expandafter\BitSet@@Flip
+\csname BS@#1\expandafter\endcsname
+\expandafter\BitSet@Empty\expandafter=\expandafter!%
+\romannumeral#2000!%
+}%
+\expandafter\let\csname BS@#1\expandafter\endcsname
+\ifx\BitSet@Temp\BitSet@Empty
+\BitSet@Zero
+\else
+\BitSet@Temp
+\fi
+}
+\def\BitSet@@Flip#1#2=#3!#4{%
+\ifx#4!%
+\ifx#11%
+\ifx\BitSet@Empty#2%
+\else
+#30#2%
+\fi
+\else
+#31#2%
+\fi
+\else
+\ifx#1\BitSet@Empty
+#30%
+\BitSet@AfterFiFi\BitSet@@@Set
+\else
+\ifx#10%
+\BitSet@AfterFiFiFi{%
+\BitSet@@Flip#2=#30!%
+}%
+\else
+#31%
+\BitSet@AfterFiFiFi{%
+\BitSet@@Flip#2=!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\bitsetClearRange{%
+\BitSet@Range\BitSet@Clear
+}
+\def\bitsetSetRange{%
+\BitSet@Range\BitSet@Set
+}
+\def\bitsetFlipRange{%
+\BitSet@Range\BitSet@Flip
+}
+\def\bitsetSetValueRange#1#2#3#4{%
+\expandafter\expandafter\expandafter\BitSet@SetValueRange
+\intcalcNum{#4}!{#1}{#2}{#3}%
+}
+\def\BitSet@SetValueRange#1!#2#3#4{%
+\ifcase#1 %
+\BitSet@Range\BitSet@Clear{#2}{#3}{#4}%
+\or
+\BitSet@Range\BitSet@Set{#2}{#3}{#4}%
+\else
+\BitSet@ErrorInvalidBitValue{#1}%
+\fi
+}
+\def\BitSet@Range#1#2#3#4{%
+\edef\BitSet@Temp{%
+\noexpand\BitSet@@Range\noexpand#1{#2}%
+\intcalcNum{#3}!\intcalcNum{#4}!%
+}%
+\BitSet@Temp
+}
+\def\BitSet@@Range#1#2#3!#4!{%
+\ifnum#3<0 %
+\BitSet@NegativeIndex#1{#2}#3!#4!0!#4!%
+\else
+\ifnum#4<0 %
+\BitSet@NegativeIndex#1{#2}#3!#4!#3!0!%
+\else
+\ifcase\intcalcCmp{#3}{#4} %
+\or
+\@PackageError{bitset}{%
+ Wrong index numbers in range [#3..#4]\MessageBreak% hash-ok
+ for clear/set/flip on bit set `#2'.\MessageBreak
+ The lower index exceeds the upper index.\MessageBreak
+ Canceling the operation as error recovery%
+}\@ehc
+\else
+\BitSet@@@Range#3!#4!#1{#2}%
+\fi
+\fi
+\fi
+}
+\def\BitSet@NegativeIndex#1#2#3!#4!#5!#6!{%
+\@PackageError{bitset}{%
+ Negative index in range [#3..#4]\MessageBreak % hash-ok
+ for \string\bitset
+\ifx#1\BitSet@Clear
+ Clear%
+\else
+\ifx#1\BitSet@Set
+ Set%
+\else
+ Flip%
+\fi
+\fi
+ Range on bit set `#2'.\MessageBreak
+ Using [#5..#6] as error recovery% hash-ok
+}\@ehc
+\BitSet@@Range#1{#2}#5!#6!%
+}
+\def\BitSet@@@Range#1!#2!#3#4{%
+\ifnum#1<#2 %
+#3{#4}{#1}%
+\BitSet@AfterFi{%
+\expandafter\expandafter\expandafter\BitSet@@@Range
+\IntCalcInc#1!!#2!#3{#4}%
+}%
+\BitSet@Fi
+}
+\def\bitsetGet#1#2{%
+\number
+\expandafter\expandafter\expandafter\BitSet@Get
+\intcalcNum{#2}!{#1}%
+}
+\def\BitSet@Get#1!#2{%
+\ifnum#1<0 %
+\BitSet@AfterFi{%
+ 0 \BitSetError:NegativeIndex%
+}%
+\else
+\BitSet@IfUndefined{#2}{0}{%
+\expandafter\expandafter\expandafter\BitSet@@Get
+\csname BS@#2\expandafter\endcsname
+\expandafter!\expandafter=%
+\expandafter{\expandafter}\expandafter{\expandafter}%
+\romannumeral\intcalcNum{#1}000!%
+}%
+\expandafter\BitSet@Space
+\BitSet@Fi
+}
+\def\BitSet@@Get#1#2=#3#4#5{%
+#3#4%
+\ifx#5!%
+\ifx#1!%
+ 0%
+\else
+#1%
+\fi
+\else
+\ifx#1!%
+ 0%
+\BitSet@AfterFiFi\BitSet@Cleanup
+\else
+\BitSet@@Get#2=%
+\fi
+\BitSet@Fi
+}
+\def\bitsetNextClearBit#1#2{%
+\number
+\expandafter\expandafter\expandafter\BitSet@NextClearBit
+\intcalcNum{#2}!{#1} %
+}
+\def\BitSet@NextClearBit#1!#2{%
+\ifnum#1<0 %
+\BitSet@NextClearBit0!{#2}%
+\BitSet@AfterFi{%
+\expandafter\BitSet@Space
+\expandafter\BitSetError:NegativeIndex\romannumeral0%
+}%
+\else
+\bitsetIsEmpty{#2}{#1}{%
+\expandafter\BitSet@Skip
+\number#1\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!!!!!!!!!=%
+{\BitSet@@NextClearBit#1!}%
+}%
+\BitSet@Fi
+}
+\def\BitSet@@NextClearBit#1!#2{%
+\ifx#2!%
+#1%
+\else
+\ifx#20%
+#1%
+\BitSet@AfterFiFi\BitSet@Cleanup
+\else
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@@NextClearBit
+\IntCalcInc#1!!%
+}%
+\fi
+\BitSet@Fi
+}
+\def\bitsetNextSetBit#1#2{%
+\number
+\expandafter\expandafter\expandafter\BitSet@NextSetBit
+\intcalcNum{#2}!{#1} %
+}
+\def\BitSet@NextSetBit#1!#2{%
+\ifnum#1<0 %
+\BitSet@NextSetBit0!{#2}%
+\BitSet@AfterFi{%
+\expandafter\BitSet@Space
+\expandafter\BitSetError:NegativeIndex\romannumeral0%
+}%
+\else
+\bitsetIsEmpty{#2}{-1}{%
+\expandafter\BitSet@Skip
+\number#1\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!!!!!!!!!=%
+{\BitSet@@NextSetBit#1!}%
+}%
+\BitSet@Fi
+}
+\def\BitSet@@NextSetBit#1!#2{%
+\ifx#2!%
+ -1%
+\else
+\ifx#21%
+#1%
+\BitSet@AfterFiFi\BitSet@Cleanup
+\else
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@@NextSetBit
+\IntCalcInc#1!!%
+}%
+\fi
+\BitSet@Fi
+}
+\def\BitSet@Cleanup#1!{}
+\def\BitSet@Skip#1!#2{%
+\ifx#2!%
+\BitSet@AfterFi{%
+\BitSet@SkipContinue%
+}%
+\else
+\ifcase#1 %
+\BitSet@AfterFiFi{%
+\BitSet@SkipContinue#2%
+}%
+\or
+\BitSet@AfterFiFi\BitSet@SkipContinue
+\or
+\BitSet@AfterFiFi{%
+\expandafter\BitSet@SkipContinue\BitSet@Gobble
+}%
+\else
+\ifnum#1>8 %
+\BitSet@AfterFiFiFi{%
+\expandafter\BitSet@Skip
+\number\IntCalcSub#1!8!\expandafter!%
+\BitSet@GobbleSeven
+}%
+\else
+\BitSet@AfterFiFiFi{%
+\expandafter\expandafter\expandafter\BitSet@Skip
+\IntCalcDec#1!!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\BitSet@SkipContinue#1!#2=#3{%
+#3#1!%
+}
+\def\BitSet@GobbleSeven#1#2#3#4#5#6#7{}
+\def\bitsetGetSetBitList#1{%
+\romannumeral0%
+\bitsetIsEmpty{#1}{ }{%
+\expandafter\BitSet@GetSetBitList
+\number\BitSet@NextSetBit0!{#1}!{#1}{}!%
+}%
+}
+\def\BitSet@GetSetBitList#1!#2#3#4!{%
+\ifnum#1<0 %
+\BitSet@AfterFi{ #4}%
+\else
+\BitSet@AfterFi{%
+\expandafter\BitSet@GetSetBitList\number
+\expandafter\expandafter\expandafter\BitSet@NextSetBit
+\IntCalcInc#1!!{#2}!{#2},#4#3#1!%
+}%
+\BitSet@Fi
+}
+\def\bitsetSize#1{%
+\number
+\BitSet@IfUndefined{#1}{0 }{%
+\expandafter\expandafter\expandafter\BitSet@Size
+\expandafter\expandafter\expandafter1%
+\expandafter\expandafter\expandafter!%
+\csname BS@#1\endcsname!0!%
+}%
+}
+\def\BitSet@Size#1!#2#3!#4!{%
+\ifx#21%
+\ifx\\#3\\%
+\BitSet@AfterFiFi{#1 }%
+\else
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@Size
+\IntCalcInc#1!!#3!#1!%
+}%
+\fi
+\else
+\ifx\\#3\\%
+\BitSet@AfterFiFi{#4 }%
+\else
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@Size
+\IntCalcInc#1!!#3!#4!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\bitsetCardinality#1{%
+\number
+\BitSet@IfUndefined{#1}{0 }{%
+\expandafter\expandafter\expandafter\BitSet@Cardinality
+\expandafter\expandafter\expandafter0%
+\expandafter\expandafter\expandafter!%
+\csname BS@#1\endcsname!%
+}%
+}
+\def\BitSet@Cardinality#1!#2#3!{%
+\ifx#21%
+\ifx\\#3\\%
+\BitSet@AfterFiFi{\IntCalcInc#1! }%
+\else
+\BitSet@AfterFiFi{%
+\expandafter\expandafter\expandafter\BitSet@Cardinality
+\IntCalcInc#1!!#3!%
+}%
+\fi
+\else
+\ifx\\#3\\%
+\BitSet@AfterFiFi{#1 }%
+\else
+\BitSet@AfterFiFi{%
+\BitSet@Cardinality#1!#3!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\def\bitsetIsDefined#1{%
+\BitSet@IfUndefined{#1}%
+\BitSet@SecondOfTwo
+\BitSet@FirstOfTwo
+}
+\def\bitsetIsEmpty#1{%
+\BitSet@IfUndefined{#1}\BitSet@FirstOfTwo{%
+\expandafter\ifx\csname BS@#1\endcsname\BitSet@Zero
+\expandafter\BitSet@FirstOfTwo
+\else
+\expandafter\BitSet@SecondOfTwo
+\fi
+}%
+}
+\def\BitSet@Zero{0}
+\def\bitsetQuery#1#2{%
+\ifnum\bitsetGet{#1}{#2}=1 %
+\expandafter\BitSet@FirstOfTwo
+\else
+\expandafter\BitSet@SecondOfTwo
+\fi
+}
+\def\bitsetEquals#1#2{%
+\BitSet@IfUndefined{#1}{%
+\BitSet@IfUndefined{#2}\BitSet@FirstOfTwo\BitSet@SecondOfTwo
+}{%
+\BitSet@IfUndefined{#2}\BitSet@SecondOfTwo{%
+\expandafter\ifx\csname BS@#1\expandafter\endcsname
+\csname BS@#2\endcsname
+\expandafter\BitSet@FirstOfTwo
+\else
+\expandafter\BitSet@SecondOfTwo
+\fi
+}%
+}%
+}
+\def\bitsetIntersects#1#2{%
+\bitsetIsEmpty{#1}\BitSet@SecondOfTwo{%
+\bitsetIsEmpty{#2}\BitSet@SecondOfTwo{%
+\expandafter\expandafter\expandafter\BitSet@Intersects
+\csname BS@#1\expandafter\expandafter\expandafter\endcsname
+\expandafter\expandafter\expandafter!%
+\csname BS@#2\endcsname!%
+}%
+}%
+}
+\def\BitSet@Intersects#1#2!#3#4!{%
+\ifnum#1#3=11 %
+\BitSet@AfterFi\BitSet@FirstOfTwo
+\else
+\ifx\\#2\\%
+\BitSet@AfterFiFi\BitSet@SecondOfTwo
+\else
+\ifx\\#4\\%
+\BitSet@AfterFiFiFi\BitSet@SecondOfTwo
+\else
+\BitSet@AfterFiFiFi{%
+\BitSet@Intersects#2!#4!%
+}%
+\fi
+\fi
+\BitSet@Fi
+}
+\BitSet@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{uniquecounter}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@uniquecounter.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{uniquecounter}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@uniquecounter.sty\endcsname
+\ProvidesPackage{uniquecounter}%
+ [2011/01/30 v1.2 Provide unlimited unique counter (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname uqc@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\uqc@AtEnd{%
+\uqc@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\uqc@AtEnd{\uqc@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{bigintcalc}[2007/11/11]%
+\TMP@RequirePackage{infwarerr}[2007/09/09]%
+\else
+\RequirePackage{bigintcalc}[2007/11/11]%
+\RequirePackage{infwarerr}[2007/09/09]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\def\uqc@IncNum#1{%
+\begingroup
+\count@=\csname uqc@cnt@#1\endcsname\relax
+\advance\count@\@ne
+\expandafter\xdef\csname uqc@cnt@#1\endcsname{%
+\number\count@
+}%
+\ifnum\count@=2147483647 %
+\global\expandafter\let\csname uqc@inc@#1\endcsname
+\uqc@IncBig
+\fi
+\endgroup
+}%
+\else
+\def\uqc@IncNum#1{%
+\expandafter\xdef\csname uqc@cnt@#1\endcsname{%
+\number\numexpr\csname uqc@cnt@#1\endcsname+1%
+}%
+\ifnum\csname uqc@cnt@#1\endcsname=2147483647 %
+\global\expandafter\let\csname uqc@inc@#1\endcsname
+\uqc@IncBig
+\fi
+}%
+\fi
+\def\uqc@IncBig#1{%
+\expandafter\xdef\csname uqc@cnt@#1\endcsname{%
+\expandafter\expandafter\expandafter
+\BigIntCalcInc\csname uqc@cnt@#1\endcsname!%
+}%
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newcommand\endcsname\relax
+\def\uqc@Def#1{\def#1##1}%
+\else
+\def\uqc@Def#1{\newcommand*{#1}[1]}%
+\fi
+\uqc@Def\UniqueCounterNew{%
+\expandafter\ifx\csname uqc@cnt@#1\endcsname\relax
+\expandafter\xdef\csname uqc@cnt@#1\endcsname{0}%
+\global\expandafter\let\csname uqc@inc@#1\endcsname\uqc@IncNum
+\@PackageInfo{uniquecounter}{New unique counter `#1'}%
+\else
+\@PackageError{uniquecounter}{Unique counter `#1' is already defined}\@ehc
+\fi
+}
+\uqc@Def\UniqueCounterIncrement{%
+\expandafter\ifx\csname uqc@cnt@#1\endcsname\relax
+\@PackageError{uniquecounter}{Unique counter `#1' is undefined}\@ehc
+\else
+\csname uqc@inc@#1\endcsname{#1}%
+\fi
+}
+\uqc@Def\UniqueCounterGet{%
+\csname uqc@cnt@#1\endcsname
+}
+\uqc@Def\UniqueCounterCall{%
+\expandafter\ifx\csname uqc@cnt@#1\endcsname\relax
+\@PackageError{uniquecounter}{Unique counter `#1' is undefined}\@ehc
+\expandafter\uqc@Call\expandafter0%
+\else
+\UniqueCounterIncrement{#1}%
+\expandafter\expandafter\expandafter\uqc@Call
+\expandafter\expandafter\expandafter{%
+\csname uqc@cnt@#1\expandafter\endcsname\expandafter
+}%
+\fi
+}
+\long\def\uqc@Call#1#2{#2{#1}}%
+\uqc@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\HOBsub@AtEnd%
+\endinput
+%%
+%% End of file `hobsub-generic.sty'.

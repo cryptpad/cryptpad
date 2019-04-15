@@ -1,0 +1,1161 @@
+% \iffalse meta-comment
+%
+% File: accsupp.dtx
+% Version: 2010/01/16 v0.3
+% Info: Accessibility support by marked content
+%
+% Copyright (C) 2007, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file accsupp.dtx
+% and the derived files
+%    accsupp.sty, accsupp.pdf, accsupp.ins, accsupp.drv,
+%    accsupp-pdftex.def, accsupp-dvipdfm.def, accsupp-dvips.def,
+%    accsupp-example1.tex, accsupp-example2.tex,
+%    accsupp-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/accsupp.dtx
+%    CTAN:macros/latex/contrib/oberdiek/accsupp.pdf
+%
+% Unpacking:
+%    (a) If accsupp.ins is present:
+%           tex accsupp.ins
+%    (b) Without accsupp.ins:
+%           tex accsupp.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{accsupp.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If accsupp.drv is present:
+%           latex accsupp.drv
+%    (b) Without accsupp.drv:
+%           latex accsupp.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex accsupp.dtx
+%       makeindex -s gind.ist accsupp.idx
+%       pdflatex accsupp.dtx
+%       makeindex -s gind.ist accsupp.idx
+%       pdflatex accsupp.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/accsupp.sty
+%    TDS:tex/latex/oberdiek/accsupp-pdftex.def
+%    TDS:tex/latex/oberdiek/accsupp-dvipdfm.def
+%    TDS:tex/latex/oberdiek/accsupp-dvips.def
+%    TDS:doc/latex/oberdiek/accsupp.pdf
+%    TDS:doc/latex/oberdiek/accsupp-example1.tex
+%    TDS:doc/latex/oberdiek/accsupp-example2.tex
+%    TDS:doc/latex/oberdiek/test/accsupp-test1.tex
+%    TDS:source/latex/oberdiek/accsupp.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: accsupp 2010/01/16 v0.3 Accessibility support by marked content (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: accsupp
+Version: 2010/01/16 v0.3
+
+Copyright (C) 2007, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file accsupp.dtx
+and the derived files
+   accsupp.sty, accsupp.pdf, accsupp.ins, accsupp.drv,
+   accsupp-pdftex.def, accsupp-dvipdfm.def, accsupp-dvips.def,
+   accsupp-example1.tex, accsupp-example2.tex,
+   accsupp-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{accsupp.ins}{\from{accsupp.dtx}{install}}%
+  \file{accsupp.drv}{\from{accsupp.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{accsupp.sty}{\from{accsupp.dtx}{package}}%
+  \file{accsupp-pdftex.def}{\from{accsupp.dtx}{pdftex}}%
+  \file{accsupp-dvipdfm.def}{\from{accsupp.dtx}{dvipdfm}}%
+  \file{accsupp-dvips.def}{\from{accsupp.dtx}{dvips}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{accsupp-example1.tex}{\from{accsupp.dtx}{example1}}%
+  \file{accsupp-example2.tex}{\from{accsupp.dtx}{example2}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{accsupp-test1.tex}{\from{accsupp.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{accsupp.xml}{\from{accsupp.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     accsupp.sty, accsupp-pdftex.def, accsupp-dvipdfm.def,}
+\Msg{*     accsupp-dvips.def}
+\Msg{*}
+\Msg{* To produce the documentation run the file `accsupp.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{accsupp.drv}%
+  [2010/01/16 v0.3 Accessibility support by marked content (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{accsupp.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{462}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{accsupp.drv}
+%
+% \title{The \xpackage{accsupp} package}
+% \date{2010/01/16 v0.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Since PDF 1.5 portions of a page can be marked for better
+% accessibility support.
+% For example, replacement texts or expansions of abbreviations can be
+% provided. Package \xpackage{accsupp} starts with providing a minimal
+% low-level interface for programmers. Status is experimental.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Macros}
+%
+% Section ``10.8 Accessibility Support'' of the PDF reference
+% \cite{pdfspec} lists some features that can be added by
+% operators for marked content.
+%
+% \begin{declcs}{BeginAccSupp} \M{options}
+% \end{declcs}
+% It puts the operator |BDC| in the page stream:
+% \begin{quote}
+%   |/Span|\\
+%   |<<|\dots|>>| \qquad \textit{\% property dictionary}\\
+%   |BDC|
+% \end{quote}
+% The contents of the dictionary is controlled by \meta{options}.
+% See sections \ref{sec:feature} and \ref{sec:method}.
+%
+% \begin{declcs}{EndAccSupp} \M{options}
+% \end{declcs}
+% It puts the operator |EMC| in the page stream.
+% The only option is \xoption{pdfliteral}, see section \ref{sec:pdftex}.
+%
+% \bigskip
+% \noindent\textbf{Note:}
+% The caller is responsible for the placement of \cs{BeginAccSupp}
+% and \cs{EndAccSupp} pairs. Especially page breaks are not allowed
+% in between.
+%
+% \subsubsection{Feature options}\label{sec:feature}
+%
+% The PDF reference \cite{pdfspec} describes and explains the different
+% features. The names of the feature options are the same as the
+% key names for the property dictionary for operator |BDC|, see
+% \cs{BeginAccSupp}.
+%
+% \begin{description}
+% \item[\xoption{ActualText}:]
+%   Provides a replacement text, see examples in
+%   section \ref{sec:example}.
+% \item[\xoption{Alt}:]
+%   Provides an alternate description.
+% \item[\xoption{E}:]
+%   Provides the expansion of an abbreviation or an acronym.
+% \item[\xoption{Lang}:]
+%   Specifies the language.
+% \end{description}
+%
+% \subsubsection{Input methods}\label{sec:method}
+%
+% Except for \xoption{Lang} option \xoption{method} controls
+% how the argument for \xoption{ActualText}, \xoption{Alt},
+% and \xoption{E} are interpreted.
+% \begin{description}
+% \item[\xoption{method=plain}:]
+%   The string is only expanded and written without further
+%   treatment. Special characters are not protected, thus this method
+%   may result in an invalid PDF file.
+% \item[\xoption{mehod=escape}:]
+%   The string is expanded and special characters are escaped.
+%   The result is a valid PDF string.
+% \item[\xoption{method=hex}:]
+%   The string is given in hexadecimal notation.
+%   Section \ref{sec:example:notparallel} shows an example.
+% \item[\xoption{method=pdfstringdef}:]
+%   If package \xpackage{hyperref} is loaded, then its \cs{pdfstringdef}
+%   is used. This method is slow, but useful if the string contains
+%   arbitrary \hologo{TeX} code.
+% \item[\xoption{unicode}:]
+%   This option is needed, if the string is given as Unicode string
+%   (16 bit). Internally it adds the string prefix for Unicode.
+%   In case of \xoption{method=pdfstringdef} it passes the option
+%   to \cs{hypersetup}.
+% \end{description}
+%
+% \subsection{Workaround, option \xoption{space}}
+%
+% PDF specification says in ``10.8.3 Replacement Text''
+% \begin{quote}
+% Just as alternative descriptions can be provided for images and other
+% items that do not translate naturally into text (\dots), replacement
+% text can be specified for content that does translate into text but
+% that is represented in a nonstandard way. These nonstandard representations
+% might include, for example, glyphs for ligatures or custom characters, or
+% inline graphics corresponding to letters in an illuminated manustript or to
+% dropped capitals.
+% \end{quote}
+% However, the ActualText is ignored in Acrobat Reader
+% (until version 9 at least), if the content does not contain glyphs.
+% Option \xoption{space} adds such an invisible glyph, a space
+% character. The font name can be configured by option \xoption{spacefont},
+% the default font is \texttt{phvr8r}. The character slot is given
+% by option \xoption{spacechar}, default is \texttt{32}, the usual
+% position of the space character.
+%
+% These options can also be given as package options or in
+% macro \cs{AccSuppSetup} that takes a key value list as argument.
+% Usually only option \xoption{space} is necessary, if the
+% contents does not contain glyphs otherwise. Option \xoption{space}
+% is enabled by |space| or |space=true| and disabled by |space=false|.
+% It is disabled as default. The option is evaluated by \cs{BeginAccSupp}
+% and ignored by \cs{EndAccSupp}.
+%
+% Note: Even with option \xoption{space} I get sometimes wrong texts
+% when cut \& paste from AR7/Linux or AR8/Linux, e.g.
+% \begin{quote}
+%   |Hello| $\rightarrow$ |Helo|, |Helol|, |Hell|, \dots\\
+%   |Hello World| $\rightarrow$ |Helo WorldW|, |Helo World|, \dots
+% \end{quote}
+% I do not know what Acrobat Reader is doing here, thus feedback and
+% insights are welcome.
+%
+% \subsection{Driver options}
+%
+% Driver options are package options only.
+% The special \hologo{TeX} compilers \hologo{pdfTeX} and \hologo{XeTeX}
+% are detected automatically. The default for unrecognized drivers can be
+% set by defining \cs{ActualTextDriverDefault}. This can be done
+% in the configuration file \xfile{accsupp.cfg}.
+%
+% \subsubsection{Option \xoption{pdftex}}\label{sec:pdftex}
+% Package option \xoption{pdftex} is used for \hologo{pdfTeX} in PDF mode.
+% Additionally \cs{BeginAccSupp} and \cs{EndAccSupp} understand
+% option \xoption{pdfliteral}. It controls
+% the modifier keyword for \cs{pdfliteral}:
+% \begin{quote}
+%   |pdfliteral=direct| $\Rightarrow$ |\pdfliteral direct{...}|
+% \end{quote}
+%
+% \subsubsection{Option \xoption{dvipdfm}}
+%
+% Package option \xoption{dvipdfm} and its aliases \xoption{dvipdfmx}
+% \xoption{xetex} are used for drivers that support
+% \textsf{dvipdfm} specials.
+%
+% \subsubsection{Option \xoption{dvips}}
+%
+% Package option \xoption{dvips} and its alias \xoption{dvipsone}
+% write pdfmark specials in the output. Unhappily these pdfmark
+% operators are ignored by \textsf{ghostscript} (latest tested
+% version is 8.54). Perhaps they are recognized by commercial
+% distiller applications.
+%
+% \subsubsection{Turning off page stream compression}
+%
+% For debugging it is useful to have uncompressed page stream objects.
+% This can be done afterwards via \textsf{pdftk}:
+% \begin{quote}
+%   |pdftk file.pdf output file-uncompressed.pdf uncompress|
+% \end{quote}
+% Or the PDF file is generated uncompressed:
+% \begin{description}
+% \item[\hologo{pdfTeX}:] |\pdfcompresslevel=0|
+% \item[dvipdfm:] |dvipdfm -z0 ...|
+% \item[dvipdfmx:] |dvipdfmx -z0 ...|
+% \item[ghostscript/ps2pdf:]
+%      |ps2pdf -dCompressPages=false input.ps output.pdf|
+% \end{description}
+%
+% \section{Example}
+% \label{sec:example}
+%
+% \subsection{Example \cs{notparallel}}
+% \label{sec:example:notparallel}
+%
+%    \begin{macrocode}
+%<*example1>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<<END
+\documentclass{article}
+\usepackage{accsupp}[2007/11/14]
+\usepackage{centernot}
+% U+2226 NOT PARALLEL
+% \mathrel{...} prevents page break in between
+\newcommand*{\notparallel}{%
+  \ensuremath{%
+    \mathrel{%
+      \BeginAccSupp{method=hex,unicode,ActualText=2226}%
+      \centernot{\parallel}%
+      \EndAccSupp{}%
+    }%
+  }%
+}
+\begin{document}
+\begin{equation}
+A\notparallel B
+\end{equation}
+\end{document}
+%END
+%    \end{macrocode}
+%    \begin{macrocode}
+%</example1>
+%    \end{macrocode}
+%
+% \subsection{Example with \xoption{pdfstringdef}}
+%
+%    \begin{macrocode}
+%<*example2>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<<END
+\documentclass{article}
+\usepackage[unicode]{hyperref}
+\usepackage{accsupp}[2007/11/14]
+\begin{document}
+  \begin{equation}
+    \BeginAccSupp{
+      method=pdfstringdef,
+      unicode,
+      ActualText={%
+        a\texttwosuperior +b\texttwosuperior
+        =c\texttwosuperior
+      }
+    }
+    a^2 + b^2 = c^2
+    \EndAccSupp{}
+  \end{equation}
+\end{document}
+%END
+%    \end{macrocode}
+%    \begin{macrocode}
+%</example2>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Package}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ACCSUPP@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ACCSUPP@AtEnd{%
+    \ACCSUPP@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{254}{12}% ^^fe
+\TMP@EnsureCode{255}{12}% ^^ff
+\edef\ACCSUPP@AtEnd{\ACCSUPP@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{accsupp}%
+  [2010/01/16 v0.3 Accessibility support by marked content (HO)]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{pdfescape}[2007/02/25]
+\RequirePackage{ifpdf}
+\RequirePackage{ifxetex}
+\RequirePackage{kvoptions}
+%    \end{macrocode}
+%    \begin{macrocode}
+\SetupKeyvalOptions{%
+  family=ACCSUPP,%
+  prefix=ACCSUPP@%
+}
+%    \end{macrocode}
+%
+% \subsection{Space setup}
+%
+%    \begin{macrocode}
+\DeclareBoolOption{space}
+\DeclareStringOption[phvr8r]{spacefont}
+\DeclareStringOption[32]{spacechar}
+%    \end{macrocode}
+%
+% \subsection{Driver detection and setup}
+%
+% \paragraph{Driver declarations.}
+%
+%    \begin{macrocode}
+\def\ACCSUPP@DefineDriverKey{%
+  \@dblarg\ACCSUPP@@DefineDriverKey
+}
+\def\ACCSUPP@@DefineDriverKey[#1]#2{%
+  \define@key{ACCSUPP}{#2}[]{%
+    \def\ACCSUPP@driver{#1}%
+  }%
+  \g@addto@macro\ACCSUPP@DisableOptions{%
+    \DisableKeyvalOption{ACCSUPP}{#2}%
+  }%
+}
+\let\ACCSUPP@DisableOptions\@empty
+\ACCSUPP@DefineDriverKey{pdftex}
+\ACCSUPP@DefineDriverKey{dvips}
+\ACCSUPP@DefineDriverKey[dvips]{dvipsone}
+\ACCSUPP@DefineDriverKey{dvipdfm}
+\ACCSUPP@DefineDriverKey[dvipdfm]{dvipdfmx}
+\ACCSUPP@DefineDriverKey[dvipdfm]{xetex}
+\let\ACCSUPP@driver\relax
+\InputIfFileExists{accsupp.cfg}{}{}
+\providecommand*{\ActualTextDriverDefault}{dvips}
+\ifpdf
+  \def\ACCSUPP@driver{pdftex}%
+\else
+  \ifxetex
+    \def\ACCSUPP@driver{dvipdfm}%
+  \else
+    \ifx\ACCSUPP@driver\relax
+      \let\ACCSUPP@driver\ActualTextDriverDefault
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%
+% \paragraph{Process options.}
+%
+%    \begin{macrocode}
+\ProcessKeyvalOptions*
+\ACCSUPP@DisableOptions
+%    \end{macrocode}
+%
+% \paragraph{Driver validation and loading.}
+%
+%    \begin{macrocode}
+\def\ACCSUPP@temp{pdftex}%
+\ifpdf
+  \ifx\ACCSUPP@temp\ACCSUPP@driver
+  \else
+    \PackageWarningNoLine{accsupp}{%
+      Wrong driver `\ACCSUPP@driver', using `pdftex' instead%
+    }%
+    \let\ACCSUPP@driver\ACCSUPP@temp
+  \fi
+\else
+  \ifx\ACCSUPP@temp\ACCSUPP@driver
+    \PackageError{accsupp}{%
+      Wrong driver, pdfTeX is not running in PDF mode.\MessageBreak
+      Package loading is aborted%
+    }\@ehc
+    \expandafter\expandafter\expandafter\ACCSUPP@AtEnd
+  \fi
+  \def\ACCSUPP@temp{dvipdfm}%
+  \ifxetex
+    \ifx\ACCSUPP@temp\ACCSUPP@driver
+    \else
+      \PackageWarningNoLine{accsupp}{%
+        Wrong driver `\ACCSUPP@driver',\MessageBreak
+        using `dvipdfm' for XeTeX instead%
+      }%
+      \let\ACCSUPP@driver\ACCSUPP@temp
+    \fi
+  \fi
+\fi%
+\ifx\ACCSUPP@driver\relax
+  \PackageError{accsupp}{%
+    Missing driver option.\MessageBreak
+    Package loading is aborted%
+  }\@ehc
+  \expandafter\ACCSUPP@AtEnd
+\fi%
+\InputIfFileExists{accsupp-\ACCSUPP@driver.def}{}{%
+  \PackageError{accsupp}{%
+    Unsupported driver `\ACCSUPP@driver'.\MessageBreak
+    Package loading is aborted%
+  }\@ehc
+  \ACCSUPP@AtEnd
+}%
+%    \end{macrocode}
+%
+% \subsection{Main macro}
+%
+%    \begin{macrocode}
+\DeclareBoolOption{unicode}
+\DeclareStringOption[page]{pdfliteral}
+\DeclareStringOption{Lang}
+\def\ACCSUPP@method{escape}
+\define@key{ACCSUPP}{method}{%
+  \@ifundefined{ACCSUPP@method@#1}{%
+    \PackageError{accsupp}{%
+      Ignoring unknown method `#1'%
+    }\@ehc
+  }{%
+    \edef\ACCSUPP@method{#1}%
+  }%
+}
+\let\ACCSUPP@Lang\relax
+\def\ACCSUPP@temp#1{%
+  \expandafter\ACCSUPP@@temp\csname ACCSUPP@#1\endcsname{#1}%
+}
+\def\ACCSUPP@@temp#1#2{%
+  \let#1\relax
+  \define@key{ACCSUPP}{#2}{%
+    \def#1{##1}%
+    \ifx#1\@empty
+      \def#1{()}%
+    \else
+      \csname ACCSUPP@method@\ACCSUPP@method\endcsname#1%
+    \fi
+  }%
+}
+\ACCSUPP@temp{Alt}
+\ACCSUPP@temp{ActualText}
+\ACCSUPP@temp{E}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcommand*{\BeginAccSupp}[1]{%
+  \begingroup
+    \setkeys{ACCSUPP}{#1}%
+    \edef\ACCSUPP@span{%
+      /Span<<%
+        \ifx\ACCSUPP@Lang\relax
+        \else
+          /Lang\ACCSUPP@Lang
+        \fi
+        \ifx\ACCSUPP@Alt\relax
+        \else
+          /Alt\ACCSUPP@Alt
+        \fi
+        \ifx\ACCSUPP@ActualText\relax
+        \else
+          /ActualText\ACCSUPP@ActualText
+        \fi
+        \ifx\ACCSUPP@E\relax
+        \else
+          /E\ACCSUPP@E
+        \fi
+      >>%
+    }%
+    \ACCSUPP@bdc
+    \ACCSUPP@space
+  \endgroup
+}
+\newcommand*{\EndAccSupp}[1]{%
+  \begingroup
+    \setkeys{ACCSUPP}{#1}%
+    \ACCSUPP@emc
+  \endgroup
+}
+\def\ACCSUPP@space{%
+  \ifACCSUPP@space
+    \begingroup
+      \@ifundefined{ACCSUPP@Font}{%
+        \global\font\ACCSUPP@Font=\ACCSUPP@spacefont\relax
+      }{}%
+      \leavevmode
+      \setbox\z@\hbox{\ACCSUPP@Font\char\ACCSUPP@spacechar}%
+      \wd\z@\z@
+      \ht\z@\z@
+      \dp\z@\z@
+      \copy\z@
+    \endgroup
+  \fi
+}
+\newcommand*{\AccSuppSetup}{%
+  \setkeys{ACCSUPP}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Input methods}
+%
+%    \begin{macrocode}
+\def\ACCSUPP@method@plain#1{%
+  \csname @safe@activestrue\endcsname
+  \edef#1{%
+    (%
+    \ifACCSUPP@unicode
+      \string\376\string\377%
+    \fi
+    #1%
+    )%
+  }%
+  \@onelevel@sanitize#1%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\ACCSUPP@method@escape#1{%
+  \EdefEscapeString#1{%
+    \ifACCSUPP@unicode
+      ^^fe^^ff%
+    \fi
+    #1%
+  }%
+  \edef#1{(#1)}%
+}%
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\ACCSUPP@method@hex#1{%
+  \edef#1{%
+    <%
+    \ifACCSUPP@unicode
+      FEFF%
+    \fi
+    #1%
+    >%
+  }%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\ACCSUPP@method@pdfstringdef#1{%
+  \ifACCSUPP@unicode
+    \@ifundefined{hypersetup}{}{%
+      \hypersetup{unicode}%
+    }%
+  \fi
+  \@ifundefined{pdfstringdef}{%
+    \PackageError{accsupp}{%
+      Method `pdfstringdef' requires package `hyperref'%
+    }\@ehc
+    \let\ACCSUPP@temp\@empty
+  }{%
+    \begingroup
+      \setbox0=\hbox{%
+        \pdfstringdef\ACCSUPP@temp#1%
+        \global\let\ACCSUPP@temp\ACCSUPP@temp
+      }%
+    \endgroup
+  }%
+  \edef#1{(\ACCSUPP@temp)}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ACCSUPP@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Drivers}
+%
+% \subsubsection{Driver \xoption{pdftex}}
+%
+%    \begin{macrocode}
+%<*pdftex>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{accsupp-pdftex.def}%
+  [2010/01/16 v0.3 accsupp driver for pdfTeX (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ACCSUPP@bdc{%
+  \pdfliteral\ACCSUPP@pdfliteral{\ACCSUPP@span BDC}%
+}
+\def\ACCSUPP@emc{%
+  \pdfliteral\ACCSUPP@pdfliteral{EMC}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</pdftex>
+%    \end{macrocode}
+%
+% \subsubsection{Driver \xoption{dvipdfm}}
+%
+%    \begin{macrocode}
+%<*dvipdfm>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{accsupp-dvipdfm.def}%
+  [2010/01/16 v0.3 accsupp driver for dvipdfm (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ACCSUPP@bdc{%
+  \special{pdf:content \ACCSUPP@span BDC}%
+}
+\def\ACCSUPP@emc{%
+  \special{pdf:content EMC}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</dvipdfm>
+%    \end{macrocode}
+%
+% \subsubsection{Driver \xoption{dvips}}
+%
+%    \begin{macrocode}
+%<*dvips>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{accsupp-dvips.def}%
+  [2010/01/16 v0.3 accsupp driver for dvips (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ACCSUPP@bdc{%
+  \special{ps:[\ACCSUPP@span/BDC pdfmark}%
+}
+\def\ACCSUPP@emc{%
+  \special{ps:[/EMC pdfmark}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</dvips>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\makeatletter
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@\@ne
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@\@ne
+  \repeat
+}
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{127}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\{=1 %
+  \catcode`\}=2 %
+  \catcode`\#=6 %
+  \catcode`\[=12 %
+  \catcode`\]=12 %
+  \catcode`\%=14 %
+  \catcode`\ =10 %
+  \catcode13=5 %
+  \RequirePackage{accsupp}[2010/01/16]\relax
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/accsupp.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/accsupp.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex accsupp.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   accsupp.sty & tex/latex/oberdiek/accsupp.sty\\
+%   accsupp-pdftex.def & tex/latex/oberdiek/accsupp-pdftex.def\\
+%   accsupp-dvipdfm.def & tex/latex/oberdiek/accsupp-dvipdfm.def\\
+%   accsupp-dvips.def & tex/latex/oberdiek/accsupp-dvips.def\\
+%   accsupp.pdf & doc/latex/oberdiek/accsupp.pdf\\
+%   accsupp-example1.tex & doc/latex/oberdiek/accsupp-example1.tex\\
+%   accsupp-example2.tex & doc/latex/oberdiek/accsupp-example2.tex\\
+%   test/accsupp-test1.tex & doc/latex/oberdiek/test/accsupp-test1.tex\\
+%   accsupp.dtx & source/latex/oberdiek/accsupp.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk accsupp.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{accsupp.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex accsupp.dtx
+%makeindex -s gind.ist accsupp.idx
+%pdflatex accsupp.dtx
+%makeindex -s gind.ist accsupp.idx
+%pdflatex accsupp.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{accsupp.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='accsupp'>
+  <name>accsupp</name>
+  <caption>Better accessibility support for PDF files.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010'/>
+  <license type='lppl1.3'/>
+  <version number='0.3'/>
+  <description>
+    Since PDF 1.5 portions of a page can be marked for better accessibility
+    support. For example, replacement texts or expansions of abbreviations can
+    be provided. This package starts with providing a minimal low-level
+    interface for programmers; its status is experimental.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/accsupp.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/accsupp.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \bibitem{pdfspec}
+% Adobe Systems Incorporated,
+% \textit{PDF Reference}, 6th edition, 2006.
+% \url{http://www.adobe.com/devnet/acrobat/pdfs/pdf_reference.pdf}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/03/21 v0.1}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/11/14 v0.2}
+%   \item
+%     Various bug fixes.
+%   \item
+%     Catcode section rewritten, test added.
+%   \end{Version}
+%   \begin{Version}{2010/01/16 v0.3}
+%   \item
+%     \cs{AccSuppSetup} added.
+%   \item
+%     Options \xoption{space}, \xoption{spacefont}, \xoption{spacechar} added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

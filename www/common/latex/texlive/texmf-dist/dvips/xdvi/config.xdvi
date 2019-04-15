@@ -1,0 +1,40 @@
+% original config.xdvi -- Configuration file for Type 1 rendering in xdvi.
+% (If you change or delete `original' in the first line of this file,
+% new xdvik installations won't overwrite the file.)
+%
+% This file is part of xdvik (notwithstanding its location).
+%
+% Lines starting with `%' are comments.
+%
+% This file indicates which map files are to be used when running xdvi.
+% (It is not used by dvips, unless you type "dvips -Pxdvi ...", which is not
+% likely.  Doing so, however, would allow you to use the same map files
+% in dvips as are used in xdvi.)
+%
+% The format is the same as for dvips configuration files, except that only
+% the `p' and `p+' directives are used.  A line
+%
+%	p file.map
+%
+% clears the existing list of map files and sets the list to the given file.
+% A line
+%
+%	p+ file2.map
+%
+% adds the given map file to the end of the list.  If you use "p file.map"
+% anywhere other than as the first (non-comment, non-blank) line of the file,
+% then you are probably making a mistake.
+%
+% If a font entry is found in several files, the earlier entry will be used
+% (as is done in dvips).  Therefore, to override font entries in the standard
+% file psfonts.map, you should use entries such as:
+%
+%	p myfile.map
+%	p+ anotherfile.map
+%	p+ psfonts.map
+%
+% However, normally it isn't necessary to add any other map file here
+% because psfonts.map is (normally) a generated file (by the updmap
+% script).  Instead, map files should be added to the updmap.cfg file.
+%
+% p psfonts.map

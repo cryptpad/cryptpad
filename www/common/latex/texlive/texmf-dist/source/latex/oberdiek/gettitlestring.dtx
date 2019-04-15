@@ -1,0 +1,1030 @@
+% \iffalse meta-comment
+%
+% File: gettitlestring.dtx
+% Version: 2010/12/03 v1.4
+% Info: Cleanup title references
+%
+% Copyright (C) 2009, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file gettitlestring.dtx
+% and the derived files
+%    gettitlestring.sty, gettitlestring.pdf, gettitlestring.ins,
+%    gettitlestring.drv, gettitlestring-test1.tex,
+%    gettitlestring-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/gettitlestring.dtx
+%    CTAN:macros/latex/contrib/oberdiek/gettitlestring.pdf
+%
+% Unpacking:
+%    (a) If gettitlestring.ins is present:
+%           tex gettitlestring.ins
+%    (b) Without gettitlestring.ins:
+%           tex gettitlestring.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{gettitlestring.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If gettitlestring.drv is present:
+%           latex gettitlestring.drv
+%    (b) Without gettitlestring.drv:
+%           latex gettitlestring.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex gettitlestring.dtx
+%       makeindex -s gind.ist gettitlestring.idx
+%       pdflatex gettitlestring.dtx
+%       makeindex -s gind.ist gettitlestring.idx
+%       pdflatex gettitlestring.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/gettitlestring.sty
+%    TDS:doc/latex/oberdiek/gettitlestring.pdf
+%    TDS:doc/latex/oberdiek/test/gettitlestring-test1.tex
+%    TDS:doc/latex/oberdiek/test/gettitlestring-test2.tex
+%    TDS:source/latex/oberdiek/gettitlestring.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: gettitlestring
+Version: 2010/12/03 v1.4
+
+Copyright (C) 2009, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file gettitlestring.dtx
+and the derived files
+   gettitlestring.sty, gettitlestring.pdf, gettitlestring.ins,
+   gettitlestring.drv, gettitlestring-test1.tex,
+   gettitlestring-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{gettitlestring.ins}{\from{gettitlestring.dtx}{install}}%
+  \file{gettitlestring.drv}{\from{gettitlestring.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{gettitlestring.sty}{\from{gettitlestring.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{gettitlestring-test1.tex}{\from{gettitlestring.dtx}{test1}}%
+  \file{gettitlestring-test2.tex}{\from{gettitlestring.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{gettitlestring.xml}{\from{gettitlestring.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     gettitlestring.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `gettitlestring.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{gettitlestring.drv}%
+  [2010/12/03 v1.4 Cleanup title references (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{gettitlestring.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{721}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{gettitlestring.drv}
+%
+% \title{The \xpackage{gettitlestring} package}
+% \date{2010/12/03 v1.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The \LaTeX\ package addresses packages that are dealing with
+% references to titles (\cs{section}, \cs{caption}, \dots).
+% The package tries to remove \cs{label} and other
+% commands from title strings.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Macros}
+%
+% \begin{declcs}{GetTitleStringSetup} \M{key value list}
+% \end{declcs}
+% The options are given as comma separated key value pairs.
+% See section \ref{sec:options}.
+%
+% \begin{declcs}{GetTitleString} \M{text}\\
+% \cs{GetTitleStringExpand} \M{text}\\
+% \cs{GetTitleStringNonExpand} \M{text}
+% \end{declcs}
+% Macro \cs{GetTitleString} tries to remove unwanted stuff from \meta{text}
+% the result is stored in Macro \cs{GetTitleStringResult}.
+% Two methods are available:
+% \begin{description}
+% \item[\cs{GetTitleStringExpand}:]
+% The \meta{text} is expanded in a context where the unwanted
+% macros are redefined to remove themselves.
+% This is the method used in packages \xpackage{titleref}~\cite{titleref},
+% \xpackage{zref-titleref}~\cite{zref}
+% or class \xclass{memoir}~\cite{memoir}.
+% \cs{protect} is supported, but fragile material might break.
+% \item[\cs{GetTitleStringNonExpand}:]
+% The \meta{text} is not expanded. Thus the removal of unwanted
+% material is more difficult. It is especially removed at the
+% start of the \meta{text} and spaces are removed from the end.
+% Currently only \cs{label} is removed in the whole string,
+% if it is not hidden inside curly braces or part of macro
+% definitions. Thus the removal of unwanted stuff might not be
+% complete, but fragile material will not break.
+% (But the result string can break at a later time, of course).
+% \end{description}
+% Option \xoption{expand} controls which method is used by
+% macro \cs{GetTitleString}.
+%
+% \begin{declcs}{GetTitleStringDisableCommands} \M{code}
+% \end{declcs}
+% The \meta{code} is called right before the
+% text is expanded in \cs{GetTitleStringExpand}.
+% Additional definitions can be given for macros that
+% should be removed.
+% Keep in mind that expansion means that the definitions
+% must work in expandable context. Macros like
+% \cs{@ifstar} or \cs{@ifnextchar} or optional arguments
+% will not work. The macro names in \meta{code} may contain
+% the at sign |@|, it has catcode 11 (letter).
+%
+% \subsection{Options}\label{sec:options}
+%
+% \begin{description}
+% \item[\xoption{expand}:] Boolean option, takes values |true| or |false|.
+% No value means |true|. The option specifies the method to remove
+% unwanted stuff from the title string, see below.
+% \end{description}
+% Options can be set at the following places:
+% \begin{itemize}
+% \item \cs{usepackage}
+% \item Configuration file \xfile{gettitlestring.cfg}.
+% \item \cs{GetTitleStringSetup}
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@gettitlestring.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{gettitlestring}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@gettitlestring.sty\endcsname
+\ProvidesPackage{gettitlestring}%
+  [2010/12/03 v1.4 Cleanup title references (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname GTS@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\GTS@AtEnd{%
+    \GTS@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\GTS@AtEnd{\GTS@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\RequirePackage{kvoptions}[2009/07/17]
+\SetupKeyvalOptions{%
+  family=gettitlestring,%
+  prefix=GTS@%
+}
+\newcommand*{\GetTitleStringSetup}{%
+  \setkeys{gettitlestring}%
+}
+\DeclareBoolOption{expand}
+\InputIfFileExists{gettitlestring.cfg}{}{}
+\ProcessKeyvalOptions*\relax
+%    \end{macrocode}
+%
+% \subsection{\cs{GetTitleString}}
+%
+%    \begin{macro}{\GetTitleString}
+%    \begin{macrocode}
+\newcommand*{\GetTitleString}{%
+  \ifGTS@expand
+    \expandafter\GetTitleStringExpand
+  \else
+    \expandafter\GetTitleStringNonExpand
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\GetTitleStringExpand}
+%    \begin{macrocode}
+\newcommand{\GetTitleStringExpand}[1]{%
+  \def\GetTitleStringResult{#1}%
+  \begingroup
+    \GTS@DisablePredefinedCmds
+    \GTS@DisableHook
+    \edef\x{\endgroup
+      \noexpand\def\noexpand\GetTitleStringResult{%
+        \GetTitleStringResult
+      }%
+    }%
+  \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\GetTitleString}
+%    \begin{macrocode}
+\newcommand{\GetTitleStringNonExpand}[1]{%
+  \def\GetTitleStringResult{#1}%
+  \global\let\GTS@GlobalString\GetTitleStringResult
+  \begingroup
+    \GTS@RemoveLeft
+    \GTS@RemoveRight
+  \endgroup
+  \let\GetTitleStringResult\GTS@GlobalString
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Expand method}
+%
+%    \begin{macro}{\GTS@DisablePredefinedCmds}
+%    \begin{macrocode}
+\def\GTS@DisablePredefinedCmds{%
+  \let\label\@gobble
+  \let\zlabel\@gobble
+  \let\zref@label\@gobble
+  \let\zref@labelbylist\@gobbletwo
+  \let\zref@labelbyprops\@gobbletwo
+  \let\index\@gobble
+  \let\glossary\@gobble
+  \let\markboth\@gobbletwo
+  \let\@mkboth\@gobbletwo
+  \let\markright\@gobble
+  \let\phantomsection\@empty
+  \def\addcontentsline{\expandafter\@gobble\@gobbletwo}%
+  \let\raggedright\@empty
+  \let\raggedleft\@empty
+  \let\centering\@empty
+  \let\protect\@unexpandable@protect
+  \let\enit@format\@empty % package enumitem
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\GTS@DisableHook}
+%    \begin{macrocode}
+\providecommand*{\GTS@DisableHook}{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\GetTitleStringDisableCommands}
+%    \begin{macrocode}
+\def\GetTitleStringDisableCommands{%
+  \begingroup
+    \makeatletter
+    \GTS@DisableCommands
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\GTS@DisableCommands}
+%    \begin{macrocode}
+\long\def\GTS@DisableCommands#1{%
+    \toks0=\expandafter{\GTS@DisableHook}%
+    \toks2={#1}%
+    \xdef\GTS@GlobalString{\the\toks0 \the\toks2}%
+  \endgroup
+  \let\GTS@DisableHook\GTS@GlobalString
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Non-expand method}
+%
+%    \begin{macrocode}
+\def\GTS@RemoveLeft{%
+  \toks@\expandafter\expandafter\expandafter{%
+    \expandafter\GTS@Car\GTS@GlobalString{}{}{}{}\GTS@Nil
+  }%
+  \edef\GTS@Token{\the\toks@}%
+  \GTS@PredefinedLeftCmds
+  \expandafter\futurelet\expandafter\GTS@Token
+  \expandafter\GTS@TestLeftSpace\GTS@GlobalString\GTS@Nil
+  \GTS@End
+}
+\def\GTS@End{}
+\long\def\GTS@TestLeft#1#2{%
+  \def\GTS@temp{#1}%
+  \ifx\GTS@temp\GTS@Token
+    \toks@\expandafter\expandafter\expandafter{%
+      \expandafter#2\GTS@GlobalString\GTS@Nil
+    }%
+    \expandafter\GTS@TestLeftEnd
+  \fi
+}
+\long\def\GTS@TestLeftEnd#1\GTS@End{%
+  \xdef\GTS@GlobalString{\the\toks@}%
+  \GTS@RemoveLeft
+}
+\long\def\GTS@Car#1#2\GTS@Nil{#1}
+\long\def\GTS@Cdr#1#2\GTS@Nil{#2}
+\long\def\GTS@CdrTwo#1#2#3\GTS@Nil{#3}
+\long\def\GTS@CdrThree#1#2#3#4\GTS@Nil{#4}
+\long\def\GTS@CdrFour#1#2#3#4#5\GTS@Nil{#5}
+\long\def\GTS@TestLeftSpace#1\GTS@Nil{%
+  \ifx\GTS@Token\@sptoken
+    \toks@\expandafter{%
+      \romannumeral-0\GTS@GlobalString
+    }%
+    \expandafter\GTS@TestLeftEnd
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\GTS@PredefinedLeftCmds}
+%    \begin{macrocode}
+\def\GTS@PredefinedLeftCmds{%
+  \GTS@TestLeft\Hy@phantomsection\GTS@Cdr
+  \GTS@TestLeft\Hy@SectionAnchor\GTS@Cdr
+  \GTS@TestLeft\Hy@SectionAnchorHref\GTS@CdrTwo
+  \GTS@TestLeft\label\GTS@CdrTwo
+  \GTS@TestLeft\zlabel\GTS@CdrTwo
+  \GTS@TestLeft\index\GTS@CdrTwo
+  \GTS@TestLeft\glossary\GTS@CdrTwo
+  \GTS@TestLeft\markboth\GTS@CdrThree
+  \GTS@TestLeft\@mkboth\GTS@CdrThree
+  \GTS@TestLeft\addcontentsline\GTS@CdrFour
+  \GTS@TestLeft\enit@format\GTS@Cdr % package enumitem
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\GTS@RemoveRight{%
+  \toks@{}%
+  \expandafter\GTS@TestRightLabel\GTS@GlobalString
+      \label{}\GTS@Nil\@nil
+  \GTS@RemoveRightSpace
+}
+\begingroup
+  \def\GTS@temp#1{\endgroup
+    \def\GTS@RemoveRightSpace{%
+      \expandafter\GTS@TestRightSpace\GTS@GlobalString
+          \GTS@Nil#1\GTS@Nil\@nil
+    }%
+  }%
+\GTS@temp{ }
+\def\GTS@TestRightSpace#1 \GTS@Nil#2\@nil{%
+  \ifx\relax#2\relax
+  \else
+    \gdef\GTS@GlobalString{#1}%
+    \expandafter\GTS@RemoveRightSpace
+  \fi
+}
+\def\GTS@TestRightLabel#1\label#2#3\GTS@Nil#4\@nil{%
+  \def\GTS@temp{#3}%
+  \ifx\GTS@temp\@empty
+    \expandafter\gdef\expandafter\GTS@GlobalString\expandafter{%
+      \the\toks@
+      #1%
+    }%
+    \expandafter\@gobble
+  \else
+    \expandafter\@firstofone
+  \fi
+  {%
+    \toks@\expandafter{\the\toks@#1}%
+    \GTS@TestRightLabel#3\GTS@Nil\@nil
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\GTS@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input gettitlestring.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test of non-expand method}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\usepackage{gettitlestring}[2010/12/03]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\begin{document}
+\begin{qstest}{non-expand}{non-expand}
+  \def\test#1#2{%
+    \sbox0{%
+      \GetTitleString{#1}%
+      \Expect{#2}*{\GetTitleStringResult}%
+    }%
+    \Expect{0.0pt}*{\the\wd0}%
+  }%
+  \test{}{}%
+  \test{ }{}%
+  \test{ x }{x}%
+  \test{ x y }{x y}%
+  \test{ \relax}{\relax}%
+  \test{\label{f}a}{a}%
+  \test{ \label{f}a}{a}%
+  \test{\label{f} a}{a}%
+  \test{ \label{f} a}{a}%
+  \test{a\label{f}}{a}%
+  \test{a\label{f} }{a}%
+  \test{a \label{f}}{a}%
+  \test{a \label{f} }{a}%
+  \test{a\label{f}b\label{g}}{ab}%
+  \test{a \label{f}b \label{g} }{a b}%
+  \test{a\label{f} b \label{g} }{a b}%
+\end{qstest}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/gettitlestring.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/gettitlestring.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex gettitlestring.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   gettitlestring.sty & tex/generic/oberdiek/gettitlestring.sty\\
+%   gettitlestring.pdf & doc/latex/oberdiek/gettitlestring.pdf\\
+%   test/gettitlestring-test1.tex & doc/latex/oberdiek/test/gettitlestring-test1.tex\\
+%   test/gettitlestring-test2.tex & doc/latex/oberdiek/test/gettitlestring-test2.tex\\
+%   gettitlestring.dtx & source/latex/oberdiek/gettitlestring.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk gettitlestring.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{gettitlestring.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex gettitlestring.dtx
+%makeindex -s gind.ist gettitlestring.idx
+%pdflatex gettitlestring.dtx
+%makeindex -s gind.ist gettitlestring.idx
+%pdflatex gettitlestring.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{gettitlestring.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='gettitlestring'>
+  <name>gettitlestring</name>
+  <caption>Clean up title references.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    Cleans up the title string (removing <tt>\label</tt> commands) for
+    packages (such as <xref refid='nameref'>nameref</xref>) that
+    typeset such strings.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/gettitlestring.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/gettitlestring.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{memoir}
+% Peter Wilson, Lars Madsen:
+% \textit{The Memoir Class};
+% 2009/11/17 v1.61803398c;
+% \CTAN{macros/latex/contrib/memoir/}
+%
+% \bibitem{titleref}
+% Donald Arsenau:
+% \textit{Titleref.sty};
+% 2001/04/05 ver 3.1;
+% \CTAN{macros/latex/contrib/misc/titleref.sty}
+%
+% \bibitem{zref}
+% Heiko Oberdiek:
+% \textit{The \xpackage{zref} package};
+% 2009/12/08 v2.7;
+% \CTAN{macros/latex/contrib/oberdiek/zref.pdf}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2009/12/08 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+%   \begin{Version}{2009/12/12 v1.1}
+%   \item
+%     Short info shortened.
+%   \end{Version}
+%   \begin{Version}{2009/12/13 v1.2}
+%   \item
+%     Forgotten third argument for \cs{InputIfFileExists} added.
+%   \end{Version}
+%   \begin{Version}{2009/12/18 v1.3}
+%   \item
+%     \cs{Hy@SectionAnchorHref} added for filtering
+%     (hyperref 2009/12/18 v6.79w).
+%   \end{Version}
+%   \begin{Version}{2010/12/03 v1.4}
+%   \item
+%     Support of package \xpackage{enumitem}: removing
+%     \cs{enit@format} from title string (problem report by GL).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

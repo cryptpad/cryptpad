@@ -1,0 +1,177 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltalloc.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltalloc.dtx}
+             [1996/07/26 v1.1c LaTeX Kernel (allocation)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltalloc.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+\MaintainedByLaTeXTeam{latex}
+\maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{33}
+%
+% \changes{v1.1a}{1994/05/16}{(ASAJ) Split from ltinit.dtx.}
+% \changes{v1.1b}{1995/10/25}{General doc improvements}
+%
+% \section{Counters}
+%
+% This section deals with counter and other variable allocation.
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+% The following are from plain \TeX:
+% \begin{description}
+% \item[\cs{z@}] A zero dimen or number.  It's more efficient to write
+%               |\parindent\z@| than |\parindent 0pt|.
+% \item[\cs{@ne}]         The number 1.
+% \item[\cs{m@ne}]        The number $-1$.
+% \item[\cs{tw@}]         The number 2.
+% \item[\cs{sixt@@n }]    The number 16.
+% \item[\cs{@m}]          The number 1000.
+% \item[\cs{@MM}]         The number 20000.
+% \end{description}
+%
+% \begin{macro}{\@xxxii}
+% The constant $32$.
+%    \begin{macrocode}
+\chardef\@xxxii=32
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@Mi}
+% \begin{macro}{\@Mii}
+% \begin{macro}{\@Miii}
+% \begin{macro}{\@miv}
+% Constants $1001$--$1004$.
+%    \begin{macrocode}
+\mathchardef\@Mi=10001
+\mathchardef\@Mii=10002
+\mathchardef\@Miii=10003
+\mathchardef\@Miv=10004
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.0d}{1994/03/28}
+%     {Redefinition of `new' allocations removed.}
+%
+% \begin{macro}{\@tempcnta}
+% \begin{macro}{\@tempcntb}
+% Scratch count registers used by \LaTeX\ kernel commands.
+%    \begin{macrocode}
+\newcount\@tempcnta
+\newcount\@tempcntb
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\if@tempswa}
+% General boolean switch used by \LaTeX\ kernel commands.
+%    \begin{macrocode}
+\newif\if@tempswa
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tempdima}
+% \begin{macro}{\@tempdimb}
+% \begin{macro}{\@tempdimc}
+% Scratch dimen registers used by \LaTeX\ kernel commands.
+%    \begin{macrocode}
+\newdimen\@tempdima
+\newdimen\@tempdimb
+\newdimen\@tempdimc
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@tempboxa}
+% Scratch box register used by \LaTeX\ kernel commands.
+%    \begin{macrocode}
+\newbox\@tempboxa
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tempskipa}
+% \begin{macro}{\@tempskipb}
+% Scratch skip registers used by \LaTeX\ kernel commands.
+%    \begin{macrocode}
+\newskip\@tempskipa
+\newskip\@tempskipb
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@temptokena}
+% Scratch token register used by \LaTeX\ kernel commands.
+%    \begin{macrocode}
+\newtoks\@temptokena
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@flushglue}
+% Glue used for |\right|- \& |\leftskip|  = 0pt plus 1fil
+%    \begin{macrocode}
+\newskip\@flushglue \@flushglue = 0pt plus 1fil
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+\endinput

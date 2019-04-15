@@ -1,0 +1,3432 @@
+% \iffalse meta-comment
+%
+% File: kvoptions.dtx
+% Version: 2011/06/30 v3.11
+% Info: Key value format for package options
+%
+% Copyright (C) 2004, 2006, 2007, 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file kvoptions.dtx
+% and the derived files
+%    kvoptions.sty, kvoptions.pdf, kvoptions.ins, kvoptions.drv,
+%    kvoptions-patch.sty, example-mycolorsetup.sty,
+%    kvoptions-test1.tex, kvoptions-test2.tex,
+%    kvoptions-test3.tex, kvoptions-test4.tex,
+%    kvoptions-test4.sty.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/kvoptions.dtx
+%    CTAN:macros/latex/contrib/oberdiek/kvoptions.pdf
+%
+% Unpacking:
+%    (a) If kvoptions.ins is present:
+%           tex kvoptions.ins
+%    (b) Without kvoptions.ins:
+%           tex kvoptions.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{kvoptions.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If kvoptions.drv is present:
+%           latex kvoptions.drv
+%    (b) Without kvoptions.drv:
+%           latex kvoptions.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex kvoptions.dtx
+%       makeindex -s gind.ist kvoptions.idx
+%       pdflatex kvoptions.dtx
+%       makeindex -s gind.ist kvoptions.idx
+%       pdflatex kvoptions.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/kvoptions.sty
+%    TDS:tex/latex/oberdiek/kvoptions-patch.sty
+%    TDS:doc/latex/oberdiek/kvoptions.pdf
+%    TDS:doc/latex/oberdiek/example-mycolorsetup.sty
+%    TDS:doc/latex/oberdiek/test/kvoptions-test1.tex
+%    TDS:doc/latex/oberdiek/test/kvoptions-test2.tex
+%    TDS:doc/latex/oberdiek/test/kvoptions-test3.tex
+%    TDS:doc/latex/oberdiek/test/kvoptions-test4.tex
+%    TDS:doc/latex/oberdiek/test/kvoptions-test4.sty
+%    TDS:source/latex/oberdiek/kvoptions.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: kvoptions
+Version: 2011/06/30 v3.11
+
+Copyright (C) 2004, 2006, 2007, 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file kvoptions.dtx
+and the derived files
+   kvoptions.sty, kvoptions.pdf, kvoptions.ins, kvoptions.drv,
+   kvoptions-patch.sty, example-mycolorsetup.sty,
+   kvoptions-test1.tex, kvoptions-test2.tex,
+   kvoptions-test3.tex, kvoptions-test4.tex,
+   kvoptions-test4.sty.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{kvoptions.ins}{\from{kvoptions.dtx}{install}}%
+  \file{kvoptions.drv}{\from{kvoptions.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{kvoptions.sty}{\from{kvoptions.dtx}{package}}%
+  \file{kvoptions-patch.sty}{\from{kvoptions.dtx}{patch}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{example-mycolorsetup.sty}{\from{kvoptions.dtx}{example}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{kvoptions-test1.tex}{\from{kvoptions.dtx}{test1}}%
+  \file{kvoptions-test2.tex}{\from{kvoptions.dtx}{test2}}%
+  \file{kvoptions-test3.tex}{\from{kvoptions.dtx}{test3}}%
+  \file{kvoptions-test4.tex}{\from{kvoptions.dtx}{test4}}%
+  \file{kvoptions-test4.sty}{\from{kvoptions.dtx}{test4pkg}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{kvoptions.xml}{\from{kvoptions.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     kvoptions.sty, kvoptions-patch.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `kvoptions.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{kvoptions.drv}%
+  [2011/06/30 v3.11 Key value format for package options (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{kvoptions.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2398}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{kvoptions.drv}
+%
+% \title{The \xpackage{kvoptions} package}
+% \date{2011/06/30 v3.11}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package is intended for package authors who want to
+% use options in key value format for their package options.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \def\M#1{\texttt{\{}\meta{#1}\texttt{\}}}
+% \def\O#1{\texttt{[}\meta{#1}\texttt{]}}
+%
+% \section{Introduction}
+%
+% First I want to recommend the very good review article
+% ``A guide to key-value methods'' by Joseph Wright \cite{tb94wright}.
+% It introduces the different key-value packages and compares them.
+%
+% \subsection{The beginning}
+%
+% This package \xpackage{kvoptions} addresses class or package writers
+% that want to allow their users to specify options
+% as key value pairs, e.g.:
+% \begin{quote}
+% |\documentclass[verbose=false,name=me]{myclass}|\\
+% |\usepackage[format=print]{mylayout}|
+% \end{quote}
+% Prominent example is package \xpackage{hyperref},
+% probably the first package that offers this service.
+% It's \cs{ProcessOptionsWithKV} is often copied und
+% used in other packages, e.g. package \xpackage{helvet}
+% that uses this interface for its option \xoption{scaled}.
+%
+% However copying code is not the most modern software
+% development technique. And \xpackage{hyperref}'s
+% code for \cs{ProcessOptionsWithKV} was changed
+% to fix bugs. The version used in other packages
+% depends on the time of copying and the awareness
+% of \xpackage{hyperref}'s changes.
+% Now the code is sourced out into this package and
+% available for other package or class writers.
+%
+% \subsection{Overview}
+%
+% Package \xpackage{kvoptions} connects package
+% \xpackage{\emph{k}ey\emph{v}al}
+% with \LaTeX's package and class \emph{options}:
+% \begin{center}
+% \def\T#1{\bfseries #1}
+% \renewcommand{\arraystretch}{1.5}
+% \begin{tabular}{l|l|l}
+%   \T{Package \xpackage{keyval}}
+%   & \T{Package \xpackage{kvoptions}}
+%   & \T{\LaTeX\ kernel}
+%   \\
+% \hline
+%     \cs{define@key}
+%   &
+%     \renewcommand*{\arraystretch}{1}^^A
+%     \begin{tabular}[t]{@{}l@{}}
+%       \cs{DeclareVoidOption}\\
+%       \cs{DeclareStringOption}\\
+%       \cs{DeclareBoolOption}\\
+%       \cs{DeclareComplementaryOption}\\
+%       \cs{DisableKeyvalOption}
+%     \end{tabular}
+%   & \cs{DeclareOption}
+%   \\
+% \hline
+%   & \cs{DeclareDefaultOption}
+%   & \cs{DeclareOption*}
+%   \\
+% \hline
+%   & \cs{ProcessKeyvalOptions}
+%   & \cs{ProcessOptions*}
+%   \\
+% \hline
+%   & Option \xoption{patch}
+%   &
+%     \renewcommand*{\arraystretch}{1}^^A
+%     \begin{tabular}[t]{@{}l@{}}
+%       Class/package\\
+%       option system
+%     \end{tabular}
+%   \\
+% \hline
+%   & \cs{SetupKeyvalOptions} &
+%   \\
+% \end{tabular}
+% \end{center}
+%
+% \hypersetup{bookmarksopenlevel=3}
+% \section{Usage}
+%
+% \subsection{Process options}
+%
+% \subsubsection{\cs{ProcessKeyvalOptions}}
+%
+% \begin{declcs}{ProcessKeyvalOptions}\,\M{family}\\
+%   \cs{ProcessKeyvalOptions} \*
+% \end{declcs}
+% This command evaluates the global or local options of
+% the package that are defined with \xpackage{keyval}'s
+% interface within the family \meta{family}. It acts the
+% same way as \LaTeX's \cs{ProcessOptions*}. In a package
+% unknown global options are ignored, in a class they
+% are added to the unknown option list. The known global
+% options and all local options are passed to \xpackage{keyval}'s
+% \cs{setkeys} command for executing the options.
+% Unknown options are reported to the user by an error.
+%
+% If the family name happens to be the same as the name
+% of the package or class where \cs{ProcessKeyvalOptions}
+% is used or the family name has previously been setup by
+% \cs{SetupKeyvalOptions}, then \cs{ProcessKeyvalOptions}
+% knows the family name already and you can use the star form
+% without mandatory argument.
+%
+% \subsubsection{\cs{ProcessLocalKeyvalOptions}}
+%
+% \begin{declcs}{ProcessLocalKeyvalOptions}\,\M{family}\\
+%   \cs{ProcessLocalKeyvalOptions} \*
+% \end{declcs}
+% This macro has the same syntax and works similar as
+% \cs{ProcessKeyvalOptions}. However it ignores
+% global options and only processes the local package options.
+% Therefore it only can be used inside a package.
+% An error is thrown, if it is used inside a class.
+%
+% Neither of the following macros are necessary for
+% \cs{ProcessKeyvalOptions{}}. They just help the package/class
+% author in common tasks.
+%
+% \subsubsection{\cs{SetupKeyvalOptions}}\label{setup}
+%
+% \begin{declcs}{SetupKeyvalOptions}\,\texttt{\{}\\
+%   \hspace{1.5em}|family|\,|=|\,\meta{family}|,|\\
+%   \hspace{1.5em}|prefix|\,|=|\,\meta{prefix}\\
+%   \hspace{1.5em}|setkeys|\,|=|\,\meta{setkeys command}\\
+%   \texttt{\}}
+% \end{declcs}
+% This command allows to configure the default assumptions
+% that are based on the current package or class name.
+% \LaTeX\ remembers this name in \cs{@currname}. The syntax
+% description of the default looks a little weird, therefor
+% an example is given for a package or class named |foobar|.
+% \begin{quote}
+% \begin{tabular}{@{}l|ll|l@{}}
+%   Key & Default & (example) & Used by\\
+% \hline
+%   \rule{0pt}{1.2\ht\csname @arstrutbox\endcsname}^^A
+%   |family| & \meta{\cs{@currname}} & (|foobar|)
+%       & \cs{ProcessKeyvalOptions*} \\
+%     &&& \cs{DeclareBoolOption} \\
+%     &&& \cs{DeclareStringOption} \\
+% \hline
+%   \rule{0pt}{1.2\ht\csname @arstrutbox\endcsname}^^A
+%   |prefix| & \meta{\cs{@currname}}|@| & (|foobar@|)
+%       & \cs{DeclareBoolOption} \\
+%     &&& \cs{DeclareStringOption} \\
+%     &&& \cs{DeclareVoidOption} \\
+% \hline
+%   \rule{0pt}{1.2\ht\csname @arstrutbox\endcsname}^^A
+%   |setkeys| & \cs{setkeys} & (\cs{kvsetkeys})
+%       & \cs{ProcessKeyvalOptions} \\
+%     &&& \cs{ProcessLocalKeyvalOptions}
+% \end{tabular}
+% \end{quote}
+% Key |setkeys| was added in version 3.9. The original
+% \cs{setkeys} of package \xpackage{keyval} is not reentrant.
+% If an option is processed by this \cs{setkeys}, then
+% the option should not call \cs{setkeys} again with a
+% different family. Otherwise the next options of the
+% first \cs{setkeys} call are processed with the wrong
+% family. With key |setkeys| the macro \cs{kvsetkeys}
+% can be set that does not have the problem of the
+% original \cs{setkeys} of package {keyval}.
+%
+% Probably \cs{setkeys} of package \xpackage{xkeyval}
+% is safe in this respect. But I haven't made a full
+% analysis. At least it does not have the problem
+% of the original \cs{setkeys}.
+%
+% \subsection{Option declarations}
+%
+% The options for \cs{ProcessKeyvalOptions} are defined
+% by \xpackage{keyval}'s \cs{define@key}.
+% Common purposes of such keys are boolean switches, they
+% enable or disable something. Or they store a name or some kind of
+% string in a macro. The following commands help the user. He
+% declares what he wants and \xpackage{kvoptions} take care of
+% the key definition, resource allocation and initialization.
+%
+% In order to avoid name clashes of macro names, internal
+% commands are prefixed. Both the prefix and the family
+% name for the defined keys can be configured by
+% \cs{SetupKeyvalOptions}.
+%
+% \subsubsection{\cs{DeclareStringOption}}
+%
+% \begin{declcs}{DeclareStringOption}\,\O{init}\,\M{key}\,\O{default}
+% \end{declcs}
+% A macro is created that remembers the value of the key \meta{key}.
+% The name of the macro consists of the option name \meta{key} that
+% is prefixed by the prefix (see \ref{setup}).
+% The initial contents of the
+% macro can be given by the first optional argument \meta{init}.
+% The default is empty.
+%
+% The the option \meta{key} is defined. The option code
+% just stores its value in the macro. If the optional argument
+% at the end of \cs{DeclareStringOption} is given, then option
+% \meta{key} is defined with the default \meta{default}.
+%
+% Example for a package with the following two lines:
+% \begin{quote}
+% |\ProvidesPackage{foobar}|\\
+% |\DeclareStringOption[me]{name}|
+% \end{quote}
+% Then \cs{DeclareStringOption} defines the macro with content |me|,
+% note \LaTeX\ complains if the name of the macro already exists:
+% \begin{quote}
+% |\newcommand*{\foobar@name}{me}|
+% \end{quote}
+% The option definition is similar to:
+% \begin{quote}
+% |\define@key{foobar}{name}{%|\\
+% |  \renewcommand*{\foobar@name}{#1}%|\\
+% |}|
+% \end{quote}
+%
+% \subsubsection{\cs{DeclareBoolOption}}
+%
+% \begin{declcs}{DeclareBoolOption}\,\O{init}\,\M{key}
+% \end{declcs}
+% A boolean switch is generated, initialized by value \meta{init}
+% and the corresponding key \meta{key} is defined. If the
+% initialization value is not given, |false| is used as default.
+%
+% The internal actions of \cs{DeclareBoolOption} are shown below.
+% The example is given for a package author who has the following
+% two lines in his package/class:
+% \begin{quote}
+% |\ProvidesPackage{foobar}|\\
+% |\DeclareBoolOption{verbose}|
+% \end{quote}
+% First a new switch is created:
+% \begin{quote}
+%   |\newif\iffoobar@verbose|
+% \end{quote}
+% and initialized:
+% \begin{quote}
+%   |\foobar@verbosefalse|
+% \end{quote}
+% Finally the key is defined:
+% \begin{quote}
+%   |\define@key{foobar}{verbose}[true]{|\dots|}|
+% \end{quote}
+% The option code configures the boolean option in the following way:
+% If the author specifies |true| or |false| then the switch is
+% turned on or off respectivly. Also the option can be given without
+% explicit value. Then the switch is enabled.
+% Other values are reported as errors.
+%
+% Now the switch is ready to use in the package/class, e.g.:
+% \begin{quote}
+%   |\iffoobar@verbose|\\
+%   \qquad\textit{\% print verbose message}\\
+%   |\else|\\
+%   \qquad\textit{\% be quiet}\\
+%   |\fi|
+% \end{quote}
+% Users of package \cs{ifthen} can use the switch as
+% boolean:
+% \begin{quote}
+%   |\boolean{foobar@verbose}|
+% \end{quote}
+%
+% \subsubsection{\cs{DeclareComplementaryOption}}
+%
+% \begin{declcs}{DeclareComplementaryOption}\,\M{key}\,\M{parent}
+% \end{declcs}
+% Sometimes contrasting names are used to characterize the
+% two states of a boolean switch, for example \xoption{draft}
+% vs.\@ \xoption{final}. Both options behave like boolean
+% options but they do not need two different switches, they
+% should share one. \cs{DeclareComplementaryOption} allows this.
+% The option \meta{key} shares the switch of option \meta{parent}.
+% Example:
+% \begin{quote}
+%   |\DeclareBoolOption{draft}|\\
+%   |\DeclareComplementaryOption{final}{draft}|
+% \end{quote}
+% Then |final| sets the switch of \xoption{draft} to |false|, and
+% |final=false| enables the \xoption{draft} switch.
+%
+% \subsubsection{\cs{DeclareVoidOption}}
+%
+% \begin{declcs}{DeclareVoidOption}\,\M{key}\,\M{code}
+% \end{declcs}
+% \cs{ProcessKeyvalOptions} can be extended to recognize
+% options that are declared in traditional way by \cs{DeclareOption}.
+% But in case of the error that the user specifies a value, then
+% this option would not recognized as key value option because
+% of \cs{DeclareOption} and not detected as traditional option
+% because of the value part. The user would get an unknown option
+% error, difficult to understand.
+%
+% \cs{DeclareVoidOption} solves
+% this problem. It defines the option \meta{key} as key value option.
+% If the user specifies a value, a warning is given and the
+% value is ignored.
+%
+% The code part \meta{code} is stored in a macro.
+% The name of the macro consists of the option name \meta{key} that
+% is prefixed by the prefix (see \ref{setup}).
+% If the option is set, the macro will be executed. During the
+% execution \cs{CurrentOption} is available with the current key name.
+%
+% \subsubsection{\cs{DeclareDefaultOption}}
+%
+% \begin{declcs}{DeclareDefaultOption}\,\M{code}
+% \end{declcs}
+% \begin{sloppypar}
+% This command does not define a specific key, it is the equivalent
+% to \LaTeX's \cs{DeclareOption*}. It allows the specification
+% of a default action \meta{code} that is invoked if an unknown option
+% is found.
+% While \meta{code} is called,
+% macro \cs{CurrentOption} contains the current option string.
+% In addition \cs{CurrentOptionValue} contains the value part
+% if the option string is parsable as key value pair, otherwise
+% it is \cs{relax}. \cs{CurrentOptionKey} contains the key of
+% the key value pair, or the whole option string, if it misses
+% the equal sign.
+% \end{sloppypar}
+%
+% Inside packages typical default actions are to pass unknown
+% options to another package. Or an error message can be thrown
+% by \cs{@unknownoptionerror}. This is the original error
+% message that \LaTeX\ gives for unkown package options.
+% This error message is easier to understand for the user
+% as the error message from package \xpackage{keyval} that
+% is given otherwise.
+%
+% A Class ignores unknown options and puts them on the
+% unused option list. Let \LaTeX\ do the job and just
+% call \cs{OptionNotUsed}. Or the options can be passed to
+% another class that is later loaded.
+%
+% \subsubsection{Local options}
+%
+% \begin{declcs}{DeclareLocalOption} \M{option}\\
+%   \cs{DeclareLocalOptions} \M{option list}
+% \end{declcs}
+% Both macros mark package options as local options. That means
+% that they are ignored by \cs{ProcessKeyvalOptions} if they are given
+% as global options. \cs{DeclareLocalOptions} takes one option,
+% \cs{DeclareLocalOptions} expects a comma separated list of options.
+%
+% \subsubsection{Dynamic options}
+%
+% Options of \LaTeX's package/class system are cleared
+% in \cs{ProcessOptions}. They modify the static model
+% of a package. For example, depending on option \xoption{bookmarks}
+% package \xpackage{hyperref} loads differently.
+%
+% Options, however,
+% defined by \xpackage{keyval}'s \cs{define@key} remain
+% defined, if the options are processed by \cs{setkeys}.
+% Therefore these options can also be used to model
+% the dynamic behaviour of a package. For example, in
+% \xpackage{hyperref} the link colors can be changed
+% everywhere until the end in |\end{document}|.
+%
+% However package \xpackage{color} that adds color support
+% is necessary and it
+% cannot be loaded after |\begin{document}|. Option \xoption{colorlinks}
+% that loads \xpackage{color} should be active until |\begin{document}|
+% and die in some way if it is too late for loading packages.
+% With \cs{DisableKeyvalOption} the package/class author can
+% specify and configure the death of an option and controls
+% the life period of the option.
+%
+% \subsubsection{\cs{DisableKeyvalOption}}
+%
+% \begin{declcs}{DisableKeyvalOption}\,\O{options}\,\M{family}\,\M{key}
+%   \\[0.5ex]
+%   \meta{options}:\\
+%   \hspace{1.5em}^^A
+%   \begin{tabular}[t]{@{}l@{ \texttt{=} }l@{\qquad}>{default: }l@{}}
+%     |action| & |undef|, |warning|, |error|, or |ignore|
+%     & |undef|
+%     \\
+%     \multicolumn{1}{@{}l}{|global| or |local|} & & |global|
+%     \\
+%     |package| or |class| & \meta{name}
+%     \\
+%   \end{tabular}^^A
+% \end{declcs}
+% \cs{DisableKeyvalOption} can be called to mark the end when
+% the option \meta{key} is no longer useful. The behaviour of
+% an option after its death can be configured by \xoption{action}:
+% \begin{description}
+% \item[\texttt{undef}:] The option will be undefined,
+%   If it is called, \cs{setkeys} reports an error because
+%   of unknown key.
+% \item[\texttt{error} or \texttt{warning}:] Use of the
+%  option will cause an error or warning message.
+%  Also these actions require that exclusivly either the
+%  package or class name is given in options \xoption{package}
+%  or \xoption{class}.
+% \item[\texttt{ignore}:] The use of the option will silently
+%  be ignored.
+% \end{description}
+% The option's death can be limited to the end of the current
+% group, if option \xoption{local} is given. Default is
+% \xoption{global}.
+%
+% The package/class author can wish the end of the option
+% already during the package loading, then he will have
+% static behaviour. In case of dynamic options \cs{DisableKeyvalOption}
+% can be executed everywhere, also outside the package. Therefore
+% the family name and the package/class name is usually unknown for
+% \cs{DisableKeyvalOption}. Therefore the argument for the family
+% name is mandatory and for some actions the package/class name
+% must be provided.
+%
+% Usually a macro would configure the option death, Example:
+%\begin{quote}
+%\begin{verbatim}
+%\ProvidesPackage{foobar}
+%\DeclareBoolOption{color}
+%\DeclareStringOption[red]{emphcolor}
+%\ProcessKeyvalOptions*
+%
+%\newcommand*{\foobar@DisableOption}[2]{%
+%  \DisableKeyvalueOption[
+%    action={#1},
+%    package=foobar
+%  ]{foobar}{#2}%
+%}
+%
+%\iffoobar@color
+%  \RequirePackage{color}
+%  \renewcommand*{\emph}[1]{\textcolor{\foobar@emphcolor}{#1}}
+%\else
+%  % Option emphcolor is not wrong, if we have color support.
+%  % otherwise the option has no effect, but we don't want to
+%  % remove it. Therefore action 'ignore' is the best choice:
+%  \foobar@DisableOption{ignore}{emphcolor}
+%\fi
+%% No we don't need the option 'color'.
+%\foobar@DisableOption{warning}{color}
+%
+%% With color support option 'emphcolor' will dynamically
+%% change the color of \emph statements.
+%\end{verbatim}
+%\end{quote}
+%
+% \subsubsection{\cs{AddToKeyvalOption}}
+%
+% \begin{declcs}{AddToKeyvalOption}\,\M{family}\,\M{key}\,\M{code}\\
+%   \cs{AddToKeyvalOption} \*\,\M{key}\,\M{code}
+% \end{declcs}
+% The code for an existing key \meta{key} of family \meta{family} is
+% extended by code \meta{code}. In the starred form the current
+% family setting is used, see \cs{ProcessKeyvalOptions*}.
+%
+% \subsection{Global vs. local options}
+%
+% Options that are given for \cs{documentclass} are called
+% global options. They are known to the class and all packages.
+% A package may make use of a global option and marks it as
+% used. The advantage for the user is the freedom to specify
+% options both in the \cs{documentclass} or \cs{usepackage}
+% commands.
+%
+% However global options are shared with the class options
+% and options of all other packages. Thus there can be the
+% same option with different semantics for different
+% packages and classes. As example, package \xpackage{bookmark}
+% knows option \xoption{open} that specifies whether the bookmarks
+% are opened or closed initially. It's values are |true| or |false|.
+% Since KOMA-Script version 3.00 the KOMA classes also introduces
+% option \xoption{open} with values |right| and |any| and a
+% complete different meaning.
+%
+% Such conflicts can be resolved by marking all or part of options
+% as local by \cs{DeclareLocalOption} or \cs{DeclareLocalOptions}.
+% Then the packages ignores global occurences of these options.
+% Package \xpackage{kvoptions} provides two methods:
+% \begin{itemize}
+% \item \cs{ProcessLocalKeyvalOptions} automatically uses all options
+%   as local options. It ignores all global options.
+% \item \cs{DeclareLocalOption} or \cs{DeclareLocalOptions} marks
+%   options as local options. \cs{ProcessKeyvalOptions} will then
+%   ignore global occurences for these local options.
+% \end{itemize}
+% Since version 1.5 package \xpackage{bookmark} uses the latter
+% method. It checks global and local option places for driver options
+% and limits all other options as local options. Thus the class
+% option \xoption{open} of KOMA-Script is not misread as
+% option for package \xpackage{bookmark}.
+%
+% \subsection{Summary of internal macros}
+%
+% The \cs{Declare}\texttt{\dots Option} commands define
+% macros, additionally to the macros generated by the key definition.
+% These macros can be used by the package/class author.
+% The name of the macros starts with the prefix \meta{prefix}
+% that can be configured by \cs{SetupKeyvalOptions}.
+% \begin{center}
+% \def\prefix{\cs{}\meta{prefix}\meta{key}}^^A
+% \def\Hline{^^A
+%   \hline
+%   \rule{0pt}{1.2\ht\csname @arstrutbox\endcsname}^^A
+% }^^A
+% \begin{tabular}{@{}l|>{\ttfamily}l|l@{}}
+%   Declare \meta{key} & \textrm{Defined macro} & Description\\
+% \Hline
+%   \cs{DeclareStringOption}
+%    & \prefix & holds the string\\
+% \Hline
+%   \cs{DeclareBoolOption}
+%     & \cs{if}\meta{prefix}\meta{key}& boolean switch\\
+%   &\prefix false& disable switch\\
+%   &\prefix true& enable switch\\
+% \Hline
+%   \cs{DeclareComplementaryOption}
+%     & \prefix false& enable parent switch\\
+%     & \prefix true& disable parent switch\\
+% \Hline
+%   \cs{DeclareVoidOption}
+%   & \prefix & holds the action
+% \end{tabular}
+% \end{center}
+%
+% \subsection{\plainTeX}
+%
+% Package \xpackage{keyval} is also usable in \plainTeX\ with
+% the help of file \xfile{miniltx.tex}. Some features of this
+% package \xpackage{kvoptions} might also be useful for \plainTeX.
+% If \LaTeX\ is not found, \cs{ProcessKeyvalOptions} and option
+% \xoption{patch} are disabled. Before using the option declaration
+% commands \cs{Declare...Option}, \cs{SetupKeyvalOptions} must be
+% used.
+%
+% \hypersetup{bookmarksopenlevel=1}
+%
+% \section{Example}
+%
+% The following example defined a package that serves some
+% private color management. A boolean option \xoption{print} enables
+% print mode without colors. An option \xoption{emph} redefines
+% \cs{emph} to print in the given color. And the driver
+% can be specified by option \xoption{driver}.
+%
+%    \begin{macrocode}
+%<*example>
+    % Package identification
+    % -----------------------
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{example-mycolorsetup}[2011/06/30 Managing my colors]
+
+\RequirePackage{ifpdf}
+\RequirePackage{kvoptions}
+
+    % Option declarations
+    % -------------------
+
+\SetupKeyvalOptions{
+  family=MCS,
+  prefix=MCS@
+}
+    % Use a shorter family name and prefix
+
+    % Option print
+\DeclareBoolOption{print}
+    % is the same as
+    % \DeclareBoolOption[false]{print}
+
+    % Option driver
+\ifpdf
+  \DeclareStringOption[pdftex]{driver}
+\else
+  \DeclareStringOption[dvips]{driver}
+\fi
+
+    % Alternative interface for driver options
+\DeclareVoidOption{dvips}{\SetupDriver}
+\DeclareVoidOption{dvipdfm}{\SetupDriver}
+\DeclareVoidOption{pdftex}{\SetupDriver}
+    % In \SetupDriver we take the current option \CurrentOption
+    % and pass it to the driver option.
+    % The \expandafter commands expand \CurrentOption at the
+    % time, when \SetupDriver is executed and \CurrentOption
+    % has the correct meaning.
+\newcommand*{\SetupDriver}{%
+  \expandafter\@SetupDriver\expandafter{\CurrentOption}%
+}
+\newcommand*{\@SetupDriver}[1]{%
+  \setkeys{MCS}{driver={#1}}%
+}
+
+    % Option emph
+    % An empty value means, we want to have no color for \emph.
+    % If the user specifies option emph without value, the red is used.
+\DeclareStringOption{emph}[red]
+    % is the same as
+    % \DeclareStringOption[]{emph}[red]
+
+    % Default option rule
+\DeclareDefaultOption{%
+  \ifx\CurrentOptionValue\relax
+    \PackageWarningNoLine{\@currname}{%
+      Unknown option `\CurrentOption'\MessageBreak
+      is passed to package `color'%
+    }%
+    % Pass the option to package color.
+    % Again it is better to expand \CurrentOption.
+    \expandafter\PassOptionsToPackage
+    \expandafter{\CurrentOption}{color}%
+  \else
+    % Package color does not take options with values.
+    % We provide the standard LaTeX error.
+    \@unknownoptionerror
+  \fi
+}
+
+    % Process options
+    % ---------------
+\ProcessKeyvalOptions*
+
+    % Implementation depending on option values
+    % -----------------------------------------
+    % Code for print mode
+\ifMCS@print
+  \PassOptionsToPackage{monochrome}{color}
+    % tells package color to use black and white
+\fi
+
+\RequirePackage[\MCS@driver]{color}
+    % load package color with the correct driver
+
+    % \emph setup
+\ifx\MCS@emph\@empty
+    % \@empty is a predefined macro with empty contents.
+    % the option value of option emph is empty, thus
+    % we do not want a redefinition of \emph.
+\else
+  \renewcommand*{\emph}[1]{%
+    \textcolor{\MCS@emph}{#1}%
+  }
+\fi
+%</example>
+%    \end{macrocode}
+%
+% \section{Package options}
+%
+% The package \xpackage{kvoptions} knows two package options
+% \xoption{patch} and \xoption{debugshow}.
+% The options of package \xpackage{kvoptions} are intended
+% for authors, not for package/class writers. Inside a package
+% it is too late for option \xoption{patch} and \xoption{debugshow}
+% enables some messages that are perhaps useful for the debugging
+% phase. Also \LaTeX\ is unhappy if a package is loaded
+% later again with options that are previously not given.
+% Thus package and class authors, stay with |\RequirePackage{kvoptions}|
+% without options.
+%
+% Option \xoption{patch} loads package \xpackage{kvoptions-patch}.
+%
+% \subsection{Package \xpackage{kvoptions-patch}}
+%
+% \LaTeX's system of package/class options has some severe limitations
+% that especially affects the value part if options are used as
+% pair of key and value.
+% \begin{itemize}
+% \item Spaces are removed, regardless where:
+%   \begin{quote}
+%     |\documentclass[box=0 0 400 600]{article}|
+%   \end{quote}
+%   Now each package will see |box=00400600| as global option.
+% \item In the previous case also braces would not help:
+%   \begin{quote}
+%     |\documentclass[box={0 0 400 600}]{article}|
+%   \end{quote}
+%   The result is an error message:
+%   \begin{quote}
+%     |! LaTeX Error: Missing \begin{document}.|
+%   \end{quote}
+%   As local option, however, it works if the package
+%   knows about key value options (By using this package, for example).
+% \item The requirements on robustness are extremly high.
+%   \LaTeX\ expands the option. All that will not work as environment
+%   name will break also as option. Even a \cs{relax} will generate
+%   an error message:
+%   \begin{quote}
+%     |! Missing \endcsname inserted.|
+%   \end{quote}
+%   Of course, \LaTeX\ does not use its protecting mechanisms.
+%   On contrary \cs{protect} itself will cause errors.
+% \item The options are expanded. But perhaps the package will
+%   do that, because it has to setup some things before?
+%   Example \xpackage{hyperref}:
+%   \begin{quote}
+%     |\usepackage[pdfauthor=M\"uller]{hyperref}|
+%   \end{quote}
+%   Package \xpackage{hyperref} does not see |M\"uller| but
+%   its expansion and it does not like it, you get many warnings
+%   \begin{quote}
+%     |Token not allowed in a PDFDocEncoded string|
+%   \end{quote}
+%   And the title becomes: |Mu127uller|.
+%   Therefore such options must usually be given after package
+%   \xpackage{hyperref}
+%   is loaded:
+%   \begin{quote}
+%     |\usepackage{hyperref}|\\
+%     |\hypersetup{pdfauthor=Fran\c coise M\"uller}|
+%   \end{quote}
+%   As package option it will even break with |Fran\c coise|
+%   because of the cedilla |\c c|, it is not robust enough.
+% \end{itemize}
+% For users that do not want with this limitations the package
+% offers package \xoption{kvoptions-patch}. It patches \LaTeX's option system
+% and tries to teach it also to handle options that are given
+% as pairs of key and value and to prevent expansion.
+% It can already be used at the very beginning, before \cs{documentclass}:
+% \begin{quote}
+%   |\RequirePackage{kvoptions-patch}|\\
+%   |\documentclass[pdfauthor=Fran\c coise M\"uller]{article}|\\
+%   |\usepackage{hyperref}|
+% \end{quote}
+% The latest time is before the package where you want to use
+% problematic values:
+% \begin{quote}
+%   |\usepackage{kvoptions-patch}|\\
+%   |\usepackage[Fran\c coise M\"uller]{hyperref}|
+% \end{quote}
+% Some remarks:
+% \begin{itemize}
+% \item The patch requires \eTeX, its \cs{unexpanded} feature
+%   is much too nice. It is possible to work around using token
+%   registers. But the code becomes longer, slower, more difficult
+%   to read and maintain. The package without option \xoption{patch}
+%   works and will work without \eTeX.
+% \item The code for the patch is quite long, there are many test
+%   cases. Thus the probability for bugs is probably not too small.
+% \item Since 2008/10/18 v3.0 package \xpackage{kvoptions-patch} is
+%   available. Before option \xoption{patch} of package \xpackage{kvoptions}
+%   must be used instead. I think, the solution as standalone package
+%   \xpackage{kvoptions-patch} is cleaner and avoids option clashes.
+% \end{itemize}
+%
+% \subsection{Option \xoption{debugshow}}
+%
+% The name of this option follows the convention of packages
+% \xpackage{multicol}, \xpackage{tabularx}, and \xpackage{tracefnt}.
+% Currently it prints the setting of boolean options, declared
+% by \cs{DeclareBoolOption} in the \xfile{.log} file, if that
+% boolean option is used.
+% You can activate the option by
+% \begin{itemize}
+% \item |\PassOptionsToPackage{debugshow}{kvoptions}|\\
+%       Put this somewhere before package \xpackage{kvoptions} is
+%       loaded first, e.g. before \cs{documentclass}.
+% \item |\RequirePackage[debugshow]{kvoptions}|\\
+%       Before \cs{documentclass} even an author has to use
+%       \cs{RequirePackage}. \cs{usepackage} only works after
+%       \cs{documentclass}.
+% \end{itemize}
+% The preferred method is \cs{PassOptionsToPackage}, because
+% it does not force the package loading and does not disturb,
+% if the package is not loaded later at all.
+%
+% \section{Limitations}
+%
+% \subsection{Compatibility}
+% \subsubsection{Package \xpackage{kvoptions-patch} vs. package \xpackage{xkvltxp}}
+%
+% Package \xpackage{xkvltxp} from the \xpackage{xkeyval} project
+% has the same goal as package \xpackage{kvoptions-patch}
+% and to patch \LaTeX's kernel commands in order to get better support
+% for key value options.
+% Of course they cannot be used both. The user must decide, which
+% method he prefers. Package \xpackage{kvoptions-patch} aborts itself,
+% if it detects that \xpackage{xkvltxp} is
+% already loaded.
+%
+% However package \xpackage{xkvltxp} and \xpackage{kvoptions}
+% can be used together, example:
+% \begin{quote}
+% |\usepackage{xkvltxp}|\\
+% |\usepackage[...]{foobar} % |\texttt{\itshape foobar using kvoptions}
+% \end{quote}
+% The other way should work, too.
+%
+% Package \xpackage{kvoptions-patch} tries to catch more situations
+% and to be more robust.
+% For example, during the comparison of options it normalizes
+% them by removing spaces around |=| and the value. Thus the
+% following is not reported as option clash:
+% \begin{quote}
+%\begin{verbatim}
+%\RequirePackage{kvoptions-patch}
+%\documentclass{article}
+%
+%\usepackage[scaled=0.7]{helvet}
+%\usepackage[scaled = 0.7]{helvet}
+%
+%\begin{document}
+%\end{document}
+%\end{verbatim}
+% \end{quote}
+%
+% \subsection{Limitations}
+%
+% \subsubsection{Option comparisons}
+%
+% In some situations \LaTeX\ compares option lists, e.g. option clash check,
+% \cs{@ifpackagewith}, or \cs{@ifclasswith}. Apart from catcode and
+% sanitizing problems of option \xoption{patch}, there is another problem.
+% \LaTeX\ does not know about the type and default values of
+% options in key value style. Thus an option clash is reported,
+% even if the key value has the same meaning:
+% \begin{quote}
+% |\usepackage[scaled]{helvet} %| \texttt{\textit{default is }.95}\\
+% |\usepackage[.95]{helvet}|\\
+% |\usepackage[0.95]{helvet}|
+% \end{quote}
+%
+% \subsubsection{Option list parsing with package \xpackage{kvoptions-patch}}
+%
+% With package \xpackage{kvoptions-patch} the range of possible values
+% in key value specifications is much large, for example
+% the comma can be used, if enclosed in curly braces.
+%
+% Other packages, especially the packages that uses their
+% own process option code can be surprised to find tokens
+% inside options that they do not expect and errors would
+% be the consequence. To avoid errors the options, especially
+% the unused option list is sanitized. That means the list
+% will only contain tokens with catcode 12 (other) and
+% perhaps spaces (catcode 10). This allows a safe parsing
+% for other packages. But a comma in the value part is
+% no longer protected by curly braces because they have lost
+% their special meaning. This is the price for compatibility.
+%
+% Example:
+% \begin{quote}
+% |\RequirePackage{kvoptions-patch}|\\
+% |\documentclass[a={a,b,c},b]{article}|\\
+% |\begin{document}|\\
+% |\end{document}|
+% \end{quote}
+% Result:
+% \begin{quote}
+% |LaTeX Warning: Unused global option(s):|\\
+% |    [a={a,c},b].|
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Preamble}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \paragraph{Reload check and  identification.}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@kvoptions.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{kvoptions}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@kvoptions.sty\endcsname
+\ProvidesPackage{kvoptions}%
+  [2011/06/30 v3.11 Key value format for package options (HO)]%
+%    \end{macrocode}
+%
+% \paragraph{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname KVO@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\KVO@AtEnd{%
+    \KVO@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{1}{14}% ^^A (comment)
+\TMP@EnsureCode{2}{14}% ^^A (comment)
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\edef\KVO@AtEnd{\KVO@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \paragraph{External resources.}
+%    The package extends the support for key value pairs of
+%    package \cs{keyval} to package options. Thus the package
+%    needs to be loaded anyway. and we use it for
+%    \cs{SetupKeyvalOptions}. AFAIK this does not disturb
+%    users of \xpackage{xkeyval}.
+%    \begin{macrocode}
+\@ifundefined{define@key}{%
+  \RequirePackage{keyval}\relax
+}{}
+%    \end{macrocode}
+%
+%    Macro \cs{DeclareLocalOptions} parses a comma separated key list
+%    and uses \cs{comma@parse} of package \xpackage{kvsetkeys},
+%    version 1.3.
+%    \begin{macrocode}
+\RequirePackage{ltxcmds}[2010/12/02]
+\RequirePackage{kvsetkeys}[2007/09/29]
+%    \end{macrocode}
+%
+% \paragraph{Provide macros for \plainTeX.}
+%    \begin{macrocode}
+\@ifundefined{@x@protect}{%
+  \def\@x@protect#1\fi#2#3{%
+    \fi\protect#1%
+  }%
+  \let\@typeset@protect\relax
+}{}
+\@ifundefined{@currname}{%
+  \def\@currname{}%
+}{}
+\@ifundefined{@currext}{%
+  \def\@currext{}%
+}{}
+%    \end{macrocode}
+%
+% \paragraph{Options}
+%    Option \xoption{debugshow} enables additional lines of
+%    code that prints information into the \xfile{.log}
+%    file.
+%    \begin{macrocode}
+\DeclareOption{debugshow}{\catcode\@ne=9 }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareOption{patch}{%
+  \AtEndOfPackage{%
+    \RequirePackage{kvoptions-patch}[2011/06/30]%
+  }%
+}
+%    \end{macrocode}
+%
+%    Optionen auswerten:
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% \subsection{Option declaration macros}
+%
+% \subsubsection{\cs{SetupKeyvalOptions}}
+%
+%    The family for the key value pairs can be setup once
+%    and is remembered later.
+%    The package name seems a reasonable default for the
+%    family key, if it is not set by the package author.
+%
+%    \begin{macro}{\KVO@family}
+%    We cannot store the family setting in one macro,
+%    because the package should be usable for many
+%    other packages, too. Thus we remember the family
+%    setting in a macro, whose name contains the
+%    package name with extension, a key in \LaTeX's
+%    class/package system.
+%    \begin{macrocode}
+\define@key{KVO}{family}{%
+  \expandafter\edef\csname KVO@family@%
+      \@currname.\@currext\endcsname{#1}%
+}
+\def\KVO@family{%
+  \@ifundefined{KVO@family@\@currname.\@currext}{%
+    \@currname
+  }{%
+    \csname KVO@family@\@currname.\@currext\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVO@prefix}
+%    The value settings of options that are declared by \cs{DeclareBoolOption}
+%    and \cs{DeclareStringOption} need to be saved in macros.
+%    in the first case this is a switch \cs{if}\meta{prefix}\meta{key},
+%    in the latter case a macro \cs{}\meta{prefix}\meta{key}.
+%    The prefix can be configured, by \xoption{prefix} that is declared
+%    here. The default is the package name with |@| appended.
+%    \begin{macrocode}
+\define@key{KVO}{prefix}{%
+  \expandafter\edef\csname KVO@prefix@%
+      \@currname.\@currext\endcsname{#1}%
+}
+\def\KVO@prefix{%
+  \ltx@ifundefined{KVO@prefix@\@currname.\@currext}{%
+    \@currname @%
+  }{%
+    \csname KVO@prefix@\@currname.\@currext\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\define@key{KVO}{setkeys}{%
+  \expandafter\def\csname KVO@setkeys@%
+      \@currname.\@currext\endcsname{#1}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\KVO@setkeys}
+%    \begin{macrocode}
+\def\KVO@setkeys{%
+  \ltx@IfUndefined{KVO@setkeys@\@currname.\@currext}{%
+    \setkeys
+  }{%
+    \csname KVO@setkeys@\@currname.\@currext\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\SetupKeyvalOptions}
+%    The argument of \cs{SetupKeyvalOptions} expects a key value
+%    list, known keys are \xoption{family} and \xoption{prefix}.
+%    \begin{macrocode}
+\newcommand*{\SetupKeyvalOptions}{%
+  \kvsetkeys{KVO}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\cs{DeclareBoolOption}}
+%
+%    \begin{macro}{\DeclareBoolOption}
+%    Usually options of boolean type can be given by the
+%    user without value and this means a setting to \emph{true}.
+%    We follow this convention here. Also it simplifies the
+%    user interface.
+%
+%    The switch is created and initialized with \emph{false}.
+%    The default setting can be overwritten by the optional
+%    argument.
+%
+%    \LaTeX's \cs{newif} does not check for already defined
+%    macros, therefore we add this check here to prevent
+%    the user from accidently redefining of \TeX's primitives
+%    and other macros.
+%    \begin{macrocode}
+\newcommand*{\DeclareBoolOption}[2][false]{%
+  \KVO@ifdefinable{if\KVO@prefix#2}{%
+    \KVO@ifdefinable{\KVO@prefix#2true}{%
+      \KVO@ifdefinable{\KVO@prefix#2false}{%
+        \csname newif\expandafter\endcsname
+        \csname if\KVO@prefix#2\endcsname
+        \@ifundefined{\KVO@prefix#2#1}{%
+          \PackageWarning{kvoptions}{%
+            Initialization of option `#2' failed,\MessageBreak
+            cannot set boolean option to `#1',\MessageBreak
+            use `true' or `false', now using `false'%
+          }%
+        }{%
+          \csname\KVO@prefix#2#1\endcsname
+        }%
+        \begingroup
+          \edef\x{\endgroup
+            \noexpand\define@key{\KVO@family}{#2}[true]{%
+              \noexpand\KVO@boolkey{\@currname}%
+              \ifx\@currext\@clsextension
+                \noexpand\@clsextension
+              \else
+                \noexpand\@pkgextension
+              \fi
+              {\KVO@prefix}{#2}{####1}%
+            }%
+          }%
+        \x
+      }%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\DeclareComplementaryOption}
+%    The first argument is the key name, the second the
+%    key that must be a boolean option with the same
+%    current family and prefix. A new switch is not
+%    created for the new key, we have already a switch.
+%    Instead we define switch setting commands to work
+%    on the parent switch.
+%    \begin{macrocode}
+\newcommand*{\DeclareComplementaryOption}[2]{%
+  \@ifundefined{if\KVO@prefix#2}{%
+    \PackageError{kvoptions}{%
+      Cannot generate option code for `#1',\MessageBreak
+      parent switch `#2' does not exist%
+    }{%
+      You are inside %
+      \ifx\@currext\@clsextension class\else package\fi\space
+      `\@currname.\@currext'.\MessageBreak
+      `\KVO@family' is used as familiy %
+      for the keyval options.\MessageBreak
+      `\KVO@prefix' serves as prefix %
+      for internal switch macros.\MessageBreak
+      \MessageBreak
+      \@ehc
+    }%
+  }{%
+    \KVO@ifdefinable{\KVO@prefix#1true}{%
+      \KVO@ifdefinable{\KVO@prefix#1false}{%
+        \expandafter\let\csname\KVO@prefix#1false\expandafter\endcsname
+          \csname\KVO@prefix#2true\endcsname
+        \expandafter\let\csname\KVO@prefix#1true\expandafter\endcsname
+          \csname\KVO@prefix#2false\endcsname
+%    \end{macrocode}
+%    The same code part as in \cs{DeclareBoolOption} can
+%    now be used.
+%    \begin{macrocode}
+        \begingroup
+          \edef\x{\endgroup
+            \noexpand\define@key{\KVO@family}{#1}[true]{%
+              \noexpand\KVO@boolkey{\@currname}%
+              \ifx\@currext\@clsextension
+                \noexpand\@clsextension
+              \else
+                \noexpand\@pkgextension
+              \fi
+              {\KVO@prefix}{#1}{####1}%
+            }%
+          }%
+        \x
+      }%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVO@ifdefinable}
+%    Generate the command token LaTeX's \cs{@ifdefinable} expects.
+%    \begin{macrocode}
+\def\KVO@ifdefinable#1{%
+  \expandafter\@ifdefinable\csname #1\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVO@boolkey}
+%    We check explicitly for |true| and |false| to prevent
+%    the user from accidently calling other macros.
+%    \begin{quote}
+%    \begin{tabular}{@{}ll@{}}
+%    |#1|& package/class name\\
+%    |#2|& |\@pkgextension|/|\@clsextension|\\
+%    |#3|& prefix \\
+%    |#4|& key name\\
+%    |#5|& new value
+%    \end{tabular}
+%    \end{quote}
+%    \begin{macrocode}
+\def\KVO@boolkey#1#2#3#4#5{%
+  \edef\KVO@param{#5}%
+  \ltx@onelevel@sanitize\KVO@param
+  \ifx\KVO@param\KVO@true
+    \expandafter\@firstofone
+  \else
+    \ifx\KVO@param\KVO@false
+      \expandafter\expandafter\expandafter\@firstofone
+    \else
+      \ifx#2\@clsextension
+        \expandafter\ClassWarning
+      \else
+        \expandafter\PackageWarning
+      \fi
+      {#1}{%
+        Value `\KVO@param' is not supported by\MessageBreak
+        option `#4'%
+      }%
+      \expandafter\expandafter\expandafter\@gobble
+    \fi
+  \fi
+  {%
+    ^^A\ifx#2\@clsextension
+    ^^A  \expandafter\ClassInfo
+    ^^A\else
+    ^^A  \expandafter\PackageInfo
+    ^^A\fi
+    ^^A{#1}{[option] #4=\KVO@param}%
+    \csname#3#4\KVO@param\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@true}
+%    \begin{macro}{\KVO@false}
+%    The macros \cs{KVO@true} and \cs{KVO@false} are used
+%    for string comparisons. After \cs{ltx@onelevel@sanitize}
+%    we have only tokens with catcode 12 (other).
+%    \begin{macrocode}
+\def\KVO@true{true}
+\def\KVO@false{false}
+\ltx@onelevel@sanitize\KVO@true
+\ltx@onelevel@sanitize\KVO@false
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%
+% \subsubsection{\cs{DeclareStringOption}}
+%
+%    \begin{macro}{\DeclareStringOption}
+%    \begin{macrocode}
+\newcommand*{\DeclareStringOption}[2][]{%
+  \@ifnextchar[{%
+    \KVO@DeclareStringOption{#1}{#2}@%
+  }{%
+    \KVO@DeclareStringOption{#1}{#2}{}[]%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@DeclareStringOption}
+%    \begin{macrocode}
+\def\KVO@DeclareStringOption#1#2#3[#4]{%
+  \KVO@ifdefinable{\KVO@prefix#2}{%
+    \@namedef{\KVO@prefix#2}{#1}%
+    \begingroup
+      \ifx\\#3\\%
+        \toks@{}%
+      \else
+        \toks@{[{#4}]}%
+      \fi
+      \edef\x{\endgroup
+        \noexpand\define@key{\KVO@family}{#2}\the\toks@{%
+          ^^A\begingroup
+          ^^A  \toks@{####1}%
+          ^^A  \ifx\@currext\@clsextension
+          ^^A    \noexpand\ClassInfo
+          ^^A  \else
+          ^^A    \noexpand\PackageInfo
+          ^^A  \fi
+          ^^A  {\@currname}{%
+          ^^A    [option] #2={\noexpand\the\toks@}%
+          ^^A  }%
+          ^^A\endgroup
+          \noexpand\def
+          \expandafter\noexpand\csname\KVO@prefix#2\endcsname{####1}%
+        }%
+      }%
+    \x
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\cs{DeclareVoidOption}}
+%
+%    \begin{macro}{\DeclareVoidOption}
+%    \begin{macrocode}
+\newcommand*{\DeclareVoidOption}[2]{%
+  \begingroup
+    \let\next\@gobbletwo
+    \KVO@ifdefinable{\KVO@prefix#1}{%
+      \let\next\@firstofone
+    }%
+  \expandafter\endgroup
+  \next{%
+    \begingroup
+      \edef\x{\endgroup
+        \noexpand\define@key{\KVO@family}{#1}[\KVO@VOID@]{%
+          \noexpand\KVO@voidkey{\@currname}%
+          \ifx\@currext\@clsextension
+            \noexpand\@clsextension
+          \else
+            \noexpand\@pkgextension
+          \fi
+          {#1}%
+          {####1}%
+          \expandafter\noexpand\csname\KVO@prefix#1\endcsname
+        }%
+      }%
+    \x
+    \begingroup
+      \toks@{#2}%
+    \expandafter\endgroup
+    \expandafter\def
+    \csname\KVO@prefix#1\expandafter\endcsname
+    \expandafter{\the\toks@}%
+  }%
+}
+\def\KVO@VOID@{@VOID@}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@voidkey}
+%    \begin{tabular}{@{}ll@{}}
+%    |#1|& package/class name\\
+%    |#2|& |\@pkgextension|/|\@clsextension|\\
+%    |#3|& key name\\
+%    |#4|& default (|@VOID@|)\\
+%    |#5|& macro with option code
+%    \end{tabular}
+%    \begin{macrocode}
+\def\KVO@voidkey#1#2#3#4{%
+  \def\CurrentOption{#3}%
+  \begingroup
+    \def\x{#4}%
+  \expandafter\endgroup
+  \ifx\x\KVO@VOID@
+  \else
+    \ifx#2\@clsextension
+      \expandafter\ClassWarning
+    \else
+      \expandafter\PackageWarning
+    \fi
+    {#1}{%
+      Unexpected value for option `#3'\MessageBreak
+      is ignored%
+    }%
+  \fi
+  ^^A\ifx#2\@clsextension
+  ^^A  \expandafter\ClassInfo
+  ^^A\else
+  ^^A  \expandafter\PackageInfo
+  ^^A\fi
+  ^^A{#1}{[option] #3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\cs{DeclareDefaultOption}}
+%
+%    \begin{macro}{\DeclareDefaultOption}
+%    \begin{macrocode}
+\newcommand*{\DeclareDefaultOption}{%
+  \@namedef{KVO@default@\@currname.\@currext}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\cs{DeclareLocalOptions}}
+%
+%    \begin{macro}{\DeclareLocalOptions}
+%    \begin{macrocode}
+\newcommand*{\DeclareLocalOptions}[1]{%
+  \comma@parse{#1}\KVO@DeclareLocalOption
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@DeclareLocalOption}
+%    \begin{macrocode}
+\def\KVO@DeclareLocalOption#1{%
+  \expandafter\def\csname KVO@local@\KVO@family @#1\endcsname{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Dynamic options}
+%
+% \subsubsection{\cs{DisableKeyvalOption}}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{%
+  family=KVOdyn,%
+  prefix=KVOdyn@%
+}
+\DeclareBoolOption[true]{global}
+\DeclareComplementaryOption{local}{global}
+\DeclareStringOption[undef]{action}
+\let\KVOdyn@name\relax
+\let\KVOdyn@ext\@empty
+\define@key{KVOdyn}{class}{%
+  \def\KVOdyn@name{#1}%
+  \let\KVOdyn@ext\@clsextension
+}
+\define@key{KVOdyn}{package}{%
+  \def\KVOdyn@name{#1}%
+  \let\KVOdyn@ext\@pkgextension
+}
+\newcommand*{\DisableKeyvalOption}[3][]{%
+  \begingroup
+    \kvsetkeys{KVOdyn}{#1}%
+    \def\x{\endgroup}%
+    \@ifundefined{KVO@action@\KVOdyn@action}{%
+      \PackageError{kvoptions}{%
+        Unknown disable action %
+        `\expandafter\strip@prefix\meaning\KVOdyn@action'\MessageBreak
+        for option `#3' in keyval family '#2'%
+      }\@ehc
+    }{%
+      \csname KVO@action@\KVOdyn@action\endcsname{#2}{#3}%
+    }%
+  \x
+}
+\def\KVO@action@undef#1#2{%
+  \edef\x{\endgroup
+    \ifKVOdyn@global\global\fi
+    \let
+    \expandafter\noexpand\csname KV@#1@#2\endcsname
+    \relax
+    \ifKVOdyn@global\global\fi
+    \let
+    \expandafter\noexpand\csname KV@#1@#2@default\endcsname
+    \relax
+  }%
+  ^^A\PackageInfo{kvoptions}{%
+  ^^A  [option] key `#2' of family `#1'\MessageBreak
+  ^^A  is disabled (undef, \ifKVOdyn@global global\else local\fi)%
+  ^^A}%
+}
+\def\KVO@action@ignore#1#2{%
+  \edef\x{\endgroup
+    \ifKVOdyn@global\global\fi
+    \let
+    \expandafter\noexpand\csname KV@#1@#2\endcsname
+    \noexpand\@gobble
+    \ifKVOdyn@global\global\fi
+    \let
+    \expandafter\noexpand\csname KV@#1@#2@default\endcsname
+    \noexpand\@empty
+  }%
+  ^^A\PackageInfo{kvoptions}{%
+  ^^A  [option] key `#2' of family `#1'\MessageBreak
+  ^^A  is disabled (ignore, \ifKVOdyn@global global\else local\fi)%
+  ^^A}%
+}
+\def\KVO@action@error{%
+  \KVO@do@action{error}%
+}
+\def\KVO@action@warning{%
+  \KVO@do@action{warning}%
+}
+%    \end{macrocode}
+%    \begin{tabular}{@{}ll@{}}
+%    |#1|& |error| or |warning|\\
+%    |#2|& \meta{family}\\
+%    |#3|& \meta{key}\\
+%    \end{tabular}
+%    \begin{macrocode}
+\def\KVO@do@action#1#2#3{%
+  \ifx\KVOdyn@name\relax
+    \PackageError{kvoptions}{%
+      Action type `#1' needs package/class name\MessageBreak
+      for key `#3' in family `#2'%
+    }\@ehc
+  \else
+    \edef\x{\endgroup
+      \noexpand\define@key{#2}{#3}[]{%
+        \expandafter\noexpand\csname KVO@disable@#1\endcsname
+        {\KVOdyn@name}\noexpand\KVOdyn@ext{#3}%
+      }%
+      \ifKVOdyn@global
+        \global\let
+        \expandafter\noexpand\csname KV@#2@#3\endcsname
+        \expandafter\noexpand\csname KV@#2@#3\endcsname
+        \global\let
+        \expandafter\noexpand\csname KV@#2@#3@default\endcsname
+        \expandafter\noexpand\csname KV@#2@#3@default\endcsname
+      \fi
+    }%
+    ^^A\ifx\KVOdyn@ext\@clsextension
+    ^^A  \expandafter\ClassInfo
+    ^^A\else
+    ^^A   \expandafter\PackageInfo
+    ^^A\fi
+    ^^A{\KVOdyn@name}{%
+    ^^A  [option] key `#3' of family `#2'\MessageBreak
+    ^^A  is disabled (#1, \ifKVOdyn@global global\else local\fi)%
+    ^^A}%
+  \fi
+}
+\def\KVO@disable@error#1#2#3{%
+  \ifx#2\@clsextension
+    \expandafter\ClassError
+  \else
+    \expandafter\PackageError
+  \fi
+  {#1}{%
+    Option `#3' is given too late,\MessageBreak
+    now the option is ignored%
+  }\@ehc
+}
+\def\KVO@disable@warning#1#2#3{%
+  \ifx#2\@clsextension
+    \expandafter\ClassWarning
+  \else
+    \expandafter\PackageWarning
+  \fi
+  {#1}{%
+    Option `#3' is already consumed\MessageBreak
+    and has no effect%
+  }%
+}
+%    \end{macrocode}
+%
+% \subsection{Change option code}
+%
+% \subsubsection{\cs{AddToKeyvalOption}}
+%
+%    \begin{macro}{\AddToKeyvalOption}
+%    \begin{macrocode}
+\newcommand*{\AddToKeyvalOption}{%
+  \@ifstar{%
+    \begingroup
+      \edef\x{\endgroup
+        \noexpand\KVO@AddToKeyvalOption{\KVO@family}%
+      }%
+    \x
+  }%
+  \KVO@AddToKeyvalOption
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@AddToKeyvalOption}
+%    \begin{macrocode}
+\def\KVO@AddToKeyvalOption#1#2{%
+  \@ifundefined{KV@#1@#2}{%
+    \PackageWarning{kvoptions}{%
+      Key `#2' of family `#1' does not exist.\MessageBreak
+      Ignoring \string\AddToKeyvalOption
+    }%
+    \@gobble
+  }{%
+    \edef\KVO@next{%
+      \noexpand\KVO@@AddToKeyvalOption
+      \expandafter\noexpand\csname KV@#1@#2\endcsname
+    }%
+    \afterassignment\KVO@next
+    \def\KVO@temp##1%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@@AddToKeyvalOption}
+%    \begin{macrocode}
+\def\KVO@@AddToKeyvalOption#1{%
+  \begingroup
+    \toks@\expandafter{#1{##1}}%
+    \toks@\expandafter{\the\expandafter\toks@\KVO@temp{##1}}%
+    \edef\x{\endgroup
+      \noexpand\def\noexpand#1####1{\the\toks@}%
+    }%
+  \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Process options}
+%
+% \subsubsection{Get global options}
+%
+%    Package \xpackage{xkeyval} removes options with equal signs from
+%    the global options (\cs{@classoptionslist}). The effect is that
+%    other packages and classes will not see these global options anymore.
+%    A bug-report was answered that this behaviour is ``by design''.
+%    Thus I call it a design bug. Now getting the global options require
+%    an algorithm instead of a simple macro call.
+%    \begin{macrocode}
+%</package>
+%<*package|patch>
+%    \end{macrocode}
+%    \begin{macro}{\KVO@IfDefThen}
+%    Call |#2| if command |#1| is defined and not \cs{relax}.
+%    (Package \xpackage{kvoptions-patch} does not load
+%    package \xpackage{ltxcmds}.)
+%    \begin{macrocode}
+\def\KVO@IfDefThen#1#2{%
+  \ifx#1\ltx@undefined
+  \else
+    \ifx#1\relax
+    \else
+      #2%
+    \fi
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@GetClassOptionsList}
+%    \begin{macrocode}
+\def\KVO@GetClassOptionsList{%
+  \let\KVO@classoptionslist\@classoptionslist
+  \KVO@IfDefThen\@classoptionslist{%
+    \KVO@IfDefThen\XKV@documentclass{%
+      \ifx\XKV@documentclass\ltx@empty
+      \else
+        \KVO@IfDefThen\XKV@classoptionslist{%
+          \ifx\XKV@classoptionslist\ltx@empty
+          \else
+            \let\KVO@classoptionslist\XKV@classoptionslist
+          \fi
+        }%
+      \fi
+    }%
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+%</package|patch>
+%<*package>
+%    \end{macrocode}
+%
+% \subsubsection{\cs{ProcessKeyvalOptions}}
+%
+%    \begin{macro}{\ProcessKeyvalOptions}
+%    If the optional star is given, we get the family
+%    name and expand it for safety.
+%    \begin{macrocode}
+\newcommand*{\ProcessKeyvalOptions}{%
+  \@ifstar{%
+    \begingroup
+      \edef\x{\endgroup
+        \noexpand\KVO@ProcessKeyvalOptions{\KVO@family}%
+      }%
+    \x
+  }%
+  \KVO@ProcessKeyvalOptions
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\KVO@ProcessKeyvalOptions#1{%
+  \let\@tempc\relax
+  \let\KVO@temp\@empty
+%    \end{macrocode}
+%    Add any global options that are known to KV to the start of
+%    the list being built in |\KVO@temp| and mark them used (by
+%    removing them from the unused option list).
+%    \begin{macrocode}
+  \ifx\@currext\@clsextension
+  \else
+    \KVO@GetClassOptionsList
+    \ifx\KVO@classoptionslist\relax
+    \else
+      \@for\KVO@CurrentOption:=\KVO@classoptionslist\do{%
+        \@ifundefined{KV@#1@\expandafter\KVO@getkey
+                      \KVO@CurrentOption=\@nil}{%
+        }{%
+          \@ifundefined{KVO@local@#1@\expandafter\KVO@getkey
+                        \KVO@CurrentOption=\@nil}{%
+            \ifx\KVO@Patch Y%
+              \edef\KVO@temp{%
+                \etex@unexpanded\expandafter{%
+                  \KVO@temp
+                }%
+                ,%
+                \etex@unexpanded\expandafter{%
+                  \KVO@CurrentOption
+                }%
+                ,%
+              }%
+              \ltx@onelevel@sanitize\KVO@CurrentOption
+            \else
+              \edef\KVO@temp{%
+                \KVO@temp
+                ,%
+                \KVO@CurrentOption
+                ,%
+              }%
+            \fi
+            \@expandtwoargs\@removeelement\KVO@CurrentOption
+              \@unusedoptionlist\@unusedoptionlist
+          }{}%
+        }%
+      }%
+    \fi
+  \fi
+%    \end{macrocode}
+%     Now stick the package options at the end of the list and wrap
+%     in a call to \cs{setkeys}. A class ignores unknown global
+%     options, we must remove them to prevent error messages
+%     from \cs{setkeys}.
+%    \begin{macrocode}
+  \begingroup
+    \toks\tw@{}%
+    \@ifundefined{opt@\@currname.\@currext}{%
+      \toks@\expandafter{\KVO@temp}%
+    }{%
+      \toks@\expandafter\expandafter\expandafter{%
+        \csname opt@\@currname.\@currext\endcsname
+      }%
+      \ifx\@currext\@clsextension
+        \edef\CurrentOption{\the\toks@}%
+        \toks@\expandafter{\KVO@temp}%
+        \@for\CurrentOption:=\CurrentOption\do{%
+          \@ifundefined{%
+            KV@#1@\expandafter\KVO@getkey\CurrentOption=\@nil
+          }{%
+%    \end{macrocode}
+%    A class puts not used options in the unused option list
+%    unless there is a default handler.
+%    \begin{macrocode}
+            \@ifundefined{KVO@default@\@currname.\@currext}{%
+              \ifx\KVO@Patch Y%
+                \ltx@onelevel@sanitize\CurrentOption
+              \fi
+              \ifx\@unusedoptionlist\@empty
+                \global\let\@unusedoptionlist\CurrentOption
+              \else
+                \expandafter\expandafter\expandafter\gdef
+                \expandafter\expandafter\expandafter\@unusedoptionlist
+                \expandafter\expandafter\expandafter{%
+                  \expandafter\@unusedoptionlist
+                  \expandafter,\CurrentOption
+                }%
+              \fi
+            }{%
+              \toks\tw@\expandafter{%
+                \the\toks\expandafter\tw@\expandafter,\CurrentOption
+              }%
+            }%
+          }{%
+            \toks@\expandafter{%
+              \the\expandafter\toks@\expandafter,\CurrentOption
+            }%
+          }%
+        }%
+      \else
+%    \end{macrocode}
+%    Without default action we pass all options to \cs{setkeys}.
+%    Otherwise we have to check which options are known.
+%    These are passed to \cs{setkeys}. For the others the default
+%    action is performed.
+%    \begin{macrocode}
+        \@ifundefined{KVO@default@\@currname.\@currext}{%
+          \toks@\expandafter\expandafter\expandafter{%
+            \expandafter\KVO@temp\the\toks@
+          }%
+        }{%
+          \edef\CurrentOption{\the\toks@}%
+          \toks@\expandafter{\KVO@temp}%
+          \@for\CurrentOption:=\CurrentOption\do{%
+            \@ifundefined{%
+              KV@#1@\expandafter\KVO@getkey\CurrentOption=\@nil
+            }{%
+              \toks\tw@\expandafter{%
+                \the\toks\expandafter\tw@\expandafter,\CurrentOption
+              }%
+            }{%
+              \toks@\expandafter{%
+                \the\expandafter\toks@\expandafter,\CurrentOption
+              }%
+            }%
+          }%
+        }%
+      \fi
+    }%
+    \edef\KVO@temp{\endgroup
+      \noexpand\KVO@calldefault{\the\toks\tw@}%
+      \noexpand\KVO@setkeys{#1}{\the\toks@}%
+    }%
+  \KVO@temp
+%    \end{macrocode}
+%    Some cleanup of \cs{ProcessOptions}.
+%    \begin{macrocode}
+  \let\CurrentOption\@empty
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{\cs{ProcessLocalKeyvalOptions}}
+%
+%    \begin{macro}{\ProcessLocalKeyvalOptions}
+%    If the optional star is given, we get the family
+%    name and expand it for safety.
+%    \begin{macrocode}
+\newcommand*{\ProcessLocalKeyvalOptions}{%
+  \@ifstar{%
+    \begingroup
+      \edef\x{\endgroup
+        \noexpand\KVO@ProcessLocalKeyvalOptions{\KVO@family}%
+      }%
+    \x
+  }%
+  \KVO@ProcessLocalKeyvalOptions
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\KVO@ProcessLocalKeyvalOptions#1{%
+  \let\@tempc\relax
+  \let\KVO@temp\@empty
+%    \end{macrocode}
+%    Check if \cs{ProcessLocalKeyvalOptions} is called inside
+%    a package.
+%    \begin{macrocode}
+  \ifx\@currext\@pkgextension
+  \else
+    \PackageError{kvoptions}{%
+      \string\ProcessLocalKeyvalOptions\space is intended for packages only%
+    }\@ehc
+  \fi
+%    \end{macrocode}
+%     The package options are put into toks register \cs{toks@}.
+%    \begin{macrocode}
+  \begingroup
+    \toks\tw@{}%
+    \@ifundefined{opt@\@currname.\@currext}{%
+      \toks@\expandafter{\KVO@temp}%
+    }{%
+      \toks@\expandafter\expandafter\expandafter{%
+        \csname opt@\@currname.\@currext\endcsname
+      }%
+%    \end{macrocode}
+%    Without default action we pass all options to \cs{setkeys}.
+%    Otherwise we have to check which options are known.
+%    These are passed to \cs{setkeys}. For the others the default
+%    action is performed.
+%    \begin{macrocode}
+      \@ifundefined{KVO@default@\@currname.\@currext}{%
+        \toks@\expandafter\expandafter\expandafter{%
+          \expandafter\KVO@temp\the\toks@
+        }%
+      }{%
+        \edef\CurrentOption{\the\toks@}%
+        \toks@\expandafter{\KVO@temp}%
+        \@for\CurrentOption:=\CurrentOption\do{%
+          \@ifundefined{%
+            KV@#1@\expandafter\KVO@getkey\CurrentOption=\@nil
+          }{%
+            \toks\tw@\expandafter{%
+              \the\toks\expandafter\tw@\expandafter,\CurrentOption
+            }%
+          }{%
+            \toks@\expandafter{%
+              \the\expandafter\toks@\expandafter,\CurrentOption
+            }%
+          }%
+        }%
+      }%
+    }%
+    \edef\KVO@temp{\endgroup
+      \noexpand\KVO@calldefault{\the\toks\tw@}%
+      \noexpand\KVO@setkeys{#1}{\the\toks@}%
+    }%
+  \KVO@temp
+%    \end{macrocode}
+%    Some cleanup of \cs{ProcessOptions}.
+%    \begin{macrocode}
+  \let\CurrentOption\@empty
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Helper macros}
+%
+%    \begin{macro}{\KVO@getkey}
+%    Extract the key part of a key=value pair.
+%    \begin{macrocode}
+\def\KVO@getkey#1=#2\@nil{#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVO@calldefault}
+%    \begin{macrocode}
+\def\KVO@calldefault#1{%
+  \begingroup
+    \def\x{#1}%
+  \expandafter\endgroup
+  \ifx\x\@empty
+  \else
+    \@for\CurrentOption:=#1\do{%
+      \ifx\CurrentOption\@empty
+      \else
+        \expandafter\KVO@setcurrents\CurrentOption=\@nil
+        \@nameuse{KVO@default@\@currname.\@currext}%
+      \fi
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVO@setcurrents}
+%    Extract the key part of a key=value pair.
+%    \begin{macrocode}
+\def\KVO@setcurrents#1=#2\@nil{%
+  \def\CurrentOptionValue{#2}%
+  \ifx\CurrentOptionValue\@empty
+    \let\CurrentOptionKey\CurrentOption
+    \let\CurrentOptionValue\relax
+  \else
+    \edef\CurrentOptionKey{\zap@space#1 \@empty}%
+    \expandafter\KVO@setcurrentvalue\CurrentOption\@nil
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KV@setcurrentvalue}
+%    Here the value part is parsed. Package \xpackage{keyval}'s
+%    \cs{KV@@sp@def} helps in removing spaces at the begin and
+%    end of the value.
+%    \begin{macrocode}
+\def\KVO@setcurrentvalue#1=#2\@nil{%
+  \KV@@sp@def\CurrentOptionValue{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\plainTeX}
+%
+%    Disable \LaTeX\ stuff.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname documentclass\endcsname\relax
+  \def\ProcessKeyvalOptions{%
+    \@ifstar{}\@gobble
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\KVO@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Package \xpackage{kvoptions-patch}}
+%
+%    \begin{macrocode}
+%<*patch>
+\NeedsTeXFormat{LaTeX2e}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname KVO@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\KVO@AtEnd{%
+    \KVO@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\edef\KVO@AtEnd{\KVO@AtEnd\noexpand\endinput}
+\ProvidesPackage{kvoptions-patch}%
+  [2011/06/30 v3.11 LaTeX patch for keyval options (HO)]%
+%    \end{macrocode}
+%
+%    Check for \eTeX.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname eTeXversion\endcsname\relax
+  \PackageWarningNoLine{kvoptions-patch}{%
+    Package loading is aborted, because e-TeX is missing%
+  }%
+  \expandafter\KVO@AtEnd
+\fi%
+%    \end{macrocode}
+%
+%    Package \xpackage{etexcmds} for \cs{etex@unexpanded}.
+%    \begin{macrocode}
+\RequirePackage{etexcmds}[2007/09/09]
+\ifetex@unexpanded
+\else
+  \PackageError{kvoptions-patch}{%
+    Could not find eTeX's \string\unexpanded.\MessageBreak
+    Try adding \string\RequirePackage\string{etexcmds\string} %
+    before \string\documentclass%
+  }\@ehd
+  \expandafter\KVO@AtEnd
+\fi%
+%    \end{macrocode}
+%
+%    Check for package \xpackage{xkvltxp}.
+%    \begin{macrocode}
+\@ifpackageloaded{xkvltxp}{%
+  \PackageWarningNoLine{kvoptions}{%
+    Option `patch' cannot be used together with\MessageBreak
+    package `xkvltxp' that is already loaded.\MessageBreak
+    Therefore package loading is aborted%
+  }%
+  \KVO@AtEnd
+}{}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@if@ptions#1#2#3{%
+  \begingroup
+    \KVO@normalize\KVO@temp{#3}%
+    \edef\x{\endgroup
+      \noexpand\@if@pti@ns{%
+        \detokenize\expandafter\expandafter\expandafter{%
+          \csname opt@#2.#1\endcsname
+        }%
+      }{%
+        \detokenize\expandafter{\KVO@temp}%
+      }%
+    }%
+  \x
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@pass@ptions#1#2#3{%
+  \KVO@normalize\KVO@temp{#2}%
+  \@ifundefined{opt@#3.#1}{%
+    \expandafter\gdef\csname opt@#3.#1%
+          \expandafter\endcsname\expandafter{%
+      \KVO@temp
+    }%
+  }{%
+    \expandafter\gdef\csname opt@#3.#1%
+          \expandafter\expandafter\expandafter\endcsname
+          \expandafter\expandafter\expandafter{%
+      \csname opt@#3.#1\expandafter\endcsname\expandafter,\KVO@temp
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ProcessOptions{%
+  \let\ds@\@empty
+  \@ifundefined{opt@\@currname.\@currext}{%
+    \let\@curroptions\@empty
+  }{%
+    \expandafter\expandafter\expandafter\def
+    \expandafter\expandafter\expandafter\@curroptions
+    \expandafter\expandafter\expandafter{%
+      \csname opt@\@currname.\@currext\endcsname
+    }%
+  }%
+  \@ifstar\KVO@xprocess@ptions\KVO@process@ptions
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@process@ptions{%
+  \@for\CurrentOption:=\@declaredoptions\do{%
+    \ifx\CurrentOption\@empty
+    \else
+      \begingroup
+        \ifx\@currext\@clsextension
+          \toks@{}%
+        \else
+          \KVO@GetClassOptionsList
+          \toks@\expandafter{\KVO@classoptionslist,}%
+        \fi
+        \toks\tw@\expandafter{\@curroptions}%
+        \edef\x{\endgroup
+          \noexpand\in@{,\CurrentOption,}{,\the\toks@\the\toks\tw@,}%
+        }%
+      \x
+      \ifin@
+        \KVO@use@ption
+        \expandafter\let\csname ds@\CurrentOption\endcsname\@empty
+      \fi
+    \fi
+  }%
+  \KVO@process@pti@ns
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@xprocess@ptions{%
+  \ifx\@currext\@clsextension
+  \else
+    \KVO@GetClassOptionsList
+    \@for\CurrentOption:=\KVO@classoptionslist\do{%
+      \ifx\CurrentOption\@empty
+      \else
+        \KVO@in@\CurrentOption\@declaredoptions
+        \ifin@
+          \KVO@use@ption
+          \expandafter\let\csname ds@\CurrentOption\endcsname\@empty
+        \fi
+      \fi
+    }%
+  \fi
+  \KVO@process@pti@ns
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@in@#1#2{%
+  \in@false
+  \begingroup
+    \@for\x:=#2\do{%
+      \ifx\x#1\relax
+        \in@true
+      \fi
+    }%
+    \edef\x{\endgroup
+      \ifin@
+        \noexpand\in@true
+      \fi
+    }%
+  \x
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@process@pti@ns{%
+  \@for\CurrentOption:=\@curroptions\do{%
+    \@ifundefined{ds@\KVO@SanitizedCurrentOption}{%
+      \KVO@use@ption
+      \default@ds
+    }%
+    \KVO@use@ption
+  }%
+  \@for\CurrentOption:=\@declaredoptions\do{%
+    \expandafter\let\csname ds@\CurrentOption\endcsname\relax
+  }%
+  \let\CurrentOption\@empty
+  \let\@fileswith@pti@ns\@@fileswith@pti@ns
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@use@ption{%
+  \begingroup
+    \edef\x{\endgroup
+      \noexpand\@removeelement{%
+        \detokenize\expandafter{\CurrentOption}%
+      }{%
+        \detokenize\expandafter{\@unusedoptionlist}%
+      }%
+    }%
+  \x\@unusedoptionlist
+  \csname ds@\KVO@SanitizedCurrentOption\endcsname
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\OptionNotUsed{%
+  \ifx\@currext\@clsextension
+    \xdef\@unusedoptionlist{%
+      \ifx\@unusedoptionlist\@empty
+      \else
+        \detokenize\expandafter{\@unusedoptionlist,}%
+      \fi
+      \detokenize\expandafter{\CurrentOption}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%
+%    Variant of \cs{ExecuteOptions} that better protects \cs{CurrentOption}.
+%    \begin{macrocode}
+\def\CurrentOption@SaveLevel{0}
+\def\ExecuteOptions{%
+  \expandafter\KVO@ExecuteOptions
+      \csname CurrentOption@\CurrentOption@SaveLevel\endcsname
+}
+\def\KVO@ExecuteOptions#1#2{%
+  \let#1\CurrentOption
+  \edef\CurrentOption@SaveLevel{%
+    \the\numexpr\CurrentOption@SaveLevel+1%
+  }%
+  \@for\CurrentOption:=#2\do{%
+    \csname ds@\CurrentOption\endcsname
+  }%
+  \edef\CurrentOption@SaveLevel{%
+    \the\numexpr\CurrentOption@SaveLevel-1%
+  }%
+  \let\CurrentOption#1%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@fileswith@pti@ns#1[#2]#3[#4]{%
+  \ifx#1\@clsextension
+    \ifx\@classoptionslist\relax
+      \KVO@normalize\KVO@temp{#2}%
+      \expandafter\gdef\expandafter\@classoptionslist\expandafter{%
+        \KVO@temp
+      }%
+      \def\reserved@a{%
+        \KVO@onefilewithoptions{#3}[{#2}][{#4}]#1%
+        \@documentclasshook
+      }%
+    \else
+      \def\reserved@a{%
+        \KVO@onefilewithoptions{#3}[{#2}][{#4}]#1%
+      }%
+    \fi
+  \else
+    \begingroup
+      \let\KVO@temp\relax
+      \let\KVO@onefilewithoptions\relax
+      \let\@pkgextension\relax
+      \def\reserved@b##1,{%
+        \ifx\@nil##1\relax
+        \else
+          \ifx\relax##1\relax
+          \else
+            \KVO@onefilewithoptions{##1}[{\KVO@temp}][{#4}]%
+            \@pkgextension
+          \fi
+          \expandafter\reserved@b
+        \fi
+      }%
+      \edef\reserved@a{\zap@space#3 \@empty}%
+      \edef\reserved@a{\expandafter\reserved@b\reserved@a,\@nil,}%
+      \toks@{#2}%
+      \def\KVO@temp{\the\toks@}%
+    \edef\reserved@a{\endgroup \reserved@a}%
+  \fi
+  \reserved@a
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@onefilewithoptions#1[#2][#3]#4{%
+  \@pushfilename
+  \xdef\@currname{#1}%
+  \global\let\@currext#4%
+  \expandafter\let\csname\@currname.\@currext-h@@k\endcsname\@empty
+  \let\CurrentOption\@empty
+  \@reset@ptions
+  \makeatletter
+  \def\reserved@a{%
+    \@ifl@aded\@currext{#1}{%
+      \@if@ptions\@currext{#1}{#2}{%
+      }{%
+        \begingroup
+          \@ifundefined{opt@#1.\@currext}{%
+            \def\x{}%
+          }{%
+            \edef\x{%
+              \expandafter\expandafter\expandafter\strip@prefix
+              \expandafter\meaning\csname opt@#1.\@currext\endcsname
+            }%
+          }%
+          \def\y{#2}%
+          \edef\y{\expandafter\strip@prefix\meaning\y}%
+          \@latex@error{Option clash for \@cls@pkg\space #1}{%
+            The package #1 has already been loaded %
+            with options:\MessageBreak
+            \space\space[\x]\MessageBreak
+            There has now been an attempt to load it %
+             with options\MessageBreak
+            \space\space[\y]\MessageBreak
+            Adding the global options:\MessageBreak
+            \space\space
+                 \x,\y\MessageBreak
+            to your \noexpand\documentclass declaration may fix this.%
+            \MessageBreak
+            Try typing \space <return> \space to proceed.%
+          }%
+        \endgroup
+      }%
+    }{%
+      \@pass@ptions\@currext{#2}{#1}%
+      \global\expandafter
+      \let\csname ver@\@currname.\@currext\endcsname\@empty
+      \InputIfFileExists
+        {\@currname.\@currext}%
+        {}%
+        {\@missingfileerror\@currname\@currext}%
+      \let\@unprocessedoptions\@@unprocessedoptions
+      \csname\@currname.\@currext-h@@k\endcsname
+      \expandafter\let\csname\@currname.\@currext-h@@k\endcsname
+              \@undefined
+      \@unprocessedoptions
+    }%
+    \@ifl@ter\@currext{#1}{#3}{%
+    }{%
+      \@latex@warning@no@line{%
+        You have requested,\on@line, %
+        version\MessageBreak
+          #3' of \@cls@pkg\space #1,\MessageBreak
+        but only version\MessageBreak
+         `\csname ver@#1.\@currext\endcsname'\MessageBreak
+        is available%
+      }%
+    }%
+    \ifx\@currext\@clsextension\let\LoadClass\@twoloadclasserror\fi
+    \@popfilename
+    \@reset@ptions
+  }%
+  \reserved@a
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@unknownoptionerror{%
+  \@latex@error{%
+    Unknown option `\KVO@SanitizedCurrentOption' %
+    for \@cls@pkg\space`\@currname'%
+  }{%
+    The option `\KVO@SanitizedCurrentOption' was not declared in %
+    \@cls@pkg\space`\@currname', perhaps you\MessageBreak
+    misspelled its name. %
+    Try typing \space <return> %
+    \space to proceed.%
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@@unprocessedoptions{%
+  \ifx\@currext\@pkgextension
+    \@ifundefined{opt@\@currname.\@currext}{%
+      \let\@curroptions\@empty
+    }{%
+      \expandafter\let\expandafter\@curroptions
+          \csname opt@\@currname.\@currext\endcsname
+    }%
+    \@for\CurrentOption:=\@curroptions\do{%
+        \ifx\CurrentOption\@empty\else\@unknownoptionerror\fi
+    }%
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\KVO@SanitizedCurrentOption{%
+  \expandafter\strip@prefix\meaning\CurrentOption
+}
+%    \end{macrocode}
+%
+%    Normalize option list.
+%    \begin{macrocode}
+\def\KVO@normalize#1#2{%
+  \let\KVO@result\@empty
+  \KVO@splitcomma#2,\@nil
+  \let#1\KVO@result
+}
+\def\KVO@splitcomma#1,#2\@nil{%
+  \KVO@ifempty{#1}{}{%
+    \KVO@checkkv#1=\@nil
+  }%
+  \KVO@ifempty{#2}{}{\KVO@splitcomma#2\@nil}%
+}
+\def\KVO@ifempty#1{%
+  \expandafter\ifx\expandafter\\\detokenize{#1}\\%
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+\def\KVO@checkkv#1=#2\@nil{%
+  \KVO@ifempty{#2}{%
+    % option without value
+    \edef\KVO@x{\zap@space#1 \@empty}%
+    \ifx\KVO@x\@empty
+      % ignore empty option
+    \else
+      % append to list
+      \edef\KVO@result{%
+        \etex@unexpanded\expandafter{\KVO@result},\KVO@x
+      }%
+    \fi
+  }{%
+    % #1: "key", #2: "value="
+    % add key part
+    \edef\KVO@result{%
+      \etex@unexpanded\expandafter{\KVO@result},%
+      \zap@space#1 \@empty
+    }%
+    \futurelet\@let@token\KVO@checkfirsttok#2 \@nil| = \@nil|\KVO@nil
+  }%
+}
+\def\KVO@checkfirsttok{%
+  \ifx\@let@token\bgroup
+    % no space at start
+    \expandafter\KVO@removelastspace\expandafter=%
+    % "<value><spaceopt>= \@nil"
+  \else
+    \expandafter\KVO@checkfirstA
+  \fi
+}
+\def\KVO@checkfirstA#1 #2\@nil{%
+  \KVO@ifempty{#2}{%
+    \KVO@removelastspace=#1 \@nil
+  }{%
+    \KVO@ifempty{#1}{%
+      \KVO@removelastspace=#2\@nil
+    }{%
+      \KVO@removelastspace=#1 #2\@nil
+    }%
+  }%
+}
+\def\KVO@removelastspace#1 = \@nil|#2\KVO@nil{%
+  \KVO@ifempty{#2}{%
+    \edef\KVO@result{%
+      \etex@unexpanded\expandafter{\KVO@result}%
+      \etex@unexpanded\expandafter{\KVO@removegarbage#1\KVO@nil}%
+    }%
+  }{%
+    \edef\KVO@result{%
+      \etex@unexpanded\expandafter{\KVO@result}%
+      \etex@unexpanded{#1}%
+    }%
+  }%
+}
+\def\KVO@removegarbage#1= \@nil#2\KVO@nil{#1}%
+%    \end{macrocode}
+%
+%    Arguments |#1| and |#2| are macros.
+%    \begin{macrocode}
+\def\KVO@removeelement#1#2{%
+  \begingroup
+    \toks@={}%
+    \@for\x:=#2\do{%
+      \ifx\x\@empty
+      \else
+        \ifx\x#1\relax
+        \else
+          \edef\t{\the\toks@}%
+          \ifx\t\@empty
+          \else
+            \toks@\expandafter{\the\toks@,}%
+          \fi
+          \toks@\expandafter{\the\expandafter\toks@\x}%
+        \fi
+      \fi
+    }%
+    \edef\x{\endgroup
+      \def\noexpand#2{\the\toks@}%
+    }%
+  \x
+}
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+\let\@@fileswith@pti@ns\KVO@fileswith@pti@ns
+\ifx\@fileswith@pti@ns\@badrequireerror
+\else
+  \let\@fileswith@pti@ns\KVO@fileswith@pti@ns
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\KVO@Patch}
+%    \begin{macrocode}
+\let\KVO@Patch=Y
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\KVO@AtEnd%
+%</patch>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Preface for standard catcode check}
+%
+%    \begin{macrocode}
+%<*test1>
+\input miniltx.tex\relax
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input kvoptions.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\makeatletter
+\catcode`\@=11 %
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@\@ne
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@\@ne
+  \repeat
+}
+\def\Test#1{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\{=1 %
+  \catcode`\}=2 %
+  \catcode`\#=6 %
+  \catcode`\[=12 %
+  \catcode`\]=12 %
+  \catcode`\%=14 %
+  \catcode`\ =10 %
+  \catcode13=5 %
+  #1\relax
+  \RestoreCatcodes
+}
+\Test{\RequirePackage{kvoptions-patch}}%
+\Test{\RequirePackage{kvoptions}}%
+\csname @@end\endcsname
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\makeatletter
+\RequirePackage{kvoptions}[2011/06/30]
+\def\msg#{\immediate\write16}
+\define@key{testfamily}{testkey}{%
+  \msg{[testfamily/testkey/#1]}%
+}
+\define@key{testfamily}{testdefaultkey}[testdefault]{%
+  \msg{[testfamily/testdefaultkey/#1]}%
+}
+\AddToKeyvalOption{testfamily}{testkey}{%
+  \msg{[addition/#1]}%
+}
+\AddToKeyvalOption{testfamily}{testdefaultkey}{%
+  \msg{[addition/#1]}%
+}
+\setkeys{testfamily}{%
+  testkey=testA,%
+  testdefaultkey=testB,%
+  testdefaultkey,%
+}
+\SetupKeyvalOptions{%
+  family=testfamily%
+}
+\AddToKeyvalOption*{testkey}{%
+  \msg{[star addition/#1]}%
+}
+\AddToKeyvalOption*{testdefaultkey}{%
+  \msg{[star addition/#1]}%
+}
+\setkeys{testfamily}{%
+  testkey=testA,%
+  testdefaultkey=testB,%
+  testdefaultkey,%
+}
+\@@end
+%</test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test4pkg>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{kvoptions-test4}[2011/06/30 package for testing]
+\RequirePackage{kvoptions}[2011/06/30]
+\SetupKeyvalOptions{%
+  family=FOO,%
+  prefix=foo,%
+  setkeys=\kvsetkeys,%
+}
+\DeclareStringOption{str}
+\define@key{FOO}{set}{%
+  \setkeys{BAR}{strbar={#1}}%
+}
+\define@key{BAR}{strbar}{%
+  \def\foostr{[BAR:#1]}%
+}
+\ProcessKeyvalOptions*
+%</test4pkg>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test4>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{kvoptions-test4.tex}[2011/06/30 test file]
+\RequirePackage[%
+  str=A,set=B,str=C,%
+]{kvoptions-test4}[2011/06/30]
+\def\TestExpected{C}
+\ifx\foostr\TestExpected
+  \typeout{* Test ok.}%
+\else
+  \typeout{* Result: [\foostr]}%
+  \typeout{* Expected: [\TestExpected]}%
+  \errmessage{Test failed!}%
+\fi
+\csname @@end\endcsname\end
+%</test4>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/kvoptions.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/kvoptions.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex kvoptions.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   kvoptions.sty & tex/latex/oberdiek/kvoptions.sty\\
+%   kvoptions-patch.sty & tex/latex/oberdiek/kvoptions-patch.sty\\
+%   kvoptions.pdf & doc/latex/oberdiek/kvoptions.pdf\\
+%   example-mycolorsetup.sty & doc/latex/oberdiek/example-mycolorsetup.sty\\
+%   test/kvoptions-test1.tex & doc/latex/oberdiek/test/kvoptions-test1.tex\\
+%   test/kvoptions-test2.tex & doc/latex/oberdiek/test/kvoptions-test2.tex\\
+%   test/kvoptions-test3.tex & doc/latex/oberdiek/test/kvoptions-test3.tex\\
+%   test/kvoptions-test4.tex & doc/latex/oberdiek/test/kvoptions-test4.tex\\
+%   test/kvoptions-test4.sty & doc/latex/oberdiek/test/kvoptions-test4.sty\\
+%   kvoptions.dtx & source/latex/oberdiek/kvoptions.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk kvoptions.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{kvoptions.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex kvoptions.dtx
+%makeindex -s gind.ist kvoptions.idx
+%pdflatex kvoptions.dtx
+%makeindex -s gind.ist kvoptions.idx
+%pdflatex kvoptions.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{kvoptions.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='kvoptions'>
+  <name>kvoptions</name>
+  <caption>Key value format for package options.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2004,2006,2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='3.11'/>
+  <description>
+    This package offers support for package authors who want to
+    use options in key-value format for their package options.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/kvoptions.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/kvoptions.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \newcommand*{\bibpackage}[4]{^^A
+%   \bibitem{#1}
+%   Package \xpackage{#1}, #2, #3.^^A
+%   \ifx\\#4\\\else\space#4\fi\par
+% }
+%
+% \begin{thebibliography}{99}
+% \bibitem{tb94wright}
+%   A guide to key-value methods, Joseph Wright, second draft for
+%   \href{http://www.tug.org/tugboat}{TUGBoat}, 2009-03-17.
+%   \url{http://www.texdev.net/wp-content/uploads/2009/03/keyval.pdf}
+% \bibpackage{ifthen}{David Carlisle}{2001/05/26}
+%   {\CTAN{macros/latex/base/ifthen.dtx}}
+% \bibpackage{helvet}{Sebastian Rahtz, Walter Schmidt}{2004/01/26}
+%   {\CTAN{macros/latex/required/psnfss/psfonts.dtx}}
+% \bibpackage{hyperref}{Sebastian Rahtz, Heiko Oberdiek}{2006/02/12}
+%   {\CTAN{macros/latex/contrib/hyperref/}}
+% \bibpackage{keyval}{David Carlisle}{1999/03/16}
+%   {\CTAN{macros/latex/required/graphics/keyval.dtx}}
+% \bibpackage{multicol}{Frank Mittelbach}{2004/02/14}
+%   {\CTAN{macros/latex/required/tools/multicol.dtx}}
+% \bibpackage{tabularx}{David Carlisle}{1999/01/07}
+%   {\CTAN{macros/latex/required/tools/tabularx.dtx}}
+% \bibpackage{tracefnt}{Frank Mittelbach, Rainer Sch\"opf}{1997/05/29}
+%   {\CTAN{macros/latex/base/ltfsstrc.dtx}}
+% \bibpackage{xkeyval}{Hendri Adriaens}{2005/05/07}
+%   {\CTAN{macros/latex/contrib/xkeyval/}}
+% \bibitem{clsguide}
+%   The \LaTeX3 Project, \textit{\LaTeXe\ for class and package writers},
+%   2003/12/09.
+%   \CTAN{macros/latex/doc/clsguide.pdf}
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{0000/00/00 v0.0}
+%   \item
+%     Probably David Carlisle's code in \xpackage{hyperref}
+%     was the start.
+%   \end{Version}
+%   \begin{Version}{2004/02/22 v1.0}
+%   \item
+%     The first version was never published. It also
+%     has offered a patch to get rid of \LaTeX's option
+%     expansion.
+%   \end{Version}
+%   \begin{Version}{2006/02/16 v2.0}
+%   \item
+%     Now the package is redesigned with an easier
+%     user interface.
+%   \item
+%     \cs{ProcessKeyvalOptions} remains the central service, inherited
+%     from \xpackage{hyperref}'s \cs{ProcessOptionsWithKV}.
+%     Now the use inside classes is also supported.
+%   \item
+%     Provides help macros for boolean and simple string options.
+%   \item
+%     Fixes for the patch of \LaTeX{}. The patch is only enabled,
+%     if the user requests it.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v2.1}
+%   \item
+%     Unused option list is sanitized to prevent problems
+%     with other packages that uses own processing methods
+%     for key value options. Disadvantage: the unused global
+%     option detection is weakened.
+%   \item
+%     New option type by \cs{DeclareVoidOption} for options without
+%     value.
+%   \item
+%     Default rule by \cs{DeclareDefaultOption}.
+%   \item
+%     Dynamic options: \cs{DisableKeyvalOption}.
+%   \end{Version}
+%   \begin{Version}{2006/06/01 v2.2}
+%   \item
+%     Fixes for option \xoption{patch}.
+%   \end{Version}
+%   \begin{Version}{2006/08/17 v2.3}
+%   \item
+%     \cs{DeclareBooleanOption} renamed to \cs{DeclareBoolOption}
+%     to avoid a name clash with package \cs{ifoption}.
+%   \end{Version}
+%   \begin{Version}{2006/08/22 v2.4}
+%   \item
+%     Option \xoption{patch}: \cs{ExecuteOptions} does not
+%     change the meaning of macro \cs{CurrentOption} at all.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v2.5}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/05/06 v2.6}
+%   \item
+%     Uses package \xpackage{etexcmds}.
+%   \end{Version}
+%   \begin{Version}{2007/06/11 v2.7}
+%   \item
+%     The patch part fixes LaTeX bug latex/3965.
+%   \end{Version}
+%   \begin{Version}{2007/10/02 v2.8}
+%   \item
+%     Compatibility for \plainTeX\ added.
+%   \item
+%     Typos in documentation fixed (Axel Sommerfeldt).
+%   \end{Version}
+%   \begin{Version}{2007/10/11 v2.9}
+%   \item
+%     Bug fix for option \xoption{patch}.
+%   \end{Version}
+%   \begin{Version}{2007/10/18 v3.0}
+%   \item
+%     New package \xpackage{kvoptions-patch}.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v3.1}
+%   \item
+%     Space by line end removed in definition of internal macro.
+%   \end{Version}
+%   \begin{Version}{2009/07/17 v3.2}
+%   \item
+%     \cs{ProcessLocalKeyvalOptions} added.
+%   \item
+%     \cs{DisableKeyvalOption} with the \texttt{action=ignore} option
+%     fixed (Joseph Wright).
+%   \end{Version}
+%   \begin{Version}{2009/07/21 v3.3}
+%   \item
+%     \cs{DeclareLocalOption}, \cs{DeclareLocalOptions} added.
+%   \end{Version}
+%   \begin{Version}{2009/08/13 v3.4}
+%   \item
+%     Documentation addition: recommendation for Joseph Wright's
+%     review article.
+%   \item
+%     Documentation addition: local/global options.
+%   \end{Version}
+%   \begin{Version}{2009/12/04 v3.5}
+%   \item
+%     \cs{AddToKeyvalOption} added.
+%   \end{Version}
+%   \begin{Version}{2009/12/08 v3.6}
+%   \item
+%     Fix: If a default handler is configured, it is now also
+%     called for classes.
+%   \end{Version}
+%   \begin{Version}{2010/02/22 v3.7}
+%   \item
+%     Missing space in error message added.
+%   \end{Version}
+%   \begin{Version}{2010/07/23 v3.8}
+%   \item
+%     Documenation for package \xpackage{kvoptions-patch} improved.
+%     No code changes.
+%   \end{Version}
+%   \begin{Version}{2010/12/02 v3.9}
+%   \item
+%     Key \texttt{setkeys} added for \cs{SetupKeyvalOptions}.
+%   \end{Version}
+%   \begin{Version}{2010/12/23 v3.10}
+%   \item
+%     \cs{DeclareVoidOption} also parses the second parameter as
+%     \hologo{TeX} argument to improve compatibility with
+%     \cs{DeclareOption}.
+%   \end{Version}
+%   \begin{Version}{2011/06/30 v3.11}
+%   \item
+%     Fix because of design bug in package \xpackage{xkeyval} that
+%     removes global options with equal signs.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

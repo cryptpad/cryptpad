@@ -1,0 +1,1085 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltmath.dtx
+%
+%<leqno>\ProvidesFile{leqno.clo}
+%<fleqn>\ProvidesFile{fleqn.clo}
+%<leqno,fleqn>        [2015/03/31 v1.1i Standard LaTeX option
+%<leqno>                                   (left equation numbers)]
+%<fleqn>                                   (flush left equations)]
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltmath.dtx}
+              [2015/03/11 v1.1i LaTeX Kernel (Math Setup)]
+% \iffalse
+%</driver>
+%
+%<*driver>
+\documentclass{ltxdoc}
+\GetFileInfo{ltmath.dtx}
+\title{\filename}
+\date{\filedate}
+\author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+  \MaintainedByLaTeXTeam{latex}
+  \maketitle
+  \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1208}
+%
+% \changes{v1.1b}{1996/07/26}{Removed \cs{global} before
+%     \cs{@ignoretrue} in various places.}
+% \changes{v1.1c}{1998/08/17}{(RmS) Minor documentation fixes.}
+% \changes{v1.1g}{2005/11/10}{(MH) Minor documentation fixes.}
+%
+% \section{Math setup}
+%
+% This file contains a lot of the original plain \TeX{} code, as well
+% as the \LaTeX{} environments for math. It still needs sorting out.
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{math definitions,}
+%    \end{macrocode}
+%
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \subsection{Math commands based on plain \TeX}
+%
+% \subsubsection{The log-like functions}
+%
+% \changes{1.0m}{1994/10/29}{ASAJ: Added \cs{DeclareMathOperator}.}
+% \changes{v1.0o}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{1.0q}{1994/11/30}{ASAJ: \cs{DeclareMathOperator} moved to
+%    AMS\LaTeX.}
+% \changes{v1.0r}{1995/05/07}{Use \cs{hb@xt@}}
+% \changes{v1.0r}{1995/05/21}{Update some plain macros}
+% \changes{v1.0t}{1995/06/28}{minor doc edits}
+%
+% \begin{macro}{\log}
+% The standard operators:
+%    \begin{macrocode}
+\def\log{\mathop{\operator@font log}\nolimits}
+\def\lg{\mathop{\operator@font lg}\nolimits}
+\def\ln{\mathop{\operator@font ln}\nolimits}
+\def\lim{\mathop{\operator@font lim}}
+\def\limsup{\mathop{\operator@font lim\,sup}}
+\def\liminf{\mathop{\operator@font lim\,inf}}
+\def\sin{\mathop{\operator@font sin}\nolimits}
+\def\arcsin{\mathop{\operator@font arcsin}\nolimits}
+\def\sinh{\mathop{\operator@font sinh}\nolimits}
+\def\cos{\mathop{\operator@font cos}\nolimits}
+\def\arccos{\mathop{\operator@font arccos}\nolimits}
+\def\cosh{\mathop{\operator@font cosh}\nolimits}
+\def\tan{\mathop{\operator@font tan}\nolimits}
+\def\arctan{\mathop{\operator@font arctan}\nolimits}
+\def\tanh{\mathop{\operator@font tanh}\nolimits}
+\def\cot{\mathop{\operator@font cot}\nolimits}
+\def\coth{\mathop{\operator@font coth}\nolimits}
+\def\sec{\mathop{\operator@font sec}\nolimits}
+\def\csc{\mathop{\operator@font csc}\nolimits}
+\def\max{\mathop{\operator@font max}}
+\def\min{\mathop{\operator@font min}}
+\def\sup{\mathop{\operator@font sup}}
+\def\inf{\mathop{\operator@font inf}}
+\def\arg{\mathop{\operator@font arg}\nolimits}
+\def\ker{\mathop{\operator@font ker}\nolimits}
+\def\dim{\mathop{\operator@font dim}\nolimits}
+\def\hom{\mathop{\operator@font hom}\nolimits}
+\def\det{\mathop{\operator@font det}}
+\def\exp{\mathop{\operator@font exp}\nolimits}
+\def\Pr{\mathop{\operator@font Pr}}
+\def\gcd{\mathop{\operator@font gcd}}
+\def\deg{\mathop{\operator@font deg}\nolimits}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bmod}
+% And some operators have to be done by hand:
+%    \begin{macrocode}
+\def\bmod{%
+  \nonscript\mskip-\medmuskip\mkern5mu%
+  \mathbin{\operator@font mod}\penalty900\mkern5mu%
+  \nonscript\mskip-\medmuskip}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pmod}
+%    \begin{macrocode}
+\def\pmod#1{%
+  \allowbreak\mkern18mu({\operator@font mod}\,\,#1)}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Biggggg}
+%
+% \begin{macro}{\big}
+% Variants on |\big| and friends for use with delimiters:
+%    \begin{macrocode}
+\def\bigl{\mathopen\big}
+\def\bigm{\mathrel\big}
+\def\bigr{\mathclose\big}
+\def\Bigl{\mathopen\Big}
+\def\Bigm{\mathrel\Big}
+\def\Bigr{\mathclose\Big}
+\def\biggl{\mathopen\bigg}
+\def\biggm{\mathrel\bigg}
+\def\biggr{\mathclose\bigg}
+\def\Biggl{\mathopen\Bigg}
+\def\Biggm{\mathrel\Bigg}
+\def\Biggr{\mathclose\Bigg}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{The UNSORTED Rest}
+%
+% The other math commands are lifted from plain \TeX.
+%
+% \begin{macro}{\jot}
+%    \begin{macrocode}
+\newdimen\jot
+\jot=3pt
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\interdisplaylinepenalty}
+%    \begin{macrocode}
+\newcount\interdisplaylinepenalty
+\interdisplaylinepenalty=100
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\choose}
+%    \begin{macrocode}
+\def\choose{\atopwithdelims()}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\brack}
+%    \begin{macrocode}
+\def\brack{\atopwithdelims[]}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\brace}
+%    \begin{macrocode}
+\def\brace{\atopwithdelims\{\}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\mathpalette}
+%    \begin{macrocode}
+\def\mathpalette#1#2{%
+  \mathchoice
+    {#1\displaystyle{#2}}%
+    {#1\textstyle{#2}}%
+    {#1\scriptstyle{#2}}%
+    {#1\scriptscriptstyle{#2}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\root}
+% \changes{v1.1d}{1997/01/08}
+%      {(DPC) Remove spurious space tokens from
+%              plain \TeX\ definition /2359}
+% \begin{macro}{\rootbox}
+% \begin{macro}{\r@@t}
+% \changes{v1.0r}{1995/05/21}{Use \cs{sqrtsign} instead of
+%                             \cs{sqrt}}
+%    \begin{macrocode}
+\newbox\rootbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\root#1\of{%
+  \setbox\rootbox\hbox{$\m@th\scriptscriptstyle{#1}$}%
+  \mathpalette\r@@t}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\r@@t#1#2{%
+  \setbox\z@\hbox{$\m@th#1\sqrtsign{#2}$}%
+  \dimen@\ht\z@ \advance\dimen@-\dp\z@
+  \mkern5mu\raise.6\dimen@\copy\rootbox
+  \mkern-10mu\box\z@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\phantom}
+% \changes{v1.0p}{1994/11/18}
+%         {(DPC) use \cs{expandafter} instead of \cs{next}}
+% \changes{v1.0p}{1994/11/18}
+%         {(DPC) colour support}
+% \begin{macro}{\hphantom}
+% \begin{macro}{\vphantom}
+%    \begin{macrocode}
+\newif\ifv@
+\newif\ifh@
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\vphantom{\v@true\h@false\ph@nt}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\hphantom{\v@false\h@true\ph@nt}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\phantom{\v@true\h@true\ph@nt}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ph@nt{%
+  \ifmmode
+    \expandafter\mathpalette\expandafter\mathph@nt
+  \else
+    \expandafter\makeph@nt
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\makeph@nt#1{%
+  \setbox\z@\hbox{\color@begingroup#1\color@endgroup}\finph@nt}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\mathph@nt#1#2{%
+  \setbox\z@\hbox{$\m@th#1{#2}$}\finph@nt}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\finph@nt{%
+  \setbox\tw@\null
+  \ifv@ \ht\tw@\ht\z@ \dp\tw@\dp\z@\fi
+  \ifh@ \wd\tw@\wd\z@\fi \box\tw@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\mathstrut}
+%    \begin{macrocode}
+\def\mathstrut{\vphantom(}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\smash}
+% \changes{v1.0p}{1994/11/18}
+%         {(DPC) use \cs{expandafter} instead of \cs{next}}
+% \changes{v1.0p}{1994/11/18}
+%         {(DPC) colour support}
+%    \begin{macrocode}
+\def\smash{%
+  \relax % \relax, in case this comes first in \halign
+  \ifmmode
+    \expandafter\mathpalette\expandafter\mathsm@sh
+  \else
+    \expandafter\makesm@sh
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\makesm@sh#1{%
+  \setbox\z@\hbox{\color@begingroup#1\color@endgroup}\finsm@sh}
+\def\mathsm@sh#1#2{%
+  \setbox\z@\hbox{$\m@th#1{#2}$}\finsm@sh}
+\def\finsm@sh{\ht\z@\z@ \dp\z@\z@ \box\z@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\buildrel}
+%    \begin{macrocode}
+\def\buildrel#1\over#2{\mathrel{\mathop{\kern\z@#2}\limits^{#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\cases}
+% \changes{LaTeX2.09}{1991/08/14}
+%         {(RmS) inserted extra braces around entry for NFSS}
+%    \begin{macrocode}
+\def\cases#1{\left\{\,\vcenter{\normalbaselines\m@th
+    \ialign{$##\hfil$&\quad{##}\hfil\crcr#1\crcr}}\right.}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\matrix}
+%    \begin{macrocode}
+\def\matrix#1{\null\,\vcenter{\normalbaselines\m@th
+    \ialign{\hfil$##$\hfil&&\quad\hfil$##$\hfil\crcr
+      \mathstrut\crcr\noalign{\kern-\baselineskip}
+      #1\crcr\mathstrut\crcr\noalign{\kern-\baselineskip}}}\,}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pmatrix}
+%    \begin{macrocode}
+\def\pmatrix#1{\left(\matrix{#1}\right)}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\bordermatrix}
+% \changes{LaTeX2e}{1994/01/25}{Removed \cs{p@renwd}.}
+%    \begin{macrocode}
+\def\bordermatrix#1{\begingroup \m@th
+  \@tempdima 8.75\p@
+  \setbox\z@\vbox{%
+    \def\cr{\crcr\noalign{\kern2\p@\global\let\cr\endline}}%
+    \ialign{$##$\hfil\kern2\p@\kern\@tempdima&\thinspace\hfil$##$\hfil
+      &&\quad\hfil$##$\hfil\crcr
+      \omit\strut\hfil\crcr\noalign{\kern-\baselineskip}%
+      #1\crcr\omit\strut\cr}}%
+  \setbox\tw@\vbox{\unvcopy\z@\global\setbox\@ne\lastbox}%
+  \setbox\tw@\hbox{\unhbox\@ne\unskip\global\setbox\@ne\lastbox}%
+  \setbox\tw@\hbox{$\kern\wd\@ne\kern-\@tempdima\left(\kern-\wd\@ne
+    \global\setbox\@ne\vbox{\box\@ne\kern2\p@}%
+    \vcenter{\kern-\ht\@ne\unvbox\z@\kern-\baselineskip}\,\right)$}%
+  \null\;\vbox{\kern\ht\@ne\box\tw@}\endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\openup}
+%    \begin{macrocode}
+\def\openup{\afterassignment\@penup\dimen@}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@penup{\advance\lineskip\dimen@
+  \advance\baselineskip\dimen@
+  \advance\lineskiplimit\dimen@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\displaylines}
+%    \begin{macrocode}
+\newif\ifdt@p
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\displ@y{\global\dt@ptrue\openup\jot\m@th
+  \everycr{\noalign{\ifdt@p \global\dt@pfalse \ifdim\prevdepth>-1000\p@
+      \vskip-\lineskiplimit \vskip\normallineskiplimit \fi
+      \else \penalty\interdisplaylinepenalty \fi}}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@lign{\tabskip\z@skip\everycr{}} % restore inside \displ@y
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\displaylines#1{\displ@y \tabskip\z@skip
+  \halign{\hb@xt@\displaywidth{$\@lign\hfil\displaystyle##\hfil$}\crcr
+    #1\crcr}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.0r}{1995/05/21}{Remove \cs{mathhexbox} from this file}
+%
+% \begin{macro}{\sp}
+% \begin{macro}{\sb}
+%    \begin{macrocode}
+\let\sp=^
+\let\sb=_
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\>}
+% \begin{macro}{\;}
+% \begin{macro}{\!}
+%    \begin{macrocode}
+%\def\,{\mskip\thinmuskip}      % already defined in ltspace
+\def\>{\mskip\medmuskip}
+\def\;{\mskip\thickmuskip}
+\def\!{\mskip-\thinmuskip}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\*}
+%    \begin{macrocode}
+\def\*{\discretionary{\thinspace\the\textfont2\char2}{}{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\:}
+%    Nickname for the medium space since |\>| is not available inside
+%    \texttt{tabbing}.
+%    \begin{macrocode}
+\let\:=\>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\active@math@prime}
+% \changes{v1.1e}{1999/10/09}{Macro added, see PR 3104.}
+%    This is the definition of the active math prime.
+%    \begin{macrocode}
+\def\active@math@prime{^\bgroup\prim@s}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\prime@s}
+% \changes{v1.0p}{1994/11/18}
+%         {(DPC) use \cs{@let@token} instead of \cs{next}
+%           and \cs{expandafter} instead of \cs{nxt}}
+% \changes{v1.1e}{1999/10/09}{Introduce \cs{active@math@prime}.}
+%    \begin{macrocode}
+{\catcode`\'=\active \global\let'\active@math@prime}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\prim@s{%
+  \prime\futurelet\@let@token\pr@m@s}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\pr@m@s{%
+  \ifx'\@let@token
+    \expandafter\pr@@@s
+  \else
+    \ifx^\@let@token
+      \expandafter\expandafter\expandafter\pr@@@t
+    \else
+      \egroup
+    \fi
+  \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\pr@@@s#1{\prim@s}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\pr@@@t#1#2{#2\egroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.0i}{1994/05/17}{Replaced \cs{let} by \cs{gdef}, for
+%            indirect definition.}
+%    \begin{macrocode}
+{\catcode`\_=\active \gdef_{\_}} % _ in math is
+                                 % either subscript or \_
+%    \end{macrocode}
+%
+%
+% \changes{v1.0m}{1994/10/29}{ASAJ: Removed \cs{dag}, \cs{ddag}.}
+% \changes{v1.0m}{1994/10/29}{ASAJ: Renamed \cs{S} and \cs{P} to
+%    \cs{mathsection} and \cs{mathparagraph} and made them
+%    \cs{mathchardef}s.}
+% \changes{v1.0m}{1994/10/29}{ASAJ: Added \cs{mathellipsis},
+%    \cs{mathdollar} and \cs{mathsterling}.}
+% \changes{v1.0n}{1994/10/30}{ASAJ: Moved the new commands to ltoutenc.}
+%
+% \subsection{Math Environments}
+%
+% \changes{1.0m}{1994/10/29}{ASAJ: Tidied up documentation.}
+%
+% \begin{macro}{\(}
+% \begin{macro}{\)}
+%    Produces |$...$| with checks that |\(| isn't used in math mode, and
+%    that |\)| is only used in math mode begun with |\(|.
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\(}{Make \( robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\({%
+  \relax\ifmmode\@badmath\else$\fi}%
+\DeclareRobustCommand\){%
+  \relax\ifmmode\ifinner$\else\@badmath\fi\else \@badmath\fi}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\(}{Make \( robust}%
+%<latexrelease>\def\({%
+%<latexrelease>  \relax\ifmmode\@badmath\else$\fi}%
+%<latexrelease>\def\){%
+%<latexrelease>  \relax\ifmmode\ifinner$\else\@badmath\fi\else \@badmath\fi}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\[}
+% \changes{v1.1g}{2005/11/10}
+%                {(MH) Fixed potential problem in \cs{[} (pr/3399).}
+% \begin{macro}{\]}
+%    Produces |$$...$$| with checks that |\[| isn't used in math mode,
+%    and that |\]| is only used in display math mode (though there is no 
+%    real test that this display math started with |\[| and not with |$$|).
+% \changes{v1.1h}{2015/01/08}{Make Robust (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\[}{Make \[ robust}%
+%<*2ekernel|latexrelease>
+\DeclareRobustCommand\[{%
+   \relax\ifmmode
+      \@badmath
+   \else
+      \ifvmode
+         \nointerlineskip
+         \makebox[.6\linewidth]{}%
+      \fi
+      $$%%$$ BRACE MATCH HACK
+   \fi
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand\]{%
+   \relax\ifmmode
+      \ifinner
+         \@badmath
+      \else
+         $$%%$$ BRACE MATCH HACK
+      \fi
+   \else
+      \@badmath
+   \fi
+   \ignorespaces
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\[}{Make \[ robust}%
+%<latexrelease>\def\[{%
+%<latexrelease>   \relax\ifmmode
+%<latexrelease>      \@badmath
+%<latexrelease>   \else
+%<latexrelease>      \ifvmode
+%<latexrelease>         \nointerlineskip
+%<latexrelease>         \makebox[.6\linewidth]{}%
+%<latexrelease>      \fi
+%<latexrelease>      $$%%$$ BRACE MATCH HACK
+%<latexrelease>   \fi
+%<latexrelease>}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<latexrelease>\def\]{%
+%<latexrelease>   \relax\ifmmode
+%<latexrelease>      \ifinner
+%<latexrelease>         \@badmath
+%<latexrelease>      \else
+%<latexrelease>         $$%%$$ BRACE MATCH HACK
+%<latexrelease>      \fi
+%<latexrelease>   \else
+%<latexrelease>      \@badmath
+%<latexrelease>   \fi
+%<latexrelease>   \ignorespaces
+%<latexrelease>}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{environment}{math}
+% \begin{environment}{displaymath}
+%    Disguises for |\(...\)| and |\[...\]|.
+%    \begin{macrocode}
+\let\math=\(
+\let\endmath=\)
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\displaymath{\[}
+\def\enddisplaymath{\]\@ignoretrue}
+%    \end{macrocode}
+% \end{environment}
+% \end{environment}
+%
+%
+% \begin{environment}{equation}
+% \changes{LaTeX2.09}{1992/01/10}{RmS: put \cs{hbox} around \cs{@eqnnum}
+%    to typeset the equation number in text mode
+%    (as in the eqnarray env.)}
+% \begin{macro}{\c@equation}
+%  Numbered equations, using the counter |\c@equation|.
+%  \emph{Note}: The document style must define |\theequation| etc., and
+%  do the appropriate |\@addtoreset|. It should also redefine |\@eqnnum|
+%  if another format for the equation number is desired other than the
+%  standard (...), or to move the equation numbers to the flushleft.
+%   (See comment on the |\def| of |\@eqnnum|.)
+%    \begin{macrocode}
+\@definecounter{equation}
+\def\equation{$$\refstepcounter{equation}}
+\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
+%    \end{macrocode}
+% \end{macro}
+% \end{environment}
+%
+% \begin{macro}{\@eqnnum}
+% \changes{LaTeX2.09}{1991/09/29}{RmS: \cs{reset@font} added.}
+% \changes{v1.0l}{1994/10/23}{Added \cs{normalcolor} since \cs{eqno}
+%    introduces a subgroup of the displayed math group}
+%
+%     Produces the equation number for equation and
+%     eqnarray environments.  The following definition is for
+%     flushright numbers; for flushleft numbers, see leqno.clo.
+%     The equation number is set in black roman type even
+%     if an eqnarray environment appears in an italic environment.
+% \changes{v1.0s}{1995/05/26}{Removed \cs{rmfamily} (PR 1578),
+% replaced \cs{reset@font} with \cs{normalfont}}
+%    \begin{macrocode}
+\def\@eqnnum{{\normalfont \normalcolor (\theequation)}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\stackrel}
+%    A disguise for plain \TeX's buildrel.
+%    \begin{macrocode}
+\def\stackrel#1#2{\mathrel{\mathop{#2}\limits^{#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \changes{v0.9g}{1993/12/11}{Added a group around the first argument
+%    of \cs{frac} to prevent
+%    changes (for example font changes) from modifying the contents of
+%     the second argument.}
+%
+%  \begin{macro}{\frac}
+%    A disguise for plain \TeX's |\over|.
+%    \begin{macrocode}
+\def\frac#1#2{{\begingroup#1\endgroup\over#2}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\sqrt}
+% \changes{v1.0y}{1995/10/16}{(DPC) Make robust /1808}
+% \begin{macro}{\@sqrt}
+%    Add an optional argument to plain's |\sqrt| to give the $n$th root
+%    of an expression $\sqrt[n]{e}$.
+% \changes{v1.0r}{1995/05/21}{Use \cs{sqrtsign}}
+%    \begin{macrocode}
+\DeclareRobustCommand\sqrt{\@ifnextchar[\@sqrt\sqrtsign}
+\def\@sqrt[#1]{\root #1\of}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \changes{LaTeX2.09}{1985/11/04}{produce warning message if line
+%      extends into margin.  Doesn't warn about formula
+%      overprinting equation number.}
+% \changes{LaTeX2.09}{1993/11/02}{RmS:
+%        Corrected description of \cs{@eqnsel}, moved \cs{@eqnsel}
+%        accordingly and removed extra \cs{tabskip} assignment.}
+% \changes{LaTeX2e}{1993/11/03}{RmS: Initialized \cs{everycr} to empty}
+% \changes{v0.9i}{1993/12/16}
+%     {use \cs{refstepcounter} instead of shortcut}
+% \changes{v0.9o}{1994/01/13}{correcting 0.9i}
+%
+% \begin{environment}{eqnarray}
+% \begin{macro}{\@eqcnt}
+% \begin{macro}{\@eqpen}
+% \begin{macro}{\if@eqnsw}
+% \begin{macro}{\@eqnsel}
+%    Here's the eqnarray environment:
+%    Default is for left-hand side of equations to be flushright.
+%    To make them flushleft, |\let\@eqnsel = \hfil|.
+%    \begin{macrocode}
+\newcount\@eqcnt
+\newcount\@eqpen
+\newif\if@eqnsw\@eqnswtrue
+\newskip\@centering
+\@centering = 0pt plus 1000pt
+%    \end{macrocode}
+%    To get a proper \cs{@currentlabel} we have to redefine it for the
+%    whole display. Note that we can't use \cs{refstepcounter} as this
+%    results in |\@currentlabel| getting restored at the wrong and
+%    thus always writing the first label to the \texttt{.aux} file.
+%    \begin{macrocode}
+\def\eqnarray{%
+   \stepcounter{equation}%
+   \def\@currentlabel{\p@equation\theequation}%
+   \global\@eqnswtrue
+   \m@th
+   \global\@eqcnt\z@
+   \tabskip\@centering
+   \let\\\@eqncr
+   $$\everycr{}\halign to\displaywidth\bgroup
+       \hskip\@centering$\displaystyle\tabskip\z@skip{##}$\@eqnsel
+      &\global\@eqcnt\@ne\hskip \tw@\arraycolsep \hfil${##}$\hfil
+      &\global\@eqcnt\tw@ \hskip \tw@\arraycolsep
+         $\displaystyle{##}$\hfil\tabskip\@centering
+      &\global\@eqcnt\thr@@ \hb@xt@\z@\bgroup\hss##\egroup
+         \tabskip\z@skip
+      \cr
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\endeqnarray{%
+      \@@eqncr
+      \egroup
+      \global\advance\c@equation\m@ne
+   $$\@ignoretrue
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\@eqnsel=\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{environment}
+%
+% \begin{macro}{\nonumber}
+%    Switches off equation numbering.
+%    \begin{macrocode}
+\def\nonumber{\global\@eqnswfalse}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@eqncr}
+% \begin{macro}{\@xeqncr}
+% \begin{macro}{\@yeqncr}
+% \changes{v1.0y}{1995/10/16}{(DPC) Use \cs{@testopt} /1911}
+%    \begin{macrocode}
+\def\@eqncr{%
+   {\ifnum0=`}\fi
+   \@ifstar{%
+      \global\@eqpen\@M\@yeqncr
+   }{%
+      \global\@eqpen\interdisplaylinepenalty \@yeqncr
+   }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@yeqncr{\@testopt\@xeqncr\z@skip}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@xeqncr[#1]{%
+   \ifnum0=`{\fi}%
+   \@@eqncr
+   \noalign{\penalty\@eqpen\vskip\jot\vskip #1\relax}%
+}
+%    \end{macrocode}
+%
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@@eqncr}
+% \changes{v0.9i}{1993/12/16}{use \cs{refstepcounter} instead of shortcut}
+% \changes{v0.9o}{1994/01/13}{correcting 0.9i}
+%
+%    \begin{macrocode}
+\def\@@eqncr{\let\reserved@a\relax
+    \ifcase\@eqcnt \def\reserved@a{& & &}\or \def\reserved@a{& &}%
+     \or \def\reserved@a{&}\else
+       \let\reserved@a\@empty
+       \@latex@error{Too many columns in eqnarray environment}\@ehc\fi
+     \reserved@a \if@eqnsw\@eqnnum\stepcounter{equation}\fi
+     \global\@eqnswtrue\global\@eqcnt\z@\cr}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{environment}{eqnarray*}
+% \begin{macro}{\@seqncr}
+%    Here's the eqnarray* environment:
+%    \begin{macrocode}
+\let\@seqncr=\@eqncr
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@namedef{eqnarray*}{\def\@eqncr{\nonumber\@seqncr}\eqnarray}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@namedef{endeqnarray*}{\nonumber\endeqnarray}
+%    \end{macrocode}
+% \end{macro}
+% \end{environment}
+%
+% \begin{macro}{\lefteqn}
+%  |\lefteqn{FORMULA}| typesets |FORMULA| in display math style
+%  flushleft in a box of width zero.
+% \changes{v1.0r}{1995/05/21}{Use \cs{rlap}}
+%    \begin{macrocode}
+\def\lefteqn#1{\rlap{$\displaystyle #1$}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ensuremath}
+%   In math mode, |\ensuremath{text}| is equivalent to text; in LR or
+%   paragraph mode, it is equivalent to |$|text|$|.
+%   |\relax| is not needed
+%   in front of the |\ifmmode| as |\protect| will be |\let| to |\relax|.
+%   This version (due to Donald Arseneau) avoids duplicating its
+%   argument in the `then' and `else' part of the |\ifmath| which is
+%   necessary in nested  `tabular' like environments. See amslatex/2104.
+% \changes{v1.0k}{1994/05/16}
+%     {Use \cs{DeclareRobustCommand} and add extra braces in math mode}
+% \changes{v1.0l}{1994/10/23}{Remove extra braces: but see p 168 of
+%      Leslie's book}
+% \changes{v1.1a}{1996/03/25}{Reimplement for amslatex/2104}
+%    \begin{macrocode}
+\DeclareRobustCommand{\ensuremath}{%
+  \ifmmode
+    \expandafter\@firstofone
+  \else
+    \expandafter\@ensuredmath
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ensuredmath}
+% \changes{v1.1a}{1996/03/25}{Macro added for amslatex/2104}
+% \changes{v1.1c}{1996/11/09}{Made long, as it was before. /2104}
+% The |\relax| stops |\ensuremath{}| starting display math.
+%    \begin{macrocode}
+\long\def\@ensuredmath#1{$\relax#1$}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+%
+%
+% \subsection{External options to the standard document classes}
+%
+% \changes{v1.0u}{1995/08/09}
+%    {Added code for class options leqno and fleqn}
+%
+% \subsubsection{Left equation numbering}
+%
+%  \begin{macro}{\@eqnnum}
+%    To put the equation number on the left side of an equation we
+%    have to use a little trick. The number is shifted |\displaywidth|
+%    to the left inside a box of (approximately) zero width. This
+%    fails when the quation is too wide, the equation number than may
+%    overprint the equation itself.
+% \changes{v1.2y classes}{1995/01/12}{Added \cs{normalcolor}}
+% \changes{v1.3c classes}{1995/05/25}
+%    {replace \cs{reset@font}\cs{rmfamily} with \cs{normalfont}
+%      (PR 1578)}
+%    \begin{macrocode}
+%<*leqno>
+\renewcommand\@eqnnum{\hb@xt@.01\p@{}%
+                      \rlap{\normalfont\normalcolor
+                        \hskip -\displaywidth(\theequation)}}
+%</leqno>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \subsubsection{Flush left equations}
+%
+%    To get the displayed math environments to print the contents
+%    flush left (with an indentation) we have to redefine all of
+%    \LaTeXe's displayed math environments.
+%
+%  \begin{macro}{\mathindent}
+%    The amount of indentation of the equations is stored in a register.
+%    \begin{macrocode}
+%<*fleqn>
+\newdimen\mathindent
+%    \end{macrocode}
+%    The setting of |\mathindent| has to be deferred until the class
+%    file has been processed, because |\leftmargini| is still 0pt
+%    wide at the moment \texttt{fleqn.clo} is read in.
+% \changes{v1.0n classes}
+%    {1994/01/19}{Deferred setting of \cs{mathindent}}
+% \changes{v1.2t classes}
+%    {1994/06/22}{Set \cs{mathindent} at the end of the
+%    class instead of at begin document}
+%    \begin{macrocode}
+\AtEndOfClass{\mathindent\leftmargini}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\[}
+%    Begin display math;
+%    \begin{macrocode}
+\IncludeInRelease{2015/01/01}{\[}{Make \[ robust}%
+\DeclareRobustCommand\[{\relax
+                \ifmmode\@badmath
+                \else
+                  \begin{trivlist}%
+                    \@beginparpenalty\predisplaypenalty
+                    \@endparpenalty\postdisplaypenalty
+                    \item[]\leavevmode
+                    \hb@xt@\linewidth\bgroup $\m@th\displaystyle %$
+                      \hskip\mathindent\bgroup
+                \fi}
+\EndIncludeInRelease
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\IncludeInRelease{0000/00/00}{\[}{Make \[ robust}%
+\renewcommand\[{\relax
+                \ifmmode\@badmath
+                \else
+                  \begin{trivlist}%
+                    \@beginparpenalty\predisplaypenalty
+                    \@endparpenalty\postdisplaypenalty
+                    \item[]\leavevmode
+                    \hb@xt@\linewidth\bgroup $\m@th\displaystyle %$
+                      \hskip\mathindent\bgroup
+                \fi}
+\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\]}
+%    end display math;
+%    \begin{macrocode}
+\IncludeInRelease{2015/01/01}{\]}{Make \] robust}%
+\DeclareRobustCommand\]{\relax
+                \ifmmode
+                      \egroup $\hfil% $
+                    \egroup
+                  \end{trivlist}%
+                \else \@badmath
+                \fi}
+\EndIncludeInRelease
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\IncludeInRelease{0000/00/00}{\]}{Make \] robust}%
+\renewcommand\]{\relax
+                \ifmmode
+                      \egroup $\hfil% $
+                    \egroup
+                  \end{trivlist}%
+                \else \@badmath
+                \fi}
+\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{environment}{equation}
+%    The \textsf{equation} environment
+%    \begin{macrocode}
+\renewenvironment{equation}%
+    {\@beginparpenalty\predisplaypenalty
+     \@endparpenalty\postdisplaypenalty
+     \refstepcounter{equation}%
+     \trivlist \item[]\leavevmode
+       \hb@xt@\linewidth\bgroup $\m@th% $
+         \displaystyle
+         \hskip\mathindent}%
+        {$\hfil % $
+         \displaywidth\linewidth\hbox{\@eqnnum}%
+       \egroup
+     \endtrivlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{eqnarray}
+%    The \textsf{eqnarray} environment
+%    \begin{macrocode}
+\renewenvironment{eqnarray}{%
+    \stepcounter{equation}%
+    \def\@currentlabel{\p@equation\theequation}%
+    \global\@eqnswtrue\m@th
+    \global\@eqcnt\z@
+    \tabskip\mathindent
+    \let\\=\@eqncr
+    \setlength\abovedisplayskip{\topsep}%
+    \ifvmode
+      \addtolength\abovedisplayskip{\partopsep}%
+    \fi
+%    \end{macrocode}
+%    When the documentclass uses a non-zero |\parskip| setting the
+%    |\topsep| might have a negative value to compensate for
+%    that. Therefore we add |\parskip| to |\abovedisplayskip|.
+% \changes{v1.2v classes}{1994/11/10}{Added value of \cs{parskip} to
+%    \cs{abovedisplayskip} to compensate for negative \cs{topsep}}
+%    \begin{macrocode}
+    \addtolength\abovedisplayskip{\parskip}%
+    \setlength\belowdisplayskip{\abovedisplayskip}%
+    \setlength\belowdisplayshortskip{\abovedisplayskip}%
+    \setlength\abovedisplayshortskip{\abovedisplayskip}%
+    $$\everycr{}\halign to\linewidth% $$
+    \bgroup
+      \hskip\@centering
+      $\displaystyle\tabskip\z@skip{##}$\@eqnsel&%
+      \global\@eqcnt\@ne \hskip \tw@\arraycolsep \hfil${##}$\hfil&%
+      \global\@eqcnt\tw@ \hskip \tw@\arraycolsep
+        $\displaystyle{##}$\hfil \tabskip\@centering&%
+      \global\@eqcnt\thr@@
+        \hb@xt@\z@\bgroup\hss##\egroup\tabskip\z@skip\cr}%
+      {\@@eqncr
+    \egroup
+    \global\advance\c@equation\m@ne$$% $$
+    \@ignoretrue
+    }
+%</fleqn>
+%    \end{macrocode}
+% \end{environment}
+%
+%
+%
+% \Finale
+%

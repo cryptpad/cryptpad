@@ -1,0 +1,590 @@
+% \def\filename{amsbooka.dtx}
+% \def\fileversion{2.08}
+% \def\filedate{2014/07/11}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 2008, 2014 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+% 
+% \fi
+%
+% \iffalse
+%<*driver>
+\documentclass{amsdtx}
+
+\CodelineIndex
+
+\begin{document}
+\title{The \pkg{amsbooka} package}
+\author{American Mathematical Society\\Barbara Beeton}
+\date{Version \fileversion, \filedate}
+\DocInput{amsbooka.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%
+%    This package is an add-on to the \amslatex/ document classes for
+%    monographs.  It provides the facility to include an author's name
+%    with a part or chapter title of a monograph, and automatically pass
+%    the author information on to the table of contents for presentation
+%    in a style compatible with the regular (series-specific) TOC style.
+%    It also provides facilities to add elements often associated with
+%    separately authored chapters, including a copyright notice,
+%    uunumbered footnotes, and a section-level bibliography.
+%
+%    This package may become part of the \amslatex/ collection of
+%    document classes and related packages.
+%
+% \StopEventually{}
+%
+%    Standard file identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1995/06/01]% LaTeX date must be June 1995 or later
+\ProvidesPackage{amsbooka}[2014/07/11 v2.08 monograph part/chapter authors]
+%    \end{macrocode}
+%
+% \section{User instructions}
+%
+%    \textbf{Getting started:} The front matter of the book must include
+%    (at least) a \cn{title} and \cn{\maketitle}.  If these are absent,
+%    an unintelligible error message will result.  This is caused by
+%    the redefinition of the \cn{author} command, which is ordinarily
+%    expected to occur only in the book's front matter.
+%
+% \subsection{Chapter and part headings}
+%
+%    A part or chapter with no associated author is input in the usual
+%    way:\\[2pt]
+%    \verb|\part{|\<full title>\verb|}|\\
+%    \verb|\chapter[|\<short title>\verb|]{|\<full title>\verb|}|\\[2pt]
+%    The part or chapter title will be set in the regular style for
+%    the series.
+%
+%    If an author is to be associated with a chapter, then the short
+%    title \emph{must} be provided, and the author is included within
+%    the full title, thus:\\[2pt]
+%    \verb|\chapter[|\<short title>\verb|]{|\<full title>%
+%    \verb| \author{|\<author name>\verb|}}|
+%
+%    \vspace{2pt}
+%
+%    This works for both \verb|\chapter| and \verb|\chapter*|.
+%    Similarly, a part title with an associated author must include
+%    the author as follows:\\[2pt]
+%    \verb|\part{|\<full title>\verb| \author{|\<author name>\verb|}}|\\[2pt]
+%    No short title is required for a part title with author.
+%
+%    The author name will be set following the title and also included
+%    in the table of contents, both in the appropriate style for the
+%    series.
+%
+%    When an author is specified for a chapter, the left-hand running
+%    head will be the author name; the right-hand running head will
+%    be the chapter title, taken from the short title.  For a chapter
+%    with no specified author, the running heads will be the same as
+%    for an ``ordinary'' monograph: chapter title on the left and
+%    section heading on the right, except that, if the chapter has
+%    no sections, the chapter title will also appear on the right.
+%
+%    By default, ``authored'' chapters will be numbered, but chapter
+%    numbers will be omitted from the running heads.  (Most volumes
+%    encountered so far in this style are essentially collections.)
+%    Chapter numbers can be restored to the running heads by using the
+%    documentclass option \opt{[rhchapnum]}.  In the present version
+%    of \pkg{amsbooka} this is an all-or-nothing proposition, but
+%    this decision may be reconsidered if an example emerges in which
+%    there is justification for including chapter numbers in some
+%    running heads but not in others.
+%
+%    Similarly, the ``standard'' monograph running heads (chapter on
+%    the left, section on the right) can be forced for all authored
+%    chapters by specifying the documentclass option \opt{[rhchapsec]}.
+%    With this option, chapter numbers will not be suppressed.  Again,
+%    this is an all-or-nothing choice.
+%
+% \subsection{Elements at the bottom of the first page}
+%
+%    If information such as a previous publication or an alternate
+%    source is noted, this should appear on the first page of the
+%    chapter as an unnumbered footnote.  Enter this immediately
+%    after the \verb|\chapter| title, using this command:\\[2pt]
+%    \verb|\barefootnote{|\<footnote text>\verb|}|
+%
+%    \vspace{2pt}
+%
+%    If a separate copyright notice is required for a chapter,
+%    enter it as follows:\\[2pt]
+%    \verb|\copyrightinfo{|\<year>\verb|}{|\<copyright holder>\verb|}|\\[2pt]
+%    If this command is not input for a chapter, no notice will appear.
+%
+% \subsection{Bibliography within a chapter}
+%
+%    The bibliography of a monograph usually appears as a separate chapter.
+%    However, for collections addressed by the present package, each
+%    individual chapter may have its own reference list, which should
+%    be treated as a section.
+%    
+%    If the chapter bibliography has been prepared for \pkg{amsrefs},
+%    specify \env{bibsection} to obtain the proper format.  (See the
+%    \pkg{amsrefs} documentation for details.)
+%
+%    If the chapter bibliography has been prepared using \BibTeX,
+%    substitute\\[2pt]
+%    \verb|\begin{inchapterbibliography}|\\
+%    \verb|...|\\
+%    \verb|\end{inchapterbibliography}|\\[2pt]
+%    for the usual \env{thebibliography} environment.  The actual contents
+%    of the bibliography should be included within the chapter file,
+%    not read in from a separate \fn{.bbl} file.  If the heading of
+%    this section needs to be changed,\\[2pt]
+%    \verb|\renewcommand{\bibname}{...}|
+%    
+%
+% \section{Implementation}
+%
+%    This package is meant for use with all AMS monograph series.
+%    Two series, GSM and STML, have special requirements, so provide
+%    matching strings that can be used to identify them.  Other series
+%    may be added to this list, so also provide a switch that can be
+%    used to identify them collectively.
+%    \begin{macrocode}
+\def\@gsm{gsm-l}
+\def\@stml{stml-l}
+\newif\if@ruledchapterhead
+\@ruledchapterheadfalse
+\ifx\@classname\@gsm \@ruledchapterheadtrue
+  \else\ifx\@classname\@stml \@ruledchapterheadtrue
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    Some ramifications with running heads are best addressed with
+%    defaults that can be overridden by options.
+%
+%    First option: force ``standard'' (chapter/section) running heads.
+%    \begin{macrocode}
+\newif\if@rhchapnum
+\@rhchapnumfalse
+\DeclareOption{rhchapnum}{\@rhchapnumtrue}
+%    \end{macrocode}
+%
+%    Next option: force ``standard'' (chapter/section) running heads.
+%    This also turns on chapter numbers in the running heads.
+%    \begin{macrocode}
+\newif\if@rhchapsec
+\@rhchapsecfalse
+\DeclareOption{rhchapsec}{\@rhchapsectrue \@rhchapnumtrue}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% \subsection{Chapter headings}
+%
+%  \begin{macro}{@schaptera}
+%  \begin{macro}{@schapterb}
+%    In order to associate an author name with an unnumbered chapter,
+%    we need to redefine \cs{@schapter} to accept a bracketed optional
+%    version for the running head.  The original version, without
+%    optional text, is still required for the bibliography and index
+%    as well as for other unauthored chapters.  Use the original
+%    \cs{@schapter} for this by giving it another name, and check
+%    again for the presence of a bracketed option.
+%    \begin{macrocode}
+\let\@schapterb\@schapter
+\def\@schapter{\secdef\@schaptera\@schapterb}
+\def\@schaptera[#1]#2{\typeout{#1}%
+  \let\@secnumber\@empty
+  \def\@toclevel{0}%
+  \ifx\chaptername\appendixname \@tocwriteb\tocappendix{chapter}{#2}%
+  \else \@tocwriteb\tocchapter{chapter}{#2}\fi
+  \chaptermark{#1}%
+  \addtocontents{lof}{\protect\addvspace{10\p@}}%
+  \addtocontents{lot}{\protect\addvspace{10\p@}}%
+  \@makeschapterhead{#2}\@afterheading
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{@makechapterhead}
+%  \begin{macro}{@makeschapterhead}
+%    Redefine the commands \cs{@makechapterhead} and \cs{@makeschapterhead}
+%    from the regular monograph document classes, handling special cases
+%    as necessary.
+%    \begin{macrocode}
+\def\@makechapterhead#1{%
+  \ifx\@classname\@gsm \@makegsmchapterhead{#1}%
+  \else \ifx\@classname\@stml \@makestmlchapterhead{#1}%
+  \else \@makeplainchapterhead{#1}%
+  \fi \fi
+}
+\newif\if@schapter \@schapterfalse
+\def\@makeschapterhead#1{%
+  \@schaptertrue
+  \ifx\@classname\@gsm \@makegsmchapterhead{#1}%
+  \else \ifx\@classname\@stml \@makestmlchapterhead{#1}%
+  \else \@makeplainschapterhead{#1}%
+  \fi \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{@makeplainchapterhead}
+%  \begin{macro}{@makeschapterhead}
+%    The ``plain'' chapter head style is used for nearly all AMS
+%    monograph series.  The title is set in the usual style, with
+%    the author name centered below in small caps.\\
+%    The author name is set up to be the left-hand running head,
+%    as it would be for a journal or proceedings article.  This
+%    will be effected only for chapters with an \cn{author}.
+%    It can also be suppressed with the \opt{[rhchapsec]} option.\\
+%    If a copyright notice is included, suppress it for the next
+%    chapter.
+%    \begin{macrocode}
+\def\@makeplainchapterhead#1{%
+  \global\topskip 7.5pc\relax
+  \@setcopyright
+  \let\copyrightyear\@empty
+  \begingroup
+  \def\title{}%
+  \def\author##1{%
+    \if@rhchapsec
+    \else \markleft{\MakeUppercase{##1}}%
+    \fi
+    \vskip1pc\fontsize{\@xiipt}{14}\mdseries\textsc{##1}}%
+  \fontsize{\@xivpt}{18}\bfseries\centering
+    \ifnum\c@secnumdepth>\m@ne
+      \leavevmode \hskip-\leftskip
+      \rlap{\vbox to\z@{\vss
+          \centerline{\normalsize\mdseries
+              \MakeUppercase{\chaptername}\enspace\thechapter}
+          \vskip 3pc}}\hskip\leftskip
+    \fi
+    #1\par \endgroup
+  \skip@34\p@ \advance\skip@-\normalbaselineskip
+  \vskip\skip@
+}
+\def\@makeschapterhead#1{%
+  \global\topskip 7.5pc\relax
+  \@setcopyright
+  \let\copyrightyear\@empty
+  \begingroup
+  \def\title{}%
+  \def\author##1{%
+    \if@rhchapsec
+    \else \markleft{\MakeUppercase{##1}}%
+    \fi
+    \vskip1pc\fontsize{\@xiipt}{14}\mdseries\textsc{##1}}%
+  \fontsize{\@xivpt}{18}\bfseries\centering
+  #1\par \endgroup
+  \skip@34\p@ \advance\skip@-\normalbaselineskip
+  \vskip\skip@
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{@makeruledchapterhead}
+%  \begin{macro}{@makeruledschapterhead}
+%    GSM and STML require a rule at the top of the page and a smaller
+%    rule above the page number at the bottom.  Other specs are
+%    publication-specific.
+%    \begin{macrocode}
+\def\@makeruledchapterhead#1{%
+  \global\topskip\normaltopskip
+  \begingroup
+  \def\author##1{%
+    \if@rhchapsec
+    \else \markleft{##1}%
+    \fi
+    \\ \hfil \\ \@chapauthorstyle ##1}%
+  \vbox to\topskip{%
+    \chapter@number
+    \vss
+  }\penalty\@M
+  \@chapheadstyle \raggedright
+  \noindent #1\par \endgroup
+  \if@index
+    \@indexstyle
+  \else
+    \@dropfolio
+    \@noindexstyle
+  \fi
+  \@afterheading
+}
+\def\@makeruledschapterhead#1{%
+  \global\topskip\normaltopskip
+  \begingroup
+  \def\author##1{%
+    \if@rhchapsec
+    \else \markleft{##1}%
+    \fi
+    \\ \hfil \\ \@chapauthorstyle ##1}%
+  \@chapheadstyle \raggedright
+  \noindent #1\par \endgroup
+  \if@index
+    \@indexstyle
+  \else
+    \@dropfolio
+    \@noindexstyle
+  \fi
+  \@afterheading
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{@makegsmchapterhead}
+%    The style for GSM requires a rule at the top of the page, with
+%    the chapter title flush left, bold, and the author information
+%    below the title also flush left and bold but in a smaller size.
+%    \begin{macrocode}
+\def\@makegsmchapterhead#1{%
+  \def\@chapheadstyle{\Huge\bfseries \hsize24pc
+    \top@space{11pc}}%
+  \def\@chapauthorstyle{\LARGE\bfseries}%
+  \def\@indexstyle{%
+    \ifx\@empty\indexintro
+      \bb@space{7.5pc}%
+    \else
+      \vspace{3pc}%
+      \begingroup \small
+        \parbox[t]{27pc}{\leftskip3pc\normalfont\indexintro\par}%
+      \endgroup
+      \bb@space{3pc}%
+    \fi
+    }%
+  \def\@noindexstyle{\bb@space{7.5pc}}%
+  \if@schapter
+    \@makeruledschapterhead{#1}%
+  \else
+    \@makeruledchapterhead{#1}%
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{@makestmlchapterhead}
+%    The style for STML is similar to that for GSM, except for the
+%    smaller page size and the author information set in lightface
+%    in the LARGE size.
+%    \begin{macrocode}
+\def\@makestmlchapterhead#1{%
+  \def\@chapheadstyle{\fontsize\@xxpt{22}\selectfont\bfseries\hsize 21pc
+    \top@par@space{9pc}}%
+  \def\@chapauthorstyle{\LARGE\mdseries}%
+  \def\@indexstyle{%
+    \ifx\@empty\indexintro
+      \bb@par@space{6.5pc}%
+    \else
+      \vspace{2.5pc}%
+      \begingroup \small
+        \parbox[t]{22.5pc}{\leftskip2.5pc\normalfont\indexintro\par}%
+      \endgroup
+      \bb@par@space{2.5pc}%
+    \fi
+    }%
+  \def\@noindexstyle{\bb@par@space{6.5pc}}%
+  \if@schapter
+    \@makeruledschapterhead{#1}%
+  \else
+    \@makeruledchapterhead{#1}%
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \subsection{Running heads}
+%
+%  \begin{macro}{chapterrunhead}
+%    Unless overridden by the \opt{[]} option, omit chapter numbers
+%    from the right-hand running head with chapter title.  (Explicit
+%    line breaks with \verb|\\| are converted to spaces.)
+%    \begin{macrocode}
+\if@rhchapnum
+\else
+  \def\chapterrunhead#1#2#3{%
+    \def\@tempa{#3}%
+    \begingroup \def\\{ \ignorespaces}%
+      \uppercasenonmath\@tempa\@tempa
+    \endgroup
+  }
+\fi
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \subsection{Part headings}
+%
+%  \begin{macro}{@plainpart}
+%    The ``plain'' part head style is used for nearly all AMS
+%    monograph series.  The title is set in the usual style, with
+%    the author name centered below in italic.
+%    \begin{macrocode}
+\def\partauthor{%
+  \def\author##1{\newline\phantom{Part 1.\enspace}{\mdseries\scshape##1}}}
+\def\@part[#1]#2{%
+  \ifnum \c@secnumdepth >-2\relax \refstepcounter{part}%
+    \addcontentsline{toc}{part}{\partname\ \thepart.%
+        \protect\partauthor\protect\enspace\protect\noindent#1}%
+  \else
+    \addcontentsline{toc}{part}{#1}\fi
+  \begingroup
+  \def\author##1{\\ \hfil \\ \fontsize{\@xivpt}{20}\mdseries\itshape ##1}%
+  \centering
+  \ifnum \c@secnumdepth >-2\relax
+     {\fontsize{\@xviipt}{22}\bfseries
+       \partname\ \thepart} \vskip 20\p@ \fi
+  \fontsize{\@xxpt}{25}\bfseries
+    #1\vfil\vfil\endgroup \newpage\thispagestyle{empty}}
+\def\@spart#1{\addcontentsline{toc}{part}%
+  {\protect\partauthor\protect\noindent#1}%
+  \begingroup
+  \def\author##1{\\ \hfil \\ \fontsize{\@xivpt}{20}\mdseries\itshape ##1}%
+  \centering
+  \fontsize{\@xxpt}{25}\bfseries
+    #1\vfil\vfil\endgroup \newpage\thispagestyle{empty}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \subsection{Table of Contents}
+%
+%    Allow more space for the page number than provided in \cls{amsbook};
+%    that is only 1.6em, and results in unpleasantly long text.
+%    \begin{macrocode}
+\setbox\z@\hbox{\kern1.5pc 999}
+\renewcommand{\@pnumwidth}{\wd\z@}
+%    \end{macrocode}
+%
+%  \begin{macro}{@tocline}
+%    Replace the \cs{@tocline} command to include the \cn{author}
+%    information.  This will be set in small caps on the line following
+%    the chapter title, with the same indentation as the title.
+%    \begin{macrocode}
+\def\@tocline#1#2#3#4#5#6#7{\relax
+  \ifnum #1>\c@tocdepth % then omit
+  \else
+    \def\author##1{\newline\textsc{##1}}%
+    \par \addpenalty\@secpenalty\addvspace{#2}%
+    \begingroup \hyphenpenalty\@M
+    \@ifempty{#4}{%
+      \@tempdima\csname r@tocindent\number#1\endcsname\relax
+    }{%
+      \@tempdima#4\relax
+    }%
+    \parindent\z@ \leftskip#3\relax \advance\leftskip\@tempdima\relax
+    \rightskip\@pnumwidth plus.2\hsize \parfillskip-\@pnumwidth
+    #5\leavevmode\hskip-\@tempdima #6\nobreak\relax
+    \hfil\hbox to\@pnumwidth{\@tocpagenum{#7}}\par
+    \nobreak
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \subsection{Other features}
+%
+%  \subsubsection{Copyright notice}
+%    A copyright notice is sometimes wanted on separately authored
+%    chapters of a ``composite'' monograph or volume of collected works.
+%    Provide the ability to add this feature if required, using the
+%    same command, \cn{copyrightinfo}, used for journal and proceedings
+%    articles.  \cn{copyrightinfo} is present in \cls{amsbook}, so it
+%    suffices to set an appropriate default to suppress it unless it
+%    is requested explicitly.
+%    \begin{macrocode}
+\let\copyrightyear\@empty
+%    \end{macrocode}
+%
+%    For now, don't allow a copyright notice for GSM or STML or other
+%    books with a similar design.  The need is unlikely, but the more
+%    important reason is that the style needs rethinking if such a
+%    notice is to be included.
+%    \begin{macrocode}
+\if@ruledchapterhead \def\copyrightinfo#1#2{}\fi
+%    \end{macrocode}
+%
+%  \begin{macro}{barefootnote}
+%  \subsubsection{``Bare'' footnotes}
+%    Unnumbered footnotes (such as those that appear on the first page
+%    of a journal or proceedings article) are needed to provide information
+%    regarding earlier publication and the like.
+%    \begin{macrocode}
+\newcommand{\barefootnote}[1]{{%
+  \let\@makefnmark\relax \let\@thefnmark\relax
+  \@footnotetext{#1}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{inchapterbibliography}
+%    \subsubsection{Chapter-specific bibliography}
+%    Separately authored chapters often have individual bibliographies,
+%    which should be presented as sections, not chapters.  For now,
+%    disable the mark for the section header (copying the code from
+%    the initial value in \cls{amsbook}); it should not appear as
+%    the right-hand running head if the author/chapter title headers
+%    are in effect.  Still to be determined is whether the section title
+%    ``Bibliography'' should appear in the running head if no author is
+%    specified and the ``standard'' running heads are used.
+%    \begin{macrocode}
+\newenvironment{inchapterbibliography}[1]{%
+  \let\sectionmark\@gobble
+  \@xp\section\@xp*\@xp{\bibname}%
+  \normalfont\footnotesize\labelsep .5em\relax
+  \renewcommand\theenumiv{\arabic{enumiv}}\let\p@enumiv\@empty
+  \list{\@biblabel{\theenumiv}}{\settowidth\labelwidth{\@biblabel{#1}}%
+    \leftmargin\labelwidth \advance\leftmargin\labelsep
+    \usecounter{enumiv}}%
+  \sloppy \clubpenalty\@M \widowpenalty\clubpenalty
+  \sfcode`\.=\@m
+}{%
+  \def\@noitemerr{\@latex@warning{Empty `inchapterbibliography' environment}}%
+  \endlist
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \subsection{Boilerplate}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{566}
+% \Finale

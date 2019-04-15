@@ -1,0 +1,373 @@
+% \iffalse meta-comment
+%
+% Copyright 2013-2014 Javier Bezos and any individual authors
+% listed elsewhere in this file.  All rights reserved.
+% 
+% This file is part of the Babel system.
+% --------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2003/12/01 or later.
+% 
+% This work has the LPPL maintenance status "maintained".
+% 
+% The Current Maintainer of this work is Javier Bezos.
+% 
+% The list of all files belonging to the Babel system is
+% given in the file `manifest.bbl. See also `legal.bbl' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+% \fi
+% \CheckSum{795}
+%
+% \iffalse
+%<*dtx>
+\ProvidesFile{bbunicode.dtx}
+       [2015/05/10 v1.0e Babel hooks for Unicode engines]
+%</dtx>
+%
+%% File `bbunicode.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 2103-2014
+%%           by Javier Bezos
+%
+%<*filedriver>
+\documentclass{ltxdoc}
+\font\manual=logo10 % font used for the METAFONT logo, etc.
+\newcommand*\MF{{\manual META}\-{\manual FONT}}
+\newcommand*{\babel}{\textsf{babel}}
+\newcommand*{\langvar}{$\langle \it lang \rangle$}
+\newcommand*{\note}[1]{}
+\newcommand*{\pkg}[1]{\textsf{#1}}
+\newcommand*{\Lopt}[1]{\textsf{#1}}
+\newcommand*{\file}[1]{\texttt{#1}}
+\begin{document}
+ \DocInput{bbunicode.dtx}
+\end{document}
+%</filedriver>
+% \fi
+%
+% \GetFileInfo{bbunicode.dtx}
+% \StopEventually{}
+%
+% \section{Tentative font handling}
+%
+% A general solution is far from trivial:
+% \begin{itemize}
+% \item |\addfontfeature| only sets it for the current family and it's
+%   not very efficient, and
+% \item |\defaultfontfeatures| requires to redefine the font (and the
+%   opti\texttt{}ons aren't ``orthogonal'').
+% \end{itemize}
+%
+%    \begin{macrocode}
+%<<*Font selection>>
+\def\babelFSstore#1{%
+  \bbl@for\bbl@tempa{#1}{%
+    \edef\bbl@tempb{\noexpand\bbl@FSstore{\bbl@tempa}}
+    \bbl@tempb{rm}\rmdefault\bbl@save@rmdefault
+    \bbl@tempb{sf}\sfdefault\bbl@save@sfdefault
+    \bbl@tempb{tt}\ttdefault\bbl@save@ttdefault}}
+\def\bbl@FSstore#1#2#3#4{%
+  \bbl@csarg\edef{#2default#1}{#3}%
+  \expandafter\addto\csname extras#1\endcsname{%
+    \let#4#3%
+    \ifx#3\f@family
+      \edef#3{\csname bbl@#2default#1\endcsname}%
+      \fontfamily{#3}\selectfont
+    \else
+      \edef#3{\csname bbl@#2default#1\endcsname}%
+    \fi}%
+  \expandafter\addto\csname noextras#1\endcsname{%
+    \ifx#3\f@family
+      \fontfamily{#4}\selectfont
+    \fi
+    \let#3#4}}
+\let\bbl@langfeatures\@empty
+\def\babelFSfeatures{%
+  \let\bbl@ori@fontspec\fontspec
+  \renewcommand\fontspec[1][]{%
+    \bbl@ori@fontspec[\bbl@langfeatures##1]}
+  \let\babelFSfeatures\bbl@FSfeatures
+  \babelFSfeatures}
+\def\bbl@FSfeatures#1#2{%
+  \expandafter\addto\csname extras#1\endcsname{%
+    \babel@save\bbl@langfeatures
+    \edef\bbl@langfeatures{#2,}}}
+%<</Font selection>>
+%    \end{macrocode}
+%    \section{Hooks for XeTeX and LuaTeX}
+%
+%    \subsection{XeTeX}
+%
+%    Unfortunately, the current encoding cannot be retrieved and
+%    therefore it is reset always to |utf8|, which seems a sensible
+%    default.
+%
+%    \LaTeX{} sets many ``codes'' just before loading
+%    \verb|hyphen.cfg|. That is not a problem in luatex, but in xetex
+%    they must be reset to the proper value. Most of the work is done in
+%    \textsf{xe(la)tex.ini}, so here we just ``undo'' some of the
+%    changes done by \LaTeX. Anyway, for consistency Lua\TeX{} also
+%    resets the catcodes. 
+% \changes{bbunicode~1.0c}{2014/03/10}{Reset ``codes'' set by \cs{LaTeX}
+%    to what xetex expects. Used also in luatex.}
+%    \begin{macrocode}
+%<<*Restore Unicode catcodes before loading patterns>>
+\AddBabelHook{xetex}{loadkernel}{%
+  \begingroup
+      % Reset chars "80-"C0 to category "other", no case mapping:
+    \catcode`\@=11 \count@=128
+    \loop\ifnum\count@<192
+      \global\uccode\count@=0 \global\lccode\count@=0
+      \global\catcode\count@=12 \global\sfcode\count@=1000
+      \advance\count@ by 1 \repeat
+      % Other:
+    \def\O ##1 {%
+      \global\uccode"##1=0 \global\lccode"##1=0
+      \global\catcode"##1=12 \global\sfcode"##1=1000 }%
+      % Letter:
+    \def\L ##1 ##2 ##3 {\global\catcode"##1=11
+      \global\uccode"##1="##2
+      \global\lccode"##1="##3
+      % Uppercase letters have sfcode=999:
+      \ifnum"##1="##3 \else \global\sfcode"##1=999 \fi }%
+      % Letter without case mappings:
+    \def\l ##1 {\L ##1 ##1 ##1 }%
+    \l 00AA
+    \L 00B5 039C 00B5
+    \l 00BA
+    \O 00D7
+    \l 00DF
+    \O 00F7
+    \L 00FF 0178 00FF
+  \endgroup
+  \input #1\relax}
+%<</Restore Unicode catcodes before loading patterns>>
+%    \end{macrocode}
+%
+% Now, the code.
+%
+%    \begin{macrocode}
+%<*xetex>
+\def\BabelStringsDefault{unicode}
+\let\xebbl@stop\relax
+\AddBabelHook{xetex}{encodedcommands}{%
+  \def\bbl@tempa{#1}%
+  \ifx\bbl@tempa\@empty
+    \XeTeXinputencoding"bytes"%
+  \else
+      \XeTeXinputencoding"#1"%
+  \fi
+  \def\xebbl@stop{\XeTeXinputencoding"utf8"}}
+\AddBabelHook{xetex}{stopcommands}{%
+  \xebbl@stop
+  \let\xebbl@stop\relax}
+<@Restore Unicode catcodes before loading patterns@>
+<@Font selection@>
+%</xetex>
+%    \end{macrocode}
+%    \subsection{LuaTeX}
+%
+%    This part relies on the |lua| stripts in \pkg{luatex-hyphen} by Khaled
+%    Hosny, \'{E}lie Roux, and Manuel
+%    P\'{e}gouri\'{e}-Gonnard. \'{E}lie also improved the code below.
+% \changes{bbunicode~1.0b}{2013/04/22}{luatex-hyphen is loaded
+%    with require. Changes supplied by \'{E}lie Roux.}
+% \changes{bbunicode~1.0c}{2014/03/10}{Defined hook for
+%   `initiateactive', to fetch the next token and continue only if
+%   letter or other}
+% \changes{bbunicode~1.0d}{2014/03/21}{Removed the `misfeature' for
+%   `initiateactive'}
+% \changes{bbunicode~1.0e}{2015/05/10}{Use brackets instead of
+%   \cs{luaescapestring}}
+% \changes{bbunicode~1.0e}{2015/07/26}{Added function addpatterns and
+%   modified the patterns hook.}
+%
+%    \begin{macrocode}
+%<*luatex>
+\begingroup
+\catcode`\%=12
+\catcode`\'=12
+\catcode`\"=12
+\catcode`\:=12
+\directlua{
+  require("luatex-hyphen")
+  Babel = {}
+  function Babel.bytes(line)
+    return line:gsub("(.)",
+      function (chr) return unicode.utf8.char(string.byte(chr)) end)
+  end
+  function Babel.begin_process_input()
+    if luatexbase and luatexbase.add_to_callback then
+      luatexbase.add_to_callback('process_input_buffer',
+                                 Babel.bytes,'Babel.bytes')
+    else
+      Babel.callback = callback.find('process_input_buffer')
+      callback.register('process_input_buffer',Babel.bytes)
+    end
+  end
+  function Babel.end_process_input ()
+    if luatexbase and luatexbase.remove_from_callback then
+      luatexbase.remove_from_callback('process_input_buffer','Babel.bytes')
+    else
+      callback.register('process_input_buffer',Babel.callback)
+    end
+  end
+  function Babel.addpatterns(pp, lg)
+    local lg = lang.new(lg)
+    local pats = lang.patterns(lg) or ''
+    lang.clear_patterns(lg)
+    for p in pp:gmatch('[^%s]+') do
+      ss = ''
+      for i in string.utfcharacters(p:gsub('%d', '')) do
+         ss = ss .. '%d?' .. i
+      end
+      ss = ss:gsub('^%%d%?%.', '%%.') .. '%d?'
+      ss = ss:gsub('%.%%d%?$', '%%.')
+      pats, n = pats:gsub('%s' .. ss .. '%s', ' ' .. p .. ' ')
+      if n == 0 then
+        tex.sprint(
+          [[\string\csname\space bbl@info\endcsname{New pattern: ]]
+          .. p .. [[}]])
+        pats = pats .. ' ' .. p
+      else
+        tex.sprint(
+          [[\string\csname\space bbl@info\endcsname{Renew pattern: ]]
+          .. p .. [[}]])
+      end
+    end
+    lang.patterns(lg, pats)
+  end
+}
+\endgroup
+\def\BabelStringsDefault{unicode}
+\let\luabbl@stop\relax
+\AddBabelHook{luatex}{encodedcommands}{%
+  \def\bbl@tempa{utf8}\def\bbl@tempb{#1}%
+  \ifx\bbl@tempa\bbl@tempb\else
+    \directlua{Babel.begin_process_input()}%
+    \def\luabbl@stop{%
+      \directlua{Babel.end_process_input()}}%
+  \fi}%
+\AddBabelHook{luatex}{stopcommands}{%
+  \luabbl@stop
+  \let\luabbl@stop\relax}
+\AddBabelHook{luatex}{patterns}{%
+  \ifcsname lu@texhyphen@loaded@\the\language\endcsname \else
+    \global\@namedef{lu@texhyphen@loaded@\the\language}{}%
+    \directlua{
+      luatexhyphen.loadlanguage([[\string#1]],
+        '\the\language')}%
+  \fi
+  \@ifundefined{bbl@patterns@}{}{%
+    \begingroup
+      \@expandtwoargs\in@{,\number\language,}{,\bbl@pttnlist}%
+      \ifin@\else
+        \ifx\bbl@patterns@\@empty\else
+           \directlua{ Babel.addpatterns(
+             [[\bbl@patterns@]], \number\language) }%
+        \fi
+        \@ifundefined{bbl@patterns@#1}%
+          \@empty
+          {\directlua{ Babel.addpatterns(
+               [[\space\csname bbl@patterns@#1\endcsname]],
+               \number\language) }}%
+        \xdef\bbl@pttnlist{\bbl@pttnlist\number\language,}%
+      \fi
+    \endgroup}}
+\AddBabelHook{luatex}{adddialect}{%
+  \ifx\directlua\relax\else
+    \directlua{
+      luatexhyphen.adddialect([[\string#1]], 
+        [[\string#2]])
+    }%
+  \fi}
+\AddBabelHook{luatex}{everylanguage}{%
+  \directlua{
+    processnow = (tex.language == 0) or
+      (luatexhyphen.lookupname([[\string#1]]) == nil)}%
+  \ifnum0=\directlua{tex.sprint(processnow and "0" or "1")}\relax
+    \global\@namedef{lu@texhyphen@loaded@\the\language}{}%
+  \fi}
+\AddBabelHook{luatex}{loadpatterns}{%
+  \ifnum0=\directlua{tex.sprint(processnow and "0" or "1")}\relax
+    \input #1\relax
+  \fi}
+\AddBabelHook{luatex}{loadexceptions}{%
+  \ifnum0=\directlua{tex.sprint(processnow and "0" or "1")}\relax
+    \input #1\relax
+  \fi
+  \directlua{processnow = nil}}
+%    \end{macrocode}
+%
+%  \begin{macro}{\babelpatterns}
+%
+%    This macro adds patterns. Two macros are used to store them:
+%    |\bbl@patterns@| for the global ones and |\bbl@patterns<lang>|
+%    for language ones. We make sure there is a space between words
+%    when multiple commands are used.
+% \changes{bbunicode~1.0e}{2015/07/26}{Macro \cs{babelpatterns} added}
+%
+%    \begin{macrocode}
+\@onlypreamble\babelpatterns
+\AtEndOfPackage{%
+  \newcommand\babelpatterns[2][\@empty]{%
+    \ifx\bbl@patterns@\relax
+      \let\bbl@patterns@\@empty
+    \fi
+    \ifx\bbl@pttnlist\@empty\else
+      \bbl@warning{%
+        You must not intermingle \string\selectlanguage\space and\\%
+        \string\babelpatterns\space or some patterns will not\\%
+        be taken into account. Reported}%
+    \fi
+    \ifx\@empty#1%
+      \protected@edef\bbl@patterns@{\bbl@patterns@\space#2}%
+    \else
+      \edef\bbl@tempb{\zap@space#1 \@empty}%
+      \bbl@for\bbl@tempa\bbl@tempb{%
+        \bbl@fixname\bbl@tempa
+        \bbl@iflanguage\bbl@tempa{%
+          \bbl@csarg\protected@edef{patterns@\bbl@tempa}{%
+            \@ifundefined{bbl@patterns@\bbl@tempa}%
+              \@empty
+              {\csname bbl@patterns@\bbl@tempa\endcsname\space}%
+            #2}}}%
+    \fi}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% Common stuff.
+%
+%    \begin{macrocode}
+<@Restore Unicode catcodes before loading patterns@>
+<@Font selection@>
+%</luatex>
+%    \end{macrocode}
+%
+\endinput
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

@@ -1,0 +1,101 @@
+% dummy file seminar.con, if it does not exist.
+\begin{filecontents}{seminar.con}
+\end{filecontents}
+\documentclass[]{seminar}
+\usepackage{slidesec}
+\def\thepage{E\arabic{page}}
+\usepackage{lastpage}
+\usepackage{xspace}
+\usepackage{makeidx}
+\usepackage[pdfstartview={FitBH -32768},pdfpagemode=None,plainpages=false,colorlinks]{hyperref}
+\hypersetup{pdfauthor=?`\c C\"asar M\"uller n\~ao!`}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+\makeindex
+\hypersetup{pdftitle=Welcome to the Monkey House}
+\newcommand{\ANS}{\textsf{ANSYS}\xspace}
+\begin{document}
+\begin{slide}
+\slideheading{xx}
+\end{slide}
+\begin{slide}
+\listofslides
+\end{slide}
+
+\begin{slide}
+\slideheading{A funny \ANS-section}
+Page 1; See \textcolor{red}{page} --\pageref{page2}--
+\end{slide}
+\begin{slide}
+Page 2; this is page 2\label{page2}
+\end{slide}
+
+\begin{slide}
+\index{an item on slide 3}
+
+\htmladdnormallink{A dummy URL}{http://www.tug.org/A-Fake_URL.html}
+
+\Acrobatmenu{Quit}{End Acrobat Reader}
+
+\Acrobatmenu{FullScreen}{Switch to full screen}
+
+\Acrobatmenu{ZoomIn}{Zoom in}
+
+$\int\!dx$
+\end{slide}
+\begin{slide}
+\slideheading{Yet another ?`\c C\"asar M\"uller n\~ao!`}
+
+\end{slide}
+\begin{slide}
+\slideheading{Testing Int\'ernal J\oe mps}\label{ss:intjmps}
+
+This is some text and this is a \hypertarget{target}{target}.
+
+\end{slide}
+\begin{slide}
+Now lets jump to \hyperlink{target}{Target}.
+
+Let's try going to Section~\ref{ss:intjmps}
+
+\end{slide}
+\begin{slide}
+\slideheading{A \ss ection with $\leq$}
+xx
+xx
+\subsubsection{A subsubsection \texorpdfstring{$a+b$}{a+b}}
+xx
+\paragraph{A paragraph}
+xx
+\subparagraph{A subparagraph}
+xxx
+\end{slide}
+\begin{slide}
+\slideheading{Testing External Jumps}\label{ss:extjmps}
+
+\begin{enumerate}
+
+\item Jump to an external: The jump
+\href{file:test7#TestTarget}{target} should open test7.pdf on
+page 2,
+\item  Jump to an external: The jump
+\href{file:test7#page.1}{page 1} should open test7.pdf on
+page 1.
+
+%\item Jump to an relative external strange file
+%\href{/D/srahtz/skills.doc}{destination}
+
+\href{run:picture.eps}{a PS file to launch}
+
+\href{run:fontman.exe}{an application}
+
+\href{run:e:\string\\mdraw\string\\mdraw.exe#picture.eps}{a PS file to launch (2)}
+\end{enumerate}
+\end{slide}
+\begin{slide}
+\printindex
+\end{slide}
+\end{document}
+
+
+

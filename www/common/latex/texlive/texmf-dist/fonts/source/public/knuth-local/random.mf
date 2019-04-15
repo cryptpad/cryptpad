@@ -1,0 +1,198 @@
+% Font for examples in Chapter 21 of The METAFONTbook
+
+font_size 10pt#;
+mode_setup;
+
+font_identifier "RANDOM";
+font_coding_scheme "PI";
+
+% uniforms (characters 0--9)
+randomseed:=3.14159;
+for code=0 upto 9:
+beginchar(code,10pt#,10pt#,0);
+pickup pencircle scaled .3pt; draw unitsquare scaled w;
+pickup pencircle scaled 1pt;
+for k=1 upto 100: drawdot(uniformdeviate w,uniformdeviate w); endfor
+endchar;
+endfor
+
+% normals (characters 10--19)
+randomseed:=3.14159;
+for code=10 upto 19:
+beginchar(code,10pt#,10pt#,0);
+pickup pencircle scaled .3pt; draw unitsquare scaled w;
+pickup pencircle scaled 1pt;
+for k=1 upto 100: drawdot(1/6w*normaldeviate+.5w,1/6w*normaldeviate+.5w); endfor
+endchar;
+endfor
+
+% both (characters 20--29)
+randomseed:=3.14159;
+for code=20 upto 29:
+beginchar(code,10pt#,10pt#,0);
+pickup pencircle scaled .3pt; draw unitsquare scaled w;
+pickup pencircle scaled 1pt;
+for k=1 upto 100: drawdot(uniformdeviate w,1/6w*normaldeviate+.5w); endfor
+endchar;
+endfor
+
+% METAFONT logo (characters 30--109)
+randomseed:=ASCII"M"+epsilon*ASCII"F";
+vardef noise=normaldeviate*craziness enddef;
+
+ht#:=6pt#;
+xgap#:=0.6pt#;
+u#:=4/9pt#;
+s#:=0;
+o#:=1/9pt#;
+px#:=2/3pt#;
+ygap#:=xgap#;
+leftstemloc#:=2.5u#+s#;
+barheight#:=.45ht#;
+define_pixels(s,u,xgap,ygap,leftstemloc,barheight);
+py#:=.9px#; define_blacker_pixels(px,py);
+pickup pencircle xscaled px yscaled py; logo_pen:=savepen;
+define_corrected_pixels(o);
+
+def beginlogochar(expr c,n) =
+ beginchar(incr code,n*u#+2s#,ht#,0); pickup logo_pen enddef;
+
+def NN=
+beginlogochar("N",15);
+x1=leftstemloc+noise;
+x2=leftstemloc+noise;
+x4=w-leftstemloc+noise;
+x5=w-leftstemloc+noise;
+bot y1=noise-o;
+top y2=h+o+noise;
+y3=y4+ygap+noise;
+bot y4=noise-o;
+top y5=h+o+noise;
+z3=whatever[z4,z5];
+draw z1--z2--z3; draw z4--z5; labels(1,2,3,4,5); endchar;
+enddef;
+
+def MM=
+beginlogochar("M",18);
+x1=leftstemloc+noise;
+x2=leftstemloc+noise;
+x3=.5w+noise;
+x4=w-leftstemloc+noise;
+x5=w-leftstemloc+noise;
+bot y1=noise-o;
+top y2=h+o+noise;
+bot y3=ygap+noise;
+top y4=h+o+noise;
+bot y5=noise-o;
+draw z1--z2--z3--z4--z5; labels(1,2,3,4,5); endchar;
+enddef;
+
+def EE=
+beginlogochar("E",14);
+x1=leftstemloc+noise;
+x3=leftstemloc+noise;
+x4=w-leftstemloc+o+noise;
+x5=w-leftstemloc+o-xgap+noise;
+x6=w-leftstemloc+o+noise;
+bot y1=noise;
+y2=barheight+noise;
+top y3=h+noise;
+top y4=h+noise;
+y5=barheight+noise;
+bot y6=noise;
+z2=whatever[z1,z3];
+draw z6--z1--z3--z4; draw z2--z5; labels(1,2,3,4,5,6); endchar;
+enddef;
+
+def FF=
+beginlogochar("F",14);
+x1=leftstemloc+noise;
+x3=leftstemloc+noise;
+x4=w-leftstemloc+o+noise;
+x5=w-leftstemloc+o-xgap+noise;
+bot y1=noise-o;
+y2=barheight+noise;
+top y3=h+noise;
+top y4=h+noise;
+y5=barheight+noise;
+bot y6=noise;
+z2=whatever[z1,z3];
+draw z1--z3--z4; draw z2--z5; labels(1,2,3,4,5); endchar;
+enddef;
+
+def TT=
+beginlogochar("T",13);
+lft x1=noise;
+rt x2=w+noise;
+x3=.5w+noise;
+x4=.5w+noise;
+top y1=h+noise;
+top y2=h+noise;
+bot y4=noise-o;
+z3=whatever[z1,z2];
+draw z1--z2; draw z3--z4; labels(1,2,3,4); endchar;
+enddef;
+
+def AA=
+beginlogochar("A",15);
+x1=.5w+noise;
+x2'=leftstemloc+noise;
+x3'=w-leftstemloc+noise;
+x4=leftstemloc+noise;
+x5=w-leftstemloc+noise;
+top y2'=h+o+noise;
+top y3'=h+o+noise;
+y2=barheight+noise;
+y3=barheight+noise;
+bot y4=noise-o;
+bot y5=noise-o;
+z1=whatever[z2',z3'];
+z2=whatever[z4,z2'];
+z3=whatever[z5,z3'];
+draw z4--z2--z3--z5;
+draw z2{z2'-z2}...z2+.8(z2'-z2)-.2(z2'-z1){z1-z2}
+ ...z1{z3'-z2'}...z3+.8(z3'-z3)-.2(z3'-z1){z3-z1}...z3{z3-z3'};
+labels(1,2,3,4,5,2',3'); endchar;
+enddef;
+
+def OO=
+beginlogochar("O",15);
+x1'=1.5u+s+noise;
+x2'=1.5u+s+noise;
+x3'=w-1.5u-s+noise;
+x4'=w-1.5u-s+noise;
+bot y1'=noise-o;
+top y2'=h+o+noise;
+top y3'=h+o+noise;
+bot y4'=noise-o;
+z1=.5[z1',z2']; z2=.5[z2',z3']; z3=.5[z3',z4']; z4=.5[z4',z1'];
+draw z2{z2'-z3'}...z2+.8(z2'-z2)-.2(z2'-z1){z1-z2}
+ ...z1{z1'-z2'}...z1+.8(z1'-z1)-.2(z1'-z4){z4-z1}
+ ...z4{z4'-z1'}...z4+.8(z4'-z4)-.2(z4'-z3){z3-z4}
+ ...z3{z3'-z4'}...z3+.8(z3'-z3)-.2(z3'-z2){z2-z3}...cycle;
+labels(1,2,3,4,5,2',3'); endchar;
+enddef;
+
+
+code:=29;
+for c=10 downto 1:craziness:=c*.05pt;
+ MM; EE; TT; AA; FF; OO; NN; TT; endfor
+
+% histogram (character 126)
+randomseed:=0;
+beginchar(126,24pt#,10pt#,0);
+%pickup pencircle scaled .3pt; draw unitsquare xscaled w yscaled h;
+ numeric count[]; pickup pencircle scaled 1pt;
+for n:=1 upto 100: x:=normaldeviate*4pt+12pt;
+y:=floor(x/pt); if unknown count[y]: count[y]:=-1; fi
+drawdot(x,pt*incr count[y]); endfor endchar;
+
+% skyline (character 127)
+randomseed:=2.71828;
+beginchar(127,100pt#,10pt#,0);
+for n:=0 upto 99:
+fill unitsquare xscaled 1pt yscaled uniformdeviate h shifted (n*pt,0);
+endfor
+endchar;
+
+bye

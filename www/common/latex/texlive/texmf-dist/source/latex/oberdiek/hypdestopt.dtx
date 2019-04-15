@@ -1,0 +1,1023 @@
+% \iffalse meta-comment
+%
+% File: hypdestopt.dtx
+% Version: 2011/05/13 v2.3
+% Info: Hyperref destination optimizer
+%
+% Copyright (C) 2006-2008, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file hypdestopt.dtx
+% and the derived files
+%    hypdestopt.sty, hypdestopt.pdf, hypdestopt.ins, hypdestopt.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hypdestopt.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hypdestopt.pdf
+%
+% Unpacking:
+%    (a) If hypdestopt.ins is present:
+%           tex hypdestopt.ins
+%    (b) Without hypdestopt.ins:
+%           tex hypdestopt.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hypdestopt.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hypdestopt.drv is present:
+%           latex hypdestopt.drv
+%    (b) Without hypdestopt.drv:
+%           latex hypdestopt.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hypdestopt.dtx
+%       makeindex -s gind.ist hypdestopt.idx
+%       pdflatex hypdestopt.dtx
+%       makeindex -s gind.ist hypdestopt.idx
+%       pdflatex hypdestopt.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/hypdestopt.sty
+%    TDS:doc/latex/oberdiek/hypdestopt.pdf
+%    TDS:source/latex/oberdiek/hypdestopt.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hypdestopt 2011/05/13 v2.3 Hyperref destination optimizer (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hypdestopt
+Version: 2011/05/13 v2.3
+
+Copyright (C) 2006-2008, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file hypdestopt.dtx
+and the derived files
+   hypdestopt.sty, hypdestopt.pdf, hypdestopt.ins, hypdestopt.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hypdestopt.ins}{\from{hypdestopt.dtx}{install}}%
+  \file{hypdestopt.drv}{\from{hypdestopt.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{hypdestopt.sty}{\from{hypdestopt.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hypdestopt.xml}{\from{hypdestopt.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hypdestopt.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hypdestopt.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hypdestopt.drv}%
+  [2011/05/13 v2.3 Hyperref destination optimizer (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{hypdestopt.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{565}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hypdestopt.drv}
+%
+% \title{The \xpackage{hypdestopt} package}
+% \date{2011/05/13 v2.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{hypdestopt} supports \xpackage{hyperref}'s
+% \xoption{pdftex} driver. It removes unnecessary destinations
+% and shortens the destination names or uses numbered destinations
+% to get smaller PDF files.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{User interface}
+%
+% \subsection{Introduction}
+%
+% Before PDF-1.5 annotations and destinations cannot be compressed.
+% If the destination names are not needed for external use, the
+% file size can be decreased by the following means:
+% \begin{itemize}
+% \item Unused destinations are removed.
+% \item The destination names are shortened (option \xoption{name}).
+% \item Using numbered destinations (option \xoption{num}).
+% \end{itemize}
+%
+% \subsection{Requirements}
+%
+% \begin{itemize}
+% \item Package \xpackage{hyperref} 2006/06/01 v6.75a or newer
+%       (\cite{hyperref}).
+% \item Package \xpackage{alphalph} 2006/05/30 v1.4 or newer
+%       (\cite{alphalph}), if option \xoption{name} is used.
+% \item Package \xpackage{ifpdf} (\cite{ifpdf}).
+% \item \pdfTeX\ 1.30.0 or newer.
+% \item \pdfTeX\ in PDF mode.
+% \item \eTeX\ extensions enabled.
+% \item Probably an additional compile run of \pdfLaTeX\ is necessary.
+% \end{itemize}
+%
+% In the first compile runs you can get warnings such as:
+%\begin{quote}
+%\begin{verbatim}
+%! pdfTeX warning (dest): name{...} has been referenced ...
+%\end{verbatim}
+%\end{quote}
+% These warnings should vanish in later compile runs.
+% However these warnings also can occur without this package.
+% The package does not cure them, thus these warnings will remain,
+% but the destination name can be different. In such cases test
+% without package, too.
+%
+% \subsection{Use}
+%
+% If the requirements are met, load the package:
+%\begin{quote}
+%\verb|\usepackage{hypdestopt}|
+%\end{quote}
+%
+% The following options are supported:
+% \begin{description}
+% \item[\xoption{verbose}:] Verbose debug output is enabled and written
+%   in the protocol file.
+% \item[\xoption{num}:] Numbered destinations are used. The file size
+%   is smaller, because names are no longer used.
+%   This is the default.
+% \item[\xoption{name}:] Destinations are identified by names.
+% \end{description}
+%
+% \subsection{Limitations}
+%
+% \begin{itemize}
+% \item Forget this package, if you need preserved destination names.
+% \item Destination name strings use all bytes (0..255) except
+%       the carriage return (13), left parenthesis (40), right
+%       parenthesis (41), and backslash (92), because they
+%       must be quoted in general and therefore occupy two bytes
+%       instead of one.
+%
+%       Further the zero byte (0) is avoided for programs
+%       that implement strings using zero terminated C strings.
+%       And 255 (0xFF) is avoided to get rid of a possible
+%       unicode marker at the begin.
+%
+%       So far I have not seen problems with:
+%       \begin{itemize}
+%       \item AcrobatReader 5.08/Linux
+%       \item AcrobatReader 7.0/Linux
+%       \item xpdf 3.00
+%       \item Ghostscript 8.50
+%       \item gv 3.5.8
+%       \item GSview 4.6
+%       \end{itemize}
+%       But I have not tested all and all possible PDF viewers.
+% \item Use of named destinations (\cs{pdfdest}, \cs{pdfoutline},
+%       \cs{pdfstartlink}, \dots) that are not supported by this
+%       package.
+% \item Currently only \xpackage{hyperref} with \pdfTeX\ in PDF
+%       mode is supported.
+% \end{itemize}
+%
+% \subsection{Future}
+%
+% A more general approach is a PDF postprocessor that takes
+% a PDF file, performs some transformations and writes the
+% result in a more optimized PDF file. Then it does not depend,
+% how the original PDF file was generated and further improvements
+% are easier to apply. For example, the destination names could be sorted:
+% often used destination names would then be shorter than seldom used ones.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypdestopt}%
+  [2011/05/13 v2.3 Hyperref destination optimizer (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+% \subsubsection{Option \xoption{verbose}}
+%
+%    \begin{macrocode}
+\newif\ifHypDest@Verbose
+\DeclareOption{verbose}{\HypDest@Verbosetrue}
+%    \end{macrocode}
+%
+%    \begin{macro}{\HypDest@VerboseInfo}
+%    Wrapper for verbose messages.
+%    \begin{macrocode}
+\def\HypDest@VerboseInfo#1{%
+  \ifHypDest@Verbose
+    \PackageInfo{hypdestopt}{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Options \xoption{num} and \xoption{name}}
+%
+%    The options \xoption{num} or \xoption{name} specify
+%    the method, how destinations are referenced (by name or
+%    number). Default is option \xoption{num}.
+%    \begin{macrocode}
+\newif\ifHypDest@name
+\DeclareOption{num}{\HypDest@namefalse}
+\DeclareOption{name}{\HypDest@nametrue}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions*\relax
+%    \end{macrocode}
+%
+% \subsection{Check requirements}
+%
+%    First \pdfTeX\ must running in PDF mode.
+%    \begin{macrocode}
+\RequirePackage{ifpdf}[2007/09/09]
+\RequirePackage{pdftexcmds}[2007/11/11]
+\ifpdf
+\else
+  \PackageError{hypdestopt}{%
+    This package requires pdfTeX in PDF mode%
+  }\@ehc
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%    The version of \pdfTeX\ must not be too old, because
+%    \cs{pdfescapehex} and \cs{pdfunescapehex} are used.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapehex\endcsname\relax
+  \PackageError{hypdestopt}{%
+    This pdfTeX is too old, at least 1.30.0 is required%
+  }\@ehc
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%    Features of \eTeX\ are used, e.g. \cs{numexpr}.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \PackageError{hypdestopt}{%
+    e-TeX features are missing%
+  }\@ehc
+  \expandafter\endinput
+\fi
+%    \end{macrocode}
+%    Package \xpackage{alphalph} provides \cs{newalphalph} since
+%    version 2006/05/30 v1.4.
+%    \begin{macrocode}
+\ifHypDest@name
+  \RequirePackage{alphalph}[2006/05/30]%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage{auxhook}[2009/12/14]
+\RequirePackage{pdfescape}[2007/04/21]
+%    \end{macrocode}
+%
+% \subsection{Preamble for auxiliary file}
+%
+%    Provide dummy definitions for the macros that are used in the
+%    auxiliary files. If the package is used no longer, then these
+%    commands will not generate errors.
+%
+%    \begin{macro}{\HypDest@PrependDocument}
+%    We add our stuff in front of the \cs{AtBeginDocument} hook
+%    to ensure that we are before \xpackage{hyperref}'s stuff.
+%    \begin{macrocode}
+\long\def\HypDest@PrependDocument#1{%
+  \begingroup
+    \toks\z@{#1}%
+    \toks\tw@\expandafter{\@begindocumenthook}%
+    \xdef\@begindocumenthook{\the\toks\z@\the\toks\tw@}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AddLineBeginAux{%
+  \string\providecommand{\string\HypDest@Use}[1]{}%
+}
+%    \end{macrocode}
+%
+% \subsection{Generation of destination names}
+%
+%    Counter |HypDest| is used for identifying destinations.
+%    \begin{macrocode}
+\newcounter{HypDest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifHypDest@name
+%    \end{macrocode}
+%
+%    \begin{macro}{\HypDest@HexChar}
+%    Destination names are generated by automatically
+%    numbering with the help of package \xpackage{alphalph}.
+%    \cs{HypDest@HexChar} converts a number of the range 1 until 252
+%    into the hexadecimal representation of the string character.
+%    \begin{macrocode}
+  \def\HypDest@HexChar#1{%
+    \ifcase#1\or
+%    \end{macrocode}
+%    Avoid zero byte because of C strings in PDF viewer
+%    applications.
+%    \begin{macrocode}
+      01\or 02\or 03\or 04\or 05\or 06\or 07\or
+%    \end{macrocode}
+%    Omit carriage return (13/\verb|^^0d|).
+%    It needs quoting, otherwise it would be converted
+%    to line feed (10/\verb|^^0a|).
+%    \begin{macrocode}
+      08\or 09\or 0A\or 0B\or 0C\or 0E\or 0F\or
+      10\or 11\or 12\or 13\or 14\or 15\or 16\or 17\or
+      18\or 19\or 1A\or 1B\or 1C\or 1D\or 1E\or 1F\or
+      20\or 21\or 22\or 23\or 24\or 25\or 26\or 27\or
+%    \end{macrocode}
+%    Omit left and right parentheses (40/\verb|^^28|, 41/\verb|^^39|),
+%    they need quoting in general.
+%    \begin{macrocode}
+      2A\or 2B\or 2C\or 2D\or 2E\or 2F\or
+      30\or 31\or 32\or 33\or 34\or 35\or 36\or 37\or
+      38\or 39\or 3A\or 3B\or 3C\or 3D\or 3E\or 3F\or
+      40\or 41\or 42\or 43\or 44\or 45\or 46\or 47\or
+      48\or 49\or 4A\or 4B\or 4C\or 4D\or 4E\or 4F\or
+      50\or 51\or 52\or 53\or 54\or 55\or 56\or 57\or
+%    \end{macrocode}
+%    Omit backslash (92/\verb|^^5C|), it needs quoting.
+%    \begin{macrocode}
+      58\or 59\or 5A\or 5B\or 5D\or 5E\or 5F\or
+      60\or 61\or 62\or 63\or 64\or 65\or 66\or 67\or
+      68\or 69\or 6A\or 6B\or 6C\or 6D\or 6E\or 6F\or
+      70\or 71\or 72\or 73\or 74\or 75\or 76\or 77\or
+      78\or 79\or 7A\or 7B\or 7C\or 7D\or 7E\or 7F\or
+      80\or 81\or 82\or 83\or 84\or 85\or 86\or 87\or
+      88\or 89\or 8A\or 8B\or 8C\or 8D\or 8E\or 8F\or
+      90\or 91\or 92\or 93\or 94\or 95\or 96\or 97\or
+      98\or 99\or 9A\or 9B\or 9C\or 9D\or 9E\or 9F\or
+      A0\or A1\or A2\or A3\or A4\or A5\or A6\or A7\or
+      A8\or A9\or AA\or AB\or AC\or AD\or AE\or AF\or
+      B0\or B1\or B2\or B3\or B4\or B5\or B6\or B7\or
+      B8\or B9\or BA\or BB\or BC\or BD\or BE\or BF\or
+      C0\or C1\or C2\or C3\or C4\or C5\or C6\or C7\or
+      C8\or C9\or CA\or CB\or CC\or CD\or CE\or CF\or
+      D0\or D1\or D2\or D3\or D4\or D5\or D6\or D7\or
+      D8\or D9\or DA\or DB\or DC\or DD\or DE\or DF\or
+      E0\or E1\or E2\or E3\or E4\or E5\or E6\or E7\or
+      E8\or E9\or EA\or EB\or EC\or ED\or EE\or EF\or
+      F0\or F1\or F2\or F3\or F4\or F5\or F6\or F7\or
+%    \end{macrocode}
+%    Avoid 255 (0xFF) to get rid of a possible unicode
+%    marker at the begin of the string.
+%    \begin{macrocode}
+      F8\or F9\or FA\or FB\or FC\or FD\or FE%
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{HypDest@HexString}
+%    Now package \xpackage{alphalph} comes into play.
+%    \cs{HypDest@HexString} is defined and converts
+%    a positive number into a string, given in hexadecimal
+%    representation.
+%    \begin{macrocode}
+  \newalphalph\HypDest@HexString\HypDest@HexChar{250}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\theHypDest}
+%    For use, the hexadecimal string is converted back.
+%    \begin{macrocode}
+  \renewcommand*{\theHypDest}{%
+    \pdf@unescapehex{\HypDest@HexString{\value{HypDest}}}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    With option \xoption{num} we use the number directly.
+%    \begin{macrocode}
+\else
+  \renewcommand*{\theHypDest}{%
+    \number\value{HypDest}%
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Assign destination names}
+%
+%    \begin{macro}{\HypDest@Prefix}
+%    The new destination names are remembered in macros whose names
+%    start with prefix \cs{HypDest@Prefix}.
+%    \begin{macrocode}
+\edef\HypDest@Prefix{HypDest\string:}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HypDest@Use}
+%    During the first read of the auxiliary files, the used destinations
+%    get fresh generated short destination names. Also for the old
+%    destination names we use the hexadecimal representation. That
+%    avoid problems with arbitrary names.
+%    \begin{macrocode}
+\def\HypDest@Use#1{%
+  \begingroup
+    \edef\x{%
+      \expandafter\noexpand
+      \csname\HypDest@Prefix\pdf@unescapehex{#1}\endcsname
+    }%
+    \expandafter\ifx\x\relax
+      \stepcounter{HypDest}%
+      \expandafter\xdef\x{\theHypDest}%
+      \let\on@line\@empty
+      \ifHypDest@name
+        \HypDest@VerboseInfo{%
+          Use: (\pdf@unescapehex{#1}) -\string> %
+          0x\pdf@escapehex{\x} (\number\value{HypDest})%
+        }%
+      \else
+        \HypDest@VerboseInfo{%
+          Use: (\pdf@unescapehex{#1}) -\string> num \x
+        }%
+      \fi
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    After the first \xfile{.aux} file processing the destination names
+%    are assigned and we can disable \cs{HypDest@Use}.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \let\HypDest@Use\@gobble
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\HypDest@MarkUsed}
+%    Destinations that are actually used are marked by \cs{HypDest@MarkUsed}.
+%    \cs{nofiles} is respected.
+%    \begin{macrocode}
+\def\HypDest@MarkUsed#1{%
+  \HypDest@VerboseInfo{%
+    MarkUsed: (#1)%
+  }%
+  \if@filesw
+    \immediate\write\@auxout{%
+      \string\HypDest@Use{\pdf@escapehex{#1}}%
+    }%
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Redefinition of \xpackage{hyperref}'s hooks}
+%
+%    Package \xpackage{hyperref} can be loaded later, therefore
+%    we redefine \xpackage{hyperref}'s macros at |\begin{document}|.
+%    \begin{macrocode}
+\HypDest@PrependDocument{%
+%    \end{macrocode}
+%
+%    Check hyperref version.
+%    \begin{macrocode}
+  \@ifpackagelater{hyperref}{2006/06/01}{}{%
+    \PackageError{hypdestopt}{%
+      hyperref 2006/06/01 v6.75a or later is required%
+    }\@ehc
+  }%
+%    \end{macrocode}
+%
+% \subsubsection{Destination setting}
+%
+%    \begin{macrocode}
+  \ifHypDest@name
+    \let\HypDest@Org@DestName\Hy@DestName
+    \renewcommand*{\Hy@DestName}[2]{%
+      \EdefUnescapeString\HypDest@temp{#1}%
+      \@ifundefined{\HypDest@Prefix\HypDest@temp}{%
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) unused%
+        }%
+      }{%
+        \HypDest@Org@DestName{%
+          \csname\HypDest@Prefix\HypDest@temp\endcsname
+        }{#2}%
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) %
+          0x\pdf@escapehex{%
+            \csname\HypDest@Prefix\HypDest@temp\endcsname
+          }%
+        }%
+      }%
+    }%
+  \else
+    \renewcommand*{\Hy@DestName}[2]{%
+      \EdefUnescapeString\HypDest@temp{#1}%
+      \@ifundefined{\HypDest@Prefix\HypDest@temp}{%
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) unused%
+        }%
+      }{%
+        \pdfdest num%
+        \csname\HypDest@Prefix\HypDest@temp\endcsname#2\relax
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) %
+          num \csname\HypDest@Prefix\HypDest@temp\endcsname
+        }%
+      }%
+    }%
+  \fi
+%    \end{macrocode}
+%
+% \subsubsection{Links}
+%
+%    \begin{macrocode}
+  \let\HypDest@Org@StartlinkName\Hy@StartlinkName
+  \ifHypDest@name
+    \renewcommand*{\Hy@StartlinkName}[2]{%
+      \HypDest@MarkUsed{#2}%
+      \HypDest@Org@StartlinkName{#1}{%
+        \@ifundefined{\HypDest@Prefix#2}{%
+          #2%
+        }{%
+          \csname\HypDest@Prefix#2\endcsname
+        }%
+      }%
+    }%
+  \else
+    \renewcommand*{\Hy@StartlinkName}[2]{%
+      \HypDest@MarkUsed{#2}%
+      \@ifundefined{\HypDest@Prefix#2}{%
+        \HypDest@Org@StartlinkName{#1}{#2}%
+      }{%
+        \pdfstartlink attr{#1}%
+                      goto num\csname\HypDest@Prefix#2\endcsname
+        \relax
+      }%
+    }%
+  \fi
+%    \end{macrocode}
+%
+% \subsubsection{Outlines of package \xpackage{hyperref}}
+%
+%    \begin{macrocode}
+  \let\HypDest@Org@OutlineName\Hy@OutlineName
+  \ifHypDest@name
+    \renewcommand*{\Hy@OutlineName}[4]{%
+      \HypDest@Org@OutlineName{#1}{%
+        \@ifundefined{\HypDest@Prefix#2}{%
+          #2%
+        }{%
+          \csname\HypDest@Prefix#2\endcsname
+        }%
+      }{#3}{#4}%
+    }%
+  \else
+    \renewcommand*{\Hy@OutlineName}[4]{%
+      \@ifundefined{\HypDest@Prefix#2}{%
+        \HypDest@Org@OutlineName{#1}{#2}{#3}{#4}%
+      }{%
+        \pdfoutline goto num\csname\HypDest@Prefix#2\endcsname
+                    count#3{#4}%
+      }%
+    }%
+  \fi
+%    \end{macrocode}
+%    Because \cs{Hy@OutlineName} is called after the \xfile{.out} file
+%    is written in the previous run. Therefore we mark the destination
+%    earlier in \cs{@@writetorep}.
+%    \begin{macrocode}
+  \let\HypDest@Org@@writetorep\@@writetorep
+  \renewcommand*{\@@writetorep}[5]{%
+    \begingroup
+      \edef\Hy@tempa{#5}%
+      \ifx\Hy@tempa\Hy@bookmarkstype
+        \HypDest@MarkUsed{#3}%
+      \fi
+    \endgroup
+    \HypDest@Org@@writetorep{#1}{#2}{#3}{#4}{#5}%
+  }%
+%    \end{macrocode}
+%
+% \subsubsection{Outlines of package \xpackage{bookmark}}
+%
+%    \begin{macrocode}
+  \@ifpackageloaded{bookmark}{%
+    \@ifpackagelater{bookmark}{2008/08/08}{%
+      \renewcommand*{\BKM@DefGotoNameAction}[2]{%
+        \@ifundefined{\HypDest@Prefix#2}{%
+          \edef#1{goto name{hypdestopt\string :unknown}}%
+        }{%
+          \ifHypDest@name
+            \edef#1{goto name{\csname\HypDest@Prefix#2\endcsname}}%
+          \else
+            \edef#1{goto num\csname\HypDest@Prefix#2\endcsname}%
+          \fi
+        }%
+      }%
+      \def\BKM@HypDestOptHook{%
+        \ifx\BKM@dest\@empty
+        \else
+          \ifx\BKM@gotor\@empty
+            \HypDest@MarkUsed\BKM@dest
+          \fi
+        \fi
+      }%
+    }{%
+      \@PackageError{hypdestopt}{%
+        Package `bookmark' is too old.\MessageBreak
+        Version 2008/08/08 or later is needed%
+      }\@ehc
+    }%
+  }{}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypdestopt.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypdestopt.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hypdestopt.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hypdestopt.sty & tex/latex/oberdiek/hypdestopt.sty\\
+%   hypdestopt.pdf & doc/latex/oberdiek/hypdestopt.pdf\\
+%   hypdestopt.dtx & source/latex/oberdiek/hypdestopt.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hypdestopt.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hypdestopt.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hypdestopt.dtx
+%makeindex -s gind.ist hypdestopt.idx
+%pdflatex hypdestopt.dtx
+%makeindex -s gind.ist hypdestopt.idx
+%pdflatex hypdestopt.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hypdestopt.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hypdestopt'>
+  <name>hypdestopt</name>
+  <caption>Hyperref destination optimizer.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2008,2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.3'/>
+  <description>
+    This package supports <xref refid='hyperref'>hyperref</xref>'s
+    pdftex driver. It removes unnecessary destinations
+    and shortens the destination names or uses numbered destinations
+    to get smaller PDF files.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hypdestopt.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hypdestopt.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{alphalph}
+%   Heiko Oberdiek: \textit{The \xpackage{alphalph} package};
+%   2006/05/30 v1.4;
+%   \CTAN{macros/latex/contrib/oberdiek/alphalph.pdf}.
+%
+% \bibitem{hyperref}
+%   Sebastian Rahtz, Heiko Oberdiek:
+%   \textit{The \xpackage{hyperref} package};
+%   2006/06/01 v6.75a;
+%   \CTAN{macros/latex/contrib/hyperref/}.
+%
+% \bibitem{ifpdf}
+%   Heiko Oberdiek: \textit{The \xpackage{ifpdf} package};
+%   2006/02/20 v1.4;
+%   \CTAN{macros/latex/contrib/oberdiek/ifpdf.pdf}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2006/06/01 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2006/06/01 v2.0}
+%   \item
+%     New method for referencing destinations by number; an idea
+%     proposed by Lars Hellstr\"om in the mailing list LATEX-L.
+%   \item
+%     Options \xoption{name} and \xoption{num} added.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v2.1}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+%   \begin{Version}{2008/08/08 v2.2}
+%   \item
+%     Support for package \xpackage{bookmark} added.
+%   \end{Version}
+%   \begin{Version}{2011/05/13 v2.3}
+%   \item
+%     Fix for \cs{Hy@DestName} if the destination name contains
+%     special characters.
+%   \item
+%     Fix for option \xoption{name} and package \xpackage{bookmark}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

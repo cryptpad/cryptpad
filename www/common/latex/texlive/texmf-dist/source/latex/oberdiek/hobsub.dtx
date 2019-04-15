@@ -1,0 +1,1483 @@
+% \iffalse meta-comment
+%
+% File: hobsub.dtx
+% Version: 2012/05/28 v1.13
+% Info: Construct package bundles
+%
+% Copyright (C) 2011, 2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file hobsub.dtx
+% and the derived files
+%    hobsub.sty, hobsub.pdf, hobsub.ins, hobsub.drv, hobsub-generic.sty,
+%    hobsub-hyperref.sty, hobsub-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hobsub.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hobsub.pdf
+%
+% Unpacking:
+%    (a) If hobsub.ins is present:
+%           tex hobsub.ins
+%    (b) Without hobsub.ins:
+%           tex hobsub.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hobsub.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hobsub.drv is present:
+%           latex hobsub.drv
+%    (b) Without hobsub.drv:
+%           latex hobsub.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hobsub.dtx
+%       makeindex -s gind.ist hobsub.idx
+%       pdflatex hobsub.dtx
+%       makeindex -s gind.ist hobsub.idx
+%       pdflatex hobsub.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/hobsub.sty
+%    TDS:tex/generic/oberdiek/hobsub-generic.sty
+%    TDS:tex/generic/oberdiek/hobsub-hyperref.sty
+%    TDS:doc/latex/oberdiek/hobsub.pdf
+%    TDS:doc/latex/oberdiek/test/hobsub-test1.tex
+%    TDS:source/latex/oberdiek/hobsub.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hobsub
+Version: 2012/05/28 v1.13
+
+Copyright (C) 2011, 2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file hobsub.dtx
+and the derived files
+   hobsub.sty, hobsub.pdf, hobsub.ins, hobsub.drv, hobsub-generic.sty,
+   hobsub-hyperref.sty, hobsub-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hobsub.ins}{\from{hobsub.dtx}{install}}%
+  \file{hobsub.drv}{\from{hobsub.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{hobsub.sty}{\from{hobsub.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{hobsub-test1.tex}{\from{hobsub.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hobsub.xml}{\from{hobsub.dtx}{catalogue}}%
+}
+\let\hobsubSavedNormalLine\normalLine
+\def\hobsubGobble#1{}
+\begingroup
+  \lccode`\0=32 % space
+  \lccode`\1=35 % hash
+  \lccode`\2=37 % percent
+  \lccode`\3=92 % backslash
+  \lccode`\4=123 % {
+  \lccode`\5=125 % }
+\lowercase{\endgroup
+  \let\hobsubTokenSpaceOther= 0%
+  \let\hobsubTokenHash= 1%
+  \let\hobsubTokenPercent= 2%
+  \let\hobsubTokenBackslash= 3%
+  \let\hobsubTokenBraceLeft= 4%
+  \let\hobsubTokenBraceRight= 5%
+  \def\hobsubNormalLineWithSpace{%
+    \hobsubSavedNormalLine0%
+  }%
+}
+\def\normalLine{%
+  \futurelet\hobsubToken\hobsubFirst
+}
+\def\hobsubFirst{%
+  \ifx\hobsubToken\hobsubTokenSpaceOther
+    \expandafter\expandafter\expandafter\futurelet
+    \expandafter\expandafter\expandafter\hobsubToken
+    \expandafter\expandafter\expandafter\hobsubNext
+    \expandafter\hobsubGobble
+  \else
+    \expandafter\hobsubSavedNormalLine
+  \fi
+}
+\def\hobsubNext{%
+  \ifx\hobsubToken\hobsubTokenSpaceOther
+    \expandafter\expandafter\expandafter\futurelet
+    \expandafter\expandafter\expandafter\hobsubToken
+    \expandafter\expandafter\expandafter\hobsubNext 
+    \expandafter\hobsubGobble
+  \else
+    \let\hobsubWithSpace=Y%
+    \ifx\hobsubToken\hobsubTokenBackslash
+      \let\hobsubWithSpace=N%
+    \else
+      \ifx\hobsubToken\hobsubTokenBraceRight
+        \let\hobsubWithSpace=N%
+      \else
+        \ifx\hobsubToken\hobsubTokenBraceLeft
+          \let\hobsubWithSpace=N%
+        \else
+          \ifx\hobsubToken\hobsubTokenPercent
+            \let\hobsubWithSpace=N%
+          \else
+            \ifx\hobsubToken\hobsubTokenHash
+              \let\hobsubWithSpace=N%
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+    \ifx\hobsubWithSpace Y%
+      \expandafter\expandafter\expandafter\hobsubNormalLineWithSpace
+    \else
+      \expandafter\expandafter\expandafter\hobsubSavedNormalLine
+    \fi
+  \fi
+}
+\generate{%
+  \usedir{tex/generic/oberdiek}%
+  \file{hobsub-generic.sty}{%
+    \from{hobsub.dtx}{generic,preamble,infwarerr}%
+    \from{infwarerr.dtx}{package}%
+    \from{hobsub.dtx}{post,ltxcmds}%
+    \from{ltxcmds.dtx}{package}%
+    \from{hobsub.dtx}{post,ifluatex}%
+    \from{ifluatex.dtx}{package}%
+    \from{hobsub.dtx}{post,ifvtex}%
+    \from{ifvtex.dtx}{package}%
+    \from{hobsub.dtx}{post,intcalc}%
+    \from{intcalc.dtx}{package}%
+    \from{hobsub.dtx}{post,ifpdf}%
+    \from{ifpdf.dtx}{package}%
+    \from{hobsub.dtx}{post,etexcmds}%
+    \from{etexcmds.dtx}{package}%
+    \from{hobsub.dtx}{post,kvsetkeys}%
+    \from{kvsetkeys.dtx}{package}%
+    \from{hobsub.dtx}{post,kvdefinekeys}%
+    \from{kvdefinekeys.dtx}{package}%
+    \from{hobsub.dtx}{post,luatex-loader}%
+    \from{luatex.dtx}{loader}%
+    \from{hobsub.dtx}{post,pdftexcmds}%
+    \from{pdftexcmds.dtx}{package}%
+    \from{hobsub.dtx}{post,pdfescape}%
+    \from{pdfescape.dtx}{package}%
+    \from{hobsub.dtx}{post,bigintcalc}%
+    \from{bigintcalc.dtx}{package}%
+    \from{hobsub.dtx}{post,bitset}%
+    \from{bitset.dtx}{package}%
+    \from{hobsub.dtx}{post,uniquecounter}%
+    \from{uniquecounter.dtx}{package}%
+    \from{hobsub.dtx}{post,atend}%
+  }%
+}
+\generate{%
+  \usedir{tex/generic/oberdiek}%
+  \file{hobsub-hyperref.sty}{%
+    \from{hobsub.dtx}{hyperref,preamble,,letltxmacro}%
+    \from{letltxmacro.dtx}{package}%
+    \from{hobsub.dtx}{post,hopatch}%
+    \from{hopatch.dtx}{package}%
+    \from{hobsub.dtx}{post,xcolor-patch}%
+    \from{hycolor.dtx}{xcolor}%
+    \from{hobsub.dtx}{post,atveryend}%
+    \from{atveryend.dtx}{package}%
+    \from{hobsub.dtx}{post,atbegshi}%
+    \from{atbegshi.dtx}{package}%
+    \from{hobsub.dtx}{post,refcount}%
+    \from{refcount.dtx}{package}%
+    \from{hobsub.dtx}{post,hycolor}%
+    \from{hycolor.dtx}{package}%
+    \from{hobsub.dtx}{post}%
+  }%
+}
+\let\normalLine\hobsubSavedNormalLine
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hobsub.sty, hobsub-generic.sty, hobsub-hyperref.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hobsub.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hobsub.drv}%
+  [2012/05/28 v1.13 Construct package bundles (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{array}
+\usepackage{caption}
+\renewcommand*{\bottomfraction}{.5}
+\renewcommand*{\topfraction}{.5}
+\begin{document}
+  \DocInput{hobsub.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{765}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hobsub.drv}
+%
+% \title{The \xpackage{hobsub} package}
+% \date{2012/05/28 v1.13}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{hobsub} implements the idea of loading
+% several packages in one big collection package.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \def\TableGeneric{^^A
+%   \TableEntry{\xpackage{infwarerr}}{}{2010/04/08 v1.3}^^A
+%   \TableEntry{\xpackage{ltxcmds}}{}{2011/11/09 v1.22}^^A
+%   \TableEntry{\xpackage{ifluatex}}{}{2010/03/01 v1.3}^^A
+%   \TableEntry{\xpackage{ifvtex}}{}{2010/03/01 v1.5}^^A
+%   \TableEntry{\xpackage{intcalc}}{}{2007/09/27 v1.1}^^A
+%   \TableEntry{\xpackage{ifpdf}}{\xpackage{ifluatex}}{2011/01/30 v2.3}^^A
+%   \TableEntry{\xpackage{etexcmds}}{}{2011/02/16 v1.5}^^A
+%   \TableEntry{\xpackage{kvsetkeys}}{}{2012/04/25 v1.16}^^A
+%   \TableEntry{\xpackage{kvdefinekeys}}{}{2011/04/07 v1.3}^^A
+%   \TableEntry{\xpackage{luatex-loader}}{}{2010/03/09 v0.4}^^A
+%   \TableEntry{\xpackage{pdftexcmds}}{\xpackage{ifluatex}, \xpackage{ifpdf}, \xpackage{infwarerr}, \xpackage{ltxcmds}, \xpackage{luatex-loader}}{2011/11/29 v0.20}^^A
+%   \TableEntry{\xpackage{pdfescape}}{\xpackage{ltxcmds}, \xpackage{pdftexcmds}}{2011/11/25 v1.13}^^A
+%   \TableEntry{\xpackage{bigintcalc}}{\xpackage{pdftexcmds}}{2012/04/08 v1.3}^^A
+%   \TableEntry{\xpackage{bitset}}{\xpackage{bigintcalc}, \xpackage{infwarerr}, \xpackage{intcalc}}{2011/01/30 v1.1}^^A
+%   \TableEntry{\xpackage{uniquecounter}}{\xpackage{bigintcalc}, \xpackage{infwarerr}}{2011/01/30 v1.2}^^A
+% }
+% \def\TableHyperref{^^A
+%   \TableEntry{\xpackage{letltxmacro}}{}{2010/09/02 v1.4}^^A
+%   \TableEntry{\xpackage{hopatch}}{}{2012/05/28 v1.2}^^A
+%   \TableEntry{\xpackage{xcolor-patch}}{}{2011/01/30 v1.7}^^A
+%   \TableEntry{\xpackage{atveryend}}{}{2011/06/30 v1.8}^^A
+%   \TableEntry{\xpackage{atbegshi}}{\xpackage{ifpdf}, \xpackage{infwarerr}, \xpackage{ltxcmds}}{2011/10/05 v1.16}^^A
+%   \TableEntry{\xpackage{refcount}}{\xpackage{infwarerr}, \xpackage{ltxcmds}}{2011/10/16 v3.4}^^A
+%   \TableEntry{\xpackage{hycolor}}{\xpackage{xcolor-patch}}{2011/01/30 v1.7}^^A
+% }
+%
+% \newenvironment{TableList}[2][htbp]{^^A
+%   \begin{table}[{#1}]^^A
+%   \centering
+%   \caption{Overview \xpackage{hobsub-#2}}^^A
+%   \label{tab:#2}^^A
+%   \begin{tabular}{ll>{\raggedright}p{.4\linewidth}}^^A
+%   \bfseries Package & \bfseries Release &
+%   \bfseries Dependencies\tabularnewline
+%   \hline
+% }{^^A
+%   \end{tabular}^^A
+%   \end{table}^^A
+% }
+% \newcommand*{\TableEntry}[3]{%
+%   #1&#3&#2\tabularnewline
+% }
+%
+% \renewcommand*{\arraystretch}{1.1}
+% \setlength{\extrarowheight}{2pt}
+%
+% \section{Documentation}
+%
+% In January 2011 the mailing list lualatex-dev discussed
+% ``quietening lualatex console output'' \cite{lualatex:quiet}.
+% Inspired from this, I implemented this package \xpackage{hobsub}
+% to load several packages in one file. The package is applied for
+% two packages collections that are subsets of my package bundle
+% \xpackage{oberdiek}.
+% \begin{description}
+% \item[\xpackage{hobsub-generic}] is a collection of packages
+%   that can also be used with \hologo{plainTeX}.
+% \item[\xpackage{hobsub-hyperref}] is a collection of packages
+%   that is used by package \xpackage{hyperref}.
+% \end{description}
+%
+% Package \xpackage{hobsub} provides the macros that
+% are used in the collection packages and might be used
+% in other projects as well. But there are many caveats,
+% some of them are discussed below.
+%
+% The most serious problem is consistency. A package
+% that is available as standalone package and is part
+% of a collection might have different versions.
+% Because my packages are organized in a bundle and should
+% be installed and updated as bundle, the risk seems low
+% to me. However, if a single package is updated manually, for
+% example for testing, then it should be loaded before the
+% collection that contains the package with an older version.
+% In a collection, the package will not be loaded again if it
+% is already loaded.
+%
+% \subsection{Usage}
+%
+% The collection packages \xpackage{hobsub-generic} and
+% \xpackage{hobsub-hyperref} are loaded as usual:
+% \begin{quote}
+%  \begin{tabular}{@{}ll@{}}
+%    |\usepackage{hobsub-generic}| & \hologo{LaTeX}\\
+%    |\input hobsub-generic.sty| & \hologo{plainTeX}
+%  \end{tabular}
+% \end{quote}
+% or
+% \begin{quote}|\usepackage{hobsub-hyperref}|\end{quote}
+% Of course, both \cs{usepackage} or \cs{RequirePackage}
+% can be used.
+%
+% If you need requirements on the version date of a package
+% inside a collection, then specify them afterwards, for
+% example:
+% \begin{quote}
+%   |\usepackage{hobsub-generic}|\\
+%   |\usepackage{ltxcmds}[2010/12/04]% |^^A
+%   {\itshape |\ltx@ifblank is needed|}
+% \end{quote}
+%
+% Also it is not garanteed that a package will be always
+% part of a collection. Therefore it does not harm,
+% to make the requirements explicite \emph{after}
+% a collection is loaded, see the previous example.
+% \hologo{LaTeX} knows that a
+% package is already loaded and does not load it again.
+%
+% \subsection{Supported features}
+%
+% \begin{description}
+% \item[No reloads:] If a package is already loaded then it
+%  is not reloaded again if it is part of a collection package.
+% \item[\cs{listfiles}:]
+%   Each package that is loaded in a collection is also
+%   added to the output of \cs{listfiles}.
+% \item[\cs{@currname}, \cs{@currext}]
+%   are updated, they are used by \hologo{LaTeX}'s
+%  \cs{ProvidesPackage}.
+% \item[\cs{AtEndOfPackage}:]
+%   \hologo{LaTeX}'s hook mechanism that is used for
+%   \cs{AtEndOfPackage} is supported. However none of the
+%   packages in the collections are using \cs{AtEndOfPackage},
+%   therefore this feature is completely untested.
+% \end{description}
+%
+% \subsection{Common limitations}
+%
+% \begin{description}
+% \item[\cs{endinput}:]
+%   Often a package is using \cs{endinput}, either added by
+%   \xpackage{docstrip}, or to stop package loading at an earlier
+%   time. Therefore \cs{endinput} must be catched during package
+%   loading to prevent that the collection package is closed
+%   too early before reading all packages it contains.
+%
+%   This redefinition of \cs{endinput} fails if the package loads
+%   other files that contain \cs{endinput}. To some degree it could
+%   be catched by redefining macros that load files. But this will
+%   not work for the primitive \cs{input}.
+% \item[Options:]
+%   \hologo{LaTeX}'s package options are not supported.
+%   Therefore the packages that are put in a collection must
+%   not support options.
+% \item[Hook packages:]
+%   Some packages and classes provides hooks for packages, see
+%   packages \xpackage{scrlfile}, \xpackage{filehook}
+%   or class \xclass{memoir}. These hooks are not supported
+%   for embedded packages inside a collection package.
+%   Because of the problem with \cs{endinput}, these hooks
+%   are not supported. The hooks might contain code that
+%   loads other files that execute \cs{endinput}.
+% \end{description}
+%
+% \subsection{Package \xpackage{hobsub-generic}}
+%
+% \begin{TableList}[bp]{generic}\TableGeneric\end{TableList}
+%
+% Collection `generic' contains some of the \hologo{plainTeX} compatible
+% packages of my bundle, see table \ref{tab:generic}.
+% It adds the following restrictions to any package
+% that is part of this collection:
+% \begin{description}
+% \item[Generic formats:] The following formats must be supported:
+%   \hologo{LaTeX}, \hologo{plainTeX} and even \hologo{iniTeX}.
+%   This applies to the collection package \xpackage{hobsub-generic}
+%   the same way.
+% \item[Prefixed macros:]
+%   Any package of this collection should only define macros with
+%   prefixed names to avoid name clashes. Resources like registers
+%   must not be allocated and other global states should not be
+%   changed except for added macro definitions.
+% \end{description}
+% Thus the package \xpackage{hobsub-generic} can also preloaded
+% in the format file with \hologo{iniTeX}.
+%
+% \subsection{Package \xpackage{hobsub-hyperref}}
+%
+% \begin{TableList}[tp]{hyperref}\TableHyperref\end{TableList}
+%
+% Collection `hyperref' contains additional packages that are
+% used by package \xpackage{hyperref} and that does not fit
+% in collection `generic', see table{tab:hyperref}.
+% The latter collection package
+% \xpackage{hobsub-generic} is loaded via a conventional
+% \cs{RequirePackage}.
+%
+% Because most of the packages in the collection `hyperref'
+% needs \hologo{LaTeX}, the collection requires \hologo{LaTeX}.
+%
+% \subsection{Package \xpackage{hobsub}}
+%
+% This section is for advanced users that might want to
+% build a collection package. Then it can be done by
+% using \xpackage{hobsub}:
+% \begin{quote}
+%   \dots\\
+%   |\RequirePackage{hobsub}[2012/05/28]|\\
+%   \dots\\
+%   |\hobsub@StartPackage{foo1}|\\
+%   \textit{\dots\unskip\ package code of \xfile{foo1.sty} \dots}\\
+%   |\endinput|\\
+%   |<hobsub>|\\
+%   |\hobsub@StopPackage|\\
+%   |\hobsub@StartPackage{bar2}|\\
+%   \textit{\dots\unskip\ package code of \xfile{bar2.sty} \dots}\\
+%   |\endinput|\\
+%   |<hobsub>|\\
+%   |\hobsub@StopPackage|
+%   \dots
+% \end{quote}
+% But be aware of the caveats and limitations, see above.
+% Only quite a small portion of the packages can be embedded
+% like this.
+%
+% \clearpage
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Reload check and package identification}
+%
+% \subsubsection{Package \xpackage{hobsub}}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@hobsub.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{hobsub}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@hobsub.sty\endcsname
+\ProvidesPackage{hobsub}%
+  [2012/05/28 v1.13 Construct package bundles (HO)]%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{hobsub-generic}}
+%
+%    \begin{macrocode}
+%<*generic>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@hobsub-generic.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{hobsub-generic}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@hobsub-generic.sty\endcsname
+\ProvidesPackage{hobsub-generic}%
+  [2012/05/28 v1.13 Bundle oberdiek, subset generic (HO)]%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</generic>
+%    \end{macrocode}
+%
+% \subsubsection{Package \xpackage{hobsub-hyperref}}
+%
+%    \begin{macrocode}
+%<*hyperref>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@hobsub-hyperref.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{hobsub-hyperref}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@hobsub-hyperref.sty\endcsname
+\ProvidesPackage{hobsub-hyperref}%
+  [2012/05/28 v1.13 Bundle oberdiek, subset hyperref (HO)]%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</hyperref>
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+%<*package|generic|hyperref>
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname HOBsub@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\HOBsub@AtEnd{%
+    \HOBsub@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{96}{12}% `
+\edef\HOBsub@AtEnd{\HOBsub@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package|generic|hyperref>
+%    \end{macrocode}
+%
+% \subsection{Package \xpackage{hobsub-hyperref} loads \xpackage{hobsub-generic}}
+%
+%    \begin{macrocode}
+%<*hyperref>
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{hobsub-generic}[2012/05/28]
+%</hyperref>
+%    \end{macrocode}
+%
+% \subsection{Preamble}
+%
+%    \begin{macrocode}
+%<*preamble>
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@hobsub.sty\endcsname\relax
+\else
+  \expandafter\hobsub@GobbleRemainingPackage
+\fi
+%</preamble>
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+%<*package|preamble>
+%    \end{macrocode}
+%
+%    \begin{macro}{\HOBsub@OrgEndinput}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname HOBsub@OrgEndinput\endcsname\relax
+  \let\HOBsub@OrgEndinput\endinput
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\hobsub@GobbleRemainingPackage}
+%    \begin{macrocode}
+\def\hobsub@GobbleRemainingPackage{%
+  \begingroup
+  \catcode92=14 % backslash: comment
+  \catcode32=14 % space: comment
+  \catcode35=14 % hash: comment
+  \catcode123=14 % left brace: comment
+  \catcode125=14 % right brace: comment
+  \catcode60=3 % less: math
+  \catcode62=4 % greater: align
+  \endlinechar=-1 %
+  \HOBsub@GobbleRemainingPackage
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HOBsub@GobbleRemainingPackage}
+%    \begin{macrocode}
+\catcode60=3 % less: dollar
+\catcode62=4 % greater: align
+\long\def\HOBsub@GobbleRemainingPackage#1<hobsub>{%
+  \endgroup
+}
+\catcode60=12 % less: other
+\catcode62=12 % greater: other
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hobsub@StartPackage}
+%    \begin{macrocode}
+\def\hobsub@StartPackage#1{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+    \let\HOBsub@OrgCurrName\@currname
+    \let\HOBsub@OrgCurrExt\@currext
+    \csname @pushfilename\endcsname
+    \def\@currname{#1}%
+    \def\@currext{sty}%
+    \expandafter\def\csname\@currname.\@currext-h@@k\endcsname{}%
+    \let\endinput\hobsub@GobbleRemainingPackage
+    \def\hobsub@StopPackage{%
+      \let\hobsub@StopPackage\relax
+      \HOBsub@StopPackage
+%     \hobsub@Info{hobsub}{Package `#1' loaded}%
+    }%
+    \hobsub@AddToFileList{#1.sty}%
+  \else
+    \hobsub@Info{hobsub}{Skipping package `#1' (already loaded)}%
+    \let\hobsub@StopPackage\relax
+    \expandafter\hobsub@GobbleRemainingPackage
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hobsub@StopPackage}
+%    \begin{macrocode}
+\let\hobsub@StopPackage\relax
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hobsub@Info}
+%    \begin{macrocode}
+\def\hobsub@Info#1#2{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @PackageInfoNoLine\endcsname\relax
+    \immediate\write-1{Package #1 Info: #2.}%
+  \else
+    \let\hobsub@Info\@PackageInfoNoLine
+    \hobsub@Info{#1}{#2}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HOBsub@StopPackage}
+%    \begin{macrocode}
+\def\HOBsub@StopPackage{%
+  \csname\@currname.\@currext-h@@k\endcsname
+  \let\endinput\HOBsub@OrgEndinput
+  \csname @popfilename\endcsname
+  \let\@currname\HOBsub@OrgCurrName
+  \let\@currext\HOBsub@OrgCurrExt
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hobsub@AddToFileList}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @addtofilelist\endcsname\relax
+  \def\hobsub@AddToFileList#1{}%
+\else
+  \def\hobsub@AddToFileList#1{%
+    \@addtofilelist{#1}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package|preamble>
+%    \end{macrocode}
+%
+% \subsection{End of preamble for subset packages}
+%
+%    Add the end marker for possible skipping of previous
+%    macros, if package \xpackage{hobsub} was already loaded.
+%    \begin{macrocode}
+%<*preamble>
+\hobsub@GobbleRemainingPackage
+<hobsub>
+%    \end{macrocode}
+%
+%    All macros of package \xpackage{hobsub} are now available.
+%    Now we officially load the package \xpackage{hobsub} inline
+%    for proper package identification.
+%    \begin{macrocode}
+\hobsub@StartPackage{hobsub}%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+  \immediate\write-1{%
+    Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)%
+  }%
+\else
+  \ProvidesPackage{hobsub}%
+  [2012/05/28 v1.13 Construct package bundles (HO)]%
+\fi
+%</preamble>
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+%<*post|preamble>
+ \endinput
+<hobsub>
+\hobsub@StopPackage
+%</post|preamble>
+%    \end{macrocode}
+%
+% \subsection{Package list}
+%
+%    \begin{macrocode}
+%<infwarerr>\hobsub@StartPackage{infwarerr}
+%<ltxcmds>\hobsub@StartPackage{ltxcmds}
+%<ifluatex>\hobsub@StartPackage{ifluatex}
+%<ifvtex>\hobsub@StartPackage{ifvtex}
+%<intcalc>\hobsub@StartPackage{intcalc}
+%<ifpdf>\hobsub@StartPackage{ifpdf}
+%<etexcmds>\hobsub@StartPackage{etexcmds}
+%<kvsetkeys>\hobsub@StartPackage{kvsetkeys}
+%<kvdefinekeys>\hobsub@StartPackage{kvdefinekeys}
+%<*luatex-loader>
+\ifluatex
+\else
+  \expandafter\hobsub@GobbleRemainingPackage
+\fi
+\hobsub@StartPackage{luatex-loader}
+%</luatex-loader>
+%<pdftexcmds>\hobsub@StartPackage{pdftexcmds}
+%<pdfescape>\hobsub@StartPackage{pdfescape}
+%<bigintcalc>\hobsub@StartPackage{bigintcalc}
+%<bitset>\hobsub@StartPackage{bitset}
+%<uniquecounter>\hobsub@StartPackage{uniquecounter}
+%<letltxmacro>\hobsub@StartPackage{letltxmacro}
+%<hopatch>\hobsub@StartPackage{hopatch}
+%<xcolor-patch>\hobsub@StartPackage{xcolor-patch}
+%<atveryend>\hobsub@StartPackage{atveryend}
+%<atbegshi>\hobsub@StartPackage{atbegshi}
+%<refcount>\hobsub@StartPackage{refcount}
+%<hycolor>\hobsub@StartPackage{hycolor}
+%    \end{macrocode}
+%
+% \subsection{End of packages}
+%
+%    \begin{macrocode}
+%<package|atend>\HOBsub@AtEnd%
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input hobsub.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hobsub.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hobsub.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hobsub.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hobsub.sty & tex/generic/oberdiek/hobsub.sty\\
+%   hobsub-generic.sty & tex/generic/oberdiek/hobsub-generic.sty\\
+%   hobsub-hyperref.sty & tex/generic/oberdiek/hobsub-hyperref.sty\\
+%   hobsub.pdf & doc/latex/oberdiek/hobsub.pdf\\
+%   test/hobsub-test1.tex & doc/latex/oberdiek/test/hobsub-test1.tex\\
+%   hobsub.dtx & source/latex/oberdiek/hobsub.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hobsub.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hobsub.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hobsub.dtx
+%makeindex -s gind.ist hobsub.idx
+%pdflatex hobsub.dtx
+%makeindex -s gind.ist hobsub.idx
+%pdflatex hobsub.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hobsub.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hobsub'>
+  <name>hobsub</name>
+  <caption>Construct package bundles</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011,2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.13'/>
+  <description>
+    The package offers a means of loading a bundle of (other) packages
+    &#x201C;at once&#x201D;, offering a means of reducing the amount of log output
+    as the packages are loaded, and an aide-memoire for complicated
+    requirements.  In some ways, loading a package via hobsub behaves
+    much like loading the package in the normal way; for example,
+    reloads are suppressed, as in LaTeX proper, and correct
+    <tt>\listfiles</tt> output is produced.
+    <p/>
+    Examples provided are a &#x2018;generic&#x2019; bundle (comprising the author&#x2019;s
+    packages that can be used with Plain TeX) and a &#x2018;hyperref&#x2019; bundle
+    (comprising packages useful when generating hypertext output with
+    LaTeX).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hobsub.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hobsub.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+% \bibitem{lualatex:quiet}
+% Will Robertson,
+% \textit{[lltx] quietening lualatex console output};
+% mailing list \textsf{lualatex-dev at tug.org},
+% 2011-01-29;
+% \url{http://tug.org/pipermail/lualatex-dev/2011-January/001031.html}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2011/01/30 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2011/04/16 v1.1}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/04/17 v1.2}
+%   \item
+%     White spaces at line begins are removed or reduced
+%     in the generated collection packages.
+%   \end{Version}
+%   \begin{Version}{2011/04/18 v1.3}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/04/23 v1.4}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/06/24 v1.5}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/06/30 v1.6}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/07/01 v1.7}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/07/28 v1.8}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/08/22 v1.9}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/10/16 v1.10}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2011/11/29 v1.11}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2012/04/25 v1.12}
+%   \item
+%     Package updates.
+%   \end{Version}
+%   \begin{Version}{2012/05/28 v1.13}
+%   \item
+%     Package updates.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

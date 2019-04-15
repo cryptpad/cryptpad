@@ -1,0 +1,323 @@
+%%
+%% This is file `resizegather.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% resizegather.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: resizegather
+%% Version: 2010/03/01 v1.2
+%% 
+%% Copyright (C) 2009, 2010 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file resizegather.dtx
+%% and the derived files
+%%    resizegather.sty, resizegather.pdf, resizegather.ins, resizegather.drv,
+%%    resizegather-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@resizegather.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{resizegather}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@resizegather.sty\endcsname
+\ProvidesPackage{resizegather}%
+  [2010/03/01 v1.2 Resize overly large equations (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ResizeGather@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ResizeGather@AtEnd{%
+    \ResizeGather@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\edef\ResizeGather@AtEnd{\ResizeGather@AtEnd\noexpand\endinput}
+\RequirePackage{kvoptions}[2009/12/04]
+\SetupKeyvalOptions{%
+  family=resizegather,%
+  prefix=ResizeGather@,%
+}
+\@for\ResizeGather@option:=%
+  centertags,%
+  tbtags,%
+  sumlimits,%
+  nosumlimits,%
+  intlimits,%
+  nointlimits,%
+  nonamelimits,%
+  leqno,%
+  reqno,%
+  fleqn%
+\do{%
+  \edef\ResizeGather@temp{%
+    \noexpand\DeclareVoidOption{\ResizeGather@option}{%
+      \noexpand\PassOptionsToPackage{amsmath}{\ResizeGather@option}%
+    }%
+    \noexpand\AtEndOfPackage{%
+      \noexpand\DisableKeyvalOption[%
+        action=error,%
+        package=resizegather,%
+      ]{resizegather}{\ResizeGather@option}%
+    }%
+  }%
+  \ResizeGather@temp
+}
+\@for\ResizeGather@option:=%
+  draft,%
+  final,%
+  hiderotate,%
+  hidescale,%
+  hiresbb,%
+  demo,%
+  dvips,xdvi,dvipdf,dvipdfm,dvipdfmx,pdftex,dvipsone,%
+  dviwindo,emtex,dviwin,pctexps,pctexwin,pctexhp,pctex32,%
+  truetex,tcidvi,vtex,oztex,textures,xetex%
+\do{%
+  \edef\ResizeGather@temp{%
+    \noexpand\DeclareVoidOption{\ResizeGather@option}{%
+      \noexpand\PassOptionsToPackage{graphics}{\ResizeGather@option}%
+    }%
+    \noexpand\AtEndOfPackage{%
+      \noexpand\DisableKeyvalOption[%
+        action=error,%
+        package=resizegather,%
+      ]{resizegather}{\ResizeGather@option}%
+    }%
+  }%
+  \ResizeGather@temp
+}
+\DeclareBoolOption[true]{enable}
+\DeclareComplementaryOption{disable}{enable}
+\DeclareStringOption[.05]{warningthreshold}
+\newif\ifResizeGather@NeedInit
+\DeclareBoolOption[true]{equations}
+\DeclareBoolOption[true]{equation}
+\DeclareBoolOption[true]{displaymath}
+\AddToKeyvalOption*{equations}{%
+  \ResizeGather@NeedInittrue
+  \ifResizeGather@equations
+    \ResizeGather@equationtrue
+    \ResizeGather@displaymathtrue
+  \else
+    \ResizeGather@equationfalse
+    \ResizeGather@displaymathfalse
+  \fi
+}
+\AddToKeyvalOption*{equation}{%
+  \ResizeGather@NeedInittrue
+}
+\AddToKeyvalOption*{displaymath}{%
+  \ResizeGather@NeedInittrue
+}
+\newcommand*{\resizegathersetup}[1]{%
+  \ResizeGather@NeedInitfalse
+  \setkeys{resizegather}{#1}%
+  \ifResizeGather@NeedInit
+    \ResizeGather@init
+  \fi
+}
+\let\ResizeGather@init\relax
+\InputIfFileExists{resizegather.cfg}{}{}%
+\ProcessKeyvalOptions*\relax
+\RequirePackage{amsmath}
+\RequirePackage{graphics}
+\def\ResizeGather@redefine#1#2#3#4#5{%
+  \csname ifResizeGather@#1\endcsname
+    \@ifundefined{ResizeGather@org@#2}{%
+      \expandafter\let\csname ResizeGather@org@#2\expandafter\endcsname
+                      \csname #2\endcsname
+    }{}%
+    \@ifundefined{ResizeGather@org@#3}{%
+      \expandafter\let\csname ResizeGather@org@#3\expandafter\endcsname
+                      \csname #3\endcsname
+    }{}%
+    \expandafter\edef\csname #2\endcsname{%
+      \expandafter\noexpand\csname#4\endcsname
+    }%
+    \expandafter\edef\csname #3\endcsname{%
+      \expandafter\noexpand\csname#5\endcsname
+    }%
+  \else
+    \@ifundefined{ResizeGather@org@#2}{}{%
+      \expandafter\let\csname #2\expandafter\endcsname
+                      \csname ResizeGather@org@#2\endcsname
+      \expandafter\let\csname #3\expandafter\endcsname
+                      \csname ResizeGather@org@#3\endcsname
+    }%
+  \fi
+}
+\def\ResizeGather@init{%
+  \ResizeGather@redefine{equation}{equation}{endequation}%
+    {gather}{endgather}%
+  \ResizeGather@redefine{displaymath}{displaymath}{enddisplaymath}%
+    {gather*}{endgather*}%
+}
+\ResizeGather@init
+\def\ResizeGather@ResizeGather{%
+  \ifResizeGather@enable
+    \dimen@\displaywidth
+    \if@fleqn
+      \advance\dimen@-\@mathmargin
+    \fi
+    \ifdim\wdz@>\dimen@
+      \begingroup
+        \advance\dimen@ -\wdz@
+        \dimen@ -\dimen@
+        \ifdim\ResizeGather@warningthreshold\wdz@>\dimen@
+          \expandafter\PackageInfo
+        \else
+          \expandafter\PackageWarning
+        \fi
+        {resizegather}{%
+          Equation line \the\row@\space is too large %
+          by \the\dimen@\MessageBreak
+          in environment `\@currenvir'%
+        }%
+      \endgroup
+      \setboxz@h to\dimen@{%
+        \resizebox{\dimen@}{!}{\boxz@}%
+        \hss
+      }%
+    \fi
+  \fi
+}
+\expandafter\def\expandafter\calc@shift@gather\expandafter{%
+  \expandafter\ResizeGather@ResizeGather
+  \calc@shift@gather
+}
+\let\ResizeGather@org@gmeasure@\gmeasure@
+\def\gmeasure@#1{%
+  \ResizeGather@org@gmeasure@{#1}%
+  \ifResizeGather@enable
+    \ifdim\totwidth@>\displaywidth
+      \totwidth@=\displaywidth
+    \fi
+  \fi
+}
+\ResizeGather@AtEnd%
+\endinput
+%%
+%% End of file `resizegather.sty'.

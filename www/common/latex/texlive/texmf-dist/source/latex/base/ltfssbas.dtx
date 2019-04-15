@@ -1,0 +1,1908 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltfssbas.dtx
+%% Copyright (C) 1989-2002 Frank Mittelbach and Rainer Sch\"opf
+%
+%<*driver>
+% \fi
+%
+%
+\ProvidesFile{ltfssbas.dtx}
+             [2015/04/07 v3.1a LaTeX Kernel (NFSS Basic Macros)]
+% \iffalse
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{ltfssbas.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \iffalse
+%<+checkmem>\def\CHECKMEM{\tracingstats=2
+%<+checkmem>  \newlinechar=`\^^J
+%<+checkmem>  \message{^^JMemory usage: \filename}\shipout\hbox{}}
+%<+checkmem>\CHECKMEM
+% \fi
+%
+% \CheckSum{1155}
+%
+%
+% \GetFileInfo{ltfssbas.dtx}
+% \title{A new font selection scheme for \TeX{} macro packages\\
+%        (Basic Macros)\thanks
+%       {This file has version number
+%       \fileversion\ dated \filedate}}
+%
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This file contains the main implementation of the `low level' font
+% selection commands. See other parts of the \LaTeX\
+% distribution, or  \emph{The \LaTeX\ Companion} for higher level
+% documentation of the \LaTeX\ `New' Font Selection Scheme.
+%
+% \begin{quote}
+%   \textbf{Warning:}
+%  The macro documentation is still basically the documentation from the
+%  first NFSS release and therefore in some cases probably not
+%  completely accurate.
+% \end{quote}
+%
+% \StopEventually{}
+%
+% \changes{v3.0v}{1998/08/17}{(RmS) Documentation fixes.}
+% \changes{v3.0j}{1995/10/22}{(RmS) New size function macro
+%    \cs{genb@sfcnt} needs to be disabled at \cs{document}.}
+% \changes{v3.0i}{1995/10/20}
+%         {(DPC) Modify autoload code, change \cs{undefined}}
+% \changes{v3.0g}{1995/10/04}{Modify autoload code}
+% \changes{v3.0f}{1995/08/24}{Added autoload code}
+% \changes{v3.0d}{1995/07/13}
+%         {minor documentation changes}
+% \changes{v3.0c}{1995/06/15}
+%         {(DPC) minor documentation changes}
+% \changes{v3.0a}{1995/05/24}
+%         {(DPC) Make file from previous file, fam.dtx 1995/05/20 v2.2d}
+%
+%
+% \changes{v2.1x}{1994/11/18}{(DPC) use \cs{reserved@f} not \cs{next}}
+% \changes{v2.1q}{1994/05/20}{Use new error commands}
+% \changes{v2.1o}{1994/05/15}{encoding cmds changed to {enc}-cmd}
+% \changes{v2.1k}{1994/05/13}{Remove File identification `typeout'}
+% \changes{v2.1j}{1994/05/12}{New baselinestretch concept}
+% \changes{v2.1j}{1994/05/12}{Replaced hand-protected commands by
+%                             \cs{DeclareRobustCommand} defs}
+% \changes{v2.1h}{1994/04/11}{Added \cs{defaultscriptratio} and
+%    \cs{defaultscriptscriptratio}.  ASAJ.}
+% \changes{v2.1g}{1994/03/13}{add 2ekernel module to omit repeated code}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+% \changes{v2.0c}{1993/03/18}{Changed all \cs{@tempdima} in
+%               \cs{@tempdimb} to avoid killing \cs{numberline}}
+% \changes{v1.91a}{1992/09/22}{Introduced \cs{tf@size} for math size.}
+% \changes{v1.3a}{1991/11/27}{All \cs{family}, \cs{shape} etc.
+%                           renamed to \cs{fontfamily} etc.}
+% \changes{v1.2i}{1990/04/01}{Code added from tracefnt.dtx.}
+% \changes{v1.2i}{1990/04/01}{Support for TeX3.}
+% \changes{v1.2g}{1990/02/16}{Support for changes of \cs{baselineskip}
+%          without changing the size.}
+%
+% \changes{v1.2c}{1990/01/23}{\cs{no@version@warning} renamed to
+%                           \cs{no@alphabet@error}.}
+% \changes{v1.0s}{1989/11/25}{All \cs{edef}\cs{font@name} changed to
+%                           \cs{xdef}\cs{font@name}.
+%                           Necessary after introduction of
+%                           \cs{begingroup}/\cs{endgroup} in v1.0q.}
+% \changes{v1.0s}{1989/11/25}{extra// $\to$ + in \cs{extra@def}.}
+% \changes{v1.0o}{1989/11/08}{First parameter of
+%                           \cs{define@mathalphabet}
+%                           and \cs{define@mathgroup} changed
+%                           from string to control sequence.}
+% \changes{v1.0m}{1989/09/14}
+%      {Global replacement: \cs{group} to \cs{mathgroup}}
+% \changes{v1.0k}{1989/05/22}{Lines longer than 72 characters folded.}
+% \changes{v1.0j}{1989/05/01}{Default for \cs{baselinestretch} added.}
+% \changes{v1.0i}{1989/04/29}
+%      {Removed the \cs{halign} \cs{noalign} correction
+%                           (wasn't bugfree)}
+% \changes{v1.0h}{1989/04/29}{Documented problem with \cs{halign}, and
+%                           \cs{noalign}}
+% \changes{v1.0g}{1989/04/27}{Documentation revised.}
+% \changes{v1.0f}{1989/04/23}{\% in \cs{getanddefinefonts} added.}
+% \changes{v1.0e}{1989/04/21}{Documentation is fun!!
+%                       Parameters of \cs{define@mathalphabet} changed.}
+% \changes{v1.0d}{1989/04/19}{Even more doc.}
+% \changes{v1.0c}{1989/04/14}{More documentation added.}
+% \changes{v1.0b}{1989/04/10}{\cs{preload@sizes} added.}
+% \changes{v1.0b}{1989/04/10}{\cs{wrong@fontshape} changed to define
+%                            substitution font/shape macro.}
+% \changes{v1.0a}{1989/04/10}{Starting with version numbers!!
+%                           \cs{ifmmode} added in \cs{math@group}}
+% \changes{v2.1w}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v3.0z}{2015/02/21}
+%         {Removed autoload code}
+%
+%
+% The `2ekernel' code ensures that a |\usepackage{autofss1}| is
+% essentially ignored if a `full' format is being used that has
+% picture mode already in the format.
+%
+% Note the |autofss2| loading is currently disabled.
+%
+%    \begin{macrocode}
+%<2ekernel>\expandafter\let\csname ver@autofss1.sty\endcsname\fmtversion
+%    \end{macrocode}
+%
+%
+% \section{Preliminary macros}
+%
+% We define a number
+% of macros that will be used later.
+%
+%
+% \begin{macro}{\@nomath}
+%    |\@nomath| is used by most macros that will have no effect
+%    in math mode. It issues a warning message.
+%    \begin{macrocode}
+%<*2ekernel>
+\def\@nomath#1{\relax\ifmmode
+   \@font@warning{Command \noexpand#1invalid in math mode}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v1.2c}{1990/01/23}{Macro \cs{no@alphabet@help} added}
+% \changes{v2.1i}{1994/04/18}{Macro \cs{no@alphabet@help}
+%                             removed again}
+%
+% \begin{macro}{\no@alphabet@error}
+% \changes{v1.2c}{1990/01/23}{Changed to error call}
+% \changes{v2.1i}{1994/04/18}{Use std LaTeX error macro}
+%    The macro |\no@alphabet@error| is called whenever
+%    the user requests a math \emph{alphabet} that is not
+%    available in the current \emph{version}.
+%    In math mode an error message is produced otherwise the command
+%    keeps silent.
+%    The argument is the name of the control sequence that identifies
+%    the math \emph{alphabet}.
+%    The |\relax| at the beginning is necessary to prevent
+%    \TeX{} from scanning too far in certain situations.
+%    \begin{macrocode}
+\gdef\no@alphabet@error#1{\relax \ifmmode
+    \@latex@error{Math\space alphabet\space identifier\space
+          \noexpand#1is\space undefined\space in\space math\space
+           version\space `\math@version'}%
+        {Your\space requested\space math\space alphabet\space
+         is\space undefined\space in\space the\space current\space
+          math\space version.^^JCheck\space the\space spelling\space
+          or\space use\space the\space \noexpand\SetMathAlphabet\space
+          command.}
+     \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\new@mathgroup}
+% \begin{macro}{\mathgroup}
+%    We also give a new name to |\newfam| and |\fam|
+%    to avoid verbal confusion
+%    (see the introduction).\footnote{For the same reason
+%                           it seems advisable to
+%                           {\ttfamily\bslash let\bslash fam} and
+%                           {\ttfamily\bslash newfam}
+%                           equal to {\ttfamily\bslash relax},
+%                           but this is commented out to retain
+%                           compatibility to existing style files.}
+% \changes{v1.2e}{1990/01/28}{\cs{newfam} let to \cs{new@mathgroup}.}
+% \changes{v3.0a}{1995/05/24}
+%         {(DPC) No need to redefine \cs{newfam} as not outer}
+% \changes{v3.0b}{1995/05/27}
+%         {(FMi) But a need to define \cs{new@mathgroup}}
+% \changes{v3.0y}{2014/12/30}
+%         {move allocation to ltplain.}
+%    \begin{macrocode}
+%\def\new@mathgroup{\alloc@8\mathgroup\chardef\sixt@@n}
+\let\mathgroup\fam
+%\let\newfam\new@mathgroup
+\@onlypreamble\new@mathgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \section{Macros for setting up the tables}
+%
+%  \begin{macro}{\DeclareFontShape}
+%
+% \changes{v1.9a}{1992/07/26}{Introduced \cs{DeclareFontShape}}
+%    The macro |\DeclareFontShape| takes $6$ arguments:
+%    \begin{macrocode}
+\def\DeclareFontShape{\begingroup
+%    \end{macrocode}
+%    First we restore the catcodes of all characters used in the syntax.
+% \changes{v2.1e}{1994/02/24}
+%     {Separate restoration of catcodes for fd cmds}
+%    \begin{macrocode}
+   \nfss@catcodes
+%    \end{macrocode}
+%    We use |\expandafter| |\endgroup| to restore catcode in case
+%    something goes wrong with the argument parsing (suggested by Tim
+%    Van Zandt)
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\DeclareFontShape}
+% \changes{v2.1c}{1994/02/07}{revert catcode settings earlier}
+% \changes{v3.0m}{1995/11/01}
+%      {(DPC) Test for \cs{relax} not \cs{undefined}, internal/1933}
+%    \begin{macrocode}
+   \expandafter\endgroup
+   \DeclareFontShape@}
+\def\DeclareFontShape@#1#2#3#4#5#6{%
+   \expandafter\ifx\csname #1+#2\endcsname\relax
+     \@latex@error{Font family `#1+#2' unknown}\@eha
+   \else
+     \expandafter
+       \xdef\csname#1/#2/#3/#4\endcsname{\expandafter\noexpand
+                                   \csname #5\endcsname}%
+     \def\reserved@a{#6}%
+     \global
+     \expandafter\let\csname#5\expandafter\endcsname
+        \ifx\reserved@a\@empty
+          \@empty
+        \else
+          \reserved@a
+        \fi
+   \fi
+  }
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\DeclareFixedFont}
+%    Define a direct font switch that avoids all overhead.
+% \changes{v2.1u}{1994/11/06}{Renamed
+%                        \cs{every@size} to \cs{every@math@size}.}
+%    \begin{macrocode}
+\def\DeclareFixedFont#1#2#3#4#5#6{%
+   \begingroup
+      \math@fontsfalse
+      \every@math@size{}%
+      \fontsize{#6}\z@
+      \usefont{#2}{#3}{#4}{#5}%
+      \global\expandafter\let\expandafter#1\the\font
+   \endgroup
+  }
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%
+%  \begin{macro}{\do@subst@correction}
+%
+%    \begin{macrocode}
+\def\do@subst@correction{%
+       \xdef\subst@correction{%
+          \font@name
+          \global\expandafter\font
+            \csname \curr@fontshape/\f@size\endcsname
+            \noexpand\fontname\font
+           \relax}%
+%    \end{macrocode}
+%    Calling |\subst@correction| after the current group means calling
+%    it after we have loaded the substitution font which is done
+%    inside a group.
+%    \begin{macrocode}
+       \aftergroup\subst@correction
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\DeclareFontFamily}
+%    \begin{macrocode}
+\def\DeclareFontFamily#1#2#3{%
+%    \end{macrocode}
+%    If we want fast checking for the encoding scheme we can just
+%    check for |\T@..| being defined.
+%    \begin{macrocode}
+% \@tempswafalse
+% \def\reserved@b{#1}%
+% \def\cdp@elt##1##2##3##4{\def\reserved@c{##1}%
+%      \ifx\reserved@b\reserved@c \@tempswatrue\fi}%
+% \cdp@list
+% \if@tempswa
+ \@ifundefined{T@#1}%
+    {%
+     \@latex@error{Encoding scheme  `#1' unknown}\@eha
+    }%
+    {%
+%    \end{macrocode}
+%    Now we have to define the macro |\|\meta{\#1}|+|\meta{\#2}
+%    to contain |#3|. But since most of the time |#3| will be empty
+%    we use |\let| in a tricky way rather than a simple |\def| since
+%    this will save internal memory.
+%    We store the argument |#3| in a temporary macro
+%    |\reserved@a|.
+%    \begin{macrocode}
+     \def\reserved@a{#3}%
+%    \end{macrocode}
+%    We compare |\reserved@a| with |\@empty|
+%    If these two are the same we |\let| the `extra'
+%    macro equal to |\@empty| which is not the same a doing a |\let|
+%    to |\reserved@a| --- the latter would blow one extra memory
+%    location rather  then reusing the one from |\@empty|.
+%    \begin{macrocode}
+     \global
+     \expandafter\let\csname #1+#2\expandafter\endcsname
+            \ifx \reserved@a\@empty
+              \@empty
+            \else \reserved@a
+            \fi
+    }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\cdp@list}
+%    We initialize the code page list to be empty.
+%    \begin{macrocode}
+\let\cdp@list\@empty
+\@onlypreamble\cdp@list
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\cdp@elt}
+%    \begin{macrocode}
+\let\cdp@elt\relax
+\@onlypreamble\cdp@elt
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%
+% \begin{macro}{\DeclareFontEncoding}
+%    \begin{macrocode}
+\def\DeclareFontEncoding{%
+%    \end{macrocode}
+%    First we start with ignoring all blanks and newlines since every
+%    surplus space in the second or third argument will come out in
+%    a weird place in the document.
+% \changes{v2.1c}{1994/02/07}{revert catcode settings earlier}
+% \changes{v2.1t}{1994/10/19}{Add missing \cs{relax}.}
+% \changes{v2.1z}{1994/12/06}{use \cs{nfss@catcodes}}
+%    \begin{macrocode}
+   \begingroup
+   \nfss@catcodes
+   \expandafter\endgroup
+   \DeclareFontEncoding@}
+\@onlypreamble\DeclareFontEncoding
+%    \end{macrocode}
+% \changes{v2.0g}{1993/09/15}
+%      {Corrected: \cs{default@T} to \cs{default@M}.}
+%    \begin{macrocode}
+\def\DeclareFontEncoding@#1#2#3{%
+  \expandafter
+  \ifx\csname T@#1\endcsname\relax
+     \def\cdp@elt{\noexpand\cdp@elt}%
+     \xdef\cdp@list{\cdp@list\cdp@elt{#1}%
+                    {\default@family}{\default@series}%
+                    {\default@shape}}%
+%    \end{macrocode}
+%    To support encoding dependent commands (like accents) we
+%    initialise the command
+% |\|\meta{encoding}|-cmd| to be |\@changed@cmd|.
+%    (See \texttt{ltoutenc.dtx} for details.)
+% \changes{v2.1l}{1994/05/13}{Init encoding change command}
+% \changes{v2.1n}{1994/05/14}{Only init enc change cmd when
+%                             new encoding}
+% \changes{v2.1n}{1994/05/14}{Log if encoding is redeclared}
+%    \begin{macrocode}
+     \expandafter\let\csname#1-cmd\endcsname\@changed@cmd
+  \else
+     \@font@info{Redeclaring font encoding #1}%
+  \fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \global\@namedef{T@#1}{#2}%
+  \global\@namedef{M@#1}{\default@M#3}%
+%    \end{macrocode}
+%    Keep a record of the last encoding being declared:
+% \changes{v3.0w}{1999/01/06}{Added \cs{LastDeclaredEncoding} to
+%   support cyrillic integration (pr/2988)}
+%    \begin{macrocode}
+  \xdef\LastDeclaredEncoding{#1}%
+  }
+\@onlypreamble\DeclareFontEncoding@
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\LastDeclaredEncoding}
+% \changes{v3.0w}{1999/01/06}{Added \cs{LastDeclaredEncoding} to
+%   support cyrillic integration (pr/2988)}
+%    The last encoding being declared by |\DeclareFontEncoding|.
+%    \begin{macrocode}
+\def\LastDeclaredEncoding{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareFontSubstitution}
+%    \begin{macrocode}
+\def\DeclareFontSubstitution#1#2#3#4{%
+  \expandafter
+  \ifx\csname T@#1\endcsname\relax
+    \@latex@error{Encoding scheme  `#1' unknown}\@eha
+  \else
+    \begingroup
+%    \end{macrocode}
+% \changes{v3.0x}{2002/10/02}{Adding \cs{LastDeclaredEncoding}
+%   introduced a bug as on some occasions that macro name was stored
+%   in the internal lists instead of the actual encoding. (pr/3459)}
+%    We loop through the |\cdp@list| and rebuild it anew in |\toks@|
+%    thereby replacing the defaults for the encoding in question with
+%    the new defaults. It is important to store the encoding to test
+%    against expanded in |\reserved@a| since it might just be
+%    |\LastDeclaredEncoding| that is passed as |#1|.
+%    \begin{macrocode}
+       \edef\reserved@a{#1}%
+       \toks@{}%
+       \def\cdp@elt##1##2##3##4{%
+          \def\reserved@b{##1}%
+          \ifx\reserved@a\reserved@b
+%    \end{macrocode}
+%    Here we use the new defaults but we use |##1| (i.e., the encoding
+%    name already stored previously) since we know that it is expanded.
+%    \begin{macrocode}
+             \addto@hook\toks@{\cdp@elt{##1}{#2}{#3}{#4}}%
+          \else
+%    \end{macrocode}
+%    If |\reserved@a| and |\reserved@b| differ then we simply copy
+%    from the old list to the new.
+%    \begin{macrocode}
+             \addto@hook\toks@{\cdp@elt{##1}{##2}{##3}{##4}}%
+          \fi}%
+        \cdp@list
+        \xdef\cdp@list{\the\toks@}%
+    \endgroup
+    \global
+    \@namedef{D@#1}{%
+           \def\default@family{#2}%
+           \def\default@series{#3}%
+           \def\default@shape{#4}%
+           }%
+  \fi
+ }
+\@onlypreamble\DeclareFontSubstitution
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\DeclareFontEncodingDefaults}
+%    \begin{macrocode}
+\def\DeclareFontEncodingDefaults#1#2{%
+  \ifx\relax#1\else
+    \ifx\default@T\@empty\else
+      \@font@info{Overwriting encoding scheme text defaults}%
+    \fi
+    \gdef\default@T{#1}%
+  \fi
+  \ifx\relax#2\else
+    \ifx\default@M\@empty\else
+      \@font@info{Overwriting encoding scheme math defaults}%
+    \fi
+    \gdef\default@M{#2}%
+  \fi
+}
+\@onlypreamble\DeclareFontEncodingDefaults
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\default@T}
+% \begin{macro}{\default@M}
+%    \begin{macrocode}
+\let\default@T\@empty
+\let\default@M\@empty
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\DeclarePreloadSizes}
+%    \begin{macrocode}
+\def\DeclarePreloadSizes#1#2#3#4#5{%
+ \@ifundefined{T@#1}%
+   {\@latex@error{Encoding scheme  `#1' unknown}\@eha}%
+   {%
+%    \end{macrocode}
+%    Don't know at the moment what this group here does!
+%    \begin{macrocode}
+   \begingroup
+%    \end{macrocode}
+%    We define a macro |\reserved@f|\footnote{We cannot use
+%                                      {\ttfamily\bslash @tempa}
+%                                      since it is needed in
+%                                     {\ttfamily\bslash pickup@font}.}
+%    that grabs the next \emph{size} and loads the corresponding
+%    font.
+%    This is done by delimiting |\reserved@f|'s only argument by the
+%    \textsf{token} |,| (comma).
+%    \begin{macrocode}
+    \def\reserved@f##1,{%
+%    \end{macrocode}
+%    The end of the list will be detected when there are no more
+%    elements, i.e.\ when |\reserved@f|'s argument is empty.
+%    The trick used here is explained in Appendix~D of the
+%    \TeX{}book: if the argument is empty the |\if|
+%    will select the first clause and |\let| |\reserved@f|
+%    equal to |\relax|.
+%    (We use the |>| character here since it cannot appear
+%    in font file names.)
+% \changes{v1.2j}{1990/06/24}{Missing percent added.}
+%    \begin{macrocode}
+        \if>##1>%
+          \let\reserved@f\relax
+        \else
+%    \end{macrocode}
+%    Otherwise, we define |\font@name| appropriately and
+%    call |\pickup@font| to do the work.
+%    Note that the requested |\curr@fontshape|
+%    combination must have been defined, or you will get an error.
+%    The definition of |\font@name| is carried out globally
+%    to be consistent with the rest of the code in this file.
+%    \begin{macrocode}
+          \xdef\font@name{\csname#1/#2/#3/#4/##1\endcsname}%
+          \pickup@font
+%    \end{macrocode}
+%    Now we forget the name of the font just loaded.
+%    More precisely, we set the corresponding control sequence
+%    to |\relax|.  This means that later on, when the font
+%    is first used, the macro |\define@newfont| is called
+%    again to execute the `extra' macro for this font.
+% \changes{v1.2d}{1990/01/27}{Font identifier set to \cs{relax}.}
+%    \begin{macrocode}
+          \global\expandafter\let\font@name\relax
+        \fi
+%    \end{macrocode}
+%    Finally we call |\reserved@f| again to process the next
+%    \emph{size}. If |\reserved@f| was |\let| equal to |\relax|
+%    this will end the macro.
+%    \begin{macrocode}
+        \reserved@f}%
+%    \end{macrocode}
+%    We finish with reinserting the list of sizes after the
+%    |\reserved@f|
+%    macro and appending an empty element so that the end of the list
+%    is recognized properly.
+%    \begin{macrocode}
+     \reserved@f#5,,%
+   \endgroup
+   }%
+}
+\@onlypreamble\DeclarePreloadSizes
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\ifmath@fonts}
+%    We need a switch to decide if we have to switch math fonts.
+%    For this purpose we provide |\ifmath@fonts|
+%    that can be set to true or false by the |\S@...| macros
+%    depending on if math fonts
+%    are provided for this size or not.
+%    The default is of course to switch all fonts.
+%    \begin{macrocode}
+\newif\ifmath@fonts \math@fontstrue
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\DeclareMathSizes}
+% \begin{macro}{\DeclareMathSizes*}
+%    |\DeclareMathSizes| takes the text size, math text size, math
+%    script size, and math scriptscript size as arguments and defines
+%    the right |\S@|\dots{} macro.
+%
+%    \begin{macrocode}
+\def\DeclareMathSizes{%
+  \@ifstar{\@DeclareMathSizes\math@fontsfalse}%
+          {\@DeclareMathSizes{}}}
+\@onlypreamble\DeclareMathSizes
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@DeclareMathSizes}
+% \changes{v3.0p}{1996/07/26}{use faster \cs{if} test}
+% This modification by Michael J. Downes on comp.text.tex on 2002/10/17
+% allows the user to have settings such as\\
+%  |\DeclareMathSizes{9.5dd}{9.5dd}{7.4dd}{6.6dd}|.
+% \changes{v3.0y}{2015/01/11}{Allow arbitrary units (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\@DeclareMathSizes}%
+%<latexrelease>                 {Arbitrary units in \DeclareMathSizes}%
+%<*2ekernel|latexrelease>
+\def\@DeclareMathSizes #1#2#3#4#5{%
+  \@defaultunits\dimen@ #2pt\relax\@nnil
+  \if $#3$%
+    \expandafter\let\csname S@\strip@pt\dimen@\endcsname\math@fontsfalse
+  \else
+    \@defaultunits\dimen@ii #3pt\relax\@nnil
+    \@defaultunits\@tempdima #4pt\relax\@nnil
+    \@defaultunits\@tempdimb #5pt\relax\@nnil
+    \toks@{#1}%
+    \expandafter\xdef\csname S@\strip@pt\dimen@\endcsname{%
+      \gdef\noexpand\tf@size{\strip@pt\dimen@ii}%
+      \gdef\noexpand\sf@size{\strip@pt\@tempdima}%
+      \gdef\noexpand\ssf@size{\strip@pt\@tempdimb}%
+      \the\toks@
+    }%
+  \fi
+}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\@DeclareMathSizes}%
+%<latexrelease>                 {Arbitrary units in \DeclareMathSizes}%
+%<latexrelease>\def\@DeclareMathSizes#1#2#3#4#5{%
+%<latexrelease>    \@defaultunits\dimen@#2pt\relax\@nnil
+%<latexrelease>    \if$#3$%
+%<latexrelease>      \expandafter \let
+%<latexrelease>        \csname S@\strip@pt\dimen@\endcsname
+%<latexrelease>        \math@fontsfalse
+%<latexrelease>    \else
+%<latexrelease>      \expandafter \gdef
+%<latexrelease>      \csname S@\strip@pt\dimen@\endcsname
+%<latexrelease>            {\gdef\tf@size{#3}\gdef\sf@size{#4}%
+%<latexrelease>                             \gdef\ssf@size{#5}%
+%<latexrelease>             #1%
+%<latexrelease>                             }%
+%<latexrelease>    \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\@DeclareMathSizes
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \section{Selecting a new font}
+%
+% \subsection{Macros for the user}
+%
+%
+% \begin{macro}{\fontencoding}
+% \changes{v2.1j}{1994/05/12}{Use \cs{DeclareRobustCommand}.}
+% \begin{macro}{\f@encoding}
+% As we said in the introduction a font is described by four parameters.
+% We first define macros to specify the wanted \emph{family},
+% \emph{series}, or \emph{shape}.
+% These are simply recorded in internal macros
+% |\f@family|, |\f@series|, and |\f@shape|, resp.
+% We use |\edef|'s so that the arguments can also be macros.
+%    \begin{macrocode}
+\DeclareRobustCommand\fontencoding[1]{%
+    \expandafter\ifx\csname T@#1\endcsname\relax
+      \@latex@error{Encoding scheme `#1' unknown}\@eha
+    \else
+      \edef\f@encoding{#1}%
+      \ifx\cf@encoding\f@encoding
+%    \end{macrocode}
+%    If the new encoding is the same as the old
+%    encoding we have nothing to do.
+%    However, in case we had a sequence of several encoding changes
+%    without a |\selectfont| in-between we can save processing by
+%    making sure that |\enc@update| is |\relax|.
+%    \begin{macrocode}
+        \let\enc@update\relax
+      \else
+%    \end{macrocode}
+%    If current and new encoding differ we define the macro
+%    |\enc@update|
+%    to contain all updates necessary at |\selectfont| time.
+%    \begin{macrocode}
+        \let\enc@update\@@enc@update
+      \fi
+    \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@@enc@update}
+%    \begin{macrocode}
+\def\@@enc@update{%
+%    \end{macrocode}
+%    When |\@@enc@update| is executed |\f@encoding| holds the encoding
+%    name
+%    for the new encoding and |\cf@encoding| the name of the last active
+%    encoding.
+%
+%    We start by setting the init command for encoding dependent
+%    macros to |\@changed@cmd|.
+%    \begin{macrocode}
+          \expandafter
+          \let
+            \csname\cf@encoding -cmd\endcsname
+            \@changed@cmd
+%    \end{macrocode}
+%    Then we turn the one for the new encoding to |\@current@cmd| (see
+%    \texttt{ltoutenc.dtx} for further explanations).
+%    \begin{macrocode}
+          \expandafter
+          \let
+            \csname\f@encoding-cmd\endcsname
+            \@current@cmd
+%    \end{macrocode}
+%    We execute the default settings |\default@T|, followed by the one
+%    for the new encoding.
+%    \begin{macrocode}
+        \default@T
+        \csname T@\f@encoding\endcsname
+%    \end{macrocode}
+%    Finally we change the default substitution values, disable
+%    |\enc@update| and make |\f@encoding| officially the current
+%    encoding.
+%    \begin{macrocode}
+        \csname D@\f@encoding\endcsname
+        \let\enc@update\relax
+        \let\cf@encoding\f@encoding
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\enc@update}
+% \changes{v2.1m}{1994/05/14}{Macro added}
+%    The default action in |\selectfont| is to do nothing.
+%    \begin{macrocode}
+\let\enc@update\relax
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\fontfamily}
+% \changes{v2.1j}{1994/05/12}{Use \cs{DeclareRobustCommand}.}
+% \begin{macro}{\f@family}
+% \begin{macro}{\fontseries}
+% \changes{v2.1j}{1994/05/12}{Use \cs{DeclareRobustCommand}.}
+% \begin{macro}{\f@series}
+% \begin{macro}{\fontshape}
+% \changes{v2.1j}{1994/05/12}{Use \cs{DeclareRobustCommand}.}
+% \changes{v2.1y}{1994/11/30}{Use \cs{@current@cmd} in
+%    \cs{@@enc@update}.  ASAJ.}
+% \begin{macro}{\f@shape}
+%    \begin{macrocode}
+\DeclareRobustCommand\fontfamily[1]{\edef\f@family{#1}}
+\DeclareRobustCommand\fontseries[1]{\edef\f@series{#1}}
+\DeclareRobustCommand\fontshape [1]{\edef\f@shape{#1}}
+%    \end{macrocode}
+%    Some handy abbreviation if you want to get some particular font
+%    in the current size. If also the size should change one has to
+%    issue a |\fontsize| command first.
+%    \begin{macrocode}
+\def\usefont#1#2#3#4{\fontencoding{#1}\fontfamily{#2}%
+             \fontseries{#3}\fontshape{#4}\selectfont
+             \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%  \begin{macro}{\linespread}
+% \changes{v2.1j}{1994/05/12}{New macro}
+% \changes{v2.1p}{1994/05/16}{Remove surplus braces}
+%    The command |\linespread| changes the current |\baselinestretch|
+%    by calling |\set@fontsize|. The values for |\f@size| and
+%    |\f@baselineskip| will be left unchanged.
+%    \begin{macrocode}
+\DeclareRobustCommand\linespread[1]
+   {\set@fontsize{#1}\f@size\f@baselineskip}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\fontsize}
+% \changes{v2.1j}{1994/05/12}{Redefined to use \cs{set@fontsize}}
+% \changes{v2.1p}{1994/05/16}{Pass \cs{baselinstretch} not
+%    \cs{f@linespread}}
+%    We also define a macro that allows to specify a size.  In this
+%    case, however, we also need the value of |\baselineskip|. As the
+%    first argument to |\set@fontsize| we pass the current value of
+%    |\baselinestretch|. This will either match the internal value (in
+%    which case nothing changes, or it will be an updated value due to
+%    a user change of that macro using |\renewcommand|. If we would
+%    pass the internal |\f@linespread| such a change would be
+%    effectively overwritten by a size change.
+%    \begin{macrocode}
+\DeclareRobustCommand\fontsize[2]
+   {\set@fontsize\baselinestretch{#1}{#2}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \changes{v2.1n}{1994/05/14}{Set defaults for all \cs{f@...}}
+%
+%  \begin{macro}{\f@linespread}
+% \changes{v2.1j}{1994/05/12}{New macro}
+%    This macro holds the current internal value for
+%    |\baselinestretch|.
+%    \begin{macrocode}
+\let\f@family\@empty
+\let\f@series\@empty
+\let\f@shape\@empty
+\let\f@size\@empty
+\let\f@baselineskip\@empty
+\let\f@linespread\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\cf@encoding}
+% \changes{v2.1u}{1994/11/06}{New macro}
+%    \begin{macrocode}
+\let\f@encoding\@empty
+\let\cf@encoding\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\@defaultunits}
+%
+%    The function |\@defaultunits| when wrapped around a dimen or skip
+%    assignment supplies default units. Usage:
+%
+%      |\@defaultunits\dimen@=#1pt\relax\@nnil|
+%
+%    Note: the |\relax| is *important*.  Other units can be substituted
+%    for the `pt' if desired.
+%
+%    We use |\remove@to@nnil| as an auxiliary macros for
+%    |\@defaultunits|. It just has to gobble the supplied default unit
+%    `pt' or whatever, if it wasn't used in the assignment.
+%    \begin{macrocode}
+\def\@defaultunits{\afterassignment\remove@to@nnil}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\strip@pt}
+%  \begin{macro}{\rem@pt}
+%  This macro strips the characters |pt| produced by using |\the|
+%  on a dimen register.
+%    \begin{macrocode}
+\begingroup
+  \catcode`P=12
+  \catcode`T=12
+  \lowercase{
+    \def\x{\def\rem@pt##1.##2PT{##1\ifnum##2>\z@.##2\fi}}}
+  \expandafter\endgroup\x
+\def\strip@pt{\expandafter\rem@pt\the}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% \begin{macro}{\mathversion}
+% \changes{v1.0h}{1989/04/29}{Test if version defined added.}
+% \changes{v1.0m}{1989/09/14}
+%     {Corrected typo: \cs{endscname} to \cs{endcsname}.}
+% \changes{v2.1j}{1994/05/12}{Use \cs{DeclareRobustCommand}.}
+% \begin{macro}{\math@version}
+%    |\mathversion| takes the math \emph{version} name as
+%    argument, defines |\math@version| appropriately and switches
+%    to the font selected
+%    forcing a call to |\glb@settings| if the \emph{version} is
+%    known to the system.
+% \changes{v1.0p}{1989/11/14}{Math version prefix `mv@' added.}
+% \changes{v1.0r}{1989/11/22}
+%      {\cs{def} $\to$ \cs{edef} for \cs{math@version}.}
+% \changes{v1.2g}{1990/02/16}{\cs{@nomath} added.}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+%    \begin{macrocode}
+\DeclareRobustCommand\mathversion[1]
+         {\@nomath\mathversion
+          \expandafter\ifx\csname mv@#1\endcsname\relax
+          \@latex@error{Math version `#1' is not defined}\@eha\else
+          \edef\math@version{#1}%
+%    \end{macrocode}
+%    We need to force a math font setup both now and at the point
+%    where we return to the previous math version.
+%    Forcing a math font setup can simply be done by setting
+%    |\glb@currsize| to an invalid value since this will trigger the
+%    setup when the formula starts.
+%    \begin{macrocode}
+          \gdef\glb@currsize{}%
+%    \end{macrocode}
+%    When the scope of the current |\mathversion| ends we need to
+%    restore the old setup. However this time we need to force it
+%    directly at least if we are inside math, otherwise we could wait.
+%    Another way to enhance this code here is todo the setting only if
+%    the version really has changed after all. This might be
+%    interesting in case of \texttt{amstext} and \texttt{boldsymbol}.
+% \changes{v2.1b}{1994/01/25}{Corrections for math setup}
+%    \begin{macrocode}
+          \aftergroup\glb@settings
+          \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% If \TeX{} would support a hook just before the end of a formula
+% (opposite of |\everymath| so to speak) the implementation of the
+% algorithm would be much simpler because in that case we would set up
+% the correct math fonts at this point without having to worry about
+% incorrect settings due to nesting. The same would be true if in
+% \LaTeX{} the use of |$| (as the primitive \TeX{} command) would be
+% impossible and instead only a higher-level interface would be
+% available. Note that this does not mean that a |$| couldn't be the
+% short-hand for starting and stopping that higher-level interface, it
+% only means that the direct \TeX{} function must be hidden.
+%
+% Anyway, since we don't have this and won't have it in \LaTeXe{} we
+% need to implement it in a somewhat slower way.
+%
+%
+% We test for the current math font setup on entry of a formula,
+% i.e., on the
+% hooks |\everymath| and |\everydisplay|. But since these hooks may
+% contain user data we provide ourselves with an internal version of
+% these hooks which stays frozen.
+%
+%
+% \begin{macro}{\frozen@everymath}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+% \begin{macro}{\frozen@everydisplay}
+%    New internal names for |\everymath| and |\everydisplay|.
+%    \begin{macrocode}
+\let\frozen@everymath\everymath
+\let\frozen@everydisplay\everydisplay
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\everymath}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+% \begin{macro}{\everydisplay}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+%    Now we provide now user hooks that will be called in the
+%    frozen internals.
+%    \begin{macrocode}
+\newtoks\everymath
+\newtoks\everydisplay
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\frozen@everymath}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+%    Now we define the behaviour of the frozen hooks: first
+%    check the math setup then call the user hook.
+%    \begin{macrocode}
+\frozen@everymath = {\check@mathfonts
+                     \the\everymath}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\frozen@everydisplay}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+%    Ditto for the display hook.
+%    \begin{macrocode}
+\frozen@everydisplay = {\check@mathfonts
+                        \the\everydisplay}
+%    \end{macrocode}
+% \end{macro}
+%
+% \changes{v3.0q}{1996/07/27}{\cs{if@inmath} switch removed}
+%
+%  \begin{macro}{\curr@math@size}
+% \changes{v2.1a}{1994/01/17}{New math font setup}
+%    This holds locally the current math size.
+%    \begin{macrocode}
+\let\curr@math@size\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%
+% \subsection{Macros for loading fonts}
+%
+% \begin{macro}{\pickup@font}
+%    The macro |\pickup@font| which is used in
+%    |\selectfont| is very simple:
+%    if the font name is undefined (i.e.\ not known yet) it calls
+%    |\define@newfont| to load it.
+%    \begin{macrocode}
+\def\pickup@font{%
+    \expandafter \ifx \font@name \relax
+       \define@newfont
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\split@name}
+%    |\pickup@font| assumes that |\font@name| is set
+%    but it is sometimes called when |\f@family|, |\f@series|,
+%    |\f@shape|, or |\f@size| may have the wrong settings
+%    (see, e.g., the definition of |\getanddefine@fonts|).
+%    Therefore we need a macro to extract font \emph{family},
+%    \emph{series}, \emph{shape}, and \emph{size} from the font name.
+%    To this end we define |\split@name| which takes the font
+%    name as a list of characters of |\catcode| 12 (without the
+%    backslash at the beginning) delimited by the
+%    special control sequence |\@nil|.
+%    This is not very complicated: we first ensure that |/| has
+%    the right |\catcode|
+%    \begin{macrocode}
+{\catcode`\/=12
+%    \end{macrocode}
+%    and define |\split@name| so that it will define our
+%    private |\f@encoding|, |\f@family|, |\f@series|, |\f@shape|,
+%    and |\f@size| macros.
+% \changes{v1.9a}{1992/07/26}{Added splitting into \cs{f@encoding}.}
+%    \begin{macrocode}
+\gdef\split@name#1/#2/#3/#4/#5\@nil{\def\f@encoding{#1}%
+                                    \def\f@family{#2}%
+                                    \def\f@series{#3}%
+                                    \def\f@shape{#4}%
+                                    \def\f@size{#5}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\curr@fontshape}
+%    Abbreviation which may get removed again for speed.
+% \changes{v1.9a}{1992/07/26}{}
+%    \begin{macrocode}
+\def\curr@fontshape{\f@encoding/\f@family/\f@series/\f@shape}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\define@newfont}
+%    Now we can tackle the problem of defining a new font.
+% \changes{v1.9a}{1992/07/26}{}
+%    \begin{macrocode}
+\def\define@newfont{%
+%    \end{macrocode}
+%    We have already mentioned that the \textsf{token} list that
+%    |\split@name| will get as argument must not start with
+%    a backslash.
+%    To reach this goal we will set the |\escapechar| to $-1$ so
+%    that the |\string| primitive will not generate an
+%    escape character.
+%    To keep this change local we open a group.  We use
+%    |\begingroup| for this purpose since |\define@newfont|
+%    might be called in math mode, and an empty
+%    |\bgroup|\ldots|\egroup| would add an empty Ord atom
+%    to the math list and thus affect the spacing.
+%
+%    Also locally redefine |\typeout| so that `No file ...fd'
+%    Warnings become Font Info message just sent to the log file.
+% \changes{v1.0q}{1989/11/19}{Group added.}
+% \changes{v3.0m}{1995/11/17}{Redefine \cs{typeout} latex/1676}
+%    \begin{macrocode}
+  \begingroup
+    \let\typeout\@font@info
+    \escapechar\m@ne
+%    \end{macrocode}
+%    Then we extract \emph{encoding scheme}, \emph{family},
+%    \emph{series}, \emph{shape},
+%    and \emph{size} from the font name.
+%    Note the four |\expandafter|'s so that |\font@name| is
+%    expanded first, then |\string|, and finally
+%    |\split@name|.
+%    \begin{macrocode}
+    \expandafter\expandafter\expandafter
+       \split@name\expandafter\string\font@name\@nil
+%    \end{macrocode}
+%    If the |\curr@fontshape| combination is not available,
+%    (i.e.\ undefined) we call the macro |\wrong@fontshape| to take
+%    care of this case.  Otherwise |\extract@font|
+%    will load the external font for us.
+% \changes{v1.2f}{1990/01/28}{Added call to \cs{curr@fontshape} macro
+%      to allow substitution.}
+%    \begin{macrocode}
+%    \expandafter\ifx
+%        \csname\curr@fontshape\endcsname \relax
+      \try@load@fontshape % try always
+%    \fi
+    \expandafter\ifx
+       \csname\curr@fontshape\endcsname \relax
+      \wrong@fontshape\else
+%    \end{macrocode}
+%    To allow substitution we call the  |curr@fontshape| macro
+%    which usually will expand to |\relax| but may hold code for
+%    substitution (see |\subst@fontshape| definition).
+%    \begin{macrocode}
+%      \csname\curr@fontshape\endcsname
+      \extract@font\fi
+%    \end{macrocode}
+%    We are nearly finished and must only restore the
+%    |\escapechar| by closing the group.
+%    \begin{macrocode}
+  \endgroup}
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+\def\try@load@fontshape{%
+   \expandafter
+   \ifx\csname \f@encoding+\f@family\endcsname\relax
+     \@font@info{Try loading font information for
+                   \f@encoding+\f@family}%
+%    \end{macrocode}
+%    We predefine this combination to be |\@empty| which means that
+%    next time we don't try again unnecessary in case we don't find a
+%    |.fd| file. If the file contains a |\DeclareFontFamily| command
+%    than this setting will be overwritten.
+% \changes{v2.1e}{1994/02/24}
+%     {Separate restoration of catcodes for fd cmds}
+% \changes{v2.1l}{1994/05/13}{Use \cs{@input@} for fd files}
+%    \begin{macrocode}
+    \global\expandafter\let
+       \csname\f@encoding+\f@family\endcsname\@empty
+%    \end{macrocode}
+%    Set the catcodes used in the syntax, but do it only once (this
+%    will be restored at the end of the font loading group).
+% \changes{v3.0t}{1997/10/21}{Move \cs{makeatletter} to
+%    \cs{nfss@catcodes}.}
+%    \begin{macrocode}
+     \nfss@catcodes
+     \let\nfss@catcodes\relax
+%    \end{macrocode}
+%
+% \changes{v3.0s}{1996/11/18}
+%     {(DPC) lowercase fd file names. internal/1044}
+%    For increased portability make the external filename
+%    monocase, but look for the (old style) mixed case
+%    filename if the first attempt fails.
+%
+%   On any monocase system this means that the file is looked for twice
+%   which takes up time and string space, but at least for this release
+%   Check for both names to give people time to re-install their private
+%   fd files with lowercase names.
+%    \begin{macrocode}
+     \edef\reserved@a{%
+       \lowercase{%
+         \noexpand\InputIfFileExists{\f@encoding\f@family.fd}}}%
+     \reserved@a\relax
+          {\@input@{\f@encoding\f@family.fd}}%
+   \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\nfss@catcodes}
+% \changes{v2.1e}{1994/02/24}
+%     {Separate restoration of catcodes for fd cmds}
+%    This macro should contain the standard |\catcode| assignments to
+%    all characters which are used in the commands found in an
+%    \texttt{.fd} file and which might have special |\catcode|s in the
+%    middle of a document. If necessary, this list can be extended in
+%    a package file using a suitable number of |\expandafter|, i.e.,
+%\begin{verbatim}
+%  \expandafter\def\expandafter\nfss@catcodes
+%        \expandafter{\nfss@catcodes <additional settings>}
+%\end{verbatim}
+%    Note, that this macro might get executed several times since it
+%    is also called by |\DeclareFontShape|, thus it probably should
+%    not be misused as a general purpose hook.
+%    \begin{macrocode}
+\def\nfss@catcodes{%
+%    \end{macrocode}
+%    We start by making |@| a letter and ignoring all blanks and newlines.
+% \changes{v2.1z}{1994/12/06}{Added tab char as well}
+% \changes{v3.0p}{1996/07/26}{omit \cs{relax} as not needed}
+% \changes{v3.0t}{1997/10/21}{Moved \cs{makeatletter} from
+%    \cs{try@load@font@shape}.}
+%    \begin{macrocode}
+     \makeatletter
+     \catcode`\ 9%
+     \catcode`\^^I9%
+     \catcode`\^^M9%
+%    \end{macrocode}
+%    Then we set up |\|, |{|, |}|, |#| and |%| in case an \texttt{.fd}
+%    file is loaded during a verbatim environment.
+% \changes{v3.0n}{1995/11/27}{Reset hash, for definitions in fd files}
+% \changes{v3.00}{1995/12/06}{Reset hat, for typeouts etc in fd files}
+%    \begin{macrocode}
+     \catcode`\\\z@
+     \catcode`\{\@ne
+     \catcode`\}\tw@
+     \catcode`\#6%
+     \catcode`\^7%
+     \catcode`\%14%
+%    \end{macrocode}
+%    The we make sure that the important syntax parts have the right
+%    |\catcode|.
+% \changes{v2.1s}{1994/09/16}{Reset [ and ] as well, just in case}
+% \changes{v3.0r}{1996/08/25}{Reset the acute, grave and double quote
+%    chars as well}
+%    \begin{macrocode}
+   \@makeother\<%
+   \@makeother\>%
+   \@makeother\*%
+   \@makeother\.%
+   \@makeother\-%
+   \@makeother\/%
+   \@makeother\[%
+   \@makeother\]%
+   \@makeother\`%
+   \@makeother\'%
+   \@makeother\"%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\DeclareErrorFont}
+%    Declare the last resort shape! We assume that in this fontshape
+%    there is a 10pt font but it doesn't really matter. We only loose
+%    one macro name if the assumption is false. But at least the font
+%    should be there!
+%    \begin{macrocode}
+\def\DeclareErrorFont#1#2#3#4#5{%
+      \xdef\error@fontshape{%
+          \noexpand\expandafter\noexpand\split@name\noexpand\string
+          \expandafter\noexpand\csname#1/#2/#3/#4/#5\endcsname
+          \noexpand\@nil}%
+%    \end{macrocode}
+%    Initialize all those internal variables which may or may not have
+%    values in the first seconds of NFSS' bootstraping process. Later
+%    on such values will be updated when an encoding is selected, etc.
+%
+%    We definitely don't want to set |\f@encoding|; we can set all the
+%    others since if they are left ``blank'' any selection would grap
+%    ``error default values'' as well. However, this probably should
+%    go also.
+% \changes{v2.1n}{1994/05/14}{Don't set \cs{f@encoding}}
+%    \begin{macrocode}
+%      \gdef\f@encoding{#1}%
+      \gdef\default@family{#2}%
+      \gdef\default@series{#3}%
+      \gdef\default@shape{#4}%
+      \global\let\f@family\default@family
+      \global\let\f@series\default@series
+      \global\let\f@shape\default@shape
+      \gdef\f@size{#5}%
+      \gdef\f@baselineskip{#5pt}%
+}
+\@onlypreamble\DeclareErrorFont
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\wrong@fontshape}
+%    Before we come to the macro |\extract@font| we have to take
+%    care of unknown |\curr@fontshape| combinations.
+%    The general strategy is to issue a warning and to try a default
+%    \emph{shape}, then a default \emph{series},
+%    and finally a default \emph{family}.
+%    If this last one also fails \TeX{} will go into an infinite loop.
+%    But if the defaults are set incorrectly one deserves nothing else!
+% \changes{v1.9a}{1992/07/26}{}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\wrong@fontshape}%
+%<latexrelease>                 {Font substituation in preamble}%
+%<*2ekernel|latexrelease>
+\def\wrong@fontshape{%
+    \csname D@\f@encoding\endcsname   % install defaults if in math
+%    \end{macrocode}
+%    We remember the wanted |\curr@fontshape| combination
+%    which we will need in a moment.
+%    \begin{macrocode}
+    \edef\reserved@a{\csname\curr@fontshape\endcsname}%
+  \ifx\last@fontshape\reserved@a
+     \errmessage{Corrupted NFSS tables}%
+     \error@fontshape
+  \else
+%    \end{macrocode}
+%    Then we warn the user about the mess and set the shape to its
+%    default.
+% \changes{v1.0q}{1989/11/19}
+%     {Instead of calling \cs{family}\cs{default@family},
+%                           etc. we directly set \cs{f@family}, etc.}
+% \changes{v1.2f}{1990/01/28}{Warning message slightly changed.}
+%    \begin{macrocode}
+    \let\f@shape\default@shape
+%    \end{macrocode}
+%    If the combination is not known, try the default \emph{series}.
+%    \begin{macrocode}
+    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+       \let\f@series\default@series
+%    \end{macrocode}
+%    If this is still undefined, try the default \emph{family}.
+%    Otherwise give up. We never try to change the encoding scheme!
+% \changes{v1.9a}{1992/07/26}{}
+% \changes{v3.1a}{2015/04/07}{Try loading fd file if family has changed}
+%    \begin{macrocode}
+        \expandafter
+          \ifx\csname\curr@fontshape\endcsname\relax
+           \let\f@family\default@family
+%    \end{macrocode}
+%    If we change the font family and we are in the preamble then the
+%    corresponding \texttt{.fd} file may not been loaded
+%    yet. Therefore we try this now. Otherwise equating the requested
+%    font shape with the finally selected fontshape below will fail
+%    and can result in ``NFSS tables corruped''. After begin document
+%    that will not happen as all \texttt{.fd} files involved in
+%    substituation are loaded at |\begin{document}|.
+%    \begin{macrocode}
+           \begingroup
+              \try@load@fontshape
+           \endgroup 
+        \fi \fi
+  \fi
+%    \end{macrocode}
+%    At this point a valid |\curr@fontshape| combination must
+%    have been found.
+%    We inform the user about this fact.
+%\changes{v3.0n}{1995/11/02}
+%    {(DPC) Remove extra space with \cs{string} for latex/1676}
+% \changes{v3.0m}{1995/11/17}
+%    {Support \cs{@wrong@font@char} latex/1676}
+%
+% The |\expandafter\string| here stops \TeX\ adding the space
+% that it usually puts after command names in messages. The similar
+% construction with |\@undefined| just produces `undefined', but saves
+% a few tokens.
+%
+% |\@wrong@font@char|  is locally redefined in |\UseTextSymbol| from
+% its normal (empty) definition, to report the symbol generating the
+% font switch.
+%    \begin{macrocode}
+     \@font@warning{Font shape `\expandafter\string\reserved@a'
+                     \expandafter\@gobble\string\@undefined\MessageBreak
+                   using `\curr@fontshape' instead\@wrong@font@char}%
+    \global\let\last@fontshape\reserved@a
+%    \end{macrocode}
+%    We change |\@defaultsubs| to produce a warning at the end of
+%    the document.
+% \changes{v3.0d}{1995/07/13}{Change a macro not a switch to flag
+%         default font substitutions}
+% \changes{v3.0k}{1995/10/24}{Make this code inline since it
+%         happens only here}
+%    The macro |\@defaultsubs| is initially |\relax| but gets changed
+%    here if some default font substitution happens.
+%    It is then executed in |\enddocument|.
+%    \begin{macrocode}
+    \gdef\@defaultsubs{%
+      \@font@warning{Some font shapes were not available, defaults
+                      substituted.\@gobbletwo}}%
+%    \end{macrocode}
+%    If we substitute a |\curr@fontshape| combination
+%    by the default one we don't want the warning to be printed out
+%    whenever this (unknown) combination is used.
+%    Therefore we globally |\let| the macro corresponding to
+%    the wanted combination equal to its substitution.
+%    This requires the use of four |\expandafter|'s
+%    since |\csname|\dots|\endcsname| has to be
+%    expanded before |\reserved@a| (i.e.\  the requested
+%    combination),
+%    and this must happen before the |\let| is executed.
+%    \begin{macrocode}
+    \global\expandafter\expandafter\expandafter\let
+       \expandafter\reserved@a
+           \csname\curr@fontshape\endcsname
+%    \end{macrocode}
+%    Now we can redefine |\font@name| accordingly.
+%    This \emph{must} be done globally since it might occur in the
+%    group opened by |\define@newfont|.  If we would this
+%    definition were local the closing |\endgroup| there
+%    would restore the old meaning of |\font@name| and then
+%    switch to the wrong font at the end of |\selectfont|
+%    although the correct font was loaded.
+%    \begin{macrocode}
+    \xdef\font@name{%
+      \csname\curr@fontshape/\f@size\endcsname}%
+%    \end{macrocode}
+%    The last thing this macro does is to call |\pickup@font|
+%    again to load the font if it is not defined yet.
+%    At this point this code will loop endlessly if
+%    the defaults are not well defined.
+%    \begin{macrocode}
+    \pickup@font}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\wrong@fontshape}%
+%<latexrelease>                 {Font substituation in preamble}%
+%<latexrelease>\def\wrong@fontshape{%
+%<latexrelease>    \csname D@\f@encoding\endcsname
+%<latexrelease>    \edef\reserved@a{\csname\curr@fontshape\endcsname}%
+%<latexrelease>  \ifx\last@fontshape\reserved@a
+%<latexrelease>     \errmessage{Corrupted NFSS tables}%
+%<latexrelease>     \error@fontshape
+%<latexrelease>  \else
+%<latexrelease>    \let\f@shape\default@shape
+%<latexrelease>    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+%<latexrelease>       \let\f@series\default@series
+%<latexrelease>        \expandafter
+%<latexrelease>          \ifx\csname\curr@fontshape\endcsname\relax
+%<latexrelease>           \let\f@family\default@family
+%<latexrelease>        \fi \fi
+%<latexrelease>  \fi
+%<latexrelease>     \@font@warning{Font shape
+%<latexrelease>            `\expandafter\string\reserved@a'
+%<latexrelease>            \expandafter\@gobble\string\@undefined
+%<latexrelease>            \MessageBreak
+%<latexrelease>            using `\curr@fontshape' instead\@wrong@font@char}%
+%<latexrelease>    \global\let\last@fontshape\reserved@a
+%<latexrelease>    \gdef\@defaultsubs{%
+%<latexrelease>      \@font@warning{Some font shapes were not available,
+%<latexrelease>                       defaults substituted.\@gobbletwo}}%
+%<latexrelease>    \global\expandafter\expandafter\expandafter\let
+%<latexrelease>       \expandafter\reserved@a
+%<latexrelease>           \csname\curr@fontshape\endcsname
+%<latexrelease>    \xdef\font@name{%
+%<latexrelease>      \csname\curr@fontshape/\f@size\endcsname}%
+%<latexrelease>    \pickup@font}
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@wrong@font@char}
+% \changes{v3.0m}{1995/11/17}{(DPC) Macro added. latex/1676}
+%    Normally empty but redefined in |\UseTextSymbol| so that the
+%    Font shape undefined message can refer to the symbol causing the
+%    problem.
+%    \begin{macrocode}
+\let\@wrong@font@char\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@@defaultsubs}
+% \changes{v3.0d}{1995/07/13}{macro added}
+% \changes{v3.0k}{1995/10/24}{macro removed}
+%  \begin{macro}{\@defaultsubs}
+% \changes{v3.0d}{1995/07/13}{macro added}
+%    See above.
+%    \begin{macrocode}
+\let\@defaultsubs\relax
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% \begin{macro}{\strip@prefix}
+%    In |\extract@font| we will need a way to recover the
+%    replacement text of a macro.
+%    This is done by the primitive |\meaning| together
+%    with the macro |\strip@prefix| (for the details
+%    see appendix~D of the \TeX{}book, p.\ 382).
+%    \begin{macrocode}
+\def\strip@prefix#1>{}
+%    \end{macrocode}
+% \end{macro}
+%
+% ^^A \extract@font
+%
+%
+%
+% \section{Assigning math fonts to \emph{versions}}
+%
+%
+%  \begin{macro}{\install@mathalphabet}
+%    This is just another name for |\gdef| but we can redefine it if
+%    necessary later on.
+%    \begin{macrocode}
+\let\install@mathalphabet\gdef
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\math@fonts}
+%
+% \changes{v1.9a}{1992/07/26}{}
+%    \begin{macrocode}
+\let\math@fonts\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \begin{macro}{\select@group}
+% \changes{v1.0t}{1989/11/26}{\cs{bgroup}/\cs{egroup} changed to
+%   \cs{begingroup}/\cs{endgroup} to avoid empty Ord atom on math list.}
+%    |\select@group| has four arguments: the new
+%    \meta{math alphabet identifier} (a control sequence), the
+%    \meta{math group number}, the extra macro for math mode
+%    and the |\curr@fontshape| definition macro name.
+%    We first check if we are in math mode.
+% \changes{v1.1a}{1989/12/16}{\cs{relax} in front added.}
+% \changes{v1.1a}{1989/12/16}{Now four arguments.}
+%    \begin{macrocode}
+%\def\select@group#1#2#3{\relax\ifmmode
+%    \end{macrocode}
+%    We do these things locally using |\begingroup| instead
+%    of |\bgroup| to avoid the appearance of an empty Ord
+%    atom on the math list.
+%    \begin{macrocode}
+%  \begingroup
+%    \end{macrocode}
+%    We set the math fonts for the \emph{family} in question by calling
+%    |\getanddefine@fonts| in the correct environment.
+% \changes{v1.9a}{1992/07/26}{}
+%    \begin{macrocode}
+%     \escapechar\m@ne
+%    \getanddefine@fonts{\csname c@mv@\math@version\endcsname}#3%
+%    \end{macrocode}
+%    We globally select the math fonts\dots
+%    \begin{macrocode}
+%    \globaldefs\@ne  \math@fonts
+%    \end{macrocode}
+%    \dots{} and close the group to
+%    restore |\globaldefs| and |\escapechar|.
+%    \begin{macrocode}
+%  \endgroup
+%    \end{macrocode}
+%    As long as no \emph{size} or \emph{version} change occurs
+%    the \meta{math alphabet identifier} should simply switch to the
+%    installed \emph{math group} instead of calling
+%    |\select@group|
+%    unnecessarily. So we globally redefine the first argument
+%    (the new \meta{math alphabet identifier})
+%    to expand into a |\mathgroup| switch
+%    and then select this \emph{alphabet}. Note that this redefinition
+%    will be overwritten by the next call to a \emph{version} macro.
+% \changes{v1.1a}{1989/12/16}{Usage of `\quotechar=' macro added.}
+% \changes{v1.1a}{1989/12/16}{Redefinition of alphabet now simpler.}
+% \changes{v1.2a}{1990/01/20}{Def for alph id changed.}
+%    The original code for the end of |\select@group| was
+%    \begin{verbatim}
+%  \gdef#1{#3\mathgroup #2}#1\fi}
+%\end{verbatim}
+%    i.e.\ first redefining the \meta{math alphabet identifier} and
+%    then calling the new definition to switch to the wanted
+%    \meta{math group}. Now we define the \meta{math alphabet
+%    identifier} as a call to the |\use@mathgroup| command.
+% \changes{v1.2b}{1990/01/21}{Code moved to \cs{use@mathgroup}.}
+%    \begin{macrocode}
+%  \xdef#1{\noexpand\use@mathgroup\noexpand#2%
+%          {\number\csname c@mv@\math@version\endcsname}}%
+%    \end{macrocode}
+%    \changes{v1.3c}{1992/05/12}{Added call to
+%             \cs{extract@alph@from@version}.}
+%    But this is not sufficient, as we learned the hard way.
+%    The problem here is that the loading of the fonts that comprise
+%    the alphabet identifier |#1|, as well as the necessary math font
+%    assignments is deferred until it is used. This is OK so far, but
+%    if the fonts are switched within the current formula (which may
+%    happen if a sub-formula is a box that contains a math version
+%    switch) the font assignments for |#1| are not restored unless
+%    |#1| is used again. This is disastrous since TeX sees the wrong
+%    fonts at the end of the math formula, when it converts the math
+%    list into a horizontal list.
+%
+%    This is taken into account as follows: When a math alphabet
+%    identifier is used for the first time in a certain version
+%    it modifies the corresponding macro |\mv@|\meta{version}
+%    so that it calls |\getanddefine@fonts| directly in future as well.
+%    We use the macro |\extract@alph@from@version| to do this.
+%    It takes the math alphabet identifer |#1| and the math version
+%    macro as arguments.
+% \changes{v1.9a}{1992/07/26}{}
+%    \begin{macrocode}
+%     \expandafter\extract@alph@from@version
+%        \csname mv@\math@version\expandafter\endcsname
+%       \expandafter{\number\csname c@mv@\math@version\endcsname}%
+%       #1%
+%     \stepcounter{mv@\math@version}%
+%    \end{macrocode}
+%    Finally, it is not possible to simply call the new definition
+%    since we
+%    have an argument (the third argument of |\use@mathgroup|
+%    or more exactly the argument od |\math@egroup| if the {\ttfamily
+%    margid} option is in force)
+%    which would swallow our closing |\fi|.  So
+%    we use the |\expandafter| technique to remove the |\fi|
+%    before the |\use@mathgroup| is expanded.
+%    \begin{macrocode}
+%\expandafter #1\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\extract@alph@from@version}
+%    \changes{v1.3c}{1992/05/12}{Macro added.}
+%    We proceed to the definition of the
+%    macro |\extract@alph@from@version|. As stated above, it takes
+%    a math alphabet identifier and a math version macro
+%    (e.g.\ |\mv@normal|) as its arguments.
+%    \begin{macrocode}
+\def\extract@alph@from@version#1#2#3{%
+%    \end{macrocode}
+%    To extract and replace the definition of math alphabet identifier
+%    |#3| in macro |#1| we have to recall how this definition looks
+%    like: Somewhere in the replacement text of |#1| there is
+%    the sequence\\[2pt]
+%    |\install@mathalphabet|\meta{math alphabet identifier} |#3||{%| \\
+%      \hspace*{\MacroIndent}\hspace*{5mm}
+%     \meta{Definitions for }|#3}| \\[2pt]
+%    Hence, the first thing we do is to extract the tokens preceding
+%    this definitions, the definition itself, and the tokens following
+%    it. To this end we define one auxiliary macro |\reserved@a|.
+%    \begin{macrocode}
+     \def\reserved@a##1\install@mathalphabet#3##2##3\@nil{%
+%    \end{macrocode}
+%    When |\reserved@a| is expanded, it will have the tokens preceding
+%    the definition in question in its first argument (|##1|), the
+%    following tokens in its third argument (|##3|), and the replacement
+%    text for the math alphabet identifier |#3| in its second argument.
+%    (|##2|). This is then recorded for later use in a temporary macro
+%    |\reserved@b|.
+%    \begin{macrocode}
+         \def\reserved@b{##2}%
+%    \end{macrocode}
+%    Additionally, we define a macro |\reserved@c| to reconstruct the
+%    definitions for the math version in question from the tokens that
+%    will remain unchanged (|##1| and |##3|) and the yet to build new
+%    definitions for the math alphabet identifier |#3|.
+%    \begin{macrocode}
+         \def\reserved@c####1{\gdef#1{##1####1##3}}}%
+%    \end{macrocode}
+%    Then we execute our auxiliary macro.
+%    \begin{macrocode}
+     \expandafter\reserved@a#1\@nil
+%    \end{macrocode}
+%    OK, so now we have to build the new definition for |#3|. To do so,
+%    we first extract the interesting parts out of the old one.
+%    The old definition looks like:\\[2pt]
+%    |\select@group|\meta{math alphabet identifier} \\
+%      \hspace*{\MacroIndent}\hspace*{5mm}
+%      \meta{math group number}\meta{math extra part}\\
+%      \meta{|curr@fontshape| definition} \\[2pt]
+%    So we define a new temporary macro |\reserved@a| that
+%     extracts these parts.
+%    \begin{macrocode}
+     \def\reserved@a\select@group#3##1##2\@nil{%
+%    \end{macrocode}
+%    This macro can now directly rebuild the math version definition
+%    by calling |\reserved@c|:
+%    \begin{macrocode}
+        \reserved@c{%
+           \getanddefine@fonts{#2}##2%
+           \install@mathalphabet#3{%
+              \relax\ifmmode \else \non@alpherr#3\fi
+              \use@mathgroup##1{#2}}}%
+%    \end{macrocode}
+% \changes{v2.1t}{1994/10/15}{Warn if math alpha is used outside math}
+%    In addtion it defines the alphabet the way it should be used from
+%    now on.
+%    \begin{macrocode}
+       \gdef#3{\relax\ifmmode \else \non@alpherr#3\fi
+               \use@mathgroup##1{#2}}}%
+%    \end{macrocode}
+%    Finally, we only have to call this macro |\reserved@a| on the old
+%    definitions recorded in |\reserved@b|:
+%    \begin{macrocode}
+     \expandafter\reserved@a\reserved@b\@nil
+     }
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\math@bgroup}
+% \changes{v1.2a}{1990/01/20}{Def. placed in this file.}
+% \begin{macro}{\math@egroup}
+% \changes{v1.2a}{1990/01/20}{Def. placed in this file.}
+% \changes{v1.2h}{1990/03/30}{Changed to have one arg.}
+% \changes{v2.2f}{1994/03/10}{Changed \cs{begingroup}/\cs{endgroup} to
+%                             \cs{bgroup}/\cs{egroup}.}
+%   Here are the default definitions for |\math@bgroup| and
+%   |\math@egroup|. We use |\bgroup| instead of |\begingroup|
+%   to avoid `leaking out' of style changes. This has the side
+%   effect of always producing mathord atoms.
+%    \begin{macrocode}
+\let\math@bgroup\bgroup
+\def\math@egroup#1{#1\egroup}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\calculate@math@sizes}
+% \changes{v2.1i}{1994/04/18}{Changed message to log only}
+%    Here is the default definition for |\calculate@math@sizes|
+%    a more elaborate interface
+%    is under testing in mthscale.sty.
+%    \begin{macrocode}
+\gdef\calculate@math@sizes{%
+  \@font@info{Calculating\space math\space sizes\space for\space
+              size\space <\f@size>}%
+  \dimen@\f@size \p@
+  \@tempdimb \defaultscriptratio \dimen@
+  \dimen@ \defaultscriptscriptratio \dimen@
+  \expandafter\xdef\csname S@\f@size\endcsname{%
+    \gdef\noexpand\tf@size{\f@size}%
+    \gdef\noexpand\sf@size{\strip@pt\@tempdimb}%
+    \gdef\noexpand\ssf@size{\strip@pt\dimen@}%
+    \noexpand\math@fontstrue}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\defaultscriptratio}
+% \changes{v2.1h}{1994/04/11}{Macro added}
+% \begin{macro}{\defaultscriptscriptratio}
+% \changes{v2.1h}{1994/04/11}{Macro added}
+%    The default ratio for math
+%    sizes is:\\
+% 1 to |\defaultscriptratio| to |\defaultscriptscriptratio|.\\
+%  By default this is 1 to .7 to .5.
+%    \begin{macrocode}
+\def\defaultscriptratio{.7}
+\def\defaultscriptscriptratio{.5}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\noaccents@}
+%    If we don't have a definition for |\noaccents@| we provide a
+%    dummy.
+%    \begin{macrocode}
+\ifx\noaccents@\@undefined
+  \let\noaccents@\@empty
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\showhyphens}
+% \changes{v1.2l}{1990/06/30}{Macro added.}
+% \changes{v2.0e}{1993/05/16}{Use \cs{reset@font}}
+% \changes{v3.0h}{1995/10/10}
+%    {Use \cs{normalfont} and make colour safe, and autoloadable}
+% \changes{v3.0u}{1998/03/25}
+%    {Suppress unnecessary error when used in preamble}
+%    The |\showhyphens| command must be redefined since the version in
+%    \texttt{plain.tex} uses |\tenrm|.  We have also made some further
+%    adjustments for its use in \LaTeX.
+%    \begin{macrocode}
+\gdef\showhyphens#1{%
+  \setbox0\vbox{%
+    \color@begingroup
+    \everypar{}%
+    \parfillskip\z@skip\hsize\maxdimen
+    \normalfont
+    \pretolerance\m@ne\tolerance\m@ne\hbadness\z@\showboxdepth\z@\ #1%
+    \color@endgroup}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\addto@hook}
+% \changes{v1.0u}{1989/12/05}{\cs{addto@hook} added.}
+% \changes{v2.1d}{1994/02/10}{Made \cs{addto@hook} long.}
+%    We need a macro to add tokens to a hook.
+%    \begin{macrocode}
+\long\def\addto@hook#1#2{#1\expandafter{\the#1#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@vpt}
+% \changes{v2.1v}{1994/11/09}{(DPC) macros added, from setsize.dtx}
+% \changes{v2.1v}{1994/11/09}{(DPC) reduce save stack usage latex/1742}
+%    \begin{macrocode}
+ \def\@vpt{5}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@vipt}
+%    \begin{macrocode}
+ \def\@vipt{6}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@viipt}
+%    \begin{macrocode}
+ \def\@viipt{7}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@viiipt}
+%    \begin{macrocode}
+ \def\@viiipt{8}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ixpt}
+%    \begin{macrocode}
+ \def\@ixpt{9}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xpt}
+%    \begin{macrocode}
+ \def\@xpt{10}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xipt}
+%    \begin{macrocode}
+ \def\@xipt{10.95}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xiipt}
+%    \begin{macrocode}
+ \def\@xiipt{12}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xivpt}
+%    \begin{macrocode}
+ \def\@xivpt{14.4}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xviipt}
+%    \begin{macrocode}
+ \def\@xviipt{17.28}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xxpt}
+%    \begin{macrocode}
+ \def\@xxpt{20.74}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xxvpt}
+%    \begin{macrocode}
+ \def\@xxvpt{24.88}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

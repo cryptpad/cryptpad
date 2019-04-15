@@ -1,0 +1,275 @@
+% \iffalse meta-comment
+%
+% Copyright 1989-2008 Johannes L. Braams and any individual authors
+% listed elsewhere in this file.  All rights reserved.
+% 
+% This file is part of the Babel system.
+% --------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2003/12/01 or later.
+% 
+% This work has the LPPL maintenance status "maintained".
+% 
+% The Current Maintainer of this work is Javier Bezos.
+% 
+% The list of all files belonging to the Babel system is
+% given in the file `manifest.bbl. See also `legal.bbl' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+% \fi
+% \CheckSum{263}
+%
+% \iffalse
+%<*dtx>
+\ProvidesFile{bbcompat.dtx}[2013/07/28 v1.2l]
+%</dtx>
+%
+%% File 'bbcompat.dtx'
+%% Copyright (C) 1989 -- 2008 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%
+%% Please report errors to: J.L. Braams
+%%                          babel at braams dot xs4all dot nl
+%<*filedriver>
+\documentclass{ltxdoc}
+\newcommand*\TeXhax{\TeX hax}
+\newcommand*\babel{\textsf{babel}}
+\newcommand*\Lopt[1]{\textsf{#1}}
+\newcommand*\file[1]{\texttt{#1}}
+\newcommand*\pkg[1]{\texttt{#1}}
+\begin{document}
+ \DocInput{bbcompat.dtx}
+\end{document}
+%</filedriver>
+% \fi
+%
+% \GetFileInfo{bbcompat.dtx}
+% \changes{bbcompat-1.2j}{2006/06/05}{Small documentation fix}
+%
+% \StopEventually{}
+%
+% \changes{bbcompat-1.2}{1996/11/02}{Added the check for \cs{LdfInit}}
+% \changes{bbcompat-1.2d}{1999/04/12}{When these files are read by a
+%    non-babel plain format the @ has still category code `other' so
+%    can't use \cs{@undefined}} 
+%    \begin{macrocode}
+\ifx\LdfInit\undefined
+  \def\LdfInit{%
+    \chardef\atcatcode=\catcode`\@
+    \catcode`\@=11\relax
+    \input babel.def\relax
+    \catcode`\@=\atcatcode \let\atcatcode\relax
+    \LdfInit}
+\fi
+%    \end{macrocode}
+%    It seems that these files, although meant for compatibility with
+%    \file{plain.tex} are also used as packages in \LaTeXe. The
+%    disadvantage of that is that a number of compatibility measures
+%    with other packages that are part of \file{babel.sty} are not
+%    present. Therefore we issue an error and then load
+%    \file{babel.def} to let the user continue processing his
+%    document (at his own risk). 
+%
+%    First we determine whether we are loaded from \LaTeX\ by checking
+%    whether |\PackageError| is defined.
+%    \begin{macrocode}
+\ifx\PackageError\undefined
+%    \end{macrocode}
+%    In this case we are not being loaded by \LaTeXe, so just define
+%    |\ProvidesLanguage| to prevent an error when the \file{.ldf} file
+%    is loaded.
+%    \begin{macrocode}
+  \def\ProvidesLanguage#1[#2 #3 #4]{%
+    \wlog{Language: #1 #4 #3 <#2>}}%
+\else
+%    \end{macrocode}
+%    Now we define an error message which `deletes' itself from
+%    memory.
+% \changes{bbcompat-1.2l}{2013/07/28}{Raise a more useful error.} 
+%
+%    \begin{macrocode}
+  \def\bblstyerror{%
+    \PackageError{babel}%
+      {You are loading directly a language style.\MessageBreak
+       This syntax is deprecated and you must use\MessageBreak
+       \string\usepackage[language]\string{babel\string}}%
+      {You could proceed but don't complain if you run into errors}%
+    \let\bblstyerror\@undefined
+    }
+%    \end{macrocode}
+%    Now we can issue the error, it should appear when these files are
+%    loaded from \LaTeXe, with \emph{or} without \file{hyphen.cfg}
+%    preloaded in the format. 
+% \changes{bbcompat-1.2e}{1999/04/20}{Added a check for
+%    \cs{ProvidesLanguage}} 
+%    \begin{macrocode}
+  \ifx\ProvidesLanguage\undefined
+%    \end{macrocode}
+%    In this case \file{hyphen.cfg} wasn't loaded in the \LaTeXe\
+%    format so we also need to provide a suitable definition for
+%    |\ProvidesLanguage|.
+%    \begin{macrocode}
+    \bblstyerror
+    \def\ProvidesLanguage{%
+      \chardef\atcatcode=\catcode`\@
+      \catcode`\@=11\relax
+      \input babel.def\relax
+      \catcode`\@=\atcatcode \let\atcatcode\relax
+      \ProvidesLanguage}
+%    \end{macrocode}
+%    When we end up here, \file{hyphen.cfg} was loaded into the
+%    format; we only need to issue the error from \LaTeXe.
+%    \begin{macrocode}
+  \else
+    \bblstyerror
+  \fi
+\fi
+%    \end{macrocode}
+% \changes{bbcompat-1.2}{1996/07/13}{Added \file{.sty} files and
+%    definition of \cs{CurrentOption} for language definition files
+%    that are loaded by more than one option.} 
+% \changes{bbcompat-1.2}{1996/12/14}{Added \file{welsh.sty}}
+% \changes{bbcompat-1.2b}{1997/02/07}{Added \file{sanskrit.sty}}
+% \changes{bbcompat-1.2c}{1998/03/24}{Added \file{hebrew.sty}}
+% \changes{bbcompat-1.2d}{1999/03/09}{Added \file{ukraineb.sty}}
+% \changes{bbcompat-1.2d}{1999/04/10}{Added \file{ngerman.sty} and
+%    \file{naustrian.sty}} 
+% \changes{bbcompat-1.2f}{2000/09/26}{Added \file{icelandic.sty},
+%    \file{bulgarian.sty} and \file{samin.sty}}
+% \changes{bbcompat-1.2f}{2000/09/27}{Define \cs{CurrentOption} in
+%    each file}
+% \changes{bbcompat-1.2g}{2001/01/19}{Added code for usenglish and
+%    ukenglish.sty} 
+% \changes{bbcompat-1.2h}{2003/11/13}{Added \file{interlingua.sty}}
+% \changes{bbcompat-1.2i}{2005/11/23}{Added \file{albanian.sty} and
+%    \file{bahasam.sty}}
+% \changes{bbcompat-1.2k}{2008/07/06}{Added \file{latin.sty}}
+%    \begin{macrocode}
+%<+albanian>\def\CurrentOption{albanian}
+%<+albanian>\input albanian.ldf\relax
+%<+american>\def\CurrentOption{american}
+%<+USenglish>\def\CurrentOption{USenglish}
+%<+british>\def\CurrentOption{british}
+%<+english>\def\CurrentOption{english}
+%<+UKenglish>\def\CurrentOption{UKenglish}
+%<american|british|english|UKenglish|USenglish>\input english.ldf\relax
+%<+bahasa>\def\CurrentOption{bahasai}
+%<+bahasa>\input bahasai.ldf\relax
+%<+bahasam>\def\CurrentOption{bahasam}
+%<+bahasam>\input bahasam.ldf\relax
+%<+breton>\def\CurrentOption{breton}
+%<+breton>\input breton.ldf\relax
+%<+bulgarian>\def\CurrentOption{bulgarian}
+%<+bulgarian>\input bulgarian.ldf\relax
+%<+catalan>\def\CurrentOption{catalan}
+%<+catalan>\input catalan.ldf\relax
+%<+croatian>\def\CurrentOption{croatian}
+%<+croatian>\input croatian.ldf\relax
+%<+czech>\def\CurrentOption{czech}
+%<+czech>\input czech.ldf\relax
+%<+danish>\def\CurrentOption{danish}
+%<+danish>\input danish.ldf\relax
+%<+afrikaans>\def\CurrentOption{afrikaans}
+%<+dutch>\def\CurrentOption{dutch}
+%<+afrikaans|dutch>\input dutch.ldf\relax
+%<+esperanto>\def\CurrentOption{esperanto}
+%<+esperanto>\input esperanto.ldf\relax
+%<+estonian>\def\CurrentOption{estonian}
+%<+estonian>\input estonian.ldf\relax
+%<+finnish>\def\CurrentOption{finnish}
+%<+finnish>\input finnish.ldf\relax
+%<+francais>\def\CurrentOption{francais}
+%<+french>\def\CurrentOption{french}
+%<+francais|french>\input frenchb.ldf\relax
+%<+galician>\def\CurrentOption{galician}
+%<+galician>\input galician.ldf\relax
+%<+austrian>\def\CurrentOption{austrian}
+%<+german>\def\CurrentOption{german}
+%<+germanb>\def\CurrentOption{german}
+%<+austrian|german|germanb>\input germanb.ldf\relax
+%<+naustrian>\def\CurrentOption{naustrian}
+%<+ngerman>\def\CurrentOption{ngerman}
+%<+naustrian|ngerman>\input ngermanb.ldf\relax
+%<+greek>\def\CurrentOption{greek}
+%<+greek>\input greek.ldf\relax
+%<+icelandic>\def\CurrentOption{icelandic}
+%<+icelandic>\input icelandic.ldf\relax
+%<+interlingua>\def\CurrentOption{interlingua}
+%<+interlingua>\input interlingua.ldf\relax
+%<+irish>\def\CurrentOption{irish}
+%<+irish>\input irish.ldf\relax
+%<+italian>\def\CurrentOption{italian}
+%<+italian>\input italian.ldf\relax
+%<+latin>\def\CurrentOption{latin}
+%<+latin>\input latin.ldf\relax
+%<+lsorbian>\def\CurrentOption{lsorbian}
+%<+lsorbian>\input lsorbian.ldf\relax
+%<+magyar>\def\CurrentOption{magyar}
+%<+hungarian>\def\CurrentOption{hungarian}
+%<+magyar|hungarian>\input magyar.ldf\relax
+%<+norsk>\def\CurrentOption{norsk}
+%<+nynorsk>\def\CurrentOption{nynorsk}
+%<+norsk|nynorsk>\input norsk.ldf\relax
+%<+polish>\def\CurrentOption{polish}
+%<+polish>\input polish.ldf\relax
+%<+portuges>\def\CurrentOption{portuges}
+%<+portuguese>\def\CurrentOption{portuguese}
+%<+brazil>\def\CurrentOption{brazil}
+%<+brazilian>\def\CurrentOption{brazilian}
+%<+portuges|portuguese|brazil|brazilian>\input portuges.ldf\relax
+%<+romanian>\def\CurrentOption{romanian}
+%<+romanian>\input romanian.ldf\relax
+%<+russianb>\def\CurrentOption{russianb}
+%<+russianb>\input russianb.ldf\relax
+%<+ukraineb>\def\CurrentOption{ukraineb}
+%<+ukraineb>\input ukraineb.ldf\relax
+%<+samin>\def\CurrentOption{samin}
+%<+samin>\input samin.ldf\relax
+%<+sanskrit>\def\CurrentOption{sanskrit}
+%<+sanskrit>\input sanskrit.ldf\relax
+%<+scottish>\def\CurrentOption{scottish}
+%<+scottish>\input scottish.ldf\relax
+%<+slovak>\def\CurrentOption{slovak}
+%<+slovak>\input slovak.ldf\relax
+%<+slovene>\def\CurrentOption{slovene}
+%<+slovene>\input slovene.ldf\relax
+%<+spanish>\def\CurrentOption{spanish}
+%<+spanish>\input spanish.ldf\relax
+%<+swedish>\def\CurrentOption{swedish}
+%<+swedish>\input swedish.ldf\relax
+%<+turkish>\def\CurrentOption{turkish}
+%<+turkish>\input turkish.ldf\relax
+%<+usorbian>\def\CurrentOption{usorbian}
+%<+usorbian>\input usorbian.ldf\relax
+%<+welsh>\def\CurrentOption{welsh}
+%<+welsh>\input welsh.ldf\relax
+%<+hebrew>\def\CurrentOption{hebrew}
+%<+hebrew>\input rlbabel.def\input hebrew.ldf\relax
+%    \end{macrocode}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput

@@ -1,0 +1,24 @@
+\nofiles
+\documentclass{article}
+\ifx\driver\UnDeFiNeD
+  \usepackage[pdfpagelabels=false]{hyperref}%
+\else
+  \expandafter\usepackage\expandafter[%
+    \driver,pdfpagelabels=false%
+  ]{hyperref}%
+\fi
+\hypersetup{%
+  pdftitle={MyTitle},%
+  pdfsubject={MySubject},%
+  pdfauthor={MyAuthor},%
+  pdfkeywords={MyKeywords},%
+  pdfcreator={MyCreator},%
+  pdfproducer={MyProducer},%
+  pdfcreationdate={D:20050505050505Z},%
+  pdfmoddate={D:20101010101010Z},%
+  pdfinfo={MyKey=MyValue},%
+}
+
+\begin{document}
+\shipout\null
+\end{document}

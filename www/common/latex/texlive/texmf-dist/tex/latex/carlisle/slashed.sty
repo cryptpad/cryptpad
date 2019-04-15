@@ -1,0 +1,171 @@
+%% slashed.sty: Produce the `Feynman slashed character' notation
+%% beloved of High Energy Physicists.
+%%
+%% This is a standard LaTeX package, but as many physicists perversely
+%% use use a plain TeX rather than a format designed for document
+%% production, it runs under plain as well.
+%% (Just say \input slashed.sty in that case
+%% rather than \usepackage{slashed}).
+
+%% This began life as me commenting in comp.text.tex
+%% on some code posted by Ben Bullock, which was originally written by
+%% Mike Wade. 
+%% In the ensuing newsgroup thread, P? Parker, Axel Thimm
+%% and  Maurizio Loreti and others made helpful comments
+%%
+%% David Carlisle
+%%
+%% Copyright 1997 David carlisle
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+
+\ifx\ProvidesPackage\undefined
+  \catcode`\@=11
+\else
+\ProvidesPackage{slashed}
+    [1997/01/16 v0.01 Feynman Slashed Character Notation (DPC)]
+\fi
+
+
+%% Usage  \slashed{p}  \slashed{D} etc.
+
+%% As \slashed may not put the / quite where you want, you can
+%% customise it for certain arguments. After
+%%
+%% \declareslashed{}{/}{.1}{0}{D}
+%%
+%% Then any later use of \slashed{D} will have the / moved
+%% to the right of centre by 0.1 of the width of `D'.
+%%
+%% The arguments to \declareslashed are:
+%%
+%% #1 A command to apply to the constructed character (for instance
+%% \mathbin to re-make it into a binary relation). (It seems that
+%% For the intended use as the Feynman notation it will only
+%% ever be applied to `ordinary' symbols, and so #1 will be empty
+%% but someone might find use for it.
+%%
+%% #2 The symbol to overprint. Normally / but you can try \not or |
+%% (or \big/ or whatever) to get different effects.
+%%
+%% #3 The overprinted symbol is moved to the right by this fraction
+%% of the width of the symbol #5.
+%%
+%% #4 The overprinted symbol is moved up by this fraction
+%% of the width of the symbol #5.
+%% (Note width not height, so #3 and #4 use the same units)
+%%
+%% #5 The symbol to which these customisations applies.
+
+
+%% The basic guts of the macro just measures the specified character
+%% and a / and arranges to put the centre of the / over the centre
+%% of the character. (This, barring some TeX quibbles, was what the
+%% orignally posted macro did.)
+
+%% The first refinement is to call the macro via \mathpalette so
+%% that it works correctly in subscripts, fractions etc.
+
+%% Remaining problems.
+
+%% The macro puts the middle of the slash through the
+%% middle of the symbol, where `middle' is defined as the centre of the
+%% bounding rectangles. However the eye doesn't necessarily work that
+%% way, for instance $\sla D$ looks to have the slash too far to the
+%% left to me. It is virtually impossible to do such micro positioning
+%% automatically as it depends on the shape of the letters and the
+%% personal judgement of the viewer, and \TeX\ does not have either of
+%% these pieces of information. However one could do something like
+%% the following which allows you to predefine offsets for certain
+%% letters. The offsets are done relative to the size of the symbol
+%% so they work OK in superscrips (or within the scope of a La\TeX\
+%% size change).
+
+%% Some characters just don't work with /. The computer modern math
+%% italic f and / have about the same slope and whatever you do it
+%% just looks horrible. So allow the use of an alternative character
+%% (eg \not, which has a slightly different slope).
+
+% #1 normally /
+% #2 right shift
+% #3 up shift
+% #4 \displaystyle etc (added by \mathpalette)
+% #5 symbol.
+\def\sla@#1#2#3#4#5{{%
+  \setbox\z@\hbox{$\m@th#4#5$}%
+  \setbox\tw@\hbox{$\m@th#4#1$}%
+  \dimen4\wd\ifdim\wd\z@<\wd\tw@\tw@\else\z@\fi
+  \dimen@\ht\tw@
+  \advance\dimen@-\dp\tw@
+  \advance\dimen@-\ht\z@
+  \advance\dimen@\dp\z@
+  \divide\dimen@\tw@
+  \advance\dimen@-#3\ht\tw@
+  \advance\dimen@-#3\dp\tw@
+  \dimen@ii#2\wd\z@
+  \raise-\dimen@\hbox to\dimen4{%
+    \hss\kern\dimen@ii\box\tw@\kern-\dimen@ii\hss}%
+  \llap{\hbox to\dimen4{\hss\box\z@\hss}}}}
+
+% Use offsets of 0 unless a command has been pre-defined
+% with different offsets for this symbol.
+\def\slashed#1{%
+  \expandafter\ifx\csname sla@\string#1\endcsname\relax
+    {\mathpalette{\sla@/00}{#1}}%
+  \else
+    \csname sla@\string#1\endcsname
+  \fi}
+
+% #1 normally empty, can be \mathop etc
+% #2 normally /
+% #3 right shift
+% #4 up shift
+% #5 symbol
+\def\declareslashed#1#2#3#4#5{%
+  \expandafter\def\csname sla@\string#5\endcsname{%
+    #1{\mathpalette{\sla@{#2}{#3}{#4}}{#5}}}}
+
+\catcode`\@=12
+
+%% Now some fine tuning, if you are not using Computer Modern
+%% This is almost certainly wrong. You may think some of these are
+%% wrong anyway.
+
+
+\declareslashed{}{/}{.08}{0}{D}
+\declareslashed{}{/}{.1}{0}{A}
+\declareslashed{}{/}{0}{-.05}{k}
+\declareslashed{}{/}{.1}{0}{\partial}
+\declareslashed{}{\not}{-.6}{0}{f}
+
+\endinput
+
+================================================================
+% test file (plain TeX)
+\input slashed.sty
+
+
+$ 
+\slashed{D} \slashed{p} \slashed{k} \slashed{r} \slashed{A}
+ \slashed{f}
+\slashed{U} \slashed{\partial}
+$
+
+\bye
+
+================================================================
+% and same again as LaTeX
+
+\documentclass{article}
+\usepackage{slashed}
+
+\begin{document}
+
+$ 
+\slashed{D} \slashed{p} \slashed{k} \slashed{r} \slashed{A}
+ \slashed{f}
+\slashed{U} \slashed{\partial}
+$
+\end{document}
+
+

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='ifdraft'>
+  <name>ifdraft</name>
+  <caption>Detect "draft" and "final" class options.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999,2005,2006,2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    The package defines commands that switch according to the
+    prevailing &#x2018;draft&#x2019; or &#x2018;final&#x2019;
+    options; each command takes two arguments, the first for the
+    &#x2018;true&#x2019;, the second for the &#x2018;false&#x2019;
+    case.  Commands are:<br/>
+    &#x2014; <tt>\ifdraft</tt> determines whether we're operating in
+      draft (&#x2018;true&#x2019;) or final mode;<br/>
+
+    &#x2014; <tt>\ifoptiondraft</tt> determines whether a
+      &#x2018;draft&#x2019; option has been given; and<br/>
+    &#x2014; <tt>\ifoptionfinal</tt> determines whether a
+      &#x2018;final&#x2019; option has been given.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/ifdraft.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/ifdraft.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

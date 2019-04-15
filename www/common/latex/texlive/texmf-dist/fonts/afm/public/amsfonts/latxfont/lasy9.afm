@@ -1,0 +1,40 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName LASY9
+FullName LASY9
+FamilyName LaTeX
+Weight Medium
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name LASY9.)
+ItalicAngle -14.035
+IsFixedPitch false
+UnderlinePosition 0
+UnderlineThickness 0
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox -20 -196 971 683
+StartCharMetrics 23
+C 1 ; WX 799 ; N a1 ; B 86 -50 714 551 ;
+C 2 ; WX 799 ; N a2 ; B 86 -151 714 652 ;
+C 3 ; WX 799 ; N a3 ; B 86 -50 714 551 ;
+C 4 ; WX 799 ; N a4 ; B 86 -151 714 652 ;
+C 32 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 40 ; WX 342 ; N a40 ; B 57 69 254 431 ;
+C 41 ; WX 342 ; N a41 ; B 89 69 285 431 ;
+C 42 ; WX 513 ; N a42 ; B 76 -196 438 0 ;
+C 43 ; WX 513 ; N a43 ; B 76 0 438 197 ;
+C 48 ; WX 742 ; N a48 ; B 46 -21 697 683 ;
+C 49 ; WX 742 ; N a49 ; B 65 46 678 638 ;
+C 50 ; WX 753 ; N a50 ; B 93 58 660 625 ;
+C 51 ; WX 794 ; N a51 ; B 57 1 738 682 ;
+C 58 ; WX 685 ; N a58 ; B -20 116 706 384 ;
+C 59 ; WX 1027 ; N a59 ; B -20 71 971 429 ;
+C 60 ; WX 799 ; N a60 ; B 96 -50 735 551 ;
+C 61 ; WX 799 ; N a61 ; B 65 -50 703 551 ;
+C 128 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 162 ; WX 799 ; N a1 ; B 86 -50 714 551 ;
+C 163 ; WX 799 ; N a2 ; B 86 -151 714 652 ;
+C 164 ; WX 799 ; N a3 ; B 86 -50 714 551 ;
+C 165 ; WX 799 ; N a4 ; B 86 -151 714 652 ;
+C 195 ; WX 333 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+EndFontMetrics

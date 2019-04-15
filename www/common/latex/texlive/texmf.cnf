@@ -1,0 +1,11 @@
+% (Public domain.)
+% This texmf.cnf file should contain only your personal changes from the
+% original texmf.cnf (for example, as chosen in the installer).
+%
+% That is, if you need to make changes to texmf.cnf, put your custom
+% settings in this file, which is .../texlive/YYYY/texmf.cnf, rather than
+% the distributed file (which is .../texlive/YYYY/texmf-dist/web2c/texmf.cnf).
+% And include *only* your changed values, not a copy of the whole thing!
+%
+TEXMFLOCAL = $SELFAUTOPARENT/texmf-local
+TEXMFVAR = /home/thunder/emsdk_portable/texlive.js/home/texmf-var

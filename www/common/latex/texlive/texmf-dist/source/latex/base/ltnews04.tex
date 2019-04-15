@@ -1,0 +1,143 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews04.tex
+
+% This is issue 4 of LaTeX News.
+
+\documentclass
+%   [lw35fonts]
+   {ltnews}
+
+
+\publicationmonth{December}
+\publicationyear{1995}
+\publicationissue{4}
+
+\begin{document}
+
+\maketitle
+
+\section{Welcome to \LaTeXNews~4}
+
+An issue of \emph{\LaTeXNews} will accompany every future release of
+\LaTeX.  It will tell you about important events, such as major bug
+fixes, newly available packages, or any other \LaTeX{} news.
+This issue accompanies the fourth release of \LaTeXe.
+
+
+\section{\LaTeX\ getting smaller}
+
+The last release in June started a trend of \LaTeX\ becoming
+smaller, we are pleased to announce that this has continued with this
+release. In particular the experimental `autoload' version described in
+\texttt{autoload.txt} is much smaller as more parts of \LaTeX\ are
+autoloaded.
+
+\section{New `concurrent' docstrip}
+
+The time taken to `unpack' this release from the documented sources
+should be much reduced (roughly half the time, depending on
+installation conditions). This is due to an improved version of the
+docstrip program that has been contributed by Marcin Woli\'nski.
+This can write up to 16 files at once. The
+previous version could only write one file at a time which meant that
+it was very slow when producing many small files from the same source
+file as the source needed to be re-read for each file written.
+
+\section{New T1 encoded fonts}
+
+This year J\"org Knappen has completed a new release of the `Cork'
+(T1) encoded Computer Modern fonts: the dc fonts release 1.2.
+
+This release of the dc fonts fixes many bugs (including the missing
+\verb|?`| (?`) and \verb|!`| (!`) ligatures) and improves the fonts in
+many other ways. It is strongly recommended that you upgrade as soon as
+possible if currently you are using the old dc fonts, release 1.1 or
+earlier. The new fonts are available from the CTAN archives, in
+\texttt{tex-archive/fonts/dc}. 
+
+The names of the font files are \emph{different}. This does not affect
+\LaTeX\ documents but \emph{does} affect the installation procedure as
+it assumes that you have the \emph{new} fonts, and will write suitable
+`fd' files for those fonts. If you have not yet upgraded your dc fonts
+then, after unpacking the distribution, you \emph{must}
+\verb|latex olddc.ins| to produce `fd' files for the old dc fonts.
+This must be done \emph{before} the format is made. Running the test
+document at \texttt{ltxcheck.tex} the end of the installation will
+inform you if the wrong set of `fd' files has been installed.
+
+Note that this change does not affect the standard `OT1' Computer
+Modern fonts that \LaTeX\ uses by default.
+
+\section{More robust commands}
+
+The commands \verb|\cite| and \verb|\sqrt| are now robust.
+
+Although most commands with optional arguments are fragile, as
+documented, such commands defined using the second optional argument
+of \verb|\newcommand| and its derivatives are now \emph{robust}.
+
+\section{New Interface to building `extension' classes}
+
+The mechanism provided by \verb|\DeclareOption|, \verb|\ProcessOptions|
+and \verb|\LoadClass| has proved to be a powerful and expressive means
+of defining one class in terms of another `base' class. However there
+have been some requests to simplify the declaration of the common case
+where you want the `base' class to be called with \emph{all} the
+options that were specified to the extension class.  This is now
+provided by the new command \verb|\LoadClassWithOptions|. A similar
+command \verb|\RequirePackageWithOptions| is provided for package use.
+More details of this feature are provided in \texttt{clsguide.tex} and
+\texttt{ltclass.dtx}.
+
+\section{More Input Encodings}
+
+The experimental \texttt{inputenc} package allows a more natural style
+of input of accented and other characters.
+
+Three new input encodings are now supported.
+\begin{itemize}
+\item \texttt{ansinew} the Windows ansi encoding, 
+                       as used in Microsoft Windows 3.x.
+\item \texttt{cp437de} a variant of \texttt{cp437}, which uses \ss\
+  rather than $\beta$  in the appropriate slot.
+\item \texttt{next} the encoding used on Next computers. 
+\end{itemize}
+
+\section{Further information}
+
+For more information on \TeX{} and \LaTeX, get in touch with your local
+\TeX{} Users Group, or the international \TeX{} Users Group,
+1850 Union Street, \#1637, San Francisco, CA~94123, USA, 
+Fax:~+1~415~982~8559,
+EMail:~tug@tug.org.
+The \LaTeX{} home page is \verb|http://www.tex.ac.uk/ctan/latex/|
+and contains links to other WWW resources for \LaTeX.
+
+\end{document}

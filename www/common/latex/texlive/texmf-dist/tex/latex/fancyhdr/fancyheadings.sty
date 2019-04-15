@@ -1,0 +1,18 @@
+% Public domain.
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]%
+\ProvidesPackage{fancyheadings}[2008/02/04 1.99 Dummy package to call fancyhdr]%
+\PackageWarningNoLine{fancyheadings}{%
+  Please stop using fancyheadings!\MessageBreak
+  Use fancyhdr instead.\MessageBreak
+  We will call fancyhdr with the very same\MessageBreak
+  options you passed to fancyheadings.\MessageBreak
+  \MessageBreak
+  fancyhdr is 99 percent compatible with\MessageBreak
+  fancyheadings. The only incompatibility is\MessageBreak
+  that \protect\headrulewidth\space and \protect\footrulewidth\space 
+     and\MessageBreak
+  their \protect\plain... versions are no longer length\MessageBreak
+  parameters, but normal macros (to be changed\MessageBreak
+  with \protect\renewcommand\space rather than \protect\setlength).}
+\RequirePackage{fancyhdr}
+\endinput

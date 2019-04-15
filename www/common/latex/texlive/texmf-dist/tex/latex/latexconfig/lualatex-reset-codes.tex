@@ -1,0 +1,33 @@
+% $Id $
+% Manuel Pégourié-Gonnard, originally written 2010. WTFPL v2.
+
+% To be loaded after latex.ltx and before luatex-unicode-letters.tex.
+
+% latex.ltx (ltfinal.dtx) sets lccodes, uccodes, sfcodes and catcodes for
+% characters in the "00-"ff range.
+%
+% In the "80-"ff range, lccodes, uccodes & sfcodes are based on T1, and need
+% to be reset before the correct, Unicode-based, codes are set. Also, the
+% catcodes are set to 12 (other).
+%
+\begingroup
+\makeatletter
+\count@=128
+\loop \ifnum\count@<256
+  \global\uccode\count@=0
+  \global\lccode\count@=0
+  \global\sfcode\count@=1000
+  \global\catcode\count@=12
+  \advance\count@\@ne
+\repeat
+\endgroup
+
+% A few codes in the ASCII range are set by latex.ltx:
+%
+% \lccode`\^^[=`\^^[ % oe in OT1
+% \lccode`\- =`\-    % default hyphen char
+% \lccode 127=127    % alternate hyphen char
+% \lccode 23 =23     % textcompwordmark in T1
+%
+% They don't look too problematic, so we don't reset them now, but this may
+% change later if problems are found.

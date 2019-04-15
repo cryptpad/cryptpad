@@ -1,0 +1,2968 @@
+% \iffalse meta-comment
+%
+% File: askinclude.dtx
+% Version: 2011/12/02 v2.2
+% Info: Interactive asking of included files
+%
+% Copyright (C) 1991-1994 by Pablo A. Straub
+% Copyright (C) 2007, 2008, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file askinclude.dtx
+% and the derived files
+%    askinclude.sty, askinclude.pdf, askinclude.ins, askinclude.drv,
+%    askinclude.bib, askinclude-a.tex, askinclude-b.tex,
+%    askinclude-c.tex, askinclude-test1.tex,
+%    askinclude-test2.tex, askinclude-test3.tex,
+%    askinclude-test4.tex, askinclude-test5.tex,
+%    askinclude-test6.tex, askinclude-test7.tex,
+%    askinclude-test8.tex, askinclude-test9.tex,
+%    askinclude-test10.tex, askinclude-test11.tex,
+%    askinclude-test12.tex, askinclude-test13.tex,
+%    askinclude-test14.tex, askinclude-test15.tex,
+%    askinclude-test16.tex, askinclude-test17.tex,
+%    askinclude-test18.tex, askinclude-test19.tex,
+%    askinclude-test20.tex, askinclude-test21.tex,
+%    askinclude-test22.tex, askinclude-test23.tex,
+%    askinclude-test24.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/askinclude.dtx
+%    CTAN:macros/latex/contrib/oberdiek/askinclude.pdf
+%
+% Unpacking:
+%    (a) If askinclude.ins is present:
+%           tex askinclude.ins
+%    (b) Without askinclude.ins:
+%           tex askinclude.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{askinclude.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If askinclude.drv is present:
+%           latex askinclude.drv
+%    (b) Without askinclude.drv:
+%           latex askinclude.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex askinclude.dtx
+%       bibtex askinclude.aux
+%       makeindex -s gind.ist askinclude.idx
+%       pdflatex askinclude.dtx
+%       makeindex -s gind.ist askinclude.idx
+%       pdflatex askinclude.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/askinclude.sty
+%    TDS:doc/latex/oberdiek/askinclude.pdf
+%    TDS:doc/latex/oberdiek/test/askinclude-a.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-b.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-c.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test1.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test2.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test3.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test4.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test5.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test6.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test7.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test8.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test9.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test10.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test11.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test12.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test13.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test14.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test15.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test16.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test17.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test18.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test19.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test20.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test21.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test22.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test23.tex
+%    TDS:doc/latex/oberdiek/test/askinclude-test24.tex
+%    TDS:source/latex/oberdiek/askinclude.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: askinclude 2011/12/02 v2.2 Interactive asking of included files}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: askinclude
+Version: 2011/12/02 v2.2
+
+Copyright (C) 1991-1994 by Pablo A. Straub
+Copyright (C) 2007, 2008, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file askinclude.dtx
+and the derived files
+   askinclude.sty, askinclude.pdf, askinclude.ins, askinclude.drv,
+   askinclude.bib, askinclude-a.tex, askinclude-b.tex,
+   askinclude-c.tex, askinclude-test1.tex,
+   askinclude-test2.tex, askinclude-test3.tex,
+   askinclude-test4.tex, askinclude-test5.tex,
+   askinclude-test6.tex, askinclude-test7.tex,
+   askinclude-test8.tex, askinclude-test9.tex,
+   askinclude-test10.tex, askinclude-test11.tex,
+   askinclude-test12.tex, askinclude-test13.tex,
+   askinclude-test14.tex, askinclude-test15.tex,
+   askinclude-test16.tex, askinclude-test17.tex,
+   askinclude-test18.tex, askinclude-test19.tex,
+   askinclude-test20.tex, askinclude-test21.tex,
+   askinclude-test22.tex, askinclude-test23.tex,
+   askinclude-test24.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{askinclude.ins}{\from{askinclude.dtx}{install}}%
+  \file{askinclude.drv}{\from{askinclude.dtx}{driver}}%
+  \nopreamble
+  \nopostamble
+  \file{askinclude.bib}{\from{askinclude.dtx}{bib}}%
+  \usepreamble\defaultpreamble
+  \usepostamble\defaultpostamble
+  \usedir{tex/latex/oberdiek}%
+  \file{askinclude.sty}{\from{askinclude.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{askinclude-a.tex}{\from{askinclude.dtx}{a}}%
+  \file{askinclude-b.tex}{\from{askinclude.dtx}{b}}%
+  \file{askinclude-c.tex}{\from{askinclude.dtx}{c}}%
+  \file{askinclude-test1.tex}{\from{askinclude.dtx}{test0,test1}}%
+  \file{askinclude-test2.tex}{\from{askinclude.dtx}{test0,test2}}%
+  \file{askinclude-test3.tex}{\from{askinclude.dtx}{test0,test3}}%
+  \file{askinclude-test4.tex}{\from{askinclude.dtx}{test0,test4}}%
+  \file{askinclude-test5.tex}{\from{askinclude.dtx}{test0,test5}}%
+  \file{askinclude-test6.tex}{\from{askinclude.dtx}{test0,test6}}%
+  \file{askinclude-test7.tex}{\from{askinclude.dtx}{test0,test7}}%
+  \file{askinclude-test8.tex}{\from{askinclude.dtx}{test0,test8}}%
+  \file{askinclude-test9.tex}{\from{askinclude.dtx}{test0,test9}}%
+  \file{askinclude-test10.tex}{\from{askinclude.dtx}{test0,test10}}%
+  \file{askinclude-test11.tex}{\from{askinclude.dtx}{test0,test11}}%
+  \file{askinclude-test12.tex}{\from{askinclude.dtx}{test0,test12}}%
+  \file{askinclude-test13.tex}{\from{askinclude.dtx}{test0,test13}}%
+  \file{askinclude-test14.tex}{\from{askinclude.dtx}{test0,test14}}%
+  \file{askinclude-test15.tex}{\from{askinclude.dtx}{test0,test15}}%
+  \file{askinclude-test16.tex}{\from{askinclude.dtx}{test0,test16}}%
+  \file{askinclude-test17.tex}{\from{askinclude.dtx}{test0,test17}}%
+  \file{askinclude-test18.tex}{\from{askinclude.dtx}{test0,test18}}%
+  \file{askinclude-test19.tex}{\from{askinclude.dtx}{test0,test19}}%
+  \file{askinclude-test20.tex}{\from{askinclude.dtx}{test0,test20}}%
+  \file{askinclude-test21.tex}{\from{askinclude.dtx}{test0,test21}}%
+  \file{askinclude-test22.tex}{\from{askinclude.dtx}{test0,test22}}%
+  \file{askinclude-test23.tex}{\from{askinclude.dtx}{test0,test23}}%
+  \file{askinclude-test24.tex}{\from{askinclude.dtx}{test0,test24}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{askinclude.xml}{\from{askinclude.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     askinclude.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `askinclude.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*bib>
+@online{texlive,
+  author={Fairbairns, Robin},
+  title={[tex-live] licence on includeonly.sty},
+  date={2007-10-13},
+  url={http://www.tug.org/pipermail/tex-live/2007-October/014928.html},
+  urldate={2011-12-02},
+}
+@online{newsthread,
+  author={Vo{\ss}, Herbert},
+  title={askinclude.sty},
+  note={Thread in newsgroup {\xnewsgroup{comp.text.tex}};
+      Message-ID: {\texttt{fev72m\$b35\$02\$2@news.t-online.com}}},
+  date={2007-10-15},
+  url={http://groups.google.com/group/comp.text.tex/browse_thread/thread/728a3e73c04c6789/349e31865c40d00c},
+  urldate={2011-12-02},
+}
+@manual{makematch,
+  author={Kastrup, David},
+  title={makematch.sty: Pattern matching with wildcards},
+  date={2007-02-23},
+  version={1.7925},
+  url={http://mirror.ctan.org/macros/latex/contrib/qstest/makematch.pdf},
+  urldate={2011-12-02},
+}
+@manual{excludeonly,
+  author={Luecking, Daniel H. and Arseneau, Donald},
+  title={The excludeonly package},
+  date={2003-03-14},
+  url={http://mirror.ctan.org/macros/latex/contrib/excludeonly/excludeonly.pdf},
+  urldate={2011-12-02},
+}
+%</bib>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{askinclude.drv}%
+  [2011/12/02 v2.2 Interactive asking of included files]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{ifluatex}
+\ifluatex
+\else
+  \usepackage[T1]{fontenc}%
+  \usepackage{lmodern}%
+\fi
+\usepackage{csquotes}
+\usepackage[
+  bibencoding=ascii,
+  alldates=iso8601,
+]{biblatex}[2011/11/13]
+\bibliography{oberdiek-source}
+\bibliography{askinclude}
+\begin{document}
+  \DocInput{askinclude.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2078}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{askinclude.drv}
+%
+% \title{The \xpackage{askinclude} package}
+% \date{2011/12/02 v2.2}
+% \author{
+%   Pablo A. Straub\\[1ex]
+%   Heiko Oberdiek (maintainer)\\\xemail{heiko.oberdiek at googlemail.com}
+% }
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package replaces \cs{includeonly} by an interactive user
+% interface.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{User interface}
+%
+% The \cs{include} feature of \LaTeX\ allows the division of
+% the text body in separate compilation units. It is page
+% based and stores counter settings in additional auxiliary
+% files. \cs{includeonly} limits the actually included files
+% to the ones, listed in its argument.
+%
+% Example:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{report}
+%
+%\usepackage{askinclude}
+%
+% % Don't use \include in the preamble.
+% % Instead \input can be used or make a package
+%
+%\begin{document}
+%\include{title}
+%\include{introduction}
+%\include{summary}
+%\include{index}
+%\end{document}
+%\end{verbatim}
+%\end{quote}
+%
+% Package \xpackage{askinclude} adds an interactive user interface.
+% The user is asked which files he want to include and sets
+% \cs{includeonly} accordingly.
+%
+% The first time the package is used the question looks like:
+%\begin{quote}
+%\begin{verbatim}
+%***********************************
+%*** Package askinclude Question ***
+%***********************************
+%
+%Previous answer (noregexp):
+%     [*]
+%
+%Regular expressions:
+% --> [noregexp]  disabled
+%     [makematch] enabled, using package `makematch'
+%     [pdfmatch]  enabled, using pdfTeX's \pdfmatch
+%
+%Which files do you want to include?
+%     [foo,bar]   comma separated file or pattern list
+%     [*]         all files
+%     [-]         no files
+%     [?]         ask for each file
+%     []          use the previous answer
+%
+%\answer=chapter2,summary
+%\end{verbatim}
+%\end{quote}
+% Square brackets are used as quotation symbols,
+% they are not part of the answer.
+% The answer by the user follows in the last line after |\answer=|.
+% \begin{description}
+% \def\Item[#1]{\item[{[\texttt{#1}]:}]}
+% \Item[foo,bar]
+%   A comma separated file list (also one file only) is passed
+%   to macro \cs{includeonly} directly. If regular expression support
+%   is enabled, the entries in the list are interpreted as
+%   file name patterns that will be matched against the file names
+%   in \cs{include}, see \hyperref[sec:regexp]{section \ref*{sec:regexp}}.
+% \Item[*] This is a shortcut for specifying \emph{all} files.
+% \Item[-] This means \emph{none} of the files is included.
+% \Item[?] The switches in single asking mode.
+%   The user will be asked at each \cs{include}.
+%   See section \hyperref[sec:single]{section \ref*{sec:single}}.
+% \Item[] Just pressing return (empty string) uses the default
+%   answer, that was stored in the auxiliary file (\xfile{.aux})
+%   of the previous \LaTeX run with package \xpackage{askinclude}.
+%   Without previous runs the default is [|*|] for all files.
+% \Item[noregexp] Turns regular expression support off.
+% \Item[makematch] Enables regular expression support
+%   package \xpackage{makematch} provides.
+% \Item[pdfmatch] It is shown, if \pdfTeX~1.30 or later is used.
+%   It relies on an undocumented feature \cs{pdfmatch} that may
+%   change in future versions of \pdfTeX.
+% \end{description}
+% Package \xpackage{askinclude} remembers the files of \cs{include}
+% in the auxiliary file and the given answer. they are
+% presented at the next run
+% at the start of the question:
+%\begin{quote}
+%\begin{verbatim}
+%***********************************
+%*** Package askinclude Question ***
+%***********************************
+%
+%Files, found by previous run in \include:
+%     (-) title
+%     (-) introduction
+%     (-) chapter1
+%     (+) chapter2
+%     (-) chapter3
+%     (+) summary
+%
+%Previous answer (noregexp):
+%     [chapter2,summary]
+%...
+%\end{verbatim}
+%\end{quote}
+% |(+)| and |(-)| marks files that were and were not included in
+% the previous run. The file list and marks are not always correct.
+% For example, if \cs{include} statements are added or removed.
+% If the method of regular expression support is different,
+% then the marks only reflects the mode of the previous answer.
+%
+% \subsection{Single asking mode}
+% \label{sec:single}
+%
+% The special answer `|?|' trigger single asking mode,
+% at the next \cs{include} the user is asked again:
+%\begin{quote}
+%\begin{verbatim}
+%***********************************
+%*** Package askinclude Question ***
+%***********************************
+%
+%Include `title'? [y]es, [n]o, [A]ll, [N]one, [D]efault (n):
+%
+%\answer=
+%\end{verbatim}
+%\end{quote}
+% Use the letter inside the square brackets as answer.
+% An empty string uses the default answer, the letter in parentheses.
+% The answers are:
+% \begin{description}
+% \def\Item[#1]{\item[{[\texttt{#1}]:}]}
+% \Item[y] The file is included.
+% \Item[n] The file is excluded.
+% \Item[A] This file and all following files are included.
+% \Item[N] This file and all following files are excluded.
+% \Item[D] Use the default answer for this and all following files.
+% \end{description}
+% If the file is known from the previous run, then the
+% default is `|y|' or `|n|' corresponding to the mark
+% `|(+)|' or `|(-)|' in the list of previous files.
+% Otherwise `|y|' is used as default.
+%
+% \subsection{Regular expressions}
+% \label{sec:regexp}
+%
+% Three methods are available that can also set by package options:
+% \begin{description}
+% \def\Item[#1]{\item[\xoption{#1}:]}
+% \Item[noregexp] Regular expression support is disabled.
+% \Item[makematch] Use package \xpackage{makematch}.
+% \Item[pdfmatch] Use \pdfTeX's \cs{pdfmatch} if available.
+% \end{description}
+% Without options the value remembered in the auxiliary file
+% is used, otherwise the default is \xoption{noregexp}.
+%
+% \subsubsection{Method \xoption{makematch}}
+%
+% Package \xpackage{makematch} (part of \xpackage{qstest}), written
+% by David Kastrup provides pattern matching based on wildcards:
+% \begin{description}
+% \item[{[\texttt{*}]}:] The star matches zero or more characters.
+% Thus a lonely star machtes anything.
+% \item[{[\texttt{!}]}:] The exclamation mark at the begin of a
+% pattern negates it, thus the matching files are excluded.
+% \end{description}
+% The pattern list is evaluated for a file name from left to
+% right. Always a file name must match the whole pattern.
+% The file is included if it is matched by a pattern and
+% not excluded afterwards. Examples:
+% \begin{quote}
+% \def\no{\textrm{$\emptyset$}}
+% \begin{tabular}{>{\ttfamily}l|>{\ttfamily}l|>{\ttfamily}l}
+% \textrm{Pattern list} & \textrm{File names} & \textrm{Result}\\
+% \hline
+% foobar & foobar,dummy & foobar\\
+% foo*  & foobar,xfoobar & foobar\\
+% \relax *foo* & xfoobar & xfoobar\\
+% f*b*r & foobar  & foobar\\
+% \relax *     & any     & any\\
+% !foobar & foobar,other & other\\
+% !foo*   & xfoobar & xfoobar\\
+% in*,!*dex & intro,index & intro\\
+% !index,in* & intro,index & intro,index\\
+% \relax *,!chap2 & chap1,chap2,chap3 & chap1,chap3\\
+% \end{tabular}
+% \end{quote}
+% The example in the last line shows, how the behaviour of package
+% \xpackage{excludeonly} \cite{excludeonly} can be simulated.
+%
+% The documentation of package \xpackage{makematch} tells the
+% the empty pattern does not match anything. But if you answer
+% the question with an empty string the answer of the previous
+% run is used. Also curly braces are not reliable because the
+% can get stripped during the processing of the answer.
+% Using a pair of empty curly braces or the comma for two empty
+% patterns currently works, but this is specific for the current
+% implementation and may change in future. But the special
+% answer `-' is available.
+%
+% \subsubsection{Method \xoption{pdfmatch}}
+%
+% In \pdfTeX\ 1.30 the new primitive \cs{pdfmatch} was introduced.
+% It is not documented yet, because it was not decided if it remains
+% and which implementation of regular expressions should be used.
+% Thus the situation may change in later versions of \pdfTeX.
+% Currently (1.30 until 1.40) it uses a library for POSIX 1003.2 regular
+% expressions, see manual page ``regex(7)''.
+%
+% If a pattern in the pattern list is invalid, the package prints
+% a warning and removes the pattern from the list. Actually there
+% are two warnings, the other warning is generated by \pdfTeX\ itself.
+%
+% In opposite to \xoption{makematch} the pattern only needs to
+% match the specified part of the file name.
+% For matching the whole name, the symbols `|^|' and `|$|' for
+% begin and end of string must be included.
+%
+% Additionally an initial exclamation mark `|!|' implements the
+% same logic as method \xoption{makematch}. The match result is
+% inverted, the matched file excluded.
+%
+% Examples:
+% \begin{quote}
+% \def\no{\textrm{$\emptyset$}}
+% \begin{tabular}{>{\ttfamily}l|>{\ttfamily}l|>{\ttfamily}l}
+% \textrm{Pattern list} & \textrm{File names} & \textrm{Result}\\
+% \hline
+% foobar & foobar,dummy & foobar\\
+% foo.*  & foobar,xfoobar & foobar,xfoobar\\
+% |^|foo.* & foobar,xfoobar & foobar\\
+% foo|$| & foo,foobar & foo\\
+% fo?bar & fbar,fobar,foobar  & fbar,fobar\\
+% fo+bar & fbar,fobar,foobar  & fobar,foobar\\
+% fo*bar & fbar,fobar,foobar & fbar,fobar,foobar\\
+% chap3 & chap3,chap32 & chap1,chap3,chap32\\
+% chap[13] & chap1,chap2,chap3 & chap1,chap3\\
+% chap(1\string|3)|$| & chap1,chap3,chap33 & chap1,chap3\\
+% .*     & any     & any\\
+% !foobar & foobar,other & other\\
+% in.*,!dex & intro,index & intro\\
+% !index,in.* & intro,index & intro,index\\
+% .*,!chap2 & chap1,chap2,chap3 & chap1,chap3\\
+% .*,!bla & foo,bla,blabla & foo\\
+% .*,!|^|bla|$| & foo,bla,blabla & foo,blabla\\
+% \end{tabular}
+% \end{quote}
+% The example in the last line shows, how the behaviour of package
+% \xpackage{excludeonly} \cite{excludeonly} can be simulated.
+% As the third last line shows, that sometimes `|^|' and `|$|' can
+% be omitted, but this will not work always, shown in the second
+% last line.
+%
+% \subsection{History}
+%
+% Package \xpackage{askinclude} was invented by Pablo A. Straub in 1991
+% and maintained until 1994.
+% ^^A Email address: pablo.straub \symbol{64} gmail.com
+%
+% In October 2007 it was removed from ``TeX Live'' because of
+% the no-commercial license \cite{texlive}. Herbert Vo\ss\ initiated
+% a search for the author in the newsgroup \xnewsgroup{comp.text.tex}
+% \cite{newsthread} to ask him to change the license.
+%
+% It seems that the author could not be reached any more.
+% Joseph Wright suggested a reimplementation that I (HO) have done
+% as package \xpackage{askinc}. Soon it was enhanced by
+% feature requests.
+%
+% Then Ulrike Fischer found email addresses of the original author
+% and Jim Hefferon succeeded in contacting him. He allowed a change
+% of the license to LPPL and the transfer of the maintainership
+% to someone else.
+%
+% Thus I merged both packages as \xpackage{askinclude} in a new
+% major version 2. The license is LPPL.
+%
+% \subsection{New features of version 2}
+%
+% \begin{itemize}
+% \item License is now LPPL.
+% \item A list of \cs{include} files that are detected by the previous
+%   run is printed before the question.
+% \item If the special answer `|?|' is given, then the user is
+%   asked at each \cs{include}.
+% \item Support for regular expressions.
+% \item The remaining stuff in the \xfile{.aux} file does not
+%   cause errors, if the package is removed.
+% \item The use of \cs{includeonly} before the package loading time
+%   is detected and respected by taking precedence. After the package
+%   is loaded, \cs{includeonly} is disabled and prints a warning.
+% \end{itemize}
+%
+% \subsection{Compatibility to version 1}
+%
+% \begin{itemize}
+% \item The user interface of version 1 with its special answers
+%   `|*|', `|-|', and `' remain unchanged, but it is extended by
+%   version 2 with the special answer `|?|' and support for
+%   regular expressions can be enabled.
+% \item As reimplementation the internal macros have changed of course.
+% \item \xfile{.aux} files that are written by version 1.x will work
+%   with version 2.x because \cs{@includeonly} is recognized.
+% \item \LaTeX\ 2.09: The package works as \cs{documentstyle} option
+%   in compatibility mode of \LaTeXe. It is possible that it
+%   will not work in pure \LaTeX\ 2.09.
+% \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Header and catcodes}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname AskInc@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\AskInc@AtEnd{%
+    \AskInc@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\AskInc@AtEnd{\AskInc@AtEnd\noexpand\endinput}
+\ProvidesPackage{askinclude}%
+  [2011/12/02 v2.2 Interactive asking of included files]%
+%    \end{macrocode}
+%
+% \subsection{Delay action after preamble}
+%
+%    \begin{macro}{\AskInc@AtBeginDocument}
+%    Some actions such as \xfile{.aux} file writing cannot be
+%    performed in the preamble. \cs{AtBeginDocument} delays
+%    such action until |\begin{document}|. However \cs{AtBeginDocument}
+%    must not be used after that time (\cs{@onlypreamble}).
+%    Thus \cs{AskInc@AtBeginDocument} uses \cs{AtBeginDocument}
+%    in the preamble and afterwards executes the code immediately.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \let\AskInc@AtBeginDocument\@firstofone
+}
+\providecommand*{\AskInc@AtBeginDocument}{\AtBeginDocument}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Write entry in \xfile{.aux} file}
+%
+%    \begin{macro}{\AskInc@WriteAux}
+%    The first argument is written to the main \xfile{.aux} file
+%    and the second argument is executed if writing was possible.
+%    Remember \cs{nofiles} prevents writing to auxiliary files.
+%    \begin{macrocode}
+\def\AskInc@WriteAux#1#2{%
+  \AskInc@AtBeginDocument{%
+    \if@filesw
+      \immediate\write\@mainaux{#1}%
+      #2%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Remember \cs{include} files}
+%
+%    \begin{macro}{\AskInc@CharHash}
+%    \begin{macrocode}
+\edef\AskInc@CharHash{\string#}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AskInc@WriteDefAddList}
+%    \begin{macrocode}
+\def\AskInc@WriteDefAddList{%
+  \AskInc@WriteAux{%
+%    \end{macrocode}
+%    \begin{macro}{\AskInc@AddList}
+%    \begin{macrocode}
+    \string\providecommand*\string\AskInc@AddList[2]{%
+      \string\ifcase\string\ifx\AskInc@CharHash1\string\@undefined
+                    \string\else
+                      \string\ifx\AskInc@CharHash1\string\relax
+                      \string\else
+                        \string\ifx\AskInc@CharHash1\string\@empty
+                        \string\else
+                          1%
+                        \string\fi
+                      \string\fi
+                    \string\fi
+                    0 %
+        \string\gdef\AskInc@CharHash1{\AskInc@CharHash2}%
+      \string\else
+        \string\g@addto@macro\AskInc@CharHash1{,\AskInc@CharHash2}%
+      \string\fi
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  }{%
+    \global\let\AskInc@WriteDefAddList\relax
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@WriteDefAddFile}
+%    \begin{macrocode}
+\def\AskInc@WriteDefAddFile{%
+  \AskInc@WriteDefAddList
+  \AskInc@WriteAux{%
+%    \end{macrocode}
+%    \begin{macro}{\AskInc@AddFile}
+%    \begin{macrocode}
+    \string\providecommand\string\AskInc@AddFile{%
+      \string\AskInc@AddList\string\AskInc@Files
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  }{%
+    \global\let\AskInc@WriteDefAddFile\relax
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@AddFile}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \global\let\AskInc@AddFile\@gobble
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@WriteAddFile}
+%    \begin{macrocode}
+\def\AskInc@WriteAddFile#1{%
+  \AskInc@WriteDefAddFile
+  \AskInc@WriteAux{%
+    \string\AskInc@AddFile{#1}%
+  }{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@Files}
+%    \begin{macrocode}
+\providecommand*{\AskInc@Files}{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \paragraph{Summary:}
+%    Now \cs{AskInc@Files} is always defined
+%    and either empty or contains a comma separated list of
+%    \cs{include} files of previous run.
+%
+%    The \cs{include} files are remembered by using
+%    \cs{AskInc@WriteAddFile} at each \cs{include}.
+%
+% \subsection{Redefine \cs{include}}
+%
+%    \begin{macro}{\AskInc@OrgInclude}
+%    \begin{macrocode}
+\newcommand{\AskInc@OrgInclude}{}
+\let\AskInc@OrgInclude\include
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@AskFile}
+%    \begin{macrocode}
+\let\AskInc@AskFile\@gobble
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@MatchFile}
+%    \begin{macrocode}
+\let\AskInc@MatchFile\@gobble
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\include}
+%    \begin{macrocode}
+\renewcommand*{\include}[1]{%
+  \AskInc@WriteAddFile{#1}%
+  \AskInc@AskFile{#1}%
+  \AskInc@MatchFile{#1}%
+  \AskInc@OrgInclude{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Store answer and match method in \xfile{.aux} file}
+%
+%    \begin{macrocode}
+\AtEndOfPackage{%
+  \AtBeginDocument{%
+    \@ifundefined{AskInc@Answer}{}{%
+      \AskInc@WriteAux{%
+        \string\gdef\string\AskInc@Answer{\AskInc@Answer}%
+      }{}%
+    }%
+    \@ifundefined{AskInc@MatchMethod}{}{%
+      \AskInc@WriteAux{%
+        \string\gdef\string\AskInc@MatchMethod{\AskInc@MatchMethod}%
+      }{}%
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+% \subsection{Support for \cs{@includeonly}}
+%
+%    \begin{macro}{\@includeonly}
+%    Macro \cs{@includeonly} is defined for compatiblity reasons only,
+%    if the \xfile{.aux} file was written by versions before 2 of package
+%    \xpackage{askinclude}.
+%    \begin{macrocode}
+\providecommand*{\@includeonly}[1]{%
+  \gdef\AskInc@Answer{#1}%
+  \ifx\AskInc@Answer\@empty
+    \gdef\AskInc@Answer{-}%
+  \fi
+  \global\let\AskInc@MatchMethod\@empty
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Stop if \cs{includeonly} is active}
+%
+%    If \cs{includeonly} is used before, the questions are skipped
+%    and the data in the main auxiliary file is preserved.
+%    \begin{macrocode}
+\if@partsw
+  \PackageWarningNoLine{askinclude}{%
+    Previous \string\includeonly\space detected,\MessageBreak
+    therefore asking for files is suppressed%
+  }%
+%    \end{macrocode}
+%    Dummy options.
+%    \begin{macrocode}
+  \DeclareOption{makematch}{}%
+  \DeclareOption{pdfmatch}{}%
+  \DeclareOption{noregexp}{}%
+  \ProcessOptions*%
+%    \end{macrocode}
+%    Preserve \cs{AskInc@MatchFiles}.
+%    \begin{macrocode}
+  \@ifundefined{AskInc@MatchFiles}{%
+  }{%
+    \ifx\AskInc@MatchMethod\@empty
+    \else
+      \AskInc@WriteAux{%
+        \string\gdef\string\AskInc@MatchFiles{\AskInc@MatchFiles}%
+      }{}%
+    \fi
+  }%
+  \expandafter\AskInc@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{\cs{includeonly}}
+%
+%    \begin{macro}{\AskInc@OrgIncludeOnly}
+%    \begin{macrocode}
+\newcommand{\AskInc@OrgIncludeOnly}{}%
+\let\AskInc@OrgIncludeOnly\includeonly
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\includeonly}
+%    \begin{macrocode}
+\renewcommand*{\includeonly}[1]{%
+  \PackageWarning{askinclude}{%
+    \string\includeonly\space is managed by package `askinclude',%
+    \MessageBreak
+    therefore it is ignored%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Options}
+%
+%    \begin{macro}{\AskInc@StringNoRegExp}
+%    \begin{macrocode}
+\def\AskInc@StringNoRegExp{noregexp}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@StringMakeMatch}
+%    \begin{macrocode}
+\def\AskInc@StringMakeMatch{makematch}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@StringPdfMatch}
+%    \begin{macrocode}
+\def\AskInc@StringPdfMatch{pdfmatch}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifAskInc@PdfMatchAvailable}
+%    \begin{macrocode}
+\newif\ifAskInc@PdfMatchAvailable
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfmatch\endcsname\relax
+\else
+  \AskInc@PdfMatchAvailabletrue
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareOption{makematch}{%
+  \let\AskInc@MatchOption\AskInc@StringMakeMatch
+}
+\ifAskInc@PdfMatchAvailable
+  \DeclareOption{pdfmatch}{%
+    \let\AskInc@MatchOption\AskInc@StringPdfMatch
+  }%
+\else
+  \DeclareOption{pdfmatch}{%
+    \PackageWarningNoLine{askinclude}{%
+      Option `pdfmatch' is not available because\MessageBreak
+      your pdfTeX does not provide \string\pdfmatch
+    }%
+  }%
+\fi
+\DeclareOption{noregexp}{%
+  \let\AskInc@MatchOption\@empty
+}
+\ProcessOptions*
+%    \end{macrocode}
+%
+% \subsection{Strings}
+%
+%    \begin{macro}{\AskInc@CharAsterisk}
+%    \begin{macrocode}
+\def\AskInc@CharAsterisk{*}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharMinus}
+%    \begin{macrocode}
+\def\AskInc@CharMinus{-}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharPlus}
+%    \begin{macrocode}
+\def\AskInc@CharPlus{+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharQuestion}
+%    \begin{macrocode}
+\def\AskInc@CharQuestion{?}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharExclam}
+%    \begin{macrocode}
+\def\AskInc@CharExclam{!}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharYes}
+%    \begin{macrocode}
+\def\AskInc@CharYes{y}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharNo}
+%    \begin{macrocode}
+\def\AskInc@CharNo{n}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharAll}
+%    \begin{macrocode}
+\def\AskInc@CharAll{A}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharNone}
+%    \begin{macrocode}
+\def\AskInc@CharNone{N}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CharDefault}
+%    \begin{macrocode}
+\def\AskInc@CharDefault{D}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Set defaults}
+%
+%    \begin{macro}{\AskInc@SanitizeAnswer}
+%    \begin{macrocode}
+\def\AskInc@SanitizeAnswer#1#2{%
+  \begingroup
+    \escapechar=`\\%
+    \edef\[{\string\[}%
+    \edef\]{\string\]}%
+    \edef\({\string\(}%
+    \edef\){\string\)}%
+    \edef\*{\string\*}%
+    \edef\+{\string\+}%
+    \edef\?{\string\?}%
+    \edef\|{\string\|}%
+    \edef\^{\string\^}%
+    \edef\${\string\$}%
+    \edef\{{\string\{}%
+    \edef\}{\string\}}%
+    \edef\.{\string\.}%
+    \xdef#1{%
+      \expandafter\expandafter\expandafter\zap@space
+      \expandafter#2\space\@empty
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifundefined{AskInc@Answer}{%
+    \global\let\AskInc@Answer\AskInc@CharAsterisk
+  }{%
+    \AskInc@SanitizeAnswer\AskInc@Answer\AskInc@Answer
+  }%
+  \global\let\AskInc@PreviousAnswer\AskInc@Answer
+  \@ifundefined{AskInc@MatchMethod}{%
+    \global\let\AskInc@MatchMethod\@empty
+  }{}%
+  \global\let\AskInc@PreviousMatchMethod\AskInc@MatchMethod
+  \@ifundefined{AskInc@MatchOption}{%
+    \let\AskInc@MatchOption\AskInc@MatchMethod
+  }{}%
+  \ifx\AskInc@MatchOption\AskInc@StringPdfMatch
+    \ifAskInc@PdfMatchAvailable
+    \else
+      \let\AskInc@MatchOption\@empty
+    \fi
+  \fi
+  \@ifundefined{AskInc@MatchFiles}{%
+    \let\AskInc@MatchFiles\@empty
+  }{}%
+}
+%    \end{macrocode}
+%
+% \subsection{Questions}
+%
+% \subsubsection{Generic question header}
+%
+%    \begin{macro}{\AskInc@QuestionHeader}
+%    \begin{macrocode}
+\def\AskInc@QuestionHeader{%
+  \typeout{}%
+  \typeout{***********************************}%
+  \typeout{*** Package askinclude Question ***}%
+  \typeout{***********************************}%
+  \typeout{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Display files}
+%
+%    \begin{macro}{\AskInc@TypeoutFiles}
+%    \begin{macrocode}
+\def\AskInc@TypeoutFiles{%
+  \global\let\AskInc@PreviousMatches\@empty
+  \ifx\AskInc@Files\@empty
+  \else
+    \typeout{Files, found by previous run in \string\include:}%
+    \@for\AskInc@File:=\AskInc@Files\do{%
+      \ifx\AskInc@Answer\AskInc@CharAsterisk
+        \let\AskInc@Mark\AskInc@CharPlus
+      \else
+        \let\AskInc@Mark\AskInc@CharMinus
+        \ifx\AskInc@Answer\AskInc@CharMinus
+        \else
+          \ifx\AskInc@MatchMethod\@empty
+            \expandafter\@firstoftwo
+          \else
+            \expandafter\@secondoftwo
+          \fi
+          {\@for\AskInc@Temp:=\AskInc@Answer}%
+          {\@for\AskInc@Temp:=\AskInc@MatchFiles}%
+          \do{%
+            \ifx\AskInc@File\AskInc@Temp
+              \let\AskInc@Mark\AskInc@CharPlus
+            \fi
+          }%
+        \fi
+      \fi
+      \typeout{ \@spaces(\AskInc@Mark) \AskInc@File}%
+      \ifx\AskInc@Mark\AskInc@CharPlus
+        \ifx\AskInc@PreviousMatches\@empty
+          \global\let\AskInc@PreviousMatches\AskInc@File
+        \else
+          \expandafter\g@addto@macro
+          \expandafter\AskInc@PreviousMatches{%
+            \expandafter,\AskInc@File
+          }%
+        \fi
+      \fi
+    }%
+    \typeout{}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Previous answer}
+%
+%    \begin{macro}{\AskInc@TypeoutPreviousAnswer}
+%    \begin{macrocode}
+\def\AskInc@TypeoutPreviousAnswer{%
+  \typeout{%
+    Previous answer (%
+    \ifx\AskInc@MatchMethod\@empty
+      noregexp%
+    \else
+      \AskInc@MatchMethod
+    \fi
+    ):%
+  }%
+  \typeout{ \@spaces[\AskInc@Answer]}%
+  \typeout{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Current regular expression support}
+%
+%    \begin{macro}{\AskInc@TypeoutMatchMethod}
+%    \begin{macrocode}
+\def\AskInc@TypeoutMatchMethod{%
+  \typeout{Regular expressions:}%
+  \AskInc@TypeoutMethod\@empty{noregexp}{%
+    \space disabled%
+  }%
+  \AskInc@TypeoutMethod\AskInc@StringMakeMatch{makematch}{%
+    enabled, using package `makematch'%
+  }%
+  \ifAskInc@PdfMatchAvailable
+    \AskInc@TypeoutMethod\AskInc@StringPdfMatch{pdfmatch}{%
+      \space enabled, using pdfTeX's \string\pdfmatch
+    }%
+  \fi
+  \typeout{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@TypeoutMethod}
+%    \begin{macrocode}
+\def\AskInc@TypeoutMethod#1#2#3{%
+  \typeout{%
+    \ifx#1\AskInc@MatchOption \space--> \else\@spaces\space\fi
+    [#2] #3% hash-ok
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Main question text}
+%
+%    \begin{macro}{\AskInc@TypeoutMainQuestion}
+%    \begin{macrocode}
+\def\AskInc@TypeoutMainQuestion{%
+  \typeout{Which files do you want to include?}%
+  \typeout{ \@spaces[foo,bar] \space\space
+      comma separated file or pattern list}%
+  \typeout{ \@spaces[*] \@spaces\@spaces all files}%
+  \typeout{ \@spaces[-] \@spaces\@spaces no files}%
+  \typeout{ \@spaces[?] \@spaces\@spaces ask for each file}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Main question}
+%
+%    \begin{macro}{\AskInc@MainQuestion}
+%    \begin{macrocode}
+\def\AskInc@MainQuestion{%
+  \AskInc@QuestionHeader
+  \AskInc@TypeoutFiles
+  \AskInc@TypeoutPreviousAnswer
+  \AskInc@TypeoutMatchMethod
+  \AskInc@TypeoutMainQuestion
+  \begingroup
+    \@makeother\*%
+    \@makeother\-%
+    \@makeother\?%
+    \@makeother\,%
+    \@makeother\!%
+    \@makeother\^%
+    \@makeother\$%
+    \@makeother\(%
+    \@makeother\)%
+    \@makeother\+%
+    \@makeother\[%
+    \@makeother\]%
+    \@makeother\\%
+    \@makeother\|%
+    \@makeother\:%
+    \@makeother\.%
+    \typein[\answer]%
+        { \@spaces[] \space\@spaces\@spaces use the previous answer}%
+    \typeout{}%
+    \AskInc@SanitizeAnswer\AskInc@@Answer\answer
+  \endgroup
+  \let\AskInc@Next\AskInc@MainQuestion
+  \ifx\AskInc@@Answer\AskInc@StringNoRegExp
+    \let\AskInc@MatchOption\@empty
+  \else
+    \ifx\AskInc@@Answer\AskInc@StringMakeMatch
+      \let\AskInc@MatchOption\AskInc@StringMakeMatch
+    \else
+      \ifx\AskInc@@Answer\AskInc@StringPdfMatch
+        \ifAskInc@PdfMatchAvailable
+          \let\AskInc@MatchOption\AskInc@StringPdfMatch
+        \else
+          \PackageWarning{askinclude}{%
+            Method `pdfmatch' is not available because\MessageBreak
+            your pdfTeX does not provide \string\pdfmatch
+          }%
+          \let\AskInc@MatchOption\@empty
+        \fi
+      \else
+        \ifx\AskInc@@Answer\@empty
+          \global\let\AskInc@@Answer\AskInc@Answer
+        \fi
+        \let\AskInc@Next\AskInc@MainAnswer
+      \fi
+    \fi
+  \fi
+  \AskInc@Next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Evaluate answer of main question}
+%
+%    \begin{macro}{\AskInc@MainAnswer}
+%    \begin{macrocode}
+\def\AskInc@MainAnswer{%
+  \ifx\AskInc@@Answer\AskInc@CharQuestion
+    \global\let\AskInc@Answer\@empty
+    \global\let\AskInc@MatchMethod\@empty
+    \global\let\AskInc@AskFile\AskInc@DoAskFile
+    \AskInc@OrgIncludeOnly{}%
+  \else
+    \global\let\AskInc@Answer\AskInc@@Answer
+    \ifx\AskInc@@Answer\AskInc@CharAsterisk
+      \global\let\AskInc@MatchMethod\@empty
+    \else
+      \ifx\AskInc@@Answer\AskInc@CharMinus
+        \global\let\AskInc@MatchMethod\@empty
+        \AskInc@OrgIncludeOnly{}%
+      \else
+        \global\let\AskInc@MatchMethod\AskInc@MatchOption
+        \ifx\AskInc@MatchOption\@empty
+          \expandafter\AskInc@OrgIncludeOnly\expandafter{%
+            \AskInc@Answer
+          }%
+        \else
+          \AskInc@MatchInit
+          \AskInc@OrgIncludeOnly{}%
+        \fi
+      \fi
+    \fi
+  \fi
+  \let\AskInc@Include\AskInc@DoInclude
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AskInc@MatchInit}
+%    \begin{macrocode}
+\def\AskInc@MatchInit{%
+  \RequirePackage{kvsetkeys}[2007/09/29]%
+  \expandafter\comma@normalize\expandafter{\AskInc@Answer}%
+  \global\let\AskInc@MatchList\comma@list
+%    \end{macrocode}
+%    \begin{macro}{\AskInc@MatchFile}
+%    \begin{macrocode}
+  \def\AskInc@MatchFile##1{%
+    \AskInc@DoMatch{##1}{%
+      \AskInc@WriteAddMatch{##1}%
+      \ifx\@partlist\@empty
+        \gdef\@partlist{##1}%
+      \else
+        \g@addto@macro\@partlist{,##1}%
+      \fi
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \ifx\AskInc@MatchMethod\AskInc@StringMakeMatch
+    \AskInc@MakeMatchInit
+  \else
+    \AskInc@PdfMatchInit
+  \fi
+  \let\AskInc@MatchInit\@undefined
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@MakeMatchInit}
+%    \begin{macrocode}
+\def\AskInc@MakeMatchInit{%
+  \RequirePackage{makematch}%
+%    \end{macrocode}
+%    \begin{macro}{\AskInc@DoMatch}
+%    \begin{macrocode}
+  \def\AskInc@DoMatch##1{%
+    \def\AskInc@Temp{%
+      \MakeMatcher[,]\AskInc@Temp
+    }%
+    \expandafter\AskInc@Temp\expandafter{\AskInc@MatchList}%
+    \AskInc@Temp{{##1}}\@firstofone\@gobble
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \let\AskInc@MakeMatchInit\@undefined
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@PdfMatchInit}
+%    \begin{macrocode}
+\def\AskInc@PdfMatchInit{%
+%    \end{macrocode}
+%    \begin{macro}{\ifAskInc@Found}
+%    \begin{macrocode}
+  \newif\ifAskInc@Found
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@DoMatch}
+%    \begin{macrocode}
+  \def\AskInc@DoMatch##1{%
+    \AskInc@Foundfalse
+    \expandafter\comma@parse@normalized\expandafter
+    {\AskInc@MatchList}{\AskInc@CheckMatch{##1}}%
+    \ifAskInc@Found
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@CheckMatch}
+%    \begin{macrocode}
+  \def\AskInc@CheckMatch##1##2{%
+    \AskInc@@CheckMatch##2\@empty\@nil{##1}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@@CheckMatch}
+%    \begin{macrocode}
+  \def\AskInc@@CheckMatch##1##2\@nil##3{%
+    \def\AskInc@Temp{##1}%
+    \ifx\AskInc@Temp\AskInc@CharExclam
+      \ifcase\pdfmatch{##2}{##3}=1 %
+      \or
+        \AskInc@Foundfalse
+      \else
+        \AskInc@InvalidPattern{##2}{##1##2}%
+      \fi
+    \else
+      \ifcase\pdfmatch{##1##2}{##3} %
+      \or
+        \AskInc@Foundtrue
+      \else
+        \AskInc@InvalidPattern{##1##2}{##1##2}%
+      \fi
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@InvalidPattern}
+%    Prints a warning with the regular expression and
+%    removes it from the list to prevent further warnings
+%    for the same expression.
+%    \begin{macrocode}
+  \def\AskInc@InvalidPattern##1##2{%
+    \edef\AskInc@Temp{##1}%
+    \PackageWarningNoLine{askinclude}{%
+      Invalid pattern `\AskInc@Temp' for \string\pdfmatch
+    }%
+    \edef\AskInc@Temp{##2}%
+    \global\expandafter\let\expandafter\AskInc@MatchList
+    \expandafter\@empty
+    \expandafter\comma@parse@normalized\expandafter
+    {\AskInc@MatchList}\AskInc@FilterPattern
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@FilterPattern}
+%    \begin{macrocode}
+  \def\AskInc@FilterPattern##1{%
+    \edef\AskInc@Pattern{##1}%
+    \ifx\AskInc@Temp\AskInc@Pattern
+    \else
+      \ifx\AskInc@MatchList\@empty
+        \global\let\AskInc@MatchList\AskInc@Pattern
+      \else
+        \expandafter\g@addto@macro\expandafter\AskInc@MatchList{%
+          \expandafter,\AskInc@Pattern
+        }%
+      \fi
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \let\AskInc@PdfMatchInit\@undefined
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AskInc@WriteDefAddMatch}
+%    \begin{macrocode}
+\def\AskInc@WriteDefAddMatch{%
+  \AskInc@WriteDefAddList
+  \AskInc@WriteAux{%
+%    \end{macrocode}
+%    \begin{macro}{\AskInc@AddMatch}
+%    \begin{macrocode}
+    \string\providecommand\string\AskInc@AddMatch{%
+      \string\AskInc@AddList\string\AskInc@MatchFiles
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  }{%
+    \global\let\AskInc@WriteDefAddMatch\relax
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@AddMatch}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \global\let\AskInc@AddMatch\@gobble
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@WriteAddMatch}
+%    \begin{macrocode}
+\def\AskInc@WriteAddMatch#1{%
+  \AskInc@WriteDefAddMatch
+  \AskInc@WriteAux{%
+    \string\AskInc@AddMatch{#1}%
+  }{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AskInc@SaveAnswer}
+%    \begin{macrocode}
+\def\AskInc@SaveAnswer{%
+  \AskInc@WriteAux{%
+      \string\gdef\string\AskInc@Answer{\AskInc@Answer}%
+  }{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Ask for each file}
+%
+%    \begin{macro}{\AskInc@PreviousAnswer}
+%    \begin{macrocode}
+\@ifundefined{AskInc@PreviousAnswer}{%
+  \let\AskInc@PreviousAnswer\AskInc@CharAsterisk
+}{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@PreviousMatchMethod}
+%    \begin{macrocode}
+\@ifundefined{AskInc@PreviousMatchMethod}{%
+  \let\AskInc@PreviousMatchMethod\@empty
+}{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@DoAskFile}
+%    \begin{macrocode}
+\def\AskInc@DoAskFile#1{%
+  \edef\AskInc@File{#1}%
+  \ifx\AskInc@PreviousAnswer\AskInc@CharAsterisk
+    \let\AskInc@Default\AskInc@CharYes
+  \else
+    \let\AskInc@Default\AskInc@CharNo
+    \ifx\AskInc@PreviousAnswer\AskInc@CharMinus
+    \else
+      \ifx\AskInc@PreviousMatchMethod\@empty
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {\@for\AskInc@Temp:=\AskInc@PreviousAnswer}%
+      {\@for\AskInc@Temp:=\AskInc@MatchFiles}%
+      \do{%
+        \ifx\AskInc@Temp\AskInc@File
+          \let\AskInc@Default\AskInc@CharYes
+        \fi
+      }%
+    \fi
+    \ifx\AskInc@Default\AskInc@CharNo
+      \let\AskInc@Default\AskInc@CharYes
+      \@for\AskInc@Temp:=\AskInc@Files\do{%
+        \ifx\AskInc@Temp\AskInc@File
+          \let\AskInc@Default\AskInc@CharNo
+        \fi
+      }%
+    \fi
+  \fi
+  \let\AskInc@@QuestionHeader\AskInc@QuestionHeader
+  \AskInc@AskQuestion
+  \ifx\AskInc@AskResult\AskInc@CharYes
+    \ifx\AskInc@Answer\@empty
+      \gdef\AskInc@Answer{#1}%
+    \else
+      \g@addto@macro\AskInc@Answer{,#1}%
+    \fi
+    \AskInc@SaveAnswer
+    \let\@partlist\AskInc@Answer
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AskInc@AskQuestion}
+%    \begin{macrocode}
+\def\AskInc@AskQuestion{%
+  \let\AskInc@Temp\answer
+  \AskInc@@QuestionHeader
+  \let\AskInc@@QuestionHeader\relax
+  \typein[\answer]{%
+    Include `\AskInc@File'? [y]es, [n]o, [A]ll, [N]one, [D]efault %
+    (\AskInc@Default):%
+  }%
+  \typeout{}%
+  \let\AskInc@AskResult\answer
+  \let\answer\AskInc@Temp
+  \ifx\AskInc@AskResult\@empty
+    \let\AskInc@AskResult\AskInc@Default
+    \let\AskInc@Next\relax
+  \else
+    \ifx\AskInc@AskResult\AskInc@CharYes
+      \let\AskInc@Next\relax
+    \else
+      \ifx\AskInc@AskResult\AskInc@CharNo
+        \let\AskInc@Next\relax
+      \else
+        \ifx\AskInc@AskResult\AskInc@CharAll
+          \gdef\AskInc@AskQuestion{%
+            \let\AskInc@AskResult\AskInc@CharYes
+          }%
+        \else
+          \ifx\AskInc@AskResult\AskInc@CharNone
+            \gdef\AskInc@AskQuestion{%
+              \let\AskInc@AskResult\AskInc@CharNo
+            }%
+          \else
+            \ifx\AskInc@AskResult\AskInc@CharDefault
+              \gdef\AskInc@AskQuestion{%
+                \let\AskInc@AskResult\AskInc@Default
+              }%
+            \else
+              \PackageWarningNoLine{askinclude}{%
+                Invalid answer [\AskInc@AskResult].\MessageBreak
+                Answer must be one letter out of [ynAND]%
+              }%
+            \fi
+          \fi
+        \fi
+        \let\AskInc@Next\AskInc@AskQuestion
+      \fi
+    \fi
+  \fi
+  \AskInc@Next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\AtBeginDocument{\AskInc@MainQuestion}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AskInc@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Included files}
+%
+%    \begin{macrocode}
+%<*a>
+\chapter{Chapter A}
+\let\filea=Y
+%</a>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*b>
+\chapter{Chapter B}
+\let\fileb=Y
+%</b>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*c>
+\chapter{Chapter C}
+\let\filec=Y
+%</c>
+%    \end{macrocode}
+%
+% \subsection{Special test setup}
+%
+%    \begin{macrocode}
+%<*test18>
+\includeonly{askinclude-b}
+%</test18>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test20|test21|test22>
+\let\AtBeginDocumentMode=N%
+%</test20|test21|test22>
+%    \end{macrocode}
+%
+% \subsection{Common start}
+%
+%    \begin{macrocode}
+%<*test0>
+\ifx\CompatibilityMode Y%
+  \documentstyle[filecontents,qstest,askinclude]{book}%
+\else
+  \documentclass{book}%
+  \usepackage{filecontents}%
+  \usepackage{qstest}%
+%<*test1>
+  \makeatletter
+  \def\RestoreCatcodes{}%
+  \count@=0 %
+  \loop
+    \edef\RestoreCatcodes{%
+      \RestoreCatcodes
+      \catcode\the\count@=\the\catcode\count@\relax
+    }%
+  \ifnum\count@<255 %
+    \advance\count@\@ne
+  \repeat
+  \def\RangeCatcodeInvalid#1#2{%
+    \count@=#1\relax
+    \loop
+      \catcode\count@=15 %
+    \ifnum\count@<#2\relax
+      \advance\count@\@ne
+    \repeat
+  }%
+  \def\Test#1\EndTest{%
+    \RangeCatcodeInvalid{0}{47}%
+    \RangeCatcodeInvalid{58}{64}%
+    \RangeCatcodeInvalid{91}{96}%
+    \RangeCatcodeInvalid{123}{255}%
+    \catcode`\@=12 %
+    \catcode`\\=0 %
+    \catcode`\{=1 %
+    \catcode`\}=2 %
+    \catcode`\#=6 %
+    \catcode`\[=12 %
+    \catcode`\]=12 %
+    \catcode`\%=14 %
+    \catcode`\ =10 %
+    \catcode13=5 %
+    #1\relax
+    \RestoreCatcodes
+    \makeatother
+  }%
+  \Test
+%</test1>
+%<*!test1>
+  \ifx\AtBeginDocumentMode Y%
+    \AtBeginDocument{%
+      \usepackage{askinclude}[2011/12/02]%
+    }%
+  \else
+%</!test1>
+    \usepackage{askinclude}[2011/12/02]%
+%<*!test1>
+  \fi
+%</!test1>
+%<*test1>
+  \EndTest
+%</test1>
+\fi
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\makeatletter
+\let\org@typein\typein
+\def\typein[#1]#2{%
+  \ifx\@Stack\@StackEmpty
+    \begin{qstest}{StackNonEmpty}{StackNonEmpty}%
+      \Expect{Error: empty stack}{}%
+    \end{qstest}%
+    \org@typein[{#1}]{#2}%
+  \else
+    \edef#1{%
+      \unexpanded\expandafter\expandafter\expandafter{%
+        \expandafter\@car\@Stack\@nil
+      }%
+    }%
+    \xdef\@Stack{%
+      \unexpanded\expandafter\expandafter\expandafter{%
+        \expandafter\@cdr\@Stack\@nil
+      }%
+    }%
+    \typeout{}%
+    \typeout{\string#1=#1}%
+  \fi
+}
+\def\@StackEmpty{\BOTTOM}
+\let\@Stack\@StackEmpty
+\newcommand*{\Stack}[1]{%
+  \def\@Stack{#1\BOTTOM}%
+}
+\AtEndDocument{%
+  \begin{qstest}{StackUsed}{StackUsed}%
+    \Expect*{%
+      \ifx\@Stack\@StackEmpty
+      \else
+        Error: Unused stack entries%
+      \fi
+    }{}%
+  \end{qstest}%
+}
+\newcommand*{\CheckInclude}[2]{%
+  \include{askinclude-#1}%
+  \begin{qstest}{CheckInclude-#1}{CheckInclude-#1}%
+    \Expect*{%
+      \expandafter\ifx\csname file#1\endcsname Ytrue\else false\fi
+    }{#2}%
+  \end{qstest}%
+}
+\def\@EndChecks{}
+\AtBeginDocument{%
+  \AtEndDocument{%
+    \if@filesw
+      \immediate\write\@mainaux{\string\@EndChecks}%
+    \fi
+  }%
+}
+\newcommand*{\CheckAnswer}[1]{%
+  \gdef\AnswerText{#1}%
+  \g@addto@macro\@EndChecks{\@CheckAnswer}%
+}
+\def\@CheckAnswer{%
+  \begin{qstest}{CheckAnswer}{CheckAnswer}%
+    \Expect*{\unexpanded\expandafter{\AskInc@Answer}}%
+           *{\unexpanded\expandafter{\AnswerText}}%
+  \end{qstest}%
+}
+\newcommand*{\CheckMatchMethod}[1]{%
+  \gdef\MatchMethodText{#1}%
+  \g@addto@macro\@EndChecks{\@CheckMatchMethod}%
+}
+\def\@CheckMatchMethod{%
+  \begin{qstest}{CheckMatchMethod}{CheckMatchMethod}%
+    \Expect*{\unexpanded\expandafter{\AskInc@MatchMethod}}%
+           *{\unexpanded\expandafter{\MatchMethodText}}%
+  \end{qstest}%
+}
+\def\@CheckAux{%
+  \begin{qstest}{CheckAux}{CheckAux}%
+    \def\GetFileContents##1{%
+      \pdfunescapehex{%
+        \pdffiledump length\pdffilesize{##1}{##1}%
+      }%
+    }%
+    \Expect*{\GetFileContents{\jobname.aux}}%
+           *{\GetFileContents{\jobname-aux.aux}}%
+  \end{qstest}%
+}
+\g@addto@macro\@EndChecks{\@CheckAux}
+\let\org@filec@ntents\filec@ntents
+\def\filec@ntents{%
+  \catcode`\|=0 %
+  \org@filec@ntents
+}
+\begingroup
+  \endlinechar=-1 %
+  \catcode`\|=0 %
+  \@makeother\#%
+  \@makeother\\%
+  |gdef|AddList{%
+    \providecommand*\AskInc@AddList[2]{%
+      \ifcase\ifx#1\@undefined
+             \else\ifx#1\relax
+             \else\ifx#1\@empty
+             \else1\fi\fi\fi0 %
+        \gdef#1{#2}%
+      \else
+        \g@addto@macro#1{,#2}%
+      \fi
+    }%
+  }%
+  |gdef|AddFile{%
+    \providecommand\AskInc@AddFile{%
+      \AskInc@AddList\AskInc@Files
+    }%
+  }%
+  |gdef|AddMatch{%
+    \providecommand\AskInc@AddMatch{%
+      \AskInc@AddList\AskInc@MatchFiles
+    }%
+  }%
+|endgroup
+%</test0>
+%    \end{macrocode}
+%
+% \subsection{First run tests}
+%
+%    \begin{macrocode}
+%<*test1>
+\Stack{{}}
+\CheckAnswer{*}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{*}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2>
+\Stack{*}
+\CheckAnswer{*}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{*}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\Stack{-}%
+\CheckAnswer{-}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{-}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test4>
+\Stack{{askinclude-b}}
+\CheckAnswer{askinclude-b}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{askinclude-b}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{true}
+\CheckInclude{c}{false}
+%</test4>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test5>
+\Stack{{askinclude-a,askinclude-c}}
+\CheckAnswer{askinclude-a,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{askinclude-a,askinclude-c}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{true}
+%</test5>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test6>
+\Stack{?yny}
+\CheckAnswer{askinclude-a,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\gdef\AskInc@Answer{askinclude-a,askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{true}
+%</test6>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test7>
+\Stack{?yA}
+\CheckAnswer{askinclude-a,askinclude-b,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\gdef\AskInc@Answer{askinclude-a,askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\gdef\AskInc@Answer{askinclude-a,askinclude-b,askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test7>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test8>
+\Stack{?yD}
+\CheckAnswer{askinclude-a,askinclude-b,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\gdef\AskInc@Answer{askinclude-a,askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\gdef\AskInc@Answer{askinclude-a,askinclude-b,askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test8>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test9>
+\Stack{?yN}
+\CheckAnswer{askinclude-a}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test9>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test10>
+\Stack{?{}N}
+\CheckAnswer{askinclude-a}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test10>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test11>
+\Stack{?xxyxxN}
+\CheckAnswer{askinclude-a}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test11>
+%    \end{macrocode}
+%
+% \subsection{Second run tests}
+%
+%    \begin{macrocode}
+%<*test12>
+\Stack{{}}
+\CheckAnswer{askinclude-b}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-b}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\AskInc@AddFile{askinclude-c}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{askinclude-b}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{true}
+\CheckInclude{c}{false}
+%</test12>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test13>
+\Stack{{}}
+\CheckAnswer{askinclude-b}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-b}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{askinclude-b}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{true}
+\CheckInclude{c}{false}
+%</test13>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test14>
+\Stack{{}}
+\CheckAnswer{*}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{*}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{*}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test14>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test15>
+\Stack{?D}
+\CheckAnswer{askinclude-a,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-a}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\gdef\AskInc@Answer{askinclude-a,askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{true}
+%</test15>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test16>
+\Stack{?A}
+\CheckAnswer{askinclude-a,askinclude-b,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-a}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\gdef\AskInc@Answer{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\gdef\AskInc@Answer{askinclude-a,askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\gdef\AskInc@Answer{askinclude-a,askinclude-b,askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test16>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test17>
+\Stack{?N}
+\CheckAnswer{}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-a}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test17>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test18>
+\Stack{}
+\CheckAnswer{askinclude-a}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-a}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{askinclude-a}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{true}
+\CheckInclude{c}{false}
+%</test18>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test19>
+\Stack{?N}
+\CheckAnswer{}
+\begin{filecontents*}{\jobname.aux}
+\gdef\AskInc@Answer{askinclude-a}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\AskInc@AddFile{askinclude-b}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\ifx\AtBeginDocumentMode Y%
+  \AtBeginDocument{\includeonly{askinclude-b}}%
+\else
+  \includeonly{askinclude-b}%
+\fi
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test19>
+%    \end{macrocode}
+%
+% \subsection{Compatibility for changing from old to new}
+%
+%    \begin{macrocode}
+%<*test20>
+\Stack{{}}
+\CheckAnswer{*}
+\begin{filecontents*}{\jobname.aux}
+\@includeonly{*}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{*}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{true}
+\CheckInclude{c}{true}
+%</test20>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test21>
+\Stack{{}}
+\CheckAnswer{-}
+\begin{filecontents*}{\jobname.aux}
+\@includeonly{}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{-}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{false}
+\CheckInclude{b}{false}
+\CheckInclude{c}{false}
+%</test21>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test22>
+\Stack{{}}
+\CheckAnswer{askinclude-a,askinclude-c}
+\begin{filecontents*}{\jobname.aux}
+\@includeonly{askinclude-a,askinclude-c}
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{askinclude-a,askinclude-c}
+\gdef\AskInc@MatchMethod{}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{true}
+%</test22>
+%    \end{macrocode}
+%
+% \subsection{Regular expressions}
+%
+%    \begin{macrocode}
+%<*test23>
+\Stack{{makematch}{*,!askinclude-b}}
+\CheckAnswer{*,!askinclude-b}
+\CheckMatchMethod{makematch}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{*,!askinclude-b}
+\gdef\AskInc@MatchMethod{makematch}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+|AddMatch
+\AskInc@AddMatch{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\AskInc@AddMatch{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{true}
+%</test23>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test24>
+\Stack{{pdfmatch}{.,!askinclude-b}}
+\CheckAnswer{.,!askinclude-b}
+\CheckMatchMethod{pdfmatch}
+\begin{filecontents*}{\jobname.aux}
+\relax
+\end{filecontents*}
+\begin{filecontents*}{\jobname-aux.aux}
+\relax|space
+\gdef\AskInc@Answer{.,!askinclude-b}
+\gdef\AskInc@MatchMethod{pdfmatch}
+|AddList
+|AddFile
+\AskInc@AddFile{askinclude-a}
+|AddMatch
+\AskInc@AddMatch{askinclude-a}
+\@input{askinclude-a.aux}
+\AskInc@AddFile{askinclude-b}
+\@input{askinclude-b.aux}
+\AskInc@AddFile{askinclude-c}
+\AskInc@AddMatch{askinclude-c}
+\@input{askinclude-c.aux}
+\@EndChecks
+\end{filecontents*}
+\begin{document}
+\CheckInclude{a}{true}
+\CheckInclude{b}{false}
+\CheckInclude{c}{true}
+%</test24>
+%    \end{macrocode}
+%
+%
+% \subsection{Common end}
+%
+%    \begin{macrocode}
+%<*test0>
+\end{document}
+%</test0>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/askinclude.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/askinclude.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex askinclude.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   askinclude.sty & tex/latex/oberdiek/askinclude.sty\\
+%   askinclude.pdf & doc/latex/oberdiek/askinclude.pdf\\
+%   test/askinclude-a.tex & doc/latex/oberdiek/test/askinclude-a.tex\\
+%   test/askinclude-b.tex & doc/latex/oberdiek/test/askinclude-b.tex\\
+%   test/askinclude-c.tex & doc/latex/oberdiek/test/askinclude-c.tex\\
+%   test/askinclude-test1.tex & doc/latex/oberdiek/test/askinclude-test1.tex\\
+%   test/askinclude-test2.tex & doc/latex/oberdiek/test/askinclude-test2.tex\\
+%   test/askinclude-test3.tex & doc/latex/oberdiek/test/askinclude-test3.tex\\
+%   test/askinclude-test4.tex & doc/latex/oberdiek/test/askinclude-test4.tex\\
+%   test/askinclude-test5.tex & doc/latex/oberdiek/test/askinclude-test5.tex\\
+%   test/askinclude-test6.tex & doc/latex/oberdiek/test/askinclude-test6.tex\\
+%   test/askinclude-test7.tex & doc/latex/oberdiek/test/askinclude-test7.tex\\
+%   test/askinclude-test8.tex & doc/latex/oberdiek/test/askinclude-test8.tex\\
+%   test/askinclude-test9.tex & doc/latex/oberdiek/test/askinclude-test9.tex\\
+%   test/askinclude-test10.tex & doc/latex/oberdiek/test/askinclude-test10.tex\\
+%   test/askinclude-test11.tex & doc/latex/oberdiek/test/askinclude-test11.tex\\
+%   test/askinclude-test12.tex & doc/latex/oberdiek/test/askinclude-test12.tex\\
+%   test/askinclude-test13.tex & doc/latex/oberdiek/test/askinclude-test13.tex\\
+%   test/askinclude-test14.tex & doc/latex/oberdiek/test/askinclude-test14.tex\\
+%   test/askinclude-test15.tex & doc/latex/oberdiek/test/askinclude-test15.tex\\
+%   test/askinclude-test16.tex & doc/latex/oberdiek/test/askinclude-test16.tex\\
+%   test/askinclude-test17.tex & doc/latex/oberdiek/test/askinclude-test17.tex\\
+%   test/askinclude-test18.tex & doc/latex/oberdiek/test/askinclude-test18.tex\\
+%   test/askinclude-test19.tex & doc/latex/oberdiek/test/askinclude-test19.tex\\
+%   test/askinclude-test20.tex & doc/latex/oberdiek/test/askinclude-test20.tex\\
+%   test/askinclude-test21.tex & doc/latex/oberdiek/test/askinclude-test21.tex\\
+%   test/askinclude-test22.tex & doc/latex/oberdiek/test/askinclude-test22.tex\\
+%   test/askinclude-test23.tex & doc/latex/oberdiek/test/askinclude-test23.tex\\
+%   test/askinclude-test24.tex & doc/latex/oberdiek/test/askinclude-test24.tex\\
+%   askinclude.dtx & source/latex/oberdiek/askinclude.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk askinclude.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{askinclude.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex askinclude.dtx
+%bibtex askinclude.aux
+%makeindex -s gind.ist askinclude.idx
+%pdflatex askinclude.dtx
+%makeindex -s gind.ist askinclude.idx
+%pdflatex askinclude.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{askinclude.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='askinclude'>
+  <name>askinclude</name>
+  <caption>Interactive use of \includeonly</caption>
+  <authorref id='auth:straub'/>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner="Pablo A. Straub" year='1991-1994'/>
+  <copyright owner="Heiko Oberdiek" year='2007,2008,2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.2'/>
+  <description>
+    The package asks the user which files to put in a \includeonly
+    command.  There is provision for answering &#x201C;same as last
+    time&#x201D; or &#x201C;all files&#x201D;.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/askinclude.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/askinclude.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Tom Scavo]
+%   suggested saving the include file list
+%   from the previous run and a simplified user interface.
+% \item[Joseph Wright] suggested questions for each \cs{include}.
+% \end{description}
+%
+% \printbibliography[
+%   heading=bibnumbered,
+% ]
+%
+% \begin{History}
+%   \begin{Version}{1991/11/05 v0.95}
+%   \item
+%     First beta-test version (asked two questions).
+%   \end{Version}
+%   \begin{Version}{1991/11/05 v0.99}
+%   \item
+%     Second beta-test version (asks one question; uses `|*|' and `|-|').
+%   \end{Version}
+%   \begin{Version}{1991/11/07 v1.0}
+%   \item
+%     Changed prompts (sent to \xnewsgroup{comp.text.tex}):
+%     \URL{``\link{Interactive inclusion of files in LaTeX}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/34b770a7c277e79c}
+%   \end{Version}
+%   \begin{Version}{1991/12/13 v1.1}
+%   \item
+%     \textit{Unknown}.
+%   \end{Version}
+%   \begin{Version}{1994/11/02 v1.2e}
+%   \item
+%     Two small changes to run under LaTeX2e [RF].
+%   \item
+%     Additional documentation [TRS].
+%   \end{Version}
+%   \begin{Version}{2007/10/15 v1.0 (askinc)}
+%   \item
+%     Reimplementation, published as \xpackage{askinc} in
+%     newsgroup \xnewsgroup{comp.text.tex}:\\
+%     \URL{``\link{Re: askinclude.sty}''}^^A
+%     {http://groups.google.com/group/comp.text.tex/msg/2d638b84a858fdc8}
+%   \item
+%     Listing of included files, collected from the previous run before
+%     the question.
+%   \item
+%     No error message by \xfile{.aux} file if package is removed.
+%   \end{Version}
+%   \begin{Version}{2007/10/23 v2.0}
+%   \item
+%     The next version of \xpackage{askinc} becomes
+%     version 2.0 of \xpackage{askinclude}.
+%   \item
+%     `|?|' added for questioning each file.
+%   \item
+%     \cs{includeonly} has precedence until package loading.
+%     Then it is disabled by a warning.
+%   \item
+%     Documentation rewritten/added.
+%   \item
+%     Tests added.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v2.1}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2011/12/02 v2.2}
+%   \item
+%     Bibliography rewritten for biblatex.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

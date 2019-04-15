@@ -1,0 +1,189 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% File: exscale.dtx
+%% Copyright (C) 1992-1997,2007 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{exscale}
+%<fd,    >\ProvidesFile{OMXcmex.fd}
+%<package,fd>     [2014/09/29 v2.1h
+%<package>                         Standard LaTeX package exscale]
+%<fd,    >                         exscale package font definitions]
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{exscale}
+\GetFileInfo{exscale.sty}
+\begin{document}
+\title{The \texttt{exscale} package\thanks
+       {This file has version number \fileversion, dated \filedate.}\\
+      for use with \LaTeX2e}
+\author{Frank Mittelbach \and Rainer Sch\"opf}
+\date{\filedate}
+\MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{exscale.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{41}
+%
+% \changes{v2.1g}{1997/06/16}{Documentation fix.}
+% \changes{v2.1d}{1994/05/09}{Added setting \cs{big}... sizes.}
+% \changes{v2.1c}{1994/05/08}{Changed to new documentation standards.}
+% \changes{v2.1a}{1993/12/12}{Update for \LaTeXe}
+%
+% \def\MF{\textsf{Metafont}}
+% \def\dst{{\normalfont\scshape docstrip}}
+%
+%
+% \section{Introduction}
+%
+% On popular request, this package implements scaling of the
+% math extension font `cmex'. If this package is used the site needs
+% scaled versions of the \texttt{cmex10} in the sizes 10.95pt, 12pt,
+% 14.4pt , 17.28pt, 20.74pt, and 24.88pt which corresponds to standard
+% magsteps using |\magstephalf|, and |\magstep1| through |\magstep5|.
+% Additionally `cmex' variants for the sizes 7pt to 9pt are necessary.
+% These fonts are part of the AMS font package and can be found on
+% many servers.
+%
+% We don't think that using a scalable `cmex' font improves the
+% appearance of the document very much because the linear scaling of
+% the font introduces changes to font dimen parameters of the font
+% that are used all over the place in \TeX's math placement routines
+% and definitely shouldn't be scaled linearly.  As a positive result,
+% however, symbols from this font will come out in approximately the
+% right size when used with a large basis font size.
+%
+% We therefore strongly recommend the generation of designed fonts for
+% the larger sizes and hope that the corresponding \MF{} sources will
+% be available in the near future.
+%
+%
+% \section{Usage}
+%
+% This file can be used either as a package by placing its name
+% in the argument of
+% |\usepackage|, or by generating from it a |.fd| file which then
+% replaces the normally used |.fd| file |OMXcmex.fd|.
+%
+% For the second solution you should prepare a small \dst{} command
+% file containing the following statements:
+% \begin{quote}
+%   |\def\batchfile{|\meta{name-of-your-command-file}|}|  \\
+%   |\input docstrip.tex|                         \\
+%   |\generateFile{OMXcmex.fd}{t}{\from{exscale.dtx}{fd}}|
+% \end{quote}
+% and then run this file through \LaTeX.
+% This would mean however, that your documents may look different if
+% they are printed on another installation whereas when using the
+% package file they would come out the same on both sites.
+%
+% \StopEventually{}
+%
+%
+% \section{Implementation}
+%
+%
+%    In case this should produce a font definition file we write
+%    a message to the transcript file only.
+%    The explicit spaces are necessary in an
+%    |.fd| file and the |\string| guards against situations where |`|,
+%    |<| or |>| is active.
+% \changes{v2.1f}{1995/11/27}{Use \cs{ProvidesFile}}
+%    \begin{macrocode}
+%\ProvidesFile{OMXcmex.fd}[]% moved to top of the file
+%    \end{macrocode}
+%
+% We now define to which external fonts the font/shape Computer Modern
+% Extension Medium Normal. For the sizes 7--10pt we use fonts that are
+% designed for the corresponding size and for the higher sizes we use
+% scaled versions of the 10pt font since for these sizes no designed
+% fonts are easily available.
+%    \begin{macrocode}
+%<*fd|package>
+\DeclareFontShape{OMX}{cmex}{m}{n}{%
+%    \end{macrocode}
+%    According to Michael Downes `cmex5' and `cmex6' are not
+%    distributed currently. Therefore we use `cmex7' in those size but
+%    we omit a warning.
+%    \begin{macrocode}
+      <-8>sfixed * cmex7
+      <8> cmex8
+      <9> cmex9
+      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88>cmex10
+       }{}
+%</fd|package>
+%    \end{macrocode}
+%
+% We also redeclare the symbol font for large symbols. This is
+% already done when the base format also uses CM math fonts, but it
+% doesn't hurt either.
+%    \begin{macrocode}
+%<*package>
+\DeclareSymbolFont{largesymbols}{OMX}{cmex}{m}{n}
+%    \end{macrocode}
+%
+% Finally we redefine the primitive commands |\big|, |\Big|, |\bigg|
+% and |\Bigg| to change size with main size changes. To this end we
+% need a new dimen register |\big@size|.
+%    \begin{macrocode}
+\newdimen\big@size
+%    \end{macrocode}
+% This dimen is set with every size change to $1.2$ times the height
+% of a left parenthesis.
+% \changes{v2.1e}{1994/11/06}{Renamed \cs{every@size} to
+%                             \cs{every@math@size}}
+% \changes{v2.1e}{1994/11/06}{Update \cs{big@size} globally}
+% \changes{v2.1h}{2001/10/29}{Use box 0 within group to avoid changing this
+%                             scratch register}
+%    \begin{macrocode}
+\addto@hook\every@math@size{%
+  \begingroup
+     \setbox\z@\vbox{\hbox{$($}\kern\z@}%
+     \global\big@size 1.2\ht\z@
+  \endgroup}
+%    \end{macrocode}
+% Now we can define the macros. Note: |\n@space| sets the internal
+% variables |\nulldelimiterspace| and |\mathsurround| to zero length.
+%    \begin{macrocode}
+\def\bBigg@#1#2{%
+   {\hbox{$\left#2\vcenter to#1\big@size{}\right.\n@space$}}}
+\def\big{\bBigg@\@ne}
+\def\Big{\bBigg@{1.5}}
+\def\bigg{\bBigg@\tw@}
+\def\Bigg{\bBigg@{2.5}}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

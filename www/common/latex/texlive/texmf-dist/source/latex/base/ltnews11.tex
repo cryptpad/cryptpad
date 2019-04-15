@@ -1,0 +1,141 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews11.tex 01/06/1999
+% This is issue 11 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]     % uncomment this line to get Times
+   {ltnews}
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{June}
+\publicationyear{1999}
+\publicationissue{11}
+
+\begin{document}
+
+\maketitle
+
+\section{Back in sync}
+
+The last release of \LaTeX{} was delayed even longer than you have
+come to expect.  We hope that it proved worth waiting for.  It
+required a major integration of the code from several people and,
+independently, the introduction of the LPPL (see \LaTeX{} News~10) plus
+several related changes to our internal systems.  It therefore seemed
+sensible to wait until everything was complete rather than do things
+in too much hurry.
+
+This seem to have been a successful strategy as
+the recent patch release was related to an isolated change that was
+done many months previously.  If this release does not appear a lot
+closer to its nominal date then \ldots~well, you will not be reading
+this sentence!
+
+\section{Yearly release cycles}
+
+With the year 2000 rapidly approaching, we intend to switch to a
+release frequency of just one per year (with patches if necessary) for
+the core of \LaTeXe{}. These days the system is sufficiently stable
+that the original update policy is costing everybody more time than is
+now warranted.
+
+\section{LPPL update}
+
+Thanks to extensive and valuable input from Matt Swift
+(\email{swift@alum.mit.edu}) we now have a clearer and more detailed
+form of the \LaTeX{} Project Public Licence.  This release contains
+both the original version (in \file{lppl-1-0.txt}) and the updated
+version, LPPL~1.1.
+
+\section{The future of Sli\TeX{}}
+
+We still get a very small trickle of reports about this part of the
+system (if you are no longer able to recall \LaTeX~2.09 then you will
+know it as the \class{slides} class).  We have not classified them (in
+our minds at least) as bugs since we have always known that there are
+many problems with this class.  It is clear to us that the only
+sensible action would be to redesign the system completely; in
+particular, to remove much of its complexity whose purpose is to
+support 10-year-old overlay technology.  However, this would take a
+lot too much time and would be completely out of proportion to its
+current usage.
+
+We are therefore planning to make the \class{slides} class
+unsupported in the sense that any problem related to the use of
+invisible fonts is considered to be a feature (The \LaTeXe{} manual by
+Leslie Lamport doesn't even describe this part of the class any more).
+Of course, if it still has its enthusiasts then we are happy to cede
+it to their loving care (somewhat like a preserved steam locomotive,
+in some parts of the world).
+
+\section{Fontenc package peculiarities}
+
+The \verb=\usepackage= interface normally ensures that a package is
+loaded only once.  The \pkg{fontenc} package has become an
+exception to this rule: it can be loaded several times using different
+options, e.g., allowing the user to add a font encoding in the
+preamble. This comes at a price for package writers: the low-level
+commands (see \file{ltclass.dtx}) used to check if a package was
+loaded, and with which options, do not work for the \pkg{fontenc}
+package.
+
+\section{New math font encodings}
+    
+As we announced in \LaTeX{} News~9, a joint working group of the
+\TeX{} Users Group and the \LaTeX3 Project has developed a new
+\mbox{8-bit} math font encoding for \TeX{}.
+The reason why this work is not yet released is because of other
+exciting developments in the world of math fonts and math characters.
+It is obviously wise to ensure that the encoding work is fully
+integrated with the available fonts.
+
+Those interested are reminded that further information about the Math
+Font Group may be found on the World Wide Web at:\\
+\url{http://www.tug.org/twg/mfg/}.
+
+\section{Tools distribution}
+
+The \pkg{multicol} package has now got a small but useful extension
+which allows you to force a column break where this is really
+necessary.  This is done with the command \verb=\columnbreak=, which
+can be used like \verb=\pagebreak= (e.g.,~within paragraphs) except
+that it cannot have an optional argument and thus it always forces a
+new column.
+
+\section{Coming soon}
+
+Major work on a new class file structure to support flexible
+designs is well under way; some of this work will be presented at the
+TUG'99 conference in Vancouver, Canada.  With a bit of luck much of
+this work could be ready for integration into the next release---so
+watch this space!
+
+\end{document}

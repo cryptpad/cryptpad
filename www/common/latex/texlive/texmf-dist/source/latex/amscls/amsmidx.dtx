@@ -1,0 +1,232 @@
+% \def\filename{amsmidx.dtx}
+% \def\fileversion{2.02}
+% \def\filedate{2007/09/25}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 2004, 2009, 2010 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\documentclass{amsdtx}
+\begin{document}
+\title{The \pkg{amsmidx} package}
+\author{American Mathematical Society\\Barbara Beeton}
+\date{Version \fileversion, \filedate}
+\DocInput{amsmidx.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%
+%    This package provides the facility to produce multiple indexes
+%    with \amslatex/ document classes (particularly \fn{amsbook} and
+%    the AMS author packages for books), superseding the built-in
+%    index facility which can accommodate only one index.  This may
+%    in the future be incorporated as an option into the \amslatex/
+%    document classes.
+%
+%    This package is based on \pkg{multind.sty} by F.W. Long.
+%
+% \StopEventually{}
+%
+%    Standard file identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+\ProvidesPackage{amsmidx}[2007/09/25 v2.02 multiple indexes for AMS classes]
+%    \end{macrocode}
+%
+% \section{User instructions}
+%
+%    In the preamble, invoke \cn{makeindex} with a file name to provide
+%    as many indexes as desired:
+%\begin{verbatim}
+%    \makeindex{filename-a}
+%    \makeindex{filename-b}
+%\end{verbatim}
+%    This will initiate the creation of \fn{filename-a.idx} etc.
+%
+%    In the body of the text, use the \cn{index} command with two
+%    arguments
+%\begin{verbatim}
+%    \index{filename-a}{index term}
+%\end{verbatim}
+%    as appropriate to populate the \fn{.idx} files.
+%
+%    In the \cn{backmatter} segment of the driver file, insert the
+%    \cn{Printendex} command to print the indexes; the second argument
+%    gives the title to be printed at the top of the index:
+%\begin{verbatim}
+%    \Printindex{filename-a}{First Index}
+%    \Printindex{filename-b}{Second Index}
+%\end{verbatim}
+%
+%    On the first pass, the \fn{.idx} files will be created.  Process
+%    each \fn{.idx} file with \textit{MakeIndex} to generate an \fn{.ind}
+%    file, which will then be read in by \cn{Printindex}.  Whenever any
+%    page references change, be sure to run \textit{MakeIndex} again,
+%    and process the entire job with \latex/ once more to get the correct
+%    page references in the indexes.
+%
+%    To include a paragraph of comments below the index title, insert
+%    the text as an \cn{indexcomment} before the relevant \cn{Printindex}:
+%\begin{verbatim}
+%    \indexcomment{Text of comments}
+%    \Printindex{...}{...}
+%\end{verbatim}
+%    The \cn{indexcomment} text will be cleared after use.
+%
+%
+% \section{Implementation}
+%
+%  \begin{macro}{\makeindex}
+%    Redefine \cn{makeindex} to create a new \fn{.idx} file with the
+%    name provided by argument |#1|.
+%    \begin{macrocode}
+\renewcommand{\makeindex}[1]{%
+  \begingroup
+    \makeatletter
+    \if@filesw \expandafter\newwrite\csname #1@idxfile\endcsname
+    \expandafter\immediate\openout \csname #1@idxfile\endcsname #1.idx\relax
+    \typeout{Writing index file #1.idx }\fi
+  \endgroup}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\index}
+%    Redefine \cn{index} to specify into which file/index the term is
+%    to be placed.  Argument |#1| identifies the file, |#2| provides
+%    the text of the term to be indexed.
+%    \begin{macrocode}
+\renewcommand{\index}[1]{%
+  \@bsphack
+  \begingroup
+    \def\protect##1{\string##1\space}\@sanitize\@wrindex{#1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@wrindex}
+%    \cs{@wrindex} checks to make sure that the requested file is available,
+%    and writes an entry into the file or emits an error message.
+%    \begin{macrocode}
+\renewcommand{\@wrindex}[2]{%
+  \let\thepage\relax
+  \xdef\@gtempa{%
+    \@ifundefined{#1@idxfile}{%
+      \PackageError{\@packagename}{%
+        The requested file, #1@idxfile.idx, does not exist;\MessageBreak
+        index term #2 will not be be written out.%
+      }%
+    }{%
+      \expandafter\write\csname #1@idxfile\endcsname
+        {\string\indexentry{#2}{\thepage}}%
+      }%
+    }%
+  \endgroup\@gtempa
+  \if@nobreak \ifvmode\nobreak\fi\fi
+  \@esphack
+  }
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\printindex}
+%  \begin{macro}{\Printindex}
+%    Redefine \cs{printindex} to specify the file to be included; provide
+%    an alternate command \cs{Printindex} that specifies both the file and
+%    the index title to be printed.  Argument |#1| identifies the file,
+%    |#2| provides the title.  Also modify some formatting commands to
+%    improve the appearance of index entries, especially long ones in
+%    the presence of three index levels.
+%    \begin{macrocode}
+\renewcommand{\printindex}[1]{\@input{#1.ind}}
+\newcommand{\Printindex}[2]{%
+  \begingroup
+    \cleardoublepage
+    \def\indexname{#2}%
+    \raggedright
+    \hyphenpenalty=10000
+    \renewcommand{\seename}{see~also}
+    \renewcommand{\subitem}{\par\hangindent 3em\hspace*{1em}}
+    \@input{#1.ind}%
+  \endgroup
+  }
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\indexcomment}
+%  \begin{macro}{\indexchap}
+%    Format comments in a block somewhat narrower than the full page
+%    width, and redefine \cn{indexchap} to insert the block below the
+%    title, before starting the two-column index.  Clear out
+%    \cs{indexcomment} after use.
+%    \begin{macrocode}
+\newdimen\@indexcommentwidth
+\@indexcommentwidth=\textwidth
+\ifdim\@indexcommentwidth > 26pc
+  \advance\@indexcommentwidth-6pc
+\else
+  \advance\@indexcommentwidth-4pc
+\fi
+\newcommand{\indexcomment}[1]{%
+  \def\theindexcomment{%
+    \vskip\baselineskip
+    \parbox[t]{\@indexcommentwidth}{\normalsize\mdseries#1}%
+    }%
+  }
+\let\theindexcomment\@empty
+\renewcommand{\indexchap}[1]{%
+  \global\topskip 7.5pc\relax
+  \twocolumn[\fontsize{\@xivpt}{18}%
+    \vskip\topskip\vskip-\baselineskip\hbox{}% adjust top space
+    \bfseries\centering #1\par
+    \ifx\theindexcomment\@empty
+    \else \theindexcomment
+      \global\let\theindexcomment\@empty
+    \fi
+    ]%
+  \global\topskip 34\p@
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{131}
+% \Finale

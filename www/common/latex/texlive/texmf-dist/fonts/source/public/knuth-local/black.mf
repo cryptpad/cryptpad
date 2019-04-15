@@ -1,0 +1,2 @@
+%input blackimagen % the `standard' black font is for imagen (300dpi)
+input blacklj % now it's for LaserJet 4 (600dpi)

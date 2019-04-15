@@ -1,0 +1,3128 @@
+%%
+%% This is file `hobsub-hyperref.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hobsub.dtx  (with options: `hyperref,preamble,,letltxmacro')
+%% letltxmacro.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,hopatch')
+%% hopatch.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,xcolor-patch')
+%% hycolor.dtx  (with options: `xcolor')
+%% hobsub.dtx  (with options: `post,atveryend')
+%% atveryend.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,atbegshi')
+%% atbegshi.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,refcount')
+%% refcount.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post,hycolor')
+%% hycolor.dtx  (with options: `package')
+%% hobsub.dtx  (with options: `post')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hobsub
+%% Version: 2012/05/28 v1.13
+%% 
+%% Copyright (C) 2011, 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file hobsub.dtx
+%% and the derived files
+%%    hobsub.sty, hobsub.pdf, hobsub.ins, hobsub.drv, hobsub-generic.sty,
+%%    hobsub-hyperref.sty, hobsub-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@hobsub-hyperref.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{hobsub-hyperref}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@hobsub-hyperref.sty\endcsname
+\ProvidesPackage{hobsub-hyperref}%
+ [2012/05/28 v1.13 Bundle oberdiek, subset hyperref (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname HOBsub@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\HOBsub@AtEnd{%
+\HOBsub@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{96}{12}% `
+\edef\HOBsub@AtEnd{\HOBsub@AtEnd\noexpand\endinput}
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{hobsub-generic}[2012/05/28]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@hobsub.sty\endcsname\relax
+\else
+\expandafter\hobsub@GobbleRemainingPackage
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname HOBsub@OrgEndinput\endcsname\relax
+\let\HOBsub@OrgEndinput\endinput
+\fi
+\def\hobsub@GobbleRemainingPackage{%
+\begingroup
+\catcode92=14 % backslash: comment
+\catcode32=14 % space: comment
+\catcode35=14 % hash: comment
+\catcode123=14 % left brace: comment
+\catcode125=14 % right brace: comment
+\catcode60=3 % less: math
+\catcode62=4 % greater: align
+\endlinechar=-1 %
+\HOBsub@GobbleRemainingPackage
+}
+\catcode60=3 % less: dollar
+\catcode62=4 % greater: align
+\long\def\HOBsub@GobbleRemainingPackage#1<hobsub>{%
+\endgroup
+}
+\catcode60=12 % less: other
+\catcode62=12 % greater: other
+\def\hobsub@StartPackage#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\let\HOBsub@OrgCurrName\@currname
+\let\HOBsub@OrgCurrExt\@currext
+\csname @pushfilename\endcsname
+\def\@currname{#1}%
+\def\@currext{sty}%
+\expandafter\def\csname\@currname.\@currext-h@@k\endcsname{}%
+\let\endinput\hobsub@GobbleRemainingPackage
+\def\hobsub@StopPackage{%
+\let\hobsub@StopPackage\relax
+\HOBsub@StopPackage
+}%
+\hobsub@AddToFileList{#1.sty}%
+\else
+\hobsub@Info{hobsub}{Skipping package `#1' (already loaded)}%
+\let\hobsub@StopPackage\relax
+\expandafter\hobsub@GobbleRemainingPackage
+\fi
+}
+\let\hobsub@StopPackage\relax
+\def\hobsub@Info#1#2{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @PackageInfoNoLine\endcsname\relax
+\immediate\write-1{Package #1 Info: #2.}%
+\else
+\let\hobsub@Info\@PackageInfoNoLine
+\hobsub@Info{#1}{#2}%
+\fi
+}
+\def\HOBsub@StopPackage{%
+\csname\@currname.\@currext-h@@k\endcsname
+\let\endinput\HOBsub@OrgEndinput
+\csname @popfilename\endcsname
+\let\@currname\HOBsub@OrgCurrName
+\let\@currext\HOBsub@OrgCurrExt
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @addtofilelist\endcsname\relax
+\def\hobsub@AddToFileList#1{}%
+\else
+\def\hobsub@AddToFileList#1{%
+\@addtofilelist{#1}%
+}%
+\fi
+\hobsub@GobbleRemainingPackage
+<hobsub>
+\hobsub@StartPackage{hobsub}%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\immediate\write-1{%
+ Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)%
+}%
+\else
+\ProvidesPackage{hobsub}%
+ [2012/05/28 v1.13 Construct package bundles (HO)]%
+\fi
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{letltxmacro}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname llm@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\llm@AtEnd{%
+\llm@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\llm@AtEnd{%
+\llm@AtEnd
+\escapechar\the\escapechar\relax
+\noexpand\endinput
+}
+\escapechar=92 % `\\
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{letltxmacro}%
+ [2010/09/02 v1.4 Let assignment for LaTeX macros (HO)]
+\newcommand*{\LetLtxMacro}{%
+\llm@ModeLetLtxMacro{}%
+}
+\newcommand*{\GlobalLetLtxMacro}{%
+\llm@ModeLetLtxMacro\global
+}
+\newcommand*{\llm@ModeLetLtxMacro}[3]{%
+\edef\llm@escapechar{\the\escapechar}%
+\escapechar=-1 %
+\edef\reserved@a{%
+\noexpand\protect
+\expandafter\noexpand
+\csname\string#3 \endcsname
+}%
+\ifx\reserved@a#3\relax
+#1\edef#2{%
+\noexpand\protect
+\expandafter\noexpand
+\csname\string#2 \endcsname
+}%
+#1\expandafter\let
+\csname\string#2 \expandafter\endcsname
+\csname\string#3 \endcsname
+\expandafter\llm@LetLtxMacro
+\csname\string#2 \expandafter\endcsname
+\csname\string#3 \endcsname{#1}%
+\else
+\llm@LetLtxMacro{#2}{#3}{#1}%
+\fi
+\escapechar=\llm@escapechar\relax
+}
+\def\llm@LetLtxMacro#1#2#3{%
+\escapechar=92 %
+\expandafter\llm@CheckParams\meaning#2:->\@nil{%
+\begingroup
+\def\@protected@testopt{%
+\expandafter\@testopt\@gobble
+}%
+\def\@testopt##1##2{%
+\toks@={##2}%
+}%
+\let\llm@testopt\@empty
+\edef\x{%
+\noexpand\@protected@testopt
+\noexpand#2%
+\expandafter\noexpand\csname\string#2\endcsname
+}%
+\expandafter\expandafter\expandafter\def
+\expandafter\expandafter\expandafter\y
+\expandafter\expandafter\expandafter{%
+\expandafter\llm@CarThree#2{}{}{}\llm@nil
+}%
+\ifx\x\y
+#2%
+\def\llm@testopt{%
+\noexpand\@protected@testopt
+\noexpand#1%
+}%
+\else
+\edef\x{%
+\noexpand\@testopt
+\expandafter\noexpand
+\csname\string#2\endcsname
+}%
+\expandafter\expandafter\expandafter\def
+\expandafter\expandafter\expandafter\y
+\expandafter\expandafter\expandafter{%
+\expandafter\llm@CarTwo#2{}{}\llm@nil
+}%
+\ifx\x\y
+#2%
+\def\llm@testopt{%
+\noexpand\@testopt
+}%
+\fi
+\fi
+\ifx\llm@testopt\@empty
+\else
+\llm@protected\xdef\llm@GlobalTemp{%
+\llm@testopt
+\expandafter\noexpand
+\csname\string#1\endcsname
+{\the\toks@}%
+}%
+\fi
+\expandafter\endgroup\ifx\llm@testopt\@empty
+#3\let#1=#2\relax
+\else
+#3\let#1=\llm@GlobalTemp
+#3\expandafter\let
+\csname\string#1\expandafter\endcsname
+\csname\string#2\endcsname
+\fi
+}{%
+#3\let#1=#2\relax
+}%
+}
+\def\llm@CheckParams#1:->#2\@nil{%
+\begingroup
+\def\x{#1}%
+\ifx\x\llm@macro
+\endgroup
+\def\llm@protected{}%
+\expandafter\@firstoftwo
+\else
+\ifx\x\llm@protectedmacro
+\endgroup
+\def\llm@protected{\protected}%
+\expandafter\expandafter\expandafter\@firstoftwo
+\else
+\endgroup
+\expandafter\expandafter\expandafter\@secondoftwo
+\fi
+\fi
+}
+\def\llm@macro{macro}
+\@onelevel@sanitize\llm@macro
+\def\llm@protectedmacro{\protected macro}
+\@onelevel@sanitize\llm@protectedmacro
+\def\llm@CarThree#1#2#3#4\llm@nil{#1#2#3}%
+\def\llm@CarTwo#1#2#3\llm@nil{#1#2}%
+\llm@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{hopatch}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname HOpatch@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\HOpatch@AtEnd{%
+\HOpatch@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\HOpatch@AtEnd{\HOpatch@AtEnd\noexpand\endinput}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hopatch}%
+ [2012/05/28 v1.2 Wrapper for package hooks (HO)]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{ltxcmds}[2010/12/12]%
+\else
+\RequirePackage{ltxcmds}[2010/12/12]%
+\fi
+\def\HOpatch@counter{0}%
+\ltx@ifundefined{numexpr}{%
+\def\HOpatch@StepCounter{%
+\begingroup
+\count@\HOpatch@counter\relax
+\advance\count@\ltx@one\relax
+\edef\x{\endgroup
+\noexpand\def\noexpand\HOpatch@counter{\the\count@}%
+}%
+\x
+}%
+}{%
+\def\HOpatch@StepCounter{%
+\edef\HOpatch@counter{%
+\the\numexpr\HOpatch@counter+\ltx@one\relax
+}%
+}%
+}
+\def\HOpatch@list{}
+\def\HOpatch@Add{%
+\ltx@LocalAppendToMacro\HOpatch@list
+}
+\def\hopatch@AfterPackage#1{%
+\ltx@ifpackageloaded{#1}{%
+\ltx@firstofone
+}{%
+\HOpatch@AfterPackage{#1}%
+}%
+}
+\def\HOpatch@AfterPackage#1{%
+\edef\HOpatch@temp{#1}%
+\HOpatch@StepCounter
+\expandafter\HOpatch@@AfterPackage
+\csname HOpatch@\HOpatch@counter\expandafter\endcsname{%
+\HOpatch@temp
+}%
+}
+\def\HOpatch@@AfterPackage#1#2#3{%
+\begingroup
+\toks@{#3}%
+\xdef\HOpatch@gtemp{%
+\noexpand\ltx@ifpackageloaded{#2}{%
+\noexpand\let\noexpand#1\noexpand\relax
+\the\toks@
+}{}%
+}%
+\endgroup
+\let#1\HOpatch@gtemp
+\HOpatch@Add#1%
+\HOpatch@Try{AfterPackage}{#2}#1%
+\HOpatch@Try{AtEndPackage}{#2}#1%
+\HOpatch@Try{AtEndOfPackageFile}{#2}#1%
+}
+\def\HOpatch@Try#1#2#3{%
+\ltx@ifundefined{#1}{}{%
+\csname #1\endcsname{#2}{#3}%
+}%
+}
+\AtBeginDocument{\HOpatch@list}
+\ltx@ifundefined{AtEndPreamble}{}{%
+\ltx@ifundefined{@endpreamblehook}{}{%
+\AtEndPreamble{\HOpatch@list}%
+}%
+}
+\ltx@ifundefined{AfterEndPreamble}{}{%
+\ltx@ifundefined{@afterendpreamblehook}{}{%
+\AfterEndPreamble{%
+\let\HOpatch@OrgIfPackageLoaded\@ifpackageloaded
+\let\HOpatch@OrgIfPackageLater\@ifpackagelater
+\let\HOpatch@OrgIfClassLoaded\@ifclassloaded
+\let\HOpatch@OrgIfClassLater\@ifclasslater
+\let\@ifpackageloaded\ltx@ifpackageloaded
+\let\@ifpackagelater\ltx@ifpackagelater
+\let\@ifclassloaded\ltx@ifclassloaded
+\let\@ifclasslater\ltx@ifclasslater
+\HOpatch@list
+\let\@ifpackageloaded\HOpatch@OrgIfPackageLoaded
+\let\@ifpackagelater\HOpatch@OrgIfPackageLater
+\let\@ifclassloaded\HOpatch@OrgIfClassLoaded
+\let\@ifclasslater\HOpatch@OrgIfClassLater
+}%
+}%
+}
+\HOpatch@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{xcolor-patch}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{xcolor-patch}[2011/01/30 xcolor patch]
+\RequirePackage{hopatch}[2011/01/30]
+\hopatch@AfterPackage{xcolor}{%
+\long\def\reserved@a#1#2#3{%
+\long\def\@@tmp##1##2{%
+\ifx#1##1%
+\toks@{##2}%
+\expandafter\remove@to@nnil
+\else
+\expandafter\@@tmp
+\fi
+}%
+\@@tmp#2#1{#3}\@nnil\the\toks@
+}%
+\ifx\XC@ifxcase\reserved@a
+\long\def\XC@ifxcase#1#2#3{%
+\long\def\XC@if@##1##2{%
+\ifx#1##1%
+\toks@{##2}%
+\expandafter\remove@to@nnil
+\else
+\expandafter\XC@if@
+\fi
+}%
+\XC@if@#2#1{#3}\@nnil
+\the\toks@
+}%
+\fi
+\long\def\reserved@a#1#2#3{%
+\long\def\@@tmp##1##2{%
+\@expandtwoargs\in@{,#1,}{,##1,}%
+\ifin@
+\toks@{##2}%
+\expandafter\remove@to@nnil
+\else
+\expandafter\@@tmp
+\fi
+}%
+\@@tmp#2{#1}{#3}\@nnil
+\the\toks@
+}%
+\ifx\XC@ifcase\reserved@a
+\long\def\XC@ifcase#1#2#3{%
+\long\def\XC@if@##1##2{%
+\@expandtwoargs\in@{,#1,}{,##1,}%
+\ifin@
+\toks@{##2}%
+\expandafter\remove@to@nnil
+\else
+\expandafter\XC@if@
+\fi
+}%
+\XC@if@#2{#1}{#3}\@nnil
+\the\toks@
+}%
+\fi
+\def\reserved@a#1,{%
+\XC@ifxcase\tm{%
+\XC@mod@rgb{%
+\XC@calcN{#1}\@@tmp
+\edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+}%
+\XC@mod@cmy{%
+\XC@calcC{#1}\@@tmp
+\edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+}%
+\XC@mod@cmyk{%
+\XC@calcC{#1}\@@tmp
+\edef\@@tmp{0,0,0,\@@tmp}%
+}%
+\XC@mod@RGB{%
+\edef\@@scl{\rangeRGB}%
+\XC@calcM{#1}\@@tmp
+\edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+}%
+\XC@mod@HTML{%
+\edef\@@scl{\@cclv}%
+\XC@calcM{#1}\@@tmp
+\XC@calcH\@@tmp\@@tmp
+\edef\@@tmp{\@@tmp\@@tmp\@@tmp}%
+}%
+\XC@mod@HSB{%
+\edef\@@scl{\rangeHSB}%
+\XC@calcM{#1}\@@tmp
+\edef\@@tmp{0,0,\@@tmp}%
+}%
+\XC@mod@Gray{%
+\edef\@@scl{\rangeGray}%
+\XC@calcM{#1}\@@tmp
+}%
+}%
+{%
+\XC@calcN{#1}\@@tmp
+\edef\@@tmp{0,0,\@@tmp}%
+}%
+}%
+\ifx\XC@cnv@gray\reserved@a
+\def\XC@cnv@gray#1,{%
+\XC@ifxcase\tm{%
+\XC@mod@rgb{%
+\XC@calcN{#1}\@@tmp
+\edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+}%
+\XC@mod@gray{}%
+\XC@mod@cmy{%
+\XC@calcC{#1}\@@tmp
+\edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+}%
+\XC@mod@cmyk{%
+\XC@calcC{#1}\@@tmp
+\edef\@@tmp{0,0,0,\@@tmp}%
+}%
+\XC@mod@RGB{%
+\edef\@@scl{\rangeRGB}%
+\XC@calcM{#1}\@@tmp
+\edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+}%
+\XC@mod@HTML{%
+\edef\@@scl{\@cclv}%
+\XC@calcM{#1}\@@tmp
+\XC@calcH\@@tmp\@@tmp
+\edef\@@tmp{\@@tmp\@@tmp\@@tmp}%
+}%
+\XC@mod@HSB{%
+\edef\@@scl{\rangeHSB}%
+\XC@calcM{#1}\@@tmp
+\edef\@@tmp{0,0,\@@tmp}%
+}%
+\XC@mod@Gray{%
+\edef\@@scl{\rangeGray}%
+\XC@calcM{#1}\@@tmp
+}%
+}%
+{%
+\XC@calcN{#1}\@@tmp
+\edef\@@tmp{0,0,\@@tmp}%
+}%
+}%
+\fi
+\@ifundefined{XC@frameb@x }{%
+\expandafter\let\csname XC@frameb@x \endcsname\XC@frameb@x
+\edef\XC@frameb@x{%
+\noexpand\protect
+\expandafter\noexpand\csname XC@frameb@x \endcsname
+}%
+\expandafter\ifx\csname XC@frameb@x \endcsname\@frameb@x
+\let\@frameb@x\XC@frameb@x
+\fi
+}{}%
+}
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{atveryend}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname AtVeryEnd@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\AtVeryEnd@AtEnd{%
+\AtVeryEnd@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{9}{10}% (tab)
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\AtVeryEnd@AtEnd{\AtVeryEnd@AtEnd\noexpand\endinput}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{atveryend}%
+ [2011/06/30 v1.8 Hooks at the very end of document (HO)]
+\def\AtVeryEnd@ifundefined#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname #1\endcsname\relax
+\expandafter\@firstoftwo
+\else
+\expandafter\@secondoftwo
+\fi
+}
+\let\AtVeryEnd@BeforeClearDocumentHook\@empty
+\let\AtVeryEnd@AfterLastShipoutHook\@empty
+\let\AtVeryEnd@AtVeryEndDocumentHook\@empty
+\let\AtVeryEnd@AtEndAfterFileListHook\@empty
+\let\AtVeryEnd@AtVeryVeryEndHook\@empty
+\newcommand*{\BeforeClearDocument}{%
+\g@addto@macro\AtVeryEnd@BeforeClearDocumentHook
+}
+\newcommand*{\AfterLastShipout}{%
+\g@addto@macro\AtVeryEnd@AfterLastShipoutHook
+}
+\newcommand*{\AtVeryEndDocument}{%
+\g@addto@macro\AtVeryEnd@AtVeryEndDocumentHook
+}
+\newcommand*{\AtEndAfterFileList}{%
+\g@addto@macro\AtVeryEnd@AtEndAfterFileListHook
+}
+\newcommand*{\AtVeryVeryEnd}{%
+\g@addto@macro\AtVeryEnd@AtVeryVeryEndHook
+}
+\newcommand*{\Call@BeforeClearDocument}{%
+\let\BeforeClearDocument\@firstofone
+\ifx\AtVeryEnd@BeforeClearDocumentHook\@empty
+\PackageInfo{atveryend}{Empty hook `BeforeClearDocument'}%
+\else
+\PackageInfo{atveryend}{Executing hook `BeforeClearDocument'}%
+\AtVeryEnd@BeforeClearDocumentHook
+\fi
+\global\let\AtVeryEnd@BeforeClearDocumentHook\@undefined
+\global\let\Call@BeforeClearDocument\relax
+}
+\newcommand*{\Call@AfterLastShipout}{%
+\let\AfterLastShipout\@firstofone
+\ifx\AtVeryEnd@AfterLastShipoutHook\@empty
+\PackageInfo{atveryend}{Empty hook `AfterLastShipout'}%
+\else
+\PackageInfo{atveryend}{Executing hook `AfterLastShipout'}%
+\AtVeryEnd@AfterLastShipoutHook
+\fi
+\global\let\AtVeryEnd@AfterLastShipoutHook\@undefined
+\global\let\Call@AfterLastShipout\relax
+}
+\newcommand*{\Call@AtVeryEndDocument}{%
+\let\AtVeryEndDocument\@firstofone
+\ifx\AtVeryEnd@AtVeryEndDocumentHook\@empty
+\PackageInfo{atveryend}{Empty hook `AtVeryEndDocument'}%
+\else
+\PackageInfo{atveryend}{Executing hook `AtVeryEndDocument'}%
+\AtVeryEnd@AtVeryEndDocumentHook
+\fi
+\global\let\AtVeryEnd@AtVeryEndDocumentHook\@undefined
+\global\let\Call@AtVeryEndDocument\relax
+}
+\newcommand*{\Call@AtEndAfterFileList}{%
+\Call@AtVeryEndDocument
+\let\AtEndAfterFileList\@firstofone
+\ifx\AtVeryEnd@AtEndAfterFileListHook\@empty
+\PackageInfo{atveryend}{Empty hook `AtEndAfterFileList'}%
+\else
+\PackageInfo{atveryend}{Executing hook `AtEndAfterFileList'}%
+\AtVeryEnd@AtEndAfterFileListHook
+\fi
+\global\let\AtVeryEnd@AtEndAfterFileListHook\@undefined
+\global\let\Call@AtEndAfterFileList\relax
+}
+\newcommand*{\Call@AtVeryVeryEnd}{%
+\Call@AtEndAfterFileList
+\let\AtVeryVeryEnd\@firstofone
+\ifx\AtVeryEnd@AtVeryVeryEndHook\@empty
+\PackageInfo{atveryend}{Empty hook `AtVeryVeryEnd'}%
+\else
+\PackageInfo{atveryend}{Executing hook `AtVeryVeryEnd'}%
+\AtVeryEnd@AtVeryVeryEndHook
+\fi
+\global\let\AtVeryEnd@AtVeryVeryEndHook\@undefined
+\global\let\Call@AtVeryVeryEnd\relax
+}
+\def\AtVeryEnd@test@standard{%
+\let\AtEndDocument\@firstofone
+\@enddocumenthook
+\@checkend{document}%
+\clearpage
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\let\@setckpt\@gobbletwo
+\let\@newl@bel\@testdef
+\@tempswafalse
+\makeatletter
+\input\jobname.aux %
+\fi
+\@dofilelist
+\ifdim \font@submax >\fontsubfuzz\relax
+\@font@warning{Size substitutions with differences\MessageBreak
+ up to \font@submax\space have occurred.\@gobbletwo}%
+\fi
+\@defaultsubs
+\@refundefined
+\if@filesw
+\ifx \@multiplelabels \relax
+\if@tempswa
+\@latex@warning@no@line{Label(s) may have changed. %
+ Rerun to get cross-references right}%
+\fi
+\else
+\@multiplelabels
+\fi
+\fi
+\endgroup
+\deadcycles\z@
+\@@end
+}
+\def\AtVeryEnd@enddocument@standard{%
+\let\AtEndDocument\@firstofone
+\@enddocumenthook
+\@checkend{document}%
+\Call@BeforeClearDocument
+\clearpage
+\Call@AfterLastShipout
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\let\@setckpt\@gobbletwo
+\let\@newl@bel\@testdef
+\@tempswafalse
+\makeatletter
+\input\jobname.aux %
+\fi
+\Call@AtVeryEndDocument
+\@dofilelist
+\Call@AtEndAfterFileList
+\ifdim \font@submax >\fontsubfuzz\relax
+\@font@warning{Size substitutions with differences\MessageBreak
+ up to \font@submax\space have occurred.\@gobbletwo}%
+\fi
+\@defaultsubs
+\@refundefined
+\if@filesw
+\ifx \@multiplelabels \relax
+\if@tempswa
+\@latex@warning@no@line{Label(s) may have changed. %
+ Rerun to get cross-references right}%
+\fi
+\else
+\@multiplelabels
+\fi
+\fi
+\endgroup
+\deadcycles\z@
+\Call@AtVeryVeryEnd
+\@@end
+}
+\expandafter\def\csname AtVeryEnd@test@standard20110627\endcsname{%
+\let\AtEndDocument\@firstofone
+\@enddocumenthook
+\@checkend{document}%
+\clearpage
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\let\@setckpt\@gobbletwo
+\let\@newl@bel\@testdef
+\@tempswafalse
+\makeatletter
+\@@input\jobname.aux %
+\fi
+\@dofilelist
+\ifdim \font@submax >\fontsubfuzz\relax
+\@font@warning{Size substitutions with differences\MessageBreak
+ up to \font@submax\space have occurred.\@gobbletwo}%
+\fi
+\@defaultsubs
+\@refundefined
+\if@filesw
+\ifx \@multiplelabels \relax
+\if@tempswa
+\@latex@warning@no@line{Label(s) may have changed. %
+ Rerun to get cross-references right}%
+\fi
+\else
+\@multiplelabels
+\fi
+\fi
+\endgroup
+\deadcycles\z@
+\@@end
+}
+\expandafter\def\csname AtVeryEnd@enddocument@standard20110627\endcsname{%
+\let\AtEndDocument\@firstofone
+\@enddocumenthook
+\@checkend{document}%
+\Call@BeforeClearDocument
+\clearpage
+\Call@AfterLastShipout
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\let\@setckpt\@gobbletwo
+\let\@newl@bel\@testdef
+\@tempswafalse
+\makeatletter
+\@@input\jobname.aux %
+\fi
+\Call@AtVeryEndDocument
+\@dofilelist
+\Call@AtEndAfterFileList
+\ifdim \font@submax >\fontsubfuzz\relax
+\@font@warning{Size substitutions with differences\MessageBreak
+ up to \font@submax\space have occurred.\@gobbletwo}%
+\fi
+\@defaultsubs
+\@refundefined
+\if@filesw
+\ifx \@multiplelabels \relax
+\if@tempswa
+\@latex@warning@no@line{Label(s) may have changed. %
+ Rerun to get cross-references right}%
+\fi
+\else
+\@multiplelabels
+\fi
+\fi
+\endgroup
+\deadcycles\z@
+\Call@AtVeryVeryEnd
+\@@end
+}
+\expandafter\def\expandafter\AtVeryEnd@test@booklet\expandafter{%
+\expandafter\twoupclearpage
+\AtVeryEnd@test@standard
+}
+\expandafter\def\expandafter\AtVeryEnd@enddocument@booklet\expandafter{%
+\expandafter\twoclearpage
+\AtVeryEnd@enddocument@standard
+}
+\def\AtVeryEnd@test@dinbrief{%
+\@checkend{document} %
+\newpage
+\begingroup
+\if@filesw
+\ifnum\c@labelgen>0 %
+\immediate\closeout\@mainlbl
+\makeatletter
+\input \jobname@lbl\relax
+\clearpage
+\fi
+\immediate\closeout\@mainaux
+\fi
+\endgroup
+\deadcycles\z@
+\@@end
+}
+\def\AtVeryEnd@enddocument@dinbrief{%
+\@checkend{document}%
+\Call@BeforeClearDocument
+\newpage
+\Call@AfterLastShipout
+\begingroup
+\if@filesw
+\ifnum\c@labelgen>\z@
+\immediate\closeout\@mainlbl
+\makeatletter
+\input \jobname@lbl\relax
+\clearpage
+\fi
+\immediate\closeout\@mainaux
+\fi
+\Call@AtVeryEndDocument
+\csname @dofilelist\endcsname
+\Call@AtEndAfterFileList
+\endgroup
+\deadcycles\z@
+\Call@AtVeryVeryEnd
+\@@end
+}
+\def\AtVeryEnd@test@combine{%
+\@enddocumenthook
+\@checkend{document}%
+\clearpage
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\immediate\closeout\@partaux
+\let\@setckpt\@gobbletwo
+\let\@newl@bel\@testdef
+\@tempswafalse
+\makeatletter \input\c@lmainauxfile  %% change here
+\fi
+\c@lenddoca                            %% a replacement
+\@refundefined
+\endgroup
+\deadcycles\z@
+\@@end
+}
+\def\AtVeryEnd@enddocument@combine{%
+\@enddocumenthook
+\@checkend{document}%
+\Call@BeforeClearDocument
+\clearpage
+\Call@AfterLastShipout
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\immediate\closeout\@partaux
+\let\@setckpt\@gobbletwo
+\let\@newl@bel\@testdef
+\@tempswafalse
+\makeatletter \input\c@lmainauxfile  %% change here
+\fi
+\Call@AtVeryEndDocument
+\c@lenddoca                            %% a replacement
+\@refundefined
+\endgroup
+\deadcycles\z@
+\Call@AtVeryVeryEnd
+\@@end
+}
+\long\def\AtVeryEnd@test@c@lenddoca{%
+\@dofilelist
+\ifdim\font@submax>\fontsubfuzz\relax
+\@font@warning{%
+ Size substitutions with differences\MessageBreak
+ up to \font@submax\space have occured.\@gobbletwo
+}%
+\fi
+\@defaultsubs
+\if@filesw
+\ifx\@multiplelabels\relax
+\if@tempswa
+\@latex@warning@no@line{%
+ Label(s) may have changed. %
+ Rerun to get cross-references right%
+}%
+\fi
+\else
+\@multiplelabels
+\fi
+\fi
+}
+\ifx\AtVeryEnd@c@lenddoca\c@lenddoca
+\def\c@lenddoca{%
+\@dofilelist
+\Call@AtEndAfterFileList
+\ifdim\font@submax>\fontsubfuzz\relax
+\@font@warning{%
+ Size substitutions with differences\MessageBreak
+ up to \font@submax\space have occured.\@gobbletwo
+}%
+\fi
+\@defaultsubs
+\if@filesw
+\ifx\@multiplelabels\relax
+\if@tempswa
+\@latex@warning@no@line{%
+ Label(s) may have changed. %
+ Rerun to get cross-references right%
+}%
+\fi
+\else
+\@multiplelabels
+\fi
+\fi
+}%
+\fi
+\def\AtVeryEnd@test@jpsj{%
+\if@lastpagebalancing
+\global\let\@outputdblcol=\balancing@outputdblcol
+\fi
+\@checkend{document}%
+\clearpage
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\def\global\@namedef##1##2{}%
+\def\newlabel{\@testdef r}%
+\def\bibcite{\@testdef b}%
+\@tempswafalse
+\makeatletter
+\input \jobname.aux %
+\if@tempswa
+\@warning{%
+ Label(s) may have changed. %
+ Rerun to get cross-references right%
+}%
+\fi
+\fi
+\endgroup
+\deadcycles\z@
+\@@end
+}
+\def\AtVeryEnd@enddocument@jpsj{%
+\if@lastpagebalancing
+\global\let\@outputdblcol=\balancing@outputdblcol
+\fi
+\@checkend{document}%
+\Call@BeforeClearDocument
+\clearpage
+\Call@AfterLastShipout
+\begingroup
+\if@filesw
+\immediate\closeout\@mainaux
+\def\global\@namedef##1##2{}%
+\def\newlabel{\@testdef r}%
+\def\bibcite{\@testdef b}%
+\@tempswafalse
+\makeatletter
+\input \jobname.aux %
+\if@tempswa
+\@warning{%
+ Label(s) may have changed. %
+ Rerun to get cross-references right%
+}%
+\fi
+\fi
+\Call@AtVeryEndDocument
+\csname @dofilelist\endcsname
+\Call@AtEndAfterFileList
+\endgroup
+\deadcycles\z@
+\Call@AtVeryVeryEnd
+\@@end
+}
+\def\AtVeryEnd@Test#1#2{%
+\expandafter\ifx\csname AtVeryEnd@test@#2\endcsname#1%
+\expandafter\let\expandafter#1%
+\csname AtVeryEnd@enddocument@#2\endcsname
+\begingroup
+\let\on@line\@empty
+\PackageInfo{atveryend}{%
+\string#1 detected (#2)%
+}%
+\endgroup
+\expandafter\AtVeryEnd@SkipToNil
+\fi
+}
+\def\AtVeryEnd@SkipToNil#1\@nil{}
+\def\AtVeryEnd@RedefEndDocument#1{%
+\ifx#1\@undefined
+\else
+\AtVeryEnd@Test#1{standard20110627}%
+\AtVeryEnd@Test#1{standard}%
+\AtVeryEnd@Test#1{booklet}%
+\AtVeryEnd@Test#1{dinbrief}%
+\AtVeryEnd@Test#1{combine}%
+\AtVeryEnd@Test#1{jpsj}%
+\AtVeryEnd@SkipToNil
+\@nil
+\fi
+}
+\AtVeryEnd@RedefEndDocument\enddocument
+\AtVeryEnd@RedefEndDocument\AP@enddocument % afterpage.sty
+\AtVeryEnd@RedefEndDocument\hyper@back@cite@enddocument % htx-bc.sty
+\AtVeryEnd@RedefEndDocument\hyper@enddocument % hyper.sty
+\AtVeryEnd@RedefEndDocument\hyper@fn@enddocument % hyper.sty
+\AtVeryEnd@RedefEndDocument\cweb@save@enddocument % cweb.cls
+\AtVeryEnd@RedefEndDocument\prev@enddocument % flushend.sty
+\AtVeryEnd@RedefEndDocument\endorigdocument % gaceta.cls
+\AtVeryEnd@RedefEndDocument\keependdoc % aguplus.sty
+\AtVeryEnd@RedefEndDocument\EMenddocument % t-angles.sty
+\AtVeryEnd@RedefEndDocument\docmute@enddocument % docmute.sty
+\AtVeryEnd@RedefEndDocument\a@enddocument % alatex.sty
+\AtVeryEnd@RedefEndDocument\enddocumentasusual % frenchle.sty
+\AtVeryEnd@RedefEndDocument\old@enddocument % uwthesis.cls
+\def\AtVeryEnd@document{document}%
+\def\AtVeryEnd@RedefCheckEnd{%
+\expandafter\def\expandafter\@checkend
+\expandafter##\expandafter1\expandafter{%
+\@checkend{##1}%
+\def\AtVeryEnd@temp{##1}%
+\ifx\AtVeryEnd@temp\AtVeryEnd@document
+\let\AtVeryEnd@OrgClearpage\clearpage
+\def\clearpage{%
+\let\clearpage\AtVeryEnd@OrgClearpage
+\Call@BeforeClearDocument
+\clearpage
+\Call@AfterLastShipout
+}%
+\fi
+}%
+\aftergroup\AtVeryEnd@RedefCheckEnd
+}%
+\AtBeginDocument{%
+\AtEndDocument{%
+\AtVeryEnd@RedefCheckEnd
+}%
+}
+\AtEndDocument{%
+\@ifundefined{@dofilelist}{%
+\gdef\@dofilelist{%
+\Call@AtVeryEndDocument
+\Call@AtEndAfterFileList
+}%
+}{%
+\begingroup
+\toks@\expandafter{\@dofilelist}%
+\xdef\@dofilelist{%
+\noexpand\Call@AtVeryEndDocument
+\the\toks@
+\noexpand\Call@AtEndAfterFileList
+}%
+\endgroup
+}%
+}
+\AtBeginDocument{%
+\@ifpackageloaded{scrlfile}{%
+\AtVeryEnd@ifundefined{BeforeClosingMainAux}{}{%
+\BeforeClosingMainAux{\Call@AfterLastShipout}%
+}%
+\AtVeryEnd@ifundefined{AfterReadingMainAux}{}{%
+\AfterReadingMainAux{\Call@AtVeryEndDocument}%
+}%
+}{}%
+\@ifpackageloaded{etoolbox}{%
+\AtVeryEnd@ifundefined{AfterEndDocument}{}{%
+\AfterEndDocument{\Call@AtVeryEndDocument}%
+}%
+}{}%
+}
+\def\AtVeryEnd@temp{%
+\AtBeginDocument{%
+\let\@startlabels\startlabels
+\let\@mlabel\mlabel
+\if@filesw
+\immediate\write\@mainaux{\string\@startlabels}%
+\fi
+}%
+\AtEndDocument{%
+\if@filesw
+\immediate\write\@mainaux{\string\clearpage}%
+\fi
+}%
+}
+\ifx\makelabels\AtVeryEnd@temp
+\else
+\expandafter\AtVeryEnd@AtEnd
+\fi%
+\let\AtVeryEnd@PatchLetter=N%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname endletter\endcsname\relax
+\else
+\long\def\AtVeryEnd@TestEndLetter#1\@auxout#2#3\AtVeryEnd@Nil{%
+\def\AtVeryEnd@temp{#2}%
+\ifx\AtVeryEnd@temp\@empty
+\else
+\@onelevel@sanitize\AtVeryEnd@temp
+\edef\AtVeryEnd@StringMlabel{%
+\string\string
+\string\@mlabel
+\expandafter\@gobble\string\{%
+}%
+\def\AtVeryEnd@CatchFirst##1##2##3##4##5##6##7##8{%
+##1##2##3##4##5##6##7##8\AtVeryEnd@CatchSecond
+}%
+\def\AtVeryEnd@CatchSecond##1##2##3##4##5##6##7##8##9\@nil{%
+##1##2##3##4##5##6##7##8%
+}%
+\edef\AtVeryEnd@temp{%
+\expandafter\AtVeryEnd@CatchFirst\AtVeryEnd@temp
+{}{}{}{}{}{}{}{}%
+{}{}{}{}{}{}{}{}%
+\@nil
+}%
+\ifx\AtVeryEnd@temp\AtVeryEnd@StringMlabel
+\expandafter\def\expandafter\endletter\expandafter{%
+\endletter
+\begingroup
+\let\\=\relax
+\let\protect\@unexpandable@protect
+\let\@mlabel=\relax
+\edef\x{\endgroup
+\noexpand\AtEndDocument{%
+\@gobble#2%
+}%
+}%
+\x
+}%
+\let\AtVeryEnd@PatchLetter=Y%
+\fi
+\fi
+}%
+\expandafter\AtVeryEnd@TestEndLetter\endletter
+\@auxout{}\AtVeryEnd@Nil
+\fi
+\ifx\AtVeryEnd@PatchLetter Y%
+\begingroup
+\let\on@line\@empty
+\PackageInfo{atveryend}{%
+\@backslashchar makelabels detected. %
+ Moving labels\MessageBreak
+ from `.aux' file to \@backslashchar AtEndDocument%
+}%
+\endgroup
+\def\makelabels{%
+\AtBeginDocument{%
+\let\@startlabels\startlabels
+\let\@mlabel\mlabel
+}%
+}%
+\AtEndDocument{%
+\AtVeryEnd@ifundefined{@startlabels}{%
+}{%
+\clearpage
+\@startlabels
+}%
+}%
+\AfterLastShipout{%
+\let\@startlabels\relax
+\let\@mlabel\@gobbletwo
+}%
+\else
+\PackageWarningNoLine{atveryend}{%
+\@backslashchar makelabels detected, but labels cannot\MessageBreak
+ be moved to \@backslashchar AtEndDocument, because\MessageBreak
+\@backslashchar endletter is not in expected form%
+}%
+\fi
+\AtVeryEnd@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{atbegshi}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@atbegshi.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{atbegshi}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@atbegshi.sty\endcsname
+\ProvidesPackage{atbegshi}%
+ [2011/10/05 v1.16 At begin shipout hook (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname AtBegShi@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\AtBegShi@AtEnd{%
+\AtBegShi@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^(superscript)
+\TMP@EnsureCode{96}{12}% `
+\edef\AtBegShi@AtEnd{\AtBegShi@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{infwarerr}[2007/09/09]%
+\TMP@RequirePackage{ltxcmds}[2010/03/01]%
+\else
+\RequirePackage{infwarerr}[2007/09/09]%
+\RequirePackage{ltxcmds}[2010/03/01]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname @ifdefinable\endcsname\relax
+\def\AtBegShi@CheckDefinable#1{%
+\ifcase\ifx#1\relax
+\ltx@one
+\else
+\ifx#1\@undefined
+\ltx@one
+\else
+\ltx@zero
+\fi
+\fi
+\@PackageError{atbegshi}{%
+\string#1\space is already defined%
+}\@ehd
+\fi
+}%
+\else
+\def\AtBegShi@CheckDefinable#1{%
+\@ifdefinable{#1}{}%
+}%
+\fi
+\ltx@newif\ifAtBegShi@Discarded
+\AtBegShi@CheckDefinable\AtBeginShipoutDiscard
+\def\AtBeginShipoutDiscard{%
+\deadcycles=\ltx@zero
+\global\AtBegShi@Discardedtrue
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+\catcode`X=9  % ignore
+\catcode`E=14 % comment
+\else
+\catcode`X=14 % comment
+\catcode`E=9  % ignore
+\fi
+\def\AtBegShi@Shipout{%
+X \begingroup
+X \setbox\AtBeginShipoutBox=\hbox\bgroup
+X \kern\p@
+E \edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+\afterassignment\AtBegShi@Test
+X \global
+\setbox\AtBeginShipoutBox=%
+}
+\def\AtBegShi@Test{%
+X \ifdim\lastkern=0pt %
+E \ifnum\AtBegShi@GroupLevel<\currentgrouplevel
+\expandafter\aftergroup
+\fi
+\AtBegShi@Output
+}
+\def\AtBegShi@Output{%
+X \egroup
+X \endgroup
+\ifvoid\AtBeginShipoutBox
+\@PackageWarning{atbegshi}{Ignoring void shipout box}%
+\else
+\let\AtBegShi@OrgProtect\protect
+\csname set@typeset@protect\endcsname
+\global\AtBegShi@Discardedfalse
+\AtBegShi@Hook
+\expandafter\gdef\expandafter\AtBegShi@HookNext
+\expandafter{\expandafter}%
+\AtBegShi@HookNext
+\ifAtBegShi@Discarded
+\@PackageInfoNoLine{atbegshi}{Shipout page discarded}%
+\global\AtBegShi@Discardedfalse
+\begingroup
+\setbox\AtBeginShipoutBox\box\AtBeginShipoutBox
+\endgroup
+\let\protect\AtBegShi@OrgProtect
+\else
+\AtBegShi@First
+\let\protect\AtBegShi@OrgProtect
+\AtBegShi@GetBoxSize\AtBeginShipoutBox
+\ltx@ifundefined{AtNextShipout}{%
+}{%
+\AtNextShipout{\AtBegShi@GetBoxSize\@cclv}%
+}%
+\AtBeginShipoutOriginalShipout\box\AtBeginShipoutBox
+\fi
+\fi
+}
+\def\AtBegShi@GetBoxSize#1{%
+\xdef\AtBeginShipoutBoxWidth{\the\wd#1}%
+\xdef\AtBeginShipoutBoxHeight{\the\ht#1}%
+\xdef\AtBeginShipoutBoxDepth{\the\dp#1}%
+}
+\def\AtBeginShipoutBoxWidth{0pt}
+\def\AtBeginShipoutBoxHeight{0pt}
+\def\AtBeginShipoutBoxDepth{0pt}
+\catcode`\X=11 %
+\catcode`\E=11 %
+\def\AtBegShi@First{%
+\ifx\AtBegShi@HookFirst\ltx@empty
+\else
+\AtBeginShipoutAddToBox{\AtBegShi@HookFirst}%
+\fi
+\global\let\AtBegShi@First\ltx@empty
+\global\let\AtBeginShipoutFirst\AtBegShi@FirstDisabled
+}
+\gdef\AtBegShi@Hook{}
+\gdef\AtBegShi@HookNext{}
+\gdef\AtBegShi@HookFirst{}
+\AtBegShi@CheckDefinable\AtBeginShipout
+\def\AtBeginShipout{%
+\AtBegShi@AddHook\AtBegShi@Hook
+}
+\AtBegShi@CheckDefinable\AtBeginShipoutNext
+\def\AtBeginShipoutNext{%
+\AtBegShi@AddHook\AtBegShi@HookNext
+}
+\AtBegShi@CheckDefinable\AtBeginShipoutFirst
+\def\AtBeginShipoutFirst{%
+\AtBegShi@AddTo\AtBegShi@HookFirst
+}
+\long\def\AtBegShi@FirstDisabled#1{%
+\@PackageWarning{atbegshi}{%
+ First page is already shipped out, ignoring\MessageBreak
+\string\AtBeginShipoutFirst
+}%
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname g@addto@macro\endcsname\relax
+\long\def\AtBegShi@AddTo#1#2{%
+\begingroup
+\toks\ltx@zero\expandafter{#1#2}%
+\xdef#1{\the\toks\ltx@zero}%
+\endgroup
+}%
+\else
+\let\AtBegShi@AddTo\g@addto@macro
+\fi
+\long\def\AtBegShi@AddHook#1#2{%
+\AtBegShi@AddTo#1{\AtBegShi@Item{#2}}%
+}
+\long\def\AtBegShi@Item#1{%
+\ifAtBegShi@Discarded
+\else
+#1%
+\ifAtBegShi@Discarded
+\else
+\ifvoid\AtBeginShipoutBox
+\@PackageWarning{atbegshi}{%
+ Shipout box was voided by hook,\MessageBreak
+ ignoring shipout box%
+}%
+\AtBeginShipoutDiscard
+\fi
+\fi
+\fi
+}
+\AtBegShi@CheckDefinable\AtBeginShipoutInit
+\def\AtBeginShipoutInit{%
+\ltx@IfUndefined{newbox}{%
+\@PackageError{atbegshi}{%
+\string\AtBeginShipoutInit\space failed\MessageBreak
+ because of missing \expandafter\string\csname newbox\endcsname
+}\@ehc
+}{%
+\csname newbox\endcsname\AtBeginShipoutBox
+\AtBegShi@CheckDefinable\AtBeginShipoutOriginalShipout
+\global\let\AtBeginShipoutOriginalShipout\shipout
+\global\let\shipout\AtBegShi@Shipout
+}%
+\gdef\AtBeginShipoutInit{}%
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname AtBeginDocument\endcsname\relax
+\AtBeginShipoutInit
+\else
+\AtBeginDocument{\AtBeginShipoutInit}%
+\fi
+\def\AtBeginShipoutAddToBox#1{%
+\ifhbox\AtBeginShipoutBox
+\edef\AtBegShi@restore{%
+\hfuzz=\the\hfuzz\relax
+\hbadness=\the\hbadness\relax
+}%
+\hfuzz=1073741823sp\relax
+\hbadness=2147483647\relax
+\setbox\AtBeginShipoutBox=\hbox to \wd\AtBeginShipoutBox{%
+\setbox\ltx@zero=\hbox{%
+\begingroup
+\AtBegShi@restore
+#1%
+\endgroup
+}%
+\wd\ltx@zero=0pt\relax
+\ht\ltx@zero=0pt\relax
+\dp\ltx@zero=0pt\relax
+\raise\ht\AtBeginShipoutBox\copy\ltx@zero
+\unhcopy\AtBeginShipoutBox
+}%
+\AtBegShi@restore
+\else
+\ifvbox\AtBeginShipoutBox
+\edef\AtBegShi@restore{%
+\vfuzz=\the\vfuzz\relax
+\vbadness=\the\vbadness\relax
+\dimen\ltx@zero=\the\dimen\ltx@zero\relax
+}%
+\edef\AtBegShi@restorebox{%
+\ht\AtBeginShipoutBox=\the\ht\AtBeginShipoutBox\relax
+\dp\AtBeginShipoutBox=\the\dp\AtBeginShipoutBox\relax
+}%
+\vfuzz=1073741823sp\relax
+\vbadness=2147483647\relax
+\dimen\ltx@zero=\ht\AtBeginShipoutBox
+\advance\dimen\ltx@zero by \dp\AtBeginShipoutBox
+\setbox\AtBeginShipoutBox=\vbox to \dimen\ltx@zero{%
+\setbox\ltx@zero=\hbox{%
+\begingroup
+\AtBegShi@restore
+#1%
+\endgroup
+}%
+\wd\ltx@zero=0pt\relax
+\ht\ltx@zero=0pt\relax
+\dp\ltx@zero=0pt\relax
+\baselineskip=0pt\relax
+\lineskip=0pt\relax
+\lineskiplimit=0pt\relax
+\copy\ltx@zero
+\unvbox\AtBeginShipoutBox
+\kern0pt%
+}%
+\AtBegShi@restore
+\AtBegShi@restorebox
+\fi
+\fi
+}
+\def\AtBeginShipoutAddToBoxForeground#1{%
+\ifhbox\AtBeginShipoutBox
+\edef\AtBegShi@restore{%
+\hfuzz=\the\hfuzz\relax
+\hbadness=\the\hbadness\relax
+}%
+\hfuzz=1073741823sp\relax
+\hbadness=2147483647\relax
+\setbox\AtBeginShipoutBox=\hbox to \wd\AtBeginShipoutBox{%
+\unhcopy\AtBeginShipoutBox
+\kern-\wd\AtBeginShipoutBox
+\setbox\ltx@zero=\hbox{%
+\begingroup
+\AtBegShi@restore
+#1%
+\endgroup
+}%
+\wd\ltx@zero=0pt\relax
+\ht\ltx@zero=0pt\relax
+\dp\ltx@zero=0pt\relax
+\raise\ht\AtBeginShipoutBox\copy\ltx@zero
+\kern\wd\AtBeginShipoutBox
+}%
+\AtBegShi@restore
+\else
+\ifvbox\AtBeginShipoutBox
+\edef\AtBegShi@restore{%
+\vfuzz=\the\vfuzz\relax
+\vbadness=\the\vbadness\relax
+\dimen\ltx@zero=\the\dimen\ltx@zero\relax
+}%
+\edef\AtBegShi@restorebox{%
+\ht\AtBeginShipoutBox=\the\ht\AtBeginShipoutBox\relax
+\dp\AtBeginShipoutBox=\the\dp\AtBeginShipoutBox\relax
+}%
+\vfuzz=1073741823sp\relax
+\vbadness=2147483647\relax
+\dimen\ltx@zero=\ht\AtBeginShipoutBox
+\advance\dimen\ltx@zero by \dp\AtBeginShipoutBox
+\setbox\AtBeginShipoutBox=\vbox to \dimen\ltx@zero{%
+\setbox\ltx@zero=\hbox{%
+\begingroup
+\AtBegShi@restore
+#1%
+\endgroup
+}%
+\wd\ltx@zero=0pt\relax
+\ht\ltx@zero=0pt\relax
+\dp\ltx@zero=0pt\relax
+\baselineskip=0pt\relax
+\lineskip=0pt\relax
+\lineskiplimit=0pt\relax
+\unvbox\AtBeginShipoutBox
+\kern-\dimen\ltx@zero
+\copy\ltx@zero
+\kern\dimen\ltx@zero
+}%
+\AtBegShi@restore
+\AtBegShi@restorebox
+\fi
+\fi
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\def\TMP@RequirePackage#1[#2]{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@#1.sty\endcsname\relax
+\input #1.sty\relax
+\fi
+}%
+\TMP@RequirePackage{ifpdf}[2011/01/30]%
+\else
+\RequirePackage{ifpdf}[2011/01/30]%
+\fi
+\ifpdf
+\def\AtBegShi@horigin{\pdfhorigin}%
+\def\AtBegShi@vorigin{\pdfvorigin}%
+\else
+\def\AtBegShi@horigin{72.27pt}%
+\def\AtBegShi@vorigin{72.27pt}%
+\fi
+\begingroup
+\ifcase
+\expandafter\ifx\csname picture\endcsname\relax
+ 1%
+\else
+\expandafter\ifx\csname endpicture\endcsname\relax
+ 1%
+\else
+ 0%
+\fi
+\fi
+\endgroup
+\def\AtBegShi@BeginPicture{%
+\begingroup
+\picture(0,0)\relax
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname unitlength\endcsname\relax
+\else
+\unitlength=1pt\relax
+\fi
+\ignorespaces
+}%
+\def\AtBegShi@EndPicture{%
+\endpicture
+\endgroup
+}%
+\else
+\endgroup
+\def\AtBegShi@BeginPicture{%
+\setbox\ltx@zero=\hbox\bgroup
+\begingroup
+\ignorespaces
+}%
+\def\AtBegShi@EndPicture{%
+\endgroup
+\egroup
+\ht\ltx@zero=0pt\relax
+\dp\ltx@zero=0pt\relax
+\copy\ltx@zero
+}%
+\fi
+\def\AtBeginShipoutUpperLeft#1{%
+\AtBeginShipoutAddToBox{%
+\kern-\AtBegShi@horigin\relax
+\vbox to 0pt{%
+\kern-\AtBegShi@vorigin\relax
+\AtBegShi@BeginPicture
+#1%
+\AtBegShi@EndPicture
+\vss
+}%
+}%
+}
+\def\AtBeginShipoutUpperLeftForeground#1{%
+\AtBeginShipoutAddToBoxForeground{%
+\kern-\AtBegShi@horigin\relax
+\vbox to 0pt{%
+\kern-\AtBegShi@vorigin\relax
+\AtBegShi@BeginPicture
+#1%
+\AtBegShi@EndPicture
+\vss
+}%
+}%
+}
+\def\AtBegShi@AbortIfUndefined#1{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname#1\endcsname\relax
+\expandafter\AtBegShi@AtEnd
+\fi
+}
+\AtBegShi@AbortIfUndefined{currentgrouplevel}%
+\AtBegShi@AbortIfUndefined{AtBeginDocument}%
+\AtBegShi@AbortIfUndefined{@ifpackageloaded}%
+\AtBegShi@AbortIfUndefined{@ifclassloaded}%
+\def\AtBegShi@PatchCrop{%
+\begingroup
+\def\AtBegShi@Crop@shipout{%
+\afterassignment\CROP@ship
+\setbox\@cclv=%
+}%
+\def\AtBegShi@Crop@ship{%
+\ifvoid\@cclv
+\expandafter\aftergroup
+\fi
+\CROP@@ship
+}%
+\def\AtBegShi@Crop@shiplist{%
+\lineskip\z@
+\lineskiplimit\z@
+\baselineskip\z@
+\CROP@kernel
+\box\@cclv
+}%
+\def\AtBegShi@Crop@@ship{%
+\CROP@shipout\vbox{%
+\CROP@shiplist
+}%
+}%
+\ifx\AtBegShi@Crop@ship\CROP@ship
+\ifx\AtBegShi@Crop@shiplist\CROP@shiplist
+\ifx\AtBegShi@Crop@@ship\CROP@@ship
+\let\AtBegShi@found\relax
+\ifx\shipout\AtBegShi@Crop@shipout
+\def\AtBegShi@found{\shipout}%
+\else\ifx\AtBeginShipoutOriginalShipout\AtBegShi@Crop@shipout
+\def\AtBegShi@found{\AtBeginShipoutOriginalShipout}%
+\else\ifx\@EveryShipout@Org@Shipout\AtBegShi@Crop@shipout
+\def\AtBegShi@found{\@EveryShipout@Org@Shipout}%
+\else\ifx\GPTorg@shipout\AtBegShi@Crop@shipout
+\def\AtBegShi@found{\GPTorg@shipout}%
+\else\ifx\THBorg@shipout\AtBegShi@Crop@shipout
+\def\AtBegShi@found{\THBorg@shipout}%
+\else\ifx\mem@oldshipout\AtBegShi@Crop@shipout
+\def\AtBegShi@found{\mem@oldshipout}%
+\fi\fi\fi\fi\fi\fi
+\ifx\AtBegShi@found\relax
+\else
+\expandafter\endgroup
+\expandafter\def\AtBegShi@found{%
+\edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+\afterassignment\CROP@ship
+\setbox\AtBeginShipoutBox=%
+}%
+\def\CROP@ship{%
+\ifnum\AtBegShi@GroupLevel=\currentgrouplevel
+\else
+\expandafter\aftergroup
+\fi
+\CROP@@ship
+}%
+\def\CROP@shiplist{%
+\lineskip 0pt\relax
+\lineskiplimit 0pt\relax
+\baselineskip 0pt\relax
+\CROP@kernel
+\box\AtBeginShipoutBox
+}%
+\def\CROP@@ship{%
+\ifvoid\AtBeginShipoutBox
+\else
+\setbox\AtBeginShipoutBox=\vbox{%
+\CROP@shiplist
+}%
+\AtBegShi@GetBoxSize\AtBeginShipoutBox
+\expandafter\CROP@shipout
+\expandafter\box
+\expandafter\AtBeginShipoutBox
+\fi
+}%
+\@PackageInfoNoLine{atbegshi}{Package `crop' patched}%
+\begingroup
+\fi
+\fi
+\fi
+\fi
+\endgroup
+\let\AtBegShi@PatchCrop\relax
+}
+\@ifpackageloaded{crop}{%
+\AtBegShi@PatchCrop
+}{%
+\AtBeginDocument{\AtBegShi@PatchCrop}%
+}
+\def\AtBegShi@PatchEveryshi{%
+\begingroup
+\long\def\AtBegShi@Everyshi@shipout{%
+\afterassignment\@EveryShipout@Test
+\global\setbox\@cclv= %
+}%
+\long\def\AtBegShi@Everyshi@Test{%
+\ifvoid\@cclv\relax
+\aftergroup\@EveryShipout@Output
+\else
+\@EveryShipout@Output
+\fi
+}%
+\ifx\AtBegShi@Everyshi@Test\@EveryShipout@Test
+\let\AtBegShi@found\relax
+\ifx\shipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\shipout}%
+\else\ifx\AtBeginShipoutOriginalShipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\AtBeginShipoutOriginalShipout}%
+\else\ifx\CROP@shipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\CROP@shipout}%
+\else\ifx\GPTorg@shipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\GPTorg@shipout}%
+\else\ifx\THBorg@shipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\THBorg@shipout}%
+\else\ifx\mem@oldshipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\mem@oldshipout}%
+\else
+\expandafter\ifx\csname @EveryShipout@Org@Shipout\endcsname
+\relax
+\ifx\@EveryShipout@Shipout\AtBegShi@Everyshi@shipout
+\def\AtBegShi@found{\@EveryShipout@Shipout}%
+\fi
+\fi
+\fi\fi\fi\fi\fi\fi
+\ifx\AtBegShi@found\relax
+\else
+\expandafter\endgroup
+\expandafter\def\AtBegShi@found{%
+\edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+\afterassignment\@EveryShipout@Test
+\setbox\AtBeginShipoutBox=%
+}%
+\def\@EveryShipout@Test{%
+\ifnum\AtBegShi@GroupLevel=\currentgrouplevel
+\else
+\expandafter\aftergroup
+\fi
+\AtBegShi@Everyshi@Output
+}%
+\def\AtBegShi@Everyshi@Output{%
+\ifvoid\AtBeginShipoutBox
+\else
+\global\setbox\ltx@cclv\box\AtBeginShipoutBox
+\expandafter\@EveryShipout@Output
+\fi
+}%
+\@PackageInfoNoLine{atbegshi}{Package `everyshi' patched}%
+\begingroup
+\fi
+\fi
+\endgroup
+\let\AtBegShi@PatchEveryshi\relax
+}
+\@ifpackageloaded{everyshi}{%
+\AtBegShi@PatchEveryshi
+}{%
+\AtBeginDocument{\AtBegShi@PatchEveryshi}%
+}
+\def\AtBegShi@PatchMemoir{%
+\begingroup
+\def\AtBegShi@Memoir@shipout{%
+\afterassignment\mem@shipi
+\setbox\@cclv=%
+}%
+\def\AtBegShi@Memoir@shipi{%
+\ifvoid\@cclv
+\expandafter\aftergroup
+\fi
+\mem@shipii
+}%
+\def\AtBegShi@Memoir@shipiiA{%
+\mem@oldshipout\vbox{%
+\trimmarks
+\unvbox\@cclv
+}%
+}%
+\def\AtBegShi@Memoir@shipiiB{%
+\ifvoid\@cclv
+\mem@oldshipout\box\@cclv
+\else
+\mem@oldshipout\vbox{%
+\trimmarks
+\unvbox\@cclv
+}%
+\fi
+}%
+\def\AtBegShi@Memoir@PatchAB{%
+\ifvoid\AtBeginShipoutBox
+\else
+\setbox\AtBeginShipoutBox=\vbox{%
+\trimmarks
+\ifvbox\AtBeginShipoutBox
+\unvbox\AtBeginShipoutBox
+\else
+\box\AtBeginShipoutBox
+\fi
+}%
+\AtBegShi@GetBoxSize\AtBeginShipoutBox
+\expandafter\mem@oldshipout
+\expandafter\box
+\expandafter\AtBeginShipoutBox
+\fi
+}%
+\def\AtBegShi@Memoir@shipiiC{% 2008/08/07 v1.6180339a
+\ifvoid\@cclv
+\mem@oldshipout\box\@cclv
+\else
+\ifshowtrims
+\mem@oldshipout\vbox{\trimmarks\unvbox\@cclv}%
+\else
+\mem@oldshipout\box\@cclv
+\fi
+\fi
+}%
+\def\AtBegShi@Memoir@shipiiD{% 2011/03/06 v3.6j
+\ifvoid\@cclv
+\mem@oldshipout\box\@cclv
+\else
+\ifshowtrims
+\mem@oldshipout\vbox{%
+\trimmarks
+\nointerlineskip
+\box\@cclv
+}%
+\else
+\mem@oldshipout\box\@cclv
+\fi
+\fi
+}%
+\def\AtBegShi@Memoir@PatchCD{%
+\ifvoid\AtBeginShipoutBox
+\else
+\ifshowtrims
+\setbox\AtBeginShipoutBox=\vbox{%
+\trimmarks
+\nointerlineskip
+\box\AtBeginShipoutBox
+}%
+\fi
+\AtBegShi@GetBoxSize\AtBeginShipoutBox
+\expandafter\mem@oldshipout
+\expandafter\box
+\expandafter\AtBeginShipoutBox
+\fi
+}%
+\ifx\AtBegShi@Memoir@shipi\mem@shipi
+\let\AtBegShi@found\ltx@one
+\ifx\AtBegShi@Memoir@shipiiA\mem@shipii
+\let\AtBegShi@found\ltx@zero
+\global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchAB
+\else\ifx\AtBegShi@Memoir@shipiiB\mem@shipii
+\let\AtBegShi@found\ltx@zero
+\global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchAB
+\else\ifx\AtBegShi@Memoir@shipiiC\mem@shipii
+\let\AtBegShi@found\ltx@zero
+\global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchCD
+\else\ifx\AtBegShi@Memoir@shipiiD\mem@shipii
+\let\AtBegShi@found\ltx@zero
+\global\let\AtBegShi@Memoir@PatchX\AtBegShi@Memoir@PatchCD
+\fi\fi\fi\fi
+\ifcase\AtBegShi@found
+\let\AtBegShi@found\relax
+\ifx\shipout\AtBegShi@Memoir@shipout
+\def\AtBegShi@found{\shipout}%
+\else\ifx\AtBeginShipoutOriginalShipout\AtBegShi@Memoir@shipout
+\def\AtBegShi@found{\AtBeginShipoutOriginalShipout}%
+\else\ifx\CROP@shipout\AtBegShi@Memoir@shipout
+\def\AtBegShi@found{\CROP@shipout}%
+\else\ifx\GPTorg@shipout\AtBegShi@Memoir@shipout
+\def\AtBegShi@found{\GPTorg@shipout}%
+\else\ifx\THBorg@shipout\AtBegShi@Memoir@shipout
+\def\AtBegShi@found{\THBorg@shipout}%
+\else\ifx\@EveryShipout@Org@Shipout\AtBegShi@Memoir@shipout
+\def\AtBegShi@found{\@EveryShipout@Org@Shipout}%
+\fi\fi\fi\fi\fi\fi
+\ifx\AtBegShi@found\relax
+\else
+\expandafter\endgroup
+\expandafter\def\AtBegShi@found{%
+\edef\AtBegShi@GroupLevel{\number\currentgrouplevel}%
+\afterassignment\mem@shipi
+\setbox\AtBeginShipoutBox=%
+}%
+\def\mem@shipi{%
+\ifnum\AtBegShi@GroupLevel=\currentgrouplevel
+\else
+\expandafter\aftergroup
+\fi
+\mem@shipii
+}%
+\let\mem@shipii\AtBegShi@Memoir@PatchX
+\@PackageInfoNoLine{atbegshi}{Class `memoir' patched}%
+\begingroup
+\fi
+\fi
+\fi
+\endgroup
+\let\AtBegShi@PatchMemoir\relax
+}
+\@ifclassloaded{memoir}{%
+\AtBegShi@PatchMemoir
+}{%
+\AtBeginDocument{\AtBegShi@PatchMemoir}%
+}
+\AtBegShi@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{refcount}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\let\expandafter\x\csname ver@refcount.sty\endcsname
+\ifx\x\relax % plain-TeX, first loading
+\else
+\def\empty{}%
+\ifx\x\empty % LaTeX, first loading,
+% variable is initialized, but \ProvidesPackage not yet seen
+\else
+\expandafter\ifx\csname PackageInfo\endcsname\relax
+\def\x#1#2{%
+\immediate\write-1{Package #1 Info: #2.}%
+}%
+\else
+\def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+\fi
+\x{refcount}{The package is already loaded}%
+\aftergroup\endinput
+\fi
+\fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode39=12 % '
+\catcode40=12 % (
+\catcode41=12 % )
+\catcode44=12 % ,
+\catcode45=12 % -
+\catcode46=12 % .
+\catcode47=12 % /
+\catcode58=12 % :
+\catcode64=11 % @
+\catcode91=12 % [
+\catcode93=12 % ]
+\catcode123=1 % {
+\catcode125=2 % }
+\expandafter\ifx\csname ProvidesPackage\endcsname\relax
+\def\x#1#2#3[#4]{\endgroup
+\immediate\write-1{Package: #3 #4}%
+\xdef#1{#4}%
+}%
+\else
+\def\x#1#2[#3]{\endgroup
+#2[{#3}]%
+\ifx#1\@undefined
+\xdef#1{#3}%
+\fi
+\ifx#1\relax
+\xdef#1{#3}%
+\fi
+}%
+\fi
+\expandafter\x\csname ver@refcount.sty\endcsname
+\ProvidesPackage{refcount}%
+ [2011/10/16 v3.4 Data extraction from label references (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode123=1 % {
+\catcode125=2 % }
+\catcode64=11 % @
+\def\x{\endgroup
+\expandafter\edef\csname rc@AtEnd\endcsname{%
+\endlinechar=\the\endlinechar\relax
+\catcode13=\the\catcode13\relax
+\catcode32=\the\catcode32\relax
+\catcode35=\the\catcode35\relax
+\catcode61=\the\catcode61\relax
+\catcode64=\the\catcode64\relax
+\catcode123=\the\catcode123\relax
+\catcode125=\the\catcode125\relax
+}%
+}%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+\edef\rc@AtEnd{%
+\rc@AtEnd
+\catcode#1=\the\catcode#1\relax
+}%
+\catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\rc@AtEnd{\rc@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\input ltxcmds.sty\relax
+\input infwarerr.sty\relax
+\else
+\RequirePackage{ltxcmds}[2011/11/09]%
+\RequirePackage{infwarerr}[2010/04/08]%
+\fi
+\ltx@IfUndefined{@ifdefinable}{%
+\def\rc@IfDefinable#1{%
+\ifx#1\ltx@undefined
+\expandafter\ltx@firstofone
+\else
+\ifx#1\relax
+\expandafter\expandafter\expandafter\ltx@firstofone
+\else
+\@PackageError{refcount}{%
+ Command \string#1 is already defined.\MessageBreak
+ It will not redefined by this package%
+}\@ehc
+\expandafter\expandafter\expandafter\ltx@gobble
+\fi
+\fi
+}%
+}{%
+\let\rc@IfDefinable\@ifdefinable
+}
+\ltx@IfUndefined{protected}{%
+\ltx@IfUndefined{DeclareRobustCommand}{%
+\def\rc@RobustDefOne#1#2#3#4{%
+\rc@IfDefinable#3{%
+#1\def#3##1{#4}%
+}%
+}%
+\def\rc@RobustDefZero#1#2{%
+\rc@IfDefinable#1{%
+\def#1{#2}%
+}%
+}%
+}{%
+\def\rc@RobustDefOne#1#2#3#4{%
+\rc@IfDefinable#3{%
+\DeclareRobustCommand#2#3[1]{#4}%
+}%
+}%
+\def\rc@RobustDefZero#1#2{%
+\rc@IfDefinable#1{%
+\DeclareRobustCommand#1{#2}%
+}%
+}%
+}%
+}{%
+\def\rc@RobustDefOne#1#2#3#4{%
+\rc@IfDefinable#3{%
+\protected#1\def#3##1{#4}%
+}%
+}%
+\def\rc@RobustDefZero#1#2{%
+\rc@IfDefinable#1{%
+\protected\def#1{#2}%
+}%
+}%
+}
+\ltx@IfUndefined{newcommand}{%
+\def\rc@newcommand*#1[#2]#3{% hash-ok
+\rc@IfDefinable#1{%
+\ifcase#2 %
+\def#1{#3}%
+\or
+\def#1##1{#3}%
+\or
+\def#1##1##2{#3}%
+\else
+\rc@InternalError
+\fi
+}%
+}%
+}{%
+\let\rc@newcommand\newcommand
+}
+\rc@RobustDefOne\long{}\setrefcountdefault{%
+\def\rc@default{#1}%
+}
+\setrefcountdefault{0}
+\ltx@IfUndefined{G@refundefinedtrue}{%
+\rc@RobustDefOne{}{*}\refused{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\ltx@IfUndefined{r@#1}{%
+\protect\G@refundefinedtrue
+\rc@WarningUndefined{#1}%
+}{}%
+\endgroup
+}%
+}{%
+\rc@RobustDefOne{}{*}\refused{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\ltx@IfUndefined{r@#1}{%
+\csname protect\expandafter\endcsname
+\csname G@refundefinedtrue\endcsname
+\rc@WarningUndefined{#1}%
+}{}%
+\endgroup
+}%
+}
+\ltx@IfUndefined{@latex@warning}{%
+\def\rc@WarningUndefined#1{%
+\ltx@ifundefined{thepage}{%
+\def\thepage{\number\count0 }%
+}{}%
+\@PackageWarning{refcount}{%
+ Reference `#1' on page \thepage\space undefined%
+}%
+}%
+}{%
+\def\rc@WarningUndefined#1{%
+\@latex@warning{%
+ Reference `#1' on page \thepage\space undefined%
+}%
+}%
+}
+\def\rc@set#1#2#3#4{%
+\begingroup
+\csname @safe@activestrue\endcsname
+\refused{#4}%
+\expandafter\rc@@set\csname r@#4\endcsname{#1}{#2}{#3}%
+\endgroup
+}
+\def\rc@@set#1#2#3#4{%
+\ifx#1\relax
+#2{#4}{\rc@default}%
+\else
+#2{#4}{%
+\expandafter#3#1\rc@default\rc@default\@nil
+}%
+\fi
+}
+\rc@RobustDefZero\setcounterref{%
+\rc@set\setcounter\ltx@car
+}
+\rc@RobustDefZero\addtocounterref{%
+\rc@set\addtocounter\ltx@car
+}
+\rc@RobustDefZero\setcounterpageref{%
+\rc@set\setcounter\ltx@carsecond
+}
+\rc@RobustDefZero\addtocounterpageref{%
+\rc@set\addtocounter\ltx@carsecond
+}
+\rc@newcommand*{\getrefnumber}[1]{%
+\romannumeral
+\ltx@ifundefined{r@#1}{%
+\expandafter\ltx@zero
+\rc@default
+}{%
+\expandafter\expandafter\expandafter\rc@extract@
+\expandafter\expandafter\expandafter!%
+\csname r@#1\expandafter\endcsname
+\expandafter{\rc@default}\@nil
+}%
+}
+\rc@newcommand*{\getpagerefnumber}[1]{%
+\romannumeral
+\ltx@ifundefined{r@#1}{%
+\expandafter\ltx@zero
+\rc@default
+}{%
+\expandafter\expandafter\expandafter\rc@extract@page
+\expandafter\expandafter\expandafter!%
+\csname r@#1\expandafter\expandafter\expandafter\endcsname
+\expandafter\expandafter\expandafter{%
+\expandafter\rc@default
+\expandafter}\expandafter{\rc@default}\@nil
+}%
+}
+\rc@newcommand*{\getrefbykeydefault}[2]{%
+\romannumeral
+\expandafter\rc@getrefbykeydefault
+\csname r@#1\expandafter\endcsname
+\csname rc@extract@#2\endcsname
+}
+\long\def\rc@getrefbykeydefault#1#2#3{%
+\ifx#1\relax
+% reference is undefined
+\ltx@ReturnAfterElseFi{%
+\ltx@zero
+#3%
+}%
+\else
+\ltx@ReturnAfterFi{%
+\ifx#2\relax
+% extract method is missing
+\ltx@ReturnAfterElseFi{%
+\ltx@zero
+#3%
+}%
+\else
+\ltx@ReturnAfterFi{%
+\expandafter
+\rc@generic#1{#3}{#3}{#3}{#3}{#3}\@nil#2{#3}%
+}%
+\fi
+}%
+\fi
+}
+\long\def\rc@generic#1#2\@nil#3#4{%
+#3{#1\TR@TitleReference\@empty{#4}\@nil}{#1}#2\@nil
+}
+\long\def\rc@extract@#1#2#3\@nil{%
+\ltx@zero
+#2%
+}
+\long\def\rc@extract@page#1#2#3#4\@nil{%
+\ltx@zero
+#3%
+}
+\long\def\rc@extract@name#1#2#3#4#5\@nil{%
+\ltx@zero
+#4%
+}
+\long\def\rc@extract@anchor#1#2#3#4#5#6\@nil{%
+\ltx@zero
+#5%
+}
+\long\def\rc@extract@url#1#2#3#4#5#6#7\@nil{%
+\ltx@zero
+#6%
+}
+\long\def\rc@extract@title#1#2\@nil{%
+\rc@@extract@title#1%
+}
+\long\def\rc@@extract@title#1\TR@TitleReference#2#3#4\@nil{%
+\ltx@zero
+#3%
+}
+\rc@newcommand*{\IfRefUndefinedExpandable}[1]{%
+\ltx@ifundefined{r@#1}\ltx@firstoftwo\ltx@secondoftwo
+}
+\rc@RobustDefOne{}*\IfRefUndefinedBabel{%
+\begingroup
+\csname safe@actives@true\endcsname
+\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname r@#1\endcsname\relax
+\expandafter\ltx@firstoftwo
+\else
+\expandafter\ltx@secondoftwo
+\fi
+}
+\rc@AtEnd%
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\hobsub@StartPackage{hycolor}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hycolor}%
+ [2011/01/30 v1.7 Color options for hyperref/bookmark (HO)]%
+\RequirePackage{xcolor-patch}[2011/01/30]
+\begingroup
+\catcode`\!=13 %
+\catcode`\:=13 %
+\catcode`\-=13 %
+\catcode`\+=13 %
+\catcode`\;=13 %
+\catcode`\"=13 %
+\catcode`\>=13 %
+\edef\x{%
+\def\noexpand!{\string!}%
+\def\noexpand:{\string:}%
+\def\noexpand-{\string-}%
+\def\noexpand+{\string+}%
+\def\noexpand;{\string;}%
+\def\noexpand"{\string"}%
+\def\noexpand>{\string>}%
+}%
+\def\y#1{\endgroup
+\def\HyColor@DefSanitized##1##2{%
+\begingroup
+\csname @safe@activestrue\endcsname
+#1%
+\edef\x{\endgroup
+\def\noexpand##1{##2}%
+}%
+\x
+\@onelevel@sanitize##1%
+}%
+}%
+\expandafter\y\expandafter{\x}
+\def\HyColor@NormalizeNum#1#2{%
+\ifdim#1pt<\z@
+\def#2{0}%
+\else
+\edef#2{\zap@space#1 \@empty}%
+\expandafter\HyColor@CheckDot#2..\@nil#2%
+\fi
+}
+\def\HyColor@CheckDot#1.#2.#3\@nil#4{%
+\ifnum0#1<\@ne
+\ifx\\#2\\%
+\def#4{0}%
+\else
+\edef#4{\HyColor@ReverseString#2\@nil{}}%
+\edef#4{\expandafter\HyColor@StripLeadingZeros#4\@empty}%
+\ifx#4\@empty
+\def#4{0}%
+\else
+\edef#4{.\expandafter\HyColor@ReverseString#4\@nil{}}%
+\fi
+\fi
+\else
+\def#4{1}%
+\fi
+}
+\def\HyColor@ReverseString#1#2\@nil#3{%
+\ifx\\#2\\%
+#1#3%
+\else
+\@ReturnAfterFi{%
+\HyColor@ReverseString#2\@nil{#1#3}%
+}%
+\fi
+}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+\def\HyColor@StripLeadingZeros#1{%
+\ifx#10%
+\expandafter\HyColor@StripLeadingZeros
+\else
+#1%
+\fi
+}
+\def\HyColor@NormalizeCommaRGB#1,#2,#3\@nil#4{%
+\HyColor@NormalizeNum{#1}\HyColor@temp
+\let#4\HyColor@temp
+\HyColor@NormalizeNum{#2}\HyColor@temp
+\edef#4{#4 \HyColor@temp}%
+\HyColor@NormalizeNum{#3}\HyColor@temp
+\edef#4{#4 \HyColor@temp}%
+}
+\def\HyColor@NormalizeCommaCMYK#1,#2,#3,#4\@nil#5{%
+\HyColor@NormalizeNum{#1}\HyColor@temp
+\let#5\HyColor@temp
+\HyColor@NormalizeNum{#2}\HyColor@temp
+\edef#5{#5 \HyColor@temp}%
+\HyColor@NormalizeNum{#3}\HyColor@temp
+\edef#5{#5 \HyColor@temp}%
+\HyColor@NormalizeNum{#4}\HyColor@temp
+\edef#5{#5 \HyColor@temp}%
+}
+\def\HyColor@BookmarkColor#1#2#3#4{%
+\HyColor@IfModel{#1}{%
+\HyColor@IfXcolor{%
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@rgb#2%
+\expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+}{%
+\ifx\HyColor@model\HyColor@model@rgb
+\expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+\else
+\ifx\HyColor@model\HyColor@model@gray
+\expandafter\HyColor@NormalizeNum
+\expandafter{\HyColor@values}#2%
+\edef#2{#2 #2 #2}%
+\else
+\let#2\@empty
+\HyColor@ErrorModelNoXcolor{#3}{#4}%
+\fi
+\fi
+}%
+}{%
+\let#2\HyColor@values
+\ifx#2\@empty
+\else
+\HyColor@IfXcolor{%
+\extractcolorspec{#1}#2%
+\expandafter\convertcolorspec#2\HyColor@model@rgb#2%
+\expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+}{%
+\let#2\@empty
+\HyColor@ErrorSpecNoXcolor{#3}{#4}%
+}%
+\fi
+}%
+}
+\def\HyColor@ErrorModelNoXcolor#1#2{%
+\PackageError{#1}{%
+ Color model `\HyColor@model' is not supported\MessageBreak
+ without package `xcolor' in\MessageBreak
+ `#2=[\HyColor@model]{\HyColor@values}'%
+}\@ehc
+}
+\def\HyColor@ErrorSpecNoXcolor#1#2{%
+\PackageError{#1}{%
+ This color specification is not supported\MessageBreak
+ without package `xcolor' in\MessageBreak
+ `#2=\HyColor@values'%
+}\@ehc
+}
+\def\HyColor@IfModel#1{%
+\@ifnextchar[{%
+\HyColor@WithModel
+}{%
+\HyColor@WithoutModel
+}%
+#1\@nil
+}
+\def\HyColor@WithModel[#1]#2\@nil{%
+\HyColor@DefSanitized\HyColor@model{#1}%
+\HyColor@DefSanitized\HyColor@values{#2}%
+\@firstoftwo
+}
+\def\HyColor@WithoutModel#1\@nil{%
+\let\HyColor@model\relax
+\HyColor@DefSanitized\HyColor@values{#1}%
+\@secondoftwo
+}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+\def\HyColor@IfXcolor{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname convertcolorspec\endcsname\relax
+\expandafter\@secondoftwo
+\else
+\expandafter\@firstoftwo
+\fi
+}
+\def\HyColor@model@empty{empty}
+\@onelevel@sanitize\HyColor@model@empty
+\def\HyColor@model@gray{gray}
+\@onelevel@sanitize\HyColor@model@gray
+\def\HyColor@model@rgb{rgb}
+\@onelevel@sanitize\HyColor@model@rgb
+\def\HyColor@model@cmyk{cmyk}
+\@onelevel@sanitize\HyColor@model@cmyk
+\def\HyColor@model@Gray{Gray}
+\@onelevel@sanitize\HyColor@model@Gray
+\def\HyColor@UseColor#1{%
+\ifx#1\relax
+\else
+\ifx#1\@empty
+\else
+\expandafter\HyColor@@UseColor#1\@nil
+\fi
+\fi
+}
+\def\HyColor@@UseColor{%
+\@ifnextchar[\HyColor@@@UseColor\HyColor@@@@UseColor
+}
+\def\HyColor@@@UseColor[#1]#2\@nil{%
+\color[{#1}]{#2}%
+}
+\def\HyColor@@@@UseColor#1\@nil{%
+\color{#1}%
+}
+\def\HyColor@HyperrefColor#1#2{%
+\HyColor@IfModel{#1}{%
+\edef#2{[{\HyColor@model}]{\HyColor@values}}%
+}{%
+\let#2\HyColor@values
+\ifx#2\@empty
+\let#2\relax
+\fi
+}%
+}
+\def\HyColor@XZeroOneThreeFour#1#2#3#4{%
+\HyColor@IfModel{#1}{%
+\ifx\HyColor@model\HyColor@model@empty
+\let#2\@empty
+\else\ifx\HyColor@model\HyColor@model@gray
+\expandafter\HyColor@NormalizeNum
+\expandafter{\HyColor@values}#2%
+\else\ifx\HyColor@model\HyColor@model@rgb
+\expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+\else\ifx\HyColor@model\HyColor@model@cmyk
+\expandafter\HyColor@NormalizeCommaCMYK\HyColor@values\@nil#2%
+\else\ifx\HyColor@model\HyColor@model@Gray
+\HyColor@IfXcolor{%
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@gray#2%
+\expandafter\HyColor@NormalizeNum\expandafter{#2}#2%
+\let\HyColor@model\HyColor@model@gray
+}{%
+\let#2\relax
+\HyColor@ErrorModelNoXcolor{#3}{#4}%
+}%
+\else
+\HyColor@IfXcolor{%
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@rgb#2%
+\expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+\let\HyColor@model\HyColor@model@rgb
+}{%
+\let#2\relax
+\HyColor@ErrorModelNoXcolor{#3}{#4}%
+}%
+\fi\fi\fi\fi\fi
+}{%
+\let#2\HyColor@values
+\ifx#2\@empty
+\let#2\relax
+\else
+\expandafter\HyColor@IfRGB\expandafter{\HyColor@values}{%
+\expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+}{%
+\HyColor@IfXcolor{%
+\expandafter\extractcolorspec\expandafter{\HyColor@values}#2%
+\edef\HyColor@model{\expandafter\@firstoftwo#2}%
+\edef\HyColor@values{\expandafter\@secondoftwo#2}%
+\ifx\HyColor@model\HyColor@model@gray
+\expandafter\HyColor@NormalizeNum\expandafter
+{\HyColor@values}#2%
+\else\ifx\HyColor@model\HyColor@model@rgb
+\expandafter\HyColor@NormalizeCommaRGB
+\HyColor@values\@nil#2%
+\else\ifx\HyColor@model\HyColor@model@cmyk
+\expandafter\HyColor@NormalizeCommaCMYK
+\HyColor@values\@nil#2%
+\else\ifx\HyColor@model\HyColor@model@Gray
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@gray#2%
+\expandafter\HyColor@NormalizeNum\expandafter
+{\HyColor@values}#2%
+\let\HyColor@model\HyColor@model@gray
+\else
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@rgb#2%
+\expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+\let\HyColor@model\HyColor@model@rgb
+\fi\fi\fi\fi
+}{%
+\let#2\relax
+\HyColor@ErrorSpecNoXcolor{#3}{#4}%
+}%
+}%
+\fi
+}%
+}
+\let\HyColor@FieldBColor\HyColor@XZeroOneThreeFour
+\def\HyColor@FieldColor#1#2#3#4{%
+\let\HyColor@model\@empty
+\HyColor@XZeroOneThreeFour{#1}{#2}{#3}{#4}%
+\ifx#2\relax
+\let#2\@empty
+\else
+\ifx#2\@empty
+\else
+\ifx\HyColor@model\HyColor@model@gray
+\edef#2{#2 g}%
+\else\ifx\HyColor@model\HyColor@model@rgb
+\edef#2{#2 rg}%
+\else\ifx\HyColor@model\HyColor@model@cmyk
+\edef#2{#2 k}%
+\else
+\PackageError{#3}{Internal error: unsupported color model}\@ehc
+\fi\fi\fi
+\fi
+\fi
+}
+\newif\ifHyColor@result
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfmatch\endcsname\relax
+\expandafter\@firstoftwo
+\else
+\expandafter\@secondoftwo
+\fi
+{%
+\begingroup
+\def\x#1{\endgroup
+\def\HyColor@IfRGB##1{%
+\HyColor@@IfRGB##1#1#1#1\@nil
+}%
+}%
+\x{ }%
+\edef\HyColor@TwoSpaces{\space\space}%
+\def\HyColor@@IfRGB#1 #2 #3 #4\@nil{%
+\HyColor@resulttrue
+\def\HyColor@temp{#4}%
+\ifx\HyColor@temp\HyColor@TwoSpaces
+\HyColor@CheckNum{#1}%
+\ifHyColor@result
+\HyColor@CheckNum{#2}%
+\ifHyColor@result
+\HyColor@CheckNum{#3}%
+\fi
+\fi
+\else
+\HyColor@resultfalse
+\fi
+\ifHyColor@result
+\let\HyColor@model\HyColor@model@rgb
+\edef\HyColor@values{#1,#2,#3}%
+\expandafter\@firstoftwo
+\else
+\expandafter\@secondoftwo
+\fi
+}%
+\def\HyColor@zero{0}%
+\def\HyColor@one{1}%
+\def\HyColor@dot{.}%
+\def\HyColor@CheckNum#1{%
+\def\HyColor@temp{#1}%
+\ifx\HyColor@temp\@empty
+\HyColor@resultfalse
+\else
+\edef\HyColor@temp{\@car#1\@nil}%
+\ifx\HyColor@temp\HyColor@zero
+\else
+\ifx\HyColor@temp\HyColor@one
+\else
+\ifx\HyColor@temp\HyColor@dot
+\else
+\HyColor@resultfalse
+\fi
+\fi
+\fi
+\fi
+}%
+}{%
+\def\HyColor@MatchNum{%
+ (0*1\string\.0*|0*1|0+\string\.?[0-9]*|\string\.[0-9]+)%
+}%
+\def\HyColor@IfRGB#1{%
+\ifnum\pdfmatch{^\HyColor@MatchNum\space\HyColor@MatchNum
+\space\HyColor@MatchNum$}{#1}>\z@
+\let\HyColor@model\HyColor@model@rgb
+\edef\HyColor@values{%
+\expandafter\strip@prefix\pdflastmatch1,%
+\expandafter\strip@prefix\pdflastmatch2,%
+\expandafter\strip@prefix\pdflastmatch3%
+}%
+\HyColor@resulttrue
+\expandafter\@firstoftwo
+\else
+\HyColor@resultfalse
+\expandafter\@secondoftwo
+\fi
+}%
+}
+\def\HyColor@HyperrefBorderColor#1#2#3#4{%
+\HyColor@IfModel{#1}{%
+\HyColor@IfXcolor{%
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@rgb#2%
+\expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+}{%
+\ifx\HyColor@model\HyColor@model@rgb
+\expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+\else
+\ifx\HyColor@model\HyColor@model@gray
+\expandafter\HyColor@NormalizeNum
+\expandafter{\HyColor@values}#2%
+\edef#2{#2 #2 #2}%
+\else
+\let#2\relax
+\HyColor@ErrorModelNoXcolor{#3}{#4}%
+\fi
+\fi
+}%
+}{%
+\let#2\HyColor@values
+\ifx#2\@empty
+\let#2\relax
+\else
+\expandafter\HyColor@IfRGB\expandafter{\HyColor@values}{%
+\expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+}{%
+\HyColor@IfXcolor{%
+\extractcolorspec{#1}#2%
+\expandafter\convertcolorspec#2\HyColor@model@rgb#2%
+\expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+}{%
+\let#2\relax
+\HyColor@ErrorSpecNoXcolor{#3}{#4}%
+}%
+}%
+\fi
+}%
+}
+\def\HyColor@DetectPdfVersion{%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname Hy@pdfversion\endcsname\relax
+\global\chardef\HyColor@PdfVersion=0 %
+\else
+\global\chardef\HyColor@PdfVersion=\Hy@pdfversion\relax
+\fi
+\global\let\HyColor@DetectPdfVersion\relax
+}
+\def\HyColor@SpaceToComma#1 #2\@nil{%
+#1%
+\ifx\relax#2\relax
+\expandafter\@gobble
+\else
+ ,%
+\expandafter\@firstofone
+\fi
+{%
+\HyColor@SpaceToComma#2\@nil
+}%
+}%
+\def\HyColor@AttachfileColor#1#2#3#4#5#6{%
+\def#2{#1}%
+\ifx#2\@empty
+\let#3\@gobble
+\let#4\@empty
+\else
+\HyColor@resultfalse
+\HyColor@XZeroOneThreeFour{#1}#3{#5}{#6}%
+\ifHyColor@result
+\edef#2{%
+ [rgb]{\expandafter\HyColor@SpaceToComma#3 \@nil}%
+}%
+\fi
+\ifx\HyColor@model\HyColor@model@rgb
+\edef#4{/C[#3]}% hash-ok
+\edef#3##1{%
+#3 %
+\noexpand\csname atfi@SETRGBCOLOR##1\noexpand\endcsname
+}%
+\else
+\ifx\HyColor@model\HyColor@model@gray
+\HyColor@DetectPdfVersion
+\ifnum\HyColor@PdfVersion<7 %
+\edef#4{/C[#3 #3 #3]}% hash-ok
+\else
+\edef#4{/C[#3]}% hash-ok
+\fi
+\edef#3##1{%
+#3 %
+\noexpand\csname atfi@SETGRAYCOLOR##1\noexpand\endcsname
+}%
+\else
+\ifx\HyColor@model\HyColor@model@cmyk
+\HyColor@DetectPdfVersion
+\ifnum\HyColor@PdfVersion<7 %
+\HyColor@IfModel{#1}{%
+\HyColor@IfXcolor{%
+\convertcolorspec\HyColor@model\HyColor@values
+\HyColor@model@rgb#4%
+\expandafter\HyColor@NormalizeCommaRGB#4\@nil#4%
+\edef#4{/C[#4]}% hash-ok
+}{%
+\let#4\@empty
+\HyColor@ErrorModelNoXcolor{#5}{#6}%
+}%
+}{%
+\HyColor@IfXcolor{%
+\extractcolorspec{#1}#4%
+\expandafter\convertcolorspec#4%
+\HyColor@model@rgb#4%
+\expandafter\HyColor@NormalizeCommaRGB#4\@nil#4%
+\edef#4{/C[#4]}% hash-ok
+}{%
+\let#4\@empty
+\HyColor@ErrorSpecNoXcolor{#5}{#6}%
+}%
+}%
+\else
+\edef#4{/C[#3]}% hash-ok
+\fi
+\edef#3##1{%
+#3 %
+\noexpand\csname atfi@SETCMYKCOLOR##1\noexpand\endcsname
+}%
+\else
+\ifx\HyColor@model\HyColor@model@empty
+\PackageError{#5}{%
+ Color model `empty' is not permitted for option `#6'%
+}\@ehc
+\let#2\@empty
+\let#3\@gobble
+\let#4\@empty
+\else
+\ifx\HyColor@model\relax % (missing xcolor)
+\let#3\@gobble
+\let#4\@empty
+\else
+\PackageError{#5}{%
+ Internal error: unsupported color model%
+}\@ehc
+\fi
+\fi
+\fi
+\fi
+\fi
+\fi
+}
+\endinput
+<hobsub>
+\hobsub@StopPackage
+\endinput
+%%
+%% End of file `hobsub-hyperref.sty'.

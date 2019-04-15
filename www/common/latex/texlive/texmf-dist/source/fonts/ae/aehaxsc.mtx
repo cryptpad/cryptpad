@@ -1,0 +1,59 @@
+%% aehaxsc.mtx
+%% Copyright 1999 Lars Engebretsen
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+\relax
+
+\metrics
+
+\needsfontinstversion{1.315}
+
+\resetglyph{ff}
+   \glyph{f}{1000}
+   \movert{\add{\kerning{f}{f}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{f}{1000}
+\endresetglyph
+
+\resetglyph{fi}
+   \glyph{f}{1000}
+   \movert{\add{\kerning{f}{i}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{i}{1000}
+\endresetglyph
+
+\resetglyph{fl}
+   \glyph{f}{1000}
+   \movert{\add{\kerning{f}{l}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{l}{1000}
+\endresetglyph
+
+\resetglyph{ffi}
+   \glyph{ff}{1000}
+   \movert{\add{\kerning{ff}{i}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{i}{1000}
+\endresetglyph
+
+\resetglyph{ffl}
+   \glyph{ff}{1000}
+   \movert{\add{\kerning{ff}{l}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{l}{1000}
+\endresetglyph
+
+\endmetrics

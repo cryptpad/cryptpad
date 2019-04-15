@@ -1,0 +1,2171 @@
+% \iffalse meta-comment
+%
+% File: embedfile.dtx
+% Version: 2011/04/13 v2.6
+% Info: Embed files into PDF
+%
+% Copyright (C) 2006-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file embedfile.dtx
+% and the derived files
+%    embedfile.sty, embedfile.pdf, embedfile.ins, embedfile.drv,
+%    dtx-attach.sty, embedfile-example-plain.tex,
+%    embedfile-example-collection.tex, embedfile-test1.tex,
+%    embedfile-test2.tex, embedfile-test3.tex,
+%    embedfile-test4.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/embedfile.dtx
+%    CTAN:macros/latex/contrib/oberdiek/embedfile.pdf
+%
+% Unpacking:
+%    (a) If embedfile.ins is present:
+%           tex embedfile.ins
+%    (b) Without embedfile.ins:
+%           tex embedfile.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{embedfile.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If embedfile.drv is present:
+%           latex embedfile.drv
+%    (b) Without embedfile.drv:
+%           latex embedfile.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex embedfile.dtx
+%       makeindex -s gind.ist embedfile.idx
+%       pdflatex embedfile.dtx
+%       makeindex -s gind.ist embedfile.idx
+%       pdflatex embedfile.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/embedfile.sty
+%    TDS:tex/generic/oberdiek/dtx-attach.sty
+%    TDS:doc/latex/oberdiek/embedfile.pdf
+%    TDS:doc/latex/oberdiek/embedfile-example-plain.tex
+%    TDS:doc/latex/oberdiek/embedfile-example-collection.tex
+%    TDS:doc/latex/oberdiek/test/embedfile-test1.tex
+%    TDS:doc/latex/oberdiek/test/embedfile-test2.tex
+%    TDS:doc/latex/oberdiek/test/embedfile-test3.tex
+%    TDS:doc/latex/oberdiek/test/embedfile-test4.tex
+%    TDS:source/latex/oberdiek/embedfile.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: embedfile 2011/04/13 v2.6 Embed files into PDF (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: embedfile
+Version: 2011/04/13 v2.6
+
+Copyright (C) 2006-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file embedfile.dtx
+and the derived files
+   embedfile.sty, embedfile.pdf, embedfile.ins, embedfile.drv,
+   dtx-attach.sty, embedfile-example-plain.tex,
+   embedfile-example-collection.tex, embedfile-test1.tex,
+   embedfile-test2.tex, embedfile-test3.tex,
+   embedfile-test4.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{embedfile.ins}{\from{embedfile.dtx}{install}}%
+  \file{embedfile.drv}{\from{embedfile.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{embedfile.sty}{\from{embedfile.dtx}{package}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{dtx-attach.sty}{\from{embedfile.dtx}{dtxattach}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{embedfile-example-plain.tex}{\from{embedfile.dtx}{exampleplain}}%
+  \file{embedfile-example-collection.tex}{\from{embedfile.dtx}{examplecollection}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{embedfile-test1.tex}{\from{embedfile.dtx}{test1}}%
+  \file{embedfile-test2.tex}{\from{embedfile.dtx}{test2}}%
+  \file{embedfile-test3.tex}{\from{embedfile.dtx}{test3}}%
+  \file{embedfile-test4.tex}{\from{embedfile.dtx}{test4}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{embedfile.xml}{\from{embedfile.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     embedfile.sty, dtx-attach.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `embedfile.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{embedfile.drv}%
+  [2011/04/13 v2.6 Embed files into PDF (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{embedfile.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1363}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{embedfile.drv}
+%
+% \title{The \xpackage{embedfile} package}
+% \date{2011/04/13 v2.6}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package embeds files to a PDF document.
+% Currently the only supported driver is \pdfTeX\ $>=$ 1.30 in PDF mode.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+%    The PDF format (\cite{pdfspec}) allows the inclusion of files
+%    inside the PDF document. The included files can be bound to an
+%    annotation on a page. Or they can be recorded in a sorted
+%    list of embedded files. The packages \xpackage{attachfile}
+%    or \xpackage{attachfile2} follow the first approach, this
+%    package uses the latter method.
+%
+% \subsubsection{Future development}
+%
+%    My dream is a large package that merges the features of
+%    all these packages meantioned before:
+%    \begin{itemize}
+%    \item Files can be attached to a page.
+%    \item Files can be attached to the document.
+%    \item An easy user interface for simple, common tasks and
+%          beginners.
+%    \item An interface for the advanced users that want to setup
+%          every detail.
+%    \item Support of many drivers (pdftex, dvips, dvipdfm, \dots).
+%    \item \dots
+%    \end{itemize}
+%    However, I have not managed to take the time for this project.
+%    Instead:
+%    \begin{itemize}
+%    \item First I experimented with package \xpackage{attachfile},
+%          adding driver support, fixing bugs, \dots. The result is
+%          currently named as \xpackage{attachfile2}. It uses an external
+%          script to get file properties (size, date, checksum, \dots).
+%    \item In order to avoid an external program for getting basic
+%          file properties I provided a patch ``EscapeAndOther'' for
+%          pdfTeX that was accepted for version 1.30.
+%    \item This package closes a gap left by the packages for attaching
+%          files and allows the embedding of files to the document.
+%          Also it makes use of the new primitives of \pdfTeX.
+%    \end{itemize}
+%
+% \subsection{User interface}
+%
+%    This package \xpackage{embedfile} can be used with both
+%    \LaTeX\ and \plainTeX. See \autoref{sec:plain} that
+%    explains the use with \plainTeX\ by an example.
+%    In \LaTeX\ the package is loaded as usually. There are no options.
+%    \begin{quote}
+%      \verb|\usepackage{embedfile}|
+%    \end{quote}
+%
+%    \begin{declcs}{embedfile}
+%      |[|\meta{options}|]| \M{file}
+%    \end{declcs}
+%    The macro \cs{embedfile} includes file \meta{file} and
+%    attaches it to the PDF document. At the end of the document
+%    the sorted list of embedded files are written. Thus you can
+%    safely use \cs{embedfile} before \verb|\end{document}|.
+%    Embedding files using \cs{AtEndDocument} will only work,
+%    if \cs{AtEndDocument} is called before loading the package
+%    \xpackage{embedfile}.
+%
+%    The \meta{options} are give as key value pairs. The following
+%    keys are supported:
+%    \begin{description}
+%    \item[\xoption{filespec}]
+%      This allows to override the file name
+%      that appears in the PDF file. If you are using other than
+%      simple file names (8-bit, path separators, \dots), look into
+%      the PDF specification (\cite{pdfspec}).
+%      There are rules how these file names must be written/encoded.
+%      Avoid 8-bit characters
+%      and other special characters, the behaviour is currently undefined.
+%      Use option \xoption{ucfilespec} for more funny file names.
+%      The string method, see below, is |escape| since version 2.4.
+%
+%      This name is also used as entry in a name tree
+%      (see PDF specification: |/EmbeddedFiles|). Therefore the
+%      value for \xoption{filespec} must be unique among all
+%      embedded files. Also key \xoption{initialfiles} refers
+%      to this name, if the file name and the value of \xoption{filespec}
+%      are different.
+%    \item[\xoption{ucfilespec}]
+%      Since PDF 1.7 the file name may be provided in Unicode.
+%      The conversion of the option value into a PDF string
+%      is controlled by option \xoption{stringmethod}.
+%    \item[\xoption{filesystem}]
+%      This sets the entry \verb|/FS| in
+%      the file specification dictionary, see PDF specification
+%      (\cite{pdfspec}).
+%      Example: \verb|filesystem=URL|.
+%    \item[\xoption{mimetype}]
+%      This sets the mime type (\cite{mime}) of the file,
+%      see \autoref{sec:plain} for examples and \cite{types}
+%      for a list of officially registered types.
+%    \item[\xoption{desc}]
+%      The description for the file.
+%    \item[\xoption{stringmethod}]
+%      The package must convert the values of the keys \xoption{ucfilespec}
+%      and \xoption{desc} into a PDF string (before version 2.4: \xoption{filespec}
+%      and \xoption{desc}). If \xpackage{hyperref}
+%      is found, then its \cs{pdfstringdef} will be used, otherwise
+%      \pdfTeX's \cs{pdfescapestring} is used. Value \verb|psd|
+%      forces the use of \cs{pdfstringdef}, value \verb|escape|
+%      the use of \cs{pdfescapestring}.
+%    \item[\xoption{\meta{key}.value}] Sets the value of a collection
+%      item property, see section \ref{sec:collection}.
+%    \item[\xoption{\meta{key}.prefix}]
+%      Sets the prefix of a collection item property,
+%      see section \ref{sec:collection}.
+%    \item[\xoption{id}]
+%      The value must be an unique name. Macros
+%      \cs{embedfileifobjectexists} and \cs{embedfilegetobject}
+%      are using this name later.
+%    \end{description}
+%
+%    \begin{declcs}{embedfilefinish}
+%    \end{declcs}
+%    The list of all embedded files must be added as data structure
+%    in the PDF file. In case of \LaTeX\ this is automatically done.
+%    The package uses \cs{AtEndDocument}. Then the list of all
+%    files should be known. However, \plainTeX\ does not know
+%    about \cs{AtEndDocument}. Thus the user must call
+%    \cs{embedfilefinish} at the end of the document
+%    after the last file is embedded.
+%
+%    \begin{declcs}{embedfilesetup} \M{options}
+%    \end{declcs}
+%    Options for \cs{embedfile} and collection support
+%    can be set in \cs{embedfilesetup}.
+%
+% \subsection{Collection support (PDF 1.7)}
+% \label{sec:collection}
+%
+%    Since PDF 1.7 the embedded files can form a \emph{collection}
+%    (sometimes referred as \emph{package}), the main document
+%    is called \emph{cover sheet}. See PDF specification
+%    8.2.4 ``Collections'' and 3.10.5 ``Collection items'' \cite{pdfspec}.
+%
+%    Usually Acrobat Reader 7 or 8 shows the
+%    embedded files in a table at the bottom with the following columns:
+%    \begin{quote}
+%    \begin{tabular}{@{}l|l|l|l@{}}
+%       Name & Description & Modified & Size\\
+%       \hline
+%       \dots & \dots & \dots & \dots\\
+%    \end{tabular}
+%    \end{quote}
+%    Acrobat Reader 10 shows the embeded files in the left panel
+%    and adds a new column for the compressed size.
+%
+%    If the files form a collection, then they are displayed
+%    in a table left or top (depending on option \xoption{view},
+%    see \cs{embedfilesetup}).
+%
+%
+%    Collection support is enabled automatically, if
+%    it is used.
+%
+%    \begin{declcs}{embedfilesetup} \M{options}
+%    \end{declcs}
+%    The following options are supported in addition
+%    to options for \cs{embedfile}:
+%    \begin{description}
+%    \item[\xoption{view}]
+%      If the PDF file contains a collection, then Acrobat Reader 8
+%      shows a line at the top below the menu bar and the toolbar.
+%      It shows the current selected file, icons for changing the
+%      view mode, an options menu.
+%      The initial mode how the collection is presented is
+%      set by this option \xoption{view}.
+%      The following modes/values are supported, the default is |details|:
+%        \begin{description}
+%        \item[\texttt{details}] The full collection table is displayed
+%          at the top below the collection bar.
+%        \item[\texttt{tile}] The files of the collection are shown
+%          in tile mode on the left.
+%        \item[\texttt{hidden}] The collection table is not shown.
+%        \end{description}
+%    \item[\xoption{initialfile}]
+%      Selects the file that is initially presented. Especially
+%      useful for an embedded PDF file that is then shown instead
+%      of the cover document. There must be an \cs{embedfile} command
+%      somewhere whose value for key \xoption{filespec} is used here.
+%      The \cs{embedfile} command can drop option \xoption{filespec}
+%      if the file name is not different.
+%    \end{description}
+%
+%    \begin{declcs}{embedfilefield} \M{key} \M{options}
+%    \end{declcs}
+%    Macro \cs{embedfilefield} defines a column/field in the collection table.
+%    The name of the field is \meta{key}.
+%    \begin{description}
+%    \item[\xoption{type}]
+%      sets the type of the field. The supported values are:
+%      \begin{description}
+%      \item[\texttt{text}] A text field. Its value is set in
+%        \cs{embedfile} by option \xoption{\meta{key}.value}.
+%      \item[\texttt{date}] A date field. Its value is set in
+%        \cs{embedfile} by option \xoption{\meta{key}.value}.
+%        A special format is required, see ``3.8.3 Dates'' \cite{pdfspec}.
+%      \item[\texttt{number}] A field with an integer or float number.
+%        Its value is set in \cs{embedfile} by option
+%        \xoption{\meta{key}.value}.
+%      \item[\texttt{file}] The file name of the embedded file.
+%      \item[\texttt{desc}] The description text of the embedded file. It is
+%       set in \cs{embedfile} by option \xoption{desc}.
+%      \item[\texttt{moddate}] The modification date of the embedded file.
+%      \item[\texttt{size}] The size of the embedded file.
+%      \end{description}
+%      All types allow the use of a prefix that is disregarded by
+%      sorting. The prefix for this field is set in \cs{embedfile} by
+%      option \xoption{\meta{key}.prefix}.
+%    \item[\xoption{title}] sets the column title.
+%    \item[\xoption{visible}] controls whether the column is presented:
+%      \begin{description}
+%      \item[\texttt{true}] shows the column.
+%      \item[\texttt{false}] hides the column.
+%      \end{description}
+%      Default: \texttt{true}
+%    \item[\xoption{edit}]
+%      Allows the editing of field values. Does not seem to have an
+%      effect for Acrobat Reader.
+%      \begin{description}
+%      \item[\texttt{true}] enables the feature, if available (depends
+%        on the PDF viewer).
+%      \item[\texttt{false}] disables the feature.
+%      \end{description}
+%      Default: \texttt{false}
+%    \end{description}
+%    The order of \cs{embedfilefield} statements defines the order
+%    of the columns.
+%
+%    \begin{declcs}{embedfilesort} \M{key-sort-list}
+%    \end{declcs}
+%    The sort order of the embedded files are controlled by
+%    macro \cs{embedfilesort}. \meta{key-sort-list} defines
+%    the sort order. The key is a field name defined by \cs{embedfilefield}.
+%    Its value is either \texttt{ascending} or \texttt{descending}.
+%    The default is \texttt{ascending}.
+%
+% \subsection{Export of object references}
+%
+%    Caution: This feature is still experimental. It may be even removed
+%    in future versions. Therefore feedback would be nice, if someone
+%    has a useful application for this feature.
+%
+%    Object numbers are saved, if \xoption{id} is given in \cs{embedfile}.
+%    The following objects are supported:
+%    \begin{itemize}
+%    \item \texttt{EmbeddedFile}
+%    \item \texttt{Filespec}
+%    \end{itemize}
+%
+%    \begin{declcs}{embedfileifobjectexists} \M{id} \M{type}
+%      \M{then} \M{else}
+%    \end{declcs}
+%    Macro \cs{embedfileifobjectexists} tests whether object of \meta{type}
+%    is available for the embedded file identified by \meta{id}.
+%
+%    \begin{declcs}{embedfilegetobject} \M{id} \M{type}
+%    \end{declcs}
+%    Macro \cs{embedfilegetobject} expands to the full object reference
+%    object of \meta{type} for the embedded file identified by \meta{id}.
+%
+% \subsubsection{Example}
+%
+%\begin{quote}
+%\begin{verbatim}
+%\embedfile[id={foo}]{foo.pdf}
+%\embedfileifobjectexists{foo}{Filespec}{%
+%  \typeout{%
+%    FileSpec object for `foo': %
+%    \embedfilegetobject{foo}{Filespec}%
+%  }%
+%}{%
+%  \typeout{No Filespec object for `foo'}%
+%}
+%\end{verbatim}
+%\end{quote}
+%
+% \subsection{Examples}
+% \label{sec:examples}
+%
+% \subsubsection{\plainTeX}
+% \label{sec:plain}
+%
+%    The package can be used with \plainTeX. It can be used
+%    with or without help from \xfile{miniltx.tex}.
+%
+%    If additionally package \xpackage{keyval} (\xpackage{graphicx})
+%    is needed, load it first. Then package \xpackage{embedfile} avoids
+%    a duplicate loading of package \xpackage{keyval}.
+%
+%    Because \plainTeX\ does not provide a hook at end of the document,
+%    you have to call \cs{embedfilefinish} manually at the end
+%    after the last embedded file.
+%    \begin{macrocode}
+%<*exampleplain>
+%<<END
+% Load packages
+\input miniltx
+% \def\Gin@driver{pdftex.def}
+% \input graphicx.sty
+\input embedfile.sty
+\resetatcatcode
+
+% default setting
+\embedfilesetup{
+  mimetype=text/plain
+}
+
+% Embed files
+\embedfile[
+  filespec=example.tex,
+  desc={Source code (plain-TeX) of this example}
+]{embedfile-example-plain.tex}
+
+\embedfile[
+  desc={Source of package `embedfile'}
+]{embedfile.dtx}
+
+\embedfile[
+  mimetype=application/pdf,
+  desc={Documentation of package `embedfile'}
+]{embedfile.pdf}
+
+% Some text
+This example document contains three embedded files.
+
+% End of document
+\embedfilefinish % don't forget
+\bye
+%END
+%</exampleplain>
+%    \end{macrocode}
+%
+% \subsubsection{Collection example}
+%
+%    \begin{macrocode}
+%<*examplecollection>
+%<<END
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage[bookmarks=false]{hyperref}
+% provides \pdfstringdef that is then used by `title' and
+% other keys.
+\usepackage{embedfile}[2011/04/13]
+\embedfilesetup{
+  view=details,
+  initialfile=embedfile.pdf
+}
+\embedfilefield{file}{
+  type=file,
+  title={File name}
+}
+\embedfilefield{description}{
+  type=desc,
+  title={Description}
+}
+\embedfilefield{date}{
+  type=moddate,
+  title={Date}
+}
+\embedfilefield{size}{
+  type=size,
+  title={Size}
+}
+\embedfilefield{type}{
+  type=text,
+  title={Type},
+  visible=false
+}
+\embedfilesort{
+  type,
+  date=descending
+}
+\begin{document}
+An example for embedded files as collection.
+You need Acrobat Reader 8 or higher.
+
+\embedfile[
+  desc={Source file of package `embedfile'},
+  description.prefix={Package: },
+  type.value={DTX}
+]{embedfile.dtx}
+
+\embedfile[
+  desc={Documentation of package `embedfile'},
+  description.prefix={Package: },
+  type.value={PDF}
+]{embedfile.pdf}
+
+\embedfile[
+  desc={The source for this example},
+  description.prefix={Example: },
+  type.value={TEX}
+]{\jobname.tex}
+
+\end{document}
+%END
+%</examplecollection>
+%    \end{macrocode}
+%
+% \subsection{Package \xpackage{dtx-attach}}
+%
+% Package \xpackage{dtx-attach} is just a small application of
+% package \xpackage{embedfile}. I am using it for the CTAN
+% documentation of my packages in \CTAN{macros/latex/contrib/oberdiek/}.
+% It also serves as small example for the use of the package with \LaTeX.
+%
+%    \begin{macrocode}
+%<*dtxattach>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dtx-attach}
+  [2011/04/13 v2.6 Embed \string\jobname.dtx (HO)]%
+\RequirePackage{embedfile}[2011/04/13]
+\embedfile[%
+  stringmethod=escape,%
+  mimetype=plain/text,%
+  desc={LaTeX docstrip source archive for package `\jobname'}%
+]{\jobname.dtx}
+%</dtxattach>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@embedfile.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{embedfile}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@embedfile.sty\endcsname
+\ProvidesPackage{embedfile}%
+  [2011/04/13 v2.6 Embed files into PDF (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname EmFi@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\EmFi@AtEnd{%
+    \EmFi@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\EmFi@AtEnd{\EmFi@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Tools}
+%
+%    \begin{macro}{\EmFi@RequirePackage}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\EmFi@RequirePackage#1[#2]{%
+    \input #1.sty\relax
+  }%
+\else
+  \let\EmFi@RequirePackage\RequirePackage
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\EmFi@Error}
+%    \begin{macrocode}
+\EmFi@RequirePackage{infwarerr}[2007/09/09]%
+\def\EmFi@Error{%
+  \@PackageError{embedfile}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Check for recent \pdfTeX\ in PDF mode}
+%
+%    Load package \xpackage{ifpdf} and check mode.
+%    \begin{macrocode}
+\EmFi@RequirePackage{ifpdf}[2007/09/09]
+\ifpdf
+\else
+  \EmFi@Error{%
+    Missing pdfTeX in PDF mode%
+  }{%
+    Currently other drivers are not supported. %
+    Package loading is aborted.%
+  }%
+  \expandafter\EmFi@AtEnd
+\fi%
+%    \end{macrocode}
+%    \begin{macrocode}
+\EmFi@RequirePackage{pdftexcmds}[2007/11/11]
+\EmFi@RequirePackage{ltxcmds}[2010/03/01]
+\EmFi@RequirePackage{kvsetkeys}[2010/03/01]
+\EmFi@RequirePackage{kvdefinekeys}[2010/03/01]
+%    \end{macrocode}
+%    Check version.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filesize\endcsname\relax
+  \EmFi@Error{%
+    Unsupported pdfTeX version%
+  }{%
+    At least version 1.30 is necessary. Package loading is aborted.%
+  }%
+  \expandafter\EmFi@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Strings}
+%
+%    Minimal version of package \xpackage{pdfescape} is 2007/08/27 v1.5
+%    because of \cs{EdefSanitize}.
+%    \begin{macrocode}
+\EmFi@RequirePackage{pdfescape}[2007/11/11]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\EmFi@temp#1{%
+  \expandafter\EdefSanitize\csname EmFi@S@#1\endcsname{#1}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\EmFi@details}
+%    \begin{macrocode}
+\EmFi@temp{details}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@tile}
+%    \begin{macrocode}
+\EmFi@temp{tile}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@hidden}
+%    \begin{macrocode}
+\EmFi@temp{hidden}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@text}
+%    \begin{macrocode}
+\EmFi@temp{text}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@date}
+%    \begin{macrocode}
+\EmFi@temp{date}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@number}
+%    \begin{macrocode}
+\EmFi@temp{number}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@file}
+%    \begin{macrocode}
+\EmFi@temp{file}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@desc}
+%    \begin{macrocode}
+\EmFi@temp{desc}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@moddate}
+%    \begin{macrocode}
+\EmFi@temp{moddate}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@creationdate}
+%    \begin{macrocode}
+\EmFi@temp{creationdate}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@size}
+%    \begin{macrocode}
+\EmFi@temp{size}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@ascending}
+%    \begin{macrocode}
+\EmFi@temp{ascending}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@descending}
+%    \begin{macrocode}
+\EmFi@temp{descending}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@true}
+%    \begin{macrocode}
+\EmFi@temp{true}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@S@false}
+%    \begin{macrocode}
+\EmFi@temp{false}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Switches}
+%
+%    \begin{macro}{\ifEmFi@collection}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@collection
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifEmFi@sort}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@sort
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifEmFi@visible}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@visible
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifEmFi@edit}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@edit
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifEmFi@item}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@item
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifEmFi@finished}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@finished
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifEmFi@id}
+%    \begin{macrocode}
+\ltx@newif\ifEmFi@id
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Key value definitions}
+%
+%    \begin{macro}{\EmFi@GlobalKey}
+%    \begin{macrocode}
+\def\EmFi@GlobalKey#1#2{%
+  \global\expandafter\let\csname KV@#1@#2\expandafter\endcsname
+                         \csname KV@#1@#2\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@GlobalDefaultKey}
+%    \begin{macrocode}
+\def\EmFi@GlobalDefaultKey#1#2{%
+  \EmFi@GlobalKey{#1}{#2}%
+  \global\expandafter\let
+      \csname KV@#1@#2@default\expandafter\endcsname
+      \csname KV@#1@#2@default\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\EmFi@DefineKey}
+%    \begin{macrocode}
+\def\EmFi@DefineKey#1#2{%
+  \kv@define@key{EmFi}{#1}{%
+    \expandafter\def\csname EmFi@#1\endcsname{##1}%
+  }%
+  \expandafter\def\csname EmFi@#1\endcsname{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    Subtype of the embedded file (optional).
+%    \begin{macrocode}
+\EmFi@DefineKey{mimetype}{}
+%    \end{macrocode}
+%    File specification string.
+%    \begin{macrocode}
+\EmFi@DefineKey{filespec}{\EmFi@file}
+%    \end{macrocode}
+%    File specification string in Unicode.
+%    \begin{macrocode}
+\EmFi@DefineKey{ucfilespec}{}
+%    \end{macrocode}
+%    File system (optional).
+%    \begin{macrocode}
+\EmFi@DefineKey{filesystem}{}
+%    \end{macrocode}
+%    Description (optional).
+%    \begin{macrocode}
+\EmFi@DefineKey{desc}{}
+%    \end{macrocode}
+%    Method for converting text to PDF strings.
+%    \begin{macrocode}
+\EmFi@DefineKey{stringmethod}{%
+  \ifx\pdfstringdef\@undefined
+    escape%
+  \else
+    \ifx\pdfstringdef\relax
+      escape%
+    \else
+      psd%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%
+%    Option \xoption{id} as key for object numbers.
+%    \begin{macrocode}
+\kv@define@key{EmFi}{id}{%
+  \def\EmFi@id{#1}%
+  \EmFi@idtrue
+}
+%    \end{macrocode}
+%    \begin{macro}{\EmFi@defobj}
+%    \begin{macrocode}
+\def\EmFi@defobj#1{%
+  \ifEmFi@id
+    \expandafter\xdef\csname EmFi@#1@\EmFi@id\endcsname{%
+      \the\pdflastobj\ltx@space 0 R%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\embedfileifobjectexists}
+%    \begin{macrocode}
+\def\embedfileifobjectexists#1#2{%
+  \expandafter\ifx\csname EmFi@#2@#1\endcsname\relax
+    \expandafter\ltx@secondoftwo
+  \else
+    \expandafter\ltx@firstoftwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\embedfilegetobject}
+%    \begin{macrocode}
+\def\embedfilegetobject#1#2{%
+  \embedfileifobjectexists{#1}{#2}{%
+    \csname EmFi@#2@#1\endcsname
+  }{%
+    0 0 R%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Initial view of the collection.
+%    \begin{macrocode}
+\kv@define@key{EmFi}{view}[]{%
+  \EdefSanitize\EmFi@temp{#1}%
+  \def\EmFi@next{%
+    \global\EmFi@collectiontrue
+  }%
+  \ifx\EmFi@temp\ltx@empty
+    \let\EmFi@view\EmFi@S@details
+  \else\ifx\EmFi@temp\EmFi@S@details
+    \let\EmFi@view\EmFi@S@details
+  \else\ifx\EmFi@temp\EmFi@S@tile
+    \let\EmFi@view\EmFi@S@tile
+  \else\ifx\EmFi@temp\EmFi@S@hidden
+    \let\EmFi@view\EmFi@S@hidden
+  \else
+    \let\EmFi@next\relax
+    \EmFi@Error{%
+      Unknown value `\EmFi@temp' for key `view'.\MessageBreak
+      Supported values: `details', `tile', `hidden'.%
+    }\@ehc
+  \fi\fi\fi\fi
+  \EmFi@next
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\EmFi@DefineKey{initialfile}{}
+%    \end{macrocode}
+%
+%    \begin{macro}{\embedfilesetup}
+%    \begin{macrocode}
+\def\embedfilesetup{%
+  \ifEmFi@finished
+    \def\EmFi@next##1{}%
+    \EmFi@Error{%
+      \string\embedfilefield\ltx@space after \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \def\EmFi@next{%
+      \kvsetkeys{EmFi}%
+    }%
+  \fi
+  \EmFi@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\EmFi@schema}
+%    \begin{macrocode}
+\def\EmFi@schema{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@order}
+%    \begin{macrocode}
+\gdef\EmFi@order{0}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@@order}
+%    \begin{macrocode}
+\let\EmFi@@order\relax
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@fieldlist}
+%    \begin{macrocode}
+\def\EmFi@fieldlist{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@sortcase}
+%    \begin{macrocode}
+\def\EmFi@sortcase{0}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\embedfilefield}
+%    \begin{macrocode}
+\def\embedfilefield#1#2{%
+  \ifEmFi@finished
+    \EmFi@Error{%
+      \string\embedfilefield\ltx@space after \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \global\EmFi@collectiontrue
+    \EdefSanitize\EmFi@key{#1}%
+    \expandafter\ifx\csname KV@EmFi@\EmFi@key.prefix\endcsname\relax
+      \begingroup
+        \count@=\EmFi@order
+        \advance\count@ 1 %
+        \xdef\EmFi@order{\the\count@}%
+        \let\EmFi@title\EmFi@key
+        \let\EmFi@type\EmFi@S@text
+        \EmFi@visibletrue
+        \EmFi@editfalse
+        \kvsetkeys{EmFiFi}{#2}%
+        \EmFi@convert\EmFi@title\EmFi@title
+        \xdef\EmFi@schema{%
+          \EmFi@schema
+          /\pdf@escapename{\EmFi@key}<<%
+            /Subtype/%
+            \ifx\EmFi@type\EmFi@S@date D%
+            \else\ifx\EmFi@type\EmFi@S@number N%
+            \else\ifx\EmFi@type\EmFi@S@file F%
+            \else\ifx\EmFi@type\EmFi@S@desc Desc%
+            \else\ifx\EmFi@type\EmFi@S@moddate ModDate%
+            \else\ifx\EmFi@type\EmFi@S@creationdate CreationDate%
+            \else\ifx\EmFi@type\EmFi@S@size Size%
+            \else S%
+            \fi\fi\fi\fi\fi\fi\fi
+            /N(\EmFi@title)%
+            \EmFi@@order{\EmFi@order}%
+            \ifEmFi@visible
+            \else
+              /V false%
+            \fi
+            \ifEmFi@edit
+              /E true%
+            \fi
+          >>%
+        }%
+        \let\do\relax
+        \xdef\EmFi@fieldlist{%
+          \EmFi@fieldlist
+          \do{\EmFi@key}%
+        }%
+        \ifx\EmFi@type\EmFi@S@text
+          \kv@define@key{EmFi}{\EmFi@key.value}{%
+            \EmFi@itemtrue
+            \def\EmFi@temp{##1}%
+            \EmFi@convert\EmFi@temp\EmFi@temp
+            \expandafter\def\csname EmFi@V@#1%
+            \expandafter\endcsname\expandafter{%
+              \expandafter(\EmFi@temp)%
+            }%
+          }%
+          \EmFi@GlobalKey{EmFi}{\EmFi@key.value}%
+        \else\ifx\EmFi@type\EmFi@S@date
+          \kv@define@key{EmFi}{\EmFi@key.value}{%
+            \EmFi@itemtrue
+            \def\EmFi@temp{##1}%
+            \EmFi@convert\EmFi@temp\EmFi@temp
+            \expandafter\def\csname EmFi@V@#1%
+            \expandafter\endcsname\expandafter{%
+              \expandafter(\EmFi@temp)%
+            }%
+          }%
+          \EmFi@GlobalKey{EmFi}{\EmFi@key.value}%
+        \else\ifx\EmFi@type\EmFi@S@number
+          \kv@define@key{EmFi}{\EmFi@key.value}{%
+            \EmFi@itemtrue
+            \expandafter\EdefSanitize\csname EmFi@V@#1\endcsname{ ##1}%
+          }%
+          \EmFi@GlobalKey{EmFi}{\EmFi@key.value}%
+        \fi\fi\fi
+        \kv@define@key{EmFi}{\EmFi@key.prefix}{%
+          \EmFi@itemtrue
+          \expandafter\def\csname EmFi@P@#1\endcsname{##1}%
+        }%
+        \EmFi@GlobalKey{EmFi}{\EmFi@key.prefix}%
+        \kv@define@key{EmFiSo}{\EmFi@key}[ascending]{%
+          \EdefSanitize\EmFi@temp{##1}%
+          \ifx\EmFi@temp\EmFi@S@ascending
+            \def\EmFi@temp{true}%
+          \else\ifx\EmFi@temp\EmFi@S@descending
+            \def\EmFi@temp{false}%
+          \else
+            \def\EmFi@temp{}%
+            \EmFi@Error{%
+              Unknown sort order `\EmFi@temp'.\MessageBreak
+              Supported values: `\EmFi@S@ascending', %
+              `\EmFi@S@descending
+            }\@ehc
+          \fi\fi
+          \ifx\EmFi@temp\ltx@empty
+          \else
+            \xdef\EmFi@sortkeys{%
+              \EmFi@sortkeys
+              /\pdf@escapename{#1}%
+            }%
+            \ifx\EmFi@sortorders\ltx@empty
+              \global\let\EmFi@sortorders\EmFi@temp
+              \gdef\EmFi@sortcase{1}%
+            \else
+              \xdef\EmFi@sortorders{%
+                \EmFi@sortorders
+                \ltx@space
+                \EmFi@temp
+              }%
+              \xdef\EmFi@sortcase{2}%
+            \fi
+          \fi
+        }%
+        \EmFi@GlobalDefaultKey{EmFiSo}\EmFi@key
+      \endgroup
+    \else
+      \EmFi@Error{%
+        Field `\EmFi@key' is already defined%
+      }\@ehc
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\kv@define@key{EmFiFi}{type}{%
+  \EdefSanitize\EmFi@temp{#1}%
+  \ifx\EmFi@temp\EmFi@S@text
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@date
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@number
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@file
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@desc
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@moddate
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@creationdate
+    \let\EmFi@type\EmFi@temp
+  \else\ifx\EmFi@temp\EmFi@S@size
+    \let\EmFi@type\EmFi@temp
+  \else
+    \EmFi@Error{%
+      Unknown type `\EmFi@temp'.\MessageBreak
+      Supported types: `text', `date', `number', `file',\MessageBreak
+      `desc', `moddate', `creationdate', `size'%
+    }%
+  \fi\fi\fi\fi\fi\fi\fi\fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\kv@define@key{EmFiFi}{title}{%
+  \def\EmFi@title{#1}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\EmFi@setboolean}
+%    \begin{macrocode}
+\def\EmFi@setboolean#1#2{%
+  \EdefSanitize\EmFi@temp{#2}%
+  \ifx\EmFi@temp\EmFi@S@true
+    \csname EmFi@#1true\endcsname
+  \else
+    \ifx\EmFi@temp\EmFi@S@false
+      \csname EmFi@#1false\endcsname
+    \else
+      \EmFi@Error{%
+        Unknown value `\EmFi@temp' for key `#1'.\MessageBreak
+        Supported values: `true', `false'%
+      }\@ehc
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\kv@define@key{EmFiFi}{visible}[true]{%
+  \EmFi@setboolean{visible}{#1}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\kv@define@key{EmFiFi}{edit}[true]{%
+  \EmFi@setboolean{edit}{#1}%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\EmFi@sortkeys}
+%    \begin{macrocode}
+\def\EmFi@sortkeys{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@sortorders}
+%    \begin{macrocode}
+\def\EmFi@sortorders{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\embedfilesort}
+%    \begin{macrocode}
+\def\embedfilesort{%
+  \kvsetkeys{EmFiSo}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Embed the file}
+%
+%    \begin{macro}{\embedfile}
+%    \begin{macrocode}
+\def\embedfile{%
+  \ltx@ifnextchar[\EmFi@embedfile{\EmFi@embedfile[]}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@embedfile}
+%    \begin{macrocode}
+\def\EmFi@embedfile[#1]#2{%
+  \ifEmFi@finished
+    \EmFi@Error{%
+      \string\embedfile\ltx@space after \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \begingroup
+      \def\EmFi@file{#2}%
+      \kvsetkeys{EmFi}{#1}%
+      \expandafter\expandafter\expandafter
+      \ifx\expandafter\expandafter\expandafter
+          \\\pdf@filesize{\EmFi@file}\\%
+        \EmFi@Error{%
+          File `\EmFi@file' not found%
+        }{%
+          The unknown file is not embedded.%
+        }%
+      \else
+        \edef\EmFi@@filespec{%
+          \pdf@escapestring{\EmFi@filespec}%
+        }%
+        \ifx\EmFi@ucfilespec\ltx@empty
+          \let\EmFi@@ucfilespec\ltx@empty
+        \else
+          \EmFi@convert\EmFi@ucfilespec\EmFi@@ucfilespec
+        \fi
+        \ifx\EmFi@desc\ltx@empty
+          \let\EmFi@@desc\ltx@empty
+        \else
+          \EmFi@convert\EmFi@desc\EmFi@@desc
+        \fi
+        \ifEmFi@item
+          \let\do\EmFi@do
+          \immediate\pdfobj{%
+            <<%
+              \EmFi@fieldlist
+            >>%
+          }%
+          \edef\EmFi@ci{\the\pdflastobj}%
+        \fi
+        \immediate\pdfobj stream attr{%
+          /Type/EmbeddedFile%
+          \ifx\EmFi@mimetype\ltx@empty
+          \else
+            /Subtype/\pdf@escapename{\EmFi@mimetype}%
+          \fi
+          /Params<<%
+            /ModDate(\pdf@filemoddate{\EmFi@file})%
+            /Size \pdf@filesize{\EmFi@file}%
+            /CheckSum<\pdf@filemdfivesum{\EmFi@file}>%
+          >>%
+        }file{\EmFi@file}\relax
+        \EmFi@defobj{EmbeddedFile}%
+        \immediate\pdfobj{%
+          <<%
+            /Type/Filespec%
+            \ifx\EmFi@filesystem\ltx@empty
+            \else
+            /FS/\pdf@escapename{\EmFi@filesystem}%
+            \fi
+            /F(\EmFi@@filespec)%
+            \ifx\EmFi@@ucfilespec\ltx@empty
+            \else
+              /UF(\EmFi@@ucfilespec)%
+            \fi
+            \ifx\EmFi@@desc\ltx@empty
+            \else
+              /Desc(\EmFi@@desc)%
+            \fi
+            /EF<<%
+              /F \the\pdflastobj\ltx@space 0 R%
+            >>%
+            \ifEmFi@item
+              /CI \EmFi@ci\ltx@space 0 R%
+            \fi
+          >>%
+        }%
+        \EmFi@defobj{Filespec}%
+        \EmFi@add{%
+          \EmFi@@filespec
+        }{\the\pdflastobj\ltx@space 0 R}%
+      \fi
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@do}
+%    \begin{macrocode}
+\def\EmFi@do#1{%
+  \expandafter\ifx\csname EmFi@P@#1\endcsname\relax
+    \expandafter\ifx\csname EmFi@V@#1\endcsname\relax
+    \else
+      /\pdf@escapename{#1}\csname EmFi@V@#1\endcsname
+    \fi
+  \else
+    /\pdf@escapename{#1}<<%
+      \expandafter\ifx\csname EmFi@V@#1\endcsname\relax
+      \else
+        /D\csname EmFi@V@#1\endcsname
+      \fi
+      /P(\csname EmFi@P@#1\endcsname)%
+    >>%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EmFi@convert}
+%    \begin{macrocode}
+\def\EmFi@convert#1#2{%
+  \ifnum\pdf@strcmp{\EmFi@stringmethod}{psd}=0 %
+    \pdfstringdef\EmFi@temp{#1}%
+    \let#2\EmFi@temp
+  \else
+    \edef#2{\pdf@escapestring{#1}}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\global\let\EmFi@list\ltx@empty
+%    \end{macrocode}
+%    \begin{macro}{\EmFi@add}
+%    Sorting is done by the insertion sort algorithm.
+%    Probably the sorting could be done more reliable.
+%    However, the PDF specification is not too clear to me
+%    regarding precise sorting rules (how to deal with
+%    different encodings, escaped characters, \dots).
+%    \begin{macrocode}
+\def\EmFi@add#1#2{%
+  \begingroup
+    \ifx\EmFi@list\ltx@empty
+      \xdef\EmFi@list{\noexpand\do{#1}{#2}}%
+    \else
+      \def\do##1##2{%
+        \ifnum\pdf@strcmp{##1}{#1}>0 %
+          \edef\x{%
+            \toks@{%
+              \the\toks@%
+              \noexpand\do{#1}{#2}%
+              \noexpand\do{##1}{##2}%
+            }%
+          }%
+          \x
+          \def\do####1####2{%
+            \toks@\expandafter{\the\toks@\do{####1}{####2}}%
+          }%
+          \def\stop{%
+            \xdef\EmFi@list{\the\toks@}%
+          }%
+        \else
+          \toks@\expandafter{\the\toks@\do{##1}{##2}}%
+        \fi
+      }%
+      \def\stop{%
+        \xdef\EmFi@list{\the\toks@\noexpand\do{#1}{#2}}%
+      }%
+      \toks@{}%
+      \EmFi@list\stop
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\embedfilefinish}
+%    \begin{macrocode}
+\def\embedfilefinish{%
+  \ifEmFi@finished
+    \EmFi@Error{%
+      Too many invocations of \string\embedfilefinish
+    }{%
+      The list of embedded files is already written.%
+    }%
+  \else
+    \ifx\EmFi@list\ltx@empty
+    \else
+%    \end{macrocode}
+%    Write |/EmbeddedFiles| entry.
+%    \begin{macrocode}
+      \global\EmFi@finishedtrue
+      \begingroup
+        \def\do##1##2{%
+          (##1)##2%
+        }%
+        \immediate\pdfobj{%
+          <<%
+            /Names[\EmFi@list]%
+          >>%
+        }%
+        \pdfnames{%
+          /EmbeddedFiles \the\pdflastobj\ltx@space 0 R%
+        }%
+      \endgroup
+%    \end{macrocode}
+%    Write collection objects.
+%    \begin{macrocode}
+      \ifx\EmFi@initialfile\ltx@empty
+      \else
+        \EmFi@collectiontrue
+      \fi
+      \ifEmFi@collection
+        \ifx\EmFi@initialfile\ltx@empty
+          \let\EmFi@@initialfile\ltx@empty
+        \else
+          \edef\EmFi@@initialfile{%
+            \pdf@escapestring{\EmFi@initialfile}%
+          }%
+        \fi
+%    \end{macrocode}
+%    Look for initial file among the embedded files.
+%    \begin{macrocode}
+        \begingroup
+          \let\f=N%
+          \def\do##1##2{%
+            \def\x{##1}%
+            \ifx\x\EmFi@@initialfile
+              \let\f=Y%
+              \let\do\ltx@gobbletwo
+            \fi
+          }%
+          \EmFi@list
+        \expandafter\endgroup
+        \ifx\f Y%
+        \else
+          \@PackageWarningNoLine{embedfile}{%
+            Missing initial file `\EmFi@initialfile'\MessageBreak
+            among the embedded files%
+          }%
+          \let\EmFi@initialfile\ltx@empty
+          \let\EmFi@@initialfile\ltx@empty
+        \fi
+        \ifcase\EmFi@sortcase
+          \def\EmFi@temp{}%
+        \or
+          \def\EmFi@temp{%
+            /S\EmFi@sortkeys
+            /A \EmFi@sortorders
+          }%
+        \else
+          \def\EmFi@temp{%
+            /S[\EmFi@sortkeys]%
+            /A[\EmFi@sortorders]%
+          }%
+        \fi
+        \def\EmFi@@order##1{%
+          \ifnum\EmFi@order>1 %
+            /O ##1%
+          \fi
+        }%
+        \immediate\pdfobj{%
+          <<%
+            \ifx\EmFi@schema\ltx@empty
+            \else
+              /Schema<<\EmFi@schema>>%
+            \fi
+            \ifx\EmFi@@initialfile\ltx@empty
+            \else
+              /D(\EmFi@@initialfile)%
+            \fi
+            \ifx\EmFi@view\EmFi@S@tile
+              /View/T%
+            \else\ifx\EmFi@view\EmFi@S@hidden
+              /View/H%
+            \fi\fi
+            \ifx\EmFi@temp\ltx@empty
+              \EmFi@temp
+            \else
+              /Sort<<\EmFi@temp>>%
+            \fi
+          >>%
+        }%
+        \pdfcatalog{%
+          /Collection \the\pdflastobj\ltx@space0 R%
+        }%
+      \fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname AtEndDocument\endcsname\relax
+\else
+  \AtEndDocument{\embedfilefinish}%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\EmFi@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input embedfile.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Simple test}
+%
+%    \begin{macrocode}
+%<*test2>
+\input embedfile.sty\relax
+\embedfile[%
+  stringmethod=escape,%
+  mimetype=plain/text,%
+  desc={LaTeX docstrip source archive for package `embedfile'},%
+  id={embedfile.dtx}%
+]{embedfile.dtx}
+\nopagenumbers
+Test (plain-\TeX): {\tt embedfile.dtx} should be embedded.%
+
+\def\Test#1{%
+  \par
+  \embedfileifobjectexists{embedfile.dtx}{#1}{%
+    Object #1 (embedfile.dtx): %
+    \embedfilegetobject{embedfile.dtx}{#1}%
+  }{%
+    \errmessage{Missing object #1 (embedfile.dtx)}%
+  }%
+}
+\Test{EmbeddedFile}
+\Test{Filespec}
+\embedfilefinish
+\bye
+%</test2>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\let\SavedJobname\jobname
+\def\jobname{embedfile}
+\RequirePackage{dtx-attach}[2011/04/13]
+\let\jobname\SavedJobname
+\documentclass{minimal}
+\begin{document}
+  Test (\LaTeX): \texttt{embedfile.dtx} should be embedded.%
+\end{document}
+%</test3>
+%    \end{macrocode}
+%
+% \subsection{Test for \iniTeX}
+%
+%    \begin{macrocode}
+%<*test4>
+\catcode`\{=1 %
+\catcode`\}=2 %
+\input ifluatex.sty %
+\ifluatex
+  \directlua{%
+    tex.enableprimitives('', {%
+      'pdflastobj',%
+      'pdfnames',%
+      'pdfobj',%
+      'pdfoutput'%
+    })%
+  }%
+\fi
+\pdfoutput=1 %
+\input embedfile.sty %
+\shipout\hbox{}
+\embedfile[%
+  stringmethod=escape,%
+  mimetype=plain/text,%
+  desc={iniTeX source},%
+]{\jobname.tex}
+\embedfilefinish
+\end
+%</test4>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/embedfile.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/embedfile.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex embedfile.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   embedfile.sty & tex/generic/oberdiek/embedfile.sty\\
+%   dtx-attach.sty & tex/generic/oberdiek/dtx-attach.sty\\
+%   embedfile.pdf & doc/latex/oberdiek/embedfile.pdf\\
+%   embedfile-example-plain.tex & doc/latex/oberdiek/embedfile-example-plain.tex\\
+%   embedfile-example-collection.tex & doc/latex/oberdiek/embedfile-example-collection.tex\\
+%   test/embedfile-test1.tex & doc/latex/oberdiek/test/embedfile-test1.tex\\
+%   test/embedfile-test2.tex & doc/latex/oberdiek/test/embedfile-test2.tex\\
+%   test/embedfile-test3.tex & doc/latex/oberdiek/test/embedfile-test3.tex\\
+%   test/embedfile-test4.tex & doc/latex/oberdiek/test/embedfile-test4.tex\\
+%   embedfile.dtx & source/latex/oberdiek/embedfile.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk embedfile.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{embedfile.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex embedfile.dtx
+%makeindex -s gind.ist embedfile.idx
+%pdflatex embedfile.dtx
+%makeindex -s gind.ist embedfile.idx
+%pdflatex embedfile.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{embedfile.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='embedfile'>
+  <name>embedfile</name>
+  <caption>Embed files into PDF.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.6'/>
+  <description>
+    This package embeds files in a PDF document, using the PDF
+    format's embedding operation (note the contrast with the attach
+    operation used by the <xref refid='attachfile'>attachfile</xref>
+    and <xref refid='attachfile2'>attachfile2</xref> packages).
+    Currently only <xref refid='pdftex'>pdfTeX</xref> &gt;=1.30, in
+    PDF mode, is supported.
+
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/embedfile.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/embedfile.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \bibitem{attachfile}
+%   Scott Pakin: \textit{The \xpackage{attachfile} package};
+%   2005/02/20 v1.2;
+%   \CTAN{macros/latex/contrib/attachfile/}.
+%
+% \bibitem{attachfile2}
+%   Heiko Oberdiek: \textit{The \xpackage{attachfile2} package};
+%   2006/08/16 v2.2;
+%   \CTAN{macros/latex/contrib/oberdiek/attachfile2.pdf}.
+%
+% \bibitem{pdfspec}
+%   Adobe Systems Incorporated:
+%   \href{http://www.adobe.com/devnet/acrobat/pdfs/pdf_reference.pdf}%
+%       {\textit{PDF Reference, Sixth Edition, Version 1.7}},%
+%   Oktober 2006;
+%   \url{http://www.adobe.com/devnet/pdf/pdf_reference.html}.
+%
+% \bibitem{mime}
+%   Network Working Group: RFC 2046, \textit{Multipurpose Internet Mail Extensions (MIME) Part Two:
+%     Media Types}, November 1996; \url{http://www.rfc-editor.org/}.
+%
+% \bibitem{types}
+%   IANA (Internet Assigned Numbers Authority):
+%   \textit{MIME Media Types}, May 2006;
+%   \url{http://www.iana.org/assignments/media-types/}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2006/08/16 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.1}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.2}
+%   \item
+%     Fixes for plain-TeX, wrapper for package \xpackage{keyval} added.
+%   \item
+%     Catcode section rewritten.
+%   \end{Version}
+%   \begin{Version}{2007/10/28 v2.0}
+%   \item
+%     Collection support added (PDF 1.7).
+%   \end{Version}
+%   \begin{Version}{2007/10/29 v2.1}
+%   \item
+%     Export of object references by adding new option \xoption{id} and
+%     new macros \cs{embedfileifobjectexists} and \cs{embedfilegetobject}.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v2.2}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+%   \begin{Version}{2007/11/25 v2.3}
+%   \item
+%     Fix in use of \cs{pdf@filesize}, bug introduced in previous version.
+%   \end{Version}
+%   \begin{Version}{2009/09/25 v2.4}
+%   \item
+%     Bug fix: If \xpackage{hyperref} is used with option \xoption{unicode},
+%     the Unicode encoded file name causes trouble. Therefore \cs{pdfstringdef}
+%     is now never used for option \xoption{filespec}, always method
+%     \texttt{escape} is applied (Peter Cibulka).
+%   \item
+%     Bug fix for \xoption{initialfile}.
+%   \item
+%     Bug fix for file names in \texttt{/EmbeddedFiles}.
+%   \item
+%     New option \xoption{ucfilespec} for file name support in Unicode
+%     (since PDF 1.7).
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v2.5}
+%   \item
+%     Compatibility for \iniTeX.
+%   \item
+%     Package \xpackage{keyval} replaced by packages \xpackage{kvsetkeys}
+%     and \xpackage{kvdefinekeys} because of compatibility for \iniTeX.
+%   \item
+%     TDS location moved from TDS:tex/latex/oberdiek/embedfile.sty to
+%     TDS:tex/generic/oberdiek/embedfile.sty.
+%   \end{Version}
+%   \begin{Version}{2011/04/13 v2.6}
+%   \item
+%     Docu fixes (thanks Hans-Martin M\"unch).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

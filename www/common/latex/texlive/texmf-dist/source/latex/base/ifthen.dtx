@@ -1,0 +1,527 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%
+%% File `ifthen.dtx'.
+%% Copyright (C) 1991 by Leslie Lamport
+%% Copyright (C) 1994-2001 LaTeX3 project, David Carlisle
+%%                       all rights reserved.
+%%
+%
+%<*dtx>
+          \ProvidesFile{ifthen.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+%<package>\ProvidesPackage{ifthen}
+%<driver>\ProvidesFile{ifthen.drv}
+% \fi
+%         \ProvidesFile{ifthen.dtx}
+          [2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{ifthen.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{ifthen.dtx}
+%
+% \title{The \textsf{ifthen} package\thanks{This file
+%         has version number \fileversion, last
+%         revised \filedate.}}
+% \author{David Carlisle}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{latex}
+%  \maketitle
+%
+% \CheckSum{306}
+%
+%
+% \begin{abstract}
+% This file implements an |\ifthenelse| command for \LaTeXe.
+% The algorithm used is compatible with that used in the \LaTeX~2.09
+% |ifthen| style option. It has been recoded, making the resulting
+% definitions somewhat more compact and efficient.
+% \end{abstract}
+%
+% \changes{v1.0a}{1993/10/15}{New implementation}
+% \changes{v1.0b}{1993/12/17}{Upgrade to LaTeX2e}
+% \changes{v1.0e}{1994/02/11}{Improve documentation}
+% \changes{v1.0f}{1994/03/02}{Remove need for dtx file}
+% \changes{v1.0g}{1994/03/14}{Modify for the new ltxdoc.cls}
+% \changes{v1.0k}{1995/04/25}{Fix `driver' docstrip guards.}
+% \changes{v1.0n}{1997/11/03}{Documentation fix.}
+% \changes{v1.0o}{1998/08/17}{Documentation fix.}
+%
+% \section{Introduction}
+%
+% \DescribeMacro{\ifthenelse}
+% |\ifthenelse{|^^A
+%       \meta{test}|}{|\meta{then clause}|}{|\meta{else clause}|}|
+%
+% Evaluates \meta{test} as a boolean function, and then executes
+% either \meta{then clause} or \meta{else clause}.
+%
+% \meta{test} is a boolean expression using the infix connectives,
+% |\and|, |\or|, the unary |\not| and parentheses |\( \)|.
+%
+% As an alternative notation |\AND|, |\OR| and |\NOT| can be
+%    used. This is safer since it can't be misinterpreted
+%    when appearing inside a \TeX-conditional in which |\or| has a
+%    different meaning.
+%
+% The atomic  propositions are:\\
+% \meta{number} |<| \meta{number} \\
+% \meta{number} |=| \meta{number} \\
+% \meta{number} |>| \meta{number} \\
+% |\isodd{| \meta{number} |}|\\
+% |\isundefined{| \meta{command name} |}|\\
+% |\equal{|\meta{string}|}{|\meta{string}|}|\\
+% |\lengthtest{|\meta{dimen}|<|\meta{dimen}|}|\\
+% |\lengthtest{|\meta{dimen}|=|\meta{dimen}|}|\\
+% |\lengthtest{|\meta{dimen}|>|\meta{dimen}|}|\\
+% |\boolean{|\meta{name}|}|
+%
+% The \meta{string}s tested by |\equal| may be any sequence of commands
+% that expand to a list of tokens. If these expansions are equal, then
+% the proposition is true.
+%
+% |\isodd| is true if the \meta{number} is odd, and false otherwise
+% (even if the argument is not a number).
+%
+% |\isundefined{\cmd}| is true if |\cmd| is not defined.
+%
+% |\boolean{xyz}| returns the truth value contained in the primitive
+% \TeX\ |\if|, |\ifxyz|. This is usually used with boolean flags
+% created with |\newboolean| and  |\provideboolean| described below.
+% It can also be used with the names of |\newif| created tokens, and
+% primitive \TeX\ |\if| constructs, for example |\boolean{true}|
+% (|\iftrue|),  |\boolean{mmode}| (|\ifmmode|) etc.
+%
+%
+%  The commands:\\
+%  |\newboolean|\marg{name}\DescribeMacro{\newboolean}\ and\
+%  |\provideboolean|\marg{name}\DescribeMacro{\provideboolean}\
+%  are provided so the user can easily create  new boolean flags.
+%  As for |\newcommand|, |\newboolean| generates an error if the
+%  command name is not new. |\provideboolean| silently does nothing in
+%  that case.
+%
+%  The boolean flags may be set with:\\
+%  |\setboolean|\marg{name}\marg{value}\DescribeMacro{\setboolean}\\
+% \meta{value} may be either |true| or |false| (any CaSe).
+%
+% Note that there is no precedence between |\and| and |\or|.
+% The proposition is evaluated in a left right manner. |\not| only
+% applies to the immediately following proposition. (This is consistent
+% with Lamport's |ifthen.sty|.) In this style, though the test is
+% `lazily' evaluated, so for instance if the first proposition in an
+% |\or| is true, the second one is skipped. (On the second pass---the
+% first pass in an |\edef| expands clauses in all propositions.)
+%
+% Apart from the addition of the extra atomic propositions |\isodd|,
+% |\boolean|, |\lengthtest| and |\isundefined|,
+% the only known incompatibility is that
+% in this package the expression|\not\not|\meta{P} is equivalent to
+% \meta{P}.
+% However in the original style it was equivalent to |\not|\meta{P}.
+% This is intentional (bug fix:-).
+%
+% \DescribeMacro{\whiledo}
+% The command |\whiledo| is also defined (copied directly from
+% the \LaTeX2.09 definition).
+%
+% |\whiledo{|\meta{test}|}{|\meta{while clause}|}|
+%
+% With \meta{test} as above, repeatedly executes \meta{while clause}
+% while the test remains true.
+%
+% \StopEventually{}
+%
+% \section{The Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\TE@throw}
+% In order to support the syntax of |ifthen.sty|, which allows access
+% to the primitive \TeX\ syntax for a numeric test, rather than a |{}|
+% delimited argument form, it is most convenient to work `within' an
+% |\ifnum|. |\ift@throw| `throws' you out of the current |\ifnum| so
+% that you can (eg) start an |\ifdim| for the length tests.
+%    \begin{macrocode}
+\def\TE@throw{\@ne=\@ne\noexpand\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\boolean}
+% A non-standard extension to |ifthen|, supporting boolean was
+% previously available, this is a simpler implementation.
+%    \begin{macrocode}
+\def\boolean#1#2{%
+  \TE@throw\expandafter\noexpand\csname if#1\endcsname#2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@length}
+% Testing lengths. |#1| is the test. The extra argument gobbles spaces.
+%    \begin{macrocode}
+\def\TE@length#1#2{\TE@throw\noexpand\ifdim#1#2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@odd}
+% \begin{macro}{\TE@@odd}
+% Testing odd/even. This is true if |#1| is an odd number, and false
+% otherwise (even if |#1| is not a number at all).
+%
+% It is hard to make this completely reliable. Here I have erred on the
+% side of safety. This should not generate a \TeX\ error if given any
+% robust commands as its argument. However it returns true on any
+% argument that \emph{starts} with an odd number |11xx| which is bad,
+% and it can not deal with \TeX's count registers, although \LaTeX\
+% counters work (via |\value|).
+% \changes{v1.0b}{1993/12/17}{Improve \cs{isodd}.}
+% \changes{v1.0c}{1994/01/20}{Improve \cs{isodd} again.}
+%    \begin{macrocode}
+\def\TE@odd#1#2{%
+  \TE@throw\noexpand\TE@@odd#1\noexpand\@nil\noexpand\ifodd\count@#2}
+%    \end{macrocode}
+%
+% |\TE@@odd| is not expanded on the first pass.
+%    \begin{macrocode}
+\def\TE@@odd#1#2\@nil{%
+  \@defaultunits
+  \count@\if-#1-0\else0\expandafter#1\fi#2\relax\@nnil}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\TE@repl}
+% |\TE@repl| replaces the single token |#1| by |#2|. (Not within |{}|
+% groups.) It is used to replace |\or| by |\TE@or| without the need to
+% redefine |\or|. Earlier versions just |\let\or\TE@or| but this has a
+% bad effect on the expansion of commands which use the primitive
+% |\or| internally, eg |\alph|, and so caused surprising results if
+% these commands were used inside |\equal|.
+% \changes{v1.0h}{1994/05/14}{macro added}
+%    \begin{macrocode}
+\def\TE@repl#1#2{%
+  \long\def\@tempc##1#1##2{%
+    \def\@tempa{##2}\def\@tempb{\@tempc}%
+    \ifx\@tempa\@tempb
+     \toks@\expandafter{\the\toks@##1}%
+     \expandafter\@gobble
+    \else
+      \toks@\expandafter{\the\toks@##1#2}%
+    \expandafter\@tempc
+    \fi
+    ##2}%
+  \expandafter\toks@\expandafter{\expandafter}%
+  \expandafter\@tempc\the\toks@#1\@tempc}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\ifthenelse}
+% The remaining macros in this file are derived from the ones in
+% |ifthen.sty| but recoded and simplified. The main simplification is
+% that the original style (and the |\boolean| extensions) expressed
+% logical values always in terms of |\ifnum|. As |\fi| is `untyped' this
+% is not necessary, so for example the length tests can return values
+% via |\ifdim|, the trailing |\fi| will not complain, even though it was
+% `expecting' an |\ifnum|. Also the system of passing information via
+% macros expanding to |T| or |F| has been completely replaced by a
+% simpler system using |\iftrue|, which furthermore allows lazy
+% evaluation on the second pass.
+%    \begin{macrocode}
+\long\def\ifthenelse#1{%
+%    \end{macrocode}
+% \changes{v1.0h}{1994/05/14}{Use \cs{TE@repl}}
+%    \begin{macrocode}
+  \toks@{#1}%
+  \TE@repl\or\TE@or
+  \TE@repl\and\TE@and
+  \TE@repl\not\TE@neg
+%    \end{macrocode}
+%
+% \changes{v1.1c}{2001/05/25}{Added \cs{AND}, \cs{OR} and \cs{NOT} as
+%    boolean operators as alternative to the lower case versions
+%    (pr/3297)}
+%    Support alternate names for the boolean operators (strictly
+%    speaking only |\OR| would be necessary).
+%    \begin{macrocode}
+  \TE@repl\OR\TE@or
+  \TE@repl\AND\TE@and
+  \TE@repl\NOT\TE@neg
+%    \end{macrocode}
+% The original |ifthen.sty| processed everything inside a box
+% assignment, to catch any extra spaces before they appeared in the
+% output. Instead I have added extra arguments to the commands so they
+% each remove any following space.
+%
+% Set up the user level names |\not| etc.
+% \changes{v1.0c}{1994/01/20}{Modify \cs{protect} and \cs{value}}
+% \changes{v1.0j}{1994/11/15}{Modify \cs{protect} add \cs{@setref}}
+% \changes{v1.0l}{1996/03/22}
+%      {Use \cs{begingroup} not \cs{bgroup} for latex/2105}
+% \changes{v1.1a}{1999/01/07}{\cs{isundefined} added for /2824}
+%    \begin{macrocode}
+    \begingroup
+        \let\protect\@unexpandable@protect
+        \def\@setref##1##2##3{%
+         \ifx##1\relax\z@\else\expandafter##2##1\fi}%
+        \def\value##1{\the\csname c@##1\endcsname}%
+        \let\equal\TE@equal \let\(\TE@lparen \let\)\TE@rparen
+        \let\isodd\TE@odd \let\lengthtest\TE@length
+        \let\isundefined\TE@undef
+%    \end{macrocode}
+% For the first pass, in a group, make various tokens non-expandable.
+%
+% It is unfortunate that in order to remain compatible with |ifthen|
+% syntax, it is necessary to have a two pass system. The first pass
+% inside an |\edef| `exposes' the |\if|\ldots\ |\fi| tokens, so the
+% correct clauses may be skipped on the second pass. This means that the
+% whole |\ifthenelse| command does not work by expansion, and so
+% possibly has only limited usefulness for macro code writers.
+% The main problem with the |ifthen:| syntax is that (unique for \LaTeX)
+% it does not uses a brace delimited argument form, and exposes the
+% primitive \TeX\ syntax for \meta{number}. Pretty much the only way of
+% parsing |1 > 2 \or 2 < 1| is to actually evaluate the primitive
+% |\ifnum|s. A syntax such as:\\%
+% |\or{\numtest{1<2}}{\lengthtest{1pt<1in}}|\\
+%  could easily be evaluated in a one pass way, operating directly via
+%  expansion, and leaving no extra tokens in the token stream.
+%
+% Still, on with the code\ldots\ make |\@tempa| and |\@tempb| tokens
+% non-expandable on the first pass.
+% \changes{v1.0l}{1996/03/22}
+%      {Use \cs{begingroup} not \{ for latex/2105}
+%    \begin{macrocode}
+        \begingroup
+          \let\@tempa\relax\let\@tempb\relax
+          \xdef\@gtempa{\expandafter\TE@eval\the\toks@\TE@endeval}%
+        \endgroup
+%    \end{macrocode}
+% Now outside the group, execute |\@gtempa| which causes all the
+% |\if|s etc., to be evaluated, the final truth value is contained in
+% the |\newif| token |\ifTE@val|. Finally this is tested and either the
+% first or second following argument is chosen accordingly.
+% \changes{v1.0d}{1994/01/24}
+%     {Use \cs{@firstoftwo} not \cs{@leftmark}.}
+%    \begin{macrocode}
+        \@gtempa
+        \expandafter\endgroup\ifTE@val
+          \expandafter\@firstoftwo
+        \else
+          \expandafter\@secondoftwo
+        \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@eval}
+% Initialise a term. (Expanded on the first pass).
+%    \begin{macrocode}
+\def\TE@eval{\noexpand\TE@negatefalse\noexpand\iftrue\noexpand\ifnum}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifTE@val}
+% \begin{macro}{\ifTE@negate}
+% Two |\newif|s the first holds the current truth value of the
+% expression. The second is a temporary flag which is true if we need to
+% negate the current proposition.
+%    \begin{macrocode}
+\newif\ifTE@val
+\newif\ifTE@negate
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\TE@endeval}
+% Finalise a term. (Expanded on the first pass).
+%    \begin{macrocode}
+\def\TE@endeval{\relax
+      \noexpand\TE@setvaltrue\noexpand
+    \else
+      \noexpand\TE@setvalfalse\noexpand
+    \fi
+    \noexpand\TE@negatefalse\noexpand
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@setvaltrue}
+% \begin{macro}{\TE@setvalfalse}
+% Set the |\ifTE@val| to true or false depending on the value of the
+% current proposition, and the negate flag. (Not expanded on the first
+% pass.)
+%    \begin{macrocode}
+\def\TE@setvaltrue{%
+  \ifTE@negate\TE@valfalse\else\TE@valtrue\fi}
+\def\TE@setvalfalse{\let\ifTE@val\ifTE@negate}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\TE@or}
+% The internal version of |\or|. Ends the current term.
+% If true skip the remaining terms.
+%    \begin{macrocode}
+\def\TE@or{\TE@endeval\noexpand\ifTE@val\noexpand\else\noexpand\ifnum}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@and}
+% The internal version of |\and|. If false skip the remaining terms.
+%    \begin{macrocode}
+\def\TE@and{\TE@endeval\noexpand\ifTE@val\noexpand\ifnum}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@neg}
+% \begin{macro}{\TE@negswitch}
+% |\not|. Throw the current context, set a negate flag, then restart
+% the |\ifnum|. |\TE@negswitch| is not expanded on the first pass.
+%    \begin{macrocode}
+\def\TE@neg{\TE@throw\noexpand\TE@negswitch\noexpand\ifnum}
+\def\TE@negswitch{\ifTE@negate\TE@negatefalse\else\TE@negatetrue\fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\TE@lparen}
+% |\(|. Throw the current context, then restart a term inside a group.
+%    \begin{macrocode}
+\def\TE@lparen#1{\TE@throw\begingroup\TE@eval#1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@rparen}
+% |\)| end the current term, and the local group started by |\(|, but
+% pass on the boolean value in |\if\@val T|. The |\noexpand| stops the
+% |\expandafter| from expanding on the first pass.
+%    \begin{macrocode}
+\def\TE@rparen#1{%
+  \TE@endeval
+  \noexpand\expandafter\endgroup\noexpand\ifTE@val#1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@equal}
+% |\equal| greatly simplified from the original. |\def| may be used
+% rather than |\edef| as the whole thing is expanded anyway in the
+% first pass. The boolean can be directly encoded with the |\ifx|,
+% there is no need to start an equivalent |\ifnum|.
+% \changes{v1.0h}{1994/05/14}{make long}
+%    \begin{macrocode}
+\long\def\TE@equal#1#2#3{\TE@throw
+      \def\@tempa{#1}\def\@tempb{#2}%
+      \noexpand\ifx\@tempa\@tempb#3}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\setboolean}
+% |\setboolean| takes |true| or |false|, as |#2|, and sets |#1|
+% accordingly.
+% \changes{v1.0i}{1994/05/27}{New style error commands}
+%    \begin{macrocode}
+\def\setboolean#1#2{%
+  \lowercase{\def\@tempa{#2}}%
+  \@ifundefined{@tempswa\@tempa}%
+    {\PackageError{ifthen}%
+       {You can only set a boolean to `true' or `false'}\@ehc}%
+    {\@ifundefined{#1\@tempa}%
+      {\PackageError{ifthen}{Boolean #1 undefined}\@ehc}%
+      {\csname#1\@tempa\endcsname}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\newboolean}
+% \changes{v1.0m}{1996/08/02}{Add \cs{@ifdefinable} test for latex/2220}
+% Define a new `boolean'.
+%    \begin{macrocode}
+\def\newboolean#1{%
+  \expandafter\@ifdefinable\csname if#1\endcsname{%
+    \expandafter\newif\csname if#1\endcsname}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\provideboolean}
+% \changes{v1.0m}{1996/08/02}{Macro added for latex/2220}
+% Define a new `boolean' if it is not already defined.
+%    \begin{macrocode}
+\def\provideboolean#1{%
+  \@ifundefined{if#1}{%
+    \expandafter\newif\csname if#1\endcsname}\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\whiledo}
+% |\whiledo| copied directly from the original.\\
+% |\whiledo{|\meta{test}|}{|\meta{body}|}|\\
+% repeatedly evaluates \meta{body} until \meta{test} is true.
+%    \begin{macrocode}
+\long\def\whiledo#1#2{%
+  \ifthenelse{#1}%
+    {\@whiledotrue
+     \@whilesw\if@whiledo\fi
+       {#2%
+        \ifthenelse{#1}\@whiledotrue\@whiledofalse}}%
+    {}%
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TE@undef}
+% \changes{v1.1a}{1999/01/07}{Macro added for /2824}
+% test if csname is defined. |\ifx| test.
+%    \begin{macrocode}
+\def\TE@undef#1#2{%
+  \TE@throw\noexpand\ifx\noexpand\@undefined\noexpand#1#2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@whiledo}
+% Internal switch for |\whiledo|.
+%    \begin{macrocode}
+\newif\if@whiledo
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+\endinput

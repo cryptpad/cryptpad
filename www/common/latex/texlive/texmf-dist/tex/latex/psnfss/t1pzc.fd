@@ -1,0 +1,15 @@
+\ProvidesFile{t1pzc.fd}
+   [2001/06/04 font definitions for T1/pzc.]
+
+\DeclareFontFamily{T1}{pzc}{}
+
+\DeclareFontShape{T1}{pzc}{mb}{it}{
+   <-> pzcmi8t
+}{}
+
+\DeclareFontShape{T1}{pzc}{m}{it}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{T1}{pzc}{mb}{sl}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{T1}{pzc}{m}{sl}{<->ssub * pzc/mb/sl}{}
+\DeclareFontShape{T1}{pzc}{m}{n}{<->ssub * pzc/mb/it}{}
+
+\endinput

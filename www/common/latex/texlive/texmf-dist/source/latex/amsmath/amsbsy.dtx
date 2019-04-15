@@ -1,0 +1,244 @@
+% \def\filename{amsbsy.dtx}
+% \def\fileversion{1.2d}
+% \def\filedate{1999/11/29}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 1999 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\usepackage{amsbsy}
+\begin{document}
+\title{The \pkg{amsbsy} package}
+\author{Frank Mittelbach\and Rainer Sch\"opf\and Michael Downes}
+\date{Version \fileversion, \filedate}
+\DocInput{amsbsy.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+%
+% \section{Introduction}
+%
+%    The package \texttt{amsbsy}, first written in 1989, implements a
+%    few commands for producing \textbf{bold} characters in the `normal'
+%    \emph{math version}.
+% \begin{quote}\em
+%    Note: It is recommended nowadays to use the \pkg{bm} package, which
+%    became available in 1997.
+% \end{quote}
+%
+%    If we have bold fonts which contain the character in question then
+%    we will use these fonts to produce the wanted character. But
+%    sometimes math fonts are only available in a certain weight
+%    (e.g.\ the AMS symbol fonts).
+% \DescribeMacro\pmb
+%    For these cases we provide a command which is called \verb+\pmb+ (an
+%    acronym for \textbf{p}oor \textbf{m}an's \textbf{b}old) with one argument.
+%    The bolder weight is achieved by copying the argument three times in
+%    slightly different positions which is better than nothing but no
+%    match for a real bold font.
+%
+% \DescribeMacro\boldsymbol
+%    There also exists the \verb+\boldsymbol+ command which is better in
+%    all cases where bold fonts exists. This command will internally
+%    switch to the corresponding `bold' \emph{math version} typeset its
+%    argument in this version.
+%
+%    Both commands will preserve the nature of their arguments, i.e.\ if
+%    they get a relational atom their result will again be a relation as
+%    far as \tex/'s mathspacing is concerned.
+%
+%    Since it is good policy to make at least a small test we try to
+%    typeset the infinity sign ($\infty$) first with \verb+\pmb+ and then
+%    with \verb+\boldsymbol+.
+% \[
+%           \pmb{\infty} = \boldsymbol{\infty} \quad ?
+% \]
+% \StopEventually{}
+%
+%    Standard package info.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must December 1994 or later
+\ProvidesPackage{amsbsy}[1999/11/29 v1.2d]
+%    \end{macrocode}
+%
+% \section{The implementation}
+%
+%    We need some functions from the \pkg{amsgen} package.
+%    \begin{macrocode}
+\RequirePackage{amsgen}
+%    \end{macrocode}
+%
+%\begin{macro}{\boldsymbol}
+%    In implementing boldsymbol, we must take into account \tex/'s
+%    limitation of only 16 mathgroups (math families, in Knuth's
+%    terminology). If we wanted to maintain mathgroups for both the bold
+%    and non-bold version of each math font, it would not take long to
+%    run out of mathgroups. Therefore what we do instead for a bold
+%    symbol is embed it in an \verb|\hbox|; inside that \verb|\hbox|,
+%    when we start another math formula, we can change all the
+%    mathgroups to their bold equivalents.
+%
+%    However, to get the correct math style inside the hbox (display,
+%    text, script or scriptscript) we have to use \verb|\mathchoice|.
+%    Since \verb|\mathversion{bold}| has a lot of overhead, and
+%    \verb|\mathchoice| typesets the argument text four times, we would
+%    rather not put the \verb|\mathversion| command inside each
+%    \verb|\hbox| in the \verb|\mathchoice|; on the other hand,
+%    \verb|\mathversion| gives an error message if it's used in math
+%    mode. Therefore if we want to execute \verb|\mathversion{bold}|
+%    before starting the \verb|\mathchoice| we have to temporarily
+%    disable the \verb|\@nomath| error. (The error message is intended
+%    to keep people from accidentally emboldening a preceding part of a
+%    math formula, since only the mathgroups defined at the end of a
+%    math formula will determine the fonts used in that formula; but we
+%    are going to typeset our bold symbol not in the current formula but
+%    in an embedded formula, so that this danger doesn't apply here.)
+%    \begin{macrocode}
+\DeclareRobustCommand{\boldsymbol}[1]{%
+%    \end{macrocode}
+%    Start a group to localize the change of \verb|\@nomath|:
+%    \begin{macrocode}
+  \begingroup
+%    \end{macrocode}
+%    Disable \verb|\@nomath| so that we don't have to leave math
+%    mode before executing \verb|\mathversion|:
+%    \begin{macrocode}
+  \let\@nomath\@gobble \mathversion{bold}%
+%    \end{macrocode}
+%    \cs{math@atom} is a test macro which looks at its argument and
+%    produces a math atom of the proper class.
+%    \begin{macrocode}
+  \math@atom{#1}{%
+%    \end{macrocode}
+%    Although it is tempting to use \verb|\text| here, to save some
+%    main memory, that caused a bug in the past due to some internal
+%    interactions with \verb|\mathversion|.
+%    \begin{macrocode}
+  \mathchoice%
+    {\hbox{$\m@th\displaystyle#1$}}%
+    {\hbox{$\m@th\textstyle#1$}}%
+    {\hbox{$\m@th\scriptstyle#1$}}%
+    {\hbox{$\m@th\scriptscriptstyle#1$}}}%
+%    \end{macrocode}
+%    End the group we started earlier.
+%    \begin{macrocode}
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\math@atom}
+%    The macro \verb+\math@atom+ looks at its argument and produce a
+%    correct math atom, i.e.\ a primitive like \verb+\mathopen+.
+%    Until the day we have a real implementation for all cases we use
+%    the \verb+\binrel@+ command from \amstex/ which can distinguish
+%    between binary, relation and ord atoms.
+%    \begin{macrocode}
+\def\math@atom#1#2{%
+   \binrel@{#1}\binrel@@{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pmb}
+%    Poor man's bold command, works by typesetting multiple copies of
+%    the given argument with small offsets.
+%    \begin{macrocode}
+\DeclareRobustCommand{\pmb}{%
+  \ifmmode\else \expandafter\pmb@@\fi\mathpalette\pmb@}
+%    \end{macrocode}
+%
+%    \cs{pmb@@} is called by \cn{pmb} in the non-math-mode case.
+%    Discard the first two arguments which are for the math-mode case.
+%    \begin{macrocode}
+\def\pmb@@#1#2#3{\leavevmode\setboxz@h{#3}%
+   \dimen@-\wdz@
+   \kern-.5\ex@\copy\z@
+   \kern\dimen@\kern.25\ex@\raise.4\ex@\copy\z@
+   \kern\dimen@\kern.25\ex@\box\z@
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newdimen\pmbraise@
+%    \end{macrocode}
+%    Note: because of the use of \cs{mathpalette}, if \cs{pmb@} is applied to a
+%    single math italic character (or a single character from some other
+%    slanted math font), the italic correction will be added. This will
+%    cause subscripts to fall too far away from the character in some
+%    cases, e.g., $\pmb{T}_1$ or $\pmb{\mathcal{T}}_1$.
+%    \begin{macrocode}
+\def\pmb@#1#2{\setbox8\hbox{$\m@th#1{#2}$}%
+  \setboxz@h{$\m@th#1\mkern.5mu$}\pmbraise@\wdz@
+  \binrel@{#2}%
+  \dimen@-\wd8 %
+  \binrel@@{%
+    \mkern-.8mu\copy8 %
+    \kern\dimen@\mkern.4mu\raise\pmbraise@\copy8 %
+    \kern\dimen@\mkern.4mu\box8 }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\def\binrel@#1{\begingroup
+  \setboxz@h{\thinmuskip0mu
+    \medmuskip\m@ne mu\thickmuskip\@ne mu
+    \setbox\tw@\hbox{$#1\m@th$}\kern-\wd\tw@
+    ${}#1{}\m@th$}%
+%    \end{macrocode}
+%    The \cn{noexpand} here should be unnecessary, but just in case
+%    \ldots
+%    \begin{macrocode}
+  \edef\@tempa{\endgroup\let\noexpand\binrel@@
+    \ifdim\wdz@<\z@ \mathbin
+    \else\ifdim\wdz@>\z@ \mathrel
+    \else \relax\fi\fi}%
+  \@tempa
+}
+%    \end{macrocode}
+%    For completeness, assign a default value for \cs{binrel@@}.
+%    \begin{macrocode}
+\let\binrel@@\relax
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{131}
+% \Finale

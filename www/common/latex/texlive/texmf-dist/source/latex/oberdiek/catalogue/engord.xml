@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='engord'>
+  <name>engord</name>
+  <caption>Converts numbers to English ordinal numbers.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2000,2003,2006-2008,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.8'/>
+  <description>
+    Defines <tt>\engord</tt> (used like <tt>\arabic</tt>,
+    <tt>\roman</tt>, etc.), and <tt>\engordnumber</tt> (which formats
+    a &#x201C;TeX number&#x201D;).
+    <p/>
+    So <tt>\pagenumbering{engord}</tt> gives page numbers <tt>1st,
+    2nd, 3rd, ...</tt>
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/engord.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/engord.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

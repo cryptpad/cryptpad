@@ -1,0 +1,219 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \CheckSum{82}
+%
+% \iffalse   % this is a METACOMMENT !
+%
+% File `latexsym.dtx'.
+% Copyright 1994-1998 by Frank Mittelbach. All rights reserved.
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{latexsym}
+%<fd>\ProvidesFile{ulasy.fd}
+%<-driver>             [1998/08/17 v2.2e
+%<package>                 Standard LaTeX package (lasy symbols)]
+%<fd>              LaTeX symbol font definitions]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{latexsym}
+\GetFileInfo{latexsym.sty}
+\providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+\title{The \LaTeX{} symbol fonts for use with
+         \LaTeXe.\thanks{This file has version
+           number \fileversion, dated \filedate.}}
+\date{\filedate}
+\author{Frank Mittelbach}
+\begin{document}
+\MaintainedByLaTeXTeam{latex}
+\maketitle
+ \DocInput{latexsym.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \changes{v2.2e}{1998/08/17}{Documentation fixes.}
+%
+% \section{Introduction}
+%
+%    This file defines the package |latexsym| which makes the few
+%    additional characters available that come from the |lasy| fonts
+%    (\LaTeX's symbol fonts). These fonts are not automatically
+%    included in the NFSS2/\LaTeXe{} since they take up important
+%    space and aren't necessary if one makes use of the packages
+%    \texttt{amsfonts} or \texttt{amssymb}.
+%
+%    The commands defined by the \texttt{latexsym} package are:
+%    \begin{quote}\raggedright
+%    |\mho|~$\mho$ \quad
+%    |\Join|~$\Join$ \quad
+%    |\Box|~$\Box$ \quad
+%    |\Diamond|~$\Diamond$ \quad
+%    |\leadsto|~$\leadsto$ \quad
+%    |\sqsubset|~$\sqsubset$ \quad
+%    |\sqsupset|~$\sqsupset$ \quad
+%    |\lhd|~$\lhd$ \quad
+%    |\unlhd|~$\unlhd$ \quad
+%    |\rhd|~$\rhd$ \quad
+%    |\unrhd|~$\unrhd$
+%    \end{quote}
+%
+% \StopEventually{}
+%
+% \section{The \dst{} modules}
+%
+% The following modules are used in the implementation to direct
+% \dst{} in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   package  & produce a package file \\
+%   fd     & produce a font definition file
+% \end{tabular}
+% \end{center}
+%
+%
+% \section{The Implementation}
+%
+% The individual files generated from this code are identified at the
+% very top of this file by a couple of lines looking like this:
+% \begin{verbatim}
+% %<fd>\ProvidesFile{Ulasy.fd}
+% %<-driver>             [????/??/?? v2.2?
+% %<package>                 Standard LaTeX package (lasy symbols)]
+% %<fd>              LaTeX symbol font definitions]
+%\end{verbatim}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\symlasy}
+%
+%    It is possible to detect whether or not the \LaTeX{} symbols are
+%    already defined by checking for the math group number with the
+%    name |\symlasy|.
+%
+%    In that case we exit but write a message to the transcript file.
+%    \begin{macrocode}
+\ifx\symlasy\undefined \else
+  \wlog{Package latexsym: nothing to set up^^J}%
+  \endinput \fi
+%    \end{macrocode}
+%    Otherwise we define the new symbol font.
+%    \begin{macrocode}
+  \DeclareSymbolFont{lasy}{U}{lasy}{m}{n}
+  \SetSymbolFont{lasy}{bold}{U}{lasy}{b}{n}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%    Because the lasy symbols are made an error in the format we have
+%    to undefine them before we can set them anew with
+%    |\DeclareMathSymbol|.
+%    \begin{macrocode}
+  \let\mho\undefined            \let\sqsupset\undefined
+  \let\Join\undefined           \let\lhd\undefined
+  \let\Box\undefined            \let\unlhd\undefined
+  \let\Diamond\undefined        \let\rhd\undefined
+  \let\leadsto\undefined        \let\unrhd\undefined
+  \let\sqsubset\undefined
+%    \end{macrocode}
+% \changes{v2.2a}{1995/03/18}{\cs{lhd} and friends should be bin ops.}
+%    \begin{macrocode}
+  \DeclareMathSymbol\mho     {\mathord}{lasy}{"30}
+  \DeclareMathSymbol\Join    {\mathrel}{lasy}{"31}
+  \DeclareMathSymbol\Box     {\mathord}{lasy}{"32}
+  \DeclareMathSymbol\Diamond {\mathord}{lasy}{"33}
+  \DeclareMathSymbol\leadsto {\mathrel}{lasy}{"3B}
+  \DeclareMathSymbol\sqsubset{\mathrel}{lasy}{"3C}
+  \DeclareMathSymbol\sqsupset{\mathrel}{lasy}{"3D}
+  \DeclareMathSymbol\lhd     {\mathbin}{lasy}{"01}
+  \DeclareMathSymbol\unlhd   {\mathbin}{lasy}{"02}
+  \DeclareMathSymbol\rhd     {\mathbin}{lasy}{"03}
+  \DeclareMathSymbol\unrhd   {\mathbin}{lasy}{"04}
+%    \end{macrocode}
+%    To save some space we can remove the definition of |\not@base|
+%    since it isn't any longer needed. (We use |\@undefined| so that
+%    gives an error and not a recursive definition
+%    if it is still used somewhere.)
+% \changes{v2.2b}{1995/07/03}{Free space for \cs{not@base}}
+%    \begin{macrocode}
+  \let\not@base\@undefined
+%</package>
+%    \end{macrocode}
+%
+%  \subsection{\LaTeX{} symbols fonts}
+%
+% \changes{v2.2d}{1996/11/20}{lowercase ulasy.fd /1044}
+%    The rest of this file defines the the font shape declarations
+%    that have to go into the corresponding |.fd| file.
+%
+%    \begin{macrocode}
+%<*fd>
+\DeclareFontFamily{U}{lasy}{}
+\DeclareFontShape{U}{lasy}{m}{n}{ <5> <6> <7> <8> <9> gen * lasy
+      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88>lasy10  }{}
+%    \end{macrocode}
+%    Since there are no bold lasy symbols below 10pt we silently
+%    substitute them by the medium ones to avoid terminal warnings if
+%    |\boldmath| is selected.
+%    \begin{macrocode}
+\DeclareFontShape{U}{lasy}{b}{n}{ <-10> ssub * lasy/m/n
+     <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88>lasyb10  }{}
+%</fd>
+%    \end{macrocode}
+%
+%    The next line goes into all files and in addition prevents \dst{}
+%    from adding any further code from the main source file (such as a
+%    character table).
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \DeleteShortVerb{\|}
+% \Finale
+%
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

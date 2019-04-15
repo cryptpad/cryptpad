@@ -1,0 +1,891 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the Standard LaTeX `MFNFSS Bundle'.
+% --------------------------------------------------------
+% 
+% This file may be distributed under the terms of the LaTeX Project
+% Public License, as described in lppl.txt in the base LaTeX distribution.
+% Either version 1.0 or, at your option, any later version.
+% 
+% \fi
+%
+% \CheckSum{27}
+%
+% \iffalse   % this is a METACOMMENT !
+%
+% File: oldgerm.dtx
+% Copyright (C) 1994 Yannis Haralambous
+% Copyright (C) 1994-1996 by LaTeX3 project. All rights reserved.
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{oldgerm}
+%<Uyswab>\ProvidesFile{Uyswab.fd}
+%<Uygoth>\ProvidesFile{Uygoth.fd}
+%<Uyfrak>\ProvidesFile{Uyfrak.fd}
+%<Uyinit>\ProvidesFile{Uyinit.fd}
+%<-driver>             [1998/06/07 v2.1j
+%<package>                 LaTeX2e package for Old German fonts]
+%<Uyswab>              YH Schwabacher font definitions]
+%<Uygoth>              YH Gothic font definitions]
+%<Uyfrak>              YH Fraktur definitions]
+%<Uyinit>              YH large initials font definitions]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{oldgerm}
+\GetFileInfo{oldgerm.sty}
+\providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+\title{The \texttt{oldgerm} package for use with 
+        \LaTeXe\thanks{This file contains a reproduction 
+        of an article by Yannis Haralambous}}
+\date{\filedate}
+\author{Frank Mittelbach}
+
+
+
+\begin{document}
+\maketitle
+ \DocInput{oldgerm.dtx}
+\end{document}
+%</driver>
+%
+% \fi
+%
+% \changes{v2.1a}{1993/12/12}{Update for \LaTeXe}
+% \changes{v2.1d}{1994/04/14}{Renamed \cs{@newtextcmd} to
+%    \cs{DeclareTextFontCommand}}
+% \changes{v2.1e}{1994/05/27}{Changed for new driver format.}
+% \changes{v2.1f}{1994/06/09}{Use correct font 
+%                             commands in documentation.}
+% \changes{v2.1g}{1995/05/07}{Add a documentation section about the
+%                             limitations when using these fonts due
+%                             to their encoding.}
+%
+% \section{Introduction}
+%
+% This file defines commands to use the old German fonts for Fraktur,
+% Schwabacher, and Gothic designed by Yannis Haralambous.
+% To access them, use the package \texttt{oldgerm} in a
+% |\usepackage| command.  
+%
+% \DescribeMacro\gothfamily \DescribeMacro\frakfamily 
+% \DescribeMacro\swabfamily This
+% package option defines the commands |\gothfamily|, |\frakfamily| and 
+% |\swabfamily| to
+% switch to the corresponding font families (thus these commands
+% behave similar as |\sffamily| or |\ttfamily|).  Since these
+% families only consist of one shape in one series, commands like
+% |\bfseries| or |\itshape| have no effect when typesetting in these
+% families. However, size changing commands are honoured.
+%
+% \DescribeMacro\textgoth
+% \DescribeMacro\textfrak
+% \DescribeMacro\textswab
+% In addition the package defines the corresponding font commands with
+% arguments, that is |\textgoth|, |\textfrak|, and |\textswab|.
+%
+% \subsection{Important notes}
+%
+% These fonts are currently encoded in a way that does not correspond
+% to any standard encoding (for this reason they are classified by
+% NFSS as |U| encoded. In addition the fonts uses special ligatures
+% with the character |"| to access accents and sharp s.
+% For this reason commands accessing special
+% characters like |\ss| or accents like |\"| will not really work
+% directly when used with these fonts. You can either declare them for
+% the |U| encoding manually, e.g., by saying something like
+%\begin{verbatim}
+% \DeclareTextCommand{\"}{U}[1]{\UseTextAccent{OT1}#1}
+% \DeclareTextCompositeCommand{\"}{U}{a}{"a}
+% \DeclareTextCompositeCommand{\"}{U}{u}{"u}
+% ...
+% \DeclareTextCommand{\ss}{U}{"s}
+%\end{verbatim}
+% and so on, or you use the ligatures directly. However, declaring
+% composite characters for the |U| encoding means that they are declared
+% for every font with |U| encoding which might be totally inappropriate
+% for other fonts.
+%
+% Please also note that while |"a|, etc.\ looks very much like the
+% convention used by the |german| or |babel| packages the internal
+% mechanism to produce the accents is completely different. These
+% packages define |"a| to produce something like |\"a| which isn't
+% defined for the |U| encoding, while |"a| without the package is
+% interpreted as a ligature generating the accented letter ``\"{a}''
+% in the font. Using these packages with these fonts will therefore
+% produce some undesired effects.
+%
+% Finally please note that there might be some strange hyphenations in
+% the German examples of the article by Yannis below. The reason is
+% that this document is typeset with standard English hyphenation
+% patterns to ensure that it does work everywhere (this could be
+% improved).
+%
+% \vspace{0.5cm}
+%
+% \begin{quote}
+% The following section is a reproduction of an article by Yannis
+% about these fonts which was presented at the Cork '90
+% \TeX{}conference and was later published in \textsl{TUGboat\/} 12\#1,
+% pages 129--138. It is complete except for the picture of Emanuel
+% Breitkopf and the appendices which have
+% been left out (at the moment).
+% \end{quote}
+%
+% \vspace{0.5cm}
+%
+% \begingroup
+% 
+%
+% ^^A a number of definitions to typeset Yannis article
+%
+% \renewcommand\line{\hbox to\hsize}
+% \newcommand\MF{\textsf{Metafont}}
+% \newcommand\entry{}
+%
+% Yannis uses different names in his article
+%
+% \let\ygoth\gothfamily
+% \let\yfrak\frakfamily
+% \let\yswab\swabfamily
+%
+%
+%
+%
+% \begin{multicols}{2}
+%       [
+% \section{Typesetting old german:
+%  Fraktur, Schwabacher,
+%  Gotisch and Initials}
+%  \begin{center}
+%  Yannis Haralambous\protect\\
+%  U. F. R. de Math\'ematiques,\protect\\
+%  Universit\'e de Lille--Flandres--Artois,\protect\\
+%  59655 Villeneuve d'Ascq, France
+%  \end{center}
+%       ]
+%
+% Typesetting in the old style, with the corresponding types, besides
+% being an art, is also a real pleasure. \MF\ allows the creation of
+% faithful copies of these types and \TeX\ gives the possibility of
+% using them in the most traditional manner.  In this spirit, the
+% necessary fonts and macros to typeset in the old german types
+% Gotisch (also called Textur), Schwabacher and Fraktur are presented
+% in this paper, together with an historical introduction to each of
+% them. Also, a set of initials is described. Rules for typesetting in
+% these types are given, together with extracts from the original
+% sources.
+%
+% \centerline{\vphantom{A}}
+% \centerline{\slshape This paper is dedicated to}
+% \centerline{\slshape D. E. Knuth.}\vskip1cm
+% 
+% \noindent This article shows the first results of a longterm project
+% on reconstructing old types and typesetting following the old rules,
+% with \TeX\ and \MF. The work presented in this paper has been done
+% on a Mac SE/30 with Oz\TeX\ and Mac\MF.
+% 
+% \subsection{General Introduction to the Project: What's the Use of
+% Reconstructing Old Types}
+%
+% Old types are beautiful. Until now, one could find either modernized
+% copies of them (for decorative use) or facsimiles of historical
+% books.  With \TeX\ and \MF\ at last we have the possibility to
+% approach these types in the manner ---and with the care--- of a
+% \textit{collectionneur}. Since there is no commercial scope, no
+% compromise needs to be made in the creation of the fonts.  And once
+% the \MF ing is done, we can bring the fonts back to life, by using
+% them in typesetting texts, new or old ones. \TeX\ and \MF\ are
+% strong enough to achieve a faithful reproduction of old works, and
+% what's more, delicate enough to allow a personal tone and new ideas.
+% Thanks to D.  E. Knuth's work, typesetting becomes an interpretative
+% art at the reach of everybody. And you can believe me, it is the
+% same pleasure to read (resp. typeset) Goethe's poems in Breitkopf's
+% Fraktur as to hear (resp. play) Mozart's Sonatas on a Stein's
+% Pianoforte.
+% 
+% \subsection{Old German Types \protect\\
+% Gotisch}
+%
+% Gutenberg choosed the bible as his first work for merely commercial
+% reasons: only the churches and monasteries could afford to buy
+% quantities of books. Consequently, the first types he created had to
+% imitate manuscript characters, to be able to concurrence the
+% beautiful manuscript bibles produced by the monasteries themselves.
+% This explains the fact that Gutenberg's font is so elaborated. A
+% similar situation arose with Venetian greek renaissance types, which
+% had to imitate alexandrinian and byzantine greek handwriting:
+% hundreds of ligatures were used.
+% 
+% Gutenberg's font had 288 characters: besides the 25 uppercase (there
+% is no distinction between I and J) and 27 lowercase (there are two
+% kinds of s), all the others are variant types, accented characters
+% and ligatures.
+% 
+% The font |ygoth| presented here, is not an exact copy of Gutenberg's
+% font. It merely follows Gutenberg's guidelines on lowercase
+% characters and selects the uppercase ones from different 15th
+% century types. Please note that these uppercase characters are not
+% suitable for ``all capitals'' typesetting. Here are the basic upper
+% and lowercase characters:
+% 
+% {\baselineskip=20pt
+% \noindent\centerline{\ygoth A B C D E F G H}
+% 
+% \noindent\centerline{\ygoth I K L M N O P Q R}
+% 
+% \noindent\centerline{\ygoth S T U V W X Y Z}
+% 
+% \noindent\centerline{\ygoth a b c d e f g h i j}
+% 
+% \noindent\centerline{\ygoth k l m n o p q r}
+% 
+% \noindent\centerline{\ygoth s s: t u v w x y z}
+% }
+% \noindent
+%
+% For all old german types there is no distinction between I and J;
+% also there are two kinds of s: the middle and initial ``long s'' and
+% the final ``short s''
+% $$\hbox{\ygoth s\ s:}$$
+% In composite words, a short s is used when some
+% component of the word ends on s: 
+% $$\hbox{{\ygoth Aus:gang}, but {\ygoth Anstand}.}$$
+% Since it's almost impossible for a computer to know if some s is
+% long or short, you have to do it manually: type |s:| for a short s,
+% like in |Aus:gang| or |Alles:|.
+% 
+% The following ligatures are part of the font:
+% 
+% {\baselineskip=20pt
+% \noindent\centerline{\ygoth ae ba be bo ch ck ct}
+% 
+% \noindent\centerline{\ygoth da de do ha he ho}
+% 
+% \noindent\centerline{\ygoth ff fi fl ffi ffl ij ll}
+% 
+% \noindent\centerline{\ygoth oe pa pe po pp qq qz}
+% 
+% \noindent\centerline{\ygoth ss ssi st tz va ve vu}
+% }
+% \noindent
+% Beside the ones shown beyond, there are variant forms 
+% 
+% \noindent\centerline{\ygoth \char'052\ \char'057\ \char'075}
+% 
+% at positions {\it'052, '057, '075} of the font. Because of the many
+% ligatures, there is no place left for special characters (I used
+% only 128-character fonts); you'll have to switch to |CM| for \#, \$,
+% \%, \&, *, +, = etc. For the vowels a, e, o, u with Umlaut and for
+% the \ss, I followed Partl's [1988] convention: just type |"a|, |"e|,
+% |"o|, |"u|, |"s| (\"e is used in flemish) to obtain
+% 
+% \noindent\centerline{\ygoth "a "e "o "u "s.}
+% 
+% The difference with Partl's approach is that in our case |"a|, |"e|,
+% etc are ligatures. Since \ss\ historically comes from the ligature
+% s+z (\ss\ is called es-zet), by typing either |"s| or |sz|, you get
+% the same output.
+%   
+% In Appendix A you can find a sample of the font; it is an extract of
+% Luther's bible (1534), in the original orthograph.
+% 
+% \subsection{Schwabacher} 
+%
+% The name comes from Schwabach, a little german town on the south of
+% N\"urnberg.  According to Updike [1927], \textsl{in fifteenth century
+% German gothic or black-letter fonts, a differentiation of type-faces
+% began to show itself, as we have seen, in the last twenty years of
+% the century, between types that were somewhat pointed and a rounder,
+% more cursive gothic letter, with certain peculiarities ---the closed
+% a, looped b, d, h, and l, and a tailed f ans s. The first type was
+% called ``fraktur.'' The second was ultimately known as
+% ``schwabacher.''} Schwabacher was in some extend the ``boldface''
+% font, compared to the usual Fraktur. The font presented here is
+% called |yswab|; it is based on 18th century types. Nevertheless,
+% some characters (like the ``hebrew-like question mark {\yswab?})
+% have been taken from a contemporary book: A. Wikenhauser [1948],
+% \textsl{Das Evangelium nach Johannes}, where John's text is written in
+% Schwabacher and comments in Fraktur. Here are the basic upper and
+% lowercase characters:
+% 
+% \noindent\centerline{\yswab A B C D E F G H I K L M N}
+% 
+% \noindent\centerline{\yswab O P Q R S T U V W X Y Z}
+% 
+% \noindent\centerline{\yswab a b c d e f g h i j k l m n}
+% 
+% \noindent\centerline{\yswab o p q r s: s t u v w x y z.}
+% 
+% The following ligatures are included in the font:
+% 
+% \noindent\centerline{\yswab ff, sf, ss, st, sz}
+% 
+% For the vowels a, e, o, u with Umlaut, you have the choice between
+% two forms: for the older one (a small ``e'' over the letter) you
+% need to type a |*| + vowel combination, and for the newer one a |"|
+% + vowel combination. So, by typing |*a|, |*e|, |*o|, |*u|, |"a|,
+% |"e|, |"o|, |"u| you get
+% 
+% \noindent\centerline{\yswab *a *e *o *u "a "e "o "u}
+% 
+% respectively. 
+% 
+% \subsection{Fraktur}
+%
+% The first Fraktur type was created by Johann Sch\"onsperger in
+% Augsburg to typeset the book of prayers of Kaiser Maximilian (1513).
+% Some years later, Hieronymus Andre\ae\ created a new Fraktur type,
+% used by D\"urer for the printing of his theoretical works. In the
+% 17th century, Fraktur had a period of decline. It was only in the
+% fall of the 18th century that some progressive typographers like G.
+% I. Breitkopf and J. F. Unger gaved Fraktur a new breath, by creating
+% new fonts with the aesthetic standards of their time. Especially
+% Unger's font seems to lay more in the 19th century spirit.
+% 
+% \iffalse
+% \begin{figure*}[t]
+% \[ *** \mbox{ sorry, that wouldn't be portable }*** \]
+% \caption{\yfrak Gottlob Immanuel Breitkopf}
+% \end{figure*}
+% \fi
+% 
+% 
+% Gottlob Immanuel Breitkopf (1719--1794) lived in Leipzig. He
+% travelled a lot, studied french, english and other foreign fonts and
+% wrote himself an article (Breitkopf [1793]) on the situation of
+% typographers and typography in Leipzig at his time. In 1754 he was
+% to first to use removable types to typeset music. His name is
+% familiar to all musicians and friends of music, because of the
+% famous Breitkopf \& H\"artel editions of complete works of Bach,
+% Beethoven etc.
+% 
+% After Breitkopf, the ``official'' version of Fraktur (newspapers and
+% official documents) didn't evolved very much. In the 19th century,
+% with all its social ---and artistic--- turbulences many decorative
+% Fraktur types have been made, most of them are monstruous (for
+% example see Knebel [1870]). A final renovative effort has been made
+% in the twenties of our century by artists like Walter Tiemann and
+% others.  Unfortunately, the destructive trend for uniformisation of
+% nazism didn't left much place for \ae sthetic improvements or
+% changements.
+% 
+% Texts like {\yfrak Warum deutsche Schrift}?  (Why german type?) by
+% G. Barthel [1934], and {\yfrak Heraus: aus: der Schriftverelendung}!
+% (No more degenerate writing!) by T.  Thormeyer [1934] ({\yfrak
+% ...die Rundungen haben nichts: mit dem deutschen
+% Spannungs:bed"urfnis: gemeinsam. Das: Schwelgen in abgerundeten
+% Formen kann man andern Nationen "uberlassen...}) show that nazists
+% tried to use Fraktur as a symbol of the german nation. But ---an
+% historical paradox--- it was the nazis themselves who abolished
+% Fraktur in 1941\footnote{There seems to have been some
+% secrecy around this decision of the nazis. The only data I could
+% find is a short and cryptical reference in the 1941 DIN-booklet on
+% typographic standards: ``Bekanntgebung I$\!$I EM 8408/41 vom 26 Juli
+% 1941 des Reichswirtschaftsministers an den Deutschen
+% Normenauschlu\ss''. I would be very obliged if some reader could
+% provide me with more informations.}.  In a not too old edition of
+% the Brockhaus, one can find the sentence \textsl{``Die
+% nationalsozialist.  Regierung lie\ss\ die Fraktur 1941 aus
+% Zweckm\"a\ss igkeitsgr\"unden von Amts wegen abschaffen. Ob sie
+% damit eine Entscheidung traf, die ohnehin im Zuge der Entwicklung
+% lag, ist schwer zu beurteilen...''} (it is hard to say if the nazi
+% decision of abolishing Fraktur was really in the sense of
+% development...); there is a certain nostalgy in these words.
+% 
+% 
+% Today Fraktur is used mainly for decorative purposes (a nice
+% counterexample is the dtv pocket edition of Mozart's correspondence:
+% his letters are in Fraktur and the comments in Antiqua). Also there
+% are methods for the old german handwriting (S\"uterlin) which also
+% include Fraktur (for example {\yfrak Wir lesen deutsche Schrift},
+% bei A. Kiewel et al [1989]).
+% 
+% Let's return now to \TeX: the font |yfrak| which I propose is in the
+% old Breitkopf style. Here are the basic upper and lowercase
+% characters
+% 
+% \noindent\centerline{\yfrak A B C D E F G H I K L M N}
+% 
+% \noindent\centerline{\yfrak O P Q R S T U V W X Y Z}
+% 
+% \noindent\centerline{\yfrak a b c d e f g h i j k l m n}
+% 
+% \noindent\centerline{\yfrak o p q r s: s t u v w x y z.}
+% 
+% It contains the same ligatures and Umlauts as |yswab|. The symbols
+% {\yfrak\char'044} (which means ``etc'') and {\yfrak\char'100} (an
+% attempt to differentiate I and J) are in font positions \textit{'044}
+% and \textit{'100} respectively. You can a find a sample of the font in
+% Appendix B; it is the begining of the second part of Carl Philipp
+% Emanuel Bach's treatise on the true art of playing the keyboard
+% (meant is the harpsichord and/or clavichord) ``{\yfrak Versuch "uber
+% die wahre Art das: Clavier zu spielen}'' [1762].
+% 
+% \subsection{Initials}
+% 
+% The chancery initials which you can see on Appendix B and C are a
+% revival of baroque designs. This makes them suitable for old and new
+% texts as well.  They form the font |yinit|. You have the choice of
+% creating characters with depth zero, or characters with height equal
+% to |cap_height| of |cmr10| (with the corresponding magnification)
+% and the biggest part of the character under the baseline. For this
+% there is a boolean parameter |zero_depth| in the |yinit.mf|
+% parameter file.  To typeset the initial D of Appendix B, I used the
+% macro |\yinitial{D}| as follows (with |zero_depth:=false|)
+% \begin{verbatim}
+% \def\yinitial#1
+% {\hangindent=2.54cm
+% \hangafter=-4
+% \hskip-3.24cm
+% \lower-2.7mm
+% \hbox{\yinit #1}
+% \hskip1.5mm}
+%\end{verbatim}
+% Of course all these parameters will need some adjustment, according
+% to the interline skip and the textfont you are using. Note also that
+% |\par| stops the execution of |\hangafter|; you should better use
+% |\hfill\break\indent| instead.
+% 
+% \subsection{Typesetting Rules}
+% 
+% In the following text, taken from the Duden (M\"ulsing and Schmidt
+% [1919]) many fine points of typesetting in Fraktur are explained.
+% The essential points are the following: 1) don't use ligatures in
+% latin antiqua words, use them in french antiqua and in french
+% Fraktur; 2) in a composite word, do not use ligatures between
+% adjacent letters of two components 3) the antiqua \ss\ is to be used
+% in german words and names regardless of the language; 4) the latin
+% ``etc'' is to be translated as {\yfrak usw.} and its older form
+% {\yfrak\char'044} should not be used anymore; 5) concerning foreign
+% words in german, use Fraktur when the word has been ``germanized'',
+% and else antiqua; 6) the hyphen should always be in Fraktur, except
+% when it appears between two antiqua words; 7) in 1879, Daniel
+% Sanders proposed {\yfrak\char'100} as an alternative to {\yfrak I}
+% for the letter J, it would be nice if the authorities recognize it.
+% 
+% \vskip0.3cm
+% \centerline{\yfrak Einzelvorschriften f"ur den Schriftsatz}
+% \vskip0.5cm
+%
+% \yfrak In diesem Abschnitte stellen wir einige Einzelvorschriften
+% zusammen, deren allgemeine Befolgung f"ur die Einheitlichkeit bei
+% der Herstellung von Drucksachen sehr w"unschens:wert w"are.
+%
+% \yswab Ligaturen \bf \AE, \ae, \OE, \oe\ \yswab statt
+% \bf Ae, ae, Oe, oe. \yfrak In lateinischen W"ortern sind die
+% Ligaturen nicht anzuwenden, z. B. \rm Caelius mons, Asa
+% foetida. \yfrak In franz"osischen W"ortern, die im deutschen Satz
+% verstreut vorkommen, mu"s, wie im franz"osischen Satz "uberhaupt,
+% stets: \bf \OE\ \yfrak und \bf \oe\ \yfrak gesetzt
+% werden, z. B. \rm \OE uvres, s\oe ur.  \yfrak Selbst bei
+% Fraktursatz darf auf das: kleine o$\!$e nicht verzichtet werden, z.
+% B. Hors:d'o$\!$euvre.
+%
+% \yswab Sonstige Ligaturen. \yfrak In Wortverschmelzungen wie
+% Schiffahrt, Schnel{\kern-1pt}l"aufer, al{\kern-1pt}liebend, d. h.
+% also in W"ortern, die von drei gleichen Mitlauten einen
+% aus:gesto"sen haben, ist die Ligatur anzuwenden, wenn sie in der
+% betreffenden Schriftgattung vorhanden ist. Die Ligatur ist ferner
+% "uberall da anzuwenden, wo sie die sprachliche Richtigkeit nicht
+% st"ort, z. B. benutzen, abflauen, Billard, nicht aber in einfachen
+% Zusammensetzungen wie ent{}zwei, Kauf{}leute, viel{}leicht.
+% 
+% \yswab Der Buchstabe "s in fremdsprachichem Satz. \yfrak Wenn aus:
+% einem Deutschen Namen, in dem "s vorkommt, durch Anf"ugung einer
+% Lateinischen Endung ein Lateinisches: Wort gebildet wird, so bleibt
+% das: "s erhalten, es: erscheint also als: \rm \ss\ \yfrak (in
+% Antiqua). So wird z. B. aus: Wei"senburg: \rm Wei\ss
+% enburgensis \yfrak(der \rm Codex Wei\ss enburgensis). \yfrak
+% Eben\-so wird \rm\ss\ \yfrak gesetzt, wenn deutsche Eigennamen
+% mit "s in fremdsprachlichem Satz erscheinen, z. B.: \rm
+% Monsieur A\ss mann a \'et\'e \`a Paris. Ho trovato il Signor Gro\ss
+% e a Venezia.
+% 
+% \yswab usw. -- {\yfrak\char'044} -- {\bf etc.} \yfrak Im
+% deutschen Satze ist ``und so weiter'' der amtlichen Vorschrift
+% gem"a"s durch usw. abzuk"urzen, und zwar sowohl in Fraktur wie in
+% Antiqua. Die Form \char'044, die sich innerhalb der Lautschrift wie
+% eine Hieroglyphe, wie ein Vertreter der Zeichenschrift, ausnimmt,
+% ist veraltet und nicht mehr anzuwenden.\hfill\break\indent Die Form
+% {\rm etc} darf nur im Antiquasatz angewandt werden, wird aber
+% besser durch {\rm usw.} ersetzt. F"ur lateinischen Satz, also
+% innerhalb lateinischen Textes:, ist {\rm etc.}
+% selbstverst"andlich. Ferner sei erw"ahnt, da"s die Franzosen und
+% Engl"ander {\rm\&c.}, die Italiener {\rm ecc.} und die
+% Spanier {\rm etc.} verwenden, und zwar setzen alle stets:
+% einen Beistrich vor diese Abk"urzungen, was: im Deutschen nicht
+% "ublich ist.
+% 
+% \yswab Anwendung der Antiqua im Fraktursatz. \yfrak Um dem
+% bisherigen Schwanken in der Wahl zwischen Antiqua und Fraktur ein
+% Ende zu machen, empfiehlt es: sich folgende Grunds"atze zu
+% beobachten:\par 1. Alle Fremdw"orter romanischen Ursprungs:, die
+% nicht durch Annahme deutscher Biegung oder deutscher Lautbezeichnung
+% als: eingedeutscht erscheinen, setze man aus: Antiqua, z. B.
+% \rm en avant, en arri\`ere, en vogue, in praxi, in petto; a
+% conto, dolce far niente; \yfrak ferner Verbindungen wie \rm
+% Agent provocateur, Tempi passati, Lapsus linguae, Agnus Dei. \yfrak
+% Auch alle italienischen technischen Aus:dr"ucke aus: der Tonkunst,
+% wie \rm andante, adagio, moderato, vivace, \yfrak setze man
+% aus: Antiqua.  Die der lateinischen Sprache entstammenden
+% Bezeichnungen Dur und Moll sind als: eingedeutschte Hauptw"orter
+% aufzufallen und daher gro"s zu setzen, z. B. \rm C\yfrak-Dur.
+% \par2. Wenn ein Fremdwort deutsche Lautbezeichnung oder deutsche
+% Biegung annimmt oder mit einem deutschen Worte zusammengesetzt wird,
+% so setze man es: ais: Fraktur, z. B. \rm adagio, \yfrak aber:
+% das: Adagio, die Adagios:; \rm a conto, \yfrak aber: die
+% Akontozahlung; \rm dolce far niente, \yfrak aber: das:
+% Dolcefarniente.
+% 
+% \yswab Anwendung des: Bindestrichs: in Fraktursatz, der mit Antiqua
+% vermischt ist.  \yfrak Wenn in Fraktursatz bei Wortzusammensetzungen
+% der eine Teil der Zusammensetzung aus: Antiqua gesetzt werden mu"s,
+% so sind etwa vorkommende Bindestriche aus: der Textschrift, also
+% aus: Fraktur, zu se\-tzen, z. B.  \rm CGS\yfrak-Ma"ssystem. Eine
+% Aus:nahme wird nur dann gemacht, wenn der mit dem Bindestrich
+% schlie"sende erste (Antiqua-) Bestandteil an das: Ende einer Zeile
+% oder in Klammern zu stehen kommt; in diesem Falle ist der
+% Bindestrich aus: Antiqua zu setzen. In besonderen F"allen kann auch
+% eine Vermischung von Fraktur- und Antiquabindestrichen stattfinden,
+% z. B. Hoftheater-\rm Corps-de-ballet; \yfrak denn innerhalb des:
+% aus: Antiqua gesetzten Wortes: m"ussen auch die Bindestriche aus:
+% Antiqua gesetzt werden.
+% 
+% \yswab I (Selbstlaut) und J (Mitlaut) in der lateinischen
+% Druckschrift. \yfrak In der lateinischen Druckschrift wird zwischen
+% dem Selbstlaut und dem Mitlaut I genau unterschieden, und zwar steht
+% \rm I \yfrak aus:schlie"slich f"ur den Selbstlaut, \rm J
+% \yfrak aus:schlie"slich f"ur den Mitlaut. Diese Unterscheidung
+% machen alle neueren Sprachen. Da"s die deutsche Druckschrift einen
+% Unterschied zwischen I (Selbstlaut) und J (Mitlaut) nicht kennt, ist
+% ein gro"ser Mangel.  Diesen Mangel zu beseitigen versuchte schon
+% 1879 Daniel Sanders:, indem er f"ur den Mitlaut das: Zeichen
+% \char'100\ empfahl.  Dieses: Zeichen ist heute nur vereinzelt in
+% Drucken zu finden, hat sich also nicht allgemein eingeb"urgert und
+% ist auch nicht amtlich anerkannt worden. Es: w"are sehr zu
+% w"unschen, da"s auch in deutscher Schrift ein Unterschied zwischen I
+% (Selbstlaut) und J (Mitlaut) geschaffen und von der zust"andigen
+% Beh"orde anerkannt w"urde, und zwar um so mehr, als: er bei den
+% kleinen Buchstaben sowohl in deutscher (i, j) wie in lateinischer
+% \rm(i, j) \yfrak Schrift bereits: seit langem besteht.
+%
+% \normalfont
+% 
+% \subsection{Availability}
+%
+% Following a tradition of my friend Klaus
+% Thull, these fonts are in the public domain. The should be available
+% at the Aston end Heidelberg archives.  Also you can obtain them at
+% my adress. The status of this software is postcard-ware: each
+% satisfied user could send me a nice local postcard for my
+% collection.
+% 
+% \subsection{References}
+% 
+% \entry{Bach, Carl Philipp Emanuel. \textsl{Versuch \"uber die wahre
+% Art das Clavier zu spielen. Zweyter Theil, in welchem die Lehre von
+% dem Accompagnement und der freyen Fantasie abgehandelt wird.}
+% Berlin: G.  L. Winter, 1762.}
+% 
+% \entry{Barthel, Gustav. ``Warum deutsche Schrift?'' \textsl{Schrift
+% und Schreiben} 4, pages 98--130, 1934.}
+% 
+% \entry{Breitkopf, Johann Gottlob Immanuel. ``Ueber Buchdruckerey und
+% Buchhandel in Leipzig.''  \textsl{Journal f\"ur Fabrik, Manufaktur und
+% Handlung} 5, pages 1--57, 1793.}
+% 
+% \entry{Faulmann, Carl. \textsl{Das Buch der Schrift, enthaltend die
+% Schriftzeichen und Alphabete aller Zeiten und aller V\"olker des
+% Erdkreises.} Wien: Druck und Verlag der kaiserlich-k\"oniglichen
+% Hof- und Staatsdruckerei, 1880.}
+% 
+% \entry{Glaister, Geoffrey Ashall. \textsl{Glaister's Glossary of the
+% Book.} London: 1960.}
+% 
+% \entry{Kiewel, Albert, Eberhard Dietrich, Inghild St\"olting, and
+% Heinold Wachtendorf. \textsl{Wir lesen deutsche Schrift.} Hannover:
+% Kallmeyer'sche Verlagsbuchhandlung, 1989.}
+% 
+% \entry{Knebel, P. \textsl{Sammlung der gebr\"auchlisten
+% Schriftgattungen.} Landshut: Verlag der Jos. Thomann'schen
+% Buchhandlung, 1870.}
+% 
+% \entry{M\"ulsing, Ernst and Schmidt Alfred. \textsl{Duden,
+% Recht\-schrei\-bung der deutschen Sprache und der\break
+% Fremd\-w\"or\-ter.} Leipzig und Wien: Bibliographisches Institut,
+% 1919.}
+% 
+% \entry{Partl, Hubert. ``German \TeX.'' \textsl{TUGboat} 9 (1), pages
+% 70--72.}
+% 
+% \entry{Stiebner, Erhardt, Helmut Huber and Heribert Zahn.
+% \textsl{Schriften + Zeichen.} M\"unchen: Bruckmann, 1987.}
+% 
+% \entry{Thormeyer, Traugott. ``Heraus aus der Schriftverelendung!''
+% \textsl{Schrift und Schreiben} 4, pages 131--136, 1934.}
+% 
+% \entry{Updike, D. B. \textsl{Printing Types.} 1927.}
+% 
+% \entry{Walther, Karl Klaus. \textsl{Lexikon der Buchkunst und
+% Bibliophilie.} Leipzig: Bibliographisches Institut, 1987.}
+% 
+% \entry{Wikenhauser, Alfred. \textsl{Das Evangelium nach Johannes.}
+% Regensburg: Friedrich Pustet, 1948.}
+% 
+% \end{multicols}
+%
+% \iffalse don't typeset the appendicies at the moment
+%
+% \appendix \centerline{\bigygoth Taufb"uchlein}\vskip1cm \ygoth\par
+% Weyl ich teglich sehe vnd hore wie gar mit vnvleysz vnd wenigem
+% ernst will nicht sagen mit leychtfertickeit man das: hohe heylige
+% trostlich sacrament der tauffe handellt vber den kindeln wilchs:
+% vrsach ich achte der auch eyne sey das: die so da bey stehen nichts:
+% dauon verstehen was: da geredt vnd gehandellt wirt Dunckt michs:
+% nicht alleyne n"utz sondern auch not seyn das: mans: yun deutsche
+% sprache thue. Vnd habe darumb solchs: wie bisz her z{\font\rm=cmr10
+% scaled 2074\rm\accent'27\ygoth u} latin geschehen verdeutscht
+% antzufahen auff deutsch z{\font\rm=cmr10 scaled
+% 2074\rm\accent'27\ygoth u} teuffen da mit die paten v{\font\rm=cmr10
+% scaled 2074\rm\={\ygoth n}} beystehende deste mehr zum glauben vnnd
+% ernstlicher andacht gereytzt werden vnnd die priester so da teuffen
+% deste mehr vleysz vmb der zuh"orer willen haben m"ussen.
+% 
+% Ich bitt aber ausz Christlicher trew alle die ihenigen so da teuffen
+% kinder heben vnnd da bey stehen wollten z{\font\rm=cmr10 scaled
+% 2074\accent'27\ygoth u} hertzen nemen das: trefflich werck vnd den
+% grossen ernst der hyrynnen ist.  Denn du hie h"orist ynn den wortten
+% diszer gepett wie kleglich vnd ernstlich die Christlich kirche das:
+% kindlin her tregt vnnd mit so bestendigen vngezweyffelten wortten
+% fur Gott bekennet es: sey vom teuffel besessen vnd eyn kind der
+% sunden vnnd vngnaden vnd so vleyszlich bitt vmb h"ulff vnnd gnad
+% durch die tauff das: es: eyn kind Gottis: werden m"uge.
+% 
+% Darumb wolltistu bedencken wie gar es: nicht eyn schertz ist widder
+% den teuffel handelln vnd den selben nicht alleyne vom kindlin
+% iag{\font\rm=cmr10 scaled 2074\rm\={\ygoth e}} sondern auch dem
+% kindlin eyn solchen mechtigen feynd leben lang auff den halsz laden
+% das: es: wol nott ist dem armen kindlin ausz gantzem hertzen vnnd
+% starckem glawben beystehen auffs: andechtigist bitten das: yhm Got
+% nach lautt diszer gepett nicht alleyn von des: teuffels: gewalt vnd
+% sterben bestehen. Vnd ich besorge das: darumb die leutt nach der
+% tauff so vbel auch geratten das: man so kallt und lessig mit yhn
+% vmbgangen und so gar on ernst fur sie gebett hatt ynn der tauffe.
+% \vskip0.7cm \centerline{\rm Appendix A. An extract from Luther's
+% Taufb\"uchlein.}
+% 
+% \hsize=14cm\hoffset=0.9cm
+% \def\paragraph{{\bigyfrak\char'074}}
+% \font\bigyfrak=yfrak scaled 2487
+% \def\k{{\kern0.7mm}}
+% \centerline{\bigyfrak E\k i\k n\k l\k e\k i\k t\k u\k n\k g}
+% \vskip0.5cm
+% \centerline{\bigyfrak \paragraph. 1.}
+% \vskip0.5cm
+% \hangindent=2.54cm\hangafter=-4
+% \hskip-3.24cm\lower-2.7mm\hbox{\yinit D}\hskip1.5mm
+% \bigyfrak ie \bigyswab Orgel, \bigyfrak der \bigyswab Fl*ugel, 
+% \bigyfrak das: \bigyswab
+% Fortepiano \bigyfrak und das: \bigyswab Clavicord \bigyfrak sind die
+% gebr*auchlisten
+% Clavierinstrumente zum Accompagnement.\hfill\break\indent
+%
+% \paragraph. 2. Es: ist Schade, da"s die sch*one Erfindung des
+% \bigyswab Holfeldischen Bogenclaviers: \bigyfrak noch nicht
+% gemeinn*utzig geworden ist; man kann dahero dessen besondere
+% Vorz*uge hierinnen noch nicht genau bestimmen. Es: ist gewi"s zu
+% glauben, da"s es: sich auch bey der Begleitung gut aus:nehmen werde.
+% 
+% \paragraph. 3. Die \bigyswab Orgel \bigyfrak ist bey Kirchensachen,
+% wegen der Fugen, starken Ch*ore, und *uberhaupt der Bindung wegen
+% unentbehrlich. Sie bef*ordert die Pracht und erh*alt die Ordnung.
+% 
+% \paragraph. 4. So bald aber in der Kirche Recitative und Arien,
+% besonders: solche, wo die Mittelstimmen der Singstimme, durch ein
+% simpel Accompagnement alle Freyheit zum Ver*andern lassen, mit
+% vorkommen, so mu"s ein \bigyswab Fl*ugel \bigyfrak dabey seyn. Man
+% h*ort leyder mehr als: zu oft, wie kahl in diesem Falle die
+% Aus:f*uhrung ohne Begleitung des: Fl*ugels: aus:f*allt.
+% 
+% \paragraph. 5. Dieses: letzere Instrument ist ausserdem beym Theater
+% und in der Cammer wegen solcher Arien und Recitative unentbehrlich.
+% 
+% \paragraph. 6. Das: \bigyswab Fortepiano \bigyfrak und das:
+% \bigyswab Clavicord \bigyfrak unterst*utzen am besten eine
+% Aus:f*uhrung, wo die gr*osten Feinigkeiten des: Geschmacks:
+% vorkommen. Nur wollen gewisse S*anger lieber mit dem \bigyswab
+% Clavicord \bigyfrak oder \bigyswab Fl*ugel, \bigyfrak als: mit jenem
+% Instrumente, accompagnirt seyn.
+% 
+% \paragraph. 7. Man kann also ohne Begleitung eines:
+% Clavierinstruments: kein St*uck auff*uhren. Auch bey den st*arksten
+% Musiken, in Opern, so gar unter freyem Himmel, wo man gewi"s glauben
+% solte, nicht das: geringste vom Fl*ugel zu h*oren, vermi"st man ihn,
+% wenn er wegbleibt. H*ort man in der H*ohe zu, so kann man jeden Ton
+% besselben deutlich vernehmen. Ich spreche aus: der Erfahrung und
+% jedermann kann es: versuchen.
+% 
+% \paragraph. 8. Einige lassen sich beym Solo mit der Bratsche oder
+% gar mit der Violine ohne Clavier begleiten. Wenn dieses: aus: Noth,
+% wegen Mangel an \bigyswab guten \bigyfrak Clavieristen, geschiehet, so
+% mu"s man sie entschuldigen; sonst aber gehen bey dieser Art von
+% Aus:f*uhrung viele Ungleichheiten vor. Aus: dem Solo wird ein Duett,
+% wenn der Ba"s gut gearbeitet ist; ist er schlecht,%
+% \break\line{\hfill \vphantom{A}wie}\rm \vskip0.7cm
+% \centerline{Appendix B. An extract from C. P. E. Bach's Treatise on
+% the true Art of playing the Keyboard.}
+% 
+% 
+% \font\yinit=yinit scaled 1728
+% \def\k{\kern 0.7cm }
+% \noindent\centerline{\yinit A\k B\k C\k D\k E}
+% \vskip0.7cm
+% \noindent\centerline{\yinit F\k G\k H\k I\k K}
+% \vskip0.7cm
+% \noindent\centerline{\yinit L\k M\k N\k O\k P}
+% \vskip0.7cm
+% \noindent\centerline{\yinit Q\k R\k S\k T\k U}
+% \vskip0.7cm
+% \noindent\centerline{\yinit V\k W\k X\k Y\k Z}
+% \vskip1.5cm
+% \centerline{\rm Appendix C. The font |yinit scaled 1728|.} 
+%
+%  ^^A start typesetting again.
+% \fi
+%
+% \endgroup
+%
+% \StopEventually{}
+%
+% \section{The \dst{} modules}
+%
+% The following modules are used in the implementation to direct
+% \dst{} in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   package  & produce a package file \\
+%   fd     & produce a font definition file \\[2pt]
+%   Uyfrak & produce Yannis Fraktur  \\
+%   Uyswab & produce Yannis Schwabacher  \\
+%   Uygoth & produce Yannis Gothic  \\
+%   Uyinit & produce Yannis Initials  \\
+% \end{tabular}
+% \end{center}
+%
+%
+% \section{The implementation}
+%
+% \subsection{The package}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%
+%  \begin{macro}{\gothfamily}
+%  \begin{macro}{\swabfamily}
+%  \begin{macro}{\frakfamily}
+%  \begin{macro}{\textgoth}
+%  \begin{macro}{\textswab}
+%  \begin{macro}{\textfrak}
+%    We switch to the fonts using the |\usefont| macro since all such
+%    fonts are only available in one series and one shape.
+% \changes{v2.1g}{1995/05/07}{Use \cs{newcommand} instead of \cs{def}}
+%    \begin{macrocode}
+\newcommand\gothfamily{\usefont{U}{ygoth}{m}{n}}
+\DeclareTextFontCommand{\textgoth}{\gothfamily}
+\newcommand\swabfamily{\usefont{U}{yswab}{m}{n}}
+\DeclareTextFontCommand{\textswab}{\swabfamily}
+\newcommand\frakfamily{\usefont{U}{yfrak}{m}{n}}
+\DeclareTextFontCommand{\textfrak}{\frakfamily}
+%</package>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%    
+% \subsection{The font definition files}
+%
+%
+% \subsubsection{Yannis Schwabacher}
+%
+% \changes{v2.1b}{1994/03/01}{Removed extra braces after
+%                          \cs{DeclareFontFamily}.}
+% \changes{v2.1i}{1996/02/08}{Added 10.95 size for all fonts}
+%    \begin{macrocode}
+%<*Uyswab>
+\DeclareFontFamily{U}{yswab}{}
+\DeclareFontShape{U}{yswab}{m}{n}{
+   <10> <10.95> <12> <14.4> <17.28>  <20.74> <24.88> yswab   }{}
+%</Uyswab>
+%    \end{macrocode}
+%    
+% \subsubsection{Yannis Gothic}
+%    \begin{macrocode}
+%<*Uygoth>
+\DeclareFontFamily{U}{ygoth}{}
+\DeclareFontShape{U}{ygoth}{m}{n}{
+   <10> <10.95> <12> <14.4> <17.28>  <20.74> <24.88> ygoth   }{}
+%</Uygoth>
+%    \end{macrocode}
+%    
+% \subsubsection{Yannis Fraktur}
+%
+%    \begin{macrocode}
+%<*Uyfrak>
+\DeclareFontFamily{U}{yfrak}{}
+\DeclareFontShape{U}{yfrak}{m}{n}{
+   <10> <10.95> <12> <14.4> <17.28>  <20.74> <24.88> yfrak   }{}
+%</Uyfrak>
+%    \end{macrocode}
+%    
+% \subsubsection{Yannis Initials}
+%
+%  Since the \texttt{yinit} font does have a very special design size and
+%  one might have to scale it up or down to get characters in a size needed
+%  for some particular combination of body font size and leading we pretend
+%  that the font is available in any size (which in fact it is on most modern
+%  \TeX{} installations.
+% \changes{v2.1j}{1998/06/07}{Allow yinit in all sizes}
+%    \begin{macrocode}
+%<*Uyinit>
+\DeclareFontFamily{U}{yinit}{}
+\DeclareFontShape{U}{yinit}{m}{n}{
+   <->  yinit   }{}
+%</Uyinit>
+%    \end{macrocode}
+%
+%    The next line goes into all files and in addition prevents \dst{}
+%    from adding any further code from the main source file (such as a
+%    character table).
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \Finale
+%
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}

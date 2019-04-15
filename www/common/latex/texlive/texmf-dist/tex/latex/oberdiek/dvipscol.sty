@@ -1,0 +1,74 @@
+%%
+%% This is file `dvipscol.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% dvipscol.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: dvipscol
+%% Version: 2008/08/11 v1.2
+%% 
+%% Copyright (C) 2000, 2006, 2008 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file dvipscol.dtx
+%% and the derived files
+%%    dvipscol.sty, dvipscol.pdf, dvipscol.ins, dvipscol.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dvipscol}%
+  [2008/08/11 v1.2 Alter the usage of the dvips color stack (HO)]
+\@ifundefined{ver@dvips.def}{%
+  \PackageWarningNoLine{dvipscol}{%
+    Nothing to fix, because \string`dvips.def\string' not loaded%
+  }%
+  \endinput
+}
+\CheckCommand*{\set@color}{%
+  \special{color push \current@color}%
+  \aftergroup\reset@color
+}
+\newcommand*{\nogroupcolor}{%
+  \let\saved@org@set@color\set@color
+  \def\set@color{%
+    \let\set@color\saved@org@set@color
+    \special{color \current@color}%
+  }%
+  \color
+}
+\ifx\currentgrouplevel\@undefined
+  \PackageWarningNoLine{dvipscol}{%
+    \string\set@color\space cannot be fixed, %
+    because the\MessageBreak
+    e-TeX extensions are not available%
+  }%
+  \expandafter\endinput
+\fi
+\def\set@color{%
+  \ifcase\currentgrouplevel
+    \special{color \current@color}%
+  \else
+    \special{color push \current@color}%
+    \aftergroup\reset@color
+  \fi
+}
+\endinput
+%%
+%% End of file `dvipscol.sty'.

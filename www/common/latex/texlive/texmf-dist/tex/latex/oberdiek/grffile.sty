@@ -1,0 +1,493 @@
+%%
+%% This is file `grffile.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% grffile.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: grffile
+%% Version: 2012/04/05 v1.16
+%% 
+%% Copyright (C) 2006-2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file grffile.dtx
+%% and the derived files
+%%    grffile.sty, grffile.pdf, grffile.ins, grffile.drv,
+%%    grffile-test1.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{grffile}%
+  [2012/04/05 v1.16 Extended file name support for graphics (HO)]%
+\edef\grffile@RestoreCatcodes{%
+  \catcode`\noexpand\=\the\catcode`\=\relax
+  \catcode`\noexpand\:\the\catcode`\:\relax
+  \catcode`\noexpand\.\the\catcode`\.\relax
+  \catcode`\noexpand\'\the\catcode`\'\relax
+  \catcode`\noexpand\<\the\catcode`\<\relax
+  \catcode`\noexpand\>\the\catcode`\>\relax
+  \catcode`\noexpand\*\the\catcode`\*\relax
+  \catcode`\noexpand\^\the\catcode`\^\relax
+  \catcode`\noexpand\~\the\catcode`\~\relax
+}
+\@makeother\=
+\@makeother\:
+\@makeother\.
+\@makeother\'
+\@makeother\<
+\@makeother\>
+\@makeother\*
+\catcode`\^=7 %
+\catcode`\~=\active
+\RequirePackage{ifpdf}[2010/01/28]
+\RequirePackage{ifxetex}[2010/09/12]
+\RequirePackage{kvoptions}[2006/08/17]
+\SetupKeyvalOptions{%
+  family=Gin,%
+  prefix=grffile@%
+}
+\DeclareDefaultOption{\@unknownoptionerror}
+\DeclareBoolOption[true]{multidot}
+\DeclareBoolOption[true]{babel}
+\DeclareBoolOption[false]{extendedchars}
+\DeclareBoolOption{space}
+\DeclareVoidOption{encoding}{%
+  \RequirePackage{stringenc}\relax
+}
+\DeclareStringOption{inputencoding}
+\DeclareStringOption{filenameencoding}
+\DeclareDefaultOption{%
+  \PassOptionsToPackage\CurrentOption{graphics}%
+}
+\RequirePackage{pdftexcmds}[2007/11/11]
+\ifxetex
+  \grffile@spacetrue
+\else
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@filesize\endcsname\relax
+    \grffile@spacefalse
+    \let\grffile@space@disabled\@empty
+    \def\grffile@spacetrue{%
+      \PackageWarning{grffile}{%
+        Option `space' is not available,\MessageBreak
+        because it needs pdfTeX >= 1.30 or XeTeX%
+      }%
+    }%
+  \else
+    \ifpdf
+      \grffile@spacetrue
+    \else
+      \grffile@spacefalse
+    \fi
+  \fi
+\fi
+\ProcessKeyvalOptions*
+\AtBeginDocument{%
+  \DisableKeyvalOption[package=grffile]{Gin}{encoding}%
+}
+\RequirePackage{graphics}
+\newcommand*{\grffilesetup}{%
+  \setkeys{Gin}%
+}
+\let\grffile@org@Ginclude@graphics\Ginclude@graphics
+\renewcommand*{\Ginclude@graphics}{%
+  \ifx\grffile@filenameencoding\@empty
+  \else
+    \ifx\grffile@inputencoding\@empty
+      \expandafter\ifx\csname inputencodingname\endcsname\relax
+        \expandafter\ifx\csname
+            CurrentInputEncodingOption\endcsname\relax
+        \else
+          \let\grffile@inputencoding\CurrentInputEncodingOption
+        \fi
+      \else
+        \let\grffile@inputencoding\inputencodingname
+      \fi
+    \fi
+    \ifx\grffile@inputencoding\@empty
+    \else
+      \grffile@extendedcharstrue
+    \fi
+  \fi
+  \ifnum0\ifgrffile@babel 1\fi\ifgrffile@extendedchars 1\fi>\z@
+    \begingroup
+      \ifgrffile@babel
+        \csname @safe@activestrue\endcsname
+        \edef~{\string~}%
+      \fi
+      \ifgrffile@extendedchars
+        \grffile@inputenc@loop\^^A\^^H%
+        \grffile@inputenc@loop\^^K\^^K%
+        \grffile@inputenc@loop\^^N\^^_%
+        \grffile@inputenc@loop\^^?\^^ff%
+      \fi
+      \expandafter\grffile@extchar@Ginclude@graphics
+  \else
+    \expandafter\grffile@Ginclude@graphics
+  \fi
+}
+\def\grffile@extchar@Ginclude@graphics#1{%
+  \toks@{#1}%
+  \edef\grffile@filename{\the\toks@}%
+  \ifx\grffile@inputencoding\@empty
+  \else
+    \ifx\grfile@filenameencoding\@empty
+    \else
+      \ifx\grffile@inputencoding\grffile@filenameencoding
+      \else
+        \expandafter\ifx\csname StringEncodingConvert\endcsname\relax
+          \PackageError{grffile}{%
+            Package `stringenc' is not loaded,\MessageBreak
+            omitting file name conversion%
+          }\@ehc
+        \else
+          \StringEncodingConvert\grffile@temp\grffile@filename
+              \grffile@inputencoding\grffile@filenameencoding
+          \StringEncodingSuccessFailure{%
+            \let\grffile@filename\grffile@temp
+          }{%
+            \PackageError{grffile}{%
+              Filename conversion failed%
+            }\@ehc
+          }%
+        \fi
+      \fi
+    \fi
+  \fi
+  \edef\x{\endgroup
+    \noexpand\grffile@Ginclude@graphics{\grffile@filename}%
+  }%
+  \x
+}
+\def\grffile@inputenc@loop#1#2{%
+  \count@=`#1\relax
+  \loop
+    \begingroup
+      \uccode`\~=\count@
+    \uppercase{%
+      \endgroup
+      \edef~{\string~}%
+    }%
+  \ifnum\count@<`#2\relax
+    \advance\count@\@ne
+  \repeat
+}
+\def\grffile@space@getbase#1{%
+  \edef\grffile@tempa{%
+    \def\noexpand\@tempa####1#1\noexpand\@nil{%
+      \def\noexpand\Gin@base{####1}%
+    }%
+  }%
+  \grffile@IfFileExists{\filename@area\filename@base#1}{%
+    \grffile@tempa
+    \expandafter\@tempa\grffile@file@found\@nil
+    \edef\Gin@ext{#1}%
+  }{%
+  }%
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filesize\endcsname\relax
+  \ifxetex
+    \long\def\grffile@XeTeX@IfFileExists#1{%
+      \openin\@inputcheck"#1" %
+      \ifeof\@inputcheck
+        \closein\@inputcheck
+        \expandafter\@secondoftwo
+      \else
+        \closein\@inputcheck
+        \expandafter\@firstoftwo
+      \fi
+    }%
+    \long\def\grffile@IfFileExists#1{%
+      \grffile@XeTeX@IfFileExists{#1}{%
+        \edef\grffile@file@found{#1}%
+        \@firstoftwo
+      }{%
+        \let\reserved@a\@secondoftwo
+        \ifx\input@path\@undefined
+        \else
+          \expandafter\@tfor\expandafter\reserved@b\expandafter
+              :\expandafter=\input@path\do{%
+            \grffile@XeTeX@IfFileExists{\reserved@b#1}{%
+              \edef\grffile@file@found{\reserved@b#1}%
+              \let\reserved@a\@firstoftwo
+              \iftrue\@break@tfor\fi
+            }{}%
+          }%
+        \fi
+        \reserved@a
+      }%
+    }%
+    \def\grffile@org@Gread@QTm#1{%
+      \IfFileExists{\Gin@base.bb}{%
+        \Gread@eps{\Gin@base.bb}%
+      }{%
+        \G@measure@QTm{\Gin@base}{\Gin@ext}%
+      }%
+    }%
+    \ifx\Gread@QTm\grffile@org@Gread@QTm
+      \def\Gread@QTm#1{%
+        \grffile@IfFileExists{\Gin@base.bb}{%
+          \Gread@eps{\Gin@base.bb}%
+        }{%
+          \G@measure@QTm{\Gin@base}{\Gin@ext}%
+        }%
+      }%
+      \PackageInfo{grffile}{\string\Gread@QTm\space patched}%
+    \else
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname Gread@QTm\endcsname\relax
+        \PackageWarning{grffile}{%
+          \string\Gread@QTm\space of xetex.def not found%
+        }%
+      \else
+        \let\grffile@org@Gread@QTm\Gread@QTm
+        \def\Gread@QTm#1{%
+          \let\grffile@saved@IfFileExists\IfFileExists
+          \let\IfFileExists\grffile@IfFileExists
+          \grffile@org@GreadQTm{#1}%
+          \let\IfFileExists\grffile@saved@IfFileExists
+        }%
+      \fi
+    \fi
+    \let\grffile@org@Gread@eps\Gread@eps
+    \def\grffile@temp#1\immediate\openin#2 #3\grffile@nil#4\grffile@NIL{%
+      \begingroup
+      \toks@{#2}%
+      \edef\grffile@temp{\the\toks@}%
+      \def\grffile@test{\@inputcheck####1}%
+      \ifx\grffile@temp\grffile@test
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \toks@{%
+          #1%
+          \immediate\openin\@inputcheck"##1"\relax
+          #3%
+        }%
+        \expandafter\endgroup
+        \expandafter\def\expandafter\Gread@eps
+        \expandafter##\expandafter1\expandafter{%
+          \the\toks@
+        }%
+        \PackageInfo{grffile}{%
+          \string\Gread@eps\space patched%
+        }%
+      }{%
+        \PackageWarning{grffile}{%
+          Unsupported \string\Gread@eps\space not patched%
+        }%
+        \endgroup
+      }%
+    }%
+    \expandafter\grffile@temp\Gread@eps{#1}\grffile@nil
+        \immediate\openin{} \grffile@nil\grffile@NIL
+  \else
+    \begingroup
+      \let\on@line\@empty
+      \PackageInfo{grffile}{%
+        \string\grffile@IfFileExists\space without space support,%
+        \MessageBreak
+        because pdfTeX's \string\pdffilesize\space is not available%
+        \MessageBreak
+        or XeTeX is not running%
+      }%
+    \endgroup
+    \long\def\grffile@IfFileExists#1{%
+      \IfFileExists{#1}{%
+        \let\grffile@IFE@next\@firstoftwo
+      }{%
+        \let\grffile@file@found\@filef@und
+        \let\grffile@IFE@next\@secondoftwo
+      }%
+      \grffile@IFE@next
+    }%
+  \fi
+\else
+  \long\def\grffile@IfFileExists#1{%
+    \expandafter\expandafter\expandafter
+    \ifx\expandafter\expandafter\expandafter\\\pdf@filesize{#1}\\%
+      \let\reserved@a\@secondoftwo
+      \ifx\input@path\@undefined
+      \else
+        \expandafter\@tfor\expandafter\reserved@b\expandafter
+            :\expandafter=\input@path\do{%
+          \expandafter\expandafter\expandafter
+          \ifx\expandafter\expandafter\expandafter
+              \\\pdf@filesize{\reserved@b#1}\\%
+          \else
+            \edef\grffile@file@found{\reserved@b#1}%
+            \let\reserved@a\@firstoftwo
+            \@break@tfor
+          \fi
+        }%
+      \fi
+      \expandafter\reserved@a
+    \else
+      \edef\grffile@file@found{#1}%
+      \expandafter\@firstoftwo
+    \fi
+  }%
+\fi
+\def\grffile@Ginclude@graphics#1{%
+  \begingroup
+    \ifgrffile@space
+      \let\Gin@getbase\grffile@space@getbase
+    \fi
+    \ifgrffile@multidot
+      \let\filename@base\@empty
+      \let\filename@simple\grffile@filename@simple
+    \fi
+    \grffile@org@Ginclude@graphics{#1}%
+  \endgroup
+}%
+\def\grffile@filename@simple#1.#2\\{%
+  \ifx\\#2\\%
+    \def\filename@base{#1}%
+    \let\filename@ext\relax
+  \else
+    \def\filename@base{}%
+    \grffile@analyze@ext{#1}.{#2}\\%
+  \fi
+}
+\def\grffile@analyze@ext#1.#2\\{%
+  \let\grffile@next\relax
+  \ifx\\#2\\%
+    \edef\filename@base{\filename@base#1}%
+    \let\filename@ext\relax
+    \def\grffile@next{\grffile@try@extlist}%
+  \else
+    \edef\filename@base{\filename@base #1}%
+    \edef\filename@ext{\filename@dot#2\\}%
+    \expandafter\ifx\csname Gin@rule@.\filename@ext\endcsname\relax
+      \edef\filename@base{\filename@base.}%
+      \def\grffile@next{\grffile@analyze@ext#2\\}%
+    \else
+      \grffile@IfFileExists{\filename@area\filename@base.\filename@ext}{%
+        % success
+      }{%
+        \edef\filename@base{\filename@base.\filename@ext}%
+        \let\filename@ext\relax
+        \def\grffile@next{\grffile@try@extlist}%
+      }%
+    \fi
+  \fi
+  \grffile@next
+}
+\def\grffile@try@extlist{%
+  \@for\grffile@temp:=\Gin@extensions\do{%
+    \grffile@IfFileExists{\filename@area\filename@base\grffile@temp}{%
+      \ifx\filename@ext\relax
+        \edef\filename@ext{\expandafter\@gobble\grffile@temp\@empty}%
+      \fi
+    }{}%
+  }%
+  \ifx\filename@ext\relax
+    \expandafter\let\expandafter\filename@base\expandafter\@empty
+    \expandafter\grffile@use@last@ext\filename@base.\\%
+  \fi
+}
+\def\grffile@use@last@ext#1.#2\\{%
+  \ifx\\#2\\%
+    \edef\filename@base{\expandafter\filename@dot\filename@base\\}%
+    \def\filename@ext{#1}%
+    \expandafter\@gobble
+  \else
+    \edef\filename@base{\filename@base#1.}%
+    \expandafter\@firstofone
+  \fi
+  {%
+    \grffile@use@last@ext#2\\%
+  }%
+}
+\def\grffile@option@status#1{%
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{grffile}{%
+      Option `#1' is %
+      \expandafter\ifx\csname ifgrffile@#1\expandafter\endcsname
+                      \csname iftrue\endcsname
+        set to `true'%
+      \else
+        \expandafter\ifx\csname grffile@#1@disabled\endcsname\@empty
+          not available%
+        \else
+          set to `false'%
+        \fi
+      \fi
+    }%
+  \endgroup
+}
+\grffile@option@status{multidot}
+\grffile@option@status{extendedchars}
+\grffile@option@status{space}
+\def\grffile@Gin@ii@graphicx[#1]#2{%
+  \def\@tempa{[}%
+  \def\@tempb{#2}%
+  \ifx\@tempa\@tempb
+    \def\@tempa{\Gin@iii[#1][}% hash-ok
+    \expandafter\@tempa
+  \else
+    \begingroup
+      \@tempswafalse
+      \toks@{\Ginclude@graphics{#2}}%
+      \setkeys{Gin}{#1}%
+      \Gin@esetsize
+      \the\toks@
+    \endgroup
+  \fi
+}
+\def\grffile@Gin@ii@fixed[#1]#2{%
+  \def\@tempa{[}%
+  \begingroup
+    \toks@={#2}%
+    \edef\@tempb{\the\toks@}%
+  \expandafter\endgroup
+  \ifx\@tempa\@tempb
+    \def\@tempa{\Gin@iii[#1][}% hash-ok
+    \expandafter\@tempa
+  \else
+    \begingroup
+      \@tempswafalse
+      \toks@{\Ginclude@graphics{#2}}%
+      \setkeys{Gin}{#1}%
+      \Gin@esetsize
+      \the\toks@
+    \endgroup
+  \fi
+}
+\def\grffile@Fix@Gin@ii{%
+  \let\Gin@ii\grffile@Gin@ii@fixed
+  \begingroup
+    \escapechar=92 %
+    \PackageInfo{grffile}{\string\Gin@ii\space of package `graphicx' fixed}%
+  \endgroup
+}
+\ifx\Gin@ii\grffile@Gin@ii@graphicx
+  \grffile@Fix@Gin@ii
+\else
+  \AtBeginDocument{\grffile@Fix@Gin@ii}%
+\fi
+\grffile@RestoreCatcodes
+\endinput
+%%
+%% End of file `grffile.sty'.

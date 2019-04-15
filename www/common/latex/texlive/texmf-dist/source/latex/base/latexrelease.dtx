@@ -1,0 +1,484 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%
+%<*dtx>
+          \ProvidesFile{latexrelease.dtx}
+%</dtx>
+%<driver>\ProvidesFile{latexrelease.drv}
+%<fixltx2e>\ProvidesPackage{fixltx2e}
+%<fixltx2e>   [2015/06/22 v2.0b fixes to LaTeX (obsolete)]
+%<latexrelease>\ProvidesPackage{latexrelease}
+%<*!fixltx2e>
+% \fi
+%         \ProvidesFile{latexrelease.dtx}
+          [2015/06/22 v1.0f LaTeX release emulation and tests]
+% \iffalse
+%</!fixltx2e>
+%<*driver>
+ \documentclass{ltxdoc}
+ \newcommand\Lopt[1]{\textsf{#1}}
+ \let\Lpack\Lopt
+ \providecommand{\file}[1]{\texttt{#1}}
+ \providecommand{\MF}{\textsf{Metafont}}
+ \providecommand{\danger}{\marginpar[\hfill\protect\Huge!!]{\protect\Huge!!\hfill}}
+ \begin{document}
+ \DocInput{latexrelease.dtx}
+ \end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{100}
+%
+%
+% \let\package\textsf
+%
+%
+% \GetFileInfo{latexrelease.dtx}
+%
+% \title{The \Lpack{latexrelease} package\thanks{This file
+%         has version number \fileversion, last
+%         revised \filedate.}}
+% \author{The \LaTeX3 Project}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{latex}
+%  \maketitle
+%
+% \section{Introduction}
+% Prior to the 2015 release of \LaTeX{}, essentially no changes had been
+% made to the \LaTeX\ format code for some years, with all
+% improvements being instead added to the package \Lpack{fixltx2e}.
+%
+% While this worked at a technical level it meant that you had to
+% explicitly opt-in to bug fixes and improvements, and the vast
+% majority of documents did not benefit.
+%
+% As described in \LaTeX\ News 22, a new policy is being implemented 
+% in which improvements will now be added to the format by default,
+% and this \Lpack{latexrelease} package may be used to ensure
+% stability where needed, either by making a new format use an older
+% definition of some commands, or conversely may be used to supply the
+% new definitions for use with an old format.
+%
+% The basic use is:
+%\begin{verbatim}
+% \RequirePackage[2015/01/01]{latexrelease}
+% \documentclass{article}
+% ....
+%\end{verbatim}
+%
+% After such a declaration the document will use definitions current
+% in the January 2015 \LaTeX{}, whether the actual format being used is
+% older, or newer than that date. In the former case a copy of
+% |latexrelease.sty| would need to be made available for use with the
+% older format.  This may be used, for example, to share a document
+% between co-workers using different \LaTeX\ releases, or to protect a
+% document from being affected by system updates. As well as the
+% definitions within the format itself, individual packages may use
+% the commands defined here to  adjust their definitions to the
+% specified date as described below.
+%
+%
+% The bulk of this package, after some initial setup and option
+% handling consists of a series of |\IncludeInRelease| commands
+% which have been extracted from the main source files of the \LaTeX\
+% format. These contain the old and new versions of any commands with
+% modified definitions.
+%
+% \section{Package Options}
+% \begin{itemize}
+% \item \emph{yyyy/mm/dd}
+% The package accepts any \LaTeX\ format date as argument,% 
+% although dates in the future for which the current release of this
+% package has no information will generate a warning.
+%
+% \item%
+% |current| This is the default behaviour, it does not change the
+% effective date of the format but does ensure that the
+% |\IncludeInRelease| command is defined.
+%
+% \item
+% |latest| sets the effective date of the format to the release date
+% of this file, so in an older format applies all patches currently
+% available.
+% \end{itemize}
+%
+%
+% \section{Release Specific Code}
+%
+% The |\IncludeInRelease| mechanism allows the kernel developer to
+% associate code with a specific date to choose different versions of
+% definitions depending on the date specified as an option to the
+% \Lpack{latexrelease} package. Is also available for use by package
+% authors (or even in a document if necessary).
+%
+% \medskip
+%
+% \noindent\DescribeMacro{\IncludeInRelease}
+% \marg{code-date}^^A
+% \oarg{format-date}%^^A
+% \marg{label}^^A
+% \marg{message}^^A
+% \meta{code}^^A
+% |\EndIncludeInRelease|
+%
+% \begin{description}
+%
+% \item[\marg{code-date}] This date is associated with the \marg{code}
+% argument and will be compared to the requested date in the option to
+% the \Lpack{latexrelease}.
+% 
+% \item[\oarg{format-date}] This optional argument can be used to
+% specify a format date with the code in addition to the mandatory
+% \marg{code-date} argument. This can be useful for package developers
+% as described below.
+%
+% \item[\marg{label}] The \marg{label} argument is an identifier
+% (string) that within a given package must be a unique label for each
+% related set of optional definitions. Per package at most one code
+% block from all the |\IncludeInRelease| declarations with the same
+% label will be executed.
+%
+% \item[\marg{message}]
+% The \marg{message} is an informative string that is used in
+% messages. It has no other function.
+%
+% \item[\meta{code}]
+% Any \TeX\ code after the |\IncludeInRelease| arguments
+% up until the and the following |\EndIncludeInRelease|
+% is to be
+% conditionally included depending on the date of the format as
+% described below.
+%
+% \end{description}
+%
+% The |\IncludeInRelease| declarations with a given label should be in
+% reverse chronological order in the file. The one chosen will depend
+% on this order, the effective format version and the date options, as
+% described below.
+%
+% If your package \Lpack{mypackage} defines a |\widget| command but
+% has one definition using the features available in the 2015 \LaTeX\
+% release, and a different definition is required for older formats
+% then you can use:
+%\begin{verbatim}
+% \IncludeInRelease{2015/01/01}{\widget}{Widget Definition}
+%  \def\widget{new version}%
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{0000/00/00}{\widget}{Widget Definition}
+%  \def\widget{old version}%
+% \EndIncludeInRelease
+%\end{verbatim}
+%
+% If a document using this package is used with a format with
+% effective release date of 2015/01/01 or later the new code will be
+% used, otherwise the old code will be used. Note the \emph{effective
+% release date} might be the original \LaTeX\ release date as shown at
+% the start of every \LaTeX\ job, or it may be set by the
+% \Lpack{latexrelease} package, so for example a document author who
+% wants to ensure the new version is used could use
+%\begin{verbatim}
+% \RequirePackage[2015/01/01]{latexrelease}
+% \documentclass{article}
+% \usepackage{mypackage}
+%\end{verbatim}
+%
+% If the document  is used with a \LaTeX\ format from 2014 or before,
+% then \Lpack{latexrelease} will not have been part of the original
+% distribution, but it may be obtained from a later \LaTeX\ release or
+% from CTAN and distributed with the document, it will make an older
+% \LaTeX\ release act essentially like the 2015 release.
+%
+% \subsection{Intermediate Package Releases}
+%
+% The above example works well for testing against the latex format
+% but is not always ideal for controlling code by the release date of
+% the \emph{package}. Suppose \LaTeX\ is not updated but in March you
+% update the \Lpack{mypackage} package and modify the definition of
+% |\widget|. You could code the package as:
+%\begin{verbatim}
+% \IncludeInRelease{2015/03/01}{\widget}{Widget Definition}
+%  \def\widget{even newer improved March version}%
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{2015/01/01}{\widget}{Widget Definition}
+%  \def\widget{new version}%
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{0000/00/00}{\widget}{Widget Definition}
+%  \def\widget{old version}%
+% \EndIncludeInRelease
+%\end{verbatim}
+%
+% This would work and allow a document author to choose a date such as
+%\begin{verbatim}
+% \RequirePackage[2015/03/01]{latexrelease}
+% \documentclass{article}
+% \usepackage{mypackage}
+%\end{verbatim}
+%
+% To use the latest version, however it would have disadvantage that
+% until the next release of \LaTeX, by default, if the document does 
+% not use \Lpack{latexrelease} to specify a date, the new improved
+% code will not be selected as the effective date will be 2015/01/01
+% and so the first code block will be skipped.
+% 
+% For this reason |\IncludeInRelease| has an optional argument that
+% specifies an alternative date to use if a date option has not been
+% specified to \Lpack{latexrelease}.
+%\begin{verbatim}
+% \IncludeInRelease{2015/03/01}[2015/01/01]{\widget}{Widget Definition}
+%  \def\widget{even newer improved March version}%
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{2015/01/01}{\widget}{Widget Definition}
+%  \def\widget{new version}%
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{0000/00/00}{\widget}{Widget Definition}
+%  \def\widget{old version}%
+% \EndIncludeInRelease
+%\end{verbatim}
+%
+% Now, by default on a 2015/01/01 \LaTeX\ format, the first code block
+% will compare the format date to the optional argument 2015/01/01
+% and so will execute the \emph{even newer improved} version. The
+% remaining blocks using the |\widget| label argument will all then be
+% skipped.
+%
+% If on the other hand the document requests an explicit release date
+% using \Lpack{latexrelease} then this date will be used to decide what 
+% code block to include.
+%
+% \subsection{Using \cs{IncludeInRelease} in Packages}
+%
+% If |\IncludeInRelease| is used within a package then all such
+% conditional code needs to be within such declarations, e.g., it is
+% not possible in the above example to have the ``current'' definition
+% of |\widget| somewhere in the main code and only the two older
+% definitions inside |\IncludeInRelease| declarations. If you would do
+% this then one of those |\IncludeInRelease| declarations would be
+% included overwriting the even newer code in the main part of the
+% package. As a result your package may get fragmented over time with
+% various |\IncludeInRelease| declarations sprinkled throughout your
+% code or you have to interrupt the reading flow by putting those
+% declarations together but not necessarily in the place where they
+% belong.
+%
+% To avoid this issue you can use the following coding
+% strategy: place the current |\widget| definition in the main code
+% where it correctly belongs. 
+% \begin{verbatim}
+%   ...
+%  \def\widget {even newer improved March version}
+%  \def\@widget{newly added helper command no defined in older releases}
+%   ...
+%\end{verbatim}
+% Then, near the end of your package place
+% the following:
+%  \begin{verbatim}
+% \IncludeInRelease{2015/03/01}[2015/01/01]{\widget}{Widget Definition}
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{2015/01/01}{\widget}{Widget Definition}
+%  \def\widget{new version}%
+%  \let\@widget\@undefined % this doesn't exist in earlier releases
+% \EndIncludeInRelease
+%
+% \IncludeInRelease{0000/00/00}{\widget}{Widget Definition}
+%  \def\widget{old version}%
+% \EndIncludeInRelease
+%\end{verbatim}
+% This way the empty code block hides the other |\IncludeInRelease|
+% declarations unless there is an explicit request with a date
+% 2015/01/01 or earlier.
+%
+% Now if you make a further change to |\widget| in the future you
+% simply copy the current definition into the empty block and add a new
+% empty declaration with todays date and the current format date. This
+% way your main code stays readable and the old versions accumulate at
+% the end of the package.\footnote{Of course there may be some cases
+% in which the old code has to be in a specific place within the
+% package as other code depends on it (e.g., if you
+% \texttt{\string\let} something to it). In that case you have to
+% place the code variations in the right place in your package rather
+% than accumulating them at the very end.}
+%
+% The only other ``extra effort'' necessary when using this approach
+% is that it may be advisable to undo new definitions in the code
+% block for the previous release, e.g., in the above example we
+% undefined |\@widget| as that isn't available in the 2015/01/01
+% release but was defined in the main code. If all your conditional
+% code is within |\IncludeInRelease| declarations that wouldn't been
+% necessary as the new code only gets defined if that release is
+% chosen.
+%
+% \section{fixltx2e}
+%
+% As noted above, prior to the 2015 \LaTeX\ release updates to the
+% \LaTeX\ kernel were not made in the format source files but were 
+% made available in the \Lpack{fixltx2e} package. That package is no
+% longer needed but we generate a small package from this source
+% that just makes a warning message but otherwise does nothing.
+%
+%
+%
+%
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+% We require at least a somewhat sane version of \LaTeXe{}. Earlier
+% ones where really quite different from one another.
+%    \begin{macrocode}
+%<*latexrelease>
+\NeedsTeXFormat{LaTeX2e}[1996/06/01]
+%    \end{macrocode}
+%
+% \section{Setup}
+%
+% \begin{macro}{\IncludeInRelease}
+% \begin{macro}{\EndIncludeInRelease}
+%    \begin{macrocode}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.0c}{2015/02/19}{Swap argument order}
+%    \begin{macrocode}
+\DeclareOption*{%
+  \def\@IncludeInRelease#1[#2]{\@IncludeInRele@se{#1}}%
+  \let\requestedpatchdate\CurrentOption}
+\DeclareOption{latest}{%
+  \let\requestedpatchdate\latexreleaseversion}
+\DeclareOption{current}{%
+  \let\requestedpatchdate\fmtversion}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ExecuteOptions{current}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+% Sanity check options, it allows some non-legal dates but always
+% ensures |requestedLaTeXdate| gets set to a number.  Generate an
+% error if there are any non digit tokens remaining after removing the
+% |//|.
+%    \begin{macrocode}
+\def\reserved@a{%
+\edef\requestedLaTeXdate{\the\count@}%
+\reserved@b}
+\def\reserved@b#1\\{%
+\def\reserved@b{#1}%
+\ifx\reserved@b\@empty\else
+\PackageError{latexrelease}%
+             {Unexpected option \requestedpatchdate}%
+             {The option must be of the form yyyy/mm/dd}%
+\fi}
+\afterassignment\reserved@a
+\count@\expandafter
+  \@parse@version\expandafter0\requestedpatchdate//00\@nil\\
+%    \end{macrocode}
+%
+% less precautions needed for |\fmtversion|
+%    \begin{macrocode}
+\edef\currentLaTeXdate{%
+   \expandafter\@parse@version\fmtversion//00\@nil}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifnum\requestedLaTeXdate=\currentLaTeXdate
+\PackageWarningNoLine{latexrelease}{%
+  Current format date selected, no patches applied.}
+\expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+% A newer version of latexrelease should have been distributed with
+% the later format.
+%    \begin{macrocode}
+\ifnum\currentLaTeXdate
+  >\expandafter\@parse@version\latexreleaseversion//00\@nil
+\PackageWarningNoLine{latexrelease}{%
+The current package is for an older LaTeX format:\MessageBreak
+LaTeX \fmtversion\space\MessageBreak
+Obtain a newer version of this package!}
+\expandafter\endinput
+\fi
+%    \end{macrocode}
+% can't patch into the future, could make this an error
+% but it has some uses to control package updates
+% so allow for now.
+%    \begin{macrocode}
+\ifnum\requestedLaTeXdate
+  >\expandafter\@parse@version\latexreleaseversion//00\@nil
+\PackageWarningNoLine{latexrelease}{%
+The current package is for LaTeX \latexreleaseversion:\MessageBreak
+It has no patches beyond that date\MessageBreak
+There may be an updated version\MessageBreak
+of this package available from CTAN}
+\expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+% Update the format version to the requested date.
+%    \begin{macrocode}
+\let\fmtversion\requestedpatchdate
+\let\currentLaTeXdate\requestedLaTeXdate
+%    \end{macrocode}
+%
+%
+% \section{Individual  Changes}
+%
+% The code for each change will be inserted at this point, extracted
+% from the kernel source files.
+%    
+%    \begin{macrocode}
+%</latexrelease>
+%    \end{macrocode}
+%
+% \section{fixltx2e}
+%
+% Generate a stub \Lpack{fixltx2e} package:
+%    \begin{macrocode}
+%<*fixltx2e>
+\NeedsTeXFormat{LaTeX2e}
+\PackageWarningNoLine{fixltx2e}{%
+fixltx2e is not required with releases after 2015\MessageBreak
+All fixes are now in the LaTeX kernel.\MessageBreak
+See the latexrelease package for details}
+%</fixltx2e>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

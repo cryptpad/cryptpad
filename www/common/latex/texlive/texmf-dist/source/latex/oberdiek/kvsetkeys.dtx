@@ -1,0 +1,2194 @@
+% \iffalse meta-comment
+%
+% File: kvsetkeys.dtx
+% Version: 2012/04/25 v1.16
+% Info: Key value parser
+%
+% Copyright (C) 2006, 2007, 2009-2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file kvsetkeys.dtx
+% and the derived files
+%    kvsetkeys.sty, kvsetkeys.pdf, kvsetkeys.ins, kvsetkeys.drv,
+%    kvsetkeys-example.tex, kvsetkeys-test1.tex,
+%    kvsetkeys-test2.tex, kvsetkeys-test3.tex,
+%    kvsetkeys-test4.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/kvsetkeys.dtx
+%    CTAN:macros/latex/contrib/oberdiek/kvsetkeys.pdf
+%
+% Unpacking:
+%    (a) If kvsetkeys.ins is present:
+%           tex kvsetkeys.ins
+%    (b) Without kvsetkeys.ins:
+%           tex kvsetkeys.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{kvsetkeys.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If kvsetkeys.drv is present:
+%           latex kvsetkeys.drv
+%    (b) Without kvsetkeys.drv:
+%           latex kvsetkeys.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex kvsetkeys.dtx
+%       makeindex -s gind.ist kvsetkeys.idx
+%       pdflatex kvsetkeys.dtx
+%       makeindex -s gind.ist kvsetkeys.idx
+%       pdflatex kvsetkeys.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/kvsetkeys.sty
+%    TDS:doc/latex/oberdiek/kvsetkeys.pdf
+%    TDS:doc/latex/oberdiek/kvsetkeys-example.tex
+%    TDS:doc/latex/oberdiek/test/kvsetkeys-test1.tex
+%    TDS:doc/latex/oberdiek/test/kvsetkeys-test2.tex
+%    TDS:doc/latex/oberdiek/test/kvsetkeys-test3.tex
+%    TDS:doc/latex/oberdiek/test/kvsetkeys-test4.tex
+%    TDS:source/latex/oberdiek/kvsetkeys.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: kvsetkeys
+Version: 2012/04/25 v1.16
+
+Copyright (C) 2006, 2007, 2009-2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file kvsetkeys.dtx
+and the derived files
+   kvsetkeys.sty, kvsetkeys.pdf, kvsetkeys.ins, kvsetkeys.drv,
+   kvsetkeys-example.tex, kvsetkeys-test1.tex,
+   kvsetkeys-test2.tex, kvsetkeys-test3.tex,
+   kvsetkeys-test4.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{kvsetkeys.ins}{\from{kvsetkeys.dtx}{install}}%
+  \file{kvsetkeys.drv}{\from{kvsetkeys.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{kvsetkeys.sty}{\from{kvsetkeys.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{kvsetkeys-example.tex}{\from{kvsetkeys.dtx}{example}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{kvsetkeys-test1.tex}{\from{kvsetkeys.dtx}{test1}}%
+  \file{kvsetkeys-test2.tex}{\from{kvsetkeys.dtx}{test2}}%
+  \file{kvsetkeys-test3.tex}{\from{kvsetkeys.dtx}{test2,noetex}}%
+  \file{kvsetkeys-test4.tex}{\from{kvsetkeys.dtx}{test4}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{kvsetkeys.xml}{\from{kvsetkeys.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     kvsetkeys.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `kvsetkeys.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{kvsetkeys.drv}%
+  [2012/04/25 v1.16 Key value parser (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{kvsetkeys.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1557}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{kvsetkeys.drv}
+%
+% \title{The \xpackage{kvsetkeys} package}
+% \date{2012/04/25 v1.16}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{kvsetkeys} provides \cs{kvsetkeys}, a variant
+% of package \xpackage{keyval}'s \cs{setkeys}. It allows to specify
+% a handler that deals with unknown options. Active commas and equal
+% signs may be used (e.g. see \xpackage{babel}'s shorthands) and
+% only one level of curly braces is removed from the values.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \def\M#1{\texttt{\{}\meta{#1}\texttt{\}}}
+%
+% \section{Documentation}
+%
+% First I want to recommend the very good review article
+% ``A guide to key-value methods'' by Joseph Wright \cite{tb94wright}.
+% It introduces the different key-value packages and compares them.
+%
+% \subsection{Motivation}
+%
+% \cs{kvsetkeys} serves as replacement for \xpackage{keyval}'s
+% \cs{setkeys}. It basically uses the same syntax. But the
+% implementation is more robust and predictable:
+% \begin{description}
+% \item[Active syntax characters:]
+%   Comma `|,|' and the equals sign `|=|' are used inside
+%   key value lists as syntax characters. Package \xpackage{keyval}
+%   uses the catcode of the characters that is active during
+%   package loading, usually this is catcode 12 (other).
+%   But it can happen that the catcode setting of the syntax characters
+%   changes. Especially active characters are of interest, because
+%   some language adaptations uses them. For example, option \xoption{turkish}
+%   of package \xpackage{babel} uses the equals sign as active shorthand
+%   character. Therefore package \xpackage{kvsetkeys} deals with
+%   both catcode settings 12 (other) and 13 (active).
+% \item[Brace removal:]
+%   Package \xpackage{keyval}'s \cs{setkeys} removes up to two
+%   levels of curly braces around the value in some unpredictable way:
+%\begin{quote}
+%|\setkeys{fam}{key={{value}}} || || | $\rightarrow$ |value|\\
+%|\setkeys{fam}{key={{{value}}}} | $\rightarrow$ |{value}|\\
+%|\setkeys{fam}{key= {{{value}}}}| $\rightarrow$ |{{value}}|
+%\end{quote}
+%   This package \xpackage{kvsetkeys} follows a much stronger rule:
+%   Exactly one level of braces are removed from an item, if the
+%   item is surrounded by curly braces. An item can be a
+%   the key value pair, the key or the value.
+%\begin{quote}
+%|\kvsetkeys{fam}{key={value}} || | $\rightarrow$ |value|\\
+%|\kvsetkeys{fam}{key={{value}} | $\rightarrow$ |{value}|\\
+%|\kvsetkeys{fam}{key= {{value}}| $\rightarrow$ |{value}|
+%\end{quote}
+% \item[Arbitrary values:] Unmatched conditionals are supported.
+% \end{description}
+%
+% Before I describe
+% \cs{kvsetkeys} in more detail, first I want to explain, how
+% this package deals with key value lists. For the package also
+% provides low level interfaces that can be used by package authors.
+%
+% \subsection{Normalizing key value lists}
+%
+% \begin{declcs}{kv@normalize}\,\M{key value list}
+% \end{declcs}
+% If the user specifies key value lists, he usually prefers
+% nice formatted source code, e.g.:
+% \begin{quote}
+%\begin{verbatim}
+%\hypersetup{
+%  pdftitle    = {...},
+%  pdfsubject  = {...},
+%  pdfauthor   = {...},
+%  pdfkeywords = {...},
+%  ...
+%}
+%\end{verbatim}
+% \end{quote}
+% Thus there can be spaces around keys, around |=| or around the value.
+% Also empty entries are possible by too many commas. Therefore these
+% spaces and empty entries are silently removed by package \xpackage{keyval}
+% and this package. Whereas the contents of the value can be protected
+% by curly braces, especially if spaces or commas are used inside,
+% a key name must not use spaces or other syntax characters.
+%
+% \cs{kv@normalize} takes a key value list and performs the cleanup:
+% \begin{itemize}
+% \item Spaces are removed.
+% \item Syntax characters (comma and equal sign) that are active
+%   are replaced by the same characters with standard catcode.
+%   (Example: \xpackage{babel}'s language option \xoption{turkish}
+%   uses the equal sign as active shorthand character.)
+% \end{itemize}
+% The result is stored in \cs{kv@list}, e.g.:
+% \begin{quote}
+% |\kv@list| $\rightarrow$ |,pdftitle={...},pdfsubject={...},...,|
+% \end{quote}
+% Curly braces around values (or keys) remain untouched.
+% \begin{description}
+% \item[v1.3+:]
+% One comma is added in front of the list and each pair ends with
+% a comma. Thus an empty list consists of one comma, otherwise
+% two commas encloses the list. Empty entries other than the first
+% are removed.
+% \item[v1.0 -- v1.2:]
+% Empty entries are removed later. In fact it adds a comma at the begin
+% and end to protect the last value and an easier implementation.
+% \end{description}
+%
+% \subsection{Parsing key value lists}
+%
+% \begin{declcs}{kv@parse}\,\M{key value list}\,\M{processor}
+% \end{declcs}
+% It is easier to parse a normalized list, thus \cs{kv@parse}
+% normalizes the list and calls \cs{kv@parse@normalized}.
+%
+% \begin{declcs}{kv@parse@normalized}\,\M{key value list}%
+%   \,\M{processor}
+% \end{declcs}
+% Now the key value list is split into single key value pairs.
+% For further processing the key and value are given as arguments
+% for the \meta{processor}:
+% \begin{quote}
+%   \meta{processor}\,\M{key}\,\M{value}
+% \end{quote}
+% Also key and value are stored in macro names:
+% \begin{itemize}
+% \item \cs{kv@key} stores the key.
+% \item \cs{kv@value} stores the value or if the value was not
+%   specified it has the meaning \cs{relax}.
+% \end{itemize}
+% The behaviour in pseudo code:
+% \begin{quote}
+%   foreach (\meta{key}, \meta{value}) in (\meta{key value list})\\
+%   \hspace*{1.5em}\cs{kv@key} := \meta{key}\\
+%   \hspace*{1.5em}\cs{kv@value} := \meta{value}\\
+%   \hspace*{1.5em}\meta{processor}\,\M{key}\,\M{value}
+% \end{quote}
+%
+% \begin{declcs}{kv@break}
+% \end{declcs}
+% Since version 2011/03/03 v1.11 \cs{kv@break} can be
+% called inside the \meta{processor}
+% of \cs{kv@parse} or \cs{kv@parse@normalized}, then
+% the processing is stopped and the following entries discarded.
+%
+% \subsection{Processing key value pairs}
+%
+% Key value pairs can be processed in many different ways.
+% For example, the processor for \cs{kvsetkeys} works similar
+% to \cs{setkeys} of package \xpackage{keyval}. There unknown
+% keys raise an error.
+%
+% Package \xpackage{xkeyval} also knows a star form of \cs{setkeys}
+% that stores unknown keys in an internal macro for further processing
+% with \cs{setrmkeys} and similar macros. This feature is covered
+% by processor \cs{kv@processor@known}.
+%
+% \subsubsection{Processing similar to \xpackage{keyval}}
+%
+% \begin{declcs}{kv@processor@default}\,\M{family}\,\M{key}\,\M{value}
+% \end{declcs}
+% There are many possiblities to process key value pairs.
+% \cs{kv@processor@default} is the processor used in \cs{kvsetkeys}.
+% It reimplements and extends the behaviour of
+% \xpackage{keyval}'s \cs{setkeys}.
+% In case of unknown keys \cs{setkeys} raise an error.
+% This processer, however, calls a handler instead, if it
+% is provided by the family. Both \meta{family} and \meta{key}
+% may contain package \xpackage{babel}'s shorthands
+% (since 2011/04/07 v1.13).
+%
+% Since 2011/10/18 v1.15 the family handler can reject the
+% successful handling of a key by calling \cs{kv@handled@false}.
+%
+% Since 2012/04/25 v1.16 \cs{kv@processor@default} also defines
+% macro \cs{kv@fam} with meaning \meta{family} for convenience.
+%
+% \subsubsection{Processing similar to \cs{setkeys*} of package \xpackage{xkeyval}}
+%
+% \begin{declcs}{kv@processor@known}\,\M{family}\,^^A
+%   \M{cmd}\,\M{key}\,\M{value}
+% \end{declcs}
+% The key value processor \cs{kv@processor@known} behaves similar
+% to \cs{kv@processor@default}. If the \meta{key} exists in the
+% \meta{family} its code is called, otherwise the family handler
+% is tried. If the family handler is not set or cannot handle the
+% key, the unknown key value pair is added to the macro \meta{cmd}.
+% Since 2011/10/18 v1.15.
+%
+% The behaviour in pseudo code:
+% \begin{quote}
+%   if \meta{key} exists\\
+%   \hspace*{1.5em}call the keyval code of \meta{key}\\
+%   else\\
+%   \hspace*{1.5em}if \meta{handler} for \meta{family} exists\\
+%   \hspace*{3em}handled = true\\
+%   \hspace*{3em}\meta{handler}\,\M{key}\,\M{value}\\
+%   \hspace*{3em}if handled\\
+%   \hspace*{3em}else\\
+%   \hspace*{4.5em}add \texttt{"}\M{key}\texttt{=}\M{value}\texttt{"}
+%     to \M{cmd}\\
+%   \hspace*{3em}fi\\
+%   \hspace*{1.5em}else\\
+%   \hspace*{3em}add \texttt{"}\M{key}\texttt{=}\M{value}\texttt{"}
+%     to \M{cmd}\\
+%   \hspace*{3em}raise unknown key error\\
+%   \hspace*{1.5em}fi\\
+%   fi
+% \end{quote}
+%
+% Since 2012/04/25 v1.16 \cs{kv@processor@known} also defines
+% macro \cs{kv@fam} with meaning \meta{family} for convenience.
+%
+% \subsection{Default family handler}
+%
+% \cs{kv@processor@default} calls \meta{handler}, the default
+% handler for the family, if the key does not exist in the family.
+% The handler is called with two arguments, the key and the value.
+% It can be defined with \cs{kv@set@family@hander}:
+%
+% \begin{declcs}{kv@set@family@handler}\,\M{family}\,\M{handler definition}
+% \end{declcs}
+% This sets the default family handler for the keyval family
+% \meta{family}. Inside \meta{handler definition} |#1| stands for
+% the key and |#2| is the value. Also \cs{kv@key} and \cs{kv@value}
+% can be used for the key and the value. If the value is not given,
+% \cs{kv@value} has the meaning \cs{relax}.
+%
+% \begin{declcs}{kv@unset@family@handler}\,\M{family}
+% \end{declcs}
+% It removes the family handler for \meta{family}.
+% Since 2011/10/18 v1.15.
+%
+% \subsection{Put it all together}
+%
+% \begin{declcs}{kvsetkeys}\,\M{family}\,\M{key value list}
+% \end{declcs}
+% Macro \cs{kvsetkeys} processes the \meta{key value list} with
+% the standard processor \cs{kv@processor@default}:
+% \begin{quote}
+%   \cs{kv@parse}\,\M{key value list}^^A
+%   \texttt{\{}\cs{kv@processor@default}\,\M{family}\texttt{\}}
+% \end{quote}
+%
+% \begin{declcs}{kvsetknownkeys}\,\M{family}\,\M{cmd}\,\M{key value list}
+% \end{declcs}
+% Macro \cs{kvsetknownkeys} processes the \meta{key value list}
+% with processor \cs{kv@processor@known}. All key value pairs
+% with keys that are not known in \meta{family} are stored
+% in macro \meta{cmd}. A previous contents of macro \meta{cmd}
+% will be overwritten. If all keys can be handled, \meta{cmd}
+% will be empty, otherwise it contains a key value list of
+% unhandled key value pairs.
+% Since 2011/10/18 v1.15.
+%
+% Pseudo code:
+% \begin{quote}
+%   create macro \meta{cmdaux} with unique name (inside the current group)\\
+%   \cs{def}\meta{cmdaux}\{\}\\
+%   \cs{kv@parse}\,\M{key value list}^^A
+%   \texttt{\{}\cs{kv@processor@known}\,\M{family}\,\M{cmdaux}\texttt{\}}\\
+%   \cs{let}\meta{cmd}=\meta{cmdaux}
+% \end{quote}
+%
+% \begin{declcs}{kvsetkeys@expandafter}\,\M{family}\,\M{list cmd}\\
+%   \cs{kvsetknownkeys@expandafter}\,\M{family}\,%
+%   \M{cmd}\,\M{list cmd}
+% \end{declcs}
+% Both macros behave like the counterparts without suffix
+% |@expandafter|. The difference is that the key value list is
+% given as macro that is expanded once.
+% Since 2011/10/18 v1.15.
+%
+% Thus you can replace \cs{setkeys} of package \xpackage{keyval}
+% by the key value parser of this package:
+% \begin{quote}
+%   |\renewcommand*{\setkeys}{\kvsetkeys}|\\
+%   or\\
+%   |\let\setkeys\kvsetkeys|
+% \end{quote}
+%
+% \subsection{Comma separated lists}
+%
+% Since version 2007/09/29 v1.3 this package also supports the normalizing
+% and parsing of general comma separated lists.
+%
+% \begin{declcs}{comma@normalize}\,\M{comma list}
+% \end{declcs}
+% Macro \cs{comma@normalize} normalizes the comma separated list,
+% removes spaces around commas. The result is put in macro \cs{comma@list}.
+%
+% \begin{declcs}{comma@parse}\,\M{comma list}\,\M{processor}
+% \end{declcs}
+% Macro \cs{comma@parse} first normalizes the comma separated list
+% and then parses the list by calling \cs{comma@parse@normalized}.
+%
+% \begin{declcs}{comma@parse@normalized}\,\M{normalized comma list}^^A
+%   \,\M{processor}
+% \end{declcs}
+% The list is parsed. Empty entries are ignored. \meta{processor}
+% is called for each non-empty entry with the entry as argument:
+% \begin{quote}
+%   \meta{processor}|{|\meta{entry}|}|
+% \end{quote}
+% Also the entry is stored in the macro \cs{comma@entry}.
+%
+% \begin{declcs}{comma@break}
+% \end{declcs}
+% Since version 2011/03/03 v1.11 \cs{comma@break} can be
+% called inside the \meta{processor}
+% of \cs{comma@parse} or \cs{comma@parse@normalized}, then
+% the processing is stopped and the following entries discarded.
+%
+% \section{Example}
+%
+% The following example prints a short piece of HTML code using
+% the tabbing environment for indenting purpose and a key value
+% syntax for specifying the attributes of an HTML tag.
+% The example illustrates the use of a default family handler.
+%    \begin{macrocode}
+%<*example>
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{kvsetkeys}
+\usepackage{keyval}
+
+\makeatletter
+\newcommand*{\tag}[2][]{%
+  % #1: attributes
+  % #2: tag name
+  \begingroup
+    \toks@={}%
+    \let\@endslash\@empty
+    \kvsetkeys{tag}{#1}%
+    \texttt{%
+      \textless #2\the\toks@\@endslash\textgreater
+    }%
+  \endgroup
+}
+\kv@set@family@handler{tag}{%
+  % #1: key
+  % #2: value
+  \toks@\expandafter{%
+    \the\toks@
+    \space
+    #1=\string"#2\string"%
+  }%
+}
+\define@key{tag}{/}[]{%
+  \def\@endslash{/}%
+}
+\makeatother
+
+\begin{document}
+\begin{tabbing}
+  \mbox{}\qquad\=\qquad\=\kill
+  \tag{html}\\
+  \>\dots\\
+  \>\tag[border=1]{table}\\
+  \>\>\tag[width=200, span=3, /]{colgroup}\\
+  \>\>\dots\\
+  \>\tag{/table}\\
+  \>\dots\\
+  \tag{/html}\\
+\end{tabbing}
+\end{document}
+%</example>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@kvsetkeys.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{kvsetkeys}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@kvsetkeys.sty\endcsname
+\ProvidesPackage{kvsetkeys}%
+  [2012/04/25 v1.16 Key value parser (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname KVS@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\KVS@AtEnd{%
+    \KVS@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{126}{13}% ~ (active)
+\edef\KVS@AtEnd{\KVS@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Package loading}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{infwarerr}[2007/09/09]%
+  \TMP@RequirePackage{etexcmds}[2010/01/28]%
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{etexcmds}[2010/01/28]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\expandafter\ifx\csname toks@\endcsname\relax
+  \toksdef\toks@=0 %
+\fi
+%    \end{macrocode}
+%
+% \subsection{Check for \eTeX}
+%
+%    \cs{unexpanded}, \cs{ifcsname}, and \cs{unless} are used if found.
+%    \begin{macrocode}
+\begingroup\expandafter\endgroup
+\ifcase0\ifetex@unexpanded
+          \expandafter\ifx\csname ifcsname\endcsname\relax
+          \else
+            \expandafter\ifx\csname unless\endcsname\relax
+            \else
+              1%
+            \fi
+          \fi
+        \fi
+  \catcode`\$=9 % ignore
+  \catcode`\&=14 % comment
+\else % e-TeX
+  \catcode`\$=14 % comment
+  \catcode`\&=9  % ignore
+\fi
+%    \end{macrocode}
+%
+% \subsection{Generic help macros}
+%
+%    \begin{macro}{\KVS@Empty}
+%    \begin{macrocode}
+\def\KVS@Empty{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@FirstOfTwo}
+%    \begin{macrocode}
+\long\def\KVS@FirstOfTwo#1#2{#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@SecondOfTwo}
+%    \begin{macrocode}
+\long\def\KVS@SecondOfTwo#1#2{#2}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVS@IfEmpty}
+%    \begin{macrocode}
+\long\def\KVS@IfEmpty#1{%
+& \edef\KVS@Temp{\etex@unexpanded{#1}}%
+$ \begingroup
+$   \toks@{#1}%
+$   \edef\KVS@Temp{\the\toks@}%
+$ \expandafter\endgroup
+  \ifx\KVS@Temp\KVS@Empty
+    \expandafter\KVS@FirstOfTwo
+  \else
+    \expandafter\KVS@SecondOfTwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Normalizing}
+%
+%    \begin{macro}{\kv@normalize}
+%    \begin{macrocode}
+\long\def\kv@normalize#1{%
+  \begingroup
+    \toks@{,#1,}%
+    \KVS@Comma
+    \KVS@SpaceComma
+    \KVS@CommaSpace
+    \KVS@CommaComma
+    \KVS@Equals
+    \KVS@SpaceEquals
+    \KVS@EqualsSpace
+    \xdef\KVS@Global{\the\toks@}%
+  \endgroup
+  \let\kv@list\KVS@Global
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\comma@normalize}
+%    \begin{macrocode}
+\def\comma@normalize#1{%
+  \begingroup
+    \toks@{,#1,}%
+    \KVS@Comma
+    \KVS@SpaceComma
+    \KVS@CommaSpace
+    \KVS@CommaComma
+    \xdef\KVS@Global{\the\toks@}%
+  \endgroup
+  \let\comma@list\KVS@Global
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@Comma}
+%    Converts active commas into comma with catcode other.
+%    Also adds a comma at the end to protect the last value
+%    for next cleanup steps.
+%    \begin{macrocode}
+\begingroup
+  \lccode`\,=`\,%
+  \lccode`\~=`\,%
+\lowercase{\endgroup
+  \def\KVS@Comma{%
+    \toks@\expandafter{\expandafter}\expandafter
+    \KVS@@Comma\the\toks@~\KVS@Nil
+  }%
+  \long\def\KVS@@Comma#1~#2\KVS@Nil{%
+    \toks@\expandafter{\the\toks@#1}%
+    \KVS@IfEmpty{#2}{%
+    }{%
+      \KVS@@Comma,#2\KVS@Nil
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@SpaceComma}
+%    Removes spaces before the comma, may add commas at the end.
+%    \begin{macrocode}
+\def\KVS@SpaceComma#1{%
+  \def\KVS@SpaceComma{%
+    \expandafter\KVS@@SpaceComma\the\toks@#1,\KVS@Nil
+  }%
+}
+\KVS@SpaceComma{ }
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@@SpaceComma}
+%    \begin{macrocode}
+\long\def\KVS@@SpaceComma#1 ,#2\KVS@Nil{%
+  \KVS@IfEmpty{#2}{%
+    \toks@{#1}%
+  }{%
+    \KVS@@SpaceComma#1,#2\KVS@Nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@CommaSpace}
+%    Removes spaces after the comma, may add commas at the end.
+%    \begin{macrocode}
+\def\KVS@CommaSpace{%
+  \expandafter\KVS@@CommaSpace\the\toks@, \KVS@Nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@@CommaSpace}
+%    \begin{macrocode}
+\long\def\KVS@@CommaSpace#1, #2\KVS@Nil{%
+  \KVS@IfEmpty{#2}{%
+    \toks@{#1}%
+  }{%
+    \KVS@@CommaSpace#1,#2\KVS@Nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@CommaComma}
+%    Replaces multiple commas by one comma.
+%    \begin{macrocode}
+\def\KVS@CommaComma{%
+  \expandafter\KVS@@CommaComma\the\toks@,\KVS@Nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@@CommaComma}
+%    \begin{macrocode}
+\long\def\KVS@@CommaComma#1,,#2\KVS@Nil{%
+  \KVS@IfEmpty{#2}{%
+    \toks@{#1,}% (!)
+  }{%
+    \KVS@@CommaComma#1,#2\KVS@Nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVS@Equals}
+%    Converts active equals signs into catcode other characters.
+%    \begin{macrocode}
+\begingroup
+  \lccode`\==`\=%
+  \lccode`\~=`\=%
+\lowercase{\endgroup
+  \def\KVS@Equals{%
+    \toks@\expandafter{\expandafter}\expandafter
+    \KVS@@Equals\the\toks@~\KVS@Nil
+  }%
+  \long\def\KVS@@Equals#1~#2\KVS@Nil{%
+    \edef\KVS@Temp{\the\toks@}%
+    \ifx\KVS@Temp\KVS@Empty
+      \expandafter\KVS@FirstOfTwo
+    \else
+      \expandafter\KVS@SecondOfTwo
+    \fi
+    {%
+      \toks@{#1}%
+    }{%
+      \toks@\expandafter{\the\toks@=#1}%
+    }%
+    \KVS@IfEmpty{#2}{%
+    }{%
+      \KVS@@Equals#2\KVS@Nil
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@SpaceEquals}
+%    Removes spaces before the equals sign.
+%    \begin{macrocode}
+\def\KVS@SpaceEquals#1{%
+  \def\KVS@SpaceEquals{%
+    \expandafter\KVS@@SpaceEquals\the\toks@#1=\KVS@Nil
+  }%
+}
+\KVS@SpaceEquals{ }
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@@SpaceEquals}
+%    \begin{macrocode}
+\long\def\KVS@@SpaceEquals#1 =#2\KVS@Nil{%
+  \KVS@IfEmpty{#2}{%
+    \toks@{#1}%
+  }{%
+    \KVS@@SpaceEquals#1=#2\KVS@Nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@EqualsSpace}
+%    Removes spaces after the equals sign.
+%    \begin{macrocode}
+\def\KVS@EqualsSpace{%
+  \expandafter\KVS@@EqualsSpace\the\toks@= \KVS@Nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@@EqualsSpace}
+%    \begin{macrocode}
+\long\def\KVS@@EqualsSpace#1= #2\KVS@Nil{%
+  \KVS@IfEmpty{#2}{%
+    \toks@{#1}%
+  }{%
+    \KVS@@EqualsSpace#1=#2\KVS@Nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Parsing key value lists}
+%
+%    \begin{macro}{\kv@parse}
+%    Normalizes and parses the key value list. Also sets \cs{kv@list}.
+%    \begin{macrocode}
+\long\def\kv@parse#1{%
+  \kv@normalize{#1}%
+  \expandafter\kv@parse@normalized\expandafter{\kv@list}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\kv@parse@normalized}
+%    |#1|: key value list\\
+%    |#2|: processor
+%    \begin{macrocode}
+\long\def\kv@parse@normalized#1#2{%
+  \KVS@Parse#1,\KVS@Nil{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@Parse}
+%    |#1,#2|: key value list\\
+%    |#3|: processor
+%    \begin{macrocode}
+\long\def\KVS@Parse#1,#2\KVS@Nil#3{%
+  \KVS@IfEmpty{#1}{%
+  }{%
+    \KVS@Process#1=\KVS@Nil{#3}%
+  }%
+  \KVS@MaybeBreak
+  \KVS@IfEmpty{#2}{%
+  }{%
+    \KVS@Parse#2\KVS@Nil{#3}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@Process}
+%    |#1|: key\\
+%    |#2|: value, |=|\\
+%    |#3|: processor
+%    \begin{macrocode}
+\long\def\KVS@Process#1=#2\KVS@Nil#3{%
+  \let\KVS@MaybeBreak\relax
+  \def\kv@key{#1}%
+  \KVS@IfEmpty{#2}{%
+    \let\kv@value\relax
+    #3{#1}{}%
+  }{%
+    \KVS@@Process{#1}#2\KVS@Nil{#3}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@@Process}
+%    |#1|: key\\
+%    |#2|: value\\
+%    |#3|: processor
+%    \begin{macrocode}
+\long\def\KVS@@Process#1#2=\KVS@Nil#3{%
+& \edef\kv@value{\etex@unexpanded{#2}}%
+$ \begingroup
+$   \toks@{#2}%
+$   \xdef\KVS@Global{\the\toks@}%
+$ \endgroup
+$ \let\kv@value\KVS@Global
+  #3{#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@MaybeBreak}
+%    \begin{macrocode}
+\let\KVS@MaybeBreak\relax
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@break}
+%    \begin{macrocode}
+\def\KVS@break#1#2#3#4{%
+  \let\KVS@MaybeBreak\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\kv@break}
+%    \begin{macrocode}
+\def\kv@break{%
+  \let\KVS@MaybeBreak\KVS@break
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Parsing comma lists}
+%
+%    \begin{macro}{\comma@parse}
+%    Normalizes and parses the key value list. Also sets \cs{comma@list}.
+%    \begin{macrocode}
+\def\comma@parse#1{%
+  \comma@normalize{#1}%
+  \expandafter\comma@parse@normalized\expandafter{\comma@list}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\comma@parse@normalized}
+%    |#1|: comma list\\
+%    |#2|: processor
+%    \begin{macrocode}
+\def\comma@parse@normalized#1#2{%
+  \KVS@CommaParse#1,\KVS@Nil{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@CommaParse}
+%    |#1,#2|: comma list\\
+%    |#3|: processor
+%    \begin{macrocode}
+\def\KVS@CommaParse#1,#2\KVS@Nil#3{%
+  \KVS@IfEmpty{#1}{%
+  }{%
+    \def\comma@entry{#1}%
+    #3{#1}%
+  }%
+  \KVS@MaybeBreak
+  \KVS@IfEmpty{#2}{%
+  }{%
+    \KVS@CommaParse#2\KVS@Nil{#3}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\comma@break}
+%    \begin{macrocode}
+\def\comma@break{%
+  \let\KVS@MaybeBreak\KVS@break
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Processing key value pairs}
+%
+%    \begin{macro}{\kv@handled@false}
+%    The handler can call \cs{kv@handled@false} or
+%    \cs{kv@handled@true} so report failure or success.
+%    The default is success (compatibility for versions
+%    before 2011/10/18 v1.15).
+%    \begin{macrocode}
+\def\kv@handled@false{%
+  \let\ifkv@handled@\iffalse
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\kv@handled@true}
+%    \begin{macrocode}
+\def\kv@handled@true{%
+  \let\ifkv@handled@\iftrue
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifkv@handled@}
+%    \begin{macrocode}
+\kv@handled@true
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kv@processor@default}
+%    \begin{macrocode}
+\def\kv@processor@default#1#2{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \let\ifincsname\iftrue
+    \edef\KVS@temp{\endgroup
+      \noexpand\KVS@ProcessorDefault{#1}{#2}%
+    }%
+  \KVS@temp
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@ProcessorDefault}
+%    \begin{macrocode}
+\long\def\KVS@ProcessorDefault#1#2#3{%
+  \def\kv@fam{#1}%
+& \unless\ifcsname KV@#1@#2\endcsname
+$ \begingroup\expandafter\expandafter\expandafter\endgroup
+$ \expandafter\ifx\csname KV@#1@#2\endcsname\relax
+&   \unless\ifcsname KVS@#1@handler\endcsname
+$   \begingroup\expandafter\expandafter\expandafter\endgroup
+$   \expandafter\ifx\csname KVS@#1@handler\endcsname\relax
+      \kv@error@unknownkey{#1}{#2}%
+    \else
+      \kv@handled@true
+      \csname KVS@#1@handler\endcsname{#2}{#3}%
+      \relax
+      \ifkv@handled@
+      \else
+        \kv@error@unknownkey{#1}{#2}%
+      \fi
+    \fi
+  \else
+    \ifx\kv@value\relax
+&     \unless\ifcsname KV@#1@#2@default\endcsname
+$     \begingroup\expandafter\expandafter\expandafter\endgroup
+$     \expandafter\ifx\csname KV@#1@#2@default\endcsname\relax
+        \kv@error@novalue{#1}{#2}%
+      \else
+        \csname KV@#1@#2@default\endcsname
+        \relax
+      \fi
+    \else
+      \csname KV@#1@#2\endcsname{#3}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kv@processor@known}
+%    \begin{macrocode}
+\def\kv@processor@known#1#2#3{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \let\ifincsname\iftrue
+    \edef\KVS@temp{\endgroup
+      \noexpand\KVS@ProcessorKnown{#1}\noexpand#2{#3}%
+    }%
+  \KVS@temp
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@ProcessorKnown}
+%    \begin{macrocode}
+\long\def\KVS@ProcessorKnown#1#2#3#4{%
+  \def\kv@fam{#1}%
+& \unless\ifcsname KV@#1@#3\endcsname
+$ \begingroup\expandafter\expandafter\expandafter\endgroup
+$ \expandafter\ifx\csname KV@#1@#3\endcsname\relax
+&   \unless\ifcsname KVS@#1@handler\endcsname
+$   \begingroup\expandafter\expandafter\expandafter\endgroup
+$   \expandafter\ifx\csname KVS@#1@handler\endcsname\relax
+      \KVS@AddUnhandled#2{#3}{#4}%
+    \else
+      \kv@handled@true
+      \csname KVS@#1@handler\endcsname{#3}{#4}%
+      \relax
+      \ifkv@handled@
+      \else
+        \KVS@AddUnhandled#2{#3}{#4}%
+      \fi
+    \fi
+  \else
+    \ifx\kv@value\relax
+&     \unless\ifcsname KV@#1@#2@default\endcsname
+$     \begingroup\expandafter\expandafter\expandafter\endgroup
+$     \expandafter\ifx\csname KV@#1@#3@default\endcsname\relax
+        \kv@error@novalue{#1}{#3}%
+      \else
+        \csname KV@#1@#3@default\endcsname
+        \relax
+      \fi
+    \else
+      \csname KV@#1@#3\endcsname{#4}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@AddUnhandled}
+%    \begin{macrocode}
+\long\def\KVS@AddUnhandled#1#2#3{%
+& \edef#1{%
+&   \ifx#1\KVS@empty
+&   \else
+&     \etex@unexpanded{#1},%
+&   \fi
+&   \etex@unexpanded{{#2}={#3}}%
+& }%
+$ \begingroup
+$   \ifx#1\KVS@empty
+$     \toks@{{#2}={#3}}%
+$   \else
+$     \toks@\expandafter{#1,{#2}={#3}}%
+$   \fi
+$   \xdef\KVS@Global{\the\toks@}%
+$ \endgroup
+$ \let#1\KVS@Global
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kv@set@family@handler}
+%    \begin{macrocode}
+\long\def\kv@set@family@handler#1#2{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \let\ifincsname\iftrue
+  \expandafter\endgroup
+  \expandafter\def\csname KVS@#1@handler\endcsname##1##2{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kv@unset@family@handler}
+%    \begin{macrocode}
+\long\def\kv@unset@family@handler#1#2{%
+  \begingroup
+    \csname @safe@activestrue\endcsname
+    \let\ifincsname\iftrue
+  \expandafter\endgroup
+  \expandafter\let\csname KVS@#1@handler\endcsname\@UnDeFiNeD
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Error handling}
+%
+%    \begin{macro}{\kv@error@novalue}
+%    \begin{macrocode}
+\def\kv@error@novalue{%
+  \kv@error@generic{No value specified for}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\kv@error@unknownkey}
+%    \begin{macrocode}
+\def\kv@error@unknownkey{%
+  \kv@error@generic{Undefined}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\kv@error@generic}
+%    \begin{macrocode}
+\def\kv@error@generic#1#2#3{%
+  \@PackageError{kvsetkeys}{%
+    #1 key `#3'%
+  }{%
+    The keyval family of the key `#3' is `#2'.\MessageBreak
+    The setting of the key is ignored because of the error.\MessageBreak
+    \MessageBreak
+    \@ehc
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Do it all}
+%
+%    \begin{macro}{\kvsetkeys}
+%    \begin{macrocode}
+\long\def\kvsetkeys#1#2{%
+  \kv@parse{#2}{\kv@processor@default{#1}}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kvsetkeys@expandafter}
+%    \begin{macrocode}
+\def\kvsetkeys@expandafter#1#2{%
+  \expandafter\kv@parse\expandafter{#2}{%
+    \kv@processor@default{#1}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\KVS@cmd}
+%    \begin{macrocode}
+\def\KVS@cmd{0}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@cmd@inc}
+%    \begin{macrocode}
+\def\KVS@cmd@inc{%
+& \edef\KVS@cmd{\the\numexpr\KVS@cmd+1}%
+$ \begingroup
+$   \count255=\KVS@cmd\relax
+$   \advance\count255 by 1\relax
+$ \edef\x{\endgroup
+$   \noexpand\def\noexpand\KVS@cmd{\number\count255}%
+$ }%
+$ \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@cmd@dec}
+%    \begin{macrocode}
+\def\KVS@cmd@dec{%
+& \edef\KVS@cmd{\the\numexpr\KVS@cmd-1}%
+$ \begingroup
+$   \count255=\KVS@cmd\relax
+$   \advance\count255 by -1\relax
+$ \edef\x{\endgroup
+$   \noexpand\def\noexpand\KVS@cmd{\number\count255}%
+$ }%
+$ \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@empty}
+%    \begin{macrocode}
+\def\KVS@empty{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kvsetknownkeys}
+%    \begin{macrocode}
+\def\kvsetknownkeys{%
+  \expandafter
+  \KVS@setknownkeys\csname KVS@cmd\KVS@cmd\endcsname{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\KVS@setknownkeys}
+%    \begin{macrocode}
+\long\def\KVS@setknownkeys#1#2#3#4#5{%
+  \let#1\KVS@empty
+  \KVS@cmd@inc
+  #2\kv@parse#2{#5}{\kv@processor@known{#3}#1}%
+  \KVS@cmd@dec
+  \let#4=#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\kvsetknownkeys@expandafter}
+%    \begin{macrocode}
+\def\kvsetknownkeys@expandafter{%
+  \expandafter
+  \KVS@setknownkeys
+      \csname KVS@cmd\KVS@cmd\endcsname\expandafter
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\KVS@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input kvsetkeys.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+% \subsubsection{Preamble}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{article}
+%<noetex>\let\SavedUnexpanded\unexpanded
+%<noetex>\let\unexpanded\UNDEFINED
+\makeatletter
+\chardef\KVS@TestMode=1 %
+\makeatother
+\usepackage{kvsetkeys}[2012/04/25]
+%<noetex>\let\unexpanded\SavedUnexpanded
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+%    \end{macrocode}
+%
+% \subsubsection{Time}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfresettimer\endcsname\relax
+\else
+  \makeatletter
+  \newcount\SummaryTime
+  \newcount\TestTime
+  \SummaryTime=\z@
+  \newcommand*{\PrintTime}[2]{%
+    \typeout{%
+      [Time #1: \strip@pt\dimexpr\number#2sp\relax\space s]%
+    }%
+  }%
+  \newcommand*{\StartTime}[1]{%
+    \renewcommand*{\TimeDescription}{#1}%
+    \pdfresettimer
+  }%
+  \newcommand*{\TimeDescription}{}%
+  \newcommand*{\StopTime}{%
+    \TestTime=\pdfelapsedtime
+    \global\advance\SummaryTime\TestTime
+    \PrintTime\TimeDescription\TestTime
+  }%
+  \let\saved@qstest\qstest
+  \let\saved@endqstest\endqstest
+  \def\qstest#1#2{%
+    \saved@qstest{#1}{#2}%
+    \StartTime{#1}%
+  }%
+  \def\endqstest{%
+    \StopTime
+    \saved@endqstest
+  }%
+  \AtEndDocument{%
+    \PrintTime{summary}\SummaryTime
+  }%
+  \makeatother
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Test sets}
+%
+%    \begin{macrocode}
+\makeatletter
+\def\@makeactive#1{%
+  \catcode`#1=13\relax
+}
+\@makeactive\,
+\def,{\errmessage{COMMA}}
+\@makeother\,
+\@makeactive\=
+\def={\errmessage{EQUALS}}
+\@makeother\=
+
+\begin{qstest}{normalize}{normalize,active-chars,space-removal}%
+  \long\def\Test#1#2{%
+    \@makeother\,%
+    \@makeother\=%
+    \scantokens{\toks@={#2}}%
+    \edef\Result{\the\toks@}%
+    \@makeother\,%
+    \@makeother\=%
+    \@Test{#1}%
+    \@makeactive\,%
+    \@Test{#1}%
+    \@makeactive\=%
+    \@Test{#1}%
+    \@makeother\,%
+    \@Test{#1}%
+    \@makeother\=%
+  }%
+  \long\def\@Test#1{%
+    \scantokens{\kv@normalize{#1}}%
+    \expandafter\expandafter\expandafter\Expect
+    \expandafter\expandafter\expandafter
+    {\expandafter\kv@list\expandafter}\expandafter{\Result}%
+    \Expect*{\ifx\kv@list\Result true\else false\fi}{true}%
+  }%
+  \Test{}{,}%
+  \Test{,}{,}%
+  \Test{,,}{,}%
+  \Test{,,,}{,}%
+  \Test{ , }{,}%
+  \Test{{a}}{,{a},}%
+  \Test{,{a}}{,{a},}%
+  \Test{{a},}{,{a},}%
+  \Test{{a},{b}}{,{a},{b},}%
+  \Test{{b}={c},{}=,{}={},{d}=}{,{b}={c},{}=,{}={},{d}=,}%
+  \Test{{}}{,{},}%
+  \Test{{},{},{}}{,{},{},{},}%
+  \Test{=}{,=,}%
+  \Test{=,=,=}{,=,=,=,}%
+  \Test{a=\par}{,a=\par,}%
+  \Test{\par}{,\par,}%
+  \def\TestSet#1{%
+    \Test{#1#1}{,}%
+    \Test{#1#1,#1#1}{,}%
+    \Test{#1#1,#1#1,#1#1}{,}%
+    \Test{#1#1#1#1#1}{,}%
+    \Test{{a}#1#1=#1#1{b}}{,{a}={b},}%
+  }%
+  \TestSet{ }%
+  \begingroup
+    \let\saved@normalize\kv@normalize
+    \def\kv@normalize#1{%
+      \saved@normalize{#1}%
+      \@onelevel@sanitize\kv@list
+      \@onelevel@sanitize\Result
+    }%
+    \Test{#,#=#,{#}={#},{#}=,{#}}{,#,#=#,{#}={#},{#}=,{#},}%
+  \endgroup
+  \begingroup
+    \def\Test#1#2{%
+      \edef\Result{#2}%
+      \@Test{#1}%
+    }%
+    \Test{{ a = b }}{,{ a = b },}%
+    \@makeactive\,%
+    \Test{{,}}{\string,{\noexpand,}\string,}%
+    \@makeother\,%
+    \@makeactive\=%
+    \Test{a={=}}{,a\string={\noexpand=},}%
+  \endgroup
+  \Test{a=b}{,a=b,}%
+  \Test{a={b}}{,a={b},}%
+  \Test{a ={b}}{,a={b},}%
+  \Test{a= {b}}{,a={b},}%
+  \Test{a = {b}}{,a={b},}%
+  \Test{a = {b} ,}{,a={b},}%
+  \Test{a}{,a,}%
+  \Test{ a}{,a,}%
+  \Test{a }{,a,}%
+  \Test{ a }{,a,}%
+  \Test{, a ,}{,a,}%
+  \Test{, a b ,}{,a b,}%
+  \Test{,a ,}{,a,}%
+  \Test{ a =}{,a=,}%
+  \Test{ a = }{,a=,}%
+  \Test{a =}{,a=,}%
+  \Test{{a} =}{,{a}=,}%
+  \Test{{a}= {}}{,{a}={},}%
+  \Test{, a = {}}{,a={},}%
+  \Test{a,,b}{,a,b,}%
+  \Test{a=\fi}{,a=\fi,}%
+  \Test{a=\iffalse}{,a=\iffalse,}%
+  \Test{a=\iffalse,b=\fi}{,a=\iffalse,b=\fi,}%
+\end{qstest}
+
+\begin{qstest}{parse}{parse,brace-removal}
+  \def\Processor#1#2{%
+    \expandafter\Expect\expandafter{\kv@key}{#1}%
+    \toks@{#2}%
+    \edef\x{\the\toks@}%
+    \ifx\kv@value\relax
+      \Expect*{\the\toks@}{}%
+      \def\Value{<>}%
+    \else
+      \edef\Value{[\the\toks@]}%
+      \@onelevel@sanitize\Value
+    \fi
+    \toks@{#1}%
+    \ifx\Result\@empty
+      \edef\Result{[\the\toks@]=\Value}%
+    \else
+      \edef\Result{\Result,[\the\toks@]=\Value}%
+    \fi
+    \@onelevel@sanitize\Result
+  }%
+  \def\Test#1#2{%
+    \sbox0{%
+      \let\Result\@empty
+      \kv@parse{#1}\Processor
+      \Expect*{\Result}{#2}%
+    }%
+    \Expect*{\the\wd0}{0.0pt}%
+  }%
+  \Test{}{}%
+  \Test{{}}{}%
+  \Test{{{}}}{[]=<>}%
+  \Test{{{{}}}}{[{}]=<>}%
+  \Test{a}{[a]=<>}%
+  \Test{{a}}{[a]=<>}%
+  \Test{{a}}{[a]=<>}%
+  \Test{{{a}}}{[a]=<>}%
+  \Test{{{{a}}}}{[{a}]=<>}%
+  \Test{a=}{[a]=[]}%
+  \Test{{a}=}{[a]=[]}%
+  \Test{{{a}}=}{[{a}]=[]}%
+  \Test{a={}}{[a]=[]}%
+  \Test{{a}={{}}}{[a]=[{}]}%
+  \Test{a=b}{[a]=[b]}%
+  \Test{a=\fi}{[a]=[\fi]}%
+  \Test{a=\iffalse}{[a]=[\iffalse]}%
+  \Test{a=\iffalse,b=\fi}{[a]=[\iffalse],[b]=[\fi]}%
+  \Test{{ a = b }}{[ a ]=[ b ]}%
+  \Test{{{ a = b }}}{[ a = b ]=<>}%
+\end{qstest}
+
+\begin{qstest}{comma}{comma,parse}
+  \def\Processor#1{%
+    \expandafter\Expect\expandafter{\comma@entry}{#1}%
+    \toks@{#1}%
+    \ifx\Result\@empty
+      \edef\Result{[\the\toks@]}%
+    \else
+      \edef\Result{\Result,[\the\toks@]}%
+    \fi
+    \@onelevel@sanitize\Result
+  }%
+  \def\Test#1#2{%
+    \sbox0{%
+      \let\Result\@empty
+      \comma@parse{#1}\Processor
+      \Expect*{\Result}{#2}%
+    }%
+    \Expect*{\the\wd0}{0.0pt}%
+  }%
+  \Test{}{}%
+  \Test{{}}{}%
+  \Test{{{}}}{[{}]}%
+  \Test{a}{[a]}%
+  \Test{{a}}{[a]}%
+  \Test{{{a}}}{[{a}]}%
+  \Test{a=}{[a=]}%
+  \Test{a\fi}{[a\fi]}%
+  \Test{a\iffalse}{[a\iffalse]}%
+  \Test{\iffalse,\fi}{[\iffalse],[\fi]}%
+  \Test{ a , b , c }{[a],[b],[c]}%
+  \Test{ { } ,{ }, { }, { } , { } }{[ ],[ ],[ ],[ ],[ ]}%
+  \Test{ {{}} ,{{}}, {{}}, {{}} , {{}} }{[{}],[{}],[{}],[{}],[{}]}%
+\end{qstest}
+
+\begin{document}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \subsection{Tests for key value processing handler}
+%
+%    \begin{macrocode}
+%<*test4>
+\catcode`\{=1
+\catcode`\}=2
+\catcode`\#=6
+\catcode`\@=11
+\input kvdefinekeys.sty\relax
+\input kvsetkeys.sty\relax
+\input infwarerr.sty\relax
+\def\Error#1{%
+  \@PackageError{test}{#1}\@ehc
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\temp#1#2{%
+  \kv@define@key{#1}{#2}{%
+    \edef\result{%
+      \result
+      [#1:#2=##1]% hash-ok
+    }%
+  }%
+}
+\temp{FA}{key1}
+\temp{FA}{key2}
+\temp{FB}{key3}
+\temp{FB}{key3}
+%    \end{macrocode}
+%    \begin{macrocode}
+\setbox0=\hbox{%
+  \def\result{}%
+  \kvsetknownkeys{FA}\cmd{key1=234,key3=456}%
+  \def\expected{[FA:key1=234]}%
+  \ifx\expected\result
+  \else
+    \Error{%
+      \string\kvsetknownkeys/\string\result\MessageBreak
+      Expected: \expected\MessageBreak
+      Result: \space\result
+    }%
+  \fi
+  \def\expected{{key3}={456}}%
+  \ifx\cmd\expected
+  \else
+    \Error{%
+      \string\kvsetknownkeys/\string\cmd\MessageBreak
+      Expected: \expected\MessageBreak
+      Result: \space\cmd
+    }%
+  \fi
+}
+\ifdim\wd0=0pt %
+\else
+  \Error{Spurious spaces?}%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\csname @@end\endcsname\end
+%</test4>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/kvsetkeys.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/kvsetkeys.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex kvsetkeys.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   kvsetkeys.sty & tex/generic/oberdiek/kvsetkeys.sty\\
+%   kvsetkeys.pdf & doc/latex/oberdiek/kvsetkeys.pdf\\
+%   kvsetkeys-example.tex & doc/latex/oberdiek/kvsetkeys-example.tex\\
+%   test/kvsetkeys-test1.tex & doc/latex/oberdiek/test/kvsetkeys-test1.tex\\
+%   test/kvsetkeys-test2.tex & doc/latex/oberdiek/test/kvsetkeys-test2.tex\\
+%   test/kvsetkeys-test3.tex & doc/latex/oberdiek/test/kvsetkeys-test3.tex\\
+%   test/kvsetkeys-test4.tex & doc/latex/oberdiek/test/kvsetkeys-test4.tex\\
+%   kvsetkeys.dtx & source/latex/oberdiek/kvsetkeys.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk kvsetkeys.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{kvsetkeys.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex kvsetkeys.dtx
+%makeindex -s gind.ist kvsetkeys.idx
+%pdflatex kvsetkeys.dtx
+%makeindex -s gind.ist kvsetkeys.idx
+%pdflatex kvsetkeys.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{kvsetkeys.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='kvsetkeys'>
+  <name>kvsetkeys</name>
+  <caption>Key value parser with default handler support.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006,2007,2009-2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.16'/>
+  <description>
+    This package provides \kvsetkeys, a variant of package
+    <xref refid='keyval'>keyval</xref>'s <tt>\setkeys</tt>.  It allows
+    the user to specify a handler that deals with unknown options.
+    Active commas and equal signs may be used (e.g. see
+    <xref refid='babel'>babel</xref>'s shorthands) and only one level
+    of curly braces are removed from the values.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/kvsetkeys.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/kvsetkeys.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \bibitem{tb94wright}
+%   A guide to key-value methods, Joseph Wright, second draft for
+%   \href{http://www.tug.org/tugboat}{TUGBoat}, 2009-03-17.
+%   \url{http://www.texdev.net/wp-content/uploads/2009/03/keyval.pdf}
+%
+% \bibitem{keyval}
+%   David Carlisle:
+%   \textit{The \xpackage{keyval} package};
+%   1999/03/16 v1.13;
+%   \CTAN{macros/latex/required/graphics/keyval.dtx}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2006/03/06 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2006/10/19 v1.1}
+%   \item
+%     Fix of \cs{kv@set@family@handler}.
+%   \item
+%     Example added.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.2}
+%   \item
+%     Using package \xpackage{infwarerr} for error messages.
+%   \item
+%     Catcode section rewritten.
+%   \end{Version}
+%   \begin{Version}{2007/09/29 v1.3}
+%   \item
+%     Normalizing and parsing of comma separated lists added.
+%   \item
+%     \cs{kv@normalize} rewritten.
+%   \item
+%     Robustness increased for normalizing and parsing,
+%     e.g. for values with unmatched conditionals.
+%   \item
+%     \eTeX\ is used if available.
+%   \item
+%     Tests added for normalizing and parsing.
+%   \end{Version}
+%   \begin{Version}{2009/07/19 v1.4}
+%   \item
+%     Bug fix for \cs{kv@normalize}: unwanted space removed (Florent Chervet).
+%   \end{Version}
+%   \begin{Version}{2009/07/30 v1.5}
+%   \item
+%     Documentation addition: recommendation for Joseph Wright's
+%     review article.
+%   \end{Version}
+%   \begin{Version}{2009/12/12 v1.6}
+%   \item
+%     Short info shortened.
+%   \end{Version}
+%   \begin{Version}{2009/12/22 v1.7}
+%   \item
+%     Internal optimization (\cs{KVS@CommaSpace}, \dots, \cs{KVS@EqualsSpace}).
+%   \end{Version}
+%   \begin{Version}{2010/01/28 v1.8}
+%   \item
+%     Compatibility to ini\TeX\ added.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.9}
+%   \item
+%     Support of \cs{par} inside values.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.10}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/03/03 v1.11}
+%   \item
+%     \cs{kv@break} and \cs{comma@break} added.
+%   \end{Version}
+%   \begin{Version}{2011/04/05 v1.12}
+%   \item
+%     Error message with recovery action in help message
+%     (request by GL).
+%   \end{Version}
+%   \begin{Version}{2011/04/07 v1.13}
+%   \item
+%     \cs{kv@processor@default} supports package \xpackage{babel}'s
+%     shorthands.
+%   \item
+%     \cs{kv@set@family@handler} with shorthand support.
+%   \end{Version}
+%   \begin{Version}{2011/06/15 v1.14}
+%   \item
+%     Some optimizations in token register uses (GL, HO).
+%   \end{Version}
+%   \begin{Version}{2011/10/18 v1.15}
+%   \item
+%     \cs{kv@processor@known} and \cs{kvsetknownkeys} added.
+%   \item
+%     \cs{kvsetkeys@expandafter} and \cs{kvsetknownkeys@expandafter} added.
+%   \item
+%     Family handler can report success or failure by \cs{kv@handled@true}
+%     or \cs{kv@handled@false}.
+%   \item
+%     \cs{kv@unset@family@handler} added.
+%   \end{Version}
+%   \begin{Version}{2012/04/25 v1.16}
+%   \item
+%     \cs{kv@processor@default} and \cs{kv@processor@known} define
+%     macro \cs{kv@fam} for convenience.
+%   \item
+%     Catcode section: Catcode setting for \texttt{+} added for \hologo{eTeX}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

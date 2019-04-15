@@ -1,0 +1,1021 @@
+% \iffalse meta-comment
+%
+% File: telprint.dtx
+% Version: 2008/08/11 v1.10
+% Info: Format German phone numbers
+%
+% Copyright (C) 1996, 1997, 2004-2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file telprint.dtx
+% and the derived files
+%    telprint.sty, telprint.pdf, telprint.ins, telprint.drv,
+%    telprint-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/telprint.dtx
+%    CTAN:macros/latex/contrib/oberdiek/telprint.pdf
+%
+% Unpacking:
+%    (a) If telprint.ins is present:
+%           tex telprint.ins
+%    (b) Without telprint.ins:
+%           tex telprint.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{telprint.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If telprint.drv is present:
+%           latex telprint.drv
+%    (b) Without telprint.drv:
+%           latex telprint.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex telprint.dtx
+%       makeindex -s gind.ist telprint.idx
+%       pdflatex telprint.dtx
+%       makeindex -s gind.ist telprint.idx
+%       pdflatex telprint.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/telprint.sty
+%    TDS:doc/latex/oberdiek/telprint.pdf
+%    TDS:doc/latex/oberdiek/test/telprint-test1.tex
+%    TDS:source/latex/oberdiek/telprint.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: telprint 2008/08/11 v1.10 Format German phone numbers (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: telprint
+Version: 2008/08/11 v1.10
+
+Copyright (C) 1996, 1997, 2004-2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file telprint.dtx
+and the derived files
+   telprint.sty, telprint.pdf, telprint.ins, telprint.drv,
+   telprint-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{telprint.ins}{\from{telprint.dtx}{install}}%
+  \file{telprint.drv}{\from{telprint.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{telprint.sty}{\from{telprint.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{telprint-test1.tex}{\from{telprint.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{telprint.xml}{\from{telprint.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     telprint.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `telprint.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{telprint.drv}%
+  [2008/08/11 v1.10 Format German phone numbers (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage[ngerman,english]{babel}
+\begin{document}
+  \DocInput{telprint.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{602}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{telprint.drv}
+%
+% \title{The \xpackage{telprint} package}
+% \date{2008/08/11 v1.10}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{telprint} provides \cs{telprint} for formatting
+% German phone numbers.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+%            This is a very old package that I have written
+%            to format phone numbers. It follows German
+%            conventions and the documentation is mainly in German.
+%
+% \subsection{Short overview in English}
+%
+% \LaTeX:
+% \begin{quote}
+% |\usepackage{telprint}|\\
+% |\telprint{123/456-789}|\\
+% \end{quote}
+% \plainTeX:
+% \begin{quote}
+%   |\input telprint.sty|\\
+%   |\telprint{123/456-789}|
+% \end{quote}
+%
+% \DescribeMacro\telprint
+% |\telprint{...}| formats the explicitly given number.
+%     Digits, spaces and some special characters
+%     ('+', '/', '-', '(', ')', '\textasciitilde', ' ') are supported.
+%     Numbers are divided into groups of two digits from the right.
+% Examples:
+% \begin{quote}
+%     |\telprint{0761/12345}     ==> 07\,61/1\,23\,45|\\
+%     |\telprint{01234/567-89}   ==> 0\,12\,34/5\,67\leavevmode\hbox{-}89|\\
+%     |\telprint{+49 (6221) 297} ==> +49~(62\,21)~2\,97|
+% \end{quote}
+%
+% \subsubsection{Configuration}
+%
+% The output of the symbols can be configured by
+% \cs{telhyphen}, \cs{telslash}, \cs{telleftparen}, \cs{telrightparen},
+% \cs{telplus}, \cs{teltilde}.
+% Example:
+% \begin{quote}
+%   |\telslash{\,/\,}\\|
+%   |\telprint{12/34} ==> 12\,/\,34|
+% \end{quote}
+%
+% \DescribeMacro\telspace
+% \cs{telspace} configures the space between digit groups.
+%
+% \DescribeMacro\telnumber
+% \cs{telnumber} only formats a number in digit groups; special
+%    characters are not recognized.
+%
+% \subsection{Documentation in German}
+%
+% \begin{otherlanguage*}{ngerman}
+% \hyphenation{To-ken-ma-kros}
+% \begin{itemize}
+% \item \DescribeMacro\telprint |telprint#1|\\
+%   Der eigentliche Anwenderbefehl zur formatierten Ausgabe von
+%   Telefonnummern. Diese d\"urfen dabei nur als Zahlen angegeben
+%   werden(, da sie tokenweise analysiert werden).
+%   Als Trenn- oder Sonderzeichen werden unterst\"utzt:
+%   '+', '/', '-', '(', ')', '\textasciitilde', ' '
+%   Einfache Leerzeichen werden erkannt und durch Tilden ersetzt, um
+%   Trennungen in der Telefonnummer zu verhindern. (Man beachte aus
+%   gleichem Grunde die \cs{hbox} bei '-'.)
+%   Beispiele:
+%   \begin{quote}
+%     |\telprint{0761/12345}     ==> 07\,61/1\,23\,45|\\
+%     |\telprint{01234/567-89}   ==> 0\,12\,34/5\,67\leavevmode\hbox{-}89|\\
+%     |\telprint{+49 (6221) 297} ==> +49~(62\,21)~2\,97|
+%   \end{quote}
+% \end{itemize}
+% Der Rest enth\"alt eher Technisches:
+% \begin{itemize}
+% \item \DescribeMacro\telspace |\telspace#1|\\
+%   Mit diesem Befehl wird der Abstand zwischen den Zifferngruppen
+%   angegeben (Default: |\,|).
+%   (Durch |\telspace{}| kann dieser zusaetzliche Abstand abgestellt
+%   werden.)
+% \item \DescribeMacro\telhyphen |\telhyphen#1|\\
+%   Dieser Befehl gibt die Art des Bindestriches, wie er ausgegeben
+%   werden soll. In der Eingabe darf jedoch nur der einfache
+%   Bindestrich stehen:
+%   |\telprint{123-45}|, jedoch NIE |\telprint{123--45}|!
+%   Kopka-Bindestrich-Fans geben an:
+%   |\telhyphen{\leavevmode\hbox{--}}|
+% \item
+%   \DescribeMacro{\telslash}
+%   \DescribeMacro{\telleftparen}
+%   \DescribeMacro{\telrightparen}
+%   \DescribeMacro{\telplus}
+%   \DescribeMacro{\teltilde}
+%   |\telslash#1|, |\telleftparen#1|, |\telrightparen#1|, |\telplus#1|,
+%   |\teltilde|\\
+%   Diese Befehle konfigurieren die Zeichen '/', '(', ')', '+'
+%   und '\textasciitilde'. Sie funktionieren analog zu \cs{telhyphen}.
+% \item \DescribeMacro\telnumber |\telnumber#1|\\
+%   Richtung interner Befehl: Er dient dazu, eine Zifferngruppe
+%   in Zweiergruppen auszugeben.
+%   Die einzelnen Zahlen werden im Tokenregister \cs{TELtoks}
+%   gespeichert. Abwechselnd werden dabei zwischen zwei Token
+%   (Zahlen) \cs{TELx} bzw. \cs{TELy} eingefuegt, abh\"angig von dem
+%   wechselnden Wert von \cs{TELswitch}. Zum Schluss kann dann einfach
+%   festgestellt werden ob die Nummer nun eine geradzahlige oder
+%   ungeradzahlige Zahl von Ziffern aufwies. Dem entsprechend wird
+%   \cs{TELx} mit dem Zusatzabstand belegt und \cs{TELy} leer definiert
+%   oder umgekehrt. )
+% \item |\TEL...| interne Befehle, Technisches:\\
+%   \cs{TELsplit} dient zur Aufteilung einer zusammengesetzten
+%   Telefonnummer (Vorwahl, Hauptnummer, Nebenstelle). In dieser
+%   Implementation werden als Trennzeichen nur '/' und '-' erkannt.
+%   Die einzelnen Bestandteile wie Vorwahl werden dann dem Befehl
+%   \cs{telnumber} zur Formatierung uebergeben.
+% \item Die Erkennung von einfachen Leerzeichen ist um einiges
+%   schwieriger: Die Tokentrennung ueber Parameter |#1#2| funktioniert
+%   nicht f\"ur einfache Leerzeichen, da TeX sie \emph{niemals} als
+%   eigenst\"andige Argumente behandelt! (The TeXbook, Chapter 20,
+%   p. 201)
+%
+%   (Anmerkung am Rande: Deshalb funktionieren die entsprechenden
+%   Tokenmakros auf S. 149 des Buches "`Einf\"uhrung in TeX"' von
+%   N. Schwarz (3. Aufl.) nicht, wenn im Tokenregister als erstes
+%   ein einfaches Leerzeichen steht!)
+% \end{itemize}
+% \end{otherlanguage*}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@telprint.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{telprint}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@telprint.sty\endcsname
+\ProvidesPackage{telprint}%
+  [2008/08/11 v1.10 Format German phone numbers (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname TELAtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\TELAtEnd{%
+    \TELAtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{126}{13}% ~ (active)
+\edef\TELAtEnd{\TELAtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Package macros}
+%    \begin{macrocode}
+\ifx\DeclareRobustCommand\UnDeFiNeD
+  \def\DeclareRobustCommand*#1[1]{\def#1##1}%
+  \def\TELreset{\let\DeclareRobustCommand=\UnDeFiNeD}%
+  \input infwarerr.sty\relax
+  \@PackageInfo{telprint}{%
+    Macros are not robust!%
+  }%
+\else
+  \let\TELreset=\relax
+\fi
+%    \end{macrocode}
+%    \begin{macro}{\telspace}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telspace}[1]{\def\TELspace{#1}}
+\telspace{{}$\,${}}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telhyphen}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telhyphen}[1]{\def\TELhyphen{#1}}
+\telhyphen{\leavevmode\hbox{-}}% \hbox zur Verhinderung der Trennung
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telslash}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telslash}[1]{\def\TELslash{#1}}
+\telslash{/}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telleftparen}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telleftparen}[1]{\def\TELleftparen{#1}}
+\telleftparen{(}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telrightparen}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telrightparen}[1]{\def\TELrightparen{#1}}
+\telrightparen{)}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telplus}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telplus}[1]{\def\TELplus{#1}}
+\telplus{+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\teltilde}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\teltilde}[1]{\def\TELtilde{#1}}
+\teltilde{~}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\TELtoks}
+%    \begin{macrocode}
+\newtoks\TELtoks
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\TELnumber}
+%    \begin{macrocode}
+\def\TELnumber#1#2\TELnumberEND{%
+  \begingroup
+  \def\0{#2}%
+  \expandafter\endgroup
+  \ifx\0\empty
+    \TELtoks=\expandafter{\the\TELtoks#1}%
+    \ifnum\TELswitch=0 %
+      \def\TELx{\TELspace}\def\TELy{}%
+    \else
+      \def\TELx{}\def\TELy{\TELspace}%
+    \fi
+    \the\TELtoks
+  \else
+    \ifnum\TELswitch=0 %
+      \TELtoks=\expandafter{\the\TELtoks#1\TELx}%
+      \def\TELswitch{1}%
+    \else
+      \TELtoks=\expandafter{\the\TELtoks#1\TELy}%
+      \def\TELswitch{0}%
+    \fi
+    \TELnumber#2\TELnumberEND
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telnumber}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telnumber}[1]{%
+  \TELtoks={}%
+  \def\TELswitch{0}%
+  \TELnumber#1{}\TELnumberEND
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\TELsplit}
+%    \begin{macrocode}
+\def\TELsplit{\futurelet\TELfuture\TELdosplit}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\TELdosplit}
+%    \begin{macrocode}
+\def\TELdosplit#1#2\TELsplitEND
+{%
+  \def\TELsp{ }%
+  \expandafter\ifx\TELsp\TELfuture
+    \let\TELfuture=\relax
+    \expandafter\telnumber\expandafter{\the\TELtoks}~%
+    \telprint{#1#2}% Das Leerzeichen kann nicht #1 sein!
+  \else
+    \def\TELfirst{#1}%
+    \ifx\TELfirst\empty
+      \expandafter\telnumber\expandafter{\the\TELtoks}%
+      \TELtoks={}%
+    \else\if-\TELfirst
+      \expandafter\telnumber\expandafter{\the\TELtoks}\TELhyphen
+      \telprint{#2}%
+    \else\if/\TELfirst
+      \expandafter\telnumber\expandafter{\the\TELtoks}\TELslash
+      \telprint{#2}%
+    \else\if(\TELfirst
+      \expandafter\telnumber\expandafter{\the\TELtoks}\TELleftparen
+      \telprint{#2}%
+    \else\if)\TELfirst
+      \expandafter\telnumber\expandafter{\the\TELtoks}\TELrightparen
+      \telprint{#2}%
+    \else\if+\TELfirst
+      \expandafter\telnumber\expandafter{\the\TELtoks}\TELplus
+      \telprint{#2}%
+    \else\def\TELtemp{~}\ifx\TELtemp\TELfirst
+      \expandafter\telnumber\expandafter{\the\TELtoks}\TELtilde
+      \telprint{#2}%
+    \else
+      \TELtoks=\expandafter{\the\TELtoks#1}%
+      \TELsplit#2{}\TELsplitEND
+    \fi\fi\fi\fi\fi\fi\fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\telprint}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\telprint}[1]{%
+  \TELtoks={}%
+  \TELsplit#1{}\TELsplitEND
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\TELreset\let\TELreset=\UnDeFiNeD
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\TELAtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input telprint.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/telprint.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/telprint.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex telprint.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   telprint.sty & tex/generic/oberdiek/telprint.sty\\
+%   telprint.pdf & doc/latex/oberdiek/telprint.pdf\\
+%   test/telprint-test1.tex & doc/latex/oberdiek/test/telprint-test1.tex\\
+%   telprint.dtx & source/latex/oberdiek/telprint.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk telprint.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{telprint.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex telprint.dtx
+%makeindex -s gind.ist telprint.idx
+%pdflatex telprint.dtx
+%makeindex -s gind.ist telprint.idx
+%pdflatex telprint.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{telprint.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='telprint'>
+  <name>telprint</name>
+  <caption>Format German phone numbers.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1996,1997,2004-2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.10'/>
+  <description>
+    The package provides a command <tt>\telprint</tt> for formatting
+    German telephone numbers.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/telprint.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/telprint.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1996/11/28 v1.0}
+%   \item
+%     Erste lauff\"ahige Version.
+%   \item
+%     Nur '-' und '/' als zul\"assige Sonderzeichen.
+%   \end{Version}
+%   \begin{Version}{1997/09/16 v1.1}
+%   \item
+%     Dokumentation und Kommentare (Posting in de.comp.text.tex).
+%   \item
+%     Erweiterung um Sonderzeichen '(', ')', '+', '\textasciitilde' und ' '.
+%   \item
+%     Trennungsverhinderung am 'hyphen'.
+%   \end{Version}
+%   \begin{Version}{1997/10/16 v1.2}
+%   \item
+%     Schutz vor wiederholtem Einlesen.
+%   \item
+%     Unter \LaTeXe\ Nutzung des \cs{DeclareRobustCommand}-Features.
+%   \end{Version}
+%   \begin{Version}{1997/12/09 v1.3}
+%   \item
+%     Tempor\"are Variable eingespart.
+%   \item
+%     Posted in newsgroup \xnewsgroup{de.comp.text.tex}:\\
+%     \URL{``\link{Re: Generisches Markup f\"ur Telefonnummern?}''}^^A
+%     {http://groups.google.com/group/de.comp.text.tex/msg/86b3a86140007309}
+%   \end{Version}
+%   \begin{Version}{2004/11/02 v1.4}
+%   \item
+%     Fehler in der Dokumentation korrigiert.
+%   \end{Version}
+%   \begin{Version}{2005/09/30 v1.5}
+%   \item
+%     Konfigurierbare Symbole: '/', '(', ')', '+' und '\textasciitilde'.
+%   \end{Version}
+%   \begin{Version}{2006/02/12 v1.6}
+%   \item
+%     LPPL 1.3.
+%   \item
+%     Kurze \"Ubersicht in Englisch.
+%   \item
+%     CTAN.
+%   \end{Version}
+%   \begin{Version}{2006/08/26 v1.7}
+%   \item
+%     New DTX framework.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.8}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.9}
+%   \item
+%     Catcode section added.
+%   \item
+%     Missing docstrip tag added.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.10}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

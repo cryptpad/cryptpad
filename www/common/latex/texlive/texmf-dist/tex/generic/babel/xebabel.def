@@ -1,0 +1,120 @@
+%%
+%% This is file `xebabel.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bbunicode.dtx  (with options: `xetex')
+%% This is a generated file.
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright 1989-2008 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% The Current Maintainer of this work is Javier Bezos.
+%% 
+%% This file may only be distributed together with a copy of the Babel
+%% system. You may however distribute the Babel system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the Babel distribution is
+%% given in the file `manifest.bbl'. See also `legal.bbl for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%% File `bbunicode.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 2103-2014
+%%           by Javier Bezos
+\def\BabelStringsDefault{unicode}
+\let\xebbl@stop\relax
+\AddBabelHook{xetex}{encodedcommands}{%
+  \def\bbl@tempa{#1}%
+  \ifx\bbl@tempa\@empty
+    \XeTeXinputencoding"bytes"%
+  \else
+      \XeTeXinputencoding"#1"%
+  \fi
+  \def\xebbl@stop{\XeTeXinputencoding"utf8"}}
+\AddBabelHook{xetex}{stopcommands}{%
+  \xebbl@stop
+  \let\xebbl@stop\relax}
+\AddBabelHook{xetex}{loadkernel}{%
+  \begingroup
+      % Reset chars "80-"C0 to category "other", no case mapping:
+    \catcode`\@=11 \count@=128
+    \loop\ifnum\count@<192
+      \global\uccode\count@=0 \global\lccode\count@=0
+      \global\catcode\count@=12 \global\sfcode\count@=1000
+      \advance\count@ by 1 \repeat
+      % Other:
+    \def\O ##1 {%
+      \global\uccode"##1=0 \global\lccode"##1=0
+      \global\catcode"##1=12 \global\sfcode"##1=1000 }%
+      % Letter:
+    \def\L ##1 ##2 ##3 {\global\catcode"##1=11
+      \global\uccode"##1="##2
+      \global\lccode"##1="##3
+      % Uppercase letters have sfcode=999:
+      \ifnum"##1="##3 \else \global\sfcode"##1=999 \fi }%
+      % Letter without case mappings:
+    \def\l ##1 {\L ##1 ##1 ##1 }%
+    \l 00AA
+    \L 00B5 039C 00B5
+    \l 00BA
+    \O 00D7
+    \l 00DF
+    \O 00F7
+    \L 00FF 0178 00FF
+  \endgroup
+  \input #1\relax}
+\def\babelFSstore#1{%
+  \bbl@for\bbl@tempa{#1}{%
+    \edef\bbl@tempb{\noexpand\bbl@FSstore{\bbl@tempa}}
+    \bbl@tempb{rm}\rmdefault\bbl@save@rmdefault
+    \bbl@tempb{sf}\sfdefault\bbl@save@sfdefault
+    \bbl@tempb{tt}\ttdefault\bbl@save@ttdefault}}
+\def\bbl@FSstore#1#2#3#4{%
+  \bbl@csarg\edef{#2default#1}{#3}%
+  \expandafter\addto\csname extras#1\endcsname{%
+    \let#4#3%
+    \ifx#3\f@family
+      \edef#3{\csname bbl@#2default#1\endcsname}%
+      \fontfamily{#3}\selectfont
+    \else
+      \edef#3{\csname bbl@#2default#1\endcsname}%
+    \fi}%
+  \expandafter\addto\csname noextras#1\endcsname{%
+    \ifx#3\f@family
+      \fontfamily{#4}\selectfont
+    \fi
+    \let#3#4}}
+\let\bbl@langfeatures\@empty
+\def\babelFSfeatures{%
+  \let\bbl@ori@fontspec\fontspec
+  \renewcommand\fontspec[1][]{%
+    \bbl@ori@fontspec[\bbl@langfeatures##1]}
+  \let\babelFSfeatures\bbl@FSfeatures
+  \babelFSfeatures}
+\def\bbl@FSfeatures#1#2{%
+  \expandafter\addto\csname extras#1\endcsname{%
+    \babel@save\bbl@langfeatures
+    \edef\bbl@langfeatures{#2,}}}
+\endinput
+%%
+%% End of file `xebabel.def'.

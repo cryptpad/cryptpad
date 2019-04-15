@@ -1,0 +1,233 @@
+%%% ====================================================================
+%%% @LaTeX-file{
+%%%   filename  = "technote.tex",
+%%%   version   = "2.0",
+%%%   date      = "1999/11/15",
+%%%   time      = "15:07:20 EST",
+%%%   checksum  = "58506 233 1647 12005",
+%%%   author    = "American Mathematical Society",
+%%%   copyright = "Copyright 1995, 1999 American Mathematical Society,
+%%%                all rights reserved.  Copying of this file is
+%%%                authorized only if either:
+%%%                (1) you make absolutely no changes to your copy,
+%%%                including name; OR
+%%%                (2) if you do make changes, you first rename it
+%%%                to some other name.",
+%%%   address   = "American Mathematical Society,
+%%%                Technical Support,
+%%%                Electronic Products and Services,
+%%%                P. O. Box 6248,
+%%%                Providence, RI 02940,
+%%%                USA",
+%%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%%                800-321-4AMS (321-4267)",
+%%%   FAX       = "401-331-3842",
+%%%   email     = "tech-support@ams.org (Internet)",
+%%%   supported = "yes",
+%%%   keywords  = "amsmath, latex",
+%%%   abstract  = "This is part of the AMS-\LaTeX{} distribution. It
+%%%                is a document discussing some technical issues in the
+%%%                contents and interface of AMS-\LaTeX{} packages."
+%%%   docstring = "The checksum field above contains a CRC-16 checksum
+%%%                as the first value, followed by the equivalent of
+%%%                the standard UNIX wc (word count) utility output of
+%%%                lines, words, and characters.  This is produced by
+%%%                Robert Solovay's checksum utility.",
+%%% }
+%%% ====================================================================
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must December 1994 or later
+\documentclass{amsdtx}
+
+\title{Technical notes on the \pkg{amsmath} package}
+\author{American Mathematical Society\\Michael Downes}
+\date{1999/10/29}
+
+\markboth
+  {Technical notes on the \pkg{amsmath} package}
+  {Technical notes on the \pkg{amsmath} package}
+\renewcommand{\sectionmark}[1]{}
+
+\providecommand{\etc}[1]{etc.}
+
+\providecommand{\begend}[1]{%
+  {\ntt \symbol{92}begin\symbol{123}#1\symbol{125}}
+    \ldots\ {\ntt\symbol{92}end\symbol{123}#1\symbol{125}}%
+}
+
+\MakeShortVerb{\|}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+These notes are miscellaneous remarks on some technical questions
+applicable to version 2.0 of \amslatex/.
+
+\section{Deprecated and disallowed commands}
+
+Certain commands that were in the \pkg{amstex} package (the predecessor,
+in \amslatex/ 1.0 and 1.1, of the \pkg{amsmath} package) were moved into
+\pkg{amsxtra} because they seemed to be little-used relics:
+\cn{accentedsymbol}, \qq{sup accents} (\cn{sptilde}, \cn{sphat}, etc.).
+
+Certain other commands\mdash e.g., \cn{over}, \cn{pmatrix}, and
+\cn{cases}\mdash are changed by the \pkg{amsmath} package to produce
+warning messages or error messages, depending on their history; these
+are discussed in more detail in the following sections.
+
+\section{Why do \cn{matrix}, \cn{pmatrix}, and \cn{cases} stop working
+when I add the \pkg{amsmath} package?}
+
+If you used the \fn{plain.tex} versions of \cn{matrix}, \cn{pmatrix}, or
+\cn{cases} in a document and then later converted the document to use
+the \pkg{amsmath} package (or one of the AMS documentclasses, which
+automatically call the \pkg{amsmath} package internally), the instances
+of those commands will produce error messages. The problem is that when
+\latex/ was originally created, it adopted most of its mathematics
+features straight from \fn{plain.tex}. But in the case of \cn{matrix},
+\cn{pmatrix}, \cn{cases} this was a mistake\mdash the \fn{plain.tex}
+syntax for them is decidedly non-\latex/ in style, for example the fact
+that they use \cs{cr} instead of \cn{\\} to mark line breaks, and they
+don't use \cn{begin} and \cn{end}. In basic \latex/ this mistake will be
+perpetuated at least until \latex/3 appears, in order to avoid breaking
+existing documents. But no existing documents that were written with the
+\pkg{amsmath} package have that syntactic problem, as \pkg{amsmath}
+provides proper \latex/-syntax versions of \cn{matrix} and the others.
+The possibility of optionally allowing the \fn{plain.tex} variants to
+make document conversion easier seems ill-advised since those variants
+are so blatantly wrong in a \latex/ context. The \env{array} environment
+ought to have been used instead.
+
+\section{Why do \cn{over}, \cn{atop}, \cn{above} [\dots{\ntt withdelims}]
+ give a warning when I add the \pkg{amsmath} package?}
+
+Using the six generalized fraction commands \cn{over},
+\cn{overwithdelims}, \cn{atop}, \cn{atopwithdelims}, \cn{above},
+\cn{abovewithdelims} is not really a good idea in \latex/, for reasons
+explained below. I construe \latex/'s provision of \cs{frac}, and the
+lack of any mention in the \latex/ book of the primitive fraction
+commands, as an implicit injunction against their use, although I don't
+think Lamport actually spent a lot of time pondering the issue, and the
+basic \latex/ version of \cn{frac} provides access only to \cn{over},
+not to \cn{atop}, \cn{above}, or the \verb'withdelims' variants. The
+\pkg{amsmath} package, however, provides a \cn{genfrac} command that
+gives user-level access to all six of the generalized fraction
+primitives in a way that conforms to the syntactic conventions followed
+by all other \latex/ commands.
+
+Not only is the unusual syntax of the \tex/ primitives rather out of
+place in \latex/, but furthermore that syntax seems to be responsible
+for one of the most significant flaws in \tex/'s mathematical
+typesetting capabilities: the fact that the current mathstyle at any
+given point in a math formula cannot be determined until the end of the
+formula, because of the possibility that a following generalized
+fraction command will change the mathstyle of the \emph{preceding}
+material. To cite two of the worst side effects: \cn{mathchoice} must
+actually typeset all four of its arguments, instead of being able to
+immediately select only one; and, were it possible to always know the
+current math style at a given point, math font selection would be
+greatly simplified and the upper limit of 16 different math font
+\cn{fam}s would never be a problem as \cn{text,script[script]font}
+assignments for any \cn{fam} could take immediate effect and therefore
+could be changed arbitrarily often within a single formula. More
+concretely, math font selection difficulties are responsible for many of
+the more convoluted passages in the source code of \latex/'s NFSS (that
+does font loading on demand) and of the \pkg{amsmath} package, and by
+extension it has historically been responsible for significant delays in
+making new features available to end users and for making those features
+more prone to bugs.
+
+There are additional bad consequences following from the syntax of those
+generalized fraction commands that only become evident when you do some
+writing of nontrivial macros for math use. For example, as things
+currently stand you cannot measure the size of any object in math
+without going through \cn{mathchoice} and \emph{leaving and reentering
+math mode} via \verb'\hbox{$' (which then introduces complications
+regarding \cn{everymath} and \cn{mathsurround}). And it seems that
+uncertainty about the current mathstyle is the only barrier to allowing
+the use of mu units with \cn{vrule}, to make vertical struts in
+constructing compound symbols or notation. And so on and so forth.
+
+\section{The \opt{fleqn} option and \cn{mathindent}}
+
+Strictly speaking, the \pkg{amsmath} package doesn't use \cn{mathindent}
+to control the left indent of displayed equations when the \opt{fleqn}
+option is in effect: it uses an internal parameter \cs{@mathmargin}
+instead. However, for compatibility with existing \latex/ documentation,
+\pkg{amsmath} turns \cn{mathindent} into an alias for \cs{@mathmargin}.
+There is a small risk here: In the plain \latex/ implementation,
+\cn{mathindent} is a dimen register, but with \pkg{amsmath}
+\cs{@mathmargin} is a skip register and, by association, so is
+\cn{mathindent}. If any package or documentclass uses \cn{mathindent} in
+a way that depends on it being a dimen register, when used in
+conjunction with the \pkg{amsmath} package it may be vulnerable to a
+well-known pitfall having to do with the primitive \tex/ lookahead for a
+\texttt{plus} or \texttt{minus} key word. However if the standard
+\latex/ commands \cn{setlength} and \cn{addtolength} are used to modify
+\cn{mathindent} then this problem will not arise.
+
+\section{Why can't I use abbreviations for \protect\begend{align}?}
+
+Authors often like to use abbreviations such as |\beq| |\eeq| for
+|\begin{equation}| |\end{equation}|. For some environments defined by
+the \pkg{amsmath} package, such as \env{align}, \env{gather},
+\env{multline}, and others of the same general type, this does not work:
+An attempt to define |\bal| |\eal| as shorthand for |\begin{align}|
+|\end{align}| will fail with a puzzling error message. This has to do
+with unfortunately nontrivial technical complications: the given
+environments must read their contents as a delimited macro argument
+because they do multipass processing of the contents using algorithms
+inherited from Spivak's \fn{amstex.tex}. The obvious
+solution\mdash substitution of different algorithms that do box shuffling
+instead of token shuffling for the multipass calculations\mdash would
+require rewriting these display environments from the ground up; while
+that is a worthy goal, it was beyond the original scope of the
+\amslatex/ project. Work is under way on an auxiliary package called
+\pkg{breqn} that addresses not only this problem but a number of others;
+at the time of this writing, however [September 1999] it has only
+progressed as far as a beta release.
+
+Some workarounds:
+\begin{itemize}
+\item |\def\bal#1\eal{\begin{align}#1\end{align}}|
+\item Define |\newcommand{\env}[2]{\begin{#1}#2\end{#1}}| and then use
+  |\env{align}{...}|
+\end{itemize}
+
+\section{The \pkg{upref} package}
+
+The reason for splitting out the \pkg{upref} package instead of
+automatically incorporating it in the \cls{amsart} and \cls{amsbook}
+classes is this: It involves low-level surgery on an important \latex/
+command. This means that if ever this command changes in the future (as
+it did between versions 2.09 and 2e of \latex/) we have a maintenance
+problem. And the benefit that \pkg{upref} provides is something that
+most end users don't care much about.
+
+\section{The \pkg{amsintx} package}
+
+After a very preliminary trial release the \pkg{amsintx} package was
+withdrawn to await further development. It is still considered a worthy
+project but has simply not yet made it to the head of the priority queue
+in the AMS \latex/ development program, as it has had to contend with a
+number of other equally worthy projects for development time.
+
+\section{Hyphenation in the documentation}
+
+Hyphenation was allowed for certain long command names in
+\fn{amsldoc.tex}; this presented technical difficulties because \latex/
+normally deactivates hyphenation for tt fonts. The method chosen to
+reinstate hyphenation was to turn off the encoding-specific function
+\cs{OT1+cmtt} that disables the \cs{hyphenchar} for tt fonts; see the
+definition of \cn{allowtthyphens} in \fn{amsdtx.dtx}. Then a list of all
+tt words in the document was gathered (from the \fn{.idx} file, produced
+by the \cn{cn}, \cn{fn}, \cn{pkg}, etc. commands) and \cn{showhyphens}
+was applied to this list. The result was another list in the resulting
+\tex/ log, containing those words in a form suitable for the argument of
+\cn{hyphenation}. That list was then edited by hand to overrule
+undesirable hyphenations; words with acceptable hyphenations were
+dropped from the list, as they don't need to be repeated there.
+
+\end{document}

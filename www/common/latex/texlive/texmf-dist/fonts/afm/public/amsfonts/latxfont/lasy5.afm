@@ -1,0 +1,40 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName LASY5
+FullName LASY5
+FamilyName LaTeX
+Weight Medium
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name LASY5.)
+ItalicAngle -14.035
+IsFixedPitch false
+UnderlinePosition 0
+UnderlineThickness 0
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox -27 -224 1292 719
+StartCharMetrics 23
+C 1 ; WX 1083 ; N a1 ; B 104 -100 979 601 ;
+C 2 ; WX 1083 ; N a2 ; B 104 -218 979 719 ;
+C 3 ; WX 1083 ; N a3 ; B 104 -100 979 601 ;
+C 4 ; WX 1083 ; N a4 ; B 104 -218 979 719 ;
+C 32 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 40 ; WX 527 ; N a40 ; B 69 47 295 453 ;
+C 41 ; WX 527 ; N a41 ; B 233 47 458 453 ;
+C 42 ; WX 736 ; N a42 ; B 165 -224 571 0 ;
+C 43 ; WX 736 ; N a43 ; B 165 0 571 225 ;
+C 48 ; WX 1013 ; N a48 ; B 56 -22 958 683 ;
+C 49 ; WX 1013 ; N a49 ; B 76 39 938 645 ;
+C 50 ; WX 913 ; N a50 ; B 111 51 692 632 ;
+C 51 ; WX 930 ; N a51 ; B 125 1 806 682 ;
+C 58 ; WX 944 ; N a58 ; B -27 110 972 391 ;
+C 59 ; WX 1361 ; N a59 ; B -27 67 1292 433 ;
+C 60 ; WX 1083 ; N a60 ; B 115 -100 1007 601 ;
+C 61 ; WX 1083 ; N a61 ; B 76 -100 968 601 ;
+C 128 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 162 ; WX 1083 ; N a1 ; B 104 -100 979 601 ;
+C 163 ; WX 1083 ; N a2 ; B 104 -218 979 719 ;
+C 164 ; WX 1083 ; N a3 ; B 104 -100 979 601 ;
+C 165 ; WX 1083 ; N a4 ; B 104 -218 979 719 ;
+C 195 ; WX 333 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+EndFontMetrics

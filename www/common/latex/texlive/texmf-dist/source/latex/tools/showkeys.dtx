@@ -1,0 +1,906 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: showkeys.dtx Copyright (C) 1992-1997 David Carlisle
+%% File: showkeys.dtx Copyright (C) 2006-2014 David Carlisle, LaTeX3 Project
+%
+%<*dtx>
+          \ProvidesFile{showkeys.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{showkeys}
+%<driver> \ProvidesFile{showkeys.drv}
+% \fi
+%         \ProvidesFile{showkeys.dtx}
+          [2014/10/28 v3.17 Show cite and label keys (DPC, MH)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage
+%     [notcite,notref,color]
+            {showkeys}
+\setlength{\belowcaptionskip}{\baselineskip}
+\setlength{\abovecaptionskip}{0pt}
+\begin{document}
+\DocInput{showkeys.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{showkeys.dtx}
+% \title{The \textsf{showkeys} package\thanks{This file
+%         has version number \fileversion, last
+%         revised \filedate.}}
+% \author{David Carlisle \and Morten H\o gholm}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \CheckSum{595}
+%
+%
+% \changes{v1.01}{1992/08/25}{Initial version}
+% \changes{v1.02}{1994/01/05}
+%         {Fix incorrect initialisation (FGBDA19@CC1.KULEUVEN.AC.BE)}
+% \changes{v2.00}{1994/01/31}{new version for LaTeX2e}
+% \changes{v2.01}{1994/06/30}{Fix \cs{ProvidesPackage} usage.}
+% \changes{v3.00}{1994/09/07}
+%         {Support harvard, varioref and natbib packages,}
+% \changes{v3.02}{1995/03/17}
+%         {Support new AMS files}
+%
+% \section{Introduction}\label{sec:intro}
+%
+% |showkeys.sty| modifies the |\label|, |\ref|, |\pageref|, |\cite|, and
+% |\bibitem| commands so that the `internal' key is printed. The package
+% tries hard to position these labels so that the formatting of the rest
+% of the document is unchanged. |\label| and |\bibitem| cause the
+% key to appear in a box either in the margin, or in a \TeX\ box of zero
+% width, which may possibly over-print other text. The |\ref|,
+% |\pageref| and |\cite| commands print their arguments in small type,
+% raised just above the line, like this: \ref{sec:intro}.
+% This package works with the \textsf{fleqn} option, the packages
+% in the AMS-\LaTeX\ collection, and the \textsf{varioref},
+% \textsf{natbib} and \textsf{harvard} packages.
+%
+% \changes{v2.00}{1992/01/31}
+%         {leqno or ams* may now be loaded after showkeys}
+%
+% \section{Package Options}\label{options}
+% Some people have commented that the printing of the |\ref| and
+% |\cite| keys is less useful than the printing of the |\label| keys
+% and so \textsf{showkeys} now supports two options that can be given
+% in the |\usepackage| command:
+% \begin{description}
+% \item[notref] to stop the redefinition of |\ref| and |\pageref|,
+% and related commands from the \textsf{varioref} package.
+% \item[notcite] to stop the redefinition of |\cite| and related
+% commands from the \textsf{harvard} and \textsf{natbib} packages.
+% \end{description}
+% So if the package is loaded with |\usepackage[notref]{showkeys}|
+% then |\ref| will have its standard definition, but |\label| will
+% print its key argument (usually in the margin).
+%
+% If you find the printed keys distracting, but don't want to use the
+% above options to stop them altogether you may use:
+% \begin{description}
+% \item[color] Print the keys in a distinguishing colour. The default
+%  value is a light grey.
+% \end{description}
+% The colours may be changed by redefining the following two colours
+% after the package is loaded.
+% |refkey| (also used for |\cite|) and
+% |labelkey| (also used for |\bibitem|).
+% The defaults are:
+%\begin{verbatim}
+%  \definecolor{refkey}{gray}{.75}
+%  \definecolor{labelkey}{gray}{.75}
+%\end{verbatim}
+%
+% If this option is used the \textsf{color} package will be loaded.
+%
+% The package accepts two further options.
+% \begin{description}
+% \item[final] to suporess the action of this package, for `final'
+% versions.
+% \item[draft] the normal behaviour of this package.
+% \end{description}
+% Clearly there is not much point in entering the |final| option
+% directly in the |\usepackage| command, as just not loading this
+% package would have the same effect, and execute more quickly,
+% however the |final| option may be useful as it may be used once in
+% the |documentclass| command to affect any number of packages that
+% may be loaded. The |draft| option does not do anything, but is there
+% to honour an informal convention that packages have these options in
+% pairs.
+%
+% You can also control the appearance of the typeset label with the
+% command |\showkeyslabelformat|, which takes one argument. The default is
+% \begin{verbatim}
+% \providecommand*\showkeyslabelformat[1]{%
+%   \fbox{\normalfont\small\ttfamily#1}}
+% \end{verbatim}
+% The command is called inside a group so you can put in local
+% modifications of |\fboxsep|, for instance, without them leaking to
+% the rest of the document.
+%
+%
+% \section{More Examples}\label{examples}
+% The only other similar package that I could find in the macro index,
+% \cite{DMJ:mi}, was |showlabels.sty|, \cite{GN:sl}. After the first
+% draft of this package was written, I found \cite{anon:sk} on my local
+% installation! I think the current package is more robust than
+% \cite{anon:sk}, but I thought that |showkeys| was rather a good name,
+% so I have stolen it for this file.
+%
+% \begin{enumerate}
+% \item \label{e^1}This has |\label| immediately after |\item|.
+% \item This has the |\label| at the end.\label{e^2}
+% \end{enumerate}
+%
+% \[
+% \mbox{A minipage :- }\left\{
+% \begin{minipage}{3in}
+% Within environments like this |minipage|, we cannot use
+% |\marginpar|\footnotemark,
+% so the appearance is slightly different. Here is that |enumerate|
+% environment again:
+%
+% \begin{enumerate}
+% \item \label{m&e^1}This has |\label| immediately after |\item|.
+% \item This has the |\label| at the end.\label{m&e^2}
+% \end{enumerate}
+% \end{minipage}
+% \right.
+% \]
+%
+% Displayed math (without |equation| counter).
+% \[0=0\label{disp}\]
+%
+% Some text referring to the maths on page~\pageref{disp},  and the
+% item~\ref{e^1}.\footnotetext{Actually \texttt{\string\marginpar} is
+% not used at all in this package now.}
+%
+% If |showkeys| thinks that the current environment is going to produce
+% an ``equation number'', then it does not show the label where the
+% |\label| command occurs, but tries to put it in the margin, as shown
+% with equation~\ref{eq:xx}.
+% The package `knows' about the standard |equation| and |eqnarray|
+% environments, and also all the numbered alignment environments offered
+% by the AMS\LaTeX\ package, |amsmath|.
+%
+% ^^A (|amstex.sty| must be loaded before |showkeys.sty|
+% ^^A for this to work.)
+% \changes{v2.00}{1992/01/31}
+%         {leqno or ams* may now be loaded after showkeys}
+%
+% \begin{equation}
+% 1=1\label{eq:xx}
+% \end{equation}
+%
+% \begin{eqnarray}
+% 2&=&2\label{eqnar:a}\\
+% 3&=&3\nonumber\\
+% 4&=&4\label{eqnar:b}
+% \end{eqnarray}
+%
+%
+% \begin{figure}[ht]
+% Within a |figure| environment, the |\label| must not come  before the
+% |\caption| command. If you place |\label| inside the argument of
+% |\caption| the label will be shown like this:
+%
+% \caption{Within the caption argument.\label{cap:a}}
+%
+% If you place |\label| immediately after the |\caption| command it will
+% be shown like this:
+%
+% \caption{Immediately after the caption argument.}\label{cap:b}
+%
+% If you place the |\label| command at some random point after the
+% |\caption| command, it may be shown like:
+%
+% \caption{In vertical mode not immediately after a box.}
+% \vspace{2pt}
+%
+% \label{cap:c}
+% \end{figure}
+%
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{GN:sl}
+% Gil Neiger, \emph{showlabels.sty},
+% Undated package, similar to this one, but shows labels
+% inline, affecting the formatting of the document.
+%
+% \bibitem{anon:sk}
+% Anonymous, \emph{showkeys.sty},
+% Package, dated 14 May 1988. Very similar to this one,
+% also uses |\marginpar| in outer vertical mode.
+%
+% \bibitem{DMJ:mi}
+% David M. Jones, \emph{\TeX\ Macro Index},
+% A catalogue of \TeX\ macros, including \LaTeX\ packages,
+% available from all good \TeX\ archives.
+%
+% \end{thebibliography}
+%
+% \StopEventually{}
+%
+% \section{The Macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%
+% First we handle the options. Normally all related commands are
+% defined to show their `keys'. But since v3.03 one can specify:
+%
+% \texttt{notref} to stop the redefinition of |\ref| (and |\pageref|,
+% and related commands from \textsf{varioref} package),
+%
+% \texttt{notcite} to stop the redefinition of |\cite| and related
+% commands from the \textsf{harvard} and \textsf{natbib} packages.
+%
+% \changes{v3.03}{1995/04/25}
+%      {Add option handling.}
+%    \begin{macrocode}
+\DeclareOption{notref}{\let\SK@ref\@empty}
+\DeclareOption{notcite}{\let\SK@cite\@empty}
+%    \end{macrocode}
+%
+% \begin{macro}{\SK@refcolor}
+% \begin{macro}{\SK@labelcolor}
+% Colour commands. Normally no-op.
+%    \begin{macrocode}
+\let\SK@refcolor\relax
+\let\SK@labelcolor\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v3.11}{1996/11/01}
+%         {Colour support added, inspired by tools/2297}
+% |color| option loads the \textsf{color} package and defines the
+% colours. Delayed to the end of the  package as package loading not
+% allowed in this option section.
+%    \begin{macrocode}
+\DeclareOption{color}{\AtEndOfPackage{%
+  \RequirePackage{color}%
+  \definecolor{refkey}{gray}{.75}%
+  \definecolor{labelkey}{gray}{.75}%
+  \def\SK@refcolor{\color{refkey}}%
+  \def\SK@labelcolor{\color{labelkey}}}}
+%    \end{macrocode}
+%
+% \changes{v3.04}{1995/10/30}
+%      {final and draft options handling.}
+% \changes{v3.15}{2007/08/07}
+%      {Fix \cs{showkeyslabelformat} for final option PR/3918.}
+% Allow |final| to be specified in the document class options
+% to suppress the loading of this package.
+%    \begin{macrocode}
+\DeclareOption{final}{%
+  \providecommand*\showkeyslabelformat[1]{}%
+  \endinput}
+\DeclareOption{draft}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+% \changes{v2.00}{1992/01/31}
+%         {\cmd{reset@font} is now standard}
+%
+% \begin{macro}{\SK@label}
+% \begin{macro}{\SK@bibitem}
+% \begin{macro}{\SK@lbibitem}
+% The saved original definitions
+%    \begin{macrocode}
+\let\SK@label\label
+\let\SK@bibitem\@bibitem
+\let\SK@lbibitem\@lbibitem
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\label}
+% \changes{v3.09}{1996/08/30}
+%      {Add extra group so brace hack works. Donald Arseneau tools/2147}
+% The new definition, print the argument, and then do the old
+% definition.
+%    \begin{macrocode}
+\def\label#1{%
+  \@bsphack
+  \SK@\SK@@label{#1}%
+  \begingroup
+    \SK@label{#1}%
+  \endgroup
+  \@esphack}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@bibitem}
+% \begin{macro}{\@lbibitem}
+% \changes{v3.02}{1995/03/17}
+%         {New label code.}
+% For |\bibitem|, position the \textsf{showkeys} code as for a standard
+% list with |\item| and |\label|.
+%    \begin{macrocode}
+\def\@bibitem#1{%
+  \SK@bibitem{#1}\SK@\SK@@label{#1}\ignorespaces}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@lbibitem[#1]#2{%
+  \SK@lbibitem[{#1}]{#2}\SK@\SK@@label{#2}\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\SK@}
+% \changes{v3.07}{1996/05/17}
+%      {use \cs{protected@edef} for tools/2147}
+% Grab hold of |#2| via |\meaning| so characters like |&| and
+% |^| do not cause problems later, and pass the result on to the command
+% |#1|.
+%    \begin{macrocode}
+\def\SK@#1#2{%
+  \protected@edef\@tempa{#2}%
+  \expandafter#1\meaning\@tempa\SK@}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\showkeyslabelformat}
+% \changes{v3.13}{2006/01/09}{Added command}
+%    \begin{macrocode}
+\providecommand*\showkeyslabelformat[1]{%
+  \fbox{\normalfont\small\ttfamily#1}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\SK@@label}
+% \changes{v3.13}{2006/01/09}{Do not hardwire label format}
+% Strip off the initial segment of the |\meaning| output, and then put
+% the rest either in a |\marginpar| or in a box of size 0pt,
+% hopefully not disturbing the surrounding text.
+%    \begin{macrocode}
+\def\SK@@label#1>#2\SK@{%
+%    \end{macrocode}
+% Need to work globally as in some cases like alignments, and |fleqn|,
+% the counter will be printed in a different group to the |\label|
+% command.
+%    \begin{macrocode}
+  \gdef\SK@lab{\smash{\SK@labelcolor\showkeyslabelformat{#2}}}%
+  \ifvmode
+    \if@inlabel
+%    \end{macrocode}
+% \changes{v3.02}{1995/03/17}
+%         {New code for `in label' case.}
+% If the |\label| is straight after |\item| (|\bibitem| is handled by
+% this case as well) then the item label has not been added to the page
+% yet. It is hanging around in the box |\@labels| waiting for the
+% paragraph to start. So just need to attach the label to this box.
+%    \begin{macrocode}
+      \global\setbox\@labels\hbox{%
+        \llap{\SK@lab\SK@lab@relax
+              \kern\@totalleftmargin\kern\marginparsep}%
+        \box\@labels}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \else
+%    \end{macrocode}
+% \changes{v3.10}{1996/09/06}
+%      {Save prevdepth and restore later}
+% If we insert a box into the main vertical list, do not want to
+% change |\prevdepth| as that would affect vertical spacing in the
+% document. (The box itself should not cause any difference in break
+% points as there is a node there anyway coming from the |\write| to
+% the aux file.
+%    \begin{macrocode}
+      \dimen@\prevdepth
+      \nointerlineskip
+%    \end{macrocode}
+% The inner vertical mode cases are mainly designed to do the right
+% thing with float captions, but seem to work OK in other cases as well.
+%    \begin{macrocode}
+      \ifinner
+        \skip@\lastskip\unskip
+%    \end{macrocode}
+% In inner vertical mode, attach the label to the right of the
+% immediately preceding box, if it is a box before the current point.
+% Otherwise just put it in a box of zero dimensions, with no interline
+% skip. (This may slightly move the surrounding text (but perhaps not
+% now that |\prevdepth| is restored.)
+% \changes{v3.00}{1994/09/07}
+%      {Back up over a previous skip because of the new
+%       \cs{belowcaptionskip}}
+% \changes{v3.04}{1995/10/30}
+%      {\cs{advance} added, to total two successive skips.}
+% \changes{v3.04}{1995/10/30}
+%      {\cs{nointerlineskip} called before \cs{ifvoid} test, not just
+%      void case}
+% \changes{v3.04}{1995/10/30}
+%      {\cs{marginparskip} added in inner vmode case}
+%    \begin{macrocode}
+        \advance\skip@\lastskip\unskip
+        \setbox\z@\lastbox
+%    \end{macrocode}
+% \changes{v3.10}{1996/09/06}
+%      {Inner vertical mode case, put it in the margin.}
+% \changes{v3.14}{2006/09/25}
+% {The label put in the margin shouldn't make box 255 wider (PR/3884).}
+%    \begin{macrocode}
+        \ifvoid\z@
+          \llap{\SK@lab\SK@lab@relax\kern\marginparsep}%
+        \else
+          \hbox{\box\z@\rlap{\kern\marginparsep\SK@labx}}%
+        \fi
+        \vskip\skip@
+      \else
+%    \end{macrocode}
+% In outer vertical mode, previously used a |\vadjust| at the start of
+% the next  paragraph (and before that used |\marginpar|). These
+% methods sometimes cause extra space, eg if paragraph starts with a
+% math display, so now just insert the box directly, taking care not
+% to change |\prevdepth|.
+% \changes{v3.02}{1995/03/17}
+%         {Use \cs{vadjust} instead of \cs{marginpar}}
+% \changes{v3.10}{1996/09/06}
+%      {Insert the box directly}
+%    \begin{macrocode}
+        \llap{\SK@lab\SK@lab@relax\kern\marginparsep}%
+      \fi
+%    \end{macrocode}
+% Restore |\prevdepth|.
+%    \begin{macrocode}
+      \prevdepth\dimen@
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \fi
+  \else
+%    \end{macrocode}
+% If we are in an numbered equation-style environment, do nothing as the
+% code to print the number will also print the label, otherwise just
+% stick the label at the current point, in a box of zero dimensions.
+% \changes{v3.02}{1995/03/17}
+%         {Add \cs{ifmmode} test}
+%    \begin{macrocode}
+    \csname SK@\@currenvir\endcsname
+    \ifSK@equation\else
+      \ifmmode
+        \SK@labx
+      \else
+%    \end{macrocode}
+% Inner horizontal mode. Not much we can do, just stick it here.
+% \changes{v3.03}{1995/04/25}
+%         {Fix inner horizontal mode case (broken in 3.02)}
+%    \begin{macrocode}
+        \ifinner
+          \rlap\SK@lab
+      \else
+%    \end{macrocode}
+% In outer horizontal mode use |\vadjust| to get to the margin.
+% \changes{v3.02}{1995/03/17}
+%         {Use \cs{vadjust} in horizontal mode}
+%    \begin{macrocode}
+          \vadjust{\llap{\SK@lab\kern\marginparsep}}%
+        \fi
+        \SK@lab@relax
+      \fi
+    \fi
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tagform@}
+% \changes{v2.00}{1992/01/31}
+%         {Defer tests to begin document}
+% \changes{v3.02}{1995/03/17}
+%         {Support new AMS files}
+% \begin{macro}{\@eqnnum}
+% \changes{v3.13}{2006/01/09}
+%         {Change to also work correctly for \texttt{leqno} option.}
+% \begin{macro}{\maketag@@@}
+% \changes{v3.13}{2006/01/09}
+%         {Support for \cs{tag*} tools/3693.}
+% Firstly we grab |\@eqnnum|.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \let\SK@eqnnum\@eqnnum
+%    \end{macrocode}
+% Then check for \textsf{amsmath} where we grab the internal commands
+% |\tagform@| and |\maketag@@@|. Redefine them and redefine |\@eqnnum|
+% as well.
+%    \begin{macrocode}
+  \@ifpackageloaded{amsmath}{%
+    \let\SK@tagform@\tagform@
+    \let\SK@maketag@@@\maketag@@@
+    \iftagsleft@
+      \def\tagform@#1{%
+        \ifx\df@label\@empty
+          \SK@lab@relax
+        \else
+          \expandafter\SK@@label\meaning\df@label\SK@
+        \fi
+        \llap{\SK@lab\kern\marginparsep}%
+        \SK@lab@relax\SK@tagform@{#1}}%
+      \def\maketag@@@#1{%
+        \ifx\df@label\@empty
+          \SK@lab@relax
+        \else
+          \expandafter\SK@@label\meaning\df@label\SK@
+        \fi
+        \llap{\SK@lab\kern\marginparsep}\SK@lab@relax
+        \SK@maketag@@@{#1}%
+      }%
+      \def\@eqnnum{%
+        \llap{\SK@lab\kern\displaywidth\kern\marginparsep}%
+        \SK@lab@relax\SK@eqnnum}%
+    \else
+%    \end{macrocode}
+% Almost the same for tags on the right, except we use |\rlap| and
+% typeset it after the tag.
+%    \begin{macrocode}
+      \def\tagform@#1{%
+        \ifx\df@label\@empty
+          \SK@lab@relax
+        \else
+          \expandafter\SK@@label\meaning\df@label\SK@
+        \fi
+%    \end{macrocode}
+% \changes{v3.08}{1996/07/10}{Missing percent added. /2215}
+%    \begin{macrocode}
+        \SK@tagform@{#1}%
+        \rlap{\kern\marginparsep\SK@lab}\SK@lab@relax}%
+      \def\maketag@@@#1{%
+        \ifx\df@label\@empty
+          \SK@lab@relax
+        \else
+          \expandafter\SK@@label\meaning\df@label\SK@
+        \fi
+        \SK@maketag@@@{#1}%
+        \rlap{\kern\marginparsep\SK@lab}\SK@lab@relax
+      }%
+      \def\@eqnnum{\SK@eqnnum\rlap{\kern\marginparsep\SK@lab}%
+        \SK@lab@relax}%
+    \fi
+  }%
+%    \end{macrocode}
+% If \textsf{amsmath} wasn't loaded we check explicitly if the
+% \texttt{leqno} option was used in |\documentclass| and redefine
+% accordingly.
+%    \begin{macrocode}
+  {%
+    \@ifundefined{ver@leqno.clo}{%
+      \def\@eqnnum{\SK@eqnnum\rlap{\kern\marginparsep\SK@lab}%
+        \SK@lab@relax}%
+    }{%
+      \def\@eqnnum{%
+        \llap{\SK@lab\kern\displaywidth\kern\marginparsep}%
+        \SK@lab@relax\SK@eqnnum}%
+    }%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\SK@labx}
+% Print the label, and then globally reset the print command to
+% |\relax|.
+%    \begin{macrocode}
+\def\SK@labx{\rlap\SK@lab\global\let\SK@lab\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SK@lab@relax}
+% Clear the label.
+% \changes{v1.02}{1994/01/05}{Execute to initialise correctly}
+%    \begin{macrocode}
+\def\SK@lab@relax{\global\let\SK@lab\relax}\SK@lab@relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SK@equation}
+% \begin{macro}{\SK@eqnarray}
+% The following environments print an equation number, so |\label|
+% should not print its argument at the point where it appears.
+% Note this will fail to show the label if you are in an |eqnarray|
+% environment, and use |\label| together with |\nonumber| This might
+% just about make sense if you are going to use |\pageref|, but that is
+% too bad\ldots
+%    \begin{macrocode}
+\newif\ifSK@equation
+\let\SK@equation\SK@equationtrue
+\let\SK@eqnarray\SK@equationtrue
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\eqnarray}
+% \changes{v3.09}{1996/08/30}
+%      {Fix eqnarray AMS incompatibility. tools/2252}
+% When the AMS packages are loaded |showkeys| assumes environments
+% work `The AMS way' However |eqnarray| (unlike |equation|) is not
+% redefined, so here we need to remove some of the AMS hacks.
+%    \begin{macrocode}
+\toks@\expandafter{\eqnarray}
+\edef\eqnarray{\let\noexpand\tagform@\noexpand\SK@tagform@\the\toks@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SK@align}
+% \begin{macro}{\SK@alignat}
+% \begin{macro}{\SK@xalignat}
+% \begin{macro}{\SK@xxalignat}
+% \begin{macro}{\SK@gather}
+% \begin{macro}{\SK@multline}
+% \begin{macro}{\SK@flalign}
+% \changes{v3.02}{1995/03/17}
+%         {Add \cs{SK@flalign}}
+% The AMS environments
+%    \begin{macrocode}
+\let\SK@align\SK@equationtrue
+\let\SK@alignat\SK@equationtrue
+\let\SK@xalignat\SK@equationtrue
+\let\SK@xxalignat\SK@equationtrue
+\let\SK@gather\SK@equationtrue
+\let\SK@multline\SK@equationtrue
+\let\SK@flalign\SK@equationtrue
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\SK@align*}
+% \begin{macro}{\SK@alignat*}
+% \begin{macro}{\SK@flalign*}
+% \begin{macro}{\SK@gather*}
+% \begin{macro}{\SK@multline*}
+% \begin{macro}{\SK@equation*}
+% \changes{v3.13}{2006/01/09}
+%         {Add the starred AMS environments for tools/3697.}
+% Starred versions of the AMS environments.
+%    \begin{macrocode}
+\expandafter\let\csname SK@align*\endcsname\SK@equationtrue
+\expandafter\let\csname SK@alignat*\endcsname\SK@equationtrue
+\expandafter\let\csname SK@flalign*\endcsname\SK@equationtrue
+\expandafter\let\csname SK@gather*\endcsname\SK@equationtrue
+\expandafter\let\csname SK@multline*\endcsname\SK@equationtrue
+\expandafter\let\csname SK@equation*\endcsname\SK@equationtrue
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\SK@def}
+% \changes{v3.05}{1995/11/09}
+%      {Macro added}
+% This macro redefines a command |#1|. The new definition can make use
+% of the old definition as |\SK@|\emph{old name}. If |#1| is really a
+% |\protect|'ed command with the real definition in a `\emph{space}'
+% command then the `space' version is used as the old definition.
+% Need to test this for each command as some package may have changed
+% the status of a command to being `protected'.
+% The new definition is made as if with |\DeclareRobustCommand|, but
+% with |\def| syntax for the argument specification.
+%    \begin{macrocode}
+\def\SK@def#1{%
+  \edef\@tempa{\expandafter\@gobble\string#1}%
+  \@ifundefined{\@tempa\space}%
+    {\expandafter\let\csname SK@\@tempa\endcsname#1}%
+    {\expandafter\let\csname SK@\@tempa\expandafter\endcsname
+                         \csname\@tempa\space\endcsname}%
+  \expandafter\def\expandafter#1\expandafter{%
+        \expandafter\protect\csname\@tempa\space\endcsname}%
+  \expandafter\def\csname\@tempa\space\endcsname}
+%    \end{macrocode}
+%  \end{macro}
+%
+% The next section redefines |\ref| and |\pageref| (unless the
+% \texttt{notref} option was given).
+%    \begin{macrocode}
+\ifx\SK@ref\@empty
+%    \end{macrocode}
+% Even if \texttt{notref} option is used, need to fudge the
+% \textsf{varioref} commands as they use |\label| internally.
+% \changes{v3.04}{1995/10/30}
+%      {improve varioref support in notref option case, for
+%      tools/1744}
+% \changes{v3.13}{2006/01/09}{Updated varioref support, for latex/3373}
+% \changes{v3.15}{2006/06/19}
+%         {Prevent loss of brackets}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifpackageloaded{varioref}{%
+    \SK@def\@@vpageref#1[#2]#3{{%
+      \let\label\SK@label
+      \SK@@@vpageref{#1}[{#2}]{#3}}}%
+    \def\vr@f#1{%
+      \leavevmode\unskip\vref@space
+      \ref{#1}%
+      {\let\label\SK@label
+      \vpageref[\unskip]{#1}}}%
+  }{}}
+\else
+%    \end{macrocode}
+%
+% \begin{macro}{\ref}
+% \begin{macro}{\pageref}
+% Save the redefinition to |\begin{document}| so that this package can
+% work with packages that redefine |\cite|. Tested with harvard and
+% natbib packages. Also add code at this point to support varioref.
+% \changes{v3.00}{1994/09/07}
+%      {Delay \cs{ref} redefinition.}
+% \changes{v3.03}{1995/04/25}
+%      {Make redefinition conditional on notref option}
+% \changes{v3.15}{2006/06/19}
+%         {Prevent loss of brackets}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \SK@def\ref#1{\SK@\SK@@ref{#1}\SK@ref{#1}}%
+  \SK@def\pageref#1{\SK@\SK@@ref{#1}\SK@pageref{#1}}%
+%    \end{macrocode}
+% varioref support.
+%    \begin{macrocode}
+  \@ifpackageloaded{varioref}{%
+    \SK@def\@@vpageref#1[#2]#3{{%
+      \let\label\SK@label\let\ref\SK@ref\let\pageref\SK@pageref
+      \leavevmode\unskip\SK@\SK@@ref{#3}\SK@@@vpageref{#1}[{#2}]{#3}}}%
+    \def\vr@f#1{%
+      \leavevmode\unskip\vref@space
+      \ref{#1}%
+      \let\label\SK@label\let\ref\SK@ref\let\pageref\SK@pageref
+      \vpageref[\unskip]{#1}}%
+  }{}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% Now redefine |\cite| unless \texttt{notcite} option given.
+%    \begin{macrocode}
+\ifx\SK@cite\@empty
+%    \end{macrocode}
+% \changes{v3.06}{1995/11/22}
+%         {Fix \cs{harvarditem} support}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \ifx\HAR@checkdef\@undefined\else
+      \expandafter\let\expandafter
+         \SK@HAR@bi\csname\string\harvarditem\endcsname
+      \expandafter\def\csname\string\harvarditem\endcsname[#1]#2#3#4{%
+        \SK@HAR@bi[{#1}]{#2}{#3}{#4}\SK@\SK@@label{#4}}%
+  \fi}
+\else
+%    \end{macrocode}
+%
+% \begin{macro}{\cite}
+% \changes{v3.00}{1994/09/07}
+%      {Delay \cs{cite} redefinition.}
+% \changes{v3.03}{1995/04/25}
+%      {Make redefinition conditional on notcite option}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \ifx\HAR@checkdef\@undefined
+%    \end{macrocode}
+% Standard (non-harvard) support, including extra cite commands from
+% \textsf{natbib} and \textsf{cite}.
+% \changes{v3.01}{1994/09/09}
+%         {Add \cs{citefullauthor}}
+% \changes{v3.12}{1997/06/12}
+%         {Support cite package. tools/2490}
+% \changes{v3.17}{2014/04/24}
+%         {redefine \cs{@citex} rather than \cs{cite} for tools/4162}
+%
+% If \textsf{cite} or \textsf{overcite} is being used, redefine |\citen|
+% rather than |\cite| so as not to spoil the space and punctuation
+% calculations done by those packages.
+%    \begin{macrocode}
+    \ifx\citen\@undefined
+      \SK@def\@citex[#1]#2{\SK@citex[{#1}]{#2}}%
+    \else
+      \SK@def\citen#1{\SK@\SK@@ref{#1}\SK@citen{#1}}%
+    \fi
+    \SK@def\citeauthor#1{\SK@\SK@@ref{#1}\SK@citeauthor{#1}}%
+    \SK@def\citefullauthor#1{\SK@\SK@@ref{#1}\SK@citefullauthor{#1}}%
+    \SK@def\citeyear#1{\SK@\SK@@ref{#1}\SK@citeyear{#1}}%
+  \else
+%    \end{macrocode}
+% In the \textsf{harvard} style do \emph{not} redefine individual cite
+% commands. Just redefine one internal command that is used in all the
+% citation forms.
+%    \begin{macrocode}
+    \SK@def\HAR@checkdef#1#2{%
+      \expandafter\SK@\expandafter\SK@@ref\expandafter{#1}%
+      \SK@HAR@checkdef{#1}{#2}}%
+      \expandafter\let\expandafter
+         \SK@HAR@bi\csname\string\harvarditem\endcsname
+%    \end{macrocode}
+% \changes{v3.06}{1995/11/22}
+%         {Fix \cs{harvarditem} support}
+%    \begin{macrocode}
+      \expandafter\def\csname\string\harvarditem\endcsname[#1]#2#3#4{%
+        \SK@HAR@bi[{#1}]{#2}{#3}{#4}\SK@\SK@@label{#4}}%
+  \fi}
+%    \end{macrocode}
+%
+% \changes{v3.17}{2014/04/24}
+%         {Change name, redefine \cs{@citex} rather than \cs{cite} for tools/4162}
+%    \begin{macrocode}
+\def\SK@citex[#1]#2{%
+  \SK@\SK@@ref{#2}\SK@@citex[{#1}]{#2}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SK@@ref}
+%   This is much simpler than the printing of the label, as we know
+%   that we can be in horizontal mode.
+%   Note extra group for colour safety.
+% \changes{v3.14}{2006/09/25}
+%                {Add fix for pdf\TeX.}
+% \changes{v3.16}{2011/11/24}
+%                {revert change made at v3.14 because of tools/4173}
+%    \begin{macrocode}
+\def\SK@@ref#1>#2\SK@{%
+  \leavevmode\vbox to\z@{{%
+    \vss
+    \SK@refcolor
+    \rlap{\vrule\raise .75em%
+       \hbox{\underbar{\normalfont\footnotesize\ttfamily#2}}}}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%

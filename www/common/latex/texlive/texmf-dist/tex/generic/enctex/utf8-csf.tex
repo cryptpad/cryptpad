@@ -1,0 +1,221 @@
+% utf8-csf.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This file implements the conversion from UTF8 to ISO-8859-2
+% encoding (used by CSfonts in csplain and cslatex).
+% The conversion is done by encTeX v. Dec 2002 or higher.
+%
+% Copyright (C) 2002-2003 Petr Olsak
+% Copyright (C) 2003 David Necas (Yeti)
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+\ifx\mubyte\undefined
+   \errhelp{Sorry, you can't use this file without encTeX ver. Jan. 2003.}
+   \errmessage{The encTeX extension of TeX is not found}
+   \endinput \fi
+
+% first, we set the identity mapping in xord/xchr:
+
+\bgroup
+\ifx\xordcode\undefined
+   \errhelp{May be, you are using this file from csplain which disables
+            the \xordcode primitive. Use
+            initex \let\enc=u \input csplain.ini
+            for csplain generation instead this file.
+            If you are using ISO8859-2 input encoding in csplain,
+            you can skip this error message.}
+   \errmessage{I can't set the xord/xchr to identity mapping}
+   \def\xchrcode\count255=\count255{} \def\xordcode\count255=\count255{}
+\fi
+\count255=128
+\loop \xordcode\count255=\count255
+      \xchrcode\count255=\count255
+      \advance\count255 by 1
+\ifnum \count255<256 \repeat
+\egroup
+
+
+% we remove the current conversion table, if exists:
+
+{\catcode`\^^@=12
+\gdef\clearmubytes{\bgroup \count255=1
+   \loop \uccode`X=\count255
+       \uppercase{\mubyte XX\endmubyte}%
+       \advance\count255 by1
+       \ifnum\count255<256 \repeat
+   \mubyte ^^@^^@\endmubyte
+   \egroup}
+}
+\clearmubytes
+
+% include these first, so we can redefine some characters better later here
+
+\input utf8cseq
+\input utf8math
+\input utf8unkn
+
+% now, the conversion table is created:
+
+\mubyte ^^c1  ^^c3^^81\endmubyte % \'A
+\mubyte ^^e1  ^^c3^^a1\endmubyte % \'a
+\mubyte ^^c9  ^^c3^^89\endmubyte % \'E
+\mubyte ^^e9  ^^c3^^a9\endmubyte % \'e
+\mubyte ^^cd  ^^c3^^8d\endmubyte % \'I
+\mubyte ^^ed  ^^c3^^ad\endmubyte % \'i
+\mubyte ^^d3  ^^c3^^93\endmubyte % \'O
+\mubyte ^^f3  ^^c3^^b3\endmubyte % \'o
+\mubyte ^^da  ^^c3^^9a\endmubyte % \'U
+\mubyte ^^fa  ^^c3^^ba\endmubyte % \'u
+\mubyte ^^dd  ^^c3^^9d\endmubyte % \'Y
+\mubyte ^^fd  ^^c3^^bd\endmubyte % \'y
+\mubyte ^^d4  ^^c3^^94\endmubyte % \^O
+\mubyte ^^f4  ^^c3^^b4\endmubyte % \^o
+\mubyte ^^c4  ^^c3^^84\endmubyte % \"A
+\mubyte ^^e4  ^^c3^^a4\endmubyte % \"a
+\mubyte ^^d6  ^^c3^^96\endmubyte % \"O
+\mubyte ^^f6  ^^c3^^b6\endmubyte % \"o
+\mubyte ^^dc  ^^c3^^9c\endmubyte % \"U
+\mubyte ^^fc  ^^c3^^bc\endmubyte % \"u
+
+\mubyte ^^c8  ^^c4^^8c\endmubyte % \v C
+\mubyte ^^e8  ^^c4^^8d\endmubyte % \v c
+\mubyte ^^cf  ^^c4^^8e\endmubyte % \v D
+\mubyte ^^ef  ^^c4^^8f\endmubyte % \v d
+\mubyte ^^cc  ^^c4^^9a\endmubyte % \v E
+\mubyte ^^ec  ^^c4^^9b\endmubyte % \v e
+\mubyte ^^c5  ^^c4^^b9\endmubyte % \' L
+\mubyte ^^e5  ^^c4^^ba\endmubyte % \' l
+\mubyte ^^a5  ^^c4^^bd\endmubyte % \v L
+\mubyte ^^b5  ^^c4^^be\endmubyte % \v l
+
+\mubyte ^^d2  ^^c5^^87\endmubyte % \v N
+\mubyte ^^f2  ^^c5^^88\endmubyte % \v n
+\mubyte ^^d8  ^^c5^^98\endmubyte % \v R
+\mubyte ^^f8  ^^c5^^99\endmubyte % \v r
+\mubyte ^^a9  ^^c5^^a0\endmubyte % \v S
+\mubyte ^^b9  ^^c5^^a1\endmubyte % \v s
+\mubyte ^^ab  ^^c5^^a4\endmubyte % \v T
+\mubyte ^^bb  ^^c5^^a5\endmubyte % \v t
+\mubyte ^^d9  ^^c5^^ae\endmubyte % \r U
+\mubyte ^^f9  ^^c5^^af\endmubyte % \r u
+\mubyte ^^ae  ^^c5^^bd\endmubyte % \v Z
+\mubyte ^^be  ^^c5^^be\endmubyte % \v z
+\mubyte ^^c0  ^^c5^^94\endmubyte % \' R
+\mubyte ^^e0  ^^c5^^95\endmubyte % \' r
+
+% Non-characters
+\chardef\erqq="22
+\mubyte \erqq ^^e2^^80^^9d\endmubyte % right double quotation mark
+\chardef\erq="27
+\mubyte \erq ^^e2^^80^^99\endmubyte % right single quotation mark
+% there's no \elqq, \elq, they are the same Unicode character as \crqq, \crq
+\chardef\endash="7B
+\chardef\emdash="7C
+\mubyte \endash ^^e2^^80^^93\endmubyte % en dash
+\mubyte \emdash ^^e2^^80^^94\endmubyte % em dash
+\chardef\utfinvexclamation="3C
+\chardef\utfinvquestion="3E
+\mubyte \utfinvexclamation ^^c2^^a1\endmubyte % inverted exclamation mark
+\mubyte \utfinvquestion ^^c2^^bf\endmubyte % inverted question mark
+\chardef\utfligatureff="0B
+\chardef\utfligaturefi="0C
+\chardef\utfligaturefl="0D
+\chardef\utfligatureffi="0E
+\chardef\utfligatureffl="0F
+\mubyte \utfligatureff ^^ef^^ac^^80\endmubyte % latin small ligature ff
+\mubyte \utfligaturefi ^^ef^^ac^^81\endmubyte % latin small ligature fi
+\mubyte \utfligaturefl ^^ef^^ac^^82\endmubyte % latin small ligature fl
+\mubyte \utfligatureffi ^^ef^^ac^^83\endmubyte % latin small ligature ffi
+\mubyte \utfligatureffl ^^ef^^ac^^84\endmubyte % latin small ligature ffl
+
+% You can add more UTF-8 codes here. You can map these codes to
+% control sequences (see encdoc.tex for more datails) so,
+% the number of UTF-8 codes examined by TeX is unlimited.
+
+% ...
+
+\mubytein=1 \mubyteout=3
+
+%% for compatibility with hyphen.lan file:
+\let\csaccents=\relax \let\cmaccents=\relax
+
+% now we still have to deal with accents
+\input csfmacro \input encmacro
+
+% This needed for hyphenation patterns.
+
+% (1) Czech/Slovak alphabet
+%            input TeX   lc   uc    sf cat prn        sequence
+\setcharcode  ?  "C1  "E1  "C1   999  11  1  \texaccent \'A
+\setcharcode  ?  "E1  "E1  "C1  1000  11  1  \texaccent \'a
+\setcharcode  ?  "C4  "E4  "C4   999  11  1  \texaccent \"A
+\setcharcode  ?  "E4  "E4  "C4  1000  11  1  \texaccent \"a
+\setcharcode  ?  "C8  "E8  "C8   999  11  1  \texaccent \v C
+\setcharcode  ?  "E8  "E8  "C8  1000  11  1  \texaccent \v c
+\setcharcode  ?  "CF  "EF  "CF   999  11  1  \texaccent \v D
+\setcharcode  ?  "EF  "EF  "CF  1000  11  1  \texaccent \v d
+\setcharcode  ?  "C9  "E9  "C9   999  11  1  \texaccent \'E
+\setcharcode  ?  "E9  "E9  "C9  1000  11  1  \texaccent \'e
+\setcharcode  ?  "CC  "EC  "CC   999  11  1  \texaccent \v E
+\setcharcode  ?  "EC  "EC  "CC  1000  11  1  \texaccent \v e
+\setcharcode  ?  "CD  "ED  "CD   999  11  1  \texaccent \'I
+\setcharcode  ?  "ED  "ED  "CD  1000  11  1  \texaccent \'i  \texaccent \'\i
+\setcharcode  ?  "C5  "E5  "C5   999  11  1  \texaccent \'L
+\setcharcode  ?  "E5  "E5  "C5  1000  11  1  \texaccent \'l
+\setcharcode  ?  "A5  "B5  "A5   999  11  1  \texaccent \v L
+\setcharcode  ?  "B5  "B5  "A5  1000  11  1  \texaccent \v l
+\setcharcode  ?  "D2  "F2  "D2   999  11  1  \texaccent \v N
+\setcharcode  ?  "F2  "F2  "D2  1000  11  1  \texaccent \v n
+\setcharcode  ?  "D3  "F3  "D3   999  11  1  \texaccent \'O
+\setcharcode  ?  "F3  "F3  "D3  1000  11  1  \texaccent \'o
+\setcharcode  ?  "D4  "F4  "D4   999  11  1  \texaccent \^O
+\setcharcode  ?  "F4  "F4  "D4  1000  11  1  \texaccent \^o
+\setcharcode  ?  "D6  "F6  "D6   999  11  1  \texaccent \"O
+\setcharcode  ?  "F6  "F6  "D6  1000  11  1  \texaccent \"o
+\setcharcode  ?  "C0  "E0  "C0   999  11  1  \texaccent \'R
+\setcharcode  ?  "E0  "E0  "C0  1000  11  1  \texaccent \'r
+\setcharcode  ?  "D8  "F8  "D8   999  11  1  \texaccent \v R
+\setcharcode  ?  "F8  "F8  "D8  1000  11  1  \texaccent \v r
+\setcharcode  ?  "A9  "B9  "A9   999  11  1  \texaccent \v S
+\setcharcode  ?  "B9  "B9  "A9  1000  11  1  \texaccent \v s
+\setcharcode  ?  "AB  "BB  "AB   999  11  1  \texaccent \v T
+\setcharcode  ?  "BB  "BB  "AB  1000  11  1  \texaccent \v t
+\setcharcode  ?  "DA  "FA  "DA   999  11  1  \texaccent \'U
+\setcharcode  ?  "FA  "FA  "DA  1000  11  1  \texaccent \'u
+\setcharcode  ?  "D9  "F9  "D9   999  11  1  \texaccent \r U
+\setcharcode  ?  "F9  "F9  "D9  1000  11  1  \texaccent \r u
+\setcharcode  ?  "DC  "FC  "DC   999  11  1  \texaccent \"U
+\setcharcode  ?  "FC  "FC  "DC  1000  11  1  \texaccent \"u
+\setcharcode  ?  "DD  "FD  "DD   999  11  1  \texaccent \'Y
+\setcharcode  ?  "FD  "FD  "DD  1000  11  1  \texaccent \'y
+\setcharcode  ?  "AE  "BE  "AE   999  11  1  \texaccent \v Z
+\setcharcode  ?  "BE  "BE  "AE  1000  11  1  \texaccent \v z
+
+\redefaccent \'
+\redefaccent \v
+\redefaccent \"
+\redefaccent \^
+\redefaccent \r
+
+% finally, we can forbid the encTeX primitives in document
+% (this is commented out here because it is only an example):
+
+% \let\xordcode=\undefined \let\xchrcode=\undefined\let
+% \let\xprncode=\undefined
+% \let\mubytein=\undefined \let\mubyteout=\undefined
+% \let\mubyte=\undefined   \let\endmubyte=\undefined
+
+\endinput
+

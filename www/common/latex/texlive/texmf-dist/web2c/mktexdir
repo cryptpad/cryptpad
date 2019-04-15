@@ -1,0 +1,61 @@
+#!/bin/sh
+# mkinstalldirs (now mktexdir) -- make directory hierarchy.
+# Author: Noah Friedman <friedman@prep.ai.mit.edu>, created: 1993-05-16.
+# Public domain.
+# 
+# Modified for sticky directory creation, --help, --version, more,
+# by Thomas Esser, Karl Berry, Olaf Weber, et al.
+
+version='$Id: mktexdir 34656 2014-07-18 23:38:50Z karl $'
+progname=`echo $0 | sed 's%.*/%%'`
+
+# preferentially use subprograms from our own directory.
+mydir=`echo "$0" | sed 's,/[^/]*$,,'`
+mydir=`cd "$mydir" && pwd`
+PATH="$mydir:$PATH"; export PATH
+
+usage="Usage: $0 DIR...
+  Create each DIR, including any missing leading directories."
+mt_max_args=$#
+
+# Common code for all scripts.
+: ${MT_TEXMFMAIN=`kpsewhich --expand-path='$TEXMFMAIN'`}
+: ${MT_MKTEX_OPT=`kpsewhich --format='web2c files' mktex.opt`}
+test -n "$MT_MKTEX_OPT" || MT_MKTEX_OPT="$MT_TEXMFMAIN/web2c/mktex.opt"
+if test ! -f "$MT_MKTEX_OPT"; then
+  echo "$0: Cannot find mktex.opt; check your installation." >&2
+  exit 1
+fi
+
+. "$MT_MKTEX_OPT"
+
+test -n "$MT_MKTEXDIR_OPT" && . "$MT_MKTEXDIR_OPT"
+
+test -z "$MT_APPEND_MASK" && MT_APPEND_MASK="="
+
+errstatus=0
+
+for file
+do
+   case $file in
+     /*) cd /;;
+     *) cd $KPSE_DOT;;
+   esac
+   OLDIFS=$IFS; IFS=/; set fnord `echo "./$file"`; IFS=$OLDIFS; shift
+
+   pathcomp=
+   for d
+   do
+     test -z "$d" && continue
+     pathcomp="$pathcomp$d"
+
+     if test ! -d "./$pathcomp"; then
+        mkdir "./$pathcomp" || { errstatus=$?; break; }
+        chmod `kpsestat ${MT_APPEND_MASK} "$pathcomp"/..` "./$pathcomp"
+     fi
+
+     pathcomp="$pathcomp/"
+   done
+done
+
+exit $errstatus

@@ -1,0 +1,188 @@
+%%
+%% This is file `listingsutf8.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% listingsutf8.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: listingsutf8
+%% Version: 2011/11/10 v1.2
+%% 
+%% Copyright (C) 2007, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file listingsutf8.dtx
+%% and the derived files
+%%    listingsutf8.sty, listingsutf8.pdf, listingsutf8.ins, listingsutf8.drv,
+%%    listingsutf8-test1.tex, listingsutf8-test2.tex,
+%%    listingsutf8-test3.tex, listingsutf8-test4.tex,
+%%    listingsutf8-test5.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname lstU@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\lstU@AtEnd{%
+    \lstU@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{8}% _ (subscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\TMP@EnsureCode{126}{13}% ~ (active)
+\edef\lstU@AtEnd{\lstU@AtEnd\noexpand\endinput}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{listingsutf8}%
+  [2011/11/10 v1.2 Allow UTF-8 in listings input (HO)]
+\DeclareOption*{%
+  \PassOptionsToPackage\CurrentOption{listings}%
+}
+\ProcessOptions*
+\RequirePackage{listings}[2002/04/01]
+\AtBeginDocument{%
+  \@ifundefined{inputencoding}{%
+    \RequirePackage{inputenc}%
+  }{}%
+}
+\RequirePackage{pdftexcmds}[2011/04/22]
+\def\lstU@temp#1#2{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\relax
+    \PackageWarningNoLine{listingsutf8}{%
+      Package loading is aborted because of missing %
+      \@backslashchar#1.\MessageBreak
+      #2%
+    }%
+    \expandafter\lstU@AtEnd
+  \fi
+}
+\lstU@temp{scantokens}{It is provided by e-TeX}%
+\lstU@temp{pdf@unescapehex}{It is provided by pdfTeX >= 1.30}%
+\lstU@temp{pdf@filedump}{It is provided by pdfTeX >= 1.30}%
+\lstU@temp{pdf@filesize}{It is provided by pdfTeX >= 1.30}%
+\RequirePackage{stringenc}[2010/03/01]
+\newif\iflstU@utfviii
+\def\lstU@inputenc#1{%
+  \expandafter\lstU@@inputenc#1utf8/utf8/\@nil
+}
+\def\lstU@@inputenc#1utf8/#2utf8/#3\@nil{%
+  \ifx\\#1\\%
+    \lstU@utfviiitrue
+    \def\lst@inputenc{#2}%
+  \else
+    \lstU@utfviiifalse
+  \fi
+}
+\lst@Key{inputencoding}\relax{%
+  \def\lst@inputenc{#1}%
+  \lstU@inputenc{#1}%
+}
+\def\lstU@input#1{%
+  \iflstU@utfviii
+    \edef\lstU@text{%
+      \pdf@unescapehex{%
+        \pdf@filedump{0}{\pdf@filesize{#1}}{#1}%
+      }%
+    }%
+    \lstU@CRLFtoLF\lstU@text
+    \StringEncodingConvert\lstU@text\lstU@text{utf8}\lst@inputenc
+    \def\lstU@temp{%
+      \scantokens\expandafter{\lstU@text}%
+    }%
+  \else
+    \def\lstU@temp{%
+      \input{#1}%
+    }%
+  \fi
+  \lstU@temp
+}
+\begingroup
+  \endlinechar=-1 %
+  \@makeother\^^J %
+  \@makeother\^^M %
+  \gdef\lstU@CRLFtoLF#1{%
+    \edef#1{%
+      \expandafter\lstU@CRLFtoLF@aux#1^^M^^J\@nil
+    }%
+  }%
+  \gdef\lstU@CRLFtoLF@aux#1^^M^^J#2\@nil{%
+    #1%
+    \ifx\relax#2\relax
+      \@car
+    \fi
+    ^^J%
+    \lstU@CRLFtoLF@aux#2\@nil
+  }%
+\endgroup %
+\def\lstU@temp#1\def\lst@next#2#3\@nil{%
+  \def\lst@InputListing##1{%
+    #1%
+    \def\lst@next{\lstU@input{##1}}%
+    #3%
+  }%
+}
+\expandafter\lstU@temp\lst@InputListing{#1}\@nil
+\lstU@AtEnd%
+\endinput
+%%
+%% End of file `listingsutf8.sty'.

@@ -1,0 +1,142 @@
+%%% The encoding table, v.Sep.1997 (C) Petr Ol\v s\'ak
+%%% input: CP1250, internal TeX: CS-font
+
+\input encmacro  \input csfmacro
+
+% (1) Czech/Slovak alphabet
+%            input TeX   lc   uc    sf cat prn        sequence
+\setcharcode  "C1  "C1  "E1  "C1   999  11  1  \texaccent \'A
+\setcharcode  "E1  "E1  "E1  "C1  1000  11  1  \texaccent \'a
+\setcharcode  "C4  "C4  "E4  "C4   999  11  1  \texaccent \"A
+\setcharcode  "E4  "E4  "E4  "C4  1000  11  1  \texaccent \"a
+\setcharcode  "C8  "C8  "E8  "C8   999  11  1  \texaccent \v C
+\setcharcode  "E8  "E8  "E8  "C8  1000  11  1  \texaccent \v c
+\setcharcode  "CF  "CF  "EF  "CF   999  11  1  \texaccent \v D
+\setcharcode  "EF  "EF  "EF  "CF  1000  11  1  \texaccent \v d
+\setcharcode  "C9  "C9  "E9  "C9   999  11  1  \texaccent \'E
+\setcharcode  "E9  "E9  "E9  "C9  1000  11  1  \texaccent \'e
+\setcharcode  "CC  "CC  "EC  "CC   999  11  1  \texaccent \v E
+\setcharcode  "EC  "EC  "EC  "CC  1000  11  1  \texaccent \v e
+\setcharcode  "CD  "CD  "ED  "CD   999  11  1  \texaccent \'I
+\setcharcode  "ED  "ED  "ED  "CD  1000  11  1  \texaccent \'i  \texaccent \'\i
+\setcharcode  "C5  "C5  "E5  "C5   999  11  1  \texaccent \'L
+\setcharcode  "E5  "E5  "E5  "C5  1000  11  1  \texaccent \'l
+\setcharcode  "BC  "A5  "B5  "A5   999  11  1  \texaccent \v L
+\setcharcode  "BE  "B5  "B5  "A5  1000  11  1  \texaccent \v l
+\setcharcode  "D2  "D2  "F2  "D2   999  11  1  \texaccent \v N
+\setcharcode  "F2  "F2  "F2  "D2  1000  11  1  \texaccent \v n
+\setcharcode  "D3  "D3  "F3  "D3   999  11  1  \texaccent \'O
+\setcharcode  "F3  "F3  "F3  "D3  1000  11  1  \texaccent \'o
+\setcharcode  "D4  "D4  "F4  "D4   999  11  1  \texaccent \^O
+\setcharcode  "F4  "F4  "F4  "D4  1000  11  1  \texaccent \^o
+\setcharcode  "D6  "D6  "F6  "D6   999  11  1  \texaccent \"O
+\setcharcode  "F6  "F6  "F6  "D6  1000  11  1  \texaccent \"o
+\setcharcode  "C0  "C0  "E0  "C0   999  11  1  \texaccent \'R
+\setcharcode  "E0  "E0  "E0  "C0  1000  11  1  \texaccent \'r
+\setcharcode  "D8  "D8  "F8  "D8   999  11  1  \texaccent \v R
+\setcharcode  "F8  "F8  "F8  "D8  1000  11  1  \texaccent \v r
+\setcharcode  "8A  "A9  "B9  "A9   999  11  1  \texaccent \v S
+\setcharcode  "9A  "B9  "B9  "A9  1000  11  1  \texaccent \v s
+\setcharcode  "8D  "AB  "BB  "AB   999  11  1  \texaccent \v T
+\setcharcode  "9D  "BB  "BB  "AB  1000  11  1  \texaccent \v t
+\setcharcode  "DA  "DA  "FA  "DA   999  11  1  \texaccent \'U
+\setcharcode  "FA  "FA  "FA  "DA  1000  11  1  \texaccent \'u
+\setcharcode  "D9  "D9  "F9  "D9   999  11  1  \texaccent \r U
+\setcharcode  "F9  "F9  "F9  "D9  1000  11  1  \texaccent \r u
+\setcharcode  "DC  "DC  "FC  "DC   999  11  1  \texaccent \"U
+\setcharcode  "FC  "FC  "FC  "DC  1000  11  1  \texaccent \"u
+\setcharcode  "DD  "DD  "FD  "DD   999  11  1  \texaccent \'Y
+\setcharcode  "FD  "FD  "FD  "DD  1000  11  1  \texaccent \'y
+\setcharcode  "8E  "AE  "BE  "AE   999  11  1  \texaccent \v Z
+\setcharcode  "9E  "BE  "BE  "AE  1000  11  1  \texaccent \v z
+
+% (2) Non Czech/Slovak alphabet
+%            input TeX   lc   uc    sf cat prn        sequence
+\setcharcode  "A5  "A1    0    0     0  13  0  \expandto {\og A}
+\setcharcode  "B9  "B1    0    0     0  13  0  \expandto {\ogonek a}
+\setcharcode  "A3  "A3    0    0     0  13  0  \expandto {\L}
+\setcharcode  "B3  "B3    0    0     0  13  0  \expandto {\l}
+\setcharcode  "8C  "A6    0    0     0  13  0  \expandto {\'S}
+\setcharcode  "9C  "B6    0    0     0  13  0  \expandto {\'s}
+\setcharcode  "AA  "AA    0    0     0  13  0  \expandto {\c S}
+\setcharcode  "BA  "BA    0    0     0  13  0  \expandto {\c s}
+\setcharcode  "8F  "AC    0    0     0  13  0  \expandto {\'Z}
+\setcharcode  "9F  "BC    0    0     0  13  0  \expandto {\'z}
+\setcharcode  "AF  "AF    0    0     0  13  0  \expandto {\.Z}
+\setcharcode  "BF  "BF    0    0     0  13  0  \expandto {\.z}
+\setcharcode  "C2  "C2    0    0     0  13  0  \expandto {\^A}
+\setcharcode  "E2  "E2    0    0     0  13  0  \expandto {\^a}
+\setcharcode  "C3  "C3    0    0     0  13  0  \expandto {\u A}
+\setcharcode  "E3  "E3    0    0     0  13  0  \expandto {\u a}
+\setcharcode  "C6  "C6    0    0     0  13  0  \expandto {\'C}
+\setcharcode  "E6  "E6    0    0     0  13  0  \expandto {\'c}
+\setcharcode  "C7  "C7    0    0     0  13  0  \expandto {\c C}
+\setcharcode  "E7  "E7    0    0     0  13  0  \expandto {\c c}
+\setcharcode  "CA  "CA    0    0     0  13  0  \expandto {\ogonek E}
+\setcharcode  "EA  "EA    0    0     0  13  0  \expandto {\ogonek e}
+\setcharcode  "CB  "CB    0    0     0  13  0  \expandto {\"E}
+\setcharcode  "EB  "EB    0    0     0  13  0  \expandto {\"e}
+\setcharcode  "CE  "CE    0    0     0  13  0  \expandto {\^I}
+\setcharcode  "EE  "EE    0    0     0  13  0  \expandto {\^\i}
+\setcharcode  "D0  "D0    0    0     0  15  0  % Dslash is not accesible
+\setcharcode  "F0  "F0    0    0     0  15  0  % dslash is not accesible
+\setcharcode  "D1  "D1    0    0     0  13  0  \expandto {\'N}
+\setcharcode  "F1  "F1    0    0     0  13  0  \expandto {\'n}
+\setcharcode  "D5  "D5    0    0     0  13  0  \expandto {\H O}
+\setcharcode  "F5  "F5    0    0     0  13  0  \expandto {\H o}
+\setcharcode  "DB  "DB    0    0     0  13  0  \expandto {\H U}
+\setcharcode  "FB  "FB    0    0     0  13  0  \expandto {\H u}
+\setcharcode  "DE  "DE    0    0     0  13  0  \expandto {\c T}
+\setcharcode  "FE  "95    0    0     0  13  0  \expandto {\c t} % We have the ,, (csquota) on this slot
+\setcharcode  "DF  "DF    0    0     0  13  0  \expandto {\ss}
+
+% (3) Accents
+\setcharcode  "A2  "15    0    0     0  12  1  % breve
+\setcharcode  "A8  "7F    0    0     0  12  1  % dieresis
+\setcharcode  "B0  "17    0    0     0  12  1  % ring
+\setcharcode  "B2  "9D    0    0     0  12  1  % ogonek
+\setcharcode  "B4  "13    0    0     0  12  1  % acute
+\setcharcode  "A1  "14    0    0     0  12  1  % caron
+\setcharcode  "B8  "18    0    0     0  12  1  % cedilla
+\setcharcode  "BD  "BD    0    0     0  13  0  \expandto {\char"7D } % hungarumlaut
+\setcharcode  "FF  "07    0    0     0  13  0  \expandto {\char95 }  % dotaccent, there is `` on this slot
+
+% (4) Other characters:
+%            input TeX   lc   uc    sf cat prn        sequence
+\setcharcode  "82  "01    0    0     0  13  0  \expandto {\clq}
+\setcharcode  "91  "02    0    0     0  13  0  \expandto {\crq}
+\setcharcode  "92  "03    0    0     0  13  0  \expandto {'}
+\setcharcode  "B7  "04    0    0     0  13  0  \expandto {$\cdot$}
+\setcharcode  "8B  "05    0    0     0  15  0  % < \flq not accesible
+\setcharcode  "9B  "06    0    0     0  15  0  % > \frq not accesible
+\setcharcode  "96  "15    0    0     0  13  0  \expandto {--}
+\setcharcode  "97  "16    0    0     0  13  0  \expandto {---}
+\setcharcode  "A9  "80    0    0     0  13  0  \expandto {\copyright}
+\setcharcode  "AE  "81    0    0     0  13  0  \expandto {\registered}
+\setcharcode  "99  "82    0    0     0  13  0  \expandto {\trademark}
+\setcharcode  "B5  "86    0    0     0  13  0  \expandto {$\mu$}
+\setcharcode  "B1  "87    0    0     0  13  0  \expandto {$\pm$}
+\setcharcode  "B6  "89    0    0     0  13  0  \expandto {\P}
+\setcharcode  "86  "8A    0    0     0  13  0  \expandto {\dag}
+\setcharcode  "87  "8B    0    0     0  13  0  \expandto {\ddag}
+\setcharcode  "89  "8D    0    0     0  12  1  \texmacro \promile
+\setcharcode  "AC  "8E    0    0     0  13  0  \expandto {$\neg$}
+\setcharcode  "85  "8F    0    0     0  13  0  \expandto {\dots}
+\setcharcode  "95  "90    0    0     0  13  0  \expandto {$\bullet$}
+\setcharcode  "94  "94    0    0     0  13  0  \expandto {''}
+\setcharcode  "A6  "9B    0    0     0  13  0  \expandto {\pipe}
+\setcharcode  "AB  "9E    0    0     0  12  1  \texmacro \flqq
+\setcharcode  "BB  "9F    0    0     0  12  1  \texmacro \frqq
+\setcharcode  "A4  "A4    0    0     0  15  0 % slunicko, not accesible
+\setcharcode  "A7  "A7    0    0     0  13  0  \expandto {\S}
+\setcharcode  "D7  "D7    0    0     0  13  0  \expandto {$\times$}
+\setcharcode  "F7  "F7    0    0     0  13  0  \expandto {$\div$}
+\setcharcode  "84  "FE    0    0     0  12  1  \texmacro \clqq
+\setcharcode  "93  "FF    0    0     0  12  1  \texmacro \crqq
+
+\redefaccent \'
+\redefaccent \v
+\redefaccent \"
+\redefaccent \^
+\redefaccent \r
+

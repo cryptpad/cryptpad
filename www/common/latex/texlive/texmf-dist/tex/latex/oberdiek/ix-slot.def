@@ -1,0 +1,2186 @@
+%%
+%% This is file `ix-slot.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `slot')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{ix-slot.def}%
+  [2011/05/27 v1.10 SLOT and UC to Encodings (inputenx)]%
+\InputenxSlot{128}{00A0}{\do{nextstep}}
+\InputenxSlot{128}{00C4}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{128}{00C7}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{128}{0402}{\do{cp1251}}
+\InputenxSlot{128}{0410}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{128}{0452}{\do{cp855}}
+\InputenxSlot{128}{20AC}{%
+  \do{cp1250}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{128}{2500}{\do{koi8-r}}
+\InputenxSlot{129}{00C0}{\do{nextstep}}
+\InputenxSlot{129}{00C5}{\do{mac-roman}}
+\InputenxSlot{129}{00FC}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{129}{0100}{\do{mac-centeuro}}
+\InputenxSlot{129}{0402}{\do{cp855}}
+\InputenxSlot{129}{0403}{\do{cp1251}}
+\InputenxSlot{129}{0411}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{129}{2502}{\do{koi8-r}}
+\InputenxSlot{130}{00C1}{\do{nextstep}}
+\InputenxSlot{130}{00C7}{\do{mac-roman}}
+\InputenxSlot{130}{00E9}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{130}{0101}{\do{mac-centeuro}}
+\InputenxSlot{130}{0412}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{130}{0453}{\do{cp855}}
+\InputenxSlot{130}{201A}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{130}{250C}{\do{koi8-r}}
+\InputenxSlot{131}{00C2}{\do{nextstep}}
+\InputenxSlot{131}{00C9}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{131}{00E2}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{131}{0192}{\do{cp1252}\do{cp1255}}
+\InputenxSlot{131}{0403}{\do{cp855}}
+\InputenxSlot{131}{0413}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{131}{0453}{\do{cp1251}}
+\InputenxSlot{131}{2510}{\do{koi8-r}}
+\InputenxSlot{132}{00C3}{\do{nextstep}}
+\InputenxSlot{132}{00D1}{\do{mac-roman}}
+\InputenxSlot{132}{00E4}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{132}{0104}{\do{mac-centeuro}}
+\InputenxSlot{132}{0414}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{132}{0451}{\do{cp855}}
+\InputenxSlot{132}{201E}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{132}{2514}{\do{koi8-r}}
+\InputenxSlot{133}{00C4}{\do{nextstep}}
+\InputenxSlot{133}{00D6}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{133}{00E0}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{133}{016F}{\do{cp852}}
+\InputenxSlot{133}{0401}{\do{cp855}}
+\InputenxSlot{133}{0415}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{133}{2026}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{133}{2518}{\do{koi8-r}}
+\InputenxSlot{134}{00C5}{\do{nextstep}}
+\InputenxSlot{134}{00DC}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{134}{00E5}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{134}{0107}{\do{cp852}}
+\InputenxSlot{134}{0416}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{134}{0454}{\do{cp855}}
+\InputenxSlot{134}{2020}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{134}{251C}{\do{koi8-r}}
+\InputenxSlot{135}{00C7}{\do{nextstep}}
+\InputenxSlot{135}{00E1}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{135}{00E7}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{135}{0404}{\do{cp855}}
+\InputenxSlot{135}{0417}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{135}{2021}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{135}{2524}{\do{koi8-r}}
+\InputenxSlot{136}{00C8}{\do{nextstep}}
+\InputenxSlot{136}{00E0}{\do{mac-roman}}
+\InputenxSlot{136}{00EA}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{136}{0105}{\do{mac-centeuro}}
+\InputenxSlot{136}{0142}{\do{cp852}}
+\InputenxSlot{136}{02C6}{\do{cp1252}\do{cp1255}}
+\InputenxSlot{136}{0418}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{136}{0455}{\do{cp855}}
+\InputenxSlot{136}{20AC}{\do{cp1251}}
+\InputenxSlot{136}{252C}{\do{koi8-r}}
+\InputenxSlot{137}{00C9}{\do{nextstep}}
+\InputenxSlot{137}{00E2}{\do{mac-roman}}
+\InputenxSlot{137}{00EB}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{137}{010C}{\do{mac-centeuro}}
+\InputenxSlot{137}{0405}{\do{cp855}}
+\InputenxSlot{137}{0419}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{137}{2030}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{137}{2534}{\do{koi8-r}}
+\InputenxSlot{138}{00CA}{\do{nextstep}}
+\InputenxSlot{138}{00E4}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{138}{00E8}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{138}{0150}{\do{cp852}}
+\InputenxSlot{138}{0160}{\do{cp1250}\do{cp1252}}
+\InputenxSlot{138}{0409}{\do{cp1251}}
+\InputenxSlot{138}{041A}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{138}{0456}{\do{cp855}}
+\InputenxSlot{138}{253C}{\do{koi8-r}}
+\InputenxSlot{139}{00CB}{\do{nextstep}}
+\InputenxSlot{139}{00E3}{\do{mac-roman}}
+\InputenxSlot{139}{00EF}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{139}{010D}{\do{mac-centeuro}}
+\InputenxSlot{139}{0151}{\do{cp852}}
+\InputenxSlot{139}{0406}{\do{cp855}}
+\InputenxSlot{139}{041B}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{139}{2039}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{139}{2580}{\do{koi8-r}}
+\InputenxSlot{140}{00CC}{\do{nextstep}}
+\InputenxSlot{140}{00E5}{\do{mac-roman}}
+\InputenxSlot{140}{00EE}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{140}{0106}{\do{mac-centeuro}}
+\InputenxSlot{140}{0152}{\do{cp1252}}
+\InputenxSlot{140}{015A}{\do{cp1250}}
+\InputenxSlot{140}{040A}{\do{cp1251}}
+\InputenxSlot{140}{041C}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{140}{0457}{\do{cp855}}
+\InputenxSlot{140}{2584}{\do{koi8-r}}
+\InputenxSlot{141}{00A8}{\do{cp1257}}
+\InputenxSlot{141}{00CD}{\do{nextstep}}
+\InputenxSlot{141}{00E7}{\do{mac-roman}}
+\InputenxSlot{141}{00EC}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{141}{0107}{\do{mac-centeuro}}
+\InputenxSlot{141}{0164}{\do{cp1250}}
+\InputenxSlot{141}{0179}{\do{cp852}}
+\InputenxSlot{141}{0407}{\do{cp855}}
+\InputenxSlot{141}{040C}{\do{cp1251}}
+\InputenxSlot{141}{041D}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{141}{2588}{\do{koi8-r}}
+\InputenxSlot{142}{00C4}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{142}{00CE}{\do{nextstep}}
+\InputenxSlot{142}{00E9}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{142}{017D}{\do{cp1250}\do{cp1252}}
+\InputenxSlot{142}{02C7}{\do{cp1257}}
+\InputenxSlot{142}{040B}{\do{cp1251}}
+\InputenxSlot{142}{041E}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{142}{0458}{\do{cp855}}
+\InputenxSlot{142}{258C}{\do{koi8-r}}
+\InputenxSlot{143}{00B8}{\do{cp1257}}
+\InputenxSlot{143}{00C5}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{143}{00CF}{\do{nextstep}}
+\InputenxSlot{143}{00E8}{\do{mac-roman}}
+\InputenxSlot{143}{0106}{\do{cp852}}
+\InputenxSlot{143}{0179}{\do{cp1250}\do{mac-centeuro}}
+\InputenxSlot{143}{0408}{\do{cp855}}
+\InputenxSlot{143}{040F}{\do{cp1251}}
+\InputenxSlot{143}{041F}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{143}{2590}{\do{koi8-r}}
+\InputenxSlot{144}{00C9}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{144}{00D0}{\do{nextstep}}
+\InputenxSlot{144}{00EA}{\do{mac-roman}}
+\InputenxSlot{144}{017A}{\do{mac-centeuro}}
+\InputenxSlot{144}{0420}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{144}{0452}{\do{cp1251}}
+\InputenxSlot{144}{0459}{\do{cp855}}
+\InputenxSlot{144}{2591}{\do{koi8-r}}
+\InputenxSlot{145}{00D1}{\do{nextstep}}
+\InputenxSlot{145}{00E6}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{145}{00EB}{\do{mac-roman}}
+\InputenxSlot{145}{010E}{\do{mac-centeuro}}
+\InputenxSlot{145}{0139}{\do{cp852}}
+\InputenxSlot{145}{0409}{\do{cp855}}
+\InputenxSlot{145}{0421}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{145}{2018}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{145}{2592}{\do{koi8-r}}
+\InputenxSlot{146}{00C6}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{146}{00D2}{\do{nextstep}}
+\InputenxSlot{146}{00ED}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{146}{013A}{\do{cp852}}
+\InputenxSlot{146}{0422}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{146}{045A}{\do{cp855}}
+\InputenxSlot{146}{2019}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{146}{2593}{\do{koi8-r}}
+\InputenxSlot{147}{00D3}{\do{nextstep}}
+\InputenxSlot{147}{00EC}{\do{mac-roman}}
+\InputenxSlot{147}{00F4}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{147}{010F}{\do{mac-centeuro}}
+\InputenxSlot{147}{040A}{\do{cp855}}
+\InputenxSlot{147}{0423}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{147}{201C}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{148}{00D4}{\do{nextstep}}
+\InputenxSlot{148}{00EE}{\do{mac-roman}}
+\InputenxSlot{148}{00F6}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{148}{0112}{\do{mac-centeuro}}
+\InputenxSlot{148}{0424}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{148}{045B}{\do{cp855}}
+\InputenxSlot{148}{201D}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{148}{25A0}{\do{koi8-r}}
+\InputenxSlot{149}{00D5}{\do{nextstep}}
+\InputenxSlot{149}{00EF}{\do{mac-roman}}
+\InputenxSlot{149}{00F2}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{149}{0113}{\do{mac-centeuro}}
+\InputenxSlot{149}{013D}{\do{cp852}}
+\InputenxSlot{149}{040B}{\do{cp855}}
+\InputenxSlot{149}{0425}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{149}{2022}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{149}{2219}{\do{koi8-r}}
+\InputenxSlot{150}{00D6}{\do{nextstep}}
+\InputenxSlot{150}{00F1}{\do{mac-roman}}
+\InputenxSlot{150}{00FB}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{150}{0116}{\do{mac-centeuro}}
+\InputenxSlot{150}{013E}{\do{cp852}}
+\InputenxSlot{150}{0426}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{150}{045C}{\do{cp855}}
+\InputenxSlot{150}{2013}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{150}{221A}{\do{koi8-r}}
+\InputenxSlot{151}{00D9}{\do{nextstep}}
+\InputenxSlot{151}{00F3}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{151}{00F9}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{151}{015A}{\do{cp852}}
+\InputenxSlot{151}{040C}{\do{cp855}}
+\InputenxSlot{151}{0427}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{151}{2014}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{151}{2248}{\do{koi8-r}}
+\InputenxSlot{152}{00DA}{\do{nextstep}}
+\InputenxSlot{152}{00F2}{\do{mac-roman}}
+\InputenxSlot{152}{00FF}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{152}{0117}{\do{mac-centeuro}}
+\InputenxSlot{152}{015B}{\do{cp852}}
+\InputenxSlot{152}{02DC}{\do{cp1252}\do{cp1255}}
+\InputenxSlot{152}{0428}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{152}{045E}{\do{cp855}}
+\InputenxSlot{152}{2264}{\do{koi8-r}}
+\InputenxSlot{153}{00D6}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{153}{00DB}{\do{nextstep}}
+\InputenxSlot{153}{00F4}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{153}{040E}{\do{cp855}}
+\InputenxSlot{153}{0429}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{153}{2122}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{153}{2265}{\do{koi8-r}}
+\InputenxSlot{154}{00A0}{\do{koi8-r}}
+\InputenxSlot{154}{00DC}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+  \do{nextstep}%
+}
+\InputenxSlot{154}{00F6}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{154}{0161}{\do{cp1250}\do{cp1252}}
+\InputenxSlot{154}{042A}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{154}{0459}{\do{cp1251}}
+\InputenxSlot{154}{045F}{\do{cp855}}
+\InputenxSlot{155}{00A2}{\do{atarist}\do{cp437}}
+\InputenxSlot{155}{00DD}{\do{nextstep}}
+\InputenxSlot{155}{00F5}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{155}{00F8}{\do{cp850}\do{cp858}\do{cp865}}
+\InputenxSlot{155}{0164}{\do{cp852}}
+\InputenxSlot{155}{040F}{\do{cp855}}
+\InputenxSlot{155}{042B}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{155}{203A}{%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{156}{00A3}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{156}{00B0}{\do{koi8-r}}
+\InputenxSlot{156}{00DE}{\do{nextstep}}
+\InputenxSlot{156}{00FA}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{156}{0153}{\do{cp1252}}
+\InputenxSlot{156}{015B}{\do{cp1250}}
+\InputenxSlot{156}{0165}{\do{cp852}}
+\InputenxSlot{156}{042C}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{156}{044E}{\do{cp855}}
+\InputenxSlot{156}{045A}{\do{cp1251}}
+\InputenxSlot{157}{00A5}{\do{atarist}\do{cp437}}
+\InputenxSlot{157}{00AF}{\do{cp1257}}
+\InputenxSlot{157}{00B2}{\do{koi8-r}}
+\InputenxSlot{157}{00B5}{\do{nextstep}}
+\InputenxSlot{157}{00D8}{\do{cp850}\do{cp858}\do{cp865}}
+\InputenxSlot{157}{00F9}{\do{mac-roman}}
+\InputenxSlot{157}{011A}{\do{mac-centeuro}}
+\InputenxSlot{157}{0141}{\do{cp852}}
+\InputenxSlot{157}{0165}{\do{cp1250}}
+\InputenxSlot{157}{042D}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{157}{042E}{\do{cp855}}
+\InputenxSlot{157}{045C}{\do{cp1251}}
+\InputenxSlot{158}{00B7}{\do{koi8-r}}
+\InputenxSlot{158}{00D7}{%
+  \do{cp850}\do{cp852}\do{cp858}\do{nextstep}%
+}
+\InputenxSlot{158}{00DF}{\do{atarist}}
+\InputenxSlot{158}{00FB}{\do{mac-roman}}
+\InputenxSlot{158}{011B}{\do{mac-centeuro}}
+\InputenxSlot{158}{017E}{\do{cp1250}\do{cp1252}}
+\InputenxSlot{158}{02DB}{\do{cp1257}}
+\InputenxSlot{158}{042E}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{158}{044A}{\do{cp855}}
+\InputenxSlot{158}{045B}{\do{cp1251}}
+\InputenxSlot{158}{20A7}{\do{cp437}\do{cp865}}
+\InputenxSlot{159}{00F7}{\do{koi8-r}\do{nextstep}}
+\InputenxSlot{159}{00FC}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{159}{010D}{\do{cp852}}
+\InputenxSlot{159}{0178}{\do{cp1252}}
+\InputenxSlot{159}{017A}{\do{cp1250}}
+\InputenxSlot{159}{0192}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{159}{042A}{\do{cp855}}
+\InputenxSlot{159}{042F}{\do{cp866}\do{mac-cyrillic}}
+\InputenxSlot{159}{045F}{\do{cp1251}}
+\InputenxSlot{160}{00A0}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-5}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{160}{00A9}{\do{nextstep}}
+\InputenxSlot{160}{00E1}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{160}{0430}{\do{cp855}\do{cp866}}
+\InputenxSlot{160}{2020}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{160}{2550}{\do{koi8-r}}
+\InputenxSlot{161}{00A1}{%
+  \do{iso-8859-1}\do{iso-8859-9}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1255}\do{dec-mcs}\do{nextstep}%
+}
+\InputenxSlot{161}{00B0}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{161}{00ED}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{161}{0104}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-10}\do{iso-8859-16}%
+}
+\InputenxSlot{161}{0126}{\do{iso-8859-3}}
+\InputenxSlot{161}{02C7}{\do{cp1250}}
+\InputenxSlot{161}{0401}{\do{iso-8859-5}}
+\InputenxSlot{161}{040E}{\do{cp1251}}
+\InputenxSlot{161}{0410}{\do{cp855}}
+\InputenxSlot{161}{0431}{\do{cp866}}
+\InputenxSlot{161}{1E02}{\do{iso-8859-14}}
+\InputenxSlot{161}{201D}{\do{iso-8859-13}}
+\InputenxSlot{161}{2551}{\do{koi8-r}}
+\InputenxSlot{162}{00A2}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+  \do{mac-roman}\do{nextstep}%
+}
+\InputenxSlot{162}{00F3}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{162}{0105}{\do{iso-8859-16}}
+\InputenxSlot{162}{0112}{\do{iso-8859-10}}
+\InputenxSlot{162}{0118}{\do{mac-centeuro}}
+\InputenxSlot{162}{0138}{\do{iso-8859-4}}
+\InputenxSlot{162}{02D8}{\do{iso-8859-2}\do{iso-8859-3}\do{cp1250}}
+\InputenxSlot{162}{0402}{\do{iso-8859-5}}
+\InputenxSlot{162}{0431}{\do{cp855}}
+\InputenxSlot{162}{0432}{\do{cp866}}
+\InputenxSlot{162}{045E}{\do{cp1251}}
+\InputenxSlot{162}{0490}{\do{mac-cyrillic}}
+\InputenxSlot{162}{1E03}{\do{iso-8859-14}}
+\InputenxSlot{162}{2552}{\do{koi8-r}}
+\InputenxSlot{163}{00A3}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1255}\do{cp1257}\do{dec-mcs}\do{mac-centeuro}%
+  \do{mac-cyrillic}\do{mac-roman}\do{nextstep}%
+}
+\InputenxSlot{163}{00FA}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{163}{0122}{\do{iso-8859-10}}
+\InputenxSlot{163}{0141}{\do{iso-8859-2}\do{iso-8859-16}\do{cp1250}}
+\InputenxSlot{163}{0156}{\do{iso-8859-4}}
+\InputenxSlot{163}{0403}{\do{iso-8859-5}}
+\InputenxSlot{163}{0408}{\do{cp1251}}
+\InputenxSlot{163}{0411}{\do{cp855}}
+\InputenxSlot{163}{0433}{\do{cp866}}
+\InputenxSlot{163}{0451}{\do{koi8-r}}
+\InputenxSlot{164}{00A4}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}\do{cp1250}%
+  \do{cp1251}\do{cp1252}\do{cp1257}%
+}
+\InputenxSlot{164}{00A7}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{164}{00F1}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{164}{0104}{\do{cp852}}
+\InputenxSlot{164}{010A}{\do{iso-8859-14}}
+\InputenxSlot{164}{012A}{\do{iso-8859-10}}
+\InputenxSlot{164}{0404}{\do{iso-8859-5}}
+\InputenxSlot{164}{0434}{\do{cp866}}
+\InputenxSlot{164}{0446}{\do{cp855}}
+\InputenxSlot{164}{2044}{\do{nextstep}}
+\InputenxSlot{164}{20AC}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{164}{2553}{\do{koi8-r}}
+\InputenxSlot{165}{00A5}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-15}%
+  \do{cp1252}\do{cp1255}\do{dec-mcs}\do{nextstep}%
+}
+\InputenxSlot{165}{00D1}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{165}{0104}{\do{cp1250}}
+\InputenxSlot{165}{0105}{\do{cp852}}
+\InputenxSlot{165}{010B}{\do{iso-8859-14}}
+\InputenxSlot{165}{0128}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{165}{013D}{\do{iso-8859-2}}
+\InputenxSlot{165}{0405}{\do{iso-8859-5}}
+\InputenxSlot{165}{0426}{\do{cp855}}
+\InputenxSlot{165}{0435}{\do{cp866}}
+\InputenxSlot{165}{0490}{\do{cp1251}}
+\InputenxSlot{165}{201E}{\do{iso-8859-13}\do{iso-8859-16}}
+\InputenxSlot{165}{2022}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{165}{2554}{\do{koi8-r}}
+\InputenxSlot{166}{00A6}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{166}{00AA}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{166}{00B6}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{166}{0124}{\do{iso-8859-3}}
+\InputenxSlot{166}{0136}{\do{iso-8859-10}}
+\InputenxSlot{166}{013B}{\do{iso-8859-4}}
+\InputenxSlot{166}{015A}{\do{iso-8859-2}}
+\InputenxSlot{166}{0160}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{166}{017D}{\do{cp852}}
+\InputenxSlot{166}{0192}{\do{nextstep}}
+\InputenxSlot{166}{0406}{\do{iso-8859-5}}
+\InputenxSlot{166}{0434}{\do{cp855}}
+\InputenxSlot{166}{0436}{\do{cp866}}
+\InputenxSlot{166}{1E0A}{\do{iso-8859-14}}
+\InputenxSlot{166}{2555}{\do{koi8-r}}
+\InputenxSlot{167}{00A7}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+  \do{nextstep}%
+}
+\InputenxSlot{167}{00BA}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{167}{00DF}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{167}{017E}{\do{cp852}}
+\InputenxSlot{167}{0406}{\do{mac-cyrillic}}
+\InputenxSlot{167}{0407}{\do{iso-8859-5}}
+\InputenxSlot{167}{0414}{\do{cp855}}
+\InputenxSlot{167}{0437}{\do{cp866}}
+\InputenxSlot{167}{2556}{\do{koi8-r}}
+\InputenxSlot{168}{00A4}{\do{dec-mcs}\do{nextstep}}
+\InputenxSlot{168}{00A8}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-8}\do{iso-8859-9}\do{cp1250}\do{cp1252}\do{cp1255}%
+}
+\InputenxSlot{168}{00AE}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{168}{00BF}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{168}{00D8}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{168}{0118}{\do{cp852}}
+\InputenxSlot{168}{013B}{\do{iso-8859-10}}
+\InputenxSlot{168}{0161}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{168}{0401}{\do{cp1251}}
+\InputenxSlot{168}{0408}{\do{iso-8859-5}}
+\InputenxSlot{168}{0435}{\do{cp855}}
+\InputenxSlot{168}{0438}{\do{cp866}}
+\InputenxSlot{168}{1E80}{\do{iso-8859-14}}
+\InputenxSlot{168}{2557}{\do{koi8-r}}
+\InputenxSlot{169}{00A9}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+  \do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}%
+}
+\InputenxSlot{169}{00AE}{\do{cp850}\do{cp858}}
+\InputenxSlot{169}{0110}{\do{iso-8859-10}}
+\InputenxSlot{169}{0119}{\do{cp852}}
+\InputenxSlot{169}{0130}{\do{iso-8859-3}}
+\InputenxSlot{169}{0160}{\do{iso-8859-2}\do{iso-8859-4}}
+\InputenxSlot{169}{0409}{\do{iso-8859-5}}
+\InputenxSlot{169}{0415}{\do{cp855}}
+\InputenxSlot{169}{0439}{\do{cp866}}
+\InputenxSlot{169}{2019}{\do{nextstep}}
+\InputenxSlot{169}{2310}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{169}{2558}{\do{koi8-r}}
+\InputenxSlot{170}{00AA}{%
+  \do{iso-8859-1}\do{iso-8859-9}\do{iso-8859-15}\do{cp1252}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{170}{00AC}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{170}{00D7}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{170}{0112}{\do{iso-8859-4}}
+\InputenxSlot{170}{0156}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{170}{015E}{\do{iso-8859-2}\do{iso-8859-3}\do{cp1250}}
+\InputenxSlot{170}{0160}{\do{iso-8859-10}}
+\InputenxSlot{170}{0218}{\do{iso-8859-16}}
+\InputenxSlot{170}{0404}{\do{cp1251}}
+\InputenxSlot{170}{040A}{\do{iso-8859-5}}
+\InputenxSlot{170}{043A}{\do{cp866}}
+\InputenxSlot{170}{0444}{\do{cp855}}
+\InputenxSlot{170}{1E82}{\do{iso-8859-14}}
+\InputenxSlot{170}{201C}{\do{nextstep}}
+\InputenxSlot{170}{2122}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{170}{2559}{\do{koi8-r}}
+\InputenxSlot{171}{00AB}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1251}\do{cp1252}%
+  \do{cp1255}\do{cp1257}\do{dec-mcs}\do{nextstep}%
+}
+\InputenxSlot{171}{00B4}{\do{mac-roman}}
+\InputenxSlot{171}{00BD}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{171}{0119}{\do{mac-centeuro}}
+\InputenxSlot{171}{011E}{\do{iso-8859-3}}
+\InputenxSlot{171}{0122}{\do{iso-8859-4}}
+\InputenxSlot{171}{0164}{\do{iso-8859-2}}
+\InputenxSlot{171}{0166}{\do{iso-8859-10}}
+\InputenxSlot{171}{017A}{\do{cp852}}
+\InputenxSlot{171}{0402}{\do{mac-cyrillic}}
+\InputenxSlot{171}{040B}{\do{iso-8859-5}}
+\InputenxSlot{171}{0424}{\do{cp855}}
+\InputenxSlot{171}{043B}{\do{cp866}}
+\InputenxSlot{171}{1E0B}{\do{iso-8859-14}}
+\InputenxSlot{171}{255A}{\do{koi8-r}}
+\InputenxSlot{172}{00A8}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{172}{00AC}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}%
+  \do{cp1257}%
+}
+\InputenxSlot{172}{00BC}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{172}{010C}{\do{cp852}}
+\InputenxSlot{172}{0134}{\do{iso-8859-3}}
+\InputenxSlot{172}{0166}{\do{iso-8859-4}}
+\InputenxSlot{172}{0179}{\do{iso-8859-2}\do{iso-8859-16}}
+\InputenxSlot{172}{017D}{\do{iso-8859-10}}
+\InputenxSlot{172}{040C}{\do{iso-8859-5}}
+\InputenxSlot{172}{0433}{\do{cp855}}
+\InputenxSlot{172}{043C}{\do{cp866}}
+\InputenxSlot{172}{0452}{\do{mac-cyrillic}}
+\InputenxSlot{172}{1EF2}{\do{iso-8859-14}}
+\InputenxSlot{172}{2039}{\do{nextstep}}
+\InputenxSlot{172}{255B}{\do{koi8-r}}
+\InputenxSlot{173}{00A1}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{173}{00AD}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-5}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{173}{015F}{\do{cp852}}
+\InputenxSlot{173}{0413}{\do{cp855}}
+\InputenxSlot{173}{043D}{\do{cp866}}
+\InputenxSlot{173}{203A}{\do{nextstep}}
+\InputenxSlot{173}{2260}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{173}{255C}{\do{koi8-r}}
+\InputenxSlot{174}{00AB}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}%
+  \do{cp865}%
+}
+\InputenxSlot{174}{00AE}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{cp1250}\do{cp1251}\do{cp1252}%
+  \do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{174}{00C6}{\do{mac-roman}}
+\InputenxSlot{174}{0123}{\do{mac-centeuro}}
+\InputenxSlot{174}{016A}{\do{iso-8859-10}}
+\InputenxSlot{174}{017A}{\do{iso-8859-16}}
+\InputenxSlot{174}{017D}{\do{iso-8859-2}\do{iso-8859-4}}
+\InputenxSlot{174}{0403}{\do{mac-cyrillic}}
+\InputenxSlot{174}{040E}{\do{iso-8859-5}}
+\InputenxSlot{174}{043E}{\do{cp866}}
+\InputenxSlot{174}{255D}{\do{koi8-r}}
+\InputenxSlot{174}{FB01}{\do{nextstep}}
+\InputenxSlot{175}{00A4}{\do{cp865}}
+\InputenxSlot{175}{00AF}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-15}\do{cp1252}\do{cp1255}%
+}
+\InputenxSlot{175}{00BB}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}%
+}
+\InputenxSlot{175}{00C6}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{175}{00D8}{\do{mac-roman}}
+\InputenxSlot{175}{012E}{\do{mac-centeuro}}
+\InputenxSlot{175}{014A}{\do{iso-8859-10}}
+\InputenxSlot{175}{0178}{\do{iso-8859-14}}
+\InputenxSlot{175}{017B}{%
+  \do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-16}\do{cp1250}%
+}
+\InputenxSlot{175}{0407}{\do{cp1251}}
+\InputenxSlot{175}{040F}{\do{iso-8859-5}}
+\InputenxSlot{175}{043F}{\do{cp866}}
+\InputenxSlot{175}{0453}{\do{mac-cyrillic}}
+\InputenxSlot{175}{255E}{\do{koi8-r}}
+\InputenxSlot{175}{FB02}{\do{nextstep}}
+\InputenxSlot{176}{00AE}{\do{nextstep}}
+\InputenxSlot{176}{00B0}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1251}\do{cp1252}%
+  \do{cp1255}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{176}{00E3}{\do{atarist}}
+\InputenxSlot{176}{012F}{\do{mac-centeuro}}
+\InputenxSlot{176}{0410}{\do{iso-8859-5}}
+\InputenxSlot{176}{1E1E}{\do{iso-8859-14}}
+\InputenxSlot{176}{221E}{\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{176}{255F}{\do{koi8-r}}
+\InputenxSlot{176}{2591}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{177}{00B1}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1251}\do{cp1252}%
+  \do{cp1255}\do{cp1257}\do{dec-mcs}\do{mac-cyrillic}\do{mac-roman}%
+}
+\InputenxSlot{177}{00F5}{\do{atarist}}
+\InputenxSlot{177}{0105}{\do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{177}{0127}{\do{iso-8859-3}}
+\InputenxSlot{177}{012A}{\do{mac-centeuro}}
+\InputenxSlot{177}{0411}{\do{iso-8859-5}}
+\InputenxSlot{177}{1E1F}{\do{iso-8859-14}}
+\InputenxSlot{177}{2013}{\do{nextstep}}
+\InputenxSlot{177}{2560}{\do{koi8-r}}
+\InputenxSlot{177}{2592}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{178}{00B2}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-13}\do{iso-8859-15}\do{cp1252}\do{cp1255}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{178}{00D8}{\do{atarist}}
+\InputenxSlot{178}{010C}{\do{iso-8859-16}}
+\InputenxSlot{178}{0113}{\do{iso-8859-10}}
+\InputenxSlot{178}{0120}{\do{iso-8859-14}}
+\InputenxSlot{178}{02DB}{\do{iso-8859-2}\do{iso-8859-4}\do{cp1250}}
+\InputenxSlot{178}{0406}{\do{cp1251}}
+\InputenxSlot{178}{0412}{\do{iso-8859-5}}
+\InputenxSlot{178}{2020}{\do{nextstep}}
+\InputenxSlot{178}{2264}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{178}{2561}{\do{koi8-r}}
+\InputenxSlot{178}{2593}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{179}{00B3}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-13}\do{iso-8859-15}\do{cp1252}\do{cp1255}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{179}{00F8}{\do{atarist}}
+\InputenxSlot{179}{0121}{\do{iso-8859-14}}
+\InputenxSlot{179}{0123}{\do{iso-8859-10}}
+\InputenxSlot{179}{0142}{\do{iso-8859-2}\do{iso-8859-16}\do{cp1250}}
+\InputenxSlot{179}{0157}{\do{iso-8859-4}}
+\InputenxSlot{179}{0401}{\do{koi8-r}}
+\InputenxSlot{179}{0413}{\do{iso-8859-5}}
+\InputenxSlot{179}{0456}{\do{cp1251}}
+\InputenxSlot{179}{2021}{\do{nextstep}}
+\InputenxSlot{179}{2265}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{179}{2502}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{180}{00A5}{\do{mac-roman}}
+\InputenxSlot{180}{00B4}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-8}\do{iso-8859-9}\do{cp1250}\do{cp1252}\do{cp1255}%
+  \do{cp1257}%
+}
+\InputenxSlot{180}{00B7}{\do{nextstep}}
+\InputenxSlot{180}{012B}{\do{iso-8859-10}\do{mac-centeuro}}
+\InputenxSlot{180}{0153}{\do{atarist}}
+\InputenxSlot{180}{017D}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{180}{0414}{\do{iso-8859-5}}
+\InputenxSlot{180}{0456}{\do{mac-cyrillic}}
+\InputenxSlot{180}{0491}{\do{cp1251}}
+\InputenxSlot{180}{1E40}{\do{iso-8859-14}}
+\InputenxSlot{180}{201C}{\do{iso-8859-13}}
+\InputenxSlot{180}{2524}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{180}{2562}{\do{koi8-r}}
+\InputenxSlot{181}{00A6}{\do{nextstep}}
+\InputenxSlot{181}{00B5}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-13}\do{iso-8859-15}\do{cp1250}\do{cp1251}\do{cp1252}%
+  \do{cp1255}\do{cp1257}\do{dec-mcs}\do{mac-cyrillic}\do{mac-roman}%
+}
+\InputenxSlot{181}{00C1}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{181}{0129}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{181}{0136}{\do{mac-centeuro}}
+\InputenxSlot{181}{013E}{\do{iso-8859-2}}
+\InputenxSlot{181}{0152}{\do{atarist}}
+\InputenxSlot{181}{0415}{\do{iso-8859-5}}
+\InputenxSlot{181}{0445}{\do{cp855}}
+\InputenxSlot{181}{1E41}{\do{iso-8859-14}}
+\InputenxSlot{181}{201D}{\do{iso-8859-16}}
+\InputenxSlot{181}{2561}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{181}{2563}{\do{koi8-r}}
+\InputenxSlot{182}{00B6}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+  \do{nextstep}%
+}
+\InputenxSlot{182}{00C0}{\do{atarist}}
+\InputenxSlot{182}{00C2}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{182}{0125}{\do{iso-8859-3}}
+\InputenxSlot{182}{0137}{\do{iso-8859-10}}
+\InputenxSlot{182}{013C}{\do{iso-8859-4}}
+\InputenxSlot{182}{015B}{\do{iso-8859-2}}
+\InputenxSlot{182}{0416}{\do{iso-8859-5}}
+\InputenxSlot{182}{0425}{\do{cp855}}
+\InputenxSlot{182}{0491}{\do{mac-cyrillic}}
+\InputenxSlot{182}{2202}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{182}{2562}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{182}{2564}{\do{koi8-r}}
+\InputenxSlot{183}{00B7}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-15}\do{iso-8859-16}%
+  \do{cp1250}\do{cp1251}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{183}{00C0}{\do{cp850}\do{cp858}}
+\InputenxSlot{183}{00C3}{\do{atarist}}
+\InputenxSlot{183}{011A}{\do{cp852}}
+\InputenxSlot{183}{02C7}{\do{iso-8859-2}\do{iso-8859-4}}
+\InputenxSlot{183}{0408}{\do{mac-cyrillic}}
+\InputenxSlot{183}{0417}{\do{iso-8859-5}}
+\InputenxSlot{183}{0438}{\do{cp855}}
+\InputenxSlot{183}{1E56}{\do{iso-8859-14}}
+\InputenxSlot{183}{2022}{\do{nextstep}}
+\InputenxSlot{183}{2211}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{183}{2556}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{183}{2565}{\do{koi8-r}}
+\InputenxSlot{184}{00A9}{\do{cp850}\do{cp858}}
+\InputenxSlot{184}{00B8}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-8}\do{iso-8859-9}\do{cp1250}\do{cp1252}\do{cp1255}%
+}
+\InputenxSlot{184}{00D5}{\do{atarist}}
+\InputenxSlot{184}{00F8}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{184}{013C}{\do{iso-8859-10}}
+\InputenxSlot{184}{0142}{\do{mac-centeuro}}
+\InputenxSlot{184}{015E}{\do{cp852}}
+\InputenxSlot{184}{017E}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{184}{0404}{\do{mac-cyrillic}}
+\InputenxSlot{184}{0418}{\do{iso-8859-5}\do{cp855}}
+\InputenxSlot{184}{0451}{\do{cp1251}}
+\InputenxSlot{184}{1E81}{\do{iso-8859-14}}
+\InputenxSlot{184}{201A}{\do{nextstep}}
+\InputenxSlot{184}{220F}{\do{mac-roman}}
+\InputenxSlot{184}{2555}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{184}{2566}{\do{koi8-r}}
+\InputenxSlot{185}{00A8}{\do{atarist}}
+\InputenxSlot{185}{00B9}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{185}{0105}{\do{cp1250}}
+\InputenxSlot{185}{010D}{\do{iso-8859-16}}
+\InputenxSlot{185}{0111}{\do{iso-8859-10}}
+\InputenxSlot{185}{0131}{\do{iso-8859-3}}
+\InputenxSlot{185}{013B}{\do{mac-centeuro}}
+\InputenxSlot{185}{0161}{\do{iso-8859-2}\do{iso-8859-4}}
+\InputenxSlot{185}{03C0}{\do{mac-roman}}
+\InputenxSlot{185}{0419}{\do{iso-8859-5}}
+\InputenxSlot{185}{0454}{\do{mac-cyrillic}}
+\InputenxSlot{185}{1E57}{\do{iso-8859-14}}
+\InputenxSlot{185}{201E}{\do{nextstep}}
+\InputenxSlot{185}{2116}{\do{cp1251}}
+\InputenxSlot{185}{2563}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{185}{2567}{\do{koi8-r}}
+\InputenxSlot{186}{00B4}{\do{atarist}}
+\InputenxSlot{186}{00BA}{%
+  \do{iso-8859-1}\do{iso-8859-9}\do{iso-8859-15}\do{cp1252}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{186}{00F7}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{186}{0113}{\do{iso-8859-4}}
+\InputenxSlot{186}{013C}{\do{mac-centeuro}}
+\InputenxSlot{186}{0157}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{186}{015F}{\do{iso-8859-2}\do{iso-8859-3}\do{cp1250}}
+\InputenxSlot{186}{0161}{\do{iso-8859-10}}
+\InputenxSlot{186}{0219}{\do{iso-8859-16}}
+\InputenxSlot{186}{0407}{\do{mac-cyrillic}}
+\InputenxSlot{186}{041A}{\do{iso-8859-5}}
+\InputenxSlot{186}{0454}{\do{cp1251}}
+\InputenxSlot{186}{1E83}{\do{iso-8859-14}}
+\InputenxSlot{186}{201D}{\do{nextstep}}
+\InputenxSlot{186}{222B}{\do{mac-roman}}
+\InputenxSlot{186}{2551}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{186}{2568}{\do{koi8-r}}
+\InputenxSlot{187}{00AA}{\do{mac-roman}}
+\InputenxSlot{187}{00BB}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1251}\do{cp1252}%
+  \do{cp1255}\do{cp1257}\do{dec-mcs}\do{nextstep}%
+}
+\InputenxSlot{187}{011F}{\do{iso-8859-3}}
+\InputenxSlot{187}{0123}{\do{iso-8859-4}}
+\InputenxSlot{187}{013D}{\do{mac-centeuro}}
+\InputenxSlot{187}{0165}{\do{iso-8859-2}}
+\InputenxSlot{187}{0167}{\do{iso-8859-10}}
+\InputenxSlot{187}{041B}{\do{iso-8859-5}}
+\InputenxSlot{187}{0457}{\do{mac-cyrillic}}
+\InputenxSlot{187}{1E60}{\do{iso-8859-14}}
+\InputenxSlot{187}{2020}{\do{atarist}}
+\InputenxSlot{187}{2557}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{187}{2569}{\do{koi8-r}}
+\InputenxSlot{188}{00B6}{\do{atarist}}
+\InputenxSlot{188}{00BA}{\do{mac-roman}}
+\InputenxSlot{188}{00BC}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{188}{0135}{\do{iso-8859-3}}
+\InputenxSlot{188}{013D}{\do{cp1250}}
+\InputenxSlot{188}{013E}{\do{mac-centeuro}}
+\InputenxSlot{188}{0152}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{188}{0167}{\do{iso-8859-4}}
+\InputenxSlot{188}{017A}{\do{iso-8859-2}}
+\InputenxSlot{188}{017E}{\do{iso-8859-10}}
+\InputenxSlot{188}{0409}{\do{mac-cyrillic}}
+\InputenxSlot{188}{041C}{\do{iso-8859-5}}
+\InputenxSlot{188}{0458}{\do{cp1251}}
+\InputenxSlot{188}{1EF3}{\do{iso-8859-14}}
+\InputenxSlot{188}{2026}{\do{nextstep}}
+\InputenxSlot{188}{255D}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{188}{256A}{\do{koi8-r}}
+\InputenxSlot{189}{00A2}{\do{cp850}\do{cp858}}
+\InputenxSlot{189}{00A9}{\do{atarist}}
+\InputenxSlot{189}{00BD}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-8}\do{iso-8859-9}%
+  \do{iso-8859-13}\do{cp1252}\do{cp1255}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{189}{0139}{\do{mac-centeuro}}
+\InputenxSlot{189}{014A}{\do{iso-8859-4}}
+\InputenxSlot{189}{0153}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{189}{017B}{\do{cp852}}
+\InputenxSlot{189}{02DD}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{189}{03A9}{\do{mac-roman}}
+\InputenxSlot{189}{0405}{\do{cp1251}}
+\InputenxSlot{189}{041D}{\do{iso-8859-5}}
+\InputenxSlot{189}{0439}{\do{cp855}}
+\InputenxSlot{189}{0459}{\do{mac-cyrillic}}
+\InputenxSlot{189}{1E84}{\do{iso-8859-14}}
+\InputenxSlot{189}{2015}{\do{iso-8859-10}}
+\InputenxSlot{189}{2030}{\do{nextstep}}
+\InputenxSlot{189}{255C}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{189}{256B}{\do{koi8-r}}
+\InputenxSlot{190}{00A5}{\do{cp850}\do{cp858}}
+\InputenxSlot{190}{00AC}{\do{nextstep}}
+\InputenxSlot{190}{00AE}{\do{atarist}}
+\InputenxSlot{190}{00BE}{%
+  \do{iso-8859-1}\do{iso-8859-8}\do{iso-8859-9}\do{iso-8859-13}%
+  \do{cp1252}\do{cp1255}\do{cp1257}%
+}
+\InputenxSlot{190}{00E6}{\do{mac-roman}}
+\InputenxSlot{190}{013A}{\do{mac-centeuro}}
+\InputenxSlot{190}{013E}{\do{cp1250}}
+\InputenxSlot{190}{016B}{\do{iso-8859-10}}
+\InputenxSlot{190}{0178}{\do{iso-8859-15}\do{iso-8859-16}}
+\InputenxSlot{190}{017C}{\do{cp852}}
+\InputenxSlot{190}{017E}{\do{iso-8859-2}\do{iso-8859-4}}
+\InputenxSlot{190}{040A}{\do{mac-cyrillic}}
+\InputenxSlot{190}{0419}{\do{cp855}}
+\InputenxSlot{190}{041E}{\do{iso-8859-5}}
+\InputenxSlot{190}{0455}{\do{cp1251}}
+\InputenxSlot{190}{1E85}{\do{iso-8859-14}}
+\InputenxSlot{190}{255B}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{190}{256C}{\do{koi8-r}}
+\InputenxSlot{191}{00A9}{\do{koi8-r}}
+\InputenxSlot{191}{00BF}{%
+  \do{iso-8859-1}\do{iso-8859-9}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1255}\do{dec-mcs}\do{nextstep}%
+}
+\InputenxSlot{191}{00E6}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{191}{00F8}{\do{mac-roman}}
+\InputenxSlot{191}{0145}{\do{mac-centeuro}}
+\InputenxSlot{191}{014B}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{191}{017C}{%
+  \do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-16}\do{cp1250}%
+}
+\InputenxSlot{191}{041F}{\do{iso-8859-5}}
+\InputenxSlot{191}{0457}{\do{cp1251}}
+\InputenxSlot{191}{045A}{\do{mac-cyrillic}}
+\InputenxSlot{191}{1E61}{\do{iso-8859-14}}
+\InputenxSlot{191}{2122}{\do{atarist}}
+\InputenxSlot{191}{2510}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{192}{00B9}{\do{nextstep}}
+\InputenxSlot{192}{00BF}{\do{mac-roman}}
+\InputenxSlot{192}{00C0}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{192}{0100}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{192}{0104}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{192}{0133}{\do{atarist}}
+\InputenxSlot{192}{0146}{\do{mac-centeuro}}
+\InputenxSlot{192}{0154}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{192}{0410}{\do{cp1251}}
+\InputenxSlot{192}{0420}{\do{iso-8859-5}}
+\InputenxSlot{192}{044E}{\do{koi8-r}}
+\InputenxSlot{192}{0458}{\do{mac-cyrillic}}
+\InputenxSlot{192}{2514}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{193}{00A1}{\do{mac-roman}}
+\InputenxSlot{193}{00C1}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{193}{012E}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{193}{0132}{\do{atarist}}
+\InputenxSlot{193}{0143}{\do{mac-centeuro}}
+\InputenxSlot{193}{02CB}{\do{nextstep}}
+\InputenxSlot{193}{0405}{\do{mac-cyrillic}}
+\InputenxSlot{193}{0411}{\do{cp1251}}
+\InputenxSlot{193}{0421}{\do{iso-8859-5}}
+\InputenxSlot{193}{0430}{\do{koi8-r}}
+\InputenxSlot{193}{2534}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{194}{00AC}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{194}{00B4}{\do{nextstep}}
+\InputenxSlot{194}{00C2}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{194}{0100}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{194}{0412}{\do{cp1251}}
+\InputenxSlot{194}{0422}{\do{iso-8859-5}}
+\InputenxSlot{194}{0431}{\do{koi8-r}}
+\InputenxSlot{194}{05D0}{\do{atarist}}
+\InputenxSlot{194}{252C}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{195}{00C3}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{195}{0102}{\do{iso-8859-2}\do{iso-8859-16}\do{cp1250}}
+\InputenxSlot{195}{0106}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{195}{02C6}{\do{nextstep}}
+\InputenxSlot{195}{0413}{\do{cp1251}}
+\InputenxSlot{195}{0423}{\do{iso-8859-5}}
+\InputenxSlot{195}{0446}{\do{koi8-r}}
+\InputenxSlot{195}{05D1}{\do{atarist}}
+\InputenxSlot{195}{221A}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{195}{251C}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{196}{00C4}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{196}{0144}{\do{mac-centeuro}}
+\InputenxSlot{196}{0192}{\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{196}{02DC}{\do{nextstep}}
+\InputenxSlot{196}{0414}{\do{cp1251}}
+\InputenxSlot{196}{0424}{\do{iso-8859-5}}
+\InputenxSlot{196}{0434}{\do{koi8-r}}
+\InputenxSlot{196}{05D2}{\do{atarist}}
+\InputenxSlot{196}{2500}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{197}{00AF}{\do{nextstep}}
+\InputenxSlot{197}{00C5}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{197}{0106}{\do{iso-8859-16}}
+\InputenxSlot{197}{010A}{\do{iso-8859-3}}
+\InputenxSlot{197}{0139}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{197}{0147}{\do{mac-centeuro}}
+\InputenxSlot{197}{0415}{\do{cp1251}}
+\InputenxSlot{197}{0425}{\do{iso-8859-5}}
+\InputenxSlot{197}{0435}{\do{koi8-r}}
+\InputenxSlot{197}{05D3}{\do{atarist}}
+\InputenxSlot{197}{2248}{\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{197}{253C}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{198}{00C6}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1252}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{198}{00E3}{\do{cp850}\do{cp858}}
+\InputenxSlot{198}{0102}{\do{cp852}}
+\InputenxSlot{198}{0106}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{198}{0108}{\do{iso-8859-3}}
+\InputenxSlot{198}{0118}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{198}{02D8}{\do{nextstep}}
+\InputenxSlot{198}{0416}{\do{cp1251}}
+\InputenxSlot{198}{0426}{\do{iso-8859-5}}
+\InputenxSlot{198}{043A}{\do{cp855}}
+\InputenxSlot{198}{0444}{\do{koi8-r}}
+\InputenxSlot{198}{05D4}{\do{atarist}}
+\InputenxSlot{198}{2206}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{198}{255E}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{199}{00AB}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{199}{00C3}{\do{cp850}\do{cp858}}
+\InputenxSlot{199}{00C7}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-9}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{199}{0103}{\do{cp852}}
+\InputenxSlot{199}{0112}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{199}{012E}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{199}{02D9}{\do{nextstep}}
+\InputenxSlot{199}{0417}{\do{cp1251}}
+\InputenxSlot{199}{041A}{\do{cp855}}
+\InputenxSlot{199}{0427}{\do{iso-8859-5}}
+\InputenxSlot{199}{0433}{\do{koi8-r}}
+\InputenxSlot{199}{05D5}{\do{atarist}}
+\InputenxSlot{199}{255F}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{200}{00A8}{\do{nextstep}}
+\InputenxSlot{200}{00BB}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{200}{00C8}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{200}{010C}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-10}\do{iso-8859-13}%
+  \do{cp1250}\do{cp1257}%
+}
+\InputenxSlot{200}{0418}{\do{cp1251}}
+\InputenxSlot{200}{0428}{\do{iso-8859-5}}
+\InputenxSlot{200}{0445}{\do{koi8-r}}
+\InputenxSlot{200}{05D6}{\do{atarist}}
+\InputenxSlot{200}{255A}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{201}{00B2}{\do{nextstep}}
+\InputenxSlot{201}{00C9}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{201}{0419}{\do{cp1251}}
+\InputenxSlot{201}{0429}{\do{iso-8859-5}}
+\InputenxSlot{201}{0438}{\do{koi8-r}}
+\InputenxSlot{201}{05D7}{\do{atarist}}
+\InputenxSlot{201}{2026}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{201}{2554}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{202}{00A0}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{202}{00CA}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{202}{0118}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-10}\do{cp1250}%
+}
+\InputenxSlot{202}{0179}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{202}{02DA}{\do{nextstep}}
+\InputenxSlot{202}{041A}{\do{cp1251}}
+\InputenxSlot{202}{042A}{\do{iso-8859-5}}
+\InputenxSlot{202}{0439}{\do{koi8-r}}
+\InputenxSlot{202}{05D8}{\do{atarist}}
+\InputenxSlot{202}{2569}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{203}{00B8}{\do{nextstep}}
+\InputenxSlot{203}{00C0}{\do{mac-roman}}
+\InputenxSlot{203}{00CB}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{203}{0116}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{203}{0148}{\do{mac-centeuro}}
+\InputenxSlot{203}{040B}{\do{mac-cyrillic}}
+\InputenxSlot{203}{041B}{\do{cp1251}}
+\InputenxSlot{203}{042B}{\do{iso-8859-5}}
+\InputenxSlot{203}{043A}{\do{koi8-r}}
+\InputenxSlot{203}{05D9}{\do{atarist}}
+\InputenxSlot{203}{2566}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{204}{00B3}{\do{nextstep}}
+\InputenxSlot{204}{00C3}{\do{mac-roman}}
+\InputenxSlot{204}{00CC}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{204}{0116}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{204}{011A}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{204}{0122}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{204}{0150}{\do{mac-centeuro}}
+\InputenxSlot{204}{041C}{\do{cp1251}}
+\InputenxSlot{204}{042C}{\do{iso-8859-5}}
+\InputenxSlot{204}{043B}{\do{koi8-r}}
+\InputenxSlot{204}{045B}{\do{mac-cyrillic}}
+\InputenxSlot{204}{05DB}{\do{atarist}}
+\InputenxSlot{204}{2560}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{205}{00CD}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{205}{00D5}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{205}{0136}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{205}{02DD}{\do{nextstep}}
+\InputenxSlot{205}{040C}{\do{mac-cyrillic}}
+\InputenxSlot{205}{041D}{\do{cp1251}}
+\InputenxSlot{205}{042D}{\do{iso-8859-5}}
+\InputenxSlot{205}{043C}{\do{koi8-r}}
+\InputenxSlot{205}{05DC}{\do{atarist}}
+\InputenxSlot{205}{2550}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{206}{00CE}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{206}{012A}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{206}{0151}{\do{mac-centeuro}}
+\InputenxSlot{206}{0152}{\do{mac-roman}}
+\InputenxSlot{206}{02DB}{\do{nextstep}}
+\InputenxSlot{206}{041E}{\do{cp1251}}
+\InputenxSlot{206}{042E}{\do{iso-8859-5}}
+\InputenxSlot{206}{043D}{\do{koi8-r}}
+\InputenxSlot{206}{045C}{\do{mac-cyrillic}}
+\InputenxSlot{206}{05DE}{\do{atarist}}
+\InputenxSlot{206}{256C}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{207}{00A4}{%
+  \do{cp850}\do{cp852}\do{cp855}\do{cp858}%
+}
+\InputenxSlot{207}{00CF}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1252}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{207}{010E}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{207}{012A}{\do{iso-8859-4}}
+\InputenxSlot{207}{013B}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{207}{014C}{\do{mac-centeuro}}
+\InputenxSlot{207}{0153}{\do{mac-roman}}
+\InputenxSlot{207}{02C7}{\do{nextstep}}
+\InputenxSlot{207}{041F}{\do{cp1251}}
+\InputenxSlot{207}{042F}{\do{iso-8859-5}}
+\InputenxSlot{207}{043E}{\do{koi8-r}}
+\InputenxSlot{207}{0455}{\do{mac-cyrillic}}
+\InputenxSlot{207}{05E0}{\do{atarist}}
+\InputenxSlot{207}{2567}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{208}{00D0}{%
+  \do{iso-8859-1}\do{iso-8859-10}\do{iso-8859-15}\do{cp1252}%
+}
+\InputenxSlot{208}{00F0}{\do{cp850}\do{cp858}}
+\InputenxSlot{208}{0110}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-16}\do{cp1250}%
+}
+\InputenxSlot{208}{0111}{\do{cp852}}
+\InputenxSlot{208}{011E}{\do{iso-8859-9}}
+\InputenxSlot{208}{0160}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{208}{0174}{\do{iso-8859-14}}
+\InputenxSlot{208}{0420}{\do{cp1251}}
+\InputenxSlot{208}{0430}{\do{iso-8859-5}}
+\InputenxSlot{208}{043B}{\do{cp855}}
+\InputenxSlot{208}{043F}{\do{koi8-r}}
+\InputenxSlot{208}{05E1}{\do{atarist}}
+\InputenxSlot{208}{2013}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{208}{2014}{\do{nextstep}}
+\InputenxSlot{208}{2568}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{209}{00B1}{\do{nextstep}}
+\InputenxSlot{209}{00D0}{\do{cp850}\do{cp858}}
+\InputenxSlot{209}{00D1}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{209}{0110}{\do{cp852}}
+\InputenxSlot{209}{0143}{%
+  \do{iso-8859-2}\do{iso-8859-13}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1257}%
+}
+\InputenxSlot{209}{0145}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{209}{041B}{\do{cp855}}
+\InputenxSlot{209}{0421}{\do{cp1251}}
+\InputenxSlot{209}{0431}{\do{iso-8859-5}}
+\InputenxSlot{209}{044F}{\do{koi8-r}}
+\InputenxSlot{209}{05E2}{\do{atarist}}
+\InputenxSlot{209}{2014}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{209}{2564}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{210}{00BC}{\do{nextstep}}
+\InputenxSlot{210}{00CA}{\do{cp850}\do{cp858}}
+\InputenxSlot{210}{00D2}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{210}{010E}{\do{cp852}}
+\InputenxSlot{210}{0145}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{210}{0147}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{210}{014C}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{210}{0422}{\do{cp1251}}
+\InputenxSlot{210}{0432}{\do{iso-8859-5}}
+\InputenxSlot{210}{043C}{\do{cp855}}
+\InputenxSlot{210}{0440}{\do{koi8-r}}
+\InputenxSlot{210}{05E4}{\do{atarist}}
+\InputenxSlot{210}{201C}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{210}{2565}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{211}{00BD}{\do{nextstep}}
+\InputenxSlot{211}{00CB}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{211}{00D3}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-9}%
+  \do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{211}{0136}{\do{iso-8859-4}}
+\InputenxSlot{211}{041C}{\do{cp855}}
+\InputenxSlot{211}{0423}{\do{cp1251}}
+\InputenxSlot{211}{0433}{\do{iso-8859-5}}
+\InputenxSlot{211}{0441}{\do{koi8-r}}
+\InputenxSlot{211}{05E6}{\do{atarist}}
+\InputenxSlot{211}{201D}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{211}{2559}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{212}{00BE}{\do{nextstep}}
+\InputenxSlot{212}{00C8}{\do{cp850}\do{cp858}}
+\InputenxSlot{212}{00D4}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{212}{010F}{\do{cp852}}
+\InputenxSlot{212}{014C}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{212}{0424}{\do{cp1251}}
+\InputenxSlot{212}{0434}{\do{iso-8859-5}}
+\InputenxSlot{212}{043D}{\do{cp855}}
+\InputenxSlot{212}{0442}{\do{koi8-r}}
+\InputenxSlot{212}{05E7}{\do{atarist}}
+\InputenxSlot{212}{2018}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{212}{2558}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{213}{00D5}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{213}{00E0}{\do{nextstep}}
+\InputenxSlot{213}{0120}{\do{iso-8859-3}}
+\InputenxSlot{213}{0131}{\do{cp850}}
+\InputenxSlot{213}{0147}{\do{cp852}}
+\InputenxSlot{213}{0150}{\do{iso-8859-2}\do{iso-8859-16}\do{cp1250}}
+\InputenxSlot{213}{041D}{\do{cp855}}
+\InputenxSlot{213}{0425}{\do{cp1251}}
+\InputenxSlot{213}{0435}{\do{iso-8859-5}}
+\InputenxSlot{213}{0443}{\do{koi8-r}}
+\InputenxSlot{213}{05E8}{\do{atarist}}
+\InputenxSlot{213}{2019}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{213}{20AC}{\do{cp858}}
+\InputenxSlot{213}{2552}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{214}{00CD}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{214}{00D6}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{214}{00E1}{\do{nextstep}}
+\InputenxSlot{214}{00F7}{\do{mac-centeuro}\do{mac-cyrillic}\do{mac-roman}}
+\InputenxSlot{214}{0426}{\do{cp1251}}
+\InputenxSlot{214}{0436}{\do{iso-8859-5}\do{koi8-r}}
+\InputenxSlot{214}{043E}{\do{cp855}}
+\InputenxSlot{214}{05E9}{\do{atarist}}
+\InputenxSlot{214}{2553}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{215}{00CE}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{215}{00D7}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-13}\do{iso-8859-15}\do{cp1250}%
+  \do{cp1252}\do{cp1257}%
+}
+\InputenxSlot{215}{00E2}{\do{nextstep}}
+\InputenxSlot{215}{0152}{\do{dec-mcs}}
+\InputenxSlot{215}{015A}{\do{iso-8859-16}}
+\InputenxSlot{215}{0168}{\do{iso-8859-10}}
+\InputenxSlot{215}{041E}{\do{cp855}}
+\InputenxSlot{215}{0427}{\do{cp1251}}
+\InputenxSlot{215}{0432}{\do{koi8-r}}
+\InputenxSlot{215}{0437}{\do{iso-8859-5}}
+\InputenxSlot{215}{05EA}{\do{atarist}}
+\InputenxSlot{215}{1E6A}{\do{iso-8859-14}}
+\InputenxSlot{215}{201E}{\do{mac-cyrillic}}
+\InputenxSlot{215}{256B}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{215}{25CA}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{216}{00CF}{\do{cp850}\do{cp858}}
+\InputenxSlot{216}{00D8}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{216}{00E3}{\do{nextstep}}
+\InputenxSlot{216}{00FF}{\do{mac-roman}}
+\InputenxSlot{216}{011B}{\do{cp852}}
+\InputenxSlot{216}{011C}{\do{iso-8859-3}}
+\InputenxSlot{216}{014D}{\do{mac-centeuro}}
+\InputenxSlot{216}{0158}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{216}{0170}{\do{iso-8859-16}}
+\InputenxSlot{216}{0172}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{216}{040E}{\do{mac-cyrillic}}
+\InputenxSlot{216}{0428}{\do{cp1251}}
+\InputenxSlot{216}{0438}{\do{iso-8859-5}}
+\InputenxSlot{216}{043F}{\do{cp855}}
+\InputenxSlot{216}{044C}{\do{koi8-r}}
+\InputenxSlot{216}{05DF}{\do{atarist}}
+\InputenxSlot{216}{256A}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{217}{00D9}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{217}{00E4}{\do{nextstep}}
+\InputenxSlot{217}{0141}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{217}{0154}{\do{mac-centeuro}}
+\InputenxSlot{217}{016E}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{217}{0172}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{217}{0178}{\do{mac-roman}}
+\InputenxSlot{217}{0429}{\do{cp1251}}
+\InputenxSlot{217}{0439}{\do{iso-8859-5}}
+\InputenxSlot{217}{044B}{\do{koi8-r}}
+\InputenxSlot{217}{045E}{\do{mac-cyrillic}}
+\InputenxSlot{217}{05DA}{\do{atarist}}
+\InputenxSlot{217}{2518}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{218}{00DA}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{218}{00E5}{\do{nextstep}}
+\InputenxSlot{218}{0155}{\do{mac-centeuro}}
+\InputenxSlot{218}{015A}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{218}{040F}{\do{mac-cyrillic}}
+\InputenxSlot{218}{042A}{\do{cp1251}}
+\InputenxSlot{218}{0437}{\do{koi8-r}}
+\InputenxSlot{218}{043A}{\do{iso-8859-5}}
+\InputenxSlot{218}{05DD}{\do{atarist}}
+\InputenxSlot{218}{2044}{\do{mac-roman}}
+\InputenxSlot{218}{250C}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{219}{00DB}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-4}\do{iso-8859-9}%
+  \do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}%
+  \do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{219}{00E7}{\do{nextstep}}
+\InputenxSlot{219}{0158}{\do{mac-centeuro}}
+\InputenxSlot{219}{016A}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{219}{0170}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{219}{042B}{\do{cp1251}}
+\InputenxSlot{219}{043B}{\do{iso-8859-5}}
+\InputenxSlot{219}{0448}{\do{koi8-r}}
+\InputenxSlot{219}{045F}{\do{mac-cyrillic}}
+\InputenxSlot{219}{05E3}{\do{atarist}}
+\InputenxSlot{219}{20AC}{\do{mac-roman}}
+\InputenxSlot{219}{2588}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{220}{00DC}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{220}{00E8}{\do{nextstep}}
+\InputenxSlot{220}{042C}{\do{cp1251}}
+\InputenxSlot{220}{043C}{\do{iso-8859-5}}
+\InputenxSlot{220}{044D}{\do{koi8-r}}
+\InputenxSlot{220}{05E5}{\do{atarist}}
+\InputenxSlot{220}{2039}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{220}{2116}{\do{mac-cyrillic}}
+\InputenxSlot{220}{2584}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{221}{00A6}{\do{cp850}\do{cp858}}
+\InputenxSlot{221}{00A7}{\do{atarist}}
+\InputenxSlot{221}{00DD}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-10}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{cp1250}\do{cp1252}%
+}
+\InputenxSlot{221}{00E9}{\do{nextstep}}
+\InputenxSlot{221}{0118}{\do{iso-8859-16}}
+\InputenxSlot{221}{0130}{\do{iso-8859-9}}
+\InputenxSlot{221}{0162}{\do{cp852}}
+\InputenxSlot{221}{0168}{\do{iso-8859-4}}
+\InputenxSlot{221}{016C}{\do{iso-8859-3}}
+\InputenxSlot{221}{0178}{\do{dec-mcs}}
+\InputenxSlot{221}{017B}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{221}{0401}{\do{mac-cyrillic}}
+\InputenxSlot{221}{041F}{\do{cp855}}
+\InputenxSlot{221}{042D}{\do{cp1251}}
+\InputenxSlot{221}{043D}{\do{iso-8859-5}}
+\InputenxSlot{221}{0449}{\do{koi8-r}}
+\InputenxSlot{221}{203A}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{221}{258C}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{222}{00CC}{\do{cp850}\do{cp858}}
+\InputenxSlot{222}{00DE}{%
+  \do{iso-8859-1}\do{iso-8859-10}\do{iso-8859-15}\do{cp1252}%
+}
+\InputenxSlot{222}{00EA}{\do{nextstep}}
+\InputenxSlot{222}{0159}{\do{mac-centeuro}}
+\InputenxSlot{222}{015C}{\do{iso-8859-3}}
+\InputenxSlot{222}{015E}{\do{iso-8859-9}}
+\InputenxSlot{222}{0162}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{222}{016A}{\do{iso-8859-4}}
+\InputenxSlot{222}{016E}{\do{cp852}}
+\InputenxSlot{222}{0176}{\do{iso-8859-14}}
+\InputenxSlot{222}{017D}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{222}{021A}{\do{iso-8859-16}}
+\InputenxSlot{222}{042E}{\do{cp1251}}
+\InputenxSlot{222}{043E}{\do{iso-8859-5}}
+\InputenxSlot{222}{0447}{\do{koi8-r}}
+\InputenxSlot{222}{044F}{\do{cp855}}
+\InputenxSlot{222}{0451}{\do{mac-cyrillic}}
+\InputenxSlot{222}{2227}{\do{atarist}}
+\InputenxSlot{222}{2590}{\do{cp437}\do{cp865}\do{cp866}}
+\InputenxSlot{222}{FB01}{\do{mac-roman}}
+\InputenxSlot{223}{00DF}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{223}{00EB}{\do{nextstep}}
+\InputenxSlot{223}{0156}{\do{mac-centeuro}}
+\InputenxSlot{223}{042F}{\do{cp1251}}
+\InputenxSlot{223}{043F}{\do{iso-8859-5}}
+\InputenxSlot{223}{044A}{\do{koi8-r}}
+\InputenxSlot{223}{044F}{\do{mac-cyrillic}}
+\InputenxSlot{223}{2017}{\do{iso-8859-8}}
+\InputenxSlot{223}{221E}{\do{atarist}}
+\InputenxSlot{223}{2580}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{223}{FB02}{\do{mac-roman}}
+\InputenxSlot{224}{00D3}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{224}{00E0}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{224}{00EC}{\do{nextstep}}
+\InputenxSlot{224}{0101}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{224}{0105}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{224}{0155}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{224}{0157}{\do{mac-centeuro}}
+\InputenxSlot{224}{03B1}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{224}{042E}{\do{koi8-r}}
+\InputenxSlot{224}{042F}{\do{cp855}}
+\InputenxSlot{224}{0430}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{224}{0440}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{224}{05D0}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{224}{2021}{\do{mac-roman}}
+\InputenxSlot{225}{00B7}{\do{mac-roman}}
+\InputenxSlot{225}{00C6}{\do{nextstep}}
+\InputenxSlot{225}{00DF}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{225}{00E1}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{225}{012F}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{225}{0160}{\do{mac-centeuro}}
+\InputenxSlot{225}{03B2}{\do{atarist}}
+\InputenxSlot{225}{0410}{\do{koi8-r}}
+\InputenxSlot{225}{0431}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{225}{0440}{\do{cp855}}
+\InputenxSlot{225}{0441}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{225}{05D1}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{226}{00D4}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{226}{00E2}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{226}{00ED}{\do{nextstep}}
+\InputenxSlot{226}{0101}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{226}{0393}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{226}{0411}{\do{koi8-r}}
+\InputenxSlot{226}{0420}{\do{cp855}}
+\InputenxSlot{226}{0432}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{226}{0442}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{226}{05D2}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{226}{201A}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{227}{00AA}{\do{nextstep}}
+\InputenxSlot{227}{00D2}{\do{cp850}\do{cp858}}
+\InputenxSlot{227}{00E3}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{227}{0103}{\do{iso-8859-2}\do{iso-8859-16}\do{cp1250}}
+\InputenxSlot{227}{0107}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{227}{0143}{\do{cp852}}
+\InputenxSlot{227}{03C0}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{227}{0426}{\do{koi8-r}}
+\InputenxSlot{227}{0433}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{227}{0441}{\do{cp855}}
+\InputenxSlot{227}{0443}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{227}{05D3}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{227}{201E}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{228}{00E4}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{228}{00EE}{\do{nextstep}}
+\InputenxSlot{228}{00F5}{\do{cp850}\do{cp858}}
+\InputenxSlot{228}{0144}{\do{cp852}}
+\InputenxSlot{228}{0161}{\do{mac-centeuro}}
+\InputenxSlot{228}{03A3}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{228}{0414}{\do{koi8-r}}
+\InputenxSlot{228}{0421}{\do{cp855}}
+\InputenxSlot{228}{0434}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{228}{0444}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{228}{05D4}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{228}{2030}{\do{mac-roman}}
+\InputenxSlot{229}{00C2}{\do{mac-roman}}
+\InputenxSlot{229}{00D5}{\do{cp850}\do{cp858}}
+\InputenxSlot{229}{00E5}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{229}{00EF}{\do{nextstep}}
+\InputenxSlot{229}{0107}{\do{iso-8859-16}}
+\InputenxSlot{229}{010B}{\do{iso-8859-3}}
+\InputenxSlot{229}{013A}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{229}{0148}{\do{cp852}}
+\InputenxSlot{229}{015A}{\do{mac-centeuro}}
+\InputenxSlot{229}{03C3}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{229}{0415}{\do{koi8-r}}
+\InputenxSlot{229}{0435}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{229}{0442}{\do{cp855}}
+\InputenxSlot{229}{0445}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{229}{05D5}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{230}{00B5}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{230}{00CA}{\do{mac-roman}}
+\InputenxSlot{230}{00E6}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1252}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{230}{00F0}{\do{nextstep}}
+\InputenxSlot{230}{0107}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{230}{0109}{\do{iso-8859-3}}
+\InputenxSlot{230}{0119}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{230}{015B}{\do{mac-centeuro}}
+\InputenxSlot{230}{0160}{\do{cp852}}
+\InputenxSlot{230}{0422}{\do{cp855}}
+\InputenxSlot{230}{0424}{\do{koi8-r}}
+\InputenxSlot{230}{0436}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{230}{0446}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{230}{05D6}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{231}{00C1}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{231}{00E7}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-9}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{231}{00F1}{\do{nextstep}}
+\InputenxSlot{231}{00FE}{\do{cp850}\do{cp858}}
+\InputenxSlot{231}{0113}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{231}{012F}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{231}{0161}{\do{cp852}}
+\InputenxSlot{231}{03C4}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{231}{0413}{\do{koi8-r}}
+\InputenxSlot{231}{0437}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{231}{0443}{\do{cp855}}
+\InputenxSlot{231}{0447}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{231}{05D7}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{232}{00CB}{\do{mac-roman}}
+\InputenxSlot{232}{00DE}{\do{cp850}\do{cp858}}
+\InputenxSlot{232}{00E8}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{232}{010D}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-10}\do{iso-8859-13}%
+  \do{cp1250}\do{cp1257}%
+}
+\InputenxSlot{232}{0141}{\do{nextstep}}
+\InputenxSlot{232}{0154}{\do{cp852}}
+\InputenxSlot{232}{0164}{\do{mac-centeuro}}
+\InputenxSlot{232}{03A6}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{232}{0423}{\do{cp855}}
+\InputenxSlot{232}{0425}{\do{koi8-r}}
+\InputenxSlot{232}{0438}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{232}{0448}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{232}{05D8}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{233}{00C8}{\do{mac-roman}}
+\InputenxSlot{233}{00D8}{\do{nextstep}}
+\InputenxSlot{233}{00DA}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{233}{00E9}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{233}{0165}{\do{mac-centeuro}}
+\InputenxSlot{233}{0398}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{233}{0418}{\do{koi8-r}}
+\InputenxSlot{233}{0436}{\do{cp855}}
+\InputenxSlot{233}{0439}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{233}{0449}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{233}{05D9}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{234}{00CD}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{234}{00DB}{\do{cp850}\do{cp858}}
+\InputenxSlot{234}{00EA}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{234}{0119}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-10}\do{cp1250}%
+}
+\InputenxSlot{234}{0152}{\do{nextstep}}
+\InputenxSlot{234}{0155}{\do{cp852}}
+\InputenxSlot{234}{017A}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{234}{03A9}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{234}{0416}{\do{cp855}}
+\InputenxSlot{234}{0419}{\do{koi8-r}}
+\InputenxSlot{234}{043A}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{234}{044A}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{234}{05DA}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{235}{00BA}{\do{nextstep}}
+\InputenxSlot{235}{00CE}{\do{mac-roman}}
+\InputenxSlot{235}{00D9}{\do{cp850}\do{cp858}}
+\InputenxSlot{235}{00EB}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{235}{0117}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{235}{0170}{\do{cp852}}
+\InputenxSlot{235}{017D}{\do{mac-centeuro}}
+\InputenxSlot{235}{03B4}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{235}{041A}{\do{koi8-r}}
+\InputenxSlot{235}{0432}{\do{cp855}}
+\InputenxSlot{235}{043B}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{235}{044B}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{235}{05DB}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{236}{00CF}{\do{mac-roman}}
+\InputenxSlot{236}{00EC}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{236}{00F2}{\do{nextstep}}
+\InputenxSlot{236}{00FD}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{236}{0117}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{236}{011B}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{236}{0123}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{236}{017E}{\do{mac-centeuro}}
+\InputenxSlot{236}{0412}{\do{cp855}}
+\InputenxSlot{236}{041B}{\do{koi8-r}}
+\InputenxSlot{236}{043C}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{236}{044C}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{236}{05DC}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{236}{221E}{\do{cp437}\do{cp865}}
+\InputenxSlot{236}{222E}{\do{atarist}}
+\InputenxSlot{237}{00CC}{\do{mac-roman}}
+\InputenxSlot{237}{00DD}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{237}{00ED}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{237}{00F3}{\do{nextstep}}
+\InputenxSlot{237}{0137}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{237}{016A}{\do{mac-centeuro}}
+\InputenxSlot{237}{03C6}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{237}{041C}{\do{koi8-r}}
+\InputenxSlot{237}{043D}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{237}{044C}{\do{cp855}}
+\InputenxSlot{237}{044D}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{237}{05DD}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{238}{00AF}{\do{cp850}\do{cp858}}
+\InputenxSlot{238}{00D3}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{238}{00EE}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{238}{00F4}{\do{nextstep}}
+\InputenxSlot{238}{012B}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{238}{0163}{\do{cp852}}
+\InputenxSlot{238}{03B5}{\do{cp437}\do{cp865}}
+\InputenxSlot{238}{041D}{\do{koi8-r}}
+\InputenxSlot{238}{042C}{\do{cp855}}
+\InputenxSlot{238}{043E}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{238}{044E}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{238}{05DE}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{238}{2208}{\do{atarist}}
+\InputenxSlot{239}{00B4}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{239}{00D4}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{239}{00EF}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}\do{cp1252}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{239}{00F5}{\do{nextstep}}
+\InputenxSlot{239}{010F}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{239}{012B}{\do{iso-8859-4}}
+\InputenxSlot{239}{013C}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{239}{041E}{\do{koi8-r}}
+\InputenxSlot{239}{043F}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{239}{044F}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{239}{05DF}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{239}{2116}{\do{cp855}}
+\InputenxSlot{239}{2229}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{240}{00AD}{%
+  \do{cp850}\do{cp852}\do{cp855}\do{cp858}%
+}
+\InputenxSlot{240}{00F0}{%
+  \do{iso-8859-1}\do{iso-8859-10}\do{iso-8859-15}\do{cp1252}%
+}
+\InputenxSlot{240}{00F6}{\do{nextstep}}
+\InputenxSlot{240}{0111}{%
+  \do{iso-8859-2}\do{iso-8859-4}\do{iso-8859-16}\do{cp1250}%
+}
+\InputenxSlot{240}{011F}{\do{iso-8859-9}}
+\InputenxSlot{240}{0161}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{240}{016B}{\do{mac-centeuro}}
+\InputenxSlot{240}{0175}{\do{iso-8859-14}}
+\InputenxSlot{240}{0401}{\do{cp866}}
+\InputenxSlot{240}{041F}{\do{koi8-r}}
+\InputenxSlot{240}{0440}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{240}{05E0}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{240}{2116}{\do{iso-8859-5}}
+\InputenxSlot{240}{2261}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{241}{00B1}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{241}{00D2}{\do{mac-roman}}
+\InputenxSlot{241}{00E6}{\do{nextstep}}
+\InputenxSlot{241}{00F1}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{241}{0144}{%
+  \do{iso-8859-2}\do{iso-8859-13}\do{iso-8859-16}\do{cp1250}%
+  \do{cp1257}%
+}
+\InputenxSlot{241}{0146}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{241}{016E}{\do{mac-centeuro}}
+\InputenxSlot{241}{02DD}{\do{cp852}}
+\InputenxSlot{241}{042F}{\do{koi8-r}}
+\InputenxSlot{241}{0441}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{241}{044B}{\do{cp855}}
+\InputenxSlot{241}{0451}{\do{iso-8859-5}\do{cp866}}
+\InputenxSlot{241}{05E1}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{242}{00DA}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{242}{00F2}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{242}{00F9}{\do{nextstep}}
+\InputenxSlot{242}{0146}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{242}{0148}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{242}{014D}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{242}{02DB}{\do{cp852}}
+\InputenxSlot{242}{0404}{\do{cp866}}
+\InputenxSlot{242}{0420}{\do{koi8-r}}
+\InputenxSlot{242}{042B}{\do{cp855}}
+\InputenxSlot{242}{0442}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{242}{0452}{\do{iso-8859-5}}
+\InputenxSlot{242}{05E2}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{242}{2017}{\do{cp850}\do{cp858}}
+\InputenxSlot{242}{2265}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{243}{00BE}{\do{cp850}\do{cp858}}
+\InputenxSlot{243}{00DB}{\do{mac-roman}}
+\InputenxSlot{243}{00F3}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-9}%
+  \do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{243}{00FA}{\do{nextstep}}
+\InputenxSlot{243}{0137}{\do{iso-8859-4}}
+\InputenxSlot{243}{016F}{\do{mac-centeuro}}
+\InputenxSlot{243}{02C7}{\do{cp852}}
+\InputenxSlot{243}{0421}{\do{koi8-r}}
+\InputenxSlot{243}{0437}{\do{cp855}}
+\InputenxSlot{243}{0443}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{243}{0453}{\do{iso-8859-5}}
+\InputenxSlot{243}{0454}{\do{cp866}}
+\InputenxSlot{243}{05E3}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{243}{2264}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{244}{00B6}{\do{cp850}\do{cp858}}
+\InputenxSlot{244}{00D9}{\do{mac-roman}}
+\InputenxSlot{244}{00F4}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{244}{00FB}{\do{nextstep}}
+\InputenxSlot{244}{014D}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{244}{0170}{\do{mac-centeuro}}
+\InputenxSlot{244}{02D8}{\do{cp852}}
+\InputenxSlot{244}{0407}{\do{cp866}}
+\InputenxSlot{244}{0417}{\do{cp855}}
+\InputenxSlot{244}{0422}{\do{koi8-r}}
+\InputenxSlot{244}{0444}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{244}{0454}{\do{iso-8859-5}}
+\InputenxSlot{244}{05E4}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{245}{00A7}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{245}{00F5}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-13}\do{iso-8859-14}\do{iso-8859-15}\do{cp1252}%
+  \do{cp1257}\do{dec-mcs}%
+}
+\InputenxSlot{245}{0121}{\do{iso-8859-3}}
+\InputenxSlot{245}{0131}{\do{mac-roman}\do{nextstep}}
+\InputenxSlot{245}{0151}{\do{iso-8859-2}\do{iso-8859-16}\do{cp1250}}
+\InputenxSlot{245}{0171}{\do{mac-centeuro}}
+\InputenxSlot{245}{0423}{\do{koi8-r}}
+\InputenxSlot{245}{0445}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{245}{0448}{\do{cp855}}
+\InputenxSlot{245}{0455}{\do{iso-8859-5}}
+\InputenxSlot{245}{0457}{\do{cp866}}
+\InputenxSlot{245}{05E5}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{246}{00F6}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{246}{00F7}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{246}{00FC}{\do{nextstep}}
+\InputenxSlot{246}{0172}{\do{mac-centeuro}}
+\InputenxSlot{246}{02C6}{\do{mac-roman}}
+\InputenxSlot{246}{040E}{\do{cp866}}
+\InputenxSlot{246}{0416}{\do{koi8-r}}
+\InputenxSlot{246}{0428}{\do{cp855}}
+\InputenxSlot{246}{0446}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{246}{0456}{\do{iso-8859-5}}
+\InputenxSlot{246}{05E6}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{247}{00B8}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{247}{00F7}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-13}\do{iso-8859-15}\do{cp1250}%
+  \do{cp1252}\do{cp1257}%
+}
+\InputenxSlot{247}{00FD}{\do{nextstep}}
+\InputenxSlot{247}{0153}{\do{dec-mcs}}
+\InputenxSlot{247}{015B}{\do{iso-8859-16}}
+\InputenxSlot{247}{0169}{\do{iso-8859-10}}
+\InputenxSlot{247}{0173}{\do{mac-centeuro}}
+\InputenxSlot{247}{02DC}{\do{mac-roman}}
+\InputenxSlot{247}{0412}{\do{koi8-r}}
+\InputenxSlot{247}{0447}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{247}{044D}{\do{cp855}}
+\InputenxSlot{247}{0457}{\do{iso-8859-5}}
+\InputenxSlot{247}{045E}{\do{cp866}}
+\InputenxSlot{247}{05E7}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{247}{1E6B}{\do{iso-8859-14}}
+\InputenxSlot{247}{2248}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{248}{00AF}{\do{mac-roman}}
+\InputenxSlot{248}{00B0}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp852}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{248}{00DD}{\do{mac-centeuro}}
+\InputenxSlot{248}{00F8}{%
+  \do{iso-8859-1}\do{iso-8859-4}\do{iso-8859-9}\do{iso-8859-10}%
+  \do{iso-8859-14}\do{iso-8859-15}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{248}{011D}{\do{iso-8859-3}}
+\InputenxSlot{248}{0142}{\do{nextstep}}
+\InputenxSlot{248}{0159}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{248}{0171}{\do{iso-8859-16}}
+\InputenxSlot{248}{0173}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{248}{042C}{\do{koi8-r}}
+\InputenxSlot{248}{042D}{\do{cp855}}
+\InputenxSlot{248}{0448}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{248}{0458}{\do{iso-8859-5}}
+\InputenxSlot{248}{05E8}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{249}{00A8}{\do{cp850}\do{cp852}\do{cp858}}
+\InputenxSlot{249}{00F8}{\do{nextstep}}
+\InputenxSlot{249}{00F9}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-9}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{249}{00FD}{\do{mac-centeuro}}
+\InputenxSlot{249}{0142}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{249}{016F}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{249}{0173}{\do{iso-8859-4}\do{iso-8859-10}}
+\InputenxSlot{249}{02D8}{\do{mac-roman}}
+\InputenxSlot{249}{042B}{\do{koi8-r}}
+\InputenxSlot{249}{0449}{\do{cp855}\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{249}{0459}{\do{iso-8859-5}}
+\InputenxSlot{249}{05E9}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{249}{2219}{%
+  \do{atarist}\do{cp437}\do{cp865}\do{cp866}%
+}
+\InputenxSlot{250}{00B7}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}\do{cp866}%
+}
+\InputenxSlot{250}{00FA}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1250}\do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{250}{0137}{\do{mac-centeuro}}
+\InputenxSlot{250}{0153}{\do{nextstep}}
+\InputenxSlot{250}{015B}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{250}{02D9}{\do{cp852}\do{mac-roman}}
+\InputenxSlot{250}{0417}{\do{koi8-r}}
+\InputenxSlot{250}{0429}{\do{cp855}}
+\InputenxSlot{250}{044A}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{250}{045A}{\do{iso-8859-5}}
+\InputenxSlot{250}{05EA}{\do{iso-8859-8}\do{cp1255}}
+\InputenxSlot{251}{00B9}{\do{cp850}\do{cp858}}
+\InputenxSlot{251}{00DF}{\do{nextstep}}
+\InputenxSlot{251}{00FB}{%
+  \do{iso-8859-1}\do{iso-8859-3}\do{iso-8859-4}\do{iso-8859-9}%
+  \do{iso-8859-10}\do{iso-8859-14}\do{iso-8859-15}\do{iso-8859-16}%
+  \do{cp1252}\do{dec-mcs}%
+}
+\InputenxSlot{251}{016B}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{251}{0171}{\do{iso-8859-2}\do{cp852}\do{cp1250}}
+\InputenxSlot{251}{017B}{\do{mac-centeuro}}
+\InputenxSlot{251}{02DA}{\do{mac-roman}}
+\InputenxSlot{251}{0428}{\do{koi8-r}}
+\InputenxSlot{251}{0447}{\do{cp855}}
+\InputenxSlot{251}{044B}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{251}{045B}{\do{iso-8859-5}}
+\InputenxSlot{251}{221A}{%
+  \do{atarist}\do{cp437}\do{cp865}\do{cp866}%
+}
+\InputenxSlot{252}{00B3}{\do{cp850}\do{cp858}}
+\InputenxSlot{252}{00B8}{\do{mac-roman}}
+\InputenxSlot{252}{00FC}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}%
+  \do{iso-8859-9}\do{iso-8859-10}\do{iso-8859-13}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{iso-8859-16}\do{cp1250}\do{cp1252}\do{cp1257}%
+  \do{dec-mcs}%
+}
+\InputenxSlot{252}{00FE}{\do{nextstep}}
+\InputenxSlot{252}{0141}{\do{mac-centeuro}}
+\InputenxSlot{252}{0158}{\do{cp852}}
+\InputenxSlot{252}{0427}{\do{cp855}}
+\InputenxSlot{252}{042D}{\do{koi8-r}}
+\InputenxSlot{252}{044C}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{252}{045C}{\do{iso-8859-5}}
+\InputenxSlot{252}{207F}{\do{atarist}\do{cp437}\do{cp865}}
+\InputenxSlot{252}{2116}{\do{cp866}}
+\InputenxSlot{253}{00A4}{\do{cp866}}
+\InputenxSlot{253}{00A7}{\do{iso-8859-5}\do{cp855}}
+\InputenxSlot{253}{00B2}{%
+  \do{atarist}\do{cp437}\do{cp850}\do{cp858}\do{cp865}%
+}
+\InputenxSlot{253}{00FD}{%
+  \do{iso-8859-1}\do{iso-8859-2}\do{iso-8859-10}\do{iso-8859-14}%
+  \do{iso-8859-15}\do{cp1250}\do{cp1252}%
+}
+\InputenxSlot{253}{00FF}{\do{dec-mcs}\do{nextstep}}
+\InputenxSlot{253}{0119}{\do{iso-8859-16}}
+\InputenxSlot{253}{0131}{\do{iso-8859-9}}
+\InputenxSlot{253}{0159}{\do{cp852}}
+\InputenxSlot{253}{0169}{\do{iso-8859-4}}
+\InputenxSlot{253}{016D}{\do{iso-8859-3}}
+\InputenxSlot{253}{017C}{\do{iso-8859-13}\do{cp1257}\do{mac-centeuro}}
+\InputenxSlot{253}{02DD}{\do{mac-roman}}
+\InputenxSlot{253}{0429}{\do{koi8-r}}
+\InputenxSlot{253}{044D}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{254}{00B3}{\do{atarist}}
+\InputenxSlot{254}{00FE}{%
+  \do{iso-8859-1}\do{iso-8859-10}\do{iso-8859-15}\do{cp1252}%
+}
+\InputenxSlot{254}{0122}{\do{mac-centeuro}}
+\InputenxSlot{254}{015D}{\do{iso-8859-3}}
+\InputenxSlot{254}{015F}{\do{iso-8859-9}}
+\InputenxSlot{254}{0163}{\do{iso-8859-2}\do{cp1250}}
+\InputenxSlot{254}{016B}{\do{iso-8859-4}}
+\InputenxSlot{254}{0177}{\do{iso-8859-14}}
+\InputenxSlot{254}{017E}{\do{iso-8859-13}\do{cp1257}}
+\InputenxSlot{254}{021B}{\do{iso-8859-16}}
+\InputenxSlot{254}{02DB}{\do{mac-roman}}
+\InputenxSlot{254}{0427}{\do{koi8-r}}
+\InputenxSlot{254}{044E}{\do{cp1251}\do{mac-cyrillic}}
+\InputenxSlot{254}{045E}{\do{iso-8859-5}}
+\InputenxSlot{254}{25A0}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{255}{00A0}{%
+  \do{cp437}\do{cp850}\do{cp852}\do{cp855}\do{cp858}\do{cp865}%
+  \do{cp866}%
+}
+\InputenxSlot{255}{00AF}{\do{atarist}}
+\InputenxSlot{255}{00FF}{%
+  \do{iso-8859-1}\do{iso-8859-9}\do{iso-8859-14}\do{iso-8859-15}%
+  \do{iso-8859-16}\do{cp1252}%
+}
+\InputenxSlot{255}{0138}{\do{iso-8859-10}}
+\InputenxSlot{255}{02C7}{\do{mac-centeuro}\do{mac-roman}}
+\InputenxSlot{255}{02D9}{%
+  \do{iso-8859-2}\do{iso-8859-3}\do{iso-8859-4}\do{cp1250}\do{cp1257}%
+}
+\InputenxSlot{255}{042A}{\do{koi8-r}}
+\InputenxSlot{255}{044F}{\do{cp1251}}
+\InputenxSlot{255}{045F}{\do{iso-8859-5}}
+\InputenxSlot{255}{2019}{\do{iso-8859-13}}
+\InputenxSlot{255}{20AC}{\do{mac-cyrillic}}
+\endinput
+%%
+%% End of file `ix-slot.def'.

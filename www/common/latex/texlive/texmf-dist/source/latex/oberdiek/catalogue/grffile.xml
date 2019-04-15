@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='grffile'>
+  <name>grffile</name>
+  <caption>Extended file name support for graphics.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.16'/>
+  <description>
+    The package extends the file name processing of package
+    <xref refid='graphics'>graphics</xref> to support a larger range
+    of file names. For example, the file name may contain several dots.
+
+    Or in case of <xref refid='pdftex'>pdfTeX</xref> in PDF mode the
+    file name may contain spaces.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/grffile.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/grffile.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

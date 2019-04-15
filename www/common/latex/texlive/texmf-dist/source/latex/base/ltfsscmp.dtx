@@ -1,0 +1,379 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltfsscmp.dtx
+%% Copyright (C) 1989-1995 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+%
+%<*driver>
+% \fi
+%
+%
+\ProvidesFile{ltfsscmp.dtx}
+             [2015/06/23 v3.0f LaTeX Kernel (NFSS1 Compatibility)]
+% \iffalse
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{ltfsscmp.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \iffalse
+%<+checkmem>\def\CHECKMEM{\tracingstats=2
+%<+checkmem>  \newlinechar=`\^^J
+%<+checkmem>  \message{^^JMemory usage: \filename}\shipout\hbox{}}
+%<+checkmem>\CHECKMEM
+% \fi
+%
+% \CheckSum{259}
+%
+%
+% \GetFileInfo{ltfsscmp.dtx}
+% \title{A new font selection scheme for \TeX{} macro packages\\
+%        (Compatibility with NFSS1)\thanks
+%       {This file has version number
+%       \fileversion\ dated \filedate}}
+%
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This file contains the  implementation of commands giving
+% compatibility with the original `NFSS1' release of the Font Selection
+% Scheme.
+%
+% \begin{quote}
+%   \textbf{Warning:}
+%  The macro documentation is still basically the documentation from the
+%  first NFSS release  and therefore in some cases probably not
+%  completely accurate.
+% \end{quote}
+%
+% Version 1 of NFSS is obsolete now for about 20 years (and was
+%   ``current'' only for a short intermediate time) so with the 2015
+%   release these internal interface commands are removed from the
+%   kernel and  made available via \textsf{latexrelease} package so that
+%   backward compatibility remains ensured for very old documents.
+%
+% \StopEventually{}
+%
+%
+% \changes{v3.0b}{1995/06/15}
+%         {(DPC) minor documentation edits}
+% \changes{v3.0a}{1995/05/24}
+%         {(DPC) Make file from previous file, fam.dtx 1995/05/20 v2.2d}
+% \changes{v3.0d}{2015/02/21}
+%         {Removed autoload code}
+% \changes{v3.0e}{2015/02/22}
+%         {Moved all code into latexrelease - obsolete commands are no
+%   longer automatically part of the kernel}
+%
+%
+%    \begin{macrocode}
+%<*latexrelease>
+\IncludeInRelease{2015/01/01}{\new@fontshape}%
+                             {NFSS version1 commands}%
+\let\new@fontshape\@undefined
+\let\warn@rel@i\@undefined
+\let\scan@fontshape\@undefined
+\let\scan@@fontshape\@undefined
+\let\subst@fontshape\@undefined
+\let\extra@def\@undefined
+\let\default@mextra\@undefined
+\let\preload@sizes\@undefined
+\let\err@rel@i\@undefined
+\let\newmathalphabet\@undefined
+\let\newmathalphabet@\@undefined
+\let\newmathalphabet@@@\@undefined
+\let\if@no@font@opt\@undefined
+\let\@no@font@optfalse\@undefined
+\let\define@mathalphabet\@undefined
+\let\define@mathgroup\@undefined
+\let\addtoversion\@undefined
+\EndIncludeInRelease
+%    \end{macrocode}
+%
+%    In older releases we provide the original definitions.
+%
+%    \begin{macrocode}
+\IncludeInRelease{0000/00/00}{\new@fontshape}%
+                             {NFSS version1 commands}%
+%    \end{macrocode}
+%
+% \begin{macro}{\new@fontshape}
+%    The interface is now |\DeclareFontShape|.
+%    \begin{macrocode}
+\gdef\new@fontshape#1#2#3#4{%
+     \warn@rel@i\new@fontshape\DeclareFontShape
+     \expandafter\scan@fontshape\@gobble#4<\@nil><<%
+     \DeclareFontShape U{#1}{#2}{#3}\reserved@f}%
+\@onlypreamble\new@fontshape
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\warn@rel@i}
+%    The warning message used above.
+%    \begin{macrocode}
+\gdef\warn@rel@i#1#2{%
+ \@font@warning{***  NFSS release 1 command
+               \noexpand#1found\MessageBreak
+   ***  Update by using release 2 command
+        \string#2.\MessageBreak
+   ***  Recovery is probably possible}%
+}%
+\@onlypreamble\warn@rel@i
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\scan@fontshape}
+%    This will scan the old font shape definition syntax.
+%    \begin{macrocode}
+\gdef\scan@fontshape{%
+  \let\reserved@f\@empty
+  \let\reserved@e\@empty %        holds last info
+  \scan@@fontshape
+}%
+\@onlypreamble\scan@fontshape
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\scan@@fontshape}
+%    \begin{macrocode}
+\gdef\scan@@fontshape#1>#2#3<{%
+  \ifx\@nil#1%
+    \edef\reserved@f{\reserved@f\reserved@e}%
+  \else
+    \def\reserved@b{#1}%       nick names
+    \def\reserved@c{#3}%
+    \in@{ at}{#3}%
+    \ifin@
+      \in@{pt}{#3}%  not a proof but a good chance
+      \ifin@
+%    \end{macrocode}
+%    We grap also everything after pt and discard it if people have
+%    forgotten to place a percent sign there.
+% \changes{v2.1d}{1994/02/10}{scan away stuff after pt}
+%    \begin{macrocode}
+        \def\reserved@a##1 at##2pt##3\@nil{%
+           \def\reserved@b{##2}%
+           \def\reserved@c{##1}%
+           }%
+        \reserved@a#3\@nil
+      \fi
+    \fi
+    \ifnum 0<0#2
+      \edef\reserved@d{subf*\reserved@c}%
+      \ifcase #2\or
+      \or
+      \else
+        \errmessage{*** What's this? NFSS release 0? ***}%
+      \fi
+    \else
+      \edef\reserved@d{#2\reserved@c}%
+    \fi
+    \ifx\reserved@d\reserved@e
+      \edef\reserved@f{\reserved@f<\reserved@b>}%
+    \else
+      \edef\reserved@f{\reserved@f\reserved@e<\reserved@b>}%add old info
+      \let\reserved@e\reserved@d
+    \fi
+    \expandafter\scan@@fontshape
+  \fi
+}%
+\@onlypreamble\scan@@fontshape
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \begin{macro}{\subst@fontshape}
+%    This is now also handled by the extend syntax of
+%    |\DeclareFontShape|.
+%    \begin{macrocode}
+\gdef\subst@fontshape#1#2#3#4#5#6{%
+     \warn@rel@i\subst@fontshape\DeclareFontShape
+     \DeclareFontShape{U}{#1}{#2}{#3}{<->sub*#4/#5/#6}{}}%
+\@onlypreamble\subst@fontshape
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%  \begin{macro}{\extra@def}
+%    This was replaced by |\DeclareFontFamily|.
+%    \begin{macrocode}
+\gdef\extra@def#1#2#3{%
+     \warn@rel@i\extra@def\DeclareFontFamily
+     \DeclareFontFamily{U}{#1}{}%
+}%
+\@onlypreamble\extra@def
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%
+%  \begin{macro}{\default@mextra}
+%    The new name is |\DeclareFontEncodingDefaults| but in this case
+%    we don't feel comfortable with this either.
+%    \begin{macrocode}
+\gdef\default@mextra{%
+  \warn@rel@i\default@mextra\DeclareFontEncodingDefaults
+%    \end{macrocode}
+%    We pick up the argument to |\default@mextra| implicitly as
+%    the second argument of |\DeclareFontEncodingDefaults|.
+%    \begin{macrocode}
+  \DeclareFontEncodingDefaults\relax
+}%
+\@onlypreamble\default@mextra
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\preload@sizes}
+%    The new interface is |\DeclarePreloadSizes|.
+%    \begin{macrocode}
+\gdef\preload@sizes{%
+     \warn@rel@i\preload@sizes\DeclarePreloadSizes
+     \DeclarePreloadSizes U%
+}%
+\@onlypreamble\preload@sizes
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\err@rel@i}
+%    This macro is used in cases where emulation with NFSS2 features
+%    is not really possible.
+%    \begin{macrocode}
+\gdef\err@rel@i#1#2{%
+  \@latex@error{***  NFSS release 1 command \noexpand#1found%
+          ^^J***  Recovery not possible. Use \string#2}%
+       {The new release of NFSS doesn't support the
+        \noexpand#1command^^Jany longer.
+        Please upgrade your file to the syntax of NFSS
+        release 2^^Jusing the \noexpand#2command.}%
+%    \end{macrocode}
+%    Let's die.
+%    \begin{macrocode}
+  \batchmode\input.\relax
+}%
+\@onlypreamble\err@rel@i
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \begin{macro}{\newmathalphabet}
+% \begin{macro}{\newmathalphabet@@}
+% \begin{macro}{\newmathalphabet@@@}
+%    |\newmathalphabet| is the old form.
+%    \begin{macrocode}
+\gdef\newmathalphabet{%
+  \if@no@font@opt
+    \@latex@error{*** NFSS release 1 command
+                    \noexpand\newmathalphabet found%
+     ^^J \space*** Automatic recovery not possible.%
+     ^^J \space*** TYPE H for Help%
+              }%
+       {Please look at the file usrguide.tex for hints on
+        how to resolve this problem.}%
+  \else
+     \warn@rel@i\newmathalphabet\DeclareMathAlphabet
+  \fi
+  \@ifstar\newmathalphabet@@@
+          \newmathalphabet@@}%
+\gdef\newmathalphabet@@#1{\DeclareMathAlphabet#1{U}{}{}{}}%
+\gdef\newmathalphabet@@@#1#2#3#4{%
+       \DeclareMathAlphabet{#1}{U}{#2}{#3}{#4}}%
+\@onlypreamble\newmathalphabet
+\@onlypreamble\newmathalphabet@@
+\@onlypreamble\newmathalphabet@@@
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\if@no@font@opt}
+%  \begin{macro}{\@no@font@optfalse}
+%    \begin{macrocode}
+\global\let\if@no@font@opt\iftrue
+\gdef\@no@font@optfalse{\let\if@no@font@opt\iffalse}%
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\define@mathalphabet}
+%    This is a case where dying is best.
+%    \begin{macrocode}
+\gdef\define@mathalphabet{%
+      \err@rel@i\define@mathalphabet\DeclareMathAlphabet
+}%
+\@onlypreamble\define@mathalphabet
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%
+%  \begin{macro}{\define@mathgroup}
+%    And here is another one
+%    \begin{macrocode}
+\gdef\define@mathgroup{%
+      \err@rel@i\define@mathgroup\DeclareSymbolFont
+}%
+\@onlypreamble\define@mathgroup
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\addtoversion}
+%    |\addtoversion| is the old form.
+%    \begin{macrocode}
+\def\addtoversion#1#2{%
+  \warn@rel@i\addtoversion\SetMathAlphabet
+  \SetMathAlphabet#2{#1}{U}}%
+\@onlypreamble\addtoversion
+%    \end{macrocode}
+% \end{macro}
+%
+% Finishing off this huge |\IncludeInRelease| argument:
+%    \begin{macrocode}
+\EndIncludeInRelease
+%</latexrelease>
+%    \end{macrocode}
+%
+% \Finale
+%

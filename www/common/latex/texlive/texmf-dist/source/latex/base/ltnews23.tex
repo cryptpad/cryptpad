@@ -1,0 +1,257 @@
+% \iffalse meta-comment
+%
+% Copyright 2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% Filename: ltnews23.tex
+%
+% This is issue 23 of LaTeX News.
+
+\documentclass{ltnews}
+\usepackage[T1]{fontenc}
+
+\usepackage{lmodern,url,hologo}
+
+\makeatletter % -- provide command introduced in new release
+              %    so this typesets with an old format
+
+% Check we are not in the preamble of a composite document
+\def\@tempa{\@latex@error{Can be used only in preamble}\@eha}
+\ifx\DeclareTextCommandDefault\@tempa
+\else
+  \DeclareTextCommandDefault\textcommabelow[1]
+    {\hmode@bgroup\ooalign{\null#1\crcr\hidewidth\raise-.31ex
+     \hbox{\check@mathfonts\fontsize\ssf@size\z@
+     \math@fontsfalse\selectfont,}\hidewidth}\egroup}
+\fi
+\makeatother
+
+\publicationmonth{October}
+\publicationyear{2015}
+
+\publicationissue{23}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Enhanced support for \hologo{LuaTeX}}
+
+As noted in \LaTeX\ News 22, the 2015/01/01 release of \LaTeX,
+introduced built in support for extended TeX systems.
+
+The range of allocated register numbers (for example, for count
+registers) is now set according to the underlying engine capabilities
+to 256, 32768 or 65536. Additional allocators were also added for the
+facilities added by \hologo{eTeX} (\verb|\newmark|) and \hologo{XeTeX}
+(\verb|\newXeTeXintercharclass|). At that time however the work to
+incorporate additional allocators for \hologo{LuaTeX} was not ready for
+distribution.
+
+The main feature of this release is  that by default it includes
+allocators for \hologo{LuaTeX} provided features, such as lua
+functions, bytecode registers, catcode tables and lua callbacks.
+Previously these features have been provided by the contributed
+\package{luatex} (Heiko Oberdiek) and \package{luatexbase}
+(\'{E}lie Roux,
+  Manuel P\'{e}gouri\'{e}-Gonnard and Philipp Gesang)
+packages. However just as
+noted with the \package{etex} package in the previous release, it is
+better if allocation is handled by the format to avoid problems with
+conflicts between different allocation schemes, or definitions made
+before a package-defined allocation scheme is enabled.
+
+The facilities incorporated into the format this release, and
+described below, are closely modelled on the \package{luatexbase}
+package and we thank the authors, and especially \'{E}lie Roux, for
+help in arranging this transition.
+
+The implementation of these \hologo{LuaTeX} features has been
+redesigned to match the allocation system introduced in the 2015/01/01
+\LaTeX\ release, and there are some other differences to the previous
+\package{luatexbase} package. However, as noted below,
+\package{luatexbase} is being updated in line with this \LaTeX\ release
+to provide the previous interface as a wrapper around the new
+implementation, so we expect the majority of documents using
+\package{luatexbase} to work without change.
+
+\subsection{Names of \hologo{LuaTeX} primitive commands}
+
+The 2015/01/01 \LaTeX\ release for the first time initialised
+\hologo{LuaTeX} in \textsf{latex.ltx} if \hologo{LuaTeX} is being
+used. Following the convention used in the contributed
+\textsf{lualatex.ini} file used to set up the format for earlier
+releases, most \hologo{LuaTeX}-specific primitives were defined with
+names prefixed by \texttt{luatex}. This was designed to minimize name
+clashes but had the disadvantage that names did not match the
+\hologo{LuaTeX} manual, or the names used in other formats, and
+produced some awkward command names such as \verb|\luatexluafunction|.
+From this release the names are enabled without the \texttt{luatex}
+prefix.
+
+In practice this change should not affect many documents, relatively
+few packages access the primitive commands, and many of those are
+already set up to work with prefixed or unprefixed names, so that they
+work with multiple formats.
+
+For package writers, if you want to ensure that your code works with
+this and earlier releases, use unprefixed names in the package and
+ensure that they are defined by using code such as:
+\begin{verbatim}
+\directlua{tex.enableprimitives("",
+             tex.extraprimitives(
+               "omega", "aleph", "luatex"))}
+\end{verbatim}
+Conversely if your document  uses a package relying on prefixed names
+then you can add:
+\begin{verbatim}
+\directlua{tex.enableprimitives("luatex",
+             tex.extraprimitives(
+               "omega", "aleph", "luatex"))}
+\end{verbatim}
+to your document.
+
+Note the compatibility layer offered by the \package{luatexbase} package
+described below makes several commands available under both names.
+
+As always, this change can be reverted using:\\
+\verb|\RequirePackage[2015/01/01]{latexrelease}|\\
+at the start of the document.
+
+
+
+\subsection{\TeX\ commands for allocation in \hologo{LuaTeX}}
+For detailed descriptions of the new allocation commands see the
+documented sources in \textsf{ltluatex.dtx} or chapter N of
+\textsf{source2e} however the following new allocation commands are
+defined by default in \hologo{LuaTeX}: 
+\verb|\newattribute|,
+\verb|\newcatcodetable|,
+\verb|\newluafunction| and
+\verb|\newwhatsit|.
+In addition, the commands \verb|\setattribute| and
+\verb|\unsetattribute| are defined to set and unset lua attributes
+(integer values similar to counters, but attached to nodes). Finally
+several catcode tables are predefined: 
+\verb|\catcodetable@initex|,
+\verb|\catcodetable@string|,
+\verb|\catcodetable@latex|,
+\verb|\catcodetable@atletter|.
+
+\subsection{Predefined lua functions}
+If used with \hologo{LuaTeX}, \LaTeX\ will initialise a lua table,
+\textsf{luatexbase}, with functions supporting allocation and also
+the registering of lua callback functions.
+
+\subsection{Support for older releases and plain \TeX}
+The \hologo{LuaTeX} allocation functionality made available in this
+release is also available in plain \TeX\ and older \LaTeX\ releases 
+in the files \textsf{ltluatex.tex} and \textsf{ltluatex.lua} which may be
+used simply by including the \TeX\ file: \verb|\input{ltluatex}|.
+An alternative for old LaTeX releases is to use:\\
+\verb|\RequirePackage[2015/10/01]{latexrelease}|\\
+which will update the kernel to the current release, including
+\hologo{LuaTeX} support.
+
+\subsection{Additional \hologo{LuaTeX} support packages}
+In addition to the base \LaTeX\ release two packages have been
+contributed to the \textsf{contrib} area on CTAN. The
+\package{ctablestack} package offers some commands to help package
+writers control the \hologo{LuaTeX} \textsf{catcodetable}
+functionality, and the \package{luatexbase} package replaces the
+previously available package of the same name, providing a compatible
+interface but implemented over the \package{ltluatex} code.
+
+\section{More Floats and Inserts}
+If \hologo{eTeX} is available, the number of registers allocated in
+the format to hold floats such as figures is increased from 18 to 52.
+
+The extended allocation system introduced in 2015/01/01 means that in
+most cases it is no longer necessary to load the \package{etex}
+package. Many classes and packages that previously loaded this package
+no longer do so. Unfortunately in some circumstances where a package
+or class previously used the \package{etex} \verb|\reserveinserts|
+command, it is possible for a document that previously worked to
+generate an error ``no room for a new insert''. In practice this error
+can always be avoided by declaring inserts earlier, before the
+registers below 256 are all allocated, however it would be better not
+to require packages to be re-ordered and in some cases the re-ordering
+is complicated due to delayed allocations in \verb|\AtBeginDocument|.
+
+In this release a new implementation of
+\verb|\newinsert| is used which allocates inserts from the previously
+allocated float lists once the classical register allocation has run
+out. This allows an extra 52 (or in \hologo{LuaTeX}, 64 thousand)
+insert allocations which is more than enough for practical documents
+(by default, \LaTeX\ only uses two insert allocations).
+
+\section{Updated Unicode data}
+
+
+The file \textsf{unicode-letters.def} recording catcodes, upper and
+lower case mappings and other properties for Unicode characters has
+been regenerated using the data files from Unicode~8.
+
+\section{Support for Comma Accent}
+The command \verb|\textcommabelow| has been added to the format.
+This is mainly used for the Romanian letters 
+\textcommabelow{S}\textcommabelow{s}\textcommabelow{T}\textcommabelow{t}.
+This was requested in latex/4414 in the \LaTeX\ bug tracker.
+
+\section{Extended \package{inputenc}}
+The \texttt{utf8} option for \package{inputenc} has been extended to support
+the letters s and t with comma accent,
+U+0218\,--\,U+021b. Similarly circumflex w and y U+0174\,--\,U+0177 are defined.
+Also U+00a0 and U+00ad are declared by default, and defined to be
+\verb|\nobreakspace| and \verb|\-| respectively.
+
+The error message given on undefined UTF-8 input characters
+now displays the Unicode number
+in U+\textit{hex} format in addition
+to showing the character.
+
+\section{Pre-release Releases}
+The patch level mechanism has been used previously to identify \LaTeX\
+releases that have small patches applied to the main release, without
+changing the main format date.
+
+The mechanism has now been extended to allow identification of
+pre-release versions of the software (which may or may not be released
+via CTAN) but can be identified with a banner such as\\
+{\catcode`\<=13 \def<{\string<} \catcode`\>=13 \def>{\string>}%
+\verb|LaTeX2e <2015/10/01> pre-release-1|}\\
+Internally this is identified as a patch release with a negative patch
+level.
+
+\section{Updates in tools}
+
+The \package{multicol} package has been updated to fix the interaction
+with ``here'' floats that land on the same page as the start or end of
+a \textsf{multicols} environment.
+
+\end{document}

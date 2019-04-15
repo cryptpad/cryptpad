@@ -1,0 +1,1943 @@
+% \iffalse meta-comment
+%
+% File: luatex.dtx
+% Version: 2010/03/09 v0.4
+% Info: LuaTeX basic definition package
+%
+% Copyright (C) 2007, 2009, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file luatex.dtx
+% and the derived files
+%    luatex.sty, luatex.pdf, luatex.ins, luatex.drv, luatex-loader.sty,
+%    luatex-test1.tex, luatex-test2.tex, luatex-test3.tex,
+%    luatex-test4.tex, luatex-test5.tex, oberdiek.luatex.lua.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/luatex.dtx
+%    CTAN:macros/latex/contrib/oberdiek/luatex.pdf
+%
+% Unpacking:
+%    (a) If luatex.ins is present:
+%           tex luatex.ins
+%    (b) Without luatex.ins:
+%           tex luatex.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{luatex.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If luatex.drv is present:
+%           latex luatex.drv
+%    (b) Without luatex.drv:
+%           latex luatex.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex luatex.dtx
+%       makeindex -s gind.ist luatex.idx
+%       pdflatex luatex.dtx
+%       makeindex -s gind.ist luatex.idx
+%       pdflatex luatex.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/luatex.sty
+%    TDS:tex/generic/oberdiek/luatex-loader.sty
+%    TDS:scripts/oberdiek/oberdiek.luatex.lua
+%    TDS:doc/latex/oberdiek/luatex.pdf
+%    TDS:doc/latex/oberdiek/test/luatex-test1.tex
+%    TDS:doc/latex/oberdiek/test/luatex-test2.tex
+%    TDS:doc/latex/oberdiek/test/luatex-test3.tex
+%    TDS:doc/latex/oberdiek/test/luatex-test4.tex
+%    TDS:doc/latex/oberdiek/test/luatex-test5.tex
+%    TDS:source/latex/oberdiek/luatex.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: luatex 2010/03/09 v0.4 LuaTeX basic definition package (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: luatex
+Version: 2010/03/09 v0.4
+
+Copyright (C) 2007, 2009, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file luatex.dtx
+and the derived files
+   luatex.sty, luatex.pdf, luatex.ins, luatex.drv, luatex-loader.sty,
+   luatex-test1.tex, luatex-test2.tex, luatex-test3.tex,
+   luatex-test4.tex, luatex-test5.tex, oberdiek.luatex.lua.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{luatex.ins}{\from{luatex.dtx}{install}}%
+  \file{luatex.drv}{\from{luatex.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{luatex.sty}{\from{luatex.dtx}{package}}%
+  \file{luatex-loader.sty}{\from{luatex.dtx}{loader}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{luatex-test1.tex}{\from{luatex.dtx}{test1}}%
+  \file{luatex-test2.tex}{\from{luatex.dtx}{test1,test2}}%
+  \file{luatex-test3.tex}{\from{luatex.dtx}{test1,test3}}%
+  \file{luatex-test4.tex}{\from{luatex.dtx}{test4}}%
+  \file{luatex-test5.tex}{\from{luatex.dtx}{test5}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{luatex.xml}{\from{luatex.dtx}{catalogue}}%
+}
+\def\MetaPrefix{-- }
+\def\defaultpostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+\def\currentpostamble{\defaultpostamble}%
+\generate{%
+  \usedir{scripts/oberdiek}%
+  \file{oberdiek.luatex.lua}{\from{luatex.dtx}{lua}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     luatex.sty, luatex-loader.sty}
+\Msg{*}
+\Msg{* And install the following script file:}
+\Msg{*}
+\Msg{*     oberdiek.luatex.lua}
+\Msg{*}
+\Msg{* To produce the documentation run the file `luatex.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{luatex.drv}%
+  [2010/03/09 v0.4 LuaTeX basic definition package (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{paralist}
+\begin{document}
+  \DocInput{luatex.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1429}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{luatex.drv}
+%
+% \title{The \xpackage{luatex} package}
+% \date{2010/03/09 v0.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package manages the new and extended features and resources
+% that \LuaTeX\ provides. Examples are attributes and catcode
+% tables.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% \TeX\ provides global resources such as registers.
+% But it does not provide an interface for managing these resources.
+% For example, two packages want to use a counter register.
+% If they take the same register
+% number, then the use of both packages will conflict and they cannot
+% be used together.
+% Therefore formats such as \plainTeX\ or \LaTeX\ implement
+% an allocation scheme for registers. A package reserves with
+% \cs{newcount} an unused register number for its own exclusive use.
+%
+% Nowadays \TeX\ is not alone anymore: \eTeX, \pdfTeX\ and other
+% compilers for \TeX\ are developed that extend and add new
+% features and resources.
+%
+% Now \LuaTeX\ has reached beta state. It inherits most of
+% \pdfTeX's features including \eTeX. Also it implements
+% new concepts such as attributes or catcode tables.
+%
+% \subsubsection{\LaTeX}
+%
+% \LaTeXe\ is frozen and therefore refuses to even notice
+% the new \TeX\ variants. Not even the old \eTeX\ is supported
+% by its kernel. At least there is a third party package \xpackage{etex}
+% that manages the new \eTeX\ resources.
+%
+% This package tries to do the same for \LuaTeX\ and starts to
+% support at least a few of the new features.
+%
+% \subsubsection{\plainTeX}
+%
+% \LaTeX\ has inherited its resource handling from \plainTeX.
+% The interface is basically the same: \cs{newcount}, \dots
+% Therefore this package tries to follow this tradition by
+% providing compatibility to \plainTeX. It can be loaded
+% with \plainTeX\ and defines at least some of the
+% features that this packages provides for \LaTeX.
+%
+% \subsection{Register allocation}
+%
+% \subsubsection{Register with 16 bit}
+%
+% Because \LuaTeX\ is a super set of \eTeX\ regarding registers,
+% the register allocation scheme should not conflict with
+% package \xpackage{etex}. Therefore this package is loaded
+% to inherit its allocation scheme. The only change is currently
+% that the limit is increased to 65536 registers for the following
+% register classes:
+% \begin{compactitem}
+% \item count
+% \item dimen
+% \item skip
+% \item muskip
+% \item marks
+% \item toks
+% \item box
+% \end{compactitem}
+% This affects the number of global and local registers.
+% Because it is done in a package and not in the kernel,
+% it is possible that someone loads package \xpackage{etex}
+% before uses the local allocation variants. This will prevent
+% the extension for this register class. If more registers are
+% needed, just load package \xpackage{luatex} earlier.
+%
+% \subsubsection{Insertions}
+%
+% Insertions need four registers \cs{count}, \cs{dimen}, \cs{skip},
+% and \cs{box} with the same number. Usually they are allocated
+% downwards from 254, 253, \dots Also \cs{newcount}, \cs{newdimen}, \dots
+% fill up these register numbers from below before switching to
+% higher register numbers by package \xpackage{etex}.
+% When this occurs, no insertions can be allocated anymore.
+%
+% Therefore \cs{newcount}, \cs{newdimen}, \cs{newskip}, and
+% \cs{newbox} are replaced by their global variants (\cs{globcount}, \dots)
+% that use the higher numbers immediately, leaving the room for insertions.
+% There should not be an efficiency penalty because \LuaTeX\ stores
+% the registers of a class in the same Lua table unlike \eTeX, where
+% registers below 256 are stored in an array and higher numbers
+% are put in a tree structure.
+%
+% \subsection{Attributes}
+%
+% Nodes can have custom attributes in \LuaTeX. These attributes
+% are organized by a new register class. As the other registers
+% up to $2^{16}$ attributes are supported. An attribute value
+% can be negative that means the attribute is not set. Otherwise
+% \TeX's range of non-negative integers up to $2^31$ are available.
+%
+% \begin{declcs}{newattribute} \M{cmd}
+% \end{declcs}
+% Macro \cs{newattribute} defines command \meta{cmd} using \cs{attributedef}
+% using an new attribute number. The new attribute is initially unset.
+%
+% \begin{declcs}{setattribute} \M{cmd} \M{value}
+% \end{declcs}
+% Macro \cs{setattribute} locally sets attribute command \meta{cmd}
+% to the number \meta{value}. Valid values range from $-1$ until $2^31$
+% (the upper limit is the same as for other \TeX\ integer numbers).
+%
+% \begin{declcs}{unsetattribute} \M{cmd}
+% \end{declcs}
+% Macro \cs{unsettattribute} clears the attribute command \meta{cmd}.
+%
+% \subsection{Catcode tables}
+%
+% \LuaTeX\ introduces catcode tables as new feature, see documentation.
+% There is need for discussion, how to deal best:
+% \begin{itemize}
+% \item \cs{initcatcodetable} and \cs{setcatcodetable} act globally.
+% \item \cs{catcodetable} causes an error if used with an uninitialized
+%   catcode table.
+% \item Large catcode table numbers should be avoided because of
+%   performance breakdown.
+% \item Use case \LaTeX\ package:
+%   The package must not be surprised by changed catcodes and
+%   must not surprise by changing catcodes accidently.
+%   Catcode tables could offer a solution. At the begin
+%   a catcode regime with standard catcodes is established
+%   and the old one is restored afterwards.
+% \item Use case: \LuaTeX's |tex.print| might be used with
+%   a catcode table number, for example a table where all
+%   entries have catcode ``other''.
+% \item Readonly catcode tables.
+% \item Is there is a need for local allocations?
+%   (Package \xpackage{etex}'s \cs{loc} variants are not used in
+%   \TeX\ Live 2007.)
+% \end{itemize}
+%
+% \subsubsection{Interface proposal}
+%
+% The idea: \cs{newcatcodetable} allocates odd numbered catcode
+% tables. Even numbered tables are managed as stack.
+% Also some catcode tables are defined. These must not be
+% changed.
+%
+% \begin{declcs}{newcatcodetable} \M{cmd}
+% \end{declcs}
+% Macro \cs{newcatcodetable} reserves a new catcode table and
+% remembers its number in \meta{cmd}. The catcode table is
+% initialized with \iniTeX's catcodes.
+%
+% \begin{declcs}{CatcodeTableIniTeX}\\
+%   \cs{CatcodeTableString}\\
+%   \cs{CatcodeTableOther}\\
+%   \cs{CatcodeTableLaTeX}\\
+% \end{declcs}
+% These are catcode tables and must not be changed.
+% \cs{CatcodeTableIniTeX} contains the catcode settings of \iniTeX.
+% \cs{CatcodeTableString} follows \TeX's convention of
+% \cs{string}, \cs{meaning} and friends. The space gets catcode
+% 10 (space), the other characters have catcode 12 (other).
+% In \cs{CatcodeTableOther} all entries have catcode 12 (other).
+% \cs{CatcodeTableLaTeX} contains the setting of a pure \LaTeX\ format
+% (`at' is other).
+%
+% \begin{declcs}{CatcodeTableStack}\\
+%   \cs{IncCatcodeTableStack}\\
+%   \cs{DecCatcodeTableStack}
+% \end{declcs}
+% \cs{CatcodeTableStack} is the stack pointer. Initially
+% it is catcode table zero. \cs{IncCatcodeTableStack} and
+% \cs{DecCatcodeTableStack} increments and decrements the
+% stack pointer. Currently \cs{IncCatcodeTableStack} does not
+% initialize a new catcode table. Both increment and decrement
+% operations do not set a catcode table.
+%
+% \begin{declcs}{PushCatcodeTableNumStack}\\
+%   \cs{PopCatcodeTableNumStack}
+% \end{declcs}
+% It can be handy to have a global stack for catcode table
+% numbers to deal with the global assignment property of
+% \cs{initcatcodetable} and \cs{savecatcodetable}.
+% \cs{PushCatcodeTableNumStack} pushes the current catcode table
+% on the stack.
+% \cs{PopCatcodeTableNumStack} pops the topmost number off the number
+% stack to set the current catcode table. Catcode table zero is
+% used in case of an empty stack.
+%
+% \begin{declcs}{BeginCatcodeRegime} \M{catcodetable}\\
+%   \cs{EndCatcodeRegime}
+% \end{declcs}
+% \cs{BeginCatcodeRegime} remembers the current catcode table number.
+% Then it creates and uses a fresh catcode table on the stack
+% that is initialized by \meta{catcodetable}:
+% \begin{quote}\ttfamily
+%   \cs{PushCatcodeTableNumStack}\\
+%   \cs{catcodetable}\meta{catcodetable}||
+%   \cs{IncCatcodeTableStack}\\
+%   \cs{savecatcodetable}\cs{CatcodeTableStack}\\
+%   \cs{catcodetable}\cs{CatcodeTableStack}
+% \end{quote}
+% \cs{EndCatcodeRegime} drops the catcode table, created by
+% \cs{BeginCatcodeRegime} and sets the catcode table that was
+% active before:
+% \begin{quote}
+%   \cs{DecCatcodeTableStack}\\
+%   \cs{PopCatcodeTableNumStack}
+% \end{quote}
+% These macros solve the use case, described earlier for a \LaTeX\ package:
+% \begin{quote}
+%   |% package foobar.sty|\\
+%   |\BeginCatcodeRegime\CatcodeTableLaTeX|\\
+%   |\makeatletter|\\
+%   |% ... package contents ...|\\
+%   |\EndCatcodeRegime|\\
+%   |% end of package|
+% \end{quote}
+% If the package wants to change catcodes after its loading,
+% \cs{AtBeginDocument} or \cs{AtEndOfPackage} can be used.
+%
+% \begin{declcs}{SetCatcodeRange} \M{from} \M{to} \M{catcode}
+% \end{declcs}
+% The catcodes of characters in range from \meta{from}
+% to inclusive \meta{to} are set to \meta{catcode}.
+%
+% \subsection{Lua module loading}
+%
+% Currently \LuaTeX\ (version 0.20) does not support Lua script
+% files inside \xfile{TDS:scripts//}, because Lua's mechanism
+% for module loading does not use the \textsf{kpathsea} library.
+% Therefore this packages appends a kpse loader to the list of
+% Lua's module loaders. It finds the module \meta{module} by
+% \begin{quote}
+%   \ttfamily |kpse.find_file("|\meta{module}|.lua", "texmfscripts")|
+% \end{quote}
+% Unhappily \textsf{kpathsea} does not support directory components
+% in a file name. Therefore the Lua convention is not followed to
+% replace dots in the module name by the directory separator.
+%
+% Example:
+% A Lua script of a package \xpackage{foobar} wants the following
+% modules:
+% \begin{quote}
+%   |require("foobar.hello.world")|\\
+%   |require("org.somewhere.xyz")|
+% \end{quote}
+% Then they can be find in:
+% \begin{quote}
+%   |TDS:scripts/foobar/foobar.hello.world.lua|\\
+%   |TDS:scripts/foobar/org.somewhere.xyz.lua|
+% \end{quote}
+% I would have preferred the following locations, following lua conventions,
+% e.\,g.:
+% \begin{quote}
+%   |TDS:scripts/foobar/hello/world.lua|\\
+%   |TDS:scripts/foobar/org/somewhere/xyz.lua|
+% \end{quote}
+% But I do not know, how to achieve this in a reliable way using
+% \textsf{kpathsea}.
+%
+% \subsubsection{Package \xpackage{luatex-loader}}
+%
+% If someone do not need or want package \xpackage{luatex} but
+% it's extension for module loading, then he can use
+% package \xpackage{luatex-loader}. Both \plainTeX\ and \LaTeX\ are
+% supported.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@luatex.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{luatex}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@luatex.sty\endcsname
+\ProvidesPackage{luatex}%
+  [2010/03/09 v0.4 LuaTeX basic definition package (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname LuT@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\LuT@AtEnd{%
+    \LuT@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{95}{12}% _ (other!)
+\TMP@EnsureCode{96}{12}% `
+\edef\LuT@AtEnd{\LuT@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Check for \LuaTeX}
+%
+%    Without \LuaTeX\ there is no point in using this package.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input ifluatex.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ifluatex}[2009/04/10]%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifluatex
+\else
+  \@PackageError{luatex}{%
+    This package may only be run using LuaTeX%
+  }\@ehc
+  \expandafter\LuT@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Provide Lua\TeX\ primitives}
+%
+%    \begin{macrocode}
+\ifnum\luatexversion<36 %
+  \def\LuT@MakePrimitive#1{%
+    \expandafter\let\csname luatex#1\expandafter\endcsname
+    \csname #1\endcsname
+  }%
+\else
+  \def\LuT@MakeLuatexPrimitive#1{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname luatex#1\endcsname\relax
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname #1\endcsname\relax
+      \else
+        \expandafter\let
+        \csname luatex#1\expandafter\endcsname
+        \csname #1\endcsname
+      \fi
+    \fi
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname luatex#1\endcsname\relax
+      \begingroup
+        \expandafter\let\csname luatex#1\endcsname\@undefined
+        \ifnum0%
+          \directlua{%
+            if tex.enableprimitives then %
+              tex.enableprimitives('luatex',{'#1'})%
+              tex.print('1')%
+            end%
+          }%
+          \expandafter\ifx\csname luatex#1\endcsname\relax\else1\fi
+        =11 %
+          \global\expandafter\let
+          \csname luatex#1\expandafter\endcsname
+          \csname luatex#1\endcsname
+        \else
+          \@PackageError{luatex}{%
+            tex.enableprimitives failed for `#1'%
+          }\@ehc
+        \fi
+      \endgroup
+    \fi
+  }%
+  \def\LuT@MakePrimitive#1{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname#1\endcsname\relax
+      \begingroup
+        \expandafter\let\csname#1\endcsname\@undefined
+        \ifnum0%
+          \directlua{%
+            if tex.enableprimitives then %
+              tex.enableprimitives('',{'#1'})%
+              tex.print('1')%
+            end%
+          }%
+          \expandafter\ifx\csname#1\endcsname\relax\else1\fi
+        =11 %
+          \global\expandafter\let
+          \csname#1\expandafter\endcsname
+          \csname#1\endcsname
+        \else
+          \@PackageError{luatex}{%
+            tex.enableprimitives failed for `#1'%
+          }\@ehc
+        \fi
+      \endgroup
+    \fi
+  }%
+\fi
+\LuT@MakeLuatexPrimitive{attribute}
+\LuT@MakeLuatexPrimitive{attributedef}
+\LuT@MakeLuatexPrimitive{catcodetable}
+\LuT@MakeLuatexPrimitive{initcatcodetable}
+\LuT@MakeLuatexPrimitive{luaescapestring}
+\LuT@MakeLuatexPrimitive{savecatcodetable}
+\LuT@MakePrimitive{numexpr}
+%    \end{macrocode}
+%
+% \subsection{Inherit support for \eTeX}
+%
+%    Package \xpackage{etex} is not compatible for \plainTeX.
+%    But it could be present if a format is used that is based
+%    on \xfile{etex.src}. Therefore we only load the package
+%    in case of \LaTeX\ and tests its presence independently
+%    of the format by looking for \cs{et@xins}.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+\else
+  \RequirePackage{etex}[1998/03/26]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Adaption of \eTeX's register allocation}
+%
+%    \eTeX has increased the number of \TeX\ registers
+%    from $2^8$ (256) to $2^{15}$ (32768) for a register class.
+%    \LuaTeX\ extends the limit further to $2^16$ (65536).
+%    The allocation scheme of package \xpackage{etex} is not
+%    changed. But this can be subject for discussion.
+%
+%    If a register class hasn't registered any local registers
+%    yet, then the limit can safely be pushed to 65536.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname et@xins\endcsname\relax
+  \@PackageWarningNoLine{luatex}{%
+    Support for eTeX is not loaded (etex.src)%
+  }%
+\else
+  \def\LuT@temp#1{%
+    \ifnum\count27#1=32768 %
+      \count27#1=65536 %
+    \fi
+  }%
+  \LuT@temp0%
+  \LuT@temp1%
+  \LuT@temp2%
+  \LuT@temp3%
+  \LuT@temp4%
+  \LuT@temp5%
+  \LuT@temp6%
+%    \end{macrocode}
+%
+% \eTeX\ uses an array for the first 256 registers and then a tree
+% structure. \LuaTeX\ stores all registers of a class in one Lua table.
+% There shouldn't be large performance differences.
+% This allows starting immediately in the extended
+% area, leaving room for insertions.
+%    \begin{macrocode}
+  \let\newcount\globcount
+  \let\newdimen\globdimen
+  \let\newskip\globskip
+  \let\newbox\globbox
+\fi
+%    \end{macrocode}
+%
+% \subsection{\plainTeX\ compatibility}
+%
+%    \begin{macro}{\@empty}
+%    \begin{macrocode}
+\expandafter\ifx\csname @empty\endcsname\relax
+  \def\@empty{}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@gobble}
+%    \begin{macrocode}
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@firstofone}
+%    \begin{macrocode}
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@firstoftwo}
+%    \begin{macrocode}
+\expandafter\ifx\csname @firstoftwo\endcsname\relax
+  \long\def\@firstoftwo#1#2{#1}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@car}
+%    \begin{macrocode}
+\expandafter\ifx\csname @car\endcsname\relax
+  \def\@car#1#2\@nil{#1}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@cdr}
+%    \begin{macrocode}
+\expandafter\ifx\csname @cdr\endcsname\relax
+  \def\@cdr#1#2\@nil{#2}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ifstar}
+%    \begin{macrocode}
+\expandafter\ifx\csname @ifstar\endcsname\relax
+  \def\@ifstar#1{%
+    \@ifnextchar*{\@firstoftwo{#1}}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ifnextchar}
+%    \begin{macrocode}
+  \long\def\@ifnextchar#1#2#3{%
+    \let\reserved@d=#1%
+    \def\reserved@a{#2}%
+    \def\reserved@b{#3}%
+    \futurelet\@let@token\@ifnch
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ifnch}
+%    \begin{macrocode}
+  \def\@ifnch{%
+    \ifx\@let@token\@sptoken
+      \let\reserved@c\@xifnch
+    \else
+      \ifx\@let@token\reserved@d
+        \let\reserved@c\reserved@a
+      \else
+        \let\reserved@c\reserved@b
+      \fi
+    \fi
+    \reserved@c
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@sptoken}
+%    \begin{macrocode}
+  \let\LuT@temp\:%
+  \def\:{\let\@sptoken= }%
+  \: % explicit space
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@xifnch}
+%    \begin{macrocode}
+  \def\:{\@xifnch}%
+  \expandafter\def\: {%
+    \futurelet\@let@token\@ifnch
+  }%
+  \let\:\LuT@temp
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@tempcnta}
+%    \begin{macrocode}
+\expandafter\ifx\csname @tempcnta\endcsname\relax
+  \csname newcount\endcsname\@tempcnta
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@tempcntb}
+%    \begin{macrocode}
+\expandafter\ifx\csname @tempcntb\endcsname\relax
+  \csname newcount\endcsname\@tempcntb
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\LuT@newcommand}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newcommand\endcsname\relax
+  \def\LuT@newcommand#1[#2]#3{%
+    \ifx#1\@undefined
+      \let#1\relax
+    \else
+      \ifx#1\relax
+      \else
+        \@PackageError{luatex}{%
+          \string#1 is already defined.\MessageBreak
+          Redefinition is skipped%
+        }\@ehc
+      \fi
+    \fi
+    \ifx#1\relax
+      \ifcase#2 %
+        \def#1{#3}%
+      \or
+        \def#1##1{#3}%
+      \or
+        \def#1##1##2{#3}%
+      \or
+        \def#1##1##2##3{#3}%
+      \or
+        \@INTERNAL@ERROR
+      \fi
+    \fi
+  }%
+\else
+  \def\LuT@newcommand{\newcommand*}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Attributes}
+%
+% \subsubsection{Allocation}
+%
+%    \begin{macro}{\LuT@AllocAttribute}
+%    \begin{macrocode}
+\newcount\LuT@AllocAttribute
+\LuT@AllocAttribute=\m@ne
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\newattribute}
+%    \begin{macrocode}
+\LuT@newcommand\newattribute[1]{%
+  \ifnum\LuT@AllocAttribute<65535 %
+    \global\advance\LuT@AllocAttribute\@ne
+    \allocationnumber\LuT@AllocAttribute
+    \global\luatexattributedef#1=\allocationnumber
+    \unsetattribute{#1}%
+    \wlog{\string#1=\string\attribute\the\allocationnumber}%
+  \else
+    \errmessage{No room for a new \string\attribute}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Interface}
+%
+%    \begin{macro}{\setattribute}
+%    \begin{macrocode}
+\LuT@newcommand\setattribute[2]{%
+  #1=\numexpr#2\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\unsetattribute}
+%    \begin{macrocode}
+\ifnum\luatexversion<37
+  \LuT@newcommand\LuT@UnsetAttributeValue[0]{}%
+  \let\LuT@UnsetAttributeValue\m@ne
+\else
+  \LuT@newcommand\LuT@UnsetAttributeValue[0]{-2147483647 }%
+\fi
+\LuT@newcommand\unsetattribute[1]{%
+  #1=\LuT@UnsetAttributeValue
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Catcode tables}
+%
+% \subsubsection{Allocation}
+%
+%    \begin{macro}{\LuT@AllocCatcodeTable}
+%    \begin{macrocode}
+\newcount\LuT@AllocCatcodeTable
+\LuT@AllocCatcodeTable=\m@ne
+\newcount\CatcodeTableStack
+\CatcodeTableStack=\z@
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\newcatcodetable}
+%    \begin{macrocode}
+\LuT@newcommand\newcatcodetable[1]{%
+  \ifnum\LuT@AllocCatcodeTable<1114110 % 0x10FFFF is maximal \chardef
+    % or < 268435455 % 2^28 - 1
+    \global\advance\LuT@AllocCatcodeTable by\tw@
+    \allocationnumber=\LuT@AllocCatcodeTable
+    \global\chardef#1=\allocationnumber
+    \wlog{%
+      \string#1=\string\catcodetable\the\allocationnumber
+    }%
+  \else
+    \errmessage{No room for a new \string\catcodetable}%
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\IncCatcodeTableStack}
+%    \begin{macrocode}
+\LuT@newcommand\IncCatcodeTableStack[0]{%
+  \ifnum\CatcodeTableStack<268435454 %
+    \global\advance\CatcodeTableStack by\tw@
+  \else
+    \@PackageError{luatex}{%
+      Catcode table stack overflow%
+    }\@ehd
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\DecCatcodeTableStack}
+%    \begin{macrocode}
+\LuT@newcommand\DecCatcodeTableStack[0]{%
+  \ifnum\CatcodeTableStack>\z@
+    \global\advance\CatcodeTableStack by-2 %
+  \else
+    \@PackageError{luatex}{%
+      Catcode table stack is empty%
+    }\@ehd
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{\cs{SetCatcodeRange}}
+%
+%    \begin{macro}{\SetCatcodeRange}
+%    \begin{macrocode}
+\LuT@newcommand\SetCatcodeRange[3]{%
+  \edef\LuT@temp{%
+    \noexpand\@tempcnta=\the\@tempcnta
+    \noexpand\@tempcntb=\the\@tempcntb
+    \noexpand\count@=\the\count@
+    \relax
+  }%
+  \@tempcnta=\numexpr#1\relax
+  \@tempcntb=\numexpr#2\relax
+  \count@=\numexpr#3\relax
+  \loop
+    \unless\ifnum\@tempcnta>\@tempcntb
+    \catcode\@tempcnta=\count@
+    \advance\@tempcnta by \@ne
+  \repeat
+  \LuT@temp
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Predefined catcode tables}
+%
+%    \begin{macrocode}
+\newcatcodetable\CatcodeTableIniTeX
+\newcatcodetable\CatcodeTableString
+\newcatcodetable\CatcodeTableOther
+\newcatcodetable\CatcodeTableLaTeX
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\luatexinitcatcodetable\CatcodeTableIniTeX
+\begingroup
+  \def\@makeother#1{\catcode#1=12\relax}%
+  \@firstofone{%
+    \luatexcatcodetable\CatcodeTableIniTeX
+    \begingroup
+      \SetCatcodeRange{0}{8}{15}%
+      \catcode9=10 % tab
+      \catcode11=15 %
+      \catcode12=13 % form feed
+      \SetCatcodeRange{14}{31}{15}%
+      \catcode35=6 % hash
+      \catcode36=3 % dollar
+      \catcode38=4 % ampersand
+      \catcode94=7 % circumflex
+      \catcode95=8 % underscore
+      \catcode123=1 % brace left
+      \catcode125=2 % brace right
+      \catcode126=13 % tilde
+      \catcode127=15 %
+      \luatexsavecatcodetable\CatcodeTableLaTeX
+    \endgroup
+    \@makeother{0}% nul
+    \@makeother{13}% carriage return
+    \@makeother{37}% percent
+    \@makeother{92}% backslash
+    \@makeother{127}%
+    \SetCatcodeRange{65}{90}{12}% A-Z
+    \SetCatcodeRange{97}{122}{12}% a-z
+    \luatexsavecatcodetable\CatcodeTableString
+    \@makeother{32}% space
+    \luatexsavecatcodetable\CatcodeTableOther
+  \endgroup
+}%
+%    \end{macrocode}
+%
+% \subsubsection{Number stack}
+%
+%    \begin{macro}{\LuT@NumStackEmpty}
+%    A special empty stack value because of \cs{@cdr}'s brace removal.
+%    \begin{macrocode}
+\def\LuT@NumStackEmpty{0}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\LuT@NumStack}
+%    \begin{macrocode}
+\let\LuT@NumStack\LuT@NumStackEmpty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PushCatcodeTableNumStack}
+%    \begin{macrocode}
+\LuT@newcommand\PushCatcodeTableNumStack[0]{%
+  \xdef\LuT@NumStack{%
+    {\the\luatexcatcodetable}\LuT@NumStack
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PopCatcodeTableNumStack}
+%    \begin{macrocode}
+\LuT@newcommand\PopCatcodeTableNumStack[0]{%
+  \ifx\LuT@NumStack\LuT@NumStackEmpty
+    \@PackageWarning{luatex}{Empty catcode table number stack}%
+    \luatexcatcodetable\z@
+  \else
+    \luatexcatcodetable=\expandafter\@car\LuT@NumStack\@nil\relax
+    \xdef\LuT@NumStack{%
+      \expandafter\@cdr\LuT@NumStack\@nil
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Catcode regime macros}
+%
+%    \begin{macro}{\BeginCatcodeRegime}
+%    \begin{macrocode}
+\LuT@newcommand\BeginCatcodeRegime[1]{%
+  \PushCatcodeTableNumStack
+  \luatexcatcodetable=\numexpr#1\relax
+  \IncCatcodeTableStack
+  \luatexsavecatcodetable\CatcodeTableStack
+  \luatexcatcodetable\CatcodeTableStack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\EndCatcodeRegime}
+%    \begin{macrocode}
+\LuT@newcommand\EndCatcodeRegime[0]{%
+  \DecCatcodeTableStack
+  \PopCatcodeTableNumStack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Lua module loader}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input luatex-loader.sty\relax
+\else
+  \RequirePackage{luatex-loader}[2010/03/09]%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\LuT@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*loader>
+%    \end{macrocode}
+%
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@luatex-loader.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{luatex-loader}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@luatex-loader.sty\endcsname
+\ProvidesPackage{luatex-loader}%
+  [2010/03/09 v0.4 Lua module loader (HO)]%
+%    \end{macrocode}
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5\endlinechar=13\relax%
+  \catcode10=12 % ^^J
+  \catcode34=12 % "
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode46=12 % .
+  \catcode60=12 % <
+  \catcode61=12 % =
+  \catcode95=12 % _ (other!)
+  \catcode96=12 % `
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \endlinechar=10 %
+  \ifnum\luatexversion<36 %
+    \directlua0%
+  \else %
+    \expandafter\directlua %
+  \fi %
+  {%
+     do
+      local script = "oberdiek.luatex.lua"
+      local file = kpse.find_file(script, "texmfscripts")
+      if file then
+        texio.write_nl("(" .. file .. ")")
+        dofile(file)
+      else
+        error("File `" .. script .. "' not found")
+      end
+    end
+  }%
+\endgroup\endinput%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</loader>
+%    \end{macrocode}
+%
+% \subsection{Lua script}
+%
+%    Currently \LuaTeX\ does not use KPSE when searching for module
+%    files. The following Lua script implements a workaround.
+%    It extends |package.loader| by another search method.
+%    Modules are found by the module name with extension \xext{lua}
+%    similar to
+%    \begin{quote}
+%      \ttfamily |kpsewhich --format=texmfscripts| \meta{module}|.lua|
+%    \end{quote}
+%    Unhappily \textsf{kpsewhich} does not support directory components
+%    in the file name. Therefore a module |a.b.c| cannot be installed
+%    as \xfile{a/b/c.lua}. The script must be named \xfile{a.b.c.lua}.
+%    \begin{macrocode}
+%<*lua>
+%    \end{macrocode}
+%    \begin{macrocode}
+module("oberdiek.luatex", package.seeall)
+%    \end{macrocode}
+%    \begin{macrocode}
+function kpse_module_loader(module)
+  local script = module .. ".lua"
+  local file = kpse.find_file(script, "texmfscripts")
+  if file then
+    local loader, error = loadfile(file)
+    if loader then
+      texio.write_nl("(" .. file .. ")")
+      return loader
+    end
+    return "\n\t[oberdiek.luatex.kpse_module_loader] Loading error:\n\t"
+           .. error
+  end
+  return "\n\t[oberdiek.luatex.kpse_module_loader] Search failed"
+end
+table.insert(package.loaders, kpse_module_loader)
+%    \end{macrocode}
+%    \begin{macrocode}
+%</lua>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test2>
+\documentclass{article}
+\def\LoadCommand{%
+  \RequirePackage{luatex}[2010/03/09]%
+}
+%</test2>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test3>
+\documentclass{article}
+\def\LoadCommand{%
+  \RequirePackage{luatex-loader}[2010/03/09]%
+}
+%</test3>
+%    \end{macrocode}
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input luatex.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Catcode tables}
+%
+% \subsubsection{Predefined catcode tables}
+%
+%    \begin{macrocode}
+%<*test4>
+\NeedsTeXFormat{LaTeX2e}
+%    \end{macrocode}
+%    Remember \LaTeX's initial catcodes in count registers
+%    starting at \cs{TestLaTeX}.
+%    \begin{macrocode}
+\count0=0 %
+\chardef\TestLaTeX=1000 %
+\chardef\TestMax=300 %
+\loop
+  \count\numexpr\TestLaTeX+\count0\relax=\catcode\count0 %
+\ifnum\count0<\TestMax
+  \advance\count0 by 1 %
+\repeat
+\documentclass{minimal}
+\usepackage{luatex}[2010/03/09]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\makeatletter
+\def\Check#1{%
+  \Expect*{\the\count@=\the\catcode\count@}%
+         *{\the\count@=#1}%
+}
+\newcount\scratch
+\def\Test#1#2{%
+  \begin{qstest}{CatcodeTable#1}{CatcodeTable#1}%
+    \luatexcatcodetable\csname CatcodeTable#1\endcsname
+    \count@=\z@
+    \loop
+      \scratch=#2\relax
+      \Expect*{\the\count@=\the\catcode\count@}%
+             *{\the\count@=\the\scratch}%
+    \ifnum\count@<\TestMax
+      \advance\count@\@ne
+    \repeat
+  \end{qstest}%
+}
+\begingroup
+  % luatex-unicode-letters.tex makes some slots to letters
+  \def\TestMax{169}%
+  \Test{LaTeX}{\the\count\numexpr\TestLaTeX+\count@}%
+\endgroup
+\Test{String}{\ifnum\count@=32 10\else 12\fi}
+\Test{Other}{12}
+\luatexinitcatcodetable99 %
+\Test{IniTeX}{%
+  0\relax
+  \begingroup
+    \luatexcatcodetable99 %
+    \global\scratch=\the\catcode\count@
+  \endgroup
+}
+%    \end{macrocode}
+%
+% \subsubsection{Catcode table number stack}
+%
+%    \begin{macrocode}
+\begin{qstest}{CatcodeTableNumStack}{CatcodeTableNumStack}
+  \def\TestStack#1{%
+    \Expect*{\LuT@NumStack}{#1}%
+  }%
+  \TestStack{0}%
+  \PushCatcodeTableNumStack
+  \TestStack{{0}0}%
+  \@firstofone{%
+    \begingroup
+      \luatexinitcatcodetable12 %
+      \luatexcatcodetable12 %
+      \PushCatcodeTableNumStack
+      \TestStack{{12}{0}0}%
+      \PopCatcodeTableNumStack
+      \TestStack{{0}0}%
+      \PopCatcodeTableNumStack
+      \TestStack{0}%
+      \def\TestWarning{Missing empty stack warning}%
+      \def\@PackageWarning#1#2{\def\TestWarning{empty stack}}%
+      \PopCatcodeTableNumStack
+      \TestStack{0}%
+      \Expect*{\TestWarning}{empty stack}%
+    \endgroup
+  }%
+\end{qstest}
+%    \end{macrocode}
+%
+% \subsubsection{Catcode table stack}
+%
+%    \begin{macrocode}
+\begin{qstest}{CatcodeTableStack}{CatcodeTableStack}
+  \def\TestStack#1{%
+    \Expect*{\the\CatcodeTableStack}{#1}%
+  }%
+  \TestStack{0}%
+  \IncCatcodeTableStack
+  \TestStack{2}%
+  \IncCatcodeTableStack
+  \TestStack{4}%
+  \begingroup
+    \IncCatcodeTableStack
+    \TestStack{6}%
+  \endgroup
+  \TestStack{6}%
+  \begingroup
+    \DecCatcodeTableStack
+    \TestStack{4}%
+  \endgroup
+  \TestStack{4}%
+  \DecCatcodeTableStack
+  \TestStack{2}%
+  \DecCatcodeTableStack
+  \TestStack{0}%
+  \begingroup
+    \def\TestError{Missing error}%
+    \def\@PackageError#1#2#3{%
+      \def\TestError{Empty stack}%
+    }%
+    \DecCatcodeTableStack
+    \TestStack{0}%
+    \Expect*{\TestError}{Empty stack}%
+  \endgroup
+\end{qstest}
+%    \end{macrocode}
+%
+% \subsubsection{Catcode regime macros}
+%
+%    \begin{macrocode}
+\begin{qstest}{CatcodeRegime}{CatcodeRegime}
+  \def\TestStacks#1#2#3{%
+    \Expect*{\the\luatexcatcodetable}{#1}%
+    \Expect*{\the\CatcodeTableStack}{#2}%
+    \Expect*{\LuT@NumStack}{#3}%
+  }%
+  \TestStacks{0}{0}{0}%
+  \catcode`\|=7 %
+  \BeginCatcodeRegime\CatcodeTableLaTeX
+    \TestStacks{2}{2}{{0}0}%
+    \Expect*{\the\catcode`\|}{12}%
+  \EndCatcodeRegime
+  \TestStacks{0}{0}{0}%
+  \Expect*{\the\catcode`\|}{7}%
+\end{qstest}
+%    \end{macrocode}
+%
+% \subsection{Attribute allocation}
+%
+%    \begin{macrocode}
+\begin{qstest}{Attributes}{Attributes}
+  \newattribute\TestAttr
+  \Expect*{\meaning\TestAttr}%
+         *{\string\attribute\number\allocationnumber}%
+  \Expect*{\the\allocationnumber}{0}%
+  \begingroup
+    \newattribute\TestAttr
+    \Expect*{\the\allocationnumber}{1}%
+  \endgroup
+  \Expect*{\the\allocationnumber}{0}%
+  \Expect*{\meaning\TestAttr}*{\string\attribute1}%
+  \Expect*{\the\TestAttr}*{\number\LuT@UnsetAttributeValue}%
+  \def\Test#1{%
+    \setattribute\TestAttr{#1}%
+    \Expect*{\the\TestAttr}{#1}%
+  }%
+  \Test{0}%
+  \Test{1}%
+  \Test{-1}%
+  \Test{123}%
+  \unsetattribute\TestAttr
+  \Expect*{\the\TestAttr}*{\number\LuT@UnsetAttributeValue}%
+  \begingroup
+    \Expect*{\the\TestAttr}*{\number\LuT@UnsetAttributeValue}%
+    \Test{1234}%
+  \endgroup
+  \Expect*{\the\TestAttr}*{\number\LuT@UnsetAttributeValue}%
+\end{qstest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@end
+%</test4>
+%    \end{macrocode}
+%
+% \subsection{Short test for \plainTeX}
+%
+%    \begin{macrocode}
+%<*test5>
+\input luatex.sty\relax
+\newattribute\TestAttr
+\setattribute\TestAttr{10}
+\unsetattribute\TestAttr
+\newcatcodetable\TestCTa
+\begingroup
+  \SetCatcodeRange{`A}{`Z}{12}%
+\endgroup
+\BeginCatcodeRegime\CatcodeTableLaTeX
+\EndCatcodeRegime
+\end
+%</test5>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/luatex.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/luatex.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex luatex.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   luatex.sty & tex/generic/oberdiek/luatex.sty\\
+%   luatex-loader.sty & tex/generic/oberdiek/luatex-loader.sty\\
+%   oberdiek.luatex.lua & scripts/oberdiek/oberdiek.luatex.lua\\
+%   luatex.pdf & doc/latex/oberdiek/luatex.pdf\\
+%   test/luatex-test1.tex & doc/latex/oberdiek/test/luatex-test1.tex\\
+%   test/luatex-test2.tex & doc/latex/oberdiek/test/luatex-test2.tex\\
+%   test/luatex-test3.tex & doc/latex/oberdiek/test/luatex-test3.tex\\
+%   test/luatex-test4.tex & doc/latex/oberdiek/test/luatex-test4.tex\\
+%   test/luatex-test5.tex & doc/latex/oberdiek/test/luatex-test5.tex\\
+%   luatex.dtx & source/latex/oberdiek/luatex.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk luatex.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{luatex.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex luatex.dtx
+%makeindex -s gind.ist luatex.idx
+%pdflatex luatex.dtx
+%makeindex -s gind.ist luatex.idx
+%pdflatex luatex.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{luatex.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='luatex'>
+  <name>luatex</name>
+  <caption>The LuaTeX engine.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='0.4'/>
+  <description>
+    LuaTeX is an extended version of pdfTeX using Lua as an embedded
+    scripting language.  The LuaTeX project&#x2019;s main objective
+    is to provide an open and configurable variant of TeX while at the
+    same time offering downward compatibility.
+    <p/>
+    LuaTeX uses Unicode (as UTF-8) as its default input encoding, and
+    is able to use modern (OpenType) fonts (for both text and mathematics).
+    <p/>
+    It should be noted that LuaTeX is still under development; its
+    specification has been declared stable, but absolute stability
+    may not in practice be assumed.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/luatex.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/luatex.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/12/12 v0.1}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v0.2}
+%   \item
+%     Requires package \xpackage{ifluatex} in version 2.0 to ensure
+%     \cs{luatexversion}.
+%   \item
+%     Updates the call of \cs{directlua}, the syntax has changed
+%     in \LuaTeX\ 0.36.
+%   \end{Version}
+%   \begin{Version}{2009/12/02 v0.3}
+%   \item
+%     Unsetting of attributes updated for \LuaTeX\ 0.37.
+%   \end{Version}
+%   \begin{Version}{2010/03/09 v0.4}
+%   \item
+%     Support for lua states removed.
+%   \item
+%     Calling tex.enableprimitives for used primitives.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

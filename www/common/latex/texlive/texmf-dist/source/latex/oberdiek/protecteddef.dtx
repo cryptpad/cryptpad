@@ -1,0 +1,1045 @@
+% \iffalse meta-comment
+%
+% File: protecteddef.dtx
+% Version: 2011/01/31 v1.0
+% Info: Define protected commands
+%
+% Copyright (C) 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file protecteddef.dtx
+% and the derived files
+%    protecteddef.sty, protecteddef.pdf, protecteddef.ins, protecteddef.drv,
+%    protecteddef-test1.tex, protecteddef-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/protecteddef.dtx
+%    CTAN:macros/latex/contrib/oberdiek/protecteddef.pdf
+%
+% Unpacking:
+%    (a) If protecteddef.ins is present:
+%           tex protecteddef.ins
+%    (b) Without protecteddef.ins:
+%           tex protecteddef.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{protecteddef.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If protecteddef.drv is present:
+%           latex protecteddef.drv
+%    (b) Without protecteddef.drv:
+%           latex protecteddef.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex protecteddef.dtx
+%       makeindex -s gind.ist protecteddef.idx
+%       pdflatex protecteddef.dtx
+%       makeindex -s gind.ist protecteddef.idx
+%       pdflatex protecteddef.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/protecteddef.sty
+%    TDS:doc/latex/oberdiek/protecteddef.pdf
+%    TDS:doc/latex/oberdiek/test/protecteddef-test1.tex
+%    TDS:doc/latex/oberdiek/test/protecteddef-test2.tex
+%    TDS:source/latex/oberdiek/protecteddef.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: protecteddef 2011/01/31 v1.0 Define protected commands (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: protecteddef
+Version: 2011/01/31 v1.0
+
+Copyright (C) 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file protecteddef.dtx
+and the derived files
+   protecteddef.sty, protecteddef.pdf, protecteddef.ins, protecteddef.drv,
+   protecteddef-test1.tex, protecteddef-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{protecteddef.ins}{\from{protecteddef.dtx}{install}}%
+  \file{protecteddef.drv}{\from{protecteddef.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{protecteddef.sty}{\from{protecteddef.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{protecteddef-test1.tex}{\from{protecteddef.dtx}{test1}}%
+  \file{protecteddef-test2.tex}{\from{protecteddef.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{protecteddef.xml}{\from{protecteddef.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     protecteddef.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `protecteddef.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{protecteddef.drv}%
+  [2011/01/31 v1.0 Define protected commands (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{protecteddef.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{811}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{protecteddef.drv}
+%
+% \title{The \xpackage{protecteddef} package}
+% \date{2011/01/31 v1.0}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This packages provides \cs{ProtectedDef} for defining
+% robust macros for both \hologo{plainTeX} and \hologo{LaTeX}.
+% First \hologo{eTeX}'s \cs{protected} is tried, then
+% \hologo{LaTeX}'s \cs{DeclareRobustCommand} is used.
+% Otherwise the macro is not made robust.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Many of my packages work for both formats \hologo{plainTeX}
+% and \hologo{LaTeX}, even \hologo{iniTeX} is often supported.
+% It would be nice if fragile macros could be protected and
+% made robust. However the different format worlds offer different
+% solutions.
+%
+% \subsection{The \hologo{LaTeX}'s way}
+%
+% Usually \cs{newcommand} is used to define macros. It provides
+% a check if the command to be defined is already defined or
+% cannot be defined for other reasons.
+%
+% For making robust macros \hologo{LaTeX} provides \cs{DeclareRobustCommand}.
+% It shares the syntax with \cs{newcommand}. However it does not provide
+% latters check. Internally the check is available via \cs{@ifdefinable}.
+%
+% Internally the robust macro is using \cs{protect} with a nested
+% macro definition. The \cs{protect} infrastructure is a feature of
+% \cs{LaTeX} and usually not available in other formats.
+%
+% \subsection{The \hologo{eTeX}'s way}
+%
+% The need for robust macros is addressed in \cs{eTeX}. It provides
+% \cs{protected} that modifies the behaviour of \cs{def} in a similar
+% way as \cs{long}. A protected macro does not expand in
+% some expandable contexts like writing to a file or \cs{edef}.
+%
+% \subsection{The way of this package}
+%
+% The package tries to find the available protection mechanism.
+% First it looks for \cs{eTeX}'s \cs{protected}, then
+% it uses \hologo{LaTeX}'s \cs{DeclareRobustCommand}.
+% If both fails, then the macro remains unprotected.
+%
+% Additionally, \cs{LaTeX}'s check, if a macro is already defined
+% is added in all cases. First \hologo{LaTeX}'s \cs{@ifdefinable}
+% is tried to be compatible with \hologo{LaTeX}.
+% If \cs{@ifdefinable} is not available, then the test is implemented
+% by asserting that the macro is undefined or has the meaning of \cs{relax}.
+% If the test fails, then in all cases the macro is not defined
+% and an error is thrown.
+%
+% \subsection{Usage}
+%
+% \begin{declcs}{ProtectedDef} \* \M{cmd} [\meta{num}] \M{definition text}
+% \end{declcs}
+% Macro \cs{ProtectedDef} follows the syntax of \hologo{LaTeX}'s
+% \cs{newcommand} with the exception that an optional argument
+% is not supported. Macro \meta{cmd} is to be defined as
+% \cs{long} macro without star with \meta{num} arguments.
+%
+% The number of arguments \meta{num} must be given as explicite digit
+% |0| upto |9|. Otherwise the part between the argument \meta{cmd} and
+% the \meta{definition text} is taken as parameter text in the syntax
+% of vanilla \hologo{TeX}. Examples (with \cs{protected}):
+% \begin{quote}
+%   \def\to{$\Rightarrow$ }%
+%   |\ProtectedDef*{\foo}[1]{\message{#1}}|\\
+%   \to |\protected\def\foo#1{\message#1}}|\\[1ex]
+%   |\ProtectedDef\foo{abc}|\\
+%   \to |\protected\def\foo{abc}|\\[1ex]
+%   |\ProtectedDef*\foo(#1)<#2>{#1/#2}|\\
+%   \to |\protected\def\foo(#1)<#2>{#1/#2}|
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@protecteddef.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{protecteddef}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@protecteddef.sty\endcsname
+\ProvidesPackage{protecteddef}%
+  [2011/01/31 v1.0 Define protected commands (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname ProDef@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\ProDef@AtEnd{%
+    \ProDef@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\ProDef@AtEnd{\ProDef@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Resources}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+\else
+  \let\TMP@RequirePackage\RequirePackage
+\fi
+\TMP@RequirePackage{ltxcmds}[2010/12/12]%
+\TMP@RequirePackage{infwarerr}[2010/04/08]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\ProDef@temp#1{%
+  \expandafter\def\csname ProDef@param[#1]\endcsname % hash-ok
+}
+\expandafter\def\csname ProDef@param\endcsname{}
+\ProDef@temp0{}
+\ProDef@temp1{##1}
+\ProDef@temp2{##1##2}
+\ProDef@temp3{##1##2##3}
+\ProDef@temp4{##1##2##3##4}
+\ProDef@temp5{##1##2##3##4##5}
+\ProDef@temp6{##1##2##3##4##5##6}
+\ProDef@temp7{##1##2##3##4##5##7}
+\ProDef@temp8{##1##2##3##4##5##7##8}
+\ProDef@temp9{##1##2##3##4##5##7##8##9}
+%    \end{macrocode}
+%
+%    \begin{macro}{\ProDef@IfDefinable}
+%    \begin{macrocode}
+\ltx@IfUndefined{@ifdefinable}{%
+  \long\def\ProDef@IfDefinable#1{%
+    \begingroup
+      \escapechar=-1 %
+    \ltx@ifundefined{\string#1}{%
+      \endgroup
+      \ltx@firstofone
+    }{%
+      \expandafter\endgroup
+      \expandafter
+      \edef\expandafter\ProDef@temp\expandafter{\string#1 }%
+      \@PackageError{protecteddef}{%
+        Command \ltx@backslashchar\ProDef@temp already defined%
+      }\@ehc
+      \ltx@gobbletwo
+    }%
+  }%
+}{%
+  \long\def\ProDef@IfDefinable#1{%
+    \let\ProDef@next\ltx@gobbletwo
+    \@ifdefinable{#1}{%
+      \let\ProDef@next\ltx@firstofone
+    }%
+    \ProDef@next
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname DeclareRobustCommand\endcsname\relax
+    \catcode`\&=14 % comment
+  \else
+    \newcommand*{\ProtectedDef}{%
+      \ltx@ifnextchar*{%
+        \ProDef@ProtectedDef
+      }{%
+        \ProDef@ProtectedDef{}%
+      }%
+    }%
+    \long\def\ProDef@ProtectedDef#1#2#3#{%
+      \ProDef@IfDefinable{#2}{%
+        \ltx@IfUndefined{ProDef@param#3}{%
+          \DeclareRobustCommand*{#2}{}%
+          \begingroup
+            \escapechar=-1 %
+            \def\ProDef@temp{#1}%
+          \edef\x{\endgroup
+            \ifx\ProDef@temp\ltx@empty
+              \noexpand\long
+            \fi
+            \noexpand\def
+            \expandafter\noexpand\csname\string#2 \endcsname
+          }%
+          \x#3%
+        }{%
+          \DeclareRobustCommand#1{#2}#3%
+        }%
+      }%
+    }%
+    \expandafter\expandafter\expandafter\ProDef@AtEnd
+  \fi
+\else
+  \catcode`\&=9 % ignore
+\fi%
+\ProDef@IfDefinable\ProtectedDef{%
+&  \protected
+  \def\ProtectedDef%
+}{%
+  \ltx@ifnextchar*{%
+    \let\ProDef@long\ltx@empty
+    \expandafter\ProDef@ProtectedDef\ltx@gobble
+  }{%
+    \let\ProDef@long\long
+    \ProDef@ProtectedDef
+  }%
+}
+\long\def\ProDef@ProtectedDef#1#2#{%
+  \ProDef@IfDefinable{#1}{%
+    \ltx@IfUndefined{ProDef@param#2}{%
+&     \protected
+      \ProDef@long
+      \def#1#2%
+    }{%
+&     \protected
+      \ProDef@long
+      \expandafter\expandafter\expandafter\def
+      \expandafter\expandafter\expandafter#1%
+      \csname ProDef@param#2\endcsname
+    }%
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProDef@AtEnd%
+%    \end{macrocode}
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input protecteddef.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test without \hologo{LaTeX} and \cs{protected}}
+%
+%    \begin{macrocode}
+%<*test2>
+\errorcontextlines=10000 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input protecteddef.sty\relax
+  \catcode`\{=1 %
+  \catcode`\}=2 %
+  \catcode`\#=6 %
+\else
+  \RequirePackage{protecteddef}[2011/01/31]%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+  \let\pdef\def
+\else
+  \def\pdef{\protected\def}%
+\fi
+\def\msg#{\immediate\write16}
+\countdef\errcount=2 %
+\long\def\BeginCheck#1\ProtectedDef#2\EndCheck{%
+  \begingroup
+    \toks0={\ProtectedDef#2}%
+    \msg{<<\the\toks0>>}%
+  \endgroup
+  \setbox0=\hbox{%
+    #1%
+    \ProtectedDef#2%
+    \check\foo
+  }%
+  \ifdim\wd0=0pt\relax
+  \else
+    \errmessage{[Definition] Unwanted spaces?!}%
+  \fi
+  \setbox0=\hbox{%
+    \def\fooinitial{XYZ}%
+    \let\foo\fooinitial
+    \errcount=0 %
+    \expandafter\def\csname @PackageError\endcsname##1##2##3{%
+      \advance\errcount by 1 %
+    }%
+    \expandafter\def\csname @notdefinable\endcsname{%
+      \advance\errcount by 1 %
+    }%
+    \ProtectedDef#2%
+    \ifnum\errcount=1 %
+    \else
+      \errmessage{1 error expected, but found: \the\errcount}%
+    \fi
+    \ifx\foo\fooinitial
+    \else
+      \def\space{ }%
+      \errmessage{\string\foo\space is overwritten}%
+    \fi
+  }%
+  \ifdim\wd0=0pt\relax
+  \else
+    \errmessage{[Error] Unwanted spaces?!}%
+  \fi
+}
+\chardef\DeclareVersion=0 %
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname DeclareRobustCommand\endcsname\relax
+  \else
+    \chardef\DeclareVersion=1 %
+  \fi
+\fi
+\ifnum\DeclareVersion=0 %
+  \def\check#1{%
+    \ifx\cmp#1%
+      \msg{* Test passed.}%
+    \else
+      \msg{}%
+      \msg{[\meaning#1]}%
+      \msg{[\meaning\cmp]}%
+      \errmessage{Test failed!}%
+    \fi
+  }%
+\else
+  \def\check#1{%
+    \begingroup
+      \escapechar=-1 %
+    \edef\x{\endgroup
+      \def\noexpand\cs/{\string#1}%
+    }\x
+    \edef\CMP{%
+      \noexpand\protect
+      \expandafter\noexpand\csname\cs/ \endcsname
+    }%
+    \ifx\CMP#1%
+      \expandafter\ifx\csname\cs/ \endcsname\cmp
+        \msg{Test passed.}%
+      \else
+        \msg{}%
+        \msg{[\expandafter\meaning\csname\cs/ \endcsname]}%
+        \msg{[\meaning\cmp]}%
+        \errmessage{Test failed!}%
+      \fi
+    \else
+      \msg{}%
+      \msg{[\meaning#1]}%
+      \msg{[\meaning\CMP]}%
+      \errmessage{Test failed!}%
+    \fi
+  }%
+\fi
+
+\tracingmacros=1
+
+\BeginCheck
+  \pdef\cmp{}%
+  \ProtectedDef*\foo{}%
+\EndCheck
+
+\BeginCheck
+  \pdef\cmp{}%
+  \ProtectedDef*\foo[0]{}%
+\EndCheck
+
+\BeginCheck
+  \pdef\cmp#1{<#1>}%
+  \ProtectedDef*\foo[1]{<#1>}%
+\EndCheck
+
+\BeginCheck
+  \pdef\cmp(#1){<#1>}%
+  \ProtectedDef*\foo(#1){<#1>}%
+\EndCheck
+
+\BeginCheck
+  \long\pdef\cmp{}%
+  \ProtectedDef\foo{}%
+\EndCheck
+
+\BeginCheck
+  \long\pdef\cmp{}%
+  \ProtectedDef\foo[0]{}%
+\EndCheck
+
+\BeginCheck
+  \long\pdef\cmp#1{<#1>}%
+  \ProtectedDef\foo[1]{<#1>}%
+\EndCheck
+
+\BeginCheck
+  \long\pdef\cmp(#1){<#1>}%
+  \ProtectedDef\foo(#1){<#1>}%
+\EndCheck
+
+\csname @@end\endcsname\end
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/protecteddef.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/protecteddef.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex protecteddef.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   protecteddef.sty & tex/generic/oberdiek/protecteddef.sty\\
+%   protecteddef.pdf & doc/latex/oberdiek/protecteddef.pdf\\
+%   test/protecteddef-test1.tex & doc/latex/oberdiek/test/protecteddef-test1.tex\\
+%   test/protecteddef-test2.tex & doc/latex/oberdiek/test/protecteddef-test2.tex\\
+%   protecteddef.dtx & source/latex/oberdiek/protecteddef.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk protecteddef.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{protecteddef.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex protecteddef.dtx
+%makeindex -s gind.ist protecteddef.idx
+%pdflatex protecteddef.dtx
+%makeindex -s gind.ist protecteddef.idx
+%pdflatex protecteddef.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{protecteddef.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='protecteddef'>
+  <name>protecteddef</name>
+  <caption>Define protected commands.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    The package defines a command <tt>\ProtectedDef</tt> that will
+    create LaTeX &#x2018;robust&#x2019; command or an e-TeX
+    &#x2018;protected&#x2019; command as appropriate
+    to its environment.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/protecteddef.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/protecteddef.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2011/01/31 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

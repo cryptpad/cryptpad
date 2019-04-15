@@ -1,0 +1,268 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%\iffalse   % this is a METACOMMENT !
+%
+%% File `oldlfont.dtx'.
+%% Copyright (C) 1989-1995 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+%
+%<*dtx>
+          \ProvidesFile{oldlfont.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{oldlfont}
+%<driver> \ProvidesFile{oldlfont.drv}
+%<*!latex209>
+% \fi
+%         \ProvidesFile{oldlfont.dtx}
+          [2014/09/29 v2.2k Standard LaTeX package]
+%
+% \iffalse
+%</!latex209>
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{oldlfont.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{117}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+%
+%
+% \providecommand\dst{\expandafter{\normalfont\scshape docstrip}}
+%
+% \GetFileInfo{oldlfont.dtx}
+%
+% \title{The file \texttt{oldlfont.dtx} for use with
+%        \LaTeXe.\thanks{This file has version
+%        number \fileversion, dated \filedate.}\\[2pt]
+%        It contains the code for \texttt{oldlfont.sty}}
+%
+% \author{Frank Mittelbach}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Introduction}
+%
+%    This file contains the code for the \texttt{oldlfont} package
+%    which emulates the following \LaTeX~2.09 font commands:
+%    \begin{itemize}
+%    \item The two-letter font-changing commands |\rm|, etc.~are
+%       defined to cancel each other out as they did in \LaTeX~2.09.
+%    \item The two-letter font-changing commands are allowed in math
+%       mode.
+%    \item The |latexsym| package is loaded.
+%    \end{itemize}
+%    For full compatibility mode, the file |latex209.def| is loaded by
+%    |\documentstyle|.
+%
+% The following modules are used in the implementation to direct
+% \dst{} in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver   & produce a documentation driver file \\
+%   package  & produce |oldlfont.sty| \\
+%   latex209 & produce part of |latex209.def|
+% \end{tabular}
+% \end{center}
+%
+% \StopEventually{}
+%
+% \changes{v2.2k}{1995/11/29}{Remove duplicate driver code.}
+%
+% \section{The Code}
+%
+%
+% \begin{macro}{\math@bgroup}
+% \begin{macro}{\math@egroup}
+%   To make \meta{math alphabet identifier} work like simple font
+%   switches we change the meaning of |\math@bgroup| and
+%   |\math@egroup| to |\@empty|. This emulates the behavior of
+% \texttt{oldlfont.sty} in NFSS1 setups.  These definitions are not
+%    part of \texttt{latex209} automatically, since to emulate 2.09
+%    they are not necessary (all standard fonts are declared as math
+%    symbol fonts).
+% \changes{v2.2f}{1994/05/05}{Added saved versions of the
+% math-groupers, CAR}
+% \changes{v2.2g}{1994/05/09}{Moved outside latex209 part}
+%    \begin{macrocode}
+\let\math@bgroup\@empty
+\let\math@egroup\@empty
+\let \@@math@bgroup \math@bgroup
+\let \@@math@egroup \math@egroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%    The rest of this document describes code that is used in
+%    |oldlfont.sty| and |latex209.def|.
+%    \begin{macrocode}
+%<*package|latex209>
+%    \end{macrocode}
+%
+%    When emulating the old settings we don't want a lot of NFSS
+%    information being displayed. Thus we required that the
+%    \texttt{tracefnt} package is loaded with the option
+%    \texttt{errorshow}.
+%    \begin{macrocode}
+\RequirePackage[errorshow]{tracefnt}
+%    \end{macrocode}
+%
+%    We define math \emph{alphabet} identifiers for the typefaces
+%    described in the \LaTeX{} manual.  This is straightforward. Some
+%    are already defined by the kernel code.
+%    And here are the other ones defined by the old \LaTeX{}. They all
+%    get declared as math symbol font alphabets. Thus we first
+%    allocate the additional symbol fonts.
+%    \begin{macrocode}
+\DeclareSymbolFont{bold}{OT1}{cmr}{bx}{n}
+\DeclareSymbolFont{sans}{OT1}{cmss}{m}{n}
+\DeclareSymbolFont{typewriter}{OT1}{cmtt}{m}{n}
+\DeclareSymbolFont{italic}{OT1}{cmr}{m}{it}
+\DeclareSymbolFont{smallcaps}{OT1}{cmr}{m}{sc}
+\DeclareSymbolFont{slanted}{OT1}{cmr}{m}{sl}
+%    \end{macrocode}
+%    And here are the corresponding math identifiers.
+%    \begin{macrocode}
+\DeclareSymbolFontAlphabet\mathbf{bold}
+\DeclareSymbolFontAlphabet\mathsf{sans}
+\DeclareSymbolFontAlphabet\mathtt{typewriter}
+\DeclareSymbolFontAlphabet\mathsc{smallcaps}
+\DeclareSymbolFontAlphabet\mathsl{slanted}
+%    \end{macrocode}
+%    We undefine the old |\mit| and |\cal| macros (whatever meaning
+%    they have) and reallocate them as symbol font alphabets.
+%    \begin{macrocode}
+\let\mit\undefined
+\let\cal\undefined
+\let\mathit\undefined
+\DeclareSymbolFontAlphabet\mathit{italic}
+\DeclareSymbolFontAlphabet{\mit}{letters}
+\DeclareSymbolFontAlphabet{\cal}{symbols}
+%    \end{macrocode}
+%
+%    We define the font commands for selecting the typeface. They are
+%    probably defined by the document class/style but we want to force
+%    the old meaning.
+%
+%    And here are the definition as they were in \LaTeX~2.09 but
+%    translated into NFSS2 language.
+% \changes{v2.2h}{1994/05/11}{DPC use \cs{DeclareProtectedCommand}}
+% \changes{v2.2i}{1994/05/13}{DPC renamed to \cs{DeclareRobustCommand}}
+%    \begin{macrocode}
+\DeclareRobustCommand\rm{\normalfont\rmfamily\mathgroup\symoperators}
+\DeclareRobustCommand\sf{\normalfont\sffamily\mathgroup\symsans}
+\DeclareRobustCommand\sl{\normalfont\slshape\mathgroup\symslanted}
+\DeclareRobustCommand\bf{\normalfont\bfseries\mathgroup\symbold}
+\DeclareRobustCommand\sc{\normalfont\scshape\mathgroup\symsmallcaps}
+\DeclareRobustCommand\it{\normalfont\itshape\mathgroup\symitalic}
+\DeclareRobustCommand\tt{\normalfont\ttfamily\mathgroup\symtypewriter}
+%    \end{macrocode}
+%     We also have to define the \emph{emphasize} font change command
+%    (i.e.\ |\em|). This command will look whether the current font is
+%    sloped (i.e.\ has a positive |\fontdimen1|) and will then select
+%    either |\rm| or |\it|.
+%    \begin{macrocode}
+\DeclareRobustCommand\em{%
+  \@nomath\em
+  \ifdim \fontdimen\@ne\font>\z@\rm\else\it\fi}
+%    \end{macrocode}
+%
+% \begin{macro}{\@setfontsize}
+%    Font size changes are handled using the |\@setfontsize| command
+%    (in new class files) or by the |@setsize| command in old document
+%    style files. The latter is now defined to call |\@setfontsize| in
+%    the NFSS2 kernel code.
+%    Thus to make all size changing commands automatically return to
+%    the normal font of the document we only have to slightly modify
+%    the definition of |\@setfontsize| by adding a |\normalfont|
+%    command to it.
+% \changes{v2.2j}{1994/11/06}{Use \cs{@typeset@protect}}
+%    \begin{macrocode}
+\def\@setfontsize#1#2#3{\@nomath#1%
+    \ifx\protect\@typeset@protect
+      \let\@currsize#1%
+    \fi
+    \fontsize{#2}{#3}\normalfont}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\non@alpherr}
+%    Since we emulate the old syntax we also have to silently ignore
+%    uses of a math alphabet outside math mode. Since we now use the
+%    |\sym...| switches the following setting is not longer necessary.
+%    \begin{macrocode}
+%\let\non@alpherr\@gobble
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\not@math@alphabet}
+%    But we need to disable the error message that is generated from
+%    |\bfseries| etc.
+%    \begin{macrocode}
+\let\not@math@alphabet\@gobbletwo
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%    We left out the special \LaTeX{} fonts which are not automatically
+%    included in the base version of the font selection since these
+%    fonts contain only a few characters which are also included in
+%    the AMS fonts so anybody who is using these fonts doesn't need
+%    them.  But for compatibility reasons we will define these symbols.
+%
+%    \begin{macrocode}
+\RequirePackage{latexsym}
+%</package|latex209>
+%    \end{macrocode}
+%
+% \DeleteShortVerb{\|}
+% \Finale
+\endinput

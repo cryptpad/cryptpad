@@ -1,0 +1,1223 @@
+% \def\filename{amsdtx.dtx}
+% \def\fileversion{2.07}
+% \def\filedate{2009/08/19}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1996, 1999, 2004, 2009 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+% \iffalse
+%    The following section of code makes this file self-printable.
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{amsdtx}
+
+\newcommand{\rp}{\let\PBS\\\raggedright\let\\\PBS}
+
+\CodelineIndex
+
+\begin{document}
+
+\title{The \cls{amsldoc} and \cls{amsdtx} document classes}
+
+\author{American Mathematical Society\\Michael Downes\\
+  updated by David M. Jones}
+
+\date{Version \fileversion, \filedate}
+
+\DocInput{amsdtx.dtx}
+
+\PrintIndex
+
+\end{document}
+%</driver>
+% \fi
+%
+%^^A If this file is printed by itself the \fileversion and \filedate
+%^^A information will come from the file header rather than from the
+%^^A \ProvidesClass command. See \hDocInput.
+% \maketitle
+%
+%    \tableofcontents
+%
+% \MakeShortVerb\|
+% \section{Introduction}
+%    This file is the source for two documentclasses, \cls{amsldoc}
+%    (used for the \amslatex/ user's guide) and \cls{amsdtx} (used for
+%    printing AMS \fn{.dtx} files). The generic \cls{book} class is used
+%    as a base, but the \cls{amsdtx} class is modified to serve as an
+%    article-type class. This affects the form of documentation files
+%    mainly in the use of \cn{maketitle} and \cn{chapter}.
+%
+% \begin{table}
+% \caption{Features of the \cls{amsldoc} and \cls{amsdtx} classes}
+% \centering
+% \begin{tabular}{lp{.65\columnwidth}}
+% Command Name& Purpose\\
+% \hline
+% \cn{cn}& \rp To print a user command name: \verb"\cn{title}"; leading
+%   backslash can be optionally included for control symbols:
+%   \verb"\cn{\%}". The \cn{cn} command works properly even in macro
+%   arguments (compare to, e.g., \cn{verb}\verb"'\newif'"). But beware
+%   of a fragile control symbol (are there any?) in a moving argument.\\
+% \cn{cs}& \rp `Control sequence': to print an internal command name,
+%   not intended for the end user\\
+% \cn{env}& \rp To print an environment name: \verb"\env{table}"\\
+% \cn{pkg}& \rp To print a package name: \verb"\pkg{eufrak}"\\
+% \cn{cls}& \rp To print a class name: \verb"\cls{book}"\\
+% \cn{opt}& \rp To print the name of a class or package option:
+%   \verb"\opt{twocolumn}"\\
+% \cn{bst}& \rp To print the name of a \bibtex/ style
+%   \verb"\bst{amsalpha}"\\
+% \cn{fn}& \rp To print a file name or font name: \verb"\fn{T1enc.def}",
+%   \verb"\fn{cmsy10}"\\
+% \cn{fnt}& \rp To print a font name: \verb"\fn{cmsy10}" \\
+% \cn{cnt}& \rp To print a counter name: \verb"\fn{topnumber}" \\
+% \cn{qc}& \rp To quote a single character: \verb"\qc{\%}";
+%   this works properly for special characters, even in macro
+%   arguments, unlike e.g., \verb"\verb'%'"\\
+% \cn{latex/} etc.& \rp Convenient forms of \cn{LaTeX}, \cn{TeX},
+%   \cn{BibTeX}, etc. that are easier to type and have a trailing slash
+%   to eliminate the following-space problem (without needing different
+%   markup in different contexts)
+% \end{tabular}
+% \end{table}
+%
+% \StopEventually{}
+%
+%    Standard starting pieces. (Note: the reason each \cn{ProvidesClass}
+%    command is placed on a line by itself, with separate begin and end
+%    guards for docstripping, is to make automatic update of file date
+%    and version slightly easier and more robust.)
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1995/06/01]% LaTeX date must be June 1995 or later
+%<*amsldoc>
+\ProvidesClass{amsldoc}[2009/08/19 v2.07]
+%</amsldoc>
+%<*amsdtx>
+\ProvidesClass{amsdtx}[2009/08/19 v2.07]
+%</amsdtx>
+%    \end{macrocode}
+%
+% \section{Implementation}
+%    Start with the generic book class as a base.
+%    \begin{macrocode}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
+\ProcessOptions
+\LoadClass{book}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\IfFileExists{url.sty}{%
+    \RequirePackage{url}\relax
+    \@gobble
+}{%
+    \@firstofone
+}
+{
+    \DeclareRobustCommand{\url}[1]{%
+        \def\@tempa{#1}%
+        \texttt{\urlsetup $\expandafter\strip@prefix\meaning\@tempa$}%
+    }%
+    \def\urlsetup{%
+        \check@mathfonts \textfont\@ne\the\font \textfont\z@\the\font
+        \urlfix +\urlfix\=\urlfix\:\urlfix\-\urlfix\.\urlfix\,\urlfix\;%
+        \urlbreak\&\urlbreak\/\urlbreak\?%
+    }%
+    \def\urlbreak#1{%
+        \mathcode`#1="8000
+        \begingroup \lccode`\~=`#1 \lowercase{\endgroup \edef~}%
+        {\mathchar\number`#1\penalty\hyphenpenalty}%
+    }%
+    \def\urlfix#1{%
+        \mathcode`#1=`#1\relax
+    }%
+}
+%    \end{macrocode}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%    \begin{macrocode}
+\providecommand{\qq}[1]{\textquotedblleft#1\/\textquotedblright}
+\providecommand{\mdash}{\textemdash\penalty\exhyphenpenalty}
+\providecommand{\ndash}{\textendash\penalty\exhyphenpenalty}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\@xp\expandafter
+%    \end{macrocode}
+%    \section{Indexing primitives}
+%
+%    Unlike \pkg{amsdtx}, \pkg{amsldoc} doesn't load the \pkg{doc}
+%    package, so we need to provide the following logical names.  The
+%    values are consistent with \fn{makeindex}'s default conventions.
+%    \begin{macrocode}
+%<*amsldoc>
+\def\actualchar{@}
+\def\quotechar{"}
+\def\levelchar{!}
+\def\encapchar{|}
+\def\verbatimchar{+}
+%    \end{macrocode}
+%    We also need the \cs{ifcodeline@index} switch.
+%    \begin{macrocode}
+\newif\ifcodeline@index
+%</amsldoc>
+%    \end{macrocode}
+%
+%    \begin{macro}{\autoindex}
+%    When generating a codeline index, this encapsulates the page
+%    number in italics.
+%    \begin{macrocode}
+\newcommand*{\autoindex}[1]{%
+    \index{#1\ifcodeline@index\encapchar usage\fi}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ntt}
+%    To avoid font substitution warnings we make the tt font always
+%    print in the normal weight and shape.
+%    \begin{macrocode}
+\newcommand{\ntt}{\normalfont\ttfamily}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\indexcs}
+%    Index a control sequence without printing it. Note
+%    non-long. The \cs{@nobslash} strips off an optional leading
+%    backslash before passing the control sequence name to
+%    \cs{@indexcs}.  This means that |\indexcs{\cs}| and
+%    |\indexcs{cs}| produce the same index entry.
+%    \begin{macrocode}
+\newcommand*{\indexcs}[1]{%
+    \@xp\@xp\@xp\@indexcs\@xp\@nobslash\string#1\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@indexcs}
+%    Given |cs| as an argument, this writes something like
+%    |cs@\verb"*+\cs+| to the \fn{.idx} file (or |cs=\verb!*+\cs+| if
+%    using \fn{doc.sty}).
+%    \begin{macrocode}
+\def\@indexcs#1\@nil{%
+    \autoindex{#1\actualchar
+        \string\verb\quotechar*\verbatimchar
+            \@xp\@bothoftwo\string\ #1\@empty
+        \verbatimchar
+    }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@bothoftwo}
+%    This has the effect of removing spaces before each of the
+%    arguments.  In particular, it removes the space generated by
+%    \verb*+\string\ + above.
+%    \begin{macrocode}
+\def\@bothoftwo#1#2{#1#2}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\category@index}
+%    \begin{macrocode}
+\def\category@index#1#2{%
+    {\ntt#2}%
+    \@category@index{#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@category@index}
+%    \begin{macrocode}
+\def\@category@index#1#2{%
+    \autoindex{%
+        #2\actualchar\string\texttt{#2}%
+        \ifx\@nil#1\@nil\else\space#1\fi
+    }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Some functions to support \cn{cn} etc. For most of these commands
+%    we don't really want them to be \cs{long}! But in some early
+%    releases of \LaTeXe\ the \verb'*' form of \cn{newcommand} was not
+%    yet available.
+%
+%    We use the name \cn{bslchar} instead of \cn{bslash} to avoid
+%    potential conflict with the \pkg{doc} package \cn{bslash} command.
+%    Unlike \cn{bslash}, \cn{bslchar} survives unlimited
+%    writing/expansion because it is a chardef.
+%    \begin{macrocode}
+\chardef\bslchar=`\\ % p. 424, TeXbook
+\newcommand{\addbslash}{\expandafter\@addbslash\string}
+\def\@addbslash#1{\bslchar\@nobslash#1}
+\newcommand{\nobslash}{\expandafter\@nobslash\string}
+\def\@nobslash#1{\ifnum`#1=\bslchar\else#1\fi}
+%    \end{macrocode}
+%
+%  \begin{macro}{\@boxorbreak}
+%    Start up for a \cn{cs} or \cn{cn} command, adds an \cs{hbox} if in
+%    math, or an allowbreak penalty if the preceding item is not a space.
+%    (In case two such commands are used side-by-side.)
+%    \begin{macrocode}
+\def\@boxorbreak{%
+    \leavevmode
+    \ifmmode\hbox\else\ifdim\lastskip=\z@\penalty9999 \fi\fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    Control sequence. The function \cn{addbslash} makes this command
+%    also usable for some special control sequences like \cn{\%} \cn{\}}
+%    \cn{\{}: instead of writing |\cs{%}| which doesn't work, you can
+%    write |\cs{\%}|.
+%    \begin{macrocode}
+\DeclareRobustCommand{\cs}[1]{%
+    \@boxorbreak{%
+        \ntt
+        \addbslash#1\@empty
+        \@xp\@xp\@xp\@indexcs\@xp\@nobslash\string#1\@nil
+    }%
+}
+%    \end{macrocode}
+%
+%    Allow distinguishing non-private `command names' that will be
+%    visible to the user from internal (mostly private) `control
+%    sequences'.
+%    \begin{macrocode}
+\let\cn\cs
+%    \end{macrocode}
+%
+%    \begin{macro}{\embrace}
+%    \begin{macrocode}
+\DeclareTextSymbol{\lbracechar}{OT1}{123}
+\DeclareTextSymbolDefault{\lbracechar}{OT1}
+\DeclareTextSymbol{\rbracechar}{OT1}{125}
+\DeclareTextSymbolDefault{\rbracechar}{OT1}
+
+\providecommand{\embrace}[1]{%
+  \begingroup \ntt\lbracechar#1\rbracechar\endgroup}
+%    \end{macrocode}
+%    \end{macro}
+%
+% One mandatory argument: cnm; two: cnmm; one optional and one
+%    mandatory: cnom; throwing in a star: cnsom; and so on.
+%    \begin{macrocode}
+\providecommand{\cnbreak}{\penalty999\hskip0pt\relax}
+\providecommand{\cnm}[2]{\cn{#1}\cnbreak\embrace{#2}}
+\providecommand{\cnmm}[3]{\cn{#1}\cnbreak\embrace{#2}\cnbreak\embrace{#3}}
+\providecommand{\cnom}[1]{\cn{#1}\cnbreak\ommitude}
+\providecommand{\ommitude}[2][]{{\ntt[#1]}\cnbreak\embrace{#2}}
+\providecommand{\cnmsm}[4]{%
+  \cn{#1}\cnbreak\embrace{#2}\cnbreak *\embrace{#4}}
+%    \end{macrocode}
+%    The following items should not normally appear in math mode so they
+%    don't need to call \cs{@boxorbreak}.
+%
+%    \latex/ documentclass name.
+%    \begin{macrocode}
+\DeclareRobustCommand{\cls}{\category@index{class}}
+%    \end{macrocode}
+%
+%    \latex/ package name.
+%    \begin{macrocode}
+\DeclareRobustCommand{\pkg}{\category@index{package}}
+%    \end{macrocode}
+%
+%    \latex/ option name.
+%    \begin{macrocode}
+\DeclareRobustCommand{\opt}{\category@index{option}}
+%    \end{macrocode}
+%
+%    Environment name.
+%    \begin{macrocode}
+%<amsdtx>\DeclareRobustCommand{\env}[1]{{\ntt#1}\SpecialEnvIndex{#1}}
+%<amsldoc>\DeclareRobustCommand{\env}{\category@index{environment}}
+%    \end{macrocode}
+%
+%    File name.
+%    \begin{macrocode}
+\DeclareRobustCommand{\fn}{\category@index{}}
+%    \end{macrocode}
+%
+%    \bibtex/ style.
+%    \begin{macrocode}
+\DeclareRobustCommand{\bst}{\category@index{\string\BibTeX{} style}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand{\cnt}{\category@index{counter}}
+\DeclareRobustCommand{\fnt}{\category@index{font}}
+%    \end{macrocode}
+%
+%    With long command names or file names we sometimes prefer to allow
+%    hyphenation in the tt font (in combination with suitable
+%    \cn{hyphenation} statements for individual documents). To make this
+%    work we must turn off the feature of \latex/ that disables the
+%    hyphenchar of the tt fonts.
+%
+%    The method shown here depends on the assumption that OT1 encoding
+%    will be used for the tt fonts. An encoding-independent method would
+%    be more awkward: You'd have to explicitly load the relevant
+%    fonts, let's say by using \cn{AtBeginDocument}, and undo the
+%    hyphenchar change individually for each font.
+%
+%    Instead we force loading, or possibly reloading (depending on the
+%    preload options used locally for creating the \latex/ format file),
+%    of the \fn{OT1/cmtt} fd file, and then clear the macro
+%    \cs{OT1+cmtt} which contains code to execute whenever a font of
+%    this family is first loaded. The default value is to turn off the
+%    hyphenchar, and that's what we don't want.
+%
+%    This method is not especially palatable but other methods that
+%    don't involve loading the fd file are significantly less reliable.
+%    \begin{macrocode}
+\def\allowtthyphens{\begingroup
+  \fontencoding{OT1}\fontfamily{cmtt}%
+%    \end{macrocode}
+%    Undefine the csname that \cs{try@load@fontshape} tests to determine
+%    whether the fd file needs loading. Then call
+%    \cs{try@load@fontshape}. Then we can remove the `turn off
+%    hyphenation' code, which as it happens resides in the same csname
+%    that was tested.
+%    \begin{macrocode}
+  \expandafter\let\csname OT1+cmtt\endcsname\relax
+  \try@load@fontshape
+  \endgroup
+  \expandafter\let\csname OT1+cmtt\endcsname\@empty
+}
+%    \end{macrocode}
+%
+%    We allow some slop at the right margin because we have some
+%    long control sequence names and verbatim text to deal with. Also
+%    ignore underfull hboxes and vboxes unless they are really bad.
+%    \begin{macrocode}
+\hfuzz2pc
+\vbadness9999 \hbadness5000
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\AmS{{\protect\usefont{OMS}{cmsy}{m}{n}%
+  A\kern-.1667em\lower.5ex\hbox{M}\kern-.125emS}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\latex/{{\protect\LaTeX}}
+\def\amslatex/{{\protect\AmS-\protect\LaTeX}}
+\def\tex/{{\protect\TeX}}
+\def\amstex/{{\protect\AmS-\protect\TeX}}
+\def\bibtex/{{Bib\protect\TeX}}
+%    \end{macrocode}
+%
+%    \cn{makeindex} command is already used for other purposes.
+%    \begin{macrocode}
+\def\makeindx/{MakeIndex}
+%    \end{macrocode}
+%
+%    Don't allow a break after the hyphen:
+%    \begin{macrocode}
+\def\xypic/{XY\mbox{-}pic}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcommand{\Textures}{\textit{Textures}}
+%    \end{macrocode}
+%
+%    `Meta' macro.
+%    \begin{macrocode}
+\def\<#1>{\textit{$\langle$#1\/$\rangle$}}
+%    \end{macrocode}
+%
+%    Reduce itemsep in lists.
+%    \begin{macrocode}
+\def\@listi{%
+  \leftmargin\leftmargini
+  \topsep 3\p@ \@plus2\p@ \@minus\p@
+  \parsep \p@ \@plus\p@ \itemsep\parsep
+}
+\let\@listI\@listi
+\@listi
+\def\@listii{%
+  \leftmargin\leftmarginii
+  \labelwidth\leftmarginii \advance\labelwidth-\labelsep
+  \topsep\p@\@plus\p@ \@minus\p@
+  \parsep\z@skip \itemsep\z@skip
+}
+\def\@listiii{%
+  \leftmargin\leftmarginiii
+  \labelwidth\leftmarginiii \advance\labelwidth-\labelsep
+  \topsep\z@skip \parsep\z@skip \itemsep\z@skip
+}
+%    \end{macrocode}
+%
+%    An environment to encapsulate remarks relevant to old versions but
+%    not essential for the current version.
+%    \begin{macrocode}
+\newenvironment{histnote}{%
+  \trivlist\item[\hspace{\labelsep}\bfseries Historical Note:]%
+}{%
+  \endtrivlist
+}
+%    \end{macrocode}
+%
+%    Turn off \cs{autoindex} during \cn{tableofcontents} or similar.
+%    \begin{macrocode}
+\def\@starttoc#1{\begingroup
+  \let\autoindex\@gobble
+  \makeatletter
+  \@input{\jobname.#1}\if@filesw
+  \expandafter\newwrite\csname tf@#1\endcsname
+             \immediate\openout
+                 \csname tf@#1\endcsname \jobname.#1\relax
+  \fi \global\@nobreakfalse \endgroup}
+%    \end{macrocode}
+%
+%    Make glossary commands a no-op for the moment. [mjd,1994/10/03]
+%    Provide a \cn{secref} command for section references.
+%    \begin{macrocode}
+%<*amsldoc>
+\newcommand{\gloss}[1]{}
+%</amsldoc>
+\newcommand*{\secref}[1]{\S\ref{#1}}
+%    \end{macrocode}
+%
+%    We can write |\qc{\%}| to quote a single
+%    character in situations where |\verb"%"| would not work, mainly
+%    when text is read as a macro argument (e.g., footnotes).
+%    \begin{macrocode}
+\newcommand{\qc}[1]{}% check for prior definition
+\edef\qc#1{\noexpand\protect\expandafter\noexpand\csname qc \endcsname
+  \noexpand\protect#1}
+%    \end{macrocode}
+%    For this function the first argument is \cn{protect} and just needs
+%    to be discarded. The method for removing a leading backslash is to
+%    turn off \cs{escapechar}; this is more forgiving of variations like
+%    |\qc{$}|. If the argument is `|\ |' we print a cmtt visible-space
+%    character, \qc{\ }.
+%    \begin{macrocode}
+\@namedef{qc }#1#2{\begingroup\ntt
+  \ifx\ #2\char`\ \else\escapechar\m@ne\string#2\fi\endgroup}
+%    \end{macrocode}
+%    Declare a few character names to avoid e.g., indexing difficulties.
+%    \begin{macrocode}
+\DeclareRobustCommand{\qcat}{\qc\@}%
+\DeclareRobustCommand{\qcamp}{\qc\&}%
+\DeclareRobustCommand{\qcbang}{\qc\!}%
+%    \end{macrocode}
+%
+%  \begin{macro}{\arg}
+%    Change \cn{arg} to print a macro argument number:
+%    \begin{macrocode}
+\DeclareRobustCommand{\arg}[1]{{\ntt\##1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    We need to emulate the \pkg{amsthm} \cn{qedsymbol} for the
+%    \amslatex/ user's guide.
+%    \begin{macrocode}
+%<*amsldoc>
+\newcommand{\openbox}{\leavevmode
+  \hbox to.77778em{%
+  \hfil\vrule
+  \vbox to.675em{\hrule width.6em\vfil\hrule}%
+  \vrule\hfil}}
+\newcommand{\qedsymbol}{\openbox}
+%</amsldoc>
+%    \end{macrocode}
+%
+%    Logical markup for e-mail address:
+%    \begin{macrocode}
+%<amsldoc>\def\mail{\texttt}
+%    \end{macrocode}
+%
+%    Shorthand for indexing:
+%    \begin{macrocode}
+%<*amsldoc>
+\def\*#1{\def\@tempa{#1}\def\@tempb{*}%
+  \ifx\@tempa\@tempb \expandafter\index
+  \else #1\index{#1}\fi}
+%</amsldoc>
+%    \end{macrocode}
+%
+%    Non-indexed \cn{cn} (maybe call this |\cn*|?)
+%    \begin{macrocode}
+\def\ncn#1{{\let\index\@gobble\cn{#1}}}
+%    \end{macrocode}
+%    Indexing difficulties with !, @.
+%    \begin{macrocode}
+
+\DeclareRobustCommand{\cnbang}{%
+  \ncn{\!}\index{"!@{\ntt\bslchar\qcbang}}}
+\DeclareRobustCommand{\cnat}{%
+  \ncn{\!}\index{"@@{\ntt\bslchar\qcat}}}
+%    \end{macrocode}
+%
+%    Shorthand for a discouraged, but not forbidden, line break:
+%    \begin{macrocode}
+\def\5{\penalty500 }
+%    \end{macrocode}
+%
+%    Environment for error message examples. Use \cs{meaning} to allow
+%    reading the error message text as an ordinary brace-delimited arg
+%    but still be able to print embedded braces; and first change the
+%    backslash catcode to prevent extra spaces after control words.
+%    \begin{macrocode}
+%<*amsldoc>
+\newenvironment{error}{%
+  \begingroup\catcode`\\=12 \expandafter\endgroup\errora
+}{%
+  \endtrivlist
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcommand{\errora}[1]{%
+  \trivlist
+  \item[\hskip\labelsep\errorbullet\enspace
+    \ntt\frenchspacing\def\@tempa{#1}%
+    \expandafter\strip@prefix\meaning\@tempa]\leavevmode\par
+}
+%    \end{macrocode}
+%    \cs{errorbullet} is just an attempt at a simple graphic device that
+%    doesn't require any special fonts.
+%    \begin{macrocode}
+\newcommand{\errorbullet}{\rule[-.5pt]{2.5pt}{7.5pt}%
+  \rule[-.5pt]{5pt}{2.5pt}\kern-2.5pt%
+  \rule[4.5pt]{2.5pt}{2.5pt}}
+%</amsldoc>
+%    \end{macrocode}
+%    A couple of subheading commands:
+%    \begin{macrocode}
+\newcommand{\errexa}{\par\noindent\textit{Example}:\ }
+\newcommand{\errexpl}{\par\noindent\textit{Explanation}:\ }
+%    \end{macrocode}
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{\cls{amsldoc} style modifications for sectioning commands}
+%    The following section deals with book commands (part, chapter,
+%    frontmatter, \dots).
+%    \begin{macrocode}
+%<*amsldoc>
+%    \end{macrocode}
+%
+%    Modifications of sectioning commands from \fn{book.cls}, mostly
+%    reducing font sizes and vertical spacing.
+%    \begin{macrocode}
+\renewcommand\frontmatter{\clearpage
+            \@mainmatterfalse\pagenumbering{roman}}
+\renewcommand\mainmatter{\clearpage
+       \@mainmattertrue\pagenumbering{arabic}}
+\renewcommand\backmatter{\clearpage \@mainmatterfalse}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\renewcommand\part{\clearpage
+                 \thispagestyle{plain}%
+                 \if@twocolumn
+                     \onecolumn
+                     \@tempswatrue
+                   \else
+                     \@tempswafalse
+                 \fi
+                 \hbox{}\vfil
+                 \secdef\@part\@spart}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@part[#1]#2{%
+    \ifnum \c@secnumdepth >-2\relax
+      \refstepcounter{part}%
+      \addcontentsline{toc}{part}{\thepart\hspace{1em}#1}%
+    \else
+      \addcontentsline{toc}{part}{#1}%
+    \fi
+    \markboth{}{}%
+    {\centering
+     \interlinepenalty \@M
+     \reset@font
+     \ifnum \c@secnumdepth >-2\relax
+       \Large\bfseries \partname~\thepart
+       \par
+       \vskip 20\p@
+     \fi
+     \Large \bfseries #2\par}%
+    \@endpart}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@spart#1{%
+    {\centering
+     \interlinepenalty \@M
+     \reset@font
+     \Large \bfseries #1\par}%
+    \@endpart}
+\def\@endpart{\vfil\newpage
+              \if@twoside
+                \hbox{}%
+                \thispagestyle{empty}%
+                \newpage
+              \fi
+              \if@tempswa
+                \twocolumn
+              \fi}
+%</amsldoc>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\renewcommand\chapter{\par \@afterindentfalse
+                    \secdef\@chapter\@schapter}
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                       \if@mainmatter
+                         \refstepcounter{chapter}%
+                         \typeout{\@chapapp\space\thechapter.}%
+                         \addcontentsline{toc}{chapter}%
+                                   {\protect\numberline{\thechapter}#1}%
+                       \else
+                         \addcontentsline{toc}{chapter}{#1}\fi
+                    \else
+                      \addcontentsline{toc}{chapter}{#1}
+                    \fi
+                    \chaptermark{#1}%
+                    \addtocontents{lof}{\protect\addvspace{10\p@}}%
+                    \addtocontents{lot}{\protect\addvspace{10\p@}}%
+                    \if@twocolumn
+                      \@topnewpage[\@makechapterhead{#2}]%
+                    \else
+                      \@makechapterhead{#2}%
+                      \@afterheading
+                    \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@makechapterhead#1{%
+  \vspace{1.5\baselineskip}%
+  {\parindent \z@ \raggedright \reset@font
+    \ifnum \c@secnumdepth >\m@ne
+      \large\bfseries \@chapapp\space\thechapter
+      \par\nobreak
+      \vskip.5\baselineskip\relax
+    \fi
+    #1\par\nobreak
+    \vskip\baselineskip
+  }}
+\def\@schapter#1{\if@twocolumn
+                   \@topnewpage[\@makeschapterhead{#1}]%
+                 \else
+                   \@makeschapterhead{#1}%
+                   \@afterheading
+                 \fi}
+\def\@makeschapterhead#1{%
+  \vspace*{1.5\baselineskip}%
+  {\parindent \z@ \raggedright
+    \reset@font
+    \large \bfseries  #1\par\nobreak
+    \vskip\baselineskip
+  }}
+%    \end{macrocode}
+%
+%    Add Donald Arseneau's \cs{@removefromreset}; used to decouple the
+%    footnote counter from \cn{chapter}, since chapters here do not
+%    automatically start on a new page.  [bnb, 1999/09/27]
+%  \begin{verbatim}
+%    \@removefromreset{FOO}{BAR} : Removes counter FOO from the list of
+%                       counters \cl@BAR to be reset when counter BAR
+%                       is stepped.  The opposite of \@addtoreset.
+%  \end{verbatim}
+%    \begin{macrocode}
+\def\@removefromreset#1#2{\let\@tempb\@elt
+   \expandafter\let\expandafter\@tempa\csname c@#1\endcsname
+   \def\@elt##1{\expandafter\ifx\csname c@##1\endcsname\@tempa\else
+         \noexpand\@elt{##1}\fi}%
+   \expandafter\edef\csname cl@#2\endcsname{\csname cl@#2\endcsname}%
+   \let\@elt\@tempb}
+\@removefromreset{footnote}{chapter}
+%    \end{macrocode}
+%
+%    Change running head font to \cn{footnotesize}, nonslanted.
+%    \begin{macrocode}
+\def\ps@headings{%
+  \let\@oddfoot\@empty\let\@evenfoot\@empty
+  \def\@evenhead{\thepage\hfil{\footnotesize\leftmark{}{}}}%
+  \def\@oddhead{{\footnotesize\rightmark{}{}}\hfil\thepage}%
+  \let\@mkboth\markboth
+  \def\chaptermark##1{%
+    \markboth {\uppercase{\ifnum \c@secnumdepth >\m@ne
+      \if@mainmatter
+        \@chapapp\ \thechapter. \ \fi
+      \fi
+        ##1}}{}}%
+  \def\sectionmark##1{%
+    \markright {\uppercase{\ifnum \c@secnumdepth >\z@
+        \thesection. \ \fi
+        ##1}}}}
+%    \end{macrocode}
+%
+%
+% \section{\cls{amsdtx} style modifications for sectioning commands}
+%    These definitions for \cn{maketitle} are from \fn{article.cls}.
+%    \begin{macrocode}
+%<*amsdtx>
+\renewcommand\maketitle{\par
+  \begingroup
+    \renewcommand\thefootnote{\fnsymbol{footnote}}%
+    \def\@makefnmark{\hbox to\z@{$\m@th^{\@thefnmark}$\hss}}%
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hbox to1.8em{\hss$\m@th^{\@thefnmark}$}##1}%
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+        \@maketitle
+      \else
+        \twocolumn[\@maketitle]%
+      \fi
+    \else
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \@maketitle
+    \fi
+    \thispagestyle{plain}\@thanks
+  \endgroup
+  \setcounter{footnote}{0}%
+  \let\thanks\relax
+  \let\maketitle\relax\let\@maketitle\relax
+  \gdef\@thanks{}\gdef\@author{}\gdef\@title{}}
+%
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 2em%
+  \begin{center}%
+    {\LARGE \@title \par}%
+    \vskip 1.5em%
+    {\large
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em%
+    {\large \@date}%
+  \end{center}%
+  \par
+%    \end{macrocode}
+%    Put the title into both running heads.
+%    \begin{macrocode}
+  \uppercase\expandafter{\expandafter\toks@\expandafter{\@title}}%
+  \edef\@tempa{\noexpand\markboth{\the\toks@}{\the\toks@}}%
+  \@tempa
+  \vskip 1.5em}
+%</amsdtx>
+%    \end{macrocode}
+%
+%    Edit the table of contents.
+%    \begin{macrocode}
+%<*amsdtx>
+\renewcommand\tableofcontents{%
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \subsection*{\contentsname}%
+    \@starttoc{toc}%
+    \if@restonecol\twocolumn\fi
+    }
+%</amsdtx>
+%    \end{macrocode}
+%
+%    Edit the sectioning commands.
+%    \begin{macrocode}
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-.6\baselineskip \@plus -3\p@}%
+                                   {.4\baselineskip}
+%<amsdtx>                          {\reset@font\Large\bfseries}}
+%<amsldoc>                         {\reset@font\normalsize\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-.3\baselineskip\@plus -2\p@}%
+                                     {.2\baselineskip}%
+%<amsdtx>                          {\reset@font\large\bfseries}}
+%<amsldoc>                         {\reset@font\normalsize\bfseries}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-.2\baselineskip\@plus -2\p@}%
+                                     {.2\baselineskip}%
+                                     {\reset@font\normalsize\bfseries}}
+%    \end{macrocode}
+%    Change index environment to turn off \cn{autoindex}.
+%    \begin{macrocode}
+\renewenvironment{theindex}{%
+  \if@twocolumn \@restonecolfalse \else \@restonecoltrue \fi
+  \columnseprule \z@ \columnsep 35\p@
+  \let\autoindex\@gobble
+%<amsdtx>  \twocolumn[\section*{\indexname}]%
+%<amsldoc>  \twocolumn[\@makeschapterhead{\indexname}]%
+  \addcontentsline{toc}{chapter}{\indexname}%
+  \@mkboth{\uppercase{\indexname}}{\uppercase{\indexname}}%
+  \thispagestyle{plain}\parindent\z@
+  \parskip\z@ \@plus .3\p@\relax
+  \let\item\@idxitem
+}{%
+  \if@restonecol\onecolumn\else\clearpage\fi
+}
+%    \end{macrocode}
+%
+%    Take out \cn{thechapter} from \cn{thesection}.
+%    \begin{macrocode}
+%<amsdtx>\renewcommand{\thesection}{\arabic{section}}
+%    \end{macrocode}
+%
+%    Change the style of captions slightly. Also incorporate some
+%    caption improvements from Donald Arseneau (\fn{comp.text.tex}, 11
+%    Oct 1994).
+%    \begin{macrocode}
+\long\def\@makecaption#1#2{%
+  \addvspace\abovecaptionskip
+  \begingroup
+    \countdef\@parcycles=8 % local count register
+    \@parcycles\z@
+    \@setpar{\advance\@parcycles\@ne \ifnum\@parcycles>999
+      \@@par\@parcycles\z@\fi
+      \ifhmode \unskip\hskip\parfillskip\penalty-\@M\fi}%
+    \@hangfrom{\textbf{#1.} }\vadjust{\penalty\m@ne}#2%
+  \endgroup
+  \ifhmode\unpenalty\fi\par
+  \ifnum\lastpenalty=\m@ne % only one line in the caption
+    \unpenalty \setbox\@tempboxa\lastbox
+    \nointerlineskip
+    \hbox to\hsize{\hfill\unhbox\@tempboxa\unskip\hfill}%
+  \fi
+  \nobreak\vskip\belowcaptionskip
+}
+%    \end{macrocode}
+%    For table captions, assume top captions and so put space below the
+%    caption rather than above:
+%    \begin{macrocode}
+\renewenvironment{table}{%
+  \belowcaptionskip\abovecaptionskip \abovecaptionskip\z@skip
+  \@float{table}%
+}{%
+  \end@float
+}
+\renewenvironment{table*}{%
+  \belowcaptionskip\abovecaptionskip \abovecaptionskip\z@skip
+  \@dblfloat{table}%
+}{%
+  \end@dblfloat
+}
+%    \end{macrocode}
+%
+% \section{Float placement parameters}
+%    These control the placing of floating objects like tables and
+%    figures. The values here, which are much more tolerant than the
+%    \latex/ defaults, are more or less copied from \fn{amsclass.dtx}.
+%    \begin{macrocode}
+\setcounter{topnumber}{4}\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{4}\setcounter{dbltopnumber}{4}
+\renewcommand{\topfraction}{.97}\renewcommand{\bottomfraction}{.97}
+\renewcommand{\textfraction}{.03}\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\dbltopfraction}{.97}
+\renewcommand{\dblfloatpagefraction}{.9}
+\setlength{\floatsep}{8pt plus6pt}
+\setlength{\textfloatsep}{10pt plus8pt}
+\setlength{\intextsep}{8pt plus6pt}
+\setlength{\dblfloatsep}{8pt plus6pt}
+\setlength{\dbltextfloatsep}{10pt plus8pt}
+\setlength{\@fptop}{0pt}\setlength{\@fpsep}{8pt}%
+\setlength{\@fpbot}{0pt plus 1fil}
+\setlength{\@dblfptop}{0pt}\setlength{\@dblfpsep}{8pt}%
+\setlength{\@dblfpbot}{0pt plus 1fil}
+%    \end{macrocode}
+
+%    \begin{macrocode}
+\pagestyle{headings}
+%    \end{macrocode}
+%
+%    Make \verb"|...|" shorthand for verbatim fragments. In the case of
+%    the \cls{amsldoc} class, we avoid requiring an extra package
+%    (\pkg{doc} or \pkg{shortvrb}), to reduce the possibility of package
+%    files not being found at run time.
+%    \begin{macrocode}
+%<*amsldoc>
+\AtBeginDocument{\catcode`\|=\active }
+\def\activevert{\verb|}
+\expandafter\gdef\expandafter\dospecials\expandafter
+  {\dospecials \do\|}%
+\expandafter\gdef\expandafter\@sanitize\expandafter
+  {\@sanitize \@makeother\|}
+\begingroup\catcode`\|=\active \gdef|{\protect\activevert{}}\endgroup
+%</amsldoc>
+%    \end{macrocode}
+%
+%  \begin{macro}{\arrayargpatch}
+%    If the column-specs arg of array or tabular contains a vert bar
+%    character, and we have made vert bars active, it will cause
+%    trouble. The following command, used in the ctab environment,
+%    prevents the trouble.
+%    \begin{macrocode}
+\newcommand{\arrayargpatch}{%
+  \let\@oldarray\@array
+  \edef\@array[##1]##2{\catcode\number`\|=\number\catcode`\|
+    \catcode\number`\@=\number\catcode`\@ \relax
+    \let\noexpand\@array\noexpand\@oldarray
+    \noexpand\@array[##1]{##2}}%
+  \catcode`\|=12 \catcode`\@=12 \relax
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{environment}{ctab}
+%    An environment for centered tables.
+%    \begin{macrocode}
+\newenvironment{ctab}{%
+  \par\topsep\medskipamount
+  \trivlist\centering
+  \item[]%
+  \arrayargpatch
+  \begin{tabular}%
+}{%
+  \end{tabular}%
+  \endtrivlist
+}
+%    \end{macrocode}
+%  \end{environment}
+%
+%    Load \pkg{doc} package, reset \cn{AltMacroFont} to be the same as
+%    \cn{MacroFont} (when there are large sections of conditional
+%    code I think it looks better not to have it all slanted).
+%    \begin{macrocode}
+%<*amsdtx>
+\RequirePackage{doc}
+\def\AltMacroFont{\MacroFont}
+%    \end{macrocode}
+%
+%    \begin{macro}{\SpecialMainEnvIndex}
+%    Override \fn{doc.sty}'s main environment indexing to get rid of
+%    the parens around ``environment'', for compatibility with our
+%    \cs{env} command.
+%    \begin{macrocode}
+\def\SpecialMainEnvIndex#1{%
+    \@bsphack
+    \special@index{%
+        #1\actualchar\string\texttt{#1} environment\encapchar main%
+    }%
+    \special@index{%
+        environments:\levelchar#1%
+        \actualchar\string\texttt{#1}%
+        \encapchar main}%
+    \@esphack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \begin{macro}{\SpecialEnvIndex}
+%    \begin{macrocode}
+\def\SpecialEnvIndex#1{%
+    \@bsphack
+    \index{#1\actualchar\string\texttt{#1} environment\encapchar usage}%
+    \index{%
+        environments:\levelchar#1%
+        \actualchar\string\texttt{#1}%
+        \encapchar usage}%
+    \@esphack
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macro}{\DescribeOption}
+%    \begin{macrocode}
+\def\DescribeOption{%
+    \leavevmode
+    \@bsphack
+    \begingroup
+        \MakePrivateLetters
+    \Describe@Option
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\Describe@Option}
+%    \begin{macrocode}
+\def\Describe@Option#1{%
+    \endgroup
+    \marginpar{\raggedleft\PrintDescribeOption{#1}}%
+    \SpecialOptionIndex{#1}%
+    \@esphack
+    \ignorespaces
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PrintDescribeOption}
+%    \begin{macrocode}
+\def\PrintDescribeOption#1{\strut \MacroFont #1\ }
+%    \end{macrocode}
+%    \end{macro}
+%
+% \begin{macro}{\option}
+%    \begin{macrocode}
+\def\option{%
+    \let\SpecialMainEnvIndex\SpecialMainOptionIndex
+\begingroup
+   \catcode`\\12
+   \MakePrivateLetters \m@cro@ \iffalse}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macro}{\SpecialMainOptionIndex}
+%    \begin{macrocode}
+\def\SpecialMainOptionIndex#1{%
+    \@bsphack
+    \special@index{#1\actualchar\string\texttt{#1} option\encapchar main}%
+    \@esphack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \begin{macro}{\SpecialOptionIndex}
+%    \begin{macrocode}
+\def\SpecialOptionIndex{\@category@index{option}}
+%    \end{macrocode}
+% \end{macro}
+%
+%    Ordinary \cn{DocInput} doesn't handle standardized file headers
+%    unless you enclose them in \cs{iffalse} \dots\ \cs{fi} which I
+%    don't care to do. So instead here's an alternate version of
+%    \cn{DocInput}, called \cn{hDocInput}.
+%    \begin{macrocode}
+\def\hDocInput#1{\MakePercentIgnore
+  \begingroup
+%    \end{macrocode}
+%    Define active \qc{\@} which should be the first non-percent,
+%    non-equal-sign character when a file header is present. (If a file
+%    header is not present, \cn{hDocInput} should not be used.)
+%    \begin{macrocode}
+  \begingroup \lccode`\~=`\@
+  \lowercase{\endgroup\long\def ~}##1##{%
+    \catcode`\==12 \skipfileheader{##1}}%
+  \catcode`\@=\active \catcode`\==14 % comment
+  \def\filename{#1}%
+  \@@input#1 \MakePercentComment}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\skipfileheader#1#2 {\endgroup
+  \hGetFileInfo#2 version = "??" date = "??"\@nil
+  \begingroup\catcode`\==9 \catcode`\ =9 \futurelet\0\endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\long\def\hGetFileInfo#1 version = "#2"#3 date = "#4"#5\@nil{%
+  \def\fileversion{#2}\def\filedate{#4}}
+%</amsdtx>
+%    \end{macrocode}
+%
+%
+%    \section{Hyphenation exceptions}
+%
+%    \begin{macrocode}
+\hyphenation{base-line-skip}
+%    \end{macrocode}
+%
+%    \section{Index exceptions}
+%
+%    A bunch of stuff we don't want in code indexes:
+%    \begin{macrocode}
+%<*amsdtx>
+\DoNotIndex{\@xp,\@nx,\@empty,\newcommand,\renewcommand}
+\DoNotIndex{\newenvironment,\renewenvironment,\providecommand}
+\DoNotIndex{\if,\fi,\ifnum,\fi,\@let@token,\futurelet,\fsa@n}
+\DoNotIndex{\ignorespaces,\@tempcnta,\@tempcntb,\count@}
+\DoNotIndex{\toks@,\@ne,\advance}
+\DoNotIndex{\!,\/,\?,\@,\^,\_}
+\DoNotIndex{\@@par,\@M,\@auxout,\@bsphack,\@esphack,\@depth,\@ehc}
+\DoNotIndex{\@for,\@flushglue,\@gobble,\@gobbletwo,\@height,\@idxitem}
+\DoNotIndex{\@ifnextchar,\@ifstar,\@ifundefined,\@input,\@latexerr}
+\DoNotIndex{\@makeschapterhead,\@namedef,\@nameuse,\@nil}
+\DoNotIndex{\@nobreakfalse,\@restonecolfalse,\@restonecoltrue}
+\DoNotIndex{\@tempa,\@tempb,\@tempc,\@tempf}
+\DoNotIndex{\@temptokena,\@temptokenb}
+\DoNotIndex{\@themark,\@width}
+\DoNotIndex{\active,\aindex,\baselineskip,\begin,\begingroup,\box}
+\DoNotIndex{\c@page,\catcode,\chapter,\char,\chardef,\closeout}
+\DoNotIndex{\CodelineIndex,\sp,\sb,\label,\leavevmode,\mark}
+\DoNotIndex{\mark,\newinsert,\newwrite,\newtoks,\xdef}
+\DoNotIndex{\columnsep,\columnseprule,\columnwidth,\csname,\def}
+\DoNotIndex{\dimen,\do,\DocInput,\documentstyle,\edef,\em}
+\DoNotIndex{\EnableCrossrefs,\end,\endcsname,\endgroup,\endinput}
+\DoNotIndex{\everypar,\expandafter,\filedate,\fileversion}
+\DoNotIndex{\footnotesize,\gdef,\global,\glossary,\hangindent}
+\DoNotIndex{\if@filesw,\else,\fi}
+\DoNotIndex{\if@nobreak,\if@twocolumn,\if@twoside,\fi,\fi,\fi}
+\DoNotIndex{\hsize,\hskip}
+\DoNotIndex{\ifhmode,\ifmmode,\ifodd,\ifvmode,\ifx,\fi,\fi,\fi,\fi,\fi}
+\DoNotIndex{\ifcase,\ifdim,\ifeof,\iffalse,\iftrue,\fi,\fi,\fi,\fi,\fi}
+\DoNotIndex{\ifcat,\fi}
+\DoNotIndex{\immediate,\insert,\item,\jobname,\long}
+\DoNotIndex{\let,\lineskip,\marginparsep,\marginparwidth,\maxdimen}
+\DoNotIndex{\makeatletter,\noexpand,\openout,\protect,\rlap}
+\DoNotIndex{\min,\newpage,\nobreak,\normalbaselineskip}
+\DoNotIndex{\normallineskip,\p@,\par,\parfillskip,\parindent,\parskip}
+\DoNotIndex{\penalty,\relax,\section,\sin,\sloppy,\space,\string}
+\DoNotIndex{\tableofcontents,\the,\thepage,\thispagestyle,\toks,\tt}
+\DoNotIndex{\twocolumn,\uppercase,\vbox,\vrule,\vskip,\vss}
+\DoNotIndex{\write,\z@,\z@skip}
+%</amsdtx>
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \changes{v1.2b}{1995/02/15}{Added {}{} after rightmark, leftmark to
+%   handle no-maketitle case}
+% \changes{v1.2b}{1995/02/15}{Added frenchspacing in error env heading}
+%
+% \changes{v1.2c}{1996/10/28}{Update version number, date for new release}
+%
+% \changes{v1.2d}{1997/03/13}{Fixed up loading method for OT1cmtt fd file}
+%
+% \changes{v2.03}{2004/04/06}{Reworked indexing commands for
+%    compatibility with doc.sty}
+%
+% \changes{v2.04}{2004/04/07}{Further work on indexing commands for
+% compatibility with macro and environment environments in \fn{doc.sty}.
+% Also added \env{option} environment, \cs{DescribeOption},
+% \cs{PrintDescribeOption}, \cs{SpecialOptionIndex}, and
+% \cs{SpecialMainOptionIndex}.}
+%
+% \changes{v2.05}{2004/04/27}{Fixed the amsdtx \cs{env} so that it
+% prints its argument in addition to putting it in the index.  Added
+% |\penalty\exhyphenpenalty| to \cs{mdash} and \cs{ndash} as per
+% \pkg{textcmds}.}
+%
+% \CheckSum{1569}
+% \Finale

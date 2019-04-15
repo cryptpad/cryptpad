@@ -1,0 +1,88 @@
+% macro polyset
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Petr Olsak                            Sep. 2003
+
+% This macro expands sequences of type "ab{12}c{123}de" to sequences:
+% "ab1c1de" "ab1c2de" "ab1c3de" "ab2c1de" "ab2c2de" "ab2c3de".
+%
+% For more information see end of this file.
+
+\newtoks\leftpart \newtoks\rightpart \newtoks\restpart
+
+\def\applyset#1{\def\cumuseq{}\letleftseq #1{}\sep{}\sep}
+
+\def\letleftseq #1#{\def\tmp{#1}\letrest}
+\def\letrest #1#2\sep{\edef\oneset{#1}
+   \ifx\oneset\empty
+       \ifx\tmp\empty 
+          \ifx\cumuseq\empty \let\next=\relax    % finish
+          \else \let\next=\resetseq              % next batch of sequences
+          \fi
+       \else \expandafter \runseq \expandafter
+             {\tmp}\let\next=\letleftseq         % next sequence
+       \fi
+   \else                                         % expand sequence
+       \leftpart=\expandafter{\tmp}\rightpart={#2}
+       \def\tmp{#2}\ifx\tmp\empty \rightpart={{}}\fi
+       \expandseq \let\next=\letleftseq
+   \fi \next}
+\def\resetseq{\let\tmp=\cumuseq \def\cumuseq{}
+   \expandafter \letleftseq \tmp {}\sep}
+\def\expandseq {
+   \ifx\oneset\empty
+   \else \expandafter \letelement \oneset \sep
+         \restpart=\expandafter{\cumuseq}
+         \edef \cumuseq{\the\restpart
+                        \the\leftpart \firstelement \the\rightpart
+                        \noexpand\sep }
+         \expandafter \expandseq
+   \fi}
+\def\letelement #1#2\sep{\def\firstelement{#1}\def\oneset{#2}}
+
+\def\runseq #1{\message{#1}}
+
+\endinput 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+If you type, for example, \applyset{ab{12}c{123}de} then TeX runs
+\runseq{ab1c1de} \runseq{ab1c2de} \runseq{ab1c3de} 
+\runseq{ab2c1de} \runseq{ab2c2de} \runseq{ab2c3de}
+
+Generally: If the argument of \applyset includes "sets" typed by
+{...}, then each set is replaced by its elements: successively all
+elements from each set is used. The \runseq macro is invoked to all
+resulting sequences.
+
+The body of each set {...} is expanded before getting the elements.
+On the other hand, the text surrounded of the sets is not expanded
+during \applyset is working.
+
+An example of an application of this macro follows.
+It gives the possibility of more powerfull \mubyte ... \endmubyte 
+declarations for encTeX:
+
+------------------------------------------------------------------------
+
+\input polyset
+
+\def\setmubyte #1#2{\def\runseq##1{\mubyte #1 ##1\endmubyte}\applyset{#2}}
+
+\def\ndigits {123456789}
+\def\digits  {0\ndigits}
+
+\setmubyte {\dat ##0} {{\ndigits}.{\ndigits}.}    %% needs encTeX v. Feb. 2003
+\setmubyte {\dat ##0} {{12}{\digits}.{\ndigits}.}
+\setmubyte {\dat ##0} {3{01}.{\ndigits}.}
+\setmubyte {\dat ##0} {{\ndigits}.1{012}.}
+\setmubyte {\dat ##0} {{12}{\digits}.1{012}.}
+\setmubyte {\dat ##0} {3{01}.1{012}.}             %% total: 372 \mubyte
+                                                  %% declarations
+\def\dat #1.#2.{#1.\kern.15em #2.}
+
+\mubytein=1
+
+This example inserts the little space in (czech) date format automaticaly.
+Example 24.12. -> 24.\kern.15em 12. (means December 24).
+
+\end

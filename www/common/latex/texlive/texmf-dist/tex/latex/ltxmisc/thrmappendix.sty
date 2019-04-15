@@ -1,0 +1,217 @@
+						\long\def\comment#1{}
+						\comment{
+This is my implementation of theorems, lemmas, &c.  The main goal is
+to let you reprint theorems in the appendix with their proofs, so the
+text isn't cluttered with long proofs, but the reader doesn't have to
+keep flipping back to the text to find out what you're talking about in
+the appendix.
+
+It also has the side benefits that the syntax here involves less typing
+and fewer redundancies than the default, so I use it even for things
+that won't ever be proven. Compare the standard:
+
+	\begin{definition} \label{xdef} 
+	Let $x$ be a number.
+	\end{definition}
+
+versus the alternative here:
+
+	\stmt{defn}{xdef}{
+	Let $x$ be a number.
+	}
+
+
+	    __________________________________________
+
+Here is a quick summary of the macros defined in this file:
+\stmt{statement_type}{label}{This is what I want to say}
+	The definition of a theorem, assumption, &c.
+\stmtproof{label}{This is the proof.}
+	Where you should write your proof, for use with:
+\rptstmtwithproof{label}
+	This states the theorem and proof together.
+\rptstmt{label}
+	This restates just the theorem.
+\refstmt{label}
+	Prints, e.g., `Theorem 7'---like \ref{label} but you don't have
+	to remember if it's a theorem, corollary, or lemma.
+\comment{blather}
+	Delineates comments without all those darn percent signs.
+
+	    __________________________________________
+Here is a sample document using most all of the above. You can cut and
+paste it to another file and compile it to see what it does. 
+
+\documentclass{article}
+\usepackage{thrmappendix}
+\begin{document}
+
+\section{A theorem}
+
+\stmt{thrm}{sample}{Socrates is mortal.}
+
+\refstmt{sample} can either be proven using data (the fact that
+Socrates is dead), or by the proof which is provided in the appendix.
+
+
+
+\section{Appendix}
+In this appendix, the reader will find proofs of theorems not given in the text.
+
+\stmtproof{sample}{Socrates is a man. All men are mortal.}
+
+\rptstmtwithproof{sample}
+
+\comment{Notice that you can put the \stmtproof{sample}{...} anywhere
+you want, including right after your statement, just before using
+\rptstmtwithproof, or a separate file (then use \input{proofs.tex}). That
+way, neither your finished paper nor your source will be cluttered with
+proofs.}
+\end{document}
+             __________________________________________
+
+
+
+Here are the definitions of the types of theorems you can use
+with these commands, and the proof markers:
+						}
+
+\long\def\theproofmarkersforthrmappendix{
+
+%Format:
+%\newtype{nickname}{numbered like}{title}
+
+%inputs
+\newtype{ass}{ass}{Assumption}
+\newtype{defnition}{ass}{Definition}
+\newtype{defn}{ass}{Definition}
+
+%outputs
+\newtype{statement}{statement}{Proposition}
+\newtype{prop}{statement}{Proposition}
+\newtype{thrm}{statement}{Theorem}
+\newtype{corr}{statement}{Corollary}
+\newtype{lma}{statement}{Lemma}
+\newtype{guess}{statement}{Conjecture}
+
+
+\def\pf{{\bf Proof: }}
+\def\endpf{\hfill $\diamondsuit$}
+}
+
+						\comment{
+These are my preferred environments (and numbering scheme);
+add your own or modify to suit. The format here is:
+\newtype{nickname}{numbered like}{title}
+						
+E.g., the second line lets me put
+	\stmt{thrm}{mortalityresult}{Socrates is mortal.}
+in the tex file, since it defined the nickname `thrm'. If the statement
+counter is up to #7, then the output will be:
+	Theorem 7: Socrates is mortal.
+since thrms use the statement counter and print `Theorem'. To refer to
+this theorem in the text, you have two choices:
+	\refstmt{mortalityresult}	===>	 Theorem 7
+	 Theorem \ref{mortalityresult}	===>	 Theorem 7
+The first form is nice because after you prove your result, you can
+change it from a theorem to a conjecture without hunting through the
+text to fix every reference.
+
+You can see that all of the results use the `statement' counter and
+all of the inputs use the `ass' counter.  Proposition 1 may be followed
+by Theorem 2, followed by Corollary 3.  This is my preferred numbering
+scheme, suggested by Paolo Ghirardato.  After all, the intent of numbering
+these things is not to keep score as to how many theorems you've got,
+but to make it easy for the reader to find what you're referring to;
+a consistent numbering system facilitates this (especially in a long proof
+appendix).
+
+[On the other hand, a referee of one of my papers complained that
+17 theorems and 18 corollaries was too many, and I could cut that in
+half. Of course, there were only 18 results total, and s/he was only
+glancing at the two results on the last page.]
+
+To use independent numbering for each type, simply change the second field
+in the definitions above to match the first field in each case. E.g.:
+	\newthrm{thrm}{thrm}{Theorem}
+will allow you to count theorems separately from other results.
+
+
+The \rptstmtwithproof macro here will include a marker at the beginning
+and end of the proof, so you don't have to include them yourself.
+The macros \pf and \endpf are defined above and can be redefined to
+suit. Popular endproof markers include:
+
+	\def\endpf{$blackbox$}
+	\def\endpf{$blacklozenge$}
+	\def\endpf{{\sc QED}}
+
+
+					--Ben Klemens, 2 Jan 2003
+					b@avocado.caltech.edu
+
+
+
+PS: thrmappendix.sty (c)2003, Ben Klemens
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+            __________________________________________}
+
+\usepackage{ifthen}
+\def\newtype#1#2#3{
+\ifthenelse{\equal{#1}{#2}}{
+\long\expandafter\gdef\csname #1txt\endcsname{#3}
+\long\expandafter\gdef\csname #1ctr\endcsname{#2}
+\newtheorem{#1}{\csname #1txt\endcsname}
+}{
+\long\expandafter\gdef\csname #1txt\endcsname{#3}
+\long\expandafter\gdef\csname #1ctr\endcsname{#2}
+\newtheorem{#1}[\csname #1ctr\endcsname]{\csname #1txt\endcsname}
+}}
+
+\theproofmarkersforthrmappendix %from the user-readable section above.
+
+\def\cs#1{\csname #1\endcsname}
+\newcounter{dummycounter}
+
+\long\def\defstmt#1#2#3{
+}
+
+\long\def\stmt#1#2#3{
+	\long\expandafter\gdef\csname #2\endcsname{#3}
+	\expandafter\gdef\csname #2type\endcsname{#1}
+		\begin{#1} \label{#2} 
+			{#3}
+		\end{#1}
+\immediate\write\@mainaux{\string
+\newlabel{#2type}{{\cs{#1txt}}}
+ }
+}
+
+\long\def\stmtproof#1#2{
+\long\expandafter\gdef\csname #1proof\endcsname{#2}
+}
+
+\long\def\rptstmt#1{
+	\def\ctr{\cs{\cs{#1type}ctr}}
+%	\setcounter{paragraph}{\value{\ctr}}
+	\setcounter{dummycounter}{\value{\ctr}}
+\batchmode
+	\setcounter{\ctr}{\ref{#1}}
+\errorstopmode
+	\addtocounter{\ctr}{-1}
+ 	\begin{\cs{#1type}}
+		\cs{#1}
+ 	\end{\cs{#1type}}
+	\setcounter{\ctr}{\value{dummycounter}}
+}
+
+\long\def\rptstmtwithproof#1{
+	\rptstmt{#1}
+
+	\pf \cs{#1proof} \endpf
+}
+
+\def\refstmt#1{\ref{#1type} \ref{#1}}

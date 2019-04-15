@@ -1,0 +1,279 @@
+%!PS-Adobe-2.0
+% This is based on: ehandler.ps -- Downloaded Error Break-page handler
+% Copyright (C) 1984, 1985, 1986 Adobe Systems Incorporated.
+% All Rights Reserved.
+
+% Modifications Copyright (C) 1990, 1991 Y&Y.
+% 	 print names of dictionaries on dictionary stack
+% 	 print first few lines of input stream after error
+% 	 print top of execution stack
+%	 make visible offending commands that are control characters
+% 	 print jobname if it exists
+%	 catch errors in error handler and print them
+% 	 permit overloading (for debugging of error handler)
+% 	 ignore timeout errors
+% 	 control hardcopy versus softcopy output
+%	 avoid multiple pages with error message
+
+%  NOTE: For hardcopy paper/film output:	set showflag true
+%  NOTE: For screen/file output:		set printflag true
+
+0 % exitserver password
+/$brkpage where
+% {pop} if false % UNCOMMENT THIS LINE TO PERMIT OVERLOADING
+    { % ifelse  
+    pop pop
+    (Error Handler in place - not loaded again\n)
+    print flush stop
+}{ % else
+    dup serverdict begin
+    statusdict begin checkpassword { % ifelse
+	(Error Handler downloaded.\n) print flush
+	exitserver
+    }{ % else
+	pop
+	(Bad Password on loading error handler!!!\n)
+	print flush stop
+    } ifelse
+} ifelse
+/$brkpage where {pop} { % to allow overloading
+ /$brkpage 64 dict def 
+} ifelse % to allow overloading
+$brkpage begin
+/showflag true def	% set to true for hardcopy paper/film output
+/printflag false def	% set to true for sending back to screen/file
+/prnt { % def
+    dup type /stringtype ne {=string cvs} if
+    dup length 1 eq { dup 0 get 32 lt { dup 0 get  % new
+    64 add exch pop (control-X) dup 8 4 -1 roll put} if} if % new
+    dup length 6 mul
+    /tx exch def /ty 10 def
+    currentpoint /toy exch def /tox exch def
+    1 setgray newpath
+    tox toy 2 sub moveto
+    0 ty rlineto tx 0 rlineto
+    0 ty neg rlineto
+    closepath showflag{fill}if
+    tox toy moveto 0 setgray 
+    showflag{dup show}if printflag{print}{pop}ifelse
+} bind def
+/nl { % def
+    currentpoint exch pop lmargin exch moveto
+    0 -10 rmoveto
+    printflag{(\n) print flush}if
+} def
+
+/== {/cp 0 def typeprint nl} def
+/typeprint {
+    dup type dup currentdict exch known {exec}{unknowntype}ifelse
+} readonly def
+/lmargin 72 def /rmargin 72 def
+/tprint { % def
+    dup length cp add rmargin gt {nl /cp 0 def} if
+    dup length cp add /cp exch def
+    prnt
+} readonly def
+/cvsprint {=string cvs tprint ( ) tprint} readonly def
+/unknowntype { % def
+    exch pop cvlit (??) tprint cvsprint
+} readonly def
+/integertype {cvsprint} readonly def
+/realtype {cvsprint} readonly def
+/booleantype {cvsprint} readonly def
+/operatortype {(//) tprint cvsprint} readonly def
+/marktype {pop (-mark- ) tprint} readonly def
+% /dicttype {pop (-dictionary- ) tprint} readonly def % do more:
+/dicttype {namedict cvsprint} readonly def
+/nulltype {pop (-null- ) tprint} readonly def
+/filetype {pop (-filestream- ) tprint} readonly def
+/savetype {pop (-savelevel- ) tprint} readonly def
+/fonttype {pop (-fontid- ) tprint} readonly def
+/nametype { % def
+    dup xcheck not {(/) tprint} if cvsprint
+}readonly def
+/stringtype { % def
+    dup rcheck { % ifelse
+	(\() tprint tprint (\)) tprint
+    }{ % else
+	pop (-string- ) tprint
+    } ifelse
+} readonly def
+/arraytype { % def
+    dup rcheck { % ifelse
+	dup xcheck { % ifelse
+	    ({) tprint {typeprint} forall (}) tprint
+	}{ % else
+	    ([) tprint {typeprint} forall (]) tprint
+	} ifelse
+    }{ % else
+	pop (-array- ) tprint
+    } ifelse
+} readonly def
+/packedarraytype { % def
+    dup rcheck { % ifelse
+	dup xcheck { % ifelse
+	    ({) tprint {typeprint} forall (}) tprint
+	}{ % else
+	    ([) tprint {typeprint} forall (]) tprint
+	} ifelse
+    }{ % else
+	pop (-packedarray- ) tprint
+    } ifelse
+} readonly def
+/courier /Courier findfont 10 scalefont def
+/OLDhandleerror where not { % to allow overloading
+ /OLDhandleerror errordict /handleerror get def
+}{pop} ifelse % to allow overloading
+end % $brkpage
+
+% read lines terminated by EITHER newline or return
+% (to deal with brain-damage of AppleTalk connection)
+
+/readsafeline{ % def
+    dup length exch 0
+    { % loop
+    	3 index read
+	{ % ifelse
+	    dup 10 eq 1 index 13 eq or 
+	    { % ifelse
+	        pop 
+		0 exch getinterval exch pop exch pop 
+		true exit % normal exit
+	    }{ % ifelse
+		3 index 2 index le 
+		{  % ifelse
+		    pop pop exch pop exch pop true
+		    stop % rangecheck long line
+		}{ % ifelse
+		    3 copy put pop 1 add
+		} ifelse
+	    } ifelse
+	}{ % ifelse
+	    0 exch getinterval exch pop exch pop 
+	    false exit % EOF exit
+	} ifelse
+    } loop
+} def
+
+% Find name for dictionary in tree of dictionaries - ignore font dictionaries
+% Discard intermediate dictionary info - return first match
+
+/lookfordict { % name and dict to search
+ dup % save for self reference detection
+ { % forall
+  dup type /dicttype eq
+   { % is a dictionary
+    dup 3 index ne
+     { % not self reference
+      1 index /unknowndict ne
+       { % not the place we saved
+	dup unknowndict eq
+	 { % found it
+	  pop 3 1 roll pop pop true exit % return name and true
+	 }{ % not the unknown dict
+	  dup rcheck
+	  { % safe to read
+	   1 index /FontDirectory ne 
+	   { % not Font Directory 
+	    lookfordict % recurse
+	    { % found it
+	     3 1 roll pop pop true exit % return name and true
+	    }{
+	     0 0 % replace key and value
+	    } ifelse % lookfordict
+	  } if % FontDirectory 
+	} if % safe to read
+       } ifelse % equals unknown
+      } if % place we hid dict
+     } if % self reference
+    } if % is a dictionary
+  pop pop % flush key and value
+ } forall
+ dup true ne {pop pop false} if % flush name and dictionary 
+} readonly def
+
+/namedict{ % get name for dictionary 
+	dup systemdict eq {/systemdict}
+	{/unknowndict exch def % store unknown dictionary
+	 /systemdict dup load lookfordict not {/-no-name-} if} ifelse
+} readonly def
+
+/handleerror { % put
+    systemdict begin $error begin $brkpage begin
+    newerror { % ifelse
+	errorname /timeout ne { 
+	{			
+	/newerror false store
+	vmstatus % pop pop
+	3 -1 roll
+	0 ne {grestoreall} if	% free up some VM is possible
+	initgraphics courier setfont
+	lmargin 720 moveto 
+ 	exch sub 4096 lt {stop} if % nearly out of VM ?
+	statusdict /jobname known { % if
+	    statusdict /jobname get dup type /stringtype eq {
+		nl (JOBNAME: ) prnt
+		prnt nl
+	   } {pop} ifelse
+	} if
+	nl (ERROR: ) prnt
+	errorname prnt nl
+	nl (OFFENDING COMMAND: ) prnt
+	/command load prnt
+	$error /ostack known { % if
+	    nl nl (OPERAND STACK:) prnt nl nl
+	    $error /ostack get aload length {==} repeat
+	} if
+	$error /estack known { % if
+	    nl nl (TOP OF EXECUTION STACK:) prnt nl nl
+	    $error /estack get aload length 
+	    true exch 
+	    {dup {1 index == 1 index type cvlit /filetype eq {not} if} if
+	    exch pop} repeat pop % avoid system stuff
+	} if
+	$error /dstack known { % if
+	    nl nl (DICTIONARY STACK:) prnt nl nl
+	    $error /dstack get aload length {namedict cvx ==} repeat
+	} if
+	systemdict /file known 
+	{ % if
+	    nl nl (FILE STREAM:) prnt nl nl
+	    true 7 
+	    { % repeat
+	    	(%stdin) (r) file =string {readsafeline} stopped
+		{
+			pop (long line:\n) prnt =string prnt nl
+		}{
+			{
+				prnt nl
+			}{
+				prnt nl (EOF) prnt nl nl pop false exit
+			} ifelse
+		}  ifelse
+	    } repeat
+	    {3 {(.) prnt nl} repeat nl} if
+	} if
+	showflag{/#copies 1 def systemdict /showpage get exec}if
+	/newerror true store
+	/OLDhandleerror load end end end exec
+	} stopped {
+		nl nl (VMError (or error in error handler)) prnt nl
+		nl (ERROR: ) prnt	%
+		errorname prnt nl	%
+		nl (OFFENDING COMMAND: ) prnt
+		/command load prnt nl	%
+		showflag{/#copies 1 def systemdict /showpage get exec}if
+		/newerror true store
+		/OLDhandleerror load end end end exec
+		} if %% get some output at least if handler dies
+      } if % ignore timeout
+    }{ % else already in error handler ...
+	end end end
+%%	systemdict /showpage get exec %% get some output if internal error ?
+    } ifelse
+}
+dup 0 systemdict put % replace name by actual dict object
+dup 4 $brkpage put   % replace name by dict object
+bind readonly
+
+errordict 3 1 roll put % put proc in errordict as /handleerror

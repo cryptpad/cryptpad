@@ -1,0 +1,173 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005
+% 2006 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \title{The \textsf{somedefs} toolkit package}
+% \date{long time ago in a different century\ldots}
+% \author{Alan Jeffrey}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \CheckSum{56}
+%
+% \changes{v0.03}{1994/06/01}{Use new style error commands. DPC}
+% \changes{v0.02}{1994/05/10}{Added a \cmd\relax, to stop arguments to
+%    \cmd\newcommand\ being unbraced by \cmd\ProvidesCommand.  Added
+%    an error message for commands which are requested but never
+%    defined.  Spotted by DPC.}
+%
+% \section*{Overview}
+%
+% This is an example `programmers toolkit' package, for use by package
+% writers.  It allows package writers to provide options which switch
+% definitions on and off.  For example, a package |fred| might define a
+% large number of commands, including |\foo| and |\baz|, so:
+% \begin{verbatim}
+%    \usepackage{fred}
+% \end{verbatim}
+% would use a lot of memory, even if |\foo| and |\baz| were the only
+% commands needed.  However, if the author of |fred| used the |somedefs|
+% package, then the user would be able to say:
+% \begin{verbatim}
+%    \usepackage[only,foo,baz]{fred}
+% \end{verbatim}
+% and only the commands |\foo| and |\baz| would be defined.
+%
+% To use the |somedefs| package in your own packages or classes, you
+%  say:
+% \begin{verbatim}
+%    \RequirePackage{somedefs}
+% \end{verbatim}
+% You can then use four new commands:
+% \begin{flushleft}\begin{itemize}
+% \item |\UseAllDefinitions| which says that all the commands in the
+%    file should be defined.
+% \item |\UseSomeDefinitions| which says that only the commands
+%    specified by |\UseDefinition| should be defined.
+% \item |\UseDefinition{|\meta{name}|}| which says that the command
+%    |\name| should be defined.
+% \item |\ProvidesDefinition{|\meta{definition}|}| which provides one
+%    definition, of the form |\definingcommand{\command}...|
+% \end{itemize}\end{flushleft}
+% For example, the package |fred| could say:
+% \begin{verbatim}
+%    \RequirePackage{somedefs}
+%    \UseAllDefinitions
+%    \DeclareOption{only}{\UseSomeDefinitions}
+%    \DeclareOption*{\UseDefinition{\CurrentOption}}
+%    \ProcessOptions
+%    \ProvidesDefinition{\newcommand{\foo}{...}}
+%    \ProvidesDefinition{\newcommand{\baz}{...}}
+% \end{verbatim}
+% One of the commands |\UseAllDefinitions| or |\UseSomeDefinitions|
+% should always be used.  You may have some commands which need other
+% commands, in which case you have to declare the options by hand.  For
+% example, if the command |\bar| needs the command |\foo|, you could
+% say:
+% \begin{verbatim}
+%    \DeclareOption{bar}{\UseDefinition{bar}\UseDefinition{foo}}
+% \end{verbatim}
+% For a longer example of the use of the |somedefs| package, look at the
+% |rawfonts| package.
+%
+% \StopEventually{}
+%
+% \section*{Implementation}
+%
+% The driver for the documentation you're now reading.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{somedefs.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+% This is a \LaTeXe{} package.
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{somedefs}[1994/06/01 v0.03 Toolkit for optional definitions]
+%    \end{macrocode}
+% \begin{macro}{\UseSomeDefinitions}
+% \begin{macro}{\UseAllDefinitions}
+% \begin{macro}{\UseDefinition}
+% \begin{macro}{\ProvidesDefinition}
+% \begin{macro}{\@providesdefinition}
+% \begin{macro}{\@provides@definition}
+% \begin{macro}{\@unprovided@definition}
+%    The package works by having |\UseDefinition{|\meta{name}|}| define
+%    |\name| to be |\@unprovided@definition|.
+%    If |\UseSomeDefinitions| has been called,
+%    then |\ProvidesDefinition| looks to see if |\name|
+%    is |\@unprovided@definition|.  If
+%    |\UseAllDefinitions| has been called, then |\ProvidesDefinition|
+%    does nothing.  If neither has been called, then
+%    |\ProvidesDefinition| produces an error message.
+%    \begin{macrocode}
+\def\UseSomeDefinitions{%
+   \let\ProvidesDefinition\@providesdefinition
+}
+\def\UseAllDefinitions{%
+   \let\ProvidesDefinition\@firstofone
+}
+\def\UseDefinition#1{%
+   \expandafter\let\csname#1\endcsname\@unprovided@definition
+}
+\def\ProvidesDefinition#1{%
+   \PackageError{somedefs}%
+     {No \noexpand\UseSomeDefinitions or \string\UseAllDefinitions}%
+     {The package which used the `somedefs' package has an error.}%
+}
+\def\@providesdefinition#1{\@provides@definition#1\relax
+   \@provides@definition}
+\def\@provides@definition#1#2#3\@provides@definition{%
+   \ifx#2\@unprovided@definition
+      #1#2#3%
+   \fi
+}
+\def\@unprovided@definition{%
+   \PackageError{somedefs}%
+     {Package `somedefs' error: this command was never defined}%
+     {You have requested a command which does not exist.}%
+}
+\@onlypreamble\UseSomeDefinitions
+\@onlypreamble\UseAllDefinitions
+\@onlypreamble\UseDefinition
+\@onlypreamble\ProvidesDefinition
+\@onlypreamble\@providesdefinition
+\@onlypreamble\@provides@definition
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% That's it!
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%
+% \endinput

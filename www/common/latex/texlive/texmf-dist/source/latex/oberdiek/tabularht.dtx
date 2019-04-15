@@ -1,0 +1,1260 @@
+% \iffalse meta-comment
+%
+% File: tabularht.dtx
+% Version: 2007/04/11 v2.5
+% Info: Tabular with height specified
+%
+% Copyright (C) 2005-2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file tabularht.dtx
+% and the derived files
+%    tabularht.sty, tabularht.pdf, tabularht.ins, tabularht.drv,
+%    tabularht-example1.tex, tabularht-example2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/tabularht.dtx
+%    CTAN:macros/latex/contrib/oberdiek/tabularht.pdf
+%
+% Unpacking:
+%    (a) If tabularht.ins is present:
+%           tex tabularht.ins
+%    (b) Without tabularht.ins:
+%           tex tabularht.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{tabularht.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If tabularht.drv is present:
+%           latex tabularht.drv
+%    (b) Without tabularht.drv:
+%           latex tabularht.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex tabularht.dtx
+%       makeindex -s gind.ist tabularht.idx
+%       pdflatex tabularht.dtx
+%       makeindex -s gind.ist tabularht.idx
+%       pdflatex tabularht.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/tabularht.sty
+%    TDS:doc/latex/oberdiek/tabularht.pdf
+%    TDS:doc/latex/oberdiek/tabularht-example1.tex
+%    TDS:doc/latex/oberdiek/tabularht-example2.tex
+%    TDS:source/latex/oberdiek/tabularht.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: tabularht 2007/04/11 v2.5 Tabular with height specified (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: tabularht
+Version: 2007/04/11 v2.5
+
+Copyright (C) 2005-2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file tabularht.dtx
+and the derived files
+   tabularht.sty, tabularht.pdf, tabularht.ins, tabularht.drv,
+   tabularht-example1.tex, tabularht-example2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{tabularht.ins}{\from{tabularht.dtx}{install}}%
+  \file{tabularht.drv}{\from{tabularht.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{tabularht.sty}{\from{tabularht.dtx}{package}}%
+  \usedir{doc/latex/oberdiek}%
+  \file{tabularht-example1.tex}{\from{tabularht.dtx}{example1}}%
+  \file{tabularht-example2.tex}{\from{tabularht.dtx}{example2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{tabularht.xml}{\from{tabularht.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     tabularht.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `tabularht.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{tabularht.drv}%
+  [2007/04/11 v2.5 Tabular with height specified (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{tabularht.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{654}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{tabularht.drv}
+%
+% \title{The \xpackage{tabularht} package}
+% \date{2007/04/11 v2.5}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package defines some environments that adds
+% a height specification to tabular and array.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Usage}
+%
+% \begin{quote}
+%   |\usepackage{tabularht}|
+% \end{quote}
+% The package provides the following environments
+% that extend the tabular/array environment by
+% a height specification as first argument:
+% \begin{itemize}
+% \item |tabularht|, |tabularht*|
+% \item |arrayht|
+% \item |tabularhtx|
+%       (if package \xpackage{tabularx} is loaded)
+% \end{itemize}
+% The height argument allows a length specification,
+% package \xpackage{calc} is supported if used. This means,
+% the tabular will have the specified height.
+% You can also use the prefixes |to=| and |spread=|.
+% |to=| is the default, |spread=| means, the natural
+% height of the tabular box is changed by the length
+% after |spread=|.
+%
+% Examples:
+% \begin{quote}
+% \begin{tabular}{@{}l@{ $\rightarrow$ }l@{}}
+%   |\begin{tabularht}{1in}|
+%   & height is 1in\\
+%   |\begin{tabularht}{to=1in}|
+%   & height is 1in\\
+%   |\begin{tabularht}{spread=0pt}|
+%   & natural height, same as |\begin{tabular}|\\
+%   |\begin{tabularht}{spread=1in}|
+%   & natural height increased by 1in
+% \end{tabular}
+% \end{quote}
+%
+% Hint:  See also package \xpackage{tabularkv}, it provides an interface,
+%        where most parameters for the environments can be given
+%        by key-value pairs.
+%
+% \begin{declcs}{interrowspace}\,|{|\dots|}|
+% \end{declcs}
+% Adds space between table rows. It is essentially
+% the same as |\noalign{\vspace{...}}|.
+% \begin{declcs}{interrowfill}
+% \end{declcs}
+% Short for |\interrowspace{\fill}|
+% \begin{declcs}{interrowstart}\,\dots\,\cs{interrowstop}
+% \end{declcs}
+% Marker commands, useful for option \xoption{vlines}.
+%
+% \subsection{Option \xoption{vlines}}
+%
+% Warning: This stuff is experimental.
+%
+% \vspace{2ex}
+% \noindent
+% Vertical lines are interrupted, if space is inserted
+% in \cs{noalign}, \cs{interrowspace}, \cs{addlinespace}
+% (\xpackage{booktabs}),
+% between double \cs{hline}s. This option tries to detect
+% and add the vertical lines. The lines in a tabular
+% with \xpackage{tabularht} support (environments of this package)
+% are numbered from left to right. The gap that is
+% controlled by \cs{interrowspace} or inbetween \cs{interrowstart}
+% and \cs{interrowstop} is then filled with the detected
+% vertical lines.
+%
+% If only a limited selection of the lines should be
+% drawn, the commands know an optional argument with a
+% list of line numbers, e.g.
+% \begin{quote}
+%\begin{verbatim}
+%\begin{tabularht}{50mm}{|l|l|}
+%  Hello & World\\
+%  \interrowfill[1,3]
+%  Foo & Bar
+%\end{tabularht}
+%\end{verbatim}
+% \end{quote}
+% There are three lines, but the middle line is not drawn
+% in the gap between the first and second row.
+% Zero can be used to suppress all lines:
+% \begin{quote}
+% |\interrowspace[0]{10mm}|
+% \end{quote}
+% The syntax of the commands with the optional argument
+% with the line number list \meta{list}. \meta{list} is a comma
+% separated list of numbers, \meta{height} means the
+% height specification described above with the optional
+% prefixes |to=| or |spread=|.
+% \begin{quote}
+%   \cs{interrowspace}\,|[|\meta{list}|]|\,|{|\meta{height}|}|\\
+%   \cs{interrowfill}\,|[|\meta{list}|]|\\
+%   \cs{interrowstart}\,|[|\meta{list}|]|\,\dots\,\cs{interrowstop}
+% \end{quote}
+%
+% Option \xoption{vlines} is driver dependent and uses \eTeX\ features.
+% \begin{description}
+% \item[\xoption{pdftex}:] \pdfTeX\ in PDF mode.
+%   Here the positions of the lines are written with the
+%   help of the \cs{pdfsavepos} feature into the \xfile{.aux} file(s).
+%   Therefore you need two LaTeX runs to get the lines.
+% \item[\xoption{dvips}:]
+%   Here, PostScript's currentpoint it used to get
+%   the line positions. The lines are then drawn at the end
+%   of the page. Thus one \LaTeX/dvips run is sufficient
+%   for this option.
+% \item[Other drivers:]\mbox{}
+%   \begin{description}
+%   \item[PostScript drivers:] probably possible, an end of page
+%     hook would be nice.
+%   \item[\VTeX:] with GeX (PostScript interpreter) probably possible.
+%   \item[dvipdfm:] no idea. The big problem is, how to get the
+%     current position?
+%   \end{description}
+% \end{description}
+%
+% \subsection{Limitations}
+%
+% \begin{itemize}
+% \item
+%   Vertical lines are interrupted by |\noalign{\vfill}|.
+% \end{itemize}
+%
+% \subsection{Compatibility}
+%
+% \begin{itemize}
+% \item
+%   \xpackage{array}, \xpackage{delarray}, \xpackage{tabularx}
+%   are supported.
+% \item There can be problems with packages that
+%   redefine \cs{@array} (or \cs{@@array}, \cs{@tabarray}) and
+%   \cs{@arrayrule} (for option \xoption{vlines}).
+% \item \xpackage{colortbl}: it should at least work, but there isn't
+%   support for filling the gaps with color, neither
+%   the rules nor the backgrounds.
+% \end{itemize}
+%
+% \subsection{Examples}
+%
+% \subsubsection{Example 1}
+%
+%    \begin{macrocode}
+%<*example1>
+\documentclass{article}
+\usepackage{tabularht}
+
+\begin{document}
+\fbox{%
+  \begin{tabularht*}{1in}{4in}{@{}l@{\extracolsep{\fill}}r@{}}%
+    upper left corner & upper right corner\\%
+    \noalign{\vfill}%
+    \multicolumn{2}{@{}c@{}}{bounding box}\\%
+    \noalign{\vfill}%
+    lower left corner & lower right corner\\%
+  \end{tabularht*}%
+}
+\end{document}
+%</example1>
+%    \end{macrocode}
+%
+% \subsubsection{Example 2}
+%
+%    \begin{macrocode}
+%<*example2>
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage[dvips,vlines]{tabularht}
+
+\begin{document}
+
+\begin{tabularht}{spread=0pt}{|l|l|}
+  \hline
+  First&Line\\%
+  \hline
+\interrowstart
+  \addlinespace[10mm]%
+\interrowstop
+  \hline
+  Second&Line\\%
+\interrowstart
+  \hline
+  \hline
+\interrowstop
+  Third&Line\\%
+  \hline
+\interrowspace{10mm}
+  \hline
+  Fourth&Line\\%
+  \hline
+\end{tabularht}
+
+\end{document}
+%</example2>
+%    \end{macrocode}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tabularht}%
+  [2007/04/11 v2.5 Tabular with height specified (HO)]
+%    \end{macrocode}
+%
+% \subsection{Environments}
+%
+%    \begin{macrocode}
+\let\@toarrayheight\@empty
+\let\tabH@array@init\@empty
+
+\toks@={%
+  \begingroup
+    \long\def\x#1\vcenter\fi\fi\bgroup#2\@sharp#3#4\@nil{%
+      \endgroup
+      \gdef\@array[##1]##2{%
+        \tabH@array@init
+        #1%
+        \vcenter\fi\fi
+        \@toarrayheight
+        \bgroup
+        \let\@toarrayheight\@empty
+        #2\@sharp###3#4%
+      }%
+    }%
+  \expandafter\x\@array[#1]{#2}\@nil % hash-ok
+}
+\edef\tabH@patch@array{\the\toks@}
+\def\tabH@patch@@array{%
+  \ifx\@array\@@array
+    \def\reserved@a{\let\@@array\@array}%
+  \else
+    \let\reserved@a\relax
+  \fi
+  \tabH@patch@array
+  \reserved@a
+}
+\tabH@patch@@array
+
+\@ifpackageloaded{array}{}{%
+  \AtBeginDocument{%
+    \@ifpackageloaded{array}{%
+      \tabH@patch@@array
+    }{}%
+  }%
+}
+
+\def\tabH@setheight#1{%
+  \tabH@@setheight#1==\@nil
+}
+\def\tabH@@setheight#1=#2=#3\@nil{%
+  \ifx\\#2#3\\%
+    \setlength{\dimen@}{#1}%
+    \edef\@toarrayheight{to\the\dimen@}%
+  \else
+    \edef\tabH@temp{\zap@space#1 \@empty}%
+    \ifx\tabH@temp\tabH@to
+    \else
+      \ifx\tabH@temp\tabH@spread
+      \else
+        \PackageError{tabularht}{%
+          Unknown height specifier %
+          `\expandafter\strip@prefix\meaning\tabH@temp'%
+        }{%
+          The height dimension for tabular height can be prefixed%
+          \MessageBreak
+          with `to=' or `spread=', default is `to='.%
+        }%
+        \let\tabH@temp\tabH@to
+      \fi
+    \fi
+    \setlength{\dimen@}{#2}%
+    \edef\@toarrayheight{\tabH@temp\the\dimen@}%
+  \fi
+}
+\def\tabH@to{to}
+\def\tabH@spread{spread}
+%    \end{macrocode}
+%    First argument is the height of the table,
+%    then the orignal arguments for tabular follow.
+%    \begin{macrocode}
+\newenvironment{tabularht}[1]{%
+  \tabH@setheight{#1}%
+  \tabular
+}{%
+  \endtabular
+}
+
+\newenvironment{tabularht*}[1]{%
+  \tabH@setheight{#1}%
+  \@nameuse{tabular*}%
+}{%
+  \@nameuse{endtabular*}%
+}
+
+\newenvironment{tabularhtx}[1]{%
+  \tabH@setheight{#1}%
+  \tabularx
+}{%
+  \endtabularx
+}
+
+\newenvironment{arrayht}[1]{%
+  \tabH@setheight{#1}%
+  \array
+}{%
+  \endarray
+}
+
+\def\interrowspace{%
+  \noalign\bgroup
+    \tabH@interrowspace
+}
+\newcommand*{\tabH@interrowspace}[2][]{%
+    \tabH@vspace{#1}{#2}%
+  \egroup
+}
+\def\interrowfill{%
+  \noalign\bgroup
+    \tabH@interrowfill
+}
+\newcommand*{\tabH@interrowfill}[1][]{%
+    \tabH@vspace{#1}{\fill}%
+  \egroup
+}
+\def\tabH@vspace#1#2{%
+  \tabH@vspace@start{#1}%
+  \vspace{#2}%
+  \tabH@vspace@stop
+}
+\let\tabH@vspace@start\@gobble
+\let\tabH@vspace@stop\@empty
+
+\newcommand*{\interrowstart}{%
+  \noalign\bgroup
+    \tabH@interrowstart
+}
+\newcommand*{\tabH@interrowstart}[1][]{%
+    \tabH@vspace@start{#1}%
+  \egroup
+}
+\newcommand*{\interrowstop}{%
+  \noalign{\tabH@vspace@stop}%
+}
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\providecommand*{\tabH@driver}{}
+
+\DeclareOption{vlines}{%
+  \let\tabH@temp\relax
+}
+\DeclareOption{pdftex}{}
+\DeclareOption{dvips}{%
+  \def\tabH@driver{dvips}%
+}
+\ProcessOptions*\relax
+
+\ifx\tabH@temp\relax
+\else
+  \expandafter\endinput
+\fi
+
+\begingroup
+  \@ifundefined{eTeXversion}{%
+    \PackageError{tabularht}{%
+      Option `vlines' requires eTeX%
+    }{%
+      Use of eTeX is recommended for LaTeX, see ltnews16.%
+    }%
+    \endgroup
+    \endinput
+  }{}%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Option vlines, driver independent stuff}
+%
+%    \begin{macrocode}
+\begingroup
+  \let\@addtoreset\@gobbletwo
+  \newcounter{tabH@unique}%
+\endgroup
+\let\tabH@currenttab\@empty
+
+\def\tabH@array@init{%
+  \ifx\@toarrayheight\@empty
+    % ignore vertical lines of nested tabular environments
+    \let\tabH@currenttab\@empty
+  \else
+    \stepcounter{tabH@unique}%
+    \edef\tabH@currenttab{\the\c@tabH@unique}%
+  \fi
+}
+
+\renewcommand*{\@arrayrule}{%
+  \@addtopreamble{%
+    \hskip -.5\arrayrulewidth
+    \ifx\tabH@currenttab\@empty
+    \else
+      \tabH@vrule{\tabH@currenttab}%
+    \fi
+    \begingroup
+      \expandafter\ifx\csname CT@arc@\endcsname\relax
+      \else
+        \expandafter\CT@arc@
+      \fi
+      \vline
+    \endgroup
+    \hskip -.5\arrayrulewidth
+  }%
+}
+\let\tabH@arrayrule\@arrayrule
+\AtBeginDocument{%
+  \@ifpackageloaded{colortbl}{%
+    \let\@arrayrule\tabH@arrayrule
+  }{}%
+}
+
+\let\tabH@vrule\@gobble
+%    \end{macrocode}
+%
+% \subsection{Driver pdftex}
+%
+%    \begin{macrocode}
+\RequirePackage{ifpdf}
+\ifpdf
+  \begingroup
+    \@ifundefined{pdfsavepos}{%
+      \PackageError{tabularht}{%
+        Your pdfTeX is too old%
+      }{%
+        \string\pdfsavepos\space is missing.%
+      }%
+      \endgroup
+      \csname fi\endcsname
+      \endinput
+    }{}%
+
+    \let\on@line\@empty
+    \PackageInfo{tabularht}{%
+      Using driver `pdftex' because of pdfTeX in PDF mode%
+    }%
+  \endgroup
+
+  \protected\def\tabH@vrule#1{%
+    \if@filesw
+      \pdfsavepos
+      \protected@write\@auxout{%
+        \let\tabH@lastxpos\relax
+      }{%
+        \tabH@aux@vrule{#1}{\tabH@lastxpos}%
+      }%
+    \fi
+  }%
+
+  \def\tabH@lastxpos{\the\pdflastxpos}%
+  \def\tabH@lastypos{\the\pdflastypos}%
+
+  % The .aux file contains three commands:
+  % \tabH@aux@vrule{tabular id}{x position}
+  % \tabH@aux@vstart{tabular id}{row id}{x position}{y position}
+  % \tabH@aux@vstop{y position}
+  %
+  \AtBeginDocument{%
+    % The .aux files are read the first time before
+    % \AtBeginDocument and later at \end{document}.
+    % \tabH@aux@done is a marker to distinguish
+    % between these two readings. Only in the first
+    % case we need the \tabH@aux@... commands.
+    \let\tabH@aux@done\@empty
+    \if@filesw
+      \immediate\write\@mainaux{%
+        \@percentchar\@percentchar BeginProlog: tabularht%
+      }%
+      % items in the aux file are executed,
+      % if tabularht is loaded
+      % and during the aux file read at \begin{document} only
+      \immediate\write\@mainaux{%
+        \detokenize{%
+          % the \tabH@aux@... commands are needed only if
+          % tabularht is loaded with driver pdftex.
+          \@ifundefined{tabH@aux@vrule}\@secondoftwo\@firstofone
+          {%
+            % disable commands except for the first .aux files reading
+            \@ifundefined{tabH@aux@done}\@gobble\@firstofone
+          }%
+          {%
+            \let\tabH@aux@vrule\@gobbletwo
+            \let\tabH@aux@vstart\@gobblefour
+            \let\tabH@aux@vstop\@gobble
+          }%
+        }%
+      }%
+      \immediate\write\@mainaux{%
+        \@percentchar\@percentchar EndProlog: tabularht%
+      }%
+    \fi
+  }%
+
+  % the x positions of vrules are stored in
+  % \tabH@<tabcount>list with distinct values
+  \protected\def\tabH@aux@vrule#1#2{%
+    \@ifundefined{tabH@#1list}{%
+      \expandafter\xdef\csname tabH@#1list\endcsname{%
+        \noexpand\do{#2}%
+      }%
+    }{%
+      \begingroup
+        \def\x{#2}%
+        \let\y\@undefined
+        \let\do\tabH@do@add
+        \expandafter\xdef\csname tabH@#1list\endcsname{%
+          \csname tabH@#1list\endcsname\@empty
+          \ifx\y\@undefined
+            \noexpand\do{\x}%
+          \fi
+        }%
+      \endgroup
+    }%
+  }%
+  \def\tabH@do@add#1{%
+    \ifx\y\@undefined
+      \ifnum#1<\x\space
+      \else
+        \expandafter\ifx\csname y\endcsname\relax\fi
+        \ifnum#1>\x\space
+          \noexpand\do{\x}%
+        \fi
+      \fi
+    \fi
+    \noexpand\do{#1}%
+  }%
+
+  \def\tabH@vspace@start#1{%
+    \if@filesw
+      \stepcounter{tabH@unique}%
+      \edef\tabH@currentrow{\the\c@tabH@unique}%
+      \pdfsavepos
+      \protected@write\@auxout{%
+        \let\tabH@lastxpos\relax
+        \let\tabH@lastypos\relax
+      }{%
+        \tabH@aux@vstart{\tabH@currenttab}{\tabH@currentrow}%
+                        {\tabH@lastxpos}{\tabH@lastypos}%
+      }%
+    \fi
+    \begingroup
+      \edef\a{tabH@\tabH@currenttab row\tabH@currentrow}%
+      \expandafter\let\expandafter\x\csname\a x\endcsname
+      \ifx\x\relax
+      \else
+        \expandafter\let\expandafter\y\csname\a y\endcsname
+        \expandafter\let\expandafter\l
+            \csname tabH@\tabH@currenttab list\endcsname
+        \ifx\l\relax
+        \else
+          \def\f{#1}%
+          \ifx\f\@empty
+            \let\do\tabH@do@set
+          \else
+            \count@=\z@
+            \let\do\tabH@do@filter
+          \fi
+          \setbox\z@=\hbox{\l}%
+          \wd\z@=\z@
+          \dp\z@=\z@
+          \copy\z@
+        \fi
+      \fi
+    \endgroup
+  }%
+  \def\tabH@vspace@stop{%
+    \if@filesw
+      \pdfsavepos
+      \protected@write\@auxout{%
+        \let\tabH@lastypos\relax
+      }{%
+        \tabH@aux@vstop{\tabH@lastypos}%
+      }%
+    \fi
+  }%
+  \def\tabH@do@set#1{%
+    \hbox to \z@{%
+      \hskip \dimexpr #1sp - \x sp\relax
+      \vrule \@width\arrayrulewidth
+             \@depth\dimexpr \y sp\relax
+      \hss
+    }%
+  }%
+  \def\tabH@do@filter{%
+    \@tempswafalse
+    \advance\count@\@ne
+    \@for\e:=\f\do{%
+      \ifnum\e=\count@
+        \@tempswatrue
+      \fi
+    }%
+    \if@tempswa
+      \expandafter\tabH@do@set
+    \else
+      \expandafter\@gobble
+    \fi
+  }%
+
+  \protected\def\tabH@aux@vstart#1#2#3#4{%
+    \def\tabH@current@vstart{{#1}{#2}{#3}{#4}}%
+  }%
+  \protected\def\tabH@aux@vstop{%
+    \expandafter\tabH@aux@v\tabH@current@vstart
+  }%
+  \def\tabH@aux@v#1#2#3#4#5{%
+    \expandafter\gdef\csname tabH@#1row#2x\endcsname{#3}%
+    \expandafter\xdef\csname tabH@#1row#2y\endcsname{%
+      \the\numexpr #4 - #5\relax
+    }%
+  }%
+
+  \csname fi\endcsname
+  \endinput
+
+\fi
+%    \end{macrocode}
+%
+% \subsection{DVI drivers}
+%
+%    \begin{macrocode}
+\ifx\tabH@driver\@empty
+  \PackageError{tabularht}{%
+    Missing DVI driver, option `vlines' disabled%
+  }{%
+    Supported DVI drivers: dvips.%
+  }%
+  \expandafter\endinput
+\fi
+
+\def\tabH@driver@dvips{%
+  \def\tabH@literalps##1{\special{ps:SDict begin ##1 end}}%
+  \def\tabH@headerps##1{\special{! ##1}}%
+}
+
+\@onelevel@sanitize\tabH@driver
+\@ifundefined{tabH@driver@\tabH@driver}{%
+  \PackageError{tabularht}{%
+    Unsupported driver `\tabH@driver'%
+  }{%
+    Supported DVI drivers: dvips.%
+  }%
+  \endinput
+}{}
+
+\begingroup
+  \let\on@line\@empty
+  \PackageInfo{tabularht}{%
+    Using driver `\tabH@driver'%
+  }%
+\endgroup
+\csname tabH@driver@\tabH@driver\endcsname
+
+\protected\def\tabH@vrule#1#2\vrule#3\arrayrulewidth{%
+  #2% \fi or empty
+  % hack to get rid of maxdrift rounding of dvips,
+  % thus simulate a large motion
+  \kern1in\relax
+  \tabH@literalps{%
+    #1 tabH.vrule %
+    Resolution neg 0 translate%
+  }%
+  \vrule#3\arrayrulewidth
+  \tabH@literalps{Resolution 0 translate}%
+  \kern-1in\relax
+}
+
+\def\tabH@vspace@start#1{%
+  \begingroup
+    \let\y\@empty
+    \@for\x:=#1\do{%
+      \ifx\y\@empty
+        \edef\y{\x}%
+      \else
+        \edef\y{\y\space\x}%
+      \fi
+    }%
+    \tabH@literalps{\tabH@currenttab[\y]currentpoint exch pop}%
+  \endgroup
+}
+\def\tabH@vspace@stop{%
+  \tabH@literalps{%
+    currentpoint exch pop %
+    \number\dimexpr\arrayrulewidth\relax\space
+    tabH.vspace%
+  }%
+}
+
+\tabH@headerps{%
+  userdict begin%
+    /tabH.list 10 dict def%
+    /tabH.job [] def %
+  end%
+  /tabH.vrule{%
+    10 string cvs cvn dup tabH.list exch known{%
+      tabH.list exch dup [ exch tabH.list exch get %
+      currentpoint pop round exch true exch{%
+        % tabH.list key [ ... x true i
+        % tabH.list key [ ... false i
+        exch{%
+          % ... [ ... x i
+          2 copy lt{false}{%
+            2 copy eq{pop false}{exch true}ifelse%
+          }ifelse%
+        }{false}ifelse%
+      }forall %
+      pop%
+      ]put%
+    }{%
+      tabH.list exch[currentpoint pop round]put%
+    }ifelse%
+  }bind def%
+  % <tab num> <cols array> <ytop> <ybottom> <rulewidth[sp]>
+  /tabH.vspace{%
+    userdict begin %
+      10 dict dup begin %
+        exch 65536 div Resolution mul 72.27 div %
+        % dvips uses a poor man's ceil function
+        % see dopage.c before "drawrule": (int)(... + 0.9999999)
+        0.9999999 add truncate%
+        /rulewidth exch def %
+        exch/ybottom exch def %
+        exch/ytop exch def %
+        exch/cols exch def %
+        exch/tabkey exch 10 string cvs cvn def %
+      end%
+      /tabH.job exch[exch userdict/tabH.job get aload pop]def %
+    end%
+  }bind def %
+  % Now we do the work at the end of the page.
+  % Unhappily "eop-hook" cannot be used, because "eop"
+  % executes "restore" before, so that all data are lost.
+  TeXDict begin%
+    /eop%
+    [%
+      {%
+        tabH.job{%
+          begin%
+           /colarray %
+             tabH.list tabkey known{tabH.list tabkey get}{[]}ifelse %
+           def %
+           cols length 0 eq not{%
+             /colarray[%
+               cols{1 sub %
+                 dup 0 lt{pop}{%
+                   dup colarray length ge{pop}{%
+                     colarray exch get%
+                   }ifelse%
+                 }ifelse%
+               }forall%
+             ]def%
+           }if %
+           colarray{%
+             % (rulewidth) == rulewidth == % debug
+             Resolution sub %
+             ytop rulewidth ytop ybottom sub v%
+           }forall %
+          end%
+        }forall%
+        % tabH.list{== ==}forall % debug
+      }bind aload pop %
+      TeXDict /eop get aload pop%
+    ]cvx def %
+  end%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/tabularht.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/tabularht.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex tabularht.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   tabularht.sty & tex/latex/oberdiek/tabularht.sty\\
+%   tabularht.pdf & doc/latex/oberdiek/tabularht.pdf\\
+%   tabularht-example1.tex & doc/latex/oberdiek/tabularht-example1.tex\\
+%   tabularht-example2.tex & doc/latex/oberdiek/tabularht-example2.tex\\
+%   tabularht.dtx & source/latex/oberdiek/tabularht.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk tabularht.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{tabularht.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex tabularht.dtx
+%makeindex -s gind.ist tabularht.idx
+%pdflatex tabularht.dtx
+%makeindex -s gind.ist tabularht.idx
+%pdflatex tabularht.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{tabularht.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='tabularht'>
+  <name>tabularht</name>
+  <caption>Tabular environments with height specified.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2005-2007'/>
+  <license type='lppl1.3'/>
+  <version number='2.5'/>
+  <description>
+    The tabularht package defines some environments that add a height
+    specification to tabular and array environments.  The default set
+    of new environments take a value for their height in the first
+    argument: defined environments are: <tt>tabularht</tt>,
+    <tt>tabularht*</tt> and <tt>arrayht</tt>.  If package
+    <xref refid='tabularx'>tabularx</xref> is also loaded,
+    the package also defines environments <tt>tabularxht</tt> and
+    <tt>tabularxht*</tt>.
+    <p/>
+    The places where stretching is to happen are signalled by<br/>
+    <tt>\noalign{\vfill}</tt><br/>
+    immediately after the <tt>\\</tt> that ends a row of the table or
+    array.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/tabularht.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/tabularht.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2005/09/22 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2005/10/16 v2.0}
+%   \item
+%     Height specification allows
+%     |to=...| or |spread=...|, default is |to=|.
+%   \item
+%     Option \xoption{vlines} added,
+%     drivers \xoption{pdftex} and \xoption{dvips}.
+%   \item
+%     \cs{interrowspace}, \cs{interrowfil}, and
+%     \cs{interrowstart}\dots\cs{interrowstop} added.
+%   \end{Version}
+%   \begin{Version}{2005/10/18 v2.1}
+%   \item
+%     Fix for package \xpackage{colortbl}, but the colors
+%     of \xpackage{colortbl} remain unsupported.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v2.2}
+%   \item
+%     Code is not changed.
+%   \item
+%     DTX framework.
+%   \end{Version}
+%   \begin{Version}{2006/12/22 v2.3}
+%   \item
+%     Documentation fix.
+%   \item
+%     Fix in code of option vlines.
+%   \end{Version}
+%   \begin{Version}{2007/03/21 v2.4}
+%   \item
+%     Fix: Counter |tabh@unique| must not be changed by \cs{include}.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v2.5}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

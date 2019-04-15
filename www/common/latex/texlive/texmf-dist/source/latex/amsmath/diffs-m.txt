@@ -1,0 +1,552 @@
+diffs-m.txt [1999/12/15] American Mathematical Society
+
+This is a synopsis of the principal differences between various versions
+of the amsmath package and its companion packages.
+
+A synopsis of changes in the "AMS-LaTeX" distribution is included at the
+end of this file. See also diffs-c.txt in the amslatex/classes area.
+
+Those upgrading from version 1.2 to version 2.0 will probably be
+interested in the question:
+
+  After I upgrade will anything fail in my pre-existing documents?
+
+Certain of the bug fixes have the potential to affect the output of
+existing documents in the following ways:
+
+---Vertical spacing for some displayed equations will change because
+"abovedisplayshortskip" is now applied when possible.
+
+---Incorrect horizontal spacing for certain math constructs will change,
+e.g., for \iint\nolimits or a subscript on a double-accented letter.
+
+---The default subscript placement in displayed formulas for \varinjlim,
+\varprojlim, \varliminf, \varlimsup is now below rather than to the
+side. To get the old behavior, add \nolimits---e.g.,
+\varliminf\nolimits_{...}.
+
+---Ellipsis dots in text (\ldots or \dots) will now behave the same as
+in standard LaTeX; the surrounding space may therefore change.
+
+During regression testing we found some errors cropping up in documents
+from incorrect usage that had not been caught with version 1.2. Although
+these errors are relatively rare, documents containing such usage will
+need to be corrected before they will run properly with version 2.0:
+
+---Use of two mutually exclusive display structures for the same
+display. In this example the outer \[ \] are redundant:
+
+      \[
+      \begin{align*}
+      ...
+      \end{align*}
+      \]
+
+---Inadequate argument markup for math accents:
+
+      \hat \mathcal{C}
+
+This should have been written with braces surrounding the argument of
+the \hat command: \hat{\mathcal{C}}.
+
+For documents where error messages crop up after the upgrade, there are
+various possible approaches, including:
+
+(a) Change instances of incorrect usage (if applicable).
+
+(b) Put a copy of amsmath.sty version 1.2 into the home directory of the
+document. Then it should continue to work the same as before.
+
+(c) Use the snapshot package in combination with a shell script to
+arrange that version 1.2 of amsmath is found instead of 2.0 when
+processing the document. See ftp://ftp.ams.org/pub/tex/snapshot.*. This
+approach requires a certain amount of technical knowledge.
+
+(d) Downgrade to version 1.2 again.
+
+========================================================================
+Changes in amsmath 2.0 [November 1999]
+
+---The AMS-LaTeX User's Guide (amsldoc.tex) has been turned into the
+   AMSmath User's Guide by moving the amsthm documentation into a
+   separate file (amsthdoc.tex) in the amslatex/classes area.
+
+---Restored normal use of "shortskip" spacing in single equations.
+
+[!! NOTE: This means that page breaks may change in existing documents.]
+
+---Restored normal use of available shrink around binary operators in
+   single equations.
+
+---Fixed poor subscript placement for double-accented letters. Math
+accent handling was reworked in the process in such a way that the
+capitalized forms of the math accent commands are no longer necessary.
+\hat{\hat{X}} will do proper alignment of the second accent. \Hat et
+cetera are retained for compabitility reasons. (Thanks to Javier Bezos
+for donating some code from his accents package.)
+
+[!! NOTE: Improper math accent use will now produce wrong output.]
+
+Suppose that we have \boldH defined in the preamble as
+\newcommand{\boldH}{\mathbf{H}}. Then the following examples illustrate
+recommended usage.
+
+     \hat{\mathbf{H}}    OK
+     \hat{\boldH}        OK
+     \hat\boldH          Works OK, but deprecated by the LaTeX book
+     \hat\mathbf{H}      Not OK! Output will be incorrect.
+
+Since the output will be wrong, amsmath gives an error message when the
+last variant is detected.
+
+---The following kinds of mixed structures worked by happenstance with
+   amsmath 1.2, although they should have produced an error message.
+   With amsmath 2.0 they will produce an error or warning message.
+
+   [!! NOTE: Potential error messages]
+
+    % Outer \[ \] is redundant
+
+    \[
+    \begin{align*}
+     ...
+    \end{align*}
+    \]
+
+    % Outer \begin{equation*} ... \end{equation*} is redundant
+
+    \begin{equation*}\begin{alignat*}{2}
+    ...
+    \end{alignat*}
+    \end{equation*}
+
+    % No printed material is allowed between \begin{equation} and
+    % \begin{split}:
+
+    \begin{equation*}\left \{
+    \begin{split}
+     ...
+    \end{split}\right .
+    \end{equation*}
+
+---diff12.tex is replaced by diffs-m.txt and diffs-c.txt, with the
+   latter moving to the amslatex/classes area.
+
+---Added an "?" option which gives some information about the available
+   documentation.
+
+---The amsmath definitions for matrix, pmatrix, and cases are
+   incompatible with the plain-TeX syntax for \pmatrix, \matrix, and
+   \cases, which are used occasionally by some authors in LaTeX
+   documents. In version 2.0 the error messages resulting from the
+   plain-TeX syntax have been made more intelligible.
+
+---If you need the boldsymbol facilities of the amsbsy package, use of
+   the "bm" (boldmath) package is recommended instead for new documents.
+   The amsbsy package is retained for compatibility with existing
+   documents. If you have a recent version of LaTeX (1998 or newer) you
+   already have the bm package; otherwise you may need to get it from
+   CTAN. (It is not an AMS package.)
+
+---\iint\nolimits: Fixed poor placement of subscript (also \iiint,
+\idotsint, etc).
+
+---\varinjlim, \varprojlim, \varliminf, \varlimsup: Default to
+\displaylimits instead of nolimits.
+
+---Fixed alignedat so that it doesn't take the first token of its
+   contents and try to interpret it as a number.
+
+---Leave text version of \dots and \ldots unchanged.
+
+---Changed \numberwithin so it no longer assumes previous definition of
+   \thesomething contained no prefixes.
+
+---\mathbf{\Gamma}: Leave cap Greek letters alone instead of converting
+   them from variable (fam 7) to fixed (fam 0). \mathbf{\gamma} still
+   fails---but that's a math font problem.
+
+---\mathindent is aliased to \@mathmargin so that when the fleqn option
+   is used, users can reset it as the LaTeX book advertises.
+
+---With the showkeys package: Corrected loss of marginal notes when
+labels occurred inside an align environment.
+
+---Carried over some tweaks (\bmod, \right/leftarrowfill) from the 1996
+   version of plain.tex.
+
+---Adjusted spacing of overarrow@ and underarrow@ to allow more room for
+   larger cmsy arrowheads.
+
+---Corrected spurious "overfull \hbox" warnings for \xrightarrow.
+
+---Corrected poor spacing for \xleftarrow.
+
+---Removed the \leavevmode in \smash which caused trouble for some
+   applications (e.g., the crop package) that expected the original
+   LaTeX definition.
+
+---Changed \def to \newcommand/\newenvironment where appropriate.
+
+---Use \sqrtsign instead of \@@sqrt (but include a backward
+   compatibility hack for the latter).
+
+---Left brace in \env{cases} environment would fail to work in
+   certain circumstances: Fix by using \lbrace instead of \{.
+
+---Use \ignorespacesafterend where applicable instead of
+   \global\@ignoretrue.
+
+---Protected commands in the definition of \theequation were
+   incorrectly expanded by the subequations environment when copying
+   the definition to \theparentequation: Fix by using \protected@edef.
+
+---Spurious extra space following punctuation at that end of a display:
+   In \math@cr, \math@cr@@, etc, use \iffalse{\fi instead of simply { to
+   keep an unwanted mathord atom from being added at the end of the
+   current math list; added \endmultline@math to work around a similar
+   sort of problem specific to the `multline' environment.
+
+---Various wrong results or no effect for \displaybreak inside "align",
+   "alignat", etc. Resetting \dspbrk@level in the \everycr of
+   \@display@init cleared most of these up.
+
+---Changed \displaybreak to issue an error message if enclosed in boxing
+   environment that will keep it from having any effect.
+
+---Turned off \displaybreak during the measuring phase of multline.
+
+---Fixed some numbering problems with multline and multline* and error
+   for use of \tag.
+
+---Use \@gtempa instead of \@tempa where assigned globally (standard
+   save stack precaution).
+
+---Save and restore \column@ to keep aligned from screwing up the column
+   counting of a parent align environment. Made \column@ assignments
+   uniformly global, except in a couple of places where the risk of side
+   effects seemed too great.
+
+---Error recovery for misspelled '\end{multline}' was not very helpful.
+   Improve \collect@body along lines suggested by Hellström.
+
+---Fixed up certain number placement problems with align
+
+---Add \alignsafe@testopt to work around a LaTeX bug: when a nested
+   alignment environment that takes an optional argument has an empty
+   first cell (i.e., begins with an &) LaTeX's optional argument
+   scanning screws up the alignment state.
+
+---Add `mathdisplay' environment (internal use) to correct several
+   problems of \[ \] and the `equation' environment arising from the
+   previous implementation as a degenerate case of `gather'.
+
+---It is possible now to use \eeq as an abbreviation for \end{equation}
+(one of the consequences of the preceding change). But still not \eal
+for \end{align} or certain other display structures.
+
+---Reorganize `split' internal calling sequence to go along with the use
+   of `mathdisplay' in \[ \] and `equation'.
+
+---Suppression of LaTeX error messages during measuring phase made
+   primitive TeX errors harder to understand; stop suppressing. (As a
+   result, users will sometimes get redundant error messages now.)
+   Remove obsolete Sb, Sp environments again.
+
+---The file amsintx.dtx was removed from the distribution pending
+   further development.
+
+---Remove the \ifinany@ switch, use \spread@equation instead to achieve
+   the same ends.
+
+---Remove unbracefonts@ function, no longer needed after changes in
+   math accent handling.
+
+---Got rid of the special trap for '^x that had been carried over from
+AMS-TeX.
+
+---Made \overline, \doteq, \longrightarrow, etc, robust.
+
+---Changed \relbar to use \std@minus---otherwise \underleftrightarrow
+works poorly in a \DeclareMathOperator definition.
+
+---Use \new@ifnextchar in matrix, pmatrix, cases so that \\<newline>[x]
+doesn't trigger an error.
+
+---Bug fix for nested use of \label inside minipage inside equation.
+
+---Add minalignsep after every second column in aligned, for consistency
+with align.
+
+========================================================================
+Changes in amsmath 1.2 [January 1995]
+
+---Name change; relation to the "amsfonts" package
+
+In version 1.1 of AMS-LaTeX, the name of this package was "amstex". The
+new name is "amsmath". The amstex package automatically invoked the
+amsfonts package as well; the amsmath package does not.
+
+---Adapted for LaTeX2e
+
+Old method of invocation:
+
+  \documentstyle[amstex]{article}% LaTeX 2.09
+
+New method of invocation:
+
+  \documentclass{article}
+  \usepackage{amsmath}
+
+---Handling of options intlim, nosumlim, nonamelm, righttag, ctagsplt
+
+Old usage:
+
+  \documentstyle[amstex,righttag,intlim]
+
+New usage:
+
+  \usepackage[reqno,intlimits]{amsmath}
+
+Several option names were changed (mainly, they are no longer restricted
+to eight characters):
+
+  intlim   -> intlimits
+  nosumlim -> nosumlimits
+  nonamelm -> nonamelimits
+  righttag -> reqno         [for consistency with "leqno"]
+  ctagsplt -> centertags
+
+---Character @ is no longer used as a special command prefix
+
+Certain commands in the amstex pkg started with "@" instead of "\". This
+special usage has been discontinued, except for the amscd package, and
+then only within the CD environment. Practically speaking, this means
+primarily that it is no longer necessary to use doubled @@ to get a
+single printed @ character (e.g., in e-mail addresses).
+
+---The @, and @! micro-spacing commands are no longer provided
+
+As a consequence of the @ character change, "@," and "@!" are no longer
+recognized spacing commands. An \mspace command is provided that can be
+used instead; see the AMSmath User's Guide.
+
+---Extensible arrow commands @>>> and @<<<
+
+The commands @>>> and @<<< are no longer available [except in the CD
+environment of the amscd package]; alternative commands \xleftarrow and
+\xrightarrow are provided by the amsmath package. The sub and
+superscripts are given through an optional resp. mandatory argument, for
+example
+
+  X\xleftarrow{b}Y                  % superscript "b" only
+  X\xrightarrow[\alpha]{\beta}Y     % sub alpha, sup beta
+
+---The command \bold has been superseded by the command \mathbf, as the
+latter is now the standard name provided by LaTeX for this purpose.
+
+---The commands \newsymbol, \frak, \Bbb are no longer available because
+the amsfonts package is not loaded by amsmath. In any case those
+commands now have new names---\frak -> \mathfrak, \Bbb -> \mathbb, etc.
+See the amsfonts documentation for further details.
+
+---The amsmath package provides \lvert and \rvert to use for vert-bar
+symbols when they act as delimiters (compare \langle, \rangle for
+angle-bracket delimiters). Commands \lVert and \rVert are likewise
+provided instead of \| for paired-delimiter use of the double-vert
+symbol. Use of | and \| for paired delimiters can lead to incorrect
+spacing in rare cases. Further discussion is found in the AMS-LaTeX
+user's guide (amsldoc.tex).
+
+---The ~ command is now left unchanged by amsmath; the change
+that makes it remove a redundant preceding or following space character
+is now done only by AMS documentclasses (in version 1.1 this was done by
+the amstex package).
+
+---The following rarely used commands are removed to the amsxtra
+package: \accentedsymbol, \sphat, \spcheck, \sptilde, \spdot, \spddot,
+\spdddot, \spbreve, \@))), \@(((.
+
+---The six generalized fraction commands \over, \overwithdelims, \atop,
+\atopwithdelims, \above, \abovewithdelims are deprecated and produce
+warning messages. Their functionality can be obtained through \frac,
+\binom, and \genfrac instead. See amsldoc.tex and technote.tex for
+further details.
+
+---The \fracwithdelims command is gone, as \genfrac provides
+equivalent functionality (and a little more).
+
+---The optional argument of \frac that allowed changing the thickness of
+the fraction line is gone. That functionality is now provided only
+through \genfrac: the need to change the line thickness is so rare in
+practice that it seems better not to burden the ubiquitous \frac command
+with the somewhat time-consuming look-ahead process required for an
+optional argument. I.e., this change will contribute in a small way to
+making your documents run faster.
+
+---The commands \lcfrac and \rcfrac for left or right alignment of
+continued fraction numerators are gone; they are replaced by an optional
+argument of the \cfrac command.
+
+---A new command \DeclareMathOperator is provided for defining new
+operator names:
+
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator*{\xlim}{x-lim}
+
+The * form makes the operator name produce limit-style sub and
+superscripts, like \max or \lim. This is now the preferred method,
+instead of using the old command \operatorname (which is, however,
+retained for now). The command \operatornamewithlimits has been renamed
+\operatorname*. These commands now can also be obtained through a
+separate package amsopn, so it's not necessary to load the entire
+amsmath package just to get that feature.
+
+---Environments "Sb", "Sp" retired.
+
+The environments Sb and Sp for multiline subscripts have been replaced
+by a single command \substack, used as follows:
+
+\sum_{\substack{first line\\second line}}
+
+This command can be used equally well in a subscript or superscript, and
+provides better vertical positioning (as compared to Sb, Sp) if a
+multiline subscript is placed on the side, as perhaps for an integral.
+There is also a slightly generalized alternative, an environment
+subarray that allows you to specify either centering or left alignment
+for the contents:
+
+\sum_{\begin{subarray}{l}first line\\second line\end{subarray}}
+
+---New command \nobreakdash
+
+A command \nobreakdash is provided to suppress the possibility of a
+linebreak after the following hyphen or dash. For example, if you write
+"$p$\nobreakdash-adic" then a linebreak will never be taken between the
+hyphen and the "adic".
+
+---The placement of equation numbers has been substantially improved for
+align, gather, and split. Numbers will now never overlap on top of the
+equation body (as far as we can ascertain), and they are much less
+likely to be shifted up or down unnecessarily when there is actually
+adequate space to leave the number in the normal place. In a few
+remaining cases, an equation number will be shifted unnecessarily
+because technical complications make accurate measurement of the
+available room too difficult; for those cases a \raisetag command is
+provided that allows you to manually adjust the vertical position of the
+equation number.
+
+---The [xx]align[at] family of environments has been thoroughly revised:
+now the xalignat environment is gone, as its function has been merged
+into the align environment (it's no longer necessary to specify how many
+side-by-side structures, as was required for xalignat, because align
+automatically handles any number of them). Similarly, the xxalignat
+environment has been replaced by an environment flalign that doesn't
+require you to specify how many side-by-side structures will be needed.
+Certain numbering problems (presence of an equation number when it
+should be absent, or vice versa) have also been cleared up.
+
+(Thanks to David M. Jones for his substantial [volunteer] work behind
+this change and the preceding one.)
+
+---The alignedat environment was changed to take two arguments rather
+than one: a mandatory argument (as formerly) specifying the number of
+align structures, and a new optional one specifying the placement of the
+environment (parallel to the optional argument of aligned). However,
+aligned is simpler to use, allowing any number of aligned structures
+automatically, and therefore the use of alignedat is deprecated.
+
+---The seldom-used command \oldnos is gone; if you need it, you should
+consult the LaTeX documentation on using fonts (e.g., fntguide.tex) to
+find out how to construct an equivalent command.
+
+---A new subequations environment causes all numbered equation
+environments within its scope to be numbered (4.9a) (4.9b) (4.9c) etc.,
+if the preceding numbered equation was 4.8. A \label command immediately
+after \begin{subequations} will produce a \ref of the parent number
+`4.9', not `4.9a'. The counters used by the subequations environment are
+parentequation and equation and standard uses of \addtocounter,
+\setcounter, etc., are possible with those counter names.
+
+---The amsmath package (unlike amstex) respects the setting provided by
+the documentclass for putting equation numbers on the right or the left.
+[Technical note: a documentclass that has leqno as the default should
+explicitly pass that option to the amsmath package with
+\PassOptionsToPackage in order for it to be effective.]
+
+---The fleqn option for left-aligned instead of centered equations is
+now supported (thanks to David M. Jones).
+
+************************************************************************
+The remainder of this file discusses some changes that do not directly
+pertain to the amsmath package but to the parent distribution known as
+"AMS-LaTeX".
+
+========================================================================
+Changes in AMS-LaTeX 2.0
+
+---The AMS-LaTeX User's Guide (amsldoc.tex) is split up into amsldoc.tex
+and amsthdoc.tex, with the latter moving into the "classes" area.
+
+---The file amslatex.faq was split into amsmath.faq and amsclass.faq.
+
+---The file amslatex.bug was done away with; most of the information was
+merged into diffs-m.txt, diffs-c.txt, amsmath.faq, and amsclass.faq.
+
+========================================================================
+Changes in AMS-LaTeX 1.2
+
+---Adapted for LaTeX2e
+
+AMS-LaTeX 1.0 and 1.1 were designed to work with LaTeX 2.09, which
+became obsolete in 1994 with the appearance of "LaTeX2e". AMS-LaTeX 1.2
+has been extensively adapted to take advantage of various features of
+LaTeX2e. It is no longer a separate TeX format---i.e., it does not need
+to be invoked by a separate "amslatex" command.
+
+---LaTeX 2.09 font commands (\bf, \it, etc)
+
+Pre-existing documents will for the most part continue to work fine
+without requiring any changes. However, depending on the installation
+options used for your copy of AMS-LaTeX 1.1 you may need to update the
+options list of the \documentstyle command by adding newlfont, for
+example:
+
+  \documentstyle[newlfont]{amsart}
+
+---The packages amsfonts, amssymb were moved to the AMSFonts
+distribution. They used to be included in the AMS-LaTeX distribution for
+pragmatic reasons but their natural home is with the AMSFonts
+distribution.
+
+---Package amstex renamed to amsmath
+
+The amstex package has been renamed amsmath. The old name `amstex' came
+from the fact that version 1.0 was a more or less straight port into
+LaTeX of selected portions from the macro package AmS-TeX written by
+Michael Spivak, but the historical origins of the package are likely of
+less interest to the general usership---especially looking to the
+future---than a straightforward declaration in the name `amsmath' of the
+sort of features that are provided.
+
+Another important reason for the name change was to make possible some
+progress that would be out of the question (because of the impact on
+existing documents) if the name `amstex' were retained. For example,
+unlike amstex, amsmath doesn't automatically load the amsfonts package,
+as that package was moved out to the AMSFonts distribution as described
+above. If this change were not accompanied by a name change, many
+existing documents would have to be updated by hand (adding
+\usepackage{amsfonts}) in order to run without error. A frozen version
+of amstex.sty is provided for processing pre-existing documents; it
+won't have active maintainence henceforth except for bug fixes. For new
+documents, authors should use the amsmath package.
+
+Therefore, "\usepackage{amstex}" is incorrect usage---do not rely on the
+1994 edition of `The LaTeX Companion' in this respect (unless you obtain
+the errata for Chapter 8; see
+http://ctan.tug.org/info/compan-rev/ch8.pdf).
+
+---New documentclass amsproc
+
+A new documentclass amsproc was added for collections of articles, such as
+the proceedings of a conference.

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='eolgrab'>
+  <name>eolgrab</name>
+  <caption>Catch arguments delimited by end of line.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    The package defines the command <tt>\eolgrab</tt> that reads an
+    string terminated by end of line, and then calls a macro with that
+    string as argument.  Thus
+    <pre>\eolgrab\section My title</pre> is equivalent to
+    <pre>\section{My title}</pre>
+    <p/>
+    A second command <tt>\eolgrabopt</tt> provides the string as an
+    optional argument (which is useful for <tt>\item</tt>, for example).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/eolgrab.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/eolgrab.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

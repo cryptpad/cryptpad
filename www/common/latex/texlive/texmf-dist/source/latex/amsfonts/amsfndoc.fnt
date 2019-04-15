@@ -1,0 +1,134 @@
+%% filename: amsfndoc.fnt
+%% version: 2.2c
+%% date: 2001/11/16
+%%
+%% American Mathematical Society
+%% Technical Support
+%% Publications Technical Group
+%% 201 Charles Street
+%% Providence, RI 02904
+%% USA
+%% tel: (401) 455-4080
+%%      (800) 321-4267 (USA and Canada only)
+%% fax: (401) 331-3842
+%% email: tech-support@ams.org
+%% 
+%% Copyright 1994, 2001, 2009 American Mathematical Society.
+%% 
+%% Unlimited copying and redistribution of this file are permitted as
+%% long as this file is not modified.  Modifications, and distribution
+%% of modified versions, are permitted, but only if the resulting file
+%% is renamed.
+%%
+%% ====================================================================
+\newcount\curchar \newcount\currow \newcount\curcol
+\newdimen\indexwd \newdimen\tempcellwd
+\setbox0\hbox{\tentt 0\kern.2em}
+\indexwd=\wd0
+
+\def\ident#1{#1}
+\def\hexnumber#1{\ifcase\expandafter\ident\expandafter{\number#1} 0\or
+1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or 9\or A\or B\or C\or D\or E\or
+F\else ?\fi}
+
+\def\rownumber{\tentt\hexnumber\currow}
+\def\colnumber{\tentt\hexnumber\curcol \global\advance\curcol 1 }
+
+%    Note that the cyrillic short I has an unexpected height of more than
+%    8.5pt, and is thus centered vertically rather than aligned on the
+%    baseline; this has been reported as a bug, and may be fixed sometime.
+\def\charnumber{\setbox0=\hbox{\char\curchar}%
+  \ifdim\ht0>7.5pt\reposition
+  \else\ifdim\dp0>2.5pt\reposition\fi\fi
+  \box0 \global\advance\curchar1 }
+\def\reposition{\setbox0=\hbox{$\vcenter{\kern1.5pt\box0\kern1.5pt}$}}
+
+%    For these charts we avoid \offinterlineskip as that makes for
+%    problems when cells have unusual height or depth. Instead the
+%    vertical rules in the charts are added after the total height of
+%    the chart is know.
+\def\dochart#1{%
+  \begingroup
+  \global\curchar=0 \global\currow=0 \global\curcol=0
+  \def\hline{\kern2pt\hrule\kern3pt }%
+  \setbox0\vbox{#1%
+% 16 cols for chars + 2 for row numbers + 12pt space for 5 vrules
+    \def\0{\hbox to\cellwd{\curcol}{\hss\charnumber\hss}}%
+    \colnumbers
+    \hline
+    \setrow\setrow\setrow\setrow
+    \hline
+    \setrow\setrow\setrow\setrow
+    \hline
+    \colnumbers
+  }%
+%    Now that we know the total height, we can add the vertical rules.
+  \vbox{%
+    \hbox to\hsize{\kern\indexwd
+      \def\fullrule{\hfil\vrule height\ht0 depth\dp0\hfil}%
+      \fullrule\kern\cellwd{0}\kern\cellwd{1}\kern\cellwd{2}\kern\cellwd{3}%
+      \fullrule\kern\cellwd{4}\kern\cellwd{5}\kern\cellwd{6}\kern\cellwd{7}%
+      \fullrule\kern\cellwd{8}\kern\cellwd{9}\kern\cellwd{10}\kern\cellwd{11}%
+      \fullrule\kern\cellwd{12}\kern\cellwd{13}\kern\cellwd{14}\kern\cellwd{15}%
+      \fullrule\kern\indexwd}%
+    \kern-\ht0 \kern-\dp0 \unvbox0}%
+  \endgroup
+}
+
+\def\colnumbers{\hbox to\hsize{\global\curcol 0
+  \def\1{\hbox to\cellwd{\curcol}{\hfil\colnumber\hfil}}%
+  \kern\indexwd\hfil\hfil
+  \1\1\1\1\hfil\hfil \1\1\1\1\hfil\hfil
+  \1\1\1\1\hfil\hfil \1\1\1\1\hfil\hfil
+  \kern\indexwd}%
+}
+
+\def\setrow{\hbox to\hsize{%
+  \hbox to\indexwd{\hfil\rownumber\kern.2em}\hfil\hfil
+  \0\0\0\0\hfil\hfil \0\0\0\0\hfil\hfil
+  \0\0\0\0\hfil\hfil \0\0\0\0\hfil\hfil
+  \hbox to\indexwd{\tentt\kern.2em \rownumber\hfil}}%
+  \global\advance\currow 1 }%
+
+\def\cellwd#1{20pt}% initialize
+
+%    This is supposed to help tailor cell widths to a specific font;
+%    but at the moment just make all cells the same width.
+%    [mjd,20-Dec-1994]
+\def\measurecolwidths#1{%
+  \tempcellwd\hsize \advance\tempcellwd-2\indexwd
+%     Space for vrules:
+  \advance\tempcellwd -12pt
+  \divide\tempcellwd 16
+  \xdef\cellwd##1{\the\tempcellwd}%
+}
+
+\def \table #1#2#3{\par\penalty-200 \bigskip
+  \font #1=#2 \relax
+  \vbox{\hsize=29pc
+    \measurecolwidths{#1}%
+    \centerline{#3 -- {\tt#2}}%
+    \medskip
+    \dochart{#1}%
+}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\raggedbottom
+
+\noindent {\bf Note:} Row and column numbers are hexadecimal.
+
+\table \tenmsam{msam10}{Extra symbols, group 1, medium weight}
+\table \tenmsbm{msbm10}{Extra symbols, group 2, medium weight}
+\table \teneufm{eufm10}{Euler Fraktur medium weight}
+\table \teneurm{eurm10}{Euler cursive (roman) medium weight}
+\table \teneusm{eusm10}{Euler script medium weight}
+\table \teneuex{euex10}{Euler-compatible extension font}
+\table \tencyr{wncyr10}{Cyrillic, medium weight}
+\table \tencyi{wncyi10}{Italic Cyrillic, medium weight}
+\table \tencsc{cmcsc10}{Computer Modern caps and small caps}
+\table \tenmib{cmmib10}{Computer Modern bold math italic}
+\table \tenbsy{cmbsy10}{Computer Modern bold math symbols}
+\table \tenex{cmex10}{Computer Modern math extension font}
+
+\bye

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='luatex'>
+  <name>luatex</name>
+  <caption>The LuaTeX engine.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009,2010'/>
+  <license type='lppl1.3'/>
+  <version number='0.4'/>
+  <description>
+    LuaTeX is an extended version of pdfTeX using Lua as an embedded
+    scripting language.  The LuaTeX project&#x2019;s main objective
+    is to provide an open and configurable variant of TeX while at the
+    same time offering downward compatibility.
+    <p/>
+    LuaTeX uses Unicode (as UTF-8) as its default input encoding, and
+    is able to use modern (OpenType) fonts (for both text and mathematics).
+    <p/>
+    It should be noted that LuaTeX is still under development; its
+    specification has been declared stable, but absolute stability
+    may not in practice be assumed.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/luatex.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/luatex.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

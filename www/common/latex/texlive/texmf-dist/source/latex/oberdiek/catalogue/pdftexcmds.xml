@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdftexcmds'>
+  <name>pdftexcmds</name>
+  <caption>LuaTeX support for pdfTeX utility functions.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='0.20'/>
+  <description>
+    LuaTeX provides most of the commands of
+    <xref refid='pdftex'>pdfTeX</xref> 1.40. However, a number of
+    utility functions are not available.  This package tries to fill
+    the gap and implements some of the missing primitives using Lua.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdftexcmds.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdftexcmds.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

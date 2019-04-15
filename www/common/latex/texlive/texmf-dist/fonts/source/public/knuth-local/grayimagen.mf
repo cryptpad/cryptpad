@@ -1,0 +1,10 @@
+% Gray font for Imagen 8/300; proofsheet resolution is 75 pixels per inch.
+% Each pixel is represented by a 4x4 square, with 4/16 of the dots on.
+
+if mode<>imagen: errmessage "This file is for imagen only"; fi
+
+font_identifier "GRAYIMAGEN";
+
+boolean lightweight;
+
+input grayf

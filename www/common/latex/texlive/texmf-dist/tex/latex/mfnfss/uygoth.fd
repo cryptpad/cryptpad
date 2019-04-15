@@ -1,0 +1,36 @@
+%%
+%% This is file `uygoth.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% oldgerm.dtx  (with options: `fd,Uygoth')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the Standard LaTeX `MFNFSS Bundle'.
+%% --------------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
+\ProvidesFile{Uygoth.fd}
+             [1998/06/07 v2.1j
+              YH Gothic font definitions]
+\DeclareFontFamily{U}{ygoth}{}
+\DeclareFontShape{U}{ygoth}{m}{n}{
+   <10> <10.95> <12> <14.4> <17.28>  <20.74> <24.88> ygoth   }{}
+\endinput
+%%
+%% End of file `uygoth.fd'.

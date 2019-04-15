@@ -1,0 +1,2825 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+%\iffalse   % this is a METACOMMENT !
+%
+%% Package `array' to use with LaTeX 2e
+%% Copyright (C) 1989-1998 Frank Mittelbach, all rights reserved.
+%<+package>\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+%<+package>\ProvidesPackage{array}
+%<+package>         [2014/10/28 v2.4c Tabular extension package (FMi)]
+%
+% \fi
+%
+% \CheckSum{1115}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%
+%
+% \changes{v2.4c}{2008/09/09}{(WR) Typo fix in documentation}
+%
+% \changes{v2.3c}{1995/11/02}{(DPC) minor doc changes}
+%
+% \changes{v2.3a}{1994/10/16}{Added code for \cs{firsthline} and
+%                             friends}
+%
+% \changes{v2.2c}{1994/03/14}{removed check for \cs{@tfor} bug}
+%
+% \changes{v1.0b}{1987/06/04}{`@classi (faster),
+%                        `@classvi (new)   A in preamble means
+%                                         \&\& in `halign.}
+%
+% \changes{v1.1a}{1987/07/05}{New concept:
+%                        preamblechar: c,l,r,C,L,R,A,p,t,{\tt !|},@,!!}
+% \changes{v1.1b}{1987/09/21}{Again p like original \LaTeX{} and z for
+%                        centered `parbox.}
+%
+% \changes{v1.2a}{1987/09/27}{Completely new implementation.}
+% \changes{v1.2b}{1987/10/06}{{\tt !|} does no longer generate space at
+%                        start or end of the preamble. Otherwise `hline
+%                        is too long.}
+% \changes{v1.2b}{1987/10/06}{Enlarged `@arstrutbox by 1pt (Test-Impl)
+%                         with dimen `@strutheight.}
+% \changes{v1.2c}{1987/10/22}{New dimen parameter `extrarowheight
+%                        (default: 0pt).}
+% \changes{v1.2c}{1987/10/22}{Enlarged `@arstrutbox by `extrarowheight.
+%                        Thus you may avoid large characters to
+%                        overprint a `hline.}
+% \changes{v1.2c}{1987/10/22}{Introduced `m@th in `@array to allow
+%                         non-zero values of `mathsurround.}
+% \changes{v1.2d}{1987/11/02}{Completed the documentation.}
+% \changes{v1.2e}{1987/11/03}{Bug fixed: A at start of preamble resulted
+%                        in an error since `@mkpream generated
+%                        `@arstrut \& ... as a preamble.}
+% \changes{v1.2f}{1987/11/09}{`@testpach documented.}
+%
+% \changes{v1.3a}{1987/11/11}{Again a new implementation, with a new
+%                        concept (cf. the documentation).}
+% \changes{v1.3b}{1988/03/17}{`@decl expands now into `@empty, i.e., it
+%                        disappears when the preamble is generated,
+%                        except when the user specifies A\{\} or
+%                        B\{\}.}
+%
+% \changes{v1.4a}{1988/03/18}{Test implementation of use of token
+%                        registers in order to do without `protect.}
+% \changes{v1.4b}{1988/03/19}{Changed erroneous class numbers:
+%                        5 -!> 6
+%                        6 -!> 7
+%                        7 -!> 5
+%                        Corresponding changes in the macros.}
+% \changes{v1.4c}{1988/03/19}{Everything except p,z now works with token
+%                        registers.}
+%
+% \changes{v1.9a}{1988/03/20}{Last (so I hope) major change: 1) Options
+%                        B,A now called !>,<.  These options now point
+%                        to the column they modify.}
+% \changes{v1.9a}{1988/03/20}{2) `protect is no longer necessary. But
+%                           still the macro `@expast needs top be
+%                          modified. `multicolumn still does not work.}
+% \changes{v1.9b}{1988/04/29}{inserted missing `fi in `@testpach.
+%                        Corrected \LaTeX bug in `@tfor.}
+% \changes{v1.9c}{1988/05/07}{Re-introduced `@endpbox.
+%                        `multicolumn now works!! Version number still
+%                        1.9 since the documentation is still not
+%                        finished.}
+% \changes{v1.9c}{1988/05/07}{1) `def `the@toks \{`the ...\} remaining
+%                         only in `@mkpream.  2) Removed `@classiii and
+%                        replaced by `save@decl.}
+% \changes{v1.9c}{1988/05/07}{3) `insert@column contains only `@tempcnta
+%                        and `count@ counters.  4) `@@startpbox and
+%                        `@@endpbox now totally obsolete.}
+% \changes{v1.9d}{1988/05/10}{Replaced `number by `the where the `toks
+%                        registers' contents are used.}
+% \changes{v1.9e}{1988/05/11}{Re-introduced `@xargarraycr and
+%                        `@yargarraycr, since `endtemplate seems to
+%                        be `outer.}
+% \changes{v1.9f}{1988/05/20}{Small changes finally carried out:
+%                        1) `par!=`@empty.
+%                        2) \{..ifnum0!=!`\}...  $\to$ `bgroup and
+%                           analogously `egroup.}
+% \changes{v1.9g}{1988/02/24}{Inserted again \{..ifnum0!=!`\}..,
+%                        c.f. Appendix D of the \protect\TeX{}book.}
+% \changes{v1.9h}{1988/06/28}{No longer necessary to read in the file
+%                        twice.}
+% \changes{v1.9i}{1988/06/28}{Corrected typo in german version.}
+% \changes{v1.9j}{1988/11/23}{In a `r' column an extra `kern`z@ is
+%                        needed.}
+% \changes{v1.9j}{1988/11/23}{Otherwise the `hfil on the left side
+%                        will be removed by the `unskip in
+%                        `insert@column if the entry is empty.}
+% \changes{v1.9k}{1988/06/28}{Corrected typo in german version.}
+% \changes{v1.9k}{1989/01/16}{`begin{Macro} changed to `begin{macro} in
+%                        documentation.}
+%
+% \changes{v2.0a}{1989/05/12}{{\tt\textbackslash @thetoks} changed to
+%                          {\tt\textbackslash the@toks}.}
+% \changes{v2.0a}{1989/05/12}{source changed to reflect new doc.sty
+%                          conventions.}
+% \changes{v2.0a}{1989/05/12}{t option renamed to p to be compatible to
+%                        the original.}
+% \changes{v2.0a}{1989/05/12}{File renamed from arraye.sty to
+%                        array.sty.}
+% \changes{v2.0b}{1989/05/17}{Three forgotten end macro added.}
+% \changes{v2.0b}{1989/05/17}{All lines shortened to 72 or less.}
+% \changes{v2.2a}{1994/02/03}{Upgrade to \LaTeXe}
+%
+% \DoNotIndex{\@depth,\@ehc,\@fortmp,\@height,\@ifnextchar,\@ifstar}
+% \DoNotIndex{\@ifundefined,\@ne,\@nil,\@tempa,\@tempb}
+% \DoNotIndex{\@tempcnta,\@tempd,\@tempdima,\@whilenum,\@width,\\}
+% \DoNotIndex{\@tforloop}
+% \DoNotIndex{\advance}
+% \DoNotIndex{\baselineskip,\begingroup,\bgroup}
+% \DoNotIndex{\cr,\crcr,\csname}
+% \DoNotIndex{\def,\do,\docdate,\dp}
+% \DoNotIndex{\edef,\egroup,\else,\endcsname,\endinput,\expandafter}
+% \DoNotIndex{\fi,\filedate,\fileversion}
+% \DoNotIndex{\gdef}
+% \DoNotIndex{\hbox,\hfil,\hsize,\hskip,\ht}
+% \DoNotIndex{\if,\ifcase,\ifdim,\ifnum,\ifx,\ignorespaces}
+% \DoNotIndex{\kern}
+% \DoNotIndex{\leavevmode,\let,\lineskip}
+% \DoNotIndex{\m@ne,\multispan}
+% \DoNotIndex{\newcount,\newdimen,\noalign}
+% \DoNotIndex{\or}
+% \DoNotIndex{\relax}
+% \DoNotIndex{\setbox,\space,\strutbox}
+% \DoNotIndex{\tabskip,\thr@@,\the,\toks,\toks@,\tw@,\typeout}
+% \DoNotIndex{\unhcopy,\unskip}
+% \DoNotIndex{\vbox,\vcenter,\vline,\vrule,\vtop,\vskip}
+% \DoNotIndex{\xdef}
+% \DoNotIndex{\z@}
+%
+% \GetFileInfo{array.sty}
+%
+% \title{A new implementation of \LaTeX's \textsf{tabular}
+%        and \textsf{array} environment\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{Frank Mittelbach
+%         \and
+%         David Carlisle\thanks{David kindly agreed on the inclusion
+%         of the \texttt{\textbackslash{}newcolumntype} implementation,
+%         formerly in
+%         \texttt{newarray.sty} into this package }}
+%
+% \date{Printed \today}
+%
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \MakeShortVerb{\=}
+%
+% \begin{abstract}
+% This article describes an extended implementation of the \LaTeX\
+% \textsf{array}-- and \textsf{tabular}--environments. The special
+% merits of this implementation are further options to format columns
+% and the fact that fragile \LaTeX--commands don't have to be
+% =\protect='ed any more within those environments.
+%
+% The major part of the code for this package dates back to 1988---so
+% does some of its documentation.
+% \end{abstract}
+%
+%
+%
+% \section{Introduction}
+%
+% This new implementation of the \textsf{array}-- and
+% \textsf{tabular}--environments is part of a larger project in which
+% we are trying to improve the \LaTeX\--code in some aspects and to
+% make \LaTeX\ even easier to handle.
+%
+% The reader should be familiar with the general structure of the
+% environments
+% mentioned above. Further information can be found in
+% \cite{bk:lamport} and \cite{bk:GMS94}.
+% The additional options which can be used in the
+% preamble as well as those which now have a slightly different meaning
+% are described in table~\ref{tab:opt}.
+%
+% \DescribeMacro\extrarowheight
+% Additionally we introduce a new
+% parameter called =\extrarowheight=. If it takes a positive
+% length, the value of the parameter is added to the normal height of
+% every row of the table, while
+% the depth will remain the same. This is important for tables
+% with horizontal lines because those lines normally touch the
+% capital letters.
+% For example, we used =\setlength{\extrarowheight}{1pt}=
+% in table~\ref{tab:opt}.
+%
+% \begin{table}[t]
+% \begin{center}
+%    \setlength{\extrarowheight}{1pt}
+%    \begin{tabular}{|>{\tt}c|m{9cm}|}
+%       \hline
+%     \multicolumn{2}{|c|}{Unchanged options}\\
+%       \hline
+%       l             &  Left adjusted column. \\
+%       c             &  Centered adjusted column. \\
+%       r             &  Right adjusted column. \\
+%       p\{width\}    &  Equivalent to =\parbox[t]{width}=. \\
+%       @\{decl.\}    &  Suppresses inter-column space and inserts
+%                        \texttt{decl.}\ instead. \\
+%       \hline
+%     \multicolumn{2}{|c|}{New options}\\
+%       \hline
+%       m\{width\}    &  Defines a column of width \texttt{width}.
+%                        Every entry will be centered in proportion to
+%                        the rest of the line. It is somewhat like
+%                        =\parbox{width}=. \\
+%       \hline
+%       b\{width\}    &  Coincides with =\parbox[b]{width}=. \\
+%       \hline
+%       >\{decl.\}    &  Can be used before an \texttt{l}, \texttt{r},
+%                        \texttt{c}, \texttt{p}, \texttt{m} or a
+%                        \texttt{b} option. It inserts \texttt{decl.}\
+%                        directly in front of the entry of the column.
+%                        \\
+%       \hline
+%       <\{decl.\}    &  Can be used after an \texttt{l}, \texttt{r},
+%                        \texttt{c}, =p{..}=, =m{..}= or a =b{..}=
+%                        option.  It inserts \texttt{decl.}\ right
+%                        after the entry of the column.  \\
+%       \hline
+%       |             &  Inserts a vertical line. The distance between
+%                        two columns will be enlarged by the width of
+%                        the line
+%                        in contrast to the original definition of
+%                        \LaTeX.  \\
+%       \hline
+%       !\{decl.\}    &  Can be used anywhere and corresponds with the
+%                        \texttt{|} option. The difference is that
+%                        \texttt{decl.} is inserted instead of a
+%                        vertical line, so this option doesn't
+%                        suppress the normally inserted space between
+%                        columns in contrast to =@{...}=.\\
+%       \hline
+%    \end{tabular}
+% \end{center}
+% \caption{The  preamble options.} \label{tab:opt}
+% \end{table}
+%
+%
+% We will discuss a few examples using the new preamble options before
+% dealing with the implementation.
+% \begin{itemize}
+%    \item
+%       If you want to use a special font (for example =\bfseries=) in a
+%       flushed left column, this can be done with =>{\bfseries}l=. You
+%       do not have to begin every entry of the column with  =\bfseries=
+%       any more.
+%    \item
+%       In columns which have been generated with \texttt{p}, \texttt{m}
+%       or \texttt{b}, the default value of =\parindent= is
+%       \textsf{0pt}.
+%       This can be changed with \\
+%       =>{\setlength{\parindent}{1cm}}p=.
+%    \item
+%       The \texttt{>}-- and \texttt{<}--options were originally
+%       developed for the following application:
+%       =>{$}c<{$}= generates a column in math
+%       mode in a \textsf{tabular}--environment. If you use this type
+%       of a preamble in an \textsf{array}--environment, you get a
+%       column in LR mode because the additional \$'s cancel the
+%       existing \$'s.
+%    \item
+%       One can also think of more complex applications. A problem
+%       which has
+%       been mentioned several times in \TeX{}hax can be solved with
+%       =>{\centerdots}c=\linebreak[0]=<{\endcenterdots}=.
+%       To center decimals at their
+%       decimal points you (only?) have to define the following macros:
+%       \begin{verbatim}
+%{\catcode`\.\active\gdef.{\egroup\setbox2\hbox\bgroup}}
+%\def\centerdots{\catcode`\.\active\setbox0\hbox\bgroup}
+%\def\endcenterdots{\egroup\ifvoid2 \setbox2\hbox{0}\fi
+%   \ifdim \wd0>\wd2 \setbox2\hbox to\wd0{\unhbox2\hfill}\else
+%     \setbox0\hbox to\wd2{\hfill\unhbox0}\fi
+%   \catcode`\.12 \box0.\box2}
+%\end{verbatim}
+%      Warning: The code is bad, it doesn't work with more than one
+%      dot in a cell and doesn't work when the tabular is used in the
+%      argument of some other command. A much better version is
+%      provided in the \texttt{dcolumn.sty} by David Carlisle.
+%    \item
+%       Using =c!{\hspace{1cm}}c= you get space between two
+%       columns which is enlarged by one centimeter, while
+%       =c@{\hspace{1cm}}c= gives you exactly one centimeter
+%       space between two columns.
+% \end{itemize}
+%
+% \subsection{Defining new column specifiers}
+%
+% \DeleteShortVerb{\=}
+% \MakeShortVerb{\"}
+% \DescribeMacro{\newcolumntype}
+% Whilst it is handy to be able to type
+% \begin{quote}
+%   ">{"\meta{some declarations}"}{c}<{"\meta{some more
+%   declarations}"}"
+% \end{quote}
+% if you have a one-off column in a table, it is rather inconvenient
+% if you often use columns of this form. The new version allows you
+% to define a new column specifier, say \texttt{x}, which will expand to
+% the primitives column specifiers.\footnote{This command was named
+% \texttt{\textbackslash{}newcolumn} in the \texttt{newarray.sty}.
+% At the moment \texttt{\textbackslash{}newcolumn} is still supported
+% (but gives a warning). In later releases it will vanish.} Thus we
+% may define
+% \begin{quote}
+%   "\newcolumntype{x}{>{"\meta{some declarations}"}{c}<{"\meta{some
+%   more declarations}"}}"\hspace*{-3cm} ^^A no overfull from this line
+% \end{quote}
+% One can then use the \texttt{x} column specifier in the preamble
+% arguments of all \texttt{array} or \texttt{tabular} environments in
+% which you want columns of this form.
+%
+% It is common  to need math-mode and LR-mode columns in the same
+% alignment. If we define:
+% \begin{quote}
+%   "\newcolumntype{C}{>{$}c<{$}}" \\
+%   "\newcolumntype{L}{>{$}l<{$}}" \\
+%   "\newcolumntype{R}{>{$}r<{$}}"
+% \end{quote}
+% Then we can use \texttt{C} to get centred LR-mode in an
+% \texttt{array}, or centred math-mode in a \texttt{tabular}.
+%
+% The example given above for `centred decimal points' could be
+% assigned to a \texttt{d} specifier with the following command.
+% \begin{quote}
+% "\newcolumntype{d}{>{\centerdots}c<{\endcenterdots}}"
+% \end{quote}
+%
+% The above solution always centres the dot in the
+% column. This does not look too good if the column consists of large
+% numbers, but to only a few decimal places. An alternative definition
+% of a \texttt{d} column is
+% \begin{quote}
+%   "\newcolumntype{d}[1]{>{\rightdots{#1}}r<{\endrightdots}}"
+% \end{quote}
+% where the appropriate macros in this case are:\footnote{The package
+% \texttt{dcolumn.sty} contains more robust macros based on these
+% ideas.}
+% \begin{verbatim}
+%   \def\coldot{.}% Or if you prefer, \def\coldot{\cdot}
+%   {\catcode`\.=\active
+%     \gdef.{$\egroup\setbox2=\hbox to \dimen0 \bgroup$\coldot}}
+%   \def\rightdots#1{%
+%     \setbox0=\hbox{$1$}\dimen0=#1\wd0
+%     \setbox0=\hbox{$\coldot$}\advance\dimen0 \wd0
+%     \setbox2=\hbox to \dimen0 {}%
+%     \setbox0=\hbox\bgroup\mathcode`\.="8000 $}
+%   \def\endrightdots{$\hfil\egroup\box0\box2}
+%\end{verbatim}
+% Note that "\newcolumntype" takes the same optional argument as
+% "\newcommand" which declares the number of arguments of the column
+% specifier being defined. Now we can specify "d{2}" in our preamble
+% for a column of figures to at most two decimal places.
+%
+% A rather different use of the "\newcolumntype" system takes
+% advantage of the fact that the replacement text in the
+% "\newcolumntype" command may refer to more than one column. Suppose
+% that a document contains a lot of \texttt{tabular} environments that
+% require the same preamble, but you wish to experiment with different
+% preambles. Lamport's original definition allowed you to do the
+% following (although it was probably a mis-use of the system).
+% \begin{quote}
+%   "\newcommand{\X}{clr}"\\
+%   "\begin{tabular}{\X}" \ldots
+% \end{quote}
+% \texttt{array.sty} takes great care \textbf{not} to expand the
+% preamble, and so the above does not work with the new scheme. With
+% the new version this functionality is returned:
+% \begin{quote}
+% "\newcolumntype{X}{clr}"\\
+% "\begin{tabular}{X}" \ldots
+% \end{quote}
+%
+% The replacement text in a "\newcolumntype" command may refer to any of
+% the primitives of \texttt{array.sty} see table \ref{tab:opt} on page
+% \pageref{tab:opt}, or to any new letters defined in other
+% "\newcolumntype" commands.
+%
+%
+% \DescribeMacro{\showcols}A list of all the currently active
+% "\newcolumntype" definitions is sent to the terminal and log file if
+% the "\showcols" command is given.
+%
+%
+% \subsection{Special variations of \texttt{\textbackslash hline}}
+%
+% The family of \texttt{tabular} environments allows
+% vertical positioning with respect to the baseline of
+% the text in which the environment appears.  By default the
+% environment appears centered, but this can be changed to
+% align with the first or last line in the environment by
+% supplying a \texttt{t} or \texttt{b} value to the
+% optional position argument. However, this does not work
+% when the first or last element in the environment is a
+% "\hline" command---in that case the environment is
+% aligned at the horizontal rule.
+%
+% \pagebreak[3]
+%
+% Here is an example:
+% \begin{center}
+% \begin{minipage}[t]{.4\linewidth}
+% Tables
+% \begin{tabular}[t]{l}
+%   with no\\ hline \\ commands \\ used
+% \end{tabular} versus \\ tables
+% \begin{tabular}[t]{|l|}
+%  \hline
+%   with some \\ hline \\ commands \\
+%  \hline
+% \end{tabular} used.
+% \end{minipage}
+% \begin{minipage}[t]{.5\linewidth}
+% \begin{verbatim}
+% Tables
+% \begin{tabular}[t]{l}
+%  with no\\ hline \\ commands \\ used
+% \end{tabular} versus tables
+% \begin{tabular}[t]{|l|}
+%  \hline
+%   with some \\ hline \\ commands \\
+%  \hline
+% \end{tabular} used.
+% \end{verbatim}
+% \end{minipage}
+% \end{center}
+%
+% \DescribeMacro\firsthline
+% \DescribeMacro\lasthline
+% Using "\firsthline" and "\lasthline" will
+% cure the problem, and the tables will align properly as long
+% as their first or last line does not contain extremely large
+% objects.
+% \begin{center}
+% \begin{minipage}[t]{.4\linewidth}
+% Tables
+% \begin{tabular}[t]{l}
+%   with no\\ line \\ commands \\ used
+% \end{tabular} versus \\ tables
+% \begin{tabular}[t]{|l|}
+%  \firsthline
+%   with some \\ line   \\ commands \\
+%  \lasthline
+% \end{tabular} used.
+% \end{minipage}
+% \begin{minipage}[t]{.5\linewidth}
+% \begin{verbatim}
+% Tables
+% \begin{tabular}[t]{l}
+%   with no\\ line \\ commands \\ used
+% \end{tabular} versus tables
+% \begin{tabular}[t]{|l|}
+%  \firsthline
+%   with some \\ line   \\ commands \\
+%  \lasthline
+% \end{tabular} used.
+% \end{verbatim}
+% \end{minipage}
+% \end{center}
+% \DescribeMacro\extratabsurround
+% The implementation of these two commands contains an extra
+% dimension, which is called "\extratabsurround", to add some
+% additional space at the top and the bottom of such an environment.
+% This is useful if such tables are nested.
+%
+% \section{Final Comments}
+%
+% \subsection{Handling of rules}
+%
+% There are two possible approaches to the handling of horizontal and
+% vertical rules in tables:
+% \begin{enumerate}
+%   \item rules can be placed into the available space without
+%   enlarging the table, or
+%   \item rules can be placed between columns or rows thereby enlarging
+%   the table.
+% \end{enumerate}
+% \texttt{array.sty} implements the second possibility while the
+% default implementation in the \LaTeX{} kernel implements the first
+% concept. Both concepts have their merits but one has to be aware of
+% the individual implications.
+% \begin{itemize}
+% \item
+%   With standard \LaTeX{} adding rules to a table will not affect the
+%   width or height of the table (unless double rules are used), e.g.,
+%   changing a preamble from \verb=lll= to \verb=l|l|l= does not
+%   affect the document other than adding rules to the table. In
+%   contrast, with \texttt{array.sty} a table that just fit the
+%   \verb=\textwidth= might now produce an overfull box.
+% \item
+%   With standard \LaTeX{} modifying the width of rules could result
+%   in ugly looking tables because without adjusting the
+%   \verb=\tabcolsep=, etc.\ the space between rule and column could
+%   get too small (or too large). In fact even overprinting of text is
+%   possible. In contrast, with  \texttt{array.sty} modifying any such
+%   length usually works well as the actual visual white space (from
+%   \verb=\tabcolsep=, etc.) does not depend on the width of the
+%   rules.
+% \item
+%   With standard \LaTeX{} boxed tabulars actually have strange
+%   corners because the horizontal rules end in the middle of the
+%   vertical ones. This looks very unpleasant when a large
+%   \verb=\arrayrulewidth= is chosen. In that case a simple table like
+%\begin{verbatim}
+%\setlength{\arrayrulewidth}{5pt}
+%\begin{tabular}{|l|}
+%  \hline  A \\  \hline
+%\end{tabular}
+%\end{verbatim}
+%   will produce something like
+%   \begin{center}
+%\setlength{\arrayrulewidth}{5pt}
+%\begin{tabular}{@{}l@{}}
+%  \hline  \null\hskip-.5\arrayrulewidth\vline
+%  \hskip\tabcolsep
+%   A\hskip\tabcolsep
+%  \vline\hskip-.5\arrayrulewidth\null \\  \hline
+%\end{tabular}
+%   \quad
+%   instead of
+%   \quad
+%\begin{tabular}{|l|}
+%  \hline  A \\  \hline
+%\end{tabular}
+%   \end{center}
+% \end{itemize}
+%
+% \subsection{Comparisons with older versions of \texttt{array.sty}}
+%
+% There are some differences in the way version 2.1 treats incorrect
+% input, even if the source file does not appear to use any of the
+% extra features of the new version.
+% \begin{itemize}
+% \item A preamble of the form "{wx*{0}{abc}yz}" was treated by
+% versions prior to 2.1 as "{wx}". Version 2.1 treats it as "{wxyz}"
+% \item An incorrect positional argument such as \texttt{[Q]} was
+% treated as \texttt{[c]} by \texttt{array.sty}, but is now treated as
+% \texttt{[t]}.
+% \item A preamble such as "{cc*{2}}" with an error in
+% a $*$-form will generate different errors in the new version. In
+% both cases the error message is not particularly helpful to the
+% casual user.
+% \item Repeated \texttt{<} or \texttt{>} constructions
+% generated an error in earlier versions, but are now allowed in
+% this package.  ">{"\meta{decs1}"}>{"\meta{decs2}"}" is treated the
+% same as ">{"\meta{decs2}\meta{decs1}"}".
+% \item The "\extracolsep"
+% command does not work with the old versions of \texttt{array.sty},
+% see the comments in \texttt{array.bug}. With version 2.1
+% "\extracolsep" may again be used in \texttt{@}-expressions as in
+% standard \LaTeX, and also in \texttt{!}-expressions (but see the
+% note below).
+% \end{itemize}
+%
+%
+% \subsection{Bugs and Features}
+%
+% \begin{itemize}
+% \item Error messages generated when parsing the column specification
+%   refer to the preamble argument \textbf{after} it has been re-written
+%   by the "\newcolumntype" system, not to the preamble entered by the
+%   user.  This seems inevitable with any system based on
+%   pre-processing and so is classed as a \textbf{feature}.
+%
+% \item The treatment of multiple \texttt{<} or \texttt{>}
+%   declarations may seem strange at first. Earlier implementations
+%   treated ">{"\meta{decs1}"}>{"\meta{decs2}"}" the same as
+%   ">{"\meta{decs1}\meta{decs2}"}". However this did not give the
+%   user the opportunity of overriding the settings of a
+%   "\newcolumntype" defined using these declarations. For example,
+%   suppose in an \texttt{array} environment we use a \texttt{C}
+%   column defined as above. The \texttt{C} specifies a centred text
+%   column, however ">{\bfseries}C", which re-writes to
+%   ">{\bfseries}>{$}c<{$}" would not specify a bold column as might
+%   be expected, as the preamble would essentially expand to
+%   "\hfil$\bfseries$#$ $\hfil" and so the column entry would not be in the
+%   scope of the "\bfseries"\,! The present version switches the order
+%   of repeated declarations, and so the above example now produces a
+%   preamble of the form "\hfil$" "$\bfseries#$" "$\hfil", and the
+%   dollars cancel each other out without limiting the scope of the
+%   "\bfseries".
+%
+% \item The use of "\extracolsep" has been subject to the following
+%   two restrictions.  There must be at most one "\extracolsep"
+%   command per "@", or "!" expression and the command must be
+%   directly entered into the "@" expression, not as part of a macro
+%   definition. Thus "\newcommand{\ef}{\extracolsep{\fill}}" \ldots
+%   "@{\ef}" does not work with this package. However you can use
+%   something like
+%   "\newcolumntype{e}{@{\extracolsep{\fill}}" instead.
+%
+% \item As noted by the \LaTeX{} book, for the purpose of
+%   "\multicolumn" each column with the exception of the first one
+%   consists of the entry and the \emph{following} inter-column
+%   material. This means that in a tabular with the preamble
+%   "|l|l|l|l|" input such as "\multicolumn{2}{|c|}" in
+%   anything other than the first column is incorrect.
+
+%   In the standard array/tabular implementation this error is not so
+%   noticeable as that version contains negative spacing so that each
+%   "|" takes up no horizontal space. But since in this package the
+%   vertical lines take up their natural width one sees two lines if
+%   two are specified.
+%
+% \end{itemize}
+%
+%
+%
+% \changes{v2.2b}{1994/02/04}{Removed interactive prompt}
+%
+% \StopEventually{
+%
+%
+% \begin{thebibliography}{1}
+%    \bibitem{bk:GMS94} \textsc{M.~Goossens}, \textsc{F.~Mittelbach}
+%       and \textsc{A.~Samarin}.
+%       \newblock The \LaTeX{} Companion.
+%       \newblock
+%       Addison-Wesley, Reading, Massachusetts, 1994.
+%    \bibitem{bk:knuth}  \textsc{D. E. Knuth}.
+%       \newblock  The \TeX{}book (Computers \& Typesetting Volume A).
+%       \newblock
+%       Addison-Wesley, Reading, Massachusetts, 1986.
+%    \bibitem{bk:lamport} \textsc{L. Lamport}.
+%       \newblock
+%       \LaTeX\ --- A Document Preparation System.
+%       \newblock
+%       Addison-Wesley, Reading, Massachusetts, 1986.
+% \end{thebibliography}
+%
+% }   ^^A  end of \StopEventually
+%
+%
+%
+%
+% \section{The documentation driver file}
+%
+% The first bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the
+% \texttt{docstrip} program.
+%    \begin{macrocode}
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\documentclass{ltxdoc}
+
+\AtBeginDocument{\DeleteShortVerb{\|}}  % undo the default is not used
+
+ \usepackage{array}
+
+ % Allow large table at bottom
+ \renewcommand{\bottomfraction}{0.7}
+
+\EnableCrossrefs
+ %\DisableCrossrefs   % Say \DisableCrossrefs if index is ready
+
+\RecordChanges                  % Gather update information
+
+\CodelineIndex                  % Index code by line number
+
+ %\OnlyDescription    % comment out for implementation details
+ %\OldMakeindex       % use if your MakeIndex is pre-v2.9
+\begin{document}
+   \DocInput{array.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+% \section{The construction of the preamble}
+%
+% \DeleteShortVerb{\"}
+% \MakeShortVerb{\=}
+%
+% It is obvious that those environments will consist mainly of an
+% =\halign=, because \TeX\ typesets tables using this primitive.
+% That is why we will now take a look at the algorithm which determines
+% a preamble for a =\halign= starting with a given user preamble
+% using the options mentioned above.
+%
+%
+%    The current version is defined at the top of the file looking
+%    something like this
+%    \begin{macrocode}
+%<*package>
+%\NeedsTeXFormat{LaTeX2e}[1994/05/13]
+%\ProvidesPackage{array}[\filedate\space version\fileversion]
+%    \end{macrocode}
+%
+% The most interesting macros of this implementation are without doubt
+% those which are responsible for the construction of the preamble for
+% the =\halign=. The underlying algorithm was developed by
+% \textsc{Lamport} (resp.\ \textsc{Knuth}, see texhax V87\#??), and it
+% has been extended and improved.
+%
+% The user preamble will be read \textsf{token} by \textsf{token}.  A
+% \textsf{token} is a single character like \texttt{c} or a block
+% enclosed in ={...}=. For example the preamble of
+% =\begin{tabular}=\linebreak[0]={lc||c@{\hspace{1cm}}}= consists of
+% the \textsf{token} \texttt{l}, \texttt{c}, \texttt{|}, \texttt{|},
+% \texttt{@} and =\hspace{1cm}=.
+%
+% The currently used \textsf{token} and the one, used before, are needed
+% to decide on how the construction of the preamble has to be
+% continued.
+% In the example mentioned above the \texttt{l} causes the preamble
+% to begin with =\hskip\tabcolsep=. Furthermore
+% =# \hfil= would be appended to define a flush left column.
+% The next \textsf{token} is a \texttt{c}. Because it was preceded by an
+% \texttt{l} it generates a new column. This is done with
+% =\hskip \tabcolsep & \hskip \tabcolsep=. The column which is to
+% be centered will be appended with =\hfil # \hfil=.
+% The \textsf{token} \texttt{|} would then add a space of
+% =\hskip \tabcolsep=
+% and a vertical line because the last
+% \textsf{tokens} was a \texttt{c}.
+% The following \textsf{token} \texttt{|} would only add a space
+% =\hskip \doublerulesep= because it was preceded by the
+% \textsf{token} \texttt{|}. We will not discuss our example further but
+%  rather take a look at the general case of constructing preambles.
+%
+% The example shows that the desired preamble for the
+% =\halign= can be constructed as soon as the action of all
+% combinations
+% of the preamble \textsf{tokens} are specified. There are 18 such
+% \textsf{tokens}
+% so we have $19 \cdot 18 \string= 342$ combinations if we count the
+% beginning of
+% the preamble as a special \textsf{token}. Fortunately, there are many
+% combinations which generate the same spaces, so we can define
+% \textsf{token} classes. We will identify a
+% \textsf{token} within a class with a number, so we can insert the
+% formatting (for example of a column).
+% Table~\ref{tab:Klassen} lists all \textsf{token} classes and
+% their corresponding numbers.
+% \begin{table}[ht]
+% \begin{center}
+%    \begin{tabular}[t]{>{\ttfamily}ccc}
+%       \textsf{token} & =\@chclass= & =\@chnum= \\[2mm]
+%       c   & 0  & 0 \\
+%       l   & 0  & 1 \\
+%       r   & 0  & 2 \\
+%       p-arg    & 0  & 3 \\
+%       t-arg    & 0  & 4 \\
+%       b-arg    & 0  & 5 \\
+%       |   & 1  & 0 \\
+%       !-arg    & 1  & 1 \\
+%       <-arg    & 2  & --- \\
+%       >-arg    & 3  & ---
+%    \end{tabular}
+%    \kern3mm \vrule \kern3mm%
+%    \begin{tabular}[t]{>{\ttfamily}ccc}
+%       \textsf{token} & =\@chclass= & =\@chnum= \\[2mm]
+%       Start    & 4  & --- \\
+%       @-arg    & 5  & --- \\
+%       !   & 6  & --- \\
+%       @   & 7  & --- \\
+%       <   & 8  & --- \\
+%       >   & 9  & --- \\
+%       p   & 10 & 3 \\
+%       t   & 10 & 4 \\
+%       b   & 10 & 5
+%    \end{tabular}
+% \end{center}
+% \caption{Classes of preamble \textsf{tokens}}
+% \label{tab:Klassen}
+% \end{table}
+%
+%
+% \begin{macro}{\@chclass}
+% \begin{macro}{\@chnum}
+% \begin{macro}{\@lastchclass}
+%    The class and the number of the current \textsf{token} are saved in
+%    the
+%    \textsf{count} registers =\@chclass=
+%    and =\@chnum=, while the class of the previous
+%    \textsf{token} is stored in the
+%    \textsf{count} register =\@lastchclass=.
+%    All of the mentioned registers are already allocated in
+%    \texttt{latex.tex},
+%    which is the reason why the following three lines of code are
+%    commented out.
+%    Later throughout the text I will not mention it again explicitly
+%    whenever I use a =%= sign. These parts are already defined in
+%    \texttt{latex.tex}.
+%    \begin{macrocode}
+% \newcount \@chclass
+% \newcount \@chnum
+% \newcount \@lastchclass
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\@addtopreamble}
+%    We will save the already constructed preamble for
+%    the =\halign=
+%    in the global macro =\@preamble=. This will then be
+%     enlarged with
+%    the command =\@addtopreamble=.
+%    \begin{macrocode}
+\def\@addtopreamble#1{\xdef\@preamble{\@preamble #1}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%
+%
+% \subsection{The character class of a \textsf{token}}
+%
+% \begin{macro}{\@testpach}
+% \changes{v2.0a}{1989/05/12}{p option renamed to m (middle).}
+% \changes{v2.0a}{1989/05/12}{t option renamed to p to be compatible to
+%                         the original.}
+%    With the help of =\@lastchclass= we can now define a macro
+%    which determines the class and the number of a given preamble
+%    \textsf{token}
+%    and assigns them to the registers
+%    =\@chclass= and =\@chnum=.
+% \changes{v2.0f}{1992/02/29}{Argument removed since implicitly known}
+%    \begin{macrocode}
+\def\@testpach{\@chclass
+%    \end{macrocode}
+%    First we deal with the cases in which the \textsf{token}
+%    (=#1=) is the argument of \texttt{!}, \texttt{@}, \texttt{<} or
+%    \texttt{>}. We can see this from the value of =\@lastchclass=:
+%    \begin{macrocode}
+ \ifnum \@lastchclass=6 \@ne \@chnum \@ne \else
+  \ifnum \@lastchclass=7 5 \else
+   \ifnum \@lastchclass=8 \tw@ \else
+    \ifnum \@lastchclass=9 \thr@@
+%    \end{macrocode}
+%    Otherwise we will assume that the \textsf{token} belongs to the
+%    class $0$
+%    and assign the corresponding number to =\@chnum= if our
+%    assumption is correct.
+%    \begin{macrocode}
+   \else \z@
+%    \end{macrocode}
+%    If the last \textsf{token} was a \texttt{p}, \texttt{m} or a
+%    \texttt{b}, =\@chnum= already has the right value. This is the
+%    reason for the somewhat curious choice of the \textsf{token}
+%    numbers in class $10$.
+%    \begin{macrocode}
+   \ifnum \@lastchclass = 10 \else
+%    \end{macrocode}
+%    Otherwise we will check if =\@nextchar= is either a \texttt{c},
+%    \texttt{l} or an \texttt{r}.  Some applications change the
+%    catcodes of certain characters like ``\texttt{@}'' in
+%    \texttt{amstex.sty}. As a result the tests below would fail since
+%    they assume non-active character tokens. Therefore we evaluate
+%    =\@nextchar= once thereby turning the first token of its
+%    replacement text into a char. At this point here this should have
+%    been the only char present in =\@nextchar= which put into via a
+%    =\def=.
+% \changes{v2.0f}{1992/02/29}{Ensure to test a char which is not active}
+%    \begin{macrocode}
+   \edef\@nextchar{\expandafter\string\@nextchar}%
+   \@chnum
+   \if \@nextchar c\z@ \else
+    \if \@nextchar l\@ne \else
+     \if \@nextchar r\tw@ \else
+%    \end{macrocode}
+%    If it is a different \textsf{token}, we know that the class was
+%    not $0$. We assign the value $0$ to =\@chnum= because this value
+%    is needed for the \texttt{|}--\textsf{token}. Now we must check
+%    the remaining classes.  Note that the value of =\@chnum= is
+%    insignificant here for most classes.
+%    \begin{macrocode}
+   \z@ \@chclass
+   \if\@nextchar |\@ne \else
+    \if \@nextchar !6 \else
+     \if \@nextchar @7 \else
+      \if \@nextchar <8 \else
+       \if \@nextchar >9 \else
+%    \end{macrocode}
+%    The remaining permitted \textsf{tokens} are \texttt{p},
+%    \texttt{m} and \texttt{b} (class $10$).
+%    \begin{macrocode}
+  10
+  \@chnum
+  \if \@nextchar m\thr@@\else
+   \if \@nextchar p4 \else
+    \if \@nextchar b5 \else
+%    \end{macrocode}
+%    Now the only remaining possibility is a forbidden \textsf{token},
+%    so we choose class $0$ and number $0$ and give an error message.
+%    Then we finish the macro by closing all =\if='s.
+%    \begin{macrocode}
+   \z@ \@chclass \z@ \@preamerr \z@ \fi \fi \fi \fi
+   \fi \fi  \fi  \fi  \fi  \fi  \fi \fi \fi \fi \fi \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%
+%
+% \subsection{Multiple columns ($*$--form)}
+%
+% \begin{macro}{\@xexpast}
+% \begin{macro}{\the@toks}
+% \begin{macro}{\the@toksz}
+%    \label{@xexpast} Now we discuss the macro that deletes all forms
+%    of type =*{=\textit{N\/}=}{=\textit{String\/}=}= from a user
+%    preamble and replaces them with \textit{N} copies of
+%    \textit{String}.  Nested $*$--expressions are dealt with
+%    correctly, that means $*$--expressions are not substituted if
+%    they are in explicit braces, as in =@{*}=.
+%
+%    This macro is called via
+%    =\@xexpast=\meta{preamble}=*0x\@@=.
+%    The $*$--expression =*0x= is being used to terminate the
+%    recursion,
+%    as we shall see later, and =\@@= serves as an argument
+%    delimiter. =\@xexpast= has four arguments. The first
+%    one is the part of the
+%    user preamble before the first $*$--expression while the second
+%    and third ones are the arguments of the first $*$--expression
+%    (that is \textit{N} and \textit{String} in the notation mentioned
+%    above).
+%    The fourth argument is the rest of the preamble.
+%    \begin{macrocode}
+\def\@xexpast#1*#2#3#4\@@{%
+%    \end{macrocode}
+%    The number of copies of \textit{String} (=#2=) that are to be
+%    produced will be saved in a \textsf{count} register.
+%    \begin{macrocode}
+   \@tempcnta #2
+%    \end{macrocode}
+%    We save the part of the preamble which does not
+%    contain a $*$--form (=#1=)
+%    in a \PlainTeX\ \textsf{token} register.
+%    We also save \textit{String} (=#3=) using a \LaTeX\
+%    \textsf{token} register.
+%    \begin{macrocode}
+   \toks@={#1}\@temptokena={#3}%
+%    \end{macrocode}
+%    Now we have to use a little trick to produce \textit{N} copies of
+%    \textit{String}.
+%    We could try =\def\@tempa{#1}= and then
+%    \textit{N} times =\edef\@tempa{\@tempa#3}=. This would have the
+%    undesired effect that all macros within =#1= and =#3=
+%    would be expanded, although, for example, constructions like
+%    =@{..}= are not supposed to be changed.
+%    That is why we =\let= two control sequences to
+%    be equivalent to =\relax=.
+%    \begin{macrocode}
+   \let\the@toksz\relax \let\the@toks\relax
+%    \end{macrocode}
+%    Then we ensure that =\@tempa= contains
+%    ={\the@toksz\the@toks...\the@toks}= (the macro
+%    =\the@toks= exactly \textit{N\/} times) as substitution text.
+%    \begin{macrocode}
+   \def\@tempa{\the@toksz}%
+   \ifnum\@tempcnta >0 \@whilenum\@tempcnta >0\do
+     {\edef\@tempa{\@tempa\the@toks}\advance \@tempcnta \m@ne}%
+%    \end{macrocode}
+%    If \textit{N\/} was greater than zero we prepare for another call
+%    of =\@xexpast=. Otherwise we assume we have reached the end of
+%    the user preamble, because we had appended =*0x\@@= when we first
+%    called =\@xexpast=.  In other words: if the user inserts
+%    =*{0}{..}= in his preamble, \LaTeX\ ignores the rest of it.
+%    \begin{macrocode}
+       \let \@tempb \@xexpast \else
+       \let \@tempb \@xexnoop \fi
+%    \end{macrocode}
+%    Now we will make sure that the part of the user preamble, which
+%    was already dealt with, will be saved again in =\@tempa=.
+%    \begin{macrocode}
+   \def\the@toksz{\the\toks@}\def\the@toks{\the\@temptokena}%
+   \edef\@tempa{\@tempa}%
+%    \end{macrocode}
+%    We have now evaluated the first $*$--expression, and the user
+%    preamble up to this point
+%    is saved in =\@tempa=. We will put the contents of
+%    =\@tempa= and the rest of the user preamble together and work
+%    on the result with =\@tempb=. This macro either corresponds
+%    to =\@xexpast=, so that the next
+%    $*$--expression is handled, or to the macro =\@xexnoop=,
+%    which only ends the recursion by deleting its argument.
+%    \begin{macrocode}
+   \expandafter \@tempb \@tempa #4\@@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@xexnoop}
+%    So the first big problem is solved. Now it is easy to
+%    specify =\@xexnoop=.
+%    Its argument is delimited by =\@@= and it simply expands to
+%    nothing.
+%    \begin{macrocode}
+%  \def\@xexnoop#1\@@{}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%
+% \section{The insertion of declarations
+%           (\texttt{>}, \texttt{<}, \texttt{!}, \texttt{@})}
+%
+%
+% The preamble will be enlarged with the help of =\xdef=, but the
+% arguments of \texttt{>}, \texttt{<},~\texttt{!}\ and \texttt{@} are
+% not supposed to be expanded during the construction (we want an
+% implementation that doesn't need a =\protect=). So we have to find a
+% way to inhibit the expansion of those arguments.
+%
+% We will solve this problem with \textsf{token} registers. We need
+% one register for every \texttt{!}\ and \texttt{@}, while we need two
+% for every \texttt{c}, \texttt{l}, \texttt{r}, \texttt{m}, \texttt{p}
+% or \texttt{b}. This limits the number of columns of a table because
+% there are only 256 \textsf{token} registers. But then, who needs
+% tables with more than 100 columns?
+%
+% One could also find a solution which only needs two or three
+% \textsf{token} registers by proceeding similarly as in the macro
+% =\@xexpast= (see page \pageref{@xexpast}). The advantage of our
+% approach is the fact that we avoid some of the problems that arise
+% with the other method\footnote{Maybe there are also historical
+%  reasons.}.
+%
+% So how do we proceed? Let us assume that we had =!{foo}= in the
+% user preamble and say we saved \texttt{foo} in
+% \textsf{token} register $5$. Then we call
+% =\@addtopreamble{\the@toks5}= where
+% =\the@toks= is defined in a way that it does not expand
+% (for example it could be equivalent to =\relax=). Every
+% following call
+% of =\@addtopreamble= leaves =\the@toks5= unchanged in
+% =\@preamble=. If the construction of the preamble is completed
+% we change the definition of =\the@toks= to
+% =\the\toks= and expand =\@preamble= for the last time.
+% During this process all parts of the form
+%    =\the@toks=\meta{Number}
+% will be substituted by the contents of the respective \textsf{token}
+% registers.
+%
+% As we can see from this informal discussion the construction of the
+% preamble has to take place within a group, so that the
+% \textsf{token} registers we use will be freed later on. For that
+% reason we keep all assignments to =\@preamble= global; therefore the
+% replacement text of this macro will remain the same after we leave
+% the group.
+%
+% \begin{macro}{\count@}
+%    We further need a \textsf{count} register to remember which
+%    \textsf{token} register is to be used next. This will be
+%    initialized with $-1$ if we want to begin with the \textsf{token}
+%    register $0$. We use the \PlainTeX\ scratch register =\count@=
+%    because everything takes place locally. All we have to do is
+%    insert =\the@toks= =\the= =\count@= into the preamble.
+%    =\the@toks= will remain unchanged and =\the\count@= expands into
+%    the saved number.
+% \end{macro}
+%
+% \begin{macro}{\prepnext@tok}
+%    The macro =\prepnext@tok= is in charge of preparing the next
+%    \textsf{token} register. For that purpose we increase
+%    =\count@= by $1$:
+%    \begin{macrocode}
+\def\prepnext@tok{\advance \count@ \@ne
+%    \end{macrocode}
+%    Then we locally delete any contents the
+%    \textsf{token} register might have.
+%    \begin{macrocode}
+   \toks\count@{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\save@decl}
+%    During the construction of the preamble the current
+%    \textsf{token} is always saved in the macro =\@nextchar= (see the
+%    definition of =\@mkpream= on page \pageref{@mkpream}). The macro
+%    =\save@decl= saves it into the next free \textsf{token} register,
+%    i.e.\ in =\toks\count@=.
+% \changes{v2.0c}{1990/08/14}{\cs{relax} removed and added elsewhere.}
+%    \begin{macrocode}
+\def\save@decl{\toks\count@ \expandafter{\@nextchar}}
+%    \end{macrocode}
+%    The reason for the  use of =\relax= is the following
+%    hypothetical situation in the preamble:
+%    \quad =..\the\toks1\the\toks2..= \quad \TeX\ expands
+%    =\the\toks2= first in order to find out if the digit =1=
+%    is followed by other digits. E.g.\ a =5= saved in the
+%    \textsf{token} register $2$ would lead \TeX\ to insert the contents
+%    of \textsf{token} register $15$ instead of $1$ later on.
+%
+% The example above referred to an older version of =\save@decl= which
+% inserted a =\relex= inside the token register. This is now moved to
+% the places where the actual token registers are inserted (look for
+% =\the@toks=) because the old version would still make =@=
+% expressions to moving arguments since after expanding the second
+% register while looking for the end of the number the contents of the
+% token register is added so that later on the whole register will be
+% expanded.  This serious bug was found after nearly two years
+% international use of this package  by Johannes Braams.
+% \end{macro}
+%
+%
+%
+% How does the situation look like, if we want to add another column
+% to the preamble, i.e.\ if we have found a \texttt{c}, \texttt{l},
+% \texttt{r}, \texttt{p}, \texttt{m} or \texttt{b} in the user
+% preamble?  In this case we have the problem of the \textsf{token}
+% register from =>{..}= and =<{..}= having to be inserted at this
+% moment because formatting instructions like =\hfil= have to be set
+% around them. On the other hand it is not known yet, if any =<{..}=
+% instruction will appear in the user preamble at all.
+%
+% We solve this problem by adding two \textsf{token} registers at a
+% time.  This explains, why we have freed the \textsf{token} registers
+% in =\prepnext@tok=.
+%
+% \begin{macro}{\insert@column}
+% \begin{macro}{\@sharp}
+%    We now define the macro =\insert@column= which will do
+%    this work for us.
+%    \begin{macrocode}
+\def\insert@column{%
+%    \end{macrocode}
+%    Here, we assume that the \textsf{count} register
+%    =\@tempcnta= has saved the value $=\count@= - 1$.
+%    \begin{macrocode}
+   \the@toks \the \@tempcnta
+%    \end{macrocode}
+%    Next follows the =#= sign which specifies the place
+%    where the text of the column shall be inserted. To avoid
+%    errors during the expansions in
+%    =\@addtopreamble= we hide this sign in the command
+%    =\@sharp= which is temporarily occupied with
+%    =\relax= during the build-up of the preamble.
+%    To remove unwanted spaces before and after the column text, we set
+%    an =\ignorespaces=  in front and a =\unskip= afterwards.
+% \changes{v2.0e}{1991/02/07}{Added \{\} around \cs{@sharp} for new ftsel}
+% \changes{v2.0h}{1992/06/22}{Removed \{\} again in favour of
+%                             \cs{d@llarbegin}}
+%    \begin{macrocode}
+   \ignorespaces \@sharp \unskip
+%    \end{macrocode}
+%    Then the second \textsf{token} register follows whose number should
+%    be saved in =\count@=.
+%    We make sure that there will be no further expansion after reading
+%    the number, by finishing with =\relax=. The case above is not
+%    critical since it is ended by =\ignorespaces=.
+% \changes{v2.0c}{1990/08/14}{\cs{relax} added to avoid problem
+%                           \cs{the}\cs{toks0}\cs{the}\cs{toks1}.}
+%    \begin{macrocode}
+   \the@toks \the \count@ \relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+%
+% \subsection{The separation of columns}
+%
+% \begin{macro}{\@addamp}
+%    In the preamble a =&= has to be inserted between any two columns;
+%    before the first column there should not be a =&=. As the user
+%    preamble may start with a \texttt{|} we have to remember somehow
+%    if we have already inserted a =#= (i.e.\ a column). This is done
+%    with the boolean variable =\if@firstamp= that we test in
+%    =\@addamp=, the macro that inserts the =&=.
+%    \begin{macrocode}
+%    \newif \@iffirstamp
+%    \def\@addamp{\if@firstamp \@firstampfalse
+%                 \else \@addtopreamble &\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@acol}
+% \begin{macro}{\@acolampacol}
+% \begin{macro}{\col@sep}
+%    We will now define some abbreviations for the extensions,
+%    appearing most often in the preamble build-up.
+%    Here =\col@sep= is a \textsf{dimen} register which is set
+%    equivalent to =\arraycolsep= in an \textsf{array}--environment,
+%    otherwise it is set equivalent to =\tabcolsep=.
+%    \begin{macrocode}
+\newdimen\col@sep
+\def\@acol{\@addtopreamble{\hskip\col@sep}}
+%    \def\@acolampacol{\@acol\@addamp\@acol}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \subsection{The macro \texttt{\textbackslash @mkpream}}
+%
+% \begin{macro}{\@mkpream}
+% \begin{macro}{\the@toks}
+%    \label{@mkpream}
+%    Now we can define the macro which builds up the preamble for the
+%    =\halign=.
+%    First we initialize =\@preamble=, =\@lastchclass=
+%    and the boolean variable =\if@firstamp=.
+%    \begin{macrocode}
+\def\@mkpream#1{\gdef\@preamble{}\@lastchclass 4 \@firstamptrue
+%    \end{macrocode}
+%    During the build-up of the preamble we cannot directly use the
+%    =#= sign; this would lead to an error message in the next
+%    =\@addtopreamble= call.
+%    Instead, we use the command =\@sharp= at places where later
+%    a =#= will be.
+%    This command is at first given the meaning =\relax=;
+%    therefore it will not be expanded when the preamble
+%    is extended.
+%    In the macro =\@array=, shortly before the =\halign=
+%    is carried out, =\@sharp= is given its final meaning.
+%
+%    In a similar way,
+%    we deal with the commands =\@startpbox= and
+%    =\@endpbox=, although the reason is different here: these
+%    macros expand in many \textsf{tokens} which would delay the
+%    build-up of the preamble.
+%    \begin{macrocode}
+   \let\@sharp\relax \let\@startpbox\relax \let\@endpbox\relax
+%    \end{macrocode}
+%    Now we remove possible  $*$-forms in the user preamble with the
+%    command =\@xexpast=.  As we already know, this command saves
+%    its result in the macro =\@tempa=.
+%    \begin{macrocode}
+   \@xexpast #1*0x\@@
+%    \end{macrocode}
+%    Afterwards we initialize all registers and macros, that we need
+%    for the build-up of the preamble.
+%    Since we want to start with the \textsf{token} register $0$,
+%    =\count@= has to contain the value $-1$.
+%    \begin{macrocode}
+   \count@\m@ne
+   \let\the@toks\relax
+%    \end{macrocode}
+%    Then we call up =\prepnext@tok= in order to prepare the
+%    \textsf{token} register $0$ for use.
+%    \begin{macrocode}
+   \prepnext@tok
+%    \end{macrocode}
+%    To evaluate the user preamble (without stars) saved in
+%    =\@tempa= we use the \LaTeX--macro =\@tfor=.
+%    The strange appearing construction with =\expandafter= is
+%    based on the fact that we have to put the replacement text of
+%    =\@tempa= and not the macro =\@tempa= to this
+%    \LaTeX--macro.
+%    \begin{macrocode}
+   \expandafter \@tfor \expandafter \@nextchar
+    \expandafter :\expandafter =\@tempa \do
+%    \end{macrocode}
+%    The body of this loop (the group after the =\do=)
+%    is executed for one \textsf{token} at a time, whereas
+%    the current \textsf{token} is saved in =\@nextchar=.
+%    At first we evaluate the current \textsf{token} with the already
+%    defined macro =\@testpach=, i.e.\ we assign to
+%    =\@chclass= the character class and to =\@chnum=
+%    the character number of this \textsf{token}.
+% \changes{v2.0f}{1992/02/29}{\cs{@testpach} now without arg}
+%    \begin{macrocode}
+   {\@testpach
+%    \end{macrocode}
+%    Then we branch out depending on the value of =\@chclass= into
+%    different macros that extend the preamble respectively.
+%    \begin{macrocode}
+   \ifcase \@chclass \@classz \or \@classi \or \@classii
+     \or \save@decl \or \or \@classv \or \@classvi
+     \or \@classvii \or \@classviii  \or \@classix
+     \or \@classx \fi
+%    \end{macrocode}
+%    Two cases deserve our special attention: Since the current
+%    \textsf{token} cannot have the character class $4$ (start) we
+%    have skipped this possibility. If the character class is $3$,
+%    only the content of =\@nextchar= has to be saved into the current
+%    \textsf{token} register; therefore we call up =\save@decl=
+%    directly and save a macro name.  After the preamble has been
+%    extended we assign the value of =\@chclass= to the counter
+%    =\@lastchclass= to assure that this information will be available
+%    during the next run of the loop.
+%    \begin{macrocode}
+   \@lastchclass\@chclass}%
+%    \end{macrocode}
+%    After the loop has been finished space must still be added to
+%    the created preamble, depending on the last \textsf{token}.
+%    Depending on the value of =\@lastchclass= we perform
+%    the necessary operations.
+%    \begin{macrocode}
+   \ifcase\@lastchclass
+%    \end{macrocode}
+%    If the last class equals $0$ we add a
+%    =\hskip \col@sep=.
+%    \begin{macrocode}
+   \@acol \or
+%    \end{macrocode}
+%    If it equals $1$ we do not add any additional space so that the
+%    horizontal lines do not exceed the vertical ones.
+%    \begin{macrocode}
+   \or
+%    \end{macrocode}
+%    Class $2$ is treated like class $0$ because a =<{...}=  can
+%    only directly follow after class $0$.
+%    \begin{macrocode}
+   \@acol \or
+%    \end{macrocode}
+%    Most of the other possibilities can only appear if the user
+%    preamble was defective. Class $3$ is not allowed since after a
+%    =>{..}= there must always follow a \texttt{c}, \texttt{l},
+%    \texttt{r}, \texttt{p},\texttt{m} or \texttt{b}. We report an
+%    error and ignore the declaration given by ={..}=.
+%    \begin{macrocode}
+   \@preamerr \thr@@ \or
+%    \end{macrocode}
+%    If =\@lastchclass= is $4$ the user preamble has been empty.
+%    To continue, we insert a =#= in the preamble.
+%    \begin{macrocode}
+   \@preamerr \tw@ \@addtopreamble\@sharp \or
+%    \end{macrocode}
+%    Class $5$ is allowed again. In this case
+%    (the user preamble ends with =@{..}=) we need not
+%    do anything.
+%    \begin{macrocode}
+   \or
+%    \end{macrocode}
+%    Any other case means that the arguments to =@=, \texttt{!},
+%    \texttt{<}, \texttt{>}, \texttt{p}, \texttt{m} or \texttt{b} have
+%    been forgotten. So we report an error and ignore the last
+%    \textsf{token}.
+%    \begin{macrocode}
+   \else  \@preamerr \@ne \fi
+%    \end{macrocode}
+%    Now that the build-up of the preamble is almost finished we can
+%    insert the \textsf{token} registers and therefore redefine
+%    =\the@toks=. The actual insertion, though, is performed
+%    later.
+%    \begin{macrocode}
+   \def\the@toks{\the\toks}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+%  \section{The macros \texttt{\textbackslash @classz}
+%           to \texttt{\textbackslash @classx}}
+%
+% The preamble is extended by the macros =\@classz= to
+% =\@classx= which are called by =\@mkpream=
+%  depending on =\@lastchclass=
+% (i.e. the character class of the last \textsf{token}).
+% \begin{macro}{\@classx}
+%    First we define =\@classx= because of its important r\^ole.
+%    When it is called we find that the current
+%    \textsf{token} is \texttt{p}, \texttt{m} or \texttt{b}.
+%    That means that a new column has to start.
+%    \begin{macrocode}
+\def\@classx{%
+%    \end{macrocode}
+%    Depending on the value of =\@lastchclass= different actions
+%    must take place:
+%    \begin{macrocode}
+  \ifcase \@lastchclass
+%    \end{macrocode}
+%    If the last character class was $0$ we separate the columns by
+%    =\hskip\col@sep= followed by =&= and another
+%    =\hskip\col@sep=.
+%    \begin{macrocode}
+  \@acolampacol \or
+%    \end{macrocode}
+%    If the last class was class $1$ --- that means that a vertical
+%    line was
+%    drawn, --- before this line a =\hskip\col@sep= was inserted.
+%    Therefore there has to be only a =&= followed by
+%    =\hskip\col@sep=. But this =&= may be inserted only
+%    if this is not the first column. This process is controlled
+%    by =\if@firstamp= in the macro =\addamp=.
+%    \begin{macrocode}
+  \@addamp \@acol \or
+%    \end{macrocode}
+%    Class $2$ is treated like class $0$ because =<{...}= can only
+%    follow after class $0$.
+%    \begin{macrocode}
+  \@acolampacol \or
+%    \end{macrocode}
+%    Class $3$ requires no actions because all things necessary have
+%    been done by the preamble \textsf{token} \texttt{>}.
+%    \begin{macrocode}
+  \or
+%    \end{macrocode}
+%    Class $4$ means that we are at the beginning of the preamble.
+%    Therefore we start the preamble with =\hskip\col@sep= and
+%    then call =\@firstampfalse=. This makes sure that a later
+%    =\@addamp= inserts the character
+%    =&= into the preamble.
+%    \begin{macrocode}
+  \@acol \@firstampfalse \or
+%    \end{macrocode}
+%    For class $5$ \textsf{tokens} only the character =&= is inserted
+%    as a column separator. Therefore we call =\@addamp=.
+%    \begin{macrocode}
+  \@addamp
+%    \end{macrocode}
+%    Other cases are impossible. For an example
+%    $=\@lastchclass= \string= 6$---as it might appear in a
+%    preamble of the form =...!p...=---\texttt{p} would have
+%    been taken as an  argument of \texttt{!}\ by =\@testpach=.
+%    \begin{macrocode}
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@classz}
+%    If the character class of the last \textsf{token} is $0$ we have
+%    \texttt{c}, \texttt{l}, \texttt{r} or an argument of \texttt{m},
+%    \texttt{b} or\ \texttt{p}. In the first three cases the preamble
+%    must be extended the same way as if we had class $10$. The
+%    remaining two cases do not require any action because the space
+%    needed was generated by the last \textsf{token} (i.e.\
+%    \texttt{m}, \texttt{b} or \texttt{p}). Since =\@lastchclass= has
+%    the value $10$ at this point nothing happens when =\@classx= is
+%    called. So the macro =\@chlassz= may start like this:
+%    \begin{macrocode}
+\def\@classz{\@classx
+%    \end{macrocode}
+%    According to the definition of =\insert@column= we must store
+%    the number of the \textsf{token} register in which a preceding
+%    =>{..}= might have stored its argument into
+%    =\@tempcnta=.
+%    \begin{macrocode}
+   \@tempcnta \count@
+%    \end{macrocode}
+%    To have $=\count@= \string= =\@tmpcnta= + 1$ we prepare
+%    the next \textsf{token} register.
+%    \begin{macrocode}
+   \prepnext@tok
+%    \end{macrocode}
+%    Now the preamble must be extended with the column whose format
+%    can be determined by =\@chnum=.
+%    \begin{macrocode}
+   \@addtopreamble{\ifcase \@chnum
+%    \end{macrocode}
+%    If =\@chnum= has the value $0$ a centered column has to be
+%    generated.
+%    So we begin with stretchable space.
+%    \begin{macrocode}
+      \hfil
+%    \end{macrocode}
+%    The command =\d@llarbegin= follows expanding into =\begingroup=
+%    (in the \textsf{tabular}--environment) or into =$=.  Doing this
+%    (provided an appropriate setting of =\d@llarbegin=) we achieve
+%    that the contents of the columns of an \textsf{array}--environment
+%    are set in math mode while those of a \textsf{tabular}--environment
+%    are set in LR mode.
+%    \begin{macrocode}
+      \d@llarbegin
+%    \end{macrocode}
+%    Now we insert the contents of the two \textsf{token} registers
+%    and the symbol
+%    for the column entry (i.e.\ =#= or
+%    more precise =\@sharp=) using =\insert@column=.
+%    \begin{macrocode}
+      \insert@column
+%    \end{macrocode}
+%    We end this case with =\d@llarend= and =\hfil= where =\d@llarend=
+%    again is either =$= or =\endgroup=.
+%    \begin{macrocode}
+      \d@llarend \hfil \or
+%    \end{macrocode}
+%    The templates for \texttt{l} and \texttt{r} (i.e.\ =\@chnum= $1$
+%    or $2$) are generated the same way. Since one  =\hfil= is
+%    missing the text is moved to the relevant side.
+%    The =\kern\z@= is needed in case of an empty column
+%    entry. Otherwise
+%    the =\unskip= in =\insert@column= removes the
+%    =\hfil=. Changed to =\hskip1sp= so that it interacts better with
+%    =\@bsphack=.
+% \changes{v2.3f}{1996/04/22}
+%     {(DPC) Extra \cs{kern} keeps tabcolsep in empty l columns
+%             internal/2122}
+% \changes{v2.3i}{1996/06/14}
+%     {Change both \cs{kern}\cs{z@} to \cs{hskip}1sp for latex/2160}
+%    \begin{macrocode}
+      \hskip1sp\d@llarbegin \insert@column \d@llarend \hfil \or
+      \hfil\hskip1sp\d@llarbegin \insert@column \d@llarend \or
+%    \end{macrocode}
+%    The templates for \texttt{p}, \texttt{m} and \texttt{b} mainly
+%    consist of a \textsf{box}. In case of \texttt{m} it is generated
+%    by =\vcenter=.  This command is allowed only in math
+%    mode. Therefore we start with a~=$=.
+%    \begin{macrocode}
+   $\vcenter
+%    \end{macrocode}
+%    The part of the templates which is the same in all three cases
+%    (\texttt{p}, \texttt{m} and \texttt{b})
+%    is built by the macros =\@startpbox= and
+%    =\@endpbox=. =\@startpbox= has an argument:
+%    the width of the column which is stored in the current
+%    \textsf{token} (i.e.\ =\@nextchar=).
+%    Between these two macros we find the well known
+%    =\insert@column=.
+%    \begin{macrocode}
+   \@startpbox{\@nextchar}\insert@column \@endpbox $\or
+%    \end{macrocode}
+%    The templates for \texttt{p} and \texttt{b} are generated in the
+%    same way though we do not need the =$= characters because we use
+%    =\vtop= or =\vbox=.
+%    \begin{macrocode}
+   \vtop \@startpbox{\@nextchar}\insert@column \@endpbox \or
+   \vbox \@startpbox{\@nextchar}\insert@column \@endpbox
+%    \end{macrocode}
+%    Other values for =\@chnum= are impossible. Therefore we
+%    end the arguments to =\@addtopreamble= and =\ifcase=.
+%    Before we come to the end of =\@classz= we have to
+%    prepare the next \textsf{token} register.
+%    \begin{macrocode}
+  \fi}\prepnext@tok}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@classix}
+%    In case of class $9$ (\texttt{>}--\textsf{token}) we first check
+%    if the character class of the last
+%    \textsf{token} was $3$. In this case we have a
+%    user preamble of the form =..>{...}>{...}..= which
+%    is not allowed. We only give an error message and continue.
+%    So the declarations defined by the first  =>{...}=
+%    are ignored.
+%    \begin{macrocode}
+\def\@classix{\ifnum \@lastchclass = \thr@@
+       \@preamerr \thr@@ \fi
+%    \end{macrocode}
+%    Furthermore, we call up =\@class10= because afterwards always a
+%    new column is started by \texttt{c}, \texttt{l}, \texttt{r},
+%    \texttt{p}, \texttt{m} or \texttt{b}.
+%    \begin{macrocode}
+       \@classx}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\@classviii}
+%    If the current \textsf{token} is a \texttt{<} the last character
+%    class must be $0$. In this case it is not necessary to extend the
+%    preamble. Otherwise we output an error message, set =\@chclass=
+%    to $6$ and call =\@classvi=.  By doing this we achieve that
+%    \texttt{<} is treated like \texttt{!}.
+%    \begin{macrocode}
+\def\@classviii{\ifnum \@lastchclass >\z@
+      \@preamerr 4\@chclass 6 \@classvi \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@arrayrule}
+%    There is only one incompatibility with the original definition:
+%    the definition of =\@arrayrule=. In the original a line without
+%    width\footnote{So the space between \texttt{cc} and \texttt{c|c}
+%    is equal.}  is created by multiple insertions of
+% =\hskip .5\arrayrulewidth=.
+%    We only insert a vertical line into the
+%    preamble.  This is done to prevent problems with \TeX's main
+%    memory when generating tables with many vertical lines in them
+%    (especially in the case of \textsf{floats}).
+%    \begin{macrocode}
+\def\@arrayrule{\@addtopreamble \vline}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@classvii}
+%    As a consequence it follows that in case of class $7$
+%    (=@= \textsf{token})  the preamble need not to be extended.
+%    In the original definition $=\@lastchclass= \string= 1$
+%    is treated by inserting =\hskip .5\arrayrulewidth=.
+%    We only check if the last \textsf{token} was of class $3$ which is
+%    forbidden.
+%    \begin{macrocode}
+\def\@classvii{\ifnum \@lastchclass = \thr@@
+%    \end{macrocode}
+%    If this is true we output an error message and
+%    ignore the declarations stored
+%    by the last  =>{...}=, because these are overwritten
+%    by the argument of \texttt{@}.
+%    \begin{macrocode}
+   \@preamerr \thr@@ \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@classvi}
+%    If the current \textsf{token} is a regular \texttt{!}\ and the
+%    last class was $0$ or $2$ we extend the preamble with
+%    =\hskip\col@sep=.  If the last \textsf{token} was of class $1$
+%    (for instance \texttt{|}) we extend with =\hskip \doublerulesep=
+%    because the construction =!{...}= has to be treated like
+%    \texttt{|}.
+%    \begin{macrocode}
+\def\@classvi{\ifcase \@lastchclass
+      \@acol \or
+      \@addtopreamble{\hskip \doublerulesep}\or
+      \@acol \or
+%    \end{macrocode}
+%    Now =\@preamerr...= should follow because a
+%    user preamble of the form =..>{..}!.= is not allowed.
+%    To save memory we call =\@classvii= instead which also
+%    does what we want.
+%    \begin{macrocode}
+      \@classvii
+%    \end{macrocode}
+%    If =\@lastchclass= is $4$ or $5$ nothing has to be done.
+%    Class $6$ to $10$ are not possible.
+%    So we finish the macro.
+%    \begin{macrocode}
+      \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@classii}
+% \begin{macro}{\@classiii}
+%    In the case of character classes $2$ and $3$ (i.e.\ the argument
+%    of \texttt{<} or \texttt{>}) we only have to store the current
+%    \textsf{token} (=\@nextchar=) into the corresponding
+%    \textsf{token} register since the preparation and
+%    insertion of these registers
+%    are done by the macro =\@classz=.
+%    This is equivalent to calling =\save@decl= in the case of
+%    class $3$. To save command identifiers we do this call up
+%     in the macro =\@mkpream=.
+%
+%    Class $2$ exhibits a more complicated situation: the
+%    \textsf{token} registers have already been inserted by
+%    =\@classz=. So the value of =\count@= is too high
+%    by one. Therefore we decrease =\count@= by $1$.
+%    \begin{macrocode}
+\def\@classii{\advance \count@ \m@ne
+%    \end{macrocode}
+%    Next we store the current \textsf{token} into the correct
+%    \textsf{token} register by calling =\save@decl= and then
+%    increase the value of =\count@= again. At this point we
+%    can save memory once more (at the cost of time) if we use the
+%     macro =\prepnext@tok=.
+%    \begin{macrocode}
+   \save@decl\prepnext@tok}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@classv}
+%    If the current \textsf{token} is of class $5$ then it is an
+%    argument of a \texttt{@} \textsf{token}. It must be stored into a
+%    \textsf{token} register.
+%    \begin{macrocode}
+\def\@classv{\save@decl
+%    \end{macrocode}
+%    We extend the preamble with a command which inserts this
+%    \textsf{token} register into the preamble when its construction
+%    is finished. The user expects that this argument is worked out in
+%    math mode if it was used in an
+%    \textsf{array}--environment. Therefore we surround it with
+%    =\d@llar...='s.
+% \changes{v2.0c}{1990/08/14}{\cs{relax} added to avoid problem
+%                           `the`toks0`the`toks1.}
+%    \begin{macrocode}
+   \@addtopreamble{\d@llarbegin\the@toks\the\count@\relax\d@llarend}%
+%    \end{macrocode}
+%    Finally we must prepare the next \textsf{token} register.
+%    \begin{macrocode}
+   \prepnext@tok}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@classi}
+%    In the case of class $0$ we were able to generate the necessary
+%    space between columns by using the macro =\@classx=.
+%    Analogously the macro =\@classvi= can be used for class $1$.
+%    \begin{macrocode}
+\def\@classi{\@classvi
+%    \end{macrocode}
+%    Depending on =\@chnum= a vertical line
+%    \begin{macrocode}
+   \ifcase \@chnum \@arrayrule \or
+%    \end{macrocode}
+%    or (in case of =!{...}=) the current \textsf{token} --- stored
+%    in =\@nextchar= --- has to be inserted into the preamble.
+%    This corresponds to calling =\@classv=.
+%    \begin{macrocode}
+      \@classv \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\@startpbox}
+%    In =\@classz=  the macro =\@startpbox= is used.
+%    The width of the \textsf{parbox} is passed as an argument.
+%    =\vcenter=, =\vtop= or =\vbox= are already in the
+%    preamble. So we start with the braces for the wanted box.
+%    \begin{macrocode}
+\def\@startpbox#1{\bgroup
+%    \end{macrocode}
+%    The argument is the width of the box. This information has to be
+%    assigned to =\hsize=.
+%    Then we assign default values to several parameters used in a
+%    \textsf{parbox}.
+% \changes{v2.3k}{1998/05/12}{Use \cs{setlength} to set \cs{hsize},
+%      so that the calc package can be applied here (pr/2793)}
+%    \begin{macrocode}
+  \setlength\hsize{#1}\@arrayparboxrestore
+%    \end{macrocode}
+%    Our main problem is to obtain the same distance between succeeding
+%    lines of the \textsf{parbox}.
+%    We have to remember that the distance between two \textsf{parboxes}
+%    should be defined by =\@arstrut=. That means that it can be
+%    greater than the distance in a \textsf{parbox}.
+%    Therefore it is not enough to set a =\@arstrut= at the
+%    beginning and at the end of the \textsf{parbox}. This would
+%    dimension the distance
+%    between first and second line and the distance between the two
+%    last lines of the \textsf{parbox} wrongly.
+%    To prevent this we set an invisible rule of height
+%    =\@arstrutbox=
+%    at the beginning of the \textsf{parbox}. This has no effect on the
+%    depth of the first line. At the end of the \textsf{parbox} we set
+%    analogously another invisible rule which only affects the depth
+%    of the last line. It is necessary to wait inserting this strut
+%    until the paragraph actually starts to allow for things like
+%    =\parindent= changes via =>{...}=.
+% \changes{v2.1c}{1992/12/14}{Use `everypar to insert strut}
+%    \begin{macrocode}
+   \everypar{%
+      \vrule \@height \ht\@arstrutbox \@width \z@
+      \everypar{}}%
+   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@endpbox}
+%    If there are any declarations defined by =>{...}=
+%    and =<{...}=
+%    they now follow in the macro =\@classz= --- the contents
+%    of the column in between.
+%    So the macro =\@endpbox= must insert the \textsf{specialstrut}
+%    mentioned earlier and then close the group opened by
+%    =\@startpbox=.
+% \changes{v2.2d}{1994/05/16}{Use \LaTeXe \cs{@finalstrut}}
+% \changes{v2.3g}{1996/05/07}{Add \cs{hfil} for tools/2120}
+%    \begin{macrocode}
+\def\@endpbox{\@finalstrut\@arstrutbox \egroup\hfil}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \section{Building and calling \texttt{\textbackslash halign}}
+%
+% \begin{macro}{\@array}
+%    After we have discussed the macros needed for the evaluation
+%    of the user preamble we can define the macro =\@array=
+%    which uses these macros to create a =\halign=.
+%    It has two arguments. The first one is a position argument
+%    which can be \texttt{t}, \texttt{b} or \texttt{c}; the
+%    second one describes the wanted preamble,
+%    e.g.\ it has the form =|c|c|c|=.
+%    \begin{macrocode}
+\def\@array[#1]#2{%
+%    \end{macrocode}
+%    First we define a \textsf{strut} whose size basically corresponds
+%     to a normal \textsf{strut} multiplied by the factor
+%    =\arraystretch=.
+%    This \textsf{strut} is then  inserted into every row and enforces
+%     a minimal distance between two rows.
+%    Nevertheless, when using horizontal lines, large letters
+%    (like accented capital letters) still collide with such lines.
+%    Therefore at first we add to the height of a normal \textsf{strut}
+%    the value of the parameter =\extrarowheight=.
+%    \begin{macrocode}
+  \@tempdima \ht \strutbox
+  \advance \@tempdima by\extrarowheight
+  \setbox \@arstrutbox \hbox{\vrule
+             \@height \arraystretch \@tempdima
+             \@depth \arraystretch \dp \strutbox
+             \@width \z@}%
+%    \end{macrocode}
+%    Then we open a group, in which the user preamble is evaluated by
+%    the macro =\@mkpream=. As we know this must happen locally.
+%    This macro creates a preamble for a =\halign= and saves
+%    its result globally in the control sequence =\@preamble=.
+%    \begin{macrocode}
+  \begingroup
+  \@mkpream{#2}%
+%    \end{macrocode}
+%    We again redefine =\@preamble= so that a call up of =\@preamble=
+%    now starts the =\halign=. Thus also the arguments of \texttt{>},
+%    \texttt{<}, \texttt{@} and \texttt{!}, saved in the
+%    \textsf{token} registers are inserted into the preamble.  The
+%    =\tabskip= at the beginning and end of the preamble is set to
+%    \textsf{0pt} (in the beginning by the use of =\ialign=). Also the
+%    command =\@arstrut= is build in, which inserts the
+%    =\@arstrutbox=, defined above. Of course, the opening brace after
+%    =\ialign= has to be implicit as it will be closed in =\endarray=
+%    or another macro.
+% \changes{v2.3m}{1998/12/31}{Added \cs{noexpand} in front of \cs{ialign}
+%    to guard against interesting :-) changes to \cs{halign} done to support
+%    text glyphs in math}
+%
+%    The =\noexpand= in front of =\ialign= does no harm in standard \LaTeX{}
+%    and was added since some experimental support for using text glyphs in math
+%    redefines =\halign= with the result that is becomes expandable with
+%    disastrous results in cases like this.
+%    In the kernel definition for this macro the problem does
+%    not surface because there =\protect= is set (which is not necessary in this
+%    implementation as there is no arbitrary user input that can get expanded) and
+%    the experimental code made the redefinition robust. Whether this is the right
+%    approach is open to question; consider the =\noexpand= a courtesy to allow an
+%    unsupported redefinition of a \TeX{} primitive for the moment (as people rely
+%    on that experimental code).
+%    \begin{macrocode}
+  \xdef\@preamble{\noexpand \ialign \@halignto
+                  \bgroup \@arstrut \@preamble
+                          \tabskip \z@ \cr}%
+%    \end{macrocode}
+%    What we have not explained yet is the macro =\@halignto=
+%    that was just used. Depending on its replacement text the
+%    =\halign= becomes a =\halign= \texttt{to} \meta{dimen}.
+%    Now we close the group again. Thus
+%    =\@startpbox= and =\@endpbox= as well as all
+%    \textsf{token} registers get their former meaning back.
+%    \begin{macrocode}
+  \endgroup
+%    \end{macrocode}
+%     To support the \texttt{delarray.sty} package  we include a hook
+%     into this part of the code which is a no-op in the main package.
+% \changes{v2.1a}{1992/07/03}{Hook for delarray added}
+%    \begin{macrocode}
+  \@arrayleft
+%    \end{macrocode}
+%    Now we decide depending on the position argument in which
+%    \textsf{box} the =\halign= is to be put. (=\vcenter= may be used
+%    because we are in math mode.)
+% \changes{v2.1a}{1992/07/03}{Wrong spec is now equiv to [t]}
+%    \begin{macrocode}
+  \if #1t\vtop \else \if#1b\vbox \else \vcenter \fi \fi
+%    \end{macrocode}
+%    Now another implicit opening brace appears; then definitions
+%    which shall stay local follow. While constructing the
+%    =\@preamble= in =\@mkpream= the =#= sign must be
+%    hidden in the macro =\@sharp= which is =\let= to
+%    =\relax= at that moment (see definition of =\@mkpream=
+%    on page~\pageref{@mkpream}).
+%    All these now get their actual meaning.
+%    \begin{macrocode}
+  \bgroup
+  \let \@sharp ##\let \protect \relax
+%    \end{macrocode}
+%    With the above defined \textsf{struts} we fix down the distance
+%    between rows by setting =\lineskip= and =\baselineskip=
+%    to \textsf{0pt}. Since there have to be set =$='s
+%    around every column in the \textsf{array}--environment
+%     the parameter =\mathsurround= should
+%    also be set to \textsf{0pt}. This prevents additional space between
+%    the rows. The
+%    \PlainTeX--macro =\m@th= does this.
+%    \begin{macrocode}
+  \lineskip \z@
+  \baselineskip \z@
+  \m@th
+%    \end{macrocode}
+%    Beside, we have to assign a special meaning (which we still have
+%    to specify) to the line separator =\\=. We also have to
+%    redefine the command =\par= in such a way that empty lines in
+%    =\halign= cannot do any damage. We succeed in doing  so
+%    by choosing something that will disappear when expanding.
+%    After that we only have to call up =\@preamble= to
+%    start the wanted =\halign=.
+%    \changes{1994/12/08}{v2.3b}{add \cs{tabularnewline}}
+%    \begin{macrocode}
+  \let\\\@arraycr \let\tabularnewline\\\let\par\@empty \@preamble}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\arraybackslash}
+% \changes{v2.4a}{2003/12/17}{(DPC) Macro added (from tabularx)}
+% Restore =\\= for use in array and tabular environment (after
+% =\raggedright= etc.).
+%    \begin{macrocode}
+\def\arraybackslash{\let\\\tabularnewline}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\extrarowheight}
+%    The \textsf{dimen} parameter used above also needs to be
+%    allocated.  As a default value we use \textsf{0pt}, to ensure
+%    compatibility with standard \LaTeX.
+%    \begin{macrocode}
+\newdimen \extrarowheight
+\extrarowheight=0pt
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@arstrut}
+%    Now the insertion of =\@arstrutbox= through =\@arstut=
+%    is easy since we know exactly in which mode \TeX\ is while working
+%    on the =\halign= preamble.
+%    \begin{macrocode}
+\def\@arstrut{\unhcopy\@arstrutbox}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \section{The line separator \texttt{\textbackslash\textbackslash}}
+%
+% \begin{macro}{\@arraycr}
+%    In the macro =\@array= the line separator =\\= is
+%    =\let= to the command =\@arraycr=.
+%    Its definition starts with a special brace which I have directly
+%    copied from the original definition. It is
+%    necessary, because the =\futurlet= in =\@ifnextchar=
+%    might
+%    expand a  following =&= \textsf{token} in a construction like
+%    =\\ &=. This would otherwise end the alignment template at a
+%    wrong time. On the other hand we have to be careful to avoid
+%    producing a real group, i.e.\ ={}=, because the command will also
+%    be used for the array environment, i.e.\ in math mode. In that
+%    case an extra ={}= would produce an ord atom which could mess up
+%    the spacing. For this reason we use a combination that does not
+%    really produce a group at all but modifies the master counter so
+%    that a =&= will not be considered belonging to the current
+%    =\halign= while we are looking for a =*= or =[=.
+%    For further information see
+%    \cite[Appendix D]{bk:knuth}.
+% \changes{v2.3c}{1995/04/23}{Avoid adding an ord atom in math}
+%    \begin{macrocode}
+\def\@arraycr{\relax\iffalse{\fi\ifnum 0=`}\fi
+%    \end{macrocode}
+%    Then we test whether the user is using the star form and ignore
+%    a possible star (I also disagree with this procedure, because a
+%    star does not make any sense here).
+%    \begin{macrocode}
+  \@ifstar \@xarraycr \@xarraycr}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xarraycr}
+%    In the command =\@xarraycr= we test if an optional argument
+%    exists.
+%    \begin{macrocode}
+\def\@xarraycr{\@ifnextchar [%
+%    \end{macrocode}
+%    If it does, we branch out into the macro =\@argarraycr= if
+%    not we close the special brace (mentioned above) and end the row
+%    of the =\halign= with a =\cr=.
+% \changes{v2.3c}{1995/04/23}{Avoid adding an ord atom in math}
+%    \begin{macrocode}
+  \@argarraycr {\ifnum 0=`{}\fi\cr}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@argarraycr}
+%    If additional space is requested by the user this case is treated
+%    in the macro =\@argarraycr=. First we close the special brace
+%    and then we test if the additional space is positive.
+% \changes{v2.3c}{1995/04/23}{Avoid adding an ord atom in math}
+%    \begin{macrocode}
+\def\@argarraycr[#1]{\ifnum0=`{}\fi\ifdim #1>\z@
+%    \end{macrocode}
+%    If this is the case we create an invisible vertical rule with
+%    depth =\dp\@arstutbox=${}+{}$\meta{wanted\ space}.
+%    Thus we achieve that all vertical lines specified
+%    in the user preamble by a \texttt{|} are now
+%    generally drawn.
+%    Then the row ends with a =\cr=.
+%
+%    If the space is negative we end the row at once with a =\cr=
+%    and move back up with a =\vskip=.
+%
+%    While testing these macros I found out that the
+%    =\endtemplate=
+%    created by =\cr= and =&= is something like an
+%    =\outer= primitive and therefore it should not appear in
+%    incomplete =\if= statements. Thus the following solution was
+%    chosen which hides the =\cr= in other macros when \TeX\
+%    is skipping conditional text.
+% \changes{v2.3c}{1995/04/23}{Use \cs{expandafter}'s in conditional}
+%    \begin{macrocode}
+  \expandafter\@xargarraycr\else
+  \expandafter\@yargarraycr\fi{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xargarraycr}
+% \begin{macro}{\@yargarraycr}
+%    The following macros were already explained above.
+%    \begin{macrocode}
+\def\@xargarraycr#1{\unskip
+  \@tempdima #1\advance\@tempdima \dp\@arstrutbox
+  \vrule \@depth\@tempdima \@width\z@ \cr}
+\def\@yargarraycr#1{\cr\noalign{\vskip #1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+%
+% \section{Spanning several columns}
+%
+% \begin{macro}{\multicolumn}
+%    If several columns should be held together with a special format
+%    the command =\multicolumn= must be used. It has three
+%    arguments: the number of columns to be covered; the format for
+%    the result column and the actual column entry.
+% \changes{v2.3j}{1998/01/29}{Command made \cs{long} to match
+%      kernel change for pr/2180}
+%    \begin{macrocode}
+\long\def\multicolumn#1#2#3{%
+%    \end{macrocode}
+%    First we combine the given number of columns into a single one;
+%    then we start a new block so that the following definition is kept
+%    local.
+%    \begin{macrocode}
+   \multispan{#1}\begingroup
+%    \end{macrocode}
+%    Since a =\multicolumn= should only describe the format of a
+%    result column, we redefine =\@addamp= in such a way that one gets
+%    an error message if one uses more than one \texttt{c},
+%    \texttt{l}, \texttt{r}, \texttt{p}, \texttt{m} or \texttt{b} in
+%    the second argument. One should consider that this definition is
+%    local to the build-up of the preamble; an \textsf{array}-- or
+%    \textsf{tabular}--environment in the third argument of the
+%    =\multicolumn= is therefore worked through correctly as well.
+%    \begin{macrocode}
+   \def\@addamp{\if@firstamp \@firstampfalse \else
+                \@preamerr 5\fi}%
+%    \end{macrocode}
+%    Then we evaluate the second argument with the help of
+%    =\@mkpream=.
+%    Now we still have to insert the contents of the \textsf{token}
+%    register into the =\@preamble=, i.e.\ we have to say
+%    =\xdef\@preamble{\@preamble}=. This is achieved shorter by
+%    writing:
+%    \begin{macrocode}
+   \@mkpream{#2}\@addtopreamble\@empty
+%    \end{macrocode}
+%    After the =\@preamble= is created we forget all local
+%    definitions and occupations of the \textsf{token} registers.
+%    \begin{macrocode}
+   \endgroup
+%    \end{macrocode}
+%    In the special situation of  =\multicolumn= =\@preamble=
+%    is not needed as preamble for a =\halign= but it is directly
+%    inserted into our table. Thus instead of =\sharp=
+%    there has to be the column entry (=#3=) wanted by the user.
+%    \begin{macrocode}
+   \def\@sharp{#3}%
+%    \end{macrocode}
+%    Now we can pass the =\@preamble= to \TeX\ . For safety
+%    we start with an =\@arstrut=. This should usually be in the
+%    template for the first column however we do not know if this
+%    template was overwritten by our =\multicolumn=.
+%    We also add a =\null= at the right end to prevent any following
+%    =\unskip= (for example from =\\[..]=) to remove the =\tabcolsep=.
+% \changes{v2.2e}{1994/06/01}{Added \cs{null}}
+%    \begin{macrocode}
+   \@arstrut \@preamble
+   \null
+   \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%   \section{The Environment Definitions}
+%
+% After these preparations we are able to define the environments. They
+% only differ in the initialisations of =\d@llar...=, =\col@sep=
+%  and =\@halignto=.
+%
+% \begin{macro}{\@halignto}
+% \begin{macro}{\d@llarbegin}
+% \begin{macro}{\d@llarend}
+%    In order to relieve the \textsf{save stack} we assign the
+%    replacement texts for =\@halignto= globally. =\d@llar= has to be
+%    local since otherwise nested \textsf{tabular} and \textsf{array}
+%    environments (via =\multicolumn=) are impossible.
+% \changes{v2.0g}{1992/06/18}{`d@llarbegin defined on toplevel.}
+%    When the new font selection scheme is in force we have to
+%    we surround all =\halign= entries
+%    with braces. See remarks in TUGboat 10\#2. Actually we are going
+%    to use =\begingroup= and =\endgroup=. However, this is only
+%    necessary when we are in text mode. In math the surrounding
+%    dollar signs will already serve as the necessary extra grouping
+%    level. Therefore we switch the settings of =\d@llarbegin= and
+%    =\d@llarend= between groups and dollar signs.
+%    \begin{macrocode}
+\let\d@llarbegin\begingroup
+\let\d@llarend\endgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\array}
+%    Our new definition of =\array= then reads:
+% \changes{v2.0d}{1990/08/20}{`d@llar local to preamble.}
+%    \begin{macrocode}
+\def\array{\col@sep\arraycolsep
+  \def\d@llarbegin{$}\let\d@llarend\d@llarbegin\gdef\@halignto{}%
+%    \end{macrocode}
+%    Since there might be an optional argument we call another
+%    macro which is also used by the other environments.
+%    \begin{macrocode}
+  \@tabarray}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabarray}
+%    This macro tests for a optional bracket and then calls up
+%    =\@array= or =\@array[c]= (as default).
+%    \begin{macrocode}
+\def\@tabarray{\@ifnextchar[{\@array}{\@array[c]}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tabular}
+% \begin{macro}{\tabular*}
+%    The environments \textsf{tabular} and \textsf{tabular$*$} differ
+%    only in the initialisation of the command =\@halignto=. Therefore
+%    we define
+%    \begin{macrocode}
+\def\tabular{\gdef\@halignto{}\@tabular}
+%    \end{macrocode}
+%     and analogously for the star form. We evaluate the argument first
+%     using =\setlength= so that users of the \texttt{calc} package can
+%     write code like\\ =\begin{tabular*}{(\columnwidth-1cm)/2}...=
+% \changes{v2.3l}{1998/05/13}{Use \cs{setlength} evaluate arg
+%      so that the calc package can be applied here (pr/2793)}
+%     \begin{macrocode}
+\expandafter\def\csname tabular*\endcsname#1{%
+       \setlength\dimen@{#1}%
+       \xdef\@halignto{to\the\dimen@}\@tabular}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@tabular}
+%    The rest of the job is carried out by the =\@tabular= macro:
+%    \begin{macrocode}
+\def\@tabular{%
+%    \end{macrocode}
+%    First of all we have to make sure that we start out in
+%    \textsf{hmode}.  Otherwise we might find our table dangling by
+%    itself on a line.
+%    \begin{macrocode}
+  \leavevmode
+%    \end{macrocode}
+%    It should be taken into consideration that the macro =\@array=
+%    must be called in math mode. Therefore we open a \textsf{box},
+%    insert a =$= and then assign the correct values to =\col@sep= and
+%    =\d@llar...=.
+% \changes{v2.0d}{1990/08/20}{`d@llar local to preamble.}
+%    \begin{macrocode}
+  \hbox \bgroup $\col@sep\tabcolsep \let\d@llarbegin\begingroup
+                                    \let\d@llarend\endgroup
+%    \end{macrocode}
+%    Now everything \textsf{tabular} specific is done and we are able to
+%    call the =\@tabarray= macro.
+%    \begin{macrocode}
+  \@tabarray}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endarray}
+%    When the processing of \textsf{array} is finished we have to
+%    close the =\halign=
+%    and afterwards the surrounding \textsf{box} selected by
+%    =\@array=. To save \textsf{token} space we then redefine
+%    =\@preamble=
+%    because its replacement text isn't longer needed.
+%    \begin{macrocode}
+\def\endarray{\crcr \egroup \egroup \gdef\@preamble{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endtabular}
+% \begin{macro}{\endtabular*}
+%    To end a \textsf{tabular} or \textsf{tabular$*$} environment we
+%    call up =\endarray=, close the math mode and then the surrounding
+%    =\hbox=.
+%    \begin{macrocode}
+\def\endtabular{\endarray $\egroup}
+\expandafter\let\csname endtabular*\endcsname=\endtabular
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%
+%   \section{Last minute definitions}
+%
+%
+% If this file is used as a package file we should =\let= all macros
+% to =\relax= that were used in the original but are no longer
+%  necessary.
+%    \begin{macrocode}
+\let\@ampacol=\relax        \let\@expast=\relax
+\let\@arrayclassiv=\relax   \let\@arrayclassz=\relax
+\let\@tabclassiv=\relax     \let\@tabclassz=\relax
+\let\@arrayacol=\relax      \let\@tabacol=\relax
+\let\@tabularcr=\relax      \let\@@endpbox=\relax
+\let\@argtabularcr=\relax   \let\@xtabularcr=\relax
+%    \end{macrocode}
+%
+% \begin{macro}{\@preamerr}
+%    We also have to redefine the error routine =\@preamerr= since
+%    new kind of errors are possible.
+%    The code for this macro is not perfect yet;
+%    it still needs too much memory.
+%    \begin{macrocode}
+\def\@preamerr#1{\def\@tempd{{..} at wrong position: }%
+   \PackageError{array}{%
+   \ifcase #1 Illegal pream-token (\@nextchar): `c' used\or %0
+    Missing arg: token ignored\or                           %1
+    Empty preamble: `l' used\or                             %2
+    >\@tempd token ignored\or                               %3
+    <\@tempd changed to !{..}\or                            %4
+    Only one column-spec. allowed.\fi}\@ehc}                %5
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \section
+%   [Defining your own column specifiers]
+%   {Defining your own column specifiers\footnotemark}
+%
+% \footnotetext{The code and the documentation in this section was
+%   written by David. So far only the code from newarray was plugged
+%   into array so that some parts of the documentation still claim
+%   that this is newarray and even worse, some parts of the code are
+%   unnecessarily doubled. This will go away in a future release. For
+%   the moment we thought it would be more important to bring both
+%   packages together.}
+% \changes{v2.1a}{1992/07/03}{Newcolumn stuff added}
+%
+% \DeleteShortVerb{\=}
+% \MakeShortVerb{\"}
+%
+%  \begin{macro}{\newcolumn}
+%    In \texttt{newarray.sty} the macro for specifying new columns was
+%    named "\newcolumn". When the functionality was added to
+%    \texttt{array.sty} the command was renamed "\newcolumntype".
+%    Initially both names were supported, but now (In versions of this
+%    package distributed for \LaTeXe) the old name is not defined.
+% \changes{v2.2a}{1994/02/03}{Now made `newcolumn an error}
+% \changes{v2.2a}{1994/02/04}{Removed `newcolumn}
+%    \begin{macrocode}
+%<*ncols>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\newcolumntype}
+% \changes{v2.1b}{1992/06/07}{Macro renamed from `newcolumn} As
+% described above, the "\newcolumntype" macro gives users the chance
+% to define letters, to be used in the same way as the primitive
+% column specifiers, `c' `p' etc.
+%    \begin{macrocode}
+\def\newcolumntype#1{%
+%    \end{macrocode}
+% "\NC@char" was added in V2.01 so that active characters, like "@" in
+% AMS\LaTeX\ may be used. This trick was stolen from \texttt{array.sty}
+% 2.0h. Note that we need to use the possibly active token,
+% "#1", in several places, as that is the token that actually
+% appears in the preamble argument.
+%    \begin{macrocode}
+  \edef\NC@char{\string#1}%
+%    \end{macrocode}
+% First we check whether there is already a definition for this column.
+% Unlike "\newcommand" we give a warning rather than an error if it is
+% defined. If it is a new column, add "\NC@do" \meta{column} to
+% the list "\NC@list".
+%    \begin{macrocode}
+  \@ifundefined{NC@find@\NC@char}%
+    {\@tfor\next:=<>clrmbp@!|\do{\if\noexpand\next\NC@char
+        \PackageWarning{array}%
+                       {Redefining primitive column \NC@char}\fi}%
+     \NC@list\expandafter{\the\NC@list\NC@do#1}}%
+    {\PackageWarning{array}{Column \NC@char\space is already defined}}%
+%    \end{macrocode}
+% Now we define a macro with an argument delimited by the new column
+% specifier, this is used to find occurrences of this specifier in the
+% user preamble.
+%    \begin{macrocode}
+  \@namedef{NC@find@\NC@char}##1#1{\NC@{##1}}%
+%    \end{macrocode}
+% If an optional argument was not given, give a default argument of 0.
+%    \begin{macrocode}
+  \@ifnextchar[{\newcol@{\NC@char}}{\newcol@{\NC@char}[0]}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\newcol@}
+% We can now define the macro which does the rewriting,
+% "\@reargdef" takes the same arguments as "\newcommand", but
+% does not check that the command is new. For a column, say `D' with
+% one argument, define a command "\NC@rewrite@D" with one
+% argument, which recursively calls "\NC@find" on the user preamble
+% after replacing the first token or group with the replacement text
+% specified in the "\newcolumntype" command. "\NC@find" will find the
+% next occurrence of `D' as it will be "\let" equal to
+% "\NC@find@D" by "\NC@do".
+%    \begin{macrocode}
+\def\newcol@#1[#2]#3{\expandafter\@reargdef
+     \csname NC@rewrite@#1\endcsname[#2]{\NC@find#3}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\NC@}
+% Having found an occurrence of the new column, save the preamble
+% before the column in "\@temptokena", then check to see if we
+% are at the end of the preamble. (A dummy occurrence of the column
+% specifier will be placed at the end of the preamble by "\NC@do".
+%    \begin{macrocode}
+\def\NC@#1{%
+  \@temptokena\expandafter{\the\@temptokena#1}\futurelet\next\NC@ifend}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\NC@ifend}
+% We can tell that we are at the end as "\NC@do" will place a "\relax"
+% after the dummy column.
+%    \begin{macrocode}
+\def\NC@ifend{%
+%    \end{macrocode}
+% If we are at the end, do nothing. (The whole preamble will now be in
+% "\@temptokena".)
+%    \begin{macrocode}
+  \ifx\next\relax
+%    \end{macrocode}
+% Otherwise set the flag "\if@tempswa", and rewrite the column.
+% "\expandafter" introduced 1n V2.01
+%    \begin{macrocode}
+    \else\@tempswatrue\expandafter\NC@rewrite\fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\NC@do}
+% If the user has specified `C' and `L' as new columns, the list of
+% rewrites (in the token register "\NC@list") will look like
+% "\NC@do *" "\NC@do C" "\NC@do L".
+% So we need to define "\NC@do" as a one argument macro which
+% initialises the rewriting of the specified column. Let us assume that
+% `C' is the argument.
+%    \begin{macrocode}
+\def\NC@do#1{%
+%    \end{macrocode}
+% First we let "\NC@rewrite" and "\NC@find" be
+% "\NC@rewrite@C" and "\NC@find@C" respectively.
+%    \begin{macrocode}
+  \expandafter\let\expandafter\NC@rewrite
+    \csname NC@rewrite@\string#1\endcsname
+  \expandafter\let\expandafter\NC@find
+    \csname NC@find@\string#1\endcsname
+%    \end{macrocode}
+% Clear the token register "\@temptokena" after putting the present
+% contents of the register in front of the token "\NC@find". At the
+% end we place the tokens `"C\relax"' which "\NC@ifend" will use
+% to detect the end of the user preamble.
+%    \begin{macrocode}
+  \expandafter\@temptokena\expandafter{\expandafter}%
+        \expandafter\NC@find\the\@temptokena#1\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\showcols}
+% This macro is useful for debugging "\newcolumntype" specifications,
+% it is the equivalent of the primitive "\show" command for macro
+% definitions.  All we need to do is locally redefine "\NC@do" to take
+% its argument (say `C') and then "\show" the (slightly modified)
+% definition of "\NC@rewrite@C". Actually as the the list always
+% starts off with "\NC@do *" and we do not want to print the
+% definition of the $*$-form, define "\NC@do" to throw away the first
+% item in the list, and then redefine itself to print the rest of the
+% definitions.
+%    \begin{macrocode}
+\def\showcols{{\def\NC@do##1{\let\NC@do\NC@show}\the\NC@list}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\NC@show}
+% If the column `C' is defined as above, then
+% "\show\NC@rewrite@C" would output\\
+% "\long macro: ->\NC@find >{$}c<{$}".
+% We want to strip the "long macro: ->" and the "\NC@find". So first we
+% use "\meaning" and then apply the macro "\NC@strip" to the tokens so
+% produced and then "\typeout" the required string.
+%    \begin{macrocode}
+\def\NC@show#1{%
+  \typeout{Column #1\expandafter\expandafter\expandafter\NC@strip
+  \expandafter\meaning\csname NC@rewrite@#1\endcsname\@@}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\NC@strip}
+% Delimit the arguments to "\NC@strip" with `\texttt{:}', `\texttt{->}',
+% a space, and "\@@" to pull out the required parts of the output from
+% "\meaning".
+%    \begin{macrocode}
+\def\NC@strip#1:#2->#3 #4\@@{#2 -> #4}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\NC@list}
+% Allocate the token register used for the rewrite list.
+%    \begin{macrocode}
+\newtoks\NC@list
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{The $*$--form}
+% We view the $*$-form as a slight generalisation of the system
+% described in the previous subsection. The idea is to define a $*$
+% column by a command of the form:
+% \begin{verbatim}
+% \newcolumntype{*}[2]{%
+%    \count@=#1\ifnum\count@>0
+%       \advance\count@ by -1 #2*{\count@}{#2}\fi}
+% \end{verbatim}
+% \begin{macro}{\NC@rewrite@*}\label{NC@rewrite@*}
+% \changes{v2.4b}{2005/08/23}{Fix occasional spurious space (PR/3755)}
+% This does not work however as "\newcolumntype" takes great care not
+% to expand anything in the preamble, and so the "\if" is never
+% expanded. "\newcolumntype" sets up various other parts of the
+% rewrite correctly though so we can define:
+%    \begin{macrocode}
+\newcolumntype{*}[2]{}
+%    \end{macrocode}
+% Now we must correct the definition of "\NC@rewrite@*". The
+% following is probably more efficient than a direct translation of
+% the idea sketched above, we do not need to put a $*$ in the preamble
+% and call the rewrite recursively, we can just put "#1" copies of
+% "#2" into "\@temptokena". (Nested $*$ forms will be expanded
+% when the whole rewrite list is expanded again, see "\@mkpream")
+%    \begin{macrocode}
+\long\@namedef{NC@rewrite@*}#1#2{%
+%    \end{macrocode}
+% Store the number.
+%    \begin{macrocode}
+  \count@#1\relax
+%    \end{macrocode}
+% Put "#1" copies of "#2" in the token register.
+%    \begin{macrocode}
+  \loop
+  \ifnum\count@>\z@
+  \advance\count@\m@ne
+  \@temptokena\expandafter{\the\@temptokena#2}%
+  \repeat
+%    \end{macrocode}
+% "\NC@do" will ensure that "\NC@find" is "\let" equal
+% to "\NC@find@*".
+%    \begin{macrocode}
+  \NC@find}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Modifications to internal macros of \texttt{array.sty}}
+%
+% \begin{macro}{\@xexpast}
+% \begin{macro}{\@xexnoop}
+%    These macros are used to expand $*$-forms in
+%    \texttt{array.sty}. "\let" them to "\relax" to save space.
+%    \begin{macrocode}
+\let\@xexpast\relax
+\let\@xexnoop\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\save@decl}
+% We do not assume that the token register is free, we add the new
+% declarations to the front of the register. This is to allow user
+% preambles of the form, ">{foo}>{bar}..". Users are not encouraged to
+% enter such expressions directly, but they may result from the
+% rewriting of "\newcolumntype"'s.
+%    \begin{macrocode}
+\def\save@decl{\toks \count@ = \expandafter\expandafter\expandafter
+                  {\expandafter\@nextchar\the\toks\count@}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@mkpream}
+%    The main modification to "\@mkpream" is to replace the call to
+%    "\@xexpast" (which expanded $*$-forms) by a loop which expands
+%    all "\newcolumntype" specifiers.
+%    \begin{macrocode}
+\def\@mkpream#1{\gdef\@preamble{}\@lastchclass 4 \@firstamptrue
+   \let\@sharp\relax \let\@startpbox\relax \let\@endpbox\relax
+%    \end{macrocode}
+%    Now we remove possible  $*$-forms and user-defined column
+%    specifiers in the user preamble by repeatedly executing the list
+%    "\NC@list" until the re-writes have no more effect. The
+%    expanded preamble will then be in the token register
+%    "\@temptokena". Actually we need to know at this point that
+%    this is not "\toks0".
+%    \begin{macrocode}
+   \@temptokena{#1}\@tempswatrue
+   \@whilesw\if@tempswa\fi{\@tempswafalse\the\NC@list}%
+%    \end{macrocode}
+%    Afterwards we initialize all registers and macros, that we need
+%    for the build-up of the preamble.
+%    \begin{macrocode}
+   \count@\m@ne
+   \let\the@toks\relax
+   \prepnext@tok
+%    \end{macrocode}
+% Having expanded all tokens defined using "\newcolumntype" (including
+% "*"), we evaluate the remaining tokens, which are saved in
+% "\@temptokena".  We use the \LaTeX--macro "\@tfor" to inspect each
+% token in turn.
+%    \begin{macrocode}
+   \expandafter \@tfor \expandafter \@nextchar
+    \expandafter :\expandafter =\the\@temptokena \do
+%    \end{macrocode}
+% "\@testpatch" does not take an argument since \texttt{array.sty} 2.0h.
+%    \begin{macrocode}
+   {\@testpach
+   \ifcase \@chclass \@classz \or \@classi \or \@classii
+     \or \save@decl \or \or \@classv \or \@classvi
+     \or \@classvii \or \@classviii
+%    \end{macrocode}
+%    In \texttt{newarray.sty} class 9 is equivalent to class 10.
+%    \begin{macrocode}
+     \or \@classx
+     \or \@classx \fi
+   \@lastchclass\@chclass}%
+   \ifcase\@lastchclass
+   \@acol \or
+   \or
+   \@acol \or
+   \@preamerr \thr@@ \or
+   \@preamerr \tw@ \@addtopreamble\@sharp \or
+   \or
+   \else  \@preamerr \@ne \fi
+   \def\the@toks{\the\toks}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@classix}
+%    \texttt{array.sty} does not allow repeated \texttt{>}
+%    declarations for the same column. This is allowed in
+%    \texttt{newarray.sty} as documented in the introduction. Removing
+%    the test for this case makes class 9 equivalent to class 10, and
+%    so this macro is redundant. It is "\let" to "\relax" to save
+%    space.
+%    \begin{macrocode}
+\let\@classix\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@classviii}
+%    In \texttt{newarray.sty} explicitly allow class 2, as repeated
+%    \texttt{<} expressions are accepted by this package.
+%    \begin{macrocode}
+\def\@classviii{\ifnum \@lastchclass >\z@\ifnum\@lastchclass=\tw@\else
+      \@preamerr 4\@chclass 6 \@classvi \fi\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@classv}
+% Class 5 is \texttt{@}-expressions (and is also called by class 1)
+% This macro was incorrect in Version~1. Now we do not expand the
+% "@"-expression, but instead explicitly replace an
+% "\extracolsep" command by an assignment to "\tabskip" by a
+% method similar to the "\newcolumntype" system described above.
+% "\d@llarbegin" "\d@llarend" were introduced in V2.01 to match
+% \texttt{array.sty} 2.0h.
+%    \begin{macrocode}
+\def\@classv{\save@decl
+   \expandafter\NC@ecs\@nextchar\extracolsep{}\extracolsep\@@@
+   \@addtopreamble{\d@llarbegin\the@toks\the\count@\relax\d@llarend}%
+   \prepnext@tok}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\NC@ecs}
+% Rewrite the first occurrence of "\extracolsep{1in}" to
+% "\tabskip1in\relax". As a side effect discard any tokens after a
+% second "\extracolsep", there is no point in the user entering two of
+% these commands anyway, so this is not really a restriction.
+%    \begin{macrocode}
+\def\NC@ecs#1\extracolsep#2#3\extracolsep#4\@@@{\def\@tempa{#2}%
+  \ifx\@tempa\@empty\else\toks\count@={#1\tabskip#2\relax#3}\fi}
+%</ncols>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Support for the \texttt{delarray.sty}}
+%
+% The \texttt{delarray.sty} package  extends the array syntax by
+% supporting the notation of delimiters. To this end we extend the
+% array parsing mechanism to include a hook which can be used by this
+% (or another) package to do some additional parsing.
+%
+% \begin{macro}{\@tabarray}
+%    This macro tests for an optional bracket and then calls up
+%    "\@@array" or "\@@array[c]" (as default).
+%    \begin{macrocode}
+%<*package>
+\def\@tabarray{\@ifnextchar[{\@@array}{\@@array[c]}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\@@array}
+%    This macro tests could then test an optional delimiter before the
+%    left brace of the main preamble argument. Here in the main package
+%    it simply is let to be "\@array".
+%    \begin{macrocode}
+\let\@@array\@array
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endarray}
+% \begin{macro}{\@arrayright}
+%    We have to declare the hook we put into "\@array" above.
+%    A similar hook `"\@arrayright"' will be inserted into the
+%    "\endarray" to gain control. Both defaults to empty.
+%    \begin{macrocode}
+\def\endarray{\crcr \egroup \egroup \@arrayright \gdef\@preamble{}}
+\let\@arrayleft\@empty
+\let\@arrayright\@empty
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Support for \texttt{\textbackslash firsthline} and
+%             \texttt{\textbackslash lasthline}}
+%
+% The Companion~\cite[p.137]{bk:GMS94} suggests two additional
+% commands to control the alignments in case of tabulars with
+% horizontal lines. They are now added to this package.
+%
+%  \begin{macro}{\extratabsurround}
+%    The extra space around a table when "\firsthline" or "\lasthline"
+%    are used.
+%    \begin{macrocode}
+\newlength{\extratabsurround}
+\setlength{\extratabsurround}{2pt}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\backup@length}
+%    This register will be used internally by "\firsthline" and
+%    "\lasthline".
+%    \begin{macrocode}
+\newlength{\backup@length}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\firsthline}
+% \changes{v2.3h}{1996/05/25}{Complete reimplementation}
+%    This code can probably be improved but for the moment it should
+%    serve.
+%
+%    We start by producing a single tabular row without any visible
+%    content that will produce the external reference point in case
+%    "[t]" is used.
+%    \begin{macrocode}
+\newcommand{\firsthline}{%
+  \multicolumn1c{%
+%    \end{macrocode}
+%    Within this row we calculate "\backup@length" to be the height
+%    plus depth of a standard line. In addition we have to add the
+%    width of the "\hline", something that was forgotten in the
+%    original definition.
+%    \begin{macrocode}
+    \global\backup@length\ht\@arstrutbox
+    \global\advance\backup@length\dp\@arstrutbox
+    \global\advance\backup@length\arrayrulewidth
+%    \end{macrocode}
+%    Finally we do want to make the height of this first line be a bit
+%    larger than usual, for this we place the standard array strut
+%    into it but raised by "\extratabsurround"
+%    \begin{macrocode}
+     \raise\extratabsurround\copy\@arstrutbox
+%    \end{macrocode}
+%    Having done all this we end the line and back up by the value of
+%    "\backup@length" and then finally place our "\hline". This should
+%    place the line exactly at the right place but keep the reference
+%    point of the whole tabular at the baseline of the first row.
+%    \begin{macrocode}
+    }\\[-\backup@length]\hline
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\lasthline}
+% \changes{v2.3h}{1996/05/25}{Complete reimplementation}
+%    For "\lasthline" the situation is even worse and I got it
+%    completely wrong initially.
+%
+%    The problem in this case is that if the optional argument "[b]"
+%    is used we do want the reference point of the tabular be at the
+%    baseline of the last row but at the same time do want the the
+%    depth of this last line increased by "\extratabsurround" without
+%    changing the placement "\hline".
+%
+%    We start by placing the rule followed by an invisible row.
+%    \begin{macrocode}
+\newcommand{\lasthline}{\hline\multicolumn1c{%
+%    \end{macrocode}
+%    We now calculate "\backup@length" to be the height and depth of
+%    two lines plus the width of the rule.
+%    \begin{macrocode}
+    \global\backup@length2\ht\@arstrutbox
+    \global\advance\backup@length2\dp\@arstrutbox
+    \global\advance\backup@length\arrayrulewidth
+%    \end{macrocode}
+%    This will bring us back to the baseline of the second last row:
+%    \begin{macrocode}
+    }\\[-\backup@length]%
+%    \end{macrocode}
+%    Thus if we now add another invisible row the reference point of
+%    that row will be at the baseline of the last row (and will be the
+%    reference for the whole tabular). Since this row is invisible we
+%    can enlarge its depth by the desired amount.
+%    \begin{macrocode}
+    \multicolumn1c{%
+       \lower\extratabsurround\copy\@arstrutbox
+       }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Getting the spacing around rules right}
+%
+%    Beside a larger functionality \texttt{array.sty} has one
+%    important difference to the standard \texttt{tabular} and
+%    \texttt{array} environments: horizontal and vertical rules make a
+%    table larger or wider, e.g., \verb=\doublerulesep= really denotes
+%    the space between two rules and isn't measured from the middle of
+%    the rules.
+%
+%  \begin{macro}{\@xhline}
+%    For vertical rules this is implemented by the definitions above,
+%    for horizontal rules we have to take out the backspace.
+% \changes{v2.3d}{1995/11/19}{fix space between double rules pr/1945}
+%    \begin{macrocode}
+\CheckCommand*\@xhline{\ifx\reserved@a\hline
+               \vskip\doublerulesep
+               \vskip-\arrayrulewidth
+             \fi
+      \ifnum0=`{\fi}}
+\renewcommand*\@xhline{\ifx\reserved@a\hline
+               \vskip\doublerulesep
+             \fi
+      \ifnum0=`{\fi}}
+%</package>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \PrintIndex
+% \PrintChanges
+%
+% \Finale
+%
+\endinput
+

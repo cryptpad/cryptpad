@@ -1,0 +1,124 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltlogos.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltlogos.dtx}
+             [1998/08/17 v1.1i LaTeX Kernel (Logos)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltlogos.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{40}
+%
+% \changes{v1.1a}{1994/05/16}{(ASAJ) Split from ltinit.dtx.}
+% \changes{v1.1b}{1994/05/18}{(ASAJ) Added the \TeX{} logo.}
+% \changes{v1.1b}{1994/05/18}{(ASAJ) Made the \LaTeXe{} logo use the
+%    text font `2' rather than the math font `2'.}
+% \changes{v1.1i}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+% \section{Logos}
+%
+% Various logos are defined here.
+%
+% \StopEventually{}
+%
+% \begin{macro}{\TeX}
+%    The \TeX{} logo, adjusted so that a full stop after the logo
+%    counts as ending a sentence.
+%    \begin{macrocode}
+%<*2ekernel>
+\def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\LaTeX}
+%    The \LaTeX{} logo.
+% \changes{LaTeX2e}{1993/11/24}{Macro changed}
+% \changes{v1.0o}{1994/05/11}{Use \cs{DeclareProtectedCommand}. ASAJ.}
+% \changes{v1.1d}{1994/06/01}
+%     {Add \cs{m@th} to force math size calculations}
+% \changes{v1.1e}{1994/07/20}{Save a few tokens}
+%
+% \changes{v1.1h}{1997/10/08}{Simplify macro (force loading of
+%    suitable math fonts once).}
+%    \begin{macrocode}
+\DeclareRobustCommand{\LaTeX}{L\kern-.36em%
+        {\sbox\z@ T%
+         \vbox to\ht\z@{\hbox{\check@mathfonts
+                              \fontsize\sf@size\z@
+                              \math@fontsfalse\selectfont
+                              A}%
+                        \vss}%
+        }%
+        \kern-.15em%
+        \TeX}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v1.1c}{1994/05/26}{Remove \cs{SLiTeX} logo}
+%
+%  \begin{macro}{\LaTeXe}
+%    The \LaTeXe\ logo as proposed by A-W designers.
+% \changes{LaTeX2e}{1993/11/22}{Macro added}
+% \changes{LaTeX2e}{1993/12/16}{Extended logo by DPC}
+% \changes{v1.0o}{1994/05/11}{Use \cs{DeclareProtectedCommand}. ASAJ.}
+% \changes{v1.1e}{1994/07/20}{Save a few tokens}
+% \changes{v1.1f}{1997/05/29}{Added \cs{m@th} so that the \LaTeXe{}
+%    logo works with non-zero values of \cs{mathsurround}.}
+%    \begin{macrocode}
+\DeclareRobustCommand{\LaTeXe}{\mbox{\m@th
+  \if b\expandafter\@car\f@series\@nil\boldmath\fi
+  \LaTeX\kern.15em2$_{\textstyle\varepsilon}$}}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \Finale
+%
+\endinput

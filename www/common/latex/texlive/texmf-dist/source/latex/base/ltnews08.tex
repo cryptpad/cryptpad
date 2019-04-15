@@ -1,0 +1,154 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews08.tex
+
+% This is issue 8 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]
+   {ltnews}
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{December}
+\publicationyear{1997}
+\publicationissue{8}
+
+\begin{document}
+
+\maketitle
+
+\section{New supported font encodings}
+
+Two new font encodings are supported as options to the \textsf{fontenc}
+package:
+\begin{description}
+\item [OT4]
+This is a seven-bit encoding designed for Polish. The \LaTeX\ support
+was developed by Mariusz Olko.
+\item [TS1] This is the `Text Companion Encoding'; it contains symbols
+designed to be used in text, as opposed to mathematical formulas, and
+some accents designed for uppercase letters.  It is currently
+supported by the `tc' fonts, which match the T1 encoded `ec' text
+fonts.  A subset of the glyphs in this encoding is supported by
+virtual fonts distributed with the PostScript font metrics on the
+\textsc{ctan} archives. (This is the `8c' encoding in Karl Berry's
+fontname scheme.)  The \textsf{textcomp} package provides access to
+this encoding but here is a warning to current users of that package:
+some of the internal names for the characters have changed.
+\end{description}
+
+
+\section{New input encodings}
+
+These additions to the \textsf{inputenc} package are
+\texttt{decmulti} (the DEC Multinational
+Character Set,  contributed by M.~Y.~Chartoire) 
+and \texttt{cp1250} (an MS-Windows encoding for Central and Eastern
+Europe, contributed by Marcin Woli\'nski).  There is also a
+\texttt{cp1252} encoding that is identical to \texttt{ansinew}.
+
+
+\section{Tools}
+
+The \textsf{calc} package (used in many examples in \emph{The \LaTeX\
+Companion}) has been contributed to this distribution by Kresten Krab
+Thorup and Frank Jensen. This is essentially the same as the version
+that has been available from the \textsc{ctan} archives for some time,
+with one minor change: to use \LaTeX-style error messages.  It enables
+the use of arithmetic expressions within arguments to standard
+\LaTeX{} commands where a length or a counter value is required.  For
+example:
+\begin{verbatim}
+  \setcounter {page} { \value{page} * 2 + 1 }
+  \parbox { 3in - ( 2mm + \textwidth / 9 ) }
+\end{verbatim}
+
+There have also been some improvements to several other packages in
+this collection.  In particular, \textsf{bm} now works correctly with
+constructions such as \verb|\bm{f'}| involving \texttt{'} or other
+characters which use \TeX's special ``\verb|\mathcode"8000|''
+feature.  Also, \textsf{multicol} sets the length \verb|\columnwidth|
+to an appropriate value; this enables it to work with classes that
+support two-column setting, e.g.,~the AMS classes.
+
+
+\section{Graphics}
+
+The special \verb|oztex.def| driver file has been removed, and Oz\TeX\
+support has been merged with dvips, following advice from
+Andrew Trevorrow about Oz\TeX~3.x.
+
+The \textsf{keyval} package has had some internal improvements: to
+use \LaTeX\ format error messages; and to avoid `\verb|#| doubling'.
+This latter change means that the \verb|command| key for the
+\textsf{graphicx} version of \verb|\includegraphics| should now be used
+with one \verb|#| rather than two. For example, \verb|command = `gunzip #1|.
+Fortunately this key is almost never used in practice, so few if any
+documents should be affected by this change.
+
+
+\section{\LaTeX3 experimental programming conventions}
+
+As announced at the \TeX\ Users Group meeting  (Summer 1997), a group of
+highly experimental packages will soon be released to allow experienced\\
+\TeX\ programmers to experiment with, and comment on, a proposed set
+of syntax conventions and basic data-types that might form
+the basis for programming large scale projects in \TeX.
+They will be located in\\
+this CTAN directory:
+\begin{verbatim}  
+  CTAN:macros/latex/packages/expl3
+\end{verbatim}
+The documentation of this material is as follows: individual package
+files provide outline, draft documentation; there is an article that
+gives an overview of the syntax and related concepts; there is a
+\texttt{readme.txt} file containing a brief description of the
+collection.
+
+All aspects of these packages are liable, indeed likely, to change.
+They should not be used at this stage for anything
+that requires a stable system.  However, we do encourage people to
+experiment with these packages, and to send comments on them to the
+\texttt{LaTeX-L} mailing list.
+To subscribe to this list, mail to:
+\begin{verbatim}
+  listserv@urz.uni-heidelberg.de
+\end{verbatim}
+the following one line message:
+\begin{verbatim}
+  subscribe LATEX-L <<first-name>> <<second-name>>
+\end{verbatim}
+
+% Revert to this if gets too full.
+% See \texttt{modguide.tex} for
+% information on how to subscribe to \texttt{LaTeX-L}.
+
+\end{document}
+

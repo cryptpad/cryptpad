@@ -1,0 +1,153 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews10.tex 12/01/1998
+
+% This is issue 10 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]
+   {ltnews}[1999/02/23]
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{December}
+\publicationyear{1998}
+\publicationissue{10}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Five years of \LaTeXe}
+
+Since this is the 10th edition of \LaTeX{} News, the (no longer) New
+Standard \LaTeX{} must have hit the streets almost this long ago.  In
+fact it was only the beta-version that some people got just in time for
+Christmas~1993, and since then there has been a lot of tidying-up and
+smoothing of rough edges (not to mention a few bug fixes!).
+
+Maybe it is time for something more radically different to emerge and
+be hungrily adopted by the world; but don't panic, we shall be
+maintaining what you have now for a long time yet.  Amongst the more
+polite things that have been written about our efforts, we found that this
+quote (somewhat censored to protect the guilty) well reflects some of
+our feelings about working on \LaTeX{} over the years: \textit{the mere
+existence of \LaTeXe{} is a great miracle}.
+
+  
+  \section{Restructuring the \LaTeX{} distribution}
+  
+  Since the (once) `new' standard \LaTeX{} has reached such a venerable
+  age, we are reviewing the way in which the system is presented to the
+  world.
+  
+  An early intention is to define, given the wide variety of good
+  packages now available, what now constitutes a useful installation of
+  \LaTeX{}. We also hope that such a definition will help document
+  portability if it leads to a future in which a \LaTeX{} class
+  designer can reasonably assume that a known list of
+  facilities will be there for all users (so that each class
+  need not supply them).
+  
+  As a first small step towards this definition, we shall replace the
+  \texttt{latex/packages} subdirectory on \ctan{}.
+  This directory was a curious mixture of the important, such as the
+  \LaTeX{} \texttt{tools}, that any self-respecting \LaTeX{}
+  installation ought to have, and the esoteric or experimental.
+
+  The esoterica from \texttt{packages} will be moved to 
+  new locations, as follows:
+  \begin{quote}
+    \texttt{expl3}  to \texttt{latex/exptl/project}\\
+    \texttt{mfnfss} to \texttt{latex/contrib/supported/mfnfss}
+  \end{quote}
+
+  The subdirectory that replaces \texttt{packages} will be called
+  \texttt{latex/required}; all the other sub-directories of
+  \texttt{packages} will be moved there.
+
+\vspace{17pt}
+\pagebreak
+
+ \section{\LaTeX\ Project on the Internet}
+A new \texttt{latex-project.org} domain has been registered.
+The web site is not yet fully functional but the old \LaTeX\ pages from 
+\ctan\ are available at \texttt{http://www.latex-project.org/} and the
+\LaTeX\ bug reporting address has been changed to
+\texttt{latex-bugs@latex-project.org}.
+
+  \section{Restructuring the \LaTeX{} package licenses}
+
+Several people have requested an easy mechanism for the distribution
+of \LaTeX\ packages and other software ``under the same conditions as
+\LaTeX''.  The old \texttt{legal.txt} file was unsuitable as a general
+licence as it referred to specific \LaTeX\ authors, and to specific
+files.
+
+Therefore, in this release \texttt{legal.txt} contains just the
+copyright notice and a reference to the new \emph{\LaTeX\ Project
+Public License} (LPPL) for the distribution and modification
+conditions. The \texttt{tools}, \texttt{graphics}, and \texttt{mfnfss}
+packages also now refer to this license in their distribution notices.
+
+  \section{Support for Cyrillic encodings}
+
+Basic Cyrillic support, as announced in \LaTeX{} News~9, is now
+finally an official part of \LaTeX{}.  It includes support for the
+following standard Cyrillic font encodings (this list may
+grow):~\mbox{\texttt{T2A T2B T2C X2}}.
+
+It also includes various Cyrillic input encodings (20~in total,
+including commonly used variants and Mongolian Cyrillic
+encodings). This provides platform independent and
+sophisticated basic support for high-quality typesetting in various
+Cyrillic-based languages.
+ 
+For further information see the file \texttt{cyrguide.tex}.
+
+\section{Tools distribution}
+
+The \texttt{varioref} package has been extended to support textual
+page references to a range of objects: e.g.,~if \texttt{eq-first}
+and \texttt{eq-last} are the label names for the first and last
+equation in a sequence, then you can now write
+\begin{verbatim}
+  see~\vrefrange{eq-first}{eq-last}
+\end{verbatim}
+This results in different text depending on whether both
+labels fall on the same page.
+
+Some additional user commands, as well as building-blocks for writing
+private extensions, are described in the accompanying documentation.
+
+
+
+\end{document}
+

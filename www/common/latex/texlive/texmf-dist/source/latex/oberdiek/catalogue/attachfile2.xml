@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='attachfile2'>
+  <name>attachfile2</name>
+  <caption>Attach files into PDF.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2005-2010,2012'/>
+  <license type='lppl1.3'/>
+  <version number='2.7'/>
+  <description>
+    This package can be used to attach files to a PDF document.
+    It is a further development of Scott Pakin&#x2019;s package
+    <xref refid='attachfile'>attachfile</xref> for
+    <xref refid='pdftex'>pdfTeX</xref>.  Apart from bug fixes,
+    this package adds support for dvips,
+    some new options, and gets and writes meta information data about
+    the attached files.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/attachfile2.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/attachfile2.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

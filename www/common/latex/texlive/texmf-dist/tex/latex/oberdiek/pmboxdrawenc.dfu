@@ -1,0 +1,174 @@
+%%
+%% This is file `pmboxdrawenc.dfu',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pmboxdraw.dtx  (with options: `utf8')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pmboxdraw
+%% Version: 2011/03/24 v1.1
+%% 
+%% Copyright (C) 2006, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pmboxdraw.dtx
+%% and the derived files
+%%    pmboxdraw.sty, pmboxdraw.pdf, pmboxdraw.ins, pmboxdraw.drv,
+%%    pmboxdrawenc.dfu, pmboxdraw-test1.tex.
+%% 
+\ProvidesFile{pmboxdrawenc.dfu}%
+  [2011/03/24 v1.1 UTF-8 support for box drawing characters]%
+\DeclareUnicodeCharacter{2500}{\textSFx}
+\DeclareUnicodeCharacter{2501}{\pmboxdrawuni{2501}}
+\DeclareUnicodeCharacter{2502}{\textSFxi}
+\DeclareUnicodeCharacter{2503}{\pmboxdrawuni{2503}}
+\DeclareUnicodeCharacter{250C}{\textSFi}
+\DeclareUnicodeCharacter{250D}{\pmboxdrawuni{250D}}
+\DeclareUnicodeCharacter{250E}{\pmboxdrawuni{250E}}
+\DeclareUnicodeCharacter{250F}{\pmboxdrawuni{250F}}
+\DeclareUnicodeCharacter{2510}{\textSFiii}
+\DeclareUnicodeCharacter{2511}{\pmboxdrawuni{2511}}
+\DeclareUnicodeCharacter{2512}{\pmboxdrawuni{2512}}
+\DeclareUnicodeCharacter{2513}{\pmboxdrawuni{2513}}
+\DeclareUnicodeCharacter{2514}{\textSFii}
+\DeclareUnicodeCharacter{2515}{\pmboxdrawuni{2515}}
+\DeclareUnicodeCharacter{2516}{\pmboxdrawuni{2516}}
+\DeclareUnicodeCharacter{2517}{\pmboxdrawuni{2517}}
+\DeclareUnicodeCharacter{2518}{\textSFiv}
+\DeclareUnicodeCharacter{2519}{\pmboxdrawuni{2519}}
+\DeclareUnicodeCharacter{251A}{\pmboxdrawuni{251A}}
+\DeclareUnicodeCharacter{251B}{\pmboxdrawuni{251B}}
+\DeclareUnicodeCharacter{251C}{\textSFviii}
+\DeclareUnicodeCharacter{251D}{\pmboxdrawuni{251D}}
+\DeclareUnicodeCharacter{251E}{\pmboxdrawuni{251E}}
+\DeclareUnicodeCharacter{251F}{\pmboxdrawuni{251F}}
+\DeclareUnicodeCharacter{2520}{\pmboxdrawuni{2520}}
+\DeclareUnicodeCharacter{2521}{\pmboxdrawuni{2521}}
+\DeclareUnicodeCharacter{2522}{\pmboxdrawuni{2522}}
+\DeclareUnicodeCharacter{2523}{\pmboxdrawuni{2523}}
+\DeclareUnicodeCharacter{2524}{\textSFix}
+\DeclareUnicodeCharacter{252C}{\textSFvi}
+\DeclareUnicodeCharacter{252D}{\pmboxdrawuni{252D}}
+\DeclareUnicodeCharacter{252E}{\pmboxdrawuni{252E}}
+\DeclareUnicodeCharacter{252F}{\pmboxdrawuni{252F}}
+\DeclareUnicodeCharacter{2530}{\pmboxdrawuni{2530}}
+\DeclareUnicodeCharacter{2531}{\pmboxdrawuni{2531}}
+\DeclareUnicodeCharacter{2532}{\pmboxdrawuni{2532}}
+\DeclareUnicodeCharacter{2533}{\pmboxdrawuni{2533}}
+\DeclareUnicodeCharacter{2534}{\textSFvii}
+\DeclareUnicodeCharacter{2535}{\pmboxdrawuni{2535}}
+\DeclareUnicodeCharacter{2536}{\pmboxdrawuni{2536}}
+\DeclareUnicodeCharacter{2537}{\pmboxdrawuni{2537}}
+\DeclareUnicodeCharacter{2538}{\pmboxdrawuni{2538}}
+\DeclareUnicodeCharacter{2539}{\pmboxdrawuni{2539}}
+\DeclareUnicodeCharacter{253A}{\pmboxdrawuni{253A}}
+\DeclareUnicodeCharacter{253B}{\pmboxdrawuni{253B}}
+\DeclareUnicodeCharacter{253C}{\textSFv}
+\DeclareUnicodeCharacter{253D}{\pmboxdrawuni{253D}}
+\DeclareUnicodeCharacter{253E}{\pmboxdrawuni{253E}}
+\DeclareUnicodeCharacter{253F}{\pmboxdrawuni{253F}}
+\DeclareUnicodeCharacter{2540}{\pmboxdrawuni{2540}}
+\DeclareUnicodeCharacter{2541}{\pmboxdrawuni{2541}}
+\DeclareUnicodeCharacter{2542}{\pmboxdrawuni{2542}}
+\DeclareUnicodeCharacter{2543}{\pmboxdrawuni{2543}}
+\DeclareUnicodeCharacter{2544}{\pmboxdrawuni{2544}}
+\DeclareUnicodeCharacter{2545}{\pmboxdrawuni{2545}}
+\DeclareUnicodeCharacter{2546}{\pmboxdrawuni{2546}}
+\DeclareUnicodeCharacter{2547}{\pmboxdrawuni{2547}}
+\DeclareUnicodeCharacter{2548}{\pmboxdrawuni{2548}}
+\DeclareUnicodeCharacter{2549}{\pmboxdrawuni{2549}}
+\DeclareUnicodeCharacter{254A}{\pmboxdrawuni{254A}}
+\DeclareUnicodeCharacter{254B}{\pmboxdrawuni{254B}}
+\DeclareUnicodeCharacter{2550}{\textSFxliii}
+\DeclareUnicodeCharacter{2551}{\textSFxxiv}
+\DeclareUnicodeCharacter{2552}{\textSFli}
+\DeclareUnicodeCharacter{2553}{\textSFlii}
+\DeclareUnicodeCharacter{2554}{\textSFxxxix}
+\DeclareUnicodeCharacter{2555}{\textSFxxii}
+\DeclareUnicodeCharacter{2556}{\textSFxxi}
+\DeclareUnicodeCharacter{2557}{\textSFxxv}
+\DeclareUnicodeCharacter{2558}{\textSFl}
+\DeclareUnicodeCharacter{2559}{\textSFxlix}
+\DeclareUnicodeCharacter{255A}{\textSFxxxviii}
+\DeclareUnicodeCharacter{255B}{\textSFxxviii}
+\DeclareUnicodeCharacter{255C}{\textSFxxvii}
+\DeclareUnicodeCharacter{255D}{\textSFxxvi}
+\DeclareUnicodeCharacter{255E}{\textSFxxxvi}
+\DeclareUnicodeCharacter{255F}{\textSFxxxvii}
+\DeclareUnicodeCharacter{2560}{\textSFxlii}
+\DeclareUnicodeCharacter{2561}{\textSFxix}
+\DeclareUnicodeCharacter{2562}{\textSFxx}
+\DeclareUnicodeCharacter{2563}{\textSFxxiii}
+\DeclareUnicodeCharacter{2564}{\textSFxlvii}
+\DeclareUnicodeCharacter{2565}{\textSFxlviii}
+\DeclareUnicodeCharacter{2566}{\textSFxli}
+\DeclareUnicodeCharacter{2567}{\textSFxlv}
+\DeclareUnicodeCharacter{2568}{\textSFxlvi}
+\DeclareUnicodeCharacter{2569}{\textSFxl}
+\DeclareUnicodeCharacter{256A}{\textSFliv}
+\DeclareUnicodeCharacter{256B}{\textSFliii}
+\DeclareUnicodeCharacter{256C}{\textSFxliv}
+\DeclareUnicodeCharacter{2574}{\pmboxdrawuni{2574}}
+\DeclareUnicodeCharacter{2575}{\pmboxdrawuni{2575}}
+\DeclareUnicodeCharacter{2576}{\pmboxdrawuni{2576}}
+\DeclareUnicodeCharacter{2577}{\pmboxdrawuni{2577}}
+\DeclareUnicodeCharacter{2578}{\pmboxdrawuni{2578}}
+\DeclareUnicodeCharacter{2579}{\pmboxdrawuni{2579}}
+\DeclareUnicodeCharacter{257A}{\pmboxdrawuni{257A}}
+\DeclareUnicodeCharacter{257B}{\pmboxdrawuni{257B}}
+\DeclareUnicodeCharacter{257C}{\pmboxdrawuni{257C}}
+\DeclareUnicodeCharacter{257D}{\pmboxdrawuni{257D}}
+\DeclareUnicodeCharacter{257E}{\pmboxdrawuni{257E}}
+\DeclareUnicodeCharacter{257F}{\pmboxdrawuni{257R}}
+\DeclareUnicodeCharacter{2580}{\textupblock}
+\DeclareUnicodeCharacter{2581}{\pmboxdrawuni{2581}}
+\DeclareUnicodeCharacter{2582}{\pmboxdrawuni{2582}}
+\DeclareUnicodeCharacter{2583}{\pmboxdrawuni{2583}}
+\DeclareUnicodeCharacter{2584}{\textdnblock}
+\DeclareUnicodeCharacter{2585}{\pmboxdrawuni{2585}}
+\DeclareUnicodeCharacter{2586}{\pmboxdrawuni{2586}}
+\DeclareUnicodeCharacter{2587}{\pmboxdrawuni{2587}}
+\DeclareUnicodeCharacter{2588}{\textblock}
+\DeclareUnicodeCharacter{2589}{\pmboxdrawuni{2589}}
+\DeclareUnicodeCharacter{258A}{\pmboxdrawuni{258A}}
+\DeclareUnicodeCharacter{258B}{\pmboxdrawuni{258B}}
+\DeclareUnicodeCharacter{258C}{\textlfblock}
+\DeclareUnicodeCharacter{258D}{\pmboxdrawuni{258D}}
+\DeclareUnicodeCharacter{258E}{\pmboxdrawuni{258E}}
+\DeclareUnicodeCharacter{258F}{\pmboxdrawuni{258F}}
+\DeclareUnicodeCharacter{2590}{\textrtblock}
+\DeclareUnicodeCharacter{2591}{\textltshade}
+\DeclareUnicodeCharacter{2592}{\textshade}
+\DeclareUnicodeCharacter{2593}{\textdkshade}
+\DeclareUnicodeCharacter{2594}{\pmboxdrawuni{2594}}
+\DeclareUnicodeCharacter{2595}{\pmboxdrawuni{2595}}
+\DeclareUnicodeCharacter{2596}{\pmboxdrawuni{2596}}
+\DeclareUnicodeCharacter{2597}{\pmboxdrawuni{2597}}
+\DeclareUnicodeCharacter{2598}{\pmboxdrawuni{2598}}
+\DeclareUnicodeCharacter{2599}{\pmboxdrawuni{2599}}
+\DeclareUnicodeCharacter{259A}{\pmboxdrawuni{259A}}
+\DeclareUnicodeCharacter{259B}{\pmboxdrawuni{259B}}
+\DeclareUnicodeCharacter{259C}{\pmboxdrawuni{259C}}
+\DeclareUnicodeCharacter{259D}{\pmboxdrawuni{259D}}
+\DeclareUnicodeCharacter{259E}{\pmboxdrawuni{259E}}
+\DeclareUnicodeCharacter{259F}{\pmboxdrawuni{259F}}
+\endinput
+%%
+%% End of file `pmboxdrawenc.dfu'.

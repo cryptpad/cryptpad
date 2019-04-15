@@ -1,0 +1,1148 @@
+% \iffalse meta-comment
+%
+% File: catchfile.dtx
+% Version: 2011/03/01 v1.6
+% Info: Catch the contents of a file
+%
+% Copyright (C) 2007, 2010, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file catchfile.dtx
+% and the derived files
+%    catchfile.sty, catchfile.pdf, catchfile.ins, catchfile.drv,
+%    catchfile-test1.tex, catchfile-test2.tex,
+%    catchfile-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/catchfile.dtx
+%    CTAN:macros/latex/contrib/oberdiek/catchfile.pdf
+%
+% Unpacking:
+%    (a) If catchfile.ins is present:
+%           tex catchfile.ins
+%    (b) Without catchfile.ins:
+%           tex catchfile.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{catchfile.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If catchfile.drv is present:
+%           latex catchfile.drv
+%    (b) Without catchfile.drv:
+%           latex catchfile.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex catchfile.dtx
+%       makeindex -s gind.ist catchfile.idx
+%       pdflatex catchfile.dtx
+%       makeindex -s gind.ist catchfile.idx
+%       pdflatex catchfile.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/catchfile.sty
+%    TDS:doc/latex/oberdiek/catchfile.pdf
+%    TDS:doc/latex/oberdiek/test/catchfile-test1.tex
+%    TDS:doc/latex/oberdiek/test/catchfile-test2.tex
+%    TDS:doc/latex/oberdiek/test/catchfile-test3.tex
+%    TDS:source/latex/oberdiek/catchfile.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: catchfile 2011/03/01 v1.6 Catch the contents of a file (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: catchfile
+Version: 2011/03/01 v1.6
+
+Copyright (C) 2007, 2010, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file catchfile.dtx
+and the derived files
+   catchfile.sty, catchfile.pdf, catchfile.ins, catchfile.drv,
+   catchfile-test1.tex, catchfile-test2.tex,
+   catchfile-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{catchfile.ins}{\from{catchfile.dtx}{install}}%
+  \file{catchfile.drv}{\from{catchfile.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{catchfile.sty}{\from{catchfile.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{catchfile-test1.tex}{\from{catchfile.dtx}{test1}}%
+  \file{catchfile-test2.tex}{\from{catchfile.dtx}{test2}}%
+  \file{catchfile-test3.tex}{\from{catchfile.dtx}{test3}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{catchfile.xml}{\from{catchfile.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     catchfile.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `catchfile.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{catchfile.drv}%
+  [2011/03/01 v1.6 Catch the contents of a file (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{catchfile.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{907}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{catchfile.drv}
+%
+% \title{The \xpackage{catchfile} package}
+% \date{2011/03/01 v1.6}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package catches the contents of a file and puts it in a macro.
+% It requires \eTeX. Both \LaTeX\ and \plainTeX\ are supported.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% The package relies on \eTeX's \cs{everyeof}. Otherwise it
+% aborts with an error message.
+%
+% \begin{declcs}{CatchFileDef} \M{cmd} \M{file name} \M{setup}\\
+% \cs{CatchFileEdef} \M{cmd} \M{file name} \M{setup}
+% \end{declcs}
+% Macro \meta{cmd} is defined with the contents
+% of file \meta{file name}.
+% \cs{CatchFileDef} uses \cs{def}, \cs{CatchFileEdef} \cs{edef}
+% for the definition.
+% Additional setup code for setting
+% catcodes or treatment of line ends can be given in code
+% \meta{setup}. See the test files for an example.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@catchfile.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{catchfile}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@catchfile.sty\endcsname
+\ProvidesPackage{catchfile}%
+  [2011/03/01 v1.6 Catch the contents of a file (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname CatchFile@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\CatchFile@AtEnd{%
+    \CatchFile@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\CatchFile@AtEnd{\CatchFile@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Preparations}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input ltxcmds.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{ltxcmds}[2010/03/09]%
+\fi
+%    \end{macrocode}
+%
+%    Check for \eTeX's \cs{everyeof}.
+%    \begin{macrocode}
+\begingroup
+  \escapechar=92\relax
+  \edef\TestString{\string\everyeof}%
+  \edef\TestMeaning{\meaning\everyeof}%
+  \ifx\TestString\TestMeaning
+  \else
+    \@PackageError{catchfile}{%
+      Cannot find e-TeX's \string\everyeof,\MessageBreak
+      package loading is aborted%
+    }\@ehd
+    \endgroup
+    \expandafter\CatchFile@AtEnd
+  \fi%
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Looking for primitive \cs{input}}
+%
+%    \begin{macro}{\CatchFile@Input}
+%    The package needs the expandable primitive \cs{input}.
+%    However there are formats that redefine it. For example,
+%    \LaTeX's \cs{input} is not expandable, but it stores
+%    the primitive in \cs{@@input}. The third possibility
+%    is \cs{pdfprimitive}, introduced in \pdfTeX\ 1.40.0.
+%
+%    Thus we try to find the primitive and store it in
+%    \cs{CatchFile@Input}. If it is used, it must be expanded
+%    twice (because of the solution with \cs{pdfprimitive}).
+%    \begin{macrocode}
+\begingroup
+  \def\Check#1#2#3#4\endgroup{%
+    \edef\TestString{\string#1}%
+    \edef\TestMeaning{\meaning#2}%
+    \ifx\TestString\TestMeaning
+      \endgroup
+      \let\CatchFile@Primitive#2%
+      \def\CatchFile@Input{\CatchFile@Primitive#3}%
+    \else
+      #4\endgroup
+    \fi
+  }%
+  \Check\input\input{}%
+  \Check\input\@@input{}%
+  \Check\pdfprimitive\pdfprimitive\input
+  \@PackageError{%
+    Cannot find primitive \string\input,\MessageBreak
+    package loading is aborted%
+  }\@ehd
+  \csname endgroup\endcsname
+  \CatchFile@AtEnd%
+\endgroup
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Input file check}
+%
+%    \begin{macro}{\CatchFile@CheckFileExists}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname IfFileExists\endcsname\relax
+  \input pdftexcmds.sty\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@filesize\endcsname\relax
+    \def\CatchFile@CheckFileExists#1{%
+      \expandafter\ifx\csname @inputcheck\endcsname\relax
+        \csname newread\endcsname\@inputcheck
+      \fi
+      \openin\@inputcheck#1\relax
+      \expandafter\closein\expandafter\@inputcheck
+      \ifeof\@inputcheck
+        \let\CatchFile@File\relax
+      \else
+        \def\CatchFile@File{#1}%
+      \fi
+    }%
+  \else
+    \def\CatchFile@CheckFileExists#1{%
+      \expandafter\expandafter\expandafter\ifx
+      \expandafter\expandafter\expandafter\relax\pdf@filesize{#1}\relax
+        \let\CatchFile@File\relax
+      \else
+        \def\CatchFile@File{#1}%
+      \fi
+    }%
+  \fi
+\else
+  \def\CatchFile@CheckFileExists#1{%
+    \IfFileExists{#1}{%
+      \expandafter\CatchFile@DefFile\@filef@und\@nil
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname @addtofilelist\endcsname\relax
+      \else
+        \@addtofilelist\CatchFile@File
+      \fi
+    }{%
+      \let\CatchFile@File\relax
+    }%
+  }%
+  \def\CatchFile@DefFile#1 \@nil{%
+    \def\CatchFile@File{#1}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\CatchFile@NotFound}
+%    \begin{macrocode}
+\def\CatchFile@NotFound#1#2{%
+  \def#1{}%
+  \@PackageError{catchfile}{%
+    File `#2' not found%
+  }\@ehc
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Catch file contents}
+%
+%    \begin{macrocode}
+\ltx@IfUndefined{RequirePackage}{%
+  \input etexcmds.sty\relax
+}{%
+  \RequirePackage{etexcmds}[2010/01/28]%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\CatchFileEdef}
+%    \begin{macrocode}
+\long\def\CatchFileEdef#1#2#3{%
+  \CatchFile@CheckFileExists{#2}%
+  \ifx\CatchFile@File\relax
+    \CatchFile@NotFound{#1}{#2}%
+  \else
+    \begingroup
+      \everyeof{\noexpand}%
+      #3%
+      \xdef\CatchFile@Contents{\CatchFile@Input\CatchFile@File\space}%
+    \endgroup
+    \let#1\CatchFile@Contents
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\CatchFileDef}
+%    \begin{macrocode}
+\long\def\CatchFileDef#1#2#3{%
+  \CatchFile@CheckFileExists{#2}%
+  \ifx\CatchFile@File\relax
+    \CatchFile@NotFound{#1}{#2}%
+  \else
+    \begingroup
+      \everyeof\expandafter{%
+        \CatchFile@EOF
+        \expandafter\CatchFile@Finish
+        \noexpand
+      }%
+      \ltx@ifundefined{etex@unexpanded}{%
+        \expandafter\long\expandafter\def\expandafter\CatchFile@Do
+            \expandafter##\expandafter1\CatchFile@EOF{%
+          \toks\ltx@zero{##1}%
+          \xdef\CatchFile@gtemp{\the\toks\ltx@zero}%
+          \def\CatchFile@Finish{%
+            \endgroup
+            \let#1\CatchFile@gtemp
+            \global\let\CatchFile@gtemp\ltx@undefined
+          }%
+        }%
+      }{%
+        \expandafter\long\expandafter\def\expandafter\CatchFile@Do
+            \expandafter##\expandafter1\CatchFile@EOF{%
+          \edef\CatchFile@Finish{%
+            \endgroup
+            \etex@unexpanded{%
+              \edef#1{\etex@unexpanded{##1}}%
+            }%
+          }%
+        }%
+      }%
+      #3\relax
+    \expandafter\expandafter\expandafter\CatchFile@Do
+    \CatchFile@Input\CatchFile@File\relax
+  \fi
+}
+%    \end{macrocode}
+%    \cs{relax} after |#3| was added to make it more robust in
+%    case the user uses something like
+%\begin{verbatim}
+%\CatchFileDef{\content}{\jobname.tt}{\endlinechar=-1}
+%\end{verbatim}
+%    that expands the following \cs{expandafter} after |#3| prematurely
+%    (contribution of Martin Scharrer).
+%    \end{macro}
+%    \begin{macro}{\CatchFile@EOF}
+%    If the file is read the catcode mappings are fixed.
+%    This means that the same character cannot occur
+%    inside the file with different catcodes.
+%    Thus we use as end of file marker the at sign
+%    twice with different catcodes.
+%    \begin{macrocode}
+\begingroup
+  \lccode65=64 % lowercase('A') = '@'
+  \lccode66=64 % lowercase('B') = '@'
+  \catcode65=8 % catcode('A') = subscript
+  \catcode66=3 % catcode('B') = math shift
+\lowercase{\endgroup
+  \def\CatchFile@EOF{AB}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\CatchFile@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input catchfile.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{\LaTeX}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\listfiles
+\tracingnesting=2 %
+\documentclass{minimal}
+\usepackage{catchfile}[2011/03/01]
+\makeatletter
+\def\mysetup{%
+  \let\do\@makeother
+  \dospecials
+}
+\def\CheckContents{%
+  \begingroup
+    \expandafter\ifx\csname contents\endcsname\relax
+      \PackageError{TEST}{\string\contents\space is not defined}\@ehc
+    \fi
+  \endgroup
+}
+\def\StartDisableUnexpanded{%
+  \begingroup
+    \let\etex@unexpanded\@undefined
+}
+\def\StopDisableUnexpanded{%
+  \endgroup
+}
+\def\CheckCleanup{%
+  \begingroup
+    \edef\x{\the\toks0}%
+    \def\y{ABC}%
+    \ifx\x\y
+    \else
+      \PackageError{TEST}{\string\toks0 has changed}\@ehc
+    \fi
+    \ifx\CatchFile@gtemp\@undefined
+    \else
+      \PackageError{TEST}{Left over \string\CatchFile@gtemp}\@ehc
+    \fi
+  \endgroup
+}
+\def\Check{%
+  \CheckContents
+  \CheckCleanup
+}
+\makeatother
+\begin{document}
+\toks0{ABC}
+
+\CatchFileDef\contents{catchfile.sty}\mysetup
+\typeout{\meaning\contents}
+\Check
+\typeout{***********************************************************}%
+\CatchFileDef\contents{catchfile.sty}{}
+\typeout{\meaning\contents}
+\Check
+\typeout{***********************************************************}%
+
+\StartDisableUnexpanded
+\CatchFileDef\contents{catchfile.sty}\mysetup
+\typeout{\meaning\contents}
+\Check
+\typeout{***********************************************************}%
+\CatchFileDef\contents{catchfile.sty}{}
+\typeout{\meaning\contents}
+\Check
+\typeout{***********************************************************}%
+\StopDisableUnexpanded
+
+\CatchFileEdef\contents{catchfile.sty}{%
+  \mysetup
+  \def\par{^^J}%
+  \obeylines
+}
+\typeout{\contents}
+\Check
+\typeout{***********************************************************}%
+\CatchFileEdef\contents{catchfile.sty}{%
+  \catcode`\\=12 %
+  \catcode`\#=12 %
+  \def\par{^^J}%
+  \obeylines
+}
+\typeout{\contents}
+\Check
+\typeout{***********************************************************}%
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \subsection{\plainTeX}
+%
+%    \begin{macrocode}
+%<*test3>
+\def\msg#{\immediate\write16}
+\newlinechar=10 %
+\tracingnesting=2 %
+\input catchfile.sty\relax
+
+\def\mysetup{%
+  \def\do##1{%
+    \catcode`##1=12\relax
+  }%
+  \dospecials
+}
+\def\CheckContents{%
+  \begingroup
+    \expandafter\ifx\csname contents\endcsname\relax
+      \def\space{ }%
+      \errmessage{\string\contents\space is not defined.}%
+    \fi
+  \endgroup
+}
+\catcode`\@=11 %
+\def\CheckCleanup{%
+  \begingroup
+    \edef\x{\the\toks0}%
+    \def\y{ABC}%
+    \ifx\x\y
+    \else
+      \errmessage{\string\toks0 has changed}%
+    \fi
+    \ifx\CatchFile@gtemp\@undefined
+    \else
+      \errmessage{Left over \string\CatchFile@gtemp}%
+    \fi
+  \endgroup
+}
+\def\Check{%
+  \CheckContents
+  \CheckCleanup
+}
+\def\StartDisableUnexpanded{%
+  \begingroup
+    \let\etex@unexpanded\@undefined
+}
+\def\StopDisableUnexpanded{%
+  \endgroup
+}
+\catcode`\@=12 %
+
+\toks0{ABC}
+
+\CatchFileDef\contents{catchfile.sty}\mysetup
+\msg{\meaning\contents}
+\Check
+\msg{***********************************************************}%
+\CatchFileDef\contents{catchfile.sty}{}
+\msg{\meaning\contents}
+\Check
+\msg{***********************************************************}%
+
+\StartDisableUnexpanded
+\CatchFileDef\contents{catchfile.sty}\mysetup
+\msg{\meaning\contents}
+\Check
+\msg{***********************************************************}%
+\CatchFileDef\contents{catchfile.sty}{}
+\msg{\meaning\contents}
+\Check
+\msg{***********************************************************}%
+\StopDisableUnexpanded
+
+\CatchFileEdef\contents{catchfile.sty}{%
+  \mysetup
+  \def\par{^^J}%
+  \obeylines
+}
+\msg{\contents}
+\Check
+\msg{***********************************************************}%
+\CatchFileEdef\contents{catchfile.sty}{%
+  \catcode`\\=12 %
+  \catcode`\#=12 %
+  \def\par{^^J}%
+  \obeylines
+}
+\msg{\contents}
+\Check
+\msg{***********************************************************}%
+
+\csname @@end\endcsname
+\end
+%</test3>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/catchfile.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/catchfile.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex catchfile.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   catchfile.sty & tex/generic/oberdiek/catchfile.sty\\
+%   catchfile.pdf & doc/latex/oberdiek/catchfile.pdf\\
+%   test/catchfile-test1.tex & doc/latex/oberdiek/test/catchfile-test1.tex\\
+%   test/catchfile-test2.tex & doc/latex/oberdiek/test/catchfile-test2.tex\\
+%   test/catchfile-test3.tex & doc/latex/oberdiek/test/catchfile-test3.tex\\
+%   catchfile.dtx & source/latex/oberdiek/catchfile.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk catchfile.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{catchfile.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex catchfile.dtx
+%makeindex -s gind.ist catchfile.idx
+%pdflatex catchfile.dtx
+%makeindex -s gind.ist catchfile.idx
+%pdflatex catchfile.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{catchfile.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='catchfile'>
+  <name>catchfile</name>
+  <caption>Catch an external file into a macro.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.6'/>
+  <description>
+    This package catches the contents of a file and puts it in a macro.
+    It requires <xref refid='etex'>e-TeX</xref>. Both
+    <xref refid='latex'>LaTeX</xref> and
+    <xref refid='plain'>plain TeX</xref> are supported.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/catchfile.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/catchfile.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/05/30 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.1}
+%   \item
+%     Catcode section rewritten.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.2}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.3}
+%   \item
+%     Fix for unknown \cs{@PackageErrorNoLine}.
+%   \end{Version}
+%   \begin{Version}{2010/04/08 v1.4}
+%   \item
+%     \cs{closein} also added if \cs{ifeof} is true.
+%   \end{Version}
+%   \begin{Version}{2010/04/28 v1.5}
+%   \item
+%     \cs{CatchFileDef}: Getting rid of warning `end of semi simple group
+%     entered at line \dots\ of
+%     a different file (Florent Chervet).
+%   \item
+%     \cs{CatchFileDef}: Fix for error `Illegal parameter number in
+%     definition of \dots' (HO) including improvement that uses
+%     \cs{unexpanded} if available (Florent Chervet).
+%   \end{Version}
+%   \begin{Version}{2011/03/01 v1.6}
+%   \item
+%     \cs{relax} added after the setup argument of
+%     \cs{CatchFileDef} to prevent premature file reading
+%     (Martin Scharrer).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

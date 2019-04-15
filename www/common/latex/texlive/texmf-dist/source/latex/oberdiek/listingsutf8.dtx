@@ -1,0 +1,850 @@
+% \iffalse meta-comment
+%
+% File: listingsutf8.dtx
+% Version: 2011/11/10 v1.2
+% Info: Allow UTF-8 in listings input
+%
+% Copyright (C) 2007, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file listingsutf8.dtx
+% and the derived files
+%    listingsutf8.sty, listingsutf8.pdf, listingsutf8.ins, listingsutf8.drv,
+%    listingsutf8-test1.tex, listingsutf8-test2.tex,
+%    listingsutf8-test3.tex, listingsutf8-test4.tex,
+%    listingsutf8-test5.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/listingsutf8.dtx
+%    CTAN:macros/latex/contrib/oberdiek/listingsutf8.pdf
+%
+% Unpacking:
+%    (a) If listingsutf8.ins is present:
+%           tex listingsutf8.ins
+%    (b) Without listingsutf8.ins:
+%           tex listingsutf8.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{listingsutf8.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If listingsutf8.drv is present:
+%           latex listingsutf8.drv
+%    (b) Without listingsutf8.drv:
+%           latex listingsutf8.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex listingsutf8.dtx
+%       makeindex -s gind.ist listingsutf8.idx
+%       pdflatex listingsutf8.dtx
+%       makeindex -s gind.ist listingsutf8.idx
+%       pdflatex listingsutf8.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/listingsutf8.sty
+%    TDS:doc/latex/oberdiek/listingsutf8.pdf
+%    TDS:doc/latex/oberdiek/test/listingsutf8-test1.tex
+%    TDS:doc/latex/oberdiek/test/listingsutf8-test2.tex
+%    TDS:doc/latex/oberdiek/test/listingsutf8-test3.tex
+%    TDS:doc/latex/oberdiek/test/listingsutf8-test4.tex
+%    TDS:doc/latex/oberdiek/test/listingsutf8-test5.tex
+%    TDS:source/latex/oberdiek/listingsutf8.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: listingsutf8 2011/11/10 v1.2 Allow UTF-8 in listings input (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: listingsutf8
+Version: 2011/11/10 v1.2
+
+Copyright (C) 2007, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file listingsutf8.dtx
+and the derived files
+   listingsutf8.sty, listingsutf8.pdf, listingsutf8.ins, listingsutf8.drv,
+   listingsutf8-test1.tex, listingsutf8-test2.tex,
+   listingsutf8-test3.tex, listingsutf8-test4.tex,
+   listingsutf8-test5.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{listingsutf8.ins}{\from{listingsutf8.dtx}{install}}%
+  \file{listingsutf8.drv}{\from{listingsutf8.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{listingsutf8.sty}{\from{listingsutf8.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{listingsutf8-test1.tex}{\from{listingsutf8.dtx}{test1}}%
+  \file{listingsutf8-test2.tex}{\from{listingsutf8.dtx}{test2,utf8}}%
+  \file{listingsutf8-test3.tex}{\from{listingsutf8.dtx}{test3,utf8x}}%
+  \file{listingsutf8-test4.tex}{\from{listingsutf8.dtx}{test4,utf8,noetex}}%
+  \file{listingsutf8-test5.tex}{\from{listingsutf8.dtx}{test5,utf8x,noetex}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{listingsutf8.xml}{\from{listingsutf8.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     listingsutf8.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `listingsutf8.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{listingsutf8.drv}%
+  [2011/11/10 v1.2 Allow UTF-8 in listings input (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{listingsutf8.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{311}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{listingsutf8.drv}
+%
+% \title{The \xpackage{listingsutf8} package}
+% \date{2011/11/10 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{listings} does not support files with multi-byte
+% encodings such as UTF-8. In case of \cs{lstinputlisting} a simple
+% workaround is possible if an one-byte encoding exists that the file
+% can be converted to. Also \eTeX\ and \pdfTeX\ regardless of its mode
+% are required.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{User interface}
+%
+% Load this package after or instead of package \xpackage{listings}
+% \cite{listings}.
+% The package does not define own options and passes given options to
+% package \xpackage{listings}.
+%
+% The syntax of package \xpackage{listings}' key \xoption{inputencoding}
+% is extended:
+% \begin{quote}
+%   |inputencoding=utf8/|\meta{one-byte-encoding}\\
+%   Example: |inputencoding=utf8/latin1|
+% \end{quote}
+% That means the file is encoded in UTF-8 and can
+% be converted to the given \meta{one-byte-encoding}.
+% The available encodings for \meta{one-byte-encoding} are
+% listed in section ``1.2 Supported encodings'' of
+% package \xpackage{stringenc}'s documentation \cite{stringenc}.
+% Of course, the encoding must encode its characters with
+% one byte exactly. This excludes the unicode encodings
+% (\xoption{utf8}, \xoption{utf16}, \dots).
+%
+% Only \cs{lstinputlisting} is supported by the syntax extension
+% of key \xoption{inputencoding}.
+%
+% Internally package \xpackage{listingsutf8} reads the file as binary file
+% via primitives of \pdfTeX\ (\cs{pdffiledump}). Then the file
+% contents is converted as string using package \xpackage{stringenc} and
+% finally the string is read as virtual file by \eTeX's \cs{scantokens}.
+%
+% \subsection{Future}
+%
+% Workarounds are not provided for
+% \begin{itemize}
+% \item \cs{lstinline}
+% \item Environment |lstlisting|.
+% \item Environments defined by \cs{lstnewenvironment}.
+% \end{itemize}
+% Perhaps someone will find time to extend package \xpackage{listings}
+% with full native support for UTF-8. Then this package would become obsolete.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Catcodes and identification}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname lstU@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\lstU@AtEnd{%
+    \lstU@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{8}% _ (subscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\TMP@EnsureCode{126}{13}% ~ (active)
+\edef\lstU@AtEnd{\lstU@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{listingsutf8}%
+  [2011/11/10 v1.2 Allow UTF-8 in listings input (HO)]
+%    \end{macrocode}
+%
+% \subsection{Package options}
+%
+% Just pass options to package listings.
+%
+%    \begin{macrocode}
+\DeclareOption*{%
+  \PassOptionsToPackage\CurrentOption{listings}%
+}
+\ProcessOptions*
+%    \end{macrocode}
+%    Key \xoption{inputencoding} was introduced in version
+%    2002/04/01 v1.0 of package \xpackage{listings}.
+%    \begin{macrocode}
+\RequirePackage{listings}[2002/04/01]
+%    \end{macrocode}
+%    Ensure that \cs{inputencoding} is provided.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifundefined{inputencoding}{%
+    \RequirePackage{inputenc}%
+  }{}%
+}
+%    \end{macrocode}
+%
+% \subsection{Check prerequisites}
+%
+%    \begin{macrocode}
+\RequirePackage{pdftexcmds}[2011/04/22]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\lstU@temp#1#2{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname #1\endcsname\relax
+    \PackageWarningNoLine{listingsutf8}{%
+      Package loading is aborted because of missing %
+      \@backslashchar#1.\MessageBreak
+      #2%
+    }%
+    \expandafter\lstU@AtEnd
+  \fi
+}
+\lstU@temp{scantokens}{It is provided by e-TeX}%
+\lstU@temp{pdf@unescapehex}{It is provided by pdfTeX >= 1.30}%
+\lstU@temp{pdf@filedump}{It is provided by pdfTeX >= 1.30}%
+\lstU@temp{pdf@filesize}{It is provided by pdfTeX >= 1.30}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{stringenc}[2010/03/01]
+%    \end{macrocode}
+%
+% \subsection{Add support for UTF-8}
+%
+%    \begin{macro}{\iflstU@utfviii}
+%    \begin{macrocode}
+\newif\iflstU@utfviii
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\lstU@inputenc}
+%    \begin{macrocode}
+\def\lstU@inputenc#1{%
+  \expandafter\lstU@@inputenc#1utf8/utf8/\@nil
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\lstU@@inputenc}
+\def\lstU@@inputenc#1utf8/#2utf8/#3\@nil{%
+  \ifx\\#1\\%
+    \lstU@utfviiitrue
+    \def\lst@inputenc{#2}%
+  \else
+    \lstU@utfviiifalse
+  \fi
+}
+%    \begin{macrocode}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\lst@Key{inputencoding}\relax{%
+  \def\lst@inputenc{#1}%
+  \lstU@inputenc{#1}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Conversion}
+%
+%    \begin{macro}{\lstU@input}
+%    \begin{macrocode}
+\def\lstU@input#1{%
+  \iflstU@utfviii
+    \edef\lstU@text{%
+      \pdf@unescapehex{%
+        \pdf@filedump{0}{\pdf@filesize{#1}}{#1}%
+      }%
+    }%
+    \lstU@CRLFtoLF\lstU@text
+    \StringEncodingConvert\lstU@text\lstU@text{utf8}\lst@inputenc
+    \def\lstU@temp{%
+      \scantokens\expandafter{\lstU@text}%
+    }%
+  \else
+    \def\lstU@temp{%
+      \input{#1}%
+    }%
+  \fi
+  \lstU@temp
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Convert CR/LF pairs to LF}
+%
+%    \begin{macro}{\lstU@CRLFtoLF}
+%    \begin{macrocode}
+\begingroup
+  \endlinechar=-1 %
+  \@makeother\^^J %
+  \@makeother\^^M %
+  \gdef\lstU@CRLFtoLF#1{%
+    \edef#1{%
+      \expandafter\lstU@CRLFtoLF@aux#1^^M^^J\@nil
+    }%
+  }%
+  \gdef\lstU@CRLFtoLF@aux#1^^M^^J#2\@nil{%
+    #1%
+    \ifx\relax#2\relax
+      \@car
+    \fi
+    ^^J%
+    \lstU@CRLFtoLF@aux#2\@nil
+  }%
+\endgroup %
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Patch \cs{lst@InputListing}}
+%
+%    \begin{macrocode}
+\def\lstU@temp#1\def\lst@next#2#3\@nil{%
+  \def\lst@InputListing##1{%
+    #1%
+    \def\lst@next{\lstU@input{##1}}%
+    #3%
+  }%
+}
+\expandafter\lstU@temp\lst@InputListing{#1}\@nil
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\lstU@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\makeatletter
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@\@ne
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@\@ne
+  \repeat
+}
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{127}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\{=1 %
+  \catcode`\}=2 %
+  \catcode`\#=6 %
+  \catcode`\[=12 %
+  \catcode`\]=12 %
+  \catcode`\%=14 %
+  \catcode`\ =10 %
+  \catcode13=5 %
+  \RequirePackage{listingsutf8}[2011/11/10]\relax
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test example for latin1}
+%
+%    \begin{macrocode}
+%<*test2>
+%    \end{macrocode}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\usepackage{filecontents}
+\def\do#1{%
+  \ifx#1\^%
+  \else
+    \noexpand\do\noexpand#1%
+  \fi
+}
+\expandafter\let\expandafter\dospecials\expandafter\empty
+\expandafter\edef\expandafter\dospecials\expandafter{\dospecials}
+\begin{filecontents*}{ExampleUTF8.java}
+public class ExampleUTF8 {
+    public static String testString =
+        "Umlauts: " +
+        "^^c3^^84^^c3^^96^^c3^^9c^^c3^^a4^^c3^^b6^^c3^^bc^^c3^^9f";
+    public static void main(String[] args) {
+        System.out.println(testString);
+    }
+}
+\end{filecontents*}
+\usepackage{listingsutf8}[2011/11/10]
+\def\Text{%
+  Umlauts: %
+  ^^c3^^84^^c3^^96^^c3^^9c^^c3^^a4^^c3^^b6^^c3^^bc^^c3^^9f%
+}
+\begin{document}
+\lstinputlisting[%
+  language=Java,%
+  inputencoding=utf8/latin1,%
+]{ExampleUTF8.java}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/listingsutf8.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/listingsutf8.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex listingsutf8.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   listingsutf8.sty & tex/latex/oberdiek/listingsutf8.sty\\
+%   listingsutf8.pdf & doc/latex/oberdiek/listingsutf8.pdf\\
+%   test/listingsutf8-test1.tex & doc/latex/oberdiek/test/listingsutf8-test1.tex\\
+%   test/listingsutf8-test2.tex & doc/latex/oberdiek/test/listingsutf8-test2.tex\\
+%   test/listingsutf8-test3.tex & doc/latex/oberdiek/test/listingsutf8-test3.tex\\
+%   test/listingsutf8-test4.tex & doc/latex/oberdiek/test/listingsutf8-test4.tex\\
+%   test/listingsutf8-test5.tex & doc/latex/oberdiek/test/listingsutf8-test5.tex\\
+%   listingsutf8.dtx & source/latex/oberdiek/listingsutf8.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk listingsutf8.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{listingsutf8.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex listingsutf8.dtx
+%makeindex -s gind.ist listingsutf8.idx
+%pdflatex listingsutf8.dtx
+%makeindex -s gind.ist listingsutf8.idx
+%pdflatex listingsutf8.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{listingsutf8.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='listingsutf8'>
+  <name>listingsutf8</name>
+  <caption>Allow UTF-8 in listings input.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Package <xref refid='listings'>listings</xref> does not support files
+    with multi-byte encodings such as UTF-8.  In the case of
+    <tt>\lstinputlisting</tt>, a simple workaround is possible if a
+    one-byte encoding exists that the file can be converted to.  The
+    package requires the e-TeX extensions under pdfTeX (in either PDF
+    or DVI output mode).
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/listingsutf8.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/listingsutf8.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{inputenc}
+%   Alan Jeffrey, Frank Mittelbach,
+%   \textit{inputenc.sty}, 2006/05/05 v1.1b.
+%   \CTAN{macros/latex/base/inputenc.dtx}
+%
+% \bibitem{listings}
+%   Carsten Heinz, Brooks Moses:
+%  \textit{The \xpackage{listings} package};
+%   2007/02/22;\\
+%   \CTAN{macros/latex/contrib/listings/}.
+%
+% \bibitem{stringenc}
+%   Heiko Oberdiek:
+%   \textit{The \xpackage{stringenc} package};
+%   2007/10/22;\\
+%   \CTAN{macros/latex/contrib/oberdiek/stringenc.pdf}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/10/22 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.1}
+%   \item
+%     Use of package \xpackage{pdftexcmds}.
+%   \end{Version}
+%   \begin{Version}{2011/11/10 v1.2}
+%   \item
+%     DOS line ends CR/LF normalized to LF to avoid empty lines
+%     (Bug report of Thomas Benkert in de.comp.text.tex).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

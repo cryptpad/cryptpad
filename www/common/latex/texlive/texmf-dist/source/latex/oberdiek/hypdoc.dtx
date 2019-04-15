@@ -1,0 +1,1421 @@
+% \iffalse meta-comment
+%
+% File: hypdoc.dtx
+% Version: 2011/08/19 v1.11
+% Info: Hyper extensions for doc.sty
+%
+% Copyright (C) 2002, 2006, 2007, 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file hypdoc.dtx
+% and the derived files
+%    hypdoc.sty, hypdoc.pdf, hypdoc.ins, hypdoc.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hypdoc.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hypdoc.pdf
+%
+% Unpacking:
+%    (a) If hypdoc.ins is present:
+%           tex hypdoc.ins
+%    (b) Without hypdoc.ins:
+%           tex hypdoc.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hypdoc.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hypdoc.drv is present:
+%           latex hypdoc.drv
+%    (b) Without hypdoc.drv:
+%           latex hypdoc.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hypdoc.dtx
+%       makeindex -s gind.ist hypdoc.idx
+%       pdflatex hypdoc.dtx
+%       makeindex -s gind.ist hypdoc.idx
+%       pdflatex hypdoc.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/hypdoc.sty
+%    TDS:doc/latex/oberdiek/hypdoc.pdf
+%    TDS:source/latex/oberdiek/hypdoc.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hypdoc 2011/08/19 v1.11 Hyper extensions for doc.sty (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hypdoc
+Version: 2011/08/19 v1.11
+
+Copyright (C) 2002, 2006, 2007, 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file hypdoc.dtx
+and the derived files
+   hypdoc.sty, hypdoc.pdf, hypdoc.ins, hypdoc.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hypdoc.ins}{\from{hypdoc.dtx}{install}}%
+  \file{hypdoc.drv}{\from{hypdoc.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{hypdoc.sty}{\from{hypdoc.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hypdoc.xml}{\from{hypdoc.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hypdoc.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hypdoc.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hypdoc.drv}%
+  [2011/08/19 v1.11 Hyper extensions for doc.sty (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{hypdoc.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{718}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hypdoc.drv}
+%
+% \title{The \xpackage{hypdoc} package}
+% \date{2011/08/19 v1.11}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package adds hyper features to the package
+% \xpackage{doc} that is used in the documentation
+% system of \LaTeXe. Bookmarks are added and references
+% are linked as far as possible.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Features}
+%
+% The package adds the following features:
+% \begin{description}
+% \item[Bookmarks:]
+%   For supporting bookmarks package \verb|hyperref| is loaded.
+%   Some \TeX\ code inside section titles can cause problems
+%   during bookmark processing; these can be warnings, ugly
+%   bookmark titles or even errors. With the help of
+%   \verb|\pdfstringdefDisableCommands| or \verb|\texorpdfstring|
+%   you can manage these things, see \verb|hyperref|'s package
+%   documentation.
+% \item[Additional bookmarks:]
+%   Unnumbered bookmark entries are generated for:
+%   \begin{itemize}
+%   \item Table of contents
+%   \item List of figures
+%   \item List of tables
+%   \item Index
+%   \item Glossary
+%   \end{itemize}
+%   Option \texttt{numbered} controls, whether these section or
+%   chapters should be numbered. The exception is the table
+%   of contents if this it would be the first numbered
+%   section. Then just a bookmark is added.
+% \item[Metadata:]
+%   The loaded package \verb|hyperref|, enforced by
+%   option \verb|pdfusetitle|, tries to detect \verb|\title|
+%   and \verb|\author| and sets the corresponding PDF
+%   information fields. In case of problems see the previous
+%   item about bookmarks.
+%   These enries can be overwritten or new ones added by
+%   \verb|\hypersetup| after the packages is loaded, see
+%   documentation of package \verb|hyperref|.
+% \item[References, links:] Because of package \verb|\hyperref|
+%   |\ref| become links, also \verb|\url|, footnote referencing
+%   are supported.
+% \item[Index:]
+%   The main part of this package deals with index links in order
+%   to support the kind of index that package \verb|doc| provides.
+% \item[Thumbnails:]
+%   Package \verb|thumbpdf| is loaded for the case that the
+%   PDF file also should contain thumbnails, see the documentation
+%   of this package. But thumbnail embedding is not really
+%   necessary, because nowadays AcrobatReader is able to
+%   generate and view thumbnails on the fly.
+% \end{description}
+%
+% \section{Usage}
+%
+% The purpose of this packages is to add PDF features to
+% the documentation of LaTeX packages. Thus just load
+% the package in the driver file that generates the
+% documentation:
+% \begin{quote}
+%   \verb|\usepackage{hypdoc}|
+% \end{quote}
+% Package \verb|doc| is loaded by \verb|hypdoc|, thus you
+% also can replace a \verb|\usepackage{doc}| with this line.
+% At any case, the package must be loaded before macros of
+% package \verb|doc| such as \verb|\CodelineIndex| or
+% \verb|\PageIndex| are used.
+%
+% If the class \verb|ltxdoc| is used, you can also use
+% the configuration file for this class to add
+% package \verb|hypdoc|. Add the following line
+% to the file \verb|ltxdoc.cfg| (or create a new one):
+% \begin{quote}
+%\begin{verbatim}
+%\AtEndOfClass{\RequirePackage{hypdoc}}
+%\end{verbatim}
+% \end{quote}
+%
+% \subsection{Options}
+%
+% There is one option \texttt{numbered}. It controls,
+% whether the starred versions of section or chapter
+% inside \cs{tableofcontents}, \cs{listoffigures}, \dots
+% should be replaced by the non-star versions.
+%
+% \subsection{Simple example}
+% Example of a simple driver file \verb|foobar.drv|
+% of a package \verb|foobar|. Often the driver file
+% is packed in the file \verb|foobar.dtx| and can
+% be extracted by docstrip or if an instruction file
+% for docstrip is provided by:
+% \begin{quote}
+% \verb|tex foobar.ins|
+% \end{quote}
+% Note that although docstrip doesn't rely on \LaTeX,
+% sometimes you need to run the \verb|.ins| file through
+% \LaTeX. Oddly enough, often the only \LaTeX\ feature
+% in use is \verb|\NeedsTeXFormat{LaTeX2e}| in the first line.
+% \begin{quote}
+%\begin{verbatim}
+%\documentclass{ltxdoc}
+%\usepackage{hypdoc}
+%\RecordChanges
+%\EnableCrossrefs
+%\CodelineIndex
+%\begin{document}
+%\title{Title for package \texttt{foobar}}
+%\author{Author of package \texttt{foobar}}
+%\date{...}
+%\maketitle
+%\tableofcontents
+%\DocInput{foobar.dtx}
+%\PrintChanges
+%\PrintIndex
+%\end{document}
+%\end{verbatim}
+% \end{quote}
+%
+% Then compile it, for example with pdf\LaTeX.
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex foobar.drv
+%makeindex -s gind.ist foobar.idx
+%makeindex -s gglo.ist -o foobar.gls foobar.glo
+%pdflatex foobar.drv
+%\end{verbatim}
+% \end{quote}
+% You will need several cycles until the cross references
+% and similar things are correct.
+%
+% \subsection{Example \texttt{source2e.tex}}
+%
+% The source code of the base of \LaTeX\ is available as
+% a bunch of \verb|.dtx| files. \LaTeX\ provides the file
+% \verb|source2e.tex| to merge them all together.
+%
+% Now you can either load package \verb|hypdoc| in a private copy
+% of this file (please, respect the LPPL) or use the configuration
+% file \verb|ltxdoc.cfg|. Example that also sets A4 paper size:
+% \begin{quote}
+%\begin{verbatim}
+%\PassOptionsToClass{a4paper}{article}
+%\AtEndOfClass{\RequirePackage{hypdoc}}
+%\end{verbatim}
+% \end{quote}
+%
+% Then \verb|source2e.tex| can be compiled by pdf\TeX, for example:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex source2e
+%makeindex -s gind.ist source2e.idx
+%makeindex -s gglo.ist -o source2e.glo source2e.gls
+%pdflatex source2e
+%makeindex -s gind.ist source2e.idx
+%makeindex -s gglo.ist -o source2e.glo source2e.gls
+%pdflatex source2e
+%\end{verbatim}
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypdoc}%
+  [2011/08/19 v1.11 Hyper extensions for doc.sty (HO)]%
+%    \end{macrocode}
+%    The package identification is done at the top of the |.dtx| file
+%    in order to use only one identification string.
+%
+%    For unique command names this package uses |HD@| as prefix
+%
+% \subsection{Options}
+%
+%    \begin{macro}{\ifHD@numbered}
+%    \begin{macrocode}
+\newif\ifHD@numbered
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\DeclareOption{numbered}{\HD@numberedtrue}
+\ProcessOptions*\relax
+%    \end{macrocode}
+%
+% \subsection{Package loading}
+%
+%    \begin{macrocode}
+\RequirePackage{atveryend}[2010/03/24]
+\RequirePackage{doc}
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifx\numexpr\@undefined
+  \RequirePackage{calc}%
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage[%
+  hyperindex=false,%
+  pdfusetitle,%
+  colorlinks,%
+  pdfpagelabels%
+]{hyperref}[2002/05/09]%
+\hypersetup{%
+  plainpages=false,%
+  bookmarksopen,%
+  bookmarksnumbered,%
+  bookmarksopenlevel=0,%
+  pdfstartview={FitBH \hypercalcbp{%
+    \paperheight-\topmargin-1in-\headheight-\headsep
+  }},%
+}
+\RequirePackage{thumbpdf}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcounter{HD@unique}
+%    \end{macrocode}
+%    \begin{macro}{\theHD@unique}
+%    \begin{macrocode}
+\renewcommand{\theHD@unique}{%
+  \number\value{HD@unique}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\g@addto@macro\Hy@UseMaketitleInfos{%
+  \@ifundefined{fileinfo}{}{%
+    \ifx\@pdfsubject\@empty
+      \hypersetup{pdfsubject={\fileinfo}}%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\pdfstringdefDisableCommands{%
+  \let\thanks\@gobble
+  \let\footnote\@gobble
+  \def\cs#1{\textbackslash #1}%
+  \let\normalfont\@empty
+  \let\scshape\@empty
+  \def\and{and }%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Patch for bug latex/4096}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname mod@math@codes\endcsname\relax
+\else
+  \def\HD@ModFix#1{%
+    \mathcode`#1=`#1\relax
+  }%
+  \g@addto@macro\mod@math@codes{%
+    \HD@ModFix\-%
+    \HD@ModFix\+%
+    \HD@ModFix\:%
+    \HD@ModFix\=%
+    \HD@ModFix\*%
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Bookmarks}
+%
+%    \begin{macro}{\HD@sectionpatch}
+%    \begin{macrocode}
+\def\HD@sectionpatch{%
+  \ifHD@numbered
+    \HD@@sectionpatch{section}%
+    \HD@@sectionpatch{chapter}%
+  \else
+    \let\Hy@writebookmark\HD@disable@writebookmark
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@@sectionpatch}
+%    \begin{macrocode}
+\def\HD@@sectionpatch#1{%
+  \expandafter\let\csname HDorg@@#1\expandafter\endcsname
+    \csname #1\endcsname
+  \@namedef{#1}{%
+    \@ifstar{\@nameuse{HDorg@@#1}}{\@nameuse{HDorg@@#1}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@disable@writebookmark}
+%    \begin{macrocode}
+\def\HD@disable@writebookmark#1#2#3#4#5{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HD@guesstoclevel}
+%    A wild guessing of the toclevel. There is the hope, that
+%    the macro |#1| starts with a sectioning command.
+%    \begin{macrocode}
+\def\HD@guesstoclevel#1{%
+  \expandafter\HD@@guesstoclevel#1\section\HD@end
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@@guesstoclevel}
+%    \begin{macrocode}
+\def\HD@@guesstoclevel#1#2\HD@end{%
+  \@ifundefined{toclevel@\expandafter\@gobble\string#1\@empty}{%
+    1%
+  }{%
+    \@nameuse{toclevel@\expandafter\@gobble\string#1\@empty}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{tableofcontents}}
+%
+%    \begin{macro}{\HDorg@tableofcontents}
+%    \begin{macrocode}
+\let\HDorg@tableofcontents\tableofcontents
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\tableofcontents}
+%    As first section the table of contents shouldn't
+%    go into the toc itself. Also a number looks too funny then.
+%    Just a bookmark is enough in this case.
+%    \begin{macrocode}
+\def\tableofcontents{%
+  \begingroup
+    \@ifundefined{c@section}{%
+      \def\c@section{0}%
+    }{}%
+  \expandafter\endgroup
+  \ifcase\c@section
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@tableofcontents}]%
+        {\contentsname}{toc\theHD@unique}%
+    \HDorg@tableofcontents
+  \else
+    \ifHD@numbered
+    \else
+      \stepcounter{HD@unique}%
+      \pdfbookmark[\HD@guesstoclevel{\HDorg@tableofcontents}]%
+          {\contentsname}{toc\theHD@unique}%
+    \fi
+    \begingroup
+      \HD@sectionpatch
+      \HDorg@tableofcontents
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{listoffigures}}
+%
+%    \begin{macro}{\HDorg@listoffigures}
+%    \begin{macrocode}
+\let\HDorg@listoffigures\listoffigures
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\listoffigures}
+%    \begin{macrocode}
+\def\listoffigures{%
+  \ifHD@numbered
+  \else
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@listoffigures}]%
+        {\contentsname}{toc\theHD@unique}%
+  \fi
+  \begingroup
+    \HD@sectionpatch
+    \HDorg@listoffigures
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{listoftables}}
+%
+%    \begin{macro}{\HDorg@listoftables}
+%    \begin{macrocode}
+\let\HDorg@listoftables\listoftables
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\listoftables}
+%    \begin{macrocode}
+\def\listoftables{%
+  \ifHD@numbered
+  \else
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@listoftables}]%
+        {\contentsname}{toc\theHD@unique}%
+  \fi
+  \begingroup
+    \HD@sectionpatch
+    \HDorg@listoftables
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{thebibliography}}
+%
+%    \begin{macro}{\HDorg@thebibliography}
+%    \begin{macrocode}
+\let\HDorg@thebibliography\thebibliography
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\thebibliography}
+%    \begin{macrocode}
+\def\thebibliography{%
+  \ifHD@numbered
+  \else
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@thebibliography}]%
+      {\@ifundefined{chapter}{\refname}{\bibname}}{bib\theHD@unique}%
+  \fi
+  \HD@sectionpatch
+  \HDorg@thebibliography
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{theindex}}
+%
+%    \begin{macro}{\HDorg@theindex}
+%    \begin{macrocode}
+\let\HDorg@theindex\theindex
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\theindex}
+%    \begin{macrocode}
+\def\theindex{%
+  \let\HDorg@index@prologue\index@prologue
+  \let\HDorg@writebookmark\Hy@writebookmark
+  \HD@sectionpatch
+  \g@addto@macro\IndexParms{%
+    \ifHD@numbered
+    \else
+      \let\Hy@writebookmark\HDorg@writebookmark
+    \fi
+    \let\bfseries\HD@bfseries
+  }%
+  \edef\HD@toclevel@index{\HD@guesstoclevel{\index@prologue}}%
+  \begingroup
+    \count@=\HD@toclevel@index\relax
+    \advance\count@ by 1 %
+    \xdef\HD@toclevel@subindex{\the\count@}%
+  \endgroup
+  \def\index@prologue{%
+    \ifHD@numbered
+    \else
+      \begingroup
+        \stepcounter{HD@unique}%
+        \let\Hy@writebookmark\HDorg@writebookmark
+        \pdfbookmark[\HD@toclevel@index]%
+            {\indexname}{index\theHD@unique}%
+      \endgroup
+    \fi
+    \HDorg@index@prologue
+  }%
+  \HDorg@theindex
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HDorg@bfseries}
+%    \begin{macrocode}
+\let\HDorg@bfseries\bfseries
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@bfseries}
+%    \begin{macrocode}
+\def\HD@bfseries{\futurelet\HD@hfil\HD@@bfseries}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@@bfseries}
+%    \begin{macrocode}
+\def\HD@@bfseries{%
+  \HDorg@bfseries
+  \ifx\HD@hfil\hfil
+    \expandafter\HD@@@bfseries
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@@@bfseries}
+%    \begin{macrocode}
+\def\HD@@@bfseries\hfil#1\hfil{%
+  \ifx\\#1\\%
+  \else
+    \raisebox{\baselineskip}[0pt]{%
+      \kern-\HD@margin\relax
+      \pdfbookmark[\HD@toclevel@subindex]{#1}{HD.#1}%
+      \kern\HD@margin\relax
+    }%
+  \fi
+  \hfil#1\hfil
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@margin}
+%    \begin{macrocode}
+\def\HD@margin{1mm}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{theglossary}}
+%
+%    \begin{macro}{\HDorg@theglossary}
+%    \begin{macrocode}
+\let\HDorg@theglossary\theglossary
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\theglossary}
+%    \begin{macrocode}
+\def\theglossary{%
+  \let\HDorg@glossary@prologue\glossary@prologue
+  \let\HDorg@writebookmark\Hy@writebookmark
+  \HD@sectionpatch
+  \def\glossary@prologue{%
+    \ifHD@numbered
+    \else
+      \begingroup
+        \let\Hy@writebookmark\HDorg@writebookmark
+        \stepcounter{HD@unique}%
+        \pdfbookmark[\HD@guesstoclevel{\HDorg@glossary@prologue}]%
+            {\glossaryname}{glossary\theHD@unique}%
+      \endgroup
+    \fi
+    \HDorg@glossary@prologue
+  }%
+  \HDorg@theglossary
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\glossaryname}
+%    \begin{macrocode}
+\providecommand*{\glossaryname}{Change History}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Index}
+%
+%    \begin{macrocode}
+\newcounter{HD@hypercount}
+%    \end{macrocode}
+%    \begin{macro}{\HD@helplength}
+%    \begin{macrocode}
+\newlength{\HD@helplength}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifHD@savedest}
+%    \begin{macrocode}
+\newif\ifHD@savedest
+\HD@savedesttrue
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \HD@savedest@init
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage{rerunfilecheck}[2009/12/10]
+%    \end{macrocode}
+%    \begin{macro}{\HD@savedest@init}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\^^M=\active
+\@firstofone{\endgroup
+  \def\HD@savedest@init{%
+    \ifHD@savedest
+      \let\HDorg@tilde~%
+      \let~\HD@savedest@entry
+      \edef\HDorg@catcodeM{\the\catcode`\^^M}%
+      \catcode`\^^M=\active
+      \def^^M{}%
+      \InputIfFileExists{\jobname.hd}{}{}%
+      \let~\HDorg@tilde
+      \catcode`\^^M=\HDorg@catcodeM\relax
+      \newwrite\HD@savedest@out
+      \RerunFileCheck{\jobname.hd}{%
+        \immediate\closeout\HD@savedest@out
+      }{}%
+      \immediate\openout\HD@savedest@out=\jobname.hd\relax
+    \else
+      \let\HD@savedest@add\@gobble
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@savedest@entry}
+%    \begin{macrocode}
+  \def\HD@savedest@entry#1^^M{%
+    \@namedef{HD.#1}{}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@savedest@add}
+%    \begin{macrocode}
+\def\HD@savedest@add#1{%
+  \immediate\write\HD@savedest@out{\string~#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifHD@targetraise}
+%    \begin{macrocode}
+\newif\ifHD@targetraise
+\HD@targetraisetrue
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@target}
+%    \begin{macrocode}
+\def\HD@target{%
+  \ifHD@targetraise
+    \ifhmode
+      \settoheight{\HD@helplength}{[H]}%
+      \addtolength{\HD@helplength}{0.4ex}%
+      \raisebox{\HD@helplength}[0pt][0pt]{%
+        \HD@maketarget
+      }%
+    \else
+      \HD@maketarget
+    \fi
+  \else
+    \HD@maketarget
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@maketarget}
+%    \begin{macrocode}
+\def\HD@maketarget{%
+  \stepcounter{HD@hypercount}%
+  \def\HD@next{%
+    \llap{\hypertarget{HD.\the\c@HD@hypercount}{}\,}%
+  }%
+  \ifHD@savedest
+    \expandafter\ifx\csname HD.\the\c@HD@hypercount\endcsname\@empty
+    \else
+      \let\HD@next\relax
+    \fi
+  \fi
+  \HD@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\CodelineIndex}
+%    \begin{macrocode}
+\g@addto@macro\CodelineIndex{%
+  \let\special@index\HD@codeline@wrindex
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PageIndex}
+%    \begin{macrocode}
+\g@addto@macro\PageIndex{%
+  \let\special@index\HD@page@wrindex
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HD@codeline@wrindex}
+%    \begin{macrocode}
+\def\HD@codeline@wrindex#1{%
+  \begingroup
+    \let\HDorg@encapchar\encapchar
+    \def\encapchar##1\encapchar##2\@nil{%
+      \HDorg@encapchar
+      hdclindex{\the\c@HD@hypercount}{##1}%
+    }%
+    \codeline@wrindex{%
+      #1\encapchar\encapchar\@nil
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\HD@page@wrindex}
+%    \begin{macrocode}
+\def\HD@page@wrindex#1{%
+  \begingroup
+    \let\HDorg@encapchar\encapchar
+    \def\encapchar##1\encapchar##2\@nil{%
+      \HDorg@encapchar
+      hdpindex{##1}%
+    }%
+    \HDorg@index{#1\encapchar\encapchar\@nil}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hdclindex}
+%    \begin{macrocode}
+\def\hdclindex#1#2#3{%
+  \csname\ifx\\#2\\relax\else#2\fi\endcsname{%
+    \hyperlink{HD.#1}{#3}%
+    \HD@savedest@add{#1}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\hdpindex}
+%    \begin{macrocode}
+\def\hdpindex#1#2{%
+  \csname\ifx\\#1\\relax\else#1\fi\endcsname{%
+    \hyperpage{#2}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{PrintDescribeMacro}}
+%
+%    \begin{macro}{\HDorg@PrintDescribeMacro}
+%    \begin{macrocode}
+\let\HDorg@PrintDescribeMacro\PrintDescribeMacro
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PrintDescribeMacro}
+%    \begin{macrocode}
+\renewcommand\PrintDescribeMacro[1]{%
+  \begingroup
+    \let\HDorg@MacroFont\MacroFont
+    \def\MacroFont{%
+      \HD@target
+      \HDorg@MacroFont
+    }%
+    \HDorg@PrintDescribeMacro{#1}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{PrintMacroName}}
+%
+%    \begin{macro}{\HDorg@PrintMacroName}
+%    \begin{macrocode}
+\let\HDorg@PrintMacroName\PrintMacroName
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PrintMacroName}
+%    \begin{macrocode}
+\renewcommand\PrintMacroName[1]{%
+  \begingroup
+    \let\HDorg@MacroFont\MacroFont
+    \def\MacroFont{%
+      \HD@target
+      \HDorg@MacroFont
+    }%
+    \HDorg@PrintMacroName{#1}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{theCodelineNo}}
+%
+%    \begin{macro}{\HDorg@theCodelineNo}
+%    \begin{macrocode}
+\let\HDorg@theCodelineNo\theCodelineNo
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\theCodelineNo}
+%    \begin{macrocode}
+\renewcommand*\theCodelineNo{%
+  \settowidth{\HD@helplength}{\HDorg@theCodelineNo\ }%
+  \ifdim\HD@helplength<\MacroIndent
+    \addtolength{\HD@helplength}{-\MacroIndent}%
+    \llap{%
+      \begingroup\HD@target\endgroup
+      \hspace*{-\HD@helplength}%
+    }%
+  \else
+    \HD@target
+  \fi
+  \HDorg@theCodelineNo
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HDorg@index}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \let\HDorg@index\index
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{SpecialUsageIndex}}
+%
+%    \begin{macro}{\HDorg@SpecialUsageIndex}
+%    \begin{macrocode}
+\let\HDorg@SpecialUsageIndex\SpecialUsageIndex
+\renewcommand*\SpecialUsageIndex[1]{%
+  \@bsphack
+  \begingroup
+    \HD@target
+    \let\index\HDorg@index
+    \let\HDorg@encapchar\encapchar
+    \edef\encapchar usage{%
+       \HDorg@encapchar hdclindex{\the\c@HD@hypercount}{usage}%
+    }%
+    \HDorg@SpecialUsageIndex{#1}%
+  \endgroup
+  \@esphack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{autoindex}}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname autoindex\endcsname\relax
+\else
+%    \end{macrocode}
+%    \begin{macro}{\HDorg@autoindex}
+%    \begin{macrocode}
+  \let\HDorg@autoindex\autoindex
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\autoindex}
+%    \begin{macrocode}
+  \renewcommand*\autoindex[1]{%
+    \@bsphack
+    \begingroup
+      \HD@target
+      \let\index\HDorg@index
+      \let\HDorg@encapchar\encapchar
+      \edef\encapchar usage{%
+         \HDorg@encapchar hdclindex{\the\c@HD@hypercount}{usage}%
+      }%
+      \HDorg@autoindex{#1}%
+    \endgroup
+    \@esphack
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{SpecialEnvIndex}}
+%
+%    \begin{macro}{\HDorg@SpecialEnvIndex}
+%    \begin{macrocode}
+\let\HDorg@SpecialEnvIndex\SpecialEnvIndex
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SpecialEnvIndex}
+%    \begin{macrocode}
+\renewcommand*\SpecialEnvIndex[1]{%
+  \@bsphack
+  \begingroup
+    \HD@target
+    \let\HDorg@encapchar\encapchar
+    \edef\encapchar usage{%
+      \HDorg@encapchar hdclindex{\the\c@HD@hypercount}{usage}%
+    }%
+    \HDorg@SpecialEnvIndex{#1}%
+  \endgroup
+  \@esphack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{SortIndex}}
+%
+%    \begin{macro}{\HDorg@SortIndex}
+%    \begin{macrocode}
+\let\HDorg@SortIndex\SortIndex
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SortIndex}
+%    \begin{macrocode}
+\renewcommand*{\SortIndex}[2]{%
+  \@bsphack
+  \begingroup
+    \let\index\HD@page@wrindex
+    \HDorg@SortIndex{#1}{#2}%
+  \endgroup
+  \@esphack
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{@wrglossary}}
+%
+%    \begin{macro}{\HDorg@wrglossary}
+%    \begin{macrocode}
+\let\HDorg@wrglossary\@wrglossary
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@wrglossary}
+%    \begin{macrocode}
+\def\@wrglossary#1{%
+  \let\HDorg@encapchar\encapchar
+  \def\encapchar##1\encapchar##2\@nil{%
+    \HDorg@encapchar
+    hdpindex{##1}%
+  }%
+  \HDorg@wrglossary{#1\encapchar\encapchar\@nil}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{MacroIndent}}
+%
+%    \cs{MacroIndent} automatically calculated.
+%    \begin{macrocode}
+\AfterLastShipout{%
+  \if@filesw
+    \immediate\write\@auxout{%
+      \string\providecommand\string\HD@SetMacroIndent[1]{}%
+    }%
+    \immediate\write\@auxout{%
+      \string\HD@SetMacroIndent{\number\value{CodelineNo}}%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macro}{\HD@SetMacroIndent}
+%    \begin{macrocode}
+\def\HD@SetMacroIndent#1{%
+  \begingroup
+    \value{CodelineNo}=#1\relax
+    \settowidth{\MacroIndent}{\HDorg@theCodelineNo\ }%
+    \global\MacroIndent\MacroIndent
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypdoc.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypdoc.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hypdoc.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hypdoc.sty & tex/latex/oberdiek/hypdoc.sty\\
+%   hypdoc.pdf & doc/latex/oberdiek/hypdoc.pdf\\
+%   hypdoc.dtx & source/latex/oberdiek/hypdoc.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hypdoc.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hypdoc.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hypdoc.dtx
+%makeindex -s gind.ist hypdoc.idx
+%pdflatex hypdoc.dtx
+%makeindex -s gind.ist hypdoc.idx
+%pdflatex hypdoc.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hypdoc.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hypdoc'>
+  <name>hypdoc</name>
+  <caption>Hyper extensions for doc.sty.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2002,2006,2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.11'/>
+  <description>
+    This package adds hypertext features to the package
+    <xref refid='doc'>doc</xref> that is used in the documentation
+    system of <xref refid='latex'>LaTeX2e</xref>. Bookmarks are added
+    and references are linked as far as possible.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hypdoc.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hypdoc.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2002/05/10 v1.0}
+%   \item
+%     First standalone version.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.1}
+%   \item
+%     Option \xoption{numbered} added.
+%   \item
+%     \cs{HD@savedest@init} fixed (empty \xext{hd} file triggered
+%     first page with fl ligature).
+%   \item
+%     Bookmarks for \cs{listoffigures} and \cs{listoftables}.
+%   \item
+%     Documentation: features and usage added.
+%   \item
+%     LPPL 1.3.
+%   \end{Version}
+%   \begin{Version}{2006/04/27 v1.2}
+%   \item
+%     \cs{HD@target} fixed (\xfile{multicol.dtx}).
+%   \end{Version}
+%   \begin{Version}{2006/06/01 v1.3}
+%   \item
+%     Support for package \xpackage{amsdtx}'s \cs{autoindex} added.
+%   \end{Version}
+%   \begin{Version}{2006/06/02 v1.4}
+%   \item
+%     Bookmark fixed if there are several table of contents,
+%     bibliographies, glossaries, \dots
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.5}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/11/12 v1.6}
+%   \item
+%     Bug fix in \cs{listoffigures} (Axel Sommerfeldt).
+%   \item
+%     Markup added in implementation section.
+%   \end{Version}
+%   \begin{Version}{2009/12/10 v1.7}
+%   \item
+%     Use of package \xpackage{rerunfilecheck}.
+%   \end{Version}
+%   \begin{Version}{2010/02/03 v1.8}
+%   \item
+%     Fix for bug latex/4096 added.
+%   \end{Version}
+%   \begin{Version}{2010/03/26 v1.9}
+%   \item
+%     Definition of \cs{HD@SetMacroIndex} is provided in the \xext{aux} file.
+%   \end{Version}
+%   \begin{Version}{2011/05/05 v1.10}
+%   \item
+%     \cs{raisebox} in \cs{HD@target} with height and depth of \texttt{0pt}
+%     (request of GL).
+%   \end{Version}
+%   \begin{Version}{2011/08/19 v1.11}
+%   \item
+%     Latest comma in option list for hyperref removed to avoid option clash
+%     because of \hologo{LaTeX} 2011/06/27 with the new \cs{in@}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

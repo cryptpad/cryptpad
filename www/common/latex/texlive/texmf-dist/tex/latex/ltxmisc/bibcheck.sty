@@ -1,0 +1,87 @@
+%
+% bibcheck.sty 
+%
+% Copyright (c) 2001, Radhakrishnan CV <cvr@river-valley.com>
+%                     Rajagopal CV <cvr3@river-valley.com>
+%                     http://www.river-valley.com
+%
+% River Valley Technologies, Cotton Hills
+% Trivandrum, India 695034
+%
+% Tel: +91 471 233 7501
+%
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program (gpl.txt); if not, write to the Free
+% Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+% MA  02111-1307, USA.
+%
+% $Id: gpl,v 1.1 2001/02/07 11:30:43 cvr Exp $
+%
+\NeedsTeXFormat{LaTeX2e}
+\def\Fileversion$#1: #2 ${\gdef\fileversion{#2}}
+\def\Filedate$#1: #2 #3 ${\gdef\filedate{#2}}
+\Fileversion$Revision: 1.1 $
+\Filedate$Date: 2001/02/07 11:30:43 $
+\ProvidesPackage{bibcheck}
+   [\filedate\space\fileversion\space check uncited bibitems (CVR)]
+\PackageWarningNoLine{bibcheck}
+   {****************************************\MessageBreak
+    Package bibcheck v,\fileversion\space loaded\MessageBreak
+    [check uncited bibitems (CVR)]\MessageBreak
+    ****************************************}
+
+\newwrite\uncitedwrite
+\immediate\openout\uncitedwrite=\jobname.uncited
+\def\definecitelabel#1{\expandafter\gdef\csname CVRBIB#1\endcsname{1}}
+\def\@checkbiblabel#1{%
+    \expandafter\ifx\csname CVRBIB#1\endcsname\relax
+    \typeout{*******************************************************}
+    \typeout{This bibitem [\Xbiblabel] with KEY [#1] is NOT CITED}
+    \typeout{*******************************************************}
+    \immediate\write\uncitedwrite{Bibitem [\Xbiblabel] with key [#1] not cited}
+    \immediate\write\uncitedwrite{}
+    \else \relax
+%   \typeout{**********************************************************}
+%   \typeout{This bibitem with LABEL [#1] is cited in the body text}
+%   \typeout{**********************************************************}
+  \fi} 
+
+\def\@citex[#1]#2{%
+  \let\@citea\@empty
+  \@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{,\penalty\@m\ }%
+     \definecitelabel{\@citeb}%
+     \edef\@citeb{\expandafter\@firstofone\@citeb\@empty}%
+     \if@filesw\immediate\write\@auxout{\string\citation{\@citeb}}\fi
+     \@ifundefined{b@\@citeb}{\mbox{\reset@font\bfseries ?}%
+       \G@refundefinedtrue
+       \@latex@warning
+         {Citation `\@citeb' on page \thepage \space undefined}}%
+       {\hbox{\csname b@\@citeb\endcsname}}}}{#1}}
+
+\def\@lbibitem[#1]#2{\item[\@biblabel{#1}\hfill]\if@filesw
+      {\def\Xbiblabel{#1}\@checkbiblabel{#2}%
+       \let\protect\noexpand
+       \immediate
+       \write\@auxout{\string\bibcite{#2}{#1}}}\fi\ignorespaces}
+\def\@bibitem#1{\item\if@filesw
+         \def\Xbiblabel{\the\value{\@listctr}}%
+         \@checkbiblabel{#1}%
+         \immediate\write\@auxout
+       {\string\bibcite{#1}{\the\value{\@listctr}}}\fi\ignorespaces}
+
+\endinput
+
+%%
+%% End of package bibcheck.sty
+%%

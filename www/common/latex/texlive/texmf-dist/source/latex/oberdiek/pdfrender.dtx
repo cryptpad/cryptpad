@@ -1,0 +1,1931 @@
+% \iffalse meta-comment
+%
+% File: pdfrender.dtx
+% Version: 2010/01/28 v1.2
+% Info: Access to some PDF graphics parameters
+%
+% Copyright (C) 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file pdfrender.dtx
+% and the derived files
+%    pdfrender.sty, pdfrender.pdf, pdfrender.ins, pdfrender.drv,
+%    pdfrender-test1.tex, pdfrender-test2.tex,
+%    pdfrender-test3.tex, pdfrender-test4.tex,
+%    pdfrender-test5.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfrender.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfrender.pdf
+%
+% Unpacking:
+%    (a) If pdfrender.ins is present:
+%           tex pdfrender.ins
+%    (b) Without pdfrender.ins:
+%           tex pdfrender.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfrender.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfrender.drv is present:
+%           latex pdfrender.drv
+%    (b) Without pdfrender.drv:
+%           latex pdfrender.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfrender.dtx
+%       makeindex -s gind.ist pdfrender.idx
+%       pdflatex pdfrender.dtx
+%       makeindex -s gind.ist pdfrender.idx
+%       pdflatex pdfrender.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/pdfrender.sty
+%    TDS:doc/latex/oberdiek/pdfrender.pdf
+%    TDS:doc/latex/oberdiek/test/pdfrender-test1.tex
+%    TDS:doc/latex/oberdiek/test/pdfrender-test2.tex
+%    TDS:doc/latex/oberdiek/test/pdfrender-test3.tex
+%    TDS:doc/latex/oberdiek/test/pdfrender-test4.tex
+%    TDS:doc/latex/oberdiek/test/pdfrender-test5.tex
+%    TDS:source/latex/oberdiek/pdfrender.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfrender 2010/01/28 v1.2 Access to some PDF graphics parameters (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfrender
+Version: 2010/01/28 v1.2
+
+Copyright (C) 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file pdfrender.dtx
+and the derived files
+   pdfrender.sty, pdfrender.pdf, pdfrender.ins, pdfrender.drv,
+   pdfrender-test1.tex, pdfrender-test2.tex,
+   pdfrender-test3.tex, pdfrender-test4.tex,
+   pdfrender-test5.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfrender.ins}{\from{pdfrender.dtx}{install}}%
+  \file{pdfrender.drv}{\from{pdfrender.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{pdfrender.sty}{\from{pdfrender.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdfrender-test1.tex}{\from{pdfrender.dtx}{test1}}%
+  \file{pdfrender-test2.tex}{\from{pdfrender.dtx}{test2}}%
+  \file{pdfrender-test3.tex}{\from{pdfrender.dtx}{test3}}%
+  \file{pdfrender-test4.tex}{\from{pdfrender.dtx}{test4}}%
+  \file{pdfrender-test5.tex}{\from{pdfrender.dtx}{test5}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfrender.xml}{\from{pdfrender.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfrender.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfrender.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfrender.drv}%
+  [2010/01/28 v1.2 Access to some PDF graphics parameters (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{longtable}
+\renewcommand*{\arraystretch}{1.2}
+\begin{document}
+  \DocInput{pdfrender.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1460}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfrender.drv}
+%
+% \title{The \xpackage{pdfrender} package}
+% \date{2010/01/28 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The PDF format has some graphics parameter like
+% line width or text rendering mode. This package
+% provides an interface for setting these parameters.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% This package \xpackage{pdfrender} defines an interface for
+% PDF specific parameters that affects the rendering of
+% graphics or text. The interface and its implementation
+% uses the same technique as package \xpackage{color}
+% for color settings. Therefore this package is loaded to
+% enable \LaTeX's color interface.
+%
+% At different places \LaTeX\ uses \cs{normalcolor} to avoid that
+% header, footer or floats are print in the current color of the
+% main text. \cs{setgroup@color} is used to start a save box
+% with the color that is set at box saving time.
+% Package \xpackage{pdfrender} extends these macros to
+% add its own hooks of its parameters. Therefore \LaTeX3 should
+% generalize \LaTeXe's color interface.
+%
+% \subsection{Usage}
+%
+% In \LaTeX\ the package is loaded as normal package. Options
+% are not defined for this package.
+% \begin{quote}
+% |\usepackage{pdfrender}|
+% \end{quote}
+%
+% This package can also be used in \plainTeX\ and even ini\TeX:
+% \begin{quote}
+% |input pdfrender.sty|
+% \end{quote}
+%
+% \subsection{Macros}
+%
+% \begin{declcs}{pdfrender} \M{key value list}
+% \end{declcs}
+% The first parameter \meta{key value list} contains a
+% list of parameter settings. The key entry is the parameter name.
+% The macro works like
+% \cs{color} (without optional argument) for color setting.
+%
+% \begin{declcs}{textpdfrender} \M{key value list} \M{text}
+% \end{declcs}
+% In the same way as \cs{pdfrender} the first argument
+% specifies the parameters that should be set. This parameter
+% setting affects \meta{text} only. Basically it works
+% the same way as \cs{textcolor} (without optional argument).
+%
+% \subsection{Parameters}
+%
+% The following table shows an overview for the supported
+% parameters and values:
+%
+% \begin{longtable}{@{}l|l|l@{}}
+% \bfseries Parameter & \bfseries Value & \bfseries Alias\\*
+% \hline
+% \endhead
+% \xoption{TextRenderingMode}
+%   & \texttt{0} & \texttt{Fill}\\*
+%   & \texttt{1} & \texttt{Stroke}\\*
+%   & \texttt{2} & \texttt{FillStroke}\\*
+%   & \texttt{3} & \texttt{Invisible}\\*
+%   & \texttt{4} & \texttt{FillClip}\\*
+%   & \texttt{5} & \texttt{StrokeClip}\\*
+%   & \texttt{6} & \texttt{FillStrokeClip}\\*
+%   & \texttt{7} & \texttt{Clip}\\
+% \hline
+% \xoption{LineWidth}
+%   & \itshape positive number, & \itshape \TeX\ dimen\\*[-.2ex]
+%   & \qquad \itshape unit is bp & \\
+% \hline
+% \xoption{LineCapStyle}
+%   & \texttt{0} & \texttt{Butt}\\*
+%   & \texttt{1} & \texttt{Round}\\*
+%   & \texttt{2} & \texttt{ProjectingSquare}\\
+% \hline
+% \xoption{LineJoinStyle}
+%   & \texttt{0} & \texttt{Miter}\\*
+%   & \texttt{1} & \texttt{Round}\\*
+%   & \texttt{2} & \texttt{Bevel}\\
+% \hline
+% \xoption{MiterLimit}
+%   & \multicolumn{2}{l@{}}{\itshape positive number} \\
+% \hline
+% \xoption{Flatness}
+%   & \multicolumn{2}{l@{}}{\itshape number between 0 and 100} \\
+% \hline
+% \xoption{LineDashPattern}
+%   & \multicolumn{2}{l@{}}{^^A
+%       \itshape numbers in square brackets,^^A
+%     } \\*[-.2ex]
+%   & \multicolumn{2}{l@{}}{^^A
+%       \qquad \itshape followed by number,^^A
+%     } \\*
+%   & \multicolumn{2}{l@{}}{^^A
+%       \qquad \itshape units are bp^^A
+%     } \\
+% \hline
+% \xoption{RenderingIntent}
+%   & \multicolumn{2}{l@{}}{\texttt{AbsoluteColorimetric}} \\*
+%   & \multicolumn{2}{l@{}}{\texttt{RelativeColorimetric}} \\*
+%   & \multicolumn{2}{l@{}}{\texttt{Saturation}} \\*
+%   & \multicolumn{2}{l@{}}{\texttt{Perceptual}} \\
+% \hline
+% \xoption{FillColor}
+%   & & \itshape color specification \\
+% \hline
+% \xoption{StrokeColor}
+%   & & \itshape color specification \\
+% \end{longtable}
+%
+% \subsubsection{Details}
+%
+% The description and specification of these parameters
+% are available in the PDF specification \cite{pdf-spec}.
+% Therefore they are not repeated here.
+%
+% \begin{description}
+% \item[Value:]
+%   The values in the second column lists or describe
+%   the values that are specified by the PDF specification.
+% \item[Alias:] Instead of magic numbers the package also
+%   defines some aliases that can be given as value.
+%   Example: |LineCapStyle=Round| has the same effect as
+%   |LineCapStyle=1|.
+% \item[Number:] The term \emph{number} means an integer
+%   or real number. The real number is given as plain
+%   decimal number without exponent. The decimal separator is a period.
+%   At least one digit must be present.
+% \item[\xoption{LineWidth}:] As alias a \TeX\ dimen specification
+%   can be given. This includes explicit specifications with number
+%   and unit, e.g. |LineWidth=0.5pt|. Also \LaTeX\ length registers
+%   may be used. If \eTeX's \cs{dimexpr} is available, then it is
+%   automatically added. However package \xpackage{calc} is not
+%   supported.
+% \item[\xoption{FillColor}, \xoption{StrokeColor}:]
+%   Package \xpackage{color} or \xpackage{xcolor} must be loaded
+%   before these options can be used (since version 1.2).
+%   \LaTeX's color support sets both colors at the same time
+%   to the same value. However parameter \xoption{TextRenderingMode}
+%   offers the value \texttt{FillStroke} that makes only sense, if
+%   the two color types can be set separately.
+%   If one of the options \xoption{FillColor} or \xoption{StrokeColor}
+%   is specified, then also the color is set. For compatibility
+%   with the \LaTeX\ color packages (\xpackage{color} or \xpackage{xcolor}),
+%   always both colors must be set. Thus if one of them is not specified,
+%   it is taken from the current color.
+%
+%   Both options \xoption{FillColor} and \xoption{StrokeColor}
+%   expect a \LaTeX\ color specification as value.
+%   Also the optional color model argument is supported.
+%   Example:
+%   \begin{quote}
+%     |FillColor=yellow|,\\
+%     |StrokeColor=[cmyk]{1,.5,0,0}|\\
+%   \end{quote}
+% \end{description}
+%
+% \subsection{Color stack}
+%
+% If the \pdfTeX\ version provides color stacks, then each
+% parameter is assigned a page based color stack. The assignment
+% of a stack takes place, when its parameter is set the first time.
+% This avoids the use of color stacks that are not needed.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pdfrender.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pdfrender}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pdfrender.sty\endcsname
+\ProvidesPackage{pdfrender}%
+  [2010/01/28 v1.2 Access to some PDF graphics parameters (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname PdfRender@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\PdfRender@AtEnd{%
+    \PdfRender@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\def\PdfRender@AtEndHook{}
+\expandafter\def\expandafter\PdfRender@AtEnd\expandafter{%
+  \expandafter\PdfRender@AtEndHook
+  \PdfRender@AtEnd
+  \endinput
+}
+%    \end{macrocode}
+%
+% \subsection{Look for \pdfTeX, its mode and features}
+%
+%    \begin{macro}{\PdfRender@newif}
+%    \begin{macrocode}
+\def\PdfRender@newif#1{%
+  \expandafter\edef\csname PdfRender@#1true\endcsname{%
+    \let
+    \expandafter\noexpand\csname ifPdfRender@#1\endcsname
+    \noexpand\iftrue
+  }%
+  \expandafter\edef\csname PdfRender@#1false\endcsname{%
+    \let
+    \expandafter\noexpand\csname ifPdfRender@#1\endcsname
+    \noexpand\iffalse
+  }%
+  \csname PdfRender@#1false\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ifPdfRender@Stack}
+%    \begin{macrocode}
+\PdfRender@newif{Stack}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ifPdfRender@Match}
+%    \begin{macrocode}
+\PdfRender@newif{Match}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PdfRender@RequirePackage}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\PdfRender@RequirePackage#1[#2]{%
+    \expandafter\def\expandafter\PdfRender@AtEndHook\expandafter{%
+      \PdfRender@AtEndHook
+      \ltx@ifpackagelater{#1}{#2}{}{%
+        \@PackageWarningNoLine{pdfrender}{%
+          You have requested version\MessageBreak
+          `#2' of package `#1',\MessageBreak
+          but only version\MessageBreak
+          `\csname ver@#1.\ltx@pkgextension\endcsname'\MessageBreak
+          is available%
+        }%
+      }%
+    }%
+    \input #1.sty\relax
+  }%
+\else
+  \let\PdfRender@RequirePackage\RequirePackage
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\PdfRender@RequirePackage{ifpdf}[2010/01/28]
+\PdfRender@RequirePackage{infwarerr}[2007/09/09]
+\PdfRender@RequirePackage{ltxcmds}[2010/01/28]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifpdf
+  \ltx@IfUndefined{pdfcolorstackinit}{%
+    \@PackageWarning{pdfrender}{%
+      Missing \string\pdfcolorstackinit
+    }%
+  }{%
+    \PdfRender@Stacktrue
+  }%
+  \ltx@IfUndefined{pdfmatch}{%
+    \@PackageInfoNoLine{pdfrender}{%
+      \string\pdfmatch\ltx@space not found. %
+      Therefore the values\MessageBreak
+      of some parameters are not validated%
+    }%
+  }{%
+    \PdfRender@Matchtrue
+  }%
+\else
+  \@PackageWarning{pdfrender}{%
+    Missing pdfTeX in PDF mode%
+  }%
+%    \end{macrocode}
+%    \begin{macrocode}
+  \ltx@IfUndefined{newcommand}{%
+%    \end{macrocode}
+%    \begin{macro}{\pdfrender}
+%    \begin{macrocode}
+    \def\pdfrender#1{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\textpdfrender}
+%    \begin{macrocode}
+    \long\def\textpdfrender#1#2{#2}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  }{%
+%    \end{macrocode}
+%    \begin{macro}{\pdfrender}
+%    \begin{macrocode}
+    \newcommand*{\pdfrender}[1]{}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\textpdfrender}
+%    \begin{macrocode}
+    \newcommand{\textpdfrender}[2]{#2}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  }%
+  \expandafter\PdfRender@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Enable color support of \LaTeX}
+%
+%    \begin{macrocode}
+\ltx@ifpackageloaded{color}{}{%
+  \def\color@setgroup{\begingroup\set@color}%
+  \let\color@begingroup\begingroup
+  \def\color@endgroup{\endgraf\endgroup}%
+  \def\color@hbox{\hbox\bgroup\color@begingroup}%
+  \def\color@vbox{\vbox\bgroup\color@begingroup}%
+  \def\color@endbox{\color@endgroup\egroup}%
+  \ltx@ifundefined{bgroup}{%
+    \let\bgroup={\let\egroup=}%
+  }{}%
+  \ltx@ifundefined{endgraf}{%
+    \let\endgraf=\par
+  }{}%
+}
+%    \end{macrocode}
+%
+% \subsection{Hook into \cs{normalcolor}}
+%
+%    The problem is that packages \xpackage{color} and \xpackage{xcolor}
+%    each overwrite \cs{normalcolor}. For example, after the package
+%    loading order \xpackage{color}, \xpackage{pdfrender} and \xpackage{xcolor}
+%    the patched version of \cs{normalcolor} is overwritten by
+%    package \xpackage{xcolor}. Also using \cs{AtBeginDocument} for
+%    patching is not enough. If package \xpackage{hyperref} is loaded
+%    later, it might load package \xpackage{color} using \cs{AtBeginDocument}.
+%    \begin{macro}{\PdfRender@NormalColorHook}
+%    \begin{macrocode}
+\def\PdfRender@NormalColorHook{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@ColorSetGroupHook}
+%    \begin{macrocode}
+\def\PdfRender@ColorSetGroupHook{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@TestBox}
+%    \begin{macrocode}
+\def\PdfRender@TestBox#1{%
+  \setbox0=\color@hbox#1\color@endbox
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@PatchNormalColor}
+%    \begin{macrocode}
+\def\PdfRender@PatchNormalColor{%
+  \ltx@ifundefined{normalcolor}{%
+    \gdef\normalcolor{\PdfRender@NormalColorHook}%
+  }{%
+    \begingroup
+      \def\PdfRender@NormalColorHook{\let\PdfRender@temp=Y}%
+      \PdfRender@TestBox{%
+        \let\set@color\relax
+        \normalcolor
+        \ifx\PdfRender@temp Y%
+        \else
+          \ltx@GlobalAppendToMacro\normalcolor{%
+            \PdfRender@NormalColorHook
+          }%
+        \fi
+      }%
+    \endgroup
+  }%
+  \ifx\@nodocument\relax
+    \global\let\PdfRender@PatchNormalColor\relax
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@PatchColorSetGroup}
+%    \begin{macrocode}
+\def\PdfRender@PatchColorSetGroup{%
+  \begingroup
+    \def\PdfRender@ColorSetGroupHook{\let\PdfRender@temp=Y}%
+    \PdfRender@TestBox{%
+      \let\set@color\relax
+      \color@setgroup\color@endgroup
+      \ifx\PdfRender@temp Y%
+      \else
+        \ltx@GlobalAppendToMacro\color@setgroup{%
+          \PdfRender@ColorSetGroupHook
+        }%
+      \fi
+    }%
+  \endgroup
+  \ifx\@nodocument\relax
+    \global\let\PdfRender@PatchColorSetGroup\relax
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@PatchColor}
+%    \begin{macrocode}
+\def\PdfRender@PatchColor{%
+  \PdfRender@PatchNormalColor
+  \PdfRender@PatchColorSetGroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\PdfRender@PatchColor
+\ltx@IfUndefined{AtBeginDocument}{}{%
+  \AtBeginDocument{\PdfRender@PatchColor}%
+}
+%    \end{macrocode}
+%    \cs{AfterPackage} is provided by package \xpackage{scrlfile}.
+%    \begin{macrocode}
+\ltx@IfUndefined{AfterPackage}{%
+}{%
+  \AfterPackage{color}{\PdfRender@PatchColor}%
+  \AfterPackage{xcolor}{\PdfRender@PatchColor}%
+  \AfterPackage{etoolbox}{%
+    \AfterEndPreamble{\PdfRender@PatchColor}%
+  }%
+}%
+%    \end{macrocode}
+%    \cs{AfterEndPreamble} is provided by package \xpackage{etoolbox}.
+%    \begin{macrocode}
+\ltx@IfUndefined{AfterEndPreamble}{%
+}{%
+  \AfterEndPreamble{\PdfRender@PatchColor}%
+}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\PdfRender@RequirePackage{kvsetkeys}[2010/01/28]
+%    \end{macrocode}
+%    \begin{macro}{\PdfRender@texorpdfstring}
+%    \begin{macrocode}
+\def\PdfRender@texorpdfstring{%
+  \ltx@IfUndefined{texorpdfstring}\ltx@firstoftwo\texorpdfstring
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\pdfrender}
+%    \begin{macrocode}
+\ltx@IfUndefined{DeclareRobustCommand}%
+\ltx@firstoftwo\ltx@secondoftwo
+{%
+  \def\pdfrender#1%
+}{%
+  \newcommand{\pdfrender}{}%
+  \DeclareRobustCommand*{\pdfrender}[1]%
+}%
+{%
+  \PdfRender@texorpdfstring{%
+    \PdfRender@PatchNormalColor
+    \global\let\PdfRender@FillColor\ltx@empty
+    \global\let\PdfRender@StrokeColor\ltx@empty
+    \kvsetkeys{PDFRENDER}{#1}%
+    \PdfRender@SetColor
+  }{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\textpdfrender}
+%    \begin{macrocode}
+\ltx@IfUndefined{DeclareRobustCommand}%
+\ltx@firstoftwo\ltx@secondoftwo
+{%
+  \long\def\textpdfrender#1#2%
+}{%
+  \newcommand{\textpdfrender}{}%
+  \DeclareRobustCommand{\textpdfrender}[2]%
+}%
+{%
+  \PdfRender@texorpdfstring{%
+    \begingroup
+      \pdfrender{#1}%
+      #2%
+    \endgroup
+  }{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ifPdfRender@Values}
+%    \begin{macrocode}
+\PdfRender@newif{Values}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@NewClassValues}
+%    \begin{macrocode}
+\def\PdfRender@NewClassValues#1#2#3#4{%
+  \PdfRender@Valuestrue
+  \PdfRender@NewClass{#1}{#2}{#3}{#4}{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@NewClass}
+%    \begin{macrocode}
+\def\PdfRender@NewClass#1#2#3#4#5{%
+  \PdfRender@newif{Active#1}%
+  \expandafter\def\csname PdfRender@Default#1\endcsname{#2}%
+  \expandafter\let\csname PdfRender@Current#1\expandafter\endcsname
+      \csname PdfRender@Default#1\endcsname
+  \ifPdfRender@Stack
+    \expandafter\edef\csname PdfRender@Init#1\endcsname{%
+      \global\chardef
+      \expandafter\noexpand\csname PdfRender@Stack#1\endcsname=%
+          \noexpand\pdfcolorstackinit page direct{%
+            \noexpand#3%
+            \expandafter\noexpand\csname PdfRender@Default#1\endcsname
+          }\relax
+      \noexpand\@PackageInfo{pdfrender}{%
+        New color stack `#1' = \noexpand\number
+        \expandafter\noexpand\csname PdfRender@Stack#1\endcsname
+      }%
+      \gdef\expandafter\noexpand\csname PdfRender@Init#1\endcsname{}%
+    }%
+    \expandafter\edef\csname PdfRender@Set#1\endcsname{%
+      \expandafter\noexpand\csname PdfRender@Init#1\endcsname
+      \noexpand\pdfcolorstack
+      \expandafter\noexpand\csname PdfRender@Stack#1\endcsname
+      push{%
+        #3{\expandafter\noexpand\csname PdfRender@Current#1\endcsname}%
+      }%
+      \noexpand\aftergroup
+      \expandafter\noexpand\csname PdfRender@Reset#1\endcsname
+    }%
+    \expandafter\edef\csname PdfRender@Reset#1\endcsname{%
+      \expandafter\noexpand\csname PdfRender@Init#1\endcsname
+      \noexpand\pdfcolorstack
+      \expandafter\noexpand\csname PdfRender@Stack#1\endcsname
+      pop\relax
+    }%
+  \else
+    \expandafter\edef\csname PdfRender@Set#1\endcsname{%
+      \noexpand\pdfliteral direct{%
+        #3{\expandafter\noexpand\csname PdfRender@Current#1\endcsname}%
+      }%
+      \noexpand\aftergroup
+      \expandafter\noexpand\csname PdfRender@Reset#1\endcsname
+    }%
+    \expandafter\edef\csname PdfRender@Reset#1\endcsname{%
+      \noexpand\pdfliteral direct{%
+        #3{\expandafter\noexpand\csname PdfRender@Current#1\endcsname}%
+      }%
+    }%
+  \fi
+  \expandafter\edef\csname PdfRender@Normal#1\endcsname{%
+    \let
+    \expandafter\noexpand\csname PdfRender@Current#1\endcsname
+    \expandafter\noexpand\csname PdfRender@Default#1\endcsname
+    \noexpand\PdfRender@Set{#1}%
+  }%
+  \expandafter\ltx@GlobalAppendToMacro\expandafter\PdfRender@NormalColorHook
+  \expandafter{%
+    \csname PdfRender@Normal#1\endcsname
+  }%
+  \ltx@GlobalAppendToMacro\PdfRender@ColorSetGroupHook{%
+    \PdfRender@Set{#1}%
+  }%
+  \ifPdfRender@Values
+    \kv@parse@normalized{#4}{%
+      \expandafter\let\csname PdfRender@#1@\kv@key\endcsname\kv@key
+      \ifx\kv@value\relax
+      \else
+        \expandafter\let\csname PdfRender@#1@\kv@value\endcsname\kv@key
+      \fi
+      \ltx@gobbletwo
+    }%
+    \PdfRender@define@key{PDFRENDER}{#1}{%
+      \global\csname PdfRender@Active#1true\endcsname
+      \def\PdfRender@Current{##1}%
+      \PdfRender@SetValidateValues{#1}%
+    }%
+    \PdfRender@Valuesfalse
+  \else
+    \PdfRender@define@key{PDFRENDER}{#1}{%
+      \global\csname PdfRender@Active#1true\endcsname
+      \expandafter\def\csname PdfRender@Current#1\endcsname{##1}%
+      \ltx@IfUndefined{PdfRender@PostProcess#1}{%
+      }{%
+        \csname PdfRender@PostProcess#1\endcsname
+      }%
+      \PdfRender@SetValidate{#1}{#4}{#5}%
+    }%
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@define@key}
+%    \begin{macrocode}
+\ltx@IfUndefined{define@key}{%
+  \def\PdfRender@define@key#1#2{%
+    \expandafter\def\csname KV@#1@#2\endcsname##1%
+  }%
+}{%
+  \let\PdfRender@define@key\define@key
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@Set}
+%    \begin{macrocode}
+\def\PdfRender@Set#1{%
+  \csname ifPdfRender@Active#1\endcsname
+    \csname PdfRender@Set#1\expandafter\endcsname
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@Reset}
+%    \begin{macrocode}
+\def\PdfRender@Reset#1{%
+  \csname ifPdfRender@Active#1\endcsname
+    \csname PdfRender@Reset#1\expandafter\endcsname
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@ErrorInvalidValue}
+%    \begin{macrocode}
+\def\PdfRender@ErrorInvalidValue#1{%
+  \PackageError{pdfrender}{%
+    Ignoring parameter setting for `#1'\MessageBreak
+    because of invalid value %
+    `\csname PdfRender@Current#1\endcsname'%
+  }\@ehc
+  \expandafter\let\csname PdfRender@Current#1\endcsname\ltx@empty
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@SetValidate}
+%    \begin{macrocode}
+\ifPdfRender@Match
+  \def\PdfRender@SetValidate#1#2#3{%
+    \ifnum\pdfmatch{^(#2)$}{\csname PdfRender@Current#1\endcsname}=1 %
+      \csname PdfRender@Set#1\expandafter\endcsname
+    \else
+      \PdfRender@ErrorInvalidValue{#1}%
+    \fi
+  }%
+\else
+  \def\PdfRender@SetValidate#1#2#3{%
+    \expandafter\let\expandafter\PdfRender@Current
+    \csname PdfRender@Current#1\endcsname
+    #3%
+    \ifx\PdfRender@Current\@empty
+      \PdfRender@ErrorInvalidValue{#1}%
+    \else
+      \csname PdfRender@Set#1\expandafter\endcsname
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@SetValidateValues}
+%    \begin{macrocode}
+\def\PdfRender@SetValidateValues#1{%
+  \ltx@IfUndefined{PdfRender@#1@\PdfRender@Current}{%
+    \expandafter\let\csname PdfRender@Current#1\endcsname
+                    \PdfRender@Current
+    \PdfRender@ErrorInvalidValue{#1}%
+  }{%
+    \expandafter\edef\csname PdfRender@Current#1\endcsname{%
+      \csname PdfRender@#1@\PdfRender@Current\endcsname
+    }%
+    \csname PdfRender@Set#1\endcsname
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@OpValue}
+%    \begin{macrocode}
+\def\PdfRender@OpValue#1#2{#2\ltx@space#1}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@OpName}
+%    \begin{macrocode}
+\def\PdfRender@OpName#1#2{/#2\ltx@space#1}%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Declare and setup parameters}
+%
+%    \begin{macrocode}
+\PdfRender@NewClassValues{TextRenderingMode}%
+                      {0}%
+                      {\PdfRender@OpValue{Tr}}{%
+  0=Fill,%
+  1=Stroke,%
+  2=FillStroke,%
+  3=Invisible,%
+  4=FillClip,%
+  5=StrokeClip,%
+  6=FillStrokeClip,%
+  7=Clip,%
+}%
+\PdfRender@NewClass{LineWidth}{1}{\PdfRender@OpValue{w}}{%
+  [0-9]+\string\.?[0-9]*|\string\.[0-9]+%
+}{}%
+\ltx@IfUndefined{dimexpr}{%
+  \def\PdfRender@dimexpr{}%
+}{%
+  \let\PdfRender@dimexpr\dimexpr
+}
+\def\PdfRender@PostProcessLineWidth{%
+  \begingroup
+  \afterassignment\PdfRender@@PostProcessLineWidth
+  \dimen0=\PdfRender@dimexpr\PdfRender@CurrentLineWidth bp %
+  \PdfRender@let\PdfRender@relax\PdfRender@relax
+}
+\let\PdfRender@let\let
+\let\PdfRender@relax\relax
+\def\PdfRender@@PostProcessLineWidth#1\PdfRender@let{%
+  \ifx\\#1\\%
+    \endgroup
+  \else
+    \dimen0=.996264\dimen0 % 72/72.27
+    \edef\x{\endgroup
+      \def\noexpand\PdfRender@CurrentLineWidth{%
+        \strip@pt\dimen0%
+      }%
+    }%
+    \expandafter\x
+  \fi
+}
+\PdfRender@NewClassValues{LineCapStyle}{0}{\PdfRender@OpValue{J}}{%
+  0=Butt,%
+  1=Round,%
+  2=ProjectingSquare,%
+}%
+\PdfRender@NewClassValues{LineJoinStyle}{0}{\PdfRender@OpValue{j}}{%
+  0=Miter,%
+  1=Round,%
+  2=Bevel,%
+}%
+\PdfRender@NewClass{MiterLimit}{10}{\PdfRender@OpValue{M}}{%
+  [0-9]*[1-9][0-9]*\string\.?[0-9]*|%
+  [0-9]*\string\.?[0-9]*[1-9][0-9]*%
+}{}%
+\PdfRender@NewClass{Flatness}{0}{\PdfRender@OpValue{i}}{%
+  100(\string\.0*)?|[0-9][0-9](\string\.[0-9]*)?|\string\.[0-9]+%
+}{}%
+\PdfRender@NewClass{LineDashPattern}{[]0}{\PdfRender@OpValue{d}}{%
+  \string\[%
+  ( ?([0-9]+\string\.?[0-9]*|\string\.[0-9]+) ?)*%
+  \string\] ?%
+  ([0-9]+\string\.?[0-9]*|\string\.[0-9]+)%
+}{}%
+\PdfRender@NewClassValues{RenderingIntent}%
+                      {RelativeColorimetric}%
+                      {\PdfRender@OpName{ri}}{%
+  AbsoluteColorimetric,%
+  RelativeColorimetric,%
+  Saturation,%
+  Perceptual,%
+}%
+%    \end{macrocode}
+%
+% \subsection{Fill and stroke color support}
+%
+%    \begin{macrocode}
+\PdfRender@define@key{PDFRENDER}{FillColor}{%
+  \begingroup
+    \def\PdfRender@Color{#1}%
+    \ifx\PdfRender@Color\ltx@empty
+      \global\let\PdfRender@FillColor\ltx@empty
+    \else
+      \PdfRender@ColorAvailable{%
+        \PdfRender@TestBox{%
+          \expandafter\PdfRender@TryColor\PdfRender@Color\ltx@empty
+          \PdfRender@GetFillColor
+          \ifx\PdfRender@FillColor\ltx@empty
+            \@PackageWarning{pdfrender}{%
+              Cannot extract fill color\MessageBreak
+              from value `#1'%
+            }%
+          \fi
+        }%
+      }%
+    \fi
+  \endgroup
+}
+\PdfRender@define@key{PDFRENDER}{StrokeColor}{%
+  \begingroup
+    \def\PdfRender@Color{#1}%
+    \ifx\PdfRender@Color\ltx@empty
+      \global\let\PdfRender@StrokeColor\ltx@empty
+    \else
+      \PdfRender@ColorAvailable{%
+        \PdfRender@TestBox{%
+          \expandafter\PdfRender@TryColor\PdfRender@Color\ltx@empty
+          \PdfRender@GetStrokeColor
+          \ifx\PdfRender@StrokeColor\ltx@empty
+            \@PackageWarning{pdfrender}{%
+              Cannot extract stroke color\MessageBreak
+              from value `#1'%
+            }%
+          \fi
+        }%
+      }%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \begin{macro}{\PdfRender@ColorAvailable}
+%    \begin{macrocode}
+\def\PdfRender@ColorAvailable{%
+  \@ifundefined{set@color}{%
+    \@PackageError{pdfrender}{%
+      Ignoring color options, because neither\MessageBreak
+      package `color' nor package `xcolor' is loaded%
+    }\@ehc
+    \global\let\PdfRender@ColorAvailable\ltx@gobble
+  }{%
+    \global\let\PdfRender@ColorAvailable\ltx@firstofone
+  }%
+  \PdfRender@ColorAvailable
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@TryColor}
+%    \begin{macrocode}
+\def\PdfRender@TryColor{%
+  \@ifnextchar[\color\PdfRender@@TryColor
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@@TryColor}
+%    \begin{macrocode}
+\def\PdfRender@@TryColor#1\ltx@empty{%
+  \expandafter\color\expandafter{\PdfRender@Color}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@SetColor}
+%    \begin{macrocode}
+\def\PdfRender@SetColor{%
+  \chardef\PdfRender@NeedsCurrentColor=0 %
+  \ifx\PdfRender@FillColor\ltx@empty
+    \ifx\PdfRender@StrokeColor\ltx@empty
+    \else
+      \edef\PdfRender@CurrentColor{%
+        \noexpand\PdfRender@FillColor\ltx@space\PdfRender@StrokeColor
+      }%
+      \chardef\PdfRender@NeedsCurrentColor=1 %
+    \fi
+  \else
+    \ifx\PdfRender@StrokeColor\ltx@empty
+      \edef\PdfRender@CurrentColor{%
+        \PdfRender@FillColor\ltx@space\noexpand\PdfRender@StrokeColor
+      }%
+      \chardef\PdfRender@NeedsCurrentColor=2 %
+    \else
+      \edef\current@color{%
+        \PdfRender@FillColor\ltx@space\PdfRender@StrokeColor
+      }%
+      \set@color
+    \fi
+  \fi
+  \ifnum\PdfRender@NeedsCurrentColor=1 %
+    \PdfRender@GetFillColor
+    \ifx\PdfRender@FillColor\ltx@empty
+      \@PackageWarning{pdfrender}{%
+        Cannot extract current fill color%
+      }%
+    \else
+      \edef\current@color{\PdfRender@CurrentColor}%
+      \set@color
+    \fi
+  \else
+    \ifnum\PdfRender@NeedsCurrentColor=2 %
+      \PdfRender@GetStrokeColor
+      \ifx\PdfRender@StrokeColor\ltx@empty
+        \@PackageWarning{pdfrender}{%
+          Cannot extract current stroke color%
+        }%
+      \else
+        \edef\current@color{\PdfRender@CurrentColor}%
+        \set@color
+      \fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@PatternFillColor}
+%    \begin{macrocode}
+\edef\PdfRender@PatternFillColor{ % space
+  (%
+    [0-9\string\.]+ g|%
+    [0-9\string\.]+ [0-9\string\.]+ [0-9\string\.]+ rg|%
+    [0-9\string\.]+ [0-9\string\.]+ %
+    [0-9\string\.]+ [0-9\string\.]+ k%
+  ) % space
+  (.*)$%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@PatternStrokeColor}
+%    \begin{macrocode}
+\edef\PdfRender@PatternStrokeColor{ % space
+  (%
+    [0-9\string\.]+ G|%
+    [0-9\string\.]+ [0-9\string\.]+ [0-9\string\.]+ RG|%
+    [0-9\string\.]+ [0-9\string\.]+ %
+    [0-9\string\.]+ [0-9\string\.]+ K%
+  ) % space
+  (.*)$%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@MatchPattern}
+%    \begin{macrocode}
+\def\PdfRender@MatchPattern#1{%
+  \ifnum\pdfmatch{\PdfRender@Pattern}{\PdfRender@String}=1 %
+    \xdef#1{%
+      \expandafter\strip@prefix\pdflastmatch 1%
+    }%
+    \edef\PdfRender@String{%
+      \expandafter\strip@prefix\pdflastmatch 2%
+    }%
+    \ifx\PdfRender@String\ltx@empty
+    \else
+      \expandafter\expandafter\expandafter\PdfRender@MatchPattern
+      \expandafter\expandafter\expandafter#1%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@GetFillColor}
+%    \begin{macrocode}
+\def\PdfRender@GetFillColor{%
+  \global\let\PdfRender@FillColor\ltx@empty
+  \begingroup
+    \ifPdfRender@Match
+      \let\PdfRender@Pattern\PdfRender@PatternFillColor
+      \edef\PdfRender@String{\ltx@space\current@color\ltx@space}%
+      \PdfRender@MatchPattern\PdfRender@FillColor
+    \else
+      \edef\current@color{\current@color\ltx@space}%
+      \let\PdfRender@OP\relax
+      \PdfRender@FindOp{g}0%
+      \PdfRender@FindOp{G}1%
+      \PdfRender@FindOp{rg}0%
+      \PdfRender@FindOp{RG}1%
+      \PdfRender@FindOp{k}0%
+      \PdfRender@FindOp{K}1%
+      \PdfRender@FilterOp 0\PdfRender@FillColor
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@GetStrokeColor}
+%    \begin{macrocode}
+\def\PdfRender@GetStrokeColor{%
+  \global\let\PdfRender@StrokeColor\ltx@empty
+  \begingroup
+    \ifPdfRender@Match
+      \let\PdfRender@Pattern\PdfRender@PatternStrokeColor
+      \edef\PdfRender@String{\ltx@space\current@color\ltx@space}%
+      \PdfRender@MatchPattern\PdfRender@StrokeColor
+    \else
+      \edef\current@color{\current@color\ltx@space}%
+      \let\PdfRender@OP\relax
+      \PdfRender@FindOp{g}0%
+      \PdfRender@FindOp{G}1%
+      \PdfRender@FindOp{rg}0%
+      \PdfRender@FindOp{RG}1%
+      \PdfRender@FindOp{k}0%
+      \PdfRender@FindOp{K}1%
+      \PdfRender@FilterOp 1\PdfRender@StrokeColor
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\ifPdfRender@Match
+  \expandafter\PdfRender@AtEnd
+\fi%
+%    \end{macrocode}
+%    \begin{macro}{\PdfRender@FindOp}
+%    \begin{macrocode}
+\def\PdfRender@FindOp#1#2{%
+  \def\PdfRender@temp##1 #1 ##2\@nil{%
+    ##1%
+    \ifx\\##2\\%
+      \expandafter\@gobble
+    \else
+      \PdfRender@OP{#1}#2%
+      \expandafter\@firstofone
+    \fi
+    {%
+      \PdfRender@temp##2\@nil
+    }%
+  }%
+  \edef\current@color{%
+    \@firstofone{\expandafter\PdfRender@temp\current@color} #1 \@nil
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@FilterOp}
+%    \begin{macrocode}
+\def\PdfRender@FilterOp#1#2{%
+  \expandafter\PdfRender@@FilterOp\expandafter#1\expandafter#2%
+      \current@color\PdfRender@OP{}{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PdfRender@@FilterOp}
+%    \begin{macrocode}
+\def\PdfRender@@FilterOp#1#2#3\PdfRender@OP#4#5{%
+  \ifx\\#4#5\\%
+  \else
+    \ifnum#1=#5 %
+      \xdef#2{#3 #4}%
+    \fi
+    \expandafter\PdfRender@@FilterOp\expandafter#1\expandafter#2%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\PdfRender@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input pdfrender.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Simple test file}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfrender-test2.tex}[2010/01/28]
+\documentclass{article}
+\usepackage{color}
+\usepackage{pdfrender}[2010/01/28]
+\begin{document}
+Hello World
+\newpage
+Start
+\textpdfrender{%
+  TextRenderingMode=1,%
+  LineWidth=.1,%
+  LineCapStyle=2,%
+  LineJoinStyle=1,%
+  MiterLimit=1.2,%
+  LineDashPattern=[2 2]0,%
+  RenderingIntent=Saturation,%
+}{Hello\newpage World}
+Stop
+\par
+\newlength{\LineWidth}
+\setlength{\LineWidth}{.5pt}
+Start
+\textpdfrender{%
+  FillColor=yellow,%
+  StrokeColor=[cmyk]{1,.5,0,0},%
+  TextRenderingMode=FillStroke,%
+  LineWidth=.5\LineWidth,%
+  LineCapStyle=Round,%
+  LineJoinStyle=Bevel,%
+}{Out-\par\newpage line}
+Stop
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \subsection{Further tests}
+%
+%    Robustness and bookmarks.
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfrender-test3.tex}[2010/01/28]
+\documentclass{article}
+\usepackage{pdfrender}[2010/01/28]
+\usepackage{hyperref}
+\usepackage{bookmark}
+\begin{document}
+\tableofcontents
+\section{%
+  \textpdfrender{%
+    TextRenderingMode=1,%
+    LineCapStyle=2,%
+    LineJoinStyle=1,%
+    MiterLimit=1.2,%
+    LineDashPattern=[2 2]0,%
+    RenderingIntent=Saturation,%
+  }{Hello World}%
+}
+\end{document}
+%</test3>
+%    \end{macrocode}
+%
+%    Color algorithm if \cs{pdfmatch} is not available.
+%    \begin{macrocode}
+%<*test4>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfrender-test4.tex}[2010/01/28]
+\documentclass[12pt]{article}
+\usepackage{pdfrender}[2010/01/28]
+\usepackage{color}
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\makeatletter
+\newcommand*{\CheckColor}[1]{%
+  \Expect{#1}*{\current@color}%
+}
+\makeatother
+\begin{document}
+  \begin{qstest}{color}{color}%
+    \CheckColor{0 g 0 G}%
+    \Huge\bfseries
+    \noindent
+    \textpdfrender{%
+      TextRenderingMode=2,%
+      LineWidth=.5,%
+      FillColor=yellow,%
+      StrokeColor=blue,%
+    }{%
+      \CheckColor{0 0 1 0 k 0 0 1 RG}%
+      Blue(Yellow)\\%
+      \textpdfrender{%
+        FillColor=green,%
+      }{%
+        \CheckColor{0 1 0 rg 0 0 1 RG}%
+        Blue(Green)%
+      }\\%
+      \CheckColor{0 0 1 0 k 0 0 1 RG}%
+      Blue(Yellow)\\%
+      \textpdfrender{%
+        StrokeColor=red,%
+      }{%
+        \CheckColor{0 0 1 0 k 1 0 0 RG}%
+        Red(Yellow)%
+      }\\%
+      \CheckColor{0 0 1 0 k 0 0 1 RG}%
+      Blue(Yellow) %
+    }%
+  \end{qstest}%
+  \begin{qstest}{colorlast}{colorlast}%
+    \makeatletter
+    \def\Test#1#2#3{%
+      \begingroup
+        \def\current@color{#1}%
+        \textpdfrender{#2}{%
+          \CheckColor{#3}%
+        }%
+      \endgroup
+    }%
+    \Test{1 g 0 0 1 RG 0 0 1 0 k 0.5 G}%
+         {StrokeColor=green}%
+         {0 0 1 0 k 0 1 0 RG}%
+    \Test{1 g 0 0 1 RG 0 0 1 0 k 0.5 G}%
+         {FillColor=red}%
+         {1 0 0 rg 0.5 G}%
+  \end{qstest}%
+\end{document}
+%</test4>
+%    \end{macrocode}
+%
+% \subsection{Compatibility with \plainTeX}
+%
+%    \begin{macrocode}
+%<*test5>
+\pdfoutput=1 %
+\hsize=6.5in
+\vsize=8.9in
+\pdfpagewidth=\hsize
+\pdfpageheight=\vsize
+\parfillskip=0pt plus 1fil\relax
+\input pdfrender.sty\relax
+\catcode`\{=1 %
+\catcode`\}=2 %
+\let\OrgMakeFootLine\makefootline
+\def\makefootline{%
+  \begingroup\normalcolor\OrgMakeFootLine\endgroup
+}
+\font\f=ec-lmr10 scaled 3000\relax
+\f
+Before %
+\textpdfrender{%
+  TextRenderingMode=1,%
+  LineWidth=.1,%
+}{Hello\par\vfill\penalty-10000 World} %
+After %
+\par
+\vfill
+\penalty-10000 %
+\csname @@end\endcsname\end
+%</test5>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfrender.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfrender.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfrender.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfrender.sty & tex/generic/oberdiek/pdfrender.sty\\
+%   pdfrender.pdf & doc/latex/oberdiek/pdfrender.pdf\\
+%   test/pdfrender-test1.tex & doc/latex/oberdiek/test/pdfrender-test1.tex\\
+%   test/pdfrender-test2.tex & doc/latex/oberdiek/test/pdfrender-test2.tex\\
+%   test/pdfrender-test3.tex & doc/latex/oberdiek/test/pdfrender-test3.tex\\
+%   test/pdfrender-test4.tex & doc/latex/oberdiek/test/pdfrender-test4.tex\\
+%   test/pdfrender-test5.tex & doc/latex/oberdiek/test/pdfrender-test5.tex\\
+%   pdfrender.dtx & source/latex/oberdiek/pdfrender.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfrender.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfrender.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfrender.dtx
+%makeindex -s gind.ist pdfrender.idx
+%pdflatex pdfrender.dtx
+%makeindex -s gind.ist pdfrender.idx
+%pdflatex pdfrender.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfrender.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfrender'>
+  <name>pdfrender</name>
+  <caption>Control rendering parameters.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    The package provides interfaces for the user to control PDF
+    parameters, such as line width or text rendering mode.  The
+    control operations work in a manner very similar to that of the
+     <xref refid='color'>color</xref> package.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfrender.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfrender.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Friedrich Vosberg] asked in the
+%   newsgroup \textsf{de.comp.text.tex} for the font
+%   outline feature \cite{news-Vosberg}.
+% \item[Gaius Pupus] proposed the basic method
+%   using \cs{pdfliteral} in this thread \cite{news-Pupus}.
+% \item[Rolf Niepraschk] added color support \cite{news-Niepraschk}.
+% \end{description}
+%
+% \begin{thebibliography}{9}
+% \raggedright
+%
+% \bibitem{pdf-spec}
+%   Adobe Systems Incorporated. \textit{PDF Reference --
+%   Adobe Portable Document format -- Version 1.7}.
+%   6th ed. 2006.
+%   \textsc{URL:}\,\url{http://www.adobe.com/devnet/acrobat/pdfs/pdf_reference_1-7.pdf}.
+%
+% \bibitem{news-Vosberg}
+%   Friedrich Vosberg, \textit{Text in Buchstabenumrissen},
+%   de.comp.text.tex, 2010-01-22.
+%   \textsc{URL:}\,\url{http://groups.google.com/group/de.comp.text.tex/msg/f442310ac8b2d506}.
+%
+% \bibitem{news-Pupus}
+%   Gaius Pupus, \textit{Re: Text in Buchstabenumrissen},
+%   de.comp.text.tex, 2010-01-23.
+%   \textsc{URL:}\,\url{http://groups.google.com/group/de.comp.text.tex/msg/95d890d77ac47eb1}.
+%
+% \bibitem{news-Niepraschk}
+%   Rolf Niepraschk, \textit{Re: Text in Buchstabenumrissen},
+%   de.comp.text.tex, 2010-01-24.
+%   \textsc{URL:}\,\url{http://groups.google.com/group/de.comp.text.tex/msg/4eb61a5879db54db}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2010/01/26 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+%   \begin{Version}{2010/01/27 v1.1}
+%   \item
+%     Macros \cs{pdfrender} and \cs{textpdfrender} are made robust.
+%   \item
+%     Color extraction rewritten for the case that \cs{pdfmatch}
+%     is not available. This fixes wrong color assigments in
+%     case of nesting.
+%   \item
+%     Color extraction of case \cs{pdfmatch} is fixed
+%     for the case that the color string contains several
+%     fill or several stroke operations.
+%   \end{Version}
+%   \begin{Version}{2010/01/28 v1.2}
+%   \item
+%     Dependency from package \xpackage{color} is removed.
+%   \item
+%     Compatibility for \plainTeX\ and even ini\TeX\ added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

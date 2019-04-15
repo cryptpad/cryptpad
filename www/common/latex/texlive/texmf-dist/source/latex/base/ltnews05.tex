@@ -1,0 +1,158 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews05.tex
+
+% This is issue 5 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]
+   {ltnews}
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{June}
+\publicationyear{1996}
+\publicationissue{5}
+
+\begin{document}
+
+\maketitle
+
+\section{Welcome to \LaTeXNews~5}
+This issue of \emph{\LaTeXNews} accompanies the fifth release of the
+new standard \LaTeX{}, \LaTeXe.
+
+\section{Extra possibilities for section headings}
+Most \LaTeX\ sectioning commands are defined using
+\verb|\@startsection|.
+For example, the \textsf{article} class defines:
+\begin{small}
+\begin{verbatim}
+\newcommand\section{\@startsection 
+ {section}{1}{0pt}{-3.5ex plus-1ex minus-.2ex}%
+ {2.3ex plus.2ex}{\normalfont\Large\bfseries}}
+\end{verbatim}
+\end{small}
+The last argument specifies the style in which the section heading is
+to be typeset.
+
+The new feature added at this release is that at the \emph{end} of
+this argument you may specify a command that \emph{takes an argument}.
+This command will be applied to the section number and heading.
+For example, one could use the \verb|\MakeUppercase| command to
+produce uppercase headings. A package or class file could contain:
+\begin{small}
+\begin{verbatim}
+\renewcommand\section{\@startsection 
+ {section}{1}{0pt}{-3.5ex plus-1ex minus-.2ex}%
+ {2.3ex plus.2ex}{\normalfont\Large\MakeUppercase}}
+\end{verbatim}
+\end{small}
+to produce section headings using uppercase medium weight text, rather
+than the bold text used by \textsf{article}. Note that, like the font
+choice, the uppercasing applies only to the actual heading (including
+any automatically generated section number), not to the text as it may
+appear in the running head or table of contents.
+
+\section{The `openany' option in the `book' class}
+The \textsf{openany} option allows chapter and similar openings to
+occur on left hand pages. Previously this option only affected
+\verb|\chapter| and \verb|\backmatter|. It now also affects
+\verb|\part|, \verb|\frontmatter| and \verb|\mainmatter|.
+
+\section{More font (output) encodings}
+The font encoding name \texttt{T3} has been allocated to the encoding
+used in the new 256-character \textsc{IPA} fonts (for the phonetic
+alphabet) produced by Rei Fukui. His package, \textsf{tipa},
+gives access to these fonts and should soon be available.  (The
+encoding named \texttt{OT3} is the 128-character encoding used in the
+\textsc{IPA} fonts produced by Washington State University.)
+
+
+
+\section{More input encodings supported}
+The \textsf{inputenc} package now supports the IBM codepage~852 used
+in Eastern Europe, with the option~\texttt{[cp852]} contributed by
+Petr~Sojka.
+
+Also, the \textsf{inputenc} package now activates most `control codes'
+with \textsc{ascii} values below 32.
+Currently none of the encodings in the standard distribution makes use
+of these positions.
+
+\section{Fixes and improvements}
+The \LaTeX\ kernel has only had minor changes, apart from
+\verb|\@startsection| mentioned above.
+However, some small fixes have been incorporated removing the
+following problems:
+
+\begin{itemize}
+\item
+  In tabular and array, previous versions of \LaTeX\ `lost' the
+  inter-column space from an `\texttt{l}'-column, when that column
+  was completely empty.
+
+\item
+  Previously, the use of the \verb|\nofiles| command could change
+  the \emph{vertical spacing} in a document.\\ A side effect of fixing
+  this is that when \verb|\nofiles| is used, \verb|\label| puts a
+  blank line in the log file.
+
+\item
+  \LaTeX~often loads fonts `on demand'. Previously, this could
+  happen inside the argument of an accent command and this would
+  cause the accent to appear in the wrong place.
+
+\end{itemize}
+
+\section{Changes to the `tools' packages}
+
+\begin{itemize}
+\item
+  The \textsf{longtable} package now uses a modified algorithm,
+  contributed by David Kastrup, to align the `chunks' of a table.
+  It is now unnecessary to edit the document to add
+  \verb|\setlongtables| before the final run of \LaTeX.
+  In certain cases of overlapping \verb|\multicolumn| entries, the new
+  algorithm will produce better column widths than the old (at the
+  price of extra passes through \LaTeX).
+
+\item
+  The \textsf{dcolumn} package now has the extra possibility of
+  specifying the number of digits both \emph{before} and after the
+  `decimal point'. This makes it easy to centre the column of numbers
+  under a wide heading.
+\end{itemize}
+
+\section{New copy of the \LaTeX\ bug database}
+\verb|http://www.tex.ac.uk/ctan/latex/bugs.html| will soon have links
+to a copy of the searchable \LaTeX\ bugs database at Mainz (Germany)
+as well as the original copy at Sussex (England).
+
+\end{document}

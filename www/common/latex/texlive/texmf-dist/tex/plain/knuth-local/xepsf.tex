@@ -1,0 +1,219 @@
+%   XEPSF.TEX macro file:
+%   Same as EPSF.TEX except that it uses the ExactBoundingBox put out by
+%   MetaPost under appropriate coding.
+%
+%   (I made this unnecessary on 22 Jan 97 by changing MetaPost to
+%   output the exact bounding box when prologues<0. But I retain this
+%   file for compatibility with older uses of MetaPost, e.g. gbmac.tex.)
+%
+%   Written by Tomas Rokicki of Radical Eye Software, 29 Mar 1989.
+%   Revised by Don Knuth, 3 Jan 1990.
+%   Revised by Tomas Rokicki to accept bounding boxes with no
+%      space after the colon, 18 Jul 1990.
+%
+%   TeX macros to include an Encapsulated PostScript graphic.
+%   Works by finding the bounding box comment,
+%   calculating the correct scale values, and inserting a vbox
+%   of the appropriate size at the current position in the TeX document.
+%
+%   To use with the center environment of LaTeX, preface the \epsffile
+%   call with a \leavevmode.  (LaTeX should probably supply this itself
+%   for the center environment.)
+%
+%   To use, simply say
+%   \input epsf           % somewhere early on in your TeX file
+%   \epsfbox{filename.ps} % where you want to insert a vbox for a figure
+%
+%   Alternatively, you can type
+%
+%   \epsfbox[0 0 30 50]{filename.ps} % to supply your own BB
+%
+%   which will not read in the file, and will instead use the bounding
+%   box you specify.
+%
+%   The effect will be to typeset the figure as a TeX box, at the
+%   point of your \epsfbox command. By default, the graphic will have its
+%   `natural' width (namely the width of its bounding box, as described
+%   in filename.ps). The TeX box will have depth zero.
+%
+%   You can enlarge or reduce the figure by saying
+%     \epsfxsize=<dimen> \epsfbox{filename.ps}
+%   (or
+%     \epsfysize=<dimen> \epsfbox{filename.ps}
+%   instead). Then the width of the TeX box will be \epsfxsize and its
+%   height will be scaled proportionately (or the height will be
+%   \epsfysize and its width will be scaled proportionately).  The
+%   width (and height) is restored to zero after each use.
+%
+%   A more general facility for sizing is available by defining the
+%   \epsfsize macro.    Normally you can redefine this macro
+%   to do almost anything.  The first parameter is the natural x size of
+%   the PostScript graphic, the second parameter is the natural y size
+%   of the PostScript graphic.  It must return the xsize to use, or 0 if
+%   natural scaling is to be used.  Common uses include:
+%
+%      \epsfxsize  % just leave the old value alone
+%      0pt         % use the natural sizes
+%      #1          % use the natural sizes
+%      \hsize      % scale to full width
+%      0.5#1       % scale to 50% of natural size
+%      \ifnum#1>\hsize\hsize\else#1\fi  % smaller of natural, hsize
+%
+%   If you want TeX to report the size of the figure (as a message
+%   on your terminal when it processes each figure), say `\epsfverbosetrue'.
+%
+\newread\epsffilein    % file to \read
+\newif\ifepsffileok    % continue looking for the bounding box?
+\newif\ifepsfbbfound   % success?
+\newif\ifepsfverbose   % report what you're making?
+\newdimen\epsfxsize    % horizontal size after scaling
+\newdimen\epsfysize    % vertical size after scaling
+\newdimen\epsftsize    % horizontal size before scaling
+\newdimen\epsfrsize    % vertical size before scaling
+\newdimen\epsftmp      % register for arithmetic manipulation
+\newdimen\pspoints     % conversion factor
+%
+\pspoints=1bp          % Adobe points are `big'
+\epsfxsize=0pt         % Default value, means `use natural size'
+\epsfysize=0pt         % ditto
+%
+\def\epsfbox#1{\global\def\epsfllx{72}\global\def\epsflly{72}%
+   \global\def\epsfurx{540}\global\def\epsfury{720}%
+   \def\lbracket{[}\def\testit{#1}\ifx\testit\lbracket
+   \let\next=\epsfgetlitbb\else\let\next=\epsfnormal\fi\next{#1}}%
+%
+\def\epsfgetlitbb#1#2 #3 #4 #5]#6{\epsfgrab #2 #3 #4 #5 .\\%
+   \epsfsetgraph{#6}}%
+%
+\def\epsfnormal#1{\epsfgetbb{#1}\epsfsetgraph{#1}}%
+%
+\def\epsfgetbb#1{%
+%
+%   The first thing we need to do is to open the
+%   PostScript file, if possible.
+%
+\openin\epsffilein=#1
+\ifeof\epsffilein\errmessage{I couldn't open #1, will ignore it}\else
+%
+%   Okay, we got it. Now we'll scan lines until we find one that doesn't
+%   start with %. We're looking for the bounding box comment.
+%
+   {\epsffileoktrue \chardef\other=12
+    \def\do##1{\catcode`##1=\other}\dospecials \catcode`\ =10
+    \loop
+       \read\epsffilein to \epsffileline
+       \ifeof\epsffilein\epsffileokfalse\else
+%
+%   We check to see if the first character is a % sign;
+%   if not, we stop reading (unless the line was entirely blank);
+%   if so, we look further and stop only if the line begins with
+%   `%%%ExactBoundingBox:'.
+%
+          \expandafter\epsfaux\epsffileline:. \\%
+       \fi
+   \ifepsffileok\repeat
+   \ifepsfbbfound\else
+    \ifepsfverbose\message{No bounding box comment in #1; using defaults}\fi\fi
+   }\closein\epsffilein\fi}%
+%
+%   Now we have to calculate the scale and offset values to use.
+%   First we compute the natural sizes.
+%
+\def\epsfclipstring{}% do we clip or not?  If so,
+\def\epsfclipon{\def\epsfclipstring{ clip}}%
+\def\epsfclipoff{\def\epsfclipstring{}}%
+%
+\def\epsfsetgraph#1{%
+   \epsfrsize=\epsfury\pspoints
+   \advance\epsfrsize by-\epsflly\pspoints
+   \epsftsize=\epsfurx\pspoints
+   \advance\epsftsize by-\epsfllx\pspoints
+%
+%   If `epsfxsize' is 0, we default to the natural size of the picture.
+%   Otherwise we scale the graph to be \epsfxsize wide.
+%
+   \epsfxsize\epsfsize\epsftsize\epsfrsize
+   \ifnum\epsfxsize=0 \ifnum\epsfysize=0
+      \epsfxsize=\epsftsize \epsfysize=\epsfrsize
+      \epsfrsize=0pt
+%
+%   We have a sticky problem here:  TeX doesn't do floating point arithmetic!
+%   Our goal is to compute y = rx/t. The following loop does this reasonably
+%   fast, with an error of at most about 16 sp (about 1/4000 pt).
+% 
+     \else\epsftmp=\epsftsize \divide\epsftmp\epsfrsize
+       \epsfxsize=\epsfysize \multiply\epsfxsize\epsftmp
+       \multiply\epsftmp\epsfrsize \advance\epsftsize-\epsftmp
+       \epsftmp=\epsfysize
+       \loop \advance\epsftsize\epsftsize \divide\epsftmp 2
+       \ifnum\epsftmp>0
+          \ifnum\epsftsize<\epsfrsize\else
+             \advance\epsftsize-\epsfrsize \advance\epsfxsize\epsftmp \fi
+       \repeat
+       \epsfrsize=0pt
+     \fi
+   \else \ifnum\epsfysize=0
+     \epsftmp=\epsfrsize \divide\epsftmp\epsftsize
+     \epsfysize=\epsfxsize \multiply\epsfysize\epsftmp   
+     \multiply\epsftmp\epsftsize \advance\epsfrsize-\epsftmp
+     \epsftmp=\epsfxsize
+     \loop \advance\epsfrsize\epsfrsize \divide\epsftmp 2
+     \ifnum\epsftmp>0
+        \ifnum\epsfrsize<\epsftsize\else
+           \advance\epsfrsize-\epsftsize \advance\epsfysize\epsftmp \fi
+     \repeat
+     \epsfrsize=0pt
+    \else
+     \epsfrsize=\epsfysize
+    \fi
+   \fi
+%
+%  Finally, we make the vbox and stick in a \special that dvips can parse.
+%
+   \ifepsfverbose\message{#1: width=\the\epsfxsize, height=\the\epsfysize}\fi
+   \epsftmp=10\epsfxsize \divide\epsftmp\pspoints
+   \vbox to\epsfysize{\vfil\hbox to\epsfxsize{%
+      \ifnum\epsfrsize=0\relax
+        \special{PSfile=#1 llx=\epsfllx\space lly=\epsflly\space
+            urx=\epsfurx\space ury=\epsfury\space rwi=\number\epsftmp
+            \epsfclipstring}%
+      \else
+        \epsfrsize=10\epsfysize \divide\epsfrsize\pspoints
+        \special{PSfile=#1 llx=\epsfllx\space lly=\epsflly\space
+            urx=\epsfurx\space ury=\epsfury\space rwi=\number\epsftmp\space
+            rhi=\number\epsfrsize \epsfclipstring}%
+      \fi
+      \hfil}}%
+\global\epsfxsize=0pt\global\epsfysize=0pt}%
+%
+%   We still need to define the tricky \epsfaux macro. This requires
+%   a couple of magic constants for comparison purposes.
+%
+{\catcode`\%=12 \global\let\epsfpercent=%\global\def\epsfbblit{%%ExactBoundingBox}}%
+%
+%   So we're ready to check for `%%ExactBoundingBox:' and to grab the
+%   values if they are found.
+%
+\long\def\epsfaux#1#2:#3\\{\ifx#1\epsfpercent
+   \def\testit{#2}\ifx\testit\epsfbblit
+      \epsfgrab #3 . . . \\%
+      \epsffileokfalse
+      \global\epsfbbfoundtrue
+   \fi\else\ifx#1\par\else\epsffileokfalse\fi\fi}%
+%
+%   Here we grab the values and stuff them in the appropriate definitions.
+%
+\def\epsfempty{}%
+\def\epsfgrab #1 #2 #3 #4 #5\\{%
+\global\def\epsfllx{#1}\ifx\epsfllx\epsfempty
+      \epsfgrab #2 #3 #4 #5 .\\\else
+   \global\def\epsflly{#2}%
+   \global\def\epsfurx{#3}\global\def\epsfury{#4}\fi}%
+%
+%   We default the epsfsize macro.
+%
+\def\epsfsize#1#2{\epsfxsize}
+%
+%   Finally, another definition for compatibility with older macros.
+%
+\let\epsffile=\epsfbox

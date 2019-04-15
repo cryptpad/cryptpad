@@ -1,0 +1,172 @@
+%%
+%% This is file `greek.bdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,greek')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+\ProvidesFile{greek.bdf}
+%% Language definitions for Greek by
+%%   Prokopis Prokopidis <prokopis@ilsp.gr>
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\newcommand\bibsgreek[1][greek]{%
+  \def\biblanguagename{#1}%
+  \def\btxetalshort##1{\protect\foreignlanguage{#1}{k.'a##1{}}}%
+  \def\btxetallong##1{\protect\foreignlanguage{#1}{kai 'alloi}}%
+  \def\btxandshort##1{\protect\foreignlanguage{#1}{kai}}%
+  \def\btxandlong##1{\protect\foreignlanguage{#1}{kai}}%
+  \def\btxandcomma##1{,}%
+  \def\btxinlong##1{\protect\foreignlanguage{#1}{sto}}%
+  \def\btxinshort##1{\protect\foreignlanguage{#1}{sto}}%
+  \def\btxofseriesshort##1{\protect\foreignlanguage{#1}{tou}}%
+  \def\btxinseriesshort##1{\protect\foreignlanguage{#1}{sto}}%
+  \def\btxofserieslong##1{\protect\foreignlanguage{#1}{tou}}%
+  \def\btxinserieslong##1{\protect\foreignlanguage{#1}{sto}}%
+  \def\btxeditorshort##1{\protect\foreignlanguage{#1}{epim##1{}}}%
+  \def\btxeditorlong##1{\protect\foreignlanguage{#1}{epimelht'hc}}%
+  \def\btxeditorsshort##1{\protect\foreignlanguage{#1}{epim##1{}}}%
+  \def\btxeditorslong##1{\protect\foreignlanguage{#1}{epimelht'ec}}%
+  \def\btxvolumeshort##1{\protect\foreignlanguage{#1}{t'om##1{}}}%
+  \def\btxvolumelong##1{\protect\foreignlanguage{#1}{t'omoc}}%
+  \def\btxnumbershort##1{\protect\foreignlanguage{#1}{ar##1{}}}%
+  \def\btxnumberlong##1{\protect\foreignlanguage{#1}{arijm'oc}}%
+  \def\btxeditionshort##1{\protect\foreignlanguage{#1}{'ekd##1{}}}%
+  \def\btxeditionlong##1{\protect\foreignlanguage{#1}{'ekdosh}}%
+  \def\btxeditionnumshort##1##2{\btxnumeralshort{##1}~\btxeditionshort{##2}}%
+  \def\btxeditionnumlong##1##2{\btxnumerallong{##1}~\btxeditionlong{##2}}%
+  \def\btxchaptershort##1{\protect\foreignlanguage{#1}{kef##1{}}}%
+  \def\btxchapterlong##1{\protect\foreignlanguage{#1}{kef'alaio}}%
+  \def\btxpageshort##1{\protect\foreignlanguage{#1}{sel##1{}}}%
+  \def\btxpagelong##1{\protect\foreignlanguage{#1}{sel'ida}}%
+  \def\btxpagesshort##1{\protect\foreignlanguage{#1}{sel##1{}}}%
+  \def\btxpageslong##1{\protect\foreignlanguage{#1}{sel'idec}}%
+  \def\btxmastthesis##1{\protect\foreignlanguage{#1}{Metaptuqiak'h ergas'ia}}%
+  \def\btxphdthesis##1{\protect\foreignlanguage{#1}{Didaktorik'h diatrib'h}}%
+  \def\btxtechrepshort##1{\protect\foreignlanguage{#1}{Teqn.\ anaf##1{}}}%
+  \def\btxtechreplong##1{\protect\foreignlanguage{#1}{Teqnik'h anafor'a}}%
+  \def\btxmonjanlong##1{\protect\foreignlanguage{#1}{Ianou'arioc}}%
+  \def\btxmonfeblong##1{\protect\foreignlanguage{#1}{Febrou'arioc}}%
+  \def\btxmonmarlong##1{\protect\foreignlanguage{#1}{M'artioc}}%
+  \def\btxmonaprlong##1{\protect\foreignlanguage{#1}{Apr'ilioc}}%
+  \def\btxmonmaylong##1{\protect\foreignlanguage{#1}{M'aioc}}%
+  \def\btxmonjunlong##1{\protect\foreignlanguage{#1}{Io'unioc}}%
+  \def\btxmonjullong##1{\protect\foreignlanguage{#1}{Io'ulioc}}%
+  \def\btxmonauglong##1{\protect\foreignlanguage{#1}{A'ugoustoc}}%
+  \def\btxmonseplong##1{\protect\foreignlanguage{#1}{Sept'embrioc}}%
+  \def\btxmonoctlong##1{\protect\foreignlanguage{#1}{Okt'wbrioc}}%
+  \def\btxmonnovlong##1{\protect\foreignlanguage{#1}{No'embrioc}}%
+  \def\btxmondeclong##1{\protect\foreignlanguage{#1}{Dek'embrioc}}%
+  \def\btxmonjanshort##1{\protect\foreignlanguage{#1}{Ian##1{}}}%
+  \def\btxmonfebshort##1{\protect\foreignlanguage{#1}{Feb##1{}}}%
+  \def\btxmonmarshort##1{\protect\foreignlanguage{#1}{M'ar##1{}}}%
+  \def\btxmonaprshort##1{\protect\foreignlanguage{#1}{Apr##1{}}}%
+  \def\btxmonmayshort##1{\protect\foreignlanguage{#1}{M'ai}}%
+  \def\btxmonjunshort##1{\protect\foreignlanguage{#1}{Io'un##1{}}}%
+  \def\btxmonjulshort##1{\protect\foreignlanguage{#1}{Io'ul##1{}}}%
+  \def\btxmonaugshort##1{\protect\foreignlanguage{#1}{A'ug##1{}}}%
+  \def\btxmonsepshort##1{\protect\foreignlanguage{#1}{Sept##1{}}}%
+  \def\btxmonoctshort##1{\protect\foreignlanguage{#1}{Okt##1{}}}%
+  \def\btxmonnovshort##1{\protect\foreignlanguage{#1}{No'e##1{}}}%
+  \def\btxmondecshort##1{\protect\foreignlanguage{#1}{Dek##1{}}}%
+  \def\Btxinlong##1{\protect\foreignlanguage{#1}{Sto}}%
+  \def\Btxinshort##1{\protect\foreignlanguage{#1}{Sto}}%
+  \def\Btxeditorshort##1{\protect\foreignlanguage{#1}{Epim##1{}}}%
+  \def\Btxeditorlong##1{\protect\foreignlanguage{#1}{Epimelht'hc}}%
+  \def\Btxeditorsshort##1{\protect\foreignlanguage{#1}{Epim##1{}}}%
+  \def\Btxeditorslong##1{\protect\foreignlanguage{#1}{Epimelht'ec}}%
+  \def\Btxvolumeshort##1{\protect\foreignlanguage{#1}{T'om##1{}}}%
+  \def\Btxvolumelong##1{\protect\foreignlanguage{#1}{T'omoc}}%
+  \def\Btxnumbershort##1{\protect\foreignlanguage{#1}{Ar##1{}}}%
+  \def\Btxnumberlong##1{\protect\foreignlanguage{#1}{Arijm'oc}}%
+  \def\Btxeditionshort##1{\protect\foreignlanguage{#1}{'Ekd##1{}}}%
+  \def\Btxeditionlong##1{\protect\foreignlanguage{#1}{'Ekdosh}}%
+  \def\Btxeditionnumshort##1##2{\btxnumeralshort{##1}~\Btxeditionshort{##2}}%
+  \def\Btxeditionnumlong##1##2{\btxnumerallong{##1}~\Btxeditionlong{##2}}%
+  \def\Btxchaptershort##1{\protect\foreignlanguage{#1}{Kef##1{}}}%
+  \def\Btxchapterlong##1{\protect\foreignlanguage{#1}{Kef'alaio}}%
+  \def\Btxpageshort##1{\protect\foreignlanguage{#1}{Sel##1{}}}%
+  \def\Btxpagelong##1{\protect\foreignlanguage{#1}{Sel'ida}}%
+  \def\Btxpagesshort##1{\protect\foreignlanguage{#1}{Sel##1{}}}%
+  \def\Btxpageslong##1{\protect\foreignlanguage{#1}{Sel'idec}}%
+  \def\Btxtechrepshort##1{\protect\foreignlanguage{#1}{Teqn.\ Anaf##1{}}}%
+  \def\Btxtechreplong##1{\protect\foreignlanguage{#1}{Teqnik'h Anafor'a}}%
+  \def\btxurldatecomment##1{\protect\foreignlanguage{#1}{, ep'iskeyh thn ##1}}%
+  \def\btxfnamespaceshort{\,}%
+  \def\btxfnamespacelong{ }%
+  \def\btxnumeralshort##1{\protect\foreignlanguage{#1}{%
+      \ifnumber{##1}{##1h}{##1}}}%
+  \def\btxnumerallong##1{\protect\foreignlanguage{#1}{\ifnumber{##1}{%
+        \ifcase##1 ##1h\or pr'wth\or de'uterh\or tr'ith\or t'etarth%
+          \or p'empth\or 'ekth\or 'ebdomh\or 'ogdoh\or 'enath\else ##1h\fi
+      }{##1}}}%
+  \def\btxprintmonthyearnum##1##2{##1/##2}%
+  \def\btxkeywordlanguage##1{{\protect\selectlanguage{#1}##1}}%
+  \ifbbbblanguagenames
+    \def\btxlanguagenameamerican{\protect\foreignlanguage{#1}{agglik'a}}%
+    \def\btxlanguagenameaustrian{\protect\foreignlanguage{#1}{germanik'a}}%
+    \def\btxlanguagenamebrazil{\protect\foreignlanguage{#1}{portogalik'a}}%
+    \def\btxlanguagenamebrazilian{\protect\foreignlanguage{#1}{portogalik'a}}%
+    \def\btxlanguagenamebritish{\protect\foreignlanguage{#1}{agglik'a}}%
+    \def\btxlanguagenamebulgarian{\protect\foreignlanguage{#1}{boulgarik'a}}%
+    \def\btxlanguagenamecanadian{\protect\foreignlanguage{#1}{agglik'a}}%
+    \def\btxlanguagenamecanadien{\protect\foreignlanguage{#1}{gallik'a}}%
+    \def\btxlanguagenamecatalan{\protect\foreignlanguage{#1}{katalanik'a}}%
+    \def\btxlanguagenamecroatian{\protect\foreignlanguage{#1}{kroatik'a}}%
+    \def\btxlanguagenameczech{\protect\foreignlanguage{#1}{tseqik'a}}%
+    \def\btxlanguagenamedanish{\protect\foreignlanguage{#1}{danik'a}}%
+    \def\btxlanguagenamedutch{\protect\foreignlanguage{#1}{ollandik'a}}%
+    \def\btxlanguagenameenglish{\protect\foreignlanguage{#1}{agglik'a}}%
+    \def\btxlanguagenameesperanto{\protect\foreignlanguage{#1}{esperanto}}%
+    \def\btxlanguagenamefinnish{\protect\foreignlanguage{#1}{finlandik'a}}%
+    \def\btxlanguagenamefrancais{\protect\foreignlanguage{#1}{gallik'a}}%
+    \def\btxlanguagenamefrench{\protect\foreignlanguage{#1}{gallik'a}}%
+    \def\btxlanguagenamefrenchb{\protect\foreignlanguage{#1}{gallik'a}}%
+    \def\btxlanguagenamegerman{\protect\foreignlanguage{#1}{germanik'a}}%
+    \def\btxlanguagenamegermanb{\protect\foreignlanguage{#1}{germanik'a}}%
+    \def\btxlanguagenamegreek{\protect\foreignlanguage{#1}{ellhnik'a}}%
+    \def\btxlanguagenamehebrew{\protect\foreignlanguage{#1}{ebra"ik'a}}%
+    \def\btxlanguagenamehungarian{\protect\foreignlanguage{#1}{ouggrik'a}}%
+    \def\btxlanguagenameicelandic{\protect\foreignlanguage{#1}{islandik'a}}%
+    \def\btxlanguagenameirish{\protect\foreignlanguage{#1}{irlandik'a}}%
+    \def\btxlanguagenameitalian{\protect\foreignlanguage{#1}{italik'a}}%
+    \def\btxlanguagenamelatin{\protect\foreignlanguage{#1}{latinik'a}}%
+    \def\btxlanguagenamenaustrian{\protect\foreignlanguage{#1}{germanik'a}}%
+    \def\btxlanguagenamengerman{\protect\foreignlanguage{#1}{germanik'a}}%
+    \def\btxlanguagenamenorsk{\protect\foreignlanguage{#1}{norbhgik'a}}%
+    \def\btxlanguagenamenynorsk{\protect\foreignlanguage{#1}{n'ea norbhgik'a}}%
+    \def\btxlanguagenamepolish{\protect\foreignlanguage{#1}{polwnik'a}}%
+    \def\btxlanguagenameportuges{\protect\foreignlanguage{#1}{portogalik'a}}%
+    \def\btxlanguagenameportuguese{\protect\foreignlanguage{#1}{portogalik'a}}%
+    \def\btxlanguagenamerussian{\protect\foreignlanguage{#1}{rwsik'a}}%
+    \def\btxlanguagenamescottish{\protect\foreignlanguage{#1}{skwts'ezika}}%
+    \def\btxlanguagenameserbian{\protect\foreignlanguage{#1}{serbik'a}}%
+    \def\btxlanguagenamespanish{\protect\foreignlanguage{#1}{ispanik'a}}%
+    \def\btxlanguagenameswedish{\protect\foreignlanguage{#1}{souhdik'a}}%
+    \def\btxlanguagenameturkish{\protect\foreignlanguage{#1}{tourkik'a}}%
+    \def\btxlanguagenameUKenglish{\protect\foreignlanguage{#1}{agglik'a}}%
+    \def\btxlanguagenameUSenglish{\protect\foreignlanguage{#1}{agglik'a}}%
+  \fi
+}
+\AtBeginDocument{%
+  \ifbbbbfixlanguage
+  \else
+    \bbbbaddto{greek}{bibsgreek}
+  \fi
+  \bbbbaddto{greek}{btxifchangecaseoff}
+}
+
+\endinput
+%%
+%% End of file `greek.bdf'.

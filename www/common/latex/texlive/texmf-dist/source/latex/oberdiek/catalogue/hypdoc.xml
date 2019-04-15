@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hypdoc'>
+  <name>hypdoc</name>
+  <caption>Hyper extensions for doc.sty.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2002,2006,2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.11'/>
+  <description>
+    This package adds hypertext features to the package
+    <xref refid='doc'>doc</xref> that is used in the documentation
+    system of <xref refid='latex'>LaTeX2e</xref>. Bookmarks are added
+    and references are linked as far as possible.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hypdoc.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hypdoc.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

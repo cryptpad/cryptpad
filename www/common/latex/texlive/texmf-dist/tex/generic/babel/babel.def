@@ -1,0 +1,1473 @@
+%%
+%% This is file `babel.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babel.dtx  (with options: `core')
+%% This is a generated file.
+%% 
+%% Copyright 2012-2014 Javier Bezos and Johannes L. Braams.
+%% Copyright 1989-2008 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file was generated from file(s) of the Babel system.
+%% ---------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% The Current Maintainer of this work is Javier Bezos.
+%% 
+%% This file may only be distributed together with a copy of the Babel
+%% system. You may however distribute the Babel system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the Babel distribution is
+%% given in the file `manifest.bbl'. See also `legal.bbl for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%% File 'babel.dtx'
+%%\ProvidesFile{babel.dtx}[2015/08/03 v3.9m The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989-2008 by Johannes Braams,
+%%                            TeXniek
+%%                            all rights reserved.
+%% Copyright (C) 2013-2014 by Johannes Braams
+%%                            TeXniek
+%%                            by Javier Bezos
+%%                            all rights reserved.
+\ifx\ldf@quit\@undefined
+\else
+  \expandafter\endinput
+\fi
+\ifx\ProvidesFile\@undefined
+  \def\ProvidesFile#1[#2 #3 #4]{%
+    \wlog{File: #1 #4 #3 <#2>}%
+    \let\ProvidesFile\@undefined}
+\fi
+\ProvidesFile{babel.def}[2015/08/03 3.9m Babel common definitions]
+\ifx\AtBeginDocument\@undefined
+  \input plain.def\relax
+\fi
+\def\bbl@tempa{3.9m}%
+\ifx\bbl@version\bbl@tempa\else
+  \input switch.def\relax
+\fi
+\ifx\bbl@languages\@undefined
+  \openin1 = language.def
+  \ifeof1
+    \closein1
+    \message{I couldn't find the file language.def}
+  \else
+    \closein1
+    \begingroup
+      \def\addlanguage#1#2#3#4#5{%
+        \expandafter\ifx\csname lang@#1\endcsname\relax\else
+          \global\expandafter\let\csname l@#1\expandafter\endcsname
+            \csname lang@#1\endcsname
+        \fi}%
+      \def\uselanguage#1{}%
+      \input language.def
+    \endgroup
+  \fi
+  \chardef\l@english\z@
+\fi
+\def\bbl@add#1#2{%
+  \@ifundefined{\expandafter\@gobble\string#1}%
+    {\def#1{#2}}%
+    {\expandafter\def\expandafter#1\expandafter{#1#2}}}
+\def\bbl@csarg#1#2{\expandafter#1\csname bbl@#2\endcsname}%
+\long\def\bbl@afterelse#1\else#2\fi{\fi#1}
+\long\def\bbl@afterfi#1\fi{\fi#1}
+\def\bbl@loop#1#2#3{\bbl@@loop#1{#3}#2,\@nnil,}
+\def\bbl@loopx#1#2{\expandafter\bbl@loop\expandafter#1\expandafter{#2}}
+\def\bbl@@loop#1#2#3,{%
+  \ifx\@nnil#3\relax\else
+    \def#1{#3}#2\bbl@afterfi\bbl@@loop#1{#2}%
+  \fi}
+\def\bbl@for#1#2#3{\bbl@loopx#1{#2}{\ifx#1\@empty\else#3\fi}}
+\def\bbl@csarg#1#2{\expandafter#1\csname bbl@#2\endcsname}%
+\chardef\bbl@engine=%
+  \ifx\directlua\@undefined
+    \ifx\XeTeXinputencoding\@undefined
+      \z@
+    \else
+      \tw@
+    \fi
+  \else
+    \@ne
+  \fi
+\long\def\bbl@afterelse#1\else#2\fi{\fi#1}
+\long\def\bbl@afterfi#1\fi{\fi#1}
+\def\addto#1#2{%
+  \ifx#1\@undefined
+    \def#1{#2}%
+  \else
+    \ifx#1\relax
+      \def#1{#2}%
+    \else
+      {\toks@\expandafter{#1#2}%
+       \xdef#1{\the\toks@}}%
+    \fi
+  \fi}
+\def\bbl@withactive#1#2{%
+  \begingroup
+    \lccode`~=`#2\relax
+    \lowercase{\endgroup#1~}}
+\def\bbl@redefine#1{%
+  \edef\bbl@tempa{\expandafter\@gobble\string#1}%
+  \expandafter\let\csname org@\bbl@tempa\endcsname#1%
+  \expandafter\def\csname\bbl@tempa\endcsname}
+\@onlypreamble\bbl@redefine
+\def\bbl@redefine@long#1{%
+  \edef\bbl@tempa{\expandafter\@gobble\string#1}%
+  \expandafter\let\csname org@\bbl@tempa\endcsname#1%
+  \expandafter\long\expandafter\def\csname\bbl@tempa\endcsname}
+\@onlypreamble\bbl@redefine@long
+\def\bbl@redefinerobust#1{%
+  \edef\bbl@tempa{\expandafter\@gobble\string#1}%
+  \expandafter\ifx\csname\bbl@tempa\space\endcsname\relax
+    \expandafter\let\csname org@\bbl@tempa\endcsname#1%
+    \expandafter\edef\csname\bbl@tempa\endcsname{\noexpand\protect
+      \expandafter\noexpand\csname\bbl@tempa\space\endcsname}%
+  \else
+    \expandafter\let\csname org@\bbl@tempa\expandafter\endcsname
+                    \csname\bbl@tempa\space\endcsname
+  \fi
+  \expandafter\def\csname\bbl@tempa\space\endcsname}
+\@onlypreamble\bbl@redefinerobust
+\def\AddBabelHook#1#2{%
+  \@ifundefined{bbl@hk@#1}{\EnableBabelHook{#1}}{}%
+  \def\bbl@tempa##1,#2=##2,##3\@empty{\def\bbl@tempb{##2}}%
+  \expandafter\bbl@tempa\bbl@evargs,#2=,\@empty
+  \@ifundefined{bbl@ev@#1@#2}%
+    {\bbl@csarg\bbl@add{ev@#2}{\bbl@elt{#1}}%
+     \bbl@csarg\newcommand}%
+    {\bbl@csarg\let{ev@#1@#2}\relax
+     \bbl@csarg\newcommand}%
+  {ev@#1@#2}[\bbl@tempb]}
+\def\EnableBabelHook#1{\bbl@csarg\let{hk@#1}\@firstofone}
+\def\DisableBabelHook#1{\bbl@csarg\let{hk@#1}\@gobble}
+\def\bbl@usehooks#1#2{%
+  \def\bbl@elt##1{%
+    \@nameuse{bbl@hk@##1}{\@nameuse{bbl@ev@##1@#1}#2}}%
+  \@nameuse{bbl@ev@#1}}
+\def\bbl@evargs{,% don't delete the comma
+  everylanguage=1,loadkernel=1,loadpatterns=1,loadexceptions=1,%
+  adddialect=2,patterns=2,defaultcommands=0,encodedcommands=2,write=0,%
+  beforeextras=0,afterextras=0,stopcommands=0,stringprocess=0,%
+  hyphenation=2,initiateactive=3,afterreset=0}
+\newcommand\babelensure[2][]{%
+  \AddBabelHook{babel-ensure}{afterextras}{%
+    \ifcase\bbl@select@type
+      \@nameuse{bbl@e@\languagename}%
+    \fi}%
+  \begingroup
+    \let\bbl@ens@include\@empty
+    \let\bbl@ens@exclude\@empty
+    \def\bbl@ens@fontenc{\relax}%
+    \def\bbl@tempb##1{%
+      \ifx\@empty##1\else\noexpand##1\expandafter\bbl@tempb\fi}%
+    \edef\bbl@tempa{\bbl@tempb#1\@empty}%
+    \def\bbl@tempb##1=##2\@@{\@namedef{bbl@ens@##1}{##2}}%
+    \bbl@for\bbl@tempa\bbl@tempa{\expandafter\bbl@tempb\bbl@tempa\@@}%
+    \def\bbl@tempc{\bbl@ensure}%
+    \expandafter\bbl@add\expandafter\bbl@tempc\expandafter{%
+      \expandafter{\bbl@ens@include}}%
+    \expandafter\bbl@add\expandafter\bbl@tempc\expandafter{%
+      \expandafter{\bbl@ens@exclude}}%
+    \toks@\expandafter{\bbl@tempc}%
+    \edef\x{%
+      \endgroup
+      \noexpand\@namedef{bbl@e@#2}{\the\toks@{\bbl@ens@fontenc}}}%
+    \x}
+\def\bbl@ensure#1#2#3{%
+  \def\bbl@tempb##1{% elt for \bbl@ensured list
+    \ifx##1\@empty\else
+      \in@{##1}{#2}%
+      \ifin@\else
+        \toks@\expandafter{##1}%
+        \edef\bbl@tempa{%
+          \noexpand\DeclareRobustCommand
+          \bbl@csarg\noexpand{ensure@\languagename}[1]{%
+            \noexpand\foreignlanguage{\languagename}%
+            {\ifx\relax#3\else
+              \noexpand\fontencoding{#3}\noexpand\selectfont
+             \fi
+             ########1}}}%
+        \bbl@tempa
+        \edef##1{%
+           \bbl@csarg\noexpand{ensure@\languagename}%
+           {\the\toks@}}
+      \fi
+      \expandafter\bbl@tempb
+    \fi}%
+  \expandafter\bbl@tempb\bbl@ensured\@empty
+  \def\bbl@tempa##1{% elt for include list
+    \ifx##1\@empty\else
+      \bbl@csarg\in@{ensure@\languagename\expandafter}\expandafter{##1}%
+      \ifin@\else
+        \bbl@tempb##1\@empty
+      \fi
+      \expandafter\bbl@tempa
+    \fi}%
+  \bbl@tempa#1\@empty}
+\def\bbl@ensured{%
+  \prefacename\refname\abstractname\bibname\chaptername\appendixname
+  \contentsname\listfigurename\listtablename\indexname\figurename
+  \tablename\partname\enclname\ccname\headtoname\pagename\seename
+  \alsoname\proofname\glossaryname\today}
+\def\LdfInit#1#2{%
+  \chardef\atcatcode=\catcode`\@
+  \catcode`\@=11\relax
+  \chardef\eqcatcode=\catcode`\=
+  \catcode`\==12\relax
+  \expandafter\if\expandafter\@backslashchar
+                 \expandafter\@car\string#2\@nil
+    \ifx#2\@undefined\else
+      \ldf@quit{#1}%
+    \fi
+  \else
+    \expandafter\ifx\csname#2\endcsname\relax\else
+      \ldf@quit{#1}%
+    \fi
+  \fi
+  \let\bbl@screset\@empty
+  \let\BabelStrings\bbl@opt@strings
+  \let\BabelOptions\@empty
+  \let\BabelLanguages\relax
+  \ifx\originalTeX\@undefined
+    \let\originalTeX\@empty
+  \else
+    \originalTeX
+  \fi}
+\def\ldf@quit#1{%
+  \expandafter\main@language\expandafter{#1}%
+  \catcode`\@=\atcatcode \let\atcatcode\relax
+  \catcode`\==\eqcatcode \let\eqcatcode\relax
+  \endinput}
+\def\ldf@finish#1{%
+  \loadlocalcfg{#1}%
+  \bbl@afterlang
+  \let\bbl@afterlang\relax
+  \let\BabelModifiers\relax
+  \let\bbl@screset\relax
+  \expandafter\main@language\expandafter{#1}%
+  \catcode`\@=\atcatcode \let\atcatcode\relax
+  \catcode`\==\eqcatcode \let\eqcatcode\relax}
+\@onlypreamble\LdfInit
+\@onlypreamble\ldf@quit
+\@onlypreamble\ldf@finish
+\def\main@language#1{%
+  \def\bbl@main@language{#1}%
+  \let\languagename\bbl@main@language
+  \bbl@patterns{\languagename}}
+\AtBeginDocument{%
+  \expandafter\selectlanguage\expandafter{\bbl@main@language}}
+\def\bbl@add@special#1{%
+  \begingroup
+    \def\do{\noexpand\do\noexpand}%
+    \def\@makeother{\noexpand\@makeother\noexpand}%
+  \edef\x{\endgroup
+    \def\noexpand\dospecials{\dospecials\do#1}%
+    \expandafter\ifx\csname @sanitize\endcsname\relax \else
+      \def\noexpand\@sanitize{\@sanitize\@makeother#1}%
+    \fi}%
+  \x}
+\def\bbl@remove@special#1{%
+  \begingroup
+    \def\x##1##2{\ifnum`#1=`##2\noexpand\@empty
+                 \else\noexpand##1\noexpand##2\fi}%
+    \def\do{\x\do}%
+    \def\@makeother{\x\@makeother}%
+  \edef\x{\endgroup
+    \def\noexpand\dospecials{\dospecials}%
+    \expandafter\ifx\csname @sanitize\endcsname\relax \else
+      \def\noexpand\@sanitize{\@sanitize}%
+    \fi}%
+  \x}
+\def\bbl@active@def#1#2#3#4{%
+  \@namedef{#3#1}{%
+    \expandafter\ifx\csname#2@sh@#1@\endcsname\relax
+      \bbl@afterelse\bbl@sh@select#2#1{#3@arg#1}{#4#1}%
+    \else
+      \bbl@afterfi\csname#2@sh@#1@\endcsname
+    \fi}%
+  \long\@namedef{#3@arg#1}##1{%
+    \expandafter\ifx\csname#2@sh@#1@\string##1@\endcsname\relax
+      \bbl@afterelse\csname#4#1\endcsname##1%
+    \else
+      \bbl@afterfi\csname#2@sh@#1@\string##1@\endcsname
+    \fi}}%
+\def\initiate@active@char#1{%
+  \expandafter\ifx\csname active@char\string#1\endcsname\relax
+    \bbl@withactive
+      {\expandafter\@initiate@active@char\expandafter}#1\string#1#1%
+  \fi}
+\def\@initiate@active@char#1#2#3{%
+  \expandafter\edef\csname bbl@oricat@#2\endcsname{%
+    \catcode`#2=\the\catcode`#2\relax}%
+  \ifx#1\@undefined
+    \expandafter\edef\csname bbl@oridef@#2\endcsname{%
+      \let\noexpand#1\noexpand\@undefined}%
+  \else
+    \expandafter\let\csname bbl@oridef@@#2\endcsname#1%
+    \expandafter\edef\csname bbl@oridef@#2\endcsname{%
+      \let\noexpand#1%
+      \expandafter\noexpand\csname bbl@oridef@@#2\endcsname}%
+  \fi
+  \ifx#1#3\relax
+    \expandafter\let\csname normal@char#2\endcsname#3%
+  \else
+    \bbl@info{Making #2 an active character}%
+    \ifnum\mathcode`#2="8000
+      \@namedef{normal@char#2}{%
+        \textormath{#3}{\csname bbl@oridef@@#2\endcsname}}%
+    \else
+      \@namedef{normal@char#2}{#3}%
+    \fi
+    \bbl@restoreactive{#2}%
+    \AtBeginDocument{%
+      \catcode`#2\active
+      \if@filesw
+        \immediate\write\@mainaux{\catcode`\string#2\active}%
+      \fi}%
+    \expandafter\bbl@add@special\csname#2\endcsname
+    \catcode`#2\active
+  \fi
+  \let\bbl@tempa\@firstoftwo
+  \if\string^#2%
+    \def\bbl@tempa{\noexpand\textormath}%
+  \else
+    \ifx\bbl@mathnormal\@undefined\else
+      \let\bbl@tempa\bbl@mathnormal
+    \fi
+  \fi
+  \expandafter\edef\csname active@char#2\endcsname{%
+    \bbl@tempa
+      {\noexpand\if@safe@actives
+         \noexpand\expandafter
+         \expandafter\noexpand\csname normal@char#2\endcsname
+       \noexpand\else
+         \noexpand\expandafter
+         \expandafter\noexpand\csname bbl@doactive#2\endcsname
+       \noexpand\fi}%
+     {\expandafter\noexpand\csname normal@char#2\endcsname}}%
+  \bbl@csarg\edef{doactive#2}{%
+    \expandafter\noexpand\csname user@active#2\endcsname}%
+  \bbl@csarg\edef{active@#2}{%
+    \noexpand\active@prefix\noexpand#1%
+    \expandafter\noexpand\csname active@char#2\endcsname}%
+  \bbl@csarg\edef{normal@#2}{%
+    \noexpand\active@prefix\noexpand#1%
+    \expandafter\noexpand\csname normal@char#2\endcsname}%
+  \expandafter\let\expandafter#1\csname bbl@normal@#2\endcsname
+  \bbl@active@def#2\user@group{user@active}{language@active}%
+  \bbl@active@def#2\language@group{language@active}{system@active}%
+  \bbl@active@def#2\system@group{system@active}{normal@char}%
+  \expandafter\edef\csname\user@group @sh@#2@@\endcsname
+    {\expandafter\noexpand\csname normal@char#2\endcsname}%
+  \expandafter\edef\csname\user@group @sh@#2@\string\protect@\endcsname
+    {\expandafter\noexpand\csname user@active#2\endcsname}%
+  \if\string'#2%
+    \let\prim@s\bbl@prim@s
+    \let\active@math@prime#1%
+  \fi
+  \bbl@usehooks{initiateactive}{{#1}{#2}{#3}}}
+\@ifpackagewith{babel}{KeepShorthandsActive}%
+  {\let\bbl@restoreactive\@gobble}%
+  {\def\bbl@restoreactive#1{%
+     \edef\bbl@tempa{%
+       \noexpand\AfterBabelLanguage\noexpand\CurrentOption
+         {\catcode`#1=\the\catcode`#1\relax}%
+       \noexpand\AtEndOfPackage{\catcode`#1=\the\catcode`#1\relax}}%
+     \bbl@tempa}%
+   \AtEndOfPackage{\let\bbl@restoreactive\@gobble}}
+\def\bbl@sh@select#1#2{%
+  \expandafter\ifx\csname#1@sh@#2@sel\endcsname\relax
+    \bbl@afterelse\bbl@scndcs
+  \else
+    \bbl@afterfi\csname#1@sh@#2@sel\endcsname
+  \fi}
+\def\active@prefix#1{%
+  \ifx\protect\@typeset@protect
+  \else
+    \ifx\protect\@unexpandable@protect
+      \noexpand#1%
+    \else
+      \protect#1%
+    \fi
+    \expandafter\@gobble
+  \fi}
+\newif\if@safe@actives
+\@safe@activesfalse
+\def\bbl@restore@actives{\if@safe@actives\@safe@activesfalse\fi}
+\def\bbl@activate#1{%
+  \bbl@withactive{\expandafter\let\expandafter}#1%
+    \csname bbl@active@\string#1\endcsname}
+\def\bbl@deactivate#1{%
+  \bbl@withactive{\expandafter\let\expandafter}#1%
+    \csname bbl@normal@\string#1\endcsname}
+\def\bbl@firstcs#1#2{\csname#1\endcsname}
+\def\bbl@scndcs#1#2{\csname#2\endcsname}
+\def\declare@shorthand#1#2{\@decl@short{#1}#2\@nil}
+\def\@decl@short#1#2#3\@nil#4{%
+  \def\bbl@tempa{#3}%
+  \ifx\bbl@tempa\@empty
+    \expandafter\let\csname #1@sh@\string#2@sel\endcsname\bbl@scndcs
+    \@ifundefined{#1@sh@\string#2@}{}%
+      {\def\bbl@tempa{#4}%
+       \expandafter\ifx\csname#1@sh@\string#2@\endcsname\bbl@tempa
+       \else
+         \bbl@info
+           {Redefining #1 shorthand \string#2\\%
+            in language \CurrentOption}%
+       \fi}%
+    \@namedef{#1@sh@\string#2@}{#4}%
+  \else
+    \expandafter\let\csname #1@sh@\string#2@sel\endcsname\bbl@firstcs
+    \@ifundefined{#1@sh@\string#2@\string#3@}{}%
+      {\def\bbl@tempa{#4}%
+       \expandafter\ifx\csname#1@sh@\string#2@\string#3@\endcsname\bbl@tempa
+       \else
+         \bbl@info
+           {Redefining #1 shorthand \string#2\string#3\\%
+            in language \CurrentOption}%
+       \fi}%
+    \@namedef{#1@sh@\string#2@\string#3@}{#4}%
+  \fi}
+\def\textormath{%
+  \ifmmode
+    \expandafter\@secondoftwo
+  \else
+    \expandafter\@firstoftwo
+  \fi}
+\def\user@group{user}
+\def\language@group{english}
+\def\system@group{system}
+\def\useshorthands{%
+  \@ifstar\bbl@usesh@s{\bbl@usesh@x{}}}
+\def\bbl@usesh@s#1{%
+  \bbl@usesh@x
+    {\AddBabelHook{babel-sh-\string#1}{afterextras}{\bbl@activate{#1}}}%
+    {#1}}
+\def\bbl@usesh@x#1#2{%
+  \bbl@ifshorthand{#2}%
+    {\def\user@group{user}%
+     \initiate@active@char{#2}%
+     #1%
+     \bbl@activate{#2}}%
+    {\bbl@error
+       {Cannot declare a shorthand turned off (\string#2)}
+       {Sorry, but you cannot use shorthands which have been\\%
+        turned off in the package options}}}
+\def\user@language@group{user@\language@group}
+\def\bbl@set@user@generic#1#2{%
+  \@ifundefined{user@generic@active#1}%
+    {\bbl@active@def#1\user@language@group{user@active}{user@generic@active}%
+     \bbl@active@def#1\user@group{user@generic@active}{language@active}%
+     \expandafter\edef\csname#2@sh@#1@@\endcsname{%
+       \expandafter\noexpand\csname normal@char#1\endcsname}%
+     \expandafter\edef\csname#2@sh@#1@\string\protect@\endcsname{%
+       \expandafter\noexpand\csname user@active#1\endcsname}}%
+  \@empty}
+\newcommand\defineshorthand[3][user]{%
+  \edef\bbl@tempa{\zap@space#1 \@empty}%
+  \bbl@for\bbl@tempb\bbl@tempa{%
+    \if*\expandafter\@car\bbl@tempb\@nil
+      \edef\bbl@tempb{user@\expandafter\@gobble\bbl@tempb}%
+      \@expandtwoargs
+        \bbl@set@user@generic{\expandafter\string\@car#2\@nil}\bbl@tempb
+    \fi
+    \declare@shorthand{\bbl@tempb}{#2}{#3}}}
+\def\languageshorthands#1{\def\language@group{#1}}
+\def\aliasshorthand#1#2{%
+  \bbl@ifshorthand{#2}%
+    {\expandafter\ifx\csname active@char\string#2\endcsname\relax
+       \ifx\document\@notprerr
+         \@notshorthand{#2}%
+       \else
+         \initiate@active@char{#2}%
+         \expandafter\let\csname active@char\string#2\expandafter\endcsname
+           \csname active@char\string#1\endcsname
+         \expandafter\let\csname normal@char\string#2\expandafter\endcsname
+           \csname normal@char\string#1\endcsname
+         \bbl@activate{#2}%
+       \fi
+     \fi}%
+    {\bbl@error
+       {Cannot declare a shorthand turned off (\string#2)}
+       {Sorry, but you cannot use shorthands which have been\\%
+        turned off in the package options}}}
+\def\@notshorthand#1{%
+  \bbl@error{%
+    The character `\string #1' should be made a shorthand character;\\%
+    add the command \string\useshorthands\string{#1\string} to
+    the preamble.\\%
+    I will ignore your instruction}%
+   {You may proceed, but expect unexpected results}}
+\newcommand*\shorthandon[1]{\bbl@switch@sh\@ne#1\@nnil}
+\DeclareRobustCommand*\shorthandoff{%
+  \@ifstar{\bbl@shorthandoff\tw@}{\bbl@shorthandoff\z@}}
+\def\bbl@shorthandoff#1#2{\bbl@switch@sh#1#2\@nnil}
+\def\bbl@switch@sh#1#2{%
+  \ifx#2\@nnil\else
+    \@ifundefined{bbl@active@\string#2}%
+      {\bbl@error
+         {I cannot switch `\string#2' on or off--not a shorthand}%
+         {This character is not a shorthand. Maybe you made\\%
+          a typing mistake? I will ignore your instruction}}%
+      {\ifcase#1%
+         \catcode`#212\relax
+       \or
+         \catcode`#2\active
+       \or
+         \csname bbl@oricat@\string#2\endcsname
+         \csname bbl@oridef@\string#2\endcsname
+       \fi}%
+    \bbl@afterfi\bbl@switch@sh#1%
+  \fi}
+\def\babelshorthand{\active@prefix\babelshorthand\bbl@putsh}
+\def\bbl@putsh#1{%
+  \@ifundefined{bbl@active@\string#1}%
+     {\bbl@putsh@i#1\@empty\@nnil}%
+     {\csname bbl@active@\string#1\endcsname}}
+\def\bbl@putsh@i#1#2\@nnil{%
+  \csname\languagename @sh@\string#1@%
+    \ifx\@empty#2\else\string#2@\fi\endcsname}
+\ifx\bbl@opt@shorthands\@nnil\else
+  \let\bbl@s@initiate@active@char\initiate@active@char
+  \def\initiate@active@char#1{%
+    \bbl@ifshorthand{#1}{\bbl@s@initiate@active@char{#1}}{}}
+  \let\bbl@s@switch@sh\bbl@switch@sh
+  \def\bbl@switch@sh#1#2{%
+    \ifx#2\@nnil\else
+      \bbl@afterfi
+      \bbl@ifshorthand{#2}{\bbl@s@switch@sh#1{#2}}{\bbl@switch@sh#1}%
+    \fi}
+  \let\bbl@s@activate\bbl@activate
+  \def\bbl@activate#1{%
+    \bbl@ifshorthand{#1}{\bbl@s@activate{#1}}{}}
+  \let\bbl@s@deactivate\bbl@deactivate
+  \def\bbl@deactivate#1{%
+    \bbl@ifshorthand{#1}{\bbl@s@deactivate{#1}}{}}
+\fi
+\def\bbl@prim@s{%
+  \prime\futurelet\@let@token\bbl@pr@m@s}
+\def\bbl@if@primes#1#2{%
+  \ifx#1\@let@token
+    \expandafter\@firstoftwo
+  \else\ifx#2\@let@token
+    \bbl@afterelse\expandafter\@firstoftwo
+  \else
+    \bbl@afterfi\expandafter\@secondoftwo
+  \fi\fi}
+\begingroup
+  \catcode`\^=7  \catcode`\*=\active  \lccode`\*=`\^
+  \catcode`\'=12 \catcode`\"=\active  \lccode`\"=`\'
+  \lowercase{%
+    \gdef\bbl@pr@m@s{%
+      \bbl@if@primes"'%
+        \pr@@@s
+        {\bbl@if@primes*^\pr@@@t\egroup}}}
+\endgroup
+\initiate@active@char{~}
+\declare@shorthand{system}{~}{\leavevmode\nobreak\ }
+\bbl@activate{~}
+\expandafter\def\csname OT1dqpos\endcsname{127}
+\expandafter\def\csname T1dqpos\endcsname{4}
+\ifx\f@encoding\@undefined
+  \def\f@encoding{OT1}
+\fi
+\newcommand\languageattribute[2]{%
+  \def\bbl@tempc{#1}%
+  \bbl@fixname\bbl@tempc
+  \bbl@iflanguage\bbl@tempc{%
+    \bbl@loopx\bbl@attr{#2}{%
+      \ifx\bbl@known@attribs\@undefined
+        \in@false
+      \else
+        \@expandtwoargs\in@{,\bbl@tempc-\bbl@attr,}{,\bbl@known@attribs,}%
+      \fi
+      \ifin@
+        \bbl@warning{%
+          You have more than once selected the attribute '\bbl@attr'\\%
+          for language #1}%
+      \else
+        \edef\bbl@tempa{%
+          \noexpand\bbl@add@list
+          \noexpand\bbl@known@attribs{\bbl@tempc-\bbl@attr}}%
+        \bbl@tempa
+        \edef\bbl@tempa{\bbl@tempc-\bbl@attr}%
+        \expandafter\bbl@ifknown@ttrib\expandafter{\bbl@tempa}\bbl@attributes%
+        {\csname\bbl@tempc @attr@\bbl@attr\endcsname}%
+        {\@attrerr{\bbl@tempc}{\bbl@attr}}%
+     \fi}}}
+\@onlypreamble\languageattribute
+\newcommand*{\@attrerr}[2]{%
+  \bbl@error
+    {The attribute #2 is unknown for language #1.}%
+    {Your command will be ignored, type <return> to proceed}}
+\def\bbl@declare@ttribute#1#2#3{%
+  \@expandtwoargs\in@{,#2,}{,\BabelModifiers,}%
+  \ifin@
+    \AfterBabelLanguage{#1}{\languageattribute{#1}{#2}}%
+  \fi
+  \bbl@add@list\bbl@attributes{#1-#2}%
+  \expandafter\def\csname#1@attr@#2\endcsname{#3}}
+\def\bbl@ifattributeset#1#2#3#4{%
+  \ifx\bbl@known@attribs\@undefined
+    \in@false
+  \else
+    \@expandtwoargs\in@{,#1-#2,}{,\bbl@known@attribs,}%
+  \fi
+  \ifin@
+    \bbl@afterelse#3%
+  \else
+    \bbl@afterfi#4%
+  \fi
+  }
+\def\bbl@add@list#1#2{%
+  \ifx#1\@undefined
+    \def#1{#2}%
+  \else
+    \ifx#1\@empty
+      \def#1{#2}%
+    \else
+      \edef#1{#1,#2}%
+    \fi
+  \fi
+  }
+\def\bbl@ifknown@ttrib#1#2{%
+  \let\bbl@tempa\@secondoftwo
+  \bbl@loopx\bbl@tempb{#2}{%
+    \expandafter\in@\expandafter{\expandafter,\bbl@tempb,}{,#1,}%
+    \ifin@
+      \let\bbl@tempa\@firstoftwo
+    \else
+    \fi}%
+  \bbl@tempa
+}
+\def\bbl@clear@ttribs{%
+  \ifx\bbl@attributes\@undefined\else
+    \bbl@loopx\bbl@tempa{\bbl@attributes}{%
+      \expandafter\bbl@clear@ttrib\bbl@tempa.
+      }%
+    \let\bbl@attributes\@undefined
+  \fi
+  }
+\def\bbl@clear@ttrib#1-#2.{%
+  \expandafter\let\csname#1@attr@#2\endcsname\@undefined}
+\AtBeginDocument{\bbl@clear@ttribs}
+\def\babel@beginsave{\babel@savecnt\z@}
+\newcount\babel@savecnt
+\babel@beginsave
+\def\babel@save#1{%
+  \expandafter\let\csname babel@\number\babel@savecnt\endcsname#1\relax
+  \begingroup
+    \toks@\expandafter{\originalTeX\let#1=}%
+    \edef\x{\endgroup
+      \def\noexpand\originalTeX{\the\toks@ \expandafter\noexpand
+         \csname babel@\number\babel@savecnt\endcsname\relax}}%
+  \x
+  \advance\babel@savecnt\@ne}
+\def\babel@savevariable#1{\begingroup
+    \toks@\expandafter{\originalTeX #1=}%
+    \edef\x{\endgroup
+      \def\noexpand\originalTeX{\the\toks@ \the#1\relax}}%
+  \x}
+\def\bbl@frenchspacing{%
+  \ifnum\the\sfcode`\.=\@m
+    \let\bbl@nonfrenchspacing\relax
+  \else
+    \frenchspacing
+    \let\bbl@nonfrenchspacing\nonfrenchspacing
+  \fi}
+\let\bbl@nonfrenchspacing\nonfrenchspacing
+\def\babeltags#1{%
+  \edef\bbl@tempa{\zap@space#1 \@empty}%
+  \def\bbl@tempb##1=##2\@@{%
+    \edef\bbl@tempc{%
+      \noexpand\newcommand
+      \expandafter\noexpand\csname ##1\endcsname{%
+        \noexpand\protect
+        \expandafter\noexpand\csname otherlanguage*\endcsname{##2}}
+      \noexpand\newcommand
+      \expandafter\noexpand\csname text##1\endcsname{%
+        \noexpand\foreignlanguage{##2}}}
+    \bbl@tempc}%
+  \bbl@for\bbl@tempa\bbl@tempa{%
+    \expandafter\bbl@tempb\bbl@tempa\@@}}
+\@onlypreamble\babelhyphenation
+\AtEndOfPackage{%
+  \newcommand\babelhyphenation[2][\@empty]{%
+    \ifx\bbl@hyphenation@\relax
+      \let\bbl@hyphenation@\@empty
+    \fi
+    \ifx\bbl@hyphlist\@empty\else
+      \bbl@warning{%
+        You must not intermingle \string\selectlanguage\space and\\%
+        \string\babelhyphenation\space or some exceptions will not\\%
+        be taken into account. Reported}%
+    \fi
+    \ifx\@empty#1%
+      \protected@edef\bbl@hyphenation@{\bbl@hyphenation@\space#2}%
+    \else
+      \edef\bbl@tempb{\zap@space#1 \@empty}%
+      \bbl@for\bbl@tempa\bbl@tempb{%
+        \bbl@fixname\bbl@tempa
+        \bbl@iflanguage\bbl@tempa{%
+          \bbl@csarg\protected@edef{hyphenation@\bbl@tempa}{%
+            \@ifundefined{bbl@hyphenation@\bbl@tempa}%
+              \@empty
+              {\csname bbl@hyphenation@\bbl@tempa\endcsname\space}%
+            #2}}}%
+    \fi}}
+\def\bbl@allowhyphens{\ifvmode\else\nobreak\hskip\z@skip\fi}
+\def\bbl@t@one{T1}
+\def\allowhyphens{\ifx\cf@encoding\bbl@t@one\else\bbl@allowhyphens\fi}
+\newcommand\babelnullhyphen{\char\hyphenchar\font}
+\def\babelhyphen{\active@prefix\babelhyphen\bbl@hyphen}
+\def\bbl@hyphen{%
+  \@ifstar{\bbl@hyphen@i @}{\bbl@hyphen@i\@empty}}
+\def\bbl@hyphen@i#1#2{%
+  \@ifundefined{bbl@hy@#1#2\@empty}%
+    {\csname bbl@#1usehyphen\endcsname{\discretionary{#2}{}{#2}}}%
+    {\csname bbl@hy@#1#2\@empty\endcsname}}
+\def\bbl@usehyphen#1{%
+  \leavevmode
+  \ifdim\lastskip>\z@\mbox{#1}\nobreak\else\nobreak#1\fi
+  \hskip\z@skip}
+\def\bbl@@usehyphen#1{%
+  \leavevmode\ifdim\lastskip>\z@\mbox{#1}\else#1\fi}
+\def\bbl@hyphenchar{%
+  \ifnum\hyphenchar\font=\m@ne
+    \babelnullhyphen
+  \else
+    \char\hyphenchar\font
+  \fi}
+\def\bbl@hy@soft{\bbl@usehyphen{\discretionary{\bbl@hyphenchar}{}{}}}
+\def\bbl@hy@@soft{\bbl@@usehyphen{\discretionary{\bbl@hyphenchar}{}{}}}
+\def\bbl@hy@hard{\bbl@usehyphen\bbl@hyphenchar}
+\def\bbl@hy@@hard{\bbl@@usehyphen\bbl@hyphenchar}
+\def\bbl@hy@nobreak{\bbl@usehyphen{\mbox{\bbl@hyphenchar}\nobreak}}
+\def\bbl@hy@@nobreak{\mbox{\bbl@hyphenchar}}
+\def\bbl@hy@repeat{%
+  \bbl@usehyphen{%
+    \discretionary{\bbl@hyphenchar}{\bbl@hyphenchar}{\bbl@hyphenchar}%
+    \nobreak}}
+\def\bbl@hy@@repeat{%
+  \bbl@@usehyphen{%
+    \discretionary{\bbl@hyphenchar}{\bbl@hyphenchar}{\bbl@hyphenchar}}}
+\def\bbl@hy@empty{\hskip\z@skip}
+\def\bbl@hy@@empty{\discretionary{}{}{}}
+\def\bbl@disc#1#2{\nobreak\discretionary{#2-}{}{#1}\bbl@allowhyphens}
+\def\bbl@toglobal#1{\global\let#1#1}
+\def\bbl@recatcode#1{%
+  \@tempcnta="7F
+  \def\bbl@tempa{%
+    \ifnum\@tempcnta>"FF\else
+      \catcode\@tempcnta=#1\relax
+      \advance\@tempcnta\@ne
+      \expandafter\bbl@tempa
+    \fi}%
+  \bbl@tempa}
+\@ifpackagewith{babel}{nocase}%
+  {\let\bbl@patchuclc\relax}%
+  {\def\bbl@patchuclc{%
+    \global\let\bbl@patchuclc\relax
+    \g@addto@macro\@uclclist{\reserved@b{\reserved@b\bbl@uclc}}%
+    \gdef\bbl@uclc##1{%
+      \let\bbl@encoded\bbl@encoded@uclc
+      \@ifundefined{\languagename @bbl@uclc}% and resumes it
+        {##1}%
+        {\let\bbl@tempa##1\relax % Used by LANG@bbl@uclc
+         \csname\languagename @bbl@uclc\endcsname}%
+      {\bbl@tolower\@empty}{\bbl@toupper\@empty}}%
+    \gdef\bbl@tolower{\csname\languagename @bbl@lc\endcsname}%
+    \gdef\bbl@toupper{\csname\languagename @bbl@uc\endcsname}}}
+\@onlypreamble\StartBabelCommands
+\def\StartBabelCommands{%
+  \begingroup
+  \bbl@recatcode{11}%
+  \def\SetStringLoop##1##2{%
+    \def\bbl@templ####1{\expandafter\noexpand\csname##1\endcsname}%
+    \count@\z@
+    \bbl@loop\bbl@tempa{##2}{%
+      \advance\count@\@ne
+      \toks@\expandafter{\bbl@tempa}%
+      \edef\bbl@tempb{%
+        \bbl@templ{\romannumeral\count@}{\the\toks@}%
+        \count@=\the\count@\relax}%
+      \expandafter\SetString\bbl@tempb}}%
+  \newcommand\SetCase[3][]{%
+    \bbl@patchuclc
+    \bbl@forlang\bbl@tempa{%
+      \expandafter\bbl@encstring
+        \csname\bbl@tempa @bbl@uclc\endcsname{\bbl@tempa##1}%
+      \expandafter\bbl@encstring
+        \csname\bbl@tempa @bbl@uc\endcsname{##2}%
+      \expandafter\bbl@encstring
+        \csname\bbl@tempa @bbl@lc\endcsname{##3}}}%
+  \newcommand\SetHyphenMap[1]{%
+    \bbl@forlang\bbl@tempa{%
+      \expandafter\bbl@stringdef
+        \csname\bbl@tempa @bbl@hyphenmap\endcsname{##1}}}
+  \def\bbl@provstring##1##2{%
+    \providecommand##1{##2}%
+    \bbl@toglobal##1}%
+  \global\let\bbl@scafter\@empty
+  \let\StartBabelCommands\bbl@startcmds
+  \ifx\BabelLanguages\relax
+     \let\BabelLanguages\CurrentOption
+  \fi
+  \begingroup
+  \let\bbl@screset\@nnil % local flag - disable 1st stopcommands
+  \StartBabelCommands}
+\def\bbl@startcmds{%
+  \ifx\bbl@screset\@nnil\else
+    \bbl@usehooks{stopcommands}{}%
+  \fi
+  \endgroup
+  \begingroup
+  \@ifstar
+    {\ifx\bbl@opt@strings\@nnil
+       \let\bbl@opt@strings\BabelStringsDefault
+     \fi
+     \bbl@startcmds@i}%
+    \bbl@startcmds@i}
+\def\bbl@startcmds@i#1#2{%
+  \edef\bbl@L{\zap@space#1 \@empty}%
+  \edef\bbl@G{\zap@space#2 \@empty}%
+  \bbl@startcmds@ii}
+\newcommand\bbl@startcmds@ii[1][\@empty]{%
+  \let\SetString\@gobbletwo
+  \let\bbl@stringdef\@gobbletwo
+  \let\AfterBabelCommands\@gobble
+  \ifx\@empty#1%
+    \def\bbl@sc@label{generic}%
+    \def\bbl@encstring##1##2{%
+      \ProvideTextCommandDefault##1{##2}%
+      \bbl@toglobal##1%
+      \expandafter\bbl@toglobal\csname\string?\string##1\endcsname}%
+    \let\bbl@sctest\in@true
+  \else
+    \let\bbl@sc@charset\space % <- zapped below
+    \let\bbl@sc@fontenc\space % <-   "      "
+    \def\bbl@tempa##1=##2\@nil{%
+      \bbl@csarg\edef{sc@\zap@space##1 \@empty}{##2 }}%
+    \bbl@for\bbl@tempb{label=#1}{\expandafter\bbl@tempa\bbl@tempb\@nil}%
+    \def\bbl@tempa##1 ##2{% space -> comma
+      ##1%
+      \ifx\@empty##2\else\ifx,##1,\else,\fi\bbl@afterfi\bbl@tempa##2\fi}%
+    \edef\bbl@sc@fontenc{\expandafter\bbl@tempa\bbl@sc@fontenc\@empty}%
+    \edef\bbl@sc@label{\expandafter\zap@space\bbl@sc@label\@empty}%
+    \edef\bbl@sc@charset{\expandafter\zap@space\bbl@sc@charset\@empty}%
+    \def\bbl@encstring##1##2{%
+      \bbl@for\bbl@tempc\bbl@sc@fontenc{%
+        \@ifundefined{T@\bbl@tempc}%
+          {}%
+          {\ProvideTextCommand##1\bbl@tempc{##2}%
+           \bbl@toglobal##1%
+           \expandafter
+           \bbl@toglobal\csname\bbl@tempc\string##1\endcsname}}}%
+    \def\bbl@sctest{%
+      \@expandtwoargs
+      \in@{,\bbl@opt@strings,}{,\bbl@sc@label,\bbl@sc@fontenc,}}%
+  \fi
+  \ifx\bbl@opt@strings\@nnil         % ie, no strings key -> defaults
+  \else\ifx\bbl@opt@strings\relax    % ie, strings=encoded
+    \let\AfterBabelCommands\bbl@aftercmds
+    \let\SetString\bbl@setstring
+    \let\bbl@stringdef\bbl@encstring
+  \else       % ie, strings=value
+  \bbl@sctest
+  \ifin@
+    \let\AfterBabelCommands\bbl@aftercmds
+    \let\SetString\bbl@setstring
+    \let\bbl@stringdef\bbl@provstring
+  \fi\fi\fi
+  \bbl@scswitch
+  \ifx\bbl@G\@empty
+    \def\SetString##1##2{%
+      \bbl@error{Missing group for string \string##1}%
+        {You must assign strings to some category, typically\\%
+         captions or extras, but you set none}}%
+  \fi
+  \ifx\@empty#1%
+    \@expandtwoargs
+    \bbl@usehooks{defaultcommands}{}%
+  \else
+    \@expandtwoargs
+    \bbl@usehooks{encodedcommands}{{\bbl@sc@charset}{\bbl@sc@fontenc}}%
+  \fi}
+\def\bbl@forlang#1#2{%
+  \bbl@for#1\bbl@L{%
+    \@expandtwoargs\in@{,#1,}{,\BabelLanguages,}%
+    \ifin@#2\relax\fi}}
+\def\bbl@scswitch{%
+  \bbl@forlang\bbl@tempa{%
+    \ifx\bbl@G\@empty\else
+      \ifx\SetString\@gobbletwo\else
+        \edef\bbl@GL{\bbl@G\bbl@tempa}%
+        \@expandtwoargs\in@{,\bbl@GL,}{,\bbl@screset,}%
+        \ifin@\else
+          \global\expandafter\let\csname\bbl@GL\endcsname\@undefined
+          \xdef\bbl@screset{\bbl@screset,\bbl@GL}%
+        \fi
+      \fi
+    \fi}}
+\AtEndOfPackage{%
+  \def\bbl@forlang#1#2{\bbl@for#1\bbl@L{\@ifundefined{date#1}{}{#2}}}%
+  \let\bbl@scswitch\relax}
+\@onlypreamble\EndBabelCommands
+\def\EndBabelCommands{%
+  \bbl@usehooks{stopcommands}{}%
+  \endgroup
+  \endgroup
+  \bbl@scafter}
+\def\bbl@setstring#1#2{%
+  \bbl@forlang\bbl@tempa{%
+    \edef\bbl@LC{\bbl@tempa\expandafter\@gobble\string#1}%
+    \@ifundefined{\bbl@LC}% eg, \germanchaptername
+      {\global\expandafter
+       \bbl@add\csname\bbl@G\bbl@tempa\expandafter\endcsname\expandafter
+         {\expandafter\bbl@scset\expandafter#1\csname\bbl@LC\endcsname}}%
+      {}%
+    \def\BabelString{#2}%
+    \bbl@usehooks{stringprocess}{}%
+    \expandafter\bbl@stringdef
+      \csname\bbl@LC\expandafter\endcsname\expandafter{\BabelString}}}
+\ifx\bbl@opt@strings\relax
+  \def\bbl@scset#1#2{\def#1{\bbl@encoded#2}}
+  \bbl@patchuclc
+  \let\bbl@encoded\relax
+  \def\bbl@encoded@uclc#1{%
+    \@inmathwarn#1%
+    \expandafter\ifx\csname\cf@encoding\string#1\endcsname\relax
+      \expandafter\ifx\csname ?\string#1\endcsname\relax
+        \TextSymbolUnavailable#1%
+      \else
+        \csname ?\string#1\endcsname
+      \fi
+    \else
+      \csname\cf@encoding\string#1\endcsname
+    \fi}
+\else
+  \def\bbl@scset#1#2{\def#1{#2}}
+\fi
+\def\bbl@aftercmds#1{%
+  \toks@\expandafter{\bbl@scafter#1}%
+  \xdef\bbl@scafter{\the\toks@}}
+\newcommand\BabelLower[2]{% one to one.
+  \ifnum\lccode#1=#2\else
+    \babel@savevariable{\lccode#1}%
+    \lccode#1=#2\relax
+  \fi}
+\newcommand\BabelLowerMM[4]{% many-to-many
+  \@tempcnta=#1\relax
+  \@tempcntb=#4\relax
+  \def\bbl@tempa{%
+    \ifnum\@tempcnta>#2\else
+      \@expandtwoargs\BabelLower{\the\@tempcnta}{\the\@tempcntb}%
+      \advance\@tempcnta#3\relax
+      \advance\@tempcntb#3\relax
+      \expandafter\bbl@tempa
+    \fi}%
+  \bbl@tempa}
+\newcommand\BabelLowerMO[4]{% many-to-one
+  \@tempcnta=#1\relax
+  \def\bbl@tempa{%
+    \ifnum\@tempcnta>#2\else
+      \@expandtwoargs\BabelLower{\the\@tempcnta}{#4}%
+      \advance\@tempcnta#3
+      \expandafter\bbl@tempa
+    \fi}%
+  \bbl@tempa}
+\AtEndOfPackage{%
+  \ifx\bbl@hymapopt\@undefined
+    \@expandtwoargs\in@{,}{\bbl@language@opts}%
+    \chardef\bbl@hymapopt\ifin@4\else\@ne\fi
+  \fi}
+\def\set@low@box#1{\setbox\tw@\hbox{,}\setbox\z@\hbox{#1}%
+    \dimen\z@\ht\z@ \advance\dimen\z@ -\ht\tw@%
+    \setbox\z@\hbox{\lower\dimen\z@ \box\z@}\ht\z@\ht\tw@ \dp\z@\dp\tw@}
+\def\save@sf@q#1{\leavevmode
+  \begingroup
+    \edef\@SF{\spacefactor\the\spacefactor}#1\@SF
+  \endgroup}
+\ProvideTextCommand{\quotedblbase}{OT1}{%
+  \save@sf@q{\set@low@box{\textquotedblright\/}%
+    \box\z@\kern-.04em\bbl@allowhyphens}}
+\ProvideTextCommandDefault{\quotedblbase}{%
+  \UseTextSymbol{OT1}{\quotedblbase}}
+\ProvideTextCommand{\quotesinglbase}{OT1}{%
+  \save@sf@q{\set@low@box{\textquoteright\/}%
+    \box\z@\kern-.04em\bbl@allowhyphens}}
+\ProvideTextCommandDefault{\quotesinglbase}{%
+  \UseTextSymbol{OT1}{\quotesinglbase}}
+\ProvideTextCommand{\guillemotleft}{OT1}{%
+  \ifmmode
+    \ll
+  \else
+    \save@sf@q{\nobreak
+      \raise.2ex\hbox{$\scriptscriptstyle\ll$}\bbl@allowhyphens}%
+  \fi}
+\ProvideTextCommand{\guillemotright}{OT1}{%
+  \ifmmode
+    \gg
+  \else
+    \save@sf@q{\nobreak
+      \raise.2ex\hbox{$\scriptscriptstyle\gg$}\bbl@allowhyphens}%
+  \fi}
+\ProvideTextCommandDefault{\guillemotleft}{%
+  \UseTextSymbol{OT1}{\guillemotleft}}
+\ProvideTextCommandDefault{\guillemotright}{%
+  \UseTextSymbol{OT1}{\guillemotright}}
+\ProvideTextCommand{\guilsinglleft}{OT1}{%
+  \ifmmode
+    <%
+  \else
+    \save@sf@q{\nobreak
+      \raise.2ex\hbox{$\scriptscriptstyle<$}\bbl@allowhyphens}%
+  \fi}
+\ProvideTextCommand{\guilsinglright}{OT1}{%
+  \ifmmode
+    >%
+  \else
+    \save@sf@q{\nobreak
+      \raise.2ex\hbox{$\scriptscriptstyle>$}\bbl@allowhyphens}%
+  \fi}
+\ProvideTextCommandDefault{\guilsinglleft}{%
+  \UseTextSymbol{OT1}{\guilsinglleft}}
+\ProvideTextCommandDefault{\guilsinglright}{%
+  \UseTextSymbol{OT1}{\guilsinglright}}
+\DeclareTextCommand{\ij}{OT1}{%
+  i\kern-0.02em\bbl@allowhyphens j}
+\DeclareTextCommand{\IJ}{OT1}{%
+  I\kern-0.02em\bbl@allowhyphens J}
+\DeclareTextCommand{\ij}{T1}{\char188}
+\DeclareTextCommand{\IJ}{T1}{\char156}
+\ProvideTextCommandDefault{\ij}{%
+  \UseTextSymbol{OT1}{\ij}}
+\ProvideTextCommandDefault{\IJ}{%
+  \UseTextSymbol{OT1}{\IJ}}
+\def\crrtic@{\hrule height0.1ex width0.3em}
+\def\crttic@{\hrule height0.1ex width0.33em}
+\def\ddj@{%
+  \setbox0\hbox{d}\dimen@=\ht0
+  \advance\dimen@1ex
+  \dimen@.45\dimen@
+  \dimen@ii\expandafter\rem@pt\the\fontdimen\@ne\font\dimen@
+  \advance\dimen@ii.5ex
+  \leavevmode\rlap{\raise\dimen@\hbox{\kern\dimen@ii\vbox{\crrtic@}}}}
+\def\DDJ@{%
+  \setbox0\hbox{D}\dimen@=.55\ht0
+  \dimen@ii\expandafter\rem@pt\the\fontdimen\@ne\font\dimen@
+  \advance\dimen@ii.15ex %            correction for the dash position
+  \advance\dimen@ii-.15\fontdimen7\font %     correction for cmtt font
+  \dimen\thr@@\expandafter\rem@pt\the\fontdimen7\font\dimen@
+  \leavevmode\rlap{\raise\dimen@\hbox{\kern\dimen@ii\vbox{\crttic@}}}}
+\DeclareTextCommand{\dj}{OT1}{\ddj@ d}
+\DeclareTextCommand{\DJ}{OT1}{\DDJ@ D}
+\ProvideTextCommandDefault{\dj}{%
+  \UseTextSymbol{OT1}{\dj}}
+\ProvideTextCommandDefault{\DJ}{%
+  \UseTextSymbol{OT1}{\DJ}}
+\DeclareTextCommand{\SS}{OT1}{SS}
+\ProvideTextCommandDefault{\SS}{\UseTextSymbol{OT1}{\SS}}
+\ProvideTextCommand{\glq}{OT1}{%
+  \textormath{\quotesinglbase}{\mbox{\quotesinglbase}}}
+\ProvideTextCommand{\glq}{T1}{%
+  \textormath{\quotesinglbase}{\mbox{\quotesinglbase}}}
+\ProvideTextCommandDefault{\glq}{\UseTextSymbol{OT1}\glq}
+\ProvideTextCommand{\grq}{T1}{%
+  \textormath{\textquoteleft}{\mbox{\textquoteleft}}}
+\ProvideTextCommand{\grq}{OT1}{%
+  \save@sf@q{\kern-.0125em%
+  \textormath{\textquoteleft}{\mbox{\textquoteleft}}%
+  \kern.07em\relax}}
+\ProvideTextCommandDefault{\grq}{\UseTextSymbol{OT1}\grq}
+\ProvideTextCommand{\glqq}{OT1}{%
+  \textormath{\quotedblbase}{\mbox{\quotedblbase}}}
+\ProvideTextCommand{\glqq}{T1}{%
+  \textormath{\quotedblbase}{\mbox{\quotedblbase}}}
+\ProvideTextCommandDefault{\glqq}{\UseTextSymbol{OT1}\glqq}
+\ProvideTextCommand{\grqq}{T1}{%
+  \textormath{\textquotedblleft}{\mbox{\textquotedblleft}}}
+\ProvideTextCommand{\grqq}{OT1}{%
+  \save@sf@q{\kern-.07em%
+  \textormath{\textquotedblleft}{\mbox{\textquotedblleft}}%
+  \kern.07em\relax}}
+\ProvideTextCommandDefault{\grqq}{\UseTextSymbol{OT1}\grqq}
+\ProvideTextCommand{\flq}{OT1}{%
+  \textormath{\guilsinglleft}{\mbox{\guilsinglleft}}}
+\ProvideTextCommand{\flq}{T1}{%
+  \textormath{\guilsinglleft}{\mbox{\guilsinglleft}}}
+\ProvideTextCommandDefault{\flq}{\UseTextSymbol{OT1}\flq}
+\ProvideTextCommand{\frq}{OT1}{%
+  \textormath{\guilsinglright}{\mbox{\guilsinglright}}}
+\ProvideTextCommand{\frq}{T1}{%
+  \textormath{\guilsinglright}{\mbox{\guilsinglright}}}
+\ProvideTextCommandDefault{\frq}{\UseTextSymbol{OT1}\frq}
+\ProvideTextCommand{\flqq}{OT1}{%
+  \textormath{\guillemotleft}{\mbox{\guillemotleft}}}
+\ProvideTextCommand{\flqq}{T1}{%
+  \textormath{\guillemotleft}{\mbox{\guillemotleft}}}
+\ProvideTextCommandDefault{\flqq}{\UseTextSymbol{OT1}\flqq}
+\ProvideTextCommand{\frqq}{OT1}{%
+  \textormath{\guillemotright}{\mbox{\guillemotright}}}
+\ProvideTextCommand{\frqq}{T1}{%
+  \textormath{\guillemotright}{\mbox{\guillemotright}}}
+\ProvideTextCommandDefault{\frqq}{\UseTextSymbol{OT1}\frqq}
+\def\umlauthigh{%
+  \def\bbl@umlauta##1{\leavevmode\bgroup%
+      \expandafter\accent\csname\f@encoding dqpos\endcsname
+      ##1\bbl@allowhyphens\egroup}%
+  \let\bbl@umlaute\bbl@umlauta}
+\def\umlautlow{%
+  \def\bbl@umlauta{\protect\lower@umlaut}}
+\def\umlautelow{%
+  \def\bbl@umlaute{\protect\lower@umlaut}}
+\umlauthigh
+\expandafter\ifx\csname U@D\endcsname\relax
+  \csname newdimen\endcsname\U@D
+\fi
+\def\lower@umlaut#1{%
+  \leavevmode\bgroup
+    \U@D 1ex%
+    {\setbox\z@\hbox{%
+      \expandafter\char\csname\f@encoding dqpos\endcsname}%
+      \dimen@ -.45ex\advance\dimen@\ht\z@
+      \ifdim 1ex<\dimen@ \fontdimen5\font\dimen@ \fi}%
+    \expandafter\accent\csname\f@encoding dqpos\endcsname
+    \fontdimen5\font\U@D #1%
+  \egroup}
+\AtBeginDocument{%
+  \DeclareTextCompositeCommand{\"}{OT1}{a}{\bbl@umlauta{a}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{e}{\bbl@umlaute{e}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{i}{\bbl@umlaute{\i}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{\i}{\bbl@umlaute{\i}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{o}{\bbl@umlauta{o}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{u}{\bbl@umlauta{u}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{A}{\bbl@umlauta{A}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{E}{\bbl@umlaute{E}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{I}{\bbl@umlaute{I}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{O}{\bbl@umlauta{O}}%
+  \DeclareTextCompositeCommand{\"}{OT1}{U}{\bbl@umlauta{U}}%
+}
+\ifx\l@english\@undefined
+  \chardef\l@english\z@
+\fi
+\main@language{english}
+\ifcase\bbl@engine\or
+  \input luababel.def
+\or
+  \input xebabel.def
+\fi
+{\def\format{lplain}
+\ifx\fmtname\format
+\else
+  \def\format{LaTeX2e}
+  \ifx\fmtname\format
+  \else
+    \aftergroup\endinput
+  \fi
+\fi}
+\ifx\bbl@opt@safe\@empty\else
+  \def\@newl@bel#1#2#3{%
+   {\@safe@activestrue
+    \@ifundefined{#1@#2}%
+       \relax
+       {\gdef\@multiplelabels{%
+          \@latex@warning@no@line{There were multiply-defined labels}}%
+        \@latex@warning@no@line{Label `#2' multiply defined}}%
+    \global\@namedef{#1@#2}{#3}}}
+  \CheckCommand*\@testdef[3]{%
+    \def\reserved@a{#3}%
+    \expandafter\ifx\csname#1@#2\endcsname\reserved@a
+    \else
+      \@tempswatrue
+    \fi}
+  \def\@testdef#1#2#3{%
+    \@safe@activestrue
+    \expandafter\let\expandafter\bbl@tempa\csname #1@#2\endcsname
+    \def\bbl@tempb{#3}%
+    \@safe@activesfalse
+    \ifx\bbl@tempa\relax
+    \else
+      \edef\bbl@tempa{\expandafter\strip@prefix\meaning\bbl@tempa}%
+    \fi
+    \edef\bbl@tempb{\expandafter\strip@prefix\meaning\bbl@tempb}%
+    \ifx\bbl@tempa\bbl@tempb
+    \else
+      \@tempswatrue
+    \fi}
+\fi
+\@expandtwoargs\in@{R}\bbl@opt@safe
+\ifin@
+  \bbl@redefinerobust\ref#1{%
+    \@safe@activestrue\org@ref{#1}\@safe@activesfalse}
+  \bbl@redefinerobust\pageref#1{%
+    \@safe@activestrue\org@pageref{#1}\@safe@activesfalse}
+\else
+  \let\org@ref\ref
+  \let\org@pageref\pageref
+\fi
+\@expandtwoargs\in@{B}\bbl@opt@safe
+\ifin@
+  \bbl@redefine\@citex[#1]#2{%
+    \@safe@activestrue\edef\@tempa{#2}\@safe@activesfalse
+    \org@@citex[#1]{\@tempa}}
+  \AtBeginDocument{%
+    \@ifpackageloaded{natbib}{%
+    \def\@citex[#1][#2]#3{%
+      \@safe@activestrue\edef\@tempa{#3}\@safe@activesfalse
+      \org@@citex[#1][#2]{\@tempa}}%
+    }{}}
+  \AtBeginDocument{%
+    \@ifpackageloaded{cite}{%
+      \def\@citex[#1]#2{%
+        \@safe@activestrue\org@@citex[#1]{#2}\@safe@activesfalse}%
+      }{}}
+  \bbl@redefine\nocite#1{%
+    \@safe@activestrue\org@nocite{#1}\@safe@activesfalse}
+  \bbl@redefine\bibcite{%
+    \bbl@cite@choice
+    \bibcite}
+  \def\bbl@bibcite#1#2{%
+    \org@bibcite{#1}{\@safe@activesfalse#2}}
+  \def\bbl@cite@choice{%
+    \global\let\bibcite\bbl@bibcite
+    \@ifpackageloaded{natbib}{\global\let\bibcite\org@bibcite}{}%
+    \@ifpackageloaded{cite}{\global\let\bibcite\org@bibcite}{}%
+    \global\let\bbl@cite@choice\relax}
+  \AtBeginDocument{\bbl@cite@choice}
+  \bbl@redefine\@bibitem#1{%
+    \@safe@activestrue\org@@bibitem{#1}\@safe@activesfalse}
+\else
+  \let\org@nocite\nocite
+  \let\org@@citex\@citex
+  \let\org@bibcite\bibcite
+  \let\org@@bibitem\@bibitem
+\fi
+\bbl@redefine\markright#1{%
+  \edef\bbl@tempb{\noexpand\protect
+    \noexpand\foreignlanguage{\languagename}}%
+  \def\bbl@arg{#1}%
+  \ifx\bbl@arg\@empty
+    \toks@{}%
+  \else
+    \expandafter\toks@\expandafter{%
+             \bbl@tempb{\protect\bbl@restore@actives#1}}%
+  \fi
+  \edef\bbl@tempa{%
+    \noexpand\org@markright{\the\toks@}}%
+  \bbl@tempa
+}
+\ifx\@mkboth\markboth
+  \def\bbl@tempc{\let\@mkboth\markboth}
+\else
+  \def\bbl@tempc{}
+\fi
+\bbl@redefine\markboth#1#2{%
+  \edef\bbl@tempb{\noexpand\protect
+    \noexpand\foreignlanguage{\languagename}}%
+  \def\bbl@arg{#1}%
+  \ifx\bbl@arg\@empty
+    \toks@{}%
+  \else
+   \expandafter\toks@\expandafter{%
+             \bbl@tempb{\protect\bbl@restore@actives#1}}%
+  \fi
+  \def\bbl@arg{#2}%
+  \ifx\bbl@arg\@empty
+    \toks8{}%
+  \else
+    \expandafter\toks8\expandafter{%
+             \bbl@tempb{\protect\bbl@restore@actives#2}}%
+  \fi
+  \edef\bbl@tempa{%
+    \noexpand\org@markboth{\the\toks@}{\the\toks8}}%
+  \bbl@tempa
+}
+\bbl@tempc
+\@expandtwoargs\in@{R}\bbl@opt@safe
+\ifin@
+  \AtBeginDocument{%
+    \@ifpackageloaded{ifthen}{%
+      \bbl@redefine@long\ifthenelse#1#2#3{%
+        \let\bbl@tempa\pageref
+        \let\pageref\org@pageref
+        \let\bbl@tempb\ref
+        \let\ref\org@ref
+        \@safe@activestrue
+        \org@ifthenelse{#1}{%
+          \let\pageref\bbl@tempa
+          \let\ref\bbl@tempb
+          \@safe@activesfalse
+          #2}{%
+          \let\pageref\bbl@tempa
+          \let\ref\bbl@tempb
+          \@safe@activesfalse
+          #3}%
+        }%
+      }{}%
+    }
+  \AtBeginDocument{%
+    \@ifpackageloaded{varioref}{%
+      \bbl@redefine\@@vpageref#1[#2]#3{%
+        \@safe@activestrue
+        \org@@@vpageref{#1}[#2]{#3}%
+        \@safe@activesfalse}%
+      \bbl@redefine\vrefpagenum#1#2{%
+        \@safe@activestrue
+        \org@vrefpagenum{#1}{#2}%
+        \@safe@activesfalse}%
+      \expandafter\def\csname Ref \endcsname#1{%
+        \protected@edef\@tempa{\org@ref{#1}}\expandafter\MakeUppercase\@tempa}
+      }{}%
+    }
+\fi
+\AtEndOfPackage{%
+  \AtBeginDocument{%
+    \@ifpackageloaded{hhline}%
+      {\expandafter\ifx\csname normal@char\string:\endcsname\relax
+       \else
+         \makeatletter
+         \def\@currname{hhline}\input{hhline.sty}\makeatother
+       \fi}%
+      {}}}
+\AtBeginDocument{%
+  \@ifundefined{pdfstringdefDisableCommands}%
+    {}%
+    {\pdfstringdefDisableCommands{%
+       \languageshorthands{system}}%
+    }%
+}
+\DeclareRobustCommand{\FOREIGNLANGUAGE}[1]{%
+  \lowercase{\foreignlanguage{#1}}}
+\def\substitutefontfamily#1#2#3{%
+  \lowercase{\immediate\openout15=#1#2.fd\relax}%
+  \immediate\write15{%
+    \string\ProvidesFile{#1#2.fd}%
+    [\the\year/\two@digits{\the\month}/\two@digits{\the\day}
+     \space generated font description file]^^J
+    \string\DeclareFontFamily{#1}{#2}{}^^J
+    \string\DeclareFontShape{#1}{#2}{m}{n}{<->ssub * #3/m/n}{}^^J
+    \string\DeclareFontShape{#1}{#2}{m}{it}{<->ssub * #3/m/it}{}^^J
+    \string\DeclareFontShape{#1}{#2}{m}{sl}{<->ssub * #3/m/sl}{}^^J
+    \string\DeclareFontShape{#1}{#2}{m}{sc}{<->ssub * #3/m/sc}{}^^J
+    \string\DeclareFontShape{#1}{#2}{b}{n}{<->ssub * #3/bx/n}{}^^J
+    \string\DeclareFontShape{#1}{#2}{b}{it}{<->ssub * #3/bx/it}{}^^J
+    \string\DeclareFontShape{#1}{#2}{b}{sl}{<->ssub * #3/bx/sl}{}^^J
+    \string\DeclareFontShape{#1}{#2}{b}{sc}{<->ssub * #3/bx/sc}{}^^J
+    }%
+  \closeout15
+  }
+\@onlypreamble\substitutefontfamily
+\newcommand\BabelNonASCII{LGR,X2,OT2,OT3,OT6,LHE,LWN,LMA,LMC,LMS,LMU,}
+\let\org@TeX\TeX
+\let\org@LaTeX\LaTeX
+\let\ensureascii\@firstofone
+\AtBeginDocument{%
+  \in@false
+  \bbl@loopx\bbl@tempa\BabelNonASCII{% is there a non-ascii enc?
+    \ifin@\else
+      \edef\bbl@tempb{{,\bbl@tempa enc.def,}{,\@filelist,}}%
+      \lowercase\expandafter{\expandafter\in@\bbl@tempb}%
+    \fi}
+  \ifin@ % if a non-ascii has been loaded
+    \def\ensureascii#1{{\fontencoding{OT1}\selectfont#1}}%
+    \DeclareTextCommandDefault{\TeX}{\org@TeX}%
+    \DeclareTextCommandDefault{\LaTeX}{\org@LaTeX}%
+    \def\bbl@tempb#1\@@{\uppercase{\bbl@tempc#1}ENC.DEF\@empty\@@}%
+    \def\bbl@tempc#1ENC.DEF#2\@@{%
+      \ifx\@empty#2\else
+        \@ifundefined{T@#1}%
+          {}%
+          {\@expandtwoargs\in@{,#1,}{,\BabelNonASCII,}%
+           \ifin@
+             \DeclareTextCommand{\TeX}{#1}{\ensureascii{\org@TeX}}%
+             \DeclareTextCommand{\LaTeX}{#1}{\ensureascii{\org@LaTeX}}%
+           \else
+             \def\ensureascii##1{{\fontencoding{#1}\selectfont##1}}%
+           \fi}%
+      \fi}%
+    \bbl@loopx\bbl@tempa\@filelist{\expandafter\bbl@tempb\bbl@tempa\@@}%
+    \@expandtwoargs\in@{,\cf@encoding,}{,\BabelNonASCII,}%
+    \ifin@\else
+      \edef\ensureascii#1{{%
+        \noexpand\fontencoding{\cf@encoding}\noexpand\selectfont#1}}%
+    \fi
+  \fi}
+\AtEndOfPackage{\edef\latinencoding{\cf@encoding}}
+\AtBeginDocument{%
+  \@ifpackageloaded{fontspec}%
+    {\xdef\latinencoding{EU\ifcase\bbl@engine\or2\or1\fi}}%
+    {\gdef\latinencoding{OT1}%
+     \ifx\cf@encoding\bbl@t@one
+       \xdef\latinencoding{\bbl@t@one}%
+     \else
+       \@ifl@aded{def}{t1enc}{\xdef\latinencoding{\bbl@t@one}}{}%
+     \fi}}
+\DeclareRobustCommand{\latintext}{%
+  \fontencoding{\latinencoding}\selectfont
+  \def\encodingdefault{\latinencoding}}
+\ifx\@undefined\DeclareTextFontCommand
+  \DeclareRobustCommand{\textlatin}[1]{\leavevmode{\latintext #1}}
+\else
+  \DeclareTextFontCommand{\textlatin}{\latintext}
+\fi
+\ifx\loadlocalcfg\@undefined
+  \@ifpackagewith{babel}{noconfigs}%
+    {\let\loadlocalcfg\@gobble}%
+    {\def\loadlocalcfg#1{%
+      \InputIfFileExists{#1.cfg}%
+        {\typeout{*************************************^^J%
+                       * Local config file #1.cfg used^^J%
+                       *}}%
+        \@empty}}
+\fi
+\ifx\@unexpandable@protect\@undefined
+  \def\@unexpandable@protect{\noexpand\protect\noexpand}
+  \long\def\protected@write#1#2#3{%
+    \begingroup
+      \let\thepage\relax
+      #2%
+      \let\protect\@unexpandable@protect
+      \edef\reserved@a{\write#1{#3}}%
+      \reserved@a
+    \endgroup
+    \if@nobreak\ifvmode\nobreak\fi\fi}
+\fi
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `babel.def'.

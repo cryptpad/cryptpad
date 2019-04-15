@@ -1,0 +1,300 @@
+%%
+%% This is file `hypdestopt.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hypdestopt.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hypdestopt
+%% Version: 2011/05/13 v2.3
+%% 
+%% Copyright (C) 2006-2008, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file hypdestopt.dtx
+%% and the derived files
+%%    hypdestopt.sty, hypdestopt.pdf, hypdestopt.ins, hypdestopt.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypdestopt}%
+  [2011/05/13 v2.3 Hyperref destination optimizer (HO)]%
+\newif\ifHypDest@Verbose
+\DeclareOption{verbose}{\HypDest@Verbosetrue}
+\def\HypDest@VerboseInfo#1{%
+  \ifHypDest@Verbose
+    \PackageInfo{hypdestopt}{#1}%
+  \fi
+}
+\newif\ifHypDest@name
+\DeclareOption{num}{\HypDest@namefalse}
+\DeclareOption{name}{\HypDest@nametrue}
+\ProcessOptions*\relax
+\RequirePackage{ifpdf}[2007/09/09]
+\RequirePackage{pdftexcmds}[2007/11/11]
+\ifpdf
+\else
+  \PackageError{hypdestopt}{%
+    This package requires pdfTeX in PDF mode%
+  }\@ehc
+  \expandafter\endinput
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapehex\endcsname\relax
+  \PackageError{hypdestopt}{%
+    This pdfTeX is too old, at least 1.30.0 is required%
+  }\@ehc
+  \expandafter\endinput
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+  \PackageError{hypdestopt}{%
+    e-TeX features are missing%
+  }\@ehc
+  \expandafter\endinput
+\fi
+\ifHypDest@name
+  \RequirePackage{alphalph}[2006/05/30]%
+\fi
+\RequirePackage{auxhook}[2009/12/14]
+\RequirePackage{pdfescape}[2007/04/21]
+\long\def\HypDest@PrependDocument#1{%
+  \begingroup
+    \toks\z@{#1}%
+    \toks\tw@\expandafter{\@begindocumenthook}%
+    \xdef\@begindocumenthook{\the\toks\z@\the\toks\tw@}%
+  \endgroup
+}
+\AddLineBeginAux{%
+  \string\providecommand{\string\HypDest@Use}[1]{}%
+}
+\newcounter{HypDest}
+\ifHypDest@name
+  \def\HypDest@HexChar#1{%
+    \ifcase#1\or
+      01\or 02\or 03\or 04\or 05\or 06\or 07\or
+      08\or 09\or 0A\or 0B\or 0C\or 0E\or 0F\or
+      10\or 11\or 12\or 13\or 14\or 15\or 16\or 17\or
+      18\or 19\or 1A\or 1B\or 1C\or 1D\or 1E\or 1F\or
+      20\or 21\or 22\or 23\or 24\or 25\or 26\or 27\or
+      2A\or 2B\or 2C\or 2D\or 2E\or 2F\or
+      30\or 31\or 32\or 33\or 34\or 35\or 36\or 37\or
+      38\or 39\or 3A\or 3B\or 3C\or 3D\or 3E\or 3F\or
+      40\or 41\or 42\or 43\or 44\or 45\or 46\or 47\or
+      48\or 49\or 4A\or 4B\or 4C\or 4D\or 4E\or 4F\or
+      50\or 51\or 52\or 53\or 54\or 55\or 56\or 57\or
+      58\or 59\or 5A\or 5B\or 5D\or 5E\or 5F\or
+      60\or 61\or 62\or 63\or 64\or 65\or 66\or 67\or
+      68\or 69\or 6A\or 6B\or 6C\or 6D\or 6E\or 6F\or
+      70\or 71\or 72\or 73\or 74\or 75\or 76\or 77\or
+      78\or 79\or 7A\or 7B\or 7C\or 7D\or 7E\or 7F\or
+      80\or 81\or 82\or 83\or 84\or 85\or 86\or 87\or
+      88\or 89\or 8A\or 8B\or 8C\or 8D\or 8E\or 8F\or
+      90\or 91\or 92\or 93\or 94\or 95\or 96\or 97\or
+      98\or 99\or 9A\or 9B\or 9C\or 9D\or 9E\or 9F\or
+      A0\or A1\or A2\or A3\or A4\or A5\or A6\or A7\or
+      A8\or A9\or AA\or AB\or AC\or AD\or AE\or AF\or
+      B0\or B1\or B2\or B3\or B4\or B5\or B6\or B7\or
+      B8\or B9\or BA\or BB\or BC\or BD\or BE\or BF\or
+      C0\or C1\or C2\or C3\or C4\or C5\or C6\or C7\or
+      C8\or C9\or CA\or CB\or CC\or CD\or CE\or CF\or
+      D0\or D1\or D2\or D3\or D4\or D5\or D6\or D7\or
+      D8\or D9\or DA\or DB\or DC\or DD\or DE\or DF\or
+      E0\or E1\or E2\or E3\or E4\or E5\or E6\or E7\or
+      E8\or E9\or EA\or EB\or EC\or ED\or EE\or EF\or
+      F0\or F1\or F2\or F3\or F4\or F5\or F6\or F7\or
+      F8\or F9\or FA\or FB\or FC\or FD\or FE%
+    \fi
+  }%
+  \newalphalph\HypDest@HexString\HypDest@HexChar{250}%
+  \renewcommand*{\theHypDest}{%
+    \pdf@unescapehex{\HypDest@HexString{\value{HypDest}}}%
+  }%
+\else
+  \renewcommand*{\theHypDest}{%
+    \number\value{HypDest}%
+  }%
+\fi
+\edef\HypDest@Prefix{HypDest\string:}
+\def\HypDest@Use#1{%
+  \begingroup
+    \edef\x{%
+      \expandafter\noexpand
+      \csname\HypDest@Prefix\pdf@unescapehex{#1}\endcsname
+    }%
+    \expandafter\ifx\x\relax
+      \stepcounter{HypDest}%
+      \expandafter\xdef\x{\theHypDest}%
+      \let\on@line\@empty
+      \ifHypDest@name
+        \HypDest@VerboseInfo{%
+          Use: (\pdf@unescapehex{#1}) -\string> %
+          0x\pdf@escapehex{\x} (\number\value{HypDest})%
+        }%
+      \else
+        \HypDest@VerboseInfo{%
+          Use: (\pdf@unescapehex{#1}) -\string> num \x
+        }%
+      \fi
+    \fi
+  \endgroup
+}
+\AtBeginDocument{%
+  \let\HypDest@Use\@gobble
+}
+\def\HypDest@MarkUsed#1{%
+  \HypDest@VerboseInfo{%
+    MarkUsed: (#1)%
+  }%
+  \if@filesw
+    \immediate\write\@auxout{%
+      \string\HypDest@Use{\pdf@escapehex{#1}}%
+    }%
+  \fi
+}%
+\HypDest@PrependDocument{%
+  \@ifpackagelater{hyperref}{2006/06/01}{}{%
+    \PackageError{hypdestopt}{%
+      hyperref 2006/06/01 v6.75a or later is required%
+    }\@ehc
+  }%
+  \ifHypDest@name
+    \let\HypDest@Org@DestName\Hy@DestName
+    \renewcommand*{\Hy@DestName}[2]{%
+      \EdefUnescapeString\HypDest@temp{#1}%
+      \@ifundefined{\HypDest@Prefix\HypDest@temp}{%
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) unused%
+        }%
+      }{%
+        \HypDest@Org@DestName{%
+          \csname\HypDest@Prefix\HypDest@temp\endcsname
+        }{#2}%
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) %
+          0x\pdf@escapehex{%
+            \csname\HypDest@Prefix\HypDest@temp\endcsname
+          }%
+        }%
+      }%
+    }%
+  \else
+    \renewcommand*{\Hy@DestName}[2]{%
+      \EdefUnescapeString\HypDest@temp{#1}%
+      \@ifundefined{\HypDest@Prefix\HypDest@temp}{%
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) unused%
+        }%
+      }{%
+        \pdfdest num%
+        \csname\HypDest@Prefix\HypDest@temp\endcsname#2\relax
+        \HypDest@VerboseInfo{%
+          DestName: (\HypDest@temp) %
+          num \csname\HypDest@Prefix\HypDest@temp\endcsname
+        }%
+      }%
+    }%
+  \fi
+  \let\HypDest@Org@StartlinkName\Hy@StartlinkName
+  \ifHypDest@name
+    \renewcommand*{\Hy@StartlinkName}[2]{%
+      \HypDest@MarkUsed{#2}%
+      \HypDest@Org@StartlinkName{#1}{%
+        \@ifundefined{\HypDest@Prefix#2}{%
+          #2%
+        }{%
+          \csname\HypDest@Prefix#2\endcsname
+        }%
+      }%
+    }%
+  \else
+    \renewcommand*{\Hy@StartlinkName}[2]{%
+      \HypDest@MarkUsed{#2}%
+      \@ifundefined{\HypDest@Prefix#2}{%
+        \HypDest@Org@StartlinkName{#1}{#2}%
+      }{%
+        \pdfstartlink attr{#1}%
+                      goto num\csname\HypDest@Prefix#2\endcsname
+        \relax
+      }%
+    }%
+  \fi
+  \let\HypDest@Org@OutlineName\Hy@OutlineName
+  \ifHypDest@name
+    \renewcommand*{\Hy@OutlineName}[4]{%
+      \HypDest@Org@OutlineName{#1}{%
+        \@ifundefined{\HypDest@Prefix#2}{%
+          #2%
+        }{%
+          \csname\HypDest@Prefix#2\endcsname
+        }%
+      }{#3}{#4}%
+    }%
+  \else
+    \renewcommand*{\Hy@OutlineName}[4]{%
+      \@ifundefined{\HypDest@Prefix#2}{%
+        \HypDest@Org@OutlineName{#1}{#2}{#3}{#4}%
+      }{%
+        \pdfoutline goto num\csname\HypDest@Prefix#2\endcsname
+                    count#3{#4}%
+      }%
+    }%
+  \fi
+  \let\HypDest@Org@@writetorep\@@writetorep
+  \renewcommand*{\@@writetorep}[5]{%
+    \begingroup
+      \edef\Hy@tempa{#5}%
+      \ifx\Hy@tempa\Hy@bookmarkstype
+        \HypDest@MarkUsed{#3}%
+      \fi
+    \endgroup
+    \HypDest@Org@@writetorep{#1}{#2}{#3}{#4}{#5}%
+  }%
+  \@ifpackageloaded{bookmark}{%
+    \@ifpackagelater{bookmark}{2008/08/08}{%
+      \renewcommand*{\BKM@DefGotoNameAction}[2]{%
+        \@ifundefined{\HypDest@Prefix#2}{%
+          \edef#1{goto name{hypdestopt\string :unknown}}%
+        }{%
+          \ifHypDest@name
+            \edef#1{goto name{\csname\HypDest@Prefix#2\endcsname}}%
+          \else
+            \edef#1{goto num\csname\HypDest@Prefix#2\endcsname}%
+          \fi
+        }%
+      }%
+      \def\BKM@HypDestOptHook{%
+        \ifx\BKM@dest\@empty
+        \else
+          \ifx\BKM@gotor\@empty
+            \HypDest@MarkUsed\BKM@dest
+          \fi
+        \fi
+      }%
+    }{%
+      \@PackageError{hypdestopt}{%
+        Package `bookmark' is too old.\MessageBreak
+        Version 2008/08/08 or later is needed%
+      }\@ehc
+    }%
+  }{}%
+}
+\endinput
+%%
+%% End of file `hypdestopt.sty'.

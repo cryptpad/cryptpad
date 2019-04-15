@@ -1,0 +1,270 @@
+%%
+%% This is file `selinput.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% selinput.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: selinput
+%% Version: 2007/09/09 v1.2
+%% 
+%% Copyright (C) 2007 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file selinput.dtx
+%% and the derived files
+%%    selinput.sty, selinput.pdf, selinput.ins, selinput.drv,
+%%    selinput-test1.tex, selinput-test2.tex, selinput-test3.tex,
+%%    selinput-test4.tex, selinput-test5.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{selinput}
+  [2007/09/09 v1.2 Semi-automatic input encoding detection (HO)]%
+\RequirePackage{inputenc}
+\RequirePackage{kvsetkeys}[2006/10/19]
+\RequirePackage{stringenc}[2007/06/16]
+\RequirePackage{kvoptions}
+\newcommand*{\SelectInputEncodingList}{%
+  \let\SIE@EncodingList\@empty
+  \kvsetkeys{SelInputEnc}%
+}
+\newcommand*{\SelectInputMappings}[1]{%
+  \SIE@LoadNameDefs
+  \let\SIE@StringUnicode\@empty
+  \let\SIE@StringDest\@empty
+  \kvsetkeys{SelInputMap}{#1}%
+  \ifx\\SIE@StringUnicode\SIE@StringDest\\%
+    \PackageError{selinput}{%
+      No mappings specified%
+    }\@ehc
+  \else
+    \EdefUnescapeHex\SIE@StringUnicode\SIE@StringUnicode
+    \let\SIE@Encoding\@empty
+    \@for\SIE@EncodingTest:=\SIE@EncodingList\do{%
+      \ifx\SIE@Encoding\@empty
+        \StringEncodingConvertTest\SIE@temp\SIE@StringUnicode
+                                  {utf16be}\SIE@EncodingTest{%
+          \ifx\SIE@temp\SIE@StringDest
+            \let\SIE@Encoding\SIE@EncodingTest
+          \fi
+        }{}%
+      \fi
+    }%
+    \ifx\SIE@Encoding\@empty
+      \StringEncodingConvertTest\SIE@temp\SIE@StringDest
+                                {ascii}{utf16be}{%
+        \def\SIE@Encoding{ascii}%
+        \SIE@Info{selinput}{%
+          Matching encoding not found, but input characters%
+          \MessageBreak
+          are 7-bit (possibly editor replacements).%
+          \MessageBreak
+          Hence using ascii encoding%
+        }%
+      }{}%
+    \fi
+    \ifx\SIE@Encoding\@empty
+      \PackageError{selinput}{%
+        Cannot find a matching encoding%
+      }\@ehd
+    \else
+      \ifx\SIE@Encoding\SIE@EncodingUTFviii
+        \SIE@LoadUnicodePackage
+        \ifx\SIE@UseUTFviii\@empty
+        \else
+          \let\SIE@Encoding\SIE@UseUTFviii
+        \fi
+      \fi
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname InputEncoding\endcsname\relax
+        \inputencoding\SIE@Encoding
+      \else
+        \InputEncoding\SIE@Encoding
+      \fi
+      \SIE@Info{selinput}{Encoding `\SIE@Encoding' selected}%
+    \fi
+  \fi
+}
+\def\SIE@LoadNameDefs{%
+  \begingroup
+    \endlinechar=\m@ne
+    \catcode92=0 % backslash
+    \catcode123=1 % left curly brace/beginning of group
+    \catcode125=2 % right curly brace/end of group
+    \catcode37=14 % percent/comment character
+    \@makeother\[%
+    \@makeother\]%
+    \@makeother\.%
+    \@makeother\(%
+    \@makeother\)%
+    \@makeother\/%
+    \@makeother\-%
+    \let\InputenxName\SelectInputDefineMapping
+    \InputIfFileExists{ix-name.def}{}{%
+      \PackageError{selinput}{%
+        Missing `ix-name.def' (part of package `inputenx')%
+      }\@ehd
+    }%
+    \global\let\SIE@LoadNameDefs\relax
+  \endgroup
+}
+\newcommand*{\SelectInputDefineMapping}[1]{%
+  \expandafter\gdef\csname SIE@@#1\endcsname
+}
+\kv@set@family@handler{SelInputMap}{%
+  \@onelevel@sanitize\kv@key
+  \ifx\kv@value\relax
+    \PackageError{selinput}{%
+      Missing input character for `\kv@key'%
+    }\@ehc
+  \else
+    \@onelevel@sanitize\kv@value
+    \ifx\kv@value\@empty
+      \PackageError{selinput}{%
+        Input character got lost?\MessageBreak
+        Missing input character for `\kv@key'%
+      }\@ehc
+    \else
+      \@ifundefined{SIE@@\kv@key}{%
+        \PackageWarning{selinput}{%
+          Missing definition for `\kv@key'%
+        }%
+      }{%
+        \edef\SIE@StringDest{%
+          \SIE@StringDest
+          \kv@value
+        }%
+        \edef\SIE@StringUnicode{%
+          \SIE@StringUnicode
+          \csname SIE@@\kv@key\endcsname
+        }%
+      }%
+    \fi
+  \fi
+}
+\kv@set@family@handler{SelInputEnc}{%
+  \@onelevel@sanitize\kv@key
+  \ifx\kv@value\relax
+    \ifx\SIE@EncodingList\@empty
+      \let\SIE@EncodingList\kv@key
+    \else
+      \edef\SIE@EncodingList{\SIE@EncodingList,\kv@key}%
+    \fi
+  \else
+    \@onelevel@sanitize\kv@value
+    \PackageError{selinput}{%
+      Illegal key value pair (\kv@key=\kv@value)\MessagBreak
+      in encoding list%
+    }\@ehc
+  \fi
+}
+\def\SIE@LoadUnicodePackage{%
+  \@ifpackageloaded\SIE@UnicodePackage{}{%
+    \RequirePackage\SIE@UnicodePackage\relax
+  }%
+  \SIE@PatchUCS
+  \global\let\SIE@LoadUnicodePackage\relax
+}
+\let\SIE@show\show
+\def\SIE@PatchUCS{%
+  \AtBeginDocument{%
+    \expandafter\ifx\csname ver@ucsencs.def\endcsname\relax
+    \else
+      \let\show\SIE@show
+    \fi
+  }%
+}
+\SIE@PatchUCS
+\AtBeginDocument{%
+  \let\SIE@LoadUnicodePackage\relax
+}
+\def\SIE@EncodingUTFviii{utf8}
+\@onelevel@sanitize\SIE@EncodingUTFviii
+\def\SIE@EncodingUTFviiix{utf8x}
+\@onelevel@sanitize\SIE@EncodingUTFviiix
+\let\SIE@UnicodePackage\@empty
+\let\SIE@UseUTFviii\@empty
+\let\SIE@Info\PackageInfo
+\SetupKeyvalOptions{%
+  family=SelInput,%
+  prefix=SelInput@%
+}
+\define@key{SelInput}{utf8}{%
+  \def\SIE@UseUTFviii{#1}%
+  \@onelevel@sanitize\SIE@UseUTFviii
+}
+\DeclareBoolOption{ucs}
+\DeclareVoidOption{warning}{%
+  \let\SIE@Info\PackageWarning
+}
+\ProcessKeyvalOptions{SelInput}
+\ifSelInput@ucs
+  \def\SIE@UnicodePackage{ucs}%
+  \ifx\SIE@UseUTFviii\@empty
+    \let\SIE@UseUTFviii\SIE@EncodingUTFviiix
+  \fi
+\else
+  \ifx\SIE@UseUTFviii\@empty
+    \@ifpackageloaded{ucs}{%
+      \let\SIE@UseUTFviii\SIE@EncodingUTFviiix
+    }{%
+      \let\SIE@UseUTFviii\SIE@EncodingUTFviii
+    }%
+  \fi
+\fi
+\edef\SIE@EncodingList{%
+  utf8,%
+  x-iso-8859-1,%
+  x-iso-8859-15,%
+  x-cp1252,% ansinew
+  x-mac-roman,%
+  x-iso-8859-2,%
+  x-iso-8859-3,%
+  x-iso-8859-4,%
+  x-iso-8859-5,%
+  x-iso-8859-6,%
+  x-iso-8859-7,%
+  x-iso-8859-8,%
+  x-iso-8859-9,%
+  x-iso-8859-10,%
+  x-iso-8859-11,%
+  x-iso-8859-13,%
+  x-iso-8859-14,%
+  x-iso-8859-15,%
+  x-mac-centeuro,%
+  x-mac-cyrillic,%
+  x-koi8-r,%
+  x-cp1250,%
+  x-cp1251,%
+  x-cp1257,%
+  x-cp437,%
+  x-cp850,%
+  x-cp852,%
+  x-cp855,%
+  x-cp858,%
+  x-cp865,%
+  x-cp866,%
+  x-nextstep,%
+  x-dec-mcs%
+}%
+\@onelevel@sanitize\SIE@EncodingList
+\endinput
+%%
+%% End of file `selinput.sty'.

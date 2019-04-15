@@ -140,6 +140,8 @@
     "printBackgroundValue": "<b>Current background:</b> <em>{0}</em>",
     "printBackgroundNoValue": "<em>No background image displayed</em>",
     "printBackgroundRemove": "Remove this background image",
+    "pdfText": "Export as PDF",
+    "pdfButtonTitle2": "Export as a PDF file",
     "filePickerButton": "Embed a file stored in CryptDrive",
     "filePicker_close": "Close",
     "filePicker_description": "Choose a file from your CryptDrive to embed it or upload a new one",

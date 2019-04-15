@@ -1,0 +1,35 @@
+Swiss-German hyphenation patterns (traditional orthography)
+
+(more info about the licence to be added later)
+
+% dehyphts-x-2014-05-21.pat
+
+\message{Swiss-German Hyphenation Patterns (Traditional Orthography) `dehyphts-x' 2014-05-21 (WL)}
+
+% TeX-Trennmuster für die traditionelle deutsch-schweizerische
+% Rechtschreibung
+%
+%
+% Copyright (C) 2009, 2011, 2012, 2013, 2014 Werner Lemberg <wl@gnu.org>
+%
+% This program can be redistributed and/or modified under the terms
+% of the LaTeX Project Public License Distributed from CTAN
+% archives in directory macros/latex/base/lppl.txt; either
+% version 1 of the License, or any later version.
+%
+%
+% The word list is available from
+%
+%   http://repo.or.cz/w/wortliste.git?a=commit;h=3a97953c0ddd099a1785ea7927cbf24e639090b0
+%
+% The used patgen parameters are
+%
+%   1 1 | 2 5 | 1 1 1
+%   2 2 | 2 5 | 1 2 1
+%   3 3 | 2 6 | 1 1 1
+%   4 4 | 2 6 | 1 4 1
+%   5 5 | 2 7 | 1 1 1
+%   6 6 | 2 7 | 1 6 1
+%   7 7 | 2 13 | 1 4 1
+%   8 8 | 2 13 | 1 8 1
+

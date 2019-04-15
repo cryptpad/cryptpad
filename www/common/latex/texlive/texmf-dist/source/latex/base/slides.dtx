@@ -1,0 +1,2725 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \CheckSum{2704}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+% \iffalse
+% Copyright (C) 1994-97 LaTeX3 project, Frank Mittelbach
+% and Rainer Sch\"opf, all rights reserved.
+%
+%    \begin{macrocode}
+%<+class>\NeedsTeXFormat{LaTeX2e}[1997/06/01]
+%    \end{macrocode}
+%
+%    Announce the Class name and its version:
+% \changes{v2.3b}{1994/05/01}{Removed the use of \cs{fileversion}
+%    c.s.}
+% \changes{v2.3b}{1994/05/01}{Added \cs{ProvidesFile} to slides.def.}
+% \changes{v2.3o}{1995/05/17}{Replaced all \cs{hbox to} with
+%    \cs{hb@xt@}.}
+% \changes{v2.3o}{1995/05/17}{Cleaned up the \cs{changes} entries.}
+% \changes{v2.3p}{1995/05/23}{Corrected some brace mismatches.}
+% \changes{v2.3q}{1995/09/20}{Replaced \cs{@tempa} by \cs{reserved@a}.}
+% \changes{v2.3r}{1995/09/27}{Globally replaced scale factor 19.91 by
+%          19.907 in \cs{DeclareFontShape}, as this gives better
+%          rounded font sizes at 600dpi (suggested by Denis Roegel).}
+%    \begin{macrocode}
+%<+class>\ProvidesClass{slides}
+%<+cmd>\ProvidesFile{slides.def}
+%<*driver>
+       \ProvidesFile{slides.drv}
+%</driver>
+              [2014/09/29 v2.3z
+%<+class>               Standard LaTeX document class]
+%<+cmd>               SLiTeX definitions]
+%    \end{macrocode}
+%
+% \section{A driver for this document}
+%
+% \changes{v2.3f}{1994/05/26}{Moved the driver to the front of the
+%    file; it doesn't print any longer}
+%
+% The next bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It can be extracted from this file by the
+% \dst{} program.
+%    \begin{macrocode}
+%<*driver>
+]
+\documentclass{ltxdoc}
+%    \end{macrocode}
+%    The following command retrieves the date and version information
+%    from the file.
+%    \begin{macrocode}
+\GetFileInfo{slides.drv}
+%    \end{macrocode}
+%    Some commonly used abbreviations:
+% \changes{v2.3h}{1994/06/01}{Added definition of \cs{SLiTeX}.}
+%    \begin{macrocode}
+\DeclareRobustCommand{\SLiTeX}{{%
+   \normalfont S\kern -.06em
+   {\scshape l\kern -.035emi}\kern -.06em
+   \TeX
+}}
+\newcommand*{\Lopt}[1]{\textsf {#1}}
+\newcommand*{\file}[1]{\texttt {#1}}
+\newcommand*{\Lcount}[1]{\textsl {\small#1}}
+\newcommand*{\pstyle}[1]{\textsl {#1}}
+\newcommand*{\dst}{{\normalfont\scshape docstrip}}
+%
+%    \end{macrocode}
+%    Now start the document and input this file.
+% \changes{v2.3d}{1994/05/12}{Added a missing \cs{begin\{macrocode\}}}
+%    \begin{macrocode}
+\begin{document}
+   \DocInput{slides.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%\fi
+%
+%
+% \changes{v2.1b}{1993/12/13}{Removed \cs{CodelineIndex} from the
+%    driver code.}
+% \changes{v2.1e}{1993/12/16}{Removed again different definitions for
+%    font commands font commands in non-compatibility mode.}
+%
+% \changes{v2.2}{1993/12/18}{Changes to make it work with
+%    compatibility mode.}
+% \changes{v2.2a}{1993/12/19}{Removed float parms}
+% \changes{v2.2d}{1994/01/31}{Removed \cs{@normalsize definition}}
+% \changes{v2.2g}{1994/03/01}{Removed option makeidx.}
+% \changes{v2.2g}{1994/03/01}{Moved driver up front.}
+% \changes{v2.2g}{1994/03/01}{Renamed files \file{slides.ltx} and
+%    \file{sfontdef.ltx} to \file{slides.def} and \file{sfonts.def}.}
+% \changes{v2.2l}{1994/03/16}{Removed \cs{typeouts}}
+% \changes{v2.3}{1994/03/16}{Removed root/slide-file structure except
+%    for compatibility mode. (LL)}
+% \changes{v2.3}{1994/03/16}{Added clock option (LL)}
+% \changes{v2.3}{1994/03/16}{Modified slide, overlay, note
+%    environments. (LL)}
+% \changes{v2.3}{1994/03/16}{Added titlepage option and
+%    \cs{maketitle}. (LL)}
+% \changes{v2.3c}{1994/05/06}{Changed documentation to use
+%    `environment' instead of `macro' environment for environments}
+% \changes{v2.3f}{1994/05/26}{Wrapped two long lines}
+% \changes{v2.3l}{1994/12/16}{Use \cs{newcommand*} to define commands
+%    with an argument}
+% \changes{v2.3n}{1995/04/02}{a slight documentation fix (PR 1517)}
+%
+% \title{Producing slides with \LaTeXe{}}
+% \author{Frank Mittelbach}
+% \date{\filedate}
+%
+% \maketitle
+% \MaintainedByLaTeXTeam{latex}
+%
+% \section{Introduction}
+%
+% With \LaTeXe{} it is now no longer necessary to maintain a special
+% format for producing overhead slides. Instead the standard format
+% may be used and internally only different font definition files come
+% into play.
+%
+% \section{Usage}
+%
+% For producing slides you have to use |slides| as the
+% document class. This class is very similar to the |slides| style
+% that came with \SliTeX{}, in fact it is basically a copy changed to
+% work under \LaTeXe{}.\footnote{Therefore you should compare the
+% new class with old \SliTeX{} styles
+% in case you have local slide classes to see what you have to change
+% in order to use them with \LaTeXe{}.} Thus you have to say something
+% like
+% \begin{verbatim}
+%   \documentclass[...]{slides}
+% \end{verbatim}
+% and process this with \LaTeXe.
+%
+% \section{Fonts}
+%
+% Note, that that with NFSS you can easily produce slides with special
+% fonts just by calling an appropriate style file (like |times|) in a
+% |\usepackage| command. This works, for example, with all
+% fonts that are defined to be scaleable (e.g., PostScript fonts) since
+% they can be used at any size by NFSS.
+%
+% However, packages like |pandora| won't work because the standard
+% |.fd| files shipped with NFSS only contain small sizes. You can, of
+% course, produce additional sizes and change the |.fd| files
+% accordingly so that they would be useable for slides as well.
+%
+% \section{Invisible text and color separation}
+%
+% In the original \SliTeX{} it was possible to produce invisible text
+% using the |\invisible| command, so that one was able to put several
+% slides on top of each other (with each slides showing additional
+% details, etc.). It was also possible to produce `color' slides. This
+% was done by producing individual slides one for each color and
+% placing them on top of each other.
+%
+% The availability of color printers and the |color| package make
+% color separation obsolete, so it has been removed.  Although the
+% |color| has also made |\invisible| obsolete, the command is
+% retained in the \LaTeXe{} implementation, but there
+% are a few restrictions. Invisible fonts are implemented as special
+% shapes where the shape names are build by prefixing the normal shape
+% name with an uppercase |I|. For example, the `normal invisible
+% shape' would be |In|. When \LaTeX{} is requested to typeset
+% invisible it will thus change the current shape attribute in this
+% manner. To make this work it is necessary that the resulting font
+% shape group is defined. If not, the normal font substitution
+% mechanism of \LaTeXe{} will change the attribute until it finds a
+% usable font shape group with the result that the text may become
+% visible.
+%
+% As long as you use the standard fonts for slides this is not a
+% problem because all the visible font shape groups have invisible
+% counterparts. However, if you decide on using special fonts, e.g.,
+% PostScript fonts, your |\DeclareFontShape| settings may not contain
+% invisible font shape groups and thus you may be unable to use these
+% features without adding additional |\DeclareFontShape| commands to
+% your |.fd| files or the preamble of your document.
+%
+% \StopEventually{}
+%
+%
+% \section{The Implementation}
+%
+% \begin{quote}
+% \textbf{Warning:} The implementation is still very experimental and
+% may change internally very much. It currently basically consists of a
+% slightly modified copy of |slides.sty| (which then forms
+% |slides.cls|) followed by a slightly changed copy of |slitex.tex|.
+% Documentation is practically
+% non-existing.  Everybody is invited to help changing this!
+% \end{quote}
+%
+% The code is divided into two parts, we first implement the class
+% related functions and declarations and then define lowlevel stuff
+% that is necessary within every class. By placing such commands into
+% a separate file it will be possible to share it with other slide
+% classes.
+%
+% \subsection{The class code}
+%
+% At this point we input the redefinitions that are necessary for
+% \SLiTeX.
+% \changes{v2.3g}{1994/05/26}{Use \cs{input} instead of \cs{@@input}}
+%    \begin{macrocode}
+%<*class>
+\input{slides.def}
+%    \end{macrocode}
+%
+%
+% Now we are ready for setting up the font tables. As usual, we first
+% look for a local configuration file |sfonts.cfg|. If there isn't
+% one, we fall back to the default one (|sfonts.def|).
+% \changes{v2.2i}{1994/03/08}{Corrected first argument of
+%    \cs{IfFileExists}: \file{sfonts.def} to \file{sfonts.cfg}.}
+% \changes{v2.3g}{1994/05/26}{Use \cs{InputIfFileExists} instead of
+%    \cs{IfFileExists} and \cs{input} instead of \cs{@@input}}
+%    \begin{macrocode}
+\InputIfFileExists{sfonts.cfg}
+           {\typeout{**************************************^^J%
+                     *^^J%
+                     * Local config file sfonts.cfg used^^J%
+                     *^^J%
+                     **************************************}}%
+           {\input{sfonts.def}}
+%    \end{macrocode}
+%
+% \section{Declaration of Options}
+%
+% We declare a few options as illegal.
+%
+%
+% \subsection{Setting Paper Sizes}
+%
+%    The variables |\paperwidth| and |\paperheight| should reflect the
+%    physical paper size after trimming. For desk printer output this
+%    is usually the real paper size since there is no post-processing.
+%    Classes for real book production will probably add other paper
+%    sizes and additionally the production of crop marks for trimming.
+% \changes{v2.1d}{1993/12/14}{Corrected typo, A4 is not 279 mm high}
+%    \begin{macrocode}
+\DeclareOption{a4paper}
+   {\setlength\paperheight {297mm}%
+    \setlength\paperwidth  {210mm}}
+\DeclareOption{a5paper}
+   {\setlength\paperheight {210mm}%
+    \setlength\paperwidth  {148mm}}
+\DeclareOption{b5paper}
+   {\setlength\paperheight {250mm}%
+    \setlength\paperwidth  {176mm}}
+\DeclareOption{letterpaper}
+   {\setlength\paperheight {11in}%
+    \setlength\paperwidth  {8.5in}}
+\DeclareOption{legalpaper}
+   {\setlength\paperheight {14in}%
+    \setlength\paperwidth  {8.5in}}
+\DeclareOption{executivepaper}
+   {\setlength\paperheight {10.5in}%
+    \setlength\paperwidth  {7.25in}}
+%    \end{macrocode}
+%
+%    The option \Lopt{landscape} switches the values of |\paperheight|
+%    and |\paperwidth|, assuming the dimensions wer given for portrait
+%    paper.
+%    \begin{macrocode}
+\DeclareOption{landscape}
+   {\setlength\@tempdima   {\paperheight}%
+    \setlength\paperheight {\paperwidth}%
+    \setlength\paperwidth  {\@tempdima}}
+%    \end{macrocode}
+%
+%  \subsection{The clock option}
+
+% The option \Lopt{clock} prints the time at the bottom of each note.
+% We also define here the commands and counters used to keep track of
+% time.
+%    \begin{macrocode}
+\newif\if@clock \@clockfalse
+\DeclareOption{clock}{\@clocktrue
+  \AtEndDocument{\typeout{\@arabic\c@minutes\space minutes}}
+}%
+\newcounter{minutes}%
+\newcounter{seconds}%
+\newcommand*{\settime}[1]{\setcounter{seconds}{0}\addtime{#1}}%
+\newcommand*{\addtime}[1]{\addtocounter{seconds}{#1}%
+  \setcounter{minutes}{\value{seconds}}%
+  \global \divide \value{minutes} by 60\relax}
+
+%    \end{macrocode}
+%
+%  \subsection{Two-side or one-side printing}
+%
+% Two-sided printing is not allowed, so don't declare an option.
+% But it is necessary to initialize the switch.
+% \changes{v2.2h}{1994/03/07}{Removed declared option twoside.}
+%    \begin{macrocode}
+\@twosidefalse
+%    \end{macrocode}
+%
+%
+%  \subsection{Draft option}
+%
+%    If the user requests \Lopt{draft} we show any overfull boxes.
+%    We could probably add some more interesting stuff to this option.
+%    \begin{macrocode}
+\DeclareOption{draft}{\setlength\overfullrule{5pt}}
+\DeclareOption{final}{\setlength\overfullrule{0pt}}
+%    \end{macrocode}
+%
+%  \subsection{Titlepage option}
+%    The default is for a |\maketitle| command to make a new page.
+%    \begin{macrocode}
+\newif\if@titlepage
+\@titlepagetrue
+\DeclareOption{titlepage}{\@titlepagetrue}
+\DeclareOption{notitlepage}{\@titlepagefalse}
+%    \end{macrocode}
+%
+%  \subsection{Twocolumn printing}
+%
+%    Two-column printing is again forbidden.
+% \changes{v2.3e}{1994/05/22}{twocolumn produces only a warning}
+%    \begin{macrocode}
+\DeclareOption{onecolumn}{}
+\DeclareOption{twocolumn}{%
+    \ClassWarning{slides}{No 'twocolumn' layout for slides}}
+%    \end{macrocode}
+%
+%  \subsection{Equation numbering on the left}
+%
+%    The option \Lopt{leqno} can be used to get the equation numbers
+%    on the left side of the equation.
+% \changes{v2.2g}{1994/03/01}{Option leqno loads \file{leqno.clo}
+%    file.}
+%    \begin{macrocode}
+\DeclareOption{leqno}{\input{leqno.clo}}
+%    \end{macrocode}
+%
+%  \subsection{Flush left displays}
+%
+%    The option \Lopt{fleqn} redefines the displayed math environments
+%    in such a way that they come out flush left, with an indentation
+%    of |\mathindent| from the prevailing left margin.
+% \changes{v2.2g}{1994/03/01}{Added fleqn option.}
+%    \begin{macrocode}
+\DeclareOption{fleqn}{\input{fleqn.clo}}
+%    \end{macrocode}
+%
+%
+% \section{Executing Options}
+%
+%    Here we execute the default options to initialize certain
+%    variables.
+%    \begin{macrocode}
+\ExecuteOptions{letterpaper,final}
+%    \end{macrocode}
+%
+%    The |\ProcessOptions| command causes the execution of the code
+%    for every option \Lopt{FOO}
+%    which is declared and for which the user typed
+%    the \Lopt{FOO} option in his
+%    |\documentclass| command.  For every option \Lopt{BAR} he typed,
+%    which is not declared, the option is assumed to be a global option.
+%    All options will be passed as document options to any
+%    |\usepackage| command in the document preamble.
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+%  \section{Loading Packages}
+%
+%  The standard class files do not load additional packages.
+%
+%
+% \section{Document Layout}
+%
+%
+%  In this section we are finally dealing with the nasty typographical
+%  details.
+%
+%
+%
+% \subsection{Fonts}
+%
+%    \begin{macrocode}
+% FMi:
+\def\rmdefault{lcmss}        % no roman
+\def\sfdefault{lcmss}
+\def\ttdefault{lcmtt}
+\def\itdefault{sl}
+\def\sldefault{sl}
+\def\bfdefault{bx}
+%    \end{macrocode}
+%
+%
+%  Since the number of parameters to set are very large it seems
+%    reasonable to set up one command |\@setfontsize@parms| which will
+%    do the work for us.
+%
+%    \LaTeX\ offers the user commands to change the size of the font,
+%    relative to the `main' size. Each relative size changing command
+%    |\size| executes the command
+%    |\@setfontsize||\size|\meta{font-size}\meta{baselineskip} where:
+%
+%    \begin{description}
+%    \item[\meta{font-size}] The absolute size of the font to use from
+%        now on.
+%
+%    \item[\meta{baselineskip}] The normal value of |\baselineskip|
+%        for the size of the font selected. (The actual value will be
+%        |\baselinestretch| * \meta{baselineskip}.)
+%    \end{description}
+%
+%    A number of commands, defined in the \LaTeX{} kernel, shorten the
+%    following  definitions and are used throughout. They are:
+% \begin{center}
+% \begin{tabular}{ll@{\qquad}ll@{\qquad}ll}
+%  \verb=\@vpt= & 5 & \verb=\@vipt= & 6 & \verb=\@viipt= & 7 \\
+%  \verb=\@viiipt= & 8 & \verb=\@ixpt= & 9 & \verb=\@xpt= & 10 \\
+%  \verb=\@xipt= & 10.95 & \verb=\@xiipt= & 12 & \verb=\@xivpt= & 14.4\\
+%  ...
+%  \end{tabular}
+%  \end{center}
+%
+% \begin{macro}{\ifourteenpt}
+% \begin{macro}{\iseventeenpt}
+% \begin{macro}{\itwentypt}
+% \begin{macro}{\itwentyfourpt}
+% \begin{macro}{\itwentyninept}
+% \begin{macro}{\ithirtyfourpt}
+% \begin{macro}{\ifortyonept}
+%    For \SLiTeX{}, however, these are not sufficient, and we therefore
+%    need to add a few extra, larger, sizes.
+%    \begin{macrocode}
+\def\ifourteenpt{13.82}
+\def\iseventeenpt{16.59}
+\def\itwentypt{19.907}
+\def\itwentyfourpt{23.89}
+\def\itwentyninept{28.66}
+\def\ithirtyfourpt{34.4}
+\def\ifortyonept{41.28}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@setfontsize@parms}
+%    This routine is used in \SliTeX{} to interface font size setting
+%    it is modeled after the settings I found in \texttt{slides.sty}, so
+%    it probably needs an update. But any class is free to redefine
+%    it, as it is used only as an abbreviation.
+%    It's syntax is:
+% \begin{quote}
+%     |\@setfontsize@parms| \\
+%     |   |\meta{lineskip} \\
+%     |   |\meta{parskip} \\
+%     |   |\meta{abovedisplayskip}  \\
+%     |   |\meta{belowdisplayskip}  \\
+%     |   |\meta{abovedisplayshortskip} \\
+%     |   |\meta{belowdisplayshortskip} \\
+%     |   |\meta{strut ht} \meta{strut dp}   (without pt)
+% \end{quote}
+%
+% For NFSS1 a similar style existed which did run both with a
+% \SliTeX{} with old font selection or with NFSS1. But when no
+% separate format is made this doesn't make much sense.
+% So the following note is history and would only be true if all NFSS
+% stuff would be removed from the file and placed into the format.
+% \begin{quote}\small
+% Note: To interface the old \texttt{sfonts.tex} the \meta{size} must be
+%    hidden in commands denoting the size by its name prefixed with
+%    `i', i.e.\ 20pt size is called |\itwentypt| at this point. The
+%    NFSS interface will define those sizes to expand to the internal
+%    size, e.g.\ 20 but for the old sfonts the command name, e.g.
+%    |\itwentypt|, will be used to construct the name |\twentypt| etc.
+%
+%    This is a crude interface to the old \texttt{sfonts.tex}. It will
+%    be a bit slower than the old one because it must define |\@tiny|
+%    etc.\ every time a size changes.
+% \end{quote}
+%
+% If classes are set up that are only for use with NFSS then the second
+% argument may be an ordinary font size!
+% \changes{v2.0d}{1993/11/12}{Replaced all pt by \cs{p@}, corrected
+%    definition for \cs{tiny}.}
+%
+%    \begin{macrocode}
+\def\@setfontsize@parms#1#2#3#4#5#6#7#8{%
+   \lineskip #1\relax%
+   \parskip #2\relax
+   \abovedisplayskip #3\relax
+   \belowdisplayskip #4\relax
+   \abovedisplayshortskip #5\relax
+   \belowdisplayshortskip #6\relax
+%
+%    \end{macrocode}
+%    I don't see a reason why the |\strutbox| has a dim different from
+%    |\baselineskip| but we will leave it for the moment
+%    \begin{macrocode}
+  \setbox\strutbox=\hbox{\vrule \@height#7\p@\@depth#8\p@\@width\z@}%
+  \baselineskip\baselinestretch\baselineskip
+  \normalbaselineskip\baselineskip}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    Setting size relations for math scripts:
+% \changes{v2.2e}{1994/02/07}{Corrected entry for size 23.89.}
+%    \begin{macrocode}
+\DeclareMathSizes{13.82}{13.82}{10}{7}
+\DeclareMathSizes{16.59}{16.59}{12}{7}
+\DeclareMathSizes{19.907}{19.907}{16.59}{13.82}
+\DeclareMathSizes{23.89}{23.89}{19.907}{16.59}
+\DeclareMathSizes{28.66}{28.66}{23.89}{19.907}
+\DeclareMathSizes{34.4}{34.4}{28.66}{23.89}
+\DeclareMathSizes{41.28}{41.28}{34.4}{28.66}
+%    \end{macrocode}
+%
+% \begin{macro}{\normalsize}
+%    \begin{macrocode}
+\def\normalsize{%
+      \@setfontsize\normalsize\itwentypt{28\p@ plus3\p@ minus4\p@}%
+%            {20}{30\p@ plus3\p@ minus3\p@}%  made a bit shorter
+      \@setfontsize@parms
+            {2pt}%
+            {30\p@ plus18\p@ minus9\p@}%
+            {15\p@ plus3\p@ minus3\p@}%
+            {10\p@ plus3\p@ minus3\p@}%
+            {10\p@ plus3\p@}
+            \abovedisplayshortskip
+            {17}{7}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%    We initially choose the normalsize font.
+%    \begin{macrocode}
+\normalsize
+%    \end{macrocode}
+%
+% \begin{macro}{\small}
+%    \begin{macrocode}
+\def\small{\@setfontsize\small\iseventeenpt{19\p@ plus3\p@ minus\p@}%
+           \@setfontsize@parms
+            {2\p@}%
+            {15\p@ plus15\p@ minus7\p@}%
+            {12\p@ plus3\p@ minus3\p@}%
+            {9\p@ plus3\p@ minus3\p@}%
+            {6\p@ plus3\p@}%
+            \abovedisplayshortskip
+            {13.5}{5.6}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footnotesize}
+% \begin{macro}{\scriptsize}
+%    \begin{macrocode}
+\let\footnotesize=\small
+\let\scriptsize=\small
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\tiny}
+%    \begin{macrocode}
+\def\tiny{\@setfontsize\tiny\ifourteenpt{16\p@ plus2\p@ minus\p@}%
+          \@setfontsize@parms
+            {2pt}%
+            {14\p@ plus3\p@ minus10\p@}%
+            {11\p@ plus3\p@ minus10\p@}%
+            \abovedisplayskip
+            {8\p@ plus3\p@ minus5\p@}%
+            {\z@ plus3\p@}%
+            {10}{4}}
+%    \end{macrocode}
+% \end{macro}
+%
+% Actually copying the code above would be better because this would
+% correct the error message. Maybe one should remove the first
+% argument of |\set@font@size@parms|.
+%
+% \begin{macro}{\large}
+% \begin{macro}{\Large}
+% \begin{macro}{\LARGE}
+% \begin{macro}{\huge}
+% \begin{macro}{\Huge}
+%    \begin{macrocode}
+\def\large{\@setfontsize\large\itwentyfourpt{42\p@ plus8\p@ minus5\p@}%
+           \@setfontsize@parms
+            {2\p@}%
+            {40\p@ plus20\p@ minus4\p@}%
+            {20\p@ plus8\p@ minus3\p@}%
+            \abovedisplayskip
+            {10\p@ plus5\p@}%
+            \abovedisplayshortskip
+            {20}{8.5}}
+
+\def\Large{\@setfontsize\Large\itwentyninept{48\p@ plus10\p@ minus6\p@}%
+           \@setfontsize@parms
+            {2\p@}%
+            {48\p@ plus30\p@ minus6\p@}%
+            {24\p@ plus10\p@ minus6\p@}%
+            \abovedisplayskip
+            {12\p@ plus8\p@}%
+            \abovedisplayshortskip
+            {27}{11}}
+
+\def\LARGE{\@setfontsize\LARGE\ithirtyfourpt{52\p@ plus10\p@ minus6\p@}%
+           \@setfontsize@parms
+            {2\p@}%
+            {52\p@ plus30\p@ minus6\p@}%
+            {24\p@ plus10\p@ minus6\p@}%
+            \abovedisplayskip
+            {12\p@ plus8\p@}%
+            \abovedisplayshortskip
+            {27}{11}}
+
+\def\huge{\@setfontsize\huge\ifortyonept{60\p@ plus10\p@ minus6\p@}%
+           \@setfontsize@parms
+            {2\p@}%
+            {60\p@ plus30\p@ minus6\p@}%
+            {24\p@ plus10\p@ minus6\p@}%
+            \abovedisplayskip
+            {12\p@ plus8\p@}%
+            \abovedisplayshortskip
+            {27}{11}}
+
+\let\Huge\huge
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Paragraphing}
+%
+% \begin{macro}{\baselinestretch}
+%    This is used as a multiplier for |\baselineskip|. The default is
+%    to {\em not\/} stretch the baselines.
+%    \begin{macrocode}
+\renewcommand\baselinestretch{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\parindent}
+%    |\parindent| is the width of the paragraph indentation.
+%    \begin{macrocode}
+\setlength\parindent{\z@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@lowpenalty}
+% \begin{macro}{\@medpenalty}
+% \begin{macro}{\@highpenalty}%
+%    The commands |\nopagebreak| and |\nolinebreak| put in penalties
+%    to discourage these breaks at the point they are put in.
+%    They use |\@lowpenalty|, |\@medpenalty| or |\@highpenalty|,
+%    dependent on their argument.
+%    \begin{macrocode}
+\@lowpenalty   51
+\@medpenalty  151
+\@highpenalty 301
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\clubpenalty}
+% \begin{macro}{\widowpenalty}
+%    These penalties are use to discourrage club and widow lines.
+%    Because we use their default values we only show them here,
+%    commented out.
+%    \begin{macrocode}
+% \clubpenalty  150
+% \widowpenalty 150
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\displaywidowpenalty}
+% \begin{macro}{\predisplaypenalty}
+% \begin{macro}{\postdisplaypenalty}
+%    Discourrage (but not so much) widows in front of a math display
+%    and forbid breaking directly in front of a display. Allow break
+%    after a display without a penalty. Again the default values are
+%    used, therefore we only show them here.
+%    \begin{macrocode}
+% \displaywidowpenalty 50
+% \predisplaypenalty   10000
+% \postdisplaypenalty  0
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\interlinepenalty}
+%    Allow the breaking of a page in the middle of a paragraph.
+%    \begin{macrocode}
+% \interlinepenalty 0
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\brokenpenalty}
+%    We allow the breaking of a page after a hyphenated line.
+%    \begin{macrocode}
+% \brokenpenalty 0
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Page Layout}
+%
+%    All margin dimensions are measured from a point one inch from the
+%    top and lefthand side of the page.
+%
+% \subsubsection{Vertical spacing}
+%
+% \begin{macro}{\headheight}
+% \begin{macro}{\headsep}
+% \begin{macro}{\topskip}
+%    The |\headheight| is the height of the box that will contain the
+%    running head. The |\headsep| is the distance between the bottom
+%    of the running head and the top of the text. |\topskip| is the
+%    |\baselineskip| for the first line on a page.
+%    \begin{macrocode}
+\setlength\headheight{14\p@}
+\setlength\headsep   {15\p@}
+\setlength\topskip   {30\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\footskip}
+%    The distance from the baseline of the box which contains the
+%    running footer to the baseline of last line of text is controlled
+%    by the |\footskip|.
+%    Bottom of page:
+%    \begin{macrocode}
+\setlength\footskip{25\p@}   %
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\maxdepth}
+% \begin{macro}{\@maxdepth}
+% \changes{v2.3c}{1994/05/06}{Added setting of \cs{maxdepth} and
+%    \cs{@maxdepth}}
+%    The \TeX\ primitive register |\maxdepth| has a function that is
+%    similar to that of |\topskip|. The register |\@maxdepth| should
+%    always contain a copy of |\maxdepth|. In both plain \TeX\ and
+%    \LaTeX~2.09 |\maxdepth| had a fixed value of \texttt{4pt}; in
+%    native \LaTeX2e\ mode we let the value depend on the typesize. We
+%    set it so that |\maxdepth| $+$ |\topskip| $=$ typesize $\times
+%    1.5$. As it happens, in these classes |\topskip| is equal to the
+%    typesize, therefor we set |\maxdepth| to half the value of
+%    |\topskip|.
+%    \begin{macrocode}
+\if@compatibility
+  \setlength\maxdepth{4\p@}
+\else
+  \setlength\maxdepth{.5\topskip}
+\fi
+\setlength\@maxdepth\maxdepth
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{The dimension of text}
+%
+% \begin{macro}{\textwidth}
+%    When we are in compatibility mode we have to make sure that the
+%    dimensions of the printed area are not different from what the
+%    user was used to see.
+%
+%    \begin{macrocode}
+\if@compatibility
+  \setlength\textwidth{460\p@}
+%    \end{macrocode}
+%    When we are not in compatibility mode we can set some of the
+%    dimensions differently, taking into account the paper size for
+%    instance.
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    First, we calculate the maximum textwidth, which depends on the
+%    papersize. Then we calculate the approximate length of 65
+%    characters, which should be the maximum length of a line of text.
+%    The calculated values are stored in |\@tempdima| and |\@tempdimb|.
+%    \begin{macrocode}
+  \setlength\@tempdima{\paperwidth}
+  \addtolength\@tempdima{-2in}
+  \setbox\@tempboxa\hbox{\rmfamily im}
+  \setlength\@tempdimb{.5\wd\@tempboxa}
+  \setlength\@tempdimb{65\@tempdimb}
+%    \end{macrocode}
+%
+%    Now we can set the |\textwidth|, depending on whether we will be
+%    setting one or two columns.
+%
+%    The text should not be wider than the minimum
+%    of the paperwidth (minus 2 inches for the margins) and the
+%    maximum length of a line as defined by the number of characters.
+%    \begin{macrocode}
+  \ifdim\@tempdima>\@tempdimb\relax
+    \setlength\textwidth{\@tempdimb}
+  \else
+    \setlength\textwidth{\@tempdima}
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    Here we modify the width of the text a little to be a whole
+%    number of points.
+%    \begin{macrocode}
+\@settopoint\textwidth
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\columnwidth}
+% \begin{macro}{\columnsep}
+% \begin{macro}{\columnseprule}
+%    \begin{macrocode}
+\columnwidth \textwidth
+\columnsep 10pt
+\columnseprule \z@
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\textheight}
+%    Now that we have computed the width of the text, we have to take
+%    care of the height. The |\textheight| is the height of text
+%    (including footnotes and figures, excluding running head and
+%    foot).
+%
+%    First make sure that the compatibility mode gets the same
+%    dimensions as we had with \LaTeX2.09. The number of lines was
+%    calculated as the floor of the old |\textheight| minus
+%    |\topskip|, divided by |\baselineskip| for |\normalsize|. The
+%    old value of |\textheight| was 528pt.
+%
+%    \begin{macrocode}
+\if@compatibility
+  \setlength\textheight{600\p@}
+%    \end{macrocode}
+%
+%    Again we compute this, depending on the papersize and depending
+%    on the baselineskip that is used, in order to have a whole number
+%    of lines on the page.
+%    \begin{macrocode}
+\else
+  \setlength\@tempdima{\paperheight}
+%    \end{macrocode}
+%
+%    We leave at least a 1 inch margin on the top and the bottom of
+%    the page.
+%    \begin{macrocode}
+  \addtolength\@tempdima{-2in}
+%    \end{macrocode}
+%
+%    We also have to leave room for the running headers and footers.
+%    \begin{macrocode}
+  \addtolength\@tempdima{-1in}
+%    \end{macrocode}
+%
+%    Then we divide the result by the current |\baselineskip| and
+%    store this in the count register |\@tempcnta|, which then
+%    contains the number of lines that fit on this page.
+%    \begin{macrocode}
+  \divide\@tempdima\baselineskip
+  \@tempcnta=\@tempdima
+%    \end{macrocode}
+%
+%    From this we can calculate the height of the text.
+%    \begin{macrocode}
+  \setlength\textheight{\@tempcnta\baselineskip}
+\fi
+%    \end{macrocode}
+%
+%    The first line on the page has a height of |\topskip|.
+%    \begin{macrocode}
+\advance\textheight by \topskip
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Margins}
+%
+% \begin{macro}{\oddsidemargin}
+% \begin{macro}{\evensidemargin}
+% \begin{macro}{\marginparwidth}
+%    First we give the values for the compatibility mode.
+%
+%    Values for two-sided printing:
+%    \begin{macrocode}
+\if@compatibility
+   \setlength\oddsidemargin  {17\p@}
+   \setlength\evensidemargin {17\p@}
+   \setlength\marginparwidth {20\p@}
+\else
+%    \end{macrocode}
+%
+%    When we are not in compatibility mode we can take the dimensions
+%    of the selected paper into account.
+%
+%    We center the text on the page, by
+%    calculating the difference between |textwidth| and
+%    |\paperwidth|$-$|2in|. Half of that difference is then used for
+%    the margin. The amount of space that can be used for marginal
+%    notes is at least 0.8~inch, to which we add any `leftover' space.
+%    \begin{macrocode}
+  \setlength\@tempdima        {\paperwidth}
+  \addtolength\@tempdima      {-2in}
+  \addtolength\@tempdima      {-\textwidth}
+  \setlength\oddsidemargin    {.5\@tempdima}
+  \setlength\marginparwidth   {.8in}
+  \addtolength\marginparwidth {.5\@tempdima}
+%    \end{macrocode}
+%
+%    The |\evensidemargin| can now be computed from the values set
+%    above.
+%    \begin{macrocode}
+\setlength\evensidemargin  {\paperwidth}
+\addtolength\evensidemargin{-2in}
+\addtolength\evensidemargin{-\textwidth}
+\addtolength\evensidemargin{-\oddsidemargin}
+\fi
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\marginparsep}
+% \begin{macro}{\marginparpush}
+%    The horizontal space between the main text and marginal notes is
+%    determined by |\marginparsep|, the minimum vertical separation
+%    between two marginal notes is controlled by |\marginparpush|.
+%    \begin{macrocode}
+\setlength\marginparsep {5\p@}
+\setlength\marginparpush{5\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\topmargin}
+%    The |\topmargin| is the distance between the top of `the
+%    printable area' --which is 1 inch below the top of the paper--
+%    and the top of the box which contains the running head.
+%
+%    It can now be computed from the values set above.
+%    \begin{macrocode}
+\if@compatibility
+  \setlength\topmargin{-10pt}
+\else
+  \setlength\topmargin{\paperheight}
+  \addtolength\topmargin{-2in}
+  \addtolength\topmargin{-\headheight}
+  \addtolength\topmargin{-\headsep}
+  \addtolength\topmargin{-\textheight}
+  \addtolength\topmargin{-\footskip}     % this might be wrong!
+%    \end{macrocode}
+%    By changing the factor in the next line the complete page
+%    can be shifted vertically.
+%    \begin{macrocode}
+  \addtolength\topmargin{-.5\topmargin}
+\fi
+\@settopoint\topmargin
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection{Footnotes}
+%
+% \begin{macro}{\footnotesep}
+%    |\footnotesep| is the height of the strut placed at the beginning
+%    of every footnote. It equals the  height of a normal
+%    |\footnotesize| strut in this
+%    class, thus no extra space occurs between footnotes.
+%    \begin{macrocode}
+\setlength\footnotesep{20\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\footins}
+%    |\skip\footins| is the space between the last line of the main
+%    text and the top of the first footnote.
+%    \begin{macrocode}
+\setlength{\skip\footins}{10\p@ \@plus 2\p@ \@minus 4\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Page Styles}
+%
+%    The page style \pstyle{foo} is defined by defining the command
+%    |\ps@foo|.   This command should make only local definitions.
+%    There should be no stray spaces in the definition, since they
+%    could lead to mysterious extra spaces in the output (well, that's
+%    something that should be always avoided).
+%
+% \begin{macro}{\@evenhead}
+% \begin{macro}{\@oddhead}
+% \begin{macro}{\@evenfoot}
+% \begin{macro}{\@oddfoot}
+%    The |\ps@...| command defines the macros |\@oddhead|,
+%    |\@oddfoot|, |\@evenhead|, and |\@evenfoot| to define the running
+%    heads and feet---e.g., |\@oddhead| is the macro to produce the
+%    contents of the heading box for odd-numbered pages.  It is called
+%    inside an |\hbox| of width |\textwidth|.
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%  The page styles of slides is determined by the 'slide' page style,
+% the slide environment executing a |\thispagestyle{slide}| command.
+% The page styles of overlays and notes are similarly determined by
+% 'overlay' and 'note' page styles.  The command standard 'headings',
+% 'plain' and 'empty' page styles work by redefining the 'slide',
+% 'overlay', and 'note' styles.
+%
+% \changes{v2.3q}{1995/09/20}{Wrap some long lines, and use \cs{null}.}
+% \begin{macro}{\ps@headings}
+%    \begin{macrocode}
+\if@compatibility
+\def\ps@headings{%
+\def\ps@slide{\def\@oddfoot{\@mainsize +\hfil\hb@xt@3em{\theslide
+                                                          \hss}}%
+ \def\@oddhead{\@mainsize +\hfil +}%
+ \def\@evenfoot{\@mainsize +\hfil\hb@xt@3em{\theslide\hss}}%
+ \def\@evenhead{\@mainsize +\hfil +}}
+
+\def\ps@overlay{\def\@oddfoot{\@mainsize +\hfil\hb@xt@3em{\theoverlay
+                                                           \hss}}%
+ \def\@oddhead{\@mainsize +\hfil +}%
+ \def\@evenfoot{\@mainsize +\hfil\hb@xt@3em{\theoverlay\hss}}%
+ \def\@evenhead{\@mainsize +\hfil +}}
+\def\ps@note{\def\@oddfoot{\@mainsize \hbox{}\hfil\thenote}%
+ \def\@oddhead{}%
+ \def\@evenfoot{\@mainsize \hbox{}\hfil\thenote}%
+ \def\@evenhead{}}}
+%
+\else %%if@compatibility
+%
+\def\ps@headings{%
+  \def\ps@slide{%
+    \def\@oddfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theslide\hss}}%
+    \def\@oddhead{}%
+    \def\@evenfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theslide\hss}}%
+    \def\@evenhead{}}
+
+  \def\ps@overlay{%
+    \def\@oddfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theoverlay\hss}}%
+    \def\@oddhead{}%
+    \def\@evenfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theoverlay\hss}}%
+    \def\@evenhead{}}
+
+  \def\ps@note{%
+    \def\@oddfoot{%
+      \@mainsize
+      \if@clock
+        \fbox{\large \@arabic\c@minutes\space min}%
+      \else
+        \null
+      \fi
+      \hfil\thenote}%
+    \def\@oddhead{}%
+    \def\@evenfoot{%
+      \@mainsize
+      \if@clock
+        \fbox{\large \@arabic\c@minutes\space min}%
+      \else
+        \null
+      \fi
+      \hfil\thenote}%
+    \def\@evenhead{}}}
+\fi  %% if@compatibility
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ps@plain}
+%    \begin{macrocode}
+\def\ps@plain{\def\ps@slide{%
+ \def\@oddfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theslide\hss}}%
+ \def\@oddhead{}%
+ \def\@evenfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theslide\hss}}%
+ \def\@evenhead{}}
+\def\ps@overlay{\def\@oddfoot{\@mainsize
+   \mbox{}\hfil\hb@xt@3em{\theoverlay\hss}}%
+ \def\@oddhead{}%
+ \def\@evenfoot{\@mainsize \mbox{}\hfil\hb@xt@3em{\theoverlay\hss}}%
+ \def\@evenhead{}}
+\def\ps@note{\def\@oddfoot{\@mainsize \hbox{}\hfil\thenote}%
+ \def\@oddhead{}%
+ \def\@evenfoot{\@mainsize \hbox{}\hfil\thenote}%
+ \def\@evenhead{}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ps@empty}
+%    \begin{macrocode}
+\def\ps@empty{%
+\def\ps@slide{\def\@oddhead{}\def\@oddfoot{}%
+\def\@evenhead{}\def\@evenfoot{}}%
+\def\ps@overlay{\def\@oddhead{}\def\@oddfoot{}%
+\def\@evenhead{}\def\@evenfoot{}}%
+\def\ps@note{\def\@oddhead{}\def\@oddfoot{}%
+\def\@evenhead{}\def\@evenfoot{}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% Default definition the 'slide', 'overlay', and 'note' page styles.
+%    \begin{macrocode}
+\ps@headings
+%    \end{macrocode}
+% Set ordinary page style to 'empty'
+%    \begin{macrocode}
+\let\@oddhead\@empty\let\@oddfoot\@empty
+\let\@evenhead\@empty\let\@evenfoot\@empty
+%    \end{macrocode}
+%
+%
+% \subsection{Providing math {\em versions}}
+%
+%  \LaTeX{} provides two {\em versions\/}. We call them
+%  \textsf{normal} and \textsf{bold}, respectively.
+%  \SliTeX{} does not have a \textsf{bold} version. But we treat the
+%  invisible characters as a version. The only thing we have to take
+%  care of is to ensure that we have exactly the same fonts in both
+%  versions available.
+%
+%    \begin{macrocode}
+\DeclareMathVersion{invisible}
+%    \end{macrocode}
+%
+% Now we define the basic {\em math groups\/} used by \LaTeX{}.  Later
+% on, in packages some other {\em math groups}, e.g., the AMS
+% symbol fonts, will be defined.
+%
+%  As a default I used serif fonts for mathgroup 0 to get things like
+% \verb+\log+ look right.
+%    \begin{macrocode}
+\SetSymbolFont{operators}{normal}
+                 {OT1}{lcmss}{m}{n}
+
+\SetSymbolFont{letters}{normal}
+                 {OML}{lcmm}{m}{it}
+\SetSymbolFont{symbols}{normal}
+                 {OMS}{lcmsy}{m}{n}
+\SetSymbolFont{largesymbols}{normal}
+                 {OMX}{lcmex}{m}{n}
+
+\SetSymbolFont{operators}{invisible}
+                 {OT1}{lcmss}{m}{In}
+\SetSymbolFont{letters}{invisible}
+                 {OML}{lcmm}{m}{Iit}
+\SetSymbolFont{symbols}{invisible}
+                 {OMS}{lcmsy}{m}{In}
+\SetSymbolFont{largesymbols}{invisible}
+                  {OMX}{lcmex}{m}{In}
+
+
+\def\@mainsize{\visible\tiny}
+%    \end{macrocode}
+%
+%
+%  \subsection{Environments}
+%
+% \begin{environment}{titlepage}
+%    This environment starts a new page, with pagestyle \pstyle{empty}
+%    and sets the page counter to 0.
+%    \begin{macrocode}
+\newenvironment{titlepage}
+     {\newpage
+      \thispagestyle{empty}%
+      \setcounter{page}{\z@}}
+     {\newpage}
+%    \end{macrocode}
+% \end{environment}
+%
+% \subsubsection{General List Parameters}
+%
+%    The following commands are used to set the default values for the
+%    list environment's parameters. See the \LaTeX{} manual for an
+%    explanation of the meaning of the parameters.
+%
+% \begin{macro}{\leftmargini}
+% \begin{macro}{\leftmarginii}
+% \begin{macro}{\leftmarginiii}
+% \begin{macro}{\leftmarginiv}
+% \begin{macro}{\leftmarginv}
+% \begin{macro}{\leftmarginvi}
+%    \begin{macrocode}
+\setlength\leftmargini   {38\p@}
+\setlength\leftmarginii  {30\p@}
+\setlength\leftmarginiii {20\p@}
+\setlength\leftmarginiv  {15\p@}
+\setlength\leftmarginv   {15\p@}
+\setlength\leftmarginvi  {10\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@listi}
+% \begin{macro}{\@listii}
+% \begin{macro}{\@listiii}
+% \begin{macro}{\@listiv}
+% \begin{macro}{\@listv}
+% \begin{macro}{\@listvi}
+%    These commands set the values of |\leftmargin|, |\parsep|,
+%    |\topsep|, and |\itemsep| for the various levels of lists.
+% \changes{v2.3z}{1997/08/15}{Add initialization of \cs{leftmargin} to
+%    \cs@listi.}
+%    It is even necessary to initialize |\leftmargin| in |\@listi|,
+%    i.e. for a level one list, as a list environment may appear
+%    inside a \texttt{trivlist}, for example inside a \texttt{theorem}
+%    environment.
+%    \begin{macrocode}
+\def\@listi{\leftmargin\leftmargini
+            \parsep .5\parskip
+            \topsep \parsep
+            \itemsep\parskip
+            \partopsep \z@}
+
+\def\@listii{\leftmargin\leftmarginii
+             \labelwidth\leftmarginii
+             \advance\labelwidth-\labelsep
+             \parsep .5\parskip
+             \topsep \parsep
+             \itemsep\parskip}
+\def\@listiii{\leftmargin\leftmarginiii
+              \labelwidth\leftmarginiii
+              \advance\labelwidth-\labelsep}
+\def\@listiv{\leftmargin\leftmarginiv
+             \labelwidth\leftmarginiv
+             \advance\labelwidth-\labelsep}
+\def\@listv{\leftmargin\leftmarginv
+            \labelwidth\leftmarginv
+            \advance\labelwidth-\labelsep}
+\def\@listvi{\leftmargin\leftmarginvi
+             \labelwidth\leftmarginvi
+             \advance\labelwidth-\labelsep}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%    Here we initialize |\leftmargin| and |\labelwidth|.
+%    \begin{macrocode}
+\leftmargin\leftmargini
+\labelwidth\leftmargini\advance\labelwidth-\labelsep
+%    \end{macrocode}
+%
+%
+%    \subsubsection{Paragraph-formatting environments}
+%
+% \begin{environment}{verse}
+%    Inside a |verse| environment, |\\| ends a line, and
+%    line continuations are indented further.
+%    A blank line makes new paragraph with |\parskip| space.
+%    \begin{macrocode}
+\newenvironment{verse}{\let\\=\@centercr
+                       \list{}{\itemsep       \z@
+                               \itemindent    -15\p@
+                               \listparindent \itemindent
+                               \rightmargin   \leftmargin
+                               \advance\leftmargin 15\p@}%
+                       \item[]}
+                      {\endlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{quotation}
+%    The |quotation| environment fills lines, indents paragraphs.
+%    \begin{macrocode}
+\newenvironment{quotation}{\list{}{\listparindent 20\p@
+                                   \itemindent\listparindent
+                                   \rightmargin\leftmargin}%
+                           \item[]}
+                          {\endlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{quote}
+%    The |quote| environment is the same as the |quotation| environment,
+%    except that there is no paragraph indentation.
+%    \begin{macrocode}
+\newenvironment{quote}{\list{}{\rightmargin\leftmargin}\item[]}
+                      {\endlist}
+%    \end{macrocode}
+% \end{environment}
+%
+%
+%    \subsubsection{List-making environments}
+%
+%
+% \begin{environment}{description}
+%    The description environment is defined here -- while the itemize
+%    and enumerate environments are defined in \file{latex.dtx}.
+%
+%    \begin{macrocode}
+\newenvironment{description}{\list{}{\labelwidth\z@
+                                     \itemindent-\leftmargin
+                                     \let\makelabel\descriptionlabel}}
+                            {\endlist}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\descriptionlabel}
+%  To change the formatting of the label, you must redefine
+%  |\descriptionlabel|.
+%    \begin{macrocode}
+\newcommand*{\descriptionlabel}[1]{\hspace\labelsep
+                                \normalfont\bfseries #1}
+
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Enumerate}
+%
+%    The enumerate environment uses  four counters: \Lcount{enumi},
+%    \Lcount{enumii}, \Lcount{enumiii} and \Lcount{enumiv}, where
+%    \Lcount{enumN} controls the numbering of the Nth level
+%    enumeration.
+%
+% \begin{macro}{\theenumi}
+% \begin{macro}{\theenumii}
+% \begin{macro}{\theenumiii}
+% \begin{macro}{\theenumiv}
+%    The counters are already defined in \file{latex.dtx}, but their
+%    representation is changed here.
+%
+%    \begin{macrocode}
+\renewcommand\theenumi{\@arabic\c@enumi}
+\renewcommand\theenumii{\@alph\c@enumii}
+\renewcommand\theenumiii{\@roman\c@enumiii}
+\renewcommand\theenumiv{\@Alph\c@enumiv}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\labelenumi}
+% \begin{macro}{\labelenumii}
+% \begin{macro}{\labelenumiii}
+% \begin{macro}{\labelenumiv}
+%    The label for each item is generated by the four commands
+%    |\labelenumi| \ldots\ |\labelenumiv|.
+% \changes{v2.3k}{1994/12/12}{Handle the \cs{label...} commands as in
+%    the other class files}
+%    \begin{macrocode}
+\newcommand\labelenumi{\theenumi.}
+\newcommand\labelenumii{(\theenumii)}
+\newcommand\labelenumiii{\theenumiii.}
+\newcommand\labelenumiv{\theenumiv.}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\p@enumii}
+% \begin{macro}{\p@enumiii}
+% \begin{macro}{\p@enumiv}
+%    The expansion of |\p@enumN||\theenumN| defines the output of a
+%    |\ref| command when referencing an item of the Nth level of an
+%    enumerated list.
+%    \begin{macrocode}
+\renewcommand\p@enumii{\theenumi}
+\renewcommand\p@enumiii{\theenumi(\theenumii)}
+\renewcommand\p@enumiv{\p@enumiii\theenumiii}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Itemize}
+%
+%
+% \begin{macro}{\labelitemi}
+% \begin{macro}{\labelitemii}
+% \changes{v2.3x}{1996/08/25}{replaced -{}- with \cs{textendash}}
+% \begin{macro}{\labelitemiii}
+% \begin{macro}{\labelitemiv}
+%    Itemization is controlled by four commands: |\labelitemi|,
+%    |\labelitemii|, |\labelitemiii|, and |\labelitemiv|, which\
+%    define the labels of the various itemization levels.
+%    \begin{macrocode}
+\newcommand\labelitemi{$\m@th\bullet$}
+\newcommand\labelitemii{\normalfont\bfseries \textendash}
+\newcommand\labelitemiii{$\m@th\ast$}
+\newcommand\labelitemiv{$\m@th\cdot$}
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%    \end{macro}
+%    \end{macro}
+%
+% \subsection{Setting parameters for existing environments}
+%
+% \subsubsection{Array and tabular}
+%
+% \begin{macro}{\arraycolsep}
+%    The columns in an array environment are separated by
+%    2|\arraycolsep|.% Array and tabular environment parameters
+%    \begin{macrocode}
+\setlength\arraycolsep{8\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tabcolsep}
+%    The columns in an tabular environment are separated by
+%    2|\tabcolsep|.
+%    \begin{macrocode}
+\setlength\tabcolsep{10\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\arrayrulewidth}
+%    The width of rules in the array and tabular environments is given
+%    by  the length parameter|\arrayrulewidth|.
+%    \begin{macrocode}
+\setlength\arrayrulewidth{.6\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\doublerulesep}
+%    The space between adjacent rules in the array and tabular
+%    environments is given by |\doublerulesep|.
+%    \begin{macrocode}
+\setlength\doublerulesep{3\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Tabbing}
+%
+% \begin{macro}{\tabbingsep}
+%    This controls the space that the |\'| command puts in. (See
+%    \LaTeX{} manual for an explanation.)
+%    \begin{macrocode}
+\labelsep 10pt
+\setlength\tabbingsep{\labelsep}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Minipage}
+%
+% \begin{macro}{\@minipagerestore}
+%    The macro |\@minipagerestore| is called upon entry to a minipage
+%    environment to set up things that are to be handled differently
+%    inside a minipage environment. In the current styles, it does
+%    nothing.
+% \end{macro}
+%
+% \begin{macro}{\@mpfootins}
+%    Minipages have their own footnotes; |\skip||\@mpfootins| plays
+%    same r\^ole for footnotes in a minipage as |\skip||\footins| does
+%    for ordinary footnotes.
+%
+%    \begin{macrocode}
+\skip\@mpfootins = \skip\footins
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Framed boxes}
+%
+% \begin{macro}{\fboxsep}
+%    The space left by |\fbox| and |\framebox| between the box and the
+%    text in it.
+% \begin{macro}{\fboxrule}
+%    The width of the rules in the box made by |\fbox| and |\framebox|.
+%    \begin{macrocode}
+\setlength\fboxsep{5\p@}
+\setlength\fboxrule{.6\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\theequation}
+%    The equation number will be typeset as arabic numerals.
+%    \begin{macrocode}
+\def\theequation{\@arabic\c@equation}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\jot}
+%    |\jot| is the extra space added between lines of an eqnarray
+%    environment. The default value is used.
+%    \begin{macrocode}
+% \setlength\jot{3pt}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@eqnnum}
+%    The macro |\@eqnnum| defines how equation numbers are to appear in
+%    equations. Again the default is used.
+%
+%    \begin{macrocode}
+% \def\@eqnnum{(\theequation)}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Font changing}
+%
+% \changes{v2.3j}{1994/11/10}{fixed a few typos}
+%
+%    Here we supply the declarative font changing commands that were
+%    common in \LaTeX\ version 2.09 and earlier. These commands work
+%    in text mode \emph{and} in math mode. They are provided for
+%    compatibility, but one should start using the |\text...| and
+%    |\math...| commands instead. These commands are redefined using
+%    |\DeclareOldFontCommand|, a command with three arguments: the
+%    user command to be defined, \LaTeX\ commands to execute in text
+%    mode and \LaTeX\ commands to execute in math mode.
+%
+%  \begin{macro}{\rm}
+%  \begin{macro}{\tt}
+%  \begin{macro}{\sf}
+% \changes{v2.2}{1993/12/18}{Changed \cs{@newfontswitch} to
+%    \cs{@renewfontswitch}.}
+% \changes{v2.3a}{1994/04/14}{\cs{@renewfontswitch} has become
+%    \cs{DeclareOldFontCommand}}
+%
+%    The commands to change the family. When in compatibility mode we
+%    select the `default' font first, to get \LaTeX2.09 behaviour.
+%    \begin{macrocode}
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\bf}
+%    The command to change to the bold series. One should use
+%    |\mdseries| to explicitly switch back to medium series.
+% \changes{v2.2}{1993/12/18}{Changed \cs{@newfontswitch} to
+%    \cs{@renewfontswitch}.}
+%    \begin{macrocode}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\sl}
+%  \begin{macro}{\it}
+%  \begin{macro}{\sc}
+% \changes{v2.2}{1993/12/18}{Changed \cs{@newfontswitch} to
+%    \cs{@renewfontswitch}.}
+%    And the commands to change the shape of the font. The slanted and
+%    small caps shapes are not available by default as math alphabets,
+%    so those changes do nothing in math mode. One should use
+%    |\upshape| to explicitly change back to the upright shape.
+%    \begin{macrocode}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\relax}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\relax}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\cal}
+% \changes{v2.1d}{1993/12/14}{Macro added}
+% \begin{macro}{\mit}
+% \changes{v2.1d}{1993/12/14}{Macro added}
+%
+%    The commands |\cal| and |\mit| should only be used in math mode,
+%    outside math mode they have no effect. Currently the New Font
+%    Selection Scheme defines these commands to generate warning
+%    messages. Therefore we have to define them `by hand'.
+% \changes{v2.3k}{1994/12/12}{Now define \cs{cal} and \cs{mit} using
+%    \cs{DeclareRobustCommand*}}
+%    \begin{macrocode}
+\DeclareRobustCommand*{\cal}{\@fontswitch{\relax}{\mathcal}}
+\DeclareRobustCommand*{\mit}{\@fontswitch{\relax}{\mathnormal}}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \subsection{Footnotes}
+%
+%
+% \begin{macro}{\footnoterule}
+%    Usually, footnotes are separated from the main body of the text
+%    by a small rule. This rule is drawn by the macro |\footnoterule|.
+%    We have to make sure that the rule takes no vertical space (see
+%    \file{plain.tex}).  The resulting rule will appear on all color
+%    layers, so it's best not to draw a rule.
+%    \begin{macrocode}
+\renewcommand\footnoterule{}
+% \let \footnoterule = \relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@footnote}
+% \begin{macro}{\thefootnote}
+%    Footnotes are numbered within slides, overlays, and notes and
+%    numbered with $\ast$, $\dagger$, etc.
+%    \begin{macrocode}
+% \newcounter{footnote}
+\def\thefootnote{\fnsymbol{footnote}}
+\@addtoreset{footnote}{slide}
+\@addtoreset{footnote}{overlay}
+\@addtoreset{footnote}{note}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@makefntext}
+% \changes{v2.2i}{1994/03/08}{Always call \cs{@makefnmark}.}
+%    The footnote mechanism of \LaTeX{} calls the macro |\@makefntext|
+%    to produce the actual footnote. The macro gets the text of the
+%    footnote as its argument and should use |\@makefnmark| to produce
+%    the mark of the footnote. The macro |\@makefntext| is called when
+%    effectively inside a |\parbox| of width |\columnwidth| (i.e.,
+%    with |\hsize| = |\columnwidth|).
+%
+%   An example of what can be achieved is given by the following piece
+%   of \TeX\ code.
+% \begin{verbatim}
+%          \long\def\@makefntext#1{%
+%             \@setpar{\@@par
+%                      \@tempdima = \hsize
+%                      \advance\@tempdima-10pt
+%                      \parshape \@ne 10pt \@tempdima}%
+%             \par
+%             \parindent 1em\noindent
+%             \hbox to \z@{\hss\@makefnmark}#1}
+% \end{verbatim}
+%    The effect of this definition is that all lines of the footnote
+%    are indented by 10pt, while the first line of a new paragraph is
+%    indented by 1em. To change these dimensions, just substitute the
+%    desired value for `10pt' (in both places) or `1em'.  The mark is
+%    flushright against the footnote.
+%
+%    In these document classes we use a simpler macro, in which the
+%    footnote text is set like an ordinary text paragraph, with no
+%    indentation except on the first line of a paragraph, and the
+%    first line of the footnote. Thus, all the macro must do is set
+%    |\parindent| to the appropriate value for succeeding paragraphs
+%    and put the proper indentation before the mark.
+%
+%    \begin{macrocode}
+\long\def\@makefntext#1{
+    \noindent
+    \hangindent 10\p@
+    \hb@xt@10\p@{\hss\@makefnmark}#1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@makefnmark}
+%    The footnote markers that are printed in the text to point to the
+%    footnotes should be produced by the macro |\@makefnmark|. We use
+%    the default definition for it.
+%    \begin{macrocode}
+%\def\@makefnmark{\hbox{$^{\@thefnmark}\m@th$}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{The title}
+%     The commands |\title|, |\author|, and |\date| are already
+%     defined, so here we just define |\maketitle|.
+%
+% \changes{v2.3s}{1995/10/10}{Move \cs{par} inside the scope of
+%               \cs{Large}, to get even line spacing.}
+%    \begin{macrocode}
+\newcommand\maketitle{{\centering {\Large \@title \par}%
+     \@author \par \@date\par}%
+     \if@titlepage \break \fi}
+%    \end{macrocode}
+
+% \section{Initialisation}
+%
+% \subsection{Date}
+%
+% \begin{macro}{\today}
+%    This macro uses the \TeX\ primitives |\month|, |\day| and |\year|
+%    to provide the date of the \LaTeX-run.
+%    \begin{macrocode}
+\newcommand\today{\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi
+  \space\number\day, \number\year}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% Default initializations
+%
+%    \begin{macrocode}
+\pagenumbering{arabic}
+\onecolumn
+%</class>
+%    \end{macrocode}
+%
+% \subsection{Basic code}
+%
+% The code below is basically a copy of |slitex.tex| with some
+% changes.
+%
+% Global changes so far:
+%
+% \changes{FMi}{1990/06/01}{\cs{gdef}\cs{@slidesw} ... replaced by a
+%    \cs{newifG} which is similar to \cs{newif} but uses \cs{global}
+%    inside.}
+%
+%
+% \subsubsection{Hacks for slide macros}
+%
+%    \begin{macrocode}
+%<*cmd>
+\message{hacks,}
+
+\outer\def\newifG#1{\count@\escapechar \escapechar\m@ne
+  \expandafter\expandafter\expandafter
+   \edef\@ifG#1{true}{\global\let\noexpand#1\noexpand\iftrue}%
+  \expandafter\expandafter\expandafter
+   \edef\@ifG#1{false}{\global\let\noexpand#1\noexpand\iffalse}%
+  \@ifG#1{false}\escapechar\count@} % the condition starts out false
+\def\@ifG#1#2{\csname\expandafter\ifG@\string#1#2\endcsname}
+{\uccode`1=`i \uccode`2=`f \uccode`3=`G \uppercase{\gdef\ifG@123{G}}}
+ % `ifG' is required
+
+\def\@gobbletoend#1{\def\@argend{#1}\@ggobtoend}
+
+\long\def\@ggobtoend#1\end#2{\fi\def\reserved@a{#2}%
+\ifx\reserved@a\@argend\else\@ggobtoend\fi}
+%    \end{macrocode}
+% FMi: I don't see any reason for this command since |\fi| is hidden
+%      anyway in the replacement text
+% |\def\@xfi{\fi}|
+%    \begin{macrocode}
+ \message{slides,}
+%    \end{macrocode}
+%
+% \subsubsection{Slide macros}
+%
+%
+% Switches:\\
+% \begin{tabular}{ll}
+%   |@bw|           & true if making black and white slides \\
+%   |@visible|      & true if visible output to be produced.\\
+%   |@makingslides| & true if making a slide/overlay/note
+% \end{tabular}
+%
+%    \begin{macrocode}
+\newif\if@bw
+\newif\if@visible
+\newif\if@onlyslidesw \@onlyslideswfalse
+\newif\if@onlynotesw  \@onlynoteswfalse
+\newif\if@makingslides
+%    \end{macrocode}
+% FMi: |\newifG| replaces |\gdef\@slidesw{T}| stuff
+%    \begin{macrocode}
+\newifG\ifG@slidesw
+%    \end{macrocode}
+% Counters\\
+% \begin{tabular}{ll}
+%  slide   & slide number\\
+%  overlay & overlay number for a slide\\
+%  note    & note number for a slide
+% \end{tabular}
+%
+%    \begin{macrocode}
+\countdef\c@slide=0 \c@slide=0
+\def\cl@slide{}
+\countdef\c@overlay=1 \c@overlay=0
+\def\cl@overlay{}
+\countdef\c@note=2 \c@note=0
+\def\cl@note{}
+%    \end{macrocode}
+%  Add these counters explicitly to the `ckpt list' so that the
+%  |\include| mechanism works.
+% \changes{v2.3u}{1996/05/09}{Make include work: pr/2140(CAR)}
+% \changes{v2.3y}{1997/05/09}{Make include work properly: add the
+% counters in case some are already in there: pr/2140+2474(CAR)}
+% \changes{v2.3v}{1996/05/11}{Do not add page counter here as it is
+%   added below(CAR)}
+%    \begin{macrocode}
+\g@addto@macro\cl@@ckpt{\@elt{slide}\@elt{overlay}\@elt{note}}
+\@addtoreset{overlay}{slide}
+\@addtoreset{note}{slide}
+%    \end{macrocode}
+% Redefine page counter to some other number.
+% The page counter will always be zero except when putting out an
+% extra page for a slide, note or overlay.
+%    \begin{macrocode}
+\@definecounter{page}
+\@addtoreset{page}{slide}
+\@addtoreset{page}{note}
+\@addtoreset{page}{overlay}
+
+\def\theslide{\@arabic\c@slide}
+\def\theoverlay{\theslide-\@alph\c@overlay}
+\def\thenote{\theslide-\@arabic\c@note}
+%    \end{macrocode}
+% \begin{verbatim}
+% \@setlimits \LIST \LOW \HIGH
+%
+%    Assumes that \LIST = RANGE1,RANGE2,...,RANGEn  (n>0)
+%    Where RANGEi = j or j-k.
+%
+%    Then \@setlimits  globally sets
+%        (i) \LIST := RANGE2, ... , RANGEn
+%       (ii) \LOW  := p
+%      (iii) \HIGH := q
+%   where either RANGE1 = p-q   or  RANGE1 = p  and  q=p.
+%\end{verbatim}
+%    \begin{macrocode}
+\def\@sl@getargs#1-#2-#3\relax#4#5{\xdef#4{#1}\xdef#5{#2}}
+\def\@sl@ccdr#1,#2\relax#3#4{\xdef#3{#1-#1-}\xdef#4{#2}}
+
+\def\@setlimits #1#2#3{\expandafter\@sl@ccdr#1\relax\@sl@gtmp #1%
+\expandafter\@sl@getargs\@sl@gtmp\relax#2#3}
+%    \end{macrocode}
+% \begin{verbatim}
+% \onlyslides{LIST} ::=
+%  BEGIN
+%    @onlyslidesw := true
+%    \@doglslidelist :=G LIST,999999,999999
+%   if @onlynotesw = true
+%     else @onlynotesw := true
+%          \@doglnotelist :=G LIST,999999,999999
+%   fi
+%   message: Only Slides LIST
+%  END
+%\end{verbatim}
+%    \begin{macrocode}
+\def\onlyslides#1{\@onlyslideswtrue
+   \gdef\@doglslidelist{#1,999999,999999}%
+   \if@onlynotesw \else
+      \@onlynoteswtrue\gdef\@doglnotelist{999999,999999}\fi
+   \typeout{Only Slides #1}}
+%    \end{macrocode}
+%\begin{verbatim}
+% \onlynotes{LIST} ::=
+%  BEGIN
+%    @onlynotesw := true
+%    \@doglnotelist :=G LIST,999999,999999
+%   if @onlyslidesw = true
+%     else \@onlyslidesw := true
+%          \@doglslidelist{999999,999999}
+%   fi
+%   message: Only Notes LIST
+%  END
+%\end{verbatim}
+%    \begin{macrocode}
+\def\onlynotes#1{\@onlynoteswtrue
+   \gdef\@doglnotelist{#1,999999,999999}%
+   \if@onlyslidesw \else
+      \@onlyslideswtrue\gdef\@doglslidelist{999999,999999}\fi
+   \typeout{Only Notes #1}}
+%    \end{macrocode}
+%\begin{verbatim}
+% \setupcounters ::=    (similar to old \blackandwhite #1  ::= )
+%    \newpage
+%    page counter := 0
+%    @bw := T
+%    @visible := T
+%    if @onlyslidesw = true
+%      then  \@doslidelist := \@doglslidelist
+%            \@setlimits\@doslidelist\@doslidelow\@doslidehigh
+%    fi
+%    if @onlynotesw = true
+%      then  \@donotelist := \@doglnotelist
+%            \@setlimits\@donotelist\@donotelow\@donotehigh
+%    fi
+%    \normalsize    % Note, this sets font to \rmfamily , which sets
+%                     % \@currfont to \rmfamily
+%    counter slidenumber := 0
+%    counter note        := 0
+%    counter overlay     := 0
+%    @makingslides       := F  %% \blackandwhite: @makingslides  := T
+%                              %%                 input #1
+%                              %%                 @makingslides  := F
+%\end{verbatim}
+%    \begin{macrocode}
+\if@compatibility
+% In compatibility mode, need to define \verb+\blackandwhite+,
+% \verb+\colors+, \verb+\colorslides+, etc.
+\def\blackandwhite#1{\newpage\setcounter{page}{0}\@bwtrue\@visibletrue
+\if@onlyslidesw \xdef\@doslidelist{\@doglslidelist}%
+\@setlimits\@doslidelist\@doslidelow\@doslidehigh\fi
+\if@onlynotesw \xdef\@donotelist{\@doglnotelist}%
+\@setlimits\@donotelist\@donotelow\@donotehigh\fi
+\normalsize\setcounter{slide}{0}\setcounter{overlay}{0}%
+\setcounter{note}{0}\@makingslidestrue\input #1\@makingslidesfalse}
+%    \end{macrocode}
+%\begin{verbatim}
+% \colors{COLORS} ::=
+%  for \@colortemp := COLORS
+%     do \csname \@colortemp \endcsname == \@color{\@colortemp} od
+%  if \@colorlist = empty
+%     then \@colorlist := COLORS
+%     else \@colorlist := \@colorlist , COLORS
+%  fi
+%\end{verbatim}
+%
+%    \begin{macrocode}
+\def\colors#1{\@for\@colortemp:=#1\do{\expandafter
+  \xdef\csname\@colortemp\endcsname{\noexpand\@color{\@colortemp}}}\ifx
+  \@colorlist\@empty \gdef\@colorlist{#1}%
+    \else \xdef\@colorlist{\@colorlist,#1}\fi}
+
+\def\@colorlist{}
+%    \end{macrocode}
+%\begin{verbatim}
+% \colorslides{FILE} ::=
+%    \newpage
+%    page counter := 0
+%    @bw := F
+%    for \@currcolor := \@colorlist
+%      do  @visible := T
+%          if @onlyslidesw = true
+%            then  \@doslidelist := \@doglslidelist
+%                  \@setlimits\@doslidelist\@doslidelow\@doslidehigh
+%          fi
+%          if @onlynotesw = true
+%            then  \@donotelist := \@doglnotelist
+%                  \@setlimits\@donotelist\@donotelow\@donotehigh
+%          fi
+%          \normalsize
+%          counter slide := 0
+%          counter overlay := 0
+%          counter note    := 0
+%          type message
+%          generate color layer output page
+%          @makingslides := T
+%          input #1
+%          @makingslides := F
+%      od
+%\end{verbatim}
+%    \begin{macrocode}
+\def\colorslides#1{\newpage\setcounter{page}{0}\@bwfalse
+\@for\@currcolor:=\@colorlist\do
+{\@visibletrue
+\if@onlyslidesw \xdef\@doslidelist{\@doglslidelist}%
+\@setlimits\@doslidelist\@doslidelow\@doslidehigh\fi
+\if@onlynotesw \xdef\@donotelist{\@doglnotelist}%
+\@setlimits\@donotelist\@donotelow\@donotehigh\fi
+\normalsize\setcounter{slide}{0}\setcounter{overlay}{0}%
+\setcounter{note}{0}\typeout{color \@currcolor}%
+\newpage
+\begin{huge}%
+\begin{center}%
+COLOR LAYER\\[.75in]%
+\@currcolor
+\end{center}%
+\end{huge}%
+\newpage
+\@makingslidestrue
+\input #1
+\@makingslidesfalse}}
+%
+\else  %% if@compatibility
+%
+\def\setupcounters{\newpage\setcounter{page}{0}\@bwtrue\@visibletrue
+\if@onlyslidesw \xdef\@doslidelist{\@doglslidelist}%
+\@setlimits\@doslidelist\@doslidelow\@doslidehigh\fi
+\if@onlynotesw \xdef\@donotelist{\@doglnotelist}%
+\@setlimits\@donotelist\@donotelow\@donotehigh\fi
+\normalsize\setcounter{slide}{0}\setcounter{overlay}{0}%
+\setcounter{note}{0}\@makingslidesfalse}
+
+\AtBeginDocument{\setupcounters}
+\fi %% if@compatibility
+%    \end{macrocode}
+%\begin{verbatim}
+% \slide COLORS ::=
+%  BEGIN
+% \changes{v2.3}{1994/03/16}{Moved \cs{newpage} up front, here and in
+%    \cs{note} and \cs{overlay}}
+%   \par\break
+%   \stepcounter{slide}
+%   \setcounter{page}{0}                    % in case of non-slide pages
+%   \@slidesw :=G T
+%   if @onlyslidesw = true                  % set \@slidesw = T iff
+%     then                                  % page to be output
+%       while \c@slide > \@doslidehigh
+%          do  \@setlimits\@doslidelist\@doslidelow\@doslidehigh  od
+%       if \c@slide < \@doslidelow
+%         then \@slidesw := F
+%       fi
+%   fi
+%   if \@slidesw = T
+%      then \@slidesw :=G F
+%           \begingroup
+%              if @bw = true
+%                then  \@slidesw :=G T
+%                else \@color{COLORS}
+%                     \if@visible then \@slidesw :=G T \fi
+%              fi
+%            \endgroup
+%  fi
+%  if \@slidesw = T
+%    then @makingslides  := T
+%         \thispagestyle{slide}
+%    else \end{slide}
+%          \@gobbletoend{slide}
+%  fi
+% END
+%
+% \endslide ::=
+%  BEGIN
+%    \par\break
+%  END
+%\end{verbatim}
+%    \begin{macrocode}
+\if@compatibility
+\def\slide#1{\stepcounter{slide}\G@slideswtrue\if@onlyslidesw
+\@whilenum \c@slide >\@doslidehigh\relax
+\do{\@setlimits\@doslidelist\@doslidelow\@doslidehigh}\ifnum
+\c@slide <\@doslidelow\relax\G@slideswfalse\fi\fi
+\ifG@slidesw
+  \G@slideswfalse
+% FMi this is only a hack at the moment to get things running.
+%  \begingroup
+  \if@bw\G@slideswtrue\else
+    \@color{#1}\if@visible \G@slideswtrue \fi
+  \fi
+%  \endgroup
+\fi
+\ifG@slidesw \newpage\thispagestyle{slide}%
+%    \end{macrocode}
+%    This will set up the last color specified in the argument to
+%    \verb+\slide+ as the current color. If only back and white  slides
+%    are prepared \verb+\last@color+ will be empty and effectively
+%    \verb+\relax+ will be generated (hopefully).
+%
+%    We need to reset to a default font at the beginning of a slide.
+%    (not done yet).
+%    \begin{macrocode}
+\csname \last@color \endcsname
+%    \end{macrocode}
+%    \begin{macrocode}
+\else\end{slide}\@gobbletoend{slide}\fi}
+%
+\else  %% if@compatibility
+%
+\def\slide{\par\break
+\stepcounter{slide}\setcounter{page}{0}\G@slideswtrue\if@onlyslidesw
+\@whilenum \c@slide >\@doslidehigh\relax
+\do{\@setlimits\@doslidelist\@doslidelow\@doslidehigh}\ifnum
+\c@slide <\@doslidelow\relax\G@slideswfalse\fi\fi
+\ifG@slidesw
+  \G@slideswfalse
+% FMi this is only a hack at the moment to get things running.
+%  \begingroup
+  \if@bw\G@slideswtrue\else
+    \if@visible \G@slideswtrue \fi
+  \fi
+%  \endgroup
+\fi
+\ifG@slidesw \@makingslidestrue\thispagestyle{slide}%
+%    \end{macrocode}
+%    This will set up the last color specified in the argument to
+%    \verb+\slide+ as the current color. If only back and white  slides
+%    are prepared \verb+\last@color+ will be empty and effectively
+%    \verb+\relax+ will be generated (hopefully).
+%
+%    We need to reset to a default font at the beginning of a slide.
+%    (not done yet).
+%    \begin{macrocode}
+\csname \last@color \endcsname
+%    \end{macrocode}
+%    \begin{macrocode}
+\else\end{slide}\@gobbletoend{slide}\fi}
+\fi %% if@compatibility
+
+\let\last@color\@empty
+
+\def\endslide{\par\break}
+%    \end{macrocode}
+%\begin{verbatim}
+% \overlay COLORS ::=
+%  BEGIN
+%   \par\break
+%   \stepcounter{overlay}
+%   \setcounter{page}{0}                    % in case of non-slide pages
+%   \@slidesw :=G T
+%   if @onlyslidesw = T                     % set \@slidesw = T iff
+%     then                                  % page to be output
+%       if \c@slide < \@doslidelow
+%         then \@slidesw :=G F
+%       fi
+%  fi
+%  if \@slidesw = T
+%    \@slidesw :=G F
+%    \begingroup
+%      if @bw = true
+%          then  \@slidesw :=G T
+%          else  \@color{COLORS}
+%                \if@visible then \@slidesw :=G T \fi
+%      fi
+%    \endgroup
+%  fi
+%  if \@slidesw = T
+%     then @makingslides  := T
+%          \thispagestyle{overlay}
+%     else \end{overlay}
+%          \@gobbletoend{overlay}
+%  fi
+% END
+%
+% \endoverlay ::=
+%  BEGIN
+%    \par\break
+%  END
+%\end{verbatim}
+%    \begin{macrocode}
+\if@compatibility
+\def\overlay#1{\stepcounter{overlay}\G@slideswtrue%
+\if@onlyslidesw\ifnum \c@slide <\@doslidelow\relax
+\G@slideswfalse\fi\fi
+\ifG@slidesw \G@slideswfalse\begingroup\if@bw\G@slideswtrue%
+\else\@color{#1}\if@visible \G@slideswtrue\fi\fi\endgroup\fi
+\ifG@slidesw \newpage\thispagestyle{overlay}%
+\else\end{overlay}\@gobbletoend{overlay}\fi}
+%
+\else %%if@compatibility
+%
+\def\overlay{\par\break
+  \stepcounter{overlay}%
+  \setcounter{page}{0}%
+  \G@slideswtrue%
+  \if@onlyslidesw\ifnum \c@slide <\@doslidelow\relax
+    \G@slideswfalse\fi\fi
+  \ifG@slidesw \G@slideswfalse
+    \begingroup\if@bw\G@slideswtrue%
+               \else\if@visible \G@slideswtrue\fi\fi
+    \endgroup\fi
+  \ifG@slidesw \@makingslidestrue\thispagestyle{overlay}%
+  \else\end{overlay}\@gobbletoend{overlay}\fi}
+\fi %%if@compatibility
+
+\def\endoverlay{\par\break}
+%    \end{macrocode}
+%
+% \changes{v2.0d}{1993/11/12}{Removed extra blank.}
+%\begin{verbatim}
+% \note ::=
+%  BEGIN
+%   \par\break
+%   \stepcounter{note}
+%   \setcounter{page}{0}                    % in case of non-slide pages
+%   if @bw = T
+%     then
+%       \@slidesw :=G T
+%       if @onlynotesw = true                  % set \@notesw = T iff
+%         then                                 % page to be output
+%           while \c@slide > \@donotehigh
+%              do  \@setlimits\@donotelist\@donotelow\@donotehigh  od
+%           if \c@slide < \@donotelow
+%             then \@slidesw :=G F
+%           fi
+%       fi
+%     else \@slidesw :=G F
+%  fi
+%  if \@slidesw = T
+%     then @makingslides   := T
+%          \thispagestyle{note}
+%     else \end{note}
+%          \@gobbletoend{note}
+%  fi
+% END
+%
+% \endnote ::=
+%  BEGIN
+%    \par\break
+%  END
+%\end{verbatim}
+%    \begin{macrocode}
+\if@compatibility
+\def\note{\stepcounter{note}%
+   \if@bw
+      \G@slideswtrue
+      \if@onlynotesw\@whilenum \c@slide >\@donotehigh\relax
+      \do{\@setlimits\@donotelist\@donotelow\@donotehigh}\ifnum
+        \c@slide <\@donotelow\relax \G@slideswfalse\fi\fi
+      \else\G@slideswfalse\fi
+      \ifG@slidesw \newpage\thispagestyle{note}\else
+      \end{note}\@gobbletoend{note}\fi}
+%
+\else %%if@compatibility
+%
+\def\note{\par\break\stepcounter{note}\setcounter{page}{0}%
+   \if@bw
+      \G@slideswtrue
+      \if@onlynotesw\@whilenum \c@slide >\@donotehigh\relax
+      \do{\@setlimits\@donotelist\@donotelow\@donotehigh}\ifnum
+        \c@slide <\@donotelow\relax \G@slideswfalse\fi\fi
+      \else\G@slideswfalse\fi
+      \ifG@slidesw \@makingslidestrue\thispagestyle{note}\else
+      \end{note}\@gobbletoend{note}\fi}
+\fi %%if@compatibility
+
+\def\endnote{\par\break}
+%    \end{macrocode}
+%\begin{verbatim}
+% \@color{COLORS} ::=
+%  BEGIN
+%   if math mode
+%     then type warning
+%   fi
+%   if @bw
+%     then \visible
+%     else \invisible
+%         for \last@color := COLORS
+%          do if \last@color = \@currcolor
+%               then \visible
+%             fi
+%          od
+%   fi
+%   \ignorespaces
+% END
+%\end{verbatim}
+% FMi: |\last@color| will be used in |\slide| to set up first
+%      color if no color is given.
+% I suppose that this is much too complicated. |\else\@tempswafalse|
+% would produce the same effect I imagine.
+%    \begin{macrocode}
+\def\@color#1{\@mmodetest
+ {\if@bw \@tempswatrue \else \@tempswafalse
+   \@for \reserved@a :=#1\do{\ifx\reserved@a\@currcolor\@tempswatrue\fi
+                         \let\last@color\reserved@a}\fi
+  \if@tempswa \visible \else \invisible \fi
+  \ignorespaces}}
+
+\def\@mmodetest#1{\ifmmode\ClassWarning{slides}{Color-changing command
+       in math mode has been ignored}\else #1\fi}
+
+\def\invisible{\@mmodetest
+  {\if@visible
+     \@visiblefalse
+     \fontshape\f@shape\selectfont
+     \mathversion{invisible}%
+   \fi
+   \ignorespaces}}
+
+\def\visible{\@mmodetest
+  {\if@visible
+   \else
+     \@visibletrue
+%    \end{macrocode}
+%    Here is the \LaTeXe{} interface hidden. We use a trick to provide
+%    ourselves with a sort of additional attribute without making the
+%    current mechanism even larger. The trick is that we denote
+%    invisible by putting an uppercase |I| in front of the shape name
+%    for invisible shapes and remove it again if we want to become
+%    visible.
+%    \begin{macrocode}
+     \fontshape{\expandafter\@gobble\f@shape}\selectfont
+     \mathversion{normal}%
+   \fi
+   \ignorespaces}}
+
+\def\fontshape#1{\edef\f@shape{\if@visible \else I\fi #1}}
+%    \end{macrocode}
+%
+% \subsection{Macros for font handling}
+%
+%    We let |\familydefault| point at |\sfdefault|, to make it easier
+%    to use the document class slides with packages that set up other
+%    fonts.
+%    \begin{macrocode}
+\renewcommand{\familydefault}{\sfdefault}
+%    \end{macrocode}
+%
+%  \changes{v2.3l}{1994/12/16}{Added the declaration of the lasy font
+%    family}
+%    The \texttt{latexsym} package, which is needed to be able to access
+%    the \LaTeX\ symbol fonts (lasy), sets things up so that for sizes
+%    larger then 10 point magnifications of \texttt{lasy10} are
+%    used. For slides we want to use magnifications of \texttt{lasy8},
+%    so we set up the lasy family here to prevent \LaTeX\ from loading
+%    \texttt{Ulasy.fd}.
+%    \begin{macrocode}
+\DeclareFontFamily{U}{lasy}{}{}
+\DeclareFontShape{U}{lasy}{m}{n}{%
+      <12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>lasy8
+}{}
+\DeclareFontShape{U}{lasy}{m}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>ilasy8
+}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\message{picture,}
+%    \end{macrocode}
+%
+%  \subsubsection{Modifications to the picture environment}
+%
+%  Below are the new definitions of the picture-drawing macros
+%  required for SLiTeX.  Only those commands that actually
+%  draw something must be changed so that they do not produce
+%  any output when the |@visible| switch is false.
+%
+% \changes{v2.2j}{1994/03/11}{Corrected \cs{@oval}, like previous
+%    change to \file{latex.dtx}.}
+%    \begin{macrocode}
+\def\line(#1,#2)#3{\if@visible\@xarg #1\relax \@yarg #2\relax
+\@linelen #3\unitlength
+\ifnum\@xarg =\z@ \@vline
+  \else \ifnum\@yarg =\z@ \@hline \else \@sline\fi
+\fi\fi}
+
+\def\vector(#1,#2)#3{\if@visible\@xarg #1\relax \@yarg #2\relax
+\@linelen #3\unitlength
+\ifnum\@xarg =\z@ \@vvector
+  \else \ifnum\@yarg =\z@ \@hvector \else \@svector\fi
+\fi\fi}
+
+\def\dashbox#1(#2,#3){%
+\leavevmode\if@visible\hb@xt@\z@{\baselineskip \z@
+\lineskip \z@
+\@dashdim #2\unitlength
+\@dashcnt \@dashdim \advance\@dashcnt 200
+\@dashdim #1\unitlength\divide\@dashcnt \@dashdim
+\ifodd\@dashcnt\@dashdim\z@
+\advance\@dashcnt \@ne \divide\@dashcnt \tw@
+\else \divide\@dashdim \tw@ \divide\@dashcnt \tw@
+\advance\@dashcnt \m@ne
+\setbox\@dashbox \hbox{\vrule \@height \@halfwidth \@depth \@halfwidth
+\@width \@dashdim}\put(0,0){\copy\@dashbox}%
+\put(0,#3){\copy\@dashbox}%
+\put(#2,0){\hskip-\@dashdim\copy\@dashbox}%
+\put(#2,#3){\hskip-\@dashdim\box\@dashbox}%
+\multiply\@dashdim \thr@@
+\fi
+\setbox\@dashbox \hbox{\vrule \@height \@halfwidth \@depth \@halfwidth
+\@width #1\unitlength\hskip #1\unitlength}\@tempcnta\z@
+\put(0,0){\hskip\@dashdim \@whilenum \@tempcnta <\@dashcnt
+\do{\copy\@dashbox\advance\@tempcnta \@ne }}\@tempcnta\z@
+\put(0,#3){\hskip\@dashdim \@whilenum \@tempcnta <\@dashcnt
+\do{\copy\@dashbox\advance\@tempcnta \@ne }}%
+\@dashdim #3\unitlength
+\@dashcnt=\@dashdim \advance\@dashcnt 200
+\@dashdim #1\unitlength\divide\@dashcnt \@dashdim
+\ifodd\@dashcnt \@dashdim=\z@
+\advance\@dashcnt \@ne \divide\@dashcnt \tw@
+\else
+\divide\@dashdim \tw@ \divide\@dashcnt \tw@
+\advance\@dashcnt \m@ne
+\setbox\@dashbox\hbox{\hskip -\@halfwidth
+\vrule \@width \@wholewidth
+\@height \@dashdim}\put(0,0){\copy\@dashbox}%
+\put(#2,0){\copy\@dashbox}%
+\put(0,#3){\lower\@dashdim\copy\@dashbox}%
+\put(#2,#3){\lower\@dashdim\copy\@dashbox}%
+\multiply\@dashdim \thr@@
+\fi
+\setbox\@dashbox\hbox{\vrule \@width \@wholewidth
+\@height #1\unitlength}\@tempcnta\z@
+\put(0,0){\hskip -\@halfwidth \vbox{\@whilenum \@tempcnta <\@dashcnt
+\do{\vskip #1\unitlength\copy\@dashbox\advance\@tempcnta \@ne }%
+\vskip\@dashdim}}\@tempcnta\z@
+\put(#2,0){\hskip -\@halfwidth \vbox{\@whilenum \@tempcnta <\@dashcnt
+\relax\do{\vskip #1\unitlength\copy\@dashbox\advance\@tempcnta \@ne }%
+\vskip\@dashdim}}}\fi\@makepicbox(#2,#3)}
+
+\def\@oval(#1,#2)[#3]{\if@visible\begingroup \boxmaxdepth \maxdimen
+  \@ovttrue \@ovbtrue \@ovltrue \@ovrtrue
+  \@tfor\reserved@a :=#3\do
+     {\csname @ov\reserved@a false\endcsname}\@ovxx
+  #1\unitlength \@ovyy #2\unitlength
+  \@tempdimb \ifdim \@ovyy >\@ovxx \@ovxx\else \@ovyy \fi
+  \advance \@tempdimb -2\p@
+  \@getcirc \@tempdimb
+  \@ovro \ht\@tempboxa \@ovri \dp\@tempboxa
+  \@ovdx\@ovxx \advance\@ovdx -\@tempdima \divide\@ovdx \tw@
+  \@ovdy\@ovyy \advance\@ovdy -\@tempdima \divide\@ovdy \tw@
+  \@circlefnt \setbox\@tempboxa
+  \hbox{\if@ovr \@ovvert32\kern -\@tempdima \fi
+  \if@ovl \kern \@ovxx \@ovvert01\kern -\@tempdima \kern -\@ovxx \fi
+  \if@ovt \@ovhorz \kern -\@ovxx \fi
+  \if@ovb \raise \@ovyy \@ovhorz \fi}\advance\@ovdx\@ovro
+  \advance\@ovdy\@ovro \ht\@tempboxa\z@ \dp\@tempboxa\z@
+  \@put{-\@ovdx}{-\@ovdy}{\box\@tempboxa}%
+  \endgroup\fi}
+
+\def\@circle#1{\if@visible \begingroup \boxmaxdepth \maxdimen
+   \@tempdimb #1\unitlength
+   \ifdim \@tempdimb >15.5\p@\relax \@getcirc\@tempdimb
+      \@ovro\ht\@tempboxa
+     \setbox\@tempboxa\hbox{\@circlefnt
+      \advance\@tempcnta\tw@ \char \@tempcnta
+      \advance\@tempcnta\m@ne \char \@tempcnta \kern -2\@tempdima
+      \advance\@tempcnta\tw@
+      \raise \@tempdima \hbox{\char\@tempcnta}\raise \@tempdima
+        \box\@tempboxa}\ht\@tempboxa\z@ \dp\@tempboxa\z@
+      \@put{-\@ovro}{-\@ovro}{\box\@tempboxa}%
+   \else  \@circ\@tempdimb{96}\fi\endgroup\fi}
+
+%    \end{macrocode}
+%
+% \changes{v2.0d}{1993/11/12}{Removed extra blank.}
+%    \begin{macrocode}
+\def\@dot#1{%
+  \if@visible\@tempdimb #1\unitlength \@circ\@tempdimb{112}\fi}
+%    \end{macrocode}
+% \changes {v2.3m}{1994/03/20}{(DPC) Remove old \cs{@iframebox} and
+%    \cs{fbox} defn}
+% \changes {v2.3m}{1994/03/20}{(DPC) Add \cs{@frameb@x} defn.}
+%    \begin{macrocode}
+\def\@frameb@x#1{%
+  \@tempdima\fboxrule
+  \advance\@tempdima\fboxsep
+  \advance\@tempdima\dp\@tempboxa
+  \leavevmode
+  \hbox{%
+    \lower\@tempdima\hbox{%
+      \vbox{%
+        \if@visible\hrule\@height\else\vskip\fi\fboxrule
+        \hbox{%
+          \if@visible\vrule\@width\else\hskip\fi\fboxrule
+          #1%
+          \vbox{%
+            \vskip\fboxsep
+            \box\@tempboxa
+            \vskip\fboxsep}%
+          #1%
+          \if@visible\vrule\@width\else\hskip\fi\fboxrule}%
+        \if@visible\hrule\@height\else\vskip\fi\fboxrule}}}}
+
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\long\def\frame#1{\if@visible\leavevmode
+\vbox{\vskip-\@halfwidth\hrule \@height\@halfwidth \@depth \@halfwidth
+  \vskip-\@halfwidth\hbox{\hskip-\@halfwidth \vrule \@width\@wholewidth
+  \hskip-\@halfwidth #1\hskip-\@halfwidth \vrule \@width \@wholewidth
+  \hskip -\@halfwidth}\vskip -\@halfwidth\hrule \@height \@halfwidth
+  \@depth \@halfwidth\vskip -\@halfwidth}\else #1\fi}
+%    \end{macrocode}
+%
+% \changes{v2.0d}{1993/11/12}{Corrected \cs{@math} to \cs{m@th} in
+%    definition of \cs{underline}.}
+%
+%    \begin{macrocode}
+\message{mods,}
+%    \end{macrocode}
+%
+%
+%  \subsubsection{Other modifications to \TeX{} and \LaTeX{} commands}
+%
+% |\rule|
+%    \begin{macrocode}
+\def\@rule[#1]#2#3{\@tempdima#3\advance\@tempdima #1\leavevmode
+ \hbox{\if@visible\vrule
+  \@width#2 \@height\@tempdima \@depth-#1\else
+\vrule \@width \z@ \@height\@tempdima \@depth-#1\vrule
+ \@width#2 \@height\z@\fi}}
+
+% \_  (Added 10 Nov 86)
+
+\def\_{\leavevmode \kern.06em \if@visible\vbox{\hrule \@width.3em}\else
+   \vbox{\hrule \@height \z@ \@width.3em}\vbox{\hrule \@width \z@}\fi}
+%    \end{macrocode}
+%\begin{verbatim}
+% \overline, \underline, \frac and \sqrt
+%
+% \@mathbox{STYLE}{BOX}{MTEXT} : Called in math mode, typesets MTEXT and
+%   stores result in BOX, using style STYLE.
+%
+% \@bphant{BOX}    : Creates a phantom with dimensions BOX.
+% \@vbphant{BOX}   : Creates a phantom with ht of BOX and zero width.
+% \@hbphant{BOX}   : Creates a phantom with width of BOX
+%                    and zero ht & dp.
+% \@hvsmash{STYLE}{MTEXT} : Creates a copy of MTEXT with zero height and
+%                           width in style STYLE.
+%\end{verbatim}
+%    \begin{macrocode}
+\def\@mathbox#1#2#3{\setbox#2\hbox{$\m@th#1{#3}$}}
+
+\def\@vbphantom#1{\setbox\tw@\null \ht\tw@\ht #1\dp\tw@\dp #1%
+   \box\tw@}
+
+\def\@bphantom#1{\setbox\tw@\null
+   \wd\tw@\wd #1\ht\tw@\ht #1\dp\tw@\dp #1%
+   \box\tw@}
+
+\def\@hbphantom#1{\setbox\tw@\null \wd\tw@\wd #1\ht\tw@\z@ \dp\tw@\z@
+   \box\tw@}
+
+\def\@hvsmash#1#2{\@mathbox#1\z@{#2}\ht\z@\z@ \dp\z@\z@ \wd\z@\z@
+   \box\z@}
+
+\def\underline#1{\relax\ifmmode
+  \@xunderline{#1}\else $\m@th\@xunderline{\hbox{#1}}$\relax\fi}
+
+\def\@xunderline#1{\mathchoice{\@xyunderline\displaystyle{#1}}%
+   {\@xyunderline
+    \textstyle{#1}}{\@xyunderline\scriptstyle{#1}}{\@xyunderline
+      \scriptscriptstyle{#1}}}
+
+\def\@xyunderline#1#2{%
+   \@mathbox#1\@smashboxa{#2}\@hvsmash#1{\copy\@smashboxa}%
+   \if@visible \@hvsmash#1{\@@underline{\@bphantom\@smashboxa}}\fi
+  \@mathbox#1\@smashboxb{\@@underline{\box\@smashboxa}}%
+   \@bphantom\@smashboxb}
+
+\let\@@overline=\overline
+
+\def\overline#1{\mathchoice{\@xoverline\displaystyle{#1}}{\@xoverline
+    \textstyle{#1}}{\@xoverline\scriptstyle{#1}}{\@xoverline
+      \scriptscriptstyle{#1}}}
+
+\def\@xoverline#1#2{%
+   \@mathbox#1\@smashboxa{#2}\@hvsmash#1{\copy\@smashboxa}%
+   \if@visible \@hvsmash#1{\@@overline{\@bphantom\@smashboxa}}\fi
+   \@mathbox#1\@smashboxb{\@@overline{\box\@smashboxa}}%
+   \@bphantom\@smashboxb}
+%    \end{macrocode}
+%
+% \changes{v2.0b}{1993/04/14}{Corrected \cs{frac} command.}
+% \changes{v2.0d}{1993/11/12}{Removed \cs{vcenter} in \cs{@frac}.}
+%
+%\begin{verbatim}
+% \@frac {STYLE}{DENOMSTYLE}{NUM}{DEN}{FONTSIZE} :
+%   Creates \frac{NUM}{DENOM}
+%   in style STYLE with NUM and DENOM in style DENOMSTYLE
+%   FONTSIZE should be \textfont \scriptfont or \scriptscriptfont
+%\end{verbatim}
+%    Added a group around the first argument of |\frac| to prevent
+%    changes (for example font changes) to modify the contents of the
+%    second argument.
+% \changes{v2.1c}{1993/12/13}{Added group around first arg.}
+%    \begin{macrocode}
+\def\frac#1#2{\mathchoice
+   {\@frac\displaystyle\textstyle{#1}{#2}\textfont}{\@frac
+         \textstyle\scriptstyle{#1}{#2}\textfont}{\@frac
+         \scriptstyle\scriptscriptstyle{#1}{#2}\scriptfont}{\@frac
+         \scriptscriptstyle\scriptscriptstyle{#1}{#2}\scriptscriptfont}}
+
+\def\@frac#1#2#3#4#5{%
+   \@mathbox#1\@smashboxc{{\begingroup#3\endgroup\over#4}}%
+   \setbox\tw@\null
+   \ht\tw@ \ht\@smashboxc
+   \dp\tw@ \dp\@smashboxc
+   \wd\tw@ \wd\@smashboxc
+   \box\if@visible\@smashboxc\else\tw@\fi}
+
+\def\r@@t#1#2{\setbox\z@\hbox{$\m@th#1\@xysqrt#1{#2}$}%
+  \dimen@\ht\z@ \advance\dimen@-\dp\z@
+  \mskip5mu\raise.6\dimen@\copy\rootbox \mskip-10mu\box\z@}
+%    \end{macrocode}
+% \changes{v2.3w}{1996/05/15}{Removed use of obsolete command
+%                             \cs{@@sqrt} (CAR)}
+%    \begin{macrocode}
+\def\sqrt{\@ifnextchar[{\@sqrt}{\@xsqrt}}
+\def\@sqrt[#1]{\root #1\of}
+\def\@xsqrt#1{\mathchoice{\@xysqrt\displaystyle{#1}}{\@xysqrt
+     \textstyle{#1}}{\@xysqrt\scriptstyle{#1}}{\@xysqrt
+    \scriptscriptstyle{#1}}}
+\def\@xysqrt#1#2{\@mathbox#1\@smashboxa{#2}\if@visible
+    \@hvsmash#1{\sqrtsign{\@bphantom\@smashboxa}}\fi
+    \phantom{\sqrtsign{\@vbphantom\@smashboxa}}\box\@smashboxa}
+
+\newbox\@smashboxa
+\newbox\@smashboxb
+\newbox\@smashboxc
+%    \end{macrocode}
+%
+% array and tabular environments: changes to `\verb+|+', |\hline|,
+% |\cline|, and |\vline|,
+% added 8 Jun 88
+%    \begin{macrocode}
+\def\@arrayrule{\if@visible\@addtopreamble{\hskip -.5\arrayrulewidth
+   \vrule \@width \arrayrulewidth\hskip -.5\arrayrulewidth}\fi}
+%    \end{macrocode}
+%
+% \changes{v2.3t}{1996/01/31}{Change in \cs{cline} calling interface}
+%    \begin{macrocode}
+\def\cline#1{\if@visible\@cline#1\@nil\fi}
+
+\def\hline{\noalign{\ifnum0=`}\fi
+    \if@visible \hrule \@height \arrayrulewidth
+      \else \hrule \@width \z@
+    \fi
+    \futurelet \reserved@a\@xhline}
+
+\def\vline{\if@visible \vrule \@width \arrayrulewidth
+            \else \vrule \@width \arrayrulewidth \@height \z@
+           \@depth \z@ \fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\message{output,}
+%    \end{macrocode}
+%
+% \subsubsection{Changes to \LaTeX{} output routine}
+%
+%\begin{verbatim}
+%  \@makecol ==
+%    BEGIN
+% % Following test added for slides to check if extra page
+%     if @makingslides = T
+%     then if \c@page > 0
+%             then if \c@note > 0
+%                     then type 'Note \thenote too long.'
+%                     else if \c@overlay > 0
+%                            then type 'Overlay \theoverlay too long.'
+%                            else type 'Slide \theslide too long'
+%     fi     fi     fi     fi
+%     ifvoid \insert\footins
+%        then  \@outputbox := \box255
+%        else  \@outputbox := \vbox {\unvbox255
+%                                    \vskip \skip\footins
+%                                    \footnoterule
+%                                    \unvbox\@footinsert
+%                                   }
+%    fi
+%    \@freelist :=G \@freelist * \@midlist
+%    \@midlist  :=G empty
+%    \@combinefloats
+%    \@outputbox := \vbox to \@colht{\boxmaxdepth := \maxdepth
+%                                     \vfil     %%\vfil added for slides
+%                                     \unvbox\@outputbox
+%                                     \vfil }   %%\vfil added for slides
+%    \maxdepth :=G \@maxdepth
+%    END
+%\end{verbatim}
+% FMi simple hack to allow none centered slides Should be revised
+% of course.
+%    \begin{macrocode}
+\let\@topfil\vfil
+
+\def\@makecol{\if@makingslides\ifnum\c@page>\z@ \@extraslide\fi\fi
+\ifvoid\footins \setbox\@outputbox\box\@cclv \let\@botfil\vfil
+   \else\let\@botfil\relax\setbox\@outputbox
+     \vbox{\unvbox\@cclv\vfil
+           \vskip\skip\footins\footnoterule\unvbox\footins\vskip
+            \z@ plus.1fil\relax}\fi
+  \xdef\@freelist{\@freelist\@midlist}\gdef\@midlist{}\@combinefloats
+     \setbox\@outputbox\vbox to\@colht{\boxmaxdepth\maxdepth
+        \@topfil\unvbox\@outputbox\@botfil}\global\maxdepth\@maxdepth}
+
+\def\@extraslide{\ifnum\c@note>\z@
+    \ClassWarning{slides}{Note \thenote\space too long}\else
+     \ifnum\c@overlay>\z@
+        \ClassWarning{slides}{Overlay \theoverlay\space too long}\else
+        \ClassWarning{slides}{Slide \theslide\space too long}\fi\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\message{init}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Special \SLiTeX{} initializations}
+%
+%FMi why not allow for ref's ?
+%    \begin{macrocode}
+%   \nofiles
+
+\@visibletrue
+%</cmd>
+%    \end{macrocode}
+%
+%
+% \Finale
+%
+\endinput

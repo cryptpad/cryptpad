@@ -1,0 +1,72 @@
+
+% You can generate a special cslatex on web2c systems using encTeX. Run:
+
+% tex -ini kam-latex
+
+% kam-latex is able to input DOS files in Kamenicky encoding and has the
+% internal encoding in ISO8859-2. Output to .log, .aux, .toc is in
+% Kamenicky. This format exactly emulates the cslatex on emTeX system
+% where Kamenicky tcp table was choosen during initex.bat.
+
+\ifx\xprncode\undefined
+   \catcode`\{=1  \catcode`\}=2
+   \errhelp={The TeX binary must be compiled with encTeX patch
+             by Petr Olsak in order to possibility of re-encoding}
+   \errmessage{Sorry, I am not able to generate kam-latex}
+   \expandafter \endinput
+\else %% The encTeX is detected, OK!
+   \begingroup
+   \catcode`\{=1  \catcode`\}=2 \catcode`\#=6
+   \message{cslatex with ISO8859-2 internal and Kamenicky input encoding}
+   \def\setcode #1 #2 {\xordcode#1=#2 \xchrcode#2=#1 \xprncode#2=1 }
+   \xordcode"1A="20  % DOS's EOF (^Z) is mapped to space
+   % The DOS's \r (^M) is ignored implicitly, see code texextra.c, line 866
+   %          kam  il2
+   \setcode   "8F  "C1   % \'A
+   \setcode   "A0  "E1   % \'a
+   \setcode   "8E  "C4   % \"A
+   \setcode   "84  "E4   % \"a
+   \setcode   "80  "C8   % \v C
+   \setcode   "87  "E8   % \v c
+   \setcode   "85  "CF   % \v D
+   \setcode   "83  "EF   % \v d
+   \setcode   "90  "C9   % \'E
+   \setcode   "82  "E9   % \'e
+   \setcode   "89  "CC   % \v E
+   \setcode   "88  "EC   % \v e
+   \setcode   "8B  "CD   % \'I
+   \setcode   "A1  "ED   % \'i
+   \setcode   "8A  "C5   % \'L
+   \setcode   "8D  "E5   % \'l
+   \setcode   "9C  "A5   % \v L
+   \setcode   "8C  "B5   % \v l
+   \setcode   "A5  "D2   % \v N
+   \setcode   "A4  "F2   % \v n
+   \setcode   "95  "D3   % \'O
+   \setcode   "A2  "F3   % \'o
+   \setcode   "A7  "D4   % \^O
+   \setcode   "93  "F4   % \^o
+   \setcode   "99  "D6   % \"O
+   \setcode   "94  "F6   % \"o
+   \setcode   "AB  "C0   % \'R
+   \setcode   "AA  "E0   % \'r
+   \setcode   "9E  "D8   % \v R
+   \setcode   "A9  "F8   % \v r
+   \setcode   "9B  "A9   % \v S
+   \setcode   "A8  "B9   % \v s
+   \setcode   "86  "AB   % \v T
+   \setcode   "9F  "BB   % \v t
+   \setcode   "97  "DA   % \'U
+   \setcode   "A3  "FA   % \'u
+   \setcode   "A6  "D9   % \r U
+   \setcode   "96  "F9   % \r u
+   \setcode   "9A  "DC   % \"U
+   \setcode   "81  "FC   % \"u
+   \setcode   "9D  "DD   % \'Y
+   \setcode   "98  "FD   % \'y
+   \setcode   "92  "AE   % \v Z
+   \setcode   "91  "BE   % \v z
+   \endgroup
+\fi
+\input latex.ltx
+

@@ -1,0 +1,250 @@
+%%
+%% This is file `pagesel.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pagesel.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pagesel
+%% Version: 2008/08/11 v1.8
+%% 
+%% Copyright (C) 1999, 2003, 2006-2008 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pagesel.dtx
+%% and the derived files
+%%    pagesel.sty, pagesel.pdf, pagesel.ins, pagesel.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pagesel}
+  [2008/08/11 v1.8 Select pages of a document for output (HO)]%
+\@ifundefined{ps@makevoid}{}{%
+  \PackageWarningNoLine{pagesel}{Package already loaded.}%
+  \endinput
+}
+\newcommand*{\ps@makevoid}{%
+  \global\setbox\@cclv\copy\voidb@x
+  \begingroup
+    \count@=\deadcycles
+    \advance\count@ by -1\relax
+    \deadcycles=\count@
+  \endgroup
+}
+\newcommand*\ps@oddpages{0}
+\DeclareOption{odd}{\renewcommand*\ps@oddpages{1}}
+\DeclareOption{even}{\renewcommand*\ps@oddpages{2}}
+\DeclareOption{nofiles}{\let\ps@nofiles\nofiles}
+\DeclareOption{nonofiles}{\let\ps@nofiles\@empty}
+\DeclareOption{files}{\let\ps@nofiles\@empty}
+\ExecuteOptions{nofiles}
+\DeclareOption*{%
+  \begingroup
+    \expandafter\ps@checkoption\CurrentOption-\END
+    \edef\x{\endgroup\noexpand\ps@store{\ps@first}{\ps@last}}%
+  \x
+}
+\newcommand\ps@checkoption{}
+\def\ps@checkoption#1-#2\END{%
+  \ifx\\#2\\%
+    \ifx\\#1\\%
+      % empty option
+      \def\ps@first{\maxdimen}%
+      \def\ps@last{\maxdimen}%
+    \else
+      \edef\ps@first{#1}%
+      \edef\ps@last{#1}%
+    \fi
+  \else
+    \ifx\\#1\\%
+      \def\ps@first{-\maxdimen}%
+    \else
+      \edef\ps@first{#1}%
+    \fi
+    \ps@checklast#2%
+  \fi
+}
+\newcommand\ps@checklast{}
+\def\ps@checklast#1-{%
+  \ifx\\#1\\%
+    \def\ps@last{\maxdimen}%
+  \else
+    \edef\ps@last{#1}%
+  \fi
+}
+\newcommand*{\ps@store}[2]{%
+  \expandafter\def\expandafter\ps@testlist\expandafter{%
+    \ps@testlist\ps@pagetest{#1}{#2}%
+  }%
+}
+\newcommand*\ps@testlist{}
+\ProcessOptions
+\begingroup
+  \edef\x{%
+    \ifnum\ps@oddpages>0 \relax\fi
+    \ifx\ps@testlist\@empty\else\relax\fi
+  }%
+  \ifx\x\@empty
+    \endgroup
+    \PackageInfo{pagesel}{Nothing to do}%
+    \expandafter\endinput
+  \fi
+\endgroup
+\RequirePackage{everyshi}
+\ps@nofiles
+\newcounter{ps@count}
+\setcounter{ps@count}{0}
+\long\def\ps@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+\long\def\ps@ReturnAfterFi#1\fi{\fi#1}
+\newcommand{\ps@lastpage}{\maxdimen}
+\ifx\ps@nofiles\nofiles
+  \ifx\ps@testlist\@empty
+  \else
+    \def\ps@lastpage{0}%
+    \newcommand*{\ps@pagetest}[2]{%
+      \ifnum#2>\ps@lastpage\relax
+        \def\ps@lastpage{#2}%
+      \fi
+    }%
+    \ps@testlist
+    \let\ps@pagetest\relax
+  \fi
+\fi
+\newcommand*{\ps@ifinset}[4]{%
+  \ifnum#1>\value{ps@count}%
+    \ps@ReturnAfterElseFi{#4}%
+  \else
+    \ps@ReturnAfterFi{%
+      \ifnum#2<\value{ps@count}%
+        \ps@ReturnAfterElseFi{#4}%
+      \else
+        \ps@ReturnAfterFi{#3}%
+      \fi
+    }%
+  \fi
+}
+\newcommand*{\ps@pagetest}[2]{%
+  \ps@ifinset{#1}{#2}{\let\ps@next\@empty}{}%
+}
+\EveryShipout{%
+  \stepcounter{ps@count}%
+  \ifnum\value{ps@count}>\ps@lastpage\relax
+    \global\output{%
+      \ps@cleanup@if
+      \ps@group@message
+      \typeout{%
+        Package pagesel Notice: Aborting LaTeX job %
+        after last selected page (\ps@lastpage).%
+      }%
+      \ps@message@ignore
+      \global\setbox\@cclv\box\voidb@x
+      \deadcycles0\relax
+      \aftergroup\@@end
+    }%
+  \fi
+  \let\ps@next\@empty
+  \ifx\ps@testlist\@empty
+  \else
+    \let\ps@next\ps@makevoid
+    \ps@testlist
+  \fi
+  \ifnum\ps@oddpages=1 %
+    \ifodd\value{ps@count}%
+    \else
+      \let\ps@next\ps@makevoid
+    \fi
+  \fi
+  \ifnum\ps@oddpages=2 %
+    \ifodd\value{ps@count}%
+      \let\ps@next\ps@makevoid
+    \else
+    \fi
+  \fi
+  \ps@begindvi
+  \ps@next
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentiflevel\endcsname\relax
+  \let\ps@cleanup@if\@empty
+\else
+  \def\ps@cleanup@if{%
+    \ifnum\currentiflevel>\@ne
+      \csname fi\endcsname
+      \expandafter\ps@cleanup@if
+    \fi
+  }%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+  \let\ps@group@message\@empty
+  \def\ps@message@ignore{%
+    \typeout{%
+      (pagesel) \space\space\@spaces\@spaces\@spaces
+      Messages (\string\end\space occurred ...) can be ignored.%
+    }%
+  }%
+\else
+  \def\ps@group@message{%
+    \ifnum\currentgrouplevel>\@ne
+      \def\ps@message@ignore{%
+        \typeout{%
+          (pagesel) \space\space\@spaces\@spaces\@spaces
+          Message (\string\end\space occurred ...) %
+          can be ignored.%
+        }%
+      }%
+    \else
+      \let\ps@message@ignore\@empty
+    \fi
+  }%
+\fi
+\newbox\ps@begindvibox
+\ifvoid\@begindvibox
+\else
+  \global\setbox\ps@begindvibox\vbox{%
+    \unvbox\@begindvibox
+  }%
+\fi
+\let\ps@org@AtBeginDvi\AtBeginDvi
+\def\AtBeginDvi#1{%
+  \global\setbox\ps@begindvibox\vbox{%
+    \unvbox\ps@begindvibox
+    #1%
+  }%
+  \ps@org@AtBeginDvi{#1}%
+}
+\def\ps@begindvi{%
+  \ifx\ps@next\@empty
+    \global\let\ps@begindvi\@empty
+  \else
+    \global\let\ps@begindvi\ps@begindvi@do
+  \fi
+}
+\def\ps@begindvi@do{%
+  \ifx\ps@next\@empty
+    \setbox\@cclv\vbox{%
+      \unvbox\ps@begindvibox
+      \box\@cclv
+    }%
+    \global\let\ps@begindvi\@empty
+  \fi
+}
+\endinput
+%%
+%% End of file `pagesel.sty'.

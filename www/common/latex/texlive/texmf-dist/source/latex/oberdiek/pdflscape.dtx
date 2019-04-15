@@ -1,0 +1,1101 @@
+% \iffalse meta-comment
+%
+% File: pdflscape.dtx
+% Version: 2008/08/11 v0.10
+% Info: Display of landscape pages in PDF
+%
+% Copyright (C) 2001, 2004, 2006-2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pdflscape.dtx
+% and the derived files
+%    pdflscape.sty, pdflscape.pdf, pdflscape.ins, pdflscape.drv,
+%    pdflscape-test1.tex, pdflscape-test2.tex,
+%    pdflscape-test3.tex, pdflscape-test4.tex,
+%    pdflscape-test5.tex, pdflscape-test6.tex,
+%    pdflscape-test6.txt, ExtractRotate.java.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdflscape.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdflscape.pdf
+%
+% Unpacking:
+%    (a) If pdflscape.ins is present:
+%           tex pdflscape.ins
+%    (b) Without pdflscape.ins:
+%           tex pdflscape.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdflscape.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdflscape.drv is present:
+%           latex pdflscape.drv
+%    (b) Without pdflscape.drv:
+%           latex pdflscape.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdflscape.dtx
+%       makeindex -s gind.ist pdflscape.idx
+%       pdflatex pdflscape.dtx
+%       makeindex -s gind.ist pdflscape.idx
+%       pdflatex pdflscape.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pdflscape.sty
+%    TDS:doc/latex/oberdiek/pdflscape.pdf
+%    TDS:doc/latex/oberdiek/test/pdflscape-test1.tex
+%    TDS:doc/latex/oberdiek/test/pdflscape-test2.tex
+%    TDS:doc/latex/oberdiek/test/pdflscape-test3.tex
+%    TDS:doc/latex/oberdiek/test/pdflscape-test4.tex
+%    TDS:doc/latex/oberdiek/test/pdflscape-test5.tex
+%    TDS:doc/latex/oberdiek/test/pdflscape-test6.tex
+%    TDS:doc/latex/oberdiek/test/pdflscape-test6.txt
+%    TDS:doc/latex/oberdiek/test/ExtractRotate.java
+%    TDS:source/latex/oberdiek/pdflscape.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdflscape 2008/08/11 v0.10 Display of landscape pages in PDF (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdflscape
+Version: 2008/08/11 v0.10
+
+Copyright (C) 2001, 2004, 2006-2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pdflscape.dtx
+and the derived files
+   pdflscape.sty, pdflscape.pdf, pdflscape.ins, pdflscape.drv,
+   pdflscape-test1.tex, pdflscape-test2.tex,
+   pdflscape-test3.tex, pdflscape-test4.tex,
+   pdflscape-test5.tex, pdflscape-test6.tex,
+   pdflscape-test6.txt, ExtractRotate.java.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdflscape.ins}{\from{pdflscape.dtx}{install}}%
+  \file{pdflscape.drv}{\from{pdflscape.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pdflscape.sty}{\from{pdflscape.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdflscape-test1.tex}{\from{pdflscape.dtx}{test0,test1}}%
+  \file{pdflscape-test2.tex}{\from{pdflscape.dtx}{test0,test2}}%
+  \file{pdflscape-test3.tex}{\from{pdflscape.dtx}{test0,test3}}%
+  \file{pdflscape-test4.tex}{\from{pdflscape.dtx}{test0,test4}}%
+  \file{pdflscape-test5.tex}{\from{pdflscape.dtx}{test5}}%
+  \file{pdflscape-test6.tex}{\from{pdflscape.dtx}{test6}}%
+  \nopreamble
+  \nopostamble
+  \file{pdflscape-test6.txt}{\from{pdflscape.dtx}{result6}}%
+  \file{ExtractRotate.java}{\from{pdflscape.dtx}{ExtractRotate}}%
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdflscape.xml}{\from{pdflscape.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdflscape.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdflscape.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdflscape.drv}%
+  [2008/08/11 v0.10 Display of landscape pages in PDF (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{graphics}
+\begin{document}
+  \DocInput{pdflscape.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{473}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdflscape.drv}
+%
+% \title{The \xpackage{pdflscape} package}
+% \date{2008/08/11 v0.10}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{pdflscape} adds PDF support to the
+% environment \texttt{landscape} of package \xpackage{lscape}
+% by setting the PDF page attribute \texttt{/Rotate}.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Supported drivers}
+%
+% \begin{itemize}
+% \item \xoption{pdftex}
+% \item \xoption{dvips}, \xoption{dvipsone},
+%       \xoption{pctex32}, \xoption{pctexps}
+%       (and other drivers that provide a non-empty \cs{Gin@PS@raw})
+% \item \xoption{dvipdfm}
+% \end{itemize}
+%
+% \subsection{Caveat}
+%
+% Depending on the configuration Ghostscript
+% adds a guessed rotation entry by its own.
+% This can lead to two |/Rotate| entries per page.
+% To prevent this behaviour set the parameter
+% |AutoRotatePages| to |/None|, eg:
+% \begin{quote}
+%   |ps2pdf -dAutoRotatePages=/None|
+% \end{quote}
+%
+% \subsection{Requirements}
+%
+% \begin{itemize}
+% \item The package \xpackage{lscape}.
+% \item The package \xpackage{atbegshi} for all drivers
+%        except \xoption{pdftex}.
+% \end{itemize}
+%
+% \subsection{Usage}
+%
+% Load this package instead of or after package \xpackage{lscape}:
+% \begin{quote}
+%   |\usepackage{pdflscape}|\\
+%   |\begin{landscape}|\dots|\end{landscape}|
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Package identification}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdflscape}%
+  [2008/08/11 v0.10 Display of landscape pages in PDF (HO)]
+%    \end{macrocode}
+%
+% \subsection{Driver options}
+%
+%    \begin{macrocode}
+\let\PLS@option\@empty
+\let\PLS@driver\@empty
+\def\PLS@temp#1#2{%
+  \DeclareOption{#1}{%
+    \let\PLS@option\CurrentOption
+    \def\PLS@driver{#2}%
+  }%
+}
+\PLS@temp{pdftex}{pdftex}
+\PLS@temp{dvips}{dvips}
+\PLS@temp{dvipsone}{dvips}
+\PLS@temp{pctexps}{dvips}
+\PLS@temp{dvipdfm}{dvipdfm}
+\PLS@temp{dvipdfmx}{dvipdfm}
+\PLS@temp{xetex}{dvipdfm}
+\let\PLS@temp\@empty
+\DeclareOption*{%
+  \ifx\PLS@temp\@empty
+    \let\PLS@temp\CurrentOption
+  \else
+    \edef\PLS@temp{\PLS@temp,\CurrentOption}%
+  \fi
+}
+\ProcessOptions*
+\ifx\PLS@option\@empty
+\else
+  \expandafter\PassOptionsToPackage\expandafter{\PLS@option}{lscape}%
+\fi
+\ifx\PLS@temp\@empty
+\else
+  \expandafter\PassOptionsToPackage\expandafter{\PLS@temp}{lscape}%
+\fi
+\RequirePackage{lscape}
+%    \end{macrocode}
+%
+% \subsection{Autodetection of driver}
+%
+% \subsubsection{Driver \xoption{pdftex}}
+%
+%    \begin{macrocode}
+\RequirePackage{ifpdf}[2006/02/20]
+\def\PLS@temp{pdftex}
+\ifpdf
+  \ifx\PLS@driver\@empty
+    \let\PLS@driver\PLS@temp
+    \PackageInfo{pdflscape}{Auto-detected driver: \PLS@temp}%
+  \fi
+  \ifx\PLS@driver\PLS@temp
+  \else
+    \PackageError{pdflscape}{%
+      The driver option `\PLS@option' is not compatible\MessageBreak
+      with pdfTeX in PDF mode, using driver `pdftex' instead%
+    }\@ehc
+    \let\PLS@driver\PLS@temp
+  \fi
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Driver \xoption{xetex}}
+%
+%    \begin{macrocode}
+\RequirePackage{ifxetex}%
+\def\PLS@temp{dvipdfm}
+\ifxetex
+  \ifx\PLS@driver\@empty
+    \let\PLS@driver\PLS@temp
+    \PackageInfo{pdflscape}{%
+      Auto-detected driver: \PLS@temp\space(xetex)%
+    }%
+  \fi
+  \ifx\PLS@driver\PLS@temp
+  \else
+    \PackageError{pdflscape}{%
+      The driver option `\PLS@option' is not compatible\MessageBreak
+      with XeTeX, using driver for XeTeX (dvipdfm) instead%
+    }\@ehc
+    \let\PLS@driver\PLS@temp
+  \fi
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Detect driver based on \cs{Gin@driver}}
+%
+%    \begin{macrocode}
+\def\PLS@temp#1#2{%
+  \ifx\PLS@driver\@empty
+    \begingroup
+      \def\PLS@temp{#1.def}%
+    \expandafter\endgroup
+    \ifx\PLS@temp\Gin@driver
+      \def\PLS@driver{#2}%
+      \PackageInfo{pdflscape}{%
+        Auto-detected driver: \PLS@driver\space(#1)%
+      }%
+    \fi
+  \fi
+}
+\PLS@temp{dvipdfm}{dvipdfm}
+\PLS@temp{dvipdfmx}{dvipdfm}
+\PLS@temp{dvips}{dvips}
+\PLS@temp{dvipsone}{dvips}
+\PLS@temp{pctexps}{dvips}
+%    \end{macrocode}
+%
+% \subsubsection{Driver \xoption{dvips}}
+%
+%    \begin{macrocode}
+\ifx\PLS@driver\@empty
+  \def\PLS@temp{dvips}%
+  \ifnum 1=0\ifx\Gin@PS@raw\@undefined
+            \else
+              \ifx\Gin@PS@raw\relax
+              \else
+                \ifx\Gin@PS@raw\@empty
+                \else
+                  1%
+                \fi
+              \fi
+            \fi
+            \space
+    \let\PLS@driver\PLS@temp
+    \PackageInfo{pdflscape}{%
+      Auto-detected driver: \PLS@temp\space(PostScript)%
+    }%
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ifx\PLS@driver\@empty
+  \PackageError{pdflscape}{%
+    Neither pdfTeX, PostScript, nor dvipdfm driver found%
+  }\@ehc
+\fi
+%    \end{macrocode}
+%
+% \subsection{Driver implementation}
+%
+% \begin{itemize}
+% \item |\PLS@AddRotate #1|\\
+%   it expects the correct rotation number in |#1|
+%   and implements the adding of the /Rotation entry
+%   in the |/Page| object of the current page.
+% \item |\PLS@RemoveRotate|\\
+%   it removes a previous |/Rotate| entry, if necessary.
+% \end{itemize}
+%
+% \subsubsection{\pdfTeX}
+%
+% Not too nice is the global setting of \cs{pdfpageattr}.
+% Perhaps this can be changed in future versions.
+%
+%    \begin{macrocode}
+\def\PLS@temp{pdftex}
+\ifx\PLS@temp\PLS@driver
+  \def\PLS@AddRotate#1{%
+    \ifnum#1=0 %
+%    \end{macrocode}
+%    Already the default.
+%    \begin{macrocode}
+    \else
+      \global\pdfpageattr\expandafter{%
+        \the\pdfpageattr
+        /Rotate #1%
+      }%
+    \fi
+  }%
+%    \end{macrocode}
+%    Removes a |/Rotate| entry.
+%    \begin{macrocode}
+  \def\PLS@RemoveRotate{%
+    \begingroup
+      \global\pdfpageattr\expandafter{\expandafter}%
+      \expandafter\PLS@@RemoveRotate
+        \the\pdfpageattr /Rotate\@nil
+    \endgroup
+  }%
+  \def\PLS@@RemoveRotate#1/Rotate#2\@nil{%
+%    \end{macrocode}
+%    Append |/Rotate| free stuff to \cs{pdfpageattr}.
+%    \begin{macrocode}
+    \global\pdfpageattr\expandafter{\the\pdfpageattr#1}%
+    \ifx\\#2\\%
+%    \end{macrocode}
+%    Ready, because the detected |/Rotate| is part of
+%    the end marker: |/Rotate\@nil|
+%    \begin{macrocode}
+    \else
+%    \end{macrocode}
+%    First read in the argument of |/Rotate|,
+%    then continue parsing.
+%    \begin{macrocode}
+      \afterassignment\PLS@@RemoveRotate
+      \count0=#2\@nil
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{PostScript driver}
+%
+%    \begin{macrocode}
+\def\PLS@temp{dvips}
+\ifx\PLS@temp\PLS@driver
+  \RequirePackage{atbegshi}%
+  \AtBeginShipout{\PLS@AtBeginShipout}%
+  \let\PLS@AtBeginShipout\@empty
+  \def\PLS@AddRotate#1{%
+    \ifnum#1=0 %
+    \else
+      \def\PLS@AtBeginShipout{%
+        \global\setbox\AtBeginShipoutBox\vbox{%
+          \Gin@PS@raw{%
+            [{ThisPage}\string<\string</Rotate #1\string>\string>%
+            /PUT pdfmark%
+          }%
+          \box\AtBeginShipoutBox
+        }%
+      }%
+    \fi
+  }%
+  \def\PLS@RemoveRotate{\let\PLS@AtBeginShipout\@empty}%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Driver dvipdfm}
+%
+%    \begin{macrocode}
+\def\PLS@temp{dvipdfm}
+\ifx\PLS@temp\PLS@driver
+  \RequirePackage{atbegshi}%
+  \AtBeginShipout{\PLS@AtBeginShipout}%
+  \let\PLS@AtBeginShipout\@empty
+  \def\PLS@AddRotate#1{%
+    \ifnum#1=0 %
+    \else
+      \def\PLS@AtBeginShipout{%
+        \global\setbox\AtBeginShipoutBox\vbox{%
+          \special{pdf: put @thispage <</Rotate #1>>}%
+          \box\AtBeginShipoutBox
+        }%
+      }%
+    \fi
+  }%
+  \def\PLS@RemoveRotate{\let\PLS@AtBeginShipout\@empty}%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Driver independent stuff}
+%
+%    The landscape environment is extended by
+%    adding the correct |/Rotate| entries.
+%    \begin{macrocode}
+\g@addto@macro{\landscape}{\PLS@Rotate{90}}
+\g@addto@macro{\endlandscape}{\PLS@Rotate{0}}
+%    \end{macrocode}
+%
+%    \begin{macro}{\PLS@Rotate}
+%    Main macro, that sets the |/Rotate| entry.\\
+%    Argument: any TeX number or nothing, that means zero.\\
+%    Driver independent.
+%    \begin{macrocode}
+\def\PLS@Rotate#1{%
+  \begingroup
+%    \end{macrocode}
+%    1. Check and validate the argument.
+%    \begin{macrocode}
+    \PLS@CheckAngle{#1}%
+  \expandafter\endgroup
+%    \end{macrocode}
+%    2. Remove previous |\Rotate| entry.
+%    \begin{macrocode}
+  \expandafter\PLS@RemoveRotate
+%    \end{macrocode}
+%    3. Add |/Rotate| entry.
+%    \begin{macrocode}
+  \expandafter\PLS@AddRotate\expandafter{\the\count@}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PLS@CheckAngle}
+%    Validates the rotation angle.\\
+%    The result is stored in the count register |\count@|.\\
+%    Driver independent.
+%    \begin{macrocode}
+\def\PLS@CheckAngle#1{%
+%    \end{macrocode}
+%    Nothing means zero:
+%    \begin{macrocode}
+  \ifx\\#1\\%
+    \count@=0 %
+  \else
+    \count@=#1\relax
+  \fi
+%    \end{macrocode}
+%    Normalize to interval -360 $<$ |\count@| $<$ 360.
+%    \begin{macrocode}
+  \@whilenum\count@>359\do{\advance\count@ -360 }%
+  \@whilenum\count@<-359\do{\advance\count@ 360 }%
+%    \end{macrocode}
+%    Check values: 0, +/-90, +/-180, +/-270
+%    \begin{macrocode}
+  \ifnum 1=0\ifnum\count@=0 \else
+            \ifnum\count@=90 \else
+            \ifnum\count@=-90 \else
+            \ifnum\count@=180 \else
+            \ifnum\count@=-180 \else
+            \ifnum\count@=270 \else
+            \ifnum\count@=-270 \else
+           1\fi\fi\fi\fi\fi\fi\fi\relax
+    \PackageError{pdflscape}{%
+      Invalid value \the\count@\space for /Rotate%
+    }\@ehc
+    \count@=0 %
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Driver detection tests}
+%    \begin{macrocode}
+%<*test0>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+%</test0>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test1>
+\usepackage{ifpdf}
+\ifpdf
+  \def\ExpectDriver{pdftex}%
+\fi
+\usepackage{ifxetex}%
+\ifxetex
+  \def\ExpectDriver{dvipdfm}%
+\fi
+\usepackage{pdflscape}[2008/08/11]
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2>
+\def\ExpectDriver{pdftex}
+\usepackage[pdftex]{pdflscape}[2008/08/11]
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\def\ExpectDriver{dvipdfm}
+\usepackage[dvipdfmx]{pdflscape}[2008/08/11]
+%</test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test4>
+\def\ExpectDriver{dvips}
+\usepackage[dvipsone]{graphics}
+\usepackage{pdflscape}[2008/08/11]
+%</test4>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test0>
+\begin{document}
+\begin{qstest}{driver}{driver}
+  \makeatletter
+  \Expect*{\PLS@driver}*{\ExpectDriver}%
+\end{qstest}
+\end{document}
+%</test0>
+%    \end{macrocode}
+%
+% \subsection{Test for \cs{PLS@CheckAngle}}
+%
+%    \begin{macrocode}
+%<*test5>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\usepackage{pdflscape}[2008/08/11]
+\begin{document}
+\begin{qstest}{checkangle}{checkangle}
+  \makeatletter
+  \def\Result{%
+    \def\ResultString{\the\count@}%
+  }%
+  \def\PackageError#1#2#3{%
+    \def\Result{%
+      \def\ResultString{error}%
+    }%
+  }%
+  \def\Test#1#2{%
+    \begingroup
+      \PLS@CheckAngle{#1}%
+      \Result
+      \Expect*{\ResultString}{#2}%
+    \endgroup
+  }%
+  \Test{0}{0}%
+  \Test{90}{90}%
+  \Test{180}{180}%
+  \Test{270}{270}%
+  \Test{360}{0}%
+  \Test{450}{90}%
+  \Test{540}{180}%
+  \Test{630}{270}%
+  \Test{720}{0}%
+  \Test{3600}{0}%
+  \Test{3690}{90}%
+  \Test{-90}{270}%
+  \Test{-180}{180}%
+  \Test{-270}{-90}%
+  \Test{-360}{0}%
+  \Test{-450}{270}%
+  \Test{540}{180}%
+  \Test{-630}{90}%
+  \Test{-720}{0}%
+  \Test{-3600}{0}%
+  \Test{-3690}{270}%
+  \Test{1}{error}%
+  \Test{-1}{error}%
+  \Test{123}{error}%
+\end{qstest}
+\end{document}
+%</test5>
+%    \end{macrocode}
+%
+% \subsection{Test for rotate}
+%
+%    \begin{macrocode}
+%<*test6>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage{pdflscape}[2008/08/11]
+\begin{document}
+\section{Portrait page}
+\begin{landscape}
+\section{Landscape page}
+Foo bar foo bar foo bar foo bar foo bar
+foo bar foo bar foo bar foo bar foo bar.
+\end{landscape}
+\section{Portrait Section}
+Foo bar
+\begin{landscape}
+\section{Again Landscape Section}
+\newpage
+\section{Second Page of Landscape Section}
+\end{landscape}
+\section{Second Last Portrait Page}
+\newpage
+\section{Last Portrait Page}
+\end{document}
+%</test6>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*result6>
+/Page 1 /Rotate 0
+/Page 2 /Rotate 90
+/Page 3 /Rotate 0
+/Page 4 /Rotate 90
+/Page 5 /Rotate 90
+/Page 6 /Rotate 0
+/Page 7 /Rotate 0
+%</result6>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*ExtractRotate>
+/**
+ * ExtractRotate.java
+ *
+ * Copyright (C) 2007 by Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+ *
+ * Requires: PDFBox (http://www.pdfbox.org/)
+ *
+ * Syntax: java ExtractRotate <pdffile> <textfile>
+ *
+ * The <pdffile> is analyzed and for each page its rotation
+ * setting is printed in the <textfile>. Example:
+ *   /Page 1 /Rotate 0
+ *   /Page 2 /Rotate 90
+ */
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import org.pdfbox.pdfparser.PDFParser;
+import org.pdfbox.pdmodel.PDDocument;
+import org.pdfbox.pdmodel.PDDocumentCatalog;
+import org.pdfbox.pdmodel.PDPage;
+
+public class ExtractRotate {
+
+    public static void main(String[] args) {
+        try {
+            String infile = args[0];
+            String outfile = args[1];
+            FileWriter out = new FileWriter(outfile);
+            PDFParser parser =
+                    new PDFParser(new FileInputStream(infile));
+            parser.parse();
+            PDDocument document = parser.getPDDocument();
+            PDDocumentCatalog catalog = document.getDocumentCatalog();
+            int i = 0;
+            for (Object page: catalog.getAllPages()) {
+                i++;
+                out.write("/Page " + i + " " + "/Rotate "
+                        + ((PDPage)page).findRotation() + "\n");
+            }
+            document.close();
+            out.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+}
+%</ExtractRotate>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdflscape.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdflscape.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdflscape.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdflscape.sty & tex/latex/oberdiek/pdflscape.sty\\
+%   pdflscape.pdf & doc/latex/oberdiek/pdflscape.pdf\\
+%   test/pdflscape-test1.tex & doc/latex/oberdiek/test/pdflscape-test1.tex\\
+%   test/pdflscape-test2.tex & doc/latex/oberdiek/test/pdflscape-test2.tex\\
+%   test/pdflscape-test3.tex & doc/latex/oberdiek/test/pdflscape-test3.tex\\
+%   test/pdflscape-test4.tex & doc/latex/oberdiek/test/pdflscape-test4.tex\\
+%   test/pdflscape-test5.tex & doc/latex/oberdiek/test/pdflscape-test5.tex\\
+%   test/pdflscape-test6.tex & doc/latex/oberdiek/test/pdflscape-test6.tex\\
+%   test/pdflscape-test6.txt & doc/latex/oberdiek/test/pdflscape-test6.txt\\
+%   test/ExtractRotate.java & doc/latex/oberdiek/test/ExtractRotate.java\\
+%   pdflscape.dtx & source/latex/oberdiek/pdflscape.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdflscape.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdflscape.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdflscape.dtx
+%makeindex -s gind.ist pdflscape.idx
+%pdflatex pdflscape.dtx
+%makeindex -s gind.ist pdflscape.idx
+%pdflatex pdflscape.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdflscape.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdflscape'>
+  <name>pdflscape</name>
+  <caption>Make landscape pages display as landscape.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2004,2006-2008'/>
+  <license type='lppl1.3'/>
+  <version number='0.10'/>
+  <description>
+    The package adds PDF support to the landscape environment of
+    package <xref refid='lscape'>lscape</xref>, by setting the PDF
+    <tt>/Rotate</tt> page attribute.  Pages with this attribute will be
+    displayed in landscape orientation by conforming PDF viewers.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdflscape.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdflscape.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2001/01/15 v0.1}
+%   \item
+%     First public version,
+%     published in \xnewsgroup{de.comp.text.tex}:\\
+%     \URL{``\link{Re: Querformat, pdfLaTex und thumbpdf}''}^^A
+%     {http://groups.google.com/group/de.comp.text.tex/msg/e054c5795e52d2b8}
+%   \end{Version}
+%   \begin{Version}{2001/02/04 v0.2}
+%   \item
+%     Minor documentation update.
+%   \item
+%     CTAN.
+%   \end{Version}
+%   \begin{Version}{2004/05/11 v0.3}
+%   \item
+%     Support for dvipdfm added.
+%   \end{Version}
+%   \begin{Version}{2004/05/12 v0.4}
+%   \item
+%     Bug fix: support for multipage landscape environment
+%     for all drivers except for \xoption{pdftex}.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v0.5}
+%   \item
+%     DTX framework.
+%   \item
+%     LPPL 1.3
+%   \item
+%     Code is not changed.
+%   \end{Version}
+%   \begin{Version}{2006/04/24 v0.6}
+%   \item
+%     Bug fix: \cs{PLS@RemoveRotate} reinserted for \cs{PLS@Rotate}.
+%   \item
+%     Fix for \cs{PLS@RemoveRotate} (dvips/dvipdfm): \cs{PLS@EverhShi}
+%     hook is cleared.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v0.7}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/04/17 v0.8}
+%   \item
+%     Package \xpackage{atbegshi} replaces \xpackage{everyshi}.
+%   \end{Version}
+%   \begin{Version}{2007/10/21 v0.9}
+%   \item
+%     Driver detection for \XeTeX\ added.
+%   \item
+%     Fix for rotation angles $\le$~-360 or $\ge$~360.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v0.10}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

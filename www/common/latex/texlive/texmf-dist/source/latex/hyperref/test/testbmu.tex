@@ -1,0 +1,2017 @@
+% testbmu.tex
+%
+% Function:
+% * How display a pdf reader the bookmarks?
+% * Do hyperref.sty and puenc.def work properly?
+% * Shows the LaTeX code to get the glyphs.
+%
+% Copyright (c) 1999, 2000, 2006, 2008 by Heiko Oberdiek.
+%
+% This file is part of the `Hyperref Bundle'.
+% -------------------------------------------
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The list of all files belonging to the `Hyperref Bundle' is
+% given in the file `manifest.txt'.
+%
+% Please send error reports and suggestions for improvements to
+%   Heiko Oberdiek <heiko.oberdiek at googlemail.com>.
+%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{testbmu.tex}[2008/09/11 v1.4 Test bookmark glyphs (HO)]
+\documentclass[12pt,a4paper]{article}
+\usepackage[
+  unicode,
+  bookmarks,
+  bookmarksopen,
+  bookmarksopenlevel=0,
+  colorlinks,
+]{hyperref}[1999/08/31]% 6.65d or later
+\pdfstringdefDisableCommands{\let\\\textbackslash}
+\IfFileExists{times.sty}{\usepackage{times}}{}
+\pagestyle{empty}
+
+\makeatletter
+% from doc.sty:
+\def\GetFileInfo#1{%
+  \def\filename{#1}%
+  \def\@tempb##1 ##2 ##3\relax##4\relax{%
+    \def\filedate{##1}%
+    \def\fileversion{##2}%
+    \def\fileinfo{##3}%
+  }%
+  \edef\@tempa{\csname ver@#1\endcsname}%
+  \expandafter\@tempb\@tempa\relax? ? \relax\relax
+}
+\GetFileInfo{testbmu.tex}
+\hypersetup{
+  pdftitle={\fileinfo},
+  pdfsubject={\filename\space[\filedate\space\fileversion]},
+  pdfauthor={Heiko Oberdiek},
+  pdfkeywords={bookmarks hyperref Unicode glyph slot},
+}
+
+\edef\BackSlash{\expandafter\@car\string\\\@nil}%
+\edef\0{\string\0}%
+\edef\1{\string\1}%
+\edef\2{\string\2}%
+\edef\3{\string\3}%
+\edef\9{\string\9}%
+
+\newcommand*\tit[3]{%
+  \typeout{Unicode high byte #1#2#3}%
+  \def\highbyte{#1#2#3}%
+  \def\hb{\9#1#2#3}%
+  \pdfbookmark[0]{Unicode high byte: #1#2#3}{#1#2#3}%
+}
+
+\newcommand*\oct[2]{%
+  \typeout{Processing glyphs \highbyte/#1#20..#1#27}%
+  \begingroup
+    \edef\x{\hb\csname#1\endcsname#2}%
+    \pdfbookmark[1]{\highbyte/#1#20..#1#27:
+      \_\x0\_\x1\_\x2\_\x3\_\x4\_\x5\_\x6\_\x7\_%
+    }{\highbyte.#1#2}%
+  \endgroup
+}
+
+\newcommand*{\@defbookmarkverbcmd}[2]{%
+  \def#1{#2}%
+  \edef#1{\expandafter\strip@prefix\meaning#1}%
+  \edef#1{\expandafter\@removespace#1 \| \|\@nil#1}%
+  \edef\first{\expandafter\@car#1\@nil}%
+  \ifx\first\BackSlash
+    \edef#1{\noexpand\textbackslash\expandafter\@gobble#1}%
+  \fi
+  \edef#1{\expandafter\@changebackslash\expandafter{#1}}%
+}
+\def\@removespace#1 \|#2\@nil#3{\ifx\relax#2\relax#3\else#1\fi}
+\begingroup
+  \catcode`\|=0
+  \catcode`\\=12
+  |gdef|@changebackslash#1{|@@change#1\|END}%
+  |gdef|@@change#1\#2|END{%
+    |noexpand#1|@empty
+    |ifx|\#2|\%
+    |else
+      |noexpand|textbackslash
+      |@removeback#2%
+    |fi
+  }
+  |gdef|@removeback#1\{#1}
+|endgroup
+
+\newcounter{alias}
+\renewcommand{\thealias}{\alph{alias}}
+
+% #1#2#3: octal code
+% #4: glyph name
+% #5: pd1enc-command
+\newcommand*\E[6]{%
+  \setcounter{alias}{0}%
+  \begingroup
+    \@defbookmarkverbcmd\x{#5}%
+    \def\comment{#6}%
+    \ifx\comment\@empty
+    \else
+      \def\comment{ (#6)}%
+    \fi
+    \pdfbookmark[2]{%
+      \textbackslash#1#2#3:
+      \_\hb\csname#1\endcsname#2#3\_#5\_
+      #4 - \x\comment}{\highbyte.#1#2#3}%
+  \endgroup
+  \renewcommand*{\alias}[2][]{%
+    \stepcounter{alias}%
+    \begingroup
+      \ifx\relax##1\relax%
+        \@defbookmarkverbcmd\x{##2}%
+      \else
+        \def\x{##1}%
+      \fi
+      \pdfbookmark[3]{alias: \_##2\_ \x}{\highbyte.#1#2#3\thealias}%
+    \endgroup
+  }%
+}
+\newcommand*\alias[2][]{}
+\newcommand*\e[5]{\E#1#2#3{#4}{#5}{}}%
+
+\newcommand*\un[3]{%
+  \pdfbookmark[2]{\textbackslash#1#2#3: unused %
+  (\_\hb\csname#1\endcsname#2#3\_)}{\highbyte.#1#2#3}%
+}
+\newcommand*\na[3]{%
+  \pdfbookmark[2]{\textbackslash#1#2#3: n. a. %
+  (\_\hb\csname#1\endcsname#2#3\_)}{\highbyte.#1#2#3}%
+}
+
+\newcounter{symlist}
+\newcounter{symbol}[symlist]
+\newcommand*\symlist[1]{%
+  \stepcounter{symlist}%
+  \typeout{Processing symbol list \thesymlist}%
+  \begingroup
+    \def\x{\_}%
+    \@tfor\glyph:=#1\do{%
+      \expandafter\@addtox\glyph\_\@nil
+    }%
+    \pdfbookmark[1]{Symbols: \x}{symbol-\thesymlist}%
+    \@tfor\glyph:=#1\do{%
+      \stepcounter{symbol}%
+      \expandafter\@defbookmarkverbcmd\expandafter\x\expandafter{\glyph}%
+      \pdfbookmark[2]{\_\glyph\_ \x}{symbol-\thesymlist.\thesymbol}%
+    }%
+  \endgroup
+}
+\def\@addtox#1\@nil{%
+  \expandafter\def\expandafter\x\expandafter{\x#1}%
+}
+
+\makeatother
+
+\begin{document}
+  \tit000
+  \oct00
+    \un000
+    \un001
+    \un002
+    \un003
+    \un004
+    \un005
+    \un006
+    \un007
+  \oct01
+    \un010
+    \e011{horizontal tab}\textHT
+    \e012{line feed}\textLF
+    \un013
+    \un014
+    \e015{carriage return}\textCR
+    \un016
+    \un017
+  \oct02
+    \un020
+    \un021
+    \un022
+    \un023
+    \un024
+    \un025
+    \un026
+    \un027
+  \oct03
+    \un030
+    \un031
+    \un032
+    \un033
+    \un034
+    \un035
+    \un036
+    \un037
+  \oct04
+    \e040{space}\space
+    \alias[\\\space]\
+    \alias~
+    \e041{exclam}!
+    \e042{quotedbl}\textquotedbl
+    \e043{numbersign}\textnumbersign
+    \alias[\textbackslash\#]\#
+    \e044{dollar}\textdollar
+    \alias[\textbackslash\$]\$
+    \e045{percent}\textpercent
+    \alias[\textbackslash\%]\%
+    \e046{ampersand}\textampersand
+    \alias[\textbackslash\&]\&
+    \e047{quotesingle}'
+  \oct05
+    \e050{parenleft}\textparenleft
+    \e051{parenright}\textparenright
+    \e052{asterisk}*
+    \e053{plus}+
+    \e054{comma},
+    \e055{hyphen}-
+    \alias\textminus
+    \e056{period}.
+    \e057{slash}/
+  \oct06
+    \e060{zero}0
+    \e061{one}1
+    \e062{two}2
+    \e063{three}3
+    \e064{four}4
+    \e065{five}5
+    \e066{six}6
+    \e067{seven}7
+  \oct07
+    \e070{eight}8
+    \e071{nine}9
+    \e072{colon}:
+    \e073{semicolon};
+    \e074{less}\textless
+    \alias<
+    \e075{equal}=
+    \e076{greater}\textgreater
+    \alias>
+    \e077{question}?
+  \oct10
+    \e100{at}@
+    \e101AA
+    \e102BB
+    \e103CC
+    \e104DD
+    \e105EE
+    \e106FF
+    \e107GG
+  \oct11
+    \e110HH
+    \e111II
+    \e112JJ
+    \e113KK
+    \e114LL
+    \e115MM
+    \e116NN
+    \e117OO
+  \oct12
+    \e120PP
+    \e121QQ
+    \e122RR
+    \e123SS
+    \e124TT
+    \e125UU
+    \e126VV
+    \e127WW
+  \oct13
+    \e130XX
+    \e131YY
+    \e132ZZ
+    \e133{bracketleft}[
+    \e134{backslash}\textbackslash
+    \alias[\\\\]\\
+    \e135{bracketright}]
+    \e136{asciicircum}\textasciicircum
+    \e137{underscore}\textunderscore
+    \alias[\textbackslash\_]\_
+  \oct14
+    \e140{grave}\textasciigrave
+    \alias{\`{}}
+    \e141aa
+    \e142bb
+    \e143cc
+    \e144dd
+    \e145ee
+    \e146ff
+    \e147gg
+  \oct15
+    \e150hh
+    \e151ii
+    \alias{\.\i}
+    \alias{\.i}
+    \e152jj
+    \e153kk
+    \e154ll
+    \e155mm
+    \e156nn
+    \e157oo
+  \oct16
+    \e160pp
+    \e161qq
+    \e162rr
+    \e163ss
+    \e164tt
+    \e165uu
+    \e166vv
+    \e167ww
+  \oct17
+    \e170xx
+    \e171yy
+    \e172zz
+    \e173{braceleft}\textbraceleft
+    \alias[\textbackslash\{]\{
+    \e174{bar}\textbar
+    \e175{braceright}\textbraceright
+    \alias[\textbackslash\}]\}
+    \e176{asciitilde}\textasciitilde
+    \na177
+  \oct20
+    \na200
+    \na201
+    \na202
+    \na203
+    \na204
+    \na205
+    \na206
+    \na207
+  \oct21
+    \na210
+    \na211
+    \na212
+    \na213
+    \na214
+    \na215
+    \na216
+    \na217
+  \oct22
+    \na220
+    \na221
+    \na222
+    \na223
+    \na224
+    \na225
+    \na226
+    \na227
+  \oct23
+    \na230
+    \na231
+    \na232
+    \na233
+    \na234
+    \na235
+    \na236
+    \na237
+  \oct24
+    \na240
+    \e241{exclamdown}\textexclamdown
+    \alias[!{}']{!`}
+    \e242{cent}\textcent
+    \e243{sterling}\textsterling
+    \e244{currency}\textcurrency
+    \e245{yen}\textyen
+    \e246{brokenbar}\textbrokenbar
+    \e247{section}\textsection
+  \oct25
+    \e250{dieresis}\textasciidieresis
+    \alias{\"{}}
+    \e251{copyright}\textcopyright
+    \e252{ordfeminine}\textordfeminine
+    \e253{guillemotleft}\guillemotleft
+    \alias\textflqq
+    \alias\flqq
+    \e254{logicalnot}\textlogicalnot
+    \alias\textneg
+    \un255
+    \e256{registered}\textregistered
+    \e257{macron}\textasciimacron
+  \oct26
+    \e260{degree}\textdegree
+    \e261{plusminus}\textplusminus
+    \alias\textpm
+    \e262{twosuperior}\texttwosuperior
+    \e263{threesuperior}\textthreesuperior
+    \e264{acute}\textacute
+    \alias{\'{}}
+    \e265{mu}\textmu
+    \e266{paragraph}\textparagraph
+    \alias\P
+    \e267{periodcentered}\textperiodcentered
+    \alias\textcdot
+  \oct27
+    \e270{cedilla}\textcedilla
+    \alias{\c{}}
+    \e271{onesuperior}\textonesuperior
+    \e272{ordmasculine}\textordmasculine
+    \e273{guillemotright}\guillemotright
+    \alias\textfrqq
+    \alias\frqq
+    \e274{onequarter}\textonequarter
+    \e275{onehalf}\textonehalf
+    \e276{threequarters}\textthreequarters
+    \e277{questiondown}\textquestiondown
+    \alias[?{}']{?`}
+  \oct30
+    \e300{Agrave}{\`A}
+    \e301{Aacute}{\'A}
+    \e302{Acircumflex}{\^A}
+    \e303{Atilde}{\~A}
+    \e304{Adieresis}{\"A}
+    \e305{Aring}{\r A}
+    \e306{AE}{\AE}
+    \e307{Ccedilla}{\c C}
+  \oct31
+    \e310{Egrave}{\`E}
+    \e311{Eacute}{\'E}
+    \e312{Ecircumflex}{\^E}
+    \e313{Edieresis}{\"E}
+    \e314{Igrave}{\`I}
+    \e315{Iacute}{\'I}
+    \e316{Icircumflex}{\^I}
+    \e317{Idieresis}{\"I}
+  \oct32
+    \e320{Eth}\DH
+    \alias\DJ
+    \e321{Ntilde}{\~N}
+    \e322{Ograve}{\`O}
+    \e323{Oacute}{\'O}
+    \e324{Ocircumflex}{\^O}
+    \e325{Otilde}{\~O}
+    \e326{Odieresis}{\"O}
+    \e327{multiply}\textmultiply
+    \alias\texttimes
+  \oct33
+    \e330{Oslash}\O
+    \e331{Ugrave}{\`U}
+    \e332{Uacute}{\'U}
+    \e333{Ucircumflex}{\^U}
+    \e334{Udieresis}{\"U}
+    \e335{Yacute}{\'Y}
+    \e336{Thorn}\TH
+    \e337{germandbls}\ss
+    \alias\textbeta
+  \oct34
+    \e340{agrave}{\`a}
+    \e341{aacute}{\'a}
+    \e342{acircumflex}{\^a}
+    \e343{atilde}{\~a}
+    \e344{adieresis}{\"a}
+    \e345{aring}{\r a}
+    \e346{ae}{\ae}
+    \e347{ccedilla}{\c c}
+  \oct35
+    \e350{egrave}{\`e}
+    \e351{eacute}{\'e}
+    \e352{ecircumflex}{\^e}
+    \e353{edieresis}{\"e}
+    \e354{igrave}{\`i}
+    \alias[\\`\\i]{\`\i}
+    \e355{iacute}{\'i}
+    \alias[\\'\\i]{\'\i}
+    \e356{icircumflex}{\^\i}
+    \alias[\\^i]{\^i}
+    \e357{idieresis}{\"i}
+    \alias[\\"\\i]{\"\i}
+  \oct36
+    \e360{eth}\dh
+    \e361{ntilde}{\~n}
+    \e362{ograve}{\`o}
+    \e363{oacute}{\'o}
+    \e364{ocircumflex}{\^o}
+    \e365{otilde}{\~o}
+    \e366{odieresis}{\"o}
+    \e367{divide}\textdivide
+    \alias\textdiv
+  \oct37
+    \e370{oslash}\o
+    \e371{ugrave}{\`u}
+    \e372{uacute}{\'u}
+    \e373{ucircumflex}{\^u}
+    \e374{udieresis}{\"u}
+    \e375{yacute}{\'y}
+    \e376{thorn}\th
+    \e377{ydieresis}{\"y}
+  \symlist{\SS}
+  \symlist{\TeX\LaTeX\LaTeXe}
+  \symlist{\eTeX\MF\MP}
+%
+  \tit001
+  \oct00
+    \e000{Amacron}{\=A}
+    \e001{amacron}{\=a}
+    \e002{Abreve}{\u A}
+    \e003{abreve}{\u a}
+    \e004{Aogonek}{\k A}
+    \e005{aogonek}{\k a}
+    \e006{Cacute}{\'C}
+    \e007{cacute}{\'c}
+  \oct01
+    \e010{Ccircumflex}{\^C}
+    \e011{ccircumflex}{\^c}
+    \e012{Cdot}{\.C}
+    \e013{cdot}{\.c}
+    \e014{Ccaron}{\v C}
+    \e015{ccaron}{\v c}
+    \e016{Dcaron}{\v D}
+    \e017{dcaron}{\v d}
+  \oct02
+    \e020{Dslash}{\DJ}
+    \e021{dslash}{\dj}
+    \e022{Emacron}{\=E}
+    \e023{emacron}{\=e}
+    \e024{Ebreve}{\u E}
+    \e025{ebreve}{\u e}
+    \e026{Edot}{\.E}
+    \e027{edot}{\.e}
+  \oct03
+    \e030{Eogonek}{\k E}
+    \e031{eogonek}{\k e}
+    \e032{Ecaron}{\v E}
+    \e033{ecaron}{\v e}
+    \e034{Gcircumflex}{\^G}
+    \e035{gcircumflex}{\^g}
+    \e036{Gbreve}{\u G}
+    \e037{gbreve}{\u g}
+  \oct04
+    \e040{Gdot}{\.G}
+    \e041{gdot}{\.g}
+    \e042{Gcedilla}{\c G}
+    \e043{gcedilla}{\c g}
+    \e044{Hcircumflex}{\^H}
+    \e045{hcircumflex}{\^h}
+    \e046{Hslash}\textHslash
+    \e047{hslash}\texthslash
+  \oct05
+    \e050{Itilde}{\~I}
+    \e051{itilde}{\~i}
+    \alias[\\~\\i]{\~\i}
+    \e052{Imacron}{\=I}
+    \e053{imacron}{\=i}
+    \alias[\\=\\i]{\=\i}
+    \e054{Ibreve}{\u I}
+    \e055{ibreve}{\u i}
+    \alias[\\u\\i]{\u\i}
+    \e056{Iogonek}{\k I}
+    \e057{iogonek}{\k i}
+    \alias[\\k\\i]{\k\i}
+  \oct06
+    \e060{Idot}{\.I}
+    \e061{idotless}{\i}
+    \e062{IJ}{\IJ}
+    \e063{ij}{\ij}
+    \e064{Jcircumflex}{\^J}
+    \e065{jcircumflex}{\^j}
+    \alias[\\\string^\\j]{\^\j}
+    \e066{Kcedilla}{\c K}
+    \e067{kcedilla}{\c k}
+  \oct07
+    \e070{kgreenlandic}\textkra
+    \e071{Lacute}{\'L}
+    \e072{lacute}{\'l}
+    \e073{Lcedilla}{\c L}
+    \e074{lcedilla}{\c l}
+    \e075{Lcaron}{\v L}
+    \e076{lcaron}{\v l}
+    \na077
+  \oct10
+    \e100{ldot}{\.l}
+    \e101{Lslash}{\L}
+    \e102{lslash}{\l}
+    \e103{Nacute}{\'N}
+    \e104{nacute}{\'n}
+    \e105{Ncedilla}{\c N}
+    \e106{ncedilla}{\c n}
+    \e107{Ncaron}{\v N}
+  \oct11
+    \e110{ncaron}{\v n}
+    \e111{napostrope}\textnapostrophe
+    \e112{NG}\NG
+    \e113{ng}\ng
+    \e114{Omacron}{\=O}
+    \e115{omacron}{\=o}
+    \e116{Obreve}{\u O}
+    \e117{obreve}{\u o}
+  \oct12
+    \e120{Odoubleacute}{\H O}
+    \e121{odoubleacute}{\H o}
+    \e122{OE}{\OE}
+    \e123{oe}{\oe}
+    \e124{Racute}{\'R}
+    \e125{racute}{\'r}
+    \e126{Rcedilla}{\c R}
+    \e127{rcedilla}{\c r}
+  \oct13
+    \e130{Rcaron}{\v R}
+    \e131{rcaron}{\v r}
+    \e132{Sacute}{\'S}
+    \e133{sacute}{\'s}
+    \e134{Scircumflex}{\^S}
+    \e135{scircumflex}{\^s}
+    \e136{Scedilla}{\c S}
+    \e137{scedilla}{\c s}
+  \oct14
+    \e140{Scaron}{\v S}
+    \e141{scaron}{\v s}
+    \e142{Tcedilla}{\c T}
+    \e143{tcedilla}{\c t}
+    \e144{Tcaron}{\v T}
+    \e145{tcaron}{\v t}
+    \e146{Tslash}{\textTslash}
+    \e147{tslash}{\texttslash}
+  \oct15
+    \e150{Utilde}{\~U}
+    \e151{utilde}{\~u}
+    \e152{Umacron}{\=U}
+    \e153{umacron}{\=u}
+    \e154{Ubreve}{\u U}
+    \e155{ubreve}{\u u}
+    \e156{Uring}{\r U}
+    \e157{uring}{\r u}
+  \oct16
+    \e160{Udoubleacute}{\H U}
+    \e161{udoubleacute}{\H u}
+    \e162{Uogonek}{\k U}
+    \e163{uogonek}{\k u}
+    \e164{Wcircumflex}{\^W}
+    \e165{wcircumflex}{\^w}
+    \e166{Ycircumflex}{\^Y}
+    \e167{ycircumflex}{\^y}
+  \oct17
+    \e170{Ydieresis}{\"Y}
+    \e171{Zacute}{\'Z}
+    \e172{zacute}{\'z}
+    \e173{Zdot}{\.Z}
+    \e174{zdot}{\.z}
+    \e175{Zcaron}{\v Z}
+    \e176{zcaron}{\v z}
+    \e177{longs}\textlongs
+  \oct20
+    \na200
+    \na201
+    \na202
+    \na203
+    \na204
+    \na205
+    \na206
+    \na207
+  \oct21
+    \na210
+    \na211
+    \na212
+    \na213
+    \na214
+    \na215
+    \na216
+    \na217
+  \oct22
+    \na220
+    \na221
+    \e222{florin}\textflorin
+    \na223
+    \na224
+    \na225
+    \na226
+    \na227
+  \oct23
+    \na230
+    \na231
+    \na232
+    \na233
+    \na234
+    \na235
+    \na236
+    \na237
+  \oct24
+    \na240
+    \na241
+    \na242
+    \na243
+    \na244
+    \na245
+    \na246
+    \na247
+  \oct25
+    \na250
+    \na251
+    \na252
+    \na253
+    \na254
+    \na255
+    \na256
+    \na257
+  \oct26
+    \na260
+    \na261
+    \na262
+    \na263
+    \na264
+    \na265
+    \na266
+    \na267
+  \oct27
+    \na270
+    \na271
+    \na272
+    \na273
+    \na274
+    \na275
+    \na276
+    \na277
+  \oct30
+    \na300
+    \na301
+    \na302
+    \na303
+    \na304
+    \na305
+    \na306
+    \na307
+  \oct31
+    \na310
+    \na311
+    \na312
+    \na313
+    \na314
+    \e315{Acaron}{\v A}
+    \e316{acaron}{\v a}
+    \e317{Icaron}{\v I}
+  \oct32
+    \e320{icaron}{\v i}
+    \alias[\\v\\i]{\v\i}
+    \e321{Ocaron}{\v O}
+    \e322{ocaron}{\v o}
+    \e323{Ucaron}{\v U}
+    \e324{ucaron}{\v u}
+    \na325
+    \na326
+    \na327
+  \oct33
+    \na330
+    \na331
+    \na332
+    \na333
+    \na334
+    \na335
+    \na336
+    \na337
+  \oct34
+    \na340
+    \na341
+    \na342
+    \na343
+    \e344{Gslash}{\textGslash}
+    \e345{gslash}{\textgslash}
+    \e346{Gcaron}{\v G}
+    \e347{gcaron}{\v g}
+  \oct35
+    \e350{Kcaron}{\v K}
+    \e351{kcaron}{\v k}
+    \e352{Oogonek}{\k O}
+    \e353{oogonek}{\k o}
+    \na354
+    \na355
+    \na356
+    \na357
+  \oct36
+    \e360{jcaron}{\v\j}
+    \alias{\v j}
+    \na361
+    \na362
+    \na363
+    \e364{Gacute}{\'G}
+    \e365{gacute}{\'g}
+    \na366
+    \na367
+  \oct37
+    \e370{N with grave}{\`N}
+    \e371{n with grave}{\`n}
+    \na372
+    \na373
+    \e374{AE with acute}{\'\AE}
+    \e375{ae with acute}{\'\ae}
+    \e376{O with stroke and acute}{\'\O}
+    \e377{o with stroke and acute}{\'\o}
+%
+  \tit002
+  \oct00
+    \na000
+    \na001
+    \na002
+    \na003
+    \na004
+    \na005
+    \na006
+    \na007
+  \oct01
+    \na010
+    \na011
+    \na012
+    \na013
+    \na014
+    \na015
+    \na016
+    \na017
+  \oct02
+    \na020
+    \na021
+    \na022
+    \na023
+    \na024
+    \na025
+    \na026
+    \na027
+  \oct03
+    \na030
+    \na031
+    \na032
+    \na033
+    \na034
+    \na035
+    \na036
+    \na037
+  \oct04
+    \na040
+    \na041
+    \na042
+    \na043
+    \na044
+    \na045
+    \na046
+    \na047
+  \oct05
+    \na050
+    \na051
+    \na052
+    \na053
+    \na054
+    \na055
+    \na056
+    \na057
+  \oct06
+    \na060
+    \na061
+    \na062
+    \na063
+    \na064
+    \na065
+    \na066
+    \na067
+  \oct07
+    \na070
+    \na071
+    \na072
+    \na073
+    \na074
+    \na075
+    \na076
+    \na077
+  \oct10
+    \na100
+    \na101
+    \na102
+    \na103
+    \na104
+    \na105
+    \na106
+    \na107
+  \oct11
+    \na110
+    \na111
+    \na112
+    \na113
+    \na114
+    \na115
+    \na116
+    \na117
+  \oct12
+    \na120
+    \na121
+    \na122
+    \na123
+    \na124
+    \na125
+    \na126
+    \na127
+  \oct13
+    \na130
+    \na131
+    \na132
+    \na133
+    \na134
+    \na135
+    \na136
+    \na137
+  \oct14
+    \na140
+    \na141
+    \na142
+    \na143
+    \na144
+    \na145
+    \na146
+    \na147
+  \oct15
+    \na150
+    \na151
+    \na152
+    \na153
+    \na154
+    \na155
+    \na156
+    \na157
+  \oct16
+    \na160
+    \na161
+    \na162
+    \na163
+    \na164
+    \na165
+    \na166
+    \na167
+  \oct17
+    \na170
+    \na171
+    \na172
+    \na173
+    \na174
+    \na175
+    \na176
+    \na177
+  \oct20
+    \na200
+    \na201
+    \na202
+    \na203
+    \na204
+    \na205
+    \na206
+    \na207
+  \oct21
+    \na210
+    \na211
+    \na212
+    \na213
+    \na214
+    \na215
+    \na216
+    \na217
+  \oct22
+    \na220
+    \na221
+    \na222
+    \na223
+    \na224
+    \na225
+    \na226
+    \na227
+  \oct23
+    \na230
+    \na231
+    \na232
+    \na233
+    \na234
+    \na235
+    \na236
+    \na237
+  \oct24
+    \na240
+    \na241
+    \na242
+    \na243
+    \na244
+    \na245
+    \na246
+    \na247
+  \oct25
+    \na250
+    \na251
+    \na252
+    \na253
+    \na254
+    \na255
+    \na256
+    \na257
+  \oct26
+    \na260
+    \na261
+    \na262
+    \na263
+    \na264
+    \na265
+    \na266
+    \na267
+  \oct27
+    \na270
+    \na271
+    \na272
+    \na273
+    \na274
+    \na275
+    \na276
+    \na277
+  \oct30
+    \na300
+    \na301
+    \na302
+    \na303
+    \na304
+    \na305
+    \na306
+    \na307
+  \oct31
+    \na310
+    \na311
+    \na312
+    \na313
+    \na314
+    \na315
+    \na316
+    \na317
+  \oct32
+    \na320
+    \na321
+    \na322
+    \na323
+    \na324
+    \na325
+    \na326
+    \na327
+  \oct33
+    \na330
+    \na331
+    \na332
+    \na333
+    \na334
+    \na335
+    \na336
+    \na337
+  \oct34
+    \na340
+    \na341
+    \na342
+    \na343
+    \na344
+    \na345
+    \na346
+    \na347
+  \oct35
+    \na350
+    \na351
+    \na352
+    \na353
+    \na354
+    \na355
+    \na356
+    \na357
+  \oct36
+    \na360
+    \na361
+    \na362
+    \na363
+    \na364
+    \na365
+    \na366
+    \na367
+  \oct37
+    \na370
+    \na371
+    \na372
+    \na373
+    \na374
+    \na375
+    \na376
+    \na377
+%
+  \tit003
+  \oct00
+    \na000
+    \na001
+    \na002
+    \na003
+    \na004
+    \na005
+    \na006
+    \na007
+  \oct01
+    \na010
+    \na011
+    \na012
+    \na013
+    \na014
+    \na015
+    \na016
+    \na017
+  \oct02
+    \na020
+    \na021
+    \na022
+    \na023
+    \na024
+    \na025
+    \na026
+    \na027
+  \oct03
+    \na030
+    \na031
+    \na032
+    \na033
+    \na034
+    \na035
+    \na036
+    \na037
+  \oct04
+    \na040
+    \na041
+    \na042
+    \na043
+    \na044
+    \na045
+    \na046
+    \na047
+  \oct05
+    \na050
+    \na051
+    \na052
+    \na053
+    \na054
+    \na055
+    \na056
+    \na057
+  \oct06
+    \na060
+    \na061
+    \na062
+    \na063
+    \na064
+    \na065
+    \na066
+    \na067
+  \oct07
+    \na070
+    \na071
+    \na072
+    \na073
+    \na074
+    \na075
+    \na076
+    \na077
+  \oct10
+    \na100
+    \na101
+    \na102
+    \na103
+    \na104
+    \na105
+    \na106
+    \na107
+  \oct11
+    \na110
+    \na111
+    \na112
+    \na113
+    \na114
+    \na115
+    \na116
+    \na117
+  \oct12
+    \na120
+    \na121
+    \na122
+    \na123
+    \na124
+    \na125
+    \na126
+    \na127
+  \oct13
+    \na130
+    \na131
+    \na132
+    \na133
+    \na134
+    \na135
+    \na136
+    \na137
+  \oct14
+    \na140
+    \na141
+    \na142
+    \na143
+    \na144
+    \na145
+    \na146
+    \na147
+  \oct15
+    \na150
+    \na151
+    \na152
+    \na153
+    \na154
+    \na155
+    \na156
+    \na157
+  \oct16
+    \na160
+    \na161
+    \na162
+    \na163
+    \na164
+    \na165
+    \na166
+    \na167
+  \oct17
+    \na170
+    \na171
+    \na172
+    \na173
+    \na174
+    \na175
+    \na176
+    \na177
+  \oct20
+    \na200
+    \na201
+    \na202
+    \na203
+    \na204
+    \na205
+    \e206{Alpha tonos}{\'\textAlpha}
+    \na207
+  \oct21
+    \e210{Epsilon tonos}{\'\textEpsilon}
+    \e211{Eta tonos}{\'\textEta}
+    \e212{Iota tonos}{\'\textIota}
+    \na213
+    \e214{Omicron tonos}{\'\textOmicron}
+    \na215
+    \e216{Upsilon tonos}{\'\textUpsilon}
+    \e217{Omega tonos}{\'\textOmega}
+  \oct22
+    \e220{Iota dialytika tonos}{\'\textIotadieresis}
+    \e221{Alpha}\textAlpha
+    \e222{Beta}\textBeta
+    \e223{Gamma}\textGamma
+    \e224{Delta}\textDelta
+    \e225{Epsilon}\textEpsilon
+    \e226{Zeta}\textZeta
+    \e227{Eta}\textEta
+  \oct23
+    \e230{Theta}\textTheta
+    \e231{Iota}\textIota
+    \e232{Kappa}\textKappa
+    \e233{Lambda}\textLambda
+    \e234{Mu}\textMu
+    \e235{Nu}\textNu
+    \e236{Xi}\textXi
+    \e237{Omicron}\textOmicron
+  \oct24
+    \e240{Pi}\textPi
+    \e241{Rho}\textRho
+    \na242
+    \e243{Sigma}\textSigma
+    \e244{Tau}\textTau
+    \e245{Upsilon}\textUpsilon
+    \e246{Phi}\textPhi
+    \e247{Chi}\textChi
+  \oct25
+    \e250{Psi}\textPsi
+    \e251{Omega}\textOmega
+    \e252{Iota dialytika}{\"\textIota}
+    \e253{Upsilon dialytika}{\"\textUpsilon}
+    \e254{alpha tonos}{\'\textalpha}
+    \e255{epsilon tonos}{\'\textepsilon}
+    \e256{eta tonos}{\'\texteta}
+    \e257{iota tonos}{\'\textiota}
+  \oct26
+    \e260{upsilon dialytika tonos}{\"\textupsilonacute}
+    \e261{alpha}\textalpha
+    \e262{beta}\textbeta
+    \e263{gamma}\textgamma
+    \e264{delta}\textdelta
+    \e265{epsilon}\textepsilon
+    \e266{zeta}\textzeta
+    \e267{eta}\texteta
+  \oct27
+    \e270{theta}\texttheta
+    \e271{iota}\textiota
+    \e272{kappa}\textkappa
+    \e273{lambda}\textlambda
+    \e274{mu}\textmu
+    \e275{nu}\textnu
+    \e276{xi}\textxi
+    \e277{omicron}\textomicron
+  \oct30
+    \e300{pi}\textpi
+    \e301{rho}\textrho
+    \e302{varsigma}\textvarsigma
+    \e303{sigma}\textsigma
+    \e304{tau}\texttau
+    \e305{upsilon}\textupsilon
+    \e306{phi}\textphi
+    \e307{chi}\textchi
+  \oct31
+    \e310{psi}\textpsi
+    \e311{omega}\textomega
+    \e312{iota dialytika}{\"\textiota}
+    \e313{upsilon dialytika}{\"\textupsilon}
+    \e314{omicron tonos}{\'\textomicron}
+    \e315{upsilon tonos}{\'\textupsilon}
+    \e316{omega tonos}{\'\textomega}
+    \na317
+  \oct32
+    \na320
+    \na321
+    \na322
+    \na323
+    \na324
+    \na325
+    \na326
+    \na327
+  \oct33
+    \na330
+    \na331
+    \na332
+    \na333
+    \na334
+    \na335
+    \na336
+    \na337
+  \oct34
+    \na340
+    \na341
+    \na342
+    \na343
+    \na344
+    \na345
+    \na346
+    \na347
+  \oct35
+    \na350
+    \na351
+    \na352
+    \na353
+    \na354
+    \na355
+    \na356
+    \na357
+  \oct36
+    \na360
+    \na361
+    \na362
+    \na363
+    \na364
+    \na365
+    \na366
+    \na367
+  \oct37
+    \na370
+    \na371
+    \na372
+    \na373
+    \na374
+    \na375
+    \na376
+    \na377
+%
+  \tit004
+  \oct00
+    \na000
+    \e001{IO}\CYRYO
+    \alias[\\"\\CYRE]{\"\CYRE}
+    \e002{DJE}\CYRDJE
+    \e003{GJE}{\'\CYRG}
+    \e004{ukrainian IE}\CYRIE
+    \e005{DZE}\CYRDZE
+    \e006{byelorussian-ukrainian I}\CYRII
+    \e007{YI}\CYRYI
+  \oct01
+    \e010{JE}\CYRJE
+    \e011{LJE}\CYRLJE
+    \e012{NJE}\CYRNJE
+    \e013{TSHE}\CYRTSHE
+    \e014{KJE}{\'\CYRK}
+    \na015
+    \e016{short U}\CYRUSHRT
+    \e017{DZHE}\CYRDZHE
+  \oct02
+    \e020{A}\CYRA
+    \e021{BE}\CYRB
+    \e022{VE}\CYRV
+    \e023{GHE}\CYRG
+    \e024{DE}\CYRD
+    \e025{IE}\CYRE
+    \e026{ZHE}\CYRZH
+    \e027{ZE}\CYRZ
+  \oct03
+    \e030{I}\CYRI
+    \e031{short I}\CYRISHRT
+    \alias[\\U\\CYRI]{\U\CYRI}
+    \e032{KA}\CYRK
+    \e033{EL}\CYRL
+    \e034{EM}\CYRM
+    \e035{EN}\CYRN
+    \e036{O}\CYRO
+    \e037{PE}\CYRP
+  \oct04
+    \e040{ER}\CYRR
+    \e041{ES}\CYRS
+    \e042{TE}\CYRT
+    \e043{U}\CYRU
+    \e044{EF}\CYRF
+    \e045{HA}\CYRH
+    \e046{TSE}\CYRC
+    \e047{CHE}\CYRCH
+  \oct05
+    \e050{SHA}\CYRSH
+    \e051{SHCHA}\CYRSHCH
+    \e052{HARD SIGN}\CYRHRDSN
+    \e053{YERU}\CYRERY
+    \e054{SOFT SIGN}\CYRSFTSN
+    \e055{E}\CYREREV
+    \e056{YU}\CYRYU
+    \e057{YA}\CYRYA
+  \oct06
+    \e060{a}\cyra
+    \e061{be}\cyrb
+    \e062{ve}\cyrv
+    \e063{ghe}\cyrg
+    \e064{de}\cyrd
+    \e065{ie}\cyre
+    \e066{zhe}\cyrzh
+    \e067{ze}\cyrz
+  \oct07
+    \e070{i}\cyri
+    \e071{short i}\cyrishrt
+    \alias[\\U\\cyri]{\U\cyri}
+    \e072{ka}\cyrk
+    \e073{el}\cyrl
+    \e074{em}\cyrm
+    \e075{en}\cyrn
+    \e076{o}\cyro
+    \e077{pe}\cyrp
+  \oct10
+    \e100{er}\cyrr
+    \e101{es}\cyrs
+    \e102{te}\cyrt
+    \e103{u}\cyru
+    \e104{ef}\cyrf
+    \e105{ha}\cyrh
+    \e106{tse}\cyrc
+    \e107{che}\cyrch
+  \oct11
+    \e110{sha}\cyrsh
+    \e111{shcha}\cyrshch
+    \e112{hard sign}\cyrhrdsn
+    \e113{yeru}\cyrery
+    \e114{soft sign}\cyrsftsn
+    \e115{e}\cyrerev
+    \e116{yu}\cyryu
+    \e117{ya}\cyrya
+  \oct12
+    \na120
+    \e121{io}\cyryo
+    \e122{dje}\cyrdje
+    \e123{gje}{\'\cyrg}
+    \e124{ukrainian ie}\cyrie
+    \e125{dze}\cyrdze
+    \e126{byelorussian-ukrainian i}\cyrii
+    \e127{yi}\cyryi
+  \oct13
+    \e130{je}\cyrje
+    \e131{lje}\cyrlje
+    \e132{nje}\cyrnje
+    \e133{tshe}\cyrtshe
+    \e134{kje}{\'\cyrk}
+    \na135
+    \e136{short u}\cyrushrt
+    \e137{dzhe}\cyrdzhe
+  \oct14
+    \e140{OMEGA}\CYROMEGA
+    \e141{omega}\cyromega
+    \e142{YAT}\CYRYAT
+    \e143{yat}\cyryat
+    \e144{iotified E}\CYRIOTE
+    \e145{iotified e}\cyriote
+    \e146{little YUS}\CYRLYUS
+    \e147{little yus}\cyrlyus
+  \oct15
+    \e150{iotified little YUS}\CYRIOTLYUS
+    \e151{iotified little yos}\cyriotlyus
+    \e152{big YUS}\CYRBYUS
+    \e153{big yus}\cyrbyus
+    \e154{iotified big YUS}\CYRIOTBYUS
+    \e155{iotified big yus}\cyriotbyus
+    \e156{KSI}\CYRKSI
+    \e157{ksi}\cyrksi
+  \oct16
+    \e160{PSI}\CYRPSI
+    \e161{psi}\cyrpsi
+    \e162{FITA}\CYRFITA
+    \e163{fita}\cyrfita
+    \e164{IZHISA}\CYRIZH
+    \e165{izhisa}\cyrizh
+    \e166{IZHISA double grave}{\C\CYRIZH}
+    \e167{izhisa double grave}{\C\cyrizh}
+  \oct17
+    \e170{UK}\CYRUK
+    \e171{uk}\cyruk
+    \e172{round OMEGA}\CYROMEGARND
+    \e173{round omega}\cyromegarnd
+    \e174{OMEGA titlo}\CYROMEGATITLO
+    \e175{omega titlo}\cyromegatitlo
+    \e176{OT}\CYROT
+    \e177{ot}\cyrot
+  \oct20
+    \e200{KOPPA}\CYRKOPPA
+    \e201{koppa}\cyrkoppa
+    \e202{thousands sign}\cyrthousands
+    \na203
+    \na204
+    \na205
+    \na206
+    \na207
+  \oct21
+    \na210
+    \na211
+    \na212
+    \na213
+    \na214
+    \na215
+    \na216
+    \na217
+  \oct22
+    \e220{GHE upturn}\CYRGUP
+    \e221{ghe upturn}\cyrgup
+    \e222{GHE stroke}\CYRGHCRS
+    \e223{ghe stroke}\cyrghcrs
+    \e224{GHE middle hook}\CYRGHK
+    \e225{ghe middle hook}\cyrghk
+    \e226{ZHE descender}\CYRZHDSC
+    \e227{zhe descender}\cyrzhdsc
+  \oct23
+    \e230{ZE descender}\CYRZDSC
+    \e231{ze descender}\cyrzdsc
+    \e232{KA descender}\CYRKDSC
+    \e233{ka descender}\cyrkdsc
+    \e234{KA vertical stroke}\CYRKVCRS
+    \e235{ka vertical stroke}\cyrkvcrs
+    \e236{KA stroke}\CYRKHCRS
+    \e237{ka stroke}\cyrkhcrs
+  \oct24
+    \e240{bashkir KA}\CYRKBEAK
+    \e241{bashkir ka}\cyrkbeak
+    \e242{EN descender}\CYRNDSC
+    \e243{en descender}\cyrndsc
+    \e244{ligature EN GHE}\CYRNG
+    \e245{ligature en ghe}\cyrng
+    \e246{PE middle hook}\CYRPHK
+    \e247{pe middle hook}\cyrphk
+  \oct25
+    \e250{abkhasian HA}\CYRABHHA
+    \e251{abkhasian ha}\cyrabhha
+    \e252{ES descender}\CYRSDSC
+    \e253{es descender}\cyrsdsc
+    \e254{TE descender}\CYRTDSC
+    \e255{te descender}\cyrtdsc
+    \e256{straight U}\CYRY
+    \e257{straight u}\cyry
+  \oct26
+    \e260{straight U stroke}\CYRYHCRS
+    \e261{straight u stroke}\cyryhcrs
+    \e262{HA descender}\CYRHDSC
+    \e263{ha descender}\cyrhdsc
+    \e264{ligature TE TSE}\CYRTETSE
+    \e265{ligature te tse}\cyrtetse
+    \e266{CHE right descender}\CYRCHRDSC
+    \e267{che right descender}\cyrchrdsc
+  \oct27
+    \e270{CHE vertical stroke}\CYRCHVCRS
+    \e271{che vertical stroke}\cyrchvcrs
+    \e272{SHHA}\CYRSHHA
+    \e273{shha}\cyrshha
+    \e274{abkhasian CHE}\CYRABHCH
+    \e275{abkhasian che}\cyrabhch
+    \e276{abkhasian CHE descender}\CYRABHCHDSC
+    \e277{abkhasian che descender}\cyrabhchdsc
+  \oct30
+    \e300{palochka}\CYRpalochka
+    \e301{ZHE breve}{\U\CYRZH}
+    \e302{zhe breve}{\U\cyrzh}
+    \e303{KA hook}\CYRKHK
+    \e304{ka hook}\cyrkhk
+    \na305
+    \na306
+    \e307{EN hook}\CYRNHK
+  \oct31
+    \e310{en hook}\cyrnhk
+    \na311
+    \na312
+    \e313{khakassian CHE}\CYRCHLDSC
+    \e314{khakassian che}\cyrchldsc
+    \na315
+    \na316
+    \na317
+  \oct32
+    \e320{A breve}{\U\CYRA}
+    \e321{a breve}{\U\cyra}
+    \e322{A diaeresis}{\"\CYRA}
+    \e323{a diaeresis}{\"\cyra}
+    \e324{ligature A IE}\CYRAE
+    \e325{ligature a ie}\cyrae
+    \e326{IE breve}{\U\CYRE}
+    \e327{ie breve}{\U\cyre}
+  \oct33
+    \e330{SCHWA}\CYRSCHWA
+    \e331{schwa}\cyrschwa
+    \e332{SCHWA diaeresis}{\"\CYRSCHWA}
+    \e333{schwa diaeresis}{\"\cyrschwa}
+    \e334{ZHE diaeresis}{\"\CYRZH}
+    \e335{zhe diaeresis}{\"\cyrzh}
+    \e336{ZE diaeresis}{\"\CYRZ}
+    \e337{ze diaeresis}{\"\cyrz}
+  \oct34
+    \e340{abkhasian DZE}\CYRABHDZE
+    \e341{abkhasian dze}\cyrabhdze
+    \e342{I macron}{\=\CYRI}
+    \e343{i macron}{\=\cyri}
+    \e344{I diaeresis}{\"\CYRI}
+    \e345{i diaeresis}{\"\cyri}
+    \e346{O diaeresis}{\"\CYRO}
+    \e347{o diaeresis}{\"\cyro}
+  \oct35
+    \e350{barred O}\CYROTLD
+    \e351{barred o}\cyrotld
+    \e352{barred O diaeresis}{\"\CYROTLD}
+    \e353{barred o diaeresis}{\"\cyrotld}
+    \na354
+    \na355
+    \e356{U macron}{\=\CYRU}
+    \e357{u macron}{\=\cyru}
+  \oct36
+    \e360{U diaeresis}{\"\CYRU}
+    \e361{u diaeresis}{\"\cyru}
+    \e362{U double acute}{\H\CYRU}
+    \e363{u double acute}{\H\cyru}
+    \e364{CHE diaeresis}{\"\CYRCH}
+    \e365{che diaeresis}{\"\cyrch}
+    \na366
+    \na367
+  \oct37
+    \e370{YERU diaeresis}{\"\CYRERY}
+    \e371{yeru diaeresis}{\"\cyrery}
+    \na372
+    \na373
+    \na374
+    \na375
+    \na376
+    \na377
+%
+  \tit040
+  \oct00
+    \na000
+    \na001
+    \na002
+    \na003
+    \na004
+    \na005
+    \na006
+    \na007
+  \oct01
+    \na010
+    \na011
+    \na012
+    \na013
+    \na014
+    \na015
+    \na016
+    \na017
+  \oct02
+    \na020
+    \na021
+    \na022
+    \e023{en dash}\textendash
+    \e024{em dash}\textemdash
+    \na025
+    \na026
+    \na027
+  \oct03
+    \e030{left single quotation mark}\textquoteleft
+    \e031{right single quotation mark}\textquoteright
+    \e032{single low-9 quotation mark}\quotesinglbase
+    \na033
+    \e034{left double quotation mark}\textquotedblleft
+    \alias\textgrqq
+    \alias\grqq
+    \e035{right double quotation mark}\textquotedblright
+    \e036{double low-9 quotation mark}\quotedblbase
+    \alias\textglqq
+    \alias\glqq
+    \na037
+  \oct04
+    \e040{dagger}\textdagger
+    \e041{double dagger}\textdaggerdbl
+    \e042{bullet}\textbullet
+    \na043
+    \na044
+    \na045
+    \e046{horizontal ellipsis}\textellipsis
+    \na047
+  \oct05
+    \na050
+    \na051
+    \na052
+    \na053
+    \na054
+    \na055
+    \na056
+    \na057
+  \oct06
+    \e060{per mille sign}\textperthousand
+    \e061{per ten thousand sign}\textpertenthousand
+    \na062
+    \na063
+    \na064
+    \na065
+    \na066
+    \na067
+  \oct07
+    \na070
+    \e071{single left-pointing angle quotation mark}\guilsinglleft
+    \e072{singe right-pointing angle quotation mark}\guilsinglright
+    \na073
+    \na074
+    \na075
+    \na076
+    \na077
+  \oct10
+    \na100
+    \na101
+    \na102
+    \na103
+    \e104{fraction slash}\textfractionsolidus
+    \na105
+    \na106
+    \na107
+  \oct11
+    \na110
+    \na111
+    \na112
+    \na113
+    \na114
+    \na115
+    \na116
+    \na117
+  \oct12
+    \na120
+    \na121
+    \na122
+    \na123
+    \na124
+    \na125
+    \na126
+    \na127
+  \oct13
+    \na130
+    \na131
+    \na132
+    \na133
+    \na134
+    \na135
+    \na136
+    \na137
+  \oct14
+    \na140
+    \na141
+    \na142
+    \na143
+    \na144
+    \na145
+    \na146
+    \na147
+  \oct15
+    \na150
+    \na151
+    \na152
+    \na153
+    \na154
+    \na155
+    \na156
+    \na157
+  \oct16
+    \na160
+    \na161
+    \na162
+    \na163
+    \na164
+    \na165
+    \na166
+    \na167
+  \oct17
+    \na170
+    \na171
+    \na172
+    \na173
+    \na174
+    \na175
+    \na176
+    \na177
+  \oct20
+    \na200
+    \na201
+    \na202
+    \na203
+    \na204
+    \na205
+    \na206
+    \na207
+  \oct21
+    \na210
+    \na211
+    \na212
+    \na213
+    \na214
+    \na215
+    \na216
+    \na217
+  \oct22
+    \na220
+    \na221
+    \na222
+    \na223
+    \na224
+    \na225
+    \na226
+    \na227
+  \oct23
+    \na230
+    \na231
+    \na232
+    \na233
+    \na234
+    \na235
+    \na236
+    \na237
+  \oct24
+    \na240
+    \na241
+    \na242
+    \na243
+    \na244
+    \na245
+    \na246
+    \na247
+  \oct25
+    \na250
+    \na251
+    \na252
+    \na253
+    \e254{Euro}\texteuro
+    \na255
+    \na256
+    \na257
+  \oct26
+    \na260
+    \na261
+    \na262
+    \na263
+    \na264
+    \na265
+    \na266
+    \na267
+  \oct27
+    \na270
+    \na271
+    \na272
+    \na273
+    \na274
+    \na275
+    \na276
+    \na277
+  \oct30
+    \na300
+    \na301
+    \na302
+    \na303
+    \na304
+    \na305
+    \na306
+    \na307
+  \oct31
+    \na310
+    \na311
+    \na312
+    \na313
+    \na314
+    \na315
+    \na316
+    \na317
+  \oct32
+    \na320
+    \na321
+    \na322
+    \na323
+    \na324
+    \na325
+    \na326
+    \na327
+  \oct33
+    \na330
+    \na331
+    \na332
+    \na333
+    \na334
+    \na335
+    \na336
+    \na337
+  \oct34
+    \na340
+    \na341
+    \na342
+    \na343
+    \na344
+    \na345
+    \na346
+    \na347
+  \oct35
+    \na350
+    \na351
+    \na352
+    \na353
+    \na354
+    \na355
+    \na356
+    \na357
+  \oct36
+    \na360
+    \na361
+    \na362
+    \na363
+    \na364
+    \na365
+    \na366
+    \na367
+  \oct37
+    \na370
+    \na371
+    \na372
+    \na373
+    \na374
+    \na375
+    \na376
+    \na377
+%
+  \tit041
+  \symlist{\textcelsius\textnumero\texttrademark}
+
+  \section*{\fileinfo}
+  Document: \textbf{\filename\space[\filedate\space\fileversion]}
+  \subsection*{Function}
+  This test file has several tasks:
+  \begin{itemize}
+  \item Testing package \emph{hyperref} with encoding file
+        \emph{puenc.def}.
+  \item Showing glyph commands and aliases that are supported by
+        package \emph{hyperref}.
+  \item Test for the pdf reader, especially \emph{AcrobatReader}.
+        Which glyphs of the \emph{Unicode} encoding are
+        correctly displayed?
+  \item These glyphs are shown that package \emph{hyperref}
+        replaces with simpler letters in order to avoid missing glyphs.
+  \end{itemize}
+  \subsection*{Short explanation of the bookmarks}
+  \begin{enumerate}
+  \item The outline entries of the first level show a summary of their
+        subentries. Second a screenshot with closed bookmarks
+        will contain all slots of the \emph{Unicode} encoding.
+  \item The second level of outline entries describes each slot or glyph:
+        \begin{enumerate}
+        \item \label{oct}%
+              Octal code of the slot in the \emph{Unicode} encoding.
+        \item The glyph is shown twice, surrounded by underscores:
+              The first one is produced by the octal sequence, see \ref{oct}.
+              The second one is the result of the higher glyph command,
+              see \ref{high}.
+        \item The glyph name of \emph{Unicode} encoding.
+        \item \label{high}%
+              The higher glyph \TeX-command, supported by
+              package \emph{hyperref}.
+        \end{enumerate}
+  \item Aliases of the glyph commands are shown as subentries of the
+        outline that describes the slot of that glyph command.
+  \end{enumerate}
+\end{document}

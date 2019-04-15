@@ -1,0 +1,173 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005
+% 2006 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: xr.dtx Copyright (C) 1994-1994 David Carlisle
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{xr}
+%<package>         [1994/05/28 v5.02 eXternal References (DPC)]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{xr}
+\GetFileInfo{xr.sty}
+\begin{document}
+\title{The \textsf{xr} package\thanks{This file
+        has version number \fileversion, last
+        revised \filedate.}}
+\author{David Carlisle\thanks{%
+  The Author of Versions 1--4 was Jean-Pierre Drucbert}}
+\date{\filedate}
+\MaintainedByLaTeXTeam{tools}
+\maketitle
+\DocInput{xr.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \CheckSum{87}
+%
+% \changes{v5.00}{1993/07/07}
+%         {First DPC version (by agreement with J-PD).  New mechanism
+%         (\cmd{\read} instead of \cmd\input).}
+%
+% \changes{v5.01}{1993/07/20}{Fix bug added by DPC, v5.00 did not import
+%           aux files of \cmd\include'ed files. (Reported by J-PD)}
+%
+% \changes{v5.02}{1994/05/28}{Update for LaTeX2e}
+%
+%
+% This package implements a system for eXternal References.
+%
+% If one document needs to refer to sections of another, say |aaa.tex|,
+% then this package may be loaded in the main file, and the command\\
+% |\externaldocument{aaa}|\\
+%  given in the preamble.
+%
+% Then you may use |\ref| and |\pageref| to refer to anything which has
+% been given a |\label| in either |aaa.tex| or the main document.
+% You may declare any number of such external documents.
+%
+% If any of the external documents, or the main document, use the same
+% |\label| then an error will occur as the label will be multiply
+% defined. To overcome this problem |\externaldocument| has an optional
+% argument. If you declare |\externaldocument[A-]{aaa}| Then all
+% references from |aaa| are prefixed by |A-|. So for instance, if a
+% section of |aaa| had |\label{intro}|, then this could be referenced
+% with |\ref{A-intro}|. The prefix need not be |A-|, it can be any
+% string chosen to ensure that all the labels imported from external
+% files are unique. Note however that if your style declares certain
+% active characters (|:| in French, |"| in German) then these
+% characters can not usually be used in |\label|, and similarly may not
+% be used in the optional argument to |\externaldocument|.
+%
+% \StopEventually{}
+%
+% \section{The macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% Check for the optional argument.
+%    \begin{macrocode}
+\def\externaldocument{\@ifnextchar[\XR@{\XR@[]}}
+%    \end{macrocode}
+%
+% Save the optional prefix. Start processing the first |aux| file.
+%    \begin{macrocode}
+\def\XR@[#1]#2{{%
+  \makeatletter
+  \def\XR@prefix{#1}%
+  \XR@next#2.aux\relax\\}}
+%    \end{macrocode}
+%
+% Process the next |aux| file in the list and remove it from the head of
+% the list of files to process.
+%    \begin{macrocode}
+\def\XR@next#1\relax#2\\{%
+  \edef\XR@list{#2}%
+  \XR@loop{#1}}
+%    \end{macrocode}
+%
+% Check whether the list of |aux| files is empty.
+%    \begin{macrocode}
+\def\XR@aux{%
+  \ifx\XR@list\@empty\else\expandafter\XR@explist\fi}
+%    \end{macrocode}
+%
+
+% Expand the list of aux files, and call |\XR@next| to process the first
+% one.
+%    \begin{macrocode}
+\def\XR@explist{\expandafter\XR@next\XR@list\\}
+%    \end{macrocode}
+%
+% If the |aux| file exists, loop through line by line, looking for
+% |\newlabel| and |\@input|. Otherwise process the next file in the
+% list.
+%    \begin{macrocode}
+\def\XR@loop#1{\openin\@inputcheck#1\relax
+  \ifeof\@inputcheck
+    \PackageWarning{xr}{^^JNo file #1^^JLABELS NOT IMPORTED.^^J}%
+    \expandafter\XR@aux
+  \else
+    \PackageInfo{xr}{IMPORTING LABELS FROM #1}%
+    \expandafter\XR@read\fi}
+%    \end{macrocode}
+%
+% Read the next line of the aux file.
+%    \begin{macrocode}
+\def\XR@read{%
+  \read\@inputcheck to\XR@line
+%    \end{macrocode}
+% The |...| make sure that |\XR@test| always has sufficient arguments.
+%    \begin{macrocode}
+  \expandafter\XR@test\XR@line...\XR@}
+%    \end{macrocode}
+%
+% Look at the first token of the line.
+% If it is |\newlabel|, do the |\newlabel|. If it is |\@input|, add the
+% filename to the list of files to process. Otherwise ignore.
+% Go around the loop if not at end of file. Finally process the next
+% file in the list.
+%    \begin{macrocode}
+\long\def\XR@test#1#2#3#4\XR@{%
+  \ifx#1\newlabel
+    \newlabel{\XR@prefix#2}{#3}%
+  \else\ifx#1\@input
+     \edef\XR@list{\XR@list#2\relax}%
+  \fi\fi
+  \ifeof\@inputcheck\expandafter\XR@aux
+  \else\expandafter\XR@read\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%
+

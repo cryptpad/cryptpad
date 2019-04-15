@@ -1,0 +1,354 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005
+% 2006 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \title{A font sampler}
+% \author{Alan Jeffrey}
+% \date{v0.11}
+%
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \CheckSum{335}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%
+% \changes{v0.01}{1994/05/01}{Created this test document as part of
+%    accents.dtx.}
+% \changes{v0.02}{1994/05/12}{Added the t1enc and ot1enc packages.}
+% \changes{v0.03}{1994/05/14}{Moved fontsmpl to its own dtx file.}
+% \changes{v0.03}{1994/05/14}{Removed the t1enc and ot1enc packages.}
+% \changes{v0.04}{1994/05/14}{Removed some debugging code, improved
+%    documentation.}
+% \changes{v0.05}{1994/05/14}{Tidied up some more.  Removed the fontenc
+%    package.}
+% \changes{v0.06}{1994/10/27}{Added testing for all the commands in
+%    ltoutenc.}
+% \changes{v0.06}{1994/10/27}{Switched off error for `commands not
+%    defined in this encoding'.}
+% \changes{v0.07}{1994/10/29}{Added testing for \cs{dots},
+%    \cs{copyright} and \cs{textregistered}.}
+% \changes{v0.07}{1994/10/29}{Replaced ??? for missing characters by
+%    \textbf{?}.}
+% \changes{v0.08}{1994/10/30}{Added testing for \cs{k} and \cs{t}.}
+% \changes{v0.08}{1994/10/30}{Removed testing for any glyphs not in
+%    usrguide.}
+% \changes{v0.08}{1994/10/30}{Allowed overfull boxes in the accent test
+%    to extend out into the right margin.}
+% \changes{v0.10}{1995/09/19}{Corrected placement of docstrip guard.}
+% \changes{v0.11}{1997/05/13}{Replaced \cs{@changed@x@err} by
+%    \cs{TextSymbolUnavailable}, according to the change in
+%    \texttt{ltoutenc.dtx}.}
+%
+% \section{Introduction}
+%
+% This document describes the font test document |fontsmpl.tex| and the
+% accompanying package |fontsmpl.sty|.  This produces a test of a font
+% family, printing a sample text, a table of accents, and a sample of
+% commands such as |\pounds|.
+%
+% It can be used in two ways.  The |fontsmpl| package provides the
+% command |\fontsample|, which produces a sample of the current font.
+%
+% The |fontsmpl| document prompts interactively for a font family (for
+% example `|cmr|') and produces a sample of that family.
+%
+% \StopEventually{}
+%
+% \section{Documentation}
+%
+% This docstrip document has three docstrip options:
+% \begin{itemize}
+% \item |document| the code for |fontsmpl.tex|.
+% \item |package| the code for |fontsmpl.sty|.
+% \item |driver| this documentation.
+% \end{itemize}
+% The code for the driver is:
+%    \begin{macrocode}
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{ltxdoc}
+\begin{document}
+   \DocInput{fontsmpl.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+% \section{Font sample document}
+%
+% The sample document prompts for a family, and uses the |fontsmpl|
+% package.  If there is a file |fontsmpl.cfg|, this is loaded.
+% \changes{v0.9}{1995/05/07}{Removed \cs{pagestyle} empty}
+% \begin{macrocode}
+%<*document>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage{fontsmpl}
+\makeatletter
+\InputIfFileExists{fontsmpl.cfg}{}{}
+\makeatother
+\typein[\family]{Please enter a family name (for example `cmr').}
+\title{Test of \LaTeX{} font family `\family'}
+\author{Font sample produced with `fontsmpl'}
+\raggedright
+\begin{document}
+\maketitle
+\fontfamily{\family}\selectfont
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\itshape
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\slshape
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\scshape
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\upshape\bfseries
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\itshape
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\slshape
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\scshape
+\fontencoding{T1}\selectfont\fontsample
+\fontencoding{OT1}\selectfont\fontsample
+\end{document}
+%</document>
+%    \end{macrocode}
+%
+% \section{Font sample package}
+%
+% The |fontsmpl| package is a \LaTeXe{} package.
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fontsmpl}[1994/10/29 Font sample package]
+%    \end{macrocode}
+%
+% \begin{macro}{\fontsample}
+%    The |\fontsample| command prints out a sample text, a
+%    selection of glyphs, and a table of accents.
+%    \begin{macrocode}
+\newcommand{\fontsample}{%
+   Test of font \f@encoding/\f@family/\f@series/\f@shape.
+   \fontsampletext
+   \fontsampleglyphs
+   \fontsampleaccents
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\fontsampletext}
+%    A sample text, taken from Knuth's |testfont.tex|.
+%    \begin{macrocode}
+\newcommand{\fontsampletext}{%
+   Some text:
+   \begin{quote}\begin{flushleft}
+      On November 14, 1885, Senator \& Mrs.~Leland Stanford called
+      together at their San Francisco mansion the 24~prominent men who
+      had been chosen as the first trustees of The Leland Stanford
+      Junior University.  They handed to the board the Founding Grant
+      of the University, which they had executed three days before.
+      This document---with various amendments, legislative acts, and
+      court decrees---remains as the University's charter.  In bold,
+      sweeping language it stipulates that the objectives of the
+      University are ``to qualify students for personal success and
+      direct usefulness in life; and to promote the publick welfare by
+      exercising an influence in behalf of humanity and civilization,
+      teaching the blessings of liberty regulated by law, and
+      inculcating love and reverence for the great principles of
+      government as derived from the inalienable rights of man to life,
+      liberty, and the pursuit of happiness.''
+   \\
+      (!`THE DAZED BROWN FOX QUICKLY GAVE 12345--67890 JUMPS!)
+   \\
+      ?`But aren't Kafka's Schlo\ss\
+      and \AE sop's \OE uvres often na\"\i ve vis-\`a-vis the
+      d\ae monic ph\oe nix's official r\^ole in fluffy s\t ouffl\'es?
+   \\
+
+   \end{flushleft}\end{quote}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\fontsampleglyphs}
+% \begin{macro}{\fontsampleglyph}
+%    A list of sample glyph commands.
+%    \begin{macrocode}
+\newcommand{\fontsampleglyphs}{%
+   Some glyphs:
+   \begin{quote}\begin{flushleft}
+      \fontsampleglyph{\#}
+      \fontsampleglyph{\$}
+      \fontsampleglyph{\%}
+      \fontsampleglyph{\&}
+      \fontsampleglyph{\AA}
+      \fontsampleglyph{\AE}
+      \fontsampleglyph{\DH}
+      \fontsampleglyph{\DJ}
+      \fontsampleglyph{\L}
+      \fontsampleglyph{\NG}
+      \fontsampleglyph{\OE}
+      \fontsampleglyph{\O}
+      \fontsampleglyph{\P}
+      \fontsampleglyph{\SS}
+      \fontsampleglyph{\S}
+      \fontsampleglyph{\TH}
+      \fontsampleglyph{\_}
+      \fontsampleglyph{\aa}
+      \fontsampleglyph{\ae}
+      \fontsampleglyph{\copyright}
+      \fontsampleglyph{\dag}
+      \fontsampleglyph{\ddag}
+      \fontsampleglyph{\dh}
+      \fontsampleglyph{\dj}
+      \fontsampleglyph{\dots}
+      \fontsampleglyph{\guillemotleft}
+      \fontsampleglyph{\guillemotright}
+      \fontsampleglyph{\guilsinglleft}
+      \fontsampleglyph{\guilsinglright}
+      \fontsampleglyph{\i}
+      \fontsampleglyph{\j}
+      \fontsampleglyph{\l}
+      \fontsampleglyph{\ng}
+      \fontsampleglyph{\oe}
+      \fontsampleglyph{\o}
+      \fontsampleglyph{\pounds}
+      \fontsampleglyph{\quotedblbase}
+      \fontsampleglyph{\quotesinglbase}
+      \fontsampleglyph{\ss}
+      \fontsampleglyph{\textasciicircum}
+      \fontsampleglyph{\textasciitilde}
+      \fontsampleglyph{\textbackslash}
+      \fontsampleglyph{\textbar}
+      \fontsampleglyph{\textbullet}
+      \fontsampleglyph{\textcompwordmark}
+      \fontsampleglyph{\textemdash}
+      \fontsampleglyph{\textendash}
+      \fontsampleglyph{\textexclamdown}
+      \fontsampleglyph{\textgreater}
+      \fontsampleglyph{\texthyphenchar}
+      \fontsampleglyph{\textless}
+      \fontsampleglyph{\textperiodcentered}
+      \fontsampleglyph{\textquestiondown}
+      \fontsampleglyph{\textquotedblleft}
+      \fontsampleglyph{\textquotedblright}
+      \fontsampleglyph{\textquotedbl}
+      \fontsampleglyph{\textquoteleft}
+      \fontsampleglyph{\textquoteright}
+      \fontsampleglyph{\textvisiblespace}
+      \fontsampleglyph{\th}
+      \fontsampleglyph{\{}
+      \fontsampleglyph{\}}
+   \end{flushleft}\end{quote}
+}
+\newcommand{\fontsampleglyph}[1]{%
+   \ifx#1\@undefined
+      {\typewriterfont\string#1}~is~undefined
+   \else
+      {\typewriterfont\string#1}~is~`#1'
+   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\fontsampleaccents}
+% \begin{macro}{\fontsampleaccent}
+%    A sample of accents.
+%    \begin{macrocode}
+\newcommand{\fontsampleaccents}{%
+   Some accents:
+   \begin{quote}\begin{flushleft}
+         \fontsampleaccent{\"} \\
+         \fontsampleaccent{\'} \\
+         \fontsampleaccent{\.} \\
+         \fontsampleaccent{\=} \\
+         \fontsampleaccent{\H} \\
+         \fontsampleaccent{\^} \\
+         \fontsampleaccent{\`} \\
+         \fontsampleaccent{\b} \\
+         \fontsampleaccent{\c} \\
+         \fontsampleaccent{\d} \\
+         \fontsampleaccent{\k} \\
+         \fontsampleaccent{\u} \\
+         \fontsampleaccent{\v} \\
+         \fontsampleaccent{\~}
+   \end{flushleft}\end{quote}
+}
+\newcommand{\fontsampleaccent}[1]{%
+   \makebox[1em][r]{\typewriterfont\string#1}
+   \makebox[15em][l]{%
+      #1A#1C#1D#1E#1G#1I#1L#1N%
+      #1O#1R#1S#1T#1U#1Y#1Z%
+      #1a#1c#1d#1e#1g#1\i#1i#1l#1n%
+      #1o#1r#1s#1t#1u#1y#1z%
+   }
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\typewriterfont}
+%    Not all sites have the T1 typewriter fonts, so we set the
+%    typewriter font to be a fixed font.
+%    \begin{macrocode}
+\DeclareFixedFont{\typewriterfont}
+   {\encodingdefault}{\ttdefault}{\mddefault}{\updefault}{10}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TextSymbolUnavailable}
+%    Switch off the error message from missing glyphs.
+%    \begin{macrocode}
+\def\TextSymbolUnavailable#1{%
+   \textbf{?}\PackageInfo{fontsmpl}{%
+      Command \protect#1 undefined in encoding \f@encoding%
+   }%
+}
+%</package>
+%    \end{macrocode}
+% \end{macro}
+%\Finale
+\endinput
+
+

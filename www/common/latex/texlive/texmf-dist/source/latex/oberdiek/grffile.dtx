@@ -1,0 +1,1393 @@
+% \iffalse meta-comment
+%
+% File: grffile.dtx
+% Version: 2012/04/05 v1.16
+% Info: Extended file name support for graphics
+%
+% Copyright (C) 2006-2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file grffile.dtx
+% and the derived files
+%    grffile.sty, grffile.pdf, grffile.ins, grffile.drv,
+%    grffile-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/grffile.dtx
+%    CTAN:macros/latex/contrib/oberdiek/grffile.pdf
+%
+% Unpacking:
+%    (a) If grffile.ins is present:
+%           tex grffile.ins
+%    (b) Without grffile.ins:
+%           tex grffile.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{grffile.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If grffile.drv is present:
+%           latex grffile.drv
+%    (b) Without grffile.drv:
+%           latex grffile.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex grffile.dtx
+%       makeindex -s gind.ist grffile.idx
+%       pdflatex grffile.dtx
+%       makeindex -s gind.ist grffile.idx
+%       pdflatex grffile.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/grffile.sty
+%    TDS:doc/latex/oberdiek/grffile.pdf
+%    TDS:doc/latex/oberdiek/test/grffile-test1.tex
+%    TDS:source/latex/oberdiek/grffile.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: grffile 2012/04/05 v1.16 Extended file name support for graphics (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: grffile
+Version: 2012/04/05 v1.16
+
+Copyright (C) 2006-2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file grffile.dtx
+and the derived files
+   grffile.sty, grffile.pdf, grffile.ins, grffile.drv,
+   grffile-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{grffile.ins}{\from{grffile.dtx}{install}}%
+  \file{grffile.drv}{\from{grffile.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{grffile.sty}{\from{grffile.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{grffile-test1.tex}{\from{grffile.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{grffile.xml}{\from{grffile.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     grffile.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `grffile.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{grffile.drv}%
+  [2012/04/05 v1.16 Extended file name support for graphics (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{grffile.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{868}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{grffile.drv}
+%
+% \title{The \xpackage{grffile} package}
+% \date{2012/04/05 v1.16}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The package extends the file name processing of package \xpackage{graphics}
+% to support a larger range of file names. For example, the file name
+% may contain several dots. Or in case of \pdfTeX\ in PDF mode the file name may
+% contain spaces.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Usage}
+%
+% \subsection{Option \xoption{multidot}}
+%
+% The file name parsing of package \xpackage{graphics} is changed, in order
+% to detect known extensions. This allows both the use of dots inside the
+% base file name and extensions with several dots.
+%
+% Assume there are two files in the currect directory: \texttt{Hello.World.eps}
+% and \texttt{Hello.World.pdf}.  \verb|\includegraphics{Hello.World}| will find
+% \verb|Hello.World.pdf| with driver \xoption{pdftex} or
+% \verb|Hello.World.eps| with driver \xoption{dvips}.
+%
+% \paragraph{Limitations:} Problem could occur on systems, which don't
+% use the dot as extension delimiter. These systems needs an own
+% \verb|texsys.cfg| containing definitions for \verb|\filename@parse|.
+% The author could not test that, due to a missing example.
+%
+% \subsection{Option \xoption{babel}}
+%
+% This option allows the use of shorthand characters of package
+% \xpackage{babel} inside the graphics file name. Additionally
+% the tilde `\textasciitilde' is supported. The option
+% is turned on as default. (In version v1.1 or below of this package,
+% the features of this option were part of option \xoption{extendedchars}.)
+%
+% Example:
+% \begin{quote}
+%\begin{verbatim}
+%\usepackage[frenchb]{babel}
+%\usepackage{grffile}
+%Image: \includegraphics{C:/path/image}
+%\end{verbatim}
+% \end{quote}
+%
+% \subsection{Option \xoption{extendedchars}}
+%
+% If the input encoding is the same encoding as the encoding that
+% is used for file names and the driver allows non-ascii characters.
+% Without option \xoption{extendedchars} the 8-bit characters
+% are expanded, if they are active characters. For example,
+% see the \LaTeX\ package \xpackage{inputenc}. However a
+% file name is not input for \LaTeX. Therefore this option
+% \xoption{extendedchars} removes the active status and
+% the 8-bit characters are not expandable any more.
+%
+% Example:
+% \begin{quote}
+%   |\usepackage[latin1]{inputenc}|\\
+%   |\usepackage[extendedchars]{grffile}|\\
+%   |\includegraphics{|\texttt{B\"ackerstra\ss e}|}|
+% \end{quote}
+%
+% If the \verb|draft| option of the graphics package is enabled, the
+% file name is printed with the current font encoding for \verb|\ttfamily|.
+% Thus it is possible, that such characters are omitted or the wrong
+% characters are displayed, if the font encoding is not the same as
+% the file name encoding.
+%
+% \subsection{Option \xoption{encoding}}
+%
+% Consider the following scenario. Your file system is using
+% UTF-8 as encoding for file names. But you use \xoption{latin1}
+% as input encoding for your \TeX\ files, because some packages
+% are not ready for multi-byte encodings (\xpackage{listings}, \dots).
+%
+% Then this option \xoption{encoding} loads support for converting
+% encodings by loading package \xpackage{stringenc}.
+% The option is not defined after the preamble, because
+% \LaTeX\ limits package loading to the preamble.
+%
+% File names are converted, if package \xpackage{stringenc} is loaded
+% and the encodings are known, see options \xoption{inputencoding} and
+% \xoption{filenameencoding}.
+%
+% \subsubsection{Option \xoption{inputencoding}}
+%
+% Option \xoption{inputencoding} specifies the encoding
+% of the file name in your \TeX\ input file.
+%
+% Package \xpackage{inputenx} and package \xpackage{inputenc}
+% since version 2006/02/22 v1.1a remember the name of
+% the input encoding that is looked up by this package.
+% Therefore option \xoption{inputencoding} is usually
+% not mandatory.
+%
+% \subsubsection{Option \xoption{filenameencoding}}
+%
+% This is the encoding of the filename of your file
+% system. This option is mandatory, file names
+% are not converted without this option. The option
+% is disabled, if the value is empty.
+%
+% \subsubsection{Example}
+%
+% Back to the scenario where the file system uses UTF-8 and
+% the \LaTeX\ input files are encodind in latin1.
+% \begin{quote}
+%\begin{verbatim}
+%\usepackage[latin1]{inputenc}[2006/02/22]
+% % \usepackage[latin1]{inputenx}
+%\usepackage{graphicx}
+%\usepackage[encoding,filenameencoding=utf8]{grffile}
+%\end{verbatim}
+% \end{quote}
+%
+% For older versions of package \xoption{inputenc} option
+% \xoption{inputencoding} provides the necessary informations.
+% \begin{quote}
+%\begin{verbatim}
+%\usepackage[latin1]{inputenc}
+%\usepackage{graphicx}
+%\usepackage{grffile}
+%\grffilesetup{
+%  encoding,
+%  inputencoding=latin1,
+%  filenameencoding=utf8,
+%}
+%\end{verbatim}
+% \end{quote}
+%
+% \subsection{Option \xoption{space}}
+%
+% This option allows graphics file names that contain spaces
+% if possible.
+%
+% In general it is not possible to use space inside file names,
+% because \TeX\ considers the space character as termination in its
+% syntax for commands that expect a file name.
+%
+% Regarding graphics inclusion with the package \xpackage{graphics}
+% file names are used in two or three contexts:
+% \begin{enumerate}
+% \item The basic \cs{special} statement or primitive command for
+%       graphics inclusion. The \cs{special} statements for
+%       drivers \xoption{dvips} or \xoption{dvipdfm} do not allow
+%       spaces. However \pdfTeX's primitive \cs{pdfximage}
+%       uses curly braces to delimit the file name and allows spaces.
+%       In case of \hologo{XeTeX} file names can be enclosed in quotes
+%       to support spaces (at the cost that quotes no longer work).
+% \item \cs{includegraphics} checks the existence of the file.
+%       Also it looks for the right extension if the extension is
+%       not given.
+%
+%       If \pdfTeX\ 1.30 is given, the file existence test
+%       can be rewritten using a new primitive that allows spaces.
+%       This works in both modes DVI and PDF.
+%
+%       In case of \hologo{XeTeX} the file existence test is rewritten
+%       to automatically add quotes.
+% \item Sometimes files are read as \TeX\ input files. For example,
+%       \verb|.bb| files or MPS files.
+% \end{enumerate}
+% If \pdfTeX\ 1.30 or greater is used in PDF mode then the
+% graphics file names may contain spaces except for MPS files.
+% Therefore option \xoption{space} is only enabled by default,
+% if the supported \pdfTeX\ in PDF mode is detected or \hologo{XeTeX}
+% is running.
+% You can enable the option manually, if you know, your DVI driver
+% supports spaces in its \cs{special} syntax and if there is no
+% need to read the image file as \TeX\ input file (third context).
+%
+% \subsection{General use}
+%
+% The options can be given at many places:
+%
+% \begin{enumerate}
+% \item As package options:\\
+%       \verb|\usepackage[<options>]{grffile}|
+% \item Setup command of package \xpackage{grffile}:\\
+%       \verb|\grffilesetup{<options>}|
+% \item The options are also available as options
+%       for package \xpackage{graphicx}:\\
+%       \verb|\setkeys{Gin}{<options>}|
+% \item If package \xpackage{graphicx} is loaded the options can also be
+%       applied for a single image:\\
+%       \verb|\includegraphics[<options>]{...}|
+% \end{enumerate}
+%
+% \subsection{Default settings}
+%
+% \begin{quote}
+% \begin{tabular}{@{}lll@{}}
+%   \xoption{multidot} & |true|\\
+%   \xoption{babel}    & |true|\\
+%   \xoption{extendedchars} & |false|\\
+%   \xoption{space} & |true| & if \pdfTeX\ 1.30 or greater is used in PDF mode\\
+%                   & |false| & otherwise
+% \end{tabular}
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{grffile}%
+  [2012/04/05 v1.16 Extended file name support for graphics (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcode stuff}
+%
+%    \begin{macrocode}
+\edef\grffile@RestoreCatcodes{%
+  \catcode`\noexpand\=\the\catcode`\=\relax
+  \catcode`\noexpand\:\the\catcode`\:\relax
+  \catcode`\noexpand\.\the\catcode`\.\relax
+  \catcode`\noexpand\'\the\catcode`\'\relax
+  \catcode`\noexpand\<\the\catcode`\<\relax
+  \catcode`\noexpand\>\the\catcode`\>\relax
+  \catcode`\noexpand\*\the\catcode`\*\relax
+  \catcode`\noexpand\^\the\catcode`\^\relax
+  \catcode`\noexpand\~\the\catcode`\~\relax
+}
+\@makeother\=
+\@makeother\:
+\@makeother\.
+\@makeother\'
+\@makeother\<
+\@makeother\>
+\@makeother\*
+\catcode`\^=7 %
+\catcode`\~=\active
+%    \end{macrocode}
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\RequirePackage{ifpdf}[2010/01/28]
+\RequirePackage{ifxetex}[2010/09/12]
+\RequirePackage{kvoptions}[2006/08/17]
+\SetupKeyvalOptions{%
+  family=Gin,%
+  prefix=grffile@%
+}
+\DeclareDefaultOption{\@unknownoptionerror}
+\DeclareBoolOption[true]{multidot}
+\DeclareBoolOption[true]{babel}
+\DeclareBoolOption[false]{extendedchars}
+\DeclareBoolOption{space}
+\DeclareVoidOption{encoding}{%
+  \RequirePackage{stringenc}\relax
+}
+\DeclareStringOption{inputencoding}
+\DeclareStringOption{filenameencoding}
+\DeclareDefaultOption{%
+  \PassOptionsToPackage\CurrentOption{graphics}%
+}
+%    \end{macrocode}
+%    Default setting for option \xoption{space}.
+%    \begin{macrocode}
+\RequirePackage{pdftexcmds}[2007/11/11]
+\ifxetex
+  \grffile@spacetrue
+\else
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdf@filesize\endcsname\relax
+    \grffile@spacefalse
+    \let\grffile@space@disabled\@empty
+    \def\grffile@spacetrue{%
+      \PackageWarning{grffile}{%
+        Option `space' is not available,\MessageBreak
+        because it needs pdfTeX >= 1.30 or XeTeX%
+      }%
+    }%
+  \else
+    \ifpdf
+      \grffile@spacetrue
+    \else
+      \grffile@spacefalse
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\ProcessKeyvalOptions*
+\AtBeginDocument{%
+  \DisableKeyvalOption[package=grffile]{Gin}{encoding}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage{graphics}
+%    \end{macrocode}
+%
+%    \begin{macro}{\grffilesetup}
+%    \begin{macrocode}
+\newcommand*{\grffilesetup}{%
+  \setkeys{Gin}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\grffile@org@Ginclude@graphics}
+%    \begin{macrocode}
+\let\grffile@org@Ginclude@graphics\Ginclude@graphics
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Ginclude@graphics}
+%    \begin{macrocode}
+\renewcommand*{\Ginclude@graphics}{%
+  \ifx\grffile@filenameencoding\@empty
+  \else
+    \ifx\grffile@inputencoding\@empty
+      \expandafter\ifx\csname inputencodingname\endcsname\relax
+        \expandafter\ifx\csname
+            CurrentInputEncodingOption\endcsname\relax
+        \else
+          \let\grffile@inputencoding\CurrentInputEncodingOption
+        \fi
+      \else
+        \let\grffile@inputencoding\inputencodingname
+      \fi
+    \fi
+    \ifx\grffile@inputencoding\@empty
+    \else
+      \grffile@extendedcharstrue
+    \fi
+  \fi
+  \ifnum0\ifgrffile@babel 1\fi\ifgrffile@extendedchars 1\fi>\z@
+    \begingroup
+%    \end{macrocode}
+%    Support of babel's shorthand characters.
+%    \begin{macrocode}
+      \ifgrffile@babel
+        \csname @safe@activestrue\endcsname
+%    \end{macrocode}
+%    Support of active tilde.
+%    \begin{macrocode}
+        \edef~{\string~}%
+%    \end{macrocode}
+%    Support of characters controlled by package \xpackage{inputenc}.
+%    \begin{macrocode}
+      \fi
+      \ifgrffile@extendedchars
+        \grffile@inputenc@loop\^^A\^^H%
+        \grffile@inputenc@loop\^^K\^^K%
+        \grffile@inputenc@loop\^^N\^^_%
+        \grffile@inputenc@loop\^^?\^^ff%
+      \fi
+      \expandafter\grffile@extchar@Ginclude@graphics
+  \else
+    \expandafter\grffile@Ginclude@graphics
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@extchar@Ginclude@graphics}
+%    \begin{macrocode}
+\def\grffile@extchar@Ginclude@graphics#1{%
+  \toks@{#1}%
+  \edef\grffile@filename{\the\toks@}%
+  \ifx\grffile@inputencoding\@empty
+  \else
+    \ifx\grfile@filenameencoding\@empty
+    \else
+      \ifx\grffile@inputencoding\grffile@filenameencoding
+      \else
+        \expandafter\ifx\csname StringEncodingConvert\endcsname\relax
+          \PackageError{grffile}{%
+            Package `stringenc' is not loaded,\MessageBreak
+            omitting file name conversion%
+          }\@ehc
+        \else
+          \StringEncodingConvert\grffile@temp\grffile@filename
+              \grffile@inputencoding\grffile@filenameencoding
+          \StringEncodingSuccessFailure{%
+            \let\grffile@filename\grffile@temp
+          }{%
+            \PackageError{grffile}{%
+              Filename conversion failed%
+            }\@ehc
+          }%
+        \fi
+      \fi
+    \fi
+  \fi
+%  \toks@\expandafter{\grffile@filename}%
+  \edef\x{\endgroup
+%    \noexpand\grffile@Ginclude@graphics{\the\toks@}%
+    \noexpand\grffile@Ginclude@graphics{\grffile@filename}%
+  }%
+  \x
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@inputenc@loop}
+%    \begin{macrocode}
+\def\grffile@inputenc@loop#1#2{%
+  \count@=`#1\relax
+  \loop
+    \begingroup
+      \uccode`\~=\count@
+    \uppercase{%
+      \endgroup
+      \edef~{\string~}%
+    }%
+  \ifnum\count@<`#2\relax
+    \advance\count@\@ne
+  \repeat
+}
+%    \end{macrocode}
+%    \end{macro}
+%    Support for option \xoption{space}
+%    \begin{macro}{\grffile@space@getbase}
+%    \begin{macrocode}
+\def\grffile@space@getbase#1{%
+  \edef\grffile@tempa{%
+    \def\noexpand\@tempa####1#1\noexpand\@nil{%
+      \def\noexpand\Gin@base{####1}%
+    }%
+  }%
+  \grffile@IfFileExists{\filename@area\filename@base#1}{%
+    \grffile@tempa
+    \expandafter\@tempa\grffile@file@found\@nil
+    \edef\Gin@ext{#1}%
+  }{%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filesize\endcsname\relax
+  \ifxetex
+%    \end{macrocode}
+%    \begin{macro}{\grffile@XeTeX@IfFileExists}
+%    \begin{macrocode}
+    \long\def\grffile@XeTeX@IfFileExists#1{%
+      \openin\@inputcheck"#1" %
+      \ifeof\@inputcheck
+        \closein\@inputcheck
+        \expandafter\@secondoftwo
+      \else
+        \closein\@inputcheck
+        \expandafter\@firstoftwo
+      \fi
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@IfFileExists}
+%    \begin{macrocode}
+    \long\def\grffile@IfFileExists#1{%
+      \grffile@XeTeX@IfFileExists{#1}{%
+        \edef\grffile@file@found{#1}%
+        \@firstoftwo
+      }{%
+        \let\reserved@a\@secondoftwo
+        \ifx\input@path\@undefined
+        \else
+          \expandafter\@tfor\expandafter\reserved@b\expandafter
+              :\expandafter=\input@path\do{%
+            \grffile@XeTeX@IfFileExists{\reserved@b#1}{%
+              \edef\grffile@file@found{\reserved@b#1}%
+              \let\reserved@a\@firstoftwo
+              \iftrue\@break@tfor\fi
+            }{}%
+          }%
+        \fi
+        \reserved@a
+      }%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@org@Gread@QTm}
+%    Patch \cs{Gread@QTm} of \xfile{xetex.def}.
+%    \begin{macrocode}
+    \def\grffile@org@Gread@QTm#1{%
+      \IfFileExists{\Gin@base.bb}{%
+        \Gread@eps{\Gin@base.bb}%
+      }{%
+        \G@measure@QTm{\Gin@base}{\Gin@ext}%
+      }%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+    \ifx\Gread@QTm\grffile@org@Gread@QTm
+%    \end{macrocode}
+%    \begin{macro}{\Gread@QTm}
+%    \begin{macrocode}
+      \def\Gread@QTm#1{%
+        \grffile@IfFileExists{\Gin@base.bb}{%
+          \Gread@eps{\Gin@base.bb}%
+        }{%
+          \G@measure@QTm{\Gin@base}{\Gin@ext}%
+        }%
+      }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+      \PackageInfo{grffile}{\string\Gread@QTm\space patched}%
+    \else
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname Gread@QTm\endcsname\relax
+        \PackageWarning{grffile}{%
+          \string\Gread@QTm\space of xetex.def not found%
+        }%
+      \else
+%    \end{macrocode}
+%    \begin{macro}{\grffile@org@Gread@QTm}
+%    \begin{macrocode}
+        \let\grffile@org@Gread@QTm\Gread@QTm
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\Gread@QTm}
+%    \begin{macrocode}
+        \def\Gread@QTm#1{%
+          \let\grffile@saved@IfFileExists\IfFileExists
+          \let\IfFileExists\grffile@IfFileExists
+          \grffile@org@GreadQTm{#1}%
+          \let\IfFileExists\grffile@saved@IfFileExists
+        }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+      \fi
+    \fi
+%    \end{macrocode}
+%    \begin{macro}{\grffile@org@Gread@eps}
+%    \begin{macrocode}
+    \let\grffile@org@Gread@eps\Gread@eps
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+    \def\grffile@temp#1\immediate\openin#2 #3\grffile@nil#4\grffile@NIL{%
+      \begingroup
+      \toks@{#2}%
+      \edef\grffile@temp{\the\toks@}%
+      \def\grffile@test{\@inputcheck####1}%
+      \ifx\grffile@temp\grffile@test
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {%
+        \toks@{%
+          #1%
+          \immediate\openin\@inputcheck"##1"\relax
+          #3%
+        }%
+        \expandafter\endgroup
+        \expandafter\def\expandafter\Gread@eps
+        \expandafter##\expandafter1\expandafter{%
+          \the\toks@
+        }%
+        \PackageInfo{grffile}{%
+          \string\Gread@eps\space patched%
+        }%
+      }{%
+        \PackageWarning{grffile}{%
+          Unsupported \string\Gread@eps\space not patched%
+        }%
+        \endgroup
+      }%
+    }%
+    \expandafter\grffile@temp\Gread@eps{#1}\grffile@nil
+        \immediate\openin{} \grffile@nil\grffile@NIL
+%    \end{macrocode}
+%    \begin{macrocode}
+  \else
+    \begingroup
+      \let\on@line\@empty
+      \PackageInfo{grffile}{%
+        \string\grffile@IfFileExists\space without space support,%
+        \MessageBreak
+        because pdfTeX's \string\pdffilesize\space is not available%
+        \MessageBreak
+        or XeTeX is not running%
+      }%
+    \endgroup
+%    \end{macrocode}
+%    \begin{macro}{\grffile@IfFileExists}
+%    \begin{macrocode}
+    \long\def\grffile@IfFileExists#1{%
+      \IfFileExists{#1}{%
+        \let\grffile@IFE@next\@firstoftwo
+      }{%
+        \let\grffile@file@found\@filef@und
+        \let\grffile@IFE@next\@secondoftwo
+      }%
+      \grffile@IFE@next
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \fi
+\else
+%    \end{macrocode}
+%    \begin{macro}{\grffile@IfFileExists}
+%    \begin{macrocode}
+  \long\def\grffile@IfFileExists#1{%
+    \expandafter\expandafter\expandafter
+    \ifx\expandafter\expandafter\expandafter\\\pdf@filesize{#1}\\%
+      \let\reserved@a\@secondoftwo
+      \ifx\input@path\@undefined
+      \else
+        \expandafter\@tfor\expandafter\reserved@b\expandafter
+            :\expandafter=\input@path\do{%
+          \expandafter\expandafter\expandafter
+          \ifx\expandafter\expandafter\expandafter
+              \\\pdf@filesize{\reserved@b#1}\\%
+          \else
+            \edef\grffile@file@found{\reserved@b#1}%
+            \let\reserved@a\@firstoftwo
+            \@break@tfor
+          \fi
+        }%
+      \fi
+      \expandafter\reserved@a
+    \else
+      \edef\grffile@file@found{#1}%
+      \expandafter\@firstoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%    \begin{macro}{\grffile@Ginclude@graphics}
+%    \begin{macrocode}
+\def\grffile@Ginclude@graphics#1{%
+  \begingroup
+    \ifgrffile@space
+      \let\Gin@getbase\grffile@space@getbase
+    \fi
+    \ifgrffile@multidot
+      \let\filename@base\@empty
+      \let\filename@simple\grffile@filename@simple
+    \fi
+    \grffile@org@Ginclude@graphics{#1}%
+  \endgroup
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@filename@simple}
+%    \begin{macrocode}
+\def\grffile@filename@simple#1.#2\\{%
+  \ifx\\#2\\%
+    \def\filename@base{#1}%
+    \let\filename@ext\relax
+  \else
+    \def\filename@base{}%
+    \grffile@analyze@ext{#1}.{#2}\\%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@analyze@ext}
+%    \begin{macrocode}
+\def\grffile@analyze@ext#1.#2\\{%
+  \let\grffile@next\relax
+  \ifx\\#2\\%
+    \edef\filename@base{\filename@base#1}%
+    \let\filename@ext\relax
+    \def\grffile@next{\grffile@try@extlist}%
+  \else
+    \edef\filename@base{\filename@base #1}%
+    \edef\filename@ext{\filename@dot#2\\}%
+    \expandafter\ifx\csname Gin@rule@.\filename@ext\endcsname\relax
+      \edef\filename@base{\filename@base.}%
+      \def\grffile@next{\grffile@analyze@ext#2\\}%
+    \else
+      \grffile@IfFileExists{\filename@area\filename@base.\filename@ext}{%
+        % success
+      }{%
+        \edef\filename@base{\filename@base.\filename@ext}%
+        \let\filename@ext\relax
+        \def\grffile@next{\grffile@try@extlist}%
+      }%
+    \fi
+  \fi
+  \grffile@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@try@extlist}
+%    \begin{macrocode}
+\def\grffile@try@extlist{%
+  \@for\grffile@temp:=\Gin@extensions\do{%
+    \grffile@IfFileExists{\filename@area\filename@base\grffile@temp}{%
+      \ifx\filename@ext\relax
+        \edef\filename@ext{\expandafter\@gobble\grffile@temp\@empty}%
+      \fi
+    }{}%
+  }%
+  \ifx\filename@ext\relax
+    \expandafter\let\expandafter\filename@base\expandafter\@empty
+    \expandafter\grffile@use@last@ext\filename@base.\\%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@use@last@ext}
+%    \begin{macrocode}
+\def\grffile@use@last@ext#1.#2\\{%
+  \ifx\\#2\\%
+    \edef\filename@base{\expandafter\filename@dot\filename@base\\}%
+    \def\filename@ext{#1}%
+    \expandafter\@gobble
+  \else
+    \edef\filename@base{\filename@base#1.}%
+    \expandafter\@firstofone
+  \fi
+  {%
+    \grffile@use@last@ext#2\\%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Print current option setting
+%    \begin{macro}{\grffile@option@status}
+%    \begin{macrocode}
+\def\grffile@option@status#1{%
+  \begingroup
+    \let\on@line\@empty
+    \PackageInfo{grffile}{%
+      Option `#1' is %
+      \expandafter\ifx\csname ifgrffile@#1\expandafter\endcsname
+                      \csname iftrue\endcsname
+        set to `true'%
+      \else
+        \expandafter\ifx\csname grffile@#1@disabled\endcsname\@empty
+          not available%
+        \else
+          set to `false'%
+        \fi
+      \fi
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\grffile@option@status{multidot}
+\grffile@option@status{extendedchars}
+\grffile@option@status{space}
+%    \end{macrocode}
+%
+% \subsection{Fix \cs{Gin@ii} of package \xpackage{graphicx}}
+%
+%    If the image file name contains the hash character
+%    macro \cs{Gin@ii} of package \xpackage{graphicx} breaks.
+%    \begin{macro}{\grffile@Gin@ii@graphicx}
+%    \begin{macrocode}
+\def\grffile@Gin@ii@graphicx[#1]#2{%
+  \def\@tempa{[}%
+  \def\@tempb{#2}%
+  \ifx\@tempa\@tempb
+    \def\@tempa{\Gin@iii[#1][}% hash-ok
+    \expandafter\@tempa
+  \else
+    \begingroup
+      \@tempswafalse
+      \toks@{\Ginclude@graphics{#2}}%
+      \setkeys{Gin}{#1}%
+      \Gin@esetsize
+      \the\toks@
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@Gin@ii@fixed}
+%    \begin{macrocode}
+\def\grffile@Gin@ii@fixed[#1]#2{%
+  \def\@tempa{[}%
+  \begingroup
+    \toks@={#2}%
+    \edef\@tempb{\the\toks@}%
+  \expandafter\endgroup
+  \ifx\@tempa\@tempb
+    \def\@tempa{\Gin@iii[#1][}% hash-ok
+    \expandafter\@tempa
+  \else
+    \begingroup
+      \@tempswafalse
+      \toks@{\Ginclude@graphics{#2}}%
+      \setkeys{Gin}{#1}%
+      \Gin@esetsize
+      \the\toks@
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grffile@Fix@Gin@ii}
+%    \begin{macrocode}
+\def\grffile@Fix@Gin@ii{%
+  \let\Gin@ii\grffile@Gin@ii@fixed
+  \begingroup
+    \escapechar=92 %
+    \PackageInfo{grffile}{\string\Gin@ii\space of package `graphicx' fixed}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\ifx\Gin@ii\grffile@Gin@ii@graphicx
+  \grffile@Fix@Gin@ii
+\else
+  \AtBeginDocument{\grffile@Fix@Gin@ii}%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\grffile@RestoreCatcodes
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Multidot with default rule}
+%
+%    \begin{macrocode}
+%<*test1>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage{filecontents}
+% file grffile-test.mp:
+% beginfig(1);
+%   draw fullcircle scaled 2cm withpen pencircle scaled 2mm;
+% endfig;
+% end
+\begin{filecontents*}{grffile-test.1}
+%!PS
+%%BoundingBox: -32 -32 32 32
+%%Creator: MetaPost
+%%CreationDate: 2004.06.16:1257
+%%Pages: 1
+%%EndProlog
+%%Page: 1 1
+ 0 5.66928 dtransform truncate idtransform setlinewidth pop [] 0 setdash
+ 1 setlinejoin 10 setmiterlimit
+newpath 28.34645 0 moveto
+28.34645 7.51828 25.35938 14.72774 20.04356 20.04356 curveto
+14.72774 25.35938 7.51828 28.34645 0 28.34645 curveto
+-7.51828 28.34645 -14.72774 25.35938 -20.04356 20.04356 curveto
+-25.35938 14.72774 -28.34645 7.51828 -28.34645 0 curveto
+-28.34645 -7.51828 -25.35938 -14.72774 -20.04356 -20.04356 curveto
+-14.72774 -25.35938 -7.51828 -28.34645 0 -28.34645 curveto
+7.51828 -28.34645 14.72774 -25.35938 20.04356 -20.04356 curveto
+25.35938 -14.72774 28.34645 -7.51828 28.34645 0 curveto closepath stroke
+showpage
+%%EOF
+\end{filecontents*}
+\usepackage{graphicx}
+\usepackage[multidot]{grffile}[2008/10/13]
+\DeclareGraphicsRule{*}{mps}{*}{} % for pdflatex
+\begin{document}
+\includegraphics{grffile-test.1}
+\end{document}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/grffile.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/grffile.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex grffile.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   grffile.sty & tex/latex/oberdiek/grffile.sty\\
+%   grffile.pdf & doc/latex/oberdiek/grffile.pdf\\
+%   test/grffile-test1.tex & doc/latex/oberdiek/test/grffile-test1.tex\\
+%   grffile.dtx & source/latex/oberdiek/grffile.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk grffile.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{grffile.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex grffile.dtx
+%makeindex -s gind.ist grffile.idx
+%pdflatex grffile.dtx
+%makeindex -s gind.ist grffile.idx
+%pdflatex grffile.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{grffile.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='grffile'>
+  <name>grffile</name>
+  <caption>Extended file name support for graphics.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.16'/>
+  <description>
+    The package extends the file name processing of package
+    <xref refid='graphics'>graphics</xref> to support a larger range
+    of file names. For example, the file name may contain several dots.
+
+    Or in case of <xref refid='pdftex'>pdfTeX</xref> in PDF mode the
+    file name may contain spaces.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/grffile.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/grffile.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{graphics}
+%   David Carlisle, Sebastian Rahtz: \textit{The \xpackage{graphics} package};
+%   2006/02/20 v1.0o;
+%   \CTAN{macros/latex/required/graphics/graphics.dtx}.
+%
+% \bibitem{graphicx}
+%   Sebastian Rahtz, Heiko Oberdiek:
+%   \textit{The \xpackage{graphicx} package};
+%   1999/02/16 v1.0f;
+%   \CTAN{macros/latex/required/graphics/graphicx.dtx}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2004/07/18 v0.5}
+%   \item
+%     First version, published in newsgroup \xnewsgroup{de.comp.text.tex}:\\
+%     \URL{``\link{Re: Dateinamenproblem}''}^^A
+%     {http://groups.google.com/group/de.comp.text.tex/msg/b85984095d1a3c95}
+%   \end{Version}
+%   \begin{Version}{2006/08/15 v1.0}
+%   \item
+%     File existence check by new primitives of pdfTeX 1.30.
+%   \item
+%     Implementation partly rewritten.
+%   \item
+%     New DTX framework.
+%   \end{Version}
+%   \begin{Version}{2006/08/17 v1.1}
+%   \item
+%     Adaptation to version 2.3 of package \xpackage{kvoptions}.
+%   \end{Version}
+%   \begin{Version}{2006/11/30 v1.2}
+%   \item
+%     New option \xoption{babel}. Before this feature was part
+%     of option \xoption{extendedchars}.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.3}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/06/13 v1.4}
+%   \item
+%     Encoding support added with options \xoption{encoding},
+%     \xoption{inputencoding}, and \xoption{filenameencoding}.
+%   \end{Version}
+%   \begin{Version}{2007/08/16 v1.5}
+%   \item
+%     Bug fix in encoding support.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.6}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+%   \begin{Version}{2007/11/24 v1.7}
+%   \item
+%     Bug fix of broken previous version.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.8}
+%   \item
+%     Code is not changed.
+%   \item
+%     URLs updated.
+%   \end{Version}
+%   \begin{Version}{2008/10/13 v1.9}
+%   \item
+%     Fix for option `multidot' with default rule.
+%   \end{Version}
+%   \begin{Version}{2009/09/25 v1.10}
+%   \item
+%     Rewrite of `multidot' algorithm to fix a problem
+%     (`multidot' with \cs{graphicspath}).
+%   \end{Version}
+%   \begin{Version}{2010/01/28 v1.11}
+%   \item
+%     Undefined \cs{pdf@filesize} fixed.
+%   \end{Version}
+%   \begin{Version}{2010/08/26 v1.12}
+%   \item
+%     Macro \cs{Gin@ii} of package \xpackage{graphicx} fixed
+%     for the case that the file name contains a hash.
+%   \end{Version}
+%   \begin{Version}{2010/12/09 v1.13}
+%   \item
+%     Option \xoption{space} also supports \hologo{XeTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/10/04 v1.14}
+%   \item
+%     Fix for option \xoption{space} support of \hologo{XeTeX}
+%     for EPS files (\cs{Gread@eps}). (Bug reported by Peter Davis.)
+%   \end{Version}
+%   \begin{Version}{2011/10/17 v1.15}
+%   \item
+%     Bug fix for option \xoption{space} support of \hologo{XeTeX}.
+%     Wrong usage of \cs{@break@tfor} fixed.
+%     (Bug reported by Martin Schr\"oder.)
+%   \end{Version}
+%   \begin{Version}{2012/04/05 v1.16}
+%   \item
+%     Some fix for option \xoption{extendedchars}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

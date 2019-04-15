@@ -1,0 +1,4868 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltoutput.dtx
+%<flafter>\ProvidesPackage{flafter}
+%<fltrace>\ProvidesPackage{fltrace}
+%<flafter,fltrace>       [2015/09/05 v1.3a
+%<flafter>                  Standard LaTeX floats after reference (FMi)]
+%<fltrace>                  Tracing LaTeX floats algorithm (FMi)]
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltoutput.dtx}
+             [2015/09/05 v1.3a LaTeX Kernel (Output Routine)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltoutput.dtx}
+\title{\filename}
+\date{\filedate}
+\author{Leslie Lamport, Frank Mittelbach, Chris Rowley}
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{3800}
+%
+%
+% \iffalse
+% LATEX VERSION 2e
+% Copyright (C) 1992 by Leslie Lamport
+% Copyright (C) 1994-2000 by Leslie Lamport, LaTeX3 project
+%
+% LaTeX 2e kernel file for the output routine.
+%
+% Part of this file is the latest (not greatest, it still
+% deserves its name) version of kludge.sty.
+%
+% It also contains a few enhancements and many changes (corrections
+% and tidyings) to the float mechanism and other parts of the output
+% routine.
+%
+% The tracing in the file at present is mainly to help in testing the
+% code but it may well be developed into a full float tracing
+% package one day.
+%
+% ============================
+% \fi
+%
+% \changes{v1.1p}{1995/08/25}{Support autoloading feature (FMi).}
+% \task{CAR}{Update documentation.}
+% \changes{v1.0k}{1994/02/08}{Documentation and tasks tidied.}
+% \changes{v1.0l}{1994/03/15}{Driver added and further tidying.}
+% \changes{v1.0l}{1994/03/15}{Some boxmaxdepth settings removed.}
+% \changes{v1.0l}{1994/03/15}{Added some warnings when page gets full of
+% top floats.}
+% \changes{v1.0l}{1994/03/15}{Removed duplicated code and corrected
+% docstrip options.}
+% \changes{v1.0m}{1994/04/24}{Removed some long lines and other
+% aesthetic changes.}
+% \changes{v1.0m}{1994/04/24}{Corrected unverbed commands in
+% documentation.}
+% \changes{v1.0m}{1994/04/24}{Changed \cs{@normalsize} to
+% \cs{normalsize}.}
+% \changes{v1.0m}{1994/04/24}{Warning messages changed/corrected.}
+% \changes{v1.0n}{1994/04/30}{Added \cs{col@number}.}
+% \changes{v1.0n}{1994/04/30}{Fixed bug from \cs{dblfigrule} with
+% \cs{@topnewpage}.}
+% \changes{v1.0n}{1994/04/30}{Documentation tidied.}
+% \changes{v1.0n}{1994/04/30}{\cs{@activechar@warning} changed to an
+% info message.}
+% \changes{v1.0n}{1994/04/30}{Full of floats action improved.}
+% \changes{v1.0n}{1994/04/30}{Empty column action added.}
+% \changes{v1.0o}{1994/05/02}{Code of \cs{@resethfps} shortened.}
+% \changes{v1.0p}{1994/05/12}{\cs{normalcolor}added in various
+% places (DPC).}
+% \changes{v1.0q}{1994/05/16}{Changed setting of accents (FMi).}
+% \changes{v1.0s}{1994/05/20}{Added setting of \cs{protect}
+% during \cs{shipout}.}
+% \changes{v1.0t}{1994/05/22}{Changed warnings and infos to
+% new commands.}
+% \changes{v1.0u}{1994/05/23}{Added \cs{MessageBreak}.}
+% \changes{v1.0u}{1994/05/23}{Changed resetting of \cs{protect} after
+% shipout.}
+% \changes{v1.0v}{1994/05/25}{Extra documentation.}
+% \changes{v1.0w}{1994/06/01}{Tidied up typesetting.}
+%
+% \changes{v1.1f}{1994/11/14}{Removed old definition of \cs{@testfp}.}
+% \changes{v1.1h}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}.}
+% \changes{v1.1m}{1995/05/07}{Use \cs{hb@xt@}.}
+% \changes{v1.2n}{2015/02/21}
+%         {Removed autoload code}
+%
+% \StopEventually{}
+%
+% \def \ie {i.e.~}
+% \def \eg {e.g.~}
+%
+% \section{Output Routine}
+%
+% \subsection{Floats}
+%
+% The `2ekernel' code ensures that a |\usepackage{autoout1}| is
+% essentially ignored if a `full' format is being used that has
+% the autoload file mode already in the format.
+%    \begin{macrocode}
+%<defx>\begingroup
+%<defx>\makeatletter
+%<defx>\nfss@catcodes
+%<2ekernel>\expandafter\let\csname ver@autoout1.sty\endcsname\fmtversion
+%    \end{macrocode}
+%
+%
+% \begin{oldcomments}
+%    \begin{macrocode}
+%<*2ekernel>
+\message{output,}
+%    \end{macrocode}
+%     ****************************************
+%     *               OUTPUT                 *
+%     ****************************************
+%
+%
+%  PAGE LAYOUT PARAMETERS
+%
+%   \topmargin      : Extra space added to top of page.
+%   @twoside        : boolean.  T if two-sided printing
+%   \oddsidemargin  : IF @twoside = T
+%                       THEN extra space added to left of odd-numbered
+%                            pages.
+%                       ELSE extra space added to left of all pages.
+%   \evensidemargin : IF @twoside = T
+%                       THEN extra space added to left of even-numbered
+%                            pages.
+%   \headheight     : height of head
+%   \headsep        : separation between head and text
+%   \footskip       : distance separation between baseline of last
+%                     line of text and baseline of foot.
+%                     Note difference between \footSKIP and \headSEP.
+%   \textheight     : height of text on page, excluding head and foot
+%   \textwidth      : width of printing on page
+%   \columnsep      : IF @twocolumn = T
+%                       THEN width of space between columns
+%   \columnseprule  : IF @twocolumn = T
+%                       THEN width of rule between columns (0 if none).
+%   \columnwidth    : IF @twocolumn = T
+%                       THEN (\textwidth - \columnsep)/2
+%                       ELSE \textwidth
+%                     It is set by the \twocolumn and
+%                     \onecolumn commands.
+%   \@textbottom    : Command executed at bottom of vbox holding text of
+%                     page (including figures).  The \raggedbottom
+%                     command almost \let's this to \vfil (actually sets
+%                     it to \vskip \z@ plus.0001fil).
+%                     Should have depth 0pt.
+%
+%   \@texttop       : Command executed at top of vbox holding text of
+%                     page (including figures).  Used by letter style;
+%                     can also be used to produce centered pages.
+%                     Let to \relax by \raggedbottom and \flushbottom.
+%
+%   Page layout must initialize \@colht and \@colroom to \textheight.
+%
+%  PAGE STYLE PARAMETERS:
+%
+%   \floatsep       : Space left between floats.
+%   \textfloatsep   : Space between last top float or first bottom float
+%                     and the text.
+%   \topfigrule     : Command to place rule (or whatever) between floats
+%                     at top of page and text.  Executed in inner
+%                     vertical mode right before the \textfloatsep skip
+%                     separating the floats from the text.  Must occupy
+%                     zero vertical space.  (See \footnoterule.)
+%   \botfigrule     : Same as \topfigrule, but put after the
+%                     \textfloatsep skip separating text from the
+%                     floats at bottom of page.
+%   \intextsep      : Space left on top and bottom of an in-text float.
+%   \dblfloatsep    : Space between double-column floats.
+%   \dbltextfloatsep : Space between top double-column floats
+%                      and text.
+%   \dblfigrule     : Similar to \topfigrule, but for double-column
+%                     floats.
+%   \@fptop         : Glue to go at top of float column -- must be 0pt +
+%                     stretch
+%   \@fpsep         : Glue to go between floats in a float column.
+%   \@fpbot         : Glue to go at bottom of float column
+%                       -- must be 0pt +
+%                     stretch
+%   \@dblfptop, \@dblfpsep, \@dblfpbot
+%                   : Analogous for double-column float page in
+%                     two-column format.
+%
+%  FOOTNOTES: As in PLAIN, footnotes use \insert\footins.
+%
+%  PAGE LAYOUT SWITCHES AND MACROS
+%
+%   @twocolumn      : Boolean.  T if two columns per page globally.
+%
+%  PAGE STYLE MACROS AND SWITCHES
+%
+%   \@oddhead        : IF @twoside = T
+%                           THEN macro to generate head of odd-numbered
+%                                pages.
+%                           ELSE macro to generate head of all pages.
+%   \@evenhead       : IF @twoside = T
+%                           THEN macro to generate head of even-numbered
+%                                pages.
+%   \@oddfoot        : IF @twoside = T
+%                           THEN macro to generate foot of odd-numbered
+%                                pages.
+%                           ELSE macro to generate foot of all pages.
+%   \@evenfoot       : IF @twoside = T
+%                           THEN macro to generate foot of even-numbered
+%                                pages.
+%   @specialpage    : boolean.  T if current page is to have a special
+%                               format.
+%  \@specialstyle  : If its value is  foo then
+%                     IF @specialpage = T
+%                       THEN the command \ps@foo is executed to
+%                            temporarily reset the page style parameters
+%                            before composing the current page.
+%                            This command should execute only \def's and
+%                            \edef's, making only local definitions.
+%
+%  FLOAT PLACEMENT PARAMETERS
+%
+% The following parameters are set by the macro \@floatplacement.
+% When \@floatplacement is called,
+% \@colht is the height of the page or column being built.  I.e.:
+%         * For single-column page it equals \textheight.
+%         * For double-column page it equals \textheight - height
+%           of double-column floats on page.
+% Note that some are set globally and some locally:
+%    \@topnum  :=G Maximum number of floats allowed on the top of a
+%                  column.
+%    \@toproom :=G Maximum amount of top of column devoted to floats--
+%                  excluding \textfloatsep separation below the floats
+%                  and \floatsep separation between them.  For
+%                  two-column output, should be computed as a function
+%                  of \@colht.
+%    \@botnum, \@botroom
+%                : Analogous to above.
+%    \@colnum  :=G Maximum number of floats allowed in a column,
+%                  including in-text floats.
+%    \@textmin :=L Minimum amount of text (excluding footnotes) that
+%                  must appear on a text page.
+%                     %% 27 Sep 85 : made local to
+%                     %% \@addtocurcol and \@addtonextcol
+%                  It is now also used locally in processing double
+%                  floats.
+%    \@fpmin   :=L Minimum height of floats in a float column.
+%
+% The macro \@dblfloatplacement sets the following parameters.
+%    \@dbltopnum  :=G Maximum number of double-column floats allowed at
+%                     the top of a two-column page.
+%    \@dbltoproom :=G Maximum height of double-column floats allowed at
+%                     top of two-column page.
+%    \@fpmin      :=L Minimum height of floats in a float column.
+% It should also perform the following local assignments where necessary
+% -- i.e., where the new value differs from the old one:
+%      \@fptop       :=L \@dblfptop
+%      \@fpsep       :=L \@dblfpsep
+%      \@fpbot       :=L \@dblfpbot
+%
+%  OUTPUT ROUTINE VARIABLES
+%
+%  \@colht : The total height of the current column.  In single column
+%            style, it equals \textheight.  In two-column style, it is
+%            \textheight minus the height of the double-column floats
+%            on the current page.  MUST BE INITIALIZED TO \textheight.
+%
+%  \@colroom : The height available in the current column for text and
+%              footnotes.  It equals \@colht minus the height of all
+%              floats committed to the top and bottom of the current
+%              column.
+%
+%  \@textfloatsheight : The total height of in-text floats on the
+%                       current page.
+%
+%  \footins : Footnote insertion number.
+%
+%  \@maxdepth : Saved value of TeX's \maxdepth.  Must be set
+%               when any routine sets \maxdepth.
+%
+%            CALLING THE OUTPUT ROUTINE
+%            --------------------------
+%
+% The output routine is called either by TeX's normal page-breaking
+% mechanism, or by a macro putting a penalty < or = -10000 in the output
+% list.  In the latter case, the penalty indicates why the output
+% routine was called, using the following code.
+%
+%   penalty   reason
+%   -------   ------
+%   -10000    \pagebreak
+%             \newpage
+%   -10001    \clearpage (\penalty -10000 \vbox{} \penalty -10001)
+%   -10002    float insertion, called from horizontal mode
+%   -10003    float insertion, called from vertical mode.
+%   -10004    float insertion.
+%
+% Note: A float or marginpar puts the following sequence in the output
+%       list:  (i) a penalty of -10004,
+%             (ii) a null \vbox
+%            (iii) a penalty of -10002 or -10003.
+%       This solves two special problems:
+%         1. If the float comes right after a \newpage or \clearpage,
+%            then the first penalty is ignored, but the second one
+%            invokes the output routine.
+%         2. If there is a split footnote on the page, the second 'page'
+%            puts out the rest of the footnote.
+%
+%             THE OUTPUT ROUTINE
+%             ------------------
+%
+% FUNCTIONS USED IN THE OUTPUT ROUTINE:
+%
+% \@outputpage : Produces an output page with the contents of box
+%              \@outputbox as the text part.
+%              Also sets \@colht :=G \textheight.
+%              The page style is determined as follows.
+%                IF  @thispagestyle = true
+%                  THEN  use \thispagestyle style
+%                  ELSE  use ordinary page style.
+%
+% \@tryfcolumn\FLIST : Tries to form a float column composed of floats
+%         from \FLIST (if nonempty) with the following parameters:
+%                \@colht : height of box
+%                \@fpmin : minimum height of floats in the box
+%                \@fpsep : interfloat space
+%                \@fptop : glue at top of box
+%                \@fpbot : glue at bottom of box.
+%              If it succeeds, then it does the following:
+%                * \@outputbox :=L the composed float box.
+%                * @fcolmade   :=G true
+%                * \FLIST      :=G \FLIST - floats put in box
+%                * \@freelist  :=G \@freelist + floats put in box
+%              If it fails, then:
+%                * @fcolmade :=G false
+%           NOTE: BIT MUST BE A SINGLE TOKEN!
+%
+% \@makefcolumn \FLIST : Same as \@tryfcolumn except that it
+%             fails to make a float column only if \FLIST is empty.
+%             Otherwise, it makes a float column containing at least
+%             the first box in \FLIST, disregarding \@fpmin.
+%
+% \@startcolumn :
+%       Calls \@tryfcolumn\@deferlist.  If \@tryfcolumn returns with
+%       (globally set) @fcolmade = false, then:
+%                * Globally sets \@toplist and \@botlist to floats
+%                  from \@deferlist to go at top and bottom of column,
+%                  deleting them from \@deferlist.  It does
+%                  this using \@colht as the total height, the page
+%                  style parameters \@floatsep and \@textfloatsep, and
+%                  the float placement parameters \@topnum, \@toproom,
+%                  \@botnum, \@botroom, \@colnum and \textfraction.
+%                * Globally sets \@colroom to \@colht minus the height
+%                  of the added floats.
+%
+% \@startdblcolumn :
+%      Calls \@tryfcolumn\@dbldeferlist{8}.  If \@tryfcolumn returns
+%      with (globally set) @fcolmade = false, then:
+%               * Globally sets \@dbltoplist to floats from
+%                 \@dbldeferlist to go at top and bottom of column,
+%                 deleting them from \@dbldeferlist.
+%                 It does this using \textheight as the
+%                 total height, and the parameters \@dblfloatsep, etc.
+%               * Globally sets \@colht to \textheight minus the height
+%                 of the added floats.
+%
+% \@combinefloats : Combines the text from box
+%              \@outputbox with the floats from \@toplist and \@botlist,
+%              putting the new box in \@outputbox.  It uses \floatsep
+%              and \textfloatsep for the appropriate separations.
+%              It puts the elements of \TOPLIST and \BOTLIST onto
+%              \@freelist, and makes those lists null.
+%
+% \@makecol : Makes the contents of \box255 plus the accumulated
+%              footnotes, plus the floats in \@toplist and \@botlist,
+%              into a single column of height \@colht (unless the page
+%              height has been locally changed), which it puts
+%              into box \@outputbox.  It puts boxes in \@midlist back
+%              onto \@freelist and restores \maxdepth.
+%
+% \@opcol : Outputs a column whose text is in box \@outputbox
+%              If @twocolumn = false, then it calls \@outputpage,
+%              sets \@colht :=G \textheight, and calls \@floatplacement.
+%
+%              If @twocolumn = true, then:
+%                  If @firstcolumn = true, then it puts box \@outputbox
+%                  into \@leftcolumn and sets @firstcolumn :=G false.
+%
+%                  If @firstcolumn = false, then it puts out the current
+%                  two-column page, any possible two-column float pages,
+%                  and determines \@dbltoplist for the next page.
+%
+%
+%
+%            USER COMMANDS THAT CALL OR AFFECT THE OUTPUT ROUTINE
+%            ----------------------------------------------------
+%
+% \newpage == BEGIN \par\vfil\penalty -10000 END
+%
+% \clearpage == BEGIN \newpage
+%                     \write -1{}    % Part of hack to make sure no
+%                     \vbox{}        % \write's get lost.
+%                     \penalty -10001
+%               END
+%
+% \cleardoublepage == BEGIN \clearpage
+%                           if @twoside = true and c@page is even
+%                             then \hbox{} \newpage fi
+%                     END
+%
+%
+% \twocolumn[BOX] : starts a new page, changing to twocolumn setting
+%     and puts BOX in a parbox of width \textwidth across the top.
+%     Useful for full-width titles for double-column pages.
+%     SURPRISE: The stretch from \@dbltextfloatsep will be inserted
+%               between the BOX and the top of the two columns.
+%
+%
+%            FLOAT-HANDLING MECHANISMS
+%            -------------------------
+%
+% The float environment obtains an insertion number B from the
+% \@freelist (see below for a description of list manipulation), puts
+% the float into box B and sets \count B to a FLOAT SPECIFIER.  For
+% a normal (not double-column) float, it then causes a page break
+% in one of the following two ways:
+%   - In outer hmode: \vadjust{\penalty -10002}
+%   - In vmode :      \penalty -10003.
+% For a double-column float, it puts B onto the \@dbldeferlist.
+% The float specifier has two components:
+%    * A PLACEMENT SPECIFICATION, describing where the float may
+%      be placed.
+%    * A TYPE, which is a power of two--e.g., figures might be
+%      type 1 floats, tables type 2 floats, programs type 4 floats, etc.
+% The float specifier is encoded as follows, where bit 0 is the least
+% significant bit.
+%
+%  Bit    Meaning
+%  ---    -------
+%   0     1 iff the float may go where it appears in the text.
+%   1     1 iff the float may go on the top of a page.
+%   2     1 iff the float may go on the bottom of a page.
+%   3     1 iff the float may go on a float page.
+%   4     1 unless the PLACEMENT includes a !
+%   5     1 iff a type 1 float
+%   6     1 iff a type 2 float
+%   etc.
+%
+%  A negative float specifier is used to indicate a marginal note.
+%
+%     MACROS AND DATA STRUCTURES FOR PROCESSING FLOATS
+%     ------------------------------------------------
+%
+%  A FLOAT LIST consisting of the floats in boxes \boxa ... \boxN has
+%  the form:
+%         \@elt \boxa ... \@elt \boxN
+%  where  \boxI is defined by
+%         \newinsert\boxI
+%  Normally, \@elt is \let to \relax.  A test can be performed on the
+%  entire float list by locally \def'ing \@elt appropriately and
+%  executing the list.
+%  This is a lot more efficient than looping through the list.
+%
+%  The following macros are used for manipulating float lists.
+%
+%  \@next \CS \LIST {NONEMPTY}{EMPTY} ==  %% NOTE: ASSUME \@elt = \relax
+%    BEGIN  assume that \LIST == \@elt \B1 ... \@elt \Bn
+%           if n = 0
+%             then  EMPTY
+%             else  \CS    :=L \B1
+%                   \LIST  :=G \@elt \B2 ... \@elt \Bn
+%                   NONEMPTY
+%           fi
+%    END
+%
+%
+%  \@bitor\NUM\LIST : Globally sets switch @test to the disjunction for
+%         all I of bit  log2 \NUM of the float specifiers of all the
+%         floats in \LIST.
+%         I.e., @test is set to true iff there is at least one
+%         float in \LIST having bit  log2 \NUM  of its float specifier
+%         equal to 1.
+%
+%  Note: log2 [(\count I)/32] is the bit number corresponding to the
+%  type of float I.  To see if there is any float in \LIST having
+%  the same type as float I, you run \@bitor with
+%    \NUM = [(\count I)/32] * 32.
+%
+% \@bitor\NUM\LIST ==
+%   BEGIN
+%      @test :=G false
+%      { \@elt \CTR ==  if \NUM <> 0 then
+%                          if \count\CTR / \NUM is odd
+%                             then  @test := true       fi fi
+%        \LIST
+%      }
+%   END
+%
+%
+% \@cons\LIST\NUM : Globally sets \LIST := \LIST * \@elt \NUM
+%
+% \@cons\LIST\NUM ==
+%   BEGIN {  \@elt == \relax
+%            \LIST :=G \LIST \@elt \NUM
+%         }
+%
+%  BOX LISTS FOR FLOAT-PLACEMENT ALGORITHMS
+%
+%    \@freelist     : List of empty boxes for placing new floats.
+%    \@toplist      : List of floats to go at top of current column.
+%    \@midlist      : List of floats in middle of current column.
+%    \@botlist      : List of floats to go at bottom of current column.
+%    \@deferlist    : List of floats to go after current column.
+%    \@dbltoplist   : List of double-col. floats to go at top of current
+%                     page.
+%    \@dbldeferlist : List of double-column floats to go on subsequent
+%                     pages.
+%
+%  FLOAT-PLACEMENT ALGORITHMS
+%
+%
+%  \@addtobot : Tries to put insert \@currbox on \@botlist.
+%               Called only when:
+%                  * \ht BOX < \@colroom
+%                  * type of \@currbox not on \@deferlist
+%                  * \@colnum > 0
+%                  * @insert = false
+%               If it succeeds, then:
+%                  * sets @insert true
+%                  * decrements \@botroom by \ht BOX
+%                  * decrements \@botnum and \@colnum by 1
+%                  * decrements \@colroom by \ht BOX + either \floatsep
+%                    or \textfloatsep, as appropriate.
+%                  * sets \maxdepth to 0pt
+%
+%  \@addtotoporbot : Tries to put insert \@currbox on \@toplist or
+%                    \@botlist.
+%                    Called only under same conditions as \@addtobot.
+%                    If it succeeds, then:
+%                       * sets @insert true
+%                       * decrements \@toproom or \@botroom by \ht BOX
+%                       * decrements \@colnum and either \@topnum or
+%                         \@botnum by 1
+%                       * decrements \@colroom by \ht BOX + \floatsep
+%                         or \textfloatsep, as appropriate.
+%
+% \@addtocurcol : Tries to add \@currbox to current column, setting
+%                 @insert true if it succeeds, false otherwise.
+%                 It will add \@currbox to top only if bit 0 of
+%                 \count \@currbox is 0, and to the bottom only if
+%                 bit 0 = 0 or an earlier float of the same type is
+%                 put on the bottom.
+%                 If the float is put in the text, then
+%                 \penalty\interlinepenalty is put
+%                 right after the float, before the following \vskip,
+%                 and \outputpenalty :=L 0.
+%
+% \@addtonextcol : Tries to add \@currbox to the next column, setting
+%                  @insert true if it succeeds, false otherwise.
+%
+% \@addtodblcol : Tries to add \@currbox to the next double-column page,
+%                 adding it to \@dbltoplist if it succeeds and
+%                 \@dbldeferlist if it fails.
+%
+%
+%  \@addmarginpar ==
+%   BEGIN
+%     if \@currlist nonempty
+%       then remove \@marbox from \@currlist
+%            add \@marbox and \@currbox to \@freelist
+%                 %% NOTE: \@currbox = left box
+%       else LaTeX error: ?  %% shouldn't happen
+%     fi
+%     \@tempcnta := 1     %% 1 = right, -1 = left
+%     if @twocolumn = true
+%       then if @firstcolumn = true
+%              then \@tempcnta := -1
+%            fi
+%       else if @mparswitch = true
+%              then if count0 odd
+%                     else \@tempcnta := -1
+%                   fi
+%            fi
+%            if @reversemargin = true
+%               then \@tempcnta := -\@tempcnta
+%            fi
+%     fi
+%     if \@tempcnta < 0 then \box\@marbox :=G \box\@currbox
+%     fi
+%     \@tempdima   :=L maximum(\@mparbottom - \@pageht
+%                                           + ht of \@marbox, 0)
+%     if \@tempdima > 0 then LaTeX warning: 'marginpar moved' fi
+%     \@mparbottom :=G \@pageht + \@tempdima + depth of \@marbox
+%                          + \marginparpush
+%     \@tempdima   :=L \@tempdima - ht of \@marbox
+%     \box\@marbox :=G \box\@currbox
+%                                \vbox { \vskip \@tempdima
+%                                        \box\@marbox
+%                                       }
+%     height of \@marbox :=G depth of \@marbox :=G 0
+%     \kern -\@pagedp
+%     \nointerlineskip
+%     \hbox{ if @tempcnta > 0 then \hskip \columnwidth
+%                                 \hskip \marginparsep
+%                            else \hskip -\marginparsep
+%                                 \hskip -\marginparwidth
+%            fi
+%            \box\@marbox \hss
+%          }
+%     \nobreak
+%     \nointerlineskip
+%     \hbox{\vrule height 0 width 0 depth \@pagedp}
+%   END
+%
+%   Floats and marginpars add a lot of dead cycles.
+%    \begin{macrocode}
+\maxdeadcycles = 100
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\@elt\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@next#1#2#3#4{\ifx#2\@empty #4\else
+   \expandafter\@xnext #2\@@#1#2#3\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@xnext \@elt #1#2\@@#3#4{\def#3{#1}\gdef#4{#2}}
+%    \end{macrocode}
+%
+% \changes{v1.1v}{1996/07/26}{put \cs{global} into definition}
+%    \begin{macrocode}
+\def\@testfalse{\global\let\if@test\iffalse}
+\def\@testtrue {\global\let\if@test\iftrue}
+\@testfalse
+%    \end{macrocode}
+%
+% \changes{v1.1v}{1996/07/26}{remove \cs{global} before \cs{@test...}}
+%    \begin{macrocode}
+\def\@bitor#1#2{\@testfalse {\let\@elt\@xbitor
+   \@tempcnta #1\relax #2}}
+%    \end{macrocode}
+%    RmS 91/11/22: Added test for |\count#1 = 0|.
+%                  Suggested by Chris Rowley.
+%
+%
+% \changes{v1.1v}{1996/07/26}{remove \cs{global} before \cs{@test...}}
+%    \begin{macrocode}
+\def\@xbitor #1{\@tempcntb \count#1
+   \ifnum \@tempcnta =\z@
+   \else
+     \divide\@tempcntb\@tempcnta
+     \ifodd\@tempcntb \@testtrue\fi
+   \fi}
+%    \end{macrocode}
+%
+% DEFINITION OF FLOAT BOXES:
+% \changes{v1.3a}{2015/09/205}
+%         {extended \cs{@freelist}}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/10/01}%
+%<latexrelease>                 {\bx@ZZ}{Extended float list}%
+%<*2ekernel|latexrelease>
+\let\@elt\newinsert
+%<*2ekernel>
+\def\@freelist{%
+  \@elt\bx@A\@elt\bx@B\@elt\bx@C\@elt\bx@D\@elt\bx@E
+  \@elt\bx@F\@elt\bx@G\@elt\bx@H\@elt\bx@I\@elt\bx@J
+  \@elt\bx@K\@elt\bx@L\@elt\bx@M\@elt\bx@N
+  \@elt\bx@O\@elt\bx@P\@elt\bx@Q\@elt\bx@R}
+\@freelist
+%</2ekernel>
+\ifx\numexpr\@undefined\else
+\def\reserved@a{%
+  \@elt\bx@S\@elt\bx@T\@elt\bx@U\@elt\bx@V
+  \@elt\bx@W\@elt\bx@X\@elt\bx@Y\@elt\bx@Z
+  \@elt\bx@AA\@elt\bx@BB\@elt\bx@CC\@elt\bx@DD\@elt\bx@EE
+  \@elt\bx@FF\@elt\bx@GG\@elt\bx@HH\@elt\bx@II\@elt\bx@JJ
+  \@elt\bx@KK\@elt\bx@LL\@elt\bx@MM\@elt\bx@NN
+  \@elt\bx@OO\@elt\bx@PP\@elt\bx@QQ\@elt\bx@RR
+  \@elt\bx@SS\@elt\bx@TT\@elt\bx@UU\@elt\bx@VV
+  \@elt\bx@WW\@elt\bx@XX\@elt\bx@YY\@elt\bx@ZZ}
+\reserved@a
+\def\@elt{\noexpand\@elt\noexpand}
+\edef\@freelist{\@freelist\reserved@a}
+\fi
+\let\reserved@a\relax
+\let\@elt\relax
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\bx@ZZ}{Extended float list}%
+%<latexrelease>\def\@freelist{%
+%<latexrelease>  \@elt\bx@A\@elt\bx@B\@elt\bx@C\@elt\bx@D\@elt\bx@E
+%<latexrelease>  \@elt\bx@F\@elt\bx@G\@elt\bx@H\@elt\bx@I\@elt\bx@J
+%<latexrelease>  \@elt\bx@K\@elt\bx@L\@elt\bx@M\@elt\bx@N
+%<latexrelease>  \@elt\bx@O\@elt\bx@P\@elt\bx@Q\@elt\bx@R}
+%<latexrelease>  \insc@unt=234
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\@toplist{}
+\gdef\@botlist{}
+\gdef\@midlist{}
+\gdef\@currlist{}
+\gdef\@deferlist{}
+\gdef\@dbltoplist{}
+%    \begin{macrocode}
+% \changes{v1.2m}{2015/03/12}
+%         {initialise \cs{@dbldeferlist} again}
+%    The new algorithm stores page wide floats together with column floats
+%    in a single |\@deferlist| list. We keep |\@dbldeferlist| 
+%    initialised  as empty so that packages that are testing for
+%    deferred floats can use the same code for old or new float
+%    handling. 
+%    \end{macrocode}
+\gdef\@dbldeferlist{}
+%    \end{macrocode}
+%
+% PAGE LAYOUT PARAMETERS
+%    \begin{macrocode}
+\newdimen\topmargin
+\newdimen\oddsidemargin
+\newdimen\evensidemargin
+\let\@themargin=\oddsidemargin
+\newdimen\headheight
+\newdimen\headsep
+\newdimen\footskip
+\newdimen\textheight
+\newdimen\textwidth
+\newdimen\columnwidth
+\newdimen\columnsep
+\newdimen\columnseprule
+\newdimen\marginparwidth
+\newdimen\marginparsep
+\newdimen\marginparpush
+%    \end{macrocode}
+% \end{oldcomments}
+%
+% \begin{macro}{\AtBeginDvi}
+% \changes{v1.1c}{1994/11/05}
+%         {Added macro}
+% \begin{macro}{\@begindvibox}
+% \changes{v1.1c}{1994/11/05}
+%         {Added macro}
+% \changes{v1.1f}{1994/11/14}{Use normal box register: why a box?}
+% \changes{v1.1l}{1995/04/24}{Add \cs{vbox} latex/1392}
+%
+%    We use a box register in which to put
+%    stuff that must appear before anything else in the
+%    |.dvi| file.
+%
+%    The stuff in the box should not add any typeset material to the
+%    page when it is unboxed.
+%    \begin{macrocode}
+\newbox\@begindvibox
+\def \AtBeginDvi #1{%
+  \global \setbox \@begindvibox
+    \vbox{\unvbox \@begindvibox #1}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@maxdepth}
+%    This is not the right place to set this; it needs to be set in a
+%    class/style file when |\maxdepth| is set.
+%
+%    Also, many settings to |\maxdepth| should be to |\@maxdepth|,
+%    probably?
+% \task{All}{Sort out maxdepth: both should be set in the class files.}
+%    \begin{macrocode}
+\newdimen\@maxdepth
+\@maxdepth = \maxdepth
+%    \end{macrocode}
+%  \end{macro}
+% \begin{macro}{\paperheight}
+% \changes{v0.1a}{1993/11/23}{Register added}
+% \begin{macro}{\paperwidth}
+% \changes{v0.1a}{1993/11/23}{Register added}
+%    New |\paper|\ldots\ registers.
+%    \begin{macrocode}
+\newdimen\paperheight
+\newdimen\paperwidth
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\if@insert}
+% \begin{macro}{\if@fcolmade}
+% \begin{macro}{\if@specialpage}
+% \begin{macro}{\if@firstcolumn}
+% \begin{macro}{\if@twocolumn}
+% \begin{macro}{\if@twoside}
+% \begin{macro}{\if@reversemarginpar}
+% \begin{macro}{\if@mparswitch}
+% \begin{macro}{\col@number}
+% \changes{v1.0n}{1994/04/30}{Added \cs{col@number}}
+%    Local switches first:
+%    \begin{macrocode}
+\newif \if@insert
+%    \end{macrocode}
+%    These should definitely be global:
+%    \begin{macrocode}
+\newif \if@fcolmade
+\newif \if@specialpage \@specialpagefalse
+%    \end{macrocode}
+%    These should be global but are not always set globally in other
+%    files.
+%    \begin{macrocode}
+\newif \if@firstcolumn \@firstcolumntrue
+\newif \if@twocolumn   \@twocolumnfalse
+%    \end{macrocode}
+%    Not sure about these: two questions.
+%    Should things which must apply to a whole document be local or
+%    global (they probably should be `preamble only' commands)?
+%    Are these three such things?
+%    \begin{macrocode}
+\newif \if@twoside     \@twosidefalse
+\newif \if@reversemargin \@reversemarginfalse
+\newif \if@mparswitch  \@mparswitchfalse
+%    \end{macrocode}
+%    This counter has been imported from `multicol'.
+%    \begin{macrocode}
+\newcount \col@number
+\col@number \@ne
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{oldcomments}
+% INTERNAL REGISTERS
+%
+%    \begin{macrocode}
+\newcount\@topnum
+\newdimen\@toproom
+\newcount\@dbltopnum
+\newdimen\@dbltoproom
+\newcount\@botnum
+\newdimen\@botroom
+\newcount\@colnum
+\newdimen\@textmin
+\newdimen\@fpmin
+\newdimen\@colht
+\newdimen\@colroom
+\newdimen\@pageht
+\newdimen\@pagedp
+\newdimen\@mparbottom \@mparbottom\z@
+\newcount\@currtype
+\newbox\@outputbox
+\newbox\@leftcolumn
+\newbox\@holdpg
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@thehead{\@oddhead} % initialization
+\def\@thefoot{\@oddfoot}
+%    \end{macrocode}
+% \end{oldcomments}
+%
+%  \begin{macro}{\clearpage}
+% \changes{v1.1r}{1995/10/11}{Added a check so that it does not lose
+% the argument of \cs{twocolumn[...]}}
+%
+% The tests at the beginning are an experimental attempt to avoid a
+% completely empty page after a |\twocolumn[...]|.  This prevents the
+% text from the argument vanishing into a float box, never to be seen
+% again.  We hope that it does not produce wrong formatting in other
+% cases.
+% \changes{v1.1v}{1996/07/26}{add number of missing percents}
+%    \begin{macrocode}
+\def\clearpage{%
+  \ifvmode
+    \ifnum \@dbltopnum =\m@ne
+      \ifdim \pagetotal <\topskip
+        \hbox{}%
+      \fi
+    \fi
+  \fi
+  \newpage
+  \write\m@ne{}%
+  \vbox{}%
+  \penalty -\@Mi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\cleardoublepage}
+%
+%    \begin{macrocode}
+\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
+    \hbox{}\newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\onecolumn}
+% \changes{v1.0n}{1994/04/30}{Added setting of \cs{col@number}}
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def\onecolumn{%
+  \clearpage
+  \global\columnwidth\textwidth
+  \global\hsize\columnwidth
+  \global\linewidth\columnwidth
+  \global\@twocolumnfalse
+  \col@number \@ne
+  \@floatplacement}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\newpage}
+% \changes{v1.1x}{1996/09/29}{Checks for noskipsec and inlabel added}
+% \changes{v1.1x}{1996/09/29}{Checks for noskipsec and inlabel added}
+% \changes{v1.1y}{1996/09/30}{Checks for noskipsec and inlabel removed
+%                 pending further tests}
+% \changes{v1.1z}{1996/10/24}{Better checks for noskipsec and
+%                 inlabel added, plus nobreak}
+% \changes{v1.2a}{1996/10/25}{Reset all flags explicitly}
+%    The two checks at the beginning ensure that an item label or
+%    run-in section title immediately before a |\newpage| get printed
+%    on the correct page, the one before the page break.
+%
+%    All three tests are largely to make error processing more robust;
+%    that is why they all reset the flags explicitly, even when it
+%    would appear that this would be done by a |\leavevmode|.
+%    \begin{macrocode}
+\def \newpage {%
+  \if@noskipsec
+    \ifx \@nodocument\relax
+      \leavevmode
+      \global \@noskipsecfalse
+    \fi
+  \fi
+  \if@inlabel
+    \leavevmode
+    \global \@inlabelfalse
+  \fi
+  \if@nobreak \@nobreakfalse \everypar{}\fi
+  \par
+  \vfil
+  \penalty -\@M}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@emptycol}
+% \changes{v1.0n}{1994/04/30}{Empty column action added:
+%                 \cs{@emptycol}}
+%    It may be better to use an invisible rule rather than an empty
+%    box here.
+%    \begin{macrocode}
+\def \@emptycol {\vbox{}\penalty -\@M}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\twocolumn}
+%  \begin{macro}{\@topnewpage}
+% \changes{v1.0f}{1993/12/05}{Commands changed}
+% \changes{v1.0g}{1993/12/06}{\cs{@floatplacement} placement bug
+% fixed}
+% \changes{v1.0j}{1993/12/17}{check for vsize too small added}
+% \changes{v1.2c}{1997/11/09}{Documentation of vsize check enhanced}
+%    There are several bug fixes to the two-column stuff here.
+%
+% \changes{v1.0n}{1994/04/30}{Added setting of \cs{col@number}}
+%    \begin{macrocode}
+\def \twocolumn {%
+  \clearpage
+  \global\columnwidth\textwidth
+  \global\advance\columnwidth-\columnsep
+  \global\divide\columnwidth\tw@
+  \global\hsize\columnwidth
+  \global\linewidth\columnwidth
+  \global\@twocolumntrue
+  \global\@firstcolumntrue
+  \col@number \tw@
+%    \end{macrocode}
+%    There is no reason to put a |\@dblfloatplacement| here since
+%    |\@topnewpage| ignores these settings.
+%    The |\@floatplacement| is needed in case this comes after some
+%    changes.
+% \changes{v1.0h}{1993/12/12}{braces removed}
+%    \begin{macrocode}
+  \@ifnextchar [\@topnewpage\@floatplacement
+}
+%    \end{macrocode}
+%
+%    Note that here, getting a box from the freelist can assume
+%    success since this comes just after a |\clearpage|.
+% \changes{v1.0n}{1994/04/30}{Added setting of \cs{col@number}}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Use \cs{color@begingroup} for colour}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Use \cs{normalcolor}}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR) Extra box added to remove colour resetting from vmode}
+% \changes{v1.1b}{1994/11/05}
+%         {Use new \cs{color@hbox} concept.}
+% \changes{v1.1i}{1994/11/21}{Changed to \cs{color@vbox}}
+% \changes{v1.1z}{1996/10/24}{Added \cs{@nodocument} to trap
+%                  \cs{twocolumn} in the preamble}
+%    \begin{macrocode}
+\long\def \@topnewpage [#1]{%
+  \@nodocument
+  \@next\@currbox\@freelist{}{}%
+  \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox {%
+        \hsize\textwidth
+        \@parboxrestore
+        \col@number \@ne
+        #1%
+        \vskip -\dbltextfloatsep
+             }%
+    \color@endbox
+%    \end{macrocode}
+%    Added size test and warning message; perhaps we should use
+%    an error message.
+% \changes{v1.0l}{1994/03/15}{Corrected and amended warning message}
+% \changes{v1.0m}{1994/04/24}{Warning message removed as it will be
+% generated later}
+%    \begin{macrocode}
+  \ifdim \ht\@currbox>\textheight
+    \ht\@currbox \textheight
+  \fi
+%    \end{macrocode}
+%    This next line is not essential but it is more robust to make this
+%    value non-zero, in case of weird errors.
+%
+%    This next bit is what is needed from |\@addtodblcol|, plus some
+%    extra checks for error trapping.
+%    \begin{macrocode}
+  \global \count\@currbox \tw@
+  \@tempdima -\ht\@currbox
+  \advance \@tempdima -\dbltextfloatsep
+  \global \advance \@colht \@tempdima
+  \ifx \@dbltoplist \@empty
+  \else
+    \@latexerr{Float(s) lost}\@ehb
+    \let \@dbltoplist \@empty
+  \fi
+  \@cons \@dbltoplist \@currbox
+%    \end{macrocode}
+%    This setting of |\@dbltopnum| is used only to change the
+%    typesetting in\\ |\@combinedblfloats|.
+%    \begin{macrocode}
+  \global \@dbltopnum \m@ne
+%<*trace>
+    \fl@trace{dbltopnum set to -1 (= \the \@dbltopnum) (topnewpage)}%
+%</trace>
+%    \end{macrocode}
+%    At points such as this we need to check that there is still a
+%    minimal amount of room left on the page; this uses an arbitrary
+%    small value at present; but note that this value is larger than
+%    that used when checking that page is too full of normal floats.
+%
+%    If there is little room left we just force a page-break, OK?
+%    This involves producing two empty columns.  The second empty
+%    column may be produced by |\output|, in which case an extra,
+%    misleading, warning will be generated, OK?  (This happens only
+%    when there is too little room left on the page for any float.)
+%    Otherwise (\ie if the size is such that it is allowed as a normal
+%    float) the extra |\@emptycol| will be invoked in the second
+%    column by the conditional code guarded by the |\if@firstcolumn|
+%    test.
+%
+%    I now think that the cut-off point here should be |3\baselineskip|,
+%    but we make it a bit less so that 3 lines of text will be
+%    allowed, OK?
+%
+%    Since this happens only when there is nothing on the page but the
+%    `top-box', the empty box should not cause any problem other than
+%    some overfull box messages, which is not entirely misleading.
+%
+%    Here we need two page-ends since both columns need to be empty.
+% \task{???}{Make it less arbitrary?}
+% \changes{v1.0j}{1993/12/17}{Page room test added}
+% \changes{v1.0l}{1994/03/15}{Warning added: it should be improved}
+% \changes{v1.0m}{1994/04/24}{Message changed to give more info}
+% \changes{v1.0n}{1994/04/30}{Message changed for Frank}
+% \changes{v1.0n}{1994/04/30}{Empty column action added:
+% \cs{@emptycol}}
+% \changes{v1.0n}{1994/04/30}{Cut-off point changed to
+% 3\cs{baselineskip}}
+% \changes{v1.1t}{1996/05/24}{Cut-off point changed to
+% 2.5\cs{baselineskip}}
+%    \begin{macrocode}
+  \ifdim \@colht<2.5\baselineskip
+    \@latex@warning@no@line {Optional argument of \noexpand\twocolumn
+                too tall on page \thepage}%
+    \@emptycol
+    \if@firstcolumn
+    \else
+      \@emptycol
+    \fi
+  \else
+    \global \vsize \@colht
+    \global \@colroom \@colht
+    \@floatplacement
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\output}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%  \begin{macro}{\@specialoutput}
+% \changes{v0.1c}{1993/11/23}{Command changed}
+% \changes{v1.0f}{1993/12/06}{Unboxing of 255 added to rescue writes}
+%    This needs some small adjustments.  We cannot
+%    guarantee that the float mechanism will interact correctly with
+%    this stuff, but that mechanism does not always work properly
+%    with footnotes already.
+%
+%    RmS 91/09/29:
+%
+%    added reset of |\par| to the output routine.
+%    This avoids problems when the output routine is
+%    called within a list where |\par| may be a no-op.
+%
+%    \begin{macrocode}
+\output {%
+  \let \par \@@par
+  \ifnum \outputpenalty<-\@M
+    \@specialoutput
+  \else
+    \@makecol
+    \@opcol
+%    \end{macrocode}
+%    Moved to |\@opcol|: |\@floatplacement|.
+%    \begin{macrocode}
+    \@startcolumn
+%    \end{macrocode}
+%    This loop could be replaced by an |\expandafter| tail
+%    recursion in |\@startcolumn|.
+%    \begin{macrocode}
+    \@whilesw \if@fcolmade \fi
+      {%
+%<*trace>
+       \fl@trace{PAGE: float \if@twocolumn column \else page \fi
+                    completed}%
+%</trace>
+       \@opcol\@startcolumn}%
+  \fi
+  \ifnum \outputpenalty>-\@Miv
+%    \end{macrocode}
+%    At points such as this we need to check that there is still a
+%    minimal amount of room left on the page; this uses an arbitrary
+%    small value at present.  If there is little room left we just
+%    force a page-break, OK?
+%
+%    This bit is essential only if a float has just been processed so
+%    maybe it should be moved; but this is the natural place at which
+%    to set the vsize and a test would need to be done anyway.  A
+%    check has been added to ensure that there really has been a
+%    change in the value of |\@colroom|.
+%
+%    Since this happens only when there is nothing on the page but
+%    floats, the empty box should not cause any problem other than
+%    some overfull box messages, which is not entirely misleading.
+%
+%    The twocolumn case does not need any extra code here since this
+%    is the |\output| itself; in the second column there will still
+%    not be enough room left so |\@emptycol| will be executed again
+%    when the OR is called by the-page builder when it gets to the
+%    penalty inserted by the first execution.  (The page-builder is
+%    never invoked whilst the OR is being executed since it builds a
+%    inner vlist; thus any conditional code for the two-column case
+%    within |\output| may not get executed with the correct value of
+%    |\if@firstcolumn|.
+%
+% \task{???}{Make it less arbitrary?}
+% \changes{v1.0j}{1993/12/17}{Page room test added}
+% \changes{v1.0m}{1994/04/24}{Message changed to give more info and
+% `top' removed}
+% \changes{v1.0n}{1994/04/30}{Extra empty column added for
+% twocolumn case (wrong, see below)}
+% \changes{v1.0n}{1994/04/30}{Extra empty column added for
+% twocolumn case}
+% \changes{v1.0n}{1994/04/30}{Empty column action added:
+% \cs{@emptycol}}
+% \changes{v1.0n}{1994/04/30}{Cut-off point changed to
+% 2\cs{baselineskip}}
+% \changes{v1.1t}{1996/05/24}{Cut-off point changed to
+% 1.5\cs{baselineskip}}
+% \changes{v1.1t}{1996/05/24}{Check that \cs{@colroom} is less
+% than \cs{vsize}, indicating that a float has been added}
+% \changes{v1.1u}{1996/05/25}{Correct the above check}
+% \changes{v1.2c}{1997/11/09}{Remove incorrect code: only one
+% \cs{@emptycol} is needed here}
+%    \begin{macrocode}
+    \ifdim \@colroom<1.5\baselineskip
+      \ifdim \@colroom<\textheight
+        \@latex@warning@no@line {Text page \thepage\space
+                               contains only floats}%
+        \@emptycol
+%         \if@twocolumn
+%           \if@firstcolumn
+%           \else
+%             \@emptycol
+%           \fi
+%         \fi
+      \else
+        \global \vsize \@colroom
+      \fi
+    \else
+      \global \vsize \@colroom
+    \fi
+  \else
+    \global \vsize \maxdimen
+  \fi
+}
+%    \end{macrocode}
+%
+% \begin{oldcomments}
+% CHANGES TO \@specialoutput:
+% * \penalty\z@ changed to \penalty\interlinepenalty so \samepage
+%   works properly with figure and table environments.
+%   (Changed 23 Oct 86)
+%
+% * Definition of \@specialoutput changed 26 Feb 88 so \@pageht and
+%   \@pagedp aren't changed for a marginal note.
+%   (Change suggested by Chris Rowley.)
+% \end{oldcomments}
+%
+%    \begin{macrocode}
+\gdef\@specialoutput{%
+   \ifnum \outputpenalty>-\@Mii
+     \@doclearpage
+   \else
+     \ifnum \outputpenalty<-\@Miii
+       \ifnum \outputpenalty<-\@MM \deadcycles \z@ \fi
+       \global \setbox\@holdpg \vbox {\unvbox\@cclv}%
+     \else
+%    \end{macrocode}
+%    Note that |\boxmaxdepth| should not be set here since we wish to
+%    record the natural depth of the holdpg box.
+%
+%    This is changed so as to not lose anything, such as writes
+%    and marks, which may get into box 255 and should be returned to
+%    the list.  This should only happen when the first penalty in the
+%    mechanism is discarded and therefore |\@holdpg| should always be
+%    void in this case.  This can happen because a penalty is
+%    discarded whenever there is no box on the list.
+%
+%    It was just: |\setbox\@tempboxa \box \@cclv|.
+%
+%    The last box which is removed is the box put there by the
+%    double-penalty mechanism.  The |\unskip| then removes the
+%    |\topskip| which is put there since the box is the first on the
+%    page.
+% \task{CAR/FMi}{Is it more efficient to check whether the holdpg box
+% is void and then act accordingly?}
+%    \begin{macrocode}
+       \global \setbox\@holdpg \vbox{%
+                      \unvbox\@holdpg
+                      \unvbox\@cclv
+%    \end{macrocode}
+%    We must now remove the box added by the float mechanism and the
+%    |\topskip| glue therefore added above it by \TeX.
+%    \begin{macrocode}
+                      \setbox\@tempboxa \lastbox
+                      \unskip
+                                     }%
+%    \end{macrocode}
+%    These two are needed as separate dimensions only by
+%    |\@addmarginpar|; for other purposes we put the whole size into
+%    |\@pageht| (see below).
+%    \begin{macrocode}
+       \@pagedp \dp\@holdpg
+       \@pageht \ht\@holdpg
+       \unvbox \@holdpg
+       \@next\@currbox\@currlist{%
+         \ifnum \count\@currbox>\z@
+%    \end{macrocode}
+%    Putting the whole size into |\@pageht| (see above).
+%    \begin{macrocode}
+           \advance \@pageht \@pagedp
+           \ifvoid\footins \else
+             \advance \@pageht \ht\footins
+             \advance \@pageht \skip\footins
+             \advance \@pageht \dp\footins
+           \fi
+           \ifvbox \@kludgeins
+%    \end{macrocode}
+%    We want to make the adjustment due to this insert only if the
+%    non-star form is used.  The *-form will probably not work with
+%    floats, but maybe it still could make some adjustment here even
+%    so?
+%    \begin{macrocode}
+             \ifdim \wd\@kludgeins=\z@
+               \advance \@pageht \ht\@kludgeins
+%<*trace>
+               \fl@trace {Extra size added: \the \ht\@kludgeins}%
+%</trace>
+             \fi
+           \fi
+%    \end{macrocode}
+%    This version puts the inserts back just before the additional
+%    material; it could be moved earlier, before unboxing the
+%    page-so-far.  Neither is guaranteed not to put things on the wrong
+%    page.  This version is similar to the original version.
+%    \begin{macrocode}
+           \@reinserts
+           \@addtocurcol
+         \else
+           \@reinserts
+           \@addmarginpar
+         \fi
+         }\@latexbug
+%    \end{macrocode}
+%    A 2e change: use |\addpenalty| instead of |\penalty| here.  Some
+%    penalty is needed to create a potential break-point immediately
+%    after the reinserts (or the marginal).  Otherwise there can be no
+%    possibility to break here and this can cause the reinserts or the
+%    marginal to appear on the next page (which is often incorrect).
+%    However, if the nobreak flag is true, a |\nobreak| must be
+%    correct.
+% \changes{v1.1i}{1994/11/21}{Added \cs{if@nobreak} test}
+% \changes{v1.1z}{1996/10/24}{Added \cs{nobreak} as appropriate}
+%    \begin{macrocode}
+       \ifnum \outputpenalty<\z@
+         \if@nobreak
+           \nobreak
+         \else
+           \addpenalty \interlinepenalty
+         \fi
+       \fi
+     \fi
+   \fi
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\@testwrongwidth}
+% \begin{macro}{\f@depth}
+% \changes{v1.2n}{2015/02/21}{macro added(latexrelease)}
+%
+% Test if the float box has the wrong width when trying to place it
+% into some area. (Actually
+% the test is for a conventional depth setting rather than for the
+% width of the float. For that reason the box depth was explicitly
+%   tailored when the float was created).
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/01}%
+%<latexrelease>                 {\@testwrongwidth}{float order in 2-column}%
+%<*2ekernel|latexrelease|fltrace>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@testwrongwidth #1{%
+  \ifdim\dp#1=\f@depth
+%<*trace>
+    \fl@trace{\string#1 
+              \ifdim\f@depth=\z@ single \else double \fi 
+              column float -- ok}%
+%</trace>
+  \else
+    \global\@testtrue
+%<*trace>
+    \fl@trace{\string#1
+              \ifdim\f@depth=\z@ double \else single \fi
+              column float -- wrong}%
+%</trace>
+  \fi}%
+%    \end{macrocode}
+%
+% Normally looking for single column floats, which have zero depth.
+%    \begin{macrocode}
+\let\f@depth\z@
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</2ekernel|latexrelease|fltrace>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}%
+%<latexrelease>                 {\@testwrongwidth}{float order in 2-column}%
+%<latexrelease>\let\@testwrongwidth\@undefined
+%<latexrelease>\let\f@depth\@undefined
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+%  \begin{macro}{\@doclearpage}
+%  \task{CAR/FMi}{Investigate better float clearance}
+%  \task{CAR/FMi}{Put non-boxes back in the `right place', or nowhere?}
+%    This is a very much an emergency action, just dumping everything:
+%    footnotes first then floats.  A more sophisticated version is
+%    needed; but even more urgent is a bug-free version (see, for
+%    example, pr/3528).
+%
+%    Also, it puts any left-over non-boxes (writes, specials, etc.) back
+%    after any float pages created: this is a very bad bug since,
+%    for example, a kludge insert will be in quite the wrong place
+%    and, worse, be irremovable and uncancelable.
+%
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+% All the remaining changes are replacing the double column defer list
+% or inserting the extra test |\@testwrongwidth|\marg{box} at suitable
+% places. That is at places where a box is taken off the deferlist.
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2015/01/01}{\@doclearpage}%
+%<latexrelease>                             {float order in 2-column}%
+%<*2ekernel|latexrelease>
+\def \@doclearpage {%
+     \ifvoid\footins
+%    \end{macrocode}
+% \changes{v1.2n}{2015/01/14}{Empty kludgeins box if necessary, pr/3528}
+%    \begin{macrocode}
+       \ifvbox\@kludgeins
+         {\setbox \@tempboxa \box \@kludgeins}%
+%<*trace>
+         \fl@trace {kludgeins box made void}%
+%</trace>
+       \fi
+       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
+       \setbox\@tempboxa\box\@cclv
+       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
+       \global \let \@toplist \@empty
+       \global \let \@botlist \@empty
+       \global \@colroom \@colht
+       \ifx \@currlist\@empty
+       \else
+          \@latexerr{Float(s) lost}\@ehb
+          \global \let \@currlist \@empty
+       \fi
+       \@makefcolumn\@deferlist
+       \@whilesw\if@fcolmade \fi{\@opcol\@makefcolumn\@deferlist}%
+       \if@twocolumn
+         \if@firstcolumn
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \xdef\@deferlist{\@dbltoplist\@deferlist}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \global \let \@dbltoplist \@empty
+           \global \@colht \textheight
+           \begingroup
+              \@dblfloatplacement
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+              \@makefcolumn\@deferlist
+              \@whilesw\if@fcolmade \fi{\@outputpage
+                                        \@makefcolumn\@deferlist}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \endgroup
+         \else
+           \vbox{}\clearpage
+         \fi
+       \fi
+%    \end{macrocode}
+%    the next line is needed to avoid losing floats in certain
+%    circumstances a single call to the original |\doclearpage|
+%    will now no longer output all floats.
+% \changes{v1.2b}{2000/09/24}{FMi: ensure \cs{doclearpage}
+%     is called again until all floats are output.}
+%    \begin{macrocode}
+       \ifx\@deferlist\@empty \else\clearpage \fi
+     \else
+       \setbox\@cclv\vbox{\box\@cclv\vfil}%
+       \@makecol\@opcol
+       \clearpage
+     \fi
+}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\@doclearpage}%
+%<latexrelease>                             {float order in 2-column}%
+%<latexrelease>\def \@doclearpage {%
+%<latexrelease>     \ifvoid\footins
+%    \end{macrocode}
+% \changes{v1.2l}{2004/02/07}{Empty kludgeins box if necessary, pr/3528}
+%    We empty any left over kludge insert box here; this is a temporary fix.
+%    It should perhaps be applied to one page of cleared floats, but
+%    who cares?  The whole of this stuff needs completely redoing for
+%    many such reasons.
+%    \begin{macrocode}
+%<latexrelease>       \ifvbox\@kludgeins
+%<latexrelease>         {\setbox \@tempboxa \box \@kludgeins}%
+%<*trace>
+%<latexrelease>         \fl@trace {kludgeins box made void}%
+%</trace>
+%<latexrelease>       \fi
+%<latexrelease>       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
+%<latexrelease>       \setbox\@tempboxa\box\@cclv
+%<latexrelease>       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+%<latexrelease>       \global \let \@toplist \@empty
+%<latexrelease>       \global \let \@botlist \@empty
+%<latexrelease>       \global \@colroom \@colht
+%<latexrelease>       \ifx \@currlist\@empty
+%<latexrelease>       \else
+%<latexrelease>          \@latexerr{Float(s) lost}\@ehb
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+%<latexrelease>          \global \let \@currlist \@empty
+%<latexrelease>       \fi
+%<latexrelease>       \@makefcolumn\@deferlist
+%<latexrelease>       \@whilesw\if@fcolmade \fi
+%<latexrelease>                     {\@opcol\@makefcolumn\@deferlist}%
+%<latexrelease>       \if@twocolumn
+%<latexrelease>         \if@firstcolumn
+%<latexrelease>           \xdef\@dbldeferlist{\@dbltoplist\@dbldeferlist}%
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+%<latexrelease>           \global \let \@dbltoplist \@empty
+%<latexrelease>           \global \@colht \textheight
+%<latexrelease>           \begingroup
+%<latexrelease>              \@dblfloatplacement
+%<latexrelease>              \@makefcolumn\@dbldeferlist
+%<latexrelease>              \@whilesw\if@fcolmade \fi
+%<latexrelease>                    {\@outputpage\@makefcolumn\@dbldeferlist}%
+%<latexrelease>           \endgroup
+%<latexrelease>         \else
+%<latexrelease>           \vbox{}\clearpage
+%<latexrelease>         \fi
+%<latexrelease>       \fi
+%<latexrelease>     \else
+%<latexrelease>       \setbox\@cclv\vbox{\box\@cclv\vfil}%
+%<latexrelease>       \@makecol\@opcol
+%<latexrelease>       \clearpage
+%<latexrelease>     \fi
+%<latexrelease>  }%
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@opcol}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+% \changes{v1.0f}{1993/12/05}{Hook added}
+% \changes{v1.0j}{1993/12/17}{Hook removed}
+%    Several changes in detail here.
+%
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def \@opcol {%
+  \if@twocolumn
+    \@outputdblcol
+  \else
+    \@outputpage
+%<*trace>
+    \fl@trace{PAGE: one column (float? see above) page completed}%
+%</trace>
+%    \end{macrocode}
+%    Not needed since it comes after |\@outputpage|:
+%    \begin{macrocode}
+%   \global\@colht\textheight
+  \fi
+%    \end{macrocode}
+%    These do not need to be done every time |\@opcol| is used: they
+%    should be grouped together since they all need to be done at the
+%    end of the non-special output routine, or at the end of a clearpage
+%    one.
+%    \begin{macrocode}
+  \global \@mparbottom \z@ \global \@textfloatsheight \z@
+  \@floatplacement
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@makecol}
+% \changes{v0.1c}{1993/11/23}{Command changed}
+% \changes{v1.0b}{1993/11/29}{\cs{@makespecialcolbox} added}
+%    We must rewrite this macro to alllow for variations in page-makeup
+%    required by changes in page-length.
+%
+%    This uses a different macro if a special-length column is being
+%    produced.
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\gdef \@makecol {%
+   \ifvoid\footins
+     \setbox\@outputbox \box\@cclv
+   \else
+     \setbox\@outputbox \vbox {%
+%    \end{macrocode}
+%    This |\boxmaxdepth| setting is to ensure that  deep footnotes
+%    do not overwrite the footer (on account of the negative skip
+%    added later): it should use |\@maxdepth| otherwise the change is
+%    pointless when there are footnotes.
+% \task{CAR}{Investigate providing an option to put the footnotes
+%    below the bottom floats.}
+%
+%    But see also its use when combining floats.
+% \changes{v1.0l}{1994/03/15}{\cs{maxdepth} changed to \cs{@maxdepth}}
+%    \begin{macrocode}
+       \boxmaxdepth \@maxdepth
+%    \end{macrocode}
+%
+% \changes{v1.2e}{1999/01/06}{Added negative vskip, as when processing
+%      outputbox below: suggested by Fred Bartlett pr/2892}
+% \changes{1.2i}{2000/07/12}{Removed negative vskip, as it gives
+%    unacceptable results when the depth is large: pr/3189}
+% \changes{v1.2m}{2004/10/20}{Removed dead code}
+% \task{CAR}{As can be seen from the above two changes, getting a good
+%    layout here is difficult: fix!}
+%    \begin{macrocode}
+%       \@tempdima\dp\@cclv
+       \unvbox \@cclv
+%       \vskip-\@tempdima
+       \vskip \skip\footins
+%    \end{macrocode}
+% \changes{v1.1a}{1994/10/31}
+%     {(DPC/CAR)  Colour resetting moved to here}
+%    \begin{macrocode}
+       \color@begingroup
+         \normalcolor
+         \footnoterule
+         \unvbox \footins
+       \color@endgroup
+       }%
+   \fi
+%    \end{macrocode}
+%    The h floats have now been finally committed to this page so we
+%    can reset their list.  The top and bottom floats are then added
+%    to the page.
+% \changes{v1.2k}{2003/12/16}{Ensure that \cs{@elt} has a defined
+%                             state (pr/3586)}
+%    \begin{macrocode}
+   \let\@elt\relax
+   \xdef\@freelist{\@freelist\@midlist}%
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+   \global \let \@midlist \@empty
+   \@combinefloats
+%    \end{macrocode}
+%    The variations start here in case |\enlargethispage| has
+%    been used.
+%    \begin{macrocode}
+   \ifvbox\@kludgeins
+     \@makespecialcolbox
+   \else
+%    \end{macrocode}
+%    This extra reboxing is only needed to add the
+%    |\@texttop| and |\@textbotttom| but this could be done earlier,
+%    when the floats are added.
+%
+%    The |\boxmaxdepth| resetting here will have no effect unless
+%    |\@textbottom| ends with a box or rule.  So is this (or possibly
+%    |\@maxdepth|) the correct value?
+%
+%    The |\vskip -\dimen@|
+%    ensures that the visible depth of the box does not
+%    affect the placement of anything on the page.
+%    Thus very deep pages will overprint the footer; but these should
+%    have been prevented by suitable settings of the maxdepths at
+%    appropriate times.
+%
+%    If |\@textbottom| ends with a box or rule of non-zero depth
+%    then this skip adjustment should be done again after it.
+%
+%    I think that the final boxing of the main text page could have a
+%    common ending which may make it simpler to see what is going on.
+%
+%    This needs further investigation, especially in the `special
+%    case'.
+%    \task{CAR}{Further investigation of makecol}
+%
+%    Also, the |\boxmaxdepth| setting here affects what happens within
+%    |\@texttop| and |\@textbottom|, should it?  Is it needed at all?
+% \changes{v1.0l}{1994/03/15}{Removed boxmaxdepth setting.}
+%
+% RmS 91/10/22: Replaced |\dimen128| by |\dimen@|.
+%
+%    \begin{macrocode}
+     \setbox\@outputbox \vbox to\@colht {%
+%       \boxmaxdepth \maxdepth                   %??
+       \@texttop
+       \dimen@ \dp\@outputbox
+       \unvbox \@outputbox
+       \vskip -\dimen@
+       \@textbottom
+       }%
+   \fi
+   \global \maxdepth \@maxdepth
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@reinserts}
+% \changes{v1.0e}{1993/12/01}{Command added}
+%    This is the code which reinserts the inserts.  It puts them all
+%    in one place; this can make some of them come out on the wrong
+%    page.
+%    It has been put into a separate macro to expedite experimentation.
+%    \begin{macrocode}
+\gdef \@reinserts{%
+  \ifvoid\footins\else\insert\footins{\unvbox\footins}\fi
+  \ifvbox\@kludgeins\insert\@kludgeins
+                      {\unvbox\@kludgeins}\fi
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\@makespecialcolbox}
+% \changes{v1.0b}{1993/11/29}{Command added}
+%    This implements certain variations in page-makeup.
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\gdef \@makespecialcolbox {%
+%<*trace>
+   \fl@trace{Kludgeins ht \the\ht\@kludgeins\space
+                           dp \the\dp\@kludgeins\space
+                           wd \the\wd\@kludgeins}%
+%</trace>
+%    \end{macrocode}
+%    First we find the natural height of the column.
+%
+%    See above for discussion of what is happening here.
+%
+%    This needs further investigation, especially in this `special
+%    case'.
+% \changes{v1.0k}{1994/02/08}{boxmaxdepth setting removed}
+%    \begin{macrocode}
+   \setbox\@outputbox \vbox {%
+     \@texttop
+     \dimen@ \dp\@outputbox
+     \unvbox\@outputbox
+     \vskip-\dimen@
+     }%
+   \@tempdima \@colht
+   \ifdim \wd\@kludgeins>\z@
+%    \end{macrocode}
+%    Note that in this case (the *-version), the height of the
+%    |\@kludgeins| box is not used since its value is somewhat
+%    arbitrary: it need only be big enough to ensure that the
+%    page-break is not taken prematurely.
+%
+%    Here we calculate how much vertical space needs to be added in
+%    order to enable the column to fit into a box of size |\@colht|
+%    using the best information we have about the amount of shrink
+%    available (another thing which is known internally about a box,
+%    but cannot be accessed at the \TeX{} level!).
+%
+%    This needs \TeX3 otherwise |\pageshrink| is zero anyway; it may
+%    not be exactly the figure we wish as it is the total available
+%    from the all the material collected before the page-break
+%    decision is made.  It will, we think, always be an overestimate
+%    of the actual shrink in the box; therefore this should always
+%    force the shortest possible column with the possibility of an
+%    overfull box.
+%
+%    This should work for bothe flush- and ragged-bottom setting since
+%    it makes the contents no smaller than the size (|\@colht|) of the
+%    box into which they are put.
+%
+%    Their should perhaps be an upper limit, of 0pt?, on the extra
+%    space added to force shrinking.
+%    \task{CAR}{Further investigation of kludge-* space}
+%
+%    See above for a discussion of the |\boxmaxdepth| setting here.
+%
+% \changes{v1.0k}{1994/02/08}{boxmaxdepth setting added}
+% \changes{v1.0l}{1994/03/15}{Removed boxmaxdepth setting.}
+%    \begin{macrocode}
+     \advance \@tempdima -\ht\@outputbox
+     \advance \@tempdima \pageshrink
+%<*trace>
+     \fl@trace {Natural ht of col: \the \ht\@outputbox}%
+     \fl@trace {\string \@colht: \the \@colht}%
+     \fl@trace {Pageshrink added: \the \pageshrink}%
+     \fl@trace {Hence, space added: \the \@tempdima}%
+%</trace>
+     \setbox\@outputbox \vbox to \@colht {%
+%       \boxmaxdepth \maxdepth
+       \unvbox\@outputbox
+       \vskip \@tempdima
+       \@textbottom
+       }%
+%    \end{macrocode}
+%    For the unstarred version, the final size of the page is
+%    precisely specified.  Therefore, at least for the flush-bottom
+%    case, we need to ensure that, visually, it has this size exactly.
+%
+%    Thus we calculate this size and set the material in a box of this
+%    size, which is then put into a box of size |\@colht| with |\vss|
+%    at the bottom.
+%    \begin{macrocode}
+   \else
+     \advance \@tempdima -\ht\@kludgeins
+%<*trace>
+     \fl@trace {Natural ht of col: \the \ht\@outputbox}%
+     \fl@trace {\string \@colht: \the \@colht}%
+     \fl@trace {Extra size added: -\the \ht \@kludgeins}%
+     \fl@trace {Hence, height of inner box: \the \@tempdima}%
+     \fl@trace {Max? pageshrink available: \the \pageshrink}%
+%</trace>
+%    \end{macrocode}
+%    This type of final packaging could be done always; this may
+%    simplify all of this page-makeup.
+%
+%    It is not necessary to set |\boxmaxdepth| here since the
+%    |\@outputbox| ends with glue.
+% \changes{v1.0k}{1994/02/03}{correct mistakes in the documentation}
+%    \begin{macrocode}
+     \setbox \@outputbox \vbox to \@colht {%
+       \vbox to \@tempdima {%
+         \unvbox\@outputbox
+         \@textbottom}%
+       \vss}%
+   \fi
+%    \end{macrocode}
+%    Finally we need to explicitly make the insert box void.
+%    \begin{macrocode}
+   {\setbox \@tempboxa \box \@kludgeins}%
+%<*trace>
+     \fl@trace {kludgeins box made void}%
+%</trace>
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@texttop}
+%  \begin{macro}{\@textbottom}
+%    These do nothing as a default.
+%    \begin{macrocode}
+%<*2ekernel>
+\let \@texttop \relax
+\let \@textbottom \relax
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\@resetactivechars}
+%  \begin{macro}{\@activechar@info}
+%
+% \changes{v1.0n}{1994/04/30}{\cs{@activechar@warning} changed to
+% \cs{@activechar@info}}
+% RmS 93/09/06:
+% added hook to protect against certain active characters in the
+% output routine. Default checks are for active space and end-of-line.
+% \changes{v1.0u}{1994/05/23}{Added \cs{MessageBreak}}
+%    \begin{macrocode}
+\def\@activechar@info #1{%
+      \@latex@info@no@line {Active #1 character found while
+                            output routine is active
+                            \MessageBreak
+                            This may be a bug in a package file
+                            you are using}%
+}
+%    \end{macrocode}
+%
+%    Do not put any spaces in this next bit!
+% \changes{1.2f}{1999/10/09}{Reset definition of active prime
+%    character (used in math mode)}
+%    \begin{macrocode}
+\begingroup
+\obeylines\obeyspaces%
+\catcode`\'\active%
+\gdef\@resetactivechars{%
+\def^^M{\@activechar@info{EOL}\space}%
+\def {\@activechar@info{space}\space}%
+\let'\active@math@prime}%
+\endgroup
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\@outputpage}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%  \begin{macro}{\@shipoutsetup}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% \changes{v1.1s}{1995/11/10}{Command removed}
+%  \begin{macro}{\@writesetup}
+% \changes{v1.1s}{1995/11/10}{Command removed}
+% \changes{v1.1o}{1995/07/21}{Command added}
+% \changes{v1.0f}{1993/12/05}{\cs{@startpagehook} added}
+% \changes{v1.0j}{1993/12/17}{---and then removed}
+% \changes{v1.0p}{1994/05/12}{\cs{normalcolor}added}
+% \changes{v1.0s}{1994/05/20}{Added setting of \cs{protect}
+%                    during \cs{shipout}.}
+% \changes{v1.0u}{1994/05/23}{Changed resetting of \cs{protect} after
+% shipout to use \cs{aftergroup}}
+% \changes{v1.1b}{1994/11/05}
+%         {Use new \cs{color@hbox} concept.}
+% \changes{v1.1b}{1994/11/05}
+%         {Change protect settings for new-style, protect-free
+%         aux-files.}
+% \changes{v1.1c}{1994/11/05}
+%         {Add new \cs{AtBeginDvi} concept}
+% \changes{v1.1e}{1994/11/10}
+%         {Modify \cs{protect} setting}
+% \changes{v1.1f}{1994/11/14}
+%         {Modify new \cs{AtBeginDvi} concept}
+% \changes{v1.1o}{1995/07/21}
+%         {New, experimental, versions: need in-lining}
+% \changes{v1.1s}{1995/11/10}{In-lined}
+% \changes{v1.1w}{1996/09/21}{Added \cs{@parboxrestore} and made
+% consequent deletions: wait for the howls of protest}
+%
+%    The |\color@hbox| hooks here are used to avoid putting just a
+%    colour special into an otherwise empty box (in a header or
+%    footer).  These boxes are often set to be completely empty and so
+%    adding a special produces a very underfull box message.
+%
+%    There has been extensive tidying up of the old code here;
+%    including the removal of a level of grouping.
+%
+%    The setting of |\protect| immediately before the |\shipout|
+%    is needed so that protected commands within |\write|s are
+%    handled correctly.
+%
+%    Within shipout's vbox it is reset to its default value, |\relax|.
+%
+%    Resetting it to its default value after the shipout has been
+%    completed (and the contents of the writes have been expanded)
+%    must be done by use of |\aftergroup|.
+%    This is because it must have the value |\relax|
+%    before macros coming from other uses of |\aftergroup| within
+%    this box are expanded.
+%
+%    Putting this into the |\aftergroup| token list does not affect
+%    the definition used in expanding the |\write|s because the
+%    aftergroup token list is only constructed when popping the
+%    save-stack, it is not expanded until after the shipout is
+%    completed.
+%
+%    Question: should things from an |\aftergroup| within the shipped
+%    out box be executed in the environment set up for the writes, or
+%    after it finishes?
+%
+%    A lot of this code has been in-lined tp prevent mis-use of
+%    internal commands as hooks.
+%    \begin{macrocode}
+\def\@outputpage{%
+\begingroup           % the \endgroup is put in by \aftergroup
+%    \end{macrocode}
+%    Now all the set-up stuff has been in-lined for Frank.
+%
+%    First the stuff for the writes.
+%
+%    From here \ldots\ was in the command |\@writesetup|.
+%    \begin{macrocode}
+  \let \protect \noexpand
+%    \end{macrocode}
+%
+%    RmS 93/08/19: Redefined accents to allow changes in font encoding;
+%    but exactly why was this needed?
+%
+%    The |\catcode`\ = 10| was removed as it was considered useless
+%    (presumably because nothing gets tokenised during shipout).
+%
+%    This was put in as some error produced active spaces in a mark, I
+%    think.
+%
+%    Why was the hyphen reset?
+%
+%    \begin{macrocode}
+  \@resetactivechars
+%    \end{macrocode}
+%    If a page break happens between the start of a list and its first
+%    item the |@newlist| will be true and this will mess up any list
+%    that is used in the header or footer of the page. So we have to
+%    reset that flag.
+% \changes{v1.2h}{2000/07/19}
+%  {Reset and restore \cs{@if@newlist} for internal/3231}
+% \changes{v1.2j}{2001/01/07}
+%  {And do it in the right macro! (pr/3286)}
+%    \begin{macrocode}
+  \global\let\@@if@newlist\if@newlist
+  \global\@newlistfalse
+%    \end{macrocode}
+%
+% \changes{v1.0q}{1994/05/16}{Changed setting of accents (FMi):
+%     with the new encoding setup they can use \cs{let}.
+%     It could also use the new internal commands?}
+% \changes{v1.1l}{1995/04/24}{Reset \cmd\\ latex/1451 (DPC)}
+%    This next hook replaces the following:
+%    \begin{verbatim}
+%      \let\-\@dischyph
+%      \let\'\@acci\let\`\@accii\let\=\@acciii
+%      \let\\\@normalcr
+%      \let\par\@@par %% 15 Sep 87 (this was once inside the box)
+%    \end{verbatim}
+%    and it does more than they did; in particular it sets:
+%    \begin{verbatim}
+%      \parindent\z@
+%      \parskip\z@skip
+%      \everypar{}%
+%      \leftskip\z@skip
+%      \rightskip\z@skip
+%      \parfillskip\@flushglue
+%      \lineskip\normallineskip
+%      \baselineskip\normalbaselineskip
+%      \sloppy
+%    \end{verbatim}
+%
+%    \begin{macrocode}
+  \@parboxrestore
+%    \end{macrocode}
+%    \ldots\ to here was in the command |\@writesetup|.
+%    \begin{macrocode}
+  \shipout \vbox{%
+    \set@typeset@protect
+    \aftergroup \endgroup
+    \aftergroup \set@typeset@protect
+                                % correct? or just restore by ending
+                                % the group?
+%    \end{macrocode}
+%    This first bit has been moved inside the shipped out box.
+%
+%    Now the setup inside the shipped out box; this should contain all
+%    the stuff that could only affect typesetting; other stuff may need
+%    to be reset for the writes also.
+%
+%    From here \ldots\ was in the command |\@shipoutsetup|.
+%    \begin{macrocode}
+  \if@specialpage
+    \global\@specialpagefalse\@nameuse{ps@\@specialstyle}%
+  \fi
+  \if@twoside
+    \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
+         \let\@themargin\oddsidemargin
+    \else \let\@thehead\@evenhead
+       \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
+    \fi
+  \fi
+%    \end{macrocode}
+%
+%    The rest was always inside the box.
+%
+%    RmS 91/08/15: aded this line:
+%    \begin{macrocode}
+  \reset@font
+%    \end{macrocode}
+%    RmS 93/08/06 Added |\lineskiplimit=0pt| to guard against it being
+%              nonzero: e.g. by |\offinterlineskip| being in effect.
+%
+%    There are probably lots of other things that may need resetting.
+%
+%    \begin{macrocode}
+  \normalsize
+%    \end{macrocode}
+% Reset the space factors.
+% \changes{v1.2b}{1997/04/14}
+%     {Call \cs{normalsfcodes} (from patch file) latex/2404}
+%    \begin{macrocode}
+  \normalsfcodes
+%    \end{macrocode}
+%
+% Reset these here (previously reset separately for head and foot)
+% \changes{v1.2b}{1997/04/14}
+%     {Move \cs{label} and \cs{index} (from patch file)}
+%    \begin{macrocode}
+  \let\label\@gobble
+  \let\index\@gobble
+  \let\glossary\@gobble
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \baselineskip\z@skip \lineskip\z@skip \lineskiplimit\z@
+%    \end{macrocode}
+%    \ldots\ to here was in the command |\@shipoutsetup|.
+%    \begin{macrocode}
+    \@begindvi
+    \vskip \topmargin
+    \moveright\@themargin \vbox {%
+      \setbox\@tempboxa \vbox to\headheight{%
+        \vfil
+        \color@hbox
+          \normalcolor
+          \hb@xt@\textwidth{\@thehead}%
+        \color@endbox
+        }%                        %% 22 Feb 87
+      \dp\@tempboxa \z@
+      \box\@tempboxa
+      \vskip \headsep
+      \box\@outputbox
+      \baselineskip \footskip
+      \color@hbox
+        \normalcolor
+        \hb@xt@\textwidth{\@thefoot}%
+      \color@endbox
+      }%
+    }%
+%    \end{macrocode}
+%   |\endgroup| now inserted by |\aftergroup|
+%
+% Restore |\if@newlist|
+%    \begin{macrocode}
+  \global\let\if@newlist\@@if@newlist
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \global \@colht \textheight
+  \stepcounter{page}%
+%    \end{macrocode}
+%    It is now clear that this does something useful, thanks to Piet
+%    van Oostrum.  It is needed because a float page is made without
+%    using TeX's page-builder; thus the output routine is never called
+%    so the marks are not updated.
+%    \begin{macrocode}
+  \let\firstmark\botmark
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\@begindvi}
+% \changes{v1.1c}{1994/11/05}
+%         {Added macro}
+% \changes{v1.1f}{1994/11/14}{Use normal box register: why a box?}
+%
+%    This unboxes stuff that must appear before anything else in the
+%    |.dvi| file, then returns that box register to the free list and
+%    cancels itself.
+%
+%    The stuff in the box should not add any typeset material to the
+%    page.
+%    \begin{macrocode}
+\def \@begindvi{%
+  \unvbox \@begindvibox
+  \global\let \@begindvi \@empty
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@combinefloats}
+% \begin{macro}{\@cflt}
+% \changes{v1.0h}{1993/12/12}{name changed}
+% \begin{macro}{\@cflb}
+%    The |\boxmaxdepth| setting here was not made local to
+%    a box so was dangerous.  It is needed only within the box made
+%    by |\@cflt| (and not normally even there), so it has been
+%    moved there; this also agrees with the original pseudocode.
+%
+% \changes{v1.0h}{1993/12/12}{boxmaxdepth setting moved}
+%    \begin{macrocode}
+\def \@combinefloats {%
+%    \boxmaxdepth \maxdepth
+    \ifx \@toplist\@empty \else \@cflt \fi
+    \ifx \@botlist\@empty \else \@cflb \fi
+}
+%    \end{macrocode}
+%
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+\def \@cflt{%
+    \let \@elt \@comflelt
+    \setbox\@tempboxa \vbox{}%
+    \@toplist
+    \setbox\@outputbox \vbox{%
+                             \boxmaxdepth \maxdepth
+                             \unvbox\@tempboxa
+                             \vskip -\floatsep
+                             \topfigrule
+                             \vskip \textfloatsep
+                             \unvbox\@outputbox
+                             }%
+    \let\@elt\relax
+    \xdef\@freelist{\@freelist\@toplist}%
+    \global\let\@toplist\@empty
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def \@cflb {%
+    \let\@elt\@comflelt
+    \setbox\@tempboxa \vbox{}%
+    \@botlist
+    \setbox\@outputbox \vbox{%
+                             \unvbox\@outputbox
+                             \vskip \textfloatsep
+                             \botfigrule
+                             \unvbox\@tempboxa
+                             \vskip -\floatsep
+                             }%
+    \let\@elt\relax
+    \xdef\@freelist{\@freelist\@botlist}%
+    \global \let \@botlist\@empty
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\@comflelt}
+% \begin{macro}{\@comdblflelt}
+% \begin{macro}{\@combinedblfloats}
+%
+%    \begin{macrocode}
+\def\@comflelt#1{\setbox\@tempboxa
+      \vbox{\unvbox\@tempboxa\box #1\vskip\floatsep}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@comdblflelt#1{\setbox\@tempboxa
+      \vbox{\unvbox\@tempboxa\box #1\vskip\dblfloatsep}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def \@combinedblfloats{%
+  \ifx \@dbltoplist \@empty
+  \else
+    \setbox\@tempboxa \vbox{}%
+    \let \@elt \@comdblflelt
+    \@dbltoplist
+    \let \@elt \relax
+    \xdef \@freelist {\@freelist\@dbltoplist}%
+    \global\let \@dbltoplist \@empty
+    \setbox\@outputbox \vbox to\textheight
+%    \end{macrocode}
+%
+%    The setting of |\boxmaxdepth| here has no effect since the
+%    |\@outputbox| should already have depth zero.  Even so, it would
+%    have no effect on the layout of the page.
+% \changes{v1.0l}{1994/03/15}{Removed boxmaxdepth setting.}
+%    \begin{macrocode}
+      {%\boxmaxdepth\maxdepth   %% probably not needed, CAR
+       \unvbox\@tempboxa\vskip-\dblfloatsep
+%    \end{macrocode}
+%    Here we need different typesetting if the top float comes from
+%    |\@topnewpage|.
+% \changes{v1.0n}{1994/04/30}{Removed rule in topnewpage case}
+%    \begin{macrocode}
+       \ifnum \@dbltopnum>\m@ne
+         \dblfigrule
+       \fi
+       \vskip \dbltextfloatsep
+       \box\@outputbox
+       }%
+  \fi
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@startcolumn}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%  \begin{macro}{\@startdblcolumn}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%
+%    We could combine (most of) these two into |\@startcol <list>|.
+%    Note that |\@xstartcol| was only used once (\ie in
+%    |\@startcolumn|); it has therefore been removed.  This is not quite
+%    as efficient but it now has the same structure as
+%    |\@startdblcolumn|.
+%
+%    The empty-list test has been moved to |\@tryfcolumn|.
+%
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def \@startcolumn {%
+  \global \@colroom \@colht
+  \@tryfcolumn \@deferlist
+  \if@fcolmade
+%<*trace>
+    \fl@trace{PAGE: float \if@twocolumn column \else page \fi
+                completed}%
+%</trace>
+  \else
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+    \begingroup
+      \let \reserved@b \@deferlist
+      \global \let \@deferlist \@empty
+      \let \@elt \@scolelt
+      \reserved@b
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%
+%    This one does not need to set |\@colht|.
+%
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel|fltrace>
+%<latexrelease|fltrace>\IncludeInRelease{2015/01/01}%
+%<latexrelease|fltrace>  {\@startdblcolumn}{float order in 2-column}%
+%<*2ekernel|latexrelease|fltrace>
+\def \@startdblcolumn {%
+  \@tryfcolumn \@deferlist
+  \if@fcolmade
+%<fltrace>    \fl@trace{PAGE: double float page completed}%
+  \else
+    \begingroup
+      \let \reserved@b \@deferlist
+      \global \let \@deferlist \@empty
+      \let \@elt \@sdblcolelt
+      \reserved@b
+    \endgroup
+  \fi
+}%
+%</2ekernel|latexrelease|fltrace>
+%<latexrelease|fltrace>\EndIncludeInRelease
+%<latexrelease|fltrace>\IncludeInRelease{0000/00/00}%
+%<latexrelease|fltrace>  {\@startdblcolumn}{float order in 2-column}%
+%<latexrelease|fltrace>\def \@startdblcolumn {%
+%    \end{macrocode}
+% Not needed since this always comes after |\@outputpage|:
+%    \begin{macrocode}
+%<latexrelease|fltrace>% \global \@colht \textheight
+%<latexrelease|fltrace>  \@tryfcolumn \@dbldeferlist
+%<latexrelease|fltrace>  \if@fcolmade
+%<*trace>
+%<latexrelease|fltrace>    \fl@trace{PAGE: double float page completed}%
+%</trace>
+%<latexrelease|fltrace>  \else
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+%<latexrelease|fltrace>    \begingroup
+%<latexrelease|fltrace>      \let \reserved@b \@dbldeferlist
+%<latexrelease|fltrace>      \global \let \@dbldeferlist \@empty
+%<latexrelease|fltrace>      \let \@elt \@sdblcolelt
+%<latexrelease|fltrace>      \reserved@b
+%<latexrelease|fltrace>    \endgroup
+%<latexrelease|fltrace>  \fi
+%<latexrelease|fltrace>}%
+%<latexrelease|fltrace>\EndIncludeInRelease
+%<*2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\@tryfcolumn}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%    Now tests if its list is empty before any further exertion.
+%
+%    \begin{macrocode}
+\def \@tryfcolumn #1{%
+  \global \@fcolmadefalse
+  \ifx #1\@empty
+  \else
+%<*trace>
+     \fl@trace{PAGE: try float \if@twocolumn column/page\else page\fi
+                  ---\string #1}%
+     \fl@trace{----- \string #1: #1}%
+%</trace>
+%    \end{macrocode}
+% \changes{v1.0h}{1993/12/12}{defs changed to lets}
+%    \begin{macrocode}
+    \xdef\@trylist{#1}%
+    \global \let \@failedlist \@empty
+    \begingroup
+      \let \@elt \@xtryfc \@trylist
+    \endgroup
+    \if@fcolmade
+      \@vtryfc #1%
+    \fi
+  \fi
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%
+%  \end{macro}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+% \begin{macro}{\@scolelt}
+%    \begin{macrocode}
+\def\@scolelt#1{\def\@currbox{#1}\@addtonextcol}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@sdblcolelt}
+%    \begin{macrocode}
+\def\@sdblcolelt#1{\def\@currbox{#1}\@addtodblcol}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@vtryfc}
+% \changes{v1.2d}{1997/11/19}{Reindent code, to be understandable(DPC).}
+%    \begin{macrocode}
+\def\@vtryfc #1{%
+  \global\setbox\@outputbox\vbox{}%
+  \let\@elt\@wtryfc
+  \@flsucceed
+  \global\setbox\@outputbox \vbox to\@colht{%
+    \vskip \@fptop
+    \vskip -\@fpsep
+    \unvbox \@outputbox
+    \vskip \@fpbot}%
+  \let\@elt\relax
+  \xdef #1{\@failedlist\@flfail}%
+  \xdef\@freelist{\@freelist\@flsucceed}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@wtryfc}
+%    \begin{macrocode}
+\def\@wtryfc #1{%
+  \global\setbox\@outputbox\vbox{%
+    \unvbox\@outputbox
+    \vskip\@fpsep
+    \box #1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xtryfc}
+% \changes{v1.1v}{1996/07/26}{remove \cs{global} before \cs{@test...}}
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{\@xtryfc}%
+%<latexrelease>                             {float order in 2-column}%
+%<*2ekernel|latexrelease>
+\def\@xtryfc #1{%
+  \@next\reserved@a\@trylist{}{}%
+  \@currtype \count #1%
+  \divide\@currtype\@xxxii
+  \multiply\@currtype\@xxxii
+  \@bitor \@currtype \@failedlist
+  \@testfp #1%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \@testwrongwidth #1%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \ifdim \ht #1>\@colht
+     \@testtrue
+  \fi
+  \if@test
+    \@cons\@failedlist #1%
+  \else
+    \@ytryfc #1%
+  \fi}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{\@xtryfc}%
+%<latexrelease>                             {float order in 2-column}%
+%<latexrelease>\def\@xtryfc #1{%
+%<latexrelease>  \@next\reserved@a\@trylist{}{}%
+%<latexrelease>  \@currtype \count #1%
+%<latexrelease>  \divide\@currtype\@xxxii
+%<latexrelease>  \multiply\@currtype\@xxxii
+%<latexrelease>  \@bitor \@currtype \@failedlist
+%<latexrelease>  \@testfp #1%
+%<latexrelease>  \ifdim \ht #1>\@colht
+%<latexrelease>    \@testtrue
+%<latexrelease>  \fi
+%<latexrelease>  \if@test
+%<latexrelease>    \@cons\@failedlist #1%
+%<latexrelease>  \else
+%<latexrelease>    \@ytryfc #1%
+%<latexrelease>  \fi}%
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ytryfc}
+%    \begin{macrocode}
+\def\@ytryfc #1{%
+  \begingroup
+    \gdef\@flsucceed{\@elt #1}%
+    \global\let\@flfail\@empty
+    \@tempdima\ht #1%
+    \let\@elt\@ztryfc
+    \@trylist
+    \ifdim \@tempdima >\@fpmin
+      \global\@fcolmadetrue
+    \else
+      \@cons\@failedlist #1%
+    \fi
+  \endgroup
+  \if@fcolmade
+    \let\@elt\@gobble
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ztryfc}
+% \changes{v1.1v}{1996/07/26}{remove \cs{global} before \cs{@test...}}
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}{@ztryfc}%
+%<latexrelease>                             {float order in 2-column}%
+%<*2ekernel|latexrelease>
+\def\@ztryfc #1{%
+  \@tempcnta\count #1%
+  \divide\@tempcnta\@xxxii
+  \multiply\@tempcnta\@xxxii
+  \@bitor \@tempcnta {\@failedlist \@flfail}%
+  \@testfp #1%
+%    \end{macrocode}
+%
+% not in fixfloats?
+%    \begin{macrocode}
+  \@testwrongwidth #1%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \@tempdimb\@tempdima
+  \advance\@tempdimb\ht #1%
+  \advance\@tempdimb\@fpsep
+  \ifdim \@tempdimb >\@colht
+    \@testtrue
+  \fi
+  \if@test
+    \@cons\@flfail #1%
+  \else
+    \@cons\@flsucceed #1%
+    \@tempdima\@tempdimb
+  \fi}%
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}{@ztryfc}%
+%<latexrelease>                             {float order in 2-column}%
+%<latexrelease>\def\@ztryfc #1{%
+%<latexrelease>  \@tempcnta \count#1%
+%<latexrelease>  \divide\@tempcnta\@xxxii
+%<latexrelease>  \multiply\@tempcnta\@xxxii
+%<latexrelease>  \@bitor \@tempcnta {\@failedlist \@flfail}%
+%<latexrelease>  \@testfp #1%
+%<latexrelease>  \@tempdimb\@tempdima
+%<latexrelease>  \advance\@tempdimb \ht#1%
+%<latexrelease>  \advance\@tempdimb\@fpsep
+%<latexrelease>  \ifdim \@tempdimb >\@colht
+%<latexrelease>    \@testtrue
+%<latexrelease>  \fi
+%<latexrelease>  \if@test
+%<latexrelease>    \@cons\@flfail #1%
+%<latexrelease>  \else
+%<latexrelease>    \@cons\@flsucceed #1%
+%<latexrelease>    \@tempdima\@tempdimb
+%<latexrelease>  \fi}%
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% The major changes for float suppression and the changes to the float
+% mechanism to make it conform to the documentation are in these next
+% macros.
+%
+%  \begin{macro}{\@addtobot}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%    Lots of changes.
+%
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def \@addtobot {%
+%<*trace>
+   \fl@trace{***Start addtobot}%
+%</trace>
+   \@getfpsbit 4\relax
+%<*trace>
+   \fl@trace{fpstype \ifodd \@tempcnta OK \else not \fi bot:
+                                                     \the \@fpstype}%
+%</trace>
+   \ifodd \@tempcnta
+     \@flsetnum \@botnum
+     \ifnum \@botnum>\z@
+       \@tempswafalse
+       \@flcheckspace \@botroom \@botlist
+       \if@tempswa
+%    \end{macrocode}
+%    This next line means that this page is produced with box 255
+%    having depth zero, rather than the normal maxdepth: is this
+%    needed, useful?
+% \task{CAR/FMi}{Investigate resetting of maxdepth: I do not think it is
+% necessary here; Frank does.}
+%    \begin{macrocode}
+         \global \maxdepth \z@
+         \@flupdates \@botnum \@botroom \@botlist
+%<*trace>
+         \fl@trace{colroom (after-bot) = \the \@colroom}%
+         \fl@trace{colnum (after-bot) = \the \@colnum}%
+         \fl@trace{botnum (after-bot) = \the \@botnum}%
+         \fl@trace{***Success: bot}%
+%</trace>
+         \@inserttrue
+       \fi
+%<*trace>
+     \else
+       \fl@trace{Fail: botnum = \the \@botnum:
+                                  fpstype \the \@fpstype=ORD?}%
+       \ifnum \@fpstype<\sixt@@n
+         \fl@trace{ERROR: !b float not successful (addtobot)}%
+       \fi
+%</trace>
+     \fi
+   \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@addtotoporbot}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%    Lots of changes.
+%
+%    \begin{macrocode}
+\def \@addtotoporbot {%
+%<*trace>
+   \fl@trace{***Start addtotoporbot}%
+%</trace>
+   \@getfpsbit \tw@
+%<*trace>
+   \fl@trace{fpstype \ifodd \@tempcnta OK \else not \fi top:
+                                                     \the \@fpstype}%
+%</trace>
+   \ifodd \@tempcnta
+     \@flsetnum \@topnum
+     \ifnum \@topnum>\z@
+       \@tempswafalse
+       \@flcheckspace \@toproom \@toplist
+       \if@tempswa
+         \@bitor\@currtype{\@midlist\@botlist}%
+%<*trace>
+           \fl@trace{(mid+bot)list: \@midlist, \@botlist:
+                              (addtotoporbot-before)}%
+%</trace>
+         \if@test
+%<*trace>
+         \fl@trace{type already on list: mid or bot---sent to addtobot}%
+%</trace>
+         \else
+          \@flupdates \@topnum \@toproom \@toplist
+%<*trace>
+          \fl@trace{colroom (after-top) = \the \@colroom}%
+          \fl@trace{colnum (after-top) = \the \@colnum}%
+          \fl@trace{topnum (after-top) = \the \@topnum}%
+          \fl@trace{***Success: top}%
+%</trace>
+          \@inserttrue
+         \fi
+       \fi
+%<*trace>
+     \else
+       \fl@trace{Fail: topnum = \the \@topnum: fpstype
+                                            \the \@fpstype=ORD?}%
+       \ifnum \@fpstype<\sixt@@n
+         \fl@trace{ERROR: !t float not successful (addtotoporbot)}%
+       \fi
+%</trace>
+     \fi
+   \fi
+   \if@insert
+   \else
+%<*trace>
+     \fl@trace{sent to addtobot (addtotoporbot)}%
+%</trace>
+     \@addtobot
+   \fi
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@addtocurcol}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+% \task{CAR}{Add rules around h floats for FMi}
+% \task{CAR}{Investigate pagebreak option possibilities}
+%    Lots of changes.
+%
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%<latexrelease|fltrace|flafter>\IncludeInRelease{2015/01/01}%
+%<latexrelease|fltrace|flafter>  {\@addtocurcol}{float order in 2-column}%
+%<*2ekernel|latexrelease|fltrace|flafter>
+\def \@addtocurcol {%
+%<*trace>
+  \fl@trace{***Start addtocurcol}%
+%</trace>
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+%<*trace>
+     \fl@trace{fpstype !p only (addtocurcol): \the \@fpstype = 8?}%
+%</trace>
+   \else
+     \ifnum \@fpstype=24
+%<*trace>
+       \fl@trace{fpstype p only (addtocurcol): \the \@fpstype = 24?}%
+%</trace>
+     \else
+       \@flsettextmin
+%    \end{macrocode}
+% This is a new adjustment which is quite a major change in
+% functionality; but it implements the documentation.
+% Note that |\@reqcolroom| will include the whole of the
+% page-so-far, and hence includes |\@textfloatsheight| of floats,
+% so before comparing it with |\@textmin|, we add this to
+% |\@textmin| also.
+%    \begin{macrocode}
+%<*trace>
+       \fl@trace{textfloatsheight (before) = \the \@textfloatsheight}%
+%</trace>
+       \advance \@textmin \@textfloatsheight
+       \@reqcolroom \@pageht
+%    \end{macrocode}
+% This line must be removed since |\@specialoutput| changed.
+%    \begin{macrocode}
+%       \advance \@reqcolroom \@pagedp
+%<*trace>
+       \fl@trace{textmin + textfloatsheight: \the \@textmin}%
+       \fl@trace{page-so-far: \the \@reqcolroom}%
+%</trace>
+       \ifdim \@textmin>\@reqcolroom
+         \@reqcolroom \@textmin
+%<*trace>
+         \fl@trace{ORD? textmin being used}%
+%</trace>
+       \fi
+       \advance \@reqcolroom \ht\@currbox
+%<*trace>
+       \fl@trace{float size = \the \ht \@currbox (addtocurcol)}%
+       \fl@trace{colroom = \the \@colroom (addtocurcol)}%
+       \fl@trace{reqcolroom = \the \@reqcolroom (addtocurcol)}%
+%</trace>
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum \@colnum>\z@
+           \@bitor\@currtype\@deferlist
+%    \end{macrocode}
+%    We need to defer the float also if its width
+%    doesn't fit.
+% \changes{v1.2n}{2000/09/24}{FMi: test for wide float was
+%    in wrong place}
+%    \begin{macrocode}
+          \@testwrongwidth\@currbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*trace>
+           \fl@trace{deferlist: \@deferlist: (addtocurcol-before)}%
+%</trace>
+           \if@test
+%<*trace>
+             \fl@trace{type already on list: defer (addtocurcol)}%
+%</trace>
+           \else
+             \@bitor\@currtype\@botlist
+%<*trace>
+           \fl@trace{botlist: \@botlist: (addtocurcol-before)}%
+%</trace>
+             \if@test
+%<*trace>
+               \fl@trace{type already on list: bot---sent to addtobot}%
+%</trace>
+               \@addtobot
+             \else
+%<*trace>
+               \fl@trace{fpstype \ifodd \@tempcnta OK \else not \fi
+                      here: \the \@fpstype}%
+%</trace>
+               \ifodd \count\@currbox
+                 \advance \@reqcolroom \intextsep
+                 \ifdim \@colroom>\@reqcolroom
+                   \global \advance \@colnum \m@ne
+                   \global \advance \@textfloatsheight \ht\@currbox
+%    \end{macrocode}
+% This may sometimes give an overestimate.
+%    \begin{macrocode}
+                   \global \advance \@textfloatsheight 2\intextsep
+                   \@cons \@midlist \@currbox
+%<*trace>
+                 \fl@trace{***Success: here}%
+                 \fl@trace{textfloatsheight (after-here) =
+                      \the \@textfloatsheight}%
+                 \fl@trace{colnum (after-here) = \the \@colnum}%
+%</trace>
+%    \end{macrocode}
+%
+% CHANGE TO |\@addtocurcol|:
+%
+% |\penalty\z@| changed to |\penalty\interlinepenalty| so |\samepage|
+% works properly with figure and table environments.
+% (Changed 23 Oct 86)
+%
+% There is also an |\addpenalty\interlinepenalty| above.
+%
+% Since in 2e |\samepage| is no longer supported, these could be
+% removed.
+%
+% Although it is best to use |\addvspace| in case two h floats come
+% together, this makes other spacing more difficult to adjust; whereas
+% if a user specifies two h floats together then they can more easily
+% get the spacing correct by ad hoc commands.
+%
+% It is necessary to adjust for the addition of |\parskip| here in
+% case the float is added between paragraphs (\ie when in vertical
+% mode).
+%
+% If the nobreak switch is true we need to reset it and clear
+% |\everypar| since the float may not reset the flag and cannot reset
+% the |\everypar| globally.
+% \changes{v1.0l}{1994/03/15}{Changed \cs{addvspace} to \cs{vskip}}
+% \changes{v1.1i}{1994/11/21}
+%   {Added \cs{if@nobreak} test before float box}
+% \changes{v1.1z}{1996/10/24}{Added \cs{nobreak}, etc as appropriate}
+%
+% Typesetting starts here (we are in vertical mode).
+%    \begin{macrocode}
+                   \if@nobreak
+                     \nobreak
+                     \@nobreakfalse
+                     \everypar{}%
+                   \else
+                     \addpenalty \interlinepenalty
+                   \fi
+                   \vskip \intextsep
+                   \box\@currbox
+                   \penalty\interlinepenalty
+                   \vskip\intextsep
+                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
+%    \end{macrocode}
+% Typesetting ends here.
+%    \begin{macrocode}
+                   \outputpenalty \z@
+                   \@inserttrue
+%<*trace>
+                 \else
+                   \fl@trace{Fail---no room at 2nd test of colroom
+                                 (addtocorcol \string\intextsep)}%
+%</trace>
+                 \fi
+               \fi
+               \if@insert
+               \else
+%    \end{macrocode}
+%   Next set of docstrip guards are a bit weird, essentially
+%   |\@addtotoporbot| ends up inside the kernel and the
+%   \texttt{fltrace} package and |\@addtobot| shows up in the
+%   \texttt{flafter} package. Guess that could have been done a bit
+%   more obvious :-)
+%    \begin{macrocode}
+%<*2ekernel|fltrace|latexrelease>
+%<*trace>
+                 \fl@trace{not here: sent to addtotoporbot}%
+%</trace>
+                 \@addtotoporbot
+%</2ekernel|fltrace|latexrelease>
+%<*!2ekernel&!fltrace&!latexrelease>
+%<*trace>
+                 \fl@trace{not here: sent to addtobot}%
+%</trace>
+                 \@addtobot
+%</!2ekernel&!fltrace&!latexrelease>
+               \fi
+             \fi
+           \fi
+%<*trace>
+         \else
+           \fl@trace{Fail: colnum = \the \@colnum:
+                        fpstype \the \@fpstype=ORD?}%
+           \ifnum \@fpstype<\sixt@@n
+             \fl@trace{ERROR: BANG float not successful (addtocurcol)}%
+           \fi
+%</trace>
+         \fi
+%<*trace>
+       \else
+         \fl@trace{Fail---no room: fl box ht: \the \ht \@currbox
+                                                     (addtocurcol)}%
+%</trace>
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@resethfps
+%<*trace>
+     \fl@trace{put on deferlist (addtocurcol)}%
+%</trace>
+     \@cons\@deferlist\@currbox
+%<*trace>
+     \fl@trace{deferlist: \@deferlist: (addtocurcol-after)}%
+%</trace>
+   \fi
+}%
+%</2ekernel|latexrelease|fltrace|flafter>
+%<latexrelease|fltrace|flafter>\EndIncludeInRelease
+%<latexrelease|fltrace|flafter>\IncludeInRelease{0000/00/00}%
+%<latexrelease|fltrace|flafter>  {\@addtocurcol}{float order in 2-column}%
+%<latexrelease|fltrace|flafter>\def \@addtocurcol {%
+%<*trace>
+%<latexrelease|fltrace|flafter>  \fl@trace{***Start addtocurcol}%
+%</trace>
+%<latexrelease|fltrace|flafter>   \@insertfalse
+%<latexrelease|fltrace|flafter>   \@setfloattypecounts
+%<latexrelease|fltrace|flafter>   \ifnum \@fpstype=8
+%<*trace>
+%<latexrelease|fltrace|flafter>     \fl@trace{fpstype !p only (addtocurcol):
+%<latexrelease|fltrace|flafter>                            \the \@fpstype = 8?}%
+%</trace>
+%<latexrelease|fltrace|flafter>   \else
+%<latexrelease|fltrace|flafter>     \ifnum \@fpstype=24
+%<*trace>
+%<latexrelease|fltrace|flafter>      \fl@trace{fpstype p only (addtocurcol):
+%<latexrelease|fltrace|flafter>                           \the \@fpstype = 24?}%
+%</trace>
+%<latexrelease|fltrace|flafter>     \else
+%<latexrelease|fltrace|flafter>       \@flsettextmin
+%    \end{macrocode}
+% This is a new adjustment which is quite a major change in
+% functionality; but it implements the documentation.
+% Note that |\@reqcolroom| will include the whole of the
+% page-so-far, and hence includes |\@textfloatsheight| of floats,
+% so before comparing it with |\@textmin|, we add this to
+% |\@textmin| also.
+%    \begin{macrocode}
+%<*trace>
+%<latexrelease|fltrace|flafter>       \fl@trace{textfloatsheight (before) = 
+%<latexrelease|fltrace|flafter>                        \the \@textfloatsheight}%
+%</trace>
+%<latexrelease|fltrace|flafter>       \advance \@textmin \@textfloatsheight
+%<latexrelease|fltrace|flafter>       \@reqcolroom \@pageht
+%    \end{macrocode}
+% This line must be removed since |\@specialoutput| changed.
+%    \begin{macrocode}
+%       \advance \@reqcolroom \@pagedp
+%<*trace>
+%<latexrelease|fltrace|flafter>       \fl@trace{textmin + textfloatsheight:
+%<latexrelease|fltrace|flafter>                                 \the \@textmin}%
+%<latexrelease|fltrace|flafter>       \fl@trace{page-so-far: \the \@reqcolroom}%
+%<latexrelease|fltrace|flafter>
+%</trace>
+%<latexrelease|fltrace|flafter>       \ifdim \@textmin>\@reqcolroom
+%<latexrelease|fltrace|flafter>         \@reqcolroom \@textmin
+%<*trace>
+%<latexrelease|fltrace|flafter>         \fl@trace{ORD? textmin being used}%
+%</trace>
+%<latexrelease|fltrace|flafter>       \fi
+%<latexrelease|fltrace|flafter>       \advance \@reqcolroom \ht\@currbox
+%<*trace>
+%<latexrelease|fltrace|flafter>       \fl@trace{float size = 
+%<latexrelease|fltrace|flafter>               \the \ht \@currbox (addtocurcol)}%
+%<latexrelease|fltrace|flafter>       \fl@trace{colroom =
+%<latexrelease|fltrace|flafter>                   \the \@colroom (addtocurcol)}%
+%<latexrelease|fltrace|flafter>       \fl@trace{reqcolroom =
+%<latexrelease|fltrace|flafter>                \the \@reqcolroom (addtocurcol)}%
+%</trace>
+%<latexrelease|fltrace|flafter>       \ifdim \@colroom>\@reqcolroom
+%<latexrelease|fltrace|flafter>         \@flsetnum \@colnum
+%<latexrelease|fltrace|flafter>         \ifnum \@colnum>\z@
+%<latexrelease|fltrace|flafter>           \@bitor\@currtype\@deferlist
+%<*trace>
+%<latexrelease|fltrace|flafter>           \fl@trace{deferlist:
+%<latexrelease|fltrace|flafter>              \@deferlist: (addtocurcol-before)}%
+%</trace>
+%<latexrelease|fltrace|flafter>           \if@test
+%<*trace>
+%<latexrelease|fltrace|flafter>             \fl@trace{type already on list:
+%<latexrelease|fltrace|flafter>                            defer (addtocurcol)}%
+%</trace>
+%<latexrelease|fltrace|flafter>           \else
+%<latexrelease|fltrace|flafter>             \@bitor\@currtype\@botlist
+%<*trace>
+%<latexrelease|fltrace|flafter>           \fl@trace{botlist: \@botlist:
+%<latexrelease|fltrace|flafter>                           (addtocurcol-before)}%
+%</trace>
+%<latexrelease|fltrace|flafter>             \if@test
+%<*trace>
+%<latexrelease|fltrace|flafter>               \fl@trace{type already on list:
+%<latexrelease|fltrace|flafter>                         bot---sent to addtobot}%
+%</trace>
+%<latexrelease|fltrace|flafter>               \@addtobot
+%<latexrelease|fltrace|flafter>             \else
+%<*trace>
+%<latexrelease|fltrace|flafter>               \fl@trace{fpstype
+%<latexrelease|fltrace|flafter>               \ifodd \@tempcnta OK \else not \fi
+%<latexrelease|fltrace|flafter>               here: \the \@fpstype}%
+%</trace>
+%<latexrelease|fltrace|flafter>               \ifodd \count\@currbox
+%<latexrelease|fltrace|flafter>                 \advance \@reqcolroom \intextsep
+%<latexrelease|fltrace|flafter>                 \ifdim \@colroom>\@reqcolroom
+%<latexrelease|fltrace|flafter>                  \global \advance \@colnum \m@ne
+%<latexrelease|fltrace|flafter>                  \global \advance
+%<latexrelease|fltrace|flafter>                   \@textfloatsheight\ht\@currbox
+%    \end{macrocode}
+% This may sometimes give an overestimate.
+%    \begin{macrocode}
+%<latexrelease|fltrace|flafter>                  \global \advance
+%<latexrelease|fltrace|flafter>                   \@textfloatsheight 2\intextsep
+%<latexrelease|fltrace|flafter>                   \@cons \@midlist \@currbox
+%<*trace>
+%<latexrelease|fltrace|flafter>                 \fl@trace{***Success: here}%
+%<latexrelease|fltrace|flafter>                 \fl@trace{textfloatsheight
+%<latexrelease|fltrace|flafter>                      (after-here) =
+%<latexrelease|fltrace|flafter>                      \the \@textfloatsheight}%
+%<latexrelease|fltrace|flafter>                 \fl@trace{colnum (after-here) =
+%<latexrelease|fltrace|flafter>                          \the \@colnum}%
+%</trace>
+%    \end{macrocode}
+%
+% CHANGE TO |\@addtocurcol|:
+%
+% |\penalty\z@| changed to |\penalty\interlinepenalty| so |\samepage|
+% works properly with figure and table environments.
+% (Changed 23 Oct 86)
+%
+% There is also an |\addpenalty\interlinepenalty| above.
+%
+% Since in 2e |\samepage| is no longer supported, these could be
+% removed.
+%
+% Although it is best to use |\addvspace| in case two h floats come
+% together, this makes other spacing more difficult to adjust; whereas
+% if a user specifies two h floats together then they can more easily
+% get the spacing correct by ad hoc commands.
+%
+% It is necessary to adjust for the addition of |\parskip| here in
+% case the float is added between paragraphs (\ie when in vertical
+% mode).
+%
+% If the nobreak switch is true we need to reset it and clear
+% |\everypar| since the float may not reset the flag and cannot reset
+% the |\everypar| globally.
+% \changes{v1.0l}{1994/03/15}{Changed \cs{addvspace} to \cs{vskip}}
+% \changes{v1.1i}{1994/11/21}
+%   {Added \cs{if@nobreak} test before float box}
+% \changes{v1.1z}{1996/10/24}{Added \cs{nobreak}, etc as appropriate}
+%
+% Typesetting starts here (we are in vertical mode).
+%    \begin{macrocode}
+%<latexrelease|fltrace|flafter>                   \if@nobreak
+%<latexrelease|fltrace|flafter>                     \nobreak
+%<latexrelease|fltrace|flafter>                     \@nobreakfalse
+%<latexrelease|fltrace|flafter>                     \everypar{}%
+%<latexrelease|fltrace|flafter>                   \else
+%<latexrelease|fltrace|flafter>                     \addpenalty\interlinepenalty
+%<latexrelease|fltrace|flafter>                   \fi
+%<latexrelease|fltrace|flafter>                   \vskip \intextsep
+%<latexrelease|fltrace|flafter>                   \box\@currbox
+%<latexrelease|fltrace|flafter>                   \penalty\interlinepenalty
+%<latexrelease|fltrace|flafter>                   \vskip\intextsep
+%<latexrelease|fltrace|flafter>                   \ifnum\outputpenalty 
+%<latexrelease|fltrace|flafter>                               <-\@Mii \vskip
+%<latexrelease|fltrace|flafter>                        -\parskip\fi
+%    \end{macrocode}
+% Typesetting ends here.
+%    \begin{macrocode}
+%<latexrelease|fltrace|flafter>                   \outputpenalty \z@
+%<latexrelease|fltrace|flafter>                   \@inserttrue
+%<*trace>
+%<latexrelease|fltrace|flafter>                 \else
+%<latexrelease|fltrace|flafter>  \fl@trace{Fail---no room at 2nd test of colroom
+%<latexrelease|fltrace|flafter>                (addtocorcol \string\intextsep)}%
+%</trace>
+%<latexrelease|fltrace|flafter>                 \fi
+%<latexrelease|fltrace|flafter>               \fi
+%<latexrelease|fltrace|flafter>               \if@insert
+%<latexrelease|fltrace|flafter>               \else
+%    \end{macrocode}
+%   Next set of docstrip guards are a bit weird, essentially
+%   |\@addtotoporbot| ends up inside the kernel and the
+%   \texttt{fltrace} package and |\@addtotoporbot| shows up in the
+%   \texttt{flafter} package. Guess that could have been done a bit
+%   more obvious :-)
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+%<*trace>
+%<latexrelease|fltrace|flafter>      \fl@trace{not here: sent to addtotoporbot}%
+%</trace>
+%<latexrelease|fltrace|flafter>                 \@addtotoporbot
+%</2ekernel|fltrace>
+%<*!2ekernel&!autoload&!fltrace>
+%<*trace>
+%<latexrelease|fltrace|flafter>       \fl@trace{not here: sent to addtobot}%
+%</trace>
+%<latexrelease|fltrace|flafter>                 \@addtobot
+%</!2ekernel&!autoload&!fltrace>
+%<latexrelease|fltrace|flafter>               \fi
+%<latexrelease|fltrace|flafter>             \fi
+%<latexrelease|fltrace|flafter>           \fi
+%<*trace>
+%<latexrelease|fltrace|flafter>         \else
+%<latexrelease|fltrace|flafter>         \fl@trace{Fail: colnum = \the \@colnum:
+%<latexrelease|fltrace|flafter>                    fpstype \the \@fpstype=ORD?}%
+%<latexrelease|fltrace|flafter>         \ifnum \@fpstype<\sixt@@n
+%<latexrelease|fltrace|flafter>  \fl@trace{ERROR: BANG float not successful 
+%<latexrelease|fltrace|flafter>                                  (addtocurcol)}%
+%<latexrelease|fltrace|flafter>           \fi
+%</trace>
+%<latexrelease|fltrace|flafter>         \fi
+%<*trace>
+%<latexrelease|fltrace|flafter>       \else
+%<latexrelease|fltrace|flafter>         \fl@trace{Fail---no room: fl box ht: 
+%<latexrelease|fltrace|flafter>               \the \ht \@currbox (addtocurcol)}%
+%</trace>
+%<latexrelease|fltrace|flafter>       \fi
+%<latexrelease|fltrace|flafter>     \fi
+%<latexrelease|fltrace|flafter>   \fi
+%<latexrelease|fltrace|flafter>   \if@insert
+%<latexrelease|fltrace|flafter>   \else
+%<latexrelease|fltrace|flafter>     \@resethfps
+%<*trace>
+%<latexrelease|fltrace|flafter>     \fl@trace{put on deferlist (addtocurcol)}%
+%</trace>
+%<latexrelease|fltrace|flafter>     \@cons\@deferlist\@currbox
+%<*trace>
+%<latexrelease|fltrace|flafter>     \fl@trace{deferlist: \@deferlist:
+%<latexrelease|fltrace|flafter>                          (addtocurcol-after)}%
+%</trace>
+%<latexrelease|fltrace|flafter>   \fi
+%<latexrelease|fltrace|flafter>  }%
+%<latexrelease|fltrace|flafter>\EndIncludeInRelease
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@addtonextcol}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%    Lots of changes.
+%
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%<latexrelease|fltrace>\IncludeInRelease{2015/01/01}
+%<latexrelease|fltrace>  {\@addtonextcol}{float order in 2-column}%
+%<*2ekernel|fltrace>
+\def\@addtonextcol{%
+  \begingroup
+%<*trace>
+   \fl@trace{***Start addtonextcol}%
+%</trace>
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+%<*trace>
+     \fl@trace{fpstype not curcol: \the \@fpstype = 8?}%
+%</trace>
+   \else
+     \ifnum \@fpstype=24
+%<*trace>
+       \fl@trace{fpstype not curcol: \the \@fpstype = 24?}%
+%</trace>
+     \else
+       \@flsettextmin
+%<*trace>
+       \fl@trace{text-so-far: 0pt (top of col)}%
+%</trace>
+       \@reqcolroom \ht\@currbox
+%<*trace>
+       \fl@trace{float size: \the \@reqcolroom (addtonextcol)}%
+%</trace>
+       \advance \@reqcolroom \@textmin
+%<*trace>
+       \fl@trace{colroom = \the \@colroom (addtonextcol)}%
+       \fl@trace{reqcolroom = \the \@reqcolroom (addtonextcol)}%
+%</trace>
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum\@colnum>\z@
+            \@bitor\@currtype\@deferlist
+%<*trace>
+            \fl@trace{deferlist: \@deferlist: (addtonextcol-before)}%
+%</trace>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+            \@testwrongwidth\@currbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+            \if@test
+%<*trace>
+              \fl@trace{type already on list: defer (addtonextcol)}%
+%</trace>
+            \else
+%<*trace>
+              \fl@trace{sent to addtotoporbot (addtonextcol)}%
+%</trace>
+              \@addtotoporbot
+            \fi
+         \fi
+%<*trace>
+       \else
+         \fl@trace{Fail---no room: fl box ht: \the \ht \@currbox
+                                                  (addtonextcol)}%
+%</trace>
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+%<*trace>
+     \fl@trace{put back on deferlist (addtonextcol)}%
+%</trace>
+     \@cons\@deferlist\@currbox
+%<*trace>
+     \fl@trace{deferlist: \@deferlist: (addtonextcol-after)}%
+%</trace>
+   \fi
+%<*trace>
+  \fl@trace{End of addtonextcol -- locally counts:}%
+  \fl@trace{col: \the\@colnum. top: \the \@topnum. bot: \the \@botnum.}%
+%</trace>
+  \endgroup
+%<*trace>
+ \fl@trace{End of addtonextcol -- globally counts:}%
+ \fl@trace{col: \the\@colnum. top: \the \@topnum. bot: \the \@botnum.}%
+%</trace>
+}%
+%</2ekernel|fltrace>
+%<latexrelease|fltrace>\EndIncludeInRelease
+%<latexrelease|fltrace>\IncludeInRelease{0000/00/00}%
+%<latexrelease|fltrace>  {\@addtonextcol}{float order in 2-column}%
+%<latexrelease|fltrace>\def\@addtonextcol{%
+%<latexrelease|fltrace>  \begingroup
+%<*trace>
+%<latexrelease|fltrace>   \fl@trace{***Start addtonextcol}%
+%</trace>
+%<latexrelease|fltrace>   \@insertfalse
+%<latexrelease|fltrace>   \@setfloattypecounts
+%<latexrelease|fltrace>   \ifnum \@fpstype=8
+%<*trace>
+%<latexrelease|fltrace>     \fl@trace{fpstype not curcol:
+%<latexrelease|fltrace>                    \the \@fpstype = 8?}%
+%</trace>
+%<latexrelease|fltrace>   \else
+%<latexrelease|fltrace>     \ifnum \@fpstype=24
+%<*trace>
+%<latexrelease|fltrace>       \fl@trace{fpstype not curcol:
+%<latexrelease|fltrace>                       \the \@fpstype = 24?}%
+%</trace>
+%<latexrelease|fltrace>     \else
+%<latexrelease|fltrace>       \@flsettextmin
+%<*trace>
+%<latexrelease|fltrace>       \fl@trace{text-so-far: 0pt (top of col)}%
+%</trace>
+%<latexrelease|fltrace>       \@reqcolroom \ht\@currbox
+%<*trace>
+%<latexrelease|fltrace>       \fl@trace{float size:
+%<latexrelease|fltrace>               \the \@reqcolroom (addtonextcol)}%
+%<latexrelease|fltrace>
+%</trace>
+%<latexrelease|fltrace>       \advance \@reqcolroom \@textmin
+%<*trace>
+%<latexrelease|fltrace>       \fl@trace{colroom =
+%<latexrelease|fltrace>                  \the \@colroom (addtonextcol)}%
+%<latexrelease|fltrace>       \fl@trace{reqcolroom =
+%<latexrelease|fltrace>               \the \@reqcolroom (addtonextcol)}%
+%</trace>
+%<latexrelease|fltrace>       \ifdim \@colroom>\@reqcolroom
+%<latexrelease|fltrace>         \@flsetnum \@colnum
+%<latexrelease|fltrace>         \ifnum\@colnum>\z@
+%<latexrelease|fltrace>            \@bitor\@currtype\@deferlist
+%<*trace>
+%<latexrelease|fltrace>            \fl@trace{deferlist: \@deferlist:
+%<latexrelease|fltrace>                          (addtonextcol-before)}%
+%</trace>
+%<latexrelease|fltrace>            \if@test
+%<*trace>
+%<latexrelease|fltrace>              \fl@trace{type already on list:
+%<latexrelease|fltrace>                           defer (addtonextcol)}%
+%</trace>
+%<latexrelease|fltrace>            \else
+%<*trace>
+%<latexrelease|fltrace>              \fl@trace{sent to addtotoporbot
+%<latexrelease|fltrace>                                 (addtonextcol)}%
+%</trace>
+%<latexrelease|fltrace>              \@addtotoporbot
+%<latexrelease|fltrace>            \fi
+%<latexrelease|fltrace>         \fi
+%<*trace>
+%<latexrelease|fltrace>       \else
+%<latexrelease|fltrace>         \fl@trace{Fail---no room: fl box ht:
+%<latexrelease|fltrace>              \the \ht \@currbox (addtonextcol)}%
+%</trace>
+%<latexrelease|fltrace>       \fi
+%<latexrelease|fltrace>     \fi
+%<latexrelease|fltrace>   \fi
+%<latexrelease|fltrace>   \if@insert
+%<latexrelease|fltrace>   \else
+%<*trace>
+%<latexrelease|fltrace>     \fl@trace{put back on deferlist
+%<latexrelease|fltrace>                                (addtonextcol)}%
+%</trace>
+%<latexrelease|fltrace>     \@cons\@deferlist\@currbox
+%<*trace>
+%<latexrelease|fltrace>     \fl@trace{deferlist: \@deferlist:
+%<latexrelease|fltrace>                           (addtonextcol-after)}%
+%</trace>
+%<latexrelease|fltrace>   \fi
+%<*trace>
+%<latexrelease|fltrace>   \fl@trace{End of addtonextcol --
+%<latexrelease|fltrace>                             locally counts:}%
+%<latexrelease|fltrace>   \fl@trace{col: \the \@colnum. 
+%<latexrelease|fltrace>      top: \the \@topnum. bot: \the \@botnum.}%
+%</trace>
+%<latexrelease|fltrace>  \endgroup
+%<*trace>
+%<latexrelease|fltrace>  \fl@trace{End of addtonextcol --
+%<latexrelease|fltrace>                           globally counts:}%
+%<latexrelease|fltrace>  \fl@trace{col: \the \@colnum.
+%<latexrelease|fltrace>        top: \the \@topnum. bot: \the \@botnum.}%
+%</trace>
+%<latexrelease|fltrace>}%
+%<latexrelease|fltrace>\EndIncludeInRelease
+%    \end{macrocode}
+%
+%  \end{macro}
+%
+%  \begin{macro}{\@addtodblcol}
+% \changes{v1.0f}{1993/12/05}{Command changed}
+%    Lots of changes.
+%
+% \changes{v1.2n}{2015/01/14}{float order in 2-column (latexrelease)}
+%    \begin{macrocode}
+%<latexrelease|fltrace>\IncludeInRelease{2015/01/01}%
+%<latexrelease|fltrace>  {\@addtodblcol}{float order in 2-column}%
+%<*2ekernel|latexrelease|fltrace>
+\def\@addtodblcol{%
+  \begingroup
+%<*trace>
+  \fl@trace{***Start addtodblcol}%
+%</trace>
+   \@insertfalse
+   \@setfloattypecounts
+   \@getfpsbit \tw@
+%<*trace>
+   \fl@trace{fpstype \ifodd \@tempcnta OK \else not \fi dbltop:
+                                                     \the \@fpstype}%
+%</trace>
+   \ifodd\@tempcnta
+     \@flsetnum \@dbltopnum
+     \ifnum \@dbltopnum>\z@
+       \@tempswafalse
+       \ifdim \@dbltoproom>\ht\@currbox
+         \@tempswatrue
+%<*trace>
+         \fl@trace{Space OK: \@dbltoproom =
+                \the \@dbltoproom > \the \ht \@currbox
+                                         (dbltoproom)}%
+%</trace>
+       \else
+%<*trace>
+         \fl@trace{fpstype: \the \@fpstype (addtodblcol)}%
+%</trace>
+         \ifnum \@fpstype<\sixt@@n
+%<*trace>
+           \fl@trace{BANG float ignoring \@dbltoproom}%
+           \fl@trace{\@spaces \@dbltoproom = \the \@dbltoproom.
+                           Ht float: \the \ht \@currbox-BANG}%
+%</trace>
+%    \end{macrocode}
+% Need to check that there is room on the page, using the local value
+% of |\@textmin| to make the necessary adjustment to |\@dbltoproom|.
+%    \begin{macrocode}
+           \advance \@dbltoproom \@textmin
+%<*trace>
+           \fl@trace{Local value of texmin: \the\@textmin}%
+           \fl@trace{\@spaces space on page = \the \@dbltoproom.
+                           Ht float: \the \ht \@currbox-BANG}%
+%</trace>
+           \ifdim \@dbltoproom>\ht\@currbox
+             \@tempswatrue
+%<*trace>
+             \fl@trace{Space OK BANG: space on page =
+                         \the \@dbltoproom > \the \ht \@currbox}%
+           \else
+             \fl@trace{fpstype: \the \@fpstype}%
+             \fl@trace{Fail---no room dbltoproom-BANG?:}%
+             \fl@trace{\@spaces space on page = \the \@dbltoproom.
+                           Ht float: \the \ht \@currbox}%
+%</trace>
+           \fi
+           \advance \@dbltoproom -\@textmin
+%<*trace>
+         \else
+           \fl@trace{fpstype: \the \@fpstype}%
+           \fl@trace{Fail---no room dbltoproom-ORD?:}%
+           \fl@trace{\@spaces \@dbltoproom = \the \@dbltoproom.
+                           Ht float: \the \ht \@currbox}%
+%</trace>
+         \fi
+       \fi
+       \if@tempswa
+           \@bitor \@currtype \@deferlist
+%<*trace>
+           \fl@trace{(dbl)deferlist: \@deferlist: (before)}%
+%</trace>
+%    \end{macrocode}
+%
+% not in fixfloats?
+%    \begin{macrocode}
+          \@testwrongwidth\@currbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+           \if@test
+%<*trace>
+              \fl@trace{type already on list: (dbl)defer}%
+%</trace>
+           \else
+              \@tempdima -\ht\@currbox
+              \advance\@tempdima
+                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
+                                          \dblfloatsep \fi
+              \global \advance \@dbltoproom \@tempdima
+              \global \advance \@colht \@tempdima
+              \global \advance \@dbltopnum \m@ne
+              \@cons \@dbltoplist \@currbox
+%<*trace>
+              \fl@trace{dbltopnum (after) = \the \@dbltopnum}%
+              \fl@trace{***Success: dbltop}%
+%</trace>
+              \@inserttrue
+           \fi
+       \fi
+%<*trace>
+     \else
+       \fl@trace{Fail: dbltopnum = \the \@dbltopnum: fpstype
+                                                  \the \@fpstype=ORD?}%
+       \ifnum \@fpstype<\sixt@@n
+         \fl@trace{ERROR: !t float not successful (addtodblcol)}%
+       \fi
+%</trace>
+     \fi
+   \fi
+   \if@insert
+   \else
+%<*trace>
+     \fl@trace{put on deferlist}%
+%</trace>
+     \@cons\@deferlist\@currbox
+%<*trace>
+     \fl@trace{(dbl)deferlist: \@deferlist: (after)}%
+%</trace>
+   \fi
+%<*trace>
+   \fl@trace{End of addtodblcol -- locally count:}%
+   \fl@trace{ dbltop: \the \@dbltopnum.}%
+%</trace>
+  \endgroup
+%<*trace>
+  \fl@trace{End of addtodblcol -- globally count:}%
+  \fl@trace{dbltop: \the \@dbltopnum.}%
+%</trace>
+}%
+%</2ekernel|latexrelease|fltrace>
+%<latexrelease|fltrace>\EndIncludeInRelease
+%<latexrelease|fltrace>\IncludeInRelease{0000/00/00}%
+%<latexrelease|fltrace>  {\@addtodblcol}{float order in 2-column}%
+%<latexrelease|fltrace>\def\@addtodblcol{%
+%<latexrelease|fltrace>  \begingroup
+%<*trace>
+%<latexrelease|fltrace>  \fl@trace{***Start addtodblcol}%
+%</trace>
+%<latexrelease|fltrace>   \@insertfalse
+%<latexrelease|fltrace>   \@setfloattypecounts
+%<latexrelease|fltrace>   \@getfpsbit \tw@
+%<*trace>
+%<latexrelease|fltrace>   \fl@trace{fpstype \ifodd \@tempcnta OK
+%<latexrelease|fltrace>                \else not \fi dbltop: \the \@fpstype}%
+%</trace>
+%<latexrelease|fltrace>   \ifodd\@tempcnta
+%<latexrelease|fltrace>     \@flsetnum \@dbltopnum
+%<latexrelease|fltrace>     \ifnum \@dbltopnum>\z@
+%<latexrelease|fltrace>       \@tempswafalse
+%<latexrelease|fltrace>       \ifdim \@dbltoproom>\ht\@currbox
+%<latexrelease|fltrace>         \@tempswatrue
+%<*trace>
+%<latexrelease|fltrace>         \fl@trace{Space OK: \@dbltoproom =
+%<latexrelease|fltrace>                \the \@dbltoproom > \the \ht \@currbox
+%<latexrelease|fltrace>                                         (dbltoproom)}%
+%</trace>
+%<latexrelease|fltrace>       \else
+%<*trace>
+%<latexrelease|fltrace>      \fl@trace{fpstype: \the \@fpstype (addtodblcol)}%
+%</trace>
+%<latexrelease|fltrace>         \ifnum \@fpstype<\sixt@@n
+%<*trace>
+%<latexrelease|fltrace>           \fl@trace{BANG float ignoring \@dbltoproom}%
+%<latexrelease|fltrace>           \fl@trace{\@spaces \@dbltoproom =
+%<latexrelease|fltrace>                    \the \@dbltoproom.
+%<latexrelease|fltrace>                    Ht float: \the \ht \@currbox-BANG}%
+%</trace>
+%    \end{macrocode}
+% Need to check that there is room on the page, using the local value
+% of |\@textmin| to make the necessary adjustment to |\@dbltoproom|.
+%    \begin{macrocode}
+%<latexrelease|fltrace>           \advance \@dbltoproom \@textmin
+%<*trace>
+%<latexrelease|fltrace>       \fl@trace{Local value of texmin: \the\@textmin}%
+%<latexrelease|fltrace>       \fl@trace{\@spaces space on page =
+%<latexrelease|fltrace>                   \the \@dbltoproom.
+%<latexrelease|fltrace>                    Ht float: \the \ht \@currbox-BANG}%
+%</trace>
+%<latexrelease|fltrace>           \ifdim \@dbltoproom>\ht\@currbox
+%<latexrelease|fltrace>             \@tempswatrue
+%<*trace>
+%<latexrelease|fltrace>         \fl@trace{Space OK BANG: space on page =
+%<latexrelease|fltrace>                 \the\@dbltoproom > \the\ht\@currbox}%
+%<latexrelease|fltrace>           \else
+%<latexrelease|fltrace>         \fl@trace{fpstype: \the \@fpstype}%
+%<latexrelease|fltrace>         \fl@trace{Fail---no room dbltoproom-BANG?:}%
+%<latexrelease|fltrace>         \fl@trace{\@spaces space on page =
+%<latexrelease|fltrace>                      \the \@dbltoproom.
+%<latexrelease|fltrace>                       Ht float: \the \ht \@currbox}%
+%</trace>
+%<latexrelease|fltrace>           \fi
+%<latexrelease|fltrace>           \advance \@dbltoproom -\@textmin
+%<*trace>
+%<latexrelease|fltrace>         \else
+%<latexrelease|fltrace>           \fl@trace{fpstype: \the \@fpstype}%
+%<latexrelease|fltrace>           \fl@trace{Fail---no room dbltoproom-ORD?:}%
+%<latexrelease|fltrace>           \fl@trace{\@spaces \@dbltoproom =
+%<latexrelease|fltrace>              \the \@dbltoproom.
+%<latexrelease|fltrace>              Ht float: \the \ht \@currbox}%
+%</trace>
+%<latexrelease|fltrace>         \fi
+%<latexrelease|fltrace>       \fi
+%<latexrelease|fltrace>       \if@tempswa
+%<latexrelease|fltrace>           \@bitor \@currtype \@dbldeferlist
+%<*trace>
+%<latexrelease|fltrace>           \fl@trace{dbldeferlist:
+%<latexrelease|fltrace>                      \@dbldeferlist: (before)}%
+%</trace>
+%<latexrelease|fltrace>           \if@test
+%<*trace>
+%<latexrelease|fltrace>             \fl@trace{type already on list: dbldefer}%
+%</trace>
+%<latexrelease|fltrace>           \else
+%<latexrelease|fltrace>              \@tempdima -\ht\@currbox
+%<latexrelease|fltrace>              \advance\@tempdima
+%<latexrelease|fltrace>                -\ifx \@dbltoplist\@empty
+%<latexrelease|fltrace>                      \dbltextfloatsep
+%<latexrelease|fltrace>                 \else \dblfloatsep \fi
+%<latexrelease|fltrace>              \global \advance \@dbltoproom \@tempdima
+%<latexrelease|fltrace>              \global \advance \@colht \@tempdima
+%<latexrelease|fltrace>              \global \advance \@dbltopnum \m@ne
+%<latexrelease|fltrace>              \@cons \@dbltoplist \@currbox
+%<*trace>
+%<latexrelease|fltrace>              \fl@trace{dbltopnum (after) =
+%<latexrelease|fltrace>                                    \the \@dbltopnum}%
+%<latexrelease|fltrace>              \fl@trace{***Success: dbltop}%
+%</trace>
+%<latexrelease|fltrace>              \@inserttrue
+%<latexrelease|fltrace>           \fi
+%<latexrelease|fltrace>       \fi
+%<*trace>
+%<latexrelease|fltrace>     \else
+%<latexrelease|fltrace>       \fl@trace{Fail: dbltopnum = \the \@dbltopnum:
+%<latexrelease|fltrace>                          fpstype \the \@fpstype=ORD?}%
+%<latexrelease|fltrace>       \ifnum \@fpstype<\sixt@@n
+%<latexrelease|fltrace>         \fl@trace{ERROR: !t float not successful
+%<latexrelease|fltrace>                                        (addtodblcol)}%
+%<latexrelease|fltrace>       \fi
+%</trace>
+%<latexrelease|fltrace>     \fi
+%<latexrelease|fltrace>   \fi
+%<latexrelease|fltrace>   \if@insert
+%<latexrelease|fltrace>   \else
+%<*trace>
+%<latexrelease|fltrace>     \fl@trace{put on dbldeferlist}%
+%</trace>
+%<latexrelease|fltrace>     \@cons\@dbldeferlist\@currbox
+%<*trace>
+%<latexrelease|fltrace>     \fl@trace{dbldeferlist: \@dbldeferlist: (after)}%
+%</trace>
+%<latexrelease|fltrace>   \fi
+%<*trace>
+%<latexrelease|fltrace>   \fl@trace{End of addtodblcol -- locally count:}%
+%<latexrelease|fltrace>   \fl@trace{ dbltop: \the \@dbltopnum.}%
+%</trace>
+%<latexrelease|fltrace>  \endgroup
+%<*trace>
+%<latexrelease|fltrace>  \fl@trace{End of addtodblcol -- globally count:}%
+%<latexrelease|fltrace>  \fl@trace{dbltop: \the \@dbltopnum.}%
+%</trace>
+%<latexrelease|fltrace>}%
+%<latexrelease|fltrace>\EndIncludeInRelease
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+% \begin{macro}{\@addmarginpar}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\@addmarginpar{\@next\@marbox\@currlist{\@cons\@freelist\@marbox
+    \@cons\@freelist\@currbox}\@latexbug\@tempcnta\@ne
+    \if@twocolumn
+        \if@firstcolumn \@tempcnta\m@ne \fi
+    \else
+      \if@mparswitch
+         \ifodd\c@page \else\@tempcnta\m@ne \fi
+      \fi
+      \if@reversemargin \@tempcnta -\@tempcnta \fi
+    \fi
+    \ifnum\@tempcnta <\z@  \global\setbox\@marbox\box\@currbox \fi
+    \@tempdima\@mparbottom
+    \advance\@tempdima -\@pageht
+    \advance\@tempdima\ht\@marbox
+    \ifdim\@tempdima >\z@
+      \@latex@warning@no@line {Marginpar on page \thepage\space moved}%
+    \else
+      \@tempdima\z@
+    \fi
+    \global\@mparbottom\@pageht
+    \global\advance\@mparbottom\@tempdima
+    \global\advance\@mparbottom\dp\@marbox
+    \global\advance\@mparbottom\marginparpush
+    \advance\@tempdima -\ht\@marbox
+%    \end{macrocode}
+% Putting box movement inside the `marbox':
+%    \begin{macrocode}
+    \global\setbox \@marbox
+                   \vbox {\vskip \@tempdima
+                          \box \@marbox}%
+    \global \ht\@marbox \z@
+    \global \dp\@marbox \z@
+%    \end{macrocode}
+% Sticking (rather than gluing:-) the `marbox' to the line above,
+% changed vskip to kern:
+%    \begin{macrocode}
+    \kern -\@pagedp
+    \nointerlineskip
+    \hb@xt@\columnwidth
+      {\ifnum \@tempcnta >\z@
+          \hskip\columnwidth \hskip\marginparsep
+       \else
+          \hskip -\marginparsep \hskip -\marginparwidth
+       \fi
+       \box\@marbox \hss}%
+%    \end{macrocode}
+%    For this reason the following code can vanish:
+%\begin{verbatim}
+%    \nobreak             %% No longer needed.  CAR92/12
+%    \vskip -\@tempdima   %% No longer needed.  CAR92/12
+%\end{verbatim}
+%    \begin{macrocode}
+    \nointerlineskip
+    \hbox{\vrule \@height\z@ \@width\z@ \@depth\@pagedp}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Kludgeins}
+%
+% This part of the file is part of the implementation of the following
+% two new commands for \LaTeX2e{}.
+%
+%
+% \begin{verbatim}
+% \enlargethispage{<dim>}
+% \end{verbatim}
+%
+% Adds |<dim>| to the height of the current column only. On the printed
+% page the bottom of this column is extended downwards by exactly
+% |<dim>| without having any effect on the placement of the footer; this
+% may result in an overprinting.
+%
+% \begin{verbatim}
+% \enlargethispage*{<dim>}
+% \end{verbatim}
+%
+% Similar to |\enlargethispage| but it tries to squeeze the column to
+% be printed in as small a space as possible, ie it uses any
+% shrinkability in the column. If the column was not explicitly broken
+% (\eg with |\pagebreak|) this may result in an overfull box message but
+% execpt for this it will come out as expected (if you know what to
+% expect).
+%
+% The star form of this command is dedicated to Leslie Lamport, the
+% other we need for ourselves (FMi, CAR).
+%
+% These commands may well have unwanted effects if used soon
+% before a |\clearpage|: please give keep them clear of such places.
+%
+%  \begin{macro}{\@kludgeins}
+% \changes{v0.1c}{1993/11/23}{Insert added}
+%    The insert which makes \TeX{} do a lot of the necessary work.
+%    All we need to put into it is the amount by which the pagegoal
+%    should be changed.
+%    \begin{macrocode}
+\newinsert \@kludgeins
+\global\dimen\@kludgeins \maxdimen
+\global\count\@kludgeins 1000
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\enlargethispage}
+%  \begin{macro}{\enlargethispage*}
+% \changes{v0.1c}{1993/11/23}{Commands added}
+%    The user command.
+%    \begin{macrocode}
+\gdef \enlargethispage {%
+   \@ifstar
+     {%
+%<*trace>
+      \fl@trace{Enlarging page height * }%
+%</trace>
+      \@enlargepage{\hbox{\kern\p@}}}%
+     {%
+%<*trace>
+      \fl@trace{Enlarging page height exactly---}%
+%</trace>
+      \@enlargepage\@empty}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@enlargepage}
+% \changes{v0.1c}{1993/11/23}{Command added}
+%    This actually inserts the insert, after checking for extreme
+%    values of the change.
+%    \begin{macrocode}
+\gdef\@enlargepage#1#2{%
+%<*trace>
+   \fl@trace{\@spaces\@spaces by #2}%
+%</trace>
+   \@tempskipa#2\relax
+   \ifdim \@tempskipa>.5\maxdimen
+     \@latexerr{Suggested\space extra\space height\space
+                (\the\@tempskipa)\space dangerously\space
+                large}\@eha
+   \else
+     \ifdim \vsize<.5\maxdimen
+%<*trace>
+       \fl@trace {Kludgeins added--pagegoal before: \the\pagegoal}%
+%</trace>
+       \@bsphack
+         \insert\@kludgeins{#1\vskip-\@tempskipa}%
+       \@esphack
+%    \end{macrocode}
+%    This next bit is for tracing only:
+%    \begin{macrocode}
+%<*trace>
+       \ifvmode \par
+         \fl@trace {Kludgeins added--pagegoal after: \the \pagegoal}%
+       \fi
+%</trace>
+     \else
+       \@latexerr{Page\space height\space already\space
+                  too\space large}\@eha
+     \fi
+   \fi
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \subsubsection{Float control}
+%
+% This part implements controllable floats and other changes
+% to the float mechanism.
+%
+% It provides, at the document level, the following command for
+% inclusion in \LaTeX2e{}.
+%
+% \begin{verbatim}
+%     \suppressfloats
+% \end{verbatim}
+%
+% This suppresses all further floats on the current page.
+%
+% With an optional argument it suppresses only floats only in certain
+% positions on the current page.
+% \begin{quote}
+%  |[t]|\quad suppresses only floats at the top of the page
+%  |[b]|\quad suppresses only floats at the bottom of the page
+% \end{quote}
+%
+% It also enables the use of an extra specifier, {\tt !}, in the
+% location optional argument of a float.  If this is present then,
+% just for this particular float, whenever it is processed by the float
+% mechanism the followinhg are ignored:
+%
+% \begin{itemize}
+% \item  all restrictions on the number of floats which can appear;
+% \item  all explicit restrictions on the amount of space which should
+%   (not) be occupied by floats and/or text.
+% \end{itemize}
+%
+% The mechanism will still attempt to ensure that pages are not
+% overfull.
+%
+% These specifiers override, for the single float, the suppression
+% commands described above.
+%
+%
+% In its current form, it also supplies a reasonably exhaustive, and
+% somewhat baroque, means of tracing some aspects of the float
+% mechanism.
+%
+% More tracing.
+%  \begin{macro}{\fl@trace}
+%  \begin{macro}{\tracefloatsoff}
+%  \begin{macro}{\tracefloats}
+%  \begin{macro}{\fl@traceval}
+%  \begin{macro}{\tracefloatvals}
+%  \begin{macro}{\fl@tracemessage}
+% \changes{v1.0c}{1993/11/30}{Commands added}
+% \changes{v1.0h}{1993/12/12}{Commands changed}
+% \changes{v1.0j}{1993/12/17}{tracefloatvals made a document command}
+%    Set-up tracing for floats independent of other tracing as it
+%    produces mega-output.  Default is no tracing.
+% \changes{v1.1j}{1995/04/24}
+%   {Do not add to kernel unless `trace' specified}
+% \changes{v1.2n}{2014/04/24}
+%   {Renamed internal trace commands; provide as package}
+%
+%    \begin{macrocode}
+%<*fltrace>
+\def \fl@tracemessage #1{{\let\@elt\@empty\typeout{LaTeX2e: #1}}}
+\def \tracefloats{\let \fl@trace \fl@tracemessage}
+\def \tracefloatsoff {\let \fl@trace \@gobble}
+\tracefloatsoff
+\def \fl@traceval #1{\fl@trace{\string #1 = \the #1}}
+\IncludeInRelease{2015/01/01}{\tracefloatvals}%
+                          {trace float vals}%
+\def \tracefloatvals{%
+%    \end{macrocode}
+%    As |\@dblfloatplacement| sets |\f@depth| it needs to be run
+%   inside a group, otherwise the float placement will test for the
+%   wrong value.\footnote{This is a somewhat questionable design.}
+%    \begin{macrocode}
+ \begingroup
+  \@dblfloatplacement
+  \@floatplacement
+  \fl@trace{***Float placement parameters:}%
+  \fl@traceval\@colnum
+  \fl@traceval\@colroom
+  \fl@traceval\@topnum
+  \fl@traceval\@toproom
+  \fl@traceval\@botnum
+  \fl@traceval\@botroom
+  \fl@traceval\@fpmin
+  \fl@trace{\string\textfraction = \textfraction}%
+  \fl@traceval\@dbltopnum
+  \fl@traceval\@dbltoproom
+  \fl@trace{\string\textfraction = \textfraction}%
+  \fl@trace{toplist: \@toplist}%
+  \fl@trace{botlist: \@botlist}%
+  \fl@trace{midlist: \@midlist}%
+  \fl@trace{deferlist: \@deferlist}%
+  \fl@trace{dbltoplist: \@dbltoplist}%
+%FMi  \fl@trace{dbldeferlist: \@dbldeferlist}%
+ \endgroup
+}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\tracefloatvals}%
+                          {trace float vals}%
+\def \tracefloatvals{%
+ \begingroup
+  \@dblfloatplacement
+  \@floatplacement
+  \fl@trace{***Float placement parameters:}%
+  \fl@traceval\@colnum
+  \fl@traceval\@colroom
+  \fl@traceval\@topnum
+  \fl@traceval\@toproom
+  \fl@traceval\@botnum
+  \fl@traceval\@botroom
+  \fl@traceval\@fpmin
+  \fl@trace{\string\textfraction = \textfraction}%
+  \fl@traceval\@dbltopnum
+  \fl@traceval\@dbltoproom
+  \fl@trace{\string\textfraction = \textfraction}%
+  \fl@trace{toplist: \@toplist}%
+  \fl@trace{botlist: \@botlist}%
+  \fl@trace{midlist: \@midlist}%
+  \fl@trace{deferlist: \@deferlist}%
+  \fl@trace{dbltoplist: \@dbltoplist}%
+% next line only in old releases
+  \fl@trace{dbldeferlist: \@dbldeferlist}%
+ \endgroup
+}
+\EndIncludeInRelease
+%    \end{macrocode}
+%    We need to make sure that \texttt{fltrace} comes before
+%    \texttt{flafter} to make the tracing work.
+%    \begin{macrocode}
+\@ifpackageloaded{flafter}
+ {\PackageWarningNoLine
+      {fltrace}{Load 'fltrace' before 'flafter'\MessageBreak
+                Attempting to recover by reloading 'flafter'}%
+%    \end{macrocode}
+%    Hide the fact that \texttt{flafter} was already loaded and then
+%    request it anew.
+% \changes{v1.2m}{2015/01/20}{Reset \cs{IncludeInRelease} flags}
+%    \begin{macrocode}
+    \expandafter\let\csname ver@flafter.sty\endcsname\relax
+    \def\reserved@a#1{%
+      \expandafter\let\csname\string#1+flafter+IIR\endcsname\relax}%
+    \reserved@a\@addtocurcol
+    \reserved@a\@addtonextcol
+    \RequirePackage{flafter}}{}
+%</fltrace>
+%    \end{macrocode}
+%    As the code for \texttt{flafter} will contain tracing calls so
+%    that it works in conjunction with \texttt{fltrace} we need to
+%    provide a dummy definition for |\fl@trace| in that package.
+%    \begin{macrocode}
+%<*flafter>
+\providecommand\fl@trace[1]{}
+%</flafter>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\suppressfloats}
+%  \begin{macro}{\@flstop}
+% \changes{v1.0f}{1993/12/05}{Commands added}
+% Float suppression commands: these set the relevant counter
+% globally to zero.  Thus they are overridden for a particular float
+% by an ! specifier.
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\def \suppressfloats {%
+   \@ifnextchar [%
+     \@flstop
+    {\global \@colnum \z@}%
+}
+%    \end{macrocode}
+% Maybe this should be a loop over |#1|?
+%    \begin{macrocode}
+\def \@flstop [#1]{%
+   \if t#1%
+     \global \@topnum \z@
+   \fi
+   \if b#1%
+     \global \@botnum \z@
+   \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% Manipulation of float placement and type; both their strings and the
+% corresponding count registers.
+%
+%  \begin{macro}{\@fpstype}
+%  \begin{macro}{\@reqcolroom}
+%  \begin{macro}{\@textfloatsheight}
+% \changes{v1.0f}{1993/12/05}{Commands added}
+% First a new count register to go with |\@currtype|.
+%
+% Then a new skip register, for information needed to remove the
+% |\@maxsep| conservatism: it is possible that this could use a
+% temporary register.
+%
+% Finally a dimension register to hold the total height of in-text
+% floats on the current page.  This is needed to implement a
+% major change in the functionality of |\@addtocurcol| which is,
+% nevertheless, a bug fix.
+% It is not local and therefore cannot be a temporary register.
+%
+%    \begin{macrocode}
+\newcount \@fpstype
+\newdimen \@reqcolroom
+\newdimen \@textfloatsheight
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\@fpsadddefault}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% Adds the default placement to what is already there.
+%
+% Should not need to change this, but could do it as follows:
+% \begin{verbatim}
+%\def \@fpsadddefault {%
+%   \@temptokena \expandafter\expandafter\expandafter
+%                {\csname fps@\@captype \endcsname}%
+%   \edef \reserved@a {\the\@temptokena}%
+%   \@onelevel@sanitize \reserved@a
+%   \edef \@fps {\@fps\reserved@a}%
+%}
+% \end{verbatim}
+%
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def \@fpsadddefault {%
+%<*trace>
+   \fl@trace{fps changed from: \@fps}%
+%</trace>
+   \edef \@fps {\@fps\csname fps@\@captype \endcsname}%
+   \@latex@warning {%
+     No positions in optional float specifier.\MessageBreak
+     Default added (so using `\@fps')}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@setfloattypecounts}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% Sets counters |\@fpstype| and |\@currtype|.
+%
+% BANG $==$ bit4 of $|\count\@currbox| = 0$.
+%
+%    \begin{macrocode}
+\def \@setfloattypecounts {%
+  \@currtype \count\@currbox
+  \@fpstype \count\@currbox
+  \divide\@currtype\@xxxii \multiply\@currtype\@xxxii
+  \advance \@fpstype -\@currtype
+%<*trace>
+  \fl@trace{(mod 32) fpstype: \the \@fpstype}%
+  \fl@trace{(mult of 32) currtype: \the \@currtype}%
+% Tracing only: but some should be changed into real errors/warnings?
+  \ifnum \@fpstype<\sixt@@n
+    \ifnum \@fpstype=\z@
+      \fl@trace{ERROR: no PLACEMENT, fpstype = \the \@fpstype = 0?}%
+    \fi
+    \ifnum \@fpstype=\@ne
+      \fl@trace{WARNING: only h, fpstype = \the \@fpstype = 1?}%
+    \fi
+    \fl@trace{BANG float}%
+  \else
+    \ifnum \@fpstype=\sixt@@n
+      \fl@trace{ERROR: no PLACEMENT, fpstype = \the \@fpstype = 16?}%
+    \fi
+    \ifnum \@fpstype=17
+      \fl@trace{WARNING: only h, fpstype = \the \@fpstype = 17?}%
+    \fi
+    \fl@trace{ORD float}%
+  \fi
+%</trace>
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%
+% Macros for getting, testing and setting bits of the fps.
+%
+%
+%  \begin{macro}{\@getfpsbit}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% Sets |\@tempcnta| to required bit of |\count\@currbox|.
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\def \@getfpsbit {%
+   \@boxfpsbit \@currbox
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@boxfpsbit}
+% \changes{v1.0f}{1993/12/05}{Command added}
+%    Used above.
+%    \begin{macrocode}
+\def \@boxfpsbit #1#2{%
+   \@tempcnta \count#1%
+   \divide \@tempcnta #2\relax
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@testfp}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% New definition of the float page test.
+%
+% \changes{v1.1v}{1996/07/26}{remove \cs{global} before \cs{@test...}}
+%    \begin{macrocode}
+\def \@testfp #1{%
+   \@boxfpsbit #18\relax % Really `#1 8' for human readers!
+   \ifodd \@tempcnta
+   \else
+     \@testtrue
+   \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@setfpsbit}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% Sets required bit of |\@tempcnta| (to 1).
+%
+%    \begin{macrocode}
+\def \@setfpsbit #1{%
+   \@tempcntb \@tempcnta
+   \divide \@tempcntb #1\relax
+   \ifodd \@tempcntb
+   \else
+     \advance \@tempcnta #1\relax
+   \fi
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@resethfps}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% \changes{v1.0h}{1993/12/12}{Warnings added: minimal}
+% \changes{v1.0m}{1994/04/24}{Warning changed}
+% \changes{v1.0m}{1994/04/24}{Number 2 changed to \cs{tw@}}
+% \changes{v1.0o}{1994/05/02}{Code shortened}
+% Globally adds t as a possible location for an h or !h only placement:
+% this must be done using the count.
+%
+% Although it will leave |\@fpstype| set to 17 even if it was
+% originally 1, this does not matter since it is the last thing in
+% |\@addtocurcol|.
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def \@resethfps {%
+   \let\reserved@a\@empty
+   \ifnum \@fpstype=\@ne
+      \def \reserved@a {!}%
+      \@fpstype 17
+   \fi
+   \ifnum \@fpstype=17
+     \global \advance \count\@currbox \tw@
+     \@latex@warning@no@line {%
+       `\reserved@a h' float specifier changed to `\reserved@a ht'}%
+%<*trace>
+     \fl@trace{%
+        `t' added to `\reserved@a h'- new Count: \the \count\@currbox}%
+%</trace>
+   \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% Special stuff for BANG floats.
+%
+%  \begin{macro}{\@flsetnum}
+% \changes{v1.0f}{1993/12/05}{Command added}
+%
+% Ignores any zero float counter value in case BANG.
+%
+% It uses a local assignment to the normally global counter: a bit
+% naughty, perhaps?
+%
+% These assignments are safe so long as the counter involved is only
+% consulted once (\ie only for the `bang float') with the changed value.
+% This is the case within |\@addtocurcol| because it is used only
+% once within a call of the output routine (which forms a group).
+%
+% For |\@addtonextcol| this is achieved by putting a group around its
+% code; this is needed because it is called (by |\@startcolumn|) for
+% each float which was on the deferlist.  Almost identical
+% considerations pertain to |\@addtodblcol|.  There may be more
+% efficient ways to handle this, but the group seems to be the simplest.
+%
+% \changes{v1.0n}{1994/04/30}{Rogue space removed}
+%    \begin{macrocode}
+\def \@flsetnum #1{%
+%<*trace>
+   \fl@trace{fpstype: \the \@fpstype (flsetnum \string#1)}%
+%</trace>
+   \ifnum \@fpstype<\sixt@@n
+     \ifnum #1=\z@
+%<*trace>
+       \fl@trace{BANG float resetting \string#1 to 1}%
+%</trace>
+       #1\@ne
+     \fi
+   \fi
+%<*trace>
+   \fl@trace{#1 (before) = \the #1}%
+%</trace>
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@flsettextmin}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% This ignores |\textfraction| space restriction in case BANG.
+%
+%    \begin{macrocode}
+\def \@flsettextmin {%
+%<*trace>
+   \fl@trace{fpstype: \the \@fpstype (flsettextmin)}%
+%</trace>
+   \ifnum \@fpstype<\sixt@@n
+%<*trace>
+     \fl@trace{BANG ignoring textmin}%
+%</trace>
+     \@textmin \z@
+   \else
+     \@textmin \textfraction\@colht
+%<*trace>
+     \fl@trace{ORD textmin = \the \@textmin}%
+%</trace>
+   \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@flcheckspace}
+% \changes{v1.0f}{1993/12/05}{Command added}
+% This ignores space restriction in case BANG; this is still slightly
+% conservative since it does not allow for the fact that, if there is
+% no text in the column then |\textfloatsep| is not needed.
+% Sets |@tempswa| true if there is room for |\@currbox|.
+%
+%    \begin{macrocode}
+\def \@flcheckspace #1#2{%
+   \advance \@reqcolroom
+     \ifx #2\@empty \textfloatsep \else \floatsep \fi
+%<*trace>
+   \fl@trace{colroom = \the \@colroom 
+                                   (flcheckspace \string#1 \string#2)}%
+   \fl@trace{reqcolroom = \the \@reqcolroom
+                                   (flcheckspace \string#1 \string#2)}%
+%</trace>
+   \ifdim \@colroom>\@reqcolroom
+     \ifdim #1>\ht\@currbox
+       \@tempswatrue
+%<*trace>
+       \fl@trace{Space OK: #1 = \the #1 > \the \ht \@currbox
+                                   (flcheckspace \string#1 \string#2)}%
+%</trace>
+     \else
+%<*trace>
+       \fl@trace{fpstype: \the \@fpstype
+                                   (flcheckspace \string#1 \string#2)}%
+%</trace>
+       \ifnum \@fpstype<\sixt@@n
+%<*trace>
+         \fl@trace{BANG float ignoring #1
+                                   (flcheckspace \string#1 \string#2):}%
+         \fl@trace{\@spaces #1 = \the #1.  Ht float: \the \ht \@currbox
+                                                          BANG}%
+%</trace>
+         \@tempswatrue
+%<*trace>
+       \else
+         \fl@trace{Fail---no room (flcheckspace \string#1 \string#2)
+                       (fpstype \the \@fpstype=ORD?):}%
+         \fl@trace{\@spaces #1 = \the #1.  Ht float: \the \ht \@currbox
+                                                          ORD?}%
+%</trace>
+       \fi
+     \fi
+%<*trace>
+   \else
+     \fl@trace{Fail---no room at 2nd test of colroom
+                   (flcheckspace \string#1 \string#2)}%
+%</trace>
+   \fi
+}
+%</2ekernel|fltrace>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\@flupdates}
+% \changes{v1.0f}{1993/12/05}{Command added}
+%    This updates everything when a float is placed.
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\def \@flupdates #1#2#3{%
+   \global \advance #1\m@ne
+   \global \advance \@colnum \m@ne
+   \@tempdima -\ht\@currbox
+   \advance \@tempdima
+     -\ifx #3\@empty \textfloatsep \else \floatsep \fi
+   \global \advance #2\@tempdima
+   \global \advance \@colroom \@tempdima
+   \@cons #3\@currbox
+}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% Interesting facts about float mechanisms past and present, together
+% with a summary of various features, some unresolved:
+%
+% \begin{enumerate}
+%   \item  The value |\textfraction| does not affect the processing
+%     of doublecol floats: this seems sensible, but should be
+%     documented.
+%   \item |\twocolumn| floatplacement was wrong: dbl not needed, ord
+%     needed.
+%   \item |\@floatplacement| was not called after |\@startdblcol|
+%     or |\@topnewpage|.  This has been changed; it is clearly a bug
+%     fix.
+%   \item The use |\@topnewpage| when |\dblfigrule| is non-trivial
+%   produced a rule in the wrong place.  This has been fixed by not
+%   using |\dblfigrule| when processing the `float' from
+%   |\@topnewpage|.
+%   \item  If the specifier was just h and the float could not be put
+%     here, it went on the deferlist and stayed there until a clearpage.
+%     It now gets changed to a `th': this is only an error-recovery
+%     action, putting just h or !h should be deprecated.
+%   \item |\@dblmaxsep| was `the maximum of |\dblfloatsep| and
+%     |\dbltexfloatsep|'. But it was never used!  Now gone completely,
+%     like |\@maxsep|.
+%   \item After an h float is put on a page, it was counted as text when
+%     applying the |\textfraction| test; this is possibly too big a
+%     change although it is a bug fix?
+%   \item  Two consecutive h floats are separated by twice |\intextsep|:
+%     this could be changed to one by use of |\addvspace|, OK?
+%     Note that it would also mean that less space is put in if an h
+%     float  immediately follows other spaces.  This is also possibly
+%     too big a change, at least for compatibility mode?
+%     Or it may be simply wrong!  It has not been changed.
+%   \item Now |\@addtocurcol| checks first for just p fps.  I think
+%     that this is an increase in efficiency, but maybe the coding
+%     should be made even more efficient.
+%   \item |\@tryfcolumn| now tests if the list is empty first, otherwise
+%     lots of wasted time!  Thus this test has been removed from
+%     |\@startcolumn|.
+%     As Frank pointed out, this makes |\@startcolumn| less
+%     efficient. But it is now the same as |\@startdblcolumn|: I can
+%     see no reason why they should be different, but which is best?
+%   \item Why is |\@colroom| set in |\@doclearpage|?
+%   \item  Footnotes. Check what |\clearpage| does when footnotes are
+%     left over.  Footnotes are not put on float pages and, also,
+%     |\@addtonextcol| ignores the existence of held-over footnotes
+%     in deciding what floats can go on the page.  Not changed.
+%   \item  |\clearpage| can still lose non-boxes, at least when floats
+%     are involved.  It also moves some to the `wrong page', but this
+%     may be a coding problem.
+%   \item  The ! option makes it necessary to check in |\output| that
+%     there is enough room left on the page after adding a float.  (This
+%     would have been necessary anyway if anyone set |\@textmin| too
+%     close to zero!  A similar danger existed also if the text in a
+%     |\twocolumn[text]| entity gets too large.)
+%     The current implementation of this also makes the normal case a
+%     little less efficient, OK?
+%     Not enough room means, at present, less than  |\baselineskip|,
+%     with a warning: is this OK?  Should it be made generic (another
+%     parameter)?
+%   \item  There are four possibilities for supporting this:
+%
+%     |\twocolumn[\maketitle more text]|
+%
+%     One is to change
+%     |\maketitle| slightly to allow this.  Another is to change
+%     |\@topnewpage| so that more than one |\twocolumn[]| command is
+%     allowed; in this case |\maketitle\twocolumn[more text]| will work.
+%     The former is more robust from the user's viewpoint, but makes the
+%     code for |\maketitle| rather ad hoc (maybe it is already?).
+%     Another is to misuse the global twocolumn flag locally within
+%     |\@topnewpage|.
+%     Yet another is to move the column count register from the multicol
+%     package into the kernel.  This has been done.
+%   \item  Where should the reinserts be put to maximise the
+%     probability that footmotes come out on the correct page?
+%     Or should we go for as much compatibility as possible (but see
+%     next item)?
+%   \item  Should we continue to support (as much as possible)
+%     |\samepage|?  Some of its intended functionality is now advertised
+%     as being provided by |\enlargethispage|.  Use of either is likely
+%     to result in wrongly placed footnotes, marginals, etc.
+%     Which should have priority: obeying the pagination instructions,
+%     or correct placement of notes/marginalia?
+%   \item  Is the adjustment of space to cause shrinking in the
+%      kludge-* case correct?  Should it be limited to 0pt?
+%   \item  Is the setting of |\boxmaxdepth| in makecol and friends
+%     needed?  It only has any effect if |\@textbottom| ends with a box
+%     or rule, in which case the vskip to allow for its depth should
+%     also be added.  If it is kept, it should probably be the last
+%     thing in the box.  It has now been removed.
+%
+%     It would perhaps be better to document that |\@textbottom|
+%     and |\@texttop| must have natural height 0pt.
+%   \item  I cannot see why the vskip adjustment for the depth
+%     is needed if boxmaxdepth is used to ensure that there is never
+%     a too deep box.
+%   \item  The value of |\boxmaxdepth| should be explicitly set
+%     whenever necessary: it is too risky to assume that it has any
+%     particular value.  Care is needed in deciding what to set it to.
+%
+%     It is interesting to note that the value of |\boxmaxdepth| is
+%     unique in being read before the local settings for the box group
+%     are reset; all other parameter settings which affect the box
+%     construction use their values outside the box group.
+%   \item  Should |\@maxdepth| store the setting of |\maxdepth| from
+%     lplain?  Or should we provide a proper interface to class files
+%     for setting these?
+% \end{enumerate}
+%
+% An analysis of various other macros.
+%
+%    |\@opcol| should do |\@floatplacement|, but where?  Right at the
+%    end, since it always occurs at the start of a column.
+% \begin{verbatim}
+% \def\@opcol{%
+%   % Why is this done first?
+%   \global \@mparbottom \z@
+%   \if@twocolumn
+%     \@outputdblcol
+%   \else
+%     \@outputpage
+%     % This is not needed since it is done at the end of
+%     %   |\@outputpage|:
+%     \global \@colht \textheight
+%   \fi}
+% \end{verbatim}
+%
+% Only tracing has been added to these.
+%
+%    \begin{macrocode}
+%<*2ekernel|fltrace>
+\def\@makefcolumn #1{%
+  \begingroup
+    \@fpmin \z@
+    \let \@testfp \@gobble
+    \@tryfcolumn #1%
+  \endgroup
+%<*trace>
+  \if@fcolmade
+    \fl@trace{PAGE: in \string\clearpage
+                              \if@twocolumn ---twocolumn\fi---}%
+    \fl@trace{----- float column/page completed from \string#1}%
+  \fi
+%</trace>
+}
+%    \end{macrocode}
+% This will line up the last baselines in the two
+% columns provided they are constructed in the normal way: \ie ending
+% in a skip of minus the original depth, with |\@textbottom| adding
+% nothing.
+%
+% Thus again it is essential for |\@textbottom| to have depth 0pt.
+% \changes{1.2g}{2000/07/12}{Ensure that rule is in \cs{normalcolor}}
+% \changes{v1.2m}{2014/12/30}{Command updated (latexrelease)}
+%    \begin{macrocode}
+%</2ekernel|fltrace>
+%<latexrelease|fltrace>\IncludeInRelease{2015/01/01}%
+%<latexrelease|fltrace>  {\@outputdblcol}{2 column marks}%
+%<*2ekernel|fltrace|latexrelease>
+%    \end{macrocode}
+%
+%
+% This is just a change to the single command |\@outputdblcol|
+% so that it saves mark information for the first column and restores
+% it in the second column.
+%    \begin{macrocode}
+\def\@outputdblcol{%
+  \if@firstcolumn
+    \global\@firstcolumnfalse
+%    \end{macrocode}
+% Save the left column
+%    \begin{macrocode}
+    \global\setbox\@leftcolumn\copy\@outputbox
+%<fltrace>    \fl@trace{PAGE: first column boxed}%
+%    \end{macrocode}
+%
+% Remember the marks from the first column
+%    \begin{macrocode}
+    \splitmaxdepth\maxdimen
+    \vbadness\maxdimen
+%    \end{macrocode}
+%  In case of |\enlargethispage| we will have infinite negative glue
+%  at the bottom of the page (coming from |\vss|) and that will earn
+%  us an error message if we |\vsplit| to get at the marks.  So we
+%  need to remove thek last glue (if any) at the end of |\@outputbox|
+%  as we are only interested in marks that change doesn't matter.
+% \changes{v1.1o}{2014/04/18}{Handle infinite glue from
+%  \cs{enlargethispage} (pr/4023)}
+%    \begin{macrocode}
+     \setbox\@outputbox\vbox{\unvbox\@outputbox\unskip}%
+     \setbox\@outputbox\vsplit\@outputbox to\maxdimen
+%    \end{macrocode}
+%
+% One minor difference from the current |fixmarks| package, pass the
+% marks through a token register to stop any |#| tokens causing an
+% error in a |\def|.
+%    \begin{macrocode}
+    \toks@\expandafter{\topmark}%
+    \xdef\@firstcoltopmark{\the\toks@}%
+    \toks@\expandafter{\splitfirstmark}%
+    \xdef\@firstcolfirstmark{\the\toks@}%
+%    \end{macrocode}
+%
+% This test does not work if truly empty marks have been inserted, but
+% \LaTeX\ marks should always have (at least) two brace groups.
+% (Except before the first mark is used, when the marks are empty,
+% but that is OK here.)
+%    \begin{macrocode}
+    \ifx\@firstcolfirstmark\@empty
+      \global\let\@setmarks\relax
+    \else
+      \gdef\@setmarks{%
+        \let\firstmark\@firstcolfirstmark
+        \let\topmark\@firstcoltopmark}%
+    \fi
+%    \end{macrocode}
+%
+% End of change
+%    \begin{macrocode}
+  \else
+    \global\@firstcolumntrue
+    \setbox\@outputbox\vbox{%
+     \hb@xt@\textwidth{%
+        \hb@xt@\columnwidth{\box\@leftcolumn \hss}%
+        \hfil
+%    \end{macrocode}
+% \changes{v1.1m}{2006/09/13}{Ensure that rule is in \cs{normalcolor}}
+% The color of the \cs{vrule} should be \cs{normalcolor} as to not
+% inherit the color from the column.
+%    \begin{macrocode}
+        {\normalcolor\vrule \@width\columnseprule}%
+        \hfil
+       \hb@xt@\columnwidth{\box\@outputbox \hss}}}%
+%<fltrace>    \fl@trace{PAGE: second column also boxed}%
+  \@combinedblfloats
+%    \end{macrocode}
+% Override current first and top with those of first column if necessary
+%    \begin{macrocode}
+    \@setmarks
+%    \end{macrocode}
+% End of change
+%    \begin{macrocode}
+    \@outputpage
+%<fltrace>    \fl@trace{PAGE: two column page completed}%
+    \begingroup
+      \@dblfloatplacement
+      \@startdblcolumn
+      \@whilesw\if@fcolmade \fi{\@outputpage
+%<fltrace>      \fl@trace{PAGE: double float page completed}%
+     \@startdblcolumn}%
+    \endgroup
+  \fi}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<latexrelease|fltrace>\EndIncludeInRelease
+%<latexrelease|fltrace>\IncludeInRelease{0000/00/00}%
+%<latexrelease|fltrace>  {\@outputdblcol}{2 column marks}%
+%<latexrelease|fltrace>\def\@outputdblcol{%
+%<latexrelease|fltrace>  \if@firstcolumn
+%<latexrelease|fltrace>    \global \@firstcolumnfalse
+%<latexrelease|fltrace>    \global \setbox\@leftcolumn \box\@outputbox
+%<*trace>
+%<latexrelease|fltrace>    \fl@trace{PAGE: first column boxed}%
+%</trace>
+%<latexrelease|fltrace>  \else
+%<latexrelease|fltrace>    \global \@firstcolumntrue
+%<latexrelease|fltrace>    \setbox\@outputbox \vbox {%
+%<latexrelease|fltrace>                         \hb@xt@\textwidth {%
+%<latexrelease|fltrace>                           \hb@xt@\columnwidth {%
+%<latexrelease|fltrace>                             \box\@leftcolumn \hss}%
+%<latexrelease|fltrace>                           \hfil
+%<latexrelease|fltrace>                           {\normalcolor\vrule
+%<latexrelease|fltrace>                               \@width\columnseprule}%
+%<latexrelease|fltrace>                           \hfil
+%<latexrelease|fltrace>                           \hb@xt@\columnwidth {%
+%<latexrelease|fltrace>                             \box\@outputbox \hss}%
+%<latexrelease|fltrace>                                             }%
+%<latexrelease|fltrace>                              }%
+%<*trace>
+%<latexrelease|fltrace>    \fl@trace{PAGE: second column also boxed}%
+%</trace>
+%<latexrelease|fltrace>    \@combinedblfloats
+%<latexrelease|fltrace>    \@outputpage
+%<*trace>
+%<latexrelease|fltrace>    \fl@trace{PAGE: two column page completed}%
+%</trace>
+%<latexrelease|fltrace>    \begingroup
+%<latexrelease|fltrace>      \@dblfloatplacement
+%<latexrelease|fltrace>      \@startdblcolumn
+%    \end{macrocode}
+%    This loop could be replaced by an |\expandafter| tail
+%    recursion in\\ |\@startdblcolumn|.
+%    \begin{macrocode}
+%<latexrelease|fltrace>      \@whilesw\if@fcolmade \fi
+%<latexrelease|fltrace>        {\@outputpage
+%<*trace>
+%<latexrelease|fltrace>      \fl@trace{PAGE: double float page completed}%
+%</trace>
+%<latexrelease|fltrace>         \@startdblcolumn}%
+%<latexrelease|fltrace>    \endgroup
+%<latexrelease|fltrace>  \fi
+%<latexrelease|fltrace>}%
+%<latexrelease|fltrace>\EndIncludeInRelease
+%</2ekernel|fltrace|latexrelease>
+%    \end{macrocode}
+%
+% \subsubsection{Float placement parameters}
+% \changes{v1.0i}{1993/12/14}{Section added to declare all parameters}
+%
+% The main purpose of this section is to ensure that all the
+% float-placement parameters which need to be set in a class file or
+% package have been declared.  It also describes their use and sets
+% values for them which are reasonable for typical documents using
+% US letter or A4 sized paper.
+%
+% \paragraph{Limits for the placement of floating objects}
+%
+% \begin{macro}{\c@topnumber}
+%    This counter holds the maximum number of
+%    floats that can appear at the top of a text page or column.
+%    \begin{macrocode}
+%<*2ekernel>
+\newcount\c@topnumber
+\setcounter{topnumber}{2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\topfraction}
+%    This macro holds the maximum proportion (as a decimal number) of
+%    a text page or column that can be occupied by floats at the top.
+%    \begin{macrocode}
+\newcommand\topfraction{.7}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@bottomnumber}
+%    This counter holds the maximum number of
+%    floats that can appear at the bottom of a text page or column.
+%    \begin{macrocode}
+\newcount\c@bottomnumber
+\setcounter{bottomnumber}{1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bottomfraction}
+%    This macro holds the maximum proportion (as a decimal number) of
+%    a text page or column that can be occupied by floats at the bottom.
+%    \begin{macrocode}
+\newcommand\bottomfraction{.3}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@totalnumber}
+%    This counter holds the maximum number of floats that can appear on
+%    any text page or column.
+%    \begin{macrocode}
+\newcount\c@totalnumber
+\setcounter{totalnumber}{3}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\textfraction}
+%    This macro holds the minimum proportion (as a decimal number) of
+%    a text page or column that must be occupied by text.
+%    \begin{macrocode}
+\newcommand\textfraction{.2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\floatpagefraction}
+%    This macro holds the minimum proportion (as a decimal number) of
+%    a page or column that must be occupied by floating objects before a
+%    `float page' is produced.
+%    \begin{macrocode}
+\newcommand\floatpagefraction{.5}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@dbltopnumber}
+%    This counter holds the maximum number of double-column floats that
+%    can appear on the top of a two-column text page.
+%    \begin{macrocode}
+\newcount\c@dbltopnumber
+\setcounter{dbltopnumber}{2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\dbltopfraction}
+%    This macro holds the maximum proportion (as a decimal number) of
+%    a two-column text page that can be occupied by double-column floats
+%    at the top.
+%    \begin{macrocode}
+\newcommand\dbltopfraction{.7}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\dblfloatpagefraction}
+%    This macro holds the minimum proportion (as a decimal number) of
+%    a page that must be occupied by double-column floating objects
+%    before a `double-column float page' is produced.
+%    \begin{macrocode}
+\newcommand\dblfloatpagefraction{.5}
+%    \end{macrocode}
+% \end{macro}
+%
+% \paragraph{Floats on a text page}
+%
+% \begin{macro}{\floatsep}
+% \begin{macro}{\textfloatsep}
+% \begin{macro}{\intextsep}
+%    When a floating object is placed on a page with text, these
+%    parameters control the separation between the float and the other
+%    objects on the page. These parameters are used for both
+%    one-column mode and single-column floats in two-column mode.
+%    They are all rubber lengths.
+%
+%    |\floatsep| is the space between adjacent floats that are placed
+%    at the top or bottom of the text page or column.
+%
+%    |\textfloatsep| is the space between the main text and floats
+%    at the top or bottom of the page or column.
+%
+%    |\intextsep| is the space between in-text floats and the text.
+%    \begin{macrocode}
+\newskip\floatsep
+\newskip\textfloatsep
+\newskip\intextsep
+\setlength\floatsep    {12\p@ \@plus 2\p@ \@minus 2\p@}
+\setlength\textfloatsep{20\p@ \@plus 2\p@ \@minus 4\p@}
+\setlength\intextsep   {12\p@ \@plus 2\p@ \@minus 2\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\dblfloatsep}
+% \begin{macro}{\dbltextfloatsep}
+%    When double-column floats (floating objects that span the whole
+%    |\textwidth|) are placed at the top of a text page in two-column
+%    mode, the separation between the float and the text is controlled
+%    by |\dblfloatsep| and |\dbltextfloatsep|.  They are rubber lengths.
+%
+%    |\dblfloatsep| is the space between adjacent double-column floats
+%    placed at the top of the text page.
+%
+%    |\dbltextfloatsep| is the space between the main text and
+%    double-column floats at the top of the page.
+%    \begin{macrocode}
+\newskip\dblfloatsep
+\newskip\dbltextfloatsep
+\setlength\dblfloatsep    {12\p@ \@plus 2\p@ \@minus 2\p@}
+\setlength\dbltextfloatsep{20\p@ \@plus 2\p@ \@minus 4\p@}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \paragraph{Floats on their own page or column}
+%
+% \begin{macro}{\@fptop}
+% \begin{macro}{\@fpsep}
+% \begin{macro}{\@fpbot}
+%    When floating objects are placed on a separate page or column,
+%    called a `float page', the layout of the page is controlled by
+%    these parameters, which are rubber lengths.
+%
+%    At the top of the page |\@fptop| is inserted;
+%    typically this supplies some stretchable whitespace.
+%    At the bottom of the page |\@fpbot| ais inserted.
+%    Between adjacent floats |\@fpsep| is inserted.
+%
+%    These parameters are used for all floating objects on a
+%    `float page' in one-column mode, and for single-column
+%    floats in two-column mode.
+%
+%    Note that at least one of the two parameters |\@fptop| and
+%    |\@fpbot| should contain a |plus ...fil| so as to fill the
+%    remaining empty space.
+%    \begin{macrocode}
+\newskip\@fptop
+\newskip\@fpsep
+\newskip\@fpbot
+\setlength\@fptop{0\p@ \@plus 1fil}
+\setlength\@fpsep{8\p@ \@plus 2fil}
+\setlength\@fpbot{0\p@ \@plus 1fil}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@dblfptop}
+% \begin{macro}{\@dblfpsep}
+% \begin{macro}{\@dblfpbot}
+%    Double-column `float pages' in two-column mode use similar
+%    parameters.
+%    \begin{macrocode}
+\newskip\@dblfptop
+\newskip\@dblfpsep
+\newskip\@dblfpbot
+\setlength\@dblfptop{0\p@ \@plus 1fil}
+\setlength\@dblfpsep{8\p@ \@plus 2fil}
+\setlength\@dblfpbot{0\p@ \@plus 1fil}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\topfigrule}
+% \begin{macro}{\botfigrule}
+% \begin{macro}{\dblfigrule}
+%    The macros can be used to put in rules between floats and text;
+%    whatever they insert should be vertical mode material which takes
+%    up zero space.
+% \task{CAR}{Add more rules (for Frank in addtocurcol)}
+%    \begin{macrocode}
+\let\topfigrule=\relax
+\let\botfigrule=\relax
+\let\dblfigrule=\relax
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \Finale
+\endinput

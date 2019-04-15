@@ -1,0 +1,346 @@
+% render.ps - write font bitmaps and metric information to standard output.
+% Version 1.18.
+
+% ========================================================================
+%
+% Copyright (c) 1993-1998  Paul Vojta
+%
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to
+% deal in the Software without restriction, including without limitation the
+% rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+% sell copies of the Software, and to permit persons to whom the Software is
+% furnished to do so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included in
+% all copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+% FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+% PAUL VOJTA BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+% IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+% CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+% ========================================================================
+
+%%%
+% Usage:  gs -DNODISPLAY -q -- render.ps fontname dlstring specinfo dpi
+% Then, it will read standard input to get:
+%	pointsize
+%	charset
+
+% Example:
+% % gs -DNODISPLAY -q -- render.ps Helvetica "(phvr.gsf) run" \
+% > ".5 ExtendFont" 300
+% GS> 10
+% GS> 97 98 99
+
+/TeXDict currentdict def  % needed by dotlessj.pro
+
+%%
+%
+% Standard file definitions
+
+/.stdin  where { pop } { /.stdin  (%stdin)  (r) file def } ifelse
+
+/bad-stdout false def
+/.stdout where
+  { pop }
+  { { /.stdout (%stdout) (w) file def } stopped
+    { /bad-stdout true def }
+    if
+  } ifelse
+
+/bad-stderr false def
+/.stderr where
+  { pop }
+  { { /.stderr (%stderr) (w) file def } stopped
+    { /bad-stderr true def }
+    if
+  } ifelse
+
+%%
+%
+% Define some routines first
+
+% (string) fatal -
+%	Print string to stderr and quit.
+
+/fatal
+  bad-stderr
+  {{
+    (\nrender.ps: ) exch concatstrings
+    print flush 1 .quit
+  }}
+  {{
+    (\nrender.ps: ) exch concatstrings
+    .stderr exch writestring .stderr flushfile 1 .quit
+  }}
+  ifelse
+bind def
+
+% (string) brun -
+%	Load a font in .pfb format.
+
+/brun
+  {
+    (r) file false /PFBDecode filter cvx exec
+  }
+bind def
+
+% (string) ttload font
+%	Load a TrueType font (and leave it on the stack).
+
+/ttload
+  {
+    FontOnStack
+      {
+	(Cannot load more than one TrueType font!\n) fatal
+      } if
+    (r) file .loadttfont
+    /FontOnStack true def
+  }
+bind def
+
+/FontOnStack false def
+
+% (exec) getbbox -
+%	Get bounding box of the executable object and save it in char-urx,
+%	char-ury, etc.
+
+/getbbox
+  {
+    gsave
+      nulldevice
+      erasepage
+      newpath
+      exec
+      pathbbox % returns llx lly urx ury
+      /char-ury exch ceiling cvi def
+      /char-urx exch ceiling cvi def
+      /char-lly exch floor cvi def
+      /char-llx exch floor cvi def
+    grestore
+  }
+bind def
+
+% - drawfontbbox -
+%	Draw the font's bbox.
+
+/drawfontbbox
+  {
+    currentfont /FontBBox get
+    dup dup 0 get exch 1 get currentfont /FontMatrix get transform moveto
+    dup dup 0 get exch 3 get currentfont /FontMatrix get transform lineto
+    dup dup 2 get exch 1 get currentfont /FontMatrix get transform lineto
+    dup     2 get exch 3 get currentfont /FontMatrix get transform lineto
+  }
+bind def
+
+% (exec) mkbboxdev -
+%	Get bounding box of the executable object and make a device a few
+%	pixels larger on each side.  If pathbbox fails for the object,
+%	then use the font's bbox.
+
+/mkbboxdev
+  {
+    getbbox
+
+    char-llx char-urx sub round 0 eq char-lly char-ury sub round 0 eq or
+      {
+	{drawfontbbox} getbbox
+      }
+    if
+
+      matrix
+      char-urx char-llx sub 4 add % width
+	dup /width exch def
+      char-ury char-lly sub 4 add % height
+	dup /height exch def
+      <ff 00>
+    makeimagedevice setdevice
+    2 char-llx sub 2 char-lly sub translate
+  }
+bind def
+
+%%
+%
+% These may be called by the "specinfo" string.
+
+/usefontbbox false def
+
+% These do things to a transformation array; called by entries in psfonts.map.
+%
+/ObliqueSlant	{dup sin exch cos div neg} bind def
+/SlantFont	{font-size mul add} def
+/ExtendFont	{3 -1 roll mul exch} def
+/ReEncodeFont	{/Encoding exch def} def
+
+% Define writeppmfile, if it's not provided, or if the symbol .stdout is not
+% available.
+
+/our-writeppmfile
+
+  bad-stdout
+  systemdict /writeppmfile known not
+  or
+  {{
+    (P4\n) print
+    width =string cvs print
+    ( ) print
+    height =string cvs print
+    (\n) print
+
+    width 7 add 8 div cvi string
+    0 1 height 1 sub
+      {
+	currentdevice exch 2 index copyscanlines
+	print
+      }
+    for
+    pop % discard string
+  }}
+  {{
+    .stdout currentdevice writeppmfile
+  }}
+  ifelse
+def
+
+
+%%
+%
+% Main program begins now.  Just interpret it.
+
+% Get arguments.
+
+shellarguments not
+  {
+    (You must provide arguments to the shell!\n) fatal
+  }
+if
+
+/dpi exch cvr def
+/specinfo exch def
+/dlstring exch def
+/fontname exch def
+
+% Return the gs version number to the calling program.
+
+(V ) print revision =
+
+% Open the font.
+
+dlstring () ne
+  {
+    dlstring cvx exec
+  }
+if
+
+FontOnStack not
+  {
+    Fontmap fontname cvn known	% Or:  fontname cvn /Font resourcestatus?
+      {
+	fontname cvlit findfont
+      }
+      {
+	FontDirectory fontname cvn known
+	  {
+	    fontname cvlit findfont
+	  }
+	  {
+	    revision 341 lt
+	      {
+		/defaultfontname fontname cvlit def
+	      }
+	    if
+
+	    { fontname cvlit findfont } stopped
+	      {
+		(font ) fontname concatstrings
+		( is not defined.\n) concatstrings
+		fatal
+	      }
+	    if
+	  }
+	ifelse
+      }
+    ifelse
+  }
+if
+
+% Get arguments from stdin.  Just leave the character list on the stack.
+
+/font-size
+  .stdin 20 string readline pop cvr % get pointsize
+  72.27 div dpi mul % let's work in (TeX) points
+def
+[ .stdin 1024 string readline pop cvx exec ] % character list
+
+% Define the font, and make it current.
+
+    % Get the font.
+  exch
+    % Copy over the font dictionary to make it writable;
+    % this makes ReEncodeFont easier, and is needed for dotless j processing.
+  dup length 1 add dict begin
+  {1 index /FID ne {def}{pop pop} ifelse} forall
+    % Now do the transformations specified in psfonts.map.
+  [ font-size 0 specinfo cvx exec 0 exch font-size 0 0 ]
+    % End the current dictionary, and make it a font.
+  /TargetFont currentdict end definefont
+    % Apply the tranformation matrix and make the font current.
+exch makefont dup /TargetFont exch def setfont
+
+% If the font's bounding box is zero, then do not use it.
+
+usefontbbox
+  { currentfont /FontBBox get
+    true exch {0 eq and} forall
+    {/usefontbbox false def}if
+  }
+if
+
+% If we are to use the font's bounding box, then get it and transform it.
+
+usefontbbox
+  {
+    {drawfontbbox} mkbboxdev
+  }
+if
+
+% Begin loop over characters.
+
+  {
+    /charno exch def
+    /charstring 1 string dup 0 charno put def
+    /charwidth charstring stringwidth pop def
+
+    % Get the character's bounding box.  This also makes the device.
+    usefontbbox not
+      {
+	{ 0 0 moveto charstring true charpath } mkbboxdev
+      }
+    if
+
+    % Print the metric info.
+    (#^ ) print
+    charno =string cvs print
+    ( ) print
+    char-llx =string cvs print
+    ( ) print
+    char-lly =string cvs print
+    ( ) print
+    char-urx =string cvs print
+    ( ) print
+    char-ury =string cvs print
+    ( ) print
+    charwidth =string cvs print
+    (\n) print
+
+    % Now write the bitmap.
+    erasepage 0 0 moveto
+    charstring show
+    our-writeppmfile
+  }
+forall

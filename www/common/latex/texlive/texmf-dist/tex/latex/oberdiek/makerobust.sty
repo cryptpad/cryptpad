@@ -1,0 +1,74 @@
+%%
+%% This is file `makerobust.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% makerobust.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: makerobust
+%% Version: 2006/03/18 v1.0
+%% 
+%% Copyright (C) 2006 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file makerobust.dtx
+%% and the derived files
+%%    makerobust.sty, makerobust.pdf, makerobust.ins, makerobust.drv,
+%%    makerobust-example.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{makerobust}%
+  [2006/03/18 v1.0 Make existing macro robust (HO)]%
+\def\MakeRobustCommand#1{%
+  \begingroup
+  \@ifundefined{\expandafter\@gobble\string#1}{%
+    \endgroup
+    \PackageError{makerobust}{%
+      Macro \string`\string#1\string' is not defined%
+    }\@ehc
+  }{%
+    \global\let\MR@gtemp#1%
+    \let#1\@undefined
+    \expandafter\let\expandafter\MR@temp
+        \csname\expandafter\@gobble\string#1 \endcsname
+    \DeclareRobustCommand#1{}%
+    \ifx#1\MR@gtemp
+      \endgroup
+      \PackageInfo{makerobust}{%
+        \string`\string#1\string' is already robust%
+      }%
+    \else
+      \@ifundefined{MR@temp}{%
+        \global\let\MR@gtemp#1%
+        \endgroup
+        \expandafter\let\csname\expandafter\@gobble\string#1 \endcsname#1%
+        \let#1\MR@gtemp
+      }{%
+        \endgroup
+        \PackageError{makerobust}{%
+          Internal macro \string`\string#1 \string' already exists%
+        }\@ehc
+      }%
+    \fi
+  }%
+}
+\endinput
+%%
+%% End of file `makerobust.sty'.

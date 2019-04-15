@@ -1,0 +1,177 @@
+%%
+%% This is file `hopatch.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hopatch.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hopatch
+%% Version: 2012/05/28 v1.2
+%% 
+%% Copyright (C) 2011, 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file hopatch.dtx
+%% and the derived files
+%%    hopatch.sty, hopatch.pdf, hopatch.ins, hopatch.drv,
+%%    hopatch-test1.tex, hopatch-test2.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname HOpatch@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\HOpatch@AtEnd{%
+    \HOpatch@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\HOpatch@AtEnd{\HOpatch@AtEnd\noexpand\endinput}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hopatch}%
+  [2012/05/28 v1.2 Wrapper for package hooks (HO)]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ltxcmds}[2010/12/12]%
+\else
+  \RequirePackage{ltxcmds}[2010/12/12]%
+\fi
+\def\HOpatch@counter{0}%
+\ltx@ifundefined{numexpr}{%
+  \def\HOpatch@StepCounter{%
+    \begingroup
+      \count@\HOpatch@counter\relax
+      \advance\count@\ltx@one\relax
+    \edef\x{\endgroup
+      \noexpand\def\noexpand\HOpatch@counter{\the\count@}%
+    }%
+    \x
+  }%
+}{%
+  \def\HOpatch@StepCounter{%
+    \edef\HOpatch@counter{%
+      \the\numexpr\HOpatch@counter+\ltx@one\relax
+    }%
+  }%
+}
+\def\HOpatch@list{}
+\def\HOpatch@Add{%
+  \ltx@LocalAppendToMacro\HOpatch@list
+}
+\def\hopatch@AfterPackage#1{%
+  \ltx@ifpackageloaded{#1}{%
+    \ltx@firstofone
+  }{%
+    \HOpatch@AfterPackage{#1}%
+  }%
+}
+\def\HOpatch@AfterPackage#1{%
+  \edef\HOpatch@temp{#1}%
+  \HOpatch@StepCounter
+  \expandafter\HOpatch@@AfterPackage
+  \csname HOpatch@\HOpatch@counter\expandafter\endcsname{%
+    \HOpatch@temp
+  }%
+}
+\def\HOpatch@@AfterPackage#1#2#3{%
+  \begingroup
+    \toks@{#3}%
+    \xdef\HOpatch@gtemp{%
+      \noexpand\ltx@ifpackageloaded{#2}{%
+        \noexpand\let\noexpand#1\noexpand\relax
+        \the\toks@
+      }{}%
+    }%
+  \endgroup
+  \let#1\HOpatch@gtemp
+  \HOpatch@Add#1%
+  \HOpatch@Try{AfterPackage}{#2}#1%
+  \HOpatch@Try{AtEndPackage}{#2}#1%
+  \HOpatch@Try{AtEndOfPackageFile}{#2}#1%
+}
+\def\HOpatch@Try#1#2#3{%
+  \ltx@ifundefined{#1}{}{%
+    \csname #1\endcsname{#2}{#3}%
+  }%
+}
+\AtBeginDocument{\HOpatch@list}
+\ltx@ifundefined{AtEndPreamble}{}{%
+  \ltx@ifundefined{@endpreamblehook}{}{%
+    \AtEndPreamble{\HOpatch@list}%
+  }%
+}
+\ltx@ifundefined{AfterEndPreamble}{}{%
+  \ltx@ifundefined{@afterendpreamblehook}{}{%
+    \AfterEndPreamble{%
+      \let\HOpatch@OrgIfPackageLoaded\@ifpackageloaded
+      \let\HOpatch@OrgIfPackageLater\@ifpackagelater
+      \let\HOpatch@OrgIfClassLoaded\@ifclassloaded
+      \let\HOpatch@OrgIfClassLater\@ifclasslater
+      \let\@ifpackageloaded\ltx@ifpackageloaded
+      \let\@ifpackagelater\ltx@ifpackagelater
+      \let\@ifclassloaded\ltx@ifclassloaded
+      \let\@ifclasslater\ltx@ifclasslater
+      \HOpatch@list
+      \let\@ifpackageloaded\HOpatch@OrgIfPackageLoaded
+      \let\@ifpackagelater\HOpatch@OrgIfPackageLater
+      \let\@ifclassloaded\HOpatch@OrgIfClassLoaded
+      \let\@ifclasslater\HOpatch@OrgIfClassLater
+    }%
+  }%
+}
+\HOpatch@AtEnd%
+\endinput
+%%
+%% End of file `hopatch.sty'.

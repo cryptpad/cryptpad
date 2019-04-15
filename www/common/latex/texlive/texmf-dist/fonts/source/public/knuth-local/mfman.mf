@@ -1,0 +1,2481 @@
+% This file generates most of the figures for The METAFONTbook
+
+lcode_:=" /"; % suppress overflow labels
+grayfont black;
+
+def clear_all = clearit; clearxy; pickup standardpen;
+proofrulethickness 0;
+enddef;
+
+def heavy_dot expr z =
+ makelabel.top("",z-(1,0));
+ makelabel.top("",z+(1,0));
+ makelabel.top("",z-(0,1));
+ makelabel.top("",z+(0,1));
+ makelabel.top("",z+(1,1)/sqrt2);
+ makelabel.top("",z+(1,-1)/sqrt2);
+ makelabel.top("",z-(1,1)/sqrt2);
+ makelabel.top("",z-(1,-1)/sqrt2);
+ enddef;
+
+def font_setup=
+define_pixels(u,tiny,axis,hheight,border);
+define_blacker_pixels(hair,thin,thick,rulethickness);
+pickup if tiny<.5: nullpen else: pencircle scaled tiny fi;
+tinypen:=savepen;
+currenttransform:=identity slanted slant yscaled aspect_ratio;
+enddef;
+
+mode=proof; mode_setup;
+standardpen=savepen;
+
+"Figure 2a"; % 6 points and a grid
+clear_all;
+pair offset; offset=(.5,.5);
+z1=(0,100)+offset;
+z2=(100,100)+offset;
+z3=(200,100)+offset;
+z4=(0,0)+offset;
+z5=(100,0)+offset;
+z6=(200,0)+offset;
+proofrulethickness .8;
+proofrule (z1+(0,5),z4-(0,5)); proofrule (z4-(5,0),z6+(5,0));
+makelabel.top("1 ",z1);
+makelabel.top("2 ",z2);
+makelabel.top("3 ",z3);
+makelabel.bot("4 ",z4);
+makelabel.bot("5 ",z5);
+makelabel.bot("6 ",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+pickup pencircle;
+for x=10 step 10 until 200: draw (x,-5)+offset..(x,105)+offset; endfor
+for y=10 step 10 until 100: draw (-5,y)+offset..(205,y)+offset; endfor
+showit;
+shipit;
+
+"Figure A2a"; % 6 points and a grid and two more points
+clear_all;
+proofoffset(30,0);
+pair offset; offset=(.5,.5);
+z1=(0,100)+offset;
+z2=(100,100)+offset;
+z3=(200,100)+offset;
+z4=(0,0)+offset;
+z5=(100,0)+offset;
+z6=(200,0)+offset;
+proofrulethickness .8;
+proofrule (z1+(0,5),z4-(0,5)); proofrule (z4-(5,0),z6+(5,0));
+makelabel.top("1 ",z1);
+makelabel.top("2 ",z2);
+makelabel.top("3 ",z3);
+makelabel.bot("4 ",z4);
+makelabel.bot("5 ",z5);
+makelabel.bot("6 ",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+makelabel.lft("(-5,15)",(-5,15)+offset);
+makelabel.top("(60,30) ",(60,30)+offset);
+%makelabel.top("   ,30) ",(60,30)+offset);
+%makelabel.top("(60    ",(60,30)+offset);
+heavy_dot (-5,15)+offset;
+heavy_dot (60,30)+offset;
+pickup pencircle;
+for x=10 step 10 until 200: draw (x,-5)+offset..(x,105)+offset; endfor
+for y=10 step 10 until 100: draw (-5,y)+offset..(205,y)+offset; endfor
+showit;
+shipit;
+
+"Figure 2b"; % 6 points and a line
+clear_all;
+z1=(0,100);
+z2=(100,100);
+z3=(200,100);
+z4=(0,0);
+z5=(100,0);
+z6=(200,0);
+draw (x1-epsilon,y1)..(x6,y6);
+makelabel.lft("1 ",z1);
+makelabel.lft("2",z2);
+makelabel.rt("3",z3);
+makelabel.lft("4",z4);
+makelabel.lft("5",z5);
+makelabel.rt(" 6",z6);
+showit;
+shipit;
+
+"Figure 2c"; % 6 points and three lines (hex symbol, version 1)
+clear_all;
+z1=(0,100);
+z2=(100,100);
+z3=(200,100);
+z4=(0,0);
+z5=(100,0);
+z6=(200,0);
+draw z1..z6; draw z2..z5; draw z3..z4;
+for k=1 upto 6: drawdot z[k]; endfor
+makelabel.lft("1 ",z1);
+makelabel.lft("2 ",z2);
+makelabel.rt(" 3",z3);
+makelabel.lft("4 ",z4);
+makelabel.lft("5 ",z5);
+makelabel.rt(" 6",z6);
+showit;
+shipit;
+
+"Figure 2d"; % hex symbols with top and bottom adjusted
+clear_all;
+top z1=(0,100);
+top z2=(100,100);
+top z3=(200,100);
+bot z4=(0,0);
+bot z5=(100,0);
+bot z6=(200,0);
+draw z1..z6; draw z2..z5; draw z3..z4;
+for k=1 upto 6: drawdot z[k]; endfor
+makelabel.lft("1 ",z1);
+makelabel.lft("2 ",z2);
+makelabel.rt(" 3",z3);
+makelabel.lft("4 ",z4);
+makelabel.lft("5 ",z5);
+makelabel.rt(" 6",z6);
+showit;
+clearxy; pair offset; offset=(250,0);
+pickup pencircle scaled .6pt;
+top z1=(0,100)+offset;
+top z2=(100,100)+offset;
+top z3=(200,100)+offset;
+bot z4=(0,0)+offset;
+bot z5=(100,0)+offset;
+bot z6=(200,0)+offset;
+draw z1..z6; draw z2..z5; draw z3..z4;
+for k=1 upto 6: drawdot z[k]; endfor
+makelabel.lft("1 ",z1);
+makelabel.lft("2 ",z2);
+makelabel.rt(" 3",z3);
+makelabel.lft("4 ",z4);
+makelabel.lft("5 ",z5);
+makelabel.rt(" 6",z6);
+proofrule ((-5,100),(210,100)+offset);
+proofrule ((-5,0),(210,0)+offset);
+showit;
+shipit;
+
+"Figure 2e"; % stick-letter A
+b#:=250/36pt#; a#:=150/36pt#; s#:=30/36pt#;
+define_pixels(b,a,s);
+def A(expr alpha)=
+beginchar (incr(charcode),s#+a#+s#,b#,0);
+pickup standardpen;
+bot z1=(good.x s,0); z5=z1+(a,0);
+z3=(1/2[x1,x5],good.y b);
+z2=alpha[z1,z3]; z4=alpha[z5,z3];
+draw z1..z3; draw z3..z5; draw z2..z4;
+drawdot z1; drawdot z5; drawdot z3;
+makelabel.lft("1 ",z1);
+makelabel.lft("2 ",z2);
+makelabel.top("3   ",z3);
+makelabel.rt(" 4",z4);
+makelabel.rt(" 5",z5);
+endchar; enddef;
+
+A((3-sqrt5)/2); % (area above bar / area below) = golden ratio
+
+"Figure 3a"; % 4 points and 3 midpoints
+clear_all;
+z1=(.5,.5); z2=(40.5,80.5); z3=(150.5,100.5); z4=(300.5,.5);
+z12=1/2[z1,z2]; z23=1/2[z2,z3]; z34=1/2[z3,z4];
+pickup pencircle;
+draw z1--z2--z3--z4;
+heavy_dot z1; heavy_dot z2; heavy_dot z3; heavy_dot z4;
+makelabel.lft("1",z1);
+makelabel.lft("2",z2);
+makelabel.top(" 3",z3);
+makelabel.rt("4",z4);
+makelabel.rt("12",z12);
+makelabel.bot(" 23",z23);
+makelabel.bot("34 ",z34);
+showit;
+shipit;
+
+"Figure 3b"; % 4 points and 6 midpoints
+clear_all;
+z1=(.5,.5); z2=(40.5,80.5); z3=(150.5,100.5); z4=(300.5,.5);
+z12=1/2[z1,z2]; z23=1/2[z2,z3]; z34=1/2[z3,z4];
+z123=1/2[z12,z23]; z234=1/2[z23,z34]; z1234=1/2[z123,z234];
+heavy_dot z1; heavy_dot z2; heavy_dot z3; heavy_dot z4;
+pickup pencircle;
+draw z1--z2--z3--z4; draw z12--z23--z34; draw z123--z234;
+makelabel.lft("1",z1);
+makelabel.lft("2",z2);
+makelabel.top(" 3",z3);
+makelabel.rt("4",z4);
+makelabel.lft("12",z12);
+makelabel.top("23 ",z23);
+makelabel.rt("34",z34);
+makelabel.bot("  123",z123);
+makelabel.bot("234  ",z234);
+makelabel.bot("1234",z1234);
+showit;
+shipit;
+
+"Figure 3c"; % 4 points and infinitely many midpoints
+clear_all;
+z1=(.5,.5); z2=(40.5,80.5); z3=(150.5,100.5); z4=(300.5,.5);
+heavy_dot z1; heavy_dot z2; heavy_dot z3; heavy_dot z4;
+pickup pencircle;
+
+def makedot(expr x)= special " 1";
+ numspecial xpart x; numspecial ypart x enddef;
+
+def recurse(expr a,b,c,d)=
+dist:=abs(a-d);
+if dist>4:
+begingroup save e,f,g,h,i,j; pair e,f,g,h,i,j;
+e=(a+b)/2; makedot(e);
+f=(b+c)/2; makedot(f);
+g=(c+d)/2; makedot(g);
+h=(e+f)/2; makedot(h);
+i=(f+g)/2; makedot(i);
+j=(h+i)/2; makedot(j);
+if dist>20: draw a--b--c--d; draw e--f--g; draw h--i; fi
+recurse(a,e,h,j); recurse(j,i,g,d);
+endgroup;
+fi enddef;
+
+makedot(z1); makedot(z2); makedot(z3); makedot(z4); recurse(z1,z2,z3,z4);
+makelabel.bot.nodot("ignore",(160,-10)); % kludge for GFtoEPS!
+shipit;
+
+"Figure 3d"; % 4 points and various cubics
+clear_all;
+z1=(0,0); z2=5/6(40,80); z3=5/6(150,100); z4=5/6(300,0);
+draw z1..controls z2 and z3..z4;
+drawdot z1; drawdot z4;
+makelabel.lft("1 ",z1);
+makelabel.lft("2",z2);
+makelabel.rt("3",z3);
+makelabel.rt(" 4",z4);
+pair offset; offset:=(325,0);
+draw (z1..controls z3 and z2..z4) shifted offset;
+drawdot z1+offset; drawdot z4+offset;
+makelabel.lft("1 ",z1+offset);
+makelabel.lft("3",z2+offset);
+makelabel.rt("2",z3+offset);
+makelabel.rt(" 4",z4+offset);
+offset:=(0,-100);
+draw (z2..controls z1 and z3..z4) shifted offset;
+drawdot z2+offset; drawdot z4+offset;
+makelabel.lft("2",z1+offset);
+makelabel.lft("1 ",z2+offset);
+makelabel.rt("3",z3+offset);
+makelabel.rt(" 4",z4+offset);
+offset:=(325,-100);
+draw (z1..controls z4 and z2..z3) shifted offset;
+drawdot z1+offset; drawdot z3+offset;
+makelabel.lft("1 ",z1+offset);
+makelabel.lft("3",z2+offset);
+makelabel.rt(" 4",z3+offset);
+makelabel.rt("2",z4+offset);
+showit;
+shipit;
+
+"Figure 3e"; % example curves with automatic control points
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z4..z1..z2..z6;
+draw p;
+drawdot z4; drawdot z6;
+makelabel.bot.nodot("    1",z1);
+makelabel.top.nodot("    2",z2);
+makelabel.rt.nodot("3",z3+(2,0));
+makelabel.rt.nodot(" 4",z4);
+makelabel.rt.nodot("5",z5+(2,0));
+makelabel.rt.nodot(" 6",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+pair offset; offset=(325,0);
+p:=(z5..z4..z1..z3..z6..z5) shifted offset; draw p;
+drawdot z5+offset;
+makelabel.bot.nodot("   1",z1+offset);
+makelabel.top.nodot("2",z2+offset+(0,2));
+makelabel.bot.nodot("3   ",z3+offset);
+makelabel.top.nodot("   4",z4+offset);
+makelabel.top.nodot("5",z5+offset+(0,5));
+makelabel.top.nodot("6   ",z6+offset);
+for k=1 upto 6: heavy_dot z[k]+offset; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3f"; % bean shape with automatic control points
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..z1..z3..z6..cycle;
+draw p;
+makelabel.bot.nodot("   1",z1);
+makelabel.bot.nodot("2",z2-(0,2));
+makelabel.bot.nodot("3   ",z3);
+makelabel.top.nodot("   4",z4+(-1,1));
+makelabel.top.nodot("5",z5+(0,5));
+makelabel.top.nodot("6   ",z6+(1,1));
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3g"; % bean shape with more tension between 1 and 3
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..z1..tension1.2..z3..z6..cycle;
+draw p;
+makelabel.bot.nodot("   1",z1);
+makelabel.bot.nodot("2",z2-(0,2));
+makelabel.bot.nodot("3   ",z3);
+makelabel.top.nodot("   4",z4+(-1,1));
+makelabel.top.nodot("5",z5+(0,5));
+makelabel.top.nodot("6   ",z6+(1,1));
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3h"; % bean shape with more tension before and after 1
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..tension 1 and 1.5..z1..tension 1.5 and 1..z3..z6..cycle;
+draw p;
+makelabel.bot.nodot("   1",z1);
+makelabel.bot.nodot("2",z2-(0,2));
+makelabel.bot.nodot("3   ",z3);
+makelabel.top.nodot("   4",z4+(-1,1));
+makelabel.top.nodot("5",z5+(0,5));
+makelabel.top.nodot("6   ",z6+(1,1));
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3i"; % bean shape with straight bottom
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4{left}..z1..z3..z6{left}..cycle;
+draw p;
+makelabel.bot.nodot("   1",z1-(1,1));
+makelabel.bot.nodot("2",z2-(0,2));
+makelabel.bot.nodot("3   ",z3+(1,-1));
+makelabel.top.nodot(" 4",z4+(0,5));
+makelabel.top.nodot("5",z5+(0,5));
+makelabel.top.nodot("6 ",z6+(0,5));
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3j"; % example with direction specified
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z4..z2{z3-z4}..z3;
+draw p;
+makelabel.rt.nodot("1",z1+(0,-9));
+makelabel.rt.nodot("2",z2+(1,-11));
+makelabel.rt.nodot("3",z3+(1,-11));
+makelabel.rt.nodot("4",z4+(1,-11));
+makelabel.rt.nodot("5",z5+(0,-9));
+makelabel.rt.nodot("6",z6+(0,-9));
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3k"; % wiggly shape for exercise
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4{z4-z2}..z1..z3..z6{z2-z6}..cycle;
+draw p;
+makelabel.bot.nodot("   1",z1-(2,2));
+makelabel.bot.nodot("2",z2-(0,2));
+makelabel.bot.nodot("3   ",z3+(2,-2));
+makelabel.bot.nodot("   4",z4);
+makelabel.top.nodot("5",z5+(0,5));
+makelabel.bot.nodot("6   ",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+showit;
+shipit;
+
+"Figure 3l"; % examples of varying curl
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z4{curl0}..z2{z3-z4}..{curl0}z3;
+draw p;
+drawdot z4; drawdot z3;
+makelabel.rt.nodot("1",z1+(0,-9));
+makelabel.rt.nodot("2",z2+(1,-11));
+makelabel.rt.nodot("3",z3+(1,-11));
+makelabel.rt.nodot("4",z4+(1,-11));
+makelabel.rt.nodot("5",z5+(0,-9));
+makelabel.rt.nodot("6",z6+(0,-9));
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+pair offset; offset=(325,0);
+p:=(z4{curl2}..z2{z3-z4}..{curl2}z3) shifted offset; draw p;
+drawdot z4+offset; drawdot z3+offset;
+makelabel.rt.nodot("1",z1+(0,-9)+offset);
+makelabel.rt.nodot("2",z2+(1,-11)+offset);
+makelabel.rt.nodot("3",z3+(1,-11)+offset);
+makelabel.rt.nodot("4",z4+(1,-11)+offset);
+makelabel.rt.nodot("5",z5+(0,-9)+offset);
+makelabel.rt.nodot("6",z6+(0,-9)+offset);
+for k=1 upto 6: heavy_dot z[k]+offset; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3m"; % two directions specified
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z4{z2-z4}..z6{down};
+draw p;
+drawdot z4; drawdot z6;
+makelabel.rt.nodot("1",z1+(2,0));
+makelabel.rt.nodot("2",z2+(2,0));
+makelabel.rt.nodot("3",z3+(2,0));
+makelabel.bot.nodot("   4",z4);
+makelabel.rt.nodot("5",z5+(2,0));
+makelabel.rt.nodot(" 6",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+for k=1 upto length p: heavy_dot postcontrol k-1 of p;
+ heavy_dot precontrol k of p; endfor
+showit;
+shipit;
+
+"Figure 3n"; % two control points specified
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z4..controls z1 and z2..z6;
+draw p;
+drawdot z4; drawdot z6;
+makelabel.rt.nodot("1",z1+(2,0));
+makelabel.rt.nodot("2",z2+(2,0));
+makelabel.rt.nodot("3",z3+(2,0));
+makelabel.rt.nodot(" 4",z4);
+makelabel.rt.nodot("5",z5+(2,0));
+makelabel.rt.nodot(" 6",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+showit;
+shipit;
+
+"Figure 4a"; % bean shape with elliptical pens
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..z1..z3..z6..cycle;
+pickup pencircle xscaled .8pt yscaled .2pt rotated 30;
+draw p;
+makelabel.bot("   1",z1);
+makelabel.bot("2",z2);
+makelabel.bot(" 3",z3);
+makelabel.top("4 ",z4);
+makelabel.top("",z5); makelabel.top.nodot("5",z5+(0,5));
+makelabel.top("",z6); makelabel.top.nodot("6   ",z6+(1,1));
+pair offset; offset=(325,0);
+pickup pencircle xscaled .8pt rotated 30;
+draw p shifted offset;
+makelabel.bot("   1",z1+offset);
+makelabel.bot("2",z2+offset);
+makelabel.bot(" 3",z3+offset);
+makelabel.top("4 ",z4+offset);
+makelabel.top("",z5+offset); makelabel.top.nodot("5",z5+(0,5)+offset);
+makelabel.top("",z6+offset); makelabel.top.nodot("6   ",z6+(1,1)+offset);
+showit;
+shipit;
+
+"Figure 4b"; % T of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(suffix c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(str c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+beginlogochar(T,13);
+if odd(w-ph): w:=w+1; fi  % allows a symmetric stem
+x1+x2=2x3=2x4=w; lft.x1=-epsilon; % I tried s-o instead; was not as good
+y1=y2=y3; top.y1=h; bot.y4=-o;
+draw z1..z2; draw z3..z4;
+labels.rt(2,3);
+makelabel.top("1",z1);
+makelabel.top("4",z4);
+endchar;
+
+"Figure 4c"; % M of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(suffix c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(str c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+beginlogochar(M,18);
+x1+x5=x2+x4=2x3=w; x1=x2=leftstemloc;
+y1=y5; y2=y4; bot.y1=-o; top y2=h+o; y3=y1+yy;
+draw z1--z2--z3--z4--z5;
+labels.rt(3,5);
+makelabel.lft("1",z1);
+makelabel.bot("2",z2);
+makelabel.bot("4",z4);
+endchar;
+
+"Figure 4d"; % solid kidney bean
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..z1..z3..z6..cycle;
+fill p;
+makelabel.bot(" 1",z1);
+makelabel.bot("2",z2);
+makelabel.bot("3 ",z3);
+makelabel.top(" 4",z4);
+makelabel.top("5",z5);
+makelabel.top("6 ",z6);
+showit;
+shipit;
+
+"Figure 4e"; % black triangle character for exercises
+beginchar(oct"170", 5pt#, 6.25pt#, 0);
+t:=(2-sqrt3)/2;
+x1=x2=w-x3+.5-t=round .43pt; y3=.5+floor.5h; % MANUAL font has it different!
+%x1=x2=w-x3=round .43pt; y3=.5+floor.5h;
+z1-z2=(z3-z2) rotated 60;
+y2:=t+round(y2-t); y1:=h-y2;
+fill z1--z2--z3--cycle;
+labels.lft(1,2); labels.rt(3); endchar;
+
+"Figure 4f"; % black bean with white holes
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..z1..z3..z6..cycle;
+fill p;
+unfill 1/4[z4,z2]..3/4[z4,z2]..cycle;
+unfill 1/4[z6,z2]..3/4[z6,z2]..cycle;
+makelabel.bot(" 1",z1);
+makelabel.bot("2",z2);
+makelabel.bot("3 ",z3);
+makelabel.top(" 4",z4);
+makelabel.top("5",z5);
+makelabel.top("6 ",z6);
+showit;
+shipit;
+
+"Figure 4g"; % black bean with skewed interior cutout
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z5..z4..z1..z3..z6..cycle;
+fill p;
+z0=(.8[x1,x2],.5[y1,y4]);
+for k=1 upto 6: z[k]'=.2[z[k],z0]; endfor
+unfill z5'..z4'..z1'..z3'..z6'..cycle;
+makelabel.bot("0",z0);
+makelabel.top("1 ",z1);
+makelabel.top("2",z2);
+makelabel.top(" 3",z3);
+makelabel.bot("4 ",z4);
+makelabel.bot("5",z5);
+makelabel.bot(" 6",z6);
+makelabel.bot("  1'",z1');
+makelabel.bot(" 2'",z2');
+makelabel.bot("3'  ",z3');
+makelabel.top("  4'",z4');
+makelabel.top("5'",z5');
+makelabel.top("6'  ",z6');
+showit;
+shipit;
+
+"Figure 4h"; % sample penstroke
+clear_all;
+penpos1(1.2pt,30); penpos2(1.0pt,45); penpos3(0.8pt,90);
+z1=(0,2pt); z2=(4pt,0); x3=9pt; y3l=y2r;
+penstroke z1e..z2e{right}..z3e{right};
+labels.top(2r,3r);
+labels.bot(2l,3l);
+labels.rt(3,1r);
+labels.lft(1l,2);
+makelabel.top("1 ",z1);
+showit;
+shipit;
+
+"Figure 4i"; % cyclic penstroke example
+clear_all;
+d:=25;
+penpos1(d,30);
+penpos2(d,60);
+penpos3(d,210);
+penpos4(d,240);
+y1=.51y2r; y2r=175; y3=.49y2r; y4r=0;
+x1r=175; x2=x4=.5x1r; x3r=0;
+penstroke z1e{up}..z2e{left}..z3e{down}..z4e{right}..cycle;
+labels.lft(1l,2,3r,4);
+labels.rt(1r,3l);
+labels.top(2r,3,4l);
+labels.bot(1,2l,4r);
+showit;
+shipit;
+
+"Figure 4j"; % I from IOnian font
+clear_all;
+em#:=10pt#; cap#:=7pt#;
+bar#:=.8pt#;
+stem#:=.9pt#;
+thin#:=.8pt#;
+thick#:=1pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick,bar,stem);
+beginchar(27,.35em#,cap#,0); % "The letter I"; \IOI=27
+ penpos1(stem,15); penpos2(.9stem,12); penpos3(stem,10);
+ x1=x2=x3=.5w; y1=h; y2=.55h; y3=0;
+ x2l:=1/6[x2l,x2];
+ penstroke z1e..z2e{down}..z3e;
+labels.top(1,2,1r);
+labels.lft(2l);
+labels.rt(2r);
+labels.bot(3,3l);
+makelabel("",z1l); makelabel("",z3r);
+makelabel.lft.nodot("1l",z1l-(0,2));
+makelabel.rt.nodot("3r",z3r+(0,2));
+endchar;
+
+"Figure 4k"; % fixed pens versus penstrokes
+clear_all;
+z1=(0,0); z2=(150,0);
+pickup pencircle xscaled 0.8pt rotated 25;
+draw z1..z2..cycle;
+labels.lft(1,2);
+clearxy;
+pair offset; offset=(250,0);
+penpos1(0.8pt,25); penpos2(0.8pt,25);
+z1=(0,0)+offset; z2=(150,0)+offset;
+penstroke z1e..z2e..cycle;
+labels.lft(1l,2l);
+labels.rt(1r,2r);
+labels.bot(1,2);
+showit;
+shipit;
+
+"Figure 4l"; % hex symbol with pen-pressure adjustments
+%b#:=1.0pt#; define_blacker_pixels(b); % FOR INITIAL TESTS ONLY
+%beginchar(0,500/36pt#,250/36pt#,0); % that's magnified 2.5 as in the type
+b#:=0.4pt#; define_blacker_pixels(b);
+beginchar(0,200/36pt#,100/36pt#,0);
+pickup pencircle scaled b;
+w:=2good.x .5w;
+top z1=(0,h); top z2=(.5w,h); top z3=(w,h);
+bot z4=(0,0); bot z5=(.5w,0); bot z6=(w,0);
+draw z2..z5;
+for k=1 upto 6: drawdot z[k]; endfor
+z1'=.25[z1,z6]; z6'=.75[z1,z6];
+z3'=.25[z3,z4]; z4'=.75[z3,z4];
+ theta1:=angle(z6-z1)+90;
+ theta3:=angle(z4-z3)+90;
+penpos1'(b,theta1); penpos6'(b,theta1); penpos7(.6b,theta1);
+penpos3'(b,theta3); penpos4'(b,theta3); penpos8(.6b,theta3);
+z7=z8=.5[z1,z6];
+draw z1..z1'; draw z6'..z6;
+ penstroke z1'e{z6'-z1'}..z7e..{z6'-z1'}z6'e;
+draw z3..z3'; draw z4'..z4;
+ penstroke z3'e{z4'-z3'}..z8e..{z4'-z3'}z4'e;
+labels.top(1'r,3'l,4'l,6'r);
+labels.bot(1'l,3'r,4'r,6'l);
+forsuffixes $=1',3',4',6': makelabel("",z$); endfor
+makelabel.lft("1 ",z1);
+makelabel.lft("2 ",z2);
+makelabel.rt(" 3",z3);
+makelabel.lft("4 ",z4);
+makelabel.lft("5 ",z5);
+makelabel.rt(" 6",z6);
+makelabel.top("8l  ",z8l);
+makelabel.top("  7r",z7r);
+makelabel.bot("7l  ",z7l);
+makelabel.bot("  8r",z8r);
+endchar;
+
+"Figure 4m"; % same, cut sharp at the terminals, and inside the box
+%b#:=1.0pt#; define_blacker_pixels(b); % FOR INITIAL TESTS ONLY
+%beginchar(0,500/36pt#,250/36pt#,0); % that's magnified 2.5 as in the type
+b#:=0.4pt#; define_blacker_pixels(b);
+beginchar(0,200/36pt#,100/36pt#,0);
+pickup pencircle scaled b;
+w:=2good.x .5w;
+x1l=x4l=0;x2=x5=.5w;x3r=x6r=w;
+y1r=y2=y3l=h; y4r=y5=y6l=0;
+z1'=.25[z1,z6]; z6'=.75[z1,z6]; theta1:=angle(w,-h)+90;
+z3'=.25[z3,z4]; z4'=.75[z3,z4]; theta3:=angle(-w,-h)+90;
+z7=z8=.5[z1,z6];
+penpos1(b,theta1); penpos6(b,theta1);
+penpos1'(b,theta1); penpos6'(b,theta1); penpos7(.6b,theta1);
+penpos3(b,theta3); penpos4(b,theta3);
+penpos3'(b,theta3); penpos4'(b,theta3); penpos8(.6b,theta3);
+penstroke z1e..z1'e{z6'-z1'}..z7e..{z6'-z1'}z6'e..z6e;
+penpos2(b,0); penpos5(b,0); penstroke z2e..z5e;
+penstroke z3e..z3'e{z4'-z3'}..z8e..{z4'-z3'}z4'e..z4e;
+penlabels(1,1',3,3',4,4',6,6');
+labels.top(1r,1'r,2,3l,3'l,4l,4'l,6r,6'r);
+labels.bot(1l,1'l,3r,3'r,4r,4'r,5,6l,6'l);
+labels.lft(2l,5l);
+labels.rt(2r,5r);
+forsuffixes $=1,1',3,3',4,4',6,6': makelabel("",z$); endfor
+makelabel.top("8l  ",z8l);
+makelabel.top("  7r",z7r);
+makelabel.bot("7l  ",z7l);
+makelabel.bot("  8r",z8r);
+endchar;
+
+"Figure A5a"; % S from IOnian font
+clear_all;
+em#:=10pt#; cap#:=7pt#;
+slab#:=.8pt#;
+stem#:=.9pt#;
+thin#:=.8pt#;
+thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_corrected_pixels(o);
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick,slab,stem);
+beginchar(25,5/9em#,cap#,0); % "The letter S"; /IOS=25
+penpos1(slab,70);
+penpos2(.5slab,80);
+penpos3(.5[slab,thick],200);
+penpos5(.5[slab,thick],210);
+penpos6(.7slab,80);
+penpos7(.25[slab,thick],72);
+x1=x5; y1r=.94h+o;
+x2=x4=x6=.5w; y2r=h+o; y4=.54h; y6l=-o;
+x3r=.04em; y3=.5[y4,y2];
+x5l=w-.03em; y5=.5[y4,y6];
+.5[x7l,x7]=.04em; y7l=.12h-o;
+path trial; trial=z3{down}..z4..{down}z5;
+pair dz; dz=direction 1 of trial;
+penpos4(thick,angle dz-90);
+penstroke z1e..z2e{left}..z3e{down}..z4e{dz}..z5e{down}..z6e{left}..z7e;
+labels.lft(2,3r,5r,6,7);
+labels.rt(1,3l,4,5l);
+labels.top(1r,2r,3,4l,5,6r,7r);
+labels.bot(1l,2l,4r,6l,7l);
+endchar;
+
+"Figure 8a"; % twenty points on p2
+clear_all;
+path p[]; p1=(0,0)..(3,3); p2=(0,0)..(3,3)..cycle;
+transform t; t=identity scaled 60 shifted (50,0);
+pair zz;
+z=(1.5,1.5) transformed t;
+pickup pencircle;
+draw p2 transformed t;
+for n=0 upto 19: zz:=point n/10 of p2 transformed t;
+ heavy_dot zz;
+ makelabel.top.nodot(decimal(n/10) if n mod 10=0:&".0" fi,
+.09[zz,z] shifted(.05xpart(z-zz),-6.5)); endfor
+%.1[zz,z] shifted(.1xpart(z-zz),-8)); endfor
+shipit;
+showit;
+
+"Figure 11a"; % E of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(suffix c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(str c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+beginlogochar(E,14);
+x1=x2=x3=leftstemloc; x4=x6=w-x1+o; x5=x4-xx;
+y1=y6; y2=y5; y3=y4; bot.y1=0; top.y3=h; y2=barheight;
+draw z6--z1--z3--z4; draw z2..z5;
+labels.rt(1,2,3);
+labels.lft(4,5,6);
+endchar;
+
+"Figure 12a"; % cmr10 left parenthesis
+u#:=20/36pt#;
+tiny#:=0;
+axis#:=90/36pt#;
+hheight#:=250/36pt#;
+border#:=20/36pt#;
+hair#:=8/36pt#;
+thin#:=9/36pt#;
+thick#:=25/36pt#;
+slant:=0;
+rulethickness:=.4pt#;
+
+font_setup;
+beginchar("(",7u#, hheight#+border#, hheight#+border#-2axis#);
+italcorr (hheight#+border#)*slant-.5u#;
+pickup tinypen;
+penpos1(hair-tiny,0); penpos3(hair-tiny,0);
+penpos2(.75[thin,thick]-tiny,0);
+rt x1r = rt x3r = w-u; lft x2l = x1-4u;
+top y1=h; y2=.5[y1,y3]=axis;
+filldraw z1l{curl 4}..z2l..{curl 4}z3l--
+    z3r{curl 4}..z2r..{curl 4}z1r--cycle;
+labels.top(3,2);
+labels.bot(1);
+labels.lft(1l,2l,3l);
+labels.rt(1r,2r,3r);
+endchar;
+
+"Figure 12b"; % cmbx10 left parenthesis
+u#:=23/36pt#;
+tiny#:=0;
+axis#:=90/36pt#;
+hheight#:=250/36pt#;
+border#:=20/36pt#;
+hair#:=13/36pt#;
+thin#:=17/36pt#;
+thick#:=41/36pt#;
+slant:=0;
+
+font_setup;
+beginchar("(",7u#, hheight#+border#, hheight#+border#-2axis#);
+italcorr (hheight#+border#)*slant-.5u#;
+pickup tinypen;
+penpos1(hair-tiny,0); penpos3(hair-tiny,0);
+penpos2(.75[thin,thick]-tiny,0);
+rt x1r = rt x3r = w-u; lft x2l = x1-4u;
+top y1=h; y2=.5[y1,y3]=axis;
+filldraw z1l{curl 4}..z2l..{curl 4}z3l--
+    z3r{curl 4}..z2r..{curl 4}z1r--cycle;
+labels.top(3,2);
+labels.bot(1);
+labels.lft(1l,2l,3l);
+labels.rt(1r,2r,3r);
+endchar;
+
+"Figure 12c"; % cmvtt10 left parenthesis
+u#:=21/36pt#;
+tiny#:=22/36pt#;
+axis#:=110/36pt#;
+hheight#:=220/36pt#;
+border#:=30/36pt#;
+hair#:=22/36pt#;
+thin#:=25/36pt#;
+thick#:=25/36pt#;
+slant:=0;
+
+font_setup;
+beginchar("(",7u#, hheight#+border#, hheight#+border#-2axis#);
+italcorr (hheight#+border#)*slant-.5u#;
+pickup tinypen;
+penpos1(hair-tiny,0); penpos3(hair-tiny,0);
+penpos2(.75[thin,thick]-tiny,0);
+rt x1r = rt x3r = w-u; lft x2l = x1-4u;
+top y1=h; y2=.5[y1,y3]=axis;
+filldraw z1l{curl 4}..z2l..{curl 4}z3l--
+    z3r{curl 4}..z2r..{curl 4}z1r--cycle;
+labels.top(3,2);
+labels.bot(1);
+labels.lft(1l,2l,3l);
+labels.rt(1r,2r,3r);
+endchar;
+
+"Figure 12d"; % cmssdc10 left parenthesis
+u#:=19/36pt#;
+tiny#:=8/36pt#;
+axis#:=95/36pt#;
+hheight#:=250/36pt#;
+border#:=20/36pt#;
+hair#:=23/36pt#;
+thin#:=40/36pt#;
+thick#:=40/36pt#;
+slant:=0;
+
+font_setup;
+beginchar("(",7u#, hheight#+border#, hheight#+border#-2axis#);
+italcorr (hheight#+border#)*slant-.5u#;
+pickup tinypen;
+penpos1(hair-tiny,0); penpos3(hair-tiny,0);
+penpos2(.75[thin,thick]-tiny,0);
+rt x1r = rt x3r = w-u; lft x2l = x1-4u;
+top y1=h; y2=.5[y1,y3]=axis;
+filldraw z1l{curl 4}..z2l..{curl 4}z3l--
+    z3r{curl 4}..z2r..{curl 4}z1r--cycle;
+labels.top(3,2);
+labels.bot(1);
+labels.lft(1l,2l,3l);
+labels.rt(1r,2r,3r);
+endchar;
+
+"Figure 12e"; % cmti10 left parenthesis
+u#:=18.4/36pt#;
+tiny#:=7/36;
+axis#:=90/36pt#;
+hheight#:=250/36pt#;
+border#:=20/36pt#;
+hair#:=8/36pt#;
+thin#:=11/36pt#;
+thick#:=23/36pt#;
+slant:=.25;
+
+font_setup;
+beginchar("(",7u#, hheight#+border#, hheight#+border#-2axis#);
+italcorr (hheight#+border#)*slant-.5u#;
+pickup tinypen;
+penpos1(hair-tiny,0); penpos3(hair-tiny,0);
+penpos2(.75[thin,thick]-tiny,0);
+rt x1r = rt x3r = w-u; lft x2l = x1-4u;
+top y1=h; y2=.5[y1,y3]=axis;
+filldraw z1l{curl 4}..z2l..{curl 4}z3l--
+    z3r{curl 4}..z2r..{curl 4}z1r--cycle;
+labels.top(3,2);
+labels.bot(1);
+labels.lft(1l,2l,3l);
+labels.rt(1r,2r,3r);
+endchar;
+currenttransform:=identity yscaled aspect_ratio;
+
+"Figure 12f"; % Dangerous bend symbol
+def font_setup=
+define_pixels(u,tiny,axis,hheight,border);
+define_blacker_pixels(hair,thin,thick,rulethickness);
+pickup if tiny<.5: nullpen else: pencircle scaled tiny fi;
+tinypen:=savepen;
+currenttransform:=identity slanted slant;
+enddef;
+
+% typical cmr10 parameters
+u#:=20/36pt#;
+tiny#:=0;
+axis#:=90/36pt#;
+hheight#:=250/36pt#;
+border#:=20/36pt#;
+hair#:=8/36pt#;
+thin#:=9/36pt#;
+thick#:=25/36pt#;
+fixwidth:=0;
+slant:=0;
+rulethickness#:=.4pt#;
+
+baselinedistance#:=11pt#;
+heavyline#:=50/36pt#;
+font_setup;
+define_whole_pixels(baselinedistance);
+define_blacker_pixels(heavyline);
+
+beginchar(127,25u#,hheight#+border#,0);
+pickup pencircle scaled rulethickness;
+top y1=25/27h; lft x4=0;
+x1+x1=x1a+x1b=x4b+x2a=x4+x2=x4a+x2b=x3b+x3a=x3+x3=w;
+x4a=x4b=x4+u; x3b=x1a=x1-2u;
+y4+y4=y4a+y4b=y3b+y1a=y3+y1=y3a+y1b=y2b+y2a=y2+y2=0;
+y1a=y1b=y1-2/27h; y4b=y2a=y4+4/27h;
+draw z1a..z1..z1b---z2a..z2..z2b---
+  z3a..z3..z3b---z4a..z4..z4b---cycle;  % signboard
+x10=x11=x12=x13=good.x(.5w-u); x14=x15=x16=x17=w-x10;
+y10=y14=28/27h+epsilon; bot y13=-baselinedistance;
+z11=(z10..z13) intersectionpoint (z1a{z1a-z4b}..z1{right});
+y15=y11; y16=y12=-y11; y17=y20=y21=y13;
+draw z11--z10--z14--z15; draw z12--z13; draw z16--z17;  % signpost
+x20=w-x21; x21-x20=16u; draw z20--z21;  % ground level
+x36=w-x31; x36-x31=8u; x32=x33=x36; x31=x34=x35;
+y31=-y36=12/27h; y32=-y35=9/27h; y33=-y34=3/27h;
+pickup pencircle scaled heavyline;
+draw z32{z32-z31}..z33---z34..z35{z36-z35};  % the dangerous bend
+pickup penrazor xscaled heavyline rotated (angle(z32-z31)+90);
+draw z31--z32; draw z35--z36;    % upper and lower bars
+labels.top(11,15,2a,4b,4,2,32,34);
+labels.bot(10,14,2b,4a,33,35);
+labels.lft(1a,3b,12,13,21,36);
+labels.rt(1,1b,3a,3,16,20,17,31);
+endchar;
+
+"Figure 13a"; % Possible cube
+clear_all;
+fudge_factor:=1/2;
+s#:=5pt#*fudge_factor; define_pixels(s); % side of the square
+z1=(-epsilon,-epsilon);  z2=(s+epsilon,-epsilon);
+  z3=(-epsilon,s+epsilon); z4=(s+epsilon,s+epsilon);
+for k=1 upto 4: z[k+4]=z[k]+(2/3s,1/3s); endfor
+pickup pencircle scaled (.4pt*fudge_factor);
+draw z5--z6--z8--z7--cycle;
+pickup pencircle scaled (1.6pt*fudge_factor);
+erase draw z2--z4--z3;
+pickup pencircle scaled (.4pt*fudge_factor);
+draw z1--z2--z4--z3--cycle;
+for k=1 upto 4:  draw z[k]--z[k+4]; endfor
+labels.top(1,2,5,6);
+labels.bot(3,4,7,8);
+showit;
+shipit;
+
+"Figure 14a"; % El Palo Alto
+begingroup save flex; clear_all;
+def flex(text t) = % puts dots into normal flex
+   hide(n_:=0;
+   for z=t: z_[incr n_]:=z; makelabel("",z); endfor
+   dz_:=z_[n_]-z_1)
+   z_1 for k=2 upto n_-1: ...z_[k]{dz_} endfor ...z_[n_] enddef;
+
+def grid= proofoffset (30,0);
+  for y:=0 step 50 until 650: proofrule((-110,y),(110,y));
+    makelabel.lft.nodot(str[y],(100,y+5));
+    endfor;
+  for x:=-100 step 50 until 100: proofrule((x,-10),(x,660));endfor enddef;
+
+path branch[],trunk;
+
+branch1=
+ flex((0,660),(-9,633),(-22,610))
+ &flex((-22,610),(-3,622),(17,617))
+ &flex((17,617),(7,637),(0,660))
+  &cycle;
+
+branch2=
+ flex((30,570),(10,590),(-1,616))
+ &flex((-1,616),(-11,592),(-29,576),(-32,562))
+ &flex((-32,562),(-10,577),(30,570))
+ &cycle;
+
+branch3=
+ flex((-1,570),(-17,550),(-40,535))
+ &flex((-40,535),(-45,510),(-60,477))
+ &flex((-60,477),(-20,505),(40,512))
+ &flex((40,512),(31,532),(8,550),(-1,570))
+ &cycle;
+
+branch4=
+ flex((0,509),(-14,492),(-32,481))
+ &flex((-32,481),(-42,455),(-62,430))
+ &flex((-62,430),(-20,450),(42,448))
+ &flex((42,448),(38,465),(4,493),(0,509))
+ &cycle;
+
+branch5=
+ flex((-22,470),(-23,435),(-44,410))
+ &flex((-44,410),(-10,421),(35,420))
+ &flex((35,420),(15,455),(-22,470))
+ &cycle;
+
+branch6=
+ flex((18,375),(9,396),(5,420))
+ &flex((5,420),(-5,410),(-50,375),(-50,350))
+ &flex((-50,350),(-25,375),(18,375))
+ &cycle;
+
+branch7=
+ flex((0,400),(-13,373),(-30,350))
+ &flex((-30,350),(0,358),(30,350))
+ &flex((30,350),(13,373),(0,400))
+ &cycle;
+
+branch8=
+ flex((50,275),(45,310),(3,360))
+ &flex((3,360),(-20,330),(-70,300),(-100,266))
+ &flex((-100,266),(-75,278),(-60,266))
+ &flex((-60,266),(0,310),(50,275))
+ &cycle;
+
+branch9=
+ flex((10,333),(-15,290),(-43,256))
+ &flex((-43,256),(8,262),(58,245))
+ &flex((58,245),(34,275),(10,333))
+ &cycle;
+
+branch10=
+ flex((8,262),(-21,249),(-55,240))
+ &flex((-55,240),(-51,232),(-53,220))
+ &flex((-53,220),(-28,229),(27,235))
+ &flex((27,235),(16,246),(8,262))
+ &cycle;
+
+branch11=
+ flex((0,250),(-25,220),(-70,195))
+ &flex((-70,195),(-78,180),(-90,170))
+ &flex((-90,170),(-5,188),(74,183))
+ &flex((74,183),(34,214),(0,250))
+ &cycle;
+
+branch12=
+ flex((8,215),(-35,175),(-72,155))
+ &flex((-72,155),(-75,130),(-92,110),(-95,88))
+ &flex((-95,88),(-65,117),(-54,104))
+ &flex((-54,104),(10,151),(35,142))..flex((42,130),(60,123),(76,124))
+ &flex((76,124),(62,146),(26,180),(8,215))&cycle;
+
+trunk=(0,660)---(-12,70)..{curl 5}(-28,-8)
+ &flex((-28,-8),(-16,-4),(-10,-11))
+ &flex((-10,-11),(0,-5),(14,-10))
+ &flex((14,-10),(20,-6),(29,-11))
+ &(29,-11){curl 4}..(10,100)---cycle;
+
+makelabel("",(-12,70));
+makelabel("",(10,100));
+
+pickup pencircle scaled 2;
+draw trunk;
+for n=1 upto 12: draw branch[n]; endfor
+grid;
+showit;shipit;
+endgroup;
+
+"Figure 14b"; % Detail of one branch
+clear_all;
+pair zz[];
+zz1=(0,509);
+zz2=(-14,492);
+zz3=(-32,481);
+zz4=(-42,455);
+zz5=(-62,430);
+zz6=(-20,450);
+zz7=(42,448);
+zz8=(38,465);
+zz9=(4,493);
+for n=1 upto 9: z[n]=(zz[n]+(62,-430)) scaled 2.5; endfor
+pickup pencircle;
+filldraw flex(z1,z2,z3)&flex(z3,z4,z5)
+ &flex(z5,z6,z7)&flex(z7,z8,z9,z1)&cycle;
+labels.lft(2,3,4,5);
+labels.rt(1,7,8,9);
+labels.bot(6);
+showit; shipit;
+
+"Figure 14c"; % superellipses
+clear_all;
+w:=100; h:=150;
+pickup pencircle xscaled 0.7pt yscaled 0.2pt rotated 30;
+forsuffixes ss=65,70,75,80: s:=ss/100;
+draw superellipse((w,.5h),(.5w,h),(0,.5h),(.5w,0),s) shifted (150/.05(s-.65),0);
+makelabel.top.nodot("."&str ss,(.5w,.45h) shifted (150/.05(s-.65),0));
+endfor
+showit;
+shipit;
+
+"Figure 14d"; % demo of joinery
+clear_all;
+pickup standardpen;
+z0=(0,100); z1=(50,0); z2=(180,0);
+for n=3 upto 9: z[n]=z[n-3]+(200,0); endfor
+draw z0..z1---z2...{up}z3
+ & z3..z4--z5...{up}z6
+ & z6...z7---z8..{up}z9;
+makelabel.bot("0 ",z0);
+makelabel.bot("6 ",z6);
+labels.bot(3,9);
+labels.rt(1,4,7);
+labels.lft(2,5,8);
+showit;
+shipit;
+
+"Figure 14e"; % JofA logo
+beginchar("A",29mm#*.22,25mm#*.22,0);
+interim autorounding:=0; interim smoothing:=0;
+if odd(w-h): h:=h-1; fi
+thick#:=2mm#*.22; thin#:=5/4mm#*.22;
+define_whole_blacker_pixels(thick,thin);
+forsuffixes @=a,b,c: transform @;
+ forsuffixes e=l,r: path @e,@'e; numeric t@[]e; endfor endfor
+penpos1(thick,0); penpos2(thick,90); penpos3(thick,180); penpos4(thick,270);
+penpos5(thick,0); penpos6(thick,90); penpos7(thick,180); penpos8(thick,270);
+x2=x4=x6=x8=.5[x5,x7]=.5w; x1r=w; x3r=0; x5-x7=y6-y8;
+y1=y3=y5=y7=.5[y6,y8]=.5h; y2r=h; y4r=0; y6r=round.75h;
+forsuffixes e=l,r: a.e=b'e=c'e=superellipse(z1e,z2e,z3e,z4e,.75);
+ a'e=b.e=c.e=superellipse(z5e,z6e,z7e,z8e,.72); endfor
+penpos.a1(thin,0); penpos.a5(whatever,-90); penpos.a9(thin,180);
+x.a1l-x.a9l=1/3(x5l-x7l); x.a5=.5w; y.a1=y.a9; y.a5r=4/7h;
+x.a3l=x.a1l; x.a3r=x.a1r; x.a4r=1/6[x.a3r,x1l]; x0=.5w; y0=.52h;
+x.a6l+x.a4l=x.a6r+x.a4r=x.a7l+x.a3l=x.a7r+x.a3r=x.a9+x.a1=w;
+y.a3r=y.a4r=y.a6r=y.a7r=.2[y2l,y0]; y.a3l=y.a4l=y.a6l=y.a7l=y.a3r-thin;
+z.a4l=z.a4r+(thin,0)rotated(angle(z.a4r-z.a5r)+90)
+ +whatever*(z.a4r-z.a5r); z.a4l-z.a5l=whatever*(z.a4r-z.a5r);
+z=a.r intersectionpoint (z0--(w,0)); y.a1-y.a5=length(z-z0);
+b=identity shifted(0,y0-y.a1)rotatedaround(z0,90-angle(z0-(w,0)));
+c=b reflectedabout (z2,z4);
+for n=1,3,4,5,6,7,9: forsuffixes e=l,,r: forsuffixes @=b,c:
+ z@[n]e=z.a[n]e transformed @; endfor endfor endfor
+forsuffixes e=l,r: forsuffixes @=a,b,c:
+ z@2e=@r intersectionpoint (z@1e--z@3e);
+ z@8e=@r intersectionpoint (z@9e--z@7e);
+ t@1e=xpart(@e intersectiontimes (z@1l--z@3l));
+ t@9e=xpart(@e intersectiontimes (z@9l--z@7l));
+ t@4e=xpart(@'e intersectiontimes (z@5r--z@4l));
+ t@6e=xpart(@'e intersectiontimes (z@5r--z@6l)); endfor endfor
+penstroke subpath(t.a9e,t.b6e) of a.e;
+penstroke subpath(t.b4e,t.c4e) of b'e;
+penstroke subpath(t.c6e,t.a1e+8) of c'e;
+penstroke subpath(t.a6e,t.b9e) of a'e;
+penstroke subpath(t.b1e,t.c1e) of b.e;
+penstroke subpath(t.c9e,t.a4e+8) of c.e;
+forsuffixes @=a,b,c:
+ penstroke z@2e--z@3e--z@4e--z@5e--z@6e--z@7e--z@8e; endfor
+labels.lft(0,1l,3r,3,5l,7r,7,a1l,a2l,a3l,a6l,
+  a6r,a8r,a9r,b2l,b5,b5r,b9,c1,c2r,c5l);
+labels.rt(1,1r,3l,5,5r,7l,a1r,a2r,a4l,a4r,a7l,
+  a9l,b1,b2r,b5l,c2l,c5,c5r,c9);
+labels.top(2r,2,2l,4l,6r,6,6l,8l,a3r,a7r,a8l,
+  b1l,b3l,b3r,b6r,b6l,b8r,b9r,c1l,c3l,c3r,c6r,c6l,c8r,c9r);
+labels.bot(2r,2,2l,4,4r,8,8r,a1,a5l,a5,a5r,a9,
+  b1r,b4l,b4r,b7l,b7r,b8l,c1r,c4l,c4r,c7l,c7r,c8l);
+makelabel("",z.b9l);
+makelabel("",z.c9l);
+makelabel.lft.nodot("b9l",z.b9l-(0,3));
+makelabel.rt.nodot("c9l",z.c9l-(0,3));
+endchar;
+
+"Figure 15a"; % four u's
+beginchar("4",11pt#,11pt#,0);
+pickup pencircle scaled 3/4pt yscaled 1/3 rotated 30;
+save t; transform t;
+t=identity rotatedaround((.5w,.5h),-90);
+x2=.35w; x3=good.x .6w;
+y2=good.y .1h; top y3=round .4h+eps;
+save p; path p; p=z2{right}...{up}z3;
+top z1=point .5 of p transformed t;
+draw z1...z2{right}...{up}z3;
+addto currentpicture also currentpicture transformed t;
+addto currentpicture also currentpicture transformed(t transformed t);
+labels.bot(1,3); labels.rt(2); endchar;
+
+"Figure 16a"; % circular pen polygon
+clear_all;
+path p;
+p=makepath(pencircle scaled 20) scaled 10 shifted (110,110);
+if length p<>32: error; fi
+fill p;
+for k=1 upto length p: heavy_dot point k of p; endfor
+for x=0 step 10 until 220: proofrule((x,0),(x,220)); endfor
+for y=0 step 10 until 220: proofrule((0,y),(220,y)); endfor
+proofrulethickness .8;
+proofrule ((0,110),(220,110)); proofrule ((110,0),(110,220));
+makelabel.bot.nodot("ignore",(160,-10)); % kludge for GFtoEPS!
+showit;
+shipit;
+
+"Figure 16b"; % elliptical pen polygon
+clear_all;
+path p;
+p=makepath(pencircle xscaled 30 yscaled 20) scaled 10 shifted (160,110);
+if length p<>40: error; fi
+fill p;
+for k=1 upto length p: heavy_dot point k of p; endfor
+for x=0 step 10 until 320: proofrule((x,0),(x,220)); endfor
+for y=0 step 10 until 220: proofrule((0,y),(320,y)); endfor
+proofrulethickness .8;
+proofrule ((0,110),(320,110)); proofrule ((160,0),(160,220));
+makelabel.bot.nodot("ignore",(160,-10)); % kludge for GFtoEPS!
+showit;
+shipit;
+
+"Figure 16c"; % elliptical pen hexagon
+clear_all;
+path p;
+p=makepath((pencircle xscaled 30) yscaled 20) scaled 10 shifted (160,110);
+if length p<>6: error; fi
+fill p;
+for k=1 upto length p: heavy_dot point k of p; endfor
+for x=0 step 10 until 320: proofrule((x,0),(x,220)); endfor
+for y=0 step 10 until 220: proofrule((0,y),(320,y)); endfor
+proofrulethickness .8;
+proofrule ((0,110),(320,110)); proofrule ((160,0),(160,220));
+makelabel.bot.nodot("ignore",(160,-10)); % kludge for GFtoEPS!
+showit;
+shipit;
+
+"Figure 16d"; % cutoff version of Figure 3n
+clear_all;
+z1=(0,100); z2=(100,100); z3=(200,100);
+z4=(0,0); z5=(100,0); z6=(200,0);
+path p; p=z4..controls z1 and z2..z6;
+cutdraw p;
+makelabel.rt.nodot("1",z1+(2,0));
+makelabel.rt.nodot("2",z2+(2,0));
+makelabel.rt.nodot("3",z3+(2,0));
+makelabel.rt.nodot(" 4",z4);
+makelabel.rt.nodot("5",z5+(2,0));
+makelabel.rt.nodot(" 6",z6);
+for k=1 upto 6: heavy_dot z[k]; endfor;
+showit;
+shipit;
+
+"Figure 16e"; % cutoff version of Figure 4b
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(suffix c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(str c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+beginlogochar(T,13);
+if odd(w-ph): w:=w+1; fi  % allows a symmetric stem
+x1+x2=2x3=2x4=w; lft.x1=0;
+y1=y2=y3; top.y1=h; y4=0;
+draw z1--z2;
+cutoff(z1,170);
+cutoff(z2,-10);
+draw z3--z4;
+cutoff(z4,-80);
+labels.rt(1);
+labels.lft(2);
+labels.bot(3);
+makelabel.top("4",z4);
+endchar;
+
+"Figure 16f"; % tilde with pencircle
+clear_all;
+pickup pencircle xscaled .8pt yscaled .2pt rotated 50;
+z1=(0,0); z4=(200,30);
+z2-z1=z4-z3=whatever*dir 50;
+y2-y1=3(y4-y1);
+draw z1..controls z2 and z3..z4;
+makelabel.lft("1 ",z1);
+makelabel.rt(" 4",z4);
+showit;
+shipit;
+
+"Figure 16g"; % tilde with pensquare
+clear_all;
+pickup pensquare xscaled .8pt yscaled .2pt rotated 50;
+z1=(0,0); z4=(200,30);
+z2-z1=z4-z3=whatever*dir 50;
+y2-y1=3(y4-y1);
+draw z1..controls z2 and z3..z4;
+makelabel.lft("1 ",z1);
+makelabel.rt(" 4",z4);
+showit;
+shipit;
+
+"Figure 16h"; % fancy serif with pencircle
+clear_all;
+pickup pencircle xscaled .8pt yscaled .2pt rotated 20;
+z1=(20,175); bot z3=(0,0);
+z4=(50,0); z6=(25,175);
+x2=x1; z2=z3+whatever*dir 20;
+x5=x6; z5=z4+whatever*dir -20;
+pair dishing; dishing=(8,0) rotated 20;
+filldraw z1..controls z2..z3
+--(flex(z3,.5[z3,z4]+dishing,z4))shifted(0,-epsilon)
+-- z4..controls z5..z6--cycle;
+showit;
+labels.lft(1,2,3);
+labels.rt(4,5,6);
+shipit;
+
+"Figure 16i"; % fancy serif with pensquare
+clear_all;
+pickup pensquare xscaled .8pt yscaled .2pt rotated 20;
+z1=(20,175); bot z3=(0,0);
+z4=(50,0); z6=(25,175);
+x2=x1; z2=z3+whatever*dir 20;
+x5=x6; z5=z4+whatever*dir -20;
+pair dishing; dishing=(8,0) rotated 20;
+filldraw z1..controls z2..z3
+--(flex(z3,.5[z3,z4]+dishing,z4))shifted(0,-epsilon)
+-- z4..controls z5..z6--cycle;
+showit;
+labels.lft(1,2,3);
+labels.rt(4,5,6);
+shipit;
+
+"Figure 18a"; % O of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(expr c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+def super_half(suffix i,j,k) =
+ draw z.i{0,y.j-y.i}
+  ... (.8[x.j,x.i],.8[y.i,y.j]){z.j-z.i}
+  ... z.j{x.k-x.i,0}
+  ... (.8[x.j,x.k],.8[y.k,y.j]){z.k-z.j}
+  ... z.k{0,y.k-y.j} enddef;
+
+beginlogochar("O",15);
+x1=x4=.5w; top y1=h+o; bot y4=-o;
+x2=w-x3=good.x(1.5u+s);
+y2=y3=barheight;
+super_half(2,1,3); super_half(3,4,2);
+labels.lft(2); labels.rt(1,3,4); endchar;
+
+"Figure A18a"; % A of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(expr c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+def super_half(suffix i,j,k) =
+ draw z.i{0,y.j-y.i}
+  ... (.8[x.j,x.i],.8[y.i,y.j]){z.j-z.i}
+  ... z.j{x.k-x.i,0}
+  ... (.8[x.j,x.k],.8[y.k,y.j]){z.k-z.j}
+  ... z.k{0,y.k-y.j} enddef;
+
+beginlogochar("A",15);
+x1=.5w;
+x2=x4=leftstemloc;
+x3=x5=w-x2;
+top y1=h+o;
+y2=y3=barheight;
+bot y4=bot y5=-o;
+draw z4--z2--z3--z5;
+super_half(2,1,3);
+labels.top(2,3,4,5);
+labels.rt(1);
+endchar;
+
+"Figure 18b"; % serif points
+clear_all;
+def serif(suffix $)(expr breadth,theta,left_jut,right_jut)=
+ penpos$(breadth/abs sind theta,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+y$c=y$d; y$b=y$e=y$; y$b-y$c=if theta<0:-fi slab;
+x$b=x$c=x$l-left_jut; x$d=x$e=x$r+right_jut;
+enddef;
+
+def serif_edge suffix $ =
+ (serif_bracket($a,$l,$b)--z$c
+  --z$d--reverse serif_bracket($f,$r,$e)) enddef;
+
+def serif_bracket(suffix i,j,k) =
+ (z.i{z.j-z.i}...serif_darkness[z.j,.5[z.i,z.k] ]{z.k-z.i}
+  ...z.k{z.k-z.j}) enddef;
+
+serif_darkness:=1/4; slab:=50; bracket:=175;
+z$=(150,slab);
+serif($,100,75,80,90);
+pickup pencircle scaled 2; draw serif_edge $;
+labels.lft($l,$a);
+labels.rt($,$r,$f);
+labels.top($b,$e);
+labels.bot($c,$d);
+showit;
+shipit;
+
+"Figure 18c"; % AI by outlines
+clear_all;
+def serif(suffix $)(expr breadth,theta,left_jut,right_jut)=
+ penpos$(breadth/abs sind theta,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+y$c=y$d; y$b=y$e=y$; y$b-y$c=if theta<0:-fi slab;
+x$b=x$c=x$l-left_jut; x$d=x$e=x$r+right_jut;
+enddef;
+
+def serif_edge suffix $ =
+ (serif_bracket($a,$l,$b)--z$c
+  --z$d--reverse serif_bracket($f,$r,$e)) enddef;
+
+def serif_bracket(suffix i,j,k) =
+ (z.i{z.j-z.i}...serif_darkness[z.j,.5[z.i,z.k] ]{z.k-z.i}
+  ...z.k{z.k-z.j}) enddef;
+
+serif_darkness:=1/3;
+slab#:=1/4pt#;
+bracket#:=1pt#;
+jut#:=.9pt#;
+u#:=3/5pt#;
+ht#:=7pt#;
+thin#:=.5pt#;
+thick#:=1.1pt#;
+define_pixels(slab,bracket,jut,u,ht,thin,thick);
+
+beginchar("A",13u#,ht#,0);
+z1=(.5w,round 1.05h); x4l=w-x5r=u; y4l=y5r=slab;
+numeric theta[]; theta4=angle(z1-z4l); theta5=angle(z1-z5r);
+serif(4,thin,theta4,.6jut,jut); serif(5,thick,theta5,jut,.6jut);
+z0=z4r+whatever*dir theta4=z5l+whatever*dir theta5;
+fill z1--serif_edge4--z0 & z0--serif_edge5--z1 & cycle;
+penpos2(whatever,theta4); penpos3(whatever,theta5);
+y2r=y3r=.5[y4,y0]; y2l=y3l=y2r-thin;
+z2=whatever[z1,z4r]; z3=whatever[z1,z5l];
+penstroke z2e--z3e;
+labels.lft(3,5l,5,4a,5a);
+labels.rt(2,4r,4f,5f);
+labels.top(1,2r,3r,4l,5r,4b,4e,5b,5e);
+labels.bot(0,2l,3l,4,4c,4d,5c,5d);
+
+ww:=w; % special hacks to get two on one
+picture tmp; tmp:=currentpicture;
+proofrule((w,-d.o_),(w,h.o_));
+endgroup;
+
+beginchar("I",6u#,ht#,0);
+currentpicture:=tmp;
+currenttransform:=currenttransform shifted(ww,0);
+x1=x2=.5w; y1=h-y2; y2=slab;
+serif(1,thick,-90,1.1jut,1.1jut); serif(2,thick,90,1.1jut,1.1jut);
+fill serif_edge 2 -- reverse serif_edge 1 -- cycle;
+w:=w+ww;
+labels.lft(1a,2a,1l);
+labels.rt(1f,2f,1,1r);
+labels.top(2l,2,2r,2e,1c,1d);
+labels.bot(2d,1b,1e);
+makelabel("",z2b); makelabel("",z2c);
+makelabel.rt.nodot("2b",z2b+(0,3));
+makelabel.rt.nodot("2c",z2c-(0,3));
+endchar;
+
+currenttransform:=identity yscaled aspect_ratio;
+
+"Figure A18b"; % H by outlines
+clear_all;
+def serif(suffix $)(expr breadth,theta,left_jut,right_jut)=
+ penpos$(breadth/abs sind theta,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+y$c=y$d; y$b=y$e=y$; y$b-y$c=if theta<0:-fi slab;
+x$b=x$c=x$l-left_jut; x$d=x$e=x$r+right_jut;
+enddef;
+
+def serif_edge suffix $ =
+ (serif_bracket($a,$l,$b)--z$c
+  --z$d--reverse serif_bracket($f,$r,$e)) enddef;
+
+def serif_bracket(suffix i,j,k) =
+ (z.i{z.j-z.i}...serif_darkness[z.j,.5[z.i,z.k] ]{z.k-z.i}
+  ...z.k{z.k-z.j}) enddef;
+
+serif_darkness:=1/3;
+slab#:=1/4pt#;
+bracket#:=1pt#;
+jut#:=.9pt#;
+u#:=3/5pt#;
+ht#:=7pt#;
+thin#:=.5pt#;
+thick#:=1.1pt#;
+define_pixels(slab,bracket,jut,u,ht,thin,thick);
+
+beginchar("H",13u#,ht#,0);
+x1=x2=x5=3u; x3=x4=x6=w-x1; y1c=y3c=h; y2c=y4c=0;
+serif(1,thick,-90,jut,jut);
+serif(2,thick,90,jut,jut);
+serif(3,thick,-90,jut,jut);
+serif(4,thick,90,jut,jut);
+fill serif_edge 2 -- reverse serif_edge 1 -- cycle;
+fill serif_edge 4 -- reverse serif_edge 3 -- cycle;
+penpos5(thin,90); penpos6(thin,90);
+y5=y6=.52h; penstroke z5e--z6e;
+labels.lft(1a,2a,3a,4a,5,1,2,1l,2l,3l,4l);
+labels.rt(1f,2f,3f,4f,6,3,4,1r,2r,3r,4r);
+labels.top(1c,1d,2b,2e,4b,4e,3c,3d,5r,6r);
+labels.bot(1b,1e,2c,2d,4c,4d,3b,3e,5l,6l);
+endchar;
+
+"Figure 18d"; % AI by broadpen
+clear_all;
+def bot_serif(suffix $)(expr xx,theta,left_jut,right_jut)=
+ penpos$(xx,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+y$c=top y$l; y$d=y$r; x$c=x$l-left_jut; x$d=x$r+right_jut;
+z$b=z$l+whatever*dir theta=z$c+whatever*dir phi;
+z$e=z$r+whatever*dir theta=z$d+whatever*dir -phi;
+enddef;
+
+def top_serif(suffix $)(expr xx,theta,left_jut,right_jut)=
+ penpos$(xx,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+%y$c=top y$l; y$d=y$r; x$c=x$l-left_jut; x$d=x$r+right_jut;
+y$c=y$d=y$; x$c=x$l-left_jut; x$d=x$r+right_jut;
+z$b=z$l+whatever*dir theta=z$c+whatever*dir -phi;
+z$e=z$r+whatever*dir theta=z$d+whatever*dir phi;
+enddef;
+
+def bot_serif_edge suffix $ =
+ (z$a..controls z$b..z$c
+ --(flex(z$c,.5[z$c,z$d]+dishing,z$d)) shifted (0,-epsilon)
+ -- z$d..controls z$e..z$f) enddef;
+
+def top_serif_edge suffix $ =
+ (z$a..controls z$b..z$c
+ --(flex(z$c,.5[z$c,z$d]-dishing,z$d)) shifted (0,+epsilon)
+ -- z$d..controls z$e..z$f) enddef;
+
+phi:=20;
+pair dishing; dishing:=(1/4pt,0) rotated phi;
+bracket#:=1pt#;
+jut#:=.9pt#;
+u#:=3/5pt#;
+ht#:=7pt#;
+px#:=.8pt#;
+py#:=.2pt#;
+xx#:=.3pt#;
+define_pixels(bracket,jut,u,ht,px,py,xx);
+
+pickup pensquare xscaled px yscaled py rotated phi; broad_pen:=savepen;
+
+beginchar("A",13u#,ht#,0); pickup broad_pen;
+z1=(.5w,top h); lft x4l=w-rt x5r=1.2u; y4l=y5r=0;
+numeric theta[]; theta4=angle(z1-z4l); theta5=angle(z1-z5r);
+numeric xxx;
+px*sind(theta5-phi)+xxx*sind theta5 = px*cosd phi+xx;
+bot_serif(4,0,theta4,.8jut,.8jut);
+bot_serif(5,xxx,theta5,.6jut,.8jut);
+z0=z4r+whatever*dir theta4=z5l+whatever*dir theta5;
+filldraw z1--bot_serif_edge4--z0 & z0--bot_serif_edge5--z1 & cycle;
+top y2=top y3=.45 bot y0; z2=whatever[z1,z4r]; z3=whatever[z1,z5l];
+draw z2--z3;
+labels.lft(4a,4b,4c,4,5l,5a,5c);
+labels.rt(4f,4e,5r,5d,5e,5f);
+labels.top(1,2,3,5b);
+labels.bot(0,4d,5);
+
+ww:=w; % special hacks to get two on one
+picture tmp; tmp:=currentpicture;
+proofrule((w,-d.o_),(w,h.o_));
+endgroup;
+
+beginchar("I",6u#,ht#,0); pickup broad_pen;
+currentpicture:=tmp;
+currenttransform:=currenttransform shifted(ww,0);
+x1=x2=.5w; y1=h; y2=0;
+top_serif(1,xx,-90,1.1jut,1.1jut);
+bot_serif(2,xx,90,1.1jut,1.1jut);
+filldraw bot_serif_edge 2 -- reverse top_serif_edge 1 -- cycle;
+labels.lft(1l,2l,1a,1b,1c,2a,2b);
+labels.rt(1r,2r,1d,1e,1f,2d,2e,2f);
+labels.top(1);
+labels.bot(2,2c);
+w:=w+ww;
+endchar;
+
+currenttransform:=identity yscaled aspect_ratio;
+
+"Figure A18c"; % H by broadpen
+clear_all;
+def bot_serif(suffix $)(expr xx,theta,left_jut,right_jut)=
+ penpos$(xx,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+y$c=top y$l; y$d=y$r; x$c=x$l-left_jut; x$d=x$r+right_jut;
+z$b=z$l+whatever*dir theta=z$c+whatever*dir phi;
+z$e=z$r+whatever*dir theta=z$d+whatever*dir -phi;
+enddef;
+
+def top_serif(suffix $)(expr xx,theta,left_jut,right_jut)=
+ penpos$(xx,0);
+z$a-z$l=z$f-z$r=(bracket/abs sind theta)*dir theta;
+y$c=y$d=y$; x$c=x$l-left_jut; x$d=x$r+right_jut;
+z$b=z$l+whatever*dir theta=z$c+whatever*dir -phi;
+z$e=z$r+whatever*dir theta=z$d+whatever*dir phi;
+enddef;
+
+def bot_serif_edge suffix $ =
+ (z$a..controls z$b..z$c
+ --(flex(z$c,.5[z$c,z$d]+dishing,z$d))shifted (0,-epsilon)
+ -- z$d..controls z$e..z$f) enddef;
+
+def top_serif_edge suffix $ =
+ (z$a..controls z$b..z$c
+ --(flex(z$c,.5[z$c,z$d]-dishing,z$d))shifted (0,+epsilon)
+ -- z$d..controls z$e..z$f) enddef;
+
+phi:=20;
+pair dishing; dishing:=(1/4pt,0) rotated phi;
+bracket#:=1pt#;
+jut#:=.9pt#;
+u#:=3/5pt#;
+ht#:=7pt#;
+px#:=.8pt#;
+py#:=.2pt#;
+xx#:=.3pt#;
+define_pixels(bracket,jut,u,ht,px,py,xx);
+
+pickup pensquare xscaled px yscaled py rotated phi; broad_pen:=savepen;
+
+beginchar("H",13u#,ht#,0); pickup broad_pen;
+x1=x2=x5=3u; x3=x4=x6=w-x1; y1=y3=h; y2=y4=0;
+top_serif(1,xx,-90,jut,jut);
+bot_serif(2,xx,90,jut,jut);
+top_serif(3,xx,-90,jut,jut);
+bot_serif(4,xx,90,jut,jut);
+filldraw bot_serif_edge 2 -- reverse top_serif_edge 1 -- cycle;
+filldraw bot_serif_edge 4 -- reverse top_serif_edge 3 -- cycle;
+y5=y6=.52h; draw z5--z6;
+labels.lft(l1,2l,3l,4l,1a,1b,1c,2a,2b,2c,3a,3b,3c,4a,4b,4c);
+labels.rt(1r,2r,3r,4r,1d,1e,1f,2d,2e,2f,3d,3e,3f,4d,4e,4f);
+labels.top(1,3);
+labels.bot(2,4,5,6);
+endchar;
+
+currenttransform:=identity yscaled aspect_ratio;
+
+"Figure 20a"; % example of `solve'
+clear_all;
+z1=(0,25); z2=(100,100); z3=(300,100); z4=(320,0);
+vardef upward(expr x)=
+ ypart direction 1 of (z1{z2-z1}..(x,y2)..{z4-z3}z4)>0 enddef;
+z=(solve upward(x2,x3),y2);
+pickup pencircle scaled 4;
+draw z1{z2-z1}..z..{z4-z3}z4;
+pickup pencircle scaled 2;
+draw z1--z2; draw z3--z4;
+makelabel.lft("z1 ",z1);
+makelabel.lft("z2 ",z2);
+makelabel.rt(" z3",z3);
+makelabel.rt(" z4",z4);
+makelabel.top.nodot("z",z+(0,2));
+forsuffixes $=1,2,3,4,: heavy_dot z$; endfor
+showit;
+shipit;
+
+"Figure 21a"; % N of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(expr c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+beginlogochar("N",15);
+x1+x4=x1+x3=x2+x5=w; x1=x2=leftstemloc;
+y1=y4=y3-yy; bot.y1=-o; y2=y5; top.y5=h+o;
+draw z1--z2--z3; draw z4..z5;
+labels.top(1,3,4);
+labels.bot(2,5);
+endchar;
+
+"Figure 21b"; % random N of METAFONT logo, nine-point size
+randomseed:=1;
+
+vardef noise=normaldeviate*.1pt enddef;
+
+ht#:=.9*6pt#;
+xgap#:=.9*0.6pt#;
+u#:=.91*4/9pt#;
+s#:=.08pt#;
+o#:=1/10pt#;
+px#:=.9*2/3pt#;
+ygap#:=(ht#/13.5u#)*xgap#;
+leftstemloc#:=2.5u#+s#;
+barheight#:=.45ht#;
+define_pixels(s,u,xgap,ygap,leftstemloc,barheight);
+py#:=.9px#; define_blacker_pixels(px,py);
+pickup pencircle xscaled px yscaled py; logo_pen:=savepen;
+define_corrected_pixels(o);
+
+def beginlogochar(expr c,n) =
+ beginchar(c,n*u#+2s#,ht#,0); pickup logo_pen enddef;
+
+beginlogochar("N",15);
+x1=leftstemloc+noise;
+x2=leftstemloc+noise;
+x4=w-leftstemloc+noise;
+x5=w-leftstemloc+noise;
+bot y1=noise-o;
+top y2=h+o+noise;
+y3=y4+ygap+noise;
+bot y4=noise-o;
+top y5=h+o+noise;
+z3=whatever[z4,z5];
+draw z1--z2--z3; draw z4--z5;
+labels.top(1,3,4);
+labels.bot(2,5);
+endchar;
+
+"Figure 21c"; % random N of METAFONT logo, nine-point size
+randomseed:=2;
+
+vardef noise=normaldeviate*.1pt enddef;
+
+ht#:=.9*6pt#;
+xgap#:=.9*0.6pt#;
+u#:=.91*4/9pt#;
+s#:=.08pt#;
+o#:=1/10pt#;
+px#:=.9*2/3pt#;
+ygap#:=(ht#/13.5u#)*xgap#;
+leftstemloc#:=2.5u#+s#;
+barheight#:=.45ht#;
+define_pixels(s,u,xgap,ygap,leftstemloc,barheight);
+py#:=.9px#; define_blacker_pixels(px,py);
+pickup pencircle xscaled px yscaled py; logo_pen:=savepen;
+define_corrected_pixels(o);
+
+def beginlogochar(expr c,n) =
+ beginchar(c,n*u#+2s#,ht#,0); pickup logo_pen enddef;
+
+beginlogochar("N",15);
+x1=leftstemloc+noise;
+x2=leftstemloc+noise;
+x4=w-leftstemloc+noise;
+x5=w-leftstemloc+noise;
+bot y1=noise-o;
+top y2=h+o+noise;
+y3=y4+ygap+noise;
+bot y4=noise-o;
+top y5=h+o+noise;
+z3=whatever[z4,z5];
+draw z1--z2--z3; draw z4--z5;
+labels.top(1,3,4);
+labels.bot(2,5);
+endchar;
+
+"Figure 21d"; % random N of METAFONT logo, nine-point size
+randomseed:=3;
+
+vardef noise=normaldeviate*.1pt enddef;
+
+ht#:=.9*6pt#;
+xgap#:=.9*0.6pt#;
+u#:=.91*4/9pt#;
+s#:=.08pt#;
+o#:=1/10pt#;
+px#:=.9*2/3pt#;
+ygap#:=(ht#/13.5u#)*xgap#;
+leftstemloc#:=2.5u#+s#;
+barheight#:=.45ht#;
+define_pixels(s,u,xgap,ygap,leftstemloc,barheight);
+py#:=.9px#; define_blacker_pixels(px,py);
+pickup pencircle xscaled px yscaled py; logo_pen:=savepen;
+define_corrected_pixels(o);
+
+def beginlogochar(expr c,n) =
+ beginchar(c,n*u#+2s#,ht#,0); pickup logo_pen enddef;
+
+beginlogochar("N",15);
+x1=leftstemloc+noise;
+x2=leftstemloc+noise;
+x4=w-leftstemloc+noise;
+x5=w-leftstemloc+noise;
+bot y1=noise-o;
+top y2=h+o+noise;
+y3=y4+ygap+noise;
+bot y4=noise-o;
+top y5=h+o+noise;
+z3=whatever[z4,z5];
+draw z1--z2--z3; draw z4--z5;
+labels.top(1,3,4);
+labels.bot(2,5);
+endchar;
+
+"Figure 24a"; % Ionian O at 200 pixels/inch
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:=round 1/18em;
+pair u,uu,v;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+forsuffixes e=l,r:
+ u:=round((point 0 of path_.e)/ss);
+ for t=0 step 1/64 until 4:
+  v:=round((point t of path_.e)/ss);
+  if u<>v: if abs(u-v)=1: proofrule(u*ss,v*ss);
+  else: del:=1/128; tt:=t-del;
+   forever: uu:=round((point tt of path_.e)/ss);
+    exitif abs(u-uu)=1;
+    if del=epsilon:ddt;fi
+    del:=del/2;
+    tt:=tt if uu=u:+ else:-fi del; endfor
+   proofrule(u*ss,uu*ss); proofrule(uu*ss,v*ss); fi
+   u:=v; fi endfor
+ endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u,uu,v;
+
+"Figure 24b"; % Ionian O at 200 pixels/inch, unrounded position
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:= 1/18em;
+pair u,uu,v;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+forsuffixes e=l,r:
+ u:=round((point 0 of path_.e)/ss);
+ for t=0 step 1/64 until 4:
+  v:=round((point t of path_.e)/ss);
+  if u<>v: if abs(u-v)=1: proofrule(u*ss,v*ss);
+  else: del:=1/128; tt:=t-del;
+   forever: uu:=round((point tt of path_.e)/ss);
+    exitif abs(u-uu)=1;
+    if del=epsilon:ddt;fi
+    del:=del/2;
+    tt:=tt if uu=u:+ else:-fi del; endfor
+   proofrule(u*ss,uu*ss); proofrule(uu*ss,v*ss); fi
+   u:=v; fi endfor
+ endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u,uu,v;
+
+"Figure 24c"; % Fig 24b shifted right .05 pixel
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:= 1/18em;
+pair u,uu,v;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) shifted (.05,0) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+forsuffixes e=l,r:
+ u:=round((point 0 of path_.e)/ss);
+ for t=0 step 1/64 until 4:
+  v:=round((point t of path_.e)/ss);
+  if u<>v: if abs(u-v)=1: proofrule(u*ss,v*ss);
+  else: del:=1/128; tt:=t-del;
+   forever: uu:=round((point tt of path_.e)/ss);
+    exitif abs(u-uu)=1;
+    if del=epsilon:ddt;fi
+    del:=del/2;
+    tt:=tt if uu=u:+ else:-fi del; endfor
+   proofrule(u*ss,uu*ss); proofrule(uu*ss,v*ss); fi
+   u:=v; fi endfor
+ endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u,uu,v;
+
+"Figure 24d"; % Fig 24c shifted right .05 pixel
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:= 1/18em;
+pair u,uu,v;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) shifted (.1,0) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+forsuffixes e=l,r:
+ u:=round((point 0 of path_.e)/ss);
+ for t=0 step 1/64 until 4:
+  v:=round((point t of path_.e)/ss);
+  if u<>v: if abs(u-v)=1: proofrule(u*ss,v*ss);
+  else: del:=1/128; tt:=t-del;
+   forever: uu:=round((point tt of path_.e)/ss);
+    exitif abs(u-uu)=1;
+    if del=epsilon:ddt;fi
+    del:=del/2;
+    tt:=tt if uu=u:+ else:-fi del; endfor
+   proofrule(u*ss,uu*ss); proofrule(uu*ss,v*ss); fi
+   u:=v; fi endfor
+ endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u,uu,v;
+
+"Figure 24e"; % hash mark
+numeric u;
+u#:=10/18pt#; define_pixels(u);
+beginchar(0,15u#,250/36pt#,70/36pt#);
+pickup pencircle scaled (.4pt+blacker);
+lft x1=round u-eps; x3=x1; x2=x4=w-x1;
+y1=y2=good.y(.5[-d,h]+1.1pt); y3=y4=h-d-y1;
+draw z1--z2; draw z3--z4;
+lft x6=round 3u; x7=w-x6;
+x8=good.x .5w; x5-x6=x7-x8;
+top y5=top y7=h+eps; bot y6=bot y8=-d-eps;
+draw z5--z6; draw z7--z8;
+labels.top(6,8);
+labels.bot(5,7);
+labels.lft(2,4);
+labels.rt(1,3);
+endchar;
+
+"Figure 24f"; % Ionian O at 200 pixels/inch, autorounding=1
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:= 1/18em;
+interim autorounding:=1;
+interim granularity:=10;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+pair u;
+for v= % pairs gotten from tracingedges on a separate run!
+(2,9), (2,6), (3,6), (3,4), (4,4), (4,3), (5,3), (5,2), (6,2),
+(6,1), (8,1), (8,0), (14,0), (14,1), (16,1), (16,2), (17,2), (17,3),
+(18,3), (18,4), (19,4), (19,7), (20,7), (20,13), (19,13), (19,15),
+(18,15), (18,16), (17,16), (17,17), (16,17), (16,18), (14,18), (14,19),
+(8,19), (8,18), (6,18), (6,17), (5,17), (5,16), (4,16), (4,15), (3,15),
+(3,12), (2,12), (2,9)
+:if known u: proofrule(u*ss,v*ss) ; fi
+u:=v; endfor
+
+pair u;
+for v=
+(4,9), (4,7), (5,7), (5,5), (6,5),
+(6,4), (7,4), (7,3), (9,3), (9,2), (14,2), (14,3), (15,3), (15,4), (16,4),
+(16,5), (17,5), (17,7), (18,7), (18,12), (17,12), (17,14), (16,14),
+(16,15), (15,15), (15,16), (13,16), (13,17), (8,17), (8,16), (7,16),
+(7,15), (6,15), (6,14), (5,14), (5,12), (4,12), (4,9)
+:if known u: proofrule(u*ss,v*ss) ; fi
+u:=v; endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u;
+
+"Figure 24g"; % Ionian O at 200 pixels/inch, autorounding=2
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:= 1/18em;
+interim autorounding:=2;
+interim granularity:=10;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+pair u;
+for v=
+(2,9), (2,6), (3,6),
+(3,4), (4,4), (4,3), (5,3), (5,2), (6,2), (6,1), (8,1), (8,0), (14,0),
+(14,1), (16,1), (16,2), (17,2), (17,3), (18,3), (18,4), (19,4), (19,7),
+(20,7), (20,13), (19,13), (19,15), (18,15), (18,16), (17,16), (17,17),
+(16,17), (16,18), (14,18), (14,19), (8,19), (8,18), (6,18), (6,17),
+(5,17), (5,16), (4,16), (4,15), (3,15), (3,12), (2,12), (2,9)
+:if known u: proofrule(u*ss,v*ss) ; fi
+u:=v; endfor
+
+pair u;
+for v=
+(4,9), (4,7), (5,7), (5,5), (6,5),
+(6,4), (7,4), (7,3), (9,3), (9,2), (13,2), (13,3), (15,3), (15,4), (16,4),
+(16,5), (17,5), (17,7), (18,7), (18,12), (17,12), (17,14), (16,14),
+(16,15), (15,15), (15,16), (13,16), (13,17), (9,17), (9,16), (7,16),
+(7,15), (6,15), (6,14), (5,14), (5,12), (4,12), (4,9)
+:if known u: proofrule(u*ss,v*ss) ; fi
+u:=v; endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u;
+
+"Figure 24h"; % Ionian O at 200 pixels/inch, autorounding=0, smoothing=1
+ss:=10;
+begingroup interim hppp:=200/72.27;  % lowres parameters
+interim blacker:=.65;      % make pens a bit blacker
+interim o_correction:=.4;    % but don't overshoot as much
+ em#:=10pt#; cap#:=7pt#;
+ thin#:=1/3pt#; thick#:=5/6pt#;
+ o#:=1/5pt#;
+define_pixels(em,cap);
+define_blacker_pixels(thin,thick);
+define_corrected_pixels(o);
+ curve_sidebar:= 1/18em;
+beginchar("O",0.8em#,cap#,0);
+ penpos1(thick,10); penpos2(.1[thin,thick],90-10);
+ penpos3(thick,180+10); penpos4(thin,270-10);
+ x1l=w-x3l=curve_sidebar; x2=x4=.5w;
+ y1=.49h; y2l=-o; y3=.51h; y4l=h+o;
+ penstroke (z1e{down}..z2e{right}
+            ..z3e{up}..z4e{left}..cycle) scaled ss;
+for m=0 upto w: proofrule((m*ss,0),(m*ss,h*ss)); endfor
+for n=0 upto h: proofrule((0,n*ss),(w*ss,n*ss)); endfor
+proofrulethickness 1;
+pair u;
+for v=
+(2,9), (2,5), (3,5),
+(3,3), (4,3), (4,2), (6,2), (6,1), (8,1), (8,0), (14,0), (14,1), (16,1),
+(16,2), (17,2), (17,3), (18,3), (18,4), (19,4), (19,6), (20,6), (20,14),
+(19,14), (19,16), (18,16), (18,17), (16,17), (16,18), (14,18), (14,19),
+(8,19), (8,18), (6,18), (6,17), (5,17), (5,16), (4,16), (4,15), (3,15),
+(3,13), (2,13), (2,9)
+:if known u: proofrule(u*ss,v*ss) ; fi
+u:=v; endfor
+
+pair u;
+for v=
+(4,10), (4,9), (5,9), (5,5), (6,5),
+(6,4), (7,4), (7,3), (8,3), (8,2), (14,2), (14,3), (15,3), (15,4), (16,4),
+(16,6), (17,6), (17,8), (18,8), (18,10), (17,10), (17,13), (16,13),
+(16,15), (15,15), (15,16), (14,16), (14,17), (8,17), (8,16), (7,16),
+(7,15), (6,15), (6,13), (5,13), (5,11), (4,11), (4,10)
+:if known u: proofrule(u*ss,v*ss) ; fi
+u:=v; endfor
+showit;
+shipit;
+endgroup;
+endgroup;
+numeric u;
+
+"Figure 27a"; % Modification of Fig. 14b
+clear_all;
+pair zz[];
+zz1=(0,509);
+zz2=(-14,492);
+zz3=(-32,481);
+zz4=(-42,455);
+zz5=(-62,430);
+zz6=(-20,452);
+zz7=(42,448);
+zz8=(38,465);
+zz9=(4,493);
+for n=1 upto 9: z[n-1]=(zz[n]+(62,-430)) scaled 2.5; heavy_dot z[n-1]; endfor
+pickup pencircle scaled 3;
+draw flex(z0,z1,z2)&flex(z2,z3,z4)
+ &flex(z4,z5,z6)&flex(z6,z7,z8,z0)&cycle;
+labels.lft(1,2,3,4);
+labels.rt(0,6,7,8);
+labels.bot(5);
+showit; shipit;
+
+"Figure Da"; % Neenie's problem
+clear_all;
+z1l=(0,240-y); z1r=(15,288-y);
+z0l-z0r=z1l-z1r; z0r=(144,189-y); y0l=0;
+pickup pencircle scaled 2;
+numeric a,b,c,d;
+a=x1l; b=y1r; (c,d)=z0r;
+draw z0l--z0r--z1r--z1l--cycle;
+proofrule((a,d),(a,b)); proofrule((a,b),(a-d+b,b));
+for z=z0l,z0r,z1l,z1r,(a,b): heavy_dot z; endfor
+makelabel.bot.nodot("<=",z1r+(3,-8));
+makelabel.lft("(a,b)",(a,b));
+makelabel.top("z1r",z1r);
+makelabel.lft("z1l",z1l);
+makelabel.rt("(c,d)",z0r);
+makelabel.lft("z0r ",z0r);
+makelabel.lft("z0l ",z0l);
+showit; shipit;
+
+"Figure Ea"; % T of METAFONT logo, with italic correction
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(suffix c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(str c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+slant:=0;
+
+beginlogochar(T,13);
+italcorr h#*slant+.5u#;
+if odd(w-ph): w:=w+1; fi  % allows a symmetric stem
+x1+x2=2x3=2x4=w; lft.x1=-epsilon; % I tried s-o instead; was not as good
+y1=y2=y3; top.y1=h; bot.y4=-o;
+draw z1..z2; draw z3..z4;
+labels.rt(2,3);
+makelabel.top("1",z1);
+makelabel.top("4",z4);
+endchar;
+
+"Figure Eb"; % F of METAFONT logo
+alpha:=.45;  % controls bar location and similar things
+beta:=.2;  % controls squareness of bowls
+numeric h#, xx#, yy#, o#, s#, u#, ph#, pv#;
+numeric leftstemloc, barheight;
+  h#=6;  % height of characters, in pt
+  xx#=0.6;  % extra length of certain features, in pt
+  u#=4/9;  % unit width, in pt
+  s#=0;  % extra sidebar, in pt
+  o#=1/9;  % overshoot of curves, in pt
+  ph#=2/3;  % horizontal thickness of pen, in pt
+yy#=xx#; define_whole_pixels(xx,yy);
+define_pixels(s,u);
+define_corrected_pixels(o);
+pv#=.9ph#; define_blacker_pixels(ph,pv);
+pickup pencircle xscaled ph yscaled pv;
+logo_pen:=savepen;
+leftstemloc:=good.x((2.5u#+s#)*pt);
+barheight:=good.y(alpha*h#*pt);
+def beginlogochar(suffix c)(expr n) = % code c; width is n units plus sidebars
+  beginchar(str c,n*u#+2s#,h#,0); pickup logo_pen enddef;
+
+beginlogochar(F,14);
+x1=x2=x3=leftstemloc; x4=w-x1+o; x5=x4-xx;
+y2=y5; y3=y4; bot.y1=-o; top.y3=h; y2=barheight;
+draw z1--z3--z4; draw z2--z5;
+labels.rt(2,3);
+labels.lft(4,5);
+labels.top(1);
+endchar;
+
+"Figure Ec"; % cmr10 period
+u#:=20/36pt#;
+dot_diam#:=38/36pt#;
+body_height#:=270/36pt#;  % height of tallest characters
+asc_height#:=250/36pt#;    % height of lowercase ascenders
+x_height#:=155/36pt#;    % height of lowercase without ascenders
+bar_height#:=87/36pt#;    % height of crossbar in lowercase e
+desc_depth#:=70/36pt#;    % depth of lowercase descenders
+body_depth#:=90/36pt#;
+fine#:=7/36pt#;
+
+define_pixels(u);
+define_whole_blacker_pixels(dot_diam,fine);
+define_whole_vertical_pixels(body_height,asc_height,x_height,bar_height,
+ desc_depth,body_depth);
+
+beginchar(".",5u#,dot_diam#,0);
+def makebox(text rule) =
+ for y=0,asc_height,body_height,x_height,bar_height,-desc_depth,-body_depth:
+  rule((0,y),(w,y)); endfor % horizontals
+ for x=0,w:   rule((x,-body_depth),(x,body_height)); endfor % verticals
+ for x=u step u until w-1:
+  rule((x,-body_depth),(x,body_height)); endfor % more verticals
+ if charic<>0:
+  rule((w+charic*pt,h.o_),(w+charic*pt,.5h.o_)); fi % italic correction
+ enddef;
+pickup pencircle scaled fine;
+penpos1(dot_diam-fine,0); penpos2(dot_diam-fine,90);
+x1l=good.x(x1l+.5w-x1); bot y2l=0; z1=z2;
+filldraw z1l...z2l...z1r...z2r...cycle; % roundish dot
+labels.lft(1,1l);
+labels.rt(2,1r);
+labels.top(2r);
+labels.bot(2l);
+endchar;
+
+"Figure Ed"; % cmr10 emdash
+u#:=20/36pt#;
+dot_diam#:=38/36pt#;
+body_height#:=270/36pt#;  % height of tallest characters
+asc_height#:=250/36pt#;    % height of lowercase ascenders
+x_height#:=155/36pt#;    % height of lowercase without ascenders
+bar_height#:=87/36pt#;    % height of crossbar in lowercase e
+desc_depth#:=70/36pt#;    % depth of lowercase descenders
+body_depth#:=90/36pt#;
+vair#:=8/36pt#;      % vertical diameter of hairlines
+
+define_pixels(u);
+define_whole_blacker_pixels(dot_diam,vair);
+define_whole_vertical_pixels(body_height,asc_height,x_height,bar_height,
+ desc_depth,body_depth);
+
+beginchar(oct"174",18u#,x_height#,0);
+def makebox(text rule) =
+ for y=0,asc_height,body_height,x_height,bar_height,-desc_depth,-body_depth:
+  rule((0,y),(w,y)); endfor % horizontals
+ for x=0,w:   rule((x,-body_depth),(x,body_height)); endfor % verticals
+ for x=u step u until w-1:
+  rule((x,-body_depth),(x,body_height)); endfor % more verticals
+ if charic<>0:
+  rule((w+charic*pt,h.o_),(w+charic*pt,.5h.o_)); fi % italic correction
+ enddef;
+italcorr .61803x_height#*0 + .5u#;
+pickup nullpen;
+penpos1(vair,90); penpos2(vair,90);
+y1r=y2r=good.y(y1r+.61803h-y1);
+lft x1=-eps; rt x2=w+eps;
+penstroke z1e--z2e;                                   % crossbar
+labels.lft(1);
+labels.rt(2);
+labels.top(1r,2r);
+labels.bot(1l,2l);
+endchar;
+
+bye

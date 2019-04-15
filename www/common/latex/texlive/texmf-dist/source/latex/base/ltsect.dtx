@@ -1,0 +1,867 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltsect.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltsect.dtx}[2014/09/29 v1.0z LaTeX Kernel (Sectioning)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltsect.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Tobias Oetiker\thanks{Tobi updated
+              the comments to `doc' conventions}\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{363}
+%
+% \changes{v1.0o}{1995/05/07}{Use \cs{hb@xt@}}
+% \changes{v1.0y}{1996/10/31}{Corrected and tidied documentation;
+%                             removed long lines}
+%
+%
+% \section{Sectioning Commands}
+%
+% This file defines the declarations such as |\author| which are used
+% by |\maketitle|. |\maketitle| itself is defined by each class, not
+% in the \LaTeX{} kernel.
+%
+% The second part of the file defines the generic commands used for
+% defining sectioning commands such as |\chapter|. Again the actual
+% document level commands are defined in the class files, in terms of
+% these commands.
+%
+% \StopEventually{}
+%
+%
+% \changes{v1.0a}{1994/03/04}{Initial version, split from latex.dtx}
+% \changes{v1.0b}{1994/03/28}{Split further from ltherest.dtx}
+% \changes{v1.0d}{1994/05/21}{Use new error commands}
+% \changes{v1.0f}{1994/10/12}{Doc. typos}
+% \changes{v1.0g}{1994/10/18}{Added \cs{normalcolor}}
+% \changes{v1.0i}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0m}{1995/05/03}{TO: Promoted documentation to doc.sty
+%         standard}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{title,}
+%    \end{macrocode}
+%
+% \subsection{The Title}
+%
+% \DescribeMacro{\title}
+% The user defines the title and  author by the declarations
+% |\title|\marg{name},
+% \DescribeMacro{\author}
+% |\author|\marg{name}
+%
+% \DescribeMacro{\date}
+% Similarly the date is declared with
+% |\date|\marg{date}.
+%
+% \DescribeMacro{\thanks}
+% Inside these, the |\thanks|\marg{footnote text} command may be used
+% to make acknowledgements, notice of address, etc.\ in a footnote.
+% \DescribeMacro{\and}
+% If there are multiple authors, they have to be separated with the
+% |\and| command.
+%
+% \DescribeMacro{\maketitle}
+% And finally, the |\maketitle| command produces the actual title,
+% using the information previously saved with the other commands.
+%
+%  \begin{macro}{\title}
+%  \begin{macro}{\@title}
+% \changes{LaTeX2e}{1993/12/11}{Added default}
+% |\title| for use in |\maketitle|. If not given |\maketitle| will
+% produce an error message.
+%    \begin{macrocode}
+\def\title#1{\gdef\@title{#1}}
+\def\@title{\@latex@error{No \noexpand\title given}\@ehc}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\author}
+%  \begin{macro}{\@author}
+% \changes{LaTeX2e}{1993/12/11}{Added default}
+%
+%  |\author| for use in |\maketitle|. If not given |\maketitle| will
+%  produce a warning message.
+%
+%    \begin{macrocode}
+\def\author#1{\gdef\@author{#1}}
+\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\date}
+%  \begin{macro}{\@date}
+%    |\date| for use in |\maketitle|. If not given |\maketitle| will
+%    produce |\today| as the default.
+%    \begin{macrocode}
+\def\date#1{\gdef\@date{#1}}
+\gdef\@date{\today}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \changes{1.0h}{1994/11/04}{(ASAJ) Added \cs{protected@xdef} to
+%    \cs{thanks}.}
+% \begin{macro}{\thanks}
+%    \begin{macrocode}
+\def\thanks#1{\footnotemark
+    \protected@xdef\@thanks{\@thanks
+        \protect\footnotetext[\the\c@footnote]{#1}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@thanks}
+%    \begin{macrocode}
+\let\@thanks\@empty
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\and}
+%    \begin{macrocode}
+\def\and{%                  % \begin{tabular}
+  \end{tabular}%
+  \hskip 1em \@plus.17fil%
+  \begin{tabular}[t]{c}}%   % \end{tabular}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\message{sectioning,}
+%    \end{macrocode}
+% \subsection{Sectioning}
+%
+%
+% \begin{macro}{\@secpenalty}
+%    \begin{macrocode}
+\newcount\@secpenalty
+\@secpenalty = -300
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@noskipsec}
+% \begin{macro}{\@noskipsectrue}
+% \changes{1.0w}{1996/09/29}{Added documentation}
+% Way back in 1991 (08/26) FMi \& RmS set the |\@noskipsec| switch
+% to true for the preamble and to false in |\document|.
+% This was done to trap lists and related text in the preamble but it
+% does not catch everything.
+%    \begin{macrocode}
+\newif\if@noskipsec \@noskipsectrue
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@startsection}
+%
+% The |\@startsection{|\meta{name}|}{|\meta{level}|}{|%
+%       \meta{indent}|}{|\meta{beforeskip}|}|\\
+%     |{|\meta{afterskip}|}{|\meta{style}|}*[|\meta{altheading}%
+%     |]{|\meta{heading}|}|
+% command is the mother of all the user level sectioning commands.
+% The part after the |*|, including the |*| is optional.
+%
+% \begin{description}
+% \item[name:] e.g., 'subsection'
+% \item[level:] a number, denoting depth of section -- e.g., chapter=1,
+%                 section = 2, etc.
+% \item[indent:] Indentation of heading from left margin
+% \item[beforeskip:] Absolute value = skip to leave above the heading.
+%                If negative, then paragraph indent of text following
+%                heading is suppressed.
+% \item[afterskip:] if positive, then skip to leave below heading, else
+%                negative of skip to leave to right of run-in heading.
+% \item[style:] Commands to set style. Since June 1996 release the
+%               \emph{last} command in this argument may be a command
+%                such as |\MakeUppercase| or |\fbox| that takes an
+%                argument. The section heading will be supplied as the
+%                argument to this command. So setting |#6| to, say,
+%                |\bfseries\MakeUppercase| would produce bold,
+%                uppercase headings.
+% \end{description}
+%
+%  If `|*|' is  missing, then increment the counter.  If it is
+%  present, then there should be no |[|\meta{altheading}|]| argument.
+%  The command uses the counter 'secnumdepth'. It contains a pointer
+%  to the highest section level that is to be numbered.
+%
+%  \textbf{Warning:}
+%  The |\@startsection| command should be at the same or higher
+%  grouping level as the text that follows it.  For example, you should
+%  \emph{not} do something like
+%  \begin{verbatim}
+%      \def\foo{ \begingroup ...
+%                   \paragraph{...}
+%                 \endgroup}
+%  \end{verbatim}
+%
+% Pseudocode for the |\@startsection| command
+% \begin{oldcomments}
+% \@startsection {NAME}{LEVEL}{INDENT}{BEFORESKIP}{AFTERSKIP}{STYLE} ==
+%    BEGIN
+%     IF  @noskipsec = T  THEN  \leavevmode  FI
+%                              % true if previous section had no body.
+%
+%     \par
+%     \@tempskipa  := BEFORESKIP
+%     @afterindent := T
+%     IF \@tempskipa < 0  THEN  \@tempskipa  := -\@tempskipa
+%                               @afterindent := F
+%     FI
+%     IF @nobreak = true
+%       THEN \everypar == null
+%       ELSE \addpenalty{\@secpenalty}
+%            \addvspace{\@tempskipa}
+%     FI
+%     IF * next
+%       THEN \@ssect{INDENT}{BEFORESKIP}{AFTERSKIP}{STYLE}
+%       ELSE \@dblarg{\@sect
+%                {NAME}{LEVEL}{INDENT}
+%                {BEFORESKIP}{AFTERSKIP}{STYLE}}
+%     FI
+% END
+% \end{oldcomments}
+%
+%    \begin{macrocode}
+\def\@startsection#1#2#3#4#5#6{%
+  \if@noskipsec \leavevmode \fi
+  \par
+  \@tempskipa #4\relax
+  \@afterindenttrue
+  \ifdim \@tempskipa <\z@
+    \@tempskipa -\@tempskipa \@afterindentfalse
+  \fi
+  \if@nobreak
+    \everypar{}%
+  \else
+    \addpenalty\@secpenalty\addvspace\@tempskipa
+  \fi
+  \@ifstar
+    {\@ssect{#3}{#4}{#5}{#6}}%
+    {\@dblarg{\@sect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@sect}
+% Pseudocode for the |\@sect| command
+% \begin{oldcomments}
+% \@sect{NAME}{LEVEL}{INDENT}{BEFORESKIP}{AFTERSKIP}{STYLE}[ARG1]{ARG2}
+%           ==
+%   BEGIN
+%    IF LEVEL > \c@secnumdepth
+%      THEN \@svsec :=L null
+%      ELSE \refstepcounter{NAME}
+%           \@svsec :=L BEGIN \@seccntformat{#1}\relax END
+%    FI
+%    IF AFTERSKIP > 0
+%      THEN \begingroup
+%              STYLE
+%              \@hangfrom{\hskip INDENT\@svsec}
+%              {\interlinepenalty 10000 ARG2\par}
+%           \endgroup
+%           \NAMEmark{ARG1}
+%           \addcontentsline{toc}{NAME}
+%              { IF  LEVEL > \c@secnumdepth
+%                  ELSE \protect\numberline{\theNAME}  FI
+%                ARG1 }
+%      ELSE \@svsechd == BEGIN  STYLE
+%                               \hskip INDENT\@svsec
+%                               ARG2
+%                               \NAMEmark{ARG1}
+%                               \addcontentsline{toc}{NAME}
+%                                  { IF  LEVEL > \c@secnumdepth
+%                                      ELSE
+%                                        \protect\numberline{\theNAME}
+%                                      FI
+%                                    ARG1 }
+%                        END
+%    FI
+%    \@xsect{AFTERSKIP}
+% END
+% \end{oldcomments}
+%
+% \changes{LaTeX2.09}{1992/08/25}
+%         {(FMi) replaced explicit setting of \cs{@svsec}
+%               by call to \cs{@seccntformat}}
+% \changes{LaTeX2.09}{1993/08/05}
+%         {(RmS) Made sure that \cs{protect} works correctly in
+%               expansion of \cs{the} counter}
+% \changes{1.0h}{1994/11/04}
+%         {(ASAJ) Added \cs{protected@edef}.}
+%    \begin{macrocode}
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+  \ifnum #2>\c@secnumdepth
+    \let\@svsec\@empty
+  \else
+    \refstepcounter{#1}%
+%    \end{macrocode}
+%    Since |\@seccntformat| might end with an improper |\hskip| which
+%    is scanning forward for |plus| or |minus| we end the definition
+%    of |\@svsec| with |\relax| as a precaution.
+% \changes{1.0n}{1995/05/06}{Added \cs{relax} after
+%                            \cs{@seccntformat} just in case}
+%    \begin{macrocode}
+    \protected@edef\@svsec{\@seccntformat{#1}\relax}%
+  \fi
+  \@tempskipa #5\relax
+  \ifdim \@tempskipa>\z@
+    \begingroup
+%    \end{macrocode}
+% \changes{v1.0s}{1996/05/21}
+%         {(DPC) Moved brace to allow commands like
+%           \cs{MakeUppercase} in 6th argument.
+%            Changed \cs{par} to \cs{endgraf} to allow non-long
+%            commands. internal/2148}
+% \changes{v1.0t}{1996/06/10}
+%         {(DPC) Changed \cs{endgraf} to \cs{@@par}}
+% This |{| used to be after the argument to |\@hangfrom| but was moved
+% here to allow commands such as |\MakeUppercase| to be used at the end
+% of |#6|.
+%    \begin{macrocode}
+      #6{%
+        \@hangfrom{\hskip #3\relax\@svsec}%
+          \interlinepenalty \@M #8\@@par}%
+    \endgroup
+    \csname #1mark\endcsname{#7}%
+    \addcontentsline{toc}{#1}{%
+      \ifnum #2>\c@secnumdepth \else
+        \protect\numberline{\csname the#1\endcsname}%
+      \fi
+      #7}%
+  \else
+%    \end{macrocode}
+% |\relax| added 2 May 90
+% \changes{v1.0s}{1996/05/21}
+%         {(DPC) Added extra braces for internal/2148}
+%    \begin{macrocode}
+    \def\@svsechd{%
+      #6{\hskip #3\relax
+      \@svsec #8}%
+      \csname #1mark\endcsname{#7}%
+      \addcontentsline{toc}{#1}{%
+        \ifnum #2>\c@secnumdepth \else
+          \protect\numberline{\csname the#1\endcsname}%
+        \fi
+        #7}}%
+  \fi
+  \@xsect{#5}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xsect}%
+% Pseudocode for the |\@xsect| command
+% \begin{oldcomments}
+% \@xsect{AFTERSKIP} ==
+%  BEGIN
+%    IF AFTERSKIP > 0
+%      THEN \par \nobreak
+%           \vskip AFTERSKIP
+%           \@afterheading
+%      ELSE @nobreak :=G F
+%           @noskipsec :=G T
+%           \everypar{ IF @noskipsec = T
+%                        THEN @noskipsec :=G F
+%                             \clubpenalty :=G 10000
+%                             \hskip -\parindent
+%                             \begingroup
+%                               \@svsechd
+%                             \endgroup
+%                             \unskip
+%                             \hskip -AFTERSKIP \relax
+%                                           %% relax added 14 Jan 91
+%                        ELSE \clubpenalty :=G \@clubpenalty
+%                             \everypar := NULL
+%                      FI
+%                    }
+%    FI
+%
+%   END
+% \end{oldcomments}
+%
+% \changes{0.0}{1992/08/19}
+%     {(RmS) corrected bug: stretch and shrink in argument to
+%               \cs{hskip} previously not negated}
+%    \begin{macrocode}
+\def\@xsect#1{%
+  \@tempskipa #1\relax
+  \ifdim \@tempskipa>\z@
+%    \end{macrocode}
+%    Why not combine |\@sect| and |\@xsect| and save doing the
+%    same test twice? It is not possible to change this now as these
+%    have become hooks!
+%
+%    This |\par| seems unnecessary.
+%    \begin{macrocode}
+    \par \nobreak
+    \vskip \@tempskipa
+    \@afterheading
+  \else
+%    \end{macrocode}
+% \changes{v1.0u}{1996/07/26}{Removed \cs{global} before
+%                             \cs{@nobreak...}}
+% \changes{v1.0x}{1996/10/23}{Replaced \cs{hskip...} with \cs{setbox...}
+%                             as used in \cs{@afterheading}}
+%    \begin{macrocode}
+    \@nobreakfalse
+    \global\@noskipsectrue
+    \everypar{%
+      \if@noskipsec
+        \global\@noskipsecfalse
+       {\setbox\z@\lastbox}%
+        \clubpenalty\@M
+        \begingroup \@svsechd \endgroup
+        \unskip
+        \@tempskipa #1\relax
+        \hskip -\@tempskipa
+      \else
+        \clubpenalty \@clubpenalty
+        \everypar{}%
+      \fi}%
+  \fi
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@seccntformat}
+%    This command formats the section number including the space
+%    following it.
+% \changes{1.0n}{1995/05/06}{Use \cs{quad} instead of \cs{hskip}}
+%    \begin{macrocode}
+\def\@seccntformat#1{\csname the#1\endcsname\quad}
+%    \end{macrocode}
+% \end{macro}
+%
+% Pseudocode for the |\@ssect| command
+% \begin{oldcomments}
+% \@ssect{INDENT}{BEFORESKIP}{AFTERSKIP}{STYLE}{ARG} ==
+%   BEGIN
+%    IF AFTERSKIP > 0
+%      THEN \begingroup
+%             STYLE
+%             \@hangfrom{\hskip INDENT}{\interlinepenalty 10000 ARG\par}
+%           \endgroup
+%      ELSE \@svsechd == BEGIN STYLE
+%                              \hskip INDENT
+%                              ARG
+%                        END
+%    FI
+%    \@xsect{AFTERSKIP}
+%   END
+% \end{oldcomments}
+%
+% Pseudocode for the |\@afterheading| command
+% \begin{oldcomments}
+% \@afterheading ==
+%  BEGIN
+%    @nobreak :=G true
+%    \everypar := BEGIN  IF @nobreak = T
+%                          THEN @nobreak  :=G false
+%                               \clubpenalty :=G 10000
+%                               IF @afterindent = F
+%                                 THEN remove \lastbox
+%                               FI
+%                          ELSE \clubpenalty :=G \@clubpenalty
+%                               \everypar := NULL
+%                       FI
+%                 END
+%  END
+% \end{oldcomments}
+%
+%
+% \begin{macro}{\@ssect}
+%    \begin{macrocode}
+\def\@ssect#1#2#3#4#5{%
+  \@tempskipa #3\relax
+  \ifdim \@tempskipa>\z@
+    \begingroup
+%    \end{macrocode}
+% \changes{v1.0s}{1996/05/21}
+%         {(DPC) Moved brace to allow commands like
+%           \cs{MakeUppercase} in 4th argument.
+%            Changed \cs{par} to \cs{endgraf} to allow non-long
+%            commands. internal/2148}
+% \changes{v1.0t}{1996/06/10}
+%         {(DPC) Changed \cs{endgraf} to \cs{@@par}}
+% This |{| used to be after the argument to |\@hangfrom| but was moved
+% here to allow commands such as |\MakeUppercase| to be used at the end
+% of |#4|.
+%    \begin{macrocode}
+      #4{%
+        \@hangfrom{\hskip #1}%
+          \interlinepenalty \@M #5\@@par}%
+    \endgroup
+  \else
+%    \end{macrocode}
+% \changes{v1.0s}{1996/05/21}
+%         {(DPC) Added extra braces for internal/2148}
+%    \begin{macrocode}
+    \def\@svsechd{#4{\hskip #1\relax #5}}%
+  \fi
+  \@xsect{#3}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\if@afterindent}
+% \begin{macro}{\@afterindenttrue}
+%    \begin{macrocode}
+\newif\if@afterindent \@afterindenttrue
+%    \end{macrocode}
+% \end{macro}\end{macro}
+%
+% \begin{macro}{\@afterheading}
+% \changes{v1.0v}{1996/08/02}{Removed \cs{global}
+%                             before \cs{@nobreak...}}
+%
+% This hook is used in setting up custom-built headings in classes.dtx.
+%
+%    \begin{macrocode}
+\def\@afterheading{%
+  \@nobreaktrue
+  \everypar{%
+    \if@nobreak
+      \@nobreakfalse
+      \clubpenalty \@M
+      \if@afterindent \else
+        {\setbox\z@\lastbox}%
+      \fi
+    \else
+      \clubpenalty \@clubpenalty
+      \everypar{}%
+    \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@hangfrom}
+%
+% |\@hangfrom{|\meta{text}|}| : Puts \meta{text} in a box, and makes a
+% hanging indentation of the following material up to the first
+% |\par|. Should be used in vertical mode.
+%
+% \changes{v1.0a}{1994/03/07}{(DPC)Extra groups for colour}
+%    \begin{macrocode}
+\def\@hangfrom#1{\setbox\@tempboxa\hbox{{#1}}%
+      \hangindent \wd\@tempboxa\noindent\box\@tempboxa}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\c@secnumdepth}
+% \begin{macro}{\c@tocdepth}
+%    \begin{macrocode}
+\newcount\c@secnumdepth
+\newcount\c@tocdepth
+%    \end{macrocode}
+% \end{macro}\end{macro}
+%
+% \begin{macro}{\secdef}
+%
+% |\secdef{|\meta{unstarcmds}|}{|\meta{unstarcmds}|}{|%
+%           \meta{starcmds}|}|\\
+% When defining a |\chapter| or |\section| command without using
+% |\@startsection|, you can use |\secdef| as follows:
+% \begin{enumerate}
+% \item |\def\chapter{| \ldots  |\secdef|
+%                |\|\meta{starcmd} |\|\meta{unstarcmd} |}|
+% \item |\def\|\meta{starcmd}|[#1]#2{| \ldots |}|
+%            |%| Command to define |\chapter[|\ldots|]{|\ldots|}|
+% \item |\def\|\meta{unstarcmd}|#1{| \ldots |}|
+%   |%| Command to define |\chapter*{|\ldots|}|
+% \end{enumerate}
+%
+%    \begin{macrocode}
+\def\secdef#1#2{\@ifstar{#2}{\@dblarg{#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Initializations}
+% \begin{macro}{\sectionmark}
+% \begin{macro}{\subsectionmark}
+% \begin{macro}{\subsubsectionmark}
+% \begin{macro}{\paragraphmark}
+% \begin{macro}{\subparagraphmark}
+% \changes{v1.0q}{1995/10/25}{Use \cs{let} not \cs{def} to save space.}
+%    \begin{macrocode}
+\let\sectionmark\@gobble
+\let\subsectionmark\@gobble
+\let\subsubsectionmark\@gobble
+\let\paragraphmark\@gobble
+\let\subparagraphmark\@gobble
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+\message{contents,}
+%    \end{macrocode}
+%
+% \subsection{Table of Contents etc.}
+%
+% \subsubsection{Convention}
+% |\tf@|\meta{foo} = file number for output for table foo.
+%       The file is opened only if |@filesw| = |true|.
+%
+% \subsubsection{Commands}
+%
+%
+%  A |\l@|\meta{type}|{|\meta{entry}|}{|\meta{page}|}| Macro needs to
+%  defined by document style for making an entry of type \meta{type}
+%  in a table of contents, etc.  E.g., the document style
+%  should define |\l@chapter|, |\l@section|, etc.
+%
+%  \textbf{Note:} When the |\protect| command is
+%  used in the \meta{entry} or \meta{text} of one of the commands
+%  below, it causes the following control sequence to be written on
+%  the file without being expanded.  The sequence will be expanded
+%  when the table of contents entry is processed.
+%
+%  \textbf{Surprise:} Inside an |\addcontentsline| or |\addtocontents|
+%  command argument, the commands: |\index|, |\glossary|,  and |\label|
+%  are  no-ops .  This could cause a problem if the user puts an
+%  |\index| or |\label| into one of the commands he writes, or into the
+%  optional `short version' argument of a |\section| or |\caption|
+%  command.
+%
+% \begin{macro}{\@starttoc}
+% The |\@starttoc|\marg{ext} command is used to define the commands:\\
+% |\tableofcontents|, |\listoffigures|, etc.
+%
+% For example:
+% |\@starttoc{lof}| is used in |\listoffigures|.  This command
+% reads the |.|\meta{ext} file and sets up to write the new
+% |.|\meta{ext} file.
+%
+% \begin{oldcomments}
+% \@starttoc{EXT} ==
+%   BEGIN
+%     \begingroup
+%        \makeatletter
+%        read file \jobname.EXT
+%        IF @filesw = true
+%          THEN  open \jobname.EXT as file \tf@EXT
+%        FI
+%        @nobreak :=G FALSE  %% added 24 May 89
+%     \endgroup
+%   END
+% \end{oldcomments}
+%
+% \changes{0.0}{1992/01/14}{(RmS) added \cs{immediate} to \cs{openout}
+%               as all \cs{write} commands
+%               are also executed \cs{immediate}}
+% \changes{v1.0u}{1996/07/26}{removed \cs{global}
+%                             before \cs{@nobreak...}}
+%    \begin{macrocode}
+\def\@starttoc#1{%
+  \begingroup
+    \makeatletter
+    \@input{\jobname.#1}%
+    \if@filesw
+      \expandafter\newwrite\csname tf@#1\endcsname
+      \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+    \fi
+    \@nobreakfalse
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\addcontentsline}
+%  The |\addcontentsline{|\meta{table}|}{|\meta{type}|}{|%
+%  \meta{entry}|}| command allows the user to  add
+%  his/her own entry to a table of contents, etc. The command adds the
+%  entry |\contentsline{|\meta{type}|}{|\meta{entry}|}{|\meta{page}|}|
+%  to the |.|\meta{table} file.
+%
+%  This macro is implemented as an application of |\addtocontents|.
+%  Note that |\thepage| is not expandable during |\protected@write|
+%  therefore one gets the page number at the time of the |\shipout|.
+%
+% \changes{v1.0c}{1994/05/20}{Correct setting of \cs{protect}.}
+% \changes{v1.0j}{1995/04/23}{Use \cs{contentsline} internally.}
+% \changes{v1.0h}{1994/11/04}{Added \cs{protected@write} to
+%                \cs{addcontentsline}.  ASAJ.}
+%    \begin{macrocode}
+\def\addcontentsline#1#2#3{%
+  \addtocontents{#1}{\protect\contentsline{#2}{#3}{\thepage}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \changes{v1.0c}{1994/05/20}{Correct setting of \cs{protect}.}
+% \changes{v1.0h}{1994/11/04}{Added \cs{protected@write} to
+%    \cs{addtocontents}.  ASAJ.}
+% \begin{macro}{\addtocontents}
+%
+%   The |\addtocontents{|\meta{table}|}{|\meta{text}|}| command
+%   adds \meta{text} to the |.|\meta{table} file, with no
+%   page number.
+%
+%    \begin{macrocode}
+\long\def\addtocontents#1#2{%
+  \protected@write\@auxout
+      {\let\label\@gobble \let\index\@gobble \let\glossary\@gobble}%
+      {\string\@writefile{#1}{#2}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\contentsline}
+% The |\contentsline{|\meta{type}|}{|\meta{entry}|}{|\meta{page}|}|
+% macro produces a \meta{type} entry in a table of contents, etc.
+% It will appear in the |.toc| or other file.  For example,
+% The entry for subsection 1.4.3 in the table of contents for
+% example, might be produced by:
+%
+%  \begin{verbatim}
+%       \contentsline{subsection}
+%           {\makebox{30pt}[r]{1.4.3} Gnats and Gnus}{22}
+%  \end{verbatim}
+%
+%  The |\protect| command causes command sequences to be written
+%  without expanding them.
+%
+%    \begin{macrocode}
+\def\contentsline#1{\csname l@#1\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% |\@dottedtocline{|\meta{level}|}{|\meta{indent}|}{|\meta{numwidth}%
+%        |}{|\meta{title}|}{|\meta{page}|}|:
+%   Macro to produce a table of contents line with the following
+%   parameters:
+%   \begin{description}
+%   \item[level] If \meta{level} $>$ |\c@tocdepth|, then no line
+%                produced.
+%   \item[indent] Total indentation from the left margin.
+%   \item[numwidth] Width of box for number if the \meta{title} has a
+%                |\numberline| command.
+%                As of 25 Jan 1988, this is also the amount of extra
+%                indentation added to second and later lines of a
+%                multiple line entry.
+%   \item[title] Contents of entry.
+%   \item[page] Page number.
+%  \end{description}
+%
+%  Uses the following parameters, which must be set by the document
+%  style. They should be defined with |\def|'s.
+%  \begin{description}
+%  \item[|\@pnumwidth|]  Width of box in which page number is set.
+%  \item[|\@tocrmarg|] Right margin indentation for all but last line
+%        of multiple-line entries.
+%  \item[|\@dotsep|] Separation between dots, in mu units.
+%                  Should be |\def|'d to a number like 2 or 1.7
+%  \end{description}
+%
+% \begin{macro}{\@dottedtocline}
+% \changes{LaTeX2.09}{1991/09/29}
+%         {(RmS) added \cs{reset@font} for page number}
+% \changes{v1.0e}{1994/05/25}{Put braces around argument 4
+%          (the actual toc entry) to avoid font (and possibly other)
+%           changes leaking out to the leaders.}
+% \changes{v1.0g}{1994/10/18}{Added \cs{normalcolor} for page number}
+% \changes{v1.0z}{1996/12/20}{Added \cs{nobreak} for latex/2343}
+%    \begin{macrocode}
+\def\@dottedtocline#1#2#3#4#5{%
+  \ifnum #1>\c@tocdepth \else
+    \vskip \z@ \@plus.2\p@
+    {\leftskip #2\relax \rightskip \@tocrmarg \parfillskip -\rightskip
+     \parindent #2\relax\@afterindenttrue
+     \interlinepenalty\@M
+     \leavevmode
+     \@tempdima #3\relax
+%    \end{macrocode}
+% \changes{v1.0z}{1996/12/20}{Added \cs{nobreak} for latex/2343}
+%    \begin{macrocode}
+     \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+     {#4}\nobreak
+     \leaders\hbox{$\m@th
+%    \end{macrocode}
+%    If a document uses fonts other than computer modern, the use of a
+%    dot from math can be very disturbing despite the fact that this
+%    might be the only place in a document that then uses computer
+%    modern.
+%    Therefore we surround the dot with an |\hbox| to escape to the
+%    surrounding text font.
+% \changes{v1.0k}{1995/04/25}{Added \cs{hbox} around dots.}
+% \changes{v1.0l}{1995/05/02}{Don't reset to \cs{rmfamily}}
+%    \begin{macrocode}
+        \mkern \@dotsep mu\hbox{.}\mkern \@dotsep
+        mu$}\hfill
+     \nobreak
+     \hb@xt@\@pnumwidth{\hfil\normalfont \normalcolor #5}%
+     \par}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \textbf{Note:} |\nobreak|'s added 7 Jan 86 to prevent bad line break
+% that left the page number dangling by itself at left edge of a new
+% line.
+%
+% Changed 25 Jan 88 to use |\leftskip| instead of |\hangindent| so
+% leaders of multiple-line contents entries would line up properly.
+% \begin{macro}{\numberline}
+% |\numberline{|\meta{number}|}|: For use in a |\contentsline| command.
+%   It puts \meta{number} flushleft in a box of width |\@tempdima|
+%   (Before 25
+%   Jan 88 change, it also added |\@tempdima| to the hanging
+%   indentation.)
+%
+%    \begin{macrocode}
+\def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+%

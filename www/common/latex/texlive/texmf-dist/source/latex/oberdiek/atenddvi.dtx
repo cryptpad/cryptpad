@@ -1,0 +1,617 @@
+% \iffalse meta-comment
+%
+% File: atenddvi.dtx
+% Version: 2007/04/17 v1.1
+% Info: At end DVI hook
+%
+% Copyright (C) 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file atenddvi.dtx
+% and the derived files
+%    atenddvi.sty, atenddvi.pdf, atenddvi.ins, atenddvi.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/atenddvi.dtx
+%    CTAN:macros/latex/contrib/oberdiek/atenddvi.pdf
+%
+% Unpacking:
+%    (a) If atenddvi.ins is present:
+%           tex atenddvi.ins
+%    (b) Without atenddvi.ins:
+%           tex atenddvi.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{atenddvi.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If atenddvi.drv is present:
+%           latex atenddvi.drv
+%    (b) Without atenddvi.drv:
+%           latex atenddvi.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex atenddvi.dtx
+%       makeindex -s gind.ist atenddvi.idx
+%       pdflatex atenddvi.dtx
+%       makeindex -s gind.ist atenddvi.idx
+%       pdflatex atenddvi.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/atenddvi.sty
+%    TDS:doc/latex/oberdiek/atenddvi.pdf
+%    TDS:source/latex/oberdiek/atenddvi.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: atenddvi 2007/04/17 v1.1 At end DVI hook (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: atenddvi
+Version: 2007/04/17 v1.1
+
+Copyright (C) 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file atenddvi.dtx
+and the derived files
+   atenddvi.sty, atenddvi.pdf, atenddvi.ins, atenddvi.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{atenddvi.ins}{\from{atenddvi.dtx}{install}}%
+  \file{atenddvi.drv}{\from{atenddvi.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{atenddvi.sty}{\from{atenddvi.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{atenddvi.xml}{\from{atenddvi.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     atenddvi.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `atenddvi.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atenddvi.drv}%
+  [2007/04/17 v1.1 At end DVI hook (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{atenddvi.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{103}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{atenddvi.drv}
+%
+% \title{The \xpackage{atenddvi} package}
+% \date{2007/04/17 v1.1}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% \LaTeX\ offers \cs{AtBeginDvi}. This package \xpackage{atenddvi}
+% provides the counterpart \cs{AtEndDvi}. The execution of its
+% argument is delayed to the end of the document at the end of the
+% last page. Thus \cs{special} and \cs{write} remain effective, because
+% they are put into the last page. This is the main difference
+% to \cs{AtEndDocument}.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \begin{declcs}{AtEndDvi} \M{code}
+% \end{declcs}
+% Macro \cs{AtEndDvi} provides a hook mechanism to put \meta{code}
+% at the end of the last output page. It is the logical counterpart
+% to \cs{AtBeginDvi}. Despite the name the output type DVI, PDF or whatever
+% does not matter.
+%
+% Unlike \cs{AtBeginDvi} the \meta{code} is not put in a box and
+% therefore executed immediately. The hook for \cs{AtEndDvi} is based on
+% a macro similar to \cs{AtBeginDocument} or \cs{AtEndDocument}. The
+% execution of \meta{code} is delayed until the hook is executed on
+% the last page.
+%
+% Commands such as \cs{special} or \cs{write} (not the \cs{immediate}
+% variant) must go as nodes into the contents of a page to have the
+% desired effect.
+% When the hook for \cs{AtEndDocument} is executed, the last intended
+% page may already be shipped out. Therefore \cs{special} or \cs{write}
+% cannot be used in a reliable way without generating new page.
+%
+% This gap is closed by \cs{AtEndDvi} of this package \xpackage{atenddvi}.
+% If the document is compiled the first time, the package remembers
+% the last page in a reference. In the sceond run, it puts the hook
+% on the page that has been detected in the previous run as last page.
+% The package detectes if the number of pages has changed, and then
+% generates a warning to rerun \LaTeX.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{atenddvi}%
+  [2007/04/17 v1.1 At end DVI hook (HO)]%
+%    \end{macrocode}
+%
+%    Load the required packages
+%    \begin{macrocode}
+\RequirePackage{zref-abspage,zref-lastpage}[2007/03/19]
+\RequirePackage{atbegshi}
+%    \end{macrocode}
+%
+%    \begin{macro}{\AtEndDvi@Hook}
+%    Macro \cs{AtEndDvi@Hook} is the data storage macro
+%    for the code that is executed later at end of the last page.
+%    \begin{macrocode}
+\let\AtEndDvi@Hook\@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\AtEndDvi}
+%    Macro \cs{AtEndDvi} is called in the same way as
+%    \cs{AtBeginDocument}. The argument is added to the hook macro.
+%    \begin{macrocode}
+\newcommand*{\AtEndDvi}{%
+  \g@addto@macro\AtEndDvi@Hook
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtEndDvi@AtBeginShipout}
+%    \begin{macrocode}
+\def\AtEndDvi@AtBeginShipout{%
+  \begingroup
+%    \end{macrocode}
+%    The reference `LastPage' is marked used. If the reference
+%    is not yet defined, then the user gets the warning because of
+%    the undefined reference and the rerun warning at the end of
+%    the compile run. However, we do not need a warning each page,
+%    the first page is enough.
+%    \begin{macrocode}
+    \ifnum\value{abspage}=1 %
+      \zref@refused{LastPage}%
+    \fi
+%    \end{macrocode}
+%    The current absolute page number is compared with the
+%    absolute page number of the reference `LastPage'.
+%    \begin{macrocode}
+    \ifnum\zref@extractdefault{LastPage}{abspage}{0}=\value{abspage}%
+%    \end{macrocode}
+%    \begin{macro}{\AtEndDvi@LastPage}
+%    We found the right page and remember it in a macro.
+%    \begin{macrocode}
+      \xdef\AtEndDvi@LastPage{\number\value{abspage}}%
+%    \end{macrocode}
+%    \end{macro}
+%    The hook of \cs{AtEndDvi} is now put on the last page
+%    after the contents of the page.
+%    \begin{macrocode}
+      \global\setbox\AtBeginShipoutBox=\vbox{%
+        \hbox{%
+          \box\AtBeginShipoutBox
+          \setbox\AtBeginShipoutBox=\hbox{%
+            \begingroup
+              \AtEndDvi@Hook
+            \endgroup
+          }%
+          \wd\AtBeginShipoutBox=\z@
+          \ht\AtBeginShipoutBox=\z@
+          \dp\AtBeginShipoutBox=\z@
+          \box\AtBeginShipoutBox
+        }%
+      }%
+%    \end{macrocode}
+%    We do not need the every page hook.
+%    \begin{macrocode}
+      \global\let\AtEndDvi@AtBeginShipout\@empty
+%    \end{macrocode}
+%    The hook is consumed, \cs{AtEndDvi} does not have an effect.
+%    \begin{macrocode}
+      \global\let\AtEndDvi\@gobble
+%    \end{macrocode}
+%    Make a protocol entry, which page is used by this package
+%    as last page.
+%    \begin{macrocode}
+      \let\on@line\@empty
+      \PackageInfo{atenddvi}{Last page = \AtEndDvi@LastPage}%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtEndDvi@AtBeginDocument}
+%    In order to get as late as possible in the chain of the
+%    every shipout hook, the call of \cs{AtBeginShipout} is delayed.
+%    \begin{macrocode}
+\def\AtEndDvi@AtBeginDocument{%
+  \AtBeginShipout{\AtEndDvi@AtBeginShipout}%
+%    \end{macrocode}
+%    \begin{macro}{\AtEndDvi@Check}
+%    After \cs{AtEndDocument} \LaTeX\ reads its \xfile{.aux} files
+%    again. Code in \cs{AtEndDocument} could generate additional
+%    pages. This is unlikely by code in the \xfile{.aux} file,
+%    thus we use the \xfile{.aux} file to run macro
+%    \cs{AtEndDvi@Check} for checking the last page.
+%
+%    During the first reading of the \xfile{.aux} file,
+%    \cs{AtEndDvi@Check} is disabled, its real meaning
+%    is assigned afterwards.
+%    \begin{macrocode}
+  \if@filesw
+    \immediate\write\@mainaux{%
+      \string\providecommand\string\AtEndDvi@Check{}%
+    }%
+    \immediate\write\@mainaux{%
+      \string\AtEndDvi@Check
+    }%
+  \fi
+  \let\AtEndDvi@Check\AtEndDvi@CheckImpl
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AtBeginDocument{\AtEndDvi@AtBeginDocument}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\AtEndDvi@CheckImpl}
+%    First check is whether a last page was found at all.
+%    Secondly the found last page is compared with the real last page.
+%    \begin{macrocode}
+\def\AtEndDvi@CheckImpl{%
+  \@ifundefined{AtEndDvi@LastPage}{%
+    \PackageWarningNoLine{atenddvi}{%
+      Rerun LaTeX, last page not yet found%
+    }%
+  }{%
+    \ifnum\AtEndDvi@LastPage=\value{abspage}%
+    \else
+      \PackageWarningNoLine{atenddvi}{%
+        Rerun LaTeX, last page has changed%
+      }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/atenddvi.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/atenddvi.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex atenddvi.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   atenddvi.sty & tex/latex/oberdiek/atenddvi.sty\\
+%   atenddvi.pdf & doc/latex/oberdiek/atenddvi.pdf\\
+%   atenddvi.dtx & source/latex/oberdiek/atenddvi.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk atenddvi.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{atenddvi.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex atenddvi.dtx
+%makeindex -s gind.ist atenddvi.idx
+%pdflatex atenddvi.dtx
+%makeindex -s gind.ist atenddvi.idx
+%pdflatex atenddvi.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{atenddvi.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='atenddvi'>
+  <name>atenddvi</name>
+  <caption>Provides the \AtEndDvi command.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.1'/>
+  <description>
+    LaTeX offers <tt>\AtBeginDvi</tt>.  This package provides the
+    counterpart <tt>\AtEndDvi</tt>. The execution of its argument is
+    delayed to the end of the document at the end of the last page.
+    At this point <tt>\special</tt> and <tt>\write</tt> remain
+    effective, because they are put into the last page.  This is the
+    main difference from the LaTeX command <tt>\AtEndDocument</tt>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/atenddvi.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/atenddvi.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/03/20 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/04/17 v1.1}
+%   \item
+%     Package \xpackage{atbegshi} replaces package \xpackage{everyshi}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

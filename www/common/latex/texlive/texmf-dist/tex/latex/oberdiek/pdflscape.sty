@@ -1,0 +1,250 @@
+%%
+%% This is file `pdflscape.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pdflscape.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pdflscape
+%% Version: 2008/08/11 v0.10
+%% 
+%% Copyright (C) 2001, 2004, 2006-2008 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pdflscape.dtx
+%% and the derived files
+%%    pdflscape.sty, pdflscape.pdf, pdflscape.ins, pdflscape.drv,
+%%    pdflscape-test1.tex, pdflscape-test2.tex,
+%%    pdflscape-test3.tex, pdflscape-test4.tex,
+%%    pdflscape-test5.tex, pdflscape-test6.tex,
+%%    pdflscape-test6.txt, ExtractRotate.java.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdflscape}%
+  [2008/08/11 v0.10 Display of landscape pages in PDF (HO)]
+\let\PLS@option\@empty
+\let\PLS@driver\@empty
+\def\PLS@temp#1#2{%
+  \DeclareOption{#1}{%
+    \let\PLS@option\CurrentOption
+    \def\PLS@driver{#2}%
+  }%
+}
+\PLS@temp{pdftex}{pdftex}
+\PLS@temp{dvips}{dvips}
+\PLS@temp{dvipsone}{dvips}
+\PLS@temp{pctexps}{dvips}
+\PLS@temp{dvipdfm}{dvipdfm}
+\PLS@temp{dvipdfmx}{dvipdfm}
+\PLS@temp{xetex}{dvipdfm}
+\let\PLS@temp\@empty
+\DeclareOption*{%
+  \ifx\PLS@temp\@empty
+    \let\PLS@temp\CurrentOption
+  \else
+    \edef\PLS@temp{\PLS@temp,\CurrentOption}%
+  \fi
+}
+\ProcessOptions*
+\ifx\PLS@option\@empty
+\else
+  \expandafter\PassOptionsToPackage\expandafter{\PLS@option}{lscape}%
+\fi
+\ifx\PLS@temp\@empty
+\else
+  \expandafter\PassOptionsToPackage\expandafter{\PLS@temp}{lscape}%
+\fi
+\RequirePackage{lscape}
+\RequirePackage{ifpdf}[2006/02/20]
+\def\PLS@temp{pdftex}
+\ifpdf
+  \ifx\PLS@driver\@empty
+    \let\PLS@driver\PLS@temp
+    \PackageInfo{pdflscape}{Auto-detected driver: \PLS@temp}%
+  \fi
+  \ifx\PLS@driver\PLS@temp
+  \else
+    \PackageError{pdflscape}{%
+      The driver option `\PLS@option' is not compatible\MessageBreak
+      with pdfTeX in PDF mode, using driver `pdftex' instead%
+    }\@ehc
+    \let\PLS@driver\PLS@temp
+  \fi
+\fi
+\RequirePackage{ifxetex}%
+\def\PLS@temp{dvipdfm}
+\ifxetex
+  \ifx\PLS@driver\@empty
+    \let\PLS@driver\PLS@temp
+    \PackageInfo{pdflscape}{%
+      Auto-detected driver: \PLS@temp\space(xetex)%
+    }%
+  \fi
+  \ifx\PLS@driver\PLS@temp
+  \else
+    \PackageError{pdflscape}{%
+      The driver option `\PLS@option' is not compatible\MessageBreak
+      with XeTeX, using driver for XeTeX (dvipdfm) instead%
+    }\@ehc
+    \let\PLS@driver\PLS@temp
+  \fi
+\fi
+\def\PLS@temp#1#2{%
+  \ifx\PLS@driver\@empty
+    \begingroup
+      \def\PLS@temp{#1.def}%
+    \expandafter\endgroup
+    \ifx\PLS@temp\Gin@driver
+      \def\PLS@driver{#2}%
+      \PackageInfo{pdflscape}{%
+        Auto-detected driver: \PLS@driver\space(#1)%
+      }%
+    \fi
+  \fi
+}
+\PLS@temp{dvipdfm}{dvipdfm}
+\PLS@temp{dvipdfmx}{dvipdfm}
+\PLS@temp{dvips}{dvips}
+\PLS@temp{dvipsone}{dvips}
+\PLS@temp{pctexps}{dvips}
+\ifx\PLS@driver\@empty
+  \def\PLS@temp{dvips}%
+  \ifnum 1=0\ifx\Gin@PS@raw\@undefined
+            \else
+              \ifx\Gin@PS@raw\relax
+              \else
+                \ifx\Gin@PS@raw\@empty
+                \else
+                  1%
+                \fi
+              \fi
+            \fi
+            \space
+    \let\PLS@driver\PLS@temp
+    \PackageInfo{pdflscape}{%
+      Auto-detected driver: \PLS@temp\space(PostScript)%
+    }%
+  \fi
+\fi
+\ifx\PLS@driver\@empty
+  \PackageError{pdflscape}{%
+    Neither pdfTeX, PostScript, nor dvipdfm driver found%
+  }\@ehc
+\fi
+\def\PLS@temp{pdftex}
+\ifx\PLS@temp\PLS@driver
+  \def\PLS@AddRotate#1{%
+    \ifnum#1=0 %
+    \else
+      \global\pdfpageattr\expandafter{%
+        \the\pdfpageattr
+        /Rotate #1%
+      }%
+    \fi
+  }%
+  \def\PLS@RemoveRotate{%
+    \begingroup
+      \global\pdfpageattr\expandafter{\expandafter}%
+      \expandafter\PLS@@RemoveRotate
+        \the\pdfpageattr /Rotate\@nil
+    \endgroup
+  }%
+  \def\PLS@@RemoveRotate#1/Rotate#2\@nil{%
+    \global\pdfpageattr\expandafter{\the\pdfpageattr#1}%
+    \ifx\\#2\\%
+    \else
+      \afterassignment\PLS@@RemoveRotate
+      \count0=#2\@nil
+    \fi
+  }%
+\fi
+\def\PLS@temp{dvips}
+\ifx\PLS@temp\PLS@driver
+  \RequirePackage{atbegshi}%
+  \AtBeginShipout{\PLS@AtBeginShipout}%
+  \let\PLS@AtBeginShipout\@empty
+  \def\PLS@AddRotate#1{%
+    \ifnum#1=0 %
+    \else
+      \def\PLS@AtBeginShipout{%
+        \global\setbox\AtBeginShipoutBox\vbox{%
+          \Gin@PS@raw{%
+            [{ThisPage}\string<\string</Rotate #1\string>\string>%
+            /PUT pdfmark%
+          }%
+          \box\AtBeginShipoutBox
+        }%
+      }%
+    \fi
+  }%
+  \def\PLS@RemoveRotate{\let\PLS@AtBeginShipout\@empty}%
+\fi
+\def\PLS@temp{dvipdfm}
+\ifx\PLS@temp\PLS@driver
+  \RequirePackage{atbegshi}%
+  \AtBeginShipout{\PLS@AtBeginShipout}%
+  \let\PLS@AtBeginShipout\@empty
+  \def\PLS@AddRotate#1{%
+    \ifnum#1=0 %
+    \else
+      \def\PLS@AtBeginShipout{%
+        \global\setbox\AtBeginShipoutBox\vbox{%
+          \special{pdf: put @thispage <</Rotate #1>>}%
+          \box\AtBeginShipoutBox
+        }%
+      }%
+    \fi
+  }%
+  \def\PLS@RemoveRotate{\let\PLS@AtBeginShipout\@empty}%
+\fi
+\g@addto@macro{\landscape}{\PLS@Rotate{90}}
+\g@addto@macro{\endlandscape}{\PLS@Rotate{0}}
+\def\PLS@Rotate#1{%
+  \begingroup
+    \PLS@CheckAngle{#1}%
+  \expandafter\endgroup
+  \expandafter\PLS@RemoveRotate
+  \expandafter\PLS@AddRotate\expandafter{\the\count@}%
+}
+\def\PLS@CheckAngle#1{%
+  \ifx\\#1\\%
+    \count@=0 %
+  \else
+    \count@=#1\relax
+  \fi
+  \@whilenum\count@>359\do{\advance\count@ -360 }%
+  \@whilenum\count@<-359\do{\advance\count@ 360 }%
+  \ifnum 1=0\ifnum\count@=0 \else
+            \ifnum\count@=90 \else
+            \ifnum\count@=-90 \else
+            \ifnum\count@=180 \else
+            \ifnum\count@=-180 \else
+            \ifnum\count@=270 \else
+            \ifnum\count@=-270 \else
+           1\fi\fi\fi\fi\fi\fi\fi\relax
+    \PackageError{pdflscape}{%
+      Invalid value \the\count@\space for /Rotate%
+    }\@ehc
+    \count@=0 %
+  \fi
+}
+\endinput
+%%
+%% End of file `pdflscape.sty'.

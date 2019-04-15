@@ -1,0 +1,1169 @@
+% \iffalse meta-comment
+%
+% File: pdfcol.dtx
+% Version: 2007/12/12 v1.2
+% Info: Handle new color stacks for pdfTeX
+%
+% Copyright (C) 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file pdfcol.dtx
+% and the derived files
+%    pdfcol.sty, pdfcol.pdf, pdfcol.ins, pdfcol.drv, pdfcol-test1.tex,
+%    pdfcol-test2.tex, pdfcol-test3.tex, pdfcol-test4.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfcol.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfcol.pdf
+%
+% Unpacking:
+%    (a) If pdfcol.ins is present:
+%           tex pdfcol.ins
+%    (b) Without pdfcol.ins:
+%           tex pdfcol.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfcol.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfcol.drv is present:
+%           latex pdfcol.drv
+%    (b) Without pdfcol.drv:
+%           latex pdfcol.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfcol.dtx
+%       makeindex -s gind.ist pdfcol.idx
+%       pdflatex pdfcol.dtx
+%       makeindex -s gind.ist pdfcol.idx
+%       pdflatex pdfcol.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/pdfcol.sty
+%    TDS:doc/latex/oberdiek/pdfcol.pdf
+%    TDS:doc/latex/oberdiek/test/pdfcol-test1.tex
+%    TDS:doc/latex/oberdiek/test/pdfcol-test2.tex
+%    TDS:doc/latex/oberdiek/test/pdfcol-test3.tex
+%    TDS:doc/latex/oberdiek/test/pdfcol-test4.tex
+%    TDS:source/latex/oberdiek/pdfcol.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfcol 2007/12/12 v1.2 Handle new color stacks for pdfTeX (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfcol
+Version: 2007/12/12 v1.2
+
+Copyright (C) 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file pdfcol.dtx
+and the derived files
+   pdfcol.sty, pdfcol.pdf, pdfcol.ins, pdfcol.drv, pdfcol-test1.tex,
+   pdfcol-test2.tex, pdfcol-test3.tex, pdfcol-test4.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfcol.ins}{\from{pdfcol.dtx}{install}}%
+  \file{pdfcol.drv}{\from{pdfcol.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{pdfcol.sty}{\from{pdfcol.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdfcol-test1.tex}{\from{pdfcol.dtx}{test1}}%
+  \file{pdfcol-test2.tex}{\from{pdfcol.dtx}{test2}}%
+  \file{pdfcol-test3.tex}{\from{pdfcol.dtx}{test3}}%
+  \file{pdfcol-test4.tex}{\from{pdfcol.dtx}{test4}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfcol.xml}{\from{pdfcol.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfcol.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfcol.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfcol.drv}%
+  [2007/12/12 v1.2 Handle new color stacks for pdfTeX (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pdfcol.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{721}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfcol.drv}
+%
+% \title{The \xpackage{pdfcol} package}
+% \date{2007/12/12 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Since version 1.40 \pdfTeX\ supports color stacks.
+% The driver file \xfile{pdftex.def} for package \xpackage{color}
+% defines and uses a main color stack since version v0.04b.
+% Package \xpackage{pdfcol} is intended for package writers.
+% It defines macros for setting and maintaining new color stacks.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Version 1.40 of \pdfTeX\ adds new primitives \cs{pdfcolorstackinit}
+% and \cs{pdfcolorstack}. Now color stacks can be defined and used.
+% A main color stack is maintained by the driver file \xfile{pdftex.def}
+% similar to dvips or dvipdfm. However the number of color stacks
+% is not limited to one in \pdfTeX. Thus further color problems
+% can now be solved, such as footnotes across pages or text
+% that is set in parallel columns (e.g. packages \xpackage{parallel}
+% or \xpackage{parcolumn}). Unlike the main color stack,
+% the support by additional color stacks cannot be done in
+% a transparent manner.
+%
+% This package \xpackage{pdfcol} provides an easier interface to
+% additional color stacks without the need to use the
+% low level primitives.
+%
+% \subsection{Requirements}
+% \label{sec:req}
+%
+% \begin{itemize}
+% \item
+%   \pdfTeX\ 1.40 or greater.
+% \item
+%   \pdfTeX in PDF mode. (I don't know a DVI driver that
+%   support several color stacks.)
+% \item
+%   \xfile{pdftex.def} 2007/01/02 v0.04b.
+% \end{itemize}
+% Package \xpackage{pdfcol} checks the requirements and
+% sets switch \cs{ifpdfcolAvailable} accordingly.
+%
+% \subsection{Interface}
+%
+% \begin{declcs}{ifpdfcolAvailable}
+% \end{declcs}
+% If the requirements of section \ref{sec:req} are met the
+% switch \cs{ifpdfcolAvailable} behaves as \cs{iftrue}.
+% Otherwise the other interface macros in this section will
+% be disabled with a message. Also the first use of such a
+% macro will print a message. The messages are print to
+% the \xext{log} file only if \pdfTeX\ is not used in PDF mode.
+%
+% \begin{declcs}{pdfcolErrorNoStacks}
+% \end{declcs}
+% The first call of \cs{pdfcolErrorNoStacks} prints an error
+% message, if color stacks are not available.
+%
+% \begin{declcs}{pdfcolInitStack} \M{name}
+% \end{declcs}
+% A new color stack is initialized by \cs{pdfcolInitStack}.
+% The \meta{name} is used for indentifying the stack. It usually
+% consists of letters and digits. (The name must survive a \cs{csname}.)
+%
+% The intension of the macro is the definition of an additional
+% color stack. Thus the stack is not page bounded like the
+% main color stack. Black (\texttt{0 g 0 G}) is used as initial
+% color value. And colors are written with modifier \texttt{direct}
+% that means without setting the current transfer matrix and changing
+% the current point (see documentation of \pdfTeX\ for
+% |\pdfliteral direct{...}|).
+%
+% \begin{declcs}{pdfcolIfStackExists} \M{name} \M{then} \M{else}
+% \end{declcs}
+% Macro \cs{pdfcolIfStackExists} checks whether color stack \meta{name}
+% exists. In case of success argument \meta{then} is executed
+% and \meta{else} otherwise.
+%
+% \begin{declcs}{pdfcolSwitchStack} \M{name}
+% \end{declcs}
+% Macro \cs{pdfcolSwitchStack} switches the color stack. The color macros
+% of package \xpackage{color} (or \xpackage{xcolor}) now uses the
+% new color stack with name \meta{name}.
+%
+% \begin{declcs}{pdfcolSetCurrentColor}
+% \end{declcs}
+% Macro \cs{pdfcolSetCurrentColor} replaces the topmost
+% entry of the stack by the current color (\cs{current@color}).
+%
+% \begin{declcs}{pdfcolSetCurrent} \M{name}
+% \end{declcs}
+% Macro \cs{pdfcolSetCurrent} sets the color that is read in
+% the top-most entry of color stack \meta{name}. If \meta{name}
+% is empty, the default color stack is used.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pdfcol.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pdfcol}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pdfcol.sty\endcsname
+\ProvidesPackage{pdfcol}%
+  [2007/12/12 v1.2 Handle new color stacks for pdfTeX (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname PDFCOL@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\PDFCOL@AtEnd{%
+    \PDFCOL@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\PDFCOL@AtEnd{\PDFCOL@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Check requirements}
+%
+%    \begin{macro}{\PDFCOL@RequirePackage}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\PDFCOL@RequirePackage#1[#2]{\input #1.sty\relax}%
+\else
+  \def\PDFCOL@RequirePackage#1[#2]{%
+    \RequirePackage{#1}[{#2}]%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\PDFCOL@RequirePackage{ltxcmds}[2010/03/01]
+%    \end{macrocode}
+%
+%    \begin{macro}{ifpdfcolAvailable}
+%    \begin{macrocode}
+\ltx@newif\ifpdfcolAvailable
+\pdfcolAvailabletrue
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Check package \xpackage{luacolor}}
+%
+%    \begin{macrocode}
+\ltx@newif\ifPDFCOL@luacolor
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ver@luacolor.sty\endcsname\relax
+  \PDFCOL@luacolorfalse
+\else
+  \PDFCOL@luacolortrue
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Check PDF mode}
+%
+%    \begin{macrocode}
+\PDFCOL@RequirePackage{infwarerr}[2007/09/09]
+\PDFCOL@RequirePackage{ifpdf}[2007/09/09]
+\ifcase\ifpdf\ifPDFCOL@luacolor 1\fi\else 1\fi0 %
+  \def\PDFCOL@Message{%
+    \@PackageWarningNoLine{pdfcol}%
+  }%
+\else
+  \pdfcolAvailablefalse
+  \def\PDFCOL@Message{%
+    \@PackageInfoNoLine{pdfcol}%
+  }%
+  \PDFCOL@Message{%
+    Interface disabled because of %
+    \ifPDFCOL@luacolor
+      package `luacolor'%
+    \else
+      missing PDF mode of pdfTeX%
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Check version of \pdfTeX}
+%
+%    \begin{macrocode}
+\ifpdfcolAvailable
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdfcolorstack\endcsname\relax
+    \pdfcolAvailablefalse
+    \PDFCOL@Message{%
+      Interface disabled because of too old pdfTeX.\MessageBreak
+      Required is version 1.40+ for \string\pdfcolorstack
+    }%
+  \fi
+\fi
+\ifpdfcolAvailable
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname pdfcolorstack\endcsname\relax
+    \pdfcolAvailablefalse
+    \PDFCOL@Message{%
+      Interface disabled because of too old pdfTeX.\MessageBreak
+      Required is version 1.40+ for \string\pdfcolorstackinit
+    }%
+  \fi
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Check \xfile{pdftex.def}}
+%
+%    \begin{macrocode}
+\ifpdfcolAvailable
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @pdfcolorstack\endcsname\relax
+%    \end{macrocode}
+%    Try to load package color if it is not yet loaded (\LaTeX\ case).
+%    \begin{macrocode}
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@color.sty\endcsname\relax
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname documentclass\endcsname\relax
+      \else
+        \RequirePackage[pdftex]{color}\relax
+      \fi
+    \fi
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname @pdfcolorstack\endcsname\relax
+      \pdfcolAvailablefalse
+      \PDFCOL@Message{%
+        Interface disabled because `pdftex.def'\MessageBreak
+        is not loaded or it is too old.\MessageBreak
+        Required is version 0.04b or greater%
+      }%
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\pdfcolAvailabletrue\relax
+\let\pdfcolAvailablefalse\relax
+%    \end{macrocode}
+%
+% \subsection{Enabled interface macros}
+%
+%    \begin{macrocode}
+\ifpdfcolAvailable
+%    \end{macrocode}
+%
+%    \begin{macro}{\pdfcolErrorNoStacks}
+%    \begin{macrocode}
+  \let\pdfcolErrorNoStacks\relax
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcol@Value}
+%    \begin{macrocode}
+  \expandafter\ifx\csname pdfcol@Value\endcsname\relax
+    \def\pdfcol@Value{0 g 0 G}%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcol@LiteralModifier}
+%    \begin{macrocode}
+  \expandafter\ifx\csname pdfcol@LiteralModifier\endcsname\relax
+    \def\pdfcol@LiteralModifier{direct}%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolInitStack}
+%    \begin{macrocode}
+  \def\pdfcolInitStack#1{%
+    \expandafter\ifx\csname pdfcol@Stack@#1\endcsname\relax
+      \global\expandafter\chardef\csname pdfcol@Stack@#1\endcsname=%
+          \pdfcolorstackinit\pdfcol@LiteralModifier{\pdfcol@Value}%
+          \relax
+      \@PackageInfo{pdfcol}{%
+        New color stack `#1' = \number\csname pdfcol@Stack@#1\endcsname
+      }%
+    \else
+      \@PackageError{pdfcol}{%
+        Stack `#1' is already defined%
+      }\@ehc
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolIfStackExists}
+%    \begin{macrocode}
+  \def\pdfcolIfStackExists#1{%
+    \expandafter\ifx\csname pdfcol@Stack@#1\endcsname\relax
+      \expandafter\@secondoftwo
+    \else
+      \expandafter\@firstoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@firstoftwo}
+%    \begin{macrocode}
+  \expandafter\ifx\csname @firstoftwo\endcsname\relax
+    \long\def\@firstoftwo#1#2{#1}%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@secondoftwo}
+%    \begin{macrocode}
+  \expandafter\ifx\csname @secondoftwo\endcsname\relax
+    \long\def\@secondoftwo#1#2{#2}%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolSwitchStack}
+%    \begin{macrocode}
+  \def\pdfcolSwitchStack#1{%
+    \pdfcolIfStackExists{#1}{%
+      \expandafter\let\expandafter\@pdfcolorstack
+                      \csname pdfcol@Stack@#1\endcsname
+    }{%
+      \pdfcol@ErrorNoStack{#1}%
+    }%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolSetCurrentColor}
+%    \begin{macrocode}
+  \def\pdfcolSetCurrentColor{%
+    \pdfcolorstack\@pdfcolorstack set{\current@color}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolSetCurrent}
+%    \begin{macrocode}
+  \def\pdfcolSetCurrent#1{%
+    \ifx\\#1\\%
+      \pdfcolorstack\@pdfcolorstack current\relax
+    \else
+      \pdfcolIfStackExists{#1}{%
+        \pdfcolorstack\csname pdfcol@Stack@#1\endcsname current\relax
+      }{%
+        \pdfcol@ErrorNoStack{#1}%
+      }%
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcol@ErrorNoStack}
+%    \begin{macrocode}
+  \def\pdfcol@ErrorNoStack#1{%
+    \@PackageError{pdfcol}{Stack `#1' does not exists}\@ehc
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Disabled interface macros}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%
+%    \begin{macro}{\pdfcolErrorNoStacks}
+%    \begin{macrocode}
+  \def\pdfcolErrorNoStacks{%
+    \@PackageError{pdfcol}{%
+      Color stacks are not available%
+    }{%
+      Update pdfTeX (1.40) and `pdftex.def' (0.04b) %
+          if necessary.\MessageBreak
+      Ensure that `pdftex.def' is loaded %
+          (package `color' or `xcolor').\MessageBreak
+      Further messages can be found in TeX's %
+          protocol file `\jobname.log'.\MessageBreak
+      \MessageBreak
+      \@ehc
+    }%
+    \global\let\pdfcolErrorNoStacks\relax
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PDFCOL@Disabled}
+%    \begin{macrocode}
+  \def\PDFCOL@Disabled{%
+    \PDFCOL@Message{%
+      pdfTeX's color stacks are not available%
+    }%
+    \global\let\PDFCOL@Disabled\relax
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolInitStack}
+%    \begin{macrocode}
+  \def\pdfcolInitStack#1{%
+    \PDFCOL@Disabled
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolIfStackExists}
+%    \begin{macrocode}
+  \long\def\pdfcolIfStackExists#1#2#3{#3}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolSwitchStack}
+%    \begin{macrocode}
+  \def\pdfcolSwitchStack#1{%
+    \PDFCOL@Disabled
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolSetCurrentColor}
+%    \begin{macrocode}
+  \def\pdfcolSetCurrentColor{%
+    \PDFCOL@Disabled
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\pdfcolSetCurrent}
+%    \begin{macrocode}
+  \def\pdfcolSetCurrent#1{%
+    \PDFCOL@Disabled
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\PDFCOL@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input pdfcol.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Very simple test}
+%
+%    \begin{macrocode}
+%<*test2|test3>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{article}
+\usepackage{pdfcol}[2007/12/12]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\begin{document}
+  \begin{qstest}{pdfcol}{}%
+    \makeatletter
+%<*test2>
+    \Expect*{\ifpdfcolAvailable true\else false\fi}{false}%
+%</test2>
+%<*test3>
+    \Expect*{\ifpdfcolAvailable true\else false\fi}{true}%
+    \Expect*{\number\@pdfcolorstack}{0}%
+%</test3>
+    \setbox0=\hbox{%
+      \pdfcolInitStack{test}%
+%<*test3>
+      \Expect*{\number\pdfcol@Stack@test}{1}%
+      \Expect*{\number\@pdfcolorstack}{0}%
+%</test3>
+      \pdfcolSwitchStack{test}%
+%<*test3>
+      \Expect*{\number\@pdfcolorstack}{1}%
+%</test3>
+      \pdfcolSetCurrent{test}%
+      \pdfcolSetCurrent{}%
+    }%
+    \Expect*{\the\wd0}{0.0pt}%
+%<*test3>
+    \Expect*{\number\@pdfcolorstack}{0}%
+    \Expect*{\number\pdfcol@Stack@test}{1}%
+    \Expect*{\pdfcolIfStackExists{test}{true}{false}}{true}%
+%</test3>
+    \Expect*{\pdfcolIfStackExists{dummy}{true}{false}}{false}%
+  \end{qstest}%
+\end{document}
+%</test2|test3>
+%    \end{macrocode}
+%
+% \subsection{Detection of package \xpackage{luacolor}}
+%
+%    \begin{macrocode}
+%<*test4>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage{luacolor}
+\usepackage{pdfcol}
+\makeatletter
+\ifpdfcolAvailable
+  \@latex@error{Detection of package luacolor failed}%
+\fi
+\csname @@end\endcsname
+%</test4>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcol.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfcol.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfcol.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfcol.sty & tex/generic/oberdiek/pdfcol.sty\\
+%   pdfcol.pdf & doc/latex/oberdiek/pdfcol.pdf\\
+%   test/pdfcol-test1.tex & doc/latex/oberdiek/test/pdfcol-test1.tex\\
+%   test/pdfcol-test2.tex & doc/latex/oberdiek/test/pdfcol-test2.tex\\
+%   test/pdfcol-test3.tex & doc/latex/oberdiek/test/pdfcol-test3.tex\\
+%   test/pdfcol-test4.tex & doc/latex/oberdiek/test/pdfcol-test4.tex\\
+%   pdfcol.dtx & source/latex/oberdiek/pdfcol.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfcol.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfcol.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfcol.dtx
+%makeindex -s gind.ist pdfcol.idx
+%pdflatex pdfcol.dtx
+%makeindex -s gind.ist pdfcol.idx
+%pdflatex pdfcol.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfcol.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcol'>
+  <name>pdfcol</name>
+  <caption>Defines macros fpr maintaining color stacks under pdfTeX.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Since version 1.40 pdfTeX supports color stacks.
+    The driver file <tt>pdftex.def</tt> for package
+    <xref refid='color'>color</xref> defines and uses a main color
+    stack since version v0.04b.
+    <p/>
+    This package is intended for package writers.
+    It defines macros for setting and maintaining new color stacks.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcol.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcol.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/09/09 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/12/09 v1.1}
+%   \item
+%     \cs{pdfcolSetCurrentColor} added.
+%   \end{Version}
+%   \begin{Version}{2007/12/12 v1.2}
+%   \item
+%     Detection for package \xpackage{luacolor} added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

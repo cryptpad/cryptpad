@@ -1,0 +1,44 @@
+
+% scalefnt package
+%%%%%%%%%%%%%%%%%%
+
+% Copyright 1997 David carlisle
+% This file may be distributed under the terms of the LPPL.
+% See 00readme.txt for details.
+
+% 1997/09/28  David Carlisle
+
+% This package defines a command \scalefont. After \scalefont{.75} then
+% the current font and baselineskip will be scaled to 75% of their
+% original size. Any scale factor may be specified.
+
+% If you are using traditional fd files based on bitmap font sizes,
+% LaTeX's font system will round the requested font size to the nearest
+% available size. If you are using scalable fonts, such as the psnfss
+% or type1cm packages, then the requested font size will be used exactly.
+
+% Almost all of the code here is in fact dealing with scaling the stretch
+% components of \baselineskip. This is a bit odd as 99% of documents
+% have a rigid \baselineskip, however the technique may be useful in
+% some contexts, and is left here as an example.
+
+\DeclareRobustCommand\scalefont[1]{%
+  \dimen@\z@
+  \dimen@ii\z@
+  \afterassignment\@scalefont
+              \@tempdima\the\baselineskip\relax\relax\relax\relax\relax
+  \skip@#1\@tempdima\@plus#1\dimen@\@minus#1\dimen@ii
+  \dimen@\f@size\p@
+  \dimen@#1\dimen@
+  \fontsize\dimen@\skip@\selectfont}
+
+\def\@scalefont#1#2#3#4#5{%
+ \if#1p%
+    \afterassignment\@scalefont\dimen@#5%
+ \else
+   \if#1m%
+     \dimen@ii
+   \fi
+  \fi}
+
+

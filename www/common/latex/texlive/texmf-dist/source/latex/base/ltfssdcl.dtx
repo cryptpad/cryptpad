@@ -1,0 +1,1627 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: ltfssdcl.dtx
+%% Copyright (C) 1989-1998 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+%
+%<*driver>
+% \fi
+%
+%
+\ProvidesFile{ltfssdcl.dtx}
+            [2015/03/18 v3.0q LaTeX Kernel (NFSS Declarative Interface)]
+% \iffalse
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{ltfssdcl.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \iffalse
+%<+checkmem>\def\CHECKMEM{\tracingstats=2
+%<+checkmem>  \newlinechar=`\^^J
+%<+checkmem>  \message{^^JMemory usage: \filename}\shipout\hbox{}}
+%<+checkmem>\CHECKMEM
+% \fi
+%
+% \CheckSum{2011}
+%
+%
+% \GetFileInfo{ltfssdcl.dtx}
+% \title{A new font selection scheme for \TeX{} macro packages\\
+%        (Declarative Interface)\thanks
+%       {This file has version number
+%       \fileversion\ dated \filedate}}
+%
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This file contains the main implementation of the font selection
+% scheme commands. See other parts of the \LaTeX\ distribution, or
+% \emph{The \LaTeX\ Companion} for higher level documentation of these
+% commands.
+%
+% \begin{quote}
+%   \textbf{Warning:}
+%  The macro documentation is still basically the documentation from the
+%  first NFSS release and therefore in some cases probably not
+%  completely accurate.
+% \end{quote}
+%
+% \StopEventually{}
+%
+% \section{Interface Commands}
+%
+% \changes{v3.0i}{1998/08/17}
+%      {(RmS) Corrected minor glitches in changes entries.}
+% \changes{v3.0b}{1995/06/15}
+%      {(DPC) minor documentation changes}
+% \changes{v3.0a}{1995/05/24}
+%      {(DPC) Make file from previous file, latint.dtx 1995/05/21 v2.1t}
+% \changes{v3.0p}{2015/02/21}
+%         {Removed autoload code}
+%
+%
+% \changes{v2.1o}{1994/11/22}
+%         {wrap long lines}
+% \changes{v2.1m}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v2.1j}{1994/05/29}{Use new error commands}
+% \changes{v2.1h}{1994/05/13}{Removed file identification typeout}
+% \changes{v2.1g}{1994/05/12}{Allow \cs{relax}'ed cmds to be declared}
+% \changes{v2.1g}{1994/05/12}{Allow \cs{relax} as undefined command}
+% \changes{v2.1e}{1994/04/28}{Removed all \cs{uppercase} in hex num
+%                             parsing macros}
+% \changes{v2.1d}{1994/04/18}{Removed surplus \cs{no@alphabet@error}
+%                             (see fam.dtx)}
+%
+%
+%
+% \changes{v2.1f}{1994/05/03}{Renamed \cs{@@DeclareMathDelimiter} to
+%                             \cs{@DeclareMathDelimiter}}
+% \changes{v2.1c}{1994/03/13}{add 2ekernel module to omit repeated code}
+%
+%
+% \begin{macro}{\in@}
+% \changes{v3.0m}{2009/10/20}{More robust thanks to Heiko.}
+% \changes{v3.0n}{2011/05/08}{Simplified thanks to Bruno.}
+% \begin{macro}{\ifin@}
+%    |\@in| is a utility macro with two arguments.  It determines
+%    whether its first argument occurs in its second and sets the
+%    switch |\ifin@| accordingly. The first argument may not
+%    contain braces nor |#| (more precisely, tokens of category
+%    code 1,~2, or~6).
+%    \begin{macrocode}
+%<*2ekernel>
+\def\in@#1#2%
+ {%
+   \begingroup
+     \def\in@@##1#1{}%
+     \toks@\expandafter{\in@@#2{}{}#1}%
+     \edef\in@@{\the\toks@}%
+   \expandafter\endgroup
+   \ifx\in@@\@empty
+     \in@false
+   \else
+     \in@true
+   \fi
+ }
+\newif\ifin@
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% Before the |\begin{document}| command several
+% \meta{math versions} and \meta{math alphabet identifiers} may
+% be declared.
+% In principle, there should be exactly one family/series/shape
+% combination be declared for each version/alphabet pair.
+% But we want to allow for defaults as well for automagical
+% filling of holes.
+%
+% While building the tables for math alphabet identifiers and math
+% versions we keep several lists:
+% \begin{itemize}
+%   \item the list of all math versions, |\version@list|,
+%         each entry prefixed by the control sequence |\version@elt|,
+%         i.e.\ this list has the following form
+%         \begin{quote}
+%           |\version@elt|\meta{version$_1$}^^A
+%           |\version@elt|\meta{version$_2$}\ldots\\\hspace*{\fill}^^A
+%           |\version@elt|\meta{version$_n$}
+%         \end{quote}
+%   \item the list of all math alphabet identifiers.  Here every
+%         entry has the form:\\[2pt]
+%         \hspace*{\MacroIndent}
+%         |\group@elt|\meta{math group number}\\
+%         \hspace*{\MacroIndent}
+%         |{{|\meta{default family}^^A
+%         |}{|\meta{default series}^^A
+%         |}{|\meta{default shape}|}}|.
+%   \item Each defined math alphabet identifier holds a list containing
+%         Information about the {\em versions\/} for which it is
+%         defined.  This list has a more complicated structure: it
+%         looks as follows:
+%         \begin{quote}
+%           |\set@alpha|\meta{the alphabet identifier itself}\\
+%           \hspace*{\MacroIndent}
+%             |\reserved@c|\meta{math version}\meta{font info}\\
+%           \hspace*{\MacroIndent}\ldots\\
+%           |\@nil|
+%         \end{quote}
+%         where \meta{font info} is either |\reserved@e|
+%         (if the combination is not defined yet) or
+%         \begin{quote}
+%           |{{|\meta{family}|}{|\meta{series}^^A
+%           |}{|\meta{shape}|}}|
+%         \end{quote}
+% \end{itemize}
+%
+% \begin{macro}{\version@list}
+%    We initialize the version list to be empty.
+%    \begin{macrocode}
+\let\version@list=\@empty
+\@onlypreamble\version@list
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\version@elt}
+%    \begin{macrocode}
+\let\version@elt\relax
+\@onlypreamble\version@elt
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\new@mathversion}
+%    The macro |\new@mathversion| is called with the version control
+%    sequence as its argument.
+%    \begin{macrocode}
+%\def\new@mathversion#1{%
+%    \end{macrocode}
+%    The first thing this macro does is to check if the version
+%    identifier is already present in |\version@list|.
+%    We enclose |\version@list| in braces since it might be empty
+%    (if no {\em version\/} is defined yet).  But this means that
+%    we need a suitable number of |\expandafter| primitives.
+%    \begin{macrocode}
+%  \expandafter\in@\expandafter#1\expandafter{\version@list}%
+%  \ifin@
+%    \end{macrocode}
+%    If so it prints an error message.
+%    The |\next| macro is used to get rid of the four characters
+%    |\mv@| that would otherwise appear at the begin of the
+%    version name in the error message.
+%    \begin{macrocode}
+%    \@latex@error{Math version
+%               `\expandafter\@gobblefour\string#1'
+%               already defined}\@eha
+%    \end{macrocode}
+%    Otherwise we have a new version, and we can proceed with
+%    entering it into the tables.
+%    We add it to |\version@list|.  This is very easy:
+%    we define |\version@elt| (which is the delimiter in
+%    |\version@list|) to protect itself and the following token
+%    from being expanded and simply redefine |\version@list|.
+%    \begin{macrocode}
+%  \else
+%     \global\expandafter\newcount\csname c@\expandafter
+%                                 \@gobble\string#1\endcsname
+%     \global\csname c@\expandafter
+%                                 \@gobble\string#1\endcsname\@ne
+%     \def\version@elt{\noexpand\version@elt\noexpand}%
+%     \edef\version@list{\version@list\version@elt#1}%
+%    \end{macrocode}
+%    Then we prepare to enter the new version into all math
+%    alphabet identifier lists.  Remember that these lists
+%    use |\reserved@c| as delimiter, and that there appears the
+%    control sequence |\reserved@e| that must not be expanded.
+%    Therefore we take suitable precautions.
+%    \begin{macrocode}
+%     \def\reserved@c{\noexpand\reserved@c\noexpand}%
+%     \let\reserved@e\relax
+%    \end{macrocode}
+%    We will now go through the |\alpha@list| to process every
+%    \meta{math alphabet identifier} in turn.
+%    Since this list has |\group@elt| as a delimiter we define
+%    this control sequence.  It has three arguments as every
+%    entry consists of three items (as explained above).
+%    \begin{macrocode}
+%     \def\group@elt##1##2##3{%
+%    \end{macrocode}
+%    The first of these arguments is the \meta{math alphabet
+%    identifier}.  We redefine it by appending the information
+%    about the new version at the end of the list contained in
+%    it.  However, there is one subtlety: the definitions for
+%    |\reserved@c| and |\reserved@e| made above prevent the
+%    main part of the list from being expanded.  But we still have
+%    to take care of the header and the trailer.  To do this we
+%    remove the trailer by means of the macro |\remove@nil|
+%    which also protect the header from being expanded.  Its
+%    definition is given below.  Now we can prepare to add the
+%    new version.
+%    \begin{macrocode}
+%          \edef##1{\expandafter\remove@nil##1%
+%                   \reserved@c
+%                   #1%
+%                   \reserved@e
+%                   \noexpand\@nil}}%
+%    \end{macrocode}
+%    Finally we call |\alpha@list| which will now execute
+%    the macro |\group@elt| once for every defined \meta{math
+%    alphabet identifier}.  And that's all for now.
+%    \begin{macrocode}
+%     \alpha@list
+%  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\alpha@list}
+%    As we explained above every entry in |\alpha@list| has
+%    the form\\[2pt]
+%    |\alpha@elt|\\\meta{alphabet identifier}\meta{internal
+%    group number}\meta{default font assignments}\ldots\\[2pt]
+%    We initialize it to |\@empty|.
+%    \begin{macrocode}
+\let\alpha@list\@empty
+\@onlypreamble\alpha@list
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\alpha@elt}
+%    \begin{macrocode}
+\let\alpha@elt\relax
+\@onlypreamble\alpha@elt
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+%  \begin{macro}{\newgroup}
+% Start the group (fam) allocation at 0. (Doesn't belong here.)
+%    \begin{macrocode}
+\count18=-1
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\stepcounter}
+% \changes{v3.0f}{1997/11/13}
+%      {(DPC) Remove as never used. (Re)defined in ltcounts}
+% \end{macro}
+%
+% \begin{macro}{\select@group}
+%    We surround |\select@group| with braces so that functions using it
+%    can be used directly after |_| or |^|.
+% \changes{v2.1p}{1994/12/10}{Surround with braces (add fourth arg)}
+%    However, if we use oldstyle syntax where the math alphabet
+%    doesn't have arguments (ie if |\math@bgroup| is not |\bgroup|) we
+%    need to get rid of the extra group.
+% \changes{v2.1q}{1995/04/02}{fix problem for pr/1275}
+% \changes{v3.0g}{1997/11/20}
+%      {(DPC) inline use of \cs{stepcounter} (faster, and saves a csname
+%       per math version as no reset list)}
+% \changes{v3.0q}{2015/03/18}{Introduce \cs{e@mathgroup@top}}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}
+%<latexrelease>                 {\select@group}{\select@group}%
+%<*2ekernel|latexrelease>
+\def\select@group#1#2#3#4{%
+ \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+ {%
+ \ifmmode
+  \ifnum\csname c@mv@\math@version\endcsname<\e@mathgroup@top
+     \begingroup
+       \escapechar\m@ne
+       \getanddefine@fonts{\csname c@mv@\math@version\endcsname}#3%
+       \globaldefs\@ne  \math@fonts
+     \endgroup
+     \init@restore@version
+     \xdef#1{\noexpand\use@mathgroup\noexpand#2%
+             {\number\csname c@mv@\math@version\endcsname}}%
+     \global\advance\csname c@mv@\math@version\endcsname\@ne
+   \else
+     \let#1\relax
+     \@latex@error{Too many math alphabets used in
+                   version \math@version}%
+        \@eha
+   \fi
+ \else \expandafter\non@alpherr\fi
+ #1{#4}%
+ }%
+}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}
+%<latexrelease>                 {\select@group}{\select@group}%
+%<latexrelease>\def\select@group#1#2#3#4{%
+%<latexrelease> \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+%<latexrelease> {%
+%<latexrelease> \ifmmode
+%<latexrelease>  \ifnum\csname c@mv@\math@version\endcsname<\sixt@@n
+%<latexrelease>     \begingroup
+%<latexrelease>       \escapechar\m@ne
+%<latexrelease>       \getanddefine@fonts
+%<latexrelease>         {\csname c@mv@\math@version\endcsname}#3%
+%<latexrelease>       \globaldefs\@ne  \math@fonts
+%<latexrelease>     \endgroup
+%<latexrelease>     \init@restore@version
+%<latexrelease>     \xdef#1{\noexpand\use@mathgroup\noexpand#2%
+%<latexrelease>             {\number\csname c@mv@\math@version\endcsname}}%
+%<latexrelease>     \global\advance\csname c@mv@\math@version\endcsname\@ne
+%<latexrelease>   \else
+%<latexrelease>     \let#1\relax
+%<latexrelease>     \@latex@error{Too many math alphabets used in
+%<latexrelease>                   version \math@version}%
+%<latexrelease>        \@eha
+%<latexrelease>   \fi
+%<latexrelease> \else \expandafter\non@alpherr\fi
+%<latexrelease> #1{#4}%
+%<latexrelease> }%
+%<latexrelease>}
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\restore@mathversion
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\init@restore@version}
+% \changes{v3.0e}{1996/07/26}{Removed \cs{ifrestore@version} switch
+%          and replaced by \cs{init@restore@version}}
+%    \begin{macrocode}
+\def\init@restore@version{%
+        \global\let\init@restore@version\relax
+        \xdef\restore@mathversion
+             {\expandafter\noexpand\csname mv@\math@version\endcsname
+              \global\csname c@mv@\math@version\endcsname
+              \number\csname c@mv@\math@version\endcsname\relax}%
+        \aftergroup\dorestore@version
+}
+\@onlypreamble\init@restore@version
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\non@alpherr}
+% \changes{v3.0c}{1995/10/10}
+%         {(DPC) autoload error message}
+% \changes{v3.0j}{2005/07/27}
+%         {(MH) Change because command is now properly robust}
+%    \begin{macrocode}
+\gdef\non@alpherr#1{\@latex@error{%
+%    \end{macrocode}
+% The command here will have a space at the end of its name, so we make
+% sure not to insert an extra one.
+%    \begin{macrocode}
+    \string#1allowed only in math mode}\@ehd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\dorestore@version}
+%    \begin{macrocode}
+\def\dorestore@version
+ {\ifmmode
+    \aftergroup\dorestore@version
+  \else
+    \gdef\init@restore@version{%
+        \global\let\init@restore@version\relax
+        \xdef\restore@mathversion
+             {\expandafter\noexpand\csname mv@\math@version\endcsname
+              \global\csname c@mv@\math@version\endcsname
+              \number\csname c@mv@\math@version\endcsname\relax}%
+        \aftergroup\dorestore@version
+    }%
+    \begingroup
+      \let\getanddefine@fonts\@gobbletwo
+      \restore@mathversion
+    \endgroup
+  \fi}%
+\@onlypreamble\dorestore@version
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\document@select@group}
+%    We surround |\select@group| with braces so that functions using it
+%    can be used directly after |_| or |^|.
+% \changes{v2.1p}{1994/12/10}{Surround with braces (add fourth arg)}
+% \changes{v2.1q}{1995/04/02}{fix problem for pr/1275}
+% \changes{v3.0g}{1997/11/20}
+%      {(DPC) inline use of \cs{stepcounter} (faster, and saves a csname
+%       per math version as no reset list)}
+% \changes{v3.0q}{2015/03/18}{Introduce \cs{e@mathgroup@top}}
+%    \begin{macrocode}
+%</2ekernel>
+%<latexrelease>\IncludeInRelease{2015/01/01}
+%<latexrelease>  {\document@select@group}{\document@select@group}%
+%<*2ekernel|latexrelease>
+\def\document@select@group#1#2#3#4{%
+ \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+ {%
+ \ifmmode
+   \ifnum\csname c@mv@\math@version\endcsname<\e@mathgroup@top
+     \begingroup
+       \escapechar\m@ne
+       \getanddefine@fonts{\csname c@mv@\math@version\endcsname}#3%
+       \globaldefs\@ne  \math@fonts
+     \endgroup
+     \expandafter\extract@alph@from@version
+         \csname mv@\math@version\expandafter\endcsname
+         \expandafter{\number\csname
+                       c@mv@\math@version\endcsname}%
+          #1%
+     \global\advance\csname c@mv@\math@version\endcsname\@ne
+   \else
+     \let#1\relax
+     \@latex@error{Too many math alphabets used
+                   in version \math@version}%
+        \@eha
+  \fi
+ \else \expandafter\non@alpherr\fi
+ #1{#4}%
+ }%
+}
+%</2ekernel|latexrelease>
+%<latexrelease>\EndIncludeInRelease
+%<latexrelease>\IncludeInRelease{0000/00/00}
+%<latexrelease>  {\document@select@group}{\document@select@group}%
+%<latexrelease>\def\document@select@group#1#2#3#4{%
+%<latexrelease> \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+%<latexrelease> {%
+%<latexrelease> \ifmmode
+%<latexrelease>   \ifnum\csname c@mv@\math@version\endcsname<\sixt@@n
+%<latexrelease>     \begingroup
+%<latexrelease>       \escapechar\m@ne
+%<latexrelease>       \getanddefine@fonts
+%<latexrelease>         {\csname c@mv@\math@version\endcsname}#3%
+%<latexrelease>       \globaldefs\@ne  \math@fonts
+%<latexrelease>     \endgroup
+%<latexrelease>     \expandafter\extract@alph@from@version
+%<latexrelease>         \csname mv@\math@version\expandafter\endcsname
+%<latexrelease>         \expandafter{\number\csname
+%<latexrelease>                       c@mv@\math@version\endcsname}%
+%<latexrelease>          #1%
+%<latexrelease>     \global\advance\csname c@mv@\math@version\endcsname\@ne
+%<latexrelease>   \else
+%<latexrelease>     \let#1\relax
+%<latexrelease>     \@latex@error{Too many math alphabets used
+%<latexrelease>                   in version \math@version}%
+%<latexrelease>        \@eha
+%<latexrelease>  \fi
+%<latexrelease> \else \expandafter\non@alpherr\fi
+%<latexrelease> #1{#4}%
+%<latexrelease> }%
+%<latexrelease>}
+%<latexrelease>\EndIncludeInRelease
+%<*2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\process@table}
+%    \begin{macrocode}
+\def\process@table{%
+    \def\cdp@elt##1##2##3##4{%
+        \@font@info{Checking defaults for
+                  ##1/##2/##3/##4}%
+        \expandafter
+        \ifx\csname##1/##2/##3/##4\endcsname\relax
+%    \end{macrocode}
+%    Grouping is important for two reasons, first |\cdp@elt| will get
+%    redefined if |\Declare...| functions are executed within the
+%    external |.fd| file and secondly |\try@load@fontshape| changes a
+%    lot of catcodes without surrounding itself with a group.
+%    \begin{macrocode}
+          \begingroup
+           \def\f@encoding{##1}\def\f@family{##2}%
+           \try@load@fontshape
+          \endgroup
+        \fi
+        \expandafter
+        \ifx\csname##1/##2/##3/##4\endcsname\relax
+             \@latex@error{This NFSS system isn't set up properly}%
+                       {For encoding scheme ##1 the defaults
+                        ##2/##3/##4 do not form a valid font shape}%
+        \else
+             \@font@info{... okay}%
+        \fi}%
+    \cdp@list
+%    \end{macrocode}
+%    Now we make sure that |\error@fontshape| is okay.
+%    \begin{macrocode}
+    \begingroup
+       \escapechar\m@ne
+       \error@fontshape
+       \expandafter\ifx\csname \curr@fontshape\endcsname\relax
+          \begingroup
+            \try@load@fontshape
+           \endgroup
+       \fi
+       \expandafter\ifx\csname \curr@fontshape\endcsname\relax
+         \@latex@error{This NFSS system isn't set up properly}%
+            {The system maintainer forgot to specify a suitable
+             substitution
+             font shape using the \noexpand\DeclareErrorFont
+             command}%
+       \fi
+    \endgroup
+%    \end{macrocode}
+%    Set |\select@group| to its meaning used within the document body.
+%    \begin{macrocode}
+    \let\select@group\document@select@group
+%    \end{macrocode}
+%    Install the default font attributes they are currently pointing
+%    to error font shape.
+%    Don't use |\reset@font| since that would trigger |\selectfont|.
+%    \begin{macrocode}
+    \fontencoding{\encodingdefault}%
+    \fontfamily{\familydefault}%
+    \fontseries{\seriesdefault}%
+    \fontshape{\shapedefault}%
+%    \end{macrocode}
+%    kill all macros not longer needed.
+%    we need to add many more!!!!!!
+%    \begin{macrocode}
+ \everyjob{}%
+}
+\@onlypreamble\process@table
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%\@onlypreamble\set@mathradical
+%    \end{macrocode}
+%
+% \begin{macro}{\DeclareMathVersion}
+%    \begin{macrocode}
+\def\DeclareMathVersion#1{%
+  \expandafter\new@mathversion\csname mv@#1\endcsname}
+\@onlypreamble\DeclareMathVersion
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\new@mathversion}
+% \changes{v3.0o}{2011/09/03}
+%      {(Will) Remove \cs{global} before \cs{newcount} (unnecessary and caused etex bug).}
+%    \begin{macrocode}
+\def\new@mathversion#1{%
+  \expandafter\in@\expandafter#1\expandafter{\version@list}%
+  \ifin@
+    \@font@info{Redeclaring math version
+               `\expandafter\@gobblefour\string#1'}%
+  \else
+    \expandafter\newcount\csname c@\expandafter
+                                \@gobble\string#1\endcsname
+    \def\version@elt{\noexpand\version@elt\noexpand}%
+    \edef\version@list{\version@list\version@elt#1}%
+  \fi
+%    \end{macrocode}
+%    |\toks@| is used to gather all tokens for the math version.
+%    |\count@| will be used to count the math groups we add to this
+%    version.
+%    \begin{macrocode}
+  \toks@{}%
+  \count@\z@
+%    \end{macrocode}
+%    Now we loop over |\group@list| to add all math groups defined so
+%    far to the version and at the same time to count them.
+%    \begin{macrocode}
+  \def\group@elt##1##2{%
+       \advance\count@\@ne
+       \addto@hook\toks@{\getanddefine@fonts##1##2}%
+       }%
+  \group@list
+%    \end{macrocode}
+%    We set the counter for this math version to the number of math
+%    groups found in |\group@list|.
+%    \begin{macrocode}
+  \global\csname c@\expandafter\@gobble\string#1\endcsname\count@
+%    \end{macrocode}
+%    Now we loop over |\alpha@list| to add all math alphabets known so
+%    far. We have to distinguish the case that an alphabet by default
+%    should produce an error in new versions.
+%    \begin{macrocode}
+  \def\alpha@elt##1##2##3{%
+       \ifx##2\no@alphabet@error
+         \toks@\expandafter{\the\toks@\install@mathalphabet##1%
+             {\no@alphabet@error##1}}%
+       \else
+         \toks@\expandafter{\the\toks@\install@mathalphabet##1%
+             {\select@group##1##2##3}}%
+       \fi
+          }%
+  \alpha@list
+%    \end{macrocode}
+%    Finally we define the math version to expand to the contents of
+%    |\toks@|.
+% \changes{v2.0e}{1993/08/18}{Exchanged names of encodings in warning
+%              message of \cs{SetSymbolFont}.}
+%    \begin{macrocode}
+  \xdef#1{\the\toks@}%
+}
+\@onlypreamble\new@mathversion
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareSymbolFont}
+%    \begin{macrocode}
+\def\DeclareSymbolFont#1#2#3#4#5{%
+ \@tempswafalse
+ \edef\reserved@b{#2}%
+ \def\cdp@elt##1##2##3##4{\def\reserved@c{##1}%
+      \ifx\reserved@b\reserved@c \@tempswatrue\fi}%
+ \cdp@list
+ \if@tempswa
+   \@ifundefined{sym#1}{%
+%    \end{macrocode}
+%
+% \changes{v3.0q}{2015/03/18}{Restrict Symbol fonts to 0-15}
+%    \begin{macrocode}
+      \ifnum\count18<15 %
+        \expandafter\new@mathgroup\csname sym#1\endcsname
+        \expandafter\new@symbolfont\csname sym#1\endcsname
+                        {#2}{#3}{#4}{#5}%
+      \else
+         \@latex@error{Too many symbol fonts declared}\@eha
+      \fi
+     }%
+     {%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+      \@font@info{Redeclaring symbol font `#1'}%
+%    \end{macrocode}
+% \changes{v3.0f}{1997/11/13}
+%      {(DPC) Really update \cs{group@list} dont
+%         leave new version in \cs{toks@}. latex/2661}
+% Update the group list.
+%    \begin{macrocode}
+      \def\group@elt##1##2{%
+           \noexpand\group@elt\noexpand##1%
+           \expandafter\ifx\csname sym#1\endcsname##1%
+             \expandafter\noexpand\csname#2/#3/#4/#5\endcsname
+           \else
+               \noexpand##2%
+           \fi}%
+      \xdef\group@list{\group@list}%
+%    \end{macrocode}
+% Update the version list.
+%    \begin{macrocode}
+      \def\version@elt##1{%
+          \expandafter
+          \SetSymbolFont@\expandafter##1\csname#2/#3/#4/#5\expandafter
+              \endcsname \csname sym#1\endcsname
+          }%
+      \version@list
+     }%
+  \else
+    \@latex@error{Encoding scheme  `#2' unknown}\@eha
+  \fi
+  }
+\@onlypreamble\DeclareSymbolFont
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\group@list}
+%    \begin{macrocode}
+\let\group@list\@empty
+\@onlypreamble\group@list
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\group@elt}
+%    \begin{macrocode}
+\let\group@elt\relax
+\@onlypreamble\group@elt
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\new@symbolfont}
+%    \begin{macrocode}
+\def\new@symbolfont#1#2#3#4#5{%
+    \toks@\expandafter{\group@list}%
+    \edef\group@list{\the\toks@\noexpand\group@elt\noexpand#1%
+                     \expandafter\noexpand\csname#2/#3/#4/#5\endcsname}%
+    \def\version@elt##1{\toks@\expandafter{##1}%
+                   \edef##1{\the\toks@\noexpand\getanddefine@fonts
+                   #1\expandafter\noexpand\csname#2/#3/#4/#5\endcsname}%
+                  \global\advance\csname c@\expandafter
+                                 \@gobble\string##1\endcsname\@ne
+                 }%
+    \version@list
+}
+\@onlypreamble\new@symbolfont
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SetSymbolFont}
+%    \begin{macrocode}
+\def\SetSymbolFont#1#2#3#4#5#6{%
+ \@tempswafalse
+ \edef\reserved@b{#3}%
+ \def\cdp@elt##1##2##3##4{\def\reserved@c{##1}%
+      \ifx\reserved@b\reserved@c \@tempswatrue\fi}%
+ \cdp@list
+ \if@tempswa
+  \expandafter\SetSymbolFont@
+    \csname mv@#2\expandafter\endcsname\csname#3/#4/#5/#6\expandafter
+    \endcsname \csname sym#1\endcsname
+ \else
+  \@latex@error{Encoding scheme  `#3' unknown}\@eha
+ \fi
+}
+\@onlypreamble\SetSymbolFont
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SetSymbolFont@}
+% \changes{v3.0l}{2007/08/31}{Font warning changed to info
+%    for encoding change (pr/3975)}
+%    \begin{macrocode}
+\def\SetSymbolFont@#1#2#3{%
+  \expandafter\in@\expandafter#1\expandafter{\version@list}%
+  \ifin@
+    \expandafter\in@\expandafter#3\expandafter{\group@list}%
+    \ifin@
+      \begingroup
+        \expandafter\get@cdp\string#2\@nil\reserved@a
+        \toks@{}%
+        \def\install@mathalphabet##1##2{%
+             \addto@hook\toks@{\install@mathalphabet##1{##2}}%
+            }%
+        \def\getanddefine@fonts##1##2{%
+          \ifnum##1=#3%
+             \addto@hook\toks@{\getanddefine@fonts#3#2}%
+             \expandafter\get@cdp\string##2\@nil\reserved@b
+             \ifx\reserved@a\reserved@b\else
+                \@font@info{Encoding `\reserved@b' has changed
+                    to `\reserved@a' for symbol font\MessageBreak
+                   `\expandafter\@gobblefour\string#3' in the
+                    math version `\expandafter
+                    \@gobblefour\string#1'}%
+             \fi
+             \@font@info{%
+                Overwriting symbol font
+                `\expandafter\@gobblefour\string#3' in
+                 version `\expandafter
+                \@gobblefour\string#1'\MessageBreak
+                \@spaces \expandafter\@gobble\string##2 -->
+                         \expandafter\@gobble\string#2}%
+          \else
+             \addto@hook\toks@{\getanddefine@fonts##1##2}%
+          \fi}%
+         #1%
+         \xdef#1{\the\toks@}%
+      \endgroup
+    \else
+       \@latex@error{Symbol font `\expandafter\@gobblefour\string#3'
+                  not defined}\@eha
+    \fi
+  \else
+    \@latex@error{Math version `\expandafter\@gobblefour\string#1'
+       is not
+       defined}{You probably misspelled the name of the math
+       version.^^JOr you have to specify an additional package.}%
+  \fi
+}
+\@onlypreamble\SetSymbolFont@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\get@cdp}
+%    \begin{macrocode}
+\def\get@cdp#1#2/#3\@nil#4{\def#4{#2}}
+\@onlypreamble\get@cdp
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareMathAlphabet}
+% \changes{v3.0j}{2005/07/27}
+%         {(MH) Make document commands robust}
+%    \begin{macrocode}
+\def\DeclareMathAlphabet#1#2#3#4#5{%
+ \@tempswafalse
+ \edef\reserved@b{#2}%
+ \def\cdp@elt##1##2##3##4{\def\reserved@c{##1}%
+      \ifx\reserved@b\reserved@c \@tempswatrue\fi}%
+ \cdp@list
+ \if@tempswa
+   \expandafter\ifx
+   \csname\expandafter\@gobble\string#1\endcsname
+   \relax
+      \new@mathalphabet#1{#2}{#3}{#4}{#5}%
+   \else
+%    \end{macrocode}
+%    Check if it is already a math alphabet.
+%    \begin{macrocode}
+     \edef\reserved@a{\noexpand\in@{\string\select@group}%
+         {\expandafter\meaning\csname \expandafter
+          \@gobble\string#1\space\endcsname}}%
+     \reserved@a
+     \ifin@
+       \@font@info{Redeclaring math alphabet \string#1}%
+       \def\version@elt##1{%
+         \expandafter\SetMathAlphabet@\expandafter
+            ##1\csname#2/#3/#4/#5\expandafter\endcsname
+%    \end{macrocode}
+% \changes{???}{1994/04/18}{Pass correct arg (2 not 3)}
+%    \begin{macrocode}
+            \csname M@#2\expandafter\endcsname
+            \csname \expandafter\@gobble\string#1\space\endcsname#1}%
+       \version@list
+     \else
+%    \end{macrocode}
+%    Check if it is a math alphabet defined via
+%    |\DeclareSymbolFontAlphabet|.
+%    \begin{macrocode}
+       \edef\reserved@a{\noexpand\in@{\string\use@mathgroup}%
+         {\expandafter\meaning\csname \expandafter
+          \@gobble\string#1\space\endcsname}}%
+       \reserved@a
+       \ifin@
+%    \end{macrocode}
+%    In that case overwriting is simple since there is nothing
+%    inserted in the math version macros.
+%    \begin{macrocode}
+         \@font@info{Redeclaring math alphabet \string#1}%
+         \new@mathalphabet#1{#2}{#3}{#4}{#5}%
+%    \end{macrocode}
+%    Otherwise panic.
+%    \begin{macrocode}
+       \else
+         \@latex@error{Command `\string#1' already defined}\@eha
+       \fi
+     \fi
+  \fi
+ \else
+  \@latex@error{Encoding scheme  `#2' unknown}\@eha
+ \fi
+  }
+\@onlypreamble\DeclareMathAlphabet
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\new@mathalphabet}
+% \changes{v3.0j}{2005/07/27}
+%         {(MH) Make document commands robust}
+%    \begin{macrocode}
+\def\new@mathalphabet#1#2#3#4#5{%
+    \toks@\expandafter{\alpha@list}%
+    \edef#1{\expandafter\noexpand\csname \expandafter
+            \@gobble\string#1\space\endcsname
+            \if/#5/%
+               \noexpand\no@alphabet@error
+               \noexpand\no@alphabet@error
+            \else
+               \expandafter\noexpand\csname M@#2\endcsname
+               \expandafter\noexpand\csname#2/#3/#4/#5\endcsname
+            \fi
+           }%
+    \toks2\expandafter{#1}%
+    \edef\alpha@list{\the\toks@\noexpand\alpha@elt\the\toks2}%
+    \def\version@elt##1{\toks@\expandafter{##1}%
+                   \edef##1{\the\toks@\install@mathalphabet
+                            \expandafter\noexpand
+                            \csname \expandafter\@gobble
+                               \string#1\space\endcsname
+                           {\if/#5/%
+                             \noexpand\no@alphabet@error
+                             \noexpand#1%
+                            \else
+                             \noexpand\select@group\the\toks2
+                            \fi}}%
+                 }%
+    \version@list
+    \expandafter\edef\csname \expandafter\@gobble
+                \string#1\space\endcsname{\if/#5/%
+              \noexpand\no@alphabet@error
+              \noexpand#1%
+            \else
+              \noexpand\select@group\the\toks2
+            \fi}%
+    \edef#1{\noexpand\protect
+            \expandafter\noexpand\csname \expandafter
+            \@gobble\string#1\space\endcsname}%
+}
+\@onlypreamble\new@mathalphabet
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SetMathAlphabet}
+% \changes{v3.0j}{2005/07/27}
+%         {(MH) Make document commands robust}
+%    \begin{macrocode}
+\def\SetMathAlphabet#1#2#3#4#5#6{%
+ \@tempswafalse
+ \edef\reserved@b{#3}%
+ \def\cdp@elt##1##2##3##4{\def\reserved@c{##1}%
+      \ifx\reserved@b\reserved@c \@tempswatrue\fi}%
+ \cdp@list
+ \if@tempswa
+  \expandafter\SetMathAlphabet@
+    \csname mv@#2\expandafter\endcsname\csname#3/#4/#5/#6\expandafter
+    \endcsname \csname M@#3\expandafter\endcsname
+    \csname \expandafter\@gobble\string#1\space\endcsname#1%
+ \else
+  \@latex@error{Encoding scheme  `#3' unknown}\@eha
+ \fi
+}
+\@onlypreamble\SetMathAlphabet
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\SetMathAlphabet@}
+%    \begin{macrocode}
+\def\SetMathAlphabet@#1#2#3#4#5{%
+  \expandafter\in@\expandafter#1\expandafter{\version@list}%
+  \ifin@
+    \expandafter\in@\expandafter#4\expandafter{\alpha@list}%
+    \ifin@
+      \begingroup
+        \toks@{}%
+        \def\getanddefine@fonts##1##2{%
+             \addto@hook\toks@{\getanddefine@fonts##1##2}%
+            }%
+        \def\reserved@c##1##2##3##4{%                % for message below
+            \expandafter\@gobble\string##4}%
+        \def\install@mathalphabet##1##2{%
+          \ifx##1#4%
+             \addto@hook\toks@
+                {\install@mathalphabet#4{\select@group#4#3#2}}%
+             \@font@info{Overwriting math alphabet
+                `\string#5' in version `\expandafter
+                 \@gobblefour\string#1'\MessageBreak
+                 \@spaces \reserved@c##2 -->
+                        \expandafter\@gobble\string#2}%
+          \else
+             \addto@hook\toks@{\install@mathalphabet##1{##2}}%
+          \fi
+          }%
+        #1%
+        \xdef#1{\the\toks@}%
+      \endgroup
+    \else
+%    \end{macrocode}
+%    If the math alphabet was defined via |\DeclareSymbolFontAlphabet|
+%    we have remove its external definition and add it as a normal
+%    math alphabet to every version before trying to change it in one
+%    version.
+% \changes{v2.1b}{1994/03/11}{Changed parameter template in temporary
+%          macro to catch check add below.}
+%    \begin{macrocode}
+       \edef\reserved@a{%
+         \noexpand\in@{\string\use@mathgroup}{\meaning#4}}%
+       \reserved@a
+       \ifin@
+         \def\reserved@b##1\use@mathgroup##2##3{%
+             \def\reserved@b{##3}\def\reserved@c{##2}}%
+         \expandafter\reserved@b#4%
+         \begingroup
+           \def\install@mathalphabet##1##2{%
+               \addto@hook\toks@{\install@mathalphabet##1{##2}}%
+               }%
+            \def\getanddefine@fonts##1##2{%
+              \addto@hook\toks@{\getanddefine@fonts##1##2}%
+              \ifnum##1=\reserved@b
+                 \expandafter
+                 \addto@hook\expandafter\toks@
+                 \expandafter{\expandafter\install@mathalphabet
+                 \expandafter#4\expandafter
+                       {\expandafter\select@group\expandafter
+                         #4\reserved@c##2}}%
+              \fi
+                      }%
+           \def\version@elt##1{%
+               \toks@{}%
+               ##1%
+               \xdef##1{\the\toks@}%
+              }%
+           \version@list
+         \endgroup
+%    \end{macrocode}
+%    Put it into the |\alpha@list| with default `error'
+%    \begin{macrocode}
+         \expandafter\gdef\expandafter\alpha@list\expandafter
+             {\alpha@list
+              \alpha@elt #4\no@alphabet@error \no@alphabet@error}%
+         \gdef#4{\no@alphabet@error #5}% fake things :-)
+%    \end{macrocode}
+%    Then call the internal setting routine again:
+%    \begin{macrocode}
+         \SetMathAlphabet@{#1}{#2}{#3}#4#5%
+       \else
+         \@latex@error{Command `\string#5' not defined as a
+                       math alphabet}%
+            {Use \noexpand\DeclareMathAlphabet to define it.}%
+       \fi
+    \fi
+  \else
+    \@latex@error{Math version `\expandafter\@gobblefour\string#1'
+       is not
+       defined}{You probably misspelled the name of the math
+       version.^^JOr you have to specify an additional package.}%
+  \fi
+}
+\@onlypreamble\SetMathAlphabet@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareMathAlphabet}
+% could do with more checks like allowing single number in |#4|
+% lowercase in |#4| etc
+%    \begin{macrocode}
+\def\DeclareMathAccent#1#2#3#4{%
+  \expandafter\in@\csname sym#3\expandafter\endcsname
+     \expandafter{\group@list}%
+  \ifin@
+    \begingroup
+      \count\z@=#4\relax
+      \count\tw@\count\z@
+      \divide\count\z@\sixt@@n
+      \count@\count\z@
+      \multiply\count@\sixt@@n
+      \advance\count\tw@-\count@
+      \if\relax\noexpand#1% is command?
+        \edef\reserved@a{\noexpand\in@{\string\mathaccent}{\meaning#1}}%
+        \reserved@a
+        \ifin@
+          \expandafter\set@mathaccent
+             \csname sym#3\endcsname#1#2%
+             {\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+          \@font@info{Redeclaring math accent \string#1}%
+        \else
+          \expandafter\ifx
+          \csname\expandafter\@gobble\string#1\endcsname
+          \relax
+            \expandafter\set@mathaccent
+               \csname sym#3\endcsname#1#2%
+               {\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+          \else
+            \@latex@error{Command `\string#1' already defined}\@eha
+          \fi
+        \fi
+      \else
+       \@latex@error{Not a command name: `\noexpand#1'}\@eha
+      \fi
+    \endgroup
+  \else
+    \@latex@error{Symbol font `#3' is not defined}\@eha
+  \fi
+}
+\@onlypreamble\DeclareMathAccent
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\set@mathaccent}
+%    \begin{macrocode}
+\def\set@mathaccent#1#2#3#4{%
+  \xdef#2{\mathaccent"\mathchar@type#3\hexnumber@#1#4\relax}}
+\@onlypreamble\set@mathaccent
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareMathSymbol}
+%    \begin{macrocode}
+\def\DeclareMathSymbol#1#2#3#4{%
+  \expandafter\in@\csname sym#3\expandafter\endcsname
+     \expandafter{\group@list}%
+  \ifin@
+    \begingroup
+      \count\z@=#4\relax
+      \count\tw@\count\z@
+      \divide\count\z@\sixt@@n
+      \count@\count\z@
+      \multiply\count@\sixt@@n
+      \advance\count\tw@-\count@
+      \if\relax\noexpand#1% is command?
+        \edef\reserved@a{\noexpand\in@{\string\mathchar}{\meaning#1}}%
+        \reserved@a
+        \ifin@
+          \expandafter\set@mathsymbol
+             \csname sym#3\endcsname#1#2%
+             {\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+          \@font@info{Redeclaring math symbol \string#1}%
+        \else
+            \expandafter\ifx
+            \csname\expandafter\@gobble\string#1\endcsname
+            \relax
+            \expandafter\set@mathsymbol
+               \csname sym#3\endcsname#1#2%
+               {\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+          \else
+            \@latex@error{Command `\string#1' already defined}\@eha
+          \fi
+        \fi
+      \else
+        \expandafter\set@mathchar
+          \csname sym#3\endcsname#1#2
+          {\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+      \fi
+    \endgroup
+  \else
+    \@latex@error{Symbol font `#3' is not defined}\@eha
+  \fi
+}
+\@onlypreamble\DeclareMathSymbol
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\set@mathchar}
+%    \begin{macrocode}
+\def\set@mathchar#1#2#3#4{%
+  \global\mathcode`#2="\mathchar@type#3\hexnumber@#1#4\relax}
+\@onlypreamble\set@mathchar
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\set@mathsymbol}
+%    \begin{macrocode}
+\def\set@mathsymbol#1#2#3#4{%
+  \global\mathchardef#2"\mathchar@type#3\hexnumber@#1#4\relax}
+\@onlypreamble\set@mathsymbol
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%\def\mathsymbol#1#2#3{%
+%  \@tempcnta=#3\relax
+%  \@tempcntb\@tempcnta
+%  \divide\@tempcnta\sixt@@n
+%  \count@\@tempcnta
+%  \multiply\count@\sixt@@n
+%  \advance\@tempcntb-\count@
+%  \mathchar"\mathchar@type#1\hexnumber@#2%
+%             \hexnumber@\@tempcnta\hexnumber@\@tempcntb\relax}
+%
+%\def\DeclareMathAlphabetCharacter#1#2#3{%
+%  \DeclareMathSymbol{#1}7{#2}{#3}}
+%    \end{macrocode}
+%
+% \begin{macro}{\DeclareMathDelimiter}
+% \changes{v2.1m}{1994/11/18}
+%         {(DPC) \cs{expandafter} instead of \cs{next}}
+%    \begin{macrocode}
+\def\DeclareMathDelimiter#1{%
+  \if\relax\noexpand#1%
+    \expandafter\@DeclareMathDelimiter
+  \else
+    \expandafter\@xxDeclareMathDelimiter
+  \fi
+  #1}
+\@onlypreamble\DeclareMathDelimiter
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xxDeclareMathDelimiter}
+% \changes{v3.0h}{1998/04/15}{Macro added (pr/2662)}
+%    This macro checks if the second arg is a ``math type'' such
+%    as |\mathopen|. The undocumented original code didn't use math
+%    types when the delimiter was a single letter.
+%    For this reason the coding is a bit strange as it tries to
+%    support the undocumented syntax for compatibility reasons.
+%    \begin{macrocode}
+\def\@xxDeclareMathDelimiter#1#2#3#4{%
+%    \end{macrocode}
+%    7 is the default value returned in the case that |\mathchar@type|
+%    is passed something unexpected, like a math symbol font name.
+%    We locally move |\mathalpha| out of the way so if you use that
+%    the right branch is taken. This will still fail if an explicit
+%    number |7| is used!
+%    \begin{macrocode}
+   \begingroup
+    \let\mathalpha\mathord
+    \ifnum7=\mathchar@type{#2}%
+      \endgroup
+%    \end{macrocode}
+%    If this branch is taken we have old syntax (5 arguments).
+%    \begin{macrocode}
+      \expandafter\@firstofone
+    \else
+%    \end{macrocode}
+%    If this branch is taken |\mathchar@type| is different from 7 so
+%    we assume new syntax. In this case we also use the arguments to
+%    set up the letter as a math symbol for the case where it is not
+%    used as a delimiter.
+%    \begin{macrocode}
+      \endgroup
+      \DeclareMathSymbol#1{#2}{#3}{#4}%
+%    \end{macrocode}
+%    Then we arrange that |\@xDeclareMathDelimiter| only gets |#1|,
+%    |#3|, |#4| \ldots\ as it does not expect a math type as argument.
+%    \begin{macrocode}
+      \expandafter\@firstoftwo
+    \fi
+    {\@xDeclareMathDelimiter#1}{#2}{#3}{#4}}
+\@onlypreamble\@xxDeclareMathDelimiter
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@DeclareMathDelimiter}
+%    \begin{macrocode}
+\def\@DeclareMathDelimiter#1#2#3#4#5#6{%
+  \expandafter\in@\csname sym#3\expandafter\endcsname
+     \expandafter{\group@list}%
+  \ifin@
+    \expandafter\in@\csname sym#5\expandafter\endcsname
+       \expandafter{\group@list}%
+    \ifin@
+      \begingroup
+        \count\z@=#4\relax
+        \count\tw@\count\z@
+        \divide\count\z@\sixt@@n
+        \count@\count\z@
+        \multiply\count@\sixt@@n
+        \advance\count\tw@-\count@
+        \edef\reserved@c{\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+      %
+        \count\z@=#6\relax
+        \count\tw@\count\z@
+        \divide\count\z@\sixt@@n
+        \count@\count\z@
+        \multiply\count@\sixt@@n
+        \advance\count\tw@-\count@
+        \edef\reserved@d{\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+      %
+        \edef\reserved@a{\noexpand\in@{\string\delimiter}{\meaning#1}}%
+        \reserved@a
+        \ifin@
+          \expandafter\set@mathdelimiter
+             \csname sym#3\expandafter\endcsname
+             \csname sym#5\endcsname#1#2%
+             \reserved@c\reserved@d
+          \@font@info{Redeclaring math delimiter \string#1}%
+        \else
+            \expandafter\ifx
+            \csname\expandafter\@gobble\string#1\endcsname
+            \relax
+            \expandafter\set@mathdelimiter
+              \csname sym#3\expandafter\endcsname
+              \csname sym#5\endcsname#1#2%
+              \reserved@c\reserved@d
+          \else
+            \@latex@error{Command `\string#1' already defined}\@eha
+          \fi
+        \fi
+      \endgroup
+    \else
+      \@latex@error{Symbol font `#5' is not defined}\@eha
+    \fi
+  \else
+    \@latex@error{Symbol font `#3' is not defined}\@eha
+  \fi
+}
+\@onlypreamble\@DeclareMathDelimiter
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xDeclareMathDelimiter}
+%    \begin{macrocode}
+\def\@xDeclareMathDelimiter#1#2#3#4#5{%
+  \expandafter\in@\csname sym#2\expandafter\endcsname
+     \expandafter{\group@list}%
+  \ifin@
+    \expandafter\in@\csname sym#4\expandafter\endcsname
+       \expandafter{\group@list}%
+    \ifin@
+      \begingroup
+        \count\z@=#3\relax
+        \count\tw@\count\z@
+        \divide\count\z@\sixt@@n
+        \count@\count\z@
+        \multiply\count@\sixt@@n
+        \advance\count\tw@-\count@
+        \edef\reserved@c{\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+      %
+        \count\z@=#5\relax
+        \count\tw@\count\z@
+        \divide\count\z@\sixt@@n
+        \count@\count\z@
+        \multiply\count@\sixt@@n
+        \advance\count\tw@-\count@
+        \edef\reserved@d{\hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+        \expandafter\set@@mathdelimiter
+           \csname sym#2\expandafter\endcsname\csname sym#4\endcsname#1%
+           \reserved@c\reserved@d
+      \endgroup
+    \else
+      \@latex@error{Symbol font `#4' is not defined}\@eha
+    \fi
+  \else
+    \@latex@error{Symbol font `#2' is not defined}\@eha
+  \fi
+}
+\@onlypreamble\@xDeclareMathDelimiter
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\set@mathdelimiter}
+%    We have to end the definition of a math delimiter like |\lfloor|
+%    with a space and not with |\relax| as we did before, because
+%    otherwise constructs involving |\abovewithdelims| will prematurely
+%    end (pr/1329)
+%
+% \changes{v2.1q}{1995/04/02}{fix pr/1329}
+%    \begin{macrocode}
+\def\set@mathdelimiter#1#2#3#4#5#6{%
+  \xdef#3{\delimiter"\mathchar@type#4\hexnumber@#1#5%
+                                     \hexnumber@#2#6 }}
+\@onlypreamble\set@mathdelimiter
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\set@@mathdelimiter}
+%    \begin{macrocode}
+\def\set@@mathdelimiter#1#2#3#4#5{%
+  \global\delcode`#3="\hexnumber@#1#4\hexnumber@#2#5\relax}
+\@onlypreamble\set@@mathdelimiter
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareMathRadical}
+%    \begin{macrocode}
+\def\DeclareMathRadical#1#2#3#4#5{%
+%    \end{macrocode}
+%    Below is a crude fix to make this macro work if |#1| is undefined
+%    or |\relax|.  Should be improved!
+% \changes{v2.1t}{1995/05/21}{Allow for undefined cs names}
+%    \begin{macrocode}
+  \expandafter\ifx
+       \csname\expandafter\@gobble\string#1\endcsname
+       \relax
+     \let#1\radical
+  \fi
+  \edef\reserved@a{\noexpand\in@{\string\radical}{\meaning#1}}%
+  \reserved@a
+  \ifin@
+    \expandafter\in@\csname sym#2\expandafter\endcsname
+       \expandafter{\group@list}%
+    \ifin@
+      \expandafter\in@\csname sym#4\expandafter\endcsname
+         \expandafter{\group@list}%
+      \ifin@
+        \begingroup
+          \count\z@=#3\relax
+          \count\tw@\count\z@
+          \divide\count\z@\sixt@@n
+          \count@\count\z@
+          \multiply\count@\sixt@@n
+          \advance\count\tw@-\count@
+          \edef\reserved@c{%
+            \hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+          \count\z@=#5\relax
+          \count\tw@\count\z@
+          \divide\count\z@\sixt@@n
+          \count@\count\z@
+          \multiply\count@\sixt@@n
+          \advance\count\tw@-\count@
+          \edef\reserved@d{%
+            \hexnumber@{\count\z@}\hexnumber@{\count\tw@}}%
+%    \end{macrocode}
+%    Coded inline instead of using |\set@mathradical|
+%    \begin{macrocode}
+%          \expandafter\set@mathradical
+%             \csname sym#2\expandafter\endcsname
+%             \csname sym#4\endcsname#1%
+%             \reserved@c\reserved@d
+          \xdef#1{\radical"\expandafter\hexnumber@
+                                \csname sym#2\endcsname\reserved@c
+                             \expandafter\hexnumber@
+                                \csname sym#4\endcsname\reserved@d
+                  \relax}%
+        \endgroup
+      \else
+        \@latex@error{Symbol font `#4' is not defined}\@eha
+      \fi
+    \else
+      \@latex@error{Symbol font `#2' is not defined}\@eha
+    \fi
+  \else
+    \@latex@error{Command `\string#1' already defined}\@eha
+  \fi
+}
+\@onlypreamble\DeclareMathRadical
+%    \end{macrocode}
+% \end{macro}
+%
+% Definition below was wrong it contained |\delimiter| !
+%
+%\begin{verbatim}
+%\def\set@mathradical#1#2#3#4#5{%
+%  \xdef#3{\radical"\hexnumber@#1#4\hexnumber@#2#5\relax}}
+%\end{verbatim}
+%
+% \begin{macro}{\mathalpha}
+% just a dummy currently
+%    \begin{macrocode}
+\let\mathalpha\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\mathchar@type}
+%    \begin{macrocode}
+\def\mathchar@type#1{%
+  \ifodd 2#11 #1\else             % is this non-negative number?
+    \ifx#1\mathord 0\else
+     \ifx#1\mathop   1\else
+       \ifx#1\mathbin 2\else
+         \ifx#1\mathrel 3\else
+           \ifx#1\mathopen 4\else
+             \ifx#1\mathclose 5\else
+               \ifx#1\mathpunct 6\else
+                   7%             % anything else is variable ord
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     \fi
+    \fi
+  \fi}
+\@onlypreamble\mathchar@type
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareSymbolFontAlphabet}
+% \changes{v3.0j}{2005/07/27}
+%         {(MH) Make document commands robust}
+%    \begin{macrocode}
+\def\DeclareSymbolFontAlphabet#1#2{%
+   \expandafter\DeclareSymbolFontAlphabet@
+     \csname \expandafter\@gobble\string#1\space\endcsname{#2}#1}
+\@onlypreamble\DeclareSymbolFontAlphabet
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareSymbolFontAlphabet@}
+%    \begin{macrocode}
+\def\DeclareSymbolFontAlphabet@#1#2#3{%
+%    \end{macrocode}
+%    We use the switch |\if@tempswa| to decide if we can declare this
+%    symbol font alphabet.
+%    \begin{macrocode}
+    \@tempswatrue
+%    \end{macrocode}
+%    First check if |#2| is known to be a symbol font
+%    \begin{macrocode}
+  \expandafter\in@\csname sym#2\expandafter\endcsname
+     \expandafter{\group@list}%
+  \ifin@
+%    \end{macrocode}
+%    Check if |#1| is defined as a math alphabet defined via
+%    |\DeclareMathAlphabet|:
+%    \begin{macrocode}
+    \expandafter\in@\expandafter#1\expandafter{\alpha@list}%
+    \ifin@
+%    \end{macrocode}
+%    If so remove it from the |\alpha@list| and from all math version
+%    macros.
+%    \begin{macrocode}
+      \@font@info{Redeclaring math alphabet \string#3}%
+      \toks@{}%
+      \def\alpha@elt##1##2##3{%
+          \ifx##1#1\else\addto@hook\toks@{\alpha@elt##1##2##3}\fi}%
+      \alpha@list
+      \xdef\alpha@list{\the\toks@}%
+%    \end{macrocode}
+%    Now we loop over all versions and remove the math alphabet:
+%    \begin{macrocode}
+      \def\version@elt##1{%
+          \begingroup
+            \toks@{}%
+            \def\getanddefine@fonts####1####2{%
+               \addto@hook\toks@{\getanddefine@fonts####1####2}}%
+            \def\install@mathalphabet####1####2{%
+               \ifx####1#1\else
+                 \addto@hook\toks@{\install@mathalphabet
+                                    ####1{####2}}\fi}%
+            ##1%
+            \xdef##1{\the\toks@}%
+          \endgroup
+          }%
+      \version@list
+    \else
+%    \end{macrocode}
+%    If |#3| is not defined as a math alphabet check if it is defined
+%    at all:
+%    \begin{macrocode}
+      \expandafter\ifx
+      \csname\expandafter\@gobble\string#1\space\endcsname
+      \relax
+%    \end{macrocode}
+%    If it is undefined, fine otherwise check if it is a math alphabet
+%    defined via |\DeclareSymbolFontAlphabet|:
+%    \begin{macrocode}
+      \else
+        \edef\reserved@a{%
+          \noexpand\in@{\string\use@mathgroup}{\meaning#1}}%
+        \reserved@a
+        \ifin@
+          \@font@info{Redeclaring math alphabet \string#3}%
+        \else
+%    \end{macrocode}
+%    Since the command |#3| is defined to be something which is not a
+%    math alphabet we have to skip redefining it.
+%    \begin{macrocode}
+          \@tempswafalse
+          \@latex@error{Command `\string#3' already defined}\@eha
+        \fi
+      \fi
+    \fi
+   \else
+%    \end{macrocode}
+%    Since the symbol font is not known we better skip defining this
+%    alphabet.
+%    \begin{macrocode}
+     \@tempswafalse
+     \@latex@error{Unknown symbol font `#2'}\@eha
+   \fi
+   \if@tempswa
+%    \end{macrocode}
+%    When we reach this point we are allowed to define |#1| to be a
+%    symbol font math alphabet. This means that we have to set it to
+%    \begin{quote}
+%      |\use@mathgroup| \meta{math-settings} |\sym|\meta{name}
+%    \end{quote}
+%    The \meta{math-settings} are the one for the encoding that is
+%    used in the font shape where |\sym|\meta{name} is pointing to.
+%    This means that we have to get it from the information stored in
+%    |\group@list|. Thus we loop through that list after defining
+%    |\group@elt| in a suitable way.
+% \changes{v2.1b}{1994/03/11}{Added check against use of alphabet
+%              switch outside of math mode.}
+%    \begin{macrocode}
+     \def\group@elt##1##2{%
+        \expandafter\ifx\csname sym#2\endcsname##1%
+        \expandafter\reserved@a\string##2\@nil
+        \fi}%
+     \def\reserved@a##1##2/##3\@nil{%
+        \def\reserved@a{##2}}%
+     \group@list
+     \toks@{\relax\ifmmode \else \non@alpherr#1\fi}%
+     \edef#1{\the\toks@
+             \noexpand\use@mathgroup
+             \expandafter\noexpand\csname M@\reserved@a\endcsname
+             \csname sym#2\endcsname}%
+     \def#3{\protect#1}%
+   \fi
+}
+\@onlypreamble\DeclareSymbolFontAlphabet@
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%
+% \Finale
+%

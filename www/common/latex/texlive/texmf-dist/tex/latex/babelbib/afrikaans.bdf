@@ -1,0 +1,171 @@
+%%
+%% This is file `afrikaans.bdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% babelbib.dtx  (with options: `latex,afrikaans')
+%% 
+%%   babelbib package
+%% 
+%%   Copyright  2003--2012 Harald Harders
+%% 
+%%   This program can be redistributed and/or modified under the terms
+%%   of the LaTeX Project Public License Distributed from CTAN
+%%   archives in directory macros/latex/base/lppl.txt; either
+%%   version 1 of the License, or any later version.
+%% 
+%%   harald.harders@gmx.de
+%% 
+%% Language definitions for Afrikaans by
+%%   Danie Els <dnjels@sun.ac.za>
+\ProvidesFile{afrikaans.bdf}
+  [2012/01/03 v1.31  babelbib: multilingual bibliographies (HH)]
+\newcommand\bibsafrikaans[1][afrikaans]{%
+  \def\biblanguagename{#1}%
+  \def\btxetalshort##1{\protect\foreignlanguage{#1}{et~al##1{}}}%
+  \def\btxetallong##1{\protect\foreignlanguage{#1}{et~alii}}%
+  \def\btxandshort##1{\protect\foreignlanguage{#1}{en}}%
+  \def\btxandlong##1{\protect\foreignlanguage{#1}{en}}%
+  \def\btxandcomma##1{\protect\foreignlanguage{#1}{}}%
+  \def\btxinlong##1{\protect\foreignlanguage{#1}{in}}%
+  \def\btxinshort##1{\protect\foreignlanguage{#1}{in}}%
+  \def\btxofseriesshort##1{\protect\foreignlanguage{#1}{van}}%
+  \def\btxinseriesshort##1{\protect\foreignlanguage{#1}{in}}%
+  \def\btxofserieslong##1{\protect\foreignlanguage{#1}{van}}%
+  \def\btxinserieslong##1{\protect\foreignlanguage{#1}{in}}%
+  \def\btxeditorshort##1{\protect\foreignlanguage{#1}{red##1{}}}%
+  \def\btxeditorlong##1{\protect\foreignlanguage{#1}{redakteur}}%
+  \def\btxeditorsshort##1{\protect\foreignlanguage{#1}{reds##1{}}}%
+  \def\btxeditorslong##1{\protect\foreignlanguage{#1}{redakteurs}}%
+  \def\btxvolumeshort##1{\protect\foreignlanguage{#1}{vol##1{}}}%
+  \def\btxvolumelong##1{\protect\foreignlanguage{#1}{volume}}%
+  \def\btxnumbershort##1{\protect\foreignlanguage{#1}{no##1{}}}%
+  \def\btxnumberlong##1{\protect\foreignlanguage{#1}{nommer}}%
+  \def\btxeditionshort##1{\protect\foreignlanguage{#1}{uitg##1{}}}%
+  \def\btxeditionlong##1{\protect\foreignlanguage{#1}{uitgawe}}%
+  \def\btxeditionnumshort##1##2{\btxnumeralshort{##1}~\btxeditionshort{##2}}%
+  \def\btxeditionnumlong##1##2{\btxnumerallong{##1}~\btxeditionlong{##2}}%
+  \def\btxchaptershort##1{\protect\foreignlanguage{#1}{hfst##1{}}}%
+  \def\btxchapterlong##1{\protect\foreignlanguage{#1}{hoofstuk}}%
+  \def\btxpageshort##1{\protect\foreignlanguage{#1}{p##1{}}}%
+  \def\btxpagelong##1{\protect\foreignlanguage{#1}{bladsy}}%
+  \def\btxpagesshort##1{\protect\foreignlanguage{#1}{pp##1{}}}%
+  \def\btxpageslong##1{\protect\foreignlanguage{#1}{bladsye}}%
+  \def\btxmastthesis##1{\protect\foreignlanguage{#1}{Meesters tesis}}%
+  \def\btxphdthesis##1{\protect\foreignlanguage{#1}{PhD verhandeling}}%
+  \def\btxtechrepshort##1{\protect\foreignlanguage{#1}{Tegn.\ versl##1{}}}%
+  \def\btxtechreplong##1{\protect\foreignlanguage{#1}{Tegniese verslag}}%
+  \def\btxmonjanlong##1{\protect\foreignlanguage{#1}{Januarie}}%
+  \def\btxmonfeblong##1{\protect\foreignlanguage{#1}{Februarie}}%
+  \def\btxmonmarlong##1{\protect\foreignlanguage{#1}{Maart}}%
+  \def\btxmonaprlong##1{\protect\foreignlanguage{#1}{April}}%
+  \def\btxmonmaylong##1{\protect\foreignlanguage{#1}{Mei}}%
+  \def\btxmonjunlong##1{\protect\foreignlanguage{#1}{Junie}}%
+  \def\btxmonjullong##1{\protect\foreignlanguage{#1}{Julie}}%
+  \def\btxmonauglong##1{\protect\foreignlanguage{#1}{Augustus}}%
+  \def\btxmonseplong##1{\protect\foreignlanguage{#1}{September}}%
+  \def\btxmonoctlong##1{\protect\foreignlanguage{#1}{Oktober}}%
+  \def\btxmonnovlong##1{\protect\foreignlanguage{#1}{November}}%
+  \def\btxmondeclong##1{\protect\foreignlanguage{#1}{Desember}}%
+  \def\btxmonjanshort##1{\protect\foreignlanguage{#1}{Jan##1{}}}%
+  \def\btxmonfebshort##1{\protect\foreignlanguage{#1}{Feb##1{}}}%
+  \def\btxmonmarshort##1{\protect\foreignlanguage{#1}{Mrt##1{}}}%
+  \def\btxmonaprshort##1{\protect\foreignlanguage{#1}{Apr##1{}}}%
+  \def\btxmonmayshort##1{\protect\foreignlanguage{#1}{Mei##1}}%
+  \def\btxmonjunshort##1{\protect\foreignlanguage{#1}{Jun##1}}%
+  \def\btxmonjulshort##1{\protect\foreignlanguage{#1}{Jul##1}}%
+  \def\btxmonaugshort##1{\protect\foreignlanguage{#1}{Aug##1{}}}%
+  \def\btxmonsepshort##1{\protect\foreignlanguage{#1}{Sep##1{}}}%
+  \def\btxmonoctshort##1{\protect\foreignlanguage{#1}{Okt##1{}}}%
+  \def\btxmonnovshort##1{\protect\foreignlanguage{#1}{Nov##1{}}}%
+  \def\btxmondecshort##1{\protect\foreignlanguage{#1}{Des##1{}}}%
+  \def\Btxinlong##1{\protect\foreignlanguage{#1}{In}}%
+  \def\Btxinshort##1{\protect\foreignlanguage{#1}{In}}%
+  \def\Btxeditorshort##1{\protect\foreignlanguage{#1}{Red##1{}}}%
+  \def\Btxeditorlong##1{\protect\foreignlanguage{#1}{Redakteur}}%
+  \def\Btxeditorsshort##1{\protect\foreignlanguage{#1}{Reds##1{}}}%
+  \def\Btxeditorslong##1{\protect\foreignlanguage{#1}{Redakteurs}}%
+  \def\Btxvolumeshort##1{\protect\foreignlanguage{#1}{Vol##1{}}}%
+  \def\Btxvolumelong##1{\protect\foreignlanguage{#1}{Volume}}%
+  \def\Btxnumbershort##1{\protect\foreignlanguage{#1}{No##1{}}}%
+  \def\Btxnumberlong##1{\protect\foreignlanguage{#1}{Nommer}}%
+  \def\Btxeditionshort##1{\protect\foreignlanguage{#1}{Uitg##1{}}}%
+  \def\Btxeditionlong##1{\protect\foreignlanguage{#1}{Uitgawe}}%
+  \def\Btxeditionnumshort##1##2{\btxnumeralshort{##1}~\Btxeditionshort{##2}}%
+  \def\Btxeditionnumlong##1##2{\btxnumerallong{##1}~\Btxeditionlong{##2}}%
+  \def\Btxchaptershort##1{\protect\foreignlanguage{#1}{Hfst##1{}}}%
+  \def\Btxchapterlong##1{\protect\foreignlanguage{#1}{Hoofstuk}}%
+  \def\Btxpageshort##1{\protect\foreignlanguage{#1}{P##1{}}}%
+  \def\Btxpagelong##1{\protect\foreignlanguage{#1}{Bladsy}}%
+  \def\Btxpagesshort##1{\protect\foreignlanguage{#1}{Pp##1{}}}%
+  \def\Btxpageslong##1{\protect\foreignlanguage{#1}{Bladsye}}%
+  \def\Btxtechrepshort##1{\protect\foreignlanguage{#1}{Tegn.\ Verslag}}%
+  \def\Btxtechreplong##1{\protect\foreignlanguage{#1}{Tegniese Verslag}}%
+  \def\btxurldatecomment##1{\PackageError{babelbib}{Comment for
+      urldate in Afrikaans undefined. Please send the translation for
+      'visited on' to harald.harders@tu-bs.de}{} [##1]}%
+  \def\btxfnamespaceshort{\,}%
+  \def\btxfnamespacelong{ }%
+  \def\btxnumeralshort##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxnumerallong##1{\btxnumeralfallback{#1}{##1}}%
+  \def\btxprintmonthyearnum##1##2{##1/##2}%
+  \def\btxkeywordlanguage##1{{\protect\selectlanguage{#1}##1}}%
+  \ifbbbblanguagenames
+    \def\btxlanguagenameafrikaans{\protect\foreignlanguage{#1}{afrikaans}}%
+    \def\btxlanguagenameamerican{\protect\foreignlanguage{#1}{engels}}%
+    \def\btxlanguagenameaustrian{\protect\foreignlanguage{#1}{duits}}%
+    \def\btxlanguagenamebrazil{\protect\foreignlanguage{#1}{portugees}}%
+    \def\btxlanguagenamebrazilian{\protect\foreignlanguage{#1}{portugees}}%
+    \def\btxlanguagenamebritish{\protect\foreignlanguage{#1}{engels}}%
+    \def\btxlanguagenamebulgarian{\protect\foreignlanguage{#1}{bulgaars}}%
+    \def\btxlanguagenamecanadian{\protect\foreignlanguage{#1}{engels}}%
+    \def\btxlanguagenamecanadien{\protect\foreignlanguage{#1}{frans}}%
+    \def\btxlanguagenamecatalan{\protect\foreignlanguage{#1}{katalaans}}%
+    \def\btxlanguagenamecroatian{\protect\foreignlanguage{#1}{kroaties}}%
+    \def\btxlanguagenameczech{\protect\foreignlanguage{#1}{tsjeggies}}%
+    \def\btxlanguagenamedanish{\protect\foreignlanguage{#1}{deens}}%
+    \def\btxlanguagenamedutch{\protect\foreignlanguage{#1}{nederlands}}%
+    \def\btxlanguagenameenglish{\protect\foreignlanguage{#1}{engels}}%
+    \def\btxlanguagenameesperanto{\protect\foreignlanguage{#1}{esperanto}}%
+    \def\btxlanguagenamefinnish{\protect\foreignlanguage{#1}{fins}}%
+    \def\btxlanguagenamefrancais{\protect\foreignlanguage{#1}{frans}}%
+    \def\btxlanguagenamefrench{\protect\foreignlanguage{#1}{frans}}%
+    \def\btxlanguagenamefrenchb{\protect\foreignlanguage{#1}{frans}}%
+    \def\btxlanguagenamegerman{\protect\foreignlanguage{#1}{duits}}%
+    \def\btxlanguagenamegermanb{\protect\foreignlanguage{#1}{duits}}%
+    \def\btxlanguagenamegreek{\protect\foreignlanguage{#1}{grieks}}%
+    \def\btxlanguagenamehebrew{\protect\foreignlanguage{#1}{hebreeus}}%
+    \def\btxlanguagenamenhungarian{\protect\foreignlanguage{#1}{hongaars}}%
+    \def\btxlanguagenamenicelandic{\protect\foreignlanguage{#1}{yslands}}%
+    \def\btxlanguagenamenirish{\protect\foreignlanguage{#1}{iers}}%
+    \def\btxlanguagenamenitalian{\protect\foreignlanguage{#1}{italiaans}}%
+    \def\btxlanguagenamenlatin{\protect\foreignlanguage{#1}{latyn}}%
+    \def\btxlanguagenamenaustrian{\protect\foreignlanguage{#1}{duits}}%
+    \def\btxlanguagenamengerman{\protect\foreignlanguage{#1}{duits}}%
+    \def\btxlanguagenamennorsk{\protect\foreignlanguage{#1}{noors}}%
+    \def\btxlanguagenamennynorsk{\protect\foreignlanguage{#1}{neo-noors}}%
+    \def\btxlanguagenamenpolish{\protect\foreignlanguage{#1}{pools}}%
+    \def\btxlanguagenamenportuges{\protect\foreignlanguage{#1}{portugees}}%
+    \def\btxlanguagenamenportuguese{\protect\foreignlanguage{#1}{portugees}}%
+    \def\btxlanguagenamenrussian{\protect\foreignlanguage{#1}{russies}}%
+    \def\btxlanguagenamenscottish{\protect\foreignlanguage{#1}{skots}}%
+    \def\btxlanguagenamenserbian{\protect\foreignlanguage{#1}{serwies}}%
+    \def\btxlanguagenamenspanish{\protect\foreignlanguage{#1}{spaans}}%
+    \def\btxlanguagenamenswedish{\protect\foreignlanguage{#1}{sweeds}}%
+    \def\btxlanguagenamenturkish{\protect\foreignlanguage{#1}{turks}}%
+    \def\btxlanguagenameUKenglish{\protect\foreignlanguage{#1}{engels}}%
+    \def\btxlanguagenameUSenglish{\protect\foreignlanguage{#1}{engels}}%
+  \fi
+}
+\AtBeginDocument{%
+  \ifbbbbfixlanguage
+  \else
+    \bbbbaddto{afrikaans}{bibsafrikaans}
+  \fi
+  \bbbbaddto{afrikaans}{btxifchangecaseoff}
+}
+
+\endinput
+%%
+%% End of file `afrikaans.bdf'.

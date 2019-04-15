@@ -1,0 +1,1240 @@
+% \iffalse meta-comment
+%
+% File: infwarerr.dtx
+% Version: 2010/04/08 v1.3
+% Info: Providing info/warning/error messages
+%
+% Copyright (C) 2007, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file infwarerr.dtx
+% and the derived files
+%    infwarerr.sty, infwarerr.pdf, infwarerr.ins, infwarerr.drv,
+%    infwarerr-test1.tex, infwarerr-test2.tex,
+%    infwarerr-test3.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/infwarerr.dtx
+%    CTAN:macros/latex/contrib/oberdiek/infwarerr.pdf
+%
+% Unpacking:
+%    (a) If infwarerr.ins is present:
+%           tex infwarerr.ins
+%    (b) Without infwarerr.ins:
+%           tex infwarerr.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{infwarerr.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If infwarerr.drv is present:
+%           latex infwarerr.drv
+%    (b) Without infwarerr.drv:
+%           latex infwarerr.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex infwarerr.dtx
+%       makeindex -s gind.ist infwarerr.idx
+%       pdflatex infwarerr.dtx
+%       makeindex -s gind.ist infwarerr.idx
+%       pdflatex infwarerr.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/infwarerr.sty
+%    TDS:doc/latex/oberdiek/infwarerr.pdf
+%    TDS:doc/latex/oberdiek/test/infwarerr-test1.tex
+%    TDS:doc/latex/oberdiek/test/infwarerr-test2.tex
+%    TDS:doc/latex/oberdiek/test/infwarerr-test3.tex
+%    TDS:source/latex/oberdiek/infwarerr.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: infwarerr
+Version: 2010/04/08 v1.3
+
+Copyright (C) 2007, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file infwarerr.dtx
+and the derived files
+   infwarerr.sty, infwarerr.pdf, infwarerr.ins, infwarerr.drv,
+   infwarerr-test1.tex, infwarerr-test2.tex,
+   infwarerr-test3.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{infwarerr.ins}{\from{infwarerr.dtx}{install}}%
+  \file{infwarerr.drv}{\from{infwarerr.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{infwarerr.sty}{\from{infwarerr.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{infwarerr-test1.tex}{\from{infwarerr.dtx}{test1}}%
+  \file{infwarerr-test2.tex}{\from{infwarerr.dtx}{test2}}%
+  \file{infwarerr-test3.tex}{\from{infwarerr.dtx}{test3}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{infwarerr.xml}{\from{infwarerr.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     infwarerr.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `infwarerr.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{infwarerr.drv}%
+  [2010/04/08 v1.3 Providing info/warning/error messages (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{infwarerr.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{871}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{infwarerr.drv}
+%
+% \title{The \xpackage{infwarerr} package}
+% \date{2010/04/08 v1.3}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package provides a complete set of macros for informations,
+% warnings and error messages with support for \plainTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Package \xpackage{infwarerr} defines the following set of commands,
+% given as pseudo regular expression:
+%   \begin{quote}
+%     \verb+\@(Package|Class)(Info|InfoNoLine|Warning|WarningNoLine|Error)+^^A
+%     \kern-\rightmargin
+%   \end{quote}
+% The first argument is the package or class in question. The second
+% argument contains the message text. \cs{MessageBreak} is supported.
+% In case of error messages, the third argument contains the help
+% text. Supported are \LaTeX's message texts \cs{@ehc}:
+%   \begin{quote}
+%     |Try typing  <return>  to proceed|\\
+%     |If that doesn't work, type  X <return>  to quit.|
+%   \end{quote}
+% and \cs{@ehd}:
+%   \begin{quote}
+%     |You're in trouble here.  Try typing  <return>  to proceed|\\
+%     |If that doesn't work, type  X <return>  to quit.|
+%   \end{quote}
+%
+% The package is intended for macro writers that want to write
+% code that works for both \LaTeX\ and \plainTeX. If \LaTeX\ is
+% detected, then the macros of this package will only be wrappers
+% for \LaTeX's macros. Otherwise \LaTeX's macros will be mimicked
+% for use with \plainTeX.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@infwarerr.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{infwarerr}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@infwarerr.sty\endcsname
+\ProvidesPackage{infwarerr}%
+  [2010/04/08 v1.3 Providing info/warning/error messages (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname InfWarErr@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\InfWarErr@AtEnd{%
+    \InfWarErr@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{94}{7}% ^
+\edef\InfWarErr@AtEnd{\InfWarErr@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{\LaTeX\ detection}
+%
+%    \begin{macrocode}
+\begingroup
+  \let\x=Y%
+  \def\check#1{%
+    \@check{Generic}{#1}%
+    \@check{Package}{#1}%
+    \@check{Class}{#1}%
+  }%
+  \def\@check#1#2{%
+    \expandafter\ifx\csname #1#2\endcsname\relax
+      \let\x=N%
+    \fi
+  }%
+  \check{Info}%
+  \check{Warning}%
+  \check{Error}%
+  \@check{Package}{WarningNoLine}%
+  \@check{Class}{WarningNoLine}%
+  \@check{}{@ehc}%
+  \@check{}{@ehd}%
+\expandafter\endgroup
+\ifx\x Y%
+%    \end{macrocode}
+%
+% \subsection{Version for \LaTeX}
+%
+%    \begin{macro}{\@PackageInfo}
+%    \begin{macrocode}
+  \let\@PackageInfo\PackageInfo
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageInfoNoLine}
+%    \begin{macrocode}
+  \def\@PackageInfoNoLine#1#2{%
+    \PackageInfo{#1}{#2\@gobble}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassInfo}
+%    \begin{macrocode}
+  \let\@ClassInfo\ClassInfo
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassInfoNoLine}
+%    \begin{macrocode}
+  \def\@ClassInfoNoLine#1#2{%
+    \ClassInfo{#1}{#2\@gobble}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageWarning}
+%    \begin{macrocode}
+  \let\@PackageWarning\PackageWarning
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageWarningNoLine}
+%    \begin{macrocode}
+  \let\@PackageWarningNoLine\PackageWarningNoLine
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassWarning}
+%    \begin{macrocode}
+  \let\@ClassWarning\ClassWarning
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassWarningNoLine}
+%    \begin{macrocode}
+  \let\@ClassWarningNoLine\ClassWarningNoLine
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageError}
+%    \begin{macrocode}
+  \let\@PackageError\PackageError
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassError}
+%    \begin{macrocode}
+  \let\@ClassError\ClassError
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \expandafter\InfWarErr@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Version for \plainTeX}
+%
+%    \begin{macro}{\InfWarErr@online}
+%    \begin{macrocode}
+\begingroup\expandafter\endgroup
+\ifcase\expandafter\ifx\csname inputlineno\endcsname\relax
+         0 %
+       \else
+         \ifnum\inputlineno<0 %
+           0 %
+         \else
+           1 %
+         \fi
+       \fi
+  \def\InfWarErr@online{}%
+\else
+  \def\InfWarErr@online{ on input line \the\inputlineno}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\InfWarErr@protected}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname protected\endcsname\relax
+  \def\InfWarErr@protected{}%
+\else
+  \let\InfWarErr@protected\protected
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\InfWarErr@unused}
+%    \begin{macrocode}
+\chardef\InfWarErr@unused=16 %
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\InfWarErr@ehc}
+%    \begin{macrocode}
+\def\InfWarErr@ehc{%
+  Try typing \space <return> \space to proceed.\MessageBreak
+  If that doesn't work, type \space X <return> \space to quit.%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\InfWarErr@ehd}
+%    \begin{macrocode}
+\def\InfWarErr@ehd{%
+  You're in trouble here. \space\@ehc
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\InfWarErr@GenericInfo}
+%    \begin{macrocode}
+\InfWarErr@protected\def\InfWarErr@GenericInfo#1#2{%
+  \begingroup
+    \let\on@line\InfWarErr@online
+    \long\def\@gobble##1{}%
+    \def\space{ }%
+    \def\@spaces{\space\space\space\space}%
+    \def\MessageBreak{^^J#1}%
+    \newlinechar=10 %
+    \escapechar=92 %
+    \immediate\write-1{#2\on@line.}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\InfWarErr@GenericWarning}
+%    \begin{macrocode}
+\InfWarErr@protected\def\InfWarErr@GenericWarning#1#2{%
+  \begingroup
+    \let\on@line\InfWarErr@online
+    \long\def\@gobble##1{}%
+    \def\space{ }%
+    \def\@spaces{\space\space\space\space}%
+    \def\MessageBreak{^^J#1}%
+    \newlinechar=10 %
+    \escapechar=92 %
+    \immediate\write\InfWarErr@unused{^^J#2\on@line.^^J}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\InfWarErr@GenericError}
+%    Old \TeX\ versions below 3.141 where |^^J| is not working
+%    as newline in error message and help texts are not supported.
+%    \begin{macrocode}
+\InfWarErr@protected\def\InfWarErr@GenericError#1#2#3#4{%
+  \begingroup
+    \immediate\write\InfWarErr@unused{}%
+    \def\space{ }%
+    \def\@spaces{\space\space\space\space}%
+    \let\@ehc\InfWarErr@ehc
+    \let\@ehd\InfWarErr@ehd
+    \let\on@line\InfWarErr@online
+    \def\MessageBreak{^^J}%
+    \newlinechar=10 %
+    \escapechar=92 %
+    \edef\InfWarErr@help{\noexpand\errhelp{#4}}%
+    \InfWarErr@help
+    \def\MessageBreak{^^J#1}%
+    \errmessage{%
+      #2.^^J^^J%
+      #3^^J%
+      Type \space H <return> \space for immediate help.^^J ...^^J%
+    }%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\@PackageInfo}
+%    \begin{macrocode}
+\def\@PackageInfo#1#2{%
+  \InfWarErr@GenericInfo{%
+    (#1) \@spaces\@spaces\@spaces
+  }{%
+    Package #1 Info: #2%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageInfoNoLine}
+%    \begin{macrocode}
+\def\@PackageInfoNoLine#1#2{%
+  \@PackageInfo{#1}{#2\@gobble}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassInfo}
+%    \begin{macrocode}
+\def\@ClassInfo#1#2{%
+  \InfWarErr@GenericInfo{%
+    (#1) \space\space\@spaces\@spaces
+  }{%
+    Class #1 Info: #2%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassInfoNoLine}
+%    \begin{macrocode}
+\def\@ClassInfoNoLine#1#2{%
+  \@ClassInfo{#1}{#2\@gobble}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageWarning}
+%    \begin{macrocode}
+\def\@PackageWarning#1#2{%
+  \InfWarErr@GenericWarning{%
+    (#1)\@spaces\@spaces\@spaces\@spaces
+  }{%
+    Package #1 Warning: #2%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageWarningNoLine}
+%    \begin{macrocode}
+\def\@PackageWarningNoLine#1#2{%
+  \@PackageWarning{#1}{#2\@gobble}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassWarning}
+%    \begin{macrocode}
+\def\@ClassWarning#1#2{%
+  \InfWarErr@GenericWarning{%
+    (#1) \space\@spaces\@spaces\@spaces
+  }{%
+    Class #1 Warning: #2%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassWarningNoLine}
+%    \begin{macrocode}
+\def\@ClassWarningNoLine#1#2{%
+  \@ClassWarning{#1}{#2\@gobble}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@PackageError}
+%    \begin{macrocode}
+\def\@PackageError#1#2#3{%
+  \InfWarErr@GenericError{%
+    (#1)\@spaces\@spaces\@spaces\@spaces
+  }{%
+    Package #1 Error: #2%
+  }{%
+    See the #1 package documentation for explanation.%
+  }{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@ClassError}
+%    \begin{macrocode}
+\def\@ClassError#1#2#3{%
+  \InfWarErr@GenericError{%
+    (#1) \space\@spaces\@spaces\@spaces
+  }{%
+    Class #1 Error: #2%
+  }{%
+    See the #1 class documentation for explanation.%
+  }{#3}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\InfWarErr@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input infwarerr.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+%    \begin{macrocode}
+%<*test2>
+\let\PackageInfo\relax
+\input infwarerr.sty\relax
+\let\OrgWrite\write
+\chardef\WriteUnused=16 %
+\def\msg#{\immediate\OrgWrite\WriteUnused}
+\msg{File: infwarerr-test2.tex 2010/04/08 v1.3 Test file for plain-TeX}
+\catcode64=11 %
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{infwarerr-test3.tex}[2010/04/08 v1.3 Test file for LaTeX]
+\RequirePackage{infwarerr}[2010/04/08]
+\makeatletter
+\let\OrgWrite\write
+\chardef\WriteUnused=\@unused
+\def\msg#{\immediate\OrgWrite\WriteUnused}
+%</test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2|test3>
+\def\pkgname{PACKAGE}
+\def\clsname{CLASS}
+\def\msgtext{MESSAGE\MessageBreak SECOND LINE}
+\def\hlptext{HELP\MessageBreak SECOND LINE}
+
+\let\OrgWrite\write
+\let\OrgErrMessage\errmessage
+
+\def\write#1#{%
+  \@write{#1}%
+}
+\def\@write#1#2{%
+  \OrgWrite#1{#2}%
+  \xdef\WriteNum{\number#1}%
+  \xdef\WriteText{#2}%
+}
+\def\TestFailed#1#2{%
+  \OrgErrMessage{Test (\string#1) failed: #2}%
+}
+\def\TestWrite#1#2#3{%
+  \ifnum\WriteNum=#2\relax
+  \else
+    \TestFailed#1{write stream number: \WriteNum <> #2}%
+  \fi
+  \begingroup
+    \let~\space
+    \edef\TestString{#3}%
+    \ifx\WriteText\TestString
+    \else
+      \msg{}%
+      \msg{[\WriteText]}%
+      \msg{<>}%
+      \msg{[#3]}% hash-ok
+      \TestFailed#1{write text}%
+    \fi
+  \endgroup
+}
+\newtoks\ErrHelpToks
+\def\errmessage#1{%
+  \global\ErrHelpToks=\expandafter{\the\errhelp}%
+  \msg{**************** error message ****************}%
+  \msg{! #1}%
+  \msg{**************** help message *****************}%
+  \msg{\the\errhelp}%
+  \msg{***********************************************}%
+  \xdef\ErrMessage{! #1}%
+}
+\def\TestInfo{%
+  \@PackageInfo\pkgname\msgtext
+  \TestWrite\@PackageInfo{-1}{%
+    Package PACKAGE Info: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~SECOND LINE on input line \the\inputlineno.%
+  }%
+  \@PackageInfoNoLine\pkgname\msgtext
+  \TestWrite\@PackageInfoNoLine{-1}{%
+    Package PACKAGE Info: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~SECOND LINE.%
+  }%
+  \@ClassInfo\clsname\msgtext
+  \TestWrite\@ClassInfo{-1}{%
+    Class CLASS Info: MESSAGE^^J%
+    (CLASS)~~~~~~~~~~~SECOND LINE on input line \the\inputlineno.%
+  }%
+  \@ClassInfoNoLine\clsname\msgtext
+  \TestWrite\@ClassInfoNoLine{-1}{%
+    Class CLASS Info: MESSAGE^^J%
+    (CLASS)~~~~~~~~~~~SECOND LINE.%
+  }%
+}
+\def\TestWarning{%
+  \@PackageWarning\pkgname\msgtext
+  \TestWrite\@PackageWarning\WriteUnused{%
+    ^^J%
+    Package PACKAGE Warning: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~~~~SECOND LINE on input line \the\inputlineno.%
+    ^^J%
+  }%
+  \@PackageWarningNoLine\pkgname\msgtext
+  \TestWrite\@PackageWarningNoLine\WriteUnused{%
+    ^^J%
+    Package PACKAGE Warning: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~~~~SECOND LINE.%
+    ^^J%
+  }%
+  \@ClassWarning\clsname\msgtext
+  \TestWrite\@ClassWarning\WriteUnused{%
+    ^^J%
+    Class CLASS Warning: MESSAGE^^J%
+    (CLASS)~~~~~~~~~~~~~~SECOND LINE on input line \the\inputlineno.%
+    ^^J%
+  }%
+  \@ClassWarningNoLine\clsname\msgtext
+  \TestWrite\@ClassWarningNoLine\WriteUnused{%
+    ^^J%
+    Class CLASS Warning: MESSAGE^^J%
+    (CLASS)~~~~~~~~~~~~~~SECOND LINE.%
+    ^^J%
+  }%
+}
+\def\TestError{%
+%<test3>  \let\write\OrgWrite
+%<test3>  \def\plaindots{}
+%<test2>  \def\plaindots{.^^J ...^^J}
+  \@PackageError\pkgname\msgtext\hlptext
+  \@TestError\@PackageError{%
+    ! Package PACKAGE Error: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~~~~SECOND LINE.^^J%
+    ^^J%
+    See the PACKAGE package documentation for explanation.^^J%
+    Type~~H <return>~~for immediate help\plaindots
+  }{%
+    HELP^^J%
+    SECOND LINE%
+  }%
+  \@ClassError\clsname\msgtext\hlptext
+  \@TestError\@ClassError{%
+    ! Class CLASS Error: MESSAGE^^J%
+    (CLASS)~~~~~~~~~~~~~~SECOND LINE.^^J%
+    ^^J%
+    See the CLASS class documentation for explanation.^^J%
+    Type~~H <return>~~for immediate help\plaindots
+  }{%
+    HELP^^J%
+    SECOND LINE%
+  }%
+  \@PackageError\pkgname\msgtext\@ehc
+  \@TestError\@PackageError{%
+    ! Package PACKAGE Error: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~~~~SECOND LINE.^^J%
+    ^^J%
+    See the PACKAGE package documentation for explanation.^^J%
+    Type~~H <return>~~for immediate help\plaindots
+  }{%
+    Try typing~~<return>~~to proceed.^^J%
+    If that doesn't work, type~~X <return>~~to quit.%
+  }%
+  \@PackageError\pkgname\msgtext\@ehd
+  \@TestError\@PackageError{%
+    ! Package PACKAGE Error: MESSAGE^^J%
+    (PACKAGE)~~~~~~~~~~~~~~~~SECOND LINE.^^J%
+    ^^J%
+    See the PACKAGE package documentation for explanation.^^J%
+    Type~~H <return>~~for immediate help\plaindots
+  }{%
+    You're in trouble here.~~Try typing~~<return>~~to proceed.^^J%
+    If that doesn't work, type~~X <return>~~to quit.%
+  }%
+}
+\def\@TestError#1#2#3{%
+  \begingroup
+    \let~\space
+    \edef\x{#2}%
+%<test3>  \@onelevel@sanitize\x
+%<test3>  \@onelevel@sanitize\ErrMessage
+    \ifx\x\ErrMessage
+    \else
+      \msg{}%
+      \msg{[\ErrMessage]}%
+      \msg{<>}%
+      \msg{[\x]}%
+      \TestFailed#1{errmessage text}%
+    \fi
+    \edef\x{\the\ErrHelpToks}%
+    \edef\y{#3}%
+    \ifx\x\y
+    \else
+      \msg{}%
+      \msg{[\the\ErrHelpToks]}%
+      \msg{<>}%
+      \msg{[\y]}%
+      \TestFailed#1{errhelp text}%
+    \fi
+  \endgroup
+}
+\TestInfo
+\TestWarning
+\TestError
+%</test2|test3>
+%<test2>\end
+%<test3>\@@end
+%    \end{macrocode}
+%
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/infwarerr.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/infwarerr.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex infwarerr.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   infwarerr.sty & tex/generic/oberdiek/infwarerr.sty\\
+%   infwarerr.pdf & doc/latex/oberdiek/infwarerr.pdf\\
+%   test/infwarerr-test1.tex & doc/latex/oberdiek/test/infwarerr-test1.tex\\
+%   test/infwarerr-test2.tex & doc/latex/oberdiek/test/infwarerr-test2.tex\\
+%   test/infwarerr-test3.tex & doc/latex/oberdiek/test/infwarerr-test3.tex\\
+%   infwarerr.dtx & source/latex/oberdiek/infwarerr.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk infwarerr.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{infwarerr.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex infwarerr.dtx
+%makeindex -s gind.ist infwarerr.idx
+%pdflatex infwarerr.dtx
+%makeindex -s gind.ist infwarerr.idx
+%pdflatex infwarerr.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{infwarerr.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='infwarerr'>
+  <name>infwarerr</name>
+  <caption>Complete set of information/warning/error messages.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    This package provides a complete set of macros for information,
+    warning and error messages.  Under LaTeX, the commands are
+    wrappers for the corresponding LaTeX commands; under Plain TeX
+    they are also available as complete implementations.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/infwarerr.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/infwarerr.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/04/26 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/06/14 v1.1}
+%   \item
+%     Small fixes.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.2}
+%   \item
+%     Catcode section extended.
+%   \end{Version}
+%   \begin{Version}{2010/04/08 v1.3}
+%   \item
+%     Ensure \cs{escapechar}=92 (backslash) for infos/warnings/errors.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

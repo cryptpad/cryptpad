@@ -1,0 +1,169 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews14.tex 
+% 
+% This is issue 14 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]     % uncomment this line to get Palatino
+   {ltnews}[2001/07/12]
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{June}  
+\publicationyear{2001}
+\publicationissue{14}
+
+
+\begin{document}
+
+\maketitle
+
+\raisefirstsection
+\section{Future releases}
+
+We are currently exploring how to best support the very large
+community of individuals, organisations and enterprises that depend on
+the robustness and availability of the current standard \LaTeX{}
+distribution.  The results of this may lead to some changes in the
+regular release schedule and the handling of bug reports during the
+next year.
+
+\section{New release of \textsf{Babel} (required)}
+
+Earlier this year a new release of \textsf{Babel} (3.7) became
+available. You can read about its new features in
+\begin{latexonly}
+  \file{http://www.ctan.org/tex-archive/macros/}\\
+  \hspace*{4em}\file{latex/required/babel/announce.txt}
+\end{latexonly}
+\begin{htmlonly}
+  \url{http://www.ctan.org/tex-archive/macros/latex/required/babel/announce.txt}
+\end{htmlonly}
+
+One of the bugs that got fixed in this release deals with how labels
+are handled by \LaTeX{}.  Because this part of the kernel is modified
+by \textsf{babel}, the relevant changes need to be coordinated.
+Therefore to use \textsf{Babel} with this release of \LaTeX{} you will
+need to update your version of \textsf{babel} to at least 3.7.
+
+\section{New input encoding \package{latin9}}
+
+The package \package{inputenc} has, thanks to Karsten Tinnefeld, been
+extended to cover the \package{latin9} input encoding.  The
+ISO-Latin~9 encoding is a useful modern replacement for ISO-Latin~1
+that contains a few characters needed for French and Finnish. Of wider
+interest, it also contains the euro currency sign; this could be the
+killer argument for many 8-bit texts to use Latin-9 in the future.
+
+According to a Linux manpage, ISO~Latin-9 supports Albanian, Basque,
+Breton, Catalan, Danish, Dutch, English, Estonian, Faroese, Finnish,
+French, Frisian, Galician, German, Greenlandic, Icelandic, Irish
+Gaelic, Italian, Latin, Luxemburgish, Norwegian, Portuguese,
+Rhaeto-Romanic, Scottish Gaelic, Spanish and Swedish.\\
+The characters added in \package{latin9} are (in \LaTeX{} notation):\\
+\begin{small}
+\verb| \texteuro  \v S  \v s  \v Z  \v z  \OE  \oe  \" Y |
+\end{small}\\
+They displace the following characters from \package{latin1}:\\
+\begin{small}
+\verb| \textcurrency  \textbrokenbar  \"{}   \'{}   \c{} |\\
+\verb| \textonequarter  \textonehalf  \textthreequarters |
+\end{small}
+
+
+\section{New tools}
+
+The new package \package{trace} provides many commands to control
+\LaTeX{}'s tracing and debugging output, including the excellent new
+information available with \eTeX{} such as the extremely useful
+tracing of local assignments.  You will find it in the tools
+distribution.
+
+It offers the command \verb|\traceon|, which is similar to
+\verb|\tracingall| but suppresses uninteresting stuff such as font
+loading by NFSS (which can go on for pages if you are unlucky).  It
+also offers \verb|\traceoff| to \ldots\ guess what!  Full details are
+in the documented source file, \file{trace.dtx}.
+
+In the base \package{ifthen} package we have added
+the uppercase synonyms \verb|\NOT| \verb|\AND| and \verb|\OR|.
+
+\section{New experimental code}
+
+In \textit{\LaTeX{} News~12} we announced some ongoing work towards a
+`Designer Interface for \LaTeX' and we presented some early results
+thereof.  Since then, at Gutenberg\,2000 in Toulouse and TUG\,2000 in
+Oxford, we described a new output routine and an improved method of
+handling vertical mode material between paragraphs.  In combination
+these support higher quality \emph{automated}\footnote
+                             {The stress here is on automated!}
+page-breaking and page make-up\latex{\\}
+for complex pages---the best yet achieved with \TeX{}!
+
+More recently we have added material to handle the complex front
+matter requirements of journal articles; this was presented at 
+Gutenberg\,2001 in Metz.
+
+A paper describing the new output routine is 
+\begin{latexonly}
+  at\\
+\begin{small}
+  \file{http://www.latex-project.org/papers/xo-pfloat.pdf}\\
+\end{small}
+\end{latexonly}
+\begin{htmlonly}
+  at \url{http://www.latex-project.org/papers/xo-pfloat.pdf}. 
+\end{htmlonly}
+All code examples and documentation are available 
+\begin{latexonly}
+  at\\
+\begin{small}
+   \file{http://www.latex-project.org/code/experimental}
+\end{small}
+\end{latexonly}
+\begin{htmlonly}
+  at \url{http://www.latex-project.org/code/experimental/}.
+\end{htmlonly}
+
+This directory has been extended to contain the following.
+\begin{description}
+ \item[galley] Prototype implementation of the interface\latex{\\}
+   for manipulating vertical material in galleys.
+ \item[xinitials] Prototype implementation of the interface\latex{\\}
+   for paragraph initials (needs the \texttt{galley} package).
+ \item[xtheorem] Contributed example using the \texttt{template}
+   package to provide a designer interface for theorem environments.
+ \item[xor] A prototype implementation of the new output routine
+   as described in the \texttt{xo-pfloat.pdf} paper.
+ \item[xfrontm] A prototype version of
+   the new font matter interface.
+\end{description}
+
+\end{document}

@@ -1,0 +1,149 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews06.tex
+
+% This is issue 6 of LaTeX News.
+
+\documentclass
+%    [lw35fonts]
+   {ltnews}
+
+% \usepackage[T1]{fontenc}
+
+\publicationmonth{December}
+\publicationyear{1996}
+\publicationissue{6}
+
+\begin{document}
+
+\maketitle
+
+\section{Welcome to \LaTeXNews~6}
+This issue of \emph{\LaTeXNews} accompanies the sixth release of the
+new standard \LaTeX{}, \LaTeXe.
+
+\section{Mono-case file names}
+Previously \LaTeX\ has used some files with `mixed-case' file names
+such as \texttt{T1cmr.fd} and \texttt{T1enc.def}.
+
+These file names cause problems on some systems (in particular they
+are illegal on the ISO 9660 CDROM format) and so in this release
+all file names have been made lowercase (for example 
+\texttt{t1cmr.fd} and \texttt{t1enc.def}).
+
+This change should \emph{not} affect any document. Within \LaTeX,
+encodings still have the usual uppercase names in uses such as
+\verb|\usepackage[T1]{fontenc}| and \verb|\fontencoding{T1}|.
+\LaTeX\ will automatically convert to the lowercase form while
+constructing the file name.
+\LaTeX\ will input the `fd' file under the old name if it fails to
+find the file with the new name, so existing collections of fd files
+should still work with this new release.
+
+The change \emph{does} affect the configuration files that may be used
+to make the \LaTeX\ format with initex. For example, the file
+\texttt{fonttext.ltx} previously specified \verb|\input{T1cmr.fd}|.
+It now has \verb|\input{t1cmr.fd}|. 
+If you use a local file \texttt{fonttext.cfg}
+you will need to make similar changes, as \verb|\input{T1cmr.fd}|
+will not work as \texttt{T1cmr.fd} is no longer in the distribution.
+
+The files affected by this change all have names of the form
+\verb|*.fd| or \verb|*enc.def|.
+
+\section{Another input encoding}
+Thanks to work by S\o ren Sandmann, the \textsf{inputenc} package now
+supports the IBM codepage~865 used in Scandinavia.
+
+\section{Better user-defined math display environments}
+Suppose that you want to define an environment for displaying text
+that is numbered as an equation.  A straightforward way to do this is
+as follows:
+\begin{verbatim}
+  \newenvironment{texteqn}
+    {\begin{equation}
+       \begin{minipage}{0.9\linewidth}}
+      {\end{minipage}
+     \end{equation}}
+\end{verbatim}
+However, if you have tried this then you will probably have noticed
+that it does not work perfectly when used in the middle of a paragraph
+because an inter-word space appears at the beginning of the first
+line after the environment.
+
+There is now an extra command (with a very long name) available that
+you can use to avoid this problem; it should be inserted as shown here:
+\begin{verbatim}
+  \newenvironment{texteqn}
+    {\begin{equation}
+       \begin{minipage}{0.9\linewidth}}
+      {\end{minipage}
+     \end{equation}
+     \ignorespacesafterend}
+\end{verbatim}
+
+\section{Docstrip improvements}
+The \textsf{docstrip} program that is used to unpack the \LaTeX\ 
+sources has undergone further development. The new version should be
+able to process all old `batchfiles' but it allows a simpler syntax in
+new `batchfiles' (no need to define \verb|\def\batchfile{|\ldots).
+
+It also allows `target' directories to be specified when writing
+files.  This directory support is disabled by default unless activated
+in a local \texttt{docstrip.cfg} configuration file.
+See \texttt{docstrip.dtx} for details.
+
+\section{AMS \LaTeX\ update}
+Since the last \LaTeX\ release in June, the American Mathematical
+Society have re-issued the `AMS\LaTeX' classes and packages, fixing
+several reported problems.
+
+\section{Graphics package update}
+The \LaTeX\ color and graphics packages have been updated slightly,
+principally to support more dvi drivers, see the readme file in the
+\textsf{graphics} distribution.
+
+\section{EC Fonts released}
+The first release of the Extended Computer Modern fonts has just been
+made. (In January 1997.)
+
+This release of \LaTeX\ does \emph{not} default to these `ec' fonts
+as its T1 encoded fonts. By default it will
+use the `dc' fonts if the T1 encoding is requested.
+
+As noted in \texttt{install.txt} you may run \TeX\ on the install file
+\texttt{ec.ins} \emph{after} unpacking the base distribution but
+\emph{before} making the \LaTeX\ format. This will produce
+suitable `fd' files making \LaTeX\ (including, for the first time, the
+\textsf{slides} class) use the `ec' fonts as the default T1 encoded
+font set.
+
+
+\end{document}
+

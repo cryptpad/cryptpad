@@ -1,0 +1,416 @@
+%%
+%% This is file `pagegrid.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pagegrid.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pagegrid
+%% Version: 2009/12/04 v1.4
+%% 
+%% Copyright (C) 2009 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pagegrid.dtx
+%% and the derived files
+%%    pagegrid.sty, pagegrid.pdf, pagegrid.ins, pagegrid.drv,
+%%    pagegrid-test1.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pagegrid.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pagegrid}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pagegrid.sty\endcsname
+\ProvidesPackage{pagegrid}%
+  [2009/12/04 v1.4 Print page grid in background (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname pagegrid@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\pagegrid@AtEnd{%
+    \pagegrid@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{9}{10}% (tab)
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{8}% _ (subscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\edef\pagegrid@AtEnd{\pagegrid@AtEnd\noexpand\endinput}
+\RequirePackage{tikz}
+\RequirePackage{atbegshi}[2009/12/02]
+\RequirePackage{kvoptions}[2009/07/17]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname stockwidth\endcsname\relax
+  \def\pagegrid@width{\paperwidth}%
+  \def\pagegrid@height{\paperheight}%
+\else
+  \def\pagegrid@width{\stockwidth}%
+  \def\pagegrid@height{\stockheight}%
+\fi
+\SetupKeyvalOptions{%
+  family=pagegrid,%
+  prefix=pagegrid@,%
+}
+\def\pagegrid@init{%
+  \let\pagegrid@origin@a\@empty
+  \let\pagegrid@origin@b\@empty
+  \let\pagegrid@init\relax
+}
+\let\pagegrid@@init\pagegrid@init
+\def\pagegrid@origin@a{bl}
+\def\pagegrid@origin@b{tr}
+\def\pagegrid@SetOrigin#1{%
+  \pagegrid@init
+  \ifx\pagegrid@origin@a\@empty
+    \def\pagegrid@origin@a{#1}%
+  \else
+    \ifx\pagegrid@origin@b\@empty
+    \else
+      \let\pagegrid@origin@a\pagegrid@origin@b
+    \fi
+    \def\pagegrid@origin@b{#1}%
+  \fi
+}
+\def\pagegrid@temp#1{%
+  \DeclareVoidOption{#1}{\pagegrid@SetOrigin{#1}}%
+  \@namedef{pagegrid@N@#1}{#1}%
+}
+\pagegrid@temp{bl}
+\pagegrid@temp{br}
+\pagegrid@temp{tl}
+\pagegrid@temp{tr}
+\def\pagegrid@temp#1#2{%
+  \DeclareVoidOption{#2}{\pagegrid@SetOrigin{#1}}%
+}%
+\pagegrid@temp{bl}{lb}
+\pagegrid@temp{br}{rb}
+\pagegrid@temp{tl}{lt}
+\pagegrid@temp{tr}{rt}
+\pagegrid@temp{bl}{bottom-left}
+\pagegrid@temp{br}{bottom-right}
+\pagegrid@temp{tl}{top-left}
+\pagegrid@temp{tr}{top-right}
+\pagegrid@temp{bl}{left-bottom}
+\pagegrid@temp{br}{right-bottom}
+\pagegrid@temp{tl}{left-top}
+\pagegrid@temp{tr}{right-top}
+\DeclareBoolOption[true]{enable}
+\DeclareComplementaryOption{disable}{enable}
+\DeclareBoolOption{foreground}
+\newlength{\pagegrid@step}
+\define@key{pagegrid}{step}{%
+  \setlength{\pagegrid@step}{#1}%
+}
+\DeclareStringOption[red]{firstcolor}
+\DeclareStringOption[blue]{secondcolor}
+\DeclareBoolOption[true]{arrows}
+\newlength\pagegrid@arrowlength
+\pagegrid@arrowlength=\z@
+\define@key{pagegrid}{arrowlength}{%
+  \setlength{\pagegrid@arrowlength}{#1}%
+}
+\define@key{pagegrid}{double}[true]{%
+  \@ifundefined{pagegrid@double@#1}{%
+    \PackageWarning{pagegrid}{%
+      Unsupported value `#1' for option `double'.\MessageBreak
+      Known values are:\MessageBreak
+      `false', `first', `last', `true'.\MessageBreak
+      Now `false' is used%
+    }%
+    \chardef\pagegrid@double\z@
+  }{%
+    \chardef\pagegrid@double\csname pagegrid@double@#1\endcsname\relax
+  }%
+}
+\@namedef{pagegrid@double@false}{0}
+\@namedef{pagegrid@double@first}{1}
+\@namedef{pagegrid@double@last}{2}
+\@namedef{pagegrid@double@true}{2}
+\chardef\pagegrid@double\z@
+\newcommand*{\pagegridsetup}{%
+  \let\pagegrid@init\pagegrid@@init
+  \setkeys{pagegrid}%
+}
+\pagegridsetup{%
+  step=1mm%
+}
+\InputIfFileExists{pagegrid.cfg}{}%
+\ProcessKeyvalOptions*\relax
+\AtBeginDocument{%
+  \ifdim\pagegrid@arrowlength>\z@
+  \else
+    \pagegrid@arrowlength=10\pagegrid@step
+  \fi
+}
+\def\pagegridShipoutDoubleBegin{%
+  \begingroup
+  \let\newlabel\@gobbletwo
+  \let\zref@newlabel\@gobbletwo
+  \let\@writefile\@gobbletwo
+  \let\select@language\@gobble
+}
+\def\pagegridShipoutDoubleEnd{%
+  \endgroup
+}
+\def\pagegrid@WriteDouble#1#2{%
+  \immediate\write#1{%
+    \@backslashchar csname %
+    pagegridShipoutDouble#2%
+    \@backslashchar endcsname%
+  }%
+}
+\def\pagegrid@ShipoutDouble#1{%
+  \begingroup
+    \if@filesw
+      \pagegrid@WriteDouble\@mainaux{Begin}%
+      \ifx\@auxout\@partaux
+        \pagegrid@WriteDouble\@partaux{Begin}%
+        \def\pagegrid@temp{%
+          \pagegrid@WriteDouble\@mainaux{End}%
+          \pagegrid@WriteDouble\@partaux{End}%
+        }%
+      \else
+        \def\pagegrid@temp{%
+          \pagegrid@WriteDouble\@mainaux{End}%
+        }%
+      \fi
+    \else
+      \def\pagegrid@temp{}%
+    \fi
+    \let\protect\noexpand
+    \AtBeginShipoutOriginalShipout\copy#1\relax
+    \pagegrid@temp
+  \endgroup
+}
+\AtBeginShipout{%
+  \ifdim\pagegrid@step>\z@
+  \else
+    \pagegrid@enablefalse
+  \fi
+  \ifpagegrid@enable
+    \ifnum\pagegrid@double=\@ne
+      \pagegrid@ShipoutDouble\AtBeginShipoutBox
+    \else
+      \ifnum\pagegrid@double=\tw@
+        \@ifundefined{pagegrid@DoubleBox}{%
+          \newbox\pagegrid@DoubleBox
+        }{}%
+        \setbox\pagegrid@DoubleBox=\copy\AtBeginShipoutBox
+      \fi
+    \fi
+    \ifpagegrid@foreground
+      \expandafter\AtBeginShipoutUpperLeftForeground
+    \else
+      \expandafter\AtBeginShipoutUpperLeft
+    \fi
+    {%
+      \put(0,0){%
+        \makebox(0,0)[lt]{%
+          \begin{tikzpicture}[%
+            bl/.style={},%
+            br/.style={xshift=\pagegrid@width,xscale=-1},%
+            tl/.style={yshift=\pagegrid@height,yscale=-1},%
+            tr/.style={xshift=\pagegrid@width,%
+                       yshift=\pagegrid@height,scale=-1}%
+          ]%
+            \useasboundingbox
+              (0mm,\pagegrid@height) rectangle (0mm,\pagegrid@height);%
+            \draw[%
+              \pagegrid@origin@a,%
+              step=\pagegrid@step,%
+              style=help lines,%
+              ultra thin%
+            ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \ifx\pagegrid@origin@b\@empty
+            \else
+              \draw[%
+                \pagegrid@origin@b,%
+                step=10\pagegrid@step,%
+                {\pagegrid@secondcolor},%
+                very thin%
+              ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \fi
+            \draw[%
+               \pagegrid@origin@a,%
+               step=10\pagegrid@step,%
+               {\pagegrid@firstcolor},%
+               very thin%
+            ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \ifx\pagegrid@origin@b\@empty
+            \else
+              \draw[%
+                \pagegrid@origin@b,%
+                step=50\pagegrid@step,%
+                {\pagegrid@secondcolor},%
+                thick%
+              ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \fi
+            \draw[%
+              \pagegrid@origin@a,%
+              step=50\pagegrid@step,%
+              {\pagegrid@firstcolor},%
+              thick%
+            ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \ifpagegrid@arrows
+              \ifx\pagegrid@origin@b\@empty
+              \else
+                \draw[%
+                  \pagegrid@origin@b,%
+                  {\pagegrid@secondcolor},%
+                  stroke,%
+                  line width=1pt,%
+                  line cap=round%
+                ] (0mm,0mm) %
+                -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+                   (\pagegrid@arrowlength,.5\pagegrid@arrowlength) %
+                -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+                -- (.5\pagegrid@arrowlength,\pagegrid@arrowlength);%
+              \fi
+              \draw[%
+                \pagegrid@origin@a,%
+                {\pagegrid@firstcolor},%
+                stroke,%
+                line width=1pt,%
+                line cap=round%
+              ] (0mm,0mm) %
+              -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+                 (\pagegrid@arrowlength,.5\pagegrid@arrowlength) %
+              -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+              -- (.5\pagegrid@arrowlength,\pagegrid@arrowlength);%
+            \fi
+          \end{tikzpicture}%
+        }%
+      }%
+    }%
+    \ifnum\pagegrid@double=\tw@
+      \pagegrid@ShipoutDouble\pagegrid@DoubleBox
+    \fi
+  \fi
+}
+\pagegrid@AtEnd%
+\endinput
+%%
+%% End of file `pagegrid.sty'.

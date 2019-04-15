@@ -1,0 +1,80 @@
+%% 
+%% This is file `vrbexin.sty', modified from vrbinput.sty
+%% 
+%% The original source files were:
+%% 
+%% vrbinput.doc 
+%% 
+%% Copyright (C) 1994 by Paul Thompson
+%% 
+%% IMPORTANT NOTICE: 
+%% 
+%% You are not allowed to change this file. You may however copy this file 
+%% to a different name and then change this copy. 
+%% 
+%% You are NOT ALLOWED to take money for the distribution or use of this 
+%% file (or a changed version) except for some nominal charge for copying etc. 
+%% 
+%% 
+\def\fileversion{v1.0b}
+\def\filedate{94/06/30}
+\def\docdate{94/06/30}
+%% \CheckSum{82}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%% Style-option `vrbexin' to use with LaTeX-2e
+%%       and style-option `verbatim' (by Rainer Sch\"opf)
+%% Copyright (C) 1994 by Paul Thompson, all rights reserved.
+\@ifundefined{verbatim@readfile}{}{\endinput}
+\typeout{Style-Option: `vrbexin' \fileversion \space <\filedate> (br)}
+\typeout{English Documentation \@spaces\@spaces\space\space <\docdate> (br)}
+\@ifundefined{verbatim@@@}{\input{verbatim.sty}}{}
+\newread\verbatim@in@stream
+\ifnum\verbatim@in@stream=\@ne
+  \csname newread\endcsname\verbatim@in@stream
+\fi
+\def\verbatim@readfile#1{%
+  \verbatim@start
+  \openin\verbatim@in@stream #1\relax
+  \ifeof\verbatim@in@stream
+    \typeout{No file #1.}%
+  \else
+    \expandafter\endlinechar\expandafter\m@ne
+    \expandafter\verbatim@read@file
+    \expandafter\endlinechar\the\endlinechar\relax
+    \closein\verbatim@in@stream
+  \fi
+  \verbatim@finish
+}
+\def\verbatim@read@file{%
+  \read\verbatim@in@stream to\next
+  \ifeof\verbatim@in@stream
+  \else
+    \expandafter\verbatim@addtoline\expandafter{\next}%
+    \verbatim@processline
+    \verbatim@startline
+    \expandafter\verbatim@read@file
+  \fi
+}
+\def\verbatiminput{\begingroup
+  \@ifstar{\verbatim@input\relax}%
+          {\verbatim@input{\frenchspacing\@vobeyspaces}}}
+\def\verbatim@input#1#2{\@verbatim #1\relax
+  \verbatim@readfile{#2}\item[]\endtrivlist\endgroup\@doendpe}
+\endinput
+%% 
+%% End of file `vrbexin.sty'.

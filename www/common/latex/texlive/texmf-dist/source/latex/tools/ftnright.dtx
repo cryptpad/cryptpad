@@ -1,0 +1,1034 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+%\iffalse   % this is a METACOMMENT !
+%
+%% Package `ftnright' to use with LaTeX 2e
+%% Copyright (C) 1989-2004 Frank Mittelbach, all rights reserved.
+%<+package>\NeedsTeXFormat{LaTeX2e}[1995/06/01]
+%<+package>\ProvidesPackage{ftnright}
+%<+package>         [2014/10/28 v1.1f footnote layout package (FMi)]
+%
+% \fi
+%%
+%% \CheckSum{431}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%
+%
+%  \DoNotIndex{\;}
+%^^A  \DoNotIndex{\@cclv}
+%^^A  \DoNotIndex{\@colht}
+%^^A  \DoNotIndex{\@colroom}
+%  \DoNotIndex{\@combinedblfloats}
+%  \DoNotIndex{\@combinefloats}
+%  \DoNotIndex{\@dblfloatplacement}
+%  \DoNotIndex{\@deferlist}
+%  \DoNotIndex{\@empty}
+%^^A  \DoNotIndex{\@fcolmadefalse}
+%^^A  \DoNotIndex{\@firstcolumnfalse}
+%^^A  \DoNotIndex{\@firstcolumntrue}
+%  \DoNotIndex{\@freelist}
+%  \DoNotIndex{\@ixpt}
+%^^A  \DoNotIndex{\@leftcolumn}
+%^^A  \DoNotIndex{\@m}
+%^^A  \DoNotIndex{\@makecol}
+%^^A  \DoNotIndex{\@makefntext}
+%^^A  \DoNotIndex{\@maxdepth}
+%  \DoNotIndex{\@midlist}
+%^^A  \DoNotIndex{\@outputbox}
+%^^A  \DoNotIndex{\@outputdblcol}
+%^^A  \DoNotIndex{\@outputpage}
+%  \DoNotIndex{\@ptsize}
+%^^A  \DoNotIndex{\@setsize}
+%  \DoNotIndex{\@spaces}
+%^^A  \DoNotIndex{\@startcolumn}
+%^^A  \DoNotIndex{\@startdblcolumn}
+%  \DoNotIndex{\@tempdima}
+%  \DoNotIndex{\@textbottom}
+%  \DoNotIndex{\@texttop}
+%^^A  \DoNotIndex{\@thefnmark}
+%  \DoNotIndex{\@viiipt}
+%  \DoNotIndex{\@whilesw}
+%  \DoNotIndex{\@width}
+%^^A  \DoNotIndex{\@xstartcol}
+%  \DoNotIndex{\@xpt}
+%  \DoNotIndex{\advance}
+%  \DoNotIndex{\begingroup}
+%  \DoNotIndex{\box}
+%^^A  \DoNotIndex{\boxmaxdepth}
+%^^A  \DoNotIndex{\columnseprule}
+%^^A  \DoNotIndex{\columnwidth}
+%  \DoNotIndex{\count}
+%  \DoNotIndex{\def}
+%  \DoNotIndex{\dimen}
+%  \DoNotIndex{\dp}
+%  \DoNotIndex{\else}
+%  \DoNotIndex{\endgroup}
+%  \DoNotIndex{\fi}
+%  \DoNotIndex{\filedate}
+%  \DoNotIndex{\filename}
+%  \DoNotIndex{\fileversion}
+%^^A  \DoNotIndex{\footins}
+%^^A  \DoNotIndex{\footnoterule}
+%^^A  \DoNotIndex{\footnotesep}
+%^^A  \DoNotIndex{\footnotesize}
+%^^A  \DoNotIndex{\ftn@amount}
+%  \DoNotIndex{\gdef}
+%  \DoNotIndex{\global}
+%  \DoNotIndex{\hbox}
+%  \DoNotIndex{\hfil}
+%  \DoNotIndex{\hss}
+%  \DoNotIndex{\ht}
+%^^A  \DoNotIndex{\if@fcolmade}
+%^^A  \DoNotIndex{\if@firstcolumn}
+%  \DoNotIndex{\ifcase}
+%^^A  \DoNotIndex{\ifvoid}
+%  \DoNotIndex{\ifx}
+%^^A  \DoNotIndex{\insert}
+%  \DoNotIndex{\ixpt}
+%  \DoNotIndex{\let}
+%  \DoNotIndex{\llap}
+%  \DoNotIndex{\long}
+%^^A  \DoNotIndex{\maxdepth}
+%^^A  \DoNotIndex{\newdimen}
+%^^A  \DoNotIndex{\newskip}
+%  \DoNotIndex{\noindent}
+%  \DoNotIndex{\normalsize}
+%  \DoNotIndex{\or}
+%^^A  \DoNotIndex{\parindent}
+%^^A  \DoNotIndex{\preparefootins}
+%^^A  \DoNotIndex{\rcol@footinsskip}
+%^^A  \DoNotIndex{\saved@footinsskip}
+%  \DoNotIndex{\setbox}
+%  \DoNotIndex{\skip}
+%  \DoNotIndex{\space}
+%^^A  \DoNotIndex{\strutbox}
+%^^A  \DoNotIndex{\textheight}
+%^^A  \DoNotIndex{\textwidth}
+%  \DoNotIndex{\unvbox}
+%  \DoNotIndex{\vbox}
+%  \DoNotIndex{\viiipt}
+%  \DoNotIndex{\vrule}
+%  \DoNotIndex{\vskip}
+%^^A  \DoNotIndex{\wlog}
+%  \DoNotIndex{\xdef}
+%  \DoNotIndex{\xpt}
+%  \DoNotIndex{\z@}
+%
+% \changes{v1.1a}{1994/01/24}{Upgrades for LaTeX2e}
+% \changes{v1.1b}{1994/01/24}{Driver moved in front}
+% \changes{v1.1c}{1996/01/01}{Use article.cls for documentation}
+%
+% \renewcommand{\.}{\penalty500} %^^A for certain breaks
+%
+% \setlength{\hfuzz}{2pt} ^^A allow small overshot in verbatim
+%
+% \GetFileInfo{ftnright.sty}
+%
+% \title{Footnotes in a multi-column layout\thanks
+%   {The \LaTeX{} package {\tt \filename} which is described
+%    in this article has the version number \fileversion{} dated
+%    \filedate.}}
+% \author{Frank Mittelbach}
+%
+%
+% \maketitle
+%
+% \pageshrink 1pt  %^^A compensate for the \thanks marker
+%
+%
+% \section{Preface to version 1.1}
+%
+% The new release is a basically unchanged version of the original. I
+% upgraded the macros so that they work with \LaTeXe{} and used some
+% of the additional flexibility introduced therein. For example, the
+% command |\preparefootins| is now automatically called at
+% |\begin{document}|, thus allowing the user to adjust the
+% |\textheight| in the preamble.
+%
+% It is not surprisingly that I was forced to change some of the
+% macros because they dig deep into \LaTeX{}'s output routines.
+% Fortunately this is something normally not necessary when upgrading
+% other \LaTeX~2.09 styles to \LaTeXe{} packages.
+%
+% I also upgraded the documentation to conform to the \LaTeXe{}
+% terminology, e.g., this is a package since document classes will not
+% know about it. However it is very likely that i have missed some
+% necessary corrections.
+%
+% \section{Introduction}
+%
+%
+% The placement of footnotes in a multicolumn layout always bothered
+% me. The approach taken by \LaTeX{} (i.e., placing the footnotes
+% separately under each column) might be all right if nearly no
+% footnotes are present. But it looks clumsy when both columns contain
+% footnotes, especially when they occupy different amounts of space.
+%
+% In the multicolumn package~\cite{art:FMi89b}, I used page-wide
+% footnotes at the bottom of the page, but again the result doesn't
+% look very pleasant since short footnotes produce undesired gaps of
+% white space. Of course, the main goal of this package was a
+% balancing algorithm for columns which would allow switching between
+% different numbers of columns on the same page. With this feature,
+% the natural place for footnotes seems to be the bottom of the
+% page\footnote{You cannot use column footnotes at the bottom, since
+% the number of columns can differ on one page.} but looking at some
+% of the results it seems best to avoid footnotes in such a layout
+% entirely.
+%
+%
+% Another possibility is to turn footnotes into endnotes, i.e.,
+% printing them at the end of every chapter or the end of the entire
+% document.  But I assume everyone who has ever read a book using such
+% a layout will agree with me, that it is a pain to search back and
+% forth, so that the reader is tempted to ignore the endnotes
+% entirely.
+%
+% When I wrote the article about ``Future extensions of
+% \TeX{}''~\cite{inproc:FMi90} I was again dissatisfied with the
+% outcome of the footnotes, and since this article should show certain
+% aspects of high quality typesetting, I decided to give the footnote
+% problem a try and modified the \LaTeX{} output routine for this
+% purpose.  The layout I used was inspired by the yearbook of the
+% Gutenberg Gesellschaft Mainz \cite{book:GG}.  Later on, I found that
+% it is also recommended by Jan White \cite{book:JWh88}. On the layout
+% of footnotes I also consulted books by Jan Tschichold
+% \cite{book:JTs87} and Manfred Simoneit \cite{book:MSi89}, books I
+% would recommend to everyone being able to read German texts.
+%
+%
+% \subsection{Description of the new layout}
+%
+% The result of this effort is presented in this paper and the reader
+% can judge for himself whether it was successful or
+% not.\footnote{Please note, that this option only changed the
+% placement of footnotes. Since this article also makes use of the
+% {\tt doc} package \cite{bk:GMS94}, that assigns tiny numbers to
+% code lines sprinkled throughout the text, the resulting design is
+% not perfect. This package is now a standard part of \LaTeXe.}
+% The main idea for this layout is to assemble the
+% footnotes of all columns on a page and place them all together at
+% the bottom of the right column. Allowing for enough space between
+% footnotes and text, and in addition, setting the footnotes in
+% smaller type\footnote{The standard layout in \TUB{} uses the same
+% size for footnotes and text, giving the footnotes, in my opinion,
+% much too much prominence.} I decided that one could omit the
+% footnote separator rule which is used in most publications prepared
+% with \TeX{}.\footnote{People who prefer the rule can add it by
+% redefining the command {\tt\bslash footnoterule}
+% \cite[p.~156]{book:LLa86}. Please, note, that this command should
+% occupy no space, so that a negative space should be used to
+% compensate for the width of the rule used.} Furthermore, I decided
+% to place the footnote markers\footnote{\label{thisftn}The tiny
+% numbers or symbols, e.g., the `\ref{thisftn}' in front of this
+% footnote.} at the baseline instead of raising them as
+% superscripts.\footnote{Of course, this is done only for the mark
+% preceding the footnote text and not the one used within the main
+% text where a raised number or symbol set in smaller type will help
+% to keep the flow of thoughts, uninterrupted.}
+%
+% All in all, I think this generates a neat layout, and surprisingly
+% enough, the necessary changes to the \LaTeX{} output routine are
+% nevertheless astonishingly simple.
+%
+% \subsection{The use of the package}
+%
+% This package might be used together with any other  package
+% for \LaTeX{} which does not change the three internals changed by
+% {\tt \filename}.\footnote{These are the macros {\tt\bslash
+% @startcolumn}, {\tt\bslash @makecol}, and {\tt\bslash @outputdblcol},
+% as we will see below.  Of course, the package will take only effect
+% with a document class using a two-column layout (like {\tt ltugboat})
+% or when the user additionally specifies {\tt twocolumn} as a
+% document class option in the {\tt\bslash documentclass} command.} In
+% most cases, it is best to use this  package as the very last
+% package in the preamble to make sure that its
+% settings are not overwritten by other packages.
+%
+% It is unfortunate that the current \LaTeX{} has nearly no provisions
+% to make such changes without overwriting the internal routines. In
+% the \LaTeX3 implementation, we will certainly add some hooks that
+% will make such changes more easy.
+%
+%
+% \subsection{Limitations}
+%
+% If in the first column there is more than a full column worth of footnote
+% material the material will be split resulting in footnotes out of
+% order. This issue is now detected and generates an error but the package is
+% unable to gracefully handle it. This gives you two options: either rearrange
+% your input so that it will use less footnotes in the first column (or add
+% some pagebreaks at suitable places) or allow explicitly for more material to
+% be gathered. The latter can be achieved by adding
+%\begin{verbatim}
+%\makeatletter
+%\def\preparefootins{%
+%  \global\rcol@footinsskip\skip\footins
+%  \global\skip\footins\z@
+%  \global\count\footins\z@
+%  \global\dimen\footins2\textheight}
+%\makeatother
+%\end{verbatim}
+% to the preamble of your document. However, with this you allow two columns
+% worth of footnote material and that means that some of your footnotes are
+% likely to be detached from their reference and show up on a later page!
+%
+% \StopEventually{
+%
+% \begin{small}
+% \begin{thebibliography}{1}
+%
+% \bibitem{bk:GMS94} \textsc{M.~Goossens}, \textsc{F.~Mittelbach}
+%       and \textsc{A.~Samarin}.
+%       \newblock The \LaTeX{} Companion.
+%       \newblock
+%       Addison-Wesley, Reading, Massachusetts, 1994.
+%
+% \bibitem{book:GG}
+% Hans-Joachim Koppitz, editor.
+% \newblock {\em {Gutenberg Jahrbuch}}.
+% \newblock Gutenberg-Gesellschaft, Mainz.
+%
+% \bibitem{book:LLa86}
+% Leslie Lamport.
+% \newblock {\em {\LaTeX:} A Document Preparation System}.
+% \newblock Addison-Wesley, Reading, Massachusetts, 1986.
+%
+% \bibitem{src:ltxiii94}
+% \LaTeX3 project.
+% \newblock \LaTeXe distribution, 1994.
+% \newblock Sources for {\LaTeXe} the successor to \LaTeX~2.09.
+%
+% \bibitem{art:FMi89b}
+% Frank Mittelbach
+% \newblock An environment for multi-column output.
+% \newblock {\em TUGboat}, 10(3):407--415, November 1989.
+%
+% \bibitem{inproc:FMi90}
+% Frank Mittelbach
+% \newblock E-{\TeX}: Guidelines to future {\TeX} extensions.
+% \newblock In Lincoln K. Durst, editor, {\em \TUB}, 11(3):
+%   {\em 1990 TUG Annual Meeting Proceedings}, pages
+%   337--345, September 1990.
+%
+% \bibitem{book:MSi89}
+% Manfred Siemoneit.
+% \newblock {\em Typographisches {G}estalten}.
+% \newblock Polygraph Verlag, Frankfurt am Main, second edition, 1989.
+%
+% \bibitem{book:JTs87}
+% Jan Tschichold.
+% \newblock {\em {Ausgew\"ahlte Aufs\"atze \"uber Fragen der Gestalt des
+%   Buches}}.
+% \newblock Birkh\"auser Verlag, Basel, 1987.
+% \newblock Second printing.
+%
+% \bibitem{book:JWh88}
+% Jan White.
+% \newblock {\em Graphic Design for the Electronic Age}.
+% \newblock Watson Guptill, Xerox Press, New York, 1988.
+%
+% \end{thebibliography}
+% \end{small}
+%
+%      \onecolumn
+%      \PrintIndex
+%      \PrintChanges
+%   }
+%
+%
+%
+% \section{The documentation driver}
+%
+% The first bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the {\tt
+% docstrip} program. If you don't want to make any changes to the
+% presentation you can alternatively process the \texttt{.dtx} file
+% directly with \LaTeXe{} to obtain the documentation.
+% \changes{v1.0d}{1992/04/19}{Added driver file to source}
+% \changes{v1.0e}{1993/05/13}{Added history generation}
+%    \begin{macrocode}
+%<*driver>
+\documentclass[twocolumn]{article}
+
+\usepackage{ftnright}
+\usepackage{doc}
+\AtBeginDocument{\MakeShortVerb{\|}}
+
+\newcommand{\TUB}{{\sl TUGboat\/}}
+\renewcommand\DescribeMacro[1]{\fbox
+          {\PrintDescribeMacro{#1}}}
+\renewcommand\DescribeEnv[1]{\fbox
+          {\PrintDescribeEnv{#1}}}
+\renewcommand\PrintMacroName[1]{}
+
+\setlength{\parindent}{1em}
+\setlength{\parskip}
+          {2pt plus1pt minus1pt}
+\setlength{\headsep}{20pt}
+\setlength{\columnsep}{1.5pc}
+\renewcommand{\bottomfraction}{.4}
+
+\flushbottom
+\CodelineIndex
+\RecordChanges      % produce history
+\EnableCrossrefs
+
+\setcounter{IndexColumns}{2}
+\IndexPrologue{\section{Index}
+ All numbers denote code lines where
+ the corresponding entry is used,
+ underlined entries point to the
+ definition.}
+
+\begin{document}
+  \DocInput{ftnright.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+% \section{The Implementation}
+%
+%
+% As usual, we start by identifying the current version of this package
+% file in the transcript file.\footnote{Nico Poppelier suggested
+% omitting the {\tt\bslash typeout} statements in the production
+% version of the files to avoid showing all that unnecessary
+% information to the user. While I accept his criticism as valid, I
+% decided that this information should at least be placed into the
+% transcript file to make it easier to detect problems arising from
+% the use of older versions. This happens now automatically as the command
+% \texttt{\string\ProvidesPackage} will only write to the transcript file.}
+% This actually happens at the very top of this file so it is commented out
+% here.
+%\begin{verbatim}
+%\ProvidesPackage{ftnright}[\filedate\space
+%               LaTeX2e package \fileversion]
+%\end{verbatim}
+%
+% To implement the layout described, above we have to distinguish
+% between the left and the right column on a page. For this purpose
+% \LaTeX{} maintains the switch |\if@firstcolumn|. When assembling
+% material for the left (i.e., the first) column, footnotes should
+% take up no space, since they are held over for the second column. In
+% the second column these footnotes are combined with the ones found
+% there and placed a suitable distance from the main text at the
+% bottom of this column.
+%
+% This means that we have to change certain parameters for the
+% insertion |\footins| when we construct the second column. The right
+% place to do this is in the \LaTeX{} macro |\@outputdblcol| which we
+% are going to change later on.  What settings for the insertion
+% parameters are appropriate? For setting the first column
+% |\count|\.|\footins| and |\skip|\.|\footins| should both be zero
+% since footnotes are held over while for the second column
+% |\count|\.|\footins| should be $1000$ and the |\skip|\.|\footins|
+% has to be set to the desired separation between main text and
+% footnotes.\footnote{A value of $1000$ means that there is a
+% one-to-one relationship between the real size of the footnote and
+% the size finally occupied by the footnote on the current page.}
+%
+%
+% We will allow one column of footnotes (i.e., the right column) at
+% most, so that |\dimen|\.|\footins| has to equal |\textheight|. In
+% principle, it would be possible to allow for even more footnotes,
+% but this would complicate matters enormously.\footnote{It is not
+% possible to make {\tt\bslash dimen\bslash footins} larger than
+% {\tt\bslash textheight} directly, because this would result in a
+% full left column (with text) and more than one column of footnotes.
+% Instead, one has to make footnotes visible to the page generation
+% algorithm again at the moment when a full column of footnotes is
+% assembled, but we still have some space left in the first column. It
+% is a nice enhancement, and, I suppose, it is of some value for
+% preparing publications in certain disciplines, so here is the
+% challenge~\ldots}
+%
+%
+% \begin{macro}{\preparefootins}
+% \begin{macro}{\saved@footinsskip}
+%    Since a document usually starts with a left column, we have to
+%    set |\count| and |\skip|\.|\footins| on top-level to zero. For
+%    this purpose, we define a macro |\preparefootins| which will
+%    first save the current value of |\skip|\.|\footins| in a safe
+%    place. This saved value will be used later for the second column.
+%    In this way, it is possible for the user or a designer of a
+%    document class to adjust this parameter without fiddling with the
+%    code of this package file.
+%    \begin{macrocode}
+%<*package>
+\def\preparefootins{%
+  \global\rcol@footinsskip\skip\footins
+  \global\skip\footins\z@
+  \global\count\footins\z@
+%    \end{macrocode}
+%    We will also assign |\textheight| to |\dimen|\.|\footins| to
+%    allow the user to change this parameter in the preamble.
+%    \begin{macrocode}
+  \global\dimen\footins\textheight}
+%    \end{macrocode}
+%    It is necessary to make the assignments above |\global| because
+%    we are going to use this macro in the output routine which has an
+%    implicit grouping level to keep the changes made by it local.
+%  \end{macro}
+%    Of course, we have to allocate the {\sf skip} register that we
+%    used above:
+%    \begin{macrocode}
+\newskip\rcol@footinsskip
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+% \begin{macro}{\@outputdblcol}
+%    Now we have all the necessary tools available to tackle
+%    |\@outputdblcol|.  We have to remember that when
+%    |\if@firstcolumn| equals |\iftrue|, we are currently starting to
+%    build the second column, i.e., that the first column is already
+%    assembled. Therefore, the macro will start with the following
+%    code:
+%    \begin{macrocode}
+\def\@outputdblcol{\if@firstcolumn
+  \global\@firstcolumnfalse
+%    \end{macrocode}
+%    After changing the switch, we save the first column (which was
+%    placed by preceding macros in |\@outputbox|) in the box register
+%    |\@leftcolumn|. Since we are inside the output routine, all those
+%    assignments have to be |\global| to take any effect.
+%    \begin{macrocode}
+  \global\setbox\@leftcolumn\box\@outputbox
+%    \end{macrocode}
+%    Then, we make the footnotes visible to the page generation
+%    algorithm by setting |\count\footins| to $1000$ (|\@m| is an
+%    abbreviation for this number) and |\skip\footins| to its saved
+%    value (i.e., |\rcol@footinsskip|).
+%    \begin{macrocode}
+  \global\count\footins\@m
+  \global\skip\footins\rcol@footinsskip
+%    \end{macrocode}
+%    We also have to reinsert all footnotes left over from the first
+%    column to make sure that they are reconsidered by the page
+%    generation algorithm of \TeX{} using the new values for |\count|
+%    and |\skip|\.|\footins|. But this will be done later in the
+%    macro |\@startcolumn|.
+%
+%    If we have just finished the right column, i.e., when
+%    |\if@firstcolumn| equals |\iffalse|, we will reset the |\footins|
+%    parameters as explained above using the utility macro
+%    |\preparefootins|.
+%    \begin{macrocode}
+ \else \preparefootins
+%    \end{macrocode}
+%    Then, we compose both columns in |\@outputbox|, combine them with
+%    all page-wide floats for this page (|\@combinedblfloats|), attach
+%    header and footer, and ship out the result (|\@outputpage|).
+%    Finally we look to see whether it is possible to generate
+%    following pages consisting only of page-wide
+%    floats.\footnote{This part is copied directly from the original
+%    \LaTeX{} macro. Details about the used macros, their interfaces
+%    and meanings can be found in the \LaTeXe{} source
+%    code~\cite{src:ltxiii94}.}
+%    \begin{macrocode}
+  \global\@firstcolumntrue
+  \setbox\@outputbox\vbox{\hbox to\textwidth
+    {\hbox to\columnwidth
+                  {\box\@leftcolumn\hss}%
+     \hfil\vrule\@width\columnseprule\hfil
+     \hbox to\columnwidth
+                  {\box\@outputbox\hss}}}%
+  \@combinedblfloats\@outputpage
+  \begingroup
+   \@dblfloatplacement\@startdblcolumn
+   \@whilesw\if@fcolmade\fi
+    {\@outputpage\@startdblcolumn}%
+  \endgroup
+ \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\@startcolumn}
+% \changes{v1.0b}{1990/08/11}{Macro added to correct float problems}
+%    There is a fundamental flaw in \LaTeX's output routine for float
+%    columns and float pages: split footnotes, i.e., footnotes which
+%    are only partly typeset on the preceding page are not resolved.
+%    They are held over until \LaTeX{} starts a page (or column)
+%    containing text besides floats again. For our current layout,
+%    this would mean, that if \LaTeX{} decided to make the right
+%    column of a page a float column, footnotes from the left column
+%    would appear on a later page. A real cure for this problem would
+%    be to rewrite two-thirds of \LaTeX{}'s output routine, so I am
+%    leaving this open for the interested reader.
+%
+% \begin{figure}[b]
+%   \fbox{%^^A
+% \newlength{\puzzlewd}%^^A
+% \setlength{\puzzlewd}{\columnwidth}%^^A
+% \addtolength{\puzzlewd}{-2.1\fboxsep}%^^A
+% \begin{minipage}{\puzzlewd}
+%    \vspace{17pt}
+%    \begin{center}
+%      \bf Puzzle:
+%    \end{center}
+%    \vspace{-3pt}
+%    \small
+%    \begin{quote}
+% \rightskip \leftmargini plus 2.5em
+% Given a simple \TeX{} document containing only straight text, is
+% it possible for the editor,  after
+% deleting one sentence, to end up with a document
+% producing an extra page?
+%
+% We assume that the deleted text contains no \TeX{} macros and
+% that the document was prepared
+% with a standard macro package like the one used for \TUB\/ production.
+%    \end{quote}
+%    \vspace{7pt}
+%    \begin{flushright}
+%       The answer will be given in the next issue.
+%    \end{flushright}
+%    \vspace{7pt}
+% \end{minipage}}
+% \end{figure}
+%
+%    But the problem shows up even if only one float is contributed to
+%    the right column since \LaTeX{} assumes that the whole column is
+%    usable, whereas some of it might actually be already devoted to
+%    footnotes from the left column. So we have to change the output
+%    routine at least in the part that contributes floats to the next
+%    column. The macro involved is called |\@startcolumn|. The first
+%    thing we do is to check and see whether any deferred floats
+%    exists.
+%    \begin{macrocode}
+\def\@startcolumn{%
+ \ifx\@deferlist\@empty
+%    \end{macrocode}
+%    If not, we set the switch |\if@fcolmade| to {\tt false} which
+%    says that we did not succeed in making a float column. Then, we
+%    set |\@colroom| to |\@colht|. The register |\@colht| holds the
+%    amount of space that is available for floats, text, and footnotes
+%    in one column, i.e., it equals |\textheight| minus the space
+%    devoted to page-wide floats. |\@colroom| is a similar register
+%    which holds the value |\@colht| minus space for column floats
+%    that are already contributed to the current column. Of course,
+%    both values should be equal when we start a new column.
+%    \begin{macrocode}
+   \global\@fcolmadefalse
+   \global\@colroom\@colht
+ \else
+%    \end{macrocode}
+%    If there are floats waiting for a change to be processed, the
+%    situation is more difficult. In this case, we have to reduce both
+%    |\@colht| and |\@colroom| by the amount of space that will be
+%    needed for the footnotes from the left column. So we must check
+%    whether such footnotes are present. As we have not reinserted
+%    them in |\@outputdblcol|, we can check the |\footins| box.
+%    \begin{macrocode}
+   \ifvoid\footins\else
+%    \end{macrocode}
+%    If there are some, we measure the space that will be occupied by
+%    them. This measurement is not really exact. If  we have a full
+%    column of footnotes, it will be too high, but this does matter
+%    since we need it only for an upper bound on the free space
+%    available for floats.
+%    \begin{macrocode}
+     \ftn@amount\ht\footins
+     \advance\ftn@amount\dp\footins
+     \advance\ftn@amount\skip\footins
+   \fi
+%    \end{macrocode}
+%    We then reduce the |\@colht| by this amount and again assign
+%    |\@colroom| the value of |\@colht|. If no footnotes are present,
+%    we subtract zero, so there is no harm in doing this operation
+%    all the time.
+%    \begin{macrocode}
+   \global\advance\@colht-\ftn@amount
+   \global\@colroom\@colht
+%    \end{macrocode}
+%    Now, we call another internal \LaTeX{} macro that will try to
+%    contribute floats to the next column. It will use the register
+%    |\@colht| when trying to build up a float column, which is the
+%    reason for reducing this register. If it succeeds, it will set the
+%    switch |\if@fcolmade| to {\tt true}, otherwise, to {\tt false}. If
+%    no float column is possible, it will try to place some or all of
+%    the deferred floats to the top or the bottom of the next column,
+%    thereby, using and reducing the value of the register |\@colroom|.
+%    \begin{macrocode}
+   \@xstartcol
+%    \end{macrocode}
+%    Afterwards, we have to restore the correct values for |\@colht|
+%    and |\@colroom| again, but this time, they may differ, so that we
+%    have to |\advance| both registers separately by |\ftn@amount|.
+%    \begin{macrocode}
+   \global\advance\@colht\ftn@amount
+   \global\advance\@colroom\ftn@amount
+ \fi
+%    \end{macrocode}
+%    Now, after doing the things depending on the status of the
+%    |\@deferlist|, we have to incorporate the left over footnotes in
+%    the new column. First we check whether a float column was
+%    produced by |\@xstartcol| or not.
+%    \begin{macrocode}
+ \if@fcolmade
+%    \end{macrocode}
+%    If so, we do something awful. To make use of the |\@makecol|
+%    macro, which attaches footnotes to |\box| $255$ and places the
+%    result in the box register |\@outputbox|, we have to assign
+%    |\@outputbox| (i.e., the result of |\@xstartcol|) to |\box|
+%    $255$.\footnote{In German, we call this ``from the back through
+%    the chest into the eyes''.}
+%    \begin{macrocode}
+  \setbox\@cclv\box\@outputbox
+  \@makecol
+ \else
+%    \end{macrocode}
+%    If no float column was produced, we reinsert the held over
+%    footnotes so that they can be reconsidered by the page generation
+%    algorithm of \TeX.  But it is necessary to ensure that this
+%    operation is done only when footnotes are actually
+%    present.\footnote{Otherwise, we might get an undesired extra
+%    vertical space coming from {\tt\bslash skip\bslash footins}, even
+%    if there are no footnotes on the page.}
+%    \begin{macrocode}
+   \ifvoid\footins\else
+     \insert\footins{\unvbox\footins}\fi
+ \fi}
+%    \end{macrocode}
+% \begin{macro}{\ftn@amount}
+%    Of course, we also have to allocate the {\sf dimen} register. It
+%    will be automatically initialized to zero.
+%    \begin{macrocode}
+\newdimen\ftn@amount
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+
+
+%  \begin{macro}{\@xstartcol}
+% \changes{v1.1a}{1994/01/24}{Macro reintroduced}
+%    The macro |\@xtsartcol| was removed in \LaTeXe{} but we introduce
+%    it here again for the moment.
+%    \begin{macrocode}
+\def\@xstartcol{%
+  \@tryfcolumn \@deferlist
+  \if@fcolmade
+  \else
+    \begingroup
+      \let \@tempb \@deferlist
+      \global \let \@deferlist \@empty
+      \let \@elt \@scolelt
+      \@tempb
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@makecol}
+%    The other internal macro that we have to change is |\@makecol|, a
+%    macro that is called whenever one column of material is assembled
+%    and column floats and footnotes have to be added. Again, we have
+%    to distinguish between actions for the first and the second
+%    column.
+%    \begin{macrocode}
+\def\@makecol{\if@firstcolumn
+%    \end{macrocode}
+%    For the first column, we leave the footnotes in their box and
+%    simply save the contents of box $255$ in the |\box| register
+%    |\@outputbox|.
+%    \begin{macrocode}
+  \setbox\@outputbox\box\@cclv
+%    \end{macrocode}
+%
+%    But if the user erroneously forgot to specify a twocolumn layout, we
+%    will always typeset the first column, so that the footnotes are
+%    never printed.  Therefore we better check for this special case
+%    and output the footnotes on a separate page in an
+%    emergency.\footnote{Otherwise, the footnotes are held over for
+%    ever, preventing \TeX{} from finishing the document successfully.
+%    Instead, \TeX{} will produce infinity many empty pages at the end
+%    of the document, trying in vain to output the held over
+%    footnotes.  This problem was found by Rainer Sch\"opf when we
+%    prepared the paper for the Cork conference.}
+% \changes{v1.0c}{1990/08/24}{Introduced crude recovery if
+%                           twocolumn false.}
+% \changes{v1.0d}{1992/06/19}{Better help message}
+%    \begin{macrocode}
+  \if@twocolumn \else
+    \ifvoid\footins \else
+      \@latexerr{ftnright package
+                 used in one-column mode}%
+   {The ftnright package was designed to
+    work with LaTeX's standard^^Jtwocolumn
+    option. It does *not* work with the
+    multicol package.^^JSo please specify
+    `twocolumn' in the
+    \noexpand\documentclass command.}%
+      \shipout\box\footins \fi\fi
+%    \end{macrocode}
+%    What we also need to check is if there is so much footnote material that
+%    it resulted in a footnote being split. If that happens the whole
+%    algorithm falls apart and the footnotes get out of sync.  For the
+%    moment we simply detect it here, perhaps some better scheme can be
+%    implemented. One way to avoid this is to allow more than |\textheight| of
+%    footnotes in |\preparefootins|. However, that isn't such a good idea
+%    either as that means that a footnote from column one, might end up
+%    completely on a later page.
+% \changes{v1.1f}{2010/02/25}{Check for split footnotes (pr/4099)}
+%    \begin{macrocode}
+  \ifnum\insertpenalties>\z@
+      \@latexerr{ftnright package
+                 scrambled footnotes}%
+    {There is too much footnote material in
+     the first column  and ftnright^^Jis
+     unable to cope with this.^^JYou need
+     to reduce the amount to get a properly
+     formatted page.}%
+  \fi
+ \else
+%    \end{macrocode}
+%    When we construct the second column, we must first check whether
+%    footnotes are actually present. If not, we perform the same
+%    actions as before.
+%    \begin{macrocode}
+  \ifvoid\footins
+    \setbox\@outputbox\box\@cclv
+  \else
+%    \end{macrocode}
+%    But, if footnotes are present, it may be possible that the whole
+%    column consists of footnotes, i.e., |\box| $255$ is empty. In
+%    this case, there is no use in placing any glue (|\skip\footins|)
+%    in front,\footnote{In fact, it would be a mistake since this glue
+%    was not taken into account when the footnotes where assembled, so
+%    it would produce an overfull box.} so we have to check for this
+%    possibility.
+%    \begin{macrocode}
+    \setbox\@outputbox\vbox
+      {\ifvoid\@cclv \else
+         \unvbox\@cclv
+         \vskip\skip\footins\fi
+%    \end{macrocode}
+%    But in any case, we place the |\footnoterule| in front of the
+%    footnotes even if this macro is not used by this
+%    package.\footnote{This decision is certainly open to criticism,
+%    since there is nothing to separate. On the other hand, a rule or
+%    some other ornament in front of the footnotes is part of the
+%    design which should be used consistently throughout a document.
+%    As a last argument in favor of the rule, consider the situation
+%    where \LaTeX{} decided to place only floats and footnotes into
+%    the right hand column. In this case a separator again seems
+%    adequate. In this situation one can even argue that it is
+%    necessary to put in the {\tt \bslash skip\.\bslash footins}.}
+%    This ends the if-statement testing whether footnotes are present
+%    or not. It also ends the code which differs depending on the
+%    column number.
+% \changes{v1.1d}{1998/12/02}{Added the color@group macros and
+%    \texttt{\protect\bslash normalcolor} to make this colorsafe}
+%    \begin{macrocode}
+         \color@begingroup
+         \normalcolor
+         \footnoterule\unvbox\footins
+         \color@endgroup}\fi
+  \fi
+%    \end{macrocode}
+%    Now the column floats are added at the top and the bottom, and
+%    the |\@outputbox| is adjusted to the full column height so that
+%    the glue inside will stretch in certain situations.\footnote{It
+%    is an interesting question as to whether the current layout works
+%    well with bottom floats or not. Actually, I would prefer to place
+%    the footnotes below the bottom floats instead of above, as it is
+%    done here. At least when the floats are part of the document and
+%    not puzzles thrown in.  But I was too lazy to implement it
+%    because I seldom use floats. If somebody implements this layout
+%    (some parts of this macro have to be changed) I would be
+%    interested in seeing the code and some sample results.} Again,
+%    this code is copied verbatim from the original source, so I won't
+%    dwell on details.\footnote{I only changed {\tt\bslash dimen128}
+%    into {\tt\bslash @tempdima} which is, besides being faster and
+%    shorter, only a cosmetic change. The use of this hardwired {\sf
+%    dimen} register seems to indicate that this part of \LaTeX{} was
+%    written very early and left unchanged since then: an interesting
+%    fact for software archaeologists.}\footnote{For the \LaTeXe{}
+%    upgrade I had to add the support for the
+%    {\tt\string\enlargethispage} command---let's hope I did it in the
+%    correct way.}
+% \changes{v1.1a}{1994/01/24}{Upgrades for LaTeX2e}
+%    \begin{macrocode}
+  \xdef\@freelist{\@freelist\@midlist}%
+  \global \let \@midlist \@empty
+  \@combinefloats
+  \ifvbox\@kludgeins
+    \@makespecialcolbox
+  \else
+   \setbox\@outputbox\vbox to\@colht
+     {\boxmaxdepth\maxdepth
+      \@texttop
+      \@tempdima\dp\@outputbox
+      \unvbox\@outputbox
+      \vskip-\@tempdima
+      \@textbottom}%
+  \fi
+  \global\maxdepth\@maxdepth}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\footnotesize}
+% \changes{v1.1a}{1994/01/24}{Upgrades for LaTeX2e}
+%    Now we can tackle the remaining small changes to the standard
+%    layout.  I decided to use a smaller size for footnotes but with a
+%    slightly larger leading than usual. This means that we have to
+%    redefine the |\footnotesize| macro which depends on options like
+%    {\tt 11pt} etc. Fortunately, there is a simple way to find out
+%    the main size of the document: the macro |\@ptsize| contains $0$,
+%    $1$, or $2$ standing for $10$, $11$, or $12$ points document text
+%    size.\footnote{In the new release I used the definitions from the
+%    class option files \texttt{size1?.clo} and modified them
+%    slightly. In the previous release there was no correction for the
+%    list parameters etc., thus giving you incorrect spacing if
+%    somebody used display lists in footnotes.}
+%    \begin{macrocode}
+\ifcase \@ptsize
+\renewcommand\footnotesize{%
+ \@setfontsize\footnotesize\@viiipt{9.9}%
+ \abovedisplayskip 6\p@\@plus2\p@\@minus4\p@
+ \abovedisplayshortskip \z@ \@plus\p@
+ \belowdisplayshortskip
+                    3\p@\@plus\p@\@minus2\p@
+ \def\@listi{\leftmargin\leftmargini
+           \topsep 3\p@ \@plus\p@ \@minus\p@
+           \parsep 2\p@ \@plus\p@ \@minus\p@
+           \itemsep \parsep}%
+ \belowdisplayskip \abovedisplayskip
+}
+\or
+\renewcommand\footnotesize{%
+ \@setfontsize\footnotesize\@ixpt{11.1}%
+ \abovedisplayskip 8\p@\@plus2\p@\@minus4\p@
+ \abovedisplayshortskip \z@ \@plus\p@
+ \belowdisplayshortskip
+                 4\p@ \@plus2\p@ \@minus2\p@
+ \def\@listi{\leftmargin\leftmargini
+          \topsep 4\p@ \@plus2\p@\@minus2\p@
+          \parsep 2\p@ \@plus\p@ \@minus\p@
+          \itemsep \parsep}%
+ \belowdisplayskip \abovedisplayskip
+}
+\or
+\renewcommand\footnotesize{%
+ \@setfontsize\footnotesize\@xpt{12.3}%
+ \abovedisplayskip10\p@\@plus2\p@\@minus5\p@
+ \abovedisplayshortskip \z@ \@plus3\p@
+ \belowdisplayshortskip
+                 6\p@ \@plus3\p@ \@minus3\p@
+ \def\@listi{\leftmargin\leftmargini
+         \topsep 6\p@ \@plus2\p@ \@minus2\p@
+         \parsep 3\p@ \@plus2\p@ \@minus\p@
+         \itemsep \parsep}%
+ \belowdisplayskip \abovedisplayskip
+}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\footnoterule}
+%    Setting footnotes in smaller type and separating them with
+%    sufficient space from the main text allow us to omit the
+%    |\footnoterule| normally used.
+%    \begin{macrocode}
+\let\footnoterule\@empty
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\footnotesep}
+% \changes{v1.1a}{1994/01/24}{Upgrades for LaTeX2e}
+%    Individual footnotes are separated from each other by a more or
+%    less baseline skip of the text size. This can be specified with
+%    the following code:
+%    \begin{macrocode}
+\AtBeginDocument
+  {\global\footnotesep\ht\strutbox}
+%    \end{macrocode}
+%    The use of the \LaTeXe{} hook |\AtBeginDocument| is a big help
+%    since it allows us to defer everything that might depend on user
+%    setting inside the preamble to the |\begin{document}| environment
+%    start.
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\@makefntext}
+%    And finally, a small but nice change, to the mark at the
+%    beginning of the footnote text. We will place it at the baseline
+%    instead of raising it as a superscript. Additionally, it will get
+%    a dot as punctuation.
+% \changes{v1.0c}{1990/08/24}{Added dot as recommended by Tschichold.}
+% \changes{v1.1e}{2000/04/14}{Don't use math mode for footnote symbol
+%                             (pr/3172)}
+%    \begin{macrocode}
+\long\def\@makefntext#1{\parindent 1em
+   \noindent\hbox to 2em{}%
+   \llap{\@thefnmark.\,\,}#1}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \section{Initialisation}
+%
+% We defined the macro |\preparefootins| above,  but we also have to use
+% it to prepare typesetting the first column. As a default for the
+% separation of footnotes and text on the second column, we use the
+%    following:
+%    \begin{macrocode}
+\setlength{\skip\footins}
+          {10pt plus 5pt minus 3pt}
+\AtBeginDocument{\preparefootins}
+%</package>
+%    \end{macrocode}
+% Of course, this value can be changed by the user as
+% described in the introduction.
+%
+% \Finale
+%
+%
+%
+
+\endinput

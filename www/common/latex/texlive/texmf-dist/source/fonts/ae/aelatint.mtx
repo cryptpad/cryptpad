@@ -1,0 +1,1704 @@
+%% aelatint.mtx
+%% Copyright 1997 Alan Jeffrey
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+% 1.6, hacked SPQR
+\relax
+
+\documentstyle[fontdoc]{ltugboat}
+
+\title{The {\tt fontinst} latin glyphs}
+\author{Alan Jeffrey}
+\address{School of Cognitive and Computing Sciences \\
+   University of Sussex \\
+   Falmer \\
+   Brighton \\
+   BN1 9QH \\
+   UK}
+\netaddress{alanje@cogs.susx.ac.uk}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document describes the glyphs used by the {\tt fontinst} 
+package when generating Latin fonts.
+
+\raggedright
+
+\metrics
+
+\setint{monowidth}{1}
+
+% Uses the fontinst package.
+
+\needsfontinstversion{1.6}
+
+% A top accent is set by placing the center of the accent at the given 
+% position along the width of the letter, raised up by the difference 
+% between the height of the letter and the xheight.
+
+\setcommand\topaccent#1#2#3{
+   \push
+      \moveup{\max{0}{\sub{\height{#1}}{\int{xheight}}}}
+      \movert{\add{\sub{\scale{\width{#1}}{#3}}{\scale{\width{#2}}{500}}}
+         {\scale{\sub{\height{#1}}{\int{xheight}}}{\int{italicslant}}}}
+      \glyph{#2}{1000}
+   \pop
+   \glyph{#1}{1000}
+}
+
+% A bottom accent is set by placing the center of the accent at the given 
+% position along the width of the letter.
+
+\setcommand\botaccent#1#2#3{
+   \push
+      \movert{\sub{\scale{\width{#1}}{#3}}{\scale{\width{#2}}{500}}}
+      \glyph{#2}{1000}
+   \pop
+   \glyph{#1}{1000}
+}
+
+% A c&sc glyph is created by shrinking the cap glyph, and adding extra
+% space.
+
+\setcommand\cscglyph#1{
+   \movert{\int{smallcapsextraspace}}
+   \glyph{#1}{\int{smallcapsscale}}
+   \movert{\int{smallcapsextraspace}}
+}
+
+% A c&sc top accent glyph is placed using the small glyphs if
+% available, and otherwise by shrinking the equivalent capital.
+
+\setcommand\csctopaccent#1#2#3{
+   \ifisglyph{#1small}\then
+      \topaccent{#1small}{#2small}{#3}
+   \else
+      \cscglyph{#1#2}
+   \fi
+}
+
+% Ditto bot accents.
+
+\setcommand\cscbotaccent#1#2#3{
+   \ifisglyph{#1small}\then
+      \botaccent{#1small}{#2small}{#3}
+   \else
+      \cscglyph{#1#2}
+   \fi
+}
+
+% A small accent is created by moving a shrunk accent up by the
+% difference between a scaled x and a scaled X.
+
+\setcommand\cscaccent#1{
+   \moveup{\scale{\int{xheight}}{\sub{1000}{\int{smallcapsscale}}}}
+   \cscglyph{#1}
+   \moveup{\scale{\int{xheight}}{\sub{\int{smallcapsscale}}{1000}}}
+}
+
+% \setleftrightkerning is \setleftkerning and \setrightkerning.
+
+\setcommand\setleftrightkerning#1#2#3{
+   \setleftkerning{#1}{#2}{#3}
+   \setrightkerning{#1}{#2}{#3}
+}
+
+% \unfakable is a glyph which can't be faked.
+
+\setcommand\unfakable#1{
+   \setglyph{#1}
+      \ifisglyph{#1-not}\then
+         \moveup{\neg{\depth{#1-not}}}
+         \glyphrule{
+            \width{#1-not}
+         }{
+            \add{\depth{#1-not}}{\height{#1-not}}
+         }
+         \resetitalic{\italic{#1-not}}
+         \moveup{\depth{#1-not}}
+      \else
+         \glyphrule{500}{500}
+      \fi
+      \glyphwarning{missing glyph `#1'}
+   \endsetglyph
+}
+
+\comment{\section{Default values}}
+
+\setint{italicslant}{0}
+\setint{xheight}{\height{x}}
+\setint{capheight}{\height{A}}
+\setint{ascender}{\height{d}}
+\setint{descender}{\depth{g}}
+\setint{underlinethickness}{40}
+\setint{visiblespacedepth}{200}
+\setint{visiblespacewidth}{400}
+\setint{visiblespacesurround}{50}
+\setint{smallcapsscale}{800}
+\setint{smallcapskerning}{900}
+
+\ifisint{monowidth}\then
+   \setint{capspacing}{0}
+   \setint{smallcapsextraspace}
+      {\div{\scale{\width{x}}{\sub{1000}{\int{smallcapsscale}}}}{2}}
+\else
+   \setint{capspacing}{50}
+   \setint{smallcapsextraspace}{0}
+\fi
+
+\ifisint{visiblespace}\then
+   \setint{boundarychar}{\int{visiblespace}}
+\fi
+
+\comment{\section{Kerning}}
+
+\setleftrightkerning{visiblespace}{space}{1000}
+
+\setleftkerning{hyphenchar}{hyphen}{1000}
+
+\setleftrightkerning{Aacute}{A}{1000}
+\setleftrightkerning{Abreve}{A}{1000}
+\setleftrightkerning{Acircumflex}{A}{1000}
+\setleftrightkerning{Adieresis}{A}{1000}
+\setleftrightkerning{Agrave}{A}{1000}
+\setleftrightkerning{Aogonek}{A}{1000}
+\setleftrightkerning{Aring}{A}{1000}
+\setleftrightkerning{Atilde}{A}{1000}
+
+\setleftrightkerning{Cacute}{C}{1000}
+\setleftrightkerning{Ccaron}{C}{1000}
+\setleftrightkerning{Ccedilla}{C}{1000}
+
+\setleftrightkerning{Dcaron}{D}{1000}
+
+\setleftrightkerning{Eacute}{E}{1000}
+\setleftrightkerning{Ecaron}{E}{1000}
+\setleftrightkerning{Ecircumflex}{E}{1000}
+\setleftrightkerning{Edieresis}{E}{1000}
+\setleftrightkerning{Egrave}{E}{1000}
+\setleftrightkerning{Eogonek}{E}{1000}
+
+\setleftrightkerning{Gbreve}{G}{1000}
+
+\setleftkerning{IJ}{I}{1000}
+
+\setleftrightkerning{Iacute}{I}{1000}
+\setleftrightkerning{Icircumflex}{I}{1000}
+\setleftrightkerning{Idieresis}{I}{1000}
+\setleftrightkerning{Idotaccent}{I}{1000}
+\setleftrightkerning{Igrave}{I}{1000}
+
+\setrightkerning{IJ}{J}{1000}
+
+\setleftrightkerning{Lacute}{L}{1000}
+\setleftrightkerning{Lslash}{L}{1000}
+\setleftkerning{Lcaron}{L}{1000}
+
+\setleftrightkerning{Nacute}{N}{1000}
+\setleftrightkerning{Ncaron}{N}{1000}
+\setleftrightkerning{Ntilde}{N}{1000}
+
+\setleftkerning{Ng}{N}{1000}
+\setrightkerning{Ng}{J}{1000}
+
+\setleftrightkerning{Oacute}{O}{1000}
+\setleftrightkerning{Ocircumflex}{O}{1000}
+\setleftrightkerning{Odieresis}{O}{1000}
+\setleftrightkerning{Ograve}{O}{1000}
+\setleftrightkerning{Ohungarumlaut}{O}{1000}
+\setleftrightkerning{Oslash}{O}{1000}
+\setleftrightkerning{Otilde}{O}{1000}
+
+\setleftrightkerning{Rcaron}{R}{1000}
+\setleftrightkerning{Racute}{R}{1000}
+
+\setleftrightkerning{SS}{S}{1000}
+\setleftrightkerning{Sacute}{S}{1000}
+\setleftrightkerning{Scaron}{S}{1000}
+\setleftrightkerning{Scedilla}{S}{1000}
+
+\setleftrightkerning{Tcaron}{T}{1000}
+\setleftrightkerning{Tcedilla}{T}{1000}
+
+\setleftrightkerning{Uacute}{U}{1000}
+\setleftrightkerning{Ucircumflex}{U}{1000}
+\setleftrightkerning{Udieresis}{U}{1000}
+\setleftrightkerning{Ugrave}{U}{1000}
+\setleftrightkerning{Uhungarumlaut}{U}{1000}
+\setleftrightkerning{Uring}{U}{1000}
+
+\setleftrightkerning{Yacute}{Y}{1000}
+\setleftrightkerning{Ydieresis}{Y}{1000}
+
+\setleftrightkerning{Zacute}{Z}{1000}
+\setleftrightkerning{Zcaron}{Z}{1000}
+\setleftrightkerning{Zdotaccent}{Z}{1000}
+
+\setleftrightkerning{aogonek}{a}{1000}
+
+\setleftrightkerning{ccedilla}{c}{1000}
+
+\setleftrightkerning{eogonek}{e}{1000}
+
+\setleftkerning{ij}{i}{1000}
+
+\setrightkerning{ij}{j}{1000}
+
+\setleftkerning{ng}{n}{1000}
+\setrightkerning{ng}{j}{1000}
+
+\setleftkerning{oe}{o}{1000}
+\setrightkerning{oe}{e}{1000}
+\setleftrightkerning{oslash}{o}{1000}
+
+\setleftrightkerning{scedilla}{s}{1000}
+
+\setleftrightkerning{tcedilla}{t}{1000}
+
+\comment{\section{All-caps kerning}}
+
+\setleftrightkerning{Dbar}{Eth}{1000}
+\setleftkerning{IJspaced}{I}{1000}
+\setrightkerning{IJspaced}{J}{1000}
+\setleftrightkerning{SSspaced}{S}{1000}
+
+\comment{\section{Small caps kerning}}
+
+\setleftrightkerning{Asmall}{A}{\int{smallcapskerning}}
+\setleftrightkerning{Bsmall}{B}{\int{smallcapskerning}}
+\setleftrightkerning{Csmall}{C}{\int{smallcapskerning}}
+\setleftrightkerning{Dsmall}{D}{\int{smallcapskerning}}
+\setleftrightkerning{Esmall}{E}{\int{smallcapskerning}}
+\setleftrightkerning{Fsmall}{F}{\int{smallcapskerning}}
+\setleftrightkerning{Gsmall}{G}{\int{smallcapskerning}}
+\setleftrightkerning{Hsmall}{H}{\int{smallcapskerning}}
+\setleftrightkerning{Ismall}{I}{\int{smallcapskerning}}
+\setleftrightkerning{Jsmall}{J}{\int{smallcapskerning}}
+\setleftrightkerning{Ksmall}{K}{\int{smallcapskerning}}
+\setleftrightkerning{Lsmall}{L}{\int{smallcapskerning}}
+\setleftrightkerning{Msmall}{M}{\int{smallcapskerning}}
+\setleftrightkerning{Nsmall}{N}{\int{smallcapskerning}}
+\setleftrightkerning{Osmall}{O}{\int{smallcapskerning}}
+\setleftrightkerning{Psmall}{P}{\int{smallcapskerning}}
+\setleftrightkerning{Qsmall}{Q}{\int{smallcapskerning}}
+\setleftrightkerning{Rsmall}{R}{\int{smallcapskerning}}
+\setleftrightkerning{Ssmall}{S}{\int{smallcapskerning}}
+\setleftrightkerning{Tsmall}{T}{\int{smallcapskerning}}
+\setleftrightkerning{Usmall}{U}{\int{smallcapskerning}}
+\setleftrightkerning{Vsmall}{V}{\int{smallcapskerning}}
+\setleftrightkerning{Wsmall}{W}{\int{smallcapskerning}}
+\setleftrightkerning{Xsmall}{X}{\int{smallcapskerning}}
+\setleftrightkerning{Ysmall}{Y}{\int{smallcapskerning}}
+\setleftrightkerning{Zsmall}{Z}{\int{smallcapskerning}}
+\setleftrightkerning{Aacutesmall}{Aacute}{\int{smallcapskerning}}
+\setleftrightkerning{Abrevesmall}{Abreve}{\int{smallcapskerning}}
+\setleftrightkerning{Acircumflexsmall}{Acircumflex}{\int{smallcapskerning}}
+\setleftrightkerning{Adieresissmall}{Adieresis}{\int{smallcapskerning}}
+\setleftrightkerning{AEsmall}{AE}{\int{smallcapskerning}}
+\setleftrightkerning{Agravesmall}{Agrave}{\int{smallcapskerning}}
+\setleftrightkerning{Aogoneksmall}{Aogonek}{\int{smallcapskerning}}
+\setleftrightkerning{Aringsmall}{Aring}{\int{smallcapskerning}}
+\setleftrightkerning{Atildesmall}{Atilde}{\int{smallcapskerning}}
+\setleftrightkerning{Cacutesmall}{Cacute}{\int{smallcapskerning}}
+\setleftrightkerning{Ccaronsmall}{Ccaron}{\int{smallcapskerning}}
+\setleftrightkerning{Ccedillasmall}{Ccedilla}{\int{smallcapskerning}}
+\setleftrightkerning{Dbarsmall}{Dbar}{\int{smallcapskerning}}
+\setleftrightkerning{Dcaronsmall}{Dcaron}{\int{smallcapskerning}}
+\setleftrightkerning{Eacutesmall}{Eacute}{\int{smallcapskerning}}
+\setleftrightkerning{Ecaronsmall}{Ecaron}{\int{smallcapskerning}}
+\setleftrightkerning{Ecircumflexsmall}{Ecircumflex}{\int{smallcapskerning}}
+\setleftrightkerning{Edieresissmall}{Edieresis}{\int{smallcapskerning}}
+\setleftrightkerning{Egravesmall}{Egrave}{\int{smallcapskerning}}
+\setleftrightkerning{Eogoneksmall}{Eogonek}{\int{smallcapskerning}}
+\setleftrightkerning{Ethsmall}{Eth}{\int{smallcapskerning}}
+\setleftrightkerning{Gbrevesmall}{Gbreve}{\int{smallcapskerning}}
+\setleftrightkerning{IJsmall}{IJ}{\int{smallcapskerning}}
+\setleftrightkerning{Iacutesmall}{Iacute}{\int{smallcapskerning}}
+\setleftrightkerning{Icircumflexsmall}{Icircumflex}{\int{smallcapskerning}}
+\setleftrightkerning{Idieresissmall}{Idieresis}{\int{smallcapskerning}}
+\setleftrightkerning{Idotaccentsmall}{Idotaccent}{\int{smallcapskerning}}
+\setleftrightkerning{Igravesmall}{Igrave}{\int{smallcapskerning}}
+\setleftrightkerning{Lacutesmall}{Lacute}{\int{smallcapskerning}}
+\setleftrightkerning{Lcaronsmall}{Lcaron}{\int{smallcapskerning}}
+\setleftrightkerning{Lslashsmall}{Lslash}{\int{smallcapskerning}}
+\setleftrightkerning{Nacutesmall}{Nacute}{\int{smallcapskerning}}
+\setleftrightkerning{Ncaronsmall}{Ncaron}{\int{smallcapskerning}}
+\setleftrightkerning{Ngsmall}{Ng}{\int{smallcapskerning}}
+\setleftrightkerning{Ntildesmall}{Ntilde}{\int{smallcapskerning}}
+\setleftrightkerning{Oacutesmall}{Oacute}{\int{smallcapskerning}}
+\setleftrightkerning{Ocircumflexsmall}{Ocircumflex}{\int{smallcapskerning}}
+\setleftrightkerning{Odieresissmall}{Odieresis}{\int{smallcapskerning}}
+\setleftrightkerning{OEsmall}{OE}{\int{smallcapskerning}}
+\setleftrightkerning{Ogravesmall}{Ograve}{\int{smallcapskerning}}
+\setleftrightkerning{Ohungarumlautsmall}{Ohungarumlaut}{\int{smallcapskerning}}
+\setleftrightkerning{Oslashsmall}{Oslash}{\int{smallcapskerning}}
+\setleftrightkerning{Otildesmall}{Otilde}{\int{smallcapskerning}}
+\setleftrightkerning{Racutesmall}{Racute}{\int{smallcapskerning}}
+\setleftrightkerning{Rcaronsmall}{Rcaron}{\int{smallcapskerning}}
+\setleftrightkerning{SSsmall}{SS}{\int{smallcapskerning}}
+\setleftrightkerning{Sacutesmall}{Sacute}{\int{smallcapskerning}}
+\setleftrightkerning{Scaronsmall}{Scaron}{\int{smallcapskerning}}
+\setleftrightkerning{Scedillasmall}{Scedilla}{\int{smallcapskerning}}
+\setleftrightkerning{Tcaronsmall}{Tcaron}{\int{smallcapskerning}}
+\setleftrightkerning{Tcedillasmall}{Tcedilla}{\int{smallcapskerning}}
+\setleftrightkerning{Thornsmall}{Thorn}{\int{smallcapskerning}}
+\setleftrightkerning{Uacutesmall}{Uacute}{\int{smallcapskerning}}
+\setleftrightkerning{Ucircumflexsmall}{Ucircumflex}{\int{smallcapskerning}}
+\setleftrightkerning{Udieresissmall}{Udieresis}{\int{smallcapskerning}}
+\setleftrightkerning{Ugravesmall}{Ugrave}{\int{smallcapskerning}}
+\setleftrightkerning{Uhungarumlautsmall}{Uhungarumlaut}{\int{smallcapskerning}}
+\setleftrightkerning{Uringsmall}{Uring}{\int{smallcapskerning}}
+\setleftrightkerning{Yacutesmall}{Yacute}{\int{smallcapskerning}}
+\setleftrightkerning{Ydieresissmall}{Ydieresis}{\int{smallcapskerning}}
+\setleftrightkerning{Zacutesmall}{Zacute}{\int{smallcapskerning}}
+\setleftrightkerning{Zcaronsmall}{Zcaron}{\int{smallcapskerning}}
+\setleftrightkerning{Zdotaccentsmall}{Zdotaccent}{\int{smallcapskerning}}
+\setleftrightkerning{dotlessIsmall}{Ismall}{1000}
+\setleftrightkerning{dotlessJsmall}{Jsmall}{1000}
+
+\comment{\section{Unfakable glyphs}}
+
+\unfakable{Gamma}
+\unfakable{Delta}
+\unfakable{Theta}
+\unfakable{Lambda}
+\unfakable{Xi}
+\unfakable{Pi}
+\unfakable{Sigma}
+\unfakable{Upsilon}
+\unfakable{Upsilon1}
+\unfakable{Phi}
+\unfakable{Psi}
+\unfakable{Omega}
+\unfakable{grave}
+\unfakable{acute}
+\unfakable{circumflex}
+\unfakable{tilde}
+\unfakable{dieresis}
+\unfakable{hungarumlaut}
+\unfakable{ringfitted}
+\unfakable{caron}
+\unfakable{breve}
+\unfakable{macron}
+\unfakable{dotaccent}
+\unfakable{cedilla}
+\unfakable{guilsinglleft}
+\unfakable{guilsinglright}
+\unfakable{quotedblleft}
+\unfakable{quotedblright}
+\unfakable{quotedblbase}
+\unfakable{guillemotleft}
+\unfakable{guillemotright}
+\unfakable{dotlessi}
+\unfakable{dotlessj}
+\unfakable{perthousandzero}
+\unfakable{exclam}
+\unfakable{quotedbl}
+\unfakable{numbersign}
+\unfakable{dollar}
+\unfakable{percent}
+\unfakable{ampersand}
+\unfakable{quoteright}
+\unfakable{parenleft}
+\unfakable{parenright}
+\unfakable{asterisk}
+\unfakable{plus}
+\unfakable{comma}
+\unfakable{hyphen}
+\unfakable{period}
+\unfakable{slash}
+\unfakable{zero}
+\unfakable{one}
+\unfakable{two}
+\unfakable{three}
+\unfakable{four}
+\unfakable{five}
+\unfakable{six}
+\unfakable{seven}
+\unfakable{eight}
+\unfakable{nine}
+\unfakable{zerooldstyle}
+\unfakable{oneoldstyle}
+\unfakable{twooldstyle}
+\unfakable{threeoldstyle}
+\unfakable{fouroldstyle}
+\unfakable{fiveoldstyle}
+\unfakable{sixoldstyle}
+\unfakable{sevenoldstyle}
+\unfakable{eightoldstyle}
+\unfakable{nineoldstyle}
+\unfakable{colon}
+\unfakable{semicolon}
+\unfakable{less}
+\unfakable{equal}
+\unfakable{greater}
+\unfakable{question}
+\unfakable{at}
+\unfakable{A}
+\unfakable{B}
+\unfakable{C}
+\unfakable{D}
+\unfakable{E}
+\unfakable{F}
+\unfakable{G}
+\unfakable{H}
+\unfakable{I}
+\unfakable{J}
+\unfakable{K}
+\unfakable{L}
+\unfakable{M}
+\unfakable{N}
+\unfakable{O}
+\unfakable{P}
+\unfakable{Q}
+\unfakable{R}
+\unfakable{S}
+\unfakable{T}
+\unfakable{U}
+\unfakable{V}
+\unfakable{W}
+\unfakable{X}
+\unfakable{Y}
+\unfakable{Z}
+\unfakable{bracketleft}
+\unfakable{backslash}
+\unfakable{bracketright}
+\unfakable{underscore}
+\unfakable{quoteleft}
+\unfakable{a}
+\unfakable{b}
+\unfakable{c}
+\unfakable{d}
+\unfakable{e}
+\unfakable{f}
+\unfakable{g}
+\unfakable{h}
+\unfakable{i}
+\unfakable{j}
+\unfakable{k}
+\unfakable{l}
+\unfakable{m}
+\unfakable{n}
+\unfakable{o}
+\unfakable{p}
+\unfakable{q}
+\unfakable{r}
+\unfakable{s}
+\unfakable{t}
+\unfakable{u}
+\unfakable{v}
+\unfakable{w}
+\unfakable{x}
+\unfakable{y}
+\unfakable{z}
+\unfakable{braceleft}
+\unfakable{bar}
+\unfakable{braceright}
+\unfakable{Eng}
+\unfakable{section}
+\unfakable{eng}
+\unfakable{exclamdown}
+\unfakable{questiondown}
+\unfakable{sterling}
+\unfakable{AE}
+\unfakable{Eth}
+\unfakable{OE}
+\unfakable{Oslash}
+\unfakable{Thorn}
+\unfakable{ae}
+\unfakable{eth}
+\unfakable{oe}
+\unfakable{oslash}
+\unfakable{thorn}
+\unfakable{germandbls}
+\unfakable{lslashslash}
+
+\comment{\section{Glyphs}}
+
+\setglyph{space}
+   \ifisglyph{space-not}\then
+      \movert{\width{space-not}}
+   \else
+      \movert{\width{i}}
+   \fi
+\endsetglyph
+
+\setglyph{compwordmark}
+   \glyphrule{0}{\int{xheight}}
+\endsetglyph
+\setint{compwordmark-spacing}{0}
+
+\setglyph{ogonek}
+    \glyph{hookrightchar}{800}
+\endsetglyph
+
+\resetglyph{ogonek}
+    \moveup{\neg{\height{ogonek}}}
+    \glyph{ogonek}{1000}
+    \resetdepth{\int{descender}}
+\endresetglyph
+
+\setglyph{asciicircum}
+   \glyph{circumflex}{1000}
+\endsetglyph
+
+\setglyph{asciitilde}
+   \glyph{tilde}{1000}
+\endsetglyph
+
+\setglyph{quotesinglbase}
+   \glyph{comma}{1000}
+\endsetglyph
+
+\setglyph{fi}
+   \glyph{f}{1000}
+   \glyph{i}{1000}
+\endsetglyph
+
+\setglyph{ff}
+   \glyph{f}{1000}
+   \glyph{f}{1000}
+\endsetglyph
+
+\setglyph{fl}
+   \glyph{f}{1000}
+   \glyph{l}{1000}
+\endsetglyph
+
+\setglyph{ffi}
+   \glyph{f}{1000}
+   \glyph{f}{1000}
+   \glyph{i}{1000}
+\endsetglyph
+
+\setglyph{ffl}
+   \glyph{f}{1000}
+   \glyph{f}{1000}
+   \glyph{l}{1000}
+\endsetglyph
+
+\setglyph{rangedash}
+   \glyph{hyphen}{1000}
+\endsetglyph
+
+\setglyph{punctdash}
+   \glyph{hyphen}{1000}
+   \glyph{hyphen}{1000}
+\endsetglyph
+
+\setglyph{endash}
+   \glyph{rangedash}{1000}
+\endsetglyph
+
+\setglyph{emdash}
+   \glyph{punctdash}{1000}
+\endsetglyph
+
+\setglyph{hyphenchar}
+   \glyph{hyphen}{1000}
+\endsetglyph
+
+\setglyph{ring}
+   \movert{\neg{\div{\width{ringfitted}}{2}}}
+   \glyph{ringfitted}{1000}
+   \movert{\neg{\div{\width{ringfitted}}{2}}}
+\endsetglyph
+   
+\setglyph{lslash}
+   \glyph{lslashslash}{1000}
+   \movert{\kerning{lslashslash}{l}}
+   \glyph{l}{1000}
+\endsetglyph
+   
+\setglyph{Lslash}
+   \glyph{lslashslash}{1000}
+   \movert{\kerning{lslashslash}{L}}
+   \glyph{L}{1000}
+\endsetglyph
+
+\setglyph{Ng}
+   \glyph{Eng}{1000}
+\endsetglyph
+
+\setglyph{ng}
+   \glyph{eng}{1000}
+\endsetglyph
+
+\setglyph{Abreve}
+   \topaccent{A}{breve}{500}
+\endsetglyph
+
+\setglyph{Aogonek}
+   \botaccent{A}{ogonek}{800}
+\endsetglyph
+
+\setglyph{Cacute}
+   \topaccent{C}{acute}{500}
+\endsetglyph
+
+\setglyph{Ccaron}
+   \topaccent{C}{caron}{500}
+\endsetglyph
+
+\setglyph{Dcaron}
+   \topaccent{D}{caron}{450}
+\endsetglyph
+
+\setglyph{Ecaron}
+   \topaccent{E}{caron}{500}
+\endsetglyph
+
+\setglyph{Eogonek}
+   \botaccent{E}{ogonek}{750}
+\endsetglyph
+
+\setglyph{Gbreve}
+   \topaccent{G}{breve}{500}
+\endsetglyph
+
+\setglyph{Lacute}
+   \topaccent{L}{acute}{250}
+\endsetglyph
+
+\setglyph{Lcaron}
+   \glyph{L}{1000}
+   \ifisint{monowidth}\then\else
+      \movert{-200}
+   \fi
+   \glyph{quoteright}{1000}
+\endsetglyph
+
+\setglyph{Nacute}
+   \topaccent{N}{acute}{500}
+\endsetglyph
+
+\setglyph{Ncaron}
+   \topaccent{N}{caron}{500}
+\endsetglyph
+
+\setglyph{Ohungarumlaut}
+   \topaccent{O}{hungarumlaut}{500}
+\endsetglyph
+
+\setglyph{Racute}
+   \topaccent{R}{acute}{500}
+\endsetglyph
+
+\setglyph{Rcaron}
+   \topaccent{R}{caron}{500}
+\endsetglyph
+
+\setglyph{Sacute}
+   \topaccent{S}{acute}{500}
+\endsetglyph
+
+\setglyph{Scaron}
+   \topaccent{S}{caron}{500}
+\endsetglyph
+
+\setglyph{Scedilla}
+   \botaccent{S}{cedilla}{500}
+\endsetglyph
+
+\setglyph{Tcaron}
+   \topaccent{T}{caron}{500}
+\endsetglyph
+
+\setglyph{Tcedilla}
+   \botaccent{T}{cedilla}{500}
+\endsetglyph
+
+\setglyph{Uhungarumlaut}
+   \topaccent{U}{hungarumlaut}{500}
+\endsetglyph
+
+\setglyph{Uring}
+   \topaccent{U}{ring}{500}
+\endsetglyph
+
+\setglyph{Ydieresis}
+   \topaccent{Y}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Zacute}
+   \topaccent{Z}{acute}{500}
+\endsetglyph
+
+\setglyph{Zcaron}
+   \topaccent{Z}{caron}{500}
+\endsetglyph
+
+\setglyph{Zdotaccent}
+   \topaccent{Z}{dotaccent}{500}
+\endsetglyph
+
+\setglyph{IJ}
+   \glyph{I}{1000}
+   \movert{\kerning{I}{J}}
+   \glyph{J}{1000}
+\endsetglyph
+
+\setglyph{Idotaccent}
+   \topaccent{I}{dotaccent}{500}
+\endsetglyph
+
+\setglyph{dbar}
+   \push
+      \movert{\sub{\width{d}}{\width{macron}}}
+      \moveup{
+         \sub{\scale{\add{\height{d}}{\int{xheight}}}{500}}
+             {\height{macron}}}
+      \glyph{macron}{1000}
+   \pop
+   \glyph{d}{1000}
+\endsetglyph
+
+\setglyph{abreve}
+   \topaccent{a}{breve}{500}
+\endsetglyph
+
+\setglyph{aogonek}
+   \botaccent{a}{ogonek}{800}
+\endsetglyph
+
+\setglyph{cacute}
+   \topaccent{c}{acute}{500}
+\endsetglyph
+
+\setglyph{ccaron}
+   \topaccent{c}{caron}{500}
+\endsetglyph
+
+\setglyph{dcaron}
+   \glyph{d}{1000}
+   \ifisint{monowidth}\then\else
+      \movert{-75}
+   \fi
+   \glyph{quoteright}{1000}
+\endsetglyph
+
+\setglyph{ecaron}
+   \topaccent{e}{caron}{500}
+\endsetglyph
+
+\setglyph{eogonek}
+   \botaccent{e}{ogonek}{500}
+\endsetglyph
+
+\setglyph{gbreve}
+   \topaccent{g}{breve}{500}
+\endsetglyph
+
+\setglyph{lacute}
+   \topaccent{l}{acute}{500}
+\endsetglyph
+
+\setglyph{lcaron}
+   \glyph{l}{1000}
+   \ifisint{monowidth}\then\else
+      \movert{-100}
+   \fi
+   \glyph{quoteright}{1000}
+\endsetglyph
+
+\setglyph{nacute}
+   \topaccent{n}{acute}{500}
+\endsetglyph
+
+\setglyph{ncaron}
+   \topaccent{n}{caron}{500}
+\endsetglyph
+
+\setglyph{ohungarumlaut}
+   \topaccent{o}{hungarumlaut}{500}
+\endsetglyph
+
+\setglyph{racute}
+   \topaccent{r}{acute}{500}
+\endsetglyph
+
+\setglyph{rcaron}
+   \topaccent{r}{caron}{500}
+\endsetglyph
+
+\setglyph{sacute}
+   \topaccent{s}{acute}{500}
+\endsetglyph
+
+\setglyph{scaron}
+   \topaccent{s}{caron}{500}
+\endsetglyph
+
+\setglyph{scedilla}
+   \botaccent{s}{cedilla}{500}
+\endsetglyph
+
+\setglyph{tcaron}
+   \glyph{t}{1000}
+   \ifisint{monowidth}\then\else
+      \movert{-75}
+   \fi
+   \glyph{quoteright}{1000}
+\endsetglyph
+
+\setglyph{tcedilla}
+   \botaccent{t}{cedilla}{500}
+\endsetglyph
+
+\setglyph{uhungarumlaut}
+   \topaccent{u}{hungarumlaut}{500}
+\endsetglyph
+
+\setglyph{uring}
+   \topaccent{u}{ring}{500}
+\endsetglyph
+
+\setglyph{ydieresis}
+   \topaccent{y}{dieresis}{500}
+\endsetglyph
+
+\setglyph{zacute}
+   \topaccent{z}{acute}{500}
+\endsetglyph
+
+\setglyph{zcaron}
+   \topaccent{z}{caron}{500}
+\endsetglyph
+
+\setglyph{zdotaccent}
+   \topaccent{z}{dotaccent}{500}
+\endsetglyph
+
+\setglyph{ij}
+   \glyph{i}{1000}
+   \movert{\kerning{i}{j}}
+   \glyph{j}{1000}
+\endsetglyph
+
+\setglyph{Agrave}
+   \topaccent{A}{grave}{500}
+\endsetglyph
+
+\setglyph{Aacute}
+   \topaccent{A}{acute}{500}
+\endsetglyph
+
+\setglyph{Acircumflex}
+   \topaccent{A}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Atilde}
+   \topaccent{A}{tilde}{500}
+\endsetglyph
+
+\setglyph{Adieresis}
+   \topaccent{A}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Aring}
+   \topaccent{A}{ring}{500}
+\endsetglyph
+
+\setglyph{Ccedilla}
+   \botaccent{C}{cedilla}{500}
+\endsetglyph
+
+\setglyph{Egrave}
+   \topaccent{E}{grave}{500}
+\endsetglyph
+
+\setglyph{Eacute}
+   \topaccent{E}{acute}{500}
+\endsetglyph
+
+\setglyph{Ecircumflex}
+   \topaccent{E}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Edieresis}
+ \topaccent{E}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Iacute}
+   \topaccent{I}{acute}{500}
+\endsetglyph
+
+\setglyph{Igrave}
+   \topaccent{I}{grave}{500}
+\endsetglyph
+
+\setglyph{Icircumflex}
+   \topaccent{I}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Idieresis}
+   \topaccent{I}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Ntilde}
+   \topaccent{N}{tilde}{500}
+\endsetglyph
+
+\setglyph{Ograve}
+   \topaccent{O}{grave}{500}
+\endsetglyph
+
+\setglyph{Oacute}
+   \topaccent{O}{acute}{500}
+\endsetglyph
+
+\setglyph{Ocircumflex}
+   \topaccent{O}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Otilde}
+   \topaccent{O}{tilde}{500}
+\endsetglyph
+
+\setglyph{Odieresis}
+   \topaccent{O}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Ugrave}
+   \topaccent{U}{grave}{500}
+\endsetglyph
+
+\setglyph{Uacute}
+   \topaccent{U}{acute}{500}
+\endsetglyph
+
+\setglyph{Ucircumflex}
+   \topaccent{U}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Udieresis}
+   \topaccent{U}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Yacute}
+   \topaccent{Y}{acute}{500}
+\endsetglyph
+
+\setglyph{SS}
+   \glyph{S}{1000}
+   \movert{\kerning{S}{S}}
+   \glyph{S}{1000}
+\endsetglyph
+
+\setglyph{agrave}
+   \topaccent{a}{grave}{500}
+\endsetglyph
+
+\setglyph{aacute}
+   \topaccent{a}{acute}{500}
+\endsetglyph
+
+\setglyph{acircumflex}
+   \topaccent{a}{circumflex}{500}
+\endsetglyph
+
+\setglyph{atilde}
+   \topaccent{a}{tilde}{500}
+\endsetglyph
+
+\setglyph{adieresis}
+   \topaccent{a}{dieresis}{500}
+\endsetglyph
+
+\setglyph{aring}
+   \topaccent{a}{ring}{500}
+\endsetglyph
+
+\setglyph{ccedilla}
+   \botaccent{c}{cedilla}{500}
+\endsetglyph
+
+\setglyph{egrave}
+   \topaccent{e}{grave}{500}
+\endsetglyph
+
+\setglyph{eacute}
+   \topaccent{e}{acute}{500}
+\endsetglyph
+
+\setglyph{ecircumflex}
+   \topaccent{e}{circumflex}{500}
+\endsetglyph
+
+\setglyph{edieresis}
+   \topaccent{e}{dieresis}{500}
+\endsetglyph
+
+\setglyph{igrave}
+   \topaccent{dotlessi}{grave}{500}
+\endsetglyph
+
+\setglyph{iacute}
+   \topaccent{dotlessi}{acute}{500}
+\endsetglyph
+
+\setglyph{icircumflex}
+   \topaccent{dotlessi}{circumflex}{500}
+\endsetglyph
+
+\setglyph{idieresis}
+   \topaccent{dotlessi}{dieresis}{500}
+\endsetglyph
+
+\setglyph{ntilde}
+   \topaccent{n}{tilde}{500}
+\endsetglyph
+
+\setglyph{ograve}
+   \topaccent{o}{grave}{500}
+\endsetglyph
+
+\setglyph{oacute}
+   \topaccent{o}{acute}{500}
+\endsetglyph
+
+\setglyph{ocircumflex}
+   \topaccent{o}{circumflex}{500}
+\endsetglyph
+
+\setglyph{otilde}
+   \topaccent{o}{tilde}{500}
+\endsetglyph
+
+\setglyph{odieresis}
+   \topaccent{o}{dieresis}{500}
+\endsetglyph
+
+\setglyph{ugrave}
+   \topaccent{u}{grave}{500}
+\endsetglyph
+
+\setglyph{uacute}
+   \topaccent{u}{acute}{500}
+\endsetglyph
+
+\setglyph{ucircumflex}
+   \topaccent{u}{circumflex}{500}
+\endsetglyph
+
+\setglyph{udieresis}
+   \topaccent{u}{dieresis}{500}
+\endsetglyph
+
+\setglyph{yacute}
+   \topaccent{y}{acute}{500}
+\endsetglyph
+
+\comment{\section{All-caps glyphs}}
+
+\setglyph{dotlessI}
+   \glyph{I}{1000}
+\endsetglyph
+
+\setglyph{dotlessJ}
+   \glyph{J}{1000}
+\endsetglyph
+
+\setglyph{FFspaced}
+   \glyph{F}{1000}
+   \movert{\add{\kerning{F}{F}}
+      {\int{capspacing}}}
+   \glyph{F}{1000}
+\endsetglyph
+
+\setglyph{FIspaced}
+   \glyph{F}{1000}
+   \movert{\add{\kerning{F}{I}}
+      {\int{capspacing}}}
+   \glyph{I}{1000}
+\endsetglyph
+
+\setglyph{FLspaced}
+   \glyph{F}{1000}
+   \movert{\add{\kerning{F}{L}}
+      {\int{capspacing}}}
+   \glyph{L}{1000}
+\endsetglyph
+
+\setglyph{FFIspaced}
+   \glyph{FFspaced}{1000}
+   \movert{\add{\kerning{FFspaced}{I}}
+      {\int{capspacing}}}
+   \glyph{I}{1000}
+\endsetglyph
+
+\setglyph{FFLspaced}
+   \glyph{FFspaced}{1000}
+   \movert{\add{\kerning{FFspaced}{L}}
+      {\int{capspacing}}}
+   \glyph{L}{1000}
+\endsetglyph
+
+\setglyph{Dbar}
+   \glyph{Eth}{1000}
+\endsetglyph
+
+\setglyph{IJspaced}
+   \glyph{I}{1000}
+   \movert{\add{\kerning{I}{J}}{\int{capspacing}}}
+   \glyph{J}{1000}
+\endsetglyph
+
+\setglyph{SSspaced}
+   \glyph{S}{1000}
+   \movert{\add{\kerning{S}{S}}{\int{capspacing}}}
+   \glyph{S}{1000}
+\endsetglyph
+
+\comment{\section{Small caps glyphs}}
+
+\setglyph{Acutesmall}
+   \cscaccent{acute}
+\endsetglyph
+
+\setglyph{acutesmall}
+   \glyph{Acutesmall}{1000}
+\endsetglyph
+
+\setglyph{Gravesmall}
+   \cscaccent{grave}
+\endsetglyph
+
+\setglyph{gravesmall}
+   \glyph{Gravesmall}{1000}
+\endsetglyph
+
+\setglyph{Circumflexsmall}
+   \cscaccent{circumflex}
+\endsetglyph
+
+\setglyph{circumflexsmall}
+   \glyph{Circumflexsmall}{1000}
+\endsetglyph
+
+\setglyph{Tildesmall}
+   \cscaccent{tilde}
+\endsetglyph
+
+\setglyph{tildesmall}
+   \glyph{Tildesmall}{1000}
+\endsetglyph
+
+\setglyph{Dieresissmall}
+   \cscaccent{dieresis}
+\endsetglyph
+
+\setglyph{dieresissmall}
+   \glyph{Dieresissmall}{1000}
+\endsetglyph
+
+\setglyph{Brevesmall}
+   \cscaccent{breve}
+\endsetglyph
+
+\setglyph{brevesmall}
+   \glyph{Brevesmall}{1000}
+\endsetglyph
+
+\setglyph{Dotaccentsmall}
+   \cscaccent{dotaccent}
+\endsetglyph
+
+\setglyph{dotaccentsmall}
+   \glyph{Dotaccentsmall}{1000}
+\endsetglyph
+
+\setglyph{Caronsmall}
+   \cscaccent{caron}
+\endsetglyph
+
+\setglyph{caronsmall}
+   \glyph{Caronsmall}{1000}
+\endsetglyph
+
+\setglyph{Hungarumlautsmall}
+   \cscaccent{hungarumlaut}
+\endsetglyph
+
+\setglyph{hungarumlautsmall}
+   \glyph{Hungarumlautsmall}{1000}
+\endsetglyph
+
+\setglyph{Ringsmall}
+   \cscaccent{ring}
+\endsetglyph
+
+\setglyph{ringsmall}
+   \glyph{Ringsmall}{1000}
+\endsetglyph
+
+\setglyph{Cedillasmall}
+   \cscglyph{cedilla}
+\endsetglyph
+
+\setglyph{cedillasmall}
+   \glyph{Cedillasmall}{1000}
+\endsetglyph
+
+\setglyph{Ogoneksmall}
+   \cscglyph{ogonek}
+\endsetglyph
+
+\setglyph{ogoneksmall}
+   \glyph{Ogoneksmall}{1000}
+\endsetglyph
+
+\setglyph{Idotaccentsmall}
+   \csctopaccent{I}{dotaccent}{500}
+\endsetglyph
+
+\setglyph{Abrevesmall}
+   \csctopaccent{A}{breve}{500}
+\endsetglyph
+
+\setglyph{Aogoneksmall}
+   \cscbotaccent{A}{ogonek}{800}
+\endsetglyph
+
+\setglyph{Cacutesmall}
+   \csctopaccent{C}{acute}{500}
+\endsetglyph
+
+\setglyph{Ccaronsmall}
+   \csctopaccent{C}{caron}{500}
+\endsetglyph
+
+\setglyph{Dcaronsmall}
+   \csctopaccent{D}{caron}{500}
+\endsetglyph
+
+\setglyph{Ecaronsmall}
+   \csctopaccent{E}{caron}{500}
+\endsetglyph
+
+\setglyph{Eogoneksmall}
+   \cscbotaccent{E}{ogonek}{750}
+\endsetglyph
+
+\setglyph{Gbrevesmall}
+   \csctopaccent{G}{breve}{500}
+\endsetglyph
+
+\setglyph{Lacutesmall}
+   \csctopaccent{L}{acute}{250}
+\endsetglyph
+
+\setglyph{Nacutesmall}
+   \csctopaccent{N}{acute}{500}
+\endsetglyph
+
+\setglyph{Ncaronsmall}
+   \csctopaccent{N}{caron}{500}
+\endsetglyph
+
+\setglyph{Ngsmall}
+   \cscglyph{Ng}
+\endsetglyph
+
+\setglyph{Ohungarumlautsmall}
+   \csctopaccent{O}{hungarumlaut}{500}
+\endsetglyph
+
+\setglyph{Racutesmall}
+   \csctopaccent{R}{acute}{500}
+\endsetglyph
+
+\setglyph{Rcaronsmall}
+   \csctopaccent{R}{caron}{500}
+\endsetglyph
+
+\setglyph{Sacutesmall}
+   \csctopaccent{S}{acute}{500}
+\endsetglyph
+
+\setglyph{Scaronsmall}
+   \csctopaccent{S}{caron}{500}
+\endsetglyph
+
+\setglyph{Scedillasmall}
+   \cscbotaccent{S}{cedilla}{500}
+\endsetglyph
+
+\setglyph{Tcaronsmall}
+   \csctopaccent{T}{caron}{500}
+\endsetglyph
+
+\setglyph{Tcedillasmall}
+   \cscbotaccent{T}{cedilla}{500}
+\endsetglyph
+
+\setglyph{Uhungarumlautsmall}
+   \csctopaccent{U}{hungarumlaut}{500}
+\endsetglyph
+
+\setglyph{Uringsmall}
+   \csctopaccent{U}{ring}{500}
+\endsetglyph
+
+\setglyph{Ydieresissmall}
+   \csctopaccent{Y}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Zacutesmall}
+   \csctopaccent{Z}{acute}{500}
+\endsetglyph
+
+\setglyph{Zcaronsmall}
+   \csctopaccent{Z}{caron}{500}
+\endsetglyph
+
+\setglyph{Zdotaccentsmall}
+   \csctopaccent{Z}{dotaccent}{500}
+\endsetglyph
+
+\setglyph{Agravesmall}
+   \csctopaccent{A}{grave}{500}
+\endsetglyph
+
+\setglyph{Aacutesmall}
+   \csctopaccent{A}{acute}{500}
+\endsetglyph
+
+\setglyph{Acircumflexsmall}
+   \csctopaccent{A}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Atildesmall}
+   \csctopaccent{A}{tilde}{500}
+\endsetglyph
+
+\setglyph{Adieresissmall}
+   \csctopaccent{A}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Aringsmall}
+   \csctopaccent{A}{ring}{500}
+\endsetglyph
+
+\setglyph{Ccedillasmall}
+   \csctopaccent{C}{cedilla}{500}
+\endsetglyph
+
+\setglyph{Egravesmall}
+   \csctopaccent{E}{grave}{500}
+\endsetglyph
+
+\setglyph{Eacutesmall}
+   \csctopaccent{E}{acute}{500}
+\endsetglyph
+
+\setglyph{Ecircumflexsmall}
+   \csctopaccent{E}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Edieresissmall}
+   \csctopaccent{E}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Igravesmall}
+   \csctopaccent{I}{grave}{500}
+\endsetglyph
+
+\setglyph{Iacutesmall}
+   \csctopaccent{I}{acute}{500}
+\endsetglyph
+
+\setglyph{Icircumflexsmall}
+   \csctopaccent{I}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Idieresissmall}
+   \csctopaccent{I}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Ethsmall}
+   \cscglyph{Eth}
+\endsetglyph
+
+\setglyph{Dbarsmall}
+   \glyph{Ethsmall}{1000}
+\endsetglyph
+
+\setglyph{Ntildesmall}
+   \csctopaccent{N}{tilde}{500}
+\endsetglyph
+
+\setglyph{Ogravesmall}
+   \csctopaccent{O}{grave}{500}
+\endsetglyph
+
+\setglyph{Oacutesmall}
+   \csctopaccent{O}{acute}{500}
+\endsetglyph
+
+\setglyph{Ocircumflexsmall}
+   \csctopaccent{O}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Otildesmall}
+   \csctopaccent{O}{tilde}{500}
+\endsetglyph
+
+\setglyph{Odieresissmall}
+   \csctopaccent{O}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Ugravesmall}
+   \csctopaccent{U}{grave}{500}
+\endsetglyph
+
+\setglyph{Uacutesmall}
+   \csctopaccent{U}{acute}{500}
+\endsetglyph
+
+\setglyph{Ucircumflexsmall}
+   \csctopaccent{U}{circumflex}{500}
+\endsetglyph
+
+\setglyph{Udieresissmall}
+   \csctopaccent{U}{dieresis}{500}
+\endsetglyph
+
+\setglyph{Yacutesmall}
+   \csctopaccent{Y}{acute}{500}
+\endsetglyph
+
+\setglyph{Thornsmall}
+   \cscglyph{Thorn}
+\endsetglyph
+
+\setglyph{Asmall}
+   \cscglyph{A}
+\endsetglyph
+
+\setglyph{Bsmall}
+   \cscglyph{B}
+\endsetglyph
+
+\setglyph{Csmall}
+   \cscglyph{C}
+\endsetglyph
+
+\setglyph{Dsmall}
+   \cscglyph{D}
+\endsetglyph
+
+\setglyph{Esmall}
+   \cscglyph{E}
+\endsetglyph
+
+\setglyph{Fsmall}
+   \cscglyph{F}
+\endsetglyph
+
+\setglyph{Gsmall}
+   \cscglyph{G}
+\endsetglyph
+
+\setglyph{Hsmall}
+   \cscglyph{H}
+\endsetglyph
+
+\setglyph{Ismall}
+   \cscglyph{I}
+\endsetglyph
+
+\setglyph{Jsmall}
+   \cscglyph{J}
+\endsetglyph
+
+\setglyph{Ksmall}
+   \cscglyph{K}
+\endsetglyph
+
+\setglyph{Lsmall}
+   \cscglyph{L}
+\endsetglyph
+
+\setglyph{Msmall}
+   \cscglyph{M}
+\endsetglyph
+
+\setglyph{Nsmall}
+   \cscglyph{N}
+\endsetglyph
+
+\setglyph{Osmall}
+   \cscglyph{O}
+\endsetglyph
+
+\setglyph{Psmall}
+   \cscglyph{P}
+\endsetglyph
+
+\setglyph{Qsmall}
+   \cscglyph{Q}
+\endsetglyph
+
+\setglyph{Rsmall}
+   \cscglyph{R}
+\endsetglyph
+
+\setglyph{Ssmall}
+   \cscglyph{S}
+\endsetglyph
+
+\setglyph{Tsmall}
+   \cscglyph{T}
+\endsetglyph
+
+\setglyph{Usmall}
+   \cscglyph{U}
+\endsetglyph
+
+\setglyph{Vsmall}
+   \cscglyph{V}
+\endsetglyph
+
+\setglyph{Wsmall}
+   \cscglyph{W}
+\endsetglyph
+
+\setglyph{Xsmall}
+   \cscglyph{X}
+\endsetglyph
+
+\setglyph{Ysmall}
+   \cscglyph{Y}
+\endsetglyph
+
+\setglyph{Zsmall}
+   \cscglyph{Z}
+\endsetglyph
+
+\setglyph{Lslashsmall}
+   \cscglyph{Lslash}
+\endsetglyph
+
+\setglyph{AEsmall}
+   \cscglyph{AE}
+\endsetglyph
+
+\setglyph{OEsmall}
+   \cscglyph{OE}
+\endsetglyph
+
+\setglyph{Oslashsmall}
+   \cscglyph{Oslash}
+\endsetglyph
+
+\setglyph{dotlessIsmall}
+   \glyph{Ismall}{1000}
+\endsetglyph
+
+\setglyph{dotlessJsmall}
+   \glyph{Jsmall}{1000}
+\endsetglyph
+
+\setglyph{FFsmall}
+   \glyph{Fsmall}{1000}
+   \movert{\add{\kerning{Fsmall}{Fsmall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Fsmall}{1000}
+\endsetglyph
+
+\setglyph{FIsmall}
+   \glyph{Fsmall}{1000}
+   \movert{\add{\kerning{Fsmall}{Ismall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Ismall}{1000}
+\endsetglyph
+
+\setglyph{FLsmall}
+   \glyph{Fsmall}{1000}
+   \movert{\add{\kerning{Fsmall}{Lsmall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Lsmall}{1000}
+\endsetglyph
+
+\setglyph{FFIsmall}
+   \glyph{FFsmall}{1000}
+   \movert{\add{\kerning{FFsmall}{Ismall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Ismall}{1000}
+\endsetglyph
+
+\setglyph{FFLsmall}
+   \glyph{FFsmall}{1000}
+   \movert{\add{\kerning{FFsmall}{Lsmall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Lsmall}{1000}
+\endsetglyph
+
+\setglyph{IJsmall}
+   \glyph{Ismall}{1000}
+   \movert{\add{\kerning{Ismall}{Jsmall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Jsmall}{1000}
+\endsetglyph
+
+\setglyph{Lcaronsmall}
+   \glyph{Lsmall}{1000}
+   \ifisint{monowidth}\then\else
+      \movert{-100}
+   \fi
+   \glyph{quoteright}{\int{smallcapsscale}}
+\endsetglyph
+
+\setglyph{SSsmall}
+   \glyph{Ssmall}{1000}
+   \movert{\add{\kerning{Ssmall}{Ssmall}}
+      {\mul{2}{\int{smallcapsextraspace}}}}
+   \glyph{Ssmall}{1000}
+\endsetglyph
+
+\comment{\section{Accents}
+   \TeX's math accent-positioning requires accents to have zero depth.}
+
+\setcommand\zerodepth#1{
+   \resetglyph{#1}
+      \glyph{#1}{1000}
+      \resetdepth{0}
+   \endresetglyph
+}
+
+\zerodepth{acute}
+\zerodepth{grave}
+\zerodepth{caron}
+\zerodepth{breve}
+\zerodepth{macron}
+\zerodepth{ring}
+\zerodepth{circumflex}
+\zerodepth{dotaccent}
+\zerodepth{tilde}
+\zerodepth{dieresis}
+   
+\endmetrics
+
+\makesignature
+
+\end{document}
+
+

@@ -1,0 +1,703 @@
+%
+% \iffalse
+%%
+%% Source File `pspicture.dtx'.
+%% Copyright (C) 1992 1999 David Carlisle
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%%
+%
+%<*dtx>
+          \ProvidesFile{pspicture.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{pspicture}
+%<driver>\ProvidesFile{pspicture.drv}
+%<*package,driver>
+% \fi
+%         \ProvidesFile{pspicture.dtx}
+          [1999/04/11/ v2.02 Picture mode via PS specials (DPC)]
+%
+% \iffalse
+%</package,driver>
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{pspicture.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{pspicture.dtx}
+% \CheckSum{110}
+%
+% \changes{1}   {1989/05/10}{(Not made widely available)}
+% \changes{2}   {1992/01/02}{support for dvips added}
+% \changes{2.01}{1992/06/16}{First public release}
+% \changes{2.02}{1999/04/11}{Fix for `new' docstrip, and LPPL}
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \title{The \textsf{pspicture} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+%
+% \author{D. P. Carlisle}
+% \date{16 June 1992}
+% \maketitle
+%
+%
+% \section{Introduction}
+% {\tt pspicture} is a re-implementation, and extension of, \LaTeX's
+% {\tt picture} environment, using PostScript |\special|'s. This has
+% several advantages, mainly that lines of arbitrary slope and thickness
+% may be specified, and there is no limit on the size of the circles
+% that may be drawn\footnote{^^A
+% There is a certain amount of overlap between this style option and the
+% widely available {\tt eepic} option. However when I wrote the first
+% version of this, in 1989, I was not aware of {\tt eepic}, and {\tt
+% pspicture} has been reasonably popular in Manchester, even
+% though {\tt epic} and {\tt eepic} have been installed.}.
+%
+% One disadvantage is that the picture can no longer be previewed on a
+% |dvi| previewer, such as |xdvi|. To help with this problem, a
+% companion style option, {\tt texpicture}, may be used while developing
+% a document, this uses the standard picture commands as much as
+% possible, and silently omits any picture objects that can not be drawn
+% with standard \LaTeX.
+%
+% A second disadvantage, is that a {\tt dvi} file produced with {\tt
+% pspicture} will contain embedded |\special| commands. These commands
+% will only work with the driver program for which they were intended.
+% This makes the {\tt dvi} file less portable. {\tt pspicture} will by
+% default use |\special|'s set up for Rokicki's {\tt dvips} program,
+% although it should be easy to modify the code to work with other
+% PostScript drivers. A {\sc DocStrip} option for a version of {\tt
+% dvi2ps} is included with this distribution.
+%
+% \subsection{Commands Available}{\parskip=\baselineskip\parindent=0pt
+% \DescribeMacro{\circle}\DescribeMacro{\circle*}
+%   Use as described in the \LaTeX\ book but with no maximum diameter.
+%   The thickness of the circle is altered by the |\linethickness|
+%   command. The size of the circle produced by |\circle*| is not
+%   affected by |\linethickness|, so it is not the same as `filling in'
+%   the circle drawn by |\circle|.
+%
+% \DescribeMacro{\oval}
+%   Use as described in the \LaTeX\ book, but as there is no maximum
+%   diameter for the circular arcs, the oval (in the absence of the
+%   optional |[tr]| etc) always consists of two semi-circular arcs
+%   joined by a pair of parallel lines. To obtain a `rectangle with
+%   rounded corners' the oval command has a second optional argument
+%   (given first !).\\
+%   |\oval[20](100,200)[t]|\\
+%   Produces the top half of an oval with quarter circles of radius
+%   20*unitlength.
+%   If unitlength = 1pt then this is equivalent to the standard oval
+%   command. In general |\oval[R](x,y)| uses circular arcs of radius
+%   $\min(R,x/2,y/2)$.
+%
+% \DescribeMacro{\line}\DescribeMacro{\vector}
+%  Use as described in the \LaTeX\ book but with no restriction on the
+%  available slopes. The thickness of a sloping line is altered by the
+%  |\linethickness| command.
+%
+% \DescribeMacro{\Line}\DescribeMacro{\Vector}
+%  New forms of the line and vector commands.\\
+%   |\put(x1,y1){\Line(x2,y2)}|\\
+%   produces a line from (x1,y1) to (x1+x2,y1+y2) and similarly for
+%   |\Vector|.
+%
+% \DescribeMacro{\Curve}
+%  Like |\Line| except that it produce a curve!\\
+%   |\put(x1,y1){\Curve(x2,y2){m}}|\\
+%   produces a curve from (x1,y1) to (x1+x2,y1+y2). the amount of
+%   curvature is controlled by m but try $1$ or $-1$ first. m does not
+%   have to be an integer. Negative numbers curve the opposite way to
+%   positive numbers.
+%
+% \DescribeMacro{\thinlines}\DescribeMacro{\thicklines}%
+% \DescribeMacro{\linethickness}
+%  These commands alter the thickness of {\bf all} lines including
+%  slanted lines and circular arcs.\vspace{\baselineskip}
+%
+% \DescribeMacro{\arrowlength}
+%  A new command which specifies the size of the arrowhead drawn by the
+%  |\vector| and |\Vector| commands. Like |\linethickness| it does not
+%  get multiplied by |\unitlength|. At present the arrowhead is
+%  triangular. If a head with curved sides more like the standard
+%  \LaTeX\ head is required the definition of |!A| in pspicture.ps
+%  should be altered.
+%
+% Other {\tt picture} mode commands are not altered by this style, and
+% so may be used, just as described in the \LaTeX\ book. These include:
+% |\put|, |\multiput|, |\makebox|, |\framebox|, |dashbox| and
+% |\shortstack|.
+%
+% }\newpage\section{Examples}
+%
+% \noindent A picture built with \LaTeX's line and circle fonts.
+%
+% \noindent\begin{picture}(300,130)
+% \put(0,0){\line(1,2){50}}
+% \put(50,50){\vector(1,1){30}}
+% \put(50,50){\circle{30}}
+% \put(100,50){\circle*{10}}
+% \put(150,50){\oval(50,20)[t]}
+% \put(150,100){\oval(30,30)[bl]}
+%
+% ^^A LaTeX does not do these so well
+% \put(250,60){\circle{60}}
+% \put(250,60){\circle{50}}
+%
+% \end{picture}
+%
+% \bigskip
+% \def\eatmodule#1>{}
+
+%\eatmodule
+%<*x>
+ \ifcat a\noexpand @\else
+ \MakePercentComment
+ \def\ProvidesPackage#1[#2]{}
+ \def\NeedsTeXFormat#1{}
+ \makeatletter         ^^A This is NOT the usual way to access this
+ \input{pspicture.sty} ^^A style. It is intended as a style option:
+ \makeatother          ^^A \documentstyle[a4,pspicture]{article}
+ \MakePercentIgnore
+ \fi
+%\eatmodule
+%</x>
+%
+% \noindent The same picture built with PostScript |\special|'s.
+%
+% \noindent\begin{picture}(300,130)
+% \put(0,0){\line(1,2){50}}
+% \put(50,50){\vector(1,1){30}}
+% \put(50,50){\circle{30}}
+% \put(100,50){\circle*{10}}
+% \put(150,50){\oval(50,20)[t]}
+% \put(150,100){\oval(30,30)[bl]}
+%
+% ^^A LaTeX does not do these so well
+% \put(250,60){\circle{60}}
+% \put(250,60){\circle{50}}
+%
+% \end{picture}
+%
+% \bigskip
+% \noindent Some extra features not available using the standard picture
+% mode.
+%
+% \noindent\begin{picture}(300,150)
+% \put(250,60){\vector(-8,1){50}} ^^A Vector of any slope.
+% \put(200,0){\Line(100,100)}     ^^A Line command.
+% \put(210,100){\Vector(90,10)}   ^^A Vector command.
+% \put(70,90){\oval(100,70)}      ^^A Control over the radius of
+% \put(70,90){\oval[10](100,70)}  ^^A   `corners' of an oval.
+% \linethickness{3pt}
+% \put(20,20){\circle{20}}        ^^A Circles of any thickness and size.
+% \put(20,20){\line(10,1){30}}    ^^A Sloping lines of any thickness.
+%
+% \end{picture}
+%
+% \StopEventually{}
+%
+% \section{pspicture.sty}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% First we set up the code that is specific to the driver program that
+% is being used. If the driver can incorporate a header file, define
+% |\PS@header| appropriately, |\PS@special| should expand to the format
+% for inline PostScript code. The driver should protect this code with a
+% (g)save (g)restore pair. dvips is treated specially so that it will be
+% the default driver if this file is used without being stripped. If you
+% find definitions of these macros which work for the driver you use,
+% email me, and I will include them in the next release.
+% \begin{macro}{\PS@header}
+% Code to include the PostScript header.
+%    \begin{macrocode}
+%<*dvips>
+       \def\PS@header#1{\special{header=#1}}
+%</dvips>
+%<dvi2ps>\def\PS@header#1{\typeout{Print with the option -i #1}}
+\PS@header{pspicture.ps}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PS@special}
+% The format of the |\special| command for inline PostScript.
+%    \begin{macrocode}
+%<*dvips>
+       \def\PS@special#1{\special{"#1}}
+%</dvips>
+%<dvi2ps>\def\PS@special#1{\special{pstext="#1"}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\strippt}
+% Strip the final `pt' off the string returned by |\the|.
+%    \begin{macrocode}
+{\catcode`t=12\catcode`p=12\gdef\noPT#1pt{#1}}
+\def\strippt#1{\expandafter\noPT\the#1\space}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@circle}
+% Internal name for |\circle|.
+%    \begin{macrocode}
+\def\@circle#1{%
+  \@tempdimb #1\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       \strippt\@tempdimb
+       !C}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@dot}
+% Internal name for |\circle*|.
+%    \begin{macrocode}
+\def\@dot#1{%
+  \@tempdimb #1\unitlength
+  \PS@special{%
+       \strippt\@tempdimb
+       !D}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\line}
+% Line with a \LaTeX\ style slope specification.
+%    \begin{macrocode}
+\def\line(#1,#2)#3{%
+  \@linelen=#3\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       #1
+       #2
+       \strippt\@linelen
+       !L}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\vector}
+% Line and arrow head with a \LaTeX\ style slope specification.
+%    \begin{macrocode}
+\def\vector(#1,#2)#3{%
+  \@linelen=#3\unitlength
+  \PS@special{%
+       \strippt\@arrowlength
+       \strippt\@wholewidth
+       #1
+       #2
+       \strippt\@linelen
+       !V}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\oval}
+% If no optional argument appears, use a default of maximum radius of
+% \TeX's maximum length.
+%    \begin{macrocode}
+\def\oval{%
+  \@ifnextchar[%
+   {\@ov@l}%
+   {\count@=\maxdimen \divide\count@ by \unitlength \@ov@l[\count@]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ov@l}
+% Look for an optional |tlbr| argument.
+%    \begin{macrocode}
+\def\@ov@l[#1](#2,#3){%
+  \@ifnextchar[{\@oval[#1](#2,#3)}{\@oval[#1](#2,#3)[]}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@oval}
+% The PostScript version of the |\oval| command will print each quarter
+% of the oval separately, each quarter will only be printed if the
+% appropriate argument is $1$. An optional argument of |t| causes the
+% arguments for the two bottom quarters to be set to $0$, similarly, |r|
+% causes the two left quarters to be set to $0$. Thus an argument [tr]
+% will set the bottom and left quarters to $0$, resulting in only the
+% top right quarter being printed.
+%    \begin{macrocode}
+\def\@oval[#1](#2,#3)[#4]{\begingroup
+  \@tempdimb #1\unitlength
+  \@ovxx #2\unitlength
+  \@ovyy #3\unitlength
+  \def\r{\def\TL{0 }\def\BL{0 }}%
+  \def\l{\def\TR{0 }\def\BR{0 }}%
+  \def\t{\def\BL{0 }\def\BR{0 }}%
+  \def\b{\def\TL{0 }\def\TR{0 }}%
+  \def\TL{1 }\def\BL{1 }\def\TR{1 }\def\BR{1 }%
+  \@tfor\@tempa :=#4\do{\csname\@tempa\endcsname}%
+  \PS@special{%
+       \BR\BL\TR\TL
+       \strippt\@wholewidth
+       \strippt\@tempdimb
+       \strippt\@ovxx
+       \strippt\@ovyy
+       !O}%
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Line}
+% New style |\Line| command.
+%    \begin{macrocode}
+\def\Line(#1,#2){%
+  \@ovxx #1\unitlength
+  \@ovyy #2\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       \strippt\@ovxx
+       \strippt\@ovyy
+       !L2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Curve}
+% Not particularly good, but it will do for now.
+%    \begin{macrocode}
+\def\Curve(#1,#2)#3{%
+  \@ovxx #1\unitlength
+  \@ovyy #2\unitlength
+  \PS@special{%
+       \strippt\@wholewidth
+       \strippt\@ovxx
+       \strippt\@ovyy
+       #3
+       !C2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Vector}
+% New style |\Vector| command.
+%    \begin{macrocode}
+\def\Vector(#1,#2){%
+  \@ovxx #1\unitlength
+  \@ovyy #2\unitlength
+  \PS@special{%
+       \strippt\@arrowlength
+       \strippt\@wholewidth
+       \strippt\@ovxx
+       \strippt\@ovyy
+       !V2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@arrowlength}
+% Length of an arrow head.
+%    \begin{macrocode}
+\newdimen\@arrowlength
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\arrowlength}
+% Set the length of an arrow head.
+%    \begin{macrocode}
+\def\arrowlength#1{\@arrowlength #1}
+\arrowlength{8pt}
+%    \end{macrocode}
+% \end{macro}
+% If this file is used as a {\tt .sty} file without being stripped, we
+% want to stop here. The |\endinput| must not be at the beginning of the
+% line, or {\sf DocStrip} will stop here as well!.
+%    \begin{macrocode}
+     \endinput
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+
+% \section{texpicture.sty}
+% A dummy style file so that documents using {\tt pspicture.sty}
+% can be previewed or printed (as much as possible) using a
+% dvi (not PostScript) previewer or printer driver.
+
+% Just change `{\tt pspicture}' to `{\tt texpicture}' in the
+% |\documentstyle| options list.
+
+%    \begin{macrocode}
+%<*texsty>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+\@warning{texpicture.sty in operation:^^J\@spaces
+LaTeX document with pspicture.sty before printing}
+%    \end{macrocode}
+% \begin{macro}{\Line}
+% \begin{macro}{\Vector}
+% \begin{macro}{\arrowlength}
+% \begin{macro}{\Curve}
+% Define all these new commands to silently gobble their arguments.
+%    \begin{macrocode}
+\def\Line(#1,#2){}
+\def\Vector(#1,#2){}
+\def\arrowlength#1{}
+\def\Curve(#1,#2)#3{}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@badlinearg}
+% If a vector or line is called with a slope specification that is not
+% allowed by standard \LaTeX, |\@badlinearg| is called to produce the
+% error message. We do not want to see these errors, so:
+%    \begin{macrocode}
+\def\@badlinearg{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\oval}
+% \begin{macro}{\@@v@l}
+% \begin{macro}{\@@vv@l}
+% Give the standard |\oval| command another optional argument (which
+% will be ignored), to match the extra argument defined in {\tt
+% pspicture.sty}.
+%    \begin{macrocode}
+\let\@@v@l\oval
+\def\@@@v@l[#1]{\@@v@l}
+\def\oval{\@ifnextchar[{\@@@v@l}{\@@v@l}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</texsty>
+%    \end{macrocode}
+%
+% \section{pspicture.ps}
+% The PostScript header file for use with {\tt pspicture.sty}.
+% Probably this should use the PostScript dictionary mechanism, to keep
+% identifiers local to this package, but for now, just give them names
+% begining with {\tt!}.
+%    \begin{macrocode}
+%<*ps>
+%    \end{macrocode}
+%
+% \begin{macro}{!BP}
+% PostScript uses \TeX's |bp|, that is $1/72$ of an inch, not \TeX's
+% |pt|, $1/72.27$ of an inch, but it is inconvenient to get \TeX\ to
+% output in |bp|, so we need to scale the PostScript.
+%    \begin{macrocode}
+/!BP{
+  72 72.27 div dup scale
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!A}
+% Arrow head:\\
+% \meta{arrow length} |!A|
+%    \begin{macrocode}
+/!A{
+  newpath
+  0 0 moveto
+  dup neg dup .4 mul rlineto
+  .8 mul 0 exch  rlineto
+  closepath
+  fill
+  } def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!V}
+% |\vector(|\meta{x}|,|\meta{y}|)| \\
+% \meta{arrow length} \meta{line width} \meta{x} \meta{y}
+%             \meta{len*unitlength} |!V|
+%    \begin{macrocode}
+/!V{
+  !BP
+  /!X exch def
+  /!y exch def
+  /!x exch def
+  newpath
+  0 0 moveto
+  !x 0 eq {0  !y 0 lt {!X neg}{!X} ifelse}
+         {!x 0 lt {!X neg}{!X}ifelse  !X !y mul !x abs div} ifelse
+  lineto
+  setlinewidth  % @wholewidth
+  currentpoint
+  stroke
+  translate
+  !y !x atan
+  rotate
+  !A            % @arrowlength
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!L}
+% |\line(|\meta{x}|,|\meta{y}|)| \\
+% \meta{arrow length} \meta{line width} \meta{x} \meta{y}
+%             \meta{len*unitlength} |!L|
+%    \begin{macrocode}
+/!L{
+  !BP
+  /!X exch def
+  /!y exch def
+  /!x exch def
+  newpath
+  0 0 moveto
+  !x 0 eq {0  !y 0 lt {!X neg}{!X} ifelse}
+         {!x 0 lt {!X neg}{!X}ifelse  !X !y mul !x abs div} ifelse
+  lineto
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!C}
+% |\circle{|\meta{diam}|}| \\
+% \meta{line width} \meta{diam*unitlength} |!C|
+%    \begin{macrocode}
+/!C{
+  !BP
+  0 0 3 2 roll
+  2 div 0 360 arc
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!D}
+% |\circle*{|\meta{diam}|}| \\
+% \meta{diam*unitlength} |!D|
+%    \begin{macrocode}
+/!D{
+  !BP
+  0 0 3 2 roll
+  2 div 0 360 arc fill
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!O}
+% |\oval[|\meta{max-radius}|](|\meta{x}|,|\meta{y}|)[|\meta{tlbr}|]| \\
+% \meta{br}\meta{bl}\meta{tr}\meta{tl}\\
+%       \meta{line width} \meta{max-radius*unitlength}
+%          \meta{x*unitlength} \meta{y*unitlength} |!O|\\
+% The first four arguments should be either $0$, denoting that that
+% quarter should not be drawn, or $1$, to draw a quarter oval.
+%    \begin{macrocode}
+/!O{
+  !BP
+  /!y exch 2 div def
+  /!x exch 2 div def
+  /!r exch !x !y
+%    \end{macrocode}
+% Ghostscript appears to have a {\tt min} operator, so the following 2
+% lines could be coded as {\tt min min}, but it's not in the
+% Ref.~Manual, and it doesn't work on my printer!
+%    \begin{macrocode}
+    2 copy gt {exch} if pop
+    2 copy gt {exch} if pop
+      def
+  setlinewidth  % @wholewidth
+  1 eq
+  {newpath
+   !x neg 0 moveto
+   !x neg !y 0 !y !r arcto 4 {pop} repeat
+   0 !y lineto
+   stroke}if
+  1 eq
+  {newpath
+   !x  0 moveto
+   !x  !y 0 !y !r arcto 4 {pop} repeat
+   0 !y lineto
+   stroke}if
+  1 eq
+  {newpath
+   !x neg 0 moveto
+   !x neg !y neg 0 !y neg  !r arcto 4 {pop} repeat
+   0 !y neg lineto
+   stroke}if
+  1 eq
+  {newpath
+   !x  0 moveto
+   !x  !y neg 0 !y neg !r arcto 4 {pop} repeat
+   0 !y neg lineto
+   stroke}if
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!V2}
+% |\Vector(|\meta{x}|,|\meta{y}|)| \\
+% \meta{arrow length} \meta{line width} \meta{x*unitlength}
+% \meta{y*unitlength} |!V2|
+%    \begin{macrocode}
+/!V2{
+  !BP
+  2 copy exch
+  atan
+  /a exch def
+  2 copy
+  newpath
+  0 0 moveto
+  lineto          % <x*unitlength> <y*unitlength>
+  3 2 roll
+  setlinewidth  % @wholewidth
+  stroke
+  translate       % <x*unitlength> <y*unitlength>
+  a rotate
+  !A                    % @arrowlength
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!L2}
+% |\Line(|\meta{x}|,|\meta{y}|)| \\
+% \meta{line width} \meta{x*unitlength} \meta{y*unitlength} |!L2|
+%    \begin{macrocode}
+/!L2{
+  !BP
+  newpath
+  0 0 moveto
+  lineto          % <x*unitlength> <y*unitlength>
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{!C2}
+% |\Curve(|\meta{x}|,|\meta{y}|){|\meta{$\pm$}|}| \\
+% \meta{line width} \meta{x*unitlength} \meta{y*unitlength} \meta{$\pm$}
+%             |!C2|
+%    \begin{macrocode}
+/!C2{
+  !BP
+  /!s exch def
+  /!y exch def
+  /!x exch def
+  newpath
+  0 0 moveto
+  0 0
+  !x 2 div !y 10 div !s mul add
+  !y 2 div  !x 10 div  !s mul sub
+  !x !y
+  curveto
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</ps>
+%    \end{macrocode}
+%
+% \end{document}
+% \Finale

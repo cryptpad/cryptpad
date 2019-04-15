@@ -1,0 +1,154 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+% 
+% This file has the LPPL maintenance status "maintained".
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+% 
+% The list of derived (unpacked) files belonging to the distribution 
+% and covered by LPPL is defined by the unpacking scripts (with 
+% extension .ins) which are part of the distribution.
+% 
+% \fi
+% Filename: ltnews02.tex
+
+% This is issue 2 of LaTeX News.
+
+\documentclass
+%   [lw35fonts]
+   {ltnews}
+
+\publicationmonth{December}
+\publicationyear{1994}
+\publicationissue{2}
+
+\begin{document}
+
+\maketitle
+
+\section{Welcome to \LaTeXNews~2}
+
+An issue of \emph{\LaTeXNews} will accompany every future release of
+\LaTeX.  It will tell you about important events, such as major bug
+fixes, newly available packages, or any other \LaTeX{} news.
+
+\section{December 1994 release of \LaTeX}
+
+December 1994 sees the second release of \LaTeXe.  We are on schedule
+to deliver a release of \LaTeX{} every six months, in December and
+June.
+
+This release has seen quite a lot of activity, which is not too
+surprising as it's only been a year since the first test release of
+\LaTeXe.  We don't expect so much activity in the next six months.
+
+Many of the changes are minor improvements and bug-fixes---see
+\emph{\LaTeXe{} for authors} (\verb|usrguide.tex|), \emph{\LaTeXe{}
+font selection} (\verb|fntguide.tex|) and our change log
+(\verb|changes.txt|) for more details.
+
+However, there are two important new packages available for \LaTeX:
+\texttt{inputenc} and AMS-\LaTeX.
+
+\section{Accented input}
+
+One of the problems with writing non-English documents in \LaTeX{} is
+the accent commands.  Reading documents containing text like
+\verb|na\"\i ve| is frustrating, especially if your keyboard allows
+you to type \texttt{na\"\i ve}.
+
+In the past, \LaTeX{} has not supported input containing accented
+characters such as \texttt{\"\i}, because Windows, Macintosh and Unix
+all have different ways of dealing with accented input, called
+\emph{input encodings}.
+
+However, the \verb|inputenc| package allows you to specify which input
+encoding your document is written with, for example to use the ISO
+Latin-1 encoding, you type:
+\begin{verbatim}
+   \usepackage[latin1]{inputenc}
+\end{verbatim}
+At the moment, \verb|inputenc| supports the \verb|ascii| and
+\verb|latin1| input encodings, but more will be added with future
+releases.
+
+The \verb|inputenc| package is
+currently a test release.  The user interface for the full release will
+be upwardly compatible with the test version.
+
+\section{AMS-\LaTeX{}}
+
+ AMS-\LaTeX{} is a set of miscellaneous extensions for \LaTeX{}
+ distributed by the American Mathematical Society. They provide superior
+ information structure and superior printed output for mathematical
+ documents.
+
+ There are far too many features of AMS-\LaTeX{} to list here.  
+ AMS-\LaTeX{} is described in the accompanying documentation,
+ and in \emph{The \LaTeX{} Companion}.
+
+ Version 1.2beta of AMS-\LaTeX{} was released for testing by intrepid
+ users in October 1994.  The full release of AMS-\LaTeX{}~1.2 is expected 
+ in early January 1995.
+ 
+ It will be divided into two bundles:
+ \begin{itemize}
+ 
+ \item the \verb|amsfonts| packages, which give access to
+    hundreds of new mathematical symbols, and new math fonts
+    such as blackboard bold and fraktur.
+    
+ \item the \verb|amsmath| packages, which provide finer control over 
+    mathematical typesetting, such as multi-line subscripts,
+    enhanced theorem and proof environments, 
+    and improved displayed equations, 
+ 
+ \end{itemize}
+ For compatibility with older documents, an \verb|amstex| package will be 
+ provided.
+
+\section{\LaTeX{} on the internet}
+
+\LaTeX{} has its own home page on the World Wide Web, with the URL:
+\begin{verbatim}
+   http://www.tex.ac.uk/CTAN/latex/
+\end{verbatim}
+This page describes \LaTeX{} and the \LaTeX3 project, and contains
+pointers to other \LaTeX{} resources, such as the user guides, the
+\TeX{} Frequently Asked Questions, and the \LaTeX{} bugs database.
+
+The electronic home of anything \TeX-related is the Comprehensive
+\TeX{} Archive Network (CTAN).  This is a network of cooperating ftp
+sites, with over a gigabyte of \TeX{} material:
+\begin{verbatim}
+   ftp://ftp.tex.ac.uk/tex-archive/
+   ftp://ftp.shsu.edu/tex-archive/
+   ftp://ftp.dante.de/tex-archive/
+\end{verbatim}
+For more information, see the \LaTeX{} home page.
+
+\section{Further information}
+
+For more information on \TeX{} and \LaTeX, get in touch with your local
+\TeX{} Users Group, or the international \TeX{} Users Group,
+P.~O.~Box~869, Santa~Barbara, CA~93102-0869, USA, Fax:~+1~805~963~8358,
+EMail:~tug@tug.org.
+
+
+\end{document}

@@ -1,0 +1,314 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%\CheckSum{178}
+%\iffalse
+% Copyright (C) 1985 by Leslie Lamport
+% Copyright (C) 1994-98 by \LaTeX3 Project and Johannes Braams
+%\fi
+%
+% \changes{1.0b}{1994/01/21}{added a missing \cs{end\{macro\}}, a
+%    missing docstrip end of module and corrected a few typos}
+% \changes{1.0d}{1994/02/11}{Corrected a few documentation errors;
+%    added \cs{Checksum}}
+% \changes{1.0e}{1994/02/22}{Another documentation flaw fixed}
+% \changes{1.0f}{1994/03/01}{Moved driver further up; corrected a few
+%    errors}
+% \changes{1.0f}{1994/03/01}{Added overview of {\sc docstrip} modules}
+% \changes{1.0i}{1994/11/11}{(DPC) Removed spurious \cs{wlog}}
+% \changes{1.0k}{1998/08/17}{(RmS) Minor documentation corrections.}
+% \changes{1.0m}{2000/03/29}{(RmS) Added macros \cs{seealso} and \cs{alsoname}.}
+%
+%\title{Standard \LaTeXe\ packages \texttt{makeidx} and
+%      \texttt{showidx}}
+%
+% \author{%
+%  Johannes Braams\and
+%  David Carlisle\and
+%  Alan Jeffrey\and
+%  Leslie Lamport\and
+%  Frank Mittelbach\and
+%  Chris Rowley\and
+%  Rainer Sch\"opf}
+%
+% \date{2014/09/29}
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Description}
+%
+% \subsection{Makeidx}
+%
+%    The package \texttt{makeidx} provides two new commands, |\see|
+%    and |\printindex|.
+%
+% \DescribeMacro\see
+%    The command |\see| can used in the index to cross reference to
+%    other items.
+%
+% \DescribeMacro\printindex
+%    This command can be used to include the sorted and formatted
+%    index in the document.
+%
+% \subsection{Showidx}
+%
+%    The package \texttt{showidx} changes a number of internal
+%    \LaTeXe\ commands in such a way that each index entry is shown in
+%    the margin on the page where the entry appears. This package was
+%    originally meant to be used with the \texttt{report} and
+%    \texttt{book} document classes, but works with other classes as
+%    well. It makes |\flushbottom| the default.
+%
+% \StopEventually{}
+%
+% \section{The {\sc docstrip} modules}
+%
+% The following modules are used in the implementation to direct
+% {\sc docstrip} in generating the external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   makeidx & produce makeidx.sty\\
+%   showidx & produce showidx.sty\\
+%   driver  & produce a documentation driver file \\
+% \end{tabular}
+% \end{center}
+%
+% \section{The documentation driver file}
+%
+%    The next bit of code contains the documentation driver file for
+%    \TeX{}, i.e., the file that will produce the documentation you are
+%    currently reading. It can be extracted from this file by the
+%    {\sc docstrip} program.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{makeindx.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+% \section{Implementation}
+%
+% \subsection{Identification}
+%
+%    Announce the package and its version:
+% \changes{v1.0h}{1994/05/01}{Removed use of variables}
+%    \begin{macrocode}
+%<makeidx>\ProvidesPackage{makeidx}
+%<showidx>\ProvidesPackage{showidx}
+                [2014/09/29 v1.0m Standard LaTeX package]
+%    \end{macrocode}
+%
+% \subsection{Makeidx}
+%
+% \begin{macro}{\see}
+%    This macro discards its second argument (typically a page number)
+%    and just prints |\seename| together with the entry the reader is
+%    pointed to.
+% \changes{v1.0j}{1995/04/19}{Use \cs{emph} instead of \cs{em}}
+% \changes{v1.0j}{1995/04/19}{Disallow \cs{par} in argument}
+%    \begin{macrocode}
+%<*makeidx>
+\newcommand*\see[2]{\emph{\seename} #1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\seealso}
+% \changes{v1.0m}{2000/03/29}{Macro added (see PR 3133).}
+%    This macro discards its second argument (typically a page number)
+%    and just prints |\alsoname| together with the entry the reader is
+%    pointed to. We use |\providecommand| to retain compatibility with
+%    existing files that define this macro.
+%    \begin{macrocode}
+\providecommand*\seealso[2]{\emph{\alsoname} #1}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\printindex}
+%    This command simply inputs the (formatted) index if it exists,
+%    otherwise a warning is issued.
+% \changes{1.0c}{1994/02/08}{Use \cs{@input@} instead of \cs{@input} to
+%                        get the index listed by \cs{listfiles}}
+%    \begin{macrocode}
+\newcommand\printindex{\@input@{\jobname.ind}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\seename}
+%    This package is for documents prepared in the English language.
+%    To prepare a version for another language, various English words
+%    must be replaced.  All the English words that require replacement
+%    are% defined below in command names.
+% \changes{1.0g}{1994/03/07}{Replaced \cs{newcommand} by \cs{providecommand}.}
+%    \begin{macrocode}
+\providecommand\seename{see}
+%    \end{macrocode}
+%    We used |\providecommand| in case the command is already defined
+%    by a package loaded earlier.
+% \end{macro}
+%
+% \begin{macro}{\alsoname}
+% \changes{v1.0m}{2000/03/29}{Macro added (see PR 3133).}
+%    This macro discards its second argument (typically a page number)
+%    and just prints |\alsoname| together with the entry the reader is
+%    pointed to. We use |\providecommand| to retain compatibility with
+%    existing files that define this macro.
+%    \begin{macrocode}
+\providecommand*\alsoname{see also}
+%</makeidx>
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{showidx}
+%
+% \begin{macro}{\indexbox}
+%    This package uses \TeX's insert mechanism, therefore it needs to
+%    allocate an insert register.
+%    \begin{macrocode}
+%<*showidx>
+\newinsert\indexbox
+\dimen\indexbox=\maxdimen
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\index}
+%    This is a modified default definition for the user level |\index|
+%    command. The difference is the change of the category code of the
+%    space character.
+%    \begin{macrocode}
+\renewcommand\index{\@bsphack\begingroup
+                    \@sanitize\catcode32=10\relax\@index}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\makeindex}
+%    The same change has to be included in the user level |\makeindex|
+%    command, which changes the definition of |\index| to actually
+%    write index entries to an external file.
+%    \begin{macrocode}
+\renewcommand\makeindex{\if@filesw \newwrite\@indexfile
+  \immediate\openout\@indexfile=\jobname.idx
+  \def\index{\@bsphack\begingroup
+    \def\protect####1{\string####1\space}\@sanitize
+    \catcode32=10 \@wrindex\@indexfile}\typeout
+   {Writing index file \jobname.idx }\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@wrindex}
+%    This macro takes care of writing the index entries to a file. The
+%    definition is modified to call |\@showidx|.
+%    \begin{macrocode}
+\def\@wrindex#1#2{\let\thepage\relax
+   \xdef\@gtempa{\write#1{\string
+      \indexentry{#2}{\thepage}}}\endgroup\@gtempa
+   \@showidx{#2}\if@nobreak \ifvmode\nobreak\fi\fi\@esphack}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@index}
+%    When the user didn't use the |\makeindex| command, the |\index|
+%    macro calls |\@index|, which normally does basically nothing.
+%    This package changes the definition to call |\@showidx|, which
+%    includes the entry in the list of indexentries on the current page.
+%    \begin{macrocode}
+\def\@index#1{\@showidx{#1}\endgroup\@esphack}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@showidx}
+%    This macro adds the current index entry to the insert
+%    |\indexbox|. The |\indexbox| is typeset as a flushleft paragraph.
+%    \begin{macrocode}
+\def\@showidx#1{%
+  \insert\indexbox{\small
+    \hsize\marginparwidth
+    \hangindent\marginparsep \parindent\z@
+    \everypar{}\let\par\@@par \parfillskip\@flushglue
+    \lineskip\normallineskip
+    \baselineskip .8\normalbaselineskip\sloppy
+    \raggedright \leavevmode
+    \vrule \@height .7\normalbaselineskip \@width \z@\relax
+        #1\relax
+    \vrule \@height \z@ \@depth .3\normalbaselineskip \@width \z@}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\raggedbottom}
+% \begin{macro}{\flushbottom}
+%    The definition of these macros from \texttt{latex.dtx} is changed
+%    here to add the execution of |\@mkidx| to |\@texttop|, which is
+%    executed at the top of each page.
+%    \begin{macrocode}
+\renewcommand\raggedbottom{\def\@textbottom{\vskip
+      \z@ plus.0001fil}\let\@texttop\@mkidx}
+\renewcommand\flushbottom{\let\@textbottom\relax
+                          \let\@texttop\@mkidx}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@mkidx}
+%    This macro actually typesets the box containing all the index
+%    entries on the current page. They will occur on the left or the
+%    right side of the text, or both, depending on the setting of the
+%    switches |\if@twocolumn| and |\if@twoside|.
+%    \begin{macrocode}
+\def\@mkidx{\vbox to \z@{\hbox{\if@twocolumn
+    \if@firstcolumn \@leftidx \else \@rightidx \fi
+  \else \if@twoside \ifodd\c@page \@rightidx
+                    \else \@leftidx \fi
+        \else \@rightidx \fi
+  \fi
+  \box\indexbox}\vss}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@leftidx}
+% \begin{macro}{\@rightidx}
+%    These macros give the amount of displacement for the |\indexbox|.
+%    \begin{macrocode}
+\def\@leftidx{\hskip-\marginparsep \hskip-\marginparwidth}
+\def\@rightidx{\hskip\columnwidth \hskip\marginparsep}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    To make this work we have to execute either |\raggedbottom| or
+%    |\flushbottom|. Assuming this package is used most often with the
+%    document classes \texttt{report} and \texttt{book}, we execute
+%    |\flushbottom|.
+%    \begin{macrocode}
+\flushbottom
+%</showidx>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

@@ -1,0 +1,130 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993-2014
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% This file is part of the LaTeX base system.
+%% -------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX 
+%% version 2005/12/01 or later.
+%% 
+%% This file has the LPPL maintenance status "maintained".
+%% 
+%% In particular, NO PERMISSION is granted to modify the contents of this
+%% file since it contains the legal notices that are placed in the files
+%% it generates.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
+%% 
+%% 
+%%
+%% --------------- start of bootstrap commands ------------------
+%%
+%%
+%%  LaTeX 2e installation script (concurrent version)
+\let\documentclass\undefined
+\input ltdirchk.dtx
+\input docstrip.dtx
+
+{
+\def\ProvidesFile#1\end#2{}
+\@@input ltvers.dtx
+\Msg{**********************************************}
+\Msg{*}
+\Msg{* Welcome to the Installation routine of}
+\Msg{*}
+\Msg{* \space\space\space\space\fmtname\space <\fmtversion>}
+\Msg{*}
+\Msg{* Depending on your machine the installation}
+\Msg{* might take a long time --- this is the}
+\Msg{* price for being able to run on all platforms.}
+\Msg{* So please be patient :-)}
+\Msg{*}
+\Msg{**********************************************}
+\Msg{}
+\Msg{}
+}
+
+
+%\askonceonly
+\askforoverwritefalse
+
+\keepsilent
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% generate main kernel file
+%%% and the .ltx files that set up the default settings
+%%% that may be changed by the use of .cfg files.
+
+\batchinput{format.ins}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% generate .def files for encoding support
+
+\batchinput{inputenc.ins}
+\batchinput{ltoutenc.ins}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%% other classes and packages
+
+\batchinput{classes.ins}
+
+\batchinput{letter.ins}
+
+\batchinput{slides.ins}
+
+\batchinput{proc.ins}
+
+\batchinput{latexsym.ins}
+
+\batchinput{cmfonts.ins}
+
+\batchinput{ec.ins}
+
+\batchinput{latex209.ins}
+
+\batchinput{docstrip.ins}
+
+\batchinput{ifthen.ins}
+
+\batchinput{graphpap.ins}
+
+\batchinput{makeindx.ins}
+
+\batchinput{syntonly.ins}
+
+\batchinput{exscale.ins}
+
+\batchinput{alltt.ins}
+
+\batchinput{nfssfont.ins}
+
+\batchinput{fix-cm.ins}
+
+\batchinput{latexrelease.ins}
+
+
+\Msg{}
+\Msg{***********************************}
+\Msg{*}
+\Msg{*  Now run INITEX on latex.ltx}
+\Msg{*}
+\Msg{***********************************}
+\Msg{}
+
+\endbatchfile

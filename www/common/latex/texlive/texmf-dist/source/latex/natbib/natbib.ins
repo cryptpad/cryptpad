@@ -1,0 +1,87 @@
+% File: natbib.ins
+% Copyright 2009 Patrick W. Daly
+%
+% This is the natbib installation file for extracting package and driver
+% files from the original source file. Simply process it under
+% TeX or LaTeX.
+%
+% This installation works with docstrip 2.4 or later.
+
+\def\batchfile{natbib.ins}
+\input docstrip
+
+\preamble
+=============================================
+IMPORTANT NOTICE:
+
+This program can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt; either
+version 1 of the License, or any later version.
+
+This is a generated file.
+It may not be distributed without the original source file \inFileName.
+
+Full documentation can be obtained by LaTeXing that original file.
+Only a few abbreviated comments remain here to describe the usage.
+=============================================
+\endpreamble
+\postamble
+
+<<<<< End of generated file <<<<<<
+\endpostamble
+\keepsilent
+
+\declarepreamble\refsheet
+=============================================
+IMPORTANT NOTICE:
+
+This program can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt; either
+version 1 of the License, or any later version.
+
+This is a generated file.
+It may not be distributed without the original source file \inFileName.
+
+This is a Reference Sheet for natbib. It consists of excerpts from the
+original source file.
+
+For more details, LaTeX the source \inFileName.
+==============================================
+\endpreamble
+
+\declarepostamble\refsheetq
+
+End of Reference Sheet file
+
+\endpostamble
+
+\declarepreamble\driver
+============================================
+This is the driver file to produce the LaTeX documentation
+from the original source file \inFileName.
+
+Make changes to it as needed. (Never change the file \inFileName!)
+============================================
+\endpreamble
+
+\declarepostamble\driverq
+
+End of documentation driver file.
+\endpostamble
+
+\askforoverwritefalse
+\generate{\file{natbib.sty}{\from{natbib.dtx}{package,all}}
+          \file{natnotes.tex}{\usepreamble\refsheet\usepostamble\refsheetq
+                                \from{natbib.dtx}{notes}}
+          \file{natbib.ltx}{\usepreamble\driver\usepostamble\driverq
+                           \from{natbib.dtx}{driver}}
+         }
+
+\obeyspaces
+\Msg{*********************************************}%
+\Msg{* For documentation, process natbib.dtx     *}%
+\Msg{*    or the driver file      natbib.ltx     *}%
+\Msg{* For reference sheet, process natnotes.tex *}
+\Msg{*********************************************}

@@ -1,0 +1,360 @@
+%%
+%% This is file `magicnum.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% magicnum.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: magicnum
+%% Version: 2011/04/10 v1.4
+%% 
+%% Copyright (C) 2007, 2009-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file magicnum.dtx
+%% and the derived files
+%%    magicnum.sty, magicnum.pdf, magicnum.ins, magicnum.drv, magicnum.txt,
+%%    magicnum-test1.tex, magicnum-test2.tex, magicnum-test3.tex,
+%%    magicnum-test4.tex, magicnum.lua, oberdiek.magicnum.lua.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@magicnum.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{magicnum}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@magicnum.sty\endcsname
+\ProvidesPackage{magicnum}%
+  [2011/04/10 v1.4 Magic numbers (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname magicnum@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\magicnum@AtEnd{%
+    \magicnum@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\magicnum@AtEnd{\magicnum@AtEnd\noexpand\endinput}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname newcommand\endcsname\relax
+  \expandafter\ifx\csname magicnum\endcsname\relax
+  \else
+    \input infwarerr.sty\relax
+    \@PackageError{magicnum}{%
+      \string\magicnum\space is already defined%
+    }\@ehc
+  \fi
+\else
+  \newcommand*{\magicnum}{}%
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname directlua\endcsname\relax
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname ifcsname\endcsname\relax
+    \def\magicnum#1{%
+      \expandafter\ifx\csname MG@#1\endcsname\relax
+      \else
+        \csname MG@#1\endcsname
+      \fi
+    }%
+  \else
+    \begingroup
+      \edef\x{\endgroup
+        \def\noexpand\magicnum##1{%
+          \expandafter\noexpand\csname
+          ifcsname\endcsname MG@##1\noexpand\endcsname
+            \noexpand\csname MG@##1%
+                 \noexpand\expandafter\noexpand\endcsname
+          \expandafter\noexpand\csname fi\endcsname
+        }%
+      }%
+    \x
+  \fi
+\else
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname RequirePackage\endcsname\relax
+    \input ifluatex.sty\relax
+    \input infwarerr.sty\relax
+  \else
+    \RequirePackage{ifluatex}[2010/03/01]%
+    \RequirePackage{infwarerr}[2010/04/08]%
+  \fi
+  \ifnum\luatexversion<36 %
+    \def\magicnum@directlua{\directlua0 }%
+  \else
+    \let\magicnum@directlua\directlua
+  \fi
+  \magicnum@directlua{%
+    require("oberdiek.magicnum")%
+  }%
+  \begingroup
+    \def\x{2011/04/10 v1.4}%
+    \def\StripPrefix#1>{}%
+    \edef\x{\expandafter\StripPrefix\meaning\x}%
+    \edef\y{%
+      \magicnum@directlua{%
+        if oberdiek.magicnum.getversion then %
+          oberdiek.magicnum.getversion()%
+        end%
+      }%
+    }%
+    \ifx\x\y
+    \else
+      \@PackageError{magicnum}{%
+        Wrong version of lua module.\MessageBreak
+        Package version: \x\MessageBreak
+        Lua module: \y
+      }\@ehc
+    \fi
+  \endgroup
+  \begingroup
+    \expandafter\ifx\csname luaescapestring\endcsname\relax
+      \directlua{%
+        if tex.enableprimitives then %
+          tex.enableprimitives('magicnum@', {'luaescapestring'})%
+        end%
+      }%
+      \global\let\luaescapestring\magicnum@luaescapestring
+    \fi
+    \expandafter\ifx\csname luaescapestring\endcsname\relax
+      \escapechar=92 %
+      \@PackageError{magicnum}{%
+        Missing \string\luaescapestring
+      }\@ehc
+    \fi
+  \endgroup
+  \def\magicnum#1{%
+    \magicnum@directlua{%
+      oberdiek.magicnum.get("\luaescapestring{#1}")%
+    }%
+  }%
+  \expandafter\magicnum@AtEnd
+\fi%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname detokenize\endcsname\relax
+  \def\magicnum@add#1#2#3{%
+    \expandafter\magicnum@@add
+        \csname MG@#1.#2\expandafter\endcsname
+        \csname MG@#1.#3\endcsname
+       {#3}{#2}%
+  }%
+  \def\magicnum@@add#1#2#3#4{%
+    \def#1{#3}%
+    \def#2{#4}%
+    \edef#1{%
+      \expandafter\strip@prefix\meaning#1%
+    }%
+    \edef#2{%
+      \expandafter\strip@prefix\meaning#2%
+    }%
+  }%
+  \expandafter\ifx\csname strip@prefix\endcsname\relax
+    \def\strip@prefix#1->{}%
+  \fi
+\else
+  \def\magicnum@add#1#2#3{%
+    \expandafter\edef\csname MG@#1.#2\endcsname{%
+      \detokenize{#3}%
+    }%
+    \expandafter\edef\csname MG@#1.#3\endcsname{%
+      \detokenize{#2}%
+    }%
+  }%
+\fi
+\magicnum@add{tex.catcode}{escape}{0}
+\magicnum@add{tex.catcode}{begingroup}{1}
+\magicnum@add{tex.catcode}{endgroup}{2}
+\magicnum@add{tex.catcode}{math}{3}
+\magicnum@add{tex.catcode}{align}{4}
+\magicnum@add{tex.catcode}{eol}{5}
+\magicnum@add{tex.catcode}{parameter}{6}
+\magicnum@add{tex.catcode}{superscript}{7}
+\magicnum@add{tex.catcode}{subscript}{8}
+\magicnum@add{tex.catcode}{ignore}{9}
+\magicnum@add{tex.catcode}{space}{10}
+\magicnum@add{tex.catcode}{letter}{11}
+\magicnum@add{tex.catcode}{other}{12}
+\magicnum@add{tex.catcode}{active}{13}
+\magicnum@add{tex.catcode}{comment}{14}
+\magicnum@add{tex.catcode}{invalid}{15}
+\magicnum@add{etex.grouptype}{bottomlevel}{0}
+\magicnum@add{etex.grouptype}{simple}{1}
+\magicnum@add{etex.grouptype}{hbox}{2}
+\magicnum@add{etex.grouptype}{adjustedhbox}{3}
+\magicnum@add{etex.grouptype}{vbox}{4}
+\magicnum@add{etex.grouptype}{align}{5}
+\magicnum@add{etex.grouptype}{noalign}{6}
+\magicnum@add{etex.grouptype}{output}{8}
+\magicnum@add{etex.grouptype}{math}{9}
+\magicnum@add{etex.grouptype}{disc}{10}
+\magicnum@add{etex.grouptype}{insert}{11}
+\magicnum@add{etex.grouptype}{vcenter}{12}
+\magicnum@add{etex.grouptype}{mathchoice}{13}
+\magicnum@add{etex.grouptype}{semisimple}{14}
+\magicnum@add{etex.grouptype}{mathshift}{15}
+\magicnum@add{etex.grouptype}{mathleft}{16}
+\magicnum@add{etex.iftype}{none}{0}
+\magicnum@add{etex.iftype}{char}{1}
+\magicnum@add{etex.iftype}{cat}{2}
+\magicnum@add{etex.iftype}{num}{3}
+\magicnum@add{etex.iftype}{dim}{4}
+\magicnum@add{etex.iftype}{odd}{5}
+\magicnum@add{etex.iftype}{vmode}{6}
+\magicnum@add{etex.iftype}{hmode}{7}
+\magicnum@add{etex.iftype}{mmode}{8}
+\magicnum@add{etex.iftype}{inner}{9}
+\magicnum@add{etex.iftype}{void}{10}
+\magicnum@add{etex.iftype}{hbox}{11}
+\magicnum@add{etex.iftype}{vbox}{12}
+\magicnum@add{etex.iftype}{x}{13}
+\magicnum@add{etex.iftype}{eof}{14}
+\magicnum@add{etex.iftype}{true}{15}
+\magicnum@add{etex.iftype}{false}{16}
+\magicnum@add{etex.iftype}{case}{17}
+\magicnum@add{etex.iftype}{defined}{18}
+\magicnum@add{etex.iftype}{csname}{19}
+\magicnum@add{etex.iftype}{fontchar}{20}
+\magicnum@add{etex.nodetype}{none}{-1}
+\magicnum@add{etex.nodetype}{char}{0}
+\magicnum@add{etex.nodetype}{hlist}{1}
+\magicnum@add{etex.nodetype}{vlist}{2}
+\magicnum@add{etex.nodetype}{rule}{3}
+\magicnum@add{etex.nodetype}{ins}{4}
+\magicnum@add{etex.nodetype}{mark}{5}
+\magicnum@add{etex.nodetype}{adjust}{6}
+\magicnum@add{etex.nodetype}{ligature}{7}
+\magicnum@add{etex.nodetype}{disc}{8}
+\magicnum@add{etex.nodetype}{whatsit}{9}
+\magicnum@add{etex.nodetype}{math}{10}
+\magicnum@add{etex.nodetype}{glue}{11}
+\magicnum@add{etex.nodetype}{kern}{12}
+\magicnum@add{etex.nodetype}{penalty}{13}
+\magicnum@add{etex.nodetype}{unset}{14}
+\magicnum@add{etex.nodetype}{maths}{15}
+\magicnum@add{etex.interactionmode}{batch}{0}
+\magicnum@add{etex.interactionmode}{nonstop}{1}
+\magicnum@add{etex.interactionmode}{scroll}{2}
+\magicnum@add{etex.interactionmode}{errorstop}{3}
+\magicnum@add{luatex.pdfliteral.mode}{setorigin}{0}
+\magicnum@add{luatex.pdfliteral.mode}{page}{1}
+\magicnum@add{luatex.pdfliteral.mode}{direct}{2}
+\magicnum@AtEnd%
+\endinput
+%%
+%% End of file `magicnum.sty'.

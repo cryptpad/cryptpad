@@ -1,0 +1,1712 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltclass.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltclass.dtx}
+             [2014/09/29 v1.1i LaTeX Kernel (Class & Package Interface)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltclass.dtx}
+\begin{document}
+\title{The main structure of documents}
+\author{Frank Mittelbach\and Chris Rowley\and Alan Jeffrey\and
+        David Carlisle}
+\date{\filedate}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \iffalse
+% (C) Copyright Frank Mittelbach, Chris Rowley,
+%               Alan Jeffrey and David Carlisle 1993-1998.
+% All rights reserved.
+% \fi
+%
+% \CheckSum{1199}
+%
+% \changes{v1.0f}{1994/05/22}{Use new warning and error commands}
+% \changes{v1.0l}{1994/11/17}{\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0z}{1998/03/21}{Added to documentation of filecontents}
+% \changes{v1.1c}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+% \section{Introduction}
+%
+% This file implements the following declarations, which replace
+% |\documentstyle| in  \LaTeXe\ documents.
+%
+% Note that old documents containing |\documentstyle| will be run using
+% a compatibility option---thus keeping everyone happy, we hope!
+%
+% The overall idea is that there are two types of `style files':
+% `class files' which define elements and provide a default formatting
+% for them;  and `packages' which provide extra functionality.  One
+% difference between \LaTeXe\ and \LaTeX2.09 is that \LaTeXe\ packages
+% may have options. Note that options to classes packages may be
+% implemented such that they input files, but these file names are not
+% necessarily directly related to the option name.
+%
+% \section{User interface}
+%
+% |\documentclass[|\meta{main-option-list}|]{|^^A
+%   \meta{class}|}[|\meta{version}|]|
+%
+% There must be exactly one such declaration, and it must come first.
+% The \meta{main-option-list} is a list of options which can modify the
+% formatting of elements which are defined in the \meta{class} file
+% as well as in all following |\usepackage| declarations (see below).
+% The \meta{version} is a version number, beginning with a date in the
+% format |YYYY/MM/DD|.  If an older version of the class is found, a
+% warning is issued.
+%
+% \bigskip
+%
+% |\documentstyle[|\meta{main-option-list}|]{|^^A
+%   \meta{class}|}[|\meta{version}|]|
+%
+% The |\documentstyle| declaration is kept in order to maintain upward
+% compatibility with \LaTeX2.09 documents.  It is similar to
+% |\documentclass|, but it causes all options in
+% \meta{main-option-list} that the \meta{class} does not use to be
+% passed to |\RequirePackage| after the options have been processed.
+% This maintains compatibility with the 2.09 behaviour. Also a flag is
+% set to indicate that the document is to be processed in \LaTeX2.09
+% compatibility mode.  As far as most packages are concerned, this
+% only affects the warnings and errors \LaTeX\ generates. This flag
+% does affect the definition of font commands, and |\sloppy|.
+%
+% \bigskip
+%
+% |\usepackage[|\meta{package-option-list}|]{|^^A
+%    \meta{package-list}|}[|\meta{version}|]|
+%
+% There can be any number of these declarations. All packages in
+% \meta{package-list} are called with the same options.
+%
+% Each \meta{package} file defines new elements (or modifies those
+% defined in the \meta{class}), and thus extends the range of documents
+% which can be processed.
+% The \meta{package-option-list} is a list of options which can modify
+% the formatting of elements defined in the \meta{package} file.
+% The \meta{version} is a version number, beginning with a date in the
+% format |YYYY/MM/DD|.  If an older version of the package is found, a
+% warning is issued.
+%
+% Each package is loaded only once.  If the same package is requested
+% more than once, nothing happens, unless the package has been requested
+% with options that were not given the first time it was loaded, in
+% which case an error is produced.
+%
+% As well as processing the options given in the
+% \meta{package-option-list}, each package processes the
+% \meta{main-option-list}.  This means that options that affect all
+% of the packages can be given globally, rather than repeated for every
+% package.
+%
+% Note that class files have the extension |.cls|, packages have the
+% extension |.sty|.
+%
+% \DescribeEnv{filecontents}
+% The environment |filecontents| is intended for passing the contents
+% of packages, options, or other files along with a document in a
+% single file.
+% It has one argument, which is the name of the file to create. If that
+% file already exists (maybe only in the current directory if the OS
+% supports a notion of a `current directory' or `default directory')
+% then nothing happens
+% (except for an information message) and the body of the environment
+% is bypassed. Otherwise, the body of the environment is written
+% verbatim to the file name given as the first argument, together with
+% some comments about how it was produced.
+%
+% The environment is allowed only before |\documentclass| to ensure
+% that all packages or options necessary for this particular run are
+% present when needed.  The begin and end tags should each be on a
+% line by itself.  There is also a star-form; this does not write
+% extra comments into the file.
+%
+% \subsection{Option processing}
+%
+% When the options are processed, they are divided into two types: {\em
+% local\/} and {\em global}:
+% \begin{itemize}
+%
+% \item For a class, the options in the |\documentclass| command are
+%    local.
+%
+% \item For a package, the options in the |\usepackage| command are
+%    local, and the options in the |\documentclass| command are global.
+%
+% \end{itemize}
+% The options for |\documentclass| and |\usepackage|
+% are processed in the following way:
+% \begin{enumerate}
+%
+% \item The local and global options that have been declared
+%   (using |\DeclareOption| as  described below) are processed
+%   first.
+%
+%  In the case of |\ProcessOptions|, they are processed in the order
+%  that they were declared in the class or package.
+%
+%  In the case of |\ProcessOptions*|, they are processed in the order
+%  that they appear in the option-lists. First the global options, and
+%  then the local ones.
+%
+% \item Any remaining local options are dealt with using the default
+%   option (declared using the |\DeclareOption*| declaration described
+%   below).  For document classes, this usually does nothing, but
+%   records the option on a list of unused options.
+%   For packages, this usually produces an error.
+%
+% \end{enumerate}
+% Finally, when |\begin{document}| is reached, if there are any global
+% options which have not been used by either the class or any package,
+% the system will produce a warning.
+%
+%
+% \section{Class and Package interface}
+%
+% \subsection{Class name and version}
+%
+% \DescribeMacro\ProvidesClass
+% A class can identify itself with the
+% |\ProvidesClass{|\meta{name}|}[|\meta{version}|]| command.  The
+% \meta{version} should begin with a date in the format |YYYY/MM/DD|.
+%
+% \subsection{Package name and version}
+%
+% \DescribeMacro\ProvidesPackage
+% A package can identify itself with the
+% |\ProvidesPackage|\marg{name}\oarg{version} command.  The
+% \meta{version} should begin with a date in the format |YYYY/MM/DD|.
+%
+% \subsection{Requiring other packages}
+%
+% \DescribeMacro\RequirePackage
+% Packages or classes can load other packages using\\
+% |\RequirePackage|\oarg{options}\marg{name}\oarg{version}.\\
+% If the package has already been loaded, then nothing happens unless
+% the requested options are not a subset of the options with which it
+% was loaded, in which case an error is called.
+%
+% \DescribeMacro\LoadClass
+%  Similar to |\RequirePackage|, but for classes, may not be used in
+%  package files.
+%
+% \DescribeMacro\PassOptionsToPackage
+% Packages can pass options to other packages using:\\
+% |\PassOptionsToPackage{|\meta{options}|}{|\meta{package}|}|.\\
+% \DescribeMacro\PassOptionsToClass
+% This adds the \meta{options} to the options list of any future
+% |\RequirePackage| or |\usepackage| command.  For example:
+% \begin{verbatim}
+%    \PassOptionsToPackage{foo,bar}{fred}
+%    \RequirePackage[baz]{fred}\end{verbatim}
+% is the same as:
+% \begin{verbatim}
+%    \RequirePackage[foo,bar,baz]{fred}\end{verbatim}
+%
+% \DescribeMacro\LoadClassWithOptions
+% |\LoadClassWithOptions|\marg{name}\oarg{version}:\\
+% This is similar to
+% |\LoadClass|, but it always calls class \meta{name} with
+% exactly the same option list that is being used by the current class,
+% rather than an option explicitly  supplied or passed on by
+% |\PassOptionsToClass|.
+% \DescribeMacro\RequirePackageWithOptions
+% |\RequirePackageWithOptions| is the analogous command for packages.
+%
+% This is mainly intended to allow one class to simply build on another,
+% for example:
+%\begin{verbatim}
+%   \LoadClassWithOptions{article}
+%\end{verbatim}
+%
+% This should be contrasted with the slightly different construction
+%\begin{verbatim}
+%   \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+%   \ProcessOptions
+%   \LoadClass{article}
+%\end{verbatim}
+%
+% As used here, the effects are more or less the same, but the
+% version using |\LoadClassWithOptions| is slightly quicker
+% (and less to type).
+% If, however, the class declares options of its own then
+% the two constructions are different; compare, for example:
+%\begin{verbatim}
+%   \DeclareOption{landscape}{...}
+%   \ProcessOptions
+%   \LoadClassWithOptions{article}
+%\end{verbatim}
+% with:
+%\begin{verbatim}
+%   \DeclareOption{landscape}{...}
+%   \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+%   \ProcessOptions
+%   \LoadClass{article}
+%\end{verbatim}
+% In the first case, the \textsf{article} class will be called with
+% option |landscape| precisely when the current class is called with
+% this option; but in the second example it will
+% not as in that case \textsf{article} is only passed options by the
+% default option handler, which is not used for |landscape| as that
+% option is explicitly declared.
+%
+% \DescribeMacro\@ifpackageloaded
+% To find out if a package has already been loaded, use\\
+% \DescribeMacro\@ifclassloaded
+% |\@ifpackageloaded{|\meta{package}|}{|\meta{true}|}{|\meta{false}|}|.
+%
+% \DescribeMacro\@ifpackagelater
+% \changes{v1.1i}{2013/07/07}{Correctly describe how the date in
+%       \cs{@ifpackagelater} is used}
+% To find out if a package has already been loaded with a version
+% equal to or more
+% recent than \meta{version}, use\\
+% \DescribeMacro\@ifclasslater
+% |\@ifpackagelater{|\meta{package}|}{|\meta{version}|}{|^^A
+% \meta{true}|}{|\meta{false}|}|.
+%
+% \DescribeMacro\@ifpackagewith
+% To find out if a package has already been loaded with at least the
+% options \meta{options}, use
+% \DescribeMacro\@ifclasswith
+% |\@ifpackagewith{|\meta{package}|}{|\meta{options}|}{|^^A
+% \meta{true}|}{|\meta{false}|}|.
+%
+% There exists one package that can't be tested with the above
+% commands: the \texttt{fontenc} package pretends that it was never
+% loaded to allow for repeated reloading with different options (see
+% \texttt{ltoutenc.dtx} for details).
+%
+%
+% \subsection{Declaring new options}
+%
+% Options for classes and packages are built using the same macros.
+%
+% \DescribeMacro\DeclareOption To define a builtin option, use
+% |\DeclareOption{|\meta{name}|}{|\meta{code}|}|.
+%
+% \DescribeMacro{\DeclareOption*} To define the default action to
+% perform for local options which have not been declared, use
+% |\DeclareOption*{|\meta{code}|}|.
+%
+% {\em Note\/}: there should be no use of\\
+%  |\RequirePackage|, |\DeclareOption|, |\DeclareOption*| or
+%   |\ProcessOptions|\\
+% inside |\DeclareOption| or |\DeclareOption*|.
+%
+% Possible uses for |\DeclareOption*| include:
+%
+% |\DeclareOption*{}|\\
+%    Do nothing. Silently accept unknown options. (This suppresses the
+%    usual warnings.)
+%
+% |\DeclareOption*{\@unkownoptionerror}|\\
+%     Complain about unknown local options. (The initial setting for
+%       package files.)
+%
+% |\DeclareOption*{\PassOptionsToPackage{\CurrentOption}|^^A
+%                                     |{|\meta{pkg-name}|}|\\
+% Handle the the current option by passing it on to the package
+% \meta{pkg-name}, which will presumably be loaded via
+% |\RequirePackage| later in the file. This is useful for building
+% `extension' packages, that perhaps handle a couple of new options,
+% but then pass everything else on to an existing package.
+%
+% |\DeclareOption*{\InputIfFileExists{xx-\CurrentOption.yyy}%|\\
+% |               {}%|\\
+% |               {\OptionNotUsed}}|\\
+%  Handle the option foo by loading the file |xx-foo.yyy| if it
+%  exists, otherwise do nothing, but declare that the option was not
+%  used.
+%  Actually the |\OptionNotUsed| declaration is only needed if this is
+%  being used in class files, but does no harm in package files.
+%
+%
+% \subsection{Safe Input Macros}
+% \DescribeMacro{\InputIfFileExists}
+%  |\InputIfFileExists{|\meta{file}|}{|\meta{then}|}{|\meta{else}|}|\\
+% Inputs \meta{file} if it exists. Immediately before the input,
+% \meta{then} is executed. Otherwise \meta{else} is executed.
+%
+% \DescribeMacro{\IfFileExists}
+% As above, but does not input the file.
+%
+% One thing you might like to put in the \meta{else} clause is
+%
+% \DescribeMacro{\@missingfileerror}
+% This starts an interactive request for a filename, supplying default
+% extensions. Just hitting return causes the whole input to be skipped
+% and entering |x| quits the current run,
+%
+% \DescribeMacro{\input}
+% This has been redefined from the \LaTeX2.09 definition, in terms of
+% the new commands |\InputIfFileExists| and |\@missingfileerror|.
+%
+%
+% \DescribeMacro{\listfiles} Giving this declaration in the preamble
+% causes a list of all files input via the `safe input' commands to be
+% listed at the end. Any strings specified in the optional argument to
+% |\ProvidesPackage| are listed alongside the file name. So files in
+% standard (and other non-standard) distributions can put informative
+% strings in this argument.
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+%    \end{macrocode}
+%
+%
+% \changes{v0.2g}{1993/11/23}
+%         {Various macros now moved to latex.tex.}
+% \changes{v0.2g}{1993/11/23}
+%         {Warnings and errors now directly coded.}
+% \changes{v0.2h}{1993/11/28}
+%         {Primitive filenames now terminated by space not \cs{relax}.}
+% \changes{v0.2h}{1993/11/28}
+%         {Directory syntax checing moved to dircheck.dtx}
+% \changes{v0.2h}{1993/11/28}
+%         {Assorted commands now in the kernel removed.}
+% \changes{v0.2i}{1993/12/03}
+%         {\cs{@onlypreamble}: Many commands declared.}
+% \changes{v0.2i}{1993/12/03}
+%         {Removed obsolete \cs{@documentclass}}
+% \changes{v0.2o}{1993/12/13}
+%         {Removed setting \cs{errorcontextlines}\ (now in latex.tex)}
+% \changes{v0.2p}{1993/12/15}
+%         {Removed extra `.'s from \cs{@@warning}s}
+% \changes{v0.2s}{1994/01/17}
+%         {Added many more \cs{@onlypreamble} commands}
+% \changes{v0.2s}{1994/01/17}
+%         {Wrapped long lines to column 72}
+% \changes{v0.3a}{1994/03/02}
+%         {Remove need for driver file}
+% \changes{v0.3b}{1994/03/08}
+%         {Modify driver code into `new style'}
+% \changes{v0.3c}{1994/03/12}
+%         {Change name from docclass to ltclass}
+% \changes{v0.3h}{1994/04/25}
+%         {Removed spurious extra `.'s at the end of error messages}
+% \changes{v1.0a}{1994/04/29}
+%         {Change version number to 1 (no other change)}
+% \changes{v1.0k}{1994/11/03}
+%         {Move \cs{@missingfileerror} to ltfiles}
+%
+% \begin{macro}{\if@compatibility}
+%    The flag for compatibility mode.
+%    \begin{macrocode}
+\newif\if@compatibility
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@documentclasshook}
+%    The hook called after the first |\documentclass| command.  By
+%    default this checks to see if |\@normalsize| is undefined, and if
+%    so, sets it to |\normalsize|.
+% \changes{v0.2q}{1993/12/17}
+%         {Macro added}
+% \changes{v0.2z}{1994/02/10}
+%         {Changed the name from \cs{@compatibility} to
+%          \cs{@documentclasshook}, and added the check for whether
+%          \cs{@normalsize} has been defined.  ASAJ.}
+%    \begin{macrocode}
+\def\@documentclasshook{%
+   \ifx\@normalsize\@undefined
+      \let\@normalsize\normalsize
+   \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@declaredoptions}
+%    This list is automatically built by |\DeclareOption|.
+%    It is the list of options (separated by commas) declared in
+%    the class or package file and it defines the order in which the
+%    the corresponding |\ds@|\meta{option} commands are executed.
+%    All local \meta{option}s which are not declared will be processed
+%    in the order defined by the optional argument of |\documentclass|
+%    or |\usepackage|.
+%    \begin{macrocode}
+\let\@declaredoptions\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@classoptionslist}
+%    List of options of the main class.
+% \changes{v1.0u}{1996/07/26}{made only preamble}
+%    \begin{macrocode}
+\let\@classoptionslist\relax
+\@onlypreamble\@classoptionslist
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@unusedoptionlist}
+% \changes{v1.0u}{1996/07/26}{made only preamble}
+%    List of options of the main class that haven't been declared or
+%    loaded as class option files.
+%    \begin{macrocode}
+\let\@unusedoptionlist\@empty
+\@onlypreamble\@unusedoptionlist
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\CurrentOption}
+%    Name of current package or option.
+% \changes{v0.2c}{1993/11/17}
+%         {Name changed from \cs{@curroption}}
+%    \begin{macrocode}
+\let\CurrentOption\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\@currname}
+%    Name of current package or option.
+%    \begin{macrocode}
+\let\@currname\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@currext}
+%    The current file extension.
+% \changes{v0.2a}{1993/11/14}{Name changed from \cs{@currextension}}
+%    \begin{macrocode}
+\global\let\@currext=\@empty
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@clsextension}
+% \begin{macro}{\@pkgextension}
+%    The two possible values of |\@currext|.
+%    \begin{macrocode}
+\def\@clsextension{cls}
+\def\@pkgextension{sty}
+\@onlypreamble\@clsextension
+\@onlypreamble\@pkgextension
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@pushfilename}
+% \begin{macro}{\@popfilename}
+% \begin{macro}{\@currnamestack}
+% Commands to push and pop the file name and extension. \\
+% |#1| current name.      \\
+% |#2| current extension. \\
+% |#3| current catcode of |@|. \\
+% |#4| Rest of the stack.
+%    \begin{macrocode}
+\def\@pushfilename{%
+  \xdef\@currnamestack{%
+    {\@currname}%
+    {\@currext}%
+    {\the\catcode`\@}%
+    \@currnamestack}}
+\@onlypreamble\@pushfilename
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@popfilename{\expandafter\@p@pfilename\@currnamestack\@nil}
+\@onlypreamble\@popfilename
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@p@pfilename#1#2#3#4\@nil{%
+  \gdef\@currname{#1}%
+  \gdef\@currext{#2}%
+  \catcode`\@#3\relax
+  \gdef\@currnamestack{#4}}
+\@onlypreamble\@p@pfilename
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\@currnamestack{}
+\@onlypreamble\@currnamestack
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@ptionlist}
+%    Returns the option list of the file.
+%    \begin{macrocode}
+\def\@ptionlist#1{%
+  \@ifundefined{opt@#1}\@empty{\csname opt@#1\endcsname}}
+\@onlypreamble\@ptionlist
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ifpackageloaded}
+% \begin{macro}{\@ifclassloaded}
+%   |\@ifpackageloaded{|\meta{name}|}|
+%  Checks to see whether a file has been loaded.
+% \changes{v0.2t}{1994/01/18}
+%         {Fix typo \cs{@pkgetension}}
+%    \begin{macrocode}
+\def\@ifpackageloaded{\@ifl@aded\@pkgextension}
+\def\@ifclassloaded{\@ifl@aded\@clsextension}
+\@onlypreamble\@ifpackageloaded
+\@onlypreamble\@ifclassloaded
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@ifl@aded#1#2{%
+  \expandafter\ifx\csname ver@#2.#1\endcsname\relax
+    \expandafter\@secondoftwo
+  \else
+    \expandafter\@firstoftwo
+  \fi}
+\@onlypreamble\@ifl@aded
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@ifpackagelater}
+% \begin{macro}{\@ifclasslater}
+% |\@ifpackagelater{|\meta{name}|}{YYYY/MM/DD}|
+% Checks that the package loaded is more recent than the given date.
+%    \begin{macrocode}
+\def\@ifpackagelater{\@ifl@ter\@pkgextension}
+\def\@ifclasslater{\@ifl@ter\@clsextension}
+\@onlypreamble\@ifpackagelater
+\@onlypreamble\@ifclasslater
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@ifl@ter#1#2{%
+  \expandafter\@ifl@t@r
+    \csname ver@#2.#1\endcsname}
+\@onlypreamble\@ifl@ter
+%    \end{macrocode}
+%
+% This internal macro is also used in |\NeedsTeXFormat|.
+% \changes{v0.2f}{1993/11/22}
+%         {Added //00 so parsing never produces a runaway argument.}
+%    \begin{macrocode}
+\def\@ifl@t@r#1#2{%
+  \ifnum\expandafter\@parse@version#1//00\@nil<%
+        \expandafter\@parse@version#2//00\@nil
+    \expandafter\@secondoftwo
+  \else
+    \expandafter\@firstoftwo
+  \fi}
+\@onlypreamble\@ifl@t@r
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@parse@version#1/#2/#3#4#5\@nil{#1#2#3#4 }
+\@onlypreamble\@parse@version
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@ifpackagewith}
+% \begin{macro}{\@ifclasswith}
+% |\@ifpackagewith{|\meta{name}|}{|\meta{option-list}|}|
+% Checks that \meta{option-list} is a subset of the options
+% \textbf{with} which \meta{name} was loaded.
+%    \begin{macrocode}
+\def\@ifpackagewith{\@if@ptions\@pkgextension}
+\def\@ifclasswith{\@if@ptions\@clsextension}
+\@onlypreamble\@ifpackagewith
+\@onlypreamble\@ifclasswith
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@if@ptions#1#2{%
+  \@expandtwoargs\@if@pti@ns{\@ptionlist{#2.#1}}}
+\@onlypreamble\@if@ptions
+%    \end{macrocode}
+%
+% Probably shouldn't use |\CurrentOption| here\ldots (changed to
+% |\reserved@b|.)
+% \changes{v0.2y}{1994/02/07}
+%         {Add extra ,s so `two' is not matched with `twocolumn'}
+% \changes{v1.1i}{2011/08/19}
+%         {Re-jig definition after more stringent \cs{in@} test.}
+%    \begin{macrocode}
+\def\@if@pti@ns#1#2{%
+ \let\reserved@a\@firstoftwo
+ \@for\reserved@b:=#2\do{%
+   \ifx\reserved@b\@empty
+   \else
+     \expandafter\in@\expandafter{\expandafter,\reserved@b,}{,#1,}%
+     \ifin@
+     \else
+       \let\reserved@a\@secondoftwo
+     \fi
+   \fi
+ }%
+ \reserved@a}
+\@onlypreamble\@if@pti@ns
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\ProvidesPackage}
+%    Checks that the current filename is correct, and defines
+%    |\ver@filename|.
+% \changes{v0.3c}{1994/03/12}
+%         {Add \cs{wlog}}
+% \changes{v0.3c}{1994/03/12}
+%         {use \cs{@gtempa}}
+%    \begin{macrocode}
+\def\ProvidesPackage#1{%
+  \xdef\@gtempa{#1}%
+  \ifx\@gtempa\@currname\else
+    \@latex@warning@no@line{You have requested
+      \@cls@pkg\space`\@currname',\MessageBreak
+       but the \@cls@pkg\space provides `#1'}%
+  \fi
+  \@ifnextchar[\@pr@videpackage{\@pr@videpackage[]}}%]
+\@onlypreamble\ProvidesPackage
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@pr@videpackage[#1]{%
+  \expandafter\xdef\csname ver@\@currname.\@currext\endcsname{#1}%
+  \ifx\@currext\@clsextension
+    \typeout{Document Class: \@gtempa\space#1}%
+  \else
+    \wlog{Package: \@gtempa\space#1}%
+  \fi}
+\@onlypreamble\@pr@videpackage
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ProvidesClass}
+%    Like |\ProvidesPackage|, but for classes.
+%    \begin{macrocode}
+\let\ProvidesClass\ProvidesPackage
+\@onlypreamble\ProvidesClass
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ProvidesFile}
+%    Like |\ProvidesPackage|, but for arbitrary files. Do not apply
+%    |\@onlypreamble| to these, as we may want to label files input
+%    during the document.
+% \changes{v0.2l}{1993/12/07}
+%         {Macro added}
+% \changes{v0.3c}{1994/03/12}
+%         {Add \cs{wlog}}
+% \changes{v0.3g}{1994/04/11}
+%         {Protect against weird catcodes.}
+% \begin{macro}{\@providesfile}
+% \changes{v1.0r}{1995/10/17}
+%         {Delay definition of \cs{ProvidesFile} till ltfinal}
+% \changes{v1.1a}{1998/03/21}
+%         {Allow \&. Internal/2702}
+% \changes{v1.1d}{2001/05/25}{Explicitly set catcode of
+%                              \cs{endlinechar} to 10 (pr/3334)}
+% \changes{v1.1e}{2001/06/04}{But only if it is a char (pr/3334)}
+% \changes{v1.1f}{2001/08/26}{Readded setting of space char (pr/3353)}
+%    \begin{macrocode}
+\def\ProvidesFile#1{%
+  \begingroup
+    \catcode`\ 10 %
+    \ifnum \endlinechar<256 %
+      \ifnum \endlinechar>\m@ne
+        \catcode\endlinechar 10 %
+      \fi
+    \fi
+    \@makeother\/%
+    \@makeother\&%
+%    \end{macrocode}
+% \changes{v1.1g}{2004/01/28}{Use kernel version of
+%                             \cs{@ifnextchar} (pr/3501)}
+%    \begin{macrocode}
+    \kernel@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
+%    \end{macrocode}
+%
+% During initex a special version of |\@providesfile| is used.
+% The real definition is installed right at the end, in |ltfinal.dtx|.
+%\begin{verbatim}
+%\def\@providesfile#1[#2]{%
+%    \wlog{File: #1 #2}%
+%    \expandafter\xdef\csname ver@#1\endcsname{#2}%
+%  \endgroup}
+%    \end{macrocode}
+%\end{verbatim}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\PassOptionsToPackage}
+% \begin{macro}{\PassOptionsToClass}
+% If the package has been loaded, we check that it was first loaded with
+% the options.  Otherwise we add the option list to that of the package.
+%    \begin{macrocode}
+\def\@pass@ptions#1#2#3{%
+  \expandafter\xdef\csname opt@#3.#1\endcsname{%
+    \@ifundefined{opt@#3.#1}\@empty
+      {\csname opt@#3.#1\endcsname,}%
+    \zap@space#2 \@empty}}
+\@onlypreamble\@pass@ptions
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\PassOptionsToPackage{\@pass@ptions\@pkgextension}
+\def\PassOptionsToClass{\@pass@ptions\@clsextension}
+\@onlypreamble\PassOptionsToPackage
+\@onlypreamble\PassOptionsToClass
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\DeclareOption}
+% \begin{macro}{\DeclareOption*}
+%    Adds an option as a |\ds@| command, or the default |\default@ds|
+%    command.
+% \changes{v0.2c}{1993/11/17}
+%         {Error checking added}
+% \changes{v1.0m}{1995/04/21}
+%         {Made long /1498}
+% \changes{v1.0n}{1995/05/12}
+%         {Use \cs{toks@} to remove need to double hash /1557}
+%    \begin{macrocode}
+\def\DeclareOption{%
+  \let\@fileswith@pti@ns\@badrequireerror
+  \@ifstar\@defdefault@ds\@declareoption}
+\long\def\@declareoption#1#2{%
+   \xdef\@declaredoptions{\@declaredoptions,#1}%
+   \toks@{#2}%
+   \expandafter\edef\csname ds@#1\endcsname{\the\toks@}}
+\long\def\@defdefault@ds#1{%
+  \toks@{#1}%
+  \edef\default@ds{\the\toks@}}
+\@onlypreamble\DeclareOption
+\@onlypreamble\@declareoption
+\@onlypreamble\@defdefault@ds
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\OptionNotUsed}
+% If we are in a class file, add |\CurrentOption| to the list of
+% unused options. Otherwise, in a package file do nothing.
+%    \begin{macrocode}
+\def\OptionNotUsed{%
+  \ifx\@currext\@clsextension
+    \xdef\@unusedoptionlist{%
+      \ifx\@unusedoptionlist\@empty\else\@unusedoptionlist,\fi
+      \CurrentOption}%
+  \fi}
+\@onlypreamble\OptionNotUsed
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\default@ds}
+% The default default option code.
+% Set by |\@onefilewithoptions| to either |\OptionNotUsed| for
+% classes, or |\@unknownoptionerror| for packages. This may be reset
+% in either case with |\DeclareOption*|.
+%    \begin{macrocode}
+% \let\default@ds\OptionNotUsed
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ProcessOptions}
+% \begin{macro}{\ProcessOptions*}
+% |\ProcessOptions| calls |\ds@option| for each known package option,
+% then calls |\default@ds| for each option on the local options list.
+% Finally resets all the declared options to |\relax|. The empty option
+% does nothing, this has to be reset on the off chance it's set to
+% |\relax| if an empty element gets into the |\@declaredoptions| list.
+%
+% The star form is similar but executes options given in the order
+% specified in the document, not the order they are declared in the
+% file. In the case of packages, global options are executed before
+% local ones.
+% \changes{v0.2a}{1993/11/14}
+%         {Stop adding the global option list inside class files.}
+% \changes{v0.2a}{1993/11/14}
+%         {Optimise `empty option' code.}
+% \changes{v0.2b}{1993/11/15}
+%         {Star form added.}
+% \changes{v0.2c}{1993/11/17}
+%         {restoring \cs{@fileswith@pti@ns} added.}
+%    \begin{macrocode}
+\def\ProcessOptions{%
+  \let\ds@\@empty
+  \edef\@curroptions{\@ptionlist{\@currname.\@currext}}%
+  \@ifstar\@xprocess@ptions\@process@ptions}
+\@onlypreamble\ProcessOptions
+%    \end{macrocode}
+%
+% \changes{v0.2y}{1994/02/07}
+%         {Add extra ,s so `two' is not matched with `twocolumn'}
+%    \begin{macrocode}
+\def\@process@ptions{%
+  \@for\CurrentOption:=\@declaredoptions\do{%
+    \ifx\CurrentOption\@empty\else
+      \@expandtwoargs\in@{,\CurrentOption,}{%
+         ,\ifx\@currext\@clsextension\else\@classoptionslist,\fi
+         \@curroptions,}%
+      \ifin@
+        \@use@ption
+        \expandafter\let\csname ds@\CurrentOption\endcsname\@empty
+      \fi
+    \fi}%
+  \@process@pti@ns}
+\@onlypreamble\@process@ptions
+%    \end{macrocode}
+%
+% \changes{v0.2y}{1994/02/07}
+%         {Add extra ,s so `two' is not matched with `twocolumn'}
+%    \begin{macrocode}
+\def\@xprocess@ptions{%
+  \ifx\@currext\@clsextension\else
+    \@for\CurrentOption:=\@classoptionslist\do{%
+      \ifx\CurrentOption\@empty\else
+        \@expandtwoargs\in@{,\CurrentOption,}{,\@declaredoptions,}%
+        \ifin@
+          \@use@ption
+          \expandafter\let\csname ds@\CurrentOption\endcsname\@empty
+        \fi
+      \fi}%
+  \fi
+  \@process@pti@ns}
+\@onlypreamble\@xprocess@ptions
+%    \end{macrocode}
+%
+% The common part of |\ProcessOptions| and |\ProcessOptions*|.
+%    \begin{macrocode}
+\def\@process@pti@ns{%
+  \@for\CurrentOption:=\@curroptions\do{%
+    \@ifundefined{ds@\CurrentOption}%
+      {\@use@ption
+       \default@ds}%
+%    \end{macrocode}
+% There should not be any non-empty definition of |\CurrentOption| at
+% this point, as all the declared options were executed earlier. This is
+% for compatibility with 2.09 styles which use |\def\ds@|\ldots\
+% directly, and so have options which do not appear in
+% |\@declaredoptions|.
+%    \begin{macrocode}
+      \@use@ption}%
+%    \end{macrocode}
+% Clear all the definitions for option code. First set all the declared
+% options to |\relax|, then reset the `default' and `empty' options. and
+% the lst of declared options.
+%    \begin{macrocode}
+  \@for\CurrentOption:=\@declaredoptions\do{%
+    \expandafter\let\csname ds@\CurrentOption\endcsname\relax}%
+%    \end{macrocode}
+% \changes{v1.0r}{1995/10/17}
+%         {Reset \cs{CurrentOption} for graphics/1873}
+%    \begin{macrocode}
+  \let\CurrentOption\@empty
+  \let\@fileswith@pti@ns\@@fileswith@pti@ns
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}}
+\@onlypreamble\@process@pti@ns
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@options}
+% |\@options| is a synonym for |\ProcessOptions*| for upward
+% compatibility with \LaTeX2.09 style files.
+%    \begin{macrocode}
+\def\@options{\ProcessOptions*}
+\@onlypreamble\@options
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@use@ption}
+% Execute the code for the current option.
+% \changes{v0.2g}{1993/11/23}
+%         {Name changed from \cs{@executeoption}}
+% \changes{v1.0e}{1994/05/17}
+%         {Execute option after removing from list, not before}
+%    \begin{macrocode}
+\def\@use@ption{%
+  \@expandtwoargs\@removeelement\CurrentOption
+  \@unusedoptionlist\@unusedoptionlist
+  \csname ds@\CurrentOption\endcsname}
+\@onlypreamble\@use@ption
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ExecuteOptions}
+% |\ExecuteOptions{|\meta{option-list}|}| executes the code declared
+% for each option.
+% \changes{v0.2d}{1993/11/18}
+%         {Use \cs{CurrentOption} not \cs{reserved@a}}
+% \changes{v0.2k}{1993/12/06}
+%         {Preserve \cs{CurrentOption}.}
+%    \begin{macrocode}
+\def\ExecuteOptions#1{%
+  \def\reserved@a##1\@nil{%
+    \@for\CurrentOption:=#1\do{\csname ds@\CurrentOption\endcsname}%
+    \edef\CurrentOption{##1}}%
+  \expandafter\reserved@a\CurrentOption\@nil}
+\@onlypreamble\ExecuteOptions
+%    \end{macrocode}
+% \end{macro}
+%
+% The top-level commands, which just set some parameters then call
+% the internal command, |\@fileswithoptions|.
+% \begin{macro}{\documentclass}
+% \changes{v1.0q}{1995/06/19}
+%         {Dont redefine \cs{usepackage} in compat mode for /1634}
+% The main new-style class declaration.
+%    \begin{macrocode}
+\def\documentclass{%
+  \let\documentclass\@twoclasseserror
+  \if@compatibility\else\let\usepackage\RequirePackage\fi
+  \@fileswithoptions\@clsextension}
+\@onlypreamble\documentclass
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\documentstyle}
+% 2.09 style class `style' declaration.
+% \changes{v0.2a}{1993/11/14}
+%         {Added \cs{RequirePackage} \cs{@unusedoptionlist} stuff.}
+% \changes{v0.2b}{1993/11/15}
+%         {Modified to match \cs{ProcessOption*}}
+% \changes{v0.2d}{1993/11/18}
+%         {Modified \cs{RequirePackage} stuff.}
+% \changes{v0.2n}{1993/12/09}
+%         {input 209 compatibility file.}
+% \changes{v0.2o}{1993/12/13}
+%         {compatibility file now latex209.sty.}
+% \changes{v0.2q}{1993/12/17}
+%         {Match Alan's new code.}
+% \changes{v0.2u}{1994/01/21}
+%         {compatibility file now latex209.def.}
+%    \begin{macrocode}
+\def\documentstyle{%
+  \makeatletter\input{latex209.def}\makeatother
+  \documentclass}
+\@onlypreamble\documentstyle
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\RequirePackage}
+% Load package if not already loaded.
+%    \begin{macrocode}
+\def\RequirePackage{%
+  \@fileswithoptions\@pkgextension}
+\@onlypreamble\RequirePackage
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\LoadClass}
+% Load class.
+%    \begin{macrocode}
+\def\LoadClass{%
+  \ifx\@currext\@pkgextension
+     \@latex@error
+      {\noexpand\LoadClass in package file}%
+      {You may only use \noexpand\LoadClass in a class file.}%
+  \fi
+  \@fileswithoptions\@clsextension}
+\@onlypreamble\LoadClass
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@loadwithoptions}
+% \changes{v1.0t}{1995/11/14}{macro added}
+% Pass the current option list on to a class or package.
+% |#1| is |\@|\emph{cls-or-pkg}|extension|,
+% |#2| is |\RequirePackage| or |\LoadClass|,
+% |#3| is the class or package to be loaded.
+%    \begin{macrocode}
+\def\@loadwithoptions#1#2#3{%
+  \expandafter\let\csname opt@#3.#1\expandafter\endcsname
+       \csname opt@\@currname.\@currext\endcsname
+   #2{#3}}
+\@onlypreamble\@loadwithoptions
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\LoadClassWithOptions}
+% \changes{v1.0t}{1995/11/14}{macro added}
+% Load class `|#1|' with the current option list.
+%    \begin{macrocode}
+\def\LoadClassWithOptions{%
+  \@loadwithoptions\@clsextension\LoadClass}
+\@onlypreamble\LoadClassWithOptions
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\RequirePackageWithOptions}
+% \changes{v1.0t}{1995/11/14}{macro added}
+% \changes{v1.0v}{1996/10/04}{Reset \cs{@unprocessedoptions} for /2269}
+% Load package `|#1|' with the current option list.
+%    \begin{macrocode}
+\def\RequirePackageWithOptions{%
+  \AtEndOfPackage{\let\@unprocessedoptions\relax}%
+  \@loadwithoptions\@pkgextension\RequirePackage}
+\@onlypreamble\RequirePackageWithOptions
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\usepackage}
+%    To begin with, |\usepackage| produces an error.  This is reset by
+%    |\documentclass|.
+% \changes{v0.2o}{1993/12/13}
+%         {Fixed error handling}
+% \changes{v1.0h}{1994/05/23}{Remove argument if possible}
+%    \begin{macrocode}
+\def\usepackage#1#{%
+  \@latex@error
+    {\noexpand \usepackage before \string\documentclass}%
+    {\noexpand \usepackage may only appear in the document
+      preamble, i.e.,\MessageBreak
+      between \noexpand\documentclass and
+      \string\begin{document}.}%
+  \@gobble}
+\@onlypreamble\usepackage
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\NeedsTeXFormat}
+% Check that the document is running on the correct system.
+% \changes{v0.2a}{1993/11/14}
+%         {made more robust for alternative syntax for other formats.}
+% \changes{v0.2c}{1993/11/17}
+%         {Name changed from \cs{NeedsFormat}}
+% \changes{v0.2d}{1993/11/18}
+%         {\cs{fmtname} \cs{fmtversion} not \cs{@}\ldots}
+%    \begin{macrocode}
+\def\NeedsTeXFormat#1{%
+  \def\reserved@a{#1}%
+  \ifx\reserved@a\fmtname
+    \expandafter\@needsformat
+  \else
+     \@latex@error{This file needs format `\reserved@a'%
+       \MessageBreak but this is `\fmtname'}{%
+       The current input file will not be processed
+       further,\MessageBreak
+       because it was written for some other flavor of
+       TeX.\MessageBreak\@ehd}%
+%    \end{macrocode}
+%    If the file is not meant to be processed by \LaTeXe{} we stop
+%    inputting it, but we do not end the run. We just end inputting
+%    the current file.
+% \changes{v1.0h}{1994/05/23}
+%     {Don't stop completely when format is wrong}
+%    \begin{macrocode}
+     \endinput \fi}
+\@onlypreamble\NeedsTeXFormat
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@needsformat{%
+  \@ifnextchar[%]
+    \@needsf@rmat
+    {}}
+\@onlypreamble\@needsformat
+%    \end{macrocode}
+%
+% \changes{v1.0b}{1994/05/04}
+%         {Changed wording of the warning}
+%    \begin{macrocode}
+\def\@needsf@rmat[#1]{%
+    \@ifl@t@r\fmtversion{#1}{}%
+    {\@latex@warning@no@line
+        {You have requested release `#1' of LaTeX,\MessageBreak
+         but only release `\fmtversion' is available}}}
+\@onlypreamble\@needsf@rmat
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\zap@space}
+% |\zap@space foo|\meta{space}|\@empty| removes all spaces from |foo|
+% that are not protected by |{ }| groups.
+%    \begin{macrocode}
+\def\zap@space#1 #2{%
+  #1%
+  \ifx#2\@empty\else\expandafter\zap@space\fi
+  #2}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@fileswithoptions}
+% The common part of |\documentclass| and |\usepackage|.
+%    \begin{macrocode}
+\def\@fileswithoptions#1{%
+  \@ifnextchar[%]
+    {\@fileswith@ptions#1}%
+    {\@fileswith@ptions#1[]}}
+\@onlypreamble\@fileswithoptions
+%    \end{macrocode}
+%
+% \changes{v0.2f}{1993/11/22}
+%         {Made the default [] not [\cs{@unknownversion}]}
+% \changes{v1.1h}{2007/08/05}
+%         {Prevent loss of brackets PR/3965}
+%    \begin{macrocode}
+\def\@fileswith@ptions#1[#2]#3{%
+  \@ifnextchar[%]
+  {\@fileswith@pti@ns#1[{#2}]#3}%
+  {\@fileswith@pti@ns#1[{#2}]#3[]}}
+\@onlypreamble\@fileswith@ptions
+%    \end{macrocode}
+% Then we do some work.
+%
+% First of all, we define the global variables.
+% Then we look to see if the file has already been loaded.
+% If it has, we check that it was first loaded with at least the current
+% options.
+% If it has not, we add the current options to the package options,
+% set the default version to be |0000/00/00|, and load the file if we
+% can find it.
+% Then we check the version number.
+%
+% Finally, we restore the old file name, reset the default option,
+% and we set the catcode of |@|.
+%
+% For classes, we can immediately process the file. For other types,
+% |#2| could be a comma separated list, so loop through, processing
+% each one separately.
+% \changes{v0.2q}{1993/12/17}
+%         {Add \cs{@compatibility} hook}
+% \changes{v0.2s}{1994/01/17}
+%         {Modify to reduce parameter stack usage}
+% \changes{v0.2y}{1994/02/07}
+%         {Run \cs{@compatibility} on the first class to start
+%          (not the first to finish) }
+% \changes{v0.2z}{1994/02/10}
+%         {Renamed \cs{@compatibility} to \cs{@documentclasshook}.
+%          ASAJ.}
+% \changes{v1.1h}{2007/08/05}
+%         {Prevent loss of brackets PR/3965}
+%    \begin{macrocode}
+\def\@fileswith@pti@ns#1[#2]#3[#4]{%
+  \ifx#1\@clsextension
+    \ifx\@classoptionslist\relax
+      \xdef\@classoptionslist{\zap@space#2 \@empty}%
+      \def\reserved@a{%
+        \@onefilewithoptions#3[{#2}][{#4}]#1%
+        \@documentclasshook}%
+    \else
+      \def\reserved@a{%
+        \@onefilewithoptions#3[{#2}][{#4}]#1}%
+    \fi
+  \else
+%    \end{macrocode}
+% build up a list of calls to |\@onefilewithoptions|
+% (one for each package) without thrashing the parameter stack.
+%    \begin{macrocode}
+    \def\reserved@b##1,{%
+      \ifx\@nil##1\relax\else
+        \ifx\relax##1\relax\else
+         \noexpand\@onefilewithoptions##1[{#2}][{#4}]%
+         \noexpand\@pkgextension
+        \fi
+        \expandafter\reserved@b
+      \fi}%
+      \edef\reserved@a{\zap@space#3 \@empty}%
+      \edef\reserved@a{\expandafter\reserved@b\reserved@a,\@nil,}%
+  \fi
+  \reserved@a}
+\@onlypreamble\@fileswith@pti@ns
+%    \end{macrocode}
+%
+% Have the main argument as |#1|, so we only need one |\expandafter|
+% above.
+% \changes{v0.2a}{1993/11/14}
+%         {Moved resetting of \cs{default@ds}, \cs{ds@} and
+%         \cs{@declaredoptions} here, from the end of
+%         \cs{ProcessOptions}.}
+% \changes{v0.2f}{1993/11/22}
+%         {Made the initial version [] not [\cs{@unknownversion}]}
+% \changes{v0.2m}{1993/12/07}
+%         {Reset \cs{CurrentOption}}
+%    \begin{macrocode}
+\def\@onefilewithoptions#1[#2][#3]#4{%
+  \@pushfilename
+  \xdef\@currname{#1}%
+  \global\let\@currext#4%
+  \expandafter\let\csname\@currname.\@currext-h@@k\endcsname\@empty
+  \let\CurrentOption\@empty
+  \@reset@ptions
+  \makeatletter
+%    \end{macrocode}
+% Grab everything in a macro, so the parameter stack is popped before
+% any processing begins.
+% \changes{v0.2s}{1994/01/17}
+%         {Modify to reduce parameter stack usage}
+% \changes{v1.1b}{1998/05/07}
+%         {Modify help message for latex/2805}
+%    \begin{macrocode}
+  \def\reserved@a{%
+    \@ifl@aded\@currext{#1}%
+      {\@if@ptions\@currext{#1}{#2}{}%
+        {\@latex@error
+            {Option clash for \@cls@pkg\space #1}%
+            {The package #1 has already been loaded
+             with options:\MessageBreak
+             \space\space[\@ptionlist{#1.\@currext}]\MessageBreak
+             There has now been an attempt to load it
+              with options\MessageBreak
+             \space\space[#2]\MessageBreak
+             Adding the global options:\MessageBreak
+             \space\space
+                  \@ptionlist{#1.\@currext},#2\MessageBreak
+             to your \noexpand\documentclass declaration may fix this.%
+             \MessageBreak
+             Try typing \space <return> \space to proceed.}}}%
+      {\@pass@ptions\@currext{#2}{#1}%
+%    \end{macrocode}
+% \changes{v0.3c}{1994/03/12}
+%         {Do not use \cs{@pr@videpackage} to avoid typeout}
+%    \begin{macrocode}
+       \global\expandafter
+       \let\csname ver@\@currname.\@currext\endcsname\@empty
+       \InputIfFileExists
+         {\@currname.\@currext}%
+         {}%
+         {\@missingfileerror\@currname\@currext}%
+%    \end{macrocode}
+% |\@unprocessedoptions| will generate an error for each specified
+% option in a package unless a |\ProcessOptions| has appeared in the
+% package file.
+% \changes{v0.2v}{1994/01/29}
+%         {All options raise error if no \cs{ProcessOptions} appears}
+% \changes{v0.2x}{1994/02/02}
+%         {Only run the hook and options check if the file was loaded.}
+%    \begin{macrocode}
+    \let\@unprocessedoptions\@@unprocessedoptions
+    \csname\@currname.\@currext-h@@k\endcsname
+    \expandafter\let\csname\@currname.\@currext-h@@k\endcsname
+              \@undefined
+    \@unprocessedoptions}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \@ifl@ter\@currext{#1}{#3}{}%
+      {\@latex@warning@no@line
+         {You have requested,\on@line,
+          version\MessageBreak
+            `#3' of \@cls@pkg\space #1,\MessageBreak
+          but only version\MessageBreak
+           `\csname ver@#1.\@currext\endcsname'\MessageBreak
+          is available}}%
+%    \end{macrocode}
+% \changes{v0.2c}{1993/11/17}
+%         {Added trap for two \cs{LoadClass} commands.}
+%    \begin{macrocode}
+    \ifx\@currext\@clsextension\let\LoadClass\@twoloadclasserror\fi
+    \@popfilename
+    \@reset@ptions}%
+  \reserved@a}
+\@onlypreamble\@onefilewithoptions
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@fileswith@pti@ns}
+% Save the definition (for error checking).
+% \changes{v0.2c}{1993/11/17}
+%         {Macro added}
+%    \begin{macrocode}
+\let\@@fileswith@pti@ns\@fileswith@pti@ns
+\@onlypreamble\@@fileswith@pti@ns
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@reset@ptions}
+% Reset the default option, and clear lists of declared options.
+% \changes{v0.2a}{1993/11/14}{macro added}
+%    \begin{macrocode}
+\def\@reset@ptions{%
+  \global\ifx\@currext\@clsextension
+    \let\default@ds\OptionNotUsed
+   \else
+    \let\default@ds\@unknownoptionerror
+  \fi
+  \global\let\ds@\@empty
+  \global\let\@declaredoptions\@empty}
+\@onlypreamble\@reset@ptions
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Hooks}
+%
+% Allow code do be saved to be executed at specific later times.
+%
+% Save things in macros, I considered using toks registers, (and
+% |\addto@hook| from the NFSS code, that would require stacking the
+% contents in the case of required packages, so just generate a new
+% macro for each package.
+% \begin{macro}{\@begindocumenthook}
+% \changes{v1.0s}{1995/10/20}
+%         {Make setting conditional, for autoload version}
+% \begin{macro}{\@enddocumenthook}
+% Stuff to appear at the beginning or end of the document.
+%    \begin{macrocode}
+\ifx\@begindocumenthook\@undefined
+  \let\@begindocumenthook\@empty
+\fi
+\let\@enddocumenthook\@empty
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\g@addto@macro}
+% Globally add to the end of a macro.
+% \changes{v0.2a}{1993/11/14}{Made global}
+% \changes{v0.2w}{1994/01/31}
+%     {Use toks register to avoid `hash' problems}
+% \changes{v1.0o}{1995/05/17}
+%     {Make long for latex/1522}
+% \changes{v1.0w}{1996/12/17}
+%     {Use \cs{begingroup} to save making a mathord}
+% \changes{v1.0x}{1997/02/05}
+%     {missing percent /2402}
+%    \begin{macrocode}
+\long\def\g@addto@macro#1#2{%
+  \begingroup
+    \toks@\expandafter{#1#2}%
+    \xdef#1{\the\toks@}%
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\AtEndOfPackage}
+% \begin{macro}{\AtEndOfClass}
+% \begin{macro}{\AtBeginDocument}
+% \begin{macro}{\AtEndDocument}
+% The access functions.
+% \changes{v0.2a}{1993/11/14}
+%         {Included extension in the generated macro name for package
+%         and class hooks.}
+%    \begin{macrocode}
+\def\AtEndOfPackage{%
+  \expandafter\g@addto@macro\csname\@currname.\@currext-h@@k\endcsname}
+\let\AtEndOfClass\AtEndOfPackage
+\@onlypreamble\AtEndOfPackage
+\@onlypreamble\AtEndOfClass
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\AtBeginDocument{\g@addto@macro\@begindocumenthook}
+\def\AtEndDocument{\g@addto@macro\@enddocumenthook}
+\@onlypreamble\AtBeginDocument
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\@cls@pkg}
+%    The current file type.
+% \changes{v0.2i}{1993/12/03}
+%         {Name changed to avoid clash with output routine.}
+%    \begin{macrocode}
+\def\@cls@pkg{%
+  \ifx\@currext\@clsextension
+    document class%
+  \else
+    package%
+  \fi}
+\@onlypreamble\@cls@pkg
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@unknownoptionerror}
+% Bad option.
+%    \begin{macrocode}
+\def\@unknownoptionerror{%
+  \@latex@error
+    {Unknown option `\CurrentOption' for \@cls@pkg\space`\@currname'}%
+    {The option `\CurrentOption' was not declared in
+     \@cls@pkg\space`\@currname', perhaps you\MessageBreak
+      misspelled its name.
+     Try typing \space <return>
+     \space to proceed.}}
+\@onlypreamble\@unknownoptionerror
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@unprocessedoptions}
+% Declare an error for each option, unless a |\ProcessOptions| occurred.
+% \changes{v0.2v}{1994/01/29}
+%         {Macro added.}
+% \changes{v1.0t}{1995/11/14}{Allow empty option}
+%    \begin{macrocode}
+\def\@@unprocessedoptions{%
+  \ifx\@currext\@pkgextension
+    \edef\@curroptions{\@ptionlist{\@currname.\@currext}}%
+    \@for\CurrentOption:=\@curroptions\do{%
+        \ifx\CurrentOption\@empty\else\@unknownoptionerror\fi}%
+  \fi}
+\@onlypreamble\@unprocessedoptions
+\@onlypreamble\@@unprocessedoptions
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@badrequireerror}
+% |\RequirePackage| or |\LoadClass| occurs in the options section.
+% \changes{v0.2c}{1993/11/17}
+%         {Macro added}
+%    \begin{macrocode}
+\def\@badrequireerror#1[#2]#3[#4]{%
+  \@latex@error
+    {\noexpand\RequirePackage or \noexpand\LoadClass
+         in Options Section}%
+    {The \@cls@pkg\space `\@currname' is defective.\MessageBreak
+     It attempts to load `#3' in the options section, i.e.,\MessageBreak
+     between \noexpand\DeclareOption and \string\ProcessOptions.}}
+\@onlypreamble\@badrequireerror
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@twoloadclasserror}
+% Two |\LoadClass| in a class.
+% \changes{v0.2c}{1993/11/17}
+%         {Macro added}
+%    \begin{macrocode}
+\def\@twoloadclasserror{%
+  \@latex@error
+    {Two \noexpand\LoadClass commands}%
+    {You may only use one \noexpand\LoadClass in a class file}}
+\@onlypreamble\@twoloadclasserror
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@twoclasseserror}
+% Two |\documentclass| or |\documentstyle|.
+% \changes{v0.2h}{1993/11/28}
+%         {Macro added}
+%    \begin{macrocode}
+\def\@twoclasseserror#1#{%
+  \@latex@error
+    {Two \noexpand\documentclass or \noexpand\documentstyle commands}%
+    {The document may only declare one class.}\@gobble}
+\@onlypreamble\@twoclasseserror
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Providing shipment}
+%
+% \begin{macro}{\two@digits}
+% Prefix a number less than 10 with `0'.
+%    \begin{macrocode}
+\def\two@digits#1{\ifnum#1<10 0\fi\number#1}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\filecontents}
+%  \begin{macro}{\endfilecontents}
+%    This environment implements inline files.
+%    The star-form does not write extra comments into the file.
+%
+% \changes{v0.2h}{1993/11/28}
+%         {Don't globally allocate a write stream (always use 15)}
+% \changes{v0.2r}{1993/12/19}{Different message when ignoring a file}
+% \changes{v0.3g}{1994/04/11}
+%         {Add star form,
+%          dont write \cs{endinput} at the end of the file.}
+% \changes{v1.0c}{1994/05/11}
+%         {Add checks for form feed and tab}
+% \changes{v1.0m}{1995/04/21}
+%         {Close input check stream: latex/1487}
+% \changes{v1.0p}{1995/05/25}{Delete \cs{filec@ntents} after preamble}
+%    \begin{macrocode}
+\begingroup%
+\catcode`\*=11 %
+\catcode`\^^M\active%
+\catcode`\^^L\active\let^^L\relax%
+\catcode`\^^I\active%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\filecontents{\@tempswatrue\filec@ntents}%
+\gdef\filecontents*{\@tempswafalse\filec@ntents}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\filec@ntents#1{%
+  \openin\@inputcheck#1 %
+  \ifeof\@inputcheck%
+    \@latex@warning@no@line%
+        {Writing file `\@currdir#1'}%
+%    \end{macrocode}
+%
+% \changes{v1.0y}{1997/10/10}
+%         {\cs{reserved@c} not \cs{verbatim@out} to save a csname}
+%    \begin{macrocode}
+    \chardef\reserved@c15 %
+    \ch@ck7\reserved@c\write%
+    \immediate\openout\reserved@c#1\relax%
+  \else%
+%    \end{macrocode}
+%
+% \changes{v1.0y}{1997/10/10}
+%         {Use \cs{@gobbletwo}}
+%    \begin{macrocode}
+    \closein\@inputcheck%
+    \@latex@warning@no@line%
+            {File `#1' already exists on the system.\MessageBreak%
+             Not generating it from this source}%
+    \let\write\@gobbletwo%
+    \let\closeout\@gobble%
+  \fi%
+  \if@tempswa%
+%    \end{macrocode}
+%
+% \changes{v1.0y}{1997/10/10}
+%         {\cs{@currenvir} in banner}
+%    \begin{macrocode}
+    \immediate\write\reserved@c{%
+      \@percentchar\@percentchar\space%
+          \expandafter\@gobble\string\LaTeX2e file `#1'^^J%
+      \@percentchar\@percentchar\space  generated by the %
+        `\@currenvir' \expandafter\@gobblefour\string\newenvironment^^J%
+      \@percentchar\@percentchar\space from source `\jobname' on %
+         \number\year/\two@digits\month/\two@digits\day.^^J%
+      \@percentchar\@percentchar}%
+  \fi%
+  \let\do\@makeother\dospecials%
+%    \end{macrocode}
+%
+% \changes{v1.0y}{1997/10/10}
+%     {Check for text before or after \cs{end} environment. latex/2636}
+%    \begin{macrocode}
+  \edef\E{\@backslashchar end\string{\@currenvir\string}}%
+  \edef\reserved@b{%
+    \def\noexpand\reserved@b%
+         ####1\E####2\E####3\relax}%
+  \reserved@b{%
+    \ifx\relax##3\relax%
+%    \end{macrocode}
+% There was no |\end{filecontents}|
+%    \begin{macrocode}
+      \immediate\write\reserved@c{##1}%
+    \else%
+%    \end{macrocode}
+% There was a |\end{filecontents}|, so stop this time.
+%    \begin{macrocode}
+      \edef^^M{\noexpand\end{\@currenvir}}%
+      \ifx\relax##1\relax%
+      \else%
+%    \end{macrocode}
+% Text before the |\end|, write it with a warning.
+%    \begin{macrocode}
+          \@latex@warning{Writing text `##1' before %
+             \string\end{\@currenvir}\MessageBreak as last line of #1}%
+        \immediate\write\reserved@c{##1}%
+      \fi%
+      \ifx\relax##2\relax%
+      \else%
+%    \end{macrocode}
+% Text after the |\end|, ignore it with a warning.
+%    \begin{macrocode}
+         \@latex@warning{%
+           Ignoring text `##2' after \string\end{\@currenvir}}%
+      \fi%
+    \fi%
+    ^^M}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \catcode`\^^L\active%
+  \let\L\@undefined%
+  \def^^L{\@ifundefined L^^J^^J^^J}%
+  \catcode`\^^I\active%
+  \let\I\@undefined%
+  \def^^I{\@ifundefined I\space\space}%
+  \catcode`\^^M\active%
+  \edef^^M##1^^M{%
+    \noexpand\reserved@b##1\E\E\relax}}%
+\endgroup%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup
+\catcode`|=\catcode`\%
+\catcode`\%=12
+\catcode`\*=11
+\gdef\@percentchar{%}
+\gdef\endfilecontents{|
+  \immediate\closeout\reserved@c
+  \def\T##1##2##3{|
+  \ifx##1\@undefined\else
+    \@latex@warning@no@line{##2 has been converted to Blank ##3e}|
+  \fi}|
+  \T\L{Form Feed}{Lin}|
+  \T\I{Tab}{Spac}|
+  \immediate\write\@unused{}}
+\global\let\endfilecontents*\endfilecontents
+\@onlypreamble\filecontents
+\@onlypreamble\endfilecontents
+\@onlypreamble\filecontents*
+\@onlypreamble\endfilecontents*
+\endgroup
+\@onlypreamble\filec@ntents
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \changes{v0.2f}{1993/11/22}
+%         {\cs{@unknownversion} removed}
+% \changes{v1.0j}{1994/10/18}
+%         {Move \cs{listfiles} to ltfiles.dtx}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \section{After Preamble}
+% Finally we declare a package that allows all the commands declared
+% above to be |\@onlypreamble| to be used after |\begin{document}|.
+% \changes{v0.3f}{1994/03/16}
+%         {Add pkgindoc package}
+% \changes{v1.1a}{1998/03/21}
+%         {Correct to new onlypreamble command list}
+%    \begin{macrocode}
+%<*afterpreamble>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pkgindoc}
+         [1994/10/20 v1.1 Package Interface in Document (DPC)]
+\def\reserved@a#1\do\@classoptionslist#2\do\filec@ntents#3\relax{%
+  \gdef\@preamblecmds{#1#3}}
+\expandafter\reserved@a\@preamblecmds\relax
+%</afterpreamble>
+%    \end{macrocode}
+%
+% \Finale

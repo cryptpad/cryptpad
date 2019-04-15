@@ -1,0 +1,54 @@
+%%% EncTeX, CS-font encoding specific macros, v.Aug.1997 (C) Petr Ol\v s\'ak
+
+       %% Accents
+\def\`#1{{\accent18 #1}}
+\def\'#1{{\accent19 #1}}
+\def\v#1{{\accent20 #1}}
+\def\u#1{{\accent21 #1}}
+\def\=#1{{\accent22 #1}}
+\def\^#1{{\accent94 #1}}
+\def\.#1{{\accent95 #1}}
+\def\H#1{{\accent"7D #1}}
+\def\~#1{{\accent"7E #1}}
+\def\"#1{{\accent"7F #1}}
+\def\r#1{{\accent23 #1}}
+       %% Baseline accents
+\def\b#1{\oalign{#1\crcr\hidewidth
+    \vbox to.2ex{\hbox{\char22}\vss}\hidewidth}}
+\def\c#1{\setbox0\hbox{#1}\ifdim\ht0=1ex\accent24 #1%
+   \else{\ooalign{\hidewidth\char24\hidewidth\crcr\unhbox0}}\fi}
+\def\og #1{\setbox0\hbox{#1}\ifdim\ht0=1ex\accent157 #1%
+   \else{\ooalign{\unhbox0\crcr\hss\char157}}\fi}
+       %% for backward compatibility:
+\let\ogonek=\og
+\def\softd{\v{d}}\def\softt{\v{t}}\def\ou{\r{u}}%
+\def\softl{\v{l}}\def\softL{\v{L}}
+       %% for compatibility with hyphen.lan file:
+\let\csaccents=\relax \let\cmaccents=\relax
+       %% Czech left a right double qoutes
+\chardef\clqq=254  \sfcode254=0
+\chardef\crqq=255  \sfcode255=0
+       %% French double quotes
+\chardef\flqq=158  \sfcode158=0
+\chardef\frqq=159  \sfcode159=0
+       %% Single quotes
+\chardef\clq=44   %% Comma is similar to left sigle quota
+\chardef\crq=96   \sfcode96=0
+       %% Other characters
+\def\pound{{\it\$}}
+\chardef\promile=141
+\def\registered{\ooalign
+   {\hfil\raise.73ex\hbox{\kern.1em$\scriptstyle\rm R$}\hfil
+    \crcr\raise.7ex\hbox{\mathhexbox20D}}}
+\def\trademark{$\mathsurround=0pt^{\rm TM}$}
+\def\pipe{\leavevmode
+   \vbox{\offinterlineskip\partofpipe\kern.5ex\partofpipe\kern-.5ex}}
+\def\partofpipe{\hbox to.5em{\hss\vrule height1ex\hss}}
+       %% The czech quotes:
+\def\uv {\leavevmode  %  ,,text``
+  \bgroup\aftergroup\crqq \afterassignment\clqq \let\next=}
+\def\fuv{\leavevmode  %  >>text<<
+  \bgroup\aftergroup\flqq \afterassignment\frqq \let\next=}
+\def\uvo{\leavevmode  %  ,text`
+  \bgroup\aftergroup\crq  \afterassignment\clq  \let\next=}
+

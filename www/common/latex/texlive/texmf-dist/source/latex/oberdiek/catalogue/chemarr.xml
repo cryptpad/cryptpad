@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='chemarr'>
+  <name>chemarr</name>
+  <caption>Arrows for chemists.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2006'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    Very often chemists need a longer version of reaction arrows
+    (<tt>\rightleftharpoons</tt>) with the possibility to put text
+    above and below.  Analogous to <xref refid='amsmath'>amsmath</xref>'s
+    <tt>\xrightarrow</tt> and <tt>\xleftarrow</tt> this package
+    provides the macro <tt>\xrightleftharpoons</tt>.  The package
+    requires amsmath.  To use it, <tt>\usepackage{chemarr}</tt>,
+    then <tt>\xrightleftharpoons[below]{above}</tt> .
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/chemarr.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/chemarr.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

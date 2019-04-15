@@ -1,0 +1,386 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2014
+%
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \iffalse
+%% File: afterpage.dtx Copyright (C) 1994 1994 1995 David Carlisle
+%
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{afterpage}
+%<package>         [2014/10/28 v1.08 After-Page Package (DPC)]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{afterpage}
+\GetFileInfo{afterpage.sty}
+\begin{document}
+\title{The \textsf{afterpage} package\thanks{This file
+        has version number \fileversion, last
+        revised \filedate.}}
+\author{David Carlisle}
+\date{\filedate}
+\MaintainedByLaTeXTeam{tools}
+\maketitle
+\DocInput{afterpage.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \changes{v1.00}{1993/01/25}{Initial version}
+% \changes{v1.05}{1993/07/14}{First public version}
+% \changes{v1.06}{1994/02/01}{Update for LaTeX2e}
+% \changes{v1.07}{1994/05/23}{Documentation Changes}
+% \changes{v1.08}{1995/10/27}
+%      {Use \cs{par} not \cs{endgraf}, for tools/1579}
+% \changes{v1.08}{1995/10/27}
+%      {Try and do something sensible with nested \cs{clearpage},
+%       for tools/1880}
+% \changes{v1.08}{1995/10/27}
+%      {Try and do something sensible with footnotes, for tools/1884}
+%
+% \CheckSum{269}
+%
+% This package implements a command, |\afterpage|, that causes the
+% commands specified in its argument to be expanded after the current
+% page is output.\footnote{This is really a pre-release, to see whether
+% people like the idea of a command like this. This implementation is
+% \emph{not} particularly robust. This implementation does not work in
+% two column mode, and can get `confused' by \LaTeX's floating
+% environments.}
+%
+% \begin{enumerate}
+% \item Sometimes \LaTeX's float positioning mechanism gets overloaded,
+% and all floating |figure|s and |table|s drift to the end of the
+% document. One may flush out all the unprocessed floats by issuing a
+% |\clearpage| command, but this has the effect of making the current
+% page end prematurely. Now you can issue |\afterpage{\clearpage}| and
+% the current page will be filled up with text as usual, but then a
+% |\clearpage| command will flush out all the floats before the next
+% text page begins.
+% \item An earlier mechanism to help with float placement was the
+% optional argument |[H]| (meaning {\bf HERE!}) which was originally
+% added to the standard floating environments by |here.sty|, and is now
+% provided by |float.sty|. However some |[H]| users have commented that
+% they did not really mean `Here!' They actually wanted `Somewhere
+% close'. This can now be achieved by\\
+%  |\afterpage{\clearpage\begin{figure}[H] |\ldots
+%  |\end{figure}}|\\
+% This ensures that the figure is at the top of the next page. (The
+% |\clearpage| stops any other figures drifting past the |[H]| figure.)
+% \item Floating longtables. |longtable.sty| provides the |longtable|
+% environment, a multi-page version of |tabular|. Many |longtable| users
+% have told me that it is difficult to set the text surrounding the long
+% table, and that they wanted a `floating' version. As, presumably,
+% |longtable|s are long, they are probably too large to hold in memory,
+% and float in the way that the |table| environment is floated, however
+% if the table is in a separate file, say |ltfile.tex|, you can now
+% use one of:\\
+% |\afterpage{\clearpage\input{ltfile}}|\\
+% |\afterpage{\clearpage\input{ltfile}\clearpage}|.\\
+% The first form lets text appear on the same page as the end of the
+% longtable, the second ensures that the surrounding text starts again
+% on a new page.
+% \end{enumerate}
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\afterpage}
+% The token register used to save the old output routine.
+%    \begin{macrocode}
+\newtoks\AP@output
+\global\AP@output\expandafter{\the\output}
+%    \end{macrocode}
+%
+% A box register used to save any part of the next page which has
+% already been processed.
+%    \begin{macrocode}
+\newbox\AP@partial
+%    \end{macrocode}
+%
+% A box register used to save any footnote texts that are `tied' to
+% the text that gets saved in |\AP@partial|.
+%    \begin{macrocode}
+\newbox\AP@footins
+%    \end{macrocode}
+%
+% The following macro attempts to get safely into vertical mode, and
+% then invokes a special output routine to grab the current page into
+% |\AP@partial|.
+%    \begin{macrocode}
+\def\AP@savetop{%
+%    \end{macrocode}
+% Now begins a test to see what state we are in. |\AP@noindent|  will
+% be defined so as to return to this state (well, almost!) after
+% afterpage has finished.
+%    \begin{macrocode}
+  \ifvmode
+%    \end{macrocode}
+% Vertical mode. This is the simplest case, do nothing.
+%    \begin{macrocode}
+    \let\AP@noindent\empty
+  \else\ifhmode
+%    \end{macrocode}
+% Horizontal mode.
+% `Back out' into vertical mode, removing the indentation box as we go.
+% If in fact there was no indentation box, the output routine was
+% invoked by |\noindent| (what bad luck!) so we have to remember to
+% re-insert the |\noindent| before the paragraph is seen again.
+% |\everypar| tokens have already been inserted, so don't insert them
+% again.
+%    \begin{macrocode}
+    \setbox\z@\lastbox
+    \edef\AP@noindent
+      {{\everypar{}\ifvoid\z@\noindent\else\indent\fi}}%
+    \par
+  \else
+%    \end{macrocode}
+% The remaining (even worse) possibility that the output routine
+% was triggered by the start of displaymath within a paragraph.
+%
+% Come out of displaymath with |$$|, then adjust the spacing (getting
+% into vmode at the same time). |\AP@noindent| will restart display math
+% later. |\everydisplay| tokens have already been inserted (they apply
+% to the math list that will be started by |\AP@noindent|, even though
+% they were triggered by the display math that was closed by the lines
+% below!). Save the values |\prevgraf| and |\predisplaysize| for use in
+% the re-started math list.
+%    \begin{macrocode}
+    \abovedisplayshortskip\z@\abovedisplayskip\z@
+    \belowdisplayshortskip\z@\belowdisplayskip\z@
+    \xdef\AP@disp{%
+      \predisplaysize\the\predisplaysize
+      \prevgraf\the\prevgraf\relax}%
+    $$\vskip-\baselineskip\vskip-\parskip
+    \edef\AP@noindent{%
+%    \end{macrocode}
+% Do not insert |\everydisplay| tokens again.
+%    \begin{macrocode}
+      \toks@{\the\everydisplay}\everydisplay{}%
+%    \end{macrocode}
+% Start displaymath mode with no spurious paragraph line above it.
+% Restore |\prevgraf| and |\predisplaysize|.  Use |\aftergroup| to
+% restore the correct setting for |\everydisplay| after this display
+% has finished.
+%    \begin{macrocode}
+      {\everypar{}\noindent}$$\AP@disp\aftergroup\noexpand\AP@ed}%
+  \fi\fi
+%    \end{macrocode}
+% Now switch the  output routine and remove everything from the current
+% page into the box |\AP@partial|.
+%    \begin{macrocode}
+  \begingroup
+  \nointerlineskip\null
+    \output{%
+      \global\setbox\AP@partial\vbox{%
+        \unvbox\@cclv
+         \global\setbox\@ne\lastbox}%
+%    \end{macrocode}
+% If the text that is saved in |\AP@partial| had footnotes, we'd
+% better grab them as well otherwise they may come out on a page
+% with the `afterpage' text, before the page that has the
+% footnote mark! (Added at v1.08.)
+%    \begin{macrocode}
+       \global\setbox\AP@footins\box\footins}%
+%    \end{macrocode}
+% Having defined the output routine, trigger it\ldots
+%    \begin{macrocode}
+  \eject
+  \endgroup}
+%    \end{macrocode}
+%
+% |\AP@| stores all the commands that must be executed after the page
+% break.
+%    \begin{macrocode}
+\let\AP@\relax
+%    \end{macrocode}
+%
+% Restore the |\everydisplay| register. |\ignorespaces| prevents a space
+% or newline after |$$| creating rogue a indentation or paragraph.
+%    \begin{macrocode}
+\def\AP@ed{\everydisplay\expandafter{\the\toks@}\ignorespaces}
+%    \end{macrocode}
+%
+% Remove the current vertical list, insert the commands |\AP@|
+% at the top of the page, and then re-insert the saved text.
+%    \begin{macrocode}
+\def\AP@@{%
+  \AP@savetop
+  \global\expandafter\let\expandafter\AP@\expandafter\relax\AP@
+  \par
+%    \end{macrocode}
+% The text originally at the top of this page is now stored in the box
+% |\AP@partial|, including  |\topskip| glue. Now we want to unbox
+% |\AP@partial|, placing the baseline of the first row |\baselineskip|
+% below the baseline of the last line coming from the afterpage text.
+% If we assumed nothing has too much height or depth (and |\topskip| is
+% rigid), it would be fairly trivial to position the contents of
+% |\AP@partial| so that the baseline of the first row was
+% |\baselineskip| below the last row just added.
+%
+% In this version, I thought it might be fun to try to exactly achieve
+% the |\baselineskip|--or--|\lineskip| calculation that \TeX\ normally
+% does internally.  The call to |\addboxcontents| does the right thing
+% (I hope).
+%    \begin{macrocode}
+   \addboxcontents\AP@partial
+%    \end{macrocode}
+% Now re-insert any footnote text. This may not be quite the right
+% place, as the text that has just been unboxed may break over a page
+% in its new position. Also it may not be the right number if the text
+% from |\afterpage| itself contains footnotes. Too bad!
+%    \begin{macrocode}
+  \ifvoid\AP@footins\else
+         \insert\footins{\unvbox\AP@footins}\fi
+%    \end{macrocode}
+% Now repair things if we started off in horizontal mode.
+%    \begin{macrocode}
+  \AP@noindent}
+%    \end{macrocode}
+%
+% If |\AP@| is not |\relax| then the current page already has some
+% `afterpage' commands, so just add the new commands to the end of the
+% list. Otherwise save the commands in |\AP@|. (within a local group),
+% and switch the output routine. (The new output routine just calls the
+% old one if it is invoked by a \LaTeX{} float.
+%    \begin{macrocode}
+\long\def\afterpage#1{%
+  \ifx\AP@\relax
+    \gdef\AP@{{#1\par}}%
+    \global\output{%
+      \the\AP@output
+      \ifnum\outputpenalty>-\@Mi
+        \global\output\expandafter{\the\AP@output}%
+        \aftergroup\AP@@
+      \fi}%
+  \else
+    \expandafter\gdef\expandafter\AP@\expandafter{\AP@{#1\par}}%
+  \fi}
+%    \end{macrocode}
+%
+% If we have got to the end of the document or clearpage
+% just put the stuff out  without any trickery.
+%    \begin{macrocode}
+\let\AP@clearpage\clearpage
+\def\clearpage{%
+  \ifx\AP@\relax
+    \AP@clearpage
+  \else
+    \global\output\expandafter{\the\AP@output}%
+    \AP@clearpage
+%    \end{macrocode}
+% At this point (since v1.08) Need to clear |\AP@| \emph{before}
+% using its expansion, as otherwise hit an infinite loop. Sigh.
+%    \begin{macrocode}
+    \global\expandafter\let\expandafter\AP@\expandafter\relax
+    \expandafter\expandafter\AP@
+  \fi}
+\let\AP@enddocument\enddocument
+\def\enddocument{%
+  \ifx\AP@\relax\else
+    \global\output\expandafter{\the\AP@output}%
+    \AP@clearpage
+    \global\expandafter\let\expandafter\AP@\expandafter\relax
+    \expandafter\expandafter\AP@
+  \fi
+    \AP@enddocument}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\addboxcontents}
+% Given a vbox |#1|, add to the current vertical list such that the end
+% result is equivalent to the list that \TeX\ would have built had the
+% contents of |#1| (apart from any initial glue) been added individually
+% to the current list.
+
+% So essentially, the problem is that of unboxing |#1|, but replacing
+% the glue at the top of |#1| with (something equivalent to) the
+% |\baselineskip| or |\lineskip| glue that \TeX\ would normally have
+% placed before the first box in |#1|. Also |\prevdepth| must be set at
+% the end.
+%    \begin{macrocode}
+\def\addboxcontents#1{{%
+%    \end{macrocode}
+% Perhaps I shouldn't use grouping here, as I probably don't really want
+% to save |#1|. If it is removed, |\splittopskip| and |\splitmaxdepth|
+% would need to be restored by hand.
+%
+% First replace any glue at the top by |\vskip 0pt|.
+%    \begin{macrocode}
+  \splittopskip\z@
+  \splitmaxdepth\maxdimen
+  \setbox#1\vbox{\break\unvbox#1}%
+  \setbox\z@\vsplit#1to\z@
+%    \end{macrocode}
+% Put the breakpoint back.
+%    \begin{macrocode}
+  \setbox#1\vbox{\break\unvbox#1}%
+%    \end{macrocode}
+% Set |\skip@| to be height of |#1| (without top glue)
+%    \begin{macrocode}
+  \skip@\ht#1%
+%    \end{macrocode}
+% Now make the first baseline of the first row be |\vsize| from the top.
+% (This assumes that the first row has height less than |\vsize|.)
+%    \begin{macrocode}
+  \splittopskip\vsize
+  \setbox\z@\vsplit#1to\z@
+%    \end{macrocode}
+% Subtract the new height of |#1| from |\skip@|, and add back on
+% |\splittopskip|, so |\skip@| is now the height of the first row of
+% |#1| This may still be 0pt if (eg) a mark or whatsit is between the
+% top glue and the first box. Save (this height${}-{}$|\splittopskip|)
+% in |\skip\tw@|.
+%    \begin{macrocode}
+  \advance\skip@-\ht#1%
+  \skip\tw@\skip@
+  \advance\skip@\splittopskip
+%    \end{macrocode}
+% Now fake \TeX's |\baselineskip| calculation.
+%    \begin{macrocode}
+  \advance\skip@\prevdepth
+  \advance\skip@-\baselineskip
+  \advance\skip\tw@\ifdim-\skip@<\lineskiplimit\lineskip\else-\skip@\fi
+%    \end{macrocode}
+% Finally add the glue.
+%    \begin{macrocode}
+  \vskip\skip\tw@
+%    \end{macrocode}
+% Now unbox the box, setting |\prevdepth| by hand, as |\unvbox| (unlike
+% |\box|) does not automatically set it.
+%    \begin{macrocode}
+  \global\dimen@i\dp#1%
+  \unvbox#1}%
+  \prevdepth\dimen@i}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='embedfile'>
+  <name>embedfile</name>
+  <caption>Embed files into PDF.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2006-2011'/>
+  <license type='lppl1.3'/>
+  <version number='2.6'/>
+  <description>
+    This package embeds files in a PDF document, using the PDF
+    format's embedding operation (note the contrast with the attach
+    operation used by the <xref refid='attachfile'>attachfile</xref>
+    and <xref refid='attachfile2'>attachfile2</xref> packages).
+    Currently only <xref refid='pdftex'>pdfTeX</xref> &gt;=1.30, in
+    PDF mode, is supported.
+
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/embedfile.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/embedfile.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

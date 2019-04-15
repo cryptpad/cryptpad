@@ -1,0 +1,211 @@
+%%
+%% This is file `bmpsize.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bmpsize.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: bmpsize
+%% Version: 2009/09/04 v1.6
+%% 
+%% Copyright (C) 2006-2009 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file bmpsize.dtx
+%% and the derived files
+%%    bmpsize.sty, bmpsize.pdf, bmpsize.ins, bmpsize.drv,
+%%    bmpsize-base.sty, bmpsize-test.tex, bmpsize-dvips.def,
+%%    bmpsize-dvipdfm.def, bmpsize-dvipdfmx.def.
+%% 
+\ProvidesPackage{bmpsize}%
+  [2009/09/04 v1.6 Extract size/resolution from bitmap files (HO)]%
+\RequirePackage{ifpdf}
+\ifpdf
+  \PackageInfo{bmpsize}{Superseded by pdfTeX in PDF mode}%
+  \expandafter\endinput
+\fi
+\RequirePackage{pdftexcmds}[2007/11/11]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@filedump\endcsname\relax
+  \PackageError{bmpsize}{%
+    You need pdfTeX 1.30.0 or newer%
+  }{Package loading is aborted.}%
+  \expandafter\endinput
+\fi
+
+\RequirePackage{infwarerr}[2007/09/09]
+\RequirePackage{graphics}
+\RequirePackage{keyval}\relax
+\expandafter\ifx\csname KV@errx\endcsname\relax
+  \def\KV@errx#1{%
+    \@PackageError{keyval}{#1}\@ehc
+  }%
+\fi
+\expandafter\ifx\csname KV@err\endcsname\relax
+  \let\KV@err\KV@errx
+\fi
+\RequirePackage{bmpsize-base}
+
+\InputIfFileExists{bmpsize-\Gin@driver}{}{}
+
+\define@key{Gin}{bmpsizefast}[true]{%
+  \expandafter\ifx\csname if#1\expandafter\endcsname\csname iftrue\endcsname
+    \@bmpsize@fasttrue
+  \else
+    \@bmpsize@fastfalse
+  \fi
+}
+\define@key{Gin}{resolutionunit}{%
+  \def\bmpsize@unit@default{#1}%
+}
+\begingroup
+  \def\x#1{\endgroup
+    \define@key{Gin}{resolution}{%
+      \@bmpsize@read@resolution\@bmpsize@user@resolutiontrue##1#1#1\@nil
+    }%
+    \define@key{Gin}{defaultresolution}{%
+      \@bmpsize@read@resolution\@bmpsize@user@resolutionfalse##1#1#1\@nil
+    }%
+  }%
+\x{ }
+\def\@bmpsize@read@resolution#1#2 #3 #4\@nil{%
+  \ifcase 0\ifx\\#2\\1\fi
+           \ifnum\pdf@strcmp{#2}{\Gin@exclamation}=\z@
+             \ifx\\#3\\1\fi
+             \ifnum\pdf@strcmp{#3}{\Gin@exclamation}=\z@
+               1%
+             \fi
+           \fi
+    \ifcase\pdf@strcmp{#2}{\Gin@exclamation}\relax
+      \let\bmpsize@pixelx@default\Gin@exclamation
+    \else
+      \edef\bmpsize@pixelx@default{#2}%
+    \fi
+    \ifcase\pdf@strcmp{#3}{\Gin@exclamation}\relax
+      \let\bmpsize@pixely@default\Gin@exclamation
+    \else
+      \ifx\\#3\\%
+        \let\bmpsize@pixely@default\bmpsize@pixelx@default
+      \else
+        \edef\bmpsize@pixely@default{#3}%
+      \fi
+    \fi
+    #1%
+  \else
+    \PackageError{bmpsize}{%
+      Wrong syntax for key (default)resolution%
+    }{%
+      See package documentation for correct syntax.%
+    }%
+  \fi
+}
+\newcommand*{\bmpsizesetup}{\setkeys{Gin}}
+
+\let\@bmpsize@org@setfile\Gin@setfile
+\def\Gin@setfile#1#2#3{%
+  \ifcase\pdf@strcmp{#1}{bmp}\relax
+    \expandafter\@firstofone
+  \else
+    \expandafter\@gobble
+  \fi
+  {%
+    \bmpsize@okfalse
+    \edef\bmpsize@ext{\ifx\Gin@ext\relax\Gin@eext\else\Gin@ext\fi}%
+    \edef\bmpsize@file{\Gin@base\bmpsize@ext}%
+    \edef\@bmpsize@temp{\bmpsize@ext}%
+    \@ifundefined{bmpsize@read@\@bmpsize@temp}{%
+      \@ifundefined{bmpsize@map@\@bmpsize@temp}{}{%
+        \expandafter\let\expandafter\@bmpsize@temp
+        \csname bmpsize@map@\@bmpsize@temp\endcsname
+      }%
+    }{}%
+    \@ifundefined{bmpsize@read@\@bmpsize@temp}{%
+    }{%
+      \csname bmpsize@read@\@bmpsize@temp\endcsname\bmpsize@file
+    }%
+    \ifbmpsize@ok
+    \else
+      \@for\@bmpsize@temp:=\bmpsize@types\do{%
+        \ifbmpsize@ok
+        \else
+          \csname bmpsize@read@\@bmpsize@temp\endcsname\bmpsize@file
+        \fi
+      }%
+    \fi
+    \ifbmpsize@ok
+      \ifGin@bbox
+        \@ifundefined{Gin@vllx}{%
+          \@PackageWarning{bmpsize}{Explicit bounding box is ignored}%
+        }{%
+          \ifx\Gin@viewport@code\relax
+            \def\Gin@ollx{0}%
+            \let\Gin@olly\Gin@ollx
+            \let\Gin@ourx\bmpsize@width
+            \let\Gin@oury\bmpsize@height
+            \let\Gin@vllx\Gin@llx
+            \let\Gin@vlly\Gin@lly
+            \let\Gin@vurx\Gin@urx
+            \let\Gin@vury\Gin@ury
+            \let\Gin@viewport@code\Gin@viewport
+            \@PackageWarning{bmpsize}{%
+              Explicit bounding box replaced by\MessageBreak
+              viewport setting%
+            }%
+          \else
+            \@PackageWarning{bmpsize}{Explicit bounding box is ignored}%
+          \fi
+        }%
+      \fi
+      \def\Gin@llx{0}%
+      \def\Gin@lly{0}%
+      \let\Gin@urx\bmpsize@width
+      \let\Gin@ury\bmpsize@height
+      \Gin@bboxtrue
+    \else
+      \PackageInfo{bmpsize}{Unknown image type of \bmpsize@file}%
+    \fi
+  }%
+  \@bmpsize@org@setfile{#1}{#2}{#3}%
+}
+\newcommand*{\bmpsize@ext@type}[1]{%
+  \@namedef{bmpsize@map@#1}%
+}
+\bmpsize@ext@type{.jpg}{jpg}
+\bmpsize@ext@type{.jpe}{jpg}
+\bmpsize@ext@type{.jfif}{jpg}
+\bmpsize@ext@type{.jpeg}{jpg}
+\bmpsize@ext@type{.tif}{tiff}
+\bmpsize@ext@type{.tiff}{tiff}
+\bmpsize@ext@type{.pcx}{pcx}
+\bmpsize@ext@type{.msp}{msp}
+\bmpsize@ext@type{.bmp}{bmp}
+\bmpsize@ext@type{.png}{png}
+\bmpsize@ext@type{.pnm}{pnm}
+\bmpsize@ext@type{.pbm}{pnm}
+\bmpsize@ext@type{.pgm}{pnm}
+\bmpsize@ext@type{.ppm}{pnm}
+\bmpsize@ext@type{.pam}{pam}
+\bmpsize@ext@type{.xpm}{xpm}
+\bmpsize@ext@type{.gif}{gif}
+\bmpsize@ext@type{.tga}{tga}
+\bmpsize@ext@type{.sgi}{sgi}
+\endinput
+%%
+%% End of file `bmpsize.sty'.

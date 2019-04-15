@@ -1,0 +1,100 @@
+% a font for double-9 dominoes
+% initially designed to work best on 300dpi printer
+
+% Example: To typeset a 2x3 array containing a vertical "1 over 2"
+%   followed by horizontal "3 4" over horizontal "5 6", say 
+%   \obeylines \catcode`\^=12 \offinterlineskip
+%   ^1<3>4
+%   v2<5>6
+
+% One can also typeset individual half dominoes without boundaries
+
+% Note: The "real" dominoes (made in Taiwan) have slightly different
+% proportions, more or less as if the centers were at 17,32,47 instead
+% instead of 16,32,48. But the present scheme seems mathematically better.
+mode_setup;
+p#:=in#/300;
+d#:=64p#;
+define_pixels(p);
+
+font_identifier:="DOMINO";
+font_coding_scheme:="dominoes";
+font_size:=10pt#;
+
+pickup pencircle scaled p; tiny_pen=savepen;
+pickup pencircle scaled 13p; huge_pen=savepen;
+% I first tried 15p, and it looked OK, but the Taiwan set has smaller dots
+pickup pencircle scaled 3p; bound_pen=savepen;
+
+def begindomchar(expr code)=
+ beginchar(code,d#,d#,0);
+ pickup tiny_pen;
+ for x=0 step 2p until 60p:
+  drawdot (x+.5p,1.5p); drawdot (x+1.5p,.5p);
+  drawdot (.5p,x+3.5p); drawdot (1.5p,x+2.5p);
+  drawdot (w-1.5p,x+1.5p); drawdot (w-.5p,x+.5p);
+  drawdot (x+2.5p,h-.5p); drawdot (x+3.5p,h-1.5p);
+ endfor
+% fill (2p,2p)--(w-2p,2p)--(w-2p,h-2p)--(2p,h-2p)--cycle;
+ fill (3p,3p)--(w-3p,3p)--(w-3p,h-3p)--(3p,h-3p)--cycle;
+ pickup huge_pen;
+enddef;
+
+def dota = erase drawdot(16p,48p) enddef;
+def dotb = erase drawdot(32p,48p) enddef;
+def dotc = erase drawdot(48p,48p) enddef;
+def dotd = erase drawdot(16p,32p) enddef;
+def dote = erase drawdot(32p,32p) enddef;
+def dotf = erase drawdot(48p,32p) enddef;
+def dotg = erase drawdot(16p,16p) enddef;
+def doth = erase drawdot(32p,16p) enddef;
+def doti = erase drawdot(48p,16p) enddef;
+
+def v(expr code)=128+ASCII code enddef;
+  % change character code for vertical format
+
+begindomchar("0"); endchar;
+begindomchar("1"); dote; endchar;
+%begindomchar("2"); dotc; dotg; endchar;
+%begindomchar(v("2")); dota; doti; endchar; % in vertical position
+%begindomchar("3"); dotc; dote; dotg; endchar;
+%begindomchar(v("3")); dota; dote; doti; endchar; % in vertical position
+begindomchar("2"); dota; doti; endchar;
+begindomchar(v("2")); dotc; dotg; endchar; % in vertical position
+begindomchar("3"); dota; dote; doti; endchar;
+begindomchar(v("3")); dotc; dote; dotg; endchar; % in vertical position
+begindomchar("4"); dota; dotc; dotg; doti; endchar;
+begindomchar("5"); dota; dotc; dote; dotg; doti; endchar;
+begindomchar("6"); dota; dotb; dotc; dotg; doth; doti; endchar;
+begindomchar(v("6")); dota; dotc; dotd; dotf; dotg; doti; endchar; % vert
+begindomchar("7"); dota; dotb; dotc; dote; dotg; doth; doti; endchar;
+begindomchar(v("7")); dota; dotc; dotd; dote; dotf; dotg; doti; endchar; % vert
+begindomchar("8"); dota; dotb; dotc; dotd; dotf; dotg; doth; doti; endchar;
+begindomchar("9"); dota; dotb; dotc; dotd; dote; dotf; dotg; doth; doti;
+ endchar;
+
+beginchar("<",d#,d#,0); % outline of left half
+% fill (w-2.5p,h-2p)--(w+2.5p,h-2p)--(w+2.5p,2p)--(w-2.5p,2p)--cycle;
+ fill (w-3.5p,h-3p)--(w+3.5p,h-3p)--(w+3.5p,3p)--(w-3.5p,3p)--cycle;
+endchar;
+beginchar(">",d#,d#,0); % outline of right half
+% fill (-2.5p,h-2p)--(2.5p,h-2p)--(2.5p,2p)--(-2.5p,2p)--cycle;
+ fill (-3.5p,h-3p)--(3.5p,h-3p)--(3.5p,3p)--(-3.5p,3p)--cycle;
+endchar;
+beginchar("^",d#,d#,0); % outline of top half
+% fill (2p,-2.5p)--(2p,2.5p)--(w-2p,2.5p)--(w-2p,-2.5p)--cycle;
+ fill (3p,-3.5p)--(3p,3.5p)--(w-3p,3.5p)--(w-3p,-3.5p)--cycle;
+endchar;
+beginchar("v",d#,d#,0); % outline of bottom half
+% fill (2p,h-2.5p)--(2p,h+2.5p)--(w-2p,h+2.5p)--(w-2p,h-2.5p)--cycle;
+ fill (3p,h-3.5p)--(3p,h+3.5p)--(w-3p,h+3.5p)--(w-3p,h-3.5p)--cycle;
+endchar;
+
+ligtable "^": "v": "2" |=: v("2"), v("2") kern-d#,
+                   "3" |=: v("3"), v("3") kern-d#,
+                   "6" |=: v("6"), v("6") kern-d#,
+                   "7" |=: v("7"), v("7") kern-d#, skipto 1;
+ligtable "<": ">": "2" kern-d#, "3" kern-d#, "6" kern-d#, "7" kern-d#, 1::
+ "0" kern-d#, "1" kern-d#, "4" kern-d#, "5" kern-d#, "8" kern-d#, "9" kern-d#;
+
+end.

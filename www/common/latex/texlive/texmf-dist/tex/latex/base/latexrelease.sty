@@ -1,0 +1,2180 @@
+%%
+%% This is file `latexrelease.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ltvers.dtx  (with options: `latexrelease')
+%% latexrelease.dtx  (with options: `latexrelease')
+%% ltdirchk.dtx  (with options: `latexrelease')
+%% ltdefns.dtx  (with options: `latexrelease')
+%% ltboxes.dtx  (with options: `latexrelease')
+%% ltmath.dtx  (with options: `latexrelease')
+%% ltoutenc.dtx  (with options: `latexrelease')
+%% ltcounts.dtx  (with options: `latexrelease')
+%% ltlength.dtx  (with options: `latexrelease')
+%% ltfloat.dtx  (with options: `latexrelease')
+%% ltoutput.dtx  (with options: `latexrelease')
+%% ltspace.dtx  (with options: `latexrelease')
+%% ltplain.dtx  (with options: `latexrelease')
+%% ltfssdcl.dtx  (with options: `latexrelease')
+%% ltfssini.dtx  (with options: `latexrelease')
+%% ltfssbas.dtx  (with options: `latexrelease')
+%% ltfsscmp.dtx  (with options: `latexrelease')
+%% ltluatex.dtx  (with options: `latexrelease')
+%% ltfinal.dtx  (with options: `latexrelease')
+%% 
+%% This is a generated file.
+%% 
+%% The source is maintained by the LaTeX Project team and bug
+%% reports for it can be opened at http://latex-project.org/bugs.html
+%% (but please observe conditions on bug reports sent to that address!)
+%% 
+%% 
+%% Copyright 1993-2015
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
+%% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+%% This file has the LPPL maintenance status "maintained".
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
+%% The list of derived (unpacked) files belonging to the distribution
+%% and covered by LPPL is defined by the unpacking scripts (with
+%% extension .ins) which are part of the distribution.
+%%% From File: ltvers.dtx
+\edef\latexreleaseversion
+   {2015/10/01}
+\def\IncludeInRelease#1{\kernel@ifnextchar[%
+  {\@IncludeInRelease{#1}}
+  {\@IncludeInRelease{#1}[#1]}}
+\def\@IncludeInRelease#1[#2]{\@IncludeInRele@se{#2}}
+\def\@IncludeInRele@se#1#2#3{%
+  \toks@{[#1] #3}%
+  \expandafter\ifx\csname\string#2+\@currname+IIR\endcsname\relax
+    \ifnum\expandafter\@parse@version#1//00\@nil
+          >\expandafter\@parse@version\fmtversion//00\@nil
+      \GenericInfo{}{Skipping: \the\toks@}%
+     \expandafter\expandafter\expandafter\@gobble@IncludeInRelease
+    \else
+      \GenericInfo{}{Applying: \the\toks@}%
+      \expandafter\let\csname\string#2+\@currname+IIR\endcsname\@empty
+    \fi
+  \else
+    \GenericInfo{}{Already applied: \the\toks@}%
+    \expandafter\@gobble@IncludeInRelease
+  \fi
+}
+\long\def\@gobble@IncludeInRelease#1\EndIncludeInRelease{}
+\let\EndIncludeInRelease\relax
+\ProvidesPackage{latexrelease}
+          [2015/06/22 v1.0f LaTeX release emulation and tests]
+\NeedsTeXFormat{LaTeX2e}[1996/06/01]
+\DeclareOption*{%
+  \def\@IncludeInRelease#1[#2]{\@IncludeInRele@se{#1}}%
+  \let\requestedpatchdate\CurrentOption}
+\DeclareOption{latest}{%
+  \let\requestedpatchdate\latexreleaseversion}
+\DeclareOption{current}{%
+  \let\requestedpatchdate\fmtversion}
+\ExecuteOptions{current}
+\ProcessOptions\relax
+\def\reserved@a{%
+\edef\requestedLaTeXdate{\the\count@}%
+\reserved@b}
+\def\reserved@b#1\\{%
+\def\reserved@b{#1}%
+\ifx\reserved@b\@empty\else
+\PackageError{latexrelease}%
+             {Unexpected option \requestedpatchdate}%
+             {The option must be of the form yyyy/mm/dd}%
+\fi}
+\afterassignment\reserved@a
+\count@\expandafter
+  \@parse@version\expandafter0\requestedpatchdate//00\@nil\\
+\edef\currentLaTeXdate{%
+   \expandafter\@parse@version\fmtversion//00\@nil}
+\ifnum\requestedLaTeXdate=\currentLaTeXdate
+\PackageWarningNoLine{latexrelease}{%
+  Current format date selected, no patches applied.}
+\expandafter\endinput
+\fi
+\ifnum\currentLaTeXdate
+  >\expandafter\@parse@version\latexreleaseversion//00\@nil
+\PackageWarningNoLine{latexrelease}{%
+The current package is for an older LaTeX format:\MessageBreak
+LaTeX \fmtversion\space\MessageBreak
+Obtain a newer version of this package!}
+\expandafter\endinput
+\fi
+\ifnum\requestedLaTeXdate
+  >\expandafter\@parse@version\latexreleaseversion//00\@nil
+\PackageWarningNoLine{latexrelease}{%
+The current package is for LaTeX \latexreleaseversion:\MessageBreak
+It has no patches beyond that date\MessageBreak
+There may be an updated version\MessageBreak
+of this package available from CTAN}
+\expandafter\endinput
+\fi
+\let\fmtversion\requestedpatchdate
+\let\currentLaTeXdate\requestedLaTeXdate
+%%% From File: ltdirchk.dtx
+\ifx\directlua\undefined\else
+\IncludeInRelease{2015/10/01}{\luatexluafunction}
+                             {LuaTeX (prefixed names)}%
+    \directlua{tex.enableprimitives("",%
+                 tex.extraprimitives("omega", "aleph", "luatex"))}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\luatexluafunction}
+                             {LuaTeX (prefixed names)}%
+\directlua{
+  tex.enableprimitives(
+    "luatex",
+    tex.extraprimitives("core","omega", "aleph", "luatex")
+  )
+  local i
+  local t = { }
+  for _,i in pairs(tex.extraprimitives("luatex")) do
+    if not string.match(i,"^U") then
+      if not string.match(i, "^luatex") then
+        table.insert(t,i)
+      end
+    else
+      if string.match(i,"^Uchar$") then
+        table.insert(t,i)
+      end
+    end
+  end
+  for _,i in pairs(t) do
+    tex.print(
+      "\noexpand\\let\noexpand\\" .. i
+        .. "\noexpand\\undefined"
+    )
+  end
+}
+\EndIncludeInRelease
+\fi
+%%% From File: ltdefns.dtx
+\IncludeInRelease{2015/01/01}{\MakeRobust}{\MakeRobust}%
+\def\MakeRobust#1{%
+  \@ifundefined{\expandafter\@gobble\string#1}{%
+    \@latex@error{The control sequence `\string#1' is undefined!%
+      \MessageBreak There is nothing here to make robust}%
+    \@eha
+  }%
+  {%
+    \@ifundefined{\expandafter\@gobble\string#1\space}%
+    {%
+      \expandafter\let\csname
+      \expandafter\@gobble\string#1\space\endcsname=#1%
+      \edef\reserved@a{\string#1}%
+      \def\reserved@b{#1}%
+      \edef\reserved@b{\expandafter\strip@prefix\meaning\reserved@b}%
+      \edef#1{%
+        \ifx\reserved@a\reserved@b
+          \noexpand\x@protect\noexpand#1%
+        \fi
+        \noexpand\protect\expandafter\noexpand
+        \csname\expandafter\@gobble\string#1\space\endcsname}%
+    }%
+    {\@latex@info{The control sequence `\string#1' is already robust}}%
+   }%
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\MakeRobust}{\MakeRobust}%
+\let\MakeRobust\@undefined
+\EndIncludeInRelease
+%%% From File: ltboxes.dtx
+\IncludeInRelease{2015/01/01}%
+                 {\makebox}{Make \makebox robust}%
+\DeclareRobustCommand\makebox{%
+  \leavevmode
+  \@ifnextchar(%)
+    \@makepicbox
+    {\@ifnextchar[\@makebox\mbox}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\makebox}{Make \makebox robust}%
+\def\makebox{%
+  \leavevmode
+  \@ifnextchar(%)
+    \@makepicbox
+    {\@ifnextchar[\@makebox\mbox}}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\savebox}{Make \savebox robust}%
+\DeclareRobustCommand\savebox[1]{%
+  \@ifnextchar(%)
+    {\@savepicbox#1}{\@ifnextchar[{\@savebox#1}{\sbox#1}}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\savebox}{Make \savebox robust}%
+\def\savebox#1{%
+  \@ifnextchar(%)
+    {\@savepicbox#1}{\@ifnextchar[{\@savebox#1}{\sbox#1}}}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\framebox}{Make \framebox robust}%
+\DeclareRobustCommand\framebox{%
+  \@ifnextchar(%)
+    \@framepicbox{\@ifnextchar[\@framebox\fbox}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\framebox}{Make \framebox robust}%
+\def\framebox{%
+  \@ifnextchar(%)
+    \@framepicbox{\@ifnextchar[\@framebox\fbox}}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\parbox}{Make \parbox robust}%
+\DeclareRobustCommand\parbox{%
+  \@ifnextchar[%]
+    \@iparbox
+    {\@iiiparbox c\relax[s]}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\parbox}{Make \parbox robust}%
+\def\parbox{%
+  \@ifnextchar[%]
+    \@iparbox
+    {\@iiiparbox c\relax[s]}}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\rule}{Make \rule robust}%
+\DeclareRobustCommand\rule{\@ifnextchar[\@rule{\@rule[\z@]}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\rule}{Make \rule robust}%
+\def\rule{\@ifnextchar[\@rule{\@rule[\z@]}}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\raisebox}{Make \raisebox robust}%
+\DeclareRobustCommand\raisebox[1]{%
+  \leavevmode
+  \@ifnextchar[{\@rsbox{#1}}{\@irsbox{#1}[]}}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\raisebox}{Make \raisebox robust}%
+\def\raisebox#1{%
+  \leavevmode
+  \@ifnextchar[{\@rsbox{#1}}{\@irsbox{#1}[]}}
+\EndIncludeInRelease
+%%% From File: ltmath.dtx
+\IncludeInRelease{2015/01/01}{\(}{Make \( robust}%
+\DeclareRobustCommand\({%
+  \relax\ifmmode\@badmath\else$\fi}%
+\DeclareRobustCommand\){%
+  \relax\ifmmode\ifinner$\else\@badmath\fi\else \@badmath\fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\(}{Make \( robust}%
+\def\({%
+  \relax\ifmmode\@badmath\else$\fi}%
+\def\){%
+  \relax\ifmmode\ifinner$\else\@badmath\fi\else \@badmath\fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\[}{Make \[ robust}%
+\DeclareRobustCommand\[{%
+   \relax\ifmmode
+      \@badmath
+   \else
+      \ifvmode
+         \nointerlineskip
+         \makebox[.6\linewidth]{}%
+      \fi
+      $$%%$$ BRACE MATCH HACK
+   \fi
+}%
+\DeclareRobustCommand\]{%
+   \relax\ifmmode
+      \ifinner
+         \@badmath
+      \else
+         $$%%$$ BRACE MATCH HACK
+      \fi
+   \else
+      \@badmath
+   \fi
+   \ignorespaces
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\[}{Make \[ robust}%
+\def\[{%
+   \relax\ifmmode
+      \@badmath
+   \else
+      \ifvmode
+         \nointerlineskip
+         \makebox[.6\linewidth]{}%
+      \fi
+      $$%%$$ BRACE MATCH HACK
+   \fi
+}%
+\def\]{%
+   \relax\ifmmode
+      \ifinner
+         \@badmath
+      \else
+         $$%%$$ BRACE MATCH HACK
+      \fi
+   \else
+      \@badmath
+   \fi
+   \ignorespaces
+}%
+\EndIncludeInRelease
+%%% From File: ltoutenc.dtx
+\IncludeInRelease{2015/10/01}{\textcommabelow}{comma accent}%
+\DeclareTextCommandDefault\textcommabelow[1]
+  {\hmode@bgroup\ooalign{\null#1\crcr\hidewidth\raise-.31ex
+   \hbox{\check@mathfonts\fontsize\ssf@size\z@
+   \math@fontsfalse\selectfont,}\hidewidth}\egroup}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\textcommabelow}{comma accent}%
+\let\textcommabelow\@undefined
+\EndIncludeInRelease
+%%% From File: ltcounts.dtx
+\IncludeInRelease{2015/01/01}{\@stpelt}
+                             {Reset nested counters}%
+\def\@stpelt#1{\global\csname c@#1\endcsname \m@ne\stepcounter{#1}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\@stpelt}
+                             {Reset nested counters}%%
+\def\@stpelt#1{\global\csname c@#1\endcsname \z@}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\@fnsymbol}{Use \TexOrMath}%
+\def\@fnsymbol#1{%
+   \ifcase#1\or \TextOrMath\textasteriskcentered *\or
+   \TextOrMath \textdagger \dagger\or
+   \TextOrMath \textdaggerdbl \ddagger \or
+   \TextOrMath \textsection  \mathsection\or
+   \TextOrMath \textparagraph \mathparagraph\or
+   \TextOrMath \textbardbl \|\or
+   \TextOrMath {\textasteriskcentered\textasteriskcentered}{**}\or
+   \TextOrMath {\textdagger\textdagger}{\dagger\dagger}\or
+   \TextOrMath {\textdaggerdbl\textdaggerdbl}{\ddagger\ddagger}\else
+   \@ctrerr \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\@fnsymbol}{Use \TexOrMath}%
+\def\@fnsymbol#1{\ensuremath{%
+   \ifcase#1\or *\or \dagger\or \ddagger\or \mathsection\or
+     \mathparagraph\or \|\or **\or \dagger\dagger
+     \or \ddagger\ddagger \else\@ctrerr\fi}}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\TextOrMath}{\TextOrMath}%
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname eTeXversion\endcsname\relax
+\DeclareRobustCommand\TextOrMath{%
+  \ifmmode  \expandafter\@secondoftwo
+  \else     \expandafter\@firstoftwo  \fi}
+\protected@edef\TextOrMath#1#2{\TextOrMath{#1}{#2}}
+\else
+\protected\expandafter\def\csname TextOrMath\space\endcsname{%
+  \ifmmode  \expandafter\@secondoftwo
+  \else     \expandafter\@firstoftwo  \fi}
+\edef\TextOrMath#1#2{%
+  \expandafter\noexpand\csname TextOrMath\space\endcsname
+  {#1}{#2}}
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\TextOrMath}{\TextOrMath}%
+\let\TextOrMath\@undefined
+\EndIncludeInRelease
+%%% From File: ltlength.dtx
+\IncludeInRelease{2015/01/01}%
+                 {\setlength}{Using \setlength with \dimen0}%
+\def\setlength#1#2{#1 #2\relax}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\setlength}{Using \setlength with \dimen0}%
+\def\setlength#1#2{#1#2\relax}
+\EndIncludeInRelease
+%%% From File: ltfloat.dtx
+\IncludeInRelease{2015/01/01}%
+                 {\@xfloat}{Check float options}%
+\def\@xfloat #1[#2]{%
+  \@nodocument
+  \def \@captype {#1}%
+   \def \@fps {#2}%
+   \@onelevel@sanitize \@fps
+   \def \reserved@b {!}%
+   \ifx \reserved@b \@fps
+     \@fpsadddefault
+   \else
+     \ifx \@fps \@empty
+       \@fpsadddefault
+     \fi
+   \fi
+   \ifhmode
+     \@bsphack
+     \@floatpenalty -\@Mii
+   \else
+     \@floatpenalty-\@Miii
+   \fi
+  \ifinner
+     \@parmoderr\@floatpenalty\z@
+  \else
+    \@next\@currbox\@freelist
+      {%
+       \@tempcnta \sixt@@n
+       \expandafter \@tfor \expandafter \reserved@a
+         \expandafter :\expandafter =\@fps
+         \do
+          {%
+           \if \reserved@a h%
+             \ifodd \@tempcnta
+             \else
+               \advance \@tempcnta \@ne
+             \fi
+           \else\if \reserved@a t%
+             \@setfpsbit \tw@
+           \else\if \reserved@a b%
+             \@setfpsbit 4%
+           \else\if \reserved@a p%
+             \@setfpsbit 8%
+           \else\if \reserved@a !%
+             \ifnum \@tempcnta>15
+               \advance\@tempcnta -\sixt@@n\relax
+             \fi
+           \else
+             \@latex@error{Unknown float option `\reserved@a'}%
+             {Option `\reserved@a' ignored and `p' used.}%
+             \@setfpsbit 8%
+           \fi\fi\fi\fi\fi
+           }%
+       \@tempcntb \csname ftype@\@captype \endcsname
+       \multiply \@tempcntb \@xxxii
+       \advance \@tempcnta \@tempcntb
+       \global \count\@currbox \@tempcnta
+       }%
+    \@fltovf
+  \fi
+  \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox \bgroup
+        \hsize\columnwidth
+        \@parboxrestore
+        \@floatboxreset
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\@xfloat}{Check float options}%
+\def\@xfloat #1[#2]{%
+  \@nodocument
+  \def \@captype {#1}%
+   \def \@fps {#2}%
+   \@onelevel@sanitize \@fps
+   \def \reserved@b {!}%
+   \ifx \reserved@b \@fps
+     \@fpsadddefault
+   \else
+     \ifx \@fps \@empty
+       \@fpsadddefault
+     \fi
+   \fi
+   \ifhmode
+     \@bsphack
+     \@floatpenalty -\@Mii
+   \else
+     \@floatpenalty-\@Miii
+   \fi
+  \ifinner
+     \@parmoderr\@floatpenalty\z@
+  \else
+    \@next\@currbox\@freelist
+      {%
+       \@tempcnta \sixt@@n
+       \expandafter \@tfor \expandafter \reserved@a
+         \expandafter :\expandafter =\@fps
+         \do
+          {%
+           \if \reserved@a h%
+             \ifodd \@tempcnta
+             \else
+               \advance \@tempcnta \@ne
+             \fi
+           \fi
+           \if \reserved@a t%
+             \@setfpsbit \tw@
+           \fi
+           \if \reserved@a b%
+             \@setfpsbit 4%
+           \fi
+           \if \reserved@a p%
+             \@setfpsbit 8%
+           \fi
+           \if \reserved@a !%
+             \ifnum \@tempcnta>15
+               \advance\@tempcnta -\sixt@@n\relax
+             \fi
+           \fi
+           }%
+       \@tempcntb \csname ftype@\@captype \endcsname
+       \multiply \@tempcntb \@xxxii
+       \advance \@tempcnta \@tempcntb
+       \global \count\@currbox \@tempcnta
+       }%
+    \@fltovf
+  \fi
+  \global \setbox\@currbox
+    \color@vbox
+      \normalcolor
+      \vbox \bgroup
+        \hsize\columnwidth
+        \@parboxrestore
+        \@floatboxreset
+}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\end@dblfloat}{float order in 2-column}%
+\def\end@dblfloat{%
+  \if@twocolumn
+    \@endfloatbox
+    \ifnum\@floatpenalty <\z@
+      \@largefloatcheck
+      \global\dp\@currbox1sp %
+      \@cons\@currlist\@currbox
+      \ifnum\@floatpenalty <-\@Mii
+        \penalty -\@Miv
+        \@tempdima\prevdepth
+        \vbox{}%
+        \prevdepth\@tempdima
+        \penalty\@floatpenalty
+      \else
+        \vadjust{\penalty -\@Miv \vbox{}\penalty\@floatpenalty}\@Esphack
+      \fi
+    \fi
+  \else
+    \end@float
+  \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\end@dblfloat}{float order in 2-column}%
+\def\end@dblfloat{%
+\if@twocolumn
+  \@endfloatbox
+  \ifnum\@floatpenalty <\z@
+    \@largefloatcheck
+    \@cons\@dbldeferlist\@currbox
+  \fi
+    \ifnum \@floatpenalty =-\@Mii \@Esphack\fi
+\else
+  \end@float
+\fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+          {\@dblfloatplacement}{float order in 2-column}%
+\def\@dblfloatplacement{\global\@dbltopnum\c@dbltopnumber
+   \global\@dbltoproom \dbltopfraction\@colht
+   \@textmin \@colht
+   \advance \@textmin -\@dbltoproom
+   \@fpmin \dblfloatpagefraction\textheight
+   \@fptop \@dblfptop
+   \@fpsep \@dblfpsep
+   \@fpbot \@dblfpbot
+   \def\f@depth{1sp}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+          {\@dblfloatplacement}{float order in 2-column}%
+\def \@dblfloatplacement {%
+  \global \@dbltopnum \c@dbltopnumber
+  \global \@dbltoproom \dbltopfraction\@colht
+  \@textmin \@colht
+  \advance \@textmin -\@dbltoproom
+  \@fpmin \dblfloatpagefraction\textheight
+  \@fptop \@dblfptop
+  \@fpsep \@dblfpsep
+  \@fpbot \@dblfpbot
+}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\textsubscript}{\textsubscript}%
+\DeclareRobustCommand*\textsubscript[1]{%
+  \@textsubscript{\selectfont#1}}%
+\def\@textsubscript#1{%
+  {\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\textsubscript}{\textsubscript}%
+\let\textsubscript\@undefined
+\let\@textsubscript\@undefined
+\EndIncludeInRelease
+%%% From File: ltoutput.dtx
+\IncludeInRelease{2015/10/01}%
+                 {\bx@ZZ}{Extended float list}%
+\let\@elt\newinsert
+\ifx\numexpr\@undefined\else
+\def\reserved@a{%
+  \@elt\bx@S\@elt\bx@T\@elt\bx@U\@elt\bx@V
+  \@elt\bx@W\@elt\bx@X\@elt\bx@Y\@elt\bx@Z
+  \@elt\bx@AA\@elt\bx@BB\@elt\bx@CC\@elt\bx@DD\@elt\bx@EE
+  \@elt\bx@FF\@elt\bx@GG\@elt\bx@HH\@elt\bx@II\@elt\bx@JJ
+  \@elt\bx@KK\@elt\bx@LL\@elt\bx@MM\@elt\bx@NN
+  \@elt\bx@OO\@elt\bx@PP\@elt\bx@QQ\@elt\bx@RR
+  \@elt\bx@SS\@elt\bx@TT\@elt\bx@UU\@elt\bx@VV
+  \@elt\bx@WW\@elt\bx@XX\@elt\bx@YY\@elt\bx@ZZ}
+\reserved@a
+\def\@elt{\noexpand\@elt\noexpand}
+\edef\@freelist{\@freelist\reserved@a}
+\fi
+\let\reserved@a\relax
+\let\@elt\relax
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\bx@ZZ}{Extended float list}%
+\def\@freelist{%
+  \@elt\bx@A\@elt\bx@B\@elt\bx@C\@elt\bx@D\@elt\bx@E
+  \@elt\bx@F\@elt\bx@G\@elt\bx@H\@elt\bx@I\@elt\bx@J
+  \@elt\bx@K\@elt\bx@L\@elt\bx@M\@elt\bx@N
+  \@elt\bx@O\@elt\bx@P\@elt\bx@Q\@elt\bx@R}
+  \insc@unt=234
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\@testwrongwidth}{float order in 2-column}%
+\def\@testwrongwidth #1{%
+  \ifdim\dp#1=\f@depth
+  \else
+    \global\@testtrue
+  \fi}%
+\let\f@depth\z@
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\@testwrongwidth}{float order in 2-column}%
+\let\@testwrongwidth\@undefined
+\let\f@depth\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\@doclearpage}%
+                             {float order in 2-column}%
+\def \@doclearpage {%
+     \ifvoid\footins
+       \ifvbox\@kludgeins
+         {\setbox \@tempboxa \box \@kludgeins}%
+       \fi
+       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
+       \setbox\@tempboxa\box\@cclv
+       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
+       \global \let \@toplist \@empty
+       \global \let \@botlist \@empty
+       \global \@colroom \@colht
+       \ifx \@currlist\@empty
+       \else
+          \@latexerr{Float(s) lost}\@ehb
+          \global \let \@currlist \@empty
+       \fi
+       \@makefcolumn\@deferlist
+       \@whilesw\if@fcolmade \fi{\@opcol\@makefcolumn\@deferlist}%
+       \if@twocolumn
+         \if@firstcolumn
+           \xdef\@deferlist{\@dbltoplist\@deferlist}%
+           \global \let \@dbltoplist \@empty
+           \global \@colht \textheight
+           \begingroup
+              \@dblfloatplacement
+              \@makefcolumn\@deferlist
+              \@whilesw\if@fcolmade \fi{\@outputpage
+                                        \@makefcolumn\@deferlist}%
+           \endgroup
+         \else
+           \vbox{}\clearpage
+         \fi
+       \fi
+       \ifx\@deferlist\@empty \else\clearpage \fi
+     \else
+       \setbox\@cclv\vbox{\box\@cclv\vfil}%
+       \@makecol\@opcol
+       \clearpage
+     \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\@doclearpage}%
+                             {float order in 2-column}%
+\def \@doclearpage {%
+     \ifvoid\footins
+       \ifvbox\@kludgeins
+         {\setbox \@tempboxa \box \@kludgeins}%
+       \fi
+       \setbox\@tempboxa\vsplit\@cclv to\z@ \unvbox\@tempboxa
+       \setbox\@tempboxa\box\@cclv
+       \xdef\@deferlist{\@toplist\@botlist\@deferlist}%
+       \global \let \@toplist \@empty
+       \global \let \@botlist \@empty
+       \global \@colroom \@colht
+       \ifx \@currlist\@empty
+       \else
+          \@latexerr{Float(s) lost}\@ehb
+          \global \let \@currlist \@empty
+       \fi
+       \@makefcolumn\@deferlist
+       \@whilesw\if@fcolmade \fi
+                     {\@opcol\@makefcolumn\@deferlist}%
+       \if@twocolumn
+         \if@firstcolumn
+           \xdef\@dbldeferlist{\@dbltoplist\@dbldeferlist}%
+           \global \let \@dbltoplist \@empty
+           \global \@colht \textheight
+           \begingroup
+              \@dblfloatplacement
+              \@makefcolumn\@dbldeferlist
+              \@whilesw\if@fcolmade \fi
+                    {\@outputpage\@makefcolumn\@dbldeferlist}%
+           \endgroup
+         \else
+           \vbox{}\clearpage
+         \fi
+       \fi
+     \else
+       \setbox\@cclv\vbox{\box\@cclv\vfil}%
+       \@makecol\@opcol
+       \clearpage
+     \fi
+  }%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+  {\@startdblcolumn}{float order in 2-column}%
+\def \@startdblcolumn {%
+  \@tryfcolumn \@deferlist
+  \if@fcolmade
+  \else
+    \begingroup
+      \let \reserved@b \@deferlist
+      \global \let \@deferlist \@empty
+      \let \@elt \@sdblcolelt
+      \reserved@b
+    \endgroup
+  \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+  {\@startdblcolumn}{float order in 2-column}%
+\def \@startdblcolumn {%
+% \global \@colht \textheight
+  \@tryfcolumn \@dbldeferlist
+  \if@fcolmade
+  \else
+    \begingroup
+      \let \reserved@b \@dbldeferlist
+      \global \let \@dbldeferlist \@empty
+      \let \@elt \@sdblcolelt
+      \reserved@b
+    \endgroup
+  \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\@xtryfc}%
+                             {float order in 2-column}%
+\def\@xtryfc #1{%
+  \@next\reserved@a\@trylist{}{}%
+  \@currtype \count #1%
+  \divide\@currtype\@xxxii
+  \multiply\@currtype\@xxxii
+  \@bitor \@currtype \@failedlist
+  \@testfp #1%
+  \@testwrongwidth #1%
+  \ifdim \ht #1>\@colht
+     \@testtrue
+  \fi
+  \if@test
+    \@cons\@failedlist #1%
+  \else
+    \@ytryfc #1%
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\@xtryfc}%
+                             {float order in 2-column}%
+\def\@xtryfc #1{%
+  \@next\reserved@a\@trylist{}{}%
+  \@currtype \count #1%
+  \divide\@currtype\@xxxii
+  \multiply\@currtype\@xxxii
+  \@bitor \@currtype \@failedlist
+  \@testfp #1%
+  \ifdim \ht #1>\@colht
+    \@testtrue
+  \fi
+  \if@test
+    \@cons\@failedlist #1%
+  \else
+    \@ytryfc #1%
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{@ztryfc}%
+                             {float order in 2-column}%
+\def\@ztryfc #1{%
+  \@tempcnta\count #1%
+  \divide\@tempcnta\@xxxii
+  \multiply\@tempcnta\@xxxii
+  \@bitor \@tempcnta {\@failedlist \@flfail}%
+  \@testfp #1%
+  \@testwrongwidth #1%
+  \@tempdimb\@tempdima
+  \advance\@tempdimb\ht #1%
+  \advance\@tempdimb\@fpsep
+  \ifdim \@tempdimb >\@colht
+    \@testtrue
+  \fi
+  \if@test
+    \@cons\@flfail #1%
+  \else
+    \@cons\@flsucceed #1%
+    \@tempdima\@tempdimb
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{@ztryfc}%
+                             {float order in 2-column}%
+\def\@ztryfc #1{%
+  \@tempcnta \count#1%
+  \divide\@tempcnta\@xxxii
+  \multiply\@tempcnta\@xxxii
+  \@bitor \@tempcnta {\@failedlist \@flfail}%
+  \@testfp #1%
+  \@tempdimb\@tempdima
+  \advance\@tempdimb \ht#1%
+  \advance\@tempdimb\@fpsep
+  \ifdim \@tempdimb >\@colht
+    \@testtrue
+  \fi
+  \if@test
+    \@cons\@flfail #1%
+  \else
+    \@cons\@flsucceed #1%
+    \@tempdima\@tempdimb
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+  {\@addtocurcol}{float order in 2-column}%
+\def \@addtocurcol {%
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \advance \@textmin \@textfloatsheight
+       \@reqcolroom \@pageht
+       \ifdim \@textmin>\@reqcolroom
+         \@reqcolroom \@textmin
+       \fi
+       \advance \@reqcolroom \ht\@currbox
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum \@colnum>\z@
+           \@bitor\@currtype\@deferlist
+          \@testwrongwidth\@currbox
+           \if@test
+           \else
+             \@bitor\@currtype\@botlist
+             \if@test
+               \@addtobot
+             \else
+               \ifodd \count\@currbox
+                 \advance \@reqcolroom \intextsep
+                 \ifdim \@colroom>\@reqcolroom
+                   \global \advance \@colnum \m@ne
+                   \global \advance \@textfloatsheight \ht\@currbox
+                   \global \advance \@textfloatsheight 2\intextsep
+                   \@cons \@midlist \@currbox
+                   \if@nobreak
+                     \nobreak
+                     \@nobreakfalse
+                     \everypar{}%
+                   \else
+                     \addpenalty \interlinepenalty
+                   \fi
+                   \vskip \intextsep
+                   \box\@currbox
+                   \penalty\interlinepenalty
+                   \vskip\intextsep
+                   \ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi
+                   \outputpenalty \z@
+                   \@inserttrue
+                 \fi
+               \fi
+               \if@insert
+               \else
+                 \@addtotoporbot
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@resethfps
+     \@cons\@deferlist\@currbox
+   \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+  {\@addtocurcol}{float order in 2-column}%
+\def \@addtocurcol {%
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \advance \@textmin \@textfloatsheight
+       \@reqcolroom \@pageht
+       \ifdim \@textmin>\@reqcolroom
+         \@reqcolroom \@textmin
+       \fi
+       \advance \@reqcolroom \ht\@currbox
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum \@colnum>\z@
+           \@bitor\@currtype\@deferlist
+           \if@test
+           \else
+             \@bitor\@currtype\@botlist
+             \if@test
+               \@addtobot
+             \else
+               \ifodd \count\@currbox
+                 \advance \@reqcolroom \intextsep
+                 \ifdim \@colroom>\@reqcolroom
+                  \global \advance \@colnum \m@ne
+                  \global \advance
+                   \@textfloatsheight\ht\@currbox
+                  \global \advance
+                   \@textfloatsheight 2\intextsep
+                   \@cons \@midlist \@currbox
+                   \if@nobreak
+                     \nobreak
+                     \@nobreakfalse
+                     \everypar{}%
+                   \else
+                     \addpenalty\interlinepenalty
+                   \fi
+                   \vskip \intextsep
+                   \box\@currbox
+                   \penalty\interlinepenalty
+                   \vskip\intextsep
+                   \ifnum\outputpenalty
+                               <-\@Mii \vskip
+                        -\parskip\fi
+                   \outputpenalty \z@
+                   \@inserttrue
+                 \fi
+               \fi
+               \if@insert
+               \else
+                 \@addtobot
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@resethfps
+     \@cons\@deferlist\@currbox
+   \fi
+  }%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}
+  {\@addtonextcol}{float order in 2-column}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+  {\@addtonextcol}{float order in 2-column}%
+\def\@addtonextcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \ifnum \@fpstype=8
+   \else
+     \ifnum \@fpstype=24
+     \else
+       \@flsettextmin
+       \@reqcolroom \ht\@currbox
+       \advance \@reqcolroom \@textmin
+       \ifdim \@colroom>\@reqcolroom
+         \@flsetnum \@colnum
+         \ifnum\@colnum>\z@
+            \@bitor\@currtype\@deferlist
+            \if@test
+            \else
+              \@addtotoporbot
+            \fi
+         \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@deferlist\@currbox
+   \fi
+  \endgroup
+}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+  {\@addtodblcol}{float order in 2-column}%
+\def\@addtodblcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \@getfpsbit \tw@
+   \ifodd\@tempcnta
+     \@flsetnum \@dbltopnum
+     \ifnum \@dbltopnum>\z@
+       \@tempswafalse
+       \ifdim \@dbltoproom>\ht\@currbox
+         \@tempswatrue
+       \else
+         \ifnum \@fpstype<\sixt@@n
+           \advance \@dbltoproom \@textmin
+           \ifdim \@dbltoproom>\ht\@currbox
+             \@tempswatrue
+           \fi
+           \advance \@dbltoproom -\@textmin
+         \fi
+       \fi
+       \if@tempswa
+           \@bitor \@currtype \@deferlist
+          \@testwrongwidth\@currbox
+           \if@test
+           \else
+              \@tempdima -\ht\@currbox
+              \advance\@tempdima
+                -\ifx \@dbltoplist\@empty \dbltextfloatsep \else
+                                          \dblfloatsep \fi
+              \global \advance \@dbltoproom \@tempdima
+              \global \advance \@colht \@tempdima
+              \global \advance \@dbltopnum \m@ne
+              \@cons \@dbltoplist \@currbox
+              \@inserttrue
+           \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@deferlist\@currbox
+   \fi
+  \endgroup
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+  {\@addtodblcol}{float order in 2-column}%
+\def\@addtodblcol{%
+  \begingroup
+   \@insertfalse
+   \@setfloattypecounts
+   \@getfpsbit \tw@
+   \ifodd\@tempcnta
+     \@flsetnum \@dbltopnum
+     \ifnum \@dbltopnum>\z@
+       \@tempswafalse
+       \ifdim \@dbltoproom>\ht\@currbox
+         \@tempswatrue
+       \else
+         \ifnum \@fpstype<\sixt@@n
+           \advance \@dbltoproom \@textmin
+           \ifdim \@dbltoproom>\ht\@currbox
+             \@tempswatrue
+           \fi
+           \advance \@dbltoproom -\@textmin
+         \fi
+       \fi
+       \if@tempswa
+           \@bitor \@currtype \@dbldeferlist
+           \if@test
+           \else
+              \@tempdima -\ht\@currbox
+              \advance\@tempdima
+                -\ifx \@dbltoplist\@empty
+                      \dbltextfloatsep
+                 \else \dblfloatsep \fi
+              \global \advance \@dbltoproom \@tempdima
+              \global \advance \@colht \@tempdima
+              \global \advance \@dbltopnum \m@ne
+              \@cons \@dbltoplist \@currbox
+              \@inserttrue
+           \fi
+       \fi
+     \fi
+   \fi
+   \if@insert
+   \else
+     \@cons\@dbldeferlist\@currbox
+   \fi
+  \endgroup
+}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+  {\@outputdblcol}{2 column marks}%
+\def\@outputdblcol{%
+  \if@firstcolumn
+    \global\@firstcolumnfalse
+    \global\setbox\@leftcolumn\copy\@outputbox
+    \splitmaxdepth\maxdimen
+    \vbadness\maxdimen
+     \setbox\@outputbox\vbox{\unvbox\@outputbox\unskip}%
+     \setbox\@outputbox\vsplit\@outputbox to\maxdimen
+    \toks@\expandafter{\topmark}%
+    \xdef\@firstcoltopmark{\the\toks@}%
+    \toks@\expandafter{\splitfirstmark}%
+    \xdef\@firstcolfirstmark{\the\toks@}%
+    \ifx\@firstcolfirstmark\@empty
+      \global\let\@setmarks\relax
+    \else
+      \gdef\@setmarks{%
+        \let\firstmark\@firstcolfirstmark
+        \let\topmark\@firstcoltopmark}%
+    \fi
+  \else
+    \global\@firstcolumntrue
+    \setbox\@outputbox\vbox{%
+     \hb@xt@\textwidth{%
+        \hb@xt@\columnwidth{\box\@leftcolumn \hss}%
+        \hfil
+        {\normalcolor\vrule \@width\columnseprule}%
+        \hfil
+       \hb@xt@\columnwidth{\box\@outputbox \hss}}}%
+  \@combinedblfloats
+    \@setmarks
+    \@outputpage
+    \begingroup
+      \@dblfloatplacement
+      \@startdblcolumn
+      \@whilesw\if@fcolmade \fi{\@outputpage
+     \@startdblcolumn}%
+    \endgroup
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+  {\@outputdblcol}{2 column marks}%
+\def\@outputdblcol{%
+  \if@firstcolumn
+    \global \@firstcolumnfalse
+    \global \setbox\@leftcolumn \box\@outputbox
+  \else
+    \global \@firstcolumntrue
+    \setbox\@outputbox \vbox {%
+                         \hb@xt@\textwidth {%
+                           \hb@xt@\columnwidth {%
+                             \box\@leftcolumn \hss}%
+                           \hfil
+                           {\normalcolor\vrule
+                               \@width\columnseprule}%
+                           \hfil
+                           \hb@xt@\columnwidth {%
+                             \box\@outputbox \hss}%
+                                             }%
+                              }%
+    \@combinedblfloats
+    \@outputpage
+    \begingroup
+      \@dblfloatplacement
+      \@startdblcolumn
+      \@whilesw\if@fcolmade \fi
+        {\@outputpage
+         \@startdblcolumn}%
+    \endgroup
+  \fi
+}%
+\EndIncludeInRelease
+%%% From File: ltspace.dtx
+\IncludeInRelease{2015/01/01}%
+                 {\@esphack}{hyphenation after space hack}%
+\def\@esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \nobreak \hskip\z@skip
+      \ignorespaces
+    \fi
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\@esphack}{hyphenation after space hack}%
+\def\@esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \ignorespaces
+    \fi
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\Eesphack}{hyphenation after space hack}%
+\def\@Esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \nobreak \hskip\z@skip
+      \@ignoretrue
+      \ignorespaces
+    \fi
+   \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\@Esphack}{hyphenation after space hack}%
+\def\@Esphack{%
+  \relax
+  \ifhmode
+    \spacefactor\@savsf
+    \ifdim\@savsk>\z@
+      \@ignoretrue
+      \ignorespaces
+    \fi
+   \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\addpenalty}{\addpenalty}%
+\def\addpenalty#1{%
+  \ifvmode
+    \if@minipage
+    \else
+      \if@nobreak
+      \else
+        \ifdim\lastskip=\z@
+          \penalty#1\relax
+        \else
+          \@tempskipb\lastskip
+          \begingroup
+            \@tempskipa\@tempskipb
+            \advance \@tempskipb
+              \ifdim\prevdepth>\maxdepth\maxdepth\else
+                 \ifdim \prevdepth = -\@m\p@ \z@ \else \prevdepth \fi
+               \fi
+             \vskip -\@tempskipb
+             \penalty#1%
+             \ifdim\@tempskipa=\@tempskipb
+             \else
+               \advance\@tempskipb -\@tempskipa
+               \vskip \@tempskipb
+             \fi
+             \vskip \@tempskipa
+          \endgroup
+        \fi
+      \fi
+    \fi
+  \else
+    \@noitemerr
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\addpenalty}{\addpenalty}%
+\def\addpenalty#1{%
+  \ifvmode
+    \if@minipage
+    \else
+      \if@nobreak
+      \else
+        \ifdim\lastskip=\z@
+          \penalty#1\relax
+        \else
+          \@tempskipb\lastskip
+          \vskip -\lastskip
+          \penalty#1%
+          \vskip\@tempskipb
+        \fi
+      \fi
+    \fi
+  \else
+    \@noitemerr
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\@}{Space after \@}%
+\def\@{\spacefactor\@m{}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\@}{Space after \@}%
+\def\@{\spacefactor\@m}%
+\EndIncludeInRelease
+%%% From File: ltplain.dtx
+\IncludeInRelease{2015/01/01}%
+                 {\newcount}{Extended Allocation}%
+\def\newcount {\e@alloc\count \countdef {\count10}\insc@unt\float@count}
+\def\newdimen {\e@alloc\dimen \dimendef {\count11}\insc@unt\float@count}
+\def\newskip  {\e@alloc\skip  \skipdef  {\count12}\insc@unt\float@count}
+\def\newmuskip
+           {\e@alloc\muskip\muskipdef{\count13}\m@ne\e@alloc@top}
+\def\newbox   {\e@alloc\box
+                  {\ifnum\allocationnumber<\@cclvi
+                     \expandafter\chardef
+                   \else
+                     \expandafter\e@alloc@chardef
+                   \fi}
+                                        {\count14}\insc@unt\float@count}
+\def\newtoks  {\e@alloc\toks \toksdef{\count15}\m@ne\e@alloc@top}
+\def\newread      {\e@alloc\read     \chardef{\count16}\m@ne\sixt@@n}
+\def\newwrite     {\e@alloc\write    \chardef{\count17}\m@ne\sixt@@n}
+\def\new@mathgroup
+  {\e@alloc\mathgroup\chardef{\count18}\m@ne\e@mathgroup@top}
+\def\newlanguage  {\e@alloc\language \chardef{\count19}\m@ne\@cclvi}
+\let\newfam\new@mathgroup
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\newcount}{Extended Allocation}%
+\def\newcount{\alloc@0\count\countdef\insc@unt}
+\def\newdimen{\alloc@1\dimen\dimendef\insc@unt}
+\def\newskip{\alloc@2\skip\skipdef\insc@unt}
+\def\newmuskip{\alloc@3\muskip\muskipdef\@cclvi}
+\def\newbox{\alloc@4\box\chardef\insc@unt}
+\def\newtoks{\alloc@5\toks\toksdef\@cclvi}
+\def\newread{\alloc@6\read\chardef\sixt@@n}
+\def\newwrite{\alloc@7\write\chardef\sixt@@n}
+\def\new@mathgroup{\alloc@8\fam\chardef\sixt@@n}
+\def\newlanguage{\alloc@9\language\chardef\@cclvi}
+\let\newfam\new@mathgroup
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\e@alloc@chardef}{Extended Allocation}%
+\ifx\directlua\@undefined
+  \ifx\widowpenalties\@undefined
+    \mathchardef\e@alloc@top=255
+    \let\e@alloc@chardef\chardef
+  \else
+    \mathchardef\e@alloc@top=32767
+    \let\e@alloc@chardef\mathchardef
+  \fi
+\else
+  \chardef\e@alloc@top=65535
+  \let\e@alloc@chardef\chardef
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\e@alloc@chardef}{Extended Allocation}%
+\let\e@alloc@top\@undefined
+\let\e@alloc@chardef\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\e@mathgroup@top}{Extended Allocation}%
+\ifx\Umathcode\@undefined
+  \chardef\e@mathgroup@top=16
+\else
+  \chardef\e@mathgroup@top=256
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\e@mathgroup@top}{Extended Allocation}%
+\let\e@mathgroup@top\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\e@alloc}{Extended Allocation}%
+\def\e@alloc#1#2#3#4#5#6{%
+  \global\advance#3\@ne
+  \e@ch@ck{#3}{#4}{#5}#1%
+  \allocationnumber#3\relax
+  \global#2#6\allocationnumber
+  \wlog{\string#6=\string#1\the\allocationnumber}}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\e@alloc}{Extended Allocation}%
+\let\e@alloc\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/10/01}
+                 {\e@ch@ck}{Extended Allocation (checking)}%
+\gdef\e@ch@ck#1#2#3#4{%
+  \ifnum#1<#2\else
+    \ifnum#1=#2\relax
+      #1\@cclvi
+      \ifx\count#4\advance#1 10 \fi
+    \fi
+    \ifnum#1<#3\relax
+    \else
+      \errmessage{No room for a new \string#4}%
+    \fi
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\e@ch@ck}{Extended Allocation (checking)}%
+\gdef\e@ch@ck#1#2#3#4{%
+  \ifnum#1<#2\else
+    \ifnum#1=#2\relax
+      #1\@cclvi
+      \ifx\count#4\advance#1 10 \fi
+    \fi
+    \ifnum#1<#3\relax
+    \else
+      \errmessage{No room for a new #4}%
+    \fi
+  \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\e@ch@ck}{Extended Allocation (checking)}%
+\let\e@ch@ck\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+                 {\extrafloats}{Extra floats}%
+\let\float@count\e@alloc@top
+\ifx\numexpr\@undefined
+\def\extrafloats#1{%
+\count@#1\relax
+\ifnum\count@>\z@
+\newinsert\reserved@a
+\expandafter\chardef
+            \csname bx@\the\allocationnumber\endcsname\allocationnumber
+\@cons\@freelist{\csname bx@\the\allocationnumber\endcsname}%
+\advance\count@\m@ne
+\expandafter\extrafloats
+\expandafter\count@
+\fi
+}%
+\else
+\def\extrafloats#1{%
+\ifnum#1>\z@
+\count@\numexpr\float@count-1\relax
+  \ch@ck0\count@\count
+  \ch@ck1\count@\dimen
+  \ch@ck2\count@\skip
+  \ch@ck4\count@\box
+\e@alloc@chardef\float@count\count@
+\expandafter\e@alloc@chardef
+            \csname bx@\the\float@count\endcsname\float@count
+\@cons\@freelist{\csname bx@\the\float@count\endcsname}%
+\expandafter
+\extrafloats\expandafter{\numexpr#1-1\relax}%
+\fi}%
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\extrafloats}{Extra floats}%
+\let\float@count\@undefined
+\let\extrafloats\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/10/01}
+                 {\newinsert}{Extended \newinsert}%
+\ifx\numexpr\@undefined
+\def\newinsert#1{\global\advance\insc@unt \m@ne
+  \ch@ck0\insc@unt\count
+  \ch@ck1\insc@unt\dimen
+  \ch@ck2\insc@unt\skip
+  \ch@ck4\insc@unt\box
+  \allocationnumber\insc@unt
+  \global\chardef#1\allocationnumber
+  \wlog{\string#1=\string\insert\the\allocationnumber}}
+\else
+\ifx\directlua\@undefined
+  \chardef\e@insert@top255
+\else
+  \chardef\e@insert@top\e@alloc@top
+\fi
+\def\newinsert#1{%
+\@tempswafalse
+\ifnum\count10<\insc@unt
+\ifnum\count11<\insc@unt
+\ifnum\count12<\insc@unt
+\ifnum\count14<\insc@unt
+  \@tempswatrue
+\fi\fi\fi\fi
+\if@tempswa
+\global\advance\insc@unt\m@ne
+\allocationnumber\insc@unt
+\else
+  \extrafloats\@ne
+  \@next\@currbox\@freelist
+    {\ifnum\@currbox<\e@insert@top
+      \allocationnumber\@currbox
+     \else
+     \ch@ck0\m@ne\insert
+     \fi}%
+     {\ch@ck0\m@ne\insert}%
+\fi
+\global\chardef#1\allocationnumber
+\wlog{\string#1=\string\insert\the\allocationnumber}%
+}
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\newinsert}{Extended \newinsert}%
+\let\e@insert@top\@undefined
+\def\newinsert#1{\global\advance\insc@unt \m@ne
+  \ch@ck0\insc@unt\count
+  \ch@ck1\insc@unt\dimen
+  \ch@ck2\insc@unt\skip
+  \ch@ck4\insc@unt\box
+  \allocationnumber\insc@unt
+  \global\chardef#1\allocationnumber
+  \wlog{\string#1=\string\insert\the\allocationnumber}}
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/20}{\loggingall}{etex tracing}%
+\ifx\tracingscantokens\@undefined
+\gdef\loggingall{%
+  \tracingstats\tw@
+  \tracingpages\@ne
+  \tracinglostchars\@ne
+  \tracingparagraphs\@ne
+  \errorcontextlines\maxdimen
+  \loggingoutput
+  \tracingmacros\tw@
+  \tracingcommands\tw@
+  \tracingrestores\@ne
+  }%
+\else
+\gdef\loggingall{%
+  \tracingstats\tw@
+  \tracingpages\@ne
+  \tracinglostchars\tw@
+  \tracingparagraphs\@ne
+  \tracinggroups\@ne
+  \tracingifs\@ne
+  \tracingscantokens\@ne
+  \tracingnesting\@ne
+  \errorcontextlines\maxdimen
+  \loggingoutput
+  \tracingmacros\tw@
+  \tracingcommands\thr@@
+  \tracingrestores\@ne
+  \tracingassigns\@ne
+}%
+\fi
+\gdef\tracingall{\showoverfull\loggingall}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\loggingall}{etex tracing}%
+\gdef\loggingall{\tracingcommands\tw@\tracingstats\tw@
+  \tracingpages\@ne\tracinglostchars\@ne
+  \tracingmacros\tw@\tracingparagraphs\@ne\tracingrestores\@ne
+  \errorcontextlines\maxdimen\loggingoutput}
+  \gdef\tracingall{\loggingall\showoverfull}
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/20}{\tracingnone}%
+                             {turn off etex tracing}%
+\ifx\tracingscantokens\@undefined
+\def\tracingnone{%
+  \tracingonline\z@
+  \tracingcommands\z@
+  \showboxdepth\m@ne
+  \showboxbreadth\m@ne
+  \tracingoutput\z@
+  \errorcontextlines\m@ne
+  \tracingrestores\z@
+  \tracingparagraphs\z@
+  \tracingmacros\z@
+  \tracinglostchars\@ne
+  \tracingpages\z@
+  \tracingstats\z@
+}%
+\else
+\def\tracingnone{%
+  \tracingassigns\z@
+  \tracingrestores\z@
+  \tracingonline\z@
+  \tracingcommands\z@
+  \showboxdepth\m@ne
+  \showboxbreadth\m@ne
+  \tracingoutput\z@
+  \errorcontextlines\m@ne
+  \tracingnesting\z@
+  \tracingscantokens\z@
+  \tracingifs\z@
+  \tracinggroups\z@
+  \tracingparagraphs\z@
+  \tracingmacros\z@
+  \tracinglostchars\@ne
+  \tracingpages\z@
+  \tracingstats\z@
+}%
+\fi
+\def\hideoutput{%
+  \tracingoutput\z@
+  \showboxbreadth\m@ne
+  \showboxdepth\m@ne
+  \tracingonline\m@ne
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\tracingnone}%
+                             {turn off etex tracing}%
+\let\tracingnone\@undefined
+\let\hideoutput\@undefined
+\EndIncludeInRelease
+%%% From File: ltfssdcl.dtx
+%% Copyright (C) 1989-1998 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+\IncludeInRelease{2015/01/01}
+                 {\select@group}{\select@group}%
+\def\select@group#1#2#3#4{%
+ \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+ {%
+ \ifmmode
+  \ifnum\csname c@mv@\math@version\endcsname<\e@mathgroup@top
+     \begingroup
+       \escapechar\m@ne
+       \getanddefine@fonts{\csname c@mv@\math@version\endcsname}#3%
+       \globaldefs\@ne  \math@fonts
+     \endgroup
+     \init@restore@version
+     \xdef#1{\noexpand\use@mathgroup\noexpand#2%
+             {\number\csname c@mv@\math@version\endcsname}}%
+     \global\advance\csname c@mv@\math@version\endcsname\@ne
+   \else
+     \let#1\relax
+     \@latex@error{Too many math alphabets used in
+                   version \math@version}%
+        \@eha
+   \fi
+ \else \expandafter\non@alpherr\fi
+ #1{#4}%
+ }%
+}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}
+                 {\select@group}{\select@group}%
+\def\select@group#1#2#3#4{%
+ \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+ {%
+ \ifmmode
+  \ifnum\csname c@mv@\math@version\endcsname<\sixt@@n
+     \begingroup
+       \escapechar\m@ne
+       \getanddefine@fonts
+         {\csname c@mv@\math@version\endcsname}#3%
+       \globaldefs\@ne  \math@fonts
+     \endgroup
+     \init@restore@version
+     \xdef#1{\noexpand\use@mathgroup\noexpand#2%
+             {\number\csname c@mv@\math@version\endcsname}}%
+     \global\advance\csname c@mv@\math@version\endcsname\@ne
+   \else
+     \let#1\relax
+     \@latex@error{Too many math alphabets used in
+                   version \math@version}%
+        \@eha
+   \fi
+ \else \expandafter\non@alpherr\fi
+ #1{#4}%
+ }%
+}
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}
+  {\document@select@group}{\document@select@group}%
+\def\document@select@group#1#2#3#4{%
+ \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+ {%
+ \ifmmode
+   \ifnum\csname c@mv@\math@version\endcsname<\e@mathgroup@top
+     \begingroup
+       \escapechar\m@ne
+       \getanddefine@fonts{\csname c@mv@\math@version\endcsname}#3%
+       \globaldefs\@ne  \math@fonts
+     \endgroup
+     \expandafter\extract@alph@from@version
+         \csname mv@\math@version\expandafter\endcsname
+         \expandafter{\number\csname
+                       c@mv@\math@version\endcsname}%
+          #1%
+     \global\advance\csname c@mv@\math@version\endcsname\@ne
+   \else
+     \let#1\relax
+     \@latex@error{Too many math alphabets used
+                   in version \math@version}%
+        \@eha
+  \fi
+ \else \expandafter\non@alpherr\fi
+ #1{#4}%
+ }%
+}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}
+  {\document@select@group}{\document@select@group}%
+\def\document@select@group#1#2#3#4{%
+ \ifx\math@bgroup\bgroup\else\relax\expandafter\@firstofone\fi
+ {%
+ \ifmmode
+   \ifnum\csname c@mv@\math@version\endcsname<\sixt@@n
+     \begingroup
+       \escapechar\m@ne
+       \getanddefine@fonts
+         {\csname c@mv@\math@version\endcsname}#3%
+       \globaldefs\@ne  \math@fonts
+     \endgroup
+     \expandafter\extract@alph@from@version
+         \csname mv@\math@version\expandafter\endcsname
+         \expandafter{\number\csname
+                       c@mv@\math@version\endcsname}%
+          #1%
+     \global\advance\csname c@mv@\math@version\endcsname\@ne
+   \else
+     \let#1\relax
+     \@latex@error{Too many math alphabets used
+                   in version \math@version}%
+        \@eha
+  \fi
+ \else \expandafter\non@alpherr\fi
+ #1{#4}%
+ }%
+}
+\EndIncludeInRelease
+%%% From File: ltfssini.dtx
+%% Copyright (C) 1989-2001 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+\IncludeInRelease{2015/01/01}{\eminnershape}{\eminnershape}%
+\DeclareRobustCommand\em
+        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
+                       \eminnershape \else \itshape \fi}%
+\def\eminnershape{\upshape}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\eminnershape}{\eminnershape}%
+\DeclareRobustCommand\em
+        {\@nomath\em \ifdim \fontdimen\@ne\font >\z@
+                       \upshape \else \itshape \fi}%
+\let\eminnershape\@undefined
+\EndIncludeInRelease
+%%% From File: ltfssbas.dtx
+%% Copyright (C) 1989-2002 Frank Mittelbach and Rainer Sch\"opf
+\IncludeInRelease{2015/01/01}{\@DeclareMathSizes}%
+                 {Arbitrary units in \DeclareMathSizes}%
+\def\@DeclareMathSizes #1#2#3#4#5{%
+  \@defaultunits\dimen@ #2pt\relax\@nnil
+  \if $#3$%
+    \expandafter\let\csname S@\strip@pt\dimen@\endcsname\math@fontsfalse
+  \else
+    \@defaultunits\dimen@ii #3pt\relax\@nnil
+    \@defaultunits\@tempdima #4pt\relax\@nnil
+    \@defaultunits\@tempdimb #5pt\relax\@nnil
+    \toks@{#1}%
+    \expandafter\xdef\csname S@\strip@pt\dimen@\endcsname{%
+      \gdef\noexpand\tf@size{\strip@pt\dimen@ii}%
+      \gdef\noexpand\sf@size{\strip@pt\@tempdima}%
+      \gdef\noexpand\ssf@size{\strip@pt\@tempdimb}%
+      \the\toks@
+    }%
+  \fi
+}%
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\@DeclareMathSizes}%
+                 {Arbitrary units in \DeclareMathSizes}%
+\def\@DeclareMathSizes#1#2#3#4#5{%
+    \@defaultunits\dimen@#2pt\relax\@nnil
+    \if$#3$%
+      \expandafter \let
+        \csname S@\strip@pt\dimen@\endcsname
+        \math@fontsfalse
+    \else
+      \expandafter \gdef
+      \csname S@\strip@pt\dimen@\endcsname
+            {\gdef\tf@size{#3}\gdef\sf@size{#4}%
+                             \gdef\ssf@size{#5}%
+             #1%
+                             }%
+    \fi}%
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}{\wrong@fontshape}%
+                 {Font substituation in preamble}%
+\def\wrong@fontshape{%
+    \csname D@\f@encoding\endcsname   % install defaults if in math
+    \edef\reserved@a{\csname\curr@fontshape\endcsname}%
+  \ifx\last@fontshape\reserved@a
+     \errmessage{Corrupted NFSS tables}%
+     \error@fontshape
+  \else
+    \let\f@shape\default@shape
+    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+       \let\f@series\default@series
+        \expandafter
+          \ifx\csname\curr@fontshape\endcsname\relax
+           \let\f@family\default@family
+           \begingroup
+              \try@load@fontshape
+           \endgroup
+        \fi \fi
+  \fi
+     \@font@warning{Font shape `\expandafter\string\reserved@a'
+                     \expandafter\@gobble\string\@undefined\MessageBreak
+                   using `\curr@fontshape' instead\@wrong@font@char}%
+    \global\let\last@fontshape\reserved@a
+    \gdef\@defaultsubs{%
+      \@font@warning{Some font shapes were not available, defaults
+                      substituted.\@gobbletwo}}%
+    \global\expandafter\expandafter\expandafter\let
+       \expandafter\reserved@a
+           \csname\curr@fontshape\endcsname
+    \xdef\font@name{%
+      \csname\curr@fontshape/\f@size\endcsname}%
+    \pickup@font}
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\wrong@fontshape}%
+                 {Font substituation in preamble}%
+\def\wrong@fontshape{%
+    \csname D@\f@encoding\endcsname
+    \edef\reserved@a{\csname\curr@fontshape\endcsname}%
+  \ifx\last@fontshape\reserved@a
+     \errmessage{Corrupted NFSS tables}%
+     \error@fontshape
+  \else
+    \let\f@shape\default@shape
+    \expandafter\ifx\csname\curr@fontshape\endcsname\relax
+       \let\f@series\default@series
+        \expandafter
+          \ifx\csname\curr@fontshape\endcsname\relax
+           \let\f@family\default@family
+        \fi \fi
+  \fi
+     \@font@warning{Font shape
+            `\expandafter\string\reserved@a'
+            \expandafter\@gobble\string\@undefined
+            \MessageBreak
+            using `\curr@fontshape' instead\@wrong@font@char}%
+    \global\let\last@fontshape\reserved@a
+    \gdef\@defaultsubs{%
+      \@font@warning{Some font shapes were not available,
+                       defaults substituted.\@gobbletwo}}%
+    \global\expandafter\expandafter\expandafter\let
+       \expandafter\reserved@a
+           \csname\curr@fontshape\endcsname
+    \xdef\font@name{%
+      \csname\curr@fontshape/\f@size\endcsname}%
+    \pickup@font}
+\EndIncludeInRelease
+%%% From File: ltfsscmp.dtx
+%% Copyright (C) 1989-1995 Frank Mittelbach and Rainer Sch\"opf,
+%% all rights reserved.
+\IncludeInRelease{2015/01/01}{\new@fontshape}%
+                             {NFSS version1 commands}%
+\let\new@fontshape\@undefined
+\let\warn@rel@i\@undefined
+\let\scan@fontshape\@undefined
+\let\scan@@fontshape\@undefined
+\let\subst@fontshape\@undefined
+\let\extra@def\@undefined
+\let\default@mextra\@undefined
+\let\preload@sizes\@undefined
+\let\err@rel@i\@undefined
+\let\newmathalphabet\@undefined
+\let\newmathalphabet@\@undefined
+\let\newmathalphabet@@@\@undefined
+\let\if@no@font@opt\@undefined
+\let\@no@font@optfalse\@undefined
+\let\define@mathalphabet\@undefined
+\let\define@mathgroup\@undefined
+\let\addtoversion\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}{\new@fontshape}%
+                             {NFSS version1 commands}%
+\gdef\new@fontshape#1#2#3#4{%
+     \warn@rel@i\new@fontshape\DeclareFontShape
+     \expandafter\scan@fontshape\@gobble#4<\@nil><<%
+     \DeclareFontShape U{#1}{#2}{#3}\reserved@f}%
+\@onlypreamble\new@fontshape
+\gdef\warn@rel@i#1#2{%
+ \@font@warning{***  NFSS release 1 command
+               \noexpand#1found\MessageBreak
+   ***  Update by using release 2 command
+        \string#2.\MessageBreak
+   ***  Recovery is probably possible}%
+}%
+\@onlypreamble\warn@rel@i
+\gdef\scan@fontshape{%
+  \let\reserved@f\@empty
+  \let\reserved@e\@empty %        holds last info
+  \scan@@fontshape
+}%
+\@onlypreamble\scan@fontshape
+\gdef\scan@@fontshape#1>#2#3<{%
+  \ifx\@nil#1%
+    \edef\reserved@f{\reserved@f\reserved@e}%
+  \else
+    \def\reserved@b{#1}%       nick names
+    \def\reserved@c{#3}%
+    \in@{ at}{#3}%
+    \ifin@
+      \in@{pt}{#3}%  not a proof but a good chance
+      \ifin@
+        \def\reserved@a##1 at##2pt##3\@nil{%
+           \def\reserved@b{##2}%
+           \def\reserved@c{##1}%
+           }%
+        \reserved@a#3\@nil
+      \fi
+    \fi
+    \ifnum 0<0#2
+      \edef\reserved@d{subf*\reserved@c}%
+      \ifcase #2\or
+      \or
+      \else
+        \errmessage{*** What's this? NFSS release 0? ***}%
+      \fi
+    \else
+      \edef\reserved@d{#2\reserved@c}%
+    \fi
+    \ifx\reserved@d\reserved@e
+      \edef\reserved@f{\reserved@f<\reserved@b>}%
+    \else
+      \edef\reserved@f{\reserved@f\reserved@e<\reserved@b>}%add old info
+      \let\reserved@e\reserved@d
+    \fi
+    \expandafter\scan@@fontshape
+  \fi
+}%
+\@onlypreamble\scan@@fontshape
+\gdef\subst@fontshape#1#2#3#4#5#6{%
+     \warn@rel@i\subst@fontshape\DeclareFontShape
+     \DeclareFontShape{U}{#1}{#2}{#3}{<->sub*#4/#5/#6}{}}%
+\@onlypreamble\subst@fontshape
+\gdef\extra@def#1#2#3{%
+     \warn@rel@i\extra@def\DeclareFontFamily
+     \DeclareFontFamily{U}{#1}{}%
+}%
+\@onlypreamble\extra@def
+\gdef\default@mextra{%
+  \warn@rel@i\default@mextra\DeclareFontEncodingDefaults
+  \DeclareFontEncodingDefaults\relax
+}%
+\@onlypreamble\default@mextra
+\gdef\preload@sizes{%
+     \warn@rel@i\preload@sizes\DeclarePreloadSizes
+     \DeclarePreloadSizes U%
+}%
+\@onlypreamble\preload@sizes
+\gdef\err@rel@i#1#2{%
+  \@latex@error{***  NFSS release 1 command \noexpand#1found%
+          ^^J***  Recovery not possible. Use \string#2}%
+       {The new release of NFSS doesn't support the
+        \noexpand#1command^^Jany longer.
+        Please upgrade your file to the syntax of NFSS
+        release 2^^Jusing the \noexpand#2command.}%
+  \batchmode\input.\relax
+}%
+\@onlypreamble\err@rel@i
+\gdef\newmathalphabet{%
+  \if@no@font@opt
+    \@latex@error{*** NFSS release 1 command
+                    \noexpand\newmathalphabet found%
+     ^^J \space*** Automatic recovery not possible.%
+     ^^J \space*** TYPE H for Help%
+              }%
+       {Please look at the file usrguide.tex for hints on
+        how to resolve this problem.}%
+  \else
+     \warn@rel@i\newmathalphabet\DeclareMathAlphabet
+  \fi
+  \@ifstar\newmathalphabet@@@
+          \newmathalphabet@@}%
+\gdef\newmathalphabet@@#1{\DeclareMathAlphabet#1{U}{}{}{}}%
+\gdef\newmathalphabet@@@#1#2#3#4{%
+       \DeclareMathAlphabet{#1}{U}{#2}{#3}{#4}}%
+\@onlypreamble\newmathalphabet
+\@onlypreamble\newmathalphabet@@
+\@onlypreamble\newmathalphabet@@@
+\global\let\if@no@font@opt\iftrue
+\gdef\@no@font@optfalse{\let\if@no@font@opt\iffalse}%
+\gdef\define@mathalphabet{%
+      \err@rel@i\define@mathalphabet\DeclareMathAlphabet
+}%
+\@onlypreamble\define@mathalphabet
+\gdef\define@mathgroup{%
+      \err@rel@i\define@mathgroup\DeclareSymbolFont
+}%
+\@onlypreamble\define@mathgroup
+\def\addtoversion#1#2{%
+  \warn@rel@i\addtoversion\SetMathAlphabet
+  \SetMathAlphabet#2{#1}{U}}%
+\@onlypreamble\addtoversion
+\EndIncludeInRelease
+\ifx\directlua\@undefined\else
+\IncludeInRelease{2015/10/01}
+                 {\newluafunction}{LuaTeX}%
+\ifnum\luatexversion<60 %
+  \wlog{***************************************************}
+  \wlog{* LuaTeX version too old for ltluatex support *}
+  \wlog{***************************************************}
+  \expandafter\endinput
+\fi
+\ifx\e@alloc@attribute@count\@undefined
+  \countdef\e@alloc@attribute@count=258
+\fi
+\def\newattribute#1{%
+  \e@alloc\attribute\attributedef
+    \e@alloc@attribute@count\m@ne\e@alloc@top#1%
+}
+\e@alloc@attribute@count=\z@
+\def\setattribute#1#2{#1=\numexpr#2\relax}
+\def\unsetattribute#1{#1=-"7FFFFFFF\relax}
+\ifx\e@alloc@ccodetable@count\@undefined
+  \countdef\e@alloc@ccodetable@count=259
+\fi
+\def\newcatcodetable#1{%
+  \e@alloc\catcodetable\chardef
+    \e@alloc@ccodetable@count\m@ne{"8000}#1%
+  \initcatcodetable\allocationnumber
+}
+\e@alloc@ccodetable@count=\z@
+\newcatcodetable\catcodetable@initex
+\newcatcodetable\catcodetable@string
+\begingroup
+  \def\setrangecatcode#1#2#3{%
+    \ifnum#1>#2 %
+      \expandafter\@gobble
+    \else
+      \expandafter\@firstofone
+    \fi
+      {%
+        \catcode#1=#3 %
+        \expandafter\setrangecatcode\expandafter
+          {\number\numexpr#1 + 1\relax}{#2}{#3}
+      }%
+  }
+  \@firstofone{%
+    \catcodetable\catcodetable@initex
+      \catcode0=12 %
+      \catcode13=12 %
+      \catcode37=12 %
+      \setrangecatcode{65}{90}{12}%
+      \setrangecatcode{97}{122}{12}%
+      \catcode92=12 %
+      \catcode127=12 %
+      \savecatcodetable\catcodetable@string
+    \endgroup
+  }%
+\newcatcodetable\catcodetable@latex
+\newcatcodetable\catcodetable@atletter
+\begingroup
+  \let\ENDGROUP\endgroup
+  \let\begingroup\relax
+  \let\endgroup\relax
+  \let\global\relax
+  \let\gdef\def
+  \input{unicode-letters.def}%
+  \let\endgroup\ENDGROUP
+  \@firstofone{%
+    \catcode64=12 %
+    \savecatcodetable\catcodetable@latex
+    \catcode64=11 %
+    \savecatcodetable\catcodetable@atletter
+   }
+\endgroup
+\ifx\e@alloc@luafunction@count\@undefined
+  \countdef\e@alloc@luafunction@count=260
+\fi
+\def\newluafunction{%
+  \e@alloc\luafunction\e@alloc@chardef
+    \e@alloc@luafunction@count\m@ne\e@alloc@top
+}
+\e@alloc@luafunction@count=\z@
+\ifx\e@alloc@whatsit@count\@undefined
+  \countdef\e@alloc@whatsit@count=261
+\fi
+\def\newwhatsit#1{%
+  \e@alloc\whatsit\e@alloc@chardef
+    \e@alloc@whatsit@count\m@ne\e@alloc@top#1%
+}
+\e@alloc@whatsit@count=\z@
+\ifx\e@alloc@bytecode@count\@undefined
+  \countdef\e@alloc@bytecode@count=262
+\fi
+\def\newluabytecode#1{%
+  \e@alloc\luabytecode\e@alloc@chardef
+    \e@alloc@bytecode@count\m@ne\e@alloc@top#1%
+}
+\e@alloc@bytecode@count=\z@
+
+\ifx\e@alloc@luachunk@count\@undefined
+  \countdef\e@alloc@luachunk@count=263
+\fi
+\def\newluachunkname#1{%
+  \e@alloc\luachunk\e@alloc@chardef
+    \e@alloc@luachunk@count\m@ne\e@alloc@top#1%
+    {\escapechar\m@ne
+    \directlua{lua.name[\the\allocationnumber]="\string#1"}}%
+}
+\e@alloc@luachunk@count=\z@
+  \begingroup
+    \attributedef\attributezero=0 %
+    \chardef     \charzero     =0 %
+    \countdef    \CountZero    =0 %
+    \dimendef    \dimenzero    =0 %
+    \mathchardef \mathcharzero =0 %
+    \muskipdef   \muskipzero   =0 %
+    \skipdef     \skipzero     =0 %
+    \toksdef     \tokszero     =0 %
+    \directlua{require("ltluatex")}
+  \endgroup
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}
+                 {\newluafunction}{LuaTeX}%
+\let\e@alloc@attribute@count\@undefined
+\let\newattribute\@undefined
+\let\setattribute\@undefined
+\let\unsetattribute\@undefined
+\let\e@alloc@ccodetable@count\@undefined
+\let\newcatcodetable\@undefined
+\let\catcodetable@initex\@undefined
+\let\catcodetable@string\@undefined
+\let\catcodetable@latex\@undefined
+\let\catcodetable@atletter\@undefined
+\let\e@alloc@luafunction@count\@undefined
+\let\newluafunction\@undefined
+\let\e@alloc@luafunction@count\@undefined
+\let\newwhatsit\@undefined
+\let\e@alloc@whatsit@count\@undefined
+\let\newluabytecode\@undefined
+\let\e@alloc@bytecode@count\@undefined
+\let\newluachunkname\@undefined
+\let\e@alloc@luachunk@count\@undefined
+\directlua{luatexbase.uninstall()}
+\EndIncludeInRelease
+\fi
+%%% From File: ltfinal.dtx
+\IncludeInRelease{2015/01/01}%
+                 {\newmarks}{Extended Allocation}%
+\ifx\marks\@undefined\else
+\def\newmarks{%
+  \e@alloc\marks \e@alloc@chardef{\count256}\m@ne\e@alloc@top}
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+                 {\newmarks}{Extended Allocation}%
+\let\newmarks\@undefined
+\EndIncludeInRelease
+\IncludeInRelease{2015/01/01}%
+              {\newXeTeXintercharclass}{Extended Allocation}%
+\ifx\XeTeXcharclass\@undefined
+\else
+\countdef\xe@alloc@intercharclass=257
+\xe@alloc@intercharclass=\thr@@
+\def\newXeTeXintercharclass{%
+ \e@alloc\XeTeXcharclass\chardef\xe@alloc@intercharclass\m@ne\@cclv}
+\fi
+\EndIncludeInRelease
+\IncludeInRelease{0000/00/00}%
+              {\newXeTeXintercharclass}{Extended Allocation}%
+ \ifx\XeTeXcharclass\@undefined
+ \else
+   \newcount\xe@alloc@intercharclass
+    \xe@alloc@intercharclass=\thr@@
+    \def\xe@alloc@#1#2#3#4#5{\global\advance#1\@ne
+     \xe@ch@ck#1#4#2%
+     \allocationnumber#1%
+     \global#3#5\allocationnumber
+     \wlog{\string#5=\string#2\the\allocationnumber}}
+    \def\xe@ch@ck#1#2#3{%
+     \ifnum#1<#2\else
+      \errmessage{No room for a new #3}%
+     \fi}
+    \def\newXeTeXintercharclass{%
+     \xe@alloc@\xe@alloc@intercharclass
+                    \XeTeXcharclass\chardef\@cclv}
+ \fi
+\EndIncludeInRelease
+\endinput
+%%
+%% End of file `latexrelease.sty'.

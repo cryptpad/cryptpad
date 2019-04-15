@@ -1,0 +1,853 @@
+%% filename: amsfndoc.def
+%% version: 2.2d
+%% date: 2002/01/18
+%%
+%% American Mathematical Society
+%% Technical Support
+%% Publications Technical Group
+%% 201 Charles Street
+%% Providence, RI 02904
+%% USA
+%% tel: (401) 455-4080
+%%      (800) 321-4267 (USA and Canada only)
+%% fax: (401) 331-3842
+%% email: tech-support@ams.org
+%% 
+%% Copyright 1994, 2001, 2002, 2009 American Mathematical Society.
+%% 
+%% Unlimited copying and redistribution of this file are permitted as
+%% long as this file is not modified.  Modifications, and distribution
+%% of modified versions, are permitted, but only if the resulting file
+%% is renamed.
+%%
+%% ====================================================================
+\def\fontsreleasedate{January 2002}
+
+\def\makeatletter{\catcode`\@=11 }
+\chardef\other=12
+\def\makeatother{\catcode`\@=\other}
+\makeatletter
+
+%    If someone tries to typeset this user's guide with amstex or latex,
+%    let's give them a reasonably informative error message instead of
+%    totally random ones.
+\def\temp{\errmessage{%
+  Plain TeX format must be used for amsfndoc.tex}%
+  \csname @@end\endcsname\end}
+
+\ifx\amstexloaded@\relax
+  \errhelp{It seems that AMSTeX was used instead of plain TeX.}
+\else
+  \ifx\@@end\undefined
+    \let\temp\relax
+  \else
+    \errhelp{It seems that LaTeX was used instead of plain TeX.}
+  \fi
+\fi
+
+\temp
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Utility registers and definitions
+
+%  Test registers for transient use; paired - internal/external
+\newbox\T@stBox                 \newbox\TestBox
+\newcount\T@stCount             \newcount\TestCount
+\newdimen\T@stDimen             \newdimen\TestDimen
+\newif\ifT@stIf                 \newif\ifTestIf
+
+\newif\ifPrelimDraft            \PrelimDraftfalse
+
+% flag for when we decide whether the Extended Distribution for Mac will
+% still exist
+\newif\ifExtendedExists
+\ExtendedExiststrue
+\ExtendedExistsfalse
+
+%  Avoid unwanted vertical glue when making up pages.
+\def\basezero{\baselineskip\z@ \lineskip\z@}
+
+
+%  Vertical `laps'; cf. \llap and \rlap
+\long\def\ulap#1{\vbox to \z@{\vss#1}}
+\long\def\dlap#1{\vbox to \z@{#1\vss}}
+
+%
+%  Support ad-hoc strut construction.
+\def\makestrut[#1;#2]{\vrule height#1 depth#2 width\z@ }
+
+%       Miscellaneous useful stuff
+
+\def\BlackBoxes{\overfullrule=5pt }
+\def\NoBlackBoxes{\overfullrule=0pt }
+
+\def\linebreak{\unskip\break}
+\def\newline{\hskip0pt plus \pagewd \break}
+\def\newpage{\par\vfill\eject}
+
+\def\bull{\vrule height 1ex width .8ex depth -.2ex } % square bullet
+
+%  Hack to permit automatic hyphenation after an actual hyphen.
+
+\def\hyph{-\penalty0\hskip0pt\relax }
+
+\def\slash{/\penalty0\hskip0pt}        % "breakable" slash
+
+\def\dotsfill{\leaders\hbox to1em{\hfil.\hfil}\hfill}
+
+
+%  Today's date, to be printed on drafts.  Based on TeXbook, p.406.
+
+\def\today{\number\day\space \ifcase\month\or
+    Jan \or Feb \or Mar \or Apr \or May \or Jun \or
+    Jul \or Aug \or Sep \or Oct \or Nov \or Dec \fi
+    \number\year}
+
+%  Current time; this may be system dependent!
+\newcount\hours
+\newcount\minutes
+\def\SetTime{\hours=\time
+    \global\divide\hours by 60
+    \minutes=\hours
+    \multiply\minutes by 60
+    \advance\minutes by-\time
+    \global\multiply\minutes by-1 }
+\SetTime
+\def\now{\number\hours:\ifnum\minutes<10 0\fi\number\minutes}
+
+\def\Now{\today\ \now}
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Page dimensions
+%
+
+
+%  Dimensions given before fonts; \colwd is needed in definition of \ragged...
+
+\newdimen\pagelgt
+\newdimen\rheadlgt      \rheadlgt=2.5pc
+\newdimen\collgt        \collgt=47pc
+\maxdepth=2pt
+\newdimen\rfootlgt      \rfootlgt=2pc
+
+\newif\ifThisIsFirstPage        \ThisIsFirstPagetrue
+
+\def\resetpagelgt{\pagelgt=\collgt
+    \advance\pagelgt by \rheadlgt
+    \advance\pagelgt by \maxdepth
+    \global\advance\pagelgt by \rfootlgt
+    \global\vsize=\collgt }
+
+\resetpagelgt
+\raggedbottom
+
+\newdimen\colwd         \colwd=30pc
+\hsize=\colwd
+\newdimen\pagewd        \pagewd=30pc
+\parskip=\smallskipamount
+
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Fonts and friends
+%
+
+
+%  PLAIN CM fonts needed for \tenpoint, \ninepoint and \eightpoint
+
+\font\tenrm=cmr10
+\font\ninerm=cmr9
+\font\eightrm=cmr8
+\font\sevenrm=cmr7
+\font\sixrm=cmr6
+\font\fiverm=cmr5
+
+\font\teni=cmmi10  \skewchar\teni='177
+\font\ninei=cmmi9  \skewchar\ninei='177
+\font\eighti=cmmi8 \skewchar\eighti='177
+\font\seveni=cmmi7 \skewchar\seveni='177
+\font\sixi=cmmi6   \skewchar\sixi='177
+\font\fivei=cmmi5  \skewchar\fivei='177
+
+\font\tensy=cmsy10  \skewchar\tensy='60
+\font\ninesy=cmsy9  \skewchar\ninesy='60
+\font\eightsy=cmsy8 \skewchar\eightsy='60
+\font\sevensy=cmsy7 \skewchar\sevensy='60
+\font\sixsy=cmsy6   \skewchar\sixsy='60
+\font\fivesy=cmsy5  \skewchar\fivesy='60
+
+\font\tenex=cmex10
+
+\font\tenbf=cmbx10
+\font\ninebf=cmbx9
+\font\eightbf=cmbx8
+\font\sevenbf=cmbx7
+\font\sixbf=cmbx6
+\font\fivebf=cmbx5
+
+\font\tentt=cmtt10
+\font\ninett=cmtt9
+\font\eighttt=cmtt8
+
+\font\tensl=cmsl10
+\font\ninesl=cmsl9
+\font\eightsl=cmsl8
+
+\font\tenit=cmti10
+\font\nineit=cmti9
+\font\eightit=cmti8
+\font\sevenit=cmti7
+
+\font\tensmc=cmcsc10
+
+\def\mit{\fam\@ne}
+\def\cal{\fam\tw@}
+
+%
+%%   Minimize font usage [mjd,20-Dec-1994]
+\def\manual{\tenss}% font substitution
+
+\newfam\titlefam
+\newdimen\titlefontbaselineskip         \titlefontbaselineskip=18pt
+\def\titlefont{\textfont\titlefam=\sixteenbf
+    \scriptfont\titlefam=\twelvebf \scriptscriptfont\titlefam=\tenbf
+    \fam\titlefam \sixteenbf \baselineskip=\titlefontbaselineskip }
+
+
+%  Struts give ascenders and descenders to assist in baseline alignment
+%  (e.g. of adjoining vertical boxes); useful only with text fonts.
+%
+%  \strut is defined in PLAIN .  The structure of \strutt is equivalent.
+
+\newbox\struttbox
+\def\strutt{\relax\ifmmode\copy\struttbox\else\unhcopy\struttbox\fi}
+
+%  Struts are given the following dimensions:
+%
+%       \strut = height/depth of parenthesis in current font
+%                (not the same as PLAIN)
+%       \strutt height + depth = \normalbaselineskip,
+%                height = same as \strut
+%                (equivalent to PLAIN \strut )
+
+
+%  PLAIN's definition of \raggedright doesn't permit any stretch, and
+%  results in too many overfull boxes.  Change.
+\newdimen\raggedskip            \raggedskip=\z@
+\newdimen\raggedstretch         \raggedstretch=\colwd
+\newskip\raggedparfill          \raggedparfill=\z@ plus 1fil
+
+\def\raggedspaces{\spaceskip=.3333em \xspaceskip=.5em }
+%  Some applications may have to add stretch, in order to avoid
+%  all overfull boxes.
+
+\def\raggedright{\rightskip=\raggedskip plus\raggedstretch \raggedspaces
+        \parfillskip=\raggedparfill }
+\def\raggedleft{\leftskip=\raggedskip plus\raggedstretch \raggedspaces
+        \parfillskip=\z@ }
+\def\raggedcenter{\leftskip=\raggedskip plus\raggedstretch
+        \rightskip=\leftskip \raggedspaces
+        \parindent=\z@ \parfillskip=\z@ }
+
+\def\normalspaces{\spaceskip=.3333em plus.1667em minus.1111em
+        \xspaceskip=.4444em plus.5em minus.037em }
+
+%
+%  Allow text to be a bit stretchier than the built-in setting;
+%  TeXbook, page 433, 355
+
+\newdimen\normaltenptstretch    \normaltenptstretch=1.6667pt
+\newdimen\extratenptstretch     \extratenptstretch=4pt
+\def\NormalTenPointSpacing{\fontdimen3\tenrm=\normaltenptstretch
+        \fontdimen3\tenit=\normaltenptstretch}
+\def\StretchyTenPointSpacing{\fontdimen3\tenrm=\extratenptstretch
+        \fontdimen3\tenit=\extratenptstretch}
+
+\def\tenpoint{\normalbaselineskip=12pt
+    \abovedisplayskip=3pt plus 3pt minus 1pt
+    \belowdisplayskip=3pt plus 3pt minus 1pt
+    \abovedisplayshortskip=0pt plus 3pt
+    \belowdisplayshortskip=2pt plus 3pt
+    \def\rm{\fam\z@\tenrm}%
+    \textfont0=\tenrm \scriptfont0=\sevenrm \scriptscriptfont0=\fiverm
+    \def\oldstyle{\fam\@ne\teni}%
+    \textfont1=\teni \scriptfont1=\seveni \scriptscriptfont1=\fivei
+    \textfont2=\tensy \scriptfont2=\sevensy \scriptscriptfont2=\fivesy
+    \textfont3=\tenex \scriptfont3=\tenex \scriptscriptfont3=\tenex
+    \def\it{\fam\itfam\tenit}%
+    \textfont\itfam=\tenit \scriptfont\itfam=\sevenit
+    \def\sl{\fam\slfam\tensl}%
+    \textfont\slfam=\tensl \scriptfont\slfam=\eightsl
+    \def\bf{\fam\bffam\tenbf}%
+    \textfont\bffam=\tenbf \scriptfont\bffam=\eightbf
+        \scriptscriptfont\bffam=\sixbf
+    \def\smc{\tensmc}%
+    \def\tt{\tentt}%
+    \setbox\strutbox=\hbox{\vrule height7.5pt depth2.5pt width\z@}%
+    \setbox\struttbox=\hbox{\vrule height8.5pt depth3.5pt width\z@}%
+    \normalbaselines \rm }
+
+\tenpoint                       % initialize -- default font
+
+%
+\newdimen\normalnineptstretch   \normalnineptstretch=1.5pt
+\newdimen\extranineptstretch    \extranineptstretch=3.6pt
+\def\NormalNinePointSpacing{\fontdimen3\ninerm=\normalnineptstretch}
+\def\StretchyNinePointSpacing{\fontdimen3\ninerm=\extranineptstretch}
+
+\def\ninepoint{\normalbaselineskip=11pt
+    \abovedisplayskip=2.5pt plus 2.5pt minus 1pt
+    \belowdisplayskip=2.5pt plus 2.5pt minus 1pt
+    \abovedisplayshortskip=0pt plus 2.5pt
+    \belowdisplayshortskip=2pt plus 2.5pt
+    \def\rm{\fam\z@\ninerm}%
+    \textfont0=\ninerm \scriptfont0=\sevenrm \scriptscriptfont0=\fiverm
+    \def\oldstyle{\fam\@ne\ninei}%
+    \textfont1=\ninei \scriptfont1=\seveni \scriptscriptfont1=\fivei
+    \textfont2=\ninesy \scriptfont2=\sevensy \scriptscriptfont2=\fivesy
+    \def\it{\fam\itfam\nineit}%
+    \textfont\itfam=\nineit
+    \def\sl{\fam\slfam\ninesl}%
+    \textfont\slfam=\ninesl
+    \def\bf{\fam\bffam\ninebf}%
+    \textfont\bffam=\ninebf \scriptfont\bffam=\sevenbf
+        \scriptscriptfont\bffam=\sixbf
+    \def\tt{\ninett}%
+    \setbox\strutbox=\hbox{\vrule height 6.75pt depth 2.25pt width\z@}%
+    \setbox\struttbox=\hbox{\vrule height 7.75pt depth 3.25pt width\z@}%
+    \normalbaselines \rm }
+
+%
+\newdimen\normaleightptstretch  \normaleightptstretch=1.333pt
+\newdimen\extraeightptstretch   \extraeightptstretch=3pt
+\def\NormalEightPointSpacing{\fontdimen3\eightrm=\normaleightptstretch}
+\def\StretchyEightPointSpacing{\fontdimen3\eightrm=\extraeightptstretch}
+
+\def\eightpoint{\normalbaselineskip=10pt
+    \abovedisplayskip=3pt plus 2pt minus 1pt
+    \belowdisplayskip=3pt plus 2pt minus 1pt
+    \abovedisplayshortskip=0pt plus 2pt
+    \belowdisplayshortskip=2pt plus 2pt
+    \def\rm{\fam\z@\eightrm}%
+    \textfont0=\eightrm \scriptfont0=\sixrm \scriptscriptfont0=\fiverm
+    \def\oldstyle{\fam\@ne\eighti}%
+    \textfont1=\eighti \scriptfont1=\sixi \scriptscriptfont1=\fivei
+    \textfont2=\eightsy \scriptfont2=\sixsy \scriptscriptfont2=\fivesy
+    \def\it{\fam\itfam\eightit}%
+    \textfont\itfam=\eightit
+    \def\sl{\fam\slfam\eightsl}%
+    \textfont\slfam=\eightsl
+    \def\bf{\fam\bffam\eightbf}%
+    \textfont\bffam=\eightbf \scriptfont\bffam=\sixbf
+        \scriptscriptfont\bffam=\sixbf
+    \def\smc{\eightsmc}%
+    \def\tt{\eighttt}%
+    \setbox\strutbox=\hbox{\vrule height 6pt depth 2pt width\z@}%
+    \setbox\struttbox=\hbox{\vrule height 7pt depth 3pt width\z@}%
+    \normalbaselines \rm }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Headers/footers
+%
+
+
+\newdimen\pagenowidth
+\setbox0=\hbox{\tenrm 99\quad}
+\pagenowidth=\wd0
+
+\newdimen\rtitlebaseline        \rtitlebaseline=10pt
+\def\rtitlex{\ignorespaces\firstmark\unskip}
+\def\rhsection#1#2{\if!#1!\else #1. \fi#2}
+
+\def\runhead{\vbox to \rheadlgt{\let\mnm=\notmain
+    \line{\tenrm
+        \makestrut[\rtitlebaseline;\z@]%
+        \ifodd\pageno \hfil\rtitlex\hfil\hbox to\z@{\hss\number\pageno}%
+        \else \hbox to \z@{\number\pageno\hss}\hfil\rtitlex\hfil \fi }%
+    \vfil }}
+
+\def\runfoot{\vbox to \rfootlgt{\baselineskip=1.5pc
+    \line{\hfil\line{\hfil
+            \ifPrelimDraft \tenrm \makestrut[1.5pc;\z@]\Now \fi
+            }\hfil}
+    \vfil }}
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Output
+%
+
+
+\output{\shipout \vbox{\basezero
+    \hrule height\z@ depth\z@ width\p@
+    \vskip-\rheadlgt
+    \vbox to \pagelgt{\basezero
+        \ifThisIsFirstPage \vskip\rheadlgt \global\ThisIsFirstPagefalse
+        \else \runhead
+        \fi             % \vsize applied in \pagebody
+        \hbox to \pagewd{\hfil\pagebody \hfil}%
+        \vfil           % if no depth, avoid underfull box
+        \runfoot }%
+    }%
+    \global\advancepageno }
+
+
+%  Reorganize \pagecontents from PLAIN to put footnotes at very
+%  bottom of page, even if \raggedbottom.
+
+\def\pagecontents{\ifvoid\topins\else\unvbox\topins\fi
+  \dimen@=\dp\@cclv \unvbox\@cclv % open up \box255
+  \ifr@ggedbottom \kern-\dimen@ \vfil \fi
+  \ifvoid\footins\else % footnote info is present
+    \vskip\skip\footins
+    \footnoterule
+    \unvbox\footins\fi }
+
+%  Redefine \@ins to avoid the \par of PLAIN.
+
+\def\@ins{\begingroup\setbox\z@\vbox\bgroup} % start a \vbox
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Titles and section headings
+%
+
+\newskip\AboveTitleSkip  \AboveTitleSkip=12pt plus 2pt minus 2pt
+\newskip\BelowTitleSkip  \BelowTitleSkip=8pt plus 1pt minus 1pt
+
+\newdimen\mtrulethickness       \mtrulethickness=.6pt
+\def\mthrule{\hrule height\mtrulethickness depth 0pt \relax }
+\let\DoHrule=\mthrule
+
+\newbox\maintitlebox
+\def\maintitle #1\\#2<{\vfil\eject
+  \vbox{\rightskip=0pt plus 1fil\leftskip=\rightskip
+    \parindent=0pt\parfillskip=0pt\bf#1\par
+  }%
+  \setbox\maintitlebox\hbox{#2}%
+        \ifdim\wd\maintitlebox=\z@
+          \else\vskip3pt\centerline{#2}\fi
+        \medskip\SetupFirstPar }
+
+
+%  First-paragraph formatting
+
+\newif\ifFirstPar       \FirstParfalse
+\def\SetupFirstPar{\global\parindent=0pt \global\FirstPartrue }
+
+\newif\ifNoParIndent    \NoParIndentfalse
+\def\NoParIndent{\parindent=0pt \NoParIndenttrue}
+
+\newdimen\normalparindent        \normalparindent=20pt
+\def\NormalParIndent{\global\parindent=\normalparindent
+    \global\NoParIndentfalse}
+\NormalParIndent
+
+%  Make the first paragraph after a title start flush left, then reset
+%  \parindent; but don't reset if all paragraphs should start flush left.
+\everypar{\ifNoParIndent
+    \else \ifFirstPar \NormalParIndent \global\FirstParfalse \fi
+    \fi }
+%
+\newif\ifFigure         \Figurefalse
+
+\def\figuretitle#1{\Figuretrue \section{Figure #1}}
+
+%  Don't make running heads from \section in the appendices.
+\def\section#1#2\par{%
+    \penalty-20
+    \vskip\AboveTitleSkip
+    {\raggedcenter
+      {\smc\noindent\ignorespaces\if!#1!\else#1. \fi
+       \ifFigure\rm\fi\ignorespaces
+        #2\unskip}\strutt
+      \ifFigure \global\Figurefalse
+      \else
+         \tocwrites\tocsection{#1}{#2}%
+         \ifAppendix
+         \else \toks0{\rhsection{#1}{#2}}\mark{\the\toks0}%
+         \fi
+      \fi \endgraf
+    }%
+    \nobreak \vskip\BelowTitleSkip
+    \SetupFirstPar }
+
+\let\primend=\end
+\def\end{\immediate\closeout\auxfile
+  \ifNoToc
+    \immediate\write16{*** Warning: Need to rerun to get TOC}%
+  \fi
+  \primend}
+
+\newwrite\auxfile
+\def\auxwrite{\immediate\openout\auxfile=\jobname.aux \relax
+  \global\let\auxwrite\auxwriteb \auxwriteb}
+\def\auxwriteb{\write\auxfile}
+
+\long\def\gobbletwo#1#2{}
+\long\def\gobblethree#1#2#3{}
+
+\def\tocwrite#1#2#3{%
+  \begingroup
+  \def\temp{{#2}{#3}}\edef\temp{\mmeaning\temp}%
+  \edef\tempb{\noexpand\auxwrite{%
+    \string#1\temp{\noexpand\the\pageno}}}%
+  \tempb
+  \endgroup
+}
+
+\def\tocwrites{\tocwrite}
+\def\tocwritea{\tocwrite}
+
+\newif\ifAppendix
+\def\appendix#1#2{\maintitle Appendix #1\break #2\\<
+  \mark{Appendix #1.\enspace#2}\tocwritea\tocappendix{#1}{#2}%
+  \gdef\theappendix{#1}%
+%    Now \section should no longer go into the table of contents.
+  \let\tocwrites\gobblethree
+%    And forget the running head on the first page of an appendix.
+  \global\ThisIsFirstPagetrue \Appendixtrue
+  \InstSec=0 \relax }
+
+%    main/not main macro, prints arg #1 in the main text, #2 in running
+%    head or table of contents
+\def\mnm#1#2{#1}
+\def\notmain#1#2{#2}
+
+\def\mmeaning{\expandafter\mstrip\meaning}
+\def\mstrip#1->{}
+
+\long\def\gobble#1{}
+
+\def\References#1{\section{}References\par
+  \begingroup \raggedright \hyphenpenalty=10000 \exhyphenpenalty=10000
+  \setbox\TestBox=\hbox{[#1] }
+  \leftskip=\wd\TestBox
+}
+
+\def\endReferences{\par\endgroup}
+
+\def\bibitem [#1] {\noindent\kern-\leftskip
+    \hbox to\leftskip{[#1]\hfil}\ignorespaces}
+
+\def\bysame{\hbox to 3em{\leaders\hrule\hfill}\thinspace, }
+
+%  Note that, since \raggedbottom is turned on, there is already an
+%  implied 60pt (= 5\baselineskip) margin allowed, so the penalty
+%  should not be overly attractive.
+\def\subsection#1#2\par{\ifFirstPar \nobreak
+    \else \vskip\z@ plus 4\baselineskip \penalty-10
+        \vskip\z@ plus-4\baselineskip \vskip 8pt \vskip\parskip \fi
+    {\raggedright\hyphenpenalty=10000 \exhyphenpenalty=10000
+      \noindent\bf#1. \ignorespaces#2\endgraf}\nobreak \vskip 4pt\relax
+    \SetupFirstPar }
+
+
+\def\Contents{%
+  \subsection{\gobble}Contents of this document\par
+  \begingroup
+  \parfillskip=\normalparindent \parindent=\normalparindent
+  \let\mnm=\notmain
+  \input \jobname.aux \relax
+  \par\endgroup
+}
+
+\def\tocsection#1#2#3{%
+  \par \global\NoTocfalse
+  \begingroup  \hangindent\parindent\indent
+    \if!#1!\else#1. \fi#2\dotsfill\ #3\endgraf
+  \endgroup}
+
+\def\tocappendix#1{\tocsection{Appendix #1}}
+
+%  Define address blocks and other structures that use \obeylines
+%  in the context  \tag ...<
+%  This requires that < be active, so that \obeylines is invoked
+%  at the outer level.  \tag{...} will not deliver the data with
+%  ^M (carriage return) intact, so is not a suitable format for
+%  any construction using \obeylines; the reference (if any) in
+%  The TeXbook has not been found, and this information has been
+%  determined empirically, referring to \obeylines constructions
+%  in PLAIN and MANMAC.TeX (The TeXbook macros).
+{\catcode`\^^M=\active % these lines must end with %
+  \gdef\obeylinesblock{\catcode`\^^M\active \def^^M{\par\nobreak}}}
+
+{\catcode`\<=\active \obeylines
+\gdef\TextAddr{\endgraf\def\Phone{\leavevmode\kern\parindent}%
+    \let\NetAddr=\Phone %
+    \catcode`\<=\active %
+%               next line intentionally ends with <cr> %
+    \def<{
+          \egroup\allowbreak\catcode`\<=12 }%
+    \bgroup\penalty9999 \obeylinesblock }%
+}
+
+\newbox\usertypebox
+\let\usertypeskip\empty
+\long\def\usertype@#1{%
+  \setbox\usertypebox\hbox{\hskip2pc\tt#1}%
+  \par\usertypeskip
+  {\let\oldpar=\par
+   \def\par{%
+     \oldpar\leavevmode\hbox to 0pt
+      {\ifdim1\wd\usertypebox>10pc\hskip1\wd\usertypebox\hskip1pc
+       \else\hskip10pc
+       \fi
+       \rm $\langle$return$\rangle$\hss}\hskip2pc}%
+   \par\tt#1}%
+  \par\usertypeskip}
+
+\def\usertype{\let\usertypeskip=\smallskip \usertype@}
+\def\usertypenoskip{\let\usertypeskip=\empty \usertype@}
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Abbreviations and logos
+%
+
+
+\def\AMS{American Mathematical Society}
+
+\def\AmS{{\the\textfont2 A}\kern-.1667em\lower.5ex\hbox
+     {\the\textfont2 M}\kern-.125em{\the\textfont2 S}}
+\def\AmSTeX{\AmS-\TeX}
+
+\def\AW{Addison\kern.1em-\penalty0\hskip0pt Wesley}
+
+\def\BibTeX{{\rm B\kern-.05em{\smc i\kern-.025emb}\kern-.08em\TeX}}
+
+\def\CandT{{\sl Computers \& Typesetting}}
+
+\def\cn#1{{\tt \bs #1}}
+
+\def\JoT{{\sl The Joy of \TeX}}
+\def\Joy{{\sl Joy}}
+
+%  note -- \LaTeX definition is from LATEX.TEX 2.09 of 7 Jan 86,
+%          adapted for additional flexibility.
+%\def\LaTeX{\TestCount=\the\fam \leavevmode L\raise.42ex
+%       \hbox{$\fam\TestCount\scriptstyle\kern-.3em A$}\kern-.15em\TeX}
+%  note -- broken in two parts, to permit separate use of La, as in (La)TeX
+\def\La{\TestCount=\the\fam \leavevmode L\raise.42ex
+    \hbox{$\fam\TestCount\scriptstyle\kern-.3em A$}}
+\def\LaTeX{\La\kern-.15em\TeX}
+\def\LaTeXe{\LaTeX\kern.15em2$_{\textstyle\varepsilon}$}
+
+\def\MF{{\manual META}\-{\manual FONT}\spacefactor1000 }
+\def\mf{{\manual MF}\spacefactor1000 }
+
+\def\MR{{\sl Mathematical Reviews}}
+
+\def\pkg#1{{\tt #1}}
+
+\def\POBox{P.\thinspace O.~Box }
+
+\def\TB{{\sl The \TeX book}}
+
+\def\TeX{T\kern-.1667em\lower.424ex\hbox{E}\kern-.125emX\spacefactor1000 }
+
+\def\Textures{{\it Textures\/}}
+
+\def\TUB{{\sl TUGboat}}
+\def\TUG{\TeX{} Users Group}
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Verbatim
+%
+
+
+%  Verbatim listing of TeX source, as defined in TeXbook, p. 421.
+
+\def\ttverbatim{\begingroup \catcode`\\=\other
+  \catcode`\{=\other \catcode`\}=\other \catcode`\$=\other
+  \catcode`\&=\other \catcode`\#=\other \catcode`\%=\other
+  \catcode`\~=\other \catcode`\_=\other \catcode`\^=\other
+  \catcode`\"=\other \catcode`\@=\other
+  \obeyspaces \obeylines \hyphenpenalty=10000 \tt}
+
+\newskip\ttglue
+{\tenpoint\tt \global\ttglue=.5em plus .25em minus .15em}
+% this should be installed in each font
+
+{\obeyspaces\gdef {\ifvmode\indent\fi\space}}
+
+%  Permissible overhang beyond right margin; in MANMAC, this is 5pc,
+%  which is fine for the TeXbook, but too much here.
+\newdimen\ttrightskip
+\ttrightskip=1pc
+
+\newcount\linenumber
+
+\def\setuptt{%
+  \vskip\abovedisplayskip
+  \begingroup\def\par{\leavevmode\null\endgraf}\ttverbatim\parskip=\z@
+  \linenumber=0
+  \everypar={\global\advance\linenumber by\@ne
+          \ifnum\linenumber<3 \nobreak \fi}%
+  \catcode`\|=0
+  \frenchspacing\rightskip=-\ttrightskip}
+\outer\def\begintt{\setuptt\ttfinish}
+\def\skipaftertt{%
+  \vskip\belowdisplayskip
+  \penalty20
+  \vskip-\parskip
+  \vskip-\abovedisplayshortskip
+  \vskip-2\baselineskip
+  \vskip-\belowdisplayshortskip
+  $$\null$$     % whatever follows will behave as if it follows a display
+ }
+{\catcode`\|=0 |catcode`|\=\other % | is temporary escape character
+  |obeylines % end of line is active
+  |gdef|ttfinish#1^^M#2\endtt{#1#2|endgroup|endgroup|skipaftertt%
+  |ignorespaces}}
+
+%
+%  Other non-tt elements that may be embedded within \begintt...\endtt .
+\def\MTH{$}
+\def\sb{_}
+\def\sp{^}
+\def\SP{{\tt\char"20 }}         % "visible" space
+\chardef\bs=`\\
+\def\vrt{{\tt\char`\|}}
+
+\catcode`\|=\active
+{\obeylines %
+  \gdef|{\ttverbatim \spaceskip\ttglue \xspaceskip\ttglue %
+         \hyphenpenalty=10000 \let^^M=\  \let|=\endgroup}}
+
+\def\@period{.}
+\def\@gobble#1{}
+%\def\furtherinfo{\futurelet\test@period\check@period}
+%\def\check@period{Appendix D, {\bf For further information}%
+%  \ifx\test@period .\def\next{.\@gobble}\else \def\next{''}\fi \next }
+\def\typeiapp{Appendix B}
+\def\furtherinfo{Appendix C, {\bf For further information}}
+\def\fontchartapp{Appendix D}
+
+\def\@Note #1{\def\endx{\ifhmode \unskip\endgraf \fi \endgroup \medskip }%
+  \ifdim\lastskip>\medskipamount \else \removelastskip\medskip \fi
+  \begingroup
+  \leftskip=3pc \rightskip=\leftskip
+  \interlinepenalty=10000
+  \noindent
+  {\bf\ignorespaces#1\unskip: } \ignorespaces }
+\def\Note{\@Note{Note}}
+\def\Warn{\@Note{Warning}}
+
+\def\<#1>{$\langle${\rm #1\/}$\rangle$}
+
+\def\filename#1{%
+  \leavevmode\hbox{\tt\ignorespaces#1\unskip}}
+\def\fontname{\filename}
+\let\fn=\filename
+
+\def\description{\par\begingroup \parskip0pt \raggedright
+  \def\item##1{\par \hang
+    \noindent\hbox{\quad##1}\enspace\ignorespaces}%
+}
+\def\enddescription{\par\endgroup}
+
+\def\mathfrak{\frak}
+\def\opt{\pkg}
+
+\def\ctab#1{\noindent$$\def\\{\cr}%
+  \def\hline##1{\noalign{\nointerlineskip\vskip2pt}%
+    \multispan{##1}\hrulefill\\%
+    \noalign{\vskip-2pt}}%
+  \tabskip0pt plus1fil
+  \halign to\hsize\bgroup#1\tabskip0pt plus1fil\cr}
+\def\endctab{\crcr\egroup$$}
+
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Initialization
+%
+
+
+\PrelimDraftfalse
+\pageno=1
+
+\StretchyTenPointSpacing
+\StretchyEightPointSpacing
+
+\clubpenalty=10000
+\widowpenalty=10000
+
+\normallineskiplimit=1pt
+
+%       some hyphenation exceptions:
+\hyphenation{man-u-script man-u-scripts}
+
+%    for amsfndoc.ins:
+\font\tenss=cmss10
+
+%    These fonts and related stuff should be avoided for amsfndoc.ins
+%    because they either assume the AMSFonts collection is already
+%    installed, or they aren't needed in the appendices.
+\def\extrafonts{\input amssym.def \input amssym.tex \relax
+  \font\teneusm=eusm10 \relax
+  \font\teneurm=eurm10 \relax
+  \font\teneurb=eurb10 \relax
+  \def\matheurm##1{{\teneurm##1}}%
+  \def\matheurb##1{{\teneurb##1}}%
+  \input cyracc.def \relax
+  \font\tencyr=wncyr10 \relax
+  \def\cyr{\tencyr\cyracc}%
+}
+
+\newcount\InstSec
+\def\instsecno{\theappendix.\number\InstSec\relax}
+\def\instsec{\global\advance\InstSec 1
+  \begingroup\edef\0{\endgroup\noexpand\section{\instsecno}}%
+  \0}
+\def\theappendix{}
+
+\def\OtherSec#1{%
+  \begingroup\advance\InstSec #1 \theappendix.\number\InstSec\endgroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    TOC generation
+
+\newif\ifNoToc
+\NoToctrue % set to false by \tocsection
+
+\ifx\InstName\relax % then we are doing only the installation instructions.
+  \NoTocfalse % don't complain about the absence of TOC
+  \let\tocwrite\gobblethree
+\else
+%    Make sure there is an auxfile.
+  \openin\auxfile=\jobname.aux \relax
+  \ifeof\auxfile
+    \closein\auxfile
+    \immediate\openout\auxfile=\jobname.aux \relax
+    \write\auxfile{\relax}% to avoid \par
+    \immediate\closeout\auxfile
+  \else
+    \closein\auxfile
+  \fi
+\fi
+
+\ifx\InstName\relax % then we are doing only the installation instructions.
+\else
+  \begingroup \let\tocsection\gobblethree
+  \input \jobname.aux
+  \endgroup
+\fi
+
+\def\InstName{}
+
+\endinput

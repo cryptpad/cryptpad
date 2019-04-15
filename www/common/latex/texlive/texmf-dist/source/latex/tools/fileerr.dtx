@@ -1,0 +1,139 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005
+% 2006 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+% \def\fileversion{v1.1a} \def\filedate{2003/12/28}
+% \CheckSum{18}
+% \iffalse    This is a METACOMMENT
+% Doc-Source file to use with LaTeX2e
+% Copyright (C) 1994-2004 Frank Mittelbach, all rights reserved.
+% \fi
+% \title{File not found error\thanks{This file has version
+% \fileversion\ last revised \filedate}}
+% \author{Frank Mittelbach}
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \changes{v1.0e}{97/07/07}{Added q and r replies (PR/2525).}
+%
+% \section{Introduction}
+%    When \LaTeXe{} is unable to find a file it will ask for an
+%    alternative file name. However, sometimes the problem is
+%    only noticed by \TeX{}, and in that case \TeX{} insists on
+%    getting a valid file name; any other attempt to leave this
+%    error loop will fail.\footnote{On some systems, \TeX{}
+%    accepts a special character denoting the end of file to
+%    return from this loop, e.g.\ Control-D on UNIX or Control-Z
+%    on DOS.} Many users try to respond in the same way as to
+%    normal error messages, e.g.\ by typing \meta{return}, or |s|
+%    or |x|, but \TeX{} will interpret this as a file name and
+%    will ask again.
+%    \par To provide a graceful exit out of this loop, we define
+%    a number of files which emulate the normal behavior of
+%    \TeX{} in the error loop as far as possible.
+%    \par After installing these files the user can respond with
+%    |h|,  |q|, |r|, |s|, |e|, |x|, and on some systems also with
+%    \meta{return} to \TeX's missing file name question.
+% \StopEventually{}
+%
+% \section{The documentation driver}
+%    This code will generate the documentation. Since it is the
+%    first piece of code in the file, the documentation can be
+%    obtained by simply processing this file with \LaTeXe.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document} \DocInput{fileerr.dtx}  \end{document}
+%</driver>
+%    \end{macrocode}
+% \section{The files}
+%
+% \subsection{Asking for help with {\tt h}}
+%    When the user types |h| in the file error loop \TeX{} will
+%    look for the file |h.tex|. In this file we put a message
+%    informing the user about the situation (we use |^^J| to
+%    start new lines in the message) and then finish with a
+%    normal |\errmessage| command thereby bringing up \TeX's
+%    normal error mechanism.
+%    \begin{macrocode}
+%<*help>
+\newlinechar=`\^^J
+\message{! The file name provided could not be found.^^J%
+Use `<enter>' to continue processing,^^J%
+`S' to scroll  future errors^^J%
+`R' to run without stopping,^^J%
+`Q' to run quietly,^^J%
+or `X' to terminate TeX}
+\errmessage{}
+%</help>
+%    \end{macrocode}
+%
+% \subsection{Scrolling this and further errors with {\tt s}}
+%    For the response |s| we put a message into the file |s.tex|
+%    and start |\scrollmode| to scroll further error messages in
+%    this run.  On systems that allow |.tex| as a file name we
+%    can also trap a single \meta{return} from the user.
+%    \begin{macrocode}
+%<+scroll|return|run,batch> \message{File ignored}
+%<+scroll>            \scrollmode
+%<+run>               \nonstopmode
+%<+batch>             \batchmode
+%    \end{macrocode}
+%
+% \subsection{Exiting the run with {\tt x} or {\tt e}}
+%
+%    If the user enters |x| or |e| to stop \TeX{}, we need to put
+%    something into the corresponding file which will force \TeX{} to
+%    give up.  We achieve this by turning off terminal output and then
+%    asking \TeX{} to stop: first by using the internal \LaTeX{} name
+%    |\@@end|, and if that doesn't work because something other than
+%    \LaTeX{} is used, by trying the \TeX{} primitive |\end|.  The
+%    |\errmessage| is there to ensure that \TeX{}'s internal "history"
+%    variable is set to |error_message_issued|. This in turn will
+%    hopefully set the exit code on those operating systems that
+%    implement return codes (though there is no guarantee for this).
+% \changes{v1.1a}{2003/12/28}{Attempt to set exit code (pr/3538).}
+%    \begin{macrocode}
+%<+edit|exit>  \batchmode \errmessage{}\csname @@end\endcsname \end
+%    \end{macrocode}
+%    We end every file with an explicit |\endinput| which prevents
+%    the docstrip program from putting the character table into
+%    the generated files.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+% \Finale

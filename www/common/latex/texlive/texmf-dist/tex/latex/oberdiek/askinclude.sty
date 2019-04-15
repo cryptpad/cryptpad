@@ -1,0 +1,692 @@
+%%
+%% This is file `askinclude.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% askinclude.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: askinclude
+%% Version: 2011/12/02 v2.2
+%% 
+%% Copyright (C) 1991-1994 by Pablo A. Straub
+%% Copyright (C) 2007, 2008, 2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file askinclude.dtx
+%% and the derived files
+%%    askinclude.sty, askinclude.pdf, askinclude.ins, askinclude.drv,
+%%    askinclude.bib, askinclude-a.tex, askinclude-b.tex,
+%%    askinclude-c.tex, askinclude-test1.tex,
+%%    askinclude-test2.tex, askinclude-test3.tex,
+%%    askinclude-test4.tex, askinclude-test5.tex,
+%%    askinclude-test6.tex, askinclude-test7.tex,
+%%    askinclude-test8.tex, askinclude-test9.tex,
+%%    askinclude-test10.tex, askinclude-test11.tex,
+%%    askinclude-test12.tex, askinclude-test13.tex,
+%%    askinclude-test14.tex, askinclude-test15.tex,
+%%    askinclude-test16.tex, askinclude-test17.tex,
+%%    askinclude-test18.tex, askinclude-test19.tex,
+%%    askinclude-test20.tex, askinclude-test21.tex,
+%%    askinclude-test22.tex, askinclude-test23.tex,
+%%    askinclude-test24.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname AskInc@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\AskInc@AtEnd{%
+    \AskInc@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{96}{12}% `
+\edef\AskInc@AtEnd{\AskInc@AtEnd\noexpand\endinput}
+\ProvidesPackage{askinclude}%
+  [2011/12/02 v2.2 Interactive asking of included files]%
+\AtBeginDocument{%
+  \let\AskInc@AtBeginDocument\@firstofone
+}
+\providecommand*{\AskInc@AtBeginDocument}{\AtBeginDocument}
+\def\AskInc@WriteAux#1#2{%
+  \AskInc@AtBeginDocument{%
+    \if@filesw
+      \immediate\write\@mainaux{#1}%
+      #2%
+    \fi
+  }%
+}
+\edef\AskInc@CharHash{\string#}
+\def\AskInc@WriteDefAddList{%
+  \AskInc@WriteAux{%
+    \string\providecommand*\string\AskInc@AddList[2]{%
+      \string\ifcase\string\ifx\AskInc@CharHash1\string\@undefined
+                    \string\else
+                      \string\ifx\AskInc@CharHash1\string\relax
+                      \string\else
+                        \string\ifx\AskInc@CharHash1\string\@empty
+                        \string\else
+                          1%
+                        \string\fi
+                      \string\fi
+                    \string\fi
+                    0 %
+        \string\gdef\AskInc@CharHash1{\AskInc@CharHash2}%
+      \string\else
+        \string\g@addto@macro\AskInc@CharHash1{,\AskInc@CharHash2}%
+      \string\fi
+    }%
+  }{%
+    \global\let\AskInc@WriteDefAddList\relax
+  }%
+}
+\def\AskInc@WriteDefAddFile{%
+  \AskInc@WriteDefAddList
+  \AskInc@WriteAux{%
+    \string\providecommand\string\AskInc@AddFile{%
+      \string\AskInc@AddList\string\AskInc@Files
+    }%
+  }{%
+    \global\let\AskInc@WriteDefAddFile\relax
+  }%
+}
+\AtBeginDocument{%
+  \global\let\AskInc@AddFile\@gobble
+}
+\def\AskInc@WriteAddFile#1{%
+  \AskInc@WriteDefAddFile
+  \AskInc@WriteAux{%
+    \string\AskInc@AddFile{#1}%
+  }{}%
+}
+\providecommand*{\AskInc@Files}{}
+\newcommand{\AskInc@OrgInclude}{}
+\let\AskInc@OrgInclude\include
+\let\AskInc@AskFile\@gobble
+\let\AskInc@MatchFile\@gobble
+\renewcommand*{\include}[1]{%
+  \AskInc@WriteAddFile{#1}%
+  \AskInc@AskFile{#1}%
+  \AskInc@MatchFile{#1}%
+  \AskInc@OrgInclude{#1}%
+}
+\AtEndOfPackage{%
+  \AtBeginDocument{%
+    \@ifundefined{AskInc@Answer}{}{%
+      \AskInc@WriteAux{%
+        \string\gdef\string\AskInc@Answer{\AskInc@Answer}%
+      }{}%
+    }%
+    \@ifundefined{AskInc@MatchMethod}{}{%
+      \AskInc@WriteAux{%
+        \string\gdef\string\AskInc@MatchMethod{\AskInc@MatchMethod}%
+      }{}%
+    }%
+  }%
+}
+\providecommand*{\@includeonly}[1]{%
+  \gdef\AskInc@Answer{#1}%
+  \ifx\AskInc@Answer\@empty
+    \gdef\AskInc@Answer{-}%
+  \fi
+  \global\let\AskInc@MatchMethod\@empty
+}
+\if@partsw
+  \PackageWarningNoLine{askinclude}{%
+    Previous \string\includeonly\space detected,\MessageBreak
+    therefore asking for files is suppressed%
+  }%
+  \DeclareOption{makematch}{}%
+  \DeclareOption{pdfmatch}{}%
+  \DeclareOption{noregexp}{}%
+  \ProcessOptions*%
+  \@ifundefined{AskInc@MatchFiles}{%
+  }{%
+    \ifx\AskInc@MatchMethod\@empty
+    \else
+      \AskInc@WriteAux{%
+        \string\gdef\string\AskInc@MatchFiles{\AskInc@MatchFiles}%
+      }{}%
+    \fi
+  }%
+  \expandafter\AskInc@AtEnd
+\fi%
+\newcommand{\AskInc@OrgIncludeOnly}{}%
+\let\AskInc@OrgIncludeOnly\includeonly
+\renewcommand*{\includeonly}[1]{%
+  \PackageWarning{askinclude}{%
+    \string\includeonly\space is managed by package `askinclude',%
+    \MessageBreak
+    therefore it is ignored%
+  }%
+}
+\def\AskInc@StringNoRegExp{noregexp}
+\def\AskInc@StringMakeMatch{makematch}
+\def\AskInc@StringPdfMatch{pdfmatch}
+\newif\ifAskInc@PdfMatchAvailable
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfmatch\endcsname\relax
+\else
+  \AskInc@PdfMatchAvailabletrue
+\fi
+\DeclareOption{makematch}{%
+  \let\AskInc@MatchOption\AskInc@StringMakeMatch
+}
+\ifAskInc@PdfMatchAvailable
+  \DeclareOption{pdfmatch}{%
+    \let\AskInc@MatchOption\AskInc@StringPdfMatch
+  }%
+\else
+  \DeclareOption{pdfmatch}{%
+    \PackageWarningNoLine{askinclude}{%
+      Option `pdfmatch' is not available because\MessageBreak
+      your pdfTeX does not provide \string\pdfmatch
+    }%
+  }%
+\fi
+\DeclareOption{noregexp}{%
+  \let\AskInc@MatchOption\@empty
+}
+\ProcessOptions*
+\def\AskInc@CharAsterisk{*}
+\def\AskInc@CharMinus{-}
+\def\AskInc@CharPlus{+}
+\def\AskInc@CharQuestion{?}
+\def\AskInc@CharExclam{!}
+\def\AskInc@CharYes{y}
+\def\AskInc@CharNo{n}
+\def\AskInc@CharAll{A}
+\def\AskInc@CharNone{N}
+\def\AskInc@CharDefault{D}
+\def\AskInc@SanitizeAnswer#1#2{%
+  \begingroup
+    \escapechar=`\\%
+    \edef\[{\string\[}%
+    \edef\]{\string\]}%
+    \edef\({\string\(}%
+    \edef\){\string\)}%
+    \edef\*{\string\*}%
+    \edef\+{\string\+}%
+    \edef\?{\string\?}%
+    \edef\|{\string\|}%
+    \edef\^{\string\^}%
+    \edef\${\string\$}%
+    \edef\{{\string\{}%
+    \edef\}{\string\}}%
+    \edef\.{\string\.}%
+    \xdef#1{%
+      \expandafter\expandafter\expandafter\zap@space
+      \expandafter#2\space\@empty
+    }%
+  \endgroup
+}
+\AtBeginDocument{%
+  \@ifundefined{AskInc@Answer}{%
+    \global\let\AskInc@Answer\AskInc@CharAsterisk
+  }{%
+    \AskInc@SanitizeAnswer\AskInc@Answer\AskInc@Answer
+  }%
+  \global\let\AskInc@PreviousAnswer\AskInc@Answer
+  \@ifundefined{AskInc@MatchMethod}{%
+    \global\let\AskInc@MatchMethod\@empty
+  }{}%
+  \global\let\AskInc@PreviousMatchMethod\AskInc@MatchMethod
+  \@ifundefined{AskInc@MatchOption}{%
+    \let\AskInc@MatchOption\AskInc@MatchMethod
+  }{}%
+  \ifx\AskInc@MatchOption\AskInc@StringPdfMatch
+    \ifAskInc@PdfMatchAvailable
+    \else
+      \let\AskInc@MatchOption\@empty
+    \fi
+  \fi
+  \@ifundefined{AskInc@MatchFiles}{%
+    \let\AskInc@MatchFiles\@empty
+  }{}%
+}
+\def\AskInc@QuestionHeader{%
+  \typeout{}%
+  \typeout{***********************************}%
+  \typeout{*** Package askinclude Question ***}%
+  \typeout{***********************************}%
+  \typeout{}%
+}
+\def\AskInc@TypeoutFiles{%
+  \global\let\AskInc@PreviousMatches\@empty
+  \ifx\AskInc@Files\@empty
+  \else
+    \typeout{Files, found by previous run in \string\include:}%
+    \@for\AskInc@File:=\AskInc@Files\do{%
+      \ifx\AskInc@Answer\AskInc@CharAsterisk
+        \let\AskInc@Mark\AskInc@CharPlus
+      \else
+        \let\AskInc@Mark\AskInc@CharMinus
+        \ifx\AskInc@Answer\AskInc@CharMinus
+        \else
+          \ifx\AskInc@MatchMethod\@empty
+            \expandafter\@firstoftwo
+          \else
+            \expandafter\@secondoftwo
+          \fi
+          {\@for\AskInc@Temp:=\AskInc@Answer}%
+          {\@for\AskInc@Temp:=\AskInc@MatchFiles}%
+          \do{%
+            \ifx\AskInc@File\AskInc@Temp
+              \let\AskInc@Mark\AskInc@CharPlus
+            \fi
+          }%
+        \fi
+      \fi
+      \typeout{ \@spaces(\AskInc@Mark) \AskInc@File}%
+      \ifx\AskInc@Mark\AskInc@CharPlus
+        \ifx\AskInc@PreviousMatches\@empty
+          \global\let\AskInc@PreviousMatches\AskInc@File
+        \else
+          \expandafter\g@addto@macro
+          \expandafter\AskInc@PreviousMatches{%
+            \expandafter,\AskInc@File
+          }%
+        \fi
+      \fi
+    }%
+    \typeout{}%
+  \fi
+}
+\def\AskInc@TypeoutPreviousAnswer{%
+  \typeout{%
+    Previous answer (%
+    \ifx\AskInc@MatchMethod\@empty
+      noregexp%
+    \else
+      \AskInc@MatchMethod
+    \fi
+    ):%
+  }%
+  \typeout{ \@spaces[\AskInc@Answer]}%
+  \typeout{}%
+}
+\def\AskInc@TypeoutMatchMethod{%
+  \typeout{Regular expressions:}%
+  \AskInc@TypeoutMethod\@empty{noregexp}{%
+    \space disabled%
+  }%
+  \AskInc@TypeoutMethod\AskInc@StringMakeMatch{makematch}{%
+    enabled, using package `makematch'%
+  }%
+  \ifAskInc@PdfMatchAvailable
+    \AskInc@TypeoutMethod\AskInc@StringPdfMatch{pdfmatch}{%
+      \space enabled, using pdfTeX's \string\pdfmatch
+    }%
+  \fi
+  \typeout{}%
+}
+\def\AskInc@TypeoutMethod#1#2#3{%
+  \typeout{%
+    \ifx#1\AskInc@MatchOption \space--> \else\@spaces\space\fi
+    [#2] #3% hash-ok
+  }%
+}
+\def\AskInc@TypeoutMainQuestion{%
+  \typeout{Which files do you want to include?}%
+  \typeout{ \@spaces[foo,bar] \space\space
+      comma separated file or pattern list}%
+  \typeout{ \@spaces[*] \@spaces\@spaces all files}%
+  \typeout{ \@spaces[-] \@spaces\@spaces no files}%
+  \typeout{ \@spaces[?] \@spaces\@spaces ask for each file}%
+}
+\def\AskInc@MainQuestion{%
+  \AskInc@QuestionHeader
+  \AskInc@TypeoutFiles
+  \AskInc@TypeoutPreviousAnswer
+  \AskInc@TypeoutMatchMethod
+  \AskInc@TypeoutMainQuestion
+  \begingroup
+    \@makeother\*%
+    \@makeother\-%
+    \@makeother\?%
+    \@makeother\,%
+    \@makeother\!%
+    \@makeother\^%
+    \@makeother\$%
+    \@makeother\(%
+    \@makeother\)%
+    \@makeother\+%
+    \@makeother\[%
+    \@makeother\]%
+    \@makeother\\%
+    \@makeother\|%
+    \@makeother\:%
+    \@makeother\.%
+    \typein[\answer]%
+        { \@spaces[] \space\@spaces\@spaces use the previous answer}%
+    \typeout{}%
+    \AskInc@SanitizeAnswer\AskInc@@Answer\answer
+  \endgroup
+  \let\AskInc@Next\AskInc@MainQuestion
+  \ifx\AskInc@@Answer\AskInc@StringNoRegExp
+    \let\AskInc@MatchOption\@empty
+  \else
+    \ifx\AskInc@@Answer\AskInc@StringMakeMatch
+      \let\AskInc@MatchOption\AskInc@StringMakeMatch
+    \else
+      \ifx\AskInc@@Answer\AskInc@StringPdfMatch
+        \ifAskInc@PdfMatchAvailable
+          \let\AskInc@MatchOption\AskInc@StringPdfMatch
+        \else
+          \PackageWarning{askinclude}{%
+            Method `pdfmatch' is not available because\MessageBreak
+            your pdfTeX does not provide \string\pdfmatch
+          }%
+          \let\AskInc@MatchOption\@empty
+        \fi
+      \else
+        \ifx\AskInc@@Answer\@empty
+          \global\let\AskInc@@Answer\AskInc@Answer
+        \fi
+        \let\AskInc@Next\AskInc@MainAnswer
+      \fi
+    \fi
+  \fi
+  \AskInc@Next
+}
+\def\AskInc@MainAnswer{%
+  \ifx\AskInc@@Answer\AskInc@CharQuestion
+    \global\let\AskInc@Answer\@empty
+    \global\let\AskInc@MatchMethod\@empty
+    \global\let\AskInc@AskFile\AskInc@DoAskFile
+    \AskInc@OrgIncludeOnly{}%
+  \else
+    \global\let\AskInc@Answer\AskInc@@Answer
+    \ifx\AskInc@@Answer\AskInc@CharAsterisk
+      \global\let\AskInc@MatchMethod\@empty
+    \else
+      \ifx\AskInc@@Answer\AskInc@CharMinus
+        \global\let\AskInc@MatchMethod\@empty
+        \AskInc@OrgIncludeOnly{}%
+      \else
+        \global\let\AskInc@MatchMethod\AskInc@MatchOption
+        \ifx\AskInc@MatchOption\@empty
+          \expandafter\AskInc@OrgIncludeOnly\expandafter{%
+            \AskInc@Answer
+          }%
+        \else
+          \AskInc@MatchInit
+          \AskInc@OrgIncludeOnly{}%
+        \fi
+      \fi
+    \fi
+  \fi
+  \let\AskInc@Include\AskInc@DoInclude
+}
+\def\AskInc@MatchInit{%
+  \RequirePackage{kvsetkeys}[2007/09/29]%
+  \expandafter\comma@normalize\expandafter{\AskInc@Answer}%
+  \global\let\AskInc@MatchList\comma@list
+  \def\AskInc@MatchFile##1{%
+    \AskInc@DoMatch{##1}{%
+      \AskInc@WriteAddMatch{##1}%
+      \ifx\@partlist\@empty
+        \gdef\@partlist{##1}%
+      \else
+        \g@addto@macro\@partlist{,##1}%
+      \fi
+    }%
+  }%
+  \ifx\AskInc@MatchMethod\AskInc@StringMakeMatch
+    \AskInc@MakeMatchInit
+  \else
+    \AskInc@PdfMatchInit
+  \fi
+  \let\AskInc@MatchInit\@undefined
+}
+\def\AskInc@MakeMatchInit{%
+  \RequirePackage{makematch}%
+  \def\AskInc@DoMatch##1{%
+    \def\AskInc@Temp{%
+      \MakeMatcher[,]\AskInc@Temp
+    }%
+    \expandafter\AskInc@Temp\expandafter{\AskInc@MatchList}%
+    \AskInc@Temp{{##1}}\@firstofone\@gobble
+  }%
+  \let\AskInc@MakeMatchInit\@undefined
+}
+\def\AskInc@PdfMatchInit{%
+  \newif\ifAskInc@Found
+  \def\AskInc@DoMatch##1{%
+    \AskInc@Foundfalse
+    \expandafter\comma@parse@normalized\expandafter
+    {\AskInc@MatchList}{\AskInc@CheckMatch{##1}}%
+    \ifAskInc@Found
+      \expandafter\@firstofone
+    \else
+      \expandafter\@gobble
+    \fi
+  }%
+  \def\AskInc@CheckMatch##1##2{%
+    \AskInc@@CheckMatch##2\@empty\@nil{##1}%
+  }%
+  \def\AskInc@@CheckMatch##1##2\@nil##3{%
+    \def\AskInc@Temp{##1}%
+    \ifx\AskInc@Temp\AskInc@CharExclam
+      \ifcase\pdfmatch{##2}{##3}=1 %
+      \or
+        \AskInc@Foundfalse
+      \else
+        \AskInc@InvalidPattern{##2}{##1##2}%
+      \fi
+    \else
+      \ifcase\pdfmatch{##1##2}{##3} %
+      \or
+        \AskInc@Foundtrue
+      \else
+        \AskInc@InvalidPattern{##1##2}{##1##2}%
+      \fi
+    \fi
+  }%
+  \def\AskInc@InvalidPattern##1##2{%
+    \edef\AskInc@Temp{##1}%
+    \PackageWarningNoLine{askinclude}{%
+      Invalid pattern `\AskInc@Temp' for \string\pdfmatch
+    }%
+    \edef\AskInc@Temp{##2}%
+    \global\expandafter\let\expandafter\AskInc@MatchList
+    \expandafter\@empty
+    \expandafter\comma@parse@normalized\expandafter
+    {\AskInc@MatchList}\AskInc@FilterPattern
+  }%
+  \def\AskInc@FilterPattern##1{%
+    \edef\AskInc@Pattern{##1}%
+    \ifx\AskInc@Temp\AskInc@Pattern
+    \else
+      \ifx\AskInc@MatchList\@empty
+        \global\let\AskInc@MatchList\AskInc@Pattern
+      \else
+        \expandafter\g@addto@macro\expandafter\AskInc@MatchList{%
+          \expandafter,\AskInc@Pattern
+        }%
+      \fi
+    \fi
+  }%
+  \let\AskInc@PdfMatchInit\@undefined
+}
+\def\AskInc@WriteDefAddMatch{%
+  \AskInc@WriteDefAddList
+  \AskInc@WriteAux{%
+    \string\providecommand\string\AskInc@AddMatch{%
+      \string\AskInc@AddList\string\AskInc@MatchFiles
+    }%
+  }{%
+    \global\let\AskInc@WriteDefAddMatch\relax
+  }%
+}
+\AtBeginDocument{%
+  \global\let\AskInc@AddMatch\@gobble
+}
+\def\AskInc@WriteAddMatch#1{%
+  \AskInc@WriteDefAddMatch
+  \AskInc@WriteAux{%
+    \string\AskInc@AddMatch{#1}%
+  }{}%
+}
+\def\AskInc@SaveAnswer{%
+  \AskInc@WriteAux{%
+      \string\gdef\string\AskInc@Answer{\AskInc@Answer}%
+  }{}%
+}
+\@ifundefined{AskInc@PreviousAnswer}{%
+  \let\AskInc@PreviousAnswer\AskInc@CharAsterisk
+}{}
+\@ifundefined{AskInc@PreviousMatchMethod}{%
+  \let\AskInc@PreviousMatchMethod\@empty
+}{}
+\def\AskInc@DoAskFile#1{%
+  \edef\AskInc@File{#1}%
+  \ifx\AskInc@PreviousAnswer\AskInc@CharAsterisk
+    \let\AskInc@Default\AskInc@CharYes
+  \else
+    \let\AskInc@Default\AskInc@CharNo
+    \ifx\AskInc@PreviousAnswer\AskInc@CharMinus
+    \else
+      \ifx\AskInc@PreviousMatchMethod\@empty
+        \expandafter\@firstoftwo
+      \else
+        \expandafter\@secondoftwo
+      \fi
+      {\@for\AskInc@Temp:=\AskInc@PreviousAnswer}%
+      {\@for\AskInc@Temp:=\AskInc@MatchFiles}%
+      \do{%
+        \ifx\AskInc@Temp\AskInc@File
+          \let\AskInc@Default\AskInc@CharYes
+        \fi
+      }%
+    \fi
+    \ifx\AskInc@Default\AskInc@CharNo
+      \let\AskInc@Default\AskInc@CharYes
+      \@for\AskInc@Temp:=\AskInc@Files\do{%
+        \ifx\AskInc@Temp\AskInc@File
+          \let\AskInc@Default\AskInc@CharNo
+        \fi
+      }%
+    \fi
+  \fi
+  \let\AskInc@@QuestionHeader\AskInc@QuestionHeader
+  \AskInc@AskQuestion
+  \ifx\AskInc@AskResult\AskInc@CharYes
+    \ifx\AskInc@Answer\@empty
+      \gdef\AskInc@Answer{#1}%
+    \else
+      \g@addto@macro\AskInc@Answer{,#1}%
+    \fi
+    \AskInc@SaveAnswer
+    \let\@partlist\AskInc@Answer
+  \fi
+}
+\def\AskInc@AskQuestion{%
+  \let\AskInc@Temp\answer
+  \AskInc@@QuestionHeader
+  \let\AskInc@@QuestionHeader\relax
+  \typein[\answer]{%
+    Include `\AskInc@File'? [y]es, [n]o, [A]ll, [N]one, [D]efault %
+    (\AskInc@Default):%
+  }%
+  \typeout{}%
+  \let\AskInc@AskResult\answer
+  \let\answer\AskInc@Temp
+  \ifx\AskInc@AskResult\@empty
+    \let\AskInc@AskResult\AskInc@Default
+    \let\AskInc@Next\relax
+  \else
+    \ifx\AskInc@AskResult\AskInc@CharYes
+      \let\AskInc@Next\relax
+    \else
+      \ifx\AskInc@AskResult\AskInc@CharNo
+        \let\AskInc@Next\relax
+      \else
+        \ifx\AskInc@AskResult\AskInc@CharAll
+          \gdef\AskInc@AskQuestion{%
+            \let\AskInc@AskResult\AskInc@CharYes
+          }%
+        \else
+          \ifx\AskInc@AskResult\AskInc@CharNone
+            \gdef\AskInc@AskQuestion{%
+              \let\AskInc@AskResult\AskInc@CharNo
+            }%
+          \else
+            \ifx\AskInc@AskResult\AskInc@CharDefault
+              \gdef\AskInc@AskQuestion{%
+                \let\AskInc@AskResult\AskInc@Default
+              }%
+            \else
+              \PackageWarningNoLine{askinclude}{%
+                Invalid answer [\AskInc@AskResult].\MessageBreak
+                Answer must be one letter out of [ynAND]%
+              }%
+            \fi
+          \fi
+        \fi
+        \let\AskInc@Next\AskInc@AskQuestion
+      \fi
+    \fi
+  \fi
+  \AskInc@Next
+}
+\AtBeginDocument{\AskInc@MainQuestion}
+\AskInc@AtEnd%
+\endinput
+%%
+%% End of file `askinclude.sty'.

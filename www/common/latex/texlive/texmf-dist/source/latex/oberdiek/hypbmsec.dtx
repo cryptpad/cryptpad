@@ -1,0 +1,863 @@
+% \iffalse meta-comment
+%
+% File: hypbmsec.dtx
+% Version: 2007/04/11 v2.4
+% Info: Bookmarks in sectioning commands
+%
+% Copyright (C) 1998-2000, 2006, 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file hypbmsec.dtx
+% and the derived files
+%    hypbmsec.sty, hypbmsec.pdf, hypbmsec.ins, hypbmsec.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hypbmsec.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hypbmsec.pdf
+%
+% Unpacking:
+%    (a) If hypbmsec.ins is present:
+%           tex hypbmsec.ins
+%    (b) Without hypbmsec.ins:
+%           tex hypbmsec.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hypbmsec.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hypbmsec.drv is present:
+%           latex hypbmsec.drv
+%    (b) Without hypbmsec.drv:
+%           latex hypbmsec.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hypbmsec.dtx
+%       makeindex -s gind.ist hypbmsec.idx
+%       pdflatex hypbmsec.dtx
+%       makeindex -s gind.ist hypbmsec.idx
+%       pdflatex hypbmsec.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/hypbmsec.sty
+%    TDS:doc/latex/oberdiek/hypbmsec.pdf
+%    TDS:source/latex/oberdiek/hypbmsec.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hypbmsec 2007/04/11 v2.4 Bookmarks in sectioning commands (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hypbmsec
+Version: 2007/04/11 v2.4
+
+Copyright (C) 1998-2000, 2006, 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file hypbmsec.dtx
+and the derived files
+   hypbmsec.sty, hypbmsec.pdf, hypbmsec.ins, hypbmsec.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hypbmsec.ins}{\from{hypbmsec.dtx}{install}}%
+  \file{hypbmsec.drv}{\from{hypbmsec.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{hypbmsec.sty}{\from{hypbmsec.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hypbmsec.xml}{\from{hypbmsec.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hypbmsec.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hypbmsec.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hypbmsec.drv}%
+  [2007/04/11 v2.4 Bookmarks in sectioning commands (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{hypbmsec.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{186}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hypbmsec.drv}
+%
+% \title{The \xpackage{hypbmsec} package}
+% \date{2007/04/11 v2.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package expands the syntax of the sectioning commands. If the
+% argument of the sectioning commands isn't usable as outline entry,
+% a replacement for the bookmarks can be given.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newcommand{\type}[1]{\textsf{#1}}
+%
+% ^^A No thread support.
+% \newenvironment{article}[1]{}{}
+%
+% \section{Usage}
+%
+% \subsection{Bookmarks restrictions}\label{sec:restrictions}
+%    Outline entries (bookmarks) are written to a file and have
+%    to obey the pdf specification.
+%    Therefore they have several restrictions:
+%    \begin{itemize}
+%    \item Bookmarks have to be encoded in PDFDocEncoding^^A
+%          \footnote{\Package{hyperref} doesn't support
+%            Unicode.}.
+%    \item They should only expand to letters and spaces.
+%    \item The result of expansion have to be a valid pdf string.
+%    \item Stomach commands like \cmd{\relax}, box commands, math,
+%          assignments, or definitions aren't allowed.
+%    \item Short entries are recommended, which allow a clear view.
+%    \end{itemize}
+%
+% \subsection{\texorpdfstring{\cmd{\texorpdfstring}}{^^A
+%    \textbackslash texorpdfstring}}
+%    The generic way in package \Package{hyperref} is the use
+%    of \cmd{\texorpdfstring}^^A
+%    \footnote{In versions of \Package{hyperref} below 6.54 see
+%      \cmd{\ifbookmark}.}:
+%    \begin{quote}
+%\begin{verbatim}
+%\section{Pythagoras:
+%  \texorpdfstring{$a^2+b^2=c^2}{%
+%    a\texttwosuperior\ + b\texttwosuperior\ =
+%    c\texttwosuperior}%
+%}
+%\end{verbatim}
+%    \end{quote}
+%
+% \subsection{Sectioning commands}
+%    The package \Package{hyperref} automatically generates
+%    bookmarks from the sectioning commands,
+%    unless it is suppressed by an option.
+%    Commands that structure the text are here called
+%    ``sectioning commands'':
+%    \begin{quote}
+%    \cmd{\part}, \cmd{\chapter},\\
+%    \cmd{\section}, \cmd{\subsection}, \cmd{\subsubsection},\\
+%    \cmd{\paragraph}, \cmd{\subparagraph}
+%    \end{quote}
+%
+% \subsection{Places\texorpdfstring{ for sectioning strings}{}}
+%    \label{sec:places}
+%    The argument(s) of these commands are used on several places:
+%    \begin{description}
+%    \item[\type{text}]
+%      The current text without restrictions.
+%    \item[\type{toc}]
+%      The headlines and the table of contents with the
+%      restrictions of ``moving arguments''.
+%    \item[\type{out}]
+%      The outlines with many restrictions: The outline
+%      have to expand to a valid pdf string with PDFDocEncoding
+%      (see \ref{sec:restrictions}).
+%    \end{description}
+%
+% \subsection{\texorpdfstring{Solution with o}{O}ptional arguments}
+%    If the user wants to use a footnote within a sectioning command,
+%    the \LaTeX{} solution is an optional argument:
+%    \begin{quote}
+%      |\section[Title]{Title\footnote{Footnote text}}|
+%    \end{quote}
+%    Now |Title| without the footnote is used in the headlines and
+%    the table of contents. Also \Package{hyperref} uses it for the
+%    bookmarks.
+%
+%    This package \Package{\filename} offers two possibilities to
+%    specify a separate outline entry:
+%    \begin{itemize}
+%    \item An additional second optional argument in square brackets.
+%    \item An additional optional argument in parentheses (in
+%          assoziation with a pdf string that is internally surrounded
+%          by parentheses, too).
+%    \end{itemize}
+%    Because \Package{\filename} stores the original meaning of the
+%    sectioning commands and uses them again, there should be no
+%    problems with packages that redefine the sectioning commands, if
+%    these packages doesn't change the syntax.
+%
+% \subsection{Syntax}
+%    The following examples show the syntax of the sectioning
+%    commands. For the places the strings appear the abbreviations
+%    are used, that are introduced in \ref{sec:places}.
+%
+% \subsubsection{\texorpdfstring{Star form}{^^A
+%    \textbackslash section*\{\}}}
+%    The behaviour of the star form isn't changed. The string
+%    appears only in the current text:
+%    \begin{article}{Syntax}
+%    \begin{quote}
+%      |\section*{text}|
+%    \end{quote}
+%    \end{article}
+%
+% \subsubsection{\texorpdfstring{Without optional arguments}{^^A
+%    \textbackslash section\{\}}}
+%    The normal case, the string in the mandatory argument is
+%    used for all places:
+%    \begin{article}{Syntax}
+%    \begin{quote}
+%      |\section{text, toc, out}|
+%    \end{quote}
+%    \end{article}
+%
+% \subsubsection{\texorpdfstring{One optional argument}{^^A
+%    \textbackslash section[]\{\}}}
+%    Also the form with one optional parameter in square brackets isn't
+%    new; for the bookmarks the optional parameter is used:
+%    \begin{article}{Syntax}
+%    \begin{quote}
+%      |\section[toc, out]{text}|
+%    \end{quote}
+%    \end{article}
+%
+% \subsubsection{\texorpdfstring{Two optional arguments}{^^A
+%    \textbackslash section[][out]\{\}}}\label{sec:two}
+%    The second optional parameter in square brackets is introduced
+%    by this package to specify an outline entry:
+%    \begin{article}{Syntax}
+%    \begin{quote}
+%      |\section[toc][out]{text}|
+%    \end{quote}
+%    \end{article}
+%
+% \subsubsection{\texorpdfstring{Optional argument in parentheses}{^^A
+%    \textbackslash section(out)\{\}}}
+%    Often the \type{toc} and the \type{text} string would be the same.
+%    With the method of the two optional arguments in square brackets
+%    (see \ref{sec:two}) this string must be given twice,
+%    if the user only wants to specify a different outline entry.
+%    Therefore this package offers another possibility:
+%    In association with the internal representation in the pdf file
+%    an outline entry can be given in parentheses.
+%    So the package can easily distinguish between
+%    the two forms of optional arguments and the order does not matter:
+%    \begin{article}{Syntax}
+%    \begin{quote}
+%      |\section(out){toc, text}|\\
+%      |\section[toc](out){text}|\\
+%      |\section(out)[toc]{text}|
+%    \end{quote}
+%    \end{article}
+%
+% \subsection{Without \Package{hyperref}}
+%    Package \Package{\filename} uses \Package{hyperref} for support of
+%    the bookmarks, but this package is not required.
+%    If \Package{hyperref} isn't loaded, or
+%    is called with a driver that doesn't support bookmarks,
+%    package \Package{\filename} shouldn't be removed,
+%    because this would lead to
+%    a wrong syntax of the sectioning commands.
+%    In any cases package \Package{\filename}
+%    supports its syntax and ignores the outline entries,
+%    if there are no code for bookmarks.
+%    So it is possible to write texts,
+%    that are processed with several drivers to get different output
+%    formats.
+%
+% \subsection{Protecting parentheses}
+%    If the string itself contains parentheses, they have to be hidden
+%    from \TeX's argument parsing mechanism.
+%    The argument should be surrounded
+%    by curly braces:
+%    \begin{quote}
+%      |\section({outlines(bookmarks)}){text, toc}|
+%    \end{quote}
+%    With version 6.54 of \Package{hyperref} the other standard method
+%    works, too: The closing parenthesis is protected:
+%    \begin{quote}
+%      |\section(outlines(bookmarks{)}){text, toc}|
+%    \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypbmsec}%
+  [2007/04/11 v2.4 Bookmarks in sectioning commands (HO)]
+%    \end{macrocode}
+%
+%    Because of redifining the sectioning commands, it is dangerous
+%    to reload the package several times.
+%    \begin{macrocode}
+\@ifundefined{hbs@do}{}{%
+  \PackageInfo{hypbmsec}{Package 'hypbmsec' is already loaded}%
+  \endinput
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\hbs@do}
+%    The redefined sectioning commands calls \cmd{\hbs@do}. It does
+%    \begin{itemize}
+%    \item handle the star case.
+%    \item resets the macros that store the entries for the outlines
+%          (\cmd{\hbs@bmstring}) and table of contents (\cmd{\hbs@tocstring}).
+%    \item store the sectioning command |#1| in \cmd{\hbs@seccmd}
+%          for later reuse.
+%    \item at last call \cmd{\hbs@checkarg} that scans and interprets the
+%          parameters of the redefined sectioning command.
+%    \end{itemize}
+%    \begin{macrocode}
+\def\hbs@do#1{%
+  \@ifstar{#1*}{%
+    \let\hbs@tocstring\relax
+    \let\hbs@bmstring\relax
+    \let\hbs@seccmd#1%
+    \hbs@checkarg
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hbs@checkarg}
+%    \cmd{\hbs@checkarg} determines the type of the next argument:
+%    \begin{itemize}
+%    \item An optional argument in square brackets can be an entry
+%          for the table of contents or the bookmarks. It will be
+%          read by \cmd{\hbs@getsquare}
+%    \item An optional argument in parentheses is an outline entry.
+%          This is worked off by \cmd{\hbs@getbookmark}.
+%    \item If there are no more optional arguments, \cmd{\hbs@process}
+%          reads the mandatory argument and calls the original
+%          sectioning commands.
+%    \end{itemize}
+%    \begin{macrocode}
+\def\hbs@checkarg{%
+  \@ifnextchar[\hbs@getsquare{%
+    \@ifnextchar(\hbs@getbookmark\hbs@process
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hbs@getsquare}
+%    \cmd{\hbs@getsquare} reads an optional argument in square
+%    brackets and determines, if this is an entry for the table
+%    of contents or the bookmarks.
+%    \begin{macrocode}
+\long\def\hbs@getsquare[#1]{%
+  \ifx\hbs@tocstring\relax
+    \def\hbs@tocstring{#1}%
+  \else
+    \hbs@bmdef{#1}%
+  \fi
+  \hbs@checkarg
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hbs@getbookmark}
+%    \cmd{\hbs@getbookmark} reads an outline entry in parentheses.
+%    \begin{macrocode}
+\def\hbs@getbookmark(#1){%
+  \hbs@bmdef{#1}%
+  \hbs@checkarg
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hbs@bmdef}
+%    The command \cmd{\hbs@bmdef} save the bookmark entry in
+%    parameter |#1| in the macro \cmd{\hbs@bmstring} and catches
+%    the case, if the user has given several outline strings.
+%    \begin{macrocode}
+\def\hbs@bmdef#1{%
+  \ifx\hbs@bmstring\relax
+    \def\hbs@bmstring{#1}%
+  \else
+    \PackageError{hypbmsec}{%
+      Sectioning command with too many parameters%
+    }{%
+      You can only give one outline entry.%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\hbs@process}
+%    The parameter |#1| is the mandatory argument of the sectioning
+%    commands. \cmd{\hbs@process} calls the original sectioning command
+%    stored in \cmd{\hbs@seccmd} with arguments that depend of which
+%    optional argument are used previously.
+%    \begin{macrocode}
+\long\def\hbs@process#1{%
+  \ifx\hbs@tocstring\relax
+    \ifx\hbs@bmstring\relax
+      \hbs@seccmd{#1}%
+    \else
+      \begingroup
+        \def\x##1{\endgroup
+          \hbs@seccmd{\texorpdfstring{#1}{##1}}%
+        }%
+      \expandafter\x\expandafter{\hbs@bmstring}%
+    \fi
+  \else
+    \ifx\hbs@bmstring\relax
+      \expandafter\hbs@seccmd\expandafter[%
+        \expandafter{\hbs@tocstring}%
+      ]{#1}%
+    \else
+      \expandafter\expandafter\expandafter
+      \hbs@seccmd\expandafter\expandafter\expandafter[%
+        \expandafter\expandafter\expandafter
+        \texorpdfstring
+        \expandafter\expandafter\expandafter{%
+          \expandafter\hbs@tocstring\expandafter
+        }\expandafter{%
+          \hbs@bmstring
+        }%
+      ]{#1}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    We have to check, whether package \Package{hyperref} is loaded
+%    and have to provide a definition for \cmd{\texorpdfstring}.
+%    Because \Package{hyperref} can be loaded after this package,
+%    we do the work later (\cmd{\AtBeginDocument}).
+%
+%    This code only checks versions of \Package{hyperref} that
+%    define \cmd{\ifbookmark} (v6.4x until v6.53) or
+%    \cmd{\texorpdfstring} (v6.54 and above). Older versions aren't
+%    supported.
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \@ifundefined{texorpdfstring}{%
+    \@ifundefined{ifbookmark}{%
+      \let\texorpdfstring\@firstoftwo
+      \@ifpackageloaded{hyperref}{%
+        \PackageInfo{hypbmsec}{%
+          \ifx\hy@driver\@empty
+            Default driver %
+          \else
+            '\hy@driver' %
+          \fi
+          of hyperref not supported,\MessageBreak
+          bookmark parameters will be ignored%
+        }%
+      }{%
+        \PackageInfo{hypbmsec}{%
+          Package hyperref not loaded,\MessageBreak
+          bookmark parameters will be ignored%
+        }%
+      }%
+    }%
+    {%
+      \newcommand\texorpdfstring[2]{\ifbookmark{#2}{#1}}%
+      \PackageWarningNoLine{hypbmsec}{%
+        Old hyperref version found,\MessageBreak
+        update of hyperref recommended%
+      }%
+    }%
+  }{}%
+%    \end{macrocode}
+%
+%    Other packages are allowed to redefine the sectioning commands,
+%    if they does not change the syntax. Therefore the redefinitons
+%    of this package should be done after the other packages.
+%    \begin{macrocode}
+  \let\hbs@part         \part
+  \let\hbs@section      \section
+  \let\hbs@subsection   \subsection
+  \let\hbs@subsubsection\subsubsection
+  \let\hbs@paragraph    \paragraph
+  \let\hbs@subparagraph \subparagraph
+  \renewcommand\part         {\hbs@do\hbs@part}%
+  \renewcommand\section      {\hbs@do\hbs@section}%
+  \renewcommand\subsection   {\hbs@do\hbs@subsection}%
+  \renewcommand\subsubsection{\hbs@do\hbs@subsubsection}%
+  \renewcommand\paragraph    {\hbs@do\hbs@paragraph}%
+  \renewcommand\subparagraph {\hbs@do\hbs@subparagraph}%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname chapter\endcsname\relax\else
+    \let\hbs@chapter    \chapter
+    \renewcommand\chapter    {\hbs@do\hbs@chapter}%
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypbmsec.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hypbmsec.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hypbmsec.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hypbmsec.sty & tex/latex/oberdiek/hypbmsec.sty\\
+%   hypbmsec.pdf & doc/latex/oberdiek/hypbmsec.pdf\\
+%   hypbmsec.dtx & source/latex/oberdiek/hypbmsec.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hypbmsec.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hypbmsec.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hypbmsec.dtx
+%makeindex -s gind.ist hypbmsec.idx
+%pdflatex hypbmsec.dtx
+%makeindex -s gind.ist hypbmsec.idx
+%pdflatex hypbmsec.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hypbmsec.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hypbmsec'>
+  <name>hypbmsec</name>
+  <caption>Hypertext bookmarks in sectioning commands.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1998-2000,2006,2007'/>
+  <license type='lppl1.3'/>
+  <version number='2.4'/>
+  <description>
+    Bookmark entries can be given as another argument to the LaTeX
+    sectioning commands. The <xref refid='hyperref'>hyperref</xref>
+    package is required to get the bookmarks, but the syntax
+    works without it.
+    <p/>
+    This package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hypbmsec.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hypbmsec.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1998/11/20 v1.0}
+%   \item
+%     First version.
+%   \item
+%     It merges package \xpackage{hysecopt} and
+%   \item
+%     package \xpackage{hypbmpar}.
+%   \item
+%     Published for the DANTE'99 meeting^^A
+%     \URL{}{http://dante99.cs.uni-dortmund.de/handouts/oberdiek/hypbmsec.sty}.
+%   \end{Version}
+%   \begin{Version}{1999/04/12 v2.0}
+%   \item
+%     Adaptation to \Package{hyperref} version 6.54.
+%   \item
+%     Documentation in dtx format.
+%   \item
+%     Copyright: LPPL (\CTAN{macros/latex/base/lppl.txt})
+%   \item
+%     First CTAN release.
+%   \end{Version}
+%   \begin{Version}{2000/03/22 v2.1}
+%   \item
+%     Bug fix in redefinition of \cmd{\chapter}.
+%   \item
+%     Copyright: LPPL 1.2
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v2.2}
+%   \item
+%     Code is not changed.
+%   \item
+%     New DTX framework.
+%   \item
+%     LPPL 1.3
+%   \end{Version}
+%   \begin{Version}{2007/03/05 v2.3}
+%   \item
+%     Bug fix: Expand \cs{hbs@tocstring} and \cs{hbs@bmstring} before
+%     calling \cs{hbs@seccmd}.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v2.4}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

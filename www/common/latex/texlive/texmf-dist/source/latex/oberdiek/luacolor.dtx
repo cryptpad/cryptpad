@@ -1,0 +1,1296 @@
+% \iffalse meta-comment
+%
+% File: luacolor.dtx
+% Version: 2011/11/01 v1.8
+% Info: Color support via LuaTeX's attributes
+%
+% Copyright (C) 2007, 2009-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file luacolor.dtx
+% and the derived files
+%    luacolor.sty, luacolor.pdf, luacolor.ins, luacolor.drv,
+%    luacolor-test1.tex, luacolor-test2.tex, luacolor-test3.tex,
+%    oberdiek.luacolor.lua, luacolor.lua,
+%    oberdiek.luacolor-pre065.lua, luacolor-pre065.lua.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/luacolor.dtx
+%    CTAN:macros/latex/contrib/oberdiek/luacolor.pdf
+%
+% Unpacking:
+%    (a) If luacolor.ins is present:
+%           tex luacolor.ins
+%    (b) Without luacolor.ins:
+%           tex luacolor.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{luacolor.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If luacolor.drv is present:
+%           latex luacolor.drv
+%    (b) Without luacolor.drv:
+%           latex luacolor.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex luacolor.dtx
+%       makeindex -s gind.ist luacolor.idx
+%       pdflatex luacolor.dtx
+%       makeindex -s gind.ist luacolor.idx
+%       pdflatex luacolor.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/luacolor.sty
+%    TDS:scripts/oberdiek/oberdiek.luacolor.lua
+%    TDS:scripts/oberdiek/luacolor.lua
+%    TDS:scripts/oberdiek/oberdiek.luacolor-pre065.lua
+%    TDS:scripts/oberdiek/luacolor-pre065.lua
+%    TDS:doc/latex/oberdiek/luacolor.pdf
+%    TDS:doc/latex/oberdiek/test/luacolor-test1.tex
+%    TDS:doc/latex/oberdiek/test/luacolor-test2.tex
+%    TDS:doc/latex/oberdiek/test/luacolor-test3.tex
+%    TDS:source/latex/oberdiek/luacolor.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: luacolor 2011/11/01 v1.8 Color support via LuaTeX's attributes (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: luacolor
+Version: 2011/11/01 v1.8
+
+Copyright (C) 2007, 2009-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file luacolor.dtx
+and the derived files
+   luacolor.sty, luacolor.pdf, luacolor.ins, luacolor.drv,
+   luacolor-test1.tex, luacolor-test2.tex, luacolor-test3.tex,
+   oberdiek.luacolor.lua, luacolor.lua,
+   oberdiek.luacolor-pre065.lua, luacolor-pre065.lua.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{luacolor.ins}{\from{luacolor.dtx}{install}}%
+  \file{luacolor.drv}{\from{luacolor.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{luacolor.sty}{\from{luacolor.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{luacolor-test1.tex}{\from{luacolor.dtx}{test1}}%
+  \file{luacolor-test2.tex}{\from{luacolor.dtx}{test2}}%
+  \file{luacolor-test3.tex}{\from{luacolor.dtx}{test3}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{luacolor.xml}{\from{luacolor.dtx}{catalogue}}%
+}
+\def\MetaPrefix{-- }
+\def\defaultpostamble{%
+  \MetaPrefix^^J%
+  \MetaPrefix\space End of File `\outFileName'.%
+}
+\def\currentpostamble{\defaultpostamble}%
+\generate{%
+  \usedir{scripts/oberdiek}%
+  \file{oberdiek.luacolor.lua}{\from{luacolor.dtx}{lua}}%
+  \file{luacolor.lua}{\from{luacolor.dtx}{lua}}%
+  \file{oberdiek.luacolor-pre065.lua}{\from{luacolor.dtx}{lua,pre065}}%
+  \file{luacolor-pre065.lua}{\from{luacolor.dtx}{lua,pre065}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     luacolor.sty}
+\Msg{*}
+\Msg{* And install the following script files:}
+\Msg{*}
+\Msg{*     oberdiek.luacolor.lua, luacolor.lua,}
+\Msg{*     oberdiek.luacolor-pre065.lua, luacolor-pre065.lua}
+\Msg{*}
+\Msg{* To produce the documentation run the file `luacolor.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{luacolor.drv}%
+  [2011/11/01 v1.8 Color support via LuaTeX's attributes (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{paralist}
+\makeatletter
+\g@addto@macro\MakePrivateLetters{%
+  \@makeother\_%
+}
+\makeatother
+\begin{document}
+  \DocInput{luacolor.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{473}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{luacolor.drv}
+%
+% \title{The \xpackage{luacolor} package}
+% \date{2011/11/01 v1.8}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{luacolor} implements color support based
+% on \LuaTeX's node attributes.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% This package uses a \LuaTeX's attribute register to
+% to annotate nodes with color information.
+% If a color is set, then the attribute register
+% is set to this color and all nodes created in its scope
+% (current group) are annotated with this attribute.
+% Now the color property behaves much the same way
+% as the font property.
+%
+% \subsection{Usage}
+%
+% Package \xpackage{color} is loaded automatically by this
+% package \xpackage{luacolor}. If you need a special driver
+% option or you prefer package \xpackage{xcolor}, then load
+% it before package \xpackage{luacolor}, for example:
+% \begin{quote}
+%   |\usepackage[dvipdfmx]{xcolor}|
+% \end{quote}
+% The package \xpackage{luacolor} is loaded without options:
+% \begin{quote}
+%   |\usepackage{luacolor}|
+% \end{quote}
+% It is able to detect PDF mode and DVI drivers are
+% differentiated by its color specials. Therefore the
+% package do need driver options.
+%
+% Then it redefines the color setting commands to set
+% attributes instead of whatsits for color.
+%
+% At last the attribute annotations of the nodes in the
+% output box must be analyzed to insert the necessary color whatsits.
+% Currently \LuaTeX\ lacks an appropriate callback function.
+% Therefore package \xpackage{atbegshi} is used to get control
+% before a box is shipped out.
+%
+% \begin{declcs}{luacolorProcessBox} \M{box}
+% \end{declcs}
+% Macro \cs{luacolorProcessBox} processes the box \meta{box}
+% in the previously described manner. It is automatically
+% called for pages, but not for XForm objects.
+% Before passing a box to \cs{pdfxform}, call \cs{luacolorProcessBox}
+% first.
+%
+% \subsection{Limitations}
+%
+% \begin{description}
+% \item[Ligatures with different colored components:]
+%   Package \xpackage{luacolor} sees the ligature after
+%   the paragraph building and page breaking, when a
+%   page is to be shipped out. Therefore it cannot
+%   break ligatures, because the components might occupy
+%   different space. Therefore it is the respondibility
+%   of the ligature forming process to deal with different
+%   colored glyphs that form a ligature. The user can avoid
+%   the problem entirely by explicitly breaking the ligature
+%   at the places where the color changes.
+%  \item \dots
+% \end{description}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Catcodes and identification}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname LuaCol@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\LuaCol@AtEnd{%
+    \LuaCol@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{95}{12}% _ (other!)
+\TMP@EnsureCode{96}{12}% `
+\edef\LuaCol@AtEnd{\LuaCol@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    Package identification.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{luacolor}%
+  [2011/11/01 v1.8 Color support via LuaTeX's attributes (HO)]
+%    \end{macrocode}
+%
+% \subsection{Check for \LuaTeX}
+%
+%    Without \LuaTeX\ there is no point in using this package.
+%    \begin{macrocode}
+\RequirePackage{infwarerr}[2010/04/08]%
+\RequirePackage{ifluatex}[2010/03/01]%
+\RequirePackage{ifpdf}[2011/01/30]%
+\RequirePackage{ltxcmds}[2011/04/18]%
+\RequirePackage{color}
+%    \end{macrocode}
+%    \begin{macrocode}
+\ifluatex
+  \ltx@ifpackageloaded{luatexbase-attr}{%
+  }{%
+    \RequirePackage{luatex}[2010/03/09]%
+  }%
+\else
+  \@PackageError{luacolor}{%
+    This package may only be run using LuaTeX%
+  }\@ehc
+  \expandafter\LuaCol@AtEnd
+\fi%
+%    \end{macrocode}
+%
+%    \begin{macro}{\LuaCol@directlua}
+%    \begin{macrocode}
+\ifnum\luatexversion<36 %
+  \def\LuaCol@directlua{\directlua0 }%
+\else
+  \let\LuaCol@directlua\directlua
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Check for disabled colors}
+%
+%    \begin{macrocode}
+\ifcolors@
+\else
+  \@PackageWarningNoLine{luacolor}{%
+    Colors are disabled by option `monochrome'%
+  }%
+  \def\set@color{}%
+  \def\reset@color{}%
+  \def\set@page@color{}%
+  \def\define@color#1#2{}%
+  \expandafter\LuaCol@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Load module and check version}
+%
+%    \begin{macrocode}
+\LuaCol@directlua{%
+  require("oberdiek.luacolor\ifnum\luatexversion<65 -pre065\fi")%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\begingroup
+  \edef\x{\LuaCol@directlua{tex.write("2011/11/01 v1.8")}}%
+  \edef\y{%
+    \LuaCol@directlua{%
+      if oberdiek.luacolor.getversion then %
+        oberdiek.luacolor.getversion()%
+      end%
+    }%
+  }%
+  \ifx\x\y
+  \else
+    \@PackageError{luacolor}{%
+      Wrong version of lua module.\MessageBreak
+      Package version: \x\MessageBreak
+      Lua module: \y
+    }\@ehc
+  \fi
+\endgroup
+%    \end{macrocode}
+%
+% \subsection{Find driver}
+%
+%    \begin{macrocode}
+\ifpdf
+\else
+  \begingroup
+    \def\current@color{}%
+    \def\reset@color{}%
+    \setbox\z@=\hbox{%
+      \begingroup
+        \set@color
+      \endgroup
+    }%
+    \edef\reserved@a{%
+      \LuaCol@directlua{%
+        oberdiek.luacolor.dvidetect()%
+      }%
+    }%
+    \ifx\reserved@a\@empty
+      \@PackageError{luacolor}{%
+        DVI driver detection failed because of\MessageBreak
+        unrecognized color \string\special
+      }\@ehc
+      \endgroup
+      \expandafter\expandafter\expandafter\LuaCol@AtEnd
+    \else
+      \@PackageInfoNoLine{luacolor}{%
+        Type of color \string\special: \reserved@a
+      }%
+    \fi%
+  \endgroup
+\fi
+%    \end{macrocode}
+%
+% \subsection{Attribute setting}
+%
+%    \begin{macro}{\LuaCol@Attribute}
+%    \begin{macrocode}
+\ltx@IfUndefined{newluatexattribute}{%
+  \newattribute\LuaCol@Attribute
+}{%
+  \newluatexattribute\LuaCol@Attribute
+}
+\ltx@IfUndefined{setluatexattribute}{%
+  \let\LuaCol@setattribute\setattribute
+}{%
+  \let\LuaCol@setattribute\setluatexattribute
+}
+\LuaCol@directlua{%
+  oberdiek.luacolor.setattribute(\number\allocationnumber)%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\set@color}
+%    \begin{macrocode}
+\protected\def\set@color{%
+  \LuaCol@setattribute\LuaCol@Attribute{%
+    \LuaCol@directlua{%
+      oberdiek.luacolor.get("\luatexluaescapestring{\current@color}")%
+    }%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\reset@color}
+%    \begin{macrocode}
+\def\reset@color{}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Whatsit insertion}
+%
+%    \begin{macro}{\luacolorProcessBox}
+%    \begin{macrocode}
+\def\luacolorProcessBox#1{%
+  \LuaCol@directlua{%
+    oberdiek.luacolor.process(\number#1)%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\RequirePackage{atbegshi}[2011/01/30]
+\AtBeginShipout{%
+  \luacolorProcessBox\AtBeginShipoutBox
+}
+%    \end{macrocode}
+%
+%    Set default color.
+%    \begin{macrocode}
+\set@color
+%    \end{macrocode}
+%
+% \subsection{\cs{pdfxform} support}
+%
+%    \begin{macrocode}
+\ifpdf
+  \ltx@IfUndefined{pdfxform}{%
+    \ifnum\luatexversion>36 %
+      \directlua{%
+        tex.enableprimitives('',{%
+          'pdfxform','pdflastxform','pdfrefxform'%
+        })%
+      }%
+    \fi
+  }{}%
+  \ltx@IfUndefined{protected}{%
+    \ifnum\luatexversion>36 %
+      \directlua{tex.enableprimitives('',{'protected'})}%
+    \fi
+  }{}%
+  \ltx@IfUndefined{pdfxform}{%
+    \@PackageWarning{luacolor}{\string\pdfxform\space not found}%
+  }{%
+    \let\LuaCol@org@pdfxform\pdfxform
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname protected\endcsname\relax
+      \@PackageWarning{luacolor}{\string\protected\space not found}%
+    \else
+      \expandafter\protected
+    \fi
+    \def\pdfxform{%
+      \begingroup
+      \afterassignment\LuaCol@pdfxform
+      \count@=%
+    }%
+    \def\LuaCol@pdfxform{%
+      \luacolorProcessBox\count@
+      \LuaCol@org@pdfxform\count@
+      \endgroup
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\LuaCol@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Lua module}
+%
+%    \begin{macrocode}
+%<*lua>
+%    \end{macrocode}
+%    Box zero contains a \cs{hbox} with the color \cs{special}.
+%    That is analyzed to get the prefix for the color setting
+%    \cs{special}.
+%    \begin{macrocode}
+module("oberdiek.luacolor", package.seeall)
+%    \end{macrocode}
+%    \begin{macro}{getversion()}
+%    \begin{macrocode}
+function getversion()
+  tex.write("2011/11/01 v1.8")
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Driver detection}
+%
+%    \begin{macrocode}
+local ifpdf
+if tonumber(tex.pdfoutput) > 0 then
+  ifpdf = true
+else
+  ifpdf = false
+end
+local prefix
+local prefixes = {
+  dvips   = "color ",
+  dvipdfm = "pdf:sc ",
+  truetex = "textcolor:",
+  pctexps = "ps::",
+}
+local patterns = {
+  ["^color "]            = "dvips",
+  ["^pdf: *begincolor "] = "dvipdfm",
+  ["^pdf: *bcolor "]     = "dvipdfm",
+  ["^pdf: *bc "]         = "dvipdfm",
+  ["^pdf: *setcolor "]   = "dvipdfm",
+  ["^pdf: *scolor "]     = "dvipdfm",
+  ["^pdf: *sc "]         = "dvipdfm",
+  ["^textcolor:"]        = "truetex",
+  ["^ps::"]              = "pctexps",
+}
+%    \end{macrocode}
+%    \begin{macro}{info()}
+%    \begin{macrocode}
+local function info(msg, term)
+  local target = "log"
+  if term then
+    target = "term and log"
+  end
+  texio.write_nl(target, "Package luacolor info: " .. msg .. ".")
+  texio.write_nl(target, "")
+end
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{dvidetect()}
+%    \begin{macrocode}
+function dvidetect()
+  local v = tex.box[0]
+  assert(v.id == node.id("hlist"))
+%<!pre065>  for v in node.traverse_id(node.id("whatsit"), v.head) do
+%<pre065>  for v in node.traverse_id(node.id("whatsit"), v.list) do
+    if v and v.subtype == node.subtype("special") then
+      local data = v.data
+      for pattern, driver in pairs(patterns) do
+        if string.find(data, pattern) then
+          prefix = prefixes[driver]
+          tex.write(driver)
+          return
+        end
+      end
+      info("\\special{" .. data .. "}", true)
+      return
+    end
+  end
+  info("Missing \\special", true)
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Color strings}
+%
+%    \begin{macrocode}
+local map = {
+  n = 0,
+}
+%    \end{macrocode}
+%    \begin{macro}{get()}
+%    \begin{macrocode}
+function get(color)
+  tex.write("" .. getvalue(color))
+end
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{getvalue()}
+%    \begin{macrocode}
+function getvalue(color)
+  local n = map[color]
+  if not n then
+    n = map.n + 1
+    map.n = n
+    map[n] = color
+    map[color] = n
+  end
+  return n
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Attribute register}
+%
+%    \begin{macro}{setattribute()}
+%    \begin{macrocode}
+local attribute
+function setattribute(attr)
+  attribute = attr
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{getattribute()}
+%    \begin{macrocode}
+function getattribute()
+  return attribute
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Whatsit insertion}
+%
+%    \begin{macrocode}
+local LIST = 1
+local LIST_LEADERS = 2
+local COLOR = 3
+local RULE = node.id("rule")
+local node_types = {
+  [node.id("hlist")] = LIST,
+  [node.id("vlist")] = LIST,
+  [node.id("rule")]  = COLOR,
+  [node.id("glyph")] = COLOR,
+  [node.id("disc")]  = COLOR,
+  [node.id("whatsit")] = {
+    [node.subtype("special")] = COLOR,
+    [node.subtype("pdf_literal")] = COLOR,
+    [node.subtype("pdf_refximage")] = COLOR,
+  },
+  [node.id("glue")] =
+    function(n)
+      if n.subtype >= 100 then -- leaders
+        if n.leader.id == RULE then
+          return COLOR
+        else
+          return LIST_LEADERS
+        end
+      end
+    end,
+}
+%    \end{macrocode}
+%    \begin{macro}{get_type()}
+%    \begin{macrocode}
+local function get_type(n)
+  local ret = node_types[n.id]
+  if type(ret) == 'table' then
+    ret = ret[n.subtype]
+  end
+  if type(ret) == 'function' then
+    ret = ret(n)
+  end
+  return ret
+end
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+local mode = 2 -- luatex.pdfliteral.direct
+local WHATSIT = node.id("whatsit")
+local SPECIAL = 3
+local PDFLITERAL = 8
+local DRY_FALSE = false
+local DRY_TRUE = true
+%    \end{macrocode}
+%    \begin{macro}{traverse()}
+%    \begin{macrocode}
+local function traverse(list, color, dry)
+  if not list then
+    return color
+  end
+  if get_type(list) ~= LIST then
+    texio.write_nl("!!! Error: Wrong list type: " .. node.type(list.id))
+    return color
+  end
+%<debug>texio.write_nl("traverse: " .. node.type(list.id))
+%<!pre065>  local head = list.head
+%<pre065>  local head = list.list
+  for n in node.traverse(head) do
+%<debug>texio.write_nl("  node: " .. node.type(n.id))
+    local t = get_type(n)
+    if t == LIST then
+      color = traverse(n, color, dry)
+    elseif t == LIST_LEADERS then
+      local color_after = traverse(n.leader, color, DRY_TRUE)
+      if color == color_after then
+        traverse(n.leader, color, DRY_FALSE or dry)
+      else
+        traverse(n.leader, '', DRY_FALSE or dry)
+% The color status is unknown here, because the leader box
+% will or will not be set.
+        color = ''
+      end
+    elseif t == COLOR then
+      local v = node.has_attribute(n, attribute)
+      if v then
+        local newColor = map[v]
+        if newColor ~= color then
+          color = newColor
+          if dry == DRY_FALSE then
+            local newNode
+            if ifpdf then
+              newNode = node.new(WHATSIT, PDFLITERAL)
+              newNode.mode = mode
+              newNode.data = color
+            else
+              newNode = node.new(WHATSIT, SPECIAL)
+              newNode.data = prefix .. color
+            end
+%<*!pre065>
+            head = node.insert_before(head, n, newNode)
+%</!pre065>
+%<*pre065>
+            if head == n then
+              newNode.next = head
+              local old_prev = head.prev
+              head.prev = newNode
+              head = newNode
+              head.prev = old_prev
+            else
+              head = node.insert_before(head, n, newNode)
+            end
+%</pre065>
+          end
+        end
+      end
+    end
+  end
+%<!pre065>  list.head = head
+%<pre065>  list.list = head
+  return color
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{process()}
+%    \begin{macrocode}
+function process(box)
+  local color = ""
+  local list = tex.getbox(box)
+  traverse(list, color, DRY_FALSE)
+end
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</lua>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test1>
+\documentclass{article}
+\usepackage{color}
+%</test1>
+%    \end{macrocode}
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input luacolor.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Driver detection}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\ifcsname driver\endcsname
+  \expandafter\PassOptionsToPackage\expandafter{\driver}{color}%
+  \pdfoutput=0 %
+\fi
+\documentclass{minimal}
+\usepackage{luacolor}[2011/11/01]
+\csname @@end\endcsname
+\end
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test3>
+\NeedsTeXFormat{LaTeX2e}
+%    \end{macrocode}
+%    \begin{macrocode}
+\documentclass{minimal}
+\usepackage{luacolor}[2011/11/01]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\makeatletter
+%    \end{macrocode}
+%    \begin{macrocode}
+\@@end
+%</test3>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/luacolor.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/luacolor.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex luacolor.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   luacolor.sty & tex/latex/oberdiek/luacolor.sty\\
+%   oberdiek.luacolor.lua & scripts/oberdiek/oberdiek.luacolor.lua\\
+%   luacolor.lua & scripts/oberdiek/luacolor.lua\\
+%   oberdiek.luacolor-pre065.lua & scripts/oberdiek/oberdiek.luacolor-pre065.lua\\
+%   luacolor-pre065.lua & scripts/oberdiek/luacolor-pre065.lua\\
+%   luacolor.pdf & doc/latex/oberdiek/luacolor.pdf\\
+%   test/luacolor-test1.tex & doc/latex/oberdiek/test/luacolor-test1.tex\\
+%   test/luacolor-test2.tex & doc/latex/oberdiek/test/luacolor-test2.tex\\
+%   test/luacolor-test3.tex & doc/latex/oberdiek/test/luacolor-test3.tex\\
+%   luacolor.dtx & source/latex/oberdiek/luacolor.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk luacolor.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{luacolor.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex luacolor.dtx
+%makeindex -s gind.ist luacolor.idx
+%pdflatex luacolor.dtx
+%makeindex -s gind.ist luacolor.idx
+%pdflatex luacolor.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{luacolor.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='luacolor'>
+  <name>luacolor</name>
+  <caption>Color support based on LuaTeX's node attributes.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2009-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.8'/>
+  <description>
+      This package implements color support based on LuaTeX's node
+      attributes.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/luacolor.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/luacolor.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/12/12 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2009/04/10 v1.1}
+%   \item
+%     Fixes for changed syntax of \cs{directlua} in \LuaTeX\ 0.36.
+%   \end{Version}
+%   \begin{Version}{2010/03/09 v1.2}
+%   \item
+%     Adaptation for package \xpackage{luatex} 2010/03/09 v0.4.
+%   \end{Version}
+%   \begin{Version}{2010/12/13 v1.3}
+%   \item
+%     Support for \cs{pdfxform} added.
+%   \item
+%     Loaded package \xpackage{luatexbase-attr} recognized.
+%   \item
+%     Update for \hologo{LuaTeX}: `list' fields renamed to `head' in v0.65.0.
+%   \end{Version}
+%   \begin{Version}{2011/03/29 v1.4}
+%   \item
+%     Avoid whatsit insertion if option \xoption{monochrome} is used
+%     (thanks Manuel P\'egouri\'e-Gonnard).
+%   \end{Version}
+%   \begin{Version}{2011/04/22 v1.5}
+%   \item
+%     Bug fix by Manuel P\'egouri\'e-Gonnard: A typo prevented the
+%     detection of whatsits and applying color changes for
+%     \cs{pdfliteral} and \cs{special} nodes that might contain
+%     typesetting material.
+%   \item
+%     Bug fix by Manuel P\'egouri\'e-Gonnard: Now colors are also
+%     applied to leader boxes.
+%   \item
+%     Unnecessary color settings are removed for leaders boxes,
+%     if after the leader box the color has not changed.
+%     The costs are a little runtime, leader boxes are processed twice.
+%   \item
+%     Additional whatsits that are colored: \texttt{pdf\_refximage}.
+%   \item
+%     Workaround for bug with \texttt{node.insert\_before}
+%     removed for the version after \hologo{LuaTeX} 0.65, because
+%     bug was fixed in 0.27. (Thanks Manuel P\'egouri\'e-Gonnard.)
+%   \end{Version}
+%   \begin{Version}{2011/04/23 v1.6}
+%   \item
+%     Bug fix for nested leader boxes.
+%   \item
+%     Bug fix for leader boxes that change color, but
+%     are not set because of missing place.
+%   \item
+%     Version check for Lua module added.
+%   \end{Version}
+%   \begin{Version}{2011/10/22 v1.7}
+%   \item
+%     Lua functions \texttt{getattribute} and \texttt{getvalue}
+%     added to tell other external Lua functions
+%     the attribute register number for coloring.
+%   \end{Version}
+%   \begin{Version}{2011/11/01 v1.8}
+%   \item
+%     Use of \texttt{node.subtype} instead of magic numbers.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

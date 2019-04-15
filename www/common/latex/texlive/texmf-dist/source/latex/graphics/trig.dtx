@@ -1,0 +1,310 @@
+% \iffalse
+%% File: trig.dtx Copyright (C) 1993 1994 1995 1996 1997 1999 David Carlisle
+%%                Copyright (C) 2000--2015 David Carlisle, LaTeX3 Project
+%%
+%% This file is part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.3c or, at your option, any later version.
+%%
+%
+%<*dtx>
+          \ProvidesFile{trig.dtx}
+%</dtx>
+%<*!plain>
+%<package&!plain>\NeedsTeXFormat{LaTeX2e}
+%<package&!plain>\ProvidesPackage{trig}
+%<driver>        \ProvidesFile{trig.drv}
+% \fi
+%                \ProvidesFile{trig.dtx}
+                 [1999/03/16 v1.09 sin cos tan (DPC)]
+%
+% \iffalse
+%</!plain>
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{trig}
+\begin{document}
+ \DocInput{trig.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{trig.dtx}
+% \title{The \textsf{trig} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{David Carlisle}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{graphics}
+% \maketitle
+%
+% \CheckSum{246}
+%
+% \changes{v1.00}{1993/00/00}{Undocumented versions}
+% \changes{v1.05}{1993/10/07}{Documented, added tan}
+% \changes{v1.06}{1994/02/01}{Update for LaTeX2e}
+% \changes{v1.07}{1994/03/15}{Use ltxdoc}
+% \changes{v1.08}{1994/10/16}{Change \cs{@xc} to \cs{nin@ty}}
+%
+% \section{Introduction}
+%
+% These macros implement the trigonometric functions, sin, cos and tan.
+% In each case two commands are defined. For instance the command
+% |\CalculateSin{33}| may be issued at some point, and then anywhere
+% later in the document, the command |\UseSin{33}| will return the
+% decimal expansion of $\sin(33^\circ)$.
+%
+% The arguments to these macros do not have to be whole numbers,
+% although in the case of whole numbers, \LaTeX\ or plain \TeX\ counters
+% may be used. In \TeX{}Book syntax, arguments must be  of type:
+% \meta{optional signs}\meta{factor}
+%
+% Some other examples are:\\
+% |\CalculateSin{22.5}|, |\UseTan{\value{mycounter}}|,
+% |\UseCos{\count@}|.
+%
+% Note that unlike the psfig macros, these save all previously
+% computed values. This could easily be changed, but I thought that in
+% many applications one would want many instances of the
+% same value. (eg rotating all the headings of a table by the
+% \emph{same} amount).
+%
+% I don't really like this need to pre-calculate the values, I
+% originally implemented |\UseSin| so that it automatically calculated
+% the value if it was not pre-stored. This worked fine in testing, until
+% I remembered why one needs these values. You want to be able to say
+% |\dimen2=\UseSin{30}\dimen0|. Which means that |\UseSin| must
+% \emph{expand} to a \meta{factor}.
+%
+% \StopEventually{}
+%
+% \section{The Macros}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \begin{macro}{\nin@ty}\begin{macro}{\@clxx}
+% \begin{macro}{\@lxxi}\begin{macro}{\@mmmmlxviii}
+% Some useful constants for converting between degrees and radians.
+% $$\frac{\pi}{180}\simeq\frac{355}{113\times180}=\frac{71}{4068}$$
+%    \begin{macrocode}
+\chardef\nin@ty=90
+\chardef\@clxx=180
+\chardef\@lxxi=71
+\mathchardef\@mmmmlxviii=4068
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}\end{macro}
+%
+% The approximation to $\sin$. I experimented with various
+% approximations based on Tchebicheff polynomials, and also some
+% approximations from a SIAM handbook `Computer Approximations' However
+% the standard Taylor series seems sufficiently accurate, and used by
+% far the fewest \TeX\ tokens, as the coefficients are all rational.
+% \begin{eqnarray*}
+%  \sin(x)& \simeq& x - (1/3!)x^3 + (1/5!)x^5 - (1/7!)x^7 + (1/9!)x^9\\
+%  &\simeq&\frac{((((7!/9!x^2-7!/7!)x^2+7!/5!)x^2 +7!/3!)x^2+7!/1!)x}
+% {7!}\\
+%  &=&\frac{((((1/72x^2-1)x^2+42)x^2 +840)x^2+5040)x}
+% {5040}
+% \end{eqnarray*}
+% The nested form used above reduces the number of operations required.
+% In order to further reduce the number of operations, and more
+% importantly reduce the number of tokens used, we can precompute the
+% coefficients. Note that we can not use $9!$ as the denominator as
+% this would cause overflow of \TeX's arithmetic.
+% \begin{macro}{\@coeffz}\begin{macro}{\@coeffa}\begin{macro}{\@coeffb}
+% \begin{macro}{\@coeffc}\begin{macro}{\@coeffd}
+% Save the coefficients as |\|(|math|)|char|s.
+%    \begin{macrocode}
+\chardef\@coeffz=72
+%\chardef\@coefa=1
+\chardef\@coefb=42
+\mathchardef\@coefc=840
+\mathchardef\@coefd=5040
+%    \end{macrocode}
+% \end{macro}\end{macro}\end{macro}\end{macro}\end{macro}
+%
+% \begin{macro}{\TG@rem@pt}
+% The standard trick of getting a real number out of a \meta{dimen}.
+% This gives a maximum accuracy of approx.\ 5 decimal places, which
+% should be sufficient. It puts a space after the number, perhaps it
+% shouldn't.
+%    \begin{macrocode}
+{\catcode`t=12\catcode`p=12\gdef\noPT#1pt{#1}}
+\def\TG@rem@pt#1{\expandafter\noPT\the#1\space}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TG@term}
+% Compute one term of the above nested series. Multiply the previous sum
+% by $x^2$ (stored in |\@tempb|, then add the next coefficient, |#1|.
+%    \begin{macrocode}
+\def\TG@term#1{%
+ \dimen@\@tempb\dimen@
+ \advance\dimen@ #1\p@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TG@series}
+% Compute the above series. the value in degrees will be in |\dimen@|
+% before this is called.
+%    \begin{macrocode}
+\def\TG@series{%
+ \dimen@\@lxxi\dimen@
+ \divide \dimen@ \@mmmmlxviii
+%    \end{macrocode}
+% |\dimen@| now contains the angle in radians, as a \meta{dimen}. We
+% need to remove the units, so store the same value as a \meta{factor}
+% in |\@tempa|.
+%    \begin{macrocode}
+ \edef\@tempa{\TG@rem@pt\dimen@}%
+%    \end{macrocode}
+% Now put $x^2$ in |\dimen@| and |\@tempb|.
+%    \begin{macrocode}
+ \dimen@\@tempa\dimen@
+ \edef\@tempb{\TG@rem@pt\dimen@}%
+%    \end{macrocode}
+% The first coefficient is  $1/72$.
+%    \begin{macrocode}
+ \divide\dimen@\@coeffz
+ \advance\dimen@\m@ne\p@
+ \TG@term\@coefb
+ \TG@term{-\@coefc}%
+ \TG@term\@coefd
+%    \end{macrocode}
+% Now the cubic in $x^2$ is completed, so we need to multiply by $x$ and
+% divide by $7!$.
+%    \begin{macrocode}
+ \dimen@\@tempa\dimen@
+ \divide\dimen@ \@coefd}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\CalculateSin}
+% If this angle has already been computed, do nothing, else store the
+% angle, and call |\TG@@sin|.
+%    \begin{macrocode}
+\def\CalculateSin#1{{%
+  \expandafter\ifx\csname sin(\number#1)\endcsname\relax
+    \dimen@=#1\p@\TG@@sin
+    \expandafter\xdef\csname sin(\number#1)\endcsname
+                                    {\TG@rem@pt\dimen@}%
+  \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\CalculateCos}
+% As above, but use the relation $\cos(x) = \sin(90-x)$.
+%    \begin{macrocode}
+\def\CalculateCos#1{{%
+  \expandafter\ifx\csname cos(\number#1)\endcsname\relax
+    \dimen@=\nin@ty\p@
+    \advance\dimen@-#1\p@
+    \TG@@sin
+    \expandafter\xdef\csname cos(\number#1)\endcsname
+                                     {\TG@rem@pt\dimen@}%
+  \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TG@reduce}
+% Repeatedly use one of the the relations
+% $\sin(x)=\sin(180-x)=\sin(-180-x)$ to get $x$ in the range $-90 \leq
+% x\leq 90$. Then call |\TG@series|.
+%    \begin{macrocode}
+\def\TG@reduce#1#2{%
+\dimen@#1#2\nin@ty\p@
+  \advance\dimen@#2-\@clxx\p@
+  \dimen@-\dimen@
+  \TG@@sin}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\TG@@sin}
+% Slightly cryptic, but it seems to  work\ldots
+%    \begin{macrocode}
+\def\TG@@sin{%
+  \ifdim\TG@reduce>+%
+  \else\ifdim\TG@reduce<-%
+  \else\TG@series\fi\fi}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\UseSin}
+% \begin{macro}{\UseCos}
+% Use a pre-computed value.
+%    \begin{macrocode}
+\def\UseSin#1{\csname sin(\number#1)\endcsname}
+\def\UseCos#1{\csname cos(\number#1)\endcsname}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% A few shortcuts to save space.
+%    \begin{macrocode}
+\chardef\z@num\z@
+\expandafter\let\csname sin(0)\endcsname\z@num
+\expandafter\let\csname cos(0)\endcsname\@ne
+\expandafter\let\csname sin(90)\endcsname\@ne
+\expandafter\let\csname cos(90)\endcsname\z@num
+\expandafter\let\csname sin(-90)\endcsname\m@ne
+\expandafter\let\csname cos(-90)\endcsname\z@num
+\expandafter\let\csname sin(180)\endcsname\z@num
+\expandafter\let\csname cos(180)\endcsname\m@ne
+%    \end{macrocode}
+%
+% \begin{macro}{\CalculateTan}
+% Originally I coded the Taylor series for tan, but it seems to be
+% more accurate to just take the ratio of the sine and cosine.
+% This is accurate to 4 decimal places for angles up to
+% $50^\circ$, after that the accuracy tails off, giving
+% 57.47894 instead of 57.2900 for $89^\circ$.
+%    \begin{macrocode}
+\def\CalculateTan#1{{%
+  \expandafter\ifx\csname tan(\number#1)\endcsname\relax
+    \CalculateSin{#1}%
+    \CalculateCos{#1}%
+    \@tempdima\UseCos{#1}\p@
+    \divide\@tempdima\@iv
+    \@tempdimb\UseSin{#1}\p@
+    \@tempdimb\two@fourteen\@tempdimb
+    \divide\@tempdimb\@tempdima
+    \expandafter\xdef\csname tan(\number#1)\endcsname
+                                        {\TG@rem@pt\@tempdimb}%
+  \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\UseTan}
+% Just like |\UseSin|.
+%    \begin{macrocode}
+\def\UseTan#1{\csname tan(\number#1)\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\two@fourteen}
+% \begin{macro}{\@iv}
+% two constants needed to keep the division within \TeX's range.
+%    \begin{macrocode}
+\mathchardef\two@fourteen=16384
+\chardef\@iv=4
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% Predefine $\tan(\pm90)$ to be an error.
+%    \begin{macrocode}
+\expandafter\def\csname tan(90)\endcsname{\errmessage{Infinite tan !}}
+\expandafter\let\csname tan(-90)\expandafter\endcsname
+                                       \csname tan(90)\endcsname
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

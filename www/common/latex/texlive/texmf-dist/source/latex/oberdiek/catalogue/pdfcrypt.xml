@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfcrypt'>
+  <name>pdfcrypt</name>
+  <caption>Allows the setting of pdf encryption.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2001,2006,2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    Allows the setting of pdf encryption options for VTeX and some
+    older versions of pdfTeX.  The options can be set as package
+    options or in the command <tt>\pdfcryptsetup</tt>. Options
+    include <tt>owner=OwnerPassword</tt>, <tt>user=UserPassword,
+    print</tt>, <tt>copy</tt>, <tt>edit</tt>, <tt>annotate=true,
+    false all, none</tt>. The encryption is set at
+    <tt>\begin{document}</tt> by default, but this can be forced for
+    an earlier time by option &#x2018;set&#x2019;.
+    <p/>
+    Example:
+    <tt>\usepackage[owner=Donald,user=Knuth,print=false]{pdfcrypt}</tt>
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfcrypt.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfcrypt.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

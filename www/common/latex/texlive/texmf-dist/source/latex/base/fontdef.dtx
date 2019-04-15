@@ -1,0 +1,1338 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%%% From File: fontdef.dtx
+%<*dtx>
+           \ProvidesFile{fontdef.dtx}
+%</dtx>
+%<text,   >\ProvidesFile{fonttext.ltx}
+%<math,   >\ProvidesFile{fontmath.ltx}
+%<+cfgtext>\ProvidesFile{fonttext.cfg}
+%<+cfgmath>\ProvidesFile{fontmath.cfg}
+%<+cfgprel>\ProvidesFile{preload.cfg}
+%<driver, >\ProvidesFile{fontdef.drv}
+% \fi
+%          \ProvidesFile{fontdef.dtx}
+           [2014/09/29 v2.3a LaTeX Kernel
+% \iftrue  (\else
+%<text,   >(Text
+%<math,   >(Math
+%<+cfgtext>(Uncustomised text
+%<+cfgmath>(Uncustomised math
+%<+cfgprel>(Uncustomised preload
+% \fi
+           font setup)]
+%
+% \CheckSum{1463}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+%\iffalse        This is a META comment
+%
+% File `fontdef.dtx'.
+% Copyright (C) 1989-1999 Frank Mittelbach and Rainer Sch\"opf,
+% All rights reserved.
+%
+%\fi
+%
+% \changes{v2.1a}{1993/12/01}{Update for LaTeX2e}
+% \changes{v2.2a}{1994/10/14}{New coding}
+% \changes{v2.2i}{1994/12/02}{Commented out \cs{ldots}. ASAJ.}
+% \changes{v2.2j}{1995/05/11}{Updates to some plain macros}
+% \changes{v2.2l}{1995/10/03}{\cs{@@sqrt} from patch file for /1701}
+% \changes{v2.2o}{1996/05/17}{\cs{@@sqrt} removed, at last}
+% \changes{v2.2p}{1996/11/20}{lowercase fd and enc.def file names /1044}
+% \changes{v2.2x}{1999/01/05}{Need special protection for character
+%     \texttt{\char62} in \cs{changes} entry.}
+%
+% \title{The \texttt{fontdef.dtx} file\thanks
+%         {This file has version number \fileversion, dated \filedate}}
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+% \def\dst{{\normalfont\scshape docstrip}}
+% \setcounter{StandardModuleDepth}{1}
+%
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Introduction}
+%
+% This file is used to generate the files \texttt{fonttext.ltx} (text
+% font declarations) and \texttt{fontmath.ltx} (math font
+% declarations), which are used during the format generation.  It
+% contains the declaration of the standard text encodings used at the
+% site as well as a minimal subset of font shape groups that NFSS will
+% look at to ensure that the specified encodings are valid.
+%
+% The math part contains the setup for math encodings as well as the
+% default math symbol declarations that belong to the encoding.
+%
+% It is possible to change this setup (by using other fonts, or
+% defaults) without losing the ability to
+% process documents written at other sites. Portability in this sense
+% means that a document will compile without errors. It does not mean,
+% however, that identical output will be produced. For this it is
+% necessary that the distributed setup is used at both installations.
+%
+% \section{Customization}
+%
+% You are not allowed to change this source file!  If you want to
+% change the default encodings and/or the font shape groups preloaded
+% you should should create a copy of \texttt{fonttext.ltx}
+% under the name \texttt{fonttext.cfg} and change this copy. If
+% \LaTeXe{} finds a file of this name it will use it, otherwise it
+% uses the standard file which is \texttt{fontdef.ltx}.
+%
+% If you don't plan to use Computer Modern much or at all, it might
+% (!)  be a good idea to make your own \texttt{fonttext.cfg}. Look at
+% the comments below (docstrip module `text') to see what should
+% should go into such a file.
+%
+% To change the math font setup use a copy of \texttt{fontmath.ltx}
+% under the name \texttt{fontmath.cfg} and change this copy. However,
+% dealing with this interface is even more a job for an expert than
+% changing the text font setup --- in short, we don't encourage either.
+%
+% \begin{quote}
+%   \textbf{Warning:} please note that we don't support customised
+%   \LaTeX{} versions. Thus, before sending in a bug report please try
+%   your test file with a \LaTeX{} format which is not customised and
+%   send in the log from that version (unless the problem goes away).
+% \end{quote}
+%
+% Please note: the following standard encodings  have to
+% be defined in all local variants of \texttt{font....cfg} to guarantee
+% that all \LaTeX{} installations behave in the same way.
+% \begin{center}
+% \begin{tabular}{ll}
+%   |T1|      &    Cork \TeX{} text encoding \\
+%   |OT1|      &   old \TeX{} text encoding \\
+%   |U|        &   unknown encoding \\
+%   |OML|      &   old \TeX{} math letters encoding \\
+%   |OMS|      &   old \TeX{} math symbols encoding \\
+%   |OMX|      &   old \TeX{} math extension symbols encoding
+% \end{tabular}
+% \end{center}
+% Notice that some of these encodings are `old' in the sense that we
+% hope that they will be superseded soon by encoding standards defined
+% by the \TeX{} user community. Therefore this set of default encodings
+% may change in the future.
+%
+% The first candidate is |OT1| which will soon be replaced by |T1|, the
+% official \TeX{} text encoding.
+%
+% \begin{quote}\textbf{Warning:}
+% If you add additional encodings to this file there is no guarantee
+% any longer that files processable at your installation will also be
+% processable at other installations. Thus, if you make use of
+% such an encoding in your document, e.g.~if you intend to typeset in
+% Cyrillic (|OT2| encoding), you need to specify this encoding in the
+% preamble of your document prior to sending it to another
+% installation. Once the encoding is specified in that place in your
+% document, the document is processable at all \LaTeX{} installations
+% (provided they have suitable fonts installed).
+%
+% For this reason we suggest that you define a short package file that
+% sets up an additional encoding used at your site (rather than
+% putting the encoding into this file) since this package can easily
+% be shipped with your document.
+% \end{quote}
+%
+%
+% \StopEventually{}
+%
+% \section{The \texttt{docstrip} modules}
+%
+% The following modules are used to direct \texttt{docstrip} in
+% generating external files:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   text   & produce the file \texttt{fonttext.ltx}\\
+%   math   & produce the file \texttt{fontmath.ltx}\\
+%   cfgtext   & produce a dummy \texttt{fonttext.cfg} file\\
+%   cfgmath   & produce a dummy \texttt{fontmath.cfg} file\\
+% \end{tabular}
+% \end{center}
+% A typical \texttt{docstrip} command file would then have entries like:
+% \begin{verbatim}
+%\generateFile{fonttext.ltx}{t}{\from{fontdef.dtx}{text}}
+%\end{verbatim}
+%
+%
+% \section{A driver for this document}
+%
+% The next bit of code contains the documentation driver file for
+% \TeX{}, i.e.~the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the
+% \dst{} program.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\GetFileInfo{fontdef.dtx}
+\begin{document}
+   \DocInput{fontdef.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+%
+% \section{The \texttt{fonttext.ltx} file}
+%
+%    The identification is done earlier on with a |\ProvidesFile|
+%    declaration.
+%    \begin{macrocode}
+%<*text>
+\typeout{=== Don't modify this file, use a .cfg file instead ===^^J}
+%    \end{macrocode}
+%
+%  \subsection{Encodings}
+%
+%    This file declares the standard encodings for text and math
+%    fonts. All others should be declared in packages or in the
+%    documents directly.
+%
+%    For every text encoding there are normally a number of encoding
+%    specific commands, e.g.~accents, special characters, etc.  (The
+%    definition for such a command might have to change when the
+%    encoding is changed, because the character is in a different
+%    position, or not available at all, or the accent is produced in a
+%    different way.)  This is handled by a general mechanism which is
+%    described in \texttt{ltoutenc.dtx}.
+%
+%    By convention, text  encoding specific declarations, including the
+%    declaration |\DeclareFontEncoding|, are kept in separate file of
+%    the form \meta{enc}\texttt{enc.def}, e.g.~\texttt{ot1enc.def}. This
+%    allows other applications to make use of the declarations as
+%    well.
+%
+%    Similar to the default encoding, the loading of the encoding
+%    files for the two major text encodings shouldn't be changed.
+%    In particular, the \texttt{inputenc} package depends on this.
+% \changes{v2.2s}{1997/12/20}{Added documentation}
+%
+% \changes{v2.1d}{1994/01/05}{Removed nf prefix from file names.}
+% \changes{v2.1f}{1994/05/14}{Removed .def files.}
+% \changes{v2.1g}{1994/05/1g}{Removed \cs{DeclareFontEncoding} for ot1
+%                             and t1 and input .def files instead}
+% \changes{v2.2c}{1994/10/25}{Added OMSenc.def}
+% \changes{v2.2d}{1994/10/31}{Added OMLenc.def ...}
+% \changes{v2.2e}{1994/10/31}{... and moved further down}
+% \changes{v2.2f}{1994/11/07}{(DPC) Updated to use \cs{ProvidesFile}}
+% \changes{v2.2h}{1994/11/16}{(DPC) Removed \cmd\{ and \cmd\}}
+%    \begin{macrocode}
+\input {omlenc.def}
+\input  {t1enc.def}
+\input {ot1enc.def}       % <- should come after T1 for speed
+\input {omsenc.def}
+%    \end{macrocode}
+%
+%    We then set set the default text font encoding. This will
+%    hopefully change some day to |T1|. This setting should \emph{not}
+%    be changed to produce a portable format.
+%    \begin{macrocode}
+\fontencoding{OT1}
+%    \end{macrocode}
+%
+%    If different encodings for text fonts are in use one could put
+%    the common setup into |\DeclareFontEncodingDefaults|. There is
+%    now a better mechanism so using this interface is discouraged!
+%    \begin{macrocode}
+\DeclareFontEncodingDefaults{}{}
+%    \end{macrocode}
+%
+%    Then we define the default substitution for every encoding.
+%    This release of \LaTeXe{} assumes that the ec fonts are
+%    available. It is possible to change this to point to some other
+%    font family (e.g., Times with the appropriate encoding if it is
+%    available) without making documents non-portable. However, in
+%    such a case documents will produce different page breaks at other
+%    sites. The substitution defaults can all be changed without
+%    losing portability as long as there are font shape definitions
+%    for the selected substitutions.
+%    \begin{macrocode}
+\DeclareFontSubstitution{T1}{cmr}{m}{n}
+\DeclareFontSubstitution{OT1}{cmr}{m}{n}
+%    \end{macrocode}
+%
+%    For every encoding declaration, \LaTeXe{} will try to verify that
+%    the given substitution information makes sense, i.e.~that it is
+%    impossible to go into an endless loop if font substitution
+%    happens. This is done at the moment the |\begin{document}| is
+%    encountered. \LaTeXe{} will then check that for every encoding the
+%    substitution defaults form a valid font shape group, which means
+%    that it will check if there is a |\DeclareFontShape| declaration
+%    for this combination. We will therefore load the corresponding
+%    |.fd| files now. If we don't do this they would be loaded at
+%    verification time (i.e.~at |\begin{document}| which would delay
+%    processing unnecessarily.
+%
+%    \begin{quote}
+%       \textbf{Warning:} Please note that this means that you have to
+%       regenerate the format whenever you change any of these
+%       \texttt{.fd} files since \LaTeXe{} will not read \texttt{.fd}
+%       files if it already knows about the encoding/family
+%       combination.
+%    \end{quote}
+%
+% \changes{v2.2m}{1995/11/01}{add \cs{nfss@catcodes} for internal/1932}
+% The |\nfss@catcodes| ensures that white space is ignored in any
+% definitions made in the fd files.
+%    \begin{macrocode}
+\begingroup
+\nfss@catcodes
+\input  {t1cmr.fd}
+\input  {ot1cmr.fd}
+\endgroup
+%    \end{macrocode}
+%
+%    We also load some other font definition files which are normally
+%    needed in a document. This is only done for processing speed and
+%    you can comment the next two lines out to save some memory. If
+%    necessary these files are then loaded when your document is
+%    processed. (Loading |.fd| files is a less drastic step compared
+%    to preloading fonts because the number of fonts is limited 255 at
+%    (nearly) every \TeX{} installation, while the amount of main memory
+%    is not a limiting factor at most installations.)
+%
+%    \begin{macrocode}
+\begingroup
+\nfss@catcodes
+\input {ot1cmss.fd}
+\input {ot1cmtt.fd}
+\endgroup
+%    \end{macrocode}
+%
+%    Even with all the precautions it is still possible that NFSS will
+%    run into problems, for example, when a |.fd| file contains
+%    corrupted data. To guard against such cases NFSS has a very
+%    low-level fallback font that is installed with the following line.
+%    \begin{macrocode}
+\DeclareErrorFont{OT1}{cmr}{m}{n}{10}
+%    \end{macrocode}
+%    This means, ``if everything else fails use Computer Modern Roman
+%    normal shape at 10pt in the old text encoding''.
+%    You can change the font used but the encoding should be the same
+%    as the one specified with |\fontencoding| above.
+%
+%
+% \subsection{Defaults}
+%
+%    To allow the use of |\rmfamily|, |\sffamily|, etc.\ in documents
+%    even if non-standard families are used we provide nine macros
+%    which hold the name of the corresponding families, series, and so
+%    on. This makes it easy to use other font families (like Times
+%    Roman, etc.). One simply has to redefine these defaults.
+%
+%    All these hooks have to be defined in this file but you can
+%    change their meaning (except for |\encodingdefault|) without
+%    making documents non-portable.
+%
+%
+% \begin{macro}{\rmdefault}
+% \begin{macro}{\sfdefault}
+% \begin{macro}{\ttdefault}
+%    The following three definitions set up the meaning for
+%    |\rmfamily|, |\sffamily|, and |\ttfamily|.
+%    \begin{macrocode}
+\newcommand\rmdefault{cmr}
+\newcommand\sfdefault{cmss}
+\newcommand\ttdefault{cmtt}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\bfdefault}
+% \begin{macro}{\mddefault}
+%    Series changing commands are influenced by the following hooks.
+%    \begin{macrocode}
+\newcommand\bfdefault{bx}
+\newcommand\mddefault{m}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\itdefault}
+% \begin{macro}{\sldefault}
+% \begin{macro}{\scdefault}
+% \begin{macro}{\updefault}
+%    Shape changing commands use the following hooks.
+%    \begin{macrocode}
+\newcommand\itdefault{it}
+\newcommand\sldefault{sl}
+\newcommand\scdefault{sc}
+\newcommand\updefault{n}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\encodingdefault}
+% \begin{macro}{\familydefault}
+% \begin{macro}{\seriesdefault}
+% \begin{macro}{\shapedefault}
+%    Finally we have the hooks that describe the behaviour of
+%    the |\normalfont| command. To stay portable, the definition of
+%    |\encodingdefault| should \emph{not} be changed and should match
+%    the setting above for |\fontencoding|. All other values can be
+%    set according to your taste.
+%    \begin{macrocode}
+\newcommand\encodingdefault{OT1}
+\newcommand\familydefault{\rmdefault}
+\newcommand\seriesdefault{\mddefault}
+\newcommand\shapedefault{\updefault}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+%    This finishes the low-level setup in \texttt{fonttext.ltx}.
+%    \begin{macrocode}
+%</text>
+%    \end{macrocode}
+%
+%
+%
+%
+% \section{The \texttt{fontmath.ltx} file}
+%
+%    The identification is done earlier on with a |\ProvidesFile|
+%    declaration.
+%    \begin{macrocode}
+%<*math>
+\typeout{=== Don't modify this file, use a .cfg file instead ===^^J}
+%    \end{macrocode}
+%
+% \subsection{The font encodings used}
+%
+%    \begin{macrocode}
+\DeclareFontEncoding{OML}{}{}
+\DeclareFontEncoding{OMS}{}{}
+\DeclareFontEncoding{OMX}{}{}
+%    \end{macrocode}
+%    Finally a declaration for |U| encoding which serves for all fonts
+%    that do not fit standard encodings. For math this sets up
+%    |\noaccents@| providing for AMS-\LaTeX{}. This macro is used
+%    therein to handle accented characters if they are not supported
+%    by the font. In other words, if fonts with |U| encoding are used
+%    in math, all accents (like from |\breve|) are obtained from some
+%    other font that has them.
+%    \begin{macrocode}
+\DeclareFontEncoding{U}{}{\noaccents@}
+%    \end{macrocode}
+%    The encodings for math are next:
+%    \begin{macrocode}
+\DeclareFontSubstitution{OML}{cmm}{m}{it}
+\DeclareFontSubstitution{OMS}{cmsy}{m}{n}
+\DeclareFontSubstitution{OMX}{cmex}{m}{n}
+\DeclareFontSubstitution{U}{cmr}{m}{n}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup
+\nfss@catcodes
+\input  {omlcmm.fd}
+\input  {omscmsy.fd}
+\input  {omxcmex.fd}
+\input  {ucmr.fd}
+\endgroup
+%    \end{macrocode}
+%
+%  \subsubsection{Symbolfont and Alphabet declarations}
+%
+%    We now define the basic symbol fonts used by \LaTeX{}.
+%    These four symbol fonts must be defined by this file.
+%
+%    It is possible to make the symbol fonts point to other external
+%    fonts without losing the ability to process  documents written
+%    at other sites, as long as one defines the same symbol font names
+%    with the same encodings, e.g.~|operators| with |OT1| etc.
+%    If other encodings are used documents become non-portable.
+%    Such a change should therefore be done in a package file.
+%
+% \changes{v2.1e}{1994/01/19}{Added missing setting for symbols in
+%                             bold version.}
+%    \begin{macrocode}
+\DeclareSymbolFont{operators}   {OT1}{cmr} {m}{n}
+\DeclareSymbolFont{letters}     {OML}{cmm} {m}{it}
+\DeclareSymbolFont{symbols}     {OMS}{cmsy}{m}{n}
+\DeclareSymbolFont{largesymbols}{OMX}{cmex}{m}{n}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\SetSymbolFont{operators}{bold}{OT1}{cmr} {bx}{n}
+\SetSymbolFont{letters}  {bold}{OML}{cmm} {b}{it}
+\SetSymbolFont{symbols}  {bold}{OMS}{cmsy}{b}{n}
+%    \end{macrocode}
+%
+%    Below are the seven math alphabets which are defined by NFSS.
+%    Again they must be defined by this file.
+%    However, as before you can change the fonts used without losing
+%    portability, but you should be careful when changing the encoding
+%    since that may make documents come out wrong.
+%    \begin{macrocode}
+\DeclareSymbolFontAlphabet{\mathrm}    {operators}
+\DeclareSymbolFontAlphabet{\mathnormal}{letters}
+\DeclareSymbolFontAlphabet{\mathcal}   {symbols}
+\DeclareMathAlphabet      {\mathbf}{OT1}{cmr}{bx}{n}
+\DeclareMathAlphabet      {\mathsf}{OT1}{cmss}{m}{n}
+\DeclareMathAlphabet      {\mathit}{OT1}{cmr}{m}{it}
+\DeclareMathAlphabet      {\mathtt}{OT1}{cmtt}{m}{n}
+%    \end{macrocode}
+%    Given the currently available fonts we cannot bold-en |\mathbf|
+%    and |\mathtt| but in principle one could use `ultra bold' or
+%    something. The alphabets defined via |\DeclareSymbolFontAlphabet|
+%    will change automatically in a new math version if the
+%    corresponding symbol font changes.
+%    \begin{macrocode}
+\SetMathAlphabet\mathsf{bold}{OT1}{cmss}{bx}{n}
+\SetMathAlphabet\mathit{bold}{OT1}{cmr}{bx}{it}
+%    \end{macrocode}
+%
+%
+% \subsection{Math font sizes}
+% \changes{v2.2f}{1994/11/07}
+%     {(DPC) Add \cs{DeclareMathSizes} declarations}
+%
+%    The declarations below declare the text, script and scriptscript
+%    size to be used for each text font size.
+%
+%    All occurrences of sizes longer than a single character are replaced
+%    with the macro name that holds them, saving a number of
+%    tokens (but losing a bit of speed, so this may not stay this way).
+%    \begin{macrocode}
+ \DeclareMathSizes{5}{5}{5}{5}
+ \DeclareMathSizes{6}{6}{5}{5}
+ \DeclareMathSizes{7}{7}{5}{5}
+ \DeclareMathSizes{8}{8}{6}{5}
+ \DeclareMathSizes{9}{9}{6}{5}
+ \DeclareMathSizes{\@xpt}{\@xpt}{7}{5}
+ \DeclareMathSizes{\@xipt}{\@xipt}{8}{6}
+ \DeclareMathSizes{\@xiipt}{\@xiipt}{8}{6}
+ \DeclareMathSizes{\@xivpt}{\@xivpt}{\@xpt}{7}
+ \DeclareMathSizes{\@xviipt}{\@xviipt}{\@xiipt}{\@xpt}
+ \DeclareMathSizes{\@xxpt}{\@xxpt}{\@xivpt}{\@xiipt}
+ \DeclareMathSizes{\@xxvpt}{\@xxvpt}{\@xxpt}{\@xviipt}
+%    \end{macrocode}
+%
+% \subsection{The math symbol assignments}
+%
+%    We start by setting up math codes for most of the characters
+%    typed in directly from the keyboard. Most of them are normally
+%    already setup up in the same way by Ini\TeX{}. However, we repeat
+%    them here to have a complete setup which can be exchanged with
+%    another if desired.
+%
+% \subsubsection{The letters}
+%    \begin{macrocode}
+\DeclareMathSymbol{a}{\mathalpha}{letters}{`a}
+\DeclareMathSymbol{b}{\mathalpha}{letters}{`b}
+\DeclareMathSymbol{c}{\mathalpha}{letters}{`c}
+\DeclareMathSymbol{d}{\mathalpha}{letters}{`d}
+\DeclareMathSymbol{e}{\mathalpha}{letters}{`e}
+\DeclareMathSymbol{f}{\mathalpha}{letters}{`f}
+\DeclareMathSymbol{g}{\mathalpha}{letters}{`g}
+\DeclareMathSymbol{h}{\mathalpha}{letters}{`h}
+\DeclareMathSymbol{i}{\mathalpha}{letters}{`i}
+\DeclareMathSymbol{j}{\mathalpha}{letters}{`j}
+\DeclareMathSymbol{k}{\mathalpha}{letters}{`k}
+\DeclareMathSymbol{l}{\mathalpha}{letters}{`l}
+\DeclareMathSymbol{m}{\mathalpha}{letters}{`m}
+\DeclareMathSymbol{n}{\mathalpha}{letters}{`n}
+\DeclareMathSymbol{o}{\mathalpha}{letters}{`o}
+\DeclareMathSymbol{p}{\mathalpha}{letters}{`p}
+\DeclareMathSymbol{q}{\mathalpha}{letters}{`q}
+\DeclareMathSymbol{r}{\mathalpha}{letters}{`r}
+\DeclareMathSymbol{s}{\mathalpha}{letters}{`s}
+\DeclareMathSymbol{t}{\mathalpha}{letters}{`t}
+\DeclareMathSymbol{u}{\mathalpha}{letters}{`u}
+\DeclareMathSymbol{v}{\mathalpha}{letters}{`v}
+\DeclareMathSymbol{w}{\mathalpha}{letters}{`w}
+\DeclareMathSymbol{x}{\mathalpha}{letters}{`x}
+\DeclareMathSymbol{y}{\mathalpha}{letters}{`y}
+\DeclareMathSymbol{z}{\mathalpha}{letters}{`z}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{A}{\mathalpha}{letters}{`A}
+\DeclareMathSymbol{B}{\mathalpha}{letters}{`B}
+\DeclareMathSymbol{C}{\mathalpha}{letters}{`C}
+\DeclareMathSymbol{D}{\mathalpha}{letters}{`D}
+\DeclareMathSymbol{E}{\mathalpha}{letters}{`E}
+\DeclareMathSymbol{F}{\mathalpha}{letters}{`F}
+\DeclareMathSymbol{G}{\mathalpha}{letters}{`G}
+\DeclareMathSymbol{H}{\mathalpha}{letters}{`H}
+\DeclareMathSymbol{I}{\mathalpha}{letters}{`I}
+\DeclareMathSymbol{J}{\mathalpha}{letters}{`J}
+\DeclareMathSymbol{K}{\mathalpha}{letters}{`K}
+\DeclareMathSymbol{L}{\mathalpha}{letters}{`L}
+\DeclareMathSymbol{M}{\mathalpha}{letters}{`M}
+\DeclareMathSymbol{N}{\mathalpha}{letters}{`N}
+\DeclareMathSymbol{O}{\mathalpha}{letters}{`O}
+\DeclareMathSymbol{P}{\mathalpha}{letters}{`P}
+\DeclareMathSymbol{Q}{\mathalpha}{letters}{`Q}
+\DeclareMathSymbol{R}{\mathalpha}{letters}{`R}
+\DeclareMathSymbol{S}{\mathalpha}{letters}{`S}
+\DeclareMathSymbol{T}{\mathalpha}{letters}{`T}
+\DeclareMathSymbol{U}{\mathalpha}{letters}{`U}
+\DeclareMathSymbol{V}{\mathalpha}{letters}{`V}
+\DeclareMathSymbol{W}{\mathalpha}{letters}{`W}
+\DeclareMathSymbol{X}{\mathalpha}{letters}{`X}
+\DeclareMathSymbol{Y}{\mathalpha}{letters}{`Y}
+\DeclareMathSymbol{Z}{\mathalpha}{letters}{`Z}
+%    \end{macrocode}
+%
+% \subsubsection{The digits}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{0}{\mathalpha}{operators}{`0}
+\DeclareMathSymbol{1}{\mathalpha}{operators}{`1}
+\DeclareMathSymbol{2}{\mathalpha}{operators}{`2}
+\DeclareMathSymbol{3}{\mathalpha}{operators}{`3}
+\DeclareMathSymbol{4}{\mathalpha}{operators}{`4}
+\DeclareMathSymbol{5}{\mathalpha}{operators}{`5}
+\DeclareMathSymbol{6}{\mathalpha}{operators}{`6}
+\DeclareMathSymbol{7}{\mathalpha}{operators}{`7}
+\DeclareMathSymbol{8}{\mathalpha}{operators}{`8}
+\DeclareMathSymbol{9}{\mathalpha}{operators}{`9}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Punctuation, brace, etc. keys}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{!}{\mathclose}{operators}{"21}
+\DeclareMathSymbol{*}{\mathbin}{symbols}{"03} % \ast
+\DeclareMathSymbol{+}{\mathbin}{operators}{"2B}
+\DeclareMathSymbol{,}{\mathpunct}{letters}{"3B}
+\DeclareMathSymbol{-}{\mathbin}{symbols}{"00}
+\DeclareMathSymbol{.}{\mathord}{letters}{"3A}
+\DeclareMathSymbol{:}{\mathrel}{operators}{"3A}
+\DeclareMathSymbol{;}{\mathpunct}{operators}{"3B}
+\DeclareMathSymbol{=}{\mathrel}{operators}{"3D}
+\DeclareMathSymbol{?}{\mathclose}{operators}{"3F}
+%    \end{macrocode}
+% The following symbols are defined as delimiters below
+% which automatically defines them as math symbols.
+%    \begin{macrocode}
+%\DeclareMathSymbol{(}{\mathopen}{operators}{"28}
+%\DeclareMathSymbol{)}{\mathclose}{operators}{"29}
+%\DeclareMathSymbol{/}{\mathord}{letters}{"3D}
+%\DeclareMathSymbol{[}{\mathopen}{operators}{"5B}
+%\DeclareMathSymbol{]}{\mathclose}{operators}{"5D}
+%\DeclareMathSymbol{|}{\mathord}{symbols}{"6A}
+%\DeclareMathSymbol{<}{\mathrel}{letters}{"3C}
+%\DeclareMathSymbol{>}{\mathrel}{letters}{"3E}
+%    \end{macrocode}
+%
+%    Should all of the following being activated by default? Probably
+%    not.
+%    \begin{macrocode}
+%\DeclareMathSymbol{`\{}{\mathopen}{symbols}{"66}
+%\DeclareMathSymbol{`\}}{\mathclose}{symbols}{"67}
+%\DeclareMathSymbol{`\\}{\mathord}{symbols}{"6E} % \backslash
+\mathcode`\ ="8000 % \space
+\mathcode`\'="8000 % ^\prime
+\mathcode`\_="8000 % \_
+%    \end{macrocode}
+%
+%
+% \subsubsection{Delimitercodes for characters}
+% \changes{v2.2q}{1997/01/08}
+%     {Use \cs{DeclareMathDelimiter} to set delimiter codes}
+% \changes{v2.2u}{1998/04/15}
+%     {Use new syntax for \cs{DeclareMathDelimiter}}
+%    [to be completed]
+%
+%    Finally, Ini\TeX{} sets all |\delcode| values to -1, except
+%    |\delcode`.=0|
+%    \begin{macrocode}
+\DeclareMathDelimiter{(}{\mathopen} {operators}{"28}{largesymbols}{"00}
+\DeclareMathDelimiter{)}{\mathclose}{operators}{"29}{largesymbols}{"01}
+\DeclareMathDelimiter{[}{\mathopen} {operators}{"5B}{largesymbols}{"02}
+\DeclareMathDelimiter{]}{\mathclose}{operators}{"5D}{largesymbols}{"03}
+%    \end{macrocode}
+%
+% The next two are considered to be relations when not used in the context
+% of a delimiter! And worse, they do even represent different glyphs when
+% being used as delimiter and not as delimiter. This is a user level syntax
+% inherited from plain \TeX{}. Therefore we explicitly redefine the math
+% symbol definitions for these symbols afterwards.
+% \changes{v2.2v}{1998/04/17}
+%     {Reinsert symbol defs for \texttt{<} and \texttt{\char62} chars.}
+%    \begin{macrocode}
+\DeclareMathDelimiter{<}{\mathopen}{symbols}{"68}{largesymbols}{"0A}
+\DeclareMathDelimiter{>}{\mathclose}{symbols}{"69}{largesymbols}{"0B}
+\DeclareMathSymbol{<}{\mathrel}{letters}{"3C}
+\DeclareMathSymbol{>}{\mathrel}{letters}{"3E}
+%    \end{macrocode}
+% And here is another case where the non-delimiter version produces a
+% glyph different from the delimiter version.
+% \changes{v2.2w}{1998/04/18}
+%     {Reinsert symbol def for \texttt{/} char.}
+%    \begin{macrocode}
+\DeclareMathDelimiter{/}{\mathord}{operators}{"2F}{largesymbols}{"0E}
+\DeclareMathSymbol{/}{\mathord}{letters}{"3D}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareMathDelimiter{|}{\mathord}{symbols}{"6A}{largesymbols}{"0C}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\expandafter\DeclareMathDelimiter\@backslashchar
+                        {\mathord}{symbols}{"6E}{largesymbols}{"0F}
+%    \end{macrocode}
+% N.B. |{| and |}| should NOT get delcodes;
+% otherwise parameter grouping fails!
+%
+%
+% \subsection{Symbols accessed via control sequences}
+%
+% \subsubsection{Greek letters}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{\alpha}{\mathord}{letters}{"0B}
+\DeclareMathSymbol{\beta}{\mathord}{letters}{"0C}
+\DeclareMathSymbol{\gamma}{\mathord}{letters}{"0D}
+\DeclareMathSymbol{\delta}{\mathord}{letters}{"0E}
+\DeclareMathSymbol{\epsilon}{\mathord}{letters}{"0F}
+\DeclareMathSymbol{\zeta}{\mathord}{letters}{"10}
+\DeclareMathSymbol{\eta}{\mathord}{letters}{"11}
+\DeclareMathSymbol{\theta}{\mathord}{letters}{"12}
+\DeclareMathSymbol{\iota}{\mathord}{letters}{"13}
+\DeclareMathSymbol{\kappa}{\mathord}{letters}{"14}
+\DeclareMathSymbol{\lambda}{\mathord}{letters}{"15}
+\DeclareMathSymbol{\mu}{\mathord}{letters}{"16}
+\DeclareMathSymbol{\nu}{\mathord}{letters}{"17}
+\DeclareMathSymbol{\xi}{\mathord}{letters}{"18}
+\DeclareMathSymbol{\pi}{\mathord}{letters}{"19}
+\DeclareMathSymbol{\rho}{\mathord}{letters}{"1A}
+\DeclareMathSymbol{\sigma}{\mathord}{letters}{"1B}
+\DeclareMathSymbol{\tau}{\mathord}{letters}{"1C}
+\DeclareMathSymbol{\upsilon}{\mathord}{letters}{"1D}
+\DeclareMathSymbol{\phi}{\mathord}{letters}{"1E}
+\DeclareMathSymbol{\chi}{\mathord}{letters}{"1F}
+\DeclareMathSymbol{\psi}{\mathord}{letters}{"20}
+\DeclareMathSymbol{\omega}{\mathord}{letters}{"21}
+\DeclareMathSymbol{\varepsilon}{\mathord}{letters}{"22}
+\DeclareMathSymbol{\vartheta}{\mathord}{letters}{"23}
+\DeclareMathSymbol{\varpi}{\mathord}{letters}{"24}
+\DeclareMathSymbol{\varrho}{\mathord}{letters}{"25}
+\DeclareMathSymbol{\varsigma}{\mathord}{letters}{"26}
+\DeclareMathSymbol{\varphi}{\mathord}{letters}{"27}
+\DeclareMathSymbol{\Gamma}{\mathalpha}{operators}{"00}
+\DeclareMathSymbol{\Delta}{\mathalpha}{operators}{"01}
+\DeclareMathSymbol{\Theta}{\mathalpha}{operators}{"02}
+\DeclareMathSymbol{\Lambda}{\mathalpha}{operators}{"03}
+\DeclareMathSymbol{\Xi}{\mathalpha}{operators}{"04}
+\DeclareMathSymbol{\Pi}{\mathalpha}{operators}{"05}
+\DeclareMathSymbol{\Sigma}{\mathalpha}{operators}{"06}
+\DeclareMathSymbol{\Upsilon}{\mathalpha}{operators}{"07}
+\DeclareMathSymbol{\Phi}{\mathalpha}{operators}{"08}
+\DeclareMathSymbol{\Psi}{\mathalpha}{operators}{"09}
+\DeclareMathSymbol{\Omega}{\mathalpha}{operators}{"0A}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Ordinary symbols}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{\aleph}{\mathord}{symbols}{"40}
+\def\hbar{{\mathchar'26\mkern-9muh}}
+\DeclareMathSymbol{\imath}{\mathord}{letters}{"7B}
+\DeclareMathSymbol{\jmath}{\mathord}{letters}{"7C}
+\DeclareMathSymbol{\ell}{\mathord}{letters}{"60}
+\DeclareMathSymbol{\wp}{\mathord}{letters}{"7D}
+\DeclareMathSymbol{\Re}{\mathord}{symbols}{"3C}
+\DeclareMathSymbol{\Im}{\mathord}{symbols}{"3D}
+\DeclareMathSymbol{\partial}{\mathord}{letters}{"40}
+\DeclareMathSymbol{\infty}{\mathord}{symbols}{"31}
+\DeclareMathSymbol{\prime}{\mathord}{symbols}{"30}
+\DeclareMathSymbol{\emptyset}{\mathord}{symbols}{"3B}
+\DeclareMathSymbol{\nabla}{\mathord}{symbols}{"72}
+\def\surd{{\mathchar"1270}}
+\DeclareMathSymbol{\top}{\mathord}{symbols}{"3E}
+\DeclareMathSymbol{\bot}{\mathord}{symbols}{"3F}
+\def\angle{{\vbox{\ialign{$\m@th\scriptstyle##$\crcr
+      \not\mathrel{\mkern14mu}\crcr
+      \noalign{\nointerlineskip}
+      \mkern2.5mu\leaders\hrule \@height.34pt\hfill\mkern2.5mu\crcr}}}}
+\DeclareMathSymbol{\triangle}{\mathord}{symbols}{"34}
+\DeclareMathSymbol{\forall}{\mathord}{symbols}{"38}
+\DeclareMathSymbol{\exists}{\mathord}{symbols}{"39}
+\DeclareMathSymbol{\neg}{\mathord}{symbols}{"3A}
+    \let\lnot=\neg
+\DeclareMathSymbol{\flat}{\mathord}{letters}{"5B}
+\DeclareMathSymbol{\natural}{\mathord}{letters}{"5C}
+\DeclareMathSymbol{\sharp}{\mathord}{letters}{"5D}
+\DeclareMathSymbol{\clubsuit}{\mathord}{symbols}{"7C}
+\DeclareMathSymbol{\diamondsuit}{\mathord}{symbols}{"7D}
+\DeclareMathSymbol{\heartsuit}{\mathord}{symbols}{"7E}
+\DeclareMathSymbol{\spadesuit}{\mathord}{symbols}{"7F}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Large Operators}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{\coprod}{\mathop}{largesymbols}{"60}
+\DeclareMathSymbol{\bigvee}{\mathop}{largesymbols}{"57}
+\DeclareMathSymbol{\bigwedge}{\mathop}{largesymbols}{"56}
+\DeclareMathSymbol{\biguplus}{\mathop}{largesymbols}{"55}
+\DeclareMathSymbol{\bigcap}{\mathop}{largesymbols}{"54}
+\DeclareMathSymbol{\bigcup}{\mathop}{largesymbols}{"53}
+\DeclareMathSymbol{\intop}{\mathop}{largesymbols}{"52}
+    \def\int{\intop\nolimits}
+\DeclareMathSymbol{\prod}{\mathop}{largesymbols}{"51}
+\DeclareMathSymbol{\sum}{\mathop}{largesymbols}{"50}
+\DeclareMathSymbol{\bigotimes}{\mathop}{largesymbols}{"4E}
+\DeclareMathSymbol{\bigoplus}{\mathop}{largesymbols}{"4C}
+\DeclareMathSymbol{\bigodot}{\mathop}{largesymbols}{"4A}
+\DeclareMathSymbol{\ointop}{\mathop}{largesymbols}{"48}
+    \def\oint{\ointop\nolimits}
+\DeclareMathSymbol{\bigsqcup}{\mathop}{largesymbols}{"46}
+\DeclareMathSymbol{\smallint}{\mathop}{symbols}{"73}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Binary symbols}
+%
+% \changes{v2.3a}{2004/02/04}
+%     {Added bigtriangle synonyms for stmaryrd}
+%    \begin{macrocode}
+\DeclareMathSymbol{\triangleleft}{\mathbin}{letters}{"2F}
+\DeclareMathSymbol{\triangleright}{\mathbin}{letters}{"2E}
+\DeclareMathSymbol{\bigtriangleup}{\mathbin}{symbols}{"34}
+\DeclareMathSymbol{\bigtriangledown}{\mathbin}{symbols}{"35}
+   \let \varbigtriangledown \bigtriangledown
+   \let \varbigtriangleup \bigtriangleup
+%    \end{macrocode}
+%
+% These last two synonyms are needed because the \textsf{stamryrd}
+% package redefines them as Operators.
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{\wedge}{\mathbin}{symbols}{"5E}
+   \let\land=\wedge
+\DeclareMathSymbol{\vee}{\mathbin}{symbols}{"5F}
+   \let\lor=\vee
+\DeclareMathSymbol{\cap}{\mathbin}{symbols}{"5C}
+\DeclareMathSymbol{\cup}{\mathbin}{symbols}{"5B}
+\DeclareMathSymbol{\ddagger}{\mathbin}{symbols}{"7A}
+\DeclareMathSymbol{\dagger}{\mathbin}{symbols}{"79}
+\DeclareMathSymbol{\sqcap}{\mathbin}{symbols}{"75}
+\DeclareMathSymbol{\sqcup}{\mathbin}{symbols}{"74}
+\DeclareMathSymbol{\uplus}{\mathbin}{symbols}{"5D}
+\DeclareMathSymbol{\amalg}{\mathbin}{symbols}{"71}
+\DeclareMathSymbol{\diamond}{\mathbin}{symbols}{"05}
+\DeclareMathSymbol{\bullet}{\mathbin}{symbols}{"0F}
+\DeclareMathSymbol{\wr}{\mathbin}{symbols}{"6F}
+\DeclareMathSymbol{\div}{\mathbin}{symbols}{"04}
+\DeclareMathSymbol{\odot}{\mathbin}{symbols}{"0C}
+\DeclareMathSymbol{\oslash}{\mathbin}{symbols}{"0B}
+\DeclareMathSymbol{\otimes}{\mathbin}{symbols}{"0A}
+\DeclareMathSymbol{\ominus}{\mathbin}{symbols}{"09}
+\DeclareMathSymbol{\oplus}{\mathbin}{symbols}{"08}
+\DeclareMathSymbol{\mp}{\mathbin}{symbols}{"07}
+\DeclareMathSymbol{\pm}{\mathbin}{symbols}{"06}
+\DeclareMathSymbol{\circ}{\mathbin}{symbols}{"0E}
+\DeclareMathSymbol{\bigcirc}{\mathbin}{symbols}{"0D}
+\DeclareMathSymbol{\setminus}{\mathbin}{symbols}{"6E}
+\DeclareMathSymbol{\cdot}{\mathbin}{symbols}{"01}
+\DeclareMathSymbol{\ast}{\mathbin}{symbols}{"03}
+\DeclareMathSymbol{\times}{\mathbin}{symbols}{"02}
+\DeclareMathSymbol{\star}{\mathbin}{letters}{"3F}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Relations}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{\propto}{\mathrel}{symbols}{"2F}
+\DeclareMathSymbol{\sqsubseteq}{\mathrel}{symbols}{"76}
+\DeclareMathSymbol{\sqsupseteq}{\mathrel}{symbols}{"77}
+\DeclareMathSymbol{\parallel}{\mathrel}{symbols}{"6B}
+\DeclareMathSymbol{\mid}{\mathrel}{symbols}{"6A}
+\DeclareMathSymbol{\dashv}{\mathrel}{symbols}{"61}
+\DeclareMathSymbol{\vdash}{\mathrel}{symbols}{"60}
+\DeclareMathSymbol{\nearrow}{\mathrel}{symbols}{"25}
+\DeclareMathSymbol{\searrow}{\mathrel}{symbols}{"26}
+\DeclareMathSymbol{\nwarrow}{\mathrel}{symbols}{"2D}
+\DeclareMathSymbol{\swarrow}{\mathrel}{symbols}{"2E}
+\DeclareMathSymbol{\Leftrightarrow}{\mathrel}{symbols}{"2C}
+\DeclareMathSymbol{\Leftarrow}{\mathrel}{symbols}{"28}
+\DeclareMathSymbol{\Rightarrow}{\mathrel}{symbols}{"29}
+\def\neq{\not=} \let\ne=\neq
+\DeclareMathSymbol{\leq}{\mathrel}{symbols}{"14}
+   \let\le=\leq
+\DeclareMathSymbol{\geq}{\mathrel}{symbols}{"15}
+   \let\ge=\geq
+\DeclareMathSymbol{\succ}{\mathrel}{symbols}{"1F}
+\DeclareMathSymbol{\prec}{\mathrel}{symbols}{"1E}
+\DeclareMathSymbol{\approx}{\mathrel}{symbols}{"19}
+\DeclareMathSymbol{\succeq}{\mathrel}{symbols}{"17}
+\DeclareMathSymbol{\preceq}{\mathrel}{symbols}{"16}
+\DeclareMathSymbol{\supset}{\mathrel}{symbols}{"1B}
+\DeclareMathSymbol{\subset}{\mathrel}{symbols}{"1A}
+\DeclareMathSymbol{\supseteq}{\mathrel}{symbols}{"13}
+\DeclareMathSymbol{\subseteq}{\mathrel}{symbols}{"12}
+\DeclareMathSymbol{\in}{\mathrel}{symbols}{"32}
+\DeclareMathSymbol{\ni}{\mathrel}{symbols}{"33}
+    \let\owns=\ni
+\DeclareMathSymbol{\gg}{\mathrel}{symbols}{"1D}
+\DeclareMathSymbol{\ll}{\mathrel}{symbols}{"1C}
+\DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
+\DeclareMathSymbol{\leftrightarrow}{\mathrel}{symbols}{"24}
+\DeclareMathSymbol{\leftarrow}{\mathrel}{symbols}{"20}
+   \let\gets=\leftarrow
+\DeclareMathSymbol{\rightarrow}{\mathrel}{symbols}{"21}
+   \let\to=\rightarrow
+\DeclareMathSymbol{\mapstochar}{\mathrel}{symbols}{"37}
+   \def\mapsto{\mapstochar\rightarrow}
+\DeclareMathSymbol{\sim}{\mathrel}{symbols}{"18}
+\DeclareMathSymbol{\simeq}{\mathrel}{symbols}{"27}
+\DeclareMathSymbol{\perp}{\mathrel}{symbols}{"3F}
+\DeclareMathSymbol{\equiv}{\mathrel}{symbols}{"11}
+\DeclareMathSymbol{\asymp}{\mathrel}{symbols}{"10}
+\DeclareMathSymbol{\smile}{\mathrel}{letters}{"5E}
+\DeclareMathSymbol{\frown}{\mathrel}{letters}{"5F}
+\DeclareMathSymbol{\leftharpoonup}{\mathrel}{letters}{"28}
+\DeclareMathSymbol{\leftharpoondown}{\mathrel}{letters}{"29}
+\DeclareMathSymbol{\rightharpoonup}{\mathrel}{letters}{"2A}
+\DeclareMathSymbol{\rightharpoondown}{\mathrel}{letters}{"2B}
+%    \end{macrocode}
+%
+%    Here cometh much profligate robustification of math constructs.
+%    Warning: some of these commands may become non-robust if an
+%    AMS package is loaded.
+%
+%    Further potential problems: some math font packages may make
+%    unfortunate assumptions about some of these definitions that are
+%    not true of the robust versions we need.
+% \changes{v2.3}{2004/02/02}
+%     {Many things from here on made robust}
+%    \begin{macrocode}
+\DeclareRobustCommand
+  \cong{\mathrel{\mathpalette\@vereq\sim}} % congruence sign
+\def\@vereq#1#2{\lower.5\p@\vbox{\lineskiplimit\maxdimen\lineskip-.5\p@
+    \ialign{$\m@th#1\hfil##\hfil$\crcr#2\crcr=\crcr}}}
+\DeclareRobustCommand
+  \notin{\mathrel{\m@th\mathpalette\c@ncel\in}}
+\def\c@ncel#1#2{\m@th\ooalign{$\hfil#1\mkern1mu/\hfil$\crcr$#1#2$}}
+\DeclareRobustCommand
+  \rightleftharpoons{\mathrel{\mathpalette\rlh@{}}}
+\def\rlh@#1{\vcenter{\m@th\hbox{\ooalign{\raise2pt
+          \hbox{$#1\rightharpoonup$}\crcr
+        $#1\leftharpoondown$}}}}
+\DeclareRobustCommand
+  \doteq{\buildrel\textstyle.\over=}
+%    \end{macrocode}
+%
+% \subsubsection{Arrows}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand
+  \joinrel{\mathrel{\mkern-3mu}}
+\DeclareRobustCommand
+  \relbar{\mathrel{\smash-}} % \smash, because -
+                               % has the same height as +
+%    \end{macrocode}
+%    In contrast to \texttt{plain.tex} |\Relbar| got braces around the
+%    equal sign to guard against it being ``math active'' expanding to
+%    |\futurelet...|. This might be the case when packages are
+%    implementing shorthands for math, e.g. |=>| meaning |\Rightarrow|
+%    etc. It would actually be better not to use |=| in such
+%    definitions but instead define something like |\mathequalsign|
+%    and use this. However we can't do this now as it would break
+%    other math layouts where characters are in different places
+%    (since those wouldn't know about the need for a new command name).
+% \changes{v2.2z}{2001/06/04}{Guard against math active equal sign in
+%    \cs{Relbar} (pr/3333)}
+%    \begin{macrocode}
+\DeclareRobustCommand
+  \Relbar{\mathrel{=}}
+\DeclareMathSymbol{\lhook}{\mathrel}{letters}{"2C}
+   \def\hookrightarrow{\lhook\joinrel\rightarrow}
+\DeclareMathSymbol{\rhook}{\mathrel}{letters}{"2D}
+   \def\hookleftarrow{\leftarrow\joinrel\rhook}
+\DeclareRobustCommand
+  \bowtie{\mathrel\triangleright\joinrel\mathrel\triangleleft}
+%    \end{macrocode}
+%
+% \changes{v2.2z}{2001/06/04}{Guard against math active equal and pipe
+%    sign in \cs{models} (pr/3333)}
+%    \begin{macrocode}
+\DeclareRobustCommand
+  \models{\mathrel{|}\joinrel\Relbar}
+\DeclareRobustCommand
+  \Longrightarrow{\Relbar\joinrel\Rightarrow}
+%    \end{macrocode}
+%
+% LaTeX Change: |\longrightarrow| and |\longleftarrow| redefined to make
+%   then robust.
+%    \begin{macrocode}
+\DeclareRobustCommand\longrightarrow
+     {\relbar\joinrel\rightarrow}
+\DeclareRobustCommand\longleftarrow
+     {\leftarrow\joinrel\relbar}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand
+  \Longleftarrow{\Leftarrow\joinrel\Relbar}
+\DeclareRobustCommand
+  \longmapsto{\mapstochar\longrightarrow}
+\DeclareRobustCommand
+  \longleftrightarrow{\leftarrow\joinrel\rightarrow}
+\DeclareRobustCommand
+  \Longleftrightarrow{\Leftarrow\joinrel\Rightarrow}
+\DeclareRobustCommand
+  \iff{\;\Longleftrightarrow\;}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Punctuation symbols}
+%
+%    \begin{macrocode}
+\DeclareMathSymbol{\ldotp}{\mathpunct}{letters}{"3A}
+\DeclareMathSymbol{\cdotp}{\mathpunct}{symbols}{"01}
+\DeclareMathSymbol{\colon}{\mathpunct}{operators}{"3A}
+%    \end{macrocode}
+%
+%
+% This is commented out, since |\ldots| is now defined in ltoutenc.dtx.
+%    \begin{macrocode}
+%\def\@ldots{\mathinner{\ldotp\ldotp\ldotp}}
+%\DeclareRobustCommand\ldots
+%          {\relax\ifmmode\@ldots\else\mbox{$\m@th\@ldots\,$}\fi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareRobustCommand
+  \cdots{\mathinner{\cdotp\cdotp\cdotp}}
+\DeclareRobustCommand
+  \vdots{\vbox{\baselineskip4\p@ \lineskiplimit\z@
+    \kern6\p@\hbox{.}\hbox{.}\hbox{.}}}
+\DeclareRobustCommand
+  \ddots{\mathinner{\mkern1mu\raise7\p@
+    \vbox{\kern7\p@\hbox{.}}\mkern2mu
+    \raise4\p@\hbox{.}\mkern2mu\raise\p@\hbox{.}\mkern1mu}}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Math accents}
+%
+%    \begin{macrocode}
+\DeclareMathAccent{\acute}{\mathalpha}{operators}{"13}
+\DeclareMathAccent{\grave}{\mathalpha}{operators}{"12}
+\DeclareMathAccent{\ddot}{\mathalpha}{operators}{"7F}
+\DeclareMathAccent{\tilde}{\mathalpha}{operators}{"7E}
+\DeclareMathAccent{\bar}{\mathalpha}{operators}{"16}
+\DeclareMathAccent{\breve}{\mathalpha}{operators}{"15}
+\DeclareMathAccent{\check}{\mathalpha}{operators}{"14}
+\DeclareMathAccent{\hat}{\mathalpha}{operators}{"5E}
+\DeclareMathAccent{\vec}{\mathord}{letters}{"7E}
+\DeclareMathAccent{\dot}{\mathalpha}{operators}{"5F}
+\DeclareMathAccent{\widetilde}{\mathord}{largesymbols}{"65}
+\DeclareMathAccent{\widehat}{\mathord}{largesymbols}{"62}
+%    \end{macrocode}
+%    For some reason plain \TeX{} never bothered to provide
+%    a ring accent in math (although it is available in the fonts),
+%    but since we got a request for it here we go:
+% \changes{v2.2t}{1998/04/11}{Added \cs{mathring} accent (pr2785)}
+%    \begin{macrocode}
+\DeclareMathAccent{\mathring}{\mathalpha}{operators}{"17}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Radicals}
+%
+% \changes{v2.2o}{1996/05/17}{\cs{@@sqrt} removed, at last}
+%    \begin{macrocode}
+\DeclareMathRadical{\sqrtsign}{symbols}{"70}{largesymbols}{"70}
+%    \end{macrocode}
+%
+%
+% \subsubsection{Over and under something, etc}
+%
+%    \begin{macrocode}
+\def\overrightarrow#1{\vbox{\m@th\ialign{##\crcr
+      \rightarrowfill\crcr\noalign{\kern-\p@\nointerlineskip}
+      $\hfil\displaystyle{#1}\hfil$\crcr}}}
+\def\overleftarrow#1{\vbox{\m@th\ialign{##\crcr
+      \leftarrowfill\crcr\noalign{\kern-\p@\nointerlineskip}%
+      $\hfil\displaystyle{#1}\hfil$\crcr}}}
+\def\overbrace#1{\mathop{\vbox{\m@th\ialign{##\crcr\noalign{\kern3\p@}%
+      \downbracefill\crcr\noalign{\kern3\p@\nointerlineskip}%
+      $\hfil\displaystyle{#1}\hfil$\crcr}}}\limits}
+\def\underbrace#1{\mathop{\vtop{\m@th\ialign{##\crcr
+   $\hfil\displaystyle{#1}\hfil$\crcr
+   \noalign{\kern3\p@\nointerlineskip}%
+   \upbracefill\crcr\noalign{\kern3\p@}}}}\limits}
+%    \end{macrocode}
+%    (quite a waste of tokens, IMHO --- Frank)
+%    \begin{macrocode}
+\def\skew#1#2#3{{\muskip\z@#1mu\divide\muskip\z@\tw@ \mkern\muskip\z@
+    #2{\mkern-\muskip\z@{#3}\mkern\muskip\z@}\mkern-\muskip\z@}{}}
+%    \end{macrocode}
+%
+% \changes{v2.2n}{1995/11/21}{Incorporate changed figures,
+%                              as in plain.tex}
+%    \begin{macrocode}
+\def\rightarrowfill{$\m@th\smash-\mkern-7mu%
+  \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
+  \mkern-7mu\mathord\rightarrow$}
+\def\leftarrowfill{$\m@th\mathord\leftarrow\mkern-7mu%
+  \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
+  \mkern-7mu\smash-$}
+\DeclareMathSymbol{\braceld}{\mathord}{largesymbols}{"7A}
+\DeclareMathSymbol{\bracerd}{\mathord}{largesymbols}{"7B}
+\DeclareMathSymbol{\bracelu}{\mathord}{largesymbols}{"7C}
+\DeclareMathSymbol{\braceru}{\mathord}{largesymbols}{"7D}
+\def\downbracefill{$\m@th \setbox\z@\hbox{$\braceld$}%
+  \braceld\leaders\vrule \@height\ht\z@ \@depth\z@\hfill\braceru
+  \bracelu\leaders\vrule \@height\ht\z@ \@depth\z@\hfill\bracerd$}
+\def\upbracefill{$\m@th \setbox\z@\hbox{$\braceld$}%
+  \bracelu\leaders\vrule \@height\ht\z@ \@depth\z@\hfill\bracerd
+  \braceld\leaders\vrule \@height\ht\z@ \@depth\z@\hfill\braceru$}
+%    \end{macrocode}
+%
+% \subsubsection{Delimiters}
+%
+%    \begin{macrocode}
+\DeclareMathDelimiter{\lmoustache}   % top from (, bottom from )
+   {\mathopen}{largesymbols}{"7A}{largesymbols}{"40}
+\DeclareMathDelimiter{\rmoustache}   % top from ), bottom from (
+   {\mathclose}{largesymbols}{"7B}{largesymbols}{"41}
+\DeclareMathDelimiter{\arrowvert}    % arrow without arrowheads
+   {\mathord}{symbols}{"6A}{largesymbols}{"3C}
+\DeclareMathDelimiter{\Arrowvert}    % double arrow without arrowheads
+   {\mathord}{symbols}{"6B}{largesymbols}{"3D}
+\DeclareMathDelimiter{\Vert}
+   {\mathord}{symbols}{"6B}{largesymbols}{"0D}
+\let\|=\Vert
+\DeclareMathDelimiter{\vert}
+   {\mathord}{symbols}{"6A}{largesymbols}{"0C}
+\DeclareMathDelimiter{\uparrow}
+   {\mathrel}{symbols}{"22}{largesymbols}{"78}
+\DeclareMathDelimiter{\downarrow}
+   {\mathrel}{symbols}{"23}{largesymbols}{"79}
+\DeclareMathDelimiter{\updownarrow}
+   {\mathrel}{symbols}{"6C}{largesymbols}{"3F}
+\DeclareMathDelimiter{\Uparrow}
+   {\mathrel}{symbols}{"2A}{largesymbols}{"7E}
+\DeclareMathDelimiter{\Downarrow}
+   {\mathrel}{symbols}{"2B}{largesymbols}{"7F}
+\DeclareMathDelimiter{\Updownarrow}
+   {\mathrel}{symbols}{"6D}{largesymbols}{"77}
+\DeclareMathDelimiter{\backslash}    % for double coset G\backslash H
+   {\mathord}{symbols}{"6E}{largesymbols}{"0F}
+\DeclareMathDelimiter{\rangle}
+   {\mathclose}{symbols}{"69}{largesymbols}{"0B}
+\DeclareMathDelimiter{\langle}
+   {\mathopen}{symbols}{"68}{largesymbols}{"0A}
+\DeclareMathDelimiter{\rbrace}
+   {\mathclose}{symbols}{"67}{largesymbols}{"09}
+\DeclareMathDelimiter{\lbrace}
+   {\mathopen}{symbols}{"66}{largesymbols}{"08}
+\DeclareMathDelimiter{\rceil}
+   {\mathclose}{symbols}{"65}{largesymbols}{"07}
+\DeclareMathDelimiter{\lceil}
+   {\mathopen}{symbols}{"64}{largesymbols}{"06}
+\DeclareMathDelimiter{\rfloor}
+   {\mathclose}{symbols}{"63}{largesymbols}{"05}
+\DeclareMathDelimiter{\lfloor}
+   {\mathopen}{symbols}{"62}{largesymbols}{"04}
+%    \end{macrocode}
+%
+%  \begin{macro}{\lgroup}
+%  \begin{macro}{\rgroup}
+%  \begin{macro}{\bracevert}
+%    There are three plain \TeX{} delimiters which are not fully
+%    supported by NFSS, since they partly point into a bold cmr font.
+%    Allocating a full symbol font, just to have three delimiters
+%    seems a bit too much given the limited space available.  For this
+%    reason only the extensible sizes are supported.  If this is not
+%    desired one can use, without losing portability, define |\mathbf|
+%    and |\mathtt| as font symbol alphabet (setting up
+%    \texttt{cmr/bx/n} and \texttt{cmtt/m/n} as symbol fonts first)
+%    and modify the delimiter declarations to point with their
+%    small variant to those symbol fonts. (This is done in
+%    \texttt{oldlfont.dtx} so look there for examples.)
+%    \begin{macrocode}
+\DeclareMathDelimiter{\lgroup} % extensible ( with sharper tips
+     {\mathopen}{largesymbols}{"3A}{largesymbols}{"3A}
+\DeclareMathDelimiter{\rgroup} % extensible ) with sharper tips
+     {\mathclose}{largesymbols}{"3B}{largesymbols}{"3B}
+\DeclareMathDelimiter{\bracevert} % the vertical bar that extends braces
+     {\mathord}{largesymbols}{"3E}{largesymbols}{"3E}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \subsection{Math versions of text commands}
+%
+% \changes{v2.2k}{1995/06/05}{Moved math commands from ltoutenc.dtx.}
+%
+% The |\mathunderscore| here is really a text definition, so it has
+% been put back into |ltoutenc.dtx| (by Chris, 30/04/97) and should
+% be removed from here.
+%
+% These symbols are the math versions of text commands such as |\P|,
+% |\$|, etc.
+% \begin{macro}{\mathparagraph}
+% \changes{v2.2q}{1997/01/08}
+%     {Define using \cs{DeclareMathSymbol}}
+% \begin{macro}{\mathsection}
+% \begin{macro}{\mathdollar}
+% \begin{macro}{\mathsterling}
+% \begin{macro}{\mathunderscore}
+%    These math symbols are not in plain \TeX.
+%    \begin{macrocode}
+\DeclareMathSymbol{\mathparagraph}{\mathord}{symbols}{"7B}
+\DeclareMathSymbol{\mathsection}{\mathord}{symbols}{"78}
+\DeclareMathSymbol{\mathdollar}{\mathord}{operators}{"24}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\mathsterling{\mathit{\mathchar"7024}}
+\def\mathunderscore{\kern.06em\vbox{\hrule\@width.3em}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\mathellipsis}
+%    This is plain \TeX's |\ldots|.
+%    \begin{macrocode}
+\def\mathellipsis{\mathinner{\ldotp\ldotp\ldotp}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Other special functions and parameters}
+%
+% \subsubsection{Biggggg}
+%
+%    \begin{macrocode}
+\def\big#1{{\hbox{$\left#1\vbox to8.5\p@{}\right.\n@space$}}}
+\def\Big#1{{\hbox{$\left#1\vbox to11.5\p@{}\right.\n@space$}}}
+\def\bigg#1{{\hbox{$\left#1\vbox to14.5\p@{}\right.\n@space$}}}
+\def\Bigg#1{{\hbox{$\left#1\vbox to17.5\p@{}\right.\n@space$}}}
+\def\n@space{\nulldelimiterspace\z@ \m@th}
+%    \end{macrocode}
+%
+%
+%
+% \subsubsection{The log-like functions}
+%
+% \begin{macro}{\operator@font}
+%    The |\operator@font| determines the symbol font used for log-like
+%    functions.
+%    \begin{macrocode}
+\def\operator@font{\mathgroup\symoperators}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \subsubsection{Parameters}
+%
+%    \begin{macrocode}
+\thinmuskip=3mu
+\medmuskip=4mu plus 2mu minus 4mu
+\thickmuskip=5mu plus 5mu
+%    \end{macrocode}
+%
+%
+%    This finishes the low-level setup in \texttt{fontmath.ltx}.
+%    \begin{macrocode}
+%</math>
+%    \end{macrocode}
+%
+%
+% \section{Default cfg files}
+%
+%    We provide default \texttt{cfg} files here to ensure that
+%    on installations that search large file trees we do not pick up
+%    some strange customisation files from somewhere.
+% \changes{v2.2y}{2001/06/02}{Provide default cfg files (pr/3264)}
+%    \begin{macrocode}
+%<*cfgtext|cfgmath|cfgprel>
+%%
+%%
+%%
+%% Load the standard setup:
+%%
+%<+cfgtext>\input{fonttext.ltx}
+%<+cfgmath>\input{fontmath.ltx}
+%<+cfgprel>\input{preload.ltx}
+%%
+%% Small changes could go here; see documentation in cfgguide.tex for
+%% allowed modifications.
+%%
+%% In particular it is not allowed to misuse this configuration file
+%% to modify internal LaTeX commands!
+%%
+%% If you use this file as the basis for configuration please change
+%% the \ProvidesFile lines to clearly identify your modification, e.g.,
+%%
+%<+cfgtext>%%  \ProvidesFile{fonttext.cfg}[2001/06/01
+%<+cfgmath>%%  \ProvidesFile{fonttext.cfg}[2001/06/01
+%<+cfgprel>%%   \ProvidesFile{preload.cfg}[2001/06/01
+%%                              Customised local font setup]
+%%
+%%
+%</cfgtext|cfgmath|cfgprel>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

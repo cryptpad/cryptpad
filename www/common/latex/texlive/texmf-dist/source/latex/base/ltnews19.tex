@@ -1,0 +1,116 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% Filename: ltnews19.tex
+%
+% This is issue 19 of LaTeX News.
+
+\documentclass{ltnews}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{lmodern,url}
+
+\publicationmonth{September}
+\publicationyear{2009}
+
+\publicationissue{19}
+
+\begin{document}
+
+\maketitle
+
+\section{New \LaTeX\ release}
+
+This issue of \LaTeX~News marks the first release of a new version of
+\LaTeXe\ since the publication of The \LaTeX\ Companion in 2005--2006.
+
+Just in time for \TeX\ Live 2009, this version is a maintenance
+release and introduces no new features. A number of small changes have
+been made to correct minor bugs in the kernel, slightly extend the Unicode
+support, and improve various
+aspects of some of the \texttt{tools} packages.
+
+\section{New code repository}
+
+Since the last \LaTeX\ release, the entire code base has been moved
+to a public \textsc{svn} repository%
+\footnote{\url{http://www.latex-project.org/svnroot/latex2e-public/}}
+and the entire build architecture re-written. In fact, it has only
+been possible for us to consider a new \LaTeX\ release since earlier
+this year when the test suite was finally set up with the new system.
+In the process, a bug in the \LaTeX\ picture fonts distributed with
+\TeX\ Live was discovered, proving that the
+tests are working and are still very valuable.
+
+Now that we can easily generate new packaged versions of the \LaTeXe\
+distribution, we expect to be able to roll out bug fixes in a much
+more timely manner than over the last few years. New versions should
+be distributed yearly with \TeX\ Live. Having said this, the
+maintenance of the \LaTeXe\ kernel is slowing down as the bugs become
+fewer and more subtle. Remember that we cannot change any of the
+underlying architecture of the kernel or any design decisions of the
+standard classes because we must preserve backwards compatibility with
+legacy documents at all costs.
+
+Even new features cannot be added, because any new documents using
+them will not compile in systems (such as journal production engines)
+that are generally not updated once they've been proven to work as
+necessary.
+
+None of this is to say that we consider \LaTeXe\ to be any less
+relevant for document production than in years past: a stable system
+is a useful one.
+Moreover, the package system continues to provide a flourishing and stable
+means
+for the development of a wide range of extensions.
+
+\newpage
+
+\section{Babel}
+
+One area of the \LaTeXe\ code base that is still receiving feedback to
+be incorporated into the main distribution is the Babel system for
+multilingual typesetting.
+While the Babel sources have already been added to the \textsc{svn} repository the
+integration of the test system for Babel is still outstanding.
+
+
+\section{The future}
+
+While work on \LaTeXe\ tends to maintenance over active development,
+the \LaTeX3 project is
+seeing new life. Our goals here are to provide a transition from the
+\LaTeXe\ document processing model to one with a more flexible
+foundation. Work is continuing in the \textsf{expl3} programming
+language and the \textsf{xpackages} for document design. Future
+announcements
+about \LaTeX3 will be available via the \LaTeX\ Project
+website and in TUGboat.
+
+\end{document}

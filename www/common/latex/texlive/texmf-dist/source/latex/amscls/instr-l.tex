@@ -1,0 +1,1233 @@
+%%% ====================================================================
+%%% @LaTeX-file{
+%%%   filename  = "instr-l.tex",
+%%%   version   = "2.20",
+%%%   date      = "2004/08/06",
+%%%   time      = "16:17:21 EDT",
+%%%   checksum  = "60855 1233 6587 50183",
+%%%   author    = "American Mathematical Society",
+%%%   copyright = "Copyright 1994, 2004 American Mathematical Society,
+%%%                all rights reserved.  Copying of this file is
+%%%                authorized only if either:
+%%%                (1) you make absolutely no changes to your copy,
+%%%                including name; OR
+%%%                (2) if you do make changes, you first rename it
+%%%                to some other name.",
+%%%   address   = "American Mathematical Society,
+%%%                Technical Support,
+%%%                Publications Technical Group,
+%%%                201 Charles Street,
+%%%                Providence, RI 02904,
+%%%                USA",
+%%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%%                800-321-4AMS (321-4267)",
+%%%   FAX       = "401-331-3842",
+%%%   email     = "tech-support@ams.org (Internet)",
+%%%   codetable = "ISO/ASCII",
+%%%   keywords  = "latex, AMS, amslatex, ams-latex, author instructions",
+%%%   supported = "yes",
+%%%   abstract  = "These are instructions for preparing documents for
+%%%                submission to the AMS, using amsmath and AMS LaTeX
+%%%                document classes.",
+%%%   docstring = "The checksum field above contains a CRC-16 checksum
+%%%                as the first value, followed by the equivalent of
+%%%                the standard UNIX wc (word count) utility output of
+%%%                lines, words, and characters.  This is produced by
+%%%                Robert Solovay's checksum utility.",
+%%% }
+%%% ====================================================================
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1995/06/01]% LaTeX date must be June 1995 or later
+\documentclass{amsart}
+
+\hyphenation{man-u-script man-u-scripts over-view pre-par-ing which-ever}
+
+%%  Define macros for text substitution and for presentation of examples
+\newcommand{\AMS}{American Mathematical Society}
+\def\latex/{{\protect\LaTeX}}
+\def\latexe/{{\protect\LaTeXe}}
+\def\amslatex/{{\protect\AmS-\protect\LaTeX}}
+\def\tex/{{\protect\TeX}}
+\def\amstex/{{\protect\AmS-\protect\TeX}}
+\def\bibtex/{{Bib\protect\TeX}}
+\def\makeindx/{\textit{MakeIndex}}
+
+\newcommand{\filnam}[1]{\mbox{\texttt{\ignorespaces#1\unskip}}}
+\let\fn=\filnam
+\let\cls=\filnam
+\let\env=\filnam
+\let\pkg=\filnam
+\def\opt#1{\filnam{[#1]}}
+
+%%  For this manual, add a section number to the references header, and
+%%  include that section header in the contents list.
+\makeatletter
+\def\thebibliography#1{\section\refname
+  \normalfont\small\labelsep .5em\relax
+  \list{\@arabic\c@enumiv.}{\settowidth\labelwidth{#1.}%
+  \leftmargin\labelwidth \advance\leftmargin\labelsep
+  \usecounter{enumiv}}%
+  \sloppy \clubpenalty4000\relax \widowpenalty\clubpenalty
+  \sfcode`\.\@m}
+%
+%%  Turn off series logo and copyright note
+\let\serieslogo@\relax
+\let\@setcopyright\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Table of contents customizations
+
+\let\tocori=\tableofcontents
+\def\tableofcontents{\tocori
+  \skip@\lastskip \vskip-\lastskip
+  \addtocontents{toc}{\protect\tocpatch}%
+  \vskip\skip@ \relax}
+
+\def\tocsection#1#2#3{%
+  \indentlabel{\@ifnotempty{#2}{\tocnbox{\hss#1 #2.\quad}}}#3}
+\let\tocnbox=\hbox
+\def\tocpatch{%
+  \@xp\let\csname r@tocindent2\@xp\endcsname\csname r@tocindent1\endcsname
+  \def\tocnbox{\hbox to\@tempdima}}
+%%  In this document, subsections are unnumbered, but we want an indent
+%%  to be used.
+\def\tocsubsection#1#2#3{\hbox to\leftskip{}#3}
+\def\l@subsection{\@tocline{2}{0pt}{.5pc}{}{}}
+\makeatother
+
+\newdimen\exindent
+\exindent=3\parindent
+%% Add a high penalty to discourage line breaks within an example
+%% without absolutely prohibiting them.
+{\obeylines
+ \gdef^^M{\par\penalty9999 }%
+ \gdef\beginexample#1{\medskip\bgroup %
+   \def\(##1){\makebox[0pt]{\normalfont\mdseries##1}}%
+   \def~{\char`\~}\def\\{\char`\\}%
+   \normalfont\ttfamily\frenchspacing %
+   \parindent=0pt#1\leftskip=\exindent\obeylines}
+}%  end \obeylines
+\def\endexample{\endgraf\egroup\medskip}
+\newdimen\exboxwidth
+\exboxwidth=3in
+\def\exbox#1#2{\noindent \hangindent=\exboxwidth
+  \makebox[0pt][r]{\null\normalfont\mdseries#1\unskip\enspace}%
+  \makebox[\exboxwidth][l]{\normalfont\ttfamily\ignorespaces#2}%
+  \normalfont\mdseries\ignorespaces}
+
+\newcommand\cn[1]{\mbox{\def\\{\char`\\}%
+    \normalfont\ttfamily\\\ignorespaces#1\unskip}}
+\let\ttcs=\cn
+\newcommand\ttcsb[2]{%
+  \mbox{\def\\{\char`\\}%
+    \normalfont\ttfamily
+    \\begin\{\ignorespaces#1\unskip\}\ignorespaces#2\unskip}}
+\newcommand\ttcse[1]{\mbox{\def\\{\char`\\}%
+    \normalfont\ttfamily\\end\{\ignorespaces#1\unskip\}}}
+\def\{{\char`\{\relax}
+\def\}{\char`\}\relax}
+
+%%  Provide a meta-command facility; provide an alternate escape
+%%  character so it can be used within the verbatim environment.
+
+\catcode`\|=0
+\begingroup \catcode`\>=13 % in LaTeX2e verbatim env makes > active
+\gdef\?#1>{{\normalfont$\langle$\textup{#1}$\rangle$}}
+\gdef\0{\relax}
+\endgroup
+\def\<#1>{{\normalfont$\langle$\textup{#1}$\rangle$}}
+\newcommand{\Dimen}{\<dimen>}
+\newcommand{\tab}{\textsc{tab}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%  Provide a dummy titlepage, saving maketitle for the article title.
+%%  Table of contents goes onto the inside front cover.
+
+\def\instrversion{2.20}
+\def\instrdate{August 2004}
+
+\begin{document}
+
+\thispagestyle{empty}
+\vspace*{1.5in}
+\begin{center}
+  {\huge\bfseries Instructions\\[2pt] for Preparation\\[2pt]
+    of Papers\\[2pt] and Monographs
+    \par\vspace{\baselineskip}
+    \amslatex/
+    \par}
+  \vspace{3\baselineskip}
+  \Large
+  Version \instrversion\\[4pt] \instrdate
+\end{center}
+\newpage
+
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+\setcounter{page}{1}
+
+\title [ELECTRONIC MANUSCRIPTS: \amslatex/]
+   {Instructions for Preparation\\
+   of Papers and Monographs: \amslatex/}
+\dedicatory{%
+  \mbox{\normalfont\mdseries\small Version \instrversion: \instrdate}}
+
+\maketitle
+
+\section{Introduction}
+
+This manual is directed mainly to authors preparing material for
+publication by the AMS, using \amslatex/ document classes.  As such,
+it deals with the AMS publishing style.  Since these document classes
+are also used by authors who are not submitting items to the AMS,
+the manual also covers topics of more general relevance.  However, it
+assumes familiarity with standard \latex/ techniques and conventions,
+and contains only material specific to AMS packages.
+
+Links to information useful in preparing manuscripts and graphics
+can be found on the AMS Author Resource Center web page \cite{ARC}\@.
+That information supplements this manual, and we recommend that you
+review it.
+
+The AMS produces three major types of publications: journals (both
+print and electronic), proceedings volumes, and monographs.  There
+is a core AMS document class for each: \cls{amsart}, \cls{amsproc}
+and \cls{amsbook}, respectively.  For most journals or book series,
+there is a specific author package, based on one of the core classes.
+If the specific publication is known, the appropriate author package
+should be obtained from the AMS web server \cite{AP} and used for
+preparation of manuscripts.  In addition, there is a separate package
+for editors of proceedings volumes \cite{EP}, with facilities for
+preparing material that does not fit into the normal ``article''
+category.
+
+If the specific publication is not known, an appropriate generic AMS
+document class can be used:
+
+\begin{itemize}
+\item \pkg{gen-j-l} for journal articles (based on \pkg{amsart})
+\item \pkg{gen-p-l} for articles in book proceedings (based on \pkg{amsproc})
+\item \pkg{gen-m-l} for monographs (based on \pkg{amsbook})
+\end{itemize}
+
+The tagging of elements in a manuscript---title, author(s), section
+headings, theorems, etc.--- is consistent through all author packages.
+Thus a manuscript prepared using the appropriate generic document
+class can be modified trivially to use the specific package, simply by
+updating the \cn{documentclass} statement.  For example, to specify
+the \textit{Contemporary Mathematics} proceedings series:
+\begin{verbatim}
+\documentclass{conm-p-l}
+\end{verbatim}
+
+Each author package contains an electronic version of this manual,
+class files, sample documents, and a \texttt{README} file that
+contains information about each of the files in the package.
+
+When an AMS author package is used, both \latex/ and a recent version
+of \amslatex/ must be installed on the computer being used for
+manuscript preparation.  The AMS Author Resource Center web page
+\cite{ARC} has a link to download the most recent version of
+\amslatex/.  The version number appears at the top of the file
+\pkg{amsmath.sty} (and other files in the collection), and is also
+reported in the log file of a \latex/ run; make sure you have
+version 2.0 or later.
+
+\section{Article preparation}
+
+We first address articles intended for journals and proceedings.
+Monographs are addressed in a separate section (see
+page~\pageref{s:mono}).
+
+\subsection*{Starting a new article}\label{ss:newamsart}
+%%
+Individual articles generally have the following structure:
+\begin{itemize}
+\item \verb+\documentclass{...}+
+\item preamble (for document-specific customizations)
+\item \verb+\begin{document}+
+\item top matter information
+\item \verb+\maketitle+ (to set the top matter)
+\item article body
+\item reference list
+\item \verb+\end{document}+
+\end{itemize}
+A detailed template file (included in each package) provides
+a complete set of commands for the article top matter, and the
+instructions for using them.  The most efficient way to start a
+new article is to make a copy of the template and fill it in.
+
+
+\section{The preamble}
+
+The area between the \verb+\documentclass+ statement and the line
+\verb+\begin{document}+ is referred to as the ``preamble''.  This is
+the place to load external packages and define document-specific
+commands.
+
+Available \cn{documentclass} options are described in the file
+\filnam{amsclass.dtx}.  Process this file with \latex/ to obtain a
+version with human-readable documentation.  One option does need to
+be mentioned here: \opt{psamsfonts}; include this option as
+\begin{verbatim}
+\documentclass[psamsfonts]{...}
+\end{verbatim}
+to ensure correct sizing of fonts in environments other than normal text.
+
+\subsection*{Packages}
+%%
+The AMS document classes incorporate the code for the AMS theorem
+(\pkg{amsthm}) package and automatically load the \pkg{amsmath}
+package.  It is not necessary to request either one explicitly.
+The user guides for these packages \cite{ATP,AMP} contain the details,
+which will not be repeated here.  The \pkg{amsfonts} package is loaded
+as well, unless the \opt{noamsfonts} option is specified; see the
+AMSFonts User's Guide \cite{AFG} for the features provided.
+
+Not all publicly available packages are compatible with the AMS
+document classes.  For this reason, we mention some that are:
+\begin{itemize}
+\item \pkg{amssymb} provides names for additional symbols from the
+  AMS symbol fonts; see \cite{AFG} for details.
+\item \pkg{amsmidx} supports multiple indexes for a book; see
+  page~\pageref{ss:indexing}.
+\item \pkg{graphicx} is part of the \latex/ suite, preferred for
+  inclusion of graphics.
+\item \pkg{longtable} facilitates tables longer than one page.
+\item \pkg{upref} forces cross-references with \cn{ref} to roman;
+  see ``Roman type'', page~\pageref{ss:roman}.
+\item \pkg{xypic} is recommended for creating commutative diagrams.
+\end{itemize}
+
+There are several packages that cause particular problems for AMS
+production.  Their use should be avoided if possible:
+\begin{itemize}
+\item \pkg{psfrag}, for applying labels externally to included graphics,
+  may result in a PostScript that can't be converted properly to PDF.
+\item \pkg{epsfig} has been superseded by \pkg{graphicx}.
+\end{itemize}
+
+Don't load any packages that aren't actually needed.
+
+
+\subsection*{New commands}
+%%
+Place all definitions for new commands in the preamble.  This includes
+instructions to access fonts that are not already defined in the AMS
+document classes or \pkg{amsmath}, such as a new math alphabet (see
+\cite{AMP}).
+
+Always use \cn{newcommand}; this will let you know if the name you
+have chosen has already been used.  Do not redefine any command from
+\latex/, \pkg{amsmath}, or any AMS document class, as this could cause
+problems in AMS production.  New definitions may be used to provide
+shorthand forms for mathematical expressions that are used frequently,
+but do not use new definitions for text; for articles posted on-line,
+this will prevent indexing software from identifying relevant
+references.
+
+Use commands and environments provided by the AMS document classes
+and standard packages whenever applicable---for example, you should
+use the AMS \env{proof} environment rather than define your own
+alternative.
+
+When the file is complete, remove any commands that haven't been used.
+
+
+\section{Top matter}\label{s:topmatter}
+
+The top matter associated with an article includes information that
+would appear in a bibliographic reference to the paper, plus additional
+information about the author(s), subject classifications, key words,
+acknowledgments of support, and the abstract.
+
+
+\subsection*{Summary of tags and elements}
+%%
+Table 1 lists the top matter commands provided by \amslatex/
+version 2.0 and later.  Not every tag is necessary for each paper.
+The table shows which tags are necessary and which are optional.
+Requirements for monographs are somewhat different and are described
+later.  The template file included in every author package contains
+all the necessary tags and instructions for using them.
+
+\begin{table}[ht]
+\caption{Top matter tags}
+\begin{minipage}{\textwidth}
+\begin{verbatim}
+\documentclass{amsart}
+|?preamble commands, such as |ttcs|bgroup|0newcommand|egroup, etc.>
+
+\begin{document}
+\end{verbatim}
+\begin{center}
+\begin{tabular}{lcc}
+\                 & \multicolumn{2}{c}{Required by}\\
+\                               & Journals  & Books \\
+\verb+\title[...]{...}+         & yes\rlap{${}^1$} & yes\rlap{${}^1$} \\
+
+\verb+\author[...]{...}+        & yes\rlap{${}^1$} & yes\rlap{${}^1$} \\
+\verb+\contrib[...]{...}+       & no\rlap{${}^2$} & --- \\
+\verb+\address{...}+            & yes & yes \\
+\verb+\curraddr{...}+           & no  & no \\
+\verb+\email{...}+              & no  & no \\
+\verb+\urladdr{...}+		& no  & no \\
+\verb+\dedicatory{...}+         & no  & no \\
+\verb+\date{...}+               & ---\rlap{${}^3$} & --- \\
+\verb+\thanks{...}+             & no & no \\
+\verb+\translator{...}+         & ---\rlap{${}^3$} & ---\rlap{${}^3$} \\
+\verb+\keywords{...}+           & no & no \\
+\verb+\subjclass[2000]{...}+    & yes & yes \\
+\verb+\begin{abstract}...\end{abstract}+ & yes\rlap{${}^4$} & no \\
+\verb+\maketitle+               & yes & yes \\
+\end{tabular}
+\end{center}
+\vspace*{1pc}
+
+{\Small
+${}^1$ If no short form is needed, omit the brackets.
+
+${}^2$ For contributors, see details on page~\pageref{ss:contrib}.
+
+${}^3$ If this is necessary, it  will be filled in by the AMS staff.
+
+${}^4$ For the \textit{Journal of the  American Mathematical Society},
+abstracts are optional.
+\par
+}
+\end{minipage}
+\vspace{.25\baselineskip}
+\hrule width \textwidth
+\vspace{.5\baselineskip}
+\end{table}
+
+\subsection*{Title}
+%%
+For AMS journal articles, capitalize only the first word and proper
+nouns in the title.  For articles in an AMS proceedings volume,
+capitalize the first and last words of the title and all nouns,
+pronouns, adjectives, adverbs, and verbs.  Articles, conjunctions, and
+prepositions should be lowercased unless they are the first or last
+word of the title.  These rules should be followed even if the
+publication in which the article appears has another style.  The style
+for the particular publication will be generated automatically when
+the article is processed at the AMS.
+
+A multiline title may be left for \latex/ to break, or a desired break
+may be indicated by \cn{\\}.
+
+Unless the title is very short, provide a form of the title suitable
+for use in running heads.  This should be entered in brackets between the
+tag \cn{title} and the full title:
+\verb+\title[+short title\verb+]{+full title\verb+}+.
+Do not use author-defined macros in the title.
+
+\subsection*{Author information}\label{ss:authorinfo}
+%%
+Enter the name(s) of the author(s) with the tag \cn{author}, using
+standard capitalization for proper names.  Use a separate \cn{author}
+command for each author.  Names will be combined by \latex/ according
+to the dictates of the document class.  See also ``contributors'',
+below.
+
+If the author name(s) cannot fit in the space available for the running
+head, enter a shortened form for each name in [brackets]
+between the tag \cn{author} and the full name.  Acceptable shortened
+forms use initials for all but the surname(s).  For example,
+\begin{verbatim}
+\author[J. Smith]{Joseph Smith}
+\end{verbatim}
+If the list of shortened author names is still too long for the running
+head (including a reasonable space for the page number), it can be
+shortened as in the following example, as a last resort:
+\begin{trivlist}
+\item\relax
+\verb+\markleft{J. SMITH ET AL.}+
+\end{trivlist}
+
+\noindent
+Note that \cn{markleft} is available only for \amslatex/ versions 2.20
+and later; it is not a basic \latex/ command.
+Data provided with \cn{markleft\{\}} \emph{must} be in all capital letters
+(except for included math). Place \cn{markleft\{\}} before the first
+\cn{author} in your file.
+
+For each author you should provide one or more addresses.  Tag them
+as follows, grouping them in this order by author:
+\begin{verbatim}
+\address{...}   |rm address where the research was carried out |tt
+\curraddr{...}  |rm current address, if different from the research address |tt
+\email{...}     |rm address for electronic mail |tt
+\urladdr{...}   |rm URL address (optional)
+\end{verbatim}
+Do \emph{not} include any addresses within the scope of an
+\cn{author\{\}} command (this is different from basic \latex/).
+Do not use abbreviations in addresses.
+
+The main address should be divided by \cn{\\} into segments that
+correspond to address lines for use on an envelope.  When typeset, the
+lines will be strung together separated by commas, but the division by
+\cn{\\} will be useful to a person preparing an envelope to return
+proofs.
+
+Addresses are considered part of the top matter, but in AMS articles
+they are ordinarily printed at the end of the article following the
+bibliography (this is different from basic \latex/).  Suitable labels
+will indicate the current, e-mail, and URL addresses, typically
+\textit{Current address}:, \textit{E-mail address}:, \textit{URL}:,
+respectively.
+
+If \texttt{\textasciitilde} is needed in a URL address, enter it
+directly as \texttt{\textasciitilde} if you are using \amslatex/
+version 2.20 or later; otherwise, see the Author FAQ \cite{AF}
+for instructions.
+
+\subsection*{Contributors
+  {\mdseries (new with version 2.20)}}\label{ss:contrib}
+%%
+Contributors are much like authors, but are responsible for only
+a portion of an article, e.g., an appendix or auxiliary tables.
+The bracketed portion is not optional; it gives the exact text that
+will be printed to indicate the nature of the contribution:
+\begin{verbatim}
+\contrib[with an appendix by]{William Rogers}
+\end{verbatim}
+Multiple contributors and contributions are input like this:
+\begin{verbatim}
+\contrib[with Appendix A by]{William Rogers}
+\contrib[]{Henry Taylor}
+\contrib[and Appendix B by]{John Henderson}
+\end{verbatim}
+Note the empty brackets on the second line.  Multiple contributors
+indicated in this way will be combined and ``andified'' appropriately.
+Contributors will not be included in running heads.  Addresses provided
+for contributors will be treated the same as for regular authors.
+
+\subsection*{Dedication}
+%%
+Use the tag \cn{dedicatory} for such things as ``Dedicated to
+Professor X on the occasion of his eightieth birthday.''  If the
+dedication is longer than one line, you may indicate a break with
+\cn{\\}.
+
+\subsection*{Acknowledgments of support and other first-page footnotes}
+%%
+Use the command \cn{thanks} to acknowledge grants and other kinds of
+support or for other general information not covered by one of the
+more specific commands such as \cn{keywords} or \cn{subjclass}.  Enter
+\cn{thanks} immediately following the address(es) for the relevant
+author, \emph{not} within the scope of the \cn{author\{\}} command
+(this is different from basic \latex/).  Like \cn{address}, \cn{thanks}
+can appear more than once in the top matter.  Each occurrence will be
+printed as an unnumbered footnote at the bottom of the first page of
+the article.
+
+\subsection*{Subject information}
+%%
+Subject classifications and key words, like acknowledg-\linebreak ments, are
+part of the top matter and appear as unnumbered footnotes at the bottom of
+the first page.
+
+Subject classifications may be primary (the major topic(s) of the
+paper) or secondary (subject areas covered by ancillary results,
+motivation or origin of problems discussed, intended or potential
+field of application, or other significant aspects worthy of notice).
+At least one primary subject classification is \textbf{required}.
+Additional primaries and secondaries are optional.
+
+\begin{samepage}
+These classifications are entered as
+\begin{verbatim}
+\subjclass[2000]{Primary |?primary class>; Secondary |?secondary classes>}
+\end{verbatim}
+(Omitting \texttt{[2000]} will cause the 1991 Subject Classification
+to be cited.)
+\end{samepage}
+
+To determine the classifications, use the 2000 Mathematics Subject
+Classification scheme that appears in annual indexes of \textit{Mathematical
+Reviews} beginning in 1999.  It can also be accessed on the Web at URL:
+\texttt{http://www.ams.org/msc/} or obtained in printed form from
+Customer Services.
+Please use the full number; the two-digit code from the Contents of
+\textit{Mathematical Reviews} is \textbf{not} sufficient.
+
+Key words are not required but may be provided by an author if desired.
+They should be tagged as \cn{keywords\{...\}}.
+
+\subsection*{Abstract}
+%%
+With an AMS document class, place the abstract before \cn{maketitle},
+contrary to the practice with the basic \latex/ document classes.
+This is necessary to ensure that the abstract can always be printed in
+the proper location and style.  If the abstract is given after
+\cn{maketitle}, it will be printed in place and generate a warning
+message.
+
+Input the abstract text between \verb+\begin{abstract}...\end{abstract}+.
+It may comprise multiple paragraphs and include displayed material if
+appropriate.  The length of the abstract depends primarily on the
+length of the paper itself and on the difficulty of summarizing the
+material.  An upper limit of about 150 words for short papers and 300
+words for long papers is suggested.  Do not use author-defined macros
+or \cn{ref} in the abstract.
+
+
+\section{Document body (all document classes)}
+
+\subsection*{Linking for the Web}
+%%
+All AMS primary journals are posted on-line.  Electronic
+manuscripts prepared in \latex/ for any AMS journal should be tagged
+for maximum linking on the Web. For use of \cn{label}, \cn{ref},
+and \cn{cite}, see \cite{LC}; for \cn{eqref}, see \cite{AMP}.
+
+\subsection*{Headings}
+%%
+Four levels of headings are provided to permit logical sectioning of
+a manuscript.  These headings are applicable to individual articles
+and to chapters of a monograph.  (Headings specific to monographs are
+listed under \textit{Monograph formatting}.)
+
+\begin{verbatim}
+\specialsection{...}
+\section[...]{...}
+\subsection[...]{...}
+\subsubsection[...]{...}
+\end{verbatim}
+
+\cn{specialsection} is for long articles that need extra divisions
+(e.g., parts) at a level above the \cn{section} level.
+
+Explicit line breaks are obtained by \verb+\\+ in first-level section
+headings.
+
+Any heading may be given a label to allow references to be made to it,
+by including a \cn{label\{...\}} command with a unique identifier
+directly \emph{after} the heading.  References are made using the
+command \cn{ref\{...\}} and the same identifier.  For example,
+\begin{verbatim}
+\section{Monograph formatting}
+\label{s:mono}
+\end{verbatim}
+will establish a label for this section that can be referred to with
+\cn{ref\{s:mono\}}. Cross references of
+this sort will require \latex/ to be run at least twice for proper
+resolution.  A warning at the end of the \latex/ run, ``Cross
+references may have changed\dots\unskip'', should be heeded in this regard.
+
+
+\subsection*{Mathematical text}
+%%
+For instructions on preparing mathematical text, refer to
+\cite{AMP} and \cite{ML}.  See also ``Roman type'', below.
+
+\subsection*{Lists}
+%%
+Follow usual \latex/ conventions for producing list environments.
+
+\subsection*{Theorems, lemmas, and other proclamations}
+%%
+See the manual \textit{Using the \pkg{amsthm} package} \cite{ATP}
+for details. Theorem environments following AMS style with respect to
+punctuation, spacing and paragraphing are defined in the AMS document
+classes.  This is incompatible with the \latex/ \pkg{theorem} package,
+which cannot be used with the AMS document classes.
+
+Three different theorem styles are provided by AMS document classes:
+\cls{plain}, \cls{definition}, and \cls{remark}. By referring to these
+styles and using the \cn{newtheorem} command, you can build a
+complement of theorem environments appropriate for any paper or
+monograph.  All \cn{newtheorem} specifications should be included in
+the preamble; a starter set is included in the template for every
+AMS author package.
+
+Theorem support is also available separately in the \pkg{amsthm} package
+for users of document classes other than those from the AMS.
+
+\subsection*{Equations}
+%%
+Check displayed equations carefully, making sure they are broken and
+aligned following the guidelines in \cite[pp. 44--48]{MIT}.
+
+\subsection*{Roman type}\label{ss:roman}
+%%
+Numbers, punctuation, (parentheses), [brackets],
+$\lbrace$braces$\rbrace$, and symbols used as labels should always be
+set in roman type.  This is true even within the statement of a theorem,
+which is ordinarily set in italic type.
+
+Be careful to distinguish between roman elements that are mathematical
+in nature (e.g., ``a group of class 2''), and those that are part of
+the text (e.g., a label or a year).  Mathematical expressions, no matter
+how short or insignificant, should be coded as math, by enclosing them
+within dollar signs \verb+$...$+ or \verb+\(...\)+.  Roman text elements
+should be coded as \cn{textup\{...\}} in potentially nonroman
+environments such as theorems.
+
+Abbreviated forms of mathematical terms are also usually set in roman
+type to distinguish them from mathematical variables or constants.
+Use the control sequences for common mathematical functions and
+operators like \verb+log+ and \verb+lim+; use \cn{DeclareMathOperator}
+to add additional operator names (see \cite[\S5]{AMP}).
+
+The style of reference citations, though publication-dependent, is
+usually roman.  To ensure consistency and support linking for the Web,
+\textbf{always} use the standard \latex/ \cn{cite} command when citing
+a reference.  Internal references with the \cn{ref} command are not
+automatically roman in non-roman environments, but can be forced by
+using the \pkg{upref} package (part of the \amslatex/ collection).
+
+\subsection*{Exercises}
+%%
+Exercises are produced using the \env{xca} and \env{xcb} environments.
+\env{xca} may be used in any publication, but must be defined in
+the document preamble with \cn{theoremstyle\{definition\}} and the
+\cn{newtheorem} command; it is used for exercises that occur within a
+section.  \env{xcb} is defined only for monographs and is used for
+exercises that occur at the end of a chapter.
+
+\subsection*{Indexing facilities}
+\label{ss:indexing}
+%%
+The tags needed for \makeindx/ are already included in AMS document
+classes.  Do not include the \pkg{makeidx} package, but do put the
+command \cn{makeindex} in the preamble to launch a single index.
+See \cite[chapter 11]{LC} and \cite[chapter 11]{GL} for use of
+\makeindx/.
+
+A package for multiple indexes, \pkg{amsmidx}, is included in the
+\amslatex/ collection beginning with version 2.20.  Unlike other
+multiple-index packages, \pkg{amsmidx} is compatible with the AMS
+document classes.  To use this package, put these commands into the
+preamble:
+\begin{verbatim}
+\usepackage{amsmidx}
+\makeindex{|?name of first index file>}
+\makeindex{|?name of second index file>}
+\end{verbatim}
+To identify index entries in the text:
+\begin{verbatim}
+\index{|?name of index file>}{|?index term>}
+\end{verbatim}
+In the backmatter, where the indexes are to appear:
+\begin{verbatim}
+\Printindex{|?name of first index file>}{|?title of first index>}
+\Printindex{|?name of second index file>}{|?title of second index>}
+\end{verbatim}
+Note the capitalization of the \cn{Printindex} command.
+
+\section{Floating objects: Figures and tables}
+
+Figures and tables are usually handled as floating inserts.  Such
+items are often so large that fitting them into the document at the
+point of reference may cause problems with pagination.  Placing such
+items into a floating insert allows them to be repositioned
+automatically by \latex/ as required for good pagination.
+
+A floating insert generally contains one of these possibilities:
+\begin{itemize}
+\item \latex/ code that produces an object such as a table or
+  commutative diagram;
+\item a command to incorporate an item produced by another application
+  (most often an Encapsulated PostScript (EPS) file produced by a
+  graphics utility; see \textit{Electronic graphics},
+  page~\pageref{ss:electronicgraphics}).
+\end{itemize}
+
+If a figure is described by \latex/ code (e.g., using \pkg{xypic} or
+the \env{picture} environment), it should be included directly in the
+file.
+
+\subsection*{Placement}
+%%
+Floats should
+\begin{enumerate}
+\item be numbered consistently throughout the paper (figures and tables
+  are numbered separately),
+\item be placed at the top or bottom of the page,
+\item have an in-text reference, and
+\item definitely appear within the same section as their first text
+  reference.
+\end{enumerate}
+
+A figure or table should not precede its first text reference unless
+they both appear on the same page spread.  When a figure or table is
+an integral part of text, it may appear unnumbered in place in the
+middle of text.
+
+Figures and tables should be allowed to float according to the \latex/
+defaults preset by the document class.  If you are submitting a file
+that will be processed at the AMS (this applies to all journal
+articles), you could introduce major problems with pagination if you
+hard-set your figures and tables by using the \verb+[h!]+ option.
+Production problems will be avoided when you use the appropriate
+author package class file and avoid using figure or table options.
+For electronic manuscripts, the final placement of inserts will be
+determined by the AMS editorial staff, on the basis of the most
+appropriate page layout.
+
+\subsection*{Captions}
+%%
+Captions for floating inserts are usually positioned above a table and
+below a figure. The following is the general structure used to specify
+a figure insert, with a caption at the bottom:
+\begin{verbatim}
+\begin{figure}
+\includegraphics{|?file name of |tt.eps|rm| file>}|quad|rm or|tt|quad|?code for the insertion>
+\caption{|?caption text>}
+\label{|?reference label>}|quad|rm (optional)|tt
+\end{figure}
+\end{verbatim}
+
+This is the general structure for a table insert, with a caption at
+the top:
+\begin{verbatim}
+\begin{table}
+\caption{|?caption text>}
+\label{|?reference label>}|quad|rm (optional)|tt
+|?code for the insertion body>
+\end{table}
+\end{verbatim}
+
+Caption headings (e.g., ``\textsc{Table 3.1.}''\ or
+``\textsc{Figure 7.}'')\ will be supplied automatically.  The
+\<caption text> is any appropriate descriptive text, and may be
+omitted if no descriptive text is desired.  (The style of the caption
+differs from the basic \latex/ caption style.)  A reference label
+should usually be associated with the caption, and must be given
+\emph{after} the caption.  A reference in text to the figure or table
+has the form \cn{ref\{\<reference label>\}}.
+
+\latex/ packages for captions may appear to work with the AMS document
+classes, but the caption style doesn't usually match the AMS style.
+
+\subsection*{Electronic graphics}\label{ss:electronicgraphics}
+%%
+Graphics created by applications other than \latex/ may be submitted
+to the AMS in an electronic format.  This includes output from
+graphics applications as well as scanned photographs or other
+computer-generated images.  The AMS requires such graphics in
+Encapsulated PostScript (EPS) format.
+
+Use the \pkg{graphicx} package (part of the \pkg{graphics} bundle
+of \latex/) to embed references to EPS graphics directly in a \latex/
+file; see the manual, \filnam{grfguide.tex} \cite{GB}.  Another
+valuable reference is the manual ``Using EPS Graphics in \latexe/
+Documents'' \cite{EG}.
+
+Other packages are not recommended, as there are numerous areas of
+incompatibility which may result in the need for manual intervention,
+delaying processing and increasing the cost.
+
+The EPS files will not be physically included in the \latex/ file.
+You must submit a separate file for each graphic along with the \latex/
+document.  No matter what method is used to produce a graphic, it is
+necessary to provide a paper copy to the AMS for verification.  Double
+check to make sure the electronic and paper versions are the same.
+
+\subsection*{Compatibility requirements for graphics}
+There are two important requirements that must be observed when
+embedding graphics.
+
+\emph{Omit path names} for the included files.  Instead of
+\begin{verbatim}
+\includegraphics*{/usr/joe/book/figures/fig1.ps}
+\end{verbatim}
+use just the name of the file:
+\begin{verbatim}
+\includegraphics*{fig1.ps}
+\end{verbatim}
+The easiest way to do this is to place the graphics files in the
+same directory as the file(s) being {\TeX}ed.
+
+Do not use the \cn{graphicspath\{\<directory list>\}} command to
+establish a path.  This will result in the path being included in
+the DVI file, which will be impossible to process at the AMS\@.
+It may be possible to specify a path using one of the environments
+recognized by the {\TeX} engine (\fn{TEXINPUTS}, for example);
+instructions for setting these environments should be in the
+documentation for your system.
+
+Graphics commands must be compatible with the \textit{dvips} output
+driver.  This is particularly important if you are submitting a DVI
+file for a camera-ready publication.  The method is specific to the
+graphics package you are using; a typical method is to use a file
+\filnam{graphics.cfg} containing the line \cn{ExecuteOptions\{dvips\}}
+when you run \latex/ to create the DVI or PostScript file to send to
+the AMS.
+
+\subsection*{Technical requirements for graphics}
+%%
+If you scale a figure before submitting it, remember that line weights
+also scale.  The lightest line weight that will reproduce clearly at
+high resolution is 0.5pt after scaling.  Do \emph{not} specify
+``hairline'' weight, as this will be nearly invisible at high
+resolution and will disappear in the printing process. If a rule line
+is screened, its weight should be no less than 1 point \emph{after}
+scaling.
+
+Graded line weights should increase in increments of at least 0.5pt.
+Increments less than this are insufficiently distinguishable at high
+resolution.
+
+Screened fills should be screened not less than 15\% (less will print
+as white) and not greater than 85\% (greater will print as black).
+
+Ideally, text included in graphics files should be font outlines
+rather than bitmaps, because the AMS typesets its publications on a
+high-resolution imagesetter, not a laser printer.  Text or lines in
+graphics which are 300dpi bitmaps (which look fine in the
+laser-printed output of your article) may appear poor in quality next
+to the high-resolution text of AMS publications.  If bitmaps of
+characters are part of bitmapped line art files, output will be
+satisfactory if the bitmapped characters are at 1200dpi.
+
+\subsection*{Color graphics}
+%%
+AMS publications are ordinarily printed in black and white.
+Use of color requires explicit permission from the AMS.
+
+Color figures should have the resolution of at least 266 pixels per
+inch when printed at 100\%, and must also be suitable for printing
+as grayscale.  The files must be in EPS format
+
+
+\section{Bibliographic references}
+%%
+\subsection*{Using \protect\bibtex/ to prepare a bibliography}%
+An author may find it convenient to maintain a file of references in
+\bibtex/ form, as described in \textit{The \latex/ Companion}
+\cite[Section 13.2]{LC}. Two \bibtex/ styles are provided:
+
+\begingroup
+\exindent=2\parindent
+\beginexample{\exboxwidth=1.05in}
+\exbox{}{amsplain.bst} will produce numeric labels; preferred for articles;
+\exbox{}{amsalpha.bst} will produce labels constructed from the %
+  author name(s)\newline and year of publication.
+\endexample
+\endgroup
+
+\noindent
+Both will translate references in a \bibtex/ input (\filnam{.bib})
+file to \latex/ input in a \filnam{.bbl} file in the form appropriate
+for AMS publications, including all necessary formatting instructions.
+This method of preparing bibliographies is therefore recommended.
+
+To access a \bibtex/ bibliography in a paper or monograph, include these
+instructions in the appropriate place in the input file:
+\begin{verbatim}
+\bibliographystyle{|?style>}|qquad|rm(|tt|0amsplain  |rm or|tt  amsalpha|rm)|tt
+\bibliography{|?name of bibliography |bgroup|tt.bib|egroup| file>}
+\end{verbatim}
+
+Running \bibtex/ on the \filnam{.bib} file will produce a \filnam{.bbl}
+file.  The \filnam{.bib} file may have any name the author finds convenient;
+however, the \filnam{.bbl} file must have the same name as the source file
+for a monograph from which it is input, so it may be necessary for the
+author to rename it.  For an article, after the bibliography has been
+completed (including processing by \bibtex/), the contents of the
+\filnam{.bbl} file should be inserted into the main article input file,
+replacing the \cn{bibliographystyle} and \cn{bibliography} statements.
+
+Items in the bibliography are usually ordered alphabetically by author.
+\bibtex/ processing may alter this order, especially if the
+\filnam{amsalpha} style is used.
+
+All categories of bibliographic entries listed in
+\cite[Table 13.1]{LC} are supported in the two AMS \bibtex/ styles.
+In addition to the fields listed in Table 13.1, a \verb+language+
+field is provided for use in identifying the original language of an
+item whose title has been translated.
+
+The \pkg{harvard} package (available from CTAN) provides an
+author-year style that is compatible with the AMS document classes.
+This should ordinarily be used only for monographs on historical
+topics.
+
+Standard abbreviations for periodicals should be obtained from
+\cite{ASMR}\@.
+
+\subsection*{Preparing a bibliography without \protect\bibtex/}
+%%
+The references section of a paper is contained between the commands
+\begin{verbatim}
+\begin{thebibliography}{|?model label>}
+\end{thebibliography}
+\end{verbatim}
+This environment is resolved as an unnumbered section in an article
+or an unnumbered chapter in a monograph, following AMS publication
+specifications.  The indentation for the labels is set to an
+appropriate width using the model given with the \cn{begin} command.
+Thus the widest label in the bibliography should be used as the model;
+for example, \verb+99+ will provide space for a 2-digit numeric label.
+
+For the proper order of reference elements and use of fonts and
+punctuation, look at an issue or volume in the journal or book series
+for which your document is intended and follow the examples you see
+there.  More examples are given in \cite{MIT}.
+
+\subsubsection*{Reference input}
+%%
+Begin each item with the command \cn{bibitem\{\<bibitem label>\}}.
+The \latex/ default is to number references automatically; however,
+other labels may be used by inserting an optional key argument in
+square brackets between the command and the internal label:
+\begin{verbatim}
+\bibitem[ABC]{Arno1994}
+\end{verbatim}
+The item label and the key need not be identical.  Whatever appears
+within the \verb+[ ]+ is what prints; whatever is within the curly
+braces is used for linking and must not include any math or special
+characters.
+
+Give at least one full name; initials and last name is an acceptable
+form.  If a subsequent reference is by the same author(s), use
+\cn{bysame} instead of the name(s).
+
+For examples, refer to \cite{MIT}.
+
+
+\section{Monograph formatting}\label{s:mono}
+
+A monograph is a long work by a single author or co-authors on a
+single subject.  Each chapter should be prepared as a separate file,
+as should the bibliography.  In addition, a ``driver'' file should be
+used to input all the others.  These files should be given meaningful
+names, so that when they are transmitted to the AMS, there will be no
+question about which file represents which chapter.  For example, a
+monograph by author Grey might be composed of files named
+\filnam{grey.tex} (the driver file), \filnam{grey-ch1.tex},
+\filnam{grey-ch2.tex}, \dots, \filnam{grey-ch12.tex},
+\filnam{grey-appa.tex}, etc., and \filnam{grey-bib.tex}.
+If the author name is a common one, please include something to make
+it unique, such as first initials.
+
+Information that identifies the author(s), the subject matter of the
+monograph, acknowledgments of support, and so forth, will appear in the
+front matter of the book.  Place this information in the driver file,
+and use the tags shown below.  Most of these are the same as the tags
+associated with the top matter of an article; see the \textit{Top
+matter} section (page~\pageref{s:topmatter}) for explanations and an
+indication of which tags are required.
+
+\subsection*{Starting a new monograph}\label{s:newamsbook}
+%%
+The driver file for a monograph is generally made up of the following:
+\begin{itemize}
+\item \verb+\documentclass{...}+
+\item preamble (where extra definitions might go)
+\item \verb+\begin{document}+
+\item \verb+\frontmatter+
+\item title page and copyright page information
+\item \verb+\maketitle+ (to set the title page and copyright page; see note)
+\item \verb+\include+ files (e.g., preface, introduction)
+\item \verb+\mainmatter+
+\item \verb+\include+ files (e.g., main chapters, appendices)
+\item \verb+\backmatter+
+\item commands for bibliography, index
+\item \verb+\end{document}+
+\end{itemize}
+
+\noindent
+Note: The title and copyright pages are for information only, so that
+a printed copy can be associated with the correct author(s).  The final
+copy will be prepared at the AMS.
+
+For a typical driver file, see the template for \cls{amsbook}, included
+in the \amslatex/ collection.
+
+Instructions for preparing a dedication page are given in the AMS
+Author FAQ \cite{AF}.
+
+The table of contents will be produced automatically from a
+\filnam{.toc} file produced anew in each run of \latex/. Since there is
+no \filnam{.toc} before the first run, the body of the table of contents
+will be empty on the first run. It is AMS style to include only
+first-level heads, chapter titles, and part titles in the table of
+contents.
+
+Chapters in AMS book series start on right-hand (odd-numbered) pages.
+Blank pages will be provided as necessary at the end of earlier material
+to accomplish this.
+
+
+\subsection*{Chapter titles}
+%%
+Chapter titles should be capitalized as follows: the first and last
+words of the title and all nouns, pronouns, adjectives, adverbs, and
+verbs should be capitalized.  Articles, conjunctions, and prepositions
+should be lowercased unless they are the first or last word of the title.
+
+There are three common variations of the chapter title.  The form with
+a chapter number is most common:
+\begin{verbatim}
+\chapter{Matrix Algebras}
+\end{verbatim}
+
+The second variation is an appendix, where the word ``Appendix''
+replaces the word ``Chapter''. Use the command \cn{appendix} before
+the first \cn{chapter} command in a sequence of appendix chapters.
+\begin{verbatim}
+\appendix
+\chapter{Poisson Integral}
+\end{verbatim}
+In addition to ``Appendix'', the counter will produce letters ``A'',
+``B'', ``C'', etc.,\ instead of numbers.
+
+The third variation is used for an element such as a preface or
+introduction, which has no pretitle text at all.  For this, use the
+\cn{chapter*} command:
+\begin{verbatim}
+\chapter*{Preface}
+\end{verbatim}
+Unlike the \latex/ \cls{book} class, the AMS document classes will
+place entries for unnumbered chapters in the table of contents, as
+required by AMS style.
+
+\subsection*{Monograph running heads}
+%%
+The chapter title is used for the left running head and section
+headings for the right running head.  The chapter title repeats if
+there are no sections.  If the text of a section heading is too long
+to fit as a running head, use the square-bracket option to specify a
+shortened form for use in the running heads:
+
+\begin{verbatim}
+\section[Fourier coefficients of periodic functions]
+   {Fourier coefficients of continuous periodic functions
+   of bounded entropy norm}
+\end{verbatim}
+
+If the chapter title is too long to fit as a running head, a shortened
+form can be supplied in a similar way.  Full chapter titles and section
+headings will be used in the table of contents (this is different from
+basic \latex/).
+
+\subsection*{Numbering of figures and tables}
+%%
+The preferred AMS style for numbering figures and tables is to start
+numbering from 1 within each chapter, and to include both the chapter
+and element number in the printed caption heading.  For example, the
+first figure in Chapter 5 would be numbered ``\textsc{Figure} 5.1''.
+The \cls{amsbook} document class resets figure and table numbers
+automatically, but does not include the chapter number in the printed
+caption.  To add the chapter number, place these lines in the preamble
+of the driver file:
+\begin{verbatim}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+\end{verbatim}
+
+
+\section{Getting help}
+
+Many questions raised by authors are answered in the AMS Author FAQ
+\cite{AF}.  Please check that before asking for assistance.
+
+If you encounter difficulties in preparing or submitting your
+manuscript in electronic form after it has been accepted for
+publication by the appropriate editorial board, you can ask for help
+from the \AMS\ at:
+
+\penalty-100
+\begin{samepage}
+\beginexample{\normalfont\mdseries}
+Technical Support
+Publications Technical Group
+201 Charles Street
+Providence, RI  02904-2294
+\vspace{3pt}
+Phone: 800-321-4267, ext.\ 4080 \quad or \quad 401-455-4080
+E-mail: {\texttt{tech-support@ams.org}}
+\endexample
+\end{samepage}
+
+\noindent
+Please supply the name of the journal or book series, the editor's
+name if the manuscript is for a proceedings volume, and a concise
+explanation of the problem.
+
+
+\begin{thebibliography}{[ASMR]}
+
+\bibitem[AF]{AF} AMS Author FAQ,
+\texttt{http://www.ams.org/authors/author-faq.html}
+
+\bibitem[AFG]{AFG} \textit{AMSFonts{} version~\textup{2.2d} user's guide},
+Amer. Math. Soc.,  Providence, RI, 2002.
+PDF file linked from \texttt{http://www.ams.org/tex/amsfonts.html}
+
+\bibitem[AMP]{AMP} \textit{User's guide for the \pkg{amsmath} package
+\textup{(}version~\textup{2.0)}}, Amer. Math. Soc., Providence, RI, 2004.
+PDF file linked from \texttt{http://www.ams.org/tex/amslatex.html}
+
+\bibitem[AP]{AP} Author packages for publishing with the AMS,\\
+\texttt{http://www.ams.org/tex/author-info.html}
+
+\bibitem[ARC]{ARC} AMS Author Resource Center,
+\texttt{http://www.ams.org/authors/}
+
+\bibitem[ASMR]{ASMR} \textit{Abbreviations of names of serials reviewed in
+Mathematical Reviews}, Amer. Math. Soc., Providence, RI,
+revised annually; searchable on-line at\\
+\texttt{http://www.ams.org/msnhtml/serials-list/annser\_frames.html}.
+
+\bibitem[ATP]{ATP} \textit{Using the \pkg{amsthm} package,
+version~\textup{2.0}}, Amer. Math. Soc., Providence, RI, 2004.\\
+PDF file linked from \texttt{http://www.ams.org/tex/amslatex.html}
+
+\bibitem[EG]{EG} Keith Reckdahl, ``Using EPS graphics in \latexe/
+documents'', available in electronic form as \texttt{info/epslatex.ps}
+or \filnam{.pdf} from\newline
+\texttt{http://www.ctan.org/tex-archive/}
+
+\bibitem[EP]{EP} Guide to AMS editor's package,
+\texttt{http://www.ams.org/authors/editpkg.html}
+
+\bibitem[GB]{GB} David Carlisle, ``Packages in the `graphics' bundle'',
+available in electronic form as
+\filnam{macros/latex/required/graphics/grfguide.tex} or \filnam{.ps}
+from\\ \texttt{http://www.ctan.org/tex-archive/}
+
+\bibitem[GL]{GL} Helmut Kopka and Patrick Daly, \textit{A Guide to
+ \latex/}, 4th ed., Addison-Wesley, Reading, MA, 2004.
+
+\bibitem[HBW]{HBW} Nicholas J. Higham, \textit{Handbook of Writing for
+the Mathematical Sciences}, 2nd ed., SIAM, Philadelphia, PA, 1998.
+
+\bibitem[HWM]{HWM}
+Norman E. Steenrod, Paul R. Halmos, Menahem M. Schiffer, and Jean A.
+Dieudonn\'e, \textit{How to Write Mathematics}, 5th printing 1995,
+Amer. Math. Soc., Providence, RI, 1973.
+
+\bibitem[Joy]{Joy} M. D. Spivak, \textit{The Joy of \tex/},
+2nd revised ed., Amer. Math. Soc., Providence, RI, 1990.
+
+\bibitem[LC]{LC} Frank Mittelbach and Michel Goossens, with
+Johannes Braams, David Carlisle and Chris Rowley,
+\textit{The \latex/ Companion}, 2nd ed., Addison-Wesley Co.,
+Reading, MA, 2004.
+
+\bibitem[LGC]{LGC} Michel Goossens, Sebastian Rahtz, and Frank Mittelbach,
+\textit{The \latex/ graphics Companion}, Addison-Wesley Co., Reading,
+MA, 1997.
+
+\bibitem[MIT]{MIT} Ellen E. Swanson, updated by Arlene O'Sean and
+Antoinette Schleyer, \textit{Mathematics into Type},
+Updated ed., Amer. Math. Soc., Providence, RI, 1999.
+
+\bibitem[ML]{ML} George Gr\"{a}tzer, \textit{Math into \latex/},
+3rd ed., Birkh\"{a}user, Boston, MA/Springer Verlag, NY, 2000.
+
+\bibitem[MSC]{MSC} \textit{\textup{2000} Mathematics subject classification},
+Amer. Math. Soc., Providence, RI, 1999; searchable on-line at
+\texttt{http://www.ams.org/msc/}.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,1037 @@
+% \iffalse meta-comment
+%
+% File: selinput.dtx
+% Version: 2007/09/09 v1.2
+% Info: Semi-automatic input encoding detection
+%
+% Copyright (C) 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file selinput.dtx
+% and the derived files
+%    selinput.sty, selinput.pdf, selinput.ins, selinput.drv,
+%    selinput-test1.tex, selinput-test2.tex, selinput-test3.tex,
+%    selinput-test4.tex, selinput-test5.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/selinput.dtx
+%    CTAN:macros/latex/contrib/oberdiek/selinput.pdf
+%
+% Unpacking:
+%    (a) If selinput.ins is present:
+%           tex selinput.ins
+%    (b) Without selinput.ins:
+%           tex selinput.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{selinput.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If selinput.drv is present:
+%           latex selinput.drv
+%    (b) Without selinput.drv:
+%           latex selinput.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex selinput.dtx
+%       makeindex -s gind.ist selinput.idx
+%       pdflatex selinput.dtx
+%       makeindex -s gind.ist selinput.idx
+%       pdflatex selinput.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/selinput.sty
+%    TDS:doc/latex/oberdiek/selinput.pdf
+%    TDS:doc/latex/oberdiek/test/selinput-test1.tex
+%    TDS:doc/latex/oberdiek/test/selinput-test2.tex
+%    TDS:doc/latex/oberdiek/test/selinput-test3.tex
+%    TDS:doc/latex/oberdiek/test/selinput-test4.tex
+%    TDS:doc/latex/oberdiek/test/selinput-test5.tex
+%    TDS:source/latex/oberdiek/selinput.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: selinput 2007/09/09 v1.2 Semi-automatic input encoding detection (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: selinput
+Version: 2007/09/09 v1.2
+
+Copyright (C) 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file selinput.dtx
+and the derived files
+   selinput.sty, selinput.pdf, selinput.ins, selinput.drv,
+   selinput-test1.tex, selinput-test2.tex, selinput-test3.tex,
+   selinput-test4.tex, selinput-test5.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{selinput.ins}{\from{selinput.dtx}{install}}%
+  \file{selinput.drv}{\from{selinput.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{selinput.sty}{\from{selinput.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{selinput-test1.tex}{\from{selinput.dtx}{test,test1}}%
+  \file{selinput-test2.tex}{\from{selinput.dtx}{test,test2}}%
+  \file{selinput-test3.tex}{\from{selinput.dtx}{test,test3}}%
+  \file{selinput-test4.tex}{\from{selinput.dtx}{test,test4}}%
+  \file{selinput-test5.tex}{\from{selinput.dtx}{test,test5}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{selinput.xml}{\from{selinput.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     selinput.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `selinput.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{selinput.drv}%
+  [2007/09/09 v1.2 Semi-automatic input encoding detection (HO)]%
+\documentclass{ltxdoc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage{color}
+\begin{document}
+  \DocInput{selinput.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{389}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{selinput.drv}
+%
+% \title{The \xpackage{selinput} package}
+% \date{2007/09/09 v1.2}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package selects the input encoding by specifying between
+% input characters and their glyph names.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newcommand*{\EM}{\textcolor{blue}}
+% \newcommand*{\ExampleText}{^^A
+%   Umlauts:\ \EM{\"A\"O\"U\"a\"o\"u\ss}^^A
+% }
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% \LaTeX\ supports the direct use of 8-bit characters by means
+% of package \xpackage{inputenc}. However you must know
+% and specify the encoding, e.g.:
+% \begin{quote}
+%   \ttfamily
+%   |\documentclass{article}|\\
+%   |\usepackage[|\EM{latin1}|]{inputenc}|\\
+%   |% or \usepackage[|\EM{utf8}|]{inputenc}|\\
+%   |% or \usepackage[|\EM{??}|]{inputenc}|\\
+%   |\begin{document}|\\
+%   |  |\ExampleText\\
+%   |\end{document}|
+% \end{quote}
+%
+% If the document is transferred in an environment that
+% uses a different encoding, then there are programs that
+% convert the input characters. Examples for conversion
+% of file \xfile{test.tex}
+% from encoding latin1 (ISO-8859-1) to UTF-8:
+% \begin{quote}
+%   \ttfamily
+%   |recode ISO-8859-1..UTF-8 test.tex|\\
+%   |recode latin1..utf8 test.tex|\\
+%   |iconv --from-code ISO-8859-1|\\
+%   \hphantom{iconv}| --to-code UTF-8|\\
+%   \hphantom{iconv}| --output testnew.tex|\\
+%   \hphantom{iconv}| test.tex|\\
+%   |iconv -f latin1 -t utf8 -o testnew.tex test.tex|
+% \end{quote}
+% However, the encoding name for package \xpackage{inputenc}
+% must be changed:
+% \begin{quote}
+%    |\usepackage[latin1]{inputenc}| $\rightarrow$
+%    |\usepackage[utf8]{inputenc}|\kern-4pt\relax
+% \end{quote}
+% Of course, unless you are using some clever editor
+% that knows package \xpackage{inputenc}, recodes
+% the file and adjusts the option at the same time.
+% But most editors can perhaps recode the file, but
+% they let the option untouched.
+%
+% Therefore package \xpackage{selinput} chooses another way for
+% specifying the input encoding. The encoding name is not needed
+% at all. Some 8-bit characters are identified by their glyph
+% name and the package chooses an appropriate encoding, example:
+% \begin{quote}
+%   \ttfamily
+%   |\documentclass{article}|\\
+%   |\usepackage{selinput}|\\
+%   |\SelectInputMappings{|\\
+%   |  adieresis={|\EM{\"a}|}|,\\
+%   |  germandbls={|\EM{\ss}|}|,\\
+%   |  Euro={|\EM{\texteuro}|}|,\\
+%   |}|\\
+%   |\begin{document}|\\
+%   |  |\ExampleText\\
+%   |\end{document}|
+% \end{quote}
+%
+% \subsection{User interface}
+%
+% \begin{declcs}{SelectInputEncodingList} \M{encoding list}
+% \end{declcs}
+% \cs{SelectInputEncodingList} expects a comma separated list of
+% encoding names. Example:
+% \begin{quote}
+%   |\SelectInputEncodingList{utf8,ansinew,mac-roman}|
+% \end{quote}
+% The encodings of package \xpackage{inputenx} are used as default.
+%
+% \begin{declcs}{SelectInputMappings} \M{mapping pairs}
+% \end{declcs}
+% A mapping pair consists of a glyph name and its input
+% character:
+% \begin{quote}
+%   |\SelectInputMappings{|\\
+%   |  adieresis={|\EM{\"a}|}|,\\
+%   |  germandbls={|\EM{\ss}|}|,\\
+%   |  Euro={|\EM{\texteuro}|}|,\\
+%   |}|
+% \end{quote}
+% The supported glyph names can be found in file \xfile{ix-name.def}
+% of project \xpackage{inputenx} \cite{inputenx}. The names are
+% basically taken from Adobe's glyphlists \cite{adobe:glyphlist,adobe:aglfn}.
+% As many pairs are needed as necessary to identify the encoding.
+% Example with insufficient pairs:
+% \begin{quote}
+%   \ttfamily
+%   |\SelectInputEncodingSet{latin1,latin9}|\\
+%   |\SelectInputMappings{|\\
+%   |  adieresis={|\EM{\"a}|}|,\\
+%   |  germandbls={|\EM{\ss}|}|,\\
+%   |}|\\
+%   \ExampleText| and Euro: |\EM{\textcurrency} (wrong)
+% \end{quote}
+% The first encoding \xoption{latin1} passes the constraints given
+% by the mapping pairs. However the Euro symbol is not part of
+% the encoding. Thus a mapping pair with the Euro symbol
+% solves the problem. In fact the symbol alone already succeeds in selecting
+% between \xoption{latin1} and \xoption{latin9}:
+% \begin{quote}
+%   \ttfamily
+%   |\SelectInputEncodingSet{latin1,latin9}|\\
+%   |\SelectInputMappings{|\\
+%   |  Euro={|\EM{\texteuro}|},|\\
+%   |}|\\
+%   \ExampleText| and Euro: |\EM{\texteuro}
+% \end{quote}
+%
+% \subsection{Options}
+%
+% \begin{description}
+% \item[\xoption{warning}:]
+%   The selected encoding is written
+%   by \cs{PackageInfo} into the \xfile{.log} file only.
+%   Option \xoption{warning} changes it to \cs{PackageWarning}.
+%   Then the selected encoding is shown on the terminal as well.
+% \item[\xoption{ucs}:]
+%   The encoding file \xfile{utf8x} of package \cs{ucs} requires
+%   that the package itself is loaded before.
+%   If the package is not loaded, then the option \xoption{ucs}
+%   will load package \xpackage{ucs} if the detected encoding is
+%   UTF-8 (limited to the preamble, packages cannot be loaded later).
+% \item[\xoption{utf8=\dots}:]
+%   The option allows to specify other encoding files
+%   for UTF-8 than \LaTeX's \xfile{utf8.def}. For example,
+%   |utf8=utf-8| will load \xfile{utf-8.def} instead.
+% \end{description}
+%
+% \subsection{Encodings}
+%
+% Package \xpackage{stringenc} \cite{stringenc}
+% is used for testing the encoding. Thus the encoding
+% name must be known by this package. Then the found
+% encoding is loaded by \cs{inputencoding} by package
+% \xpackage{inputenc} or \cs{InputEncoding} if package
+% \xpackage{inputenx} is loaded.
+%
+% The supported encodings are present in the encoding list,
+% thus usually the encoding names do not matter.
+% If the list is set by \cs{SelectInputEncodingList},
+% then you can use the names that work for package
+% \xpackage{inputenc} and are known by package \xpackage{stringenc},
+% for example: \xoption{latin1}, \xoption{x-iso-8859-1}. Encoding
+% file names of package \xpackage{inputenx} are prefixed with \xfile{x-}.
+% The prefix can be dropped, if package \xpackage{inputenx} is loaded.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{selinput}
+  [2007/09/09 v1.2 Semi-automatic input encoding detection (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{inputenc}
+\RequirePackage{kvsetkeys}[2006/10/19]
+\RequirePackage{stringenc}[2007/06/16]
+\RequirePackage{kvoptions}
+%    \end{macrocode}
+%    \begin{macro}{\SelectInputEncodingList}
+%    \begin{macrocode}
+\newcommand*{\SelectInputEncodingList}{%
+  \let\SIE@EncodingList\@empty
+  \kvsetkeys{SelInputEnc}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SelectInputMappings}
+%    \begin{macrocode}
+\newcommand*{\SelectInputMappings}[1]{%
+  \SIE@LoadNameDefs
+  \let\SIE@StringUnicode\@empty
+  \let\SIE@StringDest\@empty
+  \kvsetkeys{SelInputMap}{#1}%
+  \ifx\\SIE@StringUnicode\SIE@StringDest\\%
+    \PackageError{selinput}{%
+      No mappings specified%
+    }\@ehc
+  \else
+    \EdefUnescapeHex\SIE@StringUnicode\SIE@StringUnicode
+    \let\SIE@Encoding\@empty
+    \@for\SIE@EncodingTest:=\SIE@EncodingList\do{%
+      \ifx\SIE@Encoding\@empty
+        \StringEncodingConvertTest\SIE@temp\SIE@StringUnicode
+                                  {utf16be}\SIE@EncodingTest{%
+          \ifx\SIE@temp\SIE@StringDest
+            \let\SIE@Encoding\SIE@EncodingTest
+          \fi
+        }{}%
+      \fi
+    }%
+    \ifx\SIE@Encoding\@empty
+      \StringEncodingConvertTest\SIE@temp\SIE@StringDest
+                                {ascii}{utf16be}{%
+        \def\SIE@Encoding{ascii}%
+        \SIE@Info{selinput}{%
+          Matching encoding not found, but input characters%
+          \MessageBreak
+          are 7-bit (possibly editor replacements).%
+          \MessageBreak
+          Hence using ascii encoding%
+        }%
+      }{}%
+    \fi
+    \ifx\SIE@Encoding\@empty
+      \PackageError{selinput}{%
+        Cannot find a matching encoding%
+      }\@ehd
+    \else
+      \ifx\SIE@Encoding\SIE@EncodingUTFviii
+        \SIE@LoadUnicodePackage
+        \ifx\SIE@UseUTFviii\@empty
+        \else
+          \let\SIE@Encoding\SIE@UseUTFviii
+        \fi
+      \fi
+      \begingroup\expandafter\expandafter\expandafter\endgroup
+      \expandafter\ifx\csname InputEncoding\endcsname\relax
+        \inputencoding\SIE@Encoding
+      \else
+        \InputEncoding\SIE@Encoding
+      \fi
+      \SIE@Info{selinput}{Encoding `\SIE@Encoding' selected}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SIE@LoadNameDefs}
+%    \begin{macrocode}
+\def\SIE@LoadNameDefs{%
+  \begingroup
+    \endlinechar=\m@ne
+    \catcode92=0 % backslash
+    \catcode123=1 % left curly brace/beginning of group
+    \catcode125=2 % right curly brace/end of group
+    \catcode37=14 % percent/comment character
+    \@makeother\[%
+    \@makeother\]%
+    \@makeother\.%
+    \@makeother\(%
+    \@makeother\)%
+    \@makeother\/%
+    \@makeother\-%
+    \let\InputenxName\SelectInputDefineMapping
+    \InputIfFileExists{ix-name.def}{}{%
+      \PackageError{selinput}{%
+        Missing `ix-name.def' (part of package `inputenx')%
+      }\@ehd
+    }%
+    \global\let\SIE@LoadNameDefs\relax
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SelectInputDefineMapping}
+%    \begin{macrocode}
+\newcommand*{\SelectInputDefineMapping}[1]{%
+  \expandafter\gdef\csname SIE@@#1\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\kv@set@family@handler{SelInputMap}{%
+  \@onelevel@sanitize\kv@key
+  \ifx\kv@value\relax
+    \PackageError{selinput}{%
+      Missing input character for `\kv@key'%
+    }\@ehc
+  \else
+    \@onelevel@sanitize\kv@value
+    \ifx\kv@value\@empty
+      \PackageError{selinput}{%
+        Input character got lost?\MessageBreak
+        Missing input character for `\kv@key'%
+      }\@ehc
+    \else
+      \@ifundefined{SIE@@\kv@key}{%
+        \PackageWarning{selinput}{%
+          Missing definition for `\kv@key'%
+        }%
+      }{%
+        \edef\SIE@StringDest{%
+          \SIE@StringDest
+          \kv@value
+        }%
+        \edef\SIE@StringUnicode{%
+          \SIE@StringUnicode
+          \csname SIE@@\kv@key\endcsname
+        }%
+      }%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\kv@set@family@handler{SelInputEnc}{%
+  \@onelevel@sanitize\kv@key
+  \ifx\kv@value\relax
+    \ifx\SIE@EncodingList\@empty
+      \let\SIE@EncodingList\kv@key
+    \else
+      \edef\SIE@EncodingList{\SIE@EncodingList,\kv@key}%
+    \fi
+  \else
+    \@onelevel@sanitize\kv@value
+    \PackageError{selinput}{%
+      Illegal key value pair (\kv@key=\kv@value)\MessagBreak
+      in encoding list%
+    }\@ehc
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\SIE@LoadUnicodePackage}
+%    \begin{macrocode}
+\def\SIE@LoadUnicodePackage{%
+  \@ifpackageloaded\SIE@UnicodePackage{}{%
+    \RequirePackage\SIE@UnicodePackage\relax
+  }%
+  \SIE@PatchUCS
+  \global\let\SIE@LoadUnicodePackage\relax
+}
+\let\SIE@show\show
+\def\SIE@PatchUCS{%
+  \AtBeginDocument{%
+    \expandafter\ifx\csname ver@ucsencs.def\endcsname\relax
+    \else
+      \let\show\SIE@show
+    \fi
+  }%
+}
+\SIE@PatchUCS
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \let\SIE@LoadUnicodePackage\relax
+}
+%    \end{macrocode}
+%    \begin{macro}{\SIE@EncodingUTFviii}
+%    \begin{macrocode}
+\def\SIE@EncodingUTFviii{utf8}
+\@onelevel@sanitize\SIE@EncodingUTFviii
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\SIE@EncodingUTFviiix}
+%    \begin{macrocode}
+\def\SIE@EncodingUTFviiix{utf8x}
+\@onelevel@sanitize\SIE@EncodingUTFviiix
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\let\SIE@UnicodePackage\@empty
+\let\SIE@UseUTFviii\@empty
+\let\SIE@Info\PackageInfo
+%    \end{macrocode}
+%    \begin{macrocode}
+\SetupKeyvalOptions{%
+  family=SelInput,%
+  prefix=SelInput@%
+}
+\define@key{SelInput}{utf8}{%
+  \def\SIE@UseUTFviii{#1}%
+  \@onelevel@sanitize\SIE@UseUTFviii
+}
+\DeclareBoolOption{ucs}
+\DeclareVoidOption{warning}{%
+  \let\SIE@Info\PackageWarning
+}
+\ProcessKeyvalOptions{SelInput}
+\ifSelInput@ucs
+  \def\SIE@UnicodePackage{ucs}%
+  \ifx\SIE@UseUTFviii\@empty
+    \let\SIE@UseUTFviii\SIE@EncodingUTFviiix
+  \fi
+\else
+  \ifx\SIE@UseUTFviii\@empty
+    \@ifpackageloaded{ucs}{%
+      \let\SIE@UseUTFviii\SIE@EncodingUTFviiix
+    }{%
+      \let\SIE@UseUTFviii\SIE@EncodingUTFviii
+    }%
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\SIE@EncodingList}
+%    \begin{macrocode}
+\edef\SIE@EncodingList{%
+  utf8,%
+  x-iso-8859-1,%
+  x-iso-8859-15,%
+  x-cp1252,% ansinew
+  x-mac-roman,%
+  x-iso-8859-2,%
+  x-iso-8859-3,%
+  x-iso-8859-4,%
+  x-iso-8859-5,%
+  x-iso-8859-6,%
+  x-iso-8859-7,%
+  x-iso-8859-8,%
+  x-iso-8859-9,%
+  x-iso-8859-10,%
+  x-iso-8859-11,%
+  x-iso-8859-13,%
+  x-iso-8859-14,%
+  x-iso-8859-15,%
+  x-mac-centeuro,%
+  x-mac-cyrillic,%
+  x-koi8-r,%
+  x-cp1250,%
+  x-cp1251,%
+  x-cp1257,%
+  x-cp437,%
+  x-cp850,%
+  x-cp852,%
+  x-cp855,%
+  x-cp858,%
+  x-cp865,%
+  x-cp866,%
+  x-nextstep,%
+  x-dec-mcs%
+}%
+\@onelevel@sanitize\SIE@EncodingList
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{minimal}
+\usepackage{textcomp}
+\usepackage{qstest}
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test1|test2|test3>
+\makeatletter
+\let\BeginDocumentText\@empty
+\def\TestEncoding#1#2{%
+  \SelectInputMappings{#2}%
+  \Expect*{\SIE@Encoding}{#1}%
+  \Expect*{\inputencodingname}{#1}%
+  \g@addto@macro\BeginDocumentText{%
+    \SelectInputMappings{#2}%
+    \Expect*{\SIE@Encoding}{#1}%
+    \textbf{\SIE@Encoding:} %
+    \kvsetkeys{test}{#2}\par
+  }%
+}
+\def\TestKey#1#2{%
+  \define@key{test}{#1}{%
+    \sbox0{##1}%
+    \sbox2{#2}%
+    \Expect*{wd:\the\wd0, ht:\the\ht0, dp:\the\dp0}%
+           *{wd:\the\wd2, ht:\the\ht2, dp:\the\dp2}%
+    [#1=##1] % hash-ok
+  }%
+}
+\RequirePackage{keyval}
+\TestKey{adieresis}{\"a}
+\TestKey{germandbls}{\ss}
+\TestKey{Euro}{\texteuro}
+\makeatother
+\usepackage[
+  warning,%
+%<test2>  utf8=utf-8,
+%<test3>  ucs,
+]{selinput}
+%<test1|test3>\inputencoding{ascii}
+%<test2>\inputencoding{utf-8}
+%<test3>\usepackage{ucs}
+\begin{qstest}{preamble}{}
+  \TestEncoding{x-iso-8859-15}{%
+    adieresis=^^e4,%
+    germandbls=^^df,%
+    Euro=^^a4,%
+  }%
+  \TestEncoding{x-cp1252}{%
+    adieresis=^^e4,%
+    germandbls=^^df,%
+    Euro=^^80,%
+  }%
+%<test1>  \TestEncoding{utf8}{%
+%<test2>  \TestEncoding{utf-8}{%
+%<test3>  \TestEncoding{utf8x}{%
+    adieresis=^^c3^^a4,%
+    germandbls=^^c3^^9f,%
+%<!test2>    Euro=^^e2^^82^^ac,
+  }%
+\end{qstest}
+%<test3>\let\ifUnicodeOptiongraphics\iffalse
+\begin{document}
+\begin{qstest}{document}{}
+%<test3>\makeatletter
+  \BeginDocumentText
+\end{qstest}
+%</test1|test2|test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test4>
+\usepackage[warning,ucs]{selinput}
+\SelectInputMappings{%
+    adieresis=^^c3^^a4,%
+    germandbls=^^c3^^9f,%
+    Euro=^^e2^^82^^ac,%
+}
+\begin{qstest}{encoding}{}
+  \Expect*{\inputencodingname}{utf8x}%
+\end{qstest}
+\begin{document}
+  adieresis=^^c3^^a4, %
+  germandbls=^^c3^^9f, %
+  Euro=^^e2^^82^^ac%
+%</test4>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test5>
+\usepackage[warning,ucs]{selinput}
+\SelectInputMappings{%
+    adieresis={\"a},%
+    germandbls={{\ss}},%
+    Euro=\texteuro{},%
+}
+\begin{qstest}{encoding}{}
+  \Expect*{\inputencodingname}{ascii}%
+\end{qstest}
+\begin{document}
+  adieresis={\"a}, %
+  germandbls={{\ss}}, %
+  Euro=\texteuro{}%
+%</test5>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\end{document}
+%</test>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/selinput.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/selinput.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex selinput.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   selinput.sty & tex/latex/oberdiek/selinput.sty\\
+%   selinput.pdf & doc/latex/oberdiek/selinput.pdf\\
+%   test/selinput-test1.tex & doc/latex/oberdiek/test/selinput-test1.tex\\
+%   test/selinput-test2.tex & doc/latex/oberdiek/test/selinput-test2.tex\\
+%   test/selinput-test3.tex & doc/latex/oberdiek/test/selinput-test3.tex\\
+%   test/selinput-test4.tex & doc/latex/oberdiek/test/selinput-test4.tex\\
+%   test/selinput-test5.tex & doc/latex/oberdiek/test/selinput-test5.tex\\
+%   selinput.dtx & source/latex/oberdiek/selinput.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk selinput.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{selinput.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex selinput.dtx
+%makeindex -s gind.ist selinput.idx
+%pdflatex selinput.dtx
+%makeindex -s gind.ist selinput.idx
+%pdflatex selinput.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{selinput.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='selinput'>
+  <name>selinput</name>
+  <caption>Semi-automatic detection of input encoding.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.2'/>
+  <description>
+    This package selects the input encoding by specifying pairs
+    of input characters and their glyph names.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/selinput.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/selinput.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \bibitem{inputenx}
+%   Heiko Oberdiek: \textit{The \xpackage{inputenx} package};
+%   2007-04-11 v1.1;
+%   \CTAN{macros/latex/contrib/oberdiek/inputenx.pdf}.
+%
+% \bibitem{adobe:glyphlist}
+%   Adobe: \textit{Adobe Glyph List};
+%   2002-09-20 v2.0;
+%   \url{http://partners.adobe.com/public/developer/en/opentype/glyphlist.txt}.
+%
+% \bibitem{adobe:aglfn}
+%   Adobe: \textit{Adobe Glyph List For New Fonts};
+%   2005-11-18 v1.5;
+%   \url{http://partners.adobe.com/public/developer/en/opentype/aglfn13.txt}.
+%
+% \bibitem{stringenc}
+%   Heiko Oberdiek: \textit{The \xpackage{stringenc} package};
+%   2007-06-16 v1.1;
+%   \CTAN{macros/latex/contrib/oberdiek/stringenc.pdf}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/06/16 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/06/20 v1.1}
+%   \item
+%     Requested date for package \xpackage{stringenc} fixed.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.2}
+%   \item
+%     Line end fixed.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

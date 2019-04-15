@@ -1,0 +1,165 @@
+% special font for Surreal Numbers "Conway Stone"
+
+u#:=1mm#/2.5; % basic unit, corresponds to 1mm after 250% magnification
+mode_setup;
+define_pixels(u);
+
+vardef nd= u*normaldeviate enddef;
+randomseed:=3.14;
+
+def .... = .. tension1.2 .. enddef;
+def ..... = .. tension2 .. enddef;
+
+def zerochar(expr code) =
+ beginchar(code,(10+normaldeviate)*u#,10u#,0);
+ z0=(.5w,5u);
+ for j=1 upto 5:
+  z[j]=z0+((0,4u+.125nd) rotated (j*72+8normaldeviate));
+ endfor
+ fill z1....z2....z3....z4....z5....cycle;
+ labels(0,1,2,3,4,5);
+ endchar;
+enddef;
+
+def colonchar(expr code) =
+ beginchar(code,(5.5+normaldeviate)*u#,10u#,0);
+ z0=(.5w,3u); z10=(.5w,8u);
+ for j=1 upto 3:
+  z[j]=z0+((0,1.75u+.075nd) rotated (j*120+8normaldeviate));
+  z[10+j]=z10+((0,1.75u+.075nd) rotated (60+j*120+8normaldeviate));
+ endfor
+ fill z1....z2....z3....cycle;
+ fill z11....z12....z13....cycle;
+ labels(0,1,2,3,10,11,12,13);
+ endchar;
+enddef;
+ 
+def horizchar(expr code) =
+ beginchar(code,(13+normaldeviate)*u#,10u#,0);
+ z1=(2u+nd/4,5u+nd/10);
+ z2=(w-2u+nd/4,5u+nd/10);
+ penpos1(1.5u,90);
+ penpos2(1.5u,90);
+ z10r=z1r+(nd/2,nd/8);
+ z10l=z1l+(nd/2,nd/8);
+ z10=(.5+uniformdeviate.3)[z10l,z10r]-(abs nd,0);
+ z20l=z2l+(nd/2,nd/8);
+ z20r=z2r+(nd/2,nd/8);
+ z20=(.5+uniformdeviate.3)[z20l,z20r]+(abs nd,0);
+ pickup pencircle scaled u;
+ filldraw z10r{dir(180+10normaldeviate)}...z10...z10l{dir 10normaldeviate}
+  ....z20l{dir 10normaldeviate}....z20....z20r{dir(180+10normaldeviate)}
+  ....cycle;
+ penlabels(1,2,10,20);
+ endchar;
+enddef;
+
+def equalchar(expr code) =
+ beginchar(code,(15+normaldeviate)*u#,10u#,0);
+ z1=(4.5u+nd/4,6u+nd/10);
+ z2=(w-4.5u+nd/4,6u+nd/10);
+ penpos1(u,90);
+ penpos2(u,90);
+ z10r=z1r+(nd/2,nd/8);
+ z10l=z1l+(nd/2,nd/8);
+ z10=(.5+uniformdeviate.3)[z10l,z10r]-(abs nd,0);
+ z20l=z2l+(nd/2,nd/8);
+ z20r=z2r+(nd/2,nd/8);
+ z20=(.5+uniformdeviate.3)[z20l,z20r]+(abs nd,0);
+ pickup pencircle scaled .5u;
+ filldraw z10r{dir(180+5normaldeviate)}...z10...z10l{dir 5normaldeviate}
+  ....z20l{dir 5normaldeviate}....z20....z20r{dir(180+5normaldeviate)}
+  ....cycle;
+ z3=(4.5u+nd/4,2.5u+nd/10);
+ z4=(w-4.5u+nd/4,2.5u+nd/10);
+ penpos3(u,90);
+ penpos4(u,90);
+ z30r=z3r+(nd/2,nd/8);
+ z30l=z3l+(nd/2,nd/8);
+ z30=(.5+uniformdeviate.3)[z30l,z30r]-(abs nd,0);
+ z40l=z4l+(nd/2,nd/8);
+ z40r=z4r+(nd/2,nd/8);
+ z40=(.5+uniformdeviate.3)[z40l,z40r]+(abs nd,0);
+ filldraw z30r{dir(180+5normaldeviate)}...z30...z30l{dir 5normaldeviate}
+  ....z40l{dir 5normaldeviate}....z40....z40r{dir(180+5normaldeviate)}
+  ....cycle;
+ penlabels(1,2,3,4,10,20,30,40);
+ endchar;
+enddef;
+
+def vertchar(expr code) =
+ beginchar(code,(5.5+normaldeviate)*u#,10u#,0);
+ z1=(.5w+nd/10,9u+nd/4);
+ z2=(.5w+nd/10,u+nd/4);
+ penpos1(1.8u,0);
+ penpos2(1.8u,0);
+ z10r=z1r+(nd/8,nd/2);
+ z10l=z1l+(nd/8,nd/2);
+ z10=(.5+uniformdeviate.3)[z10l,z10r]+(0,abs nd);
+ z20l=z2l+(nd/8,nd/2);
+ z20r=z2r+(nd/8,nd/2);
+ z20=(.5+uniformdeviate.3)[z20l,z20r]-(0,abs nd);
+ pickup pencircle scaled .6u;
+ filldraw z10r{dir(90+10normaldeviate)}....z10....z10l{dir-(90+10normaldeviate)}
+  ....z20l{dir-(90+10normaldeviate)}....z20....z20r{dir(90+10normaldeviate)}
+  ....cycle;
+ penlabels(1,2,10,20);
+ endchar;
+enddef;
+
+def leftchar(expr code) =
+ beginchar(code,(10+normaldeviate)*u#,10u#,0);
+ z1=(w-2u+nd/16,11u+nd/8);
+ z0=z2=(3u+nd/16,5u+nd/16);
+ z3=(w-2u+nd/16,-u+nd/8);
+ penpos1(u,-35+10normaldeviate);
+ penpos0(u,-35);
+ penpos3(u,35+10normaldeviate);
+ penpos2(u,35);
+ z4=whatever[z0l,z1l]=whatever[z2l,z3l];
+ pickup pencircle scaled u;
+ filldraw z1l{(z0l-z1l)rotated 5normaldeviate}....z4--z0r
+      ....z1r{(z1r-z0r)rotated 5normaldeviate}.....cycle;
+ filldraw z3l{(z2l-z3l)rotated 5normaldeviate}....z4--z2r
+      ....z3r{(z3r-z2r)rotated 5normaldeviate}.....cycle;
+ penlabels(0,1,2,3,4);
+ endchar;
+enddef;
+
+def rightchar(expr code) =
+ beginchar(code,(10+normaldeviate)*u#,10u#,0);
+ z1=(2u+nd/16,11u+nd/8);
+ z0=z2=(w-3u+nd/16,5u+nd/16);
+ z3=(2u+nd/16,-u+nd/8);
+ penpos1(u,35+10normaldeviate);
+ penpos0(u,35);
+ penpos3(u,-35+10normaldeviate);
+ penpos2(u,-35);
+ z4=whatever[z0r,z1r]=whatever[z2r,z3r];
+ pickup pencircle scaled u;
+ filldraw z1r{(z0r-z1r)rotated 5normaldeviate}....z4--z0l
+      ....z1l{(z1l-z0l)rotated 5normaldeviate}.....cycle;
+ filldraw z3r{(z2r-z3r)rotated 5normaldeviate}....z4--z2l
+      ....z3l{(z3l-z2l)rotated 5normaldeviate}.....cycle;
+ penlabels(0,1,2,3,4);
+ endchar;
+enddef;
+
+for r=0 upto 9:
+ zerochar(10+r);
+ colonchar(20+r);
+ horizchar(30+r);
+ equalchar(40+r);
+ vertchar(50+r);
+ leftchar(60+r);
+ rightchar(70+r);
+endfor
+
+font_quad:=10u#;
+font_normal_space:=5u#;
+font_normal_stretch:=3u#;
+font_normal_shrink:=2u#;
+font_identifier:="SNFONT";
+font_coding_scheme:="PI";
+
+end.

@@ -1,0 +1,918 @@
+% \iffalse meta-comment
+%
+% File: pagesel.dtx
+% Version: 2008/08/11 v1.8
+% Info: Select pages of a document for output
+%
+% Copyright (C) 1999, 2003, 2006-2008 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pagesel.dtx
+% and the derived files
+%    pagesel.sty, pagesel.pdf, pagesel.ins, pagesel.drv.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pagesel.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pagesel.pdf
+%
+% Unpacking:
+%    (a) If pagesel.ins is present:
+%           tex pagesel.ins
+%    (b) Without pagesel.ins:
+%           tex pagesel.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pagesel.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pagesel.drv is present:
+%           latex pagesel.drv
+%    (b) Without pagesel.drv:
+%           latex pagesel.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pagesel.dtx
+%       makeindex -s gind.ist pagesel.idx
+%       pdflatex pagesel.dtx
+%       makeindex -s gind.ist pagesel.idx
+%       pdflatex pagesel.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pagesel.sty
+%    TDS:doc/latex/oberdiek/pagesel.pdf
+%    TDS:source/latex/oberdiek/pagesel.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pagesel 2008/08/11 v1.8 Select pages of a document for output (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pagesel
+Version: 2008/08/11 v1.8
+
+Copyright (C) 1999, 2003, 2006-2008 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pagesel.dtx
+and the derived files
+   pagesel.sty, pagesel.pdf, pagesel.ins, pagesel.drv.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pagesel.ins}{\from{pagesel.dtx}{install}}%
+  \file{pagesel.drv}{\from{pagesel.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pagesel.sty}{\from{pagesel.dtx}{package}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pagesel.xml}{\from{pagesel.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pagesel.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pagesel.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pagesel.drv}%
+  [2008/08/11 v1.8 Select pages of a document for output (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pagesel.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{394}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pagesel.drv}
+%
+% \title{The \xpackage{pagesel} package}
+% \date{2008/08/11 v1.8}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Single pages or page areas can be selected for output.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \newenvironment{param}{^^A
+%   \newcommand{\entry}[1]{\meta{\###1}:&}^^A
+%   \begin{tabular}[t]{@{}l@{ }l@{}}^^A
+% }{^^A
+%   \end{tabular}^^A
+% }
+%
+% \newcommand*{\Option}[1]{\textsf{#1}}
+%
+% \section{Usage}
+%    The package \Package{pagesel} is a \LaTeXe\ package:
+%    \begin{quote}
+%      |\usepackage|\oarg{options}|{pagesel}|
+%    \end{quote}
+%    (For plain\TeX\ and \LaTeX\,2.09 the similar package
+%    \URL{\Package{selectp}}^^A
+%    {ftp://ftp.ctan.org/tex-archive/macros/latex/contrib/misc/selectp.sty}
+%    from \NameEmail{Donald Arsenau}{asnd@triumf.ca} can be used.)
+%
+%    Depending on the options the package works in two modes:
+%    \begin{enumerate}
+%    \item If no page selecting option is present, so the package
+%          ignores the other options and finishes itself. So no
+%          page will be suppressed by the package and auxiliary files
+%          will be written.
+%    \item With at least one page selecting option the specified
+%          pages are selected and the other are suppressed.
+%          The default for this mode is that auxiliary will not be
+%          overwritten. (This can be changed by an option.)
+%    \end{enumerate}
+%
+% \subsection{Page selecting}
+%    The package \Package{pagesel} sets up a new counter that is
+%    incremented by each \cmd{\shipout}.
+%    In this way the package counts the output pages regardless the value
+%    of the page counter. So each page can individually by addressed,
+%    even if there are several pages with the same page number.
+%
+% \subsubsection{Options\texorpdfstring{ for selecting pages}{}}
+%    \begin{description}
+%    \item[\Option{odd}:] The output pages must have an odd number.
+%         All even output pages are suppressed. If there are no
+%         page areas specified so all odd pages are print. With
+%         page areas only the odd pages in this areas are selected.
+%    \item[\Option{even}:] The opposite of option \Option{odd}.
+%    \item[Page area:] A page area consists of three elements:
+%         the starting output page number, an ``area'' hyphen, and
+%         the output page number of the last page in this area.
+%         Each component is optional, so there are four kinds
+%         to spezify a page area:
+%         \begin{description}
+%         \item[\meta{m}\Option{-}\meta{n}:] All pages between
+%              \meta{m} and \meta{n} inclusive.
+%         \item[\Option{-}\meta{n}:] All pages until \meta{n} inclusive.
+%         \item[\meta{m}\Option{-}:] The page area starts with \meta{m}
+%              and all pages to the end of document are selected.
+%         \item[\Option{-}:] All pages (not very useful).
+%         \item[\meta{s}:] The single page \meta{s}.
+%         \end{description}
+%    \end{description}
+%
+% \subsubsection{Examples}
+%    \newcommand*{\exam}[1]{\texttt{\strut[#1]}}^^A hash-ok
+%    \begin{tabular}{ll}
+%      Options & Output pages\\
+%      \hline
+%      \exam{1, 4, 9}&  1, 4, and 9\\
+%      \exam{7-10, 3}&  3, 7, 8, 9, and 10\\
+%      \exam{odd, 3-6}& 3, and 5\\
+%      \exam{-4, 3, even, 7-8}& 2, 4, and 8\\
+%    \end{tabular}
+%
+% \subsection{Auxiliary files}
+%    If a page is suppressed, the \cmd{\write} commands are not
+%    performed. Labels, index entries, or entries for the
+%    table of contents aren't written. So it is likely that
+%    the table of contents, registers, and lists are incomplete.
+% \subsubsection{Options\texorpdfstring{ for handling auxiliary files}{}}
+%    \begin{description}
+%    \item[\Option{nofiles}:] This is the default. Auxiliary files are
+%         read but not written or changed. Also the job is aborted
+%         after the last selected page for saving time.
+%    \item[\Option{nonofiles}/\Option{files}:] Auxiliary files are
+%         written.
+%    \end{description}
+% \subsubsection{\texorpdfstring{Package }{}\Package{hyperref}}
+%    In old versions of \Package{hyperref} [1999/04/12 v6.55] (and below)
+%    there is a bug with \cmd{\nofiles}:
+%    \begin{itemize}
+%    \item Some ``garbage'' appears on terminal and in the log file.
+%          This is harmless and can be ignored.
+%    \item The outline auxiliary file \cmd{\jobname.out}, however,
+%          is opened and truncated to zero bytes.
+%          Version 1.0 of this package had
+%          loaded a patch file \File{hypnofil.tex}, if it detects
+%          \Package{hyperref} to get \cmd{\nofiles} work.
+%
+%          With the new version of \Package{hyperref} [1999/04/13 v6.56]
+%          \cmd{\nofiles} works now. Therefore the workaround code
+%          is no longer needed and removed.
+%    \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+% \subsection{Package}
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pagesel}
+  [2008/08/11 v1.8 Select pages of a document for output (HO)]%
+%    \end{macrocode}
+%
+%    If the package is loaded twice, the package code does not
+%    work. So stop loading the package, if it is already loaded.
+%    \begin{macrocode}
+\@ifundefined{ps@makevoid}{}{%
+  \PackageWarningNoLine{pagesel}{Package already loaded.}%
+  \endinput
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\ps@makevoid}
+%    Macro \cmd{\ps@makevoid} clears the output box. Because
+%    nothing is shipped out and this is intended, we reduce
+%    the counter \cmd{\deadcycles} in order to avoid problems, if
+%    more than \cmd{\maxdeadcycles} pages are omitted.
+%    \begin{macrocode}
+\newcommand*{\ps@makevoid}{%
+  \global\setbox\@cclv\copy\voidb@x
+  \begingroup
+    \count@=\deadcycles
+    \advance\count@ by -1\relax
+    \deadcycles=\count@
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ps@oddpages}
+%    \begin{macrocode}
+\newcommand*\ps@oddpages{0}
+\DeclareOption{odd}{\renewcommand*\ps@oddpages{1}}
+\DeclareOption{even}{\renewcommand*\ps@oddpages{2}}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\DeclareOption{nofiles}{\let\ps@nofiles\nofiles}
+\DeclareOption{nonofiles}{\let\ps@nofiles\@empty}
+\DeclareOption{files}{\let\ps@nofiles\@empty}
+\ExecuteOptions{nofiles}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\DeclareOption*{%
+  \begingroup
+    \expandafter\ps@checkoption\CurrentOption-\END
+    \edef\x{\endgroup\noexpand\ps@store{\ps@first}{\ps@last}}%
+  \x
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\ps@checkoption}
+%    \begin{macrocode}
+\newcommand\ps@checkoption{}
+\def\ps@checkoption#1-#2\END{%
+  \ifx\\#2\\%
+    \ifx\\#1\\%
+      % empty option
+      \def\ps@first{\maxdimen}%
+      \def\ps@last{\maxdimen}%
+    \else
+      \edef\ps@first{#1}%
+      \edef\ps@last{#1}%
+    \fi
+  \else
+    \ifx\\#1\\%
+      \def\ps@first{-\maxdimen}%
+    \else
+      \edef\ps@first{#1}%
+    \fi
+    \ps@checklast#2%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ps@checklast}
+%    \begin{macrocode}
+\newcommand\ps@checklast{}
+\def\ps@checklast#1-{%
+  \ifx\\#1\\%
+    \def\ps@last{\maxdimen}%
+  \else
+    \edef\ps@last{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ps@store}
+%    \begin{macrocode}
+\newcommand*{\ps@store}[2]{%
+  \expandafter\def\expandafter\ps@testlist\expandafter{%
+    \ps@testlist\ps@pagetest{#1}{#2}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ps@testlist}
+%    \begin{macrocode}
+\newcommand*\ps@testlist{}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup
+  \edef\x{%
+    \ifnum\ps@oddpages>0 \relax\fi
+    \ifx\ps@testlist\@empty\else\relax\fi
+  }%
+  \ifx\x\@empty
+    \endgroup
+    \PackageInfo{pagesel}{Nothing to do}%
+    \expandafter\endinput
+  \fi
+\endgroup
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{everyshi}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ps@nofiles
+%    \end{macrocode}
+%
+%    \begin{macro}{\c@ps@count}
+%    \begin{macrocode}
+\newcounter{ps@count}
+\setcounter{ps@count}{0}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ps@ReturnAfterElseFi}
+%    \begin{macro}{\ps@ReturnAfterFi}
+%    \begin{macrocode}
+\long\def\ps@ReturnAfterElseFi#1\else#2\fi{\fi#1}
+\long\def\ps@ReturnAfterFi#1\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\newcommand{\ps@lastpage}{\maxdimen}
+\ifx\ps@nofiles\nofiles
+  \ifx\ps@testlist\@empty
+  \else
+    \def\ps@lastpage{0}%
+    \newcommand*{\ps@pagetest}[2]{%
+      \ifnum#2>\ps@lastpage\relax
+        \def\ps@lastpage{#2}%
+      \fi
+    }%
+    \ps@testlist
+    \let\ps@pagetest\relax
+  \fi
+\fi
+%    \end{macrocode}
+%
+%    \begin{macro}{\ps@ifinset}
+%    \begin{macrocode}
+\newcommand*{\ps@ifinset}[4]{%
+  \ifnum#1>\value{ps@count}%
+    \ps@ReturnAfterElseFi{#4}%
+  \else
+    \ps@ReturnAfterFi{%
+      \ifnum#2<\value{ps@count}%
+        \ps@ReturnAfterElseFi{#4}%
+      \else
+        \ps@ReturnAfterFi{#3}%
+      \fi
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\ps@pagetest}
+%    \begin{macrocode}
+\newcommand*{\ps@pagetest}[2]{%
+  \ps@ifinset{#1}{#2}{\let\ps@next\@empty}{}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\EveryShipout{%
+  \stepcounter{ps@count}%
+  \ifnum\value{ps@count}>\ps@lastpage\relax
+    \global\output{%
+      \ps@cleanup@if
+      \ps@group@message
+      \typeout{%
+        Package pagesel Notice: Aborting LaTeX job %
+        after last selected page (\ps@lastpage).%
+      }%
+      \ps@message@ignore
+      \global\setbox\@cclv\box\voidb@x
+      \deadcycles0\relax
+%    \end{macrocode}
+%    First leave the output group before ending the job.
+%    \begin{macrocode}
+      \aftergroup\@@end
+    }%
+  \fi
+  \let\ps@next\@empty
+  \ifx\ps@testlist\@empty
+  \else
+    \let\ps@next\ps@makevoid
+    \ps@testlist
+  \fi
+  \ifnum\ps@oddpages=1 %
+    \ifodd\value{ps@count}%
+    \else
+      \let\ps@next\ps@makevoid
+    \fi
+  \fi
+  \ifnum\ps@oddpages=2 %
+    \ifodd\value{ps@count}%
+      \let\ps@next\ps@makevoid
+    \else
+    \fi
+  \fi
+  \ps@begindvi
+  \ps@next
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentiflevel\endcsname\relax
+  \let\ps@cleanup@if\@empty
+\else
+  \def\ps@cleanup@if{%
+    \ifnum\currentiflevel>\@ne
+      \csname fi\endcsname
+      \expandafter\ps@cleanup@if
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%    Because of \cs{aftergroup} it is too dangerous to perform
+%    a similar cleanup for groups.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+  \let\ps@group@message\@empty
+  \def\ps@message@ignore{%
+    \typeout{%
+      (pagesel) \space\space\@spaces\@spaces\@spaces
+      Messages (\string\end\space occurred ...) can be ignored.%
+    }%
+  }%
+\else
+  \def\ps@group@message{%
+    \ifnum\currentgrouplevel>\@ne
+      \def\ps@message@ignore{%
+        \typeout{%
+          (pagesel) \space\space\@spaces\@spaces\@spaces
+          Message (\string\end\space occurred ...) %
+          can be ignored.%
+        }%
+      }%
+    \else
+      \let\ps@message@ignore\@empty
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsection{AtBeginDvi hook support}
+%
+%    The material of box \cs{@begindvibox} is recorded in parallel
+%    in box \cs{ps@begindvibox}.
+%    \begin{macrocode}
+\newbox\ps@begindvibox
+\ifvoid\@begindvibox
+\else
+  \global\setbox\ps@begindvibox\vbox{%
+    \unvbox\@begindvibox
+  }%
+\fi
+\let\ps@org@AtBeginDvi\AtBeginDvi
+\def\AtBeginDvi#1{%
+  \global\setbox\ps@begindvibox\vbox{%
+    \unvbox\ps@begindvibox
+    #1%
+  }%
+  \ps@org@AtBeginDvi{#1}%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\ps@begindvi}
+%    Macro \cs{ps@begindvi} is called the similar way as \cs{@begindvi}.
+%    If the first page is printed, then \cs{AtBeginDvi} should work
+%    as usual. Otherwise the contents of box \cs{ps@begindvibox} is
+%    set on the first selected page.
+%    \begin{macrocode}
+\def\ps@begindvi{%
+  \ifx\ps@next\@empty
+    \global\let\ps@begindvi\@empty
+  \else
+    \global\let\ps@begindvi\ps@begindvi@do
+  \fi
+}
+\def\ps@begindvi@do{%
+  \ifx\ps@next\@empty
+    \setbox\@cclv\vbox{%
+      \unvbox\ps@begindvibox
+      \box\@cclv
+    }%
+    \global\let\ps@begindvi\@empty
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pagesel.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pagesel.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pagesel.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pagesel.sty & tex/latex/oberdiek/pagesel.sty\\
+%   pagesel.pdf & doc/latex/oberdiek/pagesel.pdf\\
+%   pagesel.dtx & source/latex/oberdiek/pagesel.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pagesel.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pagesel.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pagesel.dtx
+%makeindex -s gind.ist pagesel.idx
+%pdflatex pagesel.dtx
+%makeindex -s gind.ist pagesel.idx
+%pdflatex pagesel.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pagesel.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pagesel'>
+  <name>pagesel</name>
+  <caption>Select pages of a document for output.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999,2003,2006-2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.8'/>
+  <description>
+    Selects single pages, ranges of pages, odd pages or even pages
+    for output.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pagesel.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pagesel.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{1999/03/01 v0.9}
+%   \item
+%     The first version was built as a response to a question
+%     of \NameEmail{Dirk Kuypers}{dk@comnets.rwth-aachen.de},
+%     published in the newsgroup
+%     \href{news:de.comp.text.tex}{de.comp.text.tex}:\\
+%     \URL{``\link{Re: pdflatex nur fuer bestimmte Seiten?!?}''}^^A
+%     {http://groups.google.com/group/de.comp.text.tex/msg/6b68c7b3439fb658}
+%   \end{Version}
+%   \begin{Version}{1999/04/05 v1.0}
+%   \item
+%     Documentation added in dtx format.
+%   \item
+%     Copyright: LPPL (\CTAN{macros/latex/base/lppl.txt})
+%   \item
+%     Options |odd|, |even| added.
+%   \item
+%     \cmd{\nofiles} added, bug fix for \Package{hyperref}.
+%   \item
+%     Abort loading of package, if nothing to do.
+%   \end{Version}
+%   \begin{Version}{1999/04/13 v1.1}
+%   \item
+%     \cs{nofiles} bug fix removed
+%     because of \xpackage{hyperref} 6.55.
+%   \item
+%     First CTAN release.
+%   \end{Version}
+%   \begin{Version}{2003/06/05 v1.2}
+%   \item
+%     \cs{deadcyles} is decremented for omitted pages.
+%   \item
+%     LPPL 1.2.
+%   \end{Version}
+%   \begin{Version}{2006/02/20 v1.3}
+%   \item
+%     Code is not changed.
+%   \item
+%     New DTX framework.
+%   \item
+%     LPPL 1.3
+%   \end{Version}
+%   \begin{Version}{2006/03/02 v1.4}
+%   \item
+%     Support for \cs{AtBeginDvi} added.
+%   \end{Version}
+%   \begin{Version}{2006/03/07 v1.5}
+%   \item
+%     Job is aborted after last selected page.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.6}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/04/12 v1.7}
+%   \item
+%     Hard coded box number 255 replaced by macro \cs{@cclv}.
+%   \end{Version}
+%   \begin{Version}{2008/08/11 v1.8}
+%   \item
+%     Code is not changed.
+%   \item
+%     URL updated from \texttt{www.dejanews.com}
+%     to \texttt{groups.google.com}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

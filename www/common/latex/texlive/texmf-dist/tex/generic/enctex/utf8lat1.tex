@@ -1,0 +1,156 @@
+% utf8lat1.tex: UTF-8 input declaration, Latin-1 Supplement, U+0080 -- U+00FF
+% ---------------------------------------------------------------------------
+% Petr Olsak, 2012
+
+\message{UTF-8 declaration: LATIN-1 SUPPLEMENT, U+0080--U+00FF}
+
+% You can define the \setucode texname htmlentity utf8code T1slot {TeX action}
+% by yours opinion before \input utf8lat1. If no definition is prepared by you,
+% the implicit one do following:
+% (1) Maps utf8code to \texname by encTeX's \mubytein ... \mubyteout
+% (2) if \texname is undefined do \def\texname{TeX action}
+% (3) The parameters htmlentity and T1slot are ignored
+%
+% If T1slot=* then the character is not provided by T1 encoding.
+% See the file t1code.tex for an alternative \setucode definition which uses T1slot.
+%
+% The \setcsucode is implicitly the same as \setucode, but csplain defines it as
+% ,,do nothing`` because the code is mapped by csplain as a raw character.
+%
+% Some slots are defined as \uuchar (means UndefinedUtf8char) because there
+% are not common tools for define them by plainTeX. You can redefine them, of course.
+
+
+
+\ifx\setucode\undefined
+
+\ifx\mubyte\undefined
+   \errhelp{Sorry, you can't use this file without encTeX initialised.}
+   \errmessage{The encTeX extension of TeX with \noexpand\mubyte is not found}
+   \expandafter\expandafter\expandafter \endinput
+\else
+
+% The implicit \setucode definition:
+
+\def\setucode #1 #2 #3 #4 #5{%
+   \expandafter \mubyte \csname#1\endcsname #3\endmubyte
+   \expandafter \ifx \csname#1\endcsname \relax
+      \expandafter \def\csname#1\endcsname{#5}%
+   \fi
+}
+\ifx\setcsucode\undefined \let\setcsucode=\setucode \fi
+
+\fi\fi
+
+\def\uuchar#1#2{% Undefined Utf8 character
+   \message{WARNING: undefined UTF-8 slot \string#1: #2}%
+   \leavevmode\hbox{\vrule width.5em height.5em}%
+}
+
+\let\doaccent=\char % accents are declared as \doaccent<number>, implicitly \char<number>.
+    % you can set: \let\doaccent=\accent: then accents will be placed over the next character.
+\def\intext#1{\leavevmode\hbox{$#1$}} % the math construction working in text mode.
+
+\setucode nobreakspace nbsp ^^c2^^a0 * {~}
+\setucode exclamdown iexcl  ^^c2^^a1 ^^bd {!`}
+\setucode cent cent ^^c2^^a2 * {\uuchar\cent{CENT SIGN}}
+\setucode pound pound ^^c2^^a3 ^^bf {{\it\$}}
+\setucode currency curren ^^c2^^a4 * {\uuchar\currency{CURRENCY SIGN}}
+\setucode yen yen ^^c2^^a5 * {\uuchar\yen{YEN SIGN}}
+\setucode brokenbar brvbar ^^c2^^a6 * {\leavevmode\hbox
+                    {\kern.1em\vbox{\hrule height .38em width.04em \kern.15em
+                    \hrule height.23em depth.15em width.04em}\kern.1em}}
+\setucode S sect ^^c2^^a7 ^^9f {defined already}
+\setucode dieresis uml ^^c2^^a8 ^^04 {\doaccent127 }
+\setucode copyright copy ^^c2^^a9 * {defined already}
+\setucode feminine ordf ^^c2^^aa * {\uuchar\feminine{FEMININE ORDINAL INDICATOR}}
+\setucode flqq laquo ^^c2^^ab ^^13 {\intext{\scriptstyle\langle\!\langle}}
+\setucode notsign not ^^c2^^ac * {defined already}
+\setucode softhyphen shy ^^c2^^ad * {\uuchar\softhyphen{SOFT HYPHEN}}
+\setucode registered reg ^^c2^^ae * {\uuchar\registered{REGISTERED SIGN}}
+\setucode macron macr ^^c2^^af * {\doaccent22 }
+\setucode degree deg ^^c2^^b0 * {\intext{^\circ}}
+\setucode textpm plusmn ^^c2^^b1 * {\intext{\pm}}
+\setucode suptwo sup2 ^^c2^^b2 * {\intext{^2}}
+\setucode supthree sup3 ^^c2^^b3 * {\intext{^3}}
+\setucode acute acute ^^c2^^b4 ^^01 {\doaccent19 }
+\setucode micro micro ^^c2^^b5 * {\intext{\mu}}
+\setucode P para ^^c2^^b6 * {defined already}
+\setucode textcdot middot ^^c2^^b7 * {\intext{\cdot}}
+\setucode cedilla cedil ^^c2^^b8 ^^0b {\char24 }
+\setucode supone sup1 ^^c2^^b9 * {\intext{^1}}
+\setucode masculine ordm ^^c2^^ba * {\uuchar\masculine{MASCULINE ORDINAL INDICATOR}}
+\setucode frqq raquo ^^c2^^bb ^^14 {\intext{\scriptstyle\rangle\!\rangle}}
+\setucode onequarter frac14 ^^c2^^bc * {\intext{^1\!/\!_4}}
+\setucode onehalf frac12 ^^c2^^bd * {\intext{^1\!/\!_2}}
+\setucode threequarter frac34 ^^c2^^be * {\intext{^3\!/\!_4}}
+\setucode questiondown iquest ^^c2^^bf ^^be {?`}
+\setucode Agrave Agrave ^^c3^^80 ^^c0 {\`A}
+\setcsucode Aacute Aacute ^^c3^^81 ^^c1 {\'A}
+\setucode Acircumflex Acirc ^^c3^^82 ^^c2 {\^A}
+\setucode Atilde Atilde ^^c3^^83 ^^c3 {\~A}
+\setcsucode Adieresis Auml ^^c3^^84 ^^c4 {\"A}
+\setucode Aring Aring ^^c3^^85 ^^c5 {\r A}
+\setucode AE AElig ^^c3^^86 ^^c6 {defined already}
+\setucode Ccedilla Ccedil ^^c3^^87 ^^c7 {\c C}
+\setucode Egrave Egrave ^^c3^^88 ^^c8 {\`E}
+\setcsucode Eacute Eacute ^^c3^^89 ^^c9 {\'E}
+\setucode Ecircumflex Ecirc ^^c3^^8a ^^ca {\^E}
+\setucode Edieresis Euml ^^c3^^8b ^^cb {\"E}
+\setucode Igrave Igrave ^^c3^^8c ^^cc {\`I}
+\setcsucode Iacute Iacute ^^c3^^8d ^^cd {\'I}
+\setucode Icircumflex Icirc ^^c3^^8e ^^ce {\^I}
+\setucode Idieresis Iuml ^^c3^^8f ^^cf {\"I}
+\setucode Eth ETH ^^c3^^90 ^^d0 {\uuchar\Eth{LATIN CAPITAL LETTER ETH}}
+\setucode Ntilde Ntilde ^^c3^^91 ^^d1 {\~N}
+\setucode Ograve Ograve ^^c3^^92 ^^d2 {\`O}
+\setcsucode Oacute Oacute ^^c3^^93 ^^d3 {\'O}
+\setcsucode Ocircumflex Ocirc ^^c3^^94 ^^d4 {\^O}
+\setucode Otilde Otilde ^^c3^^95 ^^d5 {\~O}
+\setcsucode Odieresis Ouml ^^c3^^96 ^^d6 {\"O}
+\setucode texttimes times ^^c3^^97 * {\intext{\times}}
+\setucode O Oslash ^^c3^^98 ^^d8 {defined already}
+\setucode Ugrave Ugrave ^^c3^^99 ^^d9 {\`U}
+\setcsucode Uacute Uacute ^^c3^^9a ^^da {\'U}
+\setucode Ucircumflex Ucirc ^^c3^^9b ^^db {\^U}
+\setcsucode Udieresis Uuml ^^c3^^9c ^^dc {\"U}
+\setcsucode Yacute Yacute ^^c3^^9d ^^dd {\'Y}
+\setucode Thorn THRON ^^c3^^9e ^^de {\uuchar\Thron{LATIN CAPITAL LETTER THRON}}
+\setucode ss szlig ^^c3^^9f ^^fb {defined already}
+\setucode agrave agrave ^^c3^^a0 ^^e0 {\`a}
+\setcsucode aacute aacute ^^c3^^a1 ^^e1 {\'a}
+\setucode acircumflex acirc ^^c3^^a2 ^^e2 {\^a}
+\setucode atilde atilde ^^c3^^a3 ^^e3 {\~a}
+\setcsucode adieresis auml ^^c3^^a4 ^^e4 {\"a}
+\setucode aring aring ^^c3^^a5 ^^e5 {\r a}
+\setucode ae aelig ^^c3^^a6 ^^e6 {defined already}
+\setucode ccedilla ccedil ^^c3^^a7 ^^e7 {\c c}
+\setucode egrave egrave ^^c3^^a8 ^^e8 {\`e}
+\setcsucode eacute eacute ^^c3^^a9 ^^e9 {\'e}
+\setucode ecircumflex ecirc ^^c3^^aa ^^ea {\^e}
+\setucode edieresis euml ^^c3^^ab ^^eb {\"e}
+\setucode igrave igrave ^^c3^^ac ^^ec {\`i}
+\setcsucode iacute iacute ^^c3^^ad ^^ed {\'i}
+\setucode icircumflex icirc ^^c3^^ae ^^ee {\^i}
+\setucode idieresis iuml ^^c3^^af ^^ef {\"i}
+\setucode eth eth ^^c3^^b0 ^^f0 {\uuchar\eth{LATIN SMALL LETTER ETH}}
+\setucode ntilde ntilde ^^c3^^b1 ^^f1 {\~n}
+\setucode ograve ograve ^^c3^^b2 ^^f2 {\`o}
+\setcsucode oacute oacute ^^c3^^b3 ^^f3 {\'o}
+\setcsucode ocircumflex ocirc ^^c3^^b4 ^^f4 {\^o}
+\setucode otilde otilde ^^c3^^b5 ^^f5 {\~o}
+\setcsucode odieresis ouml ^^c3^^b6 ^^f6 {\"o}
+\setucode division divide ^^c3^^b7 ^^f7 {\intext{\div}}
+\setucode o oslash ^^c3^^b8 * {defined already}
+\setucode ugrave ugrave ^^c3^^b9 ^^f9 {\`u}
+\setcsucode uacute uacute ^^c3^^ba ^^fa {\'u}
+\setucode ucircumflex ucirc ^^c3^^bb ^^fb {\^u}
+\setcsucode udieresis uuml ^^c3^^bc ^^fc {\"u}
+\setcsucode yacute yacute ^^c3^^bd ^^fd {\'y}
+\setucode thron thron ^^c3^^be ^^fe {\uuchar\thron{LATIN SMALL LETTER THRON}}
+\setucode ydieresis yuml ^^c3^^bf ^^ff {\"y}
+
+\catcode`\^^A=12 % Knuth set them to 8 and 7 in plain.tex but it isn't usable because 
+\catcode`\^^K=12 % acute and cedilla are mapped to these chars in T1 encoding
+
+% end of file utf8lat1.tex

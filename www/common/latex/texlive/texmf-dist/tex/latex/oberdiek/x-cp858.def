@@ -1,0 +1,260 @@
+%%
+%% This is file `x-cp858.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `cp858')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-cp858.def}%
+  [2011/05/27 v1.10 Input encoding cp858 (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textasciiacute}{%
+  \@tabacckludge'{}%
+}
+\ProvideTextCommandDefault{\textasciidieresis}{%
+  \"{}%
+}
+\ProvideTextCommandDefault{\textasciimacron}{%
+  \@tabacckludge={}%
+}
+\ProvideTextCommandDefault{\textblacksquare}{%
+  \vrule \@width .3em \@height .4em \@depth -.1em\relax
+}
+\ProvideTextCommandDefault{\textbrokenbar}{%
+  \TextSymbolUnavailable\textbrokenbar
+}
+\ProvideTextCommandDefault{\textcent}{%
+  \TextSymbolUnavailable\textcent
+}
+\ProvideTextCommandDefault{\textcurrency}{%
+  \TextSymbolUnavailable\textcurrency
+}
+\ProvideTextCommandDefault{\textdbllowline}{%
+  \begingroup
+    \sbox0{\textunderscore}%
+    \leavevmode
+    \ifdim\dp0<.2ex\relax
+      \rlap{\raisebox{-.2ex}[0pt]{\textunderscore}}%
+    \else
+      \rlap{\raisebox{.2ex}[0pt]{\textunderscore}}%
+    \fi
+    \textunderscore
+  \endgroup
+}
+\ProvideTextCommandDefault{\textdegree}{%
+  \ensuremath{{^\circ}}%
+}
+\ProvideTextCommandDefault{\textdiv}{%
+  \TextSymbolUnavailable\textdiv
+}
+\ProvideTextCommandDefault{\texteuro}{%
+  \TextSymbolUnavailable\texteuro
+}
+\ProvideTextCommandDefault{\textflorin}{%
+  \textit{f}%
+}
+\ProvideTextCommandDefault{\textlnot}{%
+  \ensuremath\lnot
+}
+\ProvideTextCommandDefault{\textmu}{%
+  \ensuremath\mu
+}
+\ProvideTextCommandDefault{\textonehalf}{%
+  \ensuremath{\frac12}%
+}
+\ProvideTextCommandDefault{\textonequarter}{%
+  \ensuremath{\frac14}%
+}
+\ProvideTextCommandDefault{\textonesuperior}{%
+  \ensuremath{{^1}}%
+}
+\ProvideTextCommandDefault{\textpm}{%
+  \ensuremath\pm
+}
+\ProvideTextCommandDefault{\textthreequarters}{%
+  \ensuremath{\frac34}%
+}
+\ProvideTextCommandDefault{\textthreesuperior}{%
+  \ensuremath{{^3}}%
+}
+\ProvideTextCommandDefault{\texttimes}{%
+  \ensuremath\times
+}
+\ProvideTextCommandDefault{\texttwosuperior}{%
+  \ensuremath{{^2}}%
+}
+\ProvideTextCommandDefault{\textyen}{%
+  \TextSymbolUnavailable\textyen
+}
+\DeclareInputText{128}{\c C}
+\DeclareInputText{129}{\"u}
+\DeclareInputText{130}{\@tabacckludge'e}
+\DeclareInputText{131}{\^a}
+\DeclareInputText{132}{\"a}
+\DeclareInputText{133}{\@tabacckludge`a}
+\DeclareInputText{134}{\r a}
+\DeclareInputText{135}{\c c}
+\DeclareInputText{136}{\^e}
+\DeclareInputText{137}{\"e}
+\DeclareInputText{138}{\@tabacckludge`e}
+\DeclareInputText{139}{\"\i}
+\DeclareInputText{140}{\^\i}
+\DeclareInputText{141}{\@tabacckludge`\i}
+\DeclareInputText{142}{\"A}
+\DeclareInputText{143}{\r A}
+\DeclareInputText{144}{\@tabacckludge'E}
+\DeclareInputText{145}{\ae}
+\DeclareInputText{146}{\AE}
+\DeclareInputText{147}{\^o}
+\DeclareInputText{148}{\"o}
+\DeclareInputText{149}{\@tabacckludge`o}
+\DeclareInputText{150}{\^u}
+\DeclareInputText{151}{\@tabacckludge`u}
+\DeclareInputText{152}{\"y}
+\DeclareInputText{153}{\"O}
+\DeclareInputText{154}{\"U}
+\DeclareInputText{155}{\o}
+\DeclareInputText{156}{\textsterling}
+\DeclareInputText{157}{\O}
+\DeclareInputText{158}{\texttimes}
+\DeclareInputText{159}{\textflorin}
+\DeclareInputText{160}{\@tabacckludge'a}
+\DeclareInputText{161}{\@tabacckludge'\i}
+\DeclareInputText{162}{\@tabacckludge'o}
+\DeclareInputText{163}{\@tabacckludge'u}
+\DeclareInputText{164}{\~n}
+\DeclareInputText{165}{\~N}
+\DeclareInputText{166}{\textordfeminine}
+\DeclareInputText{167}{\textordmasculine}
+\DeclareInputText{168}{\textquestiondown}
+\DeclareInputText{169}{\textregistered}
+\DeclareInputText{170}{\textlnot}
+\DeclareInputText{171}{\textonehalf}
+\DeclareInputText{172}{\textonequarter}
+\DeclareInputText{173}{\textexclamdown}
+\DeclareInputText{174}{\guillemotleft}
+\DeclareInputText{175}{\guillemotright}
+\DeclareInputText{176}{\textltshade}
+\DeclareInputText{177}{\textshade}
+\DeclareInputText{178}{\textdkshade}
+\DeclareInputText{179}{\textSFxi}
+\DeclareInputText{180}{\textSFix}
+\DeclareInputText{181}{\@tabacckludge'A}
+\DeclareInputText{182}{\^A}
+\DeclareInputText{183}{\@tabacckludge`A}
+\DeclareInputText{184}{\textcopyright}
+\DeclareInputText{185}{\textSFxxiii}
+\DeclareInputText{186}{\textSFxxiv}
+\DeclareInputText{187}{\textSFxxv}
+\DeclareInputText{188}{\textSFxxvi}
+\DeclareInputText{189}{\textcent}
+\DeclareInputText{190}{\textyen}
+\DeclareInputText{191}{\textSFiii}
+\DeclareInputText{192}{\textSFii}
+\DeclareInputText{193}{\textSFvii}
+\DeclareInputText{194}{\textSFvi}
+\DeclareInputText{195}{\textSFviii}
+\DeclareInputText{196}{\textSFx}
+\DeclareInputText{197}{\textSFv}
+\DeclareInputText{198}{\~a}
+\DeclareInputText{199}{\~A}
+\DeclareInputText{200}{\textSFxxxviii}
+\DeclareInputText{201}{\textSFxxxix}
+\DeclareInputText{202}{\textSFxl}
+\DeclareInputText{203}{\textSFxli}
+\DeclareInputText{204}{\textSFxlii}
+\DeclareInputText{205}{\textSFxliii}
+\DeclareInputText{206}{\textSFxliv}
+\DeclareInputText{207}{\textcurrency}
+\DeclareInputText{208}{\dh}
+\DeclareInputText{209}{\DH}
+\DeclareInputText{210}{\^E}
+\DeclareInputText{211}{\"E}
+\DeclareInputText{212}{\@tabacckludge`E}
+\DeclareInputText{213}{\texteuro}
+\DeclareInputText{214}{\@tabacckludge'I}
+\DeclareInputText{215}{\^I}
+\DeclareInputText{216}{\"I}
+\DeclareInputText{217}{\textSFiv}
+\DeclareInputText{218}{\textSFi}
+\DeclareInputText{219}{\textblock}
+\DeclareInputText{220}{\textdnblock}
+\DeclareInputText{221}{\textbrokenbar}
+\DeclareInputText{222}{\@tabacckludge`I}
+\DeclareInputText{223}{\textupblock}
+\DeclareInputText{224}{\@tabacckludge'O}
+\DeclareInputText{225}{\ss}
+\DeclareInputText{226}{\^O}
+\DeclareInputText{227}{\@tabacckludge`O}
+\DeclareInputText{228}{\~o}
+\DeclareInputText{229}{\~O}
+\DeclareInputText{230}{\textmu}
+\DeclareInputText{231}{\th}
+\DeclareInputText{232}{\TH}
+\DeclareInputText{233}{\@tabacckludge'U}
+\DeclareInputText{234}{\^U}
+\DeclareInputText{235}{\@tabacckludge`U}
+\DeclareInputText{236}{\@tabacckludge'y}
+\DeclareInputText{237}{\@tabacckludge'Y}
+\DeclareInputText{238}{\textasciimacron}
+\DeclareInputText{239}{\textasciiacute}
+\DeclareInputText{240}{\-}
+\DeclareInputText{241}{\textpm}
+\DeclareInputText{242}{\textdbllowline}
+\DeclareInputText{243}{\textthreequarters}
+\DeclareInputText{244}{\textparagraph}
+\DeclareInputText{245}{\textsection}
+\DeclareInputText{246}{\textdiv}
+\DeclareInputText{247}{\c\ }
+\DeclareInputText{248}{\textdegree}
+\DeclareInputText{249}{\textasciidieresis}
+\DeclareInputText{250}{\textperiodcentered}
+\DeclareInputText{251}{\textonesuperior}
+\DeclareInputText{252}{\textthreesuperior}
+\DeclareInputText{253}{\texttwosuperior}
+\DeclareInputText{254}{\textblacksquare}
+\DeclareInputText{255}{\nobreakspace}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-cp858.def'.

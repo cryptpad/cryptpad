@@ -1,0 +1,10 @@
+% Black font for APS with proofsheet resolution approx 90 pixels per inch
+% (Used with output of GF2DVI for the METAFONTbook illustrations)
+
+if mode<>aps: errmessage "This file is for aps only"; fi
+
+font_identifier "BLACKAPS";
+picture pix_picture; pix_wd := pix_ht := 8;
+pix_picture := unitpixel scaled 8;
+
+input grayf

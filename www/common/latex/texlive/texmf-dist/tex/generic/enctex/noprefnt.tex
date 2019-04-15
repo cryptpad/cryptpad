@@ -1,0 +1,29 @@
+
+% NOPREFNT.TEX, ver. 1,  September 1997,    by Petr Olsak (Ol\v s\'ak)
+%
+% This file re-defines the TeX primitive \font by the following way.
+%
+% You write:                               The meaning:
+%  \font\preloaded=*[scaled \magstep?] .... ignore loading 
+%  another cases ...                        the font is loaded
+
+\ifx\ignoreload\undefined \else \expandafter\endinput \fi
+
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\catcode`\#=6 % hash mark is macro parameter character
+
+\let\originalfont\font
+\edef\tempb{\string\preloaded}
+\def\font#1=#2 {\edef\tempa{\string#1}%
+  \ifx\tempa\tempb\let\next=\ignoreload
+  \else \def\next{\originalfont#1=#2 }%
+  \fi\next}
+\long\def\ignoreload#1{\ifx#1s\let\next=\skipscaled
+     \else\long\def\next{#1}\fi\next}
+\def\skipscaled #1\magstep#2{}
+\def\restorefont{\let\font\originalfont  \let\originalfont\undefined
+  \let\ignoreload\undefined \let\restorefont\undefined}
+
+% end of file NOPREFNT.TEX
+

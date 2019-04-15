@@ -1,0 +1,120 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bmhydoc}
+  [2009/11/22 Bookmark section with hyperref documentation (HO)]
+
+% This package adds bookmark entries that are added at the end
+% and lists and links the PDF files of the hyperref documentation.
+% Only pdfTeX in PDF mode is supported by this package.
+%
+% History
+%
+%   2005/08/27
+%     * First version
+%   2006/02/08
+%     * Comments added
+%     * \HyperrefOverview
+%   2007/03/19
+%     * Use package bookmark that also support other drivers
+%       than pdfTeX.
+%   2009/11/22
+%     * Bug fix: correction of "this file".
+
+\RequirePackage{pifont}
+\RequirePackage[atend]{bookmark}[2007/04/04]
+
+\BookmarkAtEnd{%
+  \bookmarksetup{%
+    startatroot,%
+    open,%
+    openlevel=2%
+  }%
+}
+
+\newcommand*{\@bmhydoc}[4][]{%
+  \BookmarkAtEnd{%
+    \bookmark[%
+      gotor={#3},%
+      color={[rgb]{0,0,1}},%
+      level={#2},%
+      view={XYZ null null null},%
+      #1,%
+    ]{#4}%
+  }%
+}
+\AtEndDocument{%
+  \@bmhydoc[open=false]{0}{manual.pdf}{Hyperref manual}
+  \@bmhydoc{1}{README.pdf}{README}
+  \@bmhydoc{1}{ChangeLog.pdf}{ChangeLog}
+  \@bmhydoc{1}{options.pdf}{Options}
+  \@bmhydoc{1}{slides.pdf}{Bookmark talk, slides}
+  \@bmhydoc{2}{paper.pdf}{Bookmark talk, paper}
+  \@bmhydoc{1}{hyperref.pdf}{Sources: hyperref.dtx}
+  \@bmhydoc{2}{backref.pdf}{backref.dtx}
+  \@bmhydoc{2}{nameref.pdf}{nameref.dtx}
+}
+
+\newcommand*{\HyperrefOverview}{%
+  \def\bmhydoc@title{Documentation overview for \texttt{hyperref}}%
+  \@ifstar{%
+    % \phantomsection
+    % \addcontentsline{toc}{section}{\bmhydoc@title}%
+    \section*{\bmhydoc@title}%
+    \@HyperrefOverview
+  }{%
+    \section{\bmhydoc@title}%
+    \@HyperrefOverview
+  }%
+}
+\def\@HyperrefOverview{%
+  The documentation for package \texttt{hyperref} consists
+  of several files:
+  \begingroup
+    \newcommand*{\entry}[2]{%
+      \item[\href{file:##1}{##2}]%
+      \ignorespaces
+    }%
+    \begin{description}
+      \entry{manual.pdf}{\textbf{Manual}}
+        The \textbf{USER MANUAL} (also available as HTML).
+      \entry{README.pdf}{\textbf{README}}
+        The \textbf{README} file (also available as text file).
+        Here information is collected that is not yet
+        in the manual: new features, package compatibility,
+        limitations, known problems, \dots
+      \entry{ChangeLog.pdf}{ChangeLog}
+        This file records the version history
+        (also available as text file).
+      \entry{options.pdf}{Options}
+        This file provides a short option summary.
+      \entry{slides.pdf}{Bookmark talk, slides}
+        Slides for the talk ``PDF information and navigation elements with
+        hyperref, pdfTeX and thumbpdf'' at Euro\TeX~1999.
+      \entry{paper.pdf}{Bookmark talk, paper}
+        The paper version of the talk.
+    \end{description}
+    Source code documentation:
+    \begin{description}
+      \entry{hyperref.pdf}{hyperref.dtx}
+        This is the source code documentation for hyperref%
+        \@thisfile{hyperref}.
+      \entry{backref.pdf}{backref.dtx}
+        ``Back referencing from bibliographical citations''%
+        \@thisfile{backref}
+      \entry{nameref.pdf}{nameref.dtx}
+        ``Section name references in \LaTeX''%
+        \@thisfile{nameref}%
+    \end{description}
+  \endgroup
+}
+\edef\@jobname{\jobname}
+\def\@thisfile#1{%
+  \begingroup
+    \edef\x{#1}%
+    \@onelevel@sanitize\x
+    \ifx\x\@jobname
+      \marginpar{\hfill\ding{43}}%
+      \space(this file)%
+    \fi
+  \endgroup
+}
+\endinput

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='mleftright'>
+  <name>mleftright</name>
+  <caption>Variants of delimiters that act as maths open/close.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.0'/>
+  <description>
+    The package defines variants <tt>\mleft</tt> and <tt>\mright</tt>
+    of <tt>\left</tt> and <tt>\right</tt>, that make the delimiters
+    act as <tt>\mathopen</tt> and <tt>\mathclose</tt>.  These commands
+    address spacing difficulties in subformulas.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/mleftright.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/mleftright.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

@@ -1,0 +1,283 @@
+%%
+%% This is file `enparen.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% enparen.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: enparen
+%% Version: 2012/01/07 v1.0
+%% 
+%% Copyright (C) 2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file enparen.dtx
+%% and the derived files
+%%    enparen.sty, enparen.pdf, enparen.ins, enparen.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{enparen}
+  [2012/01/07 v1.0 Parentheses nesting (HO)]%
+\RequirePackage{ltxcmds}[2011/11/09]
+\ltx@IfUndefined{numexpr}{%
+  \PackageError{enparen}{%
+    Missing e-TeX's \ltx@backslashchar numexpr.\MessageBreak
+    The package will continue with emergency definitions%
+  }\@ehc
+  \def\enparenLeft{(}%
+  \def\enparenRight{)}%
+  \long\def\enparen#1{\enparenLeft#1\enparenRight}%
+  \let\enparenSetup\ltx@gobble
+  \let\enparenSetSymbols\ltx@gobblethree
+  \let\enparenUnsetSymbols\ltx@gobble
+  \endinput
+}{}
+\RequirePackage{protecteddef}[2011/01/31]
+\RequirePackage{atveryend}[2011/06/30]
+\RequirePackage{uniquecounter}[2011/01/30]
+\RequirePackage{zref-base}[2011/03/18]
+\RequirePackage{kvoptions}[2011/06/30]
+\RequirePackage{kvsetkeys}[2011/10/18]
+\providecommand{\zref@wrapper@mainaux}[1]{%
+  \ifx\@auxout\@mainaux
+    #1%
+  \else
+    \begingroup
+      \let\@auxout\@mainaux
+      #1%
+    \endgroup
+  \fi
+}
+\UniqueCounterNew{enparen}
+\zref@newprop{enparen}[0]{}
+\def\enparenContextDefault{main}
+\let\enparen@ctx\ltx@empty
+\let\enparen@stack\ltx@empty
+\global\let\enparen@CtxStack\ltx@empty
+\def\enparen@CtxStackPush#1{%
+  \xdef\enparen@CtxStack{%
+    {\enparen@ctx}{\enparen@stack}%
+    \enparen@CtxStack
+  }%
+  \xdef\enparen@ctx{#1}%
+  \global\let\enparen@stack\ltx@empty
+}
+\def\enparen@CtxStackPop{%
+  \ifx\enparen@CtxStack\ltx@empty
+    \PackageWarning{enparen}{%
+      Pop request for empty context stack%
+    }%
+    \global\let\enparen@ctx\enparenContextDefault
+    \global\let\enparen@stack\ltx@empty
+  \else
+    \xdef\enparen@ctx{%
+      \expandafter\ltx@car\enparen@CtxStack\@nil
+    }%
+    \xdef\enparen@stack{%
+      \expandafter\ltx@carsecond\enparen@CtxStack\@nil
+    }%
+    \xdef\enparen@CtxStack{%
+      \expandafter\ltx@cdrtwo\enparen@CtxStack\@nil
+    }%
+  \fi
+}
+\ProtectedDef*{\enparenBeginContext}[1]{%
+  \enparen@CtxStackPush{#1}%
+}
+\ProtectedDef*{\enparenEndContext}[1]{%
+  \edef\enparen@temp{#1}%
+  \ifx\enparen@temp\enparen@ctx
+  \else
+    \PackageWarning{enparen}{%
+      Context mismatch in end request.\MessageBreak
+      `#1' should be ended, but current context\MessageBreak
+      is `\enparen@ctx'%
+    }%
+  \fi
+  \enparenCheckEmptyStack
+  \enparen@CtxStackPop
+}
+\ProtectedDef*{\enparenCheckEmptyStack}[0]{%
+  \ifx\enparen@stack\ltx@empty
+  \else
+    \PackageWarning{enparen}{%
+      Ending non-empty stack `\enparen@ctx':\MessageBreak
+      \enparen@PrintStack\MessageBreak
+    }%
+  \fi
+}
+\def\enparen@PrintStack{%
+  \expandafter\enparen@PrintStackAux
+  \enparen@stack\ltx@empty\ltx@empty
+}
+\def\enparen@PrintStackAux#1#2{%
+  \ifx\ltx@empty#1%
+  \else
+    {#1:#2}%
+    \expandafter\enparen@PrintStackAux
+  \fi
+}
+\ProtectedDef*{\enparenSetSymbols}[3]{%
+  \expandafter
+  \def\csname enparen@symbol\the\numexpr#1L\endcsname{#2}%
+  \expandafter
+  \def\csname enparen@symbol\the\numexpr#1R\endcsname{#3}%
+}
+\ProtectedDef*{\enparenUnsetSymbols}[1]{%
+  \expandafter
+  \let\csname enparen@symbol\the\numexpr#1L\endcsname\ltx@undefined
+  \expandafter
+  \let\csname enparen@symbol\the\numexpr#1R\endcsname\ltx@undefined
+}
+\enparenSetSymbols{0}{(}{)}
+\enparenSetSymbols{1}{(}{)}
+\enparenSetSymbols{2}{[}{]}
+\enparenSetSymbols{3}{\{}{\}}
+\enparenSetSymbols{4}{\ensuremath{\langle}}{\ensuremath{\rangle}}
+\ProtectedDef{\enparen}[1]{%
+  \enparenLeft#1\enparenRight
+}
+\ProtectedDef*{\enparenLeft}[0]{%
+  \UniqueCounterCall{enparen}\enparen@Left
+}
+\def\enparen@Left#1{%
+  \xdef\enparen@stack{%
+    {#1}{1}%
+    \expandafter\enparen@Inc\expandafter2\expandafter!%
+    \enparen@stack\ltx@empty\ltx@empty
+  }%
+  \edef\enparen@tmp{\zref@extract{enparen#1}{enparen}}%
+  \ltx@IfUndefined{enparen@symbol\enparen@tmp L}{%
+    \PackageWarning{enparen}{%
+      Undefined symbols for level \enparen@tmp
+    }%
+    \csname enparen@symbol0L\endcsname
+  }{%
+    \csname enparen@symbol\enparen@tmp L\endcsname
+  }%
+}
+\def\enparen@Inc#1!#2#3{%
+  \ifx\ltx@empty#2%
+  \else
+    \ifnum#3<#1 %
+      {#2}{#1}%
+      \expandafter\enparen@Inc
+      \the\numexpr#1+1\expandafter\expandafter\expandafter!%
+    \else
+      {#2}{#3}%
+    \fi
+  \fi
+}
+\ProtectedDef*{\enparenRight}[0]{%
+  \ifx\enparen@stack\ltx@empty
+    \PackageWarning{enparen}{%
+      Missing left symbol for right symbol%
+    }%
+    \csname enparen@symbol0R\endcsname
+  \else
+    \expandafter\enparen@Right\enparen@stack\@nil
+  \fi
+}
+\def\enparen@Right#1#2#3\@nil{%
+  \ltx@IfUndefined{%
+    enparen@symbol%
+    \zref@extract{enparen#1}{enparen}%
+    R%
+  }{%
+    \csname enparen@symbol0R\endcsname
+  }{%
+    \csname
+      enparen@symbol%
+      \zref@extract{enparen#1}{enparen}%
+       R%
+    \endcsname
+  }%
+  \zref@wrapper@mainaux{%
+    \zref@setcurrent{enparen}{#2}%
+    \zref@labelbyprops{enparen#1}{enparen}%
+  }%
+  \xdef\enparen@stack{#3}%
+}
+\SetupKeyvalOptions{%
+  family=enparen,%
+  prefix=enparen@,%
+}
+\ProtectedDef*{\enparenSetup}[0]{%
+  \kvsetkeys{enparen}%
+}
+\DeclareBoolOption[true]{footnote}
+\DeclareBoolOption[true]{caption}
+\ProcessKeyvalOptions*
+\def\enparen@AtBegin{%
+  \ifenparen@footnote
+    \let\enparen@org@makefntext\@makefntext
+    \long\def\@makefntext##1{%
+      \enparen@org@makefntext{%
+        \enparenBeginContext{footnote}%
+        ##1%
+        \enparenEndContext{footnote}%
+      }%
+    }%
+  \fi
+  \enparen@Disable{footnote}%
+  \ifenparen@caption
+    \let\enparen@org@makecaption\@makecaption
+    \long\def\@makecaption##1##2{%
+      \enparen@org@makecaption{##1}{%
+        \enparenBeginContext{caption}%
+        ##2%
+        \enparenEndContext{caption}%
+      }%
+    }%
+  \fi
+  \enparen@Disable{caption}%
+}
+\def\enparen@Disable#1{%
+  \DisableKeyvalOption[%
+    action=warning,%
+    package=enparen,%
+  ]{enparen}{#1}%
+}
+\AtBeginDocument{\enparen@AtBegin}
+\def\enparen@AtEnd{%
+  \enparenCheckEmptyStack
+  \ifx\enparen@CtxStack\ltx@empty
+  \else
+    \PackageWarningNoLine{enparen}{%
+      Context stack is not empty at end of document.\MessageBreak
+      Current stack and contents of context stack:\MessageBreak
+      [\enparen@ctx]:[\enparen@PrintStack]%
+      \expandafter
+      \enparen@PrintContextStack\enparen@CtxStack\relax\relax
+    }%
+  \fi
+}
+\def\enparen@PrintContextStack#1#2{%
+  \ifx\relax#1\ltx@empty
+  \else
+    \MessageBreak
+    [#1]:[\enparen@PrintStackAux#2\ltx@empty\ltx@empty]% hash-ok
+    \expandafter\enparen@PrintContextStack
+  \fi
+}
+\AtVeryEndDocument{\enparen@AtEnd}
+\endinput
+%%
+%% End of file `enparen.sty'.

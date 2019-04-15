@@ -1,0 +1,2339 @@
+% \iffalse meta-comment
+%
+% File: pdfescape.dtx
+% Version: 2011/11/25 v1.13
+% Info: Implements pdfTeX's escape features
+%
+% Copyright (C) 2007, 2010, 2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file pdfescape.dtx
+% and the derived files
+%    pdfescape.sty, pdfescape.pdf, pdfescape.ins, pdfescape.drv,
+%    pdfescape-test1.tex, pdfescape-test2.tex,
+%    pdfescape-test3.tex, pdfescape-test4.tex,
+%    pdfescape-test5.tex, pdfescape-test6.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pdfescape.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pdfescape.pdf
+%
+% Unpacking:
+%    (a) If pdfescape.ins is present:
+%           tex pdfescape.ins
+%    (b) Without pdfescape.ins:
+%           tex pdfescape.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pdfescape.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pdfescape.drv is present:
+%           latex pdfescape.drv
+%    (b) Without pdfescape.drv:
+%           latex pdfescape.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pdfescape.dtx
+%       makeindex -s gind.ist pdfescape.idx
+%       pdflatex pdfescape.dtx
+%       makeindex -s gind.ist pdfescape.idx
+%       pdflatex pdfescape.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/pdfescape.sty
+%    TDS:doc/latex/oberdiek/pdfescape.pdf
+%    TDS:doc/latex/oberdiek/test/pdfescape-test1.tex
+%    TDS:doc/latex/oberdiek/test/pdfescape-test2.tex
+%    TDS:doc/latex/oberdiek/test/pdfescape-test3.tex
+%    TDS:doc/latex/oberdiek/test/pdfescape-test4.tex
+%    TDS:doc/latex/oberdiek/test/pdfescape-test5.tex
+%    TDS:doc/latex/oberdiek/test/pdfescape-test6.tex
+%    TDS:source/latex/oberdiek/pdfescape.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pdfescape 2011/11/25 v1.13 Implements pdfTeX's escape features (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pdfescape
+Version: 2011/11/25 v1.13
+
+Copyright (C) 2007, 2010, 2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file pdfescape.dtx
+and the derived files
+   pdfescape.sty, pdfescape.pdf, pdfescape.ins, pdfescape.drv,
+   pdfescape-test1.tex, pdfescape-test2.tex,
+   pdfescape-test3.tex, pdfescape-test4.tex,
+   pdfescape-test5.tex, pdfescape-test6.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pdfescape.ins}{\from{pdfescape.dtx}{install}}%
+  \file{pdfescape.drv}{\from{pdfescape.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{pdfescape.sty}{\from{pdfescape.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pdfescape-test1.tex}{\from{pdfescape.dtx}{test1}}%
+  \file{pdfescape-test2.tex}{\from{pdfescape.dtx}{test2}}%
+  \file{pdfescape-test3.tex}{\from{pdfescape.dtx}{test3}}%
+  \file{pdfescape-test4.tex}{\from{pdfescape.dtx}{test4}}%
+  \file{pdfescape-test5.tex}{\from{pdfescape.dtx}{test5}}%
+  \file{pdfescape-test6.tex}{\from{pdfescape.dtx}{test6}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pdfescape.xml}{\from{pdfescape.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pdfescape.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pdfescape.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pdfescape.drv}%
+  [2011/11/25 v1.13 Implements pdfTeX's escape features (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pdfescape.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{2516}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pdfescape.drv}
+%
+% \title{The \xpackage{pdfescape} package}
+% \date{2011/11/25 v1.13}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package implements \pdfTeX's escape features
+% (\cs{pdfescapehex}, \cs{pdfunescapehex}, \cs{pdfescapename},
+% \cs{pdfescapestring}) using \TeX\ or \eTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \begin{declcs}{EdefEscapeHex} \M{cmd} \M{string}\\
+%  \cs{EdefUnescapeHex} \M{cmd} \M{string}\\
+%  \cs{EdefEscapeName} \M{cmd} \M{string}\\
+%  \cs{EdefEscapeString} \M{cmd} \M{string}
+% \end{declcs}
+% These commands converts \meta{string} and stores the result
+% in macro \meta{cmd}. The conversion result is the same
+% as the conversion of the corresponding \pdfTeX's primitives.
+% Note that the argument \meta{string} is expanded before
+% the conversion.
+%
+% For example, if \pdfTeX\ \textgreater= 1.30 is present,
+% then \cs{EdefEscapeHex}
+% becomes to:
+% \begin{quote}
+%\begin{verbatim}
+%\def\EdefEscapeHex#1#2{%
+%  \edef#1{\pdfescapehex{#2}}%
+%}
+%\end{verbatim}
+% \end{quote}
+% The package provides implementations for the case that \pdfTeX\ is
+% not present (or too old). Even \eTeX\ can be missing, however it is
+% used if it is detected.
+%
+% \paragraph{Babel.}
+% The input strings may contain shorthand characters of package
+% \xpackage{babel}.
+%
+% \subsection{Additional unescape macros}
+%
+% \begin{declcs}{EdefUnescapeName} \M{cmd} \M{string}
+% \end{declcs}
+% Sequences of a hash sign with two hexadecimal digits are
+% converted to the corresponding character (PDF-1.2).
+% A hash sign that is not followed by two hexadecimal digits
+% is left unchanged. The catcodes in the result string follow
+% TeX's conventions. The space has catcode 10 (space) and
+% the other characters have catcode 12 (other).
+%
+% \begin{declcs}{EdefUnescapeString} \M{cmd} \M{string}
+% \end{declcs}
+% Macro \meta{cmd} stores the unescaped string in \meta{string}.
+% All the rules for literal strings are implemented, see
+% PDF specification.
+% The catcodes in the result string follow TeX's conventions.
+%
+% \subsection{Sanitizing macro}
+%
+% \begin{declcs}{EdefSanitize} \M{cmd} \M{string}
+% \end{declcs}
+% Argument \meta{string} is expanded, converted to a string
+% of tokens with catcode 12 (other) and space tokens, and
+% stored in macro \meta{cmd}.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pdfescape.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pdfescape}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pdfescape.sty\endcsname
+\ProvidesPackage{pdfescape}%
+  [2011/11/25 v1.13 Implements pdfTeX's escape features (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123 1 % {
+  \catcode125 2 % }
+  \catcode64 11 %
+  \def\x{\endgroup
+    \expandafter\edef\csname PE@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2#3{%
+  \edef\PE@AtEnd{%
+    \PE@AtEnd
+    #1#2=\the#1#2\relax
+  }%
+  #1#2=#3\relax
+}
+\TMP@EnsureCode\catcode{0}{12}% ^^@
+\TMP@EnsureCode\catcode{34}{12}% "
+\TMP@EnsureCode\catcode{36}{3}% $
+\TMP@EnsureCode\catcode{38}{4}% &
+\TMP@EnsureCode\catcode{39}{12}% '
+\TMP@EnsureCode\catcode{42}{12}% *
+\TMP@EnsureCode\catcode{45}{12}% -
+\TMP@EnsureCode\catcode{46}{12}% .
+\TMP@EnsureCode\catcode{47}{12}% /
+\TMP@EnsureCode\catcode{60}{12}% <
+\TMP@EnsureCode\catcode{62}{12}% >
+\TMP@EnsureCode\catcode{91}{12}% [
+\TMP@EnsureCode\catcode{93}{12}% ]
+\TMP@EnsureCode\catcode{94}{7}% ^
+\TMP@EnsureCode\catcode{96}{12}% `
+\TMP@EnsureCode\uccode{34}{0}% "
+\TMP@EnsureCode\uccode{48}{0}% 0
+\TMP@EnsureCode\uccode{61}{0}% =
+\edef\PE@AtEnd{\PE@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Load package}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ltxcmds}[2010/04/08]%
+\else
+  \RequirePackage{ltxcmds}[2010/04/08]%
+\fi
+%    \end{macrocode}
+%
+% \subsection{Sanitizing}
+%
+%    \begin{macro}{\EdefSanitize}
+%    Macro \cs{EdefSanitize} takes |#2|, entirely converts
+%    it to token with catcode 12 (other) and stores the
+%    result in macro |#1|.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname detokenize\endcsname\relax
+  \long\def\EdefSanitize#1#2{%
+    \begingroup
+      \csname @safe@activestrue\endcsname
+      \edef#1{#2}%
+      \PE@onelevel@sanitize#1%
+    \expandafter\endgroup
+    \expandafter\def\expandafter#1\expandafter{#1}%
+  }%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname @onelevel@sanitize\endcsname\relax
+    \def\PE@onelevel@sanitize#1{%
+      \edef#1{\expandafter\PE@strip@prefix\meaning#1}%
+    }%
+    \def\PE@strip@prefix#1>{}%
+  \else
+    \let\PE@onelevel@sanitize\@onelevel@sanitize
+  \fi
+\else
+  \long\def\EdefSanitize#1#2{%
+    \begingroup
+      \csname @safe@activestrue\endcsname
+      \edef#1{#2}%
+    \expandafter\endgroup
+    \expandafter\def\expandafter#1\expandafter{%
+      \detokenize\expandafter{#1}%
+    }%
+  }%
+  \def\PE@onelevel@sanitize#1{%
+    \edef#1{\detokenize\expandafter{#1}}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@sanitize}
+%    Macro \cs{PE@sanitize} is only defined for
+%    compatibility with version 1.4. Its use is deprecated.
+%    \begin{macrocode}
+\let\PE@sanitize\EdefSanitize
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Space characters}
+%
+%    \begin{macro}{\PE@space@other}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\ =12\relax%
+\def\x{\endgroup\def\PE@space@other{ }}\x\relax
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@space@space}
+%    \begin{macrocode}
+\def\PE@space@space{ }
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Space normalization}
+%
+%    \begin{macro}{\PE@SanitizeSpaceOther}
+%    \begin{macrocode}
+\def\PE@SanitizeSpaceOther#1{%
+  \edef#1{\expandafter\PE@SpaceToOther#1 \relax}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PE@SpaceToOther}
+%    \begin{macrocode}
+\def\PE@SpaceToOther#1 #2\relax{%
+  #1%
+  \ifx\\#2\\%
+  \else
+    \PE@space@other
+    \ltx@ReturnAfterFi{%
+      \PE@SpaceToOther#2\relax
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{EdefUnescapeName}}
+%
+%    \begin{macro}{\EdefUnescapeName}
+%    \begin{macrocode}
+\def\EdefUnescapeName#1#2{%
+  \EdefSanitize#1{#2}%
+  \PE@SanitizeSpaceOther#1%
+  \PE@UnescapeName#1%
+  \PE@onelevel@sanitize#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PE@UnescapeName}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\$=6  % hash
+  \catcode`\#=12 % other
+  \gdef\PE@UnescapeName$1{%
+    \begingroup
+      \PE@InitUccodeHexDigit
+      \def\PE@result{}%
+      \expandafter\PE@DeName$1#\relax\relax
+    \expandafter\endgroup
+    \expandafter\def\expandafter$1\expandafter{\PE@result}%
+  }%
+  \gdef\PE@DeName$1#$2$3{%
+    \ifx\relax$2%
+      \edef\PE@result{\PE@result$1}%
+      \let\PE@next\relax
+    \else
+      \ifx\relax$3%
+        % wrong escape sequence in input
+        \edef\PE@result{\PE@result$1#}%
+        \let\PE@next\relax
+      \else
+        \uppercase{%
+          \def\PE@testA{$2}%
+          \def\PE@testB{$3}%
+        }%
+        \ifcase\ifcase\expandafter\PE@TestUcHexDigit\PE@testA
+                 \ifcase\expandafter\PE@TestUcHexDigit\PE@testB
+                   \ltx@zero
+                 \else
+                   \ltx@one
+                 \fi
+               \else
+                 \ltx@one
+               \fi
+          \uccode\ltx@zero="\PE@testA\PE@testB\relax
+          \uppercase{%
+            \def\PE@temp{^^@}%
+          }%
+          \uccode\ltx@zero=\ltx@zero
+          \edef\PE@result{\PE@result$1\PE@temp}%
+          \let\PE@next\PE@DeName
+        \else
+          % wrong escape sequence in input
+          \edef\PE@result{\PE@result$1#}%
+          \def\PE@next{\PE@DeName$2$3}%
+        \fi
+      \fi
+    \fi
+    \PE@next
+  }%
+\endgroup
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PE@InitUccodeHexDigit}
+%    \begin{macrocode}
+\def\PE@InitUccodeHexDigit{%
+  \uccode`a=`A\relax
+  \uccode`b=`B\relax
+  \uccode`c=`C\relax
+  \uccode`d=`D\relax
+  \uccode`e=`E\relax
+  \uccode`f=`F\relax
+  \uccode`A=\ltx@zero
+  \uccode`B=\ltx@zero
+  \uccode`C=\ltx@zero
+  \uccode`D=\ltx@zero
+  \uccode`E=\ltx@zero
+  \uccode`F=\ltx@zero
+  \uccode`0=\ltx@zero
+  \uccode`1=\ltx@zero
+  \uccode`2=\ltx@zero
+  \uccode`3=\ltx@zero
+  \uccode`4=\ltx@zero
+  \uccode`5=\ltx@zero
+  \uccode`6=\ltx@zero
+  \uccode`7=\ltx@zero
+  \uccode`8=\ltx@zero
+  \uccode`9=\ltx@zero
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PE@TestUcHexDigit}
+%    \begin{macrocode}
+\def\PE@TestUcHexDigit#1{%
+  \ifnum`#1<48 % 0
+    \ltx@one
+  \else
+    \ifnum`#1>70 % F
+      \ltx@one
+    \else
+      \ifnum`#1>57 % 9
+        \ifnum`#1<65 % A
+          \ltx@one
+        \else
+          \ltx@zero
+        \fi
+      \else
+        \ltx@zero
+      \fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{EdefUnescapeString}}
+%
+%    \begin{macro}{\EdefUnescapeString}
+%    \begin{macrocode}
+\def\EdefUnescapeString#1#2{%
+  \EdefSanitize#1{#2}%
+  \PE@SanitizeSpaceOther#1%
+  \PE@NormalizeLineEnd#1%
+  \PE@UnescapeString#1%
+  \PE@onelevel@sanitize#1%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\begingroup
+  \uccode`\8=10 % lf
+  \uccode`\9=13 % cr
+\def\x#1#2{\endgroup
+%    \end{macrocode}
+%    \begin{macro}{\PE@NormalizeLineEnd}
+%    \begin{macrocode}
+  \def\PE@NormalizeLineEnd##1{%
+    \def\PE@result{}%
+    \expandafter\PE@@NormalizeLineEnd##1#2\relax
+    \let##1\PE@result
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@@NormalizeLineEnd}
+%    \begin{macrocode}
+  \def\PE@@NormalizeLineEnd##1#2##2{%
+    \ifx\relax##2%
+      \edef\PE@result{\PE@result##1}%
+      \let\PE@next\relax
+    \else
+      \edef\PE@result{\PE@result##1#1}%
+      \ifx#1##2% lf
+        \let\PE@next\PE@@NormalizeLineEnd
+      \else
+        \def\PE@next{\PE@@NormalizeLineEnd##2}%
+      \fi
+    \fi
+    \PE@next
+  }%
+}%
+\uppercase{%
+  \x 89%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\begingroup
+  \catcode`\|=0 %
+  \catcode`\\=12 %
+%    \end{macrocode}
+%    \begin{macro}{\PE@UnescapeString}
+%    \begin{macrocode}
+  |gdef|PE@UnescapeString#1{%
+    |begingroup
+      |def|PE@result{}%
+      |expandafter|PE@DeString#1\|relax
+    |expandafter|endgroup
+    |expandafter|def|expandafter#1|expandafter{|PE@result}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@DeString}
+%    \begin{macrocode}
+  |gdef|PE@DeString#1\#2{%
+    |ifx|relax#2%
+      |edef|PE@result{|PE@result#1}%
+      |let|PE@next|relax
+    |else
+      |if n#2%
+        |uccode|ltx@zero=10 %
+      |else|if r#2%
+        |uccode|ltx@zero=13 %
+      |else|if t#2%
+        |uccode|ltx@zero=9 %
+      |else|if b#2%
+        |uccode|ltx@zero=8 %
+      |else|if f#2%
+        |uccode|ltx@zero=12 %
+      |else
+        |uccode|ltx@zero=|ltx@zero
+      |fi|fi|fi|fi|fi
+      |ifnum|uccode|ltx@zero>|ltx@zero
+        |uppercase{%
+          |edef|PE@temp{^^@}%
+        }%
+        |edef|PE@result{|PE@result#1|PE@temp}%
+        |let|PE@next|PE@DeString
+      |else
+        |if\#2% backslash
+          |edef|PE@result{|PE@result#1}%
+          |let|PE@next|PE@CheckEndBackslash
+        |else
+          |ifnum`#2=10 % linefeed
+            |edef|PE@result{|PE@result#1}%
+            |let|PE@next|PE@DeString
+          |else
+            |ifcase|PE@TestOctDigit#2%
+              |edef|PE@result{|PE@result#1}%
+              |def|PE@next{|PE@OctI#2}%
+            |else
+              |edef|PE@result{|PE@result#1#2}%
+              |let|PE@next|PE@DeString
+            |fi
+          |fi
+        |fi
+      |fi
+    |fi
+    |PE@next
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@CheckEndBackslash}
+%    \begin{macrocode}
+  |gdef|PE@CheckEndBackslash#1{%
+    |ifx|relax#1%
+    |else
+      |edef|PE@result{|PE@result\}%
+      |expandafter|PE@DeString|expandafter#1%
+    |fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+|endgroup
+%    \end{macrocode}
+%    \begin{macro}{\PE@TestOctDigit}
+%    \begin{macrocode}
+\def\PE@TestOctDigit#1{%
+  \ifnum`#1<48 % 0
+    \ltx@one
+  \else
+    \ifnum`#1>55 % 7
+      \ltx@one
+    \else
+      \ltx@zero
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@OctI}
+%    \begin{macrocode}
+\def\PE@OctI#1#2{%
+  \ifcase\PE@TestOctDigit#2%
+    \def\PE@next{\PE@OctII{#1#2}}%
+  \else
+    \def\PE@next{\PE@OctAll#1#2}%
+  \fi
+  \PE@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@OctII}
+%    \begin{macrocode}
+\def\PE@OctII#1#2{%
+  \ifcase\PE@TestOctDigit#2%
+    \def\PE@next{\PE@OctIII#1#2}%
+  \else
+    \def\PE@next{\PE@OctAll{#1}#2}%
+  \fi
+  \PE@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\ltx@IfUndefined{numexpr}{%
+  \catcode`\$=9 %
+  \catcode`\&=14 %
+}{%
+  \catcode`\$=14 %
+  \catcode`\&=9 %
+}
+%    \end{macrocode}
+%    \begin{macro}{\PE@OctIII}
+%    \begin{macrocode}
+\def\PE@OctIII#1#2#3{%
+  \ifnum#1<4 %
+    \def\PE@next{\PE@OctAll{#1#2#3}}%
+  \else
+$   \count\ltx@cclv#1 %
+$   \advance\count\ltx@cclv -4 %
+    \edef\PE@next{%
+      \noexpand\PE@OctAll{%
+$       \the\count\ltx@cclv
+&       \the\numexpr#1-4\relax
+        #2#3%
+      }%
+    }%
+  \fi
+  \PE@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@OctAll}
+%    \begin{macrocode}
+\def\PE@OctAll#1{%
+  \uccode\ltx@zero='#1\relax
+  \uppercase{%
+    \edef\PE@result{\PE@result^^@}%
+  }%
+  \PE@DeString
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{User macros (\pdfTeX\space analogues)}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{pdftexcmds}[2007/11/11]%
+\else
+  \RequirePackage{pdftexcmds}[2007/11/11]%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@escapehex\endcsname\relax
+%    \end{macrocode}
+%
+%    \begin{macro}{\EdefEscapeHex}
+%    \begin{macrocode}
+  \long\def\EdefEscapeHex#1#2{%
+    \EdefSanitize#1{#2}%
+    \PE@SanitizeSpaceOther#1%
+    \PE@EscapeHex#1%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EdefUnescapeHex}
+%    \begin{macrocode}
+  \def\EdefUnescapeHex#1#2{%
+    \EdefSanitize#1{#2}%
+    \PE@UnescapeHex#1%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EdefEscapeName}
+%    \begin{macrocode}
+  \long\def\EdefEscapeName#1#2{%
+    \EdefSanitize#1{#2}%
+    \PE@SanitizeSpaceOther#1%
+    \PE@EscapeName#1%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EdefEscapeString}
+%    \begin{macrocode}
+  \long\def\EdefEscapeString#1#2{%
+    \EdefSanitize#1{#2}%
+    \PE@SanitizeSpaceOther#1%
+    \PE@EscapeString#1%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%
+%    \begin{macro}{\PE@edefbabel}
+%    Help macro that adds support for \xpackage{babel}'s shorthand
+%    characters.
+%    \begin{macrocode}
+  \long\def\PE@edefbabel#1#2#3{%
+    \begingroup
+      \csname @save@activestrue\endcsname
+      \edef#1{#2{#3}}%
+    \expandafter\endgroup
+    \expandafter\def\expandafter#1\expandafter{#1}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\EdefEscapeHex}
+%    \begin{macrocode}
+  \long\def\EdefEscapeHex#1#2{%
+    \PE@edefbabel#1\pdf@escapehex{#2}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EdefUnescapeHex}
+%    \begin{macrocode}
+  \def\EdefUnescapeHex#1#2{%
+    \PE@edefbabel#1\pdf@unescapehex{#2}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EdefEscapeName}
+%    \begin{macrocode}
+  \long\def\EdefEscapeName#1#2{%
+    \PE@edefbabel#1\pdf@escapename{#2}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\EdefEscapeString}
+%    \begin{macrocode}
+  \long\def\EdefEscapeString#1#2{%
+    \PE@edefbabel#1\pdf@escapestring{#2}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+  \expandafter\PE@AtEnd
+\fi%
+%    \end{macrocode}
+%
+% \subsection{Help macros}
+%
+% \subsubsection{Characters}
+%
+%    Special characters with catcode 12 (other) are created and
+%    stored in macros.
+%    \begin{macro}{\PE@hash}
+%    \begin{macrocode}
+\edef\PE@hash{\string#}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@backslash}
+%    \begin{macrocode}
+\begingroup
+  \escapechar=-1 %
+\edef\x{\endgroup
+  \def\noexpand\PE@backslash{\string\\}%
+}
+\x
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Switch for \eTeX}
+%
+%    \begin{macrocode}
+\ltx@newif\ifPE@etex
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname numexpr\endcsname\relax
+\else
+  \PE@etextrue
+\fi
+%    \end{macrocode}
+%
+% \subsection{Conversions}
+%
+% \subsubsection{Conversion to hex string}
+%
+%    \begin{macro}{\PE@EscapeHex}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@EscapeHex#1{%
+    \edef#1{\expandafter\PE@ToHex#1\relax}%
+  }%
+\else
+  \def\PE@EscapeHex#1{%
+    \def\PE@result{}%
+    \expandafter\PE@ToHex#1\relax
+    \let#1\PE@result
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@ToHex}
+%    \begin{macrocode}
+\def\PE@ToHex#1{%
+  \ifx\relax#1%
+  \else
+    \PE@HexChar{#1}%
+    \expandafter\PE@ToHex
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@HexChar}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@HexChar#1{%
+    \PE@HexDigit{\numexpr\dimexpr.0625\dimexpr`#1sp\relax\relax\relax}%
+    \PE@HexDigit{%
+      \numexpr`#1-16*\dimexpr.0625\dimexpr`#1sp\relax\relax\relax
+    }%
+  }%
+\else
+  \def\PE@HexChar#1{%
+    \dimen0=`#1sp%
+    \dimen2=.0625\dimen0 %
+    \advance\dimen0-16\dimen2 %
+    \edef\PE@result{%
+      \PE@result
+      \PE@HexDigit{\dimen2 }%
+      \PE@HexDigit{\dimen0 }%
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@HexDigit}
+%    \begin{macrocode}
+\def\PE@HexDigit#1{%
+  \expandafter\string
+  \ifcase#1%
+    0\or 1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or 9\or
+    A\or B\or C\or D\or E\or F%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Character code to octal number}
+%
+%    \begin{macro}{\PE@OctChar}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@OctChar#1{%
+    \expandafter\PE@@OctChar
+        \the\numexpr\dimexpr.015625\dimexpr`#1sp\relax\relax
+            \expandafter\relax
+        \expandafter\relax
+        \the\numexpr\dimexpr.125\dimexpr`#1sp\relax\relax\relax
+        \relax
+        #1%
+  }%
+  \def\PE@@OctChar#1\relax#2\relax#3{%
+    \PE@backslash
+    #1%
+    \the\numexpr#2-8*#1\relax
+    \the\numexpr\dimexpr`#3sp\relax-8*#2\relax
+  }%
+\else
+  \def\PE@OctChar#1{%
+    \dimen0=`#1sp%
+    \dimen2=.125\dimen0 %
+    \dimen4=.125\dimen2 %
+    \advance\dimen0-8\dimen2 %
+    \advance\dimen2-8\dimen4 %
+    \edef\PE@result{%
+      \PE@result
+      \PE@backslash
+      \number\dimen4 %
+      \number\dimen2 %
+      \number\dimen0 %
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Unpack hex string}
+%
+%    \begin{macro}{\PE@UnescapeHex}
+%    \begin{macrocode}
+\def\PE@UnescapeHex#1{%
+  \begingroup
+    \PE@InitUccodeHexDigit
+    \def\PE@result{}%
+    \expandafter\PE@DeHex#1\relax\relax
+  \expandafter\endgroup
+  \expandafter\def\expandafter#1\expandafter{\PE@result}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@DeHex}
+%    \begin{macrocode}
+\def\PE@DeHex#1#2{%
+  \ifx#2\relax
+    \ifx#1\relax
+      \let\PE@next\relax
+    \else
+      \uppercase{%
+        \def\PE@testA{#1}%
+      }%
+      \ifcase\expandafter\PE@TestUcHexDigit\PE@testA
+        \def\PE@next{%
+          \PE@DeHex#10\relax\relax
+        }%
+      \else
+        \let\PE@next\relax
+      \fi
+    \fi
+  \else
+    \uppercase{%
+      \def\PE@testA{#1}%
+      \def\PE@testB{#2}%
+    }%
+    \ifcase\expandafter\PE@TestUcHexDigit\PE@testA
+      \ifcase\expandafter\PE@TestUcHexDigit\PE@testB
+        \uccode\ltx@zero="\PE@testA\PE@testB\relax
+        \ifnum\uccode\ltx@zero=32 %
+          \let\PE@temp\PE@space@space
+        \else
+          \uppercase{%
+            \def\PE@temp{^^@}%
+          }%
+        \fi
+        \edef\PE@result{\PE@result\PE@temp}%
+        \let\PE@next\PE@DeHex
+      \else
+        % invalid input sequence
+        \def\PE@next{%
+          \PE@DeHex#1%
+        }%
+      \fi
+    \else
+      % invalid input sequence
+      \def\PE@next{\PE@DeHex#2}%
+    \fi
+  \fi
+  \PE@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Conversion to PDF name}
+%
+%    \begin{macro}{\PE@EscapeName}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@EscapeName#1{%
+    \edef#1{\expandafter\PE@EscapeNameTokens#1\relax}%
+  }%
+\else
+  \def\PE@EscapeName#1{%
+    \def\PE@result{}%
+    \expandafter\PE@EscapeNameTokens#1\relax
+    \let#1\PE@result
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@EscapeNameTokens}
+%    \begin{macrocode}
+\def\PE@EscapeNameTokens#1{%
+  \ifx\relax#1%
+  \else
+    \ifnum`#1<33 %
+      \ifcase`#1 %
+        % drop illegal zero
+      \else
+        \PE@EscapeNameAdd\PE@hash
+        \PE@HexChar#1%
+      \fi
+    \else
+      \ifnum`#1>126 %
+        \PE@EscapeNameAdd\PE@hash
+        \PE@HexChar#1%
+      \else  \ifnum`#1=35  \PE@EscapeNameHashChar 23% #
+        \else\ifnum`#1=37  \PE@EscapeNameHashChar 25% %
+        \else\ifnum`#1=40  \PE@EscapeNameHashChar 28% (
+        \else\ifnum`#1=41  \PE@EscapeNameHashChar 29% )
+        \else\ifnum`#1=47  \PE@EscapeNameHashChar 2F% /
+        \else\ifnum`#1=60  \PE@EscapeNameHashChar 3C% <
+        \else\ifnum`#1=62  \PE@EscapeNameHashChar 3E% >
+        \else\ifnum`#1=91  \PE@EscapeNameHashChar 5B% [
+        \else\ifnum`#1=93  \PE@EscapeNameHashChar 5D% ]
+        \else\ifnum`#1=123 \PE@EscapeNameHashChar 7B% {
+        \else\ifnum`#1=125 \PE@EscapeNameHashChar 7D% }
+        \else
+          \PE@EscapeNameAdd{#1}%
+        \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+      \fi
+    \fi
+    \expandafter\PE@EscapeNameTokens
+  \fi
+}%
+\def\PE@EscapeNameHashChar#1#2{%
+  \PE@EscapeNameAdd{\PE@hash\string#1\string#2}%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@EscapeNameAdd}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@EscapeNameAdd#1{#1}%
+\else
+  \def\PE@EscapeNameAdd#1{%
+    \edef\PE@result{%
+      \PE@result
+      #1%
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Conversion to PDF string}
+%
+%    \begin{macro}{\PE@EscapeString}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@EscapeString#1{%
+    \edef#1{\expandafter\PE@EscapeStringTokens#1\relax}%
+  }%
+\else
+  \def\PE@EscapeString#1{%
+    \begingroup
+      \def\PE@result{}%
+      \expandafter\PE@EscapeStringTokens#1\relax
+    \expandafter\endgroup
+    \expandafter\def\expandafter#1\expandafter{\PE@result}%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@EscapeStringTokens}
+%    \begin{macrocode}
+\def\PE@EscapeStringTokens#1{%
+  \ifx\relax#1%
+  \else
+    \ifnum`#1<33 %
+      \PE@OctChar#1%
+    \else
+      \ifnum`#1>126 %
+        \PE@OctChar#1%
+      \else  \ifnum`#1=40 \PE@EscapeStringAdd{\string\(}% (
+        \else\ifnum`#1=41 \PE@EscapeStringAdd{\string\)}% )
+        \else\ifnum`#1=92 \PE@EscapeStringAdd{\string\\}% \
+        \else
+          \PE@EscapeStringAdd{#1}%
+        \fi\fi\fi
+      \fi
+    \fi
+    \expandafter\PE@EscapeStringTokens
+  \fi
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\PE@EscapeStringAdd}
+%    \begin{macrocode}
+\ifPE@etex
+  \def\PE@EscapeStringAdd#1{#1}%
+\else
+  \def\PE@EscapeStringAdd#1{%
+    \edef\PE@result{%
+      \PE@result
+      #1%
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\PE@AtEnd%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input pdfescape.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+%    \begin{macrocode}
+%<*test2|test3|test4|test5>
+\NeedsTeXFormat{LaTeX2e}
+\makeatletter
+%    \end{macrocode}
+%
+% \subsection{Test with \cs{pdfescape...} commands}
+%
+%    \begin{macrocode}
+%<*test2>
+\ProvidesFile{pdfescape-test2.tex}%
+    [2011/11/25 v1.13 Test with \string\pdfescape... commands]%
+%</test2>
+%    \end{macrocode}
+%
+% \subsection{Test without \cs{pdfescape...}, with \eTeX}
+%
+%    \begin{macrocode}
+%<*test3>
+\ProvidesFile{pdfescape-test3.tex}%
+    [2011/11/25 v1.13 Test without \string\pdfescape..., with e-TeX]%
+%</test3>
+%    \end{macrocode}
+%
+% \subsection{Test without \cs{pdfescape...} and \eTeX}
+%
+%    \begin{macrocode}
+%<*test4>
+\ProvidesFile{pdfescape-test4.tex}%
+    [2011/11/25 v1.13 Test without \string\pdfescape... and e-TeX]%
+%</test4>
+%    \end{macrocode}
+%
+% \subsection{Test with \LuaTeX}
+%
+%    \begin{macrocode}
+%<*test5>
+\ProvidesFile{pdfescape-test5.tex}%
+    [2011/11/25 v1.13 Test with LuaTeX]%
+%</test5>
+%    \end{macrocode}
+%
+% \subsection{Check/ensure test preconditions}
+%
+% \subsubsection{Check \cs{pdfescape...}}
+%
+%    \begin{macrocode}
+%<*test2>
+\@ifundefined{pdfescapehex}{%
+  \PackageError{pdfescape-test2}{%
+    Missing \string\pdfescape... commands%
+  }{Test aborted.}%
+  \stop
+}{}
+%</test2>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test3|test4>
+\let\pdfescapehex\@undefined
+\let\pdfunescapehex\@undefined
+\let\pdfescapename\@undefined
+\let\pdfescapestring\@undefined
+%</test3|test4>
+%    \end{macrocode}
+%
+% \subsubsection{Check \eTeX}
+%
+%    \begin{macrocode}
+%<*test3>
+\@ifundefined{numexpr}{%
+  \PackageError{pdfescape-test3}{%
+    Missing \eTeX
+  }{Test aborted.}%
+  \stop
+}{}
+%</test3>
+%    \end{macrocode}
+% Package \xpackage{qstest} uses \eTeX, thus \eTeX's features
+% can only be disabled later during loading of package \xpackage{pdfescape}.
+%
+% \subsubsection{Check \LuaTeX}
+%
+%    \begin{macrocode}
+%<*test5>
+\@ifundefined{directlua}{%
+  \PackageError{pdfescape-test5}{%
+    Missing LuaTeX%
+  }{Test aborted.}%
+  \stop
+}{}
+%</test5>
+%    \end{macrocode}
+%
+% \subsection{Common part}
+%
+%    The files for testing uses the framework, provided by the
+%    new package \xpackage{qstest} of David Kastrup.
+%    \begin{macrocode}
+\RequirePackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+
+\newcommand*{\ExpectVar}[2]{%
+  \ifx#1#2%
+  \else
+    \begingroup
+      \@onelevel@sanitize#1%
+      \@onelevel@sanitize#2%
+      \typeout{[#1] <> [#2]}% hash-ok
+    \endgroup
+  \fi
+  \Expect*{\ifx#1#2true\else false\fi}{true}%
+}
+
+\makeatletter
+\begingroup
+  \gdef\AllBytes{}%
+  \count@=0 %
+  \catcode0=12 %
+  \@whilenum\count@<256 \do{%
+    \lccode0=\count@
+    \ifnum\count@=32 %
+      \xdef\AllBytes{\AllBytes\space}%
+    \else
+      \lowercase{%
+        \xdef\AllBytes{\AllBytes^^@}%
+      }%
+    \fi
+    \advance\count@ by 1 %
+  }%
+\endgroup
+\newcommand*{\AllBytesHex}{%
+  000102030405060708090A0B0C0D0E0F%
+  101112131415161718191A1B1C1D1E1F%
+  202122232425262728292A2B2C2D2E2F%
+  303132333435363738393A3B3C3D3E3F%
+  404142434445464748494A4B4C4D4E4F%
+  505152535455565758595A5B5C5D5E5F%
+  606162636465666768696A6B6C6D6E6F%
+  707172737475767778797A7B7C7D7E7F%
+  808182838485868788898A8B8C8D8E8F%
+  909192939495969798999A9B9C9D9E9F%
+  A0A1A2A3A4A5A6A7A8A9AAABACADAEAF%
+  B0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF%
+  C0C1C2C3C4C5C6C7C8C9CACBCCCDCECF%
+  D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF%
+  E0E1E2E3E4E5E6E7E8E9EAEBECEDEEEF%
+  F0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF%
+}
+\@onelevel@sanitize\AllBytesHex
+\expandafter\lowercase\expandafter{%
+  \expandafter\newcommand\expandafter*\expandafter\AllBytesHexLC
+      \expandafter{\AllBytesHex}%
+}
+\newcommand*{\AllBytesName}{}
+\begingroup
+  \catcode`\#=12 %
+  \xdef\AllBytesName{%
+    #01#02#03#04#05#06#07#08#09#0A#0B#0C#0D#0E#0F%
+    #10#11#12#13#14#15#16#17#18#19#1A#1B#1C#1D#1E#1F%
+    #20!"#23$#25&'#28#29*+,-.#2F%
+    0123456789:;#3C=#3E?%
+    @ABCDEFGHIJKLMNO%
+    PQRSTUVWXYZ#5B\@backslashchar#5D^_%
+    `abcdefghijklmno%
+    pqrstuvwxyz#7B|#7D\string~#7F%
+    #80#81#82#83#84#85#86#87#88#89#8A#8B#8C#8D#8E#8F%
+    #90#91#92#93#94#95#96#97#98#99#9A#9B#9C#9D#9E#9F%
+    #A0#A1#A2#A3#A4#A5#A6#A7#A8#A9#AA#AB#AC#AD#AE#AF%
+    #B0#B1#B2#B3#B4#B5#B6#B7#B8#B9#BA#BB#BC#BD#BE#BF%
+    #C0#C1#C2#C3#C4#C5#C6#C7#C8#C9#CA#CB#CC#CD#CE#CF%
+    #D0#D1#D2#D3#D4#D5#D6#D7#D8#D9#DA#DB#DC#DD#DE#DF%
+    #E0#E1#E2#E3#E4#E5#E6#E7#E8#E9#EA#EB#EC#ED#EE#EF%
+    #F0#F1#F2#F3#F4#F5#F6#F7#F8#F9#FA#FB#FC#FD#FE#FF%
+  }%
+\endgroup
+\@onelevel@sanitize\AllBytesName
+
+\newcommand*{\AllBytesString}{}
+\begingroup
+  \def\|{|}%
+  \edef\%{\@percentchar}%
+  \catcode`\|=0 %
+  \catcode`\#=12 %
+  \catcode`\~=12 %
+  \catcode`\\=12 %
+  |xdef|AllBytesString{%
+    \000\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017%
+    \020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037%
+    \040!"#$|%&'\(\)*+,-./%
+    0123456789:;<=>?%
+    @ABCDEFGHIJKLMNO%
+    PQRSTUVWXYZ[\\]^_%
+    `abcdefghijklmno%
+    pqrstuvwxyz{||}~\177%
+    \200\201\202\203\204\205\206\207\210\211\212\213\214\215\216\217%
+    \220\221\222\223\224\225\226\227\230\231\232\233\234\235\236\237%
+    \240\241\242\243\244\245\246\247\250\251\252\253\254\255\256\257%
+    \260\261\262\263\264\265\266\267\270\271\272\273\274\275\276\277%
+    \300\301\302\303\304\305\306\307\310\311\312\313\314\315\316\317%
+    \320\321\322\323\324\325\326\327\330\331\332\333\334\335\336\337%
+    \340\341\342\343\344\345\346\347\350\351\352\353\354\355\356\357%
+    \360\361\362\363\364\365\366\367\370\371\372\373\374\375\376\377%
+  }%
+|endgroup
+\@onelevel@sanitize\AllBytesString
+
+%<*test4>
+\let\org@detokenize\detokenize
+\let\detokenize\@undefined
+\let\org@numexpr\numexpr
+\let\numexpr\@undefined
+%</test4>
+\RequirePackage{pdfescape}
+%<*test4>
+\let\detokenize\org@detokenize
+\let\numexpr\org@numexpr
+%</test4>
+
+\begin{qstest}{all-hex}{\AllBytes, escapehex}
+  \EdefEscapeHex\x{\AllBytes}%
+  \Expect*{\x}*{\AllBytesHex}%
+  \ExpectVar\x\AllBytesHex
+\end{qstest}
+
+\begin{qstest}{all-unhex}{\AllBytesHex, unescapehex}
+  \EdefUnescapeHex\x{\AllBytesHex}%
+  \Expect*{\x}*{\AllBytes}%
+  \ExpectVar\x\AllBytes
+\end{qstest}
+
+\begin{qstest}{all-unhex-lc}{\AllBytesHexLC, unescapehex, lowercase}
+  \EdefUnescapeHex\x{\AllBytesHexLC}%
+  \Expect*{\x}*{\AllBytes}%
+  \ExpectVar\x\AllBytes
+\end{qstest}
+
+\begin{qstest}{unhex-incomplete}{unescapehex, incomplete}
+  \EdefUnescapeHex\x{4}%
+  \Expect*{\x}{@}%
+\end{qstest}
+
+\begin{qstest}{unhex-space}{unescapehex, space}
+  \EdefUnescapeHex\x{20}%
+  \Expect*{\x}{ }%
+  \ExpectVar\x\space
+\end{qstest}
+
+\begin{qstest}{unhex-spaces}{unescapehex, spaces}
+  \EdefUnescapeHex\x{204020204120}%
+  \def\y#1{%
+    \edef\z{#1\string @#1#1\string A#1}%
+  }\y{ }%
+  \Expect*{\x}*{\z}%
+  \ExpectVar\x\z
+\end{qstest}
+
+\begin{qstest}{unhex-hash}{unescapehex, hash}
+  \catcode`\#=12 %
+  \EdefUnescapeHex\x{#20}%
+  \ExpectVar\x\space
+\end{qstest}
+
+\begin{qstest}{unhex-invalid}{unescapehex, invalid}
+  \def\test#1#2{%
+    \EdefUnescapeHex\x{#1}%
+    \edef\y{#2}%
+    \@onelevel@sanitize\y
+    \ExpectVar\x\y
+  }%
+%<*test2>
+  \edef\x{\pdfunescapehex{4X}}%
+  \edef\y{\string @}%
+  \ifx\x\y
+  \else
+    \def~{\space}%
+    \typeout{************************************}%
+    \typeout{* Your pdfTeX contains bug 777.~~~~*}%
+    \typeout{* This test is redefined as dummy, *}%
+    \typeout{* because it triggers the bug.~~~~~*}%
+    \typeout{************************************}%
+    \def\test#1#2{}%
+  \fi
+%</test2>
+  \test{X}{}%
+  \test{XY}{}%
+  \test{XYZ}{}%
+  \test{A}{^^a0}%
+  \test{AX}{^^a0}%
+  \test{XA}{^^a0}%
+  \test{XXAXX}{^^a0}%
+\end{qstest}
+
+\begin{qstest}{all-name}{\AllBytes, escapename}
+  \EdefEscapeName\x{\AllBytes}%
+  \Expect*{\x}*{\AllBytesName}%
+  \ExpectVar\x\AllBytesName
+\end{qstest}
+
+\begin{qstest}{all-string}{\AllBytes, escapestring}
+  \EdefEscapeString\x{\AllBytes}%
+  \Expect*{\x}*{\AllBytesString}%
+  \ExpectVar\x\AllBytesString
+\end{qstest}
+
+\begin{qstest}{uchexdigit}{unescape, uppercase hex digit}
+  \catcode`\@=11 %
+  \catcode0=12 %
+  \def\test#1#2{%
+    \uccode0=#1\relax
+    \uppercase{%
+      \def\x{^^@}%
+    }%
+    \Expect*{%
+       \ifcase\expandafter\PE@TestUcHexDigit\x
+         true%
+       \else
+         false%
+       \fi
+    }{#2}%
+  }%
+  \def\range#1#2#3{%
+    \count0=#1\relax
+    \loop
+    \ifnum\count0<#2\relax
+      \test{\count0}{#3}%
+      \advance\count0 by 1 %
+    \repeat
+  }%
+  \range{0}{47}{false}%
+  \range{48}{57}{true}%
+  \range{58}{64}{false}%
+  \range{65}{70}{true}%
+  \range{71}{255}{false}%
+\end{qstest}
+
+\begin{qstest}{unescapename}{unescapename}
+  \def\test#1#2{%
+    \EdefUnescapeName\x{#1}%
+    \edef\y{#2}%
+    \@onelevel@sanitize\y
+    \ExpectVar\x\y
+  }%
+  \catcode`\#=12 %
+  \catcode0=12 %
+  \test{}{}%
+  \test{x}{x}%
+  \test{xy}{xy}%
+  \test{#}{#}%
+  \test{##}{##}%
+  \test{###}{###}%
+  \test{####}{####}%
+  \test{#x}{#x}%
+  \test{#xy}{#xy}%
+  \test{#1}{#1}%
+  \test{#40}{@}%
+  \test{#400}{@0}%
+  \test{#4x0}{#4x0}%
+  \test{#ab}{^^ab}%
+  \test{#00}{^^@}%
+  \test{x#40y#40z}{x@y@z}%
+  \test{#40#40#40#40}{@@@@}%
+  \test{a#x}{a#x}%
+  \test{a#xy}{a#xy}%
+  \test{a#1}{a#1}%
+  \test{a#40}{a@}%
+  \test{a#400}{a@0}%
+  \test{#20}{ }%
+  \test{a#20}{a }%
+  \test{a#20b}{a b}%
+  \test{a#20#20#20b}{a \space\space b}%
+\end{qstest}
+
+\begin{qstest}{unescapestring}{unescapestring}
+  \def\test#1#2{%
+    \EdefUnescapeString\x{#1}%
+    \edef\y{#2}%
+    \@onelevel@sanitize\y
+    \ExpectVar\x\y
+  }%
+  \catcode0=12 %
+  \def\DefChar#1#2{%
+    \begingroup
+      \uccode0=#2\relax
+    \uppercase{\endgroup
+      \def#1{^^@}%
+    }%
+  }%
+  \DefChar\nul{0}%
+  \DefChar\one{1}%
+  \DefChar\bel{8}%
+  \DefChar\tab{9}%
+  \DefChar\lf{10}%
+  \DefChar\ff{12}%
+  \DefChar\cr{13}%
+  \DefChar\\{92}%
+  \test{}{}%
+  \test{a}{a}%
+  \test{\\}{}%
+  \test{\\\\}{\\}%
+  \test{\\\\y}{\\y}%
+  \test{\\000}{\nul}%
+  \test{\\b}{\bel}%
+  \test{\\t}{\tab}%
+  \test{\\n}{\lf}%
+  \test{\\f}{\ff}%
+  \test{\\r}{\cr}%
+  \test{\\(}{(}%
+  \test{\\)}{)}%
+  \test{\\040}{ }%
+  \test{\\100}{@}%
+  \test{\\40}{ }%
+  \test{\\1}{\one}%
+  \test{\\01}{\one}%
+  \test{\\001}{\one}%
+  \test{\\18}{\one8}%
+  \test{\\018}{\one8}%
+  \test{\\0018}{\one8}%
+  \test{x\\}{x}%
+  \test{x\\\\}{x\\}%
+  \test{x\\\\y}{x\\y}%
+  \test{x\\000}{x\nul}%
+  \test{x\\b}{x\bel}%
+  \test{x\\t}{x\tab}%
+  \test{x\\n}{x\lf}%
+  \test{x\\f}{x\ff}%
+  \test{x\\r}{x\cr}%
+  \test{x\\(}{x(}%
+  \test{x\\)}{x)}%
+  \test{x\\040}{x }%
+  \test{x\\100}{x@}%
+  \test{x\\40}{x }%
+  \test{x\\1}{x\one}%
+  \test{x\\01}{x\one}%
+  \test{x\\001}{x\one}%
+  \test{x\\18}{x\one8}%
+  \test{x\\018}{x\one8}%
+  \test{x\\0018}{x\one8}%
+  \test{\\b\\t\\n\\f\\r\\(\\)\\\\\\000\\040}{%
+    \bel\tab\lf\ff\cr()\\\nul\space
+  }%
+  \test{\\\lf}{}%
+  \test{x\\\lf}{x}%
+  \test{\cr}{\lf}%
+  \test{\cr\lf}{\lf}%
+  \test{\lf}{\lf}%
+  \test{\lf\cr}{\lf\lf}%
+  \test{x\cr}{x\lf}%
+  \test{x\cr\lf}{x\lf}%
+  \test{x\lf}{x\lf}%
+  \test{x\lf\cr}{x\lf\lf}%
+  \test{x\\\cr\lf y\cr}{xy\lf}%
+%
+  \test{\\409}{ 9}%
+  \test{\\800}{800}%
+  \test{\\900}{900}%
+  \test{\\578}{/8}%
+  \test{\\477}{?}%
+  \test{\\377}{^^ff}%
+  \test{\\777}{^^ff}%
+  \test{\\7777}{^^ff7}%
+\end{qstest}
+\stop
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</test2|test3|test4|test5>
+%    \end{macrocode}
+%
+% \subsubsection{Test for \hologo{iniTeX}}
+%
+%    \begin{macrocode}
+%<*test6>
+\input pdfescape.sty\relax
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\^=7 %
+\catcode`\@=11 %
+%    \end{macrocode}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\@=11 %
+  \countdef\count@=255 %
+  \def\space{ }%
+  \long\def\@whilenum#1\do #2{%
+    \ifnum #1\relax
+      #2\relax
+      \@iwhilenum{#1\relax#2\relax}%
+    \fi
+  }%
+  \long\def\@iwhilenum#1{%
+    \ifnum #1%
+      \expandafter\@iwhilenum
+    \else
+      \expandafter\ltx@gobble
+    \fi
+    {#1}%
+  }%
+  \gdef\AllBytes{}%
+  \count@=0 %
+  \catcode0=12 %
+  \@whilenum\count@<256 \do{%
+    \lccode0=\count@
+    \ifnum\count@=32 %
+      \xdef\AllBytes{\AllBytes\space}%
+    \else
+      \lowercase{%
+        \xdef\AllBytes{\AllBytes^^@}%
+      }%
+    \fi
+    \advance\count@ by 1 %
+  }%
+\endgroup
+\def\AllBytesHex{%
+  000102030405060708090A0B0C0D0E0F%
+  101112131415161718191A1B1C1D1E1F%
+  202122232425262728292A2B2C2D2E2F%
+  303132333435363738393A3B3C3D3E3F%
+  404142434445464748494A4B4C4D4E4F%
+  505152535455565758595A5B5C5D5E5F%
+  606162636465666768696A6B6C6D6E6F%
+  707172737475767778797A7B7C7D7E7F%
+  808182838485868788898A8B8C8D8E8F%
+  909192939495969798999A9B9C9D9E9F%
+  A0A1A2A3A4A5A6A7A8A9AAABACADAEAF%
+  B0B1B2B3B4B5B6B7B8B9BABBBCBDBEBF%
+  C0C1C2C3C4C5C6C7C8C9CACBCCCDCECF%
+  D0D1D2D3D4D5D6D7D8D9DADBDCDDDEDF%
+  E0E1E2E3E4E5E6E7E8E9EAEBECEDEEEF%
+  F0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF%
+}
+\ltx@onelevel@sanitize\AllBytesHex
+\expandafter\lowercase\expandafter{%
+  \expandafter\def\expandafter\AllBytesHexLC
+      \expandafter{\AllBytesHex}%
+}
+\begingroup
+  \catcode`\#=12 %
+  \xdef\AllBytesName{%
+    #01#02#03#04#05#06#07#08#09#0A#0B#0C#0D#0E#0F%
+    #10#11#12#13#14#15#16#17#18#19#1A#1B#1C#1D#1E#1F%
+    #20!"#23$#25&'#28#29*+,-.#2F%
+    0123456789:;#3C=#3E?%
+    @ABCDEFGHIJKLMNO%
+    PQRSTUVWXYZ#5B\ltx@backslashchar#5D^_%
+    `abcdefghijklmno%
+    pqrstuvwxyz#7B|#7D\string~#7F%
+    #80#81#82#83#84#85#86#87#88#89#8A#8B#8C#8D#8E#8F%
+    #90#91#92#93#94#95#96#97#98#99#9A#9B#9C#9D#9E#9F%
+    #A0#A1#A2#A3#A4#A5#A6#A7#A8#A9#AA#AB#AC#AD#AE#AF%
+    #B0#B1#B2#B3#B4#B5#B6#B7#B8#B9#BA#BB#BC#BD#BE#BF%
+    #C0#C1#C2#C3#C4#C5#C6#C7#C8#C9#CA#CB#CC#CD#CE#CF%
+    #D0#D1#D2#D3#D4#D5#D6#D7#D8#D9#DA#DB#DC#DD#DE#DF%
+    #E0#E1#E2#E3#E4#E5#E6#E7#E8#E9#EA#EB#EC#ED#EE#EF%
+    #F0#F1#F2#F3#F4#F5#F6#F7#F8#F9#FA#FB#FC#FD#FE#FF%
+  }%
+\endgroup
+\ltx@onelevel@sanitize\AllBytesName
+\edef\AllBytesFromName{\expandafter\ltx@gobble\AllBytes}
+
+\begingroup
+  \def\|{|}%
+  \edef\%{\ltx@percentchar}%
+  \catcode`\|=0 %
+  \catcode`\#=12 %
+  \catcode`\~=12 %
+  \catcode`\\=12 %
+  |xdef|AllBytesString{%
+    \000\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017%
+    \020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037%
+    \040!"#$|%&'\(\)*+,-./%
+    0123456789:;<=>?%
+    @ABCDEFGHIJKLMNO%
+    PQRSTUVWXYZ[\\]^_%
+    `abcdefghijklmno%
+    pqrstuvwxyz{||}~\177%
+    \200\201\202\203\204\205\206\207\210\211\212\213\214\215\216\217%
+    \220\221\222\223\224\225\226\227\230\231\232\233\234\235\236\237%
+    \240\241\242\243\244\245\246\247\250\251\252\253\254\255\256\257%
+    \260\261\262\263\264\265\266\267\270\271\272\273\274\275\276\277%
+    \300\301\302\303\304\305\306\307\310\311\312\313\314\315\316\317%
+    \320\321\322\323\324\325\326\327\330\331\332\333\334\335\336\337%
+    \340\341\342\343\344\345\346\347\350\351\352\353\354\355\356\357%
+    \360\361\362\363\364\365\366\367\370\371\372\373\374\375\376\377%
+  }%
+|endgroup
+\ltx@onelevel@sanitize\AllBytesString
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\msg#{\immediate\write16}
+\def\Test#1#2#3{%
+  \begingroup
+    #1\TestResult{#2}%
+    \ifx\TestResult#3%
+    \else
+      \newlinechar=10 %
+      \msg{Expect:^^J#3}%
+      \msg{Result:^^J\TestResult}%
+      \errmessage{\string#2 -\string#1-> \string#3}%
+    \fi
+  \endgroup
+}
+\Test\EdefEscapeHex\AllBytes\AllBytesHex
+\Test\EdefUnescapeHex\AllBytesHex\AllBytes
+\Test\EdefEscapeName\AllBytes\AllBytesName
+\Test\EdefUnescapeName\AllBytesName\AllBytesFromName
+\Test\EdefEscapeString\AllBytes\AllBytesString
+\Test\EdefUnescapeString\AllBytesString\AllBytes
+%    \end{macrocode}
+%    \begin{macrocode}
+\csname @@end\endcsname\end
+%</test6>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfescape.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pdfescape.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pdfescape.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pdfescape.sty & tex/generic/oberdiek/pdfescape.sty\\
+%   pdfescape.pdf & doc/latex/oberdiek/pdfescape.pdf\\
+%   test/pdfescape-test1.tex & doc/latex/oberdiek/test/pdfescape-test1.tex\\
+%   test/pdfescape-test2.tex & doc/latex/oberdiek/test/pdfescape-test2.tex\\
+%   test/pdfescape-test3.tex & doc/latex/oberdiek/test/pdfescape-test3.tex\\
+%   test/pdfescape-test4.tex & doc/latex/oberdiek/test/pdfescape-test4.tex\\
+%   test/pdfescape-test5.tex & doc/latex/oberdiek/test/pdfescape-test5.tex\\
+%   test/pdfescape-test6.tex & doc/latex/oberdiek/test/pdfescape-test6.tex\\
+%   pdfescape.dtx & source/latex/oberdiek/pdfescape.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pdfescape.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pdfescape.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pdfescape.dtx
+%makeindex -s gind.ist pdfescape.idx
+%pdflatex pdfescape.dtx
+%makeindex -s gind.ist pdfescape.idx
+%pdflatex pdfescape.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pdfescape.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pdfescape'>
+  <name>pdfescape</name>
+  <caption>Implements pdfTeX's escape features using TeX or e-TeX.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.13'/>
+  <description>
+    This package implements <xref refid='pdftex'>pdfTeX</xref>'s
+    escape features (<tt>\pdfescapehex</tt>, <tt>\pdfunescapehex</tt>,
+    <tt>\pdfescapename</tt>, <tt>\pdfescapestring</tt>) using TeX or
+    e-TeX.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pdfescape.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pdfescape.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/02/21 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/02/25 v1.1}
+%   \item
+%     Test files added.
+%   \item
+%     \cs{EdefUnescapeHex} supports lowercase letters.
+%   \item
+%     Fix: \verb|\EdefEscapeName{^^@}|
+%   \item
+%     Fix: \verb|\EdefEscapeName{\string#}|
+%   \item
+%     Fix for \cs{EdefUnescapeHex} in case of incomplete hex string.
+%   \item
+%     Fix: \cs{EdefUnescapeHex} generates space tokens with catcode
+%     10 (space) in all cases.
+%   \item
+%     Fix: \cs{EdefEscapeHex} and \cs{EdefEscapeName} now generate
+%     tokens with catcode 12 (other) only.
+%   \end{Version}
+%   \begin{Version}{2007/03/20 v1.2}
+%   \item
+%     Fix: Wrong year in \cs{ProvidesPackage}.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.3}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/04/21 v1.4}
+%   \item
+%     \cs{EdefUnescapeName} and \cs{EdefUnescapeString} added.
+%   \end{Version}
+%   \begin{Version}{2007/08/27 v1.5}
+%   \item
+%     \cs{EdefSanitize} added (replaces \cs{PE@sanitize}).
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.6}
+%   \item
+%     Fix in catcode setup.
+%   \end{Version}
+%   \begin{Version}{2007/10/27 v1.7}
+%   \item
+%     More efficient \cs{EdefSanitize}.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.8}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \hologo{LuaTeX} support.
+%   \end{Version}
+%   \begin{Version}{2010/03/01 v1.9}
+%   \item
+%     Compatibility with \hologo{iniTeX}.
+%   \end{Version}
+%   \begin{Version}{2010/11/12 v1.10}
+%   \item
+%     Use of package \xpackage{ltxcmds}.
+%   \item
+%     Fix for compatibility with \hologo{iniTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.11}
+%   \item
+%     Already loaded package files are not input in \hologo{plainTeX}.
+%   \end{Version}
+%   \begin{Version}{2011/04/04 v1.12}
+%   \item
+%     Further fixes for compatibility for \hologo{iniTeX}.
+%   \item
+%     Test file for \hologo{iniTeX} added.
+%   \end{Version}
+%   \begin{Version}{2011/11/25 v1.13}
+%   \item
+%     Higher order bit of octal sequences in \cs{EdefUnescapeString}
+%     ignored according to the PDF specification
+%     (Bug found by Bruno Le Floch).
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

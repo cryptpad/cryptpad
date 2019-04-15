@@ -1,0 +1,860 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltfiles.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltfiles.dtx}
+             [2015/02/21 v1.1m LaTeX Kernel (File Handling)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltfiles.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{568}
+%
+% \changes{v1.0h}{1994/05/21}{Use new error commands}
+% \changes{v1.0n}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+% \changes{v1.0u}{1995/07/13}{Updates to docu}
+% \changes{v1.1m}{2015/02/21}
+%         {Removed autoload support}
+%
+% \section{File Handling}
+%
+% The following user commands are defined in this part:
+%
+%  \DescribeMacro{\document} (ie |\begin{document}|)\\
+%      Reads in the .AUX files and |\catcode|'s |@| to 12.
+%
+%  \DescribeMacro{\nofiles}\\
+%       Suppresses all file output by setting |\@filesw| false.
+%
+%  \DescribeMacro{\includeonly}\marg{NAME1, ... ,NAMEn}\\
+%       Causes only parts NAME1, ... ,NAMEn to be read by
+%         their |\include| commands.  Works by setting \@partsw true
+%         and setting |\@partlist| to NAME1, ... ,NAMEn.
+%
+%  \DescribeMacro{\include}\marg{NAME}\\
+%        Does an |\input| NAME unless |\@partsw| is true and
+%         NAME is not in |\@partlist|.  If |\@filesw| is true, then
+%         it directs .AUX output to NAME.AUX, including a
+%         checkpoint at the end.
+%
+% \DescribeMacro{\input}\marg{NAME}\\
+%        The same as TeX's |\input|, except it allows optional
+%         braces around the file name. In \LaTeXe, it also avoids
+%         the primitive `missing file' error, if the file can not be
+%         found.
+%
+% \DescribeMacro{\IfFileExists}\marg{NAME}\marg{then}\marg{else}\\
+%   If the file exists on the system, execute \emph{then} otherwise
+%   execute \emph{else}.
+%
+% \DescribeMacro{\InputIfFileExists}\marg{NAME}\marg{then}\marg{else}\\
+%   If the file exists on the system, execute \emph{then} and input
+%   \emph{NAME}  otherwise execute \emph{else}.
+%
+% \StopEventually{}
+%
+% \changes{v1.0a}{1994/03/07}{Initial version, split from latex.dtx}
+% \changes{v1.0a}{1994/03/07}{Long lines wrapped to 72 columns}
+%
+% \begin{oldcomments}
+%
+%    \begin{macrocode}
+%<*2ekernel>
+\message{files,}
+%    \end{macrocode}
+%
+%  VARIABLES, SWITCHES AND INTERNAL COMMANDS:
+%    \@mainaux    : Output file number for main .AUX file.
+%    \@partaux    : Output file number for current part's .AUX file.
+%    \@auxout     : Either \@mainout or \@partout, depending on
+%                   which .AUX file output goes to.
+%    \@input{foo} : If file foo exists, then \input's it,
+%                   otherwise types a warning message.
+%    @filesw       : Switch -- set false if no .AUX, .TOC, .IDX etc
+%                     files are to be written
+%    @partsw      : Set true by a \includeonly command.
+%    \@partlist   : Set to the argument of the \includeonly command.
+%
+%    \cp@FOO      : The checkpoint for \include'd file FOO.TEX, written
+%                   by \@writeckpt at the end of file FOO.AUX
+%
+%
+% \includeonly{FILELIST} ==
+%  BEGIN
+%   \@partsw   := T
+%   \@partlist := FILELIST
+%  END
+%
+% \include{FILE} ==
+%  BEGIN
+%   \clearpage
+%   if \@filesw = T
+%     then  \immediate\write\@mainaux{\string\@input{FILE.AUX}}
+%   fi
+%   if  \@partsw = T
+%     then \@tempswa := F
+%          \reserved@b == FILE
+%          for \reserved@a := \@partlist
+%              do if eval(\reserved@a) = eval(\reserved@b)
+%                   then \@tempswa := T          fi
+%              od
+%   fi
+%
+%   if \@tempswa = T
+%      then \@auxout := \@partaux
+%           if \@filesw = T
+%             then  \immediate\openout\@partaux{FILE.AUX}
+%                   \immediate\write\@partaux{\relax}
+%           fi
+%           \@input{FILE.TEX}
+%           \clearpage
+%           \@writeckpt{FILE}
+%           if @filesw then \closeout \@partaux fi
+%           \@auxout := \@mainaux
+%      else \cp@FILE
+%   fi
+%  END
+%
+% \@writeckpt{FILE} ==
+%  BEGIN
+%    if \@filesw = T
+%        \immediate\write on file \@partaux:
+%                  \@setckpt{FILE}{                  %% }
+%        for \reserved@a := \cl@@ckpt
+%           do  \immediate\write on file \@partaux:
+%                   \global\string\setcounter
+%                       {eval(\reserved@a)}{eval(\c@eval(\reserved@a))}
+%           od                                     %% {
+%        \immediate\write on file \@partaux:  }
+%    fi
+%  END
+%
+% \@setckpt{FILE}{LIST} ==
+%  BEGIN
+%    G \cp@FILE := LIST
+%  END
+%
+%  INITIALIZATION
+%    \@tempswa := T
+%
+% \end{oldcomments}
+%
+%
+% \task{???}{Do we use @unused or mainaux?}
+%  \begin{macro}{\@inputcheck}
+%  \begin{macro}{\@unused}
+%    Allocate read stream for testing and output stream.
+% \changes{v1.0l}{1994/11/07}
+%      {move here from ltdefns, remove duplicate \cs{@mainaux}}
+%    \begin{macrocode}
+\newread\@inputcheck
+\newwrite\@unused
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\@mainaux}
+% \begin{macro}{\@partaux}
+%    \begin{macrocode}
+\newwrite\@mainaux
+\newwrite\@partaux
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\if@filesw}
+% \begin{macro}{\if@partsw}
+%    \begin{macrocode}
+\newif\if@filesw \@fileswtrue
+\newif\if@partsw \@partswfalse
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\@clubpenalty}
+%    This stores the current normal (non-infinite) value of
+%    \cs{clubpenalty}; it should therefore be reset whenever the
+%    normal value is changed (as in the bibliography in the standard
+%    styles).
+% \changes{v1.1h}{1996/10/05}{Added setting its value}
+%    \begin{macrocode}
+\newcount\@clubpenalty
+\@clubpenalty \clubpenalty
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\document}
+% \changes{v0.9e}{1993/12/09}{Hook added}
+%    Cancel the |\begingroup| from |\begin|
+%    \begin{macrocode}
+\def\document{\endgroup
+%    \end{macrocode}
+%    If some options on |\documentclass| haven't been used by any
+%    package we will now give a warning since this is most certainly a
+%    misspelling.
+%    \begin{macrocode}
+  \ifx\@unusedoptionlist\@empty\else
+    \@latex@warning@no@line{Unused global option(s):^^J%
+            \@spaces[\@unusedoptionlist]}%
+  \fi
+  \@colht\textheight
+  \@colroom\textheight \vsize\textheight
+  \columnwidth\textwidth
+  \@clubpenalty\clubpenalty
+  \if@twocolumn
+    \advance\columnwidth -\columnsep
+    \divide\columnwidth\tw@ \hsize\columnwidth \@firstcolumntrue
+  \fi
+  \hsize\columnwidth \linewidth\hsize
+  \begingroup\@floatplacement\@dblfloatplacement
+    \makeatletter\let\@writefile\@gobbletwo
+%    \end{macrocode}
+% \changes{v1.1a}{1995/10/24}
+%            {Removed multiplelabels switch}
+%    \begin{macrocode}
+    \global \let \@multiplelabels \relax
+    \@input{\jobname.aux}%
+  \endgroup
+  \if@filesw
+    \immediate\openout\@mainaux\jobname.aux
+    \immediate\write\@mainaux{\relax}%
+  \fi
+%    \end{macrocode}
+%
+% Dateline 1991/03/26: FMi added |\process@table| to support NFSS;
+% This will also work with old lfonts if no other style defines
+% |\process@table|.  The following line forces the initialization of
+% the math fonts.
+%    \begin{macrocode}
+  \process@table
+  \let\glb@currsize\@empty  %% Force math initialization.
+%    \end{macrocode}
+% \changes{v0.9t}{1994/01/31}
+%     {set \cs{@normalsize} or \cs{normalsize} if necessary}
+% \changes{v1.0d}{1994/03/28}
+%     {(DPC) remove \cs{@normalsize check}}
+% \changes{v1.0d}{1994/03/28}
+%     {(DPC) Use \cs{normalsize} not \cs{@normalsize}}
+% \changes{v1.0g}{1994/05/13}{Added execution of \cs{every@size}}
+% \changes{v1.0m}{1994/11/07}{Renamed \cs{every@size} to
+%                \cs{every@math@size}.}
+% \changes{v1.0q}{1995/04/25}
+%            {Removed execution of \cs{every@size} latex/1407}
+%    \begin{macrocode}
+  \normalsize
+  \everypar{}%
+%    \end{macrocode}
+%
+% So that punctuation in headings is not disturbed by verbatim
+% or other local changes to the space factor codes, save the document
+% default here. This will be locally reset by the output routine.
+% For special cases a class may want to define |\normalsfcodes|
+% directly, in case that definition will be used.
+% (This is an old bug, problem existed in \LaTeX2.0x and plain \TeX.)
+% \changes{v1.1k}{1997/04/14}
+%            {Set the document space factor defaults. latex/2404}
+%    \begin{macrocode}
+  \ifx\normalsfcodes\@empty
+    \ifnum\sfcode`\.=\@m
+      \let\normalsfcodes\frenchspacing
+    \else
+      \let\normalsfcodes\nonfrenchspacing
+    \fi
+  \fi
+%    \end{macrocode}
+% Way back in 1991 (08/26) FMi \& RmS set the |\@noskipsec| switch
+% to true in the preamble and to false here.
+% This was done to trap lists and related text in the preamble but it
+% does not catch everything; hence Change 1.1g was introduced.
+%    \begin{macrocode}
+  \@noskipsecfalse
+%    \end{macrocode}
+% \changes{v1.1a}{1995/10/24}
+%            {Removed refundefined switch}
+%    \begin{macrocode}
+  \let \@refundefined \relax
+%    \end{macrocode}
+%    Just before disabling the preamble commands we execute the begin
+%    document hook which contains any code contributed by
+%    |\AtBeginDocument|. Also disable the gathering of the file list,
+%    if no |\listfiles| has been issued. |\AtBeginDocument| is redefined
+%    at this point so that and such commands that get into the hook do
+%    not chase their tail\ldots
+% \changes{v1.1e}{1996/04/24}
+%            {(DPC) Reset \cs{AtBeginDocument} eg for latex/1297}
+%    \begin{macrocode}
+  \let\AtBeginDocument\@firstofone
+  \@begindocumenthook
+%    \end{macrocode}
+%    Most of the following assignments will be done globally in case
+%    the user adds something like |\begin{multicols}| to the document
+%    hook, i.e. starts are group in |\begin{document}|.
+% \changes{v1.0r}{1995/04/27}
+%         {Added \cs{global} to support groups in hook}
+% \changes{v1.0c}{1994/03/16}
+%         {(DPC) directly add file list settings}
+% \changes{v1.0v}{1995/08/16}{set \cs{topskip} globally}
+% \changes{v1.0v}{1995/08/16}{set \cs{@maxdepth}}
+%
+% \changes{v1.0s}{1995/05/25}
+%         {Added check for \cs{topskip} zero}
+% \changes{v1.0t}{1995/05/25}
+%         {Corrected typo}
+%    Since a value of exactly 0pt for \cs{topskip} causes
+%    \cs{twocolumn[]} to misbehave, we add this check, hoping
+%    that it will not cause any problems elsewhere.
+%    \begin{macrocode}
+  \ifdim\topskip<1sp\global\topskip 1sp\relax\fi
+  \global\@maxdepth\maxdepth
+  \global\let\@begindocumenthook\@undefined
+  \ifx\@listfiles\@undefined
+    \global\let\@filelist\relax
+    \global\let\@addtofilelist\@gobble
+  \fi
+%    \end{macrocode}
+%    At the very end we disable all preamble commands. This has to
+%    happen after the begin document hooks was executed so that this
+%    hook can still use such commands.
+% \changes{v0.9o}{1994/01/15}
+%           {move \cs{@preamblecmds} after document hook}
+% \changes{v1.0v}{1995/08/16}{set \cs{do} globally}
+%    \begin{macrocode}
+  \gdef\do##1{\global\let ##1\@notprerr}%
+  \@preamblecmds
+%    \end{macrocode}
+%    The next line saves tokens and also allows |\@nodocument| to be
+%    used directly to trap preamble errors.
+% \changes{v1.1g}{1996/09/29}{Added disabling of \cs{@nodocument}}
+%    \begin{macrocode}
+  \global\let \@nodocument \relax
+%    \end{macrocode}
+%    The next line is a pure safety measure in case a do list is ever
+%    expanded at the wrong place. In addition it will save a few
+%    tokens to get rid of the above definition.
+%    \begin{macrocode}
+  \global\let\do\noexpand
+%    \end{macrocode}
+% \changes{v1.1c}{1995/12/05}{\cs{ignorespaces} added for latex/1933}
+%    Use of |\AtBeginDocument| hook might mean that we are already in
+%    horizontal mode, so ignore the space after |\begin{document}|.
+%    \begin{macrocode}
+  \ignorespaces}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@onlypreamble\document
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\normalsfcodes}
+% \changes{v1.1k}{1997/04/14}
+%            {Macro added (from patch file) latex/2404}
+% The setting of |\@empty| is just a flag. This command may be defined
+% in a class or package file. If it is still |\@empty| at
+% |\begin{document}| it will be defined to be |\frenchspacing| or
+% |\nonfrenchspacing|, depending on which of those appears to be in
+% effect at that point.
+%    \begin{macrocode}
+\let\normalsfcodes\@empty
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\nofiles}
+% \changes{v1.0k}{1994/11/04}
+%   {Added setting of \cs{protected@write},
+%    \cs{makeindex} and \cs{makeglossary} to \cs{nofiles}.  ASAJ.}
+% \changes{v1.0o}{1994/11/30}
+%         {There is no \cs{@gobblethree}\ldots}
+% \changes{v1.0t}{1995/05/25}
+%         {(CAR) added \cs{long}}
+% \changes{v1.1f}{1996/05/17}
+%         {added \cs{write} to \cs{protected@write} for latex/2146}
+% Set |\@fileswfalse| which suppresses the places where \LaTeX\ makes
+% |\immediate| writes. The |\makeindex| and |\makeglossary| are
+% disabled. |\protected@write| is redefined not to write to the file
+% specified, but rather to write a blank line to the log file. This
+% ensures that a \meta{whatsit} node is still created, and so spacing
+% is not affected by the |\nofiles| command; to ensure this more
+% generally, the |\if@nobreak| test is needed.
+% \changes{v1.1i}{1996/11/05}
+%                {Standard \cs{if@nobreak} test added}
+%    \begin{macrocode}
+\def\nofiles{%
+  \@fileswfalse
+  \typeout{No auxiliary output files.^^J}%
+  \long\def\protected@write##1##2##3%
+    {\write\m@ne{}\if@nobreak\ifvmode\nobreak\fi\fi}%
+  \let\makeindex\relax
+  \let\makeglossary\relax}
+\@onlypreamble\nofiles
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\protected@write}
+%    This takes three arguments: an output stream, some initialization
+%    code, and some text to write.  It then writes this, with
+%    appropriate handling of |\protect| and |\thepage|.
+% \changes{v1.0k}{1994/11/04}{Macro added  ASAJ.}
+% \changes{v1.0t}{1995/05/25}
+%         {(CAR) added \cs{long}}
+%    \begin{macrocode}
+\long\def \protected@write#1#2#3{%
+      \begingroup
+       \let\thepage\relax
+       #2%
+       \let\protect\@unexpandable@protect
+       \edef\reserved@a{\write#1{#3}}%
+       \reserved@a
+      \endgroup
+      \if@nobreak\ifvmode\nobreak\fi\fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\let\@auxout=\@mainaux
+%    \end{macrocode}
+%
+%
+% \begin{macro}{\includeonly}
+% \changes{v1.0p}{1995/04/22}{Allow blanks in argument}
+%    \begin{macrocode}
+\def\includeonly#1{%
+  \@partswtrue
+  \edef\@partlist{\zap@space#1 \@empty}}
+\@onlypreamble\includeonly
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\include}
+% \changes{v0.9p}{1994/01/18}
+%         {Use \cs{@input@} so include files are listed.}
+% In the definition of |\include|, |\def\reserved@b| changed to
+% |\edef\reserved@b| to be consistent with the |\edef| in
+% |\includeonly|.
+% (Suggested by Rainer Sch\"opf \& Frank Mittelbach.
+% Change made 20 Jul 88.)
+%
+% Changed definition of |\include| to allow space at end of file name
+% --- otherwise, typing |\include{foo }| would cause \LaTeX\ to
+% overwrite |foo.tex|.  Change made 24 May 89, suggested by Rainer
+% Sch\"opf  and Frank Mittelbach
+%
+% Made |\include| check for being used inside an |\include|'d file, as
+% this will not work and cause surprising results.
+%    \begin{macrocode}
+\def\include#1{\relax
+  \ifnum\@auxout=\@partaux
+    \@latex@error{\string\include\space cannot be nested}\@eha
+  \else \@include#1 \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@include}
+%    \begin{macrocode}
+\def\@include#1 {%
+  \clearpage
+  \if@filesw
+    \immediate\write\@mainaux{\string\@input{#1.aux}}%
+  \fi
+  \@tempswatrue
+  \if@partsw
+    \@tempswafalse
+    \edef\reserved@b{#1}%
+    \@for\reserved@a:=\@partlist\do
+      {\ifx\reserved@a\reserved@b\@tempswatrue\fi}%
+  \fi
+  \if@tempswa
+    \let\@auxout\@partaux
+    \if@filesw
+      \immediate\openout\@partaux #1.aux
+      \immediate\write\@partaux{\relax}%
+    \fi
+    \@input@{#1.tex}%
+    \clearpage
+    \@writeckpt{#1}%
+    \if@filesw
+      \immediate\closeout\@partaux
+    \fi
+  \else
+%    \end{macrocode}
+% If the file is not included, reset |\deadcycles|, so that a long
+% list of non-included files does not generate an `Output loop'
+% error.
+% \changes{v1.1j}{1997/01/08}{reset \cs{deadcycles} latex/2365}
+%    \begin{macrocode}
+    \deadcycles\z@
+    \@nameuse{cp@#1}%
+  \fi
+  \let\@auxout\@mainaux}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@writeckpt}
+%    \begin{macrocode}
+\def\@writeckpt#1{%
+  \if@filesw
+    \immediate\write\@partaux{\string\@setckpt{#1}\@charlb}%
+    {\let\@elt\@wckptelt \cl@@ckpt}%
+    \immediate\write\@partaux{\@charrb}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@wckptelt}
+%    \begin{macrocode}
+\def\@wckptelt#1{%
+  \immediate\write\@partaux{%
+    \string\setcounter{#1}{\the\@nameuse{c@#1}}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@setckpt}
+% RmS 93/08/31: introduced |\@setckpt|
+%    \begin{macrocode}
+\def\@setckpt#1{\global\@namedef{cp@#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@charlb}
+% \begin{macro}{\@charrb}
+% The following defines |\@charlb| and |\@charrb| to be |{| and |}|,
+% respectively with |\catcode| 11.
+%    \begin{macrocode}
+{\catcode`[=1 \catcode`]=2
+\catcode`{=11 \catcode`}=11
+\gdef\@charlb[{]
+\gdef\@charrb[}]
+]% }brace matching
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%
+% \subsection{Safe Input Macros}
+%
+% \begin{macro}{\IfFileExists}
+% \changes{v0.9b}{1993/12/04}{Macro added}
+% \changes{v0.9p}{1994/01/18}{New Definition}
+% \changes{v1.0t}{1995/05/25}
+%         {(CAR) added \cs{long}}
+%
+%    \begin{macrocode}
+\long\def \IfFileExists#1#2#3{%
+  \openin\@inputcheck#1 %
+  \ifeof\@inputcheck
+    \ifx\input@path\@undefined
+      \def\reserved@a{#3}%
+    \else
+      \def\reserved@a{\@iffileonpath{#1}{#2}{#3}}%
+    \fi
+  \else
+    \closein\@inputcheck
+    \edef\@filef@und{#1 }%
+    \def\reserved@a{#2}%
+  \fi
+  \reserved@a}
+%    \end{macrocode}
+%
+% \begin{macro}{\@iffileonpath}
+% If the file is not found by |\openin|, and |\input@path| is defined,
+% look in all the directories specified in |\input@path|.
+% \changes{v0.9p}{1994/01/18}{Macro added}
+% \changes{v1.0f}{1994/05/02}
+%     {\cs{@break@loop} renamed to \cs{@break@tfor}}
+% \changes{v1.0t}{1995/05/25}
+%         {(CAR) added \cs{long}}
+% \changes{v1.1d}{1996/01/10}
+%     {Change argument handling to not require doubled hash. latex/2024}
+%    \begin{macrocode}
+\long\def\@iffileonpath#1{%
+  \let\reserved@a\@secondoftwo
+  \expandafter\@tfor\expandafter\reserved@b\expandafter
+             :\expandafter=\input@path\do{%
+    \openin\@inputcheck\reserved@b#1 %
+    \ifeof\@inputcheck\else
+      \edef\@filef@und{\reserved@b#1 }%
+      \let\reserved@a\@firstoftwo%
+      \closein\@inputcheck
+      \@break@tfor
+    \fi}%
+  \reserved@a}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\InputIfFileExists}
+% \changes{v0.9b}
+%         {1993/12/04}{Macro added}
+% \changes{v0.9p}
+%         {1994/01/18}{New Definition}
+% \changes{v0.3b}{1994/03/13}
+%         {Use new cmd \cs{@addtofilelist}}
+% Now define |\InputIfFileExists| to input |#1| if it seems to exist.
+% Immediately prior to the input, |#2| is executed.
+% If the file |#1| does not exist, execute `|#3|'.
+% \changes{v1.0t}{1995/05/25}
+%         {(CAR) added \cs{long}}
+%    \begin{macrocode}
+\long\def \InputIfFileExists#1#2{%
+  \IfFileExists{#1}%
+    {#2\@addtofilelist{#1}\@@input \@filef@und}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\input}
+%    Input a file: if the argument is given in braces use safe input
+%    macros, otherwise use \TeX's primitive |\input| command (which is
+%    called |\@@input| in \LaTeX).
+% \changes{v0.9b}{1993/12/04}{Macro reimplemented}
+%    \begin{macrocode}
+\def\input{\@ifnextchar\bgroup\@iinput\@@input}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@iinput}
+%    Define |\@iinput| (i.e., |\input|) in terms of
+%    |\InputIfIfileExists|.
+% \changes{v0.9b}{1993/12/04}{Macro reimplemented}
+%    \begin{macrocode}
+\def\@iinput#1{%
+  \InputIfFileExists{#1}{}%
+  {\filename@parse{#1}%
+   \edef\reserved@a{\noexpand\@missingfileerror
+     {\filename@area\filename@base}%
+     {\ifx\filename@ext\relax tex\else\filename@ext\fi}}%
+   \reserved@a}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@input}
+% \changes{v0.9b}{1993/12/04}{Macro reimplemented}
+% \changes{v0.9p}{1994/01/18}%
+%         {do not use a different definition for \cs{input@path}}
+%    Define |\@input| in terms of |\IfIfileExists|.
+%    So this is a `safe input' command, but the files input are not
+%    listed by |\listfiles|.
+%
+%    We don't want |.aux|, |.toc| files etc be listed by |\listfiles|.
+%    However, something like |.bbl| probably should be listed and thus
+%    should be implemented not by |\@input|.
+%    \begin{macrocode}
+\def\@input#1{%
+  \IfFileExists{#1}{\@@input\@filef@und}{\typeout{No file #1.}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@input@}
+% \changes{v0.9p}{1994/01/18}{Macro added}
+% \task{???}{share code with `@input ?}
+% Version of |\@input| that does add the file to |\@filelist|.
+%    \begin{macrocode}
+\def\@input@#1{\InputIfFileExists{#1}{}{\typeout{No file #1.}}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\@missingfileerror}
+% This `error' command avoids \TeX's primitive missing file loop.
+%
+% Missing file error. Prompt for a new filename, offering a default
+% extension.
+% \changes{LaTeX2e}{1993/11/21}
+%         {Stop infinite looping on \cs{@er@ext}}
+% \changes{LaTeX2e}{1993/11/28}
+%         {Use filename parser from dircheck}
+% \changes{LaTeX2e}{1994/03/15}
+%         {Quit on x or X just like a real error}
+% \changes{LaTeX2e}{1994/05/26}
+%         {Modify message format}
+% \changes{v1.0j}{1994/11/03}
+%         {Move here from ltclass}
+% \changes{v1.0w}{1995/10/06}
+%         {Autoload error}
+%    \begin{macrocode}
+\gdef\@missingfileerror#1#2{%
+     \typeout{^^J! LaTeX Error: File `#1.#2' not found.^^J^^J%
+      Type X to quit or <RETURN> to proceed,^^J%
+      or enter new name. (Default extension: #2)^^J}%
+     \message{Enter file name: }%
+      {\endlinechar\m@ne
+       \global\read\m@ne to\@gtempa}%
+    \ifx\@gtempa\@empty
+    \else
+      \def\reserved@a{x}\ifx\reserved@a\@gtempa\batchmode\@@end\fi
+      \def\reserved@a{X}\ifx\reserved@a\@gtempa\batchmode\@@end\fi
+      \filename@parse\@gtempa
+      \edef\filename@ext{%
+        \ifx\filename@ext\relax#2\else\filename@ext\fi}%
+     \edef\reserved@a{%
+       \noexpand\InputIfFileExists
+         {\filename@area\filename@base.\filename@ext}%
+         {}%
+         {\noexpand\@missingfileerror
+            {\filename@area\filename@base}{\filename@ext}}}%
+      \reserved@a
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@obsoletefile}
+%    For compatibility with \LaTeX~2.09 document styles, we distribute
+%    files called |article.sty|, |book.sty|, |report.sty|,
+%    |slides.sty| and |letter.sty|.  These use the command
+%    |\@obsoletefile|, which produces a warning message.
+%    \changes{v0.9m}{1993/12/20}{Added this command, removed
+%                               @oldfilewarning}
+% \changes{v1.0f}{1994/05/02}{Make \cs{@onlypreamble}}
+%    \begin{macrocode}
+\def\@obsoletefile#1#2{%
+   \@latex@warning@no@line{inputting `#1' instead of obsolete `#2'}}
+\@onlypreamble\@obsoletefile
+%    \end{macrocode}
+%
+% \subsection{Listing files}
+%
+% \begin{macro}{\@filelist}
+% A list of files input so far. The initial value of |\@gobble| eats
+% the comma before the first file name.
+%    \begin{macrocode}
+\let\@filelist\@gobble
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@addtofilelist}
+% Add to the  list of files input so far.
+% \changes{LaTeX2e}{1994/03/13}
+%         {Macro added}
+% \changes{LaTeX2e}{1995/10/01}
+%         {Macro added}
+% This `real' definition is only used for `cfg' files during initex.
+% An initial definition of |\@gobble| has already been set.
+%    \begin{macrocode}
+%\def\@addtofilelist#1{\xdef\@filelist{\@filelist,#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\listfiles}
+% A preamble command to cause |\end{document}| to list files input
+% from the main file.
+% \changes{LaTeX2e}{1993/11/22}
+%         {Removed checking for \cs{@unknownversion}}
+% \changes{LaTeX2e}{1994/01/17}
+%         {New Version, adds `.tex' if needed, and lines up columns}
+% \changes{LaTeX2e}{1994/05/13}
+%         {Stop \cs{listfiles} being run twice}
+% \changes{v1.0i}{1994/10/18}
+%         {code moved here from ltclass}
+%    \begin{macrocode}
+\def\listfiles{%
+  \let\listfiles\relax
+  \def\@listfiles##1##2##3##4##5##6##7##8##9\@@{%
+     \def\reserved@d{\\}%
+     \@tfor\reserved@c:=##1##2##3##4##5##6##7##8\do{%
+       \ifx\reserved@c\reserved@d
+         \edef\filename@area{ \filename@area}%
+       \fi}}%
+%    \end{macrocode}
+%
+% \changes{v1.0o}{1994/11/30}
+%         {Use \cs{@dofilelist}}
+%    \begin{macrocode}
+  \def\@dofilelist{%
+     \typeout{^^J *File List*}%
+     \@for\@currname:=\@filelist\do{%
+       \filename@parse\@currname
+       \edef\reserved@a{%
+          \filename@base.%
+          \ifx\filename@ext\relax tex\else\filename@ext\fi}%
+       \expandafter\let\expandafter\reserved@b
+                              \csname ver@\reserved@a\endcsname
+       \expandafter\expandafter\expandafter\@listfiles\expandafter
+             \filename@area\filename@base\\\\\\\\\\\\\\\\\\\@@
+       \typeout{%
+         \filename@area\reserved@a
+         \ifx\reserved@b\relax\else\@spaces\reserved@b\fi}}%
+     \typeout{ ***********^^J}}}
+%    \end{macrocode}
+%
+% \changes{LaTeX2e}{1994/03/13}
+%         {Reset \cs{@addtofilelist} at begin document}
+% \changes{LaTeX2e}{1994/03/16}
+%         {Move this code directly into \cs{document}}
+% The |\@filelist| will be de-activated if |\listfiles| does not
+% appear in the preamble. |\begin{document}| contains code equivalent
+% to the following:
+%\begin{verbatim}
+% \AtBeginDocument{%
+%   \ifx\@listfiles\@undefined
+%     \let\@filelist\relax
+%     \let\@addtofilelist\@gobble
+%   \fi}
+%\end{verbatim}
+%    \begin{macrocode}
+\@onlypreamble\listfiles
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@dofilelist}
+% \changes{v1.0o}{1994/11/30}
+%         {Macro added}
+%    \begin{macrocode}
+\let\@dofilelist\relax
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+% \end{macro}
+%
+% \Finale
+%

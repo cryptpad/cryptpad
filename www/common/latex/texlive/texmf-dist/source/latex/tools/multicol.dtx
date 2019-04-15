@@ -1,0 +1,4285 @@
+% \iffalse meta-comment
+%
+%
+% This file is part of the Standard LaTeX `Tools Bundle'.
+% -------------------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
+%
+% \fi
+%
+% \iffalse    This is a METACOMMENT
+%
+%% Package `multicol' to use with LaTeX2e
+%% Copyright 1989-2015 Frank Mittelbach
+%%
+%%  In addition to the terms of LPPL any distributed version
+%%  (unchanged or modified) of multicol has to keep the statement
+%%  about the moral obligation for using multicol. In case of major
+%%  changes where this would not be appropriate the author of the
+%%  changed version should contact the copyright holder.
+%%
+%%
+%%  Moral obligation for using multicol:
+%%  ------------------------------------
+%%
+%%  Users of multicol who wish to include or use multicol or a modified
+%%  version in a proprietary and commercially market product are asked
+%%  under certain conditions (see below) for the payment of a license
+%%  fee.  The size of this fee is to be determined, in each instance,
+%%  by the commercial user, depending on his/her judgment of the value of
+%%  multicol for his/her product.
+%%
+%%
+%%  The conditions for this are as follows:
+%%
+%%   The producer of a proprietary and commercially market product
+%%   that involves typesetting using multicol is asked to determine
+%%   the value of a license fee for using multicol if
+%%
+%%   - the product is a document and the producer has decided to
+%%     include multicol to typeset (parts of) the document or has
+%%     directed the author of the document to include multicol (for
+%%     example, by providing a class file to be used by the author)
+%%
+%%   - the product is a LaTeX class or package that includes multicol
+%%
+%%
+%%   There is no moral obligation in case
+%%
+%%   - the product is a document but producer has not directed
+%%     the author to include multicol (in that case the moral obligation
+%%     lies with the author of the document)
+%%
+%%   - the product does not involve typesetting, e.g., consists, for
+%%     example, of distributing multicol and its documentation.
+%%
+%%   - the product is not proprietary, i.e., is made available as free
+%%     software itself (which doesn't prohibit its commercial marketing)
+%%
+%%   - multicol is used for non-commercial purposes
+%%
+%%
+%% Determining a license fee might result in a license fee of zero
+%% (i.e., no payment) in case a producer has determined that the use
+%% of multicol has no enhancing effect on the product. This is a
+%% plausible scenario, i.e., in the above two cases the producer is
+%% only asked to evaluate the value of multicol for the product
+%% not for the payment of a license fee per se (which might or might
+%% not follow from this evaluation).
+%%
+%% The license fee, if any, can be payed either to the LaTeX3 fund
+%% (see ltx3info.txt in the base LaTeX distribution) or to the author of
+%% the program who can be contacted at
+%%
+%%     Frank.Mittelbach@latex-project.org
+%%
+%<*dtx>
+          \ProvidesFile{multicol.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}[1997/12/01]
+%<package>\ProvidesPackage{multicol}
+%<driver> \ProvidesFile{multicol.drv}
+% \fi
+%         \ProvidesFile{multicol.dtx}
+          [2015/08/19 v1.8n  multicolumn formatting (FMi)]
+%
+%
+%% \CheckSum{1894}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%
+% \changes{v1.5n}{1997/06/05}{Applied improvement of documentation,
+%          kindly done by Robin Fairbairns.}
+% \changes{v1.4h}{1992/06/04}{Added mark tracing with
+%                           tracingmulticols$\ge2$}
+% \changes{v1.4a}{1992/02/11}{Added support for multicol in inner mode}
+% \changes{v1.0d}{1989/05/17}{All lines shortened to 72 or less.}
+% \changes{v1.0e}{1989/06/21}{Redefinition of description env. to use
+%                           \cs{descriptionmargin}\quotechar=5pt
+%                           in documentation.}
+% \changes{v1.0f}{1989/07/11}{Changed \cs{z@} to 0pt in redefinition of
+%                           description.}
+% \changes{v1.1a}{1989/09/20}{\cs{multicolssep} changed to \cs{multicolsep}.}
+%
+% \def\description{\list{}{\labelwidth 0pt \leftmargin\descriptionmargin
+%    \itemindent-\leftmargin \let\makelabel\descriptionlabel}}
+% \newdimen\descriptionmargin \descriptionmargin=5pt
+%
+% \DoNotIndex{\@M,\@Mi,\@bsphack,\@cclv,\@colht,\@currlist,\@deferlist}
+% \DoNotIndex{\@elt,\@esphack,\@floatplacement}
+% \DoNotIndex{\@ifundefined,\@ifnextchar,\@makecol}
+% \DoNotIndex{\@ne,\@outputpage,\@scolelt,\@spaces,\@tempb,\@tempcnta}
+% \DoNotIndex{\@width}
+% \DoNotIndex{\addvspace,\advance,\allowbreak}
+% \DoNotIndex{\baselineskip,\begingroup,\box,\columnsep,\copy,\count}
+% \DoNotIndex{\count@,\def,\dimen@,\divide,\docdate}
+% \DoNotIndex{\edef,\eject,\egroup,\else,\endgroup,\endinput}
+% \DoNotIndex{\fi,\fileversion,\filedate}
+% \DoNotIndex{\gdef,\global}
+% \DoNotIndex{\hbox,\hfil,\hrule,\ht,\hss}
+% \DoNotIndex{\ifdim,\ifnum,\ifvoid,\ignorespaces,\insert,\immediate}
+% \DoNotIndex{\let,\loop}
+% \DoNotIndex{\maxdepth,\message,\multiply}
+% \DoNotIndex{\newbox,\newcount,\newdimen,\newskip,\number,\newpage}
+% \DoNotIndex{\outputpenalty,\p@,\penalty}
+% \DoNotIndex{\relax,\repeat,\setbox,\skip,\space,\splitmaxdepth}
+% \DoNotIndex{\splittopskip,\string,\sixt@@n}
+% \DoNotIndex{\the,\thepage,\thr@@,\topskip,\tw@,\typeout}
+% \DoNotIndex{\unvbox,\vbox,\vfill,\vsplit,\voidb@x,\vrule}
+% \DoNotIndex{\write,\wd}
+% \DoNotIndex{\z@}
+%
+% \MakeShortVerb{\|}
+% \newcommand{\mc}{{\sf multicols}}
+% \newcommand{\TUB}{{\sl TUGboat\/}}
+% \newcommand{\TB}{{\sl\TeX book\/}}
+%
+%
+% \setcounter{StandardModuleDepth}{2}
+% \setcounter{collectmore}{3}
+%
+% \GetFileInfo{multicol.dtx}
+% \title{An environment for multicolumn output\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}%
+%       \thanks{Note: This package is released under terms which affect
+%       its use in commercial applications. Please see the details at
+%       the top of the source file.}}
+% \author{Frank Mittelbach\\
+%       {\rm Email:} see top of the source file}
+% \date{Printed \today}
+%
+% \MaintainedByLaTeXTeam{tools}
+% \maketitle
+%
+% \begin{abstract}
+%   This article describes the use and the implementation of the \mc{}
+%   environment. This environment allows switching between
+%   one and multicolumn format on the same page. Footnotes are handled
+%   correctly (for the most part), but will be placed at the bottom of
+%   the page and not under each column.  \LaTeX{}'s float mechanism,
+%   however, is partly disabled in this implementation.  At the
+%   moment only page-wide floats (i.e., star-forms) can be used within
+%   the scope of the environment.
+% \end{abstract}
+%
+% \begin{multicols}{3}[\section*{Preface to version 1.8}]
+%    The 1.8 release improves on the balancing approach. If due to a
+%    limited number of break points (e.g., due to large objects) the
+%    balanced columns exceed the available vertical space, then
+%    balancing is canceled and a normal page is produced first. Some
+%    overflow is allowed (controlled by the parameter
+%    |\maxbalancingoverflow| which defaults to 12pt). This ensures
+%    that we only cut a normal page if we get enough material carried
+%    over to next page.
+%
+%    Also added was support for |\enlargethispage|. This means it is
+%    now possible to request a page to be artificially  enlarged or
+%    shortened. Note that if you enlarge pages by more than one line
+%    you may have to increase the {\sf collectmore} counter value to
+%    ensure that enough material is being picked up.
+%
+%    This command was used on the second page of this manual to shorten
+%    it by one line, in order to get rid of a number of widow lines on
+%    the following pages.
+%
+%
+%    Finally, version 1.8 adds the command |\docolaction| to help with
+%   more complicated actions that depend on the current column. This
+%   command expects 3 arguments: code that is executed if we are in
+%   the ``first'' column, code to execute if we end up in any
+%   ``middle'' column (if there are more than two) and finally code to
+%   execute if we are in the ``last'' column. Thus
+%\begin{verbatim}
+%  \docolaction{first}
+%              {middle}{last}
+%\end{verbatim}
+%   would typeset a different word depending the type of column this
+%   code is executed. Using it like this is probably pointless, but
+%   you can imagine applications like writing something into the
+%   nearest margin, etc.
+%
+%   As this feature needs at least two \LaTeX{} runs to produce correct
+%   results and as it adds to the processing complexity it is only
+%   made available if one add the option \texttt{colaction} when
+%   loading the package.
+%
+% \end{multicols}
+%
+% \RLmulticolcolumns
+%
+% \begin{multicols}{3}[\section*{Preface to version 1.7
+%                         (right to left support)}]
+%    The 1.7 release adds support for languages that are typeset
+%    right-to-left. For those languages the order of the columns on the page
+%    also need to be reversed---something that wasn't supported before. This
+%    paragraph demonstrates the result (as it is typeset as if we are writing
+%    in a left-to-right language---so restart reading the rightmost column
+%    first if you started with this column).
+% \end{multicols}
+%
+% \LRmulticolcolumns
+%
+% \begin{multicols}{3}
+%    Right-to-left typesetting will only reverse the column orders. Any
+%    other support needed will have to be provided by other means,
+%    e.g., using appropriate fonts and reversing the writing directions
+%    within the columns. As footnotes are typeset in full measure the
+%    footnote rule needs to be redefined as if they are below a single
+%    column, i.e., using |\textwidth| not |\columnwidth|. For example:
+%\begin{verbatim}
+%\renewcommand \footnoterule{%
+%  \kern-3pt\hbox to\textwidth
+%    {\hskip .6\textwidth
+%     \hrulefill }%
+%  \kern2.6pt}
+%\end{verbatim}
+% \end{multicols}
+%
+%
+% \begin{multicols}{3}[\section*{Preface to version 1.5 + 1.6}]
+%   \hbadness=10000
+%   The 1.5 release contains two major changes: \mc{} will now
+%   support up to 10 columns and two more tuning possibilities have
+%   been added to the balancing routine. The balancing routine now
+%   checks the badness
+%   of the resulting columns and rejects solutions that are larger
+%   than a certain threshold.
+%   At the same time \mc{} has been upgraded to run under \LaTeXe{}.
+%
+%   Later changes to 1.5 include |\columnbreak| and |multicols*|.
+%
+%   For version 1.6 micro-spacing around the boxes produced by \mc{}
+%   has been improved to allow for baseline-grid typesetting.
+% \end{multicols}
+%
+%
+% \setcounter{collectmore}{2}
+% \begin{multicols}{3}[\section{Introduction}]
+%   \hbadness=10000
+%   Switching between two-column and one-column layout is possible in
+%   \LaTeX{}, but every use of |\twocolumn| or |\onecolumn|
+%   starts a new page. Moreover, the last page of two-column output
+%   isn't balanced and this often results in an empty, or nearly
+%   empty, right column. When I started to write macros for {\sf
+%   doc.sty} (see ``The {\tt doc}--Option'', \TUB\
+%   volume 10~\#2, pp.~245--273) I thought that it would be nice to
+%   place the index
+%   on the same page as the bibliography. And balancing the last page
+%   would not only look better, it also would save space; provided of
+%   course that it is also possible to start the next article on the
+%   same page. Rewriting the index environment was comparatively easy,
+%   but the next goal, designing an environment which takes care of
+%   footnotes, floats, etc., was a harder task. It took me a whole
+%   weekend\footnote{I started with the algorithm given in the \TeX
+%   book on page 417. Without this help a weekend would not have been
+%   enough. (This remark was made in the documentation of the initial
+%    release, since then several hundreds more hours went into
+%    improving the original code.)} to get together the few lines of
+%    code below and there is
+%   still a good chance that I missed something after all.
+%
+%   Try it and, hopefully, enjoy it; and {\em please\/} direct bug
+%   reports and suggestions back to Mainz.
+% \end{multicols}
+%
+%
+% \setcounter{collectmore}{0}
+% \begin{multicols}{3}[\section{The User Interface}]
+%   \hbadness=10000
+%   To use the environment one simply says\\*[2mm]
+%     \hspace*{2mm}|\begin{multicols}{|\meta{number}|}|
+%     \hspace*{12mm}\meta{multicolumn text}\\
+%     \hspace*{2mm}|\end{multicols}|\\[2mm]
+%   where \meta{number} is the required number of columns and
+%^^A\meta{multicolumn text}
+%   $\langle${\it multi\-column text\/}$\rangle$ may contain arbitrary
+%   \LaTeX{} commands, except that floats and marginpars are not
+%   allowed in the current implementation\footnote{This is dictated by
+%   lack of time.  To implement floats one has to reimplement the
+%   whole \LaTeX{} output routine.}.
+%
+% \enlargethispage{-1\baselineskip}
+%
+% \DescribeMacro\premulticols
+% As its first action, the {\sf multicols} environment measures the
+% current page to determine whether there is enough room for some
+% portion of multicolumn output. This is controlled by the
+% \meta{dimen} variable |\premulticols| which can be changed by
+% the user with ordinary \LaTeX{} commands.
+% \DescribeMacro\multicolsep
+% If the space is less than |\premulticols|, a new page is
+% started.  Otherwise, a |\vskip| of |\multicolsep| is
+% added.\footnote{Actually the added space may be less because we use
+% \cs{addvspace} (see the \LaTeX{} manual for further
+% information about this command).}
+%
+% \DescribeMacro\postmulticols
+% When the end of the \mc{} environment is encountered, an
+% analogous mechanism is employed, but now we test whether there is a
+% space larger than |\postmulticols| available. Again we add
+% |\multicolsep| or start a new page.
+%
+% It is often convenient to spread some text over all columns, just
+% before the multicolumn output, without any page break in between. To
+% achieve this the \mc{} environment has an optional second
+% argument which can be used for this purpose. For example, the text
+% you are now reading was started with
+% \begin{verbatim}
+% \begin{multicols}{3}
+%   [\section{The User
+%             Interface}] ...
+%\end{verbatim}
+% If such text is unusually long (or short) the value of
+% |\premulticols| might need adjusting to prevent a bad page
+% break.  We therefore provide a third argument which can be used to
+% overwrite the default value of |\premulticols| just for this
+% occasion. So if you want to combine some longer single column text
+% with a multicols environment you could write
+% \begin{verbatim}
+% \begin{multicols}{3}
+%     [\section{Index}
+%      This index contains ...]
+%     [6cm]
+%  ...
+%\end{verbatim}
+%
+%
+% \DescribeMacro\columnsep
+% The space between columns is controlled by the length parameter
+% |\columnsep|. The width for the individual columns is automatically
+% calculated from this parameter and the current |\linewidth|. In this
+% article a value of \textsf{\the\columnsep} was used.
+%
+%
+% \DescribeMacro\columnseprule
+% Separation of columns with vertical rules is achieved by setting the
+% parameter |\columnseprule| to some positive value.  In this
+% article a value of {\sf.4pt} was used.
+%
+% \DescribeMacro\columnseprulecolor
+% The color of the rules separating the columns can be specified through
+% |\columnseprulecolor|. The default value is |\normalcolor|.
+%
+% \DescribeMacro\multicolbaselineskip
+% Since narrow columns tend to need adjustments in interline spacing
+% we also provide a \meta{skip} parameter called
+% |\multicolbaselineskip| which is added to the
+% |\baselineskip| parameter inside the \mc{}
+% environment.  Please use this parameter with care or leave it alone;
+% it is intended only for package file designers since even small
+% changes might produce totally unexpected changes to your document.
+%
+%
+%    \subsection{Balancing columns}
+%
+%
+% Besides the previously mentioned parameters, some others are
+% provided to influence the layout of the columns generated.
+%
+% Paragraphing in \TeX{} is controlled by several parameters. One of
+% the most important is called |\tolerance|: this controls the
+% allowed `looseness' (i.e.\ the amount of blank space between words).
+% Its default value is 200 (the \LaTeX{} |\fussy|) which is too
+% small for narrow columns. On the other hand the |\sloppy|
+% declaration (which sets |\tolerance| to $10000=\infty$) is too
+% large, allowing really bad spacing.\footnote{Look at the next
+% paragraph, it was set with the \cs{sloppy} declaration.}
+%
+% \begin{sloppypar}
+% \DescribeMacro\multicoltolerance \DescribeMacro\multicolpretolerance
+%  We therefore use a |\multicoltolerance| parameter for the
+% |\tolerance| value inside the \mc{} environment.  Its default value
+% is 9999 which is less than infinity but `bad' enough for most
+% paragraphs in a multicolumn environment. Changing its value should
+% be done outside the \mc{} environment.  Since |\tolerance| is set
+% to |\multicoltolerance| at the beginning of every {\sf multicols}
+% environment one can locally overwrite this default by assigning
+% \verb*+\tolerance = +\meta{desired value}. There also exists a
+% |\multicolpretolerance| parameter holding the value for
+% |\pretolerance| within a \mc{} environment. Both parameters are
+% usually used only by package designers.
+% \end{sloppypar}
+%
+% Generation of multicolumn output can be divided into two parts.  In
+% the first part we are collecting material for a page, shipping it
+% out, collecting material for the next page, and so on.  As a second
+% step, balancing will be done when the end of the \mc{} environment
+% is reached.
+% In the first step \TeX{} might consider more material whilst
+% finding the final column content than it actually uses when shipping out the
+% page. This might cause a problem if a footnote is encountered in
+% the part of the input considered, but not used, on the current page.
+% In this case the footnote might show up on the current page, while the
+% footnotemark corresponding to this footnote might be set on the next
+% one.\footnote{The reason behind this behavior is the asynchronous
+%               character of the \TeX{} {\it page\_builder}.
+%               However, this
+%               could be avoided by defining very complicated output
+%               routines which don't use \TeX{} primitives like
+%               \cs{insert} but do everything by hand.
+%               This is clearly beyond the scope of a weekend problem.}
+% Therefore the \mc{} environment gives a warning
+% message\footnote{This message will be generated even if there are no
+% footnotes in this part of the text.} whenever it is unable to use
+% all the material considered so far.
+%
+% If you don't use footnotes too often the chances of something
+% actually going wrong are very slim, but if this happens you can help
+% \TeX{} by using a |\pagebreak| command in the final document.
+% Another way to influence the behavior of \TeX{} in this respect is
+% given by the counter variable `{\sf collectmore}'. If you use the
+% |\setcounter| declaration to set this counter to \meta{number},
+% \TeX{} will consider \meta{number} more (or less) lines before
+% making its final decision. So a value of $-1$ may solve all your
+% problems at the cost of slightly less optimal columns.
+%
+%
+% In the second step (balancing columns) we have other bells and
+% whistles. First of all you can say |\raggedcolumns| if you
+% don't want the bottom lines to be aligned.
+% The default is |\flushcolumns|, so \TeX{} will normally try to
+% make both
+% the top and bottom baselines of all columns align.
+%
+% Additionally you can set another counter, the `{\sf unbalance}'
+% counter, to some positive \meta{number}. This will make all but the
+% right-most column \meta{number} of lines longer than they would
+% normally have been. `Lines' in this context refer to normal text
+% lines (i.e.\ one |\baselineskip| apart); thus, if your columns
+% contain displays,
+% for example, you may need a higher \meta{number}
+% to shift something from one column into another.
+%
+% Unlike `{\sf collectmore},' the `{\sf unbalance}' counter is reset
+% to zero at the end of the environment so it only applies to one
+% \mc{} environment.
+%
+% The two methods may be combined but I suggest using these features
+% only when fine tuning important publications.
+%
+% Two more general tuning possibilities were added with version~1.5.
+% \TeX{} allows to measure the badness of a column in terms of an
+% integer value, where 0 means optimal and any higher value means a
+% certain amount of extra white space. 10000 is considered to be
+% infinitely bad (\TeX{} does not distinguish any further). In addition
+% the special value 100000 means overfull (i.e., the column contains
+% more text than could possibly fit into it).
+%
+% The new release now measures every generated column and ignores
+% solutions where at least one column has a badness being larger than
+% the value of the counter {\sf columnbadness}. The default value for
+% this counter is 10000, thus \TeX{} will accept all solutions except
+% those being overfull.
+% By setting the counter to a smaller value you can force the algorithm
+% to search for solutions that do not have columns with a lot of white
+% space.
+%
+% However, if the setting is too low, the algorithm may not find any
+% acceptable solution at all and will then finally choose the extreme
+% solution of placing all text into the first column.
+%
+% Often, when columns are balanced, it is impossible to find a solution
+% that distributes the text evenly over all columns. If that is the case
+% the last column usually has less text than the others. In the earlier
+% releases this text was stretched to produce a column with the same
+% height as all others, sometimes resulting in really ugly looking
+% columns.
+%
+% In the new release this stretching is only done if the badness of
+% the final column is not larger than the value of the counter
+% {\sf finalcolumnbadness}. The default setting is 9999, thus preventing
+% the stretching for all columns that \TeX{} would consider infinitely
+% bad. In that case the final column is allowed to run short which gives
+% a much better result.
+%
+% And there are two more parameters of some experimental nature, one
+% called |\multicolovershoot| the other |\multicolundershoot|.  They
+% control the amount of space a column within the \mc{} environment is
+% allowed to be ``too full'' or ``too short'' without affecting the
+% column badness. They are set to 0pt and 2pt, respectively.
+%
+% Finally, when doing the balancing at the end, columns may become
+% higher than the remaining available space. In that case the
+% algorithm aborts and instead generates a normal page. However, if the
+% amount is not too large, e.g., a line or so, then it might be better to
+% keep everything on the same page instead of starting a new page with
+% just one line after balancing. So the parameter
+% |\maxbalancingoverflow| governs this process: only when the excess
+% gets larger than its value balancing is aborted.
+%
+% \subsection{Not balancing the columns}
+%
+% Although this package was written to solve the problem of balancing
+% columns, I got repeated requests to provide a version where all
+% white space is automatically placed in the last column or
+% columns. Since version v1.5q this now exists: if you use
+% \texttt{multicols*} instead of the usual environment the columns on
+% the last page are not  balanced. Of course, this environment only
+% works on top-level, e.g., inside a box one has to balance to
+% determine a column height in absence of a fixed value.
+%
+%
+% \subsection{Manually breaking columns}
+%
+% Another request often voiced was: ``How do I tell \LaTeX{} that it
+% should break the first column after this particular line?''. The
+% |\pagebreak| command (which works with the two-column option of
+% \LaTeX{}) is of no use here since it would end the collection phase
+% of \mc{} and thus all columns on that page. So with version 1.5u
+% the |\columnbreak| command was added. If used within a paragraph it
+% marks the end of the current line as the desired breakpoint. You can
+% observe its effect on
+% the previous page where three lines of text have been artificially
+% forced into the second column  (resulting in some white
+% space between paragraphs in the first column).
+%
+% \subsection{Floats inside a \mc{} environment}
+%
+% Within the \mc{} environment the usual star float commands are
+% available but their function is somewhat different as in the
+% two-column mode of standard \LaTeX. Stared floats, e.g., {\tt
+% figure*}, denote page wide floats that are handled in a similar
+% fashion as normal floats outside the \mc{} environment. However,
+% they will never show up on the page where they are encountered. In
+% other words, one can influence their placement by specifying a
+% combination of {\tt t}, {\tt b}, and/or {\tt p} in their optional
+% argument, but {\tt h} doesn't work because the first possible place
+% is the top of the next page. One should also note, that this means
+% that their placement behavior is determined by the values of
+% |\topfraction|, etc.\ rather than by |\dbl...|.
+%
+%
+% \subsection{Support for right-to-left typesetting}
+%
+%    In right-to-left typesetting the order of the columns on the page
+%    also need to be reversed, i.e., the first column has to appear on the far
+%    right and the last column on the left. This is supported through the
+%    commands |\RLmulticolcolumns| (switching to right-to-left typesetting)
+%    and |\LRmulticolcolumns| (switching to left-to-right typesetting) the
+%    latter being the default.
+%
+% \subsection{Warnings}
+%
+% Under certain circumstances the use of the \mc{} environment may
+% result in some
+% warnings from \TeX{} or \LaTeX{}. Here is a list
+% of the important ones and the possible cause:
+% \begin{description}
+%
+% \item[] {\hspace*{-\labelsep}\tt Underfull \string\hbox\space
+%  (badness ...)}
+%
+%  As the columns are often very narrow \TeX{} wasn't able to find a
+%  good way to break the paragraph. Underfull denotes a loose line but
+%  as long as the badness value is below $10000$ the result is probably
+%  acceptable.
+%
+% \item[]
+% {\hspace*{-\labelsep}\tt Underfull \string\vbox\space ...  while
+%  \string\output\space is active}
+%
+%  If a column contains a character with an unusual depth, for
+%  example a `(', in the bottom line then this message may show up. It
+%  usually has no significance as long as the value is not more than a
+%  few points.
+%
+% \item[] {\hspace*{-\labelsep}\tt LaTeX Warning: I moved some lines
+%  to the next page}
+%
+%  As mentioned above, \mc{} sometimes screws up the footnote
+%  numbering. As a precaution, whenever there is a footnote on a
+%  page where \mc{} had to leave a remainder for the following
+%  page this warning appears. Check the footnote numbering on this
+%  page. If it turns out that it is wrong, you have to manually break
+%  the page using |\newpage| or |\pagebreak[..]|.
+%
+% \item[] {\hspace*{-\labelsep}\tt Floats and marginpars not allowed
+%  inside `multicols' environment!}
+%
+%  This message appears if you try to use the |\marginpar| command or
+%  an unstarred version of the {\sf figure} or {\sf table} environment.
+%  Such floats will disappear!
+%
+% \item[] {\hspace*{-\labelsep}\tt Very deep columns!
+%          Grid alignment might be broken}
+%
+% This message can only appear if the option \texttt{grid} was
+%    chosen. In that case it will show up if a column has a very large
+%    depth so that \mc{} is unable to back up to its baseline. This
+%    is only relevant if one tries to produce a document where all
+%    text lines are aligned at an invisible grid, something that
+%    requires careful adjustment of many parameters and macros, e.g.,
+%    heading definitions.
+%
+% \end{description}
+%
+%
+% \subsection{Tracing the output}
+%
+% To understand the reasoning behind the decisions \TeX{} makes when
+% processing a \mc{} environment, a tracing mechanism is provided.
+% If you set the counter `\texttt{tracingmulticols}'
+% to a positive \meta{number} you then
+% will get some tracing information on the terminal and in the
+% transcript file:
+% \begin{description}
+% \item[$\meta{number}=1$.]  \TeX{} will now tell you, whenever it
+%    enters or leaves a \mc{} environment, the number of columns it
+%    is working on and its decision about starting a new page before
+%    or after the environment.
+% \item[$\meta{number}=2$.]
+%    In this case you also get information from the balancing routine:
+%    the heights tried for the left and right-most columns,
+%    information about shrinking if the |\raggedcolumns|
+%    declaration is in force and the value of the `{\sf unbalance}'
+%    counter if positive.
+% \item[$\meta{number}= 3$.]  Setting \meta{number}\pagebreak[2] to
+%    this value will additionally trace the mark handling
+%    algorithm. It will show what marks are found, what marks are
+%    considered, etc. To fully understand this information you will
+%    probably have to read carefully trough the implementation.
+% \item[$\meta{number}\geq 4$.]  Setting \meta{number}\pagebreak[2] to
+%    such a high value will additionally place an |\hrule| into your
+%    output, separating the part of text which had already been
+%    considered on the previous page from the rest.  Clearly this
+%    setting should {\em not\/} be used for the final output.  It will
+%    also activate even more debugging code for mark handling.
+% \end{description}
+%
+%
+% \end{multicols}
+%
+% \begin{multicols}{3}[\section{Prefaces to older versions}
+%                      \subsection{Preface to version 1.4}]
+%   \hbadness=10000
+%   Beside fixing some bugs as mentioned in the {\sf multicol.bug} file
+%   this new release enhances the \mc{} environment by allowing for
+%   balancing in arbitrary contexts. It is now, for example, possible
+%   to balance text within a \mc{} or a {\sf minipage} as shown in
+%   \ref{tab:newcmds} where a {\sf multicols} environment within a
+%   {\sf quote} environment was used. It is now even possible to nest
+%   \mc{} environments.
+%
+%   The only restriction to such inner \mc{} environments (nested, or
+%   within \TeX's internal vertical mode) is that such variants will
+%   produce a box with the balanced material in it, so that they can
+%   not be broken across pages or columns.
+%
+%   Additionally I rewrote the algorithm for balancing so that it will
+%   now produce slightly better results.
+%
+%   I updated the source documentation but like to apologize in
+%   advance for some `left over' parts that slipped through the
+%   revision.
+%
+%   A note to people who like to improve the balancing algorithm of
+%   \mc{}: The balancing routine is now placed into a single macro
+%   which is called |\balance@columns|. This means that one can easily
+%   try different balancing routines by rewriting this macro. The
+%   interface for it is explained in table \ref{tab:balance}. There are
+%   several improvements possible, one can think of integrating the
+%   |\badness| function of \TeX3, define a faster algorithm for finding
+%   the right column height, etc. If somebody thinks he/she has an
+%   enhancement I would be pleased to learn about it. But please obey
+%   the copyright notice and don't change {\sf multicol.dtx} directly!
+%   \begin{table*}
+%    \begin{quote}
+%    \begin{multicols}{2}
+%     \raggedcolumns
+%     The macro |\balance@columns| that contains the code for balancing
+%     gathered material is a macro without parameters. It assumes that
+%     the material for balancing is stored in the box |\mult@box| which
+%     is a |\vbox|. It also ``knows'' about all parameters set up by the
+%     \mc{} environment, like |\col@number|, etc. It can also assume
+%     that |\@colroom| is the still available space on the current page.
+%
+%     When it finishes it must return the individual columns in boxes
+%     suitable for further processing with |\page@sofar|. This means
+%     that the left column should be stored in box register
+%     |\mult@gfirstbox|, the next
+%     in register |\mult@firstbox|${}+2$, \ldots,
+%     only the last one as an exception in
+%     register |\mult@grightbox|. Furthermore it has to set up
+%     the two macros
+%     |\kept@firstmark| and |\kept@botmark| to hold the values for the
+%     first and bottom mark as found in the individual columns. There
+%     are some helper functions defined in section \ref{sec:v14} which
+%     may be used for this. Getting the marks right ``by hand'' is
+%     non-trivial and it may pay off to first take a look at the
+%     documentation and implementation of |\balance@columns| below
+%     before trying anew.
+%    \end{multicols}
+%    \end{quote}
+%    \vspace*{-3ex}
+%    \vspace*{-0ex}
+%    \caption{Interface description for \cs{balance@columns}}
+%    \label{tab:balance}
+%   \end{table*}
+% \end{multicols}
+%
+% \begin{multicols}{3}[\subsection{Preface to version 1.2}]
+%   \hbadness=10000
+%   After the article about the \mc{} environment was published in
+%   \TUB\ 10\#3, I got numerous requests for these macros. However, I
+%   also got a changed version of my style file, together with a
+%   letter asking me if I would include the changes to get better
+%   paragraphing results in the case of narrow lines. The main
+%   differences to my original style option were additional parameters
+%   (like |\multicoladjdemerits| to be used for |\adjdemerits|, etc.)
+%   which would influence the line breaking algorithm.
+%
+%   But actually resetting such parameters to zero or even worse to a
+%   negative value won't give better line breaks inside the \mc{}
+%   environment. \TeX{}s line breaking algorithm will only look at
+%   those possible line breaks which can be reached without a badness
+%   higher than the current value of |\tolerance| (or |\pretolerance|
+%   in the first pass). If this isn't possible, then, as a last
+%   resort, \TeX{} will produce overfull boxes. All those (and only
+%   those) possible break points will be considered and finally the
+%   sequence which results in the fewest demerits will be chosen. This
+%   means that a value of $-1000$ for |\adjdemerits| instructs \TeX{}
+%   to prefer visibly incompatible lines instead of producing better
+%   line breaks.
+%
+%   However, with \TeX{} 3.0 it is possible to get decent line breaks
+%   even in small columns by setting |\emergencystretch| to an
+%   appropriate value. I implemented a version which is capable of
+%   running both in the old and the new \TeX{} (actually it will
+%   simply ignore the new feature if it is not available). The
+%   calculation of |\emergencystretch| is probably incorrect. I
+%   made a few tests but of course one has to have much more experience
+%   with the new possibilities to achieve the maximum quality.
+%
+%   Version 1.1a had a nice `feature': the penalty for using the
+%   forbidden floats was their ultimate removal from \LaTeX{}s
+%   |\@freelist| so that after a few |\marginpar|s inside the \mc{}
+%   environment floats where disabled forever.  (Thanks to Chris
+%   Rowley for pointing this out.) I removed this misbehaviour and at
+%   the same time decided to allow at least floats spanning all
+%   columns, e.g., generated by the |figure*| environment.  You can
+%   see the new functionality in table~\ref{tab:newcmds} which was
+%   inserted at this very point.
+%   \begin{table*}
+%    \small
+%    \setlength{\multicolsep}{0pt}
+%    \begin{quote}
+%     \begin{multicols}{2}
+%      |\setemergencystretch|: This is a hook for people who like
+%      to play around. It is supposed to set the
+%      |\emergencystretch| \meta{dimen} register provided in the
+%      new \TeX{} 3.0. The first argument is the number of columns and
+%      the second one is the current |\hsize|. At the moment the
+%      default definition is $4\mbox{\tt pt} \times |#1|$, i.e.\ the
+%      |\hsize| isn't used at all. But maybe there are better
+%      formulae.
+%
+%      \setlength{\emergencystretch}{20pt} |\set@floatcmds|: This is
+%      the hook for the experts who like to implement a full float
+%      mechanism for the \mc{} environment. The |@| in the name
+%      should signal that this might not be easy.
+%    \end{multicols}
+%   \end{quote}
+%   \vspace*{-1ex}
+%   \vspace*{-0ex}
+%   \caption[]{The new commands of {\sf multicol.sty} version 1.2.
+%            Both commands might be removed if good solutions to these
+%            open problems are found. I hope that these commands will
+%            prevent that nearly identical style files derived from
+%            this one are floating around.}
+%   \label{tab:newcmds}
+%   \end{table*}
+%   However single column floats are still forbidden and I don't think
+%   I will have time to tackle this problem in the near future. As an
+%   advice for all who want to try: wait for \TeX{} 3.0. It has a few
+%   features which will make life much easier in multi-column
+%   surroundings. Nevertheless we are working here at the edge of
+%   \TeX{}s capabilities, really perfect solutions would need a
+%   different approach than it was done in \TeX{}s page builder.
+%
+%   The text below is nearly unchanged, I only added documentation at
+%   places where new code was added.
+% \end{multicols}
+%
+% \changes{v1.5l}{1996/01/13}{Try hard to explain unresolved reference
+%                that happens if \cs{OnlyDescription} is used}
+%
+% \StopEventually{\PrintIndex \PrintChanges
+%   \ifx\Finale\relax
+%    \typeout{**********************************}
+%    \typeout{* Info: Typesetting this document with
+%                     \protect\OnlyDescription\space will}
+%    \typeout{* Info: result in one unresolved
+%                     reference to `sec:v14'.}
+%    \typeout{* Info: --- tough, it's just not there in this case!}
+%    \typeout{**********************************}
+%   \fi
+%  }
+%
+%
+% \begin{multicols}{2}[\section{The Implementation}
+%         We are now switching to two-column output to show the
+%         abilities of this environment (and bad layout decisions).
+%      \subsection{The documentation driver file}
+%         ][10\baselineskip]
+%
+%   \hbadness=10000
+%
+%
+% The next bit of code contains the documentation driver file for
+% \TeX{}, i.e., the file that will produce the documentation you are
+% currently reading. It will be extracted from this file by the {\tt
+% docstrip} program.
+% Since this is the first code in this file one can produce the
+% documentation
+% simply by running \LaTeX{} on the \texttt{.dtx} file.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+%    \end{macrocode}
+%    We use the \texttt{balancingshow} option when loading \mc{} so
+%    that full tracing is produced. This has to be done before the
+%    \texttt{doc} package is loaded, since \texttt{doc} otherwise
+%    requires \mc{} without any options.
+%    \begin{macrocode}
+\usepackage{multicol}[1999/05/25]
+\usepackage{doc}
+%    \end{macrocode}
+%    First we set up the page layout suitable for
+%    this article.
+%    \begin{macrocode}
+\setlength{\textwidth}{39pc}
+\setlength{\textheight}{54pc}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0pt plus 1pt}
+\setlength{\oddsidemargin}{0pc}
+\setlength{\marginparwidth}{0pc}
+\setlength{\topmargin}{-2.5pc}
+\setlength{\headsep}{20pt}
+\setlength{\columnsep}{1.5pc}
+%    \end{macrocode}
+%    We want a rule between columns.
+%    \begin{macrocode}
+\setlength\columnseprule{.4pt}
+%    \end{macrocode}
+%    We also want to ensure that a new \mc{} environment finds enough
+%    space at the bottom of the page.
+%    \begin{macrocode}
+\setlength\premulticols{6\baselineskip}
+%    \end{macrocode}
+%    When balancing columns we disregard solutions that
+%    are too bad. Also, if the last column is too bad
+%    we typeset it without stretch.
+%    \begin{macrocode}
+\setcounter{columnbadness}{7000}
+\setcounter{finalcolumnbadness}{7000}
+%    \end{macrocode}
+%    The index is supposed to come out in four columns.
+%    And we don't show macro names in the margin.
+%    \begin{macrocode}
+\setcounter{IndexColumns}{4}
+\let\DescribeMacro\SpecialUsageIndex
+\let\DescribeEnv\SpecialEnvIndex
+\renewcommand\PrintMacroName[1]{}
+\CodelineIndex
+%\DisableCrossrefs           % Partial index
+\RecordChanges               % Change log
+%    \end{macrocode}
+%    Line numbers are very small for this article.
+%    \begin{macrocode}
+\renewcommand{\theCodelineNo}
+  {\scriptsize\rm\arabic{CodelineNo}}
+\settowidth\MacroIndent{\scriptsize\rm 00\ }
+
+\begin{document}
+  \typeout
+   {****************************************
+ ^^J* Expect some Under- and overfull boxes.
+ ^^J****************************************}
+   \DocInput{multicol.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+% \end{multicols}
+%
+% \begin{multicols}{2}[\subsection{Identification and
+%                      option processing}]
+%
+%
+% We start by identifying the package. Since it makes use of features
+% only available in \LaTeXe{} we ensure that this format is available.
+% (Now this is done earlier in the file.)
+%    \begin{macrocode}
+%<*package>
+% \NeedsTeXFormat{LaTeX2e}
+% \ProvidesPackage{multicol}[..../../..
+%    v... multicolumn formatting]
+%    \end{macrocode}
+%
+%^^A \subsection{Option processing}
+%
+%    Next we declare options supported by \mc{}. Two-column mode
+%    and \mc{} do not work together so we warn about possible
+%    problems. However, since you can revert to |\onecolumn|
+%    in which case \mc{} does work, we don't make this an error.
+%    \begin{macrocode}
+\DeclareOption{twocolumn}
+   {\PackageWarning{multicol}{May not work
+             with the twocolumn option}}
+%    \end{macrocode}
+%    Tracing is done using a counter. However
+%    it is also possible to invoke the tracing
+%    using the options declared below.
+%    \begin{macrocode}
+\newcount\c@tracingmulticols
+\DeclareOption{errorshow}
+    {\c@tracingmulticols\z@}
+\DeclareOption{infoshow}
+    {\c@tracingmulticols\@ne}
+\DeclareOption{balancingshow}
+    {\c@tracingmulticols\tw@}
+\DeclareOption{markshow}
+    {\c@tracingmulticols\thr@@}
+\DeclareOption{debugshow}
+    {\c@tracingmulticols5\relax}
+%    \end{macrocode}
+%    The next option is intended for typesetting on a |\baselineskip|
+%    grid. Right now it doesn't do anything other than warning if it
+%    thinks that the grid got lost.
+% \changes{v1.6a}{2003/03/15}{New option grid}
+%    \begin{macrocode}
+\let\mc@gridwarn\maxdimen
+\DeclareOption{grid}{\def\mc@gridwarn{\maxdepth}}
+%    \end{macrocode}
+%
+% \changes{v1.8e}{2014/04/23}{Support \cs{docolaction}}
+%    Next option enables the |\docolaction| command. As this changes
+%   the \texttt{.aux} file content this is not automatically enabled.
+%    \begin{macrocode}
+\DeclareOption{colaction}{%
+  \def\mc@col@status@write{%
+         \protected@write\@auxout{}%
+              {\string\mc@col@status
+              {\ifmc@firstcol 1\else 2\fi}}%
+         \mc@firstcolfalse}%
+  \def\mc@lastcol@status@write{%
+         \protected@write\@auxout{}%
+              {\string\mc@col@status{3}}}%
+}
+\let\mc@col@status@write\relax
+\let\mc@lastcol@status@write\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+%
+% \end{multicols}
+%
+% \begin{multicols}{2}[\subsection{Starting and
+%                      Ending the \mc{} Environment}]
+%
+% \begin{macro}{\multicols}
+%    As mentioned before, the \mc{} environment has one mandatory
+%    argument (the number of columns) and up to two optional ones.  We
+%    start by reading the number of columns into the |\col@number|
+%    register.
+%    \begin{macrocode}
+\def\multicols#1{\col@number#1\relax
+%    \end{macrocode}
+%    If the user forgot the argument, \TeX{} will complain about a
+%    missing number at this point. The error recovery mechanism will
+%    then use zero, which isn't a good choice in this case. So we
+%    should now test whether everything is okay. The minimum is two
+%    columns at the moment.
+% \changes{v1.3b}{1990/10/09}{Minimum of two columns}
+%    \begin{macrocode}
+  \ifnum\col@number<\tw@
+     \PackageWarning{multicol}%
+      {Using `\number\col@number'
+       columns doesn't seem a good idea.^^J
+       I therefore use two columns instead}%
+     \col@number\tw@ \fi
+%    \end{macrocode}
+%    We have only enough box registers for ten columns, so we need to
+%    check that the user hasn't asked for more.
+% \changes{v1.4k}{1992/06/27}{Maximum of 5 columns (temp)}
+% \changes{v1.5a}{1992/11/04}{Allow 10 columns again}
+%    \begin{macrocode}
+  \ifnum\col@number>10
+     \PackageError{multicol}%
+      {Too many columns}%
+      {Current implementation doesn't
+       support more than 10 columns.%
+       \MessageBreak
+       I therefore use 10 columns instead}%
+     \col@number10 \fi
+%    \end{macrocode}
+%    Within the environment we need a special version of the
+%    kernel |\@footnotetext| command since the original sets the
+%    the |\hsize| to |\columnwidth| which is not correct in the
+%    multicol environment. Here |\columnwidth| refers to the width of
+%    the individual column and the footnote should be in |\textwidth|.
+%    Since |\@footnotetext| has a different definition inside a
+%    minipage environment we do not redefine it directly. Instead we
+%    locally set |\columnwidth| to |\textwidth| and call the original
+%    (current) definition stored in |\orig@footnotetext|.
+% \changes{v1.5p}{1997/12/14}{Redefinition of \cs{@footnotetext}
+%                           only within env pr/2689.}
+% \changes{v1.5r}{1998/08/17}{Use \cs{@footnotetext} but with
+%                             local change to \cs{columnwidth}.}
+% \changes{v1.5w}{1999/10/21}{Make \cs{@footnotetext} long to allow
+%                             multi-paragraph footnotes.}
+%    If the \mc{} environment is nested inside another \mc{}
+%    environment then the redefinition has already happened. So be
+%    better test for this situation. Otherwise, we will get a \TeX{}
+%    stack overflow as this would generate a self-referencing definition.
+% \changes{v1.6e}{2004/02/14}{Avoid self-referencing definition of
+%    \cs{@footnotetext} (pr/3618)}.
+%    \begin{macrocode}
+     \ifx\@footnotetext\mult@footnotetext\else
+       \let\orig@footnotetext\@footnotetext
+       \let\@footnotetext\mult@footnotetext
+     \fi
+%    \end{macrocode}
+%    Now we can safely look for the optional arguments.
+%    \begin{macrocode}
+  \@ifnextchar[\mult@cols{\mult@cols[]}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\mult@footnotetext}
+%
+%    \begin{macrocode}
+\long\def\mult@footnotetext#1{\begingroup
+         \columnwidth\textwidth
+         \orig@footnotetext{#1}\endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\mult@cols}
+%    The |\mult@cols| macro grabs the first optional argument
+%    (if any) and looks for the second one.
+%    \begin{macrocode}
+\def\mult@cols[#1]{\@ifnextchar[%
+%    \end{macrocode}
+%    This argument should be a \meta{dimen} denoting the minimum free
+%    space needed on the current page to start the environment. If the
+%    user didn't supply one, we use |\premulticols| as a
+%    default.
+%    \begin{macrocode}
+  {\mult@@cols{#1}}%
+  {\mult@@cols{#1}[\premulticols]}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\mult@@cols}
+%    After removing all arguments from the input we are able
+%    to start with |\mult@@cols|.
+%    \begin{macrocode}
+\def\mult@@cols#1[#2]{%
+%    \end{macrocode}
+%    First thing we do is to decide whether or not this is an
+%    unbounded multicols environment, i.e. one that may split across
+%    pages, or one that has to be typeset into a box. If we are in
+%    \TeX's ``inner'' mode (e.g., inside a box already) then we have a
+%    boxed version of multicols therefore we set the |@boxedmulticols|
+%    switch to true.  The \mc{} should start in vertical mode. If we
+%    are not already there we now force it with |\par| since otherwise
+%    the test for ``inner'' mode wouldn't show if we are in a box.
+% \changes{v1.4f}{1992/04/28}{\cs{par} added to allow for correct inner test}
+%    \begin{macrocode}
+  \par
+  \ifinner \@boxedmulticolstrue
+%    \end{macrocode}
+%    Otherwise we check |\doublecol@number|. This counter is zero
+%    outside a multicols environment but positive inside (this happens
+%    a little later on). In the second case we need to process the
+%    current multicols also in ``boxed mode'' and so change the switch
+%    accordingly.
+%    \begin{macrocode}
+  \else
+    \ifnum \doublecol@number>\z@
+       \@boxedmulticolstrue
+    \fi
+  \fi
+%    \end{macrocode}
+%    Then we look to see if statistics are requested:
+%    \begin{macrocode}
+  \mult@info\z@
+      {Starting environment with
+       \the\col@number\space columns%
+%    \end{macrocode}
+%    In boxed mode we add some more info.
+% \changes{v1.4f}{1992/04/28}{\cs{on@line} added to tracing info}
+%    \begin{macrocode}
+        \if@boxedmulticols\MessageBreak
+           (boxed mode)\fi
+      }%
+%    \end{macrocode}
+%    Then we measure the current page to see whether a useful portion
+%    of the multicolumn environment can be typeset.  This routine
+%    might start a new page.
+% \changes{v1.4a}{1992/02/14}{Forgotten braces added}
+%    \begin{macrocode}
+   \enough@room{#2}%
+%    \end{macrocode}
+%    Now we output the first argument and produce vertical space
+%    above the columns. (Note that this argument corresponds to the
+%    first optional argument of the {\sf multicols} environment.)
+%    For many releases this argument was typeset in a group to get
+%    a similar effect as |\twocolumn[..]| where the argument is
+%    also implicitly surrounded by braces. However, this conflicts
+%    with local changes done by things like sectioning commands (which
+%    account for the majority of commands used in that argument)
+%    messing up vertical spacing etc.\ later in the document so that
+%    from version v1.5q on this argument is again typeset at the outer
+%    level.
+% \changes{v1.4e}{1992/03/16}{Typeset optional arg inside group}
+% \changes{v1.5q}{1998/01/19}{And removed the group again six years later}
+%    \begin{macrocode}
+   #1\par\addvspace\multicolsep
+%    \end{macrocode}
+%    When the last line of a paragraph had a positive depth then this
+%    depth normally taken into account by the baselineskip calculation
+%    for the next line. However, the columns produced by a following
+%    \texttt{multicol} are rigid and thus the distance from the
+%    baseline of a previous text line to the first line in a
+%    \texttt{multicol} would differ depending on the depth of the
+%    previous line. To account for this we add a negative space unless
+%    the depth is \texttt{-1000pt} which signals something special to
+%    \TeX and is not supposed to be a real depth.
+% \changes{v1.5z1}{2003/02/17}{Add a kern to cancel potential depth of
+%    previous line}
+%    \begin{macrocode}
+   \ifdim \prevdepth = -\@m\p@
+   \else
+%    \end{macrocode}
+%    The actual generation of this corrective space is a little bit
+%    more complicated as it doesn't make sense to always back up to
+%    the previous baseline (in case an object with a very large depth
+%    was placed there, e.g., a centered tabular). So we only back up
+%    to the extend that we are within the |\baselineskip| grid. We
+%    know that the box produced by \mc{} has |\topskip| at its top so
+%    that also needs to be taken into account.
+% \changes{v1.6a}{2003/03/15}{Adjust spacing}
+%    \begin{macrocode}
+     \@tempcnta\prevdepth
+     \@tempcntb\baselineskip
+     \divide\@tempcnta\@tempcntb
+     \advance\@tempcnta\@ne
+     \dimen@\prevdepth
+     \advance\dimen@ -\@tempcnta\baselineskip
+     \advance\dimen@ \topskip
+     \kern-\dimen@
+   \fi
+%    \end{macrocode}
+%    We start a new grouping level to hide all subsequent changes
+%    (done in |\prepare@multicols| for example).
+%    \begin{macrocode}
+   \begingroup
+     \prepare@multicols
+%    \end{macrocode}
+%    If we are in boxed mode we now open a box to typeset all material
+%    from the multicols body into it, otherwise we simply go ahead.
+% \changes{v1.4g}{1992/05/07}{\cs{global} was probably wrong but at least
+%                           unnecessary}
+%    \begin{macrocode}
+     \if@boxedmulticols
+       \setbox\mult@box\vbox\bgroup
+%    \end{macrocode}
+%
+% \changes{v1.8c}{2013/11/03}{Add \cs{color@setgroup} to prevent color leak}
+%    \begin{macrocode}
+                            \color@setgroup
+%    \end{macrocode}
+% \changes{v1.5?}{1994/?/?}{Penalty moved to later point}
+%    We may have to reset some parameters at this point,
+%    perhaps |\@parboxrestore|
+%    would be the right action but I leave it for the moment.
+% \changes{v1.4l}{1992/08/17}{\cs{@totalleftmargin} now in
+%                             \cs{prepare@multicols}}
+%    \begin{macrocode}
+     \fi
+%    \end{macrocode}
+%    We finish by suppressing initial spaces.
+%    \begin{macrocode}
+     \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\if@boxedmulticols}
+%    Here is the switch and the box for ``boxed'' multicols code.
+%    \begin{macrocode}
+\newif\if@boxedmulticols
+\@boxedmulticolsfalse
+\newbox\mult@box
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\enough@room}
+% \changes{v1.0c}{1989/05/12}{Penalty 0 added to empty the contribution
+%                           list.}
+%    The |\enough@room| macro used
+%    above isn't perfect but works reasonably well in this context. We
+%    measure the free space on the current page by subtracting
+%    |\pagetotal| from |\pagegoal|. This isn't entirely
+%    correct since it doesn't take the `shrinking' (i.e.\
+%    |\pageshrink|) into account.  The `recent contribution list'
+%    might be nonempty so we start with |\par| and an explicit
+%    |\penalty|.\footnote{See the documentation of
+%    \cs{endmulticols} for further details.}
+%    Actually, we use |\addpenalty| to ensure that a following
+%    |\addvspace| will `see' the vertical space that might be
+%    present.
+%    The use of |\addpenalty| will have the effect that all items from
+%    the recent contributions will be moved to the main vertical list
+%    and the |\pagetotal| value will be updated correctly. However,
+%    the penalty will be placed in front of any dangling glue item
+%    with the result that the main vertical list may already be
+%    overfull even if \TeX{} is not invoking the output routine.
+% \changes{v1.3b}{1990/10/09}{Do \cs{penalty} with \cs{addpenalty}}
+% \changes{v1.4e}{1992/03/16}{But ignore \cs{@nobreak} in \cs{addpenalty}}
+%    \begin{macrocode}
+\def\enough@room#1{%
+%    \end{macrocode}
+%    Measuring makes only sense when we are not in ``boxed mode'' so
+%    the routine does nothing if the switch is true.
+%    \begin{macrocode}
+   \if@boxedmulticols\else
+   \par
+%    \end{macrocode}
+%    \label{mac:enoughroom}
+%    To empty the contribution list the first release contained a
+%    penalty zero but this had the result that |\addvspace| couldn't
+%    detect preceding glue. So this was changed to |\addpenalty|. But
+%    this turned out to be not enough as |\addpenalty| will not add a
+%    penalty when |@nobreak| is true. Therefore we force this switch
+%    locally to false. As a result there may be a break between
+%    preceding text and the start of a multicols environment, but this
+%    seems acceptable since there is the optional argument for exactly
+%    this reason.
+%    \begin{macrocode}
+   \bgroup\@nobreakfalse\addpenalty\z@\egroup
+   \page@free \pagegoal
+   \advance \page@free -\pagetotal
+%    \end{macrocode}
+%    To be able to output the value we need to assign it to a register
+%    first since it might be a register (default) in which case we
+%    need to use |\the| or it might be a plain value in which case
+%    |\the| would be wrong.
+% \changes{v1.5e}{1994/05/26}{Assign arg to skip register to be able
+%                             to output value}
+%    \begin{macrocode}
+     \@tempskipa#1\relax
+%    \end{macrocode}
+%    Now we test whether tracing information is required:
+%    \begin{macrocode}
+   \mult@info\z@
+       {Current page:\MessageBreak
+        height=%
+        \the\pagegoal: used \the\pagetotal
+        \space -> free=\the\page@free
+        \MessageBreak
+        needed \the\@tempskipa
+              \space(for #1)}%
+%    \end{macrocode}
+%    Our last action is to force a page break if there isn't enough
+%    room left.
+%    \begin{macrocode}
+   \ifdim \page@free <#1\newpage \fi
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\prepare@multicols}
+%    When preparing for multicolumn output several things must
+%    be done.
+%    \begin{macrocode}
+\def\prepare@multicols{%
+%    \end{macrocode}
+%    We start saving the current |\@totalleftmargin| and then
+%    resetting the |\parshape| in case we are inside some list
+%    environment. The correct indentation for the \mc{} environment in
+%    such a case will be produced by moving the result to the right by
+%    |\multicol@leftmargin| later on. If we would use the value of of
+%    |\@totalleftmargin| directly then lists inside the \mc{}
+%    environment could cause a shift of the output.
+% \changes{v1.4l}{1992/08/17}{saved \cs{@totalleftmargin}}
+%    \begin{macrocode}
+  \multicol@leftmargin\@totalleftmargin
+  \@totalleftmargin\z@
+  \parshape\z@
+%    \end{macrocode}
+%    We also set the register |\doublecol@number| for later use.  This
+%    register should contain $2\times |\col@number|$.  This is also an
+%    indicator that we are within a \mc{} environment as mentioned
+%    above.
+% \changes{v1.5a}{1992/11/04}{Add offset to \cs{doublecolnumber}}
+%    \begin{macrocode}
+  \doublecol@number\col@number
+  \multiply\doublecol@number\tw@
+  \advance\doublecol@number\mult@rightbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \if@boxedmulticols
+    \let\l@kept@firstmark\kept@firstmark
+    \let\l@kept@botmark\kept@botmark
+    \global\let\kept@firstmark\@empty
+    \global\let\kept@botmark\@empty
+  \else
+%    \end{macrocode}
+%    We add an empty box to the main vertical list to ensure that we
+%    catch any insertions (held over or inserted at the top of the
+%    page). Otherwise it might happen that the |\eject| is discarded
+%    without calling the output routine. Inside the output routine we
+%    remove this box again.  Again this code applies only if we are on
+%    the main vertical list and not within a box.
+%    However, it is not enough to turn off interline spacing, we also
+%    have to clear |\topskip| before adding this box, since |\topskip|
+%    is always inserted before the first box on a page which would
+%    leave us with an extra space of |\topskip| if \mc{} start on a
+%    fresh sheet.
+% \changes{v1.3c}{1991/03/03}{\cs{null} inserted and removed in output}
+% \changes{v1.4a}{1992/02/11}{Conditional code for boxed mode added.}
+% \changes{v1.4o}{1992/11/22}{\cs{topskip} locally zeroed.}
+%    \begin{macrocode}
+    \nointerlineskip {\topskip\z@\null}%
+    \output{%
+      \global\setbox\partial@page\vbox
+        {%
+%    \end{macrocode}
+%    Now we have to make sure that we catch one special situation which
+%    may result in loss of text! If the user has a huge amount of
+%    vertical material within the first optional argument that is larger
+%    then |\premulticols| and we are near the bottom of the page then it
+%    can happen that not the |\eject| is triggering this special output
+%    routine but rather the overfull main vertical list.  In that case
+%    we get another breakpoint through the |\eject| penalty. As a result
+%    this special output routine would be called twice and the contents
+%    of |\partial@page|, i.e.\ the material before the \mc{}
+%    environment gets lost. There are several solutions to avoid this
+%    problem, but for now we will simply detect this and inform the user
+%    that he/she has to enlarge the |\premulticols| by using a suitable
+%    value for the second argument.
+% \changes{v1.4a}{1992/02/11}{Checking for text losses.}
+%    \begin{macrocode}
+%<*check>
+         \ifvoid\partial@page\else
+           \PackageError{multicol}%
+            {Error saving partial page}%
+            {The part of the page before
+             the multicols environment was
+             nearly full with^^Jthe result
+             that starting the environment
+             will produce an overfull
+             page.  Some^^Jtext may be lost!
+             Please increase \premulticols
+             either generally or for this%
+             ^^Jenvironment by specifying a
+             suitable value in the second
+             optional argument to^^Jthe
+             multicols environment.}
+           \unvbox\partial@page
+           \box\last@line
+         \fi
+%</check>
+         \unvbox\@cclv
+         \global\setbox\last@line\lastbox
+        }%
+%    \end{macrocode}
+%    Finally we need to record the marks that are present within the
+%    |\partial@page| so that we can construct correct first and bottom
+%    marks later on. This is done by the following code.
+% \changes{v1.4a}{1992/02/14}{kept marks initiated}
+%    \begin{macrocode}
+           \prep@keptmarks
+%    \end{macrocode}
+%    Finally we have to initialize |\kept@topmark| which should
+%    ideally be initialized with the mark that is current on ``top''
+%    of this page. Unfortunately we can't use |\topmark| because this
+%    register will not always contain what its name promises because
+%    \LaTeX{} sometimes calls the output routine for float
+%    management.\footnote{During such a call the \cs{botmark}
+%    gets globally copied to \cs{topmark} by the \TeX{}
+%    program.} Therefore we use the second best solution by
+%    initializing it with |\firstmark|. In fact, for our purpose this
+%    doesn't matter as we use |\kept@topmark| only to initialize
+%    |\firstmark| and |\botmark| of a following page if we don't find
+%    any marks on the current one.
+% \changes{v1.4i}{1992/06/18}{\cs{kept@topmark} initialized.}
+%    \begin{macrocode}
+           \global\let\kept@topmark\firstmark
+          }\eject
+%    \end{macrocode}
+%    The next thing to do is to assign a new value to |\vsize|.
+%    \LaTeX{} maintains the free room on the page (i.e.\ the page
+%    height without the space for already contributed floats) in the
+%    register |\@colroom|. We must subtract the height of
+%    |\partial@page| to put the actual free room into this
+%    variable.
+%    \begin{macrocode}
+    \advance\@colroom-\ht\partial@page
+%    \end{macrocode}
+%    Then we have to calculate the |\vsize| value to use during column
+%    assembly. |\set@mult@vsize| takes an argument which allows to
+%    make the setting local (|\relax|) or global (|\global|). The
+%    latter variant is used inside the output routine below. At this
+%    point here we have to make a local change to |\vsize| because we
+%    want to get the original value for |\vsize| restored in case
+%    this \mc{} environment ends on the same page where it has started.
+% \changes{v1.4p}{1992/11/26}{Use different \cs{vsize} setting}
+% \changes{v1.4p}{1992/11/26}{Code moved to \cs{set@mult@vsize}}
+%    \begin{macrocode}
+    \set@mult@vsize\relax
+%    \end{macrocode}
+%    Now we switch to a new |\output| routine which will be used
+%    to put the gathered column material together.
+%    \begin{macrocode}
+    \output{\multi@column@out}%
+%    \end{macrocode}
+%    Finally we handle the footnote insertions. We have to multiply
+%    the magnification factor and the extra skip by the number of
+%    columns since each footnote reduces the space for every column
+%    (remember that we have pagewide footnotes).  If, on the other
+%    hand, footnotes are typeset at the very end of the document, our
+%    scheme still works since |\count\footins| is zero then, so it
+%    will not change.
+%    To allow even further customization the setting of the |\footins|
+%    parameters is done in a separate macro.
+% \changes{v1.5?}{1994/?/?}{Use \cs{init@mult@footins}}
+%    \begin{macrocode}
+    \init@mult@footins
+%    \end{macrocode}
+%    For the same reason (pagewide footnotes), the \meta{dimen}
+%    register controlling the maximum space used for footnotes isn't
+%    changed.  Having done this, we must reinsert all the footnotes
+%    which are already present (i.e.\ those encountered when the
+%    material saved in |\partial@page| was first processed). This
+%    will reduce the free space (i.e.\ |\pagetotal|) by the
+%    appropriate amount since we have changed the magnification
+%    factor, etc.\ above.
+%    \begin{macrocode}
+    \reinsert@footnotes
+%    \end{macrocode}
+%    All the code above was only necessary for the unrestricted \mc{}
+%    version, i.e.\ the one that allows page breaks. If we are within
+%    a box there is no point in setting up special output routines or
+%    |\vsize|, etc.
+%    \begin{macrocode}
+  \fi
+%    \end{macrocode}
+%    But now we are coming to code that is necessary in all cases.  We
+%    assign new values to |\vbadness|, |\hbadness| and |\tolerance|
+%    since it's rather hard for \TeX{} to produce `good' paragraphs
+%    within narrow columns.
+% \changes{v1.2a}{1990/02/05}{\cs{vbadness} 10001 now.}
+%    \begin{macrocode}
+  \vbadness\@Mi \hbadness5000
+  \tolerance\multicoltolerance
+%    \end{macrocode}
+%    Since nearly always the first pass will fail we ignore it
+%    completely telling \TeX{} to hyphenate directly.  In fact, we now
+%    use another register to keep the value for the multicol
+%    pre-tolerance, so that a designer may allow to use
+%    |\pretolerance|.
+% \changes{v1.2a}{1990/02/05}{\cs{pretolerance} -1 because it nearly never
+%                            succeeds.}
+% \changes{v1.4e}{1992/03/20}{Using}
+%    \begin{macrocode}
+  \pretolerance\multicolpretolerance
+%    \end{macrocode}
+%    For use with the new \TeX{} we set |\emergencystretch| to
+%    $|\col@number| \times 4pt$. However this is only a guess
+%    so at the moment this is done in a macro
+%    |\setemergencystretch| which gets the current |\hsize|
+%    and the number of columns as arguments. Therefore users are able
+%    to figure out their own formula.
+% \changes{v1.2a}{1990/02/05}{\cs{setemergencystretch} added.}
+%    \begin{macrocode}
+  \setemergencystretch\col@number\hsize
+%    \end{macrocode}
+%    Another hook to allow people adding their own extensions without
+%    making a new package is |\set@floatcmds| which handles any
+%    redefinitions of \LaTeX{}s internal float commands to work with
+%    the \mc{} environment. At the moment it is only used to redefine
+%    |\@dblfloat| and |\end@dblfloat|.
+% \changes{v1.2a}{1990/02/05}{\cs{set@floatcmds} added.}
+%    \begin{macrocode}
+  \set@floatcmds
+%    \end{macrocode}
+%    Additionally, we advance |\baselineskip| by
+%    |\multicolbaselineskip| to allow corrections for narrow
+%    columns.
+%    \begin{macrocode}
+  \advance\baselineskip\multicolbaselineskip
+%    \end{macrocode}
+% \changes{v1.0e}{1989/06/21}{\cs{textwidth} changed to \cs{linewidth}.}
+% \changes{v1.0e}{1989/06/21}{So this file will
+%                           work with the `twocolumn' command.}
+%    The |\hsize| of the columns is given by the formula:
+%    \[
+%       { |\linewidth| - (|\col@number|-1)
+%                             \times
+%                             |\columnsep|
+%        \over
+%        |\col@number|}
+%    \]
+%    The formula above has changed from release to release. We now
+%    start with the current value of |\linewidth| so that the column
+%    width is properly calculated when we are inside a minipage or a
+%    list or some other environment.
+%    This will be achieved with:
+%    \begin{macrocode}
+  \hsize\linewidth \advance\hsize\columnsep
+  \advance\hsize-\col@number\columnsep
+  \divide\hsize\col@number
+%    \end{macrocode}
+%    We also set |\linewidth| and |\columnwidth| to |\hsize| In the past
+%    |\columnwidth| was left unchanged. This is inconsistent,
+%    but |\columnwidth| is used only by floats (which
+%    aren't allowed in their current implementation) and by the
+%    |\footnote| macro. Since we want pagewide
+% footnotes\footnote{I'm not sure that I really want pagewide
+%                       footnotes. But balancing of the last page can
+%                       only be achieved with this approach or with a
+%                       multi-path algorithm which is complicated and
+%                       slow. But it's a challenge to everybody to
+%                       prove me wrong!  Another possibility is to
+%                       reimplement a small part of the {\it
+%                       fire\_up\/} procedure in \TeX{} (the program).
+%                       I think that this is the best solution if you
+%                       are interested in complex page makeup, but it
+%                       has the disadvantage that the resulting
+%                       program cannot be called \TeX{} thereafter.}
+%    this simple trick saved us from rewriting the |\footnote|
+%    macros. However, some applications referred to |\columnwidth| as
+%    the ``width of the current column'' to typeset displays
+%    (the \texttt{amsmath} package, for example) and to allow the use
+%    of such applications together with \texttt{multicol} this is now
+%    changed.
+%
+%    Before we change |\linewidth| to the new value we record its old
+%    value in some register called |\full@width|. This value is
+%    used later on when we package all columns together.
+% \changes{v1.0e}{1989/06/21}{Setting of \cs{columnwidth} removed.}
+% \changes{v1.5o}{1997/11/16}{Setting of \cs{columnwidth} added again
+%                           pr/2664.}
+%    \begin{macrocode}
+  \full@width\linewidth
+  \linewidth\hsize
+  \columnwidth\hsize
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\init@mult@footins}
+%    This macro is used to set up the parameters associated
+%    with footnote floats. It can be redefined by applications that
+%    require different amount of spaces when typesetting footnotes.
+%    \begin{macrocode}
+\def\init@mult@footins{%
+    \multiply\count\footins\col@number
+    \multiply\skip \footins\col@number
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\set@mult@vsize}
+%
+%    Since we have to set |\col@umber| columns on one page,
+%    each with a height of |\@colroom|, we have to assign
+%    $
+%      |\vsize|  = |\col@number| \times |\@colroom|
+%    $
+%    in order to collect enough material before entering the
+%    |\output| routine again. In fact we have to add another
+%    $
+%       (|\col@number|-1) \times (|\baselineskip|-|\topskip|)
+%    $
+%    if you think about it.
+% \changes{v1.4p}{1992/11/26}{Macro added.}
+%    \begin{macrocode}
+\def\set@mult@vsize#1{%
+    \vsize\@colroom
+    \@tempdima\baselineskip
+    \advance\@tempdima-\topskip
+    \advance\vsize\@tempdima
+    \vsize\col@number\vsize
+    \advance\vsize-\@tempdima
+%    \end{macrocode}
+%    But this might not be enough since we use |\vsplit| later to
+%    extract the columns from the gathered material. Therefore we add
+%    some `extra lines,' one for each column plus a corrective action
+%    depending on the value of the `\texttt{collectmore}' counter.
+%    The final value is assigned globally if |#1| is |\global| because
+%    we want to use this macro later inside the output routine too.
+% \changes{v1.6c}{2003/04/08}{Collect one line per column more}
+%    \begin{macrocode}
+    \advance\vsize\col@number\baselineskip
+    #1\advance\vsize
+        \c@collectmore\baselineskip}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\multicol@leftmargin}
+%    Here is the dimen register we need for saving away the outer
+%    value of |\@totalleftmargin|.
+%    \begin{macrocode}
+\newdimen\multicol@leftmargin
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\endmulticols}
+%    When the end of the \mc{} environment is sensed we have to
+%    balance the gathered material. Depending on whether or not we are
+%    inside a boxed multicol different things must happen. But first
+%    we end the current paragraph with a |\par| command.
+%    \begin{macrocode}
+\def\endmulticols{\par
+  \if@boxedmulticols
+%    \end{macrocode}
+%    In boxed mode we have to close the box in which we have gathered
+%    all material for the columns. But before we do this we need to
+%    remove any space at the end of the box as we don't want to use
+%    this in balancing. Because of the |\color@endgroup| this can't be
+%    done later in |\balance@columns| as the color command will hide
+%    it. 
+% \changes{v1.8c}{2013/11/03}{Add \cs{color@endgroup} to prevent color leak}
+% \changes{v1.8f}{2014/06/19}{Discard spaces before adding \cs{color@endgroup}}
+%    \begin{macrocode}
+    \remove@discardable@items\color@endgroup\egroup
+%    \end{macrocode}
+%    Now we call |\balance@columns| the routine that balances material
+%    stored in the box |\mult@box|.
+% \changes{v1.5?}{1994/?/?}{Splitting off zero box moved to
+%                           \cs{balance@columns}}
+%    \begin{macrocode}
+    \balance@columns
+%    \end{macrocode}
+%    After balancing the result has to be returned by the command
+%    |\page@sofar|. But before we do this we reinsert any marks found
+%    in box |\mult@box|.
+%    \begin{macrocode}
+    \return@nonemptymark{first}%
+                 \kept@firstmark
+    \return@nonemptymark{bot}%
+                  \kept@botmark
+    \page@sofar
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+    \global\let\kept@firstmark
+               \l@kept@firstmark
+    \global\let\kept@botmark
+            \l@kept@botmark
+%<*marktrace>
+    \mult@info\tw@
+      {Restore kept marks to\MessageBreak
+       first: \meaning\kept@firstmark
+       \MessageBreak bot\space\space:
+                     \meaning\kept@botmark }%
+%</marktrace>
+%    \end{macrocode}
+%    This finishes the code for the ``boxed'' case.
+%    \begin{macrocode}
+  \else
+%    \end{macrocode}
+%    If there was a |\columnbreak| on the very last line all material
+%    will have been moved to the |\colbreak@box|. Thus the the galley
+%    will be empty and no output routine gets called so that the text
+%    is lost. To avoid this problem (though unlikely) we check if the
+%    current galley is empty and the |\colbreak@box| contains text and
+%    if so return that to the galley. If the galley is non-empty any
+%    material in  |\colbreak@box| is added in the output routine since
+%    it needs to be put in front.
+% \changes{v1.6d}{2003/04/17}{Catch problem with \cs{columnbreak} in
+%    last line}
+%    \begin{macrocode}
+    \ifdim\pagegoal=\maxdimen
+      \ifvoid\colbreak@box\else
+        \mult@info\@ne{Re-adding forced
+                 break(s) for splitting}%
+        \unvbox\colbreak@box\fi
+    \fi
+%    \end{macrocode}
+%    If we are in an unrestricted \mc{} environment we end the current
+%    paragraph above with |\par| but this isn't sufficient since \TeX{}s
+%    {\it page\_builder} will not totally empty the contribution
+%    list.\footnote{This once caused a puzzling bug where some of the
+%    material was balanced twice, resulting in some overprints.  The
+%    reason was the \cs{eject} which was placed at the end of
+%    the contribution list. Then the {\it page\_builder} was called
+%    (an explicit \cs{penalty} will empty the contribution
+%    list), but the line with the \cs{eject} didn't fit onto
+%    the current page.  It was then reconsidered after the output
+%    routine had ended, causing a second break after one line.}
+%    Therefore we must also add an explicit |\penalty|.  Now the
+%    contribution list will be emptied and, if its material doesn't
+%    all fit onto the current page then the output routine will be
+%    called before we change it.
+% \changes{v1.3b}{1990/10/09}{Do \cs{penalty} with \cs{addpenalty}}
+% \changes{v1.4e}{1992/03/16}{But ignore \cs{@nobreak} in \cs{addpenalty}}
+% \changes{v1.5c}{1993/04/18}{Again use \cs{penalty}}
+%    At this point we need to use |\penalty| not |\addpenalty| to
+%    ensure that a) the recent contributions are emptied and b) that
+%    the very last item on the main vertical list is a valid break
+%    point so that \TeX{} breaks the page in case it is overfull.
+%    \begin{macrocode}
+   \penalty\z@
+%    \end{macrocode}
+%    Now it's safe to change the output routine in order to balance
+%    the columns.
+%    \begin{macrocode}
+   \output{\balance@columns@out}%
+   \eject
+%    \end{macrocode}
+%    If the \mc{} environment body was completely empty or if a
+%    multi-page \mc{} just ends at a page boundary we have the unusual
+%    case that the |\eject| will have no effect (since the main
+%    vertical list is empty)---thus no output routine is called at
+%    all. As a result the material preceding the \mc{} (stored in
+%    |\partial@page| will get lost if we don't put this back by hand.
+% \changes{v1.4m}{1992/09/04}{Check \cs{partial@page} being emptied}
+%    \begin{macrocode}
+    \ifvbox\partial@page
+         \unvbox\partial@page\fi
+%    \end{macrocode}
+%    After the output routine has acted we restore
+%    the kept marks to their initial value.
+%    \begin{macrocode}
+     \global\let\kept@firstmark\@empty
+     \global\let\kept@botmark\@empty
+%<*marktrace>
+     \mult@info\tw@
+       {Make kept marks empty}%
+%</marktrace>
+  \fi
+%    \end{macrocode}
+%    The output routine above will take care of the |\vsize| and
+%    reinsert the balanced columns, etc. But it can't reinsert the
+%    |\footnotes| because we first have to restore the
+%    |\footins| parameter since we are returning to one column
+%    mode. This will be done in the next line of code; we simply close
+%    the group started in |\multicols|.
+%
+%    To fix an obscure bug which is the result of the current
+%    definition of the |\begin| \ldots\ |\end| macros, we check that
+%    we are still (logically speaking) in the \mc{} environment. If,
+%    for example, we forget to close some environment inside the
+%    \mc{} environment, the following |\endgroup| would be
+%    incorrectly considered to be the closing of this environment.
+% \changes{v1.3c}{1991/03/14}{Check closing env.}
+%    \begin{macrocode}
+  \@checkend{multicols}%
+  \endgroup
+%    \end{macrocode}
+%    We also set the `{\sf unbalance}' counter to its default. This is
+%    done globally since \LaTeX{} counters are always changed this
+%    way.\footnote{Actually, we are still in a group started by the
+%    \cs{begin} macro, so \cs{global} must be used
+%    anyway.}
+%    \begin{macrocode}
+  \global\c@unbalance\z@
+%    \end{macrocode}
+%    Now it's time to return any footnotes if we are in unrestricted
+%    mode:
+%    \begin{macrocode}
+  \if@boxedmulticols\else
+    \reinsert@footnotes
+%    \end{macrocode}
+%    We also take a look at the amount of free space on the current
+%    page to see if it's time for a page break.  The vertical space
+%    added thereafter will vanish if |\enough@room| starts a new
+%    page.
+%
+%    But there is one catch. If the |\end{multicols}| is at the top of
+%    which can happen if there is a break point just before it (such
+%    as end ending environment) which was chosen. In that case we
+%    would do the next page using the internal |\vsize| for multicol
+%    collection which is a disaster. So we better catch this
+%    case. Fortunately we can detect it by looking at |\pagegoal|.
+% \changes{v1.5x}{2000/05/05}{Detect and fix problem if a multicols
+%    ends at the top of a page}
+%    \begin{macrocode}
+    \ifdim \pagegoal=\maxdimen
+      \global\vsize\@colroom
+    \else
+      \enough@room\postmulticols
+    \fi
+  \fi
+  \addvspace\multicolsep
+%    \end{macrocode}
+%    There is one more thing to do: the balanced result of the
+%   environment is supposed to have a |\prevdepth| of zero as we
+%   backed up by its real prevdepth within |\page@sofar|. However if
+%   the balancing happened in the output routine then \TeX{} reverts
+%   to the |\prevdepth| that was current before the OR once the OR has
+%   finished. In short |\prevdepth| is something you can't set
+%   globally it is alway local to the current list being built. Thus
+%   we need to set it back to zero here to avoid incorrect spacing.
+% \changes{v1.8h}{2014/09/12}{Set \cs{prevdepdth} for current vlist
+%   when returning from multicols environment}
+%    \begin{macrocode}
+ \prevdepth\z@
+%    \end{macrocode}
+%    If statistics are required we finally report that we have
+%    finished everything.
+%    \begin{macrocode}
+  \mult@info\z@
+     {Ending environment
+             \if@boxedmulticols
+                \space(boxed mode)\fi
+              }}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\c@unbalance}
+% \SpecialMainIndex{\c@collectmore}
+% \SpecialMainIndex{\col@number}
+% \SpecialMainIndex{\doublecol@number}
+% \SpecialMainIndex{\premulticols}
+% \SpecialMainIndex{\multicoltolerance}
+% \SpecialMainIndex{\multicolpretolerance}
+% \SpecialMainIndex{\page@free}
+% \SpecialMainIndex{\premulticols}
+% \SpecialMainIndex{\postmulticols}
+% \SpecialMainIndex{\multicolsep}
+% \SpecialMainIndex{\multicolbaselineskip}
+% \SpecialMainIndex{\partial@page}
+%    Let us end this section by allocating all the registers used so
+%    far.
+%    \begin{macrocode}
+\newcount\c@unbalance
+\newcount\c@collectmore
+%    \end{macrocode}
+%    In the new \LaTeX{} release |\col@number| is already allocated by
+%    the kernel, so we don't allocate it again.
+%    \begin{macrocode}
+%\newcount\col@number
+\newcount\doublecol@number
+\newcount\multicoltolerance
+\newcount\multicolpretolerance
+\newdimen\full@width
+\newdimen\page@free
+\newdimen\premulticols
+\newdimen\postmulticols
+\newskip\multicolsep
+\newskip\multicolbaselineskip
+\newbox\partial@page
+\newbox\last@line
+%    \end{macrocode}
+%    And here are their default values:
+%    \begin{macrocode}
+\c@unbalance   = 0
+\c@collectmore = 0
+%    \end{macrocode}
+%    To allow checking whether some macro is used within the \mc{}
+%    environment the counter |\col@number| gets a default of |1|
+%    outside the the environment.
+% \changes{v1.3d}{1991/10/23}{\cs{col@number} set to one}
+%    \begin{macrocode}
+\col@number = 1
+\multicoltolerance = 9999
+\multicolpretolerance = -1
+\premulticols = 50pt
+\postmulticols= 20pt
+\multicolsep = 12pt plus 4pt minus 3pt
+\multicolbaselineskip=0pt
+%    \end{macrocode}
+% \end{macro}
+%
+% \end{multicols}
+%
+% \begin{multicols}{2}[\subsection{The output routines}]
+%
+% We first start with some simple macros. When typesetting the page we
+% save the columns either in the box registers 0, 2, 4,\ldots\
+% (locally) or 1, 3, 5,\ldots\ (globally). This is \PlainTeX{} policy
+% to avoid an overflow of the save stack.
+%
+% \begin{macro}{\process@cols}
+%    Therefore we define a |\process@cols| macro to help us in
+%    using these registers in the output routines below. It has two
+%    arguments: the first one is a number; the second one is the
+%    processing information.  It loops starting with |\count@=#1|
+%    (|\count@| is a scratch register defined in \PlainTeX),
+%    processes argument |#2|, adds two to |\count@|,
+%    processes argument |#2| again, etc.\ until |\count@| is
+%    higher than |\doublecol@number|.  It might be easier to
+%    understand it through an example, so we define it now and
+%    explain its usage afterwards.
+%    \begin{macrocode}
+\def\process@cols#1#2{\count@#1\relax
+     \loop
+%<*debug>
+     \typeout{Looking at box \the\count@}
+%</debug>
+      #2%
+     \advance\count@\tw@
+     \ifnum\count@<\doublecol@number
+   \repeat}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\page@sofar}
+%    We now define |\page@sofar| to give an example of the
+%    |\process@cols| macro. |\page@sofar| should output everything
+%    prepared by the balancing routine |\balance@columns|.
+%    \begin{macrocode}
+\def\page@sofar{%
+%    \end{macrocode}
+%    |\balance@columns| prepares its output in the even numbered
+%    scratch box registers.
+%    Now we output the columns gathered assuming that they are saved
+%    in the box registers 2 (left column), 4 (second column), \ldots\
+%    However, the last column (i.e.\ the right-most) should be saved in
+%    box register 0.\footnote{You will see the reason for this numbering
+%                             when we look at the output routines
+%                             \cs{multi@column@out} and
+%                             \cs{balance@columns@out}.}
+%    First we ensure that the columns have equal width. We use
+%    |\process@cols| for this purpose, starting with
+%    $|\count@|=|\mult@rightbox|$. Therefore |\count@| loops through
+%    |\mult@rightbox|, $|\mult@rightbox| + 2$,\ldots
+%                                  (to |\doublecol@number|).
+% \changes{v1.5a}{1992/11/04}{New box mechanism}
+%    \begin{macrocode}
+   \process@cols\mult@rightbox
+%    \end{macrocode}
+%    We have to check if the box in question is void, because the
+%    operation |\wd|\meta{number} on a void box will \emph{not} change
+%    its dimension (sigh).
+% \changes{v1.5h}{1994/08/26}{Check for void boxes}
+% \changes{v1.5i}{1994/10/02}{But don't remove original code.}
+%    \begin{macrocode}
+       {\ifvoid\count@
+          \setbox\count@\hbox to\hsize{}%
+        \else
+          \wd\count@\hsize
+        \fi}%
+%    \end{macrocode}
+%    Now we give some tracing information.
+% \changes{v1.4l}{1992/08/17}{use \cs{multicol@leftmargin} instead of
+%                           \cs{@totalleftmargin}}
+% \changes{v1.6b}{2003/03/15}{Different info display}
+%    \begin{macrocode}
+   \count@\col@number \advance\count@\m@ne
+   \mult@info\z@
+    {Column spec: \the\full@width\space = indent
+                  + columns + sep =\MessageBreak
+        \the\multicol@leftmargin\space
+        + \the\col@number\space
+        x \the\hsize\space
+        + \the\count@\space
+        x \the\columnsep
+     }%
+%    \end{macrocode}
+%    At this point we should always be in vertical mode.
+%    \begin{macrocode}
+\ifvmode\else\errmessage{Multicol Error}\fi
+%    \end{macrocode}
+%    Now we put all columns together in an |\hbox| of width
+%    |\full@width| (shifting it by |\multicol@leftmargin| to the right
+%    so that it will be placed correctly if we are within a list
+%    environment)
+%    and separating the columns with a rule if desired.
+% \changes{v1.5a}{1992/11/04}{New box mechanism}
+% \changes{v1.5z}{2000/07/10}{Ensure that column rule has always
+%                             \cs{normalcolor}}
+% \changes{v1.6f}{2006/09/19}{Make the color of the rule a hook}
+% \changes{v1.4l}{1992/08/17}{use \cs{multicol@leftmargin} instead of
+%                           \cs{@totalleftmargin}}
+%
+%    The box containing the columns has  a large height and thus will
+%    always result in using |\lineskip| if the normal |\baselineskip|
+%    calculations are used. We therefore better cancel that process.
+% \changes{v1.5z1}{2003/02/17}{Suppress interline glue at this point}
+%    \begin{macrocode}
+   \nointerlineskip
+%    \end{macrocode}
+%    As mentioned earlier we want to have the reference point of the
+%    box we put on the page being at the baseline of the last line of
+%    the columns but we also want to ensure that the box has no depth
+%    so that any following skip is automatically starting from that
+%    baseline.
+%    We achieve this by recording the depths of all columns and then
+%    finally backing up by the maximum. (perhaps a simpler method
+%    would be to assemble the box in a register and set the depth of
+%    that box to zero (not checked).
+%
+%    We need a global scratch register for this; using standard \TeX{}
+%    conventions we choose |\dimen2| and initialize it with the depth
+%    of the character ``p'' since that is one of the depths that
+%    compete for the maximum.
+% \changes{v1.6a}{2003/03/15}{Preparing for adjusting \cs{prevdepth}}
+%    \begin{macrocode}
+   \setbox\z@\hbox{p}\global\dimen\tw@\dp\z@
+   \moveright\multicol@leftmargin
+    \hbox to\full@width{%
+%    \end{macrocode}
+%    If the document is written in a language that is typeset right-to-left
+%    then, of course, the multicol columns should be also typeset
+%    right-to-left. To support this we call |\mc@align@columns| which
+%    with execute different code depending on the typesetting direction.
+% \changes{v1.7b}{2011/12/18}{RL language support fixed}
+%    \begin{macrocode}
+       \mc@align@columns
+%    \end{macrocode}
+%    The depths of the columns depend on their last lines. To ensure
+%    that we will always get a similar look as far as the rules are
+%    concerned we force the depth to be at least the depth of a
+%    letter~`p' (which is what we set |\dimen2| to above).
+%    \begin{macrocode}
+       \rlap{\phantom p}%
+    }%
+%    \end{macrocode}
+%    The processed material might consist of a last line with a
+%    descender in which case the |\prevdepth| will be
+%    non-zero. However, this material is getting reformatted now so
+%    that this value is likely to be wrong. We therefore normalize the
+%    situation by pretending that the depth is zero. However, if |\page@sofar|
+%   is being called inside the OR then setting |\prevdepth| here has
+%   no longlasting effect, we therefore have to repeat this once we
+%   return to the main vertical list. Here we set it only for those
+%   cases where the command is used within a list and then followed by
+%   something else.
+% \changes{v1.8g}{2014/08/24}{Resetting \cs{prevdepth} in the right place}
+%    \begin{macrocode}
+   \prevdepth\z@
+%    \end{macrocode}
+%    Now after typesetting the box we back up to its baseline by using
+%    the value stored in |\dimen2| (which will hold the largest depth
+%    found on any column).
+% \changes{v1.8g}{2003/03/15}{Now adjusting \cs{prevdepth}}
+%    \begin{macrocode}
+ \kern-\dimen\tw@
+%    \end{macrocode}
+%    However, in case one of the columns was unusually deep \TeX{} may
+%    have tried some corrective actions in which case backing up by
+%    the saved value will not bring us back to the baseline. A good
+%    indication for this is a depth of |\maxdepth| though it is not an
+%    absolute proof. If the option \texttt{grid} is used
+%    |\mc@gridwarn| will expand to this, otherwise to |\maxdimen| in
+%    which case this warning will not show up.
+% \changes{v1.8g}{2014/08/24}{Warn if value is exceeded not when equal}
+%    \begin{macrocode}
+ \ifdim\dimen\tw@ > \mc@gridwarn
+   \PackageWarning{multicol}%
+     {Very deep columns!\MessageBreak
+      Grid alignment might be broken}%
+ \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\columnseprulecolor}
+% \changes{v1.6f}{2006/09/19}{Make the color of the rule a hook}
+%    By default the vertical rule between columns will be in |\normalcolor|.
+%    \begin{macrocode}
+\def\columnseprulecolor{\normalcolor}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\reinsert@footnotes}
+%    Before we tackle the bigger output routines we define just one
+%    more macro which will help us to find our way through the
+%    mysteries later. |\reinsert@footnotes| will do what its name
+%    indicates: it reinserts the footnotes present in
+%    |\footinbox| so that they will be reprocessed by \TeX{}'s
+%    {\it page\_builder}.
+%
+%    Instead of actually reinserting the footnotes we insert an empty
+%    footnote. This will trigger insertion mechanism as well and since
+%    the old footnotes are still in their box and we are on a fresh page
+%    |\skip| |footins| should be correctly taken into account.
+% \changes{v1.3c}{1990/03/03}{\cs{unbox}ing avoided.}
+%    \begin{macrocode}
+\def\reinsert@footnotes{\ifvoid\footins\else
+         \insert\footins{}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\vfilmaxdepth}
+%    This curious definition is used as the space at the bottom of a
+%   column if we implement |\raggedcolumns|. Normlly one only appends
+%   |\vfill| in that case but this is actually wrong for columns that
+%   are more or less full: by adding a glue at the bottom such a
+%   column doesn't have any depth any more but without it the material
+%   would be allowed a depth of |\maxdepth|. So we allow shrinking by
+%   that amount. This only makes a difference if the box would
+%   otherwise become overfull and shrinking never exceeds the
+%   specified value, so we should be fine. 
+% \changes{v1.8h}{2014/09/12}{Macro added  (pr/4395)}
+% \changes{v1.8j}{2015/03/07}{Use only `0.0001fil' for stretching}
+%    \begin{macrocode}
+\def\vfilmaxdepth{\vskip \z@ \@plus .0001fil 
+                           \@minus \maxdepth}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\multi@column@out}
+%    Now we can't postpone the difficulties any longer.  The
+%    |\multi@column@out| routine will be called in two situations.
+%    Either the page is full (i.e., we have collected enough material
+%    to generate all the required columns) or a float or marginpar or
+%    a |\clearpage| is
+%    sensed.  In the latter case the |\outputpenalty| is less
+%    than $-10000$, otherwise the penalty which triggered the output
+%    routine is higher.  Therefore it's easy to distinguish both
+%    cases: we simply test this register.
+% \changes{v1.5c}{1993/04/18}{Support \cs{clearpage}}
+%    \begin{macrocode}
+\def\multi@column@out{%
+   \ifnum\outputpenalty <-\@M
+%    \end{macrocode}
+%    If this was a |\clearpage|, a float or a marginpar we call
+%    |\speci@ls|
+%    \begin{macrocode}
+    \speci@ls \else
+%    \end{macrocode}
+%    otherwise we construct the final page.
+% \changes{v1.5u}{1999/05/25}{Support \cs{columnbreak}}
+% \changes{v1.5v}{1999/07/18}{Added debug statements for
+%                             column break support}
+%    For the next block of code see comments in section~\ref{sec:colbreak}.
+%    \begin{macrocode}
+    \ifvoid\colbreak@box\else
+      \mult@info\@ne{Re-adding forced
+                break(s) for splitting}%
+      \setbox\@cclv\vbox{%
+       \unvbox\colbreak@box
+       \penalty-\@Mv
+       \unvbox\@cclv}%
+    \fi
+%    \end{macrocode}
+%    Let us now consider the
+%    normal case. We have to |\vsplit| the columns from the
+%    accumulated material in box 255.  Therefore we first assign
+%    appropriate values to |\splittopskip| and |\splitmaxdepth|.
+%    \begin{macrocode}
+   \splittopskip\topskip
+   \splitmaxdepth\maxdepth
+%    \end{macrocode}
+%    We also need to restrict |\boxmaxdepth| so that re-boxing is not
+%    generating boxes with arbitrary depth.   
+% \changes{v1.8j}{2015/03/07}{Set \cs{boxmaxdepth}}
+%    \begin{macrocode}
+   \boxmaxdepth\maxdepth
+%    \end{macrocode}
+%    Then we calculate the current column height (in |\dimen@|).
+%    Note that the height of |\partial@page| is already
+%    subtracted from |\@colroom| so we can use its value as a
+%    starter.
+%    \begin{macrocode}
+   \dimen@\@colroom
+%    \end{macrocode}
+%    But we must also subtract the space occupied by footnotes on the
+%    current page. Note that we first have to reset the skip register
+%    to its normal value.
+%    Again, the actual action is carried out in a utility macro, so that
+%    other applications can modify it.
+% \changes{v1.5?}{1994/?/?}{Use \cs{leave@mult@footins}}
+%    \begin{macrocode}
+   \divide\skip\footins\col@number
+   \ifvoid\footins \else
+      \leave@mult@footins
+   \fi
+%    \end{macrocode}
+%    And there is one more adjustment that we have to make: if the
+%    user has issue a |\enlargethispage| command then the height the
+%    |\@kludgeins| box will be the negation of the size by which the
+%    page should be enlarged. If the star form of this command has
+%    been used then we also need to shrink the resulting column. As we
+%    don't know whether or not shrinking is already generally
+%    requested with save the current value of |\ifshr@king| and
+%    restore it afterwards.
+% \changes{v1.8a}{2011/12/20}{Support for \cs{enlargethispage}}
+%    \begin{macrocode}
+   \let\ifshr@kingsaved\ifshr@king
+   \ifvbox \@kludgeins
+     \advance \dimen@ -\ht\@kludgeins
+%    \end{macrocode}
+%    The star form of  |\enlargethispage| makes the width of the box
+%    greater than zero (sneaky isn't it?).
+%    \begin{macrocode}
+     \ifdim \wd\@kludgeins>\z@
+        \shr@nkingtrue
+     \fi
+   \fi
+%    \end{macrocode}
+%    Now we are able to |\vsplit| off all but the last column.
+%    Recall that these columns should be saved in the box registers 2,
+%    4,\ldots\ (plus offset).
+% \changes{v1.5a}{1992/11/04}{New box mechanism}
+%    \begin{macrocode}
+   \process@cols\mult@gfirstbox{%
+        \setbox\count@
+            \vsplit\@cclv to\dimen@
+%    \end{macrocode}
+%    After splitting we update the kept marks.
+%    \begin{macrocode}
+            \set@keptmarks
+%    \end{macrocode}
+%    If |\raggedcolumns| is in force we add a |vfill| at the bottom by
+%    unboxing the split box.
+%    But we need to unbox anyway to ensure that at the end of the box
+%    we do not have unwanted space. This can sneak in in certain
+%    situations, for example, if two lists follow each other and we
+%    break between them. While sich space is usually zero it still has
+%    an effect because it hides depth of the last line in the column
+%    and that will result in incorrect placement.
+% \changes{v1.3c}{1990/03/03}{\cs{unbox}ing avoided.}
+% \changes{v1.8b}{2013/08/28}{And 20odd years later conclude that
+%         this was wrong and unboxing is always needed.}
+% \changes{v1.8b}{2013/08/28}{Remove discardable items at the
+%                             end of split boxes}
+% \changes{v1.8h}{2014/09/12}{Use \cs{vfilmaxdepth}}
+% \changes{v1.8k}{2015/03/22}{\cs{remove@discardable@items} removed}
+%    \begin{macrocode}
+            \setbox\count@
+                 \vbox to\dimen@
+                  {\unvbox\count@
+                   \ifshr@nking\vfilmaxdepth\fi}%
+           }%
+%    \end{macrocode}
+%    Then the last column follows.
+% \changes{v1.5a}{1992/11/04}{New box mechanism}
+% \changes{v1.8b}{2013/08/28}{Remove discardable items at the
+%                             end of split boxes}
+% \changes{v1.8h}{2014/09/12}{Use \cs{vfilmaxdepth}}
+% \changes{v1.8k}{2015/03/22}{\cs{remove@discardable@items} removed}
+%    \begin{macrocode}
+   \setbox\mult@rightbox
+       \vsplit\@cclv to\dimen@
+   \set@keptmarks
+   \setbox\mult@rightbox\vbox to\dimen@
+          {\unvbox\mult@rightbox
+           \ifshr@nking\vfilmaxdepth\fi}%
+%    \end{macrocode}
+%    Now that we are done with the boxes, we restored the current
+%    setting for shrinking in case it got changed:
+%    \begin{macrocode}
+   \let\ifshr@king\ifshr@kingsaved
+%    \end{macrocode}
+%    Having done this we hope that box 255 is emptied. If not, we
+%    reinsert its contents.
+% \changes{v1.8a}{2011/12/20}{Only re-add output penalty if it was
+%    explicitly set}
+%    \begin{macrocode}
+   \ifvoid\@cclv \else
+       \unvbox\@cclv
+       \ifnum\outputpenalty=\@M
+       \else
+          \penalty\outputpenalty
+       \fi
+%    \end{macrocode}
+%    In this case a footnote that happens to fall into the leftover
+%    bit will be typeset on the wrong page. Therefore we warn the user
+%    if the current page contains footnotes. The older versions of
+%    \mc{} produced this warning regardless of whether or not
+%    footnotes were present, resulting in many unnecessary warnings.
+% \changes{v1.3c}{1991/02/17}{Check if footnotes are actually present
+%                           before issuing a warning.}
+%    \begin{macrocode}
+       \ifvoid\footins\else
+         \PackageWarning{multicol}%
+          {I moved some lines to
+           the next page.\MessageBreak
+           Footnotes on page
+           \thepage\space might be wrong}%
+       \fi
+%    \end{macrocode}
+%    If the `{\sf tracingmulticols}' counter is 4 or higher we also
+%    add a rule.
+%    \begin{macrocode}
+       \ifnum \c@tracingmulticols>\thr@@
+                    \hrule\allowbreak \fi
+   \fi
+%    \end{macrocode}
+%    To get a correct marks for the current page we have to (locally)
+%    redefine |\firstmark| and |\botmark|.
+%    If |\kept@firstmark| is non-empty then |\kept@botmark| must be
+%    non-empty too so we can use their values. Otherwise we use the
+%    value of |\kept@topmark| which was first initialized when we
+%    gathered the |\partical@page| and later on was updated to the
+%    |\botmark| for the preceding page.
+%
+% \changes{v1.4a}{1992/02/14}{\cs{botmark} set to \cs{splitbotmark}}
+%    \begin{macrocode}
+   \ifx\@empty\kept@firstmark
+      \let\firstmark\kept@topmark
+      \let\botmark\kept@topmark
+   \else
+      \let\firstmark\kept@firstmark
+      \let\botmark\kept@botmark
+   \fi
+%    \end{macrocode}
+%    We also initalize |\topmark| with |\kept@topmark|. This will make
+%    this mark okay for all middle pages of the \mc{} environment.
+% \changes{v1.5d}{1993/09/15}{reinit \cs{topmark}}
+%    \begin{macrocode}
+   \let\topmark\kept@topmark
+%<*marktrace>
+   \mult@info\tw@
+        {Use kept top mark:\MessageBreak
+          \meaning\kept@topmark
+         \MessageBreak
+         Use kept first mark:\MessageBreak
+          \meaning\kept@firstmark
+        \MessageBreak
+         Use kept bot mark:\MessageBreak
+          \meaning\kept@botmark
+        \MessageBreak
+         Produce first mark:\MessageBreak
+          \meaning\firstmark
+        \MessageBreak
+        Produce bot mark:\MessageBreak
+          \meaning\botmark
+         \@gobbletwo}%
+%</marktrace>
+%    \end{macrocode}
+%    With a little more effort we could have done better. If we had,
+%    for example, recorded the shrinkage of the material in
+%    |\partial@page| it would be now possible to try higher
+%    values for |\dimen@| (i.e.\ the column height) to overcome
+%    the problem with the nonempty box 255. But this would make the
+%    code even more complex so I skipped it in the current
+%    implementation.
+%
+%    Now we use \LaTeX{}'s standard output
+%    mechanism.\footnote{This will produce a lot of overhead since both
+%                       output routines are held in memory. The correct
+%                       solution would be to redesign the whole output
+%                       routine used in \LaTeX.}
+%    Admittedly this is a funny way to do it.
+%
+%    \begin{macrocode}
+   \setbox\@cclv\vbox{\unvbox\partial@page
+                      \page@sofar}%
+%    \end{macrocode}
+%    The macro |\@makecol| adds all floats assigned for the current
+%    page to this page.  |\@outputpage| ships out the resulting box.
+%    Note that it is just possible that such floats are present even
+%    if we do not allow any inside a \mc{} environment.
+%    \begin{macrocode}
+   \@makecol\@outputpage
+%    \end{macrocode}
+%    After the page is shipped out we have to prepare the kept marks
+%    for the following page. |\kept@firstmark| and |\kept@botmark|
+%    reinitialized by setting them to |\@empty|.  The value of
+%    |\botmark| is then assigned to |\kept@topmark|.
+% \changes{v1.4g}{1992/06/03}{Only change \cs{kept@topmark} if
+%                            \cs{kept@botmark} non-empty}
+% \changes{v1.4i}{1992/06/18}{Set \cs{kept@topmark} to \cs{botmark}}
+%    \begin{macrocode}
+     \global\let\kept@topmark\botmark
+     \global\let\kept@firstmark\@empty
+     \global\let\kept@botmark\@empty
+%<*marktrace>
+     \mult@info\tw@
+        {(Re)Init top mark:\MessageBreak
+         \meaning\kept@topmark
+         \@gobbletwo}%
+%</marktrace>
+%    \end{macrocode}
+%    Now we reset |\@colroom| to |\@colht| which is \LaTeX's
+%    saved value of |\textheight|.
+%    We also have to reset the recorded position of the last
+%   |\marginpar| as well as the recorded size of intext floats 
+%    as we are now on a new page.
+% \changes{v1.8d}{2014/04/23}{Reset \cs{@mparbottom} after page finishes}
+% \changes{v1.8n}{2015/08/19}{Reset \cs{@textfloatsheight} after page finishes}
+%    \begin{macrocode}
+   \global\@colroom\@colht
+   \global \@mparbottom \z@
+   \global \@textfloatsheight \z@
+%    \end{macrocode}
+%    Then we process deferred floats waiting for their chance to be
+%    placed on the next page.
+%    \begin{macrocode}
+   \process@deferreds
+   \@whilesw\if@fcolmade\fi{\@outputpage
+      \global\@colroom\@colht
+      \process@deferreds}%
+%    \end{macrocode}
+%    If the user is interested in statistics we inform him about the
+%    amount of space reserved for floats.
+%    \begin{macrocode}
+   \mult@info\@ne
+     {Colroom:\MessageBreak
+      \the\@colht\space
+              after float space removed
+              = \the\@colroom \@gobble}%
+%    \end{macrocode}
+%    Having done all this we must prepare to tackle the next page.
+%    Therefore we assign a new value to |\vsize|.  New, because
+%    |\partial@page| is now empty and |\@colroom| might be
+%    reduced by the space reserved for floats.
+% \changes{v1.4p}{1992/11/26}{Use different \cs{vsize} setting}
+%    \begin{macrocode}
+    \set@mult@vsize \global
+%    \end{macrocode}
+%    The |\footins| skip register will be adjusted when the output
+%    group is closed.
+% \changes{v1.3c}{1991/03/03}{Unnecessary code removed}
+%    \begin{macrocode}
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\leave@mult@footins}
+%    This macro is used to subtract the amount of space
+%    occupied by footnotes for the current space from the
+%    space available for the current column. The space current column
+%    is stored in |\dimen@|. See above for the description of the default
+%    action.
+% \changes{v1.5?}{1994/?/?}{Macro added}
+%    \begin{macrocode}
+\def\leave@mult@footins{%
+   \advance\dimen@-\skip\footins
+   \advance\dimen@-\ht\footins
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\speci@ls}
+%    We left out two macros: |\process@deferreds| and
+%    |\speci@ls|.
+% \changes{v1.5c}{1993/04/18}{Support \cs{clearpage}}
+%    \begin{macrocode}
+\def\speci@ls{%
+ \ifnum\outputpenalty <-\@Mi
+%    \end{macrocode}
+%    If the document ends in the middle of a multicols environment, e.g.,
+%    if the user forgot the |\end{multicols}|, \TeX{} adds a very
+%    negative penalty to the end of the galley which is intended to signal
+%    the output routine that it is time to prepare for shipping out
+%    everything remaining. Since inside multicols the output routine of
+%    \LaTeX{} is disabled sometimes we better check for this case: if we
+%    find a very negative penalty we produce an error message and run
+%    the default output routine for this case.
+% \changes{v1.5s}{1998/09/10}{check for \cs{stop} penalty pr/2873}
+%    \begin{macrocode}
+  \ifnum \outputpenalty<-\@MM
+   \PackageError{multicol}{Document end
+           inside multicols environment}\@ehd
+   \@specialoutput
+  \else
+%    \end{macrocode}
+% \changes{v1.5u}{1999/05/25}{Support \cs{columnbreak}}
+% \changes{v1.5v}{1999/07/18}{Added debug statements for
+%                             column break support}
+%    For the next block of code see comments in section~\ref{sec:colbreak}.
+%    \begin{macrocode}
+     \ifnum\outputpenalty = -\@Mv
+         \mult@info\@ne{Forced column
+                        break seen}%
+         \global\advance\vsize-\pagetotal
+         \global\setbox\colbreak@box
+           \vbox{%
+              \ifvoid\colbreak@box
+              \else
+                \unvbox\colbreak@box
+                \penalty-\@Mv
+              \fi
+%    \end{macrocode}
+%    As this is the place of a forced break we now remove vertical
+%   white space just in front of it (or some of it at least) as it is
+%   quite likely that the break is not exactly in the right place,
+%   e.g., after a display environment (if LaTeX would break here by
+%   its own it would break before the space following the display).
+%
+%   Thus we rebox box 255 once (using |\maxdepth| and calling
+%   |\remove@discardable@items| inside). The depth of 255 will then
+%   give us the depth the box would have had if it would have been a
+%   natural break. We then unbox 255 to get it into the
+%   |\colbreak@box| and then back up by this depth. This will position
+%   the bottom of the box at its natural baseline which is useful for
+%   balancing later on.
+% \changes{v1.8k}{2015/03/21}{Remove discarable items just before a
+%   forced break}
+%    \begin{macrocode}
+              \boxmaxdepth\maxdepth
+              \setbox\@cclv\vbox{%
+                 \unvbox\@cclv
+                 \remove@discardable@items}%
+              \dimen@\dp\@cclv
+              \unvbox\@cclv
+              \kern-\dimen@
+         }%
+         \reinsert@footnotes
+     \else
+%    \end{macrocode}
+%    If we encounter a float or a marginpar in the current
+%    implementation we simply warn the user that this is not allowed.
+%    Then we reinsert the page and its footnotes.
+%    \begin{macrocode}
+        \PackageWarningNoLine{multicol}%
+           {Floats and marginpars not
+            allowed inside `multicols'
+            environment!}%
+        \unvbox\@cclv\reinsert@footnotes
+%    \end{macrocode}
+%    Additionally we empty the |\@currlist| to avoid later error
+%    messages when the \LaTeX{} output routine is again in force.
+%    But first we have to place the boxes back onto the
+%    |\@freelist|. (|\@elt|s default is |\relax| so
+%    this is possible with |\xdef|.)
+% \changes{v1.2a}{1990/02/05}{Float boxes freed.}
+%    \begin{macrocode}
+       \xdef\@freelist{\@freelist\@currlist}%
+       \gdef\@currlist{}%
+     \fi
+  \fi
+%    \end{macrocode}
+%    If the penalty is $-10001$ it will come from a |\clearpage| and
+%    we will execute |\@doclearpage| to get rid of any deferred
+%    floats.
+%    \begin{macrocode}
+ \else \@doclearpage \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\process@deferreds}
+%    |\process@deferreds| is a simplified version of \LaTeX{}'s
+%    |\@startpage|.  We first call the macro
+%    |\@floatplacement| to save the current user parameters in
+%    internal registers.  Then we start a new group and save the
+%    |\@deferlist| temporarily in the macro |\@tempb|.
+%    \begin{macrocode}
+\def\process@deferreds{%
+   \@floatplacement
+   \@tryfcolumn\@deferlist
+   \if@fcolmade\else
+     \begingroup
+    \let\@tempb\@deferlist
+%    \end{macrocode}
+%    Our next action is to (globally) empty |\@deferlist| and
+%    assign a new meaning to |\@elt|.  Here |\@scolelt| is a
+%    macro that looks at the boxes in a list to decide whether they
+%    should be placed on the next page (i.e.\ on |\@toplist| or
+%    |\@botlist|) or should wait for further processing.
+%    \begin{macrocode}
+      \gdef\@deferlist{}%
+      \let\@elt\@scolelt
+%    \end{macrocode}
+%    Now we call |\@tempb| which has the form
+%    \begin{center}
+%      |\@elt|\meta{box register}|\@elt|^^A
+%                        \meta{box register}\ldots{}
+%    \end{center}
+%    So |\@elt| (i.e.\ |\@scolelt|) will distribute the
+%    boxes to the three lists.
+%    \begin{macrocode}
+        \@tempb \endgroup
+   \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{ifshr@nking}
+% \begin{macro}{\raggedcolumns}
+% \begin{macro}{\flushcolumns}
+% \changes{v1.1a}{1989/09/20}{\cs{flushedcolumns} renamed to \cs{flushcolumns}.}
+%    The |\raggedcolumns| and |\flushcolumns|
+%    declarations are defined with the help of a new |\if...|
+%    macro.
+%    \begin{macrocode}
+\newif\ifshr@nking
+%    \end{macrocode}
+%    The actual definitions are simple: we just switch to {\sf true}
+%    or {\sf false} depending on the desired action. To avoid extra
+%    spaces in the output we enclose these changes in
+%    |\@bsphack|\ldots{}\allowbreak|\@esphack|.
+%    \begin{macrocode}
+\def\raggedcolumns{%
+   \@bsphack\shr@nkingtrue\@esphack}
+\def\flushcolumns{%
+   \@bsphack\shr@nkingfalse\@esphack}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\balance@columns@out}
+%    Now for the last part of the show: the column balancing output
+%    routine.  Since this code is called with an explicit penalty
+%    (|\eject|) there is no need to check for something special (eg
+%    floats).  We start by balancing the material gathered.
+%    \begin{macrocode}
+\def\balance@columns@out{%
+%    \end{macrocode}
+%    For this we need to put the contents of box 255 into |\mult@box|.
+% \changes{v1.5u}{1999/05/25}{Support \cs{columnbreak}}
+% \changes{v1.5v}{1999/07/18}{Added debug statements for column break
+%   support} For the next block of code see also comments in
+%   section~\ref{sec:colbreak}.  All forced breaks except the last are
+%   inside |\colbreak@box| so all we have to do is to concatenate this
+%   box with box |\@cclv| and put a penalty inbetween. Here we test if
+%   |\colbreak@box| is void so that the message is only generated if
+%   we really add forced breaks and the penalty.
+% \changes{v1.8k}{2015/03/21}{Use \cs{@Mv} and not \cs{break} in case
+%   this forced break is not used on this page}
+%    \begin{macrocode}
+   \setbox\mult@box\vbox{%
+       \ifvoid\colbreak@box\else
+         \unvbox\colbreak@box
+         \penalty-\@Mv
+         \mult@info\@ne{Re-adding
+           forced break(s) in balancing}%
+       \fi
+       \unvbox\@cclv
+%    \end{macrocode}
+%    The last column again is a forced break, so here we discard white
+%   space as well as that is normally unwanted.
+% \changes{v1.8k}{2015/03/21}{Add \cs{remove@discardable@items} at the
+%   end of the last column when balancing.}
+%    \begin{macrocode}
+       \remove@discardable@items
+   }%
+   \balance@columns
+%    \end{macrocode}
+%    If during balancing the columns got too long the flag
+%    |\iftoo@bad| is set to true.
+% \changes{v1.8a}{2011/12/20}{Balancing concept improved}
+%    \begin{macrocode}
+   \iftoo@bad
+     \mult@info\@ne
+        {Balancing failed ...
+         cut a normal page}%
+%    \end{macrocode}
+%    In that case we put the material back in box 255 so that we can
+%    cut a normal page. The curious set of
+%    |\vskip|s we add is necessary to  cancel out the |\splittopskip|
+%    that got added for balancing.
+%    \begin{macrocode}
+     \setbox\@cclv\vbox
+         {\vskip\topskip
+          \vskip-\splittopskip
+          \unvbox\mult@box}%
+%    \end{macrocode}
+%    We then call the standard multicol output routine which will
+%    produce a normal page for us (remember we are still within the
+%    OR so some part of the code in |\multi@column@out| is actually not
+%    doing anything---perhaps this should be cleaned up at some point).
+%    This also means that if there was an |\enlargethispage| present
+%    it will apply to this page as |\multi@column@out| will look at
+%    the status of |\@kludgeins|.
+%    \begin{macrocode}
+     \multi@column@out
+%    \end{macrocode}
+%    Because balancing made the columns too long we are sure that there
+%    will be some material remaining which was put back onto the main
+%    vertical list by |\multi@column@out|. This will also put the
+%    explicit |\eject| penalty back so the current
+%    |\balance@columns@out| output routine will be called again (so we
+%    better do not add another penalty or else the OR will be called
+%    twice and we may get scrambled results).
+% \changes{v1.8k}{2015/03/21}{No additional penalty here}
+%    \begin{macrocode}
+   \else
+%    \end{macrocode}
+%    If the balancing went ok, we are in the position
+%    to apply |\page@sofar|.  But first we have to set |\vsize| to a
+%    value suitable for one column output.
+%    \begin{macrocode}
+     \global\vsize\@colroom
+     \global\advance\vsize\ht\partial@page
+%    \end{macrocode}
+%    We also have to look at |\@kludgeins| and generate a new
+%    |\insert| in case there was one present due to an
+%    |\enlargethispage| command.
+% \changes{v1.8a}{2011/12/20}{Support for \cs{enlargethispage}}
+%    \begin{macrocode}
+     \ifvbox\@kludgeins\insert\@kludgeins
+                        {\unvbox\@kludgeins}\fi
+%    \end{macrocode}
+%    Then we |\unvbox| the |\partial@page| (which may be void if we
+%    are not processing the first page of this \mc{} environment.
+%    \begin{macrocode}
+     \unvbox\partial@page
+%    \end{macrocode}
+%    Then we return the first and bottom mark and the gathered
+%    material to the main vertical list.
+%    \begin{macrocode}
+     \return@nonemptymark{first}\kept@firstmark
+     \return@nonemptymark{bot}\kept@botmark
+     \page@sofar
+%    \end{macrocode}
+%    We need to add a penalty at this point which allows to break at
+%    this point since calling the output routine may have removed the
+%    only permissible break point thereby ``glueing'' any following
+%    skip to the balanced box. In case there are any weird settings
+%    for |\multicolsep| etc. this could produce funny results.
+%  \changes{v1.5c}{1993/04/18}{added penalty at output routine exit}
+%    \begin{macrocode}
+     \penalty\z@
+  \fi
+}
+%    \end{macrocode}
+%    As we already know, reinserting of footnotes will be done in the
+%    macro |\endmulticols|.
+% \end{macro}
+%
+%
+%  \begin{macro}{\balance@columns}
+%    This macro now does the actual balancing.
+%    \begin{macrocode}
+\def\balance@columns{%
+%    \end{macrocode}
+%    We start by setting the kept marks by updating them with any
+%    marks from this box. This has to be done \emph{before} we add a
+%    penalty of $-10000$ to the top of the box, otherwise only an
+%    empty box will be considered.
+% \changes{v1.5h}{1994/08/26}{Get kept marks first}
+%    \begin{macrocode}
+   \get@keptmarks\mult@box
+%    \end{macrocode}
+%    We then continue by resetting trying to remove any discardable
+%    stuff at the end of |\mult@box|. This is rather experimental.  We
+%    also add a forced break point at the very beginning, so that we
+%    can split the box to height zero later on, thereby adding a known
+%    |\splittopskip| glue at the beginning.
+% \changes{v1.8k}{2015/03/21}{\cs{remove@discardable@items} removed}
+%    \begin{macrocode}
+   \setbox\mult@box\vbox{%
+        \penalty-\@M
+        \unvbox\mult@box
+        }%
+%    \end{macrocode}
+%    Then follow values assignments to get the |\vsplit|ting right.
+%    We use the natural part of |\topskip| as the natural part for
+%    |\splittopskip| and allow for a bit of undershoot and overshoot
+%    by adding some stretch and shrink.
+% \changes{v1.5?}{1994/?/?}{Allow columns to come out a bit long or short}
+%    \begin{macrocode}
+   \@tempdima\topskip
+   \splittopskip\@tempdima
+       \@plus\multicolundershoot
+       \@minus\multicolovershoot
+   \splitmaxdepth\maxdepth
+%    \end{macrocode}
+%   We also have to set |\boxmaxdepth| which normally allows to
+%   build boxes with arbitrary depth, but as we are building text
+%   columns we really want to restrict the depth. This is necessary as
+%   we sometimes rebox the boxes generated by |\vsplit| and then the
+%   restriction posed by |\splitmaxdepth|  gets lost.
+% \changes{v1.8h}{2014/09/12}{All column boxes should obey
+%   \cs{maxdepth}  (pr/4395)}
+%    \begin{macrocode}
+   \boxmaxdepth\maxdepth
+%    \end{macrocode}
+%    The next step is a bit tricky: when \TeX{} assembles material in
+%    a box, the first line isn't preceded by interline glue, i.e.
+%    there is no parameter like |\boxtopskip| in \TeX{}. This means
+%    that the baseline of the first line in our box is at some
+%    unpredictable point depending on the height of the largest
+%    character in this line. But of course we want all columns to
+%    align properly at the baselines of their first lines. For this
+%    reason we have opened |\mult@box| with a |\penalty| {\sf -10000}.
+%    This will now allow us to split off from |\mult@box| a tiny bit
+%    (in fact nothing since the first possible break-point is the
+%    first item in the box). The result is that |\splittopskip| is
+%    inserted at the top of |\mult@box| which is exactly what we like
+%    to achieve.
+% \changes{v1.5?}{1994/?/?}{Do splitting to zero here}
+%    \begin{macrocode}
+   \setbox\@tempboxa\vsplit\mult@box to\z@
+%    \end{macrocode}
+%    Next we try to find a suitable starting point for the calculation
+%    of the column height.  It should be less than the height finally
+%    chosen, but large enough to reach this final value in only a few
+%    iterations.  The formula which is now implemented will try to
+%    start with the nearest value which is a multiple of
+%    |\baselineskip|. The coding is slightly tricky in \TeX{} and
+%    there are perhaps better ways \ldots
+% \changes{v1.4d}{1992/03/04}{New algorithm for start height}
+%    \begin{macrocode}
+   \@tempdima\ht\mult@box
+   \advance\@tempdima\dp\mult@box
+   \divide\@tempdima\col@number
+%    \end{macrocode}
+%    The code above sets |\@tempdima| to the length of a column if we
+%    simply divide the whole box into equal pieces. To get to the next
+%    lower multiple of |\baselineskip| we convert this dimen to a
+%    number (the number of scaled points) then divide this by
+%    |\baselineskip| (also in scaled points) and then multiply this
+%    result with |\baselineskip| assigning the result to |\dimen@|.
+%    This makes |\dimen@| $\leq$ to |\@tempdimena|.
+%    \begin{macrocode}
+   \count@\@tempdima
+   \divide\count@\baselineskip
+   \dimen@\count@\baselineskip
+%    \end{macrocode}
+%    Next step is to correct our result by taking into account the
+%    difference between |\topskip| and |\baselineskip|. We start by
+%    adding |\topskip|; if this makes the result too large then we
+%    have to subtract one |\baselineskip|.
+%    \begin{macrocode}
+   \advance\dimen@\topskip
+   \ifdim \dimen@ >\@tempdima
+     \advance\dimen@-\baselineskip
+   \fi
+%    \end{macrocode}
+%    At the user's request we start with a higher value (or lower, but
+%    this usually only increases the number of tries).
+%    \begin{macrocode}
+   \advance\dimen@\c@unbalance\baselineskip
+%    \end{macrocode}
+%    We type out statistics if we were asked to do so.
+% \changes{v1.4f}{1992/04/28}{\cs{on@line} added to tracing info}
+%    \begin{macrocode}
+   \mult@info\@ne
+      {Balance columns\on@line:
+        \ifnum\c@unbalance=\z@\else
+       (off balance=\number\c@unbalance)\fi
+      \@gobbletwo}%
+%    \end{macrocode}
+%    But we don't allow nonsense values for a start.
+%    \begin{macrocode}
+   \ifnum\dimen@<\topskip
+     \mult@info\@ne
+       {Start value
+          \the\dimen@  \space ->
+          \the\topskip \space (corrected)}%
+     \dimen@\topskip
+   \fi
+%    \end{macrocode}
+%    Now we try to find the final column height.  We start by setting
+%    |\vbadness| to infinity (i.e.\ $10000$) to suppress
+%    underfull box reports while we are trying to find an acceptable
+%    solution.  We do not need to do it in a group since at the end of
+%    the output routine everything will be restored. The setting of
+%    the final columns will nearly always produce underfull boxes with
+%    badness $10000$ so there is no point in warning the user about
+%    it.
+% \changes{v1.2a}{1990/02/05}{Group around main loop removed.}
+%    \begin{macrocode}
+   \vbadness\@M
+%    \end{macrocode}
+%    We also allow for overfull boxes while we trying to split the
+%    columns. They can easily happen if we have objects with unusual depth. 
+% \changes{v1.8h}{2014/09/12}{Do not report overfull}
+%    \begin{macrocode}
+   \vfuzz \maxdimen
+%    \end{macrocode}
+%    The variable |\last@try| will hold the dimension used in the
+%    previous trial splitting. We initialize it with a negative value.
+% \changes{v1.5?}{1994/?/?}{Initialize \cs{last@try}}
+%    \begin{macrocode}
+   \last@try-\p@
+   \loop
+%    \end{macrocode}
+%    In order not to clutter up \TeX{}'s valuable main memory with
+%    things that are no longer needed, we empty all globally used box
+%    registers. This is necessary if we return to this point after an
+%    unsuccessful trial.  We use |\process@cols| for this purpose,
+%    starting with |\mult@grightbox|.  Note the extra braces around
+%    this macro call.  They are needed since \PlainTeX{}'s
+%    |\loop|\ldots{}\allowbreak|\repeat| mechanism cannot be nested on
+%    the same level of grouping.
+% \changes{v1.5a}{1992/11/04}{New box mechanism}
+%    \begin{macrocode}
+    {\process@cols\mult@grightbox
+           {\global\setbox\count@
+                   \box\voidb@x}}%
+%    \end{macrocode}
+%    The contents of box |\mult@box| are now copied globally to
+%    box~|\mult@grightbox|.  (This will be the right-most column, as
+%    we shall see later.)
+%    \begin{macrocode}
+    \global\setbox\mult@grightbox
+           \copy\mult@box
+%    \end{macrocode}
+%    We start with the assumption that the trial will be successful.
+%    If we end up with a solution that is too bad we set
+%    |too@bad| to \texttt{true}. We also assume that all forced breaks
+%    (if any) will be used during balancing. If this is not the case
+%    we record this in |forcedbreak@leftover|.
+% \changes{v1.5b}{1992/11/05}{New badness mechanism}
+% \changes{v1.8k}{2015/03/21}{Init \cs{ifforcedbreak@leftover}}
+%    \begin{macrocode}
+%<*badness>
+   \too@badfalse
+   \forcedbreak@leftoverfalse
+%</badness>
+%    \end{macrocode}
+%    Using |\vsplit| we extract the other columns from box register
+%    |\mult@grightbox|.  This leaves box register |\mult@box|
+%    untouched so that we can start over again if this trial was
+%    unsuccessful.
+%    \begin{macrocode}
+   {\process@cols\mult@firstbox{%
+         \global\setbox\count@
+         \vsplit\mult@grightbox to\dimen@
+%    \end{macrocode}
+%    After splitting we need to ensure that there isn't any space at
+%    the bottom, so we rebox once more.
+% \changes{v1.8b}{2013/08/28}{Remove discardable items at the
+%                             end of split boxes}
+% \changes{v1.8k}{2015/03/21}{Do not use \cs{remove@discardable@items}
+%    here}
+%    \begin{macrocode}
+         \global\setbox\count@
+                 \vbox to\dimen@
+                  {\unvbox\count@}%
+%    \end{macrocode}
+%    After every split we check the badness of the resulting column,
+%    normally the amount of extra white in the column.
+%    \begin{macrocode}
+%<*badness>
+         \ifnum\c@tracingmulticols>\@ne
+           \@tempcnta\count@
+           \advance\@tempcnta-\mult@grightbox
+           \divide\@tempcnta \tw@
+           \message{^^JColumn
+              \number\@tempcnta\space
+               badness: \the\badness\space}%
+         \fi
+%    \end{macrocode}
+%    If this badness is larger than the allowed column badness
+%    we reject this solution by setting |too@bad| to \texttt{true}.
+%    \begin{macrocode}
+         \ifnum\badness>\c@columnbadness
+           \ifnum\c@tracingmulticols>\@ne
+             \message{too bad
+                  (>\the\c@columnbadness)}%
+           \fi
+           \too@badtrue
+         \fi
+%</badness>
+                        }}%
+%    \end{macrocode}
+%    There is one subtle point here: while all other constructed boxes
+%    have a depth that is determined by |\splitmaxdepth| and/or
+%   |\boxmaxdepth| the last box
+%    will get a natural depth disregarding the original setting and
+%    the value of |\splitmaxdepth| or |\boxmaxdepth|. This means that
+%    we may end up with a very large depth in box |\mult@grightbox|
+%    which would
+%    make the result of the testing incorrect. So we change the value
+%    by unboxing the box into itself.
+%    \begin{macrocode}
+   \global\setbox\mult@grightbox
+      \vbox{\unvbox\mult@grightbox}%
+%    \end{macrocode}
+%    We also save a copy |\mult@firstbox| at its ``natural'' size
+%    for later use.
+%    \begin{macrocode}
+   \setbox\mult@nat@firstbox
+      \vbox{\unvcopy\mult@firstbox}%
+%    \end{macrocode}
+%    After |\process@cols| has done its job we have the following
+%    situation:
+%    \begin{center}
+%      \begin{tabular}{r@{$\:\:\longleftarrow\:\:$}l}
+%        box |\mult@rightbox| & all material \\
+%        box |\mult@gfirstbox| & first column \\
+%        box |\mult@gfirstbox|${}+2$ & second column \\
+%        \multicolumn{1}{c}{$\vdots$} &
+%        \multicolumn{1}{c}{$\vdots$} \\
+%        box |\mult@grightbox| & last column
+%      \end{tabular}
+%    \end{center}
+%    We report the height of the first column, in brackets
+%    the natural size is given.
+% \changes{v1.5?}{1994/?/?}{Show natural size}
+%    \begin{macrocode}
+    \ifnum\c@tracingmulticols>\@ne
+       \message{^^JFirst column
+           = \the\dimen@\space
+           (\the\ht\mult@nat@firstbox)}\fi
+%    \end{macrocode}
+%    If |\raggedcolumns| is in force older releases of this file also
+%    shrank the first column to its natural height at this point.
+%    This was done so that the first column doesn't run short compared
+%    to later columns but it is actually producing incorrect results
+%    (overprinting of text) in boundary cases, so since version v1.5q
+%    |\raggedcolumns| means allows for all columns to run slightly short.
+% \changes{v1.5q}{1998/01/19}{Do not reset \cs{mult@firstbox} (pr2739)}
+%    \begin{macrocode}
+%    \ifshr@nking
+%      \global\setbox\mult@firstbox
+%             \copy\mult@nat@firstbox
+%    \fi
+%    \end{macrocode}
+%    Then we give information about the last column.\footnote{With
+%    \TeX{} version 3.141 it is now possible to use \LaTeX's
+%    \cs{newlinechar} in the \cs{message} command, but
+%    people with older \TeX{} versions will now get
+%    \texttt{\string^\string^J} instead of a new line on the screen.}
+% \changes{v1.4a}{1992/02/12}{Changed to proper \cs{endlinechar} in\cs{message}}
+%    \begin{macrocode}
+    \ifnum\c@tracingmulticols>\@ne
+      \message{<> last column =
+               \the\ht\mult@grightbox^^J}%
+%    \end{macrocode}
+%    Some tracing code that we don't compile into the production version
+%    unless asked for. It will produce huge listings of the boxes
+%    involved in balancing in the transcript file.
+% \changes{v1.6f}{2004/07/03}{need to use \cs{mult@grightbox} in the loop}
+%    \begin{macrocode}
+%<*debug>
+      \ifnum\c@tracingmulticols>4
+         {\showoutput
+          \batchmode
+          \process@cols\mult@grightbox
+           {\showbox\count@}}%
+          \errorstopmode
+      \fi
+%</debug>
+     \fi
+%    \end{macrocode}
+%    We check whether our trial was successful.  The test used is very
+%    simple: we merely compare the first and the last column.  Thus
+%    the intermediate columns may be longer than the first if
+%    |\raggedcolumns| is used.  If the right-most column is
+%    longer than the first then we start over with a larger value for
+%    |\dimen@|.
+% \changes{v1.3c}{1991/03/03}{\cs{global}\cs{advance} left over from older code}
+%    \begin{macrocode}
+    \ifdim\ht\mult@grightbox >\dimen@
+%    \end{macrocode}
+%    If the height of the last box is too large we mark this trial as
+%    unsuccessful.
+% \changes{v1.5v}{1999/07/18}{Added tracing statements for
+%                             trial unsuccessful}
+%    \begin{macrocode}
+%<*badness>
+      \too@badtrue
+      \ifnum\c@tracingmulticols>\@ne
+         \typeout{Rejected: last
+                 column too large!}%
+      \fi
+    \else
+%    \end{macrocode}
+% \changes{v1.5v}{1999/07/18}{Check last column if it contains forced
+%    break and reject trial if that is the case}
+%
+%    To ensure that there isn't a forced break in the last column we
+%    try to split off a box of size |\maxdimen| from |\mult@grightbox|
+%    (or rather from a copy of it). This should result in a void box
+%    after the split, unless there was a forced break somewhere within
+%    the column in which case the material after the break would have
+%    stayed in the box.
+%    \begin{macrocode}
+      \setbox\@tempboxa
+           \copy\mult@grightbox
+      \setbox\z@\vsplit\@tempboxa to\maxdimen
+      \ifvoid\@tempboxa
+%    \end{macrocode}
+%    Thus if |\@tempboxa| is void we  have a valid solution.
+%    In this case we take a closer
+%    look at the last column to decide if this column should be made
+%    as long as all other columns or if it should be allowed to be
+%    shorter.
+%    For this we first have to rebox the column into a box of the
+%    appropriate height. If tracing is enabled we then display the
+%    badness for this box.
+%    \begin{macrocode}
+        \global\setbox\mult@grightbox
+           \vbox to\dimen@
+              {\unvbox\mult@grightbox}%
+        \ifnum\c@tracingmulticols>\@ne
+          \message{Final badness:
+                   \the\badness}%
+        \fi
+%    \end{macrocode}
+%    We then compare this badness with the allowed badness for the final
+%    column. If it does not exceed this value we use the box, otherwise
+%    we rebox it once more and add some glue at the bottom.
+% \changes{v1.8h}{2014/09/12}{Use \cs{vfilmaxdepth}}
+% \changes{v1.8j}{2015/03/07}{Use \cs{vfil} in this case}
+%    \begin{macrocode}
+        \ifnum\badness>\c@finalcolumnbadness
+          \global\setbox\mult@grightbox
+           \vbox to\dimen@
+              {\unvbox\mult@grightbox\vfil}%
+           \ifnum\c@tracingmulticols>\@ne
+             \message{ setting natural
+              (> \the\c@finalcolumnbadness)}%
+           \fi
+        \fi
+%    \end{macrocode}
+%    If |\@tempboxa| above was not void our trial was unsuccessful and
+%    we report this fact and try again.
+% \changes{v1.6f}{2004/07/03}{\texttt{/colbreak} guard in the wrong position}
+%    \begin{macrocode}
+      \else
+%    \end{macrocode}
+%    If we have unprocessed forced breaks we normally reiterate with a
+%    larger column size to fit them in eventually. However, if there
+%    are simply too many of them (e.g., 3 forced breaks but only 2
+%    columns to balance) then this will never succeed and and we would
+%    continue growing the columns until we hit the largest possible
+%    column size. So in addition we check how big the column size is
+%    compared to available room and if we exceed this by
+%    |\maxbalancingoverflow| we give up and instead of balancing cut
+%    another normal page. To be indicate this case we set
+%    |forcedbreak@leftover| to true.
+% \changes{v1.8k}{2015/03/21}{Watch out for columns growing too far in
+%    case of forced breaks}
+% \changes{v1.8l}{2015/03/25}{Added additional tracing if column overflows}
+%    \begin{macrocode}
+       \@tempdima\@colroom
+       \advance\@tempdima \maxbalancingoverflow
+       \ifdim \dimen@ < \@tempdima
+        \too@badtrue
+         \ifnum\c@tracingmulticols>\@ne
+           \typeout{Rejected: unprocessed
+             forced break(s) in last column!}%
+         \fi
+       \else
+         \forcedbreak@leftovertrue
+         \ifnum\c@tracingmulticols>\@ne
+          \typeout{Failed: columns too large
+            with unprocessed forced break(s)!}%
+         \fi
+       \fi
+      \fi
+    \fi
+%    \end{macrocode}
+%    If the natural height of the first box is smaller than the
+%    current trial size but is larger than the previous trial size it
+%    is likely that we have missed a potentially better
+%    solution. (This could have happened if for some reason our first
+%    trial size was too high.) In that case we dismiss this trial and
+%    restart using the natural height for the next trial.
+%    \begin{macrocode}
+    \ifdim\ht\mult@nat@firstbox<\dimen@
+      \ifdim\ht\mult@nat@firstbox>\last@try
+        \too@badtrue
+        \ifnum\c@tracingmulticols>\@ne
+           \typeout{Retry: using natural
+                    height of first column!}%
+        \fi
+        \dimen@\ht\mult@nat@firstbox
+        \last@try\dimen@
+        \advance\dimen@-\p@
+      \fi
+    \fi
+%    \end{macrocode}
+%    Finally the switch |too@bad| is tested. If it was made true
+%    either earlier on or due to a rightmost column being too large
+%    we try again with a slightly larger value for |\dimen@|.
+%    \begin{macrocode}
+    \iftoo@bad
+%</badness>
+      \advance\dimen@\p@
+    \repeat
+%    \end{macrocode} 
+%    If we come out of the loop with the switch |forcedbreak@leftover|
+%    set to true then balancing has failed and we should cut a normal
+%    page. We indicate this below with |\too@badtrue| when any of the
+%    columns get too high, so we set this flag here too in order to
+%    get the same processing logic.\footnote{Should get cleaned up as
+%    we now have two different routes to reach this part of the
+%    processing.}
+% \changes{v1.8k}{2015/03/21}{}
+%    \begin{macrocode}
+    \ifforcedbreak@leftover
+       \too@badtrue
+    \else
+%    \end{macrocode}
+%    At that point |\dimen@| holds the height that was determined by
+%    the balancing loop.
+%    If that height for the columns turns out to be larger
+%    than the available space (which is |\@colroom|) we squeeze the
+%    columns into the space assuming that they will have enough
+%    shrinkability to allow this.\footnote{This might be wrong, since
+%    the shrinkability that accounts for the amount of material might
+%    be present only in some columns. But it is better to try then to
+%    give up directly.}
+%    However, this squeezing should only be done if we are balancing
+%    columns on the main galley and \emph{not} if we are building a
+%    boxed multicol (in the latter case the current |\@colroom| is
+%    irrelevant since the produced box might be moved anywhere at a
+%    later stage).
+% \changes{v1.3c}{1991/03/03}{Limit column height to \cs{@colroom}}
+% \changes{v1.5q}{1998/01/19}{Removed setting \cs{dimen@} (pr2739)}
+% \changes{v1.5y}{2000/06/10}{Limit column height only in unrestricted
+%    mode (pr/3212)}
+%    \begin{macrocode}
+     \if@boxedmulticols\else
+       \ifdim\dimen@>\@colroom
+         \dimen@\@colroom
+       \fi
+     \fi
+%    \end{macrocode}
+%    Then we move the contents of the odd-numbered box registers to
+%    the even-numbered ones, shrinking them if requested.
+%    We have to use |\vbox| not |\vtop| (as it was done in
+%    the first versions) since otherwise the resulting boxes will have
+%    no height (\TB\/ page 81). This would mean that extra
+%    |\topskip|  is added when the boxes are returned to the
+%    page-builder via |\page@sofar|.
+% \changes{v1.3a}{1990/05/20}{Changed \cs{vtop} to \cs{vbox}.}
+%    \begin{macrocode}
+     \process@cols\mult@rightbox
+         {\@tempcnta\count@
+          \advance\@tempcnta\@ne
+%    \end{macrocode}
+%    when putting the final column together we want overfull
+%    information:
+%    \begin{macrocode}
+          \vfuzz\z@
+          \setbox\count@\vbox to\dimen@
+             {%
+%    \end{macrocode}
+%
+% \changes{v1.8h}{2014/09/12}{Use \cs{vfilmaxdepth}}
+%    \begin{macrocode}
+              \vskip \z@
+                \@plus-\multicolundershoot
+                \@minus-\multicolovershoot
+              \unvbox\@tempcnta
+              \ifshr@nking\vfilmaxdepth\fi
+             }%
+%    \end{macrocode}
+%    If the resulting box is overfull there was too much material to
+%    fit into the available space. The question though is how much? If
+%    it wasn't more than |\maxbalancingoverflow| we accept it still to
+%    avoid getting very little material for the next page (which we
+%    would then have difficulties to balance).
+% \changes{v1.8a}{2011/12/20}{Balancing concept improved}
+%    \begin{macrocode}
+          \ifnum\badness>\@M
+            \vfuzz\maxdimen % no overfull warning
+            \setbox\@tempboxa \vbox to\dimen@
+                 {\vskip-\maxbalancingoverflow
+                  \unvcopy\count@}%
+            \ifnum\badness>\@M
+              \mult@info\@ne
+                {Balanced column more than
+                  \the\maxbalancingoverflow\space
+                  too large}%
+%    \end{macrocode}
+%    Fail the balancing attempt:
+%    \begin{macrocode}
+              \too@badtrue
+            \else
+%    \end{macrocode}
+%    Otherwise report that there is a problem but within the accepted
+%    boundary.
+%    \begin{macrocode}
+              \mult@info\@ne
+                {Balanced column
+                 too large, but less than
+                 \the\maxbalancingoverflow}%
+            \fi
+          \fi
+         }%
+%    \end{macrocode}
+%    Finally end the |\ifforcedbreak@leftover| conditional.
+% \changes{v1.8k}{2015/03/21}{Finish the new conditional}
+%    \begin{macrocode}
+   \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \begin{macro}{\maxbalancingoverflow}
+%    Amount that balancing is allowed to overflow the available column
+%    space. We default to 12pt which means about one line in most
+%    layouts.
+% \changes{v1.8a}{2011/12/20}{\cs{maxbalancingoverflow} parameter added}
+%    \begin{macrocode}
+\newdimen\maxbalancingoverflow
+\maxbalancingoverflow=12pt
+%    \end{macrocode}
+%  \end{macro}
+
+% \end{multicols}
+%
+% \begin{multicols}{2}[\subsection{The box allocations}]
+%
+% \begin{macro}{\mult@rightbox}
+% \begin{macro}{\mult@grightbox}
+% \begin{macro}{\mult@firstbox}
+% \begin{macro}{\mult@gfirstbox}
+%    Early releases of these macros used the first box registers
+%    0, 2, 4,\ldots\ for global boxes and 1, 3, 5,\ldots\ for the
+%    corresponding local boxes. (You might still find some traces
+%    of this setup in the documentation, sigh.) This produced a problem
+%    at the moment we had more than 5 columns because then officially
+%    allocated boxes were overwritten by the algorithm.
+%    The new release now uses private box registers
+%    \begin{macrocode}
+\newbox\mult@rightbox
+\newbox\mult@grightbox
+\newbox\mult@gfirstbox
+\newbox\mult@firstbox
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa\newbox\@tempa
+\newbox\@tempa
+\let\@tempa\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \end{multicols}
+%
+%
+% \begin{multicols}{2}[\section{New macros and hacks for version 1.2}]
+%
+% \begin{macro}{\emergencystretch}
+% \begin{macro}{\setemergencystretch}
+%    If we don't use \TeX{} 3.0 |\emergencystretch| is undefined
+%    so in this case we simply add it as an unused \meta{dimen}
+%    register.
+% \changes{v1.4j}{1992/06/25}{Setting of \cs{emergencystretch} on top
+%                  removed.}
+%    \begin{macrocode}
+\@ifundefined{emergencystretch}
+     {\newdimen\emergencystretch}{}
+%    \end{macrocode}
+% \changes{v1.2a}{1990/02/05}{Macro added.}
+%    My tests showed that the following formula worked pretty well.
+%    Nevertheless the |\setemergencystretch| macro also gets
+%    |\hsize| as second argument to enable the user to try
+%    different formulae.
+%    \begin{macrocode}
+\def\setemergencystretch#1#2{%
+   \emergencystretch 4pt
+   \multiply\emergencystretch#1}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+
+
+% \begin{macro}{\set@floatcmds}
+% \changes{v1.2a}{1990/02/05}{Macro added.}
+% \changes{v1.5g}{1994/06/07}{Updated since floats have changed}
+% \changes{v1.5j}{1994/06/07}{Updated since floats have changed again}
+% \changes{v1.5l}{1995/10/19}{Added \cs{@largefloatcheck}}
+% \changes{v1.6g}{2006/02/23}{Added \cs{@minipagefalse}}
+% \changes{v1.6h}{2008/12/05}{Use \cs{@endfloatbox} to better support
+%   the modifications done by the float package}
+%    Even if this should be used as a hook we use a |@| in the
+%    name since it is more for experts.
+%    \begin{macrocode}
+\def\set@floatcmds{%
+ \let\@dblfloat\@dbflt
+ \def\end@dblfloat{\@endfloatbox
+   \@largefloatcheck
+   \outer@nobreak
+%    \end{macrocode}
+%    This is cheap (deferring the floats until after the current page)
+%    but any other solution would go deep into \LaTeX's output
+%    routine and I don't like to work on it until I know which parts
+%    of the output routine have to be reimplemented anyway for
+%    \LaTeX3.
+%    \begin{macrocode}
+   \ifnum\@floatpenalty<\z@
+%    \end{macrocode}
+%    We have to add the float to the |\@deferlist| because we assume
+%    that outside the \mc{} environment we are in one column mode.
+%    This is not entirely correct, I already used the \mc{}
+%    environment inside of \LaTeX{}s |\twocolumn| declaration but it
+%    will do for most applications.
+%    \begin{macrocode}
+     \@cons\@deferlist\@currbox
+   \fi
+   \ifnum\@floatpenalty=-\@Mii
+     \@Esphack
+   \fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \end{multicols}
+%
+% \begin{multicols}{2}[\subsection{Maintaining the mark registers}]
+% \label{sec:v14}
+%
+% This section contains the routines that set the marks so that they
+% will be handled correctly. They have been introduced with version~1.4.
+%
+%  \begin{macro}{\kept@topmark}
+% \changes{v1.4h}{1992/06/04}{Init to double brace pair}
+%  \begin{macro}{\kept@firstmark}
+%  \begin{macro}{\kept@botmark}
+%    First thing we do is to reserve three macro names to hold the
+%    replacement text for \TeX's primitives |\firstmark|, |\botmark| and
+%    |\topmark|. We initialize the first two to be empty and
+%    |\kept@topmark| to contain  two empty pair of braces. This is
+%    necessary since |\kept@topmark| is supposed to contain the last
+%    mark from a preceding page and in \LaTeX{} any ``real'' mark must
+%    contain two parts representing left and right mark information.
+%    \begin{macrocode}
+\def\kept@topmark{{}{}}
+\let\kept@firstmark\@empty
+\let\kept@botmark\@empty
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\return@nonemptymark}
+%    Sometimes we want to return the value of a ``kept'' mark into a
+%    |\mark| node on the main vertical list. This is done by the
+%    function |\return@nonemptymark|. As the name suggests it only acts
+%    if the replacement text of the kept mark is non-empty. This is done
+%    to avoid adding an empty mark when no mark was actually present. If
+%    we would nevertheless add such a mark it would be regarded as a
+%    valid |\firstmark| later on.
+%    \begin{macrocode}
+\def\return@nonemptymark#1#2{%
+  \ifx#2\@empty
+  \else
+%    \end{macrocode}
+%    For debugging purposes we take a look at the value of the kept mark
+%    that we are about to return. This code will get stripped out for
+%    production.
+%    \begin{macrocode}
+%<*marktrace>
+    \mult@info\tw@
+      {Returned #1 mark:\MessageBreak
+       \meaning#2}%
+%      \nobreak
+%    \fi
+%</marktrace>
+%    \end{macrocode}
+%    Since the contents of the mark may be arbitrary \LaTeX{} code we
+%    better make sure that it doesn't get expanded any further. (Some
+%    expansion have been done already during the execution of
+%    |\markright| or |\markboth|.) We therefore use the usual mechanism
+%    of a toks register to prohibit expansion.\footnote{Due to the
+%    current definition of \cs{markright} etc.\ it wouldn't
+%    help to define the \cs{protect} command to prohibit
+%    expansion as any \cs{protect} has already vanished due to
+%    earlier expansions.}
+% \changes{v1.4n}{1992/09/10}{Make marks robust}
+% \changes{v1.5t}{1999/03/22}{re-add \cs{mark} command which was commented out
+%       by mistake at some point in 1998 (pr/2978)}
+%    \begin{macrocode}
+    \toks@\expandafter{#2}%
+    \mark{\the\toks@}%
+%    \end{macrocode}
+%    We don't want any breakpoint between such a returned mark and the
+%    following material (which is usually just the box where the mark
+%    came from).
+%    \begin{macrocode}
+    \nobreak
+  \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\get@keptmarks}
+%    If we have some material in a box register we may want to get the
+%    first and the last mark out of this box. This can be done with
+%    |\get@keptmarks| which takes one argument: the box register number
+%    or its nick name defined by |\newbox|.
+%    \begin{macrocode}
+\def\get@keptmarks#1{%
+%    \end{macrocode}
+%    For debugging purposes we take a look at the current dimensions
+%    of the box since in earlier versions of the code I made some
+%    mistakes in this area.
+%    \begin{macrocode}
+%<*debug>
+      \typeout{Mark box #1 before:
+               ht \the\ht#1, dp \the\dp#1}%
+%</debug>
+%    \end{macrocode}
+%    Now we open a new group an locally copy the box to itself. As a
+%    result any operation, i.e.\ |\vsplit|, will only have a local
+%    effect. Without this trick the box content would get lost up to
+%    the level where the last assignment to the box register was done.
+%    \begin{macrocode}
+  \begingroup
+   \vbadness\@M
+   \setbox#1\copy#1%
+%    \end{macrocode}
+%    Now we split the box to the maximal possible dimension. This
+%    should split off the full contents of the box so that effectively
+%    everything is split off. As a result |\splitfirstmark| and
+%    |\splitbotmark| will contain the first and last mark in the box
+%    respectively.
+%    \begin{macrocode}
+   \setbox#1\vsplit#1to\maxdimen
+%    \end{macrocode}
+%    Therefore we can now set the kept marks which is a global
+%    operation and afterwards close the group. This will restore the
+%    original box contents.
+%    \begin{macrocode}
+   \set@keptmarks
+ \endgroup
+%    \end{macrocode}
+%    For debugging we take again a look at the box dimension which
+%    shouldn't have changed.
+%    \begin{macrocode}
+%<*debug>
+    \typeout{Mark box #1 \space after:
+             ht \the\ht#1, dp \the\dp#1}%
+%</debug>
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\set@keptmarks}
+%    The macro |\set@keptmarks| is responsible for setting
+%    |\kept@firstmark| and |\kept@botmark|, by checking the current
+%    values for |\splitfirstmark| and |\splitbotmark|.
+%    \begin{macrocode}
+\def\set@keptmarks{%
+%    \end{macrocode}
+%    If |\kept@firstmark| is empty we assume that it isn't set. This
+%    is strictly speaking not correct as we loose the ability to have
+%    marks that are explicitly empty, but for standard \LaTeX{}
+%    application it is sufficient. If it is non-empty we don't change
+%    the value---within the output routines it will then be restored
+%    to |\@empty|.
+%    \begin{macrocode}
+   \ifx\kept@firstmark\@empty
+%    \end{macrocode}
+%    We now put the contents of |\splitfirstmark| into
+%    |\kept@firstmark|. In the case that there wasn't any mark at all
+%    |\kept@firstmark| will not change by that operation.
+%    \begin{macrocode}
+     \expandafter\gdef\expandafter
+        \kept@firstmark
+        \expandafter{\splitfirstmark}%
+%    \end{macrocode}
+%    When debugging we show the assignment but only when something
+%    actually happened.
+%    \begin{macrocode}
+%<*marktrace>
+     \ifx\kept@firstmark\@empty\else
+       \mult@info\tw@
+         {Set kept first mark:\MessageBreak
+          \meaning\kept@firstmark%
+          \@gobbletwo}%
+     \fi
+%</marktrace>
+   \fi
+%    \end{macrocode}
+%    We always try to set the bottom mark to the |\splitbotmark| but
+%    of course only when there has been a |\splitbotmark| at all.
+%    Again, we assume that an empty |\splitbotmark| means that the
+%    split off box part didn't contain any marks at all.
+%    \begin{macrocode}
+   \expandafter\def\expandafter\@tempa
+      \expandafter{\splitbotmark}%
+   \ifx\@tempa\@empty\else
+      \global\let\kept@botmark\@tempa
+%<*marktrace>
+      \mult@info\tw@
+        {Set kept bot mark:\MessageBreak
+         \meaning\kept@botmark%
+         \@gobbletwo}%
+%</marktrace>
+   \fi}%
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\prep@keptmarks}
+%    The |\prep@keptmarks| function is used to initialize the kept
+%    marks from the contents of  |\partial@page|, i.e.\ the box that
+%    holds everything from the top of the current page prior to
+%    starting the \mc{} environment. However, such a box is only
+%    available if we are not producing a boxed \mc{}.
+%    \begin{macrocode}
+\def\prep@keptmarks{%
+   \if@boxedmulticols \else
+     \get@keptmarks\partial@page
+   \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\remove@discardable@items}
+%    There are situations when we may have some space at the end of a
+%    column and this macro here will attempt to get rid of it. The
+%    typical \LaTeX{} sequence is a series of selfcanceling glues so
+%    if we remove them recursively we are usually fine.
+%
+%    Special care is needed with handling |\vspace*| as that
+%    corresponds to |\penalty10000|, |\vskip <skip>|, followed by
+%    |\vskip 0pt|. If we see this sequence going backwards in the the
+%    vertical list we assume that this is a ``desired'' space. We
+%    therefore stop the recursion and reinsert the spaces.
+%
+%    As the multicol code sometimes add an explicit penalty at the end
+%    of a column we first attempt to remove it in case it is there.
+% \changes{v1.8m}{2015/03/31}{Another rewrite of
+%     \cs{remove@discardable@items} hopefully okay now}
+%    \begin{macrocode}
+\skip0=0pt
+\edef\the@zero@skip{\the\skip0}
+\def\remove@discardable@items{%
+     \unpenalty
+%    \end{macrocode}
+%    Save a previous skip (if there) and then remove it, we can't
+%    really tell the difference between no skip an a skip of zero but
+%    that's life.
+%    \begin{macrocode}
+     \edef\@tempa{\the\lastskip}%
+%\typeout{s1=\@tempa}%
+     \unskip
+%    \end{macrocode}
+%    If it was a zero skip (or none) we save the next previous skip
+%    (if any).
+%    \begin{macrocode}
+     \ifx\@tempa\the@zero@skip
+       \edef\@tempb{\the\lastskip}%
+%\typeout{s2=\@tempb}%
+%    \end{macrocode}
+%    If this one again was zero (or more likely not there in the first
+%    place) we stop.
+%    \begin{macrocode}
+       \ifx\@tempb\the@zero@skip
+       \else
+%    \end{macrocode}
+%    Otherwise we remove this ``real'' skip. Then we look if it was
+%    preceeded by a penalty of 10000 (i.e., a |\nobreak|)
+%    \begin{macrocode}
+         \unskip
+%\typeout{p=\lastpenalty}%
+         \ifnum \lastpenalty=\@M
+%    \end{macrocode}
+%    If so this was a |\vspace*| or something equivalent to
+%    it. Therefore we reintroduce the skips and stop. Otherwise we
+%    recurse.
+%    \begin{macrocode}
+           \vskip\@tempb\vskip\@tempa\relax
+         \else 
+           \remove@discardable@items
+         \fi
+       \fi
+     \else
+%    \end{macrocode}
+%    If the first skip was a non-zero skip we recurse as well.
+%    \begin{macrocode}
+       \remove@discardable@items
+     \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%    \begin{macrocode}
+%<*badness>
+\newif\iftoo@bad
+\def\too@badtrue{\global\let\iftoo@bad\iftrue}
+\def\too@badfalse{\global\let\iftoo@bad\iffalse}
+%    \end{macrocode}
+%    
+% \changes{v1.8k}{2015/03/21}{The new switch}
+%    \begin{macrocode}
+\newif\ifforcedbreak@leftover
+%    \end{macrocode}
+%
+% \begin{macro}{\c@columnbadness}
+% \begin{macro}{\c@finalcolumnbadness}
+%    \begin{macrocode}
+\newcount\c@columnbadness
+\c@columnbadness=10000
+\newcount\c@finalcolumnbadness
+\c@finalcolumnbadness=9999
+
+\newdimen\last@try
+
+%    \end{macrocode}
+%
+% \changes{v1.5z1}{2003/02/17}{Change wrong default for
+%    \cs{multicolovershoot} to zero (pr/3465).}
+%    \begin{macrocode}
+\newdimen\multicolovershoot
+\newdimen\multicolundershoot
+\multicolovershoot=0pt
+\multicolundershoot=2pt
+\newbox\mult@nat@firstbox
+%</badness>
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\mult@info}
+%    A helper for producing info messages
+%    \begin{macrocode}
+\def\mult@info#1#2{%
+  \ifnum\c@tracingmulticols>#1%
+   \GenericWarning
+       {(multicol)\@spaces\@spaces}%
+       {Package multicol: #2}%
+  \fi
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \end{multicols}
+%
+%
+% \begin{multicols}{2}[\section{Fixing the
+%                        \cs{columnwidth}}]
+%
+%  \begin{macro}{\@footnotetext}
+% \changes{v1.5o}{1997/11/16}{Redefinition added pr/2664.}
+% \changes{v1.5r}{1998/08/17}{Use \cs{@footnotetext} but with
+%                             local change to \cs{columnwidth}.}
+%  \begin{macro}{\mult@footnotetext}
+% \changes{v1.5r}{1998/08/17}{Macro removed again.}
+%    If we store the current column width in |\columnwidth| we have
+%    to redefine the internal |\@footnotetext| macro to use |\textwidth|
+%    for the width of the footnotes rather than using the original
+%    definition.
+%
+%    Starting with version v1.5r this is now done in a way that the original
+%    definition is still used, except that locally |\columnwidth| is set to
+%    |\textwidth|.
+%
+%    This solves two problems: first redefinitions of |\@footnotetext|
+%    done by a class will correctly survive and second if multicols is
+%    used inside a minipage environment the special definition of
+%    |\@footnotetext| in that environment will be picked up and not the
+%    one for the main galley (the latter would result in all footnotes
+%    getting lost in that case).
+%
+%    See the definition of the |\multicols| command further up for the exact
+%    code.
+%  \end{macro}
+%  \end{macro}
+% \end{multicols}
+%
+%
+% \begin{multicols*}{2}[\section{Further extensions}]
+%
+% This section does contain code for extensions added to this package
+% over time. Not all of them may be active, some might sit dormant and
+% wait for being activated in some later release.
+%
+% \subsection{Not balancing the columns}
+%
+%  This is fairly trivial to implement. we just have to disable the
+%  balancing output routine and replace it by the one that ships out
+%  the other pages.
+%
+%  \begin{macro}{\multicols*}
+% \changes{v1.5q}{1998/01/19}{Macro added}
+%  The code for this environment was suggested by Matthias Clasen.
+%    \begin{macrocode}
+%<*nobalance>
+ \@namedef{multicols*}{%
+%    \end{macrocode}
+%    If we are not on the main galley, i.e., inside a box of some
+%    sort, that approach will not work since we don't have a vertical
+%    size for the box so we better warn that we balance anyway.
+%    \begin{macrocode}
+   \ifinner
+     \PackageWarning{multicol}%
+       {multicols* inside a box does
+        not make sense.\MessageBreak
+        Going to balance anyway}%
+   \else
+     \let\balance@columns@out
+         \multi@column@out
+   \fi
+   \begin{multicols}
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\endmulticols*}
+%    When ending the environment we simply end the inner
+%    \texttt{multicols} environment, except that we better also stick
+%    in some stretchable vertical glue so that the last column still
+%    containing text is not vertically stretched out. 
+%
+%    We do this as follows: first we cancel out |\lastskip| if it was
+%    positive (in case of a negative glue we assume that it was
+%    deliberate, for a deliberate positive glue one needs to use
+%    |\vspace*|). We can't simply use |\remove@discardable@items| here
+%    as this only works inside boxes but we are here on the main
+%    vertical list.
+%
+%    Then we back up by |\prevdepth| but not more than |\boxmaxdepth|
+%    so that a baseline of the last box is now at the bottom. This way
+%    the material will align properly in case something like |\vfill|
+%    spreads it out after all.
+%    Finally we append |\vfil| to put white space at the bottom of the
+%    column, but we only do this if we aren't anyway doing |\raggedcolumns|.
+% \changes{v1.5q}{1998/01/19}{Macro added}
+% \changes{v1.8h}{2014/09/12}{Use \cs{vfilmaxdepth}}
+% \changes{v1.8i}{2014/10/28}{Add \cs{null} to hide the final fill and only add
+%                             vertical space if not doing \cs{raggedcolumns}}
+% \changes{v1.8j}{2015/03/07}{Redesign the whole approach.}
+% \changes{v1.8k}{2015/03/21}{And a bit more redesign because of the
+%    change in \cs{remove@discardable@items}}
+%    \begin{macrocode}
+\@namedef{endmulticols*}{%
+   \ifdim\lastskip>\z@ \vskip-\lastskip \fi
+   \ifdim \prevdepth>\z@
+     \vskip-\ifdim\prevdepth>\boxmaxdepth 
+                  \boxmaxdepth
+            \else \prevdepth \fi
+   \fi
+   \ifshr@nking\else
+     \vfil
+   \fi
+   \end{multicols}}
+%</nobalance>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \subsection{Manual column breaking} \label{sec:colbreak}
+%
+% The problem with manual page breaks within \mc{} is the fact that
+% during collection of material for all columns a page-forcing penalty
+% (i.e. -10000 or higher) would stop the collecting pass which is not
+% quite what is desired. On the other hand, using a penalty like -9999
+% would mean that there would be occasions where the |\vsplit|ing
+% operations within \mc{} would ignore that penalty and still choose a
+% different break point.
+%
+% For this reason the current implementation
+% uses a completely different approach. In a nutshell it extends the \LaTeX{}
+% output routine handling by introducing an additional penalty flag
+% (i.e., a penalty which is forcing but higher than -10000 so that the
+% output routine can look at this value and thus knows why it has been
+% called).
+%
+% Inside the output routine we test for this value and if it appears
+% we do two things: save the galley up to this point in a special box
+% for later use and reduce the |\vsize| by the height of the material
+% seen. This way the forcing penalty is now hidden in that box and we
+% can restart the collection process for the remaining
+% columns. (This is done in |\speci@ls| above.)
+%
+% In the output routines that do the |\vsplit|ting either for
+% balancing or for a full page we simply combine box~255 with the
+% saved box thus getting a single box for  splitting which now
+% contains forcing breaks in the right positions.
+%
+%
+%  \begin{macro}{\columnbreak}
+% \changes{v1.5u}{1999/05/25}{Macro added}
+%    |\columnbreak| is modelled after |\pagebreak| except that we
+%    generate a penalty -10005.
+%    \begin{macrocode}
+\mathchardef\@Mv=10005
+\def\columnbreak{%
+%    \end{macrocode}
+%    We have to ensure that it is only used within a \mc{}
+%    environment since if that penalty would be seen by the unmodified
+%    \LaTeX{} output routine strange things would happen.
+%    \begin{macrocode}
+ \ifnum\col@number<\tw@
+  \PackageError{multicol}%
+   {\noexpand\columnbreak outside multicols}%
+   {This command can only be used within
+    a multicols or multicols* environment.}%
+ \else
+  \ifvmode
+    \penalty -\@Mv\relax
+  \else
+    \@bsphack
+    \vadjust{\penalty -\@Mv\relax}%
+    \@esphack
+  \fi
+ \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\colbreak@box}
+% \changes{v1.5u}{1999/05/25}{Macro added}
+%    Need a box to collect the galley up to the column break.
+%    \begin{macrocode}
+\newbox\colbreak@box
+%</package>
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+% \subsection{Supporting right-to-left languages} \label{sec:RL}
+%
+%
+% \changes{v1.7a}{2010/10/24}{RL language support added}
+% \changes{v1.7b}{2011/12/18}{RL language support fixed}
+%
+%  \begin{macro}{\LR@column@boxes}
+%    |\LR@column@boxes| is called when we are assembling the columns for left
+%    to right typesetting. When we start we are inside an |\hbox| of
+%    full width.
+%    Left to right typesetting is fairly easy, we basically output
+%    each column box intermixed with vertical rules and proper
+%    spacing. As this happens inside a box of a defined width the
+%    rules and the columns automatically get into the right positions.
+%    \begin{macrocode}
+\def\LR@column@boxes{%
+%    \end{macrocode}
+%    We loop through the columns with |\process@cols|
+%    \begin{macrocode}
+     \process@cols\mult@gfirstbox{%
+%    \end{macrocode}
+%    If the depth of the current box is larger than the maximum found
+%    so far in |\dimen2| we update that register for later use.
+% \changes{v1.6a}{2003/03/15}{Preparing for adjusting \cs{prevdepth}}
+%    \begin{macrocode}
+       \ifdim\dp\count@>\dimen\tw@
+         \global\dimen\tw@\dp\count@ \fi
+%    \end{macrocode}
+%    If the \texttt{colaction} option is given we write out status
+%    information about the current column, otherwise the next command
+%    does nothing.
+% \changes{v1.8e}{2014/04/23}{Support \cs{docolaction}}
+%    \begin{macrocode}
+       \mc@col@status@write
+%    \end{macrocode}
+%    The typeset box followed by the column rule material
+%    \begin{macrocode}
+       \box\count@
+       \hss{\columnseprulecolor\vrule
+              \@width\columnseprule}\hss}%
+%    \end{macrocode}
+%    As you will have noticed, we started with box register
+%    |\mult@gfirstbox|  (i.e.\
+%    the left column). So this time |\count@| looped through 2,
+%    4,\ldots\ (plus the appropriate offset).
+%    Finally we add box |\mult@rightbox| and we are done.
+% \changes{v1.5a}{1992/11/04}{New box mechanism}
+% \changes{v1.6a}{2003/03/15}{Preparing for adjusting \cs{prevdepth}}
+%    Again we may have to update |\dimen\tw@|.
+%    \begin{macrocode}
+     \ifdim\dp\mult@rightbox>\dimen\tw@
+       \global\dimen\tw@\dp\mult@rightbox \fi
+%    \end{macrocode}
+%    If the \texttt{colaction} option is given we write out status
+%    information about the last column, otherwise the next command
+%    does nothing.
+% \changes{v1.8e}{2014/04/23}{Support \cs{docolaction}}
+%    \begin{macrocode}
+     \mc@lastcol@status@write
+     \box\mult@rightbox
+}
+%    \end{macrocode}
+%  \end{macro}
+
+%  \begin{macro}{\RL@column@boxes}
+%    Assembling the boxes for right to left typesetting is far more
+%    complicated. When I first tried to build a solution for this my
+%    thinking was that all that is necessary to do is to reverse the
+%    order of the columns. But such an approach produces a subtle bug:
+%    If we work this way then the first column put on the page will be
+%    the last column of the text to read. and this means that the
+%    order in which \TeX{} executes write statements or assembles mark
+%    material will not happen in the order of the textual flow. So if,
+%    for example each column contains a section command then these
+%    sections will appear in reverse order in the table of content.
+%
+%    For this reason some amount of gymnastics is needed to add the
+%    columns in their natural flow.
+%    \begin{macrocode}
+\def\RL@column@boxes{%
+%    \end{macrocode}
+%    First step is to put all rules in the right place (without adding
+%    the comes which are instead represented by a space of |\hsize|.
+%    \begin{macrocode}
+     \process@cols\mult@gfirstbox{%
+       \hskip\hsize
+       \hss{\columnseprulecolor\vrule
+              \@width\columnseprule}\hss
+     }%
+     \hskip\hsize
+%    \end{macrocode}
+%    At this point in the code our typesetting reference point is at
+%    the right end of the rightmost column (or rather where that column
+%    should appear).
+%
+%    We are now typesetting all columns by first backing up by their
+%    width (which is |\hsize|) then typesetting the box and then
+%    backing up again, but this time further, i.e., also across the
+%    column separation. That will then enable us to typeset the next
+%    column using the same approach until we are done with all but the
+%    final column.
+%    \begin{macrocode}
+     \process@cols\mult@gfirstbox{%
+       \ifdim\dp\count@>\dimen\tw@
+         \global\dimen\tw@\dp\count@ \fi
+       \hskip-\hsize
+%    \end{macrocode}
+%
+% \changes{v1.8e}{2014/04/23}{Support \cs{docolaction}}
+%    \begin{macrocode}
+       \mc@col@status@write
+       \box\count@
+       \hskip-\hsize
+       \hskip-\columnsep
+     }%
+%    \end{macrocode}
+%    The approach for the final column is similar only that we do not
+%    have to back up over any column gap.
+%    \begin{macrocode}
+     \ifdim\dp\mult@rightbox>\dimen\tw@
+       \global\dimen\tw@\dp\mult@rightbox \fi
+     \hskip-\hsize
+%    \end{macrocode}
+%
+% \changes{v1.8e}{2014/04/23}{Support \cs{docolaction}}
+%    \begin{macrocode}
+     \mc@lastcol@status@write
+     \box\mult@rightbox
+     \hskip-\hsize
+%    \end{macrocode}
+%    However we do have to move the reference point to its right
+%    place: to make the rules appear at the expected places, we should
+%    get the typesetting position to the far right again. As we at the
+%    moment at the far left we skip to the far right like this:
+%    \begin{macrocode}
+     \hskip\full@width
+ }
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\RLmulticolcolumns}
+%  \begin{macro}{\LRmulticolcolumns}
+%  \begin{macro}{\mc@align@columns}
+%    Macros to switch between left-right and right-left typesetting. In LR
+%    typesetting the |\LR@column@boxes| is used to combine
+%    the columns. When typesetting right to left the |\RL@column@boxes|
+%    is used instead.
+%    \begin{macrocode}
+\newcommand\RLmulticolcolumns
+    {\let\mc@align@columns
+         \RL@column@boxes}
+\newcommand\LRmulticolcolumns
+    {\let\mc@align@columns
+      \LR@column@boxes}
+%    \end{macrocode}
+%    The default is left-to-right:
+%    \begin{macrocode}
+\LRmulticolcolumns
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% \subsection{Supporting \texttt{\textbackslash docolaction}}
+%
+% \changes{v1.8e}{2014/04/23}{Support \cs{docolaction}}
+%
+%   Whenever we want to do something that depends on the current
+%   column we execute \verb=\docolaction=. This command takes one
+%   optional and three mandatory arguments. The mandatory ones denote
+%   what to do if this is a ``left'', ``middle'', or ``right'' column
+%   and the optional one is simply there to say what to do if we don't
+%   know (default is to use the ``left'' column action in that case).
+%
+%  \begin{macro}{\mc@col@check@num}
+%   We use one counter \verb=\mc@col@check@num= to generate us unique
+%   label names. Each time we execute \verb=\docolaction= we increment
+%   this counter to get a new name.
+%    \begin{macrocode}
+\newcount\mc@col@check@num
+%    \end{macrocode}
+%  \end{macro}
+%
+%   The generated ``labels'' are named
+%\begin{verbatim}
+%\mc@col-\the\mc@col@check@num
+%\end{verbatim}
+%   and they hold as values the
+%   numbers 1, 2, or 3 denoting the current column type.
+
+%  \begin{macro}{\docolaction}
+%
+%    \begin{macrocode}
+\newcommand\docolaction[4][1]{%
+ \ifx\mc@col@status@write\relax
+     \PackageError{multicol}%
+      {Option 'colaction' not selected}%
+      {\string\docolaction\space
+       requires the use of the 'colaction'
+       option on the package}%
+ \fi
+ \global\advance\mc@col@check@num\@ne
+ \edef\mc@col@type{\expandafter\ifx
+   \csname mc@col-\the\mc@col@check@num
+   \endcsname\relax
+                   0\else
+   \csname mc@col-\the\mc@col@check@num
+   \endcsname
+                    \fi}%
+%    \end{macrocode}
+%    We prefix with 0 so that an unknown label (that returns
+%   \verb=\relax=) will result in case 0
+%    \begin{macrocode}
+ \ifcase \mc@col@type\relax
+%    \end{macrocode}
+%    If column is unknown we use the default action or the action
+%   denoted by the optional argument (so that arg can take the value
+%   1, 2, 3).
+%    \begin{macrocode}
+     \ifcase #1\or #2\or#3\or#4\fi
+  \or
+%    \end{macrocode}
+%    Otherwise we know (or think we know) that this is a first, middle,
+%   or last column:
+%    \begin{macrocode}
+     #2%  % 1 First col
+  \or
+     #3%  % 2 any middle col
+  \or
+     #4%  % 3 last col
+  \else
+    \ERROR
+  \fi
+%    \end{macrocode}
+%    But how does the column number get associated with our label? We
+%   do do this by writing another line into the aux file at this point:
+%    \begin{macrocode}
+  \edef\next{\write\@auxout
+     {\string\mc@set@col@status
+      {mc@col-\the\mc@col@check@num}%
+      {\mc@col@type}}}%
+  \next
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%   Because of extra data writing to the aux file the aux file will
+%   now contain something like the following after the document is
+%   processed the first time:
+%\begin{verbatim}
+%\relax
+%\mc@col@status{1}
+%\mc@set@col@status{lcol-1}{0}
+%\mc@col@status{2}
+%\mc@set@col@status{lcol-2}{0}
+%\mc@col@status{3}
+%\mc@set@col@status{lcol-3}{0}
+%\mc@col@status{1}
+%\mc@col@status{2}
+%\mc@col@status{3}
+%\mc@set@col@status{lcol-4}{0}
+%\end{verbatim}
+%   The \verb=\mc@col@status= line denotes the column type and has been
+%   written out just before corresponding the column box was placed
+%   onto the page.
+%   The\verb=\mc@set@col@status= lines have been written out as part
+%   of shipping the column boxes out, e.g.,
+%   \verb=\mc@set@col@status{lcol-1}{0}= was therefore somewhere within
+%   the first column as it appears between \verb=\mc@col@status{1}=
+%   and  \verb=\mc@col@status{2}=
+%   The second argument in that line is the value used in the previous
+%   run (or zero if there was no previous run. We can use this to
+%   determine if a rerun is necessary.
+%
+%   Thus with this knowledge we can set things up to get the labels
+%   working.
+%
+%
+%  \begin{macro}{\mc@col@status}
+%
+%   When the aux file is read in \verb=\mc@col@status= is used to set
+%   \verb=\mc@curr@col@status=:
+%    \begin{macrocode}
+\def\mc@col@status#1{%
+    \gdef\mc@curr@col@status{#1}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%
+%  \begin{macro}{\mc@set@col@status}
+%
+%   And when \verb=\mc@set@col@status= is executed we can simply set
+%   up the label by associating it with the \verb=\mc@curr@col@status=
+%   and ignore the second argument:
+%    \begin{macrocode}
+\def\mc@set@col@status#1#2{%
+  \global\expandafter\let\csname #1\endcsname
+                         \mc@curr@col@status}
+%    \end{macrocode}
+%   The above definition is being used when the \texttt{.aux} file is
+%   read in at the beginning. At the end we need a different
+%   definition to test if another typesetting run is needed. There we
+%   compare the value used in the current run (stored in the second
+%   argument) with the value used on the next run. If those two values
+%   differ we set \verb=@tempswa= to false which will trigger the
+%   ``Label(s) may have changed'' warning.
+%    \begin{macrocode}
+\AtEndDocument{\def\mc@set@col@status#1#2{%
+     \ifnum #2=\mc@curr@col@status\else
+       \@tempswatrue
+     \fi}%
+}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{mc@firstcol}
+%   Finally, as part of determining in which column we are, we used a
+%   switch inside |\mc@col@status@write| to determine if we are in the
+%   first column or not.
+%  \begin{macrocode}
+\newif\ifmc@firstcol
+\mc@firstcoltrue
+%    \end{macrocode}
+%  \end{macro}
+% \end{multicols*}
+%
+% \Finale
+%
+\endinput
+
+

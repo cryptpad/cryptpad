@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='kvdefinekeys'>
+  <name>kvdefinekeys</name>
+  <caption>Define keys for use in the kvsetkeys package.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2010,2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.3'/>
+  <description>
+    The package provides a macro <tt>\kv@define@key</tt> (analogous to
+    <xref refid='keyval'>keyval&#x2019;s</xref> <tt>\define@key</tt>, to
+    define keys for use by <xref refid='kvsetkeys'>kvsetkeys</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/kvdefinekeys.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/kvdefinekeys.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

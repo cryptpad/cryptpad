@@ -1,0 +1,920 @@
+%%
+%% This is file `ntheorem.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ntheorem.dtx  (with options: `package')
+%%
+%%
+%% ### WARNING: =============================================================
+%%
+%% This file is a patched version that works (it seems) with hyperref.
+%% Hyperref's \contentsline version breaks with ntheorem because it puts 3
+%% arguments in the text field (e.g.: \contentsline{def}{{def}{1}{foo}}{21})
+%%
+%% To work around the problem, the following steps are implemented:
+%% 1/ Don't use hyperref's contentsline: restore the normal definition at the
+%%    beginning of \thm@processlist.
+%% 2/ Let the different versions of \thm@@thmline take a 5th argument, the one
+%%    provided by hyperref.
+%% 3/ Let \thm@lgobble take a 3rd argument, the one provided by hyperref.
+%% 4/ Do the hyperlinks manually in the different versions of \thm@@thmline
+%%
+%% You'll find comments starting with `%%DV' around my changes in the code.
+%%
+%%
+%%                                           Didier Verna <verna@inf.enst.fr>
+%%
+%% ==========================================================================
+%%
+%% IMPORTANT NOTICE:
+%%
+%% For the copyright see the source file.
+%%
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from ntheorem.sty.
+%%
+%% For distribution of the original source see the terms
+%% for copying and modification in the file ntheorem.dtx.
+%%
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\def\filedate{1998/12/03}
+\def\docdate{1998/12/03}
+\def\fileversion{1.14}
+\def\basename{ntheorem-hyper}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\typeout{Style `\basename', Version \fileversion\space <\filedate>}
+\ProvidesPackage{ntheorem-hyper}[\filedate \space\fileversion]
+\newif\if@thmmarks\@thmmarksfalse
+\newif\ifthm@tempif
+\DeclareOption{thmmarks}{%*********************************
+\PackageInfo{\basename}{Option `thmmarks' loaded}%
+\@thmmarkstrue
+\newcounter{endNonectr}
+\newcounter{currNonectr}
+\newif\ifsetendmark\setendmarktrue
+\gdef\endtrivlist{%
+  \@endtrivlist{\PotEndMark{\hbox{}\nobreak\hfill\nobreak}}}
+\gdef\@endtrivlist#1{%  % from \endtrivlist
+  \if@inlabel \indent\fi
+  \if@newlist \@noitemerr\fi
+  \ifhmode
+     \ifdim\lastskip >\z@ #1\unskip \par  %<<<<<<<<<<<<<<<<<<<<<<
+           \else \unskip \par \fi
+     \fi
+  \if@noparlist \else
+    \ifdim\lastskip >\z@
+       \@tempskipa\lastskip \vskip -\lastskip
+      \advance\@tempskipa\parskip \advance\@tempskipa -\@outerparskip
+      \vskip\@tempskipa
+    \fi
+    \@endparenv
+  \fi}
+\gdef\SetMark@endeqn{\quad}%  as default, cf. option leqno
+\gdef\endequation{\eqno \hbox{\@eqnnum \PotEndMark{\SetMark@endeqn}}%
+    $$\global\@ignoretrue}
+\gdef\[{%
+   \relax\ifmmode
+      \@badmath
+   \else
+      \ifvmode
+         \nointerlineskip
+         \makebox[.6\linewidth]%
+      \fi
+      $$\stepcounter{end\InTheoType ctr}%
+        \@ifundefined{mark\roman{curr\InTheoType ctr}%
+                      \InTheoType\roman{end\InTheoType ctr}}{\relax}%
+          {\ifx\csname\InTheoType Symbol\endcsname\@empty\else
+             \boxmaxdepth=.5ex\begin{array}[b]{l}%
+             \boxmaxdepth=\maxdimen\displaystyle\fi}%
+        \addtocounter{end\InTheoType ctr}{-1}%
+        %%$$ BRACE MATCH HACK
+   \fi}
+\gdef\]{%
+      \stepcounter{end\InTheoType ctr}%
+        \@ifundefined{mark\roman{curr\InTheoType ctr}%
+                      \InTheoType\roman{end\InTheoType ctr}}{\relax}%
+          {\ifx\csname\InTheoType Symbol\endcsname\@empty\else
+              \end{array}\fi}%
+        \addtocounter{end\InTheoType ctr}{-1}%
+   \relax\ifmmode
+      \ifinner
+         \@badmath
+      \else
+          \PotEndMark{\eqno}\global\@ignoretrue$$%%$$ BRACE MATCH HACK
+      \fi
+   \else
+      \@badmath
+   \fi
+   \ignorespaces}
+\gdef\SetMark@endeqnarray#1{\llap{\raisebox{-1.3em}{#1}}}
+\gdef\endeqnarray{%
+      \global\let\Oldeqnnum=\@eqnnum
+      \gdef\@eqnnum{\Oldeqnnum\PotEndMark{\SetMark@endeqnarray}}%
+      \@@eqncr
+      \egroup
+      \global\advance\c@equation\m@ne
+   $$\global\@ignoretrue
+      \global\let\@eqnnum\Oldeqnnum}
+\@namedef{endeqnarray*}{%
+     %    from \@@eqncr:
+    \let\reserved@a\relax
+    \ifcase\@eqcnt \def\reserved@a{& & &}\or \def\reserved@a{& &}%
+     \or \def\reserved@a{&}\else
+       \let\reserved@a\@empty
+       \@latex@error{Too many columns in eqnarray environment}\@ehc\fi
+     \reserved@a {\normalfont \normalcolor \PotEndMark{}}%
+     \global\@eqnswtrue\global\@eqcnt\z@\cr
+     %
+      \egroup
+      \global\advance\c@equation\m@ne
+   $$\global\@ignoretrue}
+\gdef\endtabbing{%
+  \PotEndMark{\`}\@stopline\ifnum\@tabpush >\z@ \@badpoptabs
+  \fi\endtrivlist}
+\gdef\endcenter{%
+  \@endtrivlist
+    {\PotEndMark{\rightskip0pt%
+         \settowidth{\leftskip}%
+          { \csname mark\roman{curr\InTheoType ctr}\InTheoType
+                   \roman{end\InTheoType ctr}\endcsname}%
+         \advance\leftskip\@flushglue\hskip\@flushglue}}}
+\gdef\@empty{}
+\gdef\@endtheorem{%
+  \expandafter
+  \ifx\csname\InTheoType Symbol\endcsname\@empty\setendmarkfalse\fi
+  \@endtrivlist
+    {\ifsetendmark
+     \hbox{}\nobreak\hfill\nobreak\csname\InTheoType Symbol\endcsname
+     \setendmarkfalse \fi}%
+  \ifsetendmark\OrganizeTheoremSymbol\else\global\setendmarktrue\fi}
+\gdef\NoEndMark{\global\setendmarkfalse}
+\gdef\qed{\expandafter\def\csname \InTheoType Symbol\endcsname
+          {\the\qedsymbol}}%
+\gdef\PotEndMark#1{\SetEndMark{\InTheoType}{#1}}%
+\gdef\SetEndMark#1#2{%
+   \stepcounter{end#1ctr}%
+   \@ifundefined{mark\roman{curr#1ctr}#1\roman{end#1ctr}}%
+   {\relax}%
+   {#2{\csname mark\roman{curr#1ctr}#1\roman{end#1ctr}\endcsname}}}%
+\newskip\mysavskip
+\gdef\@bbsphack{%
+    \mysavskip\lastskip
+    \unskip}
+\gdef\@eesphack{%
+    \ifdim\mysavskip>\z@
+    \vskip\mysavskip \else\fi}
+%% \begin{macrocode}
+\gdef\OrganizeTheoremSymbol{%
+  \@bbsphack
+  \edef\thm@tmp{\expandafter\expandafter\expandafter\thm@meaning
+         \expandafter\meaning\csname\InTheoType Symbol\endcsname\relax}%
+  \protected@write\@auxout{}%
+     {\string\global\string\def\string\mark%
+      \roman{curr\InTheoType ctr}\InTheoType \roman{end\InTheoType ctr}%
+      {\thm@tmp}}%
+  \@eesphack}
+} % end of option [thmmarks]
+\DeclareOption{leqno}{%
+  \if@thmmarks
+  \PackageInfo{\basename}{Option `leqno' loaded}%
+   \gdef\SetMark@endeqn#1{\hss\llap{#1}}
+   \gdef\SetMark@endeqnarray#1{\hss\llap{#1}}
+  \fi}%
+\DeclareOption{fleqn}{%
+\if@thmmarks
+ \PackageInfo{\basename}{Option `fleqn' loaded}%
+ \renewcommand\[{\relax
+    \ifmmode\@badmath
+    \else
+     \begin{trivlist}%
+        \@beginparpenalty\predisplaypenalty
+        \@endparpenalty\postdisplaypenalty
+        \item[]\leavevmode
+        \hb@xt@\linewidth\bgroup $\m@th\displaystyle %$
+        \hskip\mathindent\bgroup
+          \stepcounter{end\InTheoType ctr}%
+          \@ifundefined{mark\roman{curr\InTheoType ctr}%
+                        \InTheoType\roman{end\InTheoType ctr}}{\relax}%
+            {\ifx\csname\InTheoType Symbol\endcsname\@empty\else
+              \boxmaxdepth=.5ex\begin{array}[b]{l}%
+              \boxmaxdepth=\maxdimen\displaystyle\fi}%
+          \addtocounter{end\InTheoType ctr}{-1}%
+    \fi}
+ \renewcommand\]{%
+    \stepcounter{end\InTheoType ctr}%
+    \@ifundefined{mark\roman{curr\InTheoType ctr}%
+                  \InTheoType\roman{end\InTheoType ctr}}{\relax}%
+      {\ifx\csname\InTheoType Symbol\endcsname\@empty\else
+          \end{array}\fi}%
+    \addtocounter{end\InTheoType ctr}{-1}%
+    \relax\ifmmode
+                  \egroup $\hfil\PotEndMark{}% $
+                \egroup
+              \end{trivlist}%
+            \else \@badmath
+            \fi}
+\gdef\endequation{%
+     $\hfil % $
+         \displaywidth\linewidth\hbox{\@eqnnum \PotEndMark{\SetMark@endeqn}}%
+       \egroup
+      \endtrivlist}
+\gdef\endeqnarray{%
+    \global\let\Oldeqnnum=\@eqnnum
+    \gdef\@eqnnum{\Oldeqnnum\PotEndMark{\SetMark@endeqnarray}}%
+    \@@eqncr
+    \egroup
+    \global\advance\c@equation\m@ne$$% $$
+    \global\@ignoretrue
+    \global\let\@eqnnum\Oldeqnnum}
+\fi}% end of option fleqn
+\DeclareOption{amsmath}{%
+\if@thmmarks
+ \PackageInfo{\basename}{Option `amsmath' loaded}%
+\newdimen\thm@amstmpdepth
+\gdef\TagsPlusEndmarks{%
+      \global\let\Old@maketag@@@=\maketag@@@
+      \global\let\Old@df@tag=\df@tag
+      \if@eqnsw\SetTagPlusEndMark\else
+        \iftag@\SetTagPlusEndMark
+      \else\SetOnlyEndMark
+      \fi\fi}
+\gdef\SetOnlyEndMark{%
+      \global\tag@true
+        \iftagsleft@
+           \gdef\df@tag{\hbox
+                       to \displaywidth{\hss\PotEndMark{\maketag@@@}}}%
+        \else
+            \gdef\df@tag{\PotEndMark{\maketag@@@}}%
+        \fi}
+\gdef\SetTagPlusEndMark{%
+        \iftagsleft@
+          \gdef\maketag@@@##1{%
+               \hbox to \displaywidth{\m@th\normalfont##1%
+                                      \PotEndMark{\hss}}}%
+        \else
+          \gdef\maketag@@@##1{\hbox{\m@th\normalfont##1%
+                           \llap{\hss\PotEndMark{\raisebox{-1.3em}}}}}%
+        \fi}
+\gdef\RestoreTags{%
+    \global\let\maketag@@@=\Old@maketag@@@
+    \global\let\df@tag=\Old@df@tag}
+\gdef\endgather{%
+      \TagsPlusEndmarks % <<<<<<<<<
+      \math@cr
+      \black@\totwidth@
+    \egroup
+    $$%
+    \RestoreTags        % <<<<<<<<<
+    \global\@ignoretrue}
+\expandafter\let\csname endgather*\endcsname\endgather
+\def\endalign{%
+        \ifingather@\else       % <<<<<<<<<
+           \TagsPlusEndmarks\fi % <<<<<<<<<
+        \math@cr
+        \black@\totwidth@
+    \egroup
+    \ifingather@
+        \restorealignstate@
+        \egroup
+        \nonumber
+        \ifnum0=`{\fi}%
+    \else
+        $$%
+        \RestoreTags            % <<<<<<<<<
+    \fi
+    \global\@ignoretrue}
+\expandafter\let\csname endalign*\endcsname\endalign
+\let\endxalignat\endalign
+\expandafter\let\csname endxalignat*\endcsname\endalign
+\let\endxxalignat\endalign
+\let\endalignat\endalign
+\expandafter\let\csname endalignat*\endcsname\endalign
+\let\endflalign\endalign
+\expandafter\let\csname endflalign*\endcsname\endalign
+\def\lendmultline@{%
+        \@eqnswfalse\tag@true\tagsleft@false
+        \rendmultline@}
+\def\rendmultline@{%
+    \TagsPlusEndmarks           % <<<<<<<<<
+    \iftag@
+        \begingroup
+            \ifshifttag@
+                \hskip\multlinegap
+                \llap{\vtop{%
+                    \raise@tag
+                    \normalbaselines
+                    \setbox\@ne\null
+                    \dp\@ne\lineht@
+                    \box\@ne
+                    \hbox{\strut@\make@display@tag}%
+                }}%
+            \else
+                \hskip\multlinetaggap
+                \make@display@tag
+            \fi
+        \endgroup
+    \else
+        \hskip\multlinegap
+    \fi
+    \hfilneg
+        \math@cr
+    \egroup$$%
+    \RestoreTags}                % <<<<<<<<<
+\def\[{%
+     \relax\ifmmode% \RIfM@ <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        \@badmath
+    \else
+        \DN@{%
+            $$%
+            \ingather@true
+            \inany@true
+            \def\\{\@amsmath@err{\Invalid@@\\}\@eha}%
+            \tabskip\@mathmargin
+            \halign to \displaywidth\bgroup
+                \if@fleqn\else\hfil\fi
+                \setboxz@h{$\m@th\displaystyle{####}$}%
+                \global\totwidth@\wdz@
+                \global\thm@amstmpdepth\dp0% <<<<<<<<<<<<
+                \boxz@
+                \tabskip 0pt plus 1000pt%<<<<<<<<<<<<<<
+                & ####% <<<<<<<<<<<<<<<<<<<<<<<<
+                \tabskip 0pt%
+                \cr
+        }%
+        \@xp\next@
+    \fi}
+\def\]{%
+     \relax\ifmmode%  \RIfM@ <<<<<<<<<<
+        \DN@{%
+              \PotEndMark{&\raisebox{-\thm@amstmpdepth}}% <<<<<<<<<
+              \crcr
+            \black@\totwidth@
+            \egroup
+            $$%
+        }%
+        \@xp\next@
+    \else
+        \@badmath
+    \fi}
+\def\equation{\gather\def\\{\@amsmath@err{\Invalid@@\\}\@eha}}
+\def\endequation{\endgather}
+\renewenvironment{equation*}{\equation}{\nonumber\endequation}
+\else\PackageError{\basename}{Option amsmath cannot be used without
+    option thmmarks.}\@eha
+\fi
+}% end of option amsmath
+\let\thm@usestd\@undefined
+\DeclareOption{standard}{\let\thm@usestd\relax}
+\let\thm@noconfig\@undefined
+\DeclareOption{noconfig}{\let\thm@noconfig\relax}
+\gdef\InTheoType{None}
+\def\output@None{None}
+\def\None{None}
+\gdef\newtheoremstyle#1#2#3{%
+  \expandafter\@ifundefined{th@#1}%
+   {\expandafter\gdef\csname th@#1\endcsname{%
+    \def\@begintheorem####1####2{#2}%
+    \def\@opargbegintheorem####1####2####3{#3}}}%
+   {\PackageError{\basename}{Theorem style #1 already defined}\@eha}}
+\gdef\renewtheoremstyle#1#2#3{%
+  \expandafter\@ifundefined{th@#1}%
+   {\PackageError{\basename}{Theorem style #1 undefined}\@ehc}%
+     {}%
+  \expandafter\let\csname th@#1\endcsname\relax
+  \newtheoremstyle{#1}{#2}{#3}}
+\newtheoremstyle{plain}%
+  {\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator]}%
+  {\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\ (##3)\theorem@separator]}
+\newtheoremstyle{break}%
+  {\item\hbox to \textwidth{\theorem@headerfont ##1\
+      ##2\theorem@separator\hfill}}%
+  {\item\hbox to \textwidth{\theorem@headerfont ##1\ ##2\
+      (##3)\theorem@separator\hfill}}
+\newtheoremstyle{change}%
+  {\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\theorem@separator]}%
+  {\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\ (##3)\theorem@separator]}
+\newtheoremstyle{changebreak}%
+  {\item\hbox to \textwidth{\theorem@headerfont ##2\
+      ##1\theorem@separator\hfill}}%
+  {\item\hbox to \textwidth{\theorem@headerfont ##2\ ##1\
+      (##3)\theorem@separator\hfill}}
+\newtheoremstyle{margin}%
+  {\item[\theorem@headerfont \llap{##2}\hskip\labelsep ##1\theorem@separator]}%
+  {\item[\theorem@headerfont \llap{##2}\hskip\labelsep ##1\ (##3)\theorem@separator]}
+\newtheoremstyle{marginbreak}%
+  {\item\hbox to \textwidth{\theorem@headerfont \llap{##2}\hskip\labelsep
+      ##1\theorem@separator\hfill}}%
+  {\item\hbox to \textwidth{\theorem@headerfont
+      \llap{##2}\hskip\labelsep
+      ##1\ (##3)\theorem@separator\hfill}}
+\newtheoremstyle{nonumberplain}%
+  {\item[\theorem@headerfont\hskip\labelsep ##1\theorem@separator]}%
+  {\item[\theorem@headerfont\hskip \labelsep ##1\ (##3)\theorem@separator]}
+\newtheoremstyle{nonumberbreak}%
+  {\item\hbox to \textwidth{\theorem@headerfont\hskip\labelsep
+       ##1\theorem@separator\hfill}}%
+  {\item\hbox to \textwidth{\theorem@headerfont\hskip\labelsep
+       ##1\ (##3)\theorem@separator\hfill}}
+\newtheoremstyle{empty}%
+  {\item~\hfill}%
+  {\item\hbox to \textwidth{\theorem@headerfont##3\hfill}}
+\@namedef{th@nonumbermargin}{\th@nonumberplain}
+\@namedef{th@nonumberchange}{\th@nonumberplain}
+\@namedef{th@nonumbermarginbreak}{\th@nonumberbreak}
+\@namedef{th@nonumberchangebreak}{\th@nonumberbreak}
+\@namedef{th@plainNo}{\th@nonumberplain}
+\@namedef{th@breakNo}{\th@nonumberplain}
+\@namedef{th@marginNo}{\th@nonumberplain}
+\@namedef{th@changeNo}{\th@nonumberplain}
+\@namedef{th@marginbreakNo}{\th@nonumberbreak}
+\@namedef{th@changebreakNo}{\th@nonumberbreak}
+\gdef\theoremstyle#1{%
+   \@ifundefined{th@#1}{\@warning
+          {Unknown theoremstyle `#1'. Using `plain'}%
+          \theorem@style{plain}}%
+      {\theorem@style{#1}}}
+\newtoks\theorem@style
+\newtoks\theorem@@style
+\global\theoremstyle{plain}
+\newtoks\theorembodyfont
+\global\theorembodyfont{\itshape}
+\newtoks\theoremnumbering
+\global\theoremnumbering{arabic}
+\newskip\theorempreskipamount
+\newskip\theorempostskipamount
+\global\theorempreskipamount\topsep
+\global\theorempostskipamount\topsep
+\newdimen\theoremindent
+\global\theoremindent0cm
+\newdimen\theorem@indent
+\newtoks\theoremheaderfont
+\global\theoremheaderfont{\normalfont\bfseries}
+\def\theorem@headerfont{\normalfont\bfseries}
+\newtoks\theoremseparator
+\global\theoremseparator{}
+\def\theorem@separator{}
+\newtoks\theoremsymbol
+\global\theoremsymbol{}
+\newtoks\qedsymbol
+\global\qedsymbol{}
+\DeclareOption{amsthm}{%
+  \PackageInfo{\basename}{Option `amsthm' loaded}%
+\def\swapnumbers{\PackageError{\basename}{swapnumbers not implemented.
+  Use theoremstyle change instead.}\@eha}
+
+\gdef\th@plain{%
+  \def\theorem@headerfont{\normalfont\bfseries}\itshape%
+  \def\@begintheorem##1##2{%
+      \item[\hskip\labelsep \theorem@headerfont ##1\ ##2.]}%
+  \def\@opargbegintheorem##1##2##3{%
+     \item[\hskip\labelsep \theorem@headerfont ##1\ ##2\ (##3).]}}
+\gdef\th@nonumberplain{%
+  \def\theorem@headerfont{\normalfont\bfseries}\itshape%
+  \def\@begintheorem##1##2{%
+      \item[\hskip\labelsep \theorem@headerfont ##1.]}%
+  \def\@opargbegintheorem##1##2##3{%
+     \item[\hskip\labelsep \theorem@headerfont ##1\ (##3).]}}
+\gdef\th@definition{%
+  \th@plain\def\theorem@headerfont{\normalfont\bfseries}\itshape}
+\gdef\th@nonumberdefinition{%
+  \th@nonumberplain\def\theorem@headerfont{\normalfont\bfseries}\itshape}
+\gdef\th@remark{%
+  \th@plain\def\theorem@headerfont{\itshape}\normalfont}
+\gdef\th@nonumberremark{%
+  \th@nonumberplain\def\theorem@headerfont{\itshape}\normalfont}
+\newcounter{proof}%
+\if@thmmarks
+ \newcounter{currproofctr}%
+ \newcounter{endproofctr}%
+\fi
+\newcommand{\openbox}{\leavevmode
+  \hbox to.77778em{%
+  \hfil\vrule
+  \vbox to.675em{\hrule width.6em\vfil\hrule}%
+  \vrule\hfil}}
+\gdef\proofSymbol{\openbox}
+\newcommand{\proofname}{Proof}
+\newenvironment{proof}[1][\proofname]{
+  \th@nonumberplain
+  \def\theorem@headerfont{\itshape}%
+  \normalfont
+  \theoremsymbol{\ensuremath{_\blacksquare}}
+  \@thm{proof}{proof}{#1}}%
+  {\@endtheorem}
+}% end of option amsthm
+\newskip\thm@topsepadd
+\gdef\newtheorem{%
+   \@ifstar
+     {\edef\@tempa{{nonumber\the\theorem@style}}%
+      \expandafter\theorem@@style\@tempa}%
+     {\edef\@tempa{{\the\theorem@style}}%
+      \expandafter\theorem@@style\@tempa}%
+  \@newtheorem}
+
+\gdef\renewtheorem{%
+   \@ifstar
+     {\edef\@tempa{{nonumber\the\theorem@style}}%
+      \expandafter\theorem@@style\@tempa}%
+     {\edef\@tempa{{\the\theorem@style}}%
+      \expandafter\theorem@@style\@tempa}%
+  \@renewtheorem}
+\gdef\@newtheorem#1{%
+  \thm@tempiffalse
+  \expandafter\@ifdefinable\csname #1\endcsname
+  {\expandafter\@ifdefinable\csname #1*\endcsname
+   {\thm@tempiftrue
+    \thm@definelthm{#1}% for lists
+    \if@thmmarks
+      \expandafter\@ifundefined{c@curr#1ctr}%
+        {\newcounter{curr#1ctr}}{}%
+      \expandafter\@ifundefined{c@end#1ctr}%
+        {\newcounter{end#1ctr}}{}%
+    \fi
+    \expandafter\xdef\csname #1Symbol\endcsname{\the\theoremsymbol}%
+    \expandafter\gdef\csname#1\endcsname{%
+       \let\thm@starredenv\@undefined
+       \csname mkheader@#1\endcsname}%
+    \expandafter\gdef\csname#1*\endcsname{%
+       \let\thm@starredenv\relax
+       \csname mkheader@#1\endcsname}%
+    \def\@tempa{\expandafter\noexpand\csname end#1\endcsname}%
+    \expandafter\xdef\csname end#1*\endcsname{\@tempa}%
+    \expandafter\xdef\csname setparms@#1\endcsname
+     {\noexpand \def \noexpand \theorem@headerfont
+        {\the\theoremheaderfont\noexpand\theorem@checkbold}%
+      \noexpand \def \noexpand \theorem@separator
+        {\the\theoremseparator}%
+      \noexpand \def \noexpand \theorem@indent
+        {\the\theoremindent}%
+      \the \theorembodyfont
+      \noexpand\csname th@\the \theorem@@style \endcsname}}}%
+  \@ifnextchar[{\@othm{#1}}{\@nthm{#1}}}% MUST NOT BE IN ANY IF !!!
+\gdef\@renewtheorem#1{%
+  \expandafter\@ifundefined{#1}%
+   {\PackageError{\basename}{Theorem style #1 undefined}\@ehc}%
+     {}%
+  \expandafter\let\csname #1\endcsname\relax
+  \expandafter\let\csname #1*\endcsname\relax
+  \newtheorem{#1}}
+\gdef\@nthm#1#2{%
+  \expandafter\xdef\csname num@addtheoremline#1\endcsname{%
+              \noexpand\@num@addtheoremline{#1}{#2}}%
+  \expandafter\xdef\csname nonum@addtheoremline#1\endcsname{%
+              \noexpand\@nonum@addtheoremline{#1}{#2}}%
+  \expandafter\xdef\csname output@#1\endcsname{#2}%
+  \@ifnextchar[{\@xnthm{#1}{#2}}{\@ynthm{#1}{#2}}}
+\gdef\@othm#1[#2]#3{%
+  \@ifundefined{c@#2}{\@nocounterr{#2}}%
+   {\ifthm@tempif
+     \global\@namedef{the#1}{\@nameuse{the#2}}%
+     \expandafter\xdef\csname num@addtheoremline#1\endcsname{%
+              \noexpand\@num@addtheoremline{#1}{#3}}%
+     \expandafter\xdef\csname nonum@addtheoremline#1\endcsname{%
+              \noexpand\@nonum@addtheoremline{#1}{#3}}%
+     \expandafter\xdef\csname output@#1\endcsname{#3}%
+     \expandafter\gdef\csname mkheader@#1\endcsname
+       {\csname setparms@#1\endcsname
+        \@thm{#1}{#2}{#3}}%
+     \global\@namedef{end#1}{\@endtheorem}\fi}}
+\gdef\@xnthm#1#2[#3]{%
+  \ifthm@tempif
+     \expandafter\@ifundefined{c@#1}%
+        {\@definecounter{#1}}{}%
+     \@newctr{#1}[#3]%
+     \expandafter\xdef\csname the#1\endcsname{%
+       \expandafter\noexpand\csname the#3\endcsname \@thmcountersep
+          {\noexpand\csname\the\theoremnumbering\endcsname{#1}}}%
+     \expandafter\gdef\csname mkheader@#1\endcsname
+       {\csname setparms@#1\endcsname
+        \@thm{#1}{#1}{#2}}%
+     \global\@namedef{end#1}{\@endtheorem}\fi}
+\gdef\@ynthm#1#2{%
+  \ifthm@tempif
+     \expandafter\@ifundefined{c@#1}%
+        {\@definecounter{#1}}{}%
+     \expandafter\xdef\csname the#1\endcsname
+        {\noexpand\csname\the\theoremnumbering\endcsname{#1}}%
+     \expandafter\gdef\csname mkheader@#1\endcsname
+       {\csname setparms@#1\endcsname
+        \@thm{#1}{#1}{#2}}%
+     \global\@namedef{end#1}{\@endtheorem}\fi}
+\gdef\@thm#1#2#3{%
+   \if@thmmarks
+     \stepcounter{end\InTheoType ctr}%
+   \fi
+   \renewcommand{\InTheoType}{#1}%
+   \if@thmmarks
+     \stepcounter{curr#1ctr}%
+     \setcounter{end#1ctr}{0}%
+   \fi
+   \refstepcounter{#2}%
+   \thm@topsepadd \theorempostskipamount   % cf. latex.ltx: \@trivlist
+   \ifvmode \advance\thm@topsepadd\partopsep\fi
+   \trivlist
+   \@topsep \theorempreskipamount
+   \@topsepadd \thm@topsepadd        % used by \@endparenv
+   \advance\linewidth -\theorem@indent
+   \advance\@totalleftmargin \theorem@indent
+   \parshape \@ne \@totalleftmargin \linewidth
+   \@ifnextchar[{\@ythm{#1}{#2}{#3}}{\@xthm{#1}{#2}{#3}}}
+\def\@xthm#1#2#3{%
+  \@begintheorem{#3}{\csname the#2\endcsname}%
+  \ifx\thm@starredenv\@undefined
+    \thm@thmcaption{#1}{{#3}{\csname the#2\endcsname}{}}\fi
+  \ignorespaces}
+\def\@ythm#1#2#3[#4]{%
+  \expandafter\global\expandafter\def\csname#1name\endcsname{#4}%
+  \@opargbegintheorem{#3}{\csname the#2\endcsname}{#4}%
+  \ifx\thm@starredenv\@undefined
+    \thm@thmcaption{#1}{{#3}{\csname the#2\endcsname}{#4}}\fi%
+  \ignorespaces}
+\DeclareOption{thref}{%*********************************
+  \PackageInfo{\basename}{Option `thref' loaded}%
+\def\label#1{
+  \@ifnextchar[%]
+     {\label@optarg{#1}}%
+     {\label@optarg{#1}%
+      [\csname output@\InTheoType\endcsname]}}
+\def\label@optarg#1[#2]{\@bsphack
+  \protected@write\@auxout{}%
+     {\string\newlabel{#1}{{\@currentlabel}{\thepage}}[#2]}%
+  \@esphack}
+\def\@newl@bel#1#2#3{%
+  \@ifundefined{#1@#2}%
+    \relax
+    {\gdef \@multiplelabels {%
+       \@latex@warning@no@line{There were multiply-defined labels}}%
+     \@latex@warning@no@line{Label `#2' multiply defined}}%
+  \global\@namedef{#1@#2}{#3}%
+  \@ifnextchar[{\set@labeltype#1#2}{\relax}%]
+  }
+\def\set@labeltype#1#2[#3]{\global\@namedef{#1@#2@type}{#3}}
+\@ifpackageloaded{babel}%
+  {\message{ntheorem-babel adapation loaded}%
+   \def\newlabel#1#2{%
+     \@ifnextchar[{\nth@bbl@newlabel{#1}{#2}}%]
+                  {\nth@bbl@newlabel{#1}{#2}[None]}}%
+   \def\nth@bbl@newlabel#1#2[#3]{%
+     \@safe@activestrue\bbl@newlabel{#1}{#2}[#3]\@safe@activesfalse}}%
+  \relax
+\def\thref#1{%
+   \expandafter\ifx\csname r@#1@type\endcsname\None
+     \PackageWarning{\basename}{thref: Reference Type of `#1' on page
+      \thepage \space undefined}\G@refundefinedtrue
+     \else\csname r@#1@type\endcsname~\fi%
+   \expandafter\@setref\csname r@#1\endcsname\@firstoftwo{#1}}
+}% end of option thref
+\def\thm@thmcaption#1#2{\thm@@thmcaption{#1}#2}
+\def\thm@@thmcaption#1#2#3#4{%
+    \thm@parseforwriting{#4}%
+    \edef\thm@t{{#2}{#3}{\thm@tmp}}%
+    \addcontentsline{thm}{#1}{\thm@t}}
+\def\theoremlistall{%
+    \let\thm@@thmlstart=\relax
+    \let\thm@@thmlend=\relax
+%%DV Use a fith argument (supplied by hyperref) and do the links manually
+    \def\thm@@thmline##1##2##3##4##5{%
+        \ifx\\##5\\%
+            \@dottedtocline{-2}{0em}{2.3em}%
+                {\protect\numberline{##2}##3}%
+                {##4}
+        \else
+            \ifhy@linktocpage
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {\protect\numberline{##2}##3}%
+                    {\hyper@linkstart{link}{##5}{##4}\hyper@linkend}
+            \else
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {\hyper@linkstart{link}{##5}{\protect\numberline{##2}##3}%
+                      \hyper@linkend}%
+                    {##4}
+            \fi
+        \fi}}
+%%DV    \def\thm@@thmline##1##2##3##4{%
+%%DV        \@dottedtocline{-2}{0em}{2.3em}%
+%%DV                   {\protect\numberline{##2}##3}%
+%%DV                   {##4}}}
+\def\theoremlistallname{%
+    \let\thm@@thmlstart=\relax
+    \let\thm@@thmlend=\relax
+%%DV Use a fith argument (supplied by hyperref) and do the links manually
+    \def\thm@@thmline##1##2##3##4##5{%
+        \ifx\\##5\\%
+            \@dottedtocline{-2}{0em}{2.3em}%
+                {##1 \protect\numberline{##2}##3}%
+                {##4}
+        \else
+            \ifhy@linktocpage
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {##1 \protect\numberline{##2}##3}%
+                    {\hyper@linkstart{link}{##5}{##4}\hyper@linkend}
+            \else
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {\hyper@linkstart{link}{##5}%
+                      {##1 \protect\numberline{##2}##3}\hyper@linkend}%
+                    {##4}
+            \fi
+        \fi}}
+%%DV    \def\thm@@thmline##1##2##3##4{%
+%%DV         \@dottedtocline{-2}{0em}{2.3em}%
+%%DV                   {##1 \protect\numberline{##2}##3}%
+%%DV                   {##4}}}
+\def\theoremlistoptional{%
+    \let\thm@@thmlstart=\relax
+    \let\thm@@thmlend=\relax
+%%DV Use a fith argument (supplied by hyperref) and do the links manually
+    \def\thm@@thmline##1##2##3##4##5{%
+      \ifx\empty ##3%
+      \else%
+        \ifx\\##5\\%
+            \@dottedtocline{-2}{0em}{2.3em}%
+                {\protect\numberline{##2}##3}%
+                {##4}
+        \else
+            \ifhy@linktocpage
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {\protect\numberline{##2}##3}%
+                    {\hyper@linkstart{link}{##5}{##4}\hyper@linkend}
+            \else
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {\hyper@linkstart{link}{##5}{\protect\numberline{##2}##3}%
+                      \hyper@linkend}%
+                    {##4}
+            \fi
+        \fi
+      \fi}}
+%%DV    \def\thm@@thmline##1##2##3##4{%
+%%DV         \ifx\empty ##3%
+%%DV         \else%
+%%DV            \@dottedtocline{-2}{0em}{2.3em}%
+%%DV                     {\protect\numberline{##2}##3}%
+%%DV                     {##4}%
+%%DV         \fi}}
+\def\theoremlistoptname{%
+    \let\thm@@thmlstart=\relax
+    \let\thm@@thmlend=\relax
+%%DV Use a fith argument (supplied by hyperref) and do the links manually
+    \def\thm@@thmline##1##2##3##4##5{%
+      \ifx\empty ##3%
+      \else
+        \ifx\\##5\\%
+            \@dottedtocline{-2}{0em}{2.3em}%
+                {##1 \protect\numberline{##2}##3}%
+                {##4}
+        \else
+            \ifhy@linktocpage
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {##1 \protect\numberline{##2}##3}%
+                    {\hyper@linkstart{link}{##5}{##4}\hyper@linkend}
+            \else
+                \@dottedtocline{-2}{0em}{2.3em}%
+                    {\hyper@linkstart{link}{##5}%
+                      {##1 \protect\numberline{##2}##3}\hyper@linkend}%
+                    {##4}
+            \fi
+        \fi
+      \fi}}
+%%DV    \def\thm@@thmline##1##2##3##4{%
+%%DV         \ifx\empty ##3%
+%%DV         \else%
+%%DV            \@dottedtocline{-2}{0em}{2.3em}%
+%%DV                     {##1 \protect\numberline{##2}##3}%
+%%DV                     {##4}%
+%%DV         \fi}}
+\theoremlistall
+\def\theoremlisttype#1{%
+    \@ifundefined{thm@thml@#1}%
+       {\PackageError{\basename}{Listtype #1 not defined}\@eha}
+       {\csname thm@thml@#1\endcsname}}
+\def\thm@thml@all{\theoremlistall}
+\def\thm@thml@opt{\theoremlistoptional}
+\def\thm@thml@optname{\theoremlistoptname}
+\def\thm@thml@allname{\theoremlistallname}
+\def\newtheoremlisttype#1#2#3#4{%
+  \@ifundefined{thm@thml@#1}%
+  {\expandafter\gdef\csname thm@thml@#1\endcsname{%
+    \def\thm@@thmlstart{#2}%
+    \def\thm@@thmline####1####2####3####4{#3}%
+    \def\thm@@thmlend{#4}}%
+  }{\PackageError{\basename}{list type #1 already defined}\@eha}}
+\def\renewtheoremlisttype#1#2#3#4{%
+  \@ifundefined{thm@thml@#1}%
+    {\PackageError{\basename}{List type #1 not defined}\@ehc}{}%
+  \expandafter\let\csname thm@thml@#1\endcsname\relax
+  \newtheoremlisttype{#1}{#2}{#3}{#4}}
+%%DV Use a third argument (supplied by hyperref)
+\def\thm@thmline#1#2#3{\thm@@thmline#1{#2}{#3}}
+%%DV\def\thm@thmline#1#2{\thm@@thmline#1{#2}}
+%%DV Use a third argument (supplied by hyperref)
+\long\def\thm@lgobble#1#2#3{\ignorespaces}
+%%DV\long\def\thm@lgobble#1#2{\ignorespaces}
+\def\thm@definelthm#1{%
+ \expandafter\gdef\csname l@#1\endcsname{\thm@lgobble}%
+ \expandafter\gdef\csname thm@listdo#1\endcsname{\thm@lgobble}}
+\long\def\thm@inlistdo#1#2{#2}%
+\def\listtheorems#1{\begingroup%
+  \c@tocdepth=-2%
+  \def\thm@list{#1}\thm@processlist%
+  \endgroup}
+\def\thm@processlist{%
+ \begingroup%
+ \typeout{** Generating table of \thm@list}%
+%%DV: don't use hyperref's \contentsline !! Use the normal definition.
+ \def\contentsline##1{\csname l@##1\endcsname}
+ \thm@@thmlstart
+ \@for\thm@currentlist:=\thm@list\do{%
+  \ifx\thm@currentlist\@empty\else%
+   \expandafter\gdef\csname l@\thm@currentlist\endcsname{\thm@thmline}%
+   \expandafter\gdef\csname thm@listdo\thm@currentlist\endcsname{\thm@inlistdo}%
+  \fi%
+ }%
+ \@input{\jobname .thm}%
+ \thm@@thmlend%
+ \@for\thm@currentlist:=\thm@list\do{%
+  \ifx\thm@currentlist\@empty\else%
+   \expandafter\gdef\csname l@\thm@currentlist\endcsname{\thm@lgobble}%
+   \expandafter\gdef\csname thm@listdo\thm@currentlist\endcsname{\thm@lgobble}%
+  \fi%
+ }%
+ \endgroup}
+\def\thm@enablelistoftheorems{%
+  \begingroup%
+    \makeatletter%
+    \if@filesw%
+      \expandafter\newwrite\csname tf@thm\endcsname%
+      \immediate\openout \csname tf@thm\endcsname \jobname.thm\relax%
+    \fi%
+    \@nobreakfalse%
+  \endgroup}
+\def\addtheoremline{\@ifstar{\nonum@addtheoremline}{\num@addtheoremline}}
+\def\nonum@addtheoremline#1{\csname nonum@addtheoremline#1\endcsname}%
+\def\num@addtheoremline#1{\csname num@addtheoremline#1\endcsname}%
+\def\@nonum@addtheoremline#1#2#3{%
+    \thm@parseforwriting{#3}%
+    \edef\thm@t{{#2}{}{\thm@tmp}}%
+    \addcontentsline{thm}{#1}{\thm@t}}
+\def\@num@addtheoremline#1#2#3{%
+   \thm@parseforwriting{#3}%
+    \edef\thm@t{{#2}{\csname the#1\endcsname}{\thm@tmp}}%
+    \addcontentsline{thm}{#1}{\thm@t}}
+\long\def\addtotheoremfile{%
+  \@ifnextchar[{\@@addtotheoremfile}{\@addtotheoremfile}}
+\long\def\@addtotheoremfile#1{%
+   \thm@parseforwriting{#1}%
+   \protected@write\@auxout%
+      {}{\string\@writefile{thm}{\thm@tmp}}}
+\long\def\@@addtotheoremfile[#1]#2{%
+   \thm@parseforwriting{#2}%
+   \protected@write\@auxout%
+      {}{\string\@writefile{thm}{\string\theoremlistdo{#1}{\thm@tmp}}}}
+\long\def\theoremlistdo#1#2{\csname thm@listdo#1\endcsname{#1}{#2}}
+\AtEndDocument{\thm@enablelistoftheorems}
+\def\thm@meaning#1->#2\relax{#2}% remove "macro:->"
+\long\def\thm@parseforwriting#1{%
+    \def\thm@tmp{#1}%
+    \edef\thm@tmp{\expandafter\thm@meaning\meaning\thm@tmp\relax}}
+\def\theorem@checkbold{\if b\expandafter\@car\f@series\@nil\boldmath\fi}
+\def\@greek#1{\theorem@checkbold%
+ \ifcase#1\or$\alpha$\or$\beta$\or$\gamma$\or$\delta$\or$\varepsilon$%
+  \or$\zeta$\or$\eta$\or$\vartheta$\or$\iota$\or$\kappa$\or$\lambda$\or$%
+  \mu$\or$\nu$\or$\xi$\or$ o$\or$\varpi$\or$\varrho$\or$\varsigma$\or$\tau$%
+  \or$\upsilon$\or$\varphi$\or$\chi$\or$\psi$\or$\omega$\else\@ctrerr\fi}
+\def\@Greek#1{\theorem@checkbold%
+ \ifcase#1\or A\or B\or$\Gamma$\or$\Delta$\or E%
+  \or Z\or H\or$\Theta$\or I\or K\or$\Lambda$\or M%
+  \or N\or$\Xi$\or O\or$\Pi$\or P\or$\Sigma$\or T%
+  \or$\Upsilon$\or$\Phi$\or X\or$\Psi$\or$\Omega$\else\@ctrerr\fi}
+\def\greek#1{\@greek{\csname c@#1\endcsname}}
+\def\Greek#1{\@Greek{\csname c@#1\endcsname}}
+\ProcessOptions\relax
+\ifx\thm@noconfig\@undefined
+\InputIfFileExists{ntheorem.cfg}%
+  {\PackageInfo{\basename}{Local config file ntheorem.cfg used}}%
+  {\ifx\thm@usestd\@undefined%
+   \else%
+     \InputIfFileExists{ntheorem.std}%
+      {\PackageInfo{\basename}{Standard config file ntheorem.std used}}{}
+   \fi}
+\fi
+\endinput
+%%
+%% End of file `ntheorem.sty'.

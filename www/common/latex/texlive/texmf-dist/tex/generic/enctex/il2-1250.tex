@@ -1,0 +1,24 @@
+%%% The encoding table, v.Aug.1997 (C) Petr Ol\v s\'ak
+%%% input: ISO8859-2, in system used: CP1250
+\ifx\xordcode\undefined
+   \message{Warning: the xord/xchr accessing is not possible}
+   \endinput \fi
+\let\Xordcode=\relax  \let\Yordcode=\relax
+\def\setinputcode #1 #2 {\Xordcode#1=\the\xordcode#2\relax
+                         \Yordcode#2=\the\xordcode#2\relax}
+\xdef\restoreinputencoding{%
+%
+%                 il2  1250
+   \setinputcode  "A5  "BC  % \v L
+   \setinputcode  "B5  "BE  % \v l
+   \setinputcode  "A9  "8A  % \v S
+   \setinputcode  "B9  "9A  % \v s
+   \setinputcode  "AB  "8D  % \v T
+   \setinputcode  "BB  "9D  % \v t
+   \setinputcode  "AE  "8E  % \v Z
+   \setinputcode  "BE  "9E  % \v z
+}
+\def\Yordcode#1=#2\relax{} \let\Xordcode=\xordcode
+\restoreinputencoding  % nyní se nastaví nový xord
+\def\Xordcode#1=#2\relax{} \let\Yordcode=\xordcode
+

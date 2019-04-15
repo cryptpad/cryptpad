@@ -1,0 +1,159 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+% \iffalse
+%<*driver>
+\ProvidesFile{lthyphen.dtx}
+%</driver>
+%<default>\ProvidesFile{hyphen.ltx}
+% \fi
+%         \ProvidesFile{lthyphen.dtx}
+          [1994/12/04 v1.0h LaTeX Kernel (hyphenation interface)]
+%
+%
+% \CheckSum{13}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+%\iffalse        This is a META comment
+%
+% File `lthyphen.dtx'.
+% Copyright (C) 1994-94 LaTeX3 project, Frank Mittelbach and
+% Rainer Sch\"opf, all rights reserved.
+%
+%\fi
+% \GetFileInfo{lthyphen.dtx}
+% \title{The \texttt{lthyphen.dtx} file\thanks
+%     {This file has version number \fileversion, dated \filedate.}\\
+%       for use with \LaTeXe}
+% \author{Frank Mittelbach, Chris Rowley \and Rainer Sch\"opf}
+%
+% \def\dst{{\normalfont\scshape docstrip}}
+% \setcounter{StandardModuleDepth}{1}
+%
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This file contains the code for loading hyphenation patterns into
+% \LaTeX. Most of this will end up in a file called
+% \texttt{hyphen.ltx}. If you wish to customize your \LaTeX{} system
+% in respect of hyphenation patterns, write a file
+% \texttt{hyphen.cfg}. If this file exists, it will be loaded instead
+% of \texttt{hyphen.ltx}.  See the comments below for additional
+% information.
+%
+% \StopEventually{}
+%
+% To produce the printed version of this file the following code
+% is used. It can be extracted with the \dst{} program, or one can run
+% this file directly through \LaTeXe{}.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{lthyphen.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+% \changes{v0.1c}{1994/03/07}{move the 2ekernel code to ltfinal.dtx}
+% \changes{v1.0g}{1994/12/01}{Rename lthyphen.ltx/cfg to hyphen.ltx/cfg}
+% \changes{v1.0h}{1994/12/04}{Documentation edits for /1989}
+%
+% The default file |hyphen.ltx| loads hyphenation patterns for US
+% english.  If you want to load additional or other hyphenation
+% patterns, you should create a file |hyphen.cfg|. This is best done
+% by starting from |hyphen.ltx|.
+%
+% For backward compatibility, the default file, |hyphen.ltx|,
+% first tries to load
+% the file |hyphen.tex|. If this file exists, an information
+% message is issued and the appropriate defaults for \TeX's internal
+% parameters are set: |\language| is initialized to $0$, and
+% |\lefthyphenmin| and |\righthyphenmin| to $2$ and $3$, respectively,
+% to disallow x- or -xx breaks.
+%    \begin{macrocode}
+%<*default>
+\InputIfFileExists{hyphen.tex}%
+   {\message{Loading hyphenation patterns for US english.}%
+    \language=0
+    \lefthyphenmin=2 \righthyphenmin=3 }%
+%    \end{macrocode}
+% Otherwise, since we cannot do anything without any hyphenation
+% patterns, an error message is printed and the Ini\TeX{} run
+% is terminated by invoking |\@@end| (which is the \LaTeXe{} name
+% for \TeX's |\end| primitive).
+%    \begin{macrocode}
+   {\errhelp{The configuration for hyphenation is incorrectly
+             installed.^^J%
+             If you don't understand this error message you need
+             to seek^^Jexpert advice.}%
+    \errmessage{OOPS! I can't find any hyphenation patterns for
+                US english.^^J \space Think of getting some or the
+                latex2e setup will never succeed}\@@end}
+%</default>
+%    \end{macrocode}
+% The following example describes the possible contents of a file
+% |hyphen.cfg| that will load both US English and German hyphenation
+% patterns, making the former the default.
+% It sets |\language| to $0$ for the US patterns and to $1$ for the
+% German patterns.
+% Then |\language| is set to $0$ to make this the default and the
+% default values of |\lefthyphenmin| and |\righthyphenmin| are set.
+% \begin{verbatim}
+%\language=0
+%\input hyphen % (or \input ushyphen1 if the file has been renamed)
+%\language=1
+%\input ghyph31
+%\language=0
+%\lefthyphenmin=2
+%\righthyphenmin=3
+%\endinput
+%\end{verbatim}
+%
+% Another possibility is to use the package |babel|, by Johannes Braams.
+% That package is distributed with a suitable |hyphen.cfg| file.
+%
+%
+% \Finale
+%
+\endinput

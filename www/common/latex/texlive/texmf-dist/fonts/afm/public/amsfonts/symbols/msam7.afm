@@ -1,0 +1,181 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName MSAM7
+FullName MSAM7
+FamilyName Euler
+Weight Medium
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name MSAM7.)
+ItalicAngle 0
+IsFixedPitch false
+UnderlinePosition 0
+UnderlineThickness 0
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox 29 -552 1490 1102
+StartCharMetrics 164
+C 0 ; WX 892 ; N squaredot ; B 78 0 814 756 ;
+C 1 ; WX 892 ; N squareplus ; B 78 0 814 756 ;
+C 2 ; WX 892 ; N squaremultiply ; B 78 0 814 756 ;
+C 3 ; WX 892 ; N square ; B 78 0 814 756 ;
+C 4 ; WX 892 ; N squaresolid ; B 78 0 814 756 ;
+C 5 ; WX 339 ; N squaresmallsolid ; B 78 0 260 202 ;
+C 6 ; WX 769 ; N diamond ; B 78 -143 691 714 ;
+C 7 ; WX 769 ; N diamondsolid ; B 78 -143 691 714 ;
+C 8 ; WX 892 ; N clockwise ; B 78 -118 814 689 ;
+C 9 ; WX 892 ; N anticlockwise ; B 78 -118 814 689 ;
+C 10 ; WX 1138 ; N harpoonleftright ; B 78 -40 1060 541 ;
+C 11 ; WX 1138 ; N harpoonrightleft ; B 78 -40 1060 541 ;
+C 12 ; WX 892 ; N squareminus ; B 78 0 814 756 ;
+C 13 ; WX 831 ; N forces ; B 78 0 752 694 ;
+C 14 ; WX 1015 ; N forcesbar ; B 78 0 937 694 ;
+C 15 ; WX 708 ; N satisfies ; B 78 0 629 694 ;
+C 16 ; WX 1138 ; N dblarrowheadright ; B 78 70 1060 431 ;
+C 17 ; WX 1138 ; N dblarrowheadleft ; B 78 70 1060 431 ;
+C 18 ; WX 1138 ; N dblarrowleft ; B 78 -97 1060 598 ;
+C 19 ; WX 1138 ; N dblarrowright ; B 78 -97 1060 598 ;
+C 20 ; WX 954 ; N dblarrowup ; B 93 -194 860 694 ;
+C 21 ; WX 954 ; N dblarrowdwn ; B 93 -194 860 694 ;
+C 22 ; WX 493 ; N harpoonupright ; B 222 -194 427 694 ;
+C 23 ; WX 493 ; N harpoondownright ; B 222 -194 427 694 ;
+C 24 ; WX 493 ; N harpoonupleft ; B 65 -194 270 694 ;
+C 25 ; WX 493 ; N harpoondownleft ; B 65 -194 270 694 ;
+C 26 ; WX 1261 ; N arrowtailright ; B 80 70 1183 431 ;
+C 27 ; WX 1261 ; N arrowtailleft ; B 78 70 1181 431 ;
+C 28 ; WX 1138 ; N arrowparrleftright ; B 78 -13 1060 682 ;
+C 29 ; WX 1138 ; N arrowparrrightleft ; B 78 -13 1060 682 ;
+C 30 ; WX 585 ; N shiftleft ; B 78 0 506 736 ;
+C 31 ; WX 585 ; N shiftright ; B 78 0 506 736 ;
+C 32 ; WX 1138 ; N squiggleright ; B 63 70 1060 431 ;
+C 33 ; WX 1569 ; N squiggleleftright ; B 78 70 1490 431 ;
+C 34 ; WX 1138 ; N curlyleft ; B 78 -44 1070 580 ;
+C 35 ; WX 1138 ; N curlyright ; B 68 -44 1060 580 ;
+C 36 ; WX 892 ; N circleequal ; B 78 116 814 789 ;
+C 37 ; WX 892 ; N followsorequal ; B 78 -284 814 793 ;
+C 38 ; WX 892 ; N greaterorsimilar ; B 78 -284 814 793 ;
+C 39 ; WX 892 ; N greaterorapproxeql ; B 78 -362 814 830 ;
+C 40 ; WX 1261 ; N multimap ; B 78 72 1183 429 ;
+C 41 ; WX 769 ; N therefore ; B 51 -77 718 516 ;
+C 42 ; WX 769 ; N because ; B 51 -77 718 516 ;
+C 43 ; WX 892 ; N equalsdots ; B 78 -143 814 644 ;
+C 44 ; WX 861 ; N defines ; B 62 116 799 934 ;
+C 45 ; WX 892 ; N precedesorequal ; B 78 -270 814 779 ;
+C 46 ; WX 892 ; N lessorsimilar ; B 78 -270 814 779 ;
+C 47 ; WX 892 ; N lessorapproxeql ; B 78 -362 814 830 ;
+C 48 ; WX 892 ; N equalorless ; B 108 -187 784 685 ;
+C 49 ; WX 892 ; N equalorgreater ; B 108 -187 784 685 ;
+C 50 ; WX 892 ; N equalorprecedes ; B 108 0 784 823 ;
+C 51 ; WX 892 ; N equalorfollows ; B 108 0 784 823 ;
+C 52 ; WX 892 ; N precedesorcurly ; B 108 -171 784 652 ;
+C 53 ; WX 892 ; N lessdblequal ; B 108 -223 784 820 ;
+C 54 ; WX 892 ; N lessorequalslant ; B 108 -187 784 685 ;
+C 55 ; WX 892 ; N lessorgreater ; B 59 -312 833 740 ;
+C 56 ; WX 329 ; N primereverse ; B 29 41 280 559 ;
+C 57 ; WX 553 ; N axisshort ; B 92 226 462 275 ;
+C 58 ; WX 892 ; N equaldotrightleft ; B 45 -137 847 638 ;
+C 59 ; WX 892 ; N equaldotleftright ; B 45 -137 847 638 ;
+C 60 ; WX 892 ; N followsorcurly ; B 108 -171 784 652 ;
+C 61 ; WX 892 ; N greaterdblequal ; B 108 -223 784 820 ;
+C 62 ; WX 892 ; N greaterorequalslant ; B 108 -187 784 685 ;
+C 63 ; WX 892 ; N greaterorless ; B 108 -312 784 740 ;
+C 64 ; WX 892 ; N squareimage ; B 108 -76 784 576 ;
+C 65 ; WX 892 ; N squareoriginal ; B 84 -76 809 576 ;
+C 66 ; WX 892 ; N triangleright ; B 108 -76 784 576 ;
+C 67 ; WX 892 ; N triangleleft ; B 109 -76 784 576 ;
+C 68 ; WX 892 ; N trianglerightequal ; B 108 -187 784 685 ;
+C 69 ; WX 892 ; N triangleleftequal ; B 109 -187 784 685 ;
+C 70 ; WX 982 ; N star ; B 68 -112 914 694 ;
+C 71 ; WX 585 ; N between ; B 96 -250 488 750 ;
+C 72 ; WX 771 ; N triangledownsld ; B 108 -24 663 581 ;
+C 73 ; WX 892 ; N trianglerightsld ; B 108 -76 784 576 ;
+C 74 ; WX 892 ; N triangleleftsld ; B 109 -76 784 576 ;
+C 75 ; WX 553 ; N arrowaxisright ; B 61 59 462 442 ;
+C 76 ; WX 553 ; N arrowaxisleft ; B 68 59 468 442 ;
+C 77 ; WX 771 ; N triangle ; B 108 -24 663 580 ;
+C 78 ; WX 771 ; N trianglesolid ; B 108 -24 663 580 ;
+C 79 ; WX 771 ; N triangleinv ; B 108 -24 663 581 ;
+C 80 ; WX 892 ; N ringinequal ; B 78 116 814 385 ;
+C 81 ; WX 892 ; N lessequalgreater ; B 108 -469 759 966 ;
+C 82 ; WX 892 ; N greaterlessequal ; B 108 -469 759 966 ;
+C 83 ; WX 892 ; N lessdbleqlgreater ; B 108 -552 784 1102 ;
+C 84 ; WX 892 ; N greaterdbleqlless ; B 108 -552 784 1102 ;
+C 85 ; WX 859 ; N Yen ; B 32 0 826 683 ;
+C 86 ; WX 1138 ; N arrowtripleright ; B 64 -150 1049 651 ;
+C 87 ; WX 1138 ; N arrowtripleleft ; B 89 -150 1074 651 ;
+C 88 ; WX 954 ; N check ; B 109 -30 844 704 ;
+C 89 ; WX 708 ; N orunderscore ; B 78 0 629 714 ;
+C 90 ; WX 708 ; N nand ; B 78 0 629 714 ;
+C 91 ; WX 708 ; N perpcorrespond ; B 78 -110 629 824 ;
+C 92 ; WX 831 ; N angle ; B 78 0 752 694 ;
+C 93 ; WX 831 ; N measuredangle ; B 78 -24 752 718 ;
+C 94 ; WX 831 ; N sphericalangle ; B 78 -55 752 556 ;
+C 95 ; WX 892 ; N proportional ; B 78 5 814 496 ;
+C 96 ; WX 892 ; N smile ; B 78 143 814 382 ;
+C 97 ; WX 892 ; N frown ; B 78 119 814 383 ;
+C 98 ; WX 892 ; N subsetdbl ; B 108 -76 784 577 ;
+C 99 ; WX 892 ; N supersetdbl ; B 108 -76 784 577 ;
+C 100 ; WX 769 ; N uniondbl ; B 78 -20 691 601 ;
+C 101 ; WX 769 ; N intersectiondbl ; B 78 -20 691 601 ;
+C 102 ; WX 880 ; N uprise ; B 108 -20 772 576 ;
+C 103 ; WX 880 ; N downfall ; B 108 -20 772 576 ;
+C 104 ; WX 892 ; N multiopenleft ; B 78 -20 814 694 ;
+C 105 ; WX 892 ; N multiopenright ; B 78 -20 814 694 ;
+C 106 ; WX 892 ; N subsetdblequal ; B 108 -272 784 820 ;
+C 107 ; WX 892 ; N supersetdblequal ; B 108 -272 784 820 ;
+C 108 ; WX 892 ; N difference ; B 78 116 814 522 ;
+C 109 ; WX 892 ; N geomequivalent ; B 78 -21 814 522 ;
+C 110 ; WX 1507 ; N muchless ; B 78 -106 1429 607 ;
+C 111 ; WX 1507 ; N muchgreater ; B 78 -106 1429 607 ;
+C 112 ; WX 585 ; N rightanglenw ; B 78 265 506 694 ;
+C 113 ; WX 585 ; N rightanglene ; B 78 265 506 694 ;
+C 114 ; WX 990 ; N circleR ; B 60 -189 929 680 ;
+C 115 ; WX 944 ; N circleS ; B 37 -189 906 680 ;
+C 116 ; WX 769 ; N fork ; B 78 -20 691 738 ;
+C 117 ; WX 892 ; N dotplus ; B 78 -118 814 823 ;
+C 118 ; WX 892 ; N revsimilar ; B 78 116 814 384 ;
+C 119 ; WX 892 ; N revasymptequal ; B 78 6 814 494 ;
+C 120 ; WX 585 ; N rightanglesw ; B 78 -20 506 409 ;
+C 121 ; WX 585 ; N rightanglese ; B 78 -20 506 409 ;
+C 122 ; WX 954 ; N maltesecross ; B 109 -20 844 714 ;
+C 123 ; WX 585 ; N complement ; B 78 -20 506 845 ;
+C 124 ; WX 646 ; N intercal ; B 78 -213 568 431 ;
+C 125 ; WX 892 ; N circlering ; B 78 -118 814 619 ;
+C 126 ; WX 892 ; N circleasterisk ; B 77 -119 815 620 ;
+C 127 ; WX 892 ; N circleminus ; B 78 -118 814 619 ;
+C 128 ; WX 1138 ; N squiggleright ; B 63 70 1060 431 ;
+C 160 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 161 ; WX 892 ; N squaredot ; B 78 0 814 756 ;
+C 162 ; WX 892 ; N squareplus ; B 78 0 814 756 ;
+C 163 ; WX 892 ; N squaremultiply ; B 78 0 814 756 ;
+C 164 ; WX 892 ; N square ; B 78 0 814 756 ;
+C 165 ; WX 892 ; N squaresolid ; B 78 0 814 756 ;
+C 166 ; WX 339 ; N squaresmallsolid ; B 78 0 260 202 ;
+C 167 ; WX 769 ; N diamond ; B 78 -143 691 714 ;
+C 168 ; WX 769 ; N diamondsolid ; B 78 -143 691 714 ;
+C 169 ; WX 892 ; N clockwise ; B 78 -118 814 689 ;
+C 170 ; WX 892 ; N anticlockwise ; B 78 -118 814 689 ;
+C 173 ; WX 1138 ; N harpoonleftright ; B 78 -40 1060 541 ;
+C 174 ; WX 1138 ; N harpoonrightleft ; B 78 -40 1060 541 ;
+C 175 ; WX 892 ; N squareminus ; B 78 0 814 756 ;
+C 176 ; WX 831 ; N forces ; B 78 0 752 694 ;
+C 177 ; WX 1015 ; N forcesbar ; B 78 0 937 694 ;
+C 178 ; WX 708 ; N satisfies ; B 78 0 629 694 ;
+C 179 ; WX 1138 ; N dblarrowheadright ; B 78 70 1060 431 ;
+C 180 ; WX 1138 ; N dblarrowheadleft ; B 78 70 1060 431 ;
+C 181 ; WX 1138 ; N dblarrowleft ; B 78 -97 1060 598 ;
+C 182 ; WX 1138 ; N dblarrowright ; B 78 -97 1060 598 ;
+C 183 ; WX 954 ; N dblarrowup ; B 93 -194 860 694 ;
+C 184 ; WX 954 ; N dblarrowdwn ; B 93 -194 860 694 ;
+C 185 ; WX 493 ; N harpoonupright ; B 222 -194 427 694 ;
+C 186 ; WX 493 ; N harpoondownright ; B 222 -194 427 694 ;
+C 187 ; WX 493 ; N harpoonupleft ; B 65 -194 270 694 ;
+C 188 ; WX 493 ; N harpoondownleft ; B 65 -194 270 694 ;
+C 189 ; WX 1261 ; N arrowtailright ; B 80 70 1183 431 ;
+C 190 ; WX 1261 ; N arrowtailleft ; B 78 70 1181 431 ;
+C 191 ; WX 1138 ; N arrowparrleftright ; B 78 -13 1060 682 ;
+C 192 ; WX 1138 ; N arrowparrrightleft ; B 78 -13 1060 682 ;
+C 193 ; WX 585 ; N shiftleft ; B 78 0 506 736 ;
+C 194 ; WX 585 ; N shiftright ; B 78 0 506 736 ;
+C 195 ; WX 1138 ; N squiggleright ; B 63 70 1060 431 ;
+C 196 ; WX 892 ; N circleminus ; B 78 -118 814 619 ;
+EndCharMetrics
+EndFontMetrics

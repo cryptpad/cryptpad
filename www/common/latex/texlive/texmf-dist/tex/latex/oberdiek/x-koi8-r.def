@@ -1,0 +1,204 @@
+%%
+%% This is file `x-koi8-r.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `koi8-r')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-koi8-r.def}%
+  [2011/05/27 v1.10 Input encoding koi8-r (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textapproxequal}{%
+  \ensuremath\approx
+}
+\ProvideTextCommandDefault{\textblacksquare}{%
+  \vrule \@width .3em \@height .4em \@depth -.1em\relax
+}
+\ProvideTextCommandDefault{\textdegree}{%
+  \ensuremath{{^\circ}}%
+}
+\ProvideTextCommandDefault{\textdiv}{%
+  \TextSymbolUnavailable\textdiv
+}
+\ProvideTextCommandDefault{\textgreaterequal}{%
+  \ensuremath\geq
+}
+\ProvideTextCommandDefault{\textlessequal}{%
+  \ensuremath\leq
+}
+\ProvideTextCommandDefault{\textsurd}{%
+  \ensuremath\surd
+}
+\ProvideTextCommandDefault{\texttwosuperior}{%
+  \ensuremath{{^2}}%
+}
+\DeclareInputText{128}{\textSFx}
+\DeclareInputText{129}{\textSFxi}
+\DeclareInputText{130}{\textSFi}
+\DeclareInputText{131}{\textSFiii}
+\DeclareInputText{132}{\textSFii}
+\DeclareInputText{133}{\textSFiv}
+\DeclareInputText{134}{\textSFviii}
+\DeclareInputText{135}{\textSFix}
+\DeclareInputText{136}{\textSFvi}
+\DeclareInputText{137}{\textSFvii}
+\DeclareInputText{138}{\textSFv}
+\DeclareInputText{139}{\textupblock}
+\DeclareInputText{140}{\textdnblock}
+\DeclareInputText{141}{\textblock}
+\DeclareInputText{142}{\textlfblock}
+\DeclareInputText{143}{\textrtblock}
+\DeclareInputText{144}{\textltshade}
+\DeclareInputText{145}{\textshade}
+\DeclareInputText{146}{\textdkshade}
+\DeclareInputText{148}{\textblacksquare}
+\DeclareInputText{149}{\textbullet}
+\DeclareInputText{150}{\textsurd}
+\DeclareInputText{151}{\textapproxequal}
+\DeclareInputText{152}{\textlessequal}
+\DeclareInputText{153}{\textgreaterequal}
+\DeclareInputText{154}{\nobreakspace}
+\DeclareInputText{156}{\textdegree}
+\DeclareInputText{157}{\texttwosuperior}
+\DeclareInputText{158}{\textperiodcentered}
+\DeclareInputText{159}{\textdiv}
+\DeclareInputText{160}{\textSFxliii}
+\DeclareInputText{161}{\textSFxxiv}
+\DeclareInputText{162}{\textSFli}
+\DeclareInputText{163}{\cyryo}
+\DeclareInputText{164}{\textSFlii}
+\DeclareInputText{165}{\textSFxxxix}
+\DeclareInputText{166}{\textSFxxii}
+\DeclareInputText{167}{\textSFxxi}
+\DeclareInputText{168}{\textSFxxv}
+\DeclareInputText{169}{\textSFl}
+\DeclareInputText{170}{\textSFxlix}
+\DeclareInputText{171}{\textSFxxxviii}
+\DeclareInputText{172}{\textSFxxviii}
+\DeclareInputText{173}{\textSFxxvii}
+\DeclareInputText{174}{\textSFxxvi}
+\DeclareInputText{175}{\textSFxxxvi}
+\DeclareInputText{176}{\textSFxxxvii}
+\DeclareInputText{177}{\textSFxlii}
+\DeclareInputText{178}{\textSFxix}
+\DeclareInputText{179}{\CYRYO}
+\DeclareInputText{180}{\textSFxx}
+\DeclareInputText{181}{\textSFxxiii}
+\DeclareInputText{182}{\textSFxlvii}
+\DeclareInputText{183}{\textSFxlviii}
+\DeclareInputText{184}{\textSFxli}
+\DeclareInputText{185}{\textSFxlv}
+\DeclareInputText{186}{\textSFxlvi}
+\DeclareInputText{187}{\textSFxl}
+\DeclareInputText{188}{\textSFliv}
+\DeclareInputText{189}{\textSFliii}
+\DeclareInputText{190}{\textSFxliv}
+\DeclareInputText{191}{\textcopyright}
+\DeclareInputText{192}{\cyryu}
+\DeclareInputText{193}{\cyra}
+\DeclareInputText{194}{\cyrb}
+\DeclareInputText{195}{\cyrc}
+\DeclareInputText{196}{\cyrd}
+\DeclareInputText{197}{\cyre}
+\DeclareInputText{198}{\cyrf}
+\DeclareInputText{199}{\cyrg}
+\DeclareInputText{200}{\cyrh}
+\DeclareInputText{201}{\cyri}
+\DeclareInputText{202}{\cyrishrt}
+\DeclareInputText{203}{\cyrk}
+\DeclareInputText{204}{\cyrl}
+\DeclareInputText{205}{\cyrm}
+\DeclareInputText{206}{\cyrn}
+\DeclareInputText{207}{\cyro}
+\DeclareInputText{208}{\cyrp}
+\DeclareInputText{209}{\cyrya}
+\DeclareInputText{210}{\cyrr}
+\DeclareInputText{211}{\cyrs}
+\DeclareInputText{212}{\cyrt}
+\DeclareInputText{213}{\cyru}
+\DeclareInputText{214}{\cyrzh}
+\DeclareInputText{215}{\cyrv}
+\DeclareInputText{216}{\cyrsftsn}
+\DeclareInputText{217}{\cyrery}
+\DeclareInputText{218}{\cyrz}
+\DeclareInputText{219}{\cyrsh}
+\DeclareInputText{220}{\cyrerev}
+\DeclareInputText{221}{\cyrshch}
+\DeclareInputText{222}{\cyrch}
+\DeclareInputText{223}{\cyrhrdsn}
+\DeclareInputText{224}{\CYRYU}
+\DeclareInputText{225}{\CYRA}
+\DeclareInputText{226}{\CYRB}
+\DeclareInputText{227}{\CYRC}
+\DeclareInputText{228}{\CYRD}
+\DeclareInputText{229}{\CYRE}
+\DeclareInputText{230}{\CYRF}
+\DeclareInputText{231}{\CYRG}
+\DeclareInputText{232}{\CYRH}
+\DeclareInputText{233}{\CYRI}
+\DeclareInputText{234}{\CYRISHRT}
+\DeclareInputText{235}{\CYRK}
+\DeclareInputText{236}{\CYRL}
+\DeclareInputText{237}{\CYRM}
+\DeclareInputText{238}{\CYRN}
+\DeclareInputText{239}{\CYRO}
+\DeclareInputText{240}{\CYRP}
+\DeclareInputText{241}{\CYRYA}
+\DeclareInputText{242}{\CYRR}
+\DeclareInputText{243}{\CYRS}
+\DeclareInputText{244}{\CYRT}
+\DeclareInputText{245}{\CYRU}
+\DeclareInputText{246}{\CYRZH}
+\DeclareInputText{247}{\CYRV}
+\DeclareInputText{248}{\CYRSFTSN}
+\DeclareInputText{249}{\CYRERY}
+\DeclareInputText{250}{\CYRZ}
+\DeclareInputText{251}{\CYRSH}
+\DeclareInputText{252}{\CYREREV}
+\DeclareInputText{253}{\CYRSHCH}
+\DeclareInputText{254}{\CYRCH}
+\DeclareInputText{255}{\CYRHRDSN}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-koi8-r.def'.

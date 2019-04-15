@@ -1,0 +1,122 @@
+% This file can be loaded after plain.mf.
+% It introduces conventions that are commonly used on my home computer,
+% while remaining compatible with the plain base.
+% It also adds some macros added by AMS in their amsmodes.mf, version 2.1a
+base_version:=base_version&"/art";
+
+def cand(text q) = startif true q else: false fi enddef;
+def cor(text q) = startif true true else: q fi enddef;
+tertiarydef p startif true = if p: enddef;
+
+def mode_def suffix $ =
+ if known($) cand
+   (numeric $ cand
+   ($<number_of_modes cand
+   (mode_name[$] = (str $ & "_")))):
+ else: if known(mode-$) cand (unknown mode): mode:= fi
+       $:=incr number_of_modes;
+       mode_name[$]:=str$ & "_";
+ fi
+ expandafter quote def scantokens mode_name[$] enddef;
+
+screen_rows:=1024; screen_cols:=1024;
+
+% Here are conventions for local output devices:
+
+mode_def imagen =  % imagen mode: for the Imagen 8/300 (Canon engine)
+ proofing:=0;      % no, we're not making proofs
+ fontmaking:=1;      % yes, we are making a font
+ tracingtitles:=0;    % no, don't show titles in the log
+ pixels_per_inch:=300;
+ blacker:=0;      % Canon engine is black enough
+ fillin:=.2;      % and it tends to fill in diagonals
+ o_correction:=.6;    %
+ enddef;
+
+mode_def aps =    % aps mode: for the Autologic APS-Micro5
+ proofing:=0;      % no, we're not making proofs
+ fontmaking:=1;      % yes, we are making a font
+ tracingtitles:=1;      % yes, show titles online
+ pixels_per_inch:=722.909;    % that's roughly 10 per pt
+ blacker:=.2;      % make pens a teeny bit blacker
+ fillin:=.2;      % but compensate for diagonal fillin
+ o_correction:=1;      % and keep the full overshoot
+ enddef;
+
+mode_def linohi =    % lino mode: for the Linotronic at 1270dpi
+ proofing:=0;      % no, we're not making proofs
+ fontmaking:=1;      % yes, we are making a font
+ tracingtitles:=1;      % yes, show titles online
+ pixels_per_inch:=1270;
+ blacker:=.2;      % make pens a teeny bit blacker
+ fillin:=.2;      % but compensate for diagonal fillin
+ o_correction:=1;      % and keep the full overshoot
+ enddef;
+
+mode_def fourc =  % for 400dpi printers 
+ proofing:=0;      % no, we're not making proofs
+ fontmaking:=1;      % yes, we are making a font
+ tracingtitles:=0;    % no, don't show titles in the log
+ pixels_per_inch:=400;
+ blacker:=0;      % engine is black enough
+ fillin:=.2;      % and it tends to fill in diagonals
+ o_correction:=.6;    %
+ enddef;          
+
+localfont:=imagen;
+
+% Macros to add mode information specials to fonts. (by Pierre MacKay)
+
+def mode_special(suffix $) =
+  string s,d;
+  s:=str$; d:=decimal scantokens s;
+  special s&":="&d&";" enddef;
+
+def font_mode_specials =
+ p_p_i=pixels_per_inch/mag; 
+ if fontmaking > 0:
+ begingroup; save d,s,p; save pixels_per_inch;
+  string p;
+  pixels_per_inch:=p_p_i;
+  special jobname;
+  mode_special(mag);
+  if string mode: p:=mode;
+  else: p:=substring(0,length(mode_name[mode])-1) of mode_name[mode]; fi
+  special "mode:="&p&";";
+  mode_special(pixels_per_inch);
+  mode_special(blacker);
+  mode_special(fillin);
+  mode_special(o_correction);
+ endgroup;
+ fi
+enddef;
+
+% Finally, here are macros for Xerox-world font info:
+
+def font_family expr s =  % string s names the font family, e.g., "CMR"
+ headerbyte 49: BCPL_string(s,20);
+ special "identifier "&s enddef;
+def coding_scheme expr s = % string s names the scheme, e.g. "TEX TEXT"
+ headerbyte 9: BCPL_string(s,40);
+ special "codingscheme "&s enddef;
+def font_face_byte expr x = % integer x gives the family member number,
+ headerbyte 72: x;          % which should be between 0 and 255
+ special "fontfacebyte"; numspecial x enddef;
+
+def BCPL_string(expr s,n)= % string s becomes an n-byte BCPL string
+ for l:=if length(s)>=n: n-1 else: length(s) fi: l
+  for k:=1 upto l: , substring (k-1,k) of s endfor
+  for k:=l+2 upto n: , 0 endfor endfor enddef;
+
+Xerox_world:=1;    % users can say `if known Xerox_world:...fi'
+
+inner end;
+def bye=
+ if fontmaking>0: font_family font_identifier_;
+  coding_scheme font_coding_scheme_;
+  font_face_byte max(0,254-round 2designsize);
+  font_mode_specials; fi
+ end
+ enddef;
+
+outer bye,end;

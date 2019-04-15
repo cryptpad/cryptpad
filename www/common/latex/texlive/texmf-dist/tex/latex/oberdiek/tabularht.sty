@@ -1,0 +1,582 @@
+%%
+%% This is file `tabularht.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% tabularht.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: tabularht
+%% Version: 2007/04/11 v2.5
+%% 
+%% Copyright (C) 2005-2007 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file tabularht.dtx
+%% and the derived files
+%%    tabularht.sty, tabularht.pdf, tabularht.ins, tabularht.drv,
+%%    tabularht-example1.tex, tabularht-example2.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tabularht}%
+  [2007/04/11 v2.5 Tabular with height specified (HO)]
+\let\@toarrayheight\@empty
+\let\tabH@array@init\@empty
+
+\toks@={%
+  \begingroup
+    \long\def\x#1\vcenter\fi\fi\bgroup#2\@sharp#3#4\@nil{%
+      \endgroup
+      \gdef\@array[##1]##2{%
+        \tabH@array@init
+        #1%
+        \vcenter\fi\fi
+        \@toarrayheight
+        \bgroup
+        \let\@toarrayheight\@empty
+        #2\@sharp###3#4%
+      }%
+    }%
+  \expandafter\x\@array[#1]{#2}\@nil % hash-ok
+}
+\edef\tabH@patch@array{\the\toks@}
+\def\tabH@patch@@array{%
+  \ifx\@array\@@array
+    \def\reserved@a{\let\@@array\@array}%
+  \else
+    \let\reserved@a\relax
+  \fi
+  \tabH@patch@array
+  \reserved@a
+}
+\tabH@patch@@array
+
+\@ifpackageloaded{array}{}{%
+  \AtBeginDocument{%
+    \@ifpackageloaded{array}{%
+      \tabH@patch@@array
+    }{}%
+  }%
+}
+
+\def\tabH@setheight#1{%
+  \tabH@@setheight#1==\@nil
+}
+\def\tabH@@setheight#1=#2=#3\@nil{%
+  \ifx\\#2#3\\%
+    \setlength{\dimen@}{#1}%
+    \edef\@toarrayheight{to\the\dimen@}%
+  \else
+    \edef\tabH@temp{\zap@space#1 \@empty}%
+    \ifx\tabH@temp\tabH@to
+    \else
+      \ifx\tabH@temp\tabH@spread
+      \else
+        \PackageError{tabularht}{%
+          Unknown height specifier %
+          `\expandafter\strip@prefix\meaning\tabH@temp'%
+        }{%
+          The height dimension for tabular height can be prefixed%
+          \MessageBreak
+          with `to=' or `spread=', default is `to='.%
+        }%
+        \let\tabH@temp\tabH@to
+      \fi
+    \fi
+    \setlength{\dimen@}{#2}%
+    \edef\@toarrayheight{\tabH@temp\the\dimen@}%
+  \fi
+}
+\def\tabH@to{to}
+\def\tabH@spread{spread}
+\newenvironment{tabularht}[1]{%
+  \tabH@setheight{#1}%
+  \tabular
+}{%
+  \endtabular
+}
+
+\newenvironment{tabularht*}[1]{%
+  \tabH@setheight{#1}%
+  \@nameuse{tabular*}%
+}{%
+  \@nameuse{endtabular*}%
+}
+
+\newenvironment{tabularhtx}[1]{%
+  \tabH@setheight{#1}%
+  \tabularx
+}{%
+  \endtabularx
+}
+
+\newenvironment{arrayht}[1]{%
+  \tabH@setheight{#1}%
+  \array
+}{%
+  \endarray
+}
+
+\def\interrowspace{%
+  \noalign\bgroup
+    \tabH@interrowspace
+}
+\newcommand*{\tabH@interrowspace}[2][]{%
+    \tabH@vspace{#1}{#2}%
+  \egroup
+}
+\def\interrowfill{%
+  \noalign\bgroup
+    \tabH@interrowfill
+}
+\newcommand*{\tabH@interrowfill}[1][]{%
+    \tabH@vspace{#1}{\fill}%
+  \egroup
+}
+\def\tabH@vspace#1#2{%
+  \tabH@vspace@start{#1}%
+  \vspace{#2}%
+  \tabH@vspace@stop
+}
+\let\tabH@vspace@start\@gobble
+\let\tabH@vspace@stop\@empty
+
+\newcommand*{\interrowstart}{%
+  \noalign\bgroup
+    \tabH@interrowstart
+}
+\newcommand*{\tabH@interrowstart}[1][]{%
+    \tabH@vspace@start{#1}%
+  \egroup
+}
+\newcommand*{\interrowstop}{%
+  \noalign{\tabH@vspace@stop}%
+}
+\providecommand*{\tabH@driver}{}
+
+\DeclareOption{vlines}{%
+  \let\tabH@temp\relax
+}
+\DeclareOption{pdftex}{}
+\DeclareOption{dvips}{%
+  \def\tabH@driver{dvips}%
+}
+\ProcessOptions*\relax
+
+\ifx\tabH@temp\relax
+\else
+  \expandafter\endinput
+\fi
+
+\begingroup
+  \@ifundefined{eTeXversion}{%
+    \PackageError{tabularht}{%
+      Option `vlines' requires eTeX%
+    }{%
+      Use of eTeX is recommended for LaTeX, see ltnews16.%
+    }%
+    \endgroup
+    \endinput
+  }{}%
+\endgroup
+\begingroup
+  \let\@addtoreset\@gobbletwo
+  \newcounter{tabH@unique}%
+\endgroup
+\let\tabH@currenttab\@empty
+
+\def\tabH@array@init{%
+  \ifx\@toarrayheight\@empty
+    % ignore vertical lines of nested tabular environments
+    \let\tabH@currenttab\@empty
+  \else
+    \stepcounter{tabH@unique}%
+    \edef\tabH@currenttab{\the\c@tabH@unique}%
+  \fi
+}
+
+\renewcommand*{\@arrayrule}{%
+  \@addtopreamble{%
+    \hskip -.5\arrayrulewidth
+    \ifx\tabH@currenttab\@empty
+    \else
+      \tabH@vrule{\tabH@currenttab}%
+    \fi
+    \begingroup
+      \expandafter\ifx\csname CT@arc@\endcsname\relax
+      \else
+        \expandafter\CT@arc@
+      \fi
+      \vline
+    \endgroup
+    \hskip -.5\arrayrulewidth
+  }%
+}
+\let\tabH@arrayrule\@arrayrule
+\AtBeginDocument{%
+  \@ifpackageloaded{colortbl}{%
+    \let\@arrayrule\tabH@arrayrule
+  }{}%
+}
+
+\let\tabH@vrule\@gobble
+\RequirePackage{ifpdf}
+\ifpdf
+  \begingroup
+    \@ifundefined{pdfsavepos}{%
+      \PackageError{tabularht}{%
+        Your pdfTeX is too old%
+      }{%
+        \string\pdfsavepos\space is missing.%
+      }%
+      \endgroup
+      \csname fi\endcsname
+      \endinput
+    }{}%
+
+    \let\on@line\@empty
+    \PackageInfo{tabularht}{%
+      Using driver `pdftex' because of pdfTeX in PDF mode%
+    }%
+  \endgroup
+
+  \protected\def\tabH@vrule#1{%
+    \if@filesw
+      \pdfsavepos
+      \protected@write\@auxout{%
+        \let\tabH@lastxpos\relax
+      }{%
+        \tabH@aux@vrule{#1}{\tabH@lastxpos}%
+      }%
+    \fi
+  }%
+
+  \def\tabH@lastxpos{\the\pdflastxpos}%
+  \def\tabH@lastypos{\the\pdflastypos}%
+
+  % The .aux file contains three commands:
+  % \tabH@aux@vrule{tabular id}{x position}
+  % \tabH@aux@vstart{tabular id}{row id}{x position}{y position}
+  % \tabH@aux@vstop{y position}
+  %
+  \AtBeginDocument{%
+    % The .aux files are read the first time before
+    % \AtBeginDocument and later at \end{document}.
+    % \tabH@aux@done is a marker to distinguish
+    % between these two readings. Only in the first
+    % case we need the \tabH@aux@... commands.
+    \let\tabH@aux@done\@empty
+    \if@filesw
+      \immediate\write\@mainaux{%
+        \@percentchar\@percentchar BeginProlog: tabularht%
+      }%
+      % items in the aux file are executed,
+      % if tabularht is loaded
+      % and during the aux file read at \begin{document} only
+      \immediate\write\@mainaux{%
+        \detokenize{%
+          % the \tabH@aux@... commands are needed only if
+          % tabularht is loaded with driver pdftex.
+          \@ifundefined{tabH@aux@vrule}\@secondoftwo\@firstofone
+          {%
+            % disable commands except for the first .aux files reading
+            \@ifundefined{tabH@aux@done}\@gobble\@firstofone
+          }%
+          {%
+            \let\tabH@aux@vrule\@gobbletwo
+            \let\tabH@aux@vstart\@gobblefour
+            \let\tabH@aux@vstop\@gobble
+          }%
+        }%
+      }%
+      \immediate\write\@mainaux{%
+        \@percentchar\@percentchar EndProlog: tabularht%
+      }%
+    \fi
+  }%
+
+  % the x positions of vrules are stored in
+  % \tabH@<tabcount>list with distinct values
+  \protected\def\tabH@aux@vrule#1#2{%
+    \@ifundefined{tabH@#1list}{%
+      \expandafter\xdef\csname tabH@#1list\endcsname{%
+        \noexpand\do{#2}%
+      }%
+    }{%
+      \begingroup
+        \def\x{#2}%
+        \let\y\@undefined
+        \let\do\tabH@do@add
+        \expandafter\xdef\csname tabH@#1list\endcsname{%
+          \csname tabH@#1list\endcsname\@empty
+          \ifx\y\@undefined
+            \noexpand\do{\x}%
+          \fi
+        }%
+      \endgroup
+    }%
+  }%
+  \def\tabH@do@add#1{%
+    \ifx\y\@undefined
+      \ifnum#1<\x\space
+      \else
+        \expandafter\ifx\csname y\endcsname\relax\fi
+        \ifnum#1>\x\space
+          \noexpand\do{\x}%
+        \fi
+      \fi
+    \fi
+    \noexpand\do{#1}%
+  }%
+
+  \def\tabH@vspace@start#1{%
+    \if@filesw
+      \stepcounter{tabH@unique}%
+      \edef\tabH@currentrow{\the\c@tabH@unique}%
+      \pdfsavepos
+      \protected@write\@auxout{%
+        \let\tabH@lastxpos\relax
+        \let\tabH@lastypos\relax
+      }{%
+        \tabH@aux@vstart{\tabH@currenttab}{\tabH@currentrow}%
+                        {\tabH@lastxpos}{\tabH@lastypos}%
+      }%
+    \fi
+    \begingroup
+      \edef\a{tabH@\tabH@currenttab row\tabH@currentrow}%
+      \expandafter\let\expandafter\x\csname\a x\endcsname
+      \ifx\x\relax
+      \else
+        \expandafter\let\expandafter\y\csname\a y\endcsname
+        \expandafter\let\expandafter\l
+            \csname tabH@\tabH@currenttab list\endcsname
+        \ifx\l\relax
+        \else
+          \def\f{#1}%
+          \ifx\f\@empty
+            \let\do\tabH@do@set
+          \else
+            \count@=\z@
+            \let\do\tabH@do@filter
+          \fi
+          \setbox\z@=\hbox{\l}%
+          \wd\z@=\z@
+          \dp\z@=\z@
+          \copy\z@
+        \fi
+      \fi
+    \endgroup
+  }%
+  \def\tabH@vspace@stop{%
+    \if@filesw
+      \pdfsavepos
+      \protected@write\@auxout{%
+        \let\tabH@lastypos\relax
+      }{%
+        \tabH@aux@vstop{\tabH@lastypos}%
+      }%
+    \fi
+  }%
+  \def\tabH@do@set#1{%
+    \hbox to \z@{%
+      \hskip \dimexpr #1sp - \x sp\relax
+      \vrule \@width\arrayrulewidth
+             \@depth\dimexpr \y sp\relax
+      \hss
+    }%
+  }%
+  \def\tabH@do@filter{%
+    \@tempswafalse
+    \advance\count@\@ne
+    \@for\e:=\f\do{%
+      \ifnum\e=\count@
+        \@tempswatrue
+      \fi
+    }%
+    \if@tempswa
+      \expandafter\tabH@do@set
+    \else
+      \expandafter\@gobble
+    \fi
+  }%
+
+  \protected\def\tabH@aux@vstart#1#2#3#4{%
+    \def\tabH@current@vstart{{#1}{#2}{#3}{#4}}%
+  }%
+  \protected\def\tabH@aux@vstop{%
+    \expandafter\tabH@aux@v\tabH@current@vstart
+  }%
+  \def\tabH@aux@v#1#2#3#4#5{%
+    \expandafter\gdef\csname tabH@#1row#2x\endcsname{#3}%
+    \expandafter\xdef\csname tabH@#1row#2y\endcsname{%
+      \the\numexpr #4 - #5\relax
+    }%
+  }%
+
+  \csname fi\endcsname
+  \endinput
+
+\fi
+\ifx\tabH@driver\@empty
+  \PackageError{tabularht}{%
+    Missing DVI driver, option `vlines' disabled%
+  }{%
+    Supported DVI drivers: dvips.%
+  }%
+  \expandafter\endinput
+\fi
+
+\def\tabH@driver@dvips{%
+  \def\tabH@literalps##1{\special{ps:SDict begin ##1 end}}%
+  \def\tabH@headerps##1{\special{! ##1}}%
+}
+
+\@onelevel@sanitize\tabH@driver
+\@ifundefined{tabH@driver@\tabH@driver}{%
+  \PackageError{tabularht}{%
+    Unsupported driver `\tabH@driver'%
+  }{%
+    Supported DVI drivers: dvips.%
+  }%
+  \endinput
+}{}
+
+\begingroup
+  \let\on@line\@empty
+  \PackageInfo{tabularht}{%
+    Using driver `\tabH@driver'%
+  }%
+\endgroup
+\csname tabH@driver@\tabH@driver\endcsname
+
+\protected\def\tabH@vrule#1#2\vrule#3\arrayrulewidth{%
+  #2% \fi or empty
+  % hack to get rid of maxdrift rounding of dvips,
+  % thus simulate a large motion
+  \kern1in\relax
+  \tabH@literalps{%
+    #1 tabH.vrule %
+    Resolution neg 0 translate%
+  }%
+  \vrule#3\arrayrulewidth
+  \tabH@literalps{Resolution 0 translate}%
+  \kern-1in\relax
+}
+
+\def\tabH@vspace@start#1{%
+  \begingroup
+    \let\y\@empty
+    \@for\x:=#1\do{%
+      \ifx\y\@empty
+        \edef\y{\x}%
+      \else
+        \edef\y{\y\space\x}%
+      \fi
+    }%
+    \tabH@literalps{\tabH@currenttab[\y]currentpoint exch pop}%
+  \endgroup
+}
+\def\tabH@vspace@stop{%
+  \tabH@literalps{%
+    currentpoint exch pop %
+    \number\dimexpr\arrayrulewidth\relax\space
+    tabH.vspace%
+  }%
+}
+
+\tabH@headerps{%
+  userdict begin%
+    /tabH.list 10 dict def%
+    /tabH.job [] def %
+  end%
+  /tabH.vrule{%
+    10 string cvs cvn dup tabH.list exch known{%
+      tabH.list exch dup [ exch tabH.list exch get %
+      currentpoint pop round exch true exch{%
+        % tabH.list key [ ... x true i
+        % tabH.list key [ ... false i
+        exch{%
+          % ... [ ... x i
+          2 copy lt{false}{%
+            2 copy eq{pop false}{exch true}ifelse%
+          }ifelse%
+        }{false}ifelse%
+      }forall %
+      pop%
+      ]put%
+    }{%
+      tabH.list exch[currentpoint pop round]put%
+    }ifelse%
+  }bind def%
+  % <tab num> <cols array> <ytop> <ybottom> <rulewidth[sp]>
+  /tabH.vspace{%
+    userdict begin %
+      10 dict dup begin %
+        exch 65536 div Resolution mul 72.27 div %
+        % dvips uses a poor man's ceil function
+        % see dopage.c before "drawrule": (int)(... + 0.9999999)
+        0.9999999 add truncate%
+        /rulewidth exch def %
+        exch/ybottom exch def %
+        exch/ytop exch def %
+        exch/cols exch def %
+        exch/tabkey exch 10 string cvs cvn def %
+      end%
+      /tabH.job exch[exch userdict/tabH.job get aload pop]def %
+    end%
+  }bind def %
+  % Now we do the work at the end of the page.
+  % Unhappily "eop-hook" cannot be used, because "eop"
+  % executes "restore" before, so that all data are lost.
+  TeXDict begin%
+    /eop%
+    [%
+      {%
+        tabH.job{%
+          begin%
+           /colarray %
+             tabH.list tabkey known{tabH.list tabkey get}{[]}ifelse %
+           def %
+           cols length 0 eq not{%
+             /colarray[%
+               cols{1 sub %
+                 dup 0 lt{pop}{%
+                   dup colarray length ge{pop}{%
+                     colarray exch get%
+                   }ifelse%
+                 }ifelse%
+               }forall%
+             ]def%
+           }if %
+           colarray{%
+             % (rulewidth) == rulewidth == % debug
+             Resolution sub %
+             ytop rulewidth ytop ybottom sub v%
+           }forall %
+          end%
+        }forall%
+        % tabH.list{== ==}forall % debug
+      }bind aload pop %
+      TeXDict /eop get aload pop%
+    ]cvx def %
+  end%
+}
+\endinput
+%%
+%% End of file `tabularht.sty'.

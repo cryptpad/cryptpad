@@ -1,0 +1,482 @@
+%%
+%% This is file `hypdoc.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hypdoc.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hypdoc
+%% Version: 2011/08/19 v1.11
+%% 
+%% Copyright (C) 2002, 2006, 2007, 2009-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file hypdoc.dtx
+%% and the derived files
+%%    hypdoc.sty, hypdoc.pdf, hypdoc.ins, hypdoc.drv.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hypdoc}%
+  [2011/08/19 v1.11 Hyper extensions for doc.sty (HO)]%
+\newif\ifHD@numbered
+\DeclareOption{numbered}{\HD@numberedtrue}
+\ProcessOptions*\relax
+\RequirePackage{atveryend}[2010/03/24]
+\RequirePackage{doc}
+\ifx\numexpr\@undefined
+  \RequirePackage{calc}%
+\fi
+\RequirePackage[%
+  hyperindex=false,%
+  pdfusetitle,%
+  colorlinks,%
+  pdfpagelabels%
+]{hyperref}[2002/05/09]%
+\hypersetup{%
+  plainpages=false,%
+  bookmarksopen,%
+  bookmarksnumbered,%
+  bookmarksopenlevel=0,%
+  pdfstartview={FitBH \hypercalcbp{%
+    \paperheight-\topmargin-1in-\headheight-\headsep
+  }},%
+}
+\RequirePackage{thumbpdf}
+\newcounter{HD@unique}
+\renewcommand{\theHD@unique}{%
+  \number\value{HD@unique}%
+}
+\g@addto@macro\Hy@UseMaketitleInfos{%
+  \@ifundefined{fileinfo}{}{%
+    \ifx\@pdfsubject\@empty
+      \hypersetup{pdfsubject={\fileinfo}}%
+    \fi
+  }%
+}
+\pdfstringdefDisableCommands{%
+  \let\thanks\@gobble
+  \let\footnote\@gobble
+  \def\cs#1{\textbackslash #1}%
+  \let\normalfont\@empty
+  \let\scshape\@empty
+  \def\and{and }%
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname mod@math@codes\endcsname\relax
+\else
+  \def\HD@ModFix#1{%
+    \mathcode`#1=`#1\relax
+  }%
+  \g@addto@macro\mod@math@codes{%
+    \HD@ModFix\-%
+    \HD@ModFix\+%
+    \HD@ModFix\:%
+    \HD@ModFix\=%
+    \HD@ModFix\*%
+  }%
+\fi
+\def\HD@sectionpatch{%
+  \ifHD@numbered
+    \HD@@sectionpatch{section}%
+    \HD@@sectionpatch{chapter}%
+  \else
+    \let\Hy@writebookmark\HD@disable@writebookmark
+  \fi
+}
+\def\HD@@sectionpatch#1{%
+  \expandafter\let\csname HDorg@@#1\expandafter\endcsname
+    \csname #1\endcsname
+  \@namedef{#1}{%
+    \@ifstar{\@nameuse{HDorg@@#1}}{\@nameuse{HDorg@@#1}}%
+  }%
+}
+\def\HD@disable@writebookmark#1#2#3#4#5{}
+\def\HD@guesstoclevel#1{%
+  \expandafter\HD@@guesstoclevel#1\section\HD@end
+}
+\def\HD@@guesstoclevel#1#2\HD@end{%
+  \@ifundefined{toclevel@\expandafter\@gobble\string#1\@empty}{%
+    1%
+  }{%
+    \@nameuse{toclevel@\expandafter\@gobble\string#1\@empty}%
+  }%
+}
+\let\HDorg@tableofcontents\tableofcontents
+\def\tableofcontents{%
+  \begingroup
+    \@ifundefined{c@section}{%
+      \def\c@section{0}%
+    }{}%
+  \expandafter\endgroup
+  \ifcase\c@section
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@tableofcontents}]%
+        {\contentsname}{toc\theHD@unique}%
+    \HDorg@tableofcontents
+  \else
+    \ifHD@numbered
+    \else
+      \stepcounter{HD@unique}%
+      \pdfbookmark[\HD@guesstoclevel{\HDorg@tableofcontents}]%
+          {\contentsname}{toc\theHD@unique}%
+    \fi
+    \begingroup
+      \HD@sectionpatch
+      \HDorg@tableofcontents
+    \endgroup
+  \fi
+}
+\let\HDorg@listoffigures\listoffigures
+\def\listoffigures{%
+  \ifHD@numbered
+  \else
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@listoffigures}]%
+        {\contentsname}{toc\theHD@unique}%
+  \fi
+  \begingroup
+    \HD@sectionpatch
+    \HDorg@listoffigures
+  \endgroup
+}
+\let\HDorg@listoftables\listoftables
+\def\listoftables{%
+  \ifHD@numbered
+  \else
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@listoftables}]%
+        {\contentsname}{toc\theHD@unique}%
+  \fi
+  \begingroup
+    \HD@sectionpatch
+    \HDorg@listoftables
+  \endgroup
+}
+\let\HDorg@thebibliography\thebibliography
+\def\thebibliography{%
+  \ifHD@numbered
+  \else
+    \stepcounter{HD@unique}%
+    \pdfbookmark[\HD@guesstoclevel{\HDorg@thebibliography}]%
+      {\@ifundefined{chapter}{\refname}{\bibname}}{bib\theHD@unique}%
+  \fi
+  \HD@sectionpatch
+  \HDorg@thebibliography
+}
+\let\HDorg@theindex\theindex
+\def\theindex{%
+  \let\HDorg@index@prologue\index@prologue
+  \let\HDorg@writebookmark\Hy@writebookmark
+  \HD@sectionpatch
+  \g@addto@macro\IndexParms{%
+    \ifHD@numbered
+    \else
+      \let\Hy@writebookmark\HDorg@writebookmark
+    \fi
+    \let\bfseries\HD@bfseries
+  }%
+  \edef\HD@toclevel@index{\HD@guesstoclevel{\index@prologue}}%
+  \begingroup
+    \count@=\HD@toclevel@index\relax
+    \advance\count@ by 1 %
+    \xdef\HD@toclevel@subindex{\the\count@}%
+  \endgroup
+  \def\index@prologue{%
+    \ifHD@numbered
+    \else
+      \begingroup
+        \stepcounter{HD@unique}%
+        \let\Hy@writebookmark\HDorg@writebookmark
+        \pdfbookmark[\HD@toclevel@index]%
+            {\indexname}{index\theHD@unique}%
+      \endgroup
+    \fi
+    \HDorg@index@prologue
+  }%
+  \HDorg@theindex
+}
+\let\HDorg@bfseries\bfseries
+\def\HD@bfseries{\futurelet\HD@hfil\HD@@bfseries}%
+\def\HD@@bfseries{%
+  \HDorg@bfseries
+  \ifx\HD@hfil\hfil
+    \expandafter\HD@@@bfseries
+  \fi
+}
+\def\HD@@@bfseries\hfil#1\hfil{%
+  \ifx\\#1\\%
+  \else
+    \raisebox{\baselineskip}[0pt]{%
+      \kern-\HD@margin\relax
+      \pdfbookmark[\HD@toclevel@subindex]{#1}{HD.#1}%
+      \kern\HD@margin\relax
+    }%
+  \fi
+  \hfil#1\hfil
+}%
+\def\HD@margin{1mm}
+\let\HDorg@theglossary\theglossary
+\def\theglossary{%
+  \let\HDorg@glossary@prologue\glossary@prologue
+  \let\HDorg@writebookmark\Hy@writebookmark
+  \HD@sectionpatch
+  \def\glossary@prologue{%
+    \ifHD@numbered
+    \else
+      \begingroup
+        \let\Hy@writebookmark\HDorg@writebookmark
+        \stepcounter{HD@unique}%
+        \pdfbookmark[\HD@guesstoclevel{\HDorg@glossary@prologue}]%
+            {\glossaryname}{glossary\theHD@unique}%
+      \endgroup
+    \fi
+    \HDorg@glossary@prologue
+  }%
+  \HDorg@theglossary
+}
+\providecommand*{\glossaryname}{Change History}
+\newcounter{HD@hypercount}
+\newlength{\HD@helplength}
+\newif\ifHD@savedest
+\HD@savedesttrue
+\AtBeginDocument{%
+  \HD@savedest@init
+}
+\RequirePackage{rerunfilecheck}[2009/12/10]
+\begingroup
+  \catcode`\^^M=\active
+\@firstofone{\endgroup
+  \def\HD@savedest@init{%
+    \ifHD@savedest
+      \let\HDorg@tilde~%
+      \let~\HD@savedest@entry
+      \edef\HDorg@catcodeM{\the\catcode`\^^M}%
+      \catcode`\^^M=\active
+      \def^^M{}%
+      \InputIfFileExists{\jobname.hd}{}{}%
+      \let~\HDorg@tilde
+      \catcode`\^^M=\HDorg@catcodeM\relax
+      \newwrite\HD@savedest@out
+      \RerunFileCheck{\jobname.hd}{%
+        \immediate\closeout\HD@savedest@out
+      }{}%
+      \immediate\openout\HD@savedest@out=\jobname.hd\relax
+    \else
+      \let\HD@savedest@add\@gobble
+    \fi
+  }%
+  \def\HD@savedest@entry#1^^M{%
+    \@namedef{HD.#1}{}%
+  }%
+}
+\def\HD@savedest@add#1{%
+  \immediate\write\HD@savedest@out{\string~#1}%
+}
+\newif\ifHD@targetraise
+\HD@targetraisetrue
+\def\HD@target{%
+  \ifHD@targetraise
+    \ifhmode
+      \settoheight{\HD@helplength}{[H]}%
+      \addtolength{\HD@helplength}{0.4ex}%
+      \raisebox{\HD@helplength}[0pt][0pt]{%
+        \HD@maketarget
+      }%
+    \else
+      \HD@maketarget
+    \fi
+  \else
+    \HD@maketarget
+  \fi
+}
+\def\HD@maketarget{%
+  \stepcounter{HD@hypercount}%
+  \def\HD@next{%
+    \llap{\hypertarget{HD.\the\c@HD@hypercount}{}\,}%
+  }%
+  \ifHD@savedest
+    \expandafter\ifx\csname HD.\the\c@HD@hypercount\endcsname\@empty
+    \else
+      \let\HD@next\relax
+    \fi
+  \fi
+  \HD@next
+}
+\g@addto@macro\CodelineIndex{%
+  \let\special@index\HD@codeline@wrindex
+}
+\g@addto@macro\PageIndex{%
+  \let\special@index\HD@page@wrindex
+}
+\def\HD@codeline@wrindex#1{%
+  \begingroup
+    \let\HDorg@encapchar\encapchar
+    \def\encapchar##1\encapchar##2\@nil{%
+      \HDorg@encapchar
+      hdclindex{\the\c@HD@hypercount}{##1}%
+    }%
+    \codeline@wrindex{%
+      #1\encapchar\encapchar\@nil
+    }%
+  \endgroup
+}
+\def\HD@page@wrindex#1{%
+  \begingroup
+    \let\HDorg@encapchar\encapchar
+    \def\encapchar##1\encapchar##2\@nil{%
+      \HDorg@encapchar
+      hdpindex{##1}%
+    }%
+    \HDorg@index{#1\encapchar\encapchar\@nil}%
+  \endgroup
+}
+\def\hdclindex#1#2#3{%
+  \csname\ifx\\#2\\relax\else#2\fi\endcsname{%
+    \hyperlink{HD.#1}{#3}%
+    \HD@savedest@add{#1}%
+  }%
+}
+\def\hdpindex#1#2{%
+  \csname\ifx\\#1\\relax\else#1\fi\endcsname{%
+    \hyperpage{#2}%
+  }%
+}
+\let\HDorg@PrintDescribeMacro\PrintDescribeMacro
+\renewcommand\PrintDescribeMacro[1]{%
+  \begingroup
+    \let\HDorg@MacroFont\MacroFont
+    \def\MacroFont{%
+      \HD@target
+      \HDorg@MacroFont
+    }%
+    \HDorg@PrintDescribeMacro{#1}%
+  \endgroup
+}
+\let\HDorg@PrintMacroName\PrintMacroName
+\renewcommand\PrintMacroName[1]{%
+  \begingroup
+    \let\HDorg@MacroFont\MacroFont
+    \def\MacroFont{%
+      \HD@target
+      \HDorg@MacroFont
+    }%
+    \HDorg@PrintMacroName{#1}%
+  \endgroup
+}
+\let\HDorg@theCodelineNo\theCodelineNo
+\renewcommand*\theCodelineNo{%
+  \settowidth{\HD@helplength}{\HDorg@theCodelineNo\ }%
+  \ifdim\HD@helplength<\MacroIndent
+    \addtolength{\HD@helplength}{-\MacroIndent}%
+    \llap{%
+      \begingroup\HD@target\endgroup
+      \hspace*{-\HD@helplength}%
+    }%
+  \else
+    \HD@target
+  \fi
+  \HDorg@theCodelineNo
+}
+\AtBeginDocument{%
+  \let\HDorg@index\index
+}
+\let\HDorg@SpecialUsageIndex\SpecialUsageIndex
+\renewcommand*\SpecialUsageIndex[1]{%
+  \@bsphack
+  \begingroup
+    \HD@target
+    \let\index\HDorg@index
+    \let\HDorg@encapchar\encapchar
+    \edef\encapchar usage{%
+       \HDorg@encapchar hdclindex{\the\c@HD@hypercount}{usage}%
+    }%
+    \HDorg@SpecialUsageIndex{#1}%
+  \endgroup
+  \@esphack
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname autoindex\endcsname\relax
+\else
+  \let\HDorg@autoindex\autoindex
+  \renewcommand*\autoindex[1]{%
+    \@bsphack
+    \begingroup
+      \HD@target
+      \let\index\HDorg@index
+      \let\HDorg@encapchar\encapchar
+      \edef\encapchar usage{%
+         \HDorg@encapchar hdclindex{\the\c@HD@hypercount}{usage}%
+      }%
+      \HDorg@autoindex{#1}%
+    \endgroup
+    \@esphack
+  }%
+\fi
+\let\HDorg@SpecialEnvIndex\SpecialEnvIndex
+\renewcommand*\SpecialEnvIndex[1]{%
+  \@bsphack
+  \begingroup
+    \HD@target
+    \let\HDorg@encapchar\encapchar
+    \edef\encapchar usage{%
+      \HDorg@encapchar hdclindex{\the\c@HD@hypercount}{usage}%
+    }%
+    \HDorg@SpecialEnvIndex{#1}%
+  \endgroup
+  \@esphack
+}
+\let\HDorg@SortIndex\SortIndex
+\renewcommand*{\SortIndex}[2]{%
+  \@bsphack
+  \begingroup
+    \let\index\HD@page@wrindex
+    \HDorg@SortIndex{#1}{#2}%
+  \endgroup
+  \@esphack
+}
+\let\HDorg@wrglossary\@wrglossary
+\def\@wrglossary#1{%
+  \let\HDorg@encapchar\encapchar
+  \def\encapchar##1\encapchar##2\@nil{%
+    \HDorg@encapchar
+    hdpindex{##1}%
+  }%
+  \HDorg@wrglossary{#1\encapchar\encapchar\@nil}%
+}
+\AfterLastShipout{%
+  \if@filesw
+    \immediate\write\@auxout{%
+      \string\providecommand\string\HD@SetMacroIndent[1]{}%
+    }%
+    \immediate\write\@auxout{%
+      \string\HD@SetMacroIndent{\number\value{CodelineNo}}%
+    }%
+  \fi
+}
+\def\HD@SetMacroIndent#1{%
+  \begingroup
+    \value{CodelineNo}=#1\relax
+    \settowidth{\MacroIndent}{\HDorg@theCodelineNo\ }%
+    \global\MacroIndent\MacroIndent
+  \endgroup
+}
+\endinput
+%%
+%% End of file `hypdoc.sty'.

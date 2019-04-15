@@ -1,0 +1,136 @@
+%
+% \iffalse
+%
+%% lscape.dtx Copyright (C) 1994 1999-2000 David Carlisle
+%%            Copyright (C) 2000--2015 David Carlisle, LaTeX3 Project
+%%
+%% This file is part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.3c or, at your option, any later version.
+%%
+%<*dtx>
+          \ProvidesFile{lscape.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+%<package>\ProvidesPackage{lscape}
+%<driver> \ProvidesFile{lscape.drv}
+% \fi
+%         \ProvidesFile{lscape.dtx}
+          [2000/10/22 v3.01 Landscape Pages (DPC)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{lscape}
+\begin{document}
+ \DocInput{lscape.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{lscape.dtx}
+%
+% \title{The \textsf{lscape} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{D. P. Carlisle}
+% \date{\filedate}
+%
+% \CheckSum{69}
+%
+% \begin{landscape}
+% \MaintainedByLaTeXTeam{graphics}
+% \maketitle
+%
+% All text, within the \texttt{landscape} environment is rotated through
+% 90 degrees. The environment may span several pages. It works well
+% with, and was originally created for, use with \textsf{longtable} to
+% produce long wide tables.
+%
+% All the work is done by the \textsf{graphics} package, the trick is to
+% call it at the right place in the output routine to rotate the current
+% page before the page head and foot are added.
+%
+%
+% \StopEventually{\end{landscape}}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \changes{v1.00}{1992/04/28}{Initial release}
+% \changes{v2.00}{1992/11/18}{Support for footnotes and floats.
+%         Special thanks to Sarah J. McQuay for testing this release}
+% \changes{v3.00}{1994/10/05}{Update using LaTeX2e graphics package}
+% \changes{v3.01}{1999/06/22}{Added better pdfTeX support
+%    by Scott Pakin, from graphics/3063}
+%
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%  Here is what Scott Pakin wrote about the pdftex option:
+% \begin{quote}
+%    I've made a minor improvement to lscape.dtx that I'd like to share
+% with the world.  My addition makes lscape rotate the PDF "paper" --
+% not just the text on the page -- when given the "pdftex" option.
+% (Naturally, this works only with pdfLaTeX.)  The result is that the
+% text is viewable online without the reader having to rotate his/her
+% head 90 degrees.  The document still prints normally.
+% \end{quote}
+%
+%
+%    \begin{macrocode}
+\newif\ifGin@pdftex
+\Gin@pdftexfalse
+\DeclareOption{pdftex}{%
+  \PassOptionsToPackage\CurrentOption{graphics}
+  \Gin@pdftextrue
+}
+\DeclareOption*{\PassOptionsToPackage\CurrentOption{graphics}}
+\ProcessOptions
+\RequirePackage{graphics}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\let\LS@makecol=\@makecol
+\let\LS@makefcolumn=\@makefcolumn
+\def\LS@rot{%
+  \setbox\@outputbox\vbox{\hbox{\rotatebox{90}{\box\@outputbox}}}}
+%    \end{macrocode}
+%
+% First set up the page size for landscape.
+%    \begin{macrocode}
+\def\landscape{%
+  \clearpage
+  \begingroup
+  \vsize=\textwidth
+  \hsize=\textheight
+  \linewidth=\hsize
+  \columnwidth=\hsize
+  \@colroom=\vsize
+  \textheight=\vsize
+  \@colht=\vsize
+%    \end{macrocode}
+%    Rotate the page body (text and float pages).
+%    \begin{macrocode}
+  \def\@makecol{\LS@makecol\LS@rot}%
+  \def\@makefcolumn##1{\LS@makefcolumn{##1}\LS@rot}}
+%    \end{macrocode}
+%
+%    Restore everything.  This is where the pdftex option makes a
+%    difference.
+%    \begin{macrocode}
+\def\endlandscape{%
+  \ifGin@pdftex
+    \pdfpageattr{/Rotate 90}
+  \fi
+  \clearpage
+  \endgroup
+  \global\@colht=\textheight
+  \global\vsize=\textheight
+  \global\@colroom=\textheight}
+%</package>
+%    \end{macrocode}
+%
+%
+% \Finale
+%

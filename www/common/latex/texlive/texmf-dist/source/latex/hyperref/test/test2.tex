@@ -1,0 +1,63 @@
+\documentclass[reqno]{amsart}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{ae}
+\usepackage{hyperref}
+
+
+\numberwithin{equation}{subsection}
+
+\begin{document}
+
+\section{My section title}
+
+Some text.
+
+\subsection{My first subsection}
+\label{ss:first}
+
+\begin{equation}
+\label{eq:A}
+p^{\prime\prime} + \dfrac{S^\prime}{S}p^\prime +k^2p = 0
+\end{equation}
+
+Let's refer to equations~\ref{eqs:C} in 
+subsection\ref{ss:second}.
+
+\begin{equation}
+\label{eq:B}
+g(x)=const \times f(x) \int^{x} \dfrac{d\xi}{S(\xi)f^{2}(\xi)} .
+\end{equation}
+
+Now I'll force a new page so the hyper-references will bridge a page
+boundary.
+\newpage
+
+\subsection{My second subsection}
+\label{ss:second}
+Now some subequations.
+
+\begin{subequations}
+\label{eqs:C}
+\begin{align}
+p^\prime& = -Z(x)U \label{eq:pC} \\
+U^\prime & = -Y(x)p \label{eq:UC}
+\end{align}
+\end{subequations}
+
+These are related to equation~\ref{eq:A} in subsection~\ref{ss:first}.
+
+{%
+\begin{subequations}
+\label{eqs:D}
+\begin{align}
+p^\prime& = -j \omega {\dfrac{\rho}{S(x)}}U
+ = -jk {\dfrac{\rho c}{S(x)}}U \label{eq:pD} \\
+U^\prime & = -j \omega {\dfrac{S(x)}{\rho c^{2}}}p
+ = -jk {\dfrac{S(x)}{\rho c}}p \label{eq:UD}
+\end{align}
+\end{subequations}
+}
+
+\end{document}

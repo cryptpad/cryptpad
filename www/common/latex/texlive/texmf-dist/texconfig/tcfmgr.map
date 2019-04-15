@@ -1,0 +1,10 @@
+# file			rel dir			search path		progname
+dvipdfmx.cfg		dvipdfmx		other text files	dvipdfmx
+config			dvipdfm/config		other text files	dvipdfm
+config.ps		dvips/config		dvips config		-
+modes.mf		metafont/misc		.mf			-
+pdftexconfig.tex	tex/generic/config	.tex			-
+fmtutil.cnf		web2c			web2c files		-
+mktex.cnf		web2c			web2c files		-
+updmap.cfg		web2c			web2c files		-
+XDvi			xdvi			other text files	xdvi

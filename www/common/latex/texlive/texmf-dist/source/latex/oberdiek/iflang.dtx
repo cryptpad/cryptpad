@@ -1,0 +1,1247 @@
+% \iffalse meta-comment
+%
+% File: iflang.dtx
+% Version: 2007/11/11 v1.5
+% Info: Checks for the current language
+%
+% Copyright (C) 2007 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% The Base Interpreter refers to any `TeX-Format',
+% because some files are installed in TDS:tex/generic//.
+%
+% This work consists of the main source file iflang.dtx
+% and the derived files
+%    iflang.sty, iflang.pdf, iflang.ins, iflang.drv, iflang-test1.tex,
+%    iflang-test2.tex, iflang-test3.tex, iflang-test4.tex,
+%    iflang-test5.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/iflang.dtx
+%    CTAN:macros/latex/contrib/oberdiek/iflang.pdf
+%
+% Unpacking:
+%    (a) If iflang.ins is present:
+%           tex iflang.ins
+%    (b) Without iflang.ins:
+%           tex iflang.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{iflang.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If iflang.drv is present:
+%           latex iflang.drv
+%    (b) Without iflang.drv:
+%           latex iflang.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex iflang.dtx
+%       makeindex -s gind.ist iflang.idx
+%       pdflatex iflang.dtx
+%       makeindex -s gind.ist iflang.idx
+%       pdflatex iflang.dtx
+%
+% Installation:
+%    TDS:tex/generic/oberdiek/iflang.sty
+%    TDS:doc/latex/oberdiek/iflang.pdf
+%    TDS:doc/latex/oberdiek/test/iflang-test1.tex
+%    TDS:doc/latex/oberdiek/test/iflang-test2.tex
+%    TDS:doc/latex/oberdiek/test/iflang-test3.tex
+%    TDS:doc/latex/oberdiek/test/iflang-test4.tex
+%    TDS:doc/latex/oberdiek/test/iflang-test5.tex
+%    TDS:source/latex/oberdiek/iflang.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: iflang 2007/11/11 v1.5 Checks for the current language (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: iflang
+Version: 2007/11/11 v1.5
+
+Copyright (C) 2007 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+The Base Interpreter refers to any `TeX-Format',
+because some files are installed in TDS:tex/generic//.
+
+This work consists of the main source file iflang.dtx
+and the derived files
+   iflang.sty, iflang.pdf, iflang.ins, iflang.drv, iflang-test1.tex,
+   iflang-test2.tex, iflang-test3.tex, iflang-test4.tex,
+   iflang-test5.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{iflang.ins}{\from{iflang.dtx}{install}}%
+  \file{iflang.drv}{\from{iflang.dtx}{driver}}%
+  \usedir{tex/generic/oberdiek}%
+  \file{iflang.sty}{\from{iflang.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{iflang-test1.tex}{\from{iflang.dtx}{test1}}%
+  \file{iflang-test2.tex}{\from{iflang.dtx}{test2}}%
+  \file{iflang-test3.tex}{\from{iflang.dtx}{test3}}%
+  \file{iflang-test4.tex}{\from{iflang.dtx}{test4}}%
+  \file{iflang-test5.tex}{\from{iflang.dtx}{test5}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{iflang.xml}{\from{iflang.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     iflang.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `iflang.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{iflang.drv}%
+  [2007/11/11 v1.5 Checks for the current language (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{iflang.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{910}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{iflang.drv}
+%
+% \title{The \xpackage{iflang} package}
+% \date{2007/11/11 v1.5}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package provides expandible checks for the current language
+% based on macro \cs{languagename} or hyphenation patterns.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% Package \xpackage{babel} defines \cs{iflanguagename}. As first
+% argument it takes a language name and executes the second or
+% third argument depending on the current language. This
+% language test is based on hypenation patterns. However, it
+% is possible that different languages or dialects share the
+% same patterns. In such cases \cs{iflanguagename} fails.
+%
+% However, package \xpackage{babel} and some other packages
+% such as \xpackage{german} or \xpackage{ngerman} store
+% the language name in the macro \cs{languagename} if
+% \cs{selectlanguage} is called.
+%
+% \begin{declcs}{IfLanguageName} \M{lang} \M{then} \M{else}
+% \end{declcs}
+% Makro \cs{IfLanguageName} compares language \meta{lang} with
+% the current setting of macro \cs{languagename}. If both
+% contains the same name then the \meta{then} part is called,
+% otherwise the \meta{else} part.
+%
+% The macro is expandable. Thus it can be safely used inside \cs{edef}
+% or \cs{csname}. If case of errors like an undefined \cs{languagename}
+% the \meta{else} part is executed.
+%
+% Note: Macro \cs{IfLanguageName} relies on the fact, that
+% \cs{languagename} is set correctly:
+% \begin{description}
+% \item[Package \xpackage{babel}:]
+%    \mbox{}\\
+%    Full support of \cs{languagename} in its language switching commands.
+% \item[Format based on \xpackage{babel} (\xfile{language.dat}):]
+%    \mbox{}\\
+%    If package \xpackage{babel} is not used (or not yet loaded),
+%    then \xpackage{babel}'s
+%    \xfile{hyphen.cfg} has set \cs{languagename} to the last
+%    language in \xfile{language.dat}, but \cs{language} (current
+%    patterns) is zero and points to the first language.
+%    Thus the value of \cs{languagename} is basically garbage.
+%    Package \xpackage{iflang} warns if \cs{languagename} and
+%    \cs{language} do not fit.
+%    This can be fixed by loading package \xpackage{babel} previously.
+% \item[Format based on \eTeX's \xfile{etex.src} (\xfile{language.def}):]
+%    \mbox{}\\
+%    Unhappily it does not support
+%    \cs{languagename}. Thus this package hooks into \cs{uselanguage}
+%    to get \cs{languagename} defined and updated there.
+%    At package loading time the changed \cs{uselanguage} has not
+%    been called yet. Thus package \xpackage{iflang} tries
+%    |USenglish|. This is the definite default language of \xfile{etex.src}.
+%    If the current patterns suit this default language, an
+%    undefined \cs{languagename} is set to this language. Otherwise
+%    a \cs{languagename} remains undefined and a warning is given.
+% \end{description}
+%
+% \begin{declcs}{IfLanguagePatterns} \M{lang} \M{then} \M{else}
+% \end{declcs}
+% This macro behaves similar to \cs{IfLanguageName}. But the
+% language test is based on the current pattern in force (\cs{language}).
+% Also this macro is expandable, in case of errors the \meta{else} part
+% is called.
+%
+% The following naming convention for the pattern are supported:
+% \begin{description}
+% \item[\xpackage{babel}/\xfile{language.dat}]:
+%    \cs{l@}\meta{language}
+% \item[\xpackage{etex.src}/\xfile{language.def}]:
+%    \cs{lang@}\meta{language}
+% \end{description}
+% Package \xpackage{iflang} looks for \cs{uselanguage} (defined in
+% \xfile{etex.src}) to find out the naming convention in use.
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Reload check and package identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@iflang.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{iflang}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@iflang.sty\endcsname
+\ProvidesPackage{iflang}%
+  [2007/11/11 v1.5 Checks for the current language (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname IfLang@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\IfLang@AtEnd{%
+    \IfLang@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\IfLang@AtEnd{\IfLang@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{Tools}
+%
+% \subsubsection{Provide some basic macros of \LaTeX}
+%
+%    \begin{macro}{\@firstoftwo}
+%    \begin{macrocode}
+\expandafter\ifx\csname @firstoftwo\endcsname\relax
+  \long\def\@firstoftwo#1#2{#1}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\@secondoftwo}
+%    \begin{macrocode}
+\expandafter\ifx\csname @secondoftwo\endcsname\relax
+  \long\def\@secondoftwo#1#2{#2}%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Expandible existence check for macros}
+%
+%    \begin{macro}{\IfLang@IfDefined}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname ifcsname\endcsname\relax
+  \expandafter\@firstoftwo
+\else
+  \expandafter\@secondoftwo
+\fi
+{%
+  \def\IfLang@IfDefined#1{%
+    \expandafter\ifx\csname#1\endcsname\relax
+      \expandafter\@secondoftwo
+    \else
+      \expandafter\@firstoftwo
+    \fi
+  }%
+}{%
+  \def\IfLang@IfDefined#1{%
+    \ifnum\ifcsname#1\endcsname
+            \expandafter\ifx\csname#1\endcsname\relax
+              1%
+            \else
+              0%
+            \fi
+          \else
+            1%
+          \fi
+          =0 %
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Macros for messages}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \input infwarerr.sty\relax
+  \input pdftexcmds.sty\relax
+\else
+  \RequirePackage{infwarerr}[2007/09/09]%
+  \RequirePackage{pdftexcmds}[2007/11/11]%
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Support for \xfile{etex.src}}
+%
+%    \begin{macro}{\IfLang@prefix}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname uselanguage\endcsname\relax
+  \@PackageInfoNoLine{iflang}{%
+    Naming convention for patterns: babel%
+  }%
+  \def\IfLang@prefix{l@}%
+\else
+  \@PackageInfoNoLine{iflang}{%
+    Naming convention for patterns: etex.src%
+  }%
+  \def\IfLang@prefix{lang@}%
+  \let\IfLang@OrgUseLanguage\uselanguage
+  \def\uselanguage#1{%
+    \edef\languagename{#1}%
+    \IfLang@OrgUseLanguage{#1}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    The first \cs{uselanguage} that is executed as last
+%    line in \xfile{language.def} cannot patched this way.
+%    However, \xfile{language.def} is very strict. It forces
+%    the first added and used language to be |USenglish|.
+%    Thus, if \cs{languagename} is not defined, we can
+%    quite safely assume |USenglish|. As additional
+%    safety precaution the actual used patterns are checked.
+%    \begin{macrocode}
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname languagename\endcsname\relax
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname lang@USenglish\endcsname\relax
+      \@PackageWarningNoLine{iflang}{%
+        \string\lang@USenglish\space is missing%
+      }%
+    \else
+      \ifnum\lang@USenglish=\language
+        \def\languagename{USenglish}%
+      \else
+        \@PackageWarningNoLine{iflang}{%
+          \string\languagename\space is not set,\MessageBreak
+          current language is unknown%
+        }%
+      \fi
+    \fi
+  \fi
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname languagename\endcsname\relax
+  \@PackageInfoNoLine{iflang}{%
+    \string\languagename\space is not set%
+  }%
+\fi
+%    \end{macrocode}
+%
+% \subsection{\cs{IfLanguagePatterns}}
+%
+%    \begin{macro}{\IfLanguagePatterns}
+%    \begin{macrocode}
+\def\IfLanguagePatterns#1{%
+  \ifnum\IfLang@IfDefined{\IfLang@prefix#1}{%
+          \ifnum\csname\IfLang@prefix#1\endcsname=\language
+            0%
+          \else
+            1%
+          \fi
+        }{1}=0 %
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{\cs{IfLanguageName}}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdf@strcmp\endcsname\relax
+  \expandafter\@firstoftwo
+\else
+  \expandafter\@secondoftwo
+\fi
+{%
+%    \end{macrocode}
+%    We do not have \cs{pdf@strcmp} (and \cs{pdfstrcmp}).
+%    Thus we must define
+%    our own expandable string comparison. The following
+%    implementation is based on a \TeX\ pearl from David Kastrup, presented
+%    at the conference Bacho\TeX~2005:
+%    \url{http://www-stary.gust.org.pl/pearls/2005/david-kastrup/bachotex2005-david-kastrup-pearl1.pdf}
+%
+%    The orignal code allows macros inside the second string.
+%    Because also \cs{languagename} might consists of further
+%    macros, we need a variant that allows macros in the first
+%    string, too.
+%    \begin{macrocode}
+  \def\IfLang@StrNil{\relax}%
+  \def\IfLang@StrEqual#1{%
+    \number\IfLang@StrEqualStart{}{}#1\IfLang@StrNil
+  }%
+  \def\IfLang@StrEqualStart#1#2#3{%
+    \ifx#3\IfLang@StrNil
+      \IfLang@StrEqualStop
+    \fi
+    \ifcat\noexpand#3\relax
+      \IfLang@StrExpand{#1}{#2}#3%
+    \fi
+    \IfLang@StrEqualStart{\if#3#1}{#2\fi}%
+  }%
+  \def\IfLang@StrEqualStop\fi#1\IfLang@StrEqualStart#2#3#4{%
+    \fi
+    #2#4\relax'#313 %
+  }%
+  \def\IfLang@StrExpand#1#2#3\fi\IfLang@StrEqualStart#4#5{%
+    \fi
+    \IfLang@@StrExpand{#1}{#2}#3%
+  }%
+  \def\IfLang@@StrExpand#1#2#3\IfLang@StrNil{%
+    \expandafter\IfLang@@@StrExpand#3\IfLang@StrNil{#1}{#2}%
+  }%
+  \def\IfLang@@@StrExpand#1\IfLang@StrNil#2#3{%
+    \IfLang@StrEqualStart{#2}{#3}#1\IfLang@StrNil
+  }%
+%    \end{macrocode}
+%    \begin{macro}{\IfLanguageName}
+%    \begin{macrocode}
+  \def\IfLanguageName#1{%
+    \ifnum\IfLang@IfDefined{languagename}{%
+            \if\expandafter\IfLang@StrEqual\expandafter%
+                           {\languagename}{#1}%
+              0%
+            \else
+              1%
+            \fi
+          }{1}=0 %
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}{%
+%    \end{macrocode}
+%    \begin{macro}{\IfLanguageName}
+%    \begin{macrocode}
+  \def\IfLanguageName#1{%
+    \ifnum\IfLang@IfDefined{languagename}{%
+            \pdf@strcmp{#1}{\languagename}%
+          }{1}=0 %
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+%
+% \subsection{Check plausibility of \cs{languagename}}
+%
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname languagename\endcsname\relax
+\else
+  \IfLanguagePatterns{\languagename}{}{%
+    \@PackageWarningNoLine{iflang}{%
+      Mismatch between \string\language\space
+      (patterns)\MessageBreak
+      and setting of \string\languagename
+    }%
+  }%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\IfLang@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input iflang.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Test with \LaTeX}
+%
+%    \begin{macrocode}
+%<*test2|test3>
+%    \end{macrocode}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}
+%<test3>\let\pdfstrcmp\relax
+\nofiles
+\documentclass{minimal}
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\usepackage[english,naustrian,ngerman]{babel}
+\usepackage{iflang}
+\begin{document}
+\begin{qstest}{IfLanguagePatterns}{language, pattern}
+  \def\test#1#2{%
+    \Expect*{\IfLanguagePatterns{#1}{true}{false}}{#2}%
+  }%
+  \test{ngerman}{true}%
+  \test{naustrian}{true}%
+  \test{english}{false}%
+  \test{foobar}{false}%
+\end{qstest}
+\begin{qstest}{IfLanguageName}{language, name}
+  \def\test#1#2{%
+    \Expect*{\IfLanguageName{#1}{true}{false}}{#2}%
+  }%
+  \test{ngerman}{true}%
+  \test{naustrian}{false}%
+  \selectlanguage{naustrian}%
+  \test{ngerman}{false}%
+  \test{naustrian}{true}%
+  \test{foobar}{false}%
+  %
+  \def\languagename{naustrian}%
+  \test{naustrian}{true}%
+  \test{ngerman}{false}%
+  %
+  \edef\languagename{\string naustrian}%
+  \test{naustrian}{true}%
+  \test{ngerman}{false}%
+  %
+  \def\languagename{naustrian}%
+  \makeatletter
+  \@onelevel@sanitize\languagename
+  \test{naustrian}{true}%
+  \test{ngerman}{false}%
+  %
+  \def\languagename{naustrian}%
+  \def\xaustrian{naustrian}%
+  \def\xgerman{ngerman}%
+  \test{\xaustrian}{true}%
+  \test{\xgerman}{false}%
+  %
+  \def\languagename{\xaustrian}%
+  \test{naustrian}{true}%
+  \test{ngerman}{false}%
+  \test{\xaustrian}{true}%
+  \test{\xgerman}{false}%
+  \test{\languagename}{true}%
+  \test{\languagename\space}{false}%
+  %
+  \def\languagename{\empty\xaustrian\empty}%
+  \test{naustrian}{true}%
+  \test{ngerman}{false}%
+  \test{\empty\xaustrian\empty}{true}%
+  \test{\empty\xgerman\empty}{false}%
+\end{qstest}
+\begin{qstest}{IfDefined}{defined}
+  \makeatletter
+  \let\foobar\relax
+  \Expect*{\IfLang@IfDefined{foobar}{true}{false}}{false}%
+  \Expect*{\ifx\foobar\relax true\else false\fi}{true}%
+  \let\foobar\UNDEFINED
+  \Expect*{\IfLang@IfDefined{foobar}{true}{false}}{false}%
+  \Expect*{\ifx\foobar\relax true\else false\fi}{false}%
+  \Expect*{\ifx\foobar\UNDEFINED true\else false\fi}{true}%
+\end{qstest}
+\end{document}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test2|test3>
+%    \end{macrocode}
+%
+% \subsection{Test with \plainTeX\ and \eTeX}
+%
+%    \begin{macrocode}
+%<*test4>
+%    \end{macrocode}
+%    \begin{macrocode}
+%% Format `etex' based on `language.def'
+\input iflang.sty
+\catcode64=12
+
+\def\TestGeneric#1#2#3{%
+  \begingroup
+    \edef\x{#1{#2}{true}{false}}%
+    \edef\y{#3}%
+    \ifx\x\y
+    \else
+      \errmessage{Failed test: \string#1{#2} <> #3}%
+    \fi
+  \endgroup
+}
+\def\TestPatterns{\TestGeneric\IfLanguagePatterns}
+\def\TestName{\TestGeneric\IfLanguageName}
+
+\TestPatterns{USenglish}{true}
+\TestPatterns{ngerman}{false}
+
+\TestName{USenglish}{true}
+\TestName{ngerman}{false}
+
+\uselanguage{ngerman}
+
+\TestPatterns{USenglish}{false}
+\TestPatterns{ngerman}{true}
+
+\TestName{USenglish}{false}
+\TestName{ngerman}{true}
+
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test4>
+%    \end{macrocode}
+%
+% \subsection{Test with \plainTeX\ and without \eTeX/\pdfTeX}
+%
+%    \begin{macrocode}
+%<*test5>
+%    \end{macrocode}
+%    \begin{macrocode}
+%% Format `tex' (vanilla plain-TeX)
+\let\ifcsname\UNDEFINED
+\let\pdfstrcmp\UNDEFINED
+\input iflang.sty
+\catcode64=11
+
+\def\TestDefined#1{%
+  \IfLang@IfDefined{foobar}{}{}%
+  \ifx\foobar#1%
+  \else
+    \errmessage{Failed test: \string\foobar <> \string#1}%
+  \fi
+}
+\let\foobar\relax
+\TestDefined\relax
+\let\foobar\UNDEFINED
+\TestDefined\relax
+
+\def\strip@prefix#1>{}
+\def\@onelevel@sanitize#1{%
+  \edef#1{\expandafter\strip@prefix\meaning#1}%
+}
+\def\TestCompare#1#2#3{%
+  \begingroup
+    \edef\x{%
+      \if\IfLang@StrEqual{#1}{#2}%
+        true%
+      \else
+        false%
+      \fi
+    }%
+    \def\expect{#3}%
+    \ifx\x\expect
+    \else
+      \def\a{#1}%
+      \@onelevel@sanitize\a
+      \def\b{#2}%
+      \@onelevel@sanitize\b
+      \errmessage{Failed test: `\a'='\b' <> \expect}%
+    \fi
+  \endgroup
+}
+\TestCompare{junk}{junk}{true}
+\TestCompare{}{}{true}
+\TestCompare{a}{b}{false}
+\TestCompare{aa}{bb}{false}
+\def\a{ax}
+\def\b{bx}
+\def\c{\a\b}
+\def\d{\c\b}
+\def\exch#1#2{#2#1}
+\def\gobble#1{}
+\TestCompare{\gobble a}{}{true}
+\TestCompare{}{\gobble a}{true}
+\TestCompare{a\exch xyb}{ayxb}{true}
+\TestCompare{\c}{\c}{true}
+\TestCompare{\d}{\c\b}{true}
+
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test5>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/iflang.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/iflang.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex iflang.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   iflang.sty & tex/generic/oberdiek/iflang.sty\\
+%   iflang.pdf & doc/latex/oberdiek/iflang.pdf\\
+%   test/iflang-test1.tex & doc/latex/oberdiek/test/iflang-test1.tex\\
+%   test/iflang-test2.tex & doc/latex/oberdiek/test/iflang-test2.tex\\
+%   test/iflang-test3.tex & doc/latex/oberdiek/test/iflang-test3.tex\\
+%   test/iflang-test4.tex & doc/latex/oberdiek/test/iflang-test4.tex\\
+%   test/iflang-test5.tex & doc/latex/oberdiek/test/iflang-test5.tex\\
+%   iflang.dtx & source/latex/oberdiek/iflang.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk iflang.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{iflang.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex iflang.dtx
+%makeindex -s gind.ist iflang.idx
+%pdflatex iflang.dtx
+%makeindex -s gind.ist iflang.idx
+%pdflatex iflang.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{iflang.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='iflang'>
+  <name>iflang</name>
+  <caption>Expandable checks for the current language.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007'/>
+  <license type='lppl1.3'/>
+  <version number='1.5'/>
+  <description>
+    This package provides expandable checks for the current language
+    based on macro <tt>\languagename</tt> or hyphenation patterns.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/iflang.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/iflang.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+% I wish to thank:
+% \begin{description}
+% \item[Markus Kohm] Useful hints for version 1.2.
+% \end{description}
+%
+% \begin{History}
+%   \begin{Version}{2007/04/10 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.1}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2007/04/12 v1.2}
+%   \item
+%     Initialization of \cs{languagename} in case of \xfile{etex.src}.
+%   \item
+%     Some sanity tests added.
+%   \item
+%     Documentation improved.
+%   \end{Version}
+%   \begin{Version}{2007/04/26 v1.3}
+%   \item
+%     Use of package \xpackage{infwarerr}.
+%   \end{Version}
+%   \begin{Version}{2007/09/09 v1.4}
+%   \item
+%     Bug fix: \cs{IfLang@StrEqual} $\rightarrow$ \cs{IfLangStrEqual}
+%     (Gabriele Balducci).
+%   \item
+%     Catcode section rewritten.
+%   \end{Version}
+%   \begin{Version}{2007/11/11 v1.5}
+%   \item
+%     Use of package \xpackage{pdftexcmds} for \LuaTeX\ support.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

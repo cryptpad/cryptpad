@@ -1,0 +1,860 @@
+% \iffalse meta-comment
+%
+% Copyright 2014-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% -----------------------------------------------------------------------------
+%
+% The same approach as used in \pkg{DocStrip}: if \cs{documentclass}
+% is undefined then skip the driver, allowing the file to be used directly.
+% This works as the \cs{fi} is only seen if \LaTeX{} is not in use. The odd
+% \cs{jobname} business allows the extraction to work with \LaTeX{} provided
+% an appropriate \texttt{.ins} file is set up.
+%<*gobble>
+\ifx\jobname\relax
+  \let\documentclass\undefined
+\fi
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname documentclass\endcsname\relax
+\else
+  \csname fi\endcsname
+%</gobble>
+%
+%<*driver>
+\ProvidesFile{ltunicode.dtx}
+  [2015/08/10 v1.0l LaTeX Kernel (Unicode data)]
+\documentclass{ltxdoc}
+\begin{document}
+\DocInput{\jobname.dtx}
+\end{document}
+%<*gobble>
+\fi
+%</gobble>
+%</driver>
+% \fi
+%
+% \GetFileInfo{ltunicode.dtx}
+% \title{The \texttt{ltunicode.dtx} file\thanks
+%     {This file has version number \fileversion, dated \filedate.}\\
+%       for use with \LaTeXe}
+% \author{The \LaTeX3 Project}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% This script extracts data from the Unicode Consortium files
+% |UnicodeData.txt|, |EastAsianWidth.txt| and |LineBreak.txt| to be used for
+% setting up \LaTeXe{} (or plain \TeX{}) with sane default settings when using
+% the Xe\TeX{} and Lua\TeX{} engines. Details of the process are included in
+% the code comments.
+% 
+% To create the extracted file, run this file in a location containing
+% the three input data files using \texttt{pdftex}. (The code requires
+% \cs{pdfmdfivesum} and the e-\TeX{} extensions: it could be adapted for
+% Lua\TeX{}).
+%
+% \StopEventually{}
+%
+%    \begin{macrocode}
+%<*script>
+%    \end{macrocode}
+%
+% \section{General set up}
+%
+% The script is designed to work with plain \TeX{} and so |@| is made into
+% a `letter' using the primitive approach.
+%    \begin{macrocode}
+\catcode`\@=11 %
+%    \end{macrocode}
+%
+% \begin{macro}{\gobble}
+% \begin{macro}{\gobblethree}
+% \begin{macro}{\firsttoken}
+%   Standard utilities.
+%    \begin{macrocode}
+\long\def\gobble#1{}
+\long\def\gobblethree#1#2#3{}
+\long\def\firsttoken#1#2\relax{#1}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\storedpar}
+%   A simple piece of test set up: the final line of the read file will be
+%   tokenized by \TeX{} as \cs{par} which can be tested by \cs{ifx} provided
+%   we have an equivalent available.
+%    \begin{macrocode}
+\def\storedpar{\par}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\return}
+%   A stored |^^M| for string comparisons.
+%    \begin{macrocode}
+\begingroup
+  \catcode`\^^M=12 %
+  \gdef\return{^^M}%
+\endgroup%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\sourceforhex}
+% \begin{macro}{\sethex}
+% \begin{macro}{\dohex}
+% \begin{macro}{\hexdigit}
+%   Some parts of the code here will need to be able to convert integers
+%   to their hexadecimal equivalent. That is easiest to do for the requirements
+%   here using a modified version of some code from Appendix~D of \emph{The
+%   \TeX{}book}.
+%    \begin{macrocode}
+\newcount\sourceforhex
+\def\sethex#1#2{%
+  \def#1{}%
+  \sourceforhex=#2\relax
+  \ifnum\sourceforhex=0 %
+    \def#1{0}%
+  \else
+    \dohex#1%
+  \fi
+}
+\def\dohex#1{%
+  \begingroup
+    \count0=\sourceforhex
+    \divide\sourceforhex by 16 %
+    \ifnum\sourceforhex>0 %
+      \dohex#1%
+    \fi
+    \count2=\sourceforhex
+    \multiply\count2 by -16 %
+    \advance\count0 by\count2
+    \hexdigit#1%
+  \expandafter\endgroup
+  \expandafter\def\expandafter#1\expandafter{#1}%
+}
+\def\hexdigit#1{%
+  \ifnum\count0<10 %
+    \edef#1{#1\number\count0}%
+  \else
+    \advance\count0 by -10 %
+    \edef#1{#1\ifcase\count0 A\or B\or C\or D\or E\or F\fi}%
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\unicoderead, \unicodewrite}
+%   Set up the streams for data.
+%    \begin{macrocode}
+\newread\unicoderead
+\newwrite\unicodewrite
+%    \end{macrocode}
+% \end{macro}
+%
+% \section{Verbatim copying}
+%
+% \begin{macro}{\verbatimcopy}
+% \begin{macro}{\endverbatimcopy}
+% \begin{macro}{\verbatimcopy@auxii}
+% \begin{macro}{\verbatimcopy@auxii}
+% \begin{macro}{\verbatim@endmarker}
+%   Set up to read some material verbatim and write it to the output stream.
+%   There needs to be a dedicated `clean up first line' macro, but other than
+%   that life is simple enough.
+%    \begin{macrocode}
+\begingroup
+  \catcode`\^^M=12 %
+  \gdef\verbatimcopy{%
+    \begingroup%
+      \catcode`\^^M=12 %
+      \catcode`\\=12 %
+      \catcode`\{=12 %
+      \catcode`\}=12 %
+      \catcode`\#=12 %
+      \catcode`\%=12 %
+      \catcode`\ =12 %
+      \endlinechar=`\^^M %
+      \verbatimcopy@auxi
+  }%
+  \gdef\verbatimcopy@auxi#1^^M{%
+    \expandafter\verbatimcopy@auxii\gobble#1^^M%
+  }%
+  \gdef\verbatimcopy@auxii#1^^M{%
+    \def\temp{#1}%
+    \ifx\temp\verbatim@endmarker%
+      \expandafter\endgroup%
+    \else%
+      \ifx\temp\empty\else%
+        \immediate\write\unicodewrite{#1}%
+      \fi%
+      \expandafter\verbatimcopy@auxii%
+    \fi%
+  }%
+\endgroup%
+\edef\verbatim@endmarker{\expandafter\gobble\string\\}
+\edef\verbatim@endmarker{\verbatim@endmarker endverbatimcopy}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \section{File header section}
+%
+% \changes{v1.0d}{2015/03/26}{Renamed data file to
+%   \texttt{unicode-letters.def}}
+% With the mechanisms set up, open the data file for writing.
+%    \begin{macrocode}
+\immediate\openout\unicodewrite=unicode-letters.def %
+%    \end{macrocode}
+% There are various lines that now need to go at the start of the file.
+% First, there is some header information. Parts of it are auto-generated,
+% so there is some interspersing of verbatim and non-verbatim parts.
+%    \begin{macrocode}
+\verbatimcopy
+%% This is the file `unicode-letters.def',
+%% generated using the script ltunicode.dtx.
+%%
+%% The data here are derived from the files
+\endverbatimcopy
+%    \end{macrocode}
+%    
+% \changes{v1.0b}{2015/03/25}{Include Unicode version data in generated
+%   file}
+% \changes{v1.0c}{2015/03/25}{Include MD5 sums for sources in generated
+%   file}
+% \changes{v1.0f}{2015/03/26}{Include dates for sources in generated
+%   file}
+% \begin{macro}{\parseunicodedata}
+% \begin{macro}{\parseunicodedata@auxi}
+% \begin{macro}{\parseunicodedata@auxii}
+% \begin{macro}{\mdfiveinfo}
+%   To ensure that there is a full audit trail for the data, we record
+%   both the reported file version (if available) and the checksum for each
+%   of the source files. This is done by reading the first line of each file
+%   and parsing for the version string and if found reading the second line
+%   for a date/time, and then `catching' the entire files inside a macro to
+%   work out the checksums.
+%    \begin{macrocode}
+\def\parseunicodedata#1{%
+  \openin\unicoderead=#1.txt %
+  \ifeof\unicoderead
+    \errmessage{Data file missing: #1.txt}%
+  \fi
+  \immediate\write\unicodewrite{%
+    \expandafter\gobble\string\%\expandafter\gobble\string\%
+    - #1.txt
+  }%
+  \readline\unicoderead to \unicodedataline
+  \edef\unicodedataline{\unicodedataline\detokenize{-.txt}}%
+  \expandafter\parseunicodedata@auxi\unicodedataline\relax{#1}%
+}
+\begingroup
+\catcode`\T=12 %
+\catcode`\X=12 %
+\lowercase{%
+  \endgroup
+  \def\parseunicodedata@auxi#1-#2.TXT#3\relax#4}%
+{%
+  \ifx\relax#2\relax
+  \else
+    \readline\unicoderead to \unicodedataline
+    \expandafter\parseunicodedata@auxii\unicodedataline\relax
+  \fi
+  \closein\unicoderead
+  \begingroup
+    \everyeof{\noexpand}%
+    \catcode`\#=12 %
+    \edef\mdfiveinfo{\input#4.txt\space}%
+  \expandafter\endgroup
+  \expandafter\def\expandafter\mdfiveinfo\expandafter{\mdfiveinfo}%
+  \immediate\write\unicodewrite{%
+    \expandafter\gobble\string\%\expandafter\gobble\string\%
+    \space\space
+    \ifx\relax#2\relax
+    \else
+      Version #2 dated \temp^^J%
+      \expandafter\gobble\string\%\expandafter\gobble\string\%
+      \space\space
+    \fi
+    MD5 sum \pdfmdfivesum\expandafter{\mdfiveinfo}%
+  }%
+}
+\def\parseunicodedata@auxii#1: #2, #3 #4\relax{%
+  \def\temp{#2, #3}%
+}
+\parseunicodedata{UnicodeData}
+\parseunicodedata{EastAsianWidth}
+\parseunicodedata{LineBreak}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+\verbatimcopy
+%% which are maintained by the Unicode Consortium.
+%%
+\endverbatimcopy
+%    \end{macrocode}
+% 
+% Automatically include the current date.
+%    \begin{macrocode}
+\immediate\write\unicodewrite{%
+  \expandafter\gobble\string\%\expandafter\gobble\string\%
+  Generated on \the\year
+    -\ifnum\month>9 \else 0\fi \the\month
+    -\ifnum\day>9   \else 0\fi \the\day.
+}
+%    \end{macrocode}
+%
+% Back to simple text copying
+%    \begin{macrocode}
+\verbatimcopy
+%%
+%% Copyright 2014-2015
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%%
+%% This file is part of the LaTeX base system.
+%% -------------------------------------------
+%%
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This file has the LPPL maintenance status "maintained".
+%%
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+\endverbatimcopy
+%    \end{macrocode}
+%
+% \section{Unicode character data}
+%
+% \changes{v1.0e}{2015/03/26}{Correctly parse ranges in
+%   \texttt{UnicodeData.txt}}
+% \begin{macro}{\parseunicodedata}
+% \begin{macro}{\parseunicodedata@auxi}
+% \begin{macro}{\parseunicodedata@auxii}
+% \begin{macro}{\parseunicodedata@auxiii}
+% \begin{macro}{\parseunicodedata@auxiv}
+% \begin{macro}{\parseunicodedata@auxv}
+% \begin{macro}{\parseunicodedata@auxvi}
+%   The first step of parsing a line of data is to check that it's not come
+%   from a blank in the source, which will have been tokenized as \cs{par}.
+%   Assuming that is not the case, there are lots of data items separated by
+%   |;|. Of those, only a few are needed so they are picked out and everything
+%   else is dropped. There is one complication: there are a few cases in the
+%   data file of ranges which are marked by the descriptor |First| and a
+%   matching |Last|. A separate routine is used to handle these cases.
+%    \begin{macrocode}
+\def\parseunicodedata#1{%
+  \ifx#1\storedpar
+  \else
+    \expandafter\parseunicodedata@auxi#1\relax
+  \fi
+}
+\def\parseunicodedata@auxi#1;#2;#3;#4;#5;#6;#7;#8;#9;{%
+  \parseunicodedata@auxii#1;#3;#2 First>\relax
+}
+\def\parseunicodedata@auxii#1;#2;#3 First>#4\relax{%
+  \ifx\relax#4\relax
+    \expandafter\parseunicodedata@auxiii
+  \else
+    \expandafter\parseunicodedata@auxv
+  \fi
+    #1;#2;%
+}
+\def\parseunicodedata@auxiii#1;#2;#3;#4;#5;#6;#7;#8\relax{%
+  \parseunicodedata@auxiv{#1}{#2}{#6}{#7}%
+}
+%    \end{macrocode}
+%   At this stage we have only four pieces of data
+%   \begin{enumerate}
+%     \item The code value
+%     \item The general class
+%     \item The uppercase mapping
+%     \item The lowercase mapping
+%   \end{enumerate}
+%   where both one or both of the last two may be empty. Everything here could
+%   be done in a single conditional within a \cs{write}, but that would be
+%   tricky to follow. Instead, a series of defined auxiliaries are used to
+%   show the flow. Notice that combining marks are treated as letters here
+%   (the second `letter' test).
+%    \begin{macrocode}
+\def\parseunicodedata@auxiv#1#2#3#4{%
+  \if L\firsttoken#2?\relax
+    \expandafter\unicodeletter
+  \else
+    \if M\firsttoken#2?\relax
+      \expandafter\expandafter\expandafter\unicodeletter
+    \else
+      \expandafter\expandafter\expandafter\unicodenonletter
+    \fi
+  \fi
+    {#1}{#3}{#4}%
+}
+%    \end{macrocode}
+% \changes{v1.0i}{2015/06/20}{Include first code point in a range in output}
+%   In the case where the first code point for a range was found, we
+%   assume the next line is the last code point (it always is). It's then
+%   a question of checking if the range is a set of letters or not, and if
+%   so going though them all and adding to the data file.
+%    \begin{macrocode}
+\def\parseunicodedata@auxv#1;#2;#3\relax{%
+  \read\unicoderead to \unicodedataline
+  \expandafter\parseunicodedata@auxvi\unicodedataline\relax#1;#2\relax
+}
+\def\parseunicodedata@auxvi#1;#2\relax#3;#4\relax{%
+  \if L\firsttoken#4?\relax
+    \count@="#3 %
+    \begingroup
+      \loop
+        \unless\ifnum\count@>"#1 %
+          \sethex\temp{\count@}%
+          \unicodeletter\temp\temp\temp
+          \advance\count@\@ne
+      \repeat
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.0g}{2015/03/26}{Add missing \cs{global} in definition of \cs{C}}
+% \changes{v1.0j}{2015/08/05}{Compress data for caseless letters}
+% \changes{v1.0j}{2015/08/05}{Save some space by dropping end-of-line
+%   percent chars}
+% \begin{macro}{\unicodeletter, \unicodenonletter}
+% \begin{macro}{\writeunicodedatafull}
+% \begin{macro}{\writeunicodedatacompact}
+%   For `letters', we always want to write the data to file, and the only
+%   question here is if the character has case mappings or these point back
+%   to the character itself. If there are no mappings or the mappings are
+%   all equivalent to the same code point then use a shorter version of
+%   the write macro.
+%    \begin{macrocode}
+\def\unicodeletter#1#2#3{%
+  \ifx\relax#2#3\relax
+    \writeunicodedatacompact\l{#1}%
+  \else
+    \ifnum 0%
+      \ifnum"#1="\ifx\relax#2\relax#1 \else#2 \fi\else1\fi
+      \ifnum"#1="\ifx\relax#3\relax#1 \else#3 \fi\else1\fi
+      >0 %
+      \writeunicodedatafull\L{#1}{#2}{#3}%
+    \else
+      \writeunicodedatacompact\l{#1}%
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%   Cased non-letters can also exist: they can be detected as they have at
+%   least one case mapping. Write these in much the same way as letters,
+%   but always with a full mapping (must be the case to require the entry
+%   at all).
+%    \begin{macrocode}
+\def\unicodenonletter#1#2#3{%
+  \ifx\relax#2#3\relax
+  \else
+    \writeunicodedatafull\C{#1}{#2}{#3}%
+  \fi
+}
+%    \end{macrocode}
+%   Actually write the data. In all cases both upper- and lower-case mappings
+%   are given, so there is a need to test that both were actually available and
+%   if not set up to do nothing. Cases where both mappings are no-ops will
+%   already have been filtered out and are written in a shorter form: this
+%   saves a significant amount of space in the file.
+%    \begin{macrocode}
+\def\writeunicodedatafull#1#2#3#4{%
+  \immediate\write\unicodewrite{%
+    \space\space
+    \string#1\space
+    #2 %
+    \ifx\relax#3\relax
+      #2 %
+    \else
+      #3 %
+    \fi
+    \ifx\relax#4\relax
+      #2%
+    \else
+      #4%
+    \fi
+  }%
+}
+\def\writeunicodedatacompact#1#2{%
+  \immediate\write\unicodewrite{%
+    \space\space
+    \string#1\space
+    #2%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% There is now a lead-in section which creates the macros which take the
+% processed data and do the code assignments. Everything is done within a
+% group so that there is no need to worry about names.
+%    \begin{macrocode}
+\verbatimcopy
+\begingroup
+\endverbatimcopy
+%    \end{macrocode}
+% Cased non-letters simply need to have the case mappings set.
+% For letters, there are a few things to sort out. First, the case mappings are
+% defined as for non-letters. Category code is then set to $11$ before a check
+% to see if this is an upper case letter. If it is then the \cs{sfcode} is set
+% to $999$. Finally there is a need to deal with Unicode math codes, where base
+% plane letters are class $7$ but supplementary plane letters are class~$1$.
+% Older versions of Xe\TeX{} used a different name here: easy to pick up as
+% we know that this primitive must be defined in some way. There is also an issue
+% with the supplementary plane and older Xe\TeX{} versions, which is dealt with
+% using a check at run time.
+%    \begin{macrocode}
+\verbatimcopy
+  \def\C#1 #2 #3 {%
+    \XeTeXcheck{#1}%
+    \global\uccode"#1="#2 %
+    \global\lccode"#1="#3 %
+  }
+  \def\L#1 #2 #3 {%
+    \C #1 #2 #3 %
+    \global\catcode"#1=11 %
+    \ifnum"#1="#3 %
+    \else
+      \global\sfcode"#1=999 %
+    \fi
+    \ifnum"#1<"10000 %
+      \global\Umathcode"#1="7"01"#1 %
+    \else
+      \global\Umathcode"#1="0"01"#1 %
+    \fi    
+  }
+  \def\l#1 {\L#1 #1 #1 }
+  \ifx\Umathcode\undefined
+    \let\Umathcode\XeTeXmathcode
+  \fi
+  \def\XeTeXcheck#1{}
+  \ifx\XeTeXversion\undefined
+  \else
+    \def\XeTeXcheck.#1.#2-#3\relax{#1}
+     \ifnum\expandafter\XeTeXcheck\XeTeXrevision.-\relax>996 %
+       \def\XeTeXcheck#1{}
+     \else
+       \def\XeTeXcheck#1{%
+          \ifnum"#1>"FFFF %
+            \long\def\XeTeXcheck##1\endgroup{\endgroup}
+            \expandafter\XeTeXcheck
+          \fi
+       }
+     \fi
+  \fi
+\endverbatimcopy
+%    \end{macrocode}
+% Read the data and write the resulting code assignments to the file.
+%    \begin{macrocode}
+\openin\unicoderead=UnicodeData.txt %
+\loop\unless\ifeof\unicoderead
+  \read\unicoderead to \unicodedataline
+  \parseunicodedata\unicodedataline
+\repeat
+%    \end{macrocode}
+% End the group for setting character codes and assign a couple of special
+% cases.
+%    \begin{macrocode}
+\verbatimcopy
+\endgroup
+\global\sfcode"2019=0 %
+\global\sfcode"201D=0 %
+\endverbatimcopy
+%    \end{macrocode}
+%
+% \section{Xe\TeX{} Character classes}
+% 
+% The Xe\TeX{} engine includes the concept of character classes, which allow
+% insertion of tokens into the input stream at defined boundaries. Setting
+% up this data requires a two-part process as the information is split over
+% two input files.
+%
+% \begin{macro}{\parseunicodedata}
+% \begin{macro}{\parseunicodedata@auxi}
+% \begin{macro}{\parseunicodedata@auxii}
+%   The parsing system is redefined to parse a detokenized input line which
+%   may be a comment starting with |#|. Assuming that is not the case, the
+%   data line with start with a code point potentially forming part of a range.
+%   The range is extracted and the width stored for each code point.
+%    \begin{macrocode}
+\def\parseunicodedata#1{%
+  \ifx#1\return
+  \else
+    \if\expandafter\gobble\string\#\expandafter\firsttoken#1?\relax
+    \else
+      \expandafter\parseunicodedata@auxi#1\relax
+    \fi
+  \fi
+}
+\def\parseunicodedata@auxi#1;#2 #3\relax{%
+  \parseunicodedata@auxii#1....\relax{#2}%
+}
+\def\parseunicodedata@auxii#1..#2..#3\relax#4{%
+  \expandafter\gdef\csname EAW@#1\endcsname{#4}%
+  \ifx\relax#2\relax
+  \else
+    \count@="#1 %
+    \begingroup
+      \loop
+        \ifnum\count@<"#2 %
+          \advance\count@\@ne
+          \sethex\temp{\count@}%
+          \expandafter\gdef\csname EAW@\temp\endcsname{#4}%
+      \repeat
+    \endgroup
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% With the right parser in place, read the data file.
+%    \begin{macrocode}
+\openin\unicoderead=EastAsianWidth.txt %
+\loop\unless\ifeof\unicoderead
+  \readline\unicoderead to \unicodedataline
+  \parseunicodedata\unicodedataline
+\repeat
+%    \end{macrocode}
+%
+% \changes{v1.0j}{2015/08/05}{Compress East Asian width data by recording
+%   ranges for code points of type \texttt{ID}}
+% \begin{macro}{\parseunicodedata@auxii}
+% \begin{macro}{\parseunicodedata@auxiii}
+% \begin{macro}{\parseunicodedata@auxiv}
+% \begin{macro}{\parseunicodedata@auxv}
+% \begin{macro}{\ID}
+% \begin{macro}{\OP}
+% \begin{macro}{\CL}
+% \begin{macro}{\EX}
+% \begin{macro}{\IS}
+% \begin{macro}{\NS}
+% \begin{macro}{\CM}
+%  The final file to read, |LineBreak.txt|, uses the same format as\\
+%  |EastAsianWidth.txt|. As such, only the final parts of the parser have to be
+%  redefined. The first stage here is to check if the line breaking class
+%  is known, and if so if it is equal to |ID| (class one). 
+%    \begin{macrocode}
+\def\parseunicodedata@auxii#1..#2..#3\relax#4{%
+  \ifcsname #4\endcsname
+    \ifnum\csname #4\endcsname=\@ne
+      \expandafter\expandafter\expandafter\parseunicodedata@auxiii
+    \else
+      \expandafter\expandafter\expandafter\parseunicodedata@auxiv
+    \fi
+  \else
+    \expandafter\gobblethree
+  \fi
+    {#1}{#2}{#4}%
+}
+%    \end{macrocode}
+%   For ranges of class \texttt{ID}, the entire range is written to the data
+%   file as a single block: no need to check on the width data.
+%    \begin{macrocode}
+\def\parseunicodedata@auxiii#1#2#3{%
+  \immediate\write\unicodewrite{%
+    \space\space
+    \expandafter\string\csname #3\endcsname
+    \space
+    #1 \ifx\relax#2\relax#1\else#2\fi
+  }%
+}
+%    \end{macrocode}
+%   For other cases, loop over each code point separately. If the
+%   code point is of width |F|, |H| or |W| then the line breaking
+%   property is written to the data file. The earlier check means that
+%   this only happens for characters of classes \texttt{OP} (opener),
+%   \texttt{CL} (closer), \texttt{EX} (exclamation), \texttt{IS} (infix sep),
+%   \texttt{NS} (non-starter) and \texttt{CM} (combining marks) characters
+%   (the latter need to be transparent to the mechanism).
+%    \begin{macrocode}
+\def\parseunicodedata@auxiv#1#2#3{%
+  \parseunicodedata@auxv{#1}{#3}%
+  \ifx\relax#2\relax
+  \else
+    \count@="#1 %
+    \begingroup
+      \loop
+        \ifnum\count@<"#2 %
+          \advance\count@\@ne
+          \sethex\temp{\count@}%
+          \expandafter\parseunicodedata@auxv\expandafter{\temp}{#3}%
+      \repeat
+    \endgroup
+  \fi
+}
+\def\parseunicodedata@auxv#1#2{%
+  \ifnum 0%
+    \if F\csname EAW@#1\endcsname 1\fi
+    \if H\csname EAW@#1\endcsname 1\fi
+    \if W\csname EAW@#1\endcsname 1\fi
+     >0 %
+    \immediate\write\unicodewrite{%
+      \space\space
+      \expandafter\string\csname #2\endcsname
+      \space
+      #1%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%   The East Asian width class mappings.
+%    \begin{macrocode}
+\def\ID{1}
+\def\OP{2}
+\def\CL{3}
+\let\EX\CL
+\let\IS\CL
+\let\NS\CL
+\def\CM{256}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \changes{v1.0h}{2015/05/11}{Apply category codes to East Asian
+%   chars in all cases}
+% \changes{v1.0j}{2015/08/05}{Move the stop point for Lua\TeX{}}
+% \changes{v1.0j}{2015/08/05}{Only set \cs{XeTeXcharclass} from
+%   East Asian char data}
+% \changes{v1.0k}{2015/08/06}{Add missing \cs{endgroup}}
+% \changes{v1.0l}{2015/08/10}{Add missing \cs{endgroup}}
+% Before actually reading the line breaking data file, the appropriate
+% temporary code is added to the output. As described above, only a limited
+% number of classes need to be covered: they are hard-coded as classes
+% $1$, $2$ and $3$ following the convention adopted by plain Xe\TeX{}.
+%    \begin{macrocode}
+\verbatimcopy
+\begingroup
+  \ifx\XeTeXchartoks\XeTeXcharclass
+    \endgroup\expandafter\endinput
+  \else
+    \def\setclass#1#2#3{%
+      \ifnum#1>#2 %
+        \expandafter\gobble
+      \else
+        \expandafter\firstofone
+      \fi
+        {%
+          \global\XeTeXcharclass#1=#3 %
+          \expandafter\setclass\expandafter
+            {\number\numexpr#1+1\relax}{#2}{#3}%
+        }%
+    }%
+    \def\gobble#1{}
+    \def\firstofone#1{#1}
+    \def\ID#1 #2 {\setclass{"#1}{"#2}{1}}
+    \def\OP#1 {\setclass{"#1}{"#1}{2}}
+    \def\CL#1 {\setclass{"#1}{"#1}{3}}
+    \def\EX#1 {\setclass{"#1}{"#1}{3}}
+    \def\IS#1 {\setclass{"#1}{"#1}{3}}
+    \def\NS#1 {\setclass{"#1}{"#1}{3}}
+    \def\CM#1 {\setclass{"#1}{"#1}{256}}
+  \fi
+\endverbatimcopy
+%    \end{macrocode}
+%
+% Read the line breaking data and save to the output.
+%    \begin{macrocode}
+\openin\unicoderead=LineBreak.txt %
+\loop\unless\ifeof\unicoderead
+  \readline\unicoderead to \unicodedataline
+  \parseunicodedata\unicodedataline
+\repeat
+%    \end{macrocode}
+%
+% \changes{v1.0a}{2015/03/25}{Use \cs{hskip} rather than \cs{hspace}
+%   in glue settings}
+% Set up material to be inserted between character classes.
+% that provided by plain Xe\TeX{}. Using \cs{hskip} here means the code will
+% work with plain as well as \LaTeXe{}.
+%    \begin{macrocode}
+\verbatimcopy
+\endgroup
+\gdef\xtxHanGlue{\hskip0pt plus 0.1em\relax}
+\gdef\xtxHanSpace{\hskip0.2em plus 0.2em minus 0.1em\relax}
+\global\XeTeXinterchartoks 0 1 = {\xtxHanSpace}
+\global\XeTeXinterchartoks 0 2 = {\xtxHanSpace}
+\global\XeTeXinterchartoks 0 3 = {\nobreak\xtxHanSpace}
+\global\XeTeXinterchartoks 1 0 = {\xtxHanSpace}
+\global\XeTeXinterchartoks 2 0 = {\nobreak\xtxHanSpace}
+\global\XeTeXinterchartoks 3 0 = {\xtxHanSpace}
+\global\XeTeXinterchartoks 1 1 = {\xtxHanGlue}
+\global\XeTeXinterchartoks 1 2 = {\xtxHanGlue}
+\global\XeTeXinterchartoks 1 3 = {\nobreak\xtxHanGlue}
+\global\XeTeXinterchartoks 2 1 = {\nobreak\xtxHanGlue}
+\global\XeTeXinterchartoks 2 2 = {\nobreak\xtxHanGlue}
+\global\XeTeXinterchartoks 2 3 = {\xtxHanGlue}
+\global\XeTeXinterchartoks 3 1 = {\xtxHanGlue}
+\global\XeTeXinterchartoks 3 2 = {\xtxHanGlue}
+\global\XeTeXinterchartoks 3 3 = {\nobreak\xtxHanGlue}
+\endverbatimcopy
+%    \end{macrocode}
+%
+% Done: end the script.
+%    \begin{macrocode}
+\bye
+%    \end{macrocode}
+%    
+%    \begin{macrocode}
+%</script>
+%    \end{macrocode}

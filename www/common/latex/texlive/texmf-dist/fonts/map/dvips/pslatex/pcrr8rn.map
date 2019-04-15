@@ -1,0 +1,4 @@
+% Add this line to your psfonts.map, or include it
+% via a       p +pcrr8rn.map    line in a config file.
+
+pcrr8rn Courier ".85 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc

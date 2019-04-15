@@ -1,0 +1,84 @@
+%% t1aer.fd
+%% Copyright 1997 Lars Engebretsen
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Lars Engebretsen.
+%
+% This work consists of all files listed in MANIFEST.
+%
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1aer.fd}
+   [1997/11/16 Font definitions for T1/aer.]
+
+\DeclareFontFamily{T1}{aer}{}
+
+\DeclareFontShape{T1}{aer}{m}{n}{
+   <-6> aer5
+   <6-7> aer6
+   <7-8> aer7
+   <8-9> aer8
+   <9-10> aer9
+   <10-12> aer10
+   <12-17> aer12
+   <17-> aer17
+}{}
+
+\DeclareFontShape{T1}{aer}{bx}{n}{
+   <-6> aebx5
+   <6-7> aebx6
+   <7-8> aebx7
+   <8-9> aebx8
+   <9-10> aebx9
+   <10-12> aebx10
+   <12-> aebx12
+}{}
+
+\DeclareFontShape{T1}{aer}{m}{it}{
+   <-8> aeti7
+   <8-9> aeti8
+   <9-10> aeti9
+   <10-12> aeti10
+   <12-> aeti12
+}{}
+
+\DeclareFontShape{T1}{aer}{m}{sl}{
+   <-9> aesl8
+   <9-10> aesl9
+   <10-12> aesl10
+   <12-> aesl12
+}{}
+
+\DeclareFontShape{T1}{aer}{b}{n}{
+   <-> aeb10
+}{}
+
+\DeclareFontShape{T1}{aer}{bx}{it}{
+   <-> aebxti10
+}{}
+
+\DeclareFontShape{T1}{aer}{bx}{sl}{
+   <-> aebxsl10
+}{}
+
+\DeclareFontShape{T1}{aer}{m}{sc}{
+   <-> aecsc10
+}{}
+
+\DeclareFontShape{T1}{aer}{l}{n}{<->ssub * aer/m/n}{}
+\DeclareFontShape{T1}{aer}{l}{it}{<->ssub * aer/m/it}{}
+\DeclareFontShape{T1}{aer}{l}{sl}{<->ssub * aer/m/sl}{}
+\DeclareFontShape{T1}{aer}{b}{it}{<->ssub * aer/bx/it}{}
+\DeclareFontShape{T1}{aer}{b}{sl}{<->ssub * aer/bx/sl}{}
+\DeclareFontShape{T1}{aer}{l}{sc}{<->ssub * aer/m/sc}{}
+
+\endinput

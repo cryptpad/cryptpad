@@ -1,0 +1,62 @@
+Hyphenation patterns for British English
+
+(more info about the licence to be added later)
+
+% This file has been renamed from ukhyphen.tex to hyph-en-gb.tex in June 2008
+% for consistency with other files with hyphenation patterns in hyph-utf8 package.
+% No other changes made. See http://www.tug.org/tex-hyphen for more details.
+
+% File: ukhyphen.tex
+% TeX hyphenation patterns for UK English
+
+% Unlimited copying and redistribution of this file
+% is permitted so long as the file is not modified
+% in any way.
+%
+% Modifications may be made for private purposes (though
+% this is discouraged, as it could result in documents
+% hyphenating differently on different systems) but if
+% such modifications are re-distributed, the modified
+% file must not be capable of being confused with the
+% original.  In particular, this means
+%
+%(a) the filename (the portion before the extension, if any)
+%    must not match any of :
+%
+%        UKHYPH                  UK-HYPH
+%        UKHYPHEN                UK-HYPHEN
+%        UKHYPHENS               UK-HYPHENS
+%        UKHYPHENATION           UK-HYPHENATION
+%        UKHYPHENISATION         UK-HYPHENISATION
+%        UKHYPHENIZATION         UK-HYPHENIZATION
+%
+%   regardless of case, and
+%
+%(b) the file must contain conditions identical to these,
+% except that the modifier/distributor may, if he or she
+% wishes, augment the list of proscribed filenames.
+
+%       $Log: ukhyph.tex $
+%       Revision 2.0  1996/09/10 15:04:04  ucgadkw
+%       o  added list of hyphenation exceptions at the end of this file.
+%
+%
+% Version 1.0a.  Released 18th October 2005/PT.
+%
+% Created by Dominik Wujastyk and Graham Toal using Frank Liang's PATGEN 1.0.
+% Like the US patterns, these UK patterns correctly hyphenate about 90% of
+% the words in the input list, and produce no hyphens not in the list
+% (see TeXbook pp. 451--2).
+%
+% These patterns are based on a file of 114925 British-hyphenated words
+% generously made available to Dominik Wujastyk by Oxford University Press.
+% This list of words is copyright to the OUP and may not be redistributed.
+% The hyphenation break points in the words in the abovementioned file is
+% also copyright to the OUP.
+%
+% We are very grateful to Oxford University Press for allowing us to use
+% their list of hyphenated words to produce the following TeX hyphenation
+% patterns.  This file of hyphenation patterns may be freely distributed.
+%
+% These patterns require a value of about 14000 for TeX's pattern memory size.
+%

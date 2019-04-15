@@ -1,0 +1,291 @@
+%%
+%% This is file `x-cp437.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inputenx.dtx  (with options: `cp437')
+%% 
+%% This is a generated file.
+%% 
+%% Project: inputenx
+%% Version: 2011/05/27 v1.10
+%% 
+%% Copyright (C) 2006-2011 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file inputenx.dtx
+%% and the derived files
+%%    inputenx.sty, inputenx.pdf, inputenx.ins, inputenx.drv, ix-alias.def,
+%%    ix-math.def, ix-name.def, ix-slot.def, ix-uc.def,
+%%    ix-utf8enc.dfu, x-ascii.def, x-verbatim.def, x-atarist.def,
+%%    x-iso-8859-1.def, x-iso-8859-2.def, x-iso-8859-3.def,
+%%    x-iso-8859-4.def, x-iso-8859-5.def, x-iso-8859-8.def,
+%%    x-iso-8859-9.def, x-iso-8859-10.def, x-iso-8859-13.def,
+%%    x-iso-8859-14.def, x-iso-8859-15.def, x-iso-8859-16.def,
+%%    x-cp437.def, x-cp850.def, x-cp852.def, x-cp855.def,
+%%    x-cp858.def, x-cp865.def, x-cp866.def, x-cp1250.def,
+%%    x-cp1251.def, x-cp1252.def, x-cp1255.def, x-cp1257.def,
+%%    x-dec-mcs.def, x-koi8-r.def, x-mac-centeuro.def,
+%%    x-mac-cyrillic.def, x-mac-roman.def, x-nextstep.def,
+%%    inputenx-licrcmds.txt, inputenx-utf8enc.txt.
+%% 
+\ProvidesFile{x-cp437.def}%
+  [2011/05/27 v1.10 Input encoding cp437 (inputenx)]%
+\edef\RestoreAtCatcode{\catcode64=\the\catcode64\relax}
+\makeatletter
+\ProvideTextCommandDefault{\textGamma}{%
+  \ensuremath\Gamma
+}
+\ProvideTextCommandDefault{\textOmega}{%
+  \ensuremath\Omega
+}
+\ProvideTextCommandDefault{\textPhi}{%
+  \ensuremath\Phi
+}
+\ProvideTextCommandDefault{\textSigma}{%
+  \ensuremath\Sigma
+}
+\ProvideTextCommandDefault{\textTheta}{%
+  \ensuremath\Theta
+}
+\ProvideTextCommandDefault{\textalpha}{%
+  \ensuremath\alpha
+}
+\ProvideTextCommandDefault{\textapproxequal}{%
+  \ensuremath\approx
+}
+\ProvideTextCommandDefault{\textblacksquare}{%
+  \vrule \@width .3em \@height .4em \@depth -.1em\relax
+}
+\ProvideTextCommandDefault{\textcent}{%
+  \TextSymbolUnavailable\textcent
+}
+\ProvideTextCommandDefault{\textdegree}{%
+  \ensuremath{{^\circ}}%
+}
+\ProvideTextCommandDefault{\textdelta}{%
+  \ensuremath\delta
+}
+\ProvideTextCommandDefault{\textdiv}{%
+  \TextSymbolUnavailable\textdiv
+}
+\ProvideTextCommandDefault{\textepsilon}{%
+  \ensuremath\varepsilon
+}
+\ProvideTextCommandDefault{\textequivalence}{%
+  \ensuremath\equiv
+}
+\ProvideTextCommandDefault{\textflorin}{%
+  \textit{f}%
+}
+\ProvideTextCommandDefault{\textgreaterequal}{%
+  \ensuremath\geq
+}
+\ProvideTextCommandDefault{\textinfinity}{%
+  \ensuremath\infty
+}
+\ProvideTextCommandDefault{\textintersection}{%
+  \ensuremath\cap
+}
+\ProvideTextCommandDefault{\textlessequal}{%
+  \ensuremath\leq
+}
+\ProvideTextCommandDefault{\textlnot}{%
+  \ensuremath\lnot
+}
+\ProvideTextCommandDefault{\textmu}{%
+  \ensuremath\mu
+}
+\ProvideTextCommandDefault{\textnsuperior}{%
+  \ensuremath{{^n}}%
+}
+\ProvideTextCommandDefault{\textonehalf}{%
+  \ensuremath{\frac12}%
+}
+\ProvideTextCommandDefault{\textonequarter}{%
+  \ensuremath{\frac14}%
+}
+\ProvideTextCommandDefault{\textpeseta}{%
+  Pt%
+}
+\ProvideTextCommandDefault{\textphi}{%
+  \ensuremath\phi
+}
+\ProvideTextCommandDefault{\textpi}{%
+  \ensuremath\pi
+}
+\ProvideTextCommandDefault{\textpm}{%
+  \ensuremath\pm
+}
+\ProvideTextCommandDefault{\textrevlogicalnot}{%
+  \begingroup
+    \@ifundefined{reflectbox}{%
+      \TextSymbolUnavailable\textrevlogicalnot
+    }{%
+      \def\@revlogicalnot##1##2{%
+        \reflectbox{$##1##2$}%
+      }%
+      \ensuremath{\mathpalette\@revlogicalnot\lnot}%
+    }%
+  \endgroup
+}
+\ProvideTextCommandDefault{\textsigma}{%
+  \ensuremath\sigma
+}
+\ProvideTextCommandDefault{\textsurd}{%
+  \ensuremath\surd
+}
+\ProvideTextCommandDefault{\texttau}{%
+  \ensuremath\tau
+}
+\ProvideTextCommandDefault{\texttwosuperior}{%
+  \ensuremath{{^2}}%
+}
+\ProvideTextCommandDefault{\textyen}{%
+  \TextSymbolUnavailable\textyen
+}
+\DeclareInputText{128}{\c C}
+\DeclareInputText{129}{\"u}
+\DeclareInputText{130}{\@tabacckludge'e}
+\DeclareInputText{131}{\^a}
+\DeclareInputText{132}{\"a}
+\DeclareInputText{133}{\@tabacckludge`a}
+\DeclareInputText{134}{\r a}
+\DeclareInputText{135}{\c c}
+\DeclareInputText{136}{\^e}
+\DeclareInputText{137}{\"e}
+\DeclareInputText{138}{\@tabacckludge`e}
+\DeclareInputText{139}{\"\i}
+\DeclareInputText{140}{\^\i}
+\DeclareInputText{141}{\@tabacckludge`\i}
+\DeclareInputText{142}{\"A}
+\DeclareInputText{143}{\r A}
+\DeclareInputText{144}{\@tabacckludge'E}
+\DeclareInputText{145}{\ae}
+\DeclareInputText{146}{\AE}
+\DeclareInputText{147}{\^o}
+\DeclareInputText{148}{\"o}
+\DeclareInputText{149}{\@tabacckludge`o}
+\DeclareInputText{150}{\^u}
+\DeclareInputText{151}{\@tabacckludge`u}
+\DeclareInputText{152}{\"y}
+\DeclareInputText{153}{\"O}
+\DeclareInputText{154}{\"U}
+\DeclareInputText{155}{\textcent}
+\DeclareInputText{156}{\textsterling}
+\DeclareInputText{157}{\textyen}
+\DeclareInputText{158}{\textpeseta}
+\DeclareInputText{159}{\textflorin}
+\DeclareInputText{160}{\@tabacckludge'a}
+\DeclareInputText{161}{\@tabacckludge'\i}
+\DeclareInputText{162}{\@tabacckludge'o}
+\DeclareInputText{163}{\@tabacckludge'u}
+\DeclareInputText{164}{\~n}
+\DeclareInputText{165}{\~N}
+\DeclareInputText{166}{\textordfeminine}
+\DeclareInputText{167}{\textordmasculine}
+\DeclareInputText{168}{\textquestiondown}
+\DeclareInputText{169}{\textrevlogicalnot}
+\DeclareInputText{170}{\textlnot}
+\DeclareInputText{171}{\textonehalf}
+\DeclareInputText{172}{\textonequarter}
+\DeclareInputText{173}{\textexclamdown}
+\DeclareInputText{174}{\guillemotleft}
+\DeclareInputText{175}{\guillemotright}
+\DeclareInputText{176}{\textltshade}
+\DeclareInputText{177}{\textshade}
+\DeclareInputText{178}{\textdkshade}
+\DeclareInputText{179}{\textSFxi}
+\DeclareInputText{180}{\textSFix}
+\DeclareInputText{181}{\textSFxix}
+\DeclareInputText{182}{\textSFxx}
+\DeclareInputText{183}{\textSFxxi}
+\DeclareInputText{184}{\textSFxxii}
+\DeclareInputText{185}{\textSFxxiii}
+\DeclareInputText{186}{\textSFxxiv}
+\DeclareInputText{187}{\textSFxxv}
+\DeclareInputText{188}{\textSFxxvi}
+\DeclareInputText{189}{\textSFxxvii}
+\DeclareInputText{190}{\textSFxxviii}
+\DeclareInputText{191}{\textSFiii}
+\DeclareInputText{192}{\textSFii}
+\DeclareInputText{193}{\textSFvii}
+\DeclareInputText{194}{\textSFvi}
+\DeclareInputText{195}{\textSFviii}
+\DeclareInputText{196}{\textSFx}
+\DeclareInputText{197}{\textSFv}
+\DeclareInputText{198}{\textSFxxxvi}
+\DeclareInputText{199}{\textSFxxxvii}
+\DeclareInputText{200}{\textSFxxxviii}
+\DeclareInputText{201}{\textSFxxxix}
+\DeclareInputText{202}{\textSFxl}
+\DeclareInputText{203}{\textSFxli}
+\DeclareInputText{204}{\textSFxlii}
+\DeclareInputText{205}{\textSFxliii}
+\DeclareInputText{206}{\textSFxliv}
+\DeclareInputText{207}{\textSFxlv}
+\DeclareInputText{208}{\textSFxlvi}
+\DeclareInputText{209}{\textSFxlvii}
+\DeclareInputText{210}{\textSFxlviii}
+\DeclareInputText{211}{\textSFxlix}
+\DeclareInputText{212}{\textSFl}
+\DeclareInputText{213}{\textSFli}
+\DeclareInputText{214}{\textSFlii}
+\DeclareInputText{215}{\textSFliii}
+\DeclareInputText{216}{\textSFliv}
+\DeclareInputText{217}{\textSFiv}
+\DeclareInputText{218}{\textSFi}
+\DeclareInputText{219}{\textblock}
+\DeclareInputText{220}{\textdnblock}
+\DeclareInputText{221}{\textlfblock}
+\DeclareInputText{222}{\textrtblock}
+\DeclareInputText{223}{\textupblock}
+\DeclareInputText{224}{\textalpha}
+\DeclareInputText{225}{\ss}
+\DeclareInputText{226}{\textGamma}
+\DeclareInputText{227}{\textpi}
+\DeclareInputText{228}{\textSigma}
+\DeclareInputText{229}{\textsigma}
+\DeclareInputText{230}{\textmu}
+\DeclareInputText{231}{\texttau}
+\DeclareInputText{232}{\textPhi}
+\DeclareInputText{233}{\textTheta}
+\DeclareInputText{234}{\textOmega}
+\DeclareInputText{235}{\textdelta}
+\DeclareInputText{236}{\textinfinity}
+\DeclareInputText{237}{\textphi}
+\DeclareInputText{238}{\textepsilon}
+\DeclareInputText{239}{\textintersection}
+\DeclareInputText{240}{\textequivalence}
+\DeclareInputText{241}{\textpm}
+\DeclareInputText{242}{\textgreaterequal}
+\DeclareInputText{243}{\textlessequal}
+\DeclareInputText{246}{\textdiv}
+\DeclareInputText{247}{\textapproxequal}
+\DeclareInputText{248}{\textdegree}
+\DeclareInputText{249}{\textbullet}
+\DeclareInputText{250}{\textperiodcentered}
+\DeclareInputText{251}{\textsurd}
+\DeclareInputText{252}{\textnsuperior}
+\DeclareInputText{253}{\texttwosuperior}
+\DeclareInputText{254}{\textblacksquare}
+\DeclareInputText{255}{\nobreakspace}
+\RestoreAtCatcode
+\endinput
+%%
+%% End of file `x-cp437.def'.

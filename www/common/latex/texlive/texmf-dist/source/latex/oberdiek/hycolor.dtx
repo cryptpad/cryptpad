@@ -1,0 +1,2222 @@
+% \iffalse meta-comment
+%
+% File: hycolor.dtx
+% Version: 2011/01/30 v1.7
+% Info: Color options for hyperref/bookmark
+%
+% Copyright (C) 2007-2011 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file hycolor.dtx
+% and the derived files
+%    hycolor.sty, hycolor.pdf, hycolor.ins, hycolor.drv,
+%    xcolor-patch.sty, hycolor-test1.tex, hycolor-test2.tex,
+%    hycolor-test3.tex, hycolor-test-xcol1.tex,
+%    hycolor-test-xcol2.tex, hycolor-test-xcol3.tex,
+%    hycolor-test-xcol4.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/hycolor.dtx
+%    CTAN:macros/latex/contrib/oberdiek/hycolor.pdf
+%
+% Unpacking:
+%    (a) If hycolor.ins is present:
+%           tex hycolor.ins
+%    (b) Without hycolor.ins:
+%           tex hycolor.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{hycolor.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If hycolor.drv is present:
+%           latex hycolor.drv
+%    (b) Without hycolor.drv:
+%           latex hycolor.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex hycolor.dtx
+%       makeindex -s gind.ist hycolor.idx
+%       pdflatex hycolor.dtx
+%       makeindex -s gind.ist hycolor.idx
+%       pdflatex hycolor.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/hycolor.sty
+%    TDS:tex/latex/oberdiek/xcolor-patch.sty
+%    TDS:doc/latex/oberdiek/hycolor.pdf
+%    TDS:doc/latex/oberdiek/test/hycolor-test1.tex
+%    TDS:doc/latex/oberdiek/test/hycolor-test2.tex
+%    TDS:doc/latex/oberdiek/test/hycolor-test3.tex
+%    TDS:doc/latex/oberdiek/test/hycolor-test-xcol1.tex
+%    TDS:doc/latex/oberdiek/test/hycolor-test-xcol2.tex
+%    TDS:doc/latex/oberdiek/test/hycolor-test-xcol3.tex
+%    TDS:doc/latex/oberdiek/test/hycolor-test-xcol4.tex
+%    TDS:source/latex/oberdiek/hycolor.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: hycolor
+Version: 2011/01/30 v1.7
+
+Copyright (C) 2007-2011 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file hycolor.dtx
+and the derived files
+   hycolor.sty, hycolor.pdf, hycolor.ins, hycolor.drv,
+   xcolor-patch.sty, hycolor-test1.tex, hycolor-test2.tex,
+   hycolor-test3.tex, hycolor-test-xcol1.tex,
+   hycolor-test-xcol2.tex, hycolor-test-xcol3.tex,
+   hycolor-test-xcol4.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{hycolor.ins}{\from{hycolor.dtx}{install}}%
+  \file{hycolor.drv}{\from{hycolor.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{hycolor.sty}{\from{hycolor.dtx}{package}}%
+  \file{xcolor-patch.sty}{\from{hycolor.dtx}{xcolor}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{hycolor-test1.tex}{\from{hycolor.dtx}{test,test1}}%
+  \file{hycolor-test2.tex}{\from{hycolor.dtx}{test,test2}}%
+  \file{hycolor-test3.tex}{\from{hycolor.dtx}{test,test3}}%
+  \file{hycolor-test-xcol1.tex}{\from{hycolor.dtx}{test-xcolor,xcol1}}%
+  \file{hycolor-test-xcol2.tex}{\from{hycolor.dtx}{test-xcolor,xcol2}}%
+  \file{hycolor-test-xcol3.tex}{\from{hycolor.dtx}{test-xcolor,xcol3}}%
+  \file{hycolor-test-xcol4.tex}{\from{hycolor.dtx}{test-xcolor-fbox}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{hycolor.xml}{\from{hycolor.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     hycolor.sty, xcolor-patch.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `hycolor.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{hycolor.drv}%
+  [2011/01/30 v1.7 Color options for hyperref/bookmark (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\usepackage[ruled]{algorithm2e}
+
+\makeatletter
+\newcommand*{\makedefaultH}[1]{%
+  \expandafter\edef\csname #1\endcsname{%
+      \noexpand\@protected@testopt
+      \expandafter\noexpand\csname#1\endcsname
+      \expandafter\noexpand\csname
+          \expandafter\string\csname#1\endcsname\endcsname
+      {H}%
+  }%
+}
+\makeatother
+\makedefaultH{algorithm}
+\makedefaultH{procedure}
+\makedefaultH{function}
+
+\SetKwInput{KwParam}{Param}
+\newcommand*{\Param}[2]{%
+  \KwParam{\ArgSty{#1} (#2)}%
+}
+\newcommand*{\Dat}[1]{%
+  \texttt{\upshape#1}%
+}
+\newcommand*{\Var}[1]{%
+  \ArgSty{#1}%
+}
+\newcommand*{\Gets}{%
+  \ensuremath{\leftarrow}%
+  \ %
+}
+
+\makeatletter
+\newcommand*{\bs}{\texttt{\@backslashchar}}
+\makeatother
+\begin{document}
+  \DocInput{hycolor.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1726}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{hycolor.drv}
+%
+% \title{The \xpackage{hycolor} package}
+% \date{2011/01/30 v1.7}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% Package \xpackage{hycolor} implements the color option stuff that
+% is used by packages \xpackage{hyperref} and \xpackage{bookmark}.
+% It is not intended as package for the user.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% The package \xpackage{hycolor} implements color options
+% for packages \xpackage{hyperref} and \xpackage{bookmark}.
+%
+% Package \xpackage{xcolor} provides macros for extracting
+% color values and converting color data to other color models.
+% If this package is loaded, the full range of color specifications
+% of packages \xpackage{color} and \xpackage{xcolor} are supported
+% including the optional argument for the color model.
+% \begin{quote}
+%   |\hypersetup{linkbordercolor=red}%| needs \xpackage{xcolor}\\
+%   |\hypersetup{linkbordercolor=[named]{red}}%| needs \xpackage{xcolor}\\
+%   |\hypersetup{linkbordercolor=[rgb]{1,0,0}}|\\
+% \end{quote}
+%
+% Without package \xpackage{xcolor} some of the options only
+% support some models, if they are given directly, e.g.:
+% \begin{quote}
+%   |\bookmarksetup{color=[rgb]{1,0,0}}|
+% \end{quote}
+%
+% Because of compatibility some options of \xpackage{hyperref}
+% also support space separated RGB values:
+% \begin{quote}
+%   |\hypersetup{linkbordercolor=1 0 0}%| is the same as\\
+%   |\hypersetup{linkbordercolor=[rgb]{1,0,0}}|
+% \end{quote}
+%
+% Coloring is optional, it can be turned off by using an empty
+% value:
+% \begin{quote}
+%   |\hypersetup{linkbordercolor={}}|
+% \end{quote}
+%
+% The PDF specification knows some kind of an emtpy color setting
+% without values. This applies to form field colors. The new
+% A virtual color model \texttt{empty} is introduced for this
+% purpose, e.g.
+% \begin{quote}
+%   |\TextField[backgroundcolor={[empty]{}}, ...]{...}%| or\\
+%   |\TextField[{backgroundcolor=[empty]{}, ...}]{...}|
+% \end{quote}
+% PDF specification 1.7 also allows this for border link colors.
+% But this isn't currently supported by this package, because
+% the tested viewers (AR7/Linux, xpdf 3.00, ghostscript 8.54)
+% don't support this yet. In contrary ghostscript generates an
+% error message.
+%
+% \subsection{Summary}
+%
+% \begin{quote}
+% \begin{tabular}{@{}llll@{}}
+%   Color option & Models without \xpackage{xcolor}
+%   & RGB color & Model empty\\
+%   \hline
+%   |BKM.color| & |gray|, |rgb| & no & no\\
+%   |Hyp.*color| & all & no & no\\
+%   |Hyp.*bordercolor| & |gray|, |rgb| & yes & no\\
+%   |Field.*color| & |gray|, |rgb|, |cmyk| & yes & yes\\
+%   |AtFi.color| & |gray|, |rgb| & yes & no\\
+% \end{tabular}
+% \end{quote}
+% ``RGB color'' means that the color value can be given as
+% space separated RGB numbers (real numbers in the range
+% from 0 to 1).
+% Explanation of the color option prefixes:
+% \begin{quote}
+% \begin{tabular}{@{}ll@{}}
+%   Prefix & Explanation\\
+%   \hline
+%   |BKM| & Package \xpackage{bookmark}\\
+%   |Hyp| & Package \xpackage{hyperref}:
+%           package options or |\hypersetup|\\
+%   |Field| & Package \xpackage{hyperref}:
+%             Form field options\\
+%   |AtFi| & Package \xpackage{attachfile2}: option \xoption{color}\\
+% \end{tabular}
+% \end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{hycolor}%
+  [2011/01/30 v1.7 Color options for hyperref/bookmark (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{xcolor-patch}[2011/01/30]
+%    \end{macrocode}
+%
+% \subsection{Normalization}
+%
+% \subsubsection{Sanitize value of color option}
+%
+%    \begin{procedure}
+%      \Param{cmd}{macro}
+%      \Param{value}{value of color option}
+%      \BlankLine
+%      \KwResult{\ArgSty{value} is expanded, sanitized, and
+%                stored in macro \ArgSty{cmd}.}
+%      \caption{DefSanitized(cmd, value)}
+%      \BlankLine
+%      Initialize active characters\;
+%      \ArgSty{cmd} := Expand \ArgSty{value}\;
+%      Sanitize \ArgSty{cmd}\;
+%    \end{procedure}
+%    \emph{Sanitization} means that the string does not contain any
+%    macros or special tokens. It consists of characters with
+%    catcode 12 (other). The only exception is the space with
+%    catcode 10 (space).
+%    \begin{macro}{\HyColor@DefSanitized}
+%    \begin{macrocode}
+\begingroup
+  \catcode`\!=13 %
+  \catcode`\:=13 %
+  \catcode`\-=13 %
+  \catcode`\+=13 %
+  \catcode`\;=13 %
+  \catcode`\"=13 %
+  \catcode`\>=13 %
+  \edef\x{%
+    \def\noexpand!{\string!}%
+    \def\noexpand:{\string:}%
+    \def\noexpand-{\string-}%
+    \def\noexpand+{\string+}%
+    \def\noexpand;{\string;}%
+    \def\noexpand"{\string"}%
+    \def\noexpand>{\string>}%
+  }%
+  \def\y#1{\endgroup
+    \def\HyColor@DefSanitized##1##2{%
+      \begingroup
+        \csname @safe@activestrue\endcsname
+        #1%
+        \edef\x{\endgroup
+          \def\noexpand##1{##2}%
+        }%
+      \x
+      \@onelevel@sanitize##1%
+    }%
+  }%
+\expandafter\y\expandafter{\x}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Normalize result}
+%
+%    \begin{procedure}
+%      \Param{value}{Sanitized explicit number}
+%      \Param{cmd}{Macro that stores result}
+%      \BlankLine
+%      \KwResult{\ArgSty{cmd} contains normalized number}
+%      \caption{NormalizeNum(value, cmd)}
+%      \BlankLine
+%      \uIf{\Var{value}\,\Dat{pt} $<$ \Dat{0pt}}{
+%        \ArgSty{cmd} \Gets \Dat{0}\;
+%      }
+%      \uElseIf{number before dot of \Var{value} $<$ \Dat{1}}{
+%        \Var{cmd} \Gets number after dot of \Var{value}\;
+%        \Var{cmd} \Gets strip trailing zeros from \Var{cmd}\;
+%        \If{dot remains only}{
+%          \Var{cmd} \Gets \Dat{0}\;
+%        }
+%      }
+%      \Else{
+%        \Var{cmd} \Gets \Dat{1}\;
+%      }
+%    \end{procedure}
+%    The number is limited to the range between 0.0 and 1.0 and
+%    formatted as short PDF number without leading or trailing zeros.
+%    The precision of the number isn't changed.
+%    \begin{macro}{\HyColor@NormalizeNum}
+%    \begin{macrocode}
+\def\HyColor@NormalizeNum#1#2{%
+  \ifdim#1pt<\z@
+    \def#2{0}%
+  \else
+    \edef#2{\zap@space#1 \@empty}%
+    \expandafter\HyColor@CheckDot#2..\@nil#2%
+  \fi
+}
+\def\HyColor@CheckDot#1.#2.#3\@nil#4{%
+  \ifnum0#1<\@ne
+    \ifx\\#2\\%
+      \def#4{0}%
+    \else
+      \edef#4{\HyColor@ReverseString#2\@nil{}}%
+      \edef#4{\expandafter\HyColor@StripLeadingZeros#4\@empty}%
+      \ifx#4\@empty
+        \def#4{0}%
+      \else
+        \edef#4{.\expandafter\HyColor@ReverseString#4\@nil{}}%
+      \fi
+    \fi
+  \else
+    \def#4{1}%
+  \fi
+}
+\def\HyColor@ReverseString#1#2\@nil#3{%
+  \ifx\\#2\\%
+    #1#3%
+  \else
+    \@ReturnAfterFi{%
+      \HyColor@ReverseString#2\@nil{#1#3}%
+    }%
+  \fi
+}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+\def\HyColor@StripLeadingZeros#1{%
+  \ifx#10%
+    \expandafter\HyColor@StripLeadingZeros
+  \else
+    #1%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HyColor@NormalizeCommaRGB}
+%    \begin{macrocode}
+\def\HyColor@NormalizeCommaRGB#1,#2,#3\@nil#4{%
+  \HyColor@NormalizeNum{#1}\HyColor@temp
+  \let#4\HyColor@temp
+  \HyColor@NormalizeNum{#2}\HyColor@temp
+  \edef#4{#4 \HyColor@temp}%
+  \HyColor@NormalizeNum{#3}\HyColor@temp
+  \edef#4{#4 \HyColor@temp}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HyColor@NormalizeCommaCMYK}
+%    \begin{macrocode}
+\def\HyColor@NormalizeCommaCMYK#1,#2,#3,#4\@nil#5{%
+  \HyColor@NormalizeNum{#1}\HyColor@temp
+  \let#5\HyColor@temp
+  \HyColor@NormalizeNum{#2}\HyColor@temp
+  \edef#5{#5 \HyColor@temp}%
+  \HyColor@NormalizeNum{#3}\HyColor@temp
+  \edef#5{#5 \HyColor@temp}%
+  \HyColor@NormalizeNum{#4}\HyColor@temp
+  \edef#5{#5 \HyColor@temp}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Main algorithm for color options}
+%
+% \begin{procedure}
+%   \Param{key}{name of color option}
+%   \Param{value}{value of color option}
+%   \Param{cmd}{macro that stores result}
+%   \BlankLine
+%   \KwResult{Macro \ArgSty{cmd} contains the calculated
+%      color specification string or has the meaning of \cs{relax}
+%      if the color must not set}
+%   \caption{MainColorOptionAlgorithm(key, value, cmd)}
+%   \BlankLine
+%   DefSanitized(\ArgSty{temp}, \ArgSty{value})\;
+%   Call option specific algorithm(\ArgSty{key}, \ArgSty{temp}, \ArgSty{cmd})\;
+% \end{procedure}
+%
+% \subsection{Package \xpackage{bookmark}}
+%
+% Since v0.8 2007/03/27 package \xpackage{bookmark} only provides
+% one color option \xoption{color}. Because option \xoption{rgbcolor}
+% can easily given as color specification in model rgb:
+% \begin{quote}
+%   |rgbcolor=|\meta{r} \meta{g} \meta{b} $\equiv$
+%   |color=[rgb]{|\meta{r}|,|\meta{g}|,|\meta{b}|}|
+% \end{quote}
+% Package \xpackage{bookmark} stores the result in macro \cs{BKM@color}.
+% The empty string is interpreted as \emph{no color}.
+%
+% \begin{procedure}
+%   \Param{value}{value of option \xoption{color}}
+%   \Param{cmd}{macro for result}
+%   \Param{package}{package name for error message}
+%   \Param{option}{option name for error message}
+%   \caption{BookmarkColor(value, cmd, package, option)}
+%   \BlankLine
+%   \Switch{\Var{value}}{
+%     \Case{empty}{
+%       \Var{cmd} \Gets no color\;
+%     }
+%     \Case{with model}{
+%       \eIf{with xcolor}{
+%         \Var{cmd} \Gets ConvertToRGB(\Var{model}, \Var{values})\;
+%       }{
+%         \uIf{model $=$ rgb}{
+%           \Var{cmd} \Gets \Var{values} as normalized values\;
+%         }
+%         \uElseIf{model $=$ gray}{
+%           \Var{cmd} \Gets \Var{values} as normalized tripled values\;
+%         }
+%         \Else{
+%           error\;
+%         }
+%       }
+%     }
+%     \Other{
+%       \eIf{with xcolor}{
+%         (\Var{model}, \Var{values} \Gets get model and values\;
+%         \Var{cmd} \Gets ConvertToRGB(\Var{model}, \Var{values})\;
+%       }{
+%         error\;
+%       }
+%     }
+%   }
+% \end{procedure}
+%
+%    \begin{macrocode}
+\def\HyColor@BookmarkColor#1#2#3#4{%
+  \HyColor@IfModel{#1}{%
+    \HyColor@IfXcolor{%
+      \convertcolorspec\HyColor@model\HyColor@values
+                       \HyColor@model@rgb#2%
+      \expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+    }{%
+      \ifx\HyColor@model\HyColor@model@rgb
+        \expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+      \else
+        \ifx\HyColor@model\HyColor@model@gray
+          \expandafter\HyColor@NormalizeNum
+              \expandafter{\HyColor@values}#2%
+          \edef#2{#2 #2 #2}%
+        \else
+          \let#2\@empty
+          \HyColor@ErrorModelNoXcolor{#3}{#4}%
+        \fi
+      \fi
+    }%
+  }{%
+    \let#2\HyColor@values
+    \ifx#2\@empty
+    \else
+      \HyColor@IfXcolor{%
+        \extractcolorspec{#1}#2%
+        \expandafter\convertcolorspec#2\HyColor@model@rgb#2%
+        \expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+      }{%
+        \let#2\@empty
+        \HyColor@ErrorSpecNoXcolor{#3}{#4}%
+      }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\HyColor@ErrorModelNoXcolor#1#2{%
+  \PackageError{#1}{%
+    Color model `\HyColor@model' is not supported\MessageBreak
+    without package `xcolor' in\MessageBreak
+    `#2=[\HyColor@model]{\HyColor@values}'%
+  }\@ehc
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\HyColor@ErrorSpecNoXcolor#1#2{%
+  \PackageError{#1}{%
+    This color specification is not supported\MessageBreak
+    without package `xcolor' in\MessageBreak
+    `#2=\HyColor@values'%
+  }\@ehc
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\HyColor@IfModel#1{%
+  \@ifnextchar[{%
+    \HyColor@WithModel
+  }{%
+    \HyColor@WithoutModel
+  }%
+  #1\@nil
+}
+\def\HyColor@WithModel[#1]#2\@nil{%
+  \HyColor@DefSanitized\HyColor@model{#1}%
+  \HyColor@DefSanitized\HyColor@values{#2}%
+  \@firstoftwo
+}
+\def\HyColor@WithoutModel#1\@nil{%
+  \let\HyColor@model\relax
+  \HyColor@DefSanitized\HyColor@values{#1}%
+  \@secondoftwo
+}
+%    \end{macrocode}
+%
+% \subsection{Utils}
+%
+%    \begin{macro}{\@ReturnAfterFi}
+%    \begin{macrocode}
+\long\def\@ReturnAfterFi#1\fi{\fi#1}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HyColor@IfXcolor}
+%    \begin{macrocode}
+\def\HyColor@IfXcolor{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname convertcolorspec\endcsname\relax
+    \expandafter\@secondoftwo
+  \else
+    \expandafter\@firstoftwo
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\HyColor@model@empty{empty}
+\@onelevel@sanitize\HyColor@model@empty
+\def\HyColor@model@gray{gray}
+\@onelevel@sanitize\HyColor@model@gray
+\def\HyColor@model@rgb{rgb}
+\@onelevel@sanitize\HyColor@model@rgb
+\def\HyColor@model@cmyk{cmyk}
+\@onelevel@sanitize\HyColor@model@cmyk
+\def\HyColor@model@Gray{Gray}
+\@onelevel@sanitize\HyColor@model@Gray
+%    \end{macrocode}
+%
+% \subsection{Package \xpackage{hyperref}}
+%
+% \subsubsection{Options \xoption{Hyp.*color}}
+%
+%    \begin{macrocode}
+\def\HyColor@UseColor#1{%
+  \ifx#1\relax
+  \else
+    \ifx#1\@empty
+    \else
+      \expandafter\HyColor@@UseColor#1\@nil
+    \fi
+  \fi
+}
+\def\HyColor@@UseColor{%
+  \@ifnextchar[\HyColor@@@UseColor\HyColor@@@@UseColor
+}
+\def\HyColor@@@UseColor[#1]#2\@nil{%
+  \color[{#1}]{#2}%
+}
+\def\HyColor@@@@UseColor#1\@nil{%
+  \color{#1}%
+}
+%    \end{macrocode}
+%
+% \begin{procedure}
+%   \Param{value}{value of the option}
+%   \Param{cmd}{macro for result}
+%   \caption{HyperrefColor(value, cmd)}
+%   \BlankLine
+%   \Switch{\Var{value}}{
+%     \Case{empty}{
+%       \Var{cmd} \Gets no color\;
+%     }
+%     \Case{with model}{
+%       Call \cs{color} with model\;
+%     }
+%     \Case{without model}{
+%       Call \cs{color} without model\;
+%     }
+%   }
+% \end{procedure}
+%
+%    \begin{macrocode}
+\def\HyColor@HyperrefColor#1#2{%
+  \HyColor@IfModel{#1}{%
+    \edef#2{[{\HyColor@model}]{\HyColor@values}}%
+  }{%
+    \let#2\HyColor@values
+    \ifx#2\@empty
+      \let#2\relax
+    \fi
+  }%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Generic algorithm}
+%
+% \begin{procedure}
+%   \small
+%   \Param{value}{value of the option}
+%   \Param{cmd}{macro for result}
+%   \Param{package}{package name for error message}
+%   \Param{option}{option name for error message}
+%   \caption{Algorithm X0134(value, cmd, package, option)}
+%   \BlankLine
+%   \Switch{\Var{value}}{
+%     \Case{empty}{
+%       \Var{cmd} \Gets no color\;
+%     }
+%     \Case{with model}{
+%       \Switch{\Var{model}}{
+%         \Case{empty}{
+%           \Var{cmd} \Gets ""\;
+%         }
+%         \Case{gray, rgb, cmyk}{
+%           \Var{cmd} \Gets \Var{output}()\;
+%         }
+%         \Case{Gray}{
+%           \eIf{with xcolor}{
+%             (\Var{model}, \Var{values}) \Gets convert to gray\;
+%           }{
+%             error(\Var{package}, \Var{option}, "Missing xcolor"),
+%             \Var{cmd} \Gets no color\;
+%           }
+%         }
+%         \Else{
+%           \eIf{with xcolor}{
+%             (\Var{model}, \Var{values}) \Gets convert to rgb\;
+%             \Var{cmd} \Gets \Var{output}()\;
+%           }{
+%             error(\Var{package}, \Var{option}, "Missing xcolor"),
+%             \Var{cmd} \Gets no color\;
+%           }
+%         }
+%       }
+%     }
+%     \Case{rgb values}{
+%       (\Var{model}, \Var{values}) \Gets ("rgb", (r,g,b))\;
+%       \Var{cmd} \Gets \Var{output}()\;
+%     }
+%     \Case{without model}{
+%       \eIf{with xcolor}{
+%         (\Var{model}, \Var{values}) \Gets
+%             get model and values(\Var{value})\;
+%         \Switch{\Var{model}}{
+%           \Case{gray, rgb, cmyk}{
+%             \Var{cmd} \Gets \Var{output}()\;
+%           }
+%           \Case{Gray}{
+%             (\Var{model}, \Var{values}) \Gets convert to gray\;
+%             \Var{cmd} \Gets \Var{output}()\;
+%           }
+%           \Else{
+%             (\Var{model}, \Var{values}) \Gets convert to rgb\;
+%             \Var{cmd} \Gets \Var{output}()\;
+%           }
+%         }
+%       }{
+%         error(\Var{package}, \Var{option}, "Missing xcolor"),
+%         \Var{cmd} \Gets no color\;
+%       }
+%     }
+%   }
+% \end{procedure}
+%
+%    \begin{macro}{\HyColor@XZeroOneThreeFour}
+%    \begin{macrocode}
+\def\HyColor@XZeroOneThreeFour#1#2#3#4{%
+  \HyColor@IfModel{#1}{%
+    \ifx\HyColor@model\HyColor@model@empty
+      \let#2\@empty
+    \else\ifx\HyColor@model\HyColor@model@gray
+      \expandafter\HyColor@NormalizeNum
+          \expandafter{\HyColor@values}#2%
+    \else\ifx\HyColor@model\HyColor@model@rgb
+      \expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+    \else\ifx\HyColor@model\HyColor@model@cmyk
+      \expandafter\HyColor@NormalizeCommaCMYK\HyColor@values\@nil#2%
+    \else\ifx\HyColor@model\HyColor@model@Gray
+      \HyColor@IfXcolor{%
+        \convertcolorspec\HyColor@model\HyColor@values
+                         \HyColor@model@gray#2%
+        \expandafter\HyColor@NormalizeNum\expandafter{#2}#2%
+        \let\HyColor@model\HyColor@model@gray
+      }{%
+        \let#2\relax
+        \HyColor@ErrorModelNoXcolor{#3}{#4}%
+      }%
+    \else
+      \HyColor@IfXcolor{%
+        \convertcolorspec\HyColor@model\HyColor@values
+                         \HyColor@model@rgb#2%
+        \expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+        \let\HyColor@model\HyColor@model@rgb
+      }{%
+        \let#2\relax
+        \HyColor@ErrorModelNoXcolor{#3}{#4}%
+      }%
+    \fi\fi\fi\fi\fi
+  }{%
+    \let#2\HyColor@values
+    \ifx#2\@empty
+      \let#2\relax
+    \else
+      \expandafter\HyColor@IfRGB\expandafter{\HyColor@values}{%
+        \expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+      }{%
+        \HyColor@IfXcolor{%
+          \expandafter\extractcolorspec\expandafter{\HyColor@values}#2%
+          \edef\HyColor@model{\expandafter\@firstoftwo#2}%
+          \edef\HyColor@values{\expandafter\@secondoftwo#2}%
+          \ifx\HyColor@model\HyColor@model@gray
+            \expandafter\HyColor@NormalizeNum\expandafter
+                {\HyColor@values}#2%
+          \else\ifx\HyColor@model\HyColor@model@rgb
+            \expandafter\HyColor@NormalizeCommaRGB
+                \HyColor@values\@nil#2%
+          \else\ifx\HyColor@model\HyColor@model@cmyk
+            \expandafter\HyColor@NormalizeCommaCMYK
+                \HyColor@values\@nil#2%
+          \else\ifx\HyColor@model\HyColor@model@Gray
+            \convertcolorspec\HyColor@model\HyColor@values
+                \HyColor@model@gray#2%
+            \expandafter\HyColor@NormalizeNum\expandafter
+                {\HyColor@values}#2%
+            \let\HyColor@model\HyColor@model@gray
+          \else
+            \convertcolorspec\HyColor@model\HyColor@values
+                \HyColor@model@rgb#2%
+            \expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+            \let\HyColor@model\HyColor@model@rgb
+          \fi\fi\fi\fi
+        }{%
+          \let#2\relax
+          \HyColor@ErrorSpecNoXcolor{#3}{#4}%
+        }%
+      }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Field options}
+%
+%    \begin{macro}{\HyColor@FieldBColor}
+%    \begin{macrocode}
+\let\HyColor@FieldBColor\HyColor@XZeroOneThreeFour
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HyColor@FieldColor}
+%    \begin{macrocode}
+\def\HyColor@FieldColor#1#2#3#4{%
+  \let\HyColor@model\@empty
+  \HyColor@XZeroOneThreeFour{#1}{#2}{#3}{#4}%
+  \ifx#2\relax
+    \let#2\@empty
+  \else
+    \ifx#2\@empty
+    \else
+      \ifx\HyColor@model\HyColor@model@gray
+        \edef#2{#2 g}%
+      \else\ifx\HyColor@model\HyColor@model@rgb
+        \edef#2{#2 rg}%
+      \else\ifx\HyColor@model\HyColor@model@cmyk
+        \edef#2{#2 k}%
+      \else
+        \PackageError{#3}{Internal error: unsupported color model}\@ehc
+      \fi\fi\fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Detection for naked RGB values}
+%
+%    \begin{macro}{\HyColor@IfRGB}
+%    \begin{macrocode}
+\newif\ifHyColor@result
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfmatch\endcsname\relax
+  \expandafter\@firstoftwo
+\else
+  \expandafter\@secondoftwo
+\fi
+{%
+  \begingroup
+    \def\x#1{\endgroup
+      \def\HyColor@IfRGB##1{%
+        \HyColor@@IfRGB##1#1#1#1\@nil
+      }%
+    }%
+  \x{ }%
+  \edef\HyColor@TwoSpaces{\space\space}%
+  \def\HyColor@@IfRGB#1 #2 #3 #4\@nil{%
+    \HyColor@resulttrue
+    \def\HyColor@temp{#4}%
+    \ifx\HyColor@temp\HyColor@TwoSpaces
+      \HyColor@CheckNum{#1}%
+      \ifHyColor@result
+        \HyColor@CheckNum{#2}%
+        \ifHyColor@result
+          \HyColor@CheckNum{#3}%
+        \fi
+      \fi
+    \else
+      \HyColor@resultfalse
+    \fi
+    \ifHyColor@result
+      \let\HyColor@model\HyColor@model@rgb
+      \edef\HyColor@values{#1,#2,#3}%
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+  \def\HyColor@zero{0}%
+  \def\HyColor@one{1}%
+  \def\HyColor@dot{.}%
+  \def\HyColor@CheckNum#1{%
+    \def\HyColor@temp{#1}%
+    \ifx\HyColor@temp\@empty
+      \HyColor@resultfalse
+    \else
+      \edef\HyColor@temp{\@car#1\@nil}%
+      \ifx\HyColor@temp\HyColor@zero
+      \else
+        \ifx\HyColor@temp\HyColor@one
+        \else
+          \ifx\HyColor@temp\HyColor@dot
+          \else
+            \HyColor@resultfalse
+          \fi
+        \fi
+      \fi
+    \fi
+  }%
+}{%
+  \def\HyColor@MatchNum{%
+    (0*1\string\.0*|0*1|0+\string\.?[0-9]*|\string\.[0-9]+)%
+  }%
+  \def\HyColor@IfRGB#1{%
+    \ifnum\pdfmatch{^\HyColor@MatchNum\space\HyColor@MatchNum
+        \space\HyColor@MatchNum$}{#1}>\z@
+      \let\HyColor@model\HyColor@model@rgb
+      \edef\HyColor@values{%
+        \expandafter\strip@prefix\pdflastmatch1,%
+        \expandafter\strip@prefix\pdflastmatch2,%
+        \expandafter\strip@prefix\pdflastmatch3%
+      }%
+      \HyColor@resulttrue
+      \expandafter\@firstoftwo
+    \else
+      \HyColor@resultfalse
+      \expandafter\@secondoftwo
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Options \xoption{*bordercolor}}
+%
+% \begin{procedure}
+%   \Param{value}{value of the option}
+%   \Param{cmd}{macro for result}
+%   \Param{package, option}{package and option for error message}
+%   \caption{HyperrefBorderColor(value, cmd, package, option)}
+%   \BlankLine
+%   \Switch{\Var{value}}{
+%     \Case{empty}{
+%       \Var{cmd} \Gets no color\;
+%     }
+%     \Case{with model}{
+%       \eIf{with xcolor}{
+%         (\Var{model}, \Var{values}) \Gets convert to rgb\;
+%         \Var{cmd} \Gets output values\;
+%       }{
+%         \Switch{\Var{model}}{
+%           \Case{rgb, gray}{
+%             \Var{cmd} \Gets output values\;
+%           }
+%           \Else{
+%             error(\Var{package}, \Var{option}, "Missing xcolor")\;
+%             \Var{cmd} \Gets no color\;
+%           }
+%         }
+%       }
+%     }
+%     \Case{rgb values}{
+%       \Var{cmd} \Gets output values\;
+%     }
+%     \Case{without model}{
+%       \eIf{with xcolor}{
+%         (\Var{model}, \Var{values}) \Gets convert to rgb\;
+%         \Var{cmd} \Gets output values\;
+%       }{
+%         error(\Var{package}, \Var{option}, "Missing xcolor");
+%         \Var{cmd} \Gets no color\;
+%       }
+%     }
+%   }
+% \end{procedure}
+%
+%    \begin{macro}{\HyColor@HyperrefBorderColor}
+%    \begin{macrocode}
+\def\HyColor@HyperrefBorderColor#1#2#3#4{%
+  \HyColor@IfModel{#1}{%
+    \HyColor@IfXcolor{%
+      \convertcolorspec\HyColor@model\HyColor@values
+                       \HyColor@model@rgb#2%
+      \expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+    }{%
+      \ifx\HyColor@model\HyColor@model@rgb
+        \expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+      \else
+        \ifx\HyColor@model\HyColor@model@gray
+          \expandafter\HyColor@NormalizeNum
+              \expandafter{\HyColor@values}#2%
+          \edef#2{#2 #2 #2}%
+        \else
+          \let#2\relax
+          \HyColor@ErrorModelNoXcolor{#3}{#4}%
+        \fi
+      \fi
+    }%
+  }{%
+    \let#2\HyColor@values
+    \ifx#2\@empty
+      \let#2\relax
+    \else
+      \expandafter\HyColor@IfRGB\expandafter{\HyColor@values}{%
+        \expandafter\HyColor@NormalizeCommaRGB\HyColor@values\@nil#2%
+      }{%
+        \HyColor@IfXcolor{%
+          \extractcolorspec{#1}#2%
+          \expandafter\convertcolorspec#2\HyColor@model@rgb#2%
+          \expandafter\HyColor@NormalizeCommaRGB#2\@nil#2%
+        }{%
+          \let#2\relax
+          \HyColor@ErrorSpecNoXcolor{#3}{#4}%
+        }%
+      }%
+    \fi
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Package \xpackage{attachfile2}}
+%
+%    Before PDF-1.7 only RGB values are permitted in annotations.
+%    Since PDF-1.7 the color entry in annotations understands
+%    several color models, depending on the size of the color array:
+%    \begin{itemize}
+%    \item Zero entries: means transparent, not useful for
+%          file attachments. AR7/Linux and AR8/Linux show black instead.
+%    \item One entry: color model `gray'.
+%    \item Three entries: color model `rgb'.
+%    \item Four entries: color model `cmyk'.
+%    \end{itemize}
+%    An empty color specification is interpreted as ``no color''.
+%
+%    \begin{macro}{\HyColor@DetectPdfVersion}
+%    \begin{macrocode}
+\def\HyColor@DetectPdfVersion{%
+  \begingroup\expandafter\expandafter\expandafter\endgroup
+  \expandafter\ifx\csname Hy@pdfversion\endcsname\relax
+    \global\chardef\HyColor@PdfVersion=0 %
+  \else
+    \global\chardef\HyColor@PdfVersion=\Hy@pdfversion\relax
+  \fi
+  \global\let\HyColor@DetectPdfVersion\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HyColor@SpaceToComma}
+%    \begin{macrocode}
+\def\HyColor@SpaceToComma#1 #2\@nil{%
+  #1%
+  \ifx\relax#2\relax
+    \expandafter\@gobble
+  \else
+    ,%
+    \expandafter\@firstofone
+  \fi
+  {%
+    \HyColor@SpaceToComma#2\@nil
+  }%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\HyColor@AttachfileColor}
+%    \begin{macrocode}
+\def\HyColor@AttachfileColor#1#2#3#4#5#6{%
+  \def#2{#1}%
+  \ifx#2\@empty
+    \let#3\@gobble
+    \let#4\@empty
+  \else
+    \HyColor@resultfalse
+    \HyColor@XZeroOneThreeFour{#1}#3{#5}{#6}%
+    \ifHyColor@result
+      \edef#2{%
+        [rgb]{\expandafter\HyColor@SpaceToComma#3 \@nil}%
+      }%
+    \fi
+    \ifx\HyColor@model\HyColor@model@rgb
+      \edef#4{/C[#3]}% hash-ok
+      \edef#3##1{%
+        #3 %
+        \noexpand\csname atfi@SETRGBCOLOR##1\noexpand\endcsname
+      }%
+    \else
+      \ifx\HyColor@model\HyColor@model@gray
+        \HyColor@DetectPdfVersion
+        \ifnum\HyColor@PdfVersion<7 %
+          \edef#4{/C[#3 #3 #3]}% hash-ok
+        \else
+          \edef#4{/C[#3]}% hash-ok
+        \fi
+        \edef#3##1{%
+          #3 %
+          \noexpand\csname atfi@SETGRAYCOLOR##1\noexpand\endcsname
+        }%
+      \else
+        \ifx\HyColor@model\HyColor@model@cmyk
+          \HyColor@DetectPdfVersion
+          \ifnum\HyColor@PdfVersion<7 %
+            \HyColor@IfModel{#1}{%
+              \HyColor@IfXcolor{%
+                \convertcolorspec\HyColor@model\HyColor@values
+                                 \HyColor@model@rgb#4%
+                \expandafter\HyColor@NormalizeCommaRGB#4\@nil#4%
+                \edef#4{/C[#4]}% hash-ok
+              }{%
+                \let#4\@empty
+                \HyColor@ErrorModelNoXcolor{#5}{#6}%
+              }%
+            }{%
+              \HyColor@IfXcolor{%
+                \extractcolorspec{#1}#4%
+                \expandafter\convertcolorspec#4%
+                    \HyColor@model@rgb#4%
+                \expandafter\HyColor@NormalizeCommaRGB#4\@nil#4%
+                \edef#4{/C[#4]}% hash-ok
+              }{%
+                \let#4\@empty
+                \HyColor@ErrorSpecNoXcolor{#5}{#6}%
+              }%
+            }%
+          \else
+            \edef#4{/C[#3]}% hash-ok
+          \fi
+          \edef#3##1{%
+            #3 %
+            \noexpand\csname atfi@SETCMYKCOLOR##1\noexpand\endcsname
+          }%
+        \else
+          \ifx\HyColor@model\HyColor@model@empty
+            \PackageError{#5}{%
+              Color model `empty' is not permitted for option `#6'%
+            }\@ehc
+            \let#2\@empty
+            \let#3\@gobble
+            \let#4\@empty
+          \else
+            \ifx\HyColor@model\relax % (missing xcolor)
+              \let#3\@gobble
+              \let#4\@empty
+            \else
+              \PackageError{#5}{%
+                Internal error: unsupported color model%
+              }\@ehc
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Patch for package \xpackage{xcolor}}
+%
+%    Because the test files triggered a bug in package \xpackage{xcolor}
+%    of version 2007/01/21 v2.11.
+%    I contacted the author of \xpackage{xcolor} Uwe Kern. He responded
+%    with a test version 2007/03/27 v2.12a00 that fixes the problem.
+%    However, apparently he did not found the time for an official
+%    release yet. Thus I have reluctantly written the following
+%    patch package using the fixes of v2.12a00.
+%
+%    The patch is immediately applied if package \xpackage{xcolor}
+%    is already loaded.
+%    Otherwise the patch is delayed using \cs{AfterPackage} if
+%    package \xpackage{scrlfile} is loaded. As last resort
+%    \cs{AtBeginDocument} is used.
+%    \begin{macrocode}
+%<*xcolor>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{xcolor-patch}[2011/01/30 xcolor patch]
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage{hopatch}[2011/01/30]
+\hopatch@AfterPackage{xcolor}{%
+%    \end{macrocode}
+%    \begin{macro}{\XC@ifxcase}
+%    \begin{macrocode}
+  \long\def\reserved@a#1#2#3{%
+    \long\def\@@tmp##1##2{%
+      \ifx#1##1%
+        \toks@{##2}%
+        \expandafter\remove@to@nnil
+      \else
+        \expandafter\@@tmp
+      \fi
+    }%
+    \@@tmp#2#1{#3}\@nnil\the\toks@
+  }%
+  \ifx\XC@ifxcase\reserved@a
+    \long\def\XC@ifxcase#1#2#3{%
+      \long\def\XC@if@##1##2{%
+        \ifx#1##1%
+          \toks@{##2}%
+          \expandafter\remove@to@nnil
+        \else
+          \expandafter\XC@if@
+        \fi
+      }%
+      \XC@if@#2#1{#3}\@nnil
+      \the\toks@
+    }%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\XC@ifcase}
+%    \begin{macrocode}
+  \long\def\reserved@a#1#2#3{%
+    \long\def\@@tmp##1##2{%
+      \@expandtwoargs\in@{,#1,}{,##1,}%
+      \ifin@
+        \toks@{##2}%
+        \expandafter\remove@to@nnil
+      \else
+        \expandafter\@@tmp
+      \fi
+    }%
+    \@@tmp#2{#1}{#3}\@nnil
+    \the\toks@
+  }%
+  \ifx\XC@ifcase\reserved@a
+    \long\def\XC@ifcase#1#2#3{%
+      \long\def\XC@if@##1##2{%
+        \@expandtwoargs\in@{,#1,}{,##1,}%
+        \ifin@
+          \toks@{##2}%
+          \expandafter\remove@to@nnil
+        \else
+          \expandafter\XC@if@
+        \fi
+      }%
+      \XC@if@#2{#1}{#3}\@nnil
+      \the\toks@
+    }%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\XC@cnv@gray}
+%    \begin{macrocode}
+  \def\reserved@a#1,{%
+    \XC@ifxcase\tm{%
+      \XC@mod@rgb{%
+        \XC@calcN{#1}\@@tmp
+        \edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+      }%
+      \XC@mod@cmy{%
+        \XC@calcC{#1}\@@tmp
+        \edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+      }%
+      \XC@mod@cmyk{%
+        \XC@calcC{#1}\@@tmp
+        \edef\@@tmp{0,0,0,\@@tmp}%
+      }%
+      \XC@mod@RGB{%
+        \edef\@@scl{\rangeRGB}%
+        \XC@calcM{#1}\@@tmp
+        \edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+      }%
+      \XC@mod@HTML{%
+        \edef\@@scl{\@cclv}%
+        \XC@calcM{#1}\@@tmp
+        \XC@calcH\@@tmp\@@tmp
+        \edef\@@tmp{\@@tmp\@@tmp\@@tmp}%
+      }%
+      \XC@mod@HSB{%
+        \edef\@@scl{\rangeHSB}%
+        \XC@calcM{#1}\@@tmp
+        \edef\@@tmp{0,0,\@@tmp}%
+      }%
+      \XC@mod@Gray{%
+        \edef\@@scl{\rangeGray}%
+        \XC@calcM{#1}\@@tmp
+      }%
+    }%
+    {%
+      \XC@calcN{#1}\@@tmp
+      \edef\@@tmp{0,0,\@@tmp}%
+    }%
+  }%
+  \ifx\XC@cnv@gray\reserved@a
+    \def\XC@cnv@gray#1,{%
+      \XC@ifxcase\tm{%
+        \XC@mod@rgb{%
+          \XC@calcN{#1}\@@tmp
+          \edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+        }%
+        \XC@mod@gray{}%
+        \XC@mod@cmy{%
+          \XC@calcC{#1}\@@tmp
+          \edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+        }%
+        \XC@mod@cmyk{%
+          \XC@calcC{#1}\@@tmp
+          \edef\@@tmp{0,0,0,\@@tmp}%
+        }%
+        \XC@mod@RGB{%
+          \edef\@@scl{\rangeRGB}%
+          \XC@calcM{#1}\@@tmp
+          \edef\@@tmp{\@@tmp,\@@tmp,\@@tmp}%
+        }%
+        \XC@mod@HTML{%
+          \edef\@@scl{\@cclv}%
+          \XC@calcM{#1}\@@tmp
+          \XC@calcH\@@tmp\@@tmp
+          \edef\@@tmp{\@@tmp\@@tmp\@@tmp}%
+        }%
+        \XC@mod@HSB{%
+          \edef\@@scl{\rangeHSB}%
+          \XC@calcM{#1}\@@tmp
+          \edef\@@tmp{0,0,\@@tmp}%
+        }%
+        \XC@mod@Gray{%
+          \edef\@@scl{\rangeGray}%
+          \XC@calcM{#1}\@@tmp
+        }%
+      }%
+      {%
+        \XC@calcN{#1}\@@tmp
+        \edef\@@tmp{0,0,\@@tmp}%
+      }%
+    }%
+  \fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Fix fragile \cs{@frameb@x}}
+%
+%    \cs{fbox} becomes fragile, because the internal \cs{@frameb@x}
+%    is redefined by package \xpackage{xcolor}. The redefinition is
+%    no longer robust. Test file:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{article}
+%\usepackage{xcolor}
+%\makeatletter
+%\protected@edef\x{\fbox{abc}}
+%\@@end
+%\end{verbatim}
+%\end{quote}
+%    \begin{macrocode}
+  \@ifundefined{XC@frameb@x }{%
+    \expandafter\let\csname XC@frameb@x \endcsname\XC@frameb@x
+    \edef\XC@frameb@x{%
+      \noexpand\protect
+      \expandafter\noexpand\csname XC@frameb@x \endcsname
+    }%
+    \expandafter\ifx\csname XC@frameb@x \endcsname\@frameb@x
+      \let\@frameb@x\XC@frameb@x
+    \fi
+  }{}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</xcolor>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%    \begin{macrocode}
+%<*test1>
+\ProvidesFile{hycolor-test1.tex}[2011/01/30 test file 1]
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test2>
+\ProvidesFile{hycolor-test2.tex}[2011/01/30 test file 2]
+\let\pdfmatch\relax
+%</test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<test3>\ProvidesFile{hycolor-test3.tex}[2011/01/30 test file 3]
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test>
+%    \end{macrocode}
+%    \begin{macrocode}
+\documentclass{article}
+
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+
+\makeatletter
+
+\newcommand*{\TestPackageName}{test-package}
+\newcommand*{\TestOptionName}{test-option}
+
+\newcommand\Message{}
+\def\Message#1#{\immediate\write16}
+
+\newcommand*{\ExpectError}[2]{%
+  \begingroup
+    \global\let\saved@errhelp\errhelp
+    \global\let\saved@errmessage\errmessage
+    \let\errhelp\@gobble
+    \def\errmessage##1{%
+      \xdef\@ExpectErrorMessage{##1}%
+    }%
+    \PackageError\TestPackageName{#1}\@ehc
+    \def\errhelp##1{%
+      \global\let\errhelp\saved@errhelp
+    }%
+    \global\let\@ResultErrorMessage\@empty
+    \def\errmessage##1{%
+      \xdef\@ResultErrorMessage{##1}%
+      \global\let\errmessage\saved@errmessage
+      % \Message{[ ##1}%
+      % \Message{] (ignored error)}%
+      % \Message{}%
+    }%
+    #2%
+  \endgroup
+  \Expect*{\@ResultErrorMessage}*{\@ExpectErrorMessage}%
+}
+\usepackage{scrlfile}
+\usepackage{hycolor}[2011/01/30]
+%</test>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test1>
+\begin{qstest}{NumNormalize}{num, normalize}
+  \def\test#1#2{%
+    \HyColor@NormalizeNum{#1}\cmd
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{0}{0}%
+  \test{000}{0}%
+  \test{-1}{0}%
+  \test{ 0 }{0}%
+  \test{1.1}{1}%
+  \test{100}{1}%
+  \test{00100}{1}%
+  \test{99.99}{1}%
+  \test{0.0}{0}%
+  \test{00.00}{0}%
+  \test{0.}{0}%
+  \test{.0}{0}%
+  \test{0.1}{.1}%
+  \test{0.10}{.1}%
+  \test{0.1000}{.1}%
+  \test{.1000}{.1}%
+  \test{0.01}{.01}%
+  \test{0.01010}{.0101}%
+  \test{.0000000001}{.0000000001}%
+  \test{.9999999999}{.9999999999}%
+\end{qstest}
+
+\begin{qstest}{BookmarkColor without xcolor}{bookmark, noxcolor}
+  \def\test#1#2{%
+    \HyColor@BookmarkColor{#1}\cmd\TestPackageName\TestOptionName
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{[rgb]{1,0,0}}{1 0 0}%
+  \test{[gray]{0.10}}{.1 .1 .1}%
+  \test{}{}%
+  \test{[rgb]{ 1 , 1 , 0 }}{1 1 0}%
+  \def\errortest[#1]#2{%
+    \ExpectError{%
+      Color model `#1' is not supported\MessageBreak
+      without package `xcolor' in\MessageBreak
+      `\TestOptionName=[#1]{#2}'% hash-ok
+    }{%
+      \test{[#1]{#2}}{}% hash-ok
+    }%
+  }%
+  \errortest[cmyk]{1,0,0,0}%
+  \errortest[empty]{}%
+  \def\errortest#1{%
+    \ExpectError{%
+      This color specification is not supported\MessageBreak
+      without package `xcolor' in\MessageBreak
+      `\TestOptionName=#1'%
+    }{%
+      \test{#1}{}%
+    }%
+  }%
+\end{qstest}
+%</test1>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test1|test2>
+\begin{qstest}{X0134 without xcolor}{X0134, noxcolor}
+  \def\test#1#2{%
+    \HyColor@XZeroOneThreeFour{#1}\cmd\TestPackageName\TestOptionName
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{[empty]{}}{}%
+  \test{[rgb]{1,0,0}}{1 0 0}%
+  \test{[gray]{0.10}}{.1}%
+  \test{[cmyk]{0,1,0,0}}{0 1 0 0}%
+  \test{[rgb]{ 1 , 1 , 0 }}{1 1 0}%
+  \def\errortest[#1]#2{%
+    \ExpectError{%
+      Color model `#1' is not supported\MessageBreak
+      without package `xcolor' in\MessageBreak
+      `test-option=[#1]{#2}'% hash-ok
+    }{%
+      \HyColor@XZeroOneThreeFour{[{#1}]{#2}}\cmd
+          \TestPackageName\TestOptionName
+      \Expect{true}*{\ifx\cmd\relax true\else false\fi}%
+    }%
+  }%
+  \errortest[Gray]{10}%
+  \errortest[cmy]{1,0,0}%
+  \def\errortest#1{%
+    \ExpectError{%
+      This color specification is not supported\MessageBreak
+      without package `xcolor' in\MessageBreak
+      `test-option=#1'%
+    }{%
+      \HyColor@XZeroOneThreeFour{#1}\cmd\TestPackageName\TestOptionName
+      \Expect{true}*{\ifx\cmd\relax true\else false\fi}%
+    }%
+  }%
+  \errortest{yellow}%
+\end{qstest}
+
+\begin{qstest}{HyperrefBorderColor without xcolor}%
+              {hyperef bordercolor, noxcolor}%
+  \def\test#1#2{%
+    \HyColor@HyperrefBorderColor{#1}\cmd\TestPackageName\TestOptionName
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{[rgb]{1,0,0}}{1 0 0}%
+  \test{[gray]{0.10}}{.1 .1 .1}%
+  \test{[rgb]{ 1 , 1 , 0 }}{1 1 0}%
+  \def\errortest[#1]#2{%
+    \ExpectError{%
+      Color model `#1' is not supported\MessageBreak
+      without package `xcolor' in\MessageBreak
+      `test-option=[#1]{#2}'% hash-ok
+    }{%
+      \HyColor@HyperrefBorderColor{[{#1}]{#2}}\cmd
+          \TestPackageName\TestOptionName
+      \Expect{true}*{\ifx\cmd\relax true\else false\fi}%
+    }%
+  }%
+  \errortest[Gray]{10}%
+  \errortest[cmy]{1,0,0}%
+  \errortest[cmyk]{0,1,0,0}%
+  \def\errortest#1{%
+    \ExpectError{%
+      This color specification is not supported\MessageBreak
+      without package `xcolor' in\MessageBreak
+      `test-option=#1'%
+    }{%
+      \HyColor@HyperrefBorderColor{#1}\cmd
+          \TestPackageName\TestOptionName
+      \Expect{true}*{\ifx\cmd\relax true\else false\fi}%
+    }%
+  }%
+  \errortest{yellow}%
+\end{qstest}
+%</test1|test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test1|test2>
+\usepackage{xcolor}
+\definecolor[named]{MyGreen}{rgb}{0,0.7,0}
+\definecolor{mygreen}{named}{MyGreen}
+%</test1|test2>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test1>
+\begin{qstest}{BookmarkColor with xcolor}{bookmark, xcolor}
+  \def\test#1#2{%
+    \HyColor@BookmarkColor{#1}\cmd\PackageName\OptionName
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{[rgb]{1,0,0}}{1 0 0}%
+  \test{[gray]{0.10}}{.1 .1 .1}%
+  \test{}{}%
+  \test{[rgb]{ 1 , 1 , 0 }}{1 1 0}%
+  \test{[cmyk]{1,0,0,0}}{0 1 1}%
+  \test{red}{1 0 0}%
+  \test{cyan}{0 1 1}%
+  \test{red!40!blue}{.4 0 .6}%
+  \test{[Gray]{10}}{.66667 .66667 .66667}%
+  \test{[RGB]{100,200,50}}{.39217 .78432 .19609}%
+  \test{[wave]{363}}{.00316 0 .00316}%
+  \test{[wave]814}{.00797 0 0}%
+  \test{[HSB]{100,200,50}}{.03473 .20833 .12152}%
+  \test{[HTML]{A800FF}}{.65881 0 1}%
+  \test{[cmy]{.3,.5,.2}}{.7 .5 .8}%
+  \test{[cmyk]{.3,.5,.2,.1}}{.6 .4 .7}%
+  \test{[hsb]{.3,.5,.2}}{.12 .2 .1}%
+  \test{[Hsb]{120,.5,.2}}{.1 .2 .1}%
+  \test{[tHsb]{120,.5,.2}}{.2 .2 .1}%
+  \test{[named]{MyGreen}}{0 .7 0}%
+  \test{mygreen}{0 .7 0}%
+\end{qstest}
+
+\begin{qstest}{HyperrefColor}{hyperref, color}
+  \def\test#1#2{%
+    \HyColor@HyperrefColor{#1}\cmd
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{red}{red}%
+  \test{[rgb]{1,0,0}}{[{rgb}]{1,0,0}}%
+  \HyColor@HyperrefColor{}\cmd
+  \Expect{true}*{\ifx\cmd\relax true\else false\fi}%
+\end{qstest}
+%</test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*test1|test2>
+\begin{qstest}{X0134 with xcolor}{hyperref, X0134, xcolor}
+  \def\test#1#2{%
+    \HyColor@XZeroOneThreeFour{#1}\cmd\PackageName\OptionName
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{[empty]{}}{}%
+  \test{[gray]{0.1}}{.1}%
+  \test{[rgb]{1,0.5,0.0}}{1 .5 0}%
+  \test{[cmyk]{0,1,0,0.5}}{0 1 0 .5}%
+  \test{[Gray]{10}}{.66667}%
+  \test{red}{1 0 0}%
+  \test{1 0 0}{1 0 0}%
+  \test{001.0 .23 0}{1 .23 0}%
+  \test{[named]{MyGreen}}{0 .7 0}%
+  \test{mygreen}{0 .7 0}%
+  \HyColor@XZeroOneThreeFour{}\cmd\PackageName\OptionName
+  \Expect{true}*{\ifx\cmd\relax true\else false\fi}%
+\end{qstest}
+
+\begin{qstest}{FieldColor}{hyperref, field, FieldColor}
+  \def\test#1#2{%
+    \HyColor@FieldColor{#1}\cmd\PackageName\OptionName
+    \Expect*{\cmd}{#2}%
+  }%
+  \test{}{}%
+  \test{[gray]{0.7}}{.7 g}%
+  \test{[rgb]{1,0,0}}{1 0 0 rg}%
+  \test{[cmyk]{0,1,0,0}}{0 1 0 0 k}%
+  \test{[cmy]{.5,.4,.3}}{.5 .6 .7 rg}%
+\end{qstest}
+%</test1|test2>
+%    \end{macrocode}
+%
+% \subsection{Test for package \xpackage{attachfile2}}
+%
+%    \begin{macrocode}
+%<*test3>
+\def\atfi@SETRGBCOLORtest{set-rgb}
+\def\atfi@SETGRAYCOLORtest{set-gray}
+\def\atfi@SETCMYKCOLORtest{set-cmyk}
+\def\Test#1#2#3#4#5{%
+  \begingroup
+    \setbox0=\hbox{%
+      \begingroup
+        \chardef\HyColor@PdfVersion=6 %
+        \HyColor@AttachfileColor{#1}\spec\inlinemacro\annot
+            \TestPackageName\TestOptionName
+        \edef\inline{\inlinemacro{test}}%
+        \expandafter\Expect\expandafter{\spec}{#2}%
+        \expandafter\Expect\expandafter{\inline}{#3}%
+        \expandafter\Expect\expandafter{\annot}{#4}%
+      \endgroup
+      \begingroup
+        \chardef\HyColor@PdfVersion=7 %
+        \HyColor@AttachfileColor{#1}\spec\inlinemacro\annot
+            \TestPackageName\TestOptionName
+        \edef\inline{\inlinemacro{test}}%
+        \expandafter\Expect\expandafter{\spec}{#2}%
+        \expandafter\Expect\expandafter{\inline}{#3}%
+        \expandafter\Expect\expandafter{\annot}{#5}%
+      \endgroup
+    }%
+    \Expect*{\the\wd0}{0.0pt}%
+  \endgroup
+}
+\newif\ifError
+\def\TestError[#1]#2#3#4#5#6{%
+  \begingroup
+    \global\Errorfalse
+    \let\OrgPackageError\PackageError
+    \def\PackageError##1##2##3{%
+      \edef\TestTemp{##1}%
+      \ifx\TestTemp\TestPackageName
+        \Expect*{\ifError too many errors\else ok\fi}{ok}%
+        \Expect*{#6}*{##2}%
+        \global\Errortrue
+      \else
+        \OrgPackageError{##1}{##2}{##3}%
+      \fi
+    }%
+    \setbox0=\hbox{%
+      \begingroup
+        \chardef\HyColor@PdfVersion=#1 %
+        \HyColor@AttachfileColor{#2}\spec\inlinemacro\annot
+            \TestPackageName\TestOptionName
+        \edef\inline{\inlinemacro{test}}%
+        \expandafter\Expect\expandafter{\spec}{#3}%
+        \expandafter\Expect\expandafter{\inline}{#4}%
+        \expandafter\Expect\expandafter{\annot}{#5}%
+      \endgroup
+      \ifx\\#6\\%
+      \else
+        \Expect*{\ifError ok\else missing error\fi}{ok}%
+      \fi
+    }%
+    \Expect*{\the\wd0}{0.0pt}%
+  \endgroup
+}
+\def\NoEmptyModel{%
+  Color model `empty' is not permitted for option `\TestOptionName'%
+}
+\def\ModelNoXcolor#1#2{%
+  Color model `#1' is not supported\MessageBreak
+  without package `xcolor' in\MessageBreak
+  `\TestOptionName=[#1]{#2}'% hash-ok
+}
+\def\SpecNoXColor#1{%
+  This color specification is not supported\MessageBreak
+  without package `xcolor' in\MessageBreak
+  `test-option=#1'%
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begin{qstest}{AttachfileColor}{AttachfileColor}
+  \Test{}{}{}{}{}%
+  \Test{0.1 0.2 0.3}{[rgb]{.1,.2,.3}}{.1 .2 .3 set-rgb}%
+       {/C[.1 .2 .3]}{/C[.1 .2 .3]}%
+  \Test{[gray]{0.4}}{[gray]{0.4}}{.4 set-gray}%
+       {/C[.4 .4 .4]}{/C[.4]}%
+  \Test{[rgb]{0.3,.2,.1}}{[rgb]{0.3,.2,.1}}{.3 .2 .1 set-rgb}%
+       {/C[.3 .2 .1]}{/C[.3 .2 .1]}%
+  \Test{0.0 1.0 1}{[rgb]{0,1,1}}{0 1 1 set-rgb}%
+       {/C[0 1 1]}{/C[0 1 1]}%
+  \Test{[gray]1}{[gray]1}{1 set-gray}{/C[1 1 1]}{/C[1]}%
+  \TestError[6]{[empty]{}}{}{}{}\NoEmptyModel
+  \TestError[7]{[empty]{}}{}{}{}\NoEmptyModel
+  \TestError[6]{[cmyk]{.1,.2,.3,.4}}{[cmyk]{.1,.2,.3,.4}}%
+            {.1 .2 .3 .4 set-cmyk}{}%
+            {\ModelNoXcolor{cmyk}{.1,.2,.3,.4}}%
+  \TestError[7]{[cmyk]{.1,.2,.3,.4}}{[cmyk]{.1,.2,.3,.4}}%
+            {.1 .2 .3 .4 set-cmyk}{/C[.1 .2 .3 .4]}{}%
+  \TestError[6]{red}{red}{}{}{\SpecNoXColor{red}}%
+  \TestError[7]{red}{red}{}{}{\SpecNoXColor{red}}%
+\end{qstest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\usepackage{xcolor}
+\definecolor[named]{MyGreen}{rgb}{0,0.7,0}
+\definecolor{mygreen}{named}{MyGreen}
+\definecolor{graynine}{gray}{0.9}
+\definecolor{GraySix}{Gray}{9}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begin{qstest}{AttachfileColorX}{AttachfileColorX}
+  \Test{}{}{}{}{}%
+  \Test{0.1 0.2 0.3}{[rgb]{.1,.2,.3}}{.1 .2 .3 set-rgb}%
+       {/C[.1 .2 .3]}{/C[.1 .2 .3]}%
+  \Test{[gray]{0.4}}{[gray]{0.4}}{.4 set-gray}%
+       {/C[.4 .4 .4]}{/C[.4]}%
+  \Test{[rgb]{0.3,.2,.1}}{[rgb]{0.3,.2,.1}}{.3 .2 .1 set-rgb}%
+       {/C[.3 .2 .1]}{/C[.3 .2 .1]}%
+  \Test{0.0 1.0 1}{[rgb]{0,1,1}}{0 1 1 set-rgb}%
+       {/C[0 1 1]}{/C[0 1 1]}%
+  \Test{[gray]1}{[gray]1}{1 set-gray}{/C[1 1 1]}{/C[1]}%
+  \Test{red}{red}{1 0 0 set-rgb}{/C[1 0 0]}{/C[1 0 0]}%
+  \Test{black}{black}{0 set-gray}{/C[0 0 0]}{/C[0]}%
+  \Test{cyan}{cyan}{1 0 0 0 set-cmyk}{/C[0 1 1]}{/C[1 0 0 0]}%
+  \Test{[named]{black}}{[named]{black}}{0 0 0 set-rgb}%
+       {/C[0 0 0]}{/C[0 0 0]}%
+  \Test{[Gray]{9}}{[Gray]{9}}{.6 set-gray}{/C[.6 .6 .6]}{/C[.6]}%
+  \Test{[HTML]{0080FF}}{[HTML]{0080FF}}{0 .50195 1 set-rgb}%
+       {/C[0 .50195 1]}{/C[0 .50195 1]}%
+  \Test{graynine}{graynine}{.9 set-gray}{/C[.9 .9 .9]}{/C[.9]}%
+  \Test{GraySix}{GraySix}{.6 set-gray}{/C[.6 .6 .6]}{/C[.6]}%
+  \Test{[wave]{500}}{[wave]{500}}{0 1 .49846 set-rgb}%
+       {/C[0 1 .49846]}{/C[0 1 .49846]}%
+  \TestError[6]{[empty]{}}{}{}{}\NoEmptyModel
+  \TestError[7]{[empty]{}}{}{}{}\NoEmptyModel
+\end{qstest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</test3>
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%<*test>
+\begin{document}
+\end{document}
+%</test>
+%    \end{macrocode}
+%
+% \subsection{Test for package \xpackage{xcolor}}
+%
+%    \begin{macrocode}
+%<*test-xcolor>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{minimal}
+%<*xcol1>
+\usepackage{xcolor}
+\usepackage{xcolor-patch}[2011/01/30]
+%</xcol1>
+%<*xcol2>
+\usepackage{scrlfile}
+\usepackage{xcolor-patch}[2011/01/30]
+\usepackage{xcolor}
+%</xcol2>
+%<*xcol3>
+\usepackage{xcolor-patch}[2011/01/30]
+\usepackage{xcolor}
+\begin{document}
+%</xcol3>
+\makeatletter
+\newcommand*{\ColModList}{%
+  rgb,%
+  cmy,%
+  cmyk,%
+  hsb,%
+  Hsb,%
+  tHsb,%
+  gray,%
+  RGB,%
+  HTML,%
+  HSB,%
+  Gray,%
+  % wave,
+}
+\newcommand*{\StartModel}{rgb}
+\newcommand*{\StartValues}{.1,.2,.3}
+\@for\x:=\ColModList\do{%
+  \ifx\x\@empty
+  \else
+    \convertcolorspec\StartModel\StartValues\x\y
+    \typeout{* [\StartModel]{\StartValues} ==> [\x]{\y}}%
+    \@for\xx:=\ColModList\do{%
+      \ifx\xx\@empty
+      \else
+        \convertcolorspec\x\y\xx\yy
+        \typeout{* [\x]{\y} ==> [\xx]{\yy}}%
+      \fi
+    }%
+  \fi
+}
+%<xcol3>\end{document}
+%<xcol1|xcol2>\@@end
+%</test-xcolor>
+%    \end{macrocode}
+%
+% \subsubsection{Test for \cs{@frameb@x}/\cs{fbox}}
+%
+%    \begin{macrocode}
+%<*test-xcolor-fbox>
+\NeedsTeXFormat{LaTeX2e}
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{xcolor-patch}[2011/01/30]
+\makeatletter
+\protected@edef\x{\fbox{abc}}
+\let\@tempa\@undefined
+\protected@edef\x{\fbox{abc}}
+\makeatother
+\begin{document}
+\MakeUppercase{\fbox{abc}}
+\end{document}
+%</test-xcolor-fbox>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/hycolor.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/hycolor.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex hycolor.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   hycolor.sty & tex/latex/oberdiek/hycolor.sty\\
+%   xcolor-patch.sty & tex/latex/oberdiek/xcolor-patch.sty\\
+%   hycolor.pdf & doc/latex/oberdiek/hycolor.pdf\\
+%   test/hycolor-test1.tex & doc/latex/oberdiek/test/hycolor-test1.tex\\
+%   test/hycolor-test2.tex & doc/latex/oberdiek/test/hycolor-test2.tex\\
+%   test/hycolor-test3.tex & doc/latex/oberdiek/test/hycolor-test3.tex\\
+%   test/hycolor-test-xcol1.tex & doc/latex/oberdiek/test/hycolor-test-xcol1.tex\\
+%   test/hycolor-test-xcol2.tex & doc/latex/oberdiek/test/hycolor-test-xcol2.tex\\
+%   test/hycolor-test-xcol3.tex & doc/latex/oberdiek/test/hycolor-test-xcol3.tex\\
+%   test/hycolor-test-xcol4.tex & doc/latex/oberdiek/test/hycolor-test-xcol4.tex\\
+%   hycolor.dtx & source/latex/oberdiek/hycolor.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk hycolor.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{hycolor.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex hycolor.dtx
+%makeindex -s gind.ist hycolor.idx
+%pdflatex hycolor.dtx
+%makeindex -s gind.ist hycolor.idx
+%pdflatex hycolor.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{hycolor.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hycolor'>
+  <name>hycolor</name>
+  <caption>Implements colour for packages hyperref and bookmark.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007-2011'/>
+  <license type='lppl1.3'/>
+  <version number='1.7'/>
+  <description>
+    This package provides the code for the color option
+    that is used by packages <xref refid='hyperref'>hyperref</xref>
+    and <xref refid='bookmark'>bookmark</xref>.
+    It is not intended as package for the user.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hycolor.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hycolor.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{History}
+%   \begin{Version}{2007/04/09 v1.0}
+%   \item
+%     First version.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v1.1}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2008/07/29 v1.2}
+%   \item
+%     Support for package \xpackage{attachfile2} added.
+%   \end{Version}
+%   \begin{Version}{2008/08/01 v1.3}
+%   \item
+%     Patch package \xpackage{xcolor-patch} added that fixes bugs in
+%     package \xpackage{xcolor} to get the test files running.
+%   \end{Version}
+%   \begin{Version}{2008/09/08 v1.4}
+%   \item
+%     Fix added to package \xpackage{xcolor-patch}:
+%     Fragile \cs{@frameb@x} (used in \cs{fbox}) is made robust.
+%   \end{Version}
+%   \begin{Version}{2009/10/02 v1.5}
+%   \item
+%     Doku fixes (Herbert Voss).
+%   \end{Version}
+%   \begin{Version}{2009/12/12 v1.6}
+%   \item
+%     Short info shortened.
+%   \end{Version}
+%   \begin{Version}{2011/01/30 v1.7}
+%   \item
+%     Package \xpackage{xcolor-patch} uses package \xpackage{hopatch}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

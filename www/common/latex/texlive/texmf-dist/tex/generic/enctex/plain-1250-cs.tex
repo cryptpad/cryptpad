@@ -1,0 +1,17 @@
+\input csfonts  % re-defines primitive \font
+\input plain    % format Plain
+\restorefont    % original meaning of primitive \font
+\input 1250-csf % input: CP1250, internal TeX: CS-font
+\input hyphen.lan  % czech / slovak hyphenation pattern (may be others too)
+\input plaina4  % \hsize and \vsize for A4
+\everyjob=\expandafter{\the\everyjob
+   \message{The format: plain-1250-cs <Sep. 1997>.}
+   \message{The cs-fonts are preloaded and A4 size predefined.}}
+\dump
+
+
+
+
+
+
+

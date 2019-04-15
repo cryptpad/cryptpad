@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='tabularht'>
+  <name>tabularht</name>
+  <caption>Tabular environments with height specified.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2005-2007'/>
+  <license type='lppl1.3'/>
+  <version number='2.5'/>
+  <description>
+    The tabularht package defines some environments that add a height
+    specification to tabular and array environments.  The default set
+    of new environments take a value for their height in the first
+    argument: defined environments are: <tt>tabularht</tt>,
+    <tt>tabularht*</tt> and <tt>arrayht</tt>.  If package
+    <xref refid='tabularx'>tabularx</xref> is also loaded,
+    the package also defines environments <tt>tabularxht</tt> and
+    <tt>tabularxht*</tt>.
+    <p/>
+    The places where stretching is to happen are signalled by<br/>
+    <tt>\noalign{\vfill}</tt><br/>
+    immediately after the <tt>\\</tt> that ends a row of the table or
+    array.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/tabularht.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/tabularht.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

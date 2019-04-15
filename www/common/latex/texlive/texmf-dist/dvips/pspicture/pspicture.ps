@@ -1,0 +1,138 @@
+%!
+%%
+%% Source File `pspicture.dtx'.
+%% Copyright (C) 1992 1999 David Carlisle
+%% This file may be distributed under the terms of the LPPL.
+%% See 00readme.txt for details.
+%%
+
+
+
+
+/!BP{
+  72 72.27 div dup scale
+  }def
+/!A{
+  newpath
+  0 0 moveto
+  dup neg dup .4 mul rlineto
+  .8 mul 0 exch  rlineto
+  closepath
+  fill
+  } def
+/!V{
+  !BP
+  /!X exch def
+  /!y exch def
+  /!x exch def
+  newpath
+  0 0 moveto
+  !x 0 eq {0  !y 0 lt {!X neg}{!X} ifelse}
+         {!x 0 lt {!X neg}{!X}ifelse  !X !y mul !x abs div} ifelse
+  lineto
+  setlinewidth  % @wholewidth
+  currentpoint
+  stroke
+  translate
+  !y !x atan
+  rotate
+  !A            % @arrowlength
+  }def
+/!L{
+  !BP
+  /!X exch def
+  /!y exch def
+  /!x exch def
+  newpath
+  0 0 moveto
+  !x 0 eq {0  !y 0 lt {!X neg}{!X} ifelse}
+         {!x 0 lt {!X neg}{!X}ifelse  !X !y mul !x abs div} ifelse
+  lineto
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+/!C{
+  !BP
+  0 0 3 2 roll
+  2 div 0 360 arc
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+/!D{
+  !BP
+  0 0 3 2 roll
+  2 div 0 360 arc fill
+  }def
+/!O{
+  !BP
+  /!y exch 2 div def
+  /!x exch 2 div def
+  /!r exch !x !y
+    2 copy gt {exch} if pop
+    2 copy gt {exch} if pop
+      def
+  setlinewidth  % @wholewidth
+  1 eq
+  {newpath
+   !x neg 0 moveto
+   !x neg !y 0 !y !r arcto 4 {pop} repeat
+   0 !y lineto
+   stroke}if
+  1 eq
+  {newpath
+   !x  0 moveto
+   !x  !y 0 !y !r arcto 4 {pop} repeat
+   0 !y lineto
+   stroke}if
+  1 eq
+  {newpath
+   !x neg 0 moveto
+   !x neg !y neg 0 !y neg  !r arcto 4 {pop} repeat
+   0 !y neg lineto
+   stroke}if
+  1 eq
+  {newpath
+   !x  0 moveto
+   !x  !y neg 0 !y neg !r arcto 4 {pop} repeat
+   0 !y neg lineto
+   stroke}if
+  }def
+/!V2{
+  !BP
+  2 copy exch
+  atan
+  /a exch def
+  2 copy
+  newpath
+  0 0 moveto
+  lineto          % <x*unitlength> <y*unitlength>
+  3 2 roll
+  setlinewidth  % @wholewidth
+  stroke
+  translate       % <x*unitlength> <y*unitlength>
+  a rotate
+  !A                    % @arrowlength
+  }def
+/!L2{
+  !BP
+  newpath
+  0 0 moveto
+  lineto          % <x*unitlength> <y*unitlength>
+  setlinewidth  % @wholewidth
+  stroke
+  }def
+/!C2{
+  !BP
+  /!s exch def
+  /!y exch def
+  /!x exch def
+  newpath
+  0 0 moveto
+  0 0
+  !x 2 div !y 10 div !s mul add
+  !y 2 div  !x 10 div  !s mul sub
+  !x !y
+  curveto
+  setlinewidth  % @wholewidth
+  stroke
+  }def

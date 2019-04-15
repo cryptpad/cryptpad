@@ -1,0 +1,328 @@
+% \def\filename{amscd.dtx}
+% \def\fileversion{2.0}
+% \def\filedate{1999/11/29}
+%
+% \iffalse meta-comment
+%
+% American Mathematical Society
+% Technical Support
+% Publications Technical Group
+% 201 Charles Street
+% Providence, RI 02904
+% USA
+% tel: (401) 455-4080
+%      (800) 321-4267 (USA and Canada only)
+% fax: (401) 331-3842
+% email: tech-support@ams.org
+%
+% Copyright 1995, 1999 American Mathematical Society.
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is the American Mathematical
+% Society.
+%
+% \fi
+%
+%\iffalse
+%<*driver>
+\documentclass{amsdtx}
+\usepackage{amscd}
+%    Dummy citation to avoid error in an example.
+\bibcite{fre:cichon}{C}
+\begin{document}
+\title{The \pkg{amscd} package}
+\author{Frank Mittelbach\and Rainer Sch\"opf\and Michael Downes}
+\date{Version \fileversion, \filedate}
+\DocInput{amscd.dtx}
+\end{document}
+%</driver>
+%\fi
+%
+% \maketitle
+%
+% \MakeShortVerb\|
+% \newcommand{\operatorname}[1]{\mathop{\mathrm{#1}}}
+% \newcommand{\per}{\operatorname{per}}
+% \newcommand{\cov}{\operatorname{cov}}
+% \newcommand{\non}{\operatorname{non}}
+% \newcommand{\cf}{\operatorname{cf}}
+% \newcommand{\add}{\operatorname{add}}
+% \newcommand{\End}{\operatorname{End}}
+%
+% \section{Introduction}
+%
+%    The \pkg{amscd} package provides a \env{CD} environment that
+%    emulates the commutative diagram capabilities of \amstex/ version
+%    2.x. This means that only simple rectangular diagrams are
+%    supported, with no diagonal arrows or more exotic features. Many
+%    users will be better served by one of the more powerful diagram
+%    packages such as \pkg{diagram}, \pkg{xypic}, or \pkg{kuvio}.
+%
+%    Example:
+%    \begin{equation}\begin{CD}
+%    S^{{\mathcal{W}}_\Lambda}\otimes T   @>j>>   T\\
+%    @VVV                                    @VV{\End P}V\\
+%    (S\otimes T)/I                  @=      (Z\otimes T)/J
+%    \end{CD}\end{equation}
+% \begin{verbatim}
+% \begin{equation}\begin{CD}
+% S^{{\mathcal{W}}_\Lambda}\otimes T   @>j>>   T\\
+% @VVV                                    @VV{\End P}V\\
+% (S\otimes T)/I                  @=      (Z\otimes T)/J
+% \end{CD}\end{equation}
+% \end{verbatim}
+%    (assuming \cn{End} is defined as an `operator name'.
+%
+%    Another example:
+%
+%    We will make liberal use of Cichon's Diagram \cite{fre:cichon}:
+%    \begin{equation}
+%    \begin{CD}
+%    \cov(\mathcal{L}) @>>> \non(\mathcal{K}) @>>> \cf(\mathcal{K}) @>>>
+%    \cf(\mathcal{L})\\
+%    @VVV @AAA @AAA @VVV\\
+%    \add(\mathcal{L}) @>>> \add(\mathcal{K}) @>>> \cov(\mathcal{K}) @>>>
+%    \non(\mathcal{L})
+%    \end{CD}\end{equation}
+% \begin{verbatim}
+% \begin{equation}\begin{CD}
+% \cov(\mathcal{L}) @>>> \non(\mathcal{K}) @>>> \cf(\mathcal{K}) @>>>
+% \cf(\mathcal{L})\\
+% @VVV @AAA @AAA @VVV\\
+% \add(\mathcal{L}) @>>> \add(\mathcal{K}) @>>> \cov(\mathcal{K}) @>>>
+% \non(\mathcal{L})
+% \end{CD}\end{equation}
+% \end{verbatim}
+%
+% \StopEventually{}
+%
+%    Standard package info.
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
+[1994/12/01]% LaTeX date must December 1994 or later
+\ProvidesPackage{amscd}[1999/11/29 v2.0]
+%    \end{macrocode}
+%    \begin{macrocode}
+\RequirePackage{amsgen}
+%    \end{macrocode}
+%      Better not to redefine \verb|\math@cr| if it is already defined,
+%      because for CD use only we want to omit the part of the code
+%      related to \verb|\dspbrk@lvl| (see \fn{amsmath.sty}).
+%
+%    [mjd,1999/11/04] These definitions have gone somewhat obsolete; but
+%    we had probably better leave them as they are for backward
+%    compatibility.
+%    \begin{macrocode}
+\@ifundefined{math@cr}{%
+  \def\math@cr{{\ifnum0=`}\fi
+    \@ifstar{\global\@eqpen\@M\math@cr@}%
+          {\global\@eqpen\interdisplaylinepenalty \math@cr@}}
+%    \end{macrocode}
+%    The following section merely duplicates some code from the
+%    \pkg{amsmath} package, in case the \pkg{amscd} package is used by
+%    itself. For documentation of the code refer to \fn{amsmath.dtx}.
+%    \begin{macrocode}
+  \def\math@cr@{\new@ifnextchar[\math@cr@@{\math@cr@@[\z@]}}
+  \def\math@cr@@[#1]{\ifnum0=`{\fi}\math@cr@@@
+    \noalign{\vskip#1\relax}}
+  \def\restore@math@cr{\def\math@cr@@@{\cr}}
+}{}
+\restore@math@cr
+%    \end{macrocode}
+%    [mjd,1999/11/04] These definitions too are somewhat obsolete;
+%    but we had probably better leave them as they are for backward
+%    compatibility.
+%    \begin{macrocode}
+\@ifundefined{rightarrowfill@}{
+  \def\rightarrowfill@#1{\m@th\setboxz@h{$#1-$}\ht\z@\z@
+    $#1\copy\z@\mkern-6mu\cleaders
+    \hbox{$#1\mkern-2mu\box\z@\mkern-2mu$}\hfill
+    \mkern-6mu\mathord\rightarrow$}
+  \def\leftarrowfill@#1{\m@th\setboxz@h{$#1-$}\ht\z@\z@
+    $#1\mathord\leftarrow\mkern-6mu\cleaders
+    \hbox{$#1\mkern-2mu\copy\z@\mkern-2mu$}\hfill
+    \mkern-6mu\box\z@$}
+  \def\leftrightarrowfill@#1{\m@th\setboxz@h{$#1-$}\ht\z@\z@
+    $#1\mathord\leftarrow\mkern-6mu\cleaders
+    \hbox{$#1\mkern-2mu\box\z@\mkern-2mu$}\hfill
+    \mkern-6mu\mathord\rightarrow$}
+}{}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\atdef@#1{\expandafter\def\csname\space @\string#1\endcsname}
+\@ifundefined{Iat}{%
+  \DeclareRobustCommand{\Iat}{\FN@\at@}
+}{}
+\begingroup \catcode`\@=\active
+%    \end{macrocode}
+%    Define math \qc{\@} to replicate its mathcode-dictated behavior.
+%    This is in case \qc{\@} occurs outside of \env{CD}.
+%    \begin{macrocode}
+\csname if\string @compatibility\endcsname
+\else \fam=\mathcode`\@
+  \xdef @{\mathchar\number\fam\space }
+\fi
+\gdef\CDat{\let @=\Iat}
+\endgroup
+\mathcode`\@="8000 % make @ pseudo-active in math
+\def\at@{\let\next@\at@@
+ \ifcat\noexpand\next a\else
+ \ifcat\noexpand\next0\else
+ \ifcat\noexpand\next\relax\else
+ \let\next@\at@@@\fi\fi\fi\next@}
+\def\at@@#1{\expandafter
+  \ifx\csname\space @\string#1\endcsname\relax
+    \DN@{\at@@@#1}%
+  \else
+    \DN@{\csname\space @\string#1\endcsname}%
+  \fi\next@}%
+%    \end{macrocode}
+%    The following items should be defined only if they are not
+%    already defined, either to leave the package name untouched (in
+%    the case of \cs{PackageError}) or to avoid redundant allocation
+%    of token or dimen registers.
+%    \begin{macrocode}
+\@ifundefined{default@tag}{%
+  \def\default@tag{%
+    \def\tag{\PackageError{amscd}{\protect\tag\space not allowed
+      here}\@eha}}%
+}{}%
+\@ifundefined{at@@@}{%
+  \def\at@@@{\PackageError{amscd}{\Invalid@@ @}{\the\athelp@}\char64\relax}
+}{}
+\@ifundefined{athelp@}{\csname newhelp\endcsname\athelp@
+{Only certain combinations beginning with @ make sense to me.^^J%
+I'll assume you wanted @@ for a printed @.}}{}
+\@ifundefined{minaw@}{\newdimen\minaw@}{}
+\@ifundefined{bigaw@}{\newdimen\bigaw@}{}
+%    \end{macrocode}
+%
+%      Assignment of a couple of dimensions, and initialization of
+%      \verb=\ampersand@=. We check to see if we need to define
+%      \verb=\minaw@= and \verb=\bigaw@=.
+%    \begin{macrocode}
+\minaw@11.111pt
+\newdimen\minCDarrowwidth
+\minCDarrowwidth2.5pc
+\newif\ifCD@
+\let\ampersand@\relax
+%    \end{macrocode}
+%
+%      Added \verb|\restore@math@cr\default@tag| to fix line numbering
+%      problems, 7-JUN-1991. Suggested by I.~Zakharevich.
+%    \begin{macrocode}
+\newenvironment{CD}{%
+  \CDat
+  \bgroup\relax\iffalse{\fi\let\ampersand@&\iffalse}\fi
+  \CD@true\vcenter\bgroup\let\\\math@cr\restore@math@cr\default@tag
+  \tabskip\z@skip\baselineskip20\ex@
+  \lineskip3\ex@\lineskiplimit3\ex@\halign\bgroup
+  &\hfill$\m@th##$\hfill\crcr
+}{%
+  \crcr\egroup\egroup\egroup
+}
+%    \end{macrocode}
+%
+% \begin{macro}{\CD@check}
+%    This check is used by all macros that must not appear outside the
+%    \env{CD} environment. The first argument is the symbol to be used
+%    after \verb+@+, the second one the action to be performed.
+%
+%    Once again we use the trick of defining a temporary control
+%    sequence \verb+\next@+ and calling it after the final \verb+\fi+.
+%    This is not absolutely necessary, but it ensures that the
+%    conditional text is processed in one and the same column
+%    of the enclosing alignment.
+%    \begin{macrocode}
+\def\CD@check#1#2{\ifCD@\DN@{#2}\else
+  \DN@{\PackageError{amscd}{@\protect#1 not
+    allowed outside of the CD environment}\@eha}%
+  \fi\next@}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\atdef@>#1>#2>{\ampersand@
+  \ifCD@ \global\bigaw@\minCDarrowwidth \else \global\bigaw@\minaw@ \fi
+  \setboxz@h{$\m@th\scriptstyle\;{#1}\;\;$}%
+  \ifdim\wdz@>\bigaw@\global\bigaw@\wdz@\fi
+%    \end{macrocode}
+%      If \verb|#2| is empty we can save some work.
+%    \begin{macrocode}
+  \@ifnotempty{#2}{\setbox\@ne\hbox{$\m@th\scriptstyle\;{#2}\;\;$}%
+    \ifdim\wd\@ne>\bigaw@\global\bigaw@\wd\@ne\fi}%
+ \ifCD@\enskip\fi
+   \mathrel{\mathop{\hbox to\bigaw@{\rightarrowfill@\displaystyle}}%
+     \limits^{#1}\@ifnotempty{#2}{_{#2}}}%
+ \ifCD@\enskip\fi \ampersand@}
+%
+\atdef@<#1<#2<{\ampersand@
+  \ifCD@ \global\bigaw@\minCDarrowwidth \else \global\bigaw@\minaw@ \fi
+  \setboxz@h{$\m@th\scriptstyle\;\;{#1}\;$}%
+  \ifdim\wdz@>\bigaw@ \global\bigaw@\wdz@ \fi
+  \@ifnotempty{#2}{\setbox\@ne\hbox{$\m@th\scriptstyle\;\;{#2}\;$}%
+    \ifdim\wd\@ne>\bigaw@ \global\bigaw@\wd\@ne \fi}%
+  \ifCD@\enskip\fi
+    \mathrel{\mathop{\hbox to\bigaw@{\leftarrowfill@\displaystyle}}%
+      \limits^{#1}\@ifnotempty{#2}{_{#2}}}%
+  \ifCD@\enskip\fi \ampersand@}
+%    \end{macrocode}
+%
+%      Variants of the above two arrows, using \verb|(| and \verb|)|
+%      characters instead of \verb|<| and \verb|>| characters, are
+%      provided for those whose keyboards don't have the latter.
+%    \begin{macrocode}
+\begingroup \catcode`\~=\active \lccode`\~=`\@
+\lowercase{%
+  \global\atdef@)#1)#2){~>#1>#2>}
+  \global\atdef@(#1(#2({~<#1<#2<}
+}% end lowercase
+\endgroup
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\atdef@ A#1A#2A{\CD@check{A..A..A}{\llap{$\m@th\vcenter{\hbox
+  {$\scriptstyle#1$}}$}\Big\uparrow
+  \rlap{$\m@th\vcenter{\hbox{$\scriptstyle#2$}}$}&&}}
+%
+\atdef@ V#1V#2V{\CD@check{V..V..V}{\llap{$\m@th\vcenter{\hbox
+  {$\scriptstyle#1$}}$}\Big\downarrow
+  \rlap{$\m@th\vcenter{\hbox{$\scriptstyle#2$}}$}&&}}
+%
+\atdef@={\CD@check={&\enskip\mathrel
+  {\vbox{\hrule\@width\minCDarrowwidth\vskip2\ex@\hrule\@width
+  \minCDarrowwidth}}\enskip&}}
+%
+\atdef@|{\CD@check|{\Big\Vert&&}}
+%
+\atdef@\vert{\CD@check\vert{\Big\Vert&&}}
+%
+\atdef@.{\CD@check.{&&}}
+%    \end{macrocode}
+%
+%    The \cn{pretend} command has weird syntax that doesn't fit well
+%    with standard \latex/ syntax so we leave it undone, at least for
+%    now. [mjd,1994/10/27]
+%    \begin{macrocode}
+%\def\pretend#1\haswidth#2{\setboxz@h{$\m@th\scriptstyle{#2}$}\hbox
+% to\wdz@{\hfill$\m@th\scriptstyle{#1}$\hfill}}
+%    \end{macrocode}
+%
+%    The usual \cs{endinput} to ensure that random garbage at the end of
+%    the file doesn't get copied by \fn{docstrip}.
+%    \begin{macrocode}
+\endinput
+%    \end{macrocode}
+%
+% \CheckSum{459}
+% \Finale

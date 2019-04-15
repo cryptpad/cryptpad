@@ -1,0 +1,10 @@
+% Black font for LINO with proofsheet resolution approx 90 pixels per inch
+% (Used with output of GF2DVI for the METAFONTbook illustrations)
+
+if mode<>linohi: errmessage "This file is for linotronic only"; fi
+
+font_identifier "BLACKLINO";
+picture pix_picture; pix_wd := pix_ht := 14;
+pix_picture := unitpixel scaled 14;
+
+input grayf

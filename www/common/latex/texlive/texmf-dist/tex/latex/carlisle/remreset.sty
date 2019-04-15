@@ -1,0 +1,39 @@
+
+% remreset package
+%%%%%%%%%%%%%%%%%%
+
+% Copyright 1997 David carlisle
+% This file may be distributed under the terms of the LPPL.
+% See 00readme.txt for details.
+
+% 1997/09/28  David Carlisle
+
+% LaTeX includes a command \@addtoreset that is used to declare that
+% a counter should be reset every time a second counter is incremented.
+
+% For example the book class has a line
+% \@addtoreset{footnote}{chapter}
+% So that the footnote counter is reset each chapter.
+
+% If you wish to bas a new class on book, but without this counter
+% being reset, then standard LaTeX gives no simple mechanism to do
+% this.
+
+% This package defines |\@removefromreset| which just undoes the effect
+% of \@addtorest. So for example a class file may be defined by
+
+% \LoadClass{book}
+% \@removefromreset{footnote}{chapter}
+
+
+\def\@removefromreset#1#2{{%
+  \expandafter\let\csname c@#1\endcsname\@removefromreset
+  \def\@elt##1{%
+    \expandafter\ifx\csname c@##1\endcsname\@removefromreset
+    \else
+      \noexpand\@elt{##1}%
+    \fi}%
+  \expandafter\xdef\csname cl@#2\endcsname{%
+    \csname cl@#2\endcsname}}}
+
+

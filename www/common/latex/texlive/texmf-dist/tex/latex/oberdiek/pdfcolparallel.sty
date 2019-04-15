@@ -1,0 +1,486 @@
+%%
+%% This is file `pdfcolparallel.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% pdfcolparallel.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: pdfcolparallel
+%% Version: 2010/01/11 v1.3
+%% 
+%% Copyright (C) 2007, 2008, 2010 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% This work consists of the main source file pdfcolparallel.dtx
+%% and the derived files
+%%    pdfcolparallel.sty, pdfcolparallel.pdf, pdfcolparallel.ins,
+%%    pdfcolparallel.drv, pdfcolparallel-test1.tex.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pdfcolparallel}%
+  [2010/01/11 v1.3 Color stacks support for parallel (HO)]%
+\DeclareOption*{%
+  \PassoptionsToPackage{\CurrentOption}{parallel}%
+}
+\ProcessOptions\relax
+\RequirePackage{parallel}[2003/04/13]
+\RequirePackage{infwarerr}[2007/09/09]
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname currentgrouplevel\endcsname\relax
+  \def\pcp@ColorPatch{}%
+\else
+  \def\pcp@ColorPatch{%
+    \@ifundefined{set@color}{%
+      \gdef\pcp@ColorPatch{}%
+    }{%
+      \gdef\pcp@ColorPatch{%
+        \gdef\pcp@ColorResets{}%
+        \bgroup
+        \aftergroup\pcp@ColorResets
+        \aftergroup\egroup
+        \let\pcp@OrgSetColor\set@color
+        \let\set@color\pcp@SetColor
+        \edef\pcp@GroupLevel{\the\currentgrouplevel}%
+      }%
+    }%
+    \pcp@ColorPatch
+  }%
+  \def\pcp@SetColor{%
+    \ifnum\pcp@GroupLevel=\currentgrouplevel
+      \let\pcp@OrgAfterGroup\aftergroup
+      \def\aftergroup{%
+        \g@addto@macro\pcp@ColorResets
+      }%
+      \pcp@OrgSetColor
+      \let\aftergroup\pcp@OrgAfterGroup
+    \else
+      \pcp@OrgSetColor
+    \fi
+  }%
+\fi
+\def\pcp@CmdCheckRedef#1{%
+  \begingroup
+    \def\pcp@cmd{#1}%
+    \afterassignment\pcp@CmdDo
+    \long\def\reserved@a
+}
+\def\pcp@CmdDo{%
+    \expandafter\ifx\pcp@cmd\reserved@a
+    \else
+      \edef\x*{\expandafter\string\pcp@cmd}%
+      \@PackageWarningNoLine{pdfcolparallel}{%
+        Command \x* has changed.\MessageBreak
+        Supported versions of package `parallel':\MessageBreak
+        \space\space 2003/04/13\MessageBreak
+        The redefinition of \x* may\MessageBreak
+        not behave correctly depending on the changes%
+      }%
+    \fi
+  \expandafter\endgroup
+  \expandafter\def\pcp@cmd
+}
+\def\pcp@SwitchStack#1#2{}
+\def\pcp@SetCurrent#1{}
+\pcp@CmdCheckRedef\ParallelLText{%
+  \everypar{}%
+  \@restorepar
+  \begingroup
+    \hbadness=3000 %
+    \let\footnote=\ParallelLFootnote
+    \ParallelWhichBox=0 %
+    \global\setbox\ParallelLBox=\vbox\bgroup
+      \hsize=\ParallelLWidth
+      \aftergroup\ParallelAfterText
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}{%
+  \everypar{}%
+  \@restorepar
+  \@nobreakfalse
+  \begingroup
+    \hbadness=3000 %
+    \let\footnote=\ParallelLFootnote
+    \ParallelWhichBox=0 %
+    \global\setbox\ParallelLBox=\vbox\bgroup
+      \hsize=\ParallelLWidth
+      \linewidth=\ParallelLWidth
+      \pcp@SwitchStack{Left}\ParallelLBox
+      \aftergroup\ParallelAfterText
+      \pcp@ColorPatch
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}
+\pcp@CmdCheckRedef\ParallelRText{%
+  \everypar{}%
+  \@restorepar
+  \begingroup
+    \hbadness=3000 %
+    \ifnum\ParallelFNMode=\@ne
+      \let\footnote=\ParallelRFootnote
+    \else
+      \let\footnote=\ParallelLFootnote
+    \fi
+    \ParallelWhichBox=\@ne
+    \global\setbox\ParallelRBox=\vbox\bgroup
+      \hsize=\ParallelRWidth
+      \aftergroup\ParallelAfterText
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}{%
+  \everypar{}%
+  \@restorepar
+  \@nobreakfalse
+  \begingroup
+    \hbadness=3000 %
+    \ifnum\ParallelFNMode=\@ne
+      \let\footnote=\ParallelRFootnote
+    \else
+      \let\footnote=\ParallelLFootnote
+    \fi
+    \ParallelWhichBox=\@ne
+    \global\setbox\ParallelRBox=\vbox\bgroup
+      \hsize=\ParallelRWidth
+      \linewidth=\ParallelRWidth
+      \pcp@SwitchStack{Right}\ParallelRBox
+      \aftergroup\ParallelAfterText
+      \pcp@ColorPatch
+      \begingroup
+        \afterassignment\ParallelCheckOpenBrace
+        \let\x=%
+}
+\pcp@CmdCheckRedef\ParallelParTwoPages{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \global\ParallelWhichBox=\@ne
+      \newpage
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop%
+        \ifnum\ParallelBoolVar=\@ne%
+          \ifnum\ParallelWhichBox=\@ne
+            \ifvoid\ParallelLBox
+              \mbox{} %
+              \newpage
+            \else
+              \global\ParallelWhichBox=\z@
+            \fi
+          \else
+            \ifvoid\ParallelRBox
+              \mbox{} %
+              \newpage
+            \else
+              \global\ParallelWhichBox=\@ne
+            \fi
+          \fi
+          \ifnum\ParallelWhichBox=\z@
+            \ifodd\thepage
+              \mbox{} %
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \vbox{\vsplit\ParallelLBox to.98\textheight}%
+            }%
+          \else
+            \ifodd\thepage\relax
+            \else
+              \mbox{} %
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \vbox{\vsplit\ParallelRBox to.98\textheight}%
+            }%
+          \fi
+          \vspace*{\fill}%
+          \newpage
+        \fi
+        \ifvoid\ParallelLBox
+          \ifvoid\ParallelRBox
+            \global\ParallelBoolVar=\z@
+          \fi
+        \fi
+      \ifnum\ParallelBoolVar=\@ne
+      \repeat
+      \par
+    \endgroup
+  \fi
+}{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \global\ParallelWhichBox=\@ne
+      \newpage
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop%
+        \ifnum\ParallelBoolVar=\@ne%
+          \ifnum\ParallelWhichBox=\@ne
+            \ifvoid\ParallelLBox
+              \mbox{}%
+              \newpage
+            \else
+              \global\ParallelWhichBox=\z@
+            \fi
+          \else
+            \ifvoid\ParallelRBox
+              \null
+              \newpage
+            \else
+              \global\ParallelWhichBox=\@ne
+            \fi
+          \fi
+          \ifnum\ParallelWhichBox=\z@
+            \ifodd\value{page}%
+              \null
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \pcp@SetCurrent{Left}%
+              \setbox\z@=\vsplit\ParallelLBox to.98\textheight
+              \vbox to.98\textheight{%
+                \@texttop
+                \unvbox\z@
+                \@textbottom
+              }%
+            }%
+          \else
+            \ifodd\value{page}%
+            \else
+              \mbox{}%
+              \newpage
+            \fi
+            \hbox to\textwidth{%
+              \pcp@SetCurrent{Right}%
+              \setbox\z@=\vsplit\ParallelRBox to.98\textheight
+              \vbox to.98\textheight{%
+                \@texttop
+                \unvbox\z@
+                \@textbottom
+              }%
+            }%
+          \fi
+          \vspace*{\fill}%
+          \newpage
+        \fi
+        \ifvoid\ParallelLBox
+          \ifvoid\ParallelRBox
+            \global\ParallelBoolVar=\z@
+          \fi
+        \fi
+      \ifnum\ParallelBoolVar=\@ne
+      \repeat
+      \par
+    \endgroup
+    \pcp@SetCurrent{}%
+  \fi
+}
+\RequirePackage{pdfcol}[2007/12/12]
+\ifpdfcolAvailable
+\else
+  \PackageInfo{pdfcolparallel}{%
+    Loading aborted, because color stacks are not available%
+  }%
+  \expandafter\endinput
+\fi
+\pdfcolInitStack{pcp@Left}
+\pdfcolInitStack{pcp@Right}
+\newbox\pcp@Box
+\def\pcp@SwitchStack#1#2{%
+  \pdfcolSwitchStack{pcp@#1}%
+  \global\setbox\pcp@Box=\vbox to 0pt{%
+    \pdfcolSetCurrentColor
+  }%
+  \aftergroup\pcp@FixBox
+  \aftergroup#2%
+}
+\def\pcp@FixBox#1{%
+  \global\setbox#1=\vbox{%
+    \unvbox\pcp@Box
+    \unvbox#1%
+  }%
+}
+\def\pcp@SetCurrent#1{%
+  \ifx\\#1\\%
+    \pdfcolSetCurrent{}%
+  \else
+    \pdfcolSetCurrent{pcp@#1}%
+  \fi
+}
+\pcp@CmdCheckRedef\ParallelParOnePage{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \leftmargin=\z@
+      \rightmargin=\z@
+      \parskip=\z@skip
+      \parindent=\z@
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop
+        \ifnum\ParallelBoolVar=\@ne
+          \noindent
+          \hbox to\textwidth{%
+            \hskip\ParallelLeftMargin
+            \hbox to\ParallelTextWidth{%
+              \ifvoid\ParallelLBox
+                \hskip\ParallelLWidth
+              \else
+                \ParallelWhichBox=\z@
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelLBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+              \strut
+              \ifnum\ParallelBoolMid=\@ne
+                \hskip\ParallelMainMidSkip
+                \vrule
+              \else
+                \hss
+              \fi
+              \hss
+              \ifvoid\ParallelRBox
+                \hskip\ParallelRWidth
+              \else
+                \ParallelWhichBox=\@ne
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelRBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+            }%
+          }%
+          \ifvoid\ParallelLBox
+            \ifvoid\ParallelRBox
+              \global\ParallelBoolVar=\z@
+            \fi
+          \fi%
+        \fi%
+      \ifnum\ParallelBoolVar=\@ne
+        \penalty\interlinepenalty
+      \repeat
+      \par
+    \endgroup
+  \fi
+}{%
+  \ifnum\ParallelBoolVar=\@ne
+    \par
+    \begingroup
+      \leftmargin=\z@
+      \rightmargin=\z@
+      \parskip=\z@skip
+      \parindent=\z@
+      \vbadness=10000 %
+      \vfuzz=3ex %
+      \splittopskip=\z@skip
+      \loop
+        \ifnum\ParallelBoolVar=\@ne
+          \noindent
+          \hbox to\textwidth{%
+            \hskip\ParallelLeftMargin
+            \hbox to\ParallelTextWidth{%
+              \ifvoid\ParallelLBox
+                \hskip\ParallelLWidth
+              \else
+                \pcp@SetCurrent{Left}%
+                \ParallelWhichBox=\z@
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelLBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+              \strut
+              \ifnum\ParallelBoolMid=\@ne
+                \hskip\ParallelMainMidSkip
+                \begingroup
+                  \pcp@RuleBetweenColor
+                  \vrule
+                \endgroup
+              \else
+                \hss
+              \fi
+              \hss
+              \ifvoid\ParallelRBox
+                \hskip\ParallelRWidth
+              \else
+                \pcp@SetCurrent{Right}%
+                \ParallelWhichBox=\@ne
+                \vbox{%
+                  \setbox\ParallelBoxVar
+                      =\vsplit\ParallelRBox to\dp\strutbox
+                  \unvbox\ParallelBoxVar
+                }%
+              \fi
+            }%
+          }%
+          \ifvoid\ParallelLBox
+            \ifvoid\ParallelRBox
+              \global\ParallelBoolVar=\z@
+            \fi
+          \fi%
+        \fi%
+      \ifnum\ParallelBoolVar=\@ne
+        \penalty\interlinepenalty
+      \repeat
+      \par
+    \endgroup
+    \pcp@SetCurrent{}%
+  \fi
+}
+\def\pcp@RuleBetweenColorDefault{%
+  \normalcolor
+}
+\let\pcp@RuleBetweenColor\pcp@RuleBetweenColorDefault
+\RequirePackage{keyval}
+\define@key{parallel}{rulebetweencolor}{%
+  \edef\pcp@temp{#1}%
+  \ifx\pcp@temp\@empty
+    \let\pcp@RuleBetweenColor\pcp@RuleBetweenColorDefault
+  \else
+    \edef\pcp@temp{%
+      \noexpand\@ifnextchar[{%
+        \def\noexpand\pcp@RuleBetweenColor{%
+          \noexpand\color\pcp@temp
+        }%
+        \noexpand\pcp@GobbleNil
+      }{%
+        \def\noexpand\pcp@RuleBetweenColor{%
+          \noexpand\color{\pcp@temp}%
+        }%
+        \noexpand\pcp@GobbleNil
+      }%
+      \pcp@temp\noexpand\@nil
+    }%
+    \pcp@temp
+  \fi
+}
+\long\def\pcp@GobbleNil#1\@nil{}
+\endinput
+%%
+%% End of file `pdfcolparallel.sty'.

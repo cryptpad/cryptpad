@@ -1,0 +1,285 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: preload.dtx
+%<*dtx>
+           \ProvidesFile{preload.dtx}
+%</dtx>
+%<*preload>
+%<*!tex>
+%<+cm>  \ProvidesFile{cmpreloa.%
+%<+dc>  \ProvidesFile{dcpreloa.%
+%<+xpt>                         xpt}
+%<+xipt>                        xip}
+%<+xiipt>                       xii}
+%<+min> \ProvidesFile{preload.min}
+%<+ori> \ProvidesFile{preload.ori}
+%</!tex>
+%<+tex> \ProvidesFile{preload.ltx}
+% \fi
+%       \ProvidesFile{preload.dtx}
+         [2014/09/29 v2.1g LaTeX Kernel (Font Preloading)]
+%
+% \CheckSum{41}
+%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%
+%\iffalse       This is a META comment
+%
+% File `preload.dtx'.
+% Copyright (C) 1989-1994 Frank Mittelbach and Rainer Sch\"opf,
+% all rights reserved.
+%
+% \fi
+%
+% \GetFileInfo{preload.dtx}
+% \title{The \texttt{preload.dtx} file\thanks {This file has version
+%    number \fileversion, dated \filedate}\\ for use with \LaTeXe}
+% \date{\filedate}
+% \author{Frank Mittelbach \and Rainer Sch\"opf}
+%
+% \changes{v2.0b}{1993/03/08}{Added 12pt preloads}
+% \changes{v2.1e}{1994/11/07}{(DPC) Updated to use \cs{ProvidesFile}}
+% \changes{v2.1g}{1998/08/17}{(RmS) Minor documentation fixes.}
+%
+% \def\dst{\expandafter{\normalfont\scshape docstrip}}
+%
+% \setcounter{StandardModuleDepth}{1}
+%
+% \MaintainedByLaTeXTeam{latex}
+% \maketitle
+%
+% \section{Overview}
+%
+%   This file contains an number of possible settings for preloading
+%   fonts during installation of NFSS2 (which is used by \LaTeXe).  It
+%   will be used to generate the following files:
+%   \begin{center}
+%   \begin{tabular}{ll}
+%   preload.min   &  minimal subset of fonts necessary to run NFSS2 \\
+%   preload.ori   &  preload of CM fonts similar to the old
+%                        \texttt{lfonts.tex}                       \\
+%   preload.ltx    &  The standard selection of preloads \\
+%   cmpreloa.xpt   &  preload of CM fonts for 10pt document size\\
+%   cmpreloa.xip   &  preload of CM fonts for 11pt document size\\
+%   cmpreloa.xii   &  preload of CM fonts for 12pt document size\\
+%   dcpreloa.xpt   &  preload of DC fonts for 10pt size \\
+%   dcpreloa.xip   &  preload of DC fonts for 11pt size \\
+%   dcpreloa.xii   &  preload of DC fonts for 12pt size \\
+%   \end{tabular}
+%   \end{center}
+%
+%    These files are for installations that make use of Computer
+%    Modern fonts either old encoding (OT1) or Cork encoding (T1). The
+%    Computer Modern fonts with Cork encoding are known as DC-fonts.
+%
+%    Most important is \texttt{preload.ltx} which is used during
+%    format generation. You are \emph{not} allowed to change this file.
+%
+% \section{Customization}
+%
+%    You can customize the preloaded fonts in your \LaTeXe{} system by
+%    installing a file with the name \texttt{preload.cfg}. If this
+%    file exists it will be used in place of the system file
+%    \texttt{preload.ltx}.  You can, for example, copy one of the
+%    files mentioned above (that can be generated from this source) to
+%    \texttt{preload.cfg}.
+%
+%    Or you can define completely other preloads. In that case start
+%    from \texttt{preload.min} since that contains the fonts that have
+%    to be preloaded by *all* \LaTeXe{} systems.
+%
+%    Avoid using \texttt{preload.ori}, it will load so many fonts that
+%    on most installations it is nearly impossible to load other font
+%    families afterwards. This file is only generated to show what
+%    fonts have been preloaded by \LaTeX~2.09.
+%
+%    If you normally use other fonts than Computer Modern
+%    \texttt{preload.min} might be best.
+%
+%    \begin{quote} \textbf{Warning:} If you preload fonts with
+%    encodings other than the normally supported encodings you have to
+%    declare that encoding in a \texttt{fontdef.cfg} configuration
+%    file (see the documentation in the file \texttt{fontdef.dtx}).
+%    Adding an extra encoding to the format might produce non-portable
+%    documents, thus this should be avoided if possible.
+%    \end{quote}
+%
+%
+% \StopEventually{}
+%
+% \section{Module switches for the \dst{} program}
+%
+%  The \dst{} will generate the above file from this source using the
+%  following module directives:
+% \begin{center}
+% \begin{tabular}{ll}
+%   driver & produce a documentation driver file \\
+%   preload& produce a preload\ldots file \\[2pt]
+%   cm     & for OT1 encoded Computer Modern \\
+%   dc     & for T1 encoded Computer Modern \\[2pt]
+%   min    & produce minimal subset \\
+%   xpt    & produce 10pt preloads \\
+%   xipt   & produce 11pt preloads \\
+%   xiipt  & produce 12pt preloads \\
+%   ori    & produce preloads similar to old \texttt{lfonts.tex}\\
+%   tex    & produce preload.ltx\\
+% \end{tabular}
+% \end{center}
+% A typical \dst{} command file would then have entries like:
+% \begin{verbatim}
+%\generateFile{preload.min}{t}{\from{preload.dtx}{preload,min}}
+%\end{verbatim}
+% for generating preload files.
+%
+% \section{A driver for this document}
+%
+%    The next bit of code contains the documentation driver file for
+%    \TeX{}, i.e., the file that will produce the documentation you
+%    are currently reading. It will be extracted from this file by the
+%    \dst{} program.
+%    \begin{macrocode}
+%<*driver>
+\documentclass{ltxdoc}
+%\OnlyDescription  % comment out for implementation details
+\begin{document}
+   \DocInput{preload.dtx}
+\end{document}
+%</driver>
+%    \end{macrocode}
+%
+%
+% \section{The code}
+%
+%    We begin by loading the math extension font (cmex10)
+%    and the \LaTeX{} line and circle fonts.
+%    It is necessary to do this explicitly since these are
+%    used by \texttt{lplain.tex} and \texttt{latex.tex}.
+%    Since the internal font name contains |/| characters
+%    and digits we construct the name via |\csname|.
+%    These are the only fonts (!) that must be loaded in this file.
+%
+%    All |\DeclarePreloadSizes| can be removed or others can be added,
+%    they only influence the processing speed.
+% \changes{v2.0c}{1993/08/13}{Added \cs{relax} at end of font names.}
+%    \begin{macrocode}
+\expandafter\font\csname OMX/cmex/m/n/10\endcsname=cmex10\relax
+\font\tenln  =line10   \font\tenlnw  =linew10\relax
+\font\tencirc=lcircle10 \font\tencircw=lcirclew10\relax
+%    \end{macrocode}
+%    The above fonts should not be touched but anything below this
+%    point here in the preload suggestions can be modified without any
+%    problems.
+%    \begin{macrocode}
+%<-tex>%*******************************************
+%<-tex>% Start any modification below this point **
+%<-tex>%*******************************************
+%<-tex>
+%%
+%% Computer Modern Roman:
+%%-----------------------
+%<*ori>
+\DeclarePreloadSizes{OT1}{cmr}{m}{n}
+        {5,6,7,8,9,10,10.95,12,14.4,17.28,20.74,24.88}
+\DeclarePreloadSizes{OT1}{cmr}{bx}{n}{9,10,10.95,12,14.4,17.28}
+\DeclarePreloadSizes{OT1}{cmr}{m}{sl}{10,10.95,12}
+\DeclarePreloadSizes{OT1}{cmr}{m}{it}{7,8,9,10,10.95,12}
+%</ori>
+%<+xpt&cm> \DeclarePreloadSizes{OT1}{cmr}{m}{n}{5,7,10}
+%<+xpt&dc> \DeclarePreloadSizes{T1}{cmr}{m}{n}{5,7,10}
+%<+xipt&cm> \DeclarePreloadSizes{OT1}{cmr}{m}{n}{6,8,10.95}
+%<+xipt&dc> \DeclarePreloadSizes{T1}{cmr}{m}{n}{6,8,10.95}
+%<+xiipt&cm> \DeclarePreloadSizes{OT1}{cmr}{m}{n}{6,8,12}
+%<+xiipt&dc> \DeclarePreloadSizes{T1}{cmr}{m}{n}{6,8,12}
+%%
+%% Computer Modern Sans:
+%%----------------------
+%<+ori> \DeclarePreloadSizes{OT1}{cmss}{m}{n}{10,10.95,12}
+%%
+%% Computer Modern Typewriter:
+%%----------------------------
+%<+ori> \DeclarePreloadSizes{OT1}{cmtt}{m}{n}{9,10,10.95,12}
+%%
+%% Computer Modern Math:
+%%----------------------
+%<*ori>
+\DeclarePreloadSizes{OML}{cmm}{m}{it}
+         {5,6,7,8,9,10,10.95,12,14.4,17.28,20.74}
+\DeclarePreloadSizes{OMS}{cmsy}{m}{n}
+         {5,6,7,8,9,10,10.95,12,14.4,17.28,20.74}
+%</ori>
+%    \end{macrocode}
+%
+%    The math fonts are the same for both DC and CM fonts. So far
+%    there isn't an agreed on standard.
+% \changes{v2.4e}{1995/12/04}
+%      {Ulrik Vieth. added 12pt OMS and OML preloads  /1989}
+%    \begin{macrocode}
+%<*xpt>
+\DeclarePreloadSizes{OML}{cmm}{m}{it}{5,7,10}
+\DeclarePreloadSizes{OMS}{cmsy}{m}{n}{5,7,10}
+%</xpt>
+%<*xipt>
+\DeclarePreloadSizes{OML}{cmm}{m}{it}{6,8,10.95}
+\DeclarePreloadSizes{OMS}{cmsy}{m}{n}{6,8,10.95}
+%</xipt>
+%<*xiipt>
+\DeclarePreloadSizes{OML}{cmm}{m}{it}{6,8,12}
+\DeclarePreloadSizes{OMS}{cmsy}{m}{n}{6,8,12}
+%</xiipt>
+%%
+%% LaTeX symbol fonts:
+%%--------------------
+%<*ori>
+\DeclarePreloadSizes{U}{lasy}{m}{n}
+         {5,6,7,8,9,10,10.95,12,14.4,17.28,20.74}
+%</ori>
+%</preload>
+%    \end{macrocode}
+%
+%
+%
+% \Finale
+%
+\endinput

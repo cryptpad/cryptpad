@@ -1,0 +1,26 @@
+% utf8off.tex ... switches off the encTeX \mubyte tables
+% ------------------------------------------------------
+% Petr Olsak, Oct. 2012
+%
+% You can write 
+%
+% \input utf8off
+%
+% at the beginning of your old ISO-8859-2 encoded document and all
+% processing is in the old manner.
+% If encTeX is not detected, nothing is done.
+
+\ifx\mubytein\undefined 
+  \message{WARNING: encTeX isn't initialised, settings are ignored}
+  \expandafter\endinput \fi
+
+\message{The encTeX's \noexpand\mubyte tables are switched off.}
+\mubytein=0  \mubyteout=0  \mubytelog=0
+\ifx\xprncodes\undefined \else \xprncodes=1 \fi
+
+\def\clearmubyte{{\count0=128
+   \loop \lccode`@=\count0 \lowercase{\mubyte @@\endmubyte}\advance \count0 by1
+         \ifnum\count0<256 \repeat}}
+
+
+% end of file

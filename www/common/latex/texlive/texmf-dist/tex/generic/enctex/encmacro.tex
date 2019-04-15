@@ -1,0 +1,31 @@
+%%% EncTeX, Macros for encoding tables, v.Aug.1998 (C) Petr Ol\v s\'ak
+
+\ifnum\catcode`\#=12  % This file is loaded before format in iniTeX:
+   \catcode`\{=1  \catcode`\}=2  \catcode`\$=3  \catcode`\&=4
+   \catcode`\#=6  \catcode`\^=7  \catcode`\_=8  \catcode`\^^I=10
+   \catcode`\~=13
+\fi
+
+\ifx\xordcode\undefined
+   \errmessage{Sorry: the encTeX extension is not detected}
+   \def\xordcode#1=#2 {} \let\xchrcode=\xordcode \let\xprncode=\xordcode \fi
+\def\setcharcode #1 #2 #3 #4 #5 #6 #7 {%
+   \if ?#1\else \xordcode#1=#2 \xchrcode#2=#1 \fi
+   \count255=#2
+   \lccode#2=#3 \uccode#2=#4 \sfcode#2=#5 \catcode#2=#6 \xprncode#2=#7 }
+\catcode0=13
+\def\expandto {\bgroup \uccode0=\count255 \uppercase{\egroup \def^^@}}
+\catcode0=12
+\def\texmacro #1{\bgroup \uccode0=\count255 \uppercase{\egroup \def #1{^^@}}}
+\def\texaccent #1#2{\bgroup \uccode0=\count255 \uccode`#2=`#2
+   \uppercase{\egroup
+   \expandafter\def\csname\string#1\string#2\endcsname{^^@}}}
+\def\savexchr{\xchrcode\count255=\count255 }
+\def\redefaccent#1{\expandafter\let\csname\string#1-ori\endcsname=#1
+   \def#1##1{\ifx\hsize##1\hsize \csname\string#1-ori\endcsname {}% 08.1998
+      \else \expandafter\ifx
+        \csname\string#1\string##1\endcsname \relax
+        \csname\string#1-ori\endcsname ##1%
+        \else \csname\string#1\string##1\endcsname \fi\fi}}
+
+

@@ -1,0 +1,82 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jun 13 12:00:00 2011
+FontName EUEX8
+FullName EUEX8
+FamilyName Euler
+Weight Medium
+Notice (Copyright (c) 1997, 2009, 2011 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name EUEX8.)
+ItalicAngle 0
+IsFixedPitch false
+UnderlinePosition -100
+UnderlineThickness 50
+Version 003.003
+EncodingScheme FontSpecific
+FontBBox -27 -2954 1445 770
+StartCharMetrics 65
+C 8 ; WX 620 ; N braceleftbig ; B 117 -1154 502 45 ;
+C 9 ; WX 620 ; N bracerightbig ; B 117 -1154 502 45 ;
+C 10 ; WX 708 ; N braceleftBig ; B 124 -1754 583 45 ;
+C 11 ; WX 708 ; N bracerightBig ; B 124 -1754 583 45 ;
+C 12 ; WX 797 ; N braceleftbigg ; B 138 -2354 658 45 ;
+C 13 ; WX 797 ; N bracerightbigg ; B 138 -2354 658 45 ;
+C 14 ; WX 856 ; N braceleftBigg ; B 152 -2954 703 45 ;
+C 15 ; WX 856 ; N bracerightBigg ; B 152 -2954 703 45 ;
+C 24 ; WX 1063 ; N arrowlefttophalf ; B 59 227 1003 500 ;
+C 25 ; WX 1063 ; N arrowleftbothalf ; B 59 0 1003 273 ;
+C 26 ; WX 1063 ; N arrowrighttophalf ; B 59 227 1003 500 ;
+C 27 ; WX 1063 ; N arrowrightbothalf ; B 59 0 1003 273 ;
+C 32 ; WX 1063 ; N arrowleft ; B 60 0 1003 500 ;
+C 33 ; WX 1063 ; N arrowright ; B 59 0 1002 500 ;
+C 34 ; WX 531 ; N arrowup ; B 29 -194 501 693 ;
+C 35 ; WX 531 ; N arrowdown ; B 29 -193 501 694 ;
+C 36 ; WX 1063 ; N arrowboth ; B 60 0 1002 500 ;
+C 37 ; WX 1063 ; N arrownortheast ; B 59 -250 1071 762 ;
+C 38 ; WX 1063 ; N arrowsoutheast ; B 59 -262 1071 750 ;
+C 40 ; WX 1063 ; N arrowdblleft ; B 60 -105 1003 605 ;
+C 41 ; WX 1063 ; N arrowdblright ; B 59 -105 1002 605 ;
+C 42 ; WX 708 ; N arrowdblup ; B 13 -194 695 693 ;
+C 43 ; WX 708 ; N arrowdbldown ; B 13 -193 695 694 ;
+C 44 ; WX 1063 ; N arrowdblboth ; B 39 -105 1023 605 ;
+C 45 ; WX 1063 ; N arrownorthwest ; B -9 -250 1003 762 ;
+C 46 ; WX 1063 ; N arrowsouthwest ; B -9 -262 1003 750 ;
+C 49 ; WX 1063 ; N infinity ; B 59 -10 1003 441 ;
+C 56 ; WX 944 ; N bracelefttp ; B 421 -912 763 -1 ;
+C 57 ; WX 944 ; N bracerighttp ; B 180 -912 522 -1 ;
+C 58 ; WX 944 ; N braceleftbt ; B 421 -899 763 12 ;
+C 59 ; WX 944 ; N bracerightbt ; B 180 -899 522 12 ;
+C 60 ; WX 944 ; N braceleftmid ; B 180 -1812 522 12 ;
+C 61 ; WX 944 ; N bracerightmid ; B 421 -1812 763 12 ;
+C 62 ; WX 944 ; N braceex ; B 421 -312 522 12 ;
+C 72 ; WX 561 ; N contintegraltext ; B 51 -1111 539 0 ;
+C 73 ; WX 472 ; N contintegraldisplay ; B 13 -2222 590 0 ;
+C 80 ; WX 1122 ; N summationtext ; B 59 -1000 1032 0 ;
+C 81 ; WX 1122 ; N producttext ; B 74 -1000 1047 0 ;
+C 82 ; WX 561 ; N integraltext ; B 51 -1111 539 0 ;
+C 88 ; WX 1535 ; N summationdisplay ; B 59 -1400 1445 0 ;
+C 89 ; WX 1499 ; N productdisplay ; B 59 -1400 1439 0 ;
+C 90 ; WX 472 ; N integraldisplay ; B 41 -2222 548 0 ;
+C 96 ; WX 1122 ; N coproducttext ; B 74 -1000 1047 0 ;
+C 97 ; WX 1499 ; N coproductdisplay ; B 59 -1400 1439 0 ;
+C 108 ; WX 531 ; N arrowbothv ; B 29 -270 501 770 ;
+C 109 ; WX 708 ; N arrowdblbothv ; B 13 -270 695 770 ;
+C 122 ; WX 450 ; N bracehtipdownleft ; B -27 -241 462 101 ;
+C 123 ; WX 450 ; N bracehtipdownright ; B -12 -241 477 101 ;
+C 124 ; WX 450 ; N bracehtipupleft ; B -27 0 462 342 ;
+C 125 ; WX 450 ; N bracehtipupright ; B -12 0 477 342 ;
+C 128 ; WX 1063 ; N arrowleft ; B 60 0 1003 500 ;
+C 160 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 169 ; WX 620 ; N braceleftbig ; B 117 -1154 502 45 ;
+C 170 ; WX 620 ; N bracerightbig ; B 117 -1154 502 45 ;
+C 173 ; WX 708 ; N braceleftBig ; B 124 -1754 583 45 ;
+C 174 ; WX 708 ; N bracerightBig ; B 124 -1754 583 45 ;
+C 175 ; WX 797 ; N braceleftbigg ; B 138 -2354 658 45 ;
+C 176 ; WX 797 ; N bracerightbigg ; B 138 -2354 658 45 ;
+C 177 ; WX 856 ; N braceleftBigg ; B 152 -2954 703 45 ;
+C 178 ; WX 856 ; N bracerightBigg ; B 152 -2954 703 45 ;
+C 187 ; WX 1063 ; N arrowlefttophalf ; B 59 227 1003 500 ;
+C 188 ; WX 1063 ; N arrowleftbothalf ; B 59 0 1003 273 ;
+C 189 ; WX 1063 ; N arrowrighttophalf ; B 59 227 1003 500 ;
+C 190 ; WX 1063 ; N arrowrightbothalf ; B 59 0 1003 273 ;
+C 195 ; WX 1063 ; N arrowleft ; B 60 0 1003 500 ;
+EndCharMetrics
+EndFontMetrics

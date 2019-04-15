@@ -1,0 +1,1137 @@
+% \iffalse meta-comment
+%
+% File: pagegrid.dtx
+% Version: 2009/12/04 v1.4
+% Info: Print page grid in background
+%
+% Copyright (C) 2009 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file pagegrid.dtx
+% and the derived files
+%    pagegrid.sty, pagegrid.pdf, pagegrid.ins, pagegrid.drv,
+%    pagegrid-test1.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/pagegrid.dtx
+%    CTAN:macros/latex/contrib/oberdiek/pagegrid.pdf
+%
+% Unpacking:
+%    (a) If pagegrid.ins is present:
+%           tex pagegrid.ins
+%    (b) Without pagegrid.ins:
+%           tex pagegrid.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{pagegrid.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If pagegrid.drv is present:
+%           latex pagegrid.drv
+%    (b) Without pagegrid.drv:
+%           latex pagegrid.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex pagegrid.dtx
+%       makeindex -s gind.ist pagegrid.idx
+%       pdflatex pagegrid.dtx
+%       makeindex -s gind.ist pagegrid.idx
+%       pdflatex pagegrid.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/pagegrid.sty
+%    TDS:doc/latex/oberdiek/pagegrid.pdf
+%    TDS:doc/latex/oberdiek/test/pagegrid-test1.tex
+%    TDS:source/latex/oberdiek/pagegrid.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: pagegrid 2009/12/04 v1.4 Print page grid in background (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: pagegrid
+Version: 2009/12/04 v1.4
+
+Copyright (C) 2009 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file pagegrid.dtx
+and the derived files
+   pagegrid.sty, pagegrid.pdf, pagegrid.ins, pagegrid.drv,
+   pagegrid-test1.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{pagegrid.ins}{\from{pagegrid.dtx}{install}}%
+  \file{pagegrid.drv}{\from{pagegrid.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{pagegrid.sty}{\from{pagegrid.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{pagegrid-test1.tex}{\from{pagegrid.dtx}{test1}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{pagegrid.xml}{\from{pagegrid.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     pagegrid.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `pagegrid.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{pagegrid.drv}%
+  [2009/12/04 v1.4 Print page grid in background (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{pagegrid.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{698}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{pagegrid.drv}
+%
+% \title{The \xpackage{pagegrid} package}
+% \date{2009/12/04 v1.4}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% The \LaTeX\ package prints a page grid in the background.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% The package puts a grid on the paper. It was written for
+% developers of a class or package
+% who have to put elements on definite locations on a page
+% (e.g. letter class). The grid allows a faster optical check,
+% whether the positions are correct. If the previewer already
+% offers features for measuring, the package might be obsolete.
+% Otherwise it saves the developer from printing the page and
+% measuring by hand.
+%
+% \subsection{Options}
+%
+% Options are evaluated in the following order:
+% \begin{enumerate}
+% \item
+%  Configuration file \xfile{pagegrid.cfg} using \cs{pagegridsetup}
+%  if the file exists.
+%  \item
+%  Package options given for \cs{usepackage}.
+%  \item
+%  Later calls of \cs{pagegridsetup}.
+% \end{enumerate}
+% \begin{declcs}{pagegridsetup}\M{option list}
+% \end{declcs}
+% The options are key value options. Boolean options are enabled by
+% default (without value) or by using the explicit value \texttt{true}.
+% Value \texttt{false} disable the option.
+%
+% \subsubsection{Options \xoption{enable}, \xoption{disable}}
+%
+% \begin{description}
+% \item[\xoption{enable}:] This boolean option controls whether the page grid
+%   is drawn. As default the page grid drawing is activated.
+% \item[\xoption{disable}:] It is the opposite
+%   of option \xoption{enable}. It was added for convenience and
+%   allows the abbreviation \texttt{disable} for \texttt{enable=false}.
+% \end{description}
+%
+% \subsubsection{Grid origins}
+%
+% The package supports up to two grids on a page allowing
+% measurement from opposite directions. As default two grids are drawn,
+% the first from bottom left to top right. The origin of the second
+% grid is at the opposite top right corner.
+% The origins are controlled by the following options.
+% The number of grids (one or two) depend on the number of these options
+% in one call of \cs{pagegridsetup}.
+% The following frame shows a paper and in its corners are the
+% corresponding options. At the left and right side alias names
+% are given for the options inside the paper.
+% \begin{quote}
+% \begin{tabular}{@{}r|@{\,}l@{\qquad}r@{\,}|l@{}}
+% \cline{2-3}
+% \xoption{left-top}, \xoption{lt}, \xoption{top-left}
+% & \vphantom{\"U}\xoption{tl} & \xoption{tr}
+% & \xoption{top-right}, \xoption{rt}, \xoption{right-top}\\
+% &&&\\
+% \xoption{left-bottom}, \xoption{lb}, \xoption{bottom-left}
+% & \xoption{bl} & \xoption{br}
+% & \xoption{bottom-right}, \xoption{rb}, \xoption{right-bottom}\\
+% \cline{2-3}
+% \end{tabular}
+% \end{quote}
+% Examples:
+% \begin{quote}
+% |\pagegridsetup{bl,tr}|
+% \end{quote}
+% This is the default setting with two grids as described previously.
+% The following setups one grid only. Its origin is the upper left
+% corner:
+% \begin{quote}
+% |\pagegridsetup{top-left}|
+% \end{quote}
+%
+% \subsubsection{Grid unit}
+%
+% \begin{description}
+% \item[\xoption{step}] This option takes a length and
+% setups the unit for the grid. The page width and page height
+% should be multiples of this unit.
+% Currently the default is \texttt{1mm}. But this might change
+% later by a heuristic based on the paper size.
+% \end{description}
+%
+% \subsubsection{Color options}
+%
+% The basic grid lines are drawn as ultra thin help lines and is only
+% drawn for the first grid.
+% Each tenth and fiftyth line of the basic net is drawn thicker in a special
+% color for the two grids.
+% \begin{description}
+% \item[\xoption{firstcolor}:] Color for the thicker lines and the arrows
+% of the first grid. Default value is \texttt{red}.
+% \item[\xoption{secondcolor}:] Color for the thicker lines and the arrows
+% of the second grid. Default value is \texttt{blue}.
+% \end{description}
+% Use a color specification that package \xpackage{tikz} understands.
+% (The grid is drawn with \xpackage{pgf}/\xpackage{tikz}.)
+%
+% \subsubsection{Arrow options}
+%
+% Arrows are put at the origin at the grid to show the grid start
+% and the direction of the grid.
+% \begin{description}
+% \item[\xoption{arrows}:] This boolean option turns the arrows on or off.
+% As default arrows are enabled.
+% \item[\xoption{arrowlength}:] The length given as value is the
+% length of the edge of a square at the origin within the
+% arrow is put as diagonal. Default is 10 times the grid unit (10\,mm).
+% The real arrow length is this length multiplied by $\sqrt2$.
+% \end{description}
+%
+% \subsubsection{Miscellaneous options}
+%
+% \begin{description}
+% \item[\xoption{double}:] The output page is doubled, one without page
+% grid and the other with page grid. Possible values are shown in the
+% following table:
+% \begin{quote}
+% \begin{tabular}{ll}
+% Option & Meaning\\
+% \hline
+% |false| & Turns option off.\\
+% |first| & Grid page comes first.\\
+% |last| & Grid page comes after the page without grid.\\
+% |true| & Same as |last|.\\
+% \meta{no value} & Same as |true|.\\
+% \end{tabular}
+% \end{quote}
+% \textbf{Note:}
+% The double output of the page has side effects.
+% All whatits are executed twice, for example: file writing
+% and anchor setting. Some unwanted actions are catched such
+% as multiple \cs{label} definitions, duplicate entries in
+% the table of contents. For bookmarks, use package \xpackage{bookmarks}.
+% \item[\xoption{foreground}:] Boolean option, default is \texttt{false}.
+% Sometimes there might be elements on the page (e.g. large images)
+% that hide the grid. Then option \xoption{foreground} puts the grids
+% over the current output page.
+% \end{description}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@pagegrid.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{pagegrid}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@pagegrid.sty\endcsname
+\ProvidesPackage{pagegrid}%
+  [2009/12/04 v1.4 Print page grid in background (HO)]%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname pagegrid@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\pagegrid@AtEnd{%
+    \pagegrid@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{9}{10}% (tab)
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{8}% _ (subscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\edef\pagegrid@AtEnd{\pagegrid@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{tikz}
+\RequirePackage{atbegshi}[2009/12/02]
+\RequirePackage{kvoptions}[2009/07/17]
+%    \end{macrocode}
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname stockwidth\endcsname\relax
+  \def\pagegrid@width{\paperwidth}%
+  \def\pagegrid@height{\paperheight}%
+\else
+  \def\pagegrid@width{\stockwidth}%
+  \def\pagegrid@height{\stockheight}%
+\fi
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{%
+  family=pagegrid,%
+  prefix=pagegrid@,%
+}
+\def\pagegrid@init{%
+  \let\pagegrid@origin@a\@empty
+  \let\pagegrid@origin@b\@empty
+  \let\pagegrid@init\relax
+}
+\let\pagegrid@@init\pagegrid@init
+\def\pagegrid@origin@a{bl}
+\def\pagegrid@origin@b{tr}
+\def\pagegrid@SetOrigin#1{%
+  \pagegrid@init
+  \ifx\pagegrid@origin@a\@empty
+    \def\pagegrid@origin@a{#1}%
+  \else
+    \ifx\pagegrid@origin@b\@empty
+    \else
+      \let\pagegrid@origin@a\pagegrid@origin@b
+    \fi
+    \def\pagegrid@origin@b{#1}%
+  \fi
+}
+\def\pagegrid@temp#1{%
+  \DeclareVoidOption{#1}{\pagegrid@SetOrigin{#1}}%
+  \@namedef{pagegrid@N@#1}{#1}%
+}
+\pagegrid@temp{bl}
+\pagegrid@temp{br}
+\pagegrid@temp{tl}
+\pagegrid@temp{tr}
+\def\pagegrid@temp#1#2{%
+  \DeclareVoidOption{#2}{\pagegrid@SetOrigin{#1}}%
+}%
+\pagegrid@temp{bl}{lb}
+\pagegrid@temp{br}{rb}
+\pagegrid@temp{tl}{lt}
+\pagegrid@temp{tr}{rt}
+\pagegrid@temp{bl}{bottom-left}
+\pagegrid@temp{br}{bottom-right}
+\pagegrid@temp{tl}{top-left}
+\pagegrid@temp{tr}{top-right}
+\pagegrid@temp{bl}{left-bottom}
+\pagegrid@temp{br}{right-bottom}
+\pagegrid@temp{tl}{left-top}
+\pagegrid@temp{tr}{right-top}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareBoolOption[true]{enable}
+\DeclareComplementaryOption{disable}{enable}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareBoolOption{foreground}
+%    \end{macrocode}
+%    \begin{macrocode}
+\newlength{\pagegrid@step}
+\define@key{pagegrid}{step}{%
+  \setlength{\pagegrid@step}{#1}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareStringOption[red]{firstcolor}
+\DeclareStringOption[blue]{secondcolor}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareBoolOption[true]{arrows}
+\newlength\pagegrid@arrowlength
+\pagegrid@arrowlength=\z@
+\define@key{pagegrid}{arrowlength}{%
+  \setlength{\pagegrid@arrowlength}{#1}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\define@key{pagegrid}{double}[true]{%
+  \@ifundefined{pagegrid@double@#1}{%
+    \PackageWarning{pagegrid}{%
+      Unsupported value `#1' for option `double'.\MessageBreak
+      Known values are:\MessageBreak
+      `false', `first', `last', `true'.\MessageBreak
+      Now `false' is used%
+    }%
+    \chardef\pagegrid@double\z@
+  }{%
+    \chardef\pagegrid@double\csname pagegrid@double@#1\endcsname\relax
+  }%
+}
+\@namedef{pagegrid@double@false}{0}
+\@namedef{pagegrid@double@first}{1}
+\@namedef{pagegrid@double@last}{2}
+\@namedef{pagegrid@double@true}{2}
+\chardef\pagegrid@double\z@
+%    \end{macrocode}
+%    \begin{macrocode}
+\newcommand*{\pagegridsetup}{%
+  \let\pagegrid@init\pagegrid@@init
+  \setkeys{pagegrid}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\pagegridsetup{%
+  step=1mm%
+}
+\InputIfFileExists{pagegrid.cfg}{}%
+\ProcessKeyvalOptions*\relax
+\AtBeginDocument{%
+  \ifdim\pagegrid@arrowlength>\z@
+  \else
+    \pagegrid@arrowlength=10\pagegrid@step
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\pagegridShipoutDoubleBegin{%
+  \begingroup
+  \let\newlabel\@gobbletwo
+  \let\zref@newlabel\@gobbletwo
+  \let\@writefile\@gobbletwo
+  \let\select@language\@gobble
+}
+\def\pagegridShipoutDoubleEnd{%
+  \endgroup
+}
+\def\pagegrid@WriteDouble#1#2{%
+  \immediate\write#1{%
+    \@backslashchar csname %
+    pagegridShipoutDouble#2%
+    \@backslashchar endcsname%
+  }%
+}
+\def\pagegrid@ShipoutDouble#1{%
+  \begingroup
+    \if@filesw
+      \pagegrid@WriteDouble\@mainaux{Begin}%
+      \ifx\@auxout\@partaux
+        \pagegrid@WriteDouble\@partaux{Begin}%
+        \def\pagegrid@temp{%
+          \pagegrid@WriteDouble\@mainaux{End}%
+          \pagegrid@WriteDouble\@partaux{End}%
+        }%
+      \else
+        \def\pagegrid@temp{%
+          \pagegrid@WriteDouble\@mainaux{End}%
+        }%
+      \fi
+    \else
+      \def\pagegrid@temp{}%
+    \fi
+    \let\protect\noexpand
+    \AtBeginShipoutOriginalShipout\copy#1\relax
+    \pagegrid@temp
+  \endgroup
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\AtBeginShipout{%
+  \ifdim\pagegrid@step>\z@
+  \else
+    \pagegrid@enablefalse
+  \fi
+  \ifpagegrid@enable
+    \ifnum\pagegrid@double=\@ne
+      \pagegrid@ShipoutDouble\AtBeginShipoutBox
+    \else
+      \ifnum\pagegrid@double=\tw@
+        \@ifundefined{pagegrid@DoubleBox}{%
+          \newbox\pagegrid@DoubleBox
+        }{}%
+        \setbox\pagegrid@DoubleBox=\copy\AtBeginShipoutBox
+      \fi
+    \fi
+    \ifpagegrid@foreground
+      \expandafter\AtBeginShipoutUpperLeftForeground
+    \else
+      \expandafter\AtBeginShipoutUpperLeft
+    \fi
+    {%
+      \put(0,0){%
+        \makebox(0,0)[lt]{%
+          \begin{tikzpicture}[%
+            bl/.style={},%
+            br/.style={xshift=\pagegrid@width,xscale=-1},%
+            tl/.style={yshift=\pagegrid@height,yscale=-1},%
+            tr/.style={xshift=\pagegrid@width,%
+                       yshift=\pagegrid@height,scale=-1}%
+          ]%
+            \useasboundingbox
+              (0mm,\pagegrid@height) rectangle (0mm,\pagegrid@height);%
+            \draw[%
+              \pagegrid@origin@a,%
+              step=\pagegrid@step,%
+              style=help lines,%
+              ultra thin%
+            ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \ifx\pagegrid@origin@b\@empty
+            \else
+              \draw[%
+                \pagegrid@origin@b,%
+                step=10\pagegrid@step,%
+                {\pagegrid@secondcolor},%
+                very thin%
+              ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \fi
+            \draw[%
+               \pagegrid@origin@a,%
+               step=10\pagegrid@step,%
+               {\pagegrid@firstcolor},%
+               very thin%
+            ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \ifx\pagegrid@origin@b\@empty
+            \else
+              \draw[%
+                \pagegrid@origin@b,%
+                step=50\pagegrid@step,%
+                {\pagegrid@secondcolor},%
+                thick%
+              ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \fi
+            \draw[%
+              \pagegrid@origin@a,%
+              step=50\pagegrid@step,%
+              {\pagegrid@firstcolor},%
+              thick%
+            ] (0mm,0mm) grid (\pagegrid@width,\pagegrid@height);%
+            \ifpagegrid@arrows
+              \ifx\pagegrid@origin@b\@empty
+              \else
+                \draw[%
+                  \pagegrid@origin@b,%
+                  {\pagegrid@secondcolor},%
+                  stroke,%
+                  line width=1pt,%
+                  line cap=round%
+                ] (0mm,0mm) %
+                -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+                   (\pagegrid@arrowlength,.5\pagegrid@arrowlength) %
+                -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+                -- (.5\pagegrid@arrowlength,\pagegrid@arrowlength);%
+              \fi
+              \draw[%
+                \pagegrid@origin@a,%
+                {\pagegrid@firstcolor},%
+                stroke,%
+                line width=1pt,%
+                line cap=round%
+              ] (0mm,0mm) %
+              -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+                 (\pagegrid@arrowlength,.5\pagegrid@arrowlength) %
+              -- (\pagegrid@arrowlength,\pagegrid@arrowlength) %
+              -- (.5\pagegrid@arrowlength,\pagegrid@arrowlength);%
+            \fi
+          \end{tikzpicture}%
+        }%
+      }%
+    }%
+    \ifnum\pagegrid@double=\tw@
+      \pagegrid@ShipoutDouble\pagegrid@DoubleBox
+    \fi
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\pagegrid@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input pagegrid.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/pagegrid.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/pagegrid.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex pagegrid.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   pagegrid.sty & tex/latex/oberdiek/pagegrid.sty\\
+%   pagegrid.pdf & doc/latex/oberdiek/pagegrid.pdf\\
+%   test/pagegrid-test1.tex & doc/latex/oberdiek/test/pagegrid-test1.tex\\
+%   pagegrid.dtx & source/latex/oberdiek/pagegrid.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk pagegrid.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{pagegrid.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex pagegrid.dtx
+%makeindex -s gind.ist pagegrid.idx
+%pdflatex pagegrid.dtx
+%makeindex -s gind.ist pagegrid.idx
+%pdflatex pagegrid.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{pagegrid.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='pagegrid'>
+  <name>pagegrid</name>
+  <caption>Print page grid in background.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2009'/>
+  <license type='lppl1.3'/>
+  <version number='1.4'/>
+  <description>
+    This package puts a grid on the paper. It was written for
+    developers of a class or package
+    who have to put elements on definite locations on a page
+    (e.g. letter class). The grid allows a faster optical check,
+    whether the positions are correct. If the previewer already
+    offers features for measuring, the package might be unnecessary.
+    Otherwise it saves the developer from printing the page and
+    measuring by hand.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/pagegrid.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/pagegrid.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \section{Acknowledgement}
+%
+% \begin{description}
+% \item[Klaus Braune:]
+%  He provided the idea and the first \xpackage{tikz} code.
+% \end{description}
+%
+% \begin{History}
+%   \begin{Version}{2009/11/06 v1.0}
+%   \item
+%     The first version.
+%   \end{Version}
+%   \begin{Version}{2009/11/06 v1.1}
+%   \item
+%     Option \xoption{foreground} added.
+%   \end{Version}
+%   \begin{Version}{2009/12/02 v1.2}
+%   \item
+%     Color options, arrow options added.
+%   \item
+%     Names for origin options changed.
+%   \end{Version}
+%   \begin{Version}{2009/12/03 v1.3}
+%   \item
+%     Option \xoption{double} added.
+%   \item
+%     First CTAN release.
+%   \end{Version}
+%   \begin{Version}{2009/12/04 v1.4}
+%   \item
+%     Option \xoption{double}: Some unwanted side effects removed.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

@@ -1,0 +1,1822 @@
+%
+% \iffalse
+%
+%% graphics.dtx Copyright (C) 1994      David Carlisle Sebastian Rahtz
+%%              Copyright (C) 1995--2015 David Carlisle, LaTeX3 Project
+%%
+%% This file is part of the Standard LaTeX `Graphics Bundle'.
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.3c or, at your option, any later version.
+%%
+%% This file has the LPPL maintenance status "maintained".
+%%
+%<*dtx>
+          \ProvidesFile{graphics.dtx}
+%</dtx>
+%<package>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%<package>\ProvidesPackage{graphics}
+%<driver> \ProvidesFile{graphics.drv}
+% \fi
+%         \ProvidesFile{graphics.dtx}
+          [2014/10/28 v1.0p  Standard LaTeX Graphics (DPC,SPQR)]
+%
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\newenvironment{option}[1]{\expandafter\macro\expandafter{%
+   \csname ds@#1\endcsname}}{\endmacro}
+\begin{document}
+ \DocInput{graphics.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{graphics.dtx}
+%
+% \title{The \textsf{graphics} package\thanks{This file
+%        has version number \fileversion, last
+%        revised \filedate.}}
+% \author{D. P. Carlisle\and S. P. Q. Rahtz}
+% \date{\filedate}
+% \MaintainedByLaTeXTeam{graphics}
+% \maketitle
+%
+% \CheckSum{1173}
+%
+% \changes{v0.3a}{1994/02/24}
+%     {First DPC version (after prototype by SPQR).}
+% \changes{v0.4e}{1994/05/30}
+%     {Rename egraphics to graphicx}
+% \changes{v1.0}{1996/05/29}
+%     {Version 1 at last}
+%
+%
+% \def\star{{\ttfamily*}}
+% \makeatletter
+% \def\Describe@Macro#1{\endgroup
+%              \setbox0=\lastbox\llap{\PrintDescribeMacro{#1}}}%
+% \makeatother
+% \marginparsep0pt
+%
+% \section{Introduction}
+%
+% This package implements various `graphics' functions. The main
+% features are a) inclusion of `graphics' files. b) Rotation of sections
+% of the page, c) Scaling of sections of the page.
+%
+% The design is split into three `levels'.
+% \begin{itemize}
+% \item The user interface. This is the collection of commands designed
+% to appear in a document text. Actually two separate user interface
+% have been implemented. The `standard' interface, described here, and a
+% more powerful, and more `user-friendly' interface provided by the
+% |graphicx| package.
+% \item The core functions. These functions, which are also implemented
+% in this file do all the `main work'. The `user-interface functions
+% just collect together the information from any optional-arguments or
+% star-forms, and then call one of these functions.
+% \item The driver files. It is not possible to achieve the
+% functionality of this package just using \TeX. The |dvi| driver used
+% must be given additional instructions. (Using the |\special| command
+% of \TeX.) Unfortunately, the capabilities of various drivers differ,
+% and the syntax required to pass instructions to the drivers is also
+% not standardised. So the `core functions' never access |\special|
+% directly, but rather call a series of commands that must be defined in
+% a special file customised for each driver. The accompanying file,
+% |drivers.dtx| has suitable files for a range of popular drivers.
+% \end{itemize}
+%
+% \section{Package Options}
+% Most of the options, such as |dvips|, |textures| etc., specify the
+% driver that is to be used to print the document. You may wish to set
+% up a configuration file so that this option always takes effect, even
+% if not specified in the document. To do this, produce a file
+% |graphics.cfg| containing the line:\\
+% |\ExecuteOptions{dvips}|\\
+% (or whichever other driver you wish.)
+%
+% Apart from the driver options there are a few other options to control
+% the behaviour of the package.
+% \begin{description}
+% \item[draft]
+% Do not include graphics files, but instead print a box of the size
+% the graphic would take up, and the file name. This greatly speeds up
+% previewing on most systems.
+% \item[final]
+% Turns off the |draft| option.
+% \item[debugshow]
+% Show a lot of tracing information on the terminal. If you are not me
+% you probably do not want to use this option.
+% \item[hiderotate]
+% Do not show rotated text. Sometimes useful if your previewer can not
+% rotate text.
+% \item[hidescale]
+% Do not show scaled text.
+% \item[hiresbb]
+% Look for Bounding Box lines of the form |%%HiResBoundingBox| instead
+% of the standard |%%BoundingBox|. These are used by some applications
+% to get round the restriction that BoundingBox comments should only
+% have integer values.
+% \item[demo] Instead of including a graphics file, make
+%   |\includegraphics| insert a black rectangle of size 150\,pt by
+%   100\,pt unless either dimension was already specified by another
+%   option.
+% \end{description}
+%
+% \section{Standard Interface}
+%
+% \subsection{Graphics Inclusion}
+%
+% \DescribeMacro
+%     \includegraphics\star\oarg{llx,lly}\oarg{urx,ury}\marg{file}\\
+% Include a graphics file.
+%
+% If \star\ is present, then the graphic is `clipped' to the size
+% specified. If \star\ is omitted, then any part  of the graphic that is
+% outside the specified `bounding box' will  over-print the surrounding
+% text.
+%
+% If the optional arguments are omitted, then the size of the graphic
+% will be determined by reading an external file as described below.
+% If \oarg{urx,ury} is present, then it should specify the coordinates
+% of the top right corner of the image, as a pair of \TeX\ dimensions.
+% If the units are omitted they default to |bp|. So |[1in,1in]| and
+% |[72,72]| are equivalent. If only one optional argument appears, the
+% lower left corner of the image is assumed to be at |[0,0]|. Otherwise
+% \oarg{llx,lly} may be used to specify the coordinates of this point.
+%
+% \DescribeMacro
+%    \graphicspath\marg{dir-list}\\
+% This optional declaration may be used to specify a list of directories
+% in which to search for graphics files. The format is as for the
+% \LaTeXe\ primitive |\input@path|, a list of directories, each in a
+% |{}| group (even if there is only one in the list). For example:
+%  |\graphicspath{{eps/}{tiff/}}|
+% would cause the system to look in the subdirectories |eps| and |tiff|
+% of the current directory. The default setting of this path is
+% |\input@path| that is: graphics files will be found wherever \TeX\
+% files are found.
+%
+% \DescribeMacro
+%   \DeclareGraphicsExtensions\marg{ext-list}\\
+% This specifies the behaviour of the system when the argument to
+% |\includegraphics| does not have an extension specified.
+% Here \marg{ext-list} should be a comma-separated list of file
+% extensions, each with a leading period (\texttt{.}).
+% A file name is produced by appending \emph{sep} and one extension.
+% If a file is found, the system acts as if that extension had been
+% specified. If not, the next extension in \emph{ext-list} is tried.
+% \changes{v1.0m}{2001/06/07}{Extended documentation (CAR) graphics/3228}
+%
+% Each use of |\DeclareGraphicsExtensions| overwrites all previous
+% definitions. It is not possible to add an extension to an
+% existing list.
+%
+% Early versions of this package defined a default argument for this
+% command. This has been removed.
+%
+% \DescribeMacro
+% \DeclareGraphicsRule
+%                \marg{ext}\marg{type}\marg{read-file}\marg{command}\\
+% Any number of these declarations can be made. They determine how the
+% system behaves when a file with extension \emph{ext} is specified.
+% (The extension may be specified explicitly or, if the argument to
+% |\includegraphics| does not have an extension, it may be a default
+% extension from the \emph{ext-list} specified with
+% |\DeclareGraphicsExtensions|.)
+%
+% \emph{ext} is the \emph{extension} of the file. Any file with this
+% extension will be processed by this graphics rule. Normally a file
+% with an extension for which no rule has been declared will generate an
+% error, however you may use |*| as the extension to define a
+% \emph{default rule}. For instance the |dvips| driver file declares all
+% files to be of type |eps| unless a more specific rule is declared.
+%
+% Since Version v0.6, extensions should be specified including the |.|
+% that is, |.eps| not |eps|.
+%
+% \emph{type} is the `type' of file involved. All files of the same type
+% will be input with the same internal command (which must be defined in
+% a `driver file'). For example files with extensions |ps|, |eps|,
+% |ps.gz| may all be classed as type |eps|.
+%
+% \emph{read-file} determines the extension of the file that should be
+% read to determine size information. It may be the same as \emph{ext}
+% but it may be different, for example |.ps.gz| files are not readable
+% easily by \TeX, so you may want to put the bounding box information in
+% a separate file with extension |.ps.bb|. If \emph{read-file} is empty,
+% |{}|, then the system will not try to locate an external file for size
+% info, and the size must be specified in the arguments of
+% |\includegraphics|. As a special case |*| may be used to denote the
+% same extension as the graphic file. This is mainly of use in
+% conjunction with using |*| as the extension, as in that case the
+% particular graphic extension is not known. For example
+%\begin{verbatim}
+% \DeclareGraphicsRule{*}{eps}{*}{}
+%\end{verbatim}
+% This would declare a default rule, such that all unknown extensions
+% would be treated as EPS files, and the graphic file would be read for
+% a BoundingBox comment.
+%
+% If the driver file specifies a procedure for
+% reading size files for \emph{type}, that will be used, otherwise the
+% procedure for reading |eps| files will be used. Thus the size of
+% bitmap files may be specified in a file with a PostScript style
+% |%%BoundingBox| line, if no other specific format is available.
+%
+% \emph{command} is usually empty, but if non empty it is used in place
+% of the filename in the |\special|. Within this argument, |#1| may be
+% used to denote the filename. Thus using the dvips driver, one may
+% use\\
+% |\DeclareGraphicsRule{.ps.gz}{eps}{.ps.bb}{`zcat #1}|\\
+% the final argument causes dvips to use the |zcat| command to unzip the
+% file before inserting it into the PostScript output.
+%
+% \subsection{Rotation}
+%
+% \DescribeMacro
+%   \rotatebox\marg{angle}\marg{text}\\
+% Rotate \emph{text} \emph{angle} degrees anti-clockwise. Normally
+% the rotation is about the left-hand end of the baseline of
+% \emph{text}.
+%
+% \subsection{Scaling}
+%
+% \DescribeMacro
+%   \scalebox\marg{h-scale}\oarg{v-scale}\marg{text}\\
+% Scale \emph{text} by the specified amounts. If \emph{v-scale} is
+% omitted, the vertical scale factor is the same as the horizontal one.
+%
+% \DescribeMacro
+%   \resizebox\star\marg{h-length}\marg{v-length}\marg{text}\\
+% Scale \emph{text} so that the width is \emph{h-length}.
+% If |!| is used as either length argument, the other argument is used
+% to determine a scale factor that is used in both directions.
+% Normally \emph{v-length} refers to the height of the box, but in the
+% star form, it refers to the `height +  depth'.
+% As normal for \LaTeXe\ box length arguments, |\height|,
+% |\width|, |\totalheight| and |\depth| may be used to refer to the
+% original size of the box.
+%
+% \section{The Key=Value Interface}
+% As mentioned in the introduction, apart from the above `standard
+% interface', there is an alternative syntax to the |\includegraphics|
+% and |\rotatebox| commands that some people may prefer. It is provided
+% by the accompanying |graphicx| package.
+%
+% \StopEventually{}
+%
+% \section{The Graphics Kernel Functions}
+%
+% \subsection{Graphics Inclusion}
+%
+% \DescribeMacro
+%   {\Ginclude@graphics}\marg{file}\\
+% Insert the contents of the file \emph{file} at the current point.
+% |\Ginclude@graphics| may use the four macros |\Gin@llx|, |\Gin@lly|,
+% |\Gin@urx|, |\Gin@ury| to determine the `bounding box' of the graphic.
+% The result will be a \TeX\ box of width $\mathit{urx}-\mathit{llx}$
+% and height $\mathit{ury}-\mathit{lly}$. If |\Gin@clip| is \meta{true}
+% then part of the graphic that is outside this box should not be
+% displayed. (Not all drivers can support this `clipping'.) Normally all
+% these parameters are set by the `user interface level'.
+%
+%
+% \DescribeMacro
+%   {\Gread@eps}\marg{file}\\
+% For each \emph{type} of graphics file supported, the driver file must
+% define |\Ginclude@|\emph{type} and, optionally |\Gread@|\emph{type}.
+% The read command is responsible for obtaining size information from
+% the file specified in the |\DeclareGraphicsRule| command. However the
+% kernel defines a function, |\Gread@eps|,  which can read PostScript
+% files to find the
+% |%%BoundingBox| comment. This function will be used for any type for
+% which a specific function has not been declared. |\Gread@eps| accepts
+% a generalised version of the bounding box comment. \TeX\ units may be
+% used (but there must be no space before the unit). If the unit is
+% omitted |bp| is assumed. So\\
+% |%%BoundingBox 0 0 2in 3in|\\
+% Would be accepted by this function, to produce a 2in wide, by 3in high
+% graphic.
+%
+% \subsection{Rotation}
+%
+% \DescribeMacro
+%   {\Grot@box}\\
+% Rotate the contents of |\box0| through |\Grot@angle| degrees
+% (anti-clockwise). The user-interface is responsible for setting the
+% macro |\Grot@angle|, and putting the appropriate text in |\Grot@box|.
+%
+% \subsection{Scaling}
+%
+% \DescribeMacro
+%   {\Gscale@box}\marg{xscale}\oarg{yscale}\marg{text}\\
+% (The second argument is not optional.)
+% Scale \emph{text} by the appropriate scale factors.
+%
+% \DescribeMacro
+%  {\Gscale@box@dd}\marg{dima}\marg{dimb}\marg{text}\\
+% Scale \emph{text} in both directions by a factor
+% \emph{dima}/\emph{dimb}.
+%
+% \DescribeMacro
+% {\Gscale@box@dddd}
+%        \marg{dima}\marg{dimb}\marg{dimc}\marg{dimd}\marg{text}\\
+% Scale \emph{text} in horizontally by a factor \emph{dima}/\emph{dimb},
+% and vertically by a factor of  \emph{dimc}/\emph{dimd}.
+%
+% \DescribeMacro
+% {\Gscale@div}\marg{cmd}\marg{dima}\marg{dimb}\\
+% Define the macro \emph{cmd} to be the ratio of the lengths
+% \emph{dima}/\emph{dimb}.
+%
+%
+% \section{Interface to the Driver Files}
+%
+% \subsection{Graphics Inclusion}
+%
+% Each driver file must declare that its driver can include graphics of
+% certain \emph{types}. It does this by declaring for each type a
+% command of the form:\\
+% |\Ginclude@|\emph{type}\\
+% The Graphics kernel function will call this driver-defined function
+% with the filename as argument, and certain additional information will
+% be provided as follows.:
+%
+% \noindent\begin{tabular}{p{.4\textwidth}p{.5\textwidth}}
+% |\Gin@llx|, |\Gin@lly|,\newline
+% |\Gin@urx|, |\Gin@ury| &Macros storing the `bounding box'\\
+% |\Gin@nat@width|\newline |\Gin@nat@height| &
+%               Registers storing the natural size.\\
+% |\Gin@req@width|\newline |\Gin@req@height| &
+%               Registers storing the required size, after scaling.\\
+% |\Gin@scalex|, |\Gin@scaley| & macros with the scale factors. A value
+% of |!| means: Scale by the same amount as the other direction.\\
+% |\ifGin@clip| & |\newif| token, true if the graphic should be
+%                 `clipped' to  the bounding box.
+% \end{tabular}
+%
+% Optionally the driver may define a command of the form:\\
+% |\Gread@|\emph{type}\\
+% This is responsible for reading an external file to find the bounding
+% box information. If such a command is not declared, but a read-file is
+% specified the command |\Gread@eps|, which is defined in the Graphics
+% Kernel will be used.
+%
+% \subsection{Literal Postscript}
+% Drivers that are producing PostScript output may want to define
+% the following macros. They each take one argument which should be
+% passed to an appropriate special. They are not used directly by this
+% package but allow other packages to use the standard configuration
+% file and package options to customise to various drivers:\\
+% |\Gin@PS@raw|, Literal PostScript special.\\
+% |\Gin@PS@restored|, Literal PostScript special, the driver will
+%                    surround this with a save-restore pair.\\
+% |\Gin@PS@literal@header|, Postscript to be inserted in the header
+%                           section of the PostScript file.\\
+% |\Gin@PS@file@header|, external file to be inserted in the header
+%                           section of the PostScript file.
+%
+%
+% \subsection{Rotation}
+%
+% |\Grot@start|, |\Grot@end| These macros must be defined to insert the
+% appropriate |\special| to rotate the text between them by
+% |\Grot@angle| degrees. The kernel function will make sure that the
+% correct \TeX\ spacing is produced, these functions only need insert
+% the |\special|.
+%
+% \subsection{Scaling}
+%
+% |\Gscale@start|, |\Gscale@end|, as for rotation, but here scale the
+% text by |\Gscale@x| and |\Gscale@y|.
+%
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Initialisation}
+%
+% \begin{macro}{\Gin@codes}
+% First we save the catcodes of some characters, and set them to
+% fixed values whilst this file is being read.
+% \changes{v0.5a}{1994/07/20}
+%     {Save and restore catcodes}
+%    \begin{macrocode}
+\edef\Gin@codes{%
+ \catcode`\noexpand\^^A\the\catcode`\^^A\relax
+ \catcode`\noexpand\"\the\catcode`\"\relax
+ \catcode`\noexpand\*\the\catcode`\*\relax
+ \catcode`\noexpand\!\the\catcode`\!\relax
+ \catcode`\noexpand\:\the\catcode`\:\relax}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\catcode`\^^A=\catcode`\%
+\@makeother\"%
+\catcode`\*=11
+\@makeother\!%
+\@makeother\:%
+%    \end{macrocode}
+% \end{macro}
+%
+% We will need to have an implementation of the trigonometric
+% functions for the rotation feature. May as well load it now.
+%    \begin{macrocode}
+\RequirePackage{trig}
+%    \end{macrocode}
+%
+%  \begin{macro}{\Grot@start}
+%  \begin{macro}{\Grot@end}
+% Initialise the rotation primitives.
+%    \begin{macrocode}
+\providecommand\Grot@start{\@latex@error{Rotation not supported}\@ehc
+            \global\let\Grot@start\relax}
+\providecommand\Grot@end{}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\Gscale@start}
+%  \begin{macro}{\Gscale@end}
+% Initialise the scaling primitives.
+%    \begin{macrocode}
+\providecommand\Gscale@start{\@latex@error{Scaling not supported}\@ehc
+            \global\let\Gscale@start\relax}
+\providecommand\Gscale@end{}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\Gread@BBox}
+% \changes{v1.0b}{1996/10/29}
+%     {Moved to initial section, for hiresbb option}
+% |%%BoundingBox| as a macro for testing with |\ifx|.
+% This may be redefined by the hiresbb option.
+%    \begin{macrocode}
+\edef\Gread@BBox{\@percentchar\@percentchar BoundingBox}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Options}
+%
+% \begin{option}{draft}
+% \begin{option}{final}
+% \changes{v0.3i}{1994/03/23}
+%     {notdraft option added}
+% \changes{v0.4a}{1994/04/13}
+%     {Rename option to nodraft}
+% \changes{v0.4d}{1994/05/06}
+%     {Rename option to final}
+%    \begin{macrocode}
+\DeclareOption{draft}{\Gin@drafttrue}
+\DeclareOption{final}{\Gin@draftfalse}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+%
+%  \begin{macro}{\ifGin@draft}
+% True in draft mode.
+%    \begin{macrocode}
+\newif\ifGin@draft
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{option}{hiresbb}
+% \changes{v1.0b}{1996/10/29}
+%     {hiresbb option added}
+% If given this option the package will look for bounding box comments
+% of the form |%%HiResBoundingBox| (which typically have real values)
+% instead of the standard |%%BoundingBox| (which should have integer
+% values).
+%    \begin{macrocode}
+\DeclareOption{hiresbb}{%
+  \edef\Gread@BBox{\@percentchar\@percentchar HiResBoundingBox}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{demo}
+%   \changes{v1.0o}{2006/02/20}{demo option added}
+%   If given this option the package will disregard the actual
+%   graphics file and insert a black box unless width or height are
+%   already specified.
+%    \begin{macrocode}
+\DeclareOption{demo}{%
+  \AtBeginDocument{%
+    \def\Ginclude@graphics#1{%
+      \rule{\@ifundefined{Gin@@ewidth}{150pt}{\Gin@@ewidth}}%
+      {\@ifundefined{Gin@@eheight}{100pt}{\Gin@@eheight}}}}}
+%    \end{macrocode}
+% \end{option}
+%
+%  \begin{macro}{\Gin@driver}
+% Driver in use.
+%    \begin{macrocode}
+\providecommand\Gin@driver{}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{option}{dvips}
+% \changes{v0.3g}{1994/03/15}
+%     {Use dvips def file not development version}
+% \begin{option}{xdvi}
+% Tomas Rockicki's  PostScript driver (unix, MSDOS, VMS\ldots).
+% The |X11| previewer |xdvi| supports basically the same set of
+% |\specials|.
+%    \begin{macrocode}
+\DeclareOption{dvips}{\def\Gin@driver{dvips.def}}
+\DeclareOption{xdvi}{\ExecuteOptions{dvips}}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+%
+% \begin{option}{dvipdf}
+% \changes{v1.0c}{1996/10/31}
+%     {dvipdf added}
+% Sergey Lesenko's dvipdf driver.
+%    \begin{macrocode}
+\DeclareOption{dvipdf}{\def\Gin@driver{dvipdf.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{dvipdfm}
+% \changes{v1.0k}{1999/01/13}
+%     {dvipdfm added}
+% Mark Wick's dvipdfm driver.
+%    \begin{macrocode}
+\DeclareOption{dvipdfm}{\def\Gin@driver{dvipdfm.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{dvipdfmx}
+% \changes{v1.0m}{2005/11/14}
+%     {dvipdfmx added}
+% The driver for the dvipdfmx project.
+%    \begin{macrocode}
+\DeclareOption{dvipdfmx}{\def\Gin@driver{dvipdfmx.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{xetex}
+% \changes{v1.0m}{2005/11/14}
+%     {xetex added}
+%  Jonathan Kew's \TeX\ variant.
+%    \begin{macrocode}
+\DeclareOption{xetex}{\def\Gin@driver{xetex.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{pdftex}
+% \changes{v1.0d}{1997/06/07}
+%     {pdftex added}
+%  Han The Thanh's \TeX\ variant.
+%    \begin{macrocode}
+\DeclareOption{pdftex}{\def\Gin@driver{pdftex.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{dvipsone}
+% \begin{option}{dviwindo}
+% \changes{v0.3c}{1994/03/04}
+%     {dviwindo support.}
+% \changes{v0.7c}{1995/09/07}
+%     {Merge dviwindo option with dvipsone}
+% The drivers for the Y\&Y \TeX\ system.
+%    \begin{macrocode}
+\DeclareOption{dvipsone}{\def\Gin@driver{dvipsone.def}}
+\DeclareOption{dviwindo}{\ExecuteOptions{dvipsone}}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+%
+% \begin{option}{emtex}
+% \begin{option}{dviwin}
+% Two freely available sets of drivers for MSDOS, OS/2 and Windows.
+%    \begin{macrocode}
+\DeclareOption{emtex}{\def\Gin@driver{emtex.def}}
+\DeclareOption{dviwin}{\def\Gin@driver{dviwin.def}}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+%
+% \begin{option}{oztex}
+% \changes{v1.0f}{1997/09/09}
+%     {Merge dvips and oztex options}
+% Oz\TeX\ (Macintosh).
+% Since release 3 of Oz\TeX, merge with dvips back end.
+%    \begin{macrocode}
+\DeclareOption{oztex}{\ExecuteOptions{dvips}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{textures}
+% Textures (Macintosh).
+%    \begin{macrocode}
+\DeclareOption{textures}{\def\Gin@driver{textures.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{pctexps}
+% \begin{option}{pctexwin}
+% \begin{option}{pctexhp}
+% \begin{option}{pctex32}
+% \changes{v1.0b}{1996/10/29}
+%     {pctex32 option added}
+% PC\TeX\ (MSDOS/Windows) .
+%    \begin{macrocode}
+\DeclareOption{pctexps}{\def\Gin@driver{pctexps.def}}
+\DeclareOption{pctexwin}{\def\Gin@driver{pctexwin.def}}
+\DeclareOption{pctexhp}{\def\Gin@driver{pctexhp.def}}
+\DeclareOption{pctex32}{\def\Gin@driver{pctex32.def}}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+% \end{option}
+% \end{option}
+%
+% \begin{option}{truetex}
+% \changes{v1.0b}{1996/10/29}
+%     {truetex and tcidef options added}
+% \begin{option}{tcidvi}
+% Kinch TrueTeX, and its version with extended special support as
+% shipped by Scientific Word.
+%    \begin{macrocode}
+\DeclareOption{truetex}{\def\Gin@driver{truetex.def}}
+\DeclareOption{tcidvi}{\def\Gin@driver{tcidvi.def}}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+%
+% \begin{option}{vtex}
+% \changes{v1.0h}{1998/05/27}
+%     {vtex option added}
+% V\TeX\ driver.
+%    \begin{macrocode}
+\DeclareOption{vtex}{\def\Gin@driver{vtex.def}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{dvi2ps}
+% \begin{option}{dvialw}
+% \begin{option}{dvilaser}
+% \begin{option}{dvitops}
+% \begin{option}{psprint}
+% \begin{option}{pubps}
+% \begin{option}{ln}
+% \changes{v0.6b}{1994/12/12}
+%     {ln support (untested)}
+% \changes{v1.0b}{1996/10/29}
+%     {options for historic drivers depreciated}
+% If \emph{anyone} is using any of these driver options
+% would they let me know. All these are essentially untried
+% and untested as far as I know.
+%    \begin{macrocode}
+%\DeclareOption{dvi2ps}{\def\Gin@driver{dvi2ps.def}}
+%\DeclareOption{dvialw}{\def\Gin@driver{dvialw.def}}
+%\DeclareOption{dvilaser}{\def\Gin@driver{dvilaser.def}}
+%\DeclareOption{dvitops}{\def\Gin@driver{dvitops.def}}
+%\DeclareOption{psprint}{\def\Gin@driver{psprint.def}}
+%\DeclareOption{pubps}{\def\Gin@driver{pubps.def}}
+%\DeclareOption{ln}{\def\Gin@driver{ln.def}}
+%    \end{macrocode}
+% \end{option}
+% \end{option}
+% \end{option}
+% \end{option}
+% \end{option}
+% \end{option}
+% \end{option}
+%
+% \begin{option}{debugshow}
+% You probably don't want to use this\ldots
+%    \begin{macrocode}
+\DeclareOption{debugshow}{\catcode`\^^A=9 \let\GDebug\typeout}
+%    \end{macrocode}
+% \end{option}
+%
+% A local configuration file may define more options.
+% It should also make one driver option the default, by calling
+% |\ExecuteOptions| with the appropriate option.
+% \changes{v0.4f}{1994/07/27}
+%      {Add missing 3rd argument to \cs{InputIfFileExists}}
+%    \begin{macrocode}
+\InputIfFileExists{graphics.cfg}{}{}
+%    \end{macrocode}
+%
+% \begin{option}{hiderotate}
+% \changes{v0.4a}{1994/04/13}
+%     {Rename option to hiderotate}
+%    \begin{macrocode}
+\DeclareOption{hiderotate}{%
+  \def\Grot@start{\begingroup\setbox\z@\hbox\bgroup}
+  \def\Grot@end{\egroup\endgroup}}
+%    \end{macrocode}
+% \end{option}
+%
+% \begin{option}{hidescale}
+% \changes{v0.4a}{1994/04/13}
+%     {Rename option to hidescale}
+%    \begin{macrocode}
+\DeclareOption{hidescale}{%
+  \def\Gscale@start{\begingroup\setbox\z@\hbox\bgroup}
+  \def\Gscale@end{\egroup\endgroup}}
+%    \end{macrocode}
+% \end{option}
+%
+% After the options are processed, load the appropriate driver file.
+% If a site wants a default driver (eg |textures|) it just needs to put
+% |\ExecuteOptions{textures}| in a |graphics.cfg| file.
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+% Check that a driver has been specified (either as an option, or as a
+% default option in the configuration file). Then load the `def' file
+% for that option, if it has not already been loaded by some other
+% package (for instance the \textsf{color} package).
+% \changes{v0.5c}{1994/10/03}
+%     {Error if no driver specified}
+%    \begin{macrocode}
+\if!\Gin@driver!
+  \PackageError{graphics}
+    {No driver specified}
+    {You should make a default driver option in a file \MessageBreak
+     graphics.cfg\MessageBreak
+     eg: \protect\ExecuteOptions{textures}%
+     }
+\else
+  \PackageInfo{graphics}{Driver file: \Gin@driver}
+  \@ifundefined{ver@\Gin@driver}{\input{\Gin@driver}}{}
+\fi
+%    \end{macrocode}
+%
+%
+% \subsection{Graphics Inclusion}
+%
+% This Graphics package uses a lot of dimension registers. \TeX\ only
+% has a limited number of registers, so rather than allocate new ones,
+% re-use some existing \LaTeX\ registers. This is safe as long as all
+% uses of the registers are \emph{local}, and that you can be sure
+% that you \emph{never} need to have access to both uses within the
+% same scope.
+%
+% \begin{macro}{\Gin@llx}
+% \begin{macro}{\Gin@lly}
+% \begin{macro}{\Gin@urx}
+% \begin{macro}{\Gin@ury}
+% In fact these four lengths are now stored as macros not as dimen
+% registers, mainly so that integer |bp| lengths may be passed exactly.
+% \changes{v0.7a}{1995/04/11}
+%     {Bounding box coords no longer in registers}
+%    \begin{macrocode}
+\def\Gin@llx{0}
+\let\Gin@lly\Gin@llx
+\let\Gin@urx\Gin@llx
+\let\Gin@ury\Gin@llx
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Gin@nat@width}
+% \begin{macro}{\Gin@nat@height}
+% The `natural' size of the graphic, before any scaling.
+%    \begin{macrocode}
+\let\Gin@nat@width\leftmarginv
+\let\Gin@nat@height\leftmarginvi
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\ifGin@clip}
+% This switch is \meta{true} if any graphics outside the specified
+% bounding box (really viewport) should not be printed.
+%    \begin{macrocode}
+\newif\ifGin@clip
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeclareGraphicsExtensions}
+% \changes{v0.6a}{1994/11/29}
+%     {Remove optional argument, ignore spaces in main argument.}
+% Declare a comma separated list of default extensions to be used
+% if the file is specified with no extension.
+%    \begin{macrocode}
+\newcommand\DeclareGraphicsExtensions[1]{%
+  \edef\Gin@extensions{\zap@space#1 \@empty}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\Gin@extensions}
+% Initialise the list of possible extensions.
+% \changes{v0.4b}{1994/04/20}
+%     {Use \cmd{\providecommand} in case a previous def file has
+%     already defined it}
+%    \begin{macrocode}
+\providecommand\Gin@extensions{}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\includegraphics}
+% Top level command for the standard interface, just look for a |*|.
+%    \begin{macrocode}
+\def\includegraphics{%
+  \@ifstar
+    {\Gin@cliptrue\Gin@i}%
+    {\Gin@clipfalse\Gin@i}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@i}
+%  If an optional argument is present, call |\Gin@ii| to process it,
+%    otherwise call |\Ginclude@graphics|.
+% \changes{v0.3e}{1994/03/09}
+%     {Now specify ll before ur coordinate}
+%    \begin{macrocode}
+\def\Gin@i{%
+  \@ifnextchar[%]
+    \Gin@ii
+    {\Gin@bboxfalse\Ginclude@graphics}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@ii}
+% Look for a second optional argument.
+%    \begin{macrocode}
+\def\Gin@ii[#1]{%
+  \@ifnextchar[%]
+    {\Gin@iii[#1]}
+    {\Gin@iii[0,0][#1]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@iii}
+% Set the coordinates of the {\bfseries l}lower {\bfseries l}eft corner,
+% and the coordinates of the {\bfseries u}pper {\bfseries r}ight
+% corner. The coordinates may be any \TeX\ dimension, defaulting to |bp|.
+% \changes{v0.6c}{1994/12/15}
+%     {(Denis Roegel) Extra group to keep bb settings local}
+%    \begin{macrocode}
+\def\Gin@iii[#1,#2][#3,#4]#5{%
+  \begingroup
+  \Gin@bboxtrue
+  \Gin@defaultbp\Gin@llx{#1}%
+  \Gin@defaultbp\Gin@lly{#2}%
+  \Gin@defaultbp\Gin@urx{#3}%
+  \Gin@defaultbp\Gin@ury{#4}%
+  \Ginclude@graphics{#5}%
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\Gin@defaultbp}
+% \changes{v0.7a}{1995/04/11}{Macro added}
+%  \begin{macro}{\Gin@def@bp}
+% \changes{v0.7a}{1995/04/11}{Macro added}
+% This macro grabs a length, |#2|,  which may or may not have a unit,
+% and if a unit is supplied, converts to `bp' and stores the value in
+% |#1|. If a unit is not supplied `bp' is assumed, and |#2| is directly
+% stored in |#1|. Note that supplying `bp' is not quite the same as
+% supplying no units, as in the former case a conversion via `pt' and
+% back to `bp' takes place which can introduce rounding error. The error
+% is invisibly small but files conforming to Adobe  DSC should have
+% \emph{integer} Bounding Box Coordinates, and conceivably some drivers
+% might demand integer values.
+% (Although most seem to accept real values (if they accept bounding box
+% coordinates at all) in the |\special|. This is the reason why the
+% mechanism uses |\def| and not \TeX\ lengths, as in earlier releases of
+% the package.
+%    \begin{macrocode}
+\def\Gin@defaultbp#1#2{%
+  \afterassignment\Gin@def@bp\dimen@#2bp\relax{#1}{#2}}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\Gin@def@bp#1\relax#2#3{%
+   \if!#1!%
+     \def#2{#3}%
+    \else
+      \dimen@.99626\dimen@
+      \edef#2{\strip@pt\dimen@}%
+    \fi}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%
+% \begin{macro}{\DeclareGraphicsRule}
+% Declare what actions should be taken for a particular file
+% extension.
+%
+%  |#1| extension, |#2| type, |#3| read-file, |#4| command,
+% \changes{v0.5d}{1994/10/24}
+%     {(Arthur Ogawa) Check arg3 is *, not arg2.}
+%    \begin{macrocode}
+\def\DeclareGraphicsRule#1#2#3#4{%
+  \edef\@tempa{\string *}\def\@tempb{#3}%
+  \expandafter\edef\csname Gin@rule@#1\endcsname##1%
+       {{#2}%
+        {\ifx\@tempa\@tempb\noexpand\Gin@ext\else#3\fi}%
+        {\ifx\indent#4\indent##1\else#4\fi}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% An example rule base.
+%\begin{verbatim}
+%                    ext    type  read  command
+% \DeclareGraphicsRule{.ps}   {eps} {.ps}    {}
+% \DeclareGraphicsRule{.eps}  {eps} {.eps}   {}
+% \DeclareGraphicsRule{.ps.gz}{eps} {.ps.bb} {`zcat #1}
+% \DeclareGraphicsRule{.pcx}  {bmp} {}      {}
+%\end{verbatim}
+%
+% \begin{macro}{\graphicspath}
+% User level command to set the input path for graphics files.
+% A list of directories, each in a |{}| group.
+%    \begin{macrocode}
+\def\graphicspath#1{\def\Ginput@path{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Ginput@path}
+% The default graphic path is |\input@path|.
+%    \begin{macrocode}
+\ifx\Ginput@path\@undefined
+  \let\Ginput@path\input@path
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@getbase}
+% \changes{v0.6a}{1994/11/29}
+%     {remove \cs{Gin@sep}}
+% Given a possible extension, |#1|, check whether the file exists. If
+% it does set |\Gin@base| and |\Gin@ext| to the filename stripped of
+% the extension, and the extension, respectively.
+%    \begin{macrocode}
+\def\Gin@getbase#1{%
+  \edef\Gin@tempa{%
+    \def\noexpand\@tempa####1#1\space{%
+      \def\noexpand\Gin@base{####1}}}%
+  \IfFileExists{\filename@area\filename@base#1}%
+    {\Gin@tempa
+     \expandafter\@tempa\@filef@und
+     \edef\Gin@ext{#1}}{}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@ext}
+% Initialise the macro to hold the extension.
+%    \begin{macrocode}
+\let\Gin@ext\relax
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@sepdefault}
+% \changes{v0.6a}{1994/11/29}
+%     {remove \cs{Gin@sep}}
+% This must match the token used by |\filename@parse| to delimit the
+% extension.
+%    \begin{macrocode}
+\def\Gin@sepdefault{.}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Ginclude@graphics}
+%  The main internal function implementing graphics file inclusion.
+%  |#1| is the file name.
+% \changes{v0.4c}{1994/04/28}
+%     {Improve the wording of error messages}
+% \changes{v0.5a}{1994/07/20}
+%     {Add default (*) rule possibility}
+% \changes{v0.6a}{1994/11/29}
+%     {remove \cs{Gin@sepdefault}}
+%    \begin{macrocode}
+\def\Ginclude@graphics#1{%
+  \begingroup
+  \let\input@path\Ginput@path
+  \filename@parse{#1}%
+  \ifx\filename@ext\relax
+    \@for\Gin@temp:=\Gin@extensions\do{%
+      \ifx\Gin@ext\relax
+        \Gin@getbase\Gin@temp
+      \fi}%
+  \else
+    \Gin@getbase{\Gin@sepdefault\filename@ext}%
+%    \end{macrocode}
+% \changes{v0.4d}{1994/05/06}
+%     {Make file not found a warning not an error}
+% \changes{v0.6a}{1994/11/29}
+%     {remove \cs{Gin@sep}}
+% If the user supplied an explicit extension, just give a warning if the
+% file does not exist. (It may be created later.)
+%    \begin{macrocode}
+    \ifx\Gin@ext\relax
+       \@warning{File `#1' not found}%
+       \def\Gin@base{\filename@area\filename@base}%
+%    \end{macrocode}
+% \changes{v0.6c}{1994/12/15}
+%     {(Piet van Oostrum) include `.' in \cs{Gin@ext}}%
+%    \begin{macrocode}
+       \edef\Gin@ext{\Gin@sepdefault\filename@ext}%
+    \fi
+  \fi
+%    \end{macrocode}
+% If no extension is supplied, it is an error if the file does not
+% exist, as there is no way for the system to know which extension to
+% supply.
+%    \begin{macrocode}
+    \ifx\Gin@ext\relax
+         \@latex@error{File `#1' not found}%
+         {I could not locate the file with any of these extensions:^^J%
+          \Gin@extensions^^J\@ehc}%
+    \else
+       \@ifundefined{Gin@rule@\Gin@ext}%
+%    \end{macrocode}
+% \changes{v0.5a}{1994/07/20}
+%     {Add default (*) rule possibility}
+% Handle default rule.
+%    \begin{macrocode}
+         {\ifx\Gin@rule@*\@undefined
+            \@latex@error{Unknown graphics extension: \Gin@ext}\@ehc
+          \else
+            \expandafter\Gin@setfile\Gin@rule@*{\Gin@base\Gin@ext}%
+           \fi}%
+         {\expandafter\expandafter\expandafter\Gin@setfile
+             \csname Gin@rule@\Gin@ext\endcsname{\Gin@base\Gin@ext}}%
+    \fi
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ifGread@}
+% True if a file should be read to obtain the natural size.
+%    \begin{macrocode}
+\newif\ifGread@\Gread@true
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gin@setfile}
+% Set a file to the size specified in arguments, or in a `read file'.
+% \changes{v0.5d}{1994/10/24}
+%     {(Arthur Ogawa) Add missing \cs{expandafter}}
+%    \begin{macrocode}
+\def\Gin@setfile#1#2#3{%
+  \ifx\\#2\\\Gread@false\fi
+  \ifGin@bbox\else
+    \ifGread@
+      \csname Gread@%
+         \expandafter\ifx\csname Gread@#1\endcsname\relax
+           eps%
+         \else
+           #1%
+         \fi
+      \endcsname{\Gin@base#2}%
+    \else
+%    \end{macrocode}
+% \changes{v0.5a}{1994/07/20}
+%     {New error trap for missing size arguments}
+% \changes{v0.7f}{1995/11/10}
+%     {Use \cs{Gin@nosize}}
+% By now the natural size should be known either from arguments or
+% from the file. If not generate an error. (The \textsf{graphicx}
+% interface relaxes this condition slightly.)
+%    \begin{macrocode}
+      \Gin@nosize{#3}%
+    \fi
+  \fi
+%    \end{macrocode}
+% \changes{v0.7a}{1995/04/11}{\cs{Gin@viewport@code} added.}
+% The following call will modify the `natural size' if the user has
+% supplied a viewport or trim specification. (Not available in the
+% standard interface.)
+%    \begin{macrocode}
+  \Gin@viewport@code
+%    \end{macrocode}
+% Save the natural size, and then call |\Gin@req@sizes| which (in the
+% key-val interface) will calculate the required size from the natural
+% size, and any scaling info.
+%    \begin{macrocode}
+  \Gin@nat@height\Gin@ury bp%
+  \advance\Gin@nat@height-\Gin@lly bp%
+  \Gin@nat@width\Gin@urx bp%
+  \advance\Gin@nat@width-\Gin@llx bp%
+  \Gin@req@sizes
+%    \end{macrocode}
+%
+% Call |\Ginclude@|\emph{type} to include the figure unless
+% this is not defined, or draft mode is being used.
+% \changes{v0.7h}{1996/02/20}
+%      {missing \texttt{@} added in \texttt{Gread@} csnames}
+%    \begin{macrocode}
+  \expandafter\ifx\csname Ginclude@#1\endcsname\relax
+    \Gin@drafttrue
+    \expandafter\ifx\csname Gread@#1\endcsname\relax
+      \@latex@error{Can not include graphics of type: #1}\@ehc
+      \global\expandafter\let\csname Gread@#1\endcsname\@empty
+    \fi
+  \fi
+  \leavevmode
+  \ifGin@draft
+      \hb@xt@\Gin@req@width{%
+        \vrule\hss
+        \vbox to \Gin@req@height{%
+           \hrule \@width \Gin@req@width
+           \vss
+           \edef\@tempa{#3}%
+           \rlap{ \ttfamily\expandafter\strip@prefix\meaning\@tempa}%
+           \vss
+           \hrule}%
+        \hss\vrule}%
+  \else
+%    \end{macrocode}
+% \changes{v0.3i}{1994/3/23}
+%     {Add file list info}
+% Support |\listfiles| and then set the final box to the required size.
+%    \begin{macrocode}
+    \@addtofilelist{#3}%
+    \ProvidesFile{#3}[Graphic file (type #1)]%
+    \setbox\z@\hbox{\csname Ginclude@#1\endcsname{#3}}%
+    \dp\z@\z@
+    \ht\z@\Gin@req@height
+    \wd\z@\Gin@req@width
+  \box\z@
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%  \begin{macro}{\Gin@exclamation}
+% \changes{v0.7g}{1995/12/06}{Macro added}
+% Catcode 12 |!|, in case of French, or other language styles.
+%    \begin{macrocode}
+\def\Gin@exclamation{!}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gin@req@sizes}
+%  \begin{macro}{\Gin@scalex}
+%  \begin{macro}{\Gin@scaley}
+%  \begin{macro}{\Gin@req@height}
+%  \begin{macro}{\Gin@req@width}
+% In the standard interface there is no scaling, so the required size
+% is the same as the natural size. In other interfaces |\Gin@req@sizes|
+% will be responsible for setting these parameters. Here we can set them
+% globally.
+% \changes{v0.3g}{1994/03/15}
+%     {Initialise y-scale to !!}
+% \changes{v1.0g}{1998/05/14}
+%     {Fix !! usage in changes entries. graphics/2724}
+%    \begin{macrocode}
+\let\Gin@req@sizes\relax
+\def\Gin@scalex{1}%
+\let\Gin@scaley\Gin@exclamation
+\let\Gin@req@height\Gin@nat@height
+\let\Gin@req@width\Gin@nat@width
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%  \begin{macro}{\Gin@viewport@code}
+% In the standard interface there is no possibility of specifying
+% a viewport, so this is a no-op.
+% \changes{v0.7a}{1995/04/11}{Macro added}
+%    \begin{macrocode}
+\let\Gin@viewport@code\relax
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gin@nosize}
+% \changes{v1.0p}{2014/10/14}{Fixed typo in error message}
+% \changes{v0.7f}{1995/11/10}
+%     {Macro added}
+% This command is called in the case that the graphics type
+% specifies no `read file' and the user supplied no size arguments.
+% In the standard interface can only generate an error.
+%    \begin{macrocode}
+\def\Gin@nosize#1{%
+  \@latex@error
+      {Cannot determine size of graphic in #1 (no size specified)}%
+      \@ehc}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \subsection{Reading the BoundingBox in EPS files}
+%
+% \begin{macro}{\ifGin@bbox}
+% \changes{v0.7a}{1995/04/11}{Name changed from \cs{ifGin@viewport}}
+% This switch should be set \meta{true} once a size has been found,
+% either in an argument, or in an external file.
+%    \begin{macrocode}
+\newif\ifGin@bbox
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\Gread@eps}
+% Read an EPS file (|#1|) and search for a line
+% starting with |%%BoundingBox| and returns the result
+% by setting four dimension registers
+% |\Gin@llx|, |\Gin@lly|, |\Gin@urx| and |\Gin@ury|.
+% \changes{v0.5e}{1994/1l/02}
+%     {Fix the catcodes of \cs{endlinechar} and ctrl-D}
+% \changes{v0.7a}{1995/04/11}
+%     {Fix more catcodes, for binary headers of eps files}
+%    \begin{macrocode}
+\def\Gread@eps#1{%
+  \begingroup
+%    \end{macrocode}
+% Make it reasonably safe to have binary headers in the EPS file
+% before the bounding box line.
+%    \begin{macrocode}
+  \@tempcnta\z@
+  \loop\ifnum\@tempcnta<\@xxxii
+     \catcode\@tempcnta14 %
+     \advance\@tempcnta\@ne
+  \repeat
+  \catcode`\^^?14 %
+  \let\do\@makeother
+  \dospecials
+%    \end{macrocode}
+% Make sure tab and space are accepted as white space.
+% \changes{v1.0e}{1997/09/02}
+%     {Allow TAB in DSC comments graphics/2587}
+% \changes{v1.0i}{1999/01/07}
+%     {Fix catcode of hyphen. graphics/2846}
+%    \begin{macrocode}
+  \catcode`\ 10 %
+  \catcode`\^^I10 %
+  \catcode\endlinechar5 %
+  \@makeother\:%
+  \@makeother\-%
+%    \end{macrocode}
+% The first thing we need to do is to open the
+% information file, if possible.
+% \changes{v0.4d}{1994/05/06}
+%     {Improve the error message if the info file is not there.}
+%    \begin{macrocode}
+  \immediate\openin\@inputcheck#1 %
+  \ifeof\@inputcheck
+    \@latex@error{File `#1' not found}\@ehc
+  \else
+%    \end{macrocode}
+% Now we'll scan lines until we find one that starts with
+% |%%BoundingBox:|
+% We need to reset the catcodes to read the file, and so this
+% is done in a group.
+%    \begin{macrocode}
+     \Gread@true
+     \let\@tempb\Gread@false
+     \loop
+       \read\@inputcheck to\@tempa
+       \ifeof\@inputcheck
+         \Gread@false
+       \else
+         \expandafter\Gread@find@bb\@tempa:.\\%
+       \fi
+     \ifGread@
+     \repeat
+    \immediate\closein\@inputcheck
+  \fi
+%    \end{macrocode}
+% \changes{v0.3i}{1994/03/23}
+%     {Wording of error message improved}
+% \changes{v1.0}{1996/05/29}
+%     {Use \cs{@gtempa} not \cs{g@tempa} /2090}
+%    \begin{macrocode}
+  \ifGin@bbox\else
+    \@latex@error
+      {Cannot determine size of graphic in #1 (no BoundingBox)}%
+      \@ehc
+    \gdef\@gtempa{0 0 72 72 }%
+  \fi
+  \endgroup
+  \expandafter\Gread@parse@bb\@gtempa\\}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gread@find@bb}
+% If a line in the EPS file starts with a |%%BoundingBox:|, we
+% will examine it more closely. Note using the `extra' argument |#2#3|
+% causes any space after the |:| to be gobbled.
+%    \begin{macrocode}
+\long\def\Gread@find@bb#1:#2#3\\{%
+  \def\@tempa{#1}%
+  \ifx\@tempa\Gread@BBox
+    \Gread@test@atend#2#3()\\%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\Gread@test@atend}
+% Determine if the stuff following the |%%BoundingBox| is `(atend)',
+% which will involve further reading of the file. This is accomplished
+% by making |\@tempb| into a no-op, so that finding a |%%BoundingBox|
+% does not stop the loop.
+%    \begin{macrocode}
+\def\Gread@test@atend#1(#2)#3\\{%
+  \def\@tempa{#2}%
+  \ifx\@tempa\Gread@atend
+    \Gread@true
+    \let\@tempb\relax
+  \else
+    \gdef\@gtempa{#1}%
+    \@tempb
+    \Gin@bboxtrue
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\Gread@parse@bb}
+% We have |%%BoundingBox| and what follows is not `(atend)' so we
+% will parse the rest of the line as a BB with four elements.
+% PostScript files should never have units specified in the
+% BoundingBox comment, but we allow arbitrary \TeX\ units in external
+% files, or in other interfaces.
+%    \begin{macrocode}
+\def\Gread@parse@bb#1 #2 #3 #4 #5\\{%
+  \Gin@defaultbp\Gin@llx{#1}%
+  \Gin@defaultbp\Gin@lly{#2}%
+  \Gin@defaultbp\Gin@urx{#3}%
+  \Gin@defaultbp\Gin@ury{#4}}%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Gread@atend}
+% |atend| as a macro for testing with |\ifx|.
+%    \begin{macrocode}
+\def\Gread@atend{atend}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Rotation}
+%
+% As above, we will re-use some existing local registers.
+%
+% \begin{macro}{\Grot@height}
+% \begin{macro}{\Grot@left}
+% \begin{macro}{\Grot@right}
+% \begin{macro}{\Grot@depth}
+% Final Rotated box dimensions
+%    \begin{macrocode}
+\let\Grot@height\@ovxx
+\let\Grot@left\@ovyy
+\let\Grot@right\@ovdx
+\let\Grot@depth\@ovdy
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Grot@h}
+% \begin{macro}{\Grot@l}
+% \begin{macro}{\Grot@r}
+% \begin{macro}{\Grot@d}
+% Original box dimensions
+%    \begin{macrocode}
+\let\Grot@l\@ovro
+\let\Grot@r\@ovri
+\let\Grot@h\@xdim
+\let\Grot@d\@ydim
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\Grot@x}
+% \begin{macro}{\Grot@y}
+% Coordinates of centre of rotation.
+%    \begin{macrocode}
+\let\Grot@x\@linelen
+\let\Grot@y\@dashdim
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\rotatebox}
+% The angle is specified by |#1|. The box to be rotated is |#2|.
+% In the standard interface the centre of rotation is $(0,0)$.
+% Then finally call |\Grot@box| to rotate the box.
+% \changes{v0.3f}{1994/03/11}{Remove star form}
+% \changes{v0.3h}{1994/03/17}{Fix Typo}
+% \changes{v0.7a}{1995/04/11}{\cs{leavevmode} added graphics/1521}
+% \changes{v1.0n}{2001/07/07}
+%     {Made long (CAR) graphics/2908 and 3345}
+%    \begin{macrocode}
+\long\def\rotatebox#1#2{%
+  \leavevmode
+  \Grot@setangle{#1}%
+  \setbox\z@\hbox{{#2}}%
+  \Grot@x\z@
+  \Grot@y\z@
+  \Grot@box}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\Grot@setangle}
+% Set the internal macro used by |\Grot@box|. In the standard
+% interface this is trivial, but other interfaces may have more
+% interesting definitions. For example:
+%\begin{verbatim}
+% \def\Grot@setangle#1{%
+%   \dimen@#1\p@
+%   \dimen@-57.2968\dimen@
+%   \edef\Grot@angle{\strip@pt\dimen@}}
+%\end{verbatim}
+% This would cause the argument of |\rotatebox| to be interpreted as
+% an angle specified in \emph{radians}, \emph{clockwise}.
+%    \begin{macrocode}
+\def\Grot@setangle#1{\edef\Grot@angle{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Deriving a `bounding box' for rotated object}
+% We want to know the size of a `bounding box' enclosing the rotated
+% box.
+% We define two formulae (as \TeX\ macros) to work out the $x$ and $y$
+% coordinates of vertices of the rotated box
+% in relation to its original coordinates (i.e., its width, height
+% and depth). The box we visualize with vertices $B$, $C$,
+% $D$ and $E$ is illustrated below. The vertex
+% $S$ is the reference point on the baseline. $O$ is the centre of
+% rotation, which in the standard interface is always $S$.
+%
+% \begin{center}
+% \setlength{\unitlength}{3pt}%
+%
+% \begin{picture}(34,36)(12,44)
+% \thicklines
+% \put(20,52){\dashbox{1}(20,21){}}
+% \put(20,80){\line(0,-1){36}}
+% \put(12,58){\line(1, 0){34}}
+% \put(41,59){A}
+% \put(40,74){B}
+% \put(21,74){C}
+% \put(21,49){D}
+% \put(40,49){E}
+% \put(21,59){S}
+% \put(33,65){O}
+% \put(33,65){\circle*{1}}
+% \end{picture}
+% \end{center}
+%
+% The formulae are, for a point $P$ and angle $\alpha$:
+%\[
+% \begin{array}{l}
+% P'_x = P_x - O_x \\
+% P'_y = P_y - O_y \\
+% P''_x =  ( P'_x \times \cos(\alpha)) - ( P'_y \times \sin(\alpha) ) \\
+% P''_y =  ( P'_x \times \sin(\alpha)) + ( P'_y \times \cos(\alpha) ) \\
+% P'''_x = P''_x + O_x + L_x \\
+% P'''_y = P''_y + O_y
+% \end{array}
+% \]
+% The `extra' horizontal translation $L_x$ at the end is calculated so
+% that the leftmost point of the resulting box has $x$-coordinate $0$.
+% This is desirable as \TeX\ boxes must have the reference point at
+% the left edge of the box.
+%
+% \begin{macro}{\Grot@Px}
+% Work out new $x$ coordinate of point after rotation. The parameters
+% |#2| and |#3| are the original $x$ and $y$ coordinates of the point.
+% The new $x$ coordinate is stored in |#1|.
+%    \begin{macrocode}
+\def\Grot@Px#1#2#3{%
+        #1\Grot@cos#2%
+        \advance#1-\Grot@sin#3}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\Grot@Py}
+% Work out new $y$ coordinate of point after rotation. The parameters
+% |#2| and |#3| are the original $x$ and $y$ coordinates of the point.
+% The new $y$ coordinate is stored in |#1|.
+%    \begin{macrocode}
+\def\Grot@Py#1#2#3{%
+        #1\Grot@sin#2%
+        \advance#1\Grot@cos#3}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Grot@box}
+% This is the tricky bit. We can rotate the box, but then need
+% to work out how much space to leave for it on the page.
+%
+% We simplify matters by working out first which quadrant we are in, and
+% then picking just the right values.
+%
+%    \begin{macrocode}
+\def\Grot@box{%
+  \begingroup
+%    \end{macrocode}
+% We are going to need to know the sine and cosine
+% of  the angle; simplest to calculate these now.
+%    \begin{macrocode}
+  \CalculateSin\Grot@angle
+  \CalculateCos\Grot@angle
+  \edef\Grot@sin{\UseSin\Grot@angle}%
+  \edef\Grot@cos{\UseCos\Grot@angle}%
+^^A   \GDebug{Rotate: angle \Grot@angle, sine is \Grot@sin,
+^^A             cosine is \Grot@cos}%
+%    \end{macrocode}
+% Save the four extents of the original box.
+%    \begin{macrocode}
+  \Grot@r\wd\z@  \advance\Grot@r-\Grot@x
+  \Grot@l\z@     \advance\Grot@l-\Grot@x
+  \Grot@h\ht\z@  \advance\Grot@h-\Grot@y
+  \Grot@d-\dp\z@ \advance\Grot@d-\Grot@y
+%    \end{macrocode}
+% Now a straightforward test to see which quadrant we are
+% operating in;
+%    \begin{macrocode}
+  \ifdim\Grot@sin\p@>\z@
+    \ifdim\Grot@cos\p@>\z@
+%    \end{macrocode}
+% First quadrant:
+% Height=$By$, Right=$Ex$, Left=$Cx$, Depth=$Dy$
+%    \begin{macrocode}
+      \Grot@Py\Grot@height \Grot@r\Grot@h%B
+      \Grot@Px\Grot@right  \Grot@r\Grot@d%E
+      \Grot@Px\Grot@left   \Grot@l\Grot@h%C
+      \Grot@Py\Grot@depth  \Grot@l\Grot@d%D
+    \else
+%    \end{macrocode}
+% Second quadrant:
+% Height=$Ey$, Right=$Dx$, Left=$Bx$, Depth=$Cy$
+%    \begin{macrocode}
+      \Grot@Py\Grot@height \Grot@r\Grot@d%E
+      \Grot@Px\Grot@right  \Grot@l\Grot@d%D
+      \Grot@Px\Grot@left   \Grot@r\Grot@h%B
+      \Grot@Py\Grot@depth  \Grot@l\Grot@h%C
+    \fi
+  \else
+    \ifdim\Grot@cos\p@<\z@
+%    \end{macrocode}
+% Third quadrant:
+% Height=$Dy$, Right=$Cx$, Left=$Ex$, Depth=$By$
+%    \begin{macrocode}
+      \Grot@Py\Grot@height \Grot@l\Grot@d%D
+      \Grot@Px\Grot@right  \Grot@l\Grot@h%C
+      \Grot@Px\Grot@left   \Grot@r\Grot@d%E
+      \Grot@Py\Grot@depth  \Grot@r\Grot@h%B
+    \else
+%    \end{macrocode}
+% Fourth quadrant:
+% Height=$Cy$, Right=$Bx$, Left=$Dx$, Depth=$Ey$
+%    \begin{macrocode}
+      \Grot@Py\Grot@height \Grot@l\Grot@h%C
+      \Grot@Px\Grot@right  \Grot@r\Grot@h%B
+      \Grot@Px\Grot@left   \Grot@l\Grot@d%D
+      \Grot@Py\Grot@depth  \Grot@r\Grot@d%E
+    \fi
+  \fi
+%    \end{macrocode}
+% Now we should translate back by $(O_x,O_y)$, but \TeX\ can not really
+% deal with boxes that do not have the reference point at the left edge.
+% (Everything with a $-$ve $x$-coordinate would over-print earlier
+% text). So we modify the horizontal translation so that the
+% reference point as understood by \TeX\ \emph{is} at the left edge.
+% This means that the `centre of rotation' is not fixed by |\rotatebox|,
+% but typically moves horizontally. We also need to find the image of
+% the original reference point, $S$, as that is where the rotation
+% specials must be inserted.
+%
+%    \begin{macrocode}
+  \advance\Grot@height\Grot@y
+  \advance\Grot@depth\Grot@y
+  \Grot@Px\dimen@  \Grot@x\Grot@y
+  \Grot@Py\dimen@ii \Grot@x\Grot@y
+  \dimen@-\dimen@     \advance\dimen@-\Grot@left
+  \dimen@ii-\dimen@ii \advance\dimen@ii\Grot@y
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+^^A   \GDebug{Rotate: (l,r,h,d)^^J%
+^^A Original \the\Grot@l,\the\Grot@r,\the\Grot@h,\the\Grot@d,^^J%
+^^A New..... \the\Grot@left,\the\Grot@right,%
+^^A          \the\Grot@height,\the\Grot@depth}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+  \setbox\z@\hbox{%
+    \kern\dimen@
+    \raise\dimen@ii\hbox{\Grot@start\box\z@\Grot@end}}%
+  \ht\z@\Grot@height
+  \dp\z@-\Grot@depth
+  \advance\Grot@right-\Grot@left\wd\z@\Grot@right
+  \leavevmode\box\z@
+  \endgroup}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Stretching and Scaling}
+%
+%
+%  \begin{macro}{\scalebox}
+% The top level |\scalebox|. If the vertical scale factor is omitted it
+% defaults to the horizontal scale factor, |#1|.
+% \changes{v0.3d}{1994/03/06}{Better support for negative arguments.}
+%    \begin{macrocode}
+\def\scalebox#1{%
+  \@ifnextchar[{\Gscale@box{#1}}{\Gscale@box{#1}[#1]}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gscale@box}
+% Internal version of |\scalebox|.
+% \changes{v0.7a}{1995/04/11}
+%     {\cs{leavevmode} moved earlier. graphics/1521}
+% \changes{v1.0j}{1999/01/07}
+%     {made long. graphics/2908}
+%    \begin{macrocode}
+\long\def\Gscale@box#1[#2]#3{%
+  \leavevmode
+  \def\Gscale@x{#1}\def\Gscale@y{#2}%
+  \setbox\z@\hbox{{#3}}%
+  \setbox\tw@\hbox{\Gscale@start\rlap{\copy\z@}\Gscale@end}%
+  \ifdim#2\p@<\z@
+    \ht\tw@-#2\dp\z@
+    \dp\tw@-#2\ht\z@
+  \else
+    \ht\tw@#2\ht\z@
+    \dp\tw@#2\dp\z@
+  \fi
+  \ifdim#1\p@<\z@
+    \hb@xt@-#1\wd\z@{\kern-#1\wd\z@\box\tw@\hss}%
+  \else
+    \wd\tw@#1\wd\z@
+    \box\tw@
+  \fi}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\reflectbox}
+% Just an abbreviation for the appropriate scale to get reflection.
+% \changes{v0.3e}{1994/03/09}{Macro added}
+%    \begin{macrocode}
+\def\reflectbox{\Gscale@box-1[1]}
+%    \end{macrocode}
+%  \end{macro}
+%
+%
+%  \begin{macro}{\resizebox}
+% \changes{v0.3b}{1994/03/01}{Recode \cmd\resizebox.}
+% \changes{v0.7b}{1995/04/27}
+%         {Add \cs{leavevmode} for graphics/1512}
+% Look for a |*|, which specifies that a final vertical size refers to
+% `height + depth' not just `height'.
+%    \begin{macrocode}
+\def\resizebox{%
+  \leavevmode
+  \@ifstar{\Gscale@@box\totalheight}{\Gscale@@box\height}}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gscale@@box}
+% Look for the |!| in the arguments.
+% \changes{v0.5a}{1994/07/20}
+%     {Support French active !!}
+% \changes{v0.5d}{1994/10/24}
+%     {Correct the support for !!}
+% \changes{v0.7g}
+%     {1995/12/06}{Use \cs{Gin@exclamation}}
+%    \begin{macrocode}
+\def\Gscale@@box#1#2#3{%
+  \let\@tempa\Gin@exclamation
+  \expandafter\def\expandafter\@tempb\expandafter{\string#2}%
+  \expandafter\def\expandafter\@tempc\expandafter{\string#3}%
+  \ifx\@tempb\@tempa
+    \ifx\@tempc\@tempa
+      \toks@{\mbox}%
+    \else
+      \toks@{\Gscale@box@dd{#3}#1}%
+    \fi
+  \else
+    \ifx\@tempc\@tempa
+      \toks@{\Gscale@box@dd{#2}\width}%
+    \else
+      \toks@{\Gscale@box@dddd{#2}\width{#3}#1}%
+    \fi
+  \fi
+  \the\toks@}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gscale@box@dd}
+% Scale the text |#3| in both directions by a factor $|#1|/|#2|$.
+% \changes{v0.3i}{1994/03/23}
+%     {Missing percent added}
+% \changes{v1.0i}{1999/01/07}
+%     {made long. graphics/2908}
+%    \begin{macrocode}
+\long\def\Gscale@box@dd#1#2#3{%
+  \@begin@tempboxa\hbox{#3}%
+    \setlength\@tempdima{#1}%
+    \setlength\@tempdimb{#2}%
+    \Gscale@div\@tempa\@tempdima\@tempdimb
+    \Gscale@box\@tempa[\@tempa]{\box\@tempboxa}%
+  \@end@tempboxa}
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gscale@box@dddd}
+% Scale the text |#5| horizontally by a factor $|#1|/|#2|$ and
+% vertically by a factor $|#3|/|#4|$.
+% \changes{v0.3i}{1994/03/23}
+%     {Missing percent added}
+% \changes{v0.7e}{1995/09/29}
+%     {Add \cs{ifGin@iso} code added}
+% \changes{v1.0i}{1999/01/07}
+%     {made long. graphics/2908}
+%    \begin{macrocode}
+\long\def\Gscale@box@dddd#1#2#3#4#5{%
+  \@begin@tempboxa\hbox{#5}%
+    \setlength\@tempdima{#1}%
+    \setlength\@tempdimb{#2}%
+    \Gscale@div\@tempa\@tempdima\@tempdimb
+    \setlength\@tempdima{#3}%
+    \setlength\@tempdimb{#4}%
+    \Gscale@div\@tempb\@tempdima\@tempdimb
+    \ifGin@iso
+      \ifdim\@tempa\p@>\@tempb\p@
+        \let\@tempa\@tempb
+      \else
+        \let\@tempb\@tempa
+      \fi
+    \fi
+    \Gscale@box\@tempa[\@tempb]{\box\@tempboxa}%
+  \@end@tempboxa}
+%    \end{macrocode}
+%  \end{macro}
+%
+% \begin{macro}{\ifGin@iso}
+% If this flag is true, then specifying two lengths to |\resizebox|
+% scales the box by the same factor in either direction, such that
+% neither length \emph{exceeds} the stated amount. No user interface
+% to this flag in the standard package, but it is used by the
+% |keepaspectratio| key to |\includegraphics| in the \textsf{graphicx}
+% package.
+% \changes{v0.7e}{1995/09/29}
+%     {Maco added}
+%    \begin{macrocode}
+\newif\ifGin@iso
+%    \end{macrocode}
+%  \end{macro}
+%
+%  \begin{macro}{\Gscale@div}
+% The macro |#1| is set to the ratio of the lengths |#2| and |#3|.
+% \changes{v0.7a}{1995/04/11}
+%     {Add trap for division by 0}
+% \changes{v0.7d}{1995/09/27}
+%     {Use \cs{setlength} to support calc package}
+% \changes{v1.0a}{1996/09/16}
+%     {Stop infinite loop if 2nd arg zero. graphics/2259}
+%    \begin{macrocode}
+\def\Gscale@div#1#2#3{%
+  \setlength\dimen@{#3}%
+  \ifdim\dimen@=\z@
+    \PackageError{graphics}{Division by 0}\@eha
+    \dimen@#2%
+  \fi
+  \edef\@tempd{\the\dimen@}%
+  \setlength\dimen@{#2}%
+  \count@65536\relax
+  \ifdim\dimen@<\z@
+    \dimen@-\dimen@
+    \count@-\count@
+  \fi
+  \ifdim\dimen@>\z@
+    \loop
+      \ifdim\dimen@<8192\p@
+        \dimen@\tw@\dimen@
+        \divide\count@\tw@
+    \repeat
+    \dimen@ii\@tempd\relax
+    \divide\dimen@ii\count@
+    \divide\dimen@\dimen@ii
+  \fi
+  \edef#1{\strip@pt\dimen@}}
+%    \end{macrocode}
+%  \end{macro}
+%
+% Restore Catcodes
+%    \begin{macrocode}
+\Gin@codes
+\let\Gin@codes\relax
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \Finale
+%

@@ -1,0 +1,2 @@
+#!/bin/bash
+rm -f {cm,lcm}*.mtx *.pl *.vpl *.dvi *.log *.fd try.tex *~

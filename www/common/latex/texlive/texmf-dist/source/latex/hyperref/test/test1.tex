@@ -1,0 +1,328 @@
+\documentclass[11pt]{book}
+\makeatletter
+\def\listoffigures{\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
+\chapter*{List of Figures}
+{\let\\ \ \markboth{Title}{List of Figures}}
+\addcontentsline{toc}{chapter}{\protect
+ \numberline{}LIST OF FIGURES}\@starttoc{lof}\if@restonecol \twocolumn\fi}
+\makeatother
+\usepackage{epsfig,longtable}
+\usepackage{makeidx}
+\usepackage{varioref}
+\usepackage{xr-hyper}
+\usepackage{amsmath}
+\usepackage[verbose,hypertexnames=false,bookmarksopenlevel=1,bookmarksopen,bookmarksnumbered,colorlinks,plainpages=false,linktocpage]{hyperref}
+\def\boldindex#1{\textbf{\hyperpage{#1}}}
+\makeindex
+\makeatletter
+\externaldocument{test2}
+\makeatother
+%\setcounter{page}{34}
+\title{Testing Hyperref}
+\author{Sebastian Rahtz}
+\date{May 1999}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+\begin{document}
+\pagenumbering{roman}
+%
+\makeatletter
+\long\def\hyper@section@backref#1#2#3{%
+ \typeout{BACK REF #1 / #2 / #3}%
+\hyperlink{#3}{#2}}
+%
+\makeatother
+\pdfbookmark{Title}{tit}
+\setlongtables
+\maketitle\index{title}
+\tableofcontents
+\listoftables
+\listoffigures
+\pagenumbering{arabic}
+\newcommand{\eqnref}[1]{{\autoref{#1}}}
+\newtheorem{Argument}{Here we go}[section]
+\def\thesubsection{\Roman{section} -- \arabic{subsection}}
+\setcounter{tocdepth}{1}
+
+\chapter[First part]{First part, leading to \protect\autoref{horrid}
+  next}
+\section[Test section]{Our \protect\LaTeX\ test section (leading to \autoref{One})
+ for 100\% of \AE horrid $X[Y]Z$ 
+things, like $42$\label{horrid}}
+and so see \autoref{horrid} on page \pageref{horrid}.
+
+\section{Section One --- cats}\label{One}
+see section \vref{Three} about
+cats\index{animals!cats} and cite 
+\cite{Barcelo:1992:caa}
+
+\section{one.1 -- can we see}
+some text with a footnote\footnote{WISH UPON A STAR}
+and another one with an extended 
+footnote\footnote{\protect\label{foot}This is the way the world ends not with a
+  bang but a whimper. This is the way the world ends not with a
+  bang but a whimper. This is the way the world ends not with a
+  bang but a whimper.}
+and a reference to a long table\index{tables!long!longtables},
+\autoref{mylongtab}.
+
+\subsection{one.2}
+dogs
+
+\href{file:test2#page.2}{See page  2 in file test2}, 
+on page 3 of this file.
+
+\href{file:test2.pdf#page.2}{See page 2 in file test2.pdf} 
+on page 3 of this file.
+
+And can we  see \autoref{ss:first}
+
+in the file test2.pdf? alternatively,
+\href{file:test2.pdf#subsection.1.2}{the link like this}
+
+All Or this? \url{test2.pdf#section.1}
+
+\newpage
+\section{Section Two --- \TeX\ is a dog}
+\subsection{two.1}
+\subsection{two.2}
+\newpage
+cite \cite{Barcelo:1992:caa} again.
+
+\chapter{Second part}
+\section{Section Three --- Camels}\label{Three}
+see \autoref{One}
+\subsection{three.1}
+ some text with a footnote\footnote{OVER THE RAINBOW}
+\index{rainbows}
+\subsection{three.2}
+
+\newpage
+\section[Section Four --- Butterflies]{Section Four --- Butterflies and so on}
+\subsection{four.1}
+\subsection{four.2}
+camels
+Refer to \hyperref{}{test}{test1}{with these words}
+\newpage
+\section{Introduction}\label{sec1}
+\subsection{subsec}
+\newpage
+\subsection{subsec}\label{subsec1.2}
+Define a marker \hyperdef{test}{test1}{here} while this one is a
+PostScript picture acting as marker:
+\index{PS pictures}
+\hyperlink{testpiccy}{\epsfig{figure=picture,height=1in}}
+
+This is a picture: \epsfig{figure=picture,height=1in}
+\newpage
+\section{two}\label{sec2}
+\subsection{Subsection 2}
+\subsection{Subsection 3}
+\newpage
+\section{three}
+This is a reference to section 1 (\autoref{sec1}), subsection 1.2
+(\autoref{subsec1.2}) and section 2 (\autoref{sec2}). References to
+\cite{Barcelo:1992:caa,Dallas:aia}.
+
+
+\begin{figure}
+
+xxxx
+
+\hypertarget{testpiccy}{Test picture}
+
+xxxxx
+
+xxxxx
+\caption{{A cat}}
+\label{fig1}
+\end{figure}
+
+\begin{figure}
+
+xxxx
+
+xxxxx
+\caption{Another cat with a link inside it,
+so see  \cite{Dallas:aia} xxxx \label{fig2}}
+\end{figure}
+
+\texttt{<<where is \eqnref{eq1}>>}
+
+\section{Some URLs}
+
+\begin{minipage}{1.5in}
+\url{http://www.aw.com/cp/tlgc.html#Describe}
+
+\url{http://nsi.net.kiae.su/latex/latex2e.html}
+
+\url{http://www.lehigh.edu/~dlj0/LyriX.html}
+
+\url{http://www.cs.wisc.edu/~ghost/index.html}
+
+\url{http://www.win.tue.nl/win/math/dw/personalpages/dickie/idvi/}
+
+\url{http://www.tug.org/interest.html#projects}
+
+\url{ftp://ftp.cbr.dit.csiro.au/staff/gjw/www/tex.html}
+
+
+This is a URL: \url{http://srahtz/attend.html#sebastian}
+
+\hyperref{file:test2.pdf}{equation}{1}{hello}
+\end{minipage}
+
+\newpage
+
+\section{Back to math}
+\begin{equation}
+  zzzz + b
+  \label{eq1}
+\end{equation}
+and what next?
+
+\begin{equation}
+  d - e
+  \label{eq2}
+\end{equation}
+
+\begin{eqnarray}
+  y &=&z\\
+  g &=&h\\
+  \label{eq3}
+\end{eqnarray}
+We need some lists:
+\begin{enumerate}
+\item oranges\index{oranges|boldindex}
+\item lemons\index{lemons|boldindex}
+\item beer\index{beer|boldindex}
+  \begin{enumerate}
+  \item Samuel Smiths
+  \item Labatts
+  \end{enumerate}
+\end{enumerate}
+
+Lets look at labels in lists:
+\begin{enumerate}
+\item oranges\label{oranges}
+\item lemons\label{lemons}
+\item beer\label{beer}
+  \begin{enumerate}
+  \item Samuel Smiths\label{smiths}
+  \item Labatts\label{labatts}
+  \end{enumerate}
+\end{enumerate}
+\clearpage
+
+from which see \autoref{oranges}, \ref{lemons}, \ref{smiths} and
+\autoref{labatts}
+
+
+see
+sec1: \autoref{sec1}
+sec2: \autoref{sec2}
+eq1: \autoref{eq1}
+fig1: \autoref{fig1}
+and cite \cite{Barcelo:1992:caa} again.
+\onecolumn
+\begin{longtable}{lll}
+\caption{A test long table (see \protect\cite{Dallas:aia} 
+and section \protect\ref{sec1}}\label{mylongtab}\\
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+a & b & c \\a
+\end{longtable}
+
+% !!! Does not work with hypertexnames=false !!!
+Does \hyperref{}{equation}{2.2}{this} point to the second equation?
+
+Does anything point to the eqnarray (\autoref{eq3})?
+\index{cats}
+
+\begin{thebibliography}{99}
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibitem{Barcelo:1992:caa}
+{Barcel\'o, J.} 1992.
+\newblock Programming an intelligent database in archaeology. In \emph{Computer
+  Applications and Quantitative Methods in Archaeology 1991}, {Lock, G. \&
+  J.~Moffett} (eds),   21--28, Oxford: British Archaeological Reports.
+
+\bibitem[Dallas 1992]{Dallas:aia}
+{Dallas, C.~J.} 1992.
+\newblock Syntax and semantics of figurative art: a formal approach. In
+  \emph{Archaeology and the Information Age}, {Reilly, P. \& S.~Rahtz} (eds),
+  chapter~16, London: Routledge.
+
+\bibitem[Stankovic 1988]{stankovic:88}
+J.~Stankovic, ``Misconceptions about real-time computing: a serious problem for
+  next-generation systems,'' {\em Computer}, vol.~21, no.~10, pp.~10--19, Oct.
+  1988.
+
+\end{thebibliography}
+
+\clearpage
+An index entry for gnus\index{gnus}
+\clearpage
+An index entry for gnus\index{gnus}
+\clearpage
+An index entry for gnus\index{gnus}
+\clearpage
+An index entry for gnus\index{gnus}
+\clearpage
+An index entry for gnus\index{gnus}
+\clearpage
+An index entry for gnus\index{gnus}
+\chapter*{An appendix --- the Index}
+\printindex
+\end{document}

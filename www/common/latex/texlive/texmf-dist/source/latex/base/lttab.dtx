@@ -1,0 +1,1602 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: lttab.dtx
+%<*driver>
+% \fi
+\ProvidesFile{lttab.dtx}[2015/02/21 v1.1n LaTeX Kernel (Columns)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{lttab.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+%
+% \CheckSum{1127}
+%
+% \changes{v1.0l}{1995/05/07}{Use \cs{hb@xt@}}
+% \changes{v1.1a}{1995/05/22}{Support autoloading feature}
+% \changes{v1.1b}{1995/06/14}{Use \cs{ProvidesFile} in autoload}
+% \changes{v1.1d}{1995/10/04}{Modify autoload support}
+% \changes{v1.1k}{1998/06/18}{Small addition to documentation}
+% \changes{v1.1l}{1998/07/06}{Small correction to documentation}
+% \changes{v1.1n}{2015/02/21}{Removed autoload code}
+%
+% \section{Tabbing, Tabular and Array Environments}
+% This section deals with `Lining It Up in Columns'. First the
+% |tabbing| environment is defined, and then in second part, |tabular|
+% together with its variants, |tabular*| and |array|.
+%
+% Note that the |tabular| defined here is essentially the original
+% \LaTeX~2.09 version, not the extended version described in \emph{The
+% \LaTeX\ Companion}. Use the |array| package to obtain the extended
+% version.
+%
+% \StopEventually{}
+%
+%
+% \changes{v1.0a}{1994/03/04}{Initial version, split from latex.dtx}
+% \changes{v1.0a}{1994/03/07}{Long lines wrapped to 72 columns}
+% \changes{v1.0b}{1994/03/28}{Improve documentation}
+% \changes{v1.0c}{1994/05/07}{Removed definition of \cs{+}}
+% \changes{v1.0c}{1994/05/07}{Removed surplus braces from
+%                             \cs{@ifnextchar} constructs}
+% \changes{v1.0f}{1994/05/21}{Use new error commands}
+% \changes{v1.0j}{1994/11/17}
+%         {\cs{@tempa} to \cs{reserved@a}}
+%
+% \subsection{tabbing}
+%
+% \begin{oldcomments}
+%
+%  \dimen(\@firsttab + i) = distance of tab stop i from left margin
+%         0 <= i <= 15 (?).
+%
+%  \dimen\@firsttab is initialized to \@totalleftmargin, so it starts
+%      at the prevailing left margin.
+%
+%  \@maxtab          = number of highest defined tab register
+%                       probably = \@firsttab + 12
+%  \@nxttabmar = tab stop number of next line's left margin
+%  \@curtabmar = tab stop number of current line's left margin
+%  \@curtab    = number of the current tab. At start of line,
+%                      it equals \@curtabmar
+%  \@hightab   = largest tab number currently defined.
+%  \@tabpush   = depth of \pushtab's
+%
+%  \box\@curline     = contents of current line, excluding left margin
+%                       skip, and excluding contents of current field
+%  \box\@curfield    = contents of current field
+%
+%  @rjfield          = switch: T iff the last field of the line should
+%                       be right-justified at the right margin.
+%
+%  \tabbingsep          = distance left by the \' command between the
+%                       current position and the field that is
+%                       ``left-shifted''.
+%
+%  UTILITY MACROS
+%   \@stopfield  : closes the current field
+%   \@addfield   : adds the current field to the current line.
+%   \@contfield  : continues the current field
+%   \@startfield : begins the next field
+%   \@stopline   : closes the current line and outputs it
+%   \@startline  : starts the next line
+%   \@ifatmargin : an \if that is true iff the current line.
+%                  has width zero
+%
+% \@startline ==
+%  BEGIN
+%   \@curtabmar :=G \@nxttabmar
+%   \@curtab :=G \@curtabmar
+%   \box\@curline :=G null
+%   \@startfield
+%   \strut
+%  END
+%
+% \@stopline ==
+%  BEGIN
+%   \unskip
+%   \@stopfield
+%   if @rjfield = T
+%     then  @rjfield :=G F
+%           \@tempdima := \@totalleftmargin + \linewidth
+%           \hb@xt@ \@tempdima{\@itemfudge
+%                               \hskip \dimen\@curtabmar
+%                               \box\@curline
+%                               \hfil
+%                               \box\@curfield}
+%     else \@addfield
+%          \hbox {\@itemfudge
+%                 \hskip \dimen\@curtabmar
+%                 \box\@curline}
+%   fi
+%  END
+%
+% \@startfield ==
+%  BEGIN
+%    \box\@curfield :=G \hbox {
+%  END
+%
+% \@stopfield ==
+%  BEGIN
+%     }
+%  END
+%
+% \@contfield ==
+%  BEGIN
+%   \box\@curfield :=G \hbox { \unhbox\@currfield  %%} brace matching
+%  END
+% \@addfield ==
+%  BEGIN
+%   \box\@curline :=G \unbox\@curline * \unbox\@curfield
+%  END
+%
+% \@ifatmargin ==
+%  BEGIN
+%   if  dim of box\@curline = 0pt  then
+%  END
+%
+%
+% \tabbing ==
+%  BEGIN
+%   \lineskip :=L 0pt
+%   \> == \@rtab
+%   \< == \@ltab
+%   \= == \@settab
+%   \+ == \@tabplus
+%   \- == \@tabminus
+%   \` == \@tabrj
+%   \' == \@tablab
+%   \\ == BEGIN \@stopline \@startline END
+%   \\[DIST] == BEGIN
+%                \@stopline \vskip DIST \@startline\ignorespaces END
+%   \\* == BEGIN \@stopline \penalty 10000 \@startline END
+%   \\*[DIST] == BEGIN \@stopline \penalty 10000 \vskip DIST
+%                      \@startline\ignorespaces               END
+%   \@hightab :=  \@nxttabmar :=G \@firsttab
+%   \@tabpush :=G 0
+%   \dimen\@firsttab := \@totalleftmargin
+%   @rjfield :=G F
+%   \trivlist  \item\relax
+%   if @minipage = F then \vskip \parskip fi
+%   \box\@tabfbox = \rlap{\indent\the\everypar}
+%                          % note: \the\everypar sets @inlabel :=G F
+%   \@itemfudge == BEGIN \box\@tabfbox END
+%   \@startline
+%   \ignorespaces
+%  END
+%
+% \@endtabbing ==
+%  BEGIN
+%   \@stopline
+%   if \@tabpush > 0 then error message: ''unmatched \poptabs'' fi
+%   \endtrivlist
+%  END
+%
+% \@rtab ==
+%  BEGIN
+%   \@stopfield
+%   \@addfield
+%   if \@curtab < \@hightab
+%     then \@curtab :=G \@curtab + 1
+%     else error message ``Undefined Tab''   fi
+%   \@tempdima := \dimen\@curtab - \dimen\@curtabmar
+%                        - width of box \@curline
+%   \box\@curline :=G \hbox{\unhbox\@curline + \hskip\@tempdima}
+%   \@startfield
+%  END
+%
+% \@settab ==
+%  BEGIN
+%   \@stopfield
+%   \@addfield
+%   if \@curtab < \@maxtab
+%     then \@curtab :=G \@curtab+1
+%     else error message: ``Too many tabs''    fi
+%   if \@curtab > \@hightab
+%     then \@hightab :=L \@curtab    fi
+%   \dimen\@curtab :=L \dimen\@curtabmar + width of \box\@curline
+%   \@startfield
+%  END
+%
+% \@ltab ==
+%  BEGIN
+%   \@ifatmargin
+%     then if \@curtabmar > \@firsttab
+%            then \@curtab :=G \@curtab - 1
+%                 \@curtabmar :=G \@curtabmar - 1
+%            else error message ``Too many untabs''      fi
+%     else error message ``Left tab in middle of line''
+%   fi
+%  END
+%
+% \@tabplus ==
+%  BEGIN
+%        if  \@nxttabmar < \@hightab
+%           then \@nxttabmar :=G \@nxttabmar+1
+%           else error message ``Undefined tab''
+%        fi
+%  END
+%
+% \@tabminus ==
+%  BEGIN
+%        if \@nxttabmar > \@firsttab
+%           then \@nxttabmar :=G \@nxttabmar-1
+%           else error message ``Too many untabs''
+%        fi
+%  END
+%
+% \@tabrj ==
+%  BEGIN \@stopfield
+%        \@addfield
+%        @rjfield :=G T
+%        \@startfield
+%  END
+%
+% \@tablab ==
+%  BEGIN \@stopfield
+%      \box\@curline G:= \hbox{\box\@curline %% `G' added 17 Jun 86
+%                              \hskip - width of \box\@curfield
+%                              \hskip -\tabbingsep
+%                              \box\@curfield
+%                              \hskip \tabbingsep }
+%        \@startfield
+%  END
+%
+% \pushtabs ==
+%   BEGIN
+%     \@stopfield
+%     \@tabpush :=G \@tabpush + 1
+%     \begingroup
+%     \@contfield
+%   END
+%
+% \poptabs ==
+%  BEGIN
+%    \@stopfield
+%    if \@tabpush > 0
+%      then \endgroup
+%           \@tabpush :=G \@tabpush - 1
+%      else error message: ``Too many \poptabs''
+%    fi
+%    \@contfield
+%  END
+%
+% \end{oldcomments}
+%
+% \begin{macro}{\a}
+% The accents |\`| , |\'| , and |\=| that have been redefined inside a
+% tabbing environment can be called by typing |\a`| , |\a'| , and |\a=|.
+% The macro |\a| is defined in |ltoutenc.dtx|.
+% \changes{v1.0d}{1994/05/13}
+%         {moved to ltoutenc}
+% \end{macro}
+%
+%
+% The `2ekernel' code ensures that a |\usepackage{autotabg}| is
+% essentially ignored if a `full' format is being used that has
+% picture mode already in the format.
+%    \begin{macrocode}
+%<2ekernel>\expandafter\let\csname ver@autotabg.sty\endcsname\fmtversion
+%    \end{macrocode}
+%
+% \begin{macro}{\@firsttab}
+% \begin{macro}{\@maxtab}
+% \changes{v1.0c}{1994/05/07}{Changed \cs{@firsttab} to \cs{chardef}}
+% \changes{v1.0c}{1994/05/07}{Changed \cs{@maxtab} to \cs{chardef}}
+%    \begin{macrocode}
+%<*2ekernel>
+\newdimen\@gtempa
+\chardef\@firsttab=\the\allocationnumber
+\newdimen\@gtempa\newdimen\@gtempa\newdimen\@gtempa\newdimen\@gtempa
+\newdimen\@gtempa\newdimen\@gtempa\newdimen\@gtempa\newdimen\@gtempa
+\newdimen\@gtempa\newdimen\@gtempa\newdimen\@gtempa\newdimen\@gtempa
+\newdimen\@gtempa
+\chardef\@maxtab=\the\allocationnumber
+\dimen\@firsttab=0pt
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@nxttabmar}
+% \begin{macro}{\@curtabmar}
+% \begin{macro}{\@curtab}
+% \begin{macro}{\@hightab}
+% \begin{macro}{\@tabpush}
+%    \begin{macrocode}
+\newcount\@nxttabmar
+\newcount\@curtabmar
+\newcount\@curtab
+\newcount\@hightab
+\newcount\@tabpush
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@curline}
+% \begin{macro}{\@curfield}
+% \begin{macro}{\@tabfbox}
+%    \begin{macrocode}
+\newbox\@curline
+\newbox\@curfield
+\newbox\@tabfbox
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%
+% \begin{macro}{\if@rjfield}
+%    \begin{macrocode}
+\newif\if@rjfield
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@startline}
+% \changes{v1.1f}{1995/10/23}{(CAR)Ensure that \cs{@nxttabmar} is never
+% larger than \cs{@hightab}}
+%    It is, in some sense, an error if the current margin
+%    tab setting is higher than the value of |\@hightab| (which is
+%    a local variable).  That this is allowed is a fundamental design
+%    flaw which is not going to be corrected now.
+%    \begin{macrocode}
+\gdef\@startline{%
+     \ifnum \@nxttabmar >\@hightab
+       \@badtab
+       \global\@nxttabmar \@hightab
+     \fi
+     \global\@curtabmar \@nxttabmar
+     \global\@curtab \@curtabmar
+     \global\setbox\@curline \hbox {}%
+     \@startfield
+     \strut}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@stopline}
+%    \begin{macrocode}
+\gdef\@stopline{%
+  \unskip
+  \@stopfield
+  \if@rjfield
+    \global\@rjfieldfalse
+    \@tempdima\@totalleftmargin
+    \advance\@tempdima\linewidth
+    \hb@xt@\@tempdima{%
+      \@itemfudge\hskip\dimen\@curtabmar
+      \box\@curline
+      \hfil
+      \box\@curfield}%
+  \else
+    \@addfield
+    \hbox{\@itemfudge\hskip\dimen\@curtabmar\box\@curline}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@startfield}
+% \changes{v1.0d}{1994/05/13}
+%         {Colour support}
+%    \begin{macrocode}
+\gdef\@startfield{%
+  \global\setbox\@curfield\hbox\bgroup\color@begingroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@stopfield}
+% \changes{v1.0d}{1994/05/13}
+%         {Colour support}
+%    \begin{macrocode}
+\gdef\@stopfield{%
+  \color@endgroup\egroup}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@contfield}
+% \changes{v1.0d}{1994/05/13}
+%         {Colour support}
+%    \begin{macrocode}
+\gdef\@contfield{%
+  \global\setbox\@curfield\hbox\bgroup\color@begingroup
+  \unhbox\@curfield}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@addfield}
+%    \begin{macrocode}
+\gdef\@addfield{\global\setbox\@curline\hbox{\unhbox
+     \@curline\unhbox\@curfield}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ifatmargin}
+%    \begin{macrocode}
+\gdef\@ifatmargin{\ifdim \wd\@curline =\z@}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabcr}
+%    \begin{macrocode}
+\gdef\@tabcr{\@stopline \@ifstar{\penalty \@M \@xtabcr}\@xtabcr}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xtabcr}
+%    \begin{macrocode}
+\gdef\@xtabcr{\@ifnextchar[\@itabcr{\@startline\ignorespaces}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@itabcr}
+%    \begin{macrocode}
+\gdef\@itabcr[#1]{\vskip #1\@startline\ignorespaces}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\gdef\kill{\@stopfield\@startline\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tabbing}
+% \changes{v1.1f}{1995/10/23}{(CAR)Make \cs{@hightab} consistently a
+% local variable}
+% \changes{latex2e}{1993/12/13}{Removed optional argument of \cs{item}}
+%    We use |\relax| to prevent |\item| from scanning too far.
+%    \begin{macrocode}
+\gdef\tabbing{\lineskip \z@skip\let\>\@rtab\let\<\@ltab\let\=\@settab
+     \let\+\@tabplus\let\-\@tabminus\let\`\@tabrj\let\'\@tablab
+     \let\\=\@tabcr
+     \@hightab\@firsttab
+     \global\@nxttabmar\@firsttab
+     \dimen\@firsttab\@totalleftmargin
+     \global\@tabpush\z@ \global\@rjfieldfalse
+     \trivlist \item\relax
+     \if@minipage\else\vskip\parskip\fi
+%    \end{macrocode}
+% \changes{v1.1i}{1996/10/21}{Moved the \cs{indent} so that the
+% \cs{everypar} can remove it when necessary; this is needed because
+% the code for items in lists has changed (see pr/22111)}
+%    \begin{macrocode}
+     \setbox\@tabfbox\hbox{%
+       \rlap{\hskip\@totalleftmargin\indent\the\everypar}}%
+     \def\@itemfudge{\box\@tabfbox}%
+     \@startline\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endtabbing}
+%    \begin{macrocode}
+\gdef\endtabbing{%
+  \@stopline\ifnum\@tabpush >\z@ \@badpoptabs \fi\endtrivlist}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@rtab}
+% Omitted |\global| added to |\@rtab| 17 Jun 86
+%    \begin{macrocode}
+\gdef\@rtab{\@stopfield\@addfield\ifnum \@curtab<\@hightab
+      \global\advance\@curtab \@ne \else\@badtab\fi
+      \@tempdima\dimen\@curtab
+      \advance\@tempdima -\dimen\@curtabmar
+      \advance\@tempdima -\wd\@curline
+      \global\setbox\@curline\hbox{\unhbox\@curline\hskip\@tempdima}%
+      \@startfield\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@settab}
+% \changes{v1.1f}{1995/10/23}{(CAR)Ensure that \cs{@hightab} increases
+% by at most one}
+%    \begin{macrocode}
+\gdef\@settab{\@stopfield\@addfield
+  \ifnum \@curtab <\@maxtab
+    \ifnum\@curtab =\@hightab
+      \advance\@hightab \@ne
+    \fi
+    \global\advance\@curtab \@ne
+  \else
+    \@latex@error{Tab overflow}\@ehd
+  \fi
+  \dimen\@curtab \dimen\@curtabmar
+  \advance\dimen\@curtab \wd\@curline
+  \@startfield
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ltab}
+%    \begin{macrocode}
+\gdef\@ltab{\@ifatmargin\ifnum\@curtabmar >\@firsttab
+      \global\advance\@curtab \m@ne \global\advance\@curtabmar\m@ne\else
+      \@badtab\fi\else
+      \@latex@error{\string\<\space in mid line}\@ehd\fi\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabplus}
+%    \begin{macrocode}
+\gdef\@tabplus{%
+  \ifnum\@nxttabmar<\@hightab
+    \global\advance\@nxttabmar\@ne
+  \else
+    \@badtab
+  \fi
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabminus}
+%    \begin{macrocode}
+\gdef\@tabminus{%
+  \ifnum\@nxttabmar>\@firsttab
+    \global\advance\@nxttabmar\m@ne
+  \else
+    \@badtab
+  \fi
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabrj}
+%    \begin{macrocode}
+\gdef\@tabrj{%
+  \@stopfield\@addfield\global\@rjfieldtrue\@startfield\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tablab}
+% |\setbox\@curline| made |\global| in |\@tablab|. 17 Jun 86
+%    \begin{macrocode}
+\gdef\@tablab{%
+  \@stopfield
+  \global\setbox\@curline\hbox{%
+    \box\@curline
+    \hskip-\wd\@curfield \hskip-\tabbingsep
+    \box\@curfield
+    \hskip\tabbingsep}%
+  \@startfield
+  \ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pushtabs}
+%    \begin{macrocode}
+\gdef\pushtabs{%
+  \@stopfield\@addfield\global\advance\@tabpush \@ne \begingroup
+       \@contfield}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\poptabs}
+% \changes{v1.1f}{1995/10/23}{(CAR)Ensure that \cs{@curtab} is never
+% larger than \cs{@hightab}}
+%    It is, in some sense, an error if, after the endgroup, the current
+%    tab setting is higher than the new value of |\@hightab| (which is
+%    a local variable).  That this is allowed is a fundamental design
+%    flaw which is not going to be corrected now.
+%    \begin{macrocode}
+\gdef\poptabs{\@stopfield\@addfield
+  \ifnum \@tabpush >\z@
+    \endgroup
+    \global\advance\@tabpush \m@ne
+    \ifnum \@curtab >\@hightab
+      \global \@curtab \@hightab
+      \@badtab
+    \fi
+  \else
+    \@badpoptabs
+  \fi
+  \@contfield}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\tabbingsep}
+%    \begin{macrocode}
+\newdimen\tabbingsep
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \subsection{array and tabular environments}
+%
+% \begin{oldcomments}
+%
+% ARRAY PARAMETERS:
+%  \arraycolsep
+%       : half the width separating columns in an array environment
+%  \tabcolsep
+%       : half the width separating columns in a tabular environment
+%  \arrayrulewidth
+%       : width of rules
+%  \doublerulesep
+%       : space between adjacent rules in array or tabular
+%  \arraystretch
+%       : line spacing in array and tabular environments is done by
+%         placing a strut in every row of height and depth
+%         \arraystretch times the height and depth of the strut
+%         produced by an ordinary \strut command.
+%
+% PREAMBLE:
+%  The PREAMBLE argument of an array or tabular environment can
+%  contain the following:
+%    l,r,c  : indicate where entry is to be placed.
+%    |      : for vertical rule
+%    @{EXP} : inserts the text EXP in every column.
+%              \arraycolsep or \tabcolsep  spacing is suppressed.
+%    *{N}{PRE} : equivalent to writing N copies of PRE in the preamble.
+%                PRE may contain *{N'}{EXP'} expressions.
+%    p{LEN} : makes entry in parbox of width LEN.
+%
+% SPECIAL ARRAY COMMANDS:
+%   \multicolumn{N}{FORMAT}{ITEM} : replaces the next N column
+%    items by ITEM, formatted according to FORMAT.
+%    FORMAT should contain at most one l,r or c.
+%    If it contains none, then ITEM is ignored.
+%
+%   \vline : draws a vertical line the height of the current row.  May
+%            appear in an array element entry.
+%   \hline : draws a horizontal line between rows.  Must appear either
+%            before the first entry (to appear above the first row) or
+%             right after a \\ command.  If followed by another \hline,
+%             then adds a \vskip of \doublerulesep.
+%
+%   \cline[i-j] : draws horizontal lines between rows covering columns
+%                 i through j, inclusive.  Multiple commands may follow
+%                 one another to provide lines covering several disjoint
+%                 columns
+%   \extracolsep{WIDTH} : for use inside an @ in the preamble.  Causes
+%               a WIDTH space to be added between columns for the rest
+%                of the columns.  This is in addition to the ordinary
+%                intercolumn space.
+%
+%  \array ==
+%    BEGIN
+%      \@acol    == \@arrayacol
+%      \@classz  == \@arrayclassz
+%      \@classiv == \@arrayclassiv
+%      \\        == \@arraycr
+%      \@halignto == NULL
+%      \@tabarray
+%    END
+%
+%  \endarray{NAME} ==  BEGIN  \crcr }}  END
+%
+%  \tabular  ==
+%    BEGIN
+%      \@halignto == NULL
+%      \@tabular
+%    END
+%
+%  \tabular*{WIDTH} ==
+%    BEGIN
+%      \@halignto == to WIDTH
+%      \@tabular
+%    END
+%
+%  \@tabular ==
+%    BEGIN
+%      \leavevmode
+%      \hbox { $
+%         \@acol    == \@tabacol
+%         \@classz  == \@tabclassz
+%         \@classiv == \@tabclassiv
+%         \\        == \@tabularcr
+%         \@tabarray
+%    END
+%
+%  \endtabular == BEGIN \crcr}} $} END
+%
+%  \@tabarray == if next char = [ then \@array else \@array[c] fi
+%
+%  \@array[POS]{PREAMBLE} ==
+%    BEGIN
+%      define \@arstrutbox to make \@arstrut produce strut of height
+%        and depth \arraystretch times the height and
+%        depth of a normal strut.
+%      \@mkpream{PREAMBLE}
+%      \@preamble == \halign \@halignto {\tabskip=0pt\@arstrut
+%                              eval{\@preamble}\tabskip = 0pt\cr %%}
+%      \@startpbox == \@@startpbox
+%      \@endpbox == \@@endpbox
+%      if POS = t then \vtop
+%                 else if POS = b then \vbox
+%                                 else \vcenter
+%      fi              fi
+%     {
+%      \par          ==L {} % changed 92/09/18
+%      \@sharp       == #
+%      \protect      == \relax
+%      \lineskip     :=L 0pt
+%      \baselineskip :=L 0pt
+%      \@preamble
+%    END
+%
+%
+%  \@arraycr ==
+%   BEGIN
+%     $              %% Prevents extra space at end of row's last entry.
+%     if next char = [
+%      then  \@argarraycr
+%      else  $ \cr         %% Needed to balance $
+%   END
+%
+%  \@argarraycr[LENGTH] ==
+%   BEGIN
+%     $                    %% Needed to balance $ of \@arraycr
+%     if LENGTH > 0
+%       then  \@tempdima := depth of \@arstrutbox + LENGTH
+%             \vrule height 0pt width 0pt depth \@tempdima
+%             \cr
+%       else  \cr \noalign{\vskip LENGTH}
+%   END
+%
+%  \@tabularcr and \@argtabularcr  same as \@arraycr and \@argarraycr
+%  except without the extra $'s.
+% \end{oldcomments}
+%
+%
+% \begin{macro}{\extracolsep}
+%    \begin{macrocode}
+\def\extracolsep#1{\tabskip #1\relax}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\array}
+%    \begin{macrocode}
+\def\array{\let\@acol\@arrayacol \let\@classz\@arrayclassz
+ \let\@classiv\@arrayclassiv
+ \let\\\@arraycr\let\@halignto\@empty\@tabarray}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endarray}
+% \begin{macro}{\endtabular}
+% \begin{macro}{\endtabular*}
+%    \begin{macrocode}
+\def\endarray{\crcr\egroup\egroup}
+\def\endtabular{\crcr\egroup\egroup $\egroup}
+\expandafter \let \csname endtabular*\endcsname = \endtabular
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\tabular}
+%    \begin{macrocode}
+\def\tabular{\let\@halignto\@empty\@tabular}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\tabular*}
+% \changes{v1.1j}{1998/05/18}{Use \cs{setlength}, so that
+%           calc extensions apply.}
+%    Note that the change to use |\setlength| slightly alters the
+%    timing of the expansion and use of the length in |#1| but this is
+%    very unlikely to have any practical effect.
+% \changes{latex2e}{1993/08/05}{Replaced \cs{expandafter}\cs{def}
+%             by \cs{@namedef}.}
+%    \begin{macrocode}
+\@namedef{tabular*}#1{%
+ \setlength\dimen@{#1}%
+   \edef\@halignto{to\the\dimen@}\@tabular}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabular}
+%    \begin{macrocode}
+\def\@tabular{\leavevmode \hbox \bgroup $\let\@acol\@tabacol
+   \let\@classz\@tabclassz
+   \let\@classiv\@tabclassiv \let\\\@tabularcr\@tabarray}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@tabarray}
+% RmS 91/11/04 added |\m@th|.
+%    \begin{macrocode}
+\def\@tabarray{\m@th\@ifnextchar[\@array{\@array[c]}}
+%    \end{macrocode}
+% \end{macro}
+%
+% RmS 1993/11/03 changed |\halign| to |\ialign| and removed superfluous
+%              |\tabskip| assignment
+%
+%
+% \changes{v1.1i}{1996/10/21}{Moved the code associated with
+% \cs{@mkpream} into the group provided by the box, for robustness
+% (latex/2183)}
+% \begin{macro}{\@array}
+%    \begin{macrocode}
+\def\@array[#1]#2{%
+  \if #1t\vtop \else \if#1b\vbox \else \vcenter \fi\fi
+%    \end{macrocode}
+% \changes{LaTeX2.09}{1992/09/18}
+%     {Changed \cs{par} to \cs{@empty} to avoid starting new row
+%               e.g. after \cs{hline}}
+%    \begin{macrocode}
+  \bgroup
+%    \end{macrocode}
+% This next bit of code sets up the strut and then builds the halign
+% and its preamble according to the specification in the second
+% argument.
+%
+% This code has been moved inside the box.
+% A side effect of this has been to expose what was a buglet in the
+% previous version: since the |\@arstrut| below is expanded and
+% contains an |\ifmmode| then it could produce an unnecessary extra
+% box in every row, thus wasting `lots of' main memory.
+%    \begin{macrocode}
+  \setbox\@arstrutbox\hbox{%
+    \vrule \@height\arraystretch\ht\strutbox
+           \@depth\arraystretch \dp\strutbox
+           \@width\z@}%
+  \@mkpream{#2}%
+  \edef\@preamble{%
+    \ialign \noexpand\@halignto
+      \bgroup \@arstrut \@preamble \tabskip\z@skip \cr}%
+%    \end{macrocode}
+% That is the end of setting up the preamble; now we reset
+% things before executing the halign built-up in |\@preamble|.
+% The restorations could be done by introducing an extra group,
+% thus saving tokens.
+% \changes{v1.0k}{1994/12/08}{Add \cs{tabularnewline}}
+% \changes{v1.1i}{1996/10/21}{Use \cs{set@typeset@protect}}
+%    \begin{macrocode}
+  \let\@startpbox\@@startpbox \let\@endpbox\@@endpbox
+  \let\tabularnewline\\%
+    \let\par\@empty
+    \let\@sharp##%
+    \set@typeset@protect
+    \lineskip\z@skip\baselineskip\z@skip
+%    \end{macrocode}
+%    If the parsing of the preamble goes wrong there my be some
+%    characters left which \TeX{} then tries to typeset, i.e., we
+%    would be in horizontal mode. That would produce an endless loop
+%    because the |\halign| expects vertical mode thus issues a |\par|
+%    but that is a no-op at this point. So we better test this case
+%    issue some error message and make a crude recovery by ending that
+%    horizontal mode with force.
+%    A better fix would be to ensure that we never pick up more than a
+%    single character token (not done).
+% \changes{v1.1m}{1998/11/13}{Check for hmode to see if something
+%     went wrong during parsing (pr/2884)}
+%    \begin{macrocode}
+    \ifhmode \@preamerr\z@ \@@par\fi
+    \@preamble}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@arraycr}
+% Array version of |\\|.
+%    \begin{macrocode}
+\def\@arraycr{%
+  ${\ifnum0=`}\fi\@ifstar\@xarraycr\@xarraycr}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@arraycr}
+%    \begin{macrocode}
+\def\@xarraycr{\@ifnextchar[\@argarraycr{\ifnum0=`{\fi}${}\cr}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@argarraycr}
+%    \begin{macrocode}
+\def\@argarraycr[#1]{%
+  \ifnum0=`{\fi}${}\ifdim #1>\z@ \@xargarraycr{#1}\else
+   \@yargarraycr{#1}\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\tabularnewline}
+% \changes{v1.0i}{1994/11/14}{(DPC) Macro added}
+% \changes{v1.0k}{1994/12/08}{(DPC) Made it \cs{relax}}
+% Tabular version of |\\|.
+%    \begin{macrocode}
+\let\tabularnewline\relax
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@tabularcr}
+%    \begin{macrocode}
+\def\@tabularcr{%
+  {\ifnum0=`}\fi\@ifstar\@xtabularcr\@xtabularcr}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@xtabularcr}
+%    \begin{macrocode}
+\def\@xtabularcr{\@ifnextchar[\@argtabularcr{\ifnum0=`{\fi}\cr}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@argtabularcr}
+%    \begin{macrocode}
+\def\@argtabularcr[#1]{%
+  \ifnum0=`{\fi}%
+    \ifdim #1>\z@
+      \unskip\@xargarraycr{#1}%
+    \else
+      \@yargarraycr{#1}%
+    \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@xargarraycr}
+%    \begin{macrocode}
+\def\@xargarraycr#1{\@tempdima #1\advance\@tempdima \dp \@arstrutbox
+   \vrule \@height\z@ \@depth\@tempdima \@width\z@ \cr}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@yargarraycr}
+%    \begin{macrocode}
+\def\@yargarraycr#1{\cr\noalign{\vskip #1}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\multicolumn}
+% \begin{oldcomments}
+% \multicolumn{NUMBER}{FORMAT}{ITEM} ==
+%  BEGIN
+%  \multispan{NUMBER}
+%  \begingroup
+%  \@addamp == null
+%  \@mkpream{FORMAT}
+%  \@sharp == ITEM
+%  \protect == \relax
+%  \@startpbox == \@@startpbox
+%  \@endpbox == \@@endpbox
+%  \@arstrut
+%  \@preamble
+%  \endgroup
+%  END
+% \end{oldcomments}
+%
+% The command |\def\@addamp{}| was removed from |\multicolumn| on
+% 6 Dec 86 because it caused embedded array environments not to work.  I
+% think that it was included originally to prevent an error message if
+% the 2nd argument to the |\multicolumn| command had two column
+% specifiers.
+%
+% 8 Feb 89 --- |\hbox{}| added after |\@preamble| to correct bug that
+%            occurred if |\multicolumn| preceded |\\[D]| with |D > 0|,
+%            caused by |\\[]| command doing an |\unskip|, which removed
+%            |\tabcolsep| glue inserted by |\multicolumn|.
+%
+%
+% \changes{v1.0h}{1994/11/04}{(ASAJ) added \cs{set@typeset@protect}.}
+% \changes{v1.1i}{1996/10/21}{Make \cs{multicolumn} long (latex/2180)}
+% This has been made long so that, for example, a |p|-column can
+% contain multiple paragraphs; maybe the arguments of |@|-expressions
+% should also be able to contain multiple paragraphs.
+%    \begin{macrocode}
+\long\def\multicolumn#1#2#3{\multispan{#1}\begingroup
+  \@mkpream{#2}%
+  \def\@sharp{#3}\set@typeset@protect
+  \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox
+  \@arstrut \@preamble\hbox{}\endgroup\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{oldcomments}
+% Codes for classes and character numbers of array, tabular and
+% multicolumn arguments.
+%
+%    Character     Class       Number
+%    ---------     -----       ------
+%        c           0           0
+%        l           0           1
+%        r           0           2
+%
+%        |           1           -
+%        @           2           -
+%        p           3           -
+%      {@-exp}       4           -
+%      {p-arg}       5           -
+%
+% \@testpach \foo : expands \foo, which should be an array parameter
+%           token, and sets \@chclass and \@chnum to its class and
+%           number. Uses \@lastchclass to distinguish 4 and 5
+%
+% Preamble error codes
+%    0: 'illegal character'
+%    1: 'Missing @-exp'
+%    2: 'Missing p-arg'
+%
+% \@addamp ==
+%   BEGIN if @firstamp = true then @firstamp := false
+%                             else &                     fi
+%   END
+%
+% \@mkpream TOKENLIST ==
+%   BEGIN
+%    @firstamp     := T
+%    \@lastchclass := 6
+%    \@preamble    == null
+%    \@sharp       == \relax
+%    \protect      == BEGIN \noexpand\protect\noexpand END
+%    \@startpbox   == \relax
+%    \@endpbox     == \relax
+%    \@expast{TOKENLIST}
+%    for \@nextchar := expand(\reserved@a)
+%      do  \@testpach{\@nextchar}
+%          case of \@chclass
+%            0 -> \@classz
+%            1 -> \@classi
+%              ...
+%            5 -> \@classv
+%          end case
+%          \@lastchclass := \@chclass
+%      od
+%      case of \@lastchclass
+%         0 -> \hskip \arraycolsep             % lrc
+%         1 ->                                  % |
+%         2 -> \@preamerr1 % 'Missing @-exp'    % @
+%         3 -> \@preamerr2 % 'Missing p-arg'    % p
+%         4 ->                                  % @-exp
+%         5 -> \hskip \arraycolsep             % p-exp
+%      end case
+%   END
+%
+%  \@arrayclassz ==
+%    BEGIN
+%      \@preamble := \@preamble *
+%               case of \@lastchclass
+%                  0 -> \hskip \arraycolsep \@addamp \hskip \arraycolsep
+%                  1 -> \@addamp \hskip \arraycolsep
+%                  2 ->  % impossible
+%                  3 ->  % impossible
+%                  4 -> \@addamp
+%                  5 -> \hskip \arraycolsep \@addamp \hskip \arraycolsep
+%                  6 -> \@addamp \hskip \arraycolsep
+%                end case
+%              * case of \@chnum
+%                   0 -> \hfil$\relax\@sharp$\hfil
+%                   1 -> $\relax\@sharp$\hfil
+%                   2 -> \hfil$\relax\@sharp$
+%                end case
+%    END
+%
+% \@tabclassz == similar to \@arrayclassz
+%
+% \@classi ==
+%  BEGIN
+%    \@preamble := \@preamble *
+%                  case of \@lastchclass
+%                     0 -> \hskip \arraycolsep \@arrayrule
+%                     1 -> \hskip \doublerulesep \@arrayrule
+%                     2 -> % impossible
+%                     3 -> % impossible
+%                     4 -> \@arrayrule
+%                     5 -> \hskip \arraycolsep \@arrayrule
+%                     6 -> \@arrayrule
+%                  end case
+%  END
+%
+% \@classii ==
+%  BEGIN
+%    \@preamble := \@preamble *
+%                  case of \@lastchclass
+%                     0    ->
+%                     1    -> \hskip .5\arrayrulewidth
+%                     2    -> % impossible
+%                     else ->
+%                  end case
+%  END
+%
+% \@classiii ==
+%  BEGIN
+%    \@preamble := \@preamble *
+%               case of \@lastchclass
+%                  0 -> \hskip \arraycolsep \@addamp \hskip \arraycolsep
+%                  1 -> \@addamp \hskip \arraycolsep
+%                  2 -> % impossible
+%                  3 -> % impossible
+%                  4 -> \@addamp
+%                  5 -> \hskip \arraycolsep \@addamp \hskip \arraycolsep
+%                  6 -> \@addamp \hskip \arraycolsep
+%                end case
+%  END
+%
+% \@arrayclassiv  ==
+%      BEGIN  \@preamble := \@preamble * $ \@nextchar$  END
+%
+% \@tabclassiv   == same as \@arrayclassv except without the $ ... $
+%
+% \@classv ==
+%   BEGIN
+%    \@preamble :=
+%        \@preamble * \@startpbox{\@nextchar}\ignorespaces\@sharp
+%                               \@endpbox
+%   END
+%
+% \@expast{S}:
+%  Sets \reserved@a := S with all instances of *{N}{STRING}
+%  replaced by N copies of STRING, where N > 0.  An *
+%  appearing inside braces is ignored, but *-expressions
+%  inside STRING are expanded, so nested *-expressions are
+%  handled properly.
+%
+% \@expast{S} == BEGIN  \@xexpast S *0x\@@  END
+%
+% \@xexpast S1 *{N}{S2} S3 \@@ ==
+%  BEGIN
+%    \reserved@a   := S1
+%    \@tempcnta := N
+%    if \@tempcnta > 0
+%      then  while \@tempcnta > 0 do \reserved@a   := \reserved@a S2
+%                                   \@tempcnta := \@tempcnta - 1 od
+%            \reserved@b == \@xexpast
+%      else  \reserved@b == \@xexnoop
+%    fi
+%    \expandafter \reserved@b \reserved@a S3 \@@
+%  END
+% \end{oldcomments}
+%
+%
+%  \begin{macro}{\@xexnoop}
+%    \begin{macrocode}
+\def\@xexnoop #1\@@{}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@expast}
+%    \begin{macrocode}
+\def\@expast#1{\@xexpast #1*0x\@@}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@xexpast}
+%    \begin{macrocode}
+\def\@xexpast#1*#2#3#4\@@{%
+  \edef\reserved@a{#1}%
+  \@tempcnta#2\relax
+  \ifnum\@tempcnta>\z@
+    \@whilenum\@tempcnta>\z@\do
+       {\edef\reserved@a{\reserved@a#3}\advance\@tempcnta \m@ne}%
+    \let\reserved@b\@xexpast
+  \else
+    \let\reserved@b\@xexnoop
+  \fi
+  \expandafter\reserved@b\reserved@a #4\@@}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\if@firstamp}
+%  \begin{macro}{\@addamp}
+%    \begin{macrocode}
+\newif\if@firstamp
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@addamp{%
+  \if@firstamp
+    \@firstampfalse
+  \else
+    \edef\@preamble{\@preamble &}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@arrayacol}
+%  \begin{macro}{\@tabacol}
+%  \begin{macro}{\@ampacol}
+%  \begin{macro}{\@acolampacol}
+%    \begin{macrocode}
+\def\@arrayacol{\edef\@preamble{\@preamble \hskip \arraycolsep}}
+\def\@tabacol{\edef\@preamble{\@preamble \hskip \tabcolsep}}
+\def\@ampacol{\@addamp \@acol}
+\def\@acolampacol{\@acol\@addamp\@acol}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@mkpream}
+% \changes{v1.0h}{1994/11/04}{(ASAJ) Added \cs{@unexpandable@protect}
+%    to \cs{@mkpream}.}
+%    \begin{macrocode}
+\def\@mkpream#1{\@firstamptrue\@lastchclass6
+  \let\@preamble\@empty
+  \let\protect\@unexpandable@protect
+  \let\@sharp\relax
+  \let\@startpbox\relax\let\@endpbox\relax
+  \@expast{#1}%
+  \expandafter\@tfor \expandafter
+    \@nextchar \expandafter:\expandafter=\reserved@a\do
+       {\@testpach\@nextchar
+    \ifcase \@chclass \@classz \or \@classi \or \@classii \or \@classiii
+      \or \@classiv \or\@classv \fi\@lastchclass\@chclass}%
+  \ifcase \@lastchclass \@acol
+      \or \or \@preamerr \@ne\or \@preamerr \tw@\or \or \@acol \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@arrayclassz}
+%    \begin{macrocode}
+\def\@arrayclassz{\ifcase \@lastchclass \@acolampacol \or \@ampacol \or
+   \or \or \@addamp \or
+   \@acolampacol \or \@firstampfalse \@acol \fi
+\edef\@preamble{\@preamble
+  \ifcase \@chnum
+     \hfil$\relax\@sharp$\hfil \or $\relax\@sharp$\hfil
+    \or \hfil$\relax\@sharp$\fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@tabclassz}
+% RmS 91/08/14 inserted extra braces around entry for NFSS
+%    \begin{macrocode}
+\def\@tabclassz{%
+  \ifcase\@lastchclass
+    \@acolampacol
+  \or
+    \@ampacol
+  \or
+  \or
+  \or
+    \@addamp
+  \or
+    \@acolampacol
+  \or
+    \@firstampfalse\@acol
+  \fi
+  \edef\@preamble{%
+    \@preamble{%
+      \ifcase\@chnum
+        \hfil\ignorespaces\@sharp\unskip\hfil
+      \or
+%    \end{macrocode}
+% \changes{v1.1g}{1996/04/22}
+%     {(DPC) Extra \cs{hskip} keeps tabcolsep in empty columns
+%             internal/2122}
+% \changes{v1.1h}{1996/06/14}
+%     {(DPC) Change both\cs{z@skip} to 1sp for latex/2160}
+%    \begin{macrocode}
+        \hskip1sp\ignorespaces\@sharp\unskip\hfil
+      \or
+        \hfil\hskip1sp\ignorespaces\@sharp\unskip
+      \fi}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@classi}
+%    \begin{macrocode}
+\def\@classi{%
+  \ifcase\@lastchclass
+    \@acol\@arrayrule
+  \or
+    \@addtopreamble{\hskip \doublerulesep}\@arrayrule
+  \or
+  \or
+  \or
+    \@arrayrule
+  \or
+    \@acol\@arrayrule
+  \or
+    \@arrayrule
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@classii}
+%    \begin{macrocode}
+\def\@classii{%
+  \ifcase\@lastchclass
+  \or
+    \@addtopreamble{\hskip .5\arrayrulewidth}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@classiii}
+%    \begin{macrocode}
+\def\@classiii{\ifcase \@lastchclass \@acolampacol \or
+   \@addamp\@acol \or
+   \or \or \@addamp \or
+   \@acolampacol \or \@ampacol \fi}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@tabclassiv}
+%    \begin{macrocode}
+\def\@tabclassiv{\@addtopreamble\@nextchar}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@arrayclassiv}
+%    \begin{macrocode}
+\def\@arrayclassiv{\@addtopreamble{$\@nextchar$}}
+%    \end{macrocode}
+% \end{macro}
+%
+%  \begin{macro}{\@classv}
+%    \begin{macrocode}
+\def\@classv{\@addtopreamble{\@startpbox{\@nextchar}\ignorespaces
+\@sharp\@endpbox}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@addtopreamble}
+%    \begin{macrocode}
+\def\@addtopreamble#1{\edef\@preamble{\@preamble #1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@chclass}
+% \begin{macro}{\@lastchclass}
+% \begin{macro}{\@chnum}
+%    \begin{macrocode}
+\newcount\@chclass
+\newcount\@lastchclass
+\newcount\@chnum
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\arraycolsep}
+% \begin{macro}{\tabcolsep}
+% \begin{macro}{\arrayrulewidth}
+% \begin{macro}{\doublerulesep}
+%    \begin{macrocode}
+\newdimen\arraycolsep
+\newdimen\tabcolsep
+\newdimen\arrayrulewidth
+\newdimen\doublerulesep
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\arraystretch}
+%    \begin{macrocode}
+\def\arraystretch{1}    % Default value.
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@arstrutbox}
+% \begin{macro}{\@arstrut}
+%    \begin{macrocode}
+\newbox\@arstrutbox
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@arstrut{%
+  \relax\ifmmode\copy\@arstrutbox\else\unhcopy\@arstrutbox\fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@arrayrule}
+%    \begin{macrocode}
+\def\@arrayrule{\@addtopreamble{\hskip -.5\arrayrulewidth
+   \vrule \@width \arrayrulewidth\hskip -.5\arrayrulewidth}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@testpatch}
+%    \begin{macrocode}
+\def\@testpach#1{\@chclass \ifnum \@lastchclass=\tw@ 4 \else
+    \ifnum \@lastchclass=3 5 \else
+     \z@ \if #1c\@chnum \z@ \else
+                              \if #1l\@chnum \@ne \else
+                              \if #1r\@chnum \tw@ \else
+          \@chclass \if #1|\@ne \else
+                    \if #1@\tw@ \else
+                    \if #1p3 \else \z@ \@preamerr 0\fi
+  \fi  \fi  \fi  \fi  \fi  \fi
+\fi}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\hline}
+%    \begin{macrocode}
+\def\hline{%
+  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet
+   \reserved@a\@xhline}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xhline}
+%    \begin{macrocode}
+\def\@xhline{\ifx\reserved@a\hline
+               \vskip\doublerulesep
+%    \end{macrocode}
+%    Measure from the middle of the rules.
+% \changes{latex2e}{1993/12/16}{Measure from middle of vertical rules}
+%    \begin{macrocode}
+               \vskip-\arrayrulewidth
+             \fi
+      \ifnum0=`{\fi}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\vline}
+%    \begin{macrocode}
+\def\vline{\vrule \@width \arrayrulewidth}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\cline}
+% \changes{v1.1c}{1995/09/14}
+%     {(DPC) New implementation}
+% \begin{macro}{\@cline}
+% The old \LaTeX2.09 implementation of |\cline| used up quite
+% a lot of memory and two precious count registers.
+% This new (1995/09/14) implementation does not use any count registers.
+% It is coded in a way that depends heavily on the definition of
+% |\multispan| so that command has been moved here from the file
+% |ltplain.dtx|.
+%
+% These counters are no longer declared.
+%\begin{verbatim}
+% \newcount\@cla
+% \newcount\@clb
+%\end{verbatim}
+%
+%    \begin{macrocode}
+\def\cline#1{\@cline#1\@nil}
+%    \end{macrocode}
+%
+% \changes{v1.1e}{1995/10/17}
+%     {(DPC) Use \cs{@multicnt}}
+%    \begin{macrocode}
+\def\@cline#1-#2\@nil{%
+  \omit
+%    \end{macrocode}
+% Use the counter from |\multispan|.
+%    \begin{macrocode}
+  \@multicnt#1%
+  \advance\@multispan\m@ne
+  \ifnum\@multicnt=\@ne\@firstofone{&\omit}\fi
+  \@multicnt#2%
+  \advance\@multicnt-#1%
+  \advance\@multispan\@ne
+%    \end{macrocode}
+% The original had |\unskip| at this point,
+% but how could a skip get here ???
+%    \begin{macrocode}
+  \leaders\hrule\@height\arrayrulewidth\hfill
+  \cr
+%    \end{macrocode}
+% This is back spacing is fairly horrible,
+% but it is what happened in the old version\ldots\
+% An alternative would be to make |\cline| look ahead for a following
+% |\cline| as does |\hline|. This would alter the spacing in existing
+% documents so keep the old version in the kernel. Perhaps a package
+% should do this differently.
+%    \begin{macrocode}
+  \noalign{\vskip-\arrayrulewidth}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\mscount}
+% The |\mscount| counter is no longer declared, saving a csname and a
+% register. It is declared in compatibility mode.
+% \end{macro}
+%
+% \begin{macro}{\multispan}
+% \begin{macro}{\@multispan}
+% \changes{v1.1e}{1995/10/17}
+%     {(DPC) Macro added.}
+% \begin{macro}{\sp@n}
+% Modify |\multispan| slightly from its plain \TeX\ definition
+% to allow more efficient code sharing with |\multicolumn|.
+% Also share a count register with |\multiput|.
+%    \begin{macrocode}
+\def\multispan{\omit\@multispan}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@multispan#1{%
+  \@multicnt#1\relax
+  \loop\ifnum\@multicnt>\@ne \sp@n\repeat}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\sp@n{\span\omit\advance\@multicnt\m@ne}
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+%
+% \begin{macro}{\@startpbox}
+% \begin{macro}{\@endpbox}
+% Helper macros for `p' columns.
+%
+% |\@startpbox|\marg{width} \emph{text} |\egroup| is essentially
+% |\parbox|\marg{width}\marg{text}
+%
+% |\@endpbox| is essentially  |\unskip \strut \par \egroup\hfil|
+%  (Changed 14 Jan 89) (changed again 1994/05/13)
+%
+% \changes{v1.0d}{1994/05/03}
+%     {Use \cs{@finalstrut} based on depth of \cs{@arstrutbox}}
+
+% \changes{v1.1j}{1998/05/18}{Use \cs{setlength} to set \cs{hsize},
+%      so that the changes in the calc package apply here.}
+%    \begin{macrocode}
+\def\@startpbox#1{\vtop\bgroup \setlength\hsize{#1}\@arrayparboxrestore}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\def\@endpbox{\@finalstrut\@arstrutbox\par\egroup\hfil}
+%    \end{macrocode}
+%
+% 14 Jan 89: Def of |\@endpbox| changed from\\
+%    |\def\@endpbox{\par\vskip\dp\@arstrutbox\egroup\hfil}|\\
+% so vertical spacing works out right if the last line of a `p' entry
+% has a descender.
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@@startpbox}
+% \begin{macro}{\@@endpbox}
+%    \begin{macrocode}
+\let\@@startpbox=\@startpbox
+\let\@@endpbox=\@endpbox
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%    \begin{macrocode}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%

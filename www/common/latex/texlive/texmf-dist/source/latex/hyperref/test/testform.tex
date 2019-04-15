@@ -1,0 +1,50 @@
+%\begin{Form}[action=http:www.rhbnc.ac.uk/htbin/shew-fields,html,method=post]
+
+\documentclass{article}
+\usepackage[bookmarks=false]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{10pt}
+\begin{document}
+\begin{Form}[action=mailto:srahtz,encoding=html,method=post]
+
+\TextField[width=3in,name=xname,value={Bilbo Baggins}]
+    {Full name:  }
+
+%\TextField[name=warfs,validate={AFRange_Validate\string\(true, 1, true, 13\string\);}]
+%    {How many dwarves came along:  }
+
+\TextField[multiline,width=1in,name=address,borderstyle=D,
+    color=1 1 1,backgroundcolor=0 0 .5,
+    value={Bag End, The Hill, Hobbiton}]{Address: }
+
+\ChoiceMenu[default=Home,menulength=3,width=2in,name=travel,default=Beorn]
+     {Favorite part of your travels:}
+     {Trolls,Misty Mountains,Beorn,Mirkwood,Elves,Laketown,%
+     Smaug,The Battle}
+
+Have you still got your:
+\CheckBox[]{Sword}
+\CheckBox[name=coat]{Mithril coat}
+%\CheckBox[name=ring,checked]{\textbf{Ring!}}
+\CheckBox[name=ring,checked]{Ring!}
+
+\ChoiceMenu[radio,default=Again,name=next,borderwidth=3,bordercolor=0 1 0]
+     {Do you want to:}
+     {Do it all again=Again,
+      Pretend it never happened=Forget,
+      Write a book about it=Write}
+
+%\TextField[password,name=made]{\emph{Who} made the ring? }
+\TextField[password,name=made]{Who made the ring? }
+
+\ChoiceMenu[combo,default=Bofur,name=whatdwarf,
+     ]{Select funniest name, or add one}
+     {Bofur,Thorin,Gollum,Smaug,Gandalf}
+
+%\PushButton[name=xxx,onclick={app.beep(0)}]{Make a horrid beep}
+
+\Submit{Send} 
+\Reset{Clear}
+
+\end{Form}
+\end{document}

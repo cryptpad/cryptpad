@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='twoopt'>
+  <name>twoopt</name>
+  <caption>Definitions with two optional arguments.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='1999,2006,2008'/>
+  <license type='lppl1.3'/>
+  <version number='1.5'/>
+  <description>
+    Variants of <tt>\newcommand</tt>, <tt>\renewcommand</tt> and
+    <tt>\providecommand</tt> are provided.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/twoopt.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/twoopt.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

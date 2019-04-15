@@ -1,0 +1,290 @@
+% \iffalse meta-comment
+%
+% Copyright 1993-2015
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file.
+%
+% This file is part of the LaTeX base system.
+% -------------------------------------------
+%
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+% This file has the LPPL maintenance status "maintained".
+%
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
+%
+% The list of derived (unpacked) files belonging to the distribution
+% and covered by LPPL is defined by the unpacking scripts (with
+% extension .ins) which are part of the distribution.
+%
+% \fi
+%
+% \iffalse
+%%% From File: ltthm.dtx
+%<*driver>
+% \fi
+\ProvidesFile{ltthm.dtx}
+             [2014/09/29 v1.0f LaTeX Kernel (Theorems)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltthm.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+
+\begin{document}
+ \MaintainedByLaTeXTeam{latex}
+ \maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{115}
+%
+% \section{Theorem Environments}
+%
+%
+%  The user creates his own theorem-like environments with the command\\
+%      |\newtheorem|\marg{name}\marg{text}\oarg{counter}  or\\
+%      |\newtheorem|\marg{name}\oarg{oldname}\marg{text}\\
+%  This defines the environment \meta{name} to be just as one would
+%  expect a theorem environment to be, except that it prints \meta{text}
+%  instead of ``Theorem''.
+%
+%  If \meta{oldname} is given, then environments \meta{name} and
+%  \meta{oldname} use the same counter, so using a \meta{name}
+%  environment advances the number of the next \meta{name} environment,
+%  and vice-versa.
+%
+%  If \meta{counter} is given, then environment \meta{name} is numbered
+%  within \meta{counter}.
+%
+%  E.g., if \meta{counter} = |subsection|, then the first \meta{name} in
+%  subsection 7.2 is numbered \meta{text} 7.2.1.
+%
+%  The way \meta{name} environments are numbered can be changed by
+%  redefining |\the|\meta{name}.
+%
+% \StopEventually{}
+%
+%
+% \changes{v1.0a}{1994/03/28}{Initial version, split from latex.dtx}
+% \changes{v1.0c}{1994/05/25}{Modify documentation}
+% \changes{v1.0f}{1995/10/10}{Make \cs{newtheorem} `only preamble'}
+% \changes{v1.0g}{1995/10/16}
+%      {Revert to previous \cs{newtheorem} behaviour}
+%
+% \begin{oldcomments}
+%
+%  DOCUMENT STYLE PARAMETERS
+%
+%  \@thmcounter{COUNTER} : A command such that
+%               \edef\theCOUNTER{\@thmcounter{COUNTER}}
+%     defines \theCOUNTER to produce a number for a theorem environment.
+%     The default is:
+%            BEGIN \noexpand\arabic{COUNTER} END
+%
+%  \@thmcountersep : A separator placed between a theorem number and
+%         the number of the counter within which it is numbered.
+%         E.g., to make the third theorem of section 7.2 be numbered
+%         7.2-3, \@thmcountersep should be \def'ed to '-'.  Its
+%         default is '.'.
+%
+%  \@begintheorem{NAME}{NUMBER} : A command that begins a theorem
+%         environment for a 'theorem' named 'NAME NUMBER' --
+%         e.g., \@begintheorem{Lemma}{3.7} starts Lemma 3.7.
+%
+%  \@opargbegintheorem{NAME}{NUMBER}{OPARG} :
+%         A command that begins a theorem
+%         environment for a 'theorem' named 'NAME NUMBER' with optional
+%         argument OPARG -- e.g., \@begintheorem{Lemma}{3.7}{Jones}
+%         starts `Lemma 3.7 (Jones):'.
+%
+%  \@endtheorem : A command that ends a theorem environment.
+%
+% \newtheorem{NAME}{TEXT}[COUNTER] ==
+%   BEGIN
+%     if \NAME is definable
+%       then \@definecounter{NAME}
+%            if COUNTER present
+%              then \@newctr{NAME}[COUNTER] fi
+%                   \theNAME ==  BEGIN \theCOUNTER \@thmcountersep
+%                                       eval\@thmcounter{NAME}      END
+%              else \theNAME ==  BEGIN eval\@thmcounter{NAME} END
+%            \NAME == \@thm{NAME}{TEXT}
+%            \endNAME == \@endtheorem
+%       else  error
+%     fi
+%   END
+%
+% \newtheorem{NAME}[OLDNAME]{TEXT}==
+%   BEGIN
+%     if counter OLDNAME nonexistent
+%       then ERROR
+%       else
+%            if \NAME is definable
+%              then BEGIN
+%                   \theNAME == \theOLDNAME
+%                   \NAME == \@thm{OLDNAME}{TEXT}
+%                   \endNAME == \@endtheorem
+%                   END
+%              else  error
+%            fi
+%     fi
+%   END
+%
+% \@thm{NAME}{TEXT} ==
+%   BEGIN
+%    \refstepcounter{NAME}
+%    if next char = [
+%       then \@ythm{NAME}{TEXT}
+%       else \@xthm{NAME}{TEXT}
+%    fi
+%   END
+%
+% \@xthm{NAME}{TEXT} ==
+%   BEGIN
+%    \@begintheorem{TEXT}{\theNAME}
+%    \ignorespaces
+%   END
+%
+% \@ythm{NAME}{TEXT}[OPARG] ==
+%   BEGIN
+%    \@opargbegintheorem{TEXT}{\theNAME}{OPARG}
+%    \ignorespaces
+%   END
+% \end{oldcomments}
+%
+% \begin{macro}{\newtheorem}
+% |\newtheorem| ought really be allowed only in the preamble
+% Which would be good document style, and allow some main memory to be
+% saved by declaring these commands to be
+% |\@onlypreamble|. Unfortunately the \LaTeX\ book indicates that
+% |\newtheorem| may be used anywhere in  the document\ldots
+%    \begin{macrocode}
+%<*2ekernel>
+\def\newtheorem#1{%
+  \@ifnextchar[{\@othm{#1}}{\@nthm{#1}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@nthm}
+%    \begin{macrocode}
+\def\@nthm#1#2{%
+  \@ifnextchar[{\@xnthm{#1}{#2}}{\@ynthm{#1}{#2}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xnthm}
+%
+% 92/09/18 RmS: Changed |\@addtoreset| to |\@newctr| to produce error
+%               message if counter |#3| does not exist (to be
+%               consistent with behaviour of |\newcounter|)
+%    \begin{macrocode}
+\def\@xnthm#1#2[#3]{%
+  \expandafter\@ifdefinable\csname #1\endcsname
+    {\@definecounter{#1}\@newctr{#1}[#3]%
+     \expandafter\xdef\csname the#1\endcsname{%
+       \expandafter\noexpand\csname the#3\endcsname \@thmcountersep
+          \@thmcounter{#1}}%
+     \global\@namedef{#1}{\@thm{#1}{#2}}%
+     \global\@namedef{end#1}{\@endtheorem}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@ynthm}
+%    \begin{macrocode}
+\def\@ynthm#1#2{%
+  \expandafter\@ifdefinable\csname #1\endcsname
+    {\@definecounter{#1}%
+     \expandafter\xdef\csname the#1\endcsname{\@thmcounter{#1}}%
+     \global\@namedef{#1}{\@thm{#1}{#2}}%
+     \global\@namedef{end#1}{\@endtheorem}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@othm}
+% \changes{LaTeX2.09}{1992/01/10}
+%         {(RmS) Check for existence of theorem environment}
+% \changes{LaTeX2.09}{1992/08/19}
+%         {(RmS) Changed error message to complain about undefined
+%         counter}
+% \changes{v1.0b}{1994/04/09}{Use standard counter error message (FMi)}
+% \changes{v1.0c}{1994/04/17}{Use new std counter error message (FMi)}
+%    \begin{macrocode}
+\def\@othm#1[#2]#3{%
+  \@ifundefined{c@#2}{\@nocounterr{#2}}%
+    {\expandafter\@ifdefinable\csname #1\endcsname
+    {\global\@namedef{the#1}{\@nameuse{the#2}}%
+  \global\@namedef{#1}{\@thm{#2}{#3}}%
+  \global\@namedef{end#1}{\@endtheorem}}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@thm}
+%    \begin{macrocode}
+\def\@thm#1#2{%
+  \refstepcounter{#1}%
+  \@ifnextchar[{\@ythm{#1}{#2}}{\@xthm{#1}{#2}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@xthm}
+% \begin{macro}{\@ythm}
+%    \begin{macrocode}
+\def\@xthm#1#2{%
+  \@begintheorem{#2}{\csname the#1\endcsname}\ignorespaces}
+\def\@ythm#1#2[#3]{%
+  \@opargbegintheorem{#2}{\csname the#1\endcsname}{#3}\ignorespaces}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% Default values
+% \begin{macro}{\@thmcounter}
+% \begin{macro}{\@thmcountersep}
+%    \begin{macrocode}
+\def\@thmcounter#1{\noexpand\arabic{#1}}
+\def\@thmcountersep{.}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+%  \begin{macro}{\@begintheorem}
+%  \begin{macro}{\@opargbegintheorem}
+%  \begin{macro}{\@endtheorem}
+%  \changes{LaTeX2.09}{1991/08/14}
+%         {Moved \cs{itshape} after \cs{item} to make it work with
+%         NFSS}
+%    Providing theorem defaults.
+%  \task{???}{add `reset@font?}
+%    \begin{macrocode}
+\def\@begintheorem#1#2{\trivlist
+   \item[\hskip \labelsep{\bfseries #1\ #2}]\itshape}
+\def\@opargbegintheorem#1#2#3{\trivlist
+      \item[\hskip \labelsep{\bfseries #1\ #2\ (#3)}]\itshape}
+\def\@endtheorem{\endtrivlist}
+%</2ekernel>
+%    \end{macrocode}
+%  \end{macro}
+%  \end{macro}
+%  \end{macro}
+%
+% \Finale
+%

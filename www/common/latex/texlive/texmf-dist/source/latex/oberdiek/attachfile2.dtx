@@ -1,0 +1,3217 @@
+% \iffalse meta-comment
+%
+% File: attachfile2.dtx
+% Version: 2012/04/18 v2.7
+% Info: Attach files into PDF
+%
+% Copyright (C) 2005-2010, 2012 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file attachfile2.dtx
+% and the derived files
+%    attachfile2.sty, attachfile2.pdf, attachfile2.ins, attachfile2.drv,
+%    atfi-dvips.def, atfi-pdftex.def, atfi-dvipdfmx.def,
+%    pdfatfi.pl.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/attachfile2.dtx
+%    CTAN:macros/latex/contrib/oberdiek/attachfile2.pdf
+%
+% Unpacking:
+%    (a) If attachfile2.ins is present:
+%           tex attachfile2.ins
+%    (b) Without attachfile2.ins:
+%           tex attachfile2.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{attachfile2.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If attachfile2.drv is present:
+%           latex attachfile2.drv
+%    (b) Without attachfile2.drv:
+%           latex attachfile2.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex attachfile2.dtx
+%       makeindex -s gind.ist attachfile2.idx
+%       pdflatex attachfile2.dtx
+%       makeindex -s gind.ist attachfile2.idx
+%       pdflatex attachfile2.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/attachfile2.sty
+%    TDS:tex/latex/oberdiek/atfi-dvips.def
+%    TDS:tex/latex/oberdiek/atfi-pdftex.def
+%    TDS:tex/latex/oberdiek/atfi-dvipdfmx.def
+%    TDS:scripts/oberdiek/pdfatfi.pl (exec flag)
+%    TDS:doc/latex/oberdiek/attachfile2.pdf
+%    TDS:source/latex/oberdiek/attachfile2.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: attachfile2 2012/04/18 v2.7 Attach files into PDF (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: attachfile2
+Version: 2012/04/18 v2.7
+
+Copyright (C) 2005-2010, 2012 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file attachfile2.dtx
+and the derived files
+   attachfile2.sty, attachfile2.pdf, attachfile2.ins, attachfile2.drv,
+   atfi-dvips.def, atfi-pdftex.def, atfi-dvipdfmx.def,
+   pdfatfi.pl.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{attachfile2.ins}{\from{attachfile2.dtx}{install}}%
+  \file{attachfile2.drv}{\from{attachfile2.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{attachfile2.sty}{\from{attachfile2.dtx}{package}}%
+  \file{atfi-dvips.def}{\from{attachfile2.dtx}{dvips}}%
+  \file{atfi-pdftex.def}{\from{attachfile2.dtx}{pdftex}}%
+  \file{atfi-dvipdfmx.def}{\from{attachfile2.dtx}{dvipdfmx}}%
+  \nopreamble
+  \nopostamble
+  \usedir{scripts/oberdiek}%
+  \csname execfiletrue\endcsname
+  \file{pdfatfi.pl}{\from{attachfile2.dtx}{pdfatfi}}%
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{attachfile2.xml}{\from{attachfile2.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     attachfile2.sty, atfi-dvips.def, atfi-pdftex.def,}
+\Msg{*     atfi-dvipdfmx.def}
+\Msg{*}
+\Msg{* And install the following script file:}
+\Msg{*}
+\Msg{*     pdfatfi.pl}
+\Msg{*}
+\Msg{* To produce the documentation run the file `attachfile2.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{attachfile2.drv}%
+  [2012/04/18 v2.7 Attach files into PDF (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{attachfile2.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{1744}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{attachfile2.drv}
+%
+% \title{The \xpackage{attachfile2} package}
+% \date{2012/04/18 v2.7}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package can be used to attach files to a PDF document.
+% It is a further development of Scott Pakin's package
+% \xpackage{attachfile} for \pdfTeX. Apart from bug fixes,
+% package \xpackage{attachfile2} adds support for \xoption{dvips},
+% some new options, gets and writes meta information data about
+% the attached files.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+%    The PDF format (\cite{pdfspec}) allows the inclusion of files
+%    inside the PDF document. The included files can be bound to an
+%    annotation on a page. Or they can be recorded in a sorted
+%    list of embedded files. The packages \xpackage{attachfile}
+%    or \xpackage{attachfile2} follow the first approach,
+%    package \xpackage{embedfile} uses the latter method.
+%
+% \subsubsection{Future development}
+%
+%    My dream is a large package that merges the features of
+%    all these packages meantioned before:
+%    \begin{itemize}
+%    \item Files can be attached to a page.
+%    \item Files can be attached to the document.
+%    \item An easy user interface for simple, common tasks and
+%          beginners.
+%    \item An interface for the advanced users that want to setup
+%          every detail.
+%    \item Support of many drivers (pdftex, dvips, dvipdfm, \dots).
+%    \item \dots
+%    \end{itemize}
+%    However, I have not managed to take the time for this project.
+%    Instead:
+%    \begin{itemize}
+%    \item First I experimented with package \xpackage{attachfile},
+%          adding driver support, fixing bugs, \dots. The result is
+%          currently named as \xpackage{attachfile2}. It uses an external
+%          script to get file properties (size, date, checksum, \dots).
+%    \item In order to avoid an external program for getting basic
+%          file properties I provided a patch ``EscapeAndOther'' for
+%          pdfTeX that was accepted for version 1.30.
+%    \item Package \xpackage{embedfile} closes a gap left by the
+%          packages for attaching
+%          files and allows the embedding of files to the document.
+%          Also it makes use of the new primitives of \pdfTeX.
+%    \end{itemize}
+%    Until this future becomes true, I provide the intermediate
+%    step \xpackage{attachfile2} at its current state.
+%    There are many things to do:
+%    \begin{itemize}
+%    \item Documentation, documentation, \dots
+%    \item Improving portability of the Perl script \xfile{pdfatfi.pl}
+%          (Windows, non-GNU, \dots).
+%    \item Comfortable program for extracting embeddd files.
+%    \item Embedding files to the document, see package \xpackage{embedfile}.
+%    \item Additionally use featurs of \pdfTeX\ 1.30. With a recent
+%          \pdfTeX\ the Perl script step is then obsolete.
+%    \item GoToE links.
+%    \item Layout of PinPush, especially the tip does not scale well.
+%    \item Driver for \xoption{dvipsone}, similar to \xoption{dvips}, changes:
+%          \begin{itemize}
+%          \item coordinate transformation need to be fixed here,
+%                \xfile{hdvipson.def} contains:
+%                \begin{quote}
+%\begin{verbatim}
+%/DvipsToPDF { 65781 div  } def
+%/PDFToDvips { 65781 mul } def
+%\end{verbatim}
+%                \end{quote}
+%          \item Syntax for \cs{special}: \xfile{hdvipson.def} contains
+%                both \verb|\special{! #1}| and
+%                \verb|\special{headertext= #1}|. Are bothe the same?
+%          \end{itemize}
+%    \item File name conversion, see PDF specification:
+%          \begin{quote}
+%            \verb|c:\somewhere\foobar.txt| $\rightarrow$
+%            \verb|/c/somewhere/foobar.txt|
+%          \end{quote}
+%    \item Option \xoption{scale} for icons?
+%    \item Compatibility for \plainTeX.
+%    \item ToDos for \xfile{atfidvips.def}.
+%    \end{itemize}
+%
+% \subsection{User interface}
+%
+%    Basically this package \xpackage{attachfile2} follows the
+%    user interface of package \xpackage{attachfile},
+%    look into its documentation (\cite{attachfile}).
+%
+% \subsubsection{New options}
+%    \begin{itemize}
+%    \item Driver options \xoption{dvips}, \xoption{pdftex},
+%          \xoption{dvipdfmx} and \xoption{xetex} that is an
+%          alias for \xoption{dvipdfmx}.
+%    \item Option \xoption{driverfallback} specifies a DVI driver
+%          if the driver cannot be detected automatically.
+%    \item New options \xoption{final} and \xoption{draft}.
+%    \item New option \xoption{scale} for scaling the annotation rectangle.
+%    \item Options \xoption{file} and \xoption{nofile} for controlling
+%          the generation of the auxiliary file \xfile{.atfi}.
+%    \item New option \xoption{ucfilespec} for file names with
+%          characters outside ASCII (PDF 1.7).
+%    \end{itemize}
+%
+% \subsubsection{Option \xoption{color}}
+%
+%    Package \xpackage{attachfile}'s option \xoption{color} only
+%    understands explicit RGB values as three space separated
+%    real numbers in the range from 0 to 1.
+%
+%    This package \xpackage{attachfile2} extends the syntax.
+%    The usual color specifications of packages \xpackage{color}
+%    or \xpackage{xcolor} may be used. The latter one requires
+%    that package \xpackage{xcolor} is loaded.
+%    Without package \xpackage{xcolor} a limited range of
+%    explicit color specifications are supported, the color models
+%    \texttt{rgb} and \texttt{gray} (and \texttt{cmyk} if
+%    package \xpackage{hyperref}'s option \xoption{pdfversion} is set
+%    to \texttt{1.7} or greater.
+%
+%    Example without package \xpackage{xcolor}:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{article}
+%\usepackage[color={1 0 .5}]{attachfile2}
+% % Spaces in option values in \usepackage or \documentclass
+% % must be protected by curly braces. Otherwise LaTeX strips
+% % the spaces and the package would see `color=10.5'.
+% % This protection is not necessary for \attachfilesetup.
+%\attachfilesetup{color=1 0 .5}
+%\attachfilesetup{color=[rgb]{1,0,.5}}
+%\attachfilesetup{color=[gray]{.5}}
+%\end{verbatim}
+%\end{quote}
+%
+%    The following example with package \xpackage{xcolor} shows
+%    additional color specifications:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{article}
+%\usepackage{xcolor}
+%\definecolor{attachfilecolor}{cmyk}{.1,.2,.3,.4}
+%\usepackage{color=red}{attachfile2}
+%\attachfilesetup{color=red}
+%\attachfilesetup{color=attachfilecolor}
+%\end{verbatim}
+%\end{quote}
+%
+% \paragraph{For experts.}%
+% If the color is used in annotations, the color is converted
+% with the help of package \xpackage{xcolor} to RGB.
+% PDF versions 1.7 or later also understand color models Gray and
+% CMYK. The PDF version is detected if the experimental
+% option \xoption{pdfversion}
+% of package \xpackage{hyperref} is used, example:
+%\begin{quote}
+%\begin{verbatim}
+%\documentclass{article}
+%\usepackage[pdfversion=1.7]{hyperref}
+%\usepackage{attachfile2}
+%\end{verbatim}
+%\end{quote}
+% However, currently only driver \xoption{pdftex} also supports
+% the actual setting of the PDF version in the output PDF file.
+%
+% \subsubsection{Perl script \xfile{pdfatfi.pl}}
+%
+%    This package also tries to get and add meta information data,
+%    such as file size, file date, checksum, \dots.
+%    As package \xpackage{embedfile} shows the new features
+%    of \pdfTeX\ 1.30 are very useful for getting this kind of
+%    data. Since version 2.6 these data are used if available.
+%
+%    For older versions of \pdfTeX\ and \XeTeX\ the Perl script
+%    \xfile{pdfatfi.pl} is provided to get this data.
+%    The use of the Perl script is not mandatory. This data can be shown
+%    by PDF viewers, but they are not a requirement of the PDF specification.
+%
+%    Package \xpackage{attachfile2} and the Perl script communicate
+%    via an auxiliary file with file extension \xfile{.atfi}. The script
+%    is used between two \LaTeX\ runs and updates the auxiliary file,
+%    example for \xoption{dvips}:
+%    \begin{quote}
+%\begin{verbatim}
+%latex test
+%pdfatfi test
+%latex test
+%dvips test
+%ps2pdf test.ps test.pdf
+%\end{verbatim}
+%    \end{quote}
+%
+% \subsection{Changes to \xpackage{attachfile}}
+%
+%    Some of the changes I can remember:
+%    \begin{itemize}
+%    \item Support for dvips.
+%    \item Support for dvipdfmx/\XeTeX.
+%    \item Setting and filling the /Param entry for files
+%          (file date, file size, \dots).
+%    \item Perl script \xfile{pdfatfi.pl}.
+%    \item New options.
+%    \item Bug fixes.
+%    \item \dots
+%    \end{itemize}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+% \subsection{Package}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{attachfile2}%
+  [2012/04/18 v2.7 Attach files into PDF (HO)]%
+%    \end{macrocode}
+%
+% \subsubsection{Loading of packages}
+%
+%    \begin{macrocode}
+\RequirePackage{ifpdf}[2009/04/10]
+\RequirePackage{ifxetex}
+\RequirePackage{ifluatex}[2009/04/10]
+\RequirePackage{keyval}
+\RequirePackage{color}
+\RequirePackage{infwarerr}[2010/04/08]
+\RequirePackage{ltxcmds}[2010/04/26]
+\RequirePackage{kvoptions}[2009/07/21]
+\RequirePackage{pdftexcmds}[2010/04/01]
+\RequirePackage{pdfescape}[2007/11/11]
+%    \end{macrocode}
+%    Package \xpackage{hyperref} is needed because of \cs{pdfstringdef}.
+%    \begin{macrocode}
+\RequirePackage{hyperref}
+\RequirePackage{hycolor}[2008/07/29]
+%    \end{macrocode}
+%
+% \subsubsection{Value checking}
+%
+%    \begin{macro}{\atfi@Match}
+%    \begin{macrocode}
+\ltx@IfUndefined{pdfmatch}{%
+  \def\atfi@Match#1#2#3#4#5{}%
+}{%
+  \def\atfi@Match#1#2#3{%
+    \begingroup
+    \edef\^{\ltx@backslashchar\string^}%
+    \edef\.{\ltx@backslashchar.}%
+    \let\#\ltx@hashchar
+    \edef\[{\ltx@backslashchar[}% ]]
+    \edef\${\ltx@backslashchar$}%
+    \let\%\ltx@percentchar
+    \edef\&{\string&}%
+    \edef\({\ltx@backslashchar(}%
+    \edef\){\ltx@backslashchar)}%
+    \edef\|{\ltx@backslashchar|}%
+    \edef\*{\ltx@backslashchar*}%
+    \edef\+{\ltx@backslashchar+}%
+    \edef\?{\ltx@backslashchar?}%
+    \edef\{{\ltx@backslashchar\ltx@leftbracechar}%
+    \edef\}{\ltx@rightbracechar}%
+    \edef\\{\ltx@backslashchar\ltx@backslashchar}%
+    \edef\~{\string~}%
+    \ifcase\pdfmatch#3{#2}{#1} %
+      \endgroup
+      \expandafter\ltx@secondoftwo
+    \or
+      \endgroup
+      \expandafter\ltx@firstoftwo
+    \else
+      \atfi@Warning{%
+        Internal error: Wrong pattern!\MessageBreak
+        --> #2 <--\MessageBreak
+        Pattern check ignored%
+      }%
+      \endgroup
+      \expandafter\ltx@firstoftwo
+    \fi
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@PatToken}
+%    \begin{macrocode}
+  \def\atfi@PatToken{%
+    [%
+      -% first character
+      !%
+      \#$\%\&'%
+      \*\+\.%
+      0-9%
+      A-Z%
+      \^_`%
+      a-z%
+      \{\}\|\~%
+    ]+%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@CR}
+%    \begin{macrocode}
+  \begingroup
+    \lccode64=13 % @
+  \lowercase{\endgroup
+    \def\atfi@CR{@}%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@PatQuotedString}
+%    \begin{macrocode}
+  \def\atfi@PatQuotedString{%
+    "%
+    ([^"\\\atfi@CR]|\\.)*%
+    "%
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \ltx@ifpackagelater{ltxcmds}{2010/09/11}{}{%
+%    \end{macrocode}
+%    \begin{macro}{\atfi@ltx@leftbracechar}
+%    \begin{macrocode}
+    \begingroup
+      \lccode`0=`\{\relax
+    \lowercase{\endgroup
+      \def\ltx@leftbracechar{0}%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\ltx@rightbracechar}
+%    \begin{macrocode}
+    \begingroup
+      \lccode`0=`\}\relax
+    \lowercase{\endgroup
+      \def\ltx@rightbracechar{0}%
+    }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  }%
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\atfi@Warning}
+%    \begin{macrocode}
+\def\atfi@Warning{\PackageWarning{attachfile2}}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Option declarations}
+%
+%    \begin{macrocode}
+\SetupKeyvalOptions{%
+  family=AtFi,%
+  prefix=atfi@%
+}
+%    \end{macrocode}
+%    \begin{macro}{\atfi@setup}
+%    \begin{macrocode}
+\def\atfi@setup{\setkeys{AtFi}}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Options \xoption{draft} and \xoption{final}.
+%    \begin{macrocode}
+\DeclareBoolOption{draft}
+\DeclareComplementaryOption{final}{draft}
+%    \end{macrocode}
+%
+%    Option \xoption{mimetype}.
+%    \begin{macro}{\atfi@mimetype}
+%    \begin{macrocode}
+\def\atfi@mimetype{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{mimetype}{%
+  \edef\atfi@mimetype{#1}%
+  \ifx\atfi@mimetype\ltx@empty
+  \else
+    \atfi@Match\atfi@mimetype{%
+      ^(application|audio|image|model|text|video|x-\atfi@PatToken)%
+      /%
+      ([a-z\-\+_\.0-9]+)%
+      (; ?\atfi@PatToken=(\atfi@PatToken|\atfi@PatQuotedString))*$%
+    }{icase}{}{%
+      \atfi@Warning{%
+        Invalid value `\atfi@mimetype'\MessageBreak
+        of option `mimetype'.\MessageBreak
+        Value is discarded%
+      }%
+      \let\atfi@mimetype\ltx@empty
+    }%
+  \fi
+  \ifx\atfi@mimetype\ltx@empty
+  \else
+    \EdefEscapeName\atfi@mimetype{\atfi@mimetype}%
+    \edef\atfi@mimetype{/Subtype/\atfi@mimetype}%
+  \fi
+}
+%    \end{macrocode}
+%
+%    Option \xoption{icon}
+%    \begin{macrocode}
+\define@key{AtFi}{icon}{%
+  \def\atfi@icon{/Name/#1}%
+  \def\atfi@icon@icon{#1}%
+}
+\atfi@setup{icon=PushPin}
+%    \end{macrocode}
+%
+%    Option \xoption{color}
+%    \begin{macrocode}
+\define@key{AtFi}{color}{%
+  \HyColor@AttachfileColor{#1}%
+          \atfi@color@tex\atfi@color@inline\atfi@color@annot
+          {attachfile2}{color}%
+}
+\atfi@setup{color=1 0.9255 0.7765}
+%    \end{macrocode}
+%
+%    time options timezone and date
+%    \begin{macro}{\atfi@pad@ii}
+%    \begin{macrocode}
+\def\atfi@pad@ii#1{%
+  \ifnum#1>9 %
+    \number#1%
+  \else
+    0\number#1%
+  \fi%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{atfi@timezone}
+%    \begin{macrocode}
+\let\atfi@timezone\ltx@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{timezone}{\def\atfi@timezone{#1}}
+%    \end{macrocode}
+%    \begin{macro}{\atfi@time}
+%    \begin{macrocode}
+\edef\atfi@time{\the\time}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@hours}
+%    \begin{macrocode}
+\def\atfi@hours{%
+  \numexpr\dimexpr0.01667\dimexpr\atfi@time sp\relax\relax\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@minutes}
+%    \begin{macrocode}
+\def\atfi@minutes{%
+  \numexpr\atfi@time-60*\atfi@hours\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@seconds}
+%    \begin{macrocode}
+\def\atfi@seconds{0}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@date}
+%    \begin{macrocode}
+\def\atfi@date{%
+  /M(D:\the\year
+      \atfi@pad@ii\month
+      \atfi@pad@ii\day
+      \atfi@pad@ii\atfi@hours
+      \atfi@pad@ii\atfi@minutes
+      \atfi@pad@ii\atfi@seconds
+      \atfi@timezone)%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{date}{%
+  \EdefEscapeString\atfi@date{#1}%
+  \edef\atfi@date{/M(\atfi@date)}%
+}
+%    \end{macrocode}
+%
+%    Text options author, description, and subject
+%    \begin{macro}{\atfi@pdfstringdef}
+%    \begin{macrocode}
+\DeclareRobustCommand{\atfi@pdfstringdef}[2]{%
+  \pdfstringdef\atfi@temp@string{#2}%
+  \edef#1{\atfi@temp@string}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@NoValue}
+%    \begin{macrocode}
+\def\atfi@NoValue{\NoValue}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@DefNoValueName}
+%    \begin{macrocode}
+\def\atfi@DefNoValueName#1#2#3{%
+  \def#1{#3}%
+  \ifx#1\atfi@NoValue
+    \let#1\ltx@empty
+  \else
+    \atfi@pdfstringdef#1{#1}%
+    \edef#1{/#2(#1)}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    Name for annotation to be used in GoToE actions
+%    \begin{macro}{\atfi@annotname}
+%    \begin{macrocode}
+\let\atfi@annotname\ltx@empty
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{annotname}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@annotname{NM}{#1}%
+}
+%    \end{macrocode}
+%
+%    Option \xoption{author}.
+%    \begin{macro}{\atfi@author}
+%    \begin{macrocode}
+\def\atfi@author{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{author}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@author{T}{#1}%
+}
+%    \end{macrocode}
+%
+%    Option \xoption{description}.
+%    \begin{macro}{\atfi@description}
+%    \begin{macrocode}
+\def\atfi@description{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{description}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@description{Contents}{#1}%
+}
+%    \end{macrocode}
+%
+%    Option \xoption{subject}.
+%    \begin{macro}{\atfi@subject}
+%    \begin{macrocode}
+\def\atfi@subject{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{subject}[\NoValue]{%
+  \atfi@DefNoValueName\atfi@subject{Subj}{#1}%
+}
+%    \end{macrocode}
+%
+%    Option \xoption{print}.
+%    \begin{macrocode}
+\DeclareBoolOption[true]{print}
+%    \end{macrocode}
+%
+%    Option \xoption{zoom}.
+%    \begin{macrocode}
+\DeclareBoolOption[true]{zoom}
+%    \end{macrocode}
+%
+%    Option \xoption{appearance}.
+%    \begin{macrocode}
+\DeclareBoolOption[true]{appearance}
+%    \end{macrocode}
+%
+%    Option \xoption{scale}.
+%    \begin{macrocode}
+\DeclareStringOption[1]{scale}
+%    \end{macrocode}
+%
+%    Option \xoption{ucfilespec}.
+%    \begin{macro}{\atfi@ucfilespec}
+%    \begin{macrocode}
+\def\atfi@ucfilespec{}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\define@key{AtFi}{ucfilespec}[1]{%
+  \def\atfi@ucfilespec{#1}%
+  \ifx\atfi@ucfilespec\ltx@empty
+  \else
+    \atfi@pdfstringdef\atfi@ucfilespec{#1}%
+  \fi
+}
+%    \end{macrocode}
+%
+%    Option \xoption{nofiles}.
+%    \begin{macrocode}
+\DeclareBoolOption{nofiles}
+%    \end{macrocode}
+%
+%    Driver options.
+%    \begin{macrocode}
+\let\atfi@driver\ltx@empty
+\def\atfi@driver@pdftex{pdftex}
+\def\atfi@driver@dvips{dvips}
+\def\atfi@driver@dvipdfmx{dvipdfmx}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareVoidOption{pdftex}{%
+  \let\atfi@driver\atfi@driver@pdftex
+}
+\DeclareVoidOption{dvips}{%
+  \let\atfi@driver\atfi@driver@dvips
+}
+\DeclareVoidOption{dvipdfmx}{%
+  \let\atfi@driver\atfi@driver@dvipdfmx
+}
+\DeclareVoidOption{xetex}{%
+  \let\atfi@driver\atfi@driver@dvipdfmx
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\DeclareStringOption{driverfallback}
+%    \end{macrocode}
+%
+%    \begin{macro}{\attachfilesetup}
+%    \begin{macrocode}
+\DeclareRobustCommand{\attachfilesetup}[1]{\setkeys{AtFi}{#1}}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\DeclareLocalOptions{%
+  annotname,%
+  appearance,%
+  author,%
+  color,%
+  date,%
+  description,%
+  icon,%
+  mimetype,%
+  nofiles,%
+  print,%
+  scale,%
+  subject,%
+  timezone,%
+  ucfilespec,%
+  zoom,%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Option calling}
+%
+%    Timezone setting, \dots
+%    \begin{macrocode}
+\InputIfFileExists{attachfile.cfg}{}{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\ProcessKeyvalOptions*
+%    \end{macrocode}
+%
+%    \begin{macro}{\atfi@DisableOption}
+%    \begin{macrocode}
+\def\atfi@DisableOption{%
+  \DisableKeyvalOption[action=error,package=attachfile2]{AtFi}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Evaluate driver options}
+%
+%    \begin{macrocode}
+\ifpdf
+  % ignoring other driver options
+  \let\atfi@driver\atfi@driver@pdftex
+\else
+  \ifx\atfi@driver\atfi@driver@pdftex
+    \let\atfi@driver\ltx@empty
+    \PackageError{attachfile2}{%
+      Wrong driver option `pdftex',\MessageBreak
+      because pdfTeX in PDF mode is not detected%
+    }\@ehc
+  \fi
+  \ifxetex
+    \let\atfi@driver\atfi@driver@dvipdfmx
+  \else
+    \ifx\atfi@driver\ltx@empty
+      \ifx\atfi@driverfallback\ltx@empty
+      \else
+        \expandafter\let\expandafter\atfi@driver
+            \csname atfi@driver@\atfi@driverfallback\endcsname
+        \ifx\atfi@driver\atfi@driver@dvips
+        \else
+          \ifx\atfi@driver\atfi@driver@dvipdfmx
+          \else
+             \let\atfi@driver\ltx@empty
+             \PackageWarningNoLine{attachfile2}{%
+               Option `driverfallback' with unsupported\MessageBreak
+               DVI driver (\atfi@driverfallback)%
+             }%
+          \fi
+        \fi
+      \fi
+      \ifx\atfi@driver\ltx@empty
+        \PackageWarningNoLine{attachfile2}{%
+          Driver is not specified,\MessageBreak
+          enforce draft settings%
+        }%
+        \atfi@drafttrue
+      \fi
+    \fi
+  \fi
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\atfi@DisableOption{pdftex}
+\atfi@DisableOption{dvips}
+\atfi@DisableOption{dvipdfmx}
+\atfi@DisableOption{xetex}
+\atfi@DisableOption{driverfallback}
+%    \end{macrocode}
+%
+% \subsubsection{Evaluate options \xoption{draft}/\xoption{final}}
+%
+%    \begin{macro}{\notextattachfile}
+%    \begin{macrocode}
+\DeclareRobustCommand{\notextattachfile}[2][]{%
+  \begingroup
+    \atfi@setup{#1}%
+    \ifatfi@print
+      \leavevmode
+      \begingroup
+        \HyColor@UseColor\atfi@color@tex
+        #2\strut
+      \endgroup
+    \else
+      \sbox\ltx@zero{#2\strut}%
+      \makebox[\wd0]{}%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\atfi@DisableOption{draft}%
+\atfi@DisableOption{final}%
+\ifatfi@draft
+  \def\atfi@dummy@pushpin{%
+    \raisebox{-1.25bp}{\parbox[b][14bp]{24bp}{}}%
+  }%
+  \DeclareRobustCommand{\textattachfile}[3][]{%
+    \notextattachfile[{#1}]{#3}%
+  }%
+  \DeclareRobustCommand{\noattachfile}[1][]{%
+    \notextattachfile[{#1}]{\atfi@dummy@pushpin}%
+  }%
+  \DeclareRobustCommand{\attachfile}[2][]{%
+    \noattachfile[{#1}]%
+  }%
+   \expandafter\endinput
+\fi
+%    \end{macrocode}
+%
+% \subsubsection{Load driver file}
+%
+%    \begin{macrocode}
+\input{atfi-\atfi@driver.def}
+%    \end{macrocode}
+%
+% \subsubsection{Graphics}
+%
+%    \begin{macro}{\atfi@acroGraph@data}
+%    \begin{macrocode}
+\def\atfi@acroGraph@data{%
+  \atfi@GSAVE
+  0.5 \atfi@SETGRAYFILL
+  1.1133 0 20.7202 18.2754 \atfi@RECTFILL
+  0 \atfi@SETFLAT
+  0.5 \atfi@SETLINEWIDTH
+  4 \atfi@SETMITERLIMIT
+  \atfi@RECTSTROKEFILL{%
+    1 \atfi@SETGRAYFILL
+  }{%
+    0 \atfi@SETGRAYSTROKE
+  }{%
+    0.25 1.6453 20.145 17.7715 %
+  }%
+  0 \atfi@SETGRAYFILL
+  2.7319 4.1367 3.9571 13.8867 \atfi@RECTFILL
+  8.7031 4.1367 3.9571 9.8867 \atfi@RECTFILL
+  14.7471 4.1367 3.9571 11.8867 \atfi@RECTFILL
+  \atfi@color@inline{FILL}%
+  1.689 3.0938 3.9571 13.8867 \atfi@RECTFILL
+  7.6602 3.0938 3.9571 9.8867 \atfi@RECTFILL
+  13.7041 3.0938 3.9571 11.8867 \atfi@RECTFILL
+  \atfi@GRESTORE
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroGraph}
+%    \begin{macrocode}
+\def\atfi@acroGraph{%
+  \raisebox{-1.5bp}{\parbox[b][20bp]{22bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroGraph@data}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroPaperclip@data}
+%    \begin{macrocode}
+\newcommand{\atfi@acroPaperclip@data}{%
+  \atfi@GSAVE
+  0.75 \atfi@SETGRAYSTROKE
+  0 \atfi@SETFLAT
+  2.5 \atfi@SETLINEWIDTH
+  1 \atfi@SETLINECAP
+  4 \atfi@SETMITERLIMIT
+  1.9619 11.7559 \atfi@MOVETO
+  1.9619 3.3037 1.9619 2.5059 \atfi@CURVETOV
+  1.9619 1.707 4.0947 1.25 \atfi@CURVETOY
+  7.4141 1.25 \atfi@LINETO
+  9.4292 1.8223 9.4292 3.3066 \atfi@CURVETOV
+  9.4292 4.79 9.4292 16.8945 \atfi@CURVETOY
+  9.7852 18.1514 8.481 18.1514 \atfi@CURVETOV
+  7.1768 18.1514 5.1616 18.1514 \atfi@CURVETOY
+  3.8574 17.9209 3.8574 16.8945 \atfi@CURVETOV
+  3.8574 15.8652 3.8574 6.6172 \atfi@CURVETOY
+  4.3325 5.418 5.1025 5.418 \atfi@CURVETOV
+  5.8726 5.418 6.5845 5.418 \atfi@CURVETOY
+  7.6812 5.6455 7.6812 6.4736 \atfi@CURVETOV
+  7.6812 7.3027 7.6812 11.5264 \atfi@CURVETOY
+  \atfi@STROKE
+  0 \atfi@SETGRAYSTROKE
+  1.2495 12.4404 \atfi@MOVETO
+  1.2495 3.9883 1.2495 3.1895 \atfi@CURVETOV
+  1.2495 2.3906 3.3833 1.9326 \atfi@CURVETOY
+  6.7026 1.9326 \atfi@LINETO
+  8.7178 2.5068 8.7178 3.9902 \atfi@CURVETOV
+  8.7178 5.4736 8.7178 17.5781 \atfi@CURVETOY
+  9.0732 18.834 7.769 18.834 \atfi@CURVETOV
+  6.4653 18.834 4.4497 18.834 \atfi@CURVETOY
+  3.146 18.6055 3.146 17.5781 \atfi@CURVETOV
+  3.146 16.5498 3.146 7.3018 \atfi@CURVETOY
+  3.6201 6.1016 4.3911 6.1016 \atfi@CURVETOV
+  5.1611 6.1016 5.873 6.1016 \atfi@CURVETOY
+  6.9692 6.3301 6.9692 7.1572 \atfi@CURVETOV
+  6.9692 7.9863 6.9692 12.21 \atfi@CURVETOY
+  \atfi@STROKE
+  \atfi@color@inline{STROKE}%
+  1 \atfi@SETLINEWIDTH
+  1.2495 12.4404 \atfi@MOVETO
+  1.2495 3.9883 1.2495 3.1895 \atfi@CURVETOV
+  1.2495 2.3906 3.3833 1.9326 \atfi@CURVETOY
+  6.7026 1.9326 \atfi@LINETO
+  8.7178 2.5068 8.7178 3.9902 \atfi@CURVETOV
+  8.7178 5.4736 8.7178 17.5781 \atfi@CURVETOY
+  9.0732 18.834 7.769 18.834 \atfi@CURVETOV
+  6.4653 18.834 4.4497 18.834 \atfi@CURVETOY
+  3.146 18.6055 3.146 17.5781 \atfi@CURVETOV
+  3.146 16.5498 3.146 7.3018 \atfi@CURVETOY
+  3.6201 6.1016 4.3911 6.1016 \atfi@CURVETOV
+  5.1611 6.1016 5.873 6.1016 \atfi@CURVETOY
+  6.9692 6.3301 6.9692 7.1572 \atfi@CURVETOV
+  6.9692 7.9863 6.9692 12.21 \atfi@CURVETOY
+  \atfi@STROKE
+  \atfi@GRESTORE
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroPaperclip}
+%    \begin{macrocode}
+\def\atfi@acroPaperclip{%
+  \raisebox{-1.25bp}{\parbox[b][21bp]{12bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroPaperclip@data}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroPushPin@data}
+%    \begin{macrocode}
+\def\atfi@acroPushPin@data{%
+  \atfi@GSAVE
+  1 \atfi@SETLINEWIDTH
+  1 6   \atfi@MOVETO
+  11 6  \atfi@LINETO
+  11 13 \atfi@LINETO
+  12 13 \atfi@LINETO
+  14 11 \atfi@LINETO
+  21 11 \atfi@LINETO
+  22 12 \atfi@LINETO
+  23 12 \atfi@LINETO
+  23 2  \atfi@LINETO
+  22 2  \atfi@LINETO
+  21 3  \atfi@LINETO
+  14 3  \atfi@LINETO
+  12 1  \atfi@LINETO
+  11 1  \atfi@LINETO
+  11 6  \atfi@LINETO
+  \atfi@FILLSTROKE{%
+    \atfi@color@inline{FILL}%
+  }{%
+    0 \atfi@SETGRAYSTROKE
+  }%
+  0.5 \atfi@SETGRAYSTROKE
+  0 7  \atfi@MOVETO
+  10 7 \atfi@LINETO
+  10 8 \atfi@LINETO
+  1 8  \atfi@LINETO
+  \atfi@STROKE
+  1 \atfi@SETGRAYSTROKE
+  12 12 \atfi@MOVETO
+  14 10 \atfi@LINETO
+  22 10 \atfi@LINETO
+  22 11 \atfi@LINETO
+  \atfi@STROKE
+  \atfi@GRESTORE
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroPushPin}
+%    \begin{macrocode}
+\def\atfi@acroPushPin{%
+  \raisebox{-1.25bp}{\parbox[b][14bp]{24bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroPushPin@data}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroTag@data}
+%    \begin{macrocode}
+\def\atfi@acroTag@data{%
+  \atfi@GSAVE
+  0.5 \atfi@SETGRAYFILL
+  10.0542 14.9873 \atfi@MOVETO
+  24.27 14.9873 \atfi@LINETO
+  25.252 14.0059 \atfi@LINETO
+  25.252 1.1455 \atfi@LINETO
+  24.1064 0 \atfi@LINETO
+  9.9609 0 \atfi@LINETO
+  6.0327 6.0088 \atfi@LINETO
+  6.0327 9.002 \atfi@LINETO
+  10.0542 14.9873 \atfi@LINETO
+  9.3994 9.376 \atfi@MOVETO
+  8.5215 9.376 7.8096 8.5596 7.8096 7.5527 \atfi@CURVETO
+  7.8096 6.5449 8.5215 5.7285 9.3994 5.7285 \atfi@CURVETO
+  10.2778 5.7285 10.9897 6.5449 10.9897 7.5527 \atfi@CURVETO
+  10.9897 8.5596 10.2778 9.376 9.3994 9.376 \atfi@CURVETO
+  \atfi@CLOSEPATH
+  \atfi@FILL
+  0 \atfi@SETFLAT
+  0.5 \atfi@SETLINEWIDTH
+  4 \atfi@SETMITERLIMIT
+  1 \atfi@SETLINEJOIN
+  8.5107 16.5313 \atfi@MOVETO
+  22.7266 16.5313 \atfi@LINETO
+  23.7085 15.5488 \atfi@LINETO
+  23.7085 2.6895 \atfi@LINETO
+  22.563 1.543 \atfi@LINETO
+  8.4175 1.543 \atfi@LINETO
+  4.4893 7.5527 \atfi@LINETO
+  4.4893 10.5449 \atfi@LINETO
+  8.5107 16.5313 \atfi@LINETO
+  7.856 10.9199 \atfi@MOVETO
+  6.978 10.9199 6.2661 10.1035 6.2661 9.0957 \atfi@CURVETO
+  6.2661 8.0879 6.978 7.2715 7.856 7.2715 \atfi@CURVETO
+  8.7344 7.2715 9.4463 8.0879 9.4463 9.0957 \atfi@CURVETO
+  9.4463 10.1035 8.7344 10.9199 7.856 10.9199 \atfi@CURVETO
+  \atfi@CLOSEPATH
+  \atfi@FILLSTROKE{%
+    \atfi@color@inline{FILL}%
+  }{%
+    0 \atfi@SETGRAYSTROKE
+  }%
+  1 \atfi@SETLINEWIDTH
+  12.3291 12.2656 \atfi@MOVETO
+  21.1206 12.2656 \atfi@LINETO
+  \atfi@STROKE
+  12.3291 9.1797 \atfi@MOVETO
+  21.1206 9.1797 \atfi@LINETO
+  \atfi@STROKE
+  12.3291 6.1875 \atfi@MOVETO
+  21.1206 6.1875 \atfi@LINETO
+  \atfi@STROKE
+  % 0 \atfi@SETGRAYSTROKE % redundant?
+  0.5 \atfi@SETLINEWIDTH
+  0 9.0488 \atfi@MOVETO
+  6.2661 9.0957 \atfi@LINETO
+  \atfi@STROKE
+  1.4028 5.2148 \atfi@MOVETO
+  1.4028 9.6094 \atfi@LINETO
+  1.6831 10.6387 2.4316 10.6387 \atfi@CURVETOV
+  3.6475 10.6387 3.5542 9.0488 \atfi@CURVETOY
+  \atfi@STROKE
+  \atfi@GRESTORE
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@acroTag}
+%    \begin{macrocode}
+\def\atfi@acroTag{%
+  \raisebox{-1.6bp}{\parbox[b][17bp]{25bp}{%
+    \rule{0pt}{0pt}\atfi@literal{\atfi@acroTag@data}}%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Reading the \xext{atfi} file}
+%
+%     Commands used in \cs{jobname}\xext{atfi}:
+%     \begin{itemize}
+%     \item |attachfile@timezone{<timezone in PDF format>}|
+%     \item
+%\begin{verbatim}
+%\attachfile@file[
+%  Size=<size>,
+%  CreationDate=<date>, % <date> local time without "D:" and timezone
+%  ModDateTZ=<date+TZ>,
+%  ModDate=<date>,
+%  CheckSum=<checksum>
+%]{<filename as hex string>}
+%\end{verbatim}
+%    \end{itemize}
+%
+%    \begin{macro}{\attachfile@timezone}
+%    \begin{macrocode}
+\def\attachfile@timezone#1{%
+  \ifx\\#1\\%
+    % no timezone information given
+  \else
+    \def\atfi@timezone{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\attachfile@file}
+%    \begin{macrocode}
+\newcommand*{\attachfile@file}[2][]{%
+  \EdefUnescapeHex\atfi@filename{#2}%
+  \ifx\atfi@filename\ltx@empty
+    \PackageError{attachfile2}{Empty file name}\@ehc
+  \else
+    \@namedef{atfi@file@\atfi@filename}{#1}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\InputIfFileExists{\jobname.atfi}{}{}%
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newif\ifatfi@checksum
+\define@key{AtFi@file}{CheckSum}{%
+  \atfi@checksumtrue
+  \edef\atfi@params{\atfi@params/CheckSum<#1>}%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\newif\ifatfi@creationdate
+\define@key{AtFi@file}{CreationDateTZ}{%
+  \ifatfi@creationdate
+  \else
+    \atfi@creationdatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /CreationDate(#1)%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\define@key{AtFi@file}{CreationDate}{%
+  \ifatfi@creationdate
+  \else
+    \atfi@creationdatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /CreationDate(#1\atfi@timezone)%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\newif\ifatfi@moddate
+\define@key{AtFi@file}{ModDateTZ}{%
+  \ifatfi@moddate
+  \else
+    \atfi@moddatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /ModDate(#1)%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\define@key{AtFi@file}{ModDate}{%
+  \ifatfi@moddate
+  \else
+    \atfi@moddatetrue
+    \edef\atfi@params{%
+      \atfi@params
+      /ModDate(D:#1\atfi@timezone)%
+    }%
+  \fi
+}
+%    \end{macrocode}
+%
+%    \begin{macro}{\atfi@pdftexdata}
+%    \begin{macrocode}
+\let\atfi@temp\ltx@one
+\ltx@IfUndefined{pdf@filesize}{%
+  \let\atfi@temp\ltx@zero
+}{}
+\ltx@IfUndefined{pdf@filemoddate}{%
+  \let\atfi@temp\ltx@zero
+}{}
+\ltx@IfUndefined{pdf@filemdfivesum}{%
+  \let\atfi@temp\ltx@zero
+}{}
+\ifcase\atfi@temp
+  \let\atfi@pdftexdata\ltx@gobble
+\or
+  \def\atfi@pdftexdata#1{%
+    \edef\atfi@temp{\pdf@filesize{#1}}%
+    \ifx\atfi@temp\ltx@empty
+    \else
+      \setkeys{AtFi@file}{Size=\atfi@temp}%
+      \edef\atfi@temp{\pdf@filemoddate{#1}}%
+      \ifx\atfi@temp\ltx@empty
+      \else
+        \setkeys{AtFi@file}{ModDateTZ=\atfi@temp}%
+      \fi
+      \edef\atfi@temp{\pdf@filemdfivesum{#1}}%
+      \ifx\atfi@temp\ltx@empty
+      \else
+        \setkeys{AtFi@file}{CheckSum=\atfi@temp}%
+      \fi
+    \fi
+  }%
+\fi
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Writing the \xext{atfi} file}
+%
+%    Respect \cs{nofiles} and option \xoption{nofiles}.
+%    \cs{nofiles} has more weight than option \xoption{nofiles}.
+%    \begin{macrocode}
+\if@filesw
+\else
+  \atfi@nofilestrue
+\fi
+\ifatfi@nofiles
+  \PackageInfo{attachfile2}{%
+    File `\jobname.atfi' will not be written because of\MessageBreak
+    \string\nofiles\space or option `nofiles'%
+  }%
+%    \end{macrocode}
+%    \begin{macro}{\atfi@writefile}
+%    \begin{macrocode}
+  \let\atfi@writefile\ltx@gobble
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macro}{\atfi@stream}
+%    \begin{macrocode}
+  \newwrite\atfi@stream
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+  \immediate\openout\atfi@stream=\jobname.atfi\relax
+  \immediate\write\atfi@stream{%
+    \string\attachfile@timezone{\atfi@timezone}%
+  }%
+%    \end{macrocode}
+%    \begin{macro}{\atfi@writefile}
+%    \begin{macrocode}
+  \def\atfi@writefile#1{%
+    \begingroup
+      \EdefEscapeHex\atfi@temp{#1}%
+      \immediate\write\atfi@stream{%
+        \string\attachfile@file[%
+          \ltx@ifundefined{atfi@file@#1}{}{\@nameuse{atfi@file@#1}}%
+        ]{\atfi@temp}%
+      }%
+    \endgroup
+  }%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macrocode}
+\fi
+\atfi@DisableOption{nofiles}
+%    \end{macrocode}
+%
+%    \begin{macro}{\atfi@attachfile}
+%    \begin{macrocode}
+\def\atfi@attachfile#1#2{%
+  \ltx@IfUndefined{atfi@fileobj@#2}{%
+    \atfi@writefile{#2}%
+  }{%
+    % don't need duplicates
+  }%
+  \atfi@setup{#1}%
+  \atfi@embedfile{#2}%
+  \atfi@set@appearance@icon
+  \atfi@flags@to@int
+  \atfi@insert@file@annot{#2}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsubsection{Annotation appearance}
+%
+%    \begin{macro}{\atfi@appearancewidth}
+%    \begin{macrocode}
+\newlength{\atfi@appearancewidth}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@appearanceheight}
+%    \begin{macrocode}
+\newlength{\atfi@appearanceheight}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@appearancedepth}
+%    \begin{macrocode}
+\newlength{\atfi@appearancedepth}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@appearancebox}
+%    \begin{macrocode}
+\newsavebox{\atfi@appearancebox}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@set@appearance@icon}
+%    \begin{macrocode}
+\def\atfi@set@appearance@icon{%
+  \ltx@IfUndefined{atfi@appobj@\atfi@icon@icon}{%
+    \savebox{\atfi@appearancebox}{%
+      \@nameuse{atfi@acro\atfi@icon@icon}%
+    }%
+    \expandafter
+    \xdef\csname atfi@appwidth@\atfi@icon@icon\endcsname{%
+      \the\wd\atfi@appearancebox
+    }%
+    \expandafter
+    \xdef\csname atfi@appheight@\atfi@icon@icon\endcsname{%
+      \the\ht\atfi@appearancebox
+    }%
+    \expandafter
+    \xdef\csname atfi@appdepth@\atfi@icon@icon\endcsname{%
+      \the\dp\atfi@appearancebox
+    }%
+    \atfi@xform@icon
+    \global\expandafter\let
+        \csname atfi@appobj@\atfi@icon@icon\endcsname
+        \atfi@appearanceobj
+  }{%
+  }%
+  % optimization: \setlength dropped
+  \atfi@appearancewidth=%
+      \@nameuse{atfi@appwidth@\atfi@icon@icon}\relax
+  \atfi@appearanceheight=%
+      \@nameuse{atfi@appheight@\atfi@icon@icon}\relax
+  \atfi@appearancedepth=%
+      \@nameuse{atfi@appdepth@\atfi@icon@icon}\relax
+  \expandafter\let\expandafter\atfi@appearanceobj
+      \csname atfi@appobj@\atfi@icon@icon\endcsname
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@set@appearance}
+%    \begin{macrocode}
+\def\atfi@set@appearance#1{%
+  \savebox{\atfi@appearancebox}{#1}%
+  \atfi@appearancewidth=\wd\atfi@appearancebox
+  \atfi@appearanceheight=\ht\atfi@appearancebox
+  \atfi@appearancedepth=\dp\atfi@appearancebox
+  \atfi@xform
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\newcounter{atfi@flags}
+%    \end{macrocode}
+%    \begin{macro}{\atfi@flags@to@int}
+%    \begin{macrocode}
+\DeclareRobustCommand{\atfi@flags@to@int}{%
+  \setcounter{atfi@flags}{0}%
+  \ifatfi@print
+    \addtocounter{atfi@flags}{4}%
+  \fi%
+  \ifatfi@zoom
+  \else
+    \addtocounter{atfi@flags}{8}%
+  \fi%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@textattachfile}
+%    \begin{macrocode}
+\def\atfi@textattachfile#1#2{%
+    \endgroup
+    \atfi@textattachfile@i{#1}{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@textattachfile@i}
+%    \begin{macrocode}
+\def\atfi@textattachfile@i#1#2#3{%
+    \ltx@IfUndefined{atfi@fileobj@#2}{%
+      \atfi@writefile{#2}%
+    }{%
+      % don't need duplicates
+    }%
+    \atfi@setup{#1}%
+    \atfi@embedfile{#2}%
+    \atfi@set@appearance{%
+      \leavevmode
+      \begingroup
+        \HyColor@UseColor\atfi@color@tex
+        #3\strut
+      \endgroup
+    }%
+    \atfi@flags@to@int
+    \atfi@insert@file@annot{#2}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\attachfile}
+%    \begin{macrocode}
+\DeclareRobustCommand{\attachfile}[1][]{%
+  \begingroup
+    \let\do\@makeother
+    \dospecials
+    \catcode`\{=1\relax
+    \catcode`\}=2\relax
+    \atfi@attachfile{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\textattachfile}
+%    \begin{macrocode}
+\DeclareRobustCommand{\textattachfile}[1][]{%
+  \begingroup
+    \begingroup
+      \let\do\@makeother
+      \dospecials
+      \catcode`\{=1\relax
+      \catcode`\}=2\relax
+      \atfi@textattachfile{#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\noattachfile}
+%    \begin{macrocode}
+\DeclareRobustCommand{\noattachfile}[1][]{%
+  \begingroup
+    \atfi@setup{#1}%
+    \atfi@set@appearance@icon
+    \ifatfi@print
+      \expandafter
+      \atfi@refxform\csname atfi@appobj@\atfi@icon@icon\endcsname
+    \else
+      \makebox[\atfi@appearancewidth]{}%
+    \fi
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+% \subsection{Drivers}
+%
+% \subsubsection{\pdfTeX}
+%
+%    \begin{macrocode}
+%<*pdftex>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atfi-pdftex.def}%
+  [2012/04/18 v2.7 attachfile2 driver for pdfTeX (HO)]%
+%    \end{macrocode}
+%
+% \paragraph{\LuaTeX}
+%
+%    \begin{macrocode}
+\ifluatex
+  \ifnum\luatexversion<39 %
+  \else
+    \begingroup
+      \escapechar=-1 %
+      \def\atfi@temp#1{%
+        \ltx@IfUndefined{\string#1}{%
+          \let#1\ltx@undefined
+          \directlua{%
+            if tex.enableprimitives then %
+              tex.enableprimitives('', {'\string#1'})%
+            end%
+          }%
+          \ltx@ifundefined{\string#1}{%
+          }{%
+            \global#1=#1%
+            \@PackageInfoNoLine{attachfile2}{%
+              \string#1 enabled%
+            }%
+          }%
+        }{}%
+      }%
+      \atfi@temp\pdfliteral
+      \atfi@temp\pdfobj
+      \atfi@temp\pdflastobj
+      \atfi@temp\pdfxform
+      \atfi@temp\pdflastxform
+      \atfi@temp\pdfrefxform
+      \atfi@temp\pdfannot
+    \endgroup
+  \fi
+\fi
+%    \end{macrocode}
+%
+% \paragraph{Macros for graphics data}
+%
+%    \begin{macro}{\atfi@literal}
+%    \begin{macrocode}
+\let\atfi@literal\pdfliteral
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\atfi@GSAVE{q }
+\def\atfi@GRESTORE{Q }
+\def\atfi@SETLINEWIDTH{w }
+\def\atfi@LINETO{l }
+\def\atfi@MOVETO{m }
+\def\atfi@STROKE{S }
+\def\atfi@FILL{f }
+% \atfi@FILLSTROKE{<fill color>}{<stroke color>}
+\def\atfi@FILLSTROKE#1#2{#1#2B }
+%    \end{macrocode}
+% color: uppercase are stroke colors, lowercase non-stroke (fill) colors
+% PS, however, does not different between stroke and not-stroke colors
+%    \begin{macrocode}
+\def\atfi@SETRGBCOLORSTROKE{RG }
+\def\atfi@SETRGBCOLORFILL{rg }
+\def\atfi@SETGRAYSTROKE{G }
+\def\atfi@SETGRAYFILL{g }
+\def\atfi@SETCMYKCOLORSTROKE{K }
+\def\atfi@SETCMYKCOLORFILL{k }
+\def\atfi@RECTFILL{re f }
+\def\atfi@RECTSTROKEFILL#1#2#3{#1#2#3re B }
+\def\atfi@SETMITERLIMIT{M }
+\def\atfi@SETFLAT{i }
+\def\atfi@SETLINECAP{J }
+\def\atfi@CURVETO{c }
+\def\atfi@CURVETOV{v }
+\def\atfi@CURVETOY{y }
+\def\atfi@CLOSEPATH{h }
+\def\atfi@SETLINEJOIN{j }
+%    \end{macrocode}
+%
+% \paragraph{File embedding}
+%
+%    \begin{macrocode}
+\define@key{AtFi@file}{Size}{%
+  \edef\atfi@params{\atfi@params/Size #1}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\atfi@embedfile}
+%    \begin{macrocode}
+\def\atfi@embedfile#1{%
+  \ltx@IfUndefined{atfi@fileobj@#1}{%
+    \begingroup
+      \let\atfi@params\ltx@empty
+      \expandafter\let\expandafter\atfi@temp
+          \csname atfi@file@#1\endcsname
+      \ifx\atfi@temp\ltx@empty
+        \let\atfi@temp\relax
+      \fi
+      \ifx\atfi@temp\relax
+        \atfi@pdftexdata{#1}%
+      \else
+        \edef\x{%
+          \noexpand\setkeys{AtFi@file}{\@nameuse{atfi@file@#1}}%
+        }%
+        \x
+      \fi
+      \ifx\atfi@params\ltx@empty
+      \else
+        \edef\atfi@params{/Params<<\atfi@params>>}%
+      \fi
+      \immediate\pdfobj stream attr {%
+        /Type/EmbeddedFile%
+        \atfi@mimetype
+        \atfi@params
+      } file {#1}%
+      \expandafter
+      \xdef\csname atfi@fileobj@#1\endcsname{\the\pdflastobj}%
+    \endgroup
+  }{%
+    % file already embedded
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Annotation appearance}
+%
+%    \begin{macro}{\atfi@xform}
+%    input: \cs{atfi@appearancebox}, output: \cs{atfi@appearanceobj}
+%    \begin{macrocode}
+\def\atfi@xform{%
+  \immediate\pdfxform\atfi@appearancebox
+  \edef\atfi@appearanceobj{\the\pdflastxform}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@xform@icon}
+%    \begin{macrocode}
+\let\atfi@xform@icon\atfi@xform
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@refxform}
+%    \begin{macrocode}
+\def\atfi@refxform#1{%
+  \pdfrefxform#1\relax
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{File attachment annotation}
+%
+%    \begin{macro}{\atfi@insert@file@annot}
+%    \begin{macrocode}
+\def\atfi@insert@file@annot#1{%
+  \rule{0pt}{0pt}%
+  \ifatfi@appearance
+    \def\atfi@appearance@dict{%
+      /AP<<%
+        /N \atfi@appearanceobj\space 0 R%
+        /R \atfi@appearanceobj\space 0 R%
+        /D \atfi@appearanceobj\space 0 R%
+      >>%
+    }%
+  \else
+    \let\atfi@appearance@dict\ltx@empty
+  \fi
+  \ltx@IfUndefined{atfi@fsobj@#1}{%
+    \begingroup
+      \hypersetup{unicode=false}%
+      \atfi@pdfstringdef\atfi@file{#1}%
+      \immediate\pdfobj{%
+        <<%
+          /Type/Filespec%
+          /F(\atfi@file)%
+          \ifx\atfi@ucfilespec\ltx@empty
+          \else
+            /UF(\atfi@ucfilespec)%
+          \fi
+          /EF<<%
+            /F \@nameuse{atfi@fileobj@#1} 0 R%
+          >>%
+        >>%
+      }%
+      \expandafter\xdef\csname atfi@fsobj@#1\endcsname{%
+        \the\pdflastobj
+      }%
+    \endgroup
+  }{%
+  }%
+  \pdfannot width \atfi@scale\atfi@appearancewidth
+            height \atfi@scale\atfi@appearanceheight
+            depth \atfi@scale\atfi@appearancedepth {%
+    /Subtype/FileAttachment%
+    \atfi@icon
+    \atfi@color@annot
+    \atfi@author
+    \atfi@date
+    \atfi@annotname
+    \atfi@description
+    \atfi@subject
+    \atfi@appearance@dict
+    /F \theatfi@flags
+    /FS \@nameuse{atfi@fsobj@#1} 0 R%
+  }%
+  \rule{0pt}{\atfi@appearanceheight}%
+  \rule[-\atfi@appearancedepth]{0pt}{\atfi@appearancedepth}%
+  \rule{\atfi@appearancewidth}{0pt}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</pdftex>
+%    \end{macrocode}
+%
+% \subsubsection{dvips}
+%
+%    \begin{macrocode}
+%<*dvips>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atfi-dvips.def}%
+  [2012/04/18 v2.7 attachfile2 driver for dvips (HO)]%
+%    \end{macrocode}
+%
+% \paragraph{Macros for graphics data}
+%
+%    \begin{macro}{\atfi@literal}
+%    \begin{macrocode}
+\def\atfi@literal#1{%
+  \special{ps:atfi_dict begin{#1}atfi_?pdfmark end}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@header}
+%    \begin{macrocode}
+\def\atfi@header#1{%
+  \special{! #1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\atfi@header{%
+  userdict begin 20 dict dup /atfi_dict exch def end begin%
+    /atfi_?pdfmark systemdict %
+    dup/pdfmark known%
+    {%
+      /exec get def%
+    }{%
+      /pop get def%
+    } ifelse%
+    {%
+      %
+      % x y width height atfi_re ->
+      languagelevel 2 ge {%
+        /atfi_rectfill { rectfill } bind def%
+        /atfi_rectstroke { rectstroke } bind def%
+      }{%
+        /atfi_rect {%
+          /atfi_height exch def%
+          /atfi_width exch def%
+          /atfi_x exch def%
+          /atfi_y exch def %
+          newpath %
+          atfi_x atfi_y moveto %
+          atfi_x atfi_width add atfi_y lineto %
+          atfi_x atfi_width add atfi_y atfi_height add lineto %
+          atfi_x atfi_y atfi_height add lineto %
+          closepath%
+        } bind def%
+        /atfi_rectfill {%
+          atfi_rect fill%
+        } bind def%
+        /atfi_rectstroke {%
+          atfi_rect stroke%
+        } bind def%
+      } ifelse%
+      /atfi_curveto_v {%
+        currentpoint 6 2 roll curveto%
+      } bind def%
+      /atfi_curveto_y {%
+        2 copy curveto%
+      } bind def%
+      %
+      % help macro for atfi_convert_date
+      /atfi_two {%
+        dup 10 lt%
+        {%
+          1 string cvs %
+          exch 1 add exch%
+        }{%
+          2 string cvs%
+        } ifelse %
+        putinterval%
+      } bind def%
+      %
+      % <seconds since 1970-01-01> atfi_convert_date -> (D:...Z)
+      /atfi_convert_date {%
+        dup%
+        /atfi_days exch 3600 idiv 24 idiv def%
+        % calc date part
+        /atfi_year 1970 def%
+        {%
+          atfi_year 400 mod 0 eq %
+          atfi_year 100 mod 0 ne %
+          atfi_year 4   mod 0 eq %
+          and or%
+          {366} {365} ifelse %
+          dup atfi_days lt%
+          {%
+            atfi_days exch sub /atfi_days exch def%
+            /atfi_year atfi_year 1 add def%
+          }{%
+            exit%
+          } ifelse%
+        } loop%
+        /atfi_month 1 def%
+        /atfi_days atfi_days 1 add def %
+        31 atfi_days lt%
+        {%
+          atfi_days 31 sub /atfi_days exch def%
+          /atfi_month atfi_month 1 add def %
+          366 eq {29} {28} ifelse dup atfi_days lt%
+          {%
+            atfi_days exch sub /atfi_days exch def%
+            /atfi_month atfi_month 1 add def %
+          31 atfi_days lt%
+          {%
+            atfi_days 31 sub /atfi_days exch def%
+            /atfi_month atfi_month 1 add def %
+          30 atfi_days lt%
+          {%
+            atfi_days 30 sub /atfi_days exch def%
+            /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            30 atfi_days lt%
+            {%
+              atfi_days 30 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            30 atfi_days lt%
+            {%
+              atfi_days 30 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            30 atfi_days lt%
+            {%
+              atfi_days 30 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def %
+            31 atfi_days lt%
+            {%
+              atfi_days 31 sub /atfi_days exch def%
+              /atfi_month atfi_month 1 add def%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+            } if%
+          } { pop } ifelse%
+        }{ pop } ifelse %
+        % calc time part
+        3600 24 mul mod %
+        dup 3600 idiv dup /atfi_hour exch def %
+        3600 mul sub %
+        dup 60 idiv dup /atfi_min exch def %
+        60 mul sub %
+        /atfi_sec exch def%
+        (D:19700101000000Z)%
+        dup 2  atfi_year 4 string cvs putinterval %
+        dup 6  atfi_month atfi_two %
+        dup 8  atfi_days  atfi_two %
+        dup 10 atfi_hour  atfi_two %
+        dup 12 atfi_min   atfi_two %
+        dup 14 atfi_sec   atfi_two%
+      } bind def %
+      %
+      % <filename> atfi_calc_checksum -> /CheckSum <checksum>
+      % or returns nothing, if MD5Encode is not given
+      false %
+      languagelevel 2 ge {%
+        (MD5Encode)%
+        { pop true or }%
+        (MD5Encode) length string%
+        /Filter %
+        resourceforall%
+      } if%
+      {%
+        /atfi_calc_checksum {%
+          /atfi_checksum 16 string def%
+          /atfi_file exch (r) file def%
+          /atfi_md5sum atfi_checksum /MD5Encode filter def %
+          % not too efficient to read and write byte by byte,
+          % using a buffer is probably faster
+          atfi_size {%
+            atfi_file read%
+            {%
+              atfi_md5sum exch write%
+            } if%
+          } repeat %
+          atfi_md5sum closefile %
+          atfi_file closefile%
+          /CheckSum atfi_checksum%
+        } bind def%
+      }{%
+        /atfi_calc_checksum { pop } bind def%
+      } ifelse%
+      %
+      /atfi_pttobp { 72.27 div 72 mul } bind def%
+      /atfi_pdftodvipsx { 72.27 div Resolution mul } bind def%
+      /atfi_pdftodvipsy { 72.27 div VResolution mul } bind def%
+      %
+    } atfi_?pdfmark %
+  end%
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+\def\atfi@GSAVE{gsave }
+\def\atfi@GRESTORE{grestore }
+\def\atfi@SETLINEWIDTH{setlinewidth }
+\def\atfi@LINETO{lineto }
+\def\atfi@MOVETO{moveto }
+\def\atfi@STROKE{stroke }
+\def\atfi@FILL{fill }
+\def\atfi@FILLSTROKE#1#2{gsave #1 fill grestore #2 stroke }
+\def\atfi@SETRGBCOLORSTROKE{setrgbcolor }
+\def\atfi@SETRGBCOLORFILL{setrgbcolor }
+\def\atfi@SETGRAYSTROKE{setgray }
+\def\atfi@SETGRAYFILL{setgray }
+\def\atfi@SETCMYKCOLORSTROKE{setcmykcolor }
+\def\atfi@SETCMYKCOLORFILL{setcmykcolor }
+\def\atfi@RECTFILL{atfi_rectfill }
+\def\atfi@RECTSTROKEFILL#1#2#3{%
+  #3%
+  #1%
+  gsave atfi_rectfill grestore %
+  #2%
+  #3%
+  atfi_rectstroke %
+  #1%
+}
+\def\atfi@SETMITERLIMIT{setmiterlimit }
+\def\atfi@SETFLAT{setflat }
+\def\atfi@SETLINECAP{setlinecap }
+\def\atfi@CURVETO{curveto }
+\def\atfi@CURVETOV{atfi_curveto_v }
+\def\atfi@CURVETOY{atfi_curveto_y }
+\def\atfi@CLOSEPATH{closepath }
+\def\atfi@SETLINEJOIN{setlinejoin }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcounter{atfi@obj}
+\renewcommand*{\theatfi@obj}{%
+  {atfi_obj_\number\c@atfi@obj}%
+}
+%    \end{macrocode}
+%
+% \paragraph{File embedding}
+%
+%    Most values for Params dictionary found in the \xext{atfi} file
+%    have priority:
+%    \begin{itemize}
+%    \item Recalculation (md5sum, \dots) is avoided.
+%    \item An external script has more possibilities than programming
+%          at PostScript level (operating system, getting the date and
+%          time values of the file with correct interpretation.
+%    \item Exception: status is called to test file existence, thus
+%          we get the value of size for free.
+%    \end{itemize}
+%    \begin{macrocode}
+\define@key{AtFi@file}{Size}{}
+%    \end{macrocode}
+%    \begin{macro}{\atfi@embedfile}
+%    \begin{macrocode}
+\def\atfi@embedfile#1{%
+  \ltx@IfUndefined{atfi@fileobj@#1}{%
+    \atfi@pdfstringdef\atfi@psfilename{#1}%
+    \stepcounter{atfi@obj}%
+    \expandafter\xdef\csname atfi@fileobj@#1\endcsname{\theatfi@obj}%
+    \begingroup
+      \let\atfi@params\ltx@empty
+      \expandafter\let\expandafter\atfi@temp
+          \csname atfi@file@#1\endcsname
+      \ifx\atfi@temp\ltx@empty
+        \let\atfi@temp\relax
+      \fi
+      \ifx\atfi@temp\relax
+        \atfi@pdftexdata{#1}%
+      \else
+        \edef\x{%
+          \noexpand\setkeys{AtFi@file}{\@nameuse{atfi@file@#1}}%
+        }%
+        \x
+      \fi
+      \atfi@literal{%
+        /atfi_filename(\atfi@psfilename)def %
+        atfi_filename status%
+        {%
+%    \end{macrocode}
+%         ok: file found\\
+%         save parameters of status command
+%    \begin{macrocode}
+          /atfi_created exch def%
+          /atfi_referenced exch def%
+          /atfi_size exch def %
+          pop %
+%    \end{macrocode}
+%\begin{verbatim}
+%drop parameter "pages" (storage space), never needed
+%ghostscript:
+%  created:       stat.st_ctime
+%  referenced:    stat.st_mtime
+%  stat.st_ctime: interpretion depends on operating system:
+%                 * unix: inode change time (not interesting)
+%                 * win32: probably creation time
+%                          --> /CreationDate
+%  stat.st_mtime: modification time --> /ModDate
+%  time values are seconds since 1970-01-01, GMT
+%TODO: ghostscript offers "getenv" for getting the value
+%      of an environment variable. That could be used to
+%      to detect windows and settingthe /CreationDate entry.
+%TODO: how are these values interpreted by other distiller
+%      programs?
+%\end{verbatim}
+%    \begin{macrocode}
+          [%
+            /_objdef \theatfi@obj
+            /type/stream%
+          /OBJ pdfmark%
+          [%
+            \theatfi@obj
+            <<%
+              /Type/EmbeddedFile%
+              \atfi@mimetype
+              /Params%
+              <<%
+                \atfi@params
+                %
+                /Size atfi_size%
+                %
+                /product where%
+                {%
+                  pop %
+%    \end{macrocode}
+% check for ghostscript
+%    \begin{macrocode}
+                  product (Ghostscript) search%
+                  {%
+                    pop pop pop %
+%    \end{macrocode}
+%                     ghostscript is running
+%    \begin{macrocode}
+                    \ifatfi@creationdate
+                    \else
+                      false % TODO: test for windows
+                      {%
+                        /CreationDate atfi_created atfi_convert_date%
+                      } if%
+                    \fi
+                    \ifatfi@moddate
+                    \else
+                      /ModDate atfi_referenced atfi_convert_date%
+                    \fi
+                  } if%
+%    \end{macrocode}
+%                   look for MD5Encode filter and calculate CheckSum
+%    \begin{macrocode}
+                } if %
+                \ifatfi@checksum
+                \else
+                  atfi_filename atfi_calc_checksum%
+                \fi
+              >>%
+            >>%
+          /PUT pdfmark%
+          [%
+            \theatfi@obj
+            atfi_filename (r) file%
+          /PUT pdfmark%
+          [%
+            \theatfi@obj
+          /CLOSE pdfmark%
+        }{%
+%    \end{macrocode}
+%           error: file not found\\
+%           currently nothing is done
+%    \begin{macrocode}
+        } ifelse%
+      }%
+    \endgroup
+  }{%
+%    \end{macrocode}
+%     file already embedded
+%    \begin{macrocode}
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+% \paragraph{Annotation appearance}
+%
+% output: \cs{atfi@appearanceobj}\\
+% input: \cs{atfi@appearancebox}, \cs{atfi@icon@icon}
+%    \begin{macro}{atfi@xfrom@icon}
+%    \begin{macrocode}
+\def\atfi@xform@icon{%
+  \stepcounter{atfi@obj}%
+  \edef\atfi@appearanceobj{\theatfi@obj}%
+  \atfi@literal{%
+    [%
+      /_objdef \atfi@appearanceobj
+      /BBox[%
+        0 %
+        0 %
+        \strip@pt\wd\atfi@appearancebox\space atfi_pttobp %
+        \strip@pt\dimexpr\dp\atfi@appearancebox
+            +\ht\atfi@appearancebox\relax\space atfi_pttobp%
+      ]%
+    /BP pdfmark %
+    \csname atfi@acro\atfi@icon@icon @data\endcsname
+    [%
+    /EP pdfmark%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@xform}
+%    output: \cs{atfi@appearanceobj},
+%    input: \cs{atfi@appearancebox}
+%    \begin{macrocode}
+\def\atfi@xform{%
+  \stepcounter{atfi@obj}%
+  \edef\atfi@appearanceobj{\theatfi@obj}%
+  \begingroup
+    \setbox\ltx@zero=\hbox{%
+      \atfi@literal{%
+        [%
+          /_objdef \atfi@appearanceobj
+          /BBox[%
+            currentpoint %
+              \strip@pt\dp\atfi@appearancebox\space sub %
+            currentpoint %
+              exch \strip@pt\wd\atfi@appearancebox\space add %
+              exch \strip@pt\ht\atfi@appearancebox\space add%
+          ]%
+        /BP pdfmark %
+        gsave %
+        currentpoint %
+        2 copy translate %
+        72.27 Resolution div 72.27 VResolution div neg scale %
+        exch neg exch neg translate%
+      }%
+      \usebox{\atfi@appearancebox}%
+      \atfi@literal{%
+        grestore%
+        [%
+        /EP pdfmark%
+      }%
+    }%
+    % do not allocate any space for xobject definition
+    \dp\ltx@zero=\z@
+    \ht\ltx@zero=\z@
+    \wd\ltx@zero=\z@
+    \mbox{\usebox\ltx@zero}%
+  \endgroup
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@refxform}
+%    \begin{macrocode}
+\def\atfi@refxform#1{%
+  \raisebox{-\atfi@appearancedepth}{%
+    \atfi@literal{%
+      gsave %
+        currentpoint translate %
+        Resolution 72 div VResolution neg 72 div scale%
+        [#1 /SP pdfmark % hash-ok
+      grestore%
+    }%
+    \makebox[\atfi@appearancewidth]{}%
+  }%
+  \rule{0pt}{\atfi@appearanceheight}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{File attachment annotation}
+%
+%    \begin{macro}{\atfi@insert@file@annot}
+%    \begin{macrocode}
+\def\atfi@insert@file@annot#1{%
+  \rule{0pt}{0pt}%
+  \ifatfi@appearance
+    \def\atfi@appearance@dict{%
+      /AP<<%
+        /N \atfi@appearanceobj
+        /R \atfi@appearanceobj
+        /D \atfi@appearanceobj
+      >>%
+    }%
+  \else
+    \let\atfi@appearance@dict\ltx@empty
+  \fi
+  \ltx@IfUndefined{atfi@fsobj@#1}{%
+    \stepcounter{atfi@obj}%
+    \expandafter
+    \xdef\csname atfi@fsobj@#1\endcsname{\theatfi@obj}%
+    \begingroup
+      \hypersetup{unicode=false}%
+      \atfi@pdfstringdef\atfi@file{#1}%
+      \atfi@literal{%
+        [%
+          /_objdef \theatfi@obj
+          /type/dict%
+        /OBJ pdfmark%
+        [%
+          \theatfi@obj
+          <<%
+            /Type/Filespec%
+            /F(\atfi@file)%
+            \ifx\atfi@ucfilespec\ltx@empty
+            \else
+              /UF(\atfi@ucfilespec)%
+            \fi
+            /EF<<%
+              /F \csname atfi@fileobj@#1\endcsname
+            >>%
+          >>%
+        /PUT pdfmark%
+      }%
+    \endgroup
+  }{%
+  }%
+  \atfi@literal{%
+    [%
+      /Subtype/FileAttachment%
+      \atfi@icon
+      \atfi@color@annot
+      \atfi@author
+      \atfi@date
+      \atfi@annotname
+      \atfi@description
+      \atfi@subject
+      \atfi@appearance@dict
+      /F \theatfi@flags
+      /FS \csname atfi@fsobj@#1\endcsname
+      /Rect[%
+        currentpoint %
+          \strip@pt\dimexpr\atfi@scale\atfi@appearancedepth\relax
+            \space atfi_pdftodvipsy add %
+        currentpoint %
+          exch %
+            \strip@pt\dimexpr\atfi@scale\atfi@appearancewidth\relax
+            \space atfi_pdftodvipsx add %
+          exch %
+            \strip@pt\dimexpr\atfi@scale\atfi@appearanceheight\relax
+            \space atfi_pdftodvipsy sub %
+      ]%
+    /ANN pdfmark%
+  }%
+  \rule{0pt}{\atfi@appearanceheight}%
+  \rule[-\atfi@appearancedepth]{0pt}{\atfi@appearancedepth}%
+  \rule{\atfi@appearancewidth}{0pt}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+%</dvips>
+%    \end{macrocode}
+%
+% \subsubsection{dvipdfmx}
+%
+%    \begin{macrocode}
+%<*dvipdfmx>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{atfi-dvipdfmx.def}%
+  [2012/04/18 v2.7 attachfile2 driver for dvipdfmx/XeTeX (HO)]%
+%    \end{macrocode}
+%
+% \paragraph{Macros for graphics data}
+%
+%    \begin{macro}{\atfi@special}
+%    \begin{macrocode}
+\def\atfi@special#1{%
+  \special{pdf:#1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@literal}
+%    \begin{macrocode}
+\def\atfi@literal#1{%
+  \atfi@special{content #1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macrocode}
+\def\atfi@GSAVE{q }
+\def\atfi@GRESTORE{Q }
+\def\atfi@SETLINEWIDTH{w }
+\def\atfi@LINETO{l }
+\def\atfi@MOVETO{m }
+\def\atfi@STROKE{S }
+\def\atfi@FILL{f }
+\def\atfi@FILLSTROKE#1#2{#1#2B }
+\def\atfi@SETRGBCOLORSTROKE{RG }
+\def\atfi@SETRGBCOLORFILL{rg }
+\def\atfi@SETGRAYSTROKE{G }
+\def\atfi@SETGRAYFILL{g }
+\def\atfi@SETCMYKCOLORSTROKE{K }
+\def\atfi@SETCMYKCOLORFILL{k }
+\def\atfi@RECTFILL{re f }
+\def\atfi@RECTSTROKEFILL#1#2#3{#1#2#3re B }
+\def\atfi@SETMITERLIMIT{M }
+\def\atfi@SETFLAT{i }
+\def\atfi@SETLINECAP{J }
+\def\atfi@CURVETO{c }
+\def\atfi@CURVETOV{v }
+\def\atfi@CURVETOY{y }
+\def\atfi@CLOSEPATH{h }
+\def\atfi@SETLINEJOIN{j }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newcounter{atfi@obj}
+\renewcommand*{\theatfi@obj}{%
+  @atfi_obj_\number\c@atfi@obj
+}
+%    \end{macrocode}
+%
+% \paragraph{File embedding}
+%
+%    \begin{macrocode}
+\define@key{AtFi@file}{Size}{%
+  \edef\atfi@params{\atfi@params/Size #1}%
+}
+%    \end{macrocode}
+%    \begin{macro}{\atfi@embedfile}
+%    \begin{macrocode}
+\def\atfi@embedfile#1{%
+  \ltx@IfUndefined{atfi@fileobj@#1}{%
+    \stepcounter{atfi@obj}%
+    \begingroup
+      \let\atfi@params\ltx@empty
+      \expandafter\let\expandafter\atfi@temp
+          \csname atfi@file@#1\endcsname
+      \ifx\atfi@temp\ltx@empty
+        \let\atfi@temp\relax
+      \fi
+      \ifx\atfi@temp\relax
+        \atfi@pdftexdata{#1}%
+      \else
+        \edef\x{%
+          \noexpand\setkeys{AtFi@file}{\@nameuse{atfi@file@#1}}%
+        }%
+        \x
+      \fi
+      \ifx\atfi@params\ltx@empty
+      \else
+        \edef\atfi@params{/Params<<\atfi@params>>}%
+      \fi
+      \edef\atfi@FILE{#1}%
+      \filename@parse\atfi@FILE
+      \ifx\filename@area\ltx@empty
+        \edef\atfi@FILE{./\atfi@FILE}%
+      \fi
+      \EdefEscapeString\atfi@FILE{\atfi@FILE}%
+      \atfi@special{fstream %
+        \theatfi@obj
+        (\atfi@FILE)%
+        <<%
+          /Type/EmbeddedFile%
+          \atfi@mimetype
+          \atfi@params
+        >>%
+      }%
+      \atfi@special{close \theatfi@obj}%
+      \expandafter
+      \xdef\csname atfi@fileobj@#1\endcsname{\theatfi@obj}%
+    \endgroup
+  }{%
+    % file already embedded
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{Annotation appearance}
+%
+%    \begin{macro}{\atfi@xform}
+%    input: \cs{atfi@appearancebox}, output: \cs{atfi@appearanceobj}
+%    \begin{macrocode}
+\def\atfi@xform{%
+  \stepcounter{atfi@obj}%
+  \smash{%
+    \rlap{%
+      \atfi@special{bxobj \theatfi@obj\space
+        width \the\wd\atfi@appearancebox\space
+        height \the\ht\atfi@appearancebox\space
+        depth \the\dp\atfi@appearancebox
+      }%
+      \usebox\atfi@appearancebox
+      \atfi@special{exobj}%
+    }%
+  }%
+  \edef\atfi@appearanceobj{\theatfi@obj}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\atfi@xform@icon}
+%    \begin{macrocode}
+\let\atfi@xform@icon\atfi@xform
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\atfi@refxform}
+%    \begin{macrocode}
+\def\atfi@refxform#1{%
+  \leavevmode
+  \atfi@special{uxobj #1}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \paragraph{File attachment annotation}
+%
+%    \begin{macro}{\atfi@insert@file@annot}
+%    \begin{macrocode}
+\def\atfi@insert@file@annot#1{%
+  \rule{0pt}{0pt}%
+  \ifatfi@appearance
+    \def\atfi@appearance@dict{%
+      /AP<<%
+        /N \atfi@appearanceobj
+        /R \atfi@appearanceobj
+        /D \atfi@appearanceobj
+      >>%
+    }%
+  \else
+    \let\atfi@appearance@dict\ltx@empty
+  \fi
+  \ltx@IfUndefined{atfi@fsobj@#1}{%
+    \begingroup
+      \ifxetex
+        \let\atfi@temp\Hy@Warning
+        \let\Hy@Warning\ltx@gobble
+      \fi
+      \hypersetup{unicode=false}%
+      \ifxetex
+        \let\Hy@Warning\atfi@temp
+      \fi
+      \atfi@pdfstringdef\atfi@file{#1}%
+      \stepcounter{atfi@obj}%
+      \atfi@special{obj \theatfi@obj <<%
+          /Type/Filespec%
+          /F(\atfi@file)%
+          \ifx\atfi@ucfilespec\ltx@empty
+          \else
+            /UF(\atfi@ucfilespec)%
+          \fi
+          /EF<<%
+            /F \@nameuse{atfi@fileobj@#1}%
+          >>%
+        >>%
+      }%
+      \expandafter\xdef\csname atfi@fsobj@#1\endcsname{%
+        \theatfi@obj
+      }%
+    \endgroup
+  }{%
+  }%
+  \begingroup
+    \dimen@=\atfi@scale\atfi@appearancewidth
+    \edef\atfi@rule{width \the\dimen@}%
+    \dimen@=\atfi@scale\atfi@appearanceheight
+    \edef\atfi@rule{\atfi@rule\space height \the\dimen@}%
+    \dimen@=\atfi@scale\atfi@appearancedepth
+    \edef\atfi@rule{\atfi@rule\space depth \the\dimen@}%
+    \atfi@special{ann \atfi@rule
+      <<%
+        /Subtype/FileAttachment%
+        \atfi@icon
+        \atfi@color@annot
+        \atfi@author
+        \atfi@date
+        \atfi@annotname
+        \atfi@description
+        \atfi@subject
+        \atfi@appearance@dict
+        /F \theatfi@flags
+        /FS \@nameuse{atfi@fsobj@#1}%
+      >>%
+    }%
+  \endgroup
+  \rule{0pt}{\atfi@appearanceheight}%
+  \rule[-\atfi@appearancedepth]{0pt}{\atfi@appearancedepth}%
+  \rule{\atfi@appearancewidth}{0pt}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%
+%    \begin{macrocode}
+%</dvipdfmx>
+%    \end{macrocode}
+%
+% \subsection{Perl script \xfile{pdfatfi.pl}}
+%
+%    \begin{macrocode}
+%<*pdfatfi>
+%    \end{macrocode}
+%    \begingroup\small
+%    \SpecialEscapechar\|
+%    \begin{macrocode}
+#!/usr/bin/env perl
+use strict;
+$^W=1; # turn warning on
+#
+# pdfatfi.pl
+#
+# Copyright (C) 2005-2010, 2012 Heiko Oberdiek.
+#
+# This work may be distributed and/or modified under the
+# conditions of the LaTeX Project Public License, either
+# version 1.3c of this license or (at your option) any later
+# version. This version of this license is in
+#    http://www.latex-project.org/lppl/lppl-1-3c.txt
+# and the latest version of this license is in
+#    http://www.latex-project.org/lppl.txt
+# and version 1.3 or later is part of all distributions of
+# LaTeX version 2005/12/01 or later.
+#
+# This work has the LPPL maintenance status "maintained".
+#
+# This Current Maintainer of this work is Heiko Oberdiek.
+#
+# See file "attachfile2.pdf" for a list of files that belong to
+# this project.
+#
+# This file "pdfatfi.pl" may be renamed to "pdfatfi"
+# for installation purposes.
+#
+my $prj         = 'pdfatfi';
+my $file        = "$prj.pl";
+my $program     = uc($&) if $file =~ /^\w+/;
+my $version     = "2.7";
+my $date        = "2012/04/18";
+my $author      = "Heiko Oberdiek";
+my $copyright   = "Copyright (c) 2005-2010, 2012 by $author.";
+#
+# History:
+#   2005/05/21 v1.0: First release.
+#   2006/08/16 v2.2: Included in DTX file of attachfile2.dtx.
+#   2010/09/27 v2.6: Keys ModDateTZ and CreationDateTZ added.
+#   2012/04/18 v2.7: Option --version added.
+#
+
+use POSIX qw(strftime); # %z is used (GNU)
+use Digest::MD5;
+
+### program identification
+my $title = "$program $version, $date - $copyright\n";
+
+### error strings
+my $Error = "!!! Error:"; # error prefix
+
+### variables
+my $atfifile;
+
+### option variables
+my @bool = ("false", "true");
+$::opt_help       = 0;
+$::opt_quiet      = 0;
+$::opt_debug      = 0;
+$::opt_verbose    = 0;
+$::opt_version    = 0;
+
+my $usage = <<"END_OF_USAGE";
+${title}Syntax:   \L$program\E [options] <file[.atfi]>
+Function: Help program for LaTeX package "attachfile2".
+Options:                                    (defaults:)
+  --help          print usage
+  --version       print version number
+  --(no)quiet     suppress messages         ($bool[$::opt_quiet])
+  --(no)verbose   verbose printing          ($bool[$::opt_verbose])
+  --(no)debug     debug informations        ($bool[$::opt_debug])
+END_OF_USAGE
+
+### process options
+my @OrgArgv = @ARGV;
+use Getopt::Long;
+GetOptions(
+  "help!",
+  "version!",
+  "quiet!",
+  "debug!",
+  "verbose!",
+) or die $usage;
+!$::opt_help or die $usage;
+if ($::opt_version) {
+    print "$prj $date v$version\n";
+    exit(0);
+}
+@ARGV == 1 or die "$usage$Error Missing jobname!\n";
+
+$::opt_quiet = 0 if $::opt_verbose;
+
+print $title unless $::opt_quiet;
+
+### get jobname
+$atfifile = $ARGV[0];
+if (!-f $atfifile && -f "$atfifile.atfi") {
+    $atfifile .= ".atfi";
+}
+-f $atfifile or die "$Error File `$atfifile' not found!\n";
+
+print "* job file     = $atfifile\n" if $::opt_verbose;
+
+if ($::opt_debug) {
+  print <<"END_DEB";
+* OSNAME: $^O
+* PERL_VERSION: $]
+* ARGV: @OrgArgv
+END_DEB
+}
+
+my $tmpfile = $atfifile . ".tmp";
+
+my $timezone = strftime "%z", localtime;
+
+sub gettz ($) {
+    my $time = shift;
+    my $tz = strftime "%z", localtime($time);
+    return '' unless $tz;
+    return 'Z' if $tz eq '+0000';
+    $tz =~ s/^([+\-]\d\d)(\d\d)$/$1'$2'/;
+    return $tz;
+}
+
+open(IN, $atfifile) or die "$Error Cannot open `$atfifile'!\n";
+open(OUT, ">$tmpfile") or die "$Error Cannot write `$tmpfile'!\n";
+
+while(<IN>) {
+    # timezone
+    if (s/^(\\attachfile\@timezone\{).*(\})$/$1$timezone$2/) {
+        print "* timezone     = $timezone\n" if $::opt_verbose;
+    }
+
+    # file entry
+    if (/^\\attachfile\@file\[[^\]]*\]\{(.*)\}$/) {
+        my $hexfile = $1;
+        my $file = pack('H*', $hexfile);
+        my @s = stat($file);
+        if (@s == 0) {
+            print "!!! Warning: File `$file' not found!\n";
+        }
+        else {
+            my $size = @s[7];
+            my $mtime = @s[9];
+            my $ctime = @s[10]; # inode change time
+
+            my ($sec, $min, $hour, $mday, $mon, $year) =
+                    localtime($mtime);
+            my $moddate = sprintf("%04d%02d%02d%02d%02d%02d",
+                                  $year + 1900, $mon + 1, $mday,
+                                  $hour, $min, $sec);
+            my $moddatetz = 'D:' . $moddate . gettz($mtime);
+
+            # Manual page "perlport" says that "ctime" is creation
+            # time instead of inode change time for "Win32" and
+            # "Mac OS", but it is unsupported for "Mac OS X".
+            my $creationdate = "";
+            my $creationdatetz = "";
+            if ($^O eq 'MSWin32') { # cygwin?
+                ($sec, $min, $hour, $mday, $mon, $year) =
+                        localtime($ctime);
+                $creationdate = sprintf("%04d%02d%02d%02d%02d%02d",
+                                        $year + 1900, $mon + 1, $mday,
+                                        $hour, $min, $sec);
+                $creationdatetz =
+                        'D:' . $creationdate . gettz($ctime);
+            }
+
+            # md5 checksum
+            my $checksum = "";
+            my $ctx = Digest::MD5->new;
+            if (open(FILE, $file)) {
+                $ctx->addfile(*FILE);
+                $checksum = $ctx->hexdigest;
+                close(FILE);
+            }
+            else {
+                print "!!! Warning: File `$file' cannot be read,"
+                      . " dropping checksum!\n";
+            }
+
+            $_ = "\\attachfile\@file["
+                 . "ModDateTZ=$moddatetz"
+                 . ",Size=$size"
+                 . ($checksum ? ",CheckSum=$checksum" : "")
+                 . ($creationdatetz ?
+                         ",CreationDateTZ=$creationdatetz" :
+                         ($creationdate ?
+                                 ",CreationDate=$creationdate" : ""))
+                 . "]{$hexfile}\n";
+            if ($::opt_verbose) {
+                print "* file entry   = $file\n";
+                print "  size         = $size\n";
+                print "  moddate      = $moddate\n";
+                print "  creationdate = $creationdate\n"
+                        if $creationdate;
+                print "  checksum     = $checksum\n" if $checksum;
+            }
+        }
+    }
+
+    print OUT $_;
+}
+
+close(IN);
+close(OUT);
+
+unlink($atfifile) or die "$Error Cannot delete old `$atfifile'!\n";
+rename $tmpfile, $atfifile
+        or die "$Error Cannot move `$tmpfile' to `$atfifile'!\n";
+
+print "*** ready. ***\n" unless $::opt_quiet;
+
+__END__
+%    \end{macrocode}
+%    \endgroup
+%    \begin{macrocode}
+%</pdfatfi>
+%    \end{macrocode}
+%
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/attachfile2.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/attachfile2.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex attachfile2.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   attachfile2.sty & tex/latex/oberdiek/attachfile2.sty\\
+%   atfi-dvips.def & tex/latex/oberdiek/atfi-dvips.def\\
+%   atfi-pdftex.def & tex/latex/oberdiek/atfi-pdftex.def\\
+%   atfi-dvipdfmx.def & tex/latex/oberdiek/atfi-dvipdfmx.def\\
+%   pdfatfi.pl & scripts/oberdiek/pdfatfi.pl\\
+%   attachfile2.pdf & doc/latex/oberdiek/attachfile2.pdf\\
+%   attachfile2.dtx & source/latex/oberdiek/attachfile2.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Script installation}
+%    This package comes with a Perl script \xfile{pdfatfi.pl}.
+%    Install it somewhere so that it is executed, when it is called
+%    as \verb|pdfatfi| on the command line. Example for
+%    installing it under Linux:
+%    \begin{quote}
+%\begin{verbatim}
+%cp pdfatfi.pl /usr/local/bin/pdfatfi
+%chmod +x /usr/local/bin/pdfatfi
+%\end{verbatim}
+%    \end{quote}
+%
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk attachfile2.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{attachfile2.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex attachfile2.dtx
+%makeindex -s gind.ist attachfile2.idx
+%pdflatex attachfile2.dtx
+%makeindex -s gind.ist attachfile2.idx
+%pdflatex attachfile2.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{attachfile2.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='attachfile2'>
+  <name>attachfile2</name>
+  <caption>Attach files into PDF.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2005-2010,2012'/>
+  <license type='lppl1.3'/>
+  <version number='2.7'/>
+  <description>
+    This package can be used to attach files to a PDF document.
+    It is a further development of Scott Pakin&#x2019;s package
+    <xref refid='attachfile'>attachfile</xref> for
+    <xref refid='pdftex'>pdfTeX</xref>.  Apart from bug fixes,
+    this package adds support for dvips,
+    some new options, and gets and writes meta information data about
+    the attached files.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/attachfile2.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/attachfile2.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+% \bibitem{attachfile}
+%   Scott Pakin: \textit{The \xpackage{attachfile} package};
+%   2005/02/20 v1.2;
+%   \CTAN{macros/latex/contrib/attachfile/}.
+%
+% \bibitem{embedfile}
+%   Heiko Oberdiek: \textit{The \xpackage{embedfile} package};
+%   2006/08/16 v1.0;
+%   \CTAN{macros/latex/contrib/oberdiek/embedfile.pdf}.
+%
+% \bibitem{pdfspec}
+%   Adobe Systems Incorporated:
+%   \href{http://partners.adobe.com/public/developer/en/pdf/PDFReference16.pdf}%
+%       {\textit{PDF Reference, Fifth Edition, Version 1.6}},%
+%   November 2004;
+%   \url{http://partners.adobe.com/public/developer/pdf/index_reference.html}.
+%
+% \bibitem{mime}
+%   Network Working Group: RFC 2046, \textit{Multipurpose Internet Mail Extensions (MIME) Part Two:
+%     Media Types}, November 1996; \url{http://www.rfc-editor.org/}.
+%
+% \bibitem{types}
+%   IANA (Internet Assigned Numbers Authority):
+%   \textit{MIME Media Types}, May 2006;
+%   \url{http://www.iana.org/assignments/media-types/}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2005/02/23 v2.0}
+%   \item
+%     New options: \xoption{draft}/\xoption{final}.
+%   \item
+%     New option scale for scaling the annotation rectangle.
+%   \item
+%     Supported driver options: \xoption{pdftex}, \xoption{dvips}.
+%   \item
+%     Configuration file `attachfile.cfg' supported.
+%   \item
+%     Dependency of package calc dropped.
+%   \item
+%     \eTeX\ (\cs{numexpr}, \cs{dimexpr}) used.
+%   \item
+%     New auxiliary file \cs{jobname.atfi} to get data unavailable
+%     by (pdf)\TeX, controlled by \cs{nofiles} and option nofiles.
+%   \item
+%     Use of package \xpackage{prokvopt} (never released).
+%   \end{Version}
+%   \begin{Version}{2005/10/07 v2.1}
+%   \item
+%     Option \xoption{annotname} for naming annotations
+%     (this name can be used for embedded go-to actions).
+%   \end{Version}
+%   \begin{Version}{2006/08/17 v2.2}
+%   \item
+%     Use of package \xpackage{kvoptions} instead of \xpackage{prokvopt}.
+%   \item
+%     DTX framework.
+%   \item
+%     A little documentation.
+%   \end{Version}
+%   \begin{Version}{2007/04/11 v2.3}
+%   \item
+%     Line ends sanitized.
+%   \end{Version}
+%   \begin{Version}{2008/07/29 v2.4}
+%   \item
+%     Improved color support. Option \xoption{color} now understands
+%     the usual color specifications if package \xpackage{xcolor} is
+%     loaded.
+%   \end{Version}
+%   \begin{Version}{2009/09/25 v2.5}
+%   \item
+%     New option \xoption{ucfilespec} (since PDF 1.7).
+%   \item
+%     Fix: \xpackage{hyperref}'s option \xoption{unicode} is disabled
+%     for file names except for \xoption{ucfilespec}.
+%   \end{Version}
+%   \begin{Version}{2010/09/27 v2.6}
+%   \item
+%     Support for dvipdfmx added, new option \xoption{dvipdfmx}
+%     and alias option \xoption{xetex}.
+%     (Thanks Will Robertson for pointing to |\special{pdf:fstream ...}|).
+%   \item
+%     New option \xoption{driverfallback}.
+%   \item
+%     All options except driver options are local options,
+%     that means they are ignored as global options.
+%   \item
+%     Some options are disabled after they are used
+%     (driver options, \xoption{draft}, \xoption{final}, \xoption{nofiles}).
+%   \item
+%     Driver files renamed from \texttt{atfi<driver>.def} to
+%     \texttt{atfi-<driver>.def}.
+%   \item
+%     Bug fix: \cs{textattachfile} now adds an entry into
+%     the \xext{atfi} file.
+%   \item
+%     Program \xfile{pdfatfi.pl} sets modification and creation time with
+%     time zone, because the time zone offset might differ with
+%     the file date.
+%   \end{Version}
+%   \begin{Version}{2012/04/18 v2.7}
+%   \item
+%     Program \xfile{pdfatfi.pl}: Option \xoption{version} added.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

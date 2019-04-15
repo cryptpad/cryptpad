@@ -1,0 +1,60 @@
+%%% The encoding table, v.Aug.1997 (C) Petr Ol\v s\'ak
+%%% input: ISO8859-2, in system used: Kamenicky
+\ifx\xordcode\undefined
+   \message{Warning: the xord/xchr accessing is not possible}
+   \endinput \fi
+\let\Xordcode=\relax  \let\Yordcode=\relax
+\def\setinputcode #1 #2 {\Xordcode#1=\the\xordcode#2\relax
+                         \Yordcode#2=\the\xordcode#2\relax}
+\xdef\restoreinputencoding{%
+%
+%                  il2  kam
+   \setinputcode   "C1  "8F   % \'A
+   \setinputcode   "E1  "A0   % \'a
+   \setinputcode   "C4  "8E   % \"A
+   \setinputcode   "E4  "84   % \"a
+   \setinputcode   "C8  "80   % \v C
+   \setinputcode   "E8  "87   % \v c
+   \setinputcode   "CF  "85   % \v D
+   \setinputcode   "EF  "83   % \v d
+   \setinputcode   "C9  "90   % \'E
+   \setinputcode   "E9  "82   % \'e
+   \setinputcode   "CC  "89   % \v E
+   \setinputcode   "EC  "88   % \v e
+   \setinputcode   "CD  "8B   % \'I
+   \setinputcode   "ED  "A1   % \'i
+   \setinputcode   "C5  "8A   % \'L
+   \setinputcode   "E5  "8D   % \'l
+   \setinputcode   "A5  "9C   % \v L
+   \setinputcode   "B5  "8C   % \v l
+   \setinputcode   "D2  "A5   % \v N
+   \setinputcode   "F2  "A4   % \v n
+   \setinputcode   "D3  "95   % \'O
+   \setinputcode   "F3  "A2   % \'o
+   \setinputcode   "D4  "A7   % \^O
+   \setinputcode   "F4  "93   % \^o
+   \setinputcode   "D6  "99   % \"O
+   \setinputcode   "F6  "94   % \"o
+   \setinputcode   "C0  "AB   % \'R
+   \setinputcode   "E0  "AA   % \'r
+   \setinputcode   "D8  "9E   % \v R
+   \setinputcode   "F8  "A9   % \v r
+   \setinputcode   "A9  "9B   % \v S
+   \setinputcode   "B9  "A8   % \v s
+   \setinputcode   "AB  "86   % \v T
+   \setinputcode   "BB  "9F   % \v t
+   \setinputcode   "DA  "97   % \'U
+   \setinputcode   "FA  "A3   % \'u
+   \setinputcode   "D9  "A6   % \r U
+   \setinputcode   "F9  "96   % \r u
+   \setinputcode   "DC  "9A   % \"U
+   \setinputcode   "FC  "81   % \"u
+   \setinputcode   "DD  "9D   % \'Y
+   \setinputcode   "FD  "98   % \'y
+   \setinputcode   "AE  "92   % \v Z
+   \setinputcode   "BE  "91   % \v z
+}
+\def\Yordcode#1=#2\relax{} \let\Xordcode=\xordcode
+\restoreinputencoding  % nyní se nastaví nový xord
+\def\Xordcode#1=#2\relax{} \let\Yordcode=\xordcode
+

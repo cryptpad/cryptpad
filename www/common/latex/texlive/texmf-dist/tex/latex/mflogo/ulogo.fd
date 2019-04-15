@@ -1,0 +1,49 @@
+%%
+%% This is file `ulogo.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mflogo.dtx  (with options: `Ulogo')
+%% 
+%% Copyright (C) 1994--1999 Ulrik Vieth
+%% 
+%% This file is part of the `mflogo' package.
+%% 
+%% This program is free software; you can redistribute it and/or
+%% modify it under the terms of the LaTeX Project Public License
+%% as described in lppl.txt in the base LaTeX distribution; either
+%% version 1 of the License, or (at your option) any later version.
+%% 
+%% This program is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+\ProvidesFile{ulogo.fd}
+[1999/03/10 v2.0 LaTeX font defs for Metafont and MetaPost logos]
+\DeclareFontFamily{U}{logo}{}
+\DeclareFontShape{U}{logo}{m}{n}{
+  <8> <9> gen * logo
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logo10
+}{}
+\DeclareFontShape{U}{logo}{m}{it}{
+  <8> <9> gen * logosl
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logosl10
+}{}
+\DeclareFontShape{U}{logo}{m}{sl}{
+  <-> ssub * logo/m/it
+}{}
+\DeclareFontShape{U}{logo}{sbc}{n}{
+  <8> <9> sub * logo/m/n
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logobf10
+}{}
+\DeclareFontShape{U}{logo}{b}{n}{
+  <8> <9> sub * logo/m/n
+  <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> logod10
+}{}
+\DeclareFontShape{U}{logo}{bx}{n}{
+  <-> ssub * logo/b/n
+}{}
+\endinput
+%%
+%% End of file `ulogo.fd'.

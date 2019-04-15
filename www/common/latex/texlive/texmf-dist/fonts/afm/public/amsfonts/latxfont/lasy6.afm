@@ -1,0 +1,40 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName LASY6
+FullName LASY6
+FamilyName LaTeX
+Weight Medium
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name LASY6.)
+ItalicAngle -14.035
+IsFixedPitch false
+UnderlinePosition 0
+UnderlineThickness 0
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox -25 -214 1157 702
+StartCharMetrics 23
+C 1 ; WX 962 ; N a1 ; B 97 -87 866 588 ;
+C 2 ; WX 962 ; N a2 ; B 97 -201 866 702 ;
+C 3 ; WX 962 ; N a3 ; B 97 -87 866 588 ;
+C 4 ; WX 962 ; N a4 ; B 97 -201 866 702 ;
+C 32 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 40 ; WX 444 ; N a40 ; B 65 55 280 445 ;
+C 41 ; WX 444 ; N a41 ; B 165 55 380 445 ;
+C 42 ; WX 638 ; N a42 ; B 124 -214 515 0 ;
+C 43 ; WX 638 ; N a43 ; B 124 0 515 215 ;
+C 48 ; WX 898 ; N a48 ; B 52 -20 846 683 ;
+C 49 ; WX 898 ; N a49 ; B 71 41 827 643 ;
+C 50 ; WX 839 ; N a50 ; B 104 53 680 630 ;
+C 51 ; WX 865 ; N a51 ; B 93 1 773 682 ;
+C 58 ; WX 833 ; N a58 ; B -25 112 859 388 ;
+C 59 ; WX 1222 ; N a59 ; B -25 68 1157 432 ;
+C 60 ; WX 962 ; N a60 ; B 108 -87 892 588 ;
+C 61 ; WX 962 ; N a61 ; B 71 -87 855 588 ;
+C 128 ; WX 333 ; N space ; B 0 0 0 0 ;
+C 162 ; WX 962 ; N a1 ; B 97 -87 866 588 ;
+C 163 ; WX 962 ; N a2 ; B 97 -201 866 702 ;
+C 164 ; WX 962 ; N a3 ; B 97 -87 866 588 ;
+C 165 ; WX 962 ; N a4 ; B 97 -201 866 702 ;
+C 195 ; WX 333 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+EndFontMetrics

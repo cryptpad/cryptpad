@@ -1,0 +1,12 @@
+% Light gray font for Imagen 8/300; proofsheet resolution is 60 pixels per inch.
+% Each pixel is represented by a 5x5 square, with 5/25 of the dots on.
+
+if mode<>imagen: errmessage "This file is for imagen only"; fi
+
+font_identifier "GRAYIMAGEN";
+picture pix_picture; pix_picture := nullpicture;
+for z=(0,1),(1,4),(2,2),(3,0),(4,3):
+ addto pix_picture also unitpixel shifted z; endfor
+pix_wd := pix_ht := 5;
+
+input grayf

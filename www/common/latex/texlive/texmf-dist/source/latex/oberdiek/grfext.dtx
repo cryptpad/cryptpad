@@ -1,0 +1,1175 @@
+% \iffalse meta-comment
+%
+% File: grfext.dtx
+% Version: 2010/08/19 v1.1
+% Info: Manage graphics extensions
+%
+% Copyright (C) 2007, 2010 by
+%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version. This version of this license is in
+%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+% and the latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Heiko Oberdiek.
+%
+% This work consists of the main source file grfext.dtx
+% and the derived files
+%    grfext.sty, grfext.pdf, grfext.ins, grfext.drv, grfext-test1.tex,
+%    grfext-test2.tex.
+%
+% Distribution:
+%    CTAN:macros/latex/contrib/oberdiek/grfext.dtx
+%    CTAN:macros/latex/contrib/oberdiek/grfext.pdf
+%
+% Unpacking:
+%    (a) If grfext.ins is present:
+%           tex grfext.ins
+%    (b) Without grfext.ins:
+%           tex grfext.dtx
+%    (c) If you insist on using LaTeX
+%           latex \let\install=y\input{grfext.dtx}
+%        (quote the arguments according to the demands of your shell)
+%
+% Documentation:
+%    (a) If grfext.drv is present:
+%           latex grfext.drv
+%    (b) Without grfext.drv:
+%           latex grfext.dtx; ...
+%    The class ltxdoc loads the configuration file ltxdoc.cfg
+%    if available. Here you can specify further options, e.g.
+%    use A4 as paper format:
+%       \PassOptionsToClass{a4paper}{article}
+%
+%    Programm calls to get the documentation (example):
+%       pdflatex grfext.dtx
+%       makeindex -s gind.ist grfext.idx
+%       pdflatex grfext.dtx
+%       makeindex -s gind.ist grfext.idx
+%       pdflatex grfext.dtx
+%
+% Installation:
+%    TDS:tex/latex/oberdiek/grfext.sty
+%    TDS:doc/latex/oberdiek/grfext.pdf
+%    TDS:doc/latex/oberdiek/test/grfext-test1.tex
+%    TDS:doc/latex/oberdiek/test/grfext-test2.tex
+%    TDS:source/latex/oberdiek/grfext.dtx
+%
+%<*ignore>
+\begingroup
+  \catcode123=1 %
+  \catcode125=2 %
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifcase 0\ifx\install y1\fi\expandafter
+         \ifx\csname processbatchFile\endcsname\relax\else1\fi
+         \ifx\fmtname\x\else 1\fi\relax
+\else\csname fi\endcsname
+%</ignore>
+%<*install>
+\input docstrip.tex
+\Msg{************************************************************************}
+\Msg{* Installation}
+\Msg{* Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)}
+\Msg{************************************************************************}
+
+\keepsilent
+\askforoverwritefalse
+
+\let\MetaPrefix\relax
+\preamble
+
+This is a generated file.
+
+Project: grfext
+Version: 2010/08/19 v1.1
+
+Copyright (C) 2007, 2010 by
+   Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later
+version. This version of this license is in
+   http://www.latex-project.org/lppl/lppl-1-3c.txt
+and the latest version of this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of
+LaTeX version 2005/12/01 or later.
+
+This work has the LPPL maintenance status "maintained".
+
+This Current Maintainer of this work is Heiko Oberdiek.
+
+This work consists of the main source file grfext.dtx
+and the derived files
+   grfext.sty, grfext.pdf, grfext.ins, grfext.drv, grfext-test1.tex,
+   grfext-test2.tex.
+
+\endpreamble
+\let\MetaPrefix\DoubleperCent
+
+\generate{%
+  \file{grfext.ins}{\from{grfext.dtx}{install}}%
+  \file{grfext.drv}{\from{grfext.dtx}{driver}}%
+  \usedir{tex/latex/oberdiek}%
+  \file{grfext.sty}{\from{grfext.dtx}{package}}%
+  \usedir{doc/latex/oberdiek/test}%
+  \file{grfext-test1.tex}{\from{grfext.dtx}{test1}}%
+  \file{grfext-test2.tex}{\from{grfext.dtx}{test2}}%
+  \nopreamble
+  \nopostamble
+  \usedir{source/latex/oberdiek/catalogue}%
+  \file{grfext.xml}{\from{grfext.dtx}{catalogue}}%
+}
+
+\catcode32=13\relax% active space
+\let =\space%
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     grfext.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `grfext.drv'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
+\endbatchfile
+%</install>
+%<*ignore>
+\fi
+%</ignore>
+%<*driver>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesFile{grfext.drv}%
+  [2010/08/19 v1.1 Manage graphics extensions (HO)]%
+\documentclass{ltxdoc}
+\usepackage{holtxdoc}[2011/11/22]
+\begin{document}
+  \DocInput{grfext.dtx}%
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{721}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \GetFileInfo{grfext.drv}
+%
+% \title{The \xpackage{grfext} package}
+% \date{2010/08/19 v1.1}
+% \author{Heiko Oberdiek\\\xemail{heiko.oberdiek at googlemail.com}}
+%
+% \maketitle
+%
+% \begin{abstract}
+% This package provides macros for adding and reordering
+% graphics extensions of package \xpackage{graphics}.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \section{Documentation}
+%
+% \subsection{Introduction}
+%
+% If you are not familiar with \LaTeX's graphics bundle, please
+% read its documentation \xfile{grffile} \cite{graphics}.
+% The bundle contains two packages for graphics inclusion:
+% \xpackage{graphics} and \xpackage{graphicx}. The first one
+% is loaded by the second one that adds a key value interface.
+%
+% Graphics files are included in both cases by macro
+% \cs{includegraphics}. The file name extension can be omitted.
+% Then the graphics package goes through a list of known
+% extensions until it finds the graphics file. This extension list
+% is set by \cs{DeclareGraphicsExtensions}. The previous contents
+% of the list is overwritten.
+%
+% \subsection{User interface}
+%
+% This package \xpackage{grfext} provides macros that adds entries
+% to the list or remove them. The list may be empty or even
+% undefined before. It is always defined afterwards, but can
+% be empty (especially after removing entries).
+%
+% \begin{declcs}{AppendGraphicsExtensions} * \M{ext-list}\\
+%   \cs{PrependGraphicsExtensions} * \M{ext-list}
+% \end{declcs}
+% The argument \meta{ext-list} is a comma separated list whose
+% entries are file name extensions including the dot.
+% But first the entries are removed from
+% \xpackage{graphics}' extension list to avoid multiple
+% occurences of the same extension.
+%
+% Then macro \cs{AppendGraphicsExtensions} adds the entries
+% after the end of \xpackage{graphics}' list, whereas
+% macro \cs{PrependGraphicsExtensions} puts them in front
+% of the list.
+% The order matters if a graphics file is available in
+% different acceptable formats. Then the first extension
+% wins.
+%
+% The star version of these commands only adds an extensions,
+% if a specific graphics rule exists for that extension.
+%
+% \begin{declcs}{RemoveGraphicsExtensions} \M{ext-list}
+% \end{declcs}
+% All occurences of file extensions in \meta{ext-list} are
+% removed from \xpackage{graphics}' extension list.
+%
+% \subsection{Package loading}
+%
+% The package does not define any options. It is loaded
+% as usual in \LaTeX, e.g.:
+% \begin{quote}
+%   |\usepackage{grfext}|
+% \end{quote}
+%
+% \begin{declcs}{PrintGraphicsExtensions}
+% \end{declcs}
+% Macro \cs{PrintGraphicsExtensions} writes the current
+% graphics extensions list in the \xfile{.log} file.
+% The macros described before do this automatically
+% after their operation.
+%
+% \subsection{Option support for package \xpackage{graphicx}}
+%
+% Package \xpackage{graphicx} uses the interface of package
+% \xpackage{keyval} in order to specify options for
+% \cs{includegraphics}. The options can also be set using
+% \begin{quote}
+%   |\setkeys{Gin}{|\meta{options}|}|
+% \end{quote}
+% The four user macros with the two star forms are available
+% as options in family |Gin| as well:
+% \begin{quote}
+%   |AppendGraphicsExtensions={|\meta{ext-list}|}|\\
+%   |AppendGraphicsExtensions*={|\meta{ext-list}|}|\\
+%   |PrependGraphicsExtensions={|\meta{ext-list}|}|\\
+%   |PrependGraphicsExtensions*{|\meta{ext-list}|}|\\
+%   |RemoveGraphicsExtensions={|\meta{ext-list}|}|\\
+%   |PrintGraphicsExtensions|
+% \end{quote}
+% This makes it easier to locally change the extension list
+% for an included graphics, e.g.:
+% \begin{quote}
+%   |\includegraphics[RemoveGraphicsExtensions={.pdf,PDF}]{image}|
+% \end{quote}
+%
+% \subsection{\plainTeX}
+%
+% \LaTeX's graphics packages can also be used with \plainTeX.
+% The necessary basic \LaTeX\ macros are defined in
+% \xfile{miniltx.tex}. This package \xpackage{grfext} also
+% relies on it. Example:
+%\begin{quote}
+%\begin{verbatim}
+%\input miniltx.tex\relax
+%\def\Gin@driver{pdftex.def}
+%\input graphicx.sty\relax
+%\input grfext.sty\relax
+%\resetatcatcode
+%\end{verbatim}
+%\end{quote}
+%
+% \StopEventually{
+% }
+%
+% \section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+% \subsection{Relead check and identification}
+%    Reload check, especially if the package is not used with \LaTeX.
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@grfext.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{grfext}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+%    \end{macrocode}
+%    Package identification:
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@grfext.sty\endcsname
+\ProvidesPackage{grfext}%
+  [2010/08/19 v1.1 Manage graphics extensions (HO)]%
+%    \end{macrocode}
+%
+% \subsection{Catcodes}
+%
+%    \begin{macrocode}
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname grfext@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\grfext@AtEnd{%
+    \grfext@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\edef\grfext@AtEnd{\grfext@AtEnd\noexpand\endinput}
+%    \end{macrocode}
+%
+% \subsection{\plainTeX}
+%
+%    \begin{macro}{\@expandtwoargs}
+%    Requirement is \xfile{miniltx.tex}, but we need also
+%    \LaTeX's \cs{@expandtwoargs}.
+%    \begin{macrocode}
+\@ifundefined{@expandtwoargs}{%
+  \def\@expandtwoargs#1#2#3{%
+    \edef\reserved@a{\noexpand#1{#2}{#3}}%
+    \reserved@a
+  }%
+}{}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Add}
+%
+%    \begin{macro}{\AppendGraphicsExtensions}
+%    \begin{macrocode}
+\newcommand*{\AppendGraphicsExtensions}{%
+  \@ifundefined{Gin@extensions}{%
+    \let\Gin@extensions\@empty
+  }{}%
+  \@ifstar{\grfext@Append\grfext@Check}{\grfext@Append\grfext@@Add}%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grfext@Append}
+%    \begin{macrocode}
+\def\grfext@Append#1#2{%
+  \let\grfext@Print\@gobble
+  \edef\grfext@next{%
+    \noexpand\grfext@Add\noexpand#1{%
+      \zap@space#2 \@empty
+    }{\noexpand\Gin@extensions,}{}%
+  }%
+  \grfext@next
+  \let\grfext@Print\grfext@@Print
+  \grfext@Print\AppendGraphicsExtensions
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\PrependGraphicsExtensions}
+%    \begin{macrocode}
+\newcommand*{\PrependGraphicsExtensions}{%
+  \@ifundefined{Gin@extensions}{%
+    \let\Gin@extensions\@empty
+  }{}%
+  \@ifstar{\grfext@Prepend\grfext@Check}{\grfext@Prepend\grfext@@Add}%
+}%
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grfext@Prepend}
+%    \begin{macrocode}
+\def\grfext@Prepend#1#2{%
+  \let\grfext@Print\@gobble
+  \edef\grfext@next{%
+    \noexpand\grfext@Add\noexpand#1{%
+      \zap@space#2 \@empty
+    }{}{,\noexpand\Gin@extensions}%
+  }%
+  \grfext@next
+  \let\grfext@Print\grfext@@Print
+  \grfext@Print\PrependGraphicsExtensions
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+%    \begin{macro}{\grfext@Add}
+%    \begin{macrocode}
+\def\grfext@Add#1#2{%
+  #1{#2}%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grfext@@Add}
+%    \begin{macrocode}
+\def\grfext@@Add#1#2#3{%
+  \RemoveGraphicsExtensions{#1}%
+  \ifx\Gin@extensions\@empty
+    \def\Gin@extensions{#1}%
+  \else
+    \edef\Gin@extensions{#2#1#3}%
+  \fi
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Check}
+%
+%    \begin{macro}{\grfext@Check}
+%    \begin{macrocode}
+\def\grfext@Check#1{%
+  \let\grfext@tmp\@empty
+  \@for\grfext@ext:=#1\do{%
+    \@ifundefined{Gin@rule@\grfext@ext}{%
+    }{%
+      \ifx\grfext@tmp\@empty
+        \let\grfext@tmp\grfext@ext
+      \else
+        \edef\grfext@tmp{\grfext@tmp,\grfext@ext}%
+      \fi
+    }%
+  }%
+  \ifx\grfext@tmp\@empty
+    \def\grfext@next##1##2{}%
+  \else
+    \edef\grfext@next{%
+      \noexpand\grfext@@Add{\grfext@tmp}%
+    }%
+  \fi
+  \grfext@next
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Remove}
+%
+%    \begin{macro}{\RemoveGraphicsExtensions}
+%    \begin{macrocode}
+\newcommand*{\RemoveGraphicsExtensions}[1]{%
+  \@ifundefined{Gin@extensions}{%
+    \def\Gin@extensions{}%
+  }{%
+    \edef\grfext@tmp{\zap@space#1 \@empty}%
+    \@for\grfext@ext:=\grfext@tmp\do{%
+      \def\grfext@next{%
+        \let\grfext@tmp\Gin@extensions
+        \@expandtwoargs
+        \@removeelement\grfext@ext\Gin@extensions\Gin@extensions
+        \ifx\grfext@tmp\Gin@extensions
+          \let\grfext@next\relax
+        \fi
+        \grfext@next
+      }%
+      \grfext@next
+    }%
+  }%
+  \grfext@Print\RemoveGraphicsExtensions
+}
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Print}
+%
+%    \begin{macrocode}
+\RequirePackage{infwarerr}[2007/09/09]
+%    \end{macrocode}
+%
+%    \begin{macro}{\PrintGraphicsExtensions}
+%    \begin{macrocode}
+\def\PrintGraphicsExtensions{%
+  \grfext@Print\PrintGraphicsExtensions
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grfext@Print}
+%    \begin{macrocode}
+\def\grfext@Print#1{%
+  \@PackageInfo{grfext}{%
+    Graphics extension search list:\MessageBreak
+    \@ifundefined{Gin@extensions}{%
+      <unavailable>%
+    }{%
+      [\Gin@extensions]%
+    }\MessageBreak
+    \string#1%
+  }%
+}
+%    \end{macrocode}
+%    \end{macro}
+%    \begin{macro}{\grfext@@Print}
+%    \begin{macrocode}
+\let\grfext@@Print\grfext@Print
+%    \end{macrocode}
+%    \end{macro}
+%
+% \subsection{Defining options for package \xpackage{graphicx}}
+%
+%    \begin{macrocode}
+\RequirePackage{kvdefinekeys}[2010/03/01]
+\kv@define@key{Gin}{AppendGraphicsExtensions}{%
+  \AppendGraphicsExtensions{#1}%
+}
+\kv@define@key{Gin}{AppendGraphicsExtensions*}{%
+  \AppendGraphicsExtensions*{#1}%
+}
+\kv@define@key{Gin}{PrependGraphicsExtensions}{%
+  \PrependGraphicsExtensions{#1}%
+}
+\kv@define@key{Gin}{PrependGraphicsExtensions*}{%
+  \PrependGraphicsExtensions*{#1}%
+}
+\kv@define@key{Gin}{RemoveGraphicsExtensions}{%
+  \RemoveGraphicsExtensions{#1}%
+}
+\kv@define@key{Gin}{PrintGraphicsExtensions}[]{%
+  \PrintGraphicsExtensions
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\grfext@AtEnd%
+%</package>
+%    \end{macrocode}
+%
+% \section{Test}
+%
+%     Load \xfile{miniltx} for standard catcode test.
+%    \begin{macrocode}
+%<*test1>
+\input miniltx.tex\relax
+\resetatcatcode
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Catcode checks for loading}
+%
+%    \begin{macrocode}
+%<*test1>
+%    \end{macrocode}
+%    \begin{macrocode}
+\catcode`\{=1 %
+\catcode`\}=2 %
+\catcode`\#=6 %
+\catcode`\@=11 %
+\expandafter\ifx\csname count@\endcsname\relax
+  \countdef\count@=255 %
+\fi
+\expandafter\ifx\csname @gobble\endcsname\relax
+  \long\def\@gobble#1{}%
+\fi
+\expandafter\ifx\csname @firstofone\endcsname\relax
+  \long\def\@firstofone#1{#1}%
+\fi
+\expandafter\ifx\csname loop\endcsname\relax
+  \expandafter\@firstofone
+\else
+  \expandafter\@gobble
+\fi
+{%
+  \def\loop#1\repeat{%
+    \def\body{#1}%
+    \iterate
+  }%
+  \def\iterate{%
+    \body
+      \let\next\iterate
+    \else
+      \let\next\relax
+    \fi
+    \next
+  }%
+  \let\repeat=\fi
+}%
+\def\RestoreCatcodes{}
+\count@=0 %
+\loop
+  \edef\RestoreCatcodes{%
+    \RestoreCatcodes
+    \catcode\the\count@=\the\catcode\count@\relax
+  }%
+\ifnum\count@<255 %
+  \advance\count@ 1 %
+\repeat
+
+\def\RangeCatcodeInvalid#1#2{%
+  \count@=#1\relax
+  \loop
+    \catcode\count@=15 %
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\RangeCatcodeCheck#1#2#3{%
+  \count@=#1\relax
+  \loop
+    \ifnum#3=\catcode\count@
+    \else
+      \errmessage{%
+        Character \the\count@\space
+        with wrong catcode \the\catcode\count@\space
+        instead of \number#3%
+      }%
+    \fi
+  \ifnum\count@<#2\relax
+    \advance\count@ 1 %
+  \repeat
+}
+\def\space{ }
+\expandafter\ifx\csname LoadCommand\endcsname\relax
+  \def\LoadCommand{\input grfext.sty\relax}%
+\fi
+\def\Test{%
+  \RangeCatcodeInvalid{0}{47}%
+  \RangeCatcodeInvalid{58}{64}%
+  \RangeCatcodeInvalid{91}{96}%
+  \RangeCatcodeInvalid{123}{255}%
+  \catcode`\@=12 %
+  \catcode`\\=0 %
+  \catcode`\%=14 %
+  \LoadCommand
+  \RangeCatcodeCheck{0}{36}{15}%
+  \RangeCatcodeCheck{37}{37}{14}%
+  \RangeCatcodeCheck{38}{47}{15}%
+  \RangeCatcodeCheck{48}{57}{12}%
+  \RangeCatcodeCheck{58}{63}{15}%
+  \RangeCatcodeCheck{64}{64}{12}%
+  \RangeCatcodeCheck{65}{90}{11}%
+  \RangeCatcodeCheck{91}{91}{15}%
+  \RangeCatcodeCheck{92}{92}{0}%
+  \RangeCatcodeCheck{93}{96}{15}%
+  \RangeCatcodeCheck{97}{122}{11}%
+  \RangeCatcodeCheck{123}{255}{15}%
+  \RestoreCatcodes
+}
+\Test
+\csname @@end\endcsname
+\end
+%    \end{macrocode}
+%    \begin{macrocode}
+%</test1>
+%    \end{macrocode}
+%
+% \subsection{Macro tests}
+%
+% \subsubsection{Preamble}
+%
+%    \begin{macrocode}
+%<*test2>
+\NeedsTeXFormat{LaTeX2e}
+\nofiles
+\documentclass{article}
+\usepackage[pdftex]{graphics}
+\usepackage{grfext}[2010/08/19]
+\usepackage{qstest}
+\IncludeTests{*}
+\LogTests{log}{*}{*}
+\makeatletter
+%    \end{macrocode}
+%
+% \subsubsection{Detection of unwanted space}
+%
+%    \begin{macrocode}
+\let\orig@qstest\qstest
+\let\orig@endqstest\endqstest
+\def\qstest#1#2{%
+  \orig@qstest{#1}{#2}%
+  \setbox0\hbox\bgroup\begingroup\ignorespaces
+}
+\def\endqstest{%
+  \endgroup\egroup
+  \Expect*{\the\wd0}{0.0pt}%
+  \orig@endqstest
+}
+%    \end{macrocode}
+%
+% \subsubsection{Generic test macros}
+%
+%    \begin{macrocode}
+\def\Test{\@ifnextchar\bgroup\TestInitList\TestInitCmd}%
+\def\TestInitList#1{%
+  \def\Gin@extensions{#1}%
+  \@Test
+}
+\def\TestInitCmd#1{%
+  \let\Gin@extensions#1\relax
+  \@Test
+}
+\def\@Test#1#2{%
+  \TestCmd{#1}%
+  \expandafter\Expect\expandafter*{\Gin@extensions}{#2}%
+}
+%    \end{macrocode}
+%
+% \subsubsection{Test for \cs{AppendGraphicsExtensions}}
+%
+%    \begin{macrocode}
+\begin{qstest}{AppendGraphicsExtensions}{AppendGraphicsExtensions}
+  \let\TestCmd\AppendGraphicsExtensions
+  \Test\@undefined{.test}{.test}%
+  \Test\relax{.test}{.test}%
+  \Test{}{.test}{.test}%
+  \Test{.foo}{.test}{.foo,.test}%
+  \Test{.foo,.bar}{.test}{.foo,.bar,.test}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo,.test}{.test}{.foo,.test}%
+  \Test{.test,.foo}{.test}{.foo,.test}%
+  \Test{.foo,.test,.bar}{.test}{.foo,.bar,.test}%
+  \Test{.foo}{.test,.bar}{.foo,.test,.bar}%
+  \Test{.foo}{.test,.foo}{.test,.foo}%
+  \Test{.foo}{ .test ,.bar , .x, .y }{.foo,.test,.bar,.x,.y}%
+  \def\TestCmd{\AppendGraphicsExtensions*}%
+  \Test\@undefined{.test}{}%
+  \Test\relax{.test}{}%
+  \Test{}{.test}{}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo}{.test}{.foo}%
+  \Test{.foo,.bar}{.test}{.foo,.bar}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo,.test}{.test}{.foo,.test}%
+  \Test{.test,.foo}{.test}{.test,.foo}%
+  \Test{.foo,.test,.bar}{.test}{.foo,.test,.bar}%
+  \Test{.foo}{.test,.bar}{.foo}%
+  \Test{.foo}{.test,.foo}{.foo}%
+  \DeclareGraphicsRule{.test}{test}{.test}{}%
+  \Test\@undefined{.test}{.test}%
+  \Test\relax{.test}{.test}%
+  \Test{}{.test}{.test}%
+  \Test{.foo}{.test}{.foo,.test}%
+  \Test{.foo,.bar}{.test}{.foo,.bar,.test}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo,.test}{.test}{.foo,.test}%
+  \Test{.test,.foo}{.test}{.foo,.test}%
+  \Test{.foo,.test,.bar}{.test}{.foo,.bar,.test}%
+  \Test{.foo}{.test,.bar}{.foo,.test}%
+  \Test{.foo}{.test,.foo}{.foo,.test}%
+  \DeclareGraphicsRule{.bar}{bar}{.bar}{}%
+  \Test{.foo}{.test,.bar}{.foo,.test,.bar}%
+  \Test{.bar}{.test,.bar}{.test,.bar}%
+  \Test{.bar}{.bar,.test}{.bar,.test}%
+\end{qstest}
+%    \end{macrocode}
+%
+% \subsubsection{Test for \cs{PrependGraphicsExtensions}}
+%
+%    \begin{macrocode}
+\begin{qstest}{PrependGraphicsExtensions}{PrependGraphicsExtensions}
+  \let\TestCmd\PrependGraphicsExtensions
+  \Test\@undefined{.test}{.test}%
+  \Test\relax{.test}{.test}%
+  \Test{}{.test}{.test}%
+  \Test{.foo}{.test}{.test,.foo}%
+  \Test{.foo,.bar}{.test}{.test,.foo,.bar}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo,.test}{.test}{.test,.foo}%
+  \Test{.test,.foo}{.test}{.test,.foo}%
+  \Test{.foo,.test,.bar}{.test}{.test,.foo,.bar}%
+  \Test{.foo}{.test,.bar}{.test,.bar,.foo}%
+  \Test{.foo}{.test,.foo}{.test,.foo}%
+  \Test{.foo}{ .test ,.bar , .x, .y }{.test,.bar,.x,.y,.foo}%
+  \def\TestCmd{\PrependGraphicsExtensions*}%
+  \Test\@undefined{.test}{}%
+  \Test\relax{.test}{}%
+  \Test{}{.test}{}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo}{.test}{.foo}%
+  \Test{.foo,.bar}{.test}{.foo,.bar}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo,.test}{.test}{.foo,.test}%
+  \Test{.test,.foo}{.test}{.test,.foo}%
+  \Test{.foo,.test,.bar}{.test}{.foo,.test,.bar}%
+  \DeclareGraphicsRule{.test}{test}{.test}{}%
+  \Test\@undefined{.test}{.test}%
+  \Test\relax{.test}{.test}%
+  \Test{}{.test}{.test}%
+  \Test{.foo}{.test}{.test,.foo}%
+  \Test{.foo,.bar}{.test}{.test,.foo,.bar}%
+  \Test{.test}{.test}{.test}%
+  \Test{.foo,.test}{.test}{.test,.foo}%
+  \Test{.test,.foo}{.test}{.test,.foo}%
+  \Test{.foo,.test,.bar}{.test}{.test,.foo,.bar}%
+  \Test{.foo}{.test,.bar}{.test,.foo}%
+  \Test{.foo}{.test,.foo}{.test,.foo}%
+  \DeclareGraphicsRule{.bar}{bar}{.bar}{}%
+  \Test{.foo}{.test,.bar}{.test,.bar,.foo}%
+  \Test{.bar}{.test,.bar}{.test,.bar}%
+  \Test{.bar}{.bar,.test}{.bar,.test}%
+\end{qstest}
+%    \end{macrocode}
+%
+% \subsubsection{Test for \cs{RemoveGraphicsExtensions}}
+%
+%    \begin{macrocode}
+\begin{qstest}{RemoveGraphicsExtensions}{RemoveGraphicsExtensions}
+  \let\TestCmd\RemoveGraphicsExtensions
+  \Test\@undefined{.test}{}%
+  \Test\relax{.test}{}%
+  \Test{}{.test}{}%
+  \Test{.foo}{.test}{.foo}%
+  \Test{.foo,.bar}{.test}{.foo,.bar}%
+  \Test{.test}{.test}{}%
+  \Test{.foo,.test}{.test}{.foo}%
+  \Test{.test,.foo}{.test}{.foo}%
+  \Test{.foo,.test,.bar}{.test}{.foo,.bar}%
+  \Test{.test,.test}{.test}{}%
+  \Test{.foo,.test,.bar,.test,.test,.bar}{.test}{.foo,.bar,.bar}%
+  \Test{.foo,.test,.bar,.foo,.test,.bar}{.test,.bar}{.foo,.foo}%
+  \Test{.foo,.test,.bar,.foo,.test,.bar}{ .test , .bar }{.foo,.foo}%
+\end{qstest}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\begin{document}
+\end{document}
+%</test2>
+%    \end{macrocode}
+%
+% \section{Installation}
+%
+% \subsection{Download}
+%
+% \paragraph{Package.} This package is available on
+% CTAN\footnote{\url{ftp://ftp.ctan.org/tex-archive/}}:
+% \begin{description}
+% \item[\CTAN{macros/latex/contrib/oberdiek/grfext.dtx}] The source file.
+% \item[\CTAN{macros/latex/contrib/oberdiek/grfext.pdf}] Documentation.
+% \end{description}
+%
+%
+% \paragraph{Bundle.} All the packages of the bundle `oberdiek'
+% are also available in a TDS compliant ZIP archive. There
+% the packages are already unpacked and the documentation files
+% are generated. The files and directories obey the TDS standard.
+% \begin{description}
+% \item[\CTAN{install/macros/latex/contrib/oberdiek.tds.zip}]
+% \end{description}
+% \emph{TDS} refers to the standard ``A Directory Structure
+% for \TeX\ Files'' (\CTAN{tds/tds.pdf}). Directories
+% with \xfile{texmf} in their name are usually organized this way.
+%
+% \subsection{Bundle installation}
+%
+% \paragraph{Unpacking.} Unpack the \xfile{oberdiek.tds.zip} in the
+% TDS tree (also known as \xfile{texmf} tree) of your choice.
+% Example (linux):
+% \begin{quote}
+%   |unzip oberdiek.tds.zip -d ~/texmf|
+% \end{quote}
+%
+% \paragraph{Script installation.}
+% Check the directory \xfile{TDS:scripts/oberdiek/} for
+% scripts that need further installation steps.
+% Package \xpackage{attachfile2} comes with the Perl script
+% \xfile{pdfatfi.pl} that should be installed in such a way
+% that it can be called as \texttt{pdfatfi}.
+% Example (linux):
+% \begin{quote}
+%   |chmod +x scripts/oberdiek/pdfatfi.pl|\\
+%   |cp scripts/oberdiek/pdfatfi.pl /usr/local/bin/|
+% \end{quote}
+%
+% \subsection{Package installation}
+%
+% \paragraph{Unpacking.} The \xfile{.dtx} file is a self-extracting
+% \docstrip\ archive. The files are extracted by running the
+% \xfile{.dtx} through \plainTeX:
+% \begin{quote}
+%   \verb|tex grfext.dtx|
+% \end{quote}
+%
+% \paragraph{TDS.} Now the different files must be moved into
+% the different directories in your installation TDS tree
+% (also known as \xfile{texmf} tree):
+% \begin{quote}
+% \def\t{^^A
+% \begin{tabular}{@{}>{\ttfamily}l@{ $\rightarrow$ }>{\ttfamily}l@{}}
+%   grfext.sty & tex/latex/oberdiek/grfext.sty\\
+%   grfext.pdf & doc/latex/oberdiek/grfext.pdf\\
+%   test/grfext-test1.tex & doc/latex/oberdiek/test/grfext-test1.tex\\
+%   test/grfext-test2.tex & doc/latex/oberdiek/test/grfext-test2.tex\\
+%   grfext.dtx & source/latex/oberdiek/grfext.dtx\\
+% \end{tabular}^^A
+% }^^A
+% \sbox0{\t}^^A
+% \ifdim\wd0>\linewidth
+%   \begingroup
+%     \advance\linewidth by\leftmargin
+%     \advance\linewidth by\rightmargin
+%   \edef\x{\endgroup
+%     \def\noexpand\lw{\the\linewidth}^^A
+%   }\x
+%   \def\lwbox{^^A
+%     \leavevmode
+%     \hbox to \linewidth{^^A
+%       \kern-\leftmargin\relax
+%       \hss
+%       \usebox0
+%       \hss
+%       \kern-\rightmargin\relax
+%     }^^A
+%   }^^A
+%   \ifdim\wd0>\lw
+%     \sbox0{\small\t}^^A
+%     \ifdim\wd0>\linewidth
+%       \ifdim\wd0>\lw
+%         \sbox0{\footnotesize\t}^^A
+%         \ifdim\wd0>\linewidth
+%           \ifdim\wd0>\lw
+%             \sbox0{\scriptsize\t}^^A
+%             \ifdim\wd0>\linewidth
+%               \ifdim\wd0>\lw
+%                 \sbox0{\tiny\t}^^A
+%                 \ifdim\wd0>\linewidth
+%                   \lwbox
+%                 \else
+%                   \usebox0
+%                 \fi
+%               \else
+%                 \lwbox
+%               \fi
+%             \else
+%               \usebox0
+%             \fi
+%           \else
+%             \lwbox
+%           \fi
+%         \else
+%           \usebox0
+%         \fi
+%       \else
+%         \lwbox
+%       \fi
+%     \else
+%       \usebox0
+%     \fi
+%   \else
+%     \lwbox
+%   \fi
+% \else
+%   \usebox0
+% \fi
+% \end{quote}
+% If you have a \xfile{docstrip.cfg} that configures and enables \docstrip's
+% TDS installing feature, then some files can already be in the right
+% place, see the documentation of \docstrip.
+%
+% \subsection{Refresh file name databases}
+%
+% If your \TeX~distribution
+% (\teTeX, \mikTeX, \dots) relies on file name databases, you must refresh
+% these. For example, \teTeX\ users run \verb|texhash| or
+% \verb|mktexlsr|.
+%
+% \subsection{Some details for the interested}
+%
+% \paragraph{Attached source.}
+%
+% The PDF documentation on CTAN also includes the
+% \xfile{.dtx} source file. It can be extracted by
+% AcrobatReader 6 or higher. Another option is \textsf{pdftk},
+% e.g. unpack the file into the current directory:
+% \begin{quote}
+%   \verb|pdftk grfext.pdf unpack_files output .|
+% \end{quote}
+%
+% \paragraph{Unpacking with \LaTeX.}
+% The \xfile{.dtx} chooses its action depending on the format:
+% \begin{description}
+% \item[\plainTeX:] Run \docstrip\ and extract the files.
+% \item[\LaTeX:] Generate the documentation.
+% \end{description}
+% If you insist on using \LaTeX\ for \docstrip\ (really,
+% \docstrip\ does not need \LaTeX), then inform the autodetect routine
+% about your intention:
+% \begin{quote}
+%   \verb|latex \let\install=y\input{grfext.dtx}|
+% \end{quote}
+% Do not forget to quote the argument according to the demands
+% of your shell.
+%
+% \paragraph{Generating the documentation.}
+% You can use both the \xfile{.dtx} or the \xfile{.drv} to generate
+% the documentation. The process can be configured by the
+% configuration file \xfile{ltxdoc.cfg}. For instance, put this
+% line into this file, if you want to have A4 as paper format:
+% \begin{quote}
+%   \verb|\PassOptionsToClass{a4paper}{article}|
+% \end{quote}
+% An example follows how to generate the
+% documentation with pdf\LaTeX:
+% \begin{quote}
+%\begin{verbatim}
+%pdflatex grfext.dtx
+%makeindex -s gind.ist grfext.idx
+%pdflatex grfext.dtx
+%makeindex -s gind.ist grfext.idx
+%pdflatex grfext.dtx
+%\end{verbatim}
+% \end{quote}
+%
+% \section{Catalogue}
+%
+% The following XML file can be used as source for the
+% \href{http://mirror.ctan.org/help/Catalogue/catalogue.html}{\TeX\ Catalogue}.
+% The elements \texttt{caption} and \texttt{description} are imported
+% from the original XML file from the Catalogue.
+% The name of the XML file in the Catalogue is \xfile{grfext.xml}.
+%    \begin{macrocode}
+%<*catalogue>
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='grfext'>
+  <name>grfext</name>
+  <caption>Manipulate the graphics package's list of extensions.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2007,2010'/>
+  <license type='lppl1.3'/>
+  <version number='1.1'/>
+  <description>
+    This package provides macros for adding to, and reordering the list of
+    graphics file extensions recognised by package
+    <xref refid='graphics'>graphics</xref>.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref> bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/grfext.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/grfext.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>
+%</catalogue>
+%    \end{macrocode}
+%
+% \begin{thebibliography}{9}
+%
+% \bibitem{graphics}
+%   David Carlisle, Sebastian Rahtz: \textit{The \xpackage{graphics} package};
+%   2006/02/20 v1.0o;
+%   \CTAN{macros/latex/required/graphics/graphics.dtx}.
+%
+% \end{thebibliography}
+%
+% \begin{History}
+%   \begin{Version}{2007/09/30 v1.0}
+%   \item
+%     First public version.
+%   \end{Version}
+%   \begin{Version}{2010/08/19 v1.1}
+%   \item
+%     User macros are also made available as keyval options for
+%     package \xpackage{graphicx}.
+%   \end{Version}
+% \end{History}
+%
+% \PrintIndex
+%
+% \Finale
+\endinput

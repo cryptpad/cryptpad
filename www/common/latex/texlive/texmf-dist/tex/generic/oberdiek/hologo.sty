@@ -1,0 +1,2362 @@
+%%
+%% This is file `hologo.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hologo.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Project: hologo
+%% Version: 2012/04/26 v1.10
+%% 
+%% Copyright (C) 2010-2012 by
+%%    Heiko Oberdiek <heiko.oberdiek at googlemail.com>
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. This version of this license is in
+%%    http://www.latex-project.org/lppl/lppl-1-3c.txt
+%% and the latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status "maintained".
+%% 
+%% This Current Maintainer of this work is Heiko Oberdiek.
+%% 
+%% The Base Interpreter refers to any `TeX-Format',
+%% because some files are installed in TDS:tex/generic//.
+%% 
+%% This work consists of the main source file hologo.dtx
+%% and the derived files
+%%    hologo.sty, hologo.pdf, hologo.ins, hologo.drv, hologo-example.tex,
+%%    hologo-test1.tex, hologo-test-spacefactor.tex,
+%%    hologo-test-list.tex.
+%% 
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\let\expandafter\x\csname ver@hologo.sty\endcsname
+  \ifx\x\relax % plain-TeX, first loading
+  \else
+    \def\empty{}%
+    \ifx\x\empty % LaTeX, first loading,
+      % variable is initialized, but \ProvidesPackage not yet seen
+    \else
+      \expandafter\ifx\csname PackageInfo\endcsname\relax
+        \def\x#1#2{%
+          \immediate\write-1{Package #1 Info: #2.}%
+        }%
+      \else
+        \def\x#1#2{\PackageInfo{#1}{#2, stopped}}%
+      \fi
+      \x{hologo}{The package is already loaded}%
+      \aftergroup\endinput
+    \fi
+  \fi
+\endgroup%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode35=6 % #
+  \catcode39=12 % '
+  \catcode40=12 % (
+  \catcode41=12 % )
+  \catcode44=12 % ,
+  \catcode45=12 % -
+  \catcode46=12 % .
+  \catcode47=12 % /
+  \catcode58=12 % :
+  \catcode64=11 % @
+  \catcode91=12 % [
+  \catcode93=12 % ]
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \expandafter\ifx\csname ProvidesPackage\endcsname\relax
+    \def\x#1#2#3[#4]{\endgroup
+      \immediate\write-1{Package: #3 #4}%
+      \xdef#1{#4}%
+    }%
+  \else
+    \def\x#1#2[#3]{\endgroup
+      #2[{#3}]%
+      \ifx#1\@undefined
+        \xdef#1{#3}%
+      \fi
+      \ifx#1\relax
+        \xdef#1{#3}%
+      \fi
+    }%
+  \fi
+\expandafter\x\csname ver@hologo.sty\endcsname
+\ProvidesPackage{hologo}%
+  [2012/04/26 v1.10 A logo collection with bookmark support (HO)]%
+\begingroup\catcode61\catcode48\catcode32=10\relax%
+  \catcode13=5 % ^^M
+  \endlinechar=13 %
+  \catcode123=1 % {
+  \catcode125=2 % }
+  \catcode64=11 % @
+  \def\x{\endgroup
+    \expandafter\edef\csname HOLOGO@AtEnd\endcsname{%
+      \endlinechar=\the\endlinechar\relax
+      \catcode13=\the\catcode13\relax
+      \catcode32=\the\catcode32\relax
+      \catcode35=\the\catcode35\relax
+      \catcode61=\the\catcode61\relax
+      \catcode64=\the\catcode64\relax
+      \catcode123=\the\catcode123\relax
+      \catcode125=\the\catcode125\relax
+    }%
+  }%
+\x\catcode61\catcode48\catcode32=10\relax%
+\catcode13=5 % ^^M
+\endlinechar=13 %
+\catcode35=6 % #
+\catcode64=11 % @
+\catcode123=1 % {
+\catcode125=2 % }
+\def\TMP@EnsureCode#1#2{%
+  \edef\HOLOGO@AtEnd{%
+    \HOLOGO@AtEnd
+    \catcode#1=\the\catcode#1\relax
+  }%
+  \catcode#1=#2\relax
+}
+\TMP@EnsureCode{10}{12}% ^^J
+\TMP@EnsureCode{33}{12}% !
+\TMP@EnsureCode{34}{12}% "
+\TMP@EnsureCode{36}{3}% $
+\TMP@EnsureCode{38}{4}% &
+\TMP@EnsureCode{39}{12}% '
+\TMP@EnsureCode{40}{12}% (
+\TMP@EnsureCode{41}{12}% )
+\TMP@EnsureCode{42}{12}% *
+\TMP@EnsureCode{43}{12}% +
+\TMP@EnsureCode{44}{12}% ,
+\TMP@EnsureCode{45}{12}% -
+\TMP@EnsureCode{46}{12}% .
+\TMP@EnsureCode{47}{12}% /
+\TMP@EnsureCode{58}{12}% :
+\TMP@EnsureCode{59}{12}% ;
+\TMP@EnsureCode{60}{12}% <
+\TMP@EnsureCode{62}{12}% >
+\TMP@EnsureCode{63}{12}% ?
+\TMP@EnsureCode{91}{12}% [
+\TMP@EnsureCode{93}{12}% ]
+\TMP@EnsureCode{94}{7}% ^ (superscript)
+\TMP@EnsureCode{95}{8}% _ (subscript)
+\TMP@EnsureCode{96}{12}% `
+\TMP@EnsureCode{124}{12}% |
+\edef\HOLOGO@AtEnd{%
+  \HOLOGO@AtEnd
+  \escapechar\the\escapechar\relax
+  \noexpand\endinput
+}
+\escapechar=92 %
+\def\hologoList{%
+  \hologoEntry{(La)TeX}{}{2011/10/01}%
+  \hologoEntry{AmSLaTeX}{}{2010/04/16}%
+  \hologoEntry{AmSTeX}{}{2010/04/16}%
+  \hologoEntry{biber}{}{2011/10/01}%
+  \hologoEntry{BibTeX}{}{2011/10/01}%
+  \hologoEntry{BibTeX}{sf}{2011/10/01}%
+  \hologoEntry{BibTeX}{sc}{2011/10/01}%
+  \hologoEntry{BibTeX8}{}{2011/11/22}%
+  \hologoEntry{ConTeXt}{}{2011/03/25}%
+  \hologoEntry{ConTeXt}{narrow}{2011/03/25}%
+  \hologoEntry{ConTeXt}{simple}{2011/03/25}%
+  \hologoEntry{emTeX}{}{2010/04/26}%
+  \hologoEntry{eTeX}{}{2010/04/08}%
+  \hologoEntry{ExTeX}{}{2011/10/01}%
+  \hologoEntry{HanTheThanh}{}{2011/11/29}%
+  \hologoEntry{iniTeX}{}{2011/10/01}%
+  \hologoEntry{KOMAScript}{}{2011/10/01}%
+  \hologoEntry{La}{}{2010/05/08}%
+  \hologoEntry{LaTeX}{}{2010/04/08}%
+  \hologoEntry{LaTeX2e}{}{2010/04/08}%
+  \hologoEntry{LaTeX3}{}{2010/04/24}%
+  \hologoEntry{LaTeXe}{}{2010/04/08}%
+  \hologoEntry{LaTeXML}{}{2011/11/22}%
+  \hologoEntry{LaTeXTeX}{}{2011/10/01}%
+  \hologoEntry{LuaLaTeX}{}{2010/04/08}%
+  \hologoEntry{LuaTeX}{}{2010/04/08}%
+  \hologoEntry{LyX}{}{2011/10/01}%
+  \hologoEntry{METAFONT}{}{2011/10/01}%
+  \hologoEntry{MetaFun}{}{2011/10/01}%
+  \hologoEntry{METAPOST}{}{2011/10/01}%
+  \hologoEntry{MetaPost}{}{2011/10/01}%
+  \hologoEntry{MiKTeX}{}{2011/10/01}%
+  \hologoEntry{NTS}{}{2011/10/01}%
+  \hologoEntry{OzMF}{}{2011/10/01}%
+  \hologoEntry{OzMP}{}{2011/10/01}%
+  \hologoEntry{OzTeX}{}{2011/10/01}%
+  \hologoEntry{OzTtH}{}{2011/10/01}%
+  \hologoEntry{PCTeX}{}{2011/10/01}%
+  \hologoEntry{pdfTeX}{}{2011/10/01}%
+  \hologoEntry{pdfLaTeX}{}{2011/10/01}%
+  \hologoEntry{PiC}{}{2011/10/01}%
+  \hologoEntry{PiCTeX}{}{2011/10/01}%
+  \hologoEntry{plainTeX}{}{2010/04/08}%
+  \hologoEntry{plainTeX}{space}{2010/04/16}%
+  \hologoEntry{plainTeX}{hyphen}{2010/04/16}%
+  \hologoEntry{plainTeX}{runtogether}{2010/04/16}%
+  \hologoEntry{SageTeX}{}{2011/11/22}%
+  \hologoEntry{SLiTeX}{}{2011/10/01}%
+  \hologoEntry{SLiTeX}{lift}{2011/10/01}%
+  \hologoEntry{SLiTeX}{narrow}{2011/10/01}%
+  \hologoEntry{SLiTeX}{simple}{2011/10/01}%
+  \hologoEntry{SliTeX}{}{2011/10/01}%
+  \hologoEntry{SliTeX}{narrow}{2011/10/01}%
+  \hologoEntry{SliTeX}{simple}{2011/10/01}%
+  \hologoEntry{SliTeX}{lift}{2011/10/01}%
+  \hologoEntry{teTeX}{}{2011/10/01}%
+  \hologoEntry{TeX}{}{2010/04/08}%
+  \hologoEntry{TeX4ht}{}{2011/11/22}%
+  \hologoEntry{TTH}{}{2011/11/22}%
+  \hologoEntry{virTeX}{}{2011/10/01}%
+  \hologoEntry{VTeX}{}{2010/04/24}%
+  \hologoEntry{Xe}{}{2010/04/08}%
+  \hologoEntry{XeLaTeX}{}{2010/04/08}%
+  \hologoEntry{XeTeX}{}{2010/04/08}%
+}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname RequirePackage\endcsname\relax
+  \def\TMP@RequirePackage#1[#2]{%
+    \begingroup\expandafter\expandafter\expandafter\endgroup
+    \expandafter\ifx\csname ver@#1.sty\endcsname\relax
+      \input #1.sty\relax
+    \fi
+  }%
+  \TMP@RequirePackage{ltxcmds}[2011/02/04]%
+  \TMP@RequirePackage{infwarerr}[2010/04/08]%
+  \TMP@RequirePackage{kvsetkeys}[2010/03/01]%
+  \TMP@RequirePackage{kvdefinekeys}[2010/03/01]%
+  \TMP@RequirePackage{pdftexcmds}[2010/04/01]%
+  \TMP@RequirePackage{ifpdf}[2010/01/28]%
+  \TMP@RequirePackage{ifluatex}[2010/03/01]%
+  \ltx@IfUndefined{newif}{%
+    \expandafter\let\csname newif\endcsname\ltx@newif
+  }{}%
+  \TMP@RequirePackage{ifxetex}[2009/01/23]%
+  \TMP@RequirePackage{ifvtex}[2010/03/01]%
+\else
+  \RequirePackage{ltxcmds}[2011/02/04]%
+  \RequirePackage{infwarerr}[2010/04/08]%
+  \RequirePackage{kvsetkeys}[2010/03/01]%
+  \RequirePackage{kvdefinekeys}[2010/03/01]%
+  \RequirePackage{pdftexcmds}[2010/04/01]%
+  \RequirePackage{ifpdf}[2010/01/28]%
+  \RequirePackage{ifluatex}[2010/03/01]%
+  \RequirePackage{ifxetex}[2009/01/23]%
+  \RequirePackage{ifvtex}[2010/03/01]%
+\fi
+\def\HOLOGO@IfExists#1{%
+  \ifx\@undefined#1%
+    \expandafter\ltx@secondoftwo
+  \else
+    \ifx\relax#1%
+      \expandafter\ltx@secondoftwo
+    \else
+      \expandafter\expandafter\expandafter\ltx@firstoftwo
+    \fi
+  \fi
+}
+\def\hologoSetup{%
+  \let\HOLOGO@name\relax
+  \HOLOGO@Setup
+}
+\def\hologoLogoSetup#1{%
+  \edef\HOLOGO@name{#1}%
+  \ltx@IfUndefined{HoLogo@\HOLOGO@name}{%
+    \@PackageError{hologo}{%
+      Unknown logo `\HOLOGO@name'%
+    }\@ehc
+    \ltx@gobble
+  }{%
+    \HOLOGO@Setup
+  }%
+}
+\def\HOLOGO@Setup{%
+  \kvsetkeys{HoLogo}%
+}
+\def\HOLOGO@DeclareBoolOption#1{%
+  \expandafter\chardef\csname HOLOGOOPT@#1\endcsname\ltx@zero
+  \kv@define@key{HoLogo}{#1}[true]{%
+    \def\HOLOGO@temp{##1}%
+    \ifx\HOLOGO@temp\HOLOGO@true
+      \ifx\HOLOGO@name\relax
+        \expandafter\chardef\csname HOLOGOOPT@#1\endcsname=\ltx@one
+      \else
+        \expandafter\chardef\csname
+        HoLogoOpt@#1@\HOLOGO@name\endcsname\ltx@one
+      \fi
+      \HOLOGO@SetBreakAll{#1}%
+    \else
+      \ifx\HOLOGO@temp\HOLOGO@false
+        \ifx\HOLOGO@name\relax
+          \expandafter\chardef\csname HOLOGOOPT@#1\endcsname=\ltx@zero
+        \else
+          \expandafter\chardef\csname
+          HoLogoOpt@#1@\HOLOGO@name\endcsname=\ltx@zero
+        \fi
+        \HOLOGO@SetBreakAll{#1}%
+      \else
+        \@PackageError{hologo}{%
+          Unknown value `##1' for boolean option `#1'.\MessageBreak
+          Known values are `true' and `false'%
+        }\@ehc
+      \fi
+    \fi
+  }%
+}
+\def\HOLOGO@SetBreakAll#1{%
+  \def\HOLOGO@temp{#1}%
+  \ifx\HOLOGO@temp\HOLOGO@break
+    \ifx\HOLOGO@name\relax
+      \chardef\HOLOGOOPT@hyphenbreak=\HOLOGOOPT@break
+      \chardef\HOLOGOOPT@spacebreak=\HOLOGOOPT@break
+      \chardef\HOLOGOOPT@discretionarybreak=\HOLOGOOPT@break
+    \else
+      \expandafter\chardef
+         \csname HoLogoOpt@hyphenbreak@\HOLOGO@name\endcsname=%
+         \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+      \expandafter\chardef
+         \csname HoLogoOpt@spacebreak@\HOLOGO@name\endcsname=%
+         \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+      \expandafter\chardef
+         \csname HoLogoOpt@discretionarybreak@\HOLOGO@name
+             \endcsname=%
+         \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+    \fi
+  \fi
+}
+\def\HOLOGO@true{true}
+\def\HOLOGO@false{false}
+\def\HOLOGO@break{break}
+\HOLOGO@DeclareBoolOption{break}
+\HOLOGO@DeclareBoolOption{hyphenbreak}
+\HOLOGO@DeclareBoolOption{spacebreak}
+\HOLOGO@DeclareBoolOption{discretionarybreak}
+\kv@define@key{HoLogo}{variant}{%
+  \ifx\HOLOGO@name\relax
+    \@PackageError{hologo}{%
+      Option `variant' is not available in \string\hologoSetup,%
+      \MessageBreak
+      Use \string\hologoLogoSetup\space instead%
+    }\@ehc
+  \else
+    \edef\HOLOGO@temp{#1}%
+    \ifx\HOLOGO@temp\ltx@empty
+      \expandafter
+      \let\csname HoLogoOpt@variant@\HOLOGO@name\endcsname\@undefined
+    \else
+      \ltx@IfUndefined{HoLogo@\HOLOGO@name @\HOLOGO@temp}{%
+        \@PackageError{hologo}{%
+          Unknown variant `\HOLOGO@temp' of logo `\HOLOGO@name'%
+        }\@ehc
+      }{%
+        \expandafter
+        \let\csname HoLogoOpt@variant@\HOLOGO@name\endcsname
+            \HOLOGO@temp
+      }%
+    \fi
+  \fi
+}
+\def\HOLOGO@Variant#1{%
+  #1%
+  \ltx@ifundefined{HoLogoOpt@variant@#1}{%
+  }{%
+    @\csname HoLogoOpt@variant@#1\endcsname
+  }%
+}
+\def\HOLOGO@space{%
+  \ltx@ifundefined{HoLogoOpt@spacebreak@\HOLOGO@name}{%
+    \ltx@ifundefined{HoLogoOpt@break@\HOLOGO@name}{%
+      \chardef\HOLOGO@temp=\HOLOGOOPT@spacebreak
+    }{%
+      \chardef\HOLOGO@temp=%
+        \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+    }%
+  }{%
+    \chardef\HOLOGO@temp=%
+      \csname HoLogoOpt@spacebreak@\HOLOGO@name\endcsname
+  }%
+  \ifcase\HOLOGO@temp
+    \penalty10000 %
+  \fi
+  \ltx@space
+}
+\def\HOLOGO@hyphen{%
+  \ltx@ifundefined{HoLogoOpt@hyphenbreak@\HOLOGO@name}{%
+    \ltx@ifundefined{HoLogoOpt@break@\HOLOGO@name}{%
+      \chardef\HOLOGO@temp=\HOLOGOOPT@hyphenbreak
+    }{%
+      \chardef\HOLOGO@temp=%
+        \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+    }%
+  }{%
+    \chardef\HOLOGO@temp=%
+      \csname HoLogoOpt@hyphenbreak@\HOLOGO@name\endcsname
+  }%
+  \ifcase\HOLOGO@temp
+    \ltx@mbox{-}%
+  \else
+    -%
+  \fi
+}
+\def\HOLOGO@discretionary{%
+  \ltx@ifundefined{HoLogoOpt@discretionarybreak@\HOLOGO@name}{%
+    \ltx@ifundefined{HoLogoOpt@break@\HOLOGO@name}{%
+      \chardef\HOLOGO@temp=\HOLOGOOPT@discretionarybreak
+    }{%
+      \chardef\HOLOGO@temp=%
+        \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+    }%
+  }{%
+    \chardef\HOLOGO@temp=%
+      \csname HoLogoOpt@discretionarybreak@\HOLOGO@name\endcsname
+  }%
+  \ifcase\HOLOGO@temp
+  \else
+    \-%
+  \fi
+}
+\def\HOLOGO@mbox#1{%
+  \ltx@ifundefined{HoLogoOpt@break@\HOLOGO@name}{%
+    \chardef\HOLOGO@temp=\HOLOGOOPT@hyphenbreak
+  }{%
+    \chardef\HOLOGO@temp=%
+      \csname HoLogoOpt@break@\HOLOGO@name\endcsname
+  }%
+  \ifcase\HOLOGO@temp
+    \ltx@mbox{#1}%
+  \else
+    #1%
+  \fi
+}
+\def\HoLogoFont@font#1#2#3{%
+  \begingroup
+    \ltx@IfUndefined{HoLogoFont@logo@#1.#2}{%
+      \ltx@IfUndefined{HoLogoFont@font@#2}{%
+        \@PackageWarning{hologo}{%
+          Missing font `#2' for logo `#1'%
+        }%
+        #3%
+      }{%
+        \csname HoLogoFont@font@#2\endcsname{#3}%
+      }%
+    }{%
+      \csname HoLogoFont@logo@#1.#2\endcsname{#3}%
+    }%
+  \endgroup
+}
+\def\HoLogoFont@Def#1{%
+  \expandafter\def\csname HoLogoFont@font@#1\endcsname
+}
+\def\HoLogoFont@LogoDef#1#2{%
+  \expandafter\def\csname HoLogoFont@logo@#1.#2\endcsname
+}
+\HoLogoFont@Def{general}{}%
+\ltx@IfUndefined{rmfamily}{%
+  \ltx@IfUndefined{rm}{%
+  }{%
+    \HoLogoFont@Def{rm}{\rm}%
+  }%
+}{%
+  \HoLogoFont@Def{rm}{\rmfamily}%
+}
+\ltx@IfUndefined{sffamily}{%
+  \ltx@IfUndefined{sf}{%
+  }{%
+    \HoLogoFont@Def{sf}{\sf}%
+  }%
+}{%
+  \HoLogoFont@Def{sf}{\sffamily}%
+}
+\ltx@IfUndefined{selectfont}{%
+  \ltx@IfUndefined{tensc}{%
+    \font\tensc=cmcsc10\relax
+  }{}%
+  \HoLogoFont@Def{bibsf}{\tensc}%
+}{%
+  \HoLogoFont@Def{bibsf}{%
+    $\mathsurround=0pt$%
+    \csname S@\f@size\endcsname
+    \fontsize\sf@size{0pt}%
+    \math@fontsfalse
+    \selectfont
+  }%
+}
+\ltx@IfUndefined{scshape}{%
+  \ltx@IfUndefined{tensc}{%
+    \font\tensc=cmcsc10\relax
+  }{}%
+  \HoLogoFont@Def{sc}{\tensc}%
+}{%
+  \HoLogoFont@Def{sc}{\scshape}%
+}
+\ltx@IfUndefined{usefont}{%
+  \ltx@IfUndefined{tensy}{%
+  }{%
+    \HoLogoFont@Def{sy}{\tensy}%
+  }%
+}{%
+  \HoLogoFont@Def{sy}{%
+    \usefont{OMS}{cmsy}{m}{n}%
+  }%
+}
+\begingroup
+  \def\x{LaTeX2e}%
+\expandafter\endgroup
+\ifx\fmtname\x
+  \ltx@IfUndefined{logofamily}{%
+    \DeclareRobustCommand\logofamily{%
+      \not@math@alphabet\logofamily\relax
+      \fontencoding{U}%
+      \fontfamily{logo}%
+      \selectfont
+    }%
+  }{}%
+  \ltx@IfUndefined{logofamily}{%
+  }{%
+    \HoLogoFont@Def{logo}{\logofamily}%
+  }%
+\else
+  \ltx@IfUndefined{tenlogo}{%
+    \font\tenlogo=logo10\relax
+  }{}%
+  \HoLogoFont@Def{logo}{\tenlogo}%
+\fi
+\def\hologoFontSetup{%
+  \let\HOLOGO@name\relax
+  \HOLOGO@FontSetup
+}
+\def\hologoLogoFontSetup#1{%
+  \edef\HOLOGO@name{#1}%
+  \ltx@IfUndefined{HoLogo@\HOLOGO@name}{%
+    \@PackageError{hologo}{%
+      Unknown logo `\HOLOGO@name'%
+    }\@ehc
+    \ltx@gobble
+  }{%
+    \HOLOGO@FontSetup
+  }%
+}
+\def\HOLOGO@FontSetup{%
+  \kvsetkeys{HoLogoFont}%
+}
+\def\HOLOGO@temp#1{%
+  \kv@define@key{HoLogoFont}{#1}{%
+    \ifx\HOLOGO@name\relax
+      \HoLogoFont@Def{#1}{##1}%
+    \else
+      \HoLogoFont@LogoDef\HOLOGO@name{#1}{##1}%
+    \fi
+  }%
+}
+\HOLOGO@temp{general}
+\HOLOGO@temp{sf}
+\HOLOGO@IfExists\hologo{%
+  \@PackageError{hologo}{%
+    \string\hologo\ltx@space is already defined.\MessageBreak
+    Package loading is aborted%
+  }\@ehc
+  \HOLOGO@AtEnd
+}%
+\HOLOGO@IfExists\hologoRobust{%
+  \@PackageError{hologo}{%
+    \string\hologoRobust\ltx@space is already defined.\MessageBreak
+    Package loading is aborted%
+  }\@ehc
+  \HOLOGO@AtEnd
+}%
+\ifluatex
+  \expandafter\ltx@firstofone
+\else
+  \expandafter\ltx@gobble
+\fi
+{%
+  \ltx@IfUndefined{ifincsname}{%
+    \ifnum\luatexversion<36 %
+      \expandafter\ltx@gobble
+    \else
+      \expandafter\ltx@firstofone
+    \fi
+    {%
+      \begingroup
+        \ifcase0%
+            \directlua{%
+              if tex.enableprimitives then %
+                tex.enableprimitives('HOLOGO@', {'ifincsname'})%
+              else %
+                tex.print('1')%
+              end%
+            }%
+            \ifx\HOLOGO@ifincsname\@undefined 1\fi%
+            \relax
+          \expandafter\ltx@firstofone
+        \else
+          \endgroup
+          \expandafter\ltx@gobble
+        \fi
+        {%
+          \global\let\ifincsname\HOLOGO@ifincsname
+        }%
+      \HOLOGO@temp
+    }%
+  }{}%
+}
+\ltx@IfUndefined{ifincsname}{%
+  \catcode`$=14 %
+}{%
+  \catcode`$=9 %
+}
+\def\hologo#1{%
+$ \ifincsname
+$   \ltx@ifundefined{HoLogoCs@\HOLOGO@Variant{#1}}{%
+$     #1%
+$   }{%
+$     \csname HoLogoCs@\HOLOGO@Variant{#1}\endcsname\ltx@firstoftwo
+$   }%
+$ \else
+    \HOLOGO@IfExists\texorpdfstring\texorpdfstring\ltx@firstoftwo
+    {%
+      \hologoRobust{#1}%
+    }{%
+      \ltx@ifundefined{HoLogoBkm@\HOLOGO@Variant{#1}}{%
+        \ltx@ifundefined{HoLogo@#1}{?#1?}{#1}%
+      }{%
+        \csname HoLogoBkm@\HOLOGO@Variant{#1}\endcsname
+        \ltx@firstoftwo
+      }%
+    }%
+$ \fi
+}
+\def\Hologo#1{%
+$ \ifincsname
+$   \ltx@ifundefined{HoLogoCs@\HOLOGO@Variant{#1}}{%
+$     #1%
+$   }{%
+$     \csname HoLogoCs@\HOLOGO@Variant{#1}\endcsname\ltx@secondoftwo
+$   }%
+$ \else
+    \HOLOGO@IfExists\texorpdfstring\texorpdfstring\ltx@firstoftwo
+    {%
+      \HologoRobust{#1}%
+    }{%
+      \ltx@ifundefined{HoLogoBkm@\HOLOGO@Variant{#1}}{%
+        \ltx@ifundefined{HoLogo@#1}{?#1?}{#1}%
+      }{%
+        \csname HoLogoBkm@\HOLOGO@Variant{#1}\endcsname
+        \ltx@secondoftwo
+      }%
+    }%
+$ \fi
+}
+\def\hologoVariant#1#2{%
+  \ifx\relax#2\relax
+    \hologo{#1}%
+  \else
+$   \ifincsname
+$     \ltx@ifundefined{HoLogoCs@#1@#2}{%
+$       #1%
+$     }{%
+$       \csname HoLogoCs@#1@#2\endcsname\ltx@firstoftwo
+$     }%
+$   \else
+      \HOLOGO@IfExists\texorpdfstring\texorpdfstring\ltx@firstoftwo
+      {%
+        \hologoVariantRobust{#1}{#2}%
+      }{%
+        \ltx@ifundefined{HoLogoBkm@#1@#2}{%
+          \ltx@ifundefined{HoLogo@#1}{?#1?}{#1}%
+        }{%
+          \csname HoLogoBkm@#1@#2\endcsname
+          \ltx@firstoftwo
+        }%
+      }%
+$   \fi
+  \fi
+}
+\def\HologoVariant#1#2{%
+  \ifx\relax#2\relax
+    \Hologo{#1}%
+  \else
+$   \ifincsname
+$     \ltx@ifundefined{HoLogoCs@#1@#2}{%
+$       #1%
+$     }{%
+$       \csname HoLogoCs@#1@#2\endcsname\ltx@secondoftwo
+$     }%
+$   \else
+      \HOLOGO@IfExists\texorpdfstring\texorpdfstring\ltx@firstoftwo
+      {%
+        \HologoVariantRobust{#1}{#2}%
+      }{%
+        \ltx@ifundefined{HoLogoBkm@#1@#2}{%
+          \ltx@ifundefined{HoLogo@#1}{?#1?}{#1}%
+        }{%
+          \csname HoLogoBkm@#1@#2\endcsname
+          \ltx@secondoftwo
+        }%
+      }%
+$   \fi
+  \fi
+}
+\catcode`\$=3 %
+\ltx@IfUndefined{protected}{%
+  \ltx@IfUndefined{DeclareRobustCommand}{%
+    \def\hologoRobust#1%
+  }{%
+    \DeclareRobustCommand*\hologoRobust[1]%
+  }%
+}{%
+  \protected\def\hologoRobust#1%
+}%
+{%
+  \edef\HOLOGO@name{#1}%
+  \ltx@IfUndefined{HoLogo@\HOLOGO@Variant\HOLOGO@name}{%
+    \@PackageError{hologo}{%
+      Unknown logo `\HOLOGO@name'%
+    }\@ehc
+    ?\HOLOGO@name?%
+  }{%
+    \ltx@IfUndefined{ver@tex4ht.sty}{%
+      \HoLogoFont@font\HOLOGO@name{general}{%
+        \csname HoLogo@\HOLOGO@Variant\HOLOGO@name\endcsname
+        \ltx@firstoftwo
+      }%
+    }{%
+      \ltx@IfUndefined{HoLogoHtml@\HOLOGO@Variant\HOLOGO@name}{%
+        \HOLOGO@name
+      }{%
+        \csname HoLogoHtml@\HOLOGO@Variant\HOLOGO@name\endcsname
+        \ltx@firstoftwo
+      }%
+    }%
+  }%
+}
+\ltx@IfUndefined{protected}{%
+  \ltx@IfUndefined{DeclareRobustCommand}{%
+    \def\HologoRobust#1%
+  }{%
+    \DeclareRobustCommand*\HologoRobust[1]%
+  }%
+}{%
+  \protected\def\HologoRobust#1%
+}%
+{%
+  \edef\HOLOGO@name{#1}%
+  \ltx@IfUndefined{HoLogo@\HOLOGO@Variant\HOLOGO@name}{%
+    \@PackageError{hologo}{%
+      Unknown logo `\HOLOGO@name'%
+    }\@ehc
+    ?\HOLOGO@name?%
+  }{%
+    \ltx@IfUndefined{ver@tex4ht.sty}{%
+      \HoLogoFont@font\HOLOGO@name{general}{%
+        \csname HoLogo@\HOLOGO@Variant\HOLOGO@name\endcsname
+        \ltx@secondoftwo
+      }%
+    }{%
+      \ltx@IfUndefined{HoLogoHtml@\HOLOGO@Variant\HOLOGO@name}{%
+        \expandafter\HOLOGO@Uppercase\HOLOGO@name
+      }{%
+        \csname HoLogoHtml@\HOLOGO@Variant\HOLOGO@name\endcsname
+        \ltx@secondoftwo
+      }%
+    }%
+  }%
+}
+\ltx@IfUndefined{protected}{%
+  \ltx@IfUndefined{DeclareRobustCommand}{%
+    \def\hologoVariantRobust#1#2%
+  }{%
+    \DeclareRobustCommand*\hologoVariantRobust[2]%
+  }%
+}{%
+  \protected\def\hologoVariantRobust#1#2%
+}%
+{%
+  \begingroup
+    \hologoLogoSetup{#1}{variant={#2}}%
+    \hologoRobust{#1}%
+  \endgroup
+}
+\ltx@IfUndefined{protected}{%
+  \ltx@IfUndefined{DeclareRobustCommand}{%
+    \def\HologoVariantRobust#1#2%
+  }{%
+    \DeclareRobustCommand*\HologoVariantRobust[2]%
+  }%
+}{%
+  \protected\def\HologoVariantRobust#1#2%
+}%
+{%
+  \begingroup
+    \hologoLogoSetup{#1}{variant={#2}}%
+    \HologoRobust{#1}%
+  \endgroup
+}
+\def\hologorobust{\hologoRobust}
+\def\HOLOGO@Uppercase#1{\uppercase{#1}}
+\def\HOLOGO@PdfdocUnicode{%
+  \ifx\ifHy@unicode\iftrue
+    \expandafter\ltx@secondoftwo
+  \else
+    \expandafter\ltx@firstoftwo
+  \fi
+}
+\def\HOLOGO@MathSetup{%
+  \mathsurround0pt\relax
+  \HOLOGO@IfExists\f@series{%
+    \if b\expandafter\ltx@car\f@series x\@nil
+      \csname boldmath\endcsname
+   \fi
+  }{}%
+}
+\dimendef\HOLOGO@TempDimen=\ltx@zero
+\def\HOLOGO@NegativeKerning#1{%
+  \begingroup
+    \HOLOGO@TempDimen=0pt\relax
+    \comma@parse@normalized{#1}{%
+      \ifdim\HOLOGO@TempDimen=0pt %
+        \expandafter\HOLOGO@@NegativeKerning\comma@entry
+      \fi
+      \ltx@gobble
+    }%
+    \ifdim\HOLOGO@TempDimen<0pt %
+      \kern\HOLOGO@TempDimen
+    \fi
+  \endgroup
+}
+\def\HOLOGO@@NegativeKerning#1#2{%
+  \setbox\ltx@zero\hbox{#1#2}%
+  \HOLOGO@TempDimen=\wd\ltx@zero
+  \setbox\ltx@zero\hbox{#1\kern0pt#2}%
+  \advance\HOLOGO@TempDimen by -\wd\ltx@zero
+}
+\def\HOLOGO@SpaceFactor{%
+  \spacefactor1000 %
+}
+\def\HOLOGO@Span#1#2{%
+  \HCode{<span class="HoLogo-#1">}%
+  #2%
+  \HCode{</span>}%
+}
+\def\HOLOGO@SubScript#1{%
+  \ltx@IfUndefined{textsubscript}{%
+    \ltx@IfUndefined{text}{%
+      \ltx@mbox{%
+        \mathsurround=0pt\relax
+        $%
+          _{%
+            \ltx@IfUndefined{sf@size}{%
+              \mathrm{#1}%
+            }{%
+              \mbox{%
+                \fontsize\sf@size{0pt}\selectfont
+                #1%
+              }%
+            }%
+          }%
+        $%
+      }%
+    }{%
+      \ltx@mbox{%
+        \mathsurround=0pt\relax
+        $_{\text{#1}}$%
+      }%
+    }%
+  }{%
+    \textsubscript{#1}%
+  }%
+}
+\def\HoLogo@TeX#1{%
+  T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\HOLOGO@SpaceFactor
+}
+\def\HoLogoHtml@TeX#1{%
+  \HoLogoCss@TeX
+  \HOLOGO@Span{TeX}{%
+    T%
+    \HOLOGO@Span{e}{%
+      E%
+    }%
+    X%
+  }%
+}
+\def\HoLogoCss@TeX{%
+  \Css{%
+    span.HoLogo-TeX span.HoLogo-e{%
+      position:relative;%
+      top:.5ex;%
+      margin-left:-.1667em;%
+      margin-right:-.125em;%
+    }%
+  }%
+  \Css{%
+    a span.HoLogo-TeX span.HoLogo-e{%
+      text-decoration:none;%
+    }%
+  }%
+  \global\let\HoLogoCss@TeX\relax
+}
+\def\HoLogo@plainTeX@space#1{%
+  \HOLOGO@mbox{#1{p}{P}lain}\HOLOGO@space\hologo{TeX}%
+}
+\def\HoLogoCs@plainTeX@space#1{#1{p}{P}lain TeX}%
+\def\HoLogoBkm@plainTeX@space#1{%
+  #1{p}{P}lain \hologo{TeX}%
+}
+\def\HoLogoHtml@plainTeX@space#1{%
+  #1{p}{P}lain \hologo{TeX}%
+}
+\def\HoLogo@plainTeX@hyphen#1{%
+  \HOLOGO@mbox{#1{p}{P}lain}\HOLOGO@hyphen\hologo{TeX}%
+}
+\def\HoLogoCs@plainTeX@hyphen#1{#1{p}{P}lain-TeX}
+\def\HoLogoBkm@plainTeX@hyphen#1{%
+  #1{p}{P}lain-\hologo{TeX}%
+}
+\def\HoLogoHtml@plainTeX@hyphen#1{%
+  #1{p}{P}lain-\hologo{TeX}%
+}
+\def\HoLogo@plainTeX@runtogether#1{%
+  \HOLOGO@mbox{#1{p}{P}lain\hologo{TeX}}%
+}
+\def\HoLogoCs@plainTeX@runtogether#1{#1{p}{P}lainTeX}
+\def\HoLogoBkm@plainTeX@runtogether#1{%
+  #1{p}{P}lain\hologo{TeX}%
+}
+\def\HoLogoHtml@plainTeX@runtogether#1{%
+  #1{p}{P}lain\hologo{TeX}%
+}
+\def\HoLogo@plainTeX{\HoLogo@plainTeX@space}
+\def\HoLogoCs@plainTeX{\HoLogoCs@plainTeX@space}
+\def\HoLogoBkm@plainTeX{\HoLogoBkm@plainTeX@space}
+\def\HoLogoHtml@plainTeX{\HoLogoHtml@plainTeX@space}
+\def\HoLogo@La#1{%
+  L%
+  \kern-.36em%
+  \begingroup
+    \setbox\ltx@zero\hbox{T}%
+    \vbox to\ht\ltx@zero{%
+      \hbox{%
+        \ltx@ifundefined{check@mathfonts}{%
+          \csname sevenrm\endcsname
+        }{%
+          \check@mathfonts
+          \fontsize\sf@size{0pt}%
+          \math@fontsfalse\selectfont
+        }%
+        A%
+      }%
+      \vss
+    }%
+  \endgroup
+}
+\def\HoLogo@LaTeX#1{%
+  \hologo{La}%
+  \kern-.15em%
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@LaTeX#1{%
+  \HoLogoCss@LaTeX
+  \HOLOGO@Span{LaTeX}{%
+    L%
+    \HOLOGO@Span{a}{%
+      A%
+    }%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoCss@LaTeX{%
+  \Css{%
+    span.HoLogo-LaTeX span.HoLogo-a{%
+      position:relative;%
+      top:-.5ex;%
+      margin-left:-.36em;%
+      margin-right:-.15em;%
+      font-size:85\%;%
+    }%
+  }%
+  \global\let\HoLogoCss@LaTeX\relax
+}
+\def\HoLogo@LaTeXTeX#1{%
+  (%
+  \kern-.15em%
+  \hologo{La}%
+  \kern-.2em%
+  )%
+  \kern-.15em%
+  \hologo{TeX}%
+}
+\def\HoLogoBkm@LaTeXTeX#1{(La)TeX}
+\expandafter
+\let\csname HoLogo@(La)TeX\endcsname\HoLogo@LaTeXTeX
+\expandafter
+\let\csname HoLogoBkm@(La)TeX\endcsname\HoLogoBkm@LaTeXTeX
+\def\HoLogoHtml@LaTeXTeX#1{%
+  \HoLogoCss@LaTeXTeX
+  \HOLOGO@Span{LaTeXTeX}{%
+    (%
+    \HOLOGO@Span{L}{L}%
+    \HOLOGO@Span{a}{A}%
+    \HOLOGO@Span{ParenRight}{)}%
+    \hologo{TeX}%
+  }%
+}
+\expandafter
+\let\csname HoLogoHtml@(La)TeX\endcsname\HoLogoHtml@LaTeXTeX
+\def\HoLogoCss@LaTeXTeX{%
+  \Css{%
+    span.HoLogo-LaTeXTeX span.HoLogo-L{%
+      margin-left:-.1em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-LaTeXTeX span.HoLogo-a{%
+      position:relative;%
+      top:-.5ex;%
+      margin-left:-.36em;%
+      margin-right:-.1em;%
+      font-size:85\%;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-LaTeXTeX span.HoLogo-ParenRight{%
+      margin-right:-.15em;%
+    }%
+  }%
+  \global\let\HoLogoCss@LaTeXTeX\relax
+}
+\def\HoLogo@LaTeXe#1{%
+  \hologo{LaTeX}%
+  \kern.15em%
+  \hbox{%
+    \HOLOGO@MathSetup
+    2%
+    $_{\textstyle\varepsilon}$%
+  }%
+}
+\ifnum64=`\^^^^0040\relax % test for big chars of LuaTeX/XeTeX
+  \catcode`\$=9 %
+  \catcode`\&=14 %
+\else
+  \catcode`\$=14 %
+  \catcode`\&=9 %
+\fi
+\def\HoLogoCs@LaTeXe#1{%
+  LaTeX2%
+$ \string ^^^^0395%
+& e%
+}%
+\catcode`\$=3 %
+\catcode`\&=4 %
+\def\HoLogoBkm@LaTeXe#1{%
+  \hologo{LaTeX}%
+  2%
+  \HOLOGO@PdfdocUnicode{e}{\textepsilon}%
+}
+\def\HoLogoHtml@LaTeXe#1{%
+  \HoLogoCss@LaTeXe
+  \HOLOGO@Span{LaTeX2e}{%
+    \hologo{LaTeX}%
+    \HOLOGO@Span{2}{2}%
+    \HOLOGO@Span{e}{%
+      \HOLOGO@MathSetup
+      \ensuremath{\textstyle\varepsilon}%
+    }%
+  }%
+}
+\def\HoLogoCss@LaTeXe{%
+  \Css{%
+    span.HoLogo-LaTeX2e span.HoLogo-2{%
+      padding-left:.15em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-LaTeX2e span.HoLogo-e{%
+      position:relative;%
+      top:.35ex;%
+      text-decoration:none;%
+    }%
+  }%
+  \global\let\HoLogoCss@LaTeXe\relax
+}
+\expandafter
+\let\csname HoLogo@LaTeX2e\endcsname\HoLogo@LaTeXe
+\expandafter
+\let\csname HoLogoCs@LaTeX2e\endcsname\HoLogoCs@LaTeXe
+\expandafter
+\let\csname HoLogoBkm@LaTeX2e\endcsname\HoLogoBkm@LaTeXe
+\expandafter
+\let\csname HoLogoHtml@LaTeX2e\endcsname\HoLogoHtml@LaTeXe
+\expandafter\def\csname HoLogo@LaTeX3\endcsname#1{%
+  \hologo{LaTeX}%
+  3%
+}
+\expandafter\def\csname HoLogoBkm@LaTeX3\endcsname#1{%
+  \hologo{LaTeX}%
+  3%
+}
+\expandafter
+\let\csname HoLogoHtml@LaTeX3\expandafter\endcsname
+\csname HoLogo@LaTeX3\endcsname
+\def\HoLogo@LaTeXML#1{%
+  \HOLOGO@mbox{%
+    \hologo{La}%
+    \kern-.15em%
+    T%
+    \kern-.1667em%
+    \lower.5ex\hbox{E}%
+    \kern-.125em%
+    \HoLogoFont@font{LaTeXML}{sc}{xml}%
+  }%
+}
+\def\HoLogoHtml@LaTeXML#1{%
+  \HOLOGO@Span{LaTeXML}{%
+    \HoLogoCss@LaTeX
+    \HoLogoCss@TeX
+    \HOLOGO@Span{LaTeX}{%
+      L%
+      \HOLOGO@Span{a}{%
+        A%
+      }%
+    }%
+    \HOLOGO@Span{TeX}{%
+      T%
+      \HOLOGO@Span{e}{%
+        E%
+      }%
+    }%
+    \HCode{<span style="font-variant: small-caps;">}%
+    xml%
+    \HCode{</span>}%
+  }%
+}
+\def\HoLogo@eTeX#1{%
+  \ltx@mbox{%
+    \HOLOGO@MathSetup
+    $\varepsilon$%
+    -%
+    \HOLOGO@NegativeKerning{-T,T-,To}%
+    \hologo{TeX}%
+  }%
+}
+\ifnum64=`\^^^^0040\relax % test for big chars of LuaTeX/XeTeX
+  \catcode`\$=9 %
+  \catcode`\&=14 %
+\else
+  \catcode`\$=14 %
+  \catcode`\&=9 %
+\fi
+\def\HoLogoCs@eTeX#1{%
+$ #1{\string ^^^^0395}{\string ^^^^03b5}%
+& #1{e}{E}%
+  TeX%
+}%
+\catcode`\$=3 %
+\catcode`\&=4 %
+\def\HoLogoBkm@eTeX#1{%
+  \HOLOGO@PdfdocUnicode{#1{e}{E}}{\textepsilon}%
+  -%
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@eTeX#1{%
+  \ltx@mbox{%
+    \HOLOGO@MathSetup
+    $\varepsilon$%
+    -%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogo@iniTeX#1{%
+  \HOLOGO@mbox{%
+    #1{i}{I}ni\hologo{TeX}%
+  }%
+}
+\def\HoLogoCs@iniTeX#1{#1{i}{I}niTeX}
+\def\HoLogoBkm@iniTeX#1{%
+  #1{i}{I}ni\hologo{TeX}%
+}
+\let\HoLogoHtml@iniTeX\HoLogo@iniTeX
+\def\HoLogo@virTeX#1{%
+  \HOLOGO@mbox{%
+    #1{v}{V}ir\hologo{TeX}%
+  }%
+}
+\def\HoLogoCs@virTeX#1{#1{v}{V}irTeX}
+\def\HoLogoBkm@virTeX#1{%
+  #1{v}{V}ir\hologo{TeX}%
+}
+\let\HoLogoHtml@virTeX\HoLogo@virTeX
+\def\HoLogo@SLiTeX@lift#1{%
+  \HoLogoFont@font{SliTeX}{rm}{%
+    S%
+    \kern-.06em%
+    L%
+    \kern-.18em%
+    \raise.32ex\hbox{\HoLogoFont@font{SliTeX}{sc}{i}}%
+    \HOLOGO@discretionary
+    \kern-.06em%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoBkm@SLiTeX@lift#1{SLiTeX}
+\def\HoLogoHtml@SLiTeX@lift#1{%
+  \HoLogoCss@SLiTeX@lift
+  \HOLOGO@Span{SLiTeX-lift}{%
+    \HoLogoFont@font{SliTeX}{rm}{%
+      S%
+      \HOLOGO@Span{L}{L}%
+      \HOLOGO@Span{i}{i}%
+      \hologo{TeX}%
+    }%
+  }%
+}
+\def\HoLogoCss@SLiTeX@lift{%
+  \Css{%
+    span.HoLogo-SLiTeX-lift span.HoLogo-L{%
+      margin-left:-.06em;%
+      margin-right:-.18em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-SLiTeX-lift span.HoLogo-i{%
+      position:relative;%
+      top:-.32ex;%
+      margin-right:-.06em;%
+      font-variant:small-caps;%
+    }%
+  }%
+  \global\let\HoLogoCss@SLiTeX@lift\relax
+}
+\def\HoLogo@SliTeX@simple#1{%
+  \HoLogoFont@font{SliTeX}{rm}{%
+    \ltx@mbox{%
+      \HoLogoFont@font{SliTeX}{sc}{Sli}%
+    }%
+    \HOLOGO@discretionary
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoBkm@SliTeX@simple#1{SliTeX}
+\let\HoLogoHtml@SliTeX@simple\HoLogo@SliTeX@simple
+\def\HoLogo@SliTeX@narrow#1{%
+  \HoLogoFont@font{SliTeX}{rm}{%
+    \ltx@mbox{%
+      S%
+      \kern-.06em%
+      \HoLogoFont@font{SliTeX}{sc}{%
+        l%
+        \kern-.035em%
+        i%
+      }%
+    }%
+    \HOLOGO@discretionary
+    \kern-.06em%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoBkm@SliTeX@narrow#1{SliTeX}
+\def\HoLogoHtml@SliTeX@narrow#1{%
+  \HoLogoCss@SliTeX@narrow
+  \HOLOGO@Span{SliTeX-narrow}{%
+    \HoLogoFont@font{SliTeX}{rm}{%
+      S%
+        \HOLOGO@Span{l}{l}%
+        \HOLOGO@Span{i}{i}%
+      \hologo{TeX}%
+    }%
+  }%
+}
+\def\HoLogoCss@SliTeX@narrow{%
+  \Css{%
+    span.HoLogo-SliTeX-narrow span.HoLogo-l{%
+      margin-left:-.06em;%
+      margin-right:-.035em;%
+      font-variant:small-caps;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-SliTeX-narrow span.HoLogo-i{%
+      margin-right:-.06em;%
+      font-variant:small-caps;%
+    }%
+  }%
+  \global\let\HoLogoCss@SliTeX@narrow\relax
+}
+\def\HoLogo@SLiTeX@simple{\HoLogo@SliTeX@simple}
+\def\HoLogoBkm@SLiTeX@simple{\HoLogoBkm@SliTeX@simple}
+\def\HoLogoHtml@SLiTeX@simple{\HoLogoHtml@SliTeX@simple}
+\def\HoLogo@SLiTeX@narrow{\HoLogo@SliTeX@narrow}
+\def\HoLogoBkm@SLiTeX@narrow{\HoLogoBkm@SliTeX@narrow}
+\def\HoLogoHtml@SLiTeX@narrow{\HoLogoHtml@SliTeX@narrow}
+\def\HoLogo@SliTeX@lift{\HoLogo@SLiTeX@lift}
+\def\HoLogoBkm@SliTeX@lift{\HoLogoBkm@SLiTeX@lift}
+\def\HoLogoHtml@SliTeX@lift{\HoLogoHtml@SLiTeX@lift}
+\def\HoLogo@SLiTeX{\HoLogo@SLiTeX@lift}
+\def\HoLogoBkm@SLiTeX{\HoLogoBkm@SLiTeX@lift}
+\def\HoLogoHtml@SLiTeX{\HoLogoHtml@SLiTeX@lift}
+\def\HoLogo@SliTeX{\HoLogo@SliTeX@narrow}
+\def\HoLogoBkm@SliTeX{\HoLogoBkm@SliTeX@narrow}
+\def\HoLogoHtml@SliTeX{\HoLogoHtml@SliTeX@narrow}
+\def\HoLogo@LuaTeX#1{%
+  \HOLOGO@mbox{%
+    Lua%
+    \HOLOGO@NegativeKerning{aT,oT,To}%
+    \hologo{TeX}%
+  }%
+}
+\let\HoLogoHtml@LuaTeX\HoLogo@LuaTeX
+\def\HoLogo@LuaLaTeX#1{%
+  \HOLOGO@mbox{%
+    Lua%
+    \hologo{LaTeX}%
+  }%
+}
+\let\HoLogoHtml@LuaLaTeX\HoLogo@LuaLaTeX
+\ifluatex
+  \ifnum\luatexversion<36 %
+  \else
+    \def\HOLOGO@IfCharExists#1{%
+      \ifnum
+          \directlua{%
+            if luaotfload and luaotfload.aux then %
+              if luaotfload.aux.font_has_glyph(font.current(), \number#1) then %
+                tex.print("1") %
+              end %
+            elseif font and font.fonts and font.current then %
+              local f = font.fonts[font.current()] %
+              if f.characters and f.characters[\number#1] then %
+                tex.print("1") %
+              end %
+            end %
+          }0=\ltx@zero
+        \expandafter\ltx@secondoftwo
+      \else
+        \expandafter\ltx@firstoftwo
+      \fi
+    }%
+  \fi
+\fi
+\ltx@IfUndefined{HOLOGO@IfCharExists}{%
+  \def\HOLOGO@@IfCharExists#1{%
+    \begingroup
+      \tracinglostchars=\ltx@zero
+      \setbox\ltx@zero=\hbox{%
+        \kern7sp\char#1\relax
+        \ifnum\lastkern>\ltx@zero
+          \expandafter\aftergroup\csname iffalse\endcsname
+        \else
+          \expandafter\aftergroup\csname iftrue\endcsname
+        \fi
+      }%
+      % \if{true|false} from \aftergroup
+      \endgroup
+      \expandafter\ltx@firstoftwo
+    \else
+      \endgroup
+      \expandafter\ltx@secondoftwo
+    \fi
+  }%
+  \ifxetex
+    \ltx@IfUndefined{XeTeXfonttype}{}{%
+      \ltx@IfUndefined{XeTeXcharglyph}{}{%
+        \def\HOLOGO@IfCharExists#1{%
+          \ifnum\XeTeXfonttype\font>\ltx@zero
+            \expandafter\ltx@firstofthree
+          \else
+            \expandafter\ltx@gobble
+          \fi
+          {%
+            \ifnum\XeTeXcharglyph#1>\ltx@zero
+              \expandafter\ltx@firstoftwo
+            \else
+              \expandafter\ltx@secondoftwo
+            \fi
+          }%
+          \HOLOGO@@IfCharExists{#1}%
+        }%
+      }%
+    }%
+  \fi
+}{}
+\ltx@ifundefined{HOLOGO@IfCharExists}{%
+  \ifnum64=`\^^^^0040\relax % test for big chars of LuaTeX/XeTeX
+    \let\HOLOGO@IfCharExists\HOLOGO@@IfCharExists
+  \else
+    \def\HOLOGO@IfCharExists#1{%
+      \ifnum#1>255 %
+        \expandafter\ltx@fourthoffour
+      \fi
+      \HOLOGO@@IfCharExists{#1}%
+    }%
+  \fi
+}{}
+\def\HoLogo@Xe#1{%
+  X%
+  \kern-.1em\relax
+  \HOLOGO@IfCharExists{"018E}{%
+    \lower.5ex\hbox{\char"018E}%
+  }{%
+    \chardef\HOLOGO@choice=\ltx@zero
+    \ifdim\fontdimen\ltx@one\font>0pt %
+      \ltx@IfUndefined{rotatebox}{%
+        \ltx@IfUndefined{pgftext}{%
+          \ltx@IfUndefined{psscalebox}{%
+            \ltx@IfUndefined{HOLOGO@ScaleBox@\hologoDriver}{%
+            }{%
+              \chardef\HOLOGO@choice=4 %
+            }%
+          }{%
+            \chardef\HOLOGO@choice=3 %
+          }%
+        }{%
+          \chardef\HOLOGO@choice=2 %
+        }%
+      }{%
+        \chardef\HOLOGO@choice=1 %
+      }%
+      \ifcase\HOLOGO@choice
+        \HOLOGO@WarningUnsupportedDriver{Xe}%
+        e%
+      \or % 1: \rotatebox
+        \begingroup
+          \setbox\ltx@zero\hbox{\rotatebox{180}{E}}%
+          \ltx@LocDimenA=\dp\ltx@zero
+          \advance\ltx@LocDimenA by -.5ex\relax
+          \raise\ltx@LocDimenA\box\ltx@zero
+        \endgroup
+      \or % 2: \pgftext
+        \lower.5ex\hbox{%
+          \pgfpicture
+            \pgftext[rotate=180]{E}%
+          \endpgfpicture
+        }%
+      \or % 3: \psscalebox
+        \begingroup
+          \setbox\ltx@zero\hbox{\psscalebox{-1 -1}{E}}%
+          \ltx@LocDimenA=\dp\ltx@zero
+          \advance\ltx@LocDimenA by -.5ex\relax
+          \raise\ltx@LocDimenA\box\ltx@zero
+        \endgroup
+      \or % 4: \HOLOGO@PointReflectBox
+        \lower.5ex\hbox{\HOLOGO@PointReflectBox{E}}%
+      \else
+        \@PackageError{hologo}{Internal error (choice/it}\@ehc
+      \fi
+    \else
+      \ltx@IfUndefined{reflectbox}{%
+        \ltx@IfUndefined{pgftext}{%
+          \ltx@IfUndefined{psscalebox}{%
+            \ltx@IfUndefined{HOLOGO@ScaleBox@\hologoDriver}{%
+            }{%
+              \chardef\HOLOGO@choice=4 %
+            }%
+          }{%
+            \chardef\HOLOGO@choice=3 %
+          }%
+        }{%
+          \chardef\HOLOGO@choice=2 %
+        }%
+      }{%
+        \chardef\HOLOGO@choice=1 %
+      }%
+      \ifcase\HOLOGO@choice
+        \HOLOGO@WarningUnsupportedDriver{Xe}%
+        e%
+      \or % 1: reflectbox
+        \lower.5ex\hbox{%
+          \reflectbox{E}%
+        }%
+      \or % 2: \pgftext
+        \lower.5ex\hbox{%
+          \pgfpicture
+            \pgftransformxscale{-1}%
+            \pgftext{E}%
+          \endpgfpicture
+        }%
+      \or % 3: \psscalebox
+        \lower.5ex\hbox{%
+          \psscalebox{-1 1}{E}%
+        }%
+      \or % 4: \HOLOGO@Reflectbox
+        \lower.5ex\hbox{%
+          \HOLOGO@ReflectBox{E}%
+        }%
+      \else
+        \@PackageError{hologo}{Internal error (choice/up)}\@ehc
+      \fi
+    \fi
+  }%
+}
+\def\HoLogoHtml@Xe#1{%
+  \HoLogoCss@Xe
+  \HOLOGO@Span{Xe}{%
+    X%
+    \HOLOGO@Span{e}{%
+      \HCode{&\ltx@hashchar x018e;}%
+    }%
+  }%
+}
+\def\HoLogoCss@Xe{%
+  \Css{%
+    span.HoLogo-Xe span.HoLogo-e{%
+      position:relative;%
+      top:.5ex;%
+      left-margin:-.1em;%
+    }%
+  }%
+  \global\let\HoLogoCss@Xe\relax
+}
+\def\HoLogo@XeTeX#1{%
+  \hologo{Xe}%
+  \kern-.15em\relax
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@XeTeX#1{%
+  \HoLogoCss@XeTeX
+  \HOLOGO@Span{XeTeX}{%
+    \hologo{Xe}%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoCss@XeTeX{%
+  \Css{%
+    span.HoLogo-XeTeX span.HoLogo-TeX{%
+      margin-left:-.15em;%
+    }%
+  }%
+  \global\let\HoLogoCss@XeTeX\relax
+}
+\def\HoLogo@XeLaTeX#1{%
+  \hologo{Xe}%
+  \kern-.13em%
+  \hologo{LaTeX}%
+}
+\def\HoLogoHtml@XeLaTeX#1{%
+  \HoLogoCss@XeLaTeX
+  \HOLOGO@Span{XeLaTeX}{%
+    \hologo{Xe}%
+    \hologo{LaTeX}%
+  }%
+}
+\def\HoLogoCss@XeLaTeX{%
+  \Css{%
+    span.HoLogo-XeLaTeX span.HoLogo-Xe{%
+      margin-right:-.13em;%
+    }%
+  }%
+  \global\let\HoLogoCss@XeLaTeX\relax
+}
+\def\HoLogo@pdfTeX#1{%
+  \HOLOGO@mbox{%
+    #1{p}{P}df\hologo{TeX}%
+  }%
+}
+\def\HoLogoCs@pdfTeX#1{#1{p}{P}dfTeX}
+\def\HoLogoBkm@pdfTeX#1{%
+  #1{p}{P}df\hologo{TeX}%
+}
+\let\HoLogoHtml@pdfTeX\HoLogo@pdfTeX
+\def\HoLogo@pdfLaTeX#1{%
+  \HOLOGO@mbox{%
+    #1{p}{P}df\hologo{LaTeX}%
+  }%
+}
+\def\HoLogoCs@pdfLaTeX#1{#1{p}{P}dfLaTeX}
+\def\HoLogoBkm@pdfLaTeX#1{%
+  #1{p}{P}df\hologo{LaTeX}%
+}
+\let\HoLogoHtml@pdfLaTeX\HoLogo@pdfLaTeX
+\def\HoLogo@VTeX#1{%
+  \HOLOGO@mbox{%
+    V\hologo{TeX}%
+  }%
+}
+\let\HoLogoHtml@VTeX\HoLogo@VTeX
+\def\HoLogo@AmS#1{%
+  \HoLogoFont@font{AmS}{sy}{%
+    A%
+    \kern-.1667em%
+    \lower.5ex\hbox{M}%
+    \kern-.125em%
+    S%
+  }%
+}
+\def\HoLogoBkm@AmS#1{AmS}
+\def\HoLogoHtml@AmS#1{%
+  \HoLogoCss@AmS
+    \HOLOGO@Span{AmS}{%
+      A%
+      \HOLOGO@Span{M}{M}%
+      S%
+    }%
+}
+\def\HoLogoCss@AmS{%
+  \Css{%
+    span.HoLogo-AmS span.HoLogo-M{%
+      position:relative;%
+      top:.5ex;%
+      margin-left:-.1667em;%
+      margin-right:-.125em;%
+      text-decoration:none;%
+    }%
+  }%
+  \global\let\HoLogoCss@AmS\relax
+}
+\def\HoLogo@AmSTeX#1{%
+  \hologo{AmS}%
+  \HOLOGO@hyphen
+  \hologo{TeX}%
+}
+\def\HoLogoBkm@AmSTeX#1{AmS-TeX}%
+\let\HoLogoHtml@AmSTeX\HoLogo@AmSTeX
+\def\HoLogo@AmSLaTeX#1{%
+  \hologo{AmS}%
+  \HOLOGO@hyphen
+  \hologo{LaTeX}%
+}
+\def\HoLogoBkm@AmSLaTeX#1{AmS-LaTeX}%
+\let\HoLogoHtml@AmSLaTeX\HoLogo@AmSLaTeX
+\def\HoLogo@BibTeX@sc#1{%
+  B%
+  \kern-.05em%
+  \HoLogoFont@font{BibTeX}{sc}{%
+    i%
+    \kern-.025em%
+    b%
+  }%
+  \HOLOGO@discretionary
+  \kern-.08em%
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@BibTeX@sc#1{%
+  \HoLogoCss@BibTeX@sc
+  \HOLOGO@Span{BibTeX-sc}{%
+    B%
+    \HOLOGO@Span{i}{i}%
+    \HOLOGO@Span{b}{b}%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoCss@BibTeX@sc{%
+  \Css{%
+    span.HoLogo-BibTeX-sc span.HoLogo-i{%
+      margin-left:-.05em;%
+      margin-right:-.025em;%
+      font-variant:small-caps;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-BibTeX-sc span.HoLogo-b{%
+      margin-right:-.08em;%
+      font-variant:small-caps;%
+    }%
+  }%
+  \global\let\HoLogoCss@BibTeX@sc\relax
+}
+\def\HoLogo@BibTeX@sf#1{%
+  B%
+  \kern-.05em%
+  \HoLogoFont@font{BibTeX}{bibsf}{%
+    I%
+    \kern-.025em%
+    B%
+  }%
+  \HOLOGO@discretionary
+  \kern-.08em%
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@BibTeX@sf#1{%
+  \HoLogoCss@BibTeX@sf
+  \HOLOGO@Span{BibTeX-sf}{%
+    B%
+    \HoLogoFont@font{BibTeX}{bibsf}{%
+      \HOLOGO@Span{i}{I}%
+      B%
+    }%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoCss@BibTeX@sf{%
+  \Css{%
+    span.HoLogo-BibTeX-sf span.HoLogo-i{%
+      margin-left:-.05em;%
+      margin-right:-.025em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-BibTeX-sf span.HoLogo-TeX{%
+      margin-left:-.08em;%
+    }%
+  }%
+  \global\let\HoLogoCss@BibTeX@sf\relax
+}
+\def\HoLogo@BibTeX{\HoLogo@BibTeX@sf}
+\def\HoLogoHtml@BibTeX{\HoLogoHtml@BibTeX@sf}
+\expandafter\def\csname HoLogo@BibTeX8\endcsname#1{%
+  \hologo{BibTeX}%
+  8%
+}
+\expandafter\def\csname HoLogoBkm@BibTeX8\endcsname#1{%
+  \hologo{BibTeX}%
+  8%
+}
+\expandafter
+\let\csname HoLogoHtml@BibTeX8\expandafter\endcsname
+\csname HoLogo@BibTeX8\endcsname
+\def\HoLogo@ConTeXt@simple#1{%
+  \HOLOGO@mbox{Con}%
+  \HOLOGO@discretionary
+  \HOLOGO@mbox{\hologo{TeX}t}%
+}
+\let\HoLogoHtml@ConTeXt@simple\HoLogo@ConTeXt@simple
+\def\HoLogo@ConTeXt@narrow#1{%
+  \HOLOGO@mbox{C\kern-.0333emon}%
+  \HOLOGO@discretionary
+  \kern-.0667em%
+  \HOLOGO@mbox{\hologo{TeX}\kern-.0333emt}%
+}
+\def\HoLogoHtml@ConTeXt@narrow#1{%
+  \HoLogoCss@ConTeXt@narrow
+  \HOLOGO@Span{ConTeXt-narrow}{%
+    \HOLOGO@Span{C}{C}%
+    on%
+    \hologo{TeX}%
+    t%
+  }%
+}
+\def\HoLogoCss@ConTeXt@narrow{%
+  \Css{%
+    span.HoLogo-ConTeXt-narrow span.HoLogo-C{%
+      margin-left:-.0333em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-ConTeXt-narrow span.HoLogo-TeX{%
+      margin-left:-.0667em;%
+      margin-right:-.0333em;%
+    }%
+  }%
+  \global\let\HoLogoCss@ConTeXt@narrow\relax
+}
+\def\HoLogo@ConTeXt{\HoLogo@ConTeXt@narrow}
+\def\HoLogoHtml@ConTeXt{\HoLogoHtml@ConTeXt@narrow}
+\def\HoLogo@emTeX#1{%
+  \HOLOGO@mbox{#1{e}{E}m}%
+  \HOLOGO@discretionary
+  \hologo{TeX}%
+}
+\def\HoLogoCs@emTeX#1{#1{e}{E}mTeX}%
+\def\HoLogoBkm@emTeX#1{%
+  #1{e}{E}m\hologo{TeX}%
+}
+\let\HoLogoHtml@emTeX\HoLogo@emTeX
+\def\HoLogo@ExTeX#1{%
+  \HoLogoFont@font{ExTeX}{rm}{%
+    \ltx@mbox{%
+      \HOLOGO@MathSetup
+      $%
+        \textstyle
+        \varepsilon_{%
+          \kern-0.15em%
+          \HoLogoFont@font{ExTeX}{sy}{X}%
+        }%
+      $%
+    }%
+    \HOLOGO@discretionary
+    \kern-.15em%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoHtml@ExTeX#1{%
+  \HoLogoCss@ExTeX
+  \HoLogoFont@font{ExTeX}{rm}{%
+    \HOLOGO@Span{ExTeX}{%
+      \ltx@mbox{%
+        \HOLOGO@MathSetup
+        $\textstyle\varepsilon$%
+        \HOLOGO@Span{X}{$\textstyle\chi$}%
+        \hologo{TeX}%
+      }%
+    }%
+  }%
+}
+\def\HoLogoBkm@ExTeX#1{%
+  \HOLOGO@PdfdocUnicode{#1{e}{E}x}{\textepsilon\textchi}%
+  \hologo{TeX}%
+}
+\def\HoLogoCss@ExTeX{%
+  \Css{%
+    span.HoLogo-ExTeX{%
+      font-family:serif;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-ExTeX span.HoLogo-TeX{%
+      margin-left:-.15em;%
+    }%
+  }%
+  \global\let\HoLogoCss@ExTeX\relax
+}
+\def\HoLogo@MiKTeX#1{%
+  \HOLOGO@mbox{MiK}%
+  \HOLOGO@discretionary
+  \hologo{TeX}%
+}
+\let\HoLogoHtml@MiKTeX\HoLogo@MiKTeX
+\def\HoLogo@OzTeX#1{%
+  O%
+  \kern-.03em %
+  z%
+  \kern-.15em %
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@OzTeX#1{%
+  \HoLogoCss@OzTeX
+  \HOLOGO@Span{OzTeX}{%
+    O%
+    \HOLOGO@Span{z}{z}%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoCss@OzTeX{%
+  \Css{%
+    span.HoLogo-OzTeX span.HoLogo-z{%
+      margin-left:-.03em;%
+      margin-right:-.15em;%
+    }%
+  }%
+  \global\let\HoLogoCss@OzTeX\relax
+}
+\def\HoLogo@OzMF#1{%
+  \HOLOGO@mbox{OzMF}%
+}
+\def\HoLogo@OzMP#1{%
+  \HOLOGO@mbox{OzMP}%
+}
+\def\HoLogo@OzTtH#1{%
+  \HOLOGO@mbox{OzTtH}%
+}
+\def\HoLogo@PCTeX#1{%
+  \HOLOGO@mbox{PC}%
+  \hologo{TeX}%
+}
+\let\HoLogoHtml@PCTeX\HoLogo@PCTeX
+\def\HoLogo@PiC#1{%
+  P%
+  \kern-.12em%
+  \lower.5ex\hbox{I}%
+  \kern-.075em%
+  C%
+  \HOLOGO@SpaceFactor
+}
+\def\HoLogoHtml@PiC#1{%
+  \HoLogoCss@PiC
+  \HOLOGO@Span{PiC}{%
+    P%
+    \HOLOGO@Span{i}{I}%
+    C%
+  }%
+}
+\def\HoLogoCss@PiC{%
+  \Css{%
+    span.HoLogo-PiC span.HoLogo-i{%
+      position:relative;%
+      top:.5ex;%
+      margin-left:-.12em;%
+      margin-right:-.075em;%
+      text-decoration:none;%
+    }%
+  }%
+  \global\let\HoLogoCss@PiC\relax
+}
+\def\HoLogo@PiCTeX#1{%
+  \hologo{PiC}%
+  \HOLOGO@discretionary
+  \kern-.11em%
+  \hologo{TeX}%
+}
+\def\HoLogoHtml@PiCTeX#1{%
+  \HoLogoCss@PiCTeX
+  \HOLOGO@Span{PiCTeX}{%
+    \hologo{PiC}%
+    \hologo{TeX}%
+  }%
+}
+\def\HoLogoCss@PiCTeX{%
+  \Css{%
+    span.HoLogo-PiCTeX span.HoLogo-PiC{%
+      margin-right:-.11em;%
+    }%
+  }%
+  \global\let\HoLogoCss@PiCTeX\relax
+}
+\def\HoLogo@teTeX#1{%
+  \HOLOGO@mbox{#1{t}{T}e}%
+  \HOLOGO@discretionary
+  \hologo{TeX}%
+}
+\def\HoLogoCs@teTeX#1{#1{t}{T}dfTeX}
+\def\HoLogoBkm@teTeX#1{%
+  #1{t}{T}e\hologo{TeX}%
+}
+\let\HoLogoHtml@teTeX\HoLogo@teTeX
+\expandafter\def\csname HoLogo@TeX4ht\endcsname#1{%
+  \HOLOGO@mbox{\hologo{TeX}4ht}%
+}
+\expandafter
+\let\csname HoLogoHtml@TeX4ht\expandafter\endcsname
+\csname HoLogo@TeX4ht\endcsname
+\def\HoLogo@SageTeX#1{%
+  \HOLOGO@mbox{Sage}%
+  \HOLOGO@discretionary
+  \HOLOGO@NegativeKerning{eT,oT,To}%
+  \hologo{TeX}%
+}
+\let\HoLogoHtml@SageTeX\HoLogo@SageTeX
+\def\HoLogo@METAFONT#1{%
+  \HoLogoFont@font{METAFONT}{logo}{%
+    \HOLOGO@mbox{META}%
+    \HOLOGO@discretionary
+    \HOLOGO@mbox{FONT}%
+  }%
+}
+\def\HoLogo@METAPOST#1{%
+  \HoLogoFont@font{METAPOST}{logo}{%
+    \HOLOGO@mbox{META}%
+    \HOLOGO@discretionary
+    \HOLOGO@mbox{POST}%
+  }%
+}
+\def\HoLogo@MetaFun#1{%
+  \HOLOGO@mbox{Meta}%
+  \HOLOGO@discretionary
+  \HOLOGO@mbox{Fun}%
+}
+\def\HoLogo@MetaPost#1{%
+  \HOLOGO@mbox{Meta}%
+  \HOLOGO@discretionary
+  \HOLOGO@mbox{Post}%
+}
+\def\HoLogo@biber#1{%
+  \HOLOGO@mbox{#1{b}{B}i}%
+  \HOLOGO@discretionary
+  \HOLOGO@mbox{ber}%
+}
+\def\HoLogoCs@biber#1{#1{b}{B}iber}
+\def\HoLogoBkm@biber#1{%
+  #1{b}{B}iber%
+}
+\let\HoLogoHtml@biber\HoLogo@biber
+\def\HoLogo@KOMAScript#1{%
+  \HoLogoFont@font{KOMAScript}{sf}{%
+    \HOLOGO@mbox{%
+      K\kern.05em%
+      O\kern.05em%
+      M\kern.05em%
+      A%
+    }%
+    \kern.1em%
+    \HOLOGO@hyphen
+    \kern.1em%
+    \HOLOGO@mbox{Script}%
+  }%
+}
+\def\HoLogoBkm@KOMAScript#1{%
+  KOMA-Script%
+}
+\def\HoLogoHtml@KOMAScript#1{%
+  \HoLogoCss@KOMAScript
+  \HoLogoFont@font{KOMAScript}{sf}{%
+    \HOLOGO@Span{KOMAScript}{%
+      K%
+      \HOLOGO@Span{O}{O}%
+      M%
+      \HOLOGO@Span{A}{A}%
+      \HOLOGO@Span{hyphen}{-}%
+      Script%
+    }%
+  }%
+}
+\def\HoLogoCss@KOMAScript{%
+  \Css{%
+    span.HoLogo-KOMAScript{%
+      font-family:sans-serif;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-KOMAScript span.HoLogo-O{%
+      padding-left:.05em;%
+      padding-right:.05em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-KOMAScript span.HoLogo-A{%
+      padding-left:.05em;%
+    }%
+  }%
+  \Css{%
+    span.HoLogo-KOMAScript span.HoLogo-hyphen{%
+      padding-left:.1em;%
+      padding-right:.1em;%
+    }%
+  }%
+  \global\let\HoLogoCss@KOMAScript\relax
+}
+\def\HoLogo@LyX#1{%
+  L%
+  \kern-.1667em%
+  \lower.25em\hbox{Y}%
+  \kern-.125em%
+  X%
+  \HOLOGO@SpaceFactor
+}
+\def\HoLogoHtml@LyX#1{%
+  \HoLogoCss@LyX
+  \HOLOGO@Span{LyX}{%
+    L%
+    \HOLOGO@Span{y}{Y}%
+    X%
+  }%
+}
+\def\HoLogoCss@LyX{%
+  \Css{%
+    span.HoLogo-LyX span.HoLogo-y{%
+      position:relative;%
+      top:.25em;%
+      margin-left:-.1667em;%
+      margin-right:-.125em;%
+      text-decoration:none;%
+    }%
+  }%
+  \global\let\HoLogoCss@LyX\relax
+}
+\def\HoLogo@NTS#1{%
+  \HoLogoFont@font{NTS}{sy}{%
+    N\/%
+    \kern-.35em%
+    \lower.5ex\hbox{T\/}%
+    \kern-.2em%
+    S\/%
+  }%
+  \HOLOGO@SpaceFactor
+}
+\def\HoLogo@TTH#1{%
+  \ltx@mbox{%
+    T\HOLOGO@SubScript{T}H%
+  }%
+  \HOLOGO@SpaceFactor
+}
+\def\HoLogoHtml@TTH#1{%
+  T\HCode{<sub>}T\HCode{</sub>}H%
+}
+\def\HoLogo@HanTheThanh#1{%
+  \ltx@mbox{H\`an}%
+  \HOLOGO@space
+  \ltx@mbox{%
+    Th%
+    \HOLOGO@IfCharExists{"1EBF}{%
+      \char"1EBF\relax
+    }{%
+      \^e\hbox to 0pt{\hss\raise .5ex\hbox{\'{}}}%
+    }%
+  }%
+  \HOLOGO@space
+  \ltx@mbox{Th\`anh}%
+}
+\def\HoLogoBkm@HanTheThanh#1{%
+  H\`an %
+  Th\HOLOGO@PdfdocUnicode{\^e}{\9036\277} %
+  Th\`anh%
+}
+\def\HoLogoHtml@HanTheThanh#1{%
+  H\`an %
+  Th\HCode{&\ltx@hashchar x1ebf;} %
+  Th\`anh%
+}
+\HOLOGO@IfExists\InputIfFileExists{%
+  \InputIfFileExists{hologo.cfg}{}{}%
+}{%
+  \ltx@IfUndefined{pdf@filesize}{%
+    \def\HOLOGO@InputIfExists{%
+      \openin\HOLOGO@temp=hologo.cfg\relax
+      \ifeof\HOLOGO@temp
+        \closein\HOLOGO@temp
+      \else
+        \closein\HOLOGO@temp
+        \begingroup
+          \def\x{LaTeX2e}%
+        \expandafter\endgroup
+        \ifx\fmtname\x
+          \input{hologo.cfg}%
+        \else
+          \input hologo.cfg\relax
+        \fi
+      \fi
+    }%
+    \ltx@IfUndefined{newread}{%
+      \chardef\HOLOGO@temp=15 %
+      \def\HOLOGO@CheckRead{%
+        \ifeof\HOLOGO@temp
+          \HOLOGO@InputIfExists
+        \else
+          \ifcase\HOLOGO@temp
+            \@PackageWarningNoLine{hologo}{%
+              Configuration file ignored, because\MessageBreak
+              a free read register could not be found%
+            }%
+          \else
+            \begingroup
+              \count\ltx@cclv=\HOLOGO@temp
+              \advance\ltx@cclv by \ltx@minusone
+              \edef\x{\endgroup
+                \chardef\noexpand\HOLOGO@temp=\the\count\ltx@cclv
+                \relax
+              }%
+            \x
+          \fi
+        \fi
+      }%
+    }{%
+      \csname newread\endcsname\HOLOGO@temp
+      \HOLOGO@InputIfExists
+    }%
+  }{%
+    \edef\HOLOGO@temp{\pdf@filesize{hologo.cfg}}%
+    \ifx\HOLOGO@temp\ltx@empty
+    \else
+      \ifnum\HOLOGO@temp>0 %
+        \begingroup
+          \def\x{LaTeX2e}%
+        \expandafter\endgroup
+        \ifx\fmtname\x
+          \input{hologo.cfg}%
+        \else
+          \input hologo.cfg\relax
+        \fi
+      \else
+        \@PackageInfoNoLine{hologo}{%
+          Empty configuration file `hologo.cfg' ignored%
+        }%
+      \fi
+    \fi
+  }%
+}
+\def\HOLOGO@temp#1#2{%
+  \kv@define@key{HoLogoDriver}{#1}[]{%
+    \begingroup
+      \def\HOLOGO@temp{##1}%
+      \ltx@onelevel@sanitize\HOLOGO@temp
+      \ifx\HOLOGO@temp\ltx@empty
+      \else
+        \@PackageError{hologo}{%
+          Value (\HOLOGO@temp) not permitted for option `#1'%
+        }%
+        \@ehc
+      \fi
+    \endgroup
+    \def\hologoDriver{#2}%
+  }%
+}%
+\def\HOLOGO@@temp#1#2{%
+  \ifx\kv@value\relax
+    \HOLOGO@temp{#1}{#1}%
+  \else
+    \HOLOGO@temp{#1}{#2}%
+  \fi
+}%
+\kv@parse@normalized{%
+  pdftex,%
+  luatex=pdftex,%
+  dvipdfm,%
+  dvipdfmx=dvipdfm,%
+  dvips,%
+  dvipsone=dvips,%
+  xdvi=dvips,%
+  xetex,%
+  vtex,%
+}\HOLOGO@@temp
+\kv@define@key{HoLogoDriver}{driverfallback}{%
+  \def\HOLOGO@DriverFallback{#1}%
+}
+\def\HOLOGO@DriverFallback{dvips}
+\def\hologoDriverSetup{%
+  \let\hologoDriver\ltx@undefined
+  \HOLOGO@DriverSetup
+}
+\def\HOLOGO@DriverSetup#1{%
+  \kvsetkeys{HoLogoDriver}{#1}%
+  \HOLOGO@CheckDriver
+  \ltx@ifundefined{hologoDriver}{%
+    \begingroup
+    \edef\x{\endgroup
+      \noexpand\kvsetkeys{HoLogoDriver}{\HOLOGO@DriverFallback}%
+    }\x
+  }{}%
+  \@PackageInfoNoLine{hologo}{Using driver `\hologoDriver'}%
+}
+\def\HOLOGO@CheckDriver{%
+  \ifpdf
+    \def\hologoDriver{pdftex}%
+    \let\HOLOGO@pdfliteral\pdfliteral
+    \ifluatex
+      \ltx@IfUndefined{HOLOGO@pdfliteral}{%
+        \ifnum\luatexversion<36 %
+        \else
+          \begingroup
+            \let\HOLOGO@temp\endgroup
+            \ifcase0%
+                \directlua{%
+                  if tex.enableprimitives then %
+                    tex.enableprimitives('HOLOGO@', {'pdfliteral'})%
+                  else %
+                    tex.print('1')%
+                  end%
+                }%
+                \ifx\HOLOGO@pdfliteral\@undefined 1\fi%
+                \relax%
+              \endgroup
+              \let\HOLOGO@temp\relax
+              \global\let\HOLOGO@pdfliteral\HOLOGO@pdfliteral
+            \fi%
+          \HOLOGO@temp
+        \fi
+      }{}%
+    \fi
+    \ltx@IfUndefined{HOLOGO@pdfliteral}{%
+      \@PackageWarningNoLine{hologo}{%
+        Cannot find \string\pdfliteral
+      }%
+    }{}%
+  \else
+    \ifxetex
+      \def\hologoDriver{xetex}%
+    \else
+      \ifvtex
+        \def\hologoDriver{vtex}%
+      \fi
+    \fi
+  \fi
+}
+\def\HOLOGO@WarningUnsupportedDriver#1{%
+  \@PackageWarningNoLine{hologo}{%
+    Logo `#1' needs driver specific macros,\MessageBreak
+    but driver `\hologoDriver' is not supported.\MessageBreak
+    Use a different driver or\MessageBreak
+    load package `graphics' or `pgf'%
+  }%
+}
+\ltx@IfUndefined{reflectbox}{}{%
+  \ltx@IfUndefined{rotatebox}{}{%
+    \HOLOGO@AtEnd
+  }%
+}
+\ltx@IfUndefined{pgftext}{}{%
+  \HOLOGO@AtEnd
+}
+\ltx@IfUndefined{psscalebox}{}{%
+  \HOLOGO@AtEnd
+}
+\def\HOLOGO@temp{LaTeX2e}
+\ifx\fmtname\HOLOGO@temp
+  \RequirePackage{kvoptions}[2011/06/30]%
+  \ProcessKeyvalOptions{HoLogoDriver}%
+\fi
+\HOLOGO@DriverSetup{}
+\def\HOLOGO@ReflectBox#1{%
+  \begingroup
+    \setbox\ltx@zero\hbox{\begingroup#1\endgroup}%
+    \setbox\ltx@two\hbox{%
+      \kern\wd\ltx@zero
+      \csname HOLOGO@ScaleBox@\hologoDriver\endcsname{-1}{1}{%
+        \hbox to 0pt{\copy\ltx@zero\hss}%
+      }%
+    }%
+    \wd\ltx@two=\wd\ltx@zero
+    \box\ltx@two
+  \endgroup
+}
+\def\HOLOGO@PointReflectBox#1{%
+  \begingroup
+    \setbox\ltx@zero\hbox{\begingroup#1\endgroup}%
+    \setbox\ltx@two\hbox{%
+      \kern\wd\ltx@zero
+      \raise\ht\ltx@zero\hbox{%
+        \csname HOLOGO@ScaleBox@\hologoDriver\endcsname{-1}{-1}{%
+          \hbox to 0pt{\copy\ltx@zero\hss}%
+        }%
+      }%
+    }%
+    \wd\ltx@two=\wd\ltx@zero
+    \box\ltx@two
+  \endgroup
+}
+\def\HOLOGO@temp#1#2{#2}
+\HOLOGO@temp{pdftex}{%
+  \def\HOLOGO@ScaleBox@pdftex#1#2#3{%
+    \HOLOGO@pdfliteral{%
+      q #1 0 0 #2 0 0 cm%
+    }%
+    #3%
+    \HOLOGO@pdfliteral{%
+      Q%
+    }%
+  }%
+}
+\HOLOGO@temp{dvips}{%
+  \def\HOLOGO@ScaleBox@dvips#1#2#3{%
+    \special{ps:%
+      gsave %
+      currentpoint %
+      currentpoint translate %
+      #1 #2 scale %
+      neg exch neg exch translate%
+    }%
+    #3%
+    \special{ps:%
+      currentpoint %
+      grestore %
+      moveto%
+    }%
+  }%
+}
+\HOLOGO@temp{dvipdfm}{%
+  \let\HOLOGO@ScaleBox@dvipdfm\HOLOGO@ScaleBox@dvips
+}
+\HOLOGO@temp{xetex}{%
+  \def\HOLOGO@ScaleBox@xetex#1#2#3{%
+    \special{x:gsave}%
+    \special{x:scale #1 #2}%
+    #3%
+    \special{x:grestore}%
+  }%
+}
+\HOLOGO@temp{vtex}{%
+  \def\HOLOGO@ScaleBox@vtex#1#2#3{%
+    \special{r(#1,0,0,#2,0,0}%
+    #3%
+    \special{r)}%
+  }%
+}
+\HOLOGO@AtEnd%
+\endinput
+%%
+%% End of file `hologo.sty'.

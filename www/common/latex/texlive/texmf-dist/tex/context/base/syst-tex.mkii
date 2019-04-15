@@ -1,0 +1,314 @@
+%D \module
+%D   [       file=syst-tex,
+%D        version=1999.03.17,  % an oldie: 1995.10.10
+%D          title=\CONTEXT\ System Macros,
+%D       subtitle=Efficient \PLAIN\ \TEX\ loading,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA ADE \& \CONTEXT\ Development Team}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for
+%C details.
+
+%D This file is used by mptopdf.
+
+%D We've build \CONTEXT\ on top of \PLAIN\ \TEX. Because we
+%D want to make the format file as independant as possible of
+%D machine dependant font encodings, we have to bypass the
+%D loading of fonts.
+%D
+%D Let's start at the beginning. Because \PLAIN\ is not yet
+%D loaded we have to define some \CATCODES\ ourselves.
+
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\catcode`\#=6 % hash mark is macro parameter character
+\catcode`\^=7 % circumflex is for superscripts
+
+%D To prevent all kind of end||of||file problems, for the
+%D moment we simply ignore the Control~Z token.
+
+\catcode`\^^Z=9
+
+%D We are going to report to the user what we are skipping.
+
+\def\skipmessage#1{\immediate\write16{skipping #1 in plain}}
+
+%D We want to be able to use the \type{\newsomething}
+%D declarations not only on the \type{\outer} level. This can
+%D be done by redefining \type{\outer} so we have to save its
+%D original meaning.
+
+\let\normalouter = \outer
+\let\outer       = \relax
+
+%D We also want to postpone the loading of hyphenation patters,
+%D so we redefine and therefore save \type{\input}.
+
+\let\normalinput = \input
+\def\input       #1 {\skipmessage{\string\input}}
+
+%D Finaly are going to we redefine some font specification
+%D commands and that's why we save them too. The redefinitions
+%D are straightforward because the macros have to do nothing
+%D but skipping.
+
+\let\normalskewchar         = \skewchar
+\def\skewchar               #1=#2 {\skipmessage{\string\skewchar}}
+
+\let\normaltextfont         = \textfont
+\let\normalscriptfont       = \scriptfont
+\let\normalscriptscriptfont = \scriptscriptfont
+
+\def\textfont               #1=#2{\skipmessage{\string\textfont}}
+\def\scriptfont             #1=#2{\skipmessage{\string\scriptfont}}
+\def\scriptscriptfont       #1=#2{\skipmessage{\string\scriptscriptfont}}
+
+%D The redefinition of \type{\font} is a bit more complicated,
+%D because in version 3.14159 a scaled specification was
+%D introduced.
+
+\let\normalfont = \font
+
+\def\skipscaled scaled #1 {}
+
+\long\def\font#1=#2 #3%
+  {\ifx#3s%
+     \skipmessage{scaled \string\font}%
+     \let\next\skipscaled
+   \else
+     \skipmessage{\string\font}%
+     \let\next\relax
+   \fi
+   \next#3}
+
+% or:
+%
+% \long\def\font#1=#2 #3%
+%   {\ifx#3s%
+%      \skipmessage{scaled \string\font}%
+%      \expandafter\skipscaled
+%    \else
+%      \skipmessage{\string\font}%
+%    \fi
+%    #3}
+
+%D Relaxing some font switching macros is needed because we
+%D don't want any error messages during loading. These
+%D unharmfull messages could be ingored.
+%D
+%D The next substitution is needed for determining
+%D \type{\p@renwd} in the macro \type{\bordermatrix}.
+
+\def\tenex#1%
+  {\skipmessage{used \string\tenex}\hskip8.75002pt}
+
+%D We need to define \type{\tenrm} for switching to
+%D \type{\rm}.
+
+\def\tenrm%
+  {\skipmessage{\string\tenrm}}
+
+%D In \CONTEXT\ all \PLAIN\ \TEX\ fonts are available, just
+%D like \type{\p@renwd}. We only postpone loading them until
+%D they are actually needed.
+
+%D By bypassing fonts, some definitions become less valid so
+%D we have to redefine them afterwards.
+%D
+%D \starttyping
+%D \let\normalbordermatrix=\bordermatrix
+%D
+%D \def\bordermatrix%
+%D   {\bgroup
+%D    \setbox0=\hbox{\getvalue{\textface\c!mm\c!ex}B}%
+%D    \global\p@renwd=\wd0\relax
+%D    \egroup
+%D    \normalbordermatrix}
+%D \stoptyping
+
+%D Now we are ready for loading \PLAIN\ \TEX. Of couse we use
+%D \type{\normalinput} and not \type{\input}.
+
+\normalinput plain.tex \let\normalfmtversion\fmtversion
+
+%D We have to take care of unwanted \PDFTEX\
+%D initializations. We just want to default to \DVI\ output.
+
+\ifx\pdftexversion\undefined
+  \chardef\pdfoutput=0
+\else
+  \pdfoutput=0
+\fi
+
+%D When applicable, we also load the \ETEX\ source and
+%D definition files.
+
+\bgroup \obeylines
+
+\ifx\eTeXversion\undefined
+
+  \long\gdef\beginETEX#1\endETEX%
+    {}
+
+  \gdef\beginTEX%
+    {\bgroup\obeylines\dobeginTEX}
+
+  \gdef\dobeginTEX#1
+    {\egroup}
+
+  \global\let\endTEX\relax
+
+\else
+
+  \long\gdef\beginTEX#1\endTEX%
+    {}
+
+  \gdef\beginETEX%
+    {\bgroup\obeylines\dobeginETEX}
+
+%   \gdef\dobeginETEX#1
+%     {\egroup\immediate\write16%
+%        {system (E-TEX) : [line \the\inputlineno] \detokenize{#1}}}
+
+  \gdef\dobeginETEX#1
+    {\egroup}
+
+  \global\let\endETEX\relax
+
+\fi
+
+\egroup
+
+% \ifx\eTeXversion\undefined
+%   \long\def\onlyTEX #1{#1}
+%   \long\def\onlyETEX#1{}
+% \else
+%   \long\def\only TEX#1{}
+%   \long\def\onlyETEX#1{#1}
+% \fi
+
+%D Well, this redefintion of \type {\input} fails on \ETEX,
+%D because of some \type {\cs\fi} constructs. So now we use:
+
+% \beginETEX etex.src etexdefs.lib
+%
+%   \def\input#1%
+%     {\bgroup
+%      \skipmessage{\string\input}%
+%      \expandafter\ifx\expandafter#1\csname l@ngdefnfile\endcsname
+%        \let\input\egroup
+%      \else
+%        \def\input##1 {\egroup}%
+%      \fi
+%      \input}
+%
+%   \normalinput     etex.src \relax
+%   \normalinput etexdefs.lib \relax
+%
+%   \let\fmtversion\normalfmtversion
+%
+%   \savinghyphcodes=1
+%
+% \endETEX
+%
+% \ifx\normalprotected \undefined \let\normalprotected \protected  \fi
+% \ifx\normalunexpanded\undefined \let\normalunexpanded\unexpanded \fi
+% \ifx\normalexpanded  \undefined \let\normalexpanded  \expanded   \fi
+
+\beginETEX \savinghyphcodes
+
+  \savinghyphcodes=1
+
+\endETEX
+
+%D We restore some redefined primitives to their old meaning.
+
+\let\font             = \normalfont
+\let\skewchar         = \normalskewchar
+\let\textfont         = \normaltextfont
+\let\scriptfont       = \normalscriptfont
+\let\scriptscriptfont = \normalscriptscriptfont
+\let\input            = \normalinput
+\let\outer            = \normalouter
+
+%D We reset some of the used auxiliary macro's to
+%D \type{\undefined}. One never knows what testing on them is
+%D done elsewhere.
+
+\let\skipmessage            = \undefined
+\let\skipscaled             = \undefined
+\let\normalfont             = \undefined
+\let\normalskewchar         = \undefined
+\let\normaltextfont         = \undefined
+\let\normalscriptfont       = \undefined
+\let\normalscriptscriptfont = \undefined
+
+% \let\normalinput = \undefined
+% \let\normalouter = \undefined
+
+%D We want a bit more statistics and some less logging info
+%D in the \type{log} file.
+
+\def\wlog#1{}
+
+% \let\normalwlog\wlog
+%
+% \def\wlog#1{\normalwlog{system (\string\wlog) : #1}}
+
+%D To prevent clashes, we slightly redefine the phantom
+%D macros: we let them hide their behaviour by grouping.
+
+\catcode`@=11
+
+%D Somehow this one does not work ok in math mode:
+
+\def\ph@nt%
+  {\bgroup
+   \ifmmode
+     \expandafter\mathpalette\expandafter\mathph@nt
+   \else
+     \expandafter\makeph@nt
+   \fi}
+
+\def\finph@nt%
+  {\setbox\tw@\null
+   \ifv@ \ht\tw@\ht\z@ \dp\tw@\dp\z@ \fi
+   \ifh@ \wd\tw@\wd\z@ \fi
+   \box\tw@
+   \egroup}
+
+%D But this one does work.
+
+\def\ph@nt%
+  {\ifmmode
+     \expandafter\mathpalette\expandafter\mathph@nt
+   \else
+     \bgroup\expandafter\makeph@nt
+   \fi}
+
+\def\finph@nt%
+  {\setbox\tw@\null
+   \ifv@ \ht\tw@\ht\z@ \dp\tw@\dp\z@ \fi
+   \ifh@ \wd\tw@\wd\z@ \fi
+   \box\tw@
+   \ifmmode\else\egroup\fi}
+
+\catcode`@=12
+
+%D Just for tracing purposes wet set:
+
+\tracingstats=1
+
+%D To circumvent dependencies, we can postpone certain
+%D initializations to dumping time, by appending them to the
+%D \type {\everydump} token register.
+
+\newtoks \everydump
+
+\let\normaldump \dump
+
+\def\dump{\the\everydump\normaldump}
+
+\endinput

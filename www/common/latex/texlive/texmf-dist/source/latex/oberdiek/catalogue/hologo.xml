@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE entry SYSTEM 'catalogue.dtd'>
+<entry datestamp='$Date$' modifier='$Author$' id='hologo'>
+  <name>hologo</name>
+  <caption>A collection of logos with bookmark support.</caption>
+  <authorref id='auth:oberdiek'/>
+  <copyright owner='Heiko Oberdiek' year='2010-2012'/>
+  <license type='lppl1.3'/>
+  <version number='1.10'/>
+  <description>
+    The package defines a single command <tt>\hologo</tt>, whose
+    argument is the usual case-confused ASCII version of the logo.
+    The command is bookmark-enabled, so that every logo becomes
+    available in bookmarks without further work.
+    <p/>
+    The package is part of the <xref refid='oberdiek'>oberdiek</xref>
+    bundle.
+  </description>
+  <documentation details='Package documentation'
+      href='ctan:/macros/latex/contrib/oberdiek/hologo.pdf'/>
+  <ctan file='true' path='/macros/latex/contrib/oberdiek/hologo.dtx'/>
+  <miktex location='oberdiek'/>
+  <texlive location='oberdiek'/>
+  <install path='/macros/latex/contrib/oberdiek/oberdiek.tds.zip'/>
+</entry>

@@ -1,0 +1,112 @@
+StartFontMetrics 2.0
+Comment Creation Date: Mon Jul 13 16:17:00 2009
+FontName CMINCH
+FullName CMINCH
+FamilyName Computer Modern
+Weight Bold
+Notice (Copyright (c) 1997, 2009 American Mathematical Society (<http://www.ams.org>), with Reserved Font Name CMINCH.)
+ItalicAngle 0
+IsFixedPitch false
+UnderlinePosition -100
+UnderlineThickness 50
+Version 003.002
+EncodingScheme FontSpecific
+FontBBox 12 -106 1014 716
+CapHeight 694
+StartCharMetrics 40
+C 32 ; WX 366 ; N space ; B 0 0 0 0 ;
+C 45 ; WX 366 ; N hyphen ; B 12 193 305 265 ;
+C 48 ; WX 550 ; N zero ; B 43 -22 506 716 ;
+C 49 ; WX 550 ; N one ; B 76 0 473 716 ;
+C 50 ; WX 550 ; N two ; B 46 0 494 716 ;
+C 51 ; WX 550 ; N three ; B 46 -22 503 716 ;
+C 52 ; WX 550 ; N four ; B 31 0 518 694 ;
+C 53 ; WX 550 ; N five ; B 37 -22 494 694 ;
+C 54 ; WX 550 ; N six ; B 46 -22 503 716 ;
+C 55 ; WX 550 ; N seven ; B 46 -11 503 695 ;
+C 56 ; WX 550 ; N eight ; B 46 -22 503 716 ;
+C 57 ; WX 550 ; N nine ; B 46 -22 503 716 ;
+C 65 ; WX 733 ; N A ; B 42 0 690 694 ;
+C 66 ; WX 733 ; N B ; B 91 0 671 694 ;
+C 67 ; WX 702 ; N C ; B 61 -22 647 716 ;
+C 68 ; WX 794 ; N D ; B 91 0 732 694 ;
+C 69 ; WX 641 ; N E ; B 91 0 595 691 ;
+C 70 ; WX 611 ; N F ; B 91 0 564 691 ;
+C 71 ; WX 733 ; N G ; B 61 -22 659 716 ;
+C 72 ; WX 794 ; N H ; B 91 0 702 694 ;
+C 73 ; WX 330 ; N I ; B 92 0 239 694 ;
+C 74 ; WX 519 ; N J ; B 46 -22 427 694 ;
+C 75 ; WX 763 ; N K ; B 91 0 701 694 ;
+C 76 ; WX 580 ; N L ; B 91 0 534 694 ;
+C 77 ; WX 977 ; N M ; B 91 0 886 694 ;
+C 78 ; WX 794 ; N N ; B 91 0 702 694 ;
+C 79 ; WX 794 ; N O ; B 61 -22 732 716 ;
+C 80 ; WX 702 ; N P ; B 91 0 641 694 ;
+C 81 ; WX 794 ; N Q ; B 61 -106 732 716 ;
+C 82 ; WX 702 ; N R ; B 91 0 653 694 ;
+C 83 ; WX 611 ; N S ; B 49 -22 549 716 ;
+C 84 ; WX 733 ; N T ; B 40 0 692 688 ;
+C 85 ; WX 763 ; N U ; B 91 -22 672 694 ;
+C 86 ; WX 733 ; N V ; B 27 0 705 694 ;
+C 87 ; WX 1038 ; N W ; B 24 0 1014 694 ;
+C 88 ; WX 733 ; N X ; B 37 0 694 694 ;
+C 89 ; WX 733 ; N Y ; B 24 0 708 694 ;
+C 90 ; WX 672 ; N Z ; B 61 0 616 694 ;
+C 128 ; WX 366 ; N space ; B 0 0 0 0 ;
+C 195 ; WX 366 ; N space ; B 0 0 0 0 ;
+EndCharMetrics
+StartKernData
+StartKernPairs 50
+KPX A W -122
+KPX A V -91
+KPX A Y -122
+KPX A T -91
+KPX A Q -30
+KPX A U -30
+KPX A G -30
+KPX A O -30
+KPX A C -30
+KPX D Y -30
+KPX D V -30
+KPX D A -30
+KPX D W -30
+KPX D X -30
+KPX F Q -30
+KPX F G -30
+KPX F C -30
+KPX F O -30
+KPX F A -91
+KPX I I 30
+KPX K Q -30
+KPX K G -30
+KPX K C -30
+KPX K O -30
+KPX L W -122
+KPX L V -91
+KPX L Y -122
+KPX L T -91
+KPX O Y -30
+KPX O V -30
+KPX O A -30
+KPX O W -30
+KPX O X -30
+KPX P A -91
+KPX T A -91
+KPX V Q -30
+KPX V G -30
+KPX V C -30
+KPX V O -30
+KPX V A -91
+KPX W Q -30
+KPX W G -30
+KPX W C -30
+KPX W O -30
+KPX W A -91
+KPX X Q -30
+KPX X G -30
+KPX X C -30
+KPX X O -30
+KPX Y A -91
+EndKernPairs
+EndKernData
+EndFontMetrics

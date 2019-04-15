@@ -1,0 +1,33 @@
+% mitpress.sty
+\typeout{LaTeX style for MIT Press format.}
+% Use it as \documentstyle[mitpress,...]{article}
+\textheight 21.6cm
+\textwidth 12.9cm
+% latex.ltx defines arraycolsep as a dimension, so use \setlength (gp 09/18/1998)
+%\renewcommand{\arraycolsep}{1pt}
+\setlength{\arraycolsep}{1pt}
+\def\@maketitle{\vbox to 2.5in{\hsize\textwidth \linewidth\hsize \vfil
+  \raggedright 
+  {\LARGE\bf \@title \par}     % Title set in \LARGE size. 
+  \vskip 2em                % Vertical space after title.
+  {\large \@author}
+%  {\large \begin{tabular}[t]{l}\@author \end{tabular}\par}    
+  \vfil}}
+\def\section{\@startsection {section}{1}{\z@}{-1.5ex}{1.5ex}{\large\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-1.2ex}{1.2ex}{\large\bf}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-1ex}{1ex}{
+	\normalsize\bf}}
+\def\paragraph{\@startsection
+     {paragraph}{4}{\z@}{1ex}{-1em}{\normalsize\bf}}
+\def\subparagraph{\@startsection
+     {subparagraph}{4}{\parindent}{1ex}{-1em}{\normalsize\bf}}
+\def\thebibliography#1{\section*{References\@mkboth
+  {REFERENCES}{REFERENCES}}\list
+  {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+    \advance\leftmargin\labelsep
+    \itemsep 0pt \parsep 0pt
+    \usecounter{enumi}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}
+\endinput
