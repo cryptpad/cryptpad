@@ -1,6 +1,7 @@
 define([
     'jquery',
     '/common/diffMarked.js',
+    '/common/media-tag.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
@@ -42,10 +43,12 @@ define([
     '/common/latex/latex.js',
     'css!/common/latex/css/katex.css',
     'css!/common/latex/css/article.css',
+    'css!/common/latex/css/base.css'
 
 ], function (
     $,
     DiffMd,
+    MediaTag,
     nThen,
     SFCommon,
     Framework,
@@ -65,6 +68,7 @@ define([
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
         'gfm',
+        'stex',
         'html',
         'htmlembedded',
         'htmlmixed',
@@ -123,37 +127,81 @@ define([
         var $previewButton = framework._.sfCommon.createButton('preview', true);
         var forceDrawPreview = function () {
             try {
-                console.log("IN DrawPreview " + CodeMirror.highlightMode);
                 if (editor.getValue() === '') {
                     $previewContainer.addClass('cp-app-code-preview-isempty');
                     return;
                 }
                 $previewContainer.removeClass('cp-app-code-preview-isempty');
                 if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) !== -1) {
-                    console.log("IN Markdown");
                     DiffMd.apply(DiffMd.render(editor.getValue()), $preview, framework._.sfCommon);
                 } else if (['stex'].indexOf(CodeMirror.highlightMode) !== 1) {
-                    console.log("IN STEX");
+                    var latexError = "";
+                    console.log("IN STEX/LATEX");
                     console.log("Latex JS: " + latexjs);
-		    var latexHtmlGenerator = new latexjs.HtmlGenerator({ hyphenate: false })
-                    console.log("Latex Generator: " + latexHtmlGenerator);
-                    console.log("Latex value: " + editor.getValue());
+		    var latexHtmlGenerator = new latexjs.HtmlGenerator({ 
+                        hyphenate: false, 
+                        CustomMacros: (function() {
+                           var args      = CustomMacros.args = {},
+                           prototype = CustomMacros.prototype;
+
+                           function CustomMacros(generator) {
+                              this.g = generator;
+                           }
+
+                           args['includegraphics'] = ['V','g']
+                           prototype['includegraphics'] = function(o) {
+                            try {
+                              var sMediaTag = o.data;
+                              console.log("mediaTag: " + sMediaTag);
+                              if (sMediaTag.startsWith("<media")) { 
+                                var div = document.createElement("div");
+                                div.innerHTML = sMediaTag;
+                                var url = div.firstChild.getAttribute(div.firstChild.getAttributeNames()[0]);
+                                var key = div.firstChild.getAttribute(div.firstChild.getAttributeNames()[1]);
+                                sMediaTag = "mediatag:" + url + "," + key;
+                              }
+                              console.log("mediaTag: " + sMediaTag);
+                              if (sMediaTag.startsWith("mediatag:")) {
+                               console.log("In mediatag");
+                               var data = sMediaTag.split(",");
+                               var cryptpadUrl = data[0].substring(9);
+                               var cryptpadKey = data[1];
+                               console.log("In mediatag url " + cryptpadUrl + " key: " + cryptpadKey);
+                               var mediaTag = document.createElement("media-tag");
+                               mediaTag.setAttribute("src", cryptpadUrl);
+                               mediaTag.setAttribute("data-crypto-key", cryptpadKey);
+                               MediaTag(mediaTag);
+                               return [mediaTag];
+                              } else {
+                               var img = document.createElement("img");
+                               img.setAttribute("src", o.data);
+                               img.setAttribute("width", "800");
+                               img.setAttribute("height", "600");
+                               return [img];
+                              }
+                            } catch (e) {
+                              return ["Failed to evaluate mediatag " + e];
+                            }
+                           };
+                           return CustomMacros;
+                        }())
+                    });
                     var latexGenerator;
                     try {
                      latexGenerator = latexjs.parse(editor.getValue(), { generator: latexHtmlGenerator });
                      console.log("Latex Generator: " + latexGenerator);
                     } catch(e) {
                      console.log("Latex error: " + e);
+                     latexError = "Latex error: " + e;
                     }
                     var output;
                     try {
                      var outputDoc = latexGenerator.htmlDocument("http://localhost:3000/common/latex/");
-                     console.log("Output doc: " + outputDoc);
                      output = outputDoc.documentElement.outerHTML;
-                     console.log("Output: " + output);
+                     // console.log("Output: " + output);
                     } catch(e) {
-                     console.log("Latex error: " + e);
-                     output = "Latex error: " + e;
+                     console.log("Error: " + e);
+                     output = "Error: " + e + "\n" + latexError;
                     }
                     DiffMd.apply(output, $preview, framework._.sfCommon);
                 };

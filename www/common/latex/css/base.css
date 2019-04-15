@@ -104,7 +104,7 @@
 /***************/
 
 /* .page is the element when used as a web component */
-body, .page {
+.body, .page {
     display: grid;
 
     grid-template-columns: [margin-left] var(--marginleftwidth) [body] var(--textwidth) [margin-right] var(--marginrightwidth);
@@ -181,7 +181,7 @@ body, .page {
 /* fonts */
 /*********/
 
-html, .page {
+.body, .page {
     font-family: "Computer Modern Serif", serif;
     font-size: var(--size);
 
