@@ -613,6 +613,10 @@ define([
                 });
             });
 
+            ctx.sframeChan.on('EV_WORKER_TIMEOUT', function () {
+                UI.errorLoadingScreen(Messages.timeoutError) // XXX
+            });
+
             ctx.sframeChan.on('EV_CHROME_68', function () {
                 UI.alert(Messages.chrome68);
             });

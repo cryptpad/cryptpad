@@ -874,6 +874,10 @@ define([
                 Cryptpad.cursor.execCommand(data, cb);
             });
 
+            Cryptpad.onTimeoutEvent.reg(function () {
+                sframeChan.event('EV_WORKER_TIMEOUT');
+            });
+
             if (cfg.messaging) {
                 Notifier.getPermission();
 

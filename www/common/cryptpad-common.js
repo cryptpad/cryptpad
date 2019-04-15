@@ -1058,14 +1058,12 @@ define([
     };
 
     var timeout = false;
+    common.onTimeoutEvent = Util.mkEvent();
     var onTimeout = function () {
-        return;
-        /*
         timeout = true;
         common.onNetworkDisconnect.fire();
-        // FIXME: no UI in outer...
-        window.alert("Timeout error, please reload this tab");
-        */
+        common.padRpc.onDisconnectEvent.fire();
+        common.onTimeoutEvent.fire();
     };
 
     var queries = {
