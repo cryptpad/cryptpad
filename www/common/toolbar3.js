@@ -475,11 +475,11 @@ MessengerUI, Messages) {
         };
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'chat-drawer'], false);
-            hide();
+            hide(true);
         });
         $button.click(function () {
             var visible = $content.is(':visible');
-            if (visible) { hide(); }
+            if (visible) { hide(true); }
             else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'chat-drawer'], visible);
