@@ -133,7 +133,7 @@ define(['json.sortify'], function (Sortify) {
             if (idx === -1) { console.log('Error: ' + ev + ' not in members'); return; }
             members.splice(idx, 1);
             if (!meta.user) { return; }
-            change(false);
+            change(true);
         });
         sframeChan.on('EV_RT_DISCONNECT', function () {
             members = [];

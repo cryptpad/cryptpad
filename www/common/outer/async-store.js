@@ -1262,9 +1262,15 @@ define([
         var messengerEventClients = [];
 
         var dropChannel = function (chanId) {
-            store.messenger.leavePad(chanId);
-            store.cursor.leavePad(chanId);
-            store.onlyoffice.leavePad(chanId);
+            try {
+                store.messenger.leavePad(chanId);
+            } catch (e) { console.error(e); }
+            try {
+                store.cursor.leavePad(chanId);
+            } catch (e) { console.error(e); }
+            try {
+                store.onlyoffice.leavePad(chanId);
+            } catch (e) { console.error(e); }
 
             if (!Store.channels[chanId]) { return; }
 
@@ -1283,8 +1289,12 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
-            store.cursor.removeClient(clientId);
-            store.onlyoffice.removeClient(clientId);
+            try {
+                store.cursor.removeClient(clientId);
+            } catch (e) { console.error(e); }
+            try {
+                store.onlyoffice.removeClient(clientId);
+            } catch (e) { console.error(e); }
 
             Object.keys(Store.channels).forEach(function (chanId) {
                 var chanIdx = Store.channels[chanId].clients.indexOf(clientId);

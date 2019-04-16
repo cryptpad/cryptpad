@@ -533,6 +533,7 @@ define([
                 }
             };
             cpNfInner.metadataMgr.onChange(checkReady);
+            cpNfInner.metadataMgr.onChange(onLocal);
             checkReady();
 
             var infiniteSpinnerModal = false;

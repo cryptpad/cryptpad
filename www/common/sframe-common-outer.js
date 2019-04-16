@@ -269,6 +269,9 @@ define([
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
             var updateMeta = function () {
+                // TODO availableHashes in privateData may need updates once we have
+                // a better privileges workflow
+
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj, isTemplate;
                 nThen(function (waitFor) {
