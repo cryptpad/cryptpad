@@ -18,6 +18,25 @@ define(['json.sortify'], function (Sortify) {
         var lazyChangeHandlers = [];
         var titleChangeHandlers = [];
 
+        // When someone leaves the document, their metadata is removed from our metadataObj
+        // but it is not removed instantly from the chainpad document metadata. This is
+        // the result of the lazy object: if we had to remove the metadata instantly, all
+        // the remaining members would try to push a patch to do it, and it could create
+        // conflicts. Their metadata is instead removed from the chainpad doc only when
+        // someone calls onLocal to make another change.
+        // The leaving user is not visible in the userlist UI because we filter it using
+        // the list of "members" (netflux ID currently online).
+        // Our Problem:
+        // With the addition of shared workers, a user can leave and join back with the same
+        // netflux ID (just reload the pad). If nobody has made any change in the mean time,
+        // their metadata will still be in the document, but they won't be in our metadataObj.
+        // This causes the presence of a "viewer" instead of an editor, because they don't
+        // have user data.
+        // To fix this problem, the metadata manager can request "syncs" from a chainpad app,
+        // and the app should trigger a "metadataMgr.updateMetadata(data)" in the handler.
+        // See "metadataMgr.onRequestSync" in sframe-app-framework for an example.
+        var syncHandlers = [];
+
         var rememberedTitle;
 
         var checkUpdate = function (lazy) {
@@ -41,26 +60,25 @@ define(['json.sortify'], function (Sortify) {
 
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
-            //var containsYou = false;
-            //console.log(metadataObj);
             Object.keys(metadataObj.users).forEach(function (x) {
                 if (members.indexOf(x) === -1) { return; }
                 mdo[x] = metadataObj.users[x];
-                /*if (metadataObj.users[x].uid === meta.user.uid) {
-                    //console.log('document already contains you');
-                    containsYou = true;
-                }*/
             });
-            //if (!containsYou) { mdo[meta.user.netfluxId] = meta.user; }
             if (!priv.readOnly) {
                 mdo[meta.user.netfluxId] = meta.user;
             }
             metadataObj.users = mdo;
+
+            // Always update the userlist in the lazy object, otherwise it may be outdated
+            // and metadataMgr.updateMetadata() won't do anything, and so we won't push events
+            // to the userlist UI ==> phantom viewers
             var lazyUserStr = Sortify(metadataLazyObj.users[meta.user.netfluxId]);
             dirty = false;
             if (lazy || lazyUserStr !== Sortify(meta.user)) {
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
                 lazyChangeHandlers.forEach(function (f) { f(); });
+            } else {
+                metadataLazyObj.users = JSON.parse(JSON.stringify(mdo));
             }
 
             if (metadataObj.title !== rememberedTitle) {
@@ -127,13 +145,14 @@ define(['json.sortify'], function (Sortify) {
             members.push(ev);
             if (!meta.user) { return; }
             change(false);
+            syncHandlers.forEach(function (f) { f(); });
         });
         sframeChan.on('EV_RT_LEAVE', function (ev) {
             var idx = members.indexOf(ev);
             if (idx === -1) { console.log('Error: ' + ev + ' not in members'); return; }
             members.splice(idx, 1);
             if (!meta.user) { return; }
-            change(true);
+            change(false);
         });
         sframeChan.on('EV_RT_DISCONNECT', function () {
             members = [];
@@ -171,13 +190,14 @@ define(['json.sortify'], function (Sortify) {
             onTitleChange: function (f) { titleChangeHandlers.push(f); },
             onChange: function (f) { changeHandlers.push(f); },
             onChangeLazy: function (f) { lazyChangeHandlers.push(f); },
+            onRequestSync: function (f) { syncHandlers.push(f); },
             isConnected : function () {
                 return members.indexOf(meta.user.netfluxId) !== -1;
             },
             getViewers : function () {
                 checkUpdate(false);
                 var list = members.slice().filter(function (m) { return m.length === 32; });
-                return list.length - Object.keys(metadataObj.users).length;
+                return list.length - Object.keys(metadataLazyObj.users).length;
             },
             getChannelMembers: function () { return members.slice(); },
             getPrivateData : function () {
