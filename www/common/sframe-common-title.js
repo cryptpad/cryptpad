@@ -51,14 +51,16 @@ define([
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
             if ($title) {
-                $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
-                $title.find('input').val(md.title || md.defaultTitle);
                 $title.find('input').prop('placeholder', md.defaultTitle);
             }
             exp.defaultTitle = md.defaultTitle;
-            exp.title = md.title;
         });
         metadataMgr.onTitleChange(function (title, defaultTitle) {
+            if ($title) {
+                $title.find('span.cp-toolbar-title-value').text(title || defaultTitle);
+                $title.find('input').val(title || defaultTitle);
+            }
+            exp.title = title;
             sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {
                 title: title,
                 defaultTitle: defaultTitle
