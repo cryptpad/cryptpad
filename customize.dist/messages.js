@@ -43,12 +43,30 @@ require.config({
     }
 });
 
-var req = ['/common/common-util.js', '/customize/translations/messages.js'];
+var req = [
+    '/common/common-util.js',
+    '/customize/application_config.js',
+    '/customize/translations/messages.js'
+];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
 
-define(req, function(Util, Default, Language) {
+define(req, function(Util, AppConfig, Default, Language) {
     map.en = 'English';
     var defaultLanguage = 'en';
+
+    if (AppConfig.availableLanguages) {
+        if (AppConfig.availableLanguages.indexOf(language) === -1) {
+            language = defaultLanguage;
+            Language = Default;
+            localStorage.setItem(LS_LANG, language);
+        }
+        Object.keys(map).forEach(function (l) {
+            if (l === defaultLanguage) { return; }
+            if (AppConfig.availableLanguages.indexOf(l) === -1) {
+                delete map[l];
+            }
+        });
+    }
 
     Util.extend(messages, Default);
     if (Language && language !== defaultLanguage) {
