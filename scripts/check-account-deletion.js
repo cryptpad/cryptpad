@@ -4,31 +4,8 @@ const nThen = require('nthen');
 const Pinned = require('./pinned');
 const Nacl = require('tweetnacl');
 const Path = require('path');
-const Config = require('./load-config');
-
-const hashesFromPinFile = (pinFile, fileName) => {
-    var pins = {};
-    pinFile.split('\n').filter((x)=>(x)).map((l) => JSON.parse(l)).forEach((l) => {
-        switch (l[0]) {
-            case 'RESET': {
-                pins = {};
-                if (l[1] && l[1].length) { l[1].forEach((x) => { pins[x] = 1; }); }
-                //jshint -W086
-                // fallthrough
-            }
-            case 'PIN': {
-                l[1].forEach((x) => { pins[x] = 1; });
-                break;
-            }
-            case 'UNPIN': {
-                l[1].forEach((x) => { delete pins[x]; });
-                break;
-            }
-            default: throw new Error(JSON.stringify(l) + '  ' + fileName);
-        }
-    });
-    return Object.keys(pins);
-};
+const Pins = require('../lib/pins');
+const Config = require('../lib/load-config');
 
 var escapeKeyCharacters = function (key) {
     return key && key.replace && key.replace(/\//g, '-');
@@ -61,7 +38,7 @@ nThen((waitFor) => {
     let f = Path.join(pinPath, edPublic.slice(0, 2), edPublic + '.ndjson');
     Fs.readFile(f, waitFor((err, content) => {
         if (err) { throw err; }
-        pinned = hashesFromPinFile(content.toString('utf8'), f);
+        pinned = Pins.calculateFromLog(content.toString('utf8'), f);
     }));
 }).nThen((waitFor) => {
     Pinned.load(waitFor((d) => {

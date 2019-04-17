@@ -3,12 +3,7 @@ const Fs = require("fs");
 const nThen = require("nthen");
 const Saferphore = require("saferphore");
 const PinnedData = require('./pinneddata');
-let config;
-try {
-    config = require('./config/config');
-} catch (e) {
-    config = require('./config/config.example');
-}
+const config = require("../lib/load-config");
 
 if (!config.inactiveTime || typeof(config.inactiveTime) !== "number") { return; }
 
