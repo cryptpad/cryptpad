@@ -965,6 +965,7 @@ define([
                 if (channel.padChan !== padChan) { return; }
                 if (channel.wc) { channel.wc.leave(); }
                 channel.stopped = true;
+                delete channels[chatChan];
                 return true;
             });
         };

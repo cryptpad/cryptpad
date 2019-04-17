@@ -1158,6 +1158,10 @@ define([
             var md = copyObject(metadataMgr.getMetadata());
             APP.proxy.metadata = md;
         });
+        metadataMgr.onRequestSync(function () {
+            var meta = JSON.parse(JSON.stringify(APP.proxy.metadata));
+            metadataMgr.updateMetadata(meta);
+        });
 
         /* add a forget button */
         var forgetCb = function (err) {

@@ -58147,37 +58147,6 @@ function Log(level) {
     this.warn = function () {};
     this.error = function () {};
     this.log = function () {};
-    return;
-    this.log = function () {
-        var args = Array.prototype.slice.call(arguments);
-        var level = args.shift();
-        var logLevel = this.level;
-        if (typeof logLevel === 'undefined') {
-            logLevel = defaultLevel;
-        }
-        if (logLevel <= level) {
-            if (typeof console !== 'undefined') {
-                //eslint-disable-line no-console
-                if (typeof console.log !== 'undefined') {
-                    //eslint-disable-line no-console
-                    //return console.log('[' + formatTime(new Date()) + '] ' , str); //eslint-disable-line no-console
-                    args.unshift('[' + formatTime(new Date()) + '] ');
-                    console.log.apply(console, args.map(function (a) {
-                        if (typeof a === "object") {
-                            return a.toString() + JSON.stringify(a, null, 2);
-                        }
-                        return a;
-                    }));
-                }
-            }
-        }
-    };
-
-    this.trace = window.console.debug.bind(window.console, format('TRACE', name), 'color:grey;', 'color: grey;');
-    this.debug = window.console.debug.bind(window.console, format('DEBUG', name), 'color:grey;', 'color: green;');
-    this.info = window.console.debug.bind(window.console, format('INFO', name), 'color:grey;', 'color: blue;');
-    this.warn = window.console.debug.bind(window.console, format('WARN', name), 'color:grey;', 'color: orange;');
-    this.error = window.console.debug.bind(window.console, format('ERROR', name), 'color:grey;', 'color: red;');
 }
 
 exports.Log = Log;

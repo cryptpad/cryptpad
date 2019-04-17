@@ -533,6 +533,12 @@ define([
                 }
             };
             cpNfInner.metadataMgr.onChange(checkReady);
+            cpNfInner.metadataMgr.onRequestSync(function () {
+                var newContentStr = cpNfInner.chainpad.getUserDoc();
+                var newContent = JSON.parse(newContentStr);
+                var meta = extractMetadata(newContent);
+                cpNfInner.metadataMgr.updateMetadata(meta);
+            });
             checkReady();
 
             var infiniteSpinnerModal = false;
