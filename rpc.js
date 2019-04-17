@@ -16,7 +16,7 @@ const Pinned = require('./scripts/pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
-
+const Pins = require("./lib/pins");
 
 
 var RPC = module.exports;
@@ -237,52 +237,21 @@ var loadUserPins = function (Env, publicKey, cb) {
         return cb(session.channels);
     }
 
+    var ref = {};
+    var lineHandler = Pins.createLineHandler(ref, function (label, data) {
+        Log.error(label, {
+            log: publicKey,
+            data: data,
+        });
+    });
+
     // if channels aren't in memory. load them from disk
-    var pins = {};
-
-    var pin = function (channel) {
-        pins[channel] = true;
-    };
-
-    var unpin = function (channel) {
-        // TODO delete?
-        pins[channel] = false;
-    };
-
-    Env.pinStore.getMessages(publicKey, function (msg) {
-        // handle messages...
-        var parsed;
-        try {
-            parsed = JSON.parse(msg);
-            session.hasPinned = true;
-
-            switch (parsed[0]) {
-                case 'PIN':
-                    parsed[1].forEach(pin);
-                    break;
-                case 'UNPIN':
-                    parsed[1].forEach(unpin);
-                    break;
-                case 'RESET':
-                    // TODO just wipe out the object?
-                    Object.keys(pins).forEach(unpin);
-
-                    if (parsed[1] && parsed[1].length) {
-                        parsed[1].forEach(pin);
-                    }
-                    break;
-                default:
-                    Log.warn('INVALID_STORED_MESSAGE', msg);
-            }
-        } catch (e) {
-            Log.warn('STORED_PARSE_ERROR', e);
-        }
-    }, function () {
+    Env.pinStore.getMessages(publicKey, lineHandler, function () {
         // no more messages
 
         // only put this into the cache if it completes
-        session.channels = pins;
-        cb(pins);
+        session.channels = ref.pins;
+        cb(ref.pins);
     });
 };
 
