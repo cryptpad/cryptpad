@@ -22,13 +22,23 @@ define(function() {
      */
     config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'sheet'];
 
+    /* CryptPad is available is multiple languages, but only English and French are maintained
+     * by the developers. The other languages may be outdated, and any missing string for a langauge
+     * will use the english version instead. You can customize the langauges you want to be available
+     * on your instance by removing them from the following list.
+     * An empty list will load all available languages for CryptPad. The list of available languages
+     * can be found at the top of the file `/customize.dist/messages.js`. The list should only
+     * contain languages code ('en', 'fr', 'de', 'pt-br', etc.), not their full name.
+     */
+    //config.availableLanguages = ['en', 'fr', 'de'];
+
+
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
      *  You can change their duration here (measured in milliseconds)
      */
     config.notificationTimeout = 5000;
     config.disableUserlistNotifications = false;
-    config.hideLoadingScreenTips = false;
 
     config.enablePinning = true;
 
