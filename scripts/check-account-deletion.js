@@ -4,7 +4,7 @@ const nThen = require('nthen');
 const Pinned = require('./pinned');
 const Nacl = require('tweetnacl');
 const Path = require('path');
-const Config = require('./load-config');
+const Config = require('../lib/load-config');
 
 const hashesFromPinFile = (pinFile, fileName) => {
     var pins = {};

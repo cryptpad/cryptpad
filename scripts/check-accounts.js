@@ -1,6 +1,6 @@
 /* globals Buffer */
 var Https = require('https');
-var Config = require("../config/config.js");
+var Config = require("../lib/load-config");
 var Package = require("../package.json");
 
 var body = JSON.stringify({

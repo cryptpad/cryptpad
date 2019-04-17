@@ -3,7 +3,7 @@ var Path = require("path");
 
 var nThen = require("nthen");
 
-var config = require("./load-config");
+var config = require("../lib/load-config");
 
 var FileStorage = require('../' + config.storage || './storage/file');
 var root = Path.resolve('../' + config.taskPath || './tasks');
