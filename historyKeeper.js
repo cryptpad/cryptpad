@@ -6,12 +6,12 @@ const nThen = require('nthen');
 const Nacl = require('tweetnacl');
 const Crypto = require('crypto');
 
-
+let Log;
 const now = function () { return (new Date()).getTime(); };
 
 const getHash = function (msg) {
     if (typeof(msg) !== 'string') {
-        console.log('getHash() called on', typeof(msg), msg);
+        Log.warn('', 'getHash() called on ' + typeof(msg) + ': ' + msg);
         return '';
     }
     return msg.slice(0,64);
@@ -21,7 +21,7 @@ const tryParse = function (str) {
     try {
         return JSON.parse(str);
     } catch (err) {
-        console.error(err);
+        Log.error('HK_PARSE_ERROR', err);
     }
 };
 
@@ -40,9 +40,14 @@ module.exports.create = function (cfg) {
     const rpc = cfg.rpc;
     const tasks = cfg.tasks;
     const store = cfg.store;
+    Log = cfg.log;
+
+    Log.silly('LOADING HISTORY_KEEPER MODULE');
 
     const historyKeeperKeys = {};
     const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
+
+    Log.verbose('History keeper ID: ' + HISTORY_KEEPER_ID);
 
     let sendMsg = function () {};
     let STANDARD_CHANNEL_LENGTH, EPHEMERAL_CHANNEL_LENGTH;
@@ -133,14 +138,13 @@ module.exports.create = function (cfg) {
             store.messageBin(channel.id, msgBin, waitFor(function (err) {
                 if (err) {
                     waitFor.abort();
-                    return void console.log("Error writing message: " + err.message);
+                    return void Log.error("HK_STORE_MESSAGE_ERROR", err.message);
                 }
             }));
         }).nThen((waitFor) => {
             getIndex(ctx, channel.id, waitFor((err, index) => {
                 if (err) {
-                    console.log("getIndex()");
-                    console.log(err.stack);
+                    Log.warn("HK_STORE_MESSAGE_INDEX", err.stack);
                     // non-critical, we'll be able to get the channel index later
                     return;
                 }
@@ -189,7 +193,7 @@ module.exports.create = function (cfg) {
             const validateKey = Nacl.util.decodeBase64(historyKeeperKeys[channel.id].validateKey);
             const validated = Nacl.sign.open(signedMsg, validateKey);
             if (!validated) {
-                console.log("Signed message rejected"); // TODO logging
+                Log.info("HK_SIGNED_MESSAGE_REJECTED", 'Channel '+channel.id);
                 return;
             }
         }
@@ -309,7 +313,7 @@ module.exports.create = function (cfg) {
             messageBuffer.push(parsed);
         }, function (err) {
             if (err) {
-                console.error("getOlderHistory", err);
+                Log.error("HK_GET_OLDER_HISTORY", err);
             }
             cb(messageBuffer);
         });
@@ -371,10 +375,13 @@ module.exports.create = function (cfg) {
         let parsed;
         let channelName;
         let obj = HISTORY_KEEPER_ID;
+
+        Log.silly(json);
+
         try {
             parsed = JSON.parse(json[2]);
         } catch (err) {
-            console.error("handleMessage(JSON.parse)", err); // TODO logging
+            Log.error("HK_PARSE_CLIENT_MESSAGE", json);
             return;
         }
 
@@ -413,8 +420,8 @@ module.exports.create = function (cfg) {
                         // if there is an error, we don't want to crash the whole server...
                         // just log it, and if there's a problem you'll be able to fix it
                         // at a later date with the provided information
-                        console.error('Failed to write expiration to disk:', err); // TODO logging
-                        console.error([expire, 'EXPIRE', channelName]); // TODO logging
+                        Log.error('HK_CREATE_EXPIRE_TASK', err);
+                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([expire, 'EXPIRE', channelName]));
                     }
                 }));
             }).nThen(function (waitFor) {
@@ -465,7 +472,7 @@ module.exports.create = function (cfg) {
                     if (expired) { return; }
 
                     if (err && err.code !== 'ENOENT') {
-                        if (err.message !== 'EINVAL') { console.error("GET_HISTORY", err); }
+                        if (err.message !== 'EINVAL') { Log.error("HK_GET_HISTORY", err); }
                         const parsedMsg = {error:err.message, channel: channelName};
                         sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
                         return;
@@ -550,7 +557,7 @@ module.exports.create = function (cfg) {
             }, (err) => {
                 let parsedMsg = ['FULL_HISTORY_END', parsed[1]];
                 if (err) {
-                    console.error(err.stack);
+                    Log.error('HK_GET_FULL_HISTORY', err.stack);
                     parsedMsg = ['ERROR', parsed[1], err.message];
                 }
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
@@ -582,7 +589,6 @@ module.exports.create = function (cfg) {
         }
     };
 
-    // TODO logging
     var cciLock = false;
     const checkChannelIntegrity = function (ctx) {
         if (process.env['CRYPTPAD_DEBUG'] && !cciLock) {
@@ -593,10 +599,15 @@ module.exports.create = function (cfg) {
                 if (!chan.index) { return; }
                 nt = nt((waitFor) => {
                     store.getChannelSize(channelName, waitFor((err, size) => {
-                        if (err) { return void console.log("Couldn't get size of channel", channelName); }
+                        if (err) {
+                            return void Log.debug("HK_CHECK_CHANNEL_INTEGRITY",
+                                "Couldn't get size of channel " + channelName);
+                        }
                         if (size !== chan.index.size) {
-                            console.log("channel size mismatch for", channelName,
-                                "cached:", chan.index.size, "fileSize:", size);
+                            return void Log.debug("HK_CHECK_CHANNEL_SIZE",
+                                "channel size mismatch for " + channelName +
+                                " --- cached: " + chan.index.size +
+                                " --- fileSize: " + size);
                         }
                     }));
                 }).nThen;

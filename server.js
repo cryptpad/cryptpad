@@ -283,7 +283,8 @@ var nt = nThen(function (w) {
     var hkConfig = {
         tasks: config.tasks,
         rpc: rpc,
-        store: config.store
+        store: config.store,
+        log: log
     };
     historyKeeper = HK.create(hkConfig);
 }).nThen(function () {
