@@ -1525,9 +1525,11 @@ var getActiveSessions = function (Env, ctx, cb) {
     Object.keys(ctx.users).forEach(function (u) {
         var user = ctx.users[u];
         var socket = user.socket;
-        var conn = socket.upgradeReq.connection;
-        if (ips.indexOf(conn.remoteAddress) === -1) {
-            ips.push(conn.remoteAddress);
+        var req = socket.upgradeReq;
+        var conn = req && req.connection;
+        var ip = (req && req.headers && req.headers['x-forwarded-for']) || (conn && conn.remoteAddress);
+        if (ip && ips.indexOf(ip) === -1) {
+            ips.push(ip);
         }
     });
 
