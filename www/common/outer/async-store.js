@@ -1058,14 +1058,16 @@ define([
                 onConnect: function (wc, sendMessage) {
                     channel.sendMessage = function (msg, cId, cb) {
                         // Send to server
-                        sendMessage(msg, cb);
-                        // Broadcast to other tabs
-                        channel.pushHistory(CpNfWorker.removeCp(msg), /^cp\|/.test(msg));
-                        channel.bcast("PAD_MESSAGE", {
-                            user: wc.myID,
-                            msg: CpNfWorker.removeCp(msg),
-                            validateKey: channel.data.validateKey
-                        }, cId);
+                        sendMessage(msg, function () {
+                            // Broadcast to other tabs
+                            channel.pushHistory(CpNfWorker.removeCp(msg), /^cp\|/.test(msg));
+                            channel.bcast("PAD_MESSAGE", {
+                                user: wc.myID,
+                                msg: CpNfWorker.removeCp(msg),
+                                validateKey: channel.data.validateKey
+                            }, cId);
+                            cb();
+                        });
                     };
                     channel.wc = wc;
                     channel.queue.forEach(function (data) {
