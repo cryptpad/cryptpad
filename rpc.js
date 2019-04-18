@@ -16,7 +16,7 @@ const Pinned = require('./scripts/pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
-
+const Pins = require("./lib/pins");
 
 
 var RPC = module.exports;
@@ -237,52 +237,21 @@ var loadUserPins = function (Env, publicKey, cb) {
         return cb(session.channels);
     }
 
+    var ref = {};
+    var lineHandler = Pins.createLineHandler(ref, function (label, data) {
+        Log.error(label, {
+            log: publicKey,
+            data: data,
+        });
+    });
+
     // if channels aren't in memory. load them from disk
-    var pins = {};
-
-    var pin = function (channel) {
-        pins[channel] = true;
-    };
-
-    var unpin = function (channel) {
-        // TODO delete?
-        pins[channel] = false;
-    };
-
-    Env.pinStore.getMessages(publicKey, function (msg) {
-        // handle messages...
-        var parsed;
-        try {
-            parsed = JSON.parse(msg);
-            session.hasPinned = true;
-
-            switch (parsed[0]) {
-                case 'PIN':
-                    parsed[1].forEach(pin);
-                    break;
-                case 'UNPIN':
-                    parsed[1].forEach(unpin);
-                    break;
-                case 'RESET':
-                    // TODO just wipe out the object?
-                    Object.keys(pins).forEach(unpin);
-
-                    if (parsed[1] && parsed[1].length) {
-                        parsed[1].forEach(pin);
-                    }
-                    break;
-                default:
-                    Log.warn('INVALID_STORED_MESSAGE', msg);
-            }
-        } catch (e) {
-            Log.warn('STORED_PARSE_ERROR', e);
-        }
-    }, function () {
+    Env.pinStore.getMessages(publicKey, lineHandler, function () {
         // no more messages
 
         // only put this into the cache if it completes
-        session.channels = pins;
-        cb(pins);
+        session.channels = ref.pins;
+        cb(ref.pins);
     });
 };
 
@@ -851,7 +820,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
-var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) { // FIXME deletion
+var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
     var safeKey = escapeKeyCharacters(unsafeKey);
     var safeKeyPrefix = safeKey.slice(0,3);
     var blobPrefix = blobId.slice(0,2);
@@ -889,6 +858,11 @@ var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) { // FIXME deletion
         // Delete the blob
         /*:: if (typeof(blobPath) !== 'string') { throw new Error('should never happen'); } */
         Fs.unlink(blobPath, w(function (e) { // TODO move to cold storage
+            Log.info('DELETION_OWNED_FILE_BY_OWNER_RPC', {
+                safeKey: safeKey,
+                blobPath: blobPath,
+                status: e? String(e): 'SUCCESS',
+            });
             if (e) {
                 w.abort();
                 return void cb(e.code);
@@ -897,12 +871,17 @@ var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) { // FIXME deletion
     }).nThen(function () {
         // Delete the proof of ownership
         Fs.unlink(ownPath, function (e) {
+            Log.info('DELETION_OWNED_FILE_PROOF_BY_OWNER_RPC', {
+                safeKey: safeKey,
+                proofPath: ownPath,
+                status: e? String(e): 'SUCCESS',
+            });
             cb(e && e.code);
         });
     });
 };
 
-var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) { // FIXME deletion
+var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     if (typeof(channelId) !== 'string' || !isValidId(channelId)) {
         return cb('INVALID_ARGUMENTS');
     }
@@ -922,6 +901,11 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) { // FIXME del
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
         return void Env.msgStore.removeChannel(channelId, function (e) {
+            Log.info('DELETION_CHANNEL_BY_OWNER_RPC', {
+                unsafeKey: unsafeKey,
+                channelId: channelId,
+                status: e? String(e): 'SUCCESS',
+            });
             cb(e);
         });
     });
@@ -929,11 +913,16 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) { // FIXME del
 
 /*  Users should be able to clear their own pin log with an authenticated RPC
 */
-var removePins = function (Env, safeKey, cb) { // FIXME deletion
+var removePins = function (Env, safeKey, cb) {
     if (typeof(Env.pinStore.removeChannel) !== 'function') {
         return void cb("E_NOT_IMPLEMENTED");
     }
     Env.pinStore.removeChannel(safeKey, function (err) {
+        Log.info('DELETION_PIN_BY_OWNER_RPC', {
+            safeKey: safeKey,
+            status: err? String(err): 'SUCCESS',
+        });
+
         cb(err);
     });
 };
@@ -1431,7 +1420,6 @@ var removeLoginBlock = function (Env, msg, cb) {
     var signature = msg[1];
     var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
 
-    // FIXME deletion
     validateLoginBlock(Env, publicKey, signature, block, function (e /*::, validatedBlock */) {
         if (e) { return void cb(e); }
         // derive the filepath
@@ -1443,6 +1431,12 @@ var removeLoginBlock = function (Env, msg, cb) {
         }
 
         Fs.unlink(path, function (err) {
+            Log.info('DELETION_BLOCK_BY_OWNER_RPC', {
+                publicKey: publicKey,
+                path: path,
+                status: err? String(err): 'SUCCESS',
+            });
+
             if (err) { return void cb(err); }
             cb();
         });

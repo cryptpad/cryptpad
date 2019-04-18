@@ -202,6 +202,12 @@ if (!module.parent) {
     // if no parent, it is being invoked directly
     let config = {}; // build the config from command line arguments...
 
+    var Config = require("../lib/load-config");
+
+    config.filePath = Config.filePath;
+    config.blobPath = Config.blobPath;
+    config.pinPath = Config.pinPath;
+
     // --unpinned gets the list of unpinned files
     // if you don't pass this, it will list the size of pinned data per user
     if (process.argv.indexOf('--unpinned') > -1) { config.unpinned = true; }
