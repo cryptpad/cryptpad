@@ -11,7 +11,7 @@ const now = function () { return (new Date()).getTime(); };
 
 const getHash = function (msg) {
     if (typeof(msg) !== 'string') {
-        Log.warn('', 'getHash() called on ' + typeof(msg) + ': ' + msg);
+        Log.warn('HK_GET_HASH', 'getHash() called on ' + typeof(msg) + ': ' + msg);
         return '';
     }
     return msg.slice(0,64);
@@ -42,12 +42,12 @@ module.exports.create = function (cfg) {
     const store = cfg.store;
     Log = cfg.log;
 
-    Log.silly('LOADING HISTORY_KEEPER MODULE');
+    Log.silly('HK_LOADING', 'LOADING HISTORY_KEEPER MODULE');
 
     const historyKeeperKeys = {};
     const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
 
-    Log.verbose('History keeper ID: ' + HISTORY_KEEPER_ID);
+    Log.verbose('HK_ID', 'History keeper ID: ' + HISTORY_KEEPER_ID);
 
     let sendMsg = function () {};
     let STANDARD_CHANNEL_LENGTH, EPHEMERAL_CHANNEL_LENGTH;
@@ -376,7 +376,7 @@ module.exports.create = function (cfg) {
         let channelName;
         let obj = HISTORY_KEEPER_ID;
 
-        Log.silly(json);
+        Log.silly('HK_MESSAGE', json);
 
         try {
             parsed = JSON.parse(json[2]);
