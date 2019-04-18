@@ -102,7 +102,7 @@ define([
             rel: 'noopener',
         });
 
-        var crowdFunding = AppConfig.disableCrowdfundingMessages ? undefined : h('button', [
+        var crowdFunding = h('button', [
             Msg.crowdfunding_button
         ]);
 
@@ -132,7 +132,7 @@ define([
                 h('div.col-12.col-sm-4.cp-index-block.cp-index-block-product', h('div', [
                     Msg.home_product
                 ])),
-                h('div.col-12.col-sm-4.cp-index-block.cp-index-block-help', h('div', [
+                AppConfig.disableCrowdfundingMessages ? undefined : h('div.col-12.col-sm-4.cp-index-block.cp-index-block-help', h('div', [
                     Msg.crowdfunding_home1,
                     h('br'),
                     Msg.crowdfunding_home2,
