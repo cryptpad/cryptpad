@@ -142,6 +142,7 @@ define([
             showTrailingSpace : true,
             styleActiveLine : true,
             search: true,
+            inputStyle: 'contenteditable',
             highlightSelectionMatches: {showToken: /\w+/},
             extraKeys: {"Shift-Ctrl-R": undefined},
             foldGutter: true,
@@ -355,11 +356,12 @@ define([
         };
 
         exp.mkIndentSettings = function (metadataMgr) {
-            var setIndentation = function (units, useTabs, fontSize) {
+            var setIndentation = function (units, useTabs, fontSize, spellcheck) {
                 if (typeof(units) !== 'number') { return; }
                 editor.setOption('indentUnit', units);
                 editor.setOption('tabSize', units);
                 editor.setOption('indentWithTabs', useTabs);
+                editor.setOption('spellcheck', spellcheck);
                 if (!useTabs) {
                     editor.setOption("extraKeys", {
                         Tab: function() {
@@ -377,6 +379,7 @@ define([
             var indentKey = 'indentUnit';
             var useTabsKey = 'indentWithTabs';
             var fontKey = 'fontSize';
+            var spellcheckKey = 'spellcheck';
             var updateIndentSettings = function () {
                 if (!metadataMgr) { return; }
                 var data = metadataMgr.getPrivateData().settings;
@@ -384,10 +387,12 @@ define([
                 var indentUnit = data[indentKey];
                 var useTabs = data[useTabsKey];
                 var fontSize = data[fontKey];
+                var spellcheck = data[spellcheckKey];
                 setIndentation(
                     typeof(indentUnit) === 'number'? indentUnit : 2,
                     typeof(useTabs) === 'boolean'? useTabs : false,
-                    typeof(fontSize) === 'number' ? fontSize : 12);
+                    typeof(fontSize) === 'number' ? fontSize : 12,
+                    typeof(spellcheck) === 'boolean' ? spellcheck : false);
             };
             metadataMgr.onChangeLazy(updateIndentSettings);
             updateIndentSettings();

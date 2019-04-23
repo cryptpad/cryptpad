@@ -20,7 +20,7 @@ define([
         init: function () {}
     };
 
-    require(['/code/mermaid.js'], function (_Mermaid) {
+    require(['/code/mermaid.js', 'css!/code/mermaid.css'], function (_Mermaid) {
         Mermaid = _Mermaid;
     });
 

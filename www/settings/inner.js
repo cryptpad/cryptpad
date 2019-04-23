@@ -85,6 +85,7 @@ define([
             'cp-settings-code-indent-unit',
             'cp-settings-code-indent-type',
             'cp-settings-code-font-size',
+            'cp-settings-code-spellcheck',
         ],
         'subscription': {
             onClick: function () {
@@ -1466,6 +1467,44 @@ define([
         });
         return $div;
     };
+
+    create['code-spellcheck'] = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-code-spellcheck cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_codeSpellcheckTitle).appendTo($div);
+        //$('<span>', {'class': 'cp-sidebarlayout-description'})
+        //    .text(Messages.settings_padSpellcheckHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('cp-settings-code-spellcheck',
+                                   Messages.settings_codeSpellcheckLabel,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['codemirror', 'spellcheck'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['codemirror', 'spellcheck'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
+
 
     // Settings app
 
