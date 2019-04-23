@@ -255,15 +255,26 @@ var nt = nThen(function (w) {
         log = config.log = _log;
     }));
 }).nThen(function (w) {
-    var Tasks = require("./storage/tasks");
-    //log.debug('loading task scheduler');
-    Tasks.create(config, w(function (e, tasks) {
-        config.tasks = tasks;
-    }));
-}).nThen(function (w) {
     if (config.useExternalWebsocket) { return; }
     Storage.create(config, w(function (_store) {
         config.store = _store;
+    }));
+}).nThen(function (w) {
+    if (!config.enableTaskScheduling) { return; }
+    var Tasks = require("./storage/tasks");
+    Tasks.create(config, w(function (e, tasks) {
+        if (e) {
+            throw e;
+        }
+        config.tasks = tasks;
+        setInterval(function () {
+            tasks.runAll(function (err) {
+                if (err) {
+                    // either TASK_CONCURRENCY or an error with tasks.list
+                    // in either case it is already logged.
+                }
+            });
+        }, 1000 * 60 * 5); // run every five minutes
     }));
 }).nThen(function (w) {
     config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
