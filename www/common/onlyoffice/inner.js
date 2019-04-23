@@ -679,7 +679,9 @@ define([
                                   '#fm-btn-save { display: none !important; }' +
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
-                                  '#header { display: none !important; }';
+                                  '#header { display: none !important; }' +
+                                  '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
+                                  '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
                         $('<style>').text(css).appendTo($tb);
                         if (UI.findOKButton().length) {
                             UI.findOKButton().on('focusout', function () {
