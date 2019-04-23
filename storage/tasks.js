@@ -285,7 +285,7 @@ var runAll = function (env, cb) {
     });
 };
 
-var migrate function (env, cb) {
+var migrate = function (env, cb) {
     // list every task
     list(env, function (err, paths) {
         if (err) {
@@ -307,6 +307,7 @@ var migrate function (env, cb) {
                         });
                         return;
                     }
+                    task = _task;
                 }));
             }).nThen(function (w) {
                 if (bypass) { return; }
@@ -323,17 +324,17 @@ var migrate function (env, cb) {
             }).nThen(function (w) {
                 if (bypass) { return; }
                 // remove
-                remove(env, path, function (err) {
+                remove(env, path, w(function (err) {
                     if (err) {
                         env.log.error("TASK_MIGRATION_REMOVE", {
                             error: err,
                             path: path,
                         });
                     }
-                });
+                }));
             });
         });
-        nt = nt.nThen(function (w) {
+        nt = nt.nThen(function () {
             cb();
         });
     }, true);

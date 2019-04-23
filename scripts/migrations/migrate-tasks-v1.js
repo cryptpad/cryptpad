@@ -10,7 +10,6 @@ var config = require("../../lib/load-config");
 var FileStorage = require("../../" + (config.storage || "./storage/file"));
 
 var tasks;
-var paths;
 nThen(function (w) {
     Logger.create(config, w(function (_log) {
         config.log = _log;
