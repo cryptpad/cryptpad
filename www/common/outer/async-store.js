@@ -635,7 +635,7 @@ define([
             nThen(function (waitFor) {
                 removeOwnedPads(waitFor);
             }).nThen(function () {
-                store.proxy.drive = store.fo.getStructure();
+                store.proxy.drive = store.userObject.getStructure();
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', 'filesData']
                 }, clientId);
