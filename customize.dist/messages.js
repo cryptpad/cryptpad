@@ -5,6 +5,7 @@ var map = {
     'es': 'Español',
     'el': 'Ελληνικά',
     'fr': 'Français',
+    'it': 'Italiano',
     'nb': 'Norwegian Bokmål',
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
