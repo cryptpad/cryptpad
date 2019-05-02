@@ -1041,5 +1041,11 @@
     "contact_devHint": "Pour les demandes de fonctionnalités, les améliorations d'ergonomie ou pour dire merci.",
     "contact_bug": "Rapport de bug",
     "contact_chat": "Chat",
-    "contact_email": "Email"
+    "contact_email": "Email",
+    "timeoutError": "Une erreur a coupé la connexion au serveur. <br>Appuyez sur <em>Échap</em> pour recharger la page.",
+    "admin_diskUsageTitle": "Utilisation du disque",
+    "admin_diskUsageHint": "Quantité d'espace de stockage utilisé par la base de données de CryptPad",
+    "admin_diskUsageButton": "Générer le rapport",
+    "settings_codeSpellcheckTitle": "Vérification orthographique",
+    "settings_codeSpellcheckLabel": "Activer la vérification orthographique"
 }
