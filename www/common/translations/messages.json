@@ -1041,5 +1041,11 @@
     "contact_devHint": "For feature requests, usability improvements, or to say thank you.",
     "contact_bug": "Bug report",
     "contact_chat": "Chat",
-    "contact_email": "Email"
+    "contact_email": "Email",
+    "timeoutError": "An error has broken your connection to the server. <br>Hit <em>Esc</em> to reload the page.",
+    "admin_diskUsageTitle": "Disk usage",
+    "admin_diskUsageHint": "Amount of storage space consumed by various CryptPad resources",
+    "admin_diskUsageButton": "Generate report",
+    "settings_codeSpellcheckTitle": "Spellcheck",
+    "settings_codeSpellcheckLabel": "Enable spellcheck in the code editor"
 }
