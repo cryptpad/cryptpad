@@ -614,7 +614,9 @@ define([
             });
 
             ctx.sframeChan.on('EV_WORKER_TIMEOUT', function () {
-                UI.errorLoadingScreen(Messages.timeoutError);
+                UI.errorLoadingScreen(Messages.timeoutError, false, function () {
+                    funcs.gotoURL('');
+                });
             });
 
             ctx.sframeChan.on('EV_CHROME_68', function () {
