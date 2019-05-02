@@ -305,5 +305,11 @@
     "fm_selectError": "Beklager vi får ikke til å velge elementet du ønsker. Om problemet vedvarer vennligst forsøk å laste inn sida på nytt.",
     "fm_categoryError": "Beklager vi får ikke til å åpne kategorien du har valgt, vi viser rotmappa nå.",
     "fm_info_root": "Her kan du lage så mange undermapper du ønsker.",
-    "fm_info_unsorted": "Inneholder alle filer du har besøkt som enda ikke er lagt til i \"Dokumenter\" eller er flytta til \"Papirkurven\"."
+    "fm_info_unsorted": "Inneholder alle filer du har besøkt som enda ikke er lagt til i \"Dokumenter\" eller er flytta til \"Papirkurven\".",
+    "settings_backup2Confirm": "Straks i gang med å laste ned alle filer og pads fra CryptDriven din. Velg et filnavn og trykk OK",
+    "settings_exportTitle": "Eksporter CryptDriven din",
+    "settings_exportDescription": "Vennligst vent mens vi laster ned og dekrypterer dokumentene dine. Lukker du fanen vil du avbryte nedlastingen.",
+    "settings_exportFailed": "Hvis paden trenger mer enn 1 minutt på nedlastingen så vil den desverre ikke inkluderes i eksporteringen. I stedet vil en linke til paden vises.",
+    "settings_exportWarning": "NB: denne funksjonen er beta og muligens ustabil. Vi anbefaler at du holder denne fanen i fokus.",
+    "settings_exportCancel": "Er du sikker på at du vil avbryte eksporteringen? I så fall må du starte på nytt neste gang."
 }
