@@ -1047,5 +1047,8 @@
     "admin_diskUsageHint": "Amount of storage space consumed by various CryptPad resources",
     "admin_diskUsageButton": "Generate report",
     "settings_codeSpellcheckTitle": "Spellcheck",
-    "settings_codeSpellcheckLabel": "Enable spellcheck in the code editor"
+    "settings_codeSpellcheckLabel": "Enable spellcheck in the code editor",
+    "drive_active1Day": "Last 24 hours",
+    "drive_active7Days": "Last 7 days",
+    "drive_active28Days": "Last 4 weeks"
 }
