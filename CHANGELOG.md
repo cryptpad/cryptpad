@@ -1,3 +1,48 @@
+# Vervet release (v2.21.0)
+
+## Goals
+
+For this release cycle we decided to fix some deep bugs and reduce the likelihood of regressions. This included not just errors in the code, but issues that were likely to arise from incorrect configuration. There's still some work to do, but the process of setting up a CryptPad server should be slightly easier now.
+
+## Update notes
+
+* First off, we've added a [Code of Conduct](https://github.com/xwiki-labs/cryptpad/blob/master/CODE_OF_CONDUCT.md) to this repository. This project is intended to improve people's safety, and we want to be clear that this goal extends to any medium through which the public engages with the project.
+* We've made a change related to how our server handles automatically expiring pads. Our server has always refused to send users the history of channels that have expired, but the actual files were only removed if administrators had set up a cron job to call a script which removed channels that had passed their expiration date. We've integrated this script into the server so that no such script will be necessary (though the old one will continue to work).
+  * We've also made the process which scans for expired files more efficient, though the optimizations require a new format. We've included a migration, but the removal process is backwards compatible, so nothing terrible will happen if you don't run it. Nevertheless, we recommend you do.
+* This release features changes to our serverside and clientside dependencies. To update:
+  * get the latest code:
+    * `git pull`
+  * update serverside dependencies
+    * `npm install`
+  * update clientside dependencies
+    * `bower update`
+  * restart your server
+  * run the migration to optimize for expiring channels:
+     * From your CryptPad source directory, run `node scripts/migrations/migrate-tasks-v1.js`
+* Administrators who want to restrict the translation languages available on their server can do so by defining an array of available language codes.
+  * In your `cryptpad/customize/application_config.js`, define an array containing the langauges you want:
+    * for Example: `AppConfig.availableLanguages = ['en', 'de', 'fr']`
+* Finally, some administrators requested the ability to remove any references to our crowdfunding campaign. CryptPad is open-source, so naturally this was already possible, but we've made it easier.
+  * In your `cryptpad/customize/application_config.js`, set `AppConfig.disableCrowdfundingMessages = true`.
+
+## Features
+
+* Contributors to our translation files have been busy. This release introduces Italian and Norwegian Bokmål. There has also been significant progress with for our partially complete Romanian and Russian translations.
+* Our 'history-keeper' module which is responsible for storing and fetching messages has integrated our new serverside logging API, so any errors should all end up in one log instead of printing to the console.
+* Similarly, every aspect of the server which is responsible for deleting content now makes an entry in the logs for that deletion, indicating the cause of the event (automatic expiration, deletion due to inactivity, or manual action on the part of the user).
+* We identified some parts of the serverside code and our scripts which duplicated logic, and refactored them to use singular implementation of the intended behaviour.
+* We've configured codemirror to allow for spellcheck in our code editing applications (/code/ and /slide/)
+
+## Bug fixes
+
+* The admin panel already featured a function which displayed the number of active sessions on the server, but it was likely to be incorrect if the API server was behind a reverse proxy. It should now display the correct number of distinct IPs which are currently connected.
+* We've fixed a regression in our rendering of highlighted code blocks in markdown.
+* When you close a pad which included some chat history, we remove that history from the memory of the sharedWorker which implements some caching for when you have duplicated tabs.
+* We discovered that under some conditions it was possible for tabs to lose their connection to their corresponding worker. Such tabs will now identify that they have disconnected, and will prompt the user to reload.
+* Our usage of shared workers also made it possible for users to leave a pad and then reconnect with the same network id, which led to some errors in our userlist. We've addressed a number of related problems, so incorrect userlists should be less likely to reappear in the future.
+* Our usage of OnlyOffice for our spreadsheet editor disabled some behaviour, but left the buttons present. We've hidden those buttons to avoid confusion.
+* Finally, we've investigated a bug which users reported in our rich text editor, where text could be duplicated without any user action. Unfortunately we don't yet have a fix, but we've identified the cause of the issue deep in our realtime engine. We hope to address this issue in a coming release.
+
 # Upupa release (v2.20.0)
 
 ## Goals
