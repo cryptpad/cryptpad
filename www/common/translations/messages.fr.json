@@ -1047,5 +1047,8 @@
     "admin_diskUsageHint": "Quantité d'espace de stockage utilisé par la base de données de CryptPad",
     "admin_diskUsageButton": "Générer le rapport",
     "settings_codeSpellcheckTitle": "Vérification orthographique",
-    "settings_codeSpellcheckLabel": "Activer la vérification orthographique"
+    "settings_codeSpellcheckLabel": "Activer la vérification orthographique",
+    "drive_active1Day": "Dernières 24 heures",
+    "drive_active7Days": "7 derniers jours",
+    "drive_active28Days": "4 dernières semaines"
 }
