@@ -509,6 +509,10 @@
                         }
                     }
                 }
+                &.cp-app-drive-element-separator {
+                    text-align: left;
+                    font-weight: bold;
+                }
             }
         }
         .cp-app-drive-element {
@@ -520,6 +524,12 @@
             li {
                 &.cp-app-drive-element {
                     position: relative;
+                }
+                &.cp-app-drive-element-separator {
+                    display: block;
+                    height: auto;
+                    width: auto;
+                    border: none !important;
                 }
                 input {
                     width: 100%;
@@ -599,6 +609,14 @@
                 &:not(.cp-app-drive-element-header) {
                     height: @variables_bar-height;
                     line-height: @variables_bar-height;
+                }
+                &.cp-app-drive-element-separator {
+                    position: relative;
+                    height: 1.5 * @variables_bar-height;
+                    line-height: 1.5 * @variables_bar-height;
+                    span {
+                        position: absolute;
+                    }
                 }
                 &.cp-app-drive-element-header {
                     cursor: default;

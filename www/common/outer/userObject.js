@@ -636,7 +636,7 @@ define([
                     }
 
                     // If we have an edit link, check the view link
-                    if (el.href && parsed.hashData.type === "pad") {
+                    if (el.href && parsed.hashData.type === "pad" && parsed.hashData.version) {
                         if (parsed.hashData.mode === "view") {
                             el.roHref = el.href;
                             delete el.href;
@@ -650,6 +650,10 @@ define([
                                 el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                             }
                         }
+                    }
+                    // v0 hashes don't support read-only
+                    if (parsed.hashData.version === 0) {
+                        delete el.roHref;
                     }
 
                     // Fix href

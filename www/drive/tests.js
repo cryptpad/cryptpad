@@ -268,8 +268,20 @@ define([
         assert(function (cb) {
             console.log('START DRIVE utils');
             var files = JSON.parse(JSON.stringify(example));
+
+            var href6 = "/pad/#67a9385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyGbj7LNy/";
+            var id6 = 1000000000006;
+            var data = {
+                href: href6,
+                title: 'Title6',
+                atime: +new Date(),
+                ctime: +new Date()
+            };
+            files.filesData[id6] = data;
+
             var fo = FO.init(files, config);
             fo.fixFiles();
+
 
             if (fo.isFile({}) || fo.isFile(href1) || !fo.isFile(href1, true) || !fo.isFile(id1)) {
                 console.log("DRIVE utils: isFile returns an incorrect value");
@@ -281,6 +293,10 @@ define([
             }
             if (!fo.isReadOnlyFile(id3)) {
                 console.log("DRIVE utils: isReadOnlyFile returns false for a 'view' file");
+                return cb();
+            }
+            if (typeof fo.isReadOnlyFile(id6) !== "undefined") {
+                console.log("DRIVE utils: isReadOnlyFile should return undefined for a v0 hash");
                 return cb();
             }
             if (!fo.hasSubfolder(files.root.Folder) || fo.hasSubfolder(files.root.Folder2)) {
@@ -303,7 +319,7 @@ define([
                 console.log("DRIVE utils: 'find' returns an incorrect value");
                 return cb();
             }
-            if (fo.getFiles().length !== 4 || fo.getFiles(['trash']).length !== 2) {
+            if (fo.getFiles().length !== 5 || fo.getFiles(['trash']).length !== 2) {
                 console.log("DRIVE utils: getFiles returns an incorrect value");
                 return cb();
             }

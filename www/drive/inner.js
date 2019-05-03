@@ -2454,24 +2454,51 @@ define([
         var displayRecent = function ($list) {
             var filesList = manager.getRecentPads();
             var limit = 20;
+
+            var now = new Date();
+            var last1 = new Date(now);
+            last1.setDate(last1.getDate()-1);
+            var last7 = new Date(now);
+            last7.setDate(last7.getDate()-7);
+            var last28 = new Date(now);
+            last28.setDate(last28.getDate()-28);
+
+            var header7, header28, headerOld;
             var i = 0;
-            filesList.forEach(function (id) {
-                if (i >= limit) { return; }
-                // Check path (pad exists and not in trash)
+            $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active1Day)));
+            filesList.some(function (arr) {
+                if (i >= limit) { return true; }
+                var id = arr[0];
+                var file = arr[1];
+                if (!file || !file.atime) { return; }
+
+                if (file.atime <= last28 && i >= limit) {
+                    return true;
+                }
+
                 var paths = manager.findFile(id);
                 if (!paths.length) { return; }
                 var path = paths[0];
                 if (manager.isPathIn(path, [TRASH])) { return; }
-                // Display the pad
-                var file = manager.getFileData(id);
-                if (!file) {
-                    //debug("Unsorted or template returns an element not present in filesData: ", href);
-                    file = { title: Messages.fm_noname };
-                    //return;
+
+
+                if (!header7 && file.atime < last1) {
+                    $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active7Days)));
+                    header7 = true;
                 }
+                if (!header28 && file.atime < last7) {
+                    $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active28Days)));
+                    header28 = true;
+                }
+                if (!headerOld && file.atime < last28) {
+                    $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_activeOld)));
+                    headerOld = true;
+                }
+
+                // Display the pad
                 var $icon = getFileIcon(id);
                 var ro = manager.isReadOnlyFile(id);
-                // ro undefined mens it's an old hash which doesn't support read-only
+                // ro undefined means it's an old hash which doesn't support read-only
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
