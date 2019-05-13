@@ -452,7 +452,7 @@ define([
         }
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
-            if (val.edit === false) {
+            if (val.edit === false || !hashes.editHash) {
                 $(link).find('#cp-share-editable-false').prop('checked', true);
                 $(link).find('#cp-share-editable-true').prop('checked', false);
             } else {
