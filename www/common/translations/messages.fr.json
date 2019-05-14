@@ -1050,5 +1050,6 @@
     "settings_codeSpellcheckLabel": "Activer la vérification orthographique",
     "drive_active1Day": "Dernières 24 heures",
     "drive_active7Days": "7 derniers jours",
-    "drive_active28Days": "4 dernières semaines"
+    "drive_active28Days": "4 dernières semaines",
+    "drive_activeOld": "Pads moins récents"
 }
