@@ -10,7 +10,8 @@
         "kanban": "Kanban",
         "drive": "CryptDrive",
         "todo": "Lista de tareas",
-        "file": "Archivo"
+        "file": "Archivo",
+        "media": ""
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronización",
