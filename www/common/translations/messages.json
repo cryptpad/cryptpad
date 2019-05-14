@@ -1050,5 +1050,6 @@
     "settings_codeSpellcheckLabel": "Enable spellcheck in the code editor",
     "drive_active1Day": "Last 24 hours",
     "drive_active7Days": "Last 7 days",
-    "drive_active28Days": "Last 4 weeks"
+    "drive_active28Days": "Last 4 weeks",
+    "drive_activeOld": "Less recent pads"
 }
