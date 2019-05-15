@@ -13,18 +13,18 @@ define([
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
-    '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, OnlyOffice, Mailbox, CpNfWorker, NetConfig, AppConfig,
-             Crypto, ChainPad, Listmap, nThen, Saferphore) {
+             Cursor, OnlyOffice, Mailbox, NetConfig, AppConfig,
+             Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
         var Store = window.Cryptpad_Store = {};
@@ -1018,7 +1018,7 @@ define([
                 });
                 channel.history.forEach(function (msg) {
                     postMessage(clientId, "PAD_MESSAGE", {
-                        msg: CpNfWorker.removeCp(msg),
+                        msg: CpNetflux.removeCp(msg),
                         user: channel.wc.myID,
                         validateKey: channel.data.validateKey
                     });
@@ -1028,14 +1028,15 @@ define([
                 return;
             }
             var conf = {
-                onReady: function (padData) {
-                    channel.data = padData || {};
+                onReady: function (pad) {
+                    var padData = pad.metadata || {};
+                    channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
                     postMessage(clientId, "PAD_READY");
                 },
-                onMessage: function (user, m, validateKey, isCp) {
+                onMessage: function (m, user, validateKey, isCp) {
                     channel.pushHistory(m, isCp);
                     channel.bcast("PAD_MESSAGE", {
                         user: user,
@@ -1049,13 +1050,23 @@ define([
                 onLeave: function (m) {
                     channel.bcast("PAD_LEAVE", m);
                 },
-                onDisconnect: function () {
+                onAbort: function () {
                     channel.bcast("PAD_DISCONNECT");
                 },
                 onError: function (err) {
                     channel.bcast("PAD_ERROR", err);
-                    delete channels[data.channel]; // TODO test?
+                    delete channels[data.channel];
                 },
+                onChannelError: function (err) {
+                    channel.bcast("PAD_ERROR", err);
+                    delete channels[data.channel];
+                },
+                onConnectionChange: function () {},
+                crypto: {
+                    encrypt: function (m) { return m; },
+                    decrypt: function (m) { return m; }
+                },
+                noChainPad: true,
                 channel: data.channel,
                 validateKey: data.validateKey,
                 owners: data.owners,
@@ -1068,10 +1079,10 @@ define([
                         // Send to server
                         sendMessage(msg, function () {
                             // Broadcast to other tabs
-                            channel.pushHistory(CpNfWorker.removeCp(msg), /^cp\|/.test(msg));
+                            channel.pushHistory(CpNetflux.removeCp(msg), /^cp\|/.test(msg));
                             channel.bcast("PAD_MESSAGE", {
                                 user: wc.myID,
-                                msg: CpNfWorker.removeCp(msg),
+                                msg: CpNetflux.removeCp(msg),
                                 validateKey: channel.data.validateKey
                             }, cId);
                             cb();
@@ -1088,7 +1099,7 @@ define([
                     });
                 }
             };
-            channel.cpNf = CpNfWorker.start(conf);
+            channel.cpNf = CpNetflux.start(conf);
         };
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
