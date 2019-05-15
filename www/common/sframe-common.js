@@ -10,6 +10,7 @@ define([
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
+    '/common/sframe-common-mailbox.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -33,6 +34,7 @@ define([
     File,
     CodeMirror,
     Cursor,
+    Mailbox,
     MetadataMgr,
     AppConfig,
     CommonRealtime,
@@ -630,6 +632,8 @@ define([
 
             ctx.sframeChan.ready();
             cb(funcs);
+
+            Mailbox.create(funcs);
         });
     } };
 });

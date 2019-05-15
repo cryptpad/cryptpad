@@ -625,6 +625,13 @@ define([
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
+            if (store.mailbox) {
+                // XXX test mailbox, should be removed in prod
+                store.mailbox.post('notifications', 'NAME_CHANGED', {
+                    old: store.proxy[Constants.displayNameKey],
+                    new: value
+                });
+            }
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
             if (store.messenger) { store.messenger.updateMyData(); }
@@ -950,6 +957,7 @@ define([
         // Mailbox
         Store.mailbox = {
             execCommand: function (clientId, data, cb) {
+                if (!store.loggedIn) { return void cb(); }
                 if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
                 store.mailbox.execCommand(clientId, data, cb);
             }
@@ -1092,6 +1100,7 @@ define([
                     channel.queue.forEach(function (data) {
                         channel.sendMessage(data.message, clientId);
                     });
+                    channel.queue = [];
                     channel.bcast("PAD_CONNECT", {
                         myID: wc.myID,
                         id: wc.id,
@@ -1310,12 +1319,14 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
-            // TODO mailbox events
             try {
                 store.cursor.removeClient(clientId);
             } catch (e) { console.error(e); }
             try {
                 store.onlyoffice.removeClient(clientId);
+            } catch (e) { console.error(e); }
+            try {
+                store.mailbox.removeClient(clientId);
             } catch (e) { console.error(e); }
 
             Object.keys(Store.channels).forEach(function (chanId) {
@@ -1413,6 +1424,9 @@ define([
         };
 
         var loadMailbox = function (waitFor) {
+            if (!store.loggedIn || !store.proxy.edPublic) {
+                return;
+            }
             store.mailbox = Mailbox.init(store, waitFor, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'MAILBOX_EVENT', {

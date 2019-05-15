@@ -877,6 +877,13 @@ define([
                 Cryptpad.cursor.execCommand(data, cb);
             });
 
+            Cryptpad.mailbox.onEvent.reg(function (data) {
+                sframeChan.event('EV_MAILBOX_EVENT', data);
+            });
+            sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
+                Cryptpad.mailbox.execCommand(data, cb);
+            });
+
             Cryptpad.onTimeoutEvent.reg(function () {
                 sframeChan.event('EV_WORKER_TIMEOUT');
             });
