@@ -12,6 +12,7 @@ define([
     '/common/common-messenger.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
+    '/common/outer/mailbox.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
@@ -22,7 +23,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, OnlyOffice, CpNfWorker, NetConfig, AppConfig,
+             Cursor, OnlyOffice, Mailbox, CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
 
     var create = function () {
@@ -939,11 +940,18 @@ define([
         };
 
         // Cursor
-
         Store.cursor = {
             execCommand: function (clientId, data, cb) {
                 if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
                 store.cursor.execCommand(clientId, data, cb);
+            }
+        };
+
+        // Mailbox
+        Store.mailbox = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
+                store.mailbox.execCommand(clientId, data, cb);
             }
         };
 
@@ -1291,6 +1299,7 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
+            // TODO mailbox events
             try {
                 store.cursor.removeClient(clientId);
             } catch (e) { console.error(e); }
@@ -1392,6 +1401,17 @@ define([
             });
         };
 
+        var loadMailbox = function (waitFor) {
+            store.mailbox = Mailbox.init(store, waitFor, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'MAILBOX_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
+
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
@@ -1486,6 +1506,7 @@ define([
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
+                loadMailbox(waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
