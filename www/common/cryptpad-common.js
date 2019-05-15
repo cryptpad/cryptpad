@@ -656,6 +656,12 @@ define([
     };
     cursor.onEvent = Util.mkEvent();
 
+    // Mailbox
+    var mailbox = common.mailbox = {};
+    mailbox.execCommand = function (data, cb) {
+        postMessage("MAILBOX_COMMAND", data, cb);
+    };
+    mailbox.onEvent = Util.mkEvent();
 
     // Pad RPC
     var pad = common.padRpc = {};
@@ -1096,6 +1102,8 @@ define([
         CHAT_EVENT: common.messenger.onEvent.fire,
         // Cursor
         CURSOR_EVENT: common.cursor.onEvent.fire,
+        // Mailbox
+        MAILBOX_EVENT: common.mailbox.onEvent.fire,
         // Pad
         PAD_READY: common.padRpc.onReadyEvent.fire,
         PAD_MESSAGE: common.padRpc.onMessageEvent.fire,

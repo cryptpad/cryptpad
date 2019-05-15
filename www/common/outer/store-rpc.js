@@ -66,6 +66,8 @@ define([
             OO_COMMAND: Store.onlyoffice.execCommand,
             // Cursor
             CURSOR_COMMAND: Store.cursor.execCommand,
+            // Mailbox
+            MAILBOX_COMMAND: Store.mailbox.execCommand,
             // Pad
             SEND_PAD_MSG: Store.sendPadMsg,
             JOIN_PAD: Store.joinPad,
