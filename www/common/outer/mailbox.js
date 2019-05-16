@@ -1,3 +1,4 @@
+// jshint ignore: start
 define([
     '/common/common-util.js',
     '/common/common-constants.js',
