@@ -1084,6 +1084,7 @@ define([
                     channel.queue.forEach(function (data) {
                         channel.sendMessage(data.message, clientId);
                     });
+                    channel.queue = [];
                     channel.bcast("PAD_CONNECT", {
                         myID: wc.myID,
                         id: wc.id,
