@@ -1063,6 +1063,8 @@ define([
                 },
                 onConnectionChange: function () {},
                 crypto: {
+                    // The encryption and decryption is done in the outer window.
+                    // This async-store only deals with already encrypted messages.
                     encrypt: function (m) { return m; },
                     decrypt: function (m) { return m; }
                 },
@@ -1092,6 +1094,7 @@ define([
                     channel.queue.forEach(function (data) {
                         channel.sendMessage(data.message, clientId);
                     });
+                    channel.queue = [];
                     channel.bcast("PAD_CONNECT", {
                         myID: wc.myID,
                         id: wc.id,
