@@ -605,7 +605,8 @@ define([
                     'newpad',
                     'share',
                     'limit',
-                    'unpinnedWarning'
+                    'unpinnedWarning',
+                    'notifications'
                 ],
                 title: title.getTitleConfig(),
                 metadataMgr: cpNfInner.metadataMgr,

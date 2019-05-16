@@ -37,6 +37,7 @@ MessengerUI, Messages) {
     var TITLE_CLS = Bar.constants.title = "cp-toolbar-title";
     var NEWPAD_CLS = Bar.constants.newpad = "cp-toolbar-new";
     var LINK_CLS = Bar.constants.link = "cp-toolbar-link";
+    var NOTIFICATIONS_CLS = Bar.constants.user = 'cp-toolbar-notifications';
 
     // User admin menu
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
@@ -70,6 +71,7 @@ MessengerUI, Messages) {
             'class': USER_CLS
         }).appendTo($topContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
+        $('<span>', {'class': NOTIFICATIONS_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': NEWPAD_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
@@ -927,6 +929,12 @@ MessengerUI, Messages) {
         return $userAdmin;
     };
 
+    var createNotifications = function (toolbar, config) {
+        console.log(Common.mailbox);
+        var $userAdmin = toolbar.$userAdmin.find('.'+NOTIFICATIONS_CLS).show();
+        return $userAdmin;
+    };
+
     // Events
     var initClickEvents = function (toolbar) {
         var removeDropdowns =  function () {
@@ -1095,6 +1103,7 @@ MessengerUI, Messages) {
         tb['newpad'] = createNewPad;
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
+        tb['notifications'] = createNotifications;
 
         var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
             if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }
