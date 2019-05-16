@@ -2465,6 +2465,8 @@ define([
 
             var header7, header28, headerOld;
             var i = 0;
+            var channels = [];
+
             $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active1Day)));
             filesList.some(function (arr) {
                 if (i >= limit) { return true; }
@@ -2481,6 +2483,8 @@ define([
                 var path = paths[0];
                 if (manager.isPathIn(path, [TRASH])) { return; }
 
+                if (channels.indexOf(file.channel) !== -1) { return; }
+                channels.push(file.channel);
 
                 if (!header7 && file.atime < last1) {
                     $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active7Days)));
