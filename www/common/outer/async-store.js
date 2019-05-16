@@ -1055,6 +1055,8 @@ define([
                 },
                 onConnectionChange: function () {},
                 crypto: {
+                    // The encryption and decryption is done in the outer window.
+                    // This async-store only deals with already encrypted messages.
                     encrypt: function (m) { return m; },
                     decrypt: function (m) { return m; }
                 },
