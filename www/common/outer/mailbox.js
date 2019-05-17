@@ -55,12 +55,6 @@ proxy.mailboxes = {
         };
     };
 
-    var getContact = function (ctx, user) {
-        var proxy = ctx.store && ctx.store.proxy;
-        if (!proxy.friends || !proxy.friends[user]) { return; }
-        return proxy.friends[user];
-    };
-
     var openChannel = function (ctx, type, m, onReady) {
         var box = ctx.boxes[type] = {
             queue: [], // Store the messages to send when the channel is ready
@@ -158,6 +152,11 @@ proxy.mailboxes = {
             for (var i = toClean.length-1; i>=0; i--) {
                 m.viewed.splice(toClean[i], 1);
             }
+            // Listen for changes in the "viewed" and lastKnownHash values
+            ctx.store.proxy.on('change', ['mailboxes', type], function () {
+                // Check everything!
+                // XXX
+            });
             // Continue
             onReady();
         };
@@ -171,8 +170,7 @@ proxy.mailboxes = {
         }
         var keys = getMyKeys(ctx);
         if (!keys) { return void cb({error: "missing asymmetric encryption keys"}); }
-        var friend = getContact(ctx, user);
-        if (!friend || !friend.notifications) { return void cb({error: "no notification channel"}); }
+        if (!user || !user.channel || !user.curvePublic) { return void cb({error: "no notification channel"}); }
 
         var crypto = Crypto.Mailbox.createEncryptor(keys);
         var network = ctx.store.network;
@@ -180,9 +178,9 @@ proxy.mailboxes = {
         var ciphertext = crypto.encrypt(JSON.stringify({
             type: type,
             content: msg
-        }), friend.curvePublic);
+        }), user.curvePublic);
 
-        network.join(friend.notification).then(function (wc) {
+        network.join(user.channel).then(function (wc) {
             wc.bcast(ciphertext).then(function () {
                 cb();
             });
@@ -256,6 +254,12 @@ proxy.mailboxes = {
 
         Realtime.whenRealtimeSyncs(ctx.store.realtime, function () {
             cb();
+            ctx.emit('VIEWED', {
+                type: type,
+                hash: hash
+            }, ctx.clients.filter(function (clientId) {
+                return clientId !== cId;
+            }));
         });
     };
 
