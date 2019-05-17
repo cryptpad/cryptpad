@@ -160,7 +160,7 @@ proxy.mailboxes = {
                     hash: h
                 }, ctx.clients);
             };
-            ctx.store.proxy.on('change', ['mailboxes', type], function (o, n, p, r) {
+            ctx.store.proxy.on('change', ['mailboxes', type], function (o, n, p) {
                 if (p[2] === 'lastKnownHash') {
                     // Hide everything up to this hash
                     var sliceIdx;
