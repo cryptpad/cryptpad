@@ -46,6 +46,21 @@ proxy.mailboxes = {
         }, cId ? [cId] : ctx.clients);
     };
 
+    var getMyKeys = function (ctx) {
+        var proxy = ctx.store && ctx.store.proxy;
+        if (!proxy.curvePrivate || !proxy.curvePublic) { return; }
+        return {
+            curvePrivate: proxy.curvePrivate,
+            curvePublic: proxy.curvePublic
+        };
+    };
+
+    var getContact = function (ctx, user) {
+        var proxy = ctx.store && ctx.store.proxy;
+        if (!proxy.friends || !proxy.friends[user]) { return; }
+        return proxy.friends[user];
+    };
+
     var openChannel = function (ctx, type, m, onReady) {
         var box = ctx.boxes[type] = {
             queue: [], // Store the messages to send when the channel is ready
@@ -61,20 +76,22 @@ proxy.mailboxes = {
             }
         };
         Crypto = Crypto;
-        /*
-        // XXX
         if (!Crypto.Mailbox) {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
         }
-        var crypto = Crypto.Mailbox.createEncryptor();
-        */
-        var crypto = {
-            encrypt: function (x) { return x; },
-            decrypt: function (x) { return x; }
-        };
+        var keys = getMyKeys(ctx);
+        if (!keys) { return void console.error("missing asymmetric encryption keys"); }
+        var crypto = Crypto.Mailbox.createEncryptor(keys);
+        // XXX remove 'test'
+        if (type === 'test') {
+            crypto = {
+                encrypt: function (x) { return x; },
+                decrypt: function (x) { return x; }
+            };
+        }
         var cfg = {
             network: ctx.store.network,
-            channel: m.channel, // TODO
+            channel: m.channel,
             noChainPad: true,
             crypto: crypto,
             owners: [ctx.store.proxy.edPublic],
@@ -82,6 +99,7 @@ proxy.mailboxes = {
         };
         cfg.onConnect = function (wc, sendMessage) {
             // Send a message to our box?
+            // NOTE: we use our own curvePublic so that we can decrypt our own message :)
             box.sendMessage = function (msg) {
                 try {
                     msg = JSON.stringify(msg);
@@ -92,19 +110,21 @@ proxy.mailboxes = {
                     if (m.viewed.indexOf(hash) === -1) {
                         m.viewed.push(hash);
                     }
-                });
+                }, keys.curvePublic);
             };
             box.queue.forEach(function (msg) {
                 box.sendMessage(msg);
             });
             box.queue = [];
         };
-        cfg.onMessage = function (msg, user, vKey, isCp, hash) {
+        cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
             try {
                 msg = JSON.parse(msg);
+                console.log(msg);
             } catch (e) {
                 console.error(e);
             }
+            if (author) { msg.author = author; }
             box.history.push(hash);
             if (isMessageNew(hash, m)) {
                 // Message should be displayed
@@ -145,9 +165,31 @@ proxy.mailboxes = {
     };
 
     // Send a message to someone else
-    /*var sendTo = function () {
-        
-    };*/
+    var sendTo = function (ctx, type, msg, user, cb) {
+        if (!Crypto.Mailbox) {
+            return void cb({error: "chainpad-crypto is outdated and doesn't support mailboxes."});
+        }
+        var keys = getMyKeys(ctx);
+        if (!keys) { return void cb({error: "missing asymmetric encryption keys"}); }
+        var friend = getContact(ctx, user);
+        if (!friend || !friend.notifications) { return void cb({error: "no notification channel"}); }
+
+        var crypto = Crypto.Mailbox.createEncryptor(keys);
+        var network = ctx.store.network;
+
+        var ciphertext = crypto.encrypt(JSON.stringify({
+            type: type,
+            content: msg
+        }), friend.curvePublic);
+
+        network.join(friend.notification).then(function (wc) {
+            wc.bcast(ciphertext).then(function () {
+                cb();
+            });
+        }, function (err) {
+            cb({error: err});
+        });
+    };
 
     var updateLastKnownHash = function (ctx, type) {
         var m = Util.find(ctx, ['store', 'proxy', 'mailboxes', type]);
@@ -279,6 +321,10 @@ proxy.mailboxes = {
                 content: content,
                 sender: store.proxy.curvePublic
             });
+        };
+
+        mailbox.sendTo = function (type, msg, user, cb) {
+            sendTo(ctx, type, msg, user, cb);
         };
 
         mailbox.removeClient = function (clientId) {
