@@ -451,6 +451,7 @@ define([
                     avatar: Util.find(store.proxy, ['profile', 'avatar']),
                     profile: Util.find(store.proxy, ['profile', 'view']),
                     color: getUserColor(),
+                    notifications: Util.find(store.proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: store.proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps

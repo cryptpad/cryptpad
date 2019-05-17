@@ -31,8 +31,16 @@ define([
             });
         };
 
-        mailbox.sendTo = function (user, type, content) {
+        mailbox.sendTo = function (type, content, user) {
             console.log(user, type, content);
+            execCommand('SENDTO', {
+                type: type,
+                msg: content,
+                user: user
+            }, function (err, obj) {
+                if (err || (obj && obj.error)) { return void console.error(err || obj.error); }
+                console.log('notif sent to other user from inner');
+            });
         };
 
         // UI

@@ -343,6 +343,9 @@ proxy.mailboxes = {
             if (cmd === 'DISMISS') {
                 return void dismiss(ctx, data, clientId, cb);
             }
+            if (cmd === 'SENDTO') {
+                return void sendTo(ctx, data.type, data.msg, data.user, cb);
+            }
         };
 
         return mailbox;
