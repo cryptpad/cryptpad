@@ -32,14 +32,12 @@ define([
         };
 
         mailbox.sendTo = function (type, content, user) {
-            console.log(user, type, content);
             execCommand('SENDTO', {
                 type: type,
                 msg: content,
                 user: user
             }, function (err, obj) {
                 if (err || (obj && obj.error)) { return void console.error(err || obj.error); }
-                console.log('notif sent to other user from inner');
             });
         };
 
@@ -56,11 +54,11 @@ define([
                 e.stopPropagation();
                 mailbox.dismiss(data, function (err) {
                     if (err) { return void console.error(err); }
-                    if (notif && notif.parentNode) {
+                    /*if (notif && notif.parentNode) {
                         try {
                             notif.parentNode.removeChild(notif);
                         } catch (e) { console.error(e); }
-                    }
+                    }*/
                 });
             });
             notif = h('div.cp-notification', {
@@ -75,6 +73,14 @@ define([
 
         var onViewedHandlers = [];
         var onMessageHandlers = [];
+
+        onViewedHandlers.push(function (data) {
+            var hash = data.hash.replace(/"/g, '\\\"');
+            var $notif = $('.cp-notification[data-hash="'+hash+'"]');
+            if ($notif.length) {
+                $notif.remove();
+            }
+        });
 
         // Call the onMessage handlers
         var pushMessage = function (data, handler) {

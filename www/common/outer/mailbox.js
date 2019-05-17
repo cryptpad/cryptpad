@@ -112,9 +112,9 @@ proxy.mailboxes = {
             box.queue = [];
         };
         cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
+            if (hash === m.lastKnownHash) { return; }
             try {
                 msg = JSON.parse(msg);
-                console.log(msg);
             } catch (e) {
                 console.error(e);
             }
@@ -153,9 +153,28 @@ proxy.mailboxes = {
                 m.viewed.splice(toClean[i], 1);
             }
             // Listen for changes in the "viewed" and lastKnownHash values
-            ctx.store.proxy.on('change', ['mailboxes', type], function () {
-                // Check everything!
-                // XXX
+            var view = function (h) {
+                delete box.content[h];
+                ctx.emit('VIEWED', {
+                    type: type,
+                    hash: h
+                }, ctx.clients);
+            };
+            ctx.store.proxy.on('change', ['mailboxes', type], function (o, n, p, r) {
+                if (p[2] === 'lastKnownHash') {
+                    // Hide everything up to this hash
+                    var sliceIdx;
+                    box.history.some(function (h, i) {
+                        sliceIdx = i + 1;
+                        view(h);
+                        if (h === n) { return true; }
+                    });
+                    box.history = box.history.slice(sliceIdx);
+                }
+                if (p[2] === 'viewed') {
+                    // Hide this message
+                    view(n);
+                }
             });
             // Continue
             onReady();
