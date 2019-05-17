@@ -470,6 +470,8 @@ define([
         });
     };
 
+    funcs.mailbox = {};
+
     Object.freeze(funcs);
     return { create: function (cb) {
 

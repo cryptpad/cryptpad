@@ -3,13 +3,14 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/hyperscript.js',
     '/customize/messages.js'
-], function ($, Util, UI, UIElements, Messages) {
+], function ($, Util, UI, UIElements, h, Messages) {
     var Mailbox = {};
+    Messages = Messages; // XXX
 
     Mailbox.create = function (Common) {
-        var mailbox = {};
-        var metadataMgr = Common.getMetadataMgr();
+        var mailbox = Common.mailbox;
         var sframeChan = Common.getSframeChannel();
 
         var execCommand = function (cmd, data, cb) {
@@ -30,53 +31,57 @@ define([
             });
         };
 
-        mailbox.dismiss = function (type, hash, cb) {
-            execCommand('DISMISS', {
-                hash: hash,
-                type: type
-            }, function (obj) {
-                if (obj && obj.error) { return void cb(obj.error); }
-                removeFromHistory(type, hash);
-                cb();
-            });
-        };
-
         mailbox.sendTo = function (user, type, content) {
-            
+            console.log(user, type, content);
         };
 
         // UI
+
+        var formatData = function (data) {
+            return JSON.stringify(data.content.msg.content);
+        };
+        var createElement = function (data) {
+            var notif;
+            var dismiss = h('span.fa.fa-times');
+            dismiss.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                mailbox.dismiss(data, function (err) {
+                    if (err) { return void console.error(err); }
+                    if (notif && notif.parentNode) {
+                        try {
+                            notif.parentNode.removeChild(notif);
+                        } catch (e) { console.error(e); }
+                    }
+                });
+            });
+            notif = h('div.cp-notification', {
+                'data-hash': data.content.hash
+            }, [
+                h('div.cp-notification-content', h('p', formatData(data))),
+                h('div.cp-notification-dismiss', dismiss)
+            ]);
+            return notif;
+        };
+
 
         var onViewedHandlers = [];
         var onMessageHandlers = [];
 
         // Call the onMessage handlers
-        var pushMessage = function (data) {
-            onMessageHandlers.forEach(function (f) {
+        var pushMessage = function (data, handler) {
+            var todo = function (f) {
                 try {
-                    f(data);
+                    var el = createElement(data);
+                    f(data, el);
                 } catch (e) {
                     console.error(e);
                 }
-            });
-        };
-
-        // Get all existing notifications + the new ones when they come
-        mailbox.subscribe = function (cfg) {
-            if (typeof(cfg.onViewed) === "function") {
-                onViewedHandlers.push(cfg.onViewed);
+            };
+            if (typeof (handler) === "function") {
+                return void todo(handler);
             }
-            if (typeof(cfg.onMessage) === "function") {
-                onMessageHandlers.push(cfg.onMessage);
-            }
-            Object.keys(history).forEach(function (type) {
-                history[type].forEach(function (data) {
-                    pushMessage({
-                        type: type,
-                        content: data
-                    });
-                });
-            });
+            onMessageHandlers.forEach(todo);
         };
 
         var onViewed = function (data) {
@@ -97,6 +102,37 @@ define([
             pushMessage(data);
             if (!history[data.type]) { history[data.type] = []; }
             history[data.type].push(data.content);
+        };
+
+        mailbox.dismiss = function (data, cb) {
+            var dataObj = {
+                hash: data.content.hash,
+                type: data.type
+            };
+            execCommand('DISMISS', dataObj, function (obj) {
+                if (obj && obj.error) { return void cb(obj.error); }
+                onViewed(dataObj);
+                cb();
+            });
+        };
+
+
+        // Get all existing notifications + the new ones when they come
+        mailbox.subscribe = function (cfg) {
+            if (typeof(cfg.onViewed) === "function") {
+                onViewedHandlers.push(cfg.onViewed);
+            }
+            if (typeof(cfg.onMessage) === "function") {
+                onMessageHandlers.push(cfg.onMessage);
+            }
+            Object.keys(history).forEach(function (type) {
+                history[type].forEach(function (data) {
+                    pushMessage({
+                        type: type,
+                        content: data
+                    }, cfg.onMessage);
+                });
+            });
         };
 
 

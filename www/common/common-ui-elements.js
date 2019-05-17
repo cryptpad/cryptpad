@@ -1425,7 +1425,7 @@ define([
             return /HTML/.test(Object.prototype.toString.call(o)) &&
                 typeof(o.tagName) === 'string';
         };
-        var allowedTags = ['a', 'p', 'hr'];
+        var allowedTags = ['a', 'p', 'hr', 'div'];
         var isValidOption = function (o) {
             if (typeof o !== "object") { return false; }
             if (isElement(o)) { return true; }

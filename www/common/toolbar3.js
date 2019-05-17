@@ -7,9 +7,10 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-feedback.js',
+    '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback,
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, h,
 MessengerUI, Messages) {
     var Common;
 
@@ -929,10 +930,29 @@ MessengerUI, Messages) {
         return $userAdmin;
     };
 
-    var createNotifications = function (toolbar, config) {
+    var createNotifications = function (toolbar) {
         console.log(Common.mailbox);
-        var $userAdmin = toolbar.$userAdmin.find('.'+NOTIFICATIONS_CLS).show();
-        return $userAdmin;
+        var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
+        var div = h('div.cp-notifications-container');
+        var pads_options = [div];
+        var dropdownConfig = {
+            text: '', // Button initial text
+            options: pads_options, // Entries displayed in the menu
+            container: $notif,
+            left: true,
+            common: Common
+        };
+        var $newPadBlock = UIElements.createDropdown(dropdownConfig);
+        $newPadBlock.find('button').attr('title', Messages.mailbox_title); // XXX
+        $newPadBlock.find('button').addClass('fa fa-bell-o');
+
+        Common.mailbox.subscribe({
+            onMessage: function (data, el) {
+                if (el) { div.appendChild(el); }
+            }
+        });
+
+        return $newPadBlock;
     };
 
     // Events
