@@ -451,6 +451,12 @@ define([
             if (!common.isLoggedIn()) { return; }
             common.initFilePicker({
                 onSelect: function (data) {
+                    // Supporting inserting links to documents and not only mediatags
+                    if (data.filters.link === true) {
+			mediaTagEmbedder(null, data);
+			return;
+                    }
+
                     if (data.type !== 'file') {
                         console.log("Unexpected data type picked " + data.type);
                         return;

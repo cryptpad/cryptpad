@@ -700,7 +700,8 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
+                    // var iframeClasses = (typeof cfg === undefined && cfg.classes) ? cfg.classes : "";
+                    FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe' /* , class: iframeClasses */ }).appendTo($('body'));
                     FP.picker = FilePicker.create(config);
                 } else if (!cfg.hidden) {
                     FP.$iframe.show();

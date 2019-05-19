@@ -552,13 +552,29 @@ define([
             $inner.css({ background: unlocked ? '#fff' : '#eee' });
         });
 
-        framework.setMediaTagEmbedder(function ($mt) {
-            $mt.attr('contenteditable', 'false');
-            //$mt.attr('tabindex', '1');
+        framework.setMediaTagEmbedder(function ($mt, data) {
             //MEDIATAG
-            var element = new window.CKEDITOR.dom.element($mt[0]);
-            editor.insertElement(element);
-            editor.widgets.initOn( element, 'mediatag' );
+            if (data.filters.inplace===true) {
+              console.log("Inplace inserting: " + JSON.stringify(data));
+              var selection = editor.getSelection();
+              var range = CKEDITOR.plugins.autocomplete.selectionRange;
+              var crange = editor.createRange();
+              crange.selectNodeContents(range.startContainer)
+              crange.startOffset = range.startOffset - 1;
+              crange.endOffset = range.endOffset;
+              editor.getSelection().selectRanges( [crange] );
+            }
+
+            if (data.filters.link===true) {
+              var href = data.origin + data.href;
+              editor.insertHtml("<a href='" + href + "'>" + data.name + "</a>", 'text' );
+            } else {
+              $mt.attr('contenteditable', 'false');
+              //$mt.attr('tabindex', '1');
+              var element = new window.CKEDITOR.dom.element($mt[0]);
+              editor.insertElement(element);
+              editor.widgets.initOn( element, 'mediatag' );
+            }
         });
 
         framework.setTitleRecommender(function () {
@@ -944,6 +960,7 @@ define([
                     'import': Messages.pad_mediatagImport,
                     options: Messages.pad_mediatagOptions
                 };
+                Ckeditor.plugins.addExternal('cryptpadautocomplete','/pad/', 'autocomplete-page-plugin.js');
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {

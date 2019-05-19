@@ -32,7 +32,7 @@ define([
         var $body = $('body');
         var sframeChan = common.getSframeChannel();
         var filters = metadataMgr.getPrivateData().types;
-
+        var origin = metadataMgr.getPrivateData().origin;
         var hideFileDialog = function () {
             sframeChan.event('EV_FILE_PICKER_CLOSE');
         };
@@ -45,16 +45,21 @@ define([
                 var key = Hash.encodeBase64(secret.keys.cryptKey);
                 sframeChan.event("EV_FILE_PICKED", {
                     type: parsed.type,
+                    href: data.url,
+                    origin: origin,
+		    name: data.name,
                     src: src,
-                    name: data.name,
-                    key: key
+                    key: key,
+                    filters : filters
                 });
                 return;
             }
             sframeChan.event("EV_FILE_PICKED", {
                 type: parsed.type,
                 href: data.url,
-                name: data.name
+                origin: origin,
+                name: data.name,
+                filters : filters
             });
         };
 
@@ -146,6 +151,12 @@ define([
                     $input.focus();
                 };
                 common.getFilesList(filters, todo);
+                if (filters.caretRect) {
+		   $(".cp-modal")[0].style.top = (filters.caretRect.top) + "px";
+		   $(".cp-modal")[0].style.left = (filters.caretRect.left) + "px";
+		   $(".cp-modal")[0].style.width = "500px";
+		   $(".cp-modal")[0].style.height = "400px";
+	        }
             };
             updateContainer();
         };

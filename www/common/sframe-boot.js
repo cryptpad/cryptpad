@@ -8,6 +8,7 @@
 var afterLoaded = function (req) {
     req.cfg = req.cfg || {};
     if (req.pfx) {
+        reg.cfg.pfx = pfx;
         req.cfg.onNodeCreated = function (node /*, config, module, path*/) {
             node.setAttribute('src', req.pfx + node.getAttribute('src'));
         };
