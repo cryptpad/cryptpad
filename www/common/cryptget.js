@@ -28,9 +28,9 @@ define([
         }
     };
 
-    var makeConfig = function (hash, password) {
+    var makeConfig = function (hash, opt) {
         // We can't use cryptget with a file or a user so we can use 'pad' as hash type
-        var secret = Hash.getSecrets('pad', hash, password);
+        var secret = Hash.getSecrets('pad', hash, opt.password);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
@@ -38,6 +38,7 @@ define([
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
             logLevel: 0,
+            initialState: opt.initialState
         };
         return config;
     };
@@ -57,7 +58,7 @@ define([
         }
         opt = opt || {};
 
-        var config = makeConfig(hash, opt.password);
+        var config = makeConfig(hash, opt);
         var Session = { cb: cb, hasNetwork: Boolean(opt.network) };
 
         config.onReady = function (info) {
@@ -82,7 +83,7 @@ define([
         }
         opt = opt || {};
 
-        var config = makeConfig(hash, opt.password);
+        var config = makeConfig(hash, opt);
         var Session = { cb: cb, };
 
         config.onReady = function (info) {

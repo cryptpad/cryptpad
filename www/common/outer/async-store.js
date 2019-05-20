@@ -479,10 +479,11 @@ define([
 
         Store.addPad = function (clientId, data, cb) {
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
+            var secret;
             if (!data.roHref) {
                 var parsed = Hash.parsePadUrl(data.href);
                 if (parsed.hashData.type === "pad") {
-                    var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                    secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                     data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                 }
             }
@@ -490,7 +491,7 @@ define([
             if (data.owners) { pad.owners = data.owners; }
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
-            if (data.channel) { pad.channel = data.channel; }
+            if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             store.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: e}); }
                 sendDriveEvent('DRIVE_CHANGE', {

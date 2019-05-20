@@ -719,7 +719,8 @@ define([
                                 }
                             }
                             sframeChan.query('Q_SAVE_AS_TEMPLATE', {
-                                toSave: toSave
+                                toSave: toSave,
+                                title: title
                             }, function () {
                                 UI.alert(Messages.templateSaved);
                                 Feedback.send('TEMPLATE_CREATED');

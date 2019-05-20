@@ -512,6 +512,10 @@ define([
 
         optsPut = optsPut || {};
         var optsGet = {};
+
+        if (parsed.type === 'poll') { optsGet.initialState = '{}'; }
+        if (parsed2.type === 'poll') { optsPut.initialState = '{}'; }
+
         Nthen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
