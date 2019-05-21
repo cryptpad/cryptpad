@@ -477,6 +477,9 @@ define([
         // PPP: password for the new template?
         var hash = Hash.createRandomHash(p.type);
         var href = '/' + p.type + '/#' + hash;
+
+        var optsPut = {};
+        if (p.type === 'poll') { optsPut.initialState = '{}'; }
         // PPP: add password as cryptput option
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
@@ -488,7 +491,7 @@ define([
                 if (obj && obj.error) { return void cb(obj.error); }
                 cb();
             });
-        });
+        }, optsPut);
     };
 
     common.isTemplate = function (href, cb) {
