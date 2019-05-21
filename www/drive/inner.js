@@ -2469,7 +2469,6 @@ define([
 
             $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active1Day)));
             filesList.some(function (arr) {
-                if (i >= limit) { return true; }
                 var id = arr[0];
                 var file = arr[1];
                 if (!file || !file.atime) { return; }
