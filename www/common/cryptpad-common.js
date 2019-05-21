@@ -477,6 +477,9 @@ define([
         // PPP: password for the new template?
         var hash = Hash.createRandomHash(p.type);
         var href = '/' + p.type + '/#' + hash;
+
+        var optsPut = {};
+        if (p.type === 'poll') { optsPut.initialState = '{}'; }
         // PPP: add password as cryptput option
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
@@ -488,7 +491,7 @@ define([
                 if (obj && obj.error) { return void cb(obj.error); }
                 cb();
             });
-        });
+        }, optsPut);
     };
 
     common.isTemplate = function (href, cb) {
@@ -512,6 +515,10 @@ define([
 
         optsPut = optsPut || {};
         var optsGet = {};
+
+        if (parsed.type === 'poll') { optsGet.initialState = '{}'; }
+        if (parsed2.type === 'poll') { optsPut.initialState = '{}'; }
+
         Nthen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
@@ -656,6 +663,12 @@ define([
     };
     cursor.onEvent = Util.mkEvent();
 
+    // Mailbox
+    var mailbox = common.mailbox = {};
+    mailbox.execCommand = function (data, cb) {
+        postMessage("MAILBOX_COMMAND", data, cb);
+    };
+    mailbox.onEvent = Util.mkEvent();
 
     // Pad RPC
     var pad = common.padRpc = {};
@@ -1096,6 +1109,8 @@ define([
         CHAT_EVENT: common.messenger.onEvent.fire,
         // Cursor
         CURSOR_EVENT: common.cursor.onEvent.fire,
+        // Mailbox
+        MAILBOX_EVENT: common.mailbox.onEvent.fire,
         // Pad
         PAD_READY: common.padRpc.onReadyEvent.fire,
         PAD_MESSAGE: common.padRpc.onMessageEvent.fire,

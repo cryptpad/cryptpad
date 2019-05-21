@@ -1041,5 +1041,15 @@
     "contact_devHint": "Für Verbesserungsvorschläge oder zum Danke-Sagen.",
     "contact_bug": "Fehlerbericht",
     "contact_chat": "Chat",
-    "contact_email": "E-Mail"
+    "contact_email": "E-Mail",
+    "timeoutError": "Ein Fehler hat deine Verbindung zum Server unterbrochen. <br>Drücke <em>Esc</em>, um die Seite neu zu laden.",
+    "admin_diskUsageTitle": "Speicherplatzbelegung",
+    "admin_diskUsageHint": "Speicherplatz, der von verschiedenen CryptPad-Ressourcen verwendet wird",
+    "admin_diskUsageButton": "Bericht generieren",
+    "settings_codeSpellcheckTitle": "Rechtschreibprüfung",
+    "settings_codeSpellcheckLabel": "Rechtschreibprüfung im Code-Editor aktivieren",
+    "drive_active1Day": "Letzte 24 Stunden",
+    "drive_active7Days": "Letzte 7 Tage",
+    "drive_active28Days": "Letzte 4 Wochen",
+    "drive_activeOld": "Ältere Pads"
 }

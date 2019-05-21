@@ -452,7 +452,7 @@ define([
         }
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
-            if (val.edit === false) {
+            if (val.edit === false || !hashes.editHash) {
                 $(link).find('#cp-share-editable-false').prop('checked', true);
                 $(link).find('#cp-share-editable-true').prop('checked', false);
             } else {
@@ -719,7 +719,8 @@ define([
                                 }
                             }
                             sframeChan.query('Q_SAVE_AS_TEMPLATE', {
-                                toSave: toSave
+                                toSave: toSave,
+                                title: title
                             }, function () {
                                 UI.alert(Messages.templateSaved);
                                 Feedback.send('TEMPLATE_CREATED');

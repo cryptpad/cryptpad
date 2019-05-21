@@ -832,9 +832,9 @@ define([
 
         var localStore = window.cryptpadStore;
         $button.click(function () {
-            Object.keys(localStore).forEach(function (k) {
+            Object.keys(localStore.store).forEach(function (k) {
                 if(k.slice(0, 9) === "hide-info") {
-                    localStore.put(k, undefined);
+                    localStore.put(k, null);
                 }
             });
             UI.alert(Messages.settings_resetTipsDone);

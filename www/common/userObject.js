@@ -95,6 +95,8 @@ define([
         exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
             var data = exp.getFileData(element);
+            // undefined means this pad doesn't support read-only
+            if (!data.roHref) { return; }
             return Boolean(data.roHref && !data.href);
         };
 

@@ -961,7 +961,20 @@ define([
     };
 
     var getRecentPads = function (Env) {
-        return Env.user.userObject.getRecentPads();
+        var files = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            var data = uo.getFiles([UserObject.FILES_DATA]).map(function (id) {
+                return [Number(id), uo.getFileData(id)];
+            });
+            Array.prototype.push.apply(files, data);
+        });
+        var sorted = files.filter(function (a) { return a[1].atime; })
+            .sort(function (a,b) {
+                return b[1].atime - a[1].atime;
+            });
+        return sorted;
+        //return Env.user.userObject.getRecentPads();
     };
     var getOwnedPads = function (Env) {
         return Env.user.userObject.getOwnedPads(Env.edPublic);

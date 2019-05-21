@@ -12,18 +12,19 @@ define([
     '/common/common-messenger.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
-    '/common/outer/chainpad-netflux-worker.js',
+    '/common/outer/mailbox.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, OnlyOffice, CpNfWorker, NetConfig, AppConfig,
-             Crypto, ChainPad, Listmap, nThen, Saferphore) {
+             Cursor, OnlyOffice, Mailbox, NetConfig, AppConfig,
+             Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
         var Store = window.Cryptpad_Store = {};
@@ -478,10 +479,11 @@ define([
 
         Store.addPad = function (clientId, data, cb) {
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
+            var secret;
             if (!data.roHref) {
                 var parsed = Hash.parsePadUrl(data.href);
                 if (parsed.hashData.type === "pad") {
-                    var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                    secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                     data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                 }
             }
@@ -489,7 +491,7 @@ define([
             if (data.owners) { pad.owners = data.owners; }
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
-            if (data.channel) { pad.channel = data.channel; }
+            if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             store.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: e}); }
                 sendDriveEvent('DRIVE_CHANGE', {
@@ -939,11 +941,18 @@ define([
         };
 
         // Cursor
-
         Store.cursor = {
             execCommand: function (clientId, data, cb) {
                 if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
                 store.cursor.execCommand(clientId, data, cb);
+            }
+        };
+
+        // Mailbox
+        Store.mailbox = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
+                store.mailbox.execCommand(clientId, data, cb);
             }
         };
 
@@ -1010,7 +1019,7 @@ define([
                 });
                 channel.history.forEach(function (msg) {
                     postMessage(clientId, "PAD_MESSAGE", {
-                        msg: CpNfWorker.removeCp(msg),
+                        msg: CpNetflux.removeCp(msg),
                         user: channel.wc.myID,
                         validateKey: channel.data.validateKey
                     });
@@ -1020,14 +1029,15 @@ define([
                 return;
             }
             var conf = {
-                onReady: function (padData) {
-                    channel.data = padData || {};
+                onReady: function (pad) {
+                    var padData = pad.metadata || {};
+                    channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
                     postMessage(clientId, "PAD_READY");
                 },
-                onMessage: function (user, m, validateKey, isCp) {
+                onMessage: function (m, user, validateKey, isCp) {
                     channel.pushHistory(m, isCp);
                     channel.bcast("PAD_MESSAGE", {
                         user: user,
@@ -1041,13 +1051,25 @@ define([
                 onLeave: function (m) {
                     channel.bcast("PAD_LEAVE", m);
                 },
-                onDisconnect: function () {
+                onAbort: function () {
                     channel.bcast("PAD_DISCONNECT");
                 },
                 onError: function (err) {
                     channel.bcast("PAD_ERROR", err);
-                    delete channels[data.channel]; // TODO test?
+                    delete channels[data.channel];
                 },
+                onChannelError: function (err) {
+                    channel.bcast("PAD_ERROR", err);
+                    delete channels[data.channel];
+                },
+                onConnectionChange: function () {},
+                crypto: {
+                    // The encryption and decryption is done in the outer window.
+                    // This async-store only deals with already encrypted messages.
+                    encrypt: function (m) { return m; },
+                    decrypt: function (m) { return m; }
+                },
+                noChainPad: true,
                 channel: data.channel,
                 validateKey: data.validateKey,
                 owners: data.owners,
@@ -1060,10 +1082,10 @@ define([
                         // Send to server
                         sendMessage(msg, function () {
                             // Broadcast to other tabs
-                            channel.pushHistory(CpNfWorker.removeCp(msg), /^cp\|/.test(msg));
+                            channel.pushHistory(CpNetflux.removeCp(msg), /^cp\|/.test(msg));
                             channel.bcast("PAD_MESSAGE", {
                                 user: wc.myID,
-                                msg: CpNfWorker.removeCp(msg),
+                                msg: CpNetflux.removeCp(msg),
                                 validateKey: channel.data.validateKey
                             }, cId);
                             cb();
@@ -1073,6 +1095,7 @@ define([
                     channel.queue.forEach(function (data) {
                         channel.sendMessage(data.message, clientId);
                     });
+                    channel.queue = [];
                     channel.bcast("PAD_CONNECT", {
                         myID: wc.myID,
                         id: wc.id,
@@ -1080,7 +1103,7 @@ define([
                     });
                 }
             };
-            channel.cpNf = CpNfWorker.start(conf);
+            channel.cpNf = CpNetflux.start(conf);
         };
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
@@ -1291,6 +1314,7 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
+            // TODO mailbox events
             try {
                 store.cursor.removeClient(clientId);
             } catch (e) { console.error(e); }
@@ -1392,6 +1416,17 @@ define([
             });
         };
 
+        var loadMailbox = function (waitFor) {
+            store.mailbox = Mailbox.init(store, waitFor, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'MAILBOX_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
+
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
@@ -1486,6 +1521,7 @@ define([
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
+                loadMailbox(waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
