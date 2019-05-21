@@ -2,9 +2,10 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
+    '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Hash, Realtime, CpNetflux, Crypto) {
+], function (Util, Hash, Realtime, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
@@ -14,13 +15,16 @@ define([
     var BLOCKING_TYPES = [
     ];
 
-    var initializeMailboxes = function (mailboxes) {
+    var initializeMailboxes = function (ctx, mailboxes) {
         if (!mailboxes['notifications']) {
             mailboxes.notifications = {
                 channel: Hash.createChannelId(),
                 lastKnownHash: '',
                 viewed: []
             };
+            ctx.pinPads([mailboxes.notifications.channel], function (res) {
+                if (res.error) { console.error(res); }
+            });
         }
     };
 
@@ -55,133 +59,6 @@ proxy.mailboxes = {
         };
     };
 
-    var openChannel = function (ctx, type, m, onReady) {
-        var box = ctx.boxes[type] = {
-            queue: [], // Store the messages to send when the channel is ready
-            history: [], // All the hashes loaded from the server in corretc order
-            content: {}, // Content of the messages that should be displayed
-            sendMessage: function (msg) { // To send a message to our box
-                try {
-                    msg = JSON.stringify(msg);
-                } catch (e) {
-                    console.error(e);
-                }
-                box.queue.push(msg);
-            }
-        };
-        Crypto = Crypto;
-        if (!Crypto.Mailbox) {
-            return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
-        }
-        var keys = getMyKeys(ctx);
-        if (!keys) { return void console.error("missing asymmetric encryption keys"); }
-        var crypto = Crypto.Mailbox.createEncryptor(keys);
-        // XXX remove 'test'
-        if (type === 'test') {
-            crypto = {
-                encrypt: function (x) { return x; },
-                decrypt: function (x) { return x; }
-            };
-        }
-        var cfg = {
-            network: ctx.store.network,
-            channel: m.channel,
-            noChainPad: true,
-            crypto: crypto,
-            owners: [ctx.store.proxy.edPublic],
-            lastKnownHash: m.lastKnownHash
-        };
-        cfg.onConnect = function (wc, sendMessage) {
-            // Send a message to our box?
-            // NOTE: we use our own curvePublic so that we can decrypt our own message :)
-            box.sendMessage = function (msg) {
-                try {
-                    msg = JSON.stringify(msg);
-                } catch (e) {
-                    console.error(e);
-                }
-                sendMessage(msg, function (err, hash) {
-                    if (m.viewed.indexOf(hash) === -1) {
-                        m.viewed.push(hash);
-                    }
-                }, keys.curvePublic);
-            };
-            box.queue.forEach(function (msg) {
-                box.sendMessage(msg);
-            });
-            box.queue = [];
-        };
-        cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
-            if (hash === m.lastKnownHash) { return; }
-            try {
-                msg = JSON.parse(msg);
-            } catch (e) {
-                console.error(e);
-            }
-            if (author) { msg.author = author; }
-            box.history.push(hash);
-            if (isMessageNew(hash, m)) {
-                // Message should be displayed
-                var message = {
-                    msg: msg,
-                    hash: hash
-                };
-                box.content[hash] = msg;
-                showMessage(ctx, type, message);
-            } else {
-                // Message has already been viewed by the user
-                if (Object.keys(box.content).length === 0) {
-                    // If nothing is displayed yet, we can bump our lastKnownHash and remove this hash
-                    // from our "viewed" array
-                    m.lastKnownHash = hash;
-                    box.history = [];
-                    var idxViewed = m.viewed.indexOf(hash);
-                    if (idxViewed !== -1) { m.viewed.splice(idxViewed, 1); }
-                }
-            }
-        };
-        cfg.onReady = function () {
-            // Clean the "viewed" array: make sure all the "viewed" hashes are
-            // in history
-            var toClean = [];
-            m.viewed.forEach(function (h, i) {
-                if (box.history.indexOf(h) === -1) {
-                    toClean.push(i);
-                }
-            });
-            for (var i = toClean.length-1; i>=0; i--) {
-                m.viewed.splice(toClean[i], 1);
-            }
-            // Listen for changes in the "viewed" and lastKnownHash values
-            var view = function (h) {
-                delete box.content[h];
-                ctx.emit('VIEWED', {
-                    type: type,
-                    hash: h
-                }, ctx.clients);
-            };
-            ctx.store.proxy.on('change', ['mailboxes', type], function (o, n, p) {
-                if (p[2] === 'lastKnownHash') {
-                    // Hide everything up to this hash
-                    var sliceIdx;
-                    box.history.some(function (h, i) {
-                        sliceIdx = i + 1;
-                        view(h);
-                        if (h === n) { return true; }
-                    });
-                    box.history = box.history.slice(sliceIdx);
-                }
-                if (p[2] === 'viewed') {
-                    // Hide this message
-                    view(n);
-                }
-            });
-            // Continue
-            onReady();
-        };
-        CpNetflux.start(cfg);
-    };
-
     // Send a message to someone else
     var sendTo = function (ctx, type, msg, user, cb) {
         if (!Crypto.Mailbox) {
@@ -202,6 +79,7 @@ proxy.mailboxes = {
         network.join(user.channel).then(function (wc) {
             wc.bcast(ciphertext).then(function () {
                 cb();
+                wc.leave();
             });
         }, function (err) {
             cb({error: err});
@@ -282,6 +160,146 @@ proxy.mailboxes = {
         });
     };
 
+
+    var openChannel = function (ctx, type, m, onReady) {
+        var box = ctx.boxes[type] = {
+            queue: [], // Store the messages to send when the channel is ready
+            history: [], // All the hashes loaded from the server in corretc order
+            content: {}, // Content of the messages that should be displayed
+            sendMessage: function (msg) { // To send a message to our box
+                try {
+                    msg = JSON.stringify(msg);
+                } catch (e) {
+                    console.error(e);
+                }
+                box.queue.push(msg);
+            }
+        };
+        Crypto = Crypto;
+        if (!Crypto.Mailbox) {
+            return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
+        }
+        var keys = getMyKeys(ctx);
+        if (!keys) { return void console.error("missing asymmetric encryption keys"); }
+        var crypto = Crypto.Mailbox.createEncryptor(keys);
+        // XXX remove 'test'
+        if (type === 'test') {
+            crypto = {
+                encrypt: function (x) { return x; },
+                decrypt: function (x) { return x; }
+            };
+        }
+        var cfg = {
+            network: ctx.store.network,
+            channel: m.channel,
+            noChainPad: true,
+            crypto: crypto,
+            owners: [ctx.store.proxy.edPublic],
+            lastKnownHash: m.lastKnownHash
+        };
+        cfg.onConnect = function (wc, sendMessage) {
+            // Send a message to our box?
+            // NOTE: we use our own curvePublic so that we can decrypt our own message :)
+            box.sendMessage = function (msg) {
+                try {
+                    msg = JSON.stringify(msg);
+                } catch (e) {
+                    console.error(e);
+                }
+                sendMessage(msg, function (err, hash) {
+                    if (m.viewed.indexOf(hash) === -1) {
+                        m.viewed.push(hash);
+                    }
+                }, keys.curvePublic);
+            };
+            box.queue.forEach(function (msg) {
+                box.sendMessage(msg);
+            });
+            box.queue = [];
+        };
+        cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
+            if (hash === m.lastKnownHash) { return; }
+            try {
+                msg = JSON.parse(msg);
+            } catch (e) {
+                console.error(e);
+            }
+            if (author) { msg.author = author; }
+            box.history.push(hash);
+            if (isMessageNew(hash, m)) {
+                // Message should be displayed
+                var message = {
+                    msg: msg,
+                    hash: hash
+                };
+                Handlers(ctx, box, message, function (toDismiss) {
+                    if (toDismiss) {
+                        dismiss(ctx, {
+                            type: type,
+                            hash: hash
+                        }, '', function () {
+                            console.log('Notification handled automatically');
+                        });
+                        return;
+                    }
+                    box.content[hash] = msg;
+                    showMessage(ctx, type, message);
+                });
+            } else {
+                // Message has already been viewed by the user
+                if (Object.keys(box.content).length === 0) {
+                    // If nothing is displayed yet, we can bump our lastKnownHash and remove this hash
+                    // from our "viewed" array
+                    m.lastKnownHash = hash;
+                    box.history = [];
+                    var idxViewed = m.viewed.indexOf(hash);
+                    if (idxViewed !== -1) { m.viewed.splice(idxViewed, 1); }
+                }
+            }
+        };
+        cfg.onReady = function () {
+            // Clean the "viewed" array: make sure all the "viewed" hashes are
+            // in history
+            var toClean = [];
+            m.viewed.forEach(function (h, i) {
+                if (box.history.indexOf(h) === -1) {
+                    toClean.push(i);
+                }
+            });
+            for (var i = toClean.length-1; i>=0; i--) {
+                m.viewed.splice(toClean[i], 1);
+            }
+            // Listen for changes in the "viewed" and lastKnownHash values
+            var view = function (h) {
+                delete box.content[h];
+                ctx.emit('VIEWED', {
+                    type: type,
+                    hash: h
+                }, ctx.clients);
+            };
+            ctx.store.proxy.on('change', ['mailboxes', type], function (o, n, p) {
+                if (p[2] === 'lastKnownHash') {
+                    // Hide everything up to this hash
+                    var sliceIdx;
+                    box.history.some(function (h, i) {
+                        sliceIdx = i + 1;
+                        view(h);
+                        if (h === n) { return true; }
+                    });
+                    box.history = box.history.slice(sliceIdx);
+                }
+                if (p[2] === 'viewed') {
+                    // Hide this message
+                    view(n);
+                }
+            });
+            // Continue
+            onReady();
+        };
+        CpNetflux.start(cfg);
+    };
+
+
     var subscribe = function (ctx, data, cId, cb) {
         // Get existing notifications
         Object.keys(ctx.boxes).forEach(function (type) {
@@ -306,10 +324,13 @@ proxy.mailboxes = {
         ctx.clients.splice(idx, 1);
     };
 
-    Mailbox.init = function (store, waitFor, emit) {
+    Mailbox.init = function (cfg, waitFor, emit) {
         var mailbox = {};
+        var store = cfg.store;
         var ctx = {
             store: store,
+            pinPads: cfg.pinPads,
+            updateMetadata: cfg.updateMetadata,
             emit: emit,
             clients: [],
             boxes: {}
@@ -317,7 +338,7 @@ proxy.mailboxes = {
 
         var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
 
-        initializeMailboxes(mailboxes);
+        initializeMailboxes(ctx, mailboxes);
 
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
@@ -344,6 +365,10 @@ proxy.mailboxes = {
                 content: content,
                 sender: store.proxy.curvePublic
             });
+        };
+
+        mailbox.dismiss = function (data, cb) {
+            dismiss(ctx, data, '', cb);
         };
 
         mailbox.sendTo = function (type, msg, user, cb) {

@@ -8,10 +8,11 @@ define([
     '/common/common-util.js',
     '/common/common-feedback.js',
     '/common/hyperscript.js',
+    '/common/notifications.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, h,
-MessengerUI, Messages) {
+Notifications, MessengerUI, Messages) {
     var Common;
 
     var Bar = {
@@ -232,7 +233,11 @@ MessengerUI, Messages) {
         // Display the userlist
 
         // Editors
-        var pendingFriends = Common.getPendingFriends();
+        var pendingFriends = Common.getPendingFriends(); // Friend requests sent
+        var friendRequests = Common.getFriendRequests(); // Friend requests received
+        console.log(friendRequests);
+        var friendTo = +new Date() - (2 * 24 * 3600 * 1000);
+        friendTo = +new Date(); // XXX
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});
@@ -300,9 +305,21 @@ MessengerUI, Messages) {
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
                 && !priv.readOnly) {
-                if (pendingFriends.indexOf(data.netfluxId) !== -1) {
+                console.log(pendingFriends);
+                if (pendingFriends[data.curvePublic] && pendingFriends[data.curvePublic] > friendTo) {
                     $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
                         .appendTo($rightCol);
+                } else if (friendRequests[data.curvePublic]) {
+                    $('<button>', {
+                        'class': 'fa fa-bell cp-toolbar-userlist-button',
+                        'title': 'Pending friend request' /*Messages._getKey('userlist_addAsFriendTitle', [ // XXX
+                            name
+                        ])*/
+                    }).appendTo($nameSpan).click(function (e) {
+                        e.stopPropagation();
+                        UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
+                    });
+
                 } else {
                     $('<button>', {
                         'class': 'fa fa-user-plus cp-toolbar-userlist-button',
@@ -311,7 +328,10 @@ MessengerUI, Messages) {
                         ])
                     }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
-                        Common.sendFriendRequest(data.netfluxId);
+                        Common.sendFriendRequest(data, function (err, obj) {
+                            if (err || (obj && obj.error)) { return void console.error(err || obj.error); }
+                            // XXX
+                        });
                     });
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && friends[data.curvePublic]) {
@@ -948,7 +968,10 @@ MessengerUI, Messages) {
 
         Common.mailbox.subscribe({
             onMessage: function (data, el) {
-                if (el) { div.appendChild(el); }
+                if (el) {
+                    Notifications(Common, data, el);
+                    div.appendChild(el);
+                }
             }
         });
 

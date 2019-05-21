@@ -15,12 +15,21 @@
             .cp-notification-content {
                 flex: 1;
                 min-width: 0;
+                p {
+                    word-break: break-all;
+                }
+                &.cp-clickable {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: rgba(0,0,0,0.1);
+                    }
+                }
             }
             .cp-notification-dismiss {
                 color: black;
                 width: 25px;
                 height: 100%;
-                display: flex;
+                display: none;
                 align-items: center;
                 justify-content: center;
                 span {

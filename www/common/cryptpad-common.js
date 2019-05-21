@@ -604,16 +604,6 @@ define([
         });
     };
 
-    // Messaging (manage friends from the userlist)
-    common.inviteFromUserlist = function (netfluxId, cb) {
-        postMessage("INVITE_FROM_USERLIST", {
-            netfluxId: netfluxId,
-            href: window.location.href
-        }, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb();
-        });
-    };
 
     // Admin
     common.adminRpc = function (data, cb) {
@@ -625,14 +615,13 @@ define([
     common.onNetworkReconnect = Util.mkEvent();
     common.onNewVersionReconnect = Util.mkEvent();
 
-    // Messaging
+    // Messaging (friend requests)
     var messaging = common.messaging = {};
-    messaging.onFriendRequest = Util.mkEvent();
-    messaging.onFriendComplete = Util.mkEvent();
-    messaging.addHandlers = function (href) {
-        postMessage("ADD_DIRECT_MESSAGE_HANDLERS", {
-            href: href
-        });
+    messaging.answerFriendRequest = function (data, cb) {
+        postMessage("ANSWER_FRIEND_REQUEST", data, cb);
+    };
+    messaging.sendFriendRequest = function (data, cb) {
+        postMessage("SEND_FRIEND_REQUEST", data, cb);
     };
 
     // Onlyoffice
@@ -1081,9 +1070,6 @@ define([
             var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
             if (localToken !== data.token) { requestLogin(); }
         },
-        // Messaging
-        Q_FRIEND_REQUEST: common.messaging.onFriendRequest.fire,
-        EV_FRIEND_COMPLETE: common.messaging.onFriendComplete.fire,
         // Network
         NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
         NETWORK_RECONNECT: function (data) {

@@ -2607,5 +2607,25 @@ define([
         return m;
     };
 
+    UIElements.displayFriendRequestModal = function (common, data) {
+        var msg = data.content.msg;
+        var text = Messages._getKey('contacts_request', [msg.content.displayName]);
+        UI.confirm(text, function (yes) {
+            common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
+                data: data,
+                value: yes
+            }, function (err, obj) {
+                var error = err || (obj && obj.error);
+                if (error) {
+                    return void UI.warn(error);
+                }
+                UI.log(Messages.contacts_added);
+            });
+        }, {
+            ok: 'Accept', // XXX
+            cancel: 'Ignore the request' // XXX
+        }, true);
+    };
+
     return UIElements;
 });
