@@ -8,11 +8,10 @@ define([
     '/common/common-util.js',
     '/common/common-feedback.js',
     '/common/hyperscript.js',
-    '/common/notifications.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, h,
-Notifications, MessengerUI, Messages) {
+MessengerUI, Messages) {
     var Common;
 
     var Bar = {
@@ -235,9 +234,8 @@ Notifications, MessengerUI, Messages) {
         // Editors
         var pendingFriends = Common.getPendingFriends(); // Friend requests sent
         var friendRequests = Common.getFriendRequests(); // Friend requests received
-        console.log(friendRequests);
         var friendTo = +new Date() - (2 * 24 * 3600 * 1000);
-        friendTo = +new Date(); // XXX
+        //friendTo = +new Date(); // XXX
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});
@@ -305,7 +303,6 @@ Notifications, MessengerUI, Messages) {
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
                 && !priv.readOnly) {
-                console.log(pendingFriends);
                 if (pendingFriends[data.curvePublic] && pendingFriends[data.curvePublic] > friendTo) {
                     $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
                         .appendTo($rightCol);
@@ -950,10 +947,11 @@ Notifications, MessengerUI, Messages) {
         return $userAdmin;
     };
 
-    var createNotifications = function (toolbar) {
-        console.log(Common.mailbox);
+    var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
-        var div = h('div.cp-notifications-container');
+        var div = h('div.cp-notifications-container', [
+            h('div.cp-notifications-empty', "Nothing new here") // XXX
+        ]);
         var pads_options = [div];
         var dropdownConfig = {
             text: '', // Button initial text
@@ -963,15 +961,35 @@ Notifications, MessengerUI, Messages) {
             common: Common
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
-        $newPadBlock.find('button').attr('title', Messages.mailbox_title); // XXX
-        $newPadBlock.find('button').addClass('fa fa-bell-o');
+        var $button = $newPadBlock.find('button');
+        $button.attr('title', Messages.mailbox_title); // XXX
+        $button.addClass('fa fa-bell-o');
+        var $n = $button.find('.cp-dropdown-button-title').hide();
+        var $empty = $(div).find('.cp-notifications-empty');
+
+        var refresh = function () {
+            updateUserList(toolbar, config);
+            var n = $(div).find('.cp-notification').length;
+            $button.removeClass('fa-bell-o').removeClass('fa-bell');
+            if (n === 0) {
+                $empty.show();
+                $n.hide();
+                return void $button.addClass('fa-bell-o');
+            }
+            $empty.hide();
+            $n.text(n).show();
+            $button.addClass('fa-bell');
+        };
 
         Common.mailbox.subscribe({
             onMessage: function (data, el) {
                 if (el) {
-                    Notifications(Common, data, el);
                     div.appendChild(el);
                 }
+                refresh();
+            },
+            onViewed: function (data) {
+                refresh();
             }
         });
 

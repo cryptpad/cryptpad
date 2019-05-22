@@ -68,7 +68,7 @@ define([
         });
     };
 
-    Msg.messenger = function (store) {
+    Msg.messenger = function (store, updateMetadata) {
         var messenger = {
             handlers: {
                 event: []
@@ -97,6 +97,7 @@ define([
             stack.push(f);
         };
 
+        var allowFriendsChannels = false;
         var channels = messenger.channels = {};
 
         var joining = {};
@@ -301,7 +302,10 @@ define([
             if (!proxy.friends) { return; }
             var friends = proxy.friends;
             delete friends[curvePublic];
-            Realtime.whenRealtimeSyncs(realtime, cb);
+            Realtime.whenRealtimeSyncs(realtime, function () {
+                updateMetadata();
+                cb();
+            });
         };
 
         var pushMsg = function (channel, cryptMsg) {
@@ -771,45 +775,9 @@ define([
             openChannel(data);
         };
 
-        // Detect friends changes made in another worker
-        proxy.on('change', ['friends'], function (o, n, p) {
-            var curvePublic;
-            if (o === undefined) {
-                // new friend added
-                curvePublic = p.slice(-1)[0];
-
-                // Load channel
-                var friend = friends[curvePublic];
-                if (typeof(friend) !== 'object') { return; }
-                var channel = friend.channel;
-                if (!channel) { return; }
-                loadFriend(friend, function () {
-                    emit('FRIEND', {
-                        curvePublic: curvePublic,
-                    });
-                });
-                return;
-            }
-
-            if (typeof(n) === 'undefined') {
-                // Handled by .on('remove')
-                return;
-            }
-        }).on('remove', ['friends'], function (o, p) {
-            var curvePublic = p[1];
-            if (!curvePublic) { return; }
-            if (p[2] !== 'channel') { return; }
-            var channel = channels[o];
-            channel.wc.leave(Types.unfriend);
-            delete channels[channel.id];
-            emit('UNFRIEND', {
-                curvePublic: curvePublic,
-                fromMe: true
-            });
-        });
-
         // Friend added in our contacts in the current worker
         messenger.onFriendAdded = function (friendData) {
+            if (!allowFriendsChannels) { return; }
             var friend = friends[friendData.curvePublic];
             if (typeof(friend) !== 'object') { return; }
             var channel = friend.channel;
@@ -820,10 +788,23 @@ define([
                 });
             });
         };
+        messenger.onFriendRemoved = function (curvePublic, chanId) {
+            var channel = channels[chanId];
+            if (!channel) { return; }
+            if (channel.wc) {
+                channel.wc.leave(Types.unfriend);
+            }
+            delete channels[channel.id];
+            emit('UNFRIEND', {
+                curvePublic: curvePublic,
+                fromMe: true
+            });
+        };
 
         var ready = false;
         var initialized = false;
         var init = function () {
+            allowFriendsChannels = true;
             if (initialized) { return; }
             initialized = true;
             var friends = getFriendList(proxy);

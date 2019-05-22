@@ -347,11 +347,11 @@ proxy.mailboxes = {
             if (BLOCKING_TYPES.indexOf(key) === -1) {
                 openChannel(ctx, key, m, function () {
                     updateLastKnownHash(ctx, key);
-                    console.log(key + ' mailbox is ready');
+                    //console.log(key + ' mailbox is ready');
                 });
             } else {
                 openChannel(ctx, key, m, waitFor(function () {
-                    console.log(key + ' mailbox is ready');
+                    //console.log(key + ' mailbox is ready');
                 }));
             }
         });

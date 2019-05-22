@@ -2610,7 +2610,8 @@ define([
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
         var text = Messages._getKey('contacts_request', [msg.content.displayName]);
-        UI.confirm(text, function (yes) {
+
+        var todo = function (yes) {
             common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
                 data: data,
                 value: yes
@@ -2621,10 +2622,32 @@ define([
                 }
                 UI.log(Messages.contacts_added);
             });
+        };
+
+        var content = h('div.cp-share-modal', [
+            setHTML(h('p'), text)
+        ]);
+        var buttons = [{
+            name: Messages.cancel, // XXX "later"?
+            onClick: function () {},
+            keys: [27]
         }, {
-            ok: 'Accept', // XXX
-            cancel: 'Ignore the request' // XXX
-        }, true);
+            className: 'primary',
+            name: "Accept (Enter)", // XXX
+            onClick: function () {
+                todo(true);
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: "Ignore the request", // XXX
+            onClick: function () {
+                todo(false);
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var modal = UI.dialog.customModal(content, {buttons: buttons});
+        UI.openCustomModal(modal);
     };
 
     return UIElements;

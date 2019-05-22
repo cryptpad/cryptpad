@@ -3,9 +3,10 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/notifications.js',
     '/common/hyperscript.js',
     '/customize/messages.js'
-], function ($, Util, UI, UIElements, h, Messages) {
+], function ($, Util, UI, UIElements, Notifications, h, Messages) {
     var Mailbox = {};
     Messages = Messages; // XXX
 
@@ -87,6 +88,7 @@ define([
             var todo = function (f) {
                 try {
                     var el = createElement(data);
+                    Notifications.add(Common, data, el);
                     f(data, el);
                 } catch (e) {
                     console.error(e);
@@ -103,6 +105,7 @@ define([
             onViewedHandlers.forEach(function (f) {
                 try {
                     f(data);
+                    Notifications.remove(Common, data);
                 } catch (e) {
                     console.error(e);
                 }
@@ -165,7 +168,7 @@ define([
         });
 
         execCommand('SUBSCRIBE', null, function () {
-            console.log('subscribed');
+            //console.log('subscribed');
         });
 
         return mailbox;

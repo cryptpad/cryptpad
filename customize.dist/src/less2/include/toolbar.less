@@ -898,6 +898,27 @@
         }
         .cp-toolbar-notifications {
             margin-left: 10px;
+            .cp-notifications-empty {
+                color: black;
+                padding: 5px;
+            }
+            button {
+                position: relative;
+                &.fa-bell-o {
+                    cursor: default;
+                }
+                .cp-dropdown-button-title {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    font-size: 14px;
+                    border: 1px solid;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 16px;
+                }
+            }
         }
         .cp-toolbar-link {
             display: inline-flex;

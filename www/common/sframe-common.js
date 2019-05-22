@@ -392,9 +392,16 @@ define([
     var friendRequests = {};
     funcs.addFriendRequest = function (data) {
         var curve = Util.find(data, ['content', 'msg', 'author']);
-        console.log(data);
-        console.log(curve);
         friendRequests[curve] = data;
+    };
+    funcs.removeFriendRequest = function (hash) {
+        Object.keys(friendRequests).some(function (curve) {
+            var h = Util.find(friendRequests[curve], ['content', 'hash']);
+            if (h === hash) {
+                delete friendRequests[curve];
+                return true;
+            }
+        });
     };
     funcs.getFriendRequests = function () {
         return JSON.parse(JSON.stringify(friendRequests));

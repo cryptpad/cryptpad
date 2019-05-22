@@ -59,7 +59,6 @@ define([
             curvePublic: data.curvePublic
         }, function (obj) {
             cb(obj);
-            if (obj && obj.error) { return void cb(obj); }
         });
     };
     Msg.addToFriendList = function (cfg, data, cb) {
