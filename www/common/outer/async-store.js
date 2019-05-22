@@ -123,6 +123,13 @@ define([
                 list = list.concat(fList);
             }
 
+            if (store.proxy.mailboxes) {
+                var mList = Object.keys(store.proxy.mailboxes).map(function (m) {
+                    return store.proxy.mailboxes[m].channel;
+                });
+                list = list.concat(mList);
+            }
+
             list.push(userChannel);
             list.sort();
 
