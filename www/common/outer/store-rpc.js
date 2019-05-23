@@ -58,8 +58,8 @@ define([
             ADD_SHARED_FOLDER: Store.addSharedFolder,
             LOAD_SHARED_FOLDER: Store.loadSharedFolderAnon,
             // Messaging
-            INVITE_FROM_USERLIST: Store.inviteFromUserlist,
-            ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,
+            ANSWER_FRIEND_REQUEST: Store.answerFriendRequest,
+            SEND_FRIEND_REQUEST: Store.sendFriendRequest,
             // Chat
             CHAT_COMMAND: Store.messenger.execCommand,
             // OnlyOffice

@@ -69,7 +69,23 @@ define([
                     return void UI.alert(Messages.pinLimitNotPinned, null, true);
                 } else if (err) { return; }
                 evTitleChange.fire(title);
-                if (titleUpdated) { titleUpdated(undefined, title); }
+                if (titleUpdated) {
+                    titleUpdated(undefined, title);
+                    // XXX Test notifications from inner
+                    var users = metadataMgr.getMetadata().users;
+                    var me = metadataMgr.getNetfluxId();
+                    Object.keys(users).forEach(function (netfluxId) {
+                        if (netfluxId === me) { return; }
+                        var user = users[netfluxId];
+                        if (!user.curvePublic || !user.notifications) { return; }
+                        Common.mailbox.sendTo("TEST_NOTIF_TITLE", {
+                            new_title: title
+                        }, {
+                            channel: user.notifications,
+                            curvePublic: user.curvePublic
+                        });
+                    });
+                }
             });
         });
 

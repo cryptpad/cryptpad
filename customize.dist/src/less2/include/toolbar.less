@@ -9,6 +9,7 @@
 @import (reference) "./icons.less";
 @import (reference) "./modal.less";
 @import (reference) "./help.less";
+@import (reference) "./notifications.less";
 
 .toolbar_vars (
     @color: @colortheme_default-color, // Color of the text for the toolbar
@@ -66,6 +67,7 @@
     }
 
     .help_main(@color, @bg-color);
+    .notifications_main();
     .dropdown_main();
     .history_main();
     .iconColors_main();
@@ -567,6 +569,22 @@
                 }
                 .cp-toolbar-user {
                     height: @toolbar_line-height;
+                    .cp-toolbar-notifications {
+                        height: @toolbar_line-height;
+                        width: @toolbar_line-height;
+                        margin-left: 0;
+                        button {
+                            height: @toolbar_line-height;
+                            width: @toolbar_line-height;
+                            font-size: 15px;
+                            margin-top: -1px;
+                            .cp-dropdown-button-title {
+                                transform: scale(0.5);
+                                bottom: -5px;
+                                right: -5px;
+                            }
+                        }
+                    }
                     .cp-toolbar-new {
                         height: @toolbar_line-height;
                         width: @toolbar_line-height;
@@ -834,7 +852,7 @@
                 line-height: 28px; // padding + border
             }
         }
-        .cp-toolbar-link, .cp-toolbar-new {
+        .cp-toolbar-link, .cp-toolbar-new, .cp-toolbar-notifications {
             font-size: 48px;
             line-height: 64px;
             width: @toolbar_top-height;
@@ -849,14 +867,13 @@
             }
             transition: all 0.15s;
         }
-        .cp-toolbar-new {
+        .cp-toolbar-notifications, .cp-toolbar-new {
             background-color: rgba(0,0,0,0.2);
             &:hover {
                 background-color: rgba(0,0,0,0.3);
             }
             text-align: center;
             font-size: 32px;
-            margin-left: 10px;
             &> button {
                 display: flex;
                 align-items: center;
@@ -881,6 +898,34 @@
                     font-size: 1em;
                     text-decoration: none;
                     color: inherit;
+                }
+            }
+        }
+        .cp-toolbar-notifications {
+            margin-left: 10px;
+            .cp-notifications-empty {
+                color: black;
+                padding: 5px;
+            }
+            button {
+                position: relative;
+                &.fa-bell-o {
+                    cursor: default;
+                }
+                .cp-dropdown-button-title {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    font-size: 14px;
+                    border: 1px solid;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 16px;
+                    &.cp-notifications-small {
+                        font-size: 10px;
+                        line-height: 17px;
+                    }
                 }
             }
         }
@@ -917,6 +962,7 @@
             order: 6;
             line-height: @toolbar_top-height;
             color: white;
+            .cp-toolbar-notifications { order: 1; }
             .cp-toolbar-new { order: 2; }
             .cp-toolbar-user-dropdown { order: 3; }
             .cp-toolbar-backup { order: 4; } // TODO drive migration to secure iframe

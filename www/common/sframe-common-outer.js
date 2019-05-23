@@ -502,16 +502,11 @@ define([
             });
 
             // Messaging
-            sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
-                Cryptpad.inviteFromUserlist(netfluxId, cb);
+            sframeChan.on('Q_SEND_FRIEND_REQUEST', function (data, cb) {
+                Cryptpad.messaging.sendFriendRequest(data, cb);
             });
-            Cryptpad.messaging.onFriendRequest.reg(function (confirmText, cb) {
-                sframeChan.query('Q_INCOMING_FRIEND_REQUEST', confirmText, function (err, data) {
-                    cb(data);
-                });
-            });
-            Cryptpad.messaging.onFriendComplete.reg(function (data) {
-                sframeChan.event('EV_FRIEND_REQUEST', data);
+            sframeChan.on('Q_ANSWER_FRIEND_REQUEST', function (data, cb) {
+                Cryptpad.messaging.answerFriendRequest(data, cb);
             });
 
             // History
@@ -877,6 +872,13 @@ define([
                 Cryptpad.cursor.execCommand(data, cb);
             });
 
+            Cryptpad.mailbox.onEvent.reg(function (data) {
+                sframeChan.event('EV_MAILBOX_EVENT', data);
+            });
+            sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
+                Cryptpad.mailbox.execCommand(data, cb);
+            });
+
             Cryptpad.onTimeoutEvent.reg(function () {
                 sframeChan.event('EV_WORKER_TIMEOUT');
             });
@@ -947,9 +949,6 @@ define([
                     readOnly: readOnly,
                     crypto: Crypto.createEncryptor(secret.keys),
                     onConnect: function () {
-                        var href = parsed.getUrl();
-                        // Add friends requests handlers when we have the final href
-                        Cryptpad.messaging.addHandlers(href);
                         if (window.location.hash && window.location.hash !== '#') {
                             /*window.location = parsed.getUrl({
                                 present: parsed.hashData.present,

@@ -1426,7 +1426,7 @@ define([
             return /HTML/.test(Object.prototype.toString.call(o)) &&
                 typeof(o.tagName) === 'string';
         };
-        var allowedTags = ['a', 'p', 'hr'];
+        var allowedTags = ['a', 'p', 'hr', 'div'];
         var isValidOption = function (o) {
             if (typeof o !== "object") { return false; }
             if (isElement(o)) { return true; }
@@ -2606,6 +2606,49 @@ define([
         });
 
         return m;
+    };
+
+    UIElements.displayFriendRequestModal = function (common, data) {
+        var msg = data.content.msg;
+        var text = Messages._getKey('contacts_request', [msg.content.displayName]);
+
+        var todo = function (yes) {
+            common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
+                data: data,
+                value: yes
+            }, function (err, obj) {
+                var error = err || (obj && obj.error);
+                if (error) {
+                    return void UI.warn(error);
+                }
+                UI.log(Messages.contacts_added);
+            });
+        };
+
+        var content = h('div.cp-share-modal', [
+            setHTML(h('p'), text)
+        ]);
+        var buttons = [{
+            name: Messages.friendRequest_later,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.friendRequest_accept,
+            onClick: function () {
+                todo(true);
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: Messages.friendRequest_decline,
+            onClick: function () {
+                todo(false);
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var modal = UI.dialog.customModal(content, {buttons: buttons});
+        UI.openCustomModal(modal);
     };
 
     return UIElements;

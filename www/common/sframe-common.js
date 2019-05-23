@@ -10,6 +10,7 @@ define([
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
+    '/common/sframe-common-mailbox.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -33,6 +34,7 @@ define([
     File,
     CodeMirror,
     Cursor,
+    Mailbox,
     MetadataMgr,
     AppConfig,
     CommonRealtime,
@@ -378,14 +380,31 @@ define([
     funcs.mergeAnonDrive = function (cb) {
         ctx.sframeChan.query('Q_MERGE_ANON_DRIVE', null, cb);
     };
-    // Friends
-    var pendingFriends = [];
+
+    // Create friend request
     funcs.getPendingFriends = function () {
-        return pendingFriends.slice();
+        return ctx.metadataMgr.getPrivateData().pendingFriends;
     };
-    funcs.sendFriendRequest = function (netfluxId) {
-        ctx.sframeChan.query('Q_SEND_FRIEND_REQUEST', netfluxId, $.noop);
-        pendingFriends.push(netfluxId);
+    funcs.sendFriendRequest = function (data, cb) {
+        ctx.sframeChan.query('Q_SEND_FRIEND_REQUEST', data, cb);
+    };
+    // Friend requests received
+    var friendRequests = {};
+    funcs.addFriendRequest = function (data) {
+        var curve = Util.find(data, ['content', 'msg', 'author']);
+        friendRequests[curve] = data;
+    };
+    funcs.removeFriendRequest = function (hash) {
+        Object.keys(friendRequests).some(function (curve) {
+            var h = Util.find(friendRequests[curve], ['content', 'hash']);
+            if (h === hash) {
+                delete friendRequests[curve];
+                return true;
+            }
+        });
+    };
+    funcs.getFriendRequests = function () {
+        return JSON.parse(JSON.stringify(friendRequests));
     };
 
     // Feedback
@@ -468,6 +487,8 @@ define([
         });
     };
 
+    funcs.mailbox = {};
+
     Object.freeze(funcs);
     return { create: function (cb) {
 
@@ -519,15 +540,6 @@ define([
             });
 
             UI.addTooltips();
-
-            ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
-                UI.confirm(confirmMsg, cb, null, true);
-            });
-            ctx.sframeChan.on('EV_FRIEND_REQUEST', function (data) {
-                var i = pendingFriends.indexOf(data.netfluxId);
-                if (i !== -1) { pendingFriends.splice(i, 1); }
-                UI.log(data.logText);
-            });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD", function () {
                 UIElements.displayPasswordPrompt(funcs);
@@ -630,6 +642,8 @@ define([
 
             ctx.sframeChan.ready();
             cb(funcs);
+
+            Mailbox.create(funcs);
         });
     } };
 });

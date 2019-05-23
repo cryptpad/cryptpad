@@ -123,6 +123,13 @@ define([
                 list = list.concat(fList);
             }
 
+            if (store.proxy.mailboxes) {
+                var mList = Object.keys(store.proxy.mailboxes).map(function (m) {
+                    return store.proxy.mailboxes[m].channel;
+                });
+                list = list.concat(mList);
+            }
+
             list.push(userChannel);
             list.sort();
 
@@ -451,6 +458,7 @@ define([
                     avatar: Util.find(store.proxy, ['profile', 'avatar']),
                     profile: Util.find(store.proxy, ['profile', 'view']),
                     color: getUserColor(),
+                    notifications: Util.find(store.proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: store.proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps
@@ -460,7 +468,8 @@ define([
                     friends: store.proxy.friends || {},
                     settings: store.proxy.settings,
                     thumbnails: disableThumbnails === false,
-                    isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners']))
+                    isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
+                    pendingFriends: store.proxy.friends_pending || {}
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -626,6 +635,27 @@ define([
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
+            if (store.mailbox && store.proxy.friends) {
+                // XXX test mailbox, should be removed in prod
+                /*store.mailbox.post('notifications', 'NAME_CHANGED', {
+                    old: store.proxy[Constants.displayNameKey],
+                    new: value
+                });
+                Object.keys(store.proxy.friends).forEach(function (curve) {
+                    var f = store.proxy.friends[curve];
+                    if (!f.notifications) { return; }
+                    store.mailbox.sendTo('NAME_CHANGED', {
+                        old: store.proxy[Constants.displayNameKey],
+                        new: value
+                    }, {
+                        channel: f.notifications,
+                        curvePublic: curve
+                    }, function (obj) {
+                        if (obj && obj.error) { return void console.error(obj.error); }
+                        console.log('notif sent to '+f);
+                    });
+                });*/
+            }
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
             if (store.messenger) { store.messenger.updateMyData(); }
@@ -881,36 +911,73 @@ define([
 
 
         // Messaging (manage friends from the userlist)
-        var getMessagingCfg = function (clientId) {
-            return {
-                proxy: store.proxy,
-                realtime: store.realtime,
-                network: store.network,
-                updateMetadata: function () {
-                    postMessage(clientId, "UPDATE_METADATA");
-                },
-                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-                friendComplete: function (data) {
-                    if (data.friend && store.messenger && store.messenger.onFriendAdded) {
-                        store.messenger.onFriendAdded(data.friend);
-                    }
-                    postMessage(clientId, "EV_FRIEND_COMPLETE", data);
-                },
-                friendRequest: function (data, cb) {
-                    postMessage(clientId, "Q_FRIEND_REQUEST", data, cb);
-                },
-            };
-        };
-        Store.inviteFromUserlist = function (clientId, data, cb) {
-            var messagingCfg = getMessagingCfg(clientId);
-            Messaging.inviteFromUserlist(messagingCfg, data, cb);
-        };
-        Store.addDirectMessageHandlers = function (clientId, data) {
-            var messagingCfg = getMessagingCfg(clientId);
-            Messaging.addDirectMessageHandler(messagingCfg, data.href);
-        };
+        Store.answerFriendRequest = function (clientId, obj, cb) {
+            var value = obj.value;
+            var data = obj.data;
+            if (data.type !== 'notifications') { return void cb ({error: 'EINVAL'}); }
+            var hash = data.content.hash;
+            var msg = data.content.msg;
 
-        // Messenger
+            var dismiss = function (cb) {
+                cb = cb || function () {};
+                store.mailbox.dismiss({
+                    hash: hash,
+                    type: 'notifications'
+                }, cb);
+            };
+
+            // If we accept the request, add the friend to the list
+            if (value) {
+                Messaging.acceptFriendRequest(store, msg.content, function (obj) {
+                    if (obj && obj.error) { return void cb(obj); }
+                    Messaging.addToFriendList({
+                        proxy: store.proxy,
+                        realtime: store.realtime,
+                        pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+                    }, msg.content, function (err) {
+                        if (store.messenger) {
+                            store.messenger.onFriendAdded(msg.content);
+                        }
+                        broadcast([], "UPDATE_METADATA");
+                        if (err) { return void cb({error: err}); }
+                        dismiss(cb);
+                    });
+                });
+                return;
+            }
+            // Otherwise, just remove the notification
+            store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {}, {
+                channel: msg.content.notifications,
+                curvePublic: msg.content.curvePublic
+            }, function (obj) {
+                cb(obj);
+            });
+            dismiss();
+        };
+        Store.sendFriendRequest = function (clientId, data, cb) {
+            var friend = Messaging.getFriend(store.proxy, data.curvePublic);
+            if (friend) { return void cb({error: 'ALREADY_FRIEND'}); }
+            if (!data.notifications || !data.curvePublic) { return void cb({error: 'INVALID_USER'}); }
+
+            store.proxy.friends_pending = store.proxy.friends_pending || {};
+
+            var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
+            if (store.proxy.friends_pending[data.curvePublic] &&
+                    store.proxy.friends_pending[data.curvePublic] > twoDaysAgo) {
+                return void cb({error: 'TIMEOUT'});
+            }
+
+            store.proxy.friends_pending[data.curvePublic] = +new Date();
+            broadcast([], "UPDATE_METADATA");
+
+            var myData = Messaging.createData(store.proxy);
+            store.mailbox.sendTo('FRIEND_REQUEST', myData, {
+                channel: data.notifications,
+                curvePublic: data.curvePublic
+            }, function (obj) {
+                cb(obj);
+            });
+        };
 
         // Get hashes for the share button
         Store.getStrongerHash = function (clientId, data, cb) {
@@ -925,6 +992,7 @@ define([
             cb();
         };
 
+        // Messenger
         Store.messenger = {
             execCommand: function (clientId, data, cb) {
                 if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
@@ -951,6 +1019,7 @@ define([
         // Mailbox
         Store.mailbox = {
             execCommand: function (clientId, data, cb) {
+                if (!store.loggedIn) { return void cb(); }
                 if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
                 store.mailbox.execCommand(clientId, data, cb);
             }
@@ -1314,12 +1383,14 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
-            // TODO mailbox events
             try {
                 store.cursor.removeClient(clientId);
             } catch (e) { console.error(e); }
             try {
                 store.onlyoffice.removeClient(clientId);
+            } catch (e) { console.error(e); }
+            try {
+                store.mailbox.removeClient(clientId);
             } catch (e) { console.error(e); }
 
             Object.keys(Store.channels).forEach(function (chanId) {
@@ -1385,7 +1456,9 @@ define([
         };
         var loadMessenger = function () {
             if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
-            var messenger = store.messenger = Messenger.messenger(store);
+            var messenger = store.messenger = Messenger.messenger(store, function () {
+                broadcast([], "UPDATE_METADATA");
+            });
             messenger.on('event', function (ev, data) {
                 sendMessengerEvent('CHAT_EVENT', {
                     ev: ev,
@@ -1417,7 +1490,16 @@ define([
         };
 
         var loadMailbox = function (waitFor) {
-            store.mailbox = Mailbox.init(store, waitFor, function (ev, data, clients) {
+            if (!store.loggedIn || !store.proxy.edPublic) {
+                return;
+            }
+            store.mailbox = Mailbox.init({
+                store: store,
+                updateMetadata: function () {
+                    broadcast([], "UPDATE_METADATA");
+                },
+                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+            }, waitFor, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'MAILBOX_EVENT', {
                         ev: ev,
@@ -1425,6 +1507,18 @@ define([
                     });
                 });
             });
+        };
+
+        var cleanFriendRequests = function () {
+            try {
+                if (!store.proxy.friends_pending) { return; }
+                var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
+                Object.keys(store.proxy.friends_pending).forEach(function (curve) {
+                    if (store.proxy.friends_pending[curve] < twoDaysAgo) {
+                        delete store.proxy.friends_pending[curve];
+                    }
+                });
+            } catch (e) {}
         };
 
         //////////////////////////////////////////////////////////////////
@@ -1522,6 +1616,7 @@ define([
                 loadCursor();
                 loadOnlyOffice();
                 loadMailbox(waitFor);
+                cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -1575,8 +1670,30 @@ define([
                     // Trigger userlist update when the avatar has changed
                     broadcast([], "UPDATE_METADATA");
                 });
-                proxy.on('change', ['friends'], function () {
+                proxy.on('change', ['friends'], function (o, n, p) {
                     // Trigger userlist update when the friendlist has changed
+                    broadcast([], "UPDATE_METADATA");
+
+                    if (!store.messenger) { return; }
+                    if (o !== undefined) { return; }
+                    var curvePublic = p.slice(-1)[0];
+                    var friend = proxy.friends && proxy.friends[curvePublic];
+                    store.messenger.onFriendAdded(friend);
+                });
+                proxy.on('remove', ['friends'], function (o, p) {
+                    broadcast([], "UPDATE_METADATA");
+
+                    if (!store.messenger) { return; }
+                    var curvePublic = p[1];
+                    if (!curvePublic) { return; }
+                    if (p[2] !== 'channel') { return; }
+                    store.messenger.onFriendRemoved(curvePublic, o);
+                });
+                proxy.on('change', ['friends_pending'], function () {
+                    // Trigger userlist update when the friendlist has changed
+                    broadcast([], "UPDATE_METADATA");
+                });
+                proxy.on('remove', ['friends_pending'], function () {
                     broadcast([], "UPDATE_METADATA");
                 });
                 proxy.on('change', ['settings'], function () {
