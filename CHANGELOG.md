@@ -1,3 +1,26 @@
+# Wolf release (v2.22.0)
+
+## Goals
+
+This release coincided with a little time off for the team, so we planned to include only a few things. We recognized that the "Recent pads" view in the CryptDrive was not very useful for us because it did not include documents stored in _Shared folders_, so we decided to fix that. Otherwise, we're beginning a new project which we'll announce soon, so we've started working on some of its basic features.
+
+## Update notes
+
+* This release does not include any serverside changes, so you'll only need to get the latest source from the core repository and update dependencies with `bower update`
+
+## Features
+
+* As noted above, we've updated the _Recent Pads_ view in the CryptDrive to include _Shared folders_. We've also broken the list up into categories for the last 24 hours, last 7 days, and last 4 weeks.
+* Continuing the theme of taking multi-user workflows into account, we've started working on the design and implementation of "Encrypted mailboxes". This will allow for account notifications in a future release, which will then make it possible for us to improve our "friend request" process, as well as enabling users to share access to documents directly without ever having to send their links outside of the platform.
+* Even though this is a fairly small release from us, we've continued to receive contributions to our German, Spanish, Italian, Romanian, and Russian translations.
+
+## Bug fixes
+
+* We've removed a fairly large amount of duplicated code related to our networking layer which - while not directly responsible for any bugs that we know of - increased the likelihood that there would be bugs in the future.
+* We realized that very old document hashes (version 0) were being displayed as having a "read-only link", even though those document did not support read-only mode. This has been fixed.
+* We've also included some new tests to make sure that those fixed bugs stay fixed.
+* Finally, it was reported that templates for polls were not working. We determined that the templates had been encoded in an invalid format at creation time, so when people tried to apply theme the process failed. We've addressed the underlying issue, but those invalid templates will unfortunately have to be recreated.
+
 # Vervet release (v2.21.0)
 
 ## Goals
