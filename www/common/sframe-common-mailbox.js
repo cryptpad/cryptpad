@@ -8,7 +8,6 @@ define([
     '/customize/messages.js'
 ], function ($, Util, UI, UIElements, Notifications, h, Messages) {
     var Mailbox = {};
-    Messages = Messages; // XXX
 
     Mailbox.create = function (Common) {
         var mailbox = Common.mailbox;

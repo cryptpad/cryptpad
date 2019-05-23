@@ -945,6 +945,12 @@ define([
                 return;
             }
             // Otherwise, just remove the notification
+            store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {}, {
+                channel: msg.content.notifications,
+                curvePublic: msg.content.curvePublic
+            }, function (obj) {
+                cb(obj);
+            });
             dismiss();
         };
         Store.sendFriendRequest = function (clientId, data, cb) {

@@ -30,7 +30,15 @@ define([
         var content = data.content;
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
-            .html('Friend request accepted: <b>'+msg.content.displayName+'</b>');
+            .html(Messages._getKey('friendRequest_accepted', [msg.content.displayName])
+        $(el).find('.cp-notification-dismiss').css('display', 'flex');
+    };
+
+    handlers['DECLINE_FRIEND_REQUEST'] = function (common, data, el) {
+        var content = data.content;
+        var msg = content.msg;
+        $(el).find('.cp-notification-content p')
+            .html(Messages._getKey('friendRequest_declined', [msg.content.displayName])
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 

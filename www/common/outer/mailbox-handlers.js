@@ -15,6 +15,13 @@ define([
         }
         cb();
     };
+    handlers['DECLINE_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
+        // Our friend request was declined.
+        if (!ctx.store.proxy.friends_pending[data.msg.author]) { return void cb(true); }
+        delete ctx.store.proxy.friends_pending[data.msg.author];
+        ctx.updateMetadata();
+        cb();
+    };
     handlers['ACCEPT_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
         // Our friend request was accepted.
         // Make sure we really sent it
