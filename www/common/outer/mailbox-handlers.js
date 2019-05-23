@@ -17,7 +17,7 @@ define([
     };
     handlers['DECLINE_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
         // Our friend request was declined.
-        if (!ctx.store.proxy.friends_pending[data.msg.author]) { return void cb(true); }
+        if (!ctx.store.proxy.friends_pending[data.msg.author]) { return void cb(); }
         delete ctx.store.proxy.friends_pending[data.msg.author];
         ctx.updateMetadata();
         cb();
