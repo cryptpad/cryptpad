@@ -2628,19 +2628,19 @@ define([
             setHTML(h('p'), text)
         ]);
         var buttons = [{
-            name: Messages.cancel, // XXX "later"?
+            name: Messages.friendRequest_later,
             onClick: function () {},
             keys: [27]
         }, {
             className: 'primary',
-            name: "Accept (Enter)", // XXX
+            name: Messages.friendRequest_accept,
             onClick: function () {
                 todo(true);
             },
             keys: [13]
         }, {
             className: 'primary',
-            name: "Ignore the request", // XXX
+            name: Messages.friendRequest_decline,
             onClick: function () {
                 todo(false);
             },

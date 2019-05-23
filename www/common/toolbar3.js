@@ -309,9 +309,7 @@ MessengerUI, Messages) {
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
                         'class': 'fa fa-bell cp-toolbar-userlist-button',
-                        'title': 'Pending friend request' /*Messages._getKey('userlist_addAsFriendTitle', [ // XXX
-                            name
-                        ])*/
+                        'title': Messages._getKey('friendRequest_received', [name]),
                     }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
@@ -327,7 +325,6 @@ MessengerUI, Messages) {
                         e.stopPropagation();
                         Common.sendFriendRequest(data, function (err, obj) {
                             if (err || (obj && obj.error)) { return void console.error(err || obj.error); }
-                            // XXX
                         });
                     });
                 }
@@ -950,7 +947,7 @@ MessengerUI, Messages) {
     var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
         var div = h('div.cp-notifications-container', [
-            h('div.cp-notifications-empty', "Nothing new here") // XXX
+            h('div.cp-notifications-empty', Messages.notifications_empty)
         ]);
         var pads_options = [div];
         var dropdownConfig = {
@@ -962,7 +959,7 @@ MessengerUI, Messages) {
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');
-        $button.attr('title', Messages.mailbox_title); // XXX
+        $button.attr('title', Messages.notifications_title);
         $button.addClass('fa fa-bell-o');
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');

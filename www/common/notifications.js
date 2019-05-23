@@ -1,8 +1,9 @@
 define([
     'jquery',
     '/common/hyperscript.js',
-    '/common/common-ui-elements.js'
-], function ($, h, UIElements) {
+    '/common/common-ui-elements.js',
+    '/customize/messages.js',
+], function ($, h, UIElements, Messages) {
 
     var handlers = {};
 
@@ -16,10 +17,10 @@ define([
         common.addFriendRequest(data);
 
         // Display the notification
-        $(el).find('.cp-notification-dismiss').attr('title', 'IGNORE').css('display', 'flex'); // XXX
+        $(el).find('.cp-notification-dismiss').attr('title', Messages.friendRequest_dismiss).css('display', 'flex');
         $(el).find('.cp-notification-content').addClass("cp-clickable");
         $(el).find('.cp-notification-content p')
-            .html('New friend request: <b>'+msg.content.displayName+'</b>') // XXX
+            .html(Messages._getKey('friendRequest_notification', [msg.content.displayName])
             .click(function () {
                 UIElements.displayFriendRequestModal(common, data);
             });
