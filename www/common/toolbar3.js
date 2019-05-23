@@ -991,7 +991,7 @@ MessengerUI, Messages) {
                 }
                 refresh();
             },
-            onViewed: function (data) {
+            onViewed: function () {
                 refresh();
             }
         });

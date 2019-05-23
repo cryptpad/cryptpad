@@ -5,8 +5,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/hyperscript.js',
-    '/customize/messages.js'
-], function ($, Util, UI, UIElements, Notifications, h, Messages) {
+], function ($, Util, UI, UIElements, Notifications, h) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
