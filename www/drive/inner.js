@@ -3641,7 +3641,7 @@ define([
             var pageTitle = (!APP.loggedIn && APP.newSharedFolder) ? SHARED_FOLDER_NAME : Messages.type.drive;
 
             var configTb = {
-                displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],
+                displayed: ['useradmin', 'pageTitle', 'newpad', 'limit', 'notifications'],
                 pageTitle: pageTitle,
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,

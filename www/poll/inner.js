@@ -1137,7 +1137,8 @@ define([
                 'newpad',
                 'share',
                 'limit',
-                'unpinnedWarning'
+                'unpinnedWarning',
+                'notifications'
             ],
             title: Title.getTitleConfig(),
             metadataMgr: metadataMgr,

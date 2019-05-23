@@ -458,7 +458,7 @@ define([
     };
 
     var createToolbar = function () {
-        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
         var configTb = {
             displayed: displayed,
             sfCommon: common,

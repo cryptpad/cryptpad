@@ -232,7 +232,7 @@ define([
 
             var $bar = $('.cp-toolbar-container');
 
-            var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
+            var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
             var configTb = {
                 displayed: displayed,
                 sfCommon: common,

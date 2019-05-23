@@ -167,6 +167,7 @@ MessengerUI, Messages) {
     };
     var showColors = false;
     var updateUserList = function (toolbar, config) {
+        if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
         var $userlistContent = toolbar.userlistContent;
@@ -974,11 +975,11 @@ MessengerUI, Messages) {
                 $n.hide();
                 return void $button.addClass('fa-bell-o');
             }
-            $button.attr('title', Messages.notifications_title);
             if (n > 99) {
                 n = '99+';
                 $n.addClass('cp-notifications-small');
             }
+            $button.attr('title', Messages.notifications_title);
             $empty.hide();
             $n.text(n).show();
             $button.addClass('fa-bell');
