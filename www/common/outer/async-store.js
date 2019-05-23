@@ -960,7 +960,7 @@ define([
 
             store.proxy.friends_pending = store.proxy.friends_pending || {};
 
-            var twoDaysAgo = +new Date(); // (+new Date() - (2 * 24 * 3600 * 1000)); // XXX
+            var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
             if (store.proxy.friends_pending[data.curvePublic] &&
                     store.proxy.friends_pending[data.curvePublic] > twoDaysAgo) {
                 return void cb({error: 'TIMEOUT'});
@@ -1511,7 +1511,7 @@ define([
         var cleanFriendRequests = function () {
             try {
                 if (!store.proxy.friends_pending) { return; }
-                var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000); // XXX
+                var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
                 Object.keys(store.proxy.friends_pending).forEach(function (curve) {
                     if (store.proxy.friends_pending[curve] < twoDaysAgo) {
                         delete store.proxy.friends_pending[curve];

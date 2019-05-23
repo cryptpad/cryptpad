@@ -235,7 +235,6 @@ MessengerUI, Messages) {
         var pendingFriends = Common.getPendingFriends(); // Friend requests sent
         var friendRequests = Common.getFriendRequests(); // Friend requests received
         var friendTo = +new Date() - (2 * 24 * 3600 * 1000);
-        //friendTo = +new Date(); // XXX
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});

@@ -17,7 +17,6 @@ define([
         common.addFriendRequest(data);
 
         // Display the notification
-        $(el).find('.cp-notification-dismiss').attr('title', Messages.friendRequest_dismiss).css('display', 'flex');
         $(el).find('.cp-notification-content').addClass("cp-clickable");
         $(el).find('.cp-notification-content p')
             .html(Messages._getKey('friendRequest_notification', [msg.content.displayName])
