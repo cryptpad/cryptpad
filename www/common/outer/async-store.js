@@ -946,7 +946,9 @@ define([
                 return;
             }
             // Otherwise, just remove the notification
-            store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {}, {
+            store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {
+                displayName: store.proxy['cryptpad.username']
+            }, {
                 channel: msg.content.notifications,
                 curvePublic: msg.content.curvePublic
             }, function (obj) {
