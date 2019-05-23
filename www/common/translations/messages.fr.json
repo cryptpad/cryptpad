@@ -1051,5 +1051,14 @@
     "drive_active1Day": "Dernières 24 heures",
     "drive_active7Days": "7 derniers jours",
     "drive_active28Days": "4 dernières semaines",
-    "drive_activeOld": "Pads moins récents"
+    "drive_activeOld": "Pads moins récents",
+    "friendRequest_later": "Décider plus tard",
+    "friendRequest_accept": "Accepter (Entrée)",
+    "friendRequest_decline": "Décliner",
+    "friendRequest_declined": "<b>{0}</b> a décliné votre demande d'ami",
+    "friendRequest_accepted": "<b>{0}</b> a accepté votre demande d'ami",
+    "friendRequest_received": "<b>{0}</b> souhaite être votre ami",
+    "friendRequest_notification": "<b>{0}</b> vous a envoyé une demande d'ami",
+    "notifications_empty": "Vous n'avez pas de nouvelle notification",
+    "notifications_title": "Vous avez des notifications non lues"
 }
