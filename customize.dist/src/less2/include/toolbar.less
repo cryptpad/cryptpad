@@ -576,8 +576,13 @@
                         button {
                             height: @toolbar_line-height;
                             width: @toolbar_line-height;
-                            font-size: 20px;
+                            font-size: 15px;
                             margin-top: -1px;
+                            .cp-dropdown-button-title {
+                                transform: scale(0.5);
+                                bottom: -5px;
+                                right: -5px;
+                            }
                         }
                     }
                     .cp-toolbar-new {
@@ -917,6 +922,10 @@
                     width: 20px;
                     height: 20px;
                     line-height: 16px;
+                    &.cp-notifications-small {
+                        font-size: 10px;
+                        line-height: 17px;
+                    }
                 }
             }
         }

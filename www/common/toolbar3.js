@@ -971,10 +971,15 @@ MessengerUI, Messages) {
             updateUserList(toolbar, config);
             var n = $(div).find('.cp-notification').length;
             $button.removeClass('fa-bell-o').removeClass('fa-bell');
+            $n.removeClass('cp-notifications-small');
             if (n === 0) {
                 $empty.show();
                 $n.hide();
                 return void $button.addClass('fa-bell-o');
+            }
+            if (n > 99) {
+                n = '99+';
+                $n.addClass('cp-notifications-small');
             }
             $empty.hide();
             $n.text(n).show();
