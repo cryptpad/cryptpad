@@ -1051,5 +1051,14 @@
     "drive_active1Day": "Last 24 hours",
     "drive_active7Days": "Last 7 days",
     "drive_active28Days": "Last 4 weeks",
-    "drive_activeOld": "Less recent pads"
+    "drive_activeOld": "Less recent pads",
+    "friendRequest_later": "Decide later",
+    "friendRequest_accept": "Accept (Enter)",
+    "friendRequest_decline": "Decline",
+    "friendRequest_declined": "<b>{0}</b> declined your friend request",
+    "friendRequest_accepted": "<b>{0}</b> accepted your friend request",
+    "friendRequest_received": "<b>{0}</b> would like to be your friend",
+    "friendRequest_notification": "<b>{0}</b> sent you a friend request",
+    "notifications_empty": "You have no new notifications",
+    "notifications_title": "You have unread notifications"
 }
