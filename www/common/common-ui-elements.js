@@ -2621,7 +2621,11 @@ define([
                 if (error) {
                     return void UI.warn(error);
                 }
-                UI.log(Messages.contacts_added);
+                if (yes) {
+                    UI.log(Messages.contacts_added);
+                } else {
+                    UI.log(Messages.contacts_rejected);
+                }
             });
         };
 
