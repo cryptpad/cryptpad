@@ -282,7 +282,7 @@
     "profile_inviteButtonTitle": "Create a link that will invite this user to connect with you.",
     "profile_inviteExplanation": "Clicking <strong>OK</strong> will create a link to a secure messaging session that <em>only {0} will be able to redeem.</em><br><br>The link will be copied to your clipboard and can be shared publicly.",
     "profile_viewMyProfile": "View my profile",
-    "userlist_addAsFriendTitle": "Add \"{0}\" as a contact",
+    "userlist_addAsFriendTitle": "Send \"{0}\" a friend request",
     "userlist_thisIsYou": "This is you (\"{0}\")",
     "userlist_pending": "Pending...",
     "contacts_title": "Contacts",
@@ -1064,5 +1064,7 @@
     "profile_addDescription": "Add a description",
     "profile_editDescription": "Edit your description",
     "profile_addLink": "Add a link to your website",
-    "profile_info": "Other users can find your profile through your avatar in document user lists."
+    "profile_info": "Other users can find your profile through your avatar in document user lists.",
+    "profile_friendRequestSent": "Friend request pending...",
+    "profile_friend": "{0} is your friend"
 }
