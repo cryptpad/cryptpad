@@ -659,6 +659,14 @@ define([
     };
     mailbox.onEvent = Util.mkEvent();
 
+    // Universal
+    var universal = common.universal = {};
+    universal.execCommand = function (data, cb) {
+        postMessage("UNIVERSAL_COMMAND", data, cb);
+    };
+    universal.onEvent = Util.mkEvent();
+
+
     // Pad RPC
     var pad = common.padRpc = {};
     pad.joinPad = function (data) {
@@ -1097,6 +1105,8 @@ define([
         CURSOR_EVENT: common.cursor.onEvent.fire,
         // Mailbox
         MAILBOX_EVENT: common.mailbox.onEvent.fire,
+        // Universal
+        UNIVERSAL_EVENT: common.universal.onEvent.fire,
         // Pad
         PAD_READY: common.padRpc.onReadyEvent.fire,
         PAD_MESSAGE: common.padRpc.onMessageEvent.fire,

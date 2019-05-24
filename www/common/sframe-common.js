@@ -168,6 +168,31 @@ define([
         });
     };
 
+    // Universal direct channel
+    var modules = {};
+    funcs.makeUniversal = function (type, cfg) {
+        if (modules[type]) { return; }
+        var sframeChan = funcs.getSframeChannel();
+        modules[type] = {
+            onEvent: cfg.onEvent || function () {}
+        };
+        return {
+            execCommand: function (cmd, data, cb) {
+                sframeChan.query("Q_UNIVERSAL_COMMAND", {
+                    type: type,
+                    data: {
+                        cmd: cmd,
+                        data: data
+                    }
+                }, function (err, obj) {
+                    if (err) { return void cb({error: err}); }
+                    cb(obj);
+                });
+            }
+        };
+    };
+
+
     // Chat
     var padChatChannel;
     // common-ui-elements needs to be able to get the chat channel to put it in metadata when
@@ -573,6 +598,12 @@ define([
                 UI.errorLoadingScreen(msg, false, function () {
                     funcs.gotoURL('/drive/');
                 });
+            });
+
+            ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj) {
+                var type = obj.type;
+                if (!type || !modules[type]) { return; }
+                modules[type].onEvent(obj.data);
             });
 
             ctx.metadataMgr.onReady(waitFor());

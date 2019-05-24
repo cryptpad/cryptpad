@@ -68,6 +68,8 @@ define([
             CURSOR_COMMAND: Store.cursor.execCommand,
             // Mailbox
             MAILBOX_COMMAND: Store.mailbox.execCommand,
+            // Universal
+            UNIVERSAL_COMMAND: Store.universal.execCommand,
             // Pad
             SEND_PAD_MSG: Store.sendPadMsg,
             JOIN_PAD: Store.joinPad,

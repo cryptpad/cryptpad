@@ -329,7 +329,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user);
                     }
 
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);
@@ -870,6 +870,13 @@ define([
             });
             sframeChan.on('Q_CURSOR_COMMAND', function (data, cb) {
                 Cryptpad.cursor.execCommand(data, cb);
+            });
+
+            Cryptpad.universal.onEvent.reg(function (data) {
+                sframeChan.event('EV_UNIVERSAL_EVENT', data);
+            });
+            sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
+                Cryptpad.universal.execCommand(data, cb);
             });
 
             Cryptpad.mailbox.onEvent.reg(function (data) {

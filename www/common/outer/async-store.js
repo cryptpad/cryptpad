@@ -13,6 +13,7 @@ define([
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
+    '/common/outer/profile.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -23,7 +24,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, OnlyOffice, Mailbox, NetConfig, AppConfig,
+             Cursor, OnlyOffice, Mailbox, Profile, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
@@ -35,7 +36,9 @@ define([
 
         var storeHash;
 
-        var store = window.CryptPad_AsyncStore = {};
+        var store = window.CryptPad_AsyncStore = {
+            modules: {}
+        };
 
         var onSync = function (cb) {
             nThen(function (waitFor) {
@@ -656,6 +659,9 @@ define([
                     });
                 });*/
             }
+            if (store.profile) {
+                store.profile.setName(value);
+            }
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
             if (store.messenger) { store.messenger.updateMyData(); }
@@ -992,6 +998,39 @@ define([
                 return void cb(parsed2.hash);
             }
             cb();
+        };
+
+        // Universal
+        Store.universal = {
+            execCommand: function (clientId, obj, cb) {
+                var type = obj.type;
+                var data = obj.data;
+                if (store.modules[type]) {
+                    store.modules[type].execCommand(clientId, data, cb);
+                } else {
+                    return void cb({error: type + ' is disabled'});
+                }
+            }
+        };
+        var loadUniversal = function (Module, type, waitFor) {
+            if (store.modules[type]) { return; }
+            store.modules[type] = Module.init({
+                store: store,
+                updateMetadata: function () {
+                    broadcast([], "UPDATE_METADATA");
+                },
+                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+            }, waitFor, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'UNIVERSAL_EVENT', {
+                        type: type,
+                        data: {
+                            ev: ev,
+                            data: data
+                        }
+                    });
+                });
+            });
         };
 
         // Messenger
@@ -1394,6 +1433,11 @@ define([
             try {
                 store.mailbox.removeClient(clientId);
             } catch (e) { console.error(e); }
+            Object.keys(store.modules).forEach(function (key) {
+                try {
+                    store.modules[key].removeClient(clientId);
+                } catch (e) { console.error(e); }
+            });
 
             Object.keys(Store.channels).forEach(function (chanId) {
                 var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
@@ -1469,6 +1513,24 @@ define([
             });
         };
 
+/*
+        var loadProfile = function (waitFor) {
+            store.profile = Profile.init({
+                store: store,
+                updateMetadata: function () {
+                    broadcast([], "UPDATE_METADATA");
+                },
+                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+            }, waitFor, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'PROFILE_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
+*/
         var loadCursor = function () {
             store.cursor = Cursor.init(store, function (ev, data, clients) {
                 clients.forEach(function (cId) {
@@ -1618,6 +1680,7 @@ define([
                 loadCursor();
                 loadOnlyOffice();
                 loadMailbox(waitFor);
+                loadUniversal(Profile, 'profile', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {

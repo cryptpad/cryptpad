@@ -99,10 +99,23 @@
         }
         .cp-app-profile-link {
             font-size: 25px;
+            vertical-align: middle;
         }
         .cp-app-profile-displayname, .cp-app-profile-link {
             line-height: 40px;
         }
+        .cp-app-profile-link-code {
+            display: none;
+        }
+        & > button:empty {
+            margin-left: 25px;
+        }
+    }
+
+    .cp-app-profile-friend-request {
+        flex: 0;
+        width: 400px;
+        margin-top: 10px;
     }
 
     // I tried using flexbox but messed with how the pencil icon was displayed
@@ -116,10 +129,16 @@
     #cp-app-profile-description {
         position: relative;
         font-size: 16px;
-        border: 1px solid #DDD;
         margin-bottom: 20px;
+        .cp-app-profile-description-code {
+            display: none;
+        }
         .cp-app-profile-description-rendered {
+            border: 1px solid #DDD;
             padding: 0 15px;
+            &:empty {
+                display: none;
+            }
         }
         .cp-app-profile-description-ok, .cp-app-profile-description-spin {
             position: absolute;
@@ -133,7 +152,6 @@
             height: 300px;
         }
         .CodeMirror {
-            border: 1px solid #DDD;
             font-family: monospace;
             font-size: 16px;
             line-height: initial;
@@ -142,6 +160,13 @@
                 font-family: inherit;
                 font-size: inherit;
                 line-height: inherit;
+            }
+        }
+        .cp-app-profile-description-edit {
+            & > button {
+                span {
+                    margin-left: 10px;
+                }
             }
         }
     }

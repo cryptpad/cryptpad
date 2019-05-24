@@ -43,18 +43,13 @@ define([
                 // No password for profiles
                 return void cb(null, Hash.getSecrets('profile', window.location.hash.slice(1)));
             }
-            var editHash;
             nThen(function (waitFor) {
                 // 2nd case: visiting our own existing profile
                 Cryptpad.getProfileEditUrl(waitFor(function (hash) {
-                    editHash = hash;
+                    waitFor.abort();
+                    return void cb(null, Hash.getSecrets('profile', hash));
                 }));
             }).nThen(function () {
-                if (editHash) {
-                    // No password for profile
-                    return void cb(null, Hash.getSecrets('profile', editHash));
-                }
-                // 3rd case: profile creation (create a new random hash, store it later if needed)
                 if (!Utils.LocalStore.isLoggedIn()) {
                     // Unregistered users can't create a profile
                     window.location.href = '/drive/';
@@ -79,6 +74,10 @@ define([
                 cb(null, secret);
             });
         };
+        var addData = function (meta, Cryptad, user) {
+            meta.isOwnProfile = !window.location.hash ||
+                window.location.hash.slice(1) === user.profile;
+        };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             // Adding a new avatar from the profile: pin it and store it in the object
             sframeChan.on('Q_PROFILE_AVATAR_ADD', function (data, cb) {
@@ -100,6 +99,7 @@ define([
             getSecrets: getSecrets,
             noHash: true, // Don't add the hash in the URL if it doesn't already exist
             addRpc: addRpc,
+            addData: addData,
             owned: true
         });
     });

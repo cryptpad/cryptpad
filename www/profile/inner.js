@@ -8,6 +8,7 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-realtime.js',
+    '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/marked/marked.min.js',
@@ -33,6 +34,7 @@ define([
     Util,
     UI,
     Realtime,
+    h,
     Messages,
     AppConfig,
     Marked,
@@ -75,7 +77,6 @@ define([
     var LINK_ID = "cp-app-profile-link";
     var AVATAR_ID = "cp-app-profile-avatar";
     var DESCRIPTION_ID = "cp-app-profile-description";
-    var PUBKEY_ID = "cp-app-profile-pubkey";
     var CREATE_ID = "cp-app-profile-create";
     var HEADER_ID = "cp-app-profile-header";
     var HEADER_RIGHT_ID = "cp-app-profile-rightside";
@@ -84,98 +85,6 @@ define([
 
     var common;
     var sFrameChan;
-
-    var createEditableInput = function ($block, name, ph, getValue, setValue, fallbackValue) {
-        fallbackValue = fallbackValue || ''; // don't ever display 'null' or 'undefined'
-        var lastVal;
-        getValue(function (value) {
-            lastVal = value;
-            var $input = $('<input>', {
-                'id': name+'Input',
-                placeholder: ph
-            }).val(value);
-            var editing = false;
-            var todo = function () {
-                if (editing) { return; }
-                editing = true;
-
-                var newVal = $input.val().trim();
-
-                if (newVal === lastVal) {
-                    editing = false;
-                    return;
-                }
-
-                setValue(newVal, function (err) {
-                    if (err) { return void console.error(err); }
-                    lastVal = newVal;
-                    UI.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
-                    editing = false;
-                });
-            };
-            $input.on('keyup', function (e) {
-                if (e.which === 13) { return void todo(); }
-                if (e.which === 27) {
-                    $input.val(lastVal);
-                }
-            });
-            $input.focus(function () {
-                $input.width('');
-            });
-            $input.focusout(todo);
-            $block.append($input);
-        });
-    };
-
-/* jshint ignore:start */
-    var isFriend = function (proxy, edKey) {
-        var friends = Util.find(proxy, ['friends']);
-        return typeof(edKey) === 'string' && friends && (edKey in friends);
-    };
-
-    var addCreateInviteLinkButton = function ($container) {
-        return;
-        /*var obj = APP.lm.proxy;
-
-        var proxy = Cryptpad.getProxy();
-        var userViewHash = Util.find(proxy, ['profile', 'view']);
-
-        var edKey = obj.edKey;
-        var curveKey = obj.curveKey;
-
-        if (!APP.readOnly || !curveKey || !edKey || userViewHash === window.location.hash.slice(1) || isFriend(proxy, edKey)) {
-            //console.log("edit mode or missing curve key, or you're viewing your own profile");
-            return;
-        }
-
-        // sanitize user inputs
-
-        var unsafeName = obj.name || '';
-        console.log(unsafeName);
-        var name = Util.fixHTML(unsafeName) || Messages.anonymous;
-        console.log(name);
-
-        console.log("Creating invite button");
-        $("<button>", {
-            id: CREATE_INVITE_BUTTON,
-            title: Messages.profile_inviteButtonTitle,
-        })
-        .addClass('btn btn-success')
-        .text(Messages.profile_inviteButton)
-        .click(function () {
-            UI.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
-                if (!yes) { return; }
-                console.log(obj.curveKey);
-                UI.alert("TODO");
-                // TODO create a listmap object using your curve keys
-                // TODO fill the listmap object with your invite data
-                // TODO generate link to invite object
-                // TODO copy invite link to clipboard
-            }, null, true);
-        })
-        .appendTo($container);*/
-    };
-        /* jshint ignore:end */
 
     var addViewButton = function ($container) {
         if (APP.readOnly) {
@@ -198,53 +107,106 @@ define([
 
     var addDisplayName = function ($container) {
         var $block = $('<div>', {id: DISPLAYNAME_ID}).appendTo($container);
-
-
-        var getValue = function (cb) {
-            cb(APP.lm.proxy.name);
-        };
-        var placeholder = Messages.profile_namePlaceholder;
-        if (APP.readOnly) {
-            var $span = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
-            getValue(function (value) {
-                $span.text(value || Messages.anonymous);
-            });
-
-            //addCreateInviteLinkButton($block);
-            return;
-        }
-        var setValue = function (value, cb) {
-            APP.lm.proxy.name = value;
-            Realtime.whenRealtimeSyncs(APP.lm.realtime, cb);
-        };
-        createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, Messages.anonymous);
+        APP.$name = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
+    };
+    var refreshName = function (data) {
+        APP.$name.text(data.name || Messages.anonymous);
     };
 
     var addLink = function ($container) {
         var $block = $('<div>', {id: LINK_ID}).appendTo($container);
-        var getValue = function (cb) {
-            cb(APP.lm.proxy.url);
-        };
-        if (APP.readOnly) {
-            var $a = $('<a>', {
-                'class': LINK_ID,
-                target: '_blank',
-                rel: 'noreferrer noopener'
-            }).appendTo($block);
-            getValue(function (value) {
-                if (!value) {
-                    return void $a.hide();
-                }
-                $a.attr('href', value).text(value);
+
+        APP.$link = $('<a>', {
+            'class': LINK_ID,
+            target: '_blank',
+            rel: 'noreferrer noopener'
+        }).appendTo($block).hide();
+
+        APP.$linkEdit = $();
+        if (APP.readOnly) { return; }
+
+        var button = h('button.btn.btn-primary', {
+            title: Messages.clickToEdit
+        }, Messages.profile_addLink);
+        APP.$linkEdit = $(button);
+        $block.append(button);
+        var save = h('button.btn.btn-success', Messages.settings_save);
+        var text = h('input');
+        var code = h('div.cp-app-profile-link-code', [
+            text,
+            save
+        ]);
+        var div = h('div.cp-app-profile-link-edit', [
+            code
+        ]);
+        $block.append(div);
+        $(button).click(function () {
+            $(text).val(APP.$link.attr('href'));
+            $(code).show();
+            APP.editor.refresh();
+            $(button).hide();
+        });
+        $(save).click(function () {
+            $(save).hide();
+            APP.module.execCommand('SET', {
+                key: 'url',
+                value: $(text).val()
+            }, function (data) {
+                APP.updateValues(data);
+                $(code).hide();
+                $(button).show();
+                $(save).show();
             });
+        });
+    };
+    var refreshLink = function (data) {
+        APP.$linkEdit.removeClass('fa-pencil').removeClass('fa');
+        if (!data.url) {
+            APP.$linkEdit.text(Messages.profile_addLink);
+            return void APP.$link.hide();
+        }
+        APP.$link.attr('href', data.url).text(data.url).show();
+        APP.$linkEdit.text('').addClass('fa fa-pencil');
+    };
+
+    var addFriendRequest = function ($container) {
+        if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
+        APP.$friend = $('<button>', {
+            'class': 'btn btn-success cp-app-profile-friend-request',
+        });
+        $container.append(APP.$friend);
+    };
+    var refreshFriendRequest = function (data) {
+        if (!APP.$friend) { return; }
+
+        var me = common.getMetadataMgr().getUserData().curvePublic;
+        if (data.curvePublic === me) {
+            APP.$friend.remove();
+        }
+
+        var friends = common.getMetadataMgr().getPrivateData().friends;
+        if (friends[data.curvePublic]) {
+            $(h('p.cp-app-profile-friend', Messages.profile_friend)).insertAfter(APP.$friend);
+            APP.$friend.remove();
             return;
         }
-        var setValue = function (value, cb) {
-            APP.lm.proxy.url = value;
-            Realtime.whenRealtimeSyncs(APP.lm.realtime, cb);
-        };
-        var placeholder = Messages.profile_urlPlaceholder;
-        createEditableInput($block, LINK_ID, placeholder, getValue, setValue);
+
+        var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
+        if (pendingFriends[data.curvePublic]) {
+            APP.$friend.attr('disabled', 'disabled').text();
+            APP.$friend.text(Messages.profile_friendRequestSent);
+            return;
+        }
+        APP.$friend.text(Messages._getKey('userlist_addAsFriendTitle', [data.name]))
+            .off('click')
+            .click(function () {
+                APP.common.sendFriendRequest({
+                    curvePublic: data.curvePublic,
+                    notifications: data.notifications
+                }, function () {
+                    APP.$friend.attr('disabled', 'disabled').text();
+                });
+            });
     };
 
     var AVATAR_SIZE_LIMIT = 0.5;
@@ -289,38 +251,44 @@ define([
         };
         reader.readAsDataURL(file);
     };
-    var addAvatar = function ($container) {
-        var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
-        var $span = $('<span>').appendTo($block);
+    var displayAvatar = function (val) {
         var sframeChan = common.getSframeChannel();
-        var displayAvatar = function () {
-            $span.html('');
-            if (!APP.lm.proxy.avatar) {
-                $('<img>', {
-                    src: '/customize/images/avatar.png',
-                    title: Messages.profile_avatar,
-                    alt: 'Avatar'
-                }).appendTo($span);
-                return;
-            }
-            common.displayAvatar($span, APP.lm.proxy.avatar);
+        var $span = APP.$avatar;
+        $span.html('');
+        if (!val) {
+            $('<img>', {
+                src: '/customize/images/avatar.png',
+                title: Messages.profile_avatar,
+                alt: 'Avatar'
+            }).appendTo($span);
+            return;
+        }
+        common.displayAvatar($span, val);
 
-            if (APP.readOnly) { return; }
+        if (APP.readOnly) { return; }
 
-            var $delButton = $('<button>', {
-                'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
-                title: Messages.fc_delete
-            });
-            $span.append($delButton);
-            $delButton.click(function () {
-                var old = common.getMetadataMgr().getUserData().avatar;
+        var $delButton = $('<button>', {
+            'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
+            title: Messages.fc_delete
+        });
+        $span.append($delButton);
+        $delButton.click(function () {
+            var old = common.getMetadataMgr().getUserData().avatar;
+            APP.module.execCommand("SET", {
+                key: 'avatar',
+                value: ""
+            }, function () {
                 sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
                     if (err || err2) { return void UI.log(err || err2); }
-                    delete APP.lm.proxy.avatar;
                     displayAvatar();
                 });
             });
-        };
+        });
+    };
+    var addAvatar = function ($container) {
+        var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
+        APP.$avatar = $('<span>').appendTo($block);
+        var sframeChan = common.getSframeChannel();
         displayAvatar();
         if (APP.readOnly) { return; }
 
@@ -331,10 +299,14 @@ define([
             onUploaded: function (ev, data) {
                 var old = common.getMetadataMgr().getUserData().avatar;
                 var todo = function () {
-                    sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
-                        if (err || err2) { return void UI.log(err || err2); }
-                        APP.lm.proxy.avatar = data.url;
-                        displayAvatar();
+                    APP.module.execCommand("SET", {
+                        key: 'avatar',
+                        value: data.url
+                    }, function () {
+                        sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
+                            if (err || err2) { return void UI.log(err || err2); }
+                            displayAvatar(data.url);
+                        });
                     });
                 };
                 if (old) {
@@ -378,30 +350,37 @@ define([
         $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
         $block.append($upButton);
     };
+    var refreshAvatar = function (data) {
+        displayAvatar(data.avatar);
+    };
 
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
 
-        if (APP.readOnly) {
-            if (!(APP.lm.proxy.description || "").trim()) { return void $block.hide(); }
-            var $div = $('<div>', {'class': 'cp-app-profile-description-rendered'}).appendTo($block);
-            var val = Marked(APP.lm.proxy.description);
-            $div.html(val);
-            return;
-        }
-        $('<h3>').text(Messages.profile_description).insertBefore($block);
+        APP.$description = $('<div>', {'class': 'cp-app-profile-description-rendered'}).appendTo($block);
+        APP.$descriptionEdit = $();
+        if (APP.readOnly) { return; }
 
-        var $ok = $('<span>', {
-            'class': 'cp-app-profile-description-ok fa fa-check',
-            title: Messages.saved
-        }).appendTo($block);
-        var $spinner = $('<span>', {
-            'class': 'cp-app-profile-description-spin fa fa-spinner fa-pulse'
-        }).appendTo($block);
+        var button = h('button.btn.btn-primary', [
+            h('i.fa.fa-pencil'),
+            h('span', Messages.profile_addDescription)
+        ]);
+        APP.$descriptionEdit = $(button);
+        var save = h('button.btn.btn-primary', Messages.settings_save);
+        var text = h('textarea');
+        var code = h('div.cp-app-profile-description-code', [
+            text,
+            h('br'),
+            save
+        ]);
+        var div = h('div.cp-app-profile-description-edit', [
+            h('p.cp-app-profile-info', Messages.profile_info),
+            button,
+            code
+        ]);
+        $block.append(div);
 
-        var $textarea = $('<textarea>').val(APP.lm.proxy.description || '');
-        $block.append($textarea);
-        var editor = APP.editor = CodeMirror.fromTextArea($textarea[0], {
+        var editor = APP.editor = CodeMirror.fromTextArea(text, {
             lineNumbers: true,
             lineWrapping: true,
             styleActiveLine : true,
@@ -409,25 +388,34 @@ define([
         });
 
         var markdownTb = common.createMarkdownToolbar(editor);
-        $block.prepend(markdownTb.toolbar);
+        $(code).prepend(markdownTb.toolbar);
+        $(markdownTb.toolbar).show();
 
-        var onLocal = function () {
-            $ok.hide();
-            $spinner.show();
-            var val = editor.getValue();
-            APP.lm.proxy.description = val;
-            Realtime.whenRealtimeSyncs(APP.lm.realtime, function () {
-                $ok.show();
-                $spinner.hide();
+        $(button).click(function () {
+            $(code).show();
+            APP.editor.refresh();
+            $(button).hide();
+        });
+        $(save).click(function () {
+            $(save).hide();
+            APP.module.execCommand('SET', {
+                key: 'description',
+                value: editor.getValue()
+            }, function (data) {
+                APP.updateValues(data);
+                $(code).hide();
+                $(button).show();
+                $(save).show();
             });
-        };
-
-        editor.on('change', onLocal);
+        });
     };
-
-    var addPublicKey = function ($container) {
-        var $block = $('<div>', {id: PUBKEY_ID});
-        $container.append($block);
+    var refreshDescription = function (data) {
+        var val = Marked(data.description || "");
+        APP.$description.html(val);
+        APP.$descriptionEdit.find('span').text(val === "" ? Messages.profile_addDescription : Messages.profile_editDescription);
+        if (!APP.editor) { return; }
+        APP.editor.setValue(data.description || "");
+        APP.editor.save();
     };
 
     var createLeftside = function () {
@@ -438,7 +426,7 @@ define([
         $category.append(Messages.profileButton);
     };
 
-    var onReady = function () {
+    var init = function () {
         APP.$container.find('#'+CREATE_ID).remove();
 
         if (!APP.initialized) {
@@ -447,14 +435,20 @@ define([
             var $rightside = $('<div>', {id: HEADER_RIGHT_ID}).appendTo($header);
             addDisplayName($rightside);
             addLink($rightside);
+            addFriendRequest($rightside);
             addDescription(APP.$rightside);
             addViewButton(APP.$rightside);
-            addPublicKey(APP.$rightside);
             APP.initialized = true;
             createLeftside();
         }
+    };
 
-        UI.removeLoadingScreen();
+    var updateValues = APP.updateValues = function (data) {
+        refreshAvatar(data);
+        refreshName(data);
+        refreshLink(data);
+        refreshDescription(data);
+        refreshFriendRequest(data);
     };
 
     var createToolbar = function () {
@@ -468,6 +462,16 @@ define([
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
+    };
+
+    var onEvent = function (obj) {
+        var ev = obj.ev;
+        var data = obj.data;
+        if (ev === 'UPDATE') {
+            console.log('Update');
+            updateValues(data);
+            return;
+        }
     };
 
     nThen(function (waitFor) {
@@ -508,6 +512,23 @@ define([
             return;
         }
 
+        if (privateData.isOwnProfile) {
+
+            APP.module = common.makeUniversal('profile', {
+                onEvent: onEvent
+            });
+            var execCommand = APP.module.execCommand;
+
+            init();
+
+            console.log('POST SUBSCRIBE');
+            execCommand('SUBSCRIBE', null, function (obj) {
+                updateValues(obj);
+                UI.removeLoadingScreen();
+            });
+            return;
+        }
+
         var listmapConfig = {
             data: {},
             common: common,
@@ -517,6 +538,12 @@ define([
 
         var lm = APP.lm = Listmap.create(listmapConfig);
 
-        lm.proxy.on('ready', onReady);
+        init();
+        lm.proxy.on('ready', function () {
+            updateValues(lm.proxy);
+            UI.removeLoadingScreen();
+        }).on('change', [], function () {
+            updateValues(lm.proxy);
+        });
     });
 });
