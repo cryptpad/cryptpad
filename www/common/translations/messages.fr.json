@@ -1060,5 +1060,9 @@
     "friendRequest_received": "<b>{0}</b> souhaite être votre ami",
     "friendRequest_notification": "<b>{0}</b> vous a envoyé une demande d'ami",
     "notifications_empty": "Vous n'avez pas de nouvelle notification",
-    "notifications_title": "Vous avez des notifications non lues"
+    "notifications_title": "Vous avez des notifications non lues",
+    "profile_addDescription": "Ajouter une description",
+    "profile_editDescription": "Modifier votre description",
+    "profile_addLink": "Ajouter un lien vers votre site web",
+    "profile_info": "Les autres utilisateurs peuvent trouver votre profil en cliquant sur votre nom dans la liste d'utilisateurs des documents."
 }
