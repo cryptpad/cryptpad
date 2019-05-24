@@ -1051,5 +1051,14 @@
     "drive_active1Day": "Letzte 24 Stunden",
     "drive_active7Days": "Letzte 7 Tage",
     "drive_active28Days": "Letzte 4 Wochen",
-    "drive_activeOld": "Ältere Pads"
+    "drive_activeOld": "Ältere Pads",
+    "friendRequest_later": "",
+    "friendRequest_accept": "",
+    "friendRequest_decline": "",
+    "friendRequest_declined": "",
+    "friendRequest_accepted": "",
+    "friendRequest_received": "",
+    "friendRequest_notification": "",
+    "notifications_empty": "",
+    "notifications_title": ""
 }
