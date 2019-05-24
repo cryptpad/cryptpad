@@ -197,6 +197,7 @@ proxy.mailboxes = {
             owners: [ctx.store.proxy.edPublic],
             lastKnownHash: m.lastKnownHash
         };
+        cfg.onConnectionChange = function () {}; // Allow reconnections in chainpad-netflux
         cfg.onConnect = function (wc, sendMessage) {
             // Send a message to our box?
             // NOTE: we use our own curvePublic so that we can decrypt our own message :)
