@@ -178,6 +178,7 @@ define([
     };
     var refreshFriendRequest = function (data) {
         if (!APP.$friend) { return; }
+        APP.$friend.off('click');
 
         var me = common.getMetadataMgr().getUserData().curvePublic;
         if (data.curvePublic === me) {
@@ -197,8 +198,7 @@ define([
             APP.$friend.text(Messages.profile_friendRequestSent);
             return;
         }
-        APP.$friend.text(Messages._getKey('userlist_addAsFriendTitle', [data.name]))
-            .off('click')
+        APP.$friend.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
             .click(function () {
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
