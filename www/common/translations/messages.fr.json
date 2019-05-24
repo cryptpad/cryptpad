@@ -281,7 +281,7 @@
     "profile_inviteButtonTitle": "Créer un lien pour inviter cet utilisateur à se connecter avec vous.",
     "profile_inviteExplanation": "Cliquer sur <strong>OK</strong> créera un lien vers une session de messagerie sécurisée <em>uniquement accessible par {0}.</em><br><br>Le lien peut être copié et partagé de manière publique.",
     "profile_viewMyProfile": "Voir mon profil",
-    "userlist_addAsFriendTitle": "Ajouter « {0} » comme contact",
+    "userlist_addAsFriendTitle": "Envoyer une demande d'ami à « {0} »",
     "userlist_thisIsYou": "Vous (« {0} »)",
     "userlist_pending": "En attente...",
     "contacts_title": "Contacts",
@@ -1064,5 +1064,7 @@
     "profile_addDescription": "Ajouter une description",
     "profile_editDescription": "Modifier votre description",
     "profile_addLink": "Ajouter un lien vers votre site web",
-    "profile_info": "Les autres utilisateurs peuvent trouver votre profil en cliquant sur votre nom dans la liste d'utilisateurs des documents."
+    "profile_info": "Les autres utilisateurs peuvent trouver votre profil en cliquant sur votre nom dans la liste d'utilisateurs des documents.",
+    "profile_friendRequestSent": "Demande d'ami en attente...",
+    "profile_friend": "{0} est votre ami(e)"
 }
