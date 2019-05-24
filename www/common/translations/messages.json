@@ -1060,5 +1060,9 @@
     "friendRequest_received": "<b>{0}</b> would like to be your friend",
     "friendRequest_notification": "<b>{0}</b> sent you a friend request",
     "notifications_empty": "You have no new notifications",
-    "notifications_title": "You have unread notifications"
+    "notifications_title": "You have unread notifications",
+    "profile_addDescription": "Add a description",
+    "profile_editDescription": "Edit your description",
+    "profile_addLink": "Add a link to your website",
+    "profile_info": "Other users can find your profile through your avatar in document user lists."
 }
