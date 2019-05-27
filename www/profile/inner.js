@@ -174,37 +174,43 @@ define([
         APP.$friend = $('<button>', {
             'class': 'btn btn-success cp-app-profile-friend-request',
         });
+        APP.$friend = $(h('div.cp-app-profile-friend-container'));
         $container.append(APP.$friend);
     };
     var refreshFriendRequest = function (data) {
         if (!APP.$friend) { return; }
-        APP.$friend.off('click');
 
         var me = common.getMetadataMgr().getUserData().curvePublic;
         if (data.curvePublic === me) {
             APP.$friend.remove();
-        }
-
-        var friends = common.getMetadataMgr().getPrivateData().friends;
-        if (friends[data.curvePublic]) {
-            $(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [data.name]))).insertAfter(APP.$friend);
-            APP.$friend.remove();
             return;
         }
+
+        APP.$friend.html('');
+
+        var friends = common.getMetadataMgr().getPrivateData().friends;
+        var $temp;
+        if (friends[data.curvePublic]) {
+            APP.$friend.append(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [data.name || Messages.anonymous])));
+            return;
+        }
+
+        var $button = $('<button>', {
+            'class': 'btn btn-success cp-app-profile-friend-request',
+        }).appendTo(APP.$friend);
 
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
-            APP.$friend.attr('disabled', 'disabled').text();
-            APP.$friend.text(Messages.profile_friendRequestSent);
+            $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
             return;
         }
-        APP.$friend.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
+        $button.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
             .click(function () {
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
                     notifications: data.notifications
                 }, function () {
-                    APP.$friend.attr('disabled', 'disabled').text();
+                    $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
                 });
             });
     };
