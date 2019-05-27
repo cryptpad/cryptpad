@@ -12,9 +12,12 @@ define([
 
     // Store the friend request displayed to avoid duplicates
     var friendRequest = {};
-    handlers['FRIEND_REQUEST'] = function (ctx, data, cb) {
+    handlers['FRIEND_REQUEST'] = function (ctx, box, data, cb) {
+
         // Check if the request is valid (send by the correct user)
-        if (data.msg.author !== data.msg.content.curvePublic) { return void cb(true); }
+        if (data.msg.author !== data.msg.content.curvePublic) {
+            return void cb(true);
+        }
 
         // Don't show duplicate friend request: if we already have a friend request
         // in memory from the same user, dismiss the new one
@@ -23,7 +26,8 @@ define([
         friendRequest[data.msg.author] = true;
 
         // If the user is already in our friend list, automatically accept the request
-        if (Messaging.getFriend(ctx.store.proxy, data.msg.author)) {
+        if (Messaging.getFriend(ctx.store.proxy, data.msg.author) ||
+            ctx.store.proxy.friends_pending[data.msg.author]) {
             Messaging.acceptFriendRequest(ctx.store, data.msg.content, function (obj) {
                 if (obj && obj.error) {
                     return void cb();
@@ -36,8 +40,8 @@ define([
         cb();
     };
     removeHandlers['FRIEND_REQUEST'] = function (ctx, box, data) {
-        if (friendRequest[data.curvePublic]) {
-            delete friendRequest[data.curvePublic];
+        if (friendRequest[data.content.curvePublic]) {
+            delete friendRequest[data.content.curvePublic];
         }
     };
 
@@ -51,8 +55,6 @@ define([
             delete ctx.store.proxy.friends_pending[data.msg.author];
             ctx.updateMetadata();
             if (friendRequestDeclined[data.msg.author]) { return; }
-            // If you have a profile page open, update it
-            if (ctx.store.modules['profile']) { ctx.store.modules['profile'].update(); }
             box.sendMessage({
                 type: 'FRIEND_REQUEST_DECLINED',
                 content: {
@@ -69,6 +71,7 @@ define([
         cb(true);
     };
     handlers['FRIEND_REQUEST_DECLINED'] = function (ctx, box, data, cb) {
+        ctx.updateMetadata();
         if (friendRequestDeclined[data.msg.content.user]) { return void cb(true); }
         friendRequestDeclined[data.msg.content.user] = true;
         cb();
@@ -97,9 +100,9 @@ define([
                     ctx.store.messenger.onFriendAdded(data.msg.content);
                 }
                 ctx.updateMetadata();
-                if (friendRequestAccepted[data.msg.author]) { return; }
                 // If you have a profile page open, update it
                 if (ctx.store.modules['profile']) { ctx.store.modules['profile'].update(); }
+                if (friendRequestAccepted[data.msg.author]) { return; }
                 // Display the "accepted" state in the UI
                 box.sendMessage({
                     type: 'FRIEND_REQUEST_ACCEPTED',
@@ -118,6 +121,7 @@ define([
         cb(true);
     };
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data, cb) {
+        ctx.updateMetadata();
         if (friendRequestAccepted[data.msg.content.user]) { return void cb(true); }
         friendRequestAccepted[data.msg.content.user] = true;
         cb();
@@ -131,6 +135,7 @@ define([
 
     return {
         add: function (ctx, box, data, cb) {
+            if (!data.msg) { return void cb(true); }
             var type = data.msg.type;
 
             if (handlers[type]) {

@@ -7,6 +7,7 @@ define([
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-realtime.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -33,6 +34,7 @@ define([
     SFCommon,
     Util,
     UI,
+    UIElements,
     Realtime,
     h,
     Messages,
@@ -198,6 +200,16 @@ define([
         var $button = $('<button>', {
             'class': 'btn btn-success cp-app-profile-friend-request',
         }).appendTo(APP.$friend);
+
+        // If this curve has sent us a friend request, we should not be able to sent it to them
+        var friendRequests = common.getFriendRequests();
+        if (friendRequests[data.curvePublic]) {
+            $button.html(Messages._getKey('friendRequest_received', [data.name || Messages.anonymous]))
+                .click(function () {
+                UIElements.displayFriendRequestModal(common, friendRequests[data.curvePublic]);
+            });
+            return;
+        }
 
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
@@ -548,7 +560,18 @@ define([
         lm.proxy.on('ready', function () {
             updateValues(lm.proxy);
             UI.removeLoadingScreen();
+            common.mailbox.subscribe({
+                onMessage: function () {
+                    refreshFriendRequest(lm.proxy);
+                },
+                onViewed: function () {
+                    refreshFriendRequest(lm.proxy);
+                },
+            });
         }).on('change', [], function () {
+            updateValues(lm.proxy);
+        });
+        metadataMgr.onChange(function () {
             updateValues(lm.proxy);
         });
     });

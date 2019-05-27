@@ -19,7 +19,7 @@ define([
         // Display the notification
         $(el).find('.cp-notification-content').addClass("cp-clickable");
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('friendRequest_notification', [msg.content.displayName]))
+            .html(Messages._getKey('friendRequest_notification', [msg.content.displayName || Messages.anonymous]))
             .click(function () {
                 UIElements.displayFriendRequestModal(common, data);
             });
@@ -29,7 +29,7 @@ define([
         var content = data.content;
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('friendRequest_accepted', [msg.content.name]));
+            .html(Messages._getKey('friendRequest_accepted', [msg.content.name || Messages.anonymous]));
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 
@@ -37,7 +37,7 @@ define([
         var content = data.content;
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('friendRequest_declined', [msg.content.name]));
+            .html(Messages._getKey('friendRequest_declined', [msg.content.name || Messages.anonymous]));
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 

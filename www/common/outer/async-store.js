@@ -959,6 +959,7 @@ define([
                 channel: msg.content.notifications,
                 curvePublic: msg.content.curvePublic
             }, function (obj) {
+                broadcast([], "UPDATE_METADATA");
                 cb(obj);
             });
             dismiss();
