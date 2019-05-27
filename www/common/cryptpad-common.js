@@ -1450,7 +1450,7 @@ define([
                 }, false);
             });
 
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
             window.onhashchange = function (ev) {

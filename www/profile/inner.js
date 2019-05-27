@@ -191,7 +191,6 @@ define([
         APP.$friend.html('');
 
         var friends = common.getMetadataMgr().getPrivateData().friends;
-        var $temp;
         if (friends[data.curvePublic]) {
             APP.$friend.append(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [data.name || Messages.anonymous])));
             return;
