@@ -134,6 +134,9 @@ define([
         profile.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
+        profile.update = function () {
+            ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients);
+        };
         profile.execCommand = function (clientId, obj, cb) {
             console.log(obj);
             var cmd = obj.cmd;

@@ -51,6 +51,8 @@ define([
             delete ctx.store.proxy.friends_pending[data.msg.author];
             ctx.updateMetadata();
             if (friendRequestDeclined[data.msg.author]) { return; }
+            // If you have a profile page open, update it
+            if (ctx.store.modules['profile']) { ctx.store.modules['profile'].update(); }
             box.sendMessage({
                 type: 'FRIEND_REQUEST_DECLINED',
                 content: {
@@ -95,6 +97,9 @@ define([
                     ctx.store.messenger.onFriendAdded(data.msg.content);
                 }
                 ctx.updateMetadata();
+                if (friendRequestAccepted[data.msg.author]) { return; }
+                // If you have a profile page open, update it
+                if (ctx.store.modules['profile']) { ctx.store.modules['profile'].update(); }
                 // Display the "accepted" state in the UI
                 box.sendMessage({
                     type: 'FRIEND_REQUEST_ACCEPTED',
