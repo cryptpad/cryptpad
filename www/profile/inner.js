@@ -187,7 +187,7 @@ define([
 
         var friends = common.getMetadataMgr().getPrivateData().friends;
         if (friends[data.curvePublic]) {
-            $(h('p.cp-app-profile-friend', Messages.profile_friend)).insertAfter(APP.$friend);
+            $(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [data.name]))).insertAfter(APP.$friend);
             APP.$friend.remove();
             return;
         }
