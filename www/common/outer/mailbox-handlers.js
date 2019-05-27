@@ -99,8 +99,8 @@ define([
                 box.sendMessage({
                     type: 'FRIEND_REQUEST_ACCEPTED',
                     content: {
-                        curvePublic: data.msg.author,
-                        displayName: data.msg.content.displayName
+                        user: data.msg.author,
+                        name: data.msg.content.displayName
                     }
                 }, function () {
                     if (friendRequestAccepted[data.msg.author]) {
