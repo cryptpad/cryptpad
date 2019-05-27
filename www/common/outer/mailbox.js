@@ -10,7 +10,6 @@ define([
 
     var TYPES = [
         'notifications',
-        'test'
     ];
     var BLOCKING_TYPES = [
     ];
@@ -177,13 +176,6 @@ proxy.mailboxes = {
         var keys = getMyKeys(ctx);
         if (!keys) { return void console.error("missing asymmetric encryption keys"); }
         var crypto = Crypto.Mailbox.createEncryptor(keys);
-        // XXX remove 'test'
-        if (type === 'test') {
-            crypto = {
-                encrypt: function (x) { return x; },
-                decrypt: function (x) { return x; }
-            };
-        }
         var cfg = {
             network: ctx.store.network,
             channel: m.channel,

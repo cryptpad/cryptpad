@@ -639,27 +639,6 @@ define([
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
-            if (store.mailbox && store.proxy.friends) {
-                // XXX test mailbox, should be removed in prod
-                /*store.mailbox.post('notifications', 'NAME_CHANGED', {
-                    old: store.proxy[Constants.displayNameKey],
-                    new: value
-                });
-                Object.keys(store.proxy.friends).forEach(function (curve) {
-                    var f = store.proxy.friends[curve];
-                    if (!f.notifications) { return; }
-                    store.mailbox.sendTo('NAME_CHANGED', {
-                        old: store.proxy[Constants.displayNameKey],
-                        new: value
-                    }, {
-                        channel: f.notifications,
-                        curvePublic: curve
-                    }, function (obj) {
-                        if (obj && obj.error) { return void console.error(obj.error); }
-                        console.log('notif sent to '+f);
-                    });
-                });*/
-            }
             if (store.modules['profile']) {
                 store.modules['profile'].setName(value);
             }
