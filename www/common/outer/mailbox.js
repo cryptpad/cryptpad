@@ -49,6 +49,12 @@ proxy.mailboxes = {
             content: msg
         }, cId ? [cId] : ctx.clients);
     };
+    var hideMessage = function (ctx, type, hash, clients) {
+        ctx.emit('VIEWED', {
+            type: type,
+            hash: hash
+        }, clients || ctx.clients);
+    };
 
     var getMyKeys = function (ctx) {
         var proxy = ctx.store && ctx.store.proxy;
@@ -86,14 +92,6 @@ proxy.mailboxes = {
         });
     };
 
-    var updateLastKnownHash = function (ctx, type) {
-        var m = Util.find(ctx, ['store', 'proxy', 'mailboxes', type]);
-        if (!m) { return; }
-        var box = ctx.boxes[type];
-        if (!box) { return; }
-
-    };
-
     // Mark a message as read
     var dismiss = function (ctx, data, cId, cb) {
         var type = data.type;
@@ -116,7 +114,6 @@ proxy.mailboxes = {
             if (idx === 0) {
                 m.lastKnownHash = hash;
                 box.history.shift();
-                delete box.content[hash];
             } else if (m.viewed.indexOf(hash) === -1) {
                 m.viewed.push(hash);
             }
@@ -145,16 +142,14 @@ proxy.mailboxes = {
         // Make sure we remove data about dismissed messages
         Object.keys(box.content).forEach(function (h) {
             if (box.history.indexOf(h) === -1 || m.viewed.indexOf(h) !== -1) {
+                Handlers.remove(ctx, box, box.content[h], h);
                 delete box.content[h];
             }
         });
 
         Realtime.whenRealtimeSyncs(ctx.store.realtime, function () {
             cb();
-            ctx.emit('VIEWED', {
-                type: type,
-                hash: hash
-            }, ctx.clients.filter(function (clientId) {
+            hideMessage(ctx, type, hash, ctx.clients.filter(function (clientId) {
                 return clientId !== cId;
             }));
         });
@@ -201,19 +196,23 @@ proxy.mailboxes = {
         cfg.onConnect = function (wc, sendMessage) {
             // Send a message to our box?
             // NOTE: we use our own curvePublic so that we can decrypt our own message :)
-            box.sendMessage = function (_msg) {
+            box.sendMessage = function (_msg, cb) {
+                cb = cb || function () {};
                 try {
                     msg = JSON.stringify(_msg);
                 } catch (e) {
                     console.error(e);
                 }
                 sendMessage(msg, function (err, hash) {
+                    if (err) { return void console.error(err); }
+                    box.history.push(hash);
                     box.content[hash] = _msg;
                     var message = {
                         msg: _msg,
                         hash: hash
                     };
                     showMessage(ctx, type, message);
+                    cb();
                 }, keys.curvePublic);
             };
             box.queue.forEach(function (msg) {
@@ -236,7 +235,7 @@ proxy.mailboxes = {
                     msg: msg,
                     hash: hash
                 };
-                Handlers(ctx, box, message, function (toDismiss) {
+                Handlers.add(ctx, box, message, function (toDismiss) {
                     if (toDismiss) {
                         dismiss(ctx, {
                             type: type,
@@ -275,11 +274,9 @@ proxy.mailboxes = {
             }
             // Listen for changes in the "viewed" and lastKnownHash values
             var view = function (h) {
+                Handlers.remove(ctx, box, box.content[h], h);
                 delete box.content[h];
-                ctx.emit('VIEWED', {
-                    type: type,
-                    hash: h
-                }, ctx.clients);
+                hideMessage(ctx, type, h);
             };
             ctx.store.proxy.on('change', ['mailboxes', type], function (o, n, p) {
                 if (p[2] === 'lastKnownHash') {
@@ -350,7 +347,6 @@ proxy.mailboxes = {
 
             if (BLOCKING_TYPES.indexOf(key) === -1) {
                 openChannel(ctx, key, m, function () {
-                    updateLastKnownHash(ctx, key);
                     //console.log(key + ' mailbox is ready');
                 });
             } else {

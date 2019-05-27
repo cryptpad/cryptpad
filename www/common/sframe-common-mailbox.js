@@ -25,6 +25,7 @@ define([
         var history = {};
 
         var removeFromHistory = function (type, hash) {
+            if (!history[type]) { return; }
             history[type] = history[type].filter(function (obj) {
                 return obj.hash !== hash;
             });
