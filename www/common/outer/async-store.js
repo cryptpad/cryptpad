@@ -660,8 +660,8 @@ define([
                     });
                 });*/
             }
-            if (store.profile) {
-                store.profile.setName(value);
+            if (store.modules['profile']) {
+                store.modules['profile'].setName(value);
             }
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");

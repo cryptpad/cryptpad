@@ -69,7 +69,7 @@ define([
 
     var setName = function (ctx, value, cb) {
         cb = cb || function () {};
-        ctx.profile.name = value;
+        ctx.listmap.proxy.name = value;
         Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
             if (!ctx.listmap) { return; }
             ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients);
@@ -122,8 +122,6 @@ define([
         };
 
         ctx.profile = store.proxy.profile = store.proxy.profile || {};
-
-        console.log(ctx.profile);
 
         initializeProfile(ctx, waitFor(function (err) {
             if (err) { return; }

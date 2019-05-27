@@ -930,7 +930,7 @@ MessengerUI, Messages) {
         $userButton.click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
+            var myData = metadataMgr.getUserData();
             var lastName = myData.name;
             UI.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                 if (newName === null && typeof(lastName) === "string") { return; }
