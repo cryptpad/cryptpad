@@ -25,19 +25,19 @@ define([
             });
     };
 
-    handlers['ACCEPT_FRIEND_REQUEST'] = function (common, data, el) {
+    handlers['FRIEND_REQUEST_ACCEPTED'] = function (common, data, el) {
         var content = data.content;
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('friendRequest_accepted', [msg.content.displayName]));
+            .html(Messages._getKey('friendRequest_accepted', [msg.content.name]));
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 
-    handlers['DECLINE_FRIEND_REQUEST'] = function (common, data, el) {
+    handlers['FRIEND_REQUEST_DECLINED'] = function (common, data, el) {
         var content = data.content;
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('friendRequest_declined', [msg.content.displayName]));
+            .html(Messages._getKey('friendRequest_declined', [msg.content.name]));
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 

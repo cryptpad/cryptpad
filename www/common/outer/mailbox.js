@@ -201,16 +201,19 @@ proxy.mailboxes = {
         cfg.onConnect = function (wc, sendMessage) {
             // Send a message to our box?
             // NOTE: we use our own curvePublic so that we can decrypt our own message :)
-            box.sendMessage = function (msg) {
+            box.sendMessage = function (_msg) {
                 try {
-                    msg = JSON.stringify(msg);
+                    msg = JSON.stringify(_msg);
                 } catch (e) {
                     console.error(e);
                 }
                 sendMessage(msg, function (err, hash) {
-                    if (m.viewed.indexOf(hash) === -1) {
-                        m.viewed.push(hash);
-                    }
+                    box.content[hash] = _msg;
+                    var message = {
+                        msg: _msg,
+                        hash: hash
+                    };
+                    showMessage(ctx, type, message);
                 }, keys.curvePublic);
             };
             box.queue.forEach(function (msg) {
@@ -357,7 +360,6 @@ proxy.mailboxes = {
             }
         });
 
-        // XXX test function used to populate a mailbox, should be removed in prod
         mailbox.post = function (box, type, content) {
             var b = ctx.boxes[box];
             if (!b) { return; }
