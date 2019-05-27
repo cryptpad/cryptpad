@@ -198,6 +198,7 @@ proxy.mailboxes = {
             // NOTE: we use our own curvePublic so that we can decrypt our own message :)
             box.sendMessage = function (_msg, cb) {
                 cb = cb || function () {};
+                var msg;
                 try {
                     msg = JSON.stringify(_msg);
                 } catch (e) {
