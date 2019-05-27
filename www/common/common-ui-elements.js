@@ -258,7 +258,7 @@ define([
             }));
         }
 
-        if (common.isLoggedIn() && AppConfig.enablePinning) {
+        if (common.isLoggedIn()) {
             // check the size of this file...
             var bytes = 0;
             NThen(function (waitFor) {

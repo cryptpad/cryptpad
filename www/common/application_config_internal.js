@@ -40,8 +40,6 @@ define(function() {
     config.notificationTimeout = 5000;
     config.disableUserlistNotifications = false;
 
-    config.enablePinning = true;
-
     // Update the default colors available in the whiteboard application
     config.whiteboardPalette = [
         '#000000', // black

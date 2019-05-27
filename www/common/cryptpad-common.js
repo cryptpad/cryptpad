@@ -47,8 +47,6 @@ define([
         account: {},
     };
 
-    var PINNING_ENABLED = AppConfig.enablePinning;
-
     // COMMON
     common.getLanguage = function () {
         return Messages._languageUsed;
@@ -1486,23 +1484,6 @@ define([
                 console.log('onLogout: disconnect');
                 postMessage("DISCONNECT");
             });
-
-            if (PINNING_ENABLED && LocalStore.isLoggedIn()) {
-                console.log("logged in. pads will be pinned");
-                postMessage("INIT_RPC", null, waitFor(function (obj) {
-                    console.log('RPC handshake complete');
-                    if (obj.error) { return; }
-                    localStorage[Constants.plan] = obj.plan;
-                }));
-            } else if (PINNING_ENABLED) {
-                console.log('not logged in. pads will not be pinned');
-            } else {
-                console.log('pinning disabled');
-            }
-
-            postMessage("INIT_ANON_RPC", null, waitFor(function () {
-                console.log('Anonymous RPC ready');
-            }));
         }).nThen(function (waitFor) {
             if (sessionStorage.createReadme) {
                 var data = {

@@ -834,7 +834,6 @@ MessengerUI, Messages) {
     };
 
     var createLimit = function (toolbar) {
-        if (!Config.enablePinning) { return; }
         var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
         var $limit = toolbar.$userAdmin.find('.'+LIMIT_CLS).attr({
             'title': Messages.pinLimitReached

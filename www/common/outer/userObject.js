@@ -66,7 +66,7 @@ define([
             }
 
             // Add the folder
-            if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
+            if (!loggedIn || config.testMode) {
                 return void cb("EAUTH");
             }
             var id = Util.createRandomInteger();

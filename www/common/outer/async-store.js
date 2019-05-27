@@ -312,6 +312,7 @@ define([
         };
 
         Store.initRpc = function (clientId, data, cb) {
+            if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
             require(['/common/pinpad.js'], function (Pinpad) {
                 Pinpad.create(store.network, store.proxy, function (e, call) {
@@ -1670,6 +1671,7 @@ define([
                     });
                 });
                 Store.initAnonRpc(null, null, waitFor());
+                Store.initRpc(null, null, waitFor());
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3
