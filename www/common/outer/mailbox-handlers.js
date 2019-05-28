@@ -140,6 +140,7 @@ define([
         if (ctx.store.messenger) {
             ctx.store.messenger.onFriendRemoved(curve, friend.channel);
         }
+        ctx.updateMetadata();
         cb(true);
     };
 
