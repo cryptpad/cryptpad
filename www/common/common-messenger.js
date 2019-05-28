@@ -564,7 +564,8 @@ define([
             onDirectMessage(msg, sender);
         });
 
-        var removeFriend = function (curvePublic, cb) {
+        var removeFriend = function (curvePublic, _cb) {
+            var cb = Util.once(_cb);
             if (typeof(cb) !== 'function') { throw new Error('NO_CALLBACK'); }
             var data = getFriend(proxy, curvePublic);
 
@@ -590,18 +591,29 @@ define([
             var cryptMsg = channel.encrypt(msgStr);
 
             try {
-                channel.wc.bcast(cryptMsg).then(function () {
-                    removeFromFriendList(curvePublic, function () {
-                        delete channels[channel.id];
-                        emit('UNFRIEND', {
-                            curvePublic: curvePublic,
-                            fromMe: true
+                if (store.mailbox && data.curvePublic && data.notifications) {
+                    store.mailbox.sendTo('UNFRIEND', {
+                        curvePublic: proxy.curvePublic
+                    }, {
+                        channel: data.notifications,
+                        curvePublic: data.curvePublic
+                    }, function (obj) {
+                            console.log(obj);
+                        if (obj && obj.error) {
+                            return void cb(obj);
+                        }
+                        removeFromFriendList(curvePublic, function () {
+                            delete channels[channel.id];
+                            emit('UNFRIEND', {
+                                curvePublic: curvePublic,
+                                fromMe: true
+                            });
+                            cb();
                         });
-                        cb();
                     });
-                }, function (err) {
+                }
+                channel.wc.bcast(cryptMsg).then(function () {}, function (err) {
                     console.error(err);
-                    cb({error: err});
                 });
             } catch (e) {
                 cb({error: e});

@@ -132,6 +132,17 @@ define([
         }
     };
 
+    handlers['UNFRIEND'] = function (ctx, box, data, cb) {
+        var curve = data.msg.content.curvePublic;
+        var friend = Messaging.getFriend(ctx.store.proxy, curve);
+        if (!friend) { return void cb(true); }
+        delete ctx.store.proxy.friends[curve];
+        if (ctx.store.messenger) {
+            ctx.store.messenger.onFriendRemoved(curve, friend.channel);
+        }
+        ctx.updateMetadata();
+        cb(true);
+    };
 
     return {
         add: function (ctx, box, data, cb) {
