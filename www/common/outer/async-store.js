@@ -1816,8 +1816,8 @@ define([
 
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
             // command. This allow us to avoid phantom viewers in pads.
-            var PING_INTERVAL = 30000;
-            var MAX_PING = 5000;
+            var PING_INTERVAL = 120000;
+            var MAX_PING = 30000;
             var MAX_FAILED_PING = 2;
 
             setInterval(function () {
