@@ -304,8 +304,10 @@ MessengerUI, Messages) {
             } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
                 && !priv.readOnly) {
                 if (pendingFriends[data.curvePublic] && pendingFriends[data.curvePublic] > friendTo) {
-                    $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
-                        .appendTo($rightCol);
+                    $('<button>', {
+                        'class': 'fa fa-hourglass-half cp-toolbar-userlist-button',
+                        'title': Messages.profile_friendRequestSent
+                    }).appendTo($nameSpan);
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
                         'class': 'fa fa-bell cp-toolbar-userlist-button',
