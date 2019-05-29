@@ -486,6 +486,12 @@ MessengerUI, Messages) {
         var show = function () {
             if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
+            // scroll down chat
+            var $messagebox = $content.find('.cp-app-contacts-messages');
+            if ($messagebox.length) {
+                $messagebox.scrollTop($messagebox[0].scrollHeight);
+            }
+            
             $button.addClass('cp-toolbar-button-active');
             config.$contentContainer.addClass('cp-chat-visible');
             $button.removeClass('cp-toolbar-notification');

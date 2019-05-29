@@ -197,6 +197,11 @@ define([
         var getChat = function (id) {
             return $messages.find(dataQuery(id));
         };
+        
+        var scrollChatToBottom = function () {
+            var $messagebox = $('.cp-app-contacts-messages');
+            $messagebox.scrollTop($messagebox[0].scrollHeight);
+        };
 
         var normalizeLabels = function ($messagebox) {
             $messagebox.find('div.cp-app-contacts-message').toArray().reduce(function (a, b) {
@@ -364,10 +369,7 @@ define([
                     input.value = '';
                     sending = false;
                     debug('sent successfully');
-                    var $messagebox = $(messages);
-
-                    var height = $messagebox[0].scrollHeight;
-                    $messagebox.scrollTop(height);
+                    scrollChatToBottom();
                 });
             };
 
@@ -584,7 +586,7 @@ define([
             $messagebox.append(el_message);
 
             if (shouldScroll) {
-                $messagebox.scrollTop($messagebox[0].scrollHeight);
+                scrollChatToBottom();
             }
             normalizeLabels($messagebox);
             reorderRooms();
