@@ -12,6 +12,7 @@ var map = {
     'ro': 'Română',
     'ru': 'Русский',
     'zh': '繁體中文',
+    'te': 'తెలుగు',
 };
 
 var messages = {};
