@@ -739,10 +739,6 @@ define([
     var initThumbnails = function () {
         var privateDat = metadataMgr.getPrivateData();
         if (!privateDat.thumbnails) { return; } // Thumbnails are disabled
-        var hash = privateDat.availableHashes.editHash ||
-                   privateDat.availableHashes.viewHash;
-        if (!hash) { return; }
-        var href = privateDat.pathname + '#' + hash;
         var $el = $('.cp-app-poll-realtime');
         //var $el = $('#cp-app-poll-table');
         var scrollTop;
@@ -771,7 +767,7 @@ define([
                     .css('position', '');
                 $('#cp-app-poll-form').scrollTop(scrollTop);
             },
-            href: href,
+            type: 'poll',
             getContent: function () { return JSON.stringify(APP.proxy.content); }
         };
         Thumb.initPadThumbnails(common, options);

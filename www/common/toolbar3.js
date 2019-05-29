@@ -523,23 +523,16 @@ MessengerUI, Messages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
-        var metadataMgr = config.metadataMgr;
-        var origin = config.metadataMgr.getPrivateData().origin;
-        var pathname = config.metadataMgr.getPrivateData().pathname;
-        var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
             'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
-        var modal = UIElements.createShareModal({
-            origin: origin,
-            pathname: pathname,
-            hashes: hashes,
-            common: Common
+        Common.getSframeChannel().event('EV_SHARE_OPEN', {
+            hidden: true
         });
         $shareBlock.click(function () {
-            UI.openCustomModal(UI.dialog.tabs(modal));
+            Common.getSframeChannel().event('EV_SHARE_OPEN', {});
         });
 
         toolbar.$leftside.append($shareBlock);
@@ -552,23 +545,19 @@ MessengerUI, Messages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
-        var metadataMgr = config.metadataMgr;
-        var origin = config.metadataMgr.getPrivateData().origin;
-        var pathname = config.metadataMgr.getPrivateData().pathname;
-        var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
             'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
-        var modal = UIElements.createFileShareModal({
-            origin: origin,
-            pathname: pathname,
-            hashes: hashes,
-            common: Common
+        Common.getSframeChannel().event('EV_SHARE_OPEN', {
+            hidden: true,
+            file: true
         });
         $shareBlock.click(function () {
-            UI.openCustomModal(UI.dialog.tabs(modal));
+            Common.getSframeChannel().event('EV_SHARE_OPEN', {
+                file: true
+            });
         });
 
         toolbar.$leftside.append($shareBlock);

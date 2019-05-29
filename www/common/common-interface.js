@@ -351,6 +351,9 @@ define([
         var close = function (el) {
             var $el = $(el).fadeOut(150, function () {
                 $el.detach();
+                if (opt.onClose) {
+                    opt.onClose();
+                }
             });
         };
 

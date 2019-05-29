@@ -121,13 +121,9 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (obj) {
+        if (!obj || !obj.hash) { return; }
         var data = ctx.metadataMgr.getPrivateData();
-        var secret;
-        if (obj) {
-            secret = Hash.getSecrets('file', obj.hash, obj.password);
-        } else {
-            secret = Hash.getSecrets('file', data.availableHashes.fileHash, data.password);
-        }
+        var secret = Hash.getSecrets('file', obj.hash, obj.password);
         if (secret.keys && secret.channel) {
             var key = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var hexFileName = secret.channel;
@@ -389,12 +385,6 @@ define([
                 value: value
             }, cb);
         }
-    };
-
-    funcs.isStrongestStored = function () {
-        var data = ctx.metadataMgr.getPrivateData();
-        if (data.availableHashes.fileHash) { return true; }
-        return !data.readOnly || !data.availableHashes.editHash;
     };
 
     funcs.setDisplayName = function (name, cb) {

@@ -322,6 +322,8 @@ define([
         var hashes = config.hashes;
         var common = config.common;
 
+        if (!hashes) { return; }
+
         // Share link tab
         var link = h('div.cp-share-modal', [
             h('label', Messages.share_linkAccess),
@@ -403,7 +405,10 @@ define([
             },
             keys: [[13, 'ctrl']]
         }];
-        var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
+        var frameLink = UI.dialog.customModal(link, {
+            buttons: linkButtons,
+            onClose: config.onClose
+        });
 
         // Embed tab
         var getEmbedValue = function () {
@@ -464,7 +469,9 @@ define([
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
         common.getMetadataMgr().onChange(function () {
-            hashes = common.getMetadataMgr().getPrivateData().availableHashes;
+            // "hashes" is only available is the secure "share" app
+            hashes = common.getMetadataMgr().getPrivateData().hashes;
+            if (!hashes) { return; }
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
         return tabs;
