@@ -548,7 +548,7 @@ define([
         };
 
         var isBottomedOut = function ($elem) {
-            return ($elem[0].scrollHeight - $elem.scrollTop() === $elem.outerHeight());
+            return ($elem[0].scrollHeight - $elem.scrollTop() === $elem[0].clientHeight);
         };
 
         var onMessage = function (message) {
@@ -584,7 +584,7 @@ define([
             $messagebox.append(el_message);
 
             if (shouldScroll) {
-                $messagebox.scrollTop($messagebox.outerHeight());
+                $messagebox.scrollTop($messagebox[0].scrollHeight);
             }
             normalizeLabels($messagebox);
             reorderRooms();
