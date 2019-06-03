@@ -874,17 +874,24 @@
                 font-size: @colortheme_app-font-size;
                 padding: 0 5px;
                 border: 0;
-                background: darken(@colortheme_drive-bg, 10%);
+                background: darken(@colortheme_drive-bg, 7%);
                 color: @colortheme_drive-color;
                 box-sizing: border-box;
                 transition: all 0.15s;
                 &.cp-app-drive-path-separator {
                     color: #ccc;
                 }
-                &.cp-app-drive-path-lickable {
-                    cursor: pointer;
-                    &:hover {
-                        background: darken(@colortheme_drive-bg, 15%);
+                &:hover {
+                    &:not(.cp-app-drive-path-separator) {
+                        background-color: darken(@colortheme_drive-bg, 15%);
+                        text-decoration: underline;
+                        cursor: pointer;
+                    }
+                    & ~ .cp-app-drive-path-element {
+                        background-color: darken(@colortheme_drive-bg, 15%);
+                    }
+                    & ~ .cp-app-drive-path-element:not(.cp-app-drive-path-separator) {
+                        text-decoration: underline;
                     }
                 }
             }
