@@ -71,10 +71,25 @@ define(req, function(Util, AppConfig, Default, Language) {
         });
     }
 
-    Util.extend(messages, Default);
+    var extend = function (a, b) {
+        for (var k in b) {
+            if (Util.isObject(b[k])) {
+                a[k] = Util.isObject(a[k]) ? a[k] : {};
+                extend(a[k], b[k]);
+                continue;
+            }
+            if (Array.isArray(b[k])) {
+                a[k] = b[k].slice();
+                continue;
+            }
+            a[k] = b[k] || a[k];
+        }
+    };
+
+    extend(messages, Default);
     if (Language && language !== defaultLanguage) {
         // Add the translated keys to the returned object
-        Util.extend(messages, Language);
+        extend(messages, Language);
     }
 
     messages._languages = map;
