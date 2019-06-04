@@ -7,6 +7,8 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig) {
     var requireConfig = RequireConfig();
 
+    var ready = false;
+
     var create = function (config) {
         // Loaded in load #2
         var sframeChan;
@@ -89,7 +91,7 @@ define([
                             feedbackAllowed: Utils.Feedback.state,
                             hashes: config.data.hashes,
                             password: config.data.password,
-                            file: config.data.file
+                            file: config.data.file,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -116,11 +118,25 @@ define([
                 sframeChan.on('EV_SHARE_ACTION', function (data) {
                     config.onShareAction(data);
                 });
+
+                sframeChan.onReady(function () {
+                    if (ready === true) { return; }
+                    if (typeof ready === "function") {
+                        ready();
+                    }
+                    ready = true;
+                });
             });
         });
-        var refresh = function (data) {
-            if (!sframeChan) { return; }
+        var refresh = function (data, cb) {
+            if (!ready) {
+                ready = function () {
+                    refresh(data, cb);
+                };
+                return;
+            }
             sframeChan.event('EV_SHARE_REFRESH', data);
+            cb();
         };
         return {
             refresh: refresh

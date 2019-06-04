@@ -316,6 +316,167 @@ define([
         });
     };
 
+    var getFriendsList = function (common) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        var friends = priv.friends;
+        var order = [];
+        if (!friends) { return; }
+
+        // XXX
+        for (var i = 0; i < 30; i++) {
+            friends[i] = {
+                curvePublic: Hash.createChannelId(),
+                displayName: i+ ' blu'
+            };
+        }
+
+        var others = Object.keys(friends).map(function (curve, i) {
+            var data = friends[curve];
+            var avatar = h('span.cp-share-friend-avatar.cp-avatar');
+            UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
+            return h('div.cp-share-friend', {
+                'data-curve': data.curvePublic,
+                'data-name': data.displayName,
+                'data-order': i,
+                style: 'order:'+i+';'
+            },[
+                avatar,
+                h('span.cp-share-friend-name', data.displayName)
+            ]);
+        });
+        var smallCurves = Object.keys(friends).map(function (c) {
+            return friends[c].curvePublic.slice(0,8);
+        });
+
+        // Fill with fake friends to have a uniform spacing (from the flexbox)
+        var addFake = function (els) {
+            $(bloc).find('.cp-fake-friend').remove();
+            var n = (6 - els.length%6)%6;
+            for (var j = 0; j < n; j++) {
+                els.push(h('div.cp-share-friend.cp-fake-friend', {
+                    style: 'order:9999999;'
+                }));
+            }
+        };
+        addFake(others);
+        var noOthers = others.length === 0 ? '.cp-recent-only' : '';
+
+        var buttonSelect = h('button.cp-share-with-friends', Messages.shareSelectAll || 'Select'); // XXX
+        var buttonDeselect = h('button.cp-share-with-friends', Messages.shareDeselectAll || 'Deselect'); // XXX
+        var inputFilter = h('input', {
+            placeholder: 'Search friend...'
+        });
+
+        var bloc = h('div.cp-share-friends.cp-share-column' + noOthers, [
+            h('label', Messages.share_linkFriends || "Friends"), // XXX
+            h('div.cp-share-grid-filter', [
+                inputFilter,
+                buttonSelect,
+                buttonDeselect
+            ]),
+        ]);
+        var $bloc = $(bloc);
+
+        var redraw = function () {
+            var name = $(inputFilter).val().trim().replace(/"/g, '');
+            $bloc.find('.cp-share-friend').show();
+            if (!name) { return; }
+            $bloc.find('.cp-share-friend:not(.cp-selected):not([data-name*="'+name+'"])').hide();
+        };
+
+        $(inputFilter).on('keydown keyup change', redraw);
+        $(buttonSelect).click(function () {
+            $bloc.find('.cp-share-friend:not(.cp-selected):visible').addClass('cp-selected');
+        });
+        $(buttonDeselect).click(function () {
+            $bloc.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
+                var order = $(el).attr('data-order');
+                if (!order) { return; }
+                $(el).attr('style', 'order:'+order);
+            });
+            redraw();
+        });
+
+        console.log(smallCurves);
+        var refreshButtons = function () {
+            var $nav = $bloc.parents('.alertify-tabs-content').find('nav');
+            if (!$nav.find('.cp-share-with-friends').length) {
+                var button = h('button.primary.cp-share-with-friends', {
+                    'data-keys': '[13]'
+                }, Messages.shareLinkWithFriends || 'Share with friends'); // XXX
+                $(button).click(function () {
+                    // Get the selected curves
+                    var $friends = $bloc.find('.cp-share-friend.cp-selected');
+                    var curves = $friends.toArray().map(function (el) {
+                        return ($(el).attr('data-curve') || '').slice(0,8);
+                    }).filter(function (x) { return x; });
+                    // Prepend them to the "order" array
+                    Array.prototype.unshift.apply(order, curves);
+                    console.log(order);
+                    order = Util.deduplicateString(order);
+                    console.log(order);
+                    // Make sure we don't have "old" friends and save
+                    order = order.filter(function (curve) {
+                        return smallCurves.indexOf(curve) !== -1;
+                    });
+                    console.log(order);
+                    common.setAttribute(['general', 'share-friends'], order);
+
+                    // XXX send to mailboxes
+                    // Notes: we need to filter the friend to only have th eones with mailboxes!
+                });
+                $nav.append(button);
+            }
+
+            var friendMode = $bloc.find('.cp-share-friend.cp-selected').length;
+            if (friendMode) {
+                $nav.find('button.primary[data-keys]').hide();
+                $nav.find('button.cp-share-with-friends').show();
+            } else {
+                $nav.find('button.primary[data-keys]').show();
+                $nav.find('button.cp-share-with-friends').hide();
+            }
+        };
+
+
+        common.getAttribute(['general', 'share-friends'], function (err, val) {
+            order = val || [];
+            // Sort friends by "recently shared with"
+            others.sort(function (a, b) {
+                var ca = ($(a).attr('data-curve') || '').slice(0,8);
+                var cb = ($(b).attr('data-curve') || '').slice(0,8);
+                if (!ca && !cb) { return 0; }
+                if (!ca) { return 1; }
+                if (!cb) { return -1; }
+                var ia = order.indexOf(ca);
+                var ib = order.indexOf(cb);
+                if (ia === -1 && ib === -1) { return 0; }
+                if (ia === -1) { return 1; }
+                if (ib === -1) { return -1; }
+                return ia - ib;
+            });
+            // Reorder the friend icons
+            others.forEach(function (el, i) {
+                if ($(el).is('.cp-fake-friend')) { return; }
+                $(el).attr('data-order', i).css('order', i);
+            });
+            // Display them
+            $bloc.append(h('div.cp-share-grid', others));
+            $bloc.find('.cp-share-friend').click(function (e) {
+                var sel = $(this).hasClass('cp-selected');
+                if (!sel) {
+                    $(this).addClass('cp-selected');
+                } else {
+                    var order = $(this).attr('data-order');
+                    order = order ? 'order:'+order : '';
+                    $(this).removeClass('cp-selected').attr('style', order);
+                }
+                refreshButtons();
+            });
+        });
+        return bloc;
+    };
+
     UIElements.createShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -325,32 +486,37 @@ define([
         if (!hashes) { return; }
 
         // Share link tab
-        var link = h('div.cp-share-modal', [
-            h('label', Messages.share_linkAccess),
-            h('br'),
-            UI.createRadio('cp-share-editable', 'cp-share-editable-true',
-                           Messages.share_linkEdit, true, { mark: {tabindex:1} }),
-            UI.createRadio('cp-share-editable', 'cp-share-editable-false',
-                           Messages.share_linkView, false, { mark: {tabindex:1} }),
-            /*h('input#cp-share-editable-true.cp-share-editable-value', {
-                type: 'radio',
-                name: 'cp-share-editable',
-                value: 1,
-            }),
-            h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
-            h('input#cp-share-editable-false.cp-share-editable-value', {
-                type: 'radio',
-                name: 'cp-share-editable',
-                value: 0
-            }),
-            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),*/
-            h('br'),
-            h('label', Messages.share_linkOptions),
-            h('br'),
-            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
-            UI.createCheckbox('cp-share-present', Messages.share_linkPresent, false, { mark: {tabindex:1} }),
-            h('br'),
-            UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 })
+        var friendsList = getFriendsList(common);
+        var link = h('div.cp-share-modal.cp-share-columns', [
+            h('div.cp-share-column', [
+                h('p', 'Select the access rights you want to use and copy the share URL or send it directly to your CryptPad friends'), // XXX
+                h('label', Messages.share_linkAccess),
+                h('br'),
+                UI.createRadio('cp-share-editable', 'cp-share-editable-true',
+                               Messages.share_linkEdit, true, { mark: {tabindex:1} }),
+                UI.createRadio('cp-share-editable', 'cp-share-editable-false',
+                               Messages.share_linkView, false, { mark: {tabindex:1} }),
+                /*h('input#cp-share-editable-true.cp-share-editable-value', {
+                    type: 'radio',
+                    name: 'cp-share-editable',
+                    value: 1,
+                }),
+                h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
+                h('input#cp-share-editable-false.cp-share-editable-value', {
+                    type: 'radio',
+                    name: 'cp-share-editable',
+                    value: 0
+                }),
+                h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),*/
+                h('br'),
+                h('label', Messages.share_linkOptions),
+                h('br'),
+                UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
+                UI.createCheckbox('cp-share-present', Messages.share_linkPresent, false, { mark: {tabindex:1} }),
+                h('br'),
+                UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }),
+            ]),
+            friendsList
         ]);
         if (!hashes.editHash) {
             $(link).find('#cp-share-editable-false').attr('checked', true);
@@ -407,7 +573,7 @@ define([
         }];
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
-            onClose: config.onClose
+            onClose: config.onClose,
         });
 
         // Embed tab
@@ -438,7 +604,10 @@ define([
             },
             keys: [13]
         }];
-        var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
+        var frameEmbed = UI.dialog.customModal(embed, {
+            buttons: embedButtons,
+            onClose: config.onClose,
+        });
 
         // Create modal
         var tabs = [{

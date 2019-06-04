@@ -53,7 +53,9 @@ define([
                     password: priv.password
                 }
             });
-            UI.openCustomModal(UI.dialog.tabs(modal));
+            UI.openCustomModal(UI.dialog.tabs(modal), {
+                wide: true
+            });
         };
         sframeChan.on('EV_SHARE_REFRESH', function (data) {
             createShareDialog(data);

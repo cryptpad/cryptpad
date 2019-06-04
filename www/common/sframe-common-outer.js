@@ -739,8 +739,9 @@ define([
                     ShareModal.$iframe = $('<iframe>', {id: 'sbox-share-iframe'}).appendTo($('body'));
                     ShareModal.modal = Share.create(config);
                 } else if (!cfg.hidden) {
-                    ShareModal.$iframe.show();
-                    ShareModal.modal.refresh(cfg);
+                    ShareModal.modal.refresh(cfg, function () {
+                        ShareModal.$iframe.show();
+                    });
                 }
                 if (cfg.hidden) {
                     ShareModal.$iframe.hide();
