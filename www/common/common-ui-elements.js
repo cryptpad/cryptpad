@@ -348,17 +348,6 @@ define([
             return friends[c].curvePublic.slice(0,8);
         });
 
-        // Fill with fake friends to have a uniform spacing (from the flexbox)
-        var addFake = function (els) {
-            $(bloc).find('.cp-fake-friend').remove();
-            var n = (6 - els.length%6)%6;
-            for (var j = 0; j < n; j++) {
-                els.push(h('div.cp-share-friend.cp-fake-friend', {
-                    style: 'order:9999999;'
-                }));
-            }
-        };
-        addFake(others);
         var noOthers = others.length === 0 ? '.cp-recent-only' : '';
 
         var buttonSelect = h('button.cp-share-with-friends', Messages.shareSelectAll || 'Select'); // XXX
@@ -376,6 +365,18 @@ define([
             ]),
         ]);
         var $bloc = $(bloc);
+
+        // Fill with fake friends to have a uniform spacing (from the flexbox)
+        var addFake = function (els) {
+            $(bloc).find('.cp-fake-friend').remove();
+            var n = (6 - els.length%6)%6;
+            for (var j = 0; j < n; j++) {
+                els.push(h('div.cp-share-friend.cp-fake-friend', {
+                    style: 'order:9999999;'
+                }));
+            }
+        };
+        addFake(others);
 
         var redraw = function () {
             var name = $(inputFilter).val().trim().replace(/"/g, '');
@@ -462,7 +463,7 @@ define([
             });
             // Display them
             $bloc.append(h('div.cp-share-grid', others));
-            $bloc.find('.cp-share-friend').click(function (e) {
+            $bloc.find('.cp-share-friend').click(function () {
                 var sel = $(this).hasClass('cp-selected');
                 if (!sel) {
                     $(this).addClass('cp-selected');
