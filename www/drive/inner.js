@@ -3245,6 +3245,9 @@ define([
                     modal = UIElements.createSFShareModal({
                         origin: APP.origin,
                         pathname: "/drive/",
+                        friends: friends,
+                        title: data.title,
+                        common: common,
                         hashes: {
                             editHash: parsed.hash
                         }

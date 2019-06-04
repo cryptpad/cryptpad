@@ -1,9 +1,10 @@
 define([
     'jquery',
     '/common/hyperscript.js',
+    '/common/common-hash.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-], function ($, h, UIElements, Messages) {
+], function ($, h, Hash, UIElements, Messages) {
 
     var handlers = {};
 
@@ -49,8 +50,12 @@ define([
         var content = data.content;
         var msg = content.msg;
         $(el).find('.cp-notification-content').addClass("cp-clickable");
+        var type = Hash.parsePadUrl(msg.content.href).type;
+        var key = type === 'drive' ? 'notification_folderShared' :
+                    (type === 'file' ? 'notification_fileShared' :
+                      'notification_padShared');
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('notification_padShared', [msg.content.name || Messages.anonymous, msg.content.title]))
+            .html(Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]))
             .click(function () {
                 common.openURL(msg.content.href);
             });

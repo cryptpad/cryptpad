@@ -316,7 +316,7 @@ define([
         });
     };
 
-    var getFriendsList = function (config) { // XXX test from the drive and don't forget to pass the title
+    var getFriendsList = function (config) {
         var common = config.common;
         var title = config.title;
         var friends = config.friends;
@@ -374,6 +374,7 @@ define([
         };
         addFake(others);
 
+        // Hide friends when they are filtered using the text input
         var redraw = function () {
             var name = $(inputFilter).val().trim().replace(/"/g, '');
             $div.find('.cp-share-friend').show();
@@ -394,8 +395,10 @@ define([
             redraw();
         });
 
+        // Replace "copy link" by "share with friends" if at least one friedn is selected
+        // Also create the "share with friends" button if it doesn't exist
         var refreshButtons = function () {
-            var $nav = $div.parents('.alertify-tabs-content').find('nav');
+            var $nav = $div.parents('.alertify').find('nav');
             if (!$nav.find('.cp-share-with-friends').length) {
                 var button = h('button.primary.cp-share-with-friends', {
                     'data-keys': '[13]'
@@ -418,7 +421,6 @@ define([
                         });
                     });
 
-                    console.log(UI.findCancelButton());
                     UI.findCancelButton().click();
 
                     // Update the "recently shared with" array:
@@ -659,8 +661,15 @@ define([
 
 
         // Share link tab
-        var link = h('div.cp-share-modal', [
-            UI.dialog.selectable('', { id: 'cp-share-link-preview' })
+        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+        var link = h('div.cp-share-modal' + friendsUIClass, [
+            h('div.cp-share-column', [
+                hasFriends ? h('p', Messages.share_description) : undefined,
+                UI.dialog.selectable('', { id: 'cp-share-link-preview' }),
+            ]),
+            friendsList
         ]);
         var getLinkValue = function () { return url; };
         $(link).find('#cp-share-link-preview').val(getLinkValue());
@@ -734,10 +743,17 @@ define([
         var url = origin + pathname + '#' + hashes.editHash;
 
         // Share link tab
-        var link = h('div.cp-share-modal', [
-            h('label', Messages.sharedFolders_share),
-            h('br'),
-            UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
+        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+        var link = h('div.cp-share-modal' + friendsUIClass, [
+            h('div.cp-share-column', [
+                h('label', Messages.sharedFolders_share),
+                h('br'),
+                hasFriends ? h('p', Messages.share_description) : undefined,
+                UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
+            ]),
+            friendsList
         ]);
         var linkButtons = [{
             name: Messages.cancel,
