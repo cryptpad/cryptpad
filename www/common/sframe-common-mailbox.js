@@ -132,9 +132,14 @@ define([
             });
         };
 
+        var subscribed = false;
 
         // Get all existing notifications + the new ones when they come
         mailbox.subscribe = function (cfg) {
+            if (!subscribed) {
+                execCommand('SUBSCRIBE', null, function () {});
+                subscribed = true;
+            }
             if (typeof(cfg.onViewed) === "function") {
                 onViewedHandlers.push(cfg.onViewed);
             }
@@ -164,10 +169,6 @@ define([
             if (ev === 'VIEWED') {
                 return void onViewed(data);
             }
-        });
-
-        execCommand('SUBSCRIBE', null, function () {
-            //console.log('subscribed');
         });
 
         return mailbox;

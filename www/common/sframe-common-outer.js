@@ -397,6 +397,14 @@ define([
                         cb({error:e});
                     });
                 });
+
+                Cryptpad.mailbox.onEvent.reg(function (data) {
+                    sframeChan.event('EV_MAILBOX_EVENT', data);
+                });
+                sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
+                    Cryptpad.mailbox.execCommand(data, cb);
+                });
+
             };
             addCommonRpc(sframeChan);
 
@@ -919,13 +927,6 @@ define([
             });
             sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
                 Cryptpad.universal.execCommand(data, cb);
-            });
-
-            Cryptpad.mailbox.onEvent.reg(function (data) {
-                sframeChan.event('EV_MAILBOX_EVENT', data);
-            });
-            sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
-                Cryptpad.mailbox.execCommand(data, cb);
             });
 
             Cryptpad.onTimeoutEvent.reg(function () {

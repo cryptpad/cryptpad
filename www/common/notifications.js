@@ -7,6 +7,8 @@ define([
 
     var handlers = {};
 
+    // Friend request
+
     handlers['FRIEND_REQUEST'] = function (common, data, el) {
         var content = data.content;
         var msg = content.msg;
@@ -38,6 +40,20 @@ define([
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
             .html(Messages._getKey('friendRequest_declined', [msg.content.name || Messages.anonymous]));
+        $(el).find('.cp-notification-dismiss').css('display', 'flex');
+    };
+
+    // Share pad
+
+    handlers['SHARE_PAD'] = function (common, data, el) {
+        var content = data.content;
+        var msg = content.msg;
+        $(el).find('.cp-notification-content').addClass("cp-clickable");
+        $(el).find('.cp-notification-content p')
+            .html(Messages._getKey('notification_padShared', [msg.content.name || Messages.anonymous, msg.content.title]))
+            .click(function () {
+                common.openURL(msg.content.href);
+            });
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 

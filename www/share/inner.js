@@ -24,14 +24,6 @@ define([
         var hideShareDialog = function () {
             sframeChan.event('EV_SHARE_CLOSE');
         };
-        /*
-        var onShareAction = function (data) {
-            hideShareDialog();
-            sframeChan.event("EV_SHARE_ACTION", {
-                // XXX data
-            });
-        };
-        */
 
         var createShareDialog = function (data) {
             var priv = metadataMgr.getPrivateData();
@@ -40,11 +32,16 @@ define([
             var pathname = priv.pathname;
             var f = (data && data.file) ? UIElements.createFileShareModal
                                           : UIElements.createShareModal;
+
+            var friends = common.getFriends();
+
             var modal = f({
                 origin: origin,
                 pathname: pathname,
                 hashes: hashes,
                 common: common,
+                title: data.title,
+                friends: friends,
                 onClose: function () {
                     hideShareDialog();
                 },
@@ -53,15 +50,14 @@ define([
                     password: priv.password
                 }
             });
+            UI.findCancelButton().click();
             UI.openCustomModal(UI.dialog.tabs(modal), {
-                wide: true
+                wide: Object.keys(friends).length !== 0
             });
         };
         sframeChan.on('EV_SHARE_REFRESH', function (data) {
             createShareDialog(data);
         });
-
-        //UI.removeLoadingScreen();
     };
 
     var main = function () {
@@ -70,7 +66,6 @@ define([
         nThen(function (waitFor) {
             $(waitFor(function () {
                 UI.removeLoadingScreen();
-                //UI.addLoadingScreen({hideTips: true, hideLogo: true});
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {

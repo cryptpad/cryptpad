@@ -316,22 +316,18 @@ define([
         });
     };
 
-    var getFriendsList = function (common) {
-        var priv = common.getMetadataMgr().getPrivateData();
-        var friends = priv.friends;
+    var getFriendsList = function (config) { // XXX test from the drive and don't forget to pass the title
+        var common = config.common;
+        var title = config.title;
+        var friends = config.friends;
+        var myName = common.getMetadataMgr().getUserData().name;
         var order = [];
         if (!friends) { return; }
 
-        // XXX
-        for (var i = 0; i < 30; i++) {
-            friends[i] = {
-                curvePublic: Hash.createChannelId(),
-                displayName: i+ ' blu'
-            };
-        }
-
         var others = Object.keys(friends).map(function (curve, i) {
+            if (curve.length <= 40) { return; }
             var data = friends[curve];
+            if (!data.notifications) { return; }
             var avatar = h('span.cp-share-friend-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
             return h('div.cp-share-friend', {
@@ -343,32 +339,32 @@ define([
                 avatar,
                 h('span.cp-share-friend-name', data.displayName)
             ]);
-        });
+        }).filter(function (x) { return x; });
         var smallCurves = Object.keys(friends).map(function (c) {
             return friends[c].curvePublic.slice(0,8);
         });
 
         var noOthers = others.length === 0 ? '.cp-recent-only' : '';
 
-        var buttonSelect = h('button.cp-share-with-friends', Messages.shareSelectAll || 'Select'); // XXX
-        var buttonDeselect = h('button.cp-share-with-friends', Messages.shareDeselectAll || 'Deselect'); // XXX
+        var buttonSelect = h('button.cp-share-with-friends', Messages.share_selectAll);
+        var buttonDeselect = h('button.cp-share-with-friends', Messages.share_deselectAll);
         var inputFilter = h('input', {
-            placeholder: 'Search friend...'
+            placeholder: Messages.share_filterFriend
         });
 
-        var bloc = h('div.cp-share-friends.cp-share-column' + noOthers, [
-            h('label', Messages.share_linkFriends || "Friends"), // XXX
+        var div = h('div.cp-share-friends.cp-share-column' + noOthers, [
+            h('label', Messages.share_linkFriends),
             h('div.cp-share-grid-filter', [
                 inputFilter,
                 buttonSelect,
                 buttonDeselect
             ]),
         ]);
-        var $bloc = $(bloc);
+        var $div = $(div);
 
         // Fill with fake friends to have a uniform spacing (from the flexbox)
         var addFake = function (els) {
-            $(bloc).find('.cp-fake-friend').remove();
+            $div.find('.cp-fake-friend').remove();
             var n = (6 - els.length%6)%6;
             for (var j = 0; j < n; j++) {
                 els.push(h('div.cp-share-friend.cp-fake-friend', {
@@ -380,17 +376,17 @@ define([
 
         var redraw = function () {
             var name = $(inputFilter).val().trim().replace(/"/g, '');
-            $bloc.find('.cp-share-friend').show();
+            $div.find('.cp-share-friend').show();
             if (!name) { return; }
-            $bloc.find('.cp-share-friend:not(.cp-selected):not([data-name*="'+name+'"])').hide();
+            $div.find('.cp-share-friend:not(.cp-selected):not([data-name*="'+name+'"])').hide();
         };
 
         $(inputFilter).on('keydown keyup change', redraw);
         $(buttonSelect).click(function () {
-            $bloc.find('.cp-share-friend:not(.cp-selected):visible').addClass('cp-selected');
+            $div.find('.cp-share-friend:not(.cp-selected):visible').addClass('cp-selected');
         });
         $(buttonDeselect).click(function () {
-            $bloc.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
+            $div.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
                 var order = $(el).attr('data-order');
                 if (!order) { return; }
                 $(el).attr('style', 'order:'+order);
@@ -398,38 +394,51 @@ define([
             redraw();
         });
 
-        console.log(smallCurves);
         var refreshButtons = function () {
-            var $nav = $bloc.parents('.alertify-tabs-content').find('nav');
+            var $nav = $div.parents('.alertify-tabs-content').find('nav');
             if (!$nav.find('.cp-share-with-friends').length) {
                 var button = h('button.primary.cp-share-with-friends', {
                     'data-keys': '[13]'
-                }, Messages.shareLinkWithFriends || 'Share with friends'); // XXX
+                }, Messages.share_withFriends);
                 $(button).click(function () {
+                    var href = Hash.getRelativeHref($('#cp-share-link-preview').val());
+                    var $friends = $div.find('.cp-share-friend.cp-selected');
+                    $friends.each(function (i, el) {
+                        var curve = $(el).attr('data-curve');
+                        if (!curve || !friends[curve]) { return; }
+                        var friend = friends[curve];
+                        if (!friend.notifications || !friend.curvePublic) { return; }
+                        common.mailbox.sendTo("SHARE_PAD", {
+                            href: href,
+                            name: myName,
+                            title: title
+                        }, {
+                            channel: friend.notifications,
+                            curvePublic: friend.curvePublic
+                        });
+                    });
+
+                    console.log(UI.findCancelButton());
+                    UI.findCancelButton().click();
+
+                    // Update the "recently shared with" array:
                     // Get the selected curves
-                    var $friends = $bloc.find('.cp-share-friend.cp-selected');
                     var curves = $friends.toArray().map(function (el) {
                         return ($(el).attr('data-curve') || '').slice(0,8);
                     }).filter(function (x) { return x; });
                     // Prepend them to the "order" array
                     Array.prototype.unshift.apply(order, curves);
-                    console.log(order);
                     order = Util.deduplicateString(order);
-                    console.log(order);
                     // Make sure we don't have "old" friends and save
                     order = order.filter(function (curve) {
                         return smallCurves.indexOf(curve) !== -1;
                     });
-                    console.log(order);
                     common.setAttribute(['general', 'share-friends'], order);
-
-                    // XXX send to mailboxes
-                    // Notes: we need to filter the friend to only have th eones with mailboxes!
                 });
                 $nav.append(button);
             }
 
-            var friendMode = $bloc.find('.cp-share-friend.cp-selected').length;
+            var friendMode = $div.find('.cp-share-friend.cp-selected').length;
             if (friendMode) {
                 $nav.find('button.primary[data-keys]').hide();
                 $nav.find('button.cp-share-with-friends').show();
@@ -462,8 +471,8 @@ define([
                 $(el).attr('data-order', i).css('order', i);
             });
             // Display them
-            $bloc.append(h('div.cp-share-grid', others));
-            $bloc.find('.cp-share-friend').click(function () {
+            $div.append(h('div.cp-share-grid', others));
+            $div.find('.cp-share-friend').click(function () {
                 var sel = $(this).hasClass('cp-selected');
                 if (!sel) {
                     $(this).addClass('cp-selected');
@@ -475,7 +484,7 @@ define([
                 refreshButtons();
             });
         });
-        return bloc;
+        return div;
     };
 
     UIElements.createShareModal = function (config) {
@@ -487,28 +496,18 @@ define([
         if (!hashes) { return; }
 
         // Share link tab
-        var friendsList = getFriendsList(common);
-        var link = h('div.cp-share-modal.cp-share-columns', [
+        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+        var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [
-                h('p', 'Select the access rights you want to use and copy the share URL or send it directly to your CryptPad friends'), // XXX
+                hasFriends ? h('p', Messages.share_description) : undefined,
                 h('label', Messages.share_linkAccess),
                 h('br'),
                 UI.createRadio('cp-share-editable', 'cp-share-editable-true',
                                Messages.share_linkEdit, true, { mark: {tabindex:1} }),
                 UI.createRadio('cp-share-editable', 'cp-share-editable-false',
                                Messages.share_linkView, false, { mark: {tabindex:1} }),
-                /*h('input#cp-share-editable-true.cp-share-editable-value', {
-                    type: 'radio',
-                    name: 'cp-share-editable',
-                    value: 1,
-                }),
-                h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
-                h('input#cp-share-editable-false.cp-share-editable-value', {
-                    type: 'radio',
-                    name: 'cp-share-editable',
-                    value: 0
-                }),
-                h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),*/
                 h('br'),
                 h('label', Messages.share_linkOptions),
                 h('br'),
@@ -549,6 +548,7 @@ define([
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
         var linkButtons = [{
+            className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
@@ -592,6 +592,7 @@ define([
             UI.dialog.selectable(getEmbedValue())
         ]);
         var embedButtons = [{
+            className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
@@ -664,6 +665,7 @@ define([
         var getLinkValue = function () { return url; };
         $(link).find('#cp-share-link-preview').val(getLinkValue());
         var linkButtons = [{
+            className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
@@ -690,6 +692,7 @@ define([
             UI.dialog.selectable(common.getMediatagFromHref(fileData)),
         ]);
         var embedButtons = [{
+            className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]

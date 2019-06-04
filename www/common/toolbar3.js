@@ -491,7 +491,7 @@ MessengerUI, Messages) {
             if ($messagebox.length) {
                 $messagebox.scrollTop($messagebox[0].scrollHeight);
             }
-            
+
             $button.addClass('cp-toolbar-button-active');
             config.$contentContainer.addClass('cp-chat-visible');
             $button.removeClass('cp-toolbar-notification');
@@ -532,7 +532,9 @@ MessengerUI, Messages) {
             hidden: true
         });
         $shareBlock.click(function () {
-            Common.getSframeChannel().event('EV_SHARE_OPEN', {});
+            Common.getSframeChannel().event('EV_SHARE_OPEN', {
+                title: Common.getMetadataMgr().getMetadata().title
+            });
         });
 
         toolbar.$leftside.append($shareBlock);
