@@ -756,6 +756,7 @@ define([
             friendsList
         ]);
         var linkButtons = [{
+            className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
