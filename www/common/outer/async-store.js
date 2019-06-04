@@ -1649,7 +1649,7 @@ define([
                         state: (2 + (version / 10)),
                         progress: progress
                     });
-                });
+                }, store);
                 Store.initAnonRpc(null, null, waitFor());
                 Store.initRpc(null, null, waitFor());
             }).nThen(function (waitFor) {

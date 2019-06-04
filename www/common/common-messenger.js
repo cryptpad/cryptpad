@@ -44,6 +44,7 @@ define([
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
+            notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar
         };
     };
