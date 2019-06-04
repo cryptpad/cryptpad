@@ -64,7 +64,7 @@ via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), 
 
 # Team
 
-CryptPad is actively developped by a team at [XWiki SAS](https://www.xwiki.com), a company developer of Open Source software since 2004 with Open-Source contributors from around the world. It has been funded between 2015-2019 through a research grant from the French state through [BPI France](https://www.bpifrance.fr/). It is currently funded by an 50KEuros NLNet Next-Generation Internet grant, subscribers of CryptPad.fr and our [Open-Collective](https://opencollective.com/cryptpad).
+CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), a company that has been building Open-Source software since 2004 with contributors from around the world. Between 2015 and 2019 it was funded by a research grant from the French state through [BPI France](https://www.bpifrance.fr/). It is currently financed by [NLnet PET](https://nlnet.nl/PET/), subscribers of CryptPad.fr and our donations to our [Open-Collective campaign](https://opencollective.com/cryptpad).
 
 # Contributing
 
