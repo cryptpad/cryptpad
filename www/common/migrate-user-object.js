@@ -189,7 +189,7 @@ define([
                 Feedback.send('Migrate-8', true);
                 userObject.version = version = 8;
             }
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             // Migration 9: send our mailbox channel to existing friends
             var migrateFriends = function () {
                 var network = store.network;
@@ -220,8 +220,8 @@ define([
                         // History cleared while we were offline
                         // ==> we asked for an invalid last known hash
                         if (parsed.error && parsed.error === "EINVAL") {
-                            var msg = ['GET_HISTORY', parsed.channel, {}];
-                            network.sendto(network.historyKeeper, JSON.stringify(msg))
+                            var histMsg = ['GET_HISTORY', parsed.channel, {}];
+                            network.sendto(network.historyKeeper, JSON.stringify(histMsg))
                               .then(function () {}, function () {});
                             return;
                         }
@@ -245,15 +245,15 @@ define([
                     var chan = parsed[3];
                     if (!chan || !channels[chan]) { return; }
                     var channel = channels[chan];
-                    var msg = channel.decrypt(parsed[4]);
-                    var parsedMsg = JSON.parse(msg);
+                    var msgIn = channel.decrypt(parsed[4]);
+                    var parsedMsg = JSON.parse(msgIn);
                     if (parsedMsg[0] === 'UPDATE') {
                         if (parsedMsg[1] === myData.curvePublic) { return; }
                         var data = parsedMsg[3];
                         // If it doesn't contain the mailbox channel, ignore the message
                         if (!data.notifications) { return; }
                         // Otherwise we know their channel, we can send them our own
-                        channel.friend.notifications = data.notifications
+                        channel.friend.notifications = data.notifications;
                         myData.channel = chan;
                         Mailbox.sendTo(ctx, 'UPDATE_DATA', myData, {
                             channel: data.notifications,
