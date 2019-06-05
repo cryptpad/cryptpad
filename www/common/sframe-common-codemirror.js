@@ -231,7 +231,20 @@ define([
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
-            $block.find('a').click(function () {
+            
+            var isHovering = false;
+            var $aLanguages = $block.find('a');
+            $aLanguages.mouseenter(function () {
+                isHovering = true;
+                setMode($(this).attr('data-value'));
+            });
+            $aLanguages.mouseleave(function () {
+                if (isHovering) {
+                    setMode($block.find(".cp-dropdown-element-active").attr('data-value'));
+                }
+            });
+            $aLanguages.click(function () {
+                isHovering = false;
                 setMode($(this).attr('data-value'), onModeChanged);
                 onLocal();
             });
