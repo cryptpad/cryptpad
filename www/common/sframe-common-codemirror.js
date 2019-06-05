@@ -272,12 +272,26 @@ define([
 
                 setTheme(lastTheme, $block);
 
-                $block.find('a').click(function () {
+                var isHovering = false;
+                var $aThemes = $block.find('a');
+                $aThemes.mouseenter(function () {
+                    isHovering = true;
+                    var theme = $(this).attr('data-value');
+                    setTheme(theme, $block);
+                });
+                $aThemes.mouseleave(function () {
+                    if (isHovering) {
+                        setTheme(lastTheme, $block);
+                        Common.setAttribute(themeKey, lastTheme);
+                    }
+                });
+                $aThemes.click(function () {
+                    isHovering = false;
                     var theme = $(this).attr('data-value');
                     setTheme(theme, $block);
                     Common.setAttribute(themeKey, theme);
                 });
-
+                
                 if ($drawer) { $drawer.append($block); }
                 if (cb) { cb(); }
             };
