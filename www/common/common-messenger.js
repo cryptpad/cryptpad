@@ -612,6 +612,15 @@ define([
                             cb();
                         });
                     });
+                } else {
+                    removeFromFriendList(curvePublic, function () {
+                        delete channels[channel.id];
+                        emit('UNFRIEND', {
+                            curvePublic: curvePublic,
+                            fromMe: true
+                        });
+                        cb();
+                    });
                 }
                 channel.wc.bcast(cryptMsg).then(function () {}, function (err) {
                     console.error(err);
