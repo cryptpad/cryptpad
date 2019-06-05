@@ -66,7 +66,7 @@ define([
             }
             broadcast([clientId], "UPDATE_METADATA");
             if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
-                store.messenger.updateMyData();
+                Messaging.updateMyData(store);
             }
             onSync(cb);
         };
@@ -644,7 +644,7 @@ define([
             }
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
-            if (store.messenger) { store.messenger.updateMyData(); }
+            Messaging.updateMyData(store);
             onSync(cb);
         };
 

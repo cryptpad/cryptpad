@@ -152,6 +152,7 @@ define([
         Object.keys(msg.content).forEach(function (key) {
             friend[key] = msg.content[key];
         });
+        ctx.updateMetadata();
         cb(true);
     };
 
