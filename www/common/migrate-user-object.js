@@ -192,6 +192,7 @@ define([
         }).nThen(function (waitFor) {
             // Migration 9: send our mailbox channel to existing friends
             var migrateFriends = function () {
+                var network = store.network;
                 var channels = {};
                 var ctx = {
                     store: store
@@ -203,8 +204,8 @@ define([
                     if (!channel) { return; }
                     try {
                         channel.wc.leave();
-                        delete channels[chan];
                     } catch (e) {}
+                    delete channels[chan];
                 };
 
                 var onDirectMessage = function (msg, sender) {
@@ -229,7 +230,7 @@ define([
                             // Channel is ready and we didn't receive their mailbox channel: send our channel
                             myData.channel = parsed.channel;
                             var updateMsg = ['UPDATE', myData.curvePublic, +new Date(), myData];
-                            var cryptMsg = channel.encrypt(JSON.stringify(updateMsg));
+                            var cryptMsg = channels[parsed.channel].encrypt(JSON.stringify(updateMsg));
                             channels[parsed.channel].wc.bcast(cryptMsg).then(function () {}, function (err) {
                                 console.error("Can't migrate this friend", channels[parsed.channel].friend, err);
                             });
@@ -255,10 +256,11 @@ define([
                         channel.friend.notifications = data.notifications
                         myData.channel = chan;
                         Mailbox.sendTo(ctx, 'UPDATE_DATA', myData, {
-                            channel: data.notitications,
+                            channel: data.notifications,
                             curvePublic: data.curvePublic
-                        }, function () {
-                            console.log('friend migrated', friend);
+                        }, function (obj) {
+                            if (obj && obj.error) { return void console.error(obj); }
+                            console.log('friend migrated', channel.friend);
                         });
                         close(chan);
                     }
@@ -267,7 +269,9 @@ define([
                 network.on('message', function(msg, sender) {
                     try {
                         onDirectMessage(msg, sender);
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e);
+                    }
                 });
 
                 var friends = userObject.friends || {};
@@ -309,7 +313,7 @@ define([
             if (version < 9) {
                 migrateFriends();
                 Feedback.send('Migrate-9', true);
-                userObject.version = version = 9;
+                //userObject.version = version = 9;
             }
         /*}).nThen(function (waitFor) {
             // Test progress bar in the loading screen
