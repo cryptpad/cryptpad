@@ -8,7 +8,7 @@
     "url": "git://github.com/xwiki-labs/cryptpad.git"
   },
   "dependencies": {
-    "chainpad-server": "~3.0.0",
+    "chainpad-server": "~3.0.2",
     "express": "~4.16.0",
     "fs-extra": "^7.0.0",
     "nthen": "~0.1.0",
