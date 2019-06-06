@@ -1644,14 +1644,16 @@ define([
                 });
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
+                Store.initAnonRpc(null, null, waitFor());
+                Store.initRpc(null, null, waitFor());
+            }).nThen(function (waitFor) {
+                loadMailbox(waitFor);
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
                         state: (2 + (version / 10)),
                         progress: progress
                     });
                 });
-                Store.initAnonRpc(null, null, waitFor());
-                Store.initRpc(null, null, waitFor());
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3
@@ -1661,7 +1663,6 @@ define([
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
-                loadMailbox(waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {

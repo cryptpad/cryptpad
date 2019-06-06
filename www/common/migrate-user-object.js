@@ -197,7 +197,7 @@ define([
             }, 500);
             progress(0, 0);*/
         }).nThen(function () {
-            cb();
+            setTimeout(cb);
         });
     };
 });
