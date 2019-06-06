@@ -313,7 +313,7 @@ define([
             if (version < 9) {
                 migrateFriends();
                 Feedback.send('Migrate-9', true);
-                //userObject.version = version = 9;
+                userObject.version = version = 9;
             }
         /*}).nThen(function (waitFor) {
             // Test progress bar in the loading screen
