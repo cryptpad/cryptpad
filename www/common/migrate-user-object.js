@@ -1,4 +1,5 @@
 define([
+    '/customize/application_config.js',
     '/common/common-feedback.js',
     '/common/common-hash.js',
     '/common/common-util.js',
@@ -6,7 +7,7 @@ define([
     '/common/outer/mailbox.js',
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Feedback, Hash, Util, Messenger, Mailbox, nThen, Crypto) {
+], function (AppConfig, Feedback, Hash, Util, Messenger, Mailbox, nThen, Crypto) {
     // Start migration check
     // Versions:
     // 1: migrate pad attributes
@@ -190,6 +191,9 @@ define([
                 userObject.version = version = 8;
             }
         }).nThen(function () {
+            if (!AppConfig.migrateFriends) { return; } // XXX
+
+
             // Migration 9: send our mailbox channel to existing friends
             var migrateFriends = function () {
                 var network = store.network;
