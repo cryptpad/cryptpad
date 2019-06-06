@@ -1610,6 +1610,25 @@ define([
             }
             return title;
         }; */
+
+
+        var getPrettyName = function (name) {
+            var pName;
+            switch (name) {
+                case ROOT: pName = ROOT_NAME; break;
+                case TRASH: pName = TRASH_NAME; break;
+                case TEMPLATE: pName = TEMPLATE_NAME; break;
+                case FILES_DATA: pName = FILES_DATA_NAME; break;
+                case SEARCH: pName = SEARCH_NAME; break;
+                case RECENT: pName = RECENT_NAME; break;
+                case OWNED: pName = OWNED_NAME; break;
+                case TAGS: pName = TAGS_NAME; break;
+                case SHARED_FOLDER: pName = SHARED_FOLDER_NAME; break;
+                default: pName = name;
+            }
+            return pName;
+        };
+        
         
         var drivePathOverflowing = function () {
             var $container = $(".cp-app-drive-path");
@@ -1629,11 +1648,11 @@ define([
             var $pathElements = $container.find(".cp-app-drive-path-element");
             $pathElements.not($spanCollapse).css("display", "");
 
-            if (drivePathOverflowing()) {
+            if (currentPath.length > 1 && drivePathOverflowing()) {
                 var collapseLevel = 0;
                 var removeOverflowElement = function () {
                     if (drivePathOverflowing()) {
-                        if ($pathElements.length === 3) {
+                        if ($pathElements.length <= 3) {
                             return false;
                         }
                         collapseLevel++;
@@ -1647,11 +1666,13 @@ define([
                     }
                 };
 
-                while (removeOverflowElement()) {}
+                currentPath.every(removeOverflowElement);
                 $spanCollapse.css("display", "");
                 removeOverflowElement();
 
-                $spanCollapse.attr("title", getLastOpenedFolder().slice(0, collapseLevel).join(" / ").replace("root", ROOT_NAME));
+                var tipPath = currentPath.slice(0, collapseLevel);
+                tipPath[0] = getPrettyName(tipPath[0]);
+                $spanCollapse.attr("title", tipPath.join(" / "));
                 $spanCollapse[0].onclick = function () {
                     APP.displayDirectory(getLastOpenedFolder().slice(0, collapseLevel));
                 };
@@ -1664,23 +1685,6 @@ define([
         var toolbarButtonAdditionObserver = new MutationObserver(collapseDrivePath);
         $(function () { toolbarButtonAdditionObserver.observe($("#cp-app-drive-toolbar")[0], {"childList": true, "subtree": true}); });
 
-
-        var getPrettyName = function (name) {
-            var pName;
-            switch (name) {
-                case ROOT: pName = ROOT_NAME; break;
-                case TRASH: pName = TRASH_NAME; break;
-                case TEMPLATE: pName = TEMPLATE_NAME; break;
-                case FILES_DATA: pName = FILES_DATA_NAME; break;
-                case SEARCH: pName = SEARCH_NAME; break;
-                case RECENT: pName = RECENT_NAME; break;
-                case OWNED: pName = OWNED_NAME; break;
-                case TAGS: pName = TAGS_NAME; break;
-                case SHARED_FOLDER: pName = SHARED_FOLDER_NAME; break;
-                default: pName = name;
-            }
-            return pName;
-        };
 
         // Create the title block with the "parent folder" button
         var createTitle = function ($container, path, noStyle) {
