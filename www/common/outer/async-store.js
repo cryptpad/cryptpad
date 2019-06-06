@@ -1644,6 +1644,7 @@ define([
                 });
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
+                loadMailbox(waitFor);
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
                         state: (2 + (version / 10)),
@@ -1661,7 +1662,6 @@ define([
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
-                loadMailbox(waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
