@@ -291,13 +291,12 @@ define([
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
-                    sframeChan.query('Q_CLEAR_OWNED_CHANNEL', id, function (e) {
+                    execCommand('CLEAR_OWNED_CHANNEL', id, function (e) {
                         if (e) {
                             console.error(e);
                             UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
-                        clearChannel(id);
                     });
                 });
             });

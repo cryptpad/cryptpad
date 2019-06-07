@@ -953,6 +953,16 @@ define([
             cb();
         };
 
+        var clearOwnedChannel = function (id, cb) {
+            var channel = getChannel(id);
+            if (!channel) { return void cb({error: 'NO_CHANNEL'}); }
+            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            store.rpc.clearOwnedChannel(id, function (err) {
+                cb({error:err});
+            });
+            channel.messages = [];
+        }
+
         network.on('disconnect', function () {
             emit('DISCONNECT');
         });
@@ -1009,6 +1019,9 @@ define([
             }
             if (cmd === 'SET_CHANNEL_HEAD') {
                 return void setChannelHead(data.id, data.sig, cb);
+            }
+            if (cmd === 'CLEAR_OWNED_CHANNEL') {
+                return void clearOwnedChannel(data, cb);
             }
         };
 
