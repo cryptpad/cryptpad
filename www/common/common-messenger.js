@@ -962,7 +962,7 @@ define([
                 cb({error:err});
             });
             channel.messages = [];
-        }
+        };
 
         network.on('disconnect', function () {
             emit('DISCONNECT');
