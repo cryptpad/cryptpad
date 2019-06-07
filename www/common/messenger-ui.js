@@ -618,8 +618,10 @@ define([
         };
         var onLeave = function (obj) {
             var channel = obj.id;
+            var chan = state.channels[channel];
             var data = obj.info;
-            if (contactsData[data.curvePublic]) {
+            // XXX Teams: if someone leaves a room, don't remove their data if they're also a friend
+            if (contactsData[data.curvePublic] && !(chan && chan.isFriendChat)) {
                 delete contactsData[data.curvePublic];
             }
             updateStatus(channel);
