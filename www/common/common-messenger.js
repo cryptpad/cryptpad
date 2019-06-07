@@ -520,6 +520,7 @@ define([
                 // History cleared while we're in the channel
                 if (parsed.error === 'ECLEARED') {
                     setChannelHead(parsed.channel, '', function () {});
+                    channels[parsed.channel].messages = [];
                     emit('CLEAR_CHANNEL', parsed.channel);
                     return;
                 }
