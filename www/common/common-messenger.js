@@ -44,6 +44,7 @@ define([
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
+            notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar
         };
     };
@@ -610,6 +611,15 @@ define([
                             });
                             cb();
                         });
+                    });
+                } else {
+                    removeFromFriendList(curvePublic, function () {
+                        delete channels[channel.id];
+                        emit('UNFRIEND', {
+                            curvePublic: curvePublic,
+                            fromMe: true
+                        });
+                        cb();
                     });
                 }
                 channel.wc.bcast(cryptMsg).then(function () {}, function (err) {

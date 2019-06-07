@@ -3315,12 +3315,17 @@ define([
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 var parsed, modal;
+                var friends = common.getFriends();
+
                 if (manager.isSharedFolder(el)) {
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     modal = UIElements.createSFShareModal({
                         origin: APP.origin,
                         pathname: "/drive/",
+                        friends: friends,
+                        title: data.title,
+                        common: common,
                         hashes: {
                             editHash: parsed.hash
                         }
@@ -3333,6 +3338,7 @@ define([
                     var padData = {
                         origin: APP.origin,
                         pathname: "/" + padType + "/",
+                        friends: friends,
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: roParsed.hash,
@@ -3342,13 +3348,16 @@ define([
                             hash: parsed.hash,
                             password: data.password
                         },
+                        title: data.title,
                         common: common
                     };
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
                 }
-                UI.openCustomModal(modal);
+                UI.openCustomModal(modal, {
+                    wide: Object.keys(friends).length !== 0
+                });
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }

@@ -156,12 +156,14 @@ define([
         ]);
     };
 
-    dialog.frame = function (content) {
+    dialog.frame = function (content, opt) {
+        opt = opt || {};
+        var cls = opt.wide ? '.wide' : '';
         return $(h('div.alertify', {
             tabindex: 1,
         }, [
             h('div.dialog', [
-                h('div', content),
+                h('div'+cls, content),
             ])
         ])).click(function (e) {
             e.stopPropagation();
@@ -351,6 +353,9 @@ define([
         var close = function (el) {
             var $el = $(el).fadeOut(150, function () {
                 $el.detach();
+                if (opt.onClose) {
+                    opt.onClose();
+                }
             });
         };
 
@@ -373,10 +378,10 @@ define([
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
-    UI.openCustomModal = function (content) {
+    UI.openCustomModal = function (content, opt) {
         var frame = dialog.frame([
             content
-        ]);
+        ], opt);
         $(frame).find('button[data-keys]').each(function (i, el) {
             var keys = JSON.parse($(el).attr('data-keys'));
             customListenForKeys(keys, function () {

@@ -78,5 +78,27 @@ define([
         });
     };
 
+    Msg.updateMyData = function (store, curve) {
+        if (store.messenger) {
+            store.messenger.updateMyData();
+        }
+        var myData = createData(store.proxy);
+        var todo = function (friend) {
+            if (!friend || !friend.notifications) { return; }
+            myData.channel = friend.channel;
+            store.mailbox.sendTo('UPDATE_DATA', myData, {
+                channel: friend.notifications,
+                curvePublic: friend.curvePublic
+            }, function (obj) {
+                if (obj && obj.error) { console.error(obj); }
+            });
+        };
+        if (curve) {
+            var friend = getFriend(store.proxy, curve);
+            return void todo(friend);
+        }
+        eachFriend(store.proxy.friends || {}, todo);
+    };
+
     return Msg;
 });

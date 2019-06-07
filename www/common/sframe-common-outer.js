@@ -19,6 +19,7 @@ define([
         var SFrameChannel;
         var sframeChan;
         var FilePicker;
+        var Share;
         var Messaging;
         var Notifier;
         var Utils = {
@@ -38,6 +39,7 @@ define([
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
                 '/filepicker/main.js',
+                '/share/main.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -49,7 +51,7 @@ define([
                 '/customize/application_config.js',
                 '/common/test.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _FilePicker, _Share, _Messaging, _Notifier, _Hash, _Util, _Realtime,
             _Constants, _Feedback, _LocalStore, _AppConfig, _Test) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -57,6 +59,7 @@ define([
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
+                Share = _Share;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -269,9 +272,6 @@ define([
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
             var updateMeta = function () {
-                // TODO availableHashes in privateData may need updates once we have
-                // a better privileges workflow
-
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj, isTemplate;
                 nThen(function (waitFor) {
@@ -290,12 +290,12 @@ define([
                         type: cfg.type || parsed.type
                     };
                     var additionalPriv = {
+                        app: parsed.type,
                         accountName: Utils.LocalStore.getAccountName(),
                         origin: window.location.origin,
                         pathname: window.location.pathname,
                         fileHost: ApiConfig.fileHost,
                         readOnly: readOnly,
-                        availableHashes: hashes,
                         isTemplate: isTemplate,
                         feedbackAllowed: Utils.Feedback.state,
                         isPresent: parsed.hashData && parsed.hashData.present,
@@ -324,6 +324,10 @@ define([
                         AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1 &&
                         parsed.type !== "file") {
                         additionalPriv.registeredOnly = true;
+                    }
+
+                    if (['debug', 'profile'].indexOf(parsed.type) !== -1) {
+                        additionalPriv.hashes = hashes;
                     }
 
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
@@ -378,6 +382,27 @@ define([
                     Utils.LocalStore.setThumbnail(data.key, data.value, function (e) {
                         cb({error:e});
                     });
+                });
+
+                sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
+                    Cryptpad.getAttribute(data.key, function (e, data) {
+                        cb({
+                            error: e,
+                            data: data
+                        });
+                    });
+                });
+                sframeChan.on('Q_SET_ATTRIBUTE', function (data, cb) {
+                    Cryptpad.setAttribute(data.key, data.value, function (e) {
+                        cb({error:e});
+                    });
+                });
+
+                Cryptpad.mailbox.onEvent.reg(function (data) {
+                    sframeChan.event('EV_MAILBOX_EVENT', data);
+                });
+                sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
+                    Cryptpad.mailbox.execCommand(data, cb);
                 });
 
             };
@@ -589,20 +614,6 @@ define([
                 }, href);
             });
 
-            sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
-                Cryptpad.getAttribute(data.key, function (e, data) {
-                    cb({
-                        error: e,
-                        data: data
-                    });
-                });
-            });
-            sframeChan.on('Q_SET_ATTRIBUTE', function (data, cb) {
-                Cryptpad.setAttribute(data.key, data.value, function (e) {
-                    cb({error:e});
-                });
-            });
-
             sframeChan.on('Q_DRIVE_GETDELETED', function (data, cb) {
                 Cryptpad.getDeletedPads(data, function (err, obj) {
                     if (err) { return void console.error(err); }
@@ -709,6 +720,45 @@ define([
             };
             sframeChan.on('EV_FILE_PICKER_OPEN', function (data) {
                 initFilePicker(data);
+            });
+
+            // Share modal
+            var ShareModal = {};
+            var initShareModal = function (cfg) {
+                cfg.hashes = hashes;
+                cfg.password = password;
+                // cfg.hidden means pre-loading the filepicker while keeping it hidden.
+                // if cfg.hidden is true and the iframe already exists, do nothing
+                if (!ShareModal.$iframe) {
+                    var config = {};
+                    config.onShareAction = function (data) {
+                        sframeChan.event('EV_SHARE_ACTION', data);
+                    };
+                    config.onClose = function () {
+                        ShareModal.$iframe.hide();
+                    };
+                    config.data = cfg;
+                    config.addCommonRpc = addCommonRpc;
+                    config.modules = {
+                        Cryptpad: Cryptpad,
+                        SFrameChannel: SFrameChannel,
+                        Utils: Utils
+                    };
+                    ShareModal.$iframe = $('<iframe>', {id: 'sbox-share-iframe'}).appendTo($('body'));
+                    ShareModal.modal = Share.create(config);
+                } else if (!cfg.hidden) {
+                    ShareModal.modal.refresh(cfg, function () {
+                        ShareModal.$iframe.show();
+                    });
+                }
+                if (cfg.hidden) {
+                    ShareModal.$iframe.hide();
+                    return;
+                }
+                ShareModal.$iframe.focus();
+            };
+            sframeChan.on('EV_SHARE_OPEN', function (data) {
+                initShareModal(data || {});
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
@@ -877,13 +927,6 @@ define([
             });
             sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
                 Cryptpad.universal.execCommand(data, cb);
-            });
-
-            Cryptpad.mailbox.onEvent.reg(function (data) {
-                sframeChan.event('EV_MAILBOX_EVENT', data);
-            });
-            sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
-                Cryptpad.mailbox.execCommand(data, cb);
             });
 
             Cryptpad.onTimeoutEvent.reg(function () {
