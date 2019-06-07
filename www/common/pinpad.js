@@ -152,13 +152,9 @@ define([
                 if (typeof(channel) !== 'string' || channel.length !== 32) {
                     return void cb('INVALID_ARGUMENTS');
                 }
-                rpc.send('CLEAR_OWNED_CHANNEL', channel, function (e, response) {
+                rpc.send('CLEAR_OWNED_CHANNEL', channel, function (e) {
                     if (e) { return cb(e); }
-                    if (response && response.length) {
-                        cb(void 0, response[0]);
-                    } else {
-                        cb('INVALID_RESPONSE');
-                    }
+                    cb();
                 });
             };
 
