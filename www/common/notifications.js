@@ -1,11 +1,14 @@
 define([
     'jquery',
     '/common/hyperscript.js',
+    '/common/common-hash.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-], function ($, h, UIElements, Messages) {
+], function ($, h, Hash, UIElements, Messages) {
 
     var handlers = {};
+
+    // Friend request
 
     handlers['FRIEND_REQUEST'] = function (common, data, el) {
         var content = data.content;
@@ -17,9 +20,9 @@ define([
         common.addFriendRequest(data);
 
         // Display the notification
-        $(el).find('.cp-notification-content').addClass("cp-clickable");
         $(el).find('.cp-notification-content p')
-            .html(Messages._getKey('friendRequest_notification', [msg.content.displayName || Messages.anonymous]))
+            .html(Messages._getKey('friendRequest_notification', [msg.content.displayName || Messages.anonymous]));
+        $(el).find('.cp-notification-content').addClass("cp-clickable")
             .click(function () {
                 UIElements.displayFriendRequestModal(common, data);
             });
@@ -38,6 +41,24 @@ define([
         var msg = content.msg;
         $(el).find('.cp-notification-content p')
             .html(Messages._getKey('friendRequest_declined', [msg.content.name || Messages.anonymous]));
+        $(el).find('.cp-notification-dismiss').css('display', 'flex');
+    };
+
+    // Share pad
+
+    handlers['SHARE_PAD'] = function (common, data, el) {
+        var content = data.content;
+        var msg = content.msg;
+        var type = Hash.parsePadUrl(msg.content.href).type;
+        var key = type === 'drive' ? 'notification_folderShared' :
+                    (type === 'file' ? 'notification_fileShared' :
+                      'notification_padShared');
+        $(el).find('.cp-notification-content p')
+            .html(Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]));
+        $(el).find('.cp-notification-content').addClass("cp-clickable")
+            .click(function () {
+                common.openURL(msg.content.href);
+            });
         $(el).find('.cp-notification-dismiss').css('display', 'flex');
     };
 

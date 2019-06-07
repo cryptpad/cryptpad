@@ -1,3 +1,27 @@
+# Xenops release (v2.23.0)
+
+## Goals
+
+For this release we wanted to focus on releasing a small set of features built on top of some foundations established in our last release. Since we were able to complete this feature set in less than a week, we decided to bundle them together so users could take benefit from them sooner.
+
+This work is being funded by the grant we received from NLnet foundation as a part of their PET (Privacy Enhancing Technology) fund. You can read all about this grant on our latest blog post (https://blog.cryptpad.fr/2019/05/27/Our-future-is-collaborative/).
+
+## Update notes
+
+* This update only uses clientside dependencies. Fetch the latest code for the core repository, and depending on when you last updated you may need to `bower update` as well.
+* User data is "pinned" on CryptPad instances to keep track of what encrypted data can be safely removed. At one point this system was optional and could be disabled by setting `enablePinning = false` in `customize/application_config.js`. At some point we stopped testing whether CryptPad could actually work without pinning enabled, and at this point it is definitely broken. As such, we've decided to drop support for this configuration.
+
+## Features
+
+* Some of our multilingual contributors have contributed translations in the German, Russian, and Italian. The history of their contributions is available on our weblate instance (https://weblate.cryptpad.fr/projects/cryptpad/app/).
+* This release introduces a practical use-case of the encrypted mailbox infrastructure which we developed in our last release. Registered users are now able to use this system to accept friend requests and review the status of friend requests that have been accepted or declined. Unlike our previous friend request system, our usage of encrypted mailboxes allows for users to send friend requests from other user's profiles whether or not they are online.
+* We've also put some time towards improving user profiles as well. When you change your display name from anywhere within CryptPad the name used in your profile will be updated as well. We've also made updates to other users' profiles render in real-time, since the rest of CryptPad generally updates instantly.
+
+## Bug fixes
+
+* Some small components of CryptPad time out if they don't work within a set amount of time, and apparently this timeout was causing problems in the newest Tor browser version. We've drastically increased the timeout to make it less likely to cause problems when loading very large documents.
+* We realized that Weblate was committing "empty strings" to our translation files. Our internationalization system was configured to fall back to the English translation if no translation was available in the user's preferred language, but these empty strings fooled the system into displaying nothing instead. We addressed the issue by checking whether a string was really present, and not just whether a value existed.
+
 # Wolf release (v2.22.0)
 
 ## Goals

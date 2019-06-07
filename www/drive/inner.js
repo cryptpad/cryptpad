@@ -1611,6 +1611,7 @@ define([
             return title;
         }; */
 
+
         var getPrettyName = function (name) {
             var pName;
             switch (name) {
@@ -1627,6 +1628,64 @@ define([
             }
             return pName;
         };
+        
+        
+        var drivePathOverflowing = function () {
+            var $container = $(".cp-app-drive-path");
+            if ($container.length) {
+                $container.css("overflow", "hidden");
+                var overflown = $container[0].scrollWidth > $container[0].clientWidth;
+                $container.css("overflow", "");
+                return overflown;
+            }
+        };
+
+        var collapseDrivePath = function () {
+            var $container = $(".cp-app-drive-path-inner");
+            var $spanCollapse = $(".cp-app-drive-path-collapse");
+            $spanCollapse.css("display", "none");
+
+            var $pathElements = $container.find(".cp-app-drive-path-element");
+            $pathElements.not($spanCollapse).css("display", "");
+
+            var oneFolder = currentPath.length > 1 + (currentPath[0] === SHARED_FOLDER);
+            if (oneFolder && drivePathOverflowing()) {
+                var collapseLevel = 0;
+                var removeOverflowElement = function () {
+                    if (drivePathOverflowing()) {
+                        if ($pathElements.length <= 3) {
+                            return false;
+                        }
+                        collapseLevel++;
+                        if ($($pathElements.get(-2)).is(".cp-app-drive-path-separator")) {
+                            $($pathElements.get(-2)).css("display", "none");
+                            $pathElements = $pathElements.not($pathElements.get(-2));
+                        }
+                        $($pathElements.get(-2)).css("display", "none");
+                        $pathElements = $pathElements.not($pathElements.get(-2));
+                        return true;
+                    }
+                };
+
+                currentPath.every(removeOverflowElement);
+                $spanCollapse.css("display", "");
+                removeOverflowElement();
+
+                var tipPath = currentPath.slice(0, collapseLevel);
+                tipPath[0] = getPrettyName(tipPath[0]);
+                $spanCollapse.attr("title", tipPath.join(" / "));
+                $spanCollapse[0].onclick = function () {
+                    APP.displayDirectory(getLastOpenedFolder().slice(0, collapseLevel));
+                };
+            }
+        };
+
+        window.addEventListener("resize", collapseDrivePath);
+        var treeResizeObserver = new MutationObserver(collapseDrivePath);
+        treeResizeObserver.observe($("#cp-app-drive-tree")[0], {"attributes": true});
+        var toolbarButtonAdditionObserver = new MutationObserver(collapseDrivePath);
+        $(function () { toolbarButtonAdditionObserver.observe($("#cp-app-drive-toolbar")[0], {"childList": true, "subtree": true}); });
+
 
         // Create the title block with the "parent folder" button
         var createTitle = function ($container, path, noStyle) {
@@ -1639,6 +1698,9 @@ define([
             var el = isVirtual ? undefined : manager.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
 
+            var $inner = $('<div>', {'class': 'cp-app-drive-path-inner'});
+            $container.prepend($inner);
+            
             var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
                 if (skipNext) { skipNext = false; return; }
@@ -1671,12 +1733,20 @@ define([
                     var $span2 = $('<span>', {
                         'class': 'cp-app-drive-path-element cp-app-drive-path-separator'
                     }).text(' / ');
-                    $container.prepend($span2);
+                    $inner.prepend($span2);
                 }
-
-                $span.text(name).prependTo($container);
+                $span.text(name).prependTo($inner);
             });
+
+            var $spanCollapse = $('<span>', {
+                'class': 'cp-app-drive-path-element cp-app-drive-path-collapse'
+            }).text(' ... ');
+            $inner.append($spanCollapse);
+            
+            collapseDrivePath();
         };
+
+        
 
         var createInfoBox = function (path) {
             var $box = $('<div>', {'class': 'cp-app-drive-content-info-box'});
@@ -2628,25 +2698,29 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var _displayDirectory = function (path, force) {
             APP.hideMenu();
+
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
 
-            // Only Trash and Root are available in not-owned files manager
-            if (!path || displayedCategories.indexOf(path[0]) === -1) {
-                log(Messages.fm_categoryError);
-                currentPath = [ROOT];
-                _displayDirectory(currentPath);
-                return;
+            if (!path || path.length === 0) {
+                // Only Trash and Root are available in not-owned files manager
+                if (!path || displayedCategories.indexOf(path[0]) === -1) {
+                    log(Messages.fm_categoryError);
+                }
+                if (!APP.loggedIn && APP.newSharedFolder) {
+                    // ANON_SHARED_FOLDER
+                    path = [SHARED_FOLDER, ROOT];
+                } else {
+                    path = [ROOT];
+                }
             }
+
             appStatus.ready(false);
             currentPath = path;
             var s = $content.scrollTop() || 0;
             $content.html("");
             sel.$selectBox = $('<div>', {'class': 'cp-app-drive-content-select-box'})
                 .appendTo($content);
-            if (!path || path.length === 0) {
-                path = [ROOT];
-            }
             var isInRoot = manager.isPathIn(path, [ROOT]);
             var inTrash = manager.isPathIn(path, [TRASH]);
             var isTrashRoot = manager.comparePath(path, [TRASH]);
@@ -2657,6 +2731,10 @@ define([
             var isTags = path[0] === TAGS;
             // ANON_SHARED_FOLDER
             var isSharedFolder = path[0] === SHARED_FOLDER && APP.newSharedFolder;
+            if (isSharedFolder && path.length < 2) {
+                path = [SHARED_FOLDER, 'root'];
+                currentPath = path;
+            }
 
             var root = isVirtual ? undefined : manager.find(path);
             if (manager.isSharedFolder(root)) {
@@ -3237,12 +3315,17 @@ define([
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 var parsed, modal;
+                var friends = common.getFriends();
+
                 if (manager.isSharedFolder(el)) {
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     modal = UIElements.createSFShareModal({
                         origin: APP.origin,
                         pathname: "/drive/",
+                        friends: friends,
+                        title: data.title,
+                        common: common,
                         hashes: {
                             editHash: parsed.hash
                         }
@@ -3255,6 +3338,7 @@ define([
                     var padData = {
                         origin: APP.origin,
                         pathname: "/" + padType + "/",
+                        friends: friends,
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: roParsed.hash,
@@ -3264,13 +3348,16 @@ define([
                             hash: parsed.hash,
                             password: data.password
                         },
+                        title: data.title,
                         common: common
                     };
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
                 }
-                UI.openCustomModal(modal);
+                UI.openCustomModal(modal, {
+                    wide: Object.keys(friends).length !== 0
+                });
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }

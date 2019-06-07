@@ -7,6 +7,8 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig) {
     var requireConfig = RequireConfig();
 
+    var ready = false;
+
     var create = function (config) {
         // Loaded in load #2
         var sframeChan;
@@ -20,8 +22,8 @@ define([
             };
             window.rc = requireConfig;
             window.apiconf = ApiConfig;
-            $('#sbox-filePicker-iframe').attr('src',
-                ApiConfig.httpSafeOrigin + '/filepicker/inner.html?' + requireConfig.urlArgs +
+            $('#sbox-share-iframe').attr('src',
+                ApiConfig.httpSafeOrigin + '/share/inner.html?' + requireConfig.urlArgs +
                     '#' + encodeURIComponent(JSON.stringify(req)));
 
             // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -46,7 +48,7 @@ define([
                 // First, we have to answer to this message, otherwise we're going to block
                 // sframe-boot.js. Then we can start the channel.
                 var msgEv = Utils.Util.mkEvent();
-                var iframe = $('#sbox-filePicker-iframe')[0].contentWindow;
+                var iframe = $('#sbox-share-iframe')[0].contentWindow;
                 var postMsg = function (data) {
                     iframe.postMessage(data, '*');
                 };
@@ -87,7 +89,9 @@ define([
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
-                            types: config.types
+                            hashes: config.data.hashes,
+                            password: config.data.password,
+                            file: config.data.file,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -108,20 +112,31 @@ define([
                     });
                 });
 
-                sframeChan.on('EV_FILE_PICKER_CLOSE', function () {
+                sframeChan.on('EV_SHARE_CLOSE', function () {
                     config.onClose();
                 });
-                sframeChan.on('EV_FILE_PICKED', function (data) {
-                    config.onFilePicked(data);
+                sframeChan.on('EV_SHARE_ACTION', function (data) {
+                    config.onShareAction(data);
                 });
-                sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
-                    config.onFileUpload(sframeChan, data, cb);
+
+                sframeChan.onReady(function () {
+                    if (ready === true) { return; }
+                    if (typeof ready === "function") {
+                        ready();
+                    }
+                    ready = true;
                 });
             });
         });
-        var refresh = function (types) {
-            if (!sframeChan) { return; }
-            sframeChan.event('EV_FILE_PICKER_REFRESH', types);
+        var refresh = function (data, cb) {
+            if (!ready) {
+                ready = function () {
+                    refresh(data, cb);
+                };
+                return;
+            }
+            sframeChan.event('EV_SHARE_REFRESH', data);
+            cb();
         };
         return {
             refresh: refresh

@@ -144,8 +144,30 @@ define([
         cb(true);
     };
 
+    handlers['UPDATE_DATA'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var curve = msg.author;
+        var friend = ctx.store.proxy.friends && ctx.store.proxy.friends[curve];
+        if (!friend || typeof msg.content !== "object") { return void cb(true); }
+        Object.keys(msg.content).forEach(function (key) {
+            friend[key] = msg.content[key];
+        });
+        ctx.updateMetadata();
+        cb(true);
+    };
+
     return {
         add: function (ctx, box, data, cb) {
+            /**
+             *  data = {
+                    msg: {
+                        type: 'STRING',
+                        author: 'curvePublicString',
+                        content: {} (depend on the "type")
+                    },
+                    hash: 'string'
+                }
+             */
             if (!data.msg) { return void cb(true); }
             var type = data.msg.type;
 

@@ -66,7 +66,7 @@ define([
             }
             broadcast([clientId], "UPDATE_METADATA");
             if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
-                store.messenger.updateMyData();
+                Messaging.updateMyData(store);
             }
             onSync(cb);
         };
@@ -644,7 +644,7 @@ define([
             }
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
-            if (store.messenger) { store.messenger.updateMyData(); }
+            Messaging.updateMyData(store);
             onSync(cb);
         };
 
@@ -1644,14 +1644,16 @@ define([
                 });
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
+                Store.initAnonRpc(null, null, waitFor());
+                Store.initRpc(null, null, waitFor());
+            }).nThen(function (waitFor) {
+                loadMailbox(waitFor);
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
                         state: (2 + (version / 10)),
                         progress: progress
                     });
                 });
-                Store.initAnonRpc(null, null, waitFor());
-                Store.initRpc(null, null, waitFor());
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3
@@ -1661,7 +1663,6 @@ define([
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
-                loadMailbox(waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
@@ -1816,8 +1817,8 @@ define([
 
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
             // command. This allow us to avoid phantom viewers in pads.
-            var PING_INTERVAL = 30000;
-            var MAX_PING = 5000;
+            var PING_INTERVAL = 120000;
+            var MAX_PING = 30000;
             var MAX_FAILED_PING = 2;
 
             setInterval(function () {

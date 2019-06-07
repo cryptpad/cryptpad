@@ -93,7 +93,7 @@ define([
             return;
         }
 
-        var hash = common.getMetadataMgr().getPrivateData().availableHashes.viewHash;
+        var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
 
         var $button = $('<button>', {
