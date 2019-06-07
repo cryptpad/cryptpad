@@ -2697,25 +2697,29 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var _displayDirectory = function (path, force) {
             APP.hideMenu();
+
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
 
-            // Only Trash and Root are available in not-owned files manager
-            if (!path || displayedCategories.indexOf(path[0]) === -1) {
-                log(Messages.fm_categoryError);
-                currentPath = [ROOT];
-                _displayDirectory(currentPath);
-                return;
+            if (!path || path.length === 0) {
+                // Only Trash and Root are available in not-owned files manager
+                if (!path || displayedCategories.indexOf(path[0]) === -1) {
+                    log(Messages.fm_categoryError);
+                }
+                if (!APP.loggedIn && APP.newSharedFolder) {
+                    // ANON_SHARED_FOLDER
+                    path = [SHARED_FOLDER, ROOT];
+                } else {
+                    path = [ROOT];
+                }
             }
+
             appStatus.ready(false);
             currentPath = path;
             var s = $content.scrollTop() || 0;
             $content.html("");
             sel.$selectBox = $('<div>', {'class': 'cp-app-drive-content-select-box'})
                 .appendTo($content);
-            if (!path || path.length === 0) {
-                path = [ROOT];
-            }
             var isInRoot = manager.isPathIn(path, [ROOT]);
             var inTrash = manager.isPathIn(path, [TRASH]);
             var isTrashRoot = manager.comparePath(path, [TRASH]);
@@ -2726,6 +2730,10 @@ define([
             var isTags = path[0] === TAGS;
             // ANON_SHARED_FOLDER
             var isSharedFolder = path[0] === SHARED_FOLDER && APP.newSharedFolder;
+            if (isSharedFolder && path.length < 2) {
+                path = [SHARED_FOLDER, 'root'];
+                currentPath = path;
+            }
 
             var root = isVirtual ? undefined : manager.find(path);
             if (manager.isSharedFolder(root)) {
