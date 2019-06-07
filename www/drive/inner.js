@@ -1648,7 +1648,8 @@ define([
             var $pathElements = $container.find(".cp-app-drive-path-element");
             $pathElements.not($spanCollapse).css("display", "");
 
-            if (currentPath.length > 1 && drivePathOverflowing()) {
+            var oneFolder = currentPath.length > 1 + (currentPath[0] === SHARED_FOLDER);
+            if (oneFolder && drivePathOverflowing()) {
                 var collapseLevel = 0;
                 var removeOverflowElement = function () {
                     if (drivePathOverflowing()) {
