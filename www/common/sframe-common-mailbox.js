@@ -5,7 +5,8 @@ define([
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/hyperscript.js',
-], function ($, Util, UI, UIElements, Notifications, h) {
+    '/customize/messages.js',
+], function ($, Util, UI, UIElements, Notifications, h, Messages) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -48,7 +49,10 @@ define([
         };
         var createElement = function (data) {
             var notif;
-            var dismiss = h('span.fa.fa-times');
+            var dismissIcon = h('span.fa.fa-times');
+            var dismiss = h('div.cp-notification-dismiss', {
+                title: Messages.notifications_dismiss
+            }, dismissIcon)
             dismiss.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -65,7 +69,7 @@ define([
                 'data-hash': data.content.hash
             }, [
                 h('div.cp-notification-content', h('p', formatData(data))),
-                h('div.cp-notification-dismiss', dismiss)
+                dismiss
             ]);
             return notif;
         };
