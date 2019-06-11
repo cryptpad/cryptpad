@@ -385,6 +385,7 @@
     "fc_newfolder": "New folder",
     "fc_newsharedfolder": "New shared folder",
     "fc_rename": "Rename",
+    "fc_color": "Change color",
     "fc_open": "Open",
     "fc_open_ro": "Open (read-only)",
     "fc_delete": "Move to trash",
