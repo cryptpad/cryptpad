@@ -24,7 +24,7 @@ var mkPath = function (env, channelId) {
 };
 
 var mkArchivePath = function (env, channelId) {
-    return Path.join(env.archiveRoot, channelId.slice(0, 2), channelId) + '.ndjson';
+    return Path.join(env.archiveRoot, 'datastore', channelId.slice(0, 2), channelId) + '.ndjson';
 };
 
 var getMetadataAtPath = function (Env, path, cb) {
