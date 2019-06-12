@@ -7,6 +7,14 @@ const config = require("../lib/load-config");
 
 if (!config.inactiveTime || typeof(config.inactiveTime) !== "number") { return; }
 
+/*  Instead of this script you should probably use
+    evict-inactive.js which moves things to an archive directory
+    in case the data that would have been deleted turns out to be important.
+    it also handles removing that archived data after a set period of time
+
+    it only works for channels at the moment, though, and nothing else.
+*/
+
 let inactiveTime = +new Date() - (config.inactiveTime * 24 * 3600 * 1000);
 let inactiveConfig = {
     unpinned: true,
