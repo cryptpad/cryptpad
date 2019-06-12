@@ -174,6 +174,31 @@ define([
         APP.store[LS_OPENED] = JSON.stringify(stored);
         localStore.put(LS_OPENED, JSON.stringify(stored));
     };
+    var removeFoldersOpened = function (parentPath) {
+        var stored = JSON.parse(APP.store[LS_OPENED] || '[]');
+        var s = JSON.stringify(parentPath).slice(0, -1);
+        for (var i = stored.length - 1 ; i >= 0 ; i--) {
+            if (stored[i].indexOf(s) === 0) {
+                stored.splice(i, 1);
+            }
+        }
+        APP.store[LS_OPENED] = JSON.stringify(stored);
+        localStore.put(LS_OPENED, JSON.stringify(stored));
+    };
+    var renameFoldersOpened = function (parentPath, newName) {
+        var stored = JSON.parse(APP.store[LS_OPENED] || '[]');
+        var s = JSON.stringify(parentPath).slice(0, -1);
+        var newParentPath = parentPath.slice();
+        newParentPath[newParentPath.length - 1] = newName;
+        var sNew = JSON.stringify(newParentPath).slice(0, -1);
+        for (var i = 0 ; i < stored.length ; i++) {
+            if (stored[i].indexOf(s) === 0) {
+                stored[i] = stored[i].replace(s, sNew);
+            }
+        }
+        APP.store[LS_OPENED] = JSON.stringify(stored);
+        localStore.put(LS_OPENED, JSON.stringify(stored));
+    };
 
     var getViewModeClass = function () {
         var mode = APP.store[LS_VIEWMODE];
@@ -774,15 +799,19 @@ define([
                     e.stopPropagation();
                     if (e.which === 13) {
                         removeInput(true);
+                        var newName = $input.val();
                         if (JSON.stringify(path) === JSON.stringify(currentPath)) {
-                            var newName = $input.val();
                             manager.rename(path, $input.val(), function () {
+                                renameFoldersOpened(path, newName);
                                 path[path.length - 1] = newName;
                                 APP.displayDirectory(path);
                             });
                         }
                         else {
-                            manager.rename(path, $input.val(), refresh);
+                            manager.rename(path, $input.val(), function () {
+                                renameFoldersOpened(path, newName);
+                                refresh();
+                            });
                         }
                         return;
                     }
@@ -1227,7 +1256,11 @@ define([
             if (manager.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
-            manager.move(paths, newPath, cb, copy);
+            var newCb = function () {
+                paths.forEach(removeFoldersOpened);
+                cb();
+            };
+            manager.move(paths, newPath, newCb, copy);
         };
         // Delete paths from the drive and/or shared folders (without moving them to the trash)
         var deletePaths = function (paths, pathsList) {
@@ -1254,7 +1287,10 @@ define([
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
-                manager.delete(pathsList, refresh);
+                manager.delete(pathsList, function () {
+                    pathsList.forEach(removeFoldersOpened);
+                    refresh();
+                });
             }, null, true);
         };
         // Drag & drop:
@@ -3242,7 +3278,10 @@ define([
             UI.confirm(msgD, function(res) {
                 $(window).focus();
                 if (!res) { return; }
-                manager.delete(pathsList, refresh);
+                manager.delete(pathsList, function () {
+                    pathsList.forEach(removeFoldersOpened);
+                    refresh();
+                });
             });
         };
         $contextMenu.on("click", "a", function(e) {
