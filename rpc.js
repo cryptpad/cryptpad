@@ -814,6 +814,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
 
+        // FIXME COLDSTORAGE
         return void Env.msgStore.clearChannel(channelId, function (e) {
             cb(e);
         });
@@ -900,6 +901,10 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
+
+        // FIXME COLDSTORAGE
+        // XXX check if 'config.retainData' is set to true
+        // if so, use msgStore.archiveChannel instead
         return void Env.msgStore.removeChannel(channelId, function (e) {
             Log.info('DELETION_CHANNEL_BY_OWNER_RPC', {
                 unsafeKey: unsafeKey,
@@ -1430,6 +1435,7 @@ var removeLoginBlock = function (Env, msg, cb) {
             return void cb('E_INVALID_BLOCK_PATH');
         }
 
+        // FIXME COLDSTORAGE
         Fs.unlink(path, function (err) {
             Log.info('DELETION_BLOCK_BY_OWNER_RPC', {
                 publicKey: publicKey,
