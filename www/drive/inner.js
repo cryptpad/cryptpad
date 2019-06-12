@@ -774,7 +774,16 @@ define([
                     e.stopPropagation();
                     if (e.which === 13) {
                         removeInput(true);
-                        manager.rename(path, $input.val(), refresh);
+                        if (JSON.stringify(path) === JSON.stringify(currentPath)) {
+                            var newName = $input.val();
+                            manager.rename(path, $input.val(), function () {
+                                path[path.length - 1] = newName;
+                                APP.displayDirectory(path);
+                            });
+                        }
+                        else {
+                            manager.rename(path, $input.val(), refresh);
+                        }
                         return;
                     }
                     if (e.which === 27) {
@@ -1610,7 +1619,7 @@ define([
             }
             return title;
         }; */
-        
+
         var drivePathOverflowing = function () {
             var $container = $(".cp-app-drive-path");
             if ($container.length) {
@@ -1695,7 +1704,7 @@ define([
 
             var $inner = $('<div>', {'class': 'cp-app-drive-path-inner'});
             $container.prepend($inner);
-            
+
             var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
                 if (skipNext) { skipNext = false; return; }
@@ -1737,11 +1746,11 @@ define([
                 'class': 'cp-app-drive-path-element cp-app-drive-path-collapse'
             }).text(' ... ');
             $inner.append($spanCollapse);
-            
+
             collapseDrivePath();
         };
 
-        
+
 
         var createInfoBox = function (path) {
             var $box = $('<div>', {'class': 'cp-app-drive-content-info-box'});
@@ -2398,7 +2407,7 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                     ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass 
+                    'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass
                 });
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
