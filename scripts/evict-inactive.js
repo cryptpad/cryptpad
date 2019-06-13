@@ -24,7 +24,7 @@ nThen(function (w) {
         store = _;
     })); // load the list of pinned files so you know which files
     // should not be archived or deleted
-    Pinned.load(function (err, _) {
+    Pinned.load(w(function (err, _) {
         if (err) {
             w.abort();
             return void console.error(err);
@@ -32,7 +32,7 @@ nThen(function (w) {
         pins = _;
     }, {
         pinPath: config.pinPath,
-    });
+    }));
 
     // load the logging module so that you have a record of which
     // files were archived or deleted at what time
@@ -66,7 +66,6 @@ nThen(function (w) {
                     channel: item.channel,
                 });
             }
-            console.log("removed %s from cold storage", item.channel);
             Log.info('EVICT_ARCHIVED_CHANNEL_REMOVAL', item.channel);
             removed++;
         }));
@@ -146,5 +145,6 @@ nThen(function (w) {
 }).nThen(function () {
     // the store will keep this script running if you don't shut it down
     store.shutdown();
+    Log.shutdown();
 });
 
