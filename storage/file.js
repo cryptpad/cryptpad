@@ -253,7 +253,7 @@ var listChannels = function (root, handler, cb) {
 
                         // otherwise throw it on the pile
                         sema.take(function (give) {
-                            var next = w(give()); // XXX validate that it's ok to 'waitFor' here instead of outside the 'take'
+                            var next = w(give());
                             Fs.stat(filepath, w(function (err, stats) {
                                 if (err) {
                                     return void handler(err);
