@@ -1,28 +1,16 @@
 var nThen = require("nthen");
 
 var Store = require("../storage/file");
-var Pinned = require("./pinned");
 var config = require("../lib/load-config");
 
 var store;
-var pins;
 var Log;
 nThen(function (w) {
     // load the store which will be used for iterating over channels
     // and performing operations like archival and deletion
     Store.create(config, w(function (_) {
         store = _;
-    })); // load the list of pinned files so you know which files
-    // should not be archived or deleted
-    Pinned.load(w(function (err, _) {
-        if (err) {
-            w.abort();
-            return void console.error(err);
-        }
-        pins = _;
-    }), {
-        pinPath: config.pinPath,
-    });
+    }));
 
     // load the logging module so that you have a record of which
     // files were archived or deleted at what time
@@ -42,7 +30,7 @@ nThen(function (w) {
 
         // but if it's been stored for the configured time...
         // expire it
-        store.removeArchivedChannel(item.channel, w(function (err) {
+        store.restoreArchivedChannel(item.channel, w(function (err) {
             if (err) {
                 Log.error('RESTORE_ARCHIVED_CHANNEL_RESTORATION_ERROR', {
                     error: err,

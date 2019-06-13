@@ -603,7 +603,7 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 archiveChannel(env, channelName, cb);
             },
-            unarchiveChannel: function (channelName, cb) {
+            restoreArchivedChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 unarchiveChannel(env, channelName, cb);
             },
