@@ -301,6 +301,19 @@ var archiveChannel = function (env, channelName, cb) {
     Fse.move(currentPath, archivePath, { overwrite: true }, cb);
 };
 
+var unarchiveChannel = function (env, channelName, cb) {
+    // very much like 'archiveChannel' but in the opposite direction
+
+    // the file is currently archived
+    var currentPath = mkArchivePath(env, channelName);
+    var unarchivedPath = mkPath(env, channelName);
+
+    // if a file exists in the unarchived path, you probably don't want to clobber its data
+    // so unlike 'archiveChannel' we won't overwrite.
+    // Fse.move will call back with EEXIST in such a situation
+    Fse.move(currentPath, unarchivedPath, cb);
+};
+
 var flushUnusedChannels = function (env, cb, frame) {
     var currentTime = +new Date();
 
@@ -588,6 +601,10 @@ module.exports.create = function (
             archiveChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 archiveChannel(env, channelName, cb);
+            },
+            unarchiveChannel: function (channelName, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                unarchiveChannel(env, channelName, cb);
             },
             log: function (channelName, content, cb) {
                 message(env, channelName, content, cb);
