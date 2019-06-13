@@ -902,9 +902,19 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
 
-        // FIXME COLDSTORAGE
-        // XXX check if 'config.retainData' is set to true
-        // if so, use msgStore.archiveChannel instead
+        // if the admin has configured data retention...
+        // temporarily archive the file instead of removing it
+        if (Env.retainData) {
+            return void Env.msgStore.archiveChannel(channelId, function (e) {
+                Log.info('ARCHIVAL_CHANNEL_BY_OWNER_RPC', {
+                    unsafeKey: unsafeKey,
+                    channelId: channelId,
+                    status: e? String(e): 'SUCCESS',
+                });
+                cb(e);
+            });
+        }
+
         return void Env.msgStore.removeChannel(channelId, function (e) {
             Log.info('DELETION_CHANNEL_BY_OWNER_RPC', {
                 unsafeKey: unsafeKey,
@@ -1651,6 +1661,7 @@ RPC.create = function (
     };
 
     var Env = {
+        retainData: config.retainData || false,
         defaultStorageLimit: config.defaultStorageLimit,
         maxUploadSize: config.maxUploadSize || (20 * 1024 * 1024),
         Sessions: {},
