@@ -387,6 +387,8 @@
     "fc_rename": "Rename",
     "fc_open": "Open",
     "fc_open_ro": "Open (read-only)",
+    "fc_expandAll": "Expand All",
+    "fc_collapseAll": "Collapse All",
     "fc_delete": "Move to trash",
     "fc_delete_owned": "Delete from the server",
     "fc_restore": "Restore",

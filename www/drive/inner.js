@@ -293,6 +293,14 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "expandAll",
+                }, Messages.fc_expandAll)),
+                h('li', h('a.cp-app-drive-context-collapseall.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "collapseAll",
+                }, Messages.fc_collapseAll)),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
@@ -878,6 +886,10 @@ define([
                 paths.forEach(function (p) {
                     var path = p.path;
                     var $element = p.element;
+                    if (!$element.closest("#cp-app-drive-tree").length) {
+                        hide.push('expandall');
+                        hide.push('collapseall');
+                    }
                     if (path.length === 1) {
                         // Can't rename or delete root elements
                         hide.push('delete');
@@ -908,6 +920,8 @@ define([
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
                             hide.push('newfolder');
+                            hide.push('expandall');
+                            hide.push('collapseall');
                         }
                         containsFolder = true;
                         hide.push('openro');
@@ -918,6 +932,8 @@ define([
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
                             hide.push('newfolder');
+                            hide.push('expandall');
+                            hide.push('collapseall');
                         }
                         containsFolder = true;
                         hide.push('openro');
@@ -970,7 +986,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf',
+                    show = ['open', 'openro', 'expandall', 'collapseall', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf',
                             'newfolder', 'properties', 'hashtag'];
                     break;
                 case 'default':
@@ -3335,6 +3351,32 @@ define([
                     }
                     openFile(null, href);
                 });
+            }
+            else if ($(this).hasClass('cp-app-drive-context-expandall') ||
+                     $(this).hasClass('cp-app-drive-context-collapseall')) {
+                if (paths.length !== 1) { return; }
+                var opened = $(this).hasClass('cp-app-drive-context-expandall');
+                var openRecursive = function (path) {
+                    setFolderOpened(path, opened);
+                    var folderContent = manager.find(path);
+                    var subfolders = [];
+                    for (var k in folderContent) {
+                        if (manager.isFolder(folderContent[k])) {
+                            if (manager.isSharedFolder(folderContent[k])) {
+                                subfolders.push([k].concat(manager.user.userObject.ROOT));
+                            }
+                            else {
+                                subfolders.push(k);
+                            }
+                        }
+                    }
+                    subfolders.forEach(function (p) {
+                        var subPath = path.concat(p);
+                        openRecursive(subPath);
+                    });
+                };
+                openRecursive(paths[0].path);
+                refresh();
             }
             else if ($(this).hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }

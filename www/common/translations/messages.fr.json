@@ -383,6 +383,8 @@
     "fc_rename": "Renommer",
     "fc_open": "Ouvrir",
     "fc_open_ro": "Ouvrir (lecture seule)",
+    "fc_expandAll": "Développer tout",
+    "fc_collapseAll": "Réduire tout",
     "fc_delete": "Déplacer vers la corbeille",
     "fc_delete_owned": "Supprimer du serveur",
     "fc_restore": "Restaurer",
