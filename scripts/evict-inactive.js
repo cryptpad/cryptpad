@@ -30,9 +30,9 @@ nThen(function (w) {
             return void console.error(err);
         }
         pins = _;
-    }, {
+    }), {
         pinPath: config.pinPath,
-    }));
+    });
 
     // load the logging module so that you have a record of which
     // files were archived or deleted at what time
