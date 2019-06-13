@@ -112,6 +112,7 @@ nThen(function (w) {
                     return void cb();
                 }
                 Log.info('EVICT_EPHEMERAL_CHANNEL_REMOVAL', item.channel);
+                cb();
             }));
         }
 
