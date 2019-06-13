@@ -51,97 +51,115 @@ nThen(function (w) {
     // count the number of files which have been removed in this run
     var removed = 0;
 
-    var handler = function (err, item) {
-        if (err) { return void Log.error('EVICT_ARCHIVED_CHANNEL_ITERATION', err); }
+    var handler = function (err, item, cb) {
+        if (err) {
+            Log.error('EVICT_ARCHIVED_CHANNEL_ITERATION', err);
+            return void cb();
+        }
         // don't mess with files that are freshly stored in cold storage
         // based on ctime because that's changed when the file is moved...
-        if (+new Date(item.ctime) > retentionTime) { return; }
+        if (+new Date(item.ctime) > retentionTime) {
+            return void cb();
+        }
 
         // but if it's been stored for the configured time...
         // expire it
         store.removeArchivedChannel(item.channel, w(function (err) {
             if (err) {
-                return void Log.error('EVICT_ARCHIVED_CHANNEL_REMOVAL_ERROR', {
+                Log.error('EVICT_ARCHIVED_CHANNEL_REMOVAL_ERROR', {
                     error: err,
                     channel: item.channel,
                 });
+                return void cb();
             }
             Log.info('EVICT_ARCHIVED_CHANNEL_REMOVAL', item.channel);
             removed++;
+            cb();
         }));
     };
 
     // if you hit an error, log it
     // otherwise, when there are no more channels to process
     // log some stats about how many were removed
-    var cb = function (err) {
+    var done = function (err) {
         if (err) {
             return Log.error('EVICT_ARCHIVED_FINAL_ERROR', err);
         }
         Log.info('EVICT_ARCHIVED_CHANNELS_REMOVED', removed);
     };
 
-    store.listArchivedChannels(handler, w(cb));
+    store.listArchivedChannels(handler, w(done));
 }).nThen(function (w) {
     var removed = 0;
     var channels = 0;
     var archived = 0;
 
-    var handler = function (err, item) {
+    var handler = function (err, item, cb) {
         channels++;
-        if (err) { return void Log.error('EVICT_CHANNEL_ITERATION', err); }
+        if (err) {
+            Log.error('EVICT_CHANNEL_ITERATION', err);
+            return void cb();
+        }
         // check if the database has any ephemeral channels
         // if it does it's because of a bug, and they should be removed
         if (item.channel.length === 34) {
             return void store.removeChannel(item.channel, w(function (err) {
                 if (err) {
-                    return void Log.error('EVICT_EPHEMERAL_CHANNEL_REMOVAL_ERROR', {
+                    Log.error('EVICT_EPHEMERAL_CHANNEL_REMOVAL_ERROR', {
                         error: err,
                         channel: item.channel,
                     });
+                    return void cb();
                 }
                 Log.info('EVICT_EPHEMERAL_CHANNEL_REMOVAL', item.channel);
             }));
         }
 
         // bail out if the channel was modified recently
-        if (+new Date(item.mtime) > inactiveTime) { return; }
+        if (+new Date(item.mtime) > inactiveTime) { return void cb(); }
 
         // ignore the channel if it's pinned
-        if (pins[item.channel]) { return; }
+        if (pins[item.channel]) { return void cb(); }
 
         // if the server is configured to retain data, archive the channel
         if (config.retainData) {
-            store.archiveChannel(item.channel, w(function (err) {
-                if (err) { return void Log.error('EVICT_CHANNEL_ARCHIVAL_ERROR', {
-                    error: err,
-                    channel: item.channel,
-                }); }
+            return void store.archiveChannel(item.channel, w(function (err) {
+                if (err) {
+                    Log.error('EVICT_CHANNEL_ARCHIVAL_ERROR', {
+                        error: err,
+                        channel: item.channel,
+                    });
+                    return void cb();
+                }
                 Log.info('EVICT_CHANNEL_ARCHIVAL', item.channel);
                 archived++;
+                cb();
             }));
-            return;
         }
 
         // otherwise remove it
         store.removeChannel(item.channel, w(function (err) {
-            if (err) { return void Log.error('EVICT_CHANNEL_REMOVAL_ERROR', {
-                error: err,
-                channel: item.channel,
-            }); }
+            if (err) {
+                Log.error('EVICT_CHANNEL_REMOVAL_ERROR', {
+                    error: err,
+                    channel: item.channel,
+                });
+                return void cb();
+            }
             Log.info('EVICT_CHANNEL_REMOVAL', item.channel);
             removed++;
+            cb();
         }));
     };
 
-    var cb = function () {
+    var done = function () {
         if (config.retainData) {
             return void Log.info('EVICT_CHANNELS_ARCHIVED', archived);
         }
         return void Log.info('EVICT_CHANNELS_REMOVED', removed);
     };
 
-    store.listChannels(handler, w(cb));
+    store.listChannels(handler, w(done));
 }).nThen(function () {
     // the store will keep this script running if you don't shut it down
     store.shutdown();

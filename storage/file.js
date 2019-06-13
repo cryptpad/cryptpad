@@ -253,7 +253,8 @@ var listChannels = function (root, handler, cb) {
 
                         // otherwise throw it on the pile
                         sema.take(function (give) {
-                            Fs.stat(filepath, w(give(function (err, stats) {
+                            var next = give();
+                            Fs.stat(filepath, w(function (err, stats) {
                                 if (err) {
                                     return void handler(err);
                                 }
@@ -264,8 +265,8 @@ var listChannels = function (root, handler, cb) {
                                     mtime: stats.mtime,
                                     ctime: stats.ctime,
                                     size: stats.size,
-                                });
-                            })));
+                                }, next);
+                            }));
                         });
                     });
                 })));
