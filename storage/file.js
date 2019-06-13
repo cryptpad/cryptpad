@@ -253,7 +253,7 @@ var listChannels = function (root, handler, cb) {
 
                         // otherwise throw it on the pile
                         sema.take(function (give) {
-                            var next = give();
+                            var next = w(give());
                             Fs.stat(filepath, w(function (err, stats) {
                                 if (err) {
                                     return void handler(err);
@@ -597,7 +597,7 @@ module.exports.create = function (
                 listChannels(env.root, handler, cb);
             },
             listArchivedChannels: function (handler, cb) {
-                listChannels(env.archiveRoot, handler, cb);
+                listChannels(Path.join(env.archiveRoot, 'datastore'), handler, cb);
             },
             archiveChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
