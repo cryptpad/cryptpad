@@ -213,6 +213,21 @@ var removeChannel = function (env, channelName, cb) {
     Fs.unlink(filename, cb);
 };
 
+// pass in the path so we can reuse the same function for archived files
+var channelExists = function (filepath, channelName, cb) {
+    Fs.stat(filepath, function (err, stat) {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                // no, the file doesn't exist
+                return void cb(void 0, true);
+            }
+            return void cb(err);
+        }
+        if (!stat.isFile()) { return void cb("E_NOT_FILE"); }
+        return void cb(void 0, true);
+    });
+};
+
 var removeArchivedChannel = function (env, channelName, cb) {
     var filename = mkArchivePath(env, channelName);
     Fs.unlink(filename, cb);
@@ -595,6 +610,18 @@ module.exports.create = function (
             },
             listChannels: function (handler, cb) {
                 listChannels(env.root, handler, cb);
+            },
+            isChannelAvailable: function (channelName, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                // construct the path
+                var filepath = mkPath(env, channelName);
+                channelExists(filepath, channelName, cb);
+            },
+            isChannelArchived: function (channelName, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                // construct the path
+                var filepath = mkArchivePath(env, channelName);
+                channelExists(filepath, channelName, cb);
             },
             listArchivedChannels: function (handler, cb) {
                 listChannels(Path.join(env.archiveRoot, 'datastore'), handler, cb);
