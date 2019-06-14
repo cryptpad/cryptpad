@@ -219,7 +219,7 @@ var channelExists = function (filepath, channelName, cb) {
         if (err) {
             if (err.code === 'ENOENT') {
                 // no, the file doesn't exist
-                return void cb(void 0, true);
+                return void cb(void 0, false);
             }
             return void cb(err);
         }
