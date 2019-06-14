@@ -3149,6 +3149,7 @@ define([
                 //data.noPassword = true;
                 data.noEditPassword = true;
                 data.noExpiration = true;
+                data.sharedFolder = true; // XXX debug
             }
 
             UIElements.getProperties(common, data, cb);
