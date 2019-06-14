@@ -28,8 +28,6 @@ nThen(function (w) {
             return void cb();
         }
 
-        // but if it's been stored for the configured time...
-        // expire it
         store.restoreArchivedChannel(item.channel, w(function (err) {
             if (err) {
                 Log.error('RESTORE_ARCHIVED_CHANNEL_RESTORATION_ERROR', {
