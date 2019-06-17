@@ -1705,6 +1705,11 @@ define([
                 default:
                     msg = undefined;
             }
+            if (history.isHistoryMode && history.sfId) {
+                // Shared folder history: always display the warning
+                msg = Messages.fm_info_sharedFolderHistory;
+                return $(common.fixLinks($box.html(msg)));
+            }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages.fm_info_anonymous;
                 return $(common.fixLinks($box.html(msg)));
@@ -3527,7 +3532,32 @@ define([
             return false;
         });
 
+        APP.histConfig.onOpen = function () {
+            // If we're in a shared folder history, store its id in memory
+            // so that we remember that this isn't the drive history if
+            // we browse through the drive
+            var sfId = manager.isInSharedFolder(currentPath);
+            if (!sfId) {
+                delete history.sfId;
+                delete APP.histConfig.sharedFolder;
+                return;
+            }
+            history.sfId = sfId;
+            var data = manager.getSharedFolderData(sfId);
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            APP.histConfig.sharedFolder = {
+                hash: parsed.hash,
+                password: data.password
+            };
+        };
         history.onEnterHistory = function (obj) {
+            if (history.sfId) {
+                if (!obj || typeof(obj) !== "object" || Object.keys(obj).length === 0) { return; }
+                copyObjectValue(folders[history.sfId], obj);
+                refresh();
+                return;
+            }
+            history.sfId = false;
             copyObjectValue(files, obj.drive);
             appStatus.isReady = true;
             refresh();
@@ -3667,13 +3697,22 @@ define([
             APP.histConfig = {
                 onLocal: function () {
                     UI.addLoadingScreen({ loadingText: Messages.fm_restoreDrive });
-                    proxy.drive = history.currentObj.drive;
-                    sframeChan.query("Q_DRIVE_RESTORE", history.currentObj.drive, function () {
+                    var data = {};
+                    if (history.sfId) {
+                        copyObjectValue(folders[history.sfId], history.currentObj);
+                        data.sfId = history.sfId;
+                        data.drive = history.currentObj;
+                    } else {
+                        proxy.drive = history.currentObj.drive;
+                        data.drive = history.currentObj.drive;
+                    }
+                    sframeChan.query("Q_DRIVE_RESTORE", data, function () {
                         UI.removeLoadingScreen();
                     }, {
                         timeout: 5 * 60 * 1000
                     });
                 },
+                onOpen: function () {},
                 onRemote: function () {},
                 setHistory: setHistory,
                 applyVal: function (val) {

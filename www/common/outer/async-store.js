@@ -85,6 +85,20 @@ define([
             cb({});
         };
 
+        Store.restoreSharedFolder = function (clientId, data, cb) {
+            if (!data.sfId || !data.drive) { return void cb({error:'EINVAL'}); }
+            if (store.sharedFolders[data.sfId]) {
+                Object.keys(data.drive).forEach(function (k) {
+                    store.sharedFolders[data.sfId].proxy[k] = data.drive[k];
+                });
+                Object.keys(store.sharedFolders[data.sfId].proxy).forEach(function (k) {
+                    if (data.drive[k]) { return; }
+                    delete store.sharedFolders[data.sfId].proxy[k];
+                });
+            }
+            onSync(cb);
+        };
+
         Store.hasSigningKeys = function () {
             if (!store.proxy) { return; }
             return typeof(store.proxy.edPrivate) === 'string' &&
