@@ -219,6 +219,29 @@ module.exports = {
      */
     inactiveTime: 90, // days
 
+    /*  CryptPad can be configured to remove inactive data which has not been pinned.
+     *  Deletion of data is always risky and as an operator you have the choice to
+     *  archive data instead of deleting it outright. Set this value to true if
+     *  you want your server to archive files and false if you want to keep using
+     *  the old behaviour of simply removing files.
+     *
+     *  WARNING: this is not implemented universally, so at the moment this will
+     *  only apply to the removal of 'channels' due to inactivity.
+     */
+    retainData: true,
+
+    /*  As described above, CryptPad offers the ability to archive some data
+     *  instead of deleting it outright. This archived data still takes up space
+     *  and so you'll probably still want to remove these files after a brief period.
+     *  The intent with this feature is to provide a safety net in case of accidental
+     *  deletion. Set this value to the number of days you'd like to retain
+     *  archived data before it's removed permanently.
+     *
+     *  If 'retainData' is set to false, there will never be any archived data
+     *  to remove.
+     */
+    archiveRetentionTime: 15,
+
     /*  Max Upload Size (bytes)
      *  this sets the maximum size of any one file uploaded to the server.
      *  anything larger than this size will be rejected
@@ -245,11 +268,20 @@ module.exports = {
      * ===================== */
 
     /*
-        CryptPad stores each document in an individual file on your hard drive.
-        Specify a directory where files should be stored.
-        It will be created automatically if it does not already exist.
-    */
+     *  CryptPad stores each document in an individual file on your hard drive.
+     *  Specify a directory where files should be stored.
+     *  It will be created automatically if it does not already exist.
+     */
     filePath: './datastore/',
+
+    /*  CryptPad offers the ability to archive data for a configurable period
+     *  before deleting it, allowing a means of recovering data in the event
+     *  that it was deleted accidentally.
+     *
+     *  To set the location of this archive directory to a custom value, change
+     *  the path below:
+     */
+    archivePath: './data/archive',
 
     /*  CryptPad allows logged in users to request that particular documents be
      *  stored by the server indefinitely. This is called 'pinning'.

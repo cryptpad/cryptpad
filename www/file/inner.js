@@ -115,6 +115,14 @@ define([
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
 
+                var owners = metadata.owners;
+                if (owners) {
+                    common.setPadAttribute('owners', owners);
+                }
+                if (metadata.type) {
+                    common.setPadAttribute('fileType', metadata.type);
+                }
+
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
                 toolbar.$rightside.append(common.createButton('forget', true));
                 toolbar.$rightside.append(common.createButton('properties', true));

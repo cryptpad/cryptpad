@@ -121,13 +121,9 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (obj) {
+        if (!obj || !obj.hash) { return; }
         var data = ctx.metadataMgr.getPrivateData();
-        var secret;
-        if (obj) {
-            secret = Hash.getSecrets('file', obj.hash, obj.password);
-        } else {
-            secret = Hash.getSecrets('file', data.availableHashes.fileHash, data.password);
-        }
+        var secret = Hash.getSecrets('file', obj.hash, obj.password);
         if (secret.keys && secret.channel) {
             var key = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var hexFileName = secret.channel;
@@ -391,12 +387,6 @@ define([
         }
     };
 
-    funcs.isStrongestStored = function () {
-        var data = ctx.metadataMgr.getPrivateData();
-        if (data.availableHashes.fileHash) { return true; }
-        return !data.readOnly || !data.availableHashes.editHash;
-    };
-
     funcs.setDisplayName = function (name, cb) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, cb);
@@ -430,6 +420,19 @@ define([
     };
     funcs.getFriendRequests = function () {
         return JSON.parse(JSON.stringify(friendRequests));
+    };
+
+    funcs.getFriends = function () {
+        var priv = ctx.metadataMgr.getPrivateData();
+        var friends = priv.friends;
+        var goodFriends = {};
+        Object.keys(friends).forEach(function (curve) {
+            if (curve.length !== 44) { return; }
+            var data = friends[curve];
+            if (!data.notifications) { return; }
+            goodFriends[curve] = friends[curve];
+        });
+        return goodFriends;
     };
 
     // Feedback

@@ -274,13 +274,8 @@
     "profile_create": "Ein Profil erstellen",
     "profile_description": "Beschreibung",
     "profile_fieldSaved": "Neuer Wert gespeichert: {0}",
-    "profile_inviteButton": "Sich in Verbindung setzen",
-    "profile_inviteButtonTitle": "Einen Link erstellen, mit dem du diesen Benutzer einladen kannst, sich mit dir in Verbindung zu setzen.",
-    "profile_inviteExplanation": "Ein Klick auf <strong>OK</strong> wird einen Link erstellen, der eine sichere Chatsitzung <em>nur mit {0}</em> erlaubt.<br></br>Dieser Link kann öffentlich geteilt werden.",
     "profile_viewMyProfile": "Mein Profil anzeigen",
     "userlist_addAsFriendTitle": "Benutzer \"{0}\" eine Freundschaftsanfrage senden",
-    "userlist_thisIsYou": "Das bist du (\"{0}\")",
-    "userlist_pending": "Warte...",
     "contacts_title": "Kontakte",
     "contacts_addError": "Fehler bei dem Hinzufügen des Kontakts zur Liste",
     "contacts_added": "Verbindungseinladung angenommen.",
@@ -1066,5 +1061,12 @@
     "profile_addLink": "Link zu deiner Website hinzufügen",
     "profile_info": "Andere Nutzer können dein Profil finden, indem sie auf deinen Avatar in der Benutzerliste eines Dokumentes klicken.",
     "profile_friendRequestSent": "Freundschaftsanfrage gesendet...",
-    "profile_friend": "{0} ist mit dir befreundet"
+    "profile_friend": "{0} ist mit dir befreundet",
+    "notification_padShared": "",
+    "notification_fileShared": "",
+    "notification_folderShared": "",
+    "share_selectAll": "",
+    "share_filterFriend": "",
+    "share_linkFriends": "",
+    "share_withFriends": ""
 }

@@ -4,6 +4,7 @@
 @import (reference) "../../customize/src/less2/include/limit-bar.less";
 @import (reference) "../../customize/src/less2/include/tokenfield.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/share.less';
 
 &.cp-app-drive {
     .framework_min_main(
@@ -14,6 +15,7 @@
 
     .limit-bar_main();
     .tokenfield_main();
+    .share_main();
 
     @drive_hover: #eee;
     @drive_hover-light: lighten(@drive_hover, 20%);
@@ -823,6 +825,7 @@
             padding-left: 10px;
         }
         .cp-app-drive-toolbar-leftside {
+            flex-shrink: 0;
             & > span {
                 height: 100%;
                 margin: 0;

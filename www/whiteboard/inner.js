@@ -445,11 +445,7 @@ define([
             var oldThumbnailState;
             var privateDat = metadataMgr.getPrivateData();
             if (!privateDat.thumbnails) { return; }
-            var hash = privateDat.availableHashes.editHash ||
-                       privateDat.availableHashes.viewHash;
-            var href = privateDat.pathname + '#' + hash;
             var mkThumbnail = function () {
-                if (!hash) { return; }
                 if (framework.getState() !== 'READY') { return; }
                 if (!framework._.cpNfInner.chainpad) { return; }
                 var content = framework._.cpNfInner.chainpad.getUserDoc();
@@ -457,7 +453,7 @@ define([
                 var D = Thumb.getResizedDimensions($canvas[0], 'pad');
                 Thumb.fromCanvas($canvas[0], D, function (err, b64) {
                     oldThumbnailState = content;
-                    Thumb.setPadThumbnail(framework._.sfCommon, href, privateDat.channel, b64);
+                    Thumb.setPadThumbnail(framework._.sfCommon, 'whiteboard', privateDat.channel, b64);
                 });
             };
             window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);

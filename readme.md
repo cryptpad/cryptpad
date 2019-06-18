@@ -62,13 +62,13 @@ via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), 
 [Matrix channel](https://riot.im/app/#/room/#cryptpad:matrix.org), or by
 [e-mail](mailto:research@xwiki.com).
 
+# Team
+
+CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), a company that has been building Open-Source software since 2004 with contributors from around the world. Between 2015 and 2019 it was funded by a research grant from the French state through [BPI France](https://www.bpifrance.fr/). It is currently financed by [NLnet PET](https://nlnet.nl/PET/), subscribers of CryptPad.fr and donations to our [Open-Collective campaign](https://opencollective.com/cryptpad).
+
 # Contributing
 
-We love Open Source and we love contribution. It is our intent to keep this project available
-under the AGPL license forever but in order to finance more development on this and other FOSS
-projects, we also wish to sell other licenses to this software. Before making a pull request,
-please read and
-[sign the Commons Management Agreement](https://www.clahub.com/agreements/cjdelisle/cryptpad).
+We love Open Source and we love contribution. Learn more about [contributing](https://github.com/xwiki-labs/cryptpad/wiki/Contributor-overview). 
 
 If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi on IRC, `#cryptpad` on Freenode.
 

@@ -50,7 +50,8 @@ define([
                 var postMsg = function (data) {
                     iframe.postMessage(data, '*');
                 };
-                var whenReady = waitFor(function (msg) {
+                var w = waitFor();
+                var whenReady = function (msg) {
                     if (msg.source !== iframe) { return; }
                     var data = JSON.parse(msg.data);
                     if (!data.txid) { return; }
@@ -67,7 +68,8 @@ define([
                     config.modules.SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
                         sframeChan = sfc;
                     }));
-                });
+                    w();
+                };
                 window.addEventListener('message', whenReady);
             }).nThen(function () {
                 var updateMeta = function () {

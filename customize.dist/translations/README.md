@@ -17,7 +17,7 @@ Translations can now be made using [Weblate](https://weblate.cryptpad.fr). We ma
 
 ## Translate an existing language
 
-* All translations can be done using the Weblate UI. For better help about how to use the tool, please check the [Weblate documentation](https://docs.weblate.org/en/latest/user/index.html).
+* All translations can be done using the Weblate UI. For better help about how to use the tool, please check the [Weblate documentation](https://docs.weblate.org/en/latest/).
 * Our Weblate instance is configured to always require approval for changes.
 
 ### Update an existing translation

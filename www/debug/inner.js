@@ -229,7 +229,7 @@ define([
         };
 
         var getGraph = function (chainpad, cb) {
-            var hashes = metadataMgr.getPrivateData().availableHashes;
+            var hashes = metadataMgr.getPrivateData().hashes;
             var hash = hashes.editHash || hashes.viewHash;
             var chan = Hash.hrefToHexChannelId('/drive/#'+hash);
 

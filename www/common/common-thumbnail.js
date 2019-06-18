@@ -205,7 +205,7 @@ define([
             if (content === oldThumbnailState) { return; }
             oldThumbnailState = content;
             Thumb.fromDOM(opts, function (err, b64) {
-                Thumb.setPadThumbnail(common, opts.href, null, b64);
+                Thumb.setPadThumbnail(common, opts.type, null, b64);
             });
         };
         var nafa = Util.notAgainForAnother(mkThumbnail, Thumb.UPDATE_INTERVAL);
@@ -243,11 +243,10 @@ define([
     var getKey = function (type, channel) {
         return 'thumbnail-' + type + '-' + channel;
     };
-    Thumb.setPadThumbnail = function (common, href, channel, b64, cb) {
+    Thumb.setPadThumbnail = function (common, type, channel, b64, cb) {
         cb = cb || function () {};
-        var parsed = Hash.parsePadUrl(href);
         channel = channel || common.getMetadataMgr().getPrivateData().channel;
-        var k = getKey(parsed.type, channel);
+        var k = getKey(type, channel);
         common.setThumbnail(k, b64, cb);
     };
     Thumb.displayThumbnail = function (common, href, channel, password, $container, cb) {
@@ -270,7 +269,7 @@ define([
                 if (!v) {
                     v = 'EMPTY';
                 }
-                Thumb.setPadThumbnail(common, href, hexFileName, v, function (err) {
+                Thumb.setPadThumbnail(common, parsed.type, hexFileName, v, function (err) {
                     if (!metadata.thumbnail) { return; }
                     addThumbnail(err, metadata.thumbnail, $container, cb);
                 });

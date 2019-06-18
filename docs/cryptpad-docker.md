@@ -21,7 +21,7 @@ Run from the cryptpad source directory, keeping instance state in `/var/cryptpad
 docker build -t xwiki/cryptpad .
 docker run --restart=always -d --name cryptpad -p 3000:3000 -p 3001:3001 \
 -v /var/cryptpad/files:/cryptpad/datastore \
--v /var/cryptpad/customize:/cryptpad/customize 
+-v /var/cryptpad/customize:/cryptpad/customize \
 -v /var/cryptpad/blob:/cryptpad/blob \
 -v /var/cryptpad/blobstage:/cryptpad/blobstage \
 -v /var/cryptpad/pins:/cryptpad/pins \

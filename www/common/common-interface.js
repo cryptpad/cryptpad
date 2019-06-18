@@ -156,12 +156,14 @@ define([
         ]);
     };
 
-    dialog.frame = function (content) {
+    dialog.frame = function (content, opt) {
+        opt = opt || {};
+        var cls = opt.wide ? '.wide' : '';
         return $(h('div.alertify', {
             tabindex: 1,
         }, [
             h('div.dialog', [
-                h('div', content),
+                h('div'+cls, content),
             ])
         ])).click(function (e) {
             e.stopPropagation();
@@ -351,6 +353,9 @@ define([
         var close = function (el) {
             var $el = $(el).fadeOut(150, function () {
                 $el.detach();
+                if (opt.onClose) {
+                    opt.onClose();
+                }
             });
         };
 
@@ -373,10 +378,10 @@ define([
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
-    UI.openCustomModal = function (content) {
+    UI.openCustomModal = function (content, opt) {
         var frame = dialog.frame([
             content
-        ]);
+        ], opt);
         $(frame).find('button[data-keys]').each(function (i, el) {
             var keys = JSON.parse($(el).attr('data-keys'));
             customListenForKeys(keys, function () {
@@ -838,41 +843,23 @@ define([
         // This is the robust solution to remove dangling tooltips
         // The mutation observer does not always find removed nodes.
         //setInterval(UI.clearTooltips, delay);
-        var checkRemoved = function (x) {
-            var out = false;
-            var xId = $(x).attr('aria-describedby');
-            if (xId) {
-                if (xId.indexOf('tippy-') === 0) {
-                    return true;
-                }
-            }
-            $(x).find('[aria-describedby]').each(function (i, el) {
-                var id = el.getAttribute('aria-describedby');
-                if (id.indexOf('tippy-') !== 0) { return; }
-                out = true;
-            });
-            return out;
-        };
+
         $('[title]').each(addTippy);
         var observer = new MutationObserver(function(mutations) {
-            var removed = false;
             mutations.forEach(function(mutation) {
                 if (mutation.type === "childList") {
                     for (var i = 0; i < mutation.addedNodes.length; i++) {
-                        if ($(mutation.addedNodes[i]).attr('title')) {
-                            addTippy(0, mutation.addedNodes[i]);
-                        }
                         $(mutation.addedNodes[i]).find('[title]').each(addTippy);
                     }
-                    for (var j = 0; j < mutation.removedNodes.length; j++) {
-                        removed |= checkRemoved(mutation.removedNodes[j]);
+
+                    if (mutation.removedNodes.length !== 0) {
+                        UI.clearTooltips();
                     }
                 }
                 if (mutation.type === "attributes" && mutation.attributeName === "title") {
                     addTippy(0, mutation.target);
                 }
             });
-            if (removed) { UI.clearTooltips(); }
         });
         observer.observe($('body')[0], {
             attributes: true,

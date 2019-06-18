@@ -291,13 +291,12 @@ define([
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
-                    sframeChan.query('Q_CLEAR_OWNED_CHANNEL', id, function (e) {
+                    execCommand('CLEAR_OWNED_CHANNEL', id, function (e) {
                         if (e) {
                             console.error(e);
                             UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
-                        clearChannel(id);
                     });
                 });
             });
@@ -618,8 +617,10 @@ define([
         };
         var onLeave = function (obj) {
             var channel = obj.id;
+            var chan = state.channels[channel];
             var data = obj.info;
-            if (contactsData[data.curvePublic]) {
+            // XXX Teams: if someone leaves a room, don't remove their data if they're also a friend
+            if (contactsData[data.curvePublic] && !(chan && chan.isFriendChat)) {
                 delete contactsData[data.curvePublic];
             }
             updateStatus(channel);

@@ -1672,6 +1672,23 @@ define([
             return title;
         }; */
 
+        var getPrettyName = function (name) {
+            var pName;
+            switch (name) {
+                case ROOT: pName = ROOT_NAME; break;
+                case TRASH: pName = TRASH_NAME; break;
+                case TEMPLATE: pName = TEMPLATE_NAME; break;
+                case FILES_DATA: pName = FILES_DATA_NAME; break;
+                case SEARCH: pName = SEARCH_NAME; break;
+                case RECENT: pName = RECENT_NAME; break;
+                case OWNED: pName = OWNED_NAME; break;
+                case TAGS: pName = TAGS_NAME; break;
+                case SHARED_FOLDER: pName = SHARED_FOLDER_NAME; break;
+                default: pName = name;
+            }
+            return pName;
+        };
+
         var drivePathOverflowing = function () {
             var $container = $(".cp-app-drive-path");
             if ($container.length) {
@@ -1690,11 +1707,12 @@ define([
             var $pathElements = $container.find(".cp-app-drive-path-element");
             $pathElements.not($spanCollapse).css("display", "");
 
-            if (drivePathOverflowing()) {
+            var oneFolder = currentPath.length > 1 + (currentPath[0] === SHARED_FOLDER);
+            if (oneFolder && drivePathOverflowing()) {
                 var collapseLevel = 0;
                 var removeOverflowElement = function () {
                     if (drivePathOverflowing()) {
-                        if ($pathElements.length === 3) {
+                        if ($pathElements.length <= 3) {
                             return false;
                         }
                         collapseLevel++;
@@ -1708,11 +1726,13 @@ define([
                     }
                 };
 
-                while (removeOverflowElement()) {}
+                currentPath.every(removeOverflowElement);
                 $spanCollapse.css("display", "");
                 removeOverflowElement();
 
-                $spanCollapse.attr("title", getLastOpenedFolder().slice(0, collapseLevel).join(" / ").replace("root", ROOT_NAME));
+                var tipPath = currentPath.slice(0, collapseLevel);
+                tipPath[0] = getPrettyName(tipPath[0]);
+                $spanCollapse.attr("title", tipPath.join(" / "));
                 $spanCollapse[0].onclick = function () {
                     APP.displayDirectory(getLastOpenedFolder().slice(0, collapseLevel));
                 };
@@ -1725,23 +1745,6 @@ define([
         var toolbarButtonAdditionObserver = new MutationObserver(collapseDrivePath);
         $(function () { toolbarButtonAdditionObserver.observe($("#cp-app-drive-toolbar")[0], {"childList": true, "subtree": true}); });
 
-
-        var getPrettyName = function (name) {
-            var pName;
-            switch (name) {
-                case ROOT: pName = ROOT_NAME; break;
-                case TRASH: pName = TRASH_NAME; break;
-                case TEMPLATE: pName = TEMPLATE_NAME; break;
-                case FILES_DATA: pName = FILES_DATA_NAME; break;
-                case SEARCH: pName = SEARCH_NAME; break;
-                case RECENT: pName = RECENT_NAME; break;
-                case OWNED: pName = OWNED_NAME; break;
-                case TAGS: pName = TAGS_NAME; break;
-                case SHARED_FOLDER: pName = SHARED_FOLDER_NAME; break;
-                default: pName = name;
-            }
-            return pName;
-        };
 
         // Create the title block with the "parent folder" button
         var createTitle = function ($container, path, noStyle) {
@@ -1830,6 +1833,12 @@ define([
                     break;
                 default:
                     msg = undefined;
+            }
+            if (history.isHistoryMode && history.sfId) {
+                // Shared folder history: always display the warning
+                var sfName = (manager.getSharedFolderData(history.sfId) || {}).title || Messages.fm_sharedFolderName;
+                msg = Messages._getKey('fm_info_sharedFolderHistory', [sfName]);
+                return $(common.fixLinks($box.html(msg)));
             }
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages.fm_info_anonymous;
@@ -2754,25 +2763,29 @@ define([
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var _displayDirectory = function (path, force) {
             APP.hideMenu();
+
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
 
-            // Only Trash and Root are available in not-owned files manager
-            if (!path || displayedCategories.indexOf(path[0]) === -1) {
-                log(Messages.fm_categoryError);
-                currentPath = [ROOT];
-                _displayDirectory(currentPath);
-                return;
+            if (!path || path.length === 0) {
+                // Only Trash and Root are available in not-owned files manager
+                if (!path || displayedCategories.indexOf(path[0]) === -1) {
+                    log(Messages.fm_categoryError);
+                }
+                if (!APP.loggedIn && APP.newSharedFolder) {
+                    // ANON_SHARED_FOLDER
+                    path = [SHARED_FOLDER, ROOT];
+                } else {
+                    path = [ROOT];
+                }
             }
+
             appStatus.ready(false);
             currentPath = path;
             var s = $content.scrollTop() || 0;
             $content.html("");
             sel.$selectBox = $('<div>', {'class': 'cp-app-drive-content-select-box'})
                 .appendTo($content);
-            if (!path || path.length === 0) {
-                path = [ROOT];
-            }
             var isInRoot = manager.isPathIn(path, [ROOT]);
             var inTrash = manager.isPathIn(path, [TRASH]);
             var isTrashRoot = manager.comparePath(path, [TRASH]);
@@ -2783,6 +2796,10 @@ define([
             var isTags = path[0] === TAGS;
             // ANON_SHARED_FOLDER
             var isSharedFolder = path[0] === SHARED_FOLDER && APP.newSharedFolder;
+            if (isSharedFolder && path.length < 2) {
+                path = [SHARED_FOLDER, 'root'];
+                currentPath = path;
+            }
 
             var root = isVirtual ? undefined : manager.find(path);
             if (manager.isSharedFolder(root)) {
@@ -3275,6 +3292,7 @@ define([
                 //data.noPassword = true;
                 data.noEditPassword = true;
                 data.noExpiration = true;
+                data.sharedFolder = true; // XXX debug
             }
 
             UIElements.getProperties(common, data, cb);
@@ -3392,12 +3410,17 @@ define([
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 var parsed, modal;
+                var friends = common.getFriends();
+
                 if (manager.isSharedFolder(el)) {
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     modal = UIElements.createSFShareModal({
                         origin: APP.origin,
                         pathname: "/drive/",
+                        friends: friends,
+                        title: data.title,
+                        common: common,
                         hashes: {
                             editHash: parsed.hash
                         }
@@ -3410,6 +3433,7 @@ define([
                     var padData = {
                         origin: APP.origin,
                         pathname: "/" + padType + "/",
+                        friends: friends,
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: roParsed.hash,
@@ -3419,13 +3443,16 @@ define([
                             hash: parsed.hash,
                             password: data.password
                         },
+                        title: data.title,
                         common: common
                     };
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
                 }
-                UI.openCustomModal(modal);
+                UI.openCustomModal(modal, {
+                    wide: Object.keys(friends).length !== 0
+                });
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }
@@ -3681,7 +3708,32 @@ define([
             return false;
         });
 
+        APP.histConfig.onOpen = function () {
+            // If we're in a shared folder history, store its id in memory
+            // so that we remember that this isn't the drive history if
+            // we browse through the drive
+            var sfId = manager.isInSharedFolder(currentPath);
+            if (!sfId) {
+                delete history.sfId;
+                delete APP.histConfig.sharedFolder;
+                return;
+            }
+            history.sfId = sfId;
+            var data = manager.getSharedFolderData(sfId);
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            APP.histConfig.sharedFolder = {
+                hash: parsed.hash,
+                password: data.password
+            };
+        };
         history.onEnterHistory = function (obj) {
+            if (history.sfId) {
+                if (!obj || typeof(obj) !== "object" || Object.keys(obj).length === 0) { return; }
+                copyObjectValue(folders[history.sfId], obj);
+                refresh();
+                return;
+            }
+            history.sfId = false;
             copyObjectValue(files, obj.drive);
             appStatus.isReady = true;
             refresh();
@@ -3821,13 +3873,22 @@ define([
             APP.histConfig = {
                 onLocal: function () {
                     UI.addLoadingScreen({ loadingText: Messages.fm_restoreDrive });
-                    proxy.drive = history.currentObj.drive;
-                    sframeChan.query("Q_DRIVE_RESTORE", history.currentObj.drive, function () {
+                    var data = {};
+                    if (history.sfId) {
+                        copyObjectValue(folders[history.sfId], history.currentObj);
+                        data.sfId = history.sfId;
+                        data.drive = history.currentObj;
+                    } else {
+                        proxy.drive = history.currentObj.drive;
+                        data.drive = history.currentObj.drive;
+                    }
+                    sframeChan.query("Q_DRIVE_RESTORE", data, function () {
                         UI.removeLoadingScreen();
                     }, {
                         timeout: 5 * 60 * 1000
                     });
                 },
+                onOpen: function () {},
                 onRemote: function () {},
                 setHistory: setHistory,
                 applyVal: function (val) {

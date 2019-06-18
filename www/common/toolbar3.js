@@ -304,8 +304,10 @@ MessengerUI, Messages) {
             } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
                 && !priv.readOnly) {
                 if (pendingFriends[data.curvePublic] && pendingFriends[data.curvePublic] > friendTo) {
-                    $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
-                        .appendTo($rightCol);
+                    $('<button>', {
+                        'class': 'fa fa-hourglass-half cp-toolbar-userlist-button',
+                        'title': Messages.profile_friendRequestSent
+                    }).appendTo($nameSpan);
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
                         'class': 'fa fa-bell cp-toolbar-userlist-button',
@@ -491,7 +493,7 @@ MessengerUI, Messages) {
             if ($messagebox.length) {
                 $messagebox.scrollTop($messagebox[0].scrollHeight);
             }
-            
+
             $button.addClass('cp-toolbar-button-active');
             config.$contentContainer.addClass('cp-chat-visible');
             $button.removeClass('cp-toolbar-notification');
@@ -523,23 +525,18 @@ MessengerUI, Messages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
-        var metadataMgr = config.metadataMgr;
-        var origin = config.metadataMgr.getPrivateData().origin;
-        var pathname = config.metadataMgr.getPrivateData().pathname;
-        var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
             'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
-        var modal = UIElements.createShareModal({
-            origin: origin,
-            pathname: pathname,
-            hashes: hashes,
-            common: Common
+        Common.getSframeChannel().event('EV_SHARE_OPEN', {
+            hidden: true
         });
         $shareBlock.click(function () {
-            UI.openCustomModal(UI.dialog.tabs(modal));
+            Common.getSframeChannel().event('EV_SHARE_OPEN', {
+                title: Common.getMetadataMgr().getMetadata().title
+            });
         });
 
         toolbar.$leftside.append($shareBlock);
@@ -552,23 +549,19 @@ MessengerUI, Messages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
-        var metadataMgr = config.metadataMgr;
-        var origin = config.metadataMgr.getPrivateData().origin;
-        var pathname = config.metadataMgr.getPrivateData().pathname;
-        var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
             'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
-        var modal = UIElements.createFileShareModal({
-            origin: origin,
-            pathname: pathname,
-            hashes: hashes,
-            common: Common
+        Common.getSframeChannel().event('EV_SHARE_OPEN', {
+            hidden: true,
+            file: true
         });
         $shareBlock.click(function () {
-            UI.openCustomModal(UI.dialog.tabs(modal));
+            Common.getSframeChannel().event('EV_SHARE_OPEN', {
+                file: true
+            });
         });
 
         toolbar.$leftside.append($shareBlock);

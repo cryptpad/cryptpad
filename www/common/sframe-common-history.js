@@ -63,7 +63,8 @@ define([
             var sframeChan = common.getSframeChannel();
 
             sframeChan.query('Q_GET_HISTORY_RANGE', {
-                lastKnownHash: lastKnownHash
+                lastKnownHash: lastKnownHash,
+                sharedFolder: config.sharedFolder
             }, function (err, data) {
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
@@ -312,6 +313,10 @@ define([
             render(get(c));
             $(window).trigger('resize');
         };
+
+        if (config.onOpen) {
+            config.onOpen();
+        }
 
         // Load all the history messages into a new chainpad object
         loadMoreHistory(config, common, function (err, newRt, isFull) {
