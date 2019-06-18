@@ -44,6 +44,7 @@ define([
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
+            notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar
         };
     };
@@ -519,6 +520,7 @@ define([
                 // History cleared while we're in the channel
                 if (parsed.error === 'ECLEARED') {
                     setChannelHead(parsed.channel, '', function () {});
+                    channels[parsed.channel].messages = [];
                     emit('CLEAR_CHANNEL', parsed.channel);
                     return;
                 }
@@ -610,6 +612,15 @@ define([
                             });
                             cb();
                         });
+                    });
+                } else {
+                    removeFromFriendList(curvePublic, function () {
+                        delete channels[channel.id];
+                        emit('UNFRIEND', {
+                            curvePublic: curvePublic,
+                            fromMe: true
+                        });
+                        cb();
                     });
                 }
                 channel.wc.bcast(cryptMsg).then(function () {}, function (err) {
@@ -943,6 +954,16 @@ define([
             cb();
         };
 
+        var clearOwnedChannel = function (id, cb) {
+            var channel = getChannel(id);
+            if (!channel) { return void cb({error: 'NO_CHANNEL'}); }
+            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            store.rpc.clearOwnedChannel(id, function (err) {
+                cb({error:err});
+            });
+            channel.messages = [];
+        };
+
         network.on('disconnect', function () {
             emit('DISCONNECT');
         });
@@ -999,6 +1020,9 @@ define([
             }
             if (cmd === 'SET_CHANNEL_HEAD') {
                 return void setChannelHead(data.id, data.sig, cb);
+            }
+            if (cmd === 'CLEAR_OWNED_CHANNEL') {
+                return void clearOwnedChannel(data, cb);
             }
         };
 

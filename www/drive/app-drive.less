@@ -4,6 +4,7 @@
 @import (reference) "../../customize/src/less2/include/limit-bar.less";
 @import (reference) "../../customize/src/less2/include/tokenfield.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/share.less';
 
 &.cp-app-drive {
     .framework_min_main(
@@ -14,6 +15,7 @@
 
     .limit-bar_main();
     .tokenfield_main();
+    .share_main();
 
     @drive_hover: #eee;
     @drive_hover-light: lighten(@drive_hover, 20%);
@@ -118,7 +120,7 @@
             }
             #cp-app-drive-tree {
                 resize: none;
-                width: 100%;
+                width: 100% !important;
                 max-width: unset;
                 max-height: unset;
                 border-bottom: 1px solid @drive_mobile-tree-border-col;
@@ -770,6 +772,9 @@
 
         .cp-toolbar-icon-history {
             float: right;
+            &.active {
+                background-color: rgba(0, 0, 255, 0.2);
+            }
             .cp-toolbar-drawer-element {
                 display: none;
             }
@@ -820,6 +825,7 @@
             padding-left: 10px;
         }
         .cp-app-drive-toolbar-leftside {
+            flex-shrink: 0;
             & > span {
                 height: 100%;
                 margin: 0;
@@ -861,30 +867,58 @@
             width: auto;
             overflow: hidden;
             white-space: nowrap;
-            display: flex;
-            flex-flow: row-reverse;
             flex-shrink: 1;
             min-width: 50px;
             max-width: 100%;
             text-align: left;
-            .cp-app-drive-path-element {
-                display: inline-block;
-                height: @variables_bar-height;
-                line-height: @variables_bar-height;
-                font-size: @colortheme_app-font-size;
-                padding: 0 5px;
-                border: 0;
-                background: darken(@colortheme_drive-bg, 10%);
-                color: @colortheme_drive-color;
-                box-sizing: border-box;
-                transition: all 0.15s;
-                &.cp-app-drive-path-separator {
-                    color: #ccc;
-                }
-                &.cp-app-drive-path-lickable {
-                    cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            
+            .cp-app-drive-path-inner {
+                display: flex;
+                flex-flow: row-reverse;
+                flex-grow: 1;
+
+                .cp-app-drive-path-element {
+                    display: inline-block;
+                    flex-shrink: 0;
+                    max-width: 100%;
+                    height: @variables_bar-height;
+                    line-height: @variables_bar-height;
+                    font-size: @colortheme_app-font-size;
+                    padding: 0 5px;
+                    border: 0;
+                    background: darken(@colortheme_drive-bg, 7%);
+                    color: @colortheme_drive-color;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition: all 0.15s;
+                    
+                    &:first-child {
+                        flex-shrink: 1;
+                    }
+                    
+                    &.cp-app-drive-path-separator {
+                        color: #ccc;
+                    }
+                    
+                    &.cp-app-drive-path-collapse {
+                        position: relative;
+                    }
+                    
                     &:hover {
-                        background: darken(@colortheme_drive-bg, 15%);
+                        &:not(.cp-app-drive-path-separator) {
+                            background-color: darken(@colortheme_drive-bg, 15%);
+                            text-decoration: underline;
+                            cursor: pointer;
+                        }
+                        & ~ .cp-app-drive-path-element {
+                            background-color: darken(@colortheme_drive-bg, 15%);
+                        }
+                        & ~ .cp-app-drive-path-element:not(.cp-app-drive-path-separator) {
+                            text-decoration: underline;
+                        }
                     }
                 }
             }

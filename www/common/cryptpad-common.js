@@ -130,6 +130,12 @@ define([
         postMessage("DRIVE_USEROBJECT", data, cb);
     };
     common.restoreDrive = function (data, cb) {
+        if (data.sfId) { // Shared folder ID
+            postMessage('RESTORE_SHARED_FOLDER', data, cb, {
+                timeout: 5 * 60 * 1000
+            });
+            return;
+        }
         postMessage("SET", {
             key:['drive'],
             value: data

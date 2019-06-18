@@ -57,6 +57,7 @@ define([
             GET_SHARED_FOLDER: Store.getSharedFolder,
             ADD_SHARED_FOLDER: Store.addSharedFolder,
             LOAD_SHARED_FOLDER: Store.loadSharedFolderAnon,
+            RESTORE_SHARED_FOLDER: Store.restoreSharedFolder,
             // Messaging
             ANSWER_FRIEND_REQUEST: Store.answerFriendRequest,
             SEND_FRIEND_REQUEST: Store.sendFriendRequest,

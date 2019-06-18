@@ -458,6 +458,7 @@ define([
         mkHelpMenu(framework);
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
+        CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
         CodeMirror.configureTheme(common);
 
         framework.onContentUpdate(function (newContent) {

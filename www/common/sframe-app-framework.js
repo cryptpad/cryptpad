@@ -357,16 +357,14 @@ define([
                 UI.removeLoadingScreen(emitResize);
 
                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
-                var hash = privateDat.availableHashes.editHash ||
-                           privateDat.availableHashes.viewHash;
-                var href = privateDat.pathname + '#' + hash;
+                var type = privateDat.app;
                 if (AppConfig.textAnalyzer && textContentGetter) {
                     AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
                 }
 
                 if (options.thumbnail && privateDat.thumbnails) {
-                    if (hash) {
-                        options.thumbnail.href = href;
+                    if (type) {
+                        options.thumbnail.type = type;
                         options.thumbnail.getContent = function () {
                             if (!cpNfInner.chainpad) { return; }
                             return cpNfInner.chainpad.getUserDoc();

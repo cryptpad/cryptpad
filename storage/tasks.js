@@ -83,6 +83,7 @@ var write = function (env, task, cb) {
 };
 
 var remove = function (env, path, cb) {
+    // FIXME COLDSTORAGE?
     Fs.unlink(path, cb);
 };
 
