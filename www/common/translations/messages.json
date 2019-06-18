@@ -1061,5 +1061,16 @@
     "profile_addLink": "Add a link to your website",
     "profile_info": "Other users can find your profile through your avatar in document user lists.",
     "profile_friendRequestSent": "Friend request pending...",
-    "profile_friend": "{0} is your friend"
+    "profile_friend": "{0} is your friend",
+    "notification_padShared": "{0} has shared a pad with you: <b>{1}</b>",
+    "notification_fileShared": "{0} has shared a file with you: <b>{1}</b>",
+    "notification_folderShared": "{0} has shared a folder with you: <b>{1}</b>",
+    "share_selectAll": "Select all",
+    "share_deselectAll": "Deselect all",
+    "share_filterFriend": "Search by name",
+    "share_linkFriends": "Share with friends",
+    "share_withFriends": "Share",
+    "notifications_dismiss": "Dismiss",
+    "fm_info_sharedFolderHistory": "This is only the history of your shared folder: <b>{0}</b><br/>Your CryptDrive will stay in read-only mode while you navigate.",
+    "share_description": "Choose what you'd like to share and either get the link or send it directly to your CryptPad friends."
 }
