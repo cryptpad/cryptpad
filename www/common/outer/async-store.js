@@ -1441,6 +1441,30 @@ define([
         };
         registerProxyEvents = function (proxy, fId) {
             proxy.on('change', [], function (o, n, p) {
+                if (fId) {
+                    // Pin the new pads
+                    if (p[0] === UserObject.FILES_DATA && typeof(n) === "object" && n.channel && !n.owners) {
+                        var toPin = [n.channel];
+                        // Also pin the onlyoffice channels if they exist
+                        if (n.rtChannel) { toPin.push(n.rtChannel); }
+                        if (n.lastVersion) { toPin.push(n.lastVersion); }
+                        Store.pinPads(null, toPin, function (obj) { console.error(obj); });
+                    }
+                    // Unpin the deleted pads (deleted <=> changed to undefined)
+                    if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
+                        var toUnpin = [o.channel];
+                        var c = store.manager.findChannel(o.channel);
+                        var exists = c.some(function (data) {
+                            return data.fId !== fId;
+                        });
+                        if (!exists) { // Unpin
+                            // Also unpin the onlyoffice channels if they exist
+                            if (o.rtChannel) { toUnpin.push(o.rtChannel); }
+                            if (o.lastVersion) { toUnpin.push(o.lastVersion); }
+                            Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
+                        }
+                    }
+                }
                 sendDriveEvent('DRIVE_CHANGE', {
                     id: fId,
                     old: o,
