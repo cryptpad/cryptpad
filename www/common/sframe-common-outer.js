@@ -562,9 +562,12 @@ define([
             sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
                 var nSecret = secret;
                 if (cfg.isDrive) {
+                    // Shared folder or user hash or fs hash
                     var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                    if (data.sharedFolder) { hash = data.sharedFolder.hash; }
                     if (hash) {
-                        nSecret = Utils.Hash.getSecrets('drive', hash);
+                        var password = (data.sharedFolder && data.sharedFolder.password) || undefined;
+                        nSecret = Utils.Hash.getSecrets('drive', hash, password);
                     }
                 }
                 var channel = nSecret.channel;

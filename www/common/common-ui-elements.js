@@ -288,6 +288,15 @@ define([
                 $d.append(UI.dialog.selectable(formatted, {
                     id: 'cp-app-prop-size',
                 }));
+
+        if (data.sharedFolder) { // XXX debug
+            $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
+            if (AppConfig.pinBugRecovery) { $d.append(h('p', AppConfig.pinBugRecovery)); }
+            $d.append(UI.dialog.selectable(data.channel, {
+                id: 'cp-app-prop-link',
+            }));
+        }
+
                 cb(void 0, $d);
             });
         } else {
