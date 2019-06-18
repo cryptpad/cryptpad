@@ -327,15 +327,6 @@ define([
                         account.note = obj.note;
                         cb(obj);
                     });
-
-                    arePinsSynced(function (err, yes) {
-                        if (!yes) {
-                            resetPins(function (err) {
-                                if (err) { return console.error(err); }
-                                console.log('RESET DONE');
-                            });
-                        }
-                    });
                 });
             });
         };
@@ -1690,6 +1681,15 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
+                arePinsSynced(function (err, yes) {
+                    if (!yes) {
+                        resetPins(function (err) {
+                            if (err) { return console.error(err); }
+                            console.log('RESET DONE');
+                        });
+                    }
+                });
+
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };
