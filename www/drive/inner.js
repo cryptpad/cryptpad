@@ -80,7 +80,7 @@ define([
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
-    var faColor = 'fa-palette';
+    var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
     var faDelete = 'fa-eraser';
     var faProperties = 'fa-database';
