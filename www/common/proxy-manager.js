@@ -567,6 +567,22 @@ define([
         }
         resolved.userObject.rename(resolved.path, data.newName, cb);
     };
+    var _setFolderData = function (Env, data, cb) {
+        data = data || {};
+        var resolved = _resolvePath(Env, data.path);
+        if (!resolved || !resolved.userObject) { return void cb({error: 'E_NOTFOUND'}); }
+        if (!resolved.id) {
+            var el = Env.user.userObject.find(resolved.path);
+            if (Env.user.userObject.isSharedFolder(el) && Env.folders[el]) {
+                Env.user.proxy[UserObject.SHARED_FOLDERS][el][data.key] = data.value;
+                return void Env.onSync(cb);
+            }
+        }
+        resolved.userObject.setFolderData(resolved.path, data.key, data.value, function () {
+            Env.onSync(cb);
+        });
+
+    };
     var onCommand = function (Env, cmdData, cb) {
         var cmd = cmdData.cmd;
         var data = cmdData.data || {};
@@ -585,6 +601,8 @@ define([
                 _emptyTrash(Env, data, cb); break;
             case 'rename':
                 _rename(Env, data, cb); break;
+            case 'setFolderData':
+                _setFolderData(Env, data, cb); break;
             default:
                 cb();
         }
@@ -799,6 +817,7 @@ define([
         var Env = {
             pinPads: data.pin,
             unpinPads: data.unpin,
+            onSync: data.onSync,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
             edPublic: data.edPublic,
@@ -905,6 +924,12 @@ define([
             }
         }, cb);
     };
+    var setFolderDataInner = function (Env, data, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "setFolderData",
+            data: data
+        }, cb);
+    };
 
     /* Tools */
 
@@ -989,6 +1014,19 @@ define([
         return obj;
     };
 
+    var getFolderData = function (Env, path) {
+        var resolved = _resolvePath(Env, path);
+        if (!resolved || !resolved.userObject) { return {}; }
+        if (!resolved.id) {
+            var el = Env.user.userObject.find(resolved.path);
+            if (Env.user.userObject.isSharedFolder(el)) {
+                return getSharedFolderData(Env, el);
+            }
+        }
+        var folder = resolved.userObject.find(resolved.path);
+        return resolved.userObject.getFolderData(folder);
+    };
+
     var isInSharedFolder = _isInSharedFolder;
 
     /* Generic: doesn't need access to a proxy */
@@ -1068,6 +1106,7 @@ define([
             addSharedFolder: callWithEnv(addSharedFolderInner),
             delete: callWithEnv(deleteInner),
             restore: callWithEnv(restoreInner),
+            setFolderData: callWithEnv(setFolderDataInner),
             // Tools
             getFileData: callWithEnv(getFileData),
             find: callWithEnv(find),
@@ -1081,6 +1120,7 @@ define([
             findFile: callWithEnv(findFile),
             findChannels: callWithEnv(findChannels),
             getSharedFolderData: callWithEnv(getSharedFolderData),
+            getFolderData: callWithEnv(getFolderData),
             isInSharedFolder: callWithEnv(isInSharedFolder),
             getUserObjectPath: callWithEnv(getUserObjectPath),
             isDuplicateOwned: callWithEnv(isDuplicateOwned),

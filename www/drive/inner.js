@@ -835,15 +835,19 @@ define([
             jscolorL.show();
         };
 
-        var getFolderColor = function ($element) {
-            if ($element.length === 0) { return; }
-            return $element.find(".cp-app-drive-icon-folder").css("color") || "#000";
+        var getFolderColor = function (path) {
+            if (path.length === 0) { return; }
+            return manager.getFolderData(path).color || "#000";
         };
 
-        var setFolderColor = function ($element, color) {
+        var setFolderColor = function ($element, path, color) {
             if ($element.length === 0) { return; }
             $element.find(".cp-app-drive-icon-folder").css("color", color);
-            // TODO : save color in folder metadata
+            manager.setFolderData({
+                path: path,
+                key: "color",
+                value: color
+            }, function () {});
         };
 
 
@@ -877,6 +881,7 @@ define([
                         // Can't rename or delete root elements
                         hide.push('delete');
                         hide.push('rename');
+                        hide.push('color');
                     }
                     if (!$element.is('.cp-app-drive-element-owned')) {
                         hide.push('deleteowned');
@@ -1578,9 +1583,11 @@ define([
             if (isSharedFolder) {
                 liClass = 'cp-app-drive-element-folder cp-app-drive-element';
                 $icon = $sharedFolderIcon.clone();
+                $icon.css("color", getFolderColor(path.concat(elPath)));
             } else if (isFolder) {
                 liClass = 'cp-app-drive-element-folder cp-app-drive-element';
                 $icon = manager.isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
+                $icon.css("color", getFolderColor(path.concat(elPath)));
             }
             var $element = $('<li>', {
                 draggable: true,
@@ -2871,6 +2878,7 @@ define([
 
         var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active, isSharedFolder) {
             var $name = $('<span>', { 'class': 'cp-app-drive-element' }).text(name);
+            $icon.css("color", isSharedFolder ? getFolderColor(path.slice(0, -1)) : getFolderColor(path));
             var $collapse;
             if (collapsable) {
                 $collapse = $expandIcon.clone();
@@ -2930,6 +2938,7 @@ define([
                 var $rootIcon = manager.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
+                $rootIcon.css("color", getFolderColor([ROOT])); // XXX allow t omodify color of root ?
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
                     $rootElement.find('.cp-app-drive-icon-expcol').css('visibility', 'hidden');
@@ -3226,11 +3235,12 @@ define([
                 displayRenameInput(paths[0].element, paths[0].path);
             }
             if ($(this).hasClass("cp-app-drive-context-color")) {
-                var currentColor = getFolderColor(paths[0].element);
+                var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
-                        setFolderColor(p.element, color);
+                        setFolderColor(p.element, p.path, color);
                     });
+                    refresh(); // makes imgs overview flicker in drive
                 });
             }
             else if($(this).hasClass("cp-app-drive-context-delete")) {

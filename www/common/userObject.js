@@ -91,6 +91,9 @@ define([
                     ((typeof(files[OLD_FILES_DATA]) !== "undefined" || allowStr)
                         &&  typeof(element) === "string");
         };
+        var isFolderData = exp.isFolderData = function (element) {
+            return typeof(element) === "object" && element.metadata === true;
+        };
 
         exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
@@ -101,6 +104,7 @@ define([
         };
 
         var isFolder = exp.isFolder = function (element) {
+            if (isFolderData(element)) { return false; }
             return typeof(element) === "object" || isSharedFolder(element);
         };
         exp.isFolderEmpty = function (element) {
@@ -144,10 +148,27 @@ define([
             return file;
         };
 
+        exp.hasFolderData = function (folder) {
+            for (var el in folder) {
+                if(isFolderData(folder[el])) {
+                    return true;
+                }
+            }
+        };
+
         // Get data from AllFiles (Cryptpad_RECENTPADS)
         var getFileData = exp.getFileData = function (file) {
             if (!file) { return; }
             return files[FILES_DATA][file] || {};
+        };
+
+        exp.getFolderData = function (folder) {
+            for (var el in folder) {
+                if(isFolderData(folder[el])) {
+                    return folder[el];
+                }
+            }
+            return {};
         };
 
         // Data from filesData
@@ -231,7 +252,7 @@ define([
             for (var e in root) {
                 if (isFile(root[e]) || isSharedFolder(root[e])) {
                     if(arr.indexOf(root[e]) === -1) { arr.push(root[e]); }
-                } else {
+                } else if (!isFolderData(root[e])) {
                     getFilesRecursively(root[e], arr);
                 }
             }
