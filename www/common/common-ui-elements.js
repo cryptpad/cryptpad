@@ -343,6 +343,7 @@ define([
                 'data-curve': data.curvePublic,
                 'data-name': data.displayName,
                 'data-order': i,
+                title: data.displayName,
                 style: 'order:'+i+';'
             },[
                 avatar,
@@ -392,17 +393,6 @@ define([
         };
 
         $(inputFilter).on('keydown keyup change', redraw);
-        $(buttonSelect).click(function () {
-            $div.find('.cp-share-friend:not(.cp-selected):visible').addClass('cp-selected');
-        });
-        $(buttonDeselect).click(function () {
-            $div.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
-                var order = $(el).attr('data-order');
-                if (!order) { return; }
-                $(el).attr('style', 'order:'+order);
-            });
-            redraw();
-        });
 
         // Replace "copy link" by "share with friends" if at least one friedn is selected
         // Also create the "share with friends" button if it doesn't exist
@@ -459,6 +449,19 @@ define([
             }
         };
 
+        $(buttonSelect).click(function () {
+            $div.find('.cp-share-friend:not(.cp-fake-friend):not(.cp-selected):visible').addClass('cp-selected');
+            refreshButtons();
+        });
+        $(buttonDeselect).click(function () {
+            $div.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
+                var order = $(el).attr('data-order');
+                if (!order) { return; }
+                $(el).attr('style', 'order:'+order);
+            });
+            redraw();
+            refreshButtons();
+        });
 
         common.getAttribute(['general', 'share-friends'], function (err, val) {
             order = val || [];
