@@ -1777,7 +1777,8 @@ define([
             }
             if (history.isHistoryMode && history.sfId) {
                 // Shared folder history: always display the warning
-                msg = Messages.fm_info_sharedFolderHistory;
+                var sfName = (manager.getSharedFolderData(history.sfId) || {}).title || Messages.fm_sharedFolderName;
+                msg = Messages._getKey('fm_info_sharedFolderHistory', [sfName]);
                 return $(common.fixLinks($box.html(msg)));
             }
             if (!APP.loggedIn) {
