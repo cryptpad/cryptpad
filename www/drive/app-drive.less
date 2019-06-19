@@ -185,7 +185,6 @@
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-
         .cp-app-drive-color-picker-color {
             position: relative;
             width: 50px;
@@ -193,38 +192,13 @@
             margin: 5px;
             display: inline-block;
             cursor: pointer;
-            &.cp-app-drive-no-color {
-                position: relative;
-                width: 40px;
-                height: 40px;
-                margin: 10px;
-                border: 1px solid #444;
-                border-radius: 2px;
-                background-color: white;
-                overflow: hidden;
-                &::before {
-                    content: "";
-                    position: absolute;
-                    top: -1px; left: 0;
-                    width: 200%;
-                    border: 1px solid #bbb;
-                    transform-origin: top left;
-                    -ms-transform-origin: top left;
-                    transform: rotate(45deg);
-                    -ms-transform: rotate(45deg);
-                    -webkit-transform: rotate(45deg);
-                }
-                &.cp-app-drive-current-color > .fa-check {
-                    top: 35%; left: 35%;
-                    color: black;
-                }
-            }
-
             .cp-app-drive-icon-folder {
                 position: absolute;
                 font-size: 50px;
             }
-
+            .cptools-folder-no-color {
+                color: #999;
+            }
             .fa-check {
                 position: absolute;
                 top: 40%; left: 35%;
@@ -234,6 +208,9 @@
                 color: white;
             }
 
+            &.cp-app-drive-current-color:first-child > .fa-check {
+                color: black;
+            }
         }
     }
 
