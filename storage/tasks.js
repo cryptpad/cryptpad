@@ -196,6 +196,41 @@ var read = function (env, filePath, cb) {
     });
 };
 
+var expire = function (env, task, cb) {
+    // TODO magic numbers, maybe turn task parsing into a function
+    // and also maybe just encode tasks in a better format to start...
+    var args = task.slice(2);
+
+    if (!env.retainData) {
+        Log.info('DELETION_SCHEDULED_EXPIRATION', {
+            task: task,
+        });
+        env.store.removeChannel(args[0], function (err) {
+            if (err) {
+                Log.error('DELETION_SCHEDULED_EXPIRATION_ERROR', {
+                    task: task,
+                    error: err,
+                });
+            }
+            cb()
+        });
+        return;
+    }
+
+    Log.info('ARCHIVAL_SCHEDULED_EXPIRATION', {
+        task: task,
+    });
+    env.store.archiveChannel(args[0], function (err) {
+        if (err) {
+            Log.error('ARCHIVE_SCHEDULED_EXPIRATION_ERROR', {
+                task: task,
+                error: err,
+            });
+        }
+        cb();
+    });
+};
+
 var run = Tasks.run = function (env, path, cb) {
     var CURRENT = +new Date();
 
@@ -223,11 +258,7 @@ var run = Tasks.run = function (env, path, cb) {
     }).nThen(function (w) {
         switch (command) {
             case 'EXPIRE':
-                Log.info('DELETION_SCHEDULED_EXPIRATION', {
-                    task: task,
-                });
-                env.store.removeChannel(args[0], w());
-                break;
+                return void expire(env, task, w());
             default:
                 Log.warn("TASKS_UNKNOWN_COMMAND", task);
         }
@@ -349,6 +380,7 @@ Tasks.create = function (config, cb) {
         root: config.taskPath || './tasks',
         log: config.log,
         store: config.store,
+        retainData: Boolean(config.retainData),
     };
 
     // make sure the path exists...
