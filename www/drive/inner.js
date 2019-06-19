@@ -869,16 +869,41 @@ define([
 
 
         var pickFolderColor = function ($element, currentColor, cb) {
-            var jscolorL;
-            $element[0]._jscLinkedInstance = undefined;
-            var onchange = function (color) {
-                cb("#" + color.toString());
-            };
-            if (APP.colorPicker) { APP.colorPicker.hide(); }
-            jscolorL = new window.jscolor($element[0], {showOnClick: false, onFineChange: onchange, valueElement:undefined, styleElement:undefined});
-            APP.colorPicker = jscolorL;
-            jscolorL.fromString(currentColor);
-            jscolorL.show();
+            var colors = ["none", "#f23c38", "#ff0073", "#da0eba", "#9d00ac", "#6c19b3", "#4a42b1", "#3d8af0", "#30a0f1", "#1fb9d1", "#009686", "#45b354", "#84c750", "#c6e144", "#faf147", "#fbc423", "#fc9819", "#fd5227", "#775549", "#9c9c9c", "#607a89"];
+            var colorsElements = [];
+            var currentElement = null;
+            for (var i in colors) {
+                var element;
+                if (i === "0") {
+                    element = h("span.cp-app-drive-color-picker-color.cp-app-drive-no-color");
+                    $(element).on("click", function (e) {
+                        cb("");
+                    });
+                    colorsElements.push(element);
+                }
+                else {
+                    element = h("span.cp-app-drive-color-picker-color", [
+                        h("span.cptools-folder.cptools.cp-app-drive-icon-folder.cp-app-drive-content-icon"),
+                        h("span.fa.fa-check")
+                    ]);
+                    $(element).css("color", colors[i]);
+                    if (colors[i] === currentColor) {
+                        currentElement = element;
+                        $(element).addClass("cp-app-drive-current-color");
+                    }
+                    (function (color, element) {
+                        $(element).on("click", function (e) {
+                            $(currentElement).removeClass("cp-app-drive-current-color");
+                            currentElement = element;
+                            $(element).addClass("cp-app-drive-current-color");
+                            cb(color);
+                        });
+                    })(colors[i], element)
+                    colorsElements.push(element);
+                }
+            }
+            var content = h("div.cp-app-drive-color-picker", colorsElements);
+            UI.alert(content);
         };
 
         var getFolderColor = function (path) {
@@ -3383,15 +3408,11 @@ define([
             }
             if ($(this).hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
-                var to;
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
                         setFolderColor(p.element, p.path, color);
                     });
-                    clearTimeout(to);
-                    to = setTimeout(function () {
-                        refresh(); // makes imgs overview flicker in drive
-                    }, 300);
+                    refresh(); // makes imgs overview flicker in drive
                 });
             }
             else if($(this).hasClass("cp-app-drive-context-delete")) {
