@@ -532,7 +532,7 @@ define([
             }
         };
 
-        sel.refresh = 200;
+        sel.refresh = 50;
         sel.$selectBox = $('<div>', {'class': 'cp-app-drive-content-select-box'}).appendTo($content);
         var checkSelected = function () {
             if (!sel.down) { return; }
