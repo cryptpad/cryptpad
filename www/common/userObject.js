@@ -374,10 +374,12 @@ define([
                 }
                 return paths;
             }
-            for (var e in root) {
-                var nPath = path.slice();
-                nPath.push(e);
-                _findFileInRoot(nPath, file).forEach(addPaths);
+            if (isFolder(root)) {
+                for (var e in root) {
+                    var nPath = path.slice();
+                    nPath.push(e);
+                    _findFileInRoot(nPath, file).forEach(addPaths);
+                }
             }
 
             return paths;
