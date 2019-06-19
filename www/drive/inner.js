@@ -889,7 +889,7 @@ define([
             var currentElement = null;
             colors.forEach(function (color, i) {
                 var element = h("span.cp-app-drive-color-picker-color", [
-                    h("span.cptools.cp-app-drive-icon-folder.cp-app-drive-content-icon" + (i === 0 ? ".cptools-folder-no-color" : ".cptools-folder")), // XXX cptools-folder-no-color does not show up
+                    h("span.cptools.cp-app-drive-icon-folder.cp-app-drive-content-icon" + (i === 0 ? ".cptools-folder-no-color" : ".cptools-folder")),
                     h("span.fa.fa-check")
                 ]);
                 $(element).css("color", colors[i]);
