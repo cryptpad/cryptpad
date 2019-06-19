@@ -1509,9 +1509,6 @@ define([
 
             $element.on('mousedown', function (e) {
                 e.stopPropagation();
-                if (APP.colorPicker) {
-                    APP.colorPicker.hide();
-                }
             });
 
             // Add drop handlers if we are not in the trash and if the element is a folder
@@ -3114,7 +3111,6 @@ define([
                 var $rootIcon = manager.isFolderEmpty(files[ROOT]) ?
                     (isRootOpened ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                     (isRootOpened ? $folderOpenedIcon : $folderIcon);
-                $rootIcon.css("color", getFolderColor([ROOT])); // XXX allow t omodify color of root ?
                 var $rootElement = createTreeElement(ROOT_NAME, $rootIcon.clone(), [ROOT], false, true, true, isRootOpened);
                 if (!manager.hasSubfolder(root)) {
                     $rootElement.find('.cp-app-drive-icon-expcol').css('visibility', 'hidden');
@@ -3420,7 +3416,7 @@ define([
                     paths.forEach(function (p) {
                         setFolderColor(p.element, p.path, color);
                     });
-                    refresh(); // makes imgs overview flicker in drive
+                    refresh();
                 });
             }
             else if($(this).hasClass("cp-app-drive-context-delete")) {
