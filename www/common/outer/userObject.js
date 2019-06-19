@@ -375,6 +375,19 @@ define([
             }
         };
 
+        exp.setFolderData = function (path, key, value, cb) {
+            var folder = exp.find(path);
+            if (!exp.isFolder(folder) || exp.isSharedFolder(folder)) { return; }
+            if (!exp.hasFolderData(folder)) {
+                var hashKey = "000" + Hash.createChannelId().slice(0, -3);
+                folder[hashKey] = {
+                    metadata: true
+                };
+            }
+            exp.getFolderData(folder)[key] = value;
+            cb();
+        };
+
         /**
          * INTEGRITY CHECK
          */
@@ -493,7 +506,16 @@ define([
             var fixRoot = function (elem) {
                 if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
                 var element = elem || files[ROOT];
+                var nbMetadataFolders = 0;
                 for (var el in element) {
+                    if (exp.isFolderData(element[el])) {
+                        if (nbMetadataFolders !== 0) {
+                            debug("Multiple metadata files in folder");
+                            delete element[el];
+                        }
+                        nbMetadataFolders++;
+                        continue;
+                    }
                     if (!exp.isFile(element[el], true) && !exp.isFolder(element[el])) {
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
                         delete element[el];

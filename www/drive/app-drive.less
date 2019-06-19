@@ -179,6 +179,68 @@
         }
     }
 
+    .cp-app-drive-color-picker {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        .cp-app-drive-color-picker-color {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            display: inline-block;
+            cursor: pointer;
+            &.cp-app-drive-no-color {
+                position: relative;
+                width: 40px;
+                height: 40px;
+                margin: 10px;
+                border: 1px solid #444;
+                border-radius: 2px;
+                background-color: white;
+                overflow: hidden;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: -1px; left: 0;
+                    width: 200%;
+                    border: 1px solid #bbb;
+                    transform-origin: top left;
+                    -ms-transform-origin: top left;
+                    transform: rotate(45deg);
+                    -ms-transform: rotate(45deg);
+                    -webkit-transform: rotate(45deg);
+                }
+                &.cp-app-drive-current-color > .fa-check {
+                    top: 35%; left: 35%;
+                    color: black;
+                }
+            }
+
+            .cp-app-drive-icon-folder {
+                position: absolute;
+                font-size: 50px;
+            }
+
+            .fa-check {
+                position: absolute;
+                top: 40%; left: 35%;
+                color: transparent;
+            }
+            &.cp-app-drive-current-color > .fa-check {
+                color: white;
+            }
+
+        }
+    }
+
+
+
+
+
     /* TREE */
 
 
@@ -873,7 +935,7 @@
             text-align: left;
             display: flex;
             flex-direction: row;
-            
+
             .cp-app-drive-path-inner {
                 display: flex;
                 flex-flow: row-reverse;
@@ -894,19 +956,19 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     transition: all 0.15s;
-                    
+
                     &:first-child {
                         flex-shrink: 1;
                     }
-                    
+
                     &.cp-app-drive-path-separator {
                         color: #ccc;
                     }
-                    
+
                     &.cp-app-drive-path-collapse {
                         position: relative;
                     }
-                    
+
                     &:hover {
                         &:not(.cp-app-drive-path-separator) {
                             background-color: darken(@colortheme_drive-bg, 15%);

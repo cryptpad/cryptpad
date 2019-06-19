@@ -10,7 +10,7 @@ define([
     '/common/modes.js',
     '/customize/messages.js',
     '/kanban/jkanban.js',
-    '/kanban/jscolor.js',
+    '/common/jscolor.js',
     'css!/kanban/jkanban.css',
 
     'less!/kanban/app-kanban.less'
@@ -281,7 +281,7 @@ define([
                     //return;
                 }
                 kanban.inEditMode = true;
-                // create a form to enter element 
+                // create a form to enter element
                 var boardId = $(el.parentNode.parentNode).attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item'});
                 var $input = getInput().val(name).appendTo($item);

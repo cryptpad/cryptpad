@@ -1651,6 +1651,7 @@ define([
             };
             if (!proxy.settings) { proxy.settings = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
+                onSync: onSync,
                 edPublic: proxy.edPublic,
                 pin: pin,
                 unpin: unpin,
