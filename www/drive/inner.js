@@ -199,6 +199,21 @@ define([
         APP.store[LS_OPENED] = JSON.stringify(stored);
         localStore.put(LS_OPENED, JSON.stringify(stored));
     };
+    var moveFoldersOpened = function (previousPath, newPath) {
+        var stored = JSON.parse(APP.store[LS_OPENED] || '[]');
+        var s = JSON.stringify(previousPath).slice(0, -1);
+        var sNew = JSON.stringify(newPath).slice(0, -1);
+        if (s === sNew ) { return; } // move to itself
+        if (sNew.indexOf(s) === 0) { return; } // move to subfolder
+        sNew = JSON.stringify(newPath.concat(previousPath[previousPath.length - 1])).slice(0, -1);
+        for (var i = 0 ; i < stored.length ; i++) {
+            if (stored[i].indexOf(s) === 0) {
+                stored[i] = stored[i].replace(s, sNew);
+            }
+        }
+        APP.store[LS_OPENED] = JSON.stringify(stored);
+        localStore.put(LS_OPENED, JSON.stringify(stored));
+    };
 
     var getViewModeClass = function () {
         var mode = APP.store[LS_VIEWMODE];
@@ -1273,7 +1288,9 @@ define([
                 return;
             }
             var newCb = function () {
-                paths.forEach(removeFoldersOpened);
+                paths.forEach(function (path) {
+                    moveFoldersOpened(path, newPath);
+                });
                 cb();
             };
             manager.move(paths, newPath, newCb, copy);
