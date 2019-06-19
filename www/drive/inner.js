@@ -876,8 +876,17 @@ define([
 
                 var element;
                 if (i === 0) {
-                    element = h("span.cp-app-drive-color-picker-color.cp-app-drive-no-color");
+                    element = h("span.cp-app-drive-color-picker-color.cp-app-drive-no-color", [
+                        h("span.fa.fa-check")
+                    ]);
+                    if (currentColor === "") {
+                        currentElement = element;
+                        $(element).addClass("cp-app-drive-current-color");
+                    }
                     $(element).on("click", function () {
+                        $(currentElement).removeClass("cp-app-drive-current-color");
+                        currentElement = element;
+                        $(element).addClass("cp-app-drive-current-color");
                         cb("");
                     });
                     colorsElements.push(element);
@@ -907,7 +916,7 @@ define([
 
         var getFolderColor = function (path) {
             if (path.length === 0) { return; }
-            return manager.getFolderData(path).color || "#000";
+            return manager.getFolderData(path).color || "";
         };
 
         var setFolderColor = function ($element, path, color) {
