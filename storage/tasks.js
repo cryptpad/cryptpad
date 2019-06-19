@@ -199,6 +199,7 @@ var read = function (env, filePath, cb) {
 var expire = function (env, task, cb) {
     // TODO magic numbers, maybe turn task parsing into a function
     // and also maybe just encode tasks in a better format to start...
+    var Log = env.log;
     var args = task.slice(2);
 
     if (!env.retainData) {
@@ -212,7 +213,7 @@ var expire = function (env, task, cb) {
                     error: err,
                 });
             }
-            cb()
+            cb();
         });
         return;
     }
