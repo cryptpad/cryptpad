@@ -3364,7 +3364,9 @@ define([
                 //data.noPassword = true;
                 data.noEditPassword = true;
                 data.noExpiration = true;
-                data.sharedFolder = true; // XXX debug
+                // this is here to allow users to check the channel id of a shared folder
+                // we should remove it at some point
+                data.sharedFolder = true;
             }
 
             UIElements.getProperties(common, data, cb);
