@@ -50,7 +50,7 @@ define([
                     password: priv.password
                 }
             });
-            UI.findCancelButton().click();
+            $('button.cancel').click(); // Close any existing alertify
             UI.openCustomModal(UI.dialog.tabs(modal), {
                 wide: Object.keys(friends).length !== 0
             });
@@ -74,9 +74,6 @@ define([
                 andThen(common);
                 return;
             }
-            metadataMgr.onChange(function () {
-                andThen(common);
-            });
         });
     };
     main();
