@@ -124,6 +124,7 @@ define([
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
     var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
+    var $separator = $('<div>', {"class": "dropdown-divider"});
 
     var LS_LAST = "app-drive-lastOpened";
     var LS_OPENED = "app-drive-openedFolders";
@@ -311,6 +312,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "expandAll",
@@ -319,6 +321,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': "collapseAll",
                 }, Messages.fc_collapseAll)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faColor,
@@ -347,6 +350,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.pad,
@@ -372,6 +376,7 @@ define([
                     'data-icon': AppConfig.applicationsIcon.whiteboard,
                     'data-type': 'whiteboard'
                 }, Messages.button_newwhiteboard)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faEmpty,
@@ -380,6 +385,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faRestore,
                 }, Messages.fc_restore)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-rename.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faRename,
@@ -1238,6 +1244,20 @@ define([
 
         var displayMenu = function (e) {
             var $menu = $contextMenu;
+            var showSep = false;
+            var $lastVisibleSep = null;
+            $menu.find(".dropdown-menu").children().each(function (i, el) {
+                var $el = $(el);
+                if ($el.is(".dropdown-divider")) {
+                    $el.css("display", showSep ? "list-item" : "none");
+                    if (showSep) { $lastVisibleSep = $el; }
+                    showSep = false;
+                }
+                else if ($el.is("li") && $el.css("display") !== "none") {
+                    showSep = true;
+                }
+            });
+            if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
             $menu.css({ display: "block" });
             if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
