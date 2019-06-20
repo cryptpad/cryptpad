@@ -1074,5 +1074,6 @@
     "fm_info_sharedFolderHistory": "Dies ist nur der Verlauf deines geteilten Ordners: <b>{0}</b><br/>Dein CryptDrive bleibt beim Navigieren im Nur-Lesen-Modus.",
     "share_description": "Wähle aus, was du teilen möchtest. Dir wird dann ein entsprechender Link anzeigt. Du kannst es auch direkt an deine Freunde in CryptPad senden.",
     "fc_expandAll": "Alle ausklappen",
-    "fc_collapseAll": "Alle einklappen"
+    "fc_collapseAll": "Alle einklappen",
+    "fc_color": "Farbe ändern"
 }
