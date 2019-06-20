@@ -289,7 +289,7 @@ define([
                     id: 'cp-app-prop-size',
                 }));
 
-        if (data.sharedFolder) { // XXX debug
+        if (data.sharedFolder) {
             $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
             if (AppConfig.pinBugRecovery) { $d.append(h('p', AppConfig.pinBugRecovery)); }
             $d.append(UI.dialog.selectable(data.channel, {
