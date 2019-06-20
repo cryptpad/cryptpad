@@ -3,8 +3,8 @@
 var map = {
     'ca': 'Català',
     'de': 'Deutsch',
-    'es': 'Español',
     'el': 'Ελληνικά',
+    'es': 'Español',
     'fr': 'Français',
     'it': 'Italiano',
     'nb': 'Norwegian Bokmål',
@@ -12,8 +12,8 @@ var map = {
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
     'ru': 'Русский',
+    //'te': 'తెలుగు',
     'zh': '繁體中文',
-    'te': 'తెలుగు',
 };
 
 var messages = {};
