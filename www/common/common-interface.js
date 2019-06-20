@@ -799,6 +799,11 @@ define([
         // forever, this is a solution which just searches for tooltips which have no corrisponding element and removes
         // them.
         $('.tippy-popper').each(function (i, el) {
+            if (el._tippy && el._tippy.reference && document.body.contains(el._tippy.reference) {
+                el._tippy.destroy();
+                el.remove();
+                return;
+            }
             if ($('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
                 el.remove();
             }
@@ -849,6 +854,9 @@ define([
             mutations.forEach(function(mutation) {
                 if (mutation.type === "childList") {
                     for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        if ($(mutation.addedNodes[i]).attr('title')) {
+                            addTippy(0, mutation.addedNodes[i]);
+                        }
                         $(mutation.addedNodes[i]).find('[title]').each(addTippy);
                     }
 
