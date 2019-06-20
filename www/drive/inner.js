@@ -2167,15 +2167,21 @@ define([
             var data = manager.getSharedFolderData(id);
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
+            var friends = common.getFriends();
             var modal = UIElements.createSFShareModal({
                 origin: APP.origin,
                 pathname: "/drive/",
+                friends: friends,
+                title: data.title,
+                common: common,
                 hashes: {
                     editHash: parsed.hash
                 }
             });
             $shareBlock.click(function () {
-                UI.openCustomModal(modal);
+                UI.openCustomModal(modal, {
+                    wide: Object.keys(friends).length !== 0
+                });
             });
             $container.append($shareBlock);
         };
