@@ -3636,6 +3636,14 @@ define([
             APP.hideMenu();
         });
 
+        $content.on("keydown", function (e) {
+            if (e.which === 113) {
+                var paths = $contextMenu.data('paths');
+                if (paths.length !== 1) { return; }
+                displayRenameInput(paths[0].element, paths[0].path);
+            }
+        });
+
         // Chrome considers the double-click means "select all" in the window
         $content.on('mousedown', function (e) {
             $content.focus();
