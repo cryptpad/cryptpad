@@ -304,6 +304,7 @@ define([
                 'aria-labelledby': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
+                h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
@@ -1332,11 +1333,7 @@ define([
 
                 displayMenu(e);
 
-                if ($contextMenu.find('li:visible').length === 0) {
-                    debug("No visible element in the context menu. Abort.");
-                    $contextMenu.hide();
-                    return true;
-                }
+                $(".cp-app-drive-context-noAction").toggle($contextMenu.find('li:visible').length === 0);
 
                 $contextMenu.data('paths', paths);
                 return false;
