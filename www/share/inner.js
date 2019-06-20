@@ -17,7 +17,11 @@ define([
 {
     var APP = window.APP = {};
 
+    var init = false;
     var andThen = function (common) {
+        if (init) { return; }
+        init = true;
+
         var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
 
@@ -74,6 +78,9 @@ define([
                 andThen(common);
                 return;
             }
+            metadataMgr.onChange(function () {
+                andThen(common);
+            });
         });
     };
     main();
