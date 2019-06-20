@@ -799,7 +799,7 @@ define([
         // forever, this is a solution which just searches for tooltips which have no corrisponding element and removes
         // them.
         $('.tippy-popper').each(function (i, el) {
-            if (el._tippy && el._tippy.reference && document.body.contains(el._tippy.reference) {
+            if (el._tippy && el._tippy.reference && document.body.contains(el._tippy.reference)) {
                 el._tippy.destroy();
                 el.remove();
                 return;
