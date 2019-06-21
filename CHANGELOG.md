@@ -1,3 +1,79 @@
+# Yak release (v2.24.0)
+
+## Goals
+
+We've recently had an intern join our team, so this release and those until the end of summer are likely to feature a lot of small usability fixes.
+Otherwise, we've continued to develop team-centric features, particularly the way that registered users share pads with friends.
+Finally, we prioritized the ability to archive files for a period instead of deleting them, which we've been planning for a while.
+
+## Update notes
+
+* There are some important steps in this release:
+    * **make sure you read the full update notes before proceeding!**
+* [@zimbatm](https://github.com/zimbatm) added the ability to configure the location of your configuration file via environment variables when launching the server:
+  * `CRYPTPAD_CONFIG=/home/cryptpad/cryptpad/cryptpad-config/config.js /home/cryptpad/cryptpad/server.js`
+* We discovered a bug in our Xenops release which resulted in the server's list of pads stored for each user to be incorrect.
+  * if you're running CryptPad 2.23.0, we recommend that you disable any scripts configured to delete inactive pads
+  * updating to 2.24.0 will fix the issue in the client, but each user's list of "pinned pads" won't be corrected until they visit your instance and run the latest code
+* This release introduces the ability to archive some data instead of deleting it, since it can be scary to remove user data when you can't easily inspect it to see what it is
+  * to take advantage of this new functionality you'll need to update your configuration file with three new configuration points:
+    * set `retainData` to `true` if you want to archive channels instead of deleting them
+      * either by user command or due to inactivity
+      * the server will fall back to its default deletion behaviour if this value is `false` or not set at all
+    * set `archiveRetentionTime` to the number of days that an archived pad should be stored in the archive directory before being deleted permanently
+    * set `archivePath` to the path where you'd like archives to be stored
+      * it should not be publicly accessible in order to respect the users' wishes
+* We've introduced some new scripts to work with the database, some of which were needed to diagnose problems stemming from the pinning bug
+  * `evict-inactive.js` identifies channels which are unpinned and inactive and archives them
+    * unlike `delete-inactive.js` it only handles channels, not files or any other kind of data
+    * ...but it's much safer, since nothing is removed permanently
+    * in the coming releases we'll implement archival for other types of data so that we can fully remove unsafe scripts
+  * `diagnose-archive-conflicts.js` checks all the files in your archive and identifies whether they can be restored safely or if they conflict with newer files in the production database
+  * `restore-archived.js` restores any channels archived by the server or evict-inactive.js, excluding those which would conflict with the database
+* This release depends on updates to some serverside dependencies. Run `npm update`:
+  * `ws` addresses a potential vulnerability, so if possible anyone running earlier versions of CryptPad should update
+  * `chainpad-server` handles users' websocket connections and we needed to make a few changes to deal with changes in the `ws` API
+  * `heapdump` is no longer a default dependency, though you can install it if you want its functionality
+* This release also features a **Clientside migration** which modifies users' CryptDrives. Any clients which are running both the latest code after the update as well as an older version in another browser or device risk creating conflicts in their account data. To prevent this, update in the following manner:
+  1. ensure that you've added the configuration values listed above
+  2. shut down the server and ensure that it doesn't restart until you've completed the following steps
+  3. pull the latest clientside and serverside code via git
+  4. `npm update` to get the latest serverside dependencies
+  5. update the cache-busting string if you are handling the cache manually, otherwise allow the server to handle this as per its default
+  5. restart the server: clients with open tabs should be prompted to reload instead of reconnecting because the server's version has changed
+* We recommend that you test a local version of CryptPad before deploying this latest code, as aspects of the above-mentioned migrations are not backwards-compatible.
+  * you can roll back, but users' CryptDrives might have errors coping with data introduced by newer features.
+
+## Features
+
+* As mentioned above, CryptPad instances can be configured to temporarily archive files instead of deleting them permanently.
+  * as a user this means if you accidentally delete a file you have the option of contacting your administrator and asking them to help
+  * if they're really nice and have the spare time to help you, they might actually recover your data!
+* A contributor is working on translating CryptPad into the Catalan language.
+  * if your preferred language isn't supported, you can do the same on https://weblate.cryptpad.fr
+* We added the ability to add colors to folders in users CryptDrives, along with support for arbitrary folder metadata which we aren't using yet.
+* Users with existing friends on the platform will run a migration to allow them to share pads with friends directly instead of sending them a link.
+  * they'll receive a notification indicating the title of the pad and who shared it
+  * if you've already added friends on the platform, you can send them pads from the usual "sharing menu"
+* Our code editor already offered the ability to set their color theme and highlighting mode, but now those values will be previewed when mousing over the the option in the dropdown.
+  * Our slide editor now offers the same theme selection as the code editor
+* It's now possible to view the history of a shared folder by clicking the history button while viewing the shared folder's contents.
+
+## Bug fixes
+
+* The CryptDrive received a number of usability fixes this time around:
+  * better styles when hovering over interactive elements in the drive (cursors, shading, etc)
+  * clicking the history button in the drive a second time will exit history mode
+  * after being resized, the tree pane now correctly responds to mobile layout styles
+  * the path indicator also adapts to very narrow layouts
+  * the user's current location is preserved when renaming the current folder or its ancestors
+  * you can right-click on elements in the tree and expand or collapse all of their children
+* A user noticed that one-on-one chats did not seem to be deleted, as their messages were still available after a reload.
+  * they were deleted but our usage of the sharedWorker API incorrectly preserved a local cache of those message until you closed all of your browser tabs
+* We've also fixed some elements of the chat UI, notably the position of the chat's scrollbar when first loading older messages and how the interface scrolls to keep up with new messages.
+* We've noticed some cases of tooltips getting stuck in the UI and implemented some measures to prevent this from happening.
+* After "unfriending" another user it was possible that they would be automatically re-added as friends.
+
 # Xenops release (v2.23.0)
 
 ## Goals
