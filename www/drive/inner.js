@@ -2610,6 +2610,7 @@ define([
         var displaySearch = function ($list, value) {
             var filesList = manager.search(value);
             filesList.forEach(function (r) {
+                // if r.id === null, then it's a folder, not a file
                 r.paths.forEach(function (path) {
                     if (!r.inSharedFolder &&
                         APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
@@ -2617,25 +2618,27 @@ define([
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
-                        .append(getFileIcon(r.id));
+                        .append(r.id ? getFileIcon(r.id) : $folderIcon.clone());
                     var $title = $('<td>', {
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-title'
-                    }).text(r.data.title)
-                        .click(function () {
-                        openFile(null, r.data.href);
-                    });
+                    }).text(r.data.title);
+                    if (r.id) {
+                        $title.click(function () {
+                            openFile(null, r.data.href);
+                        });
+                    }
                     var $typeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
                         .text(Messages.fm_type);
                     var $type = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(Messages.type[parsed.type] || parsed.type);
+                        .text(r.id ? Messages.type[parsed.type] || parsed.type : Messages.fm_folder);
                     var $atimeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(Messages.fm_lastAccess);
+                        .text(r.id ? Messages.fm_lastAccess : "");
                     var $atime = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(new Date(r.data.atime).toLocaleString());
+                        .text(r.id ? new Date(r.data.atime).toLocaleString() : "");
                     var $ctimeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(Messages.fm_creation);
+                        .text(r.id ? Messages.fm_creation : "");
                     var $ctime = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(new Date(r.data.ctime).toLocaleString());
+                        .text(r.id ? new Date(r.data.ctime).toLocaleString() : "");
                     if (manager.isPathIn(path, ['hrefArray'])) {
                         path.pop();
                         path.push(r.data.title);
@@ -2646,23 +2649,33 @@ define([
                     createTitle($path, path, true);
                     var parentPath = path.slice();
                     var $a;
-                    if (parentPath) {
-                        $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
+                    if (r.id) {
+                        if (parentPath) {
+                            $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
+                                e.preventDefault();
+                                if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
+                                else { parentPath.pop(); }
+                                APP.selectedFiles = [r.id];
+                                APP.displayDirectory(parentPath);
+                            });
+                        }
+                    }
+                    else {
+                        $a = $('<a>').text(Messages.fm_OpenFolder || "Open folder").click(function (e) {
                             e.preventDefault();
-                            if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
-                            else { parentPath.pop(); }
-                            APP.selectedFiles = [r.id];
-                            APP.displayDirectory(parentPath);
+                            APP.displayDirectory(path);
                         });
                     }
                     var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'}).append($a);
 
-                    $('<a>').text(Messages.fc_prop).click(function () {
-                        APP.getProperties(r.id, function (e, $prop) {
-                            if (e) { return void logError(e); }
-                            UI.alert($prop[0], undefined, true);
-                        });
-                    }).appendTo($openDir);
+                    if (r.id) {
+                        $('<a>').text(Messages.fc_prop).click(function () {
+                            APP.getProperties(r.id, function (e, $prop) {
+                                if (e) { return void logError(e); }
+                                UI.alert($prop[0], undefined, true);
+                            });
+                        }).appendTo($openDir);
+                    }
 
                     // rows 1-3
                     $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
@@ -3208,7 +3221,7 @@ define([
                 placeholder: Messages.fm_searchPlaceholder
             }).keyup(function (e) {
                 if (search.to) { window.clearTimeout(search.to); }
-                if ([38, 39, 40, 41].indexOf(e.which) !== -1) {
+                if ([37, 38, 39, 40].indexOf(e.which) !== -1) {
                     if (!$input.val()) {
                         $input.blur();
                         $content.focus();

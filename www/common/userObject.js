@@ -514,6 +514,40 @@ define([
                     data: exp.getFileData(l)
                 });
             });
+
+            // find folders
+            var resFolders = [];
+            var findFoldersRec = function (folder, path) {
+                for (var key in folder) {
+                    if (isFolder(folder[key])) {
+                        if (isSharedFolder(folder[key])) {
+//                            var name = getSharedFolderData(folder[key]).title || "";
+//                            if (name.toLowerCase().indexOf(lValue) !== -1) {
+//                                resFolders.push(path.concat([key, ROOT]));
+//                            }
+                            findFoldersRec(folder[key], path.concat([key, ROOT]));
+                        }
+                        else {
+                            if (key.toLowerCase().indexOf(lValue) !== -1) {
+                                resFolders.push({
+                                    id: null,
+                                    paths: [path.concat(key)],
+                                    data: {
+                                        title: key
+                                    }
+                                });
+                            }
+                            findFoldersRec(folder[key], path.concat(key));
+                        }
+                    }
+                }
+            };
+            findFoldersRec(files[ROOT], [ROOT]);
+            resFolders = resFolders.sort(function (a, b) {
+                return a.data.title.toLowerCase() > b.data.title.toLowerCase();
+            });
+            ret = resFolders.concat(ret);
+
             return ret;
         };
         exp.getRecentPads = function () {
