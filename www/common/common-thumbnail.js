@@ -196,8 +196,8 @@ define([
     };
 
     Thumb.initPadThumbnails = function (common, opts) {
-        if (!opts.href || !opts.getContent) {
-            throw new Error("href and getContent are needed for thumbnails");
+        if (!opts.type || !opts.getContent) {
+            throw new Error("type and getContent are needed for thumbnails");
         }
         var oldThumbnailState;
         var mkThumbnail = function () {
