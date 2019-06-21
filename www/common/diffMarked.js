@@ -45,6 +45,7 @@ define([
 
     var toc = [];
     var getTOC = function () {
+        console.log(toc);
         var content = [h('h2', Messages.markdown_toc)];
         toc.forEach(function (obj) {
             // Only include level 2 headings
@@ -84,7 +85,14 @@ define([
         }
     };
 
+    var stripTags = function (text) {
+        var div = document.createElement("div");
+        div.innerHTML = text;
+        return div.innerText;
+    }
+
     renderer.heading = function (text, level) {
+        console.log(text, level);
         var i = 0;
         var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
         var getId = function () {
@@ -99,7 +107,7 @@ define([
         toc.push({
             level: level,
             id: id,
-            title: text
+            title: stripTags(text)
         });
         return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
     };
@@ -122,10 +130,10 @@ define([
         }
         if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
             if (/checked/.test(text)) {
-                text = text.replace(bogusCheckPtn, 
+                text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
             } else if (/disabled/.test(text)) {
-                text = text.replace(bogusCheckPtn, 
+                text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
             }
         }
