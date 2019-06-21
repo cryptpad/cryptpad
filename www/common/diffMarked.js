@@ -89,7 +89,7 @@ define([
         var div = document.createElement("div");
         div.innerHTML = text;
         return div.innerText;
-    }
+    };
 
     renderer.heading = function (text, level) {
         console.log(text, level);
