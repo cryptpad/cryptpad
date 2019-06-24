@@ -729,6 +729,7 @@ define([
             if (type === "pin") {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
+                    if (!data) { return; }
                     // Don't pin pads owned by someone else
                     if (_ownedByOther(Env, data.owners)) { return; }
                     // Don't push duplicates

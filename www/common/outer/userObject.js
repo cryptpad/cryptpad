@@ -626,6 +626,11 @@ define([
                 var toClean = [];
                 for (var id in fd) {
                     id = Number(id);
+                    if (!id && id !== 0) {
+                        debug("Invalid file ID in filesData.", id);
+                        toClean.push(id);
+                        continue;
+                    }
                     var el = fd[id];
 
                     // Clean corrupted data
