@@ -45,7 +45,6 @@ define([
 
     var toc = [];
     var getTOC = function () {
-        console.log(toc);
         var content = [h('h2', Messages.markdown_toc)];
         toc.forEach(function (obj) {
             // Only include level 2 headings
@@ -92,7 +91,6 @@ define([
     };
 
     renderer.heading = function (text, level) {
-        console.log(text, level);
         var i = 0;
         var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
         var getId = function () {
