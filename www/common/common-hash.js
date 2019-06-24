@@ -85,6 +85,11 @@ define([
         return id;
     };
 
+    Hash.getChannelIdFromKey = function (publicKey) {
+        if (!publicKey) { return; }
+        return uint8ArrayToHex(Hash.decodeBase64(publicKey).subarray(0,16));
+    };
+
     Hash.createRandomHash = function (type, password) {
         var cryptor;
         if (type === 'file') {

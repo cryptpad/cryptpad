@@ -17,6 +17,6 @@ define(function () {
         // Sub
         plan: 'CryptPad_plan',
         // Apps
-        criticalApps: ['profile', 'settings', 'debug', 'admin']
+        criticalApps: ['profile', 'settings', 'debug', 'admin', 'support']
     };
 });
