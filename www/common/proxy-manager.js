@@ -707,6 +707,7 @@ define([
             if (type === 'expirable') {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
+                    if (!data) { return; }
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return pads owned by someone else or expired by time
@@ -718,6 +719,7 @@ define([
             if (type === 'owned') {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
+                    if (!data) { return; }
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return owned pads
