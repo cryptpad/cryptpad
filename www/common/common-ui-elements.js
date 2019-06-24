@@ -1737,16 +1737,20 @@ define([
             var pressed = '';
             var to;
             $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
+                var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
                 if (e.which === 38) { // Up
                     if ($value.length) {
+                        $value.mouseleave();
                         var $prev = $value.prev();
+                        $prev.mouseenter();
                         setActive($prev);
                     }
                 }
                 if (e.which === 40) { // Down
                     if ($value.length) {
+                        $value.mouseleave();
                         var $next = $value.next();
+                        $next.mouseenter();
                         setActive($next);
                     }
                 }
@@ -1757,6 +1761,7 @@ define([
                     }
                 }
                 if (e.which === 27) { // Esc
+                    $value.mouseleave();
                     hide();
                 }
             });

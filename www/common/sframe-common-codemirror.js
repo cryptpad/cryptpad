@@ -231,7 +231,7 @@ define([
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
-            
+
             var isHovering = false;
             var $aLanguages = $block.find('a');
             $aLanguages.mouseenter(function () {
@@ -304,7 +304,7 @@ define([
                     setTheme(theme, $block);
                     Common.setAttribute(themeKey, theme);
                 });
-                
+
                 if ($drawer) { $drawer.append($block); }
                 if (cb) { cb(); }
             };
