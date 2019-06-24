@@ -26,7 +26,10 @@ define([
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
             chan.history.forEach(function (msg) {
-                ctx.emit('MESSAGE', msg, [client]);
+                ctx.emit('MESSAGE', {
+                    msg: msg,
+                    validateKey: chan.validateKey
+                }, [client]);
             });
 
             // ==> And push the new tab to the list
@@ -37,7 +40,8 @@ define([
         var onOpen = function (wc) {
 
             ctx.channels[channel] = ctx.channels[channel] || {
-                history: []
+                history: [],
+                validateKey: obj.validateKey
             };
 
             chan = ctx.channels[channel];
@@ -61,7 +65,10 @@ define([
             });
             wc.on('message', function (msg) {
                 chan.history.push(msg);
-                ctx.emit('MESSAGE', msg, chan.clients);
+                ctx.emit('MESSAGE', {
+                    msg: msg,
+                    validateKey: chan.validateKey
+                }, chan.clients);
             });
 
             chan.wc = wc;
@@ -101,6 +108,7 @@ define([
         };
 
         network.on('message', function (msg, sender) {
+            if (!ctx.channels[channel]) { return; }
             var hk = network.historyKeeper;
             if (sender !== hk) { return; }
 
@@ -115,7 +123,12 @@ define([
             // Keep only metadata messages for the current channel
             if (parsed.channel && parsed.channel !== channel) { return; }
             // Ignore the metadata message
-            if (parsed.validateKey && parsed.channel) { return; }
+            if (parsed.validateKey && parsed.channel) {
+                if (!chan.validateKey) {
+                    chan.validateKey = parsed.validateKey;
+                }
+                return;
+            }
             // End of history: emit READY
             if (parsed.state && parsed.state === 1 && parsed.channel) {
                 ctx.emit('READY', '', chan.clients);
@@ -132,7 +145,9 @@ define([
             if (hash === chan.lastKnownHash || hash === chan.lastCpHash) { return; }
 
             chan.lastKnownHash = hash;
-            ctx.emit('MESSAGE', msg, chan.clients);
+            ctx.emit('MESSAGE', {
+                msg: msg,
+            }, chan.clients);
             chan.history.push(msg);
         });
 
@@ -176,7 +191,9 @@ define([
             return void chan.sendMsg(data.isCp, cb);
         }
         chan.sendMsg(data.msg, cb);
-        ctx.emit('MESSAGE', data.msg, chan.clients.filter(function (cl) {
+        ctx.emit('MESSAGE', {
+            msg: data.msg
+        }, chan.clients.filter(function (cl) {
             return cl !== clientId;
         }));
     };

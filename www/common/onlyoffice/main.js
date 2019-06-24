@@ -102,9 +102,12 @@ define([
             Cryptpad.onlyoffice.onEvent.reg(function (obj) {
                 if (obj.ev === 'MESSAGE' && !/^cp\|/.test(obj.data)) {
                     try {
+                        var validateKey = obj.data.validateKey || true;
+                        var skipCheck = validateKey === true;
+                        var msg = obj.data.msg;
                         obj.data = {
-                            msg: JSON.parse(Utils.crypto.decrypt(obj.data, Utils.secret.keys.validateKey)),
-                            hash: obj.data.slice(0,64)
+                            msg: JSON.parse(Utils.crypto.decrypt(msg, validateKey, skipCheck)),
+                            hash: msg.slice(0,64)
                         };
                     } catch (e) {
                         console.error(e);
