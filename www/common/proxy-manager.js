@@ -342,7 +342,7 @@ define([
                         });
 
                         // Remove the elements from the old location (without unpinning)
-                        Env.user.userObject.delete(resolved.main, waitFor());
+                        Env.user.userObject.delete(resolved.main, waitFor()); // FIXME waitFor() is called synchronously
                     }
                 }
             }
@@ -369,7 +369,7 @@ define([
                         if (copy) { return; }
 
                         // Remove the elements from the old location (without unpinning)
-                        uoFrom.delete(paths, waitFor());
+                        uoFrom.delete(paths, waitFor()); // FIXME waitFor() is called synchronously
                     }
                 });
             }
