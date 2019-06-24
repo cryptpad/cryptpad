@@ -2617,28 +2617,10 @@ define([
                     var href = r.data.href;
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
-                    var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
-                        .append(r.id ? getFileIcon(r.id) : $folderIcon.clone());
+                    var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'});
                     var $title = $('<td>', {
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-title'
                     }).text(r.data.title);
-                    if (r.id) {
-                        $title.click(function () {
-                            openFile(null, r.data.href);
-                        });
-                    }
-                    var $typeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(Messages.fm_type);
-                    var $type = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(r.id ? Messages.type[parsed.type] || parsed.type : Messages.fm_folder);
-                    var $atimeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(r.id ? Messages.fm_lastAccess : "");
-                    var $atime = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(r.id ? new Date(r.data.atime).toLocaleString() : "");
-                    var $ctimeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(r.id ? Messages.fm_creation : "");
-                    var $ctime = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(r.id ? new Date(r.data.ctime).toLocaleString() : "");
                     if (manager.isPathIn(path, ['hrefArray'])) {
                         path.pop();
                         path.push(r.data.title);
@@ -2647,33 +2629,46 @@ define([
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-path'
                     });
                     createTitle($path, path, true);
-                    var parentPath = path.slice();
-                    var $a;
+                    var $typeName = $('<td>', {'class': 'cp-app-drive-search-label2'}).text(Messages.fm_type);
+                    var $type = $('<td>', {'class': 'cp-app-drive-search-col2'});
+                    var $atimeName = $('<td>', {'class': 'cp-app-drive-search-label2'});
+                    var $atime = $('<td>', {'class': 'cp-app-drive-search-col2'});
+                    var $ctimeName = $('<td>', {'class': 'cp-app-drive-search-label2'});
+                    var $ctime = $('<td>', {'class': 'cp-app-drive-search-col2'});
+                    var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'});
                     if (r.id) {
+                        $icon.append(getFileIcon(r.id));
+                        $type.text(Messages.type[parsed.type] || parsed.type);
+                        $title.click(function () {
+                            openFile(null, r.data.href);
+                        });
+                        $atimeName.text(Messages.fm_lastAccess);
+                        $atime.text(new Date(r.data.atime).toLocaleString());
+                        $ctimeName.text(Messages.fm_creation);
+                        $ctime.text(new Date(r.data.ctime).toLocaleString());
+                        var parentPath = path.slice();
                         if (parentPath) {
-                            $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
+                            $('<a>').text(Messages.fm_openParent).click(function (e) {
                                 e.preventDefault();
                                 if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                                 else { parentPath.pop(); }
                                 APP.selectedFiles = [r.id];
                                 APP.displayDirectory(parentPath);
-                            });
+                            }).appendTo($openDir);
                         }
-                    }
-                    else {
-                        $a = $('<a>').text(Messages.fm_OpenFolder || "Open folder").click(function (e) {
-                            e.preventDefault();
-                            APP.displayDirectory(path);
-                        });
-                    }
-                    var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'}).append($a);
-
-                    if (r.id) {
                         $('<a>').text(Messages.fc_prop).click(function () {
                             APP.getProperties(r.id, function (e, $prop) {
                                 if (e) { return void logError(e); }
                                 UI.alert($prop[0], undefined, true);
                             });
+                        }).appendTo($openDir);
+                    }
+                    else {
+                        $icon.append($folderIcon.clone());
+                        $type.text(Messages.fm_folder);
+                        $('<a>').text(Messages.fm_OpenFolder || "Open folder").click(function (e) {
+                            e.preventDefault();
+                            APP.displayDirectory(path);
                         }).appendTo($openDir);
                     }
 
