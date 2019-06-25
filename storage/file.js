@@ -27,6 +27,29 @@ var mkArchivePath = function (env, channelId) {
     return Path.join(env.archiveRoot, 'datastore', channelId.slice(0, 2), channelId) + '.ndjson';
 };
 
+var mkMetadataPath = function (env, channelId) {
+    return Path.join(env.root, channelId.slice(0, 2), channelId) + '.metadata.ndjson';
+};
+
+var mkArchiveMetadataPath = function (env, channelId) {
+    return Path.join(env.archiveRoot, 'datastore', channelId.slice(0, 2), channelId) + '.metadata.ndjson';
+};
+
+// pass in the path so we can reuse the same function for archived files
+var channelExists = function (filepath, cb) {
+    Fs.stat(filepath, function (err, stat) {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                // no, the file doesn't exist
+                return void cb(void 0, false);
+            }
+            return void cb(err);
+        }
+        if (!stat.isFile()) { return void cb("E_NOT_FILE"); }
+        return void cb(void 0, true);
+    });
+};
+
 var getMetadataAtPath = function (Env, path, cb) {
     var remainder = '';
     var stream = Fs.createReadStream(path, { encoding: 'utf8' });
@@ -80,6 +103,7 @@ var closeChannel = function (env, channelName, cb) {
 
 var clearChannel = function (env, channelId, cb) {
     var path = mkPath(env, channelId);
+    // FIXME METADATA
     getMetadataAtPath(env, path, function (e, metadata) {
         if (e) { return cb(new Error(e)); }
         if (!metadata) {
@@ -209,31 +233,21 @@ var checkPath = function (path, callback) {
     });
 };
 
+// FIXME METADATA
+// remove associated metadata as well
 var removeChannel = function (env, channelName, cb) {
     var filename = mkPath(env, channelName);
     Fs.unlink(filename, cb);
 };
 
-// pass in the path so we can reuse the same function for archived files
-var channelExists = function (filepath, channelName, cb) {
-    Fs.stat(filepath, function (err, stat) {
-        if (err) {
-            if (err.code === 'ENOENT') {
-                // no, the file doesn't exist
-                return void cb(void 0, false);
-            }
-            return void cb(err);
-        }
-        if (!stat.isFile()) { return void cb("E_NOT_FILE"); }
-        return void cb(void 0, true);
-    });
-};
-
+// FIXME
+// remove associated metadata as well
 var removeArchivedChannel = function (env, channelName, cb) {
     var filename = mkArchivePath(env, channelName);
     Fs.unlink(filename, cb);
 };
 
+// TODO confirm that we're ignoring metadata files
 var listChannels = function (root, handler, cb) {
     // do twenty things at a time
     var sema = Semaphore.create(20);
@@ -364,6 +378,8 @@ var channelBytes = function (env, chanName, cb) {
     });
 };
 
+// FIXME METADATA
+// implement metadata bytes as well?
 /*::
 export type ChainPadServer_ChannelInternal_t = {
     atime: number,
@@ -618,13 +634,13 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 // construct the path
                 var filepath = mkPath(env, channelName);
-                channelExists(filepath, channelName, cb);
+                channelExists(filepath, cb);
             },
             isChannelArchived: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 // construct the path
                 var filepath = mkArchivePath(env, channelName);
-                channelExists(filepath, channelName, cb);
+                channelExists(filepath, cb);
             },
             listArchivedChannels: function (handler, cb) {
                 listChannels(Path.join(env.archiveRoot, 'datastore'), handler, cb);
