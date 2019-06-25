@@ -6,6 +6,7 @@ var Fse = require("fs-extra");
 var Path = require("path");
 var nThen = require("nthen");
 var Semaphore = require("saferphore");
+var Once = require("../lib/once");
 const ToPull = require('stream-to-pull-stream');
 const Pull = require('pull-stream');
 
@@ -331,20 +332,100 @@ var archiveChannel = function (env, channelName, cb) {
 
     // use Fse.move to move it, Fse makes paths to the directory when you use it.
     // https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/move.md
-    Fse.move(currentPath, archivePath, { overwrite: true }, cb);
+    nThen(function (w) {
+        // move the channel log and abort if anything goes wrong
+        Fse.move(currentPath, archivePath, { overwrite: true }, w(function (err) {
+            if (!err) { return; }
+            w.abort();
+            cb(err);
+        }));
+    }).nThen(function (w) {
+        // archive the dedicated metadata channel
+        var metadataPath = mkMetadataPath(env, channelName);
+        var archiveMetadataPath = mkArchiveMetadataPath(env, channelName);
+
+        Fse.move(metadataPath, archiveMetadataPath, { overwrite: true, }, w(function (err) {
+            // there's no metadata to archive, so you're done!
+            if (err && err.code === "ENOENT") {
+                return void cb();
+            }
+
+            // there was an error archiving the metadata
+            if (err) {
+                return void cb("E_METADATA_ARCHIVAL" + (err.code ? "_" +  err.code: ''));
+            }
+
+            // it was archived successfully
+            cb();
+        }));
+    });
 };
 
 var unarchiveChannel = function (env, channelName, cb) {
     // very much like 'archiveChannel' but in the opposite direction
 
     // the file is currently archived
-    var currentPath = mkArchivePath(env, channelName);
-    var unarchivedPath = mkPath(env, channelName);
+    var channelPath = mkArchivePath(env, channelName);
+    var metadataPath = mkMetadataPath(env, channelName);
+
+    // don't call the callback multiple times
+    var CB = Once(cb);
 
     // if a file exists in the unarchived path, you probably don't want to clobber its data
     // so unlike 'archiveChannel' we won't overwrite.
     // Fse.move will call back with EEXIST in such a situation
-    Fse.move(currentPath, unarchivedPath, cb);
+
+    nThen(function (w) {
+        // if either metadata or a file exist in prod, abort
+        channelExists(channelPath, w(function (err, exists) {
+            if (err) {
+                w.abort();
+                return void CB(err);
+            }
+            if (exists) {
+                w.abort();
+                return CB('UNARCHIVE_CHANNEL_CONFLICT');
+            }
+        }));
+        channelExists(metadataPath, w(function (err, exists) {
+            if (err) {
+                w.abort();
+                return void CB(err);
+            }
+            if (exists) {
+                w.abort();
+                return CB("UNARCHIVE_METADATA_CONFLICT");
+            }
+        }));
+    }).nThen(function (w) {
+        // construct archive paths
+        var archiveChannelPath = mkArchivePath(env, channelName);
+        // restore the archived channel
+        Fse.move(archiveChannelPath, channelPath, w(function (err) {
+            if (err) {
+                w.abort();
+                return void CB(err);
+            }
+        }));
+    }).nThen(function (w) {
+        var archiveMetadataPath = mkArchiveMetadataPath(env, channelName);
+        // TODO validate that it's ok to move metadata non-atomically
+
+        // restore the metadata log
+        Fse.move(archiveMetadataPath, metadataPath, w(function (err) {
+            // if there's nothing to move, you're done.
+            if (err && err.code === 'ENOENT') {
+                return CB();
+            }
+            // call back with an error if something goes wrong
+            if (err) {
+                w.abort();
+                return void CB("E_METADATA_RESTORATION" + (err.code ? "_" + err.code: ""));
+            }
+            // otherwise it was moved successfully
+            CB();
+        }));
+    });
 };
 
 var flushUnusedChannels = function (env, cb, frame) {
