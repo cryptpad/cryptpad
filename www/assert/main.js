@@ -11,10 +11,9 @@ define([
     '/common/flat-dom.js',
     '/common/media-tag.js',
     '/common/outer/login-block.js',
-    '/common/common-util.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block, Util) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
