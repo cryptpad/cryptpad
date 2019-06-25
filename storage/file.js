@@ -279,7 +279,7 @@ var listChannels = function (root, handler, cb) {
 
                     list.forEach(function (item) {
                         // ignore things that don't match the naming pattern
-                        if (/^\./.test(item) || !/[0-9a-fA-F]{32,}\.ndjson$/.test(item)) { return; }
+                        if (/^\./.test(item) || !/[0-9a-fA-F]{32}\.ndjson$/.test(item)) { return; }
                         var filepath = Path.join(nestedDirPath, item);
                         var channel = filepath.replace(/\.ndjson$/, '').replace(/.*\//, '');
                         if ([32, 34].indexOf(channel.length) === -1) { return; }
