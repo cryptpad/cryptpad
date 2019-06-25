@@ -470,9 +470,8 @@ const messageBin = (env, chanName, msgBin, cb) => {
         chan.writeStream.write(msgBin, function () {
             /*::if (!chan) { throw new Error("Flow unreachable"); }*/
             chan.onError.splice(chan.onError.indexOf(complete), 1);
+            chan.atime = +new Date();
             if (!cb) { return; }
-            //chan.messages.push(msg);
-            chan.atime = +new Date(); // FIXME seems like odd behaviour that not passing a callback would result in not updating atime...
             complete();
         });
     });
