@@ -581,6 +581,15 @@ module.exports.create = function (cfg) {
                 if (msg[3] === 'CLEAR_OWNED_CHANNEL') {
                     onChannelCleared(ctx, msg[4]);
                 }
+
+                // FIXME METADATA
+                /*
+                if (msg[3] === 'SET_METADATA') { // or whatever we call the RPC????
+
+                }
+
+                */
+
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0]].concat(output))]);
             });
             } catch (e) {

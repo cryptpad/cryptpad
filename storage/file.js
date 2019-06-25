@@ -197,7 +197,6 @@ const mkOffsetCounter = () => {
 
 const readMessagesBin = (env, id, start, msgHandler, cb) => {
     const stream = Fs.createReadStream(mkPath(env, id), { start: start });
-    // TODO get the channel and add the atime
     let keepReading = true;
     Pull(
         ToPull.read(stream),
@@ -213,7 +212,6 @@ const readMessagesBin = (env, id, start, msgHandler, cb) => {
 };
 
 var checkPath = function (path, callback) {
-    // TODO check if we actually need to use stat at all
     Fs.stat(path, function (err) {
         if (!err) {
             callback(undefined, true);
@@ -314,6 +312,7 @@ var listChannels = function (root, handler, cb) {
 // move a channel's log file from its current location
 // to an equivalent location in the cold storage directory
 var archiveChannel = function (env, channelName, cb) {
+    // TODO close channels before archiving them?
     if (!env.retainData) {
         return void cb("ARCHIVES_DISABLED");
     }
