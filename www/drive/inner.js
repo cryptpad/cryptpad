@@ -305,10 +305,10 @@ define([
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
                 h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
-                h('li', h('a.cp-app-drive-context-open.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faFolderOpen,
-                }, Messages.fc_open)),
+//                h('li', h('a.cp-app-drive-context-open.dropdown-item', {
+//                    'tabindex': '-1',
+//                    'data-icon': faFolderOpen,
+//                }, Messages.fc_open)),
                 h('li', h('a.cp-app-drive-context-openro.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
@@ -323,10 +323,22 @@ define([
                     'data-icon': "collapseAll",
                 }, Messages.fc_collapseAll)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': faColor,
-                }, Messages.fc_color)),
+//                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
+//                    'tabindex': '-1',
+//                    'data-icon': faColor,
+//                }, Messages.fc_color)),
+                h('li.dropdown-submenu', [
+                    h('a.cp-app-drive-context-color.dropdown-item.dropdown-toggle', {
+                        'tabindex': '-1',
+                        'data-icon': faColor,
+                    }, Messages.fc_color),
+                    h("ul.dropdown-menu", [
+                        h('li', h('a.cp-app-drive-context-open.dropdown-item', {
+                            'tabindex': '-1',
+                            'data-icon': faFolderOpen,
+                        }, Messages.fc_open))
+                    ])
+                ]),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
@@ -422,6 +434,17 @@ define([
                 $icon.text($(el).text());
             }
             $(el).prepend($icon);
+        });
+        $(menu).find(".dropdown-submenu").each(function (i, el) {
+            var $el = $(el);
+            var $sub = $el.find(".dropdown-menu");
+            $el.hover(function () {
+                setTimeout(function () { // wait for dom to update
+                    $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                });
+            }, function () {
+                $sub.removeClass("left");
+            });
         });
         return $(menu);
     };

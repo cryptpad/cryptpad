@@ -19,6 +19,19 @@
                 }
             }
         }
+        .dropdown-submenu {
+            position: relative;
+            & .dropdown-menu {
+                top: -0.6rem;
+                left: 100%;
+                &.left {
+                    left: -10rem;
+                }
+            }
+            &:hover .dropdown-menu {
+                display: block;
+            }
+        }
         .cp-app-drive-context-noAction {
             font-style: italic;
             color: #aaa;
