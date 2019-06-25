@@ -1722,7 +1722,7 @@ RPC.create = function (
                     respond(e, [null, size, null]);
                 });
             case 'GET_METADATA':
-                return void getMetadata(Env, msg[1], function (e, data) {
+                return void getMetadata(Env, msg[1], function (e, data) { // FIXME METADATA
                     WARN(e, msg[1]);
                     respond(e, [null, data, null]);
                 });

@@ -61,13 +61,13 @@ module.exports.create = function (cfg) {
         const cpIndex = [];
         let messageBuf = [];
         let validateKey;
-        let metadata;
+        let metadata; // FIXME METADATA
         let i = 0;
         store.readMessagesBin(channelName, 0, (msgObj, rmcb) => {
             let msg;
             i++;
             if (!validateKey && msgObj.buff.indexOf('validateKey') > -1) {
-                metadata = msg = tryParse(msgObj.buff.toString('utf8'));
+                metadata = msg = tryParse(msgObj.buff.toString('utf8')); // FIXME METADATA
                 if (typeof msg === "undefined") { return rmcb(); }
                 if (msg.validateKey) {
                     validateKey = historyKeeperKeys[channelName] = msg;
@@ -105,7 +105,7 @@ module.exports.create = function (cfg) {
                 cpIndex: sliceCpIndex(cpIndex, i),
                 offsetByHash: offsetByHash,
                 size: size,
-                metadata: metadata,
+                metadata: metadata, // FIXME METADATA
                 line: i
             });
         });
@@ -438,16 +438,16 @@ module.exports.create = function (cfg) {
                         so, let's just fall through...
                     */
                     if (err) { return w(); }
-                    if (!index || !index.metadata) { return void w(); }
+                    if (!index || !index.metadata) { return void w(); } // FIXME METADATA
                     // Store the metadata if we don't have it in memory
                     if (!historyKeeperKeys[channelName]) {
-                        historyKeeperKeys[channelName] = index.metadata;
+                        historyKeeperKeys[channelName] = index.metadata; // FIXME METADATA
                     }
                     // And then check if the channel is expired. If it is, send the error and abort
                     if (checkExpired(ctx, channelName)) { return void waitFor.abort(); }
                     // Send the metadata to the user
                     if (!lastKnownHash && index.cpIndex.length > 1) {
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w);
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w); // FIXME METADATA
                         return;
                     }
                     w();
@@ -494,8 +494,8 @@ module.exports.create = function (cfg) {
                             key.expire = expire;
                         }
                         historyKeeperKeys[channelName] = key;
-                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined);
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]);
+                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined); // FIXME METADATA
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]); // FIXME METADATA
                     }
 
                     // End of history message:

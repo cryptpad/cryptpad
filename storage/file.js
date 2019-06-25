@@ -60,6 +60,7 @@ var getMetadataAtPath = function (Env, path, cb) {
     stream.on('error', function (e) { complete(e); });
 };
 
+// FIXME METADATA
 var getChannelMetadata = function (Env, channelId, cb) {
     var path = mkPath(Env, channelId);
     getMetadataAtPath(Env, path, cb);
@@ -255,6 +256,9 @@ var listChannels = function (root, handler, cb) {
         var wait = w();
         dirList.forEach(function (dir) {
             sema.take(function (give) {
+    // TODO modify the asynchronous bits here to keep less in memory at any given time
+    // list a directory -> process its contents with semaphores until less than N jobs are running
+    // then list the next directory...
                 var nestedDirPath = Path.join(root, dir);
                 Fs.readdir(nestedDirPath, w(give(function (err, list) {
                     if (err) { return void handler(err); } // Is this correct?
@@ -600,7 +604,7 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 channelBytes(env, channelName, cb);
             },
-            getChannelMetadata: function (channelName, cb) {
+            getChannelMetadata: function (channelName, cb) { // FIXME METADATA
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 getChannelMetadata(env, channelName, cb);
             },
