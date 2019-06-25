@@ -983,7 +983,7 @@ MessengerUI, Messages) {
             $button.addClass('fa-bell');
         };
 
-        Common.mailbox.subscribe({
+        Common.mailbox.subscribe(['notifications'], {
             onMessage: function (data, el) {
                 if (el) {
                     div.appendChild(el);

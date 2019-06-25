@@ -90,8 +90,11 @@ define([
         var pushMessage = function (data, handler) {
             var todo = function (f) {
                 try {
-                    var el = createElement(data);
-                    Notifications.add(Common, data, el);
+                    var el;
+                    if (data.type === 'notifications') {
+                        el = createElement(data);
+                        Notifications.add(Common, data, el);
+                    }
                     f(data, el);
                 } catch (e) {
                     console.error(e);
@@ -108,7 +111,9 @@ define([
             onViewedHandlers.forEach(function (f) {
                 try {
                     f(data);
-                    Notifications.remove(Common, data);
+                    if (data.type === 'notifications') {
+                        Notifications.remove(Common, data);
+                    }
                 } catch (e) {
                     console.error(e);
                 }
@@ -139,18 +144,25 @@ define([
         var subscribed = false;
 
         // Get all existing notifications + the new ones when they come
-        mailbox.subscribe = function (cfg) {
+        mailbox.subscribe = function (types, cfg) {
             if (!subscribed) {
                 execCommand('SUBSCRIBE', null, function () {});
                 subscribed = true;
             }
             if (typeof(cfg.onViewed) === "function") {
-                onViewedHandlers.push(cfg.onViewed);
+                onViewedHandlers.push(function (data) {
+                    if (types.indexOf(data.type) === -1) { return; }
+                    cfg.onViewed(data);
+                });
             }
             if (typeof(cfg.onMessage) === "function") {
-                onMessageHandlers.push(cfg.onMessage);
+                onMessageHandlers.push(function (data, el) {
+                    if (types.indexOf(data.type) === -1) { return; }
+                    cfg.onMessage(data, el);
+                });
             }
             Object.keys(history).forEach(function (type) {
+                if (types.indexOf(type) === -1) { return; }
                 history[type].forEach(function (data) {
                     pushMessage({
                         type: type,

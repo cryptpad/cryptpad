@@ -10,6 +10,7 @@ define([
 
     var TYPES = [
         'notifications',
+        'support'
     ];
     var BLOCKING_TYPES = [
     ];
@@ -22,6 +23,16 @@ define([
                 viewed: []
             };
             ctx.pinPads([mailboxes.notifications.channel], function (res) {
+                if (res.error) { console.error(res); }
+            });
+        }
+        if (!mailboxes['support']) {
+            mailboxes.support = {
+                channel: Hash.createChannelId(),
+                lastKnownHash: '',
+                viewed: []
+            };
+            ctx.pinPads([mailboxes.support.channel], function (res) {
                 if (res.error) { console.error(res); }
             });
         }
@@ -76,15 +87,30 @@ proxy.mailboxes = {
         var crypto = Crypto.Mailbox.createEncryptor(keys);
         var network = ctx.store.network;
 
-        var ciphertext = crypto.encrypt(JSON.stringify({
+        var text = JSON.stringify({
             type: type,
             content: msg
-        }), user.curvePublic);
+        });
+        var ciphertext = crypto.encrypt(text, user.curvePublic);
 
         network.join(user.channel).then(function (wc) {
             wc.bcast(ciphertext).then(function () {
                 cb();
                 wc.leave();
+
+                // If we've just sent a message to one of our mailboxes, we have to trigger the handler manually
+                // (the server won't send back our message to us)
+                var box;
+                if (Object.keys(ctx.boxes).some(function (t) {
+                    var _box = ctx.boxes[t];
+                    if (_box.channel === user.channel) {
+                        box = _box;
+                        return true;
+                    }
+                })) {
+                    var hash = ciphertext.slice(0, 64);
+                    box.onMessage(text, null, null, null, hash, user.curvePublic);
+                }
             });
         }, function (err) {
             cb({error: err});
@@ -157,6 +183,7 @@ proxy.mailboxes = {
 
     var openChannel = function (ctx, type, m, onReady) {
         var box = ctx.boxes[type] = {
+            channel: m.channel,
             queue: [], // Store the messages to send when the channel is ready
             history: [], // All the hashes loaded from the server in corretc order
             content: {}, // Content of the messages that should be displayed
@@ -213,7 +240,7 @@ proxy.mailboxes = {
             });
             box.queue = [];
         };
-        cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
+        box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
             if (hash === m.lastKnownHash) { return; }
             try {
                 msg = JSON.parse(msg);
