@@ -1,0 +1,16 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+
+&.cp-app-notifications {
+
+    .framework_min_main(
+        @bg-color: @colortheme_notifications-bg,
+        @warn-color: @colortheme_notifications-warn,
+        @color: @colortheme_notifications-color
+    );
+    .sidebar-layout_main();
+
+    display: flex;
+    flex-flow: column;
+}
+
