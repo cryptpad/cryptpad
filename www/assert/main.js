@@ -11,9 +11,10 @@ define([
     '/common/flat-dom.js',
     '/common/media-tag.js',
     '/common/outer/login-block.js',
+    '/common/common-util.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block, Util) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
@@ -370,6 +371,20 @@ define([
         // TODO
         return cb(true);
     }, "version 2 hash failed to parse correctly");
+
+    assert(function (cb) {
+        var x;
+        var set_x = function (v) {
+            x = v;
+        };
+
+        Util.mkAsync(set_x)(7);
+        set_x(5);
+
+        Util.mkAsync(function (expected) {
+            cb(x === expected);
+        })(7);
+    }, "test mkAsync");
 
     assert(function (cb) {
         Wire.create({
