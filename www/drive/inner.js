@@ -1361,6 +1361,7 @@ define([
                 });
                 cb();
             };
+            if (paths.some(function (p) { return manager.comparePath(newPath, p) })) { return void cb(); }
             manager.move(paths, newPath, newCb, copy);
         };
         // Delete paths from the drive and/or shared folders (without moving them to the trash)
