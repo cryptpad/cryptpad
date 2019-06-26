@@ -37,7 +37,10 @@ define([
         ],
         'friends': [
             'cp-notifications-friend-requests',
-        ]
+        ],
+        'pads': [
+            'cp-notifications-shared-app',
+        ],
     };
 
     var create = {};
@@ -60,8 +63,27 @@ define([
     create['all'] = function () {
         var key = 'all';
         var $div = makeBlock(key);
-        var notif = h("div");
-        $div.append(notif);
+        var notifsTitlebar = h('div.cp-app-notifications-panel-titlebar', [
+            h("span.cp-app-notifications-panel-title", (Messages.notifications || "Notifications") + " - " + key),
+            h("div.cp-app-notifications-panel-titlebar-buttons")
+        ]);
+        var notifsList = h("div.cp-app-notifications-panel-list");
+        var notifsPanel = h("div.cp-app-notifications-panel", [
+            notifsTitlebar,
+            notifsList
+        ]);
+        $(notifsPanel).append(notifsList);
+        $div.append(notifsPanel);
+        common.mailbox.subscribe(["notifications"], {
+            onMessage: function (data, el) {
+                console.log("data : ", data);
+                if (el) {
+                    $(notifsList).prepend(el);
+                }
+            },
+            onViewed: function () {}
+        });
+        // common.mailbox.dismiss(data)
         return $div;
     };
 
@@ -84,8 +106,9 @@ define([
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
-            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
-            if (key === 'stats') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars'})); }
+            if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user-plus'})); }
+            if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-pad'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
