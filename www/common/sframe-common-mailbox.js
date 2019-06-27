@@ -49,28 +49,28 @@ define([
         };
         var createElement = function (data) {
             var notif;
-            var dismissIcon = h('span.fa.fa-times');
-            var dismiss = h('div.cp-notification-dismiss', {
-                title: Messages.notifications_dismiss
-            }, dismissIcon);
-            dismiss.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                mailbox.dismiss(data, function (err) {
-                    if (err) { return void console.error(err); }
-                    /*if (notif && notif.parentNode) {
-                        try {
-                            notif.parentNode.removeChild(notif);
-                        } catch (e) { console.error(e); }
-                    }*/
-                });
-            });
             notif = h('div.cp-notification', {
                 'data-hash': data.content.hash
-            }, [
-                h('div.cp-notification-content', h('p', formatData(data))),
-                dismiss
-            ]);
+            }, [h('div.cp-notification-content', h('p', formatData(data)))]);
+
+            if (data.content.getFormatText) {
+                $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+            }
+
+            if (data.content.isClickable) {
+                $(notif).find('.cp-notification-content').addClass("cp-clickable")
+                    .click(data.content.handler);
+            }
+            if (data.content.isDismissible) {
+                var dismissIcon = h('span.fa.fa-times');
+                var dismiss = h('div.cp-notification-dismiss', {
+                    title: Messages.notifications_dismiss
+                }, dismissIcon);
+                $(dismiss).css('display', 'flex'); // XXX
+                $(dismiss).addClass("cp-clickable")
+                    .click(data.content.dismissHandler);
+                $(notif).append(dismiss);
+            }
             return notif;
         };
 
@@ -92,8 +92,9 @@ define([
                 try {
                     var el;
                     if (data.type === 'notifications') {
+                        Notifications.add(Common, data);
+                        console.log(data);
                         el = createElement(data);
-                        Notifications.add(Common, data, el);
                     }
                     f(data, el);
                 } catch (e) {
@@ -123,7 +124,6 @@ define([
 
         var onMessage = function (data) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
-            console.log(data.content);
             pushMessage(data);
             if (!history[data.type]) { history[data.type] = []; }
             history[data.type].push(data.content);
