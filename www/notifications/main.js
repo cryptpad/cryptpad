@@ -36,8 +36,6 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var addRpc = function (sframeChan, Cryptpad/*, Utils*/) {
-        };
         var category;
         if (window.location.hash) {
             category = window.location.hash.slice(1);
@@ -48,7 +46,6 @@ define([
         };
         SFCommonO.start({
             noRealtime: true,
-            addRpc: addRpc,
             addData: addData
         });
     });

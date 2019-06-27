@@ -8,7 +8,6 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-interface.js',
-    '/common/common-util.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -22,8 +21,7 @@ define([
     SFCommon,
     h,
     Messages,
-    UI,
-    Util
+    UI
     )
 {
     var APP = {};
