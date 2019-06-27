@@ -77,6 +77,11 @@ define([
                 if (el) {
                     // if the type of notification correspond
                     if (filterTypes.length === 0 || filterTypes.indexOf(data.content.msg.type) !== -1) {
+                        var dismissHandler = data.content.dismissHandler;
+                        data.content.dismissHandler = function () {
+                            $(el).addClass("dismissed");
+                            dismissHandler();
+                        };
                         notifsData.push(data);
                         $(notifsList).prepend(el);
                     }
