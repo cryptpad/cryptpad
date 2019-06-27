@@ -172,6 +172,38 @@ define([
             });
         };
 
+        var historyState = false;
+        var onHistory = function () {};
+        mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
+            if (historyState) { return void cb("ALREADY_CALLED"); }
+            historyState = true;
+            var txid = Util.uid();
+            execCommand('LOAD_HISTORY', {
+                type: type,
+                count: count,
+                txid: txid,
+                lastKnownHash: lastKnownHash
+            }, function (err, obj) {
+                if (obj && obj.error) { console.error(obj.error); }
+            });
+            var messages = [];
+            onHistory = function (data) {
+                if (data.txid !== txid) { return; }
+                if (data.complete) {
+                    onHistory = function () {};
+                    cb(null, messages);
+                    historyState = false;
+                    return;
+                }
+                messages.push({
+                    type: type,
+                    content: {
+                        msg: data.message,
+                        hash: data.hash
+                    }
+                });
+            };
+        };
 
         // CHANNEL WITH WORKER
 
@@ -179,6 +211,9 @@ define([
             // obj = { ev: 'type', data: obj }
             var ev = obj.ev;
             var data = obj.data;
+            if (ev === 'HISTORY') {
+                return void onHistory(data);
+            }
             if (ev === 'MESSAGE') {
                 return void onMessage(data);
             }
