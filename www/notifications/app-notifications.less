@@ -13,6 +13,12 @@
     display: flex;
     flex-flow: column;
 
+    .cp-clickable {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+    }
 
     .cp-app-notifications-panel {
         display: flex;
@@ -22,10 +28,37 @@
         width: 100%;
 
         .cp-app-notifications-panel-titlebar {
-            padding: 1rem 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
             border-radius: 5px 5px 0 0;
             background-color: #777;
             color: white;
+
+            .cp-app-notifications-panel-title {
+                flex-grow: 1;
+                margin: 1rem 1rem;
+            }
+
+            .cp-app-notifications-panel-titlebar-buttons {
+                align-self: stretch;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: stretch;
+
+                .cp-app-notifications-dismissall {
+                    align-self: stretch;
+                    flex-shrink: 0;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 3rem;
+                }
+            }
         }
 
         .cp-app-notifications-panel-list {
@@ -50,10 +83,6 @@
 
                 .cp-notification-content {
                     flex-grow: 1;
-                    cursor: pointer;
-                    &:hover {
-                        background-color: #eee;
-                    }
                     p {
                         margin: 1rem 1rem;
                     }
@@ -67,12 +96,7 @@
                     justify-content: center;
                     align-items: center;
                     border-left: 1px solid #ccc;
-                    background-color: white;
-                    cursor: pointer;
                     width: 3rem;
-                    &:hover {
-                        background-color: rgba(0, 0, 0, 0.1);
-                    }
                 }
             }
         }

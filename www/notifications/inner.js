@@ -63,9 +63,11 @@ define([
     create['all'] = function () {
         var key = 'all';
         var $div = makeBlock(key);
+        var dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.dismissAll || "Dismiss All" }, h("span.fa.fa-trash"));
+        var titleButtons = h("div.cp-app-notifications-panel-titlebar-buttons", dismissAll);
         var notifsTitlebar = h('div.cp-app-notifications-panel-titlebar', [
             h("span.cp-app-notifications-panel-title", (Messages.notifications || "Notifications") + " - " + key),
-            h("div.cp-app-notifications-panel-titlebar-buttons")
+            titleButtons
         ]);
         var notifsList = h("div.cp-app-notifications-panel-list");
         var notifsPanel = h("div.cp-app-notifications-panel", [
@@ -107,7 +109,7 @@ define([
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars'})); }
-            if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user-plus'})); }
+            if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user'})); }
             if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-pad'})); }
 
             if (key === active) {
