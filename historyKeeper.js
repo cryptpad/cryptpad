@@ -400,7 +400,7 @@ module.exports.create = function (cfg) {
             var lastKnownHash = parsed[3];
             var owners;
             var expire;
-            if (parsed[2] && typeof parsed[2] === "object") {
+            if (parsed[2] && typeof parsed[2] === "object") { // FIXME METADATA RECEIVE
                 validateKey = parsed[2].validateKey;
                 lastKnownHash = parsed[2].lastKnownHash;
                 owners = parsed[2].owners;
@@ -438,16 +438,16 @@ module.exports.create = function (cfg) {
                         so, let's just fall through...
                     */
                     if (err) { return w(); }
-                    if (!index || !index.metadata) { return void w(); } // FIXME METADATA
+                    if (!index || !index.metadata) { return void w(); } // FIXME METADATA READ
                     // Store the metadata if we don't have it in memory
                     if (!historyKeeperKeys[channelName]) {
-                        historyKeeperKeys[channelName] = index.metadata; // FIXME METADATA
+                        historyKeeperKeys[channelName] = index.metadata; // FIXME METADATA STORE
                     }
                     // And then check if the channel is expired. If it is, send the error and abort
                     if (checkExpired(ctx, channelName)) { return void waitFor.abort(); }
                     // Send the metadata to the user
                     if (!lastKnownHash && index.cpIndex.length > 1) {
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w); // FIXME METADATA
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w); // FIXME METADATA SEND
                         return;
                     }
                     w();
@@ -480,6 +480,9 @@ module.exports.create = function (cfg) {
 
                     // If this is a new channel, we need to store the metadata as
                     // the first message in the file
+                    // FIXME METADATA COMMENT
+                    // in fact it should be written to a new metadata log
+                    // XXX read this kind of metadata before writing it
                     const chan = ctx.channels[channelName];
                     if (msgCount === 0 && !historyKeeperKeys[channelName] && chan && chan.indexOf(user) > -1) {
                         var key = {};
@@ -494,8 +497,8 @@ module.exports.create = function (cfg) {
                             key.expire = expire;
                         }
                         historyKeeperKeys[channelName] = key;
-                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined); // FIXME METADATA
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]); // FIXME METADATA
+                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined); // FIXME METADATA WRITE
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]); // FIXME METADATA SEND
                     }
 
                     // End of history message:
@@ -582,7 +585,7 @@ module.exports.create = function (cfg) {
                     onChannelCleared(ctx, msg[4]);
                 }
 
-                // FIXME METADATA
+                // FIXME METADATA CHANGE
                 /*
                 if (msg[3] === 'SET_METADATA') { // or whatever we call the RPC????
 
