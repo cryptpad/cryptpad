@@ -620,6 +620,9 @@ define([
     common.adminRpc = function (data, cb) {
         postMessage("ADMIN_RPC", data, cb);
     };
+    common.addAdminMailbox = function (data, cb) {
+        postMessage("ADMIN_ADD_MAILBOX", data, cb);
+    };
 
     // Network
     common.onNetworkDisconnect = Util.mkEvent();

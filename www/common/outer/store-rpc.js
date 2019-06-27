@@ -84,6 +84,7 @@ define([
             DELETE_ACCOUNT: Store.deleteAccount,
             // Admin
             ADMIN_RPC: Store.adminRpc,
+            ADMIN_ADD_MAILBOX: Store.addAdminMailbox,
         };
 
         Rpc.query = function (cmd, data, cb) {

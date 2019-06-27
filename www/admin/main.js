@@ -38,6 +38,9 @@ define([
     }).nThen(function (/*waitFor*/) {
         var addRpc = function (sframeChan, Cryptpad/*, Utils*/) {
             // Adding a new avatar from the profile: pin it and store it in the object
+            sframeChan.on('Q_ADMIN_MAILBOX', function (data, cb) {
+                Cryptpad.addAdminMailbox(data, cb);
+            });
             sframeChan.on('Q_ADMIN_RPC', function (data, cb) {
                 Cryptpad.adminRpc(data, cb);
             });

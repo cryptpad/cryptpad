@@ -10,6 +10,7 @@ define([
 
     var TYPES = [
         'notifications',
+        'supportadmin',
         'support'
     ];
     var BLOCKING_TYPES = [
@@ -96,10 +97,10 @@ proxy.mailboxes = {
         network.join(user.channel).then(function (wc) {
             wc.bcast(ciphertext).then(function () {
                 cb();
-                wc.leave();
 
                 // If we've just sent a message to one of our mailboxes, we have to trigger the handler manually
                 // (the server won't send back our message to us)
+                // If it isn't one of our mailboxes, we can close it now
                 var box;
                 if (Object.keys(ctx.boxes).some(function (t) {
                     var _box = ctx.boxes[t];
@@ -110,6 +111,8 @@ proxy.mailboxes = {
                 })) {
                     var hash = ciphertext.slice(0, 64);
                     box.onMessage(text, null, null, null, hash, user.curvePublic);
+                } else {
+                    wc.leave();
                 }
             });
         }, function (err) {
@@ -200,7 +203,7 @@ proxy.mailboxes = {
         if (!Crypto.Mailbox) {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
         }
-        var keys = getMyKeys(ctx);
+        var keys = m.keys || getMyKeys(ctx);
         if (!keys) { return void console.error("missing asymmetric encryption keys"); }
         var crypto = Crypto.Mailbox.createEncryptor(keys);
         var cfg = {
@@ -364,6 +367,7 @@ proxy.mailboxes = {
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
             var m = mailboxes[key];
+console.log(key, m);
 
             if (BLOCKING_TYPES.indexOf(key) === -1) {
                 openChannel(ctx, key, m, function () {
@@ -384,6 +388,11 @@ proxy.mailboxes = {
                 content: content,
                 sender: store.proxy.curvePublic
             });
+        };
+
+        mailbox.open = function (key, m, cb) {
+            if (TYPES.indexOf(key) === -1) { return; }
+            openChannel(ctx, key, m, cb);
         };
 
         mailbox.dismiss = function (data, cb) {

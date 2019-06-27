@@ -1,12 +1,13 @@
+/* jshint esversion: 6, node: true */
+
 const Nacl = require('tweetnacl');
-const Crypto = require('crypto');
 
 const keyPair = Nacl.box.keyPair();
 console.log(keyPair);
 
 console.log("You've just generated a new key pair for your support mailbox.");
 
-console.log("The public key should first be added to your config.js file ('supportMailboxPublicKey'), then save and restart the server.")
+console.log("The public key should first be added to your config.js file ('supportMailboxPublicKey'), then save and restart the server.");
 console.log("Once restarted, administrators (specified with 'adminKeys' in config.js too) will be able to add the private key into their account. This can be done using the administration panel.");
 console.log("You will have to send the private key to each administrator manually so that they can add it to their account.");
 console.log();
