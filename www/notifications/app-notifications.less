@@ -77,8 +77,17 @@
                 justify-content: flex-start;
                 align-items: center;
                 background-color: #ffffff;
-                &:not(:last-child) {
-                    border-bottom: 1px solid #ccc;
+                &.no-notifications {
+                    display: none;
+                    padding: 1rem 1rem;
+                    font-style: italic;
+                    color: #777;
+                    &:only-child {
+                        display: block;
+                    }
+                }
+                &:not(:first-child) {
+                    border-top: 1px solid #ccc;
                 }
 
                 .cp-notification-content {

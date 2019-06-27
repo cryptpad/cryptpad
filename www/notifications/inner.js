@@ -65,7 +65,9 @@ define([
                     dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
                 ]),
             ]),
-            notifsList = h("div.cp-app-notifications-panel-list"),
+            notifsList = h("div.cp-app-notifications-panel-list", [
+                h("div.cp-notification.no-notifications", Messages.notifications_empty),
+            ]),
         ]);
         $div.append(notifsPanel);
 
