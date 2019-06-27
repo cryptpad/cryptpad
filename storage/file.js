@@ -155,6 +155,28 @@ var getChannelMetadata = function (Env, channelId, cb) {
     getMetadataAtPath(Env, path, cb);
 };
 
+// low level method for getting just the dedicated metadata channel
+var getDedicatedMetadata = function (env, channelId, handler, cb) {
+    var metadataPath = mkMetadataPath(env, channelId);
+    readMessages(metadataPath, function (line) {
+        if (!line) { return; }
+        try {
+            var parsed = JSON.parse(line);
+            handler(null, parsed);
+        } catch (e) {
+            handler(e, line);
+        }
+    }, function (err) {
+        if (err) {
+            // ENOENT => there is no metadata log
+            if (err.code === 'ENOENT') { return void cb(); }
+            // otherwise stream errors?
+            cb(err);
+        }
+        cb();
+    });
+};
+
 var readMetadata = function (env, channelId, handler, cb) {
 /*
 
@@ -172,9 +194,6 @@ How to proceed
 
 */
 
-    var CB = Once(cb);
-
-    var index = 0;
     nThen(function (w) {
         // returns the first line of a channel, parsed...
         getChannelMetadata(env, channelId, w(function (err, data) {
@@ -182,33 +201,22 @@ How to proceed
                 // 'INVALID_METADATA' if it can't parse
                 // stream errors if anything goes wrong at a lower level
                     // ENOENT (no channel here)
-                return void handler(err, undefined, index++);
+                return void handler(err);
             }
             // disregard anything that isn't a map
             if (!data || typeof(data) !== 'object' || Array.isArray(data)) { return; }
 
             // otherwise it's good.
-            handler(null, data, index++);
+            handler(null, data);
         }));
-    }).nThen(function (w) {
-        var metadataPath = mkMetadataPath(env, channelId);
-        readMessages(metadataPath, function (line) {
-            if (!line) { return; }
-            try {
-                var parsed = JSON.parse(line);
-                handler(null, parsed, index++);
-            } catch (e) {
-                handler(e, line, index++);
-            }
-        }, w(function (err) {
+    }).nThen(function () {
+        getDedicatedMetadata(env, channelId, handler, function (err) {
             if (err) {
-                // ENOENT => there is no metadata log
-                if (err.code === 'ENOENT') { return void CB(); }
-                // otherwise stream errors?
-                CB(err);
+                // stream errors?
+                return void cb(err);
             }
-            CB();
-        }));
+            cb();
+        });
     });
 };
 
@@ -841,6 +849,12 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 getChannelMetadata(env, channelName, cb);
             },
+            // iterate over lines of metadata changes from a dedicated log
+            readDedicatedMetadata: function (channelName, handler, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                getDedicatedMetadata(env, channelName, handler, cb);
+            },
+
             // iterate over multiple lines of metadata changes
             readChannelMetadata: function (channelName, handler, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }

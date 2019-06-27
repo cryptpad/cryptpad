@@ -313,22 +313,33 @@ var getFileSize = function (Env, channel, cb) {
     });
 };
 
+var Meta = require("./lib/metadata");
+
 var getMetadata = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
 
-    if (channel.length === 32) {
-        if (typeof(Env.msgStore.getChannelMetadata) !== 'function') {
-            return cb('GET_CHANNEL_METADATA_UNSUPPORTED');
-        }
+    if (channel.length !== 32) { return cb("INVALID_CHAN"); }
 
-        return void Env.msgStore.getChannelMetadata(channel, function (e, data) {
-            if (e) {
-                if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
-                return void cb(e.code);
-            }
-            cb(void 0, data);
-        });
-    }
+    var ref = {};
+    var lineHandler = Meta.createLineHandler(ref, Log.error);
+
+    return void Env.msgStore.readChannelMetadata(channel, lineHandler, function (err) {
+        if (err) {
+            // stream errors?
+            return void cb(err);
+        }
+        cb(void 0, ref.meta);
+    });
+
+/*
+    // FIXME METADATA
+    return void Env.msgStore.getChannelMetadata(channel, function (e, data) {
+        if (e) {
+            if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
+            return void cb(e.code);
+        }
+        cb(void 0, data);
+    });*/
 };
 
 var getMultipleFileSize = function (Env, channels, cb) {
@@ -802,10 +813,12 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         return cb('INVALID_ARGUMENTS');
     }
 
+    // FIXME METADATA
     if (!(Env.msgStore && Env.msgStore.getChannelMetadata)) {
         return cb('E_NOT_IMPLEMENTED');
     }
 
+    // FIXME METADATA
     Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
         if (e) { return cb(e); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
@@ -822,6 +835,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
 };
 
 var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
+        // FIXME METADATA
     var safeKey = escapeKeyCharacters(unsafeKey);
     var safeKeyPrefix = safeKey.slice(0,3);
     var blobPrefix = blobId.slice(0,2);
@@ -891,10 +905,12 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         return void removeOwnedBlob(Env, channelId, unsafeKey, cb);
     }
 
+    // FIXME METADATA
     if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
         return cb("E_NOT_IMPLEMENTED");
     }
 
+    // FIXME METADATA
     Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
         if (e) { return cb(e); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
