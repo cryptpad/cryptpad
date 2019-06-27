@@ -41,6 +41,9 @@ define([
         'pads': [
             'cp-notifications-pads',
         ],
+        'archived': [
+            'cp-notifications-archived',
+        ],
     };
 
     var create = {};
@@ -54,9 +57,7 @@ define([
 
         var notifsData = [];
         var $div = $('<div>', {'class': 'cp-notifications-' + key + ' cp-sidebarlayout-element'});
-        var notifsPanel;
-        var notifsList;
-        var dismissAll;
+        var notifsPanel, notifsList, dismissAll;
         notifsPanel = h("div.cp-app-notifications-panel", [
             h('div.cp-app-notifications-panel-titlebar', [
                 h("span.cp-app-notifications-panel-title",
@@ -69,7 +70,14 @@ define([
                 h("div.cp-notification.no-notifications", Messages.notifications_empty),
             ]),
         ]);
+
+
         $div.append(notifsPanel);
+        if (key === "archived") {
+            var loadmore;
+            loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.loadMore || "Load more ...");
+            $div.append(loadmore);
+        }
 
         common.mailbox.subscribe(["notifications"], {
             onMessage: function (data, el) {
@@ -118,6 +126,12 @@ define([
         return makeNotificationList(key, filter);
     };
 
+    create['archived'] = function () {
+        var key = 'archived';
+        var filter = ["ARCHIVED"];
+        return makeNotificationList(key, filter);
+    };
+
 
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
@@ -140,6 +154,7 @@ define([
             if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars'})); }
             if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user'})); }
             if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-pad'})); }
+            if (key === 'archived') { $category.append($('<span>', {'class': 'fa fa-archive'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
