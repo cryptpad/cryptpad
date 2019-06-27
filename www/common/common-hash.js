@@ -89,6 +89,18 @@ define([
         if (!publicKey) { return; }
         return uint8ArrayToHex(Hash.decodeBase64(publicKey).subarray(0,16));
     };
+    Hash.getBoxPublicFromSecret = function (priv) {
+        if (!priv) { return; }
+        var u8_priv = Hash.decodeBase64(priv);
+        var pair = Nacl.box.keyPair.fromSecretKey(u8_priv);
+        return Hash.encodeBase64(pair.publicKey);
+    };
+    Hash.checkBoxKeyPair = function (priv, pub) {
+        if (!pub || !priv) { return false; }
+        var u8_priv = Hash.decodeBase64(priv);
+        var pair = Nacl.box.keyPair.fromSecretKey(u8_priv);
+        return pub === Hash.encodeBase64(pair.publicKey);
+    };
 
     Hash.createRandomHash = function (type, password) {
         var cryptor;

@@ -479,7 +479,8 @@ define([
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
-                    pendingFriends: store.proxy.friends_pending || {}
+                    pendingFriends: store.proxy.friends_pending || {},
+                    supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate'])
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -1059,6 +1060,26 @@ define([
                 if (err) { return void cb({error: err}); }
                 cb(res);
             });
+        };
+        Store.addAdminMailbox = function (clientId, data, cb) {
+            var priv = data;
+            var pub = Hash.getBoxPublicFromSecret(priv);
+            if (!priv || !pub) { return void cb({error: 'EINVAL'}); }
+            var channel = Hash.getChannelIdFromKey(pub);
+            var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
+            var box = mailboxes.supportadmin = {
+                channel: channel,
+                viewed: [],
+                lastKnownHash: '',
+                keys: {
+                    curvePublic: pub,
+                    curvePrivate: priv
+                }
+            };
+            store.mailbox.open('supportadmin', box, function () {
+                console.log('ready');
+            });
+            onSync(cb);
         };
 
         //////////////////////////////////////////////////////////////////

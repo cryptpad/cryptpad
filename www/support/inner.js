@@ -9,8 +9,8 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/support/ui.js',
     '/api/config',
-    '/common/common-feedback.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -26,17 +26,15 @@ define([
     Hash,
     Messages,
     h,
-    ApiConfig,
-    Feedback
+    Support,
+    ApiConfig
     )
 {
-    var saveAs = window.saveAs;
     var APP = window.APP = {};
 
     var common;
     var metadataMgr;
     var privateData;
-    var sframeChan;
 
     var categories = {
         'tickets': [
@@ -47,9 +45,9 @@ define([
         ],
     };
 
-    var supportKey = ApiConfig.supportMailbox; // XXX curvePublic
-    var supportChannel = Hash.getChannelIdFromKey(supportKey); // XXX
-    if (true || !supportKey || !supportChannel) {
+    var supportKey = ApiConfig.supportMailbox;
+    var supportChannel = Hash.getChannelIdFromKey(supportKey);
+    if (!supportKey || !supportChannel) {
         categories = {
             'tickets': [
                 'cp-support-disabled'
@@ -75,138 +73,14 @@ define([
         return $div;
     };
 
-    var showError = function (form, msg) {
-        if (!msg) {
-            return void $(form).find('.cp-support-form-error').text('').hide();
-        }
-        $(form).find('.cp-support-form-error').text(msg).show();
-    };
 
-    var makeForm = function (cb, title) {
-        var button;
-
-        if (typeof(cb) === "function") {
-            button = h('button.btn.btn-primary.cp-support-list-send', Messages.support_send || 'Send'); // XXX
-            $(button).click(cb);
-        }
-
-        var content = [
-            h('hr'),
-            h('div.cp-support-form-error'),
-            h('label' + (title ? '.cp-hidden' : ''), Messages.support_formTitle || 'title...'), // XXX
-            h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
-                placeholder: Messages.support_formTitlePlaceholder || 'title here...', // XXX
-                value: title
-            }),
-            cb ? undefined : h('br'),
-            h('label', Messages.support_formMessage || 'content...'), // XXX
-            h('textarea.cp-support-form-msg', {
-                placeholder: Messages.support_formMessagePlaceholder || 'describe your problem here...' // XXX
-            }),
-            h('hr'),
-            button
-        ];
-
-        return h('div.cp-support-form-container', content);
-    };
-
-    var sendForm = function (id, form) {
-        var user = metadataMgr.getUserData();
-        privateData = metadataMgr.getPrivateData();
-
-        var $title = $(form).find('.cp-support-form-title');
-        var $content = $(form).find('.cp-support-form-msg');
-
-        var title = $title.val();
-        if (!title) {
-            return void showError(form, Messages.support_formTitleError || 'title error'); // XXX
-        }
-        var content = $content.val();
-        if (!content) {
-            return void showError(form, Messages.support_formContentError || 'content error'); // XXX
-        }
-        // Success: hide any error
-        showError(form, null);
-        $content.val('');
-        $title.val('');
-
-        common.mailbox.sendTo('TICKET', {
-            sender: {
-                name: user.name,
-                channel: privateData.support,
-                curvePublic: user.curvePublic,
-                edPublic: privateData.edPublic
-            },
-            title: title,
-            message: content,
-            id: id
-        }, {
-            channel: supportChannel,
-            curvePublic: supportKey
-        });
-        common.mailbox.sendTo('TICKET', {
-            sender: {
-                name: user.name,
-                channel: privateData.support,
-                curvePublic: user.curvePublic,
-                edPublic: privateData.edPublic
-            },
-            title: title,
-            message: content,
-            id: id
-        }, {
-            channel: privateData.support,
-            curvePublic: user.curvePublic
-        });
-
-        return true;
-    };
 
     // List existing (open?) tickets
     create['list'] = function () {
         var key = 'list';
         var $div = makeBlock(key);
-
-        var makeTicket = function (content) {
-            var ticketTitle = content.id + ' - ' + content.title;
-            var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer || 'Answer'); // XXX
-
-            var $ticket = $(h('div.cp-support-list-ticket', {
-                'data-id': content.id
-            }, [
-                h('h2', ticketTitle),
-                h('div.cp-support-list-actions', answer)
-            ]));
-
-            $(answer).click(function () {
-                $div.find('.cp-support-form-container').remove();
-                $div.find('.cp-support-answer').show();
-                $(answer).hide();
-                var form = makeForm(function () {
-                    var sent = sendForm(content.id, form);
-                    if (sent) {
-                        $(answer).show();
-                        $(form).remove();
-                    }
-                }, content.title);
-                $ticket.append(form);
-            });
-
-            $div.append($ticket);
-            return $ticket;
-        };
-
-        var makeMessage = function (content, hash) {
-            // Check content.sender to see if it comes from us or from an admin
-            // XXX admins should send their personal public key?
-            var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
-            return h('div.cp-support-list-message', [
-                h('p.cp-support-message-from' + fromMe ? '.cp-support-fromme' : '',
-                    //Messages._getKey('support_from', [content.sender.name])), // XXX
-                    [h('b', 'From: '), content.sender.name]),
-                h('pre.cp-support-message-content', content.message)
-            ]);
-        };
+        $div.addClass('cp-support-container');
+        var hashesById = {};
 
         // Register to the "support" mailbox
         common.mailbox.subscribe(['support'], {
@@ -220,23 +94,39 @@ define([
                 */
                 var msg = data.content.msg;
                 var hash = data.content.hash;
-                if (msg.type === 'CLOSE') {
-                    // A ticket has been closed by the admins...
-                    // TODO: add a "closed" class to the ticket in the UI
-                }
-                if (msg.type !== 'TICKET') { return; }
                 var content = msg.content;
                 var id = content.id;
-
                 var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
-                if (!$ticket.length) {
-                    $ticket = makeTicket(content);
+
+                hashesById[id] = hashesById[id] || [];
+                if (hashesById[id].indexOf(hash) === -1) {
+                    hashesById[id].push(data);
                 }
-                $ticket.append(makeMessage(content, hash));
-            },
-            onViewed: function (data) {
-                // Remove the ticket with this hash
-                // If the ticket div is empty, remove the ticket div
+
+                if (msg.type === 'CLOSE') {
+                    // A ticket has been closed by the admins...
+                    if (!$ticket.length) { return; }
+                    $ticket.addClass('cp-support-list-closed');
+                    $ticket.append(Support.makeCloseMessage(common, content, hash));
+                    return;
+                }
+                if (msg.type !== 'TICKET') { return; }
+
+                if (!$ticket.length) {
+                    $ticket = Support.makeTicket($div, common, content, function () {
+                        var error = false;
+                        hashesById[id].forEach(function (d) {
+                            common.mailbox.dismiss(d, function (err) {
+                                if (err) {
+                                    error = true;
+                                    console.error(err);
+                                }
+                            });
+                        });
+                        if (!error) { $ticket.remove(); }
+                    });
+                }
+                $ticket.append(Support.makeMessage(common, content, hash, false));
             }
         });
         return $div;
@@ -247,14 +137,20 @@ define([
         var key = 'form';
         var $div = makeBlock(key, true);
 
-        var form = makeForm();
+        var form = Support.makeForm();
 
         $div.find('button').before(form);
 
         var id = Util.uid();
 
         $div.find('button').click(function () {
-            var sent = sendForm(id, form);
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
+            var sent = Support.sendForm(common, id, form, {
+                channel: privateData.support,
+                curvePublic: user.curvePublic
+            });
             if (sent) {
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
             }
@@ -338,7 +234,7 @@ define([
         APP.$toolbar = $('#cp-toolbar');
         APP.$leftside = $('<div>', {id: 'cp-sidebarlayout-leftside'}).appendTo(APP.$container);
         APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
-        sFrameChan = common.getSframeChannel();
+        var sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();
