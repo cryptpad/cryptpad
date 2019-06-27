@@ -10,8 +10,10 @@ define([
 
     var defaultDismiss = function (common, data) {
         return function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             common.mailbox.dismiss(data, function (err) {
                 if (err) { return void console.error(err); }
             });

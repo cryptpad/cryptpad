@@ -36,57 +36,79 @@ define([
             'cp-notifications-all',
         ],
         'friends': [
-            'cp-notifications-friend-requests',
+            'cp-notifications-friends',
         ],
         'pads': [
-            'cp-notifications-shared-app',
+            'cp-notifications-pads',
         ],
     };
 
     var create = {};
 
-    var makeBlock = function (key, addButton) {
-        // Convert to camlCase for translation keys
+    // create the list of notifications
+    // show only notifs with type in filterTypes array. If filterTypes empty, don't filter.
+    var makeNotificationList = function (key, filterTypes) {
+        filterTypes = filterTypes || [];
         var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+        var categoryName = Messages['notification_cat_' + safeKey] || safeKey;
 
+        var notifsData = [];
         var $div = $('<div>', {'class': 'cp-notifications-' + key + ' cp-sidebarlayout-element'});
-        $('<label>').text(Messages['notification_'+safeKey+'Title'] || key).appendTo($div);
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages['notification_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
-        if (addButton) {
-            $('<button>', {
-                'class': 'btn btn-primary'
-            }).text(Messages['notification_'+safeKey+'Button'] || safeKey).appendTo($div);
-        }
-        return $div;
-    };
-    create['all'] = function () {
-        var key = 'all';
-        var $div = makeBlock(key);
-        var dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.dismissAll || "Dismiss All" }, h("span.fa.fa-trash"));
-        var titleButtons = h("div.cp-app-notifications-panel-titlebar-buttons", dismissAll);
-        var notifsTitlebar = h('div.cp-app-notifications-panel-titlebar', [
-            h("span.cp-app-notifications-panel-title", (Messages.notifications || "Notifications") + " - " + key),
-            titleButtons
+        var notifsPanel;
+        var notifsList;
+        var dismissAll;
+        notifsPanel = h("div.cp-app-notifications-panel", [
+            h('div.cp-app-notifications-panel-titlebar', [
+                h("span.cp-app-notifications-panel-title",
+                    (Messages.notificationsPage || "Notifications") + " - " + categoryName),
+                h("div.cp-app-notifications-panel-titlebar-buttons", [
+                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
+                ]),
+            ]),
+            notifsList = h("div.cp-app-notifications-panel-list"),
         ]);
-        var notifsList = h("div.cp-app-notifications-panel-list");
-        var notifsPanel = h("div.cp-app-notifications-panel", [
-            notifsTitlebar,
-            notifsList
-        ]);
-        $(notifsPanel).append(notifsList);
         $div.append(notifsPanel);
+
         common.mailbox.subscribe(["notifications"], {
             onMessage: function (data, el) {
-                console.log("data : ", data);
+                console.log(data);
                 if (el) {
-                    $(notifsList).prepend(el);
+                    // if the type of notification correspond
+                    if (filterTypes.length === 0 || filterTypes.indexOf(data.content.msg.type) !== -1) {
+                        notifsData.push(data);
+                        $(notifsList).prepend(el);
+                    }
                 }
             },
             onViewed: function () {}
         });
-        // common.mailbox.dismiss(data)
+
+        $(dismissAll).click(function () {
+            notifsData.forEach(function (data) {
+                if (data.content.isDismissible) {
+                    data.content.dismissHandler();
+                }
+            });
+        });
+
         return $div;
+    };
+
+    create['all'] = function () {
+        var key = 'all';
+        return makeNotificationList(key);
+    };
+
+    create['friends'] = function () {
+        var key = 'friends';
+        var filter = ["FRIEND_REQUEST", "FRIEND_REQUEST_ACCEPTED", "FRIEND_REQUEST_DECLINED"];
+        return makeNotificationList(key, filter);
+    };
+
+    create['pads'] = function () {
+        var key = 'pads';
+        var filter = ["SHARE_PAD"];
+        return makeNotificationList(key, filter);
     };
 
 

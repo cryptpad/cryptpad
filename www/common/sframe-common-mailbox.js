@@ -93,7 +93,6 @@ define([
                     var el;
                     if (data.type === 'notifications') {
                         Notifications.add(Common, data);
-                        console.log(data);
                         el = createElement(data);
                     }
                     f(data, el);
