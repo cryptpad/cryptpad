@@ -451,9 +451,7 @@ define([
                 var txid = parsed[1];
                 var req = getRangeRequest(txid);
                 var type = parsed[0];
-                if (!req) {
-                    return void console.error("received response to unknown request");
-                }
+                if (!req) { return; }
 
                 if (!req.cb) {
                     // This is the initial history for a pad chat

@@ -206,6 +206,7 @@ proxy.mailboxes = {
         var keys = m.keys || getMyKeys(ctx);
         if (!keys) { return void console.error("missing asymmetric encryption keys"); }
         var crypto = Crypto.Mailbox.createEncryptor(keys);
+        box.encryptor = crypto;
         var cfg = {
             network: ctx.store.network,
             channel: m.channel,
@@ -323,6 +324,60 @@ proxy.mailboxes = {
         CpNetflux.start(cfg);
     };
 
+    var initializeHistory = function (ctx) {
+        var network = ctx.store.network;
+        network.on('message', function (msg, sender) {
+            if (sender !== network.historyKeeper) { return; }
+            var parsed = JSON.parse(msg);
+            if (!/HISTORY_RANGE/.test(parsed[0])) { return; }
+
+            var txid = parsed[1];
+            var req = ctx.req[txid];
+            var type = parsed[0];
+            var _msg = parsed[2];
+            var box = req.box;
+            if (!req) { return; }
+
+            if (type === 'HISTORY_RANGE') {
+                var message;
+                try {
+                    var decrypted = box.encryptor.decrypt(_msg[4]);
+                    message = JSON.parse(decrypted.content);
+                } catch (e) {
+                    console.log(e);
+                }
+                ctx.emit('HISTORY', {
+                    txid: txid,
+                    message: message,
+                    hash: _msg[4].slice(0,64)
+                }, [req.cId]);
+            } else if (type === 'HISTORY_RANGE_END') {
+                ctx.emit('HISTORY', {
+                    txid: txid,
+                    complete: true
+                }, [req.cId]);
+            }
+        });
+    };
+    var loadHistory = function (ctx, clientId, data, cb) {
+        var box = ctx.boxes[data.type];
+        if (!box) { return void cb({error: 'ENOENT'}); }
+        var msg = [ 'GET_HISTORY_RANGE', box.channel, {
+                from: data.lastKnownHash,
+                count: data.count,
+                txid: data.txid
+            }
+        ];
+        ctx.req[data.txid] = {
+            cId: clientId,
+            box: box
+        };
+        var network = ctx.store.network;
+        network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
+        }, function (err) {
+            throw new Error(err);
+        });
+    };
 
     var subscribe = function (ctx, data, cId, cb) {
         // Get existing notifications
@@ -357,17 +412,18 @@ proxy.mailboxes = {
             updateMetadata: cfg.updateMetadata,
             emit: emit,
             clients: [],
-            boxes: {}
+            boxes: {},
+            req: {}
         };
 
         var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
 
         initializeMailboxes(ctx, mailboxes);
+        initializeHistory(ctx);
 
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
             var m = mailboxes[key];
-console.log(key, m);
 
             if (BLOCKING_TYPES.indexOf(key) === -1) {
                 openChannel(ctx, key, m, function () {
@@ -417,6 +473,9 @@ console.log(key, m);
             }
             if (cmd === 'SENDTO') {
                 return void sendTo(ctx, data.type, data.msg, data.user, cb);
+            }
+            if (cmd === 'LOAD_HISTORY') {
+                return void loadHistory(ctx, clientId, data, cb);
             }
         };
 
