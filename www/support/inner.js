@@ -162,7 +162,6 @@ define([
     create['disabled'] = function () {
         var key = 'disabled';
         var $div = makeBlock(key);
-        // XXX add text
         return $div;
     };
 
@@ -219,7 +218,7 @@ define([
             displayed: displayed,
             sfCommon: common,
             $container: APP.$toolbar,
-            pageTitle: Messages.supportPage || 'Support', // XXX
+            pageTitle: Messages.supportPage || 'Support',
             metadataMgr: common.getMetadataMgr(),
         };
         APP.toolbar = Toolbar.create(configTb);

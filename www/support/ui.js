@@ -49,11 +49,11 @@ define([
 
         var title = $title.val();
         if (!title) {
-            return void showError(form, Messages.support_formTitleError || 'title error'); // XXX
+            return void showError(form, Messages.support_formTitleError);
         }
         var content = $content.val();
         if (!content) {
-            return void showError(form, Messages.support_formContentError || 'content error'); // XXX
+            return void showError(form, Messages.support_formContentError);
         }
         // Success: hide any error
         showError(form, null);
@@ -72,7 +72,7 @@ define([
         var button;
 
         if (typeof(cb) === "function") {
-            button = h('button.btn.btn-primary.cp-support-list-send', Messages.support_send || 'Send'); // XXX
+            button = h('button.btn.btn-primary.cp-support-list-send', Messages.contacts_send);
             $(button).click(cb);
         }
 
@@ -81,16 +81,13 @@ define([
         var content = [
             h('hr'),
             h('div.cp-support-form-error'),
-            h('label' + (title ? '.cp-hidden' : ''), Messages.support_formTitle || 'title...'), // XXX
+            h('label' + (title ? '.cp-hidden' : ''), Messages.support_formTitle),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
-                placeholder: Messages.support_formTitlePlaceholder || 'title here...', // XXX
                 value: title || ''
             }),
             cb ? undefined : h('br'),
-            h('label', Messages.support_formMessage || 'content...'), // XXX
-            h('textarea.cp-support-form-msg', {
-                placeholder: Messages.support_formMessagePlaceholder || 'describe your problem here...' // XXX
-            }),
+            h('label', Messages.support_formMessage),
+            h('textarea.cp-support-form-msg', { }),
             h('hr'),
             button,
             cancel
@@ -108,9 +105,9 @@ define([
 
     var makeTicket = function ($div, common, content, onHide) {
         var ticketTitle = content.id + ' - ' + content.title;
-        var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer || 'Answer'); // XXX
-        var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close || 'Close'); // XXX
-        var hide = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove || 'Remove'); // XXX
+        var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
+        var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
+        var hide = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
 
         var actions = h('div.cp-support-list-actions', [
             answer,
@@ -156,11 +153,10 @@ define([
         var privateData = metadataMgr.getPrivateData();
 
         // Check content.sender to see if it comes from us or from an admin
-        // XXX admins should send their personal public key?
         var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
 
         var userData = h('div.cp-support-showdata', [
-            Messages.support_showData || 'Show/hide data', // XXX
+            Messages.support_showData,
             h('pre.cp-support-message-data', JSON.stringify(content.sender, 0, 2))
         ]);
         $(userData).click(function () {
@@ -170,9 +166,10 @@ define([
         return h('div.cp-support-list-message', {
             'data-hash': hash
         }, [
-            h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''),
-                //Messages._getKey('support_from', [content.sender.name, new Date(content.time)])), // XXX
-                [h('b', 'From: '), content.sender.name, h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')]),
+            h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
+                h('span', Messages._getKey('support_from', [content.sender.name])),
+                h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
+            ]),
             h('pre.cp-support-message-content', content.message),
             isAdmin ? userData : undefined,
         ]);
@@ -186,10 +183,11 @@ define([
         return h('div.cp-support-list-message', {
             'data-hash': hash
         }, [
-            h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''),
-                //Messages._getKey('support_from', [content.sender.name, new Date(content.time)])), // XXX
-                [h('b', 'From: '), content.sender.name, h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')]),
-            h('pre.cp-support-message-content', Messages.support_closed || 'Ticket closed...') // XXX
+            h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
+                h('span', Messages._getKey('support_from', [content.sender.name])),
+                h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
+            ]),
+            h('pre.cp-support-message-content', Messages.support_closed)
         ]);
     };
 

@@ -240,10 +240,10 @@ define([
 
             var error = h('div.cp-admin-support-error');
             var input = h('input.cp-admin-add-private-key');
-            var button = h('button.btn.btn-primary', Messages.admin_supportAddKey || 'add key'); // XXX
+            var button = h('button.btn.btn-primary', Messages.admin_supportAddKey);
 
             if (APP.privateKey && !checkAdminKey(APP.privateKey)) {
-                $(error).text(Messages.admin_supportAddError || 'invalid'); // XXX
+                $(error).text(Messages.admin_supportAddError);
             }
 
             $div.append(h('div', [
@@ -256,15 +256,12 @@ define([
                 var key = $(input).val();
                 if (!checkAdminKey(key)) {
                     $(input).val('');
-                    return void $(error).text(Messages.admin_supportAddError || 'invalid'); // XXX
+                    return void $(error).text(Messages.admin_supportAddError);
                 }
                 sFrameChan.query("Q_ADMIN_MAILBOX", key, function () {
-                    console.log(key);
-                    console.log(arguments);
                     APP.privateKey = key;
-                    console.log('ok');
                     $('.cp-admin-support-init').hide();
-                    APP.$rightside.append(create['support-list']()); // TODO: check?
+                    APP.$rightside.append(create['support-list']());
                 });
             });
             return $div;
