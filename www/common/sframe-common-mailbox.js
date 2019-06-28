@@ -204,6 +204,15 @@ define([
                 });
             };
         };
+        mailbox.getNotificationsHistory = function (type, count, lastKnownHash, cb) {
+            mailbox.getMoreHistory(type, count, lastKnownHash, function (err, messages) {
+                messages.forEach(function (data) {
+                    data.content.archived = true;
+                    Notifications.add(Common, data);
+                });
+                cb(err, messages);
+            });
+        };
 
         // CHANNEL WITH WORKER
 

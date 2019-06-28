@@ -46,6 +46,35 @@ define([
 
     var create = {};
 
+    var formatData = function (data) {
+        return JSON.stringify(data.content.msg.content);
+    };
+    var createElement = function (data) {
+        var notif;
+        notif = h('div.cp-notification', {
+            'data-hash': data.content.hash
+        }, [h('div.cp-notification-content', h('p', formatData(data)))]);
+
+        if (data.content.getFormatText) {
+            $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+        }
+
+        if (data.content.isClickable) {
+            $(notif).find('.cp-notification-content').addClass("cp-clickable")
+                .click(data.content.handler);
+        }
+        if (data.content.isDismissible) {
+            var dismissIcon = h('span.fa.fa-times');
+            var dismiss = h('div.cp-notification-dismiss', {
+                title: Messages.notifications_dismiss
+            }, dismissIcon);
+            $(dismiss).addClass("cp-clickable").click(data.content.dismissHandler);
+            $(notif).append(dismiss);
+        }
+        return notif;
+    };
+
+
     // create the list of notifications
     // show only notifs with type in filterTypes array. If filterTypes empty, don't filter.
     var makeNotificationList = function (key, filterTypes) {
@@ -69,29 +98,47 @@ define([
             ]),
         ]);
 
+        // add notification
+        function addNotification (data, el) {
+            // if the type of notification correspond
+            if (filterTypes.length === 0 || filterTypes.indexOf(data.content.msg.type) !== -1) {
+                notifsData.push(data);
+                $(notifsList).prepend(el);
+            }
+        }
+        function addArchivedNotification (data) {
+            if (data.content.archived) {
+                notifsData.push(data);
+                var el = createElement(data);
+                $(el).addClass("cp-app-notification-archived");
+                $(notifsList).prepend(el);
+            }
+        }
 
         $div.append(notifsPanel);
         if (key === "archived") {
             var loadmore;
+            var lastKnownHash;
+            $(dismissAll).remove();
             loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.loadMore || "Load more ...");
-            $div.append(loadmore);
+            $(loadmore).click(function () {
+                common.mailbox.getNotificationsHistory('notifications', 5, lastKnownHash, function (err, messages) {
+                    console.log(messages);
+                    messages.forEach(function (data) {
+                        data.content.archived = true;
+                        addArchivedNotification(data);
+                    });
+                    lastKnownHash = messages[0].content.hash;
+                });
+            });
+            notifsList.before(loadmore);
+            $(loadmore).click();
         }
 
         common.mailbox.subscribe(["notifications"], {
             onMessage: function (data, el) {
                 console.log(data);
-                if (el) {
-                    // if the type of notification correspond
-                    if (filterTypes.length === 0 || filterTypes.indexOf(data.content.msg.type) !== -1) {
-                        var dismissHandler = data.content.dismissHandler;
-                        data.content.dismissHandler = function () {
-                            $(el).addClass("dismissed");
-                            dismissHandler();
-                        };
-                        notifsData.push(data);
-                        $(notifsList).prepend(el);
-                    }
-                }
+                addNotification(data, el);
             },
             onViewed: function () {}
         });

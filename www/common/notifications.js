@@ -83,8 +83,8 @@ define([
             if (handlers[type]) {
                 handlers[type](common, data);
                 // add getters to access simply some informations
-                data.content.isClickable = typeof data.content.handler === "function";
-                data.content.isDismissible = typeof data.content.dismissHandler === "function";
+                data.content.isClickable = typeof data.content.handler === "function" && data.content.archived !== true;
+                data.content.isDismissible = typeof data.content.dismissHandler === "function" && data.content.archived !== true;
             } else {
                 // $(el).find('.cp-notification-dismiss').css('display', 'flex'); // XXX
             }
