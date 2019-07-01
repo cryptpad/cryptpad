@@ -944,10 +944,17 @@ MessengerUI, Messages) {
 
     var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
+        var openNotifsApp = h('div.cp-notifications-gotoapp', h('p', Messages.openNotificationsApp || "Open notifications App"));
+        $(openNotifsApp).click(function () {
+            Common.openURL("/notifications");
+        })
         var div = h('div.cp-notifications-container', [
             h('div.cp-notifications-empty', Messages.notifications_empty)
         ]);
         var pads_options = [div];
+        if (Common.isLoggedIn()) {
+            pads_options.unshift(openNotifsApp);
+        }
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
