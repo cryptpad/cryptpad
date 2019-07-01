@@ -25,37 +25,44 @@ define([
     handlers['FRIEND_REQUEST'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
-        content.handler = function () {
-            UIElements.displayFriendRequestModal(common, data);
-        };
 
         // Check authenticity
         if (msg.author !== msg.content.curvePublic) { return; }
-
-        common.addFriendRequest(data);
 
         // Display the notification
         content.getFormatText = function () {
             return Messages._getKey('friendRequest_notification', [msg.content.displayName || Messages.anonymous]);
         };
+
+        // if not archived, add handlers
+        if (!content.archived) {
+            content.handler = function () {
+                UIElements.displayFriendRequestModal(common, data);
+            };
+            common.addFriendRequest(data);
+        }
     };
 
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
-        content.dismissHandler = defaultDismiss(common, data);
         content.getFormatText = function () {
             return Messages._getKey('friendRequest_accepted', [msg.content.name || Messages.anonymous]);
         };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
     };
 
     handlers['FRIEND_REQUEST_DECLINED'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
-        content.dismissHandler = defaultDismiss(common, data);
         content.getFormatText = function () {
             return Messages._getKey('friendRequest_declined', [msg.content.name || Messages.anonymous]);
         };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
     };
 
     // Share pad
@@ -67,13 +74,15 @@ define([
         var key = type === 'drive' ? 'notification_folderShared' :
                     (type === 'file' ? 'notification_fileShared' :
                     'notification_padShared');
-        content.handler = function () {
-            common.openURL(msg.content.href);
-        };
-        content.dismissHandler = defaultDismiss(common, data);
         content.getFormatText = function () {
             return Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]);
         };
+        content.handler = function () {
+            common.openURL(msg.content.href);
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
     };
 
     return {
@@ -83,8 +92,8 @@ define([
             if (handlers[type]) {
                 handlers[type](common, data);
                 // add getters to access simply some informations
-                data.content.isClickable = typeof data.content.handler === "function" && data.content.archived !== true;
-                data.content.isDismissible = typeof data.content.dismissHandler === "function" && data.content.archived !== true;
+                data.content.isClickable = typeof data.content.handler === "function";
+                data.content.isDismissible = typeof data.content.dismissHandler === "function";
             } else {
                 // $(el).find('.cp-notification-dismiss').css('display', 'flex'); // XXX
             }
