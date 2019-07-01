@@ -46,34 +46,7 @@ define([
 
     var create = {};
 
-    var formatData = function (data) {
-        return JSON.stringify(data.content.msg.content);
-    };
-    var createElement = function (data) {
-        var notif;
-        notif = h('div.cp-notification', {
-            'data-hash': data.content.hash
-        }, [h('div.cp-notification-content', h('p', formatData(data)))]);
-
-        if (data.content.getFormatText) {
-            $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
-        }
-
-        if (data.content.isClickable) {
-            $(notif).find('.cp-notification-content').addClass("cp-clickable")
-                .click(data.content.handler);
-        }
-        if (data.content.isDismissible) {
-            var dismissIcon = h('span.fa.fa-times');
-            var dismiss = h('div.cp-notification-dismiss', {
-                title: Messages.notifications_dismiss
-            }, dismissIcon);
-            $(dismiss).addClass("cp-clickable").click(data.content.dismissHandler);
-            $(notif).append(dismiss);
-        }
-        return notif;
-    };
-
+    var unreadData;
 
     // create the list of notifications
     // show only notifs with type in filterTypes array. If filterTypes empty, don't filter.
@@ -83,6 +56,9 @@ define([
         var categoryName = Messages['notification_cat_' + safeKey] || safeKey;
 
         var notifsData = [];
+        if (key === "all") {
+            unreadData = notifsData;
+        }
         var $div = $('<div>', {'class': 'cp-notifications-' + key + ' cp-sidebarlayout-element'});
         var notifsPanel, notifsList, dismissAll;
         notifsPanel = h("div.cp-app-notifications-panel", [
@@ -107,9 +83,12 @@ define([
             }
         }
         function addArchivedNotification (data) {
-            if (data.content.archived) {
+            var isDataUnread = unreadData.findIndex(function (ud) {
+                return ud.content.hash === data.content.hash;
+            }) === -1;
+            if (data.content.archived && isDataUnread) {
                 notifsData.push(data);
-                var el = createElement(data);
+                var el = common.mailbox.createElement(data);
                 $(el).addClass("cp-app-notification-archived");
                 $(notifsList).prepend(el);
             }

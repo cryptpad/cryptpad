@@ -47,7 +47,7 @@ define([
         var formatData = function (data) {
             return JSON.stringify(data.content.msg.content);
         };
-        var createElement = function (data) {
+        var createElement = mailbox.createElement = function (data) {
             var notif;
             notif = h('div.cp-notification', {
                 'data-hash': data.content.hash
