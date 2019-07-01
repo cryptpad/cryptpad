@@ -2173,6 +2173,7 @@ define([
                 pathname: "/drive/",
                 friends: friends,
                 title: data.title,
+                password: data.password,
                 common: common,
                 hashes: {
                     editHash: parsed.hash
@@ -3510,6 +3511,7 @@ define([
                         friends: friends,
                         title: data.title,
                         common: common,
+                        password: data.password,
                         hashes: {
                             editHash: parsed.hash
                         }
@@ -3523,6 +3525,7 @@ define([
                         origin: APP.origin,
                         pathname: "/" + padType + "/",
                         friends: friends,
+                        password: data.password,
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: roParsed.hash,
