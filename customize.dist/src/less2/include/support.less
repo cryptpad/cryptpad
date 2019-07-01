@@ -3,6 +3,18 @@
     @ticket-bg: #F7F7F7;
     @msg-bg: #eee;
     @fromme-bg: #ddd;
+    .cp-support-form-container {
+        [type="text"] {
+            width: @sidebar_button-width;
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 2*@sidebar_button-width;
+            max-width: 90%;
+            padding: 10px 15px;
+            height: 300px;
+        }
+    }
     .cp-support-container {
         .cp-support-list-ticket {
             display: flex;
@@ -60,6 +72,10 @@
                 .cp-support-form-container {
                     display: none !important;
                 }
+            }
+            button {
+                margin-left: 2px;
+                margin-right: 5px;
             }
         }
     }

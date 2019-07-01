@@ -218,7 +218,7 @@ define([
             displayed: displayed,
             sfCommon: common,
             $container: APP.$toolbar,
-            pageTitle: Messages.supportPage || 'Support',
+            pageTitle: Messages.supportPage,
             metadataMgr: common.getMetadataMgr(),
         };
         APP.toolbar = Toolbar.create(configTb);
@@ -239,7 +239,7 @@ define([
         createToolbar();
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
-        common.setTabTitle(Messages.supportPage || 'Support');
+        common.setTabTitle(Messages.supportPage);
 
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;

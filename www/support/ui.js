@@ -2,17 +2,11 @@ define([
     'jquery',
     '/api/config',
     '/common/hyperscript.js',
+    '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/customize/messages.js',
-], function ($, ApiConfig, h, Hash, Util, Messages) {
-
-    var showError = function (form, msg) {
-        if (!msg) {
-            return void $(form).find('.cp-support-form-error').text('').hide();
-        }
-        $(form).find('.cp-support-form-error').text(msg).show();
-    };
+], function ($, ApiConfig, h, UI, Hash, Util, Messages) {
 
     var send = function (common, id, type, data, dest) {
         var supportKey = ApiConfig.supportMailbox;
@@ -49,14 +43,12 @@ define([
 
         var title = $title.val();
         if (!title) {
-            return void showError(form, Messages.support_formTitleError);
+            return void UI.alert(Messages.support_formTitleError);
         }
         var content = $content.val();
         if (!content) {
-            return void showError(form, Messages.support_formContentError);
+            return void UI.alert(form, Messages.support_formContentError);
         }
-        // Success: hide any error
-        showError(form, null);
         $content.val('');
         $title.val('');
 
@@ -80,14 +72,15 @@ define([
 
         var content = [
             h('hr'),
-            h('div.cp-support-form-error'),
-            h('label' + (title ? '.cp-hidden' : ''), Messages.support_formTitle),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
+                placeholder: Messages.support_formTitle,
+                type: 'text',
                 value: title || ''
             }),
             cb ? undefined : h('br'),
-            h('label', Messages.support_formMessage),
-            h('textarea.cp-support-form-msg', { }),
+            h('textarea.cp-support-form-msg', {
+                placeholder: Messages.support_formMessage
+            }),
             h('hr'),
             button,
             cancel
@@ -104,7 +97,7 @@ define([
     };
 
     var makeTicket = function ($div, common, content, onHide) {
-        var ticketTitle = content.id + ' - ' + content.title;
+        var ticketTitle = content.title + ' (#' + content.id + ')';
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
         var hide = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
