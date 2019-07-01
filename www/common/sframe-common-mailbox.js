@@ -199,6 +199,7 @@ define([
                     type: type,
                     content: {
                         msg: data.message,
+                        time: data.time,
                         hash: data.hash
                     }
                 });

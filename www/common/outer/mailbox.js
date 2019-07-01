@@ -339,6 +339,7 @@ proxy.mailboxes = {
             if (!req) { return; }
 
             if (type === 'HISTORY_RANGE') {
+                if (!Array.isArray(_msg)) { return; }
                 var message;
                 try {
                     var decrypted = box.encryptor.decrypt(_msg[4]);
@@ -348,6 +349,7 @@ proxy.mailboxes = {
                 }
                 ctx.emit('HISTORY', {
                     txid: txid,
+                    time: _msg[5],
                     message: message,
                     hash: _msg[4].slice(0,64)
                 }, [req.cId]);
@@ -375,7 +377,7 @@ proxy.mailboxes = {
         var network = ctx.store.network;
         network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
         }, function (err) {
-            throw new Error(err);
+            console.error(err);
         });
     };
 
