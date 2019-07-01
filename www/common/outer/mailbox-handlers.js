@@ -188,7 +188,7 @@ define([
                 type: box.type,
                 hash: hash
             }
-        }
+        };
 
         cb(false, toRemove);
     };
