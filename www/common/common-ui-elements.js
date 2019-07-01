@@ -1866,6 +1866,13 @@ define([
                 content: h('span', Messages.adminPage || 'Admin')
             });
         }
+        if (padType !== 'support' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
+                content: h('span', Messages.supportPage || 'Support')
+            });
+        }
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
@@ -1959,6 +1966,13 @@ define([
                 window.open(origin+'/settings/');
             } else {
                 window.parent.location = origin+'/settings/';
+            }
+        });
+        $userAdmin.find('a.cp-toolbar-menu-support').click(function () {
+            if (padType) {
+                window.open(origin+'/support/');
+            } else {
+                window.parent.location = origin+'/support/';
             }
         });
         $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {

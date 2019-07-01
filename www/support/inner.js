@@ -162,7 +162,6 @@ define([
     create['disabled'] = function () {
         var key = 'disabled';
         var $div = makeBlock(key);
-        // XXX add text
         return $div;
     };
 
@@ -219,7 +218,7 @@ define([
             displayed: displayed,
             sfCommon: common,
             $container: APP.$toolbar,
-            pageTitle: Messages.supportPage || 'Support', // XXX
+            pageTitle: Messages.supportPage,
             metadataMgr: common.getMetadataMgr(),
         };
         APP.toolbar = Toolbar.create(configTb);
@@ -240,7 +239,7 @@ define([
         createToolbar();
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
-        common.setTabTitle(Messages.supportPage || 'Support');
+        common.setTabTitle(Messages.supportPage);
 
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
