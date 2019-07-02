@@ -75,26 +75,29 @@ define([
         ]);
 
         // add notification
-        function addNotification (data, el) {
+        var addNotification = function (data, el) {
             // if the type of notification correspond
             if (filterTypes.length === 0 || filterTypes.indexOf(data.content.msg.type) !== -1) {
                 notifsData.push(data);
                 $(notifsList).prepend(el);
             }
-        }
-        function addArchivedNotification (data) {
+        };
+        var addArchivedNotification = function (data) {
             var isDataUnread = unreadData.findIndex(function (ud) {
                 return ud.content.hash === data.content.hash;
             }) === -1;
             if (data.content.archived && isDataUnread) {
                 notifsData.push(data);
                 var el = common.mailbox.createElement(data);
+                var time = new Date(data.content.time);
+                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleDateString() + " - " + time.toLocaleTimeString()));
                 $(el).addClass("cp-app-notification-archived");
                 $(notifsList).prepend(el);
             }
-        }
+        };
 
         $div.append(notifsPanel);
+
         if (key === "archived") {
             var loadmore;
             var lastKnownHash;
