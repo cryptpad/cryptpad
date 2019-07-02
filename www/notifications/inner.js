@@ -108,14 +108,20 @@ define([
             $(dismissAll).remove();
             loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.loadMore || "Load more ...");
             $(loadmore).click(function () {
-                common.mailbox.getNotificationsHistory('notifications', 20, lastKnownHash, function (err, messages) {
+                common.mailbox.getNotificationsHistory('notifications', 10, lastKnownHash, function (err, messages, end) {
+                    if (!Array.isArray(messages)) { return; }
                     // display archived notifs from most recent to oldest
                     for (var i = messages.length - 1 ; i >= 0 ; i--) {
                         var data = messages[i];
                         data.content.archived = true;
                         addArchivedNotification(data);
                     }
-                    lastKnownHash = messages[0].content.hash;
+                    if (end) {
+                        $(loadmore).hide();
+                    }
+                    else {
+                        lastKnownHash = messages[0].content.hash;
+                    }
                 });
             });
             notifsList.before(loadmore);

@@ -190,7 +190,8 @@ define([
                 if (data.txid !== txid) { return; }
                 if (data.complete) {
                     onHistory = function () {};
-                    cb(null, messages);
+                    var end = messages.length < count;
+                    cb(null, messages, end);
                     historyState = false;
                     return;
                 }
@@ -207,12 +208,13 @@ define([
             };
         };
         mailbox.getNotificationsHistory = function (type, count, lastKnownHash, cb) {
-            mailbox.getMoreHistory(type, count, lastKnownHash, function (err, messages) {
+            mailbox.getMoreHistory(type, count, lastKnownHash, function (err, messages, end) {
+                if (!Array.isArray(messages)) { return void cb(err); }
                 messages.forEach(function (data) {
                     data.content.archived = true;
                     Notifications.add(Common, data);
                 });
-                cb(err, messages);
+                cb(err, messages, end);
             });
         };
 
