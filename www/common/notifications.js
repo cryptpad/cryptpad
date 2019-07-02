@@ -94,8 +94,6 @@ define([
                 // add getters to access simply some informations
                 data.content.isClickable = typeof data.content.handler === "function";
                 data.content.isDismissible = typeof data.content.dismissHandler === "function";
-            } else {
-                // $(el).find('.cp-notification-dismiss').css('display', 'flex'); // XXX
             }
         },
         remove: function (common, data) {

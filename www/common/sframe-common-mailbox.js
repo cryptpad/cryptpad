@@ -66,7 +66,6 @@ define([
                 var dismiss = h('div.cp-notification-dismiss', {
                     title: Messages.notifications_dismiss
                 }, dismissIcon);
-                $(dismiss).css('display', 'flex'); // XXX
                 $(dismiss).addClass("cp-clickable")
                     .click(data.content.dismissHandler);
                 $(notif).append(dismiss);
