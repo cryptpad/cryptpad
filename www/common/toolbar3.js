@@ -947,7 +947,7 @@ MessengerUI, Messages) {
         var openNotifsApp = h('div.cp-notifications-gotoapp', h('p', Messages.openNotificationsApp || "Open notifications App"));
         $(openNotifsApp).click(function () {
             Common.openURL("/notifications");
-        })
+        });
         var div = h('div.cp-notifications-container', [
             h('div.cp-notifications-empty', Messages.notifications_empty)
         ]);
@@ -993,7 +993,7 @@ MessengerUI, Messages) {
         Common.mailbox.subscribe(['notifications'], {
             onMessage: function (data, el) {
                 if (el) {
-                    div.appendChild(el);
+                    $(div).prepend(el);
                 }
                 refresh();
             },
