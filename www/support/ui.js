@@ -41,13 +41,13 @@ define([
         var $title = $(form).find('.cp-support-form-title');
         var $content = $(form).find('.cp-support-form-msg');
 
-        var title = $title.val();
+        var title = $title.val().trim();
         if (!title) {
             return void UI.alert(Messages.support_formTitleError);
         }
-        var content = $content.val();
+        var content = $content.val().trim();
         if (!content) {
-            return void UI.alert(form, Messages.support_formContentError);
+            return void UI.alert(Messages.support_formContentError);
         }
         $content.val('');
         $title.val('');
@@ -160,7 +160,7 @@ define([
             'data-hash': hash
         }, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
-                h('span', Messages._getKey('support_from', [content.sender.name])),
+                UI.setHTML(h('span'), Messages._getKey('support_from', [content.sender.name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
             ]),
             h('pre.cp-support-message-content', content.message),
@@ -177,7 +177,7 @@ define([
             'data-hash': hash
         }, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
-                h('span', Messages._getKey('support_from', [content.sender.name])),
+                UI.setHTML(h('span'), Messages._getKey('support_from', [content.sender.name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
             ]),
             h('pre.cp-support-message-content', Messages.support_closed)

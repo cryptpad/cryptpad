@@ -232,11 +232,11 @@ define([
     create['support-init'] = function () {
         var $div = makeBlock('support-init');
         if (!supportKey) {
-            $div.append(h('p', Messages.admin_supportInitHelp || "Your server is not configured to have a support mailbox. If you want a support mailbox to receive messages from your users, you should ask your server administrator to run the script located in './scripts/generate-admin-keys.js', store the public key in the 'config.js' file, and send you the private key.")); // XXX
+            $div.append(h('p', Messages.admin_supportInitHelp));
             return $div;
         }
         if (!APP.privateKey || !checkAdminKey(APP.privateKey)) {
-            $div.append(h('p', Messages.admin_supportInitPrivate || "Your CryptPad instance is configured to use a support mailbox but your account doesn't have the correct private key to access it. Please use the following form to add or update the private key to your account")); // XXX
+            $div.append(h('p', Messages.admin_supportInitPrivate));
 
             var error = h('div.cp-admin-support-error');
             var input = h('input.cp-admin-add-private-key');

@@ -151,6 +151,7 @@ define([
                 channel: privateData.support,
                 curvePublic: user.curvePublic
             });
+            id = Util.uid();
             if (sent) {
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
             }
