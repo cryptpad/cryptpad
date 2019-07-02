@@ -180,7 +180,7 @@ define([
             var txid = Util.uid();
             execCommand('LOAD_HISTORY', {
                 type: type,
-                count: count,
+                count: lastKnownHash ? count + 1 : count,
                 txid: txid,
                 lastKnownHash: lastKnownHash
             }, function (err, obj) {
@@ -195,14 +195,16 @@ define([
                     historyState = false;
                     return;
                 }
-                messages.push({
-                    type: type,
-                    content: {
-                        msg: data.message,
-                        time: data.time,
-                        hash: data.hash
-                    }
-                });
+                if (data.hash !== lastKnownHash) {
+                    messages.push({
+                        type: type,
+                        content: {
+                            msg: data.message,
+                            time: data.time,
+                            hash: data.hash
+                        }
+                    });
+                }
             };
         };
         mailbox.getNotificationsHistory = function (type, count, lastKnownHash, cb) {
