@@ -122,9 +122,10 @@ define([
                     else {
                         lastKnownHash = messages[0].content.hash;
                     }
+                    $('#cp-sidebarlayout-rightside').scrollTop($('#cp-sidebarlayout-rightside')[0].scrollHeight);
                 });
             });
-            notifsList.before(loadmore);
+            notifsList.after(loadmore);
             $(loadmore).click();
         }
 
