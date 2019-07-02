@@ -162,7 +162,7 @@ define([
             }
 
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad') {
+            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                 var sframeChan = common.getSframeChannel();
                 var changePwTitle = Messages.properties_changePassword;
                 var changePwConfirm = Messages.properties_confirmChange;
@@ -412,6 +412,7 @@ define([
                         if (!friend.notifications || !friend.curvePublic) { return; }
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
+                            password: config.password,
                             name: myName,
                             title: title
                         }, {
@@ -1737,16 +1738,20 @@ define([
             var pressed = '';
             var to;
             $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
+                var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
                 if (e.which === 38) { // Up
                     if ($value.length) {
+                        $value.mouseleave();
                         var $prev = $value.prev();
+                        $prev.mouseenter();
                         setActive($prev);
                     }
                 }
                 if (e.which === 40) { // Down
                     if ($value.length) {
+                        $value.mouseleave();
                         var $next = $value.next();
+                        $next.mouseenter();
                         setActive($next);
                     }
                 }
@@ -1757,6 +1762,7 @@ define([
                     }
                 }
                 if (e.which === 27) { // Esc
+                    $value.mouseleave();
                     hide();
                 }
             });
