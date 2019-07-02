@@ -26,13 +26,13 @@ define([
         var content = data.content;
         var msg = content.msg;
 
-        // Check authenticity
-        if (msg.author !== msg.content.curvePublic) { return; }
-
         // Display the notification
         content.getFormatText = function () {
             return Messages._getKey('friendRequest_notification', [msg.content.displayName || Messages.anonymous]);
         };
+
+        // Check authenticity
+        if (msg.author !== msg.content.curvePublic) { return; }
 
         // if not archived, add handlers
         if (!content.archived) {

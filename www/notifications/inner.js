@@ -44,12 +44,14 @@ define([
         ],
     };
 
+    var notifsAllowedTypes = ["FRIEND_REQUEST", "FRIEND_REQUEST_ACCEPTED", "FRIEND_REQUEST_DECLINED", "SHARE_PAD"];
+
     var create = {};
 
     var unreadData;
 
     // create the list of notifications
-    // show only notifs with type in filterTypes array. If filterTypes empty, don't filter.
+    // show only notifs with type in filterTypes array
     var makeNotificationList = function (key, filterTypes) {
         filterTypes = filterTypes || [];
         var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
@@ -77,16 +79,17 @@ define([
         // add notification
         var addNotification = function (data, el) {
             // if the type of notification correspond
-            if (filterTypes.length === 0 || filterTypes.indexOf(data.content.msg.type) !== -1) {
+            if (filterTypes.indexOf(data.content.msg.type) !== -1) {
                 notifsData.push(data);
                 $(notifsList).prepend(el);
             }
         };
         var addArchivedNotification = function (data) {
-            var isDataUnread = unreadData.findIndex(function (ud) {
-                return ud.content.hash === data.content.hash;
-            }) !== -1;
-            if (data.content.archived) {
+            // if the type is allowed
+            if (data.content.archived && notifsAllowedTypes.indexOf(data.content.msg.type) !== -1) {
+                var isDataUnread = unreadData.findIndex(function (ud) {
+                    return ud.content.hash === data.content.hash;
+                }) !== -1;
                 notifsData.push(data);
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
@@ -105,7 +108,7 @@ define([
             $(dismissAll).remove();
             loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.loadMore || "Load more ...");
             $(loadmore).click(function () {
-                common.mailbox.getNotificationsHistory('notifications', 5, lastKnownHash, function (err, messages) {
+                common.mailbox.getNotificationsHistory('notifications', 20, lastKnownHash, function (err, messages) {
                     // display archived notifs from most recent to oldest
                     for (var i = messages.length - 1 ; i >= 0 ; i--) {
                         var data = messages[i];
@@ -138,10 +141,9 @@ define([
 
         return $div;
     };
-
     create['all'] = function () {
         var key = 'all';
-        return makeNotificationList(key);
+        return makeNotificationList(key, notifsAllowedTypes);
     };
 
     create['friends'] = function () {
@@ -158,7 +160,7 @@ define([
 
     create['archived'] = function () {
         var key = 'archived';
-        var filter = ["ARCHIVED"];
+        var filter = [];
         return makeNotificationList(key, filter);
     };
 
