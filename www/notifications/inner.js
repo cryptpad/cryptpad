@@ -85,14 +85,15 @@ define([
         var addArchivedNotification = function (data) {
             var isDataUnread = unreadData.findIndex(function (ud) {
                 return ud.content.hash === data.content.hash;
-            }) === -1;
-            if (data.content.archived && isDataUnread) {
+            }) !== -1;
+            if (data.content.archived) {
                 notifsData.push(data);
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
                 $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleDateString() + " - " + time.toLocaleTimeString()));
                 $(el).addClass("cp-app-notification-archived");
-                $(notifsList).prepend(el);
+                $(el).toggle(!isDataUnread);
+                $(notifsList).append(el);
             }
         };
 
@@ -105,11 +106,12 @@ define([
             loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.loadMore || "Load more ...");
             $(loadmore).click(function () {
                 common.mailbox.getNotificationsHistory('notifications', 5, lastKnownHash, function (err, messages) {
-                    console.log(messages);
-                    messages.forEach(function (data) {
+                    // display archived notifs from most recent to oldest
+                    for (var i = messages.length - 1 ; i >= 0 ; i--) {
+                        var data = messages[i];
                         data.content.archived = true;
                         addArchivedNotification(data);
-                    });
+                    }
                     lastKnownHash = messages[0].content.hash;
                 });
             });
@@ -119,10 +121,11 @@ define([
 
         common.mailbox.subscribe(["notifications"], {
             onMessage: function (data, el) {
-                console.log(data);
                 addNotification(data, el);
             },
-            onViewed: function () {}
+            onViewed: function (data) {
+                $('.cp-app-notification-archived[data-hash="' + data.hash + '"]').show();
+            }
         });
 
         $(dismissAll).click(function () {

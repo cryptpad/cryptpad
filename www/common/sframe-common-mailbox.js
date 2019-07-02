@@ -80,7 +80,7 @@ define([
 
         onViewedHandlers.push(function (data) {
             var hash = data.hash.replace(/"/g, '\\\"');
-            var $notif = $('.cp-notification[data-hash="'+hash+'"]');
+            var $notif = $('.cp-notification[data-hash="'+hash+'"]:not(.cp-app-notification-archived)');
             if ($notif.length) {
                 $notif.remove();
             }
