@@ -92,6 +92,9 @@ define([
     var $folderIcon = $('<span>', {
         "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
     });
+    var faCut = 'fa-scissors';
+    var faCopy = 'fa-files-o';
+    var faPaste = 'fa-clipboard';
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
     var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " cptools cp-app-drive-icon-folder"});
@@ -130,6 +133,8 @@ define([
     var LS_OPENED = "app-drive-openedFolders";
     var LS_VIEWMODE = "app-drive-viewMode";
     var LS_SEARCHCURSOR = "app-drive-searchCursor";
+    var LS_CUT_CONTENT = "app-drive-cutContent";
+    var LS_COPIED_CONTENT = "app-drive-copiedContent";
     var FOLDER_CONTENT_ID = "cp-app-drive-content-folder";
 
     var config = {};
@@ -386,6 +391,19 @@ define([
                     'tabindex': '-1',
                     'data-icon': faRestore,
                 }, Messages.fc_restore)),
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-cut.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faCut,
+                }, Messages.fc_cut || "Cut")),
+                h('li', h('a.cp-app-drive-context-copy.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faCopy,
+                }, Messages.fc_copy || "Copy")),
+                h('li', h('a.cp-app-drive-context-paste.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faPaste,
+                }, Messages.fc_paste || "Paste")),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-rename.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -975,7 +993,10 @@ define([
                         // Hide the new shared folder menu if we're already in a shared folder
                         return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
-                    return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    if (className === 'newdoc') {
+                        return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    }
+                    if (className === 'paste') { return; }
                 };
             } else {
                 // In case of multiple selection, we must hide the option if at least one element
@@ -1084,10 +1105,10 @@ define([
 
             switch(type) {
                 case 'content':
-                    show = ['newfolder', 'newsharedfolder', 'newdoc'];
+                    show = ['newfolder', 'newsharedfolder', 'newdoc', 'paste'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag', 'cut', 'copy'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -1294,6 +1315,14 @@ define([
                         $(el).css("display", "block");
                         return;
                     }
+                });
+            });
+            // enable / disable paste
+            localStore.get(LS_CUT_CONTENT, function (cut) {
+                localStore.get(LS_COPIED_CONTENT, function (copied) {
+                    console.log("en/dis-able paste");
+                    console.log("disabled: ", !cut && !copied);
+                    $menu.find(".cp-app-drive-context-paste").toggleClass("disabled", !cut && !copied);
                 });
             });
             $menu.css({ display: "block" });
@@ -3470,7 +3499,7 @@ define([
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
-            if ($(this).hasClass("cp-app-drive-context-color")) {
+            else if ($(this).hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
@@ -3478,6 +3507,39 @@ define([
                     });
                     refresh();
                 });
+            }
+            else if ($(this).hasClass("cp-app-drive-context-cut")) {
+                console.log("%cCUT", "color: green");
+                var pathsToCut = paths.map(function (p) { return p.path; });
+                console.log("pathsToCut: ", pathsToCut);
+                localStore.put(LS_CUT_CONTENT, pathsToCut);
+                localStore.put(LS_COPIED_CONTENT, null);
+            }
+            else if ($(this).hasClass("cp-app-drive-context-copy")) {
+                console.log("%cCOPY", "color: green");
+                var pathsToCopy = paths.map(function (p) { return p.path; });
+                console.log("pathsToCopy: ", pathsToCopy);
+                localStore.put(LS_CUT_CONTENT, null);
+                localStore.put(LS_COPIED_CONTENT, pathsToCopy);
+            }
+            else if ($(this).hasClass("cp-app-drive-context-paste")) {
+                console.log("%cPASTE", "color: green");
+                localStore.get(LS_CUT_CONTENT, function (cut) {
+                    localStore.get(LS_COPIED_CONTENT, function (copied) {
+                        console.log("cut: ", cut);
+                        console.log("copied: ", copied);
+                        if (!cut && !copied || cut && copied) { return; }
+                        if (cut) {
+                            localStore.put(LS_CUT_CONTENT, null);
+                            // CUT & PASTE CONTENT
+                        }
+                        else if (copied) {
+                            // COPY & PASTE CONTENT
+                        }
+
+                    });
+                });
+
             }
             else if($(this).hasClass("cp-app-drive-context-delete")) {
                 if (!APP.loggedIn) {
