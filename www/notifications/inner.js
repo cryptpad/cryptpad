@@ -106,7 +106,7 @@ define([
             var loadmore;
             var lastKnownHash;
             $(dismissAll).remove();
-            loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.notifications_loadMore || "Load more ...");
+            loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.history_loadMore);
             $(loadmore).click(function () {
                 common.mailbox.getNotificationsHistory('notifications', 10, lastKnownHash, function (err, messages, end) {
                     if (!Array.isArray(messages)) { return; }
