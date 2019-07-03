@@ -21,7 +21,8 @@ define([
             name: user.name,
             channel: privateData.support,
             curvePublic: user.curvePublic,
-            edPublic: privateData.edPublic
+            edPublic: privateData.edPublic,
+            notifications: user.notifications,
         };
         data.id = id;
         data.time = +new Date();
