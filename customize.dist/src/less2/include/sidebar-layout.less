@@ -1,5 +1,6 @@
 @import (reference) "/customize/src/less2/include/colortheme-all.less";
 @import (reference) "/customize/src/less2/include/leftside-menu.less";
+@import (reference) "./browser.less";
 
 @sidebar_button-width: 400px;
 
@@ -109,4 +110,13 @@
     }
 }
 
+@media screen and (max-width: @browser_media-medium-screen) {
+    #cp-sidebarlayout-container {
+        flex-flow: column;
+        #cp-sidebarlayout-leftside {
+            width: 100%;
+        }
+    }
+
+}
 
