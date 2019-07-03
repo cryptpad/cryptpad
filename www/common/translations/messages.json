@@ -1057,7 +1057,7 @@
     "friendRequest_accepted": "<b>{0}</b> accepted your friend request",
     "friendRequest_received": "<b>{0}</b> would like to be your friend",
     "friendRequest_notification": "<b>{0}</b> sent you a friend request",
-    "notifications_empty": "You have no new notifications",
+    "notifications_empty": "No notifications available",
     "notifications_title": "You have unread notifications",
     "profile_addDescription": "Add a description",
     "profile_editDescription": "Edit your description",
@@ -1103,5 +1103,13 @@
     "support_remove": "Remove the ticket",
     "support_showData": "Show/hide user data",
     "support_from": "<b>From:</b> {0}",
-    "support_closed": "This ticket has been closed"
+    "support_closed": "This ticket has been closed",
+    "fc_noAction": "No action available",
+    "notificationsPage": "Notifications",
+    "openNotificationsApp": "Open notifications panel",
+    "notifications_cat_all": "All",
+    "notifications_cat_friends": "Friend requests",
+    "notifications_cat_pads": "Shared with me",
+    "notifications_cat_archived": "History",
+    "notifications_dismissAll": "Dismiss all"
 }

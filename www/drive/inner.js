@@ -124,6 +124,7 @@ define([
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
     var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
+    var $separator = $('<div>', {"class": "dropdown-divider"});
 
     var LS_LAST = "app-drive-lastOpened";
     var LS_OPENED = "app-drive-openedFolders";
@@ -303,6 +304,7 @@ define([
                 'aria-labelledby': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
+                h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
@@ -311,6 +313,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "expandAll",
@@ -319,6 +322,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': "collapseAll",
                 }, Messages.fc_collapseAll)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faColor,
@@ -347,6 +351,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.pad,
@@ -372,6 +377,7 @@ define([
                     'data-icon': AppConfig.applicationsIcon.whiteboard,
                     'data-type': 'whiteboard'
                 }, Messages.button_newwhiteboard)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faEmpty,
@@ -380,6 +386,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faRestore,
                 }, Messages.fc_restore)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-rename.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faRename,
@@ -406,6 +413,16 @@ define([
                 }, Messages.fc_prop)),
             ])
         ]);
+        $(menu).find("li a.dropdown-item").each(function (i, el) {
+            var $icon = $("<span>");
+            if ($(el).attr('data-icon')) {
+                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                $icon.addClass(font).addClass($(el).attr('data-icon'));
+            } else {
+                $icon.text($(el).text());
+            }
+            $(el).prepend($icon);
+        });
         return $(menu);
     };
 
@@ -1053,8 +1070,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf',
-                            'newfolder', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -1238,6 +1254,20 @@ define([
 
         var displayMenu = function (e) {
             var $menu = $contextMenu;
+            var showSep = false;
+            var $lastVisibleSep = null;
+            $menu.find(".dropdown-menu").children().each(function (i, el) {
+                var $el = $(el);
+                if ($el.is(".dropdown-divider")) {
+                    $el.css("display", showSep ? "list-item" : "none");
+                    if (showSep) { $lastVisibleSep = $el; }
+                    showSep = false;
+                }
+                else if ($el.is("li") && $el.css("display") !== "none") {
+                    showSep = true;
+                }
+            });
+            if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
             $menu.css({ display: "block" });
             if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
@@ -1313,11 +1343,7 @@ define([
 
                 displayMenu(e);
 
-                if ($contextMenu.find('li:visible').length === 0) {
-                    debug("No visible element in the context menu. Abort.");
-                    $contextMenu.hide();
-                    return true;
-                }
+                $(".cp-app-drive-context-noAction").toggle($contextMenu.find('li:visible').length === 0);
 
                 $contextMenu.data('paths', paths);
                 return false;
@@ -1345,6 +1371,7 @@ define([
                 });
                 cb();
             };
+            if (paths.some(function (p) { return manager.comparePath(newPath, p); })) { return void cb(); }
             manager.move(paths, newPath, newCb, copy);
         };
         // Delete paths from the drive and/or shared folders (without moving them to the trash)
@@ -2601,32 +2628,17 @@ define([
         var displaySearch = function ($list, value) {
             var filesList = manager.search(value);
             filesList.forEach(function (r) {
+                // if r.id === null, then it's a folder, not a file
                 r.paths.forEach(function (path) {
                     if (!r.inSharedFolder &&
                         APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
                     var href = r.data.href;
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
-                    var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
-                        .append(getFileIcon(r.id));
+                    var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'});
                     var $title = $('<td>', {
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-title'
-                    }).text(r.data.title)
-                        .click(function () {
-                        openFile(null, r.data.href);
-                    });
-                    var $typeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(Messages.fm_type);
-                    var $type = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(Messages.type[parsed.type] || parsed.type);
-                    var $atimeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(Messages.fm_lastAccess);
-                    var $atime = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(new Date(r.data.atime).toLocaleString());
-                    var $ctimeName = $('<td>', {'class': 'cp-app-drive-search-label2'})
-                        .text(Messages.fm_creation);
-                    var $ctime = $('<td>', {'class': 'cp-app-drive-search-col2'})
-                        .text(new Date(r.data.ctime).toLocaleString());
+                    }).text(r.data.title);
                     if (manager.isPathIn(path, ['hrefArray'])) {
                         path.pop();
                         path.push(r.data.title);
@@ -2635,25 +2647,48 @@ define([
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-path'
                     });
                     createTitle($path, path, true);
-                    var parentPath = path.slice();
-                    var $a;
-                    if (parentPath) {
-                        $a = $('<a>').text(Messages.fm_openParent).click(function (e) {
-                            e.preventDefault();
-                            if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
-                            else { parentPath.pop(); }
-                            APP.selectedFiles = [r.id];
-                            APP.displayDirectory(parentPath);
+                    var $typeName = $('<td>', {'class': 'cp-app-drive-search-label2'}).text(Messages.fm_type);
+                    var $type = $('<td>', {'class': 'cp-app-drive-search-col2'});
+                    var $atimeName = $('<td>', {'class': 'cp-app-drive-search-label2'});
+                    var $atime = $('<td>', {'class': 'cp-app-drive-search-col2'});
+                    var $ctimeName = $('<td>', {'class': 'cp-app-drive-search-label2'});
+                    var $ctime = $('<td>', {'class': 'cp-app-drive-search-col2'});
+                    var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'});
+                    if (r.id) {
+                        $icon.append(getFileIcon(r.id));
+                        $type.text(Messages.type[parsed.type] || parsed.type);
+                        $title.click(function () {
+                            openFile(null, r.data.href);
                         });
+                        $atimeName.text(Messages.fm_lastAccess);
+                        $atime.text(new Date(r.data.atime).toLocaleString());
+                        $ctimeName.text(Messages.fm_creation);
+                        $ctime.text(new Date(r.data.ctime).toLocaleString());
+                        var parentPath = path.slice();
+                        if (parentPath) {
+                            $('<a>').text(Messages.fm_openParent).click(function (e) {
+                                e.preventDefault();
+                                if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
+                                else { parentPath.pop(); }
+                                APP.selectedFiles = [r.id];
+                                APP.displayDirectory(parentPath);
+                            }).appendTo($openDir);
+                        }
+                        $('<a>').text(Messages.fc_prop).click(function () {
+                            APP.getProperties(r.id, function (e, $prop) {
+                                if (e) { return void logError(e); }
+                                UI.alert($prop[0], undefined, true);
+                            });
+                        }).appendTo($openDir);
                     }
-                    var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'}).append($a);
-
-                    $('<a>').text(Messages.fc_prop).click(function () {
-                        APP.getProperties(r.id, function (e, $prop) {
-                            if (e) { return void logError(e); }
-                            UI.alert($prop[0], undefined, true);
-                        });
-                    }).appendTo($openDir);
+                    else {
+                        $icon.append($folderIcon.clone());
+                        $type.text(Messages.fm_folder);
+                        $('<a>').text(Messages.fc_open).click(function (e) {
+                            e.preventDefault();
+                            APP.displayDirectory(path);
+                        }).appendTo($openDir);
+                    }
 
                     // rows 1-3
                     $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
@@ -3199,7 +3234,7 @@ define([
                 placeholder: Messages.fm_searchPlaceholder
             }).keyup(function (e) {
                 if (search.to) { window.clearTimeout(search.to); }
-                if ([38, 39, 40, 41].indexOf(e.which) !== -1) {
+                if ([37, 38, 39, 40].indexOf(e.which) !== -1) {
                     if (!$input.val()) {
                         $input.blur();
                         $content.focus();
@@ -3645,6 +3680,14 @@ define([
                 APP.displayDirectory(parentPath);
             }
             APP.hideMenu();
+        });
+
+        $content.on("keydown", function (e) {
+            if (e.which === 113) {
+                var paths = $contextMenu.data('paths');
+                if (paths.length !== 1) { return; }
+                displayRenameInput(paths[0].element, paths[0].path);
+            }
         });
 
         // Chrome considers the double-click means "select all" in the window
