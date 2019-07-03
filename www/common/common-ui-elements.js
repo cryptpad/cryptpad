@@ -162,7 +162,7 @@ define([
             }
 
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad') {
+            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                 var sframeChan = common.getSframeChannel();
                 var changePwTitle = Messages.properties_changePassword;
                 var changePwConfirm = Messages.properties_confirmChange;
@@ -412,6 +412,7 @@ define([
                         if (!friend.notifications || !friend.curvePublic) { return; }
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
+                            password: config.password,
                             name: myName,
                             title: title
                         }, {

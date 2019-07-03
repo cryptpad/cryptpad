@@ -625,6 +625,11 @@ define([
                 var root = exp.find([ROOT]);
                 var toClean = [];
                 for (var id in fd) {
+                    if (String(id) !== String(Number(id))) {
+                        debug("Invalid file ID in filesData.", id);
+                        toClean.push(id);
+                        continue;
+                    }
                     id = Number(id);
                     var el = fd[id];
 

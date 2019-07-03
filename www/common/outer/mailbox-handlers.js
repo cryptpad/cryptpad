@@ -1,6 +1,7 @@
 define([
     '/common/common-messaging.js',
-], function (Messaging) {
+    '/common/common-hash.js',
+], function (Messaging, Hash) {
 
     var getRandomTimeout = function (ctx) {
         var lag = ctx.store.realtime.getLag().lag || 0;
@@ -154,6 +155,50 @@ define([
         });
         ctx.updateMetadata();
         cb(true);
+    };
+
+    // Hide duplicates when receiving a SHARE_PAD notification:
+    // Keep only one notification per channel: the stronger and more recent one
+    var channels = {};
+    handlers['SHARE_PAD'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var hash = data.hash;
+        var content = msg.content;
+        // content.name, content.title, content.href, content.password
+
+        var channel = Hash.hrefToHexChannelId(content.href, content.password);
+        var parsed = Hash.parsePadUrl(content.href);
+        var mode = parsed.hashData && parsed.hashData.mode || 'n/a';
+
+        var old = channels[channel];
+        var toRemove;
+        if (old) {
+            // New hash is weaker, ignore
+            if (old.mode === 'edit' && mode === 'view') {
+                return void cb(true);
+            }
+            // New hash is not weaker, clear the old one
+            toRemove = old.data;
+        }
+
+        // Update the data
+        channels[channel] = {
+            mode: mode,
+            data: {
+                type: box.type,
+                hash: hash
+            }
+        };
+
+        cb(false, toRemove);
+    };
+    removeHandlers['SHARE_PAD'] = function (ctx, box, data, hash) {
+        var content = data.content;
+        var channel = Hash.hrefToHexChannelId(content.href, content.password);
+        var old = channels[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete channels[channel];
+        }
     };
 
     return {
