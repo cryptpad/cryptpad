@@ -2194,15 +2194,22 @@ define([
             var data = manager.getSharedFolderData(id);
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
+            var friends = common.getFriends();
             var modal = UIElements.createSFShareModal({
                 origin: APP.origin,
                 pathname: "/drive/",
+                friends: friends,
+                title: data.title,
+                password: data.password,
+                common: common,
                 hashes: {
                     editHash: parsed.hash
                 }
             });
             $shareBlock.click(function () {
-                UI.openCustomModal(modal);
+                UI.openCustomModal(modal, {
+                    wide: Object.keys(friends).length !== 0
+                });
             });
             $container.append($shareBlock);
         };
@@ -3399,7 +3406,9 @@ define([
                 //data.noPassword = true;
                 data.noEditPassword = true;
                 data.noExpiration = true;
-                data.sharedFolder = true; // XXX debug
+                // this is here to allow users to check the channel id of a shared folder
+                // we should remove it at some point
+                data.sharedFolder = true;
             }
 
             UIElements.getProperties(common, data, cb);
@@ -3537,6 +3546,7 @@ define([
                         friends: friends,
                         title: data.title,
                         common: common,
+                        password: data.password,
                         hashes: {
                             editHash: parsed.hash
                         }
@@ -3550,6 +3560,7 @@ define([
                         origin: APP.origin,
                         pathname: "/" + padType + "/",
                         friends: friends,
+                        password: data.password,
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: roParsed.hash,

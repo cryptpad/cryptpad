@@ -31,3 +31,4 @@ services:
       - ./data/tasks:/cryptpad/tasks:rw
       - ./data/block:/cryptpad/block:rw
       - ./data/config:/cryptpad/cfg:rw
+      - ./data/data:/cryptpad/data:rw

@@ -1683,7 +1683,7 @@ define([
                         state: (2 + (version / 10)),
                         progress: progress
                     });
-                });
+                }, store);
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3

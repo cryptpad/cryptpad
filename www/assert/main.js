@@ -372,6 +372,20 @@ define([
     }, "version 2 hash failed to parse correctly");
 
     assert(function (cb) {
+        var x;
+        var set_x = function (v) {
+            x = v;
+        };
+
+        Util.mkAsync(set_x)(7);
+        set_x(5);
+
+        Util.mkAsync(function (expected) {
+            cb(x === expected);
+        })(7);
+    }, "test mkAsync");
+
+    assert(function (cb) {
         Wire.create({
             constructor: function (cb) {
                 var service = function (type, data, cb) {

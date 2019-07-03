@@ -565,7 +565,7 @@
     "download_step1": "Laden...",
     "download_step2": "Entschlüsselung...",
     "todo_title": "CryptTodo",
-    "todo_newTodoNamePlaceholder": "Beschreibe deine Aufgabe...",
+    "todo_newTodoNamePlaceholder": "Beschreibe deine Aufgabe…",
     "todo_newTodoNameTitle": "Diese Aufgabe zu deiner ToDo-Liste hinzufügen",
     "todo_markAsCompleteTitle": "Diese Aufgabe als erledigt markieren",
     "todo_markAsIncompleteTitle": "Diese Aufgabe als nicht erledigt markieren",
@@ -830,7 +830,7 @@
         "generic": {
             "more": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a href=\"/faq.html\" target=\"_blank\">FAQ</a> liest",
             "share": "Benutze das Teilen-Menü (<span class=\"fa fa-share-alt\"></span>), um Links zu generieren, die Mitarbeiter zum Lesen oder Bearbeiten einladen",
-            "save": "Alle Änderungen werden automatisch synchronisiert. Du misst sie also nicht speichern"
+            "save": "Alle Änderungen werden automatisch synchronisiert. Du musst sie also nicht selbst speichern"
         },
         "text": {
             "formatting": "Du kannst die Werkzeugleiste anzeigen oder verbergen, indem du auf <span class=\"fa fa-caret-down\"></span> oder <span class=\"fa fa-caret-up\"></span> klickst",
@@ -1074,5 +1074,6 @@
     "fm_info_sharedFolderHistory": "Dies ist nur der Verlauf deines geteilten Ordners: <b>{0}</b><br/>Dein CryptDrive bleibt beim Navigieren im Nur-Lesen-Modus.",
     "share_description": "Wähle aus, was du teilen möchtest. Dir wird dann ein entsprechender Link anzeigt. Du kannst es auch direkt an deine Freunde in CryptPad senden.",
     "fc_expandAll": "Alle ausklappen",
-    "fc_collapseAll": "Alle einklappen"
+    "fc_collapseAll": "Alle einklappen",
+    "fc_color": "Farbe ändern"
 }

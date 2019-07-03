@@ -342,7 +342,7 @@ define([
                         });
 
                         // Remove the elements from the old location (without unpinning)
-                        Env.user.userObject.delete(resolved.main, waitFor());
+                        Env.user.userObject.delete(resolved.main, waitFor()); // FIXME waitFor() is called synchronously
                     }
                 }
             }
@@ -369,7 +369,7 @@ define([
                         if (copy) { return; }
 
                         // Remove the elements from the old location (without unpinning)
-                        uoFrom.delete(paths, waitFor());
+                        uoFrom.delete(paths, waitFor()); // FIXME waitFor() is called synchronously
                     }
                 });
             }
@@ -707,6 +707,7 @@ define([
             if (type === 'expirable') {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
+                    if (!data) { return; }
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return pads owned by someone else or expired by time
@@ -718,6 +719,7 @@ define([
             if (type === 'owned') {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
+                    if (!data) { return; }
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return owned pads
@@ -729,6 +731,7 @@ define([
             if (type === "pin") {
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
+                    if (!data) { return; }
                     // Don't pin pads owned by someone else
                     if (_ownedByOther(Env, data.owners)) { return; }
                     // Don't push duplicates

@@ -191,9 +191,6 @@ define([
                 userObject.version = version = 8;
             }
         }).nThen(function () {
-            if (!AppConfig.migrateFriends) { return; } // XXX
-
-
             // Migration 9: send our mailbox channel to existing friends
             var migrateFriends = function () {
                 var network = store.network;

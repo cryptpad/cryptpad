@@ -1074,5 +1074,6 @@
     "share_withFriends": "Partager",
     "notifications_dismiss": "Cacher",
     "fm_info_sharedFolderHistory": "Vous regardez l'historique de votre dossier partagé <b>{0}</b><br/>Votre CryptDrive restera en lecture seule pendant la navigation.",
-    "share_description": "Choisissez ce que vous souhaitez partager puis obtenez le lien ou envoyez-le directement à vos amis CryptPad."
+    "share_description": "Choisissez ce que vous souhaitez partager puis obtenez le lien ou envoyez-le directement à vos amis CryptPad.",
+    "fc_color": "Changer la couleur"
 }

@@ -311,12 +311,12 @@ define([
         _getFiles[FILES_DATA] = function () {
             var ret = [];
             if (!files[FILES_DATA]) { return ret; }
-            return Object.keys(files[FILES_DATA]).map(Number);
+            return Object.keys(files[FILES_DATA]).map(Number).filter(Boolean);
         };
         _getFiles[SHARED_FOLDERS] = function () {
             var ret = [];
             if (!files[SHARED_FOLDERS]) { return ret; }
-            return Object.keys(files[SHARED_FOLDERS]).map(Number);
+            return Object.keys(files[SHARED_FOLDERS]).map(Number).filter(Boolean);
         };
         var getFiles = exp.getFiles = function (categories) {
             var ret = [];

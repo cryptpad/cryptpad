@@ -21,22 +21,6 @@ define([
                             h('h2.text-center', Msg.about_core)
                         ]),
                     ]),
-                h('div.row.align-items-center', [
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-bio-avatar', [
-                        h('img.img-fluid', {'src': '/customize/images/CalebJames.jpg'})
-                            ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-profile-det', [
-                        h('h3', "Caleb James Delisle"),
-                        h('hr'),
-                        Pages.setHTML(h('div#bioCaleb'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.<br/>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.<br/>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.<br/>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>'),
-                        h('a.cp-soc-media', { href : 'https://twitter.com/cjdelisle'}, [
-                                h('i.fa.fa-twitter')
-                            ]),
-                        h('a.cp-soc-media', { href : 'https://github.com/cjdelisle'}, [
-                                h('i.fa.fa-github')
-                            ])
-                    ]),
-                ]),
                 h('div.row.align-items-center',[
                     h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
@@ -74,16 +58,16 @@ define([
                     ]),
                 h('div.row.align-items-center', [
                     h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-bio-avatar', [
-                        h('img.img-fluid', {'src': '/customize/images/Pierre-new.jpg'})
+                        h('img.img-fluid', {'src': '/customize/images/CalebJames.jpg'})
                             ]),
                     h('div.col-12.col-sm-12.col-md-12.col-lg-6.cp-profile-det', [
-                        h('h3', "Pierre Bondoerffer"),
+                        h('h3', "Caleb James Delisle"),
                         h('hr'),
-                        Pages.setHTML(h('div#bioPierre'), '<p>Resident CSS wizard and emoji extraordinaire, Pierre is passionate about anything related to technology. He loves to hack around computers and put parts together.<br/>He is currently studying at 42, where he learns about algorithms, networking, kernel programming and graphics.<br/>As a part of an internship, he joined XWiki SAS and worked on CryptPad to improve user experience. He also maintains the Spanish translation.</p>'),
-                        h('a.cp-soc-media', { href : 'https://twitter.com/pbondoer'}, [
+                        Pages.setHTML(h('div#bioCaleb'), '<p>Caleb is a cryptography developer, Machine Technology graduate of the Franklin County Technical School and lifelong tinkerer.<br/>In 2011, he started the cjdns Open Source project to show that secure networking could be invisible and easily deployed.<br/>After joining XWiki SAS in 2014, he started the CryptPad project with the intent of bringing the same transparent security to collaborative editing.<br/>He\'s always trying to learn from more experienced colleagues and when someone passes through the Research Team office, his favorite words are "Pull up a chair!".</p>'),
+                        h('a.cp-soc-media', { href : 'https://twitter.com/cjdelisle'}, [
                                 h('i.fa.fa-twitter')
                             ]),
-                        h('a.cp-soc-media', { href : 'https://github.com/pbondoer'}, [
+                        h('a.cp-soc-media', { href : 'https://github.com/cjdelisle'}, [
                                 h('i.fa.fa-github')
                             ])
                     ]),

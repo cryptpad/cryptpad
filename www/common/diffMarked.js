@@ -84,6 +84,12 @@ define([
         }
     };
 
+    var stripTags = function (text) {
+        var div = document.createElement("div");
+        div.innerHTML = text;
+        return div.innerText;
+    };
+
     renderer.heading = function (text, level) {
         var i = 0;
         var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
@@ -99,7 +105,7 @@ define([
         toc.push({
             level: level,
             id: id,
-            title: text
+            title: stripTags(text)
         });
         return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
     };
@@ -122,10 +128,10 @@ define([
         }
         if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
             if (/checked/.test(text)) {
-                text = text.replace(bogusCheckPtn, 
+                text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
             } else if (/disabled/.test(text)) {
-                text = text.replace(bogusCheckPtn, 
+                text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
             }
         }
