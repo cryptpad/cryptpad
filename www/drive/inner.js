@@ -1320,8 +1320,6 @@ define([
             // enable / disable paste
             localStore.get(LS_CUT_CONTENT, function (cut) {
                 localStore.get(LS_COPIED_CONTENT, function (copied) {
-                    console.log("en/dis-able paste");
-                    console.log("disabled: ", !cut && !copied);
                     $menu.find(".cp-app-drive-context-paste").toggleClass("disabled", !cut && !copied);
                 });
             });
@@ -1423,9 +1421,11 @@ define([
                 return;
             }
             var newCb = function () {
-                paths.forEach(function (path) {
-                    moveFoldersOpened(path, newPath);
-                });
+                if (!copy) {
+                    paths.forEach(function (path) {
+                        moveFoldersOpened(path, newPath);
+                    });
+                }
                 cb();
             };
             if (paths.some(function (p) { return manager.comparePath(newPath, p); })) { return void cb(); }
@@ -3531,10 +3531,12 @@ define([
                         if (!cut && !copied || cut && copied) { return; }
                         if (cut) {
                             localStore.put(LS_CUT_CONTENT, null);
-                            // CUT & PASTE CONTENT
+                            console.log("CUT & PASTE CONTENT");
+                            moveElements(cut, currentPath, false, refresh);
                         }
                         else if (copied) {
-                            // COPY & PASTE CONTENT
+                            console.log("COPY & PASTE CONTENT");
+                            moveElements(copied, currentPath, true, refresh);
                         }
 
                     });
