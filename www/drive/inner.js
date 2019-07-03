@@ -305,10 +305,10 @@ define([
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
                 h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
-//                h('li', h('a.cp-app-drive-context-open.dropdown-item', {
-//                    'tabindex': '-1',
-//                    'data-icon': faFolderOpen,
-//                }, Messages.fc_open)),
+                h('li', h('a.cp-app-drive-context-open.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faFolderOpen,
+                }, Messages.fc_open)),
                 h('li', h('a.cp-app-drive-context-openro.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
@@ -323,22 +323,38 @@ define([
                     'data-icon': "collapseAll",
                 }, Messages.fc_collapseAll)),
                 $separator.clone()[0],
-//                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
-//                    'tabindex': '-1',
-//                    'data-icon': faColor,
-//                }, Messages.fc_color)),
-                h('li.dropdown-submenu', [
-                    h('a.cp-app-drive-context-color.dropdown-item.dropdown-toggle', {
-                        'tabindex': '-1',
-                        'data-icon': faColor,
-                    }, Messages.fc_color),
-                    h("ul.dropdown-menu", [
-                        h('li', h('a.cp-app-drive-context-open.dropdown-item', {
-                            'tabindex': '-1',
-                            'data-icon': faFolderOpen,
-                        }, Messages.fc_open))
-                    ])
-                ]),
+                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faColor,
+                }, Messages.fc_color)),
+//                h('li.dropdown-submenu', [
+//                    h('a.cp-app-drive-context-test.dropdown-item', {
+//                        'tabindex': '-1',
+//                        'data-icon': faFolderOpen,
+//                    }, "TEST"),
+//                    h("ul.dropdown-menu", [
+//                        h('li', h('a.cp-app-drive-context-subtest1.dropdown-item', {
+//                            'tabindex': '-1',
+//                            'data-icon': faFolderOpen,
+//                        }, "Sub test 1")),
+//                        h('li.dropdown-submenu', [
+//                            h('a.cp-app-drive-context-test.dropdown-item', {
+//                                'tabindex': '-1',
+//                                'data-icon': faFolderOpen,
+//                            }, "TEST"),
+//                            h("ul.dropdown-menu", [
+//                                h('li', h('a.cp-app-drive-context-subtest2.dropdown-item', {
+//                                    'tabindex': '-1',
+//                                    'data-icon': faFolderOpen,
+//                                }, "Sub test 2")),
+//                                h('li', h('a.cp-app-drive-context-subtest3.dropdown-item', {
+//                                    'tabindex': '-1',
+//                                    'data-icon': faFolderOpen,
+//                                }, "Sub test 3")),
+//                            ]),
+//                        ]),
+//                    ]),
+//                ]),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
@@ -437,12 +453,18 @@ define([
         });
         $(menu).find(".dropdown-submenu").each(function (i, el) {
             var $el = $(el);
-            var $sub = $el.find(".dropdown-menu");
+            var $a = $el.children().filter("a");
+            var $sub = $el.find(".dropdown-menu").first();
+            // Add submenu expand icon
+            $a.append(h("span.dropdown-toggle"));
+            // Show / hide submenu
             $el.hover(function () {
                 setTimeout(function () { // wait for dom to update
                     $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                    $sub.show();
                 });
             }, function () {
+                $sub.hide();
                 $sub.removeClass("left");
             });
         });
@@ -1093,7 +1115,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag', 'subtest1', 'subtest2', 'subtest3'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -1279,6 +1301,7 @@ define([
             var $menu = $contextMenu;
             var showSep = false;
             var $lastVisibleSep = null;
+            // show / hide drop-down divider
             $menu.find(".dropdown-menu").children().each(function (i, el) {
                 var $el = $(el);
                 if ($el.is(".dropdown-divider")) {
@@ -1291,6 +1314,16 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
+            // show / hide submenus
+            $menu.find(".dropdown-submenu").each(function (i, el) {
+                var $el = $(el);
+                $el.find("li").each(function (i, li) {
+                    if ($(li).css("display") !== "none") {
+                        $(el).css("display", "block");
+                        return;
+                    }
+                });
+            });
             $menu.css({ display: "block" });
             if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
