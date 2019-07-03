@@ -87,9 +87,9 @@ define([
         var addArchivedNotification = function (data) {
             // if the type is allowed
             if (data.content.archived && notifsAllowedTypes.indexOf(data.content.msg.type) !== -1) {
-                var isDataUnread = unreadData.findIndex(function (ud) {
+                var isDataUnread = unreadData.some(function (ud) {
                     return ud.content.hash === data.content.hash;
-                }) !== -1;
+                });
                 notifsData.push(data);
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
