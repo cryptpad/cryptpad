@@ -77,6 +77,8 @@ define([
     var faFolderOpen = 'cptools-folder-open';
     var faSharedFolder = 'cptools-shared-folder';
     var faSharedFolderOpen = 'cptools-shared-folder-open';
+    var faExpandAll = 'fa-plus-square-o';
+    var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
@@ -316,11 +318,11 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "expandAll",
+                    'data-icon': faExpandAll,
                 }, Messages.fc_expandAll)),
                 h('li', h('a.cp-app-drive-context-collapseall.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "collapseAll",
+                    'data-icon': faCollapseAll,
                 }, Messages.fc_collapseAll)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
