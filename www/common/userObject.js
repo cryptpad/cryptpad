@@ -519,26 +519,17 @@ define([
             var resFolders = [];
             var findFoldersRec = function (folder, path) {
                 for (var key in folder) {
-                    if (isFolder(folder[key])) {
-                        if (isSharedFolder(folder[key])) {
-//                            var name = getSharedFolderData(folder[key]).title || "";
-//                            if (name.toLowerCase().indexOf(lValue) !== -1) {
-//                                resFolders.push(path.concat([key, ROOT]));
-//                            }
-                            findFoldersRec(folder[key], path.concat([key, ROOT]));
+                    if (isFolder(folder[key]) && !isSharedFolder(folder[key])) {
+                        if (key.toLowerCase().indexOf(lValue) !== -1) {
+                            resFolders.push({
+                                id: null,
+                                paths: [path.concat(key)],
+                                data: {
+                                    title: key
+                                }
+                            });
                         }
-                        else {
-                            if (key.toLowerCase().indexOf(lValue) !== -1) {
-                                resFolders.push({
-                                    id: null,
-                                    paths: [path.concat(key)],
-                                    data: {
-                                        title: key
-                                    }
-                                });
-                            }
-                            findFoldersRec(folder[key], path.concat(key));
-                        }
+                        findFoldersRec(folder[key], path.concat(key));
                     }
                 }
             };

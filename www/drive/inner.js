@@ -2684,7 +2684,7 @@ define([
                     else {
                         $icon.append($folderIcon.clone());
                         $type.text(Messages.fm_folder);
-                        $('<a>').text(Messages.fm_openFolder || "Open folder").click(function (e) {
+                        $('<a>').text(Messages.fc_open).click(function (e) {
                             e.preventDefault();
                             APP.displayDirectory(path);
                         }).appendTo($openDir);
