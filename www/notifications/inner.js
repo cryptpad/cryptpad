@@ -93,7 +93,7 @@ define([
                 notifsData.push(data);
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
-                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleDateString() + " - " + time.toLocaleTimeString()));
+                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));
                 $(el).addClass("cp-app-notification-archived");
                 $(el).toggle(!isDataUnread);
                 $(notifsList).append(el);
