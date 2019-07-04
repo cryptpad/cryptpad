@@ -11,11 +11,33 @@
         li {
             padding: 0;
             font-size: @colortheme_app-font-size;
+            &.dropdown-submenu {
+                position: relative;
+                &> a {
+                    cursor: default;
+                    // reset bootstrap active style
+                    &:active {
+                        background: inherit;
+                        color: inherit;
+                    }
+                }
+                .dropdown-toggle {
+                    margin-left: 1rem;
+                }
+                .dropdown-menu {
+                    top: -0.7rem;
+                    left: 100%;
+                    &.left {
+                        left: -10rem;
+                    }
+                }
+            }
             a {
                 cursor: pointer;
                 .fa, .cptools {
                     margin-right: 1rem;
                     color: @colortheme_context-menu-icon-color;
+                    width: 16px;
                 }
             }
         }

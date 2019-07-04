@@ -77,6 +77,8 @@ define([
     var faFolderOpen = 'cptools-folder-open';
     var faSharedFolder = 'cptools-shared-folder';
     var faSharedFolderOpen = 'cptools-shared-folder-open';
+    var faExpandAll = 'fa-plus-square-o';
+    var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
@@ -316,11 +318,11 @@ define([
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "expandAll",
+                    'data-icon': faExpandAll,
                 }, Messages.fc_expandAll)),
                 h('li', h('a.cp-app-drive-context-collapseall.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "collapseAll",
+                    'data-icon': faCollapseAll,
                 }, Messages.fc_collapseAll)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
@@ -422,6 +424,23 @@ define([
                 $icon.text($(el).text());
             }
             $(el).prepend($icon);
+        });
+        $(menu).find(".dropdown-submenu").each(function (i, el) {
+            var $el = $(el);
+            var $a = $el.children().filter("a");
+            var $sub = $el.find(".dropdown-menu").first();
+            // Add submenu expand icon
+            $a.append(h("span.dropdown-toggle"));
+            // Show / hide submenu
+            $el.hover(function () {
+                setTimeout(function () { // wait for dom to update
+                    $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                    $sub.show();
+                });
+            }, function () {
+                $sub.hide();
+                $sub.removeClass("left");
+            });
         });
         return $(menu);
     };
@@ -1256,6 +1275,7 @@ define([
             var $menu = $contextMenu;
             var showSep = false;
             var $lastVisibleSep = null;
+            // show / hide drop-down divider
             $menu.find(".dropdown-menu").children().each(function (i, el) {
                 var $el = $(el);
                 if ($el.is(".dropdown-divider")) {
@@ -1268,6 +1288,16 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
+            // show / hide submenus
+            $menu.find(".dropdown-submenu").each(function (i, el) {
+                var $el = $(el);
+                $el.find("li").each(function (i, li) {
+                    if ($(li).css("display") !== "none") {
+                        $(el).css("display", "block");
+                        return;
+                    }
+                });
+            });
             $menu.css({ display: "block" });
             if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
