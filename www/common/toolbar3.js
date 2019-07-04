@@ -959,6 +959,7 @@ MessengerUI, Messages) {
         ]);
         var pads_options = [div];
         if (Common.isLoggedIn()) {
+            pads_options.unshift(h("hr"));
             pads_options.unshift(openNotifsApp);
         }
         var dropdownConfig = {
