@@ -701,7 +701,10 @@ define([
             },
             keys: [13]
         }];
-        var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
+        var frameLink = UI.dialog.customModal(link, {
+            buttons: linkButtons,
+            onClose: config.onClose,
+        });
 
         // Embed tab
         var embed = h('div.cp-share-modal', [
@@ -728,7 +731,10 @@ define([
             },
             keys: [13]
         }];
-        var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
+        var frameEmbed = UI.dialog.customModal(embed, {
+            buttons: embedButtons,
+            onClose: config.onClose,
+        });
 
         // Create modal
         var tabs = [{
