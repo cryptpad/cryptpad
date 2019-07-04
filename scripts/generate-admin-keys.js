@@ -3,8 +3,6 @@
 const Nacl = require('tweetnacl');
 
 const keyPair = Nacl.box.keyPair();
-console.log(keyPair);
-
 console.log("You've just generated a new key pair for your support mailbox.");
 
 console.log("The public key should first be added to your config.js file ('supportMailboxPublicKey'), then save and restart the server.");

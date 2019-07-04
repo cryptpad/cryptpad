@@ -223,6 +223,11 @@ define([
                             sframeChan.event("EV_PAD_PASSWORD");
                         };
 
+                        if (!val && sessionStorage.newPadPassword) {
+                            val = sessionStorage.newPadPassword;
+                            delete sessionStorage.newPadPassword;
+                        }
+
                         if (val) {
                             password = val;
                             Cryptpad.getFileSize(window.location.href, password, waitFor(function (e, size) {

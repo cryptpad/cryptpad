@@ -55,7 +55,7 @@ define([
     var makeNotificationList = function (key, filterTypes) {
         filterTypes = filterTypes || [];
         var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-        var categoryName = Messages['notification_cat_' + safeKey] || safeKey;
+        var categoryName = Messages['notifications_cat_' + safeKey] || safeKey;
 
         var notifsData = [];
         if (key === "all") {
@@ -68,7 +68,7 @@ define([
                 h("span.cp-app-notifications-panel-title",
                     (Messages.notificationsPage || "Notifications") + " - " + categoryName),
                 h("div.cp-app-notifications-panel-titlebar-buttons", [
-                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
+                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.notifications_dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
                 ]),
             ]),
             notifsList = h("div.cp-app-notifications-panel-list", [
@@ -87,13 +87,13 @@ define([
         var addArchivedNotification = function (data) {
             // if the type is allowed
             if (data.content.archived && notifsAllowedTypes.indexOf(data.content.msg.type) !== -1) {
-                var isDataUnread = unreadData.findIndex(function (ud) {
+                var isDataUnread = unreadData.some(function (ud) {
                     return ud.content.hash === data.content.hash;
-                }) !== -1;
+                });
                 notifsData.push(data);
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
-                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleDateString() + " - " + time.toLocaleTimeString()));
+                $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));
                 $(el).addClass("cp-app-notification-archived");
                 $(el).toggle(!isDataUnread);
                 $(notifsList).append(el);
@@ -106,7 +106,7 @@ define([
             var loadmore;
             var lastKnownHash;
             $(dismissAll).remove();
-            loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.loadMore || "Load more ...");
+            loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.history_loadMore);
             $(loadmore).click(function () {
                 common.mailbox.getNotificationsHistory('notifications', 10, lastKnownHash, function (err, messages, end) {
                     if (!Array.isArray(messages)) { return; }
@@ -211,7 +211,7 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['notification_cat_'+key] || key);
+            $category.append(Messages['notifications_cat_'+key] || key);
         });
         showCategories(categories[active]);
     };

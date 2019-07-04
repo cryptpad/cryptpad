@@ -78,7 +78,12 @@ define([
             return Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]);
         };
         content.handler = function () {
-            common.openURL(msg.content.href);
+            var todo = function () { common.openURL(msg.content.href); };
+            if (!msg.content.password) { return void todo(); }
+            common.getSframeChannel().query('Q_SESSIONSTORAGE_PUT', {
+                key: 'newPadPassword',
+                value: msg.content.password
+            }, todo);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);

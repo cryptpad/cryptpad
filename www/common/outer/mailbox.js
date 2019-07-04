@@ -187,6 +187,7 @@ proxy.mailboxes = {
     var openChannel = function (ctx, type, m, onReady) {
         var box = ctx.boxes[type] = {
             channel: m.channel,
+            type: type,
             queue: [], // Store the messages to send when the channel is ready
             history: [], // All the hashes loaded from the server in corretc order
             content: {}, // Content of the messages that should be displayed
@@ -259,8 +260,8 @@ proxy.mailboxes = {
                     msg: msg,
                     hash: hash
                 };
-                Handlers.add(ctx, box, message, function (toDismiss) {
-                    if (toDismiss) {
+                Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
+                    if (dismissed) { // This message should be removed
                         dismiss(ctx, {
                             type: type,
                             hash: hash
@@ -268,6 +269,11 @@ proxy.mailboxes = {
                             console.log('Notification handled automatically');
                         });
                         return;
+                    }
+                    if (toDismiss) { // List of other messages to remove
+                        dismiss(ctx, toDismiss, '', function () {
+                            console.log('Notification handled automatically');
+                        });
                     }
                     box.content[hash] = msg;
                     showMessage(ctx, type, message);

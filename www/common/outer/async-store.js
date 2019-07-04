@@ -1076,6 +1076,7 @@ define([
                     curvePrivate: priv
                 }
             };
+            Store.pinPads(null, [channel], function () {});
             store.mailbox.open('supportadmin', box, function () {
                 console.log('ready');
             });

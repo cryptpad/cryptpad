@@ -311,12 +311,12 @@ define([
         _getFiles[FILES_DATA] = function () {
             var ret = [];
             if (!files[FILES_DATA]) { return ret; }
-            return Object.keys(files[FILES_DATA]).map(Number);
+            return Object.keys(files[FILES_DATA]).map(Number).filter(Boolean);
         };
         _getFiles[SHARED_FOLDERS] = function () {
             var ret = [];
             if (!files[SHARED_FOLDERS]) { return ret; }
-            return Object.keys(files[SHARED_FOLDERS]).map(Number);
+            return Object.keys(files[SHARED_FOLDERS]).map(Number).filter(Boolean);
         };
         var getFiles = exp.getFiles = function (categories) {
             var ret = [];
@@ -514,6 +514,31 @@ define([
                     data: exp.getFileData(l)
                 });
             });
+
+            // find folders
+            var resFolders = [];
+            var findFoldersRec = function (folder, path) {
+                for (var key in folder) {
+                    if (isFolder(folder[key]) && !isSharedFolder(folder[key])) {
+                        if (key.toLowerCase().indexOf(lValue) !== -1) {
+                            resFolders.push({
+                                id: null,
+                                paths: [path.concat(key)],
+                                data: {
+                                    title: key
+                                }
+                            });
+                        }
+                        findFoldersRec(folder[key], path.concat(key));
+                    }
+                }
+            };
+            findFoldersRec(files[ROOT], [ROOT]);
+            resFolders = resFolders.sort(function (a, b) {
+                return a.data.title.toLowerCase() > b.data.title.toLowerCase();
+            });
+            ret = resFolders.concat(ret);
+
             return ret;
         };
         exp.getRecentPads = function () {
