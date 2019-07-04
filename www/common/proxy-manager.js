@@ -252,6 +252,9 @@ define([
                 var obj = Env.folders[el].proxy.metadata || {};
                 if (obj) { key = obj.title; }
             } else {
+                try {
+                    el = JSON.parse(JSON.stringify(el));
+                } catch (e) { return undefined; }
                 userObject.getFilesRecursively(el, files);
             }
 
