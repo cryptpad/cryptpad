@@ -1867,7 +1867,7 @@ define([
                 content: h('span', Messages.adminPage || 'Admin')
             });
         }
-        if (padType !== 'support' && accountName) {
+        if (padType !== 'support' && accountName && Config.supportMailbox) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
