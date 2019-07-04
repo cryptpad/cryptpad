@@ -314,7 +314,7 @@ define([
                 // Move from the main drive
                 if (!newResolved.id) {
                     // Move from the main drive to the main drive
-                    Env.user.userObject.move(resolved.main, newResolved.path, waitFor());
+                    Env.user.userObject.move(resolved.main, newResolved.path, copy, waitFor());
                 } else {
                     // Move from the main drive to a shared folder
 
@@ -354,7 +354,7 @@ define([
                     var paths = resolved.folders[fId];
                     if (newResolved.id === fId) {
                         // Move to the same shared folder
-                        newResolved.userObject.move(paths, newResolved.path, waitFor());
+                        newResolved.userObject.move(paths, newResolved.path, copy, waitFor());
                     } else {
                         // Move to a different shared folder or to main drive
                         var uoFrom = Env.folders[fId].userObject;

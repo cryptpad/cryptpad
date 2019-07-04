@@ -582,7 +582,7 @@ define([
         };
 
         // MOVE
-        var move = exp.move = function (paths, newPath, cb) {
+        var move = exp.move = function (paths, newPath, copy, cb) {
             if (sframeChan) {
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "move",
@@ -607,6 +607,7 @@ define([
                     toRemove.push(p);
                 }
             });
+            if (copy) { return void cb(); }
             exp.delete(toRemove, cb);
         };
         exp.restore = function (path, cb) {
