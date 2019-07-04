@@ -1105,5 +1105,11 @@
     "notifications_cat_friends": "Demandes d'ami",
     "notifications_cat_pads": "Partagé avec moi",
     "notifications_cat_archived": "Historique",
-    "notifications_dismissAll": "Tout cacher"
+    "notifications_dismissAll": "Tout cacher",
+    "admin_supportInitHelp": "Votre serveur n'est pas configuré pour avoir une messagerie de support. Si vous souhaitez activer cette messagerie pour recevoir des messages des utilisateurs, vous devez demander à l'administrateur du serveur d'exécuter le script situé dans \"./scripts/generate-admin-keys.js\", de stocker la clé publique générée dans \"config.js\" puis de vous envoyer la clé privée.",
+    "admin_supportInitPrivate": "Votre instance de CryptPad est configurée pour utiliser la messagerie de support mais votre compte utilisateur ne connaît pas la bonne clé privée nécessaire pour y avoir accès. Veuillez utiliser le formulaire suivant pour ajouter ou mettre à jour la clé dans votre compte.",
+    "admin_supportInitHint": "Vous pouvez configurer une messagerie de support afin de fournir aux utilisateurs de votre instance CryptPad un moyen de vous contacter de manière sécurisée en cas de problème avec leur compte.",
+    "admin_supportListHint": "Voici la liste des tickets envoyés par les utilisateurs au support. Tous les administrateurs peuvent voir les tickets et leurs réponses. Un ticket fermé ne peut pas être ré-ouvert. Vous ne pouvez supprimer (ou cacher) que les tickets fermés, et les tickets supprimés restent visible par les autres administrateurs.",
+    "support_formHint": "Ce formulaire peut être utilisé pour créer un nouveau ticket de support. Utilisez-le pour contacter les administrateurs de manière sécurisée afin de résoudre un problème ou d'obtenir des renseignements. Merci de ne pas créer de nouveau ticket si vous avez déjà un ticket ouvert concernant le même problème, vous pouvez utiliser le bouton \"Répondre\" dans ce cas.",
+    "support_listHint": "Voici la liste des tickets envoyés au support, ainsi que les réponses. Un ticket fermé ne peut pas être ré-ouvert, mais il est possible d'en créer un nouveau. Vous pouvez cacher les tickets qui ont été fermés."
 }
