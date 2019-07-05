@@ -327,34 +327,56 @@ define([
                     'tabindex': '-1',
                     'data-icon': faColor,
                 }, Messages.fc_color)),
-//                h('li.dropdown-submenu', [
-//                    h('a.cp-app-drive-context-test.dropdown-item', {
-//                        'tabindex': '-1',
-//                        'data-icon': faFolderOpen,
-//                    }, "TEST"),
-//                    h("ul.dropdown-menu", [
-//                        h('li', h('a.cp-app-drive-context-subtest1.dropdown-item', {
-//                            'tabindex': '-1',
-//                            'data-icon': faFolderOpen,
-//                        }, "Sub test 1")),
-//                        h('li.dropdown-submenu', [
-//                            h('a.cp-app-drive-context-test.dropdown-item', {
-//                                'tabindex': '-1',
-//                                'data-icon': faFolderOpen,
-//                            }, "TEST"),
-//                            h("ul.dropdown-menu", [
-//                                h('li', h('a.cp-app-drive-context-subtest2.dropdown-item', {
-//                                    'tabindex': '-1',
-//                                    'data-icon': faFolderOpen,
-//                                }, "Sub test 2")),
-//                                h('li', h('a.cp-app-drive-context-subtest3.dropdown-item', {
-//                                    'tabindex': '-1',
-//                                    'data-icon': faFolderOpen,
-//                                }, "Sub test 3")),
-//                            ]),
-//                        ]),
-//                    ]),
-//                ]),
+                h('li.dropdown-submenu', [
+                    h('a.cp-app-drive-context-test.dropdown-item', {
+                        'tabindex': '-1',
+                        'data-icon': faFolderOpen,
+                    }, "TEST"),
+                    h("ul.dropdown-menu", [
+                        h('li', h('a.cp-app-drive-context-subtest1.dropdown-item', {
+                            'tabindex': '-1',
+                            'data-icon': faFolderOpen,
+                        }, "Sub test 1")),
+                        h('li.dropdown-submenu', [
+                            h('a.cp-app-drive-context-test.dropdown-item', {
+                                'tabindex': '-1',
+                                'data-icon': faFolderOpen,
+                            }, "TEST"),
+                            h("ul.dropdown-menu", [
+                                h('li', h('a.cp-app-drive-context-subtest2.dropdown-item', {
+                                    'tabindex': '-1',
+                                    'data-icon': faFolderOpen,
+                                }, "Sub test 2")),
+                                h('li', h('a.cp-app-drive-context-subtest3.dropdown-item', {
+                                    'tabindex': '-1',
+                                    'data-icon': faFolderOpen,
+                                }, "Sub test 3")),
+                            ]),
+                        ]),
+                        $separator.clone()[0],
+                        h('li', h('a.cp-app-drive-context-subtest4.dropdown-item', {
+                            'tabindex': '-1',
+                            'data-icon': faFolderOpen,
+                        }, "Sub test 4")),
+                        $separator.clone()[0],
+                        h('li.dropdown-submenu', [
+                            h('a.cp-app-drive-context-test.dropdown-item', {
+                                'tabindex': '-1',
+                                'data-icon': faFolderOpen,
+                            }, "TEST"),
+                            h("ul.dropdown-menu", [
+                                h('li', h('a.cp-app-drive-context-subtest5.dropdown-item', {
+                                    'tabindex': '-1',
+                                    'data-icon': faFolderOpen,
+                                }, "Sub test 5")),
+                                h('li', h('a.cp-app-drive-context-subtest6.dropdown-item', {
+                                    'tabindex': '-1',
+                                    'data-icon': faFolderOpen,
+                                }, "Sub test 6")),
+                            ]),
+                        ]),
+                    ]),
+                ]),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
@@ -1297,12 +1319,11 @@ define([
             updateContextButton();
         };
 
-        var displayMenu = function (e) {
-            var $menu = $contextMenu;
+        // show / hide dropdown separators
+        var hideSeparators = function ($menu) {
             var showSep = false;
             var $lastVisibleSep = null;
-            // show / hide drop-down divider
-            $menu.find(".dropdown-menu").children().each(function (i, el) {
+            $menu.children().each(function (i, el) {
                 var $el = $(el);
                 if ($el.is(".dropdown-divider")) {
                     $el.css("display", showSep ? "list-item" : "none");
@@ -1314,6 +1335,12 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
+        }
+        var displayMenu = function (e) {
+            var $menu = $contextMenu;
+            $menu.find(".dropdown-menu").each(function (i, menu) {
+                hideSeparators($(menu));
+            });
             // show / hide submenus
             $menu.find(".dropdown-submenu").each(function (i, el) {
                 var $el = $(el);
