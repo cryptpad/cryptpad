@@ -328,7 +328,7 @@ define([
                     'data-icon': faColor,
                 }, Messages.fc_color)),
                 h('li.dropdown-submenu', [
-                    h('a.cp-app-drive-context-test.dropdown-item', {
+                    h('a.cp-app-drive-context-test1.dropdown-item', {
                         'tabindex': '-1',
                         'data-icon': faFolderOpen,
                     }, "TEST"),
@@ -338,7 +338,7 @@ define([
                             'data-icon': faFolderOpen,
                         }, "Sub test 1")),
                         h('li.dropdown-submenu', [
-                            h('a.cp-app-drive-context-test.dropdown-item', {
+                            h('a.cp-app-drive-context-test2.dropdown-item', {
                                 'tabindex': '-1',
                                 'data-icon': faFolderOpen,
                             }, "TEST"),
@@ -360,7 +360,7 @@ define([
                         }, "Sub test 4")),
                         $separator.clone()[0],
                         h('li.dropdown-submenu', [
-                            h('a.cp-app-drive-context-test.dropdown-item', {
+                            h('a.cp-app-drive-context-test3.dropdown-item', {
                                 'tabindex': '-1',
                                 'data-icon': faFolderOpen,
                             }, "TEST"),
@@ -477,17 +477,34 @@ define([
             var $el = $(el);
             var $a = $el.children().filter("a");
             var $sub = $el.find(".dropdown-menu").first();
+            var showSubmenu = function () {
+                $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                $sub.show();
+            };
+            var hideSubmenu = function () {
+                $sub.hide();
+                $sub.removeClass("left");
+            };
             // Add submenu expand icon
             $a.append(h("span.dropdown-toggle"));
             // Show / hide submenu
             $el.hover(function () {
-                setTimeout(function () { // wait for dom to update
-                    $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
-                    $sub.show();
-                });
+                showSubmenu();
             }, function () {
-                $sub.hide();
-                $sub.removeClass("left");
+                hideSubmenu();
+            });
+            $el.click(function (e) {
+                e.stopPropagation();
+                if ($el.children().filter(".dropdown-menu:visible").length !== 0) {
+                    console.log("leave", $a[0]);
+                    $el.find(".dropdown-menu").hide();
+                    hideSubmenu();
+                }
+                else {
+                    console.log("enter", $a[0]);
+                    $el.siblings().find(".dropdown-menu").hide();
+                    showSubmenu();
+                }
             });
         });
         return $(menu);
@@ -1137,7 +1154,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag', 'subtest1', 'subtest2', 'subtest3'];
+                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag', 'subtest1', 'subtest2', 'subtest3', 'subtest4', 'subtest5', 'subtest6'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -1335,7 +1352,7 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
-        }
+        };
         var displayMenu = function (e) {
             var $menu = $contextMenu;
             $menu.find(".dropdown-menu").each(function (i, menu) {
@@ -1454,7 +1471,7 @@ define([
                 });
                 cb();
             };
-            if (paths.some(function (p) { return manager.comparePath(newPath, p) })) { return void cb(); }
+            if (paths.some(function (p) { return manager.comparePath(newPath, p); })) { return void cb(); }
             manager.move(paths, newPath, newCb, copy);
         };
         // Delete paths from the drive and/or shared folders (without moving them to the trash)
@@ -3423,6 +3440,7 @@ define([
         };
 
         APP.hideMenu = function (e) {
+            console.error("HIDEMENU", e ? e.target : "e is undefined");
             $contextMenu.hide();
             $trashTreeContextMenu.hide();
             $trashContextMenu.hide();
@@ -3525,7 +3543,7 @@ define([
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
-            if ($(this).hasClass("cp-app-drive-context-color")) {
+            else if ($(this).hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
@@ -3770,6 +3788,7 @@ define([
         $appContainer.on('mouseup', function (e) {
             //if (sel.down) { return; }
             if (e.which !== 1) { return ; }
+            if ($(e.target).is(".dropdown-submenu a, .dropdown-submenu a span")) { return; } // if we click on dropdown-submenu, don't close menu
             APP.hideMenu(e);
             //removeSelected(e);
         });
