@@ -123,7 +123,10 @@ define([
                     common.setPadAttribute('fileType', metadata.type);
                 }
 
-                toolbar.addElement(['pageTitle'], {pageTitle: title});
+                toolbar.addElement(['pageTitle'], {
+                    pageTitle: title,
+                    title: Title.getTitleConfig(),
+                });
                 toolbar.$rightside.append(common.createButton('forget', true));
                 toolbar.$rightside.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {

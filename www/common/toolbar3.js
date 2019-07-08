@@ -534,8 +534,11 @@ MessengerUI, Messages) {
             hidden: true
         });
         $shareBlock.click(function () {
+            var title = (config.title && config.title.getTitle && config.title.getTitle())
+                        || (config.title && config.title.defaultName)
+                        || "";
             Common.getSframeChannel().event('EV_SHARE_OPEN', {
-                title: Common.getMetadataMgr().getMetadata().title
+                title: title
             });
         });
 
@@ -559,7 +562,10 @@ MessengerUI, Messages) {
             file: true
         });
         $shareBlock.click(function () {
+            var title = (config.title && config.title.getTitle && config.title.getTitle())
+                        || "";
             Common.getSframeChannel().event('EV_SHARE_OPEN', {
+                title: title,
                 file: true
             });
         });
@@ -724,7 +730,7 @@ MessengerUI, Messages) {
     };
 
     var createPageTitle = function (toolbar, config) {
-        if (config.title || !config.pageTitle) { return; }
+        if (!config.pageTitle) { return; }
         var $titleContainer = $('<span>', {
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
