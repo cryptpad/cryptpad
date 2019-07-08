@@ -506,7 +506,7 @@ define([
             var fixRoot = function (elem) {
                 if (typeof(files[ROOT]) !== "object") { debug("ROOT was not an object"); files[ROOT] = {}; }
                 var element = elem || files[ROOT];
-                if (!element) { return console.error("Invalid element in root");
+                if (!element) { return console.error("Invalid element in root"); }
                 var nbMetadataFolders = 0;
                 for (var el in element) {
                     if (element[el] === null) {
