@@ -941,6 +941,13 @@ define([
                 sframeChan.event('EV_WORKER_TIMEOUT');
             });
 
+            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                Cryptpad.padRpc.requestAccess({
+                    send: data,
+                    channel: secret.channel
+                }, cb);
+            });
+
             if (cfg.messaging) {
                 Notifier.getPermission();
 

@@ -339,10 +339,10 @@ proxy.mailboxes = {
 
             var txid = parsed[1];
             var req = ctx.req[txid];
+            if (!req) { return; }
             var type = parsed[0];
             var _msg = parsed[2];
             var box = req.box;
-            if (!req) { return; }
 
             if (type === 'HISTORY_RANGE') {
                 if (!Array.isArray(_msg)) { return; }

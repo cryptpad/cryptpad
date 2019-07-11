@@ -2,9 +2,10 @@ define([
     'jquery',
     '/common/hyperscript.js',
     '/common/common-hash.js',
+    '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-], function ($, h, Hash, UIElements, Messages) {
+], function ($, h, Hash, UI, UIElements, Messages) {
 
     var handlers = {};
 
@@ -84,10 +85,34 @@ define([
                 key: 'newPadPassword',
                 value: msg.content.password
             }, todo);
+            common.mailbox.dismiss(data, function (err) {
+                if (err) { return void console.error(err); }
+            });
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }
+    };
+
+    handlers['REQUEST_PAD_ACCESS'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Check authenticity
+        if (msg.author !== msg.content.user.curvePublic) { return; }
+
+        // Display the notification
+        content.getFormatText = function () {
+            return 'Edit access request: ' + msg.content.channel + ' - ' + msg.content.user.displayName;
+        };
+
+        // if not archived, add handlers
+        content.handler = function () {
+            UI.confirm("Give edit rights?", function (yes) {
+                if (!yes) { return; }
+                // XXX Command to worker to get the edit href and send it to msg.content.user
+            });
+        };
     };
 
     return {

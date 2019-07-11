@@ -603,6 +603,7 @@ define([
                     'newpad',
                     'share',
                     'limit',
+                    'request',
                     'unpinnedWarning',
                     'notifications'
                 ],
