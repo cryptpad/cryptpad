@@ -1074,13 +1074,17 @@ define([
                 readOnly = false;
                 updateMeta();
 
-                var rtConfig = {};
+                var rtConfig = {
+                    metadata: {}
+                };
                 if (data.owned) {
-                    rtConfig.owners = [edPublic];
+                    rtConfig.metadata.owners = [edPublic];
                 }
                 if (data.expire) {
-                    rtConfig.expire = data.expire;
+                    rtConfig.metadata.expire = data.expire;
                 }
+                rtConfig.metadata.validateKey = (secret.keys && secret.keys.validateKey) || undefined;
+
                 Utils.rtConfig = rtConfig;
                 nThen(function(waitFor) {
                     if (data.templateId) {

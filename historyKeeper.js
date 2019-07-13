@@ -396,32 +396,35 @@ module.exports.create = function (cfg) {
             // parsed[3] is the last known hash (optionnal)
             sendMsg(ctx, user, [seq, 'ACK']);
             channelName = parsed[1];
-            var validateKey = parsed[2];
-            var lastKnownHash = parsed[3];
-            var owners;
-            var expire;
-            if (parsed[2] && typeof parsed[2] === "object") {
-                validateKey = parsed[2].validateKey;
-                lastKnownHash = parsed[2].lastKnownHash;
-                owners = parsed[2].owners;
-                if (parsed[2].expire) {
-                    expire = +parsed[2].expire * 1000 + (+new Date());
+            var config = parsed[2];
+            var metadata = {};
+            var lastKnownHash;
+            if (config && typeof config === "object") {
+                lastKnownHash = config.lastKnownHash;
+                metadata = config.metadata || {};
+                if (metadata.expire) {
+                    metadata.expire = +metadata.expire * 1000 + (+new Date());
                 }
+            } else if (config) {
+                // This is the old way: parsed[2] is the validateKey and parsed[3] is the last known hash
+                lastKnownHash = parsed[3];
+                metadata.validateKey = parsed[2];
             }
+            metadata.channel = channelName;
 
             nThen(function (waitFor) {
                 if (!tasks) { return; } // tasks are not supported
-                if (typeof(expire) !== 'number' || !expire) { return; }
+                if (typeof(metadata.expire) !== 'number' || !metadata.expire) { return; }
 
                 // the fun part...
                 // the user has said they want this pad to expire at some point
-                tasks.write(expire, "EXPIRE", [ channelName ], waitFor(function (err) {
+                tasks.write(metadata.expire, "EXPIRE", [ channelName ], waitFor(function (err) {
                     if (err) {
                         // if there is an error, we don't want to crash the whole server...
                         // just log it, and if there's a problem you'll be able to fix it
                         // at a later date with the provided information
                         Log.error('HK_CREATE_EXPIRE_TASK', err);
-                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([expire, 'EXPIRE', channelName]));
+                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([metadata.expire, 'EXPIRE', channelName]));
                     }
                 }));
             }).nThen(function (waitFor) {
@@ -482,20 +485,9 @@ module.exports.create = function (cfg) {
                     // the first message in the file
                     const chan = ctx.channels[channelName];
                     if (msgCount === 0 && !historyKeeperKeys[channelName] && chan && chan.indexOf(user) > -1) {
-                        var key = {};
-                        key.channel = channelName;
-                        if (validateKey) {
-                            key.validateKey = validateKey;
-                        }
-                        if (owners) {
-                            key.owners = owners;
-                        }
-                        if (expire) {
-                            key.expire = expire;
-                        }
-                        historyKeeperKeys[channelName] = key;
-                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined);
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]);
+                        historyKeeperKeys[channelName] = metadata;
+                        storeMessage(ctx, chan, JSON.stringify(metadata), false, undefined);
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(metadata)]);
                     }
 
                     // End of history message:

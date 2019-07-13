@@ -1191,10 +1191,7 @@ define([
                 },
                 noChainPad: true,
                 channel: data.channel,
-                validateKey: data.validateKey,
-                owners: data.owners,
-                password: data.password,
-                expire: data.expire,
+                metadata: data.metadata,
                 network: store.network,
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
@@ -1441,14 +1438,16 @@ define([
                 websocketURL: NetConfig.getWebsocketURL(),
                 channel: secret.channel,
                 readOnly: false,
-                validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
                 userName: 'sharedFolder',
                 logLevel: 1,
                 ChainPad: ChainPad,
                 classic: true,
                 network: store.network,
-                owners: owners
+                metadata: {
+                    validateKey: secret.keys.validateKey || undefined,
+                    owners: owners
+                }
             };
             var rt = Listmap.create(listmapConfig);
             store.sharedFolders[id] = rt;
