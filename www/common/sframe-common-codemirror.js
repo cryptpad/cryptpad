@@ -323,7 +323,7 @@ define([
             var mode;
             if (!mime) {
                 var ext = /.+\.([^.]+)$/.exec(file.name);
-                if (ext[1]) {
+                if (ext && ext[1]) {
                     mode = CMeditor.findModeByExtension(ext[1]);
                     mode = mode && mode.mode || null;
                 }
@@ -339,7 +339,8 @@ define([
                 exp.setMode('text');
                 $toolbarContainer.find('#language-mode').val('text');
             }
-            return { content: content };
+            // return the mode so that the code editor can decide how to display the new content
+            return { content: content, mode: mode };
         };
 
         exp.setValueAndCursor = function (oldDoc, remoteDoc) {
