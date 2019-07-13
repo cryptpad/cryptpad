@@ -1260,10 +1260,10 @@ define([
                     if (i >= 300) { // One minute timeout
                         clearInterval(it);
                     }
-                    i++
+                    i++;
                 }, 200);
                 return;
-            };
+            }
             var fData = channel.data || {};
             if (fData.owners) {
                 var friends = store.proxy.friends || {};
@@ -1280,9 +1280,7 @@ define([
                         });
                     });
                     if (owner) {
-                        console.log(owner);
                         if (data.send) {
-                            // XXX send the pad title here...? or get it from the recipient's drive
                             var myData = Messaging.createData(store.proxy);
                             delete myData.channel;
                             store.mailbox.sendTo('REQUEST_PAD_ACCESS', {
@@ -1301,6 +1299,40 @@ define([
                 }
             }
             cb({sent: false});
+        };
+        Store.givePadAccess = function (clientId, data, cb) {
+            var edPublic = store.proxy.edPublic;
+            var channel = data.channel;
+            var res = store.manager.findChannel(channel);
+
+            if (!data.user || !data.user.notifications || !data.user.curvePublic) {
+                return void cb({error: 'EINVAL'});
+            }
+
+            var href, title;
+
+            if (!res.some(function (obj) {
+                if (obj.data &&
+                    Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
+                    obj.data.href) {
+                        href = obj.data.href;
+                        title = obj.data.title;
+                        return true;
+                }
+            })) { return void cb({error: 'ENOTFOUND'}); }
+
+            var myData = Messaging.createData(store.proxy);
+            delete myData.channel;
+            store.mailbox.sendTo("GIVE_PAD_ACCESS", {
+                channel: channel,
+                href: href,
+                title: title,
+                user: myData
+            }, {
+                channel: data.user.notifications,
+                curvePublic: data.user.curvePublic
+            });
+            cb();
         };
 
         // GET_FULL_HISTORY from sframe-common-outer

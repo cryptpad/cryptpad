@@ -589,9 +589,8 @@ MessengerUI, Messages) {
         }).hide();
 
         // If we have access to the owner's mailbox, display the button and enable it
-        // XXX the data sent to outer is false if we want to check if we can contact the owner
-        // and it is true if we change to contact it (action)
-        // XXX get pad title here??
+        // false => check if we can contact the owner
+        // true ==> send the request
         Common.getSframeChannel().query('Q_REQUEST_ACCESS', false, function (err, obj) {
             if (obj && obj.state) {
                 $requestBlock.show().click(function () {

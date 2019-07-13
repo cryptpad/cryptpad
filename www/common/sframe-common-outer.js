@@ -941,7 +941,13 @@ define([
                 sframeChan.event('EV_WORKER_TIMEOUT');
             });
 
+            sframeChan.on('EV_GIVE_ACCESS', function (data, cb) {
+                Cryptpad.padRpc.giveAccess(data, cb);
+            });
             sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                if (readOnly && hashes.editHash) {
+                    return void cb({error: 'ALREADYKNOWN'});
+                }
                 Cryptpad.padRpc.requestAccess({
                     send: data,
                     channel: secret.channel

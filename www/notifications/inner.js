@@ -44,7 +44,7 @@ define([
         ],
     };
 
-    var notifsAllowedTypes = ["FRIEND_REQUEST", "FRIEND_REQUEST_ACCEPTED", "FRIEND_REQUEST_DECLINED", "SHARE_PAD"];
+    var notifsAllowedTypes = ["FRIEND_REQUEST", "FRIEND_REQUEST_ACCEPTED", "FRIEND_REQUEST_DECLINED", "SHARE_PAD", "REQUEST_PAD_ACCESS"];
 
     var create = {};
 

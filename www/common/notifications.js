@@ -79,15 +79,15 @@ define([
             return Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]);
         };
         content.handler = function () {
-            var todo = function () { common.openURL(msg.content.href); };
+            var todo = function () {
+                common.openURL(msg.content.href);
+                defaultDismiss(common, data)();
+            };
             if (!msg.content.password) { return void todo(); }
             common.getSframeChannel().query('Q_SESSIONSTORAGE_PUT', {
                 key: 'newPadPassword',
                 value: msg.content.password
             }, todo);
-            common.mailbox.dismiss(data, function (err) {
-                if (err) { return void console.error(err); }
-            });
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
@@ -103,15 +103,44 @@ define([
 
         // Display the notification
         content.getFormatText = function () {
-            return 'Edit access request: ' + msg.content.channel + ' - ' + msg.content.user.displayName;
-        };
+            return 'Edit access request: ' + msg.content.title + ' - ' + msg.content.user.displayName;
+        }; // XXX
 
         // if not archived, add handlers
         content.handler = function () {
             UI.confirm("Give edit rights?", function (yes) {
                 if (!yes) { return; }
-                // XXX Command to worker to get the edit href and send it to msg.content.user
+                common.getSframeChannel().event('EV_GIVE_ACCESS', {
+                    channel: msg.content.channel,
+                    user: msg.content.user
+                });
+                defaultDismiss(common, data)();
             });
+        };
+
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['GIVE_PAD_ACCESS'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Check authenticity
+        if (msg.author !== msg.content.user.curvePublic) { return; }
+
+        if (!msg.content.href) { return; }
+
+        // Display the notification
+        content.getFormatText = function () {
+            return 'Edit access received: ' + msg.content.title + ' from ' + msg.content.user.displayName;
+        }; // XXX
+
+        // if not archived, add handlers
+        content.handler = function () {
+            common.openURL(msg.content.href);
+            defaultDismiss(common, data)();
         };
     };
 

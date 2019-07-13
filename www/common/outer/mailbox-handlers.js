@@ -202,9 +202,8 @@ define([
     };
 
     // Incoming edit rights request: add data before sending it to inner
-    handlers['REQUEST_PAD_ACCESS'] = function (ctx, box, data, hash) {
+    handlers['REQUEST_PAD_ACCESS'] = function (ctx, box, data, cb) {
         var msg = data.msg;
-        var hash = data.hash;
         var content = msg.content;
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
@@ -214,9 +213,9 @@ define([
 
         if (!res.length) { return void cb(true); }
 
-        var edPublic = store.proxy.edPublic;
+        var edPublic = ctx.store.proxy.edPublic;
         var title;
-        if (!res.some(functon (obj) {
+        if (!res.some(function (obj) {
             if (obj.data &&
                 Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
                 obj.data.href) {
@@ -226,8 +225,29 @@ define([
         })) { return void cb(true); }
 
         content.title = title;
+        cb(false);
+    };
 
-    });
+    handlers['GIVE_PAD_ACCESS'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+
+        var channel = content.channel;
+        var res = ctx.store.manager.findChannel(channel);
+
+        var title;
+        res.forEach(function (obj) {
+            if (obj.data && !obj.data.href) {
+                if (!title) { title = obj.data.filename || obj.data.title; }
+                obj.data.href = content.href;
+            }
+        });
+
+        content.title = title || content.title;
+        cb(false);
+    };
 
     return {
         add: function (ctx, box, data, cb) {

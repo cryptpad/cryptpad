@@ -79,6 +79,7 @@ define([
             GET_HISTORY_RANGE: Store.getHistoryRange,
             IS_NEW_CHANNEL: Store.isNewChannel,
             REQUEST_PAD_ACCESS: Store.requestPadAccess,
+            GIVE_PAD_ACCESS: Store.givePadAccess,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,
