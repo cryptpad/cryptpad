@@ -574,6 +574,42 @@ MessengerUI, Messages) {
         return $shareBlock;
     };
 
+    var createRequest = function (toolbar, config) {
+        console.error('test');
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the request access button");
+        }
+
+        // We can only requets more access if we're in read-only mode
+        if (config.readOnly !== 1) { return; }
+
+        var $requestBlock = $('<button>', {
+            'class': 'fa fa-lock cp-toolbar-share-button',
+            title: 'REQUEST ACCESS' // XXX
+        }).hide();
+
+        // If we have access to the owner's mailbox, display the button and enable it
+        // false => check if we can contact the owner
+        // true ==> send the request
+        Common.getSframeChannel().query('Q_REQUEST_ACCESS', false, function (err, obj) {
+            if (obj && obj.state) {
+                $requestBlock.show().click(function () {
+                    Common.getSframeChannel().query('Q_REQUEST_ACCESS', true, function (err, obj) {
+                        if (obj && obj.state) {
+                            UI.log('sent'); // XXX
+                        }
+                    });
+                });
+            }
+        });
+
+
+        toolbar.$leftside.append($requestBlock);
+        toolbar.request = $requestBlock;
+
+        return $requestBlock;
+    };
+
     var createTitle = function (toolbar, config) {
         var $titleContainer = $('<span>', {
             'class': TITLE_CLS
@@ -1178,6 +1214,7 @@ MessengerUI, Messages) {
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;
+        tb['request'] = createRequest;
         tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
         tb['state'] = $.noop;

@@ -693,6 +693,13 @@ define([
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
 
+    pad.requestAccess = function (data, cb) {
+        postMessage("REQUEST_PAD_ACCESS", data, cb);
+    };
+    pad.giveAccess = function (data, cb) {
+        postMessage("GIVE_PAD_ACCESS", data, cb);
+    };
+
     common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);

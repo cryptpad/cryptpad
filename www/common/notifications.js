@@ -2,9 +2,10 @@ define([
     'jquery',
     '/common/hyperscript.js',
     '/common/common-hash.js',
+    '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-], function ($, h, Hash, UIElements, Messages) {
+], function ($, h, Hash, UI, UIElements, Messages) {
 
     var handlers = {};
 
@@ -78,7 +79,10 @@ define([
             return Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]);
         };
         content.handler = function () {
-            var todo = function () { common.openURL(msg.content.href); };
+            var todo = function () {
+                common.openURL(msg.content.href);
+                defaultDismiss(common, data)();
+            };
             if (!msg.content.password) { return void todo(); }
             common.getSframeChannel().query('Q_SESSIONSTORAGE_PUT', {
                 key: 'newPadPassword',
@@ -100,9 +104,56 @@ define([
             common.openURL('/support/');
             defaultDismiss(common, data)();
         };
+    };
+
+    handlers['REQUEST_PAD_ACCESS'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Check authenticity
+        if (msg.author !== msg.content.user.curvePublic) { return; }
+
+        // Display the notification
+        content.getFormatText = function () {
+            return 'Edit access request: ' + msg.content.title + ' - ' + msg.content.user.displayName;
+        }; // XXX
+
+        // if not archived, add handlers
+        content.handler = function () {
+            UI.confirm("Give edit rights?", function (yes) {
+                if (!yes) { return; }
+                common.getSframeChannel().event('EV_GIVE_ACCESS', {
+                    channel: msg.content.channel,
+                    user: msg.content.user
+                });
+                defaultDismiss(common, data)();
+            });
+        };
+
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }
+    };
+
+    handlers['GIVE_PAD_ACCESS'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Check authenticity
+        if (msg.author !== msg.content.user.curvePublic) { return; }
+
+        if (!msg.content.href) { return; }
+
+        // Display the notification
+        content.getFormatText = function () {
+            return 'Edit access received: ' + msg.content.title + ' from ' + msg.content.user.displayName;
+        }; // XXX
+
+        // if not archived, add handlers
+        content.handler = function () {
+            common.openURL(msg.content.href);
+            defaultDismiss(common, data)();
+        };
     };
 
     return {
