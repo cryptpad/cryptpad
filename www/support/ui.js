@@ -8,7 +8,8 @@ define([
     '/customize/messages.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Messages) {
 
-    var send = function (common, id, type, data, dest) {
+    var send = function (ctx, id, type, data, dest) {
+        var common = ctx.common;
         var supportKey = ApiConfig.supportMailbox;
         var supportChannel = Hash.getChannelIdFromKey(supportKey);
         var metadataMgr = common.getMetadataMgr();
@@ -38,7 +39,7 @@ define([
         });
     };
 
-    var sendForm = function (common, id, form, dest) {
+    var sendForm = function (ctx, id, form, dest) {
         var $title = $(form).find('.cp-support-form-title');
         var $content = $(form).find('.cp-support-form-msg');
 
@@ -53,7 +54,7 @@ define([
         $content.val('');
         $title.val('');
 
-        send(common, id, 'TICKET', {
+        send(ctx, id, 'TICKET', {
             title: title,
             message: content,
         }, dest);
@@ -97,7 +98,7 @@ define([
         return form;
     };
 
-    var makeTicket = function ($div, common, content, onHide) {
+    var makeTicket = function (ctx, $div, content, onHide) {
         var ticketTitle = content.title + ' (#' + content.id + ')';
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
@@ -117,7 +118,7 @@ define([
         ]));
 
         $(close).click(function () {
-            send(common, content.id, 'CLOSE', {}, content.sender);
+            send(ctx, content.id, 'CLOSE', {}, content.sender);
         });
 
         $(hide).click(function () {
@@ -129,7 +130,7 @@ define([
             $ticket.find('.cp-support-form-container').remove();
             $(actions).hide();
             var form = makeForm(function () {
-                var sent = sendForm(common, content.id, form, content.sender);
+                var sent = sendForm(ctx, content.id, form, content.sender);
                 if (sent) {
                     $(actions).show();
                     $(form).remove();
@@ -142,7 +143,9 @@ define([
         return $ticket;
     };
 
-    var makeMessage = function (common, content, hash, isAdmin) {
+    var makeMessage = function (ctx, content, hash) {
+        var common = ctx.common;
+        var isAdmin = ctx.isAdmin;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
@@ -169,7 +172,8 @@ define([
         ]);
     };
 
-    var makeCloseMessage = function (common, content, hash) {
+    var makeCloseMessage = function (ctx, content, hash) {
+        var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
@@ -185,11 +189,30 @@ define([
         ]);
     };
 
+    var create = function (common, isAdmin) {
+        var ui = {};
+        var ctx = {
+            common: common,
+            isAdmin: isAdmin
+        };
+
+        ui.sendForm = function (id, form, dest) {
+            return sendForm(ctx, id, form, dest);
+        };
+        ui.makeForm = makeForm;
+        ui.makeTicket = function ($div, content, onHide) {
+            return makeTicket(ctx, $div, content, onHide);
+        };
+        ui.makeMessage = function (content, hash) {
+            return makeMessage(ctx, content, hash);
+        };
+        ui.makeCloseMessage = function (content, hash) {
+            return makeCloseMessage(ctx, content, hash);
+        };
+        return ui;
+    };
+
     return {
-        sendForm: sendForm,
-        makeForm: makeForm,
-        makeTicket: makeTicket,
-        makeMessage: makeMessage,
-        makeCloseMessage: makeCloseMessage
+        create: create
     };
 });

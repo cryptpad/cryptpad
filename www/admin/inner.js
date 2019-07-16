@@ -199,13 +199,13 @@ define([
                     // A ticket has been closed by the admins...
                     if (!$ticket.length) { return; }
                     $ticket.addClass('cp-support-list-closed');
-                    $ticket.append(Support.makeCloseMessage(common, content, hash));
+                    $ticket.append(APP.support.makeCloseMessage(content, hash));
                     return;
                 }
                 if (msg.type !== 'TICKET') { return; }
 
                 if (!$ticket.length) {
-                    $ticket = Support.makeTicket($div, common, content, function () {
+                    $ticket = APP.support.makeTicket($div, content, function () {
                         var error = false;
                         hashesById[id].forEach(function (d) {
                             common.mailbox.dismiss(d, function (err) {
@@ -218,7 +218,7 @@ define([
                         if (!error) { $ticket.remove(); }
                     });
                 }
-                $ticket.append(Support.makeMessage(common, content, hash, true));
+                $ticket.append(APP.support.makeMessage(content, hash));
             }
         });
         return $div;
@@ -349,6 +349,7 @@ define([
         APP.privateKey = privateData.supportPrivateKey;
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
+        APP.support = Support.create(common, true);
 
         // Content
         var $rightside = APP.$rightside;
