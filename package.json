@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "flow-bin": "^0.59.0",
-    "jshint": "~2.9.1",
+    "jshint": "^2.10.2",
     "less": "2.7.1",
     "lesshint": "^4.5.0",
     "selenium-webdriver": "^3.6.0"
