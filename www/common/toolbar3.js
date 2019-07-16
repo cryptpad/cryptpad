@@ -585,7 +585,7 @@ MessengerUI, Messages) {
 
         var $requestBlock = $('<button>', {
             'class': 'fa fa-lock cp-toolbar-share-button',
-            title: 'REQUEST ACCESS' // XXX
+            title: Messages.requestEdit_button
         }).hide();
 
         // If we have access to the owner's mailbox, display the button and enable it
@@ -593,10 +593,16 @@ MessengerUI, Messages) {
         // true ==> send the request
         Common.getSframeChannel().query('Q_REQUEST_ACCESS', false, function (err, obj) {
             if (obj && obj.state) {
+                var locked = false;
                 $requestBlock.show().click(function () {
+                    if (locked) { return; }
+                    locked = true;
                     Common.getSframeChannel().query('Q_REQUEST_ACCESS', true, function (err, obj) {
                         if (obj && obj.state) {
-                            UI.log('sent'); // XXX
+                            UI.log(Messages.requestEdit_sent);
+                            $requestBlock.hide();
+                        } else {
+                            locked = false;
                         }
                     });
                 });

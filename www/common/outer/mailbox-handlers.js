@@ -222,17 +222,19 @@ define([
         if (!res.length) { return void cb(true); }
 
         var edPublic = ctx.store.proxy.edPublic;
-        var title;
+        var title, href;
         if (!res.some(function (obj) {
             if (obj.data &&
                 Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
                 obj.data.href) {
+                    href = obj.data.href;
                     title = obj.data.filename || obj.data.title;
                     return true;
             }
         })) { return void cb(true); }
 
         content.title = title;
+        content.href = href;
         cb(false);
     };
 
