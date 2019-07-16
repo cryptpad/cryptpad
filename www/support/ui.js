@@ -37,6 +37,13 @@ define([
             channel: dest.channel,
             curvePublic: dest.curvePublic
         });
+
+        if (ctx.isAdmin) {
+            common.mailbox.sendTo('SUPPORT_MESSAGE', {}, {
+                channel: dest.notifications,
+                curvePublic: dest.curvePublic
+            });
+        }
     };
 
     var sendForm = function (ctx, id, form, dest) {

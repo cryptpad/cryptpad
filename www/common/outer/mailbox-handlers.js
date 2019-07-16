@@ -201,6 +201,14 @@ define([
         }
     };
 
+    // Hide duplicates when receiving a SUPPORT_MESSAGE notification
+    var supportMessage = false;
+    handlers['SUPPORT_MESSAGE'] = function (ctx, box, data, cb) {
+        if (supportMessage) { return void cb(true); }
+        supportMessage = true;
+        cb();
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**

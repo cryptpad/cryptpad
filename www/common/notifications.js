@@ -90,6 +90,21 @@ define([
         }
     };
 
+    // New support message from the admins
+    handlers['SUPPORT_MESSAGE'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.support_notification;
+        };
+        content.handler = function () {
+            common.openURL('/support/');
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     return {
         add: function (common, data) {
             var type = data.content.msg.type;
