@@ -28,6 +28,10 @@ define([
         data.id = id;
         data.time = +new Date();
 
+        if (!ctx.isAdmin) {
+            data.sender.userAgent = window.navigator && window.navigator.userAgent;
+        }
+
         // Send the message to the admin mailbox and to the user mailbox
         common.mailbox.sendTo(type, data, {
             channel: supportChannel,
