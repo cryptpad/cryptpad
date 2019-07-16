@@ -512,13 +512,14 @@ define([
         // Tags used: display Tags category
         if (Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
 
-        var virtualCategories = [SEARCH, RECENT, OWNED, TAGS, SHARED_FOLDER];
+        var virtualCategories = [SEARCH, RECENT, OWNED, TAGS];
 
         if (!APP.loggedIn) {
             $tree.hide();
             if (APP.newSharedFolder) {
                 // ANON_SHARED_FOLDER
                 displayedCategories = [SHARED_FOLDER];
+                virtualCategories.push(SHARED_FOLDER);
                 currentPath = [SHARED_FOLDER, ROOT];
             } else {
                 displayedCategories = [FILES_DATA];
