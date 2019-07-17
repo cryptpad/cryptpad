@@ -2132,8 +2132,89 @@ define([
             });
             $input.click();
         };
+
+        // create the folder structure before to upload files from folder
+        var uploadFolder = function (fileList) {
+            var currentFolder = currentPath;
+            // create an array of all the files relative path
+            var files = Array.prototype.map.call(fileList, function (file) {
+                return {
+                    file: file,
+                    path: file.webkitRelativePath.split("/"),
+                };
+            });
+            // if folder name already exist in drive, rename it
+            var uploadedFolderName = files[0].path[0];
+            var availableName = manager.user.userObject.getAvailableName(manager.user.userObject.find(currentFolder), uploadedFolderName);
+            if (uploadedFolderName !== availableName) {
+                files.forEach(function (file) {
+                    file.path[0] = availableName;
+                });
+            }
+
+            // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
+            // at the index i + 1, the files and folders are children of the folders at the index i
+            var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
+            console.log("maxSteps", maxSteps);
+            var uploadSteps = []
+            for (var i = 0 ; i < maxSteps ; i++) {
+                uploadSteps[i] = {
+                    folders: [],
+                    files: [],
+                };
+            }
+            files.forEach(function (file) {
+                // add steps for subfolders containing file
+                for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
+                    var subfolderStr = file.path.slice(0, depth + 1).join("/");
+                    if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
+                        uploadSteps[depth].folders.push(subfolderStr);
+                    }
+                };
+                // add step for file (one step later than the step for its direct parent folder)
+                uploadSteps[file.path.length - 1].files.push(file);
+            });
+            console.log(uploadSteps);
+
+            // add folders, then add files when theirs folders have been created
+            // wait for the folders to be created to go to the next step (don't wait for the files)
+            var stepByStep = function (uploadSteps, i) {
+                if (i >= uploadSteps.length) { return; }
+                nThen(function (waitFor) {
+                    // add folders
+                    uploadSteps[i].folders.forEach(function (folder) {
+                        var folderPath = folder.split("/");
+                        var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
+                        var folderName = folderPath.slice(-1);
+                        manager.addFolder(parentFolder, folderName, waitFor(refresh));
+                    });
+                    // upload files
+                    uploadSteps[i].files.forEach(function (file) {
+                        var ev = {
+                            target: $content[0],
+                            path: file.path,
+                        };
+                        console.log(file);
+                        console.log(ev);
+//                    APP.FM.handleFile(file.file, ev); // THIS LINE NEED TO BE FIXED
+                    });
+                }).nThen(function () {
+                    stepByStep(uploadSteps, i + 1);
+                });
+            }
+            stepByStep(uploadSteps, 0);
+        };
         var showUploadFolderModal = function () {
             console.log("%cIMPORT FOLDER", "color: red");
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;',
+                'multiple': 'multiple',
+                'webkitdirectory': true,
+            }).on('change', function (e) {
+                uploadFolder(e.target.files);
+            });
+            $input.click();
         };
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
