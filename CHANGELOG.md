@@ -1,3 +1,35 @@
+# Zebra release (v2.25.0)
+
+## Goals
+
+This release coincided with XWiki's yearly seminar, so our regular schedule was interrupted a bit. We spent the time we had working towards implementing components of "editable metadata", which will allow pad owners to add new owners or transfer ownership to friends, among other things.
+
+Otherwise we wanted to deploy a built-in support system to improve our ability to debug issues as well as to make it easier for users to report problems. Along the way we did our best to improve usability and fix small annoying bugs.
+
+As this is the last release in our 2.0 cycle, we're going to take some extra time to prepare some big features for our 3.0.0 release, which we expect to deploy on August 20th, 2019.
+
+## Update notes
+
+* We've updated some dependencies that are used to lint the CryptPad codebase to detect errors. Run `npm install` if you plan to develop for CryptPad and you want to use the linter
+* This release introduces a _support_ tab within the admin panel. If you generate an asymmetric keypair and add it to your server-side configuration file then users will have the option of opening support tickets if they encounter errors. Their support tickets will include some basic information about their account which might help you to solve their issues. To set up your _"encrypted support mailbox"_:
+  1. run `node ./scripts/generate-admin-keys.js`
+  2. copy the "public key" and add it to your config.js file like so:
+    * `supportMailboxPublicKey: "BL3kgYBM0HNw5ms8ULWU1wMTb5ePBbxAPjDZKamkuB8=",
+  3. copy the private key and store it in a safe place
+  4. navigate to the "support" tab in the admin panel and enter the private key
+  5. share the private key with any other administrators who should be able to read the support tickets
+  6. restart so that your users receive the public key stored in your configuration file
+    * this will allow them to submit tickets via the support page
+    * if you don't know how to fix the issue and want to open a ticket on our public tracker, include the information submitted along with their ticket
+
+## Features
+
+* The feature added in the previous release which displayed a preview of the theme and highlighting mode chosen for the code and slide editors has been improved to also display previews when navigating through the dropdowns using keyboard arrow keys.
+* We've followed up on our initial work on notifications by adding a full notifications page which offers the ability to review older notifications that you might have accidentally dismissed.
+* When you right-click on an element in the CryptDrive the resulting menu now includes icons to make it easier to find the action for which you are looking
+* We now include folders in search results which used to only include files
+* You can right-click to add colors to folders, in case that helps you organize your content more effectively
+
 # Yak release (v2.24.0)
 
 ## Goals
