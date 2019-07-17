@@ -773,6 +773,7 @@ define([
             var icon = AppConfig.applicationsIcon[type];
             var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
             if (type === 'fileupload') { type = 'file'; }
+            if (type === 'folderupload') { type = 'file'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
             $icon = $('<span>', {'class': font + ' ' + icon + appClass});
         }

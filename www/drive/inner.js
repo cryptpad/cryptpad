@@ -45,6 +45,7 @@ define([
         editable: false,
         mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
         isMac: navigator.platform === "MacIntel",
+        allowFolderUpload: true,
     };
 
     var stringify = function (obj) {
@@ -135,8 +136,6 @@ define([
     var LS_VIEWMODE = "app-drive-viewMode";
     var LS_SEARCHCURSOR = "app-drive-searchCursor";
     var FOLDER_CONTENT_ID = "cp-app-drive-content-folder";
-
-    var ALLOW_FOLDERUPLOAD = true;
 
     var config = {};
     var DEBUG = config.DEBUG = false;
@@ -991,7 +990,7 @@ define([
                         return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
                     if (className === 'uploadfiles') { return; }
-                    if (className === 'uploadfolder') { return !ALLOW_FOLDERUPLOAD; }
+                    if (className === 'uploadfolder') { return !APP.allowFolderUpload; }
                     if (className === 'newdoc') {
                         return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
                     }
@@ -2201,7 +2200,7 @@ define([
                     attributes: {'class': 'cp-app-drive-new-fileupload'},
                     content: $('<div>').append(getIcon('fileupload')).html() + Messages.uploadButton
                 });
-                if (ALLOW_FOLDERUPLOAD) {
+                if (APP.allowFolderUpload) {
                     options.push({
                         tag: 'a',
                         attributes: {'class': 'cp-app-drive-new-folderupload'},
@@ -2497,7 +2496,7 @@ define([
                 $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.uploadButton));
                 // Upload folder
-                if (ALLOW_FOLDERUPLOAD) {
+                if (APP.allowFolderUpload) {
                     var $elementFolderUpload = $('<li>', {
                         'class': 'cp-app-drive-new-folderupload cp-app-drive-element-row ' +
                         'cp-app-drive-element-grid'
