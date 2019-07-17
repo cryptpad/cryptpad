@@ -87,6 +87,7 @@ define([
     var faDelete = 'fa-eraser';
     var faProperties = 'fa-database';
     var faTags = 'fa-hashtag';
+    var faUploadFiles = 'cptools-file-upload';
     var faEmpty = 'fa-trash-o';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
@@ -353,6 +354,11 @@ define([
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-uploadfiles.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faUploadFiles,
+                }, Messages.uploadButton)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -977,7 +983,10 @@ define([
                         // Hide the new shared folder menu if we're already in a shared folder
                         return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
-                    return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    if (className === 'uploadfiles') { return; }
+                    if (className === 'newdoc') {
+                        return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    }
                 };
             } else {
                 // In case of multiple selection, we must hide the option if at least one element
@@ -1086,7 +1095,7 @@ define([
 
             switch(type) {
                 case 'content':
-                    show = ['newfolder', 'newsharedfolder', 'newdoc'];
+                    show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'newdoc'];
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
@@ -2099,6 +2108,23 @@ define([
             });
             return arr;
         };
+        var openUploadFilesModal = function () {
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;',
+                'multiple': 'multiple'
+            }).on('change', function (e) {
+                var files = Util.slice(e.target.files);
+                files.forEach(function (file) {
+                    var ev = {
+                        target: $content[0],
+                        path: findDropPath($content[0])
+                    };
+                    APP.FM.handleFile(file, ev);
+                });
+            });
+            $input.click();
+        }
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
             if (isInRoot) {
@@ -2125,24 +2151,7 @@ define([
                         });
                     });
                 }
-                $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload')
-                    .click(function () {
-                    var $input = $('<input>', {
-                        'type': 'file',
-                        'style': 'display: none;',
-                        'multiple': 'multiple'
-                    }).on('change', function (e) {
-                        var files = Util.slice(e.target.files);
-                        files.forEach(function (file) {
-                            var ev = {
-                                target: $content[0],
-                                path: findDropPath($content[0])
-                            };
-                            APP.FM.handleFile(file, ev);
-                        });
-                    });
-                    $input.click();
-                });
+                $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload').click(openUploadFilesModal);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
                 .click(function () {
@@ -3630,6 +3639,9 @@ define([
                     if (!obj) { return; }
                     manager.addSharedFolder(paths[0].path, obj, refresh);
                 });
+            }
+            else if ($(this).hasClass("cp-app-drive-context-uploadfiles")) {
+                openUploadFilesModal();
             }
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $(this).data('type') || 'pad';
