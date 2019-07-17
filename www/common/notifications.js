@@ -127,18 +127,20 @@ define([
                 href: '#'
             }, Messages.requestEdit_viewPad);
             var verified = h('p.cp-notifications-requestedit-verified');
+            var $verified = $(verified);
 
             if (priv.friends && priv.friends[msg.author]) {
                 var f = priv.friends[msg.author];
-                var $verified = $(verified);
                 $verified.append(h('span.fa.fa-certificate'));
                 var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-                $verified.append(h('p', Messages._getKey('requestEdit_verified', [f.displayName])));
+                $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
                 common.displayAvatar($avatar, f.avatar, f.displayName);
+            } else {
+                $verified.append(Messages.requestEdit_fromStranger);
             }
 
             var div = h('div', [
-                h('p', Messages._getKey('requestEdit_confirm', [msg.content.title, msg.content.displayName])),
+                h('p', Messages._getKey('requestEdit_confirm', [msg.content.title, msg.content.user.displayName])),
                 verified,
                 link
             ]);
@@ -156,7 +158,7 @@ define([
                 defaultDismiss(common, data)();
             }, {
                 ok: Messages.friendRequest_accept,
-                cancel: Messages.requestEdit_later
+                cancel: Messages.later
             });
         };
 
