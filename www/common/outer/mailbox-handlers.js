@@ -201,6 +201,14 @@ define([
         }
     };
 
+    // Hide duplicates when receiving a SUPPORT_MESSAGE notification
+    var supportMessage = false;
+    handlers['SUPPORT_MESSAGE'] = function (ctx, box, data, cb) {
+        if (supportMessage) { return void cb(true); }
+        supportMessage = true;
+        cb();
+    };
+
     // Incoming edit rights request: add data before sending it to inner
     handlers['REQUEST_PAD_ACCESS'] = function (ctx, box, data, cb) {
         var msg = data.msg;
@@ -214,17 +222,19 @@ define([
         if (!res.length) { return void cb(true); }
 
         var edPublic = ctx.store.proxy.edPublic;
-        var title;
+        var title, href;
         if (!res.some(function (obj) {
             if (obj.data &&
                 Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
                 obj.data.href) {
+                    href = obj.data.href;
                     title = obj.data.filename || obj.data.title;
                     return true;
             }
         })) { return void cb(true); }
 
         content.title = title;
+        content.href = href;
         cb(false);
     };
 

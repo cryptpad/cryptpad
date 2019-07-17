@@ -94,6 +94,18 @@ define([
         }
     };
 
+    // New support message from the admins
+    handlers['SUPPORT_MESSAGE'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.support_notification;
+        };
+        content.handler = function () {
+            common.openURL('/support/');
+            defaultDismiss(common, data)();
+        };
+    };
+
     handlers['REQUEST_PAD_ACCESS'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
@@ -103,18 +115,50 @@ define([
 
         // Display the notification
         content.getFormatText = function () {
-            return 'Edit access request: ' + msg.content.title + ' - ' + msg.content.user.displayName;
-        }; // XXX
+            return Messages._getKey('requestEdit_request', [msg.content.title, msg.content.user.displayName]);
+        };
 
         // if not archived, add handlers
         content.handler = function () {
-            UI.confirm("Give edit rights?", function (yes) {
+            var metadataMgr = common.getMetadataMgr();
+            var priv = metadataMgr.getPrivateData();
+
+            var link = h('a', {
+                href: '#'
+            }, Messages.requestEdit_viewPad);
+            var verified = h('p.cp-notifications-requestedit-verified');
+            var $verified = $(verified);
+
+            if (priv.friends && priv.friends[msg.author]) {
+                var f = priv.friends[msg.author];
+                $verified.append(h('span.fa.fa-certificate'));
+                var $avatar = $(h('span.cp-avatar')).appendTo($verified);
+                $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
+                common.displayAvatar($avatar, f.avatar, f.displayName);
+            } else {
+                $verified.append(Messages.requestEdit_fromStranger);
+            }
+
+            var div = h('div', [
+                UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [msg.content.title, msg.content.user.displayName])),
+                verified,
+                link
+            ]);
+            $(link).click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                common.openURL(msg.content.href);
+            });
+            UI.confirm(div, function (yes) {
                 if (!yes) { return; }
                 common.getSframeChannel().event('EV_GIVE_ACCESS', {
                     channel: msg.content.channel,
                     user: msg.content.user
                 });
                 defaultDismiss(common, data)();
+            }, {
+                ok: Messages.friendRequest_accept,
+                cancel: Messages.later
             });
         };
 
@@ -134,8 +178,8 @@ define([
 
         // Display the notification
         content.getFormatText = function () {
-            return 'Edit access received: ' + msg.content.title + ' from ' + msg.content.user.displayName;
-        }; // XXX
+            return Messages._getKey('requestEdit_accepted', [msg.content.title, msg.content.user.displayName]);
+        };
 
         // if not archived, add handlers
         content.handler = function () {
