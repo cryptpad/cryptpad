@@ -245,8 +245,11 @@ proxy.mailboxes = {
             });
             box.queue = [];
         };
+        var lastReceivedHash; // Don't send a duplicate of the last known hash on reconnect
         box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
             if (hash === m.lastKnownHash) { return; }
+            if (hash === lastReceivedHash) { return; }
+            lastReceivedHash = hash;
             try {
                 msg = JSON.parse(msg);
             } catch (e) {
@@ -364,6 +367,7 @@ proxy.mailboxes = {
                     txid: txid,
                     complete: true
                 }, [req.cId]);
+                delete ctx.req[txid];
             }
         });
     };
