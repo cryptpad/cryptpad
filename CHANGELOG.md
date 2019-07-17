@@ -30,6 +30,8 @@ As this is the last release in our 2.0 cycle, we're going to take some extra tim
 * We now include folders in search results which used to only include files
 * You can right-click to add colors to folders, in case that helps you organize your content more effectively
 
+# Yak release (v2.24.0)
+
 ## Goals
 
 We've recently had an intern join our team, so this release and those until the end of summer are likely to feature a lot of small usability fixes.
