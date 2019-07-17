@@ -119,15 +119,32 @@ define([
         $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
             .appendTo($d);
         var owners = Messages.creation_noOwner;
-        var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
         var owned = false;
         if (data.owners && data.owners.length) {
             if (data.owners.indexOf(edPublic) !== -1) {
-                owners = Messages.yourself;
                 owned = true;
-            } else {
-                owners = Messages.creation_ownedByOther;
             }
+            var names = [];
+            var strangers = 0;
+            data.owners.forEach(function (ed) {
+                // If a friend is an owner, add their name to the list
+                // otherwise, increment the list of strangers
+                if (!Object.keys(priv.friends || {}).some(function (c) {
+                    var friend = priv.friends[c] || {};
+                    if (friend.edPublic !== ed) { return; }
+                    var name = c === 'me' ? Messages.yourself : friend.displayName;
+                    names.push(name);
+                    return true;
+                })) {
+                    strangers++;
+                }
+            });
+            if (strangers) {
+                names.push(Messages._getKey('properties_unknownUser', [strangers]));
+            }
+            owners = names.join(', ');
         }
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
