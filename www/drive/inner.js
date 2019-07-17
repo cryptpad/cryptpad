@@ -88,6 +88,7 @@ define([
     var faProperties = 'fa-database';
     var faTags = 'fa-hashtag';
     var faUploadFiles = 'cptools-file-upload';
+    var faUploadFolder = 'cptools-folder-upload';
     var faEmpty = 'fa-trash-o';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
@@ -134,6 +135,8 @@ define([
     var LS_VIEWMODE = "app-drive-viewMode";
     var LS_SEARCHCURSOR = "app-drive-searchCursor";
     var FOLDER_CONTENT_ID = "cp-app-drive-content-folder";
+
+    var ALLOW_FOLDERUPLOAD = true;
 
     var config = {};
     var DEBUG = config.DEBUG = false;
@@ -359,6 +362,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faUploadFiles,
                 }, Messages.uploadButton)),
+                h('li', h('a.cp-app-drive-context-uploadfolder.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faUploadFolder,
+                }, Messages.uploadFolderButton)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -984,6 +991,7 @@ define([
                         return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
                     if (className === 'uploadfiles') { return; }
+                    if (className === 'uploadfolder') { return !ALLOW_FOLDERUPLOAD; }
                     if (className === 'newdoc') {
                         return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
                     }
@@ -1095,7 +1103,7 @@ define([
 
             switch(type) {
                 case 'content':
-                    show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'newdoc'];
+                    show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
@@ -2108,7 +2116,7 @@ define([
             });
             return arr;
         };
-        var openUploadFilesModal = function () {
+        var showUploadFilesModal = function () {
             var $input = $('<input>', {
                 'type': 'file',
                 'style': 'display: none;',
@@ -2124,7 +2132,10 @@ define([
                 });
             });
             $input.click();
-        }
+        };
+        var showUploadFolderModal = function () {
+            console.log("%cIMPORT FOLDER", "color: red");
+        };
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
             if (isInRoot) {
@@ -2151,7 +2162,8 @@ define([
                         });
                     });
                 }
-                $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload').click(openUploadFilesModal);
+                $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload').click(showUploadFilesModal);
+                $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload').click(showUploadFolderModal);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
                 .click(function () {
@@ -2186,9 +2198,16 @@ define([
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-upload'},
+                    attributes: {'class': 'cp-app-drive-new-fileupload'},
                     content: $('<div>').append(getIcon('fileupload')).html() + Messages.uploadButton
                 });
+                if (ALLOW_FOLDERUPLOAD) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {'class': 'cp-app-drive-new-folderupload'},
+                        content: $('<div>').append(getIcon('folderupload')).html() + Messages.uploadFolderButton
+                    });
+                }
                 options.push({tag: 'hr'});
             }
             getNewPadTypes().forEach(function (type) {
@@ -2470,13 +2489,22 @@ define([
                     $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                         .text(Messages.fm_sharedFolder));
                 }
-                // File
-                var $element2 = $('<li>', {
-                    'class': 'cp-app-drive-new-upload cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
+                // Upload file
+                var $elementFileUpload = $('<li>', {
+                    'class': 'cp-app-drive-new-fileupload cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid'
                 }).prepend(getIcon('fileupload')).appendTo($container);
-                $element2.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.uploadButton));
+                // Upload folder
+                if (ALLOW_FOLDERUPLOAD) {
+                    var $elementFolderUpload = $('<li>', {
+                        'class': 'cp-app-drive-new-folderupload cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid'
+                    }).prepend(getIcon('folderupload')).appendTo($container);
+                    $elementFolderUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                        .text(Messages.uploadFolderButton));
+                }
             }
             // Pads
             getNewPadTypes().forEach(function (type) {
@@ -3641,7 +3669,10 @@ define([
                 });
             }
             else if ($(this).hasClass("cp-app-drive-context-uploadfiles")) {
-                openUploadFilesModal();
+                showUploadFilesModal();
+            }
+            else if ($(this).hasClass("cp-app-drive-context-uploadfolder")) {
+                showUploadFolderModal();
             }
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $(this).data('type') || 'pad';

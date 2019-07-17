@@ -109,6 +109,7 @@
     "newButton": "Nouveau",
     "newButtonTitle": "Créer un nouveau pad",
     "uploadButton": "Importer des fichiers",
+    "uploadFolderButton": "Importer un dossier",
     "uploadButtonTitle": "Importer un nouveau fichier dans le dossier actuel",
     "saveTemplateButton": "Sauver en tant que modèle",
     "saveTemplatePrompt": "Choisir un titre pour ce modèle",
