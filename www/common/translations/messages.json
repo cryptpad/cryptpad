@@ -1111,5 +1111,17 @@
     "notifications_cat_friends": "Friend requests",
     "notifications_cat_pads": "Shared with me",
     "notifications_cat_archived": "History",
-    "notifications_dismissAll": "Dismiss all"
+    "notifications_dismissAll": "Dismiss all",
+    "support_notification": "An administrator has responded to your support ticket",
+    "requestEdit_button": "Request edit rights",
+    "requestEdit_dialog": "Are you sure you'd like to ask the owner of this pad for the ability to edit?",
+    "requestEdit_confirm": "{1} has asked for the ability to edit the pad <b>{0}</b>. Would you like to grant them access?",
+    "requestEdit_fromFriend": "You are friends with {0}",
+    "requestEdit_fromStranger": "You are <b>not</b> friends with {0}",
+    "requestEdit_viewPad": "Open the pad in a new tab",
+    "later": "Decide later",
+    "requestEdit_request": "{1} wants to edit the pad <b>{0}</b>",
+    "requestEdit_accepted": "{1} granted you edit rights for the pad <b>{0}</b>",
+    "requestEdit_sent": "Request sent",
+    "uploadFolderButton": "Upload folder"
 }
