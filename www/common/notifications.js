@@ -126,17 +126,18 @@ define([
             var link = h('a', {
                 href: '#'
             }, Messages.requestEdit_viewPad);
-            var verified = h('p.cp-notifications-requestedit-verified');
+            var verified = h('p');
             var $verified = $(verified);
 
             if (priv.friends && priv.friends[msg.author]) {
+                $verified.addClass('cp-notifications-requestedit-verified');
                 var f = priv.friends[msg.author];
                 $verified.append(h('span.fa.fa-certificate'));
                 var $avatar = $(h('span.cp-avatar')).appendTo($verified);
                 $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
                 common.displayAvatar($avatar, f.avatar, f.displayName);
             } else {
-                $verified.append(Messages.requestEdit_fromStranger);
+                $verified.append(Messages._getKey('requestEdit_fromStranger', [msg.content.user.displayName]));
             }
 
             var div = h('div', [
