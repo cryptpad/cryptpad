@@ -156,7 +156,7 @@ define([
                 defaultDismiss(common, data)();
             }, {
                 ok: Messages.friendRequest_accept,
-                cancel: Messages.friendRequest_decline
+                cancel: Messages.requestEdit_later
             });
         };
 
