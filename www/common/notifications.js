@@ -115,7 +115,7 @@ define([
 
         // Display the notification
         content.getFormatText = function () {
-            return Messages._getKey('requestEdit_request', [msg.content.title, msg.content.displayName]);
+            return Messages._getKey('requestEdit_request', [msg.content.title, msg.content.user.displayName]);
         };
 
         // if not archived, add handlers
@@ -140,7 +140,7 @@ define([
             }
 
             var div = h('div', [
-                h('p', Messages._getKey('requestEdit_confirm', [msg.content.title, msg.content.user.displayName])),
+                UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [msg.content.title, msg.content.user.displayName])),
                 verified,
                 link
             ]);
