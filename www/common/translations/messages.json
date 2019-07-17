@@ -1123,5 +1123,6 @@
     "requestEdit_request": "{1} wants to edit the pad <b>{0}</b>",
     "requestEdit_accepted": "{1} granted you edit rights for the pad <b>{0}</b>",
     "requestEdit_sent": "Request sent",
-    "uploadFolderButton": "Upload folder"
+    "uploadFolderButton": "Upload folder",
+    "properties_unknownUser": "{0} unknown user(s)"
 }
