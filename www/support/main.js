@@ -4,7 +4,7 @@ define([
     '/api/config',
     '/common/dom-ready.js',
     '/common/requireconfig.js',
-    '/common/sframe-common-outer.js',
+    '/common/sframe-common-outer.js'
 ], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
@@ -20,7 +20,7 @@ define([
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
         document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + '/admin/inner.html?' + requireConfig.urlArgs +
+            ApiConfig.httpSafeOrigin + '/support/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -36,20 +36,6 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var addRpc = function (sframeChan, Cryptpad/*, Utils*/) {
-            // Adding a new avatar from the profile: pin it and store it in the object
-            sframeChan.on('Q_ADMIN_MAILBOX', function (data, cb) {
-                Cryptpad.addAdminMailbox(data, cb);
-            });
-            sframeChan.on('Q_ADMIN_RPC', function (data, cb) {
-                Cryptpad.adminRpc(data, cb);
-            });
-            sframeChan.on('Q_UPDATE_LIMIT', function (data, cb) {
-                Cryptpad.updatePinLimit(function (e) {
-                    cb({error: e});
-                });
-            });
-        };
         var category;
         if (window.location.hash) {
             category = window.location.hash.slice(1);
@@ -60,7 +46,6 @@ define([
         };
         SFCommonO.start({
             noRealtime: true,
-            addRpc: addRpc,
             addData: addData
         });
     });

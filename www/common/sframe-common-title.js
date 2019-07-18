@@ -79,7 +79,8 @@ define([
             return {
                 updateTitle: exp.updateTitle,
                 suggestName: suggestTitle,
-                defaultName: exp.defaultTitle
+                defaultName: exp.defaultTitle,
+                getTitle: exp.getTitle
             };
         };
 

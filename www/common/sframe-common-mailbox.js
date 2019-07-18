@@ -47,30 +47,29 @@ define([
         var formatData = function (data) {
             return JSON.stringify(data.content.msg.content);
         };
-        var createElement = function (data) {
+        var createElement = mailbox.createElement = function (data) {
             var notif;
-            var dismissIcon = h('span.fa.fa-times');
-            var dismiss = h('div.cp-notification-dismiss', {
-                title: Messages.notifications_dismiss
-            }, dismissIcon);
-            dismiss.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                mailbox.dismiss(data, function (err) {
-                    if (err) { return void console.error(err); }
-                    /*if (notif && notif.parentNode) {
-                        try {
-                            notif.parentNode.removeChild(notif);
-                        } catch (e) { console.error(e); }
-                    }*/
-                });
-            });
             notif = h('div.cp-notification', {
                 'data-hash': data.content.hash
-            }, [
-                h('div.cp-notification-content', h('p', formatData(data))),
-                dismiss
-            ]);
+            }, [h('div.cp-notification-content', h('p', formatData(data)))]);
+
+            if (data.content.getFormatText) {
+                $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
+            }
+
+            if (data.content.isClickable) {
+                $(notif).find('.cp-notification-content').addClass("cp-clickable")
+                    .click(data.content.handler);
+            }
+            if (data.content.isDismissible) {
+                var dismissIcon = h('span.fa.fa-times');
+                var dismiss = h('div.cp-notification-dismiss', {
+                    title: Messages.notifications_dismiss
+                }, dismissIcon);
+                $(dismiss).addClass("cp-clickable")
+                    .click(data.content.dismissHandler);
+                $(notif).append(dismiss);
+            }
             return notif;
         };
 
@@ -80,7 +79,7 @@ define([
 
         onViewedHandlers.push(function (data) {
             var hash = data.hash.replace(/"/g, '\\\"');
-            var $notif = $('.cp-notification[data-hash="'+hash+'"]');
+            var $notif = $('.cp-notification[data-hash="'+hash+'"]:not(.cp-app-notification-archived)');
             if ($notif.length) {
                 $notif.remove();
             }
@@ -90,8 +89,11 @@ define([
         var pushMessage = function (data, handler) {
             var todo = function (f) {
                 try {
-                    var el = createElement(data);
-                    Notifications.add(Common, data, el);
+                    var el;
+                    if (data.type === 'notifications') {
+                        Notifications.add(Common, data);
+                        el = createElement(data);
+                    }
                     f(data, el);
                 } catch (e) {
                     console.error(e);
@@ -108,7 +110,9 @@ define([
             onViewedHandlers.forEach(function (f) {
                 try {
                     f(data);
-                    Notifications.remove(Common, data);
+                    if (data.type === 'notifications') {
+                        Notifications.remove(Common, data);
+                    }
                 } catch (e) {
                     console.error(e);
                 }
@@ -118,7 +122,7 @@ define([
 
         var onMessage = function (data) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
-            console.log(data.content);
+            console.log(data.type, data.content);
             pushMessage(data);
             if (!history[data.type]) { history[data.type] = []; }
             history[data.type].push(data.content);
@@ -139,18 +143,25 @@ define([
         var subscribed = false;
 
         // Get all existing notifications + the new ones when they come
-        mailbox.subscribe = function (cfg) {
+        mailbox.subscribe = function (types, cfg) {
             if (!subscribed) {
                 execCommand('SUBSCRIBE', null, function () {});
                 subscribed = true;
             }
             if (typeof(cfg.onViewed) === "function") {
-                onViewedHandlers.push(cfg.onViewed);
+                onViewedHandlers.push(function (data) {
+                    if (types.indexOf(data.type) === -1) { return; }
+                    cfg.onViewed(data);
+                });
             }
             if (typeof(cfg.onMessage) === "function") {
-                onMessageHandlers.push(cfg.onMessage);
+                onMessageHandlers.push(function (data, el) {
+                    if (types.indexOf(data.type) === -1) { return; }
+                    cfg.onMessage(data, el);
+                });
             }
             Object.keys(history).forEach(function (type) {
+                if (types.indexOf(type) === -1) { return; }
                 history[type].forEach(function (data) {
                     pushMessage({
                         type: type,
@@ -160,6 +171,52 @@ define([
             });
         };
 
+        var historyState = false;
+        var onHistory = function () {};
+        mailbox.getMoreHistory = function (type, count, lastKnownHash, cb) {
+            if (historyState) { return void cb("ALREADY_CALLED"); }
+            historyState = true;
+            var txid = Util.uid();
+            execCommand('LOAD_HISTORY', {
+                type: type,
+                count: lastKnownHash ? count + 1 : count,
+                txid: txid,
+                lastKnownHash: lastKnownHash
+            }, function (err, obj) {
+                if (obj && obj.error) { console.error(obj.error); }
+            });
+            var messages = [];
+            onHistory = function (data) {
+                if (data.txid !== txid) { return; }
+                if (data.complete) {
+                    onHistory = function () {};
+                    var end = messages.length < count;
+                    cb(null, messages, end);
+                    historyState = false;
+                    return;
+                }
+                if (data.hash !== lastKnownHash) {
+                    messages.push({
+                        type: type,
+                        content: {
+                            msg: data.message,
+                            time: data.time,
+                            hash: data.hash
+                        }
+                    });
+                }
+            };
+        };
+        mailbox.getNotificationsHistory = function (type, count, lastKnownHash, cb) {
+            mailbox.getMoreHistory(type, count, lastKnownHash, function (err, messages, end) {
+                if (!Array.isArray(messages)) { return void cb(err); }
+                messages.forEach(function (data) {
+                    data.content.archived = true;
+                    Notifications.add(Common, data);
+                });
+                cb(err, messages, end);
+            });
+        };
 
         // CHANNEL WITH WORKER
 
@@ -167,6 +224,9 @@ define([
             // obj = { ev: 'type', data: obj }
             var ev = obj.ev;
             var data = obj.data;
+            if (ev === 'HISTORY') {
+                return void onHistory(data);
+            }
             if (ev === 'MESSAGE') {
                 return void onMessage(data);
             }

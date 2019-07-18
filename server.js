@@ -193,6 +193,7 @@ app.get('/api/config', function(req, res){
             httpUnsafeOrigin: config.httpUnsafeOrigin,
             adminEmail: config.adminEmail,
             adminKeys: admins,
+            supportMailbox: config.supportMailboxPublicKey
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
             if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }

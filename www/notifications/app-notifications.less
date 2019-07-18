@@ -1,0 +1,142 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+
+&.cp-app-notifications {
+
+    .framework_min_main(
+        @bg-color: @colortheme_notifications-bg,
+        @warn-color: @colortheme_notifications-warn,
+        @color: @colortheme_notifications-color
+    );
+    .sidebar-layout_main();
+
+    display: flex;
+    flex-flow: column;
+
+    .cp-clickable {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+    }
+
+    .cp-app-notifications-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        width: 100%;
+
+        .cp-app-notifications-panel-titlebar {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+//            border-radius: 5px 5px 0 0;
+            background-color: #888;
+            color: #fff;
+
+            .cp-app-notifications-panel-title {
+                flex-grow: 1;
+                margin: 1rem 1rem;
+            }
+
+            .cp-app-notifications-panel-titlebar-buttons {
+                align-self: stretch;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: stretch;
+
+                .cp-app-notifications-dismissall {
+                    align-self: stretch;
+                    flex-shrink: 0;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 3rem;
+                }
+            }
+        }
+
+        .cp-app-notifications-panel-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            border: 1px solid #ccc;
+            border-top: none;
+//            border-radius: 0 0 5px 5px;
+            overflow: hidden;
+
+            .cp-notification {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+                background-color: #ffffff;
+                &.no-notifications {
+                    display: none;
+                    padding: 1rem 1rem;
+                    font-style: italic;
+                    color: #777;
+                    &:only-child {
+                        display: block;
+                    }
+                }
+                &.cp-app-notification-archived {
+                    background-color: #f1f1f1;
+                }
+                &:not(:first-child) {
+                    border-top: 1px solid #ccc;
+                }
+                &.dismissed {
+                    display: none;
+                }
+
+                .cp-notification-content {
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-start;
+                    align-items: center;
+                    p {
+                        display: inline-block;
+                        margin: 1rem 1rem;
+                    }
+                    .notification-time {
+                        margin: 1rem 1rem;
+                        color: grey;
+                        margin-left: auto;
+                    }
+                }
+
+                .cp-notification-dismiss {
+                    align-self: stretch;
+                    flex-shrink: 0;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    border-left: 1px solid #ccc;
+                    width: 3rem;
+                }
+            }
+        }
+    }
+
+    .cp-app-notification-loadmore {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        color: #333;
+    }
+
+}
+

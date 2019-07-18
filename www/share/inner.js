@@ -42,6 +42,7 @@ define([
             var modal = f({
                 origin: origin,
                 pathname: pathname,
+                password: priv.password,
                 hashes: hashes,
                 common: common,
                 title: data.title,

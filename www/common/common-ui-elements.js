@@ -162,7 +162,7 @@ define([
             }
 
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad') {
+            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                 var sframeChan = common.getSframeChannel();
                 var changePwTitle = Messages.properties_changePassword;
                 var changePwConfirm = Messages.properties_confirmChange;
@@ -412,6 +412,7 @@ define([
                         if (!friend.notifications || !friend.curvePublic) { return; }
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
+                            password: config.password,
                             name: myName,
                             title: title
                         }, {
@@ -700,7 +701,10 @@ define([
             },
             keys: [13]
         }];
-        var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
+        var frameLink = UI.dialog.customModal(link, {
+            buttons: linkButtons,
+            onClose: config.onClose,
+        });
 
         // Embed tab
         var embed = h('div.cp-share-modal', [
@@ -727,7 +731,10 @@ define([
             },
             keys: [13]
         }];
-        var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
+        var frameEmbed = UI.dialog.customModal(embed, {
+            buttons: embedButtons,
+            onClose: config.onClose,
+        });
 
         // Create modal
         var tabs = [{
@@ -1866,6 +1873,13 @@ define([
                 content: h('span', Messages.adminPage || 'Admin')
             });
         }
+        if (padType !== 'support' && accountName && Config.supportMailbox) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
+                content: h('span', Messages.supportPage || 'Support')
+            });
+        }
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
@@ -1959,6 +1973,13 @@ define([
                 window.open(origin+'/settings/');
             } else {
                 window.parent.location = origin+'/settings/';
+            }
+        });
+        $userAdmin.find('a.cp-toolbar-menu-support').click(function () {
+            if (padType) {
+                window.open(origin+'/support/');
+            } else {
+                window.parent.location = origin+'/support/';
             }
         });
         $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {

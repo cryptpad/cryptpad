@@ -85,6 +85,34 @@ define([
         return id;
     };
 
+    /*  Given a base64-encoded public key, deterministically derive a channel id
+        Used for support mailboxes
+    */
+    Hash.getChannelIdFromKey = function (publicKey) {
+        if (!publicKey) { return; }
+        return uint8ArrayToHex(Hash.decodeBase64(publicKey).subarray(0,16));
+    };
+
+    /*  Given a base64-encoded asymmetric private key
+        derive the corresponding public key
+    */
+    Hash.getBoxPublicFromSecret = function (priv) {
+        if (!priv) { return; }
+        var u8_priv = Hash.decodeBase64(priv);
+        var pair = Nacl.box.keyPair.fromSecretKey(u8_priv);
+        return Hash.encodeBase64(pair.publicKey);
+    };
+
+    /*  Given a base64-encoded private key and public key
+        check that the keys are part of a valid keypair
+    */
+    Hash.checkBoxKeyPair = function (priv, pub) {
+        if (!pub || !priv) { return false; }
+        var u8_priv = Hash.decodeBase64(priv);
+        var pair = Nacl.box.keyPair.fromSecretKey(u8_priv);
+        return pub === Hash.encodeBase64(pair.publicKey);
+    };
+
     Hash.createRandomHash = function (type, password) {
         var cryptor;
         if (type === 'file') {

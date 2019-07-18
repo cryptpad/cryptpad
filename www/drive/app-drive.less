@@ -513,12 +513,18 @@
                         }
                         .cp-app-drive-search-path {
                             font-style: italic;
-                            display: flex;
-                            flex-flow: row-reverse;
-                            justify-content: right;
-                            .cp-app-drive-path-element {
-                                display: inline-block;
-                                margin-right: 5px;
+                            .cp-app-drive-path-inner {
+                                display: flex;
+                                flex-flow: row-reverse wrap-reverse;
+                                justify-content: flex-end;
+                                .cp-app-drive-path-element {
+                                    flex-shrink: 0;
+                                    display: inline-block;
+                                    margin-right: 5px;
+                                    white-space: normal;
+                                    word-wrap: break-word;
+                                    max-width: 100%;
+                                }
                             }
                         }
                         .cp-app-drive-search-title {

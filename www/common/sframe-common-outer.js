@@ -223,6 +223,11 @@ define([
                             sframeChan.event("EV_PAD_PASSWORD");
                         };
 
+                        if (!val && sessionStorage.newPadPassword) {
+                            val = sessionStorage.newPadPassword;
+                            delete sessionStorage.newPadPassword;
+                        }
+
                         if (val) {
                             password = val;
                             Cryptpad.getFileSize(window.location.href, password, waitFor(function (e, size) {
@@ -934,6 +939,19 @@ define([
 
             Cryptpad.onTimeoutEvent.reg(function () {
                 sframeChan.event('EV_WORKER_TIMEOUT');
+            });
+
+            sframeChan.on('EV_GIVE_ACCESS', function (data, cb) {
+                Cryptpad.padRpc.giveAccess(data, cb);
+            });
+            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                if (readOnly && hashes.editHash) {
+                    return void cb({error: 'ALREADYKNOWN'});
+                }
+                Cryptpad.padRpc.requestAccess({
+                    send: data,
+                    channel: secret.channel
+                }, cb);
             });
 
             if (cfg.messaging) {
