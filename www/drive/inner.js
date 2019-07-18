@@ -2145,7 +2145,7 @@ define([
             });
             // if folder name already exist in drive, rename it
             var uploadedFolderName = files[0].path[0];
-            var availableName = manager.user.userObject.getAvailableName(manager.user.userObject.find(currentFolder), uploadedFolderName);
+            var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
             if (uploadedFolderName !== availableName) {
                 files.forEach(function (file) {
                     file.path[0] = availableName;
@@ -2155,8 +2155,7 @@ define([
             // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
             // at the index i + 1, the files and folders are children of the folders at the index i
             var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
-            console.log("maxSteps", maxSteps);
-            var uploadSteps = []
+            var uploadSteps = [];
             for (var i = 0 ; i < maxSteps ; i++) {
                 uploadSteps[i] = {
                     folders: [],
@@ -2170,7 +2169,7 @@ define([
                     if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
                         uploadSteps[depth].folders.push(subfolderStr);
                     }
-                };
+                }
                 // add step for file (one step later than the step for its direct parent folder)
                 uploadSteps[file.path.length - 1].files.push(file);
             });
@@ -2192,16 +2191,14 @@ define([
                     uploadSteps[i].files.forEach(function (file) {
                         var ev = {
                             target: $content[0],
-                            path: file.path,
+                            path: currentFolder.concat(file.path.slice(0, -1)),
                         };
-                        console.log(file);
-                        console.log(ev);
-//                    APP.FM.handleFile(file.file, ev); // THIS LINE NEED TO BE FIXED
+                    APP.FM.handleFile(file.file, ev);
                     });
                 }).nThen(function () {
                     stepByStep(uploadSteps, i + 1);
                 });
-            }
+            };
             stepByStep(uploadSteps, 0);
         };
         var showUploadFolderModal = function () {
