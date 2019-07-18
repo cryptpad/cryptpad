@@ -234,37 +234,40 @@ define([
             owned: true,
             store: true
         };
-        var fileUploadModal = function (file, cb) {
-            var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(file.name) || [];
-            var name = parsedName[1] || file.name;
-            var ext = parsedName[2] || "";
-
-            var createHelper = function (href, text) {
-                var q = h('a.fa.fa-question-circle', {
-                    style: 'text-decoration: none !important;',
-                    title: text,
-                    href: origin + href,
-                    target: "_blank",
-                    'data-tippy-placement': "right"
-                });
-                return q;
-            };
-
+        var createHelper = function (href, text) {
+            var q = h('a.fa.fa-question-circle', {
+                style: 'text-decoration: none !important;',
+                title: text,
+                href: origin + href,
+                target: "_blank",
+                'data-tippy-placement': "right"
+            });
+            return q;
+        };
+        var createManualStore = function (isFolderUpload) {
             var privateData = common.getMetadataMgr().getPrivateData();
             var autoStore = Util.find(privateData, ['settings', 'general', 'autostore']) || 0;
             var initialState = modalState.owned || modalState.store;
             var initialDisabled = modalState.owned ? { disabled: true } : {};
             var manualStore = autoStore === 1 ? undefined :
-                UI.createCheckbox('cp-upload-store', Messages.autostore_forceSave, initialState, {
-                    input: initialDisabled
-                });
+            UI.createCheckbox('cp-upload-store', isFolderUpload ? (Messages.uploadFolder_modal_forceSave || "Store files in your cryptDrive") : Messages.autostore_forceSave, initialState, {
+                input: initialDisabled
+            });
+            return manualStore;
+        }
+        var fileUploadModal = function (defaultFileName, cb) {
+            var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(defaultFileName) || [];
+            var name = parsedName[1] || defaultFileName;
+            var ext = parsedName[2] || "";
+
+            var manualStore = createManualStore();
 
             // Ask for name, password and owner
             var content = h('div', [
                 h('h4', Messages.upload_modal_title),
                 UIElements.setHTML(h('label', {for: 'cp-upload-name'}),
                                    Messages._getKey('upload_modal_filename', [ext])),
-                h('input#cp-upload-name', {type: 'text', placeholder: file.name, value: file.name}),
+                h('input#cp-upload-name', {type: 'text', placeholder: defaultFileName, value: defaultFileName}),
                 h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
                 UI.passwordInput({id: 'cp-upload-password'}),
                 h('span', {
@@ -298,7 +301,7 @@ define([
                 modalState.store = forceSave;
 
                 // Add extension to the name if needed
-                if (!newName || !newName.trim()) { newName = file.name; }
+                if (!newName || !newName.trim()) { newName = defaultFileName; }
                 var newExtIdx = newName.lastIndexOf('.');
                 var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
                 if (newExt !== ext) { newName += ext; }
@@ -312,12 +315,64 @@ define([
             });
         };
 
+        var showFolderUploadModal = File.showFolderUploadModal = function (foldername, cb) {
+            var manualStore = createManualStore();
+
+            // Ask for name, password and owner
+            var content = h('div', [
+                h('h4', Messages.uploadFolder_modal_title || "Folder upload options"),
+                UIElements.setHTML(h('label', {for: 'cp-upload-name'}), Messages.fm_folderName),
+                h('input#cp-upload-foldername', {type: 'text', placeholder: foldername, value: foldername}),
+                h('label', {for: 'cp-upload-password'}, Messages.uploadFolder_modal_filesPassword || "Files password"),
+                UI.passwordInput({id: 'cp-upload-password'}),
+                h('span', {
+                    style: 'display:flex;align-items:center;justify-content:space-between'
+                }, [
+                    UI.createCheckbox('cp-upload-owned', Messages.uploadFolder_modal_owner || "Owned files", modalState.owned),
+                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
+                ]),
+                manualStore
+            ]);
+
+            $(content).find('#cp-upload-owned').on('change', function () {
+                var val = $(content).find('#cp-upload-owned').is(':checked');
+                if (val) {
+                    $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
+                } else {
+                    $(content).find('#cp-upload-store').prop('disabled', false);
+                }
+            });
+
+            UI.confirm(content, function (yes) {
+                if (!yes) { return void cb(); }
+
+                // Get the values
+                var newName = $(content).find('#cp-upload-foldername').val();
+                var password = $(content).find('#cp-upload-password').val() || undefined;
+                var owned = $(content).find('#cp-upload-owned').is(':checked');
+                var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
+
+                modalState.owned = owned;
+                modalState.store = forceSave;
+
+                if (!newName || !newName.trim()) { newName = foldername; }
+
+                cb({
+                    folderName: newName,
+                    password: password,
+                    owned: owned,
+                    forceSave: forceSave
+                });
+            });
+        }
+
         var handleFileState = {
             queue: [],
             inProgress: false
         };
-        var handleFile = File.handleFile = function (file, e) {
-            if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e]); }
+        /* if defaultOptions is passed, the function does not show the upload options modal, and directly save the file with the specified options */
+        var handleFile = File.handleFile = function (file, e, defaultOptions) {
+            if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e, defaultOptions]); }
             handleFileState.inProgress = true;
 
             var thumb;
@@ -345,7 +400,7 @@ define([
                 handleFileState.inProgress = false;
                 if (handleFileState.queue.length) {
                     var next = handleFileState.queue.shift();
-                    handleFile(next[0], next[1]);
+                    handleFile(next[0], next[1], next[2]);
                 }
             };
             var getName = function () {
@@ -354,14 +409,25 @@ define([
                 if (config.noStore) { return void finish(); }
 
                 // Otherwise, ask for password, name and ownership
-                fileUploadModal(file, function (obj) {
-                    if (!obj) { return void finish(true); }
-                    name = obj.name;
-                    password = obj.password;
-                    owned = obj.owned;
-                    forceSave = obj.forceSave;
+                // if default options were passed, upload file immediately
+                if (defaultOptions && typeof defaultOptions === "object") {
+                    name = defaultOptions.name || file.name;
+                    password = defaultOptions.password || undefined;
+                    owned = defaultOptions.owned || true;
+                    forceSave = defaultOptions.forceSave || true;
                     finish();
-                });
+                }
+                // if no default options were passed, ask the user
+                else {
+                    fileUploadModal(file.name, function (obj) {
+                        if (!obj) { return void finish(true); }
+                        name = obj.name;
+                        password = obj.password;
+                        owned = obj.owned;
+                        forceSave = obj.forceSave;
+                        finish();
+                    });
+                }
             };
 
             blobToArrayBuffer(file, function (e, buffer) {

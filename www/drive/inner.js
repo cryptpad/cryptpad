@@ -2146,60 +2146,68 @@ define([
             // if folder name already exist in drive, rename it
             var uploadedFolderName = files[0].path[0];
             var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
-            if (uploadedFolderName !== availableName) {
-                files.forEach(function (file) {
-                    file.path[0] = availableName;
-                });
-            }
 
-            // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
-            // at the index i + 1, the files and folders are children of the folders at the index i
-            var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
-            var uploadSteps = [];
-            for (var i = 0 ; i < maxSteps ; i++) {
-                uploadSteps[i] = {
-                    folders: [],
-                    files: [],
-                };
-            }
-            files.forEach(function (file) {
-                // add steps for subfolders containing file
-                for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
-                    var subfolderStr = file.path.slice(0, depth + 1).join("/");
-                    if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
-                        uploadSteps[depth].folders.push(subfolderStr);
-                    }
+            // ask for folder name and files options, then upload all the files!
+            APP.FM.showFolderUploadModal(availableName, function (folderUploadOptions) {
+                if (!folderUploadOptions) { return; }
+
+                // verfify folder name is possible, and update files path
+                availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
+                if (uploadedFolderName !== availableName) {
+                    files.forEach(function (file) {
+                        file.path[0] = availableName;
+                    });
                 }
-                // add step for file (one step later than the step for its direct parent folder)
-                uploadSteps[file.path.length - 1].files.push(file);
-            });
-            console.log(uploadSteps);
 
-            // add folders, then add files when theirs folders have been created
-            // wait for the folders to be created to go to the next step (don't wait for the files)
-            var stepByStep = function (uploadSteps, i) {
-                if (i >= uploadSteps.length) { return; }
-                nThen(function (waitFor) {
-                    // add folders
-                    uploadSteps[i].folders.forEach(function (folder) {
-                        var folderPath = folder.split("/");
-                        var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
-                        var folderName = folderPath.slice(-1);
-                        manager.addFolder(parentFolder, folderName, waitFor(refresh));
-                    });
-                    // upload files
-                    uploadSteps[i].files.forEach(function (file) {
-                        var ev = {
-                            target: $content[0],
-                            path: currentFolder.concat(file.path.slice(0, -1)),
-                        };
-                    APP.FM.handleFile(file.file, ev);
-                    });
-                }).nThen(function () {
-                    stepByStep(uploadSteps, i + 1);
+                // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
+                // at the index i + 1, the files and folders are children of the folders at the index i
+                var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
+                var uploadSteps = [];
+                for (var i = 0 ; i < maxSteps ; i++) {
+                    uploadSteps[i] = {
+                        folders: [],
+                        files: [],
+                    };
+                }
+                files.forEach(function (file) {
+                    // add steps to create subfolders containing file
+                    for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
+                        var subfolderStr = file.path.slice(0, depth + 1).join("/");
+                        if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
+                            uploadSteps[depth].folders.push(subfolderStr);
+                        }
+                    }
+                    // add step to upload file (one step later than the step of its direct parent folder)
+                    uploadSteps[file.path.length - 1].files.push(file);
                 });
-            };
-            stepByStep(uploadSteps, 0);
+
+                // add folders, then add files when theirs folders have been created
+                // wait for the folders to be created to go to the next step (don't wait for the files)
+                var stepByStep = function (uploadSteps, i) {
+                    if (i >= uploadSteps.length) { return; }
+                    nThen(function (waitFor) {
+                        // add folders
+                        uploadSteps[i].folders.forEach(function (folder) {
+                            var folderPath = folder.split("/");
+                            var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
+                            var folderName = folderPath.slice(-1);
+                            manager.addFolder(parentFolder, folderName, waitFor(refresh));
+                        });
+                        // upload files
+                        uploadSteps[i].files.forEach(function (file) {
+                            var ev = {
+                                target: $content[0],
+                                path: currentFolder.concat(file.path.slice(0, -1)),
+                            };
+                            APP.FM.handleFile(file.file, ev, folderUploadOptions);
+                        });
+                    }).nThen(function () {
+                        stepByStep(uploadSteps, i + 1);
+                    });
+                };
+
+                stepByStep(uploadSteps, 0);
+            });
         };
         var showUploadFolderModal = function () {
             console.log("%cIMPORT FOLDER", "color: red");
