@@ -342,7 +342,7 @@ define([
         });
     };
 
-    var getFriendsList = function (config) {
+    var getFriendsList = function (config, onShare) {
         var common = config.common;
         var title = config.title;
         var friends = config.friends;
@@ -453,6 +453,9 @@ define([
                         return smallCurves.indexOf(curve) !== -1;
                     });
                     common.setAttribute(['general', 'share-friends'], order);
+                    if (onShare) {
+                        onShare.fire();
+                    }
                 });
                 $nav.append(button);
             }
@@ -529,8 +532,10 @@ define([
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var onFriendShare = Util.mkEvent();
+        var friendsList = hasFriends ? getFriendsList(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+
         var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [
                 hasFriends ? h('p', Messages.share_description) : undefined,
@@ -564,6 +569,7 @@ define([
                 present: present
             });
         };
+        onFriendShare.reg(saveValue);
         var getLinkValue = function (initValue) {
             var val = initValue || {};
             var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
