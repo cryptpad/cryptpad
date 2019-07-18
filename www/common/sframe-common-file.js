@@ -413,8 +413,8 @@ define([
                 if (defaultOptions && typeof defaultOptions === "object") {
                     name = defaultOptions.name || file.name;
                     password = defaultOptions.password || undefined;
-                    owned = defaultOptions.owned || true;
-                    forceSave = defaultOptions.forceSave || true;
+                    owned = !!defaultOptions.owned;
+                    forceSave = !!defaultOptions.forceSave;
                     finish();
                 }
                 // if no default options were passed, ask the user
