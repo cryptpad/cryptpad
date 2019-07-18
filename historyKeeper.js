@@ -508,27 +508,27 @@ module.exports.create = function (cfg) {
                         return;
                     }
 
-                    // If this is a new channel, we need to store the metadata as
-                    // the first message in the file
-                    // FIXME METADATA COMMENT
-                    // in fact it should be written to a new metadata log
+                    // If this is a new channel, we should store it in the new format
+                    // as the first line in a dedicated metadata log, not in the channel
                     // XXX read this kind of metadata before writing it
                     const chan = ctx.channels[channelName];
+
+                    // XXX check metadata message count too...
                     if (msgCount === 0 && !historyKeeperKeys[channelName] && chan && chan.indexOf(user) > -1) {
-                        var key = {};
-                        key.channel = channelName;
+                        var metadata = {};
+                        metadata.channel = channelName;
                         if (validateKey) {
-                            key.validateKey = validateKey;
+                            metadata.validateKey = validateKey;
                         }
                         if (owners) {
-                            key.owners = owners;
+                            metadata.owners = owners;
                         }
                         if (expire) {
-                            key.expire = expire;
+                            metadata.expire = expire;
                         }
-                        historyKeeperKeys[channelName] = key;
-                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined); // FIXME METADATA WRITE
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]); // FIXME METADATA SEND
+                        historyKeeperKeys[channelName] = metadata;
+                        storeMessage(ctx, chan, JSON.stringify(metadata), false, undefined); // FIXME METADATA WRITE
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(metadata)]); // FIXME METADATA SEND
                     }
 
                     // End of history message:
@@ -584,6 +584,9 @@ module.exports.create = function (cfg) {
             // parsed[2] is a validation key (optionnal)
             // parsed[3] is the last known hash (optionnal)
             sendMsg(ctx, user, [seq, 'ACK']);
+
+            // XXX should we send metadata here too?
+            // my gut says yes
             getHistoryAsync(ctx, parsed[1], -1, false, (msg, cb) => {
                 if (!msg) { return; }
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(['FULL_HISTORY', msg])], cb);
@@ -618,7 +621,9 @@ module.exports.create = function (cfg) {
                 // FIXME METADATA CHANGE
                 /*
                 if (msg[3] === 'SET_METADATA') { // or whatever we call the RPC????
-
+                    // make sure we update our cache of metadata
+                    // or at least invalidate it and force other mechanisms to recompute its state
+                    // 'output' could be the new state as computed by rpc
                 }
 
                 */
