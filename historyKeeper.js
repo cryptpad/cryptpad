@@ -80,6 +80,7 @@ module.exports.create = function (cfg) {
                     metadata = msg = tryParse(msgObj.buff.toString('utf8')); // FIXME METADATA READ
                     if (typeof msg === "undefined") { return rmcb(); }
                     if (msg.validateKey) {
+                        // XXX this variable name is very misleading as it's actually the metadata, not the validateKey
                         validateKey = historyKeeperKeys[channelName] = msg;
                         return rmcb();
                     }
