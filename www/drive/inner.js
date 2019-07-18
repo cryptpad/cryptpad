@@ -45,7 +45,7 @@ define([
         editable: false,
         mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
         isMac: navigator.platform === "MacIntel",
-        allowFolderUpload: true,
+        allowFolderUpload: File.prototype.hasOwnProperty("webkitRelativePath"),
     };
 
     var stringify = function (obj) {
