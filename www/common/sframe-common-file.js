@@ -235,9 +235,9 @@ define([
             store: true
         };
         var fileUploadModal = function (file, cb) {
-            var extIdx = file.name.lastIndexOf('.');
-            var name = extIdx !== -1 ? file.name.slice(0,extIdx) : file.name;
-            var ext = extIdx !== -1 ? file.name.slice(extIdx) : "";
+            var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(file.name) || [];
+            var name = parsedName[1] || file.name;
+            var ext = parsedName[2] || "";
 
             var createHelper = function (href, text) {
                 var q = h('a.fa.fa-question-circle', {
@@ -264,7 +264,7 @@ define([
                 h('h4', Messages.upload_modal_title),
                 UIElements.setHTML(h('label', {for: 'cp-upload-name'}),
                                    Messages._getKey('upload_modal_filename', [ext])),
-                h('input#cp-upload-name', {type: 'text', placeholder: name}),
+                h('input#cp-upload-name', {type: 'text', placeholder: name, value: name}),
                 h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
                 UI.passwordInput({id: 'cp-upload-password'}),
                 h('span', {
