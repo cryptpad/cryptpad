@@ -430,6 +430,7 @@ define([
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
                             password: config.password,
+                            isTemplate: config.isTemplate,
                             name: myName,
                             title: title
                         }, {

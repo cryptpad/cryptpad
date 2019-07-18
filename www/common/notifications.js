@@ -4,8 +4,10 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/common-constants.js',
     '/customize/messages.js',
-], function ($, h, Hash, UI, UIElements, Messages) {
+    '/bower_components/nthen/index.js'
+], function ($, h, Hash, UI, UIElements, Constants, Messages, nThen) {
 
     var handlers = {};
 
@@ -83,11 +85,16 @@ define([
                 common.openURL(msg.content.href);
                 defaultDismiss(common, data)();
             };
-            if (!msg.content.password) { return void todo(); }
-            common.getSframeChannel().query('Q_SESSIONSTORAGE_PUT', {
-                key: 'newPadPassword',
-                value: msg.content.password
-            }, todo);
+            nThen(function (waitFor) {
+                if (msg.content.isTemplate) {
+                    common.sessionStorage.put(Constants.newPadPathKey, ['template'], waitFor());
+                }
+                if (msg.content.password) {
+                    common.sessionStorage.put('newPadPassword', msg.content.password, waitFor());
+                }
+            }).nThen(function () {
+                todo();
+            });
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
