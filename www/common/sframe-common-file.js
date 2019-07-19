@@ -183,8 +183,14 @@ define([
                 clearTimeout(queue.to);
                 queue.to = window.setTimeout(function () {
                     if (config.keepTable) { return; }
-                    File.$container.fadeOut();
-                }, 3000);
+                    // don't hide panel if mouse over
+                    if (File.$container.is(":hover")) {
+                        File.$container.one("mouseleave", function () { File.$container.fadeOut(); });
+                    }
+                    else {
+                        File.$container.fadeOut();
+                    }
+                }, 20000);
                 return;
             }
             if (queue.inProgress) { return; }
