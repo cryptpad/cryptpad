@@ -106,10 +106,14 @@ define([
             var $pc = $row.find('.cp-fileupload-table-progress');
             var $link = $row.find('.cp-fileupload-table-link');
 
+            /**
+             * Update progress in the download panel, for uploading a file
+             * @param {number} progressValue Progression of download, between 0 and 100
+             */
             updateProgress = function (progressValue) {
-                $pv.text(Math.round(progressValue*100)/100 + '%');
+                $pv.text(Math.round(progressValue * 100) / 100 + '%');
                 $pb.css({
-                    width: (progressValue/100)*$pc.width()+'px'
+                    width: progressValue + '%'
                 });
             };
 
@@ -537,20 +541,28 @@ define([
                         queue.next();
                     };
 
+                    /**
+                     * Update progress in the download panel, for downloading a file
+                     * @param {number} progressValue Progression of download, between 0 and 1
+                     */
                     var updateDLProgress = function (progressValue) {
-                        var text = Math.round(progressValue*100) + '%';
-                        text += ' ('+ Messages.download_step1 +'...)';
+                        var text = Math.round(progressValue * 100) + '%';
+                        text += ' ('+ Messages.download_step1 + '...)';
                         $pv.text(text);
                         $pb.css({
-                            width: progressValue * $pc.width()+'px'
+                            width: (progressValue * 100) + '%'
                         });
                     };
+                    /**
+                     * Update progress in the download panel, for decrypting a file (after downloading it)
+                     * @param {number} progressValue Progression of download, between 0 and 1
+                     */
                     var updateProgress = function (progressValue) {
-                        var text = Math.round(progressValue*100) + '%';
-                        text += progressValue === 1 ? '' : ' ('+ Messages.download_step2 +'...)';
+                        var text = Math.round(progressValue * 100) + '%';
+                        text += progressValue === 1 ? '' : ' (' + Messages.download_step2 + '...)';
                         $pv.text(text);
                         $pb.css({
-                            width: progressValue * $pc.width()+'px'
+                            width: (progressValue * 100) + '%'
                         });
                     };
 
