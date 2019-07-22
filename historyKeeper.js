@@ -257,12 +257,27 @@ module.exports.create = function (cfg) {
         });
     };
 
-    // Determine what we should store when a message a broadcasted to a channel
+    var CHECKPOINT_PATTERN = /^cp\|(([A-Za-z0-9+\/=]+)\|)?/;
+
+    /*  onChannelMessage
+        Determine what we should store when a message a broadcasted to a channel"
+
+        * ignores ephemeral channels
+        * ignores messages sent to expired channels
+        * rejects duplicated checkpoints
+        * validates messages to channels that have validation keys
+        * caches the id of the last saved checkpoint
+        * adds timestamps to incoming messages
+        * writes messages to the store
+
+
+    */
     const onChannelMessage = function (ctx, channel, msgStruct) {
         // don't store messages if the channel id indicates that it's an ephemeral message
         if (!channel.id || channel.id.length === EPHEMERAL_CHANNEL_LENGTH) { return; }
 
         const isCp = /^cp\|/.test(msgStruct[4]);
+        // FIXME METADATA
         if (historyKeeperKeys[channel.id] && historyKeeperKeys[channel.id].expire &&
                 historyKeeperKeys[channel.id].expire < +new Date()) {
             return; // Don't store messages on expired channel
@@ -270,7 +285,7 @@ module.exports.create = function (cfg) {
         let id;
         if (isCp) {
             /*::if (typeof(msgStruct[4]) !== 'string') { throw new Error(); }*/
-            id = /cp\|(([A-Za-z0-9+\/=]+)\|)?/.exec(msgStruct[4]);
+            id = CHECKPOINT_PATTERN.exec(msgStruct[4]);
             if (Array.isArray(id) && id[2] && id[2] === channel.lastSavedCp) {
                 // Reject duplicate checkpoints
                 return;
@@ -278,8 +293,9 @@ module.exports.create = function (cfg) {
         }
         if (historyKeeperKeys[channel.id] && historyKeeperKeys[channel.id].validateKey) {
             /*::if (typeof(msgStruct[4]) !== 'string') { throw new Error(); }*/
-            let signedMsg = (isCp) ? msgStruct[4].replace(/^cp\|(([A-Za-z0-9+\/=]+)\|)?/, '') : msgStruct[4];
+            let signedMsg = (isCp) ? msgStruct[4].replace(CHECKPOINT_PATTERN, '') : msgStruct[4];
             signedMsg = Nacl.util.decodeBase64(signedMsg);
+            // FIXME performance: cache the decoded key instead of decoding it every time
             const validateKey = Nacl.util.decodeBase64(historyKeeperKeys[channel.id].validateKey);
             const validated = Nacl.sign.open(signedMsg, validateKey);
             if (!validated) {
