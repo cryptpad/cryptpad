@@ -1475,6 +1475,8 @@ var removeLoginBlock = function (Env, msg, cb) {
     });
 };
 
+// FIXME METADATA
+// since we're changing how metadata works this can lead to false positives
 var isNewChannel = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     if (channel.length !== 32) { return void cb('INVALID_CHAN'); }
