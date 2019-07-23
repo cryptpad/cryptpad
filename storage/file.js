@@ -171,7 +171,7 @@ var getDedicatedMetadata = function (env, channelId, handler, cb) {
             // ENOENT => there is no metadata log
             if (err.code === 'ENOENT') { return void cb(); }
             // otherwise stream errors?
-            cb(err);
+            return void cb(err);
         }
         cb();
     });
