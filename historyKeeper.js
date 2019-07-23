@@ -115,17 +115,32 @@ module.exports.create = function (cfg) {
         const offsetByHash = {};
         let size = 0;
         nThen(function (w) {
+            // iterate over all messages in the channel log
+            // old channels can contain metadata as the first message of the log
+            // remember metadata the first time you encounter it
+            // otherwise index important messages in the log
             store.readMessagesBin(channelName, 0, (msgObj, rmcb) => {
                 let msg;
-                i++;
-                if (!metadata && msgObj.buff.indexOf('validateKey') > -1) {
-                    metadata = msg = tryParse(msgObj.buff.toString('utf8')); // FIXME METADATA READ
+                // keep an eye out for the metadata line if you haven't already seen it
+                // but only check for metadata on the first line
+                if (!i && !metadata && msgObj.buff.indexOf('{') === 0) {
+                    i++; // always increment i
+                    msg = tryParse(msgObj.buff.toString('utf8')); // FIXME METADATA READ
                     if (typeof msg === "undefined") { return rmcb(); }
-                    if (msg.validateKey) {
-                        metadata_cache[channelName] = msg;
+
+                    // XXX metadata should be truthey, an object, and not an array...
+                    if (msg && typeof(msg) === 'object' && !Array.isArray(msg)) {
+                        metadata = msg;
+
+                        // metadata can contain:
+                        // validateKey, owners, expiration...
+                        //if (msg.validateKey || msg.owners || msg.expire) {
+                            //metadata_cache[channelName] = msg;
+                        //}
                         return rmcb();
                     }
                 }
+                i++;
                 if (msgObj.buff.indexOf('cp|') > -1) {
                     msg = msg || tryParse(msgObj.buff.toString('utf8'));
                     if (typeof msg === "undefined") { return rmcb(); }
@@ -168,7 +183,7 @@ module.exports.create = function (cfg) {
                 if (err) {
                     return void Log.error("DEDICATED_METADATA_ERROR", err);
                 }
-                metadata = ref.meta;
+                metadata = metadata_cache[channelName] = ref.meta;
             }));
         }).nThen(function () {
             // FIXME METADATA READ
