@@ -11,6 +11,18 @@ const Meta = require("./lib/metadata");
 let Log;
 const now = function () { return (new Date()).getTime(); };
 
+/*  getHash
+    * this function slices off the leading portion of a message which is
+      most likely unique
+    * these "hashes" are used to identify particular messages in a channel's history
+    * clients store "hashes" either in memory or in their drive to query for new messages:
+      * when reconnecting to a pad
+      * when connecting to chat or a mailbox
+    * thus, we can't change this function without invalidating client data which:
+      * is encrypted clientside
+      * can't be easily migrated
+    * don't break it!
+*/
 const getHash = function (msg) {
     if (typeof(msg) !== 'string') {
         Log.warn('HK_GET_HASH', 'getHash() called on ' + typeof(msg) + ': ' + msg);
