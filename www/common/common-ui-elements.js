@@ -119,15 +119,32 @@ define([
         $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
             .appendTo($d);
         var owners = Messages.creation_noOwner;
-        var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
         var owned = false;
         if (data.owners && data.owners.length) {
             if (data.owners.indexOf(edPublic) !== -1) {
-                owners = Messages.yourself;
                 owned = true;
-            } else {
-                owners = Messages.creation_ownedByOther;
             }
+            var names = [];
+            var strangers = 0;
+            data.owners.forEach(function (ed) {
+                // If a friend is an owner, add their name to the list
+                // otherwise, increment the list of strangers
+                if (!Object.keys(priv.friends || {}).some(function (c) {
+                    var friend = priv.friends[c] || {};
+                    if (friend.edPublic !== ed) { return; }
+                    var name = c === 'me' ? Messages.yourself : friend.displayName;
+                    names.push(name);
+                    return true;
+                })) {
+                    strangers++;
+                }
+            });
+            if (strangers) {
+                names.push(Messages._getKey('properties_unknownUser', [strangers]));
+            }
+            owners = names.join(', ');
         }
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
@@ -325,7 +342,7 @@ define([
         });
     };
 
-    var getFriendsList = function (config) {
+    var getFriendsList = function (config, onShare) {
         var common = config.common;
         var title = config.title;
         var friends = config.friends;
@@ -413,6 +430,7 @@ define([
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
                             password: config.password,
+                            isTemplate: config.isTemplate,
                             name: myName,
                             title: title
                         }, {
@@ -436,6 +454,9 @@ define([
                         return smallCurves.indexOf(curve) !== -1;
                     });
                     common.setAttribute(['general', 'share-friends'], order);
+                    if (onShare) {
+                        onShare.fire();
+                    }
                 });
                 $nav.append(button);
             }
@@ -512,8 +533,10 @@ define([
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var onFriendShare = Util.mkEvent();
+        var friendsList = hasFriends ? getFriendsList(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+
         var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [
                 hasFriends ? h('p', Messages.share_description) : undefined,
@@ -547,6 +570,7 @@ define([
                 present: present
             });
         };
+        onFriendShare.reg(saveValue);
         var getLinkValue = function (initValue) {
             var val = initValue || {};
             var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));

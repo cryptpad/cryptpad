@@ -1111,5 +1111,17 @@
     "notifications_cat_friends": "Freundschaftsanfragen",
     "notifications_cat_pads": "Mit mir geteilt",
     "notifications_cat_archived": "Verlauf",
-    "notifications_dismissAll": "Alle verbergen"
+    "notifications_dismissAll": "Alle verbergen",
+    "support_notification": "",
+    "requestEdit_button": "",
+    "requestEdit_dialog": "",
+    "requestEdit_confirm": "",
+    "requestEdit_fromFriend": "",
+    "requestEdit_fromStranger": "",
+    "requestEdit_viewPad": "",
+    "later": "",
+    "requestEdit_request": "",
+    "requestEdit_accepted": "",
+    "requestEdit_sent": "",
+    "uploadFolderButton": ""
 }

@@ -43,6 +43,7 @@ define([
                 origin: origin,
                 pathname: pathname,
                 password: priv.password,
+                isTemplate: priv.isTemplate,
                 hashes: hashes,
                 common: common,
                 title: data.title,

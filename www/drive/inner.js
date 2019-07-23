@@ -3601,6 +3601,7 @@ define([
                             hash: parsed.hash,
                             password: data.password
                         },
+                        isTemplate: paths[0].path[0] === 'template',
                         title: data.title,
                         common: common
                     };
