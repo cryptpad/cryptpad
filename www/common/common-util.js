@@ -319,6 +319,25 @@ define([], function () {
         return window.innerHeight < 800 || window.innerWidth < 800;
     };
 
+    Util.isPlainTextFile = function (metadata) {
+        if (!metadata || !metadata.href) { return; }
+        console.log("%c" + metadata.title + " : " + metadata.fileType, "color: #3a7");
+        console.log(metadata);
+        var href = metadata.roHref || metadata.href;
+        // is it a file ?
+        if (!href || href.indexOf("/file/") === -1) { return false; }
+        // does its type begins with "text/"
+        if (metadata.fileType.indexOf("text/") === 0) { return true; }
+        // no type and no file extension -> let's guess it's plain text
+        var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(metadata.title) || [];
+        if (!metadata.fileType && !parsedName[2]) { return true; }
+        // other exceptions
+        if (metadata.fileType === 'application/x-javascript') { return true; }
+        if (metadata.fileType === 'application/xml') { return true; }
+        return false;
+    };
+
+
     return Util;
 });
 }(self));

@@ -81,6 +81,7 @@ define([
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
+    var faOpenInCode = 'cptools-code';
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
@@ -315,6 +316,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faOpenInCode,
+                }, Messages.fc_openInCode || "Open in Code")),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
@@ -1019,6 +1024,11 @@ define([
                         } else if ($element.is('.cp-app-drive-element-noreadonly')) {
                             hide.push('openro'); // Remove open 'view' mode
                         }
+                        // if it's not a plain text file
+                        var metadata = manager.getFileData(manager.find(path));
+                        if (!metadata || !Util.isPlainTextFile(metadata)) {
+                            hide.push('openincode');
+                        }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
@@ -1028,6 +1038,7 @@ define([
                         }
                         containsFolder = true;
                         hide.push('openro');
+                        hide.push('openincode');
                         hide.push('hashtag');
                         hide.push('delete');
                         //hide.push('deleteowned');
@@ -1040,6 +1051,7 @@ define([
                         }
                         containsFolder = true;
                         hide.push('openro');
+                        hide.push('openincode');
                         hide.push('properties');
                         hide.push('share');
                         hide.push('hashtag');
@@ -1089,7 +1101,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -3523,6 +3535,15 @@ define([
                         href = data.roHref;
                     }
                     openFile(null, href);
+                });
+            }
+            else if ($(this).hasClass('cp-app-drive-context-openincode')) {
+                paths.forEach(function (p) {
+                    console.info("p", p);
+                    var el = manager.find(p.path);
+                    var metadata = manager.getFileData(el);
+                    console.log(el);
+                    // open code from template
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-expandall') ||
