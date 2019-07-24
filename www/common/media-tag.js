@@ -40,7 +40,7 @@
         if (metadata.type === 'application/x-javascript') { return true; }
         if (metadata.type === 'application/xml') { return true; }
         return false;
-    }
+    };
 
     // Default config, can be overriden per media-tag call
     var config = {
