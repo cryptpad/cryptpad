@@ -84,12 +84,6 @@ define([
         }
     };
 
-    var stripTags = function (text) {
-        var div = document.createElement("div");
-        div.innerHTML = text;
-        return div.innerText;
-    };
-
     renderer.heading = function (text, level) {
         var i = 0;
         var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
@@ -105,7 +99,7 @@ define([
         toc.push({
             level: level,
             id: id,
-            title: stripTags(text)
+            title: Util.stripTags(text)
         });
         return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
     };
