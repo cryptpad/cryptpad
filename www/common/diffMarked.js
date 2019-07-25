@@ -15,6 +15,7 @@ define([
 
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
+    var restrictedRenderer = new Marked.Renderer();
 
     var Mermaid = {
         init: function () {}
@@ -61,13 +62,20 @@ define([
         return h('div.cp-md-toc', content).outerHTML;
     };
 
-    DiffMd.render = function (md, sanitize) {
+    DiffMd.render = function (md, sanitize, restrictedMd) {
+        console.error("DIFFMD RENDER", restrictedMd);
+        console.log("md:\n", md);
+        Marked.setOptions({
+            renderer: restrictedMd ? restrictedRenderer : renderer,
+        });
         var r = Marked(md, {
             sanitize: sanitize
         });
 
         // Add Table of Content
-        r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        if (!restrictedMd) {
+            r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        }
         toc = [];
 
         return r;
@@ -83,6 +91,7 @@ define([
             return defaultCode.apply(renderer, arguments);
         }
     };
+    restrictedRenderer.code = renderer.code;
 
     var stripTags = function (text) {
         var div = document.createElement("div");
@@ -108,6 +117,9 @@ define([
             title: stripTags(text)
         });
         return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
+    };
+    restrictedRenderer.heading = function (text) {
+        return text;
     };
 
     // Tasks list
@@ -138,6 +150,13 @@ define([
         var cls = (isCheckedTaskItem || isUncheckedTaskItem || hasBogusInput) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
+    restrictedRenderer.listitem = function (text) {
+        if (bogusCheckPtn.test(text)) {
+            text = text.replace(bogusCheckPtn, '');
+        }
+        return '<li>' + text + '</li>\n';
+    }
+
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
             // DEPRECATED
@@ -162,11 +181,15 @@ define([
         out += this.options.xhtml ? '/>' : '>';
         return out;
     };
+    restrictedRenderer.image = renderer.image;
 
     renderer.paragraph = function (p) {
         if (p === '[TOC]') {
             return '<p><div class="cp-md-toc"></div></p>';
         }
+        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+    };
+    restrictedRenderer.paragraph = function (p) {
         return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
     };
 
