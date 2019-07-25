@@ -2766,7 +2766,7 @@ define([
             UIElements.displayCrowdfunding(common);
             modal.delete();
         });
-        $(store).click(function () {
+        $(store).one("click", function () {
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
                 var error = err || (obj && obj.error);
                 if (error) {
