@@ -17,8 +17,6 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/messages.js',
 
-    '/common/jscolor.js',
-
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/drive/app-drive.less',
